@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人生宠物园 · Life Pet Garden</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f7f4ef;
+    --mist: #e8e3da;
+    --accent: #6b8f71;
+    --accent2: #c4875a;
+    --accent3: #7a6baa;
+    --red: #c0392b;
+    --yellow: #d4a017;
+    --green: #4a7c59;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(26,26,46,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-title { font-size: 18px; font-weight: 600; letter-spacing: 0.04em; }
+  .header-sub { font-size: 12px; opacity: 0.55; margin-top: 2px; font-weight: 300; }
+  .header-date { font-size: 12px; opacity: 0.5; font-weight: 300; }
+
+  /* MAIN LAYOUT */
+  .main { display: grid; grid-template-columns: 340px 1fr; gap: 0; min-height: calc(100vh - 60px); }
+
+  /* LEFT PANEL - nodes */
+  .left-panel {
+    background: var(--ink);
+    padding: 28px 24px;
+    overflow-y: auto;
+  }
+  .panel-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247,244,239,0.4);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .node-card {
+    background: rgba(247,244,239,0.06);
+    border: 1px solid rgba(247,244,239,0.10);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .node-card:hover { background: rgba(247,244,239,0.10); border-color: rgba(247,244,239,0.2); }
+  .node-card.selected { border-color: var(--accent); background: rgba(107,143,113,0.15); }
+
+  .node-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .node-emoji { font-size: 22px; margin-right: 10px; }
+  .node-info { flex: 1; }
+  .node-name { font-size: 13px; font-weight: 500; color: var(--paper); }
+  .node-pet { font-size: 11px; color: rgba(247,244,239,0.45); margin-top: 1px; }
+  .node-score-badge {
+    font-size: 13px;
+    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .score-green { background: rgba(74,124,89,0.3); color: #7dcc8a; }
+  .score-yellow { background: rgba(212,160,23,0.3); color: #f0c040; }
+  .score-red { background: rgba(192,57,43,0.3); color: #e07070; }
+
+  .node-bar-bg { height: 3px; background: rgba(247,244,239,0.1); border-radius: 2px; }
+  .node-bar { height: 3px; border-radius: 2px; transition: width 0.5s ease; }
+  .bar-green { background: #7dcc8a; }
+  .bar-yellow { background: #f0c040; }
+  .bar-red { background: #e07070; }
+
+  .node-slider-wrap { margin-top: 10px; display: none; }
+  .node-card.selected .node-slider-wrap { display: block; }
+  .slider-label { font-size: 10px; color: rgba(247,244,239,0.4); margin-bottom: 6px; letter-spacing: 0.08em; text-transform: uppercase; }
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(247,244,239,0.15);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid var(--paper);
+  }
+
+  /* RIGHT PANEL - garden */
+  .right-panel { padding: 28px 32px; }
+
+  .garden-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+  .garden-title { font-size: 22px; font-weight: 600; color: var(--ink); }
+  .garden-subtitle { font-size: 13px; color: rgba(26,26,46,0.45); margin-top: 3px; }
+  .overall-score {
+    text-align: right;
+  }
+  .overall-num { font-size: 42px; font-weight: 600; line-height: 1; }
+  .overall-label { font-size: 11px; color: rgba(26,26,46,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+  /* PET GRID */
+  .pet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .pet-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 16px 16px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .pet-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(26,26,46,0.14); }
+  .pet-card.selected { border-color: var(--accent); }
+  .pet-card.status-red { border-color: rgba(192,57,43,0.4); }
+
+  .pet-scene {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pet-emoji-main { font-size: 52px; line-height: 1; position: relative; z-index: 2; }
+  .pet-effect {
+    position: absolute;
+    font-size: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .pet-card:hover .pet-effect { opacity: 1; }
+
+  .pet-name { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .pet-category { font-size: 11px; color: rgba(26,26,46,0.4); margin-bottom: 10px; }
+
+  .pet-mood {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .mood-happy { background: rgba(74,124,89,0.12); color: var(--green); }
+  .mood-okay { background: rgba(212,160,23,0.12); color: #a07010; }
+  .mood-sad { background: rgba(192,57,43,0.10); color: var(--red); }
+
+  .pet-score-bar { height: 4px; background: var(--mist); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .pet-score-fill { height: 4px; border-radius: 2px; transition: width 0.6s ease; }
+
+  /* STATUS INDICATOR */
+  .status-dot {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .dot-green { background: #7dcc8a; }
+  .dot-yellow { background: #f0c040; }
+  .dot-red { background: #e07070; animation: pulse-red 1.5s infinite; }
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* ALERT PANEL */
+  .alert-panel {
+    background: rgba(192,57,43,0.06);
+    border: 1px solid rgba(192,57,43,0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .alert-panel.visible { display: block; }
+  .alert-title { font-size: 12px; font-weight: 600; color: var(--red); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .alert-item { font-size: 13px; color: rgba(26,26,46,0.7); margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
+  .alert-arrow { color: rgba(192,57,43,0.6); font-size: 11px; }
+
+  /* IMPACT CHAIN */
+  .impact-section { margin-top: 4px; }
+  .impact-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(26,26,46,0.35);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .impact-chain {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 12px rgba(26,26,46,0.06);
+  }
+  .chain-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    background: var(--paper);
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--mist);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .chain-arrow { font-size: 14px; color: rgba(26,26,46,0.25); }
+
+  /* DAILY CHECK-IN */
+  .checkin-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+  .checkin-btn:hover { background: #2d2d4e; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,46,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--paper);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(26,26,46,0.25);
+  }
+  .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .modal-pet { font-size: 48px; text-align: center; margin: 16px 0; }
+  .modal-q { font-size: 14px; color: rgba(26,26,46,0.7); margin-bottom: 20px; line-height: 1.6; }
+  .modal-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .modal-opt {
+    padding: 10px 12px;
+    border: 1.5px solid var(--mist);
+    border-radius: 10px;
+    background: white;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .modal-opt:hover { border-color: var(--accent); background: rgba(107,143,113,0.08); }
+  .modal-opt.selected { border-color: var(--accent); background: rgba(107,143,113,0.15); font-weight: 500; }
+  .modal-close {
+    display: block; width: 100%;
+    padding: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: #2d2d4e; }
+
+  /* BG colors per category */
+  .bg-sleep { background: linear-gradient(135deg, #e8e3f0 0%, #d4cce8 100%); }
+  .bg-exercise { background: linear-gradient(135deg, #e3f0e6 0%, #cce8d0 100%); }
+  .bg-finance { background: linear-gradient(135deg, #f0ece3 0%, #e8dcc8 100%); }
+  .bg-social { background: linear-gradient(135deg, #f0e3e8 0%, #e8ccd4 100%); }
+  .bg-work { background: linear-gradient(135deg, #e3ecf0 0%, #ccdce8 100%); }
+  .bg-mind { background: linear-gradient(135deg, #ece3f0 0%, #dccce8 100%); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper);
+    padding: 12px 24px; border-radius: 99px;
+    font-size: 13px; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    .left-panel { padding: 20px 16px; }
+    .pet-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">人生宠物园 · Life Pet Garden</div>
+    <div class="header-sub">每个节点健康了，你的宠物就幸福了</div>
+  </div>
+  <div class="header-date" id="today-date"></div>
+</div>
+
+<div class="main">
+  <!-- LEFT: Node controls -->
+  <div class="left-panel">
+    <div class="panel-label">你的人生节点</div>
+    <div id="node-list"></div>
+    <button class="checkin-btn" onclick="openCheckin()">🌟 今日打卡</button>
+  </div>
+
+  <!-- RIGHT: Pet garden -->
+  <div class="right-panel">
+    <div class="garden-header">
+      <div>
+        <div class="garden-title">我的宠物花园</div>
+        <div class="garden-subtitle">宠物状态反映你的人生健康度</div>
+      </div>
+      <div class="overall-score">
+        <div class="overall-num" id="overall-score">--</div>
+        <div class="overall-label">综合健康分</div>
+      </div>
+    </div>
+
+    <!-- Alert panel -->
+    <div class="alert-panel" id="alert-panel">
+      <div class="alert-title">⚠️ 需要关注</div>
+      <div id="alert-list"></div>
+    </div>
+
+    <!-- Pet grid -->
+    <div class="pet-grid" id="pet-grid"></div>
+
+    <!-- Impact chain -->
+    <div class="impact-section">
+      <div class="impact-label">影响链 — 当睡眠不足时</div>
+      <div class="impact-chain">
+        <div class="chain-node">😴 睡眠 <span style="color:var(--red);font-size:10px;">↓</span></div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-node">😤 情绪波动</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-node">💼 工作效率降低</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-node">💰 收入风险</div>
+        <div class="chain-arrow">→</div>
+        <div class="chain-node">😰 压力增大</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Daily check-in modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">今日打卡</div>
+    <div class="modal-pet" id="modal-pet">🐱</div>
+    <div class="modal-q" id="modal-q">问题加载中...</div>
+    <div class="modal-options" id="modal-opts"></div>
+    <button class="modal-close" onclick="submitCheckin()">确认更新</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const nodes = [
+  {
+    id: 'sleep',
+    name: '睡眠', category: '健康基础',
+    pet: '🐼', petName: '小熊猫',
+    bgClass: 'bg-sleep',
+    score: 72,
+    question: '今晚你睡了几个小时，睡眠质量如何？',
+    options: [
+      { label: '😴 8小时+，很香', delta: +15 },
+      { label: '🙂 7小时，还行', delta: +8 },
+      { label: '😐 6小时，将就', delta: -5 },
+      { label: '😩 5小时以下', delta: -18 },
+    ]
+  },
+  {
+    id: 'exercise',
+    name: '运动', category: '身体活力',
+    pet: '🐬', petName: '小海豚',
+    bgClass: 'bg-exercise',
+    score: 85,
+    question: '今天你有没有运动？',
+    options: [
+      { label: '🏃 运动40分钟+', delta: +18 },
+      { label: '🚶 散步20分钟', delta: +8 },
+      { label: '😅 没怎么动', delta: -8 },
+      { label: '🛋️ 完全没动', delta: -15 },
+    ]
+  },
+  {
+    id: 'finance',
+    name: '财务', category: '物质保障',
+    pet: '🦊', petName: '小狐狸',
+    bgClass: 'bg-finance',
+    score: 45,
+    question: '今天的收支情况怎么样？',
+    options: [
+      { label: '💰 有收入/存钱', delta: +16 },
+      { label: '✅ 正常花销', delta: +3 },
+      { label: '😬 超支了一点', delta: -10 },
+      { label: '😱 花了很多', delta: -20 },
+    ]
+  },
+  {
+    id: 'social',
+    name: '人际', category: '情感连接',
+    pet: '🐧', petName: '小企鹅',
+    bgClass: 'bg-social',
+    score: 68,
+    question: '今天你和重要的人有没有联系？',
+    options: [
+      { label: '🤝 见面深聊了', delta: +15 },
+      { label: '💬 发消息联系了', delta: +8 },
+      { label: '😶 没怎么联系', delta: -5 },
+      { label: '😔 感觉孤立', delta: -15 },
+    ]
+  },
+  {
+    id: 'work',
+    name: '工作', category: '成就进展',
+    pet: '🦉', petName: '猫头鹰',
+    bgClass: 'bg-work',
+    score: 58,
+    question: '今天工作/创作进展如何？',
+    options: [
+      { label: '🚀 完成了重要事项', delta: +18 },
+      { label: '📝 按计划推进', delta: +6 },
+      { label: '😐 没什么进展', delta: -8 },
+      { label: '😵 完全卡住了', delta: -16 },
+    ]
+  },
+  {
+    id: 'mind',
+    name: '内心', category: '精神世界',
+    pet: '🦋', petName: '彩蝶',
+    bgClass: 'bg-mind',
+    score: 78,
+    question: '今天你的内心状态怎么样？',
+    options: [
+      { label: '🧘 平静，有觉知', delta: +15 },
+      { label: '🙂 还好，普通', delta: +3 },
+      { label: '😤 有些焦虑', delta: -8 },
+      { label: '😞 情绪很低落', delta: -16 },
+    ]
+  },
+];
+
+let selectedNode = null;
+let checkinIndex = 0;
+let checkinSelected = null;
+
+// Helpers
+function clamp(v, min=0, max=100) { return Math.max(min, Math.min(max, v)); }
+
+function scoreColor(s) {
+  if (s >= 70) return 'green';
+  if (s >= 45) return 'yellow';
+  return 'red';
+}
+
+function scoreMood(s) {
+  if (s >= 70) return { label: '活力满满', cls: 'mood-happy' };
+  if (s >= 45) return { label: '状态一般', cls: 'mood-okay' };
+  return { label: '需要关心', cls: 'mood-sad' };
+}
+
+function petEmoji(node) {
+  const s = node.score;
+  if (s >= 70) return node.pet;
+  if (s >= 45) return node.pet;
+  return node.pet;
+}
+
+function petEffect(score) {
+  if (score >= 70) return '✨';
+  if (score >= 45) return '💤';
+  return '😢';
+}
+
+function bgClass(score, base) {
+  return base;
+}
+
+// Render left nodes
+function renderNodes() {
+  const list = document.getElementById('node-list');
+  list.innerHTML = nodes.map((n, i) => {
+    const col = scoreColor(n.score);
+    return `
+    <div class="node-card ${selectedNode === i ? 'selected' : ''}" onclick="selectNode(${i})">
+      <div class="node-top">
+        <div class="node-emoji">${n.pet}</div>
+        <div class="node-info">
+          <div class="node-name">${n.name}</div>
+          <div class="node-pet">${n.petName} · ${n.category}</div>
+        </div>
+        <div class="node-score-badge score-${col}">${n.score}</div>
+      </div>
+      <div class="node-bar-bg">
+        <div class="node-bar bar-${col}" style="width:${n.score}%"></div>
+      </div>
+      <div class="node-slider-wrap">
+        <div class="slider-label">手动调整健康分</div>
+        <input type="range" min="0" max="100" value="${n.score}"
+          oninput="adjustScore(${i}, this.value)" onclick="event.stopPropagation()">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Render pet grid
+function renderPets() {
+  const grid = document.getElementById('pet-grid');
+  grid.innerHTML = nodes.map((n, i) => {
+    const s = n.score;
+    const col = scoreColor(s);
+    const mood = scoreMood(s);
+    const dotCls = col === 'green' ? 'dot-green' : col === 'yellow' ? 'dot-yellow' : 'dot-red';
+    const fillColor = col === 'green' ? '#7dcc8a' : col === 'yellow' ? '#f0c040' : '#e07070';
+
+    // Pet visual state
+    let petDisplay = n.pet;
+    let overlay = '';
+    if (s >= 70) overlay = '<div style="position:absolute;top:6px;right:8px;font-size:13px;opacity:0.7;">✨</div>';
+    else if (s < 45) overlay = '<div style="position:absolute;top:6px;right:8px;font-size:13px;opacity:0.7;animation:pulse-red 1.5s infinite;">💔</div>';
+
+    // Pet size reflects health
+    const petSize = s >= 70 ? '52px' : s >= 45 ? '42px' : '34px';
+
+    return `
+    <div class="pet-card ${selectedNode === i ? 'selected' : ''} ${col === 'red' ? 'status-red' : ''}"
+         onclick="selectNode(${i})">
+      <div class="status-dot ${dotCls}"></div>
+      <div class="pet-scene ${n.bgClass}">
+        <div style="font-size:${petSize};line-height:1;position:relative;z-index:2;
+          transition:font-size 0.5s ease;filter:${s < 45 ? 'grayscale(50%)' : 'none'}">
+          ${petDisplay}
+        </div>
+        ${overlay}
+        <div class="pet-effect" style="position:absolute;top:8px;left:8px;">${s>=70?'🌟':s>=45?'😐':'😢'}</div>
+      </div>
+      <div class="pet-name">${n.petName}</div>
+      <div class="pet-category">${n.name} · ${n.category}</div>
+      <span class="pet-mood ${mood.cls}">${mood.label}</span>
+      <div class="pet-score-bar">
+        <div class="pet-score-fill" style="width:${s}%;background:${fillColor}"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Overall
+  const avg = Math.round(nodes.reduce((a, n) => a + n.score, 0) / nodes.length);
+  const el = document.getElementById('overall-score');
+  el.textContent = avg;
+  el.style.color = scoreColor(avg) === 'green' ? '#4a7c59' : scoreColor(avg) === 'yellow' ? '#a07010' : '#c0392b';
+
+  // Alerts
+  const reds = nodes.filter(n => n.score < 45);
+  const alertPanel = document.getElementById('alert-panel');
+  const alertList = document.getElementById('alert-list');
+  if (reds.length > 0) {
+    alertPanel.classList.add('visible');
+    alertList.innerHTML = reds.map(n =>
+      `<div class="alert-item">${n.pet} <strong>${n.petName}</strong> 正在难过
+       <span class="alert-arrow">→ ${n.name}健康分仅 ${n.score}</span></div>`
+    ).join('');
+  } else {
+    alertPanel.classList.remove('visible');
+  }
+}
+
+function selectNode(i) {
+  selectedNode = selectedNode === i ? null : i;
+  renderNodes();
+  renderPets();
+}
+
+function adjustScore(i, val) {
+  nodes[i].score = parseInt(val);
+  renderPets();
+  renderNodes();
+}
+
+// Check-in modal
+function openCheckin() {
+  checkinIndex = 0;
+  checkinSelected = null;
+  showCheckinStep();
+  document.getElementById('modal').classList.add('open');
+}
+
+function showCheckinStep() {
+  const n = nodes[checkinIndex];
+  document.getElementById('modal-title').textContent = `${n.name} · ${n.petName}的状态`;
+  document.getElementById('modal-pet').textContent = n.pet;
+  document.getElementById('modal-q').textContent = n.question;
+  checkinSelected = null;
+  document.getElementById('modal-opts').innerHTML = n.options.map((o, i) =>
+    `<button class="modal-opt" onclick="selectOpt(${i},'${o.label}',${o.delta})">${o.label}</button>`
+  ).join('');
+}
+
+function selectOpt(i, label, delta) {
+  document.querySelectorAll('.modal-opt').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.modal-opt')[i].classList.add('selected');
+  checkinSelected = delta;
+}
+
+function submitCheckin() {
+  if (checkinSelected === null) { showToast('请先选择一个选项 😊'); return; }
+  const n = nodes[checkinIndex];
+  n.score = clamp(n.score + checkinSelected);
+  checkinIndex++;
+  if (checkinIndex < nodes.length) {
+    showCheckinStep();
+  } else {
+    document.getElementById('modal').classList.remove('open');
+    renderNodes();
+    renderPets();
+    showToast('✅ 今日打卡完成！宠物们已更新状态');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Date
+document.getElementById('today-date').textContent =
+  new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+
+// Init
+renderNodes();
+renderPets();
+
+// Click outside modal to close
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+</script>
+</body>
+</html>
