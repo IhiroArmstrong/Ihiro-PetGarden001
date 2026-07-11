@@ -44,6 +44,15 @@ body {
   height: 600px;
   overflow: hidden;
   border-radius: 4px;
+  /* 兜底背景：防止各 zone 形状未覆盖处透出宣纸白 */
+  background: linear-gradient(180deg,
+    #1a1a2e 0%,
+    #252d4a 26%,
+    #1e3528 42%,
+    #2d4a32 55%,
+    #4a6741 68%,
+    #3d5235 100%
+  );
   box-shadow:
     0 2px 0 rgba(44, 31, 20, 0.06),
     0 12px 40px rgba(26, 26, 46, 0.16),
@@ -107,9 +116,8 @@ body {
         </filter>
       </defs>
 
-      <!-- 夜空背景（覆盖全画布，下层区域由其他 zone 覆盖） -->
-      <rect width="375" height="220" fill="url(#skyGrad)"/>
-      <rect y="180" width="375" height="40" fill="url(#skyGrad)" opacity="0.45"/>
+      <!-- 夜空背景（向下延伸，与古树区渐变衔接） -->
+      <rect width="375" height="280" fill="url(#skyGrad)"/>
 
       <!-- 夜云 -->
       <g class="cloud" opacity="0.28">
@@ -122,8 +130,8 @@ body {
         <ellipse cx="152" cy="42"  rx="28" ry="9"  fill="#b8b0d8"/>
       </g>
       <g class="cloud" opacity="0.2">
-        <ellipse cx="318" cy="58"  rx="36" ry="10" fill="#c0b8d8"/>
-        <ellipse cx="348" cy="62"  rx="22" ry="8"  fill="#d0c8e8"/>
+        <ellipse cx="238" cy="108" rx="32" ry="9"  fill="#c0b8d8"/>
+        <ellipse cx="262" cy="112" rx="22" ry="7"  fill="#d0c8e8"/>
       </g>
 
       <!-- 星星（15–25 颗） -->
@@ -176,7 +184,16 @@ body {
           <stop offset="65%"  stop-color="#2d5a27"/>
           <stop offset="100%" stop-color="#1e4520"/>
         </radialGradient>
+        <linearGradient id="treeZoneBg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#252d4a"/>
+          <stop offset="30%"  stop-color="#1e3528"/>
+          <stop offset="70%"  stop-color="#2d4a32"/>
+          <stop offset="100%" stop-color="#3d5235"/>
+        </linearGradient>
       </defs>
+
+      <!-- 古树区全宽背景（y≈180–400，消除树冠两侧空白断层） -->
+      <rect y="170" width="375" height="240" fill="url(#treeZoneBg)"/>
 
       <!-- 金色气场粒子（静态上升轨迹） -->
       <g class="tree-aura-particle" fill="#f0c060">
@@ -224,24 +241,24 @@ body {
       <ellipse class="tree-canopy" cx="178" cy="238" rx="56" ry="42" fill="#4a7c3f" opacity="0.75"/>
       <ellipse class="tree-canopy" cx="155" cy="210" rx="62" ry="42" fill="#5a9048" opacity="0.55"/>
 
-      <!-- 新芽（8–12 个） -->
-      <g class="tree-bud" fill="#7ab648">
-        <ellipse cx="88"  cy="248" rx="4"   ry="7"   transform="rotate(-28 88 248)"/>
-        <ellipse cx="102" cy="222" rx="3.5" ry="6.5" transform="rotate(-18 102 222)"/>
-        <ellipse cx="118" cy="208" rx="3"   ry="5.5" transform="rotate(-8 118 208)"/>
-        <ellipse cx="138" cy="198" rx="3.5" ry="6"   transform="rotate(5 138 198)"/>
-        <ellipse cx="158" cy="192" rx="4"   ry="7"   transform="rotate(12 158 192)"/>
-        <ellipse cx="182" cy="198" rx="3.5" ry="6.5" transform="rotate(22 182 198)"/>
-        <ellipse cx="202" cy="212" rx="3"   ry="5.5" transform="rotate(32 202 212)"/>
-        <ellipse cx="215" cy="232" rx="3.5" ry="6"   transform="rotate(38 215 232)"/>
-        <circle  cx="95"  cy="268" r="2.5"/>
-        <circle  cx="208" cy="248" r="2.5"/>
-        <circle  cx="172" cy="205" r="2"/>
-        <circle  cx="125" cy="218" r="2.2"/>
+      <!-- 新芽（每个元素独立 class，供 Task 2 逐颗控制显隐） -->
+      <g fill="#7ab648">
+        <ellipse class="tree-bud" cx="88"  cy="248" rx="4"   ry="7"   transform="rotate(-28 88 248)"/>
+        <ellipse class="tree-bud" cx="102" cy="222" rx="3.5" ry="6.5" transform="rotate(-18 102 222)"/>
+        <ellipse class="tree-bud" cx="118" cy="208" rx="3"   ry="5.5" transform="rotate(-8 118 208)"/>
+        <ellipse class="tree-bud" cx="138" cy="198" rx="3.5" ry="6"   transform="rotate(5 138 198)"/>
+        <ellipse class="tree-bud" cx="158" cy="192" rx="4"   ry="7"   transform="rotate(12 158 192)"/>
+        <ellipse class="tree-bud" cx="182" cy="198" rx="3.5" ry="6.5" transform="rotate(22 182 198)"/>
+        <ellipse class="tree-bud" cx="202" cy="212" rx="3"   ry="5.5" transform="rotate(32 202 212)"/>
+        <ellipse class="tree-bud" cx="215" cy="232" rx="3.5" ry="6"   transform="rotate(38 215 232)"/>
+        <circle  class="tree-bud" cx="95"  cy="268" r="2.5"/>
+        <circle  class="tree-bud" cx="208" cy="248" r="2.5"/>
+        <circle  class="tree-bud" cx="172" cy="205" r="2"/>
+        <circle  class="tree-bud" cx="125" cy="218" r="2.2"/>
       </g>
-      <g class="tree-bud" fill="#a0e070" opacity="0.7">
-        <circle cx="108" cy="235" r="2"/>
-        <circle cx="190" cy="225" r="1.8"/>
+      <g fill="#a0e070" opacity="0.7">
+        <circle class="tree-bud" cx="108" cy="235" r="2"/>
+        <circle class="tree-bud" cx="190" cy="225" r="1.8"/>
       </g>
     </svg>
   </div>
@@ -270,12 +287,12 @@ body {
         </linearGradient>
       </defs>
 
-      <!-- 草地 -->
+      <!-- 草地（上缘提前至 y≈350，与古树区背景平滑衔接） -->
       <path class="grass-area"
-        d="M0,395 Q94,382 188,390 Q282,398 375,385 L375,600 L0,600Z"
+        d="M0,350 Q94,338 188,346 Q282,354 375,342 L375,600 L0,600Z"
         fill="url(#grassGrad)"/>
       <path class="grass-area"
-        d="M0,420 Q120,410 188,418 Q256,426 375,412 L375,600 L0,600Z"
+        d="M0,375 Q120,365 188,373 Q256,381 375,368 L375,600 L0,600Z"
         fill="url(#groundGrad)" opacity="0.55"/>
 
       <!-- 草叶纹理 -->
@@ -366,71 +383,91 @@ body {
     </svg>
   </div>
 
-  <!-- ===== 小猫（打坐） ===== -->
+  <!-- ===== 小猫（打坐 · 基于 cat_mascot_macaron_2 改进版） ===== -->
   <div class="cat-wrap">
     <svg class="cat-svg" viewBox="0 0 375 600" xmlns="http://www.w3.org/2000/svg" aria-label="月见打坐">
-      <defs>
-        <filter id="catShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1a1a2e" flood-opacity="0.3"/>
-        </filter>
-      </defs>
-
-      <g transform="translate(151, 318)" filter="url(#catShadow)">
+      <g transform="translate(137, 278) scale(0.42)">
 
         <!-- 静态光圈 -->
-        <circle class="cat-aura-ring" cx="36" cy="30" r="34" fill="none" stroke="#fde890" stroke-width="0.8" opacity="0.22"/>
-        <circle class="cat-aura-ring" cx="36" cy="30" r="40" fill="none" stroke="#f0c060" stroke-width="0.5" opacity="0.12"/>
+        <circle class="cat-aura-ring" cx="120" cy="118" r="72" fill="none" stroke="#fde890" stroke-width="1.8" opacity="0.22"/>
+        <circle class="cat-aura-ring" cx="120" cy="118" r="84" fill="none" stroke="#f0c060" stroke-width="1.2" opacity="0.12"/>
 
         <!-- 打坐蒲团 -->
-        <ellipse cx="36" cy="54" rx="28" ry="8" fill="#6a5038"/>
-        <ellipse cx="36" cy="52" rx="26" ry="7" fill="#8a6848"/>
-        <ellipse cx="36" cy="50" rx="24" ry="6" fill="#9a7858"/>
+        <ellipse cx="120" cy="248" rx="68" ry="18" fill="#6a5038"/>
+        <ellipse cx="120" cy="244" rx="64" ry="16" fill="#8a6848"/>
+        <ellipse cx="120" cy="240" rx="60" ry="14" fill="#9a7858"/>
 
         <!-- 尾巴 -->
         <path class="cat-tail"
-          d="M58,44 C68,40 74,30 70,22 C66,14 58,16 55,22 C52,28 54,38 58,44Z"
-          fill="#faf6f0" stroke="#c8c0b0" stroke-width="0.5"/>
+          d="M162,210 C198,206 214,168 198,132 C188,116 164,118 160,132
+             C156,144 166,152 174,164 C186,182 180,202 150,206 Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
         <path class="cat-tail"
-          d="M64,22 C66,17 64,13 59,13" stroke="#c8c0b0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-
-        <!-- 身体 -->
-        <ellipse class="cat-body" cx="36" cy="40" rx="18" ry="14" fill="#faf6f0"/>
-        <path class="cat-body"
-          d="M28,36 C32,38 40,38 44,36" stroke="#c8c0b0" stroke-width="1.2" fill="none" opacity="0.45"/>
+          d="M200,148 C204,144 206,150 202,154 C205,158 202,162 198,158 C200,153 199,150 200,148 Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"/>
 
         <!-- 盘腿 -->
-        <ellipse class="cat-body" cx="22" cy="46" rx="10" ry="6" fill="#f0ece4"/>
-        <ellipse class="cat-body" cx="50" cy="46" rx="10" ry="6" fill="#f0ece4"/>
+        <ellipse class="cat-body" cx="88"  cy="222" rx="28" ry="16" fill="#f0ece4" stroke="#c8c0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse class="cat-body" cx="152" cy="222" rx="28" ry="16" fill="#f0ece4" stroke="#c8c0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 
-        <!-- 前爪 -->
-        <ellipse class="cat-body" cx="30" cy="36" rx="5" ry="4" fill="#f0ece4"/>
-        <ellipse class="cat-body" cx="42" cy="36" rx="5" ry="4" fill="#f0ece4"/>
-        <ellipse class="cat-body" cx="36" cy="35" rx="4" ry="3" fill="#faf6f0"/>
+        <!-- 身体 -->
+        <path class="cat-body"
+          d="M120,128 C150,128 174,152 174,184 C174,208 158,228 120,232
+             C82,228 66,208 66,184 C66,152 90,128 120,128 Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
 
-        <!-- 头 -->
-        <circle class="cat-body" cx="36" cy="18" r="16" fill="#faf6f0"/>
+        <!-- 胸口绒毛 -->
+        <path class="cat-body"
+          d="M112,142 C108,136 114,132 118,138 C122,132 128,136 124,142 C120,138 116,138 112,142 Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"/>
 
-        <!-- 耳朵 -->
+        <!-- 连续头脸轮廓 -->
+        <path class="cat-body"
+          d="M66,58 C56,44 58,26 76,20 C88,17 98,26 100,40
+             C102,54 96,68 88,78 C82,86 84,96 90,102
+             C96,108 106,114 120,116 C134,114 144,108 150,102
+             C156,96 158,86 152,78 C144,68 138,54 140,40
+             C142,26 152,17 164,20 C182,26 184,44 174,58
+             C170,52 164,46 156,48 C148,32 132,24 120,26
+             C108,24 92,32 84,48 C76,46 70,52 66,58 Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- 头顶绒毛 -->
+        <path class="cat-body"
+          d="M106,28 C102,22 108,18 112,24 C116,18 124,18 128,24
+             C132,18 138,22 134,28 C126,24 114,24 106,28 Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- 耳内 -->
         <g class="cat-ears">
-          <polygon points="22,8 18,0 28,4" fill="#faf6f0" stroke="#c8c0b0" stroke-width="0.5"/>
-          <polygon points="23,7 20,2 27,5" fill="#ffb0b8"/>
-          <polygon points="50,8 54,0 44,4" fill="#faf6f0" stroke="#c8c0b0" stroke-width="0.5"/>
-          <polygon points="49,7 52,2 45,5" fill="#ffb0b8"/>
+          <path d="M82,52 C78,38 86,30 96,36 C102,40 100,52 92,58 C88,61 84,58 82,52 Z" fill="#ffb0b8"/>
+          <path d="M158,52 C162,38 154,30 144,36 C138,40 140,52 148,58 C152,61 156,58 158,52 Z" fill="#ffb0b8"/>
         </g>
+
+        <!-- 前爪（合十） -->
+        <ellipse class="cat-body" cx="104" cy="178" rx="14" ry="11" fill="#f0ece4" stroke="#c8c0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse class="cat-body" cx="136" cy="178" rx="14" ry="11" fill="#f0ece4" stroke="#c8c0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse class="cat-body" cx="120" cy="174" rx="12" ry="9"  fill="#faf6f0" stroke="#c8c0b0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 
         <!-- 弯月闭眼 -->
         <g class="cat-eyes-closed">
-          <path d="M26,18 C28,16 32,16 34,18" stroke="#4a4038" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <path d="M38,18 C40,16 44,16 46,18" stroke="#4a4038" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M82,76 C86,72 92,72 96,76" stroke="#4a4038" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M144,76 C148,72 154,72 158,76" stroke="#4a4038" stroke-width="3" fill="none" stroke-linecap="round"/>
         </g>
 
-        <!-- 鼻子与嘴 -->
-        <ellipse cx="36" cy="22" rx="2" ry="1.5" fill="#ffb0b8"/>
-        <path d="M33,25 C36,27.5 39,25 39,25" stroke="#c8a898" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <!-- 小鼻 + 微笑 -->
+        <path d="M120,88 C118,86 115,86 115,89 C115,93 120,97 120,97
+                 C120,97 125,93 125,89 C125,86 122,86 120,88 Z" fill="#ffb0b8"/>
+        <path d="M120,97 Q114,104 108,100 M120,97 Q126,104 132,100"
+          stroke="#c8a898" stroke-width="2.2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round"/>
 
-        <!-- 腮红 -->
-        <ellipse cx="24" cy="24" rx="4" ry="2.5" fill="#ffb0b8" opacity="0.35"/>
-        <ellipse cx="48" cy="24" rx="4" ry="2.5" fill="#ffb0b8" opacity="0.35"/>
       </g>
     </svg>
   </div>
