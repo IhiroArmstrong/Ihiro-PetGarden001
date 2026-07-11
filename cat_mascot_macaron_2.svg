@@ -13,8 +13,8 @@
     d="M208,152 C214,148 216,156 210,160 C214,164 210,170 204,166 C206,160 205,155 208,152 Z"
     fill="#FFF6EC" stroke="#E8A87C" stroke-width="2"
     stroke-linecap="round" stroke-linejoin="round"/>
-  <ellipse class="cat-patch-tail-tip" cx="202" cy="142" rx="13" ry="15"
-    fill="#C9B6E4" opacity="0.55" transform="rotate(-10 202 142)"/>
+  <ellipse class="cat-patch-tail-tip" cx="192" cy="152" rx="11" ry="13"
+    fill="#C9B6E4" opacity="0.55" transform="rotate(-10 192 152)"/>
 
   <!-- 身体 -->
   <path class="cat-body"
@@ -32,43 +32,41 @@
     fill="#FFF6EC" stroke="#E8A87C" stroke-width="2"
     stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- 连续头脸轮廓：左耳→左颊→下巴→右颊→右耳→额顶 -->
+  <!-- 连续头脸轮廓（苹果形）：左耳→左颊→圆润下巴→右颊→右耳→平滑头顶弧线，一笔闭合，无断裂/无凹角 -->
   <path class="cat-head"
-    d="M66,58
-       C56,44 58,26 76,20
-       C88,17 98,26 100,40
-       C102,54 96,68 88,78
-       C82,86 84,96 90,102
-       C96,108 106,114 120,116
-       C134,114 144,108 150,102
-       C156,96 158,86 152,78
-       C144,68 138,54 140,40
-       C142,26 152,17 164,20
-       C182,26 184,44 174,58
-       C170,52 164,46 156,48
-       C148,32 132,24 120,26
-       C108,24 92,32 84,48
-       C76,46 70,52 66,58 Z"
+    d="M61,58
+       C54,45 58,28 74,21
+       C83,18 94,27 97,42
+       C100,54 94,68 85,78
+       C78,86 80,96 87,102
+       C94,108 105,114 120,116
+       C135,114 146,108 153,102
+       C160,96 162,86 155,78
+       C146,68 140,54 143,42
+       C146,27 157,18 166,21
+       C182,28 186,45 179,58
+       C170,50 140,45 120,46
+       C100,45 70,50 61,58 Z"
     fill="#FFF6EC" stroke="#E8A87C" stroke-width="2.5"
     stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- 头顶绒毛 -->
+  <!-- 头顶绒毛（简化为一小簇，位于头顶圆弧之上，不破坏轮廓） -->
   <path class="cat-head-fluff-top"
-    d="M106,28 C102,22 108,18 112,24 C116,18 124,18 128,24 C132,18 138,22 134,28 C126,24 114,24 106,28 Z"
+    d="M112,38 C109,33 114,30 117,35 C120,30 126,30 128,35 C131,31 136,34 133,39 C126,36 118,36 112,38 Z"
     fill="#FFF6EC" stroke="#E8A87C" stroke-width="2"
     stroke-linecap="round" stroke-linejoin="round"/>
 
   <!-- 耳内（圆润三角） -->
   <path class="cat-ear-inner-left"
-    d="M82,52 C78,38 86,30 96,36 C102,40 100,52 92,58 C88,61 84,58 82,52 Z"
+    d="M74,50 C71,38 78,30 88,36 C93,40 91,51 84,56 C80,59 76,56 74,50 Z"
     fill="#FFC1CC"/>
   <path class="cat-ear-inner-right"
-    d="M158,52 C162,38 154,30 144,36 C138,40 140,52 148,58 C152,61 156,58 158,52 Z"
+    d="M166,50 C169,38 162,30 152,36 C147,40 149,51 156,56 C160,59 164,56 166,50 Z"
     fill="#FFC1CC"/>
 
   <!-- 额纹 -->
   <path class="cat-marking-forehead"
-    d="M102,36 L108,50 M120,32 L120,50 M138,36 L132,50"
+    d="M99,34 L105,49 M120,31 L120,49 M141,34 L135,49"
     stroke="#FFB98A" stroke-width="4.5" stroke-linecap="round" opacity="0.6"/>
 
   <!-- 侧斑 -->
