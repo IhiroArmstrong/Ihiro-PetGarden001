@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>禅境盆景 · 月见</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Noto+Sans+SC:wght@300;400&display=swap');
+
+:root {
+  --paper:   #f7f3ec;
+  --ink:     #2c1f14;
+  --night0:  #1a1a2e;
+  --night1:  #252d4a;
+  --moon:    #f0c060;
+  --moon-hi: #fde890;
+  --tree0:   #2d5a27;
+  --tree1:   #4a7c3f;
+  --stream0: #5ba3c9;
+  --stream1: #a0d4e8;
+  --grass0:  #4a6741;
+  --grass1:  #7ab648;
+  --cat:     #faf6f0;
+  --cat-stripe: #c8c0b0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  font-family: 'Noto Serif SC', serif;
+  color: var(--ink);
+  padding: 32px 16px;
+}
+
+/* === 375×600 盆景画布 === */
+.bonsai-stage {
+  position: relative;
+  width: 375px;
+  height: 600px;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow:
+    0 2px 0 rgba(44, 31, 20, 0.06),
+    0 12px 40px rgba(26, 26, 46, 0.16),
+    inset 0 0 0 1px rgba(44, 31, 20, 0.07);
+}
+
+.zone-sky,
+.zone-tree,
+.zone-stream,
+.cat-wrap {
+  position: absolute;
+  inset: 0;
+  width: 375px;
+  height: 600px;
+  pointer-events: none;
+}
+
+.zone-sky    { z-index: 1; }
+.zone-tree   { z-index: 2; }
+.zone-stream { z-index: 3; }
+.cat-wrap    { z-index: 4; }
+
+.sky-svg,
+.tree-svg,
+.stream-svg,
+.cat-svg {
+  display: block;
+  width: 375px;
+  height: 600px;
+}
+</style>
+</head>
+<body>
+
+<div class="bonsai-stage">
+
+  <!-- ===== 夜空区域 ===== -->
+  <div class="zone-sky">
+    <svg class="sky-svg" viewBox="0 0 375 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#1a1a2e"/>
+          <stop offset="100%" stop-color="#252d4a"/>
+        </linearGradient>
+        <radialGradient id="moonGlowGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#fde890" stop-opacity="0.55"/>
+          <stop offset="45%"  stop-color="#f0c060" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="#f0c060" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="moonBodyGrad" cx="40%" cy="35%" r="55%">
+          <stop offset="0%"   stop-color="#fde890"/>
+          <stop offset="55%"  stop-color="#f0c060"/>
+          <stop offset="100%" stop-color="#e8b848"/>
+        </radialGradient>
+        <filter id="moonBlur" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="8" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- 夜空背景（覆盖全画布，下层区域由其他 zone 覆盖） -->
+      <rect width="375" height="220" fill="url(#skyGrad)"/>
+      <rect y="180" width="375" height="40" fill="url(#skyGrad)" opacity="0.45"/>
+
+      <!-- 夜云 -->
+      <g class="cloud" opacity="0.28">
+        <ellipse cx="48"  cy="72"  rx="34" ry="11" fill="#c8c0e8"/>
+        <ellipse cx="72"  cy="68"  rx="24" ry="9"  fill="#b8b0d8"/>
+        <ellipse cx="95"  cy="74"  rx="20" ry="8"  fill="#d0c8e8"/>
+      </g>
+      <g class="cloud" opacity="0.22">
+        <ellipse cx="118" cy="38"  rx="42" ry="10" fill="#a8a0c8"/>
+        <ellipse cx="152" cy="42"  rx="28" ry="9"  fill="#b8b0d8"/>
+      </g>
+      <g class="cloud" opacity="0.2">
+        <ellipse cx="318" cy="58"  rx="36" ry="10" fill="#c0b8d8"/>
+        <ellipse cx="348" cy="62"  rx="22" ry="8"  fill="#d0c8e8"/>
+      </g>
+
+      <!-- 星星（15–25 颗） -->
+      <g fill="#fff4d6">
+        <circle class="star" cx="22"  cy="28"  r="1.2" opacity="0.85"/>
+        <circle class="star" cx="48"  cy="18"  r="0.8" opacity="0.6"/>
+        <circle class="star" cx="68"  cy="42"  r="1.0" opacity="0.75"/>
+        <circle class="star" cx="92"  cy="24"  r="1.4" opacity="0.95"/>
+        <circle class="star" cx="112" cy="55"  r="0.7" opacity="0.5"/>
+        <circle class="star" cx="138" cy="32"  r="1.1" opacity="0.8"/>
+        <circle class="star" cx="158" cy="14"  r="0.9" opacity="0.65"/>
+        <circle class="star" cx="175" cy="48"  r="1.2" opacity="0.9"/>
+        <circle class="star" cx="198" cy="22"  r="0.6" opacity="0.45"/>
+        <circle class="star" cx="228" cy="38"  r="1.0" opacity="0.7"/>
+        <circle class="star" cx="248" cy="16"  r="1.5" opacity="1"/>
+        <circle class="star" cx="268" cy="52"  r="0.8" opacity="0.55"/>
+        <circle class="star" cx="288" cy="28"  r="1.1" opacity="0.82"/>
+        <circle class="star" cx="312" cy="44"  r="0.7" opacity="0.5"/>
+        <circle class="star" cx="332" cy="20"  r="1.3" opacity="0.88"/>
+        <circle class="star" cx="352" cy="36"  r="0.9" opacity="0.72"/>
+        <circle class="star" cx="36"  cy="58"  r="0.6" opacity="0.4"/>
+        <circle class="star" cx="165" cy="68"  r="0.8" opacity="0.55"/>
+        <circle class="star" cx="345" cy="72"  r="1.0" opacity="0.68"/>
+        <circle class="star" cx="14"  cy="82"  r="0.7" opacity="0.48"/>
+        <circle class="star" cx="360" cy="88"  r="1.2" opacity="0.78"/>
+      </g>
+
+      <!-- 月亮光晕 + 本体（偏右上） -->
+      <circle class="moon-glow" cx="278" cy="78" r="58" fill="url(#moonGlowGrad)"/>
+      <circle class="moon-glow" cx="278" cy="78" r="72" fill="none" stroke="#fde890" stroke-width="0.6" opacity="0.12"/>
+      <circle class="moon" cx="278" cy="78" r="32" fill="url(#moonBodyGrad)" filter="url(#moonBlur)"/>
+      <circle class="moon" cx="278" cy="78" r="32" fill="url(#moonBodyGrad)"/>
+      <circle cx="268" cy="72" r="5"   fill="#e8c860" opacity="0.2"/>
+      <circle cx="286" cy="76" r="3.5" fill="#e8c860" opacity="0.15"/>
+      <circle cx="274" cy="84" r="2.5" fill="#e8c860" opacity="0.12"/>
+    </svg>
+  </div>
+
+  <!-- ===== 古树区域 ===== -->
+  <div class="zone-tree">
+    <svg class="tree-svg" viewBox="0 0 375 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="trunkGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#1e4520"/>
+          <stop offset="45%"  stop-color="#2d5a27"/>
+          <stop offset="100%" stop-color="#1e4520"/>
+        </linearGradient>
+        <radialGradient id="canopyGrad" cx="42%" cy="38%" r="58%">
+          <stop offset="0%"   stop-color="#4a7c3f"/>
+          <stop offset="65%"  stop-color="#2d5a27"/>
+          <stop offset="100%" stop-color="#1e4520"/>
+        </radialGradient>
+      </defs>
+
+      <!-- 金色气场粒子（静态上升轨迹） -->
+      <g class="tree-aura-particle" fill="#f0c060">
+        <circle cx="118" cy="318" r="2.0" opacity="0.35"/>
+        <circle cx="128" cy="298" r="1.5" opacity="0.42"/>
+        <circle cx="138" cy="278" r="1.8" opacity="0.38"/>
+        <circle cx="148" cy="258" r="1.2" opacity="0.48"/>
+        <circle cx="158" cy="240" r="1.6" opacity="0.32"/>
+        <circle cx="168" cy="225" r="1.0" opacity="0.28"/>
+        <circle cx="178" cy="212" r="1.4" opacity="0.22"/>
+        <circle cx="188" cy="200" r="0.9" opacity="0.18"/>
+        <circle cx="108" cy="305" r="1.3" opacity="0.3"/>
+        <circle cx="145" cy="290" r="1.1" opacity="0.36"/>
+        <circle cx="165" cy="268" r="1.5" opacity="0.25"/>
+        <circle cx="152" cy="248" r="0.8" opacity="0.4"/>
+      </g>
+
+      <!-- 树干 -->
+      <path class="tree-trunk"
+        d="M168,600 C162,520 158,460 152,400 C148,360 142,320 136,280
+           C132,255 128,235 122,218 C118,208 124,200 134,202
+           C144,204 150,218 154,238 C160,268 164,310 168,360
+           C172,420 176,480 180,540 C182,570 175,600 168,600Z"
+        fill="url(#trunkGrad)"/>
+      <path class="tree-trunk"
+        d="M148,420 C142,380 138,340 132,300" stroke="#1e4520" stroke-width="1.2" fill="none" opacity="0.35"/>
+      <path class="tree-trunk"
+        d="M162,480 C166,440 170,390 174,340" stroke="#1e4520" stroke-width="0.8" fill="none" opacity="0.25"/>
+
+      <!-- 树根 -->
+      <path class="tree-trunk"
+        d="M152,580 C140,592 128,598 118,600 C112,601 110,596 115,592
+           C128,582 142,576 152,580Z" fill="#1e4520"/>
+      <path class="tree-trunk"
+        d="M188,578 C198,590 212,598 222,600 C228,601 230,596 225,592
+           C212,582 198,576 188,578Z" fill="#1e4520"/>
+
+      <!-- 树洞 -->
+      <ellipse class="tree-hollow" cx="128" cy="268" rx="14" ry="18" fill="#1a1208" opacity="0.85"/>
+      <ellipse class="tree-hollow" cx="128" cy="266" rx="10" ry="13" fill="#2a1a10" opacity="0.5"/>
+
+      <!-- 树冠 -->
+      <ellipse class="tree-canopy" cx="155" cy="228" rx="78" ry="56" fill="url(#canopyGrad)"/>
+      <ellipse class="tree-canopy" cx="130" cy="248" rx="52" ry="40" fill="#3a6a32" opacity="0.85"/>
+      <ellipse class="tree-canopy" cx="178" cy="238" rx="56" ry="42" fill="#4a7c3f" opacity="0.75"/>
+      <ellipse class="tree-canopy" cx="155" cy="210" rx="62" ry="42" fill="#5a9048" opacity="0.55"/>
+
+      <!-- 新芽（8–12 个） -->
+      <g class="tree-bud" fill="#7ab648">
+        <ellipse cx="88"  cy="248" rx="4"   ry="7"   transform="rotate(-28 88 248)"/>
+        <ellipse cx="102" cy="222" rx="3.5" ry="6.5" transform="rotate(-18 102 222)"/>
+        <ellipse cx="118" cy="208" rx="3"   ry="5.5" transform="rotate(-8 118 208)"/>
+        <ellipse cx="138" cy="198" rx="3.5" ry="6"   transform="rotate(5 138 198)"/>
+        <ellipse cx="158" cy="192" rx="4"   ry="7"   transform="rotate(12 158 192)"/>
+        <ellipse cx="182" cy="198" rx="3.5" ry="6.5" transform="rotate(22 182 198)"/>
+        <ellipse cx="202" cy="212" rx="3"   ry="5.5" transform="rotate(32 202 212)"/>
+        <ellipse cx="215" cy="232" rx="3.5" ry="6"   transform="rotate(38 215 232)"/>
+        <circle  cx="95"  cy="268" r="2.5"/>
+        <circle  cx="208" cy="248" r="2.5"/>
+        <circle  cx="172" cy="205" r="2"/>
+        <circle  cx="125" cy="218" r="2.2"/>
+      </g>
+      <g class="tree-bud" fill="#a0e070" opacity="0.7">
+        <circle cx="108" cy="235" r="2"/>
+        <circle cx="190" cy="225" r="1.8"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ===== 溪流区域 ===== -->
+  <div class="zone-stream">
+    <svg class="stream-svg" viewBox="0 0 375 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="grassGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#7ab648"/>
+          <stop offset="100%" stop-color="#4a6741"/>
+        </linearGradient>
+        <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#5a8048"/>
+          <stop offset="100%" stop-color="#3d5235"/>
+        </linearGradient>
+        <linearGradient id="waterfallGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#a0d4e8" stop-opacity="0.95"/>
+          <stop offset="55%"  stop-color="#7ec4dc"/>
+          <stop offset="100%" stop-color="#5ba3c9"/>
+        </linearGradient>
+        <linearGradient id="streamGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#5ba3c9" stop-opacity="0.7"/>
+          <stop offset="50%"  stop-color="#a0d4e8" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#7ec4dc" stop-opacity="0.65"/>
+        </linearGradient>
+      </defs>
+
+      <!-- 草地 -->
+      <path class="grass-area"
+        d="M0,395 Q94,382 188,390 Q282,398 375,385 L375,600 L0,600Z"
+        fill="url(#grassGrad)"/>
+      <path class="grass-area"
+        d="M0,420 Q120,410 188,418 Q256,426 375,412 L375,600 L0,600Z"
+        fill="url(#groundGrad)" opacity="0.55"/>
+
+      <!-- 草叶纹理 -->
+      <g class="grass-area" stroke="#6a9058" stroke-width="1.4" fill="none" opacity="0.45">
+        <path d="M18,440 Q20,425 18,412"/>
+        <path d="M32,448 Q35,432 30,418"/>
+        <path d="M48,442 Q51,426 46,414"/>
+        <path d="M64,450 Q67,434 62,420"/>
+        <path d="M80,444 Q83,428 78,416"/>
+        <path d="M240,442 Q243,426 238,414"/>
+        <path d="M258,448 Q261,432 256,418"/>
+        <path d="M276,444 Q279,428 274,416"/>
+        <path d="M294,450 Q297,434 292,420"/>
+        <path d="M312,442 Q315,426 310,414"/>
+        <path d="M330,448 Q333,432 328,418"/>
+        <path d="M350,444 Q353,428 348,416"/>
+      </g>
+
+      <!-- 瀑布源头岩石 -->
+      <path d="M258,368 C268,358 288,354 302,362 C318,372 328,388 326,408
+               C324,428 310,442 290,448 C270,454 252,446 246,428
+               C240,410 246,382 258,368Z"
+        fill="#5a5448" opacity="0.75"/>
+
+      <!-- 瀑布 -->
+      <g class="waterfall">
+        <path d="M278,378 C282,400 280,430 276,460 C274,480 270,498 268,512
+                 C266,522 272,522 274,510 C278,488 284,450 286,420
+                 C288,395 284,378 280,372Z"
+          fill="url(#waterfallGrad)" opacity="0.92"/>
+        <path d="M292,382 C296,405 294,438 290,472 C288,492 284,508 282,518
+                 C280,526 286,526 288,514 C292,490 298,448 300,418
+                 C302,392 298,378 294,372Z"
+          fill="url(#waterfallGrad)" opacity="0.72"/>
+        <path d="M266,376 C262,400 260,432 264,468 C266,488 262,506 260,516
+                 C258,524 264,524 266,512 C270,488 272,448 274,418
+                 C276,392 274,376 270,370Z"
+          fill="#c8e8f8" opacity="0.55"/>
+        <!-- 水花 -->
+        <g fill="#d8f0ff" opacity="0.85">
+          <ellipse cx="262" cy="518" rx="9"  ry="3"/>
+          <ellipse cx="282" cy="522" rx="11" ry="3.5"/>
+          <ellipse cx="298" cy="519" rx="8"  ry="2.8"/>
+          <ellipse cx="274" cy="526" rx="7"  ry="2.2"/>
+        </g>
+        <g fill="#e8f8ff" opacity="0.65">
+          <circle cx="258" cy="512" r="2"/>
+          <circle cx="270" cy="510" r="1.5"/>
+          <circle cx="288" cy="514" r="2"/>
+          <circle cx="302" cy="511" r="1.5"/>
+        </g>
+      </g>
+
+      <!-- 溪流 -->
+      <path class="stream-water"
+        d="M262,522 C240,528 200,534 150,538 C100,542 50,544 0,545
+           L0,562 C60,560 130,556 190,550 C240,546 280,538 305,528
+           C318,522 322,514 318,506Z"
+        fill="url(#streamGrad)" opacity="0.82"/>
+      <g class="stream-water" fill="none" stroke="#c8e8f8" stroke-width="0.8" opacity="0.45">
+        <ellipse cx="220" cy="538" rx="13" ry="3"/>
+        <ellipse cx="160" cy="542" rx="11" ry="2.5"/>
+        <ellipse cx="90"  cy="546" rx="14" ry="3"/>
+        <ellipse cx="30"  cy="548" rx="10" ry="2.5"/>
+      </g>
+
+      <!-- 溪边石头 -->
+      <ellipse cx="235" cy="532" rx="13" ry="6" fill="#5a5448" opacity="0.65"/>
+      <ellipse cx="145" cy="548" rx="10" ry="5" fill="#5a5448" opacity="0.55"/>
+
+      <!-- 蝴蝶 -->
+      <g class="butterfly" transform="translate(310,418)">
+        <ellipse cx="0" cy="0"  rx="5"   ry="3"   fill="#f0a040" opacity="0.85" transform="rotate(-22)"/>
+        <ellipse cx="9" cy="-2" rx="4.5" ry="2.8" fill="#f0c060" opacity="0.8"  transform="rotate(18)"/>
+        <line x1="4.5" y1="0" x2="4.5" y2="7" stroke="#6a5030" stroke-width="0.8"/>
+      </g>
+      <g class="butterfly" transform="translate(338,448)">
+        <ellipse cx="0" cy="0"  rx="4"   ry="2.5" fill="#e88090" opacity="0.8"  transform="rotate(-18)"/>
+        <ellipse cx="8" cy="-1" rx="3.5" ry="2"   fill="#f0a0b0" opacity="0.75" transform="rotate(22)"/>
+        <line x1="4" y1="0" x2="4" y2="6" stroke="#6a4050" stroke-width="0.7"/>
+      </g>
+
+      <!-- 前景草叶 -->
+      <g class="grass-area" fill="#5a8048" opacity="0.65">
+        <path d="M8,572 C10,555 12,540 8,530 C6,548 6,562 8,572Z"/>
+        <path d="M362,568 C360,552 357,538 362,528 C365,545 365,558 362,568Z"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ===== 小猫（打坐） ===== -->
+  <div class="cat-wrap">
+    <svg class="cat-svg" viewBox="0 0 375 600" xmlns="http://www.w3.org/2000/svg" aria-label="月见打坐">
+      <defs>
+        <filter id="catShadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1a1a2e" flood-opacity="0.3"/>
+        </filter>
+      </defs>
+
+      <g transform="translate(151, 318)" filter="url(#catShadow)">
+
+        <!-- 静态光圈 -->
+        <circle class="cat-aura-ring" cx="36" cy="30" r="34" fill="none" stroke="#fde890" stroke-width="0.8" opacity="0.22"/>
+        <circle class="cat-aura-ring" cx="36" cy="30" r="40" fill="none" stroke="#f0c060" stroke-width="0.5" opacity="0.12"/>
+
+        <!-- 打坐蒲团 -->
+        <ellipse cx="36" cy="54" rx="28" ry="8" fill="#6a5038"/>
+        <ellipse cx="36" cy="52" rx="26" ry="7" fill="#8a6848"/>
+        <ellipse cx="36" cy="50" rx="24" ry="6" fill="#9a7858"/>
+
+        <!-- 尾巴 -->
+        <path class="cat-tail"
+          d="M58,44 C68,40 74,30 70,22 C66,14 58,16 55,22 C52,28 54,38 58,44Z"
+          fill="#faf6f0" stroke="#c8c0b0" stroke-width="0.5"/>
+        <path class="cat-tail"
+          d="M64,22 C66,17 64,13 59,13" stroke="#c8c0b0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+        <!-- 身体 -->
+        <ellipse class="cat-body" cx="36" cy="40" rx="18" ry="14" fill="#faf6f0"/>
+        <path class="cat-body"
+          d="M28,36 C32,38 40,38 44,36" stroke="#c8c0b0" stroke-width="1.2" fill="none" opacity="0.45"/>
+
+        <!-- 盘腿 -->
+        <ellipse class="cat-body" cx="22" cy="46" rx="10" ry="6" fill="#f0ece4"/>
+        <ellipse class="cat-body" cx="50" cy="46" rx="10" ry="6" fill="#f0ece4"/>
+
+        <!-- 前爪 -->
+        <ellipse class="cat-body" cx="30" cy="36" rx="5" ry="4" fill="#f0ece4"/>
+        <ellipse class="cat-body" cx="42" cy="36" rx="5" ry="4" fill="#f0ece4"/>
+        <ellipse class="cat-body" cx="36" cy="35" rx="4" ry="3" fill="#faf6f0"/>
+
+        <!-- 头 -->
+        <circle class="cat-body" cx="36" cy="18" r="16" fill="#faf6f0"/>
+
+        <!-- 耳朵 -->
+        <g class="cat-ears">
+          <polygon points="22,8 18,0 28,4" fill="#faf6f0" stroke="#c8c0b0" stroke-width="0.5"/>
+          <polygon points="23,7 20,2 27,5" fill="#ffb0b8"/>
+          <polygon points="50,8 54,0 44,4" fill="#faf6f0" stroke="#c8c0b0" stroke-width="0.5"/>
+          <polygon points="49,7 52,2 45,5" fill="#ffb0b8"/>
+        </g>
+
+        <!-- 弯月闭眼 -->
+        <g class="cat-eyes-closed">
+          <path d="M26,18 C28,16 32,16 34,18" stroke="#4a4038" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M38,18 C40,16 44,16 46,18" stroke="#4a4038" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- 鼻子与嘴 -->
+        <ellipse cx="36" cy="22" rx="2" ry="1.5" fill="#ffb0b8"/>
+        <path d="M33,25 C36,27.5 39,25 39,25" stroke="#c8a898" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+        <!-- 腮红 -->
+        <ellipse cx="24" cy="24" rx="4" ry="2.5" fill="#ffb0b8" opacity="0.35"/>
+        <ellipse cx="48" cy="24" rx="4" ry="2.5" fill="#ffb0b8" opacity="0.35"/>
+      </g>
+    </svg>
+  </div>
+
+</div>
+
+</body>
+</html>
