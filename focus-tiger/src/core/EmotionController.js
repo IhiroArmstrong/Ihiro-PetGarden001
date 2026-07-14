@@ -57,19 +57,22 @@ export class EmotionController {
    * @param {import('../effects/IncenseGreeting.js').IncenseGreeting} deps.incenseGreeting
    * @param {import('../feedback/TransitionFX.js').TransitionFX} [deps.transitionFX]
    * @param {import('../effects/EyeTracking.js').EyeTracking} [deps.eyeTracking]
+   * @param {import('../character/SpriteSequencePlayer.js').SpriteSequencePlayer} [deps.spritePlayer]
    */
   constructor({
     poseManager,
     dynamicMotion,
     incenseGreeting,
     transitionFX = null,
-    eyeTracking = null
+    eyeTracking = null,
+    spritePlayer = null
   }) {
     this.poseManager = poseManager;
     this.dynamicMotion = dynamicMotion;
     this.incenseGreeting = incenseGreeting;
     this.transitionFX = transitionFX;
     this.eyeTracking = eyeTracking;
+    this.spritePlayer = spritePlayer;
 
     /** @type {string | null} */
     this._currentEmotionKey = null;
@@ -108,6 +111,25 @@ export class EmotionController {
           return;
         }
         this.incenseGreeting.triggerDailyIncenseComplete(model);
+      },
+
+      // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
+      // WelcomeBack（挥手欢迎）：一次性响应行为；播完淡出让位回落到 Idle。
+      // 触发源见 EMOTION_BIBLE 第五部分（用户重新回来 / 10 分钟无互动 30% 挥手）。
+      welcomeBack: (options = {}) => {
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] welcomeBack: spritePlayer 未接入，跳过（占位）'
+          );
+          return;
+        }
+        this.spritePlayer.play('waveHello', {
+          onComplete: () => {
+            // 挥手结束温和回落（不制造焦虑）：回到日常静息基底态
+            this.playEmotion('idle');
+          },
+          ...options
+        });
       },
 
       // —— 调试专用 ——
@@ -203,6 +225,7 @@ export class EmotionController {
       { key: 'celebrating', label: '跳跃欢呼' },
       { key: 'tPose', label: 'T-Pose' },
       { key: 'incenseComplete', label: '模拟一炷香完成' },
+      { key: 'welcomeBack', label: '挥手欢迎(2D序列)' },
       { key: 'blink', label: '眨眼(占位)' },
       { key: 'wakeUp', label: '唤醒(占位)' }
     ];
@@ -314,6 +337,7 @@ export const EMOTION_KEYS = Object.freeze({
   SMILING: 'smiling',
   CELEBRATING: 'celebrating',
   INCENSE_COMPLETE: 'incenseComplete',
+  WELCOME_BACK: 'welcomeBack',
   WAKE_UP: 'wakeUp',
   BLINK: 'blink',
   BREATHING: 'breathing',

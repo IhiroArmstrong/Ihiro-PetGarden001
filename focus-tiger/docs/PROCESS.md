@@ -34,7 +34,7 @@
 **明确未完成（勿当作已验收）**：
 
 - Focus Confidence V1 运行时信号链路（visibility / blur / idle）— **仅有 DESIGN 设计，无独立实现模块**
-- 2D PNG 序列播放器、正式瞳孔素材、大部分互动情绪的真实动画
+- `SpriteSequencePlayer` 浏览器运行验收（实现与静态 lint 已完成；当前执行环境无 Node/npm，尚未运行 Vite build/dev）；正式瞳孔素材、大部分互动情绪的真实动画
 - `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位；**判定/限频规则已定稿**）
 - Phase 0 清单中的持久化 / DORMANT 唤醒仪式 / PWA 等（见 `TASKS.md`）
 
@@ -43,16 +43,18 @@
 - 技术路线已从「3D 多姿态 GLB 主线」切换为「2D PNG 序列主线」；3D 定位为奖励柜
 - `EMOTION_BIBLE` 持续扩充：互动清单、MindfulAcknowledge、自主/响应分层、多语言规范
 - `CHARACTER_BIBLE` 已归档 Master Character Prompt，并澄清 Rive / 双莲花 / 蒲团 / Suffix Prompt
-- 指针检测与眼睛跟随的**检测/跟随逻辑已接线**，视觉表现多为占位，待素材与 2D 播放器
+- 指针检测与眼睛跟随的**检测/跟随逻辑已接线**，视觉表现多为占位，待后续真实素材
 - **已确认**：约 10 分钟无互动 → 加权随机（70% 继续冥想 / 30% 挥手）
 - **已确认**：英文翻译不在当前启动；见 Backlog「英文文案翻译」
 - **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
-- `SpriteSequencePlayer` 接口与文件结构方案已提出，待确认情绪 key、渲染载体及与现有 3D 场景的验证期共存方式
+- **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
+- `waveHello` 真实序列已通过 `EmotionController.playEmotion('welcomeBack')` 接线，支持 rAF 帧率控制、循环/末帧停留、立即打断、预加载及播放完成回落 `Idle`
 
 **下一步计划**：
 
-- 落地 2D 情绪序列播放器，并接到 `EmotionController` 映射（替换占位）
+- 在具备 Node/npm 的环境运行 `npm run build` 与浏览器调试按钮，完成 `welcomeBack` 真实序列运行验收
+- 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
 - 实现阶段性正念认可 / 伸懒腰提醒的非模态文案条 + 计时与限频逻辑（规则已定稿）
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
@@ -60,9 +62,8 @@
 
 **已知的开放决策 / 待确认事项**：
 
-- 首组 `wave-hello` 序列应新增正式 `welcomeBack` 情绪 key，还是暂借占位 / 调试 key 验证
-- `SpriteSequencePlayer` 首版采用单 `<img>` 换帧，还是专用 2D `<canvas>`
-- 验证期采用覆盖现有 3D canvas 的 2D overlay，还是直接隐藏 3D 主载体
+> **当前无待拍板事项。**  
+> `welcomeBack` 情绪键、单 `<img>` 换帧、2D overlay 共存方案均已确认并实现；当前仅待运行环境验收。
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 

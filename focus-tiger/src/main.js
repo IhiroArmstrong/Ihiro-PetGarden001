@@ -22,6 +22,7 @@ import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { DynamicMotion } from './effects/DynamicMotion.js';
 import { EyeTracking } from './effects/EyeTracking.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
+import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 
 const DEMO_SESSION_MINUTES = 1;
 const CELEBRATE_DURATION_MS = 4000;
@@ -81,12 +82,18 @@ async function init() {
   const stateManager = new StateManager();
   const transitionFX = new TransitionFX(scene);
 
+  // 2D PNG 序列播放器（主线情绪表现载体）：overlay 挂在 #app、位于 3D canvas 之上、UI 之下。
+  // 在 loading 遮罩下预加载首帧，避免播放时首帧卡顿。
+  const spritePlayer = new SpriteSequencePlayer({ container: app });
+  await spritePlayer.preload();
+
   const emotionController = new EmotionController({
     poseManager,
     dynamicMotion,
     incenseGreeting,
     transitionFX,
-    eyeTracking
+    eyeTracking,
+    spritePlayer
   });
   emotionController.createDebugUI(document.body);
 
@@ -96,6 +103,7 @@ async function init() {
     window.__dynamicMotion = dynamicMotion;
     window.__emotionController = emotionController;
     window.__eyeTracking = eyeTracking;
+    window.__spritePlayer = spritePlayer;
     window.__THREE = THREE;
   }
 
