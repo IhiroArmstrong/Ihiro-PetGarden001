@@ -29,6 +29,7 @@
 - 多语言骨架：`src/locales/zh.json` + `i18n.js`（`t` / `tPool`）；`en.json` 空壳；MindfulAcknowledge 文案池已写入中文
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
+- 首组 2D 真实序列素材已归档：`public/sprites/wave-hello/wave_hello_001.png` ～ `wave_hello_014.png`
 
 **明确未完成（勿当作已验收）**：
 
@@ -47,6 +48,7 @@
 - **已确认**：英文翻译不在当前启动；见 Backlog「英文文案翻译」
 - **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
+- `SpriteSequencePlayer` 接口与文件结构方案已提出，待确认情绪 key、渲染载体及与现有 3D 场景的验证期共存方式
 
 **下一步计划**：
 
@@ -58,8 +60,9 @@
 
 **已知的开放决策 / 待确认事项**：
 
-> **当前无待拍板事项。**  
-> （英文翻译时机、10 分钟无互动权重、20 分钟/2 小时判定口径与同日限频、Git 同步策略均已确认；英文实施仍挂在 Backlog。）
+- 首组 `wave-hello` 序列应新增正式 `welcomeBack` 情绪 key，还是暂借占位 / 调试 key 验证
+- `SpriteSequencePlayer` 首版采用单 `<img>` 换帧，还是专用 2D `<canvas>`
+- 验证期采用覆盖现有 3D canvas 的 2D overlay，还是直接隐藏 3D 主载体
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
