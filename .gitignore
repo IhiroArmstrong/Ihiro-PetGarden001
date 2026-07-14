@@ -13,6 +13,7 @@ Thumbs.db
 
 # Local toolchains (not part of the app)
 .tools/
+*.pkg
 
 # Env / secrets
 .env
@@ -23,3 +24,8 @@ Thumbs.db
 *.log
 npm-debug.log*
 .cache/
+
+# Test / coverage artifacts
+coverage/
+playwright-report/
+test-results/

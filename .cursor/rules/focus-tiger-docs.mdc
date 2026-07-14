@@ -54,3 +54,13 @@ alwaysApply: true
 - 不要在情绪主线任务里实现成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。  
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
+
+## Git 同步（半自动，禁止静默 push）
+
+实质性 Task 结束后（与 `PROCESS.md`「当前进度速览」维护规则对齐）：
+
+1. 更新速览 → `git commit`（message 含 Task 关键词）  
+2. 可选运行 `./scripts/git-sync-safe.sh` 做推送前体检  
+3. **仅当用户明确要求 push 时**再执行 `./scripts/git-sync-safe.sh --push` 或 `git push`  
+
+禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程。

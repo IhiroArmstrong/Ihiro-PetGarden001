@@ -28,12 +28,13 @@
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
 - 多语言骨架：`src/locales/zh.json` + `i18n.js`（`t` / `tPool`）；`en.json` 空壳；MindfulAcknowledge 文案池已写入中文
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
+- Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
 
 **明确未完成（勿当作已验收）**：
 
 - Focus Confidence V1 运行时信号链路（visibility / blur / idle）— **仅有 DESIGN 设计，无独立实现模块**
 - 2D PNG 序列播放器、正式瞳孔素材、大部分互动情绪的真实动画
-- `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位）
+- `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位；**判定/限频规则已定稿**）
 - Phase 0 清单中的持久化 / DORMANT 唤醒仪式 / PWA 等（见 `TASKS.md`）
 
 **正在进行 / 最近决定的事项**：
@@ -42,22 +43,23 @@
 - `EMOTION_BIBLE` 持续扩充：互动清单、MindfulAcknowledge、自主/响应分层、多语言规范
 - `CHARACTER_BIBLE` 已归档 Master Character Prompt，并澄清 Rive / 双莲花 / 蒲团 / Suffix Prompt
 - 指针检测与眼睛跟随的**检测/跟随逻辑已接线**，视觉表现多为占位，待素材与 2D 播放器
+- **已确认**：约 10 分钟无互动 → 加权随机（70% 继续冥想 / 30% 挥手）
+- **已确认**：英文翻译不在当前启动；见 Backlog「英文文案翻译」
+- **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
+- **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 
 **下一步计划**：
 
 - 落地 2D 情绪序列播放器，并接到 `EmotionController` 映射（替换占位）
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
-- 实现阶段性正念认可的非模态文案条 + 计时触发（待产品拍板阈值口径）
+- 实现阶段性正念认可 / 伸懒腰提醒的非模态文案条 + 计时与限频逻辑（规则已定稿）
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做）
 
 **已知的开放决策 / 待确认事项**：
 
-- 阶段性专注认可（如约 20 分钟）：用会话墙钟时长，还是与 Focus Confidence 对齐？
-- 「连续工作过久」伸懒腰提醒：计时口径与是否被中断重置
-- 提醒文案同日限频次数（文档建议限频，具体次数未定）
-- UI 默认中文已定；英文字典何时批量翻译
-- 无互动约 10 分钟：挥手 vs 继续冥想，择一或随机？
+> **当前无待拍板事项。**  
+> （英文翻译时机、10 分钟无互动权重、20 分钟/2 小时判定口径与同日限频、Git 同步策略均已确认；英文实施仍挂在 Backlog。）
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
@@ -65,6 +67,7 @@
 - Focus Confidence 未来数据源扩展
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
+- 英文文案翻译（2D 主线稳定 + 中文定稿后启动）
 - 角色边界待观察事项
 
 ---
@@ -82,6 +85,34 @@
 各 Task Brief 统一存放于 `docs/task-briefs/`（目录结构见 ARCHITECTURE.md）。
 
 命名建议：`task{编号}-brief-{关键词}`
+
+---
+
+## Git 同步节奏（本地 ↔ GitHub）
+
+Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」——素材体积大、文案/产品决策迭代快，误推代价高。
+
+### 推荐流程（半自动 + 人工拍板）
+
+完成一个**有实质性进展**的 Task（非纯 debug / 微调）后：
+
+1. 更新 `PROCESS.md`「当前进度速览」对应字段  
+2. `git add` 相关文件 → `git commit`（message 带 Task 关键词，便于对照速览）  
+3. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
+4. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
+
+Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，并可代劳 `commit`；**未经用户口头/书面确认不得 `git push`**。
+
+### 明确不做的自动化
+
+| 方式 | 本项目态度 |
+|---|---|
+| `post-commit` 钩子自动 `push` | ❌ 禁止：易推送未审改动、大体量素材、密钥 |
+| 保存文件自动 commit | ❌ 禁止：历史噪声大 |
+| CI 自动 commit 业务代码 | ❌ 禁止 |
+| IDE「定时同步远程」 | ❌ 不推荐 |
+
+允许的辅助：推送前检查脚本、Agent 收尾提醒、Project Rules 兜底文案。
 
 ---
 
@@ -133,6 +164,19 @@
 - **复杂度评级**：低（浏览器键盘事件监听 + 节奏规律性分析，技术成熟）
 - **价值定位**：锦上添花的可选玩法，非核心刚需
 - **排期**：待 2D 情绪系统主线稳定后，再评估是否开发
+
+### Backlog:英文文案翻译
+
+**当前不启动。**
+
+**触发条件（须同时满足）**：
+
+1. 2D PNG 序列主线稳定上线——指**正式播放器 + 正式动画素材**（非占位圆点 / console 占位情绪）已可验收；
+2. 中文文案经产品验证基本稳定、不再频繁修改措辞。
+
+满足后再启动 `locales/en.json`（及对应键）的批量翻译。
+
+**理由**：中文文案仍可能随测试反复调整（如「失落 → 安静等待」等多轮修正）；过早翻译会造成重复劳动。当前阶段应聚焦 2D 主线开发，不分散精力。骨架 `en.json` 与 `setLocale` 可保留，但勿在未达触发条件前铺开英译内容。
 
 ### Backlog:角色边界待观察事项（暂不处理,后续观察）
 
