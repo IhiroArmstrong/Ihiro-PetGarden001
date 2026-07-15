@@ -67,4 +67,6 @@ alwaysApply: true
 2. 可选运行 `./scripts/git-sync-safe.sh` 做推送前体检  
 3. **仅当用户明确要求 push 时**再执行 `./scripts/git-sync-safe.sh --push` 或 `git push`  
 
+`stop` 提醒钩子只允许使用本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
+
 禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程。

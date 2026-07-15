@@ -3,8 +3,7 @@
   "hooks": {
     "stop": [
       {
-        "command": ".cursor/hooks/remind-git-sync.sh",
-        "loop_limit": 1
+        "command": ".cursor/hooks/remind-git-sync.sh"
       }
     ]
   }

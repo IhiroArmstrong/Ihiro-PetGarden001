@@ -29,7 +29,7 @@
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
 - 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
-- Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
+- Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 的 macOS 系统通知钩子（只返回 `{}`，不启动额外模型回合，**不**自动 push）
 - 首个 2D PNG 序列真实素材（`wave-hello`，14 帧，透明背景）已抠图入库至 `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png` ～ `frame_014.png`，并已完成 `SpriteSequencePlayer` 对接与浏览器验收（分层路径规范见 `ARCHITECTURE.md`）
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 - 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
@@ -55,6 +55,7 @@
 - **架构决策已落地**：为应对角色/装扮市场接受度不确定性，提前预留「角色/装扮可替换」扩展点（`CharacterConfig`）；当前仍固定单一角色（小老虎僧袍造型），不做用户可选换装 UI，仅解耦素材路径与情绪触发逻辑
 - **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
+- **Git 提醒已优化（2026-07-15）**：原 `stop` hook 使用 `followup_message`，会自动提交新用户消息并产生额外 Agent/credits 用量；现改为本地 macOS 系统通知，hook 始终输出 `{}`，保留可见提醒但不再触发模型回合；`loop_limit` 已移除（无自动循环）
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
 - **视觉原则修正已拍板（2026-07-15）**：角色本体固有色恒定不变，金色进度改由外围光环/环境光反射（Rim Light）表达，禁止本体重着色。改动范围：只改文档确立新原则（`DESIGN` / `PRINCIPLES` / `ARCHITECTURE` / `EMOTION_BIBLE` / `TASKS` 已同步），2D 主线金色表达定义为「金色光晕 overlay + 粒子」写入 `ARCHITECTURE`；3D shader（`TigerCharacter` 灰→金插值、`Constants` 命名）仅留 TODO 标注不重构，重构并入未来「奖励柜」任务；历史任务书保留原文 + 顶部注记
 - **产品定位 V1.0 已定稿（2026-07-15）**：角色对外统一为 Mindful Companion，不采用喂养、健康退化、照料责任或宠物收集叙事；`daily practice` 改为 `regular practice, at your own pace`；庆祝统一为「短暂、温暖、有情感」；每次完成轻量确认、每日首次达标完整庆祝、长期里程碑纪念奖励；「小老虎更健康」改为共同经历增加、环境细节解锁与永久纪念物
