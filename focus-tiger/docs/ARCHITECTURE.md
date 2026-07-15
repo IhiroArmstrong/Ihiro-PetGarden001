@@ -264,6 +264,8 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 - 专注进度的金色反馈由**精灵图层之外**的效果承载：
   1. **金色光晕 overlay**：独立于帧序列的发光图层（CSS `box-shadow` / `filter: drop-shadow` / 径向渐变 div 均可，实现阶段定），强度随 focusLevel 插值；
   2. **金色粒子**：独立粒子层叠加在精灵周围。
+- **光晕呼吸律动（2026-07-15 拍板，通用行为）**：光晕 overlay 强度在 focusLevel 基础值之上叠加 4 秒周期的呼吸律动（吸气收敛聚焦 / 呼气柔和晕染），与角色呼吸动画同步；实现上是 overlay 层的强度调制，不触碰精灵本体。
+- **里程碑增强序列**：`MilestoneGlow`（10s 仪式性反馈，含金光蝴蝶）是上述光晕呼吸律动的增强版，素材计划走同一「视频生成 → 抽帧」管线产出专属序列；设计定稿见 `EMOTION_BIBLE.md` 第五部分，实现归属 Backlog「纪念奖励系统」，本阶段不开发。
 - **禁止**通过逐帧重着色、CSS 色相滤镜（`hue-rotate` / `sepia` 等作用于精灵本体）等方式改变角色本体颜色来表达进度。
 
 ---
