@@ -17,6 +17,7 @@
  */
 
 import { SPRITE_SEQUENCES } from './spriteManifest.js';
+import { buildFramePaths } from './CharacterConfig.js';
 
 /**
  * @typedef {object} PlayOptions
@@ -100,7 +101,8 @@ export class SpriteSequencePlayer {
         console.warn(`[SpriteSequencePlayer] preload: 未知序列 "${name}"，跳过`);
         continue;
       }
-      for (const p of def.frames) paths.push(p);
+      // 帧路径按「当前生效外观」实时解析（角色/装扮可替换预留）
+      for (const p of this._resolveFrames(def)) paths.push(p);
     }
     await Promise.all(paths.map((p) => this._loadImage(p)));
     return this;
@@ -118,7 +120,8 @@ export class SpriteSequencePlayer {
       console.warn(`[SpriteSequencePlayer] play: 未知序列 "${name}"，已忽略`);
       return false;
     }
-    if (!def.frames || def.frames.length === 0) {
+    const frames = this._resolveFrames(def);
+    if (frames.length === 0) {
       console.warn(`[SpriteSequencePlayer] play: 序列 "${name}" 无帧，已忽略`);
       return false;
     }
@@ -127,7 +130,7 @@ export class SpriteSequencePlayer {
     this._cancelRaf();
 
     this._currentName = name;
-    this._frames = def.frames;
+    this._frames = frames;
     this._frameIndex = 0;
     this._fps = options.fps ?? def.fps ?? 12;
     this._loop = options.loop ?? def.loop ?? false;
@@ -179,6 +182,16 @@ export class SpriteSequencePlayer {
   }
 
   // —— 内部实现 ——
+
+  /**
+   * 按当前生效外观解析序列的帧路径（清单只存动作名 + 帧数，不存路径）。
+   * @param {import('./spriteManifest.js').SpriteSequenceDef} def
+   * @returns {string[]}
+   */
+  _resolveFrames(def) {
+    if (!def.animation || !def.frameCount || def.frameCount <= 0) return [];
+    return buildFramePaths(def.animation, def.frameCount);
+  }
 
   /**
    * 当前帧应停留的总时长（ms）= fps 基础间隔 + 该帧的额外停留覆盖值。

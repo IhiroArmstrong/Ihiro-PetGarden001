@@ -215,6 +215,30 @@ focus-tiger/
 4. **循环衔接**：对于需要无缝循环播放的动作（如呼吸、待机类持续动画）：可采用「正放 + 倒放」拼接的方式解决首尾衔接问题，不需要额外生成或手动寻找衔接点。
 5. **人工检查**：确认风格与已有静态设计一致、动作流畅无跳变、首尾帧衔接自然；不满意则重新生成或补充人工微调。
 
+### 2D 序列素材路径规范（角色/装扮可替换预留）
+
+所有 2D 序列帧素材按以下分层目录入库（**权威规范**，后续素材一律遵守）：
+
+```
+public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
+```
+
+| 段 | 规则 | 当前默认值 |
+|---|---|---|
+| `characterId` | kebab-case 角色标识 | `tiger-cub` |
+| `outfitId` | kebab-case 装扮标识 | `monk-robe-default` |
+| `animationName` | kebab-case 动作名，只描述动作语义，**不含角色/装扮信息** | 如 `wave-hello` |
+| 帧文件名 | 统一 `frame_001.png` 起、3 位零填充、连续编号；动作名不重复出现在文件名里 | — |
+
+**解耦分层**（为未来「角色/装扮可替换」预留，本阶段不实现换装 UI）：
+
+- `EmotionController` 映射表只存「情绪 key → 序列名」，与外观无关；
+- `spriteManifest.js` 只存「序列名 → 动作名 + 帧数 + 播放参数」，不存具体路径；
+- 角色/装扮标识与路径拼接**唯一出口**为 `character/CharacterConfig.js`
+  （`getActiveAppearance` / `setActiveAppearance` / `buildFramePath(s)`），
+  播放器在预加载/播放时实时解析，任何模块不得自行手写 sprites 路径。
+- 未来换装 = 新素材目录 + `setActiveAppearance()` + 选择 UI；不改情绪触发链路与播放器。
+
 ### 播放机制
 
 通过 `requestAnimationFrame` 逐帧切换，或 Sprite Sheet（帧图拼合为单张大图，用 `background-position` 切换）方式实现帧序列播放。具体选择在实现阶段根据性能表现决定。

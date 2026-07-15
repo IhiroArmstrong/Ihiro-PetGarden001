@@ -29,8 +29,9 @@
 - 英文默认本地化：产品名 `Focus Tiger`；`en.json` / `zh.json` 结构对齐，覆盖 HUD、专注按钮、加载提示、状态名及 MindfulAcknowledge / StretchReminder 文案池；`i18n.js` 默认 `en`、缺键回退英文并支持运行时切换中文
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
-- 首组 2D 真实序列素材已归档：`public/sprites/wave-hello/wave_hello_001.png` ～ `wave_hello_014.png`
+- 首组 2D 真实序列素材已归档：`public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png` ～ `frame_014.png`（分层路径规范见 `ARCHITECTURE.md`）
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
+- 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
 
 **明确未完成（勿当作已验收）**：
 

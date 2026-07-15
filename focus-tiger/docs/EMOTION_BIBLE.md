@@ -95,7 +95,7 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
 | `WakeUp` | `WAKE_UP` | 待制作 / 待绑定 clip |
-| `WelcomeBack` | `welcomeBack`（2D 序列，本次新增） | `public/sprites/wave-hello/wave_hello_001–014.png` |
+| `WelcomeBack` | `welcomeBack`（2D 序列，本次新增） | `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001–014.png` |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
 > **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」。一次性播放（不循环），播完让位回落到当前基底态（默认 `Idle`）；优先级低于 `Celebrating`，播放中若 `Celebrating` 触发应让位。首组真实 2D 序列素材已归档，作为 2D 播放器接入验证动作。
