@@ -1,1 +1,21 @@
-{}
+{
+  "APP_TITLE": "Focus Tiger",
+  "LOADING": "Loading…",
+  "BTN_FOCUS_START": "Start Focus",
+  "BTN_FOCUS_STOP": "End Focus",
+  "HUD_LABEL_STATE": "Status",
+  "HUD_LABEL_LEVEL": "Focus",
+  "HUD_LABEL_TIME": "Time",
+  "STATE_IDLE": "Calm",
+  "STATE_FOCUSING": "Focusing",
+  "STATE_BREAK": "Break",
+  "STATE_CELEBRATE": "Celebrating",
+  "STATE_DORMANT": "Asleep",
+  "MINDFUL_FOCUS_MILESTONE_1": "One mindful breath.",
+  "MINDFUL_FOCUS_MILESTONE_2": "You're doing well.",
+  "MINDFUL_FOCUS_MILESTONE_3": "This moment is quiet.",
+  "MINDFUL_FOCUS_MILESTONE_4": "Keep going, gently.",
+  "STRETCH_REMINDER_1": "Let's stretch together.",
+  "STRETCH_REMINDER_2": "Take a break — your body will thank you.",
+  "STRETCH_REMINDER_3": "How about a short walk?"
+}

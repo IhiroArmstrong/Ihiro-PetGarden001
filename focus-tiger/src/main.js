@@ -23,6 +23,7 @@ import { DynamicMotion } from './effects/DynamicMotion.js';
 import { EyeTracking } from './effects/EyeTracking.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
+import { t, tPool, setLocale, getLocale, onLocaleChange } from './locales/i18n.js';
 
 const DEMO_SESSION_MINUTES = 1;
 const CELEBRATE_DURATION_MS = 4000;
@@ -46,6 +47,16 @@ function revealScene() {
 }
 
 async function init() {
+  // i18n：静态 HTML 已是默认语言（en）；此处接管标题/遮罩并跟随语言切换刷新
+  document.title = t('APP_TITLE');
+  const loadingMask = document.getElementById('loading-mask');
+  if (loadingMask) loadingMask.textContent = t('LOADING');
+  onLocaleChange(() => {
+    document.title = t('APP_TITLE');
+    const mask = document.getElementById('loading-mask');
+    if (mask) mask.textContent = t('LOADING');
+  });
+
   const app = document.querySelector('#app');
   const canvas = document.getElementById('scene-canvas');
   const { renderer, camera, lights } = createRenderer(app, canvas);
@@ -104,6 +115,7 @@ async function init() {
     window.__emotionController = emotionController;
     window.__eyeTracking = eyeTracking;
     window.__spritePlayer = spritePlayer;
+    window.__i18n = { t, tPool, setLocale, getLocale };
     window.__THREE = THREE;
   }
 

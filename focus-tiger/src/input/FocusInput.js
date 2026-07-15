@@ -1,5 +1,7 @@
 // 职责：专注信号来源。MVP阶段只实现手动按钮触发。
 
+import { t, onLocaleChange } from '../locales/i18n.js';
+
 export class FocusInput {
   constructor(onStart, onStop) {
     this.onStart = onStart;
@@ -8,16 +10,20 @@ export class FocusInput {
   }
 
   bindManualButton(buttonElement) {
+    buttonElement.textContent = this._buttonLabel();
     buttonElement.addEventListener('click', () => {
       if (!this._focusing) {
         this.onStart();
         this._focusing = true;
-        buttonElement.textContent = '结束专注';
       } else {
         this.onStop();
         this._focusing = false;
-        buttonElement.textContent = '开始专注';
       }
+      buttonElement.textContent = this._buttonLabel();
+    });
+    // 语言切换时按当前专注状态刷新按钮文字
+    onLocaleChange(() => {
+      buttonElement.textContent = this._buttonLabel();
     });
   }
 
@@ -31,6 +37,10 @@ export class FocusInput {
 
   resetButton(buttonElement) {
     this._focusing = false;
-    buttonElement.textContent = '开始专注';
+    buttonElement.textContent = this._buttonLabel();
+  }
+
+  _buttonLabel() {
+    return this._focusing ? t('BTN_FOCUS_STOP') : t('BTN_FOCUS_START');
   }
 }

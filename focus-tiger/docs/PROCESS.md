@@ -11,7 +11,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-14
+**最后更新时间**：2026-07-15
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -26,7 +26,7 @@
 - 眼睛跟随：`EyeTracking`（独立占位瞳孔图层、椭圆夹紧 + 阻尼跟随、闭眼/Celebrating 自动让位；debug 开关已接）
 - 文档体系：`PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
-- 多语言骨架：`src/locales/zh.json` + `i18n.js`（`t` / `tPool`）；`en.json` 空壳；MindfulAcknowledge 文案池已写入中文
+- 英文默认本地化：产品名 `Focus Tiger`；`en.json` / `zh.json` 结构对齐，覆盖 HUD、专注按钮、加载提示、状态名及 MindfulAcknowledge / StretchReminder 文案池；`i18n.js` 默认 `en`、缺键回退英文并支持运行时切换中文
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
 - 首组 2D 真实序列素材已归档：`public/sprites/wave-hello/wave_hello_001.png` ～ `wave_hello_014.png`
@@ -46,7 +46,7 @@
 - `CHARACTER_BIBLE` 已归档 Master Character Prompt，并澄清 Rive / 双莲花 / 蒲团 / Suffix Prompt
 - 指针检测与眼睛跟随的**检测/跟随逻辑已接线**，视觉表现多为占位，待后续真实素材
 - **已确认**：约 10 分钟无互动 → 加权随机（70% 继续冥想 / 30% 挥手）
-- **已确认**：英文翻译不在当前启动；见 Backlog「英文文案翻译」
+- **已确认并实现**：产品默认面向海外市场，产品名统一为 `Focus Tiger`，英文为默认语言、中文保留为可切换备选；dev-only 调试面板不纳入字典并保持原样
 - **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
@@ -63,7 +63,7 @@
 **已知的开放决策 / 待确认事项**：
 
 > **当前无待拍板事项。**  
-> `welcomeBack` 情绪键、单 `<img>` 换帧、2D overlay 共存方案均已确认并实现；当前仅待运行环境验收。
+> `welcomeBack` 情绪键、单 `<img>` 换帧、2D overlay 共存方案及“英文默认、中文可切换”均已确认并实现。
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
@@ -71,7 +71,6 @@
 - Focus Confidence 未来数据源扩展
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
-- 英文文案翻译（2D 主线稳定 + 中文定稿后启动）
 - 角色边界待观察事项
 
 ---
@@ -168,19 +167,6 @@ Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，�
 - **复杂度评级**：低（浏览器键盘事件监听 + 节奏规律性分析，技术成熟）
 - **价值定位**：锦上添花的可选玩法，非核心刚需
 - **排期**：待 2D 情绪系统主线稳定后，再评估是否开发
-
-### Backlog:英文文案翻译
-
-**当前不启动。**
-
-**触发条件（须同时满足）**：
-
-1. 2D PNG 序列主线稳定上线——指**正式播放器 + 正式动画素材**（非占位圆点 / console 占位情绪）已可验收；
-2. 中文文案经产品验证基本稳定、不再频繁修改措辞。
-
-满足后再启动 `locales/en.json`（及对应键）的批量翻译。
-
-**理由**：中文文案仍可能随测试反复调整（如「失落 → 安静等待」等多轮修正）；过早翻译会造成重复劳动。当前阶段应聚焦 2D 主线开发，不分散精力。骨架 `en.json` 与 `setLocale` 可保留，但勿在未达触发条件前铺开英译内容。
 
 ### Backlog:角色边界待观察事项（暂不处理,后续观察）
 
