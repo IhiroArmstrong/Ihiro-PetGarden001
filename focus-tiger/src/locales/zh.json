@@ -20,5 +20,10 @@
   "STRETCH_REMINDER_3": "一段长长的静止已经经过。准备好时，身体可以动一动。",
   "REFOCUS_ACKNOWLEDGE_1": "注意力出去走了一会儿。现在，它又回到这里了。",
   "REFOCUS_ACKNOWLEDGE_2": "刚才那一段已经经过了。此刻，又回到这一口呼吸。",
-  "REFOCUS_ACKNOWLEDGE_3": "有一会儿去了别处，也有这一刻重新回来。"
+  "REFOCUS_ACKNOWLEDGE_3": "有一会儿去了别处，也有这一刻重新回来。",
+  "REFLECTION_Q1": "今天你注意到了什么？",
+  "REFLECTION_Q2": "今天有哪些情绪来访？",
+  "REFLECTION_Q3": "下次想把注意力带回什么？",
+  "REFLECTION_CONTINUE": "继续",
+  "REFLECTION_SKIP": "跳过"
 }

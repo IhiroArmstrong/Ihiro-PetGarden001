@@ -156,6 +156,31 @@ Session Intention（已拍板，待开发，见 TASKS.md 任务十）：
   开始专注前可选填写一行"本次想专注做什么"，可跳过、跳过不减反馈；
   仅本次会话内显示、结束语回显；不参与达标判定（达标只看目标时长），
   不做任务列表/勾选/统计——防止产品演化成待办管理器
+
+Tiger Reflection Moment（结束反思，已实现·MVP）：
+  会话结束后可选的轻量反思环节，三个问题逐个淡入展示：
+    Q1 What did you notice today? / 今天你注意到了什么？
+    Q2 What emotion visited you? / 今天有哪些情绪来访？
+    Q3 What would you like to return to next? / 下次想把注意力带回什么？
+  （Q3 刻意用"下次"而非"明天"，避免暗示每日义务，
+   与 regular practice, at your own pace 一致）
+
+  时序衔接：
+    正常完成 → 完成反馈（Celebrating 等）完整播放、回归基础坐姿 →
+               短暂留白 → 反思面板淡入（不与庆祝粒子同屏）
+    主动结束 → 不播放 IncenseComplete / Celebrating 等完成反馈
+               （避免"尚未完成却播放完成反馈"的语义错误）→
+               回归坐姿、短暂留白 → 反思面板淡入
+
+  非评判约束（硬性）：
+    不是表单、不是日报：无提交按钮、无必填校验、无"1/3"式进度数字
+    （仅三个弱化圆点示意位置）；每题独立可跳，Skip 与 Continue
+    视觉同级；Esc 可整体划过；任何跳过路径零提示、零劝导文案
+
+  数据处理（MVP）：
+    仅非空答案本地保存最近 5 条（localStorage，复用 Storage 封装）；
+    全部跳过则不落任何记录；情绪来访答案不做标签化/统计/趋势分析，
+    写下来即可
 ```
 
 ### Milestone：里程碑与成就

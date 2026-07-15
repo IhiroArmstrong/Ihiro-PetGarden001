@@ -28,6 +28,8 @@ import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
 import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
+import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
+import { SessionEndFlow } from './core/SessionEndFlow.js';
 
 const DEMO_SESSION_MINUTES = 1;
 const CELEBRATE_DURATION_MS = 4000;
@@ -174,16 +176,24 @@ async function init() {
   });
   attentionSignals.bind();
 
+  // 结束反思：正常完成在庆祝播完回归坐姿后淡入；主动结束不播完成反馈，短暂留白后淡入。
+  const reflectionMoment = new TigerReflectionMoment(
+    document.getElementById('ui-overlay')
+  );
+  const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
+
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
     window.__attentionSignals = attentionSignals;
+    window.__reflectionMoment = reflectionMoment;
   }
 
   let celebratePending = false;
 
   const focusInput = new FocusInput(
     () => {
+      sessionEndFlow.cancelPending();
       focusSession.start();
       mindfulReminderController.startSession();
       attentionSignals.setEnabled(true);
@@ -197,6 +207,7 @@ async function init() {
       stateManager.setState(STATES.IDLE);
       tigerCharacter.setFocusLevel(0);
       celebratePending = false;
+      sessionEndFlow.onSessionEnded({ completed: false });
     }
   );
 
@@ -241,6 +252,8 @@ async function init() {
         tigerCharacter.setFocusLevel(0);
         focusInput.resetButton(focusButton);
         celebratePending = false;
+        // 庆祝已完整播放并回归坐姿，此后再留白淡入反思环节
+        sessionEndFlow.onSessionEnded({ completed: true });
       }, CELEBRATE_DURATION_MS);
     }
 

@@ -20,5 +20,10 @@
   "STRETCH_REMINDER_3": "A long stretch of stillness has passed. The body can move when ready.",
   "REFOCUS_ACKNOWLEDGE_1": "Attention wandered for a while. Now it has returned here.",
   "REFOCUS_ACKNOWLEDGE_2": "That moment has passed. Attention is back with this breath.",
-  "REFOCUS_ACKNOWLEDGE_3": "There was a moment elsewhere. Now there is this moment of return."
+  "REFOCUS_ACKNOWLEDGE_3": "There was a moment elsewhere. Now there is this moment of return.",
+  "REFLECTION_Q1": "What did you notice today?",
+  "REFLECTION_Q2": "What emotion visited you?",
+  "REFLECTION_Q3": "What would you like to return to next?",
+  "REFLECTION_CONTINUE": "Continue",
+  "REFLECTION_SKIP": "Skip"
 }

@@ -1,12 +1,20 @@
-// 职责：localStorage 封装。本任务只搭骨架，真实读写是 Task 3 的工作。
-// Schema（供Task 3参考，本任务不需要真正写入）：
-// { totalFocusMinutes: 0, streakDays: 0, tigerName: '阿寅', lastSessionTimestamp: null }
+// 职责：localStorage 的 JSON 安全封装。
+// localStorage 被禁用（隐私模式、iframe 限制等）时静默回退，不抛错、不阻断主流程。
 
 export function getStorage(key, fallback) {
-  // TODO(Task 3): 从 localStorage 读取数据
-  return fallback;
+  try {
+    const raw = globalThis.localStorage?.getItem(key);
+    if (raw === null || raw === undefined) return fallback;
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
 }
 
 export function setStorage(key, value) {
-  // TODO(Task 3): 向 localStorage 写入数据
+  try {
+    globalThis.localStorage?.setItem(key, JSON.stringify(value));
+  } catch {
+    // 持久化不可用时放弃写入，调用方不依赖写入成功。
+  }
 }

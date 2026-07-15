@@ -34,6 +34,7 @@
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 - 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
 - 三类非模态提醒运行时链路：`ReminderQuotaManager` 按用户本地自然日持久化共享额度（`MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 合计每日最多 3 次）；`AttentionSignals` 合并并去重 visibility + blur/focus 离开事件（20s 候选记账、超过 60s 回归展示）；`MindfulReminderController` 实现 20 分钟阶段确认、活跃累计 2 小时舒展提醒、Re-focus 每会话最多 1 次及强反馈静默让位；三类提醒复用 `MindfulAcknowledgeToast` 非模态 UI 与观察式中英文文案池。新增 11 项单元测试并通过，生产构建通过
+- Tiger Reflection Moment（结束反思）MVP：会话结束后（正常完成在庆祝完整播放并回归坐姿后留白淡入；主动结束不播完成反馈、短暂留白后淡入）逐题展示三问（今天注意到什么 / 有哪些情绪来访 / 下次想把注意力带回什么），每题独立可跳、Skip 与 Continue 同级、Esc 整体划过；无提交/必填/进度数字等表单元素；仅非空答案本地保存最近 5 条（`focus-tiger.reflections.v1`），全部跳过不落记录，不做标签化/统计。`TigerReflectionMoment` + `ReflectionFlowState` + `SessionEndFlow` + `Storage` JSON 封装，5 项单元测试与浏览器全路径验收通过
 
 **明确未完成（勿当作已验收）**：
 
@@ -68,6 +69,7 @@
 - **Re-focus Acknowledge 最小运行时已落地（2026-07-16）**：作为 MindfulAcknowledge 特化子类型，用户从超过 60 秒的页面离开返回时复用统一非模态文案条，按观察式文案呈现；与强反馈冲突时静默让位、不补发。该最小链路不等同于完整 Focus Confidence V1，后者的 idle 检测与可信度分值仍未实现
 - **MilestoneGlow 里程碑金辉时刻已定稿（2026-07-15，仅文档）**：长期里程碑节点（连续 7/21/100 天、累计时长等）的仪式性反馈，比 `Celebrating` 更隆重一档（优先级 110）；10s 分镜定稿：呼吸律动金光 → 全身金色 Rim Light 勾勒 → **一只金光蝴蝶**环绕（原「几只萤火虫」已修订）；老虎全程闭目坐禅不做动作，与每日 `Celebrating` 的社交性庆祝分工明确；蝴蝶为一次性过场、随金光淡去不留驻；视频源已产出，抽帧与实现归属 Backlog「纪念奖励系统」。同时拍板：分镜前段的「金光随呼吸律动」（吸气收敛/呼气晕染，同步 4s 呼吸循环）定义为 FOCUSING 光环**通用行为**，已写入 `DESIGN` / `ARCHITECTURE` / `EMOTION_BIBLE`
 - `waveHello` 真实序列已通过 `EmotionController.playEmotion('welcomeBack')` 接线，支持 rAF 帧率控制、循环/末帧停留、立即打断、预加载及播放完成回落 `Idle`
+- **结束反思两项措辞/时序已确认（2026-07-16）**：反思问题三采用「下次想把注意力带回什么」而非「明天」，避免暗示每日义务（与 regular practice, at your own pace 一致）；`IncenseGreeting` 产品语义为「今日一炷香完成」，**不**在用户主动提前结束时播放，主动结束路径直接回归坐姿后淡入反思面板
 
 **下一步计划**：
 
