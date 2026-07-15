@@ -2,6 +2,9 @@
 // 以及关键阈值参数，方便所有模块统一引用，不允许颜色值/阈值散落在各文件里硬编码。
 
 export const COLORS = {
+  // TODO(奖励柜任务): idleGray* / focusGold* 命名源自旧"灰→金材质渐变"方案，
+  // 与 2026-07-15 视觉原则（本体固有色恒定，金色仅用于光环/环境光）不符。
+  // 3D 重构时改名为环境光/光环语义（如 haloGold*），本阶段保留不动。
   idleGrayStart: '#cdd0d3',
   idleGrayEnd: '#a8adb3',
   focusGoldMid: '#e0b979',

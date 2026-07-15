@@ -17,7 +17,7 @@
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
-- 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、自然原色→金色材质、`StateManager` + HUD、「开始专注」交互
+- 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、「开始专注」交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`
 - 动态效果层：`DynamicMotion`（呼吸起伏、绕 Y 轴旋转、庆祝悬浮）— 奖励柜可复用；2D 主线不要求同等旋转
 - 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子），经 `playEmotion('incenseComplete')` 触发
@@ -53,6 +53,7 @@
 - **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
+- **视觉原则修正已拍板（2026-07-15）**：角色本体固有色恒定不变，金色进度改由外围光环/环境光反射（Rim Light）表达，禁止本体重着色。改动范围：只改文档确立新原则（`DESIGN` / `PRINCIPLES` / `ARCHITECTURE` / `EMOTION_BIBLE` / `TASKS` 已同步），2D 主线金色表达定义为「金色光晕 overlay + 粒子」写入 `ARCHITECTURE`；3D shader（`TigerCharacter` 灰→金插值、`Constants` 命名）仅留 TODO 标注不重构，重构并入未来「奖励柜」任务；历史任务书保留原文 + 顶部注记
 - `waveHello` 真实序列已通过 `EmotionController.playEmotion('welcomeBack')` 接线，支持 rAF 帧率控制、循环/末帧停留、立即打断、预加载及播放完成回落 `Idle`
 
 **下一步计划**：
@@ -176,7 +177,7 @@ Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，�
 
 1. **`input/` 目录混放**：`FocusInput.js`（Gameplay 角色）与 `UIControls.js`（UI 角色）同处 `input/` 目录。当前两文件职责边界清晰、无跨界耦合迹象，暂不拆分子目录。若后续发现有跨文件耦合修改的情况，再考虑拆分为 `input/gameplay/` 与 `input/ui/` 子目录。
 
-2. **`character/Actions.js` 与 `TigerCharacter.js` 职责轻微交叠**：`Actions.js` 负责行为枚举与播放控制，`TigerCharacter.js` 负责材质插值与动画播放；与 `MoodController` 之间的信号消费边界，需要在每次涉及这两个文件的具体 Task Brief 中明确写出边界，不作为一次性目录重构处理。
+2. **`character/Actions.js` 与 `TigerCharacter.js` 职责轻微交叠**：`Actions.js` 负责行为枚举与播放控制，`TigerCharacter.js` 负责材质/光效参数与动画播放；与 `MoodController` 之间的信号消费边界，需要在每次涉及这两个文件的具体 Task Brief 中明确写出边界，不作为一次性目录重构处理。
 
 ---
 

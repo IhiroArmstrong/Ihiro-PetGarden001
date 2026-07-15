@@ -128,6 +128,11 @@ export class TigerCharacter {
     material.needsUpdate = true;
   }
 
+  // TODO(奖励柜任务): 本 shader 的"本体色随 uFocusLevel 混入金色"做法已违反
+  // 2026-07-15 确立的视觉原则（本体固有色恒定，见 DESIGN.md「视觉状态」章节）。
+  // 3D 资产迁入奖励柜场景时重构为：本体色固定，改用 Fresnel Rim Light 边缘高光
+  // + 提升 envMapIntensity / 降低 roughness + 金色光环 mesh 承接环境反射。
+  // 当前 3D 主线已让位于 2D PNG 序列，本代码保留不动。
   _applyFocusShader(material) {
     const goldTint = new THREE.Color(COLORS.focusGoldFull);
 

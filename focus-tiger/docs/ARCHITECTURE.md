@@ -16,8 +16,10 @@
     不再是"在浏览器里手写SVG path"就能完成的工作
   - 需要处理3D场景在移动端的加载性能(健康类App的用户对首屏速度容忍度低，
     GLB+贴图体积必须控制，建议单场景所有资产压缩后 < 3MB)
-  - Shader(灰→金渐变、光晕、柔焦)需要专人写或找现成后处理库，
+  - Shader(金色环境光/光晕、柔焦)需要专人写或找现成后处理库，
     调试成本比CSS filter高一个量级
+    （注：早期方案曾表述为"灰→金材质渐变"，已按 2026-07-15 视觉原则修正：
+      本体固有色恒定，金色来自环境光反射与光环，见 DESIGN.md「视觉状态」章节）
   - 不再是"双击HTML直接打开"，需要走 npm run build 产出静态资源再部署
 
 这个决策已经确认要走，本文档后续按3D技术栈设计，但请注意：
@@ -82,7 +84,7 @@ focus-tiger/
 │  ├─ core/
 │  │  ├─ Renderer.js            # renderer/camera/lights 初始化
 │  │  ├─ Scene.js               # 场景图组装(老虎、莲花、光环挂载点)
-│  │  ├─ PostProcessing.js      # shader pass 管理(灰→金、光晕、柔焦)
+│  │  ├─ PostProcessing.js      # shader pass 管理(金色光晕、柔焦)
 │  │  ├─ FocusSession.js        # 专注会话：计时、focusLevel计算
 │  │  ├─ StateManager.js        # 全局状态机：IDLE/FOCUSING/BREAK/CELEBRATE/DORMANT
 │  │  ├─ Milestone.js           # 里程碑：连续天数、累计时长
@@ -90,7 +92,7 @@ focus-tiger/
 │  │                            # 自己不存状态(职责边界见上方说明)
 │  │
 │  ├─ character/
-│  │  ├─ TigerCharacter.js      # 小老虎：灰→金渲染、动画播放控制
+│  │  ├─ TigerCharacter.js      # 小老虎：渲染与动画播放控制（金色反光待按新原则重构，见文末 TODO）
 │  │  ├─ PoseManager.js         # 多姿态 GLB 预加载与 cross-fade 切换
 │  │  └─ Actions.js             # 行为定义：坐禅/欢呼/打瞌睡/眨眼/唤醒起身
 │  │
@@ -154,7 +156,7 @@ focus-tiger/
 
 2. core/ 下新增 Renderer.js / Scene.js / PostProcessing.js
    理由：main.js若直接承载渲染器初始化+shader管线，会快速膨胀成
-   不好维护的"上帝文件"，尤其本项目的后处理效果(灰→金、光晕、柔焦)
+   不好维护的"上帝文件"，尤其本项目的后处理效果(金色光晕、柔焦)
    逻辑量不小，需要单独文件承载
 
 3. MoodController / FocusVisualizer / TransitionFX 明确了单向数据流边界
@@ -200,6 +202,8 @@ focus-tiger/
 
 **粒子系统叠加原则**:
 粒子系统必须支持多套独立发射器同时叠加显示,不能用"共用一个粒子系统靠切换贴图"的方式实现。例如"专注氛围金粒子"与"每日总结雪花/花瓣粒子"是两套独立的发射器,分别由各自独立信号控制显隐,可同时显示(如"当日专注数据尚未显著+现在正在瞌睡"应能同时呈现雪花粒子与瞌睡姿态)。
+
+**TODO（并入未来「奖励柜」任务，本阶段不改）**：现有 3D 代码（`TigerCharacter.js` 的 focus shader 按 `uFocusLevel` 向金色混色、`Constants.js` 的 `idleGray*` / `focusGold*` 命名）与 2026-07-15 确立的「本体固有色恒定」原则不符。待 3D 资产在奖励柜场景启用时一并重构：本体色固定，改用 Fresnel Rim Light 边缘高光 + 提升 `envMapIntensity` / 降低 roughness + 金色光环 mesh 承接环境反射。
 
 ---
 
@@ -251,6 +255,16 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 - **呼吸起伏等基于 transform 的动态效果**：**予以保留**，可继续叠加在帧序列播放之上。
 - **悬浮等庆祝附属效果**：视 2D 画面表现另行评估；不强制复刻 3D 位移参数。
 
+### 2D 主线的金色进度表达（视觉原则落地方案）
+
+依据「本体固有色恒定」原则（2026-07-15 确立，见 DESIGN.md「视觉状态」章节）：
+
+- 2D PNG 序列每帧颜色在素材产出时已烘焙固定，角色本体**天然不变色**——这与新原则天然一致，无需对既有素材做任何处理。
+- 专注进度的金色反馈由**精灵图层之外**的效果承载：
+  1. **金色光晕 overlay**：独立于帧序列的发光图层（CSS `box-shadow` / `filter: drop-shadow` / 径向渐变 div 均可，实现阶段定），强度随 focusLevel 插值；
+  2. **金色粒子**：独立粒子层叠加在精灵周围。
+- **禁止**通过逐帧重着色、CSS 色相滤镜（`hue-rotate` / `sepia` 等作用于精灵本体）等方式改变角色本体颜色来表达进度。
+
 ---
 
 ## 未来扩展：角色/装扮可替换性
@@ -283,5 +297,5 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 ## Focus Confidence 数据层与视觉层的接口约定
 
 - 数据层(负责监听Page Visibility、window焦点、idle检测,计算Focus Confidence分值与Flow Continuity百分比)应作为独立的数据适配模块存在,不与MoodController或PoseManager直接耦合
-- 视觉层(粒子系统、材质插值等动态效果层)只接收数据层输出的**连续性参数**(0-1或0-100的数值),不关心该数值背后的具体计算逻辑或信号来源,保持关注点分离
+- 视觉层(粒子系统、光环/环境光强度插值等动态效果层)只接收数据层输出的**连续性参数**(0-1或0-100的数值),不关心该数值背后的具体计算逻辑或信号来源,保持关注点分离
 - 未来若接入新的信号源(见下方PROCESS.md的Backlog),只需在数据层扩展计算逻辑,视觉层接口不需要变动
