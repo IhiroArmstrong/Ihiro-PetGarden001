@@ -26,10 +26,10 @@
 - 眼睛跟随：`EyeTracking`（独立占位瞳孔图层、椭圆夹紧 + 阻尼跟随、闭眼/Celebrating 自动让位；debug 开关已接）
 - 文档体系：`PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
-- 英文默认本地化：产品名 `Focus Tiger`；`en.json` / `zh.json` 结构对齐，覆盖 HUD、专注按钮、加载提示、状态名及 MindfulAcknowledge / StretchReminder 文案池；`i18n.js` 默认 `en`、缺键回退英文并支持运行时切换中文
+- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
-- 首组 2D 真实序列素材已归档：`public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png` ～ `frame_014.png`（分层路径规范见 `ARCHITECTURE.md`）
+- 首个 2D PNG 序列真实素材（`wave-hello`，14 帧，透明背景）已抠图入库至 `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png` ～ `frame_014.png`，并已完成 `SpriteSequencePlayer` 对接与浏览器验收（分层路径规范见 `ARCHITECTURE.md`）
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 - 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
 
@@ -38,6 +38,7 @@
 - Focus Confidence V1 运行时信号链路（visibility / blur / idle）— **仅有 DESIGN 设计，无独立实现模块**
 - 正式瞳孔素材、大部分互动情绪的真实动画
 - `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位；**判定/限频规则已定稿**）
+- 角色/装扮可替换**完整功能**（用户可选换装 UI、多套角色/装扮素材）尚未实现；`CharacterConfig` 架构扩展点与素材路径/情绪触发解耦已落地
 - Phase 0 清单中的持久化 / DORMANT 唤醒仪式 / PWA 等（见 `TASKS.md`）
 
 **正在进行 / 最近决定的事项**：
@@ -46,8 +47,9 @@
 - `EMOTION_BIBLE` 持续扩充：互动清单、MindfulAcknowledge、自主/响应分层、多语言规范
 - `CHARACTER_BIBLE` 已归档 Master Character Prompt，并澄清 Rive / 双莲花 / 蒲团 / Suffix Prompt
 - 指针检测与眼睛跟随的**检测/跟随逻辑已接线**，视觉表现多为占位，待后续真实素材
-- **已确认**：约 10 分钟无互动 → 加权随机（70% 继续冥想 / 30% 挥手）
-- **已确认并实现**：产品默认面向海外市场，产品名统一为 `Focus Tiger`，英文为默认语言、中文保留为可切换备选；dev-only 调试面板不纳入字典并保持原样
+- **产品市场定位已明确**：优先面向海外市场，产品名统一为 `Focus Tiger`，UI 默认语言由中文改为英文，中文作为可切换语言保留；dev-only 调试面板不纳入字典并保持原样
+- **无互动约 10 分钟已拍板**：保留加权随机（70% 继续冥想 / 30% 挥手），挥手分支使用已入库的 `wave-hello`；具体触发计时源仍待与 Focus Confidence 决策口径统一
+- **架构决策已落地**：为应对角色/装扮市场接受度不确定性，提前预留「角色/装扮可替换」扩展点（`CharacterConfig`）；当前仍固定单一角色（小老虎僧袍造型），不做用户可选换装 UI，仅解耦素材路径与情绪触发逻辑
 - **已确认**：正念阶段性认可 / 伸懒腰：会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）、每类每日 ≤3 次
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
@@ -72,6 +74,7 @@
 - Focus Confidence 未来数据源扩展
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
+- 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
 - 角色边界待观察事项
 
 ---

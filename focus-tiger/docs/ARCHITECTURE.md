@@ -253,6 +253,33 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 ---
 
+## 未来扩展：角色/装扮可替换性
+
+当前阶段只使用单一固定形象：小老虎僧袍造型，`characterId = 'tiger-cub'`、`outfitId = 'monk-robe-default'`。角色/装扮可替换性是架构风险预留，不代表当前阶段提供换装功能。
+
+工程侧已完成以下解耦：
+
+1. **素材路径参数化**：统一遵循
+   `public/sprites/{characterId}/{outfitId}/{animationName}/frame_001.png`
+   （完整规则见上文「2D 序列素材路径规范」）。`characterId` / `outfitId`
+   由配置传入，业务代码不得硬编码 sprites 路径字符串。
+2. **情绪触发与外观解耦**：`EmotionController` 映射表只表达
+   「情绪 key → 触发什么动作」（例如 `welcomeBack` → `waveHello`；
+   `incenseComplete` 仍为独立反馈效果），不感知角色、装扮或素材路径。
+   更换角色/装扮不修改情绪触发逻辑。
+3. **路径解析唯一出口**：`character/CharacterConfig.js` 统一维护当前生效的
+   `characterId` / `outfitId`，并提供 `buildFramePath()` /
+   `buildFramePaths()`。`SpriteSequencePlayer` 在预加载和播放时通过该模块解析路径；
+   `EmotionController` 不解析路径、也不直接读取素材，从而保持更彻底的分层。
+   任何其它模块均禁止自行拼接 sprites 路径。
+4. **当前范围边界**：本阶段只完成路径与触发逻辑解耦；不实现用户选择角色/装扮的
+   UI 或交互，不制作多套角色/装扮素材，也不增加相关持久化。
+5. **与奖励系统的潜在联动**：Backlog「奖励系统」中的 3D 塑胶公仔展示，
+   未来可复用同一套 `characterId` / `outfitId` 身份抽象来关联 2D 主线形象与
+   3D 奖励资产；具体资产注册表与数据模型须另开任务设计。
+
+---
+
 ## Focus Confidence 数据层与视觉层的接口约定
 
 - 数据层(负责监听Page Visibility、window焦点、idle检测,计算Focus Confidence分值与Flow Continuity百分比)应作为独立的数据适配模块存在,不与MoodController或PoseManager直接耦合
