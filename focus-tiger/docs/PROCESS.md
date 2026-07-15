@@ -30,11 +30,12 @@
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 提醒钩子（**不**自动 push）
 - 首组 2D 真实序列素材已归档：`public/sprites/wave-hello/wave_hello_001.png` ～ `wave_hello_014.png`
+- `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 
 **明确未完成（勿当作已验收）**：
 
 - Focus Confidence V1 运行时信号链路（visibility / blur / idle）— **仅有 DESIGN 设计，无独立实现模块**
-- `SpriteSequencePlayer` 浏览器运行验收（实现与静态 lint 已完成；当前执行环境无 Node/npm，尚未运行 Vite build/dev）；正式瞳孔素材、大部分互动情绪的真实动画
+- 正式瞳孔素材、大部分互动情绪的真实动画
 - `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位；**判定/限频规则已定稿**）
 - Phase 0 清单中的持久化 / DORMANT 唤醒仪式 / PWA 等（见 `TASKS.md`）
 
@@ -53,7 +54,6 @@
 
 **下一步计划**：
 
-- 在具备 Node/npm 的环境运行 `npm run build` 与浏览器调试按钮，完成 `welcomeBack` 真实序列运行验收
 - 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
 - 实现阶段性正念认可 / 伸懒腰提醒的非模态文案条 + 计时与限频逻辑（规则已定稿）
