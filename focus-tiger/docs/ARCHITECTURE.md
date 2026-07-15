@@ -54,6 +54,7 @@ TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 ```
 focus-tiger/
 ├─ docs/                          # 流程/设计文档，不参与构建
+│  ├─ PRODUCT_POSITIONING.md      # 品牌定位、核心使命与长期方向（产品语义顶层）
 │  ├─ TASKS.md
 │  ├─ PRINCIPLES.md
 │  ├─ ARCHITECTURE.md
@@ -288,7 +289,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
    任何其它模块均禁止自行拼接 sprites 路径。
 4. **当前范围边界**：本阶段只完成路径与触发逻辑解耦；不实现用户选择角色/装扮的
    UI 或交互，不制作多套角色/装扮素材，也不增加相关持久化。
-5. **与奖励系统的潜在联动**：Backlog「奖励系统」中的 3D 塑胶公仔展示，
+5. **与纪念奖励系统的潜在联动**：Backlog「纪念奖励系统」中的 3D 塑胶公仔展示，
    未来可复用同一套 `characterId` / `outfitId` 身份抽象来关联 2D 主线形象与
    3D 奖励资产；具体资产注册表与数据模型须另开任务设计。
 

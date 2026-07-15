@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md`。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md`。
 
 ---
 
@@ -24,7 +24,8 @@
 - `EmotionController.playEmotion()` 统一情绪桥：业务侧不直连 PoseManager / DynamicMotion；映射表含已实现态 + 大量占位态
 - 鼠标/指针刺激检测：`PointerInteraction`（靠近 / 点头 / 抚摸分阈值 / 绕圈 / 静止歪头 → `playEmotion`；Celebrating 期间摸头忽略）
 - 眼睛跟随：`EyeTracking`（独立占位瞳孔图层、椭圆夹紧 + 阻尼跟随、闭眼/Celebrating 自动让位；debug 开关已接）
-- 文档体系：`PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
+- 文档体系：`PRODUCT_POSITIONING` / `PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
+- 产品定位文档 `PRODUCT_POSITIONING.md` 已纳入项目：确立正念伙伴（非传统电子宠物）、regular practice at your own pace、宁静型游戏化、三级完成反馈与只增不减的共同经历/纪念奖励；产品语义层级高于 `DESIGN.md`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
 - 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
@@ -38,6 +39,7 @@
 - Focus Confidence V1 运行时信号链路（visibility / blur / idle）— **仅有 DESIGN 设计，无独立实现模块**
 - 正式瞳孔素材、大部分互动情绪的真实动画
 - `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位；**判定/限频规则已定稿**）
+- `SessionComplete` 每次完成专注的轻量情绪确认（产品语义与情绪键已写入 `PRODUCT_POSITIONING` / `DESIGN` / `EMOTION_BIBLE`，代码、2D 素材与非模态文案尚未实现）
 - 角色/装扮可替换**完整功能**（用户可选换装 UI、多套角色/装扮素材）尚未实现；`CharacterConfig` 架构扩展点与素材路径/情绪触发解耦已落地
 - Phase 0 清单中的持久化 / DORMANT 唤醒仪式 / PWA 等（见 `TASKS.md`）
 
@@ -54,10 +56,12 @@
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
 - **视觉原则修正已拍板（2026-07-15）**：角色本体固有色恒定不变，金色进度改由外围光环/环境光反射（Rim Light）表达，禁止本体重着色。改动范围：只改文档确立新原则（`DESIGN` / `PRINCIPLES` / `ARCHITECTURE` / `EMOTION_BIBLE` / `TASKS` 已同步），2D 主线金色表达定义为「金色光晕 overlay + 粒子」写入 `ARCHITECTURE`；3D shader（`TigerCharacter` 灰→金插值、`Constants` 命名）仅留 TODO 标注不重构，重构并入未来「奖励柜」任务；历史任务书保留原文 + 顶部注记
+- **产品定位 V1.0 已定稿（2026-07-15）**：角色对外统一为 Mindful Companion，不采用喂养、健康退化、照料责任或宠物收集叙事；`daily practice` 改为 `regular practice, at your own pace`；庆祝统一为「短暂、温暖、有情感」；每次完成轻量确认、每日首次达标完整庆祝、长期里程碑纪念奖励；「小老虎更健康」改为共同经历增加、环境细节解锁与永久纪念物
 - `waveHello` 真实序列已通过 `EmotionController.playEmotion('welcomeBack')` 接线，支持 rAF 帧率控制、循环/末帧停留、立即打断、预加载及播放完成回落 `Idle`
 
 **下一步计划**：
 
+- 按已确认反馈分级实现 `SessionComplete`：每次完成的轻量动作 + 非模态文案；每日首次达标仍由 `Celebrating` 替代
 - 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
 - 实现阶段性正念认可 / 伸懒腰提醒的非模态文案条 + 计时与限频逻辑（规则已定稿）
@@ -71,7 +75,7 @@
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
-- 奖励系统（金牌 + 3D 塑胶公仔展示）
+- 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 - Focus Confidence 未来数据源扩展
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
@@ -126,13 +130,14 @@ Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，�
 
 ## 后续 Backlog（暂缓事项,已记录、未开工）
 
-### Backlog:奖励系统（金牌 + 3D 塑胶公仔展示）
+### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 
 整合此前讨论的两个想法，合并为一个后续奖励系统功能：
 
-- 用户达成特定成就/里程碑（如连续签到天数、累计专注时长等，具体规则待设计）后，获得对应的奖励
+- 用户达成明确的长期练习里程碑（如连续练习天数、累计专注时长等，具体规则待设计）后，获得**只增不减**的纪念奖励；中断不撤回奖励，不制造断签压力
 - 奖励呈现形式包括：
   - **金牌/徽章**：需要独立的持久化存储架构记录历史成就，以及一个「成就墙」展示页面
+  - **环境细节/温和动作**：解锁永久保留的纪念物、环境细节或新表达；默认状态始终完整、温暖，不以缺失或退化反衬奖励
   - **3D 塑胶公仔展示**：复用已保留的 3D 多姿态模型资产与绕 Y 轴旋转展示效果（见 `ARCHITECTURE.md`「已有 3D 资产的保留与新定位」），用户可在奖品展示场景中 360 度观赏获得的虚拟公仔
 
 此功能涉及独立的成就数据持久化架构、新增 UI 页面（成就墙/展示柜），复杂度较高，**不纳入当前 2D 情绪系统主线开发范围**。待 2D 主线（情绪清单实现、交互检测）稳定完成后，另行评估排期与具体设计方案。勿在当前阶段情绪/交互任务中顺带实现。

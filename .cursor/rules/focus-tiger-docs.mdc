@@ -11,7 +11,7 @@ alwaysApply: true
 ## 任务开始前
 
 1. 确认本次改动是否触碰下方红线 / 架构边界。  
-2. 情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。  
+2. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
 3. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。  
 4. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
 
@@ -19,6 +19,7 @@ alwaysApply: true
 
 | 文档 | 用途 |
 |---|---|
+| `docs/PRODUCT_POSITIONING.md` | **品牌与产品战略顶层**：核心使命、正念伙伴定位、宁静型游戏化、反馈分级与长期边界；产品语义层级高于 `DESIGN.md` |
 | `docs/PRINCIPLES.md` | **硬性红线**：不制造焦虑、永不消失、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
@@ -30,6 +31,9 @@ alwaysApply: true
 
 ## PRINCIPLES 硬性摘要
 
+- **正念伙伴，不是传统电子宠物**：保留伙伴式互动；禁止喂养、健康退化、照料责任与宠物收集叙事。
+- **宁静型游戏化**：regular practice, at your own pace；禁止强迫签到、概率奖励与街机式狂欢。
+- **反馈分级**：每次完成轻量确认；每日首次达标完整庆祝；长期里程碑纪念奖励。
 - **不制造焦虑**：默认态中性/温馨；禁止退步感视觉（灰败、悲伤、评判「不专注」因果）。  
 - **永不消失**：只有打瞌睡等候，无死亡/离家出走苦情。  
 - **一次只做一个任务**；禁止未立项超范围与占位空目录。  
@@ -38,7 +42,7 @@ alwaysApply: true
 ## ARCHITECTURE 硬性摘要
 
 - **主线情绪** = 2D PNG 序列（视频抽帧）；上层只调 `EmotionController.playEmotion()`。  
-- **3D GLB + PoseManager/DynamicMotion**：不删，留给 Backlog「奖励系统（金牌 + 3D 公仔）」展示，不当主界面情绪载体。  
+- **3D GLB + PoseManager/DynamicMotion**：不删，留给 Backlog「纪念奖励系统（金牌/环境细节 + 3D 公仔）」展示，不当主界面情绪载体。
 - **绕 Y 轴旋转**：2D 主线不做同等替代；奖励柜可复用。  
 - 文案：`src/locales/*.json` + `t()` / `tPool()`，禁止 UI 句子硬编码进业务逻辑。  
 - 眼睛跟随：独立瞳孔图层（`EyeTracking`），非帧序列；闭眼/Celebrating 须让位。
@@ -51,7 +55,7 @@ alwaysApply: true
 
 ## 开发时勿踩
 
-- 不要在情绪主线任务里实现成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。  
+- 不要在情绪主线任务里实现纪念奖励/成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
 

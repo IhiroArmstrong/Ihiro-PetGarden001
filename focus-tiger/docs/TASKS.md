@@ -1,5 +1,6 @@
 ---
 本项目文档已拆分为以下结构，请在需要时查阅对应文件：
+- 产品定位(品牌使命与长期方向): /docs/PRODUCT_POSITIONING.md
 - 项目原则(硬性红线): /docs/PRINCIPLES.md
 - 架构设计(模块职责边界): /docs/ARCHITECTURE.md
 - 产品设计(角色设定与状态语义): /docs/DESIGN.md
@@ -9,9 +10,9 @@
 
 # 坐禅小老虎 · 开发任务清单
 # Focus Tiger · TASKS.md
-# 版本：5.0 · 重大产品转向：单指标(专注心流) + 单宠物(小老虎) + 3D技术路线
+# 版本：5.0 · 重大产品转向：单指标(专注心流) + 单一正念伙伴(小老虎) + 3D技术路线
 
-> 产品概念、设计规范、架构说明已迁至 DESIGN.md / ARCHITECTURE.md / PRINCIPLES.md，本文档仅保留任务序列。
+> 产品定位、设计规范、架构说明已迁至 PRODUCT_POSITIONING.md / DESIGN.md / ARCHITECTURE.md / PRINCIPLES.md，本文档仅保留任务序列。
 
 ---
 
