@@ -24,6 +24,10 @@ import { EyeTracking } from './effects/EyeTracking.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { t, tPool, setLocale, getLocale, onLocaleChange } from './locales/i18n.js';
+import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
+import { MindfulReminderController } from './core/MindfulReminderController.js';
+import { AttentionSignals } from './input/AttentionSignals.js';
+import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
 
 const DEMO_SESSION_MINUTES = 1;
 const CELEBRATE_DURATION_MS = 4000;
@@ -152,16 +156,43 @@ async function init() {
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
   const focusButton = document.getElementById('btn-focus');
+  const reminderQuotaManager = new ReminderQuotaManager();
+  const mindfulToast = new MindfulAcknowledgeToast(
+    document.getElementById('ui-overlay')
+  );
+  const mindfulReminderController = new MindfulReminderController({
+    quotaManager: reminderQuotaManager,
+    emotionController,
+    toast: mindfulToast,
+    getCopy: tPool
+  });
+  const attentionSignals = new AttentionSignals({
+    onAway: () => mindfulReminderController.setAttentionAway(true),
+    onResume: () => mindfulReminderController.setAttentionAway(false),
+    onReturn: (event) =>
+      mindfulReminderController.handleAttentionReturn(event)
+  });
+  attentionSignals.bind();
+
+  if (import.meta.env.DEV) {
+    window.__reminderQuotaManager = reminderQuotaManager;
+    window.__mindfulReminderController = mindfulReminderController;
+    window.__attentionSignals = attentionSignals;
+  }
 
   let celebratePending = false;
 
   const focusInput = new FocusInput(
     () => {
       focusSession.start();
+      mindfulReminderController.startSession();
+      attentionSignals.setEnabled(true);
       stateManager.setState(STATES.FOCUSING);
       celebratePending = false;
     },
     () => {
+      attentionSignals.setEnabled(false);
+      mindfulReminderController.stopSession();
       focusSession.stop();
       stateManager.setState(STATES.IDLE);
       tigerCharacter.setFocusLevel(0);
@@ -179,6 +210,7 @@ async function init() {
 
     const delta = clock.getDelta();
     focusSession.tick(delta);
+    mindfulReminderController.update(delta);
 
     const focusLevel = focusSession.getFocusLevel();
     tigerCharacter.setFocusLevel(focusLevel);
@@ -198,6 +230,8 @@ async function init() {
       !celebratePending
     ) {
       celebratePending = true;
+      attentionSignals.setEnabled(false);
+      mindfulReminderController.stopSession();
       focusSession.pause();
       stateManager.setState(STATES.CELEBRATE);
 

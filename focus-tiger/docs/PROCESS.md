@@ -11,7 +11,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-15
+**最后更新时间**：2026-07-16
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -33,14 +33,13 @@
 - 首个 2D PNG 序列真实素材（`wave-hello`，14 帧，透明背景）已抠图入库至 `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png` ～ `frame_014.png`，并已完成 `SpriteSequencePlayer` 对接与浏览器验收（分层路径规范见 `ARCHITECTURE.md`）
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 - 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
+- 三类非模态提醒运行时链路：`ReminderQuotaManager` 按用户本地自然日持久化共享额度（`MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 合计每日最多 3 次）；`AttentionSignals` 合并并去重 visibility + blur/focus 离开事件（20s 候选记账、超过 60s 回归展示）；`MindfulReminderController` 实现 20 分钟阶段确认、活跃累计 2 小时舒展提醒、Re-focus 每会话最多 1 次及强反馈静默让位；三类提醒复用 `MindfulAcknowledgeToast` 非模态 UI 与观察式中英文文案池。新增 11 项单元测试并通过，生产构建通过
 
 **明确未完成（勿当作已验收）**：
 
-- Focus Confidence V1 运行时信号链路（visibility / blur / idle）— **仅有 DESIGN 设计，无独立实现模块**
+- 完整 Focus Confidence V1 运行时信号链路（可信度分值与 idle 检测）仍未实现；Re-focus 所需的最小 visibility + blur/focus 信号切片已由 `AttentionSignals` 落地
 - 正式瞳孔素材、大部分互动情绪的真实动画
-- `MindfulAcknowledge` / `stretchReminder` 的完整触发 + 非模态文案 UI（情绪键仅占位；20 分钟 / 2 小时判定基准已定，因新增 Re-focus Acknowledge，共享限频池上限重新开放待拍板）
-- `Re-focus Acknowledge` 回归专注确认（仅有 `EMOTION_BIBLE` 设计；依赖尚未实现的 Focus Confidence V1 信号链路，本次未新增代码、情绪键、UI 或语言字典）
-- 现有 `en.json` / `zh.json` 非模态提醒文案的「观察式措辞」审校与同步改写（文档已标记历史文案中的评价/指令语气；本次未改语言字典）
+- `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 的真实 2D 动作素材尚未接入；触发、共享额度、非模态 UI 与观察式中英文文案均已实现，动作入口当前仍为 `EmotionController` 占位日志
 - `SessionComplete` 每次完成专注的轻量情绪确认（产品语义与情绪键已写入 `PRODUCT_POSITIONING` / `DESIGN` / `EMOTION_BIBLE`，代码、2D 素材与非模态文案尚未实现）
 - Session Intention 可选单行意图输入（已拍板并立项为 `TASKS.md` 任务十，未开发）
 - `MilestoneGlow` 里程碑金辉时刻（分镜与设计约束已定稿于 `EMOTION_BIBLE`，视频源已产出；抽帧入库、情绪键接线与 FOCUSING 光环呼吸律动均未实现，归属 Backlog「纪念奖励系统」）
@@ -56,7 +55,7 @@
 - **产品市场定位已明确**：优先面向海外市场，产品名统一为 `Focus Tiger`，UI 默认语言由中文改为英文，中文作为可切换语言保留；dev-only 调试面板不纳入字典并保持原样
 - **无互动约 10 分钟已拍板**：保留加权随机（70% 继续冥想 / 30% 挥手），挥手分支使用已入库的 `wave-hello`；具体触发计时源仍待与 Focus Confidence 决策口径统一
 - **架构决策已落地**：为应对角色/装扮市场接受度不确定性，提前预留「角色/装扮可替换」扩展点（`CharacterConfig`）；当前仍固定单一角色（小老虎僧袍造型），不做用户可选换装 UI，仅解耦素材路径与情绪触发逻辑
-- **已确认部分**：正念阶段性认可 / 伸懒腰的判定基准仍为会话墙钟 20 分钟、活跃累计 2 小时（中断暂停、≥30 分钟无活动才清零）；原「每类每日 ≤3 次」因新增 Re-focus Acknowledge 并入共享限频池，已重新开放待拍板
+- **非模态提醒额度与 Re-focus 阈值已拍板并实现（2026-07-16）**：正念阶段确认 / 伸懒腰判定维持会话墙钟 20 分钟、活跃累计 2 小时（离开时暂停、两场会话间隔 ≥30 分钟重置累计）；三类提醒共用本地自然日额度、合计每日最多 3 次；Re-focus 每场会话最多 1 次；离开满 20 秒只内部记账，超过 60 秒并返回才允许展示。具名常量与单元测试已落地
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 - **Git 提醒已优化（2026-07-15）**：原 `stop` hook 使用 `followup_message`，会自动提交新用户消息并产生额外 Agent/credits 用量；现改为本地 macOS 系统通知，hook 始终输出 `{}`，保留可见提醒但不再触发模型回合；`loop_limit` 已移除（无自动循环）
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
@@ -65,7 +64,7 @@
 - **Session Intention 已拍板（2026-07-15）**：开始专注前可选单行意图输入（可跳过、不减反馈、仅会话内显示 + 结束语回显、本地保存最近几条），不参与达标判定、不做待办管理器；已立项为 `TASKS.md` Phase 1 任务十，排队开发（建议排在 `SessionComplete` 之后衔接结束语）；定量公开目标维持现状（目标时长 + 一炷香），Focus Confidence 分值继续不直接展示
 - **环境细节解锁方向已拍板（2026-07-15）**：莲花池（5 天首朵、10 天第二朵、逐步至满池）、小香炉（3 天，一炷香烟从香炉升起）、蒲团刺绣（30 天）、夜间小灯笼 + 白天小茶盏（60 天成对）；不采用背景远景类添加（保持极简空灵）；只增不减、永久保留；详见 Backlog「纪念奖励系统」，具体实现待该任务排期
 - **核心正念原则与语言规范已确立（2026-07-15）**：`PRINCIPLES` 新增「观照者而非情绪本身」——一次性/响应性情绪必须自动回归坐姿呼吸基底；`EMOTION_BIBLE` 新增观察式措辞规范（描述现象、不贴标签、不追因、不建议）及六场景中英示例，未来所有非模态文案必须通过四项自检
-- **Re-focus Acknowledge 已完成设计立项（2026-07-15，仅文档）**：作为 MindfulAcknowledge 特化子类型，用户从明显分心回到页面时复用非模态文案条，按「察觉 + 接纳 + 回归」呈现；依赖 Focus Confidence V1，当前不实现；与强反馈冲突时静默让位、不补发
+- **Re-focus Acknowledge 最小运行时已落地（2026-07-16）**：作为 MindfulAcknowledge 特化子类型，用户从超过 60 秒的页面离开返回时复用统一非模态文案条，按观察式文案呈现；与强反馈冲突时静默让位、不补发。该最小链路不等同于完整 Focus Confidence V1，后者的 idle 检测与可信度分值仍未实现
 - **MilestoneGlow 里程碑金辉时刻已定稿（2026-07-15，仅文档）**：长期里程碑节点（连续 7/21/100 天、累计时长等）的仪式性反馈，比 `Celebrating` 更隆重一档（优先级 110）；10s 分镜定稿：呼吸律动金光 → 全身金色 Rim Light 勾勒 → **一只金光蝴蝶**环绕（原「几只萤火虫」已修订）；老虎全程闭目坐禅不做动作，与每日 `Celebrating` 的社交性庆祝分工明确；蝴蝶为一次性过场、随金光淡去不留驻；视频源已产出，抽帧与实现归属 Backlog「纪念奖励系统」。同时拍板：分镜前段的「金光随呼吸律动」（吸气收敛/呼气晕染，同步 4s 呼吸循环）定义为 FOCUSING 光环**通用行为**，已写入 `DESIGN` / `ARCHITECTURE` / `EMOTION_BIBLE`
 - `waveHello` 真实序列已通过 `EmotionController.playEmotion('welcomeBack')` 接线，支持 rAF 帧率控制、循环/末帧停留、立即打断、预加载及播放完成回落 `Idle`
 
@@ -74,16 +73,14 @@
 - 按已确认反馈分级实现 `SessionComplete`：每次完成的轻量动作 + 非模态文案；每日首次达标仍由 `Celebrating` 替代
 - 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
-- 实现阶段性正念认可 / 伸懒腰提醒的非模态文案条 + 计时逻辑（20 分钟 / 2 小时判定已定；共享限频池须先完成拍板）
-- Focus Confidence V1 信号链路完成后，再排期 `Re-focus Acknowledge`；实现前须先拍板最小分心阈值、明显分心门槛与共享限频池
+- 为 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 接入真实 2D 动作素材；运行时触发、额度与非模态文案条已完成
+- 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做）
 
 **已知的开放决策 / 待确认事项**：
 
-- **提醒文案共享限频池**：`MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 的同日总上限取多少？原「每类每日 ≤3 次」不再作为最终口径。
-- **Re-focus 单会话上限**：每次专注最多触发 **1 次还是 2 次**？
-- **Re-focus 时间阈值**：分心事件最低记账阈值在建议范围 **15–30 秒**中取多少；触发反馈的「明显分心」是否采用建议的 **超过 1 分钟**？
+- 暂无。原共享提醒池每日上限、Re-focus 单会话上限与两级时间阈值已于 2026-07-16 拍板并实现。
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 

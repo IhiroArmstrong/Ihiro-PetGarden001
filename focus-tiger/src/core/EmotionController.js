@@ -196,12 +196,14 @@ export class EmotionController {
     }
 
     impl(options);
-    // 叠加层开关（breathing/rotation/hover/eyeTracking）不抢占「当前基底情绪」记录
+    // 叠加层开关及非模态提醒不抢占「当前基底情绪」记录
     if (
       key !== 'breathing' &&
       key !== 'rotation' &&
       key !== 'hover' &&
-      key !== 'eyeTracking'
+      key !== 'eyeTracking' &&
+      key !== 'mindfulAcknowledge' &&
+      key !== 'stretchReminder'
     ) {
       this._currentEmotionKey = key;
     }

@@ -11,11 +11,14 @@
   "STATE_BREAK": "休息",
   "STATE_CELEBRATE": "庆祝",
   "STATE_DORMANT": "沉睡",
-  "MINDFUL_FOCUS_MILESTONE_1": "一次专注的呼吸。",
-  "MINDFUL_FOCUS_MILESTONE_2": "做得很好。",
-  "MINDFUL_FOCUS_MILESTONE_3": "此刻,很安静。",
-  "MINDFUL_FOCUS_MILESTONE_4": "继续,慢慢来。",
-  "STRETCH_REMINDER_1": "我们一起伸个懒腰吧。",
-  "STRETCH_REMINDER_2": "休息一下,身体会感谢你。",
-  "STRETCH_REMINDER_3": "站起来走走,好吗?"
+  "MINDFUL_FOCUS_MILESTONE_1": "二十分钟，一呼一吸地走到了这里。",
+  "MINDFUL_FOCUS_MILESTONE_2": "这一段安静，被轻轻看见了。",
+  "MINDFUL_FOCUS_MILESTONE_3": "注意力已经在这里停留了一会儿。",
+  "MINDFUL_FOCUS_MILESTONE_4": "安静的此刻，又来了一口呼吸。",
+  "STRETCH_REMINDER_1": "身体安静了一阵子。此刻，也容得下一点舒展。",
+  "STRETCH_REMINDER_2": "两个安静的小时经过了。这里也留有舒展的空间。",
+  "STRETCH_REMINDER_3": "一段长长的静止已经经过。准备好时，身体可以动一动。",
+  "REFOCUS_ACKNOWLEDGE_1": "注意力出去走了一会儿。现在，它又回到这里了。",
+  "REFOCUS_ACKNOWLEDGE_2": "刚才那一段已经经过了。此刻，又回到这一口呼吸。",
+  "REFOCUS_ACKNOWLEDGE_3": "有一会儿去了别处，也有这一刻重新回来。"
 }

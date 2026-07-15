@@ -11,11 +11,14 @@
   "STATE_BREAK": "Break",
   "STATE_CELEBRATE": "Celebrating",
   "STATE_DORMANT": "Asleep",
-  "MINDFUL_FOCUS_MILESTONE_1": "One mindful breath.",
-  "MINDFUL_FOCUS_MILESTONE_2": "You're doing well.",
-  "MINDFUL_FOCUS_MILESTONE_3": "This moment is quiet.",
-  "MINDFUL_FOCUS_MILESTONE_4": "Keep going, gently.",
-  "STRETCH_REMINDER_1": "Let's stretch together.",
-  "STRETCH_REMINDER_2": "Take a break — your body will thank you.",
-  "STRETCH_REMINDER_3": "How about a short walk?"
+  "MINDFUL_FOCUS_MILESTONE_1": "Twenty minutes have passed, one breath at a time.",
+  "MINDFUL_FOCUS_MILESTONE_2": "This stretch of quiet has been noticed.",
+  "MINDFUL_FOCUS_MILESTONE_3": "Attention has stayed here for a while.",
+  "MINDFUL_FOCUS_MILESTONE_4": "Another breath arrives in this quiet moment.",
+  "STRETCH_REMINDER_1": "The body has been still for a while. A little movement is welcome.",
+  "STRETCH_REMINDER_2": "Two quiet hours have passed. There is room to stretch.",
+  "STRETCH_REMINDER_3": "A long stretch of stillness has passed. The body can move when ready.",
+  "REFOCUS_ACKNOWLEDGE_1": "Attention wandered for a while. Now it has returned here.",
+  "REFOCUS_ACKNOWLEDGE_2": "That moment has passed. Attention is back with this breath.",
+  "REFOCUS_ACKNOWLEDGE_3": "There was a moment elsewhere. Now there is this moment of return."
 }
