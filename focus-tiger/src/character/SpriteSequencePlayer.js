@@ -23,6 +23,8 @@ import { SPRITE_SEQUENCES } from './spriteManifest.js';
  * @property {boolean} [loop] 覆盖清单的循环设置
  * @property {number} [fps] 覆盖清单的帧率
  * @property {boolean} [holdLastFrame] 非循环时是否停在末帧（覆盖清单）
+ * @property {Record<number, number>} [frameHolds] 单帧额外停留时长覆盖（覆盖清单）；
+ *   键为 1 基帧号（与帧文件名序号一致），值为该帧在 fps 间隔之上额外停留的毫秒数
  * @property {(sequenceName: string) => void} [onComplete] 非循环序列播完回调（循环序列不触发）
  */
 
@@ -74,6 +76,8 @@ export class SpriteSequencePlayer {
     this._fps = 12;
     this._loop = false;
     this._holdLastFrame = false;
+    /** 单帧额外停留（键为 1 基帧号）@type {Record<number, number>} */
+    this._frameHolds = {};
     /** @type {((name: string) => void) | null} */
     this._onComplete = null;
     this._lastFrameTime = 0;
@@ -128,6 +132,7 @@ export class SpriteSequencePlayer {
     this._fps = options.fps ?? def.fps ?? 12;
     this._loop = options.loop ?? def.loop ?? false;
     this._holdLastFrame = options.holdLastFrame ?? def.holdLastFrame ?? false;
+    this._frameHolds = options.frameHolds ?? def.frameHolds ?? {};
     this._onComplete =
       typeof options.onComplete === 'function' ? options.onComplete : null;
 
@@ -176,24 +181,35 @@ export class SpriteSequencePlayer {
   // —— 内部实现 ——
 
   /**
-   * rAF 主循环：用累加时间对齐目标帧率，播放速度与显示器刷新率解耦。
+   * 当前帧应停留的总时长（ms）= fps 基础间隔 + 该帧的额外停留覆盖值。
+   * `_frameHolds` 键为 1 基帧号（与帧文件名序号一致），内部索引为 0 基，故 +1。
+   * @param {number} frameIndex 0 基帧索引
+   * @returns {number}
+   */
+  _frameDurationMs(frameIndex) {
+    const base = 1000 / this._fps;
+    const extra = this._frameHolds[frameIndex + 1] ?? 0;
+    return base + extra;
+  }
+
+  /**
+   * rAF 主循环：用累加时间对齐帧时长，播放速度与显示器刷新率解耦。
+   * 帧时长逐帧独立计算（支持单帧停留覆盖），落后时逐帧消耗补帧。
    * @param {number} now
    */
   _tick(now) {
     if (!this._playing) return;
 
-    const frameDur = 1000 / this._fps;
-    const elapsed = now - this._lastFrameTime;
+    let dur = this._frameDurationMs(this._frameIndex);
 
-    if (elapsed >= frameDur) {
-      const advance = Math.floor(elapsed / frameDur);
-      this._lastFrameTime += advance * frameDur;
-      const next = this._frameIndex + advance;
+    while (now - this._lastFrameTime >= dur) {
+      this._lastFrameTime += dur;
+      const next = this._frameIndex + 1;
 
       if (next >= this._frames.length) {
         if (this._loop) {
-          this._frameIndex = next % this._frames.length;
-          this._renderFrame(this._frameIndex);
+          this._frameIndex = 0;
+          this._renderFrame(0);
         } else {
           // 非循环：定格末帧
           this._frameIndex = this._frames.length - 1;
@@ -205,6 +221,8 @@ export class SpriteSequencePlayer {
         this._frameIndex = next;
         this._renderFrame(next);
       }
+
+      dur = this._frameDurationMs(this._frameIndex);
     }
 
     this._raf = requestAnimationFrame(this._tick);

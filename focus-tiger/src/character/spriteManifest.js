@@ -32,7 +32,16 @@ export function buildFrames(prefix, from, to, pad, ext = '.png') {
  * @property {number} fps 播放帧率
  * @property {boolean} loop 是否循环播放（持续待机类为 true）
  * @property {boolean} holdLastFrame 非循环时：播完是否停在最后一帧（false = 播完隐藏让位给底层态）
+ * @property {Record<number, number>} [frameHolds] 单帧停留时长覆盖：键为 **1 基帧号**
+ *   （与帧文件名序号一致，如 8 对应 `_008.png`），值为该帧在 fps 基础间隔之上
+ *   **额外**停留的毫秒数。未设置的帧按 fps 均匀播放。
  */
+
+/**
+ * wave-hello 抬手最高点（第 8 帧 `wave_hello_008.png`：掌心完全张开、位置最高）
+ * 的额外停留时长（ms）。观感调整建议范围 300–600。
+ */
+export const WAVE_HELLO_PEAK_HOLD_MS = 400;
 
 /** @type {Record<string, SpriteSequenceDef>} */
 export const SPRITE_SEQUENCES = {
@@ -42,6 +51,8 @@ export const SPRITE_SEQUENCES = {
     frames: buildFrames('/sprites/wave-hello/wave_hello_', 1, 14, 3),
     fps: 12,
     loop: false,
-    holdLastFrame: false
+    holdLastFrame: false,
+    // 抬手顶点定格：让「打招呼」的招牌瞬间被看清，再继续回摆
+    frameHolds: { 8: WAVE_HELLO_PEAK_HOLD_MS }
   }
 };
