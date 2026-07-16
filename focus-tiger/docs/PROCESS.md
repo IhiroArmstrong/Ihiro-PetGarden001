@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md`。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md`。
 
 ---
 
@@ -24,7 +24,7 @@
 - `EmotionController.playEmotion()` 统一情绪桥：业务侧不直连 PoseManager / DynamicMotion；映射表含已实现态 + 大量占位态
 - 鼠标/指针刺激检测：`PointerInteraction`（靠近 / 点头 / 抚摸分阈值 / 绕圈 / 静止歪头 → `playEmotion`；Celebrating 期间摸头忽略）
 - 眼睛跟随：`EyeTracking`（独立占位瞳孔图层、椭圆夹紧 + 阻尼跟随、闭眼/Celebrating 自动让位；debug 开关已接）
-- 文档体系：`PRODUCT_POSITIONING` / `PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
+- 文档体系：`PRODUCT_POSITIONING` / `MVP_PRODUCT_DEFINITION` / `PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
 - 产品定位文档 `PRODUCT_POSITIONING.md` 已纳入项目：确立正念伙伴（非传统电子宠物）、regular practice at your own pace、宁静型游戏化、三级完成反馈与只增不减的共同经历/纪念奖励；产品语义层级高于 `DESIGN.md`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
 - 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
@@ -45,7 +45,8 @@
 - Session Intention 可选单行意图输入（已拍板并立项为 `TASKS.md` 任务十，未开发）
 - `MilestoneGlow` 里程碑金辉时刻（分镜与设计约束已定稿于 `EMOTION_BIBLE`，视频源已产出；抽帧入库、情绪键接线与 FOCUSING 光环呼吸律动均未实现，归属 Backlog「纪念奖励系统」）
 - 角色/装扮可替换**完整功能**（用户可选换装 UI、多套角色/装扮素材）尚未实现；`CharacterConfig` 架构扩展点与素材路径/情绪触发解耦已落地
-- Phase 0 清单中的持久化 / DORMANT 唤醒仪式 / PWA 等（见 `TASKS.md`）
+- DORMANT 唤醒仪式（Honesty Check-in）— 设计已完成，开发中
+- Phase 0 清单中的持久化 / PWA 等（见 `TASKS.md`；DORMANT 唤醒仪式已摘出，见上条）
 
 **正在进行 / 最近决定的事项**：
 
@@ -70,9 +71,13 @@
 - **MilestoneGlow 里程碑金辉时刻已定稿（2026-07-15，仅文档）**：长期里程碑节点（连续 7/21/100 天、累计时长等）的仪式性反馈，比 `Celebrating` 更隆重一档（优先级 110）；10s 分镜定稿：呼吸律动金光 → 全身金色 Rim Light 勾勒 → **一只金光蝴蝶**环绕（原「几只萤火虫」已修订）；老虎全程闭目坐禅不做动作，与每日 `Celebrating` 的社交性庆祝分工明确；蝴蝶为一次性过场、随金光淡去不留驻；视频源已产出，抽帧与实现归属 Backlog「纪念奖励系统」。同时拍板：分镜前段的「金光随呼吸律动」（吸气收敛/呼气晕染，同步 4s 呼吸循环）定义为 FOCUSING 光环**通用行为**，已写入 `DESIGN` / `ARCHITECTURE` / `EMOTION_BIBLE`
 - `waveHello` 真实序列已通过 `EmotionController.playEmotion('welcomeBack')` 接线，支持 rAF 帧率控制、循环/末帧停留、立即打断、预加载及播放完成回落 `Idle`
 - **结束反思两项措辞/时序已确认（2026-07-16）**：反思问题三采用「下次想把注意力带回什么」而非「明天」，避免暗示每日义务（与 regular practice, at your own pace 一致）；`IncenseGreeting` 产品语义为「今日一炷香完成」，**不**在用户主动提前结束时播放，主动结束路径直接回归坐姿后淡入反思面板
+- **MVP 产品定义补充已校正并纳入（2026-07-16）**：新增 `MVP_PRODUCT_DEFINITION.md`，将首要用户、JTBD、竞争替代品、成功指标、付费与隐私从旧补充稿整理为产品策略基线；删除“每日回来”“小老虎随用户成长/退化”“AI Coach/情绪分析默认进入 Premium”等与当前原则冲突的表达，并把未经验证的人群、数字目标、价格和付费形态明确标为假设
+- **Honesty Check-in / DORMANT 唤醒仪式已定稿（2026-07-16）**：DORMANT 改为「当日自然日尚无任何已完成会话」；可忽略提示 `Did you practice elsewhere?` → 选 10/20/30+ 分钟 → 10s 呼吸引导 → `WakeUp`（伸懒腰 + 既有 Rim Light）；补登与正常计时一视同仁、无验证语气、不占共享提醒池、不设每日次数上限。旧「连续 3 天 + 1 分钟唤醒且不计会话」口径废止；`PRINCIPLES` 新增「诚实机制」，`DESIGN` / `EMOTION_BIBLE` / `TASKS` 任务五已同步
+- **新增设计并排期开发「打卡返还 & 唤醒仪式（Honesty Check-in）」功能**：允许用户手动补登在其他场景完成的专注/正念练习，体现产品「诚实机制」设计原则，与核心视觉原则（Rim Light 金光反射）对接；当前设计已完成、开发中（光效若 Rim Light 重构未就绪则先用现有 `FocusVisualizer` / `setFocusLevel` 占位）
 
 **下一步计划**：
 
+- 实现 DORMANT 唤醒仪式（Honesty Check-in）：`DailyCompletionStore` + 可忽略提示 / 时长选择 / 10s 呼吸引导 / `playEmotion('wakeUp')`；正常计时完成与补登共用当日完成记录；不占共享提醒池；光效先占位、Rim Light 重构后替换对接
 - 按已确认反馈分级实现 `SessionComplete`：每次完成的轻量动作 + 非模态文案；每日首次达标仍由 `Celebrating` 替代
 - 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移

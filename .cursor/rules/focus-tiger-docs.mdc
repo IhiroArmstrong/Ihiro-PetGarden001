@@ -11,7 +11,7 @@ alwaysApply: true
 ## 任务开始前
 
 1. 确认本次改动是否触碰下方红线 / 架构边界。  
-2. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
+2. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；用户、JTBD、指标、付费或隐私相关任务 → 先对照 `MVP_PRODUCT_DEFINITION.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
 3. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。  
 4. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
 
@@ -20,7 +20,8 @@ alwaysApply: true
 | 文档 | 用途 |
 |---|---|
 | `docs/PRODUCT_POSITIONING.md` | **品牌与产品战略顶层**：核心使命、正念伙伴定位、宁静型游戏化、反馈分级与长期边界；产品语义层级高于 `DESIGN.md` |
-| `docs/PRINCIPLES.md` | **硬性红线**：不制造焦虑、永不消失、一次一任务、不超范围、性能与风格 |
+| `docs/MVP_PRODUCT_DEFINITION.md` | **MVP 产品策略基线**：首要用户、JTBD、竞争替代品、验证指标、付费假设与隐私承诺；假设不等同于已上线功能 |
+| `docs/PRINCIPLES.md` | **硬性红线**：不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/CHARACTER_BIBLE.md` | 角色 Master Prompt 全文归档 + 项目关联澄清（Rive/莲花/蒲团/Suffix） |
@@ -32,6 +33,7 @@ alwaysApply: true
 ## PRINCIPLES 硬性摘要
 
 - **正念伙伴，不是传统电子宠物**：保留伙伴式互动；禁止喂养、健康退化、照料责任与宠物收集叙事。
+- **诚实机制**：允许无验证补登别处完成的练习；与正常计时一视同仁；禁止怀疑性文案；不占系统提醒限频池。
 - **观照者而非情绪本身**：一次性/响应性情绪必须「触发 → 表现 → 自动回归坐姿呼吸基底」；文案只作观察式描述，不贴标签、不追因、不说教。
 - **宁静型游戏化**：regular practice, at your own pace；禁止强迫签到、概率奖励与街机式狂欢。
 - **反馈分级**：每次完成轻量确认；每日首次达标完整庆祝；长期里程碑纪念奖励。

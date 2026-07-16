@@ -1,10 +1,10 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.0  
-> 最后更新：2026-07-15
+> 版本：1.1
+> 最后更新：2026-07-16
 
-本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。
+本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`。
 
 在产品语义文档中，本文档层级高于 `DESIGN.md`；`DESIGN.md` 负责把定位转化为当前阶段的具体玩法。`PRINCIPLES.md` 仍是不可违反的硬性红线，任何定位表达和功能提议均不得绕过其「不制造焦虑」「永不消失」「价值优先于复杂度」等约束。
 
@@ -12,10 +12,11 @@
 
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
-3. `DESIGN.md`：当前产品语义、体验循环与玩法；
-4. `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md`：情绪行为与角色设定；
-5. `ARCHITECTURE.md`：技术实现和模块边界；
-6. `PROCESS.md` / `TASKS.md`：阶段范围、协作流程与排期。
+3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
+4. `DESIGN.md`：当前产品语义、体验循环与玩法；
+5. `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md`：情绪行为与角色设定；
+6. `ARCHITECTURE.md`：技术实现和模块边界；
+7. `PROCESS.md` / `TASKS.md`：阶段范围、协作流程与排期。
 
 ---
 
