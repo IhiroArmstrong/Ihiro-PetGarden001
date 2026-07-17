@@ -6,7 +6,11 @@ import * as THREE from 'three';
 import { createRenderer, setupSceneEnvironment } from './core/Renderer.js';
 import { createScene } from './core/Scene.js';
 import { createPostProcessing } from './core/PostProcessing.js';
-import { FocusSession } from './core/FocusSession.js';
+import {
+  FocusSession,
+  shouldSuppressAwayReminders,
+  COMPANION_MODE_ACROSS_TOOLS
+} from './core/FocusSession.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -23,6 +27,7 @@ import { DynamicMotion } from './effects/DynamicMotion.js';
 import { EyeTracking } from './effects/EyeTracking.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
+import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, setLocale, getLocale, onLocaleChange } from './locales/i18n.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
@@ -30,16 +35,23 @@ import { AttentionSignals } from './input/AttentionSignals.js';
 import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
+import { DailyCompletionStore } from './core/DailyCompletionStore.js';
+import { HonestyCheckInController } from './core/HonestyCheckInController.js';
+import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
+import { CompanionModePicker } from './ui/CompanionModePicker.js';
+import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
+import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
+import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 
 const DEMO_SESSION_MINUTES = 1;
-const CELEBRATE_DURATION_MS = 4000;
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
 
-function revealScene() {
+function revealScene({ showCanvas = false } = {}) {
   const poster = document.getElementById('poster');
   const canvas = document.getElementById('scene-canvas');
 
-  canvas.style.opacity = '1';
+  // 2D 主线时保持 canvas 隐藏，避免透明精灵后露出 3D 垫底。
+  canvas.style.opacity = showCanvas ? '1' : '0';
   if (poster) {
     poster.style.opacity = '0';
     poster.addEventListener(
@@ -84,7 +96,9 @@ async function init() {
 
   const dynamicMotion = new DynamicMotion(mounts.tiger, poseManager);
 
-  const incenseGreeting = new IncenseGreeting(scene, mounts.tiger, camera);
+  const incenseGreeting = new IncenseGreeting(scene, mounts.tiger, camera, {
+    fxContainer: app
+  });
   await incenseGreeting.init();
 
   const eyeTracking = new EyeTracking({
@@ -103,6 +117,7 @@ async function init() {
   // 在 loading 遮罩下预加载首帧，避免播放时首帧卡顿。
   const spritePlayer = new SpriteSequencePlayer({ container: app });
   await spritePlayer.preload();
+  const idleOrchestrator = new IdleOrchestrator({ player: spritePlayer });
 
   const emotionController = new EmotionController({
     poseManager,
@@ -110,7 +125,8 @@ async function init() {
     incenseGreeting,
     transitionFX,
     eyeTracking,
-    spritePlayer
+    spritePlayer,
+    idleOrchestrator
   });
   emotionController.createDebugUI(document.body);
 
@@ -121,6 +137,7 @@ async function init() {
     window.__emotionController = emotionController;
     window.__eyeTracking = eyeTracking;
     window.__spritePlayer = spritePlayer;
+    window.__idleOrchestrator = idleOrchestrator;
     window.__i18n = { t, tPool, setLocale, getLocale };
     window.__THREE = THREE;
   }
@@ -131,9 +148,6 @@ async function init() {
 
   const focusVisualizer = new FocusVisualizer(composer);
   await focusVisualizer.init(mounts.tiger);
-
-  const moodController = new MoodController(stateManager, emotionController);
-  void moodController;
 
   const pointerInteraction = new PointerInteraction({
     canvas,
@@ -154,7 +168,8 @@ async function init() {
     return;
   }
 
-  revealScene();
+  revealScene({ showCanvas: false });
+  poseManager.setCanvasHidden(true);
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
   const focusButton = document.getElementById('btn-focus');
@@ -182,37 +197,188 @@ async function init() {
   );
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
 
+  // Honesty Check-in / DORMANT：当日零完成 → 打瞌睡 + 可忽略补登提示
+  let honestyGlowLevel = null;
+  const dailyCompletionStore = new DailyCompletionStore();
+  const honestyCheckInUI = new HonestyCheckInUI(
+    document.getElementById('ui-overlay')
+  );
+  const honestyCheckIn = new HonestyCheckInController({
+    store: dailyCompletionStore,
+    stateManager,
+    emotionController,
+    ui: honestyCheckInUI,
+    applyFocusGlow: (level) => {
+      honestyGlowLevel = level;
+      tigerCharacter.setFocusLevel(level);
+    },
+    clearFocusGlow: () => {
+      honestyGlowLevel = null;
+      if (stateManager.state !== STATES.FOCUSING) {
+        tigerCharacter.setFocusLevel(0);
+      }
+    }
+  });
+
+  const companionModePicker = new CompanionModePicker(
+    document.getElementById('ui-overlay'),
+    focusButton
+  );
+
+  function syncCompanionPostSessionChrome() {
+    const honestyBusy =
+      Boolean(honestyCheckInUI.phase) && honestyCheckInUI.phase !== 'hidden';
+    companionModePicker.setPostSessionOverlayActive(
+      reflectionMoment.isOpen() || honestyBusy
+    );
+  }
+
+  const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
+  reflectionMoment.open = () => {
+    companionModePicker.hide();
+    reflectionOpen();
+    syncCompanionPostSessionChrome();
+  };
+  const reflectionOnDone = reflectionMoment.onDone;
+  reflectionMoment.onDone = (result, hasAnyAnswer) => {
+    reflectionOnDone?.(result, hasAnyAnswer);
+    syncCompanionPostSessionChrome();
+  };
+
+  const honestyShowPrompt = honestyCheckInUI.showPrompt.bind(honestyCheckInUI);
+  honestyCheckInUI.showPrompt = () => {
+    companionModePicker.hide();
+    honestyShowPrompt();
+    syncCompanionPostSessionChrome();
+  };
+  const honestyHide = honestyCheckInUI.hide.bind(honestyCheckInUI);
+  honestyCheckInUI.hide = () => {
+    honestyHide();
+    syncCompanionPostSessionChrome();
+  };
+
+  const acrossToolsIdleGuard = new AcrossToolsIdleGuard();
+  const ambientSoundscape = new AmbientSoundscapeController();
+  const ambientSoundscapeUI = new AmbientSoundscapeUI(
+    document.getElementById('ui-overlay'),
+    ambientSoundscape
+  );
+
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
     window.__attentionSignals = attentionSignals;
     window.__reflectionMoment = reflectionMoment;
+    window.__dailyCompletionStore = dailyCompletionStore;
+    window.__honestyCheckIn = honestyCheckIn;
+    window.__companionModePicker = companionModePicker;
+    window.__acrossToolsIdleGuard = acrossToolsIdleGuard;
+    window.__ambientSoundscape = ambientSoundscape;
   }
 
   let celebratePending = false;
 
+  function endFocusChrome() {
+    attentionSignals.setEnabled(false);
+    mindfulReminderController.stopSession();
+    acrossToolsIdleGuard.stop();
+    ambientSoundscape.endSession();
+    ambientSoundscapeUI.setSessionActive(false);
+    companionModePicker.setIdleChromeVisible(true);
+  }
+
+  function beginSessionCompleteIfNeeded() {
+    if (
+      celebratePending ||
+      stateManager.state !== STATES.FOCUSING ||
+      !focusSession.hasReachedTarget()
+    ) {
+      return;
+    }
+
+    celebratePending = true;
+    endFocusChrome();
+    focusSession.pause();
+    // 庆祝时长由 celebrate-dance 一次性序列 onComplete 驱动（见 MoodController）
+    stateManager.setState(STATES.CELEBRATE);
+  }
+
+  function beginFocusWithMode(companionMode) {
+    sessionEndFlow.cancelPending();
+    honestyCheckInUI.hide();
+    honestyGlowLevel = null;
+    companionModePicker.setIdleChromeVisible(false);
+    focusSession.start({ companionMode });
+    mindfulReminderController.startSession({
+      suppressAwayReminders: shouldSuppressAwayReminders(companionMode),
+      getSessionElapsedSeconds: () => focusSession.getElapsedSeconds()
+    });
+    ambientSoundscape.startSession();
+    ambientSoundscapeUI.setSessionActive(true);
+    attentionSignals.setEnabled(true);
+    acrossToolsIdleGuard.stop();
+    if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {
+      acrossToolsIdleGuard.start({
+        onIdle: () => {
+          mindfulToast.show(tPool('ACROSS_TOOLS_IDLE'));
+        }
+      });
+    }
+    stateManager.setState(STATES.FOCUSING);
+    celebratePending = false;
+  }
+
   const focusInput = new FocusInput(
     () => {
+      if (celebratePending) return false;
       sessionEndFlow.cancelPending();
-      focusSession.start();
-      mindfulReminderController.startSession();
-      attentionSignals.setEnabled(true);
-      stateManager.setState(STATES.FOCUSING);
-      celebratePending = false;
+      honestyCheckInUI.hide();
+      beginFocusWithMode(companionModePicker.getSelectedMode());
+      return true;
     },
     () => {
-      attentionSignals.setEnabled(false);
-      mindfulReminderController.stopSession();
+      companionModePicker.hide();
+      endFocusChrome();
       focusSession.stop();
-      stateManager.setState(STATES.IDLE);
-      tigerCharacter.setFocusLevel(0);
       celebratePending = false;
+      honestyGlowLevel = null;
+      tigerCharacter.setFocusLevel(0);
+      honestyCheckIn.onIncompleteSessionEnded();
+      companionModePicker.setIdleChromeVisible(true);
       sessionEndFlow.onSessionEnded({ completed: false });
     }
   );
 
+  function finishCelebrateSession() {
+    if (!celebratePending) return;
+    focusSession.stop();
+    honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
+    stateManager.setState(STATES.IDLE);
+    honestyGlowLevel = null;
+    tigerCharacter.setFocusLevel(0);
+    focusInput.resetButton(focusButton);
+    celebratePending = false;
+    companionModePicker.setIdleChromeVisible(true);
+    sessionEndFlow.onSessionEnded({ completed: true });
+  }
+
+  const moodController = new MoodController(stateManager, emotionController, {
+    onCelebrateComplete: finishCelebrateSession
+  });
+  // StateManager 初始 IDLE 不会主动发 onChange；显式启动 observer baseline。
+  moodController.handleStateChange(stateManager.state);
+
+  // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty / DORMANT 无视觉
+  honestyCheckIn.onAppReady();
+
   const uiControls = new UIControls(focusInput);
   uiControls.bindAll();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      beginSessionCompleteIfNeeded();
+    }
+  });
 
   const clock = new THREE.Clock();
 
@@ -223,9 +389,17 @@ async function init() {
     focusSession.tick(delta);
     mindfulReminderController.update(delta);
 
-    const focusLevel = focusSession.getFocusLevel();
-    tigerCharacter.setFocusLevel(focusLevel);
-    focusVisualizer.update(focusLevel);
+    const focusLevel =
+      honestyGlowLevel != null && stateManager.state !== STATES.FOCUSING
+        ? honestyGlowLevel
+        : focusSession.getFocusLevel();
+    const presenceBoost =
+      stateManager.state === STATES.FOCUSING
+        ? ambientSoundscape.getPresenceBoost(focusSession.targetMinutes)
+        : 0;
+    const visualLevel = Math.min(1, focusLevel + presenceBoost);
+    tigerCharacter.setFocusLevel(visualLevel);
+    focusVisualizer.update(visualLevel);
     tigerCharacter.update(delta);
     dynamicMotion.update(delta);
     transitionFX.update(delta);
@@ -235,27 +409,7 @@ async function init() {
     const tigerPos = tigerCharacter.getWorldPosition();
     transitionFX.setTigerPosition(tigerPos);
 
-    if (
-      focusLevel >= 1.0 &&
-      stateManager.state === STATES.FOCUSING &&
-      !celebratePending
-    ) {
-      celebratePending = true;
-      attentionSignals.setEnabled(false);
-      mindfulReminderController.stopSession();
-      focusSession.pause();
-      stateManager.setState(STATES.CELEBRATE);
-
-      setTimeout(() => {
-        focusSession.stop();
-        stateManager.setState(STATES.IDLE);
-        tigerCharacter.setFocusLevel(0);
-        focusInput.resetButton(focusButton);
-        celebratePending = false;
-        // 庆祝已完整播放并回归坐姿，此后再留白淡入反思环节
-        sessionEndFlow.onSessionEnded({ completed: true });
-      }, CELEBRATE_DURATION_MS);
-    }
+    beginSessionCompleteIfNeeded();
 
     focusHUD.render(focusSession, stateManager);
     composer.render();

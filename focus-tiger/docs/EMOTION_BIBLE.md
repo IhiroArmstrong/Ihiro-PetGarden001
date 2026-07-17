@@ -17,6 +17,15 @@
 
 **规则**：姿态层同一时刻只允许一个「基底姿态」可见；动态效果层可与基底姿态及彼此叠加（见下文优先级）。
 
+### 动作幅度的场景边界（主界面 ≠ 奖励柜）
+
+「克制剧烈动作」**仅适用于主专注界面**的实时反馈，**不适用于**未来奖励系统（塑胶公仔展示柜）场景。产品语义全文见 `DESIGN.md`「动作幅度的场景边界」。
+
+- **主专注界面**：最大幅度止于 `Celebrating`；其正式 2D 资产为 `celebrate-dance`（起身 → 慢速舞 + 小金光 → 施礼）一次性弧线。禁止在此之外再加更娱乐化 / 街机式动作进入本表 / `playEmotion` 主路径。
+- **奖励柜（未来，用户主动进入）**：可复用 3D GLB + `DynamicMotion`，允许更丰富、更具表现力的动作；与专注练习场景心理预期不同，不套用主界面克制标准。
+
+立项新动作时先问「放主界面还是奖励柜」，避免边界模糊。
+
 ---
 
 ## 第一部分：情绪状态清单表
@@ -28,17 +37,18 @@
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
 | `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | 默认态；当日尚未产生显著专注数据；非 `Sleeping` / 非庆祝播放中 / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`，`PoseManager` 中 `IDLE_CLOSED_EYES` |
-| `Sleeping` | 瞌睡（睡着了） | 是 | 当天（用户本地自然日）尚未完成任何一次专注会话（正常计时或 Honesty Check-in 均算完成）→ 对应产品 `DORMANT`；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现**：GLB `tiger-sleeping.glb`，`PoseManager` 中 `SLEEPING`；**待实现**：按自然日「零完成」自动进入、与 Honesty Check-in 联动；历史「连续 N 天」口径已废止 |
-| `Smiling` | 坐禅微笑基底（观照者回归态） | 否（基础坐姿持续至当日结束，非情绪表演循环） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现**：GLB `tiger-meditate-smile.glb`，`PoseManager` 中 `IDLE_SMILING`；**待实现**：与「每日限一次庆祝」日期戳逻辑联动 |
-| `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完切 `Smiling`） | **已实现历史资源**：GLB `tiger-happy-jump.glb`，`PoseManager` 中 `CELEBRATING`；**部分实现**：`MoodController` 可播 `CHEER` + `TransitionFX`，完整日期戳防刷与姿态切换待接通。后续 2D 素材语义应采用舒展、轻跳或鼓掌，禁止街机式狂欢 |
+| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'forward'`） | 当天（用户本地自然日）尚未完成任何一次专注会话（正常计时或 Honesty Check-in 均算完成）→ 对应产品 `DORMANT`；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：`sleeping` 8 帧循环，`playEmotion('sleeping')` → `SpriteSequencePlayer`；首尾帧衔接可接受 forward，若试播有跳帧感再改 pingpong。3D `tiger-sleeping.glb` 仍作垫底。DORMANT / Honesty Check-in 运行时已联动 |
+| `Smiling` | 坐禅微笑基底（观照者回归态） | 是（`blink-smile` pingpong） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现（2D 主线）**：`blink-smile` 12 帧 pingpong；`playEmotion('smiling')`；3D `tiger-meditate-smile.glb` 仅作垫底且主线默认隐藏 canvas。日期戳持续基底仍待完整接通 |
+| `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放，不循环） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完回归 `Idle` / idle-breathing） | **已实现（2D 主线）**：`celebrate-dance` 57 帧一次性叙事弧线（起身 → 小金光伴随慢速舞 → 结尾施礼）；`playEmotion('celebrating')` 播完由 EmotionController 回归 idle-breathing（情绪来了又走）。3D `tiger-happy-jump.glb` 仍作垫底。日期戳防刷与 `Smiling` 持续基底仍待完整接通。本序列即主界面 Celebrating 的正式幅度上限；禁止另加更娱乐化的街机式狂欢动作 |
 
 ### 1.2 一次性反馈（不改变基底姿态枚举，叠加于当前姿态）
 
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
-| `IncenseComplete` | 一炷香完成（轻量反馈） | 否 | 「今日一炷香」小目标完成时触发；当日首次打开产品的轻量引导完成后反馈；当天不重复弹出引导，复用「当日状态」日期戳基础设施 | **80**（高于基底姿态；与 `Celebrating` 独立，强度低于完整庆祝） | **已实现**：`IncenseGreeting.js`（莲花渐显 + 金色粒子）；**待实现**：与 Milestone / 每日首次打开流程正式接线（当前有调试入口） |
+| `IncenseComplete` | 一炷香完成（轻量反馈） | 否 | 「今日一炷香」小目标完成时触发；当日首次打开产品的轻量引导完成后反馈；当天不重复弹出引导，复用「当日状态」日期戳基础设施 | **80**（高于基底姿态；与 `Celebrating` 独立，强度低于完整庆祝） | **已实现**：`IncenseGreeting.js` DOM 叠层（z-index 4，莲花 + 金色粒子，位于 2D Yin 之上）；**待实现**：与 Milestone / 每日首次打开流程正式接线（当前有调试入口） |
 | `SessionComplete` | 每次专注完成的轻量情绪确认 | 否（约 1–2s） | 每次完成用户设定的专注会话均触发；微笑、点头、合十或一次呼吸，配合简短非模态文案；若本次同时满足「当日首次达标」，由 `Celebrating` 替代，不叠加播放 | **70**（高于基底姿态、低于 `IncenseComplete` / `Celebrating`） | **待实现**：情绪键、2D 动作素材、完成事件接线与非模态文案 |
-| `WakeUp` | 唤醒起身（Honesty Check-in 完成反馈） | 否（过渡 + 伸懒腰） | 用户在 DORMANT 下完成 Honesty Check-in：选择时长 → 约 10s 呼吸引导 → 播放本反馈；对接既有金色 Rim Light / 光环系统（本体固有色不变），禁止独立光效；完成后按所选时长**等同一次已完成会话**计入当日，并回落非 DORMANT 基底 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **待实现**：`Actions.js` 已定义 `WAKE_UP` 枚举与 clip 别名；仪式交互、会话等价记账与 Rim Light 对接尚未实现 |
+| `WakeUp` | 唤醒起身（历史多日沉睡仪式，保留键） | 否 | 与 Honesty Check-in **分开**：本键保留给旧「多日沉睡」叙事若未来需要；日常补登请用 `dormantWake` | **90** | **待实现**（占位） |
+| `dormantWake` | Honesty Check-in 唤醒（深睡 → 完全清醒坐姿 + 既有金光路径） | 否（16 帧一次性正放） | 用户在 DORMANT 下完成 Honesty Check-in 呼吸引导后播放；对接既有 Rim Light / FocusVisualizer 占位光效；按所选时长等同一次已完成会话 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：呼吸引导期间保持 `sleeping`；180ms cross-fade → `dormant-wake` 001–016 → 接 `haloBreathing` 奖励（intro → loop），不再直接回 idle。金光占位仍复用 |
 | `MilestoneGlow` | 里程碑金辉时刻（仪式性纪念反馈） | 否（约 10s 一次性序列） | 长期里程碑节点达成时触发（连续练习 7/21/100 天、累计时长节点等；具体节点与 Backlog「纪念奖励系统」统一设计）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **待实现**：仅设计立项（分镜定稿见第五部分），归属 Backlog「纪念奖励系统」，本阶段不实现代码 |
 
 ### 1.3 动态效果层（可叠加）
@@ -50,7 +60,7 @@
 | `Breathing` | 呼吸起伏 | 是 | 默认开启；叠加于**任意**基底姿态（`Idle` / `Smiling` / `Sleeping` 等） | **1**（持续底层动态；一次性高优先级效果播放时不中断，与之共存） | **已实现**：`DynamicMotion.js`（`scale.y` + `position.y` 正弦波，约 3.5s 周期） |
 | `Rotation` | 缓慢旋转 | 是 | 默认开启；绕 Y 轴缓慢旋转，增加陈列感 | **1** | **已实现**：`DynamicMotion.js`（约 48s 一圈） |
 | `Hover` | 庆祝悬浮 | 是 | 仅当基底姿态为 `Celebrating` 时叠加：整体上抬 + 缓慢上下摆动 | **2**（附属于庆祝态） | **已实现**：`DynamicMotion.js` |
-| `Blink` | 眨眼 | 否（单次触发后自动结束） | 在 `Idle` / `Smiling` 及专注进行中的自然休憩展示下，随机间隔触发（设计建议 15–30s）；增加生命感 | **5**（微表情；不抢占基底姿态；与一次性庆祝/唤醒并存时短暂叠加） | **待实现**：`Actions.js` 已定义 `BLINK`；无随机调度与动画资源 |
+| `Blink` | 眨眼 | 否（单次触发后自动结束） | 在 `Idle` / `Smiling` 及专注进行中的自然休憩展示下，随机间隔触发（设计建议 15–30s）；增加生命感 | **5**（微表情；不抢占基底姿态；与一次性庆祝/唤醒并存时短暂叠加） | **已实现（2D）**：`blink-smile` 单次正放；`IdleOrchestrator` 亦可作 idle 变体插入；播完回落 Idle/Smiling |
 | `SnoringZZZ` | 打呼噜 ZZZ | 是 | 仅当基底姿态为 `Sleeping` 时叠加：ZZZ 图标漂浮 + `rotation.x` 微倾 | **3**（附属于瞌睡态） | **待实现**：`DESIGN.md` 已定义语义，无代码 |
 
 ### 1.4 调试专用（不面向用户）
@@ -75,12 +85,13 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 
 **关键场景说明**（均来自已确认产品设计，非新增玩法）：
 
-1. **完成反馈分级**：每次完成均有轻量 `SessionComplete`；当日首次达标时由完整 `Celebrating` 取代（不叠加）；同日后续完成继续播放 `SessionComplete`，不重复完整庆祝。所有一次性反馈结束后自动回到 `Idle` / `Smiling` 坐姿呼吸基底。
+1. **完成反馈分级**：每次完成均有轻量 `SessionComplete`；当日首次达标时由完整 `Celebrating`（`celebrate-dance` 一次性弧线）取代（不叠加）；同日后续完成继续播放 `SessionComplete`，不重复完整庆祝。所有一次性反馈结束后自动回到 `Idle`（idle-breathing）坐姿呼吸基底；`Smiling` 日期戳持续基底仍待完整接通。
 2. **当日尚未完成任何练习**：`Sleeping`（DORMANT）覆盖 `Idle`；用户可通过正常开始专注，或通过 Honesty Check-in 唤醒离开该态；完成后 `WakeUp`（若走补登路径）→ 非 DORMANT 基底。
 3. **一炷香完成 vs 专注达标**：`IncenseComplete` 与 `Celebrating` **相互独立**、强度分级（轻量确认 vs 完整庆祝），不共用完整庆祝资源；可同一天先后发生，各自遵守「每日一次」类限制。
 4. **每日总结氛围**（雪花 / 花瓣）与实时姿态是**两条独立信号轴**（`DESIGN.md`），可同时叠加，不并入本表姿态状态机。
 5. **专注金光**（`focusLevel` 驱动的金色光环/环境光反射强度、金粒子）由 `FocusVisualizer` / 动态效果层驱动，**不是**独立基底姿态；与 `Idle` 等姿态正交叠加。角色本体固有色恒定不变（2026-07-15 视觉原则，见 DESIGN.md「视觉状态」章节）。**金光呼吸律动**为光环通用行为：金光强弱同步 4 秒呼吸循环（吸气时微微收敛、亮部聚焦；呼气时向外柔和晕染），不是死板静止的光圈（2026-07-15 拍板，定义见 DESIGN.md）。
-6. **里程碑仪式 vs 每日庆祝**：`MilestoneGlow`（仪式性、静观，老虎全程闭目坐禅不做动作）与 `Celebrating`（社交性、互动感，睁眼看向用户）分工明确、不叠加。若里程碑达成与当日首次达标同刻发生，只播 `MilestoneGlow`，`Celebrating` 不补发但日期戳照常记账（避免同日稍后再触发完整庆祝）。序列结束后金光与蝴蝶一同淡去，回归坐姿呼吸基底，遵守「观照者而非情绪本身」闭环。
+6. **禅意背景音 → 光效叠加（MVP 已落地）**：可选 Ambient Soundscape（见 `DESIGN.md`「禅意背景音」）将**本页自播音频的实际播放时长**按比例叠加为 Rim Light / 金光强度的增强输入（`12s/分钟` 等效、上限 `0.20`）；**不替代** `focusLevel` 主路径，不参与达标判定，默认关闭。技术边界：只追踪 Focus Tiger 自己的播放器，禁止假设或依赖跨 App 音频探测。本信号**不是**情绪姿态键，不进入本表优先级裁决。
+7. **里程碑仪式 vs 每日庆祝**：`MilestoneGlow`（仪式性、静观，老虎全程闭目坐禅不做动作）与 `Celebrating`（社交性、互动感，睁眼看向用户）分工明确、不叠加。若里程碑达成与当日首次达标同刻发生，只播 `MilestoneGlow`，`Celebrating` 不补发但日期戳照常记账（避免同日稍后再触发完整庆祝）。序列结束后金光与蝴蝶一同淡去，回归坐姿呼吸基底，遵守「观照者而非情绪本身」闭环。
 
 ---
 
@@ -91,19 +102,22 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 | 本文档标识符 | 代码 / GLB 现有键名 | 资源文件 |
 |---|---|---|
 | `Idle` | `IDLE_CLOSED_EYES` | `tiger-meditate-closed.glb` |
-| `Sleeping` | `SLEEPING` | `tiger-sleeping.glb` |
+| `Sleeping` | `sleeping`（2D）/ `SLEEPING`（3D 垫底） | `public/sprites/.../sleeping/frame_001–008.png`；GLB `tiger-sleeping.glb` |
 | `Smiling` | `IDLE_SMILING` | `tiger-meditate-smile.glb` |
-| `Celebrating` | `CELEBRATING` | `tiger-happy-jump.glb` |
+| `Celebrating` | `celebrating` → `celebrateDance`（2D）/ `CELEBRATING`（3D 垫底） | `public/sprites/.../celebrate-dance/frame_001–057.png`；GLB `tiger-happy-jump.glb` |
 | `IncenseComplete` | （效果模块，非姿态键） | `IncenseGreeting` |
 | `SessionComplete` | `sessionComplete`（待接入） | 待制作 2D 轻量确认序列 |
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
 | `WakeUp` | `WAKE_UP` | 待制作 / 待绑定 clip |
-| `WelcomeBack` | `welcomeBack`（2D 序列，本次新增） | `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001–014.png` |
+| `WelcomeBack` | `welcomeBack`（2D 序列） | `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001–019.png` |
+| `nodGreeting` | `nodGreeting` → `nodGreeting`（2D） | `public/sprites/.../nod-greeting/frame_001–023.png` |
 | `MilestoneGlow` | `milestoneGlow`（待接入） | 视频源已产出（10s 分镜见第五部分），待抽帧入库；归属 Backlog「纪念奖励系统」 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
-> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」。一次性播放（不循环），播完让位回落到当前基底态（默认 `Idle`）；优先级低于 `Celebrating`，播放中若 `Celebrating` 触发应让位。首组真实 2D 序列素材已归档，作为 2D 播放器接入验证动作。
+> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」。一次性播放（不循环），播完让位回落到当前基底态（默认 `Idle`）；优先级低于 `Celebrating`，播放中若 `Celebrating` 触发应让位。正式服装版 2D 序列（19 帧）已归档；播放参数见 `spriteManifest.waveHello`。
+
+> **`nodGreeting`（点头致意）说明**：属**响应行为**。由 `PointerInteraction` 鼠标进入靠近区触发（原 `lookAtCursor` 占位视觉已替换）；一次性正放 23 帧，播完回归 `idle-breathing`。`lookAtCursor` 键仍保留为兼容占位，正式靠近反应走本键。
 
 ---
 
@@ -134,7 +148,7 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 
 | 刺激源 | 老虎反应 | 备注 |
 |---|---|---|
-| 鼠标靠近 | 好奇地看向 / 歪头看向鼠标；头部轻微歪动（建议约 **5°** 倾斜角），耳朵轻微抖动 | **参数参考**：歪头约 5°；耳朵轻颤。离开靠近阈值后恢复默认。与下方「眼睛跟随鼠标」区分——本条为进入范围的**事件触发式**反应 |
+| 鼠标靠近 | 礼貌点头致意（2D `nod-greeting`）；可叠加耳朵轻颤等微表情 | **事件触发**：进入靠近阈值播一次 `nodGreeting`，播完回归 `idle-breathing`。阈值与节流见 `PointerInteraction`（`nearRadiusFactor` / `lookAtRetriggerMs`）。与下方「眼睛跟随鼠标」区分——本条为进入范围的**一次性**礼貌反应 |
 | 眼睛跟随鼠标（持续追踪） | 瞳孔持续、平滑朝向鼠标方向偏移；鼠标离开浏览器窗口后恢复默认冥想朝向（正前方或微闭，视当前主状态） | **持续性效果，非事件触发**。**实现方式（重要）**：不通过 PNG 序列穷举注视方向；将眼睛/瞳孔拆为独立可移动图层，叠于脸部主体 PNG 之上，程序在受限范围内跟随鼠标坐标。**优先级：高**（角色生命感核心手段，建议优先实现） |
 | 鼠标停留并点击头顶 | 微笑、眯眼 | |
 | 抚摸头顶（按住左键滑动） | **分阶段递进**（见下表） | 欢呼（`Celebrating`）播放期间摸头**忽略、不排队**。阈值可按手感微调 |
@@ -156,7 +170,7 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 
 #### 眼睛跟随鼠标 · 实现要点
 
-- 与「鼠标靠近」**明确区分**：靠近是进入阈值触发一次（可含歪头约 5°、耳颤）；跟随是窗口内任意位置移动时的**持续追踪**。
+- 与「鼠标靠近」**明确区分**：靠近是进入阈值触发一次礼貌点头（`nodGreeting`）；跟随是窗口内任意位置移动时的**持续追踪**。
 - 图层方案：主体脸部 PNG + 独立瞳孔/眼睛图层；程序平移/微旋，限制在眼白可行域内。
 - 鼠标离开窗口：眼睛回到当前主状态默认朝向。
 
@@ -171,19 +185,19 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 | 用户中断专注 | 安静等待、偶尔张望 | **措辞与表现修正**：不以「托腮思考、略显失落」为设计；按「不制造焦虑原则」定为**中性等待感**，不表现因用户离开而产生的失落/难过，强调「我在这里陪着你」而非「你让我失望了」 |
 | 用户重新回来 | 开心挥手欢迎 | 情绪键 `welcomeBack`（2D 序列 `wave-hello`）；一次性播放，播完回落 `Idle` |
 | 当日尚未完成任何练习（DORMANT） | 打瞌睡表现 + 可忽略轻量提示 | 提示文案：`Did you practice elsewhere?` / 「刚刚在别处修行了吗？」；可忽略、非强制；详见下方 Honesty Check-in |
-| 用户完成 Honesty Check-in | 约 10s 呼吸引导 → `WakeUp`（伸懒腰）+ 既有 Rim Light / 光环激活 | 按所选时长等同一次已完成会话；观察式完成文案见下；**不占用**共享提醒池额度 |
+| 用户完成 Honesty Check-in | 约 10s 呼吸引导（保持 `sleeping`）→ `dormantWake` 16 帧睡醒过渡 + 既有 FocusVisualizer / setFocusLevel 金光占位 → `haloBreathing` 奖励呼吸（intro → loop） | 按所选时长等同一次已完成会话；观察式完成文案；**不占用**共享提醒池额度；情绪键与历史 `wakeUp` 拆开 |
 
 #### DORMANT 唤醒仪式（Honesty Check-in Ritual）
 
 产品语义与交互全文见 `DESIGN.md`「DORMANT 唤醒仪式（Honesty Check-in Ritual）」；上位原则见 `PRINCIPLES.md`「诚实机制」。本节只固定情绪与文案边界。
 
-- **情绪闭环**：`Sleeping`（DORMANT）→（用户点击提示并选时长）→ 10s 呼吸引导 → `WakeUp` → 回归坐姿呼吸基底；遵守「观照者而非情绪本身」。
-- **视觉对接**：唤醒时的金色效果必须走既有光环 / Rim Light 系统，禁止另起独立光效。
+- **情绪闭环**：`Sleeping`（DORMANT，呼吸引导期间保持）→ 180ms cross-fade → `dormantWake` 001–016 → 接 `haloBreathing`（001–006 intro → 007–030 pingpong 循环，直至下一情绪打断）；遵守「观照者而非情绪本身」。
+- **视觉对接**：唤醒时的金色效果必须走既有光环 / Rim Light / FocusVisualizer 路径，禁止另起独立光效；Rim Light 重构未就绪时可用 `setFocusLevel` 占位。
 - **限频**：用户主动发起，不扣减 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 共享提醒池。
-- **文案键（待接入 i18n，示例）**：
+- **文案键（已接入 i18n）**：
   - 提示：`HONESTY_CHECKIN_PROMPT` — EN `Did you practice elsewhere?` / ZH `刚刚在别处修行了吗？`
   - 完成：`HONESTY_CHECKIN_THANKS` — EN `Thank you for bringing that calm back here.` / ZH `谢谢你把那份平静带回来。`
-- **禁止**：任何验证性、怀疑性、次等标记类文案或 UI（如「手动补登」「未经验证」角标）。
+- **禁止**：任何验证性、怀疑性、次等标记类文案或 UI；未达标主动结束时亦不出现「未完成 / 失败」类提示，安静返回即可。
 
 ### 时间/作息相关
 
@@ -262,11 +276,27 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 - 日期边界按用户本地时区的 `YYYY-MM-DD` 自然日键处理，并持久化到 `localStorage`；跨午夜后的下一次额度申请惰性重置，存储不可用时退回本次运行期内存计数；
 - `Re-focus Acknowledge` 每场专注会话最多处理 **1 次**符合展示门槛的离开—回归事件；若该次因强反馈冲突或每日额度耗尽而静默，也不排队、不在本会话后续事件补发。
 
+#### 4. Companion Mode 例外（2026-07-16；三选一已落地）
+
+见 `DESIGN.md`「专注会话陪伴模式」。下列子模式关闭离开类提醒（Stay here 除外）：
+
+**I'll step away — wait quietly** / **I'm working across tools**
+
+- `MindfulReminderController.startSession({ suppressAwayReminders: true })`：**关闭**全部 `Re-focus Acknowledge`（`handleAttentionReturn` 早退）；
+- `setAttentionAway` **仍生效**，以暂停 2 小时舒展的活跃累计；
+- 20 分钟墙钟认可通过 `getSessionElapsedSeconds` 与 `FocusSession` 墙钟对齐，默认仍可触发；
+- **across-tools 另有**：`AcrossToolsIdleGuard`（默认 30 分钟无指针/键盘活动）触发一次观察式非模态文案（`ACROSS_TOOLS_IDLE` 池）；不因切页惩罚；
+- 本例外**不**改变共享提醒池的每日上限数字本身。
+
+交互：按钮下提示展开三选一；选模式只预选；Sit 才开始；记忆键 `focus-tiger.companion-mode.v1`。产品语义全文以 `DESIGN.md` 为准。
+
 ---
 
 ## 第七部分：语言设计原则：观察式措辞规范
 
 文案是「观照者而非情绪本身」原则成本最低、影响最深的落地层。`MindfulAcknowledge`、`stretchReminder`、`SessionComplete`、未来 `Re-focus Acknowledge` 及所有非模态提示均须遵守本节。
+
+**通道约束（长期原则）**：角色与系统对用户的沟通**仅限文字**；禁止角色语音、真人配音与 lip-sync 口型动画。技术上即使可复用「图生视频 + 抽帧」预生成带声口型序列，亦不采用。原则全文与四条理由见 `PRINCIPLES.md`「无角色语音原则」。
 
 ### 观察式（要求）与定性式（禁止）
 
@@ -275,6 +305,14 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 **定性式表达**直接替用户判断状态、给人格或情绪贴标签，例如「你很烦躁」「你不专心」「你今天很自律」。这会让产品从陪伴者变成评判者，必须禁止。
 
 这种语言距离感可视为认知解离（cognitive defusion）在产品文案层面的朴素借鉴：帮助用户练习「我注意到一个念头 / 情绪」，而不是「我就是这个念头 / 情绪」。产品不因此宣称提供心理治疗、诊断或临床干预。
+
+### 核心交互动词：容纳，而非抓取
+
+产品避免使用 **「Focus」** 这类隐含「用力抓取 / 二元对立」（专注 vs 不专注）意味的动词，作为**核心交互按钮**文案。转而采用 **「Sit / Rise」**（中文：「与阿寅同坐」/「起身」）这类呼应打坐仪式、传达「容纳而非抓取」的动作语言，与角色蒲团打坐的视觉设定相呼应。
+
+- 开始会话与结束会话（无论自然完成或中途起身）共用仪式动词，**不做**「完成 / 放弃」的成败区分文案；
+- 此原则适用于**未来新增的核心交互按钮命名**；
+- 本节仅为交互文案设计原则，**不影响**产品名称「Focus Tiger」（产品名决策见 `PROCESS.md` Backlog「产品命名」）。
 
 > **检测边界**：当前 Focus Confidence 的 `visibility` / `blur` / `idle` 信号只能观察页面与窗口行为，**不能据此推断用户烦躁、焦虑或其它心理状态**。下表「烦躁信号」示例只用于说明措辞方法；除非未来有用户主动提供或其它可靠且合规的输入，不得把切换标签页等行为翻译成情绪诊断。
 
@@ -285,7 +323,7 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 | 检测到烦躁信号（仅在有可靠输入时） | 「你好像有点烦躁。」 / “You seem irritated.” | 「有一点起伏被注意到了。它正在慢慢经过。」 | “A little stirring was noticed. It is passing through.” |
 | 走神次数较多 | 「你走神了 5 次。」 / “You lost focus five times.” | 「注意力出去走了 5 趟，也回来了 5 次。」 | “Attention wandered five times, and returned five times.” |
 | 专注时长达标 | 「你今天很专注！」 / “You were very focused today!” | 「今天陪你坐了 47 分钟。这段时间被好好看见了。」 | “We sat together for 47 minutes today. That time was noticed.” |
-| 长时间未活动 | 「你太久没有专注了。」 / “You have been unfocused for too long.” | 「这里安静了一阵子。你回来时，小老虎还在。」 | “It was quiet here for a while. The tiger was still here when you returned.” |
+| 长时间未活动 | 「你太久没有专注了。」 / “You have been unfocused for too long.” | 「这里安静了一阵子。你回来时，阿寅还在。」 | “It was quiet here for a while. Yin was still here when you returned.” |
 | 完成一炷香 | 「任务完成，做得真棒！」 / “Task complete. Great job!” | 「今天这一炷香，静静走完了。」 | “Today’s incense has quietly reached its end.” |
 | 重新回到专注 | 「你终于回来了，刚才不够专心。」 / “You are finally back. You were distracted.” | 「刚才注意力出去走了一会儿。现在，它又回到这里了。」 | “Attention wandered for a while. Now it has returned here.” |
 
@@ -312,6 +350,8 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 
 其目的不是宣布「你刚才不专心」，而是以「命名而不评判」的方式轻轻看见：注意力曾离开，现在又回来了。
 
+**Companion Mode**：若本场为 **I'll step away — wait quietly** 或 **I'm working across tools**，则本机制**整场不因**标签切换 / 失焦触发（前者离开是预期陪伴；后者多工具切换不可被判定为分心）。详见第六部分 §4 与 `DESIGN.md`「专注会话陪伴模式」。
+
 ### 依赖前提与当前范围
 
 完整设计依赖 Focus Confidence V1 运行时信号链路（Page Visibility / `window.blur` / idle 检测）。2026-07-16 已先实现本机制所需的最小信号切片：`AttentionSignals` 合并 Page Visibility 与 `window.blur/focus`，完成同一次离开事件去重、时长计算和回归通知；**完整 Focus Confidence 分值与 idle 检测仍未实现**。
@@ -323,7 +363,7 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 1. **分心事件最小定义**：
    - 页面 `visibilityState` 变为 `hidden`，或窗口触发 `blur`；
    - 持续时间达到 **20 秒**才在内部记为候选离开事件，不展示 UI；具名常量为 `DISTRACTION_LOG_THRESHOLD_MS = 20000`；
-   - 必须排除用户主动点击「结束专注」、会话自然结束、浏览器关闭等明确结束路径；
+   - 必须排除用户主动点击「起身 / Rise」、会话自然结束、浏览器关闭等明确结束路径；
    - `idle` 可作为 Focus Confidence 的补充信号，但不能单独推断用户的具体情绪或分心原因。
 2. **反馈触发门槛**：
    - 只有离开时长**超过 60 秒**并重新返回时才允许展示；具名常量为 `REFOCUS_DISPLAY_THRESHOLD_MS = 60000`；
@@ -444,6 +484,8 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 - 默认状态下，角色应**绝大多数时间沉浸在自己的呼吸节律中**。
 - 只是偶尔以有意图的、温柔的眼神短暂看向用户，而非机械地反复执行固定动作。
 
+本「不打扰 / 克制」约束作用于**主专注界面**；奖励柜场景的动作幅度边界见上文「动作幅度的场景边界」与 `DESIGN.md` 同名小节——娱乐性动作不得因「有趣」越界进入主界面。
+
 ---
 
 ## 文档维护
@@ -462,6 +504,21 @@ Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
 | 0.10 | 2026-07-15 | 新增「观察式措辞」强制规范与 Re-focus Acknowledge 设计；确立情绪自动回归坐姿呼吸基底；因新增回归提示，原 0.6「各类每日 ≤3 次」独立限频口径重新开放为共享限频池待拍板 |
 | 0.11 | 2026-07-15 | 立项 `MilestoneGlow` 里程碑金辉时刻（优先级 110，10s 分镜定稿，金光蝴蝶版）；「金光随呼吸律动」定义为 FOCUSING 光环通用行为；明确 MilestoneGlow 与 Celebrating 的仪式性/社交性分工与冲突规则 |
 | 0.12 | 2026-07-16 | 拍板并实现三类非模态提醒共享每日总额度 3 次、Re-focus 每会话最多 1 次、20s 候选记账 / 超过 60s 回归展示；新增统一非模态 UI 与观察式中英文文案池 |
-| 0.13 | 2026-07-16 | Honesty Check-in：`Sleeping`/`WakeUp` 触发改为「当日零完成 → DORMANT」与补登仪式；互动表新增提示/唤醒行；明确不占共享提醒池、会话等价记账、观察式文案键 |
+| 0.13 | 2026-07-16 | Honesty Check-in：`Sleeping`/`dormantWake` 触发改为「当日零完成 → DORMANT」与补登仪式；互动表新增提示/唤醒行；明确不占共享提醒池、会话等价记账、观察式文案键；与历史 `wakeUp` 拆键 |
+| 0.14 | 2026-07-16 | Honesty Check-in MVP 运行时落地：`DailyCompletionStore` + `HonestyCheckInController` / UI；情绪键 `dormantWake`；`getLocalDateKey` 抽至 `utils/localDate.js` |
+| 0.15 | 2026-07-16 | 新增 Companion Mode 例外：step-away 会话关闭离开类 MindfulAcknowledge 与全部 Re-focus；产品语义见 DESIGN「专注会话陪伴模式」 |
+| 0.16 | 2026-07-16 | 交叉引用 DESIGN「禅意背景音」：本页自播时长可作金光叠加信号；非情绪键、不改优先级表；禁止跨 App 音频探测 |
+| 0.17 | 2026-07-16 | 第七部分补充「核心交互动词：容纳而非抓取」；主按钮文案 Sit with Yin / Rise（与阿寅同坐 / 起身）；不影响产品名 Focus Tiger |
+| 0.18 | 2026-07-16 | 角色正式名落定：中文「阿寅」、英文「Yin」；观察式示例改用专名；显示名见 CHARACTER_BIBLE / i18n `CHARACTER_NAME`（`tiger-cub` 仍为 characterId） |
+| 0.19 | 2026-07-16 | Ambient Soundscape MVP：自播时长 → presenceBoost 叠光效；非情绪键；见 DESIGN 换算系数 |
+| 0.20 | 2026-07-16 | Companion Mode 三选一扩展：新增 across-tools；visibility 分心误判缺陷见 DESIGN；Re-focus 在 step-away / across-tools 下不因切页触发 |
+| 0.21 | 2026-07-16 | 交叉引用 PRINCIPLES「无角色语音原则」：沟通仅文字，禁止配音 / lip-sync；非 Backlog |
+| 0.22 | 2026-07-16 | 新增「动作幅度的场景边界」：主界面克制至 Celebrating；奖励柜可娱乐化（含跳舞）；见 DESIGN |
+| 0.23 | 2026-07-16 | Companion Mode 三选一运行时：across-tools + idle 兜底；交互见 DESIGN |
+| 0.24 | 2026-07-17 | `Celebrating` 接入 `celebrate-dance`（57 帧一次性）；`Sleeping`/DORMANT 接入 `sleeping`（8 帧 forward 循环）；播完庆祝回归 idle-breathing；场景边界改为以该庆祝弧线为上限 |
+| 0.25 | 2026-07-17 | `dormantWake` 接入同源 16 帧睡醒序列；`sleeping` → wake 与 wake → idle 均采用 180ms cross-fade，序列完成回调替代固定 2.8s 回落计时 |
+| 0.26 | 2026-07-17 | 鼠标靠近正式视觉改为 `nodGreeting`（23 帧一次性点头致意）；`PointerInteraction` 靠近检测已就绪并改接本键；播完回归 idle-breathing |
+| 0.27 | 2026-07-17 | `wave-hello` 素材整体替换为新服装正式版（19 帧）；旧深红袈裟 14 帧下线；`frameCount` 14→19；触发键与一次性播放逻辑不变 |
+| 0.28 | 2026-07-17 | 2D 主线默认隐藏 3D canvas；`idle`/`sleeping` 降帧；`Smiling`/`Blink` 接 `blink-smile`；Honesty 唤醒后接 `haloBreathing`；一炷香改 DOM 叠层（莲花/金斑在 Yin 前）；Honesty UI 标题与按钮立体化 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

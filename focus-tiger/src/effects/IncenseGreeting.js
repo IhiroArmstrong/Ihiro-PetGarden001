@@ -224,10 +224,14 @@ export class IncenseGreeting {
    * @param {THREE.Object3D} mountNode
    * @param {THREE.PerspectiveCamera} camera
    */
-  constructor(scene, mountNode, camera) {
+  constructor(scene, mountNode, camera, { fxContainer } = {}) {
     this.scene = scene;
     this.mountNode = mountNode;
     this.camera = camera;
+    this._fxContainer =
+      fxContainer ||
+      document.getElementById('app') ||
+      document.body;
 
     this._smokeTexture = createSmokeTexture();
     this._smokeGroup = new THREE.Group();
@@ -252,6 +256,16 @@ export class IncenseGreeting {
     this._smokeElapsedMs = 0;
     this._smokeSpawned = 0;
     this._spawnPos = new THREE.Vector3();
+
+    /** DOM 叠层（位于 2D sprite 之上） */
+    this._fxRoot = null;
+    this._domLotus = null;
+    this._domLotusPlaying = false;
+    this._domLotusElapsedMs = 0;
+    this._domParticles = [];
+    this._domSmokePlaying = false;
+    this._domSmokeElapsedMs = 0;
+    this._domSmokeSpawned = 0;
   }
 
   async init() {
@@ -332,49 +346,23 @@ export class IncenseGreeting {
 
   /**
    * 触发莲花渐显-停留-消失。
-   * @param {THREE.Object3D} model
+   * 主线已改 DOM 叠层（在 2D Yin 之上）；保留方法名兼容旧调用。
+   * @param {THREE.Object3D} [_model]
    */
-  playLotusBloom(model) {
-    if (!model || !this._lotusTexture) return;
-
-    if (this._lotusPlaying) {
-      this._disposeLotusSprite();
-      this._lotusPlaying = false;
-    }
-
-    this._ensureLotusSprite();
-    if (!this._lotusSprite) return;
-
-    const { targetHeight } = INCENSE_GREETING_CONFIG.lotus;
-    this._lotusBaseScale = targetHeight;
-    this._lotusBasePos.copy(computeLotusWorldPosition(model));
-
-    this._lotusSprite.position.copy(this._lotusBasePos);
-    this._lotusSprite.visible = true;
-    this._lotusMaterial.opacity = 0;
-
-    const startScale = targetHeight * INCENSE_GREETING_CONFIG.lotus.startScaleRatio;
-    this._lotusSprite.scale.set(
-      startScale * this._lotusAspect,
-      startScale,
-      1
-    );
-
-    this._lotusElapsedMs = 0;
-    this._lotusPlaying = true;
+  playLotusBloom(_model) {
+    this._playDomIncense();
   }
 
   playGoldenParticles() {
-    this._smokeElapsedMs = 0;
-    this._smokeSpawned = 0;
-    this._smokePlaying = true;
+    this._ensureFxRoot();
+    this._domSmokeElapsedMs = 0;
+    this._domSmokeSpawned = 0;
+    this._domSmokePlaying = true;
   }
 
-  /** 统一入口：莲花 + 满屏金色粒子 */
-  triggerDailyIncenseComplete(model) {
-    if (!model) return;
-    this.playLotusBloom(model);
-    this.playGoldenParticles();
+  /** 统一入口：莲花 + 满屏金色粒子（DOM 叠层，保证在 2D Yin 之上） */
+  triggerDailyIncenseComplete(_model) {
+    this._playDomIncense();
   }
 
   /** @deprecated 保留旧名兼容 */
@@ -382,9 +370,168 @@ export class IncenseGreeting {
     this.triggerDailyIncenseComplete(model);
   }
 
+  _ensureFxRoot() {
+    if (this._fxRoot?.isConnected) return this._fxRoot;
+    const root = document.createElement('div');
+    root.id = 'incense-fx-overlay';
+    root.style.cssText =
+      'position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;';
+    this._fxContainer.appendChild(root);
+    this._fxRoot = root;
+    return root;
+  }
+
+  _playDomIncense() {
+    const root = this._ensureFxRoot();
+    this._disposeDomLotus();
+    this._clearDomParticles();
+
+    const lotus = document.createElement('img');
+    lotus.alt = '';
+    lotus.draggable = false;
+    lotus.src = LOTUS_TEXTURE_PATH;
+    lotus.style.cssText = [
+      'position:absolute',
+      'left:22%',
+      'bottom:18%',
+      'width:min(28vw,220px)',
+      'height:auto',
+      'opacity:0',
+      'transform:scale(0.6)',
+      'transform-origin:50% 100%',
+      'filter:drop-shadow(0 8px 18px rgba(120,80,40,.28))',
+      'will-change:opacity,transform'
+    ].join(';');
+    root.appendChild(lotus);
+    this._domLotus = lotus;
+    this._domLotusElapsedMs = 0;
+    this._domLotusPlaying = true;
+
+    this._domSmokeElapsedMs = 0;
+    this._domSmokeSpawned = 0;
+    this._domSmokePlaying = true;
+  }
+
+  _disposeDomLotus() {
+    this._domLotus?.remove();
+    this._domLotus = null;
+    this._domLotusPlaying = false;
+  }
+
+  _clearDomParticles() {
+    for (const p of this._domParticles) p.el.remove();
+    this._domParticles = [];
+    this._domSmokePlaying = false;
+  }
+
+  _spawnDomParticle() {
+    const root = this._ensureFxRoot();
+    const el = document.createElement('div');
+    const size = 10 + Math.random() * 18;
+    const x = 8 + Math.random() * 84;
+    const y = 12 + Math.random() * 70;
+    el.style.cssText = [
+      'position:absolute',
+      `left:${x}%`,
+      `top:${y}%`,
+      `width:${size}px`,
+      `height:${size}px`,
+      'border-radius:50%',
+      'background:radial-gradient(circle,rgba(255,220,120,.95) 0%,rgba(212,160,48,.55) 45%,rgba(212,160,48,0) 72%)',
+      'opacity:0',
+      'pointer-events:none',
+      'will-change:transform,opacity'
+    ].join(';');
+    root.appendChild(el);
+    this._domParticles.push({
+      el,
+      age: 0,
+      life: 2.4 + Math.random() * 2.2,
+      vx: (Math.random() - 0.5) * 28,
+      vy: -18 - Math.random() * 36,
+      x,
+      y,
+      size
+    });
+  }
+
   update(dt) {
+    this._updateDomLotus(dt);
+    this._updateDomSmoke(dt);
+    // 保留 3D 路径更新（调试/奖励柜若再开 canvas 仍可用）
     this._updateLotus(dt);
     this._updateSmoke(dt);
+  }
+
+  _updateDomLotus(dt) {
+    if (!this._domLotusPlaying || !this._domLotus) return;
+
+    this._domLotusElapsedMs += dt * 1000;
+    const { fadeInMs, holdMs, fadeOutMs, startScaleRatio } =
+      INCENSE_GREETING_CONFIG.lotus;
+    const fadeInEnd = fadeInMs;
+    const holdEnd = fadeInEnd + holdMs;
+    const fadeOutEnd = holdEnd + fadeOutMs;
+    const t = this._domLotusElapsedMs;
+    const el = this._domLotus;
+
+    if (t <= fadeInEnd) {
+      const p = easeOutQuad(t / fadeInMs);
+      el.style.opacity = String(p);
+      const scale = startScaleRatio + (1 - startScaleRatio) * p;
+      el.style.transform = `scale(${scale}) translateY(0)`;
+    } else if (t <= holdEnd) {
+      el.style.opacity = '1';
+      el.style.transform = 'scale(1) translateY(0)';
+    } else if (t <= fadeOutEnd) {
+      const p = easeInOutQuad((t - holdEnd) / fadeOutMs);
+      el.style.opacity = String(1 - p);
+      el.style.transform = `scale(1) translateY(${-24 * p}px)`;
+    } else {
+      this._disposeDomLotus();
+    }
+  }
+
+  _updateDomSmoke(dt) {
+    for (let i = this._domParticles.length - 1; i >= 0; i--) {
+      const p = this._domParticles[i];
+      p.age += dt;
+      const lifeT = p.age / p.life;
+      if (lifeT >= 1) {
+        p.el.remove();
+        this._domParticles.splice(i, 1);
+        continue;
+      }
+      const fade =
+        lifeT < 0.15 ? lifeT / 0.15 : lifeT > 0.7 ? (1 - lifeT) / 0.3 : 1;
+      p.x += (p.vx * dt) / 10;
+      p.y += (p.vy * dt) / 10;
+      p.el.style.left = `${p.x}%`;
+      p.el.style.top = `${p.y}%`;
+      p.el.style.opacity = String(Math.max(0, Math.min(1, fade * 0.85)));
+      p.el.style.transform = `scale(${1 + lifeT * 0.35})`;
+    }
+
+    if (!this._domSmokePlaying) return;
+
+    this._domSmokeElapsedMs += dt * 1000;
+    const { count, spawnSpreadMs, effectDurationMs } =
+      INCENSE_GREETING_CONFIG.particles;
+
+    while (
+      this._domSmokeSpawned < count &&
+      this._domSmokeElapsedMs >= (this._domSmokeSpawned / count) * spawnSpreadMs
+    ) {
+      this._spawnDomParticle();
+      this._domSmokeSpawned += 1;
+    }
+
+    if (
+      this._domSmokeElapsedMs >= effectDurationMs &&
+      this._domParticles.length === 0
+    ) {
+      this._domSmokePlaying = false;
+    }
   }
 
   _updateLotus(dt) {

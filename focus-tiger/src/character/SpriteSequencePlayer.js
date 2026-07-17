@@ -22,12 +22,68 @@ import { buildFramePaths } from './CharacterConfig.js';
 /**
  * @typedef {object} PlayOptions
  * @property {boolean} [loop] 覆盖清单的循环设置
+ * @property {'none'|'forward'|'pingpong'} [loopMode] 循环模式；
+ *   pingpong 为正放到末帧后从倒数第二帧倒放，回到首帧后从首帧重开
  * @property {number} [fps] 覆盖清单的帧率
  * @property {boolean} [holdLastFrame] 非循环时是否停在末帧（覆盖清单）
  * @property {Record<number, number>} [frameHolds] 单帧额外停留时长覆盖（覆盖清单）；
  *   键为 1 基帧号（与帧文件名序号一致），值为该帧在 fps 间隔之上额外停留的毫秒数
+ * @property {number} [crossFadeMs] 从当前可见帧交叉淡入新序列首帧的时长
  * @property {(sequenceName: string) => void} [onComplete] 非循环序列播完回调（循环序列不触发）
  */
+
+export const SPRITE_LOOP_MODES = Object.freeze({
+  NONE: 'none',
+  FORWARD: 'forward',
+  PINGPONG: 'pingpong'
+});
+
+/**
+ * 纯函数：计算序列的下一帧，供播放器与单元测试共用。
+ * pingpong 的末帧不重复；首帧在一轮倒放结束与下一轮正放开始之间保留两拍，
+ * 与已确认序列 001…021, 020…001, 001… 对齐。
+ * @param {object} state
+ * @param {number} state.frameIndex
+ * @param {1|-1} state.direction
+ * @param {number} state.frameCount
+ * @param {'none'|'forward'|'pingpong'} state.loopMode
+ * @returns {{frameIndex:number,direction:1|-1,complete:boolean}}
+ */
+export function advanceSpriteFrame({
+  frameIndex,
+  direction,
+  frameCount,
+  loopMode
+}) {
+  if (frameCount <= 1) {
+    return {
+      frameIndex: 0,
+      direction: 1,
+      complete: loopMode === SPRITE_LOOP_MODES.NONE
+    };
+  }
+
+  if (loopMode === SPRITE_LOOP_MODES.PINGPONG) {
+    if (direction === 1) {
+      if (frameIndex < frameCount - 1) {
+        return { frameIndex: frameIndex + 1, direction: 1, complete: false };
+      }
+      return { frameIndex: frameCount - 2, direction: -1, complete: false };
+    }
+    if (frameIndex > 0) {
+      return { frameIndex: frameIndex - 1, direction: -1, complete: false };
+    }
+    return { frameIndex: 0, direction: 1, complete: false };
+  }
+
+  if (frameIndex < frameCount - 1) {
+    return { frameIndex: frameIndex + 1, direction: 1, complete: false };
+  }
+  if (loopMode === SPRITE_LOOP_MODES.FORWARD) {
+    return { frameIndex: 0, direction: 1, complete: false };
+  }
+  return { frameIndex, direction: 1, complete: true };
+}
 
 export class SpriteSequencePlayer {
   /**
@@ -48,23 +104,33 @@ export class SpriteSequencePlayer {
     const overlay = document.createElement('div');
     overlay.id = 'sprite-overlay';
     overlay.style.cssText =
-      'position:absolute;inset:0;z-index:3;display:flex;align-items:center;' +
+      // fixed + 独立合成层，确保在 WebGL canvas 上方稳定显示（仍低于 UI z-index:10）
+      'position:fixed;inset:0;z-index:3;display:flex;align-items:center;' +
       'justify-content:center;pointer-events:none;opacity:0;' +
-      'transition:opacity 200ms ease;';
+      'isolation:isolate;transform:translateZ(0);transition:opacity 200ms ease;';
+
+    const imageStyle =
+      'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
+      'will-change:transform,opacity;user-select:none;';
+    const outgoingImg = document.createElement('img');
+    outgoingImg.alt = '';
+    outgoingImg.decoding = 'async';
+    outgoingImg.draggable = false;
+    outgoingImg.style.cssText = imageStyle + 'opacity:0;';
 
     const img = document.createElement('img');
     img.alt = '';
     img.decoding = 'async';
     img.draggable = false;
-    img.style.cssText =
-      'max-width:100%;max-height:100%;object-fit:contain;' +
-      'will-change:transform;user-select:none;';
+    img.style.cssText = imageStyle + 'opacity:1;';
 
+    overlay.appendChild(outgoingImg);
     overlay.appendChild(img);
     container.appendChild(overlay);
 
     this.overlayEl = overlay;
     this.imgEl = img;
+    this.outgoingImgEl = outgoingImg;
 
     // —— 播放状态 ——
     this._raf = 0;
@@ -76,12 +142,17 @@ export class SpriteSequencePlayer {
     this._frameIndex = 0;
     this._fps = 12;
     this._loop = false;
+    this._loopMode = SPRITE_LOOP_MODES.NONE;
+    /** @type {1|-1} */
+    this._direction = 1;
     this._holdLastFrame = false;
     /** 单帧额外停留（键为 1 基帧号）@type {Record<number, number>} */
     this._frameHolds = {};
     /** @type {((name: string) => void) | null} */
     this._onComplete = null;
     this._lastFrameTime = 0;
+    this._crossFadeRaf = 0;
+    this._crossFadeTimer = null;
 
     this._tick = this._tick.bind(this);
   }
@@ -89,12 +160,16 @@ export class SpriteSequencePlayer {
   /**
    * 预加载一组（默认全部）序列的所有帧到浏览器缓存。
    * 应在初始化阶段（loading 遮罩下）调用，避免播放时首帧卡顿。
-   * @param {string[]} [names] 需要预加载的序列名；缺省预加载清单内全部
+   * @param {string[]} [names] 需要预加载的序列名；缺省预加载清单内 preload !== false 的序列
    * @returns {Promise<this>}
    */
-  async preload(names = Object.keys(this.manifest)) {
-    /** @type {string[]} */
-    const paths = [];
+  async preload(
+    names = Object.keys(this.manifest).filter(
+      (name) => this.manifest[name]?.preload !== false
+    )
+  ) {
+    /** @type {Set<string>} */
+    const paths = new Set();
     for (const name of names) {
       const def = this.manifest[name];
       if (!def) {
@@ -102,9 +177,9 @@ export class SpriteSequencePlayer {
         continue;
       }
       // 帧路径按「当前生效外观」实时解析（角色/装扮可替换预留）
-      for (const p of this._resolveFrames(def)) paths.push(p);
+      for (const p of this._resolveFrames(def)) paths.add(p);
     }
-    await Promise.all(paths.map((p) => this._loadImage(p)));
+    await Promise.all([...paths].map((p) => this._loadImage(p)));
     return this;
   }
 
@@ -126,14 +201,29 @@ export class SpriteSequencePlayer {
       return false;
     }
 
+    const crossFadeMs = Math.max(0, Number(options.crossFadeMs) || 0);
+    const previousSrc = this.imgEl.getAttribute('src');
+    const shouldCrossFade =
+      crossFadeMs > 0 &&
+      Boolean(previousSrc) &&
+      this.overlayEl.style.opacity !== '0';
+
     // 立即打断当前序列（满足「中途打断切换」要求）
     this._cancelRaf();
+    this._resetCrossFade();
+    if (shouldCrossFade) {
+      this.outgoingImgEl.src = previousSrc;
+      this.outgoingImgEl.style.opacity = '1';
+      this.imgEl.style.opacity = '0';
+    }
 
     this._currentName = name;
     this._frames = frames;
     this._frameIndex = 0;
     this._fps = options.fps ?? def.fps ?? 12;
-    this._loop = options.loop ?? def.loop ?? false;
+    this._loopMode = this._resolveLoopMode(def, options);
+    this._loop = this._loopMode !== SPRITE_LOOP_MODES.NONE;
+    this._direction = 1;
     this._holdLastFrame = options.holdLastFrame ?? def.holdLastFrame ?? false;
     this._frameHolds = options.frameHolds ?? def.frameHolds ?? {};
     this._onComplete =
@@ -146,6 +236,7 @@ export class SpriteSequencePlayer {
 
     this._show();
     this._renderFrame(0);
+    if (shouldCrossFade) this._startCrossFade(crossFadeMs);
     this._playing = true;
     this._lastFrameTime = performance.now();
     this._raf = requestAnimationFrame(this._tick);
@@ -159,6 +250,7 @@ export class SpriteSequencePlayer {
    */
   stop({ clear = false } = {}) {
     this._cancelRaf();
+    this._resetCrossFade();
     this._playing = false;
     if (clear) this._hide();
   }
@@ -176,6 +268,7 @@ export class SpriteSequencePlayer {
   /** 释放：停止播放、移除 overlay、清空缓存。 */
   dispose() {
     this._cancelRaf();
+    this._resetCrossFade();
     this._playing = false;
     this.overlayEl.remove();
     this._cache.clear();
@@ -190,7 +283,33 @@ export class SpriteSequencePlayer {
    */
   _resolveFrames(def) {
     if (!def.animation || !def.frameCount || def.frameCount <= 0) return [];
-    return buildFramePaths(def.animation, def.frameCount);
+    return buildFramePaths(def.animation, def.frameCount, {
+      startFrame: def.startFrame
+    });
+  }
+
+  /**
+   * 兼容既有 loop 布尔值；显式 loopMode 优先。
+   * @param {import('./spriteManifest.js').SpriteSequenceDef} def
+   * @param {PlayOptions} options
+   * @returns {'none'|'forward'|'pingpong'}
+   */
+  _resolveLoopMode(def, options) {
+    const explicitMode = options.loopMode;
+    if (Object.values(SPRITE_LOOP_MODES).includes(explicitMode)) {
+      return explicitMode;
+    }
+    if (options.loop === false) return SPRITE_LOOP_MODES.NONE;
+
+    const manifestMode = def.loopMode;
+    if (Object.values(SPRITE_LOOP_MODES).includes(manifestMode)) {
+      return options.loop === true || def.loop !== false
+        ? manifestMode
+        : SPRITE_LOOP_MODES.NONE;
+    }
+    return options.loop ?? def.loop
+      ? SPRITE_LOOP_MODES.FORWARD
+      : SPRITE_LOOP_MODES.NONE;
   }
 
   /**
@@ -217,23 +336,23 @@ export class SpriteSequencePlayer {
 
     while (now - this._lastFrameTime >= dur) {
       this._lastFrameTime += dur;
-      const next = this._frameIndex + 1;
+      const next = advanceSpriteFrame({
+        frameIndex: this._frameIndex,
+        direction: this._direction,
+        frameCount: this._frames.length,
+        loopMode: this._loopMode
+      });
 
-      if (next >= this._frames.length) {
-        if (this._loop) {
-          this._frameIndex = 0;
-          this._renderFrame(0);
-        } else {
-          // 非循环：定格末帧
-          this._frameIndex = this._frames.length - 1;
-          if (this._holdLastFrame) this._renderFrame(this._frameIndex);
-          this._finish();
-          return;
-        }
-      } else {
-        this._frameIndex = next;
-        this._renderFrame(next);
+      if (next.complete) {
+        // 非循环：定格末帧
+        this._frameIndex = this._frames.length - 1;
+        if (this._holdLastFrame) this._renderFrame(this._frameIndex);
+        this._finish();
+        return;
       }
+      this._frameIndex = next.frameIndex;
+      this._direction = next.direction;
+      this._renderFrame(this._frameIndex);
 
       dur = this._frameDurationMs(this._frameIndex);
     }
@@ -292,6 +411,42 @@ export class SpriteSequencePlayer {
       if (!img || !img.complete || img.naturalWidth === 0) return false;
     }
     return true;
+  }
+
+  /** @param {number} durationMs */
+  _startCrossFade(durationMs) {
+    // 强制提交首帧的 opacity:0，再在下一绘制帧开始双层交叉淡入淡出。
+    void this.outgoingImgEl.offsetWidth;
+    this._crossFadeRaf = requestAnimationFrame(() => {
+      this._crossFadeRaf = 0;
+      const transition = `opacity ${durationMs}ms ease`;
+      this.outgoingImgEl.style.transition = transition;
+      this.imgEl.style.transition = transition;
+      this.outgoingImgEl.style.opacity = '0';
+      this.imgEl.style.opacity = '1';
+      this._crossFadeTimer = globalThis.setTimeout(() => {
+        this._crossFadeTimer = null;
+        this.outgoingImgEl.style.transition = 'none';
+        this.imgEl.style.transition = 'none';
+        this.outgoingImgEl.removeAttribute('src');
+      }, durationMs + 34);
+    });
+  }
+
+  _resetCrossFade() {
+    if (this._crossFadeRaf) {
+      cancelAnimationFrame(this._crossFadeRaf);
+      this._crossFadeRaf = 0;
+    }
+    if (this._crossFadeTimer != null) {
+      globalThis.clearTimeout(this._crossFadeTimer);
+      this._crossFadeTimer = null;
+    }
+    this.outgoingImgEl.style.transition = 'none';
+    this.outgoingImgEl.style.opacity = '0';
+    this.outgoingImgEl.removeAttribute('src');
+    this.imgEl.style.transition = 'none';
+    this.imgEl.style.opacity = '1';
   }
 
   _cancelRaf() {

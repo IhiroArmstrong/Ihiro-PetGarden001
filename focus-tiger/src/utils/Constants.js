@@ -16,25 +16,31 @@ export const COLORS = {
 };
 
 export const FOCUS_SESSION_DEFAULT_MINUTES = 25;
+/** @deprecated 2026-07-16 Honesty Check-in：DORMANT 改为「当日零完成」，不再用连续天数。 */
 export const DORMANT_TRIGGER_DAYS = 3;
+/** @deprecated 2026-07-16：Honesty Check-in 使用约 10 秒呼吸引导，见 HonestyCheckInUI。 */
 export const WAKE_UP_RITUAL_MINUTES = 1;
 
 /**
- * 老虎视觉调参（相对原始默认值整体压低 15%，削弱发白/过曝感）。
+ * 老虎视觉调参：压低曝光/环境反射，略提饱和，减轻 3D 发白发淡。
  * 作用于全部姿态 GLB 材质（TigerCharacter._applyShadersToRoot）。
  */
-export const TIGER_BRIGHTNESS_BOOST = 0.935; // 原 1.1 × 0.85
-export const TIGER_SATURATION_BOOST = 0.935; // 原 1.1 × 0.85
-/** 环境反射强度（原 1.0 × 0.85） */
-export const TIGER_ENV_MAP_INTENSITY = 0.85;
-/** 粗糙度向 1.0 推进比例，削弱镜面高光（原 0.1 → 0.15） */
-export const TIGER_ROUGHNESS_HIGHLIGHT_REDUCTION = 0.15;
+export const TIGER_BRIGHTNESS_BOOST = 0.85;
+export const TIGER_SATURATION_BOOST = 1.2;
+/** 环境反射强度（RoomEnvironment 易洗白毛色） */
+export const TIGER_ENV_MAP_INTENSITY = 0.28;
+/** 粗糙度向 1.0 推进比例，削弱镜面高光 */
+export const TIGER_ROUGHNESS_HIGHLIGHT_REDUCTION = 0.28;
+/** MeshPhysicalMaterial 高光上限 */
+export const TIGER_SPECULAR_INTENSITY_MAX = 0.25;
+/** 场景级环境贴图强度（three r163+ scene.environmentIntensity） */
+export const SCENE_ENVIRONMENT_INTENSITY = 0.35;
 
 /**
- * 场景曝光与灯光（原值 × 0.85），影响老虎及整体画面亮度。
+ * 场景曝光与灯光：优先保住固有色层次，避免高光过曝。
  */
-export const SCENE_TONE_MAPPING_EXPOSURE = 0.978; // 原 1.15 × 0.85
-export const SCENE_LIGHT_HEMISPHERE = 0.553; // 原 0.65 × 0.85
-export const SCENE_LIGHT_AMBIENT = 0.298; // 原 0.35 × 0.85
-export const SCENE_LIGHT_MAIN = 1.87; // 原 2.2 × 0.85
-export const SCENE_LIGHT_FILL = 0.765; // 原 0.9 × 0.85
+export const SCENE_TONE_MAPPING_EXPOSURE = 0.75;
+export const SCENE_LIGHT_HEMISPHERE = 0.35;
+export const SCENE_LIGHT_AMBIENT = 0.15;
+export const SCENE_LIGHT_MAIN = 1.0;
+export const SCENE_LIGHT_FILL = 0.4;

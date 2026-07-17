@@ -11,6 +11,7 @@
 import { POSE_KEYS } from '../character/PoseManager.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
+export const DORMANT_WAKE_CROSS_FADE_MS = 180;
 
 /**
  * 规范化 emotionKey：兼容 Bible PascalCase（Idle）与接口 camelCase（idle）。
@@ -58,6 +59,7 @@ export class EmotionController {
    * @param {import('../feedback/TransitionFX.js').TransitionFX} [deps.transitionFX]
    * @param {import('../effects/EyeTracking.js').EyeTracking} [deps.eyeTracking]
    * @param {import('../character/SpriteSequencePlayer.js').SpriteSequencePlayer} [deps.spritePlayer]
+   * @param {import('../character/IdleOrchestrator.js').IdleOrchestrator} [deps.idleOrchestrator]
    */
   constructor({
     poseManager,
@@ -65,7 +67,8 @@ export class EmotionController {
     incenseGreeting,
     transitionFX = null,
     eyeTracking = null,
-    spritePlayer = null
+    spritePlayer = null,
+    idleOrchestrator = null
   }) {
     this.poseManager = poseManager;
     this.dynamicMotion = dynamicMotion;
@@ -73,6 +76,7 @@ export class EmotionController {
     this.transitionFX = transitionFX;
     this.eyeTracking = eyeTracking;
     this.spritePlayer = spritePlayer;
+    this.idleOrchestrator = idleOrchestrator;
 
     /** @type {string | null} */
     this._currentEmotionKey = null;
@@ -84,33 +88,71 @@ export class EmotionController {
      */
     this._implementations = {
       // —— 姿态层（已实现）——
-      idle: () => {
+      idle: (options = {}) => {
+        this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_CLOSED_EYES);
+        // 3D 坐姿仅保留给奖励柜；主线走 2D pingpong 呼吸。
+        if (this.idleOrchestrator) {
+          this.idleOrchestrator.start(options);
+        } else if (this.spritePlayer) {
+          this.spritePlayer.play('idleBreathing', options);
+        }
       },
       sleeping: () => {
+        this._leaveIdleBaseline();
+        this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.SLEEPING);
+        if (this.spritePlayer) {
+          this.spritePlayer.play('sleeping');
+        }
       },
       smiling: () => {
+        this._leaveIdleBaseline();
+        this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
+        if (this.spritePlayer) {
+          this.spritePlayer.play('blinkSmile');
+        }
       },
-      celebrating: () => {
+      celebrating: (options = {}) => {
+        this._leaveIdleBaseline();
+        this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.CELEBRATING);
-        // Hover 由 DynamicMotion 在 CELEBRATING 姿态下自动叠加（受主开关控制）
         if (this.transitionFX) {
           this.transitionFX.playCelebrateBurst();
         }
-        // 眼睛跟随由 EyeTracking 按姿态自动让位（闭眼/庆祝），无需改主开关
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] celebrating: spritePlayer 未接入，仅 3D 垫底；稍后回归 idle'
+          );
+          window.setTimeout(() => {
+            this.playEmotion('idle');
+            callerOnComplete?.('celebrateDance');
+          }, 4000);
+          return;
+        }
+
+        const started = this.spritePlayer.play('celebrateDance', {
+          ...options,
+          onComplete: () => {
+            // 情绪来了又走：完整弧线播完 → 回归坐姿呼吸基底
+            this.playEmotion('idle');
+            callerOnComplete?.('celebrateDance');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('celebrateDance');
+        }
       },
 
       // —— 一次性反馈（已实现：不改变基底姿态枚举）——
       incenseComplete: () => {
-        const model =
-          this.poseManager.getActiveRoot?.() ?? this.poseManager.getVisibleRoot?.();
-        if (!model) {
-          console.warn('[EmotionController] incenseComplete: 无可用模型，跳过');
-          return;
-        }
-        this.incenseGreeting.triggerDailyIncenseComplete(model);
+        // 莲花 / 金色粒子走 DOM 叠层（在 2D Yin 之上）；不再依赖可见 3D 模型。
+        this.incenseGreeting.triggerDailyIncenseComplete();
       },
 
       // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
@@ -123,20 +165,55 @@ export class EmotionController {
           );
           return;
         }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
         this.spritePlayer.play('waveHello', {
+          ...options,
           onComplete: () => {
+            callerOnComplete?.('waveHello');
             // 挥手结束温和回落（不制造焦虑）：回到日常静息基底态
             this.playEmotion('idle');
-          },
-          ...options
+          }
         });
+      },
+
+      // 点头致意：鼠标进入靠近区时的礼貌一次性反应；播完回归 idle-breathing。
+      // 替代原 lookAtCursor 占位的视觉承载；检测链路仍由 PointerInteraction 驱动。
+      nodGreeting: (options = {}) => {
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] nodGreeting: spritePlayer 未接入，跳过（占位）'
+          );
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        const started = this.spritePlayer.play('nodGreeting', {
+          ...options,
+          onComplete: () => {
+            this.playEmotion('idle');
+            callerOnComplete?.('nodGreeting');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('nodGreeting');
+        }
       },
 
       // —— 调试专用 ——
       tPose: () => {
+        this._leaveIdleBaseline();
+        this.poseManager.setCanvasHidden?.(false);
         this.poseManager.setPose(POSE_KEYS.T_POSE);
       },
       t_Pose: () => {
+        this._leaveIdleBaseline();
+        this.poseManager.setCanvasHidden?.(false);
         this.poseManager.setPose(POSE_KEYS.T_POSE);
       },
 
@@ -159,13 +236,104 @@ export class EmotionController {
         this.eyeTracking.setEnabled(enabled);
       },
 
-      // —— 待实现占位（EMOTION_BIBLE 基底 / 叠加）——
-      blink: unimplemented('blink'),
+      // 眨眼微表情：单次 blink-smile，播完回到进入前的 Idle / Smiling 基底。
+      blink: (options = {}) => {
+        if (!this.spritePlayer) {
+          console.warn('[EmotionController] blink: spritePlayer 未接入，跳过');
+          return;
+        }
+        const returnKey =
+          this._currentEmotionKey === 'smiling' ? 'smiling' : 'idle';
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        const started = this.spritePlayer.play('blinkSmile', {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          onComplete: () => {
+            this.playEmotion(returnKey);
+            callerOnComplete?.('blinkSmile');
+          }
+        });
+        if (!started) {
+          this.playEmotion(returnKey);
+          callerOnComplete?.('blinkSmile');
+        }
+      },
       wakeUp: unimplemented('wakeUp'),
+      // Honesty Check-in 唤醒：sleeping → dormant-wake → halo-breathing 奖励呼吸。
+      dormantWake: (options = {}) => {
+        // 保留当前 sleeping 可见帧，交给播放器双层交叉淡入 dormant_wake_001。
+        this._leaveIdleBaseline({ clear: false });
+        this.dynamicMotion.setBreathingEnabled(true);
+        if (this.transitionFX) {
+          this.transitionFX.playCelebrateBurst();
+        }
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] dormantWake: spritePlayer 未接入，使用既有光效占位'
+          );
+          window.setTimeout(() => {
+            this.playEmotion('haloBreathing');
+            callerOnComplete?.('dormantWake');
+          }, 2800);
+          return;
+        }
+
+        this._use2DMainline();
+        const started = this.spritePlayer.play('dormantWake', {
+          ...options,
+          crossFadeMs:
+            Number(options.crossFadeMs) || DORMANT_WAKE_CROSS_FADE_MS,
+          onComplete: () => {
+            this.playEmotion('haloBreathing', {
+              crossFadeMs: DORMANT_WAKE_CROSS_FADE_MS,
+              onComplete: () => callerOnComplete?.('dormantWake')
+            });
+          }
+        });
+        if (!started) {
+          this.playEmotion('haloBreathing');
+          callerOnComplete?.('dormantWake');
+        }
+      },
+
+      // Honesty 唤醒后的奖励：halo 引入 → 光环呼吸循环，直到下一情绪打断。
+      haloBreathing: (options = {}) => {
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] haloBreathing: spritePlayer 未接入，回落 idle'
+          );
+          this.playEmotion('idle');
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        const crossFadeMs = Number(options.crossFadeMs) || 0;
+        const started = this.spritePlayer.play('haloBreathingIntro', {
+          crossFadeMs,
+          onComplete: () => {
+            this.spritePlayer.play('haloBreathingLoop');
+            callerOnComplete?.('haloBreathing');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('haloBreathing');
+        }
+      },
       snoringZZZ: unimplemented('snoringZZZ'),
       snoringZzz: unimplemented('snoringZZZ'),
 
       // —— 互动反应占位（PointerInteraction 刺激 → 待接 PNG 序列）——
+      // lookAtCursor：历史靠近占位键；正式视觉已改走 nodGreeting，保留键以免旧调用报未知。
       lookAtCursor: pendingInteraction('lookAtCursor'),
       smileSquint: pendingInteraction('smileSquint'),
       petHead: pendingInteraction('petHead'),
@@ -176,6 +344,22 @@ export class EmotionController {
       mindfulAcknowledge: pendingInteraction('mindfulAcknowledge'),
       stretchReminder: pendingInteraction('stretchReminder')
     };
+  }
+
+  /** 2D 主线：隐藏 3D canvas，避免透明精灵后露出垫底老虎。 */
+  _use2DMainline() {
+    this.poseManager.setCanvasHidden?.(true);
+  }
+
+  /** 离开基础坐姿 / 持续 2D 态前：取消 idle 调度并让出 overlay。 */
+  _leaveIdleBaseline({ clear = true } = {}) {
+    if (this.idleOrchestrator?.isActive()) {
+      this.idleOrchestrator.stop({ clear });
+      return;
+    }
+    if (this.spritePlayer) {
+      this.spritePlayer.stop({ clear });
+    }
   }
 
   /**
@@ -203,7 +387,8 @@ export class EmotionController {
       key !== 'hover' &&
       key !== 'eyeTracking' &&
       key !== 'mindfulAcknowledge' &&
-      key !== 'stretchReminder'
+      key !== 'stretchReminder' &&
+      key !== 'incenseComplete'
     ) {
       this._currentEmotionKey = key;
     }
@@ -224,12 +409,15 @@ export class EmotionController {
       { key: 'idle', label: '坐禅闭眼' },
       { key: 'sleeping', label: '睡着了' },
       { key: 'smiling', label: '坐禅微笑' },
-      { key: 'celebrating', label: '跳跃欢呼' },
+      { key: 'celebrating', label: '庆祝跳舞(2D)' },
       { key: 'tPose', label: 'T-Pose' },
       { key: 'incenseComplete', label: '模拟一炷香完成' },
       { key: 'welcomeBack', label: '挥手欢迎(2D序列)' },
-      { key: 'blink', label: '眨眼(占位)' },
-      { key: 'wakeUp', label: '唤醒(占位)' }
+      { key: 'nodGreeting', label: '点头致意(2D)' },
+      { key: 'blink', label: '眨眼(blink-smile)' },
+      { key: 'wakeUp', label: '唤醒(占位)' },
+      { key: 'dormantWake', label: 'Honesty唤醒' },
+      { key: 'haloBreathing', label: '光环呼吸奖励' }
     ];
 
     const group = document.createElement('div');
@@ -341,6 +529,8 @@ export const EMOTION_KEYS = Object.freeze({
   INCENSE_COMPLETE: 'incenseComplete',
   WELCOME_BACK: 'welcomeBack',
   WAKE_UP: 'wakeUp',
+  DORMANT_WAKE: 'dormantWake',
+  HALO_BREATHING: 'haloBreathing',
   BLINK: 'blink',
   BREATHING: 'breathing',
   ROTATION: 'rotation',
@@ -349,6 +539,7 @@ export const EMOTION_KEYS = Object.freeze({
   SNORING_ZZZ: 'snoringZZZ',
   T_POSE: 'tPose',
   LOOK_AT_CURSOR: 'lookAtCursor',
+  NOD_GREETING: 'nodGreeting',
   SMILE_SQUINT: 'smileSquint',
   PET_HEAD: 'petHead',
   DIZZY_BLINK: 'dizzyBlink',

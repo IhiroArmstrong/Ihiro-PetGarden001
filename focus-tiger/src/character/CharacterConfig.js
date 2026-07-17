@@ -61,12 +61,14 @@ export function buildFramePath(animationName, frameNumber, overrides = {}) {
  * 拼接一个动作的全部有序帧路径（1 基连续编号）。
  * @param {string} animationName
  * @param {number} frameCount
- * @param {{ characterId?: string, outfitId?: string }} [overrides]
+ * @param {{ characterId?: string, outfitId?: string, startFrame?: number }} [overrides]
  * @returns {string[]}
  */
 export function buildFramePaths(animationName, frameCount, overrides = {}) {
   const paths = [];
-  for (let i = 1; i <= frameCount; i++) {
+  const startFrame = Math.max(1, Math.trunc(overrides.startFrame ?? 1));
+  const endFrame = startFrame + frameCount;
+  for (let i = startFrame; i < endFrame; i++) {
     paths.push(buildFramePath(animationName, i, overrides));
   }
   return paths;

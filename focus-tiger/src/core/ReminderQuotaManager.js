@@ -1,3 +1,7 @@
+import { getLocalDateKey } from '../utils/localDate.js';
+
+export { getLocalDateKey };
+
 export const SHARED_DAILY_REMINDER_LIMIT = 3;
 
 const DEFAULT_STORAGE_KEY = 'focus-tiger.reminder-quota.v1';
@@ -8,18 +12,6 @@ function getDefaultStorage() {
   } catch {
     return null;
   }
-}
-
-/**
- * 使用用户本地时区生成自然日键，避免 UTC 日期在本地午夜附近提前换日。
- * @param {Date} date
- * @returns {string}
- */
-export function getLocalDateKey(date = new Date()) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
 }
 
 export class ReminderQuotaManager {

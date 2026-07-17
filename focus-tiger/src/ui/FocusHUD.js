@@ -43,7 +43,7 @@ export class FocusHUD {
 
     const level = focusSession.getFocusLevel();
     this.levelEl.textContent = `${Math.round(level * 100)}%`;
-    this.timeEl.textContent = this._formatTime(focusSession.elapsedSeconds);
+    this.timeEl.textContent = this._formatTime(focusSession.getElapsedSeconds());
     this.stateEl.textContent = this._stateLabel(stateManager.state);
     this.stateEl.style.color = level > 0.5 ? COLORS.focusGoldMid : COLORS.textInk;
   }

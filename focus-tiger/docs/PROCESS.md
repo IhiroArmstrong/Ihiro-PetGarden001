@@ -11,13 +11,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-16
+**最后更新时间**：2026-07-17
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
-- 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、「开始专注」交互
+- 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`
 - 动态效果层：`DynamicMotion`（呼吸起伏、绕 Y 轴旋转、庆祝悬浮）— 奖励柜可复用；2D 主线不要求同等旋转
 - 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子），经 `playEmotion('incenseComplete')` 触发
@@ -30,11 +30,22 @@
 - 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 的 macOS 系统通知钩子（只返回 `{}`，不启动额外模型回合，**不**自动 push）
-- 首个 2D PNG 序列真实素材（`wave-hello`，14 帧，透明背景）已抠图入库至 `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png` ～ `frame_014.png`，并已完成 `SpriteSequencePlayer` 对接与浏览器验收（分层路径规范见 `ARCHITECTURE.md`）
+- `wave-hello` 挥手序列已替换为新服装正式版（19 帧，`frame_001.png` ～ `frame_019.png`）；旧深红袈裟 14 帧素材已下线移除；`SpriteSequencePlayer` 对接与 `playEmotion('welcomeBack')` 接线保持不变（分层路径规范见 `ARCHITECTURE.md`）
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 - 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
 - 三类非模态提醒运行时链路：`ReminderQuotaManager` 按用户本地自然日持久化共享额度（`MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 合计每日最多 3 次）；`AttentionSignals` 合并并去重 visibility + blur/focus 离开事件（20s 候选记账、超过 60s 回归展示）；`MindfulReminderController` 实现 20 分钟阶段确认、活跃累计 2 小时舒展提醒、Re-focus 每会话最多 1 次及强反馈静默让位；三类提醒复用 `MindfulAcknowledgeToast` 非模态 UI 与观察式中英文文案池。新增 11 项单元测试并通过，生产构建通过
 - Tiger Reflection Moment（结束反思）MVP：会话结束后（正常完成在庆祝完整播放并回归坐姿后留白淡入；主动结束不播完成反馈、短暂留白后淡入）逐题展示三问（今天注意到什么 / 有哪些情绪来访 / 下次想把注意力带回什么），每题独立可跳、Skip 与 Continue 同级、Esc 整体划过；无提交/必填/进度数字等表单元素；仅非空答案本地保存最近 5 条（`focus-tiger.reflections.v1`），全部跳过不落记录，不做标签化/统计。`TigerReflectionMoment` + `ReflectionFlowState` + `SessionEndFlow` + `Storage` JSON 封装，5 项单元测试与浏览器全路径验收通过
+- Honesty Check-in / DORMANT 唤醒仪式 MVP：当日零完成 → `STATES.DORMANT` + 可忽略提示；选 10/20/30+（按 30 记账）→ 10s 呼吸引导 → `playEmotion('dormantWake')` + 既有 FocusVisualizer 占位金光；`DailyCompletionStore` 与正常计时完成共用结构、无 source 区分；不占共享提醒池；未达标 End Focus 安静回 DORMANT、无失败文案。`getLocalDateKey` 抽至 `utils/localDate.js`
+- `Celebrating` 2D 正式素材：`celebrate-dance`（57 帧，`loopMode: none`）一次性叙事弧线（起身→慢速舞+小金光→施礼）；播完 EmotionController 回归 idle-breathing；会话结束时序改由序列 `onComplete` 驱动（不再固定 4s）
+- `Sleeping` / DORMANT 2D 正式素材：`sleeping`（8 帧，`loopMode: forward`）持续循环；首尾帧衔接抽样可接受，试播若跳帧再改 pingpong；替换原纯 GLB 占位表现
+- 2D 主线默认隐藏 3D canvas（`PoseManager.setCanvasHidden`）；透明精灵后不再露出垫底模型；GLB 仍保留给奖励柜
+- `idle-breathing` / `sleeping` 帧率下调（约 5 / 4 fps），减轻持续态抖动感
+- `Smiling` / `Blink` 接入 `blink-smile`；Idle 自发变体含 blink-smile；Honesty 唤醒后接 `haloBreathing` 奖励呼吸
+- 一炷香莲花/金斑改 DOM 叠层（`#incense-fx-overlay` z-index 4），保证在 2D Yin 前方
+- Honesty Check-in UI：Mindful Check-in 标题加粗加深、呼吸面板与 Sit with Yin 按钮立体化
+- `dormantWake` 2D 正式素材：同源 `dormant-wake` 16 帧一次性正放（深睡→完全清醒坐姿）；呼吸引导期间保持 sleeping，sleeping→wake 与 wake→idle-breathing 均采用 180ms 双图层 cross-fade；末帧短暂停留，完整回落由序列 `onComplete` 驱动，既有 FocusVisualizer 金光继续作 Rim Light 重构前占位
+- `nodGreeting` 2D 正式素材：`nod-greeting` 23 帧一次性点头致意；`PointerInteraction` 靠近检测（半径/滞后/节流）已就绪并改接本键，播完回归 idle-breathing；原 `lookAtCursor` 保留为兼容占位
+- 播放器层候选素材（尚未绑定 emotion key / 业务触发）：`halo-breathing` 30 帧与 `blink-smile` 12 帧已按统一 `frame_NNN.png` 规范入库；播放器新增 `startFrame` 子序列支持，并注册 halo 方案 A（001–006 once → 007–030 pingpong）、方案 B（001–030 pingpong）及 blink-smile forward 技术试播定义。端点检查显示 halo 030→007 差异约为相邻帧中位数的 2.46 倍，blink-smile 012→001 约为 4.22 倍，二者均暂不接入正式调度
 
 **明确未完成（勿当作已验收）**：
 
@@ -45,8 +56,8 @@
 - Session Intention 可选单行意图输入（已拍板并立项为 `TASKS.md` 任务十，未开发）
 - `MilestoneGlow` 里程碑金辉时刻（分镜与设计约束已定稿于 `EMOTION_BIBLE`，视频源已产出；抽帧入库、情绪键接线与 FOCUSING 光环呼吸律动均未实现，归属 Backlog「纪念奖励系统」）
 - 角色/装扮可替换**完整功能**（用户可选换装 UI、多套角色/装扮素材）尚未实现；`CharacterConfig` 架构扩展点与素材路径/情绪触发解耦已落地
-- DORMANT 唤醒仪式（Honesty Check-in）— 设计已完成，开发中
-- Phase 0 清单中的持久化 / PWA 等（见 `TASKS.md`；DORMANT 唤醒仪式已摘出，见上条）
+- DORMANT 唤醒仪式的 Rim Light 正式重构仍待替换既有 FocusVisualizer / setFocusLevel 占位光效；`dormantWake` 真实 2D 睡醒序列已接入
+- Phase 0 清单中的持久化（除当日完成记录外）/ PWA 等（见 `TASKS.md`；DORMANT 唤醒仪式已摘出，见上条）
 
 **正在进行 / 最近决定的事项**：
 
@@ -73,27 +84,40 @@
 - **结束反思两项措辞/时序已确认（2026-07-16）**：反思问题三采用「下次想把注意力带回什么」而非「明天」，避免暗示每日义务（与 regular practice, at your own pace 一致）；`IncenseGreeting` 产品语义为「今日一炷香完成」，**不**在用户主动提前结束时播放，主动结束路径直接回归坐姿后淡入反思面板
 - **MVP 产品定义补充已校正并纳入（2026-07-16）**：新增 `MVP_PRODUCT_DEFINITION.md`，将首要用户、JTBD、竞争替代品、成功指标、付费与隐私从旧补充稿整理为产品策略基线；删除“每日回来”“小老虎随用户成长/退化”“AI Coach/情绪分析默认进入 Premium”等与当前原则冲突的表达，并把未经验证的人群、数字目标、价格和付费形态明确标为假设
 - **Honesty Check-in / DORMANT 唤醒仪式已定稿（2026-07-16）**：DORMANT 改为「当日自然日尚无任何已完成会话」；可忽略提示 `Did you practice elsewhere?` → 选 10/20/30+ 分钟 → 10s 呼吸引导 → `WakeUp`（伸懒腰 + 既有 Rim Light）；补登与正常计时一视同仁、无验证语气、不占共享提醒池、不设每日次数上限。旧「连续 3 天 + 1 分钟唤醒且不计会话」口径废止；`PRINCIPLES` 新增「诚实机制」，`DESIGN` / `EMOTION_BIBLE` / `TASKS` 任务五已同步
-- **新增设计并排期开发「打卡返还 & 唤醒仪式（Honesty Check-in）」功能**：允许用户手动补登在其他场景完成的专注/正念练习，体现产品「诚实机制」设计原则，与核心视觉原则（Rim Light 金光反射）对接；当前设计已完成、开发中（光效若 Rim Light 重构未就绪则先用现有 `FocusVisualizer` / `setFocusLevel` 占位）
+- **新增设计并排期开发「打卡返还 & 唤醒仪式（Honesty Check-in）」功能**：允许用户手动补登在其他场景完成的专注/正念练习，体现产品「诚实机制」设计原则，与核心视觉原则（Rim Light 金光反射）对接；**MVP 运行时已落地**（情绪键 `dormantWake`、当日完成记录、可忽略提示与 10s 呼吸引导）；光效暂用 `FocusVisualizer` / `setFocusLevel` 占位，Rim Light 重构后替换
+- **Honesty Check-in 拍板四项（2026-07-16）**：新建 `dormantWake` 不复用 `wakeUp`；`30+` 按 30 分钟记账；`getLocalDateKey` 抽至 `utils/localDate.js`；未达标 End Focus 保持 DORMANT、不写完成记录、无失败/未完成类文案
+- **Companion Mode（专注会话陪伴模式）已定稿并实现 MVP（2026-07-16）**：Start 后先选 Stay here / I'll step away；`FocusSession` 墙钟计时；step-away 下 `suppressAwayReminders` 关闭 Re-focus（仍暂停活跃累计）；达标复用 `celebratePending → CELEBRATE → SessionEndFlow`；回页 `visibilitychange` 校正完成。与 Honesty Check-in 独立
+- **Companion Mode 三选一扩展已定稿（2026-07-16，仅文档）**：识别 Focus Confidence「标签可见=专注」对知识工作多工具切换的系统性误判；新增第三子模式 **I'm working across tools**（关离开类提醒、宽松 idle 兜底建议 ≥30 分钟、墙钟计时）；对策为用户自主声明（诚实机制）而非技术探测。运行时 UI / 代码待交互拍板后另开任务
+- **Companion Mode 三选一运行时已落地（2026-07-16）**：Sit 下提示「How will we do this?」向上展开；选模式只预选不开始；Sit 才计时；`localStorage` `focus-tiger.companion-mode.v1`；across-tools 用 `suppressAwayReminders` + `AcrossToolsIdleGuard`（30min）
+- **核心交互按钮文案已更新（2026-07-16）**：`BTN_FOCUS_START` / `BTN_FOCUS_STOP` → Sit with Yin / Rise（与阿寅同坐 / 起身）；正常完成与中途结束共用「起身」，不做完成/放弃区分。原则见 `EMOTION_BIBLE`「核心交互动词」
+- **产品命名 Backlog 已记录（2026-07-16）**：当前阶段保持「Focus Tiger」不更名；建议副标题承载更深定位；完整更名待用户反馈后评估（见 Backlog「产品命名」）
+- **角色正式名落定（2026-07-16）**：中文「阿寅」、英文「Yin」（`CHARACTER_BIBLE` + i18n `CHARACTER_NAME`）；`characterId` 仍为 `tiger-cub`；用户自定义改名标为远期 Backlog（`DESIGN`「老虎的名字」）；文档通称「小老虎」不替换
+- **禅意背景音（Ambient Soundscape）功能已确认排期开发（2026-07-16）**：追踪 Focus Tiger 自身播放音频的实际时长，并转化为金光 / Rim Light 强度增强信号；与 Companion Mode 独立、互不依赖；设计原则见 `DESIGN.md`「禅意背景音」
+- **禅意背景音 MVP 已落地（2026-07-16）**：角落展开 UI；**Mer-Ka-Ba**（Jesse Gallagher）/ **Meditation Impromptu 02**（Kevin MacLeod）两档，YouTube Audio Library；`presenceBoost` 叠视觉；归因见 `public/audio/ambient/ATTRIBUTION.md`
+- **无角色语音原则已落档（2026-07-16）**：沟通仅文字（非模态文案等）；禁止真人配音与 lip-sync；长期原则、非 Backlog（见 `PRINCIPLES.md`）
 
 **下一步计划**：
 
-- 实现 DORMANT 唤醒仪式（Honesty Check-in）：`DailyCompletionStore` + 可忽略提示 / 时长选择 / 10s 呼吸引导 / `playEmotion('wakeUp')`；正常计时完成与补登共用当日完成记录；不占共享提醒池；光效先占位、Rim Light 重构后替换对接
+- 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
+- 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
+- 将 Companion Mode 选择并入未来 Session Intention / Check-in 大面板（当前为独立预开始选择）
 - 按已确认反馈分级实现 `SessionComplete`：每次完成的轻量动作 + 非模态文案；每日首次达标仍由 `Celebrating` 替代
 - 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
 - 为 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 接入真实 2D 动作素材；运行时触发、额度与非模态文案条已完成
-- 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态
+- 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做）
 
 **已知的开放决策 / 待确认事项**：
 
-- 暂无。原共享提醒池每日上限、Re-focus 单会话上限与两级时间阈值已于 2026-07-16 拍板并实现。
+- across-tools 宽松 idle 兜底阈值微调（当前常量 30 分钟，可再拍板）
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
-- Focus Confidence 未来数据源扩展
+- Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
+- **系统级健康中枢读取**（HealthKit Mindful Minutes / Health Connect MindfulnessSession；Phase 1 规划；补充诚实机制、非替代；详见 `ARCHITECTURE.md` Backlog）
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
@@ -185,6 +209,20 @@ Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，�
 
 每一项启动前需先评估:所需权限/API的用户隐私合规性、开发与维护成本、是否需要用户额外安装第三方软件。不应假设"技术上可行"等同于"应当实现",需结合当前团队人力(参见PROCESS.md团队现状说明)综合判断。
 
+**已识别决策点（2026-07-16）——多工具切换 vs visibility 检测冲突**：
+
+知识工作场景下，高质量心流也会产生大量标签页 / 工具切换，与真正分心在浏览器隐私沙盒内无法区分；原「标签可见 = 专注」假设会对这类用户系统性误判（缺陷全文见 `DESIGN.md`「Focus Confidence」与「专注会话陪伴模式」背景）。
+
+**对策（已定稿，诚实机制延伸，非技术猜测）**：Companion Mode 升格为三选一，新增 **I'm working across tools**，由用户自主声明会话语境，关闭离开类分心判定；不依赖探测其他 App / 标签内容。运行时三选一 UI 待确认交互后另开任务实现。未来若评估「生产力网站白名单」等短信号源，**不得**绕过或削弱该用户声明边界。
+
+### Backlog:系统级健康中枢读取（Phase 1 规划）
+
+> 全文与架构约束见 **`ARCHITECTURE.md` → Backlog「未来数据源扩展 — 系统级健康中枢读取」**。此处仅作排期索引。
+
+- **Phase 0**：**不实现**（手动 Honesty Check-in + Companion Mode 跑通核心体验）。
+- **Phase 1**：评估 iOS HealthKit（Mindful Minutes）与 Android Health Connect（`MindfulnessSessionRecord`；注意 Android 14+ 覆盖滞后）；可选授权，与手动打卡并存；正念分钟可叠金光（复用 Ambient `presenceBoost` 模式）。
+- **不强制**健康数据授权；不替代诚实机制。
+
 ### Backlog:Browser First 长期产品方向
 
 **背景**：用户在使用 Cursor、VSCode、Notion、Google Docs、Figma、GitHub 等生产力工具时，理论上系统已经「知道」用户在工作，这比要求用户主动打开产品页面、手动开始计时更符合「陪伴感」而非「打开 APP」的产品定位。
@@ -198,6 +236,26 @@ Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，�
 3. **暂不可行/需谨慎评估（复杂度很高，涉及隐私敏感权限）**：检测用户是否在使用 Cursor、VSCode 等桌面应用程序（而非网页），这已超出浏览器沙盒能力范围，需要操作系统级别的应用活跃状态监控权限。此类权限申请对用户信任度要求极高，且用户对「专注工具监控其电脑上所有应用活动」的隐私顾虑值得高度重视（参考：项目开发过程中，团队自身也对开发工具请求系统级权限保持了必要的警惕）。此方向需要独立于当前项目的产品/工程投入，不建议在当前阶段纳入路线图讨论范围之外的实质开发。
 
 **处理方式**：第 1 项可在后续 Focus Confidence 相关迭代中按「价值>复杂度」原则评估纳入；第 2、3 项记录为长期方向，不纳入当前开发排期。
+
+### Backlog:产品命名（Focus Tiger 是否更名）
+
+**当前阶段决策（2026-07-16）**：产品名称 **Focus Tiger** 经讨论后**保持不变**。
+
+**理由**：
+
+1. 与已确立的核心成长模型「觉察 Awareness → 专注 Focus → 心流 Flow → 内在成长 Growth」一致——Focus 是旅程中真实的第一阶段，而非虚假包装；
+2. 保留「Focus」关键词有助于产品早期通过自然搜索被发现；
+3. 改动技术标识符（仓库名、类名、`focus-tiger` 路径与存储键等）成本需要进一步评估。
+
+**建议的深化方式（非更名）**：通过副标题承载更深定位，例如：
+
+> Focus Tiger — a mindful companion for presence, awareness, and flow
+
+**后续**：是否进行完整产品更名，留待获得真实用户反馈后重新评估。与之区分：核心交互按钮已采用「Sit / Rise」仪式动词（见 `EMOTION_BIBLE`「核心交互动词」），**不影响**本条产品名决策。
+
+### Backlog:用户自定义角色改名
+
+`DESIGN.md`「老虎的名字」保留用户可自定义改名设想（沿用 v4.0 命名交互逻辑）。**当前阶段不开发**；默认显示固定为正式名「阿寅 / Yin」（i18n `CHARACTER_NAME`）。排期前须另开 Task，明确存储、校验与观察式文案边界。
 
 ### Backlog:节奏敲击正念小游戏（「数字木鱼」）
 

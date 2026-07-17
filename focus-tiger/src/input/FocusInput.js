@@ -3,28 +3,43 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
 export class FocusInput {
+  /**
+   * @param {() => (boolean|void)} onStart 返回 false 表示延后开始（如先选 Companion Mode）
+   * @param {() => void} onStop
+   */
   constructor(onStart, onStop) {
     this.onStart = onStart;
     this.onStop = onStop;
     this._focusing = false;
+    /** @type {HTMLElement | null} */
+    this._button = null;
   }
 
   bindManualButton(buttonElement) {
+    this._button = buttonElement;
     buttonElement.textContent = this._buttonLabel();
     buttonElement.addEventListener('click', () => {
       if (!this._focusing) {
-        this.onStart();
-        this._focusing = true;
+        const deferred = this.onStart() === false;
+        if (!deferred) {
+          this._focusing = true;
+          buttonElement.textContent = this._buttonLabel();
+        }
       } else {
         this.onStop();
         this._focusing = false;
+        buttonElement.textContent = this._buttonLabel();
       }
-      buttonElement.textContent = this._buttonLabel();
     });
-    // 语言切换时按当前专注状态刷新按钮文字
     onLocaleChange(() => {
       buttonElement.textContent = this._buttonLabel();
     });
+  }
+
+  /** Companion Mode 确认后调用，将按钮切到「起身 / Rise」。 */
+  beginFocusing(buttonElement = this._button) {
+    this._focusing = true;
+    if (buttonElement) buttonElement.textContent = this._buttonLabel();
   }
 
   bindPomodoroTimer() {
@@ -35,9 +50,9 @@ export class FocusInput {
     /* 预留，暂不实现 */
   }
 
-  resetButton(buttonElement) {
+  resetButton(buttonElement = this._button) {
     this._focusing = false;
-    buttonElement.textContent = this._buttonLabel();
+    if (buttonElement) buttonElement.textContent = this._buttonLabel();
   }
 
   _buttonLabel() {

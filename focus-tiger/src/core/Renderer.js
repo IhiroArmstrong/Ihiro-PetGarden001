@@ -7,7 +7,8 @@ import {
   SCENE_LIGHT_HEMISPHERE,
   SCENE_LIGHT_AMBIENT,
   SCENE_LIGHT_MAIN,
-  SCENE_LIGHT_FILL
+  SCENE_LIGHT_FILL,
+  SCENE_ENVIRONMENT_INTENSITY
 } from '../utils/Constants.js';
 
 export function createRenderer(container, canvas = null) {
@@ -64,6 +65,7 @@ export function setupSceneEnvironment(renderer, scene) {
 
   const environment = new RoomEnvironment();
   scene.environment = pmremGenerator.fromScene(environment).texture;
+  scene.environmentIntensity = SCENE_ENVIRONMENT_INTENSITY;
 
   environment.dispose();
   pmremGenerator.dispose();

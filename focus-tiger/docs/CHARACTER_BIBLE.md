@@ -1,5 +1,18 @@
 Focus Tiger Master Character Prompt V1.0 (MVP)
 
+## 角色正式名称（Display Name）
+
+| 语言 | 正式名 |
+|---|---|
+| 中文 | **阿寅** |
+| English | **Yin** |
+
+**命名说明**：「Yin」取自「寅」字拼音，同时与阴阳概念中「阴」的沉静、内收、蓄势气质产生自然呼应，与角色打坐修行的调性相契合。此层含义可作为角色故事的一个小彩蛋记录在案，不必在产品 UI 中主动解说。
+
+**与技术标识符的区分**：工程侧 `characterId`（当前默认 `'tiger-cub'`）及素材路径、类名等是稳定技术标识，**不**随显示名改为 `yin`。面向用户的文案通过 i18n 键 `CHARACTER_NAME` 展示「阿寅 / Yin」。
+
+---
+
 Design an original world-class mascot character for a mindfulness-based productivity game called "Focus Tiger."
 
 The character is a lovable young tiger cub (approximately equivalent to a 3–5-year-old child), designed as a lifelong companion rather than a teacher or authority figure. The tiger should immediately evoke warmth, trust, calmness, curiosity, emotional safety, and quiet encouragement. It is not a superhero, not an action character, and never appears aggressive or intimidating.
@@ -362,7 +375,7 @@ Focus Tiger 优先面向海外市场，不同市场对角色造型与装扮的�
 
 ### 默认角色权威性
 
-本文档中的 **Focus Tiger Master Character Prompt V1.0 (MVP)** 保持不变，继续作为默认角色 `tiger-cub` 与默认装扮 `monk-robe-default` 的权威设定来源。任何默认角色素材仍须遵循本文档规定的比例、性格、服装、色彩、品牌标识和 Suffix Prompt 方法，不因架构可替换而降低一致性要求。
+本文档中的 **Focus Tiger Master Character Prompt V1.0 (MVP)** 保持不变，继续作为默认角色 `tiger-cub` 与默认装扮 `monk-robe-default` 的权威设定来源。用户可见的正式显示名为中文「阿寅」、英文「Yin」（见上文「角色正式名称」）；`characterId = 'tiger-cub'` 仅作工程标识，二者不同层。任何默认角色素材仍须遵循本文档规定的比例、性格、服装、色彩、品牌标识和 Suffix Prompt 方法，不因架构可替换而降低一致性要求。
 
 ### 未来变体约束
 

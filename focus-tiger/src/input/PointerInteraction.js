@@ -264,7 +264,9 @@ export class PointerInteraction {
       }
     }
 
-    // —— 靠近 / 离开 → lookAtCursor / idle ——
+    // —— 靠近 / 离开 → nodGreeting / idle ——
+    // 检测阈值已就绪（nearRadiusFactor / hysteresis / lookAtRetriggerMs）。
+    // 正式视觉：礼貌点头致意一次性序列；离开靠近区时若仍在反应中则回落 idle。
     if (!this._isNear && dist <= nearR) {
       this._isNear = true;
       if (
@@ -273,7 +275,7 @@ export class PointerInteraction {
       ) {
         this._lastLookAtAt = now;
         this._lookAtActive = true;
-        this._play(EMOTION_KEYS.LOOK_AT_CURSOR, {
+        this._play(EMOTION_KEYS.NOD_GREETING, {
           cursor: { x: clientX, y: clientY },
           tigerCenter: { x: rect.cx, y: rect.cy }
         });

@@ -36,6 +36,7 @@ export class TigerReflectionMoment {
     this.dotEls = [];
     this.continueBtn = null;
     this.skipBtn = null;
+    this.skipAllBtn = null;
 
     this._onKeyDown = (event) => {
       if (event.key === 'Escape') this._dismiss();
@@ -44,7 +45,7 @@ export class TigerReflectionMoment {
   }
 
   isOpen() {
-    return Boolean(this.root);
+    return Boolean(this.flow);
   }
 
   open() {
@@ -74,6 +75,7 @@ export class TigerReflectionMoment {
       'position:absolute',
       'left:50%',
       'bottom:96px',
+      'z-index:15',
       'width:min(460px,calc(100vw - 48px))',
       'transform:translate(-50%, 12px)',
       'padding:20px 22px 16px',
@@ -139,11 +141,16 @@ export class TigerReflectionMoment {
       'cursor:pointer'
     ].join(';');
 
-    // Skip 与 Continue 同样式同尺寸：跳过是平等选项，不是次优选择。
+    // Skip / Skip all / Continue 同样式：跳过是平等选项，不是次优选择。
     this.skipBtn = document.createElement('button');
     this.skipBtn.type = 'button';
     this.skipBtn.style.cssText = buttonCss;
     this.skipBtn.addEventListener('click', () => this._advance({ submit: false }));
+
+    this.skipAllBtn = document.createElement('button');
+    this.skipAllBtn.type = 'button';
+    this.skipAllBtn.style.cssText = buttonCss;
+    this.skipAllBtn.addEventListener('click', () => this._skipAll());
 
     this.continueBtn = document.createElement('button');
     this.continueBtn.type = 'button';
@@ -151,6 +158,7 @@ export class TigerReflectionMoment {
     this.continueBtn.addEventListener('click', () => this._advance({ submit: true }));
 
     buttons.appendChild(this.skipBtn);
+    buttons.appendChild(this.skipAllBtn);
     buttons.appendChild(this.continueBtn);
     footer.appendChild(dots);
     footer.appendChild(buttons);
@@ -166,6 +174,7 @@ export class TigerReflectionMoment {
     if (!this.root || !this.flow || this.flow.isDone()) return;
     this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[this.flow.stepIndex]);
     this.skipBtn.textContent = t('REFLECTION_SKIP');
+    this.skipAllBtn.textContent = t('REFLECTION_SKIP_ALL');
     this.continueBtn.textContent = t('REFLECTION_CONTINUE');
   }
 
@@ -208,6 +217,13 @@ export class TigerReflectionMoment {
     }
   }
 
+  /** 一次跳过全部剩余问题；已填答案保留，未填不落库。 */
+  _skipAll() {
+    if (!this.flow || this.flow.isDone()) return;
+    this.flow.abandonRest();
+    this._finish();
+  }
+
   /** Esc 或外部关闭：剩余问题视作跳过，已答内容保留，无任何提示。 */
   _dismiss() {
     if (!this.flow) return;
@@ -239,5 +255,6 @@ export class TigerReflectionMoment {
     this.dotEls = [];
     this.continueBtn = null;
     this.skipBtn = null;
+    this.skipAllBtn = null;
   }
 }

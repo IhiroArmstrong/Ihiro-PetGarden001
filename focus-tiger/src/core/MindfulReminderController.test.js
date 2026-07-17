@@ -96,3 +96,32 @@ test('eligible Re-focus silently yields to a stronger emotion and is not replaye
   assert.deepEqual(shown, []);
   assert.equal(controller.getSessionStats().refocusHandledThisSession, 1);
 });
+
+test('step-away companion mode suppresses Re-focus but still pauses stretch on away', () => {
+  const { controller, shown } = setup();
+  controller.startSession({ suppressAwayReminders: true });
+  controller.setAttentionAway(true);
+  controller.update(10);
+  controller.handleAttentionReturn({ durationMs: 90_000, displayEligible: true });
+
+  assert.deepEqual(shown, []);
+  assert.equal(controller.getSessionStats().candidateDepartureCount, 0);
+  assert.equal(controller.getSessionStats().refocusHandledThisSession, 0);
+
+  controller.setAttentionAway(false);
+  shown.length = 0;
+  controller.update(STRETCH_REMINDER_THRESHOLD_SECONDS);
+  assert.ok(shown.includes('STRETCH_REMINDER'));
+  assert.ok(!shown.some((key) => key.startsWith('REFOCUS')));
+});
+
+test('session elapsed can follow a wall-clock reader', () => {
+  const { controller, shown } = setup();
+  let elapsed = 0;
+  controller.startSession({
+    getSessionElapsedSeconds: () => elapsed
+  });
+  elapsed = MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS;
+  controller.update(0);
+  assert.deepEqual(shown, ['MINDFUL_FOCUS_MILESTONE']);
+});

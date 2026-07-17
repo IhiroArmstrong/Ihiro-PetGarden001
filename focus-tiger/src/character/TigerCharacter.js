@@ -6,7 +6,8 @@ import {
   TIGER_BRIGHTNESS_BOOST,
   TIGER_SATURATION_BOOST,
   TIGER_ENV_MAP_INTENSITY,
-  TIGER_ROUGHNESS_HIGHLIGHT_REDUCTION
+  TIGER_ROUGHNESS_HIGHLIGHT_REDUCTION,
+  TIGER_SPECULAR_INTENSITY_MAX
 } from '../utils/Constants.js';
 import { loadGLTF } from '../utils/Loaders.js';
 import { playAction as playActionImpl } from './Actions.js';
@@ -125,6 +126,13 @@ export class TigerCharacter {
     );
     material.envMapIntensity =
       (material.envMapIntensity ?? 1) * TIGER_ENV_MAP_INTENSITY;
+    // MeshPhysicalMaterial 默认 specularIntensity=1 易抬高高光发白
+    if ('specularIntensity' in material) {
+      material.specularIntensity = Math.min(
+        material.specularIntensity ?? 1,
+        TIGER_SPECULAR_INTENSITY_MAX
+      );
+    }
     material.needsUpdate = true;
   }
 

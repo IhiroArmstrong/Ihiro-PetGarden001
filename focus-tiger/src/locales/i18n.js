@@ -37,7 +37,8 @@ export const COPY_POOLS = Object.freeze({
     'REFOCUS_ACKNOWLEDGE_1',
     'REFOCUS_ACKNOWLEDGE_2',
     'REFOCUS_ACKNOWLEDGE_3'
-  ]
+  ],
+  ACROSS_TOOLS_IDLE: ['ACROSS_TOOLS_IDLE_1', 'ACROSS_TOOLS_IDLE_2']
 });
 
 /**

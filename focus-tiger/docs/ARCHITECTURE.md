@@ -246,9 +246,16 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 ### 播放机制
 
-通过 `requestAnimationFrame` 逐帧切换，或 Sprite Sheet（帧图拼合为单张大图，用 `background-position` 切换）方式实现帧序列播放。具体选择在实现阶段根据性能表现决定。
+当前采用 `SpriteSequencePlayer`：单 `<img>` + `requestAnimationFrame` 逐帧换图，
+支持 `none` / `forward` / `pingpong`、逐帧额外停留、完成回调与立即打断；
+跨序列切换可启用双 `<img>` 短时 cross-fade（如同源 sleeping → dormantWake）。
+清单可用 `startFrame + frameCount` 从同一素材目录注册子序列；例如
+`halo-breathing` 可拆成 001–006 一次性过渡与 007–030 呼吸循环，而无需复制素材。
+尚未绑定的候选序列须设 `preload: false`，避免增加首屏下载与解码成本；首次技术试播时
+由播放器按需预加载。预加载路径会去重，同目录子序列不会重复请求同一帧。
 
 上层仍只调用 `EmotionController.playEmotion(emotionKey)`；2D 播放器作为映射表内的底层实现接入，不改业务层。
+尚未确认业务语义的素材可以只注册播放器序列，不得提前绑定 emotion key。
 
 ### 动态效果调整（相对原 3D 方案）
 
@@ -301,4 +308,45 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 - 数据层(负责监听Page Visibility、window焦点、idle检测,计算Focus Confidence分值与Flow Continuity百分比)应作为独立的数据适配模块存在,不与MoodController或PoseManager直接耦合
 - 视觉层(粒子系统、光环/环境光强度插值等动态效果层)只接收数据层输出的**连续性参数**(0-1或0-100的数值),不关心该数值背后的具体计算逻辑或信号来源,保持关注点分离
-- 未来若接入新的信号源(见下方PROCESS.md的Backlog),只需在数据层扩展计算逻辑,视觉层接口不需要变动
+- 未来若接入新的信号源(见下方 Backlog 与 `PROCESS.md` Backlog),只需在数据层扩展计算逻辑,视觉层接口不需要变动
+
+---
+
+## Backlog（架构向远期项）
+
+下列事项**不安排当前开发任务**；排期以 `TASKS.md` / `PROCESS.md` 阶段划分为准。产品语义与诚实机制边界见 `PRINCIPLES.md` / `DESIGN.md`。
+
+### Backlog:未来数据源扩展 — 系统级健康中枢读取（Phase 1 规划）
+
+> **阶段标注**：Phase 1（留存优化期）评估项；**Phase 0 / 当前 MVP 不实现**。  
+> **2026-07-16 记录**。协作排期索引亦见 `PROCESS.md` Backlog 列表。
+
+#### 方案说明
+
+现有「诚实机制（Honesty Check-in）」依赖用户**手动**打卡补登。未来可扩展为自动读取系统级健康数据，减少手动操作负担：
+
+| 平台 | API / 数据类型 | 说明 |
+|---|---|---|
+| **iOS** | Apple HealthKit · `HKCategoryTypeIdentifierMindfulSession`（Mindful Minutes） | Calm、Headspace 等第三方冥想 App 完成练习后通常会写入；Focus Tiger 在用户授权读取后可获取 |
+| **Android** | Google Health Connect · `MindfulnessSessionRecord` | 记录冥想、瑜伽、引导呼吸等会话的起止时间与类型 |
+
+**Android 覆盖注意**：Health Connect 正念会话相关能力目前随 **Android 16 DP1** 预装路径推进，并计划经 Google Play 系统更新逐步推送到 **Android 14 及以上**设备。规划上线时间须计入设备 **discovery / 覆盖滞后期**，**不能假设**全体安卓用户设备立即支持该数据类型。
+
+#### 与现有诚实机制的关系
+
+本能力**不替代**、而是**补充**手动 Honesty Check-in：
+
+- 用户可自主选择授权自动读取（体验更无感），或继续仅用手动打卡（无需交出健康数据隐私）；
+- 两种方式**并存**；**禁止**强制开启健康数据授权；
+- 符合「陪伴而非监督」与诚实机制：授权是礼物式可选，不是监督门槛。
+
+#### 分期规划
+
+- **Phase 0（当前 MVP）**：**不实现**。坚持通过诚实机制手动打卡，以及 Companion Mode（用户自选会话语境的陪伴声明）跑通核心体验；避免 HealthKit / Health Connect SDK 集成带来的包体积与开发测试成本。
+- **Phase 1（留存优化期，时间点待定）**：评估引入 HealthKit（iOS）与 Health Connect（Android）的读取权限申请与数据拉取，作为面向海外用户的差异化加分项。自动读取的正念分钟数可转化为角色金光 / Rim Light 强度的**增强输入**——复用 Ambient Soundscape 已确立的「外部 / 附加信号 → 光效强度」数据流模式（`presenceBoost` 类叠加、不改写 `focusLevel` 达标真值），**不新建**独立光效计算逻辑。
+
+#### 架构约束（若 Phase 1 立项）
+
+- 健康数据适配层须落在 Focus Confidence / 会话完成数据层一侧，视觉层只消费数值参数（见上文接口约定）；
+- 须遵守 `MVP_PRODUCT_DEFINITION.md` 隐私承诺与本地优先边界；权限文案不得验证语气、不得暗示「不开授权就不算练习」；
+- 与手动 Honesty Check-in、Companion Mode **入口与记账语义**须在立项 Task Brief 中写清，禁止 silently 覆盖用户已有手动记录而不告知。

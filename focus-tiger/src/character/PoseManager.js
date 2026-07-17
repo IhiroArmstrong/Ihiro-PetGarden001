@@ -17,6 +17,7 @@ export const POSE_KEYS = {
 };
 
 const POSE_ASSETS = {
+  // 默认闭眼坐禅：Yin001 灰棉麻袈裟 + 自带蒲团（gltf-transform Draco+WebP，~500KB）
   [POSE_KEYS.IDLE_CLOSED_EYES]: '/models/tiger-meditate-closed.glb',
   [POSE_KEYS.SLEEPING]: '/models/tiger-sleeping.glb',
   [POSE_KEYS.IDLE_SMILING]: '/models/tiger-meditate-smile.glb',
@@ -227,6 +228,8 @@ export class PoseManager {
     this._rafId = null;
     /** canvas 当前明暗度（1=全亮），过渡在 2D 层完成，不碰 3D 材质 opacity */
     this._canvasOpacity = 1;
+    /** 2D 主线时强制隐藏 3D canvas，避免透明精灵后露出垫底 */
+    this._forceCanvasHidden = false;
   }
 
   /**
@@ -463,9 +466,37 @@ export class PoseManager {
     return document.getElementById('scene-canvas');
   }
 
+  /**
+   * 2D 主线序列临时接管角色画面时调整 3D 垫底可见度。
+   * 保留内部 opacity 状态，使后续 setPose() 能从当前值平滑恢复。
+   * @param {number} value 0–1
+   */
+  setCanvasOpacity(value) {
+    this._setCanvasOpacity(value);
+  }
+
+  /**
+   * 2D 主线已凑齐时强制隐藏 3D canvas，避免透明精灵后露出垫底模型。
+   * 开启后 setPose 过渡也不会把 canvas 淡回可见。
+   * @param {boolean} hidden
+   */
+  setCanvasHidden(hidden) {
+    this._forceCanvasHidden = Boolean(hidden);
+    if (this._forceCanvasHidden) {
+      this._setCanvasOpacity(0);
+    }
+  }
+
+  /** @returns {boolean} */
+  isCanvasHidden() {
+    return Boolean(this._forceCanvasHidden);
+  }
+
   /** 在 canvas 层做 2D 明暗过渡，禁用 CSS transition 避免与 rAF 冲突 */
   _setCanvasOpacity(value) {
-    const clamped = THREE.MathUtils.clamp(value, 0, 1);
+    const clamped = this._forceCanvasHidden
+      ? 0
+      : THREE.MathUtils.clamp(value, 0, 1);
     this._canvasOpacity = clamped;
     const canvas = this._getCanvas();
     if (canvas) {

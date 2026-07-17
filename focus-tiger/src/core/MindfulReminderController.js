@@ -41,9 +41,20 @@ export class MindfulReminderController {
     this.candidateDepartureCount = 0;
     this.lastSessionStoppedAt = null;
     this.attentionAway = false;
+    this.suppressAwayReminders = false;
+    /** @type {null | (() => number)} */
+    this._getSessionElapsedSeconds = null;
   }
 
-  startSession() {
+  /**
+   * @param {object} [options]
+   * @param {boolean} [options.suppressAwayReminders] Companion Mode step-away
+   * @param {() => number} [options.getSessionElapsedSeconds] 墙钟经过秒（与 FocusSession 对齐）
+   */
+  startSession({
+    suppressAwayReminders = false,
+    getSessionElapsedSeconds = null
+  } = {}) {
     if (
       this.lastSessionStoppedAt !== null &&
       this.now() - this.lastSessionStoppedAt >=
@@ -57,6 +68,11 @@ export class MindfulReminderController {
     this.refocusHandledThisSession = 0;
     this.candidateDepartureCount = 0;
     this.attentionAway = false;
+    this.suppressAwayReminders = Boolean(suppressAwayReminders);
+    this._getSessionElapsedSeconds =
+      typeof getSessionElapsedSeconds === 'function'
+        ? getSessionElapsedSeconds
+        : null;
   }
 
   stopSession() {
@@ -64,6 +80,8 @@ export class MindfulReminderController {
     this.sessionActive = false;
     this.lastSessionStoppedAt = this.now();
     this.attentionAway = false;
+    this.suppressAwayReminders = false;
+    this._getSessionElapsedSeconds = null;
   }
 
   /** @param {boolean} away */
@@ -73,10 +91,16 @@ export class MindfulReminderController {
 
   /** @param {number} deltaSeconds */
   update(deltaSeconds) {
-    if (!this.sessionActive || deltaSeconds <= 0) return;
+    if (!this.sessionActive || deltaSeconds < 0) return;
 
-    this.sessionElapsedSeconds += deltaSeconds;
-    if (!this.attentionAway) {
+    if (this._getSessionElapsedSeconds) {
+      this.sessionElapsedSeconds = this._getSessionElapsedSeconds();
+    } else if (deltaSeconds > 0) {
+      this.sessionElapsedSeconds += deltaSeconds;
+    }
+
+    // 活跃累计：仅在前台可见且未 away 时累加；step-away 离开时仍暂停（已确认）
+    if (deltaSeconds > 0 && !this.attentionAway) {
       this.activeStretchSeconds += deltaSeconds;
     }
 
@@ -102,6 +126,9 @@ export class MindfulReminderController {
    */
   handleAttentionReturn(event) {
     if (!this.sessionActive) return;
+    // Companion Mode step-away：离开是预期行为，不触发 Re-focus / 离开类提醒
+    if (this.suppressAwayReminders) return;
+
     this.candidateDepartureCount += 1;
     if (
       !event.displayEligible ||

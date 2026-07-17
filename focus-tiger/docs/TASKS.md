@@ -85,19 +85,19 @@
 （Milestone 计算规则详见 DESIGN.md「Milestone：里程碑与成就」；
  DORMANT / Honesty Check-in 详见 DESIGN.md「DORMANT 唤醒仪式」）
 
-### 任务五：沉睡态(DORMANT) + Honesty Check-in 唤醒仪式（设计已定稿，待实现）
+### 任务五：沉睡态(DORMANT) + Honesty Check-in 唤醒仪式（✅ 2D 主链路已实现；Rim Light 正式路径待替换占位）
 ```
 目标：当日自然日尚无任何已完成会话 → DORMANT（打瞌睡）；
      用户可忽略或点击「Did you practice elsewhere?」补登 10/20/30+ 分钟；
-     10s 呼吸引导后 WakeUp（伸懒腰 + 既有 Rim Light），并按所选时长等同一次已完成会话。
+     10s 呼吸引导后 dormantWake（16 帧睡醒过渡 + 既有 FocusVisualizer），并按所选时长等同一次已完成会话。
 
-验收要点（实现时）：
-  - 诚实补登与正常计时一视同仁，无「次等」标记；
-  - 不占用共享提醒池每日 3 次额度；不设每日次数上限；
-  - 金色效果对接既有光环/Rim Light，禁止独立光效；
-  - 文案观察式，无验证/怀疑语气。
+已落地：DailyCompletionStore、HonestyCheckInController/UI、dormantWake 情绪键、
+       getLocalDateKey → utils/localDate.js、未达标 End Focus 安静回 DORMANT；
+       DORMANT 视觉 `sleeping` 8 帧 forward 循环；
+       `dormant-wake` 16 帧一次性正放，前后 180ms cross-fade，播完回归 idle-breathing。
+待替换：Rim Light 正式光效（当前 setFocusLevel 占位）。
 ```
-（定稿详见 DESIGN.md「DORMANT 唤醒仪式」/ PRINCIPLES.md「诚实机制」/ EMOTION_BIBLE Sleeping·WakeUp）
+（定稿详见 DESIGN.md「DORMANT 唤醒仪式」/ PRINCIPLES.md「诚实机制」/ EMOTION_BIBLE dormantWake）
 
 ### 任务六：PWA配置
 ```
