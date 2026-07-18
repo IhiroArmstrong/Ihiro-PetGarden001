@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md`。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md`。
 
 ---
 
@@ -11,7 +11,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-17
+**最后更新时间**：2026-07-18 21:15（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -19,18 +19,22 @@
 
 - 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`
+- 闭目坐禅 3D 历史备用模型为「灰棉麻袈裟 + 深红镶边」外观：原始 GLB 以英文名保存在本地 `art-reference/models/sources/`（按规则不入 Git），运行时版本经 Draco + WebP 压缩至约 307KB，沿用稳定路径 `public/models/tiger-meditate-closed.glb`；其深红镶边仅是备用资产的历史外观，不再定义当前正式服装，2D 主线与后续素材生成统一以 `CHARACTER_BIBLE.md` 的暖浅灰无红边棉麻服装为准
 - 动态效果层：`DynamicMotion`（呼吸起伏、绕 Y 轴旋转、庆祝悬浮）— 奖励柜可复用；2D 主线不要求同等旋转
 - 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子），经 `playEmotion('incenseComplete')` 触发
 - `EmotionController.playEmotion()` 统一情绪桥：业务侧不直连 PoseManager / DynamicMotion；映射表含已实现态 + 大量占位态
 - 鼠标/指针刺激检测：`PointerInteraction`（靠近 / 点头 / 抚摸分阈值 / 绕圈 / 静止歪头 → `playEmotion`；Celebrating 期间摸头忽略）
 - 眼睛跟随：`EyeTracking`（独立占位瞳孔图层、椭圆夹紧 + 阻尼跟随、闭眼/Celebrating 自动让位；debug 开关已接）
 - 文档体系：`PRODUCT_POSITIONING` / `MVP_PRODUCT_DEFINITION` / `PRINCIPLES` / `ARCHITECTURE` / `DESIGN` / `EMOTION_BIBLE` / `PROCESS` / `CHARACTER_BIBLE` / `TASKS` / `COLLAB`
+- 工程路径命名已清理：`focus-tiger/` 内受 Git、代码、构建或工具链处理的文件名统一为 ASCII 英文；原中文/特殊省略号命名的参考图和历史任务稿已改为英文 kebab-case，中文内容仍保留在文档正文中
+- `PRINCIPLES.md` 已新增「路径必须使用英文 ASCII」硬性规则：未来新增文件/目录统一采用小写 `kebab-case`，用户素材与压缩包须先按语义重命名再入库；always-applied 项目规则已同步。现存路径审计未发现中文、空格、括号或省略号，但严格 kebab-case 审计发现 281 个历史遗留路径，暂仅记录、不在本 Task 重命名
 - 产品定位文档 `PRODUCT_POSITIONING.md` 已纳入项目：确立正念伙伴（非传统电子宠物）、regular practice at your own pace、宁静型游戏化、三级完成反馈与只增不减的共同经历/纪念奖励；产品语义层级高于 `DESIGN.md`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
 - 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 的 macOS 系统通知钩子（只返回 `{}`，不启动额外模型回合，**不**自动 push）
 - `wave-hello` 挥手序列已替换为新服装正式版（19 帧，`frame_001.png` ～ `frame_019.png`）；旧深红袈裟 14 帧素材已下线移除；`SpriteSequencePlayer` 对接与 `playEmotion('welcomeBack')` 接线保持不变（分层路径规范见 `ARCHITECTURE.md`）
+- `CHARACTER_BIBLE` Master Character Prompt 已按 `wave-hello`、`tilt-think` 等正式素材同步为暖浅灰棉麻单肩斜襟服装，补全颜色、织纹、光泽与剪裁约束，并明确排除旧版深红布料、红色镶边及未获批准的服装莲花刺绣；`DESIGN.md` 材质说明同步更新
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
 - 角色/装扮可替换架构预留：`CharacterConfig.js` 为外观标识与素材路径拼接唯一出口（默认 `tiger-cub` / `monk-robe-default`）；素材按 `sprites/{characterId}/{outfitId}/{animationName}/frame_NNN.png` 分层入库；清单只存动作名 + 帧数，播放器按当前外观实时解析路径（本阶段不做换装 UI）
 - 三类非模态提醒运行时链路：`ReminderQuotaManager` 按用户本地自然日持久化共享额度（`MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 合计每日最多 3 次）；`AttentionSignals` 合并并去重 visibility + blur/focus 离开事件（20s 候选记账、超过 60s 回归展示）；`MindfulReminderController` 实现 20 分钟阶段确认、活跃累计 2 小时舒展提醒、Re-focus 每会话最多 1 次及强反馈静默让位；三类提醒复用 `MindfulAcknowledgeToast` 非模态 UI 与观察式中英文文案池。新增 11 项单元测试并通过，生产构建通过
@@ -45,16 +49,24 @@
 - Honesty Check-in UI：Mindful Check-in 标题加粗加深、呼吸面板与 Sit with Yin 按钮立体化
 - `dormantWake` 2D 正式素材：同源 `dormant-wake` 16 帧一次性正放（深睡→完全清醒坐姿）；呼吸引导期间保持 sleeping，sleeping→wake 与 wake→idle-breathing 均采用 180ms 双图层 cross-fade；末帧短暂停留，完整回落由序列 `onComplete` 驱动，既有 FocusVisualizer 金光继续作 Rim Light 重构前占位
 - `nodGreeting` 2D 正式素材：`nod-greeting` 23 帧一次性点头致意；`PointerInteraction` 靠近检测（半径/滞后/节流）已就绪并改接本键，播完回归 idle-breathing；原 `lookAtCursor` 保留为兼容占位
+- `curiousTilt` 歪头思考正式素材：`tilt-think` 20 帧一次性正放；鼠标在老虎靠近区位移 ≤6px、静止 4 秒触发，冷却 6 秒；静止检测已改为独立计时器，不再依赖后续 `pointermove`，播完回归 idle-breathing
+- `SessionComplete` 正式动作层：`session-complete` 28 帧完整叙事摆尾（约 2s、`loopMode: none`；光环/粒子已烧录）；完成前查询 `DailyCompletionStore`，每日首次只触发 `Celebrating`，同日后续只触发 `sessionComplete`；播放期归零 FocusVisualizer / Rim Light，播完回归 idle-breathing 后再进入 Reflection Moment
+- `MilestoneGlow` 调试预览：`milestone-glow` 27 帧完整叙事（金光+蝴蝶已烧录，无独立 DOM 层）；末帧固定停留 2.5s 后回落；播放期同样归零实时金光；真实里程碑判定仍属 Backlog「纪念奖励系统」
+- Session Intention / Arrival Practice v2 MVP：Sit → 欢迎（blink-smile）/ Notice 点选（不落库）/ ~5s 呼吸 / Choose（图标+打字，`intentions.v1`+source）→ Companion Mode → 再 Sit 计时；Skip / Skip — begin；Reflection 按来源回显；见 `CORE_LOOP.md` / `ARRIVE_MOMENT_DESIGN.md`
+- 光影物理渐进（2D）：`LightProgression` — Arrival 冷→暖、三层视差 Dolly（背景 1.06 / Yin 1.12）、4s 呼吸光环、Choose 坐垫光晕；日常 `focusLevel`→DOM Rim；Recover/Re-focus 扰动+约20%亮度下降、5s平复；原则写入 `PRINCIPLES` / `ARCHITECTURE`；详规 `LIGHT_PROGRESSION_DESIGN.md` / `task-briefs/task-light-progression-parallax-rim.md`；初稿 Re-focus 安慰句未过观察式自检，继续用 `REFOCUS_ACKNOWLEDGE` 池
+- `MindfulAcknowledge` 正式动作层：`nod-bow` 13 帧克制点头鞠躬（`loopMode: none`）；20 分钟阶段确认与 Re-focus 通过同一 `mindfulAcknowledge` key 播放，Re-focus 仅传 `subtype: 'refocus'`；强反馈检查仍在申请额度和播放动作之前，冲突时静默让位且不补发；播完回归 idle-breathing
+- `stretchReminder` 正式动作层：17 帧 `stretch-reminder` 坐姿张臂舒展序列（`loopMode: none`），复用既有活跃累计 2 小时触发、共享额度、非模态文案与强反馈让位链路，播完回归 idle-breathing。归属判定依据：该序列从清醒坐姿起势并向外张臂，现有 16 帧 `dormant-wake` 从侧卧熟睡过渡为清醒打坐；起始姿态、动作弧线、构图和帧数均不同，故按情况 A 独立入库，不替换 Honesty Check-in 动作
 - 播放器层候选素材（尚未绑定 emotion key / 业务触发）：`halo-breathing` 30 帧与 `blink-smile` 12 帧已按统一 `frame_NNN.png` 规范入库；播放器新增 `startFrame` 子序列支持，并注册 halo 方案 A（001–006 once → 007–030 pingpong）、方案 B（001–030 pingpong）及 blink-smile forward 技术试播定义。端点检查显示 halo 030→007 差异约为相邻帧中位数的 2.46 倍，blink-smile 012→001 约为 4.22 倍，二者均暂不接入正式调度
+- 2026-07-18 五套新素材（见 `docs/NEW_ASSETS_2026-07-18.md`）：`celebrate-dance-v2` 作 Celebrating 50/50 变体；`palms-together` 接 `intentionSet`（Choose 确认，与坐垫 CSS 光晕叠加）；`breath-halo-expand` 作 MilestoneGlow 简化备选（仅登记）；`lotus-front-rising` / `lotus-chest-halo` 仅入库（纪念奖励 Backlog）
+- 美术/动画全量盘点（2026-07-18）：`docs/ASSET_INVENTORY.md` + Canvas `focus-tiger-emotion-asset-inventory`；19 目录 / 407 帧；相对 07-17 新增 5 套
 
 **明确未完成（勿当作已验收）**：
 
 - 完整 Focus Confidence V1 运行时信号链路（可信度分值与 idle 检测）仍未实现；Re-focus 所需的最小 visibility + blur/focus 信号切片已由 `AttentionSignals` 落地
 - 正式瞳孔素材、大部分互动情绪的真实动画
-- `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 的真实 2D 动作素材尚未接入；触发、共享额度、非模态 UI 与观察式中英文文案均已实现，动作入口当前仍为 `EmotionController` 占位日志
-- `SessionComplete` 每次完成专注的轻量情绪确认（产品语义与情绪键已写入 `PRODUCT_POSITIONING` / `DESIGN` / `EMOTION_BIBLE`，代码、2D 素材与非模态文案尚未实现）
-- Session Intention 可选单行意图输入（已拍板并立项为 `TASKS.md` 任务十，未开发）
-- `MilestoneGlow` 里程碑金辉时刻（分镜与设计约束已定稿于 `EMOTION_BIBLE`，视频源已产出；抽帧入库、情绪键接线与 FOCUSING 光环呼吸律动均未实现，归属 Backlog「纪念奖励系统」）
+- Session Intention / Arrival Practice v2（✅）：Sit → 欢迎/Notice/呼吸/Choose → Companion Mode → 再 Sit 计时；Notice 不落库；Choose `intentions.v1`+source；Reflection 按来源回显；见 `ARRIVE_MOMENT_DESIGN.md` / `CORE_LOOP.md`
+- `SessionComplete` 的非模态观察式文案尚未实现；情绪键、2D 动作、完成事件分流与自动回落已完成
+- `MilestoneGlow` 真实里程碑判定与业务触发尚未实现（27 帧素材与调试预览键已接入；FOCUSING 日常光环呼吸律动仍待正式 Rim Light 路径），归属 Backlog「纪念奖励系统」
 - 角色/装扮可替换**完整功能**（用户可选换装 UI、多套角色/装扮素材）尚未实现；`CharacterConfig` 架构扩展点与素材路径/情绪触发解耦已落地
 - DORMANT 唤醒仪式的 Rim Light 正式重构仍待替换既有 FocusVisualizer / setFocusLevel 占位光效；`dormantWake` 真实 2D 睡醒序列已接入
 - Phase 0 清单中的持久化（除当日完成记录外）/ PWA 等（见 `TASKS.md`；DORMANT 唤醒仪式已摘出，见上条）
@@ -100,18 +112,19 @@
 
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
-- 将 Companion Mode 选择并入未来 Session Intention / Check-in 大面板（当前为独立预开始选择）
-- 按已确认反馈分级实现 `SessionComplete`：每次完成的轻量动作 + 非模态文案；每日首次达标仍由 `Celebrating` 替代
+- Companion Mode 与 Session Intention 已在同一预开始 dock 视觉合并（意图在上、三选一在下）；暂不另建独立 BeginPanel 类
+- 为已完成动作层的 `SessionComplete` 补非模态观察式文案（每日首次仍由 `Celebrating` 替代）
 - 按同一 manifest / player 接口逐步接入后续 2D 情绪序列
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移
-- 为 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 接入真实 2D 动作素材；运行时触发、额度与非模态文案条已完成
 - 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做）
 
 **已知的开放决策 / 待确认事项**：
 
-- across-tools 宽松 idle 兜底阈值微调（当前常量 30 分钟，可再拍板）
+- across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）
+
+**最近拍板（2026-07-18）**：Recover 家族 = Re-focus + 未来主动 Recover；`welcomeBack` 为 Idle 偶遇、不进家族；代码/限频继续分开（见 `CORE_LOOP.md`）。
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
@@ -150,11 +163,12 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 完成一个**有实质性进展**的 Task（非纯 debug / 微调）后：
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
-2. `git add` 相关文件 → `git commit`（message 带 Task 关键词，便于对照速览）  
-3. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
-4. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
+2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
+3. `git add` 相关文件 → `git commit`（message 带 Task 关键词，便于对照速览）  
+4. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
+5. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
 
-Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，并可代劳 `commit`；**未经用户口头/书面确认不得 `git push`**。
+Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，并可代劳 `commit`；**未经用户口头/书面确认不得 `git push`**。完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 
 ### 明确不做的自动化
 
@@ -185,7 +199,7 @@ Agent / Cursor 侧约定：实质性 Task 收尾时应**提醒**上述步骤，�
 
 | 方向 | 初始建议节点 | 说明 |
 |---|---|---|
-| 莲花池 | 5 天首朵莲花；10 天旁边多开一朵小莲花/花苞 | 后续随成就逐步增加，直至莲花满池；`EMOTION_BIBLE` 原「7 天出现莲花」并入此口径统一 |
+| 莲花池 | 5 天首朵莲花；10 天旁边多开一朵小莲花/花苞 | 后续随成就逐步增加，直至莲花满池；`EMOTION_BIBLE` 原「7 天出现莲花」并入此口径统一。**素材进展（2026-07-18）**：莲花池首朵素材已到位（`lotus-front-rising`，7 帧，已登记 manifest）；触发逻辑（连续/累计天数追踪、断签是否重置）待排期，**勿因素材到位顺手实现**。 |
 | 小香炉 | 3 天 | 老虎身前出现小香炉；此后「一炷香」反馈的烟从香炉里升起 |
 | 蒲团刺绣 | 30 天 | 蒲团边缘出现一圈细小刺绣纹样；与 `outfitId` 架构天然兼容 |
 | 夜间小灯笼 | 60 天 | 夜晚使用时老虎身边多一盏暖光小灯 |

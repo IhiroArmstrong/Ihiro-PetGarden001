@@ -86,6 +86,8 @@ export class PointerInteraction {
     this._lastCircleAt = 0;
 
     this._stillAnchor = /** @type {{ x: number, y: number, since: number } | null} */ (null);
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._stillTimer = null;
     this._lastCuriousAt = 0;
 
     this._pointerDown = false;
@@ -119,6 +121,7 @@ export class PointerInteraction {
     window.removeEventListener('pointerup', this._onPointerUp);
     window.removeEventListener('pointercancel', this._onPointerCancel);
     target.removeEventListener('pointerleave', this._onPointerMove);
+    this._clearStillTimer();
   }
 
   /** 是否处于 Celebrating（欢呼期间摸头忽略） */
@@ -280,11 +283,12 @@ export class PointerInteraction {
           tigerCenter: { x: rect.cx, y: rect.cy }
         });
       }
-      this._stillAnchor = { x: clientX, y: clientY, since: now };
+      this._resetStillAnchor(clientX, clientY, now);
       this._circleSamples = [];
     } else if (this._isNear && dist > leaveR) {
       this._isNear = false;
       this._stillAnchor = null;
+      this._clearStillTimer();
       this._circleSamples = [];
       if (this._lookAtActive && !this.isCelebrating()) {
         this._lookAtActive = false;
@@ -305,7 +309,7 @@ export class PointerInteraction {
 
   _updateStill(clientX, clientY, now) {
     if (!this._stillAnchor) {
-      this._stillAnchor = { x: clientX, y: clientY, since: now };
+      this._resetStillAnchor(clientX, clientY, now);
       return;
     }
 
@@ -314,19 +318,80 @@ export class PointerInteraction {
       clientY - this._stillAnchor.y
     );
     if (moved > POINTER_INTERACTION_CONFIG.stillMoveEpsilonPx) {
-      this._stillAnchor = { x: clientX, y: clientY, since: now };
+      this._resetStillAnchor(clientX, clientY, now);
+      return;
+    }
+
+    this._tryTriggerStill(now);
+  }
+
+  _resetStillAnchor(clientX, clientY, now) {
+    this._stillAnchor = { x: clientX, y: clientY, since: now };
+    this._scheduleStillCheck(now);
+  }
+
+  _clearStillTimer() {
+    if (this._stillTimer === null) return;
+    globalThis.clearTimeout(this._stillTimer);
+    this._stillTimer = null;
+  }
+
+  /**
+   * 独立计时器保证鼠标完全静止、不再产生 pointermove 时仍可触发。
+   * pointermove 只负责在位移超过阈值时重置锚点与倒计时。
+   */
+  _scheduleStillCheck(now = performance.now()) {
+    this._clearStillTimer();
+    if (!this._isNear || !this._stillAnchor) return;
+
+    const stillRemaining = Math.max(
+      0,
+      POINTER_INTERACTION_CONFIG.stillDurationMs -
+        (now - this._stillAnchor.since)
+    );
+    const cooldownRemaining = Math.max(
+      0,
+      POINTER_INTERACTION_CONFIG.curiousCooldownMs -
+        (now - this._lastCuriousAt)
+    );
+    const delay = Math.max(stillRemaining, cooldownRemaining);
+
+    this._stillTimer = globalThis.setTimeout(() => {
+      this._stillTimer = null;
+      this._tryTriggerStill(performance.now());
+    }, delay);
+  }
+
+  _tryTriggerStill(now) {
+    if (!this._isNear || !this._stillAnchor) {
+      this._clearStillTimer();
       return;
     }
 
     const elapsed = now - this._stillAnchor.since;
+    const cooldownElapsed = now - this._lastCuriousAt;
     if (
       elapsed >= POINTER_INTERACTION_CONFIG.stillDurationMs &&
-      now - this._lastCuriousAt >= POINTER_INTERACTION_CONFIG.curiousCooldownMs
+      cooldownElapsed >= POINTER_INTERACTION_CONFIG.curiousCooldownMs &&
+      !this.isCelebrating()
     ) {
       this._lastCuriousAt = now;
-      this._stillAnchor = { x: clientX, y: clientY, since: now };
+      const { x, y } = this._stillAnchor;
+      this._stillAnchor = { x, y, since: now };
       this._play(EMOTION_KEYS.CURIOUS_TILT, { stillMs: elapsed });
     }
+
+    // 保留既有冷却语义；若 Celebrating 正在播放，短暂后再检查但不排队动作。
+    const retryNow = performance.now();
+    if (this.isCelebrating()) {
+      this._clearStillTimer();
+      this._stillTimer = globalThis.setTimeout(() => {
+        this._stillTimer = null;
+        this._tryTriggerStill(performance.now());
+      }, 250);
+      return;
+    }
+    this._scheduleStillCheck(retryNow);
   }
 
   _updateCircle(clientX, clientY, now, rect) {

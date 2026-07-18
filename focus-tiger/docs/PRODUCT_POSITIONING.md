@@ -13,10 +13,12 @@
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
-4. `DESIGN.md`：当前产品语义、体验循环与玩法；
-5. `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md`：情绪行为与角色设定；
-6. `ARCHITECTURE.md`：技术实现和模块边界；
-7. `PROCESS.md` / `TASKS.md`：阶段范围、协作流程与排期。
+4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；
+5. `CORE_LOOP.md` / `ARRIVE_MOMENT_DESIGN.md`：单次会话七步状态机与 Arrival Practice 交互详规；
+6. `DESIGN.md`：当前产品语义、体验循环与玩法；
+7. `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md`：情绪行为与角色设定；
+8. `ARCHITECTURE.md`：技术实现和模块边界；
+9. `PROCESS.md` / `TASKS.md`：阶段范围、协作流程与排期。
 
 ---
 
@@ -109,7 +111,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 
 产品不应演化成复杂待办或项目管理工具。
 
-**Session Intention（已拍板，2026-07-15，最小形态）**：开始专注前提供一个**可选**的单行输入框（"What would you like to focus on?"），可跳过且跳过不减任何反馈；仅本次会话内显示、结束语回显一次；最多本地保存最近几条。它是仪式感与觉察入口，**不参与达标判定**——定量达标仍只由用户设定的目标时长决定。明确不做任务列表、完成勾选、分类统计与逾期提醒。已立项为 `TASKS.md` Phase 1 任务十，按「一次只做一个任务」排队开发。
+**Session Intention / Arrival Practice（✅ v2，2026-07-18）**：点击 Sit with Yin 后进入 Arrival Practice（欢迎 → Notice 不落库 → 呼吸 → Choose 落库回显）→ Companion Mode → 再 Sit 开始。可整体/分步跳过。详规见 `ARRIVE_MOMENT_DESIGN.md` / `CORE_LOOP.md`。
 
 ---
 

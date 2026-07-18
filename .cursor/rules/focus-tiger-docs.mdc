@@ -21,6 +21,10 @@ alwaysApply: true
 |---|---|
 | `docs/PRODUCT_POSITIONING.md` | **品牌与产品战略顶层**：核心使命、正念伙伴定位、宁静型游戏化、反馈分级与长期边界；产品语义层级高于 `DESIGN.md` |
 | `docs/MVP_PRODUCT_DEFINITION.md` | **MVP 产品策略基线**：首要用户、JTBD、竞争替代品、验证指标、付费假设与隐私承诺；假设不等同于已上线功能 |
+| `docs/PRODUCT_MOMENTS.md` | **一天叙事框架（Five Moments）**：Arrive / Focus / Recover / Transition / Reflect；位于定位之下、`TASKS` 之上，不推翻已有实现 |
+| `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
+| `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
+| `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
 | `docs/PRINCIPLES.md` | **硬性红线**：不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
@@ -29,6 +33,7 @@ alwaysApply: true
 | `docs/PROCESS.md` | 协作流程、角色边界、**Backlog**、文首「当前进度速览」（重大进展后更新） |
 | `docs/COLLAB.md` | Task Brief / 文档更新协作约定 |
 | `docs/TASKS.md` | 任务序列（按需查，勿全文常驻上下文） |
+| `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；完成任务时须更新并在回复中说明需测项 |
 
 ## PRINCIPLES 硬性摘要
 
@@ -40,6 +45,7 @@ alwaysApply: true
 - **不制造焦虑**：默认态中性/温馨；禁止退步感视觉（灰败、悲伤、评判「不专注」因果）。  
 - **永不消失**：只有打瞌睡等候，无死亡/离家出走苦情。  
 - **一次只做一个任务**；禁止未立项超范围与占位空目录。  
+- **路径必须使用英文 ASCII**：所有新增并由代码、构建流程或 Git 处理的文件/目录均用小写 `kebab-case`；禁止中文、空格、下划线、括号、省略号等特殊字符。用户提供的素材或压缩包须在入库前先按语义重命名（如「点头致意」→ `nod-greeting`），只豁免文件正文内容，不豁免文件名。完整规则见 `PRINCIPLES.md`「原则三」。
 - 老虎与陪伴体验是主角，数据是配角；正向反馈要即时有情感。
 
 ## ARCHITECTURE 硬性摘要
@@ -61,6 +67,16 @@ alwaysApply: true
 - 不要在情绪主线任务里实现纪念奖励/成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
+
+## TEST_TRACKER 日常维护（Part 2）
+
+每次完成一项任务后：
+
+1. **UI / 动画 / 文案 / 交互**可见改动 → 在 `docs/TEST_TRACKER.md` 新增一行，状态「待人工测试」，写清测试步骤与本地访问路径，日期填当天。
+2. **纯后端 / 逻辑** → 登记「仅单元测试覆盖」，仍要登记。
+3. 完成消息须写明「本次有 N 项需要你测试，已更新 TEST_TRACKER.md」；禁止仅以「已完成 / 已验收」收尾。
+4. 单元测试通过 ≠ 用户验收；视觉项在用户确认前保持「待人工测试」。
+5. 用户反馈问题 → 该行改「有问题」并写明瑕疵；修复后再改回「待人工测试」等复测，**禁止**自行标「已通过」。
 
 ## Git 同步（半自动，禁止静默 push）
 

@@ -19,19 +19,22 @@ export class MindfulReminderController {
    * @param {{show(message: string): boolean}} deps.toast
    * @param {(poolKey: string) => string} deps.getCopy
    * @param {() => number} [deps.now]
+   * @param {(type: 'mindful' | 'stretch' | 'refocus') => void} [deps.onReminderShown]
    */
   constructor({
     quotaManager,
     emotionController,
     toast,
     getCopy,
-    now = () => Date.now()
+    now = () => Date.now(),
+    onReminderShown = null
   }) {
     this.quotaManager = quotaManager;
     this.emotionController = emotionController;
     this.toast = toast;
     this.getCopy = getCopy;
     this.now = now;
+    this.onReminderShown = onReminderShown;
 
     this.sessionActive = false;
     this.sessionElapsedSeconds = 0;
@@ -170,6 +173,8 @@ export class MindfulReminderController {
     }[type];
 
     this.emotionController.playEmotion(config.emotionKey, { subtype: type });
-    return this.toast.show(this.getCopy(config.poolKey));
+    const shown = this.toast.show(this.getCopy(config.poolKey));
+    if (shown) this.onReminderShown?.(type);
+    return shown;
   }
 }

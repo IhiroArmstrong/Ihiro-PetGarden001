@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { ReflectionFlowState } from './ReflectionFlowState.js';
 import { trimReflections, REFLECTION_MAX_SAVED } from '../core/SessionEndFlow.js';
+import { formatIntentionEcho } from '../core/SessionIntentionStore.js';
 
 test('advances through three questions and collects only non-empty answers', () => {
   const flow = new ReflectionFlowState();
@@ -57,4 +58,11 @@ test('trimReflections keeps only the most recent entries', () => {
   assert.equal(list.length, REFLECTION_MAX_SAVED);
   assert.equal(list[0].createdAt, 3);
   assert.equal(list[list.length - 1].createdAt, REFLECTION_MAX_SAVED + 2);
+});
+
+test('formatIntentionEcho substitutes the stored intention text', () => {
+  assert.equal(
+    formatIntentionEcho('Attention toward: {text}', 'write quietly'),
+    'Attention toward: write quietly'
+  );
 });

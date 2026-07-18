@@ -33,3 +33,6 @@ test-results/
 # Large local art sources (keep on disk; do not push)
 focus-tiger/art-reference/models/sources/*
 !focus-tiger/art-reference/models/sources/README.md
+
+# Ingested sprite source archives — frames live under public/sprites/
+*-transparent.zip

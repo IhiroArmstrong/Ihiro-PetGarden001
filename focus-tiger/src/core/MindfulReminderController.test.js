@@ -62,7 +62,7 @@ test('20 minute and 2 hour reminders use the same display path', () => {
 });
 
 test('Re-focus is handled at most once per focus session', () => {
-  const { controller, shown } = setup();
+  const { controller, emotions, shown } = setup();
   controller.startSession();
 
   controller.handleAttentionReturn({ durationMs: 60_001, displayEligible: true });
@@ -70,6 +70,12 @@ test('Re-focus is handled at most once per focus session', () => {
 
   assert.equal(REFOCUS_PER_SESSION_LIMIT, 1);
   assert.deepEqual(shown, ['REFOCUS_ACKNOWLEDGE']);
+  assert.deepEqual(emotions, [
+    {
+      key: 'mindfulAcknowledge',
+      options: { subtype: 'refocus' }
+    }
+  ]);
   assert.equal(controller.getSessionStats().candidateDepartureCount, 2);
 });
 
@@ -86,7 +92,7 @@ test('20 second candidate is recorded without consuming display quota', () => {
 });
 
 test('eligible Re-focus silently yields to a stronger emotion and is not replayed', () => {
-  const { controller, emotionController, shown } = setup();
+  const { controller, emotionController, emotions, shown } = setup();
   controller.startSession();
   emotionController.current = 'celebrating';
   controller.handleAttentionReturn({ durationMs: 61_000, displayEligible: true });
@@ -94,6 +100,7 @@ test('eligible Re-focus silently yields to a stronger emotion and is not replaye
   controller.handleAttentionReturn({ durationMs: 70_000, displayEligible: true });
 
   assert.deepEqual(shown, []);
+  assert.deepEqual(emotions, []);
   assert.equal(controller.getSessionStats().refocusHandledThisSession, 1);
 });
 

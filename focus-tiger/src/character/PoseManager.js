@@ -17,7 +17,7 @@ export const POSE_KEYS = {
 };
 
 const POSE_ASSETS = {
-  // 默认闭眼坐禅：Yin001 灰棉麻袈裟 + 自带蒲团（gltf-transform Draco+WebP，~500KB）
+  // 默认闭眼坐禅：灰棉麻袈裟 + 深红镶边（gltf-transform Draco+WebP，~300KB）
   [POSE_KEYS.IDLE_CLOSED_EYES]: '/models/tiger-meditate-closed.glb',
   [POSE_KEYS.SLEEPING]: '/models/tiger-sleeping.glb',
   [POSE_KEYS.IDLE_SMILING]: '/models/tiger-meditate-smile.glb',

@@ -23,6 +23,7 @@ import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
+import { LightProgression } from './effects/LightProgression.js';
 import { DynamicMotion } from './effects/DynamicMotion.js';
 import { EyeTracking } from './effects/EyeTracking.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
@@ -36,9 +37,12 @@ import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
+import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import { HonestyCheckInController } from './core/HonestyCheckInController.js';
 import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
+import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
+import { recordIntention } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
@@ -177,11 +181,18 @@ async function init() {
   const mindfulToast = new MindfulAcknowledgeToast(
     document.getElementById('ui-overlay')
   );
+  const lightProgression = new LightProgression({
+    appEl: app,
+    getSpriteOverlay: () => spritePlayer.overlayEl
+  });
   const mindfulReminderController = new MindfulReminderController({
     quotaManager: reminderQuotaManager,
     emotionController,
     toast: mindfulToast,
-    getCopy: tPool
+    getCopy: tPool,
+    onReminderShown: (type) => {
+      if (type === 'refocus') lightProgression.playRecoverDisturbance();
+    }
   });
   const attentionSignals = new AttentionSignals({
     onAway: () => mindfulReminderController.setAttentionAway(true),
@@ -234,9 +245,9 @@ async function init() {
   }
 
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
-  reflectionMoment.open = () => {
+  reflectionMoment.open = (options) => {
     companionModePicker.hide();
-    reflectionOpen();
+    reflectionOpen(options);
     syncCompanionPostSessionChrome();
   };
   const reflectionOnDone = reflectionMoment.onDone;
@@ -276,7 +287,46 @@ async function init() {
     window.__ambientSoundscape = ambientSoundscape;
   }
 
-  let celebratePending = false;
+  let completionPending = false;
+  /** Arrival Practice 完成后才允许 Sit 真正开计时 */
+  let arrivalGateReady = false;
+  /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
+  let pendingChoose = null;
+  /** @type {string} 本次会话 Choose 内容；达标与未达标结束均回显 */
+  let currentSessionIntention = '';
+  /** @type {'icon' | 'typed'} */
+  let currentIntentionSource = 'typed';
+
+  const arrivalPractice = new ArrivalPracticeUI(
+    document.getElementById('ui-overlay'),
+    {
+      onBegin: () => lightProgression.beginArrival(),
+      onWelcome: () => {
+        emotionController.playEmotion('smiling');
+      },
+      onNoticeSelected: () => lightProgression.onNoticeSelected(),
+      onBreath: () => lightProgression.beginBreath(),
+      onAfterBreath: () => lightProgression.endBreath(),
+      onChooseConfirmed: () => lightProgression.onChooseConfirmed(),
+      // 合十动作与坐垫 CSS 光晕叠加；跳过 Choose 时不播。
+      onIntentionSetPlay: (done) => {
+        emotionController.playEmotion('intentionSet', {
+          onComplete: () => done?.()
+        });
+      },
+      onClearLight: () => lightProgression.clearArrivalEffects(),
+      onReady: () => {
+        pendingChoose = arrivalPractice.getChooseResult();
+        arrivalGateReady = true;
+        companionModePicker.setPostSessionOverlayActive(false);
+        companionModePicker.open();
+      }
+    }
+  );
+  if (import.meta.env.DEV) {
+    window.__arrivalPractice = arrivalPractice;
+    window.__lightProgression = lightProgression;
+  }
 
   function endFocusChrome() {
     attentionSignals.setEnabled(false);
@@ -289,24 +339,39 @@ async function init() {
 
   function beginSessionCompleteIfNeeded() {
     if (
-      celebratePending ||
+      completionPending ||
       stateManager.state !== STATES.FOCUSING ||
       !focusSession.hasReachedTarget()
     ) {
       return;
     }
 
-    celebratePending = true;
+    completionPending = true;
     endFocusChrome();
     focusSession.pause();
-    // 庆祝时长由 celebrate-dance 一次性序列 onComplete 驱动（见 MoodController）
-    stateManager.setState(STATES.CELEBRATE);
+    // 本次记账发生在反馈播完后，因此这里读取的是“完成本次之前”的自然日状态。
+    // 当日首次只播 Celebrating；同日后续只播 SessionComplete，二者不叠加。
+    triggerSessionCompletionFeedback({
+      hasCompletedToday: dailyCompletionStore.hasCompletedToday(),
+      emotionController,
+      startCelebrating: () => stateManager.setState(STATES.CELEBRATE),
+      onComplete: finishCompletedSession
+    });
   }
 
   function beginFocusWithMode(companionMode) {
     sessionEndFlow.cancelPending();
     honestyCheckInUI.hide();
     honestyGlowLevel = null;
+    currentSessionIntention = pendingChoose?.text ?? '';
+    currentIntentionSource = pendingChoose?.source === 'icon' ? 'icon' : 'typed';
+    pendingChoose = null;
+    arrivalGateReady = false;
+    if (currentSessionIntention) {
+      recordIntention(currentSessionIntention, {
+        source: currentIntentionSource
+      });
+    }
     companionModePicker.setIdleChromeVisible(false);
     focusSession.start({ companionMode });
     mindfulReminderController.startSession({
@@ -325,45 +390,73 @@ async function init() {
       });
     }
     stateManager.setState(STATES.FOCUSING);
-    celebratePending = false;
+    completionPending = false;
   }
 
   const focusInput = new FocusInput(
     () => {
-      if (celebratePending) return false;
+      if (completionPending) return false;
       sessionEndFlow.cancelPending();
       honestyCheckInUI.hide();
+
+      if (arrivalPractice.isOpen()) {
+        arrivalPractice.skipToBegin();
+        return false;
+      }
+
+      if (!arrivalGateReady) {
+        companionModePicker.setPostSessionOverlayActive(true);
+        companionModePicker.hide();
+        arrivalPractice.start();
+        return false;
+      }
+
       beginFocusWithMode(companionModePicker.getSelectedMode());
       return true;
     },
     () => {
       companionModePicker.hide();
+      arrivalPractice.hide();
+      arrivalGateReady = false;
+      pendingChoose = null;
       endFocusChrome();
       focusSession.stop();
-      celebratePending = false;
+      completionPending = false;
       honestyGlowLevel = null;
       tigerCharacter.setFocusLevel(0);
       honestyCheckIn.onIncompleteSessionEnded();
       companionModePicker.setIdleChromeVisible(true);
-      sessionEndFlow.onSessionEnded({ completed: false });
+      sessionEndFlow.onSessionEnded({
+        completed: false,
+        intention: currentSessionIntention,
+        intentionSource: currentIntentionSource
+      });
+      currentSessionIntention = '';
+      currentIntentionSource = 'typed';
     }
   );
 
-  function finishCelebrateSession() {
-    if (!celebratePending) return;
+  function finishCompletedSession() {
+    if (!completionPending) return;
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
     stateManager.setState(STATES.IDLE);
     honestyGlowLevel = null;
     tigerCharacter.setFocusLevel(0);
     focusInput.resetButton(focusButton);
-    celebratePending = false;
+    completionPending = false;
     companionModePicker.setIdleChromeVisible(true);
-    sessionEndFlow.onSessionEnded({ completed: true });
+    sessionEndFlow.onSessionEnded({
+      completed: true,
+      intention: currentSessionIntention,
+      intentionSource: currentIntentionSource
+    });
+    currentSessionIntention = '';
+    currentIntentionSource = 'typed';
   }
 
   const moodController = new MoodController(stateManager, emotionController, {
-    onCelebrateComplete: finishCelebrateSession
+    onCelebrateComplete: finishCompletedSession
   });
   // StateManager 初始 IDLE 不会主动发 onChange；显式启动 observer baseline。
   moodController.handleStateChange(stateManager.state);
@@ -397,9 +490,13 @@ async function init() {
       stateManager.state === STATES.FOCUSING
         ? ambientSoundscape.getPresenceBoost(focusSession.targetMinutes)
         : 0;
-    const visualLevel = Math.min(1, focusLevel + presenceBoost);
+    // 已烧录金光的叙事动画播放期归零实时光效，避免与帧内光环/粒子过曝。
+    const visualLevel = emotionController.shouldSuppressRuntimeGlow()
+      ? 0
+      : Math.min(1, focusLevel + presenceBoost);
     tigerCharacter.setFocusLevel(visualLevel);
     focusVisualizer.update(visualLevel);
+    lightProgression.updateFocusGlow(visualLevel, delta);
     tigerCharacter.update(delta);
     dynamicMotion.update(delta);
     transitionFX.update(delta);

@@ -12,6 +12,20 @@ import { POSE_KEYS } from '../character/PoseManager.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
 export const DORMANT_WAKE_CROSS_FADE_MS = 180;
+export const MILESTONE_GLOW_HOLD_MS = 2500;
+
+const BAKED_EFFECT_EMOTIONS = new Set([
+  'celebrating',
+  'milestoneGlow',
+  'sessionComplete'
+]);
+const RUNTIME_GLOW_NEUTRAL_KEYS = new Set([
+  'breathing',
+  'rotation',
+  'hover',
+  'eyeTracking',
+  'incenseComplete'
+]);
 
 /**
  * 规范化 emotionKey：兼容 Bible PascalCase（Idle）与接口 camelCase（idle）。
@@ -50,7 +64,34 @@ function pendingInteraction(emotionKey) {
   };
 }
 
+/** Celebrating 两个 2D 变体；MVP 每次触发 50/50，不做轮换记账。 */
+export const CELEBRATE_DANCE_VARIANTS = Object.freeze([
+  'celebrateDance',
+  'celebrateDanceV2'
+]);
+
+/**
+ * @param {() => number} [random] 可注入；默认 Math.random
+ * @returns {'celebrateDance' | 'celebrateDanceV2'}
+ */
+export function pickCelebrateDanceVariant(random = Math.random) {
+  return random() < 0.5
+    ? CELEBRATE_DANCE_VARIANTS[0]
+    : CELEBRATE_DANCE_VARIANTS[1];
+}
+
+/** Bible 对齐的公开情绪常量；保留 camelCase 供业务层直接调用。 */
+export const EMOTIONS = Object.freeze({
+  milestoneGlow: 'milestoneGlow',
+  sessionComplete: 'sessionComplete',
+  mindfulAcknowledge: 'mindfulAcknowledge',
+  stretchReminder: 'stretchReminder',
+  intentionSet: 'intentionSet'
+});
+
 export class EmotionController {
+  static EMOTIONS = EMOTIONS;
+
   /**
    * @param {object} deps
    * @param {import('../character/PoseManager.js').PoseManager} deps.poseManager
@@ -80,6 +121,10 @@ export class EmotionController {
 
     /** @type {string | null} */
     this._currentEmotionKey = null;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._milestoneHoldTimer = null;
+    this._milestoneHoldToken = 0;
+    this._runtimeGlowSuppressed = false;
 
     /**
      * 情绪标识符 → 底层调用组合。
@@ -123,6 +168,9 @@ export class EmotionController {
         }
         const callerOnComplete =
           typeof options.onComplete === 'function' ? options.onComplete : null;
+        const sequenceName = pickCelebrateDanceVariant(
+          typeof options.random === 'function' ? options.random : Math.random
+        );
 
         if (!this.spritePlayer) {
           console.warn(
@@ -130,22 +178,51 @@ export class EmotionController {
           );
           window.setTimeout(() => {
             this.playEmotion('idle');
-            callerOnComplete?.('celebrateDance');
+            callerOnComplete?.(sequenceName);
           }, 4000);
           return;
         }
 
-        const started = this.spritePlayer.play('celebrateDance', {
-          ...options,
+        const { random: _random, ...playOptions } = options;
+        const started = this.spritePlayer.play(sequenceName, {
+          ...playOptions,
           onComplete: () => {
             // 情绪来了又走：完整弧线播完 → 回归坐姿呼吸基底
             this.playEmotion('idle');
-            callerOnComplete?.('celebrateDance');
+            callerOnComplete?.(sequenceName);
           }
         });
         if (!started) {
           this.playEmotion('idle');
-          callerOnComplete?.('celebrateDance');
+          callerOnComplete?.(sequenceName);
+        }
+      },
+
+      // Arrival Choose 确认合十：播完不抢 Companion Mode；由调用方在 onComplete 里开门闩。
+      intentionSet: (options = {}) => {
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] intentionSet: spritePlayer 未接入，直接完成'
+          );
+          callerOnComplete?.('intentionSet');
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const started = this.spritePlayer.play('palmsTogether', {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          onComplete: () => {
+            this.playEmotion('idle');
+            callerOnComplete?.('intentionSet');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('intentionSet');
         }
       },
 
@@ -156,6 +233,71 @@ export class EmotionController {
       },
 
       // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
+      // 里程碑金辉时刻：当前仅供调试预览，不接真实里程碑判定。
+      // 序列末帧固定停留 2.5s，让烧录在末段的金光与蝴蝶自然收束后回落。
+      milestoneGlow: (options = {}) => {
+        this._cancelMilestoneHold();
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] milestoneGlow: spritePlayer 未接入，回落 idle'
+          );
+          this.playEmotion('idle');
+          callerOnComplete?.('milestoneGlow');
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const started = this.spritePlayer.play('milestoneGlow', {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          holdLastFrame: true,
+          onComplete: () => {
+            this._holdMilestoneLastFrame(() => {
+              this.playEmotion('idle');
+              callerOnComplete?.('milestoneGlow');
+            });
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('milestoneGlow');
+        }
+      },
+
+      // 每次完成的完整摆尾叙事；光环与粒子已烧录，播放期关闭常规实时金光。
+      sessionComplete: (options = {}) => {
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] sessionComplete: spritePlayer 未接入，回落 idle'
+          );
+          this.playEmotion('idle');
+          callerOnComplete?.('sessionComplete');
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        this.dynamicMotion.setBreathingEnabled(true);
+        const started = this.spritePlayer.play('sessionComplete', {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          onComplete: () => {
+            // 一次性反馈结束后恢复观照者坐姿呼吸基底。
+            this.playEmotion('idle');
+            callerOnComplete?.('sessionComplete');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('sessionComplete');
+        }
+      },
+
       // WelcomeBack（挥手欢迎）：一次性响应行为；播完淡出让位回落到 Idle。
       // 触发源见 EMOTION_BIBLE 第五部分（用户重新回来 / 10 分钟无互动 30% 挥手）。
       welcomeBack: (options = {}) => {
@@ -202,6 +344,31 @@ export class EmotionController {
         if (!started) {
           this.playEmotion('idle');
           callerOnComplete?.('nodGreeting');
+        }
+      },
+
+      // 歪头思考：鼠标在老虎附近静止触发；一次性播放后回归 idle-breathing。
+      curiousTilt: (options = {}) => {
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] curiousTilt: spritePlayer 未接入，跳过'
+          );
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        const started = this.spritePlayer.play('tiltThink', {
+          ...options,
+          onComplete: () => {
+            this.playEmotion('idle');
+            callerOnComplete?.('tiltThink');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('tiltThink');
         }
       },
 
@@ -338,11 +505,63 @@ export class EmotionController {
       smileSquint: pendingInteraction('smileSquint'),
       petHead: pendingInteraction('petHead'),
       dizzyBlink: pendingInteraction('dizzyBlink'),
-      curiousTilt: pendingInteraction('curiousTilt'),
 
-      // —— 阶段性正念认可（轻于 Celebrating；文案走 i18n）——
-      mindfulAcknowledge: pendingInteraction('mindfulAcknowledge'),
-      stretchReminder: pendingInteraction('stretchReminder')
+      // —— 阶段性正念认可（轻于 SessionComplete / Celebrating；文案走 i18n）——
+      // Re-focus 通过 options.subtype === 'refocus' 复用同一小幅点头鞠躬，不另建 key。
+      mindfulAcknowledge: (options = {}) => {
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] mindfulAcknowledge: spritePlayer 未接入，回落 idle'
+          );
+          this.playEmotion('idle');
+          callerOnComplete?.('nodBow');
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const started = this.spritePlayer.play('nodBow', {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          onComplete: () => {
+            this.playEmotion('idle');
+            callerOnComplete?.('nodBow');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('nodBow');
+        }
+      },
+      stretchReminder: (options = {}) => {
+        const callerOnComplete =
+          typeof options.onComplete === 'function' ? options.onComplete : null;
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] stretchReminder: spritePlayer 未接入，回落 idle'
+          );
+          this.playEmotion('idle');
+          callerOnComplete?.('stretchReminder');
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const started = this.spritePlayer.play('stretchReminder', {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          onComplete: () => {
+            this.playEmotion('idle');
+            callerOnComplete?.('stretchReminder');
+          }
+        });
+        if (!started) {
+          this.playEmotion('idle');
+          callerOnComplete?.('stretchReminder');
+        }
+      }
     };
   }
 
@@ -363,6 +582,28 @@ export class EmotionController {
   }
 
   /**
+   * MilestoneGlow 的金光与蝴蝶已烧录在帧中；末帧按固定时长停留后直接完成。
+   * @param {() => void} onComplete
+   */
+  _holdMilestoneLastFrame(onComplete) {
+    this._cancelMilestoneHold();
+    const token = ++this._milestoneHoldToken;
+    this._milestoneHoldTimer = globalThis.setTimeout(() => {
+      if (token !== this._milestoneHoldToken) return;
+      this._milestoneHoldTimer = null;
+      onComplete();
+    }, MILESTONE_GLOW_HOLD_MS);
+  }
+
+  _cancelMilestoneHold() {
+    this._milestoneHoldToken += 1;
+    if (this._milestoneHoldTimer !== null) {
+      globalThis.clearTimeout(this._milestoneHoldTimer);
+      this._milestoneHoldTimer = null;
+    }
+  }
+
+  /**
    * 统一情绪播放入口。
    * @param {string} emotionKey EMOTION_BIBLE 标识符（如 'idle' / 'Idle' / 'incenseComplete'）
    * @param {EmotionOptions} [options]
@@ -379,6 +620,14 @@ export class EmotionController {
       return false;
     }
 
+    if (key !== 'milestoneGlow') {
+      this._cancelMilestoneHold();
+    }
+    if (BAKED_EFFECT_EMOTIONS.has(key)) {
+      this._runtimeGlowSuppressed = true;
+    } else if (!RUNTIME_GLOW_NEUTRAL_KEYS.has(key)) {
+      this._runtimeGlowSuppressed = false;
+    }
     impl(options);
     // 叠加层开关及非模态提醒不抢占「当前基底情绪」记录
     if (
@@ -400,6 +649,11 @@ export class EmotionController {
     return this._currentEmotionKey;
   }
 
+  /** @returns {boolean} 已烧录叙事光效播放期是否应关闭常规实时金光。 */
+  shouldSuppressRuntimeGlow() {
+    return this._runtimeGlowSuppressed;
+  }
+
   /**
    * 调试面板：情绪按钮 + 动态效果层开关，全部走 playEmotion。
    * @param {HTMLElement} container
@@ -410,10 +664,16 @@ export class EmotionController {
       { key: 'sleeping', label: '睡着了' },
       { key: 'smiling', label: '坐禅微笑' },
       { key: 'celebrating', label: '庆祝跳舞(2D)' },
+      { key: 'intentionSet', label: '合十确认(2D)' },
       { key: 'tPose', label: 'T-Pose' },
       { key: 'incenseComplete', label: '模拟一炷香完成' },
+      { key: 'milestoneGlow', label: '里程碑金辉(2D预览)' },
+      { key: 'sessionComplete', label: '完成摆尾(2D)' },
       { key: 'welcomeBack', label: '挥手欢迎(2D序列)' },
       { key: 'nodGreeting', label: '点头致意(2D)' },
+      { key: 'curiousTilt', label: '歪头思考(2D)' },
+      { key: 'mindfulAcknowledge', label: '正念点头鞠躬(2D)' },
+      { key: 'stretchReminder', label: '两小时舒展(2D)' },
       { key: 'blink', label: '眨眼(blink-smile)' },
       { key: 'wakeUp', label: '唤醒(占位)' },
       { key: 'dormantWake', label: 'Honesty唤醒' },
@@ -438,6 +698,23 @@ export class EmotionController {
           // 与旧调试行为一致：先切回闭眼坐禅，淡入后再播一炷香反馈
           this.playEmotion('idle');
           window.setTimeout(() => this.playEmotion('incenseComplete'), 560);
+          return;
+        }
+        if (key === 'milestoneGlow' && this.spritePlayer) {
+          // 约 24MB 的调试专用序列不进入启动预加载；首次点击时先完整缓存再播放。
+          btn.disabled = true;
+          void this.spritePlayer
+            .preload(['milestoneGlow'])
+            .then(() => this.playEmotion('milestoneGlow'))
+            .catch((error) => {
+              console.warn(
+                '[EmotionController] milestoneGlow 调试素材预加载失败',
+                error
+              );
+            })
+            .finally(() => {
+              btn.disabled = false;
+            });
           return;
         }
         this.playEmotion(key);
@@ -526,7 +803,10 @@ export const EMOTION_KEYS = Object.freeze({
   SLEEPING: 'sleeping',
   SMILING: 'smiling',
   CELEBRATING: 'celebrating',
+  INTENTION_SET: EMOTIONS.intentionSet,
   INCENSE_COMPLETE: 'incenseComplete',
+  MILESTONE_GLOW: EMOTIONS.milestoneGlow,
+  SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',
@@ -544,6 +824,6 @@ export const EMOTION_KEYS = Object.freeze({
   PET_HEAD: 'petHead',
   DIZZY_BLINK: 'dizzyBlink',
   CURIOUS_TILT: 'curiousTilt',
-  MINDFUL_ACKNOWLEDGE: 'mindfulAcknowledge',
-  STRETCH_REMINDER: 'stretchReminder'
+  MINDFUL_ACKNOWLEDGE: EMOTIONS.mindfulAcknowledge,
+  STRETCH_REMINDER: EMOTIONS.stretchReminder
 });

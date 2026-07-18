@@ -30,6 +30,9 @@
 - [x] 【v5.1】性能原则调整：从"优先保性能"改为"设底线，底线内放心追求视觉
       效果"，新增首屏Poster过渡策略；目录结构补充 docs/ / art-reference/ /
       public/ 三个根目录，GLB与贴图统一走public/而非src/assets的import方式
+- [x] 【2D主线】SessionComplete 轻量完成反馈：28 帧 `session-complete`
+      温和摆尾序列；同日后续达标触发，每日首次由 Celebrating 替代且不叠加；
+      播完回归 idle-breathing，金光复用 Rim Light / FocusVisualizer
 
 ---
 
@@ -133,26 +136,20 @@ Layer 2：推送通知 —— 语气克制，不制造焦虑，"它在等你"式
 ```
 （需遵守 PRINCIPLES.md 不制造焦虑原则）
 
-### 任务十：Session Intention（本次专注意图，已拍板·最小形态）
+### 任务十：Session Intention / Arrival Practice（✅ v2 MVP）
 ```
-目标：开始专注前提供一个可选的单行输入框
-     （默认英文占位文案 "What would you like to focus on?"，走 i18n 字典）
+Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DESIGN.md v2 / CORE_LOOP.md）：
 
-范围（严格限定为最小形态）：
-  - 可选、可跳过；跳过不减少任何反馈或奖励
-  - 仅在本次会话内显示；会话结束语中回显一次
-  - 最多本地保存最近几条（localStorage），供快速再选
-  - 定性意图仅作仪式感与觉察入口，不参与任何达标判定
-    （定量达标判定仍只用目标时长，见 DESIGN.md FocusSession）
+已实现：
+  - 欢迎 beat（blink-smile + 文字气泡）→ Notice 6 图标（不落库）→ ~5s 呼吸（无倒计时）
+    → Choose 6 图标 + 次要打字 → Companion Mode 三选一 → 再点 Sit 开始计时
+  - 全程 Skip + Skip — begin；Sit 二次点击可整体跳过仪式
+  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice 严禁持久化
+  - Reflection 按来源回显（达标与未达标均回显）；Notice 不回显
 
-明确不做（防止演化成待办管理器）：
-  - 任务列表 / 完成勾选 / 分类统计 / 逾期提醒
-  - 对意图内容的任何评判、验证或数据分析
-
-排期：位于 2D 主线当前几项（SessionComplete、瞳孔素材、
-     正念认可文案条）之后；建议与 SessionComplete 结束语衔接。
+明确不做：待办化、情绪分析统计、强制不可跳过流程、角色语音
 ```
-（决策背景见 PRODUCT_POSITIONING.md「核心体验循环」；需遵守 PRINCIPLES.md 市场与语言原则）
+（叙事层级见 PRODUCT_MOMENTS.md / CORE_LOOP.md）
 
 ### 任务十一：Tiger Reflection Moment（结束反思，✅ 已实现·MVP）
 ```

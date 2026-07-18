@@ -56,16 +56,19 @@ COLLAB.md（本文档，协作层）
    → 用户把Brief交给Cursor执行
 
 3. Cursor产出代码/效果
-   → 用户验收，若有问题，反馈给Claude
+   → 在 `docs/TEST_TRACKER.md` 登记本次改动（UI →「待人工测试」；纯后端 →「仅单元测试覆盖」）
+   → 用户按 TEST_TRACKER 验收；若有问题，反馈给Claude，对应行改「有问题」
 
 4. Claude做设计评审
    → 给出具体修改意见（不是重写代码，而是指出"哪里需要怎么调整"）
-   → 用户再交给Cursor修改
+   → 用户再交给Cursor修改；修复后行状态改回「待人工测试」等复测
 
 5. 验收通过
+   → 用户将 TEST_TRACKER 对应行标为「已通过」
    → 该任务的Brief结项，进入下一个任务
 ```
 
+**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。
 ---
 
 ## 四、什么时候需要更新TASKS.md（判断标准）

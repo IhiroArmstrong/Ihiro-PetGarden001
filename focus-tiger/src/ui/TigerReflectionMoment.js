@@ -6,6 +6,7 @@
  * - 任何跳过路径都没有提示或劝导文案，Skip 与 Continue 视觉同级；
  * - 问题三使用「下次」而非「明天」，避免暗示每日义务
  *   （regular practice, at your own pace）。
+ * - 若本次填写了 Session Intention，开头回显一句纯展示文字，不参与三问跳过/记录。
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -13,9 +14,11 @@ import {
   ReflectionFlowState,
   REFLECTION_QUESTION_KEYS
 } from './ReflectionFlowState.js';
+import { normalizeIntentionText, formatIntentionEcho, intentionEchoKey } from '../core/SessionIntentionStore.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { REFLECTION_ANSWER_FIELDS } from './ReflectionFlowState.js';
+export { formatIntentionEcho } from '../core/SessionIntentionStore.js';
 
 const FADE_MS = 260;
 
@@ -31,12 +34,17 @@ export class TigerReflectionMoment {
     /** @type {ReflectionFlowState | null} */
     this.flow = null;
     this.root = null;
+    this.echoEl = null;
     this.questionEl = null;
     this.inputEl = null;
     this.dotEls = [];
     this.continueBtn = null;
     this.skipBtn = null;
     this.skipAllBtn = null;
+    /** @type {string} */
+    this._sessionIntention = '';
+    /** @type {'icon' | 'typed' | null} */
+    this._intentionSource = null;
 
     this._onKeyDown = (event) => {
       if (event.key === 'Escape') this._dismiss();
@@ -48,8 +56,16 @@ export class TigerReflectionMoment {
     return Boolean(this.flow);
   }
 
-  open() {
+  /**
+   * @param {object} [options]
+   * @param {string} [options.intention]
+   * @param {'icon' | 'typed' | string} [options.intentionSource]
+   */
+  open({ intention = '', intentionSource = 'typed' } = {}) {
     if (this.root) return;
+    this._sessionIntention = normalizeIntentionText(intention);
+    this._intentionSource =
+      this._sessionIntention && intentionSource === 'icon' ? 'icon' : 'typed';
     this.flow = new ReflectionFlowState();
     this._buildDom();
     this._renderStep({ instant: true });
@@ -87,6 +103,14 @@ export class TigerReflectionMoment {
       `transition:opacity ${FADE_MS}ms ease,transform ${FADE_MS}ms ease`,
       'opacity:0',
       'pointer-events:auto'
+    ].join(';');
+
+    this.echoEl = document.createElement('div');
+    this.echoEl.style.cssText = [
+      'font-size:13px',
+      'line-height:1.55',
+      'color:rgba(74,58,40,.78)',
+      'margin-bottom:10px'
     ].join(';');
 
     this.questionEl = document.createElement('div');
@@ -141,7 +165,6 @@ export class TigerReflectionMoment {
       'cursor:pointer'
     ].join(';');
 
-    // Skip / Skip all / Continue 同样式：跳过是平等选项，不是次优选择。
     this.skipBtn = document.createElement('button');
     this.skipBtn.type = 'button';
     this.skipBtn.style.cssText = buttonCss;
@@ -163,6 +186,9 @@ export class TigerReflectionMoment {
     footer.appendChild(dots);
     footer.appendChild(buttons);
 
+    if (this._sessionIntention) {
+      this.root.appendChild(this.echoEl);
+    }
     this.root.appendChild(this.questionEl);
     this.root.appendChild(this.inputEl);
     this.root.appendChild(footer);
@@ -172,6 +198,16 @@ export class TigerReflectionMoment {
 
   _refreshTexts() {
     if (!this.root || !this.flow || this.flow.isDone()) return;
+    if (this.echoEl && this._sessionIntention) {
+      this.echoEl.textContent = formatIntentionEcho(
+        t(intentionEchoKey(this._intentionSource)),
+        this._sessionIntention
+      );
+      this.echoEl.hidden = false;
+    } else if (this.echoEl) {
+      this.echoEl.hidden = true;
+      this.echoEl.textContent = '';
+    }
     this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[this.flow.stepIndex]);
     this.skipBtn.textContent = t('REFLECTION_SKIP');
     this.skipAllBtn.textContent = t('REFLECTION_SKIP_ALL');
@@ -234,6 +270,8 @@ export class TigerReflectionMoment {
   _finish() {
     const flow = this.flow;
     this.flow = null;
+    this._sessionIntention = '';
+    this._intentionSource = null;
     document.removeEventListener('keydown', this._onKeyDown);
 
     if (this.root) {
@@ -250,6 +288,7 @@ export class TigerReflectionMoment {
     document.removeEventListener('keydown', this._onKeyDown);
     this.root?.remove();
     this.root = null;
+    this.echoEl = null;
     this.questionEl = null;
     this.inputEl = null;
     this.dotEls = [];

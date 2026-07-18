@@ -272,7 +272,8 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
   1. **金色光晕 overlay**：独立于帧序列的发光图层（CSS `box-shadow` / `filter: drop-shadow` / 径向渐变 div 均可，实现阶段定），强度随 focusLevel 插值；
   2. **金色粒子**：独立粒子层叠加在精灵周围。
 - **光晕呼吸律动（2026-07-15 拍板，通用行为）**：光晕 overlay 强度在 focusLevel 基础值之上叠加 4 秒周期的呼吸律动（吸气收敛聚焦 / 呼气柔和晕染），与角色呼吸动画同步；实现上是 overlay 层的强度调制，不触碰精灵本体。
-- **里程碑增强序列**：`MilestoneGlow`（10s 仪式性反馈，含金光蝴蝶）是上述光晕呼吸律动的增强版，素材计划走同一「视频生成 → 抽帧」管线产出专属序列；设计定稿见 `EMOTION_BIBLE.md` 第五部分，实现归属 Backlog「纪念奖励系统」，本阶段不开发。
+- **光影物理渐进（2026-07-18，2D 翻译）**：Arrival Practice（冷→暖背景、**三层视差 Dolly**、4s 呼吸光环、Choose 坐垫光晕）与 Recover/Re-focus（60s 阈值下的扰动 + 约 20% 亮度下降、5s 平复）由 `LightProgression`（DOM/CSS）承载；日常 `focusLevel` 另有 **DOM Rim**（`updateFocusGlow`）作 2D 主线主观感。详规见 `LIGHT_PROGRESSION_DESIGN.md`。**禁止**为此引入主界面 3D 相机推拉、Shader 或 GSAP。
+- **里程碑增强序列**：`MilestoneGlow`（10s 仪式性反馈，含金光蝴蝶）是上述光晕呼吸律动的增强版；27 帧 `milestone-glow` 透明 PNG 已按角色/装扮分层规范入库并接入仅供预览的调试情绪键。该专属叙事动画（与 `Celebrating` / `SessionComplete` 同类）允许自身烧录金光与蝴蝶，不受日常 focusLevel 光效必须与角色层分离的约束；播放期临时归零 `FocusVisualizer` / Rim Light，末帧固定停留 2.5s 后回落，不另建也不等待外部叠加层。真实里程碑判定与业务触发仍归属 Backlog「纪念奖励系统」。
 - **禁止**通过逐帧重着色、CSS 色相滤镜（`hue-rotate` / `sepia` 等作用于精灵本体）等方式改变角色本体颜色来表达进度。
 
 ---

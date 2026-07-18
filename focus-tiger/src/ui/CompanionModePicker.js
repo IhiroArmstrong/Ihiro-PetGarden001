@@ -1,6 +1,7 @@
 /**
- * 会话模式三选一：按钮下弱化提示 + 向上展开面板。
+ * Companion Mode 三选一：按钮下弱化提示 + 向上展开面板。
  * 选模式只写入预选并收起，不开始计时；Sit 才真正开会话。
+ * Choose / Session Intention 已迁至 Arrival Practice（ARRIVE_MOMENT_DESIGN v2）。
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -67,7 +68,6 @@ export class CompanionModePicker {
       this._syncHintLabel();
     });
 
-    // 将 Sit 按钮收进 dock：提示在按钮下方
     const parent = focusButton.parentElement;
     if (parent) {
       parent.insertBefore(this.dock, focusButton);
@@ -88,7 +88,6 @@ export class CompanionModePicker {
 
   /**
    * 空闲态：显示「模式提示」；专注中：只保留 Sit/Rise 按钮，隐藏提示与三选一面板。
-   * （按钮在 dock 内，整 dock 不能 hidden，否则 Rise 也会消失。）
    * @param {boolean} visible
    */
   setIdleChromeVisible(visible) {
@@ -97,7 +96,6 @@ export class CompanionModePicker {
       this._expanded = false;
       this._syncExpanded();
     } else {
-      // Rise / 会话结束后：先回到提问文案，邀请重新考虑本场怎么陪
       this._preferQuestionHint = true;
     }
     this.hintBtn.hidden = !this._idleVisible;
@@ -106,7 +104,7 @@ export class CompanionModePicker {
   }
 
   /**
-   * 反思 / Honesty 等底部叠层打开时：收起三选一并禁止再展开，避免盖住可点击面板。
+   * 反思 / Honesty / Arrival 等底部叠层打开时：收起三选一并禁止再展开。
    * @param {boolean} active
    */
   setPostSessionOverlayActive(active) {
@@ -126,12 +124,12 @@ export class CompanionModePicker {
     this.hintBtn.style.pointerEvents = allowHint ? '' : 'none';
   }
 
-  /** @deprecated 旧门闩 API；新交互不再用 open 阻塞开始 */
   open() {
     this.setIdleChromeVisible(true);
     if (this._postSessionOverlay) return;
     this._expanded = true;
     this._syncExpanded();
+    this._syncHintLabel();
   }
 
   hide() {
@@ -221,7 +219,6 @@ export class CompanionModePicker {
 
       const label = t(opt.labelKey);
       const description = t(opt.hintKey);
-      // 说明文案始终可见（触屏无 hover）；title 仅作桌面补充提示
       btn.title = description;
 
       const title = document.createElement('div');
@@ -302,7 +299,6 @@ export class CompanionModePicker {
         flex-direction: column;
         gap: 6px;
       }
-      /* display:flex above would otherwise override UA [hidden] { display:none } */
       .session-start-dock__panel[hidden] {
         display: none !important;
       }

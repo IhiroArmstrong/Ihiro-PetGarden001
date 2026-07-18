@@ -104,6 +104,16 @@ test('dormant wake is a one-shot 16-frame transition that holds its final pose',
   assert.ok(definition.frameHolds[16] > 0);
 });
 
+test('milestone glow is an on-demand one-shot that holds its final pose', () => {
+  const definition = SPRITE_SEQUENCES.milestoneGlow;
+
+  assert.equal(definition.animation, 'milestone-glow');
+  assert.equal(definition.frameCount, 27);
+  assert.equal(definition.preload, false);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.holdLastFrame, true);
+});
+
 test('nod greeting is a one-shot 23-frame sequence', () => {
   const definition = SPRITE_SEQUENCES.nodGreeting;
 
@@ -111,4 +121,54 @@ test('nod greeting is a one-shot 23-frame sequence', () => {
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.loop, false);
   assert.equal(definition.holdLastFrame, false);
+});
+
+test('tilt think is a one-shot 20-frame sequence', () => {
+  const definition = SPRITE_SEQUENCES.tiltThink;
+
+  assert.equal(definition.frameCount, 20);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.loop, false);
+  assert.equal(definition.holdLastFrame, false);
+});
+
+test('nod bow is a restrained one-shot 13-frame sequence', () => {
+  const definition = SPRITE_SEQUENCES.nodBow;
+
+  assert.equal(definition.frameCount, 13);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.loop, false);
+  assert.equal(definition.holdLastFrame, false);
+});
+
+test('stretch reminder is a one-shot 17-frame sequence', () => {
+  const definition = SPRITE_SEQUENCES.stretchReminder;
+
+  assert.equal(definition.animation, 'stretch-reminder');
+  assert.equal(definition.frameCount, 17);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.loop, false);
+  assert.equal(definition.holdLastFrame, false);
+});
+
+test('celebrateDanceV2 is registered as celebrating alternate', () => {
+  const definition = SPRITE_SEQUENCES.celebrateDanceV2;
+  assert.equal(definition.animation, 'celebrate-dance-v2');
+  assert.equal(definition.frameCount, 60);
+  assert.equal(definition.loop, false);
+  assert.equal(definition.loopMode, 'none');
+});
+
+test('palmsTogether / breathHaloExpand / lotus backlog sequences are registered', () => {
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.animation, 'palms-together');
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.frameCount, 14);
+  assert.equal(SPRITE_SEQUENCES.breathHaloExpand.animation, 'breath-halo-expand');
+  assert.equal(SPRITE_SEQUENCES.breathHaloExpand.frameCount, 17);
+  assert.equal(SPRITE_SEQUENCES.breathHaloExpand.preload, false);
+  assert.equal(SPRITE_SEQUENCES.lotusFrontRising.animation, 'lotus-front-rising');
+  assert.equal(SPRITE_SEQUENCES.lotusFrontRising.frameCount, 7);
+  assert.equal(SPRITE_SEQUENCES.lotusFrontRising.preload, false);
+  assert.equal(SPRITE_SEQUENCES.lotusChestHalo.animation, 'lotus-chest-halo');
+  assert.equal(SPRITE_SEQUENCES.lotusChestHalo.frameCount, 10);
+  assert.equal(SPRITE_SEQUENCES.lotusChestHalo.preload, false);
 });
