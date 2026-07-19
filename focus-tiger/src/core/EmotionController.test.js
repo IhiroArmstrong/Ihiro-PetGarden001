@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   DORMANT_WAKE_CROSS_FADE_MS,
   EmotionController,
+  LEAVE_DORMANT_WAKE_CROSS_FADE_MS,
   MILESTONE_GLOW_HOLD_MS
 } from './EmotionController.js';
 
@@ -176,8 +177,10 @@ test('intentionSet plays palmsTogether then returns to idle', () => {
   });
 
   assert.equal(plays[0].name, 'palmsTogether');
+  assert.equal(plays[0].options.returnCrossFadeMs, 280);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 280);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
@@ -323,4 +326,37 @@ test('holdPose keeps last frame and does not auto-return to idle', () => {
   assert.equal(completed, 1);
   assert.equal(plays.length, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'nodGreeting');
+});
+
+test('leaving dormantWake injects a longer cross-fade into the next emotion', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('dormantWake', { holdPose: true });
+  assert.equal(controller.getCurrentEmotionKey(), 'dormantWake');
+
+  controller.playEmotion('smiling');
+  assert.equal(plays.at(-1).name, 'blinkSmile');
+  assert.equal(
+    plays.at(-1).options.crossFadeMs,
+    LEAVE_DORMANT_WAKE_CROSS_FADE_MS
+  );
+
+  controller.playEmotion('dormantWake', { holdPose: true });
+  controller.playEmotion('idle', { restart: true });
+  const idlePlay = plays.filter((p) => p.name === 'idleBreathing').at(-1);
+  assert.ok(idlePlay);
+  assert.equal(idlePlay.options.crossFadeMs, LEAVE_DORMANT_WAKE_CROSS_FADE_MS);
 });

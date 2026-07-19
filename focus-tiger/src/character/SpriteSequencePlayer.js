@@ -18,6 +18,10 @@
 
 import { SPRITE_SEQUENCES } from './spriteManifest.js';
 import { buildFramePaths } from './CharacterConfig.js';
+import {
+  computeSpriteDisplayTransform,
+  spriteDisplayTransformCss
+} from './spriteDisplayFit.js';
 
 /**
  * @typedef {object} PlayOptions
@@ -170,11 +174,24 @@ export class SpriteSequencePlayer {
     this.imgEl = img;
     this.outgoingImgEl = outgoingImg;
 
+    /** @type {ResizeObserver | null} */
+    this._resizeObserver = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      this._resizeObserver = new ResizeObserver(() => {
+        this._refreshDisplayFit();
+      });
+      this._resizeObserver.observe(overlay);
+    }
+
     // —— 播放状态 ——
     this._raf = 0;
     this._playing = false;
     /** @type {string | null} */
     this._currentName = null;
+    /** @type {import('./spriteDisplayFit.js').SpriteDisplayFit | null} */
+    this._currentDisplayFit = null;
+    /** @type {import('./spriteDisplayFit.js').SpriteDisplayFit | null} */
+    this._outgoingDisplayFit = null;
     /** @type {string[]} */
     this._frames = [];
     this._frameIndex = 0;
@@ -255,6 +272,8 @@ export class SpriteSequencePlayer {
       this.outgoingImgEl.src = previousSrc;
       this.outgoingImgEl.style.opacity = '1';
       this.imgEl.style.opacity = '0';
+      this._outgoingDisplayFit = this._currentDisplayFit;
+      this._applyDisplayFit(this.outgoingImgEl, this._outgoingDisplayFit);
     }
 
     this._currentName = name;
@@ -270,6 +289,8 @@ export class SpriteSequencePlayer {
     this._maxCycles = Math.max(0, Number(options.maxCycles) || 0);
     this._onComplete =
       typeof options.onComplete === 'function' ? options.onComplete : null;
+    this._currentDisplayFit = def.displayFit ?? null;
+    this._applyDisplayFit(this.imgEl, this._currentDisplayFit);
 
     // 预加载兜底：若首次调用前未预加载，异步补载（播放仍立即开始，靠浏览器缓存收敛）
     if (!this._allCached(this._frames)) {
@@ -318,7 +339,7 @@ export class SpriteSequencePlayer {
 
   /**
    * 当前精灵在屏幕上的 object-fit:contain 显示框（供 EyeTracking 等叠层对齐）。
-   * overlay 不可见或尚无 naturalSize 时返回 null。
+   * overlay 不可见或尚无 naturalSize 时返回 null。含 displayFit 变换。
    * @returns {{ left: number, top: number, width: number, height: number, scale: number, naturalWidth: number, naturalHeight: number } | null}
    */
   getDisplayRect() {
@@ -331,17 +352,35 @@ export class SpriteSequencePlayer {
     const container = this.overlayEl.getBoundingClientRect();
     if (container.width < 1 || container.height < 1) return null;
 
-    const scale = Math.min(container.width / nw, container.height / nh);
-    const width = nw * scale;
-    const height = nh * scale;
-    const left = container.left + (container.width - width) * 0.5;
-    const top = container.top + (container.height - height) * 0.5;
+    // displayFit 按布局盒计算；Dolly 的 CSS scale 再乘到最终屏幕框上。
+    const layoutW = this.overlayEl.clientWidth || container.width;
+    const layoutH = this.overlayEl.clientHeight || container.height;
+    const baseScale = Math.min(layoutW / nw, layoutH / nh);
+    let width = nw * baseScale;
+    let height = nh * baseScale;
+    let localLeft = (layoutW - width) * 0.5;
+    let localTop = (layoutH - height) * 0.5;
+
+    const fit = computeSpriteDisplayTransform(this._currentDisplayFit, {
+      width: layoutW,
+      height: layoutH
+    });
+    if (fit.scale !== 1 || fit.tx !== 0 || fit.ty !== 0) {
+      localLeft = localLeft * fit.scale + fit.tx;
+      localTop = localTop * fit.scale + fit.ty;
+      width *= fit.scale;
+      height *= fit.scale;
+    }
+
+    // overlay 可能带 Dolly CSS scale；用 rect/layout 比估算视觉放大
+    const visualScaleX = container.width / layoutW;
+    const visualScaleY = container.height / layoutH;
     return {
-      left,
-      top,
-      width,
-      height,
-      scale,
+      left: container.left + localLeft * visualScaleX,
+      top: container.top + localTop * visualScaleY,
+      width: width * visualScaleX,
+      height: height * visualScaleY,
+      scale: baseScale * fit.scale * visualScaleX,
       naturalWidth: nw,
       naturalHeight: nh
     };
@@ -536,9 +575,33 @@ export class SpriteSequencePlayer {
     }
     this.outgoingImgEl.style.transition = 'none';
     this.outgoingImgEl.style.opacity = '0';
+    this.outgoingImgEl.style.transform = '';
     this.outgoingImgEl.removeAttribute('src');
+    this._outgoingDisplayFit = null;
     this.imgEl.style.transition = 'none';
     this.imgEl.style.opacity = '1';
+  }
+
+  /**
+   * @param {HTMLImageElement} imgEl
+   * @param {import('./spriteDisplayFit.js').SpriteDisplayFit | null | undefined} fitDef
+   */
+  _applyDisplayFit(imgEl, fitDef) {
+    // 必须用布局尺寸（clientWidth），不能用 getBoundingClientRect：
+    // LightProgression Dolly 的 CSS scale 会放大 rect，但 object-fit 仍按布局盒计算。
+    const width = this.overlayEl.clientWidth;
+    const height = this.overlayEl.clientHeight;
+    const t = computeSpriteDisplayTransform(fitDef, { width, height });
+    const css = spriteDisplayTransformCss(t);
+    imgEl.style.transformOrigin = '0 0';
+    imgEl.style.transform = css;
+  }
+
+  _refreshDisplayFit() {
+    this._applyDisplayFit(this.imgEl, this._currentDisplayFit);
+    if (this.outgoingImgEl.getAttribute('src')) {
+      this._applyDisplayFit(this.outgoingImgEl, this._outgoingDisplayFit);
+    }
   }
 
   _cancelRaf() {

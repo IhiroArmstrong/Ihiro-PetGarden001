@@ -124,6 +124,7 @@ test('wave hello repeats peak sway once and has no peak frame hold', () => {
   const definition = SPRITE_SEQUENCES.waveHello;
 
   assert.equal(definition.frameCount, 19);
+  assert.equal(definition.fps, 8);
   assert.ok(!definition.frameHolds);
   assert.deepEqual(definition.frameIndices?.slice(7, 17), [
     8, 9, 10, 11, 12, 8, 9, 10, 11, 12
@@ -176,6 +177,7 @@ test('nod bow is a restrained one-shot 13-frame sequence', () => {
   const definition = SPRITE_SEQUENCES.nodBow;
 
   assert.equal(definition.frameCount, 13);
+  assert.equal(definition.fps, 3.5);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.loop, false);
   assert.equal(definition.holdLastFrame, false);
@@ -186,9 +188,16 @@ test('stretch reminder is a one-shot 17-frame sequence', () => {
 
   assert.equal(definition.animation, 'stretch-reminder');
   assert.equal(definition.frameCount, 17);
+  assert.equal(definition.fps, 4);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.loop, false);
   assert.equal(definition.holdLastFrame, false);
+});
+
+test('sessionComplete sits in the light one-shot duration band', () => {
+  const definition = SPRITE_SEQUENCES.sessionComplete;
+  assert.equal(definition.frameCount, 28);
+  assert.equal(definition.fps, 8);
 });
 
 test('celebrateDanceV2 is registered as celebrating alternate', () => {
@@ -199,12 +208,20 @@ test('celebrateDanceV2 is registered as celebrating alternate', () => {
   assert.equal(definition.loopMode, 'none');
 });
 
-test('palmsTogether / breathHaloExpand / lotus backlog sequences are registered', () => {
+test('palmsTogether / breathHaloHq / lotus backlog sequences are registered', () => {
   assert.equal(SPRITE_SEQUENCES.palmsTogether.animation, 'palms-together');
   assert.equal(SPRITE_SEQUENCES.palmsTogether.frameCount, 14);
-  assert.equal(SPRITE_SEQUENCES.breathHaloExpand.animation, 'breath-halo-expand');
-  assert.equal(SPRITE_SEQUENCES.breathHaloExpand.frameCount, 17);
-  assert.equal(SPRITE_SEQUENCES.breathHaloExpand.preload, false);
+  // 正放合掌 → 倒放回闭目坐禅第 1 帧，末帧可接 idle-breathing
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.frameIndices?.length, 27);
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.frameIndices?.[0], 1);
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.frameIndices?.at(-1), 1);
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.fps, 4);
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.holdLastFrame, true);
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.displayFit?.width, 960);
+  assert.equal(SPRITE_SEQUENCES.palmsTogether.displayFit?.height, 960);
+  assert.equal(SPRITE_SEQUENCES.breathHaloHq.animation, 'breath-halo-hq');
+  assert.equal(SPRITE_SEQUENCES.breathHaloHq.frameCount, 16);
+  assert.equal(SPRITE_SEQUENCES.breathHaloHq.preload, false);
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.animation, 'lotus-front-rising');
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.frameCount, 7);
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.preload, false);
@@ -221,4 +238,19 @@ test('gaze lookaround and yawn-stretch idle variants are registered', () => {
   assert.equal(SPRITE_SEQUENCES.yawnStretch.animation, 'yawn-stretch');
   assert.equal(SPRITE_SEQUENCES.yawnStretch.frameCount, 16);
   assert.equal(SPRITE_SEQUENCES.yawnStretch.loopMode, 'none');
+});
+
+test('teaDrinking, earWiggleHeadTouch, blinkBreathe companion gestures are registered', () => {
+  assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
+  assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);
+  assert.equal(SPRITE_SEQUENCES.teaDrinking.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.teaDrinking.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.animation, 'ear-wiggle-head-touch');
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.frameCount, 54);
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.fps, 10);
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.blinkBreathe.animation, 'blink-breathe');
+  assert.equal(SPRITE_SEQUENCES.blinkBreathe.frameCount, 13);
+  assert.equal(SPRITE_SEQUENCES.blinkBreathe.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.blinkBreathe.loopMode, 'none');
 });

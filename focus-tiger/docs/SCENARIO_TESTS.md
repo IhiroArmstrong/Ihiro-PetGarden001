@@ -31,11 +31,11 @@
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）
    c. 呼吸 beat（~5 秒，无倒计时）
-   d. Choose：六个活动图标；点 "Deep Work" → `palms-together` 合十播一次
+   d. Choose：六个活动图标；点 "Deep Work" → `palms-together` 正放合掌再倒放回闭目（约 6–7s）
 4. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**（不是旧稿 Stay here / I'll step away / …）。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。
 5. 计时开始后，可展开右下角 Ambient Soundscape，选一首播放（未计时时点 Sound 应提示须先进入专注，不展开面板）。
 6. 全程观察 Idle：**仅**「呼吸 ×5 → blink-smile」固定节奏。  
-   **张望 gaze / yawn-stretch 已从正式 Idle 删除**（素材仍在，仅 DEV `__spritePlayer.play(...)` 可强制）。看不到它们不算失败。
+   **Idle**：仅呼吸×5→眨眼。候选手势（gaze/tea/yawn/ear/blink-breathe）用实验室「入库素材 / 组合试播」逐条看，不自动出现。
 7. 达到目标时长 → **当日首次**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。
 8. **同日第二次达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
    （旧稿「每日首次庆祝限制尚未接通」已过时——代码已接线。）
@@ -153,14 +153,14 @@
    - A8「首次庆祝未接线」→ **文档过时，已接线**。  
    - A9 自动 Incense → **确未接线**（仅调试）。  
    - E 10 分钟挥手 → **确未接线**。  
-   - A6 gaze/yawn 正式 Idle → **已删除调度**（场景稿已改）。  
+   - A6 Idle → **仅**呼吸×眨眼；候选手势见调试「入库素材」。  
 2. **数值（如实）**  
    - Re-focus 展示阈值：60s  
    - Across-tools idle：30min（1_800_000 ms）  
    - Honesty 呼吸：10_000 ms（与 dormant-wake 并行）  
    - 演示会话：1 分钟  
 3. **EyeTracking** → 回退干净。  
-4. **强制触发** → 见上表；gaze/yawn 无面板按钮。  
+4. **强制触发** → 见上表；候选手势用调试「入库素材 / 组合试播」（勿经 Idle 随机池）。  
 5. **TEST_TRACKER** → 已补「场景剧本 / 产品壳链接」说明行；不重复堆功能点。
 
 ---

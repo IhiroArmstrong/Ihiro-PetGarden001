@@ -32,7 +32,7 @@ Arrive
        呼吸 beat（~5秒，无倒计时）
          ↓
        Choose：今天做什么（图标点选为主 + 次要打字入口，会存储、会回显）
-         → 确认时 IntentionSet（palms-together）+ 坐垫光晕；跳过则直接往下
+         → 确认时 IntentionSet（合十正放→倒放落闭目）+ 坐垫光晕；跳过则直接往下
   （视觉氛围层：`LightProgression` 冷→暖 / 呼吸推近 / Choose 坐垫光晕，见 LIGHT_PROGRESSION_DESIGN.md）
   ↓
 Focus（不变）
@@ -88,3 +88,36 @@ Grow Together（老虎成长 = 用户成长的映射，非独立宠物养成机�
 - 用户可见动词可用 "return / You're back."，文档与产品结构名仍用 **Recover**。
 - Companion Mode 的 step-away / across-tools 关闭的是 **Recover 侧**（Re-focus），不是偶遇挥手；二者不得混为一谈。
 - 禁止把 `welcomeBack` 改写成「你刚才不够专注」类 Recover 文案。
+
+---
+
+## 已废弃：EyeTracking 实时瞳孔跟随鼠标
+
+**废弃日期**：2026-07-19（结论初稿 2026-07-18；与实现落点对齐为 19 日）  
+**状态**：已放弃，不再返工。
+
+### 原方案
+
+将左右瞳孔拆为独立可移动图层（`pupil-left.png` / `pupil-right.png`），叠于脸部主体 PNG 之上，在眼白椭圆内阻尼跟随鼠标坐标；闭眼 / Celebrating 时让位。情绪键 `eyeTracking`；历史靠近占位键 `lookAtCursor` 的正式视觉已改走 `nodGreeting`，本废弃仅针对**持续瞳孔跟随**，不影响点头致意。
+
+### 放弃原因（结构性 + 用户实测）
+
+1. **结构性冲突（放弃后勿再排期的主因）**：现有全部睁眼素材（idle-breathing、鞠躬、摇尾等）均由视频抽帧产出，**瞳孔已画在原图里**，没有留空的眼眶层。再叠一张可移动瞳孔小图，会与原图瞳孔错位重叠；实测为歪斜的楔形 / 月牙色块（偏离静止位置时尤其明显）。这不是校准精度问题。要做对必须先把所有睁眼帧的原有瞳孔挖空 / 涂白，属于成体量美术返工，性价比不足以支撑这一氛围细节。
+2. **用户实测确认（2026-07-19）**：截图可见瞳孔叠图严重错位（含闭目帧上叠「幽灵瞳孔」），观感不可靠，决定放弃、不再返工。
+
+### 最终结论
+
+1. **移除运行时叠加与跟随逻辑**；主线不再构造 / 更新 `EyeTracking` 层；调试面板「眼睛跟随鼠标」勾选已下线。
+2. `public/textures/eye-pupils/` 正式瞳孔 PNG 可留在仓库作历史素材，**不再接线**。
+3. 角色「偶尔看看」改由 Idle 固定节奏承担：闭目呼吸 ×5 → 单次眨眼 → 往复。`gaze-p1`～`p4`、喝茶等为**候选陪伴手势**（已入库、待场景接线），**不**进默认 Idle。EyeTracking 废弃结论不变。
+4. `EMOTION_BIBLE` 中 `eyeTracking` / `lookAtCursor`（持续跟随语义）条目状态为「已放弃，原因见本文」；`lookAtCursor` 键仍保留为兼容占位（无视觉），靠近反应继续走 `nodGreeting`。
+
+### 给以后的提醒
+
+若之后素材管线改为**分层输出**（角色本体与眼部 / 瞳孔分离的透明图层），可以重新评估实时跟随；在此之前不要因为「看起来简单」重新排期。
+
+### 实现落点
+
+- 空壳：`src/effects/EyeTracking.js`（无 DOM、无指针绑定）
+- 主线：`src/main.js` 传入 `eyeTracking: null`
+- 桥接：`EmotionController` 的 `eyeTracking` 键为空操作

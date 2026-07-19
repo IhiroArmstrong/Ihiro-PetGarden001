@@ -1,7 +1,7 @@
 # ASSET_INVENTORY.md — 美术 / 动画素材盘点
 
-**最后盘点**：2026-07-19 12:56（UTC+8）  
-**对照上次**：2026-07-19 02:00 盘点  
+**最后盘点**：2026-07-20（UTC+8）  
+**对照上次**：2026-07-19 12:56 盘点  
 **互动页**：同名 Canvas（聊天旁可打开）；本文档为可入库的镜像记录。
 
 扫描范围：`public/sprites/tiger-cub/monk-robe-default/`、`spriteManifest.js`、`EmotionController.js`、`public/models/`、仓库根目录 `*-transparent.zip`、`docs/NEW_ASSETS_2026-07-18*.md`。
@@ -12,14 +12,15 @@
 
 | 指标 | 数值 |
 |---|---|
-| 已安装动画目录 | **24** |
-| 磁盘 PNG 帧合计 | **489** |
-| 相对 07-18 新增目录 | **5**（gaze-p1…p4 / yawn-stretch） |
-| 仅 manifest、无业务触发 | **3**（breath-halo-expand / lotus-front-rising / lotus-chest-halo） |
+| 已安装动画目录 | **26** |
+| 磁盘 PNG 帧合计 | **566**（约；含 tea 24 + ear 54 + halo-hq 16，减 expand 17） |
+| 相对 07-19 新增目录 | **3**（tea-drinking / ear-wiggle-head-touch / breath-halo-hq） |
+| 已归档移出 public | **1**（breath-halo-expand → `art-reference/sprites-archived/`） |
+| 仅 manifest、无业务触发 | **3**（breath-halo-hq / lotus-front-rising / lotus-chest-halo） |
 | 3D GLB（奖励柜/垫底） | 7+ |
 
-**主结论**：正式 Idle = 呼吸×5→眨眼往复（`idle-breathing` **2.5 fps**）；张望/哈欠素材入库但不调度。EyeTracking 已废弃。`sleeping` **1 fps**。  
-**2026-07-19 12:56**：14 套已接线/备选序列已用**新抠图算法**整批重出并替换（帧数不变；旧版作废）。含 `palms-together` 灰白斑修复。
+**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` **1 fps**。  
+**2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。
 
 ---
 
@@ -33,7 +34,9 @@
 |---|---|---:|
 | `dance-v2` | `celebrate-dance-v2` | 60 |
 | `palms-together` | `palms-together` | 14 |
-| `breath-halo-expand` | `breath-halo-expand` | 17 |
+| `breath-halo-hq` | `breath-halo-hq` | 16 |
+| `tea-drinking` | `tea-drinking` | 24 |
+| `ear-wiggle-head-touch` | `ear-wiggle-head-touch` | 54 |
 | `lotus-front-rising` | `lotus-front-rising` | 7 |
 | `lotus-chest-halo` | `lotus-chest-halo` | 10 |
 | `deep-breath-glow` | `milestone-glow` | 27 |
@@ -50,11 +53,14 @@
 
 | 动画目录 | 来源 | 帧 | 素材变化 | 接线变化 |
 |---|---|---|---|---|
-| `gaze-p1-center-blink-left` | `gaze-p1-…-transparent.zip` | 15 | 中→眨→左 | Idle 张望 A 前半（现默认不调度） |
-| `gaze-p2-left-to-up` | `gaze-p2-…-transparent.zip` | 13 | 左→上 | Idle 张望 A 后半 |
-| `gaze-p3-toward-right` | `gaze-p3-…-transparent.zip` | 13 | 转向右 | Idle 张望 B 前半 |
-| `gaze-p4-right-to-down` | `gaze-p4-…-transparent.zip` | 25 | 右→下 | Idle 张望 B 后半 |
+| `gaze-p1-center-blink-left` | 同名 | 15 | 中→眨→左 | Idle 张望 A |
+| `gaze-p2-left-to-up` | 同名 | 13 | 左→上 | Idle 张望 A |
+| `gaze-p3-toward-right` | 同名 | 13 | 转向右 | Idle 张望 B |
+| `gaze-p4-right-to-down` | 同名 | 25 | 右→下 | Idle 张望 B |
 | `yawn-stretch` | `yawn-stretch-transparent.zip` | 16 | 犯困哈欠 | Idle 变体；≠ stretchReminder / dormantWake |
+| `tea-drinking` | `tea-drinking-transparent.zip` | 24 | 喝茶 | Idle 变体 |
+| `ear-wiggle-head-touch` | `ear-wiggle-…-transparent.zip` | 54 | 摇耳摸头 | Idle 变体（大幅度） |
+| `breath-halo-hq` | `breath-halo-hq-transparent.zip` | 16 | 金环呼吸 | MilestoneGlow 备选（替 expand） |
 
 ---
 
@@ -67,11 +73,13 @@
 |---|---:|---|---:|---|---|
 | idle-breathing | 21 | 1056×864 | 13.4 | idleBreathing | 已接线 · Idle；**2.5 fps**；×5→眨眼 |
 | idle-eye-glance | 8 | 1056×864 | 4.8 | idleEyeGlance | 已接线 · Idle 变体 |
-| gaze-p1-center-blink-left | 15 | — | — | gazeP1CenterBlinkLeft | 已接线 · 张望 A |
-| gaze-p2-left-to-up | 13 | — | — | gazeP2LeftToUp | 已接线 · 张望 A |
-| gaze-p3-toward-right | 13 | — | — | gazeP3TowardRight | 已接线 · 张望 B |
-| gaze-p4-right-to-down | 25 | — | — | gazeP4RightToDown | 已接线 · 张望 B |
-| yawn-stretch | 16 | — | — | yawnStretch | 已接线 · Idle 犯困（权重建议 0.3） |
+| gaze-p1-center-blink-left | 15 | — | — | gazeP1CenterBlinkLeft | 入库 · **仅调试**（正式 Idle 不自动播） |
+| gaze-p2-left-to-up | 13 | — | — | gazeP2LeftToUp | 入库 · 调试张望 A |
+| gaze-p3-toward-right | 13 | — | — | gazeP3TowardRight | 入库 · 调试张望 B |
+| gaze-p4-right-to-down | 25 | — | — | gazeP4RightToDown | 入库 · 调试张望 B |
+| yawn-stretch | 16 | — | — | yawnStretch | 入库 · **仅调试** |
+| tea-drinking | 24 | 1056×864 | — | teaDrinking | 入库 · **仅调试** |
+| ear-wiggle-head-touch | 54 | 1056×864 | — | earWiggleHeadTouch | 入库 · **仅调试** |
 | blink-smile | 12 | 1056×864 | 7.3 | blinkSmile | 已接线 · smiling / blink / **curiousTilt** |
 | wave-hello | 19 | 1056×864 | 11.3 | waveHello | 已接线 · welcomeBack |
 | celebrate-dance | 57 | 1056×864 | 47.2 | celebrateDance | 已接线 · celebrating 50% |
@@ -84,9 +92,9 @@
 | halo-breathing | 30 | 1056×864 | 25.0 | haloBreathing* | 已接线 · 唤醒后奖励 |
 | nod-greeting | 23 | 1056×864 | 14.0 | nodGreeting | 素材+调试保留；**靠近自动触发已拆除**（2026-07-19）；**6 fps** + 末帧多停 2 拍 |
 | tilt-think | 20 | 1056×864 | 11.3 | tiltThink | 存量；curiousTilt 默认已改 blink-smile（2026-07-19） |
-| palms-together | 14 | 960×960 | 8.6 | palmsTogether | 已接线 · intentionSet · **2026-07-19 12:56 新算法重抠已替换，待复测** |
+| palms-together | 14 | 960×960 | 8.6 | palmsTogether | 已接线 · intentionSet · **正放→倒放回闭目**（4fps≈6.8s）· 2026-07-19 新抠图 |
 | milestone-glow | 27 | 1056×864 | 24.0 | milestoneGlow | 仅调试；**4 fps**（2026-07-19 放慢 2×） |
-| breath-halo-expand | 17 | 1056×864 | 13.4 | breathHaloExpand | 仅清单 · MilestoneGlow 备选 |
+| breath-halo-hq | 16 | 1056×864 | — | breathHaloHq | 仅清单 · MilestoneGlow 备选（替 expand） |
 | lotus-front-rising | 7 | 1056×864 | 4.2 | lotusFrontRising | 仅清单 · 莲花池 Backlog |
 | lotus-chest-halo | 10 | 1056×864 | 7.3 | lotusChestHalo | 仅清单 · Grow Together 候选 |
 
@@ -105,7 +113,7 @@
 | dormantWake → idle | dormant-wake | 已接线；**暂不**自动接 halo（2026-07-19） |
 | haloBreathing | halo-breathing | 调试可单独播；Honesty 暂不自动接 |
 | welcomeBack / nodGreeting / curiousTilt | wave-hello / nod-greeting / **blink-smile** | 已接线（curiousTilt 不再默认 tilt-think） |
-| milestoneGlow | milestone-glow（备选 breath-halo-expand 未用） | 仅调试 |
+| milestoneGlow | milestone-glow（备选 breath-halo-hq 未用） | 仅调试 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
 | wakeUp | stretch-reminder（同源） | 已接线；与 Honesty 视觉分离（2026-07-19） |
 | snoringZZZ | 无 | unimplemented |

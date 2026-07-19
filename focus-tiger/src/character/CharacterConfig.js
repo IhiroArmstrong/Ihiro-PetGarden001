@@ -58,13 +58,18 @@ export function buildFramePath(animationName, frameNumber, overrides = {}) {
 }
 
 /**
- * 拼接一个动作的全部有序帧路径（1 基连续编号）。
+ * 拼接一个动作的全部有序帧路径（1 基连续编号，或自定义 frameIndices）。
  * @param {string} animationName
  * @param {number} frameCount
- * @param {{ characterId?: string, outfitId?: string, startFrame?: number }} [overrides]
+ * @param {{ characterId?: string, outfitId?: string, startFrame?: number, frameIndices?: number[] }} [overrides]
  * @returns {string[]}
  */
 export function buildFramePaths(animationName, frameCount, overrides = {}) {
+  if (Array.isArray(overrides.frameIndices) && overrides.frameIndices.length > 0) {
+    return overrides.frameIndices.map((frameNumber) =>
+      buildFramePath(animationName, frameNumber, overrides)
+    );
+  }
   const paths = [];
   const startFrame = Math.max(1, Math.trunc(overrides.startFrame ?? 1));
   const endFrame = startFrame + frameCount;

@@ -25,6 +25,8 @@
  * @property {Record<number, number>} [frameHolds] 单帧停留时长覆盖：键为 **播放列表中的 1 基序号**
  *   （与帧文件名序号在无 frameIndices 时一致），值为该帧在 fps 基础间隔之上
  *   **额外**停留的毫秒数。未设置的帧按 fps 均匀播放。
+ * @property {import('./spriteDisplayFit.js').SpriteDisplayFit} [displayFit]
+ *   非基准画幅（如 960×960 相对 1056×864）时，用内容包围盒把角色缩放到与 idle 同大同落点。
  */
 
 /**
@@ -32,6 +34,22 @@
  * 播放时该段播两遍，再放手；不再对单帧做额外 hold（避免最高点「完全重复一帧」）。
  */
 export const WAVE_HELLO_SWAY_FRAMES = Object.freeze([8, 9, 10, 11, 12]);
+
+/**
+ * 一次性情绪目标时长带（秒）。
+ * 舒适参考：`dormantWake` ≈5.3s、`nodGreeting` ≈3.8s、`milestoneGlow` 叙事段 ≈6.8s。
+ * 帧数不够时三选一：放慢 fps / 重复可循环段 / 正倒放或连贯其它序列。
+ * 持续循环（Idle / Sleeping）不按此带。
+ */
+export const ONE_SHOT_DURATION_SEC = Object.freeze({
+  /** 确认 / 仪式类（IntentionSet、nodGreeting、dormantWake、MindfulAcknowledge…） */
+  ackMin: 3.5,
+  ackTarget: 5.5,
+  ackMax: 7,
+  /** 轻量完成确认（SessionComplete）；应短于 Celebrating */
+  lightMin: 2.5,
+  lightMax: 4
+});
 
 /** @type {Record<string, SpriteSequenceDef>} */
 export const SPRITE_SEQUENCES = {
@@ -97,7 +115,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // Idle「犯困」变体：无聊打哈欠伸展；勿与 stretchReminder / dormantWake 混用。
+  // Idle「犯困」候选手势：无聊打哈欠伸展；勿与 stretchReminder / dormantWake 混用。
+  // 不进 IdleOrchestrator；见 companionGestureCatalog。
   yawnStretch: {
     animation: 'yawn-stretch',
     frameCount: 16,
@@ -107,8 +126,39 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // 候选陪伴手势：坐禅 → 变出茶杯 → 喝茶 → 放低。
+  teaDrinking: {
+    animation: 'tea-drinking',
+    frameCount: 24,
+    fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 候选陪伴手势：耳摇 → 双手摸头顶（大幅度）。
+  earWiggleHeadTouch: {
+    animation: 'ear-wiggle-head-touch',
+    frameCount: 54,
+    fps: 10,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 候选轻量手势：睁眼微笑坐禅下边眨眼边深呼吸（Rise 过渡候选）。
+  blinkBreathe: {
+    animation: 'blink-breathe',
+    frameCount: 13,
+    fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
   // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold（观感上的完全重复帧）。
+  // 约 29 拍 @ 8fps ≈ 3.6s（ONE_SHOT ack 带下限）。
   waveHello: {
     animation: 'wave-hello',
     frameCount: 19,
@@ -118,7 +168,7 @@ export const SPRITE_SEQUENCES = {
       ...WAVE_HELLO_SWAY_FRAMES,
       13, 14, 15, 16, 17, 18, 19
     ],
-    fps: 12,
+    fps: 8,
     loop: false,
     holdLastFrame: false
   },
@@ -148,7 +198,7 @@ export const SPRITE_SEQUENCES = {
   // 里程碑金辉时刻（EMOTION_BIBLE: MilestoneGlow）——闭目呼吸 + 金光 + 蝴蝶的完整叙事弧线
   // （特效已烧录，无独立 DOM 叠加层）。当前仅供调试预览，约 24MB 不进启动预加载；
   // 末帧由 EmotionController 固定停留后再 onComplete 回落 idle。
-  // 备选素材见 breathHaloExpand（更简化、无蝴蝶）；选用哪个等里程碑逻辑排期再定。
+  // 备选素材见 breathHaloHq（更简化、无蝴蝶）；选用哪个等里程碑逻辑排期再定。
   // 2026-07-19：金光蝴蝶叙事至少放慢 2×（原 8fps → 4）。
   milestoneGlow: {
     animation: 'milestone-glow',
@@ -160,11 +210,11 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: true
   },
 
-  // MilestoneGlow 备选素材（breath-halo-expand）：仅呼吸+光环扩展，无蝴蝶/莲花。
-  // 不绑定 emotion key / 业务触发；preload: false。
-  breathHaloExpand: {
-    animation: 'breath-halo-expand',
-    frameCount: 17,
+  // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展（一吸一呼），无蝴蝶/莲花。
+  // 2026-07-20：以 16 帧 HQ 替换旧 breath-halo-expand（17 帧）；不绑定 emotion key / 业务触发。
+  breathHaloHq: {
+    animation: 'breath-halo-hq',
+    frameCount: 16,
     fps: 8,
     preload: false,
     loop: false,
@@ -172,14 +222,29 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // Arrival Choose 确认合十（EMOTION_BIBLE: IntentionSet）——一次性；播完进 Companion Mode。
+  // Arrival Choose 确认合十（EMOTION_BIBLE: IntentionSet）。
+  // 素材第 1 帧=闭目坐禅（手在膝上），第 14 帧=睁眼合掌。
+  // 正放→倒放回第 1 帧；960×960 画幅经 displayFit 对齐 1056×864 idle，再淡入呼吸。
+  // 时长：27 拍 @ 4fps ≈ 6.8s（ONE_SHOT ack 带；对齐 dormantWake / milestoneGlow）。
   palmsTogether: {
     animation: 'palms-together',
     frameCount: 14,
-    fps: 10,
+    frameIndices: [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+      13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+    ],
+    fps: 4,
     loop: false,
     loopMode: 'none',
-    holdLastFrame: false
+    holdLastFrame: true,
+    // 闭目末帧多停一拍，再 cross-fade 回 idle
+    frameHolds: { 27: 400 },
+    // frame_001 内容包围盒（alpha>12）；与 idle-breathing 同屏对齐
+    displayFit: {
+      width: 960,
+      height: 960,
+      content: { x: 45, y: 163, w: 913, h: 734 }
+    }
   },
 
   // 环境细节解锁·莲花池首朵（Backlog 纪念奖励）——仅入库，无触发逻辑。
@@ -207,10 +272,11 @@ export const SPRITE_SEQUENCES = {
   // 每次专注完成的轻量确认（EMOTION_BIBLE: SessionComplete）——温和摆尾 + 烧录光环/粒子。
   // 当日首次达标由 Celebrating 替代；同日后续完成播放一次后回归 idle-breathing。
   // 播放期关闭 FocusVisualizer / Rim Light 实时金光，避免与帧内光效叠加。
+  // 28 拍 @ 8fps ≈ 3.5s（ONE_SHOT light 带；短于 Celebrating ≈5s）。
   sessionComplete: {
     animation: 'session-complete',
     frameCount: 28,
-    fps: 14,
+    fps: 8,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false
@@ -218,20 +284,22 @@ export const SPRITE_SEQUENCES = {
 
   // 阶段性 / 回归专注确认（MindfulAcknowledge，含 subtype: refocus）。
   // 小幅点头鞠躬，一次性播放；强度刻意低于 sessionComplete 与 Celebrating。
+  // 13 拍 @ 3.5fps ≈ 3.7s（ONE_SHOT ack 带下限）。
   nodBow: {
     animation: 'nod-bow',
     frameCount: 13,
-    fps: 10,
+    fps: 3.5,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false
   },
 
   // 活跃专注累计 2 小时的温和舒展提醒；与 sleeping → awake 的 dormant-wake 不同源。
+  // 17 拍 @ 4fps ≈ 4.3s（ONE_SHOT ack 带）。
   stretchReminder: {
     animation: 'stretch-reminder',
     frameCount: 17,
-    fps: 10,
+    fps: 4,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false

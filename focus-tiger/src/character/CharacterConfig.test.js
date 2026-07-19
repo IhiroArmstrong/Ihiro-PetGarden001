@@ -11,3 +11,18 @@ test('buildFramePaths supports a non-default start frame', () => {
     '/sprites/tiger-cub/monk-robe-default/halo-breathing/frame_009.png'
   ]);
 });
+
+test('buildFramePaths supports custom frameIndices with repeated sway frames', () => {
+  const paths = buildFramePaths('wave-hello', 19, {
+    frameIndices: [1, 8, 9, 8, 9, 19]
+  });
+
+  assert.deepEqual(paths, [
+    '/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001.png',
+    '/sprites/tiger-cub/monk-robe-default/wave-hello/frame_008.png',
+    '/sprites/tiger-cub/monk-robe-default/wave-hello/frame_009.png',
+    '/sprites/tiger-cub/monk-robe-default/wave-hello/frame_008.png',
+    '/sprites/tiger-cub/monk-robe-default/wave-hello/frame_009.png',
+    '/sprites/tiger-cub/monk-robe-default/wave-hello/frame_019.png'
+  ]);
+});

@@ -3,8 +3,7 @@ import assert from 'node:assert/strict';
 import {
   IdleOrchestrator,
   IDLE_VARIANT_CROSS_FADE_MS,
-  IDLE_BREATH_CYCLES_BEFORE_BLINK,
-  IDLE_OPEN_EYE_VARIANTS
+  IDLE_BREATH_CYCLES_BEFORE_BLINK
 } from './IdleOrchestrator.js';
 
 function createHarness() {
@@ -45,7 +44,6 @@ test('plays one pingpong breath at a time, blinks after N, then repeats', () => 
   assert.equal(harness.calls[0].options.maxCycles, 1);
   assert.equal(orchestrator.getStatus().breathsRemaining, 3);
 
-  // complete breath 1 → 2 remaining
   harness.calls.at(-1).options.onComplete();
   assert.equal(harness.calls.at(-1).name, 'idleBreathing');
   assert.equal(orchestrator.getStatus().breathsRemaining, 2);
@@ -65,12 +63,12 @@ test('plays one pingpong breath at a time, blinks after N, then repeats', () => 
   assert.equal(orchestrator.getStatus().breathsRemaining, 3);
 });
 
-test('default pattern has no yawn / gaze random pool', () => {
+test('default idle has no variant pool / no random scheduling API', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({ player: harness.player });
-  assert.deepEqual(orchestrator.variants, []);
   assert.equal(orchestrator.breathCyclesBeforeBlink, IDLE_BREATH_CYCLES_BEFORE_BLINK);
-  assert.equal(IDLE_OPEN_EYE_VARIANTS.length >= 1, true);
+  assert.equal(typeof orchestrator.forcePlayVariant, 'undefined');
+  assert.equal('variants' in orchestrator, false);
 });
 
 test('stop during blink prevents automatic return to breathing', () => {

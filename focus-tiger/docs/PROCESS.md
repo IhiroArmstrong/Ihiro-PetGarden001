@@ -27,15 +27,19 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-19 21:40（UTC+8）
+**最后更新时间**：2026-07-20 00:40（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Idle 确认**：仅呼吸×5→眨眼；候选手势（gaze/tea/yawn/ear/`blink-breathe`）入库作场景情绪素材，**不**进 Idle 随机池；调试「组合试播」不再 restart idle（修闭目帧假闪）
+- **`breath-halo-hq`** 替换 `breath-halo-expand` 作 MilestoneGlow 简化备选（旧帧归档）
+- **IntentionSet 合十衔接**：`palms-together` 正放→倒放回闭目；**960×960 vs idle 1056×864** 用 `displayFit` 对齐大小/落点后再 280ms 淡入；一次性时长标准 `ONE_SHOT_DURATION_SEC`
+- **Idle**：正式仅呼吸×5→眨眼（已关自动张望）；右上调试面板列出全部入库序列逐条试播
 - **Honesty 拍板 B**（2026-07-19）：补登结束立刻出桥接（Welcome 同屏）；首次零完成仍自动提示；空闲 **Mindful Check-in** 可同日再补登；每次补登都出桥接。定稿 `HONESTY_BRIDGE_CTA.md`
 - Companion 提示短句：`"Pick one — the timer starts."`（展开三选一时出气泡）
-- Rise 角色动画：等用户 Claude 抠图后再接线（暂不接 stretch）
+- Rise 角色动画：候选 `blink-breathe` 已入库可调试试播；**尚未接线** Rise
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
@@ -44,10 +48,10 @@
 - 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`
 - 闭目坐禅 3D Idle 运行时已换为「单色暖浅灰棉麻禅修服 / 茶服风、无红边」：源文件（gitignore）`art-reference/models/sources/yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb`；运行时稳定路径仍为 `public/models/tiger-meditate-closed.glb`（约 **1.6MB**：贴图 1024/512 + lossless WebP + Draco、不减面；避免默认 WebP 压到 ~300KB 损伤织物细节）。旧「灰棉麻 + 深红镶边」保留为历史备份；2D 主线与图生视频 / 奖励柜 3D 统一以 `CHARACTER_BIBLE.md` Costume 为准
-- IdleOrchestrator：闭目坐禅 = `idle-breathing`（**2.5 fps**）×5 → 单次眨眼 → 往复；**已删除**哈欠/张望/一瞥等其它默认变体
+- IdleOrchestrator：闭目坐禅 = `idle-breathing`（**2.5 fps**）×5 → 单次眨眼 → 往复；张望/喝茶等为候选手势（非 Idle 池）
 - Ambient Sound FAB：进应用即可见（body、z-index 22）；未 FOCUSING 点击提示须先进入专注模式；FOCUSING 才可开面板
 - 双唤醒视觉分离：Honesty `dormantWake` 独占 `dormant-wake`；调试 `wakeUp` 用伸懒腰（stretch-reminder 同源）；Honesty 暂不接金光/halo
-- IdleOrchestrator 曾扩展（`NEW_ASSETS_2026-07-18-B`）：张望 A/B 链式 + yawn；180ms cross-fade；yawn 权重建议 0.3（待确认）——张望现仅显式启用
+- IdleOrchestrator 五变体池曾接入后又撤回：现为候选陪伴手势目录（`companionGestureCatalog`），正式 Idle 仍仅呼吸×眨眼
 - 动态效果层：`DynamicMotion`（呼吸起伏、绕 Y 轴旋转、庆祝悬浮）— **仅 3D 奖励柜**；2D 主界面调试面板已移除对应开关
 - 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子），经 `playEmotion('incenseComplete')` 触发
 - `EmotionController.playEmotion()` 统一情绪桥：业务侧不直连 PoseManager / DynamicMotion；映射表含已实现态 + 大量占位态
@@ -152,7 +156,7 @@
 **已知的开放决策 / 待确认事项**：
 
 - across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）
-- Idle `yawn-stretch` 相对权重建议 **0.3**（以 idleEyeGlance=1；约默认池 ~7%）；是否采纳或改为 0.2 / 0.5 待确认
+- Idle 五变体相对权重已写入 EMOTION_BIBLE（gaze 1.0 / tea 0.5 / yawn 0.3 / ear 0.2）；试玩后可再调
 - **回归姿态（2026-07-19 已拍板软化）**：一次性情绪播完回归「类似坐禅」即可，不强制像素对齐默认闭目 idle 第 1 帧（见 `PRINCIPLES.md`）
 - **EyeTracking**：已正式放弃（2026-07-19），原因见 `CORE_LOOP.md`；勿再开返工任务
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净

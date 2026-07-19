@@ -9,9 +9,24 @@
  */
 
 import { POSE_KEYS } from '../character/PoseManager.js';
+import { SPRITE_SEQUENCES } from '../character/spriteManifest.js';
+import { COMPANION_GESTURE_CHAINS } from '../character/companionGestureCatalog.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
+/** sleeping → dormantWake 进入时的交叉淡入。 */
 export const DORMANT_WAKE_CROSS_FADE_MS = 180;
+/**
+ * 离开 Honesty `dormantWake` 定格（睁眼坐姿）→ idle / smiling 等时的交叉淡入。
+ * 须明显长于普通 180ms，避免定格硬切闭目呼吸。
+ */
+export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = 520;
+/**
+ * Arrival Breath（"Let's arrive together."）用眨眼微笑的播放帧率。
+ * 默认 blink-smile 为 8fps；此处放慢约 2×，并保持微笑、不落入 idle-breathing。
+ */
+export const ARRIVAL_BREATH_SMILE_FPS = 4;
+/** IntentionSet 合十末帧 → idle 的交叉淡入（须在 Dolly 拉回之前完成）。 */
+export const INTENTION_SET_RETURN_CROSS_FADE_MS = 280;
 export const MILESTONE_GLOW_HOLD_MS = 2500;
 
 const BAKED_EFFECT_EMOTIONS = new Set([
@@ -164,12 +179,18 @@ export class EmotionController {
           this.spritePlayer.play('sleeping');
         }
       },
-      smiling: () => {
+      smiling: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
         if (this.spritePlayer) {
-          this.spritePlayer.play('blinkSmile');
+          const playOpts = {
+            crossFadeMs: options.crossFadeMs
+          };
+          if (Number.isFinite(options.fps) && options.fps > 0) {
+            playOpts.fps = options.fps;
+          }
+          this.spritePlayer.play('blinkSmile', playOpts);
         }
       },
       celebrating: (options = {}) => {
@@ -219,7 +240,14 @@ export class EmotionController {
         const started = this.spritePlayer.play(
           'palmsTogether',
           this._oneShotPlayOpts(
-            { ...options, loop: false, loopMode: 'none' },
+            {
+              ...options,
+              loop: false,
+              loopMode: 'none',
+              // 合十末帧已 displayFit 对齐 idle；短淡入掩盖残余像素差。
+              // Dolly 须等本淡入结束后再拉回（见 main onIntentionSetPlay）。
+              returnCrossFadeMs: INTENTION_SET_RETURN_CROSS_FADE_MS
+            },
             'intentionSet'
           )
         );
@@ -591,7 +619,13 @@ export class EmotionController {
       options.onComplete(tag);
     }
     if (!options.holdPose) {
-      this.playEmotion('idle');
+      const crossFadeMs = Number(options.returnCrossFadeMs);
+      this.playEmotion(
+        'idle',
+        Number.isFinite(crossFadeMs) && crossFadeMs > 0
+          ? { crossFadeMs }
+          : undefined
+      );
     }
   }
 
@@ -634,7 +668,19 @@ export class EmotionController {
     } else if (!RUNTIME_GLOW_NEUTRAL_KEYS.has(key)) {
       this._runtimeGlowSuppressed = false;
     }
-    impl(options);
+
+    // Honesty 睡醒定格末帧后，任何下一情绪默认加长交叉淡入，避免硬切。
+    const leavingDormantWake =
+      this._currentEmotionKey === 'dormantWake' && key !== 'dormantWake';
+    const playOptions = leavingDormantWake
+      ? {
+          ...options,
+          crossFadeMs:
+            options.crossFadeMs ?? LEAVE_DORMANT_WAKE_CROSS_FADE_MS
+        }
+      : options;
+
+    impl(playOptions);
     // 叠加层开关及非模态提醒不抢占「当前基底情绪」记录
     if (
       key !== 'breathing' &&
@@ -670,52 +716,97 @@ export class EmotionController {
   }
 
   /**
-   * 调试面板：2D 情绪按钮（走 playEmotion）。
-   * 3D DynamicMotion（旋转/呼吸起伏/悬浮）仅保留给奖励柜场景，不在 2D 主界面暴露开关。
+   * 调试面板：情绪入口 + **全部入库** `SPRITE_SEQUENCES` 逐条试播。
+   * 3D DynamicMotion 仅奖励柜，不在此暴露。
    * @param {HTMLElement} container
    */
   createDebugUI(container) {
-    const buttons = [
+    const emotionButtons = [
       { key: 'idle', label: '坐禅闭眼' },
       { key: 'sleeping', label: '睡着了' },
       { key: 'smiling', label: '坐禅微笑' },
-      { key: 'celebrating', label: '庆祝跳舞(2D)' },
-      { key: 'intentionSet', label: '合十确认(2D)' },
+      { key: 'celebrating', label: '庆祝(随机v1/v2)' },
+      { key: 'intentionSet', label: '合十确认' },
       { key: 'tPose', label: 'T-Pose' },
-      { key: 'incenseComplete', label: '模拟一炷香完成' },
-      { key: 'milestoneGlow', label: '里程碑金辉(2D预览)' },
-      { key: 'sessionComplete', label: '完成摆尾(2D)' },
-      { key: 'welcomeBack', label: '挥手欢迎(2D序列)' },
-      { key: 'nodGreeting', label: '点头致意(2D)' },
-      { key: 'curiousTilt', label: '静止眨眼(2D)' },
-      { key: 'mindfulAcknowledge', label: '正念点头鞠躬(2D)' },
-      { key: 'stretchReminder', label: '两小时舒展(2D)' },
-      { key: 'blink', label: '眨眼(blink-smile)' },
+      { key: 'incenseComplete', label: '一炷香完成' },
+      { key: 'milestoneGlow', label: '里程碑金辉' },
+      { key: 'sessionComplete', label: '完成摆尾' },
+      { key: 'welcomeBack', label: '挥手欢迎' },
+      { key: 'nodGreeting', label: '点头致意' },
+      { key: 'curiousTilt', label: '静止眨眼' },
+      { key: 'mindfulAcknowledge', label: '正念点头鞠躬' },
+      { key: 'stretchReminder', label: '两小时舒展' },
+      { key: 'blink', label: '眨眼' },
       { key: 'wakeUp', label: '唤醒(伸懒腰)' },
-      { key: 'dormantWake', label: 'Honesty唤醒' },
+      { key: 'dormantWake', label: 'Honesty唤醒(流程)' },
       { key: 'haloBreathing', label: '光环呼吸奖励' }
     ];
+
+    /** @type {Record<string, string>} */
+    const sequenceLabels = {
+      idleBreathing: 'idle-breathing',
+      idleEyeGlance: 'idle-eye-glance 一瞥',
+      gazeP1CenterBlinkLeft: 'gaze-p1 中→眨→左',
+      gazeP2LeftToUp: 'gaze-p2 左→上',
+      gazeP3TowardRight: 'gaze-p3 转向右',
+      gazeP4RightToDown: 'gaze-p4 右→下',
+      yawnStretch: 'yawn-stretch 哈欠',
+      teaDrinking: 'tea-drinking 喝茶',
+      earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
+      blinkBreathe: 'blink-breathe 眨眼深呼吸',
+      waveHello: 'wave-hello 挥手',
+      celebrateDance: 'celebrate-dance v1',
+      celebrateDanceV2: 'celebrate-dance-v2',
+      milestoneGlow: 'milestone-glow',
+      breathHaloHq: 'breath-halo-hq 备选',
+      palmsTogether: 'palms-together 合十',
+      lotusFrontRising: 'lotus-front-rising',
+      lotusChestHalo: 'lotus-chest-halo',
+      sessionComplete: 'session-complete',
+      nodBow: 'nod-bow',
+      stretchReminder: 'stretch-reminder',
+      wakeUp: 'wakeUp(=stretch)',
+      sleeping: 'sleeping',
+      dormantWake: 'dormant-wake 纯动画',
+      haloBreathingIntro: 'halo-breathing intro',
+      haloBreathingLoop: 'halo-breathing loop',
+      haloBreathingPingpong: 'halo-breathing pingpong',
+      blinkSmile: 'blink-smile',
+      nodGreeting: 'nod-greeting',
+      tiltThink: 'tilt-think'
+    };
 
     const group = document.createElement('div');
     group.id = 'emotion-debug-ui';
     group.style.cssText =
-      'position:fixed;top:12px;right:12px;z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;max-height:calc(100vh - 120px);overflow-y:auto;padding-bottom:8px;';
+      'position:fixed;top:12px;right:12px;z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;max-height:calc(100vh - 24px);overflow-y:auto;padding-bottom:8px;';
 
-    buttons.forEach(({ key, label }) => {
+    const addSectionLabel = (text) => {
+      const el = document.createElement('div');
+      el.style.cssText =
+        'max-width:168px;font-size:10px;line-height:1.35;color:#8b7355;margin-top:8px;font-weight:600;';
+      el.textContent = text;
+      group.appendChild(el);
+    };
+
+    const btnCss =
+      'padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff;color:#2c1f14;border-radius:4px;text-align:left;';
+    const assetBtnCss =
+      'padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b7355;background:#fffaf3;color:#2c1f14;border-radius:4px;text-align:left;';
+
+    addSectionLabel('情绪入口');
+    emotionButtons.forEach(({ key, label }) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = label;
       btn.dataset.emotionKey = key;
-      btn.style.cssText =
-        'padding:6px 10px;font-size:12px;cursor:pointer;border:1px solid #8b2e2e;background:#fff;color:#2c1f14;border-radius:4px;';
+      btn.style.cssText = btnCss;
 
       btn.addEventListener('click', () => {
-        // 调试「Honesty唤醒」：打开补登时长三选一，不直接播 dormantWake 动画。
         if (key === 'dormantWake' && typeof this._debugHonestyWake === 'function') {
           this._debugHonestyWake();
           return;
         }
-        // 调试验收：一次性姿态 holdPose 定格末帧，不硬切默认闭目 idle（见 PRINCIPLES）。
         const holdPoseKeys = new Set([
           'celebrating',
           'intentionSet',
@@ -731,7 +822,6 @@ export class EmotionController {
           'dormantWake'
         ]);
         const opts = holdPoseKeys.has(key) ? { holdPose: true } : {};
-        // 坐禅闭眼：强制重启呼吸×5→眨眼编排，便于验收。
         if (key === 'idle') opts.restart = true;
 
         if (key === 'incenseComplete') {
@@ -762,13 +852,160 @@ export class EmotionController {
 
     const previewHint = document.createElement('div');
     previewHint.style.cssText =
-      'max-width:160px;font-size:10px;line-height:1.35;color:#8b7355;margin-top:2px;';
+      'max-width:168px;font-size:10px;line-height:1.35;color:#8b7355;margin-top:2px;';
     previewHint.textContent =
-      '姿态预览：能连贯则类似坐禅即可；不连贯播完定格末帧，不强制切回默认闭目。点「坐禅闭眼」才回呼吸循环。';
+      '姿态预览：不连贯则定格末帧。点「坐禅闭眼」回呼吸×5→眨眼。候选手势用下方「入库素材 / 组合试播」，勿经 Idle 随机池。';
     group.appendChild(previewHint);
+
+    addSectionLabel('入库素材（逐条试播）');
+    const assetHint = document.createElement('div');
+    assetHint.style.cssText =
+      'max-width:168px;font-size:10px;line-height:1.35;color:#8b7355;';
+    assetHint.textContent =
+      '对照抠图：点哪条播哪条，播完定格。**不会**先切回闭目呼吸（避免假闪）。';
+    group.appendChild(assetHint);
+
+    const sequenceNames = Object.keys(SPRITE_SEQUENCES);
+    sequenceNames.forEach((name) => {
+      const def = SPRITE_SEQUENCES[name];
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = sequenceLabels[name] ?? `${def.animation} (${name})`;
+      btn.dataset.sequenceKey = name;
+      btn.style.cssText = assetBtnCss;
+      btn.addEventListener('click', () => {
+        this._playDebugSequence(name, btn);
+      });
+      group.appendChild(btn);
+    });
+
+    addSectionLabel('组合试播（多段衔接·定格）');
+    const chainHint = document.createElement('div');
+    chainHint.style.cssText =
+      'max-width:168px;font-size:10px;line-height:1.35;color:#8b7355;';
+    chainHint.textContent =
+      '张望 A/B 等链式试播：离开 Idle 后连续播，末帧定格。不自动、不回呼吸（避免闭目帧一闪）。';
+    group.appendChild(chainHint);
+
+    COMPANION_GESTURE_CHAINS.forEach(({ id, label, sequences }) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.dataset.gestureChain = id;
+      btn.style.cssText = assetBtnCss;
+      btn.addEventListener('click', () => {
+        this._playDebugSequenceChain(sequences, btn);
+      });
+      group.appendChild(btn);
+    });
 
     container.appendChild(group);
     return group;
+  }
+
+  /**
+   * 调试：直接播一条 SPRITE_SEQUENCES，便于验收抠图/衔接。
+   * 离开 Idle 基底后播放；**不**先 restart 闭目呼吸（避免假闪）。
+   * @param {string} sequenceName
+   * @param {HTMLButtonElement} [btn]
+   */
+  _playDebugSequence(sequenceName, btn) {
+    if (!this.spritePlayer) {
+      console.warn('[EmotionController] spritePlayer 未接入，无法试播素材');
+      return;
+    }
+    const def = SPRITE_SEQUENCES[sequenceName];
+    if (!def) {
+      console.warn(`[EmotionController] 未知序列 "${sequenceName}"`);
+      return;
+    }
+
+    this._leaveIdleBaseline({ clear: false });
+    this._use2DMainline();
+
+    const run = () => {
+      this.spritePlayer.play(sequenceName, {
+        loop: false,
+        loopMode: 'none',
+        holdLastFrame: true,
+        // 调试切条：短淡入即可；0 可避免与闭目基底叠闪
+        crossFadeMs: 0
+      });
+      this._currentEmotionKey = `debug:${sequenceName}`;
+    };
+
+    if (def.preload === false) {
+      if (btn) btn.disabled = true;
+      void this.spritePlayer
+        .preload([sequenceName])
+        .then(run)
+        .catch((error) => {
+          console.warn(
+            `[EmotionController] 预加载 ${sequenceName} 失败`,
+            error
+          );
+        })
+        .finally(() => {
+          if (btn) btn.disabled = false;
+        });
+      return;
+    }
+    run();
+  }
+
+  /**
+   * 调试：连续播多段序列，末帧定格；不回 Idle 呼吸（避免闭目帧闪一下）。
+   * @param {ReadonlyArray<string>} sequences
+   * @param {HTMLButtonElement} [btn]
+   */
+  _playDebugSequenceChain(sequences, btn) {
+    if (!this.spritePlayer) {
+      console.warn('[EmotionController] spritePlayer 未接入，无法试播组合');
+      return;
+    }
+    const list = [...sequences].filter((name) => SPRITE_SEQUENCES[name]);
+    if (list.length === 0) return;
+
+    this._leaveIdleBaseline({ clear: false });
+    this._use2DMainline();
+
+    const needsPreload = list.filter(
+      (name) => SPRITE_SEQUENCES[name]?.preload === false
+    );
+
+    const playAt = (index) => {
+      const name = list[index];
+      const isLast = index >= list.length - 1;
+      this.spritePlayer.play(name, {
+        loop: false,
+        loopMode: 'none',
+        holdLastFrame: true,
+        crossFadeMs: 0,
+        onComplete: isLast
+          ? undefined
+          : () => {
+              playAt(index + 1);
+            }
+      });
+      this._currentEmotionKey = `debug-chain:${list.join('+')}`;
+    };
+
+    const start = () => playAt(0);
+
+    if (needsPreload.length > 0) {
+      if (btn) btn.disabled = true;
+      void this.spritePlayer
+        .preload(needsPreload)
+        .then(start)
+        .catch((error) => {
+          console.warn('[EmotionController] 组合预加载失败', error);
+        })
+        .finally(() => {
+          if (btn) btn.disabled = false;
+        });
+      return;
+    }
+    start();
   }
 }
 

@@ -1,9 +1,10 @@
 /**
  * IdleOrchestrator —— 闭目坐禅呼吸与偶发眨眼的固定编排。
  *
- * 默认节奏（2026-07-19 拍板）：
+ * 正式节奏（2026-07-19 / 2026-07-20 确认）：
  *   idle-breathing 完整 pingpong × N（默认 5）→ 单次 blink-smile → 再呼吸 × N → …
- * 表示 Yin「偶尔看看」；**不**再随机插入哈欠 / 张望 / 一瞥等其它动作。
+ * 表示 Yin「偶尔看看」。**不**插入张望 / 哈欠 / 喝茶等其它动作
+ * （那些是独立候选情绪序列，见 companionGestureCatalog，勿绑本编排器）。
  *
  * EmotionController 只负责在 idle 生命周期 start，在非 idle 表现前 stop。
  */
@@ -13,40 +14,6 @@ export const IDLE_VARIANT_CROSS_FADE_MS = 180;
 
 /** 两次眨眼之间，idle-breathing 完整 pingpong 循环次数。 */
 export const IDLE_BREATH_CYCLES_BEFORE_BLINK = 5;
-
-/** @deprecated 保留常量以免外部引用断裂；默认 idle 已不再用随机间隔池。 */
-export const IDLE_VARIANT_MIN_INTERVAL_MS = 25_000;
-/** @deprecated */
-export const IDLE_VARIANT_MAX_INTERVAL_MS = 45_000;
-/** @deprecated */
-export const IDLE_VARIANT_COOLDOWN_MS = 10_000;
-
-/** @deprecated 睁眼类权重；默认池已取消。 */
-export const IDLE_VARIANT_WEIGHT_EYE_GLANCE = 1;
-/** @deprecated */
-export const IDLE_VARIANT_WEIGHT_BLINK_SMILE = 1;
-/** @deprecated */
-export const IDLE_VARIANT_WEIGHT_GAZE = 1;
-/** @deprecated */
-export const IDLE_VARIANT_WEIGHT_YAWN_STRETCH_SUGGESTED = 0.3;
-
-/**
- * 历史睁眼/张望变体清单（素材仍入库）。默认 Idle **不调度**；
- * 仅供调试或显式实验传入，正式闭目坐禅路径勿启用。
- */
-export const IDLE_OPEN_EYE_VARIANTS = Object.freeze([
-  Object.freeze({ sequence: 'idleEyeGlance', weight: IDLE_VARIANT_WEIGHT_EYE_GLANCE }),
-  Object.freeze({
-    id: 'gazeLookA',
-    sequences: Object.freeze(['gazeP1CenterBlinkLeft', 'gazeP2LeftToUp']),
-    weight: IDLE_VARIANT_WEIGHT_GAZE
-  }),
-  Object.freeze({
-    id: 'gazeLookB',
-    sequences: Object.freeze(['gazeP3TowardRight', 'gazeP4RightToDown']),
-    weight: IDLE_VARIANT_WEIGHT_GAZE
-  })
-]);
 
 export class IdleOrchestrator {
   /**
@@ -74,12 +41,6 @@ export class IdleOrchestrator {
       Math.floor(Number(breathCyclesBeforeBlink) || IDLE_BREATH_CYCLES_BEFORE_BLINK)
     );
     this.crossFadeMs = Math.max(0, Number(crossFadeMs) || 0);
-
-    /** @deprecated 兼容旧测试 / DEV；默认空，正式路径不用随机池 */
-    this.variants = [];
-    this.minIntervalMs = IDLE_VARIANT_MIN_INTERVAL_MS;
-    this.maxIntervalMs = IDLE_VARIANT_MAX_INTERVAL_MS;
-    this.cooldownMs = IDLE_VARIANT_COOLDOWN_MS;
 
     this._active = false;
     /** @type {'idle'|'breathing'|'blink'} */
@@ -128,24 +89,15 @@ export class IdleOrchestrator {
 
   /**
    * DEV 调参：呼吸循环次数 / 交叉淡入。
-   * @param {{breathCyclesBeforeBlink?:number,crossFadeMs?:number,minIntervalMs?:number,maxIntervalMs?:number,cooldownMs?:number}} timing
+   * @param {{breathCyclesBeforeBlink?:number,crossFadeMs?:number}} timing
    */
-  setTiming({
-    breathCyclesBeforeBlink,
-    crossFadeMs,
-    minIntervalMs,
-    maxIntervalMs,
-    cooldownMs
-  } = {}) {
+  setTiming({ breathCyclesBeforeBlink, crossFadeMs } = {}) {
     if (Number.isFinite(breathCyclesBeforeBlink) && breathCyclesBeforeBlink >= 1) {
       this.breathCyclesBeforeBlink = Math.floor(breathCyclesBeforeBlink);
     }
     if (Number.isFinite(crossFadeMs)) {
       this.crossFadeMs = Math.max(0, crossFadeMs);
     }
-    if (Number.isFinite(minIntervalMs)) this.minIntervalMs = minIntervalMs;
-    if (Number.isFinite(maxIntervalMs)) this.maxIntervalMs = maxIntervalMs;
-    if (Number.isFinite(cooldownMs)) this.cooldownMs = cooldownMs;
 
     if (this._active) {
       this.start();
@@ -155,16 +107,13 @@ export class IdleOrchestrator {
   getTiming() {
     return {
       breathCyclesBeforeBlink: this.breathCyclesBeforeBlink,
-      crossFadeMs: this.crossFadeMs,
-      minIntervalMs: this.minIntervalMs,
-      maxIntervalMs: this.maxIntervalMs,
-      cooldownMs: this.cooldownMs
+      crossFadeMs: this.crossFadeMs
     };
   }
 
   /**
    * 逐次播放 1 个完整 pingpong；扣减剩余次数，到 0 后眨眼。
-   * （比一次性 maxCycles:N 更易验收：status.breathsRemaining 会递减。）
+   * @param {object} [playOptions]
    */
   _playNextBreath(playOptions = {}) {
     if (!this._active) return;
