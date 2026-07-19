@@ -5,6 +5,9 @@ alwaysApply: true
 
 # Focus Tiger · 回归锁（Regression Lock）
 
+> **叙事全文（原则/规范/指引/注意事项）**：`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`  
+> 本文件为 **强制门禁**；解释「为什么、怎么做」以该文档为准，后续完善也写进该文档。
+
 本规则针对两类危险现象：
 
 1. **假修好**：用户反馈已修 → 再测却无正确效果（只验 Happy Path、门闩静默失败、未 commit）。  

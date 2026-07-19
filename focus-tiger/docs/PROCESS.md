@@ -3,12 +3,13 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md`。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）。
 
 ---
 
 ## 回归锁工作法（2026-07-19 · 方法级强制；2026-07-20 增补「防改坏」）
 
+> **叙事全文**：`DEV_WORKFLOW_QUALITY.md`（原则 / 规范 / 指引 / 注意事项；两次讨论整合，后续可逐步完善）。  
 > **背景**：两类事故反复出现——（1）「上次已修 → 再测又无正确效果」（假修好）；（2）「重写编排/转场后，原先已好的观感坏了」（把好的改坏，例 Idle 眨眼闪一下）。  
 > 常见根因不是神秘回滚，而是 Agent **只验 Happy Path、门闩静默失败、无保护面重写、修复长期未 commit**。  
 > 完整门禁见 `.cursor/rules/focus-tiger-regression-lock.mdc`（alwaysApply）。
@@ -42,7 +43,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 04:15（UTC+8）
+**最后更新时间**：2026-07-20 04:30（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -60,6 +61,7 @@
 - **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
 - **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
 - Honesty 拍板 B；Companion 短句提示
+- **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（整合 7/19 防假修好+自动 commit 与 7/20 防改坏）
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 

@@ -31,6 +31,7 @@ alwaysApply: true
 | `docs/CHARACTER_BIBLE.md` | 角色 Master Prompt 全文归档 + 项目关联澄清（Rive/莲花/蒲团/Suffix） |
 | `docs/DESIGN.md` | 产品语义与玩法（专注、一炷香、沉睡唤醒等） |
 | `docs/PROCESS.md` | 协作流程、角色边界、**Backlog**、文首「当前进度速览」（重大进展后更新） |
+| `docs/DEV_WORKFLOW_QUALITY.md` | **如何改善开发工作流来保证开发质量**：原则/规范/指引/注意事项；防假修好+防改坏叙事权威；门禁仍以 regression-lock 规则为准 |
 | `docs/COLLAB.md` | Task Brief / 文档更新协作约定 |
 | `docs/TASKS.md` | 任务序列（按需查，勿全文常驻上下文） |
 | `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；用户书面意见进 **「用户反馈」列**（勿混入测试步骤）；完成任务时须更新并在回复中说明需测项 |
@@ -83,7 +84,7 @@ alwaysApply: true
 
 ## 回归锁（方法级 · 与上并列强制）
 
-详见 alwaysApply 规则 `focus-tiger-regression-lock.mdc` 与 `docs/PROCESS.md`「回归锁工作法」。摘要：
+详见 alwaysApply 规则 `focus-tiger-regression-lock.mdc`、叙事全文 `docs/DEV_WORKFLOW_QUALITY.md`、摘要 `docs/PROCESS.md`「回归锁工作法」。摘要：
 
 - 交互修复 = 主路径 + **回流路径**；禁止只验一次 Happy Path 就声称修好。  
 - 门闩未就绪 → UI 禁用，禁止可点却静默 `return`。  
