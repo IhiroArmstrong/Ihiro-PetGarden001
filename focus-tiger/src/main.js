@@ -232,11 +232,9 @@ async function init() {
   );
 
   function syncCompanionPostSessionChrome() {
-    const honestyBusy =
-      Boolean(honestyCheckInUI.phase) && honestyCheckInUI.phase !== 'hidden';
-    companionModePicker.setPostSessionOverlayActive(
-      reflectionMoment.isOpen() || honestyBusy
-    );
+    // 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint → 启动 Arrival
+    //（与 Sit 可点路径一致，禁止「看得见却静默」）。
+    companionModePicker.setPostSessionOverlayActive(reflectionMoment.isOpen());
   }
 
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);

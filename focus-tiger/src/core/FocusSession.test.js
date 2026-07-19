@@ -137,6 +137,7 @@ test('companion hint click never silently no-ops when idle and visible', () => {
     }),
     'toggle'
   );
+  // Reflection 等真正叠层才 ignore；Honesty 不得再挡 hint（见 main sync）
   assert.equal(
     resolveCompanionHintClick({
       idleVisible: true,
