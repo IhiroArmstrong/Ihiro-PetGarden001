@@ -18,7 +18,10 @@ import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
 import { MoodController } from './core/MoodController.js';
-import { EmotionController } from './core/EmotionController.js';
+import {
+  ARRIVAL_BREATH_SMILE_FPS,
+  EmotionController
+} from './core/EmotionController.js';
 import { FocusVisualizer } from './feedback/FocusVisualizer.js';
 import { TransitionFX } from './feedback/TransitionFX.js';
 import { Ambience } from './feedback/Ambience.js';
@@ -237,11 +240,12 @@ async function init() {
       }
     },
     onCheckInComplete: () => {
+      honestyCheckInUI.hideIdleEntry();
       honestyBridge?.onHonestyCheckInComplete();
     }
   });
 
-  /** 在 beginFocusWithMode 定义后填入 onModeSelected / onNeedArrival */
+  /** 在 beginFocusWithMode 定义后填入 onModeSelected / onNeedArrival / onExpandedChange */
   const companionModeHandlers = {};
   const companionModePicker = new CompanionModePicker(
     document.getElementById('ui-overlay'),
@@ -250,6 +254,20 @@ async function init() {
   );
 
   let hasEndedAnySession = false;
+
+  function syncHonestyIdleEntry() {
+    const blocked =
+      arrivalPractice?.isOpen?.() ||
+      honestyBridge?.isVisible?.() ||
+      reflectionMoment?.isOpen?.() ||
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE;
+    if (blocked) {
+      honestyCheckInUI.hideIdleEntry();
+      return;
+    }
+    honestyCheckIn.syncIdleEntry();
+  }
 
   function syncCompanionPostSessionChrome() {
     // 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint → 启动 Arrival
@@ -260,9 +278,12 @@ async function init() {
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
   reflectionMoment.open = (options) => {
     companionModePicker.hide();
+    honestyCheckInUI.hideIdleEntry();
     reflectionOpen(options);
     syncCompanionPostSessionChrome();
-    onboardingHints?.maybeShowAuto('reflection');
+    // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
+    onboardingHints?.syncVisibleAutos(['reflection']);
+    requestAnimationFrame(() => onboardingHints?.repositionAll());
   };
   const reflectionOnDone = reflectionMoment.onDone;
   reflectionMoment.onDone = (result, hasAnyAnswer) => {
@@ -271,6 +292,7 @@ async function init() {
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
     syncOnboardingAutoHints();
+    syncHonestyIdleEntry();
   };
 
   const honestyShowPrompt = honestyCheckInUI.showPrompt.bind(honestyCheckInUI);
@@ -307,15 +329,16 @@ async function init() {
     ambientSoundscape,
     {
       onBlockedTip: () => {
-        onboardingHints?.maybeShowAuto('ambient-gated');
-        onboardingHints?.markSeen('ambient-gated');
+        // 未计时点 Sound：本地 nudge（已改漫画气泡样式）展示 AMBIENT_REQUIRES_FOCUS；
+        // 同时写入 hints-seen，避免「?」补救与自动提示重复抢戏。
+        onboardingHints?.store?.markSeen?.('ambient-gated');
       },
       onPanelOpened: () => {
         onboardingHints?.maybeShowAuto('ambient-soundscape');
       },
       onTrackChosen: () => {
         onboardingHints?.markSeen('ambient-soundscape');
-        onboardingHints?.hideBubble();
+        onboardingHints?.hideBubble('ambient-soundscape');
       }
     }
   );
@@ -347,44 +370,34 @@ async function init() {
   function syncOnboardingAutoHints() {
     if (!onboardingHints) return;
     const scene = getOnboardingScene();
+    /** @type {string[]} */
+    let ids = [];
     if (scene.reflectionOpen) {
-      onboardingHints.maybeShowAuto('reflection');
-      return;
-    }
-    if (scene.isFocusing) {
-      onboardingHints.maybeShowAuto('rise-button');
-      return;
-    }
-    if (scene.ambientPanelOpen) {
-      onboardingHints.maybeShowAuto('ambient-soundscape');
-      return;
-    }
-    if (scene.arrivalOpen) {
+      ids = ['reflection'];
+    } else if (scene.isFocusing) {
+      // Rise 锚在主按钮；Sound 锚在 FAB——两句可同时出现（文档各有独立 hintId）
+      ids = ['rise-button', 'ambient-soundscape'];
+    } else if (scene.ambientPanelOpen) {
+      ids = ['ambient-soundscape'];
+    } else if (scene.arrivalOpen) {
       const step = arrivalPractice.getStep();
-      if (step === 'notice') onboardingHints.maybeShowAuto('notice');
-      else if (step === 'breath') onboardingHints.maybeShowAuto('breathing');
-      else if (step === 'choose') onboardingHints.maybeShowAuto('choose');
-      else if (step === 'welcome') onboardingHints.maybeShowAuto('notice');
-      return;
+      if (step === 'breath') ids = ['breathing'];
+      else if (step === 'choose') ids = ['choose'];
+      else ids = ['notice'];
+    } else if (scene.companionExpanded) {
+      ids = ['companion-mode'];
+    } else if (scene.honestyVisible) {
+      ids = ['honesty-optional'];
+    } else if (scene.isDormant) {
+      ids = ['dormant-open'];
+    } else if (scene.hasEverCompletedSession) {
+      ids = ['idle-after-session'];
+    } else {
+      ids = ['sit-button', 'how-shall-we-sit'];
     }
-    if (scene.companionExpanded) {
-      onboardingHints.maybeShowAuto('companion-mode');
-      return;
-    }
-    if (scene.honestyVisible) {
-      onboardingHints.maybeShowAuto('honesty-optional');
-      return;
-    }
-    if (scene.isDormant) {
-      onboardingHints.maybeShowAuto('dormant-open');
-      return;
-    }
-    if (scene.hasEverCompletedSession) {
-      onboardingHints.maybeShowAuto('idle-after-session');
-      return;
-    }
-    onboardingHints.maybeShowAuto('sit-button');
-    onboardingHints.maybeShowAuto('how-shall-we-sit');
+    onboardingHints.syncVisibleAutos(ids);
+    // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
+    requestAnimationFrame(() => onboardingHints?.repositionAll());
   }
 
   onboardingHints = new OnboardingHintsUI(document.body, {
@@ -428,6 +441,11 @@ async function init() {
       },
       onBreath: () => {
         lightProgression.beginBreath();
+        // Breath「Let's arrive together」：放慢眨眼微笑并保持，不落入 idle-breathing（硬切闭目不连贯）。
+        // 合十 palms-together 仅给 Choose 确认（intentionSet），不在此步使用。
+        emotionController.playEmotion('smiling', {
+          fps: ARRIVAL_BREATH_SMILE_FPS
+        });
         onboardingHints?.markSeen('notice');
         onboardingHints?.maybeShowAuto('breathing');
       },
@@ -441,6 +459,7 @@ async function init() {
         onboardingHints?.markSeen('choose');
       },
       onWelcome: () => {
+        // 若仍定格在 dormantWake，playEmotion 会自动加长 cross-fade，避免硬切微笑。
         emotionController.playEmotion('smiling');
         syncOnboardingAutoHints();
       },
@@ -484,6 +503,7 @@ async function init() {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
+    honestyCheckInUI.hideIdleEntry();
     companionModePicker.setArrivalReady(false);
     companionModePicker.setPostSessionOverlayActive(true);
     companionModePicker.hide();
@@ -505,10 +525,12 @@ async function init() {
       if (completionPending) return;
       if (stateManager.state === STATES.FOCUSING) return;
       if (arrivalPractice.isOpen()) return;
+      honestyCheckInUI.hideIdleEntry();
       startArrivalPracticeFromChrome();
     },
     onDecline: () => {
       emotionController.playEmotion('idle');
+      syncHonestyIdleEntry();
     }
   });
   if (import.meta.env.DEV) {
@@ -551,6 +573,7 @@ async function init() {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
+    honestyCheckInUI.hideIdleEntry();
     honestyGlowLevel = null;
     currentSessionIntention = pendingChoose?.text ?? '';
     currentIntentionSource = pendingChoose?.source === 'icon' ? 'icon' : 'typed';
@@ -568,6 +591,8 @@ async function init() {
     onboardingHints?.markSeen('how-shall-we-sit');
     onboardingHints?.markSeen('companion-mode');
     onboardingHints?.maybeShowAuto('rise-button');
+    onboardingHints?.maybeShowAuto('ambient-soundscape');
+    requestAnimationFrame(() => onboardingHints?.repositionAll());
     mindfulReminderController.startSession({
       suppressAwayReminders: shouldSuppressAwayReminders(companionMode),
       getSessionElapsedSeconds: () => focusSession.getElapsedSeconds()
@@ -610,6 +635,14 @@ async function init() {
       return;
     }
     beginFocusWithMode(mode);
+  };
+
+  companionModeHandlers.onExpandedChange = (expanded) => {
+    if (expanded) {
+      onboardingHints?.maybeShowAuto('companion-mode');
+      requestAnimationFrame(() => onboardingHints?.repositionAll());
+    }
+    syncOnboardingAutoHints();
   };
 
   /** hint 在门闩未就绪时启动 Arrival，禁止「点了没反应」 */
@@ -662,6 +695,7 @@ async function init() {
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
       onboardingHints?.markSeen('rise-button');
+      onboardingHints?.markSeen('ambient-soundscape');
       hasEndedAnySession = true;
       syncOnboardingAutoHints();
     }
@@ -684,6 +718,8 @@ async function init() {
     });
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
+    onboardingHints?.markSeen('rise-button');
+    onboardingHints?.markSeen('ambient-soundscape');
   }
 
   const moodController = new MoodController(stateManager, emotionController, {

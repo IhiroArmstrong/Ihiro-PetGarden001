@@ -42,6 +42,7 @@ export class CompanionModePicker {
    * @param {object} [handlers]
    * @param {(mode: import('../core/FocusSession.js').CompanionMode) => void} [handlers.onModeSelected]
    * @param {() => void} [handlers.onNeedArrival] 门闩未就绪时 hint 点击 → 启动 Arrival
+   * @param {(expanded: boolean) => void} [handlers.onExpandedChange] 面板展开/收起（驱动 companion-mode 气泡）
    */
   constructor(overlayRoot, focusButton, handlers = {}) {
     this.overlayRoot = overlayRoot;
@@ -193,6 +194,7 @@ export class CompanionModePicker {
       this._expanded ? 'true' : 'false'
     );
     this.hintBtn.classList.toggle('is-expanded', this._expanded);
+    this.handlers.onExpandedChange?.(this._expanded);
   }
 
   _syncHintLabel() {

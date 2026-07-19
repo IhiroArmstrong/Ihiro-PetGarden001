@@ -15,21 +15,17 @@ function createStorage() {
   };
 }
 
-test('shouldOfferHonestyBridge only when not yet shown today', () => {
-  assert.equal(shouldOfferHonestyBridge({ hasShownToday: false }), true);
-  assert.equal(shouldOfferHonestyBridge({ hasShownToday: true }), false);
-  assert.equal(
-    shouldOfferHonestyBridge({ hasShownToday: false, busy: true }),
-    false
-  );
+test('shouldOfferHonestyBridge only blocked when busy', () => {
+  assert.equal(shouldOfferHonestyBridge({}), true);
+  assert.equal(shouldOfferHonestyBridge({ busy: false }), true);
+  assert.equal(shouldOfferHonestyBridge({ busy: true }), false);
 });
 
-test('bridge appears once after thanks delay; No declines without accept', () => {
+test('bridge appears immediately after check-in; same day can offer again', () => {
   const store = new HonestyBridgeStore({
     storage: createStorage(),
     now: () => new Date(2026, 6, 19, 12)
   });
-  const timers = [];
   let shown = 0;
   let hidden = 0;
   let accepted = 0;
@@ -52,46 +48,28 @@ test('bridge appears once after thanks delay; No declines without accept', () =>
     },
     onDecline: () => {
       declined += 1;
-    },
-    thanksMs: 100,
-    schedule: (ms, fn) => {
-      const id = timers.length + 1;
-      timers.push({ id, ms, fn, cancelled: false });
-      return id;
-    },
-    cancelSchedule: (id) => {
-      const entry = timers.find((t) => t.id === id);
-      if (entry) entry.cancelled = true;
     }
   });
 
   controller.onHonestyCheckInComplete();
-  assert.equal(shown, 0);
-  assert.equal(timers.length, 1);
-  assert.equal(timers[0].ms, 100);
-
-  timers[0].fn();
   assert.equal(shown, 1);
-  assert.equal(store.hasShownToday(), true);
+  assert.equal(controller.isVisible(), true);
 
   ui.handlers.onNo();
   assert.equal(declined, 1);
   assert.equal(accepted, 0);
   assert.equal(hidden >= 1, true);
 
-  // 同日第二次补登完成：不再安排
-  timers.length = 0;
+  // 同日第二次补登：仍应出现
   controller.onHonestyCheckInComplete();
-  assert.equal(timers.length, 0);
-  assert.equal(shown, 1);
+  assert.equal(shown, 2);
 });
 
-test('Yes accepts Arrival hook; cancelPending skips reveal even if timer fires', () => {
+test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () => {
   const store = new HonestyBridgeStore({
     storage: createStorage(),
     now: () => new Date(2026, 6, 19, 12)
   });
-  const timers = [];
   let shown = 0;
   let accepted = 0;
   const ui = {
@@ -107,30 +85,15 @@ test('Yes accepts Arrival hook; cancelPending skips reveal even if timer fires',
     ui,
     onAccept: () => {
       accepted += 1;
-    },
-    thanksMs: 50,
-    schedule: (ms, fn) => {
-      const id = timers.length + 1;
-      timers.push({ id, ms, fn, cancelled: false });
-      return id;
-    },
-    cancelSchedule: (id) => {
-      const entry = timers.find((t) => t.id === id);
-      if (entry) entry.cancelled = true;
     }
   });
 
   controller.onHonestyCheckInComplete();
-  controller.cancelPending();
-  assert.equal(timers[0].cancelled, true);
-  timers[0].fn();
-  assert.equal(shown, 0);
-  assert.equal(store.hasShownToday(), false);
-
-  // 完整 Yes 路径
-  controller.onHonestyCheckInComplete();
-  timers[1].fn();
   assert.equal(shown, 1);
   ui.handlers.onYes();
   assert.equal(accepted, 1);
+
+  controller.onHonestyCheckInComplete();
+  controller.hide();
+  assert.equal(controller.isVisible(), false);
 });

@@ -56,11 +56,13 @@ export class HonestyCheckInUI {
    * @param {() => void} [handlers.onPromptClick]
    * @param {(minutes: number) => void} [handlers.onDurationSelect]
    * @param {() => void} [handlers.onBreathComplete]
+   * @param {() => void} [handlers.onIdleEntryClick] 同日再补登入口
    */
   constructor(container, handlers = {}) {
     this.container = container;
     this.handlers = handlers;
     this.root = null;
+    this.idleEntryBtn = null;
     this.phase = 'hidden';
     this._breathTimer = null;
     this._breathInterval = null;
@@ -68,6 +70,7 @@ export class HonestyCheckInUI {
   }
 
   showPrompt() {
+    this.hideIdleEntry();
     this._ensureRoot();
     this.phase = 'prompt';
     this._render();
@@ -88,7 +91,21 @@ export class HonestyCheckInUI {
     }, 280);
   }
 
+  /** 当日已有完成后的安静再补登入口（非 DORMANT 自动提示）。 */
+  showIdleEntry() {
+    if (this.phase !== 'hidden') return;
+    this._ensureIdleEntry();
+    this.idleEntryBtn.hidden = false;
+    this.idleEntryBtn.textContent = t('HONESTY_IDLE_ENTRY');
+  }
+
+  hideIdleEntry() {
+    if (!this.idleEntryBtn) return;
+    this.idleEntryBtn.hidden = true;
+  }
+
   showDurationChoices() {
+    this.hideIdleEntry();
     this._ensureRoot();
     this.phase = 'duration';
     this._render();
@@ -99,6 +116,7 @@ export class HonestyCheckInUI {
    * @param {number} [durationMs]
    */
   startBreathGuide(durationMs = HONESTY_BREATH_MS) {
+    this.hideIdleEntry();
     this._ensureRoot();
     this.phase = 'breath';
     this._render();
@@ -131,12 +149,13 @@ export class HonestyCheckInUI {
   }
 
   showThanks() {
+    this.hideIdleEntry();
     this._ensureRoot();
     this.phase = 'thanks';
     this._render();
     this._fadeIn();
     window.clearTimeout(this._breathTimer);
-    // 时长须与 HonestyBridgeCtaController.HONESTY_THANKS_MS 对齐
+    // 时长历史：曾与桥接延迟对齐；现补登结束后立刻让位桥接，此方法仅保留兼容。
     this._breathTimer = window.setTimeout(() => this.hide(), 3200);
   }
 
@@ -144,7 +163,39 @@ export class HonestyCheckInUI {
     this._unsubscribeLocale();
     window.clearTimeout(this._breathTimer);
     window.clearInterval(this._breathInterval);
+    this.hideIdleEntry();
+    this.idleEntryBtn?.remove();
+    this.idleEntryBtn = null;
     this._teardown();
+  }
+
+  _ensureIdleEntry() {
+    if (this.idleEntryBtn) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'honesty-idle-entry';
+    btn.hidden = true;
+    btn.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'bottom:74px',
+      'transform:translateX(-50%)',
+      'padding:6px 12px',
+      'font-size:12px',
+      'font-weight:500',
+      'color:rgba(74,58,40,.72)',
+      'background:transparent',
+      'border:none',
+      'border-radius:10px',
+      'cursor:pointer',
+      'text-decoration:underline',
+      'text-underline-offset:3px',
+      'z-index:14',
+      'pointer-events:auto'
+    ].join(';');
+    btn.addEventListener('click', () => this.handlers.onIdleEntryClick?.());
+    this.container.appendChild(btn);
+    this.idleEntryBtn = btn;
   }
 
   _ensureRoot() {
@@ -168,6 +219,9 @@ export class HonestyCheckInUI {
   }
 
   _refreshTexts() {
+    if (this.idleEntryBtn && !this.idleEntryBtn.hidden) {
+      this.idleEntryBtn.textContent = t('HONESTY_IDLE_ENTRY');
+    }
     if (!this.root || this.phase === 'hidden') return;
     this._render();
   }

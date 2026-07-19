@@ -53,13 +53,15 @@ export class HonestyCheckInController {
     this.ui.handlers = {
       onPromptClick: () => this._onPromptClick(),
       onDurationSelect: (minutes) => this._onDurationSelect(minutes),
-      onBreathComplete: () => this._onBreathComplete()
+      onBreathComplete: () => this._onBreathComplete(),
+      onIdleEntryClick: () => this.openDurationChoices()
     };
   }
 
   /** App 就绪后调用：按当日完成记录进入/离开 DORMANT，并在需要时展示可忽略提示。 */
   onAppReady() {
     this.syncDormantState({ showPromptIfDormant: true });
+    this.syncIdleEntry();
   }
 
   /**
@@ -74,6 +76,7 @@ export class HonestyCheckInController {
     if (this.stateManager.state === STATES.DORMANT) {
       this.stateManager.setState(STATES.IDLE);
     }
+    this.ui.hideIdleEntry();
   }
 
   /**
@@ -85,6 +88,7 @@ export class HonestyCheckInController {
     this._busy = false;
     this._pendingMinutes = null;
     this.clearFocusGlow();
+    this.ui.hideIdleEntry();
 
     if (!this.store.hasCompletedToday()) {
       this.stateManager.setState(STATES.DORMANT);
@@ -110,8 +114,11 @@ export class HonestyCheckInController {
         this.stateManager.setState(STATES.IDLE);
       }
       this.ui.hide();
+      this.syncIdleEntry();
       return;
     }
+
+    this.ui.hideIdleEntry();
 
     if (
       this.stateManager.state !== STATES.FOCUSING &&
@@ -125,6 +132,25 @@ export class HonestyCheckInController {
     }
   }
 
+  /**
+   * 同日再补登入口：仅当日已有完成、且空闲无叠层仪式时显示。
+   * 首次零完成仍走 DORMANT 自动提示，不显示本入口。
+   */
+  syncIdleEntry() {
+    const canShow =
+      this.store.hasCompletedToday() &&
+      !this._busy &&
+      this.ui.phase === 'hidden' &&
+      this.stateManager.state !== STATES.FOCUSING &&
+      this.stateManager.state !== STATES.CELEBRATE &&
+      this.stateManager.state !== STATES.DORMANT;
+    if (canShow) {
+      this.ui.showIdleEntry();
+      return;
+    }
+    this.ui.hideIdleEntry();
+  }
+
   _onPromptClick() {
     if (this._busy) return;
     if (this.stateManager.state === STATES.FOCUSING) return;
@@ -133,7 +159,7 @@ export class HonestyCheckInController {
 
   /**
    * 直接打开「补登多久」三选一（不经 Sit with Yin / 不经可忽略提示）。
-   * 调试面板「Honesty唤醒」与提示点击共用此入口。
+   * 调试面板「Honesty唤醒」、DORMANT 提示点击、同日再补登入口共用。
    * @param {{ force?: boolean }} [options] force：打断进行中的呼吸引导并重开
    */
   openDurationChoices({ force = false } = {}) {
@@ -143,9 +169,10 @@ export class HonestyCheckInController {
 
     this._busy = false;
     this._pendingMinutes = null;
+    this.ui.hideIdleEntry();
 
-    // 仪式需要睡态视觉；与 Sit with Yin / Arrival 无关。
-    if (this.stateManager.state !== STATES.DORMANT) {
+    // 仅当日零完成的唤醒仪式才切 DORMANT 睡态；同日再补登保持当前坐姿。
+    if (!this.store.hasCompletedToday() && this.stateManager.state !== STATES.DORMANT) {
       this.stateManager.setState(STATES.DORMANT);
     }
 
@@ -157,12 +184,14 @@ export class HonestyCheckInController {
     if (this._busy) return;
     this._busy = true;
     this._pendingMinutes = minutes;
+    this.ui.hideIdleEntry();
 
-    // 倒计时开始：立刻播 dormant-wake 坐起并定格末帧；
-    // 暂不接闭眼坐禅呼吸（转场衔接不成，2026-07-19）。
-    this.emotionController.playEmotion(EMOTION_KEYS.DORMANT_WAKE, {
-      holdPose: true
-    });
+    // 睡态补登：立刻播 dormant-wake；同日再补登已在坐姿，只走呼吸引导。
+    if (this.stateManager.state === STATES.DORMANT) {
+      this.emotionController.playEmotion(EMOTION_KEYS.DORMANT_WAKE, {
+        holdPose: true
+      });
+    }
     this.ui.startBreathGuide(HONESTY_BREATH_MS);
   }
 
@@ -172,15 +201,16 @@ export class HonestyCheckInController {
 
     this.store.recordCompletion(minutes);
     this.clearFocusGlow();
-    this.ui.showThanks();
     this._busy = false;
 
-    // 已在坐姿（dormant-wake 末帧定格）；补登完成只需离开 DORMANT。
+    // 已在坐姿（dormant-wake 末帧定格或本已 idle）；补登完成只需离开 DORMANT。
     if (this.stateManager.state === STATES.DORMANT) {
       this.stateManager.setState(STATES.IDLE);
     }
 
-    // 桥接 CTA 独立于补登：仅仪式路径触发，不由此开计时。
+    // 立刻让位桥接 CTA（Welcome 文案改由桥接面板顶部轻量回显）。
+    this.ui.hide();
     this.onCheckInComplete();
+    // 桥接关闭前先不显示再补登入口；main 在 bridge hide/decline 时再 sync。
   }
 }

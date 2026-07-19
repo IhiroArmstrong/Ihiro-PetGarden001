@@ -1,6 +1,7 @@
 # HONESTY_BRIDGE_CTA.md — Honesty Check-in 桥接 CTA 定稿
 
-创建日期：2026-07-19
+创建日期：2026-07-19  
+最后更新：2026-07-19（用户拍板：立刻出桥接 + Welcome 同屏一小会儿；同日可多次补登）
 
 ---
 
@@ -9,62 +10,42 @@
 - **不采纳**：把 Honesty Check-in 本身改造成"选完时长直接开始计时"——这会
   混淆"补登已经在别处做过的练习"和"现在开始一次新的实时会话"这两件语义
   不同的事，破坏 Honesty Check-in 原本"仅补登、不计时"的定稿边界。
-- **采纳**：补登仪式（10秒呼吸引导 → dormantWake 动作）走完之后，单独出现
-  一句轻量邀请，接受后进入**正常的** Arrival Practice → Companion Mode 流程，
-  不跳过 Notice/Choose 直接开表；音乐是否播放仍由用户在 Ambient Soundscape
-  面板自己决定，不因为点了这个 CTA 就自动开启。
+- **采纳**：补登仪式走完之后，单独出现一句轻量邀请，接受后进入**正常的**
+  Arrival Practice → Companion Mode 流程，不跳过 Notice/Choose 直接开表；音乐
+  是否播放仍由用户在 Ambient Soundscape 面板自己决定。
 
 ---
 
 ## 二、交互细节
 
-- **出现时机**：dormantWake 动作播完、DORMANT 状态清除之后，紧接着出现，
-  不是弹窗打断，是同一非模态文案条样式的延续。
-- **文案方向**（初稿，需过观察式四项自检）：
-  中文："要不要现在也坐一会儿？" / EN: "Want to sit for a bit now too?"
-- **两个选项**：
-  - Yes → 直接进入正常的 Sit with Yin 触发链路（Arrival Practice 完整走一遍，
-    不跳过任何步骤）
-  - No / 忽略 → 直接回到 idle-breathing，不追加任何形式的二次挽留或稍后提醒
-- **视觉权重**：Yes 和 No 必须同级（参考 Reflection 三问 Skip/Continue 同级
-  按钮的既有模式），不做主次强调。
-- **频率限制**：每次 Honesty Check-in 完成后最多出现一次，不管选 Yes 还是 No，
-  当天不再重复弹出这个桥接邀请（即使用户当天又触发了别的 DORMANT 相关流程，
-  这个 CTA 也不重复）。
+- **出现时机**：补登呼吸/坐起结束 → **立刻**出桥接（不空等 3.2s）。
+  Welcome 文案（「欢迎回来。阿寅醒来了。」 / `HONESTY_CHECKIN_THANKS`）作为桥接
+  面板顶部轻量回显，与邀请同屏一小会儿——可称 Welcome 条，勿依赖单独 thanks 相位。
+- **文案**：中文「要不要现在也坐一会儿？」/ EN: "Want to sit for a bit now too?"
+- **两个选项**（Yes / No 同级）：
+  - Yes → 完整 Arrival Practice → Companion Mode（不跳过、不直接开表/Ambient）
+  - No / 忽略 → idle，无二次挽留
+- **频率**：**每次**补登完成后都可出现（**不限**当日一次）。
+
+### Honesty 同日多次补登（2026-07-19 拍板 B）
+
+- **首次零完成**：仍自动 DORMANT + 可忽略「别处修行了吗？」提示。
+- **当日已有完成**：不再自动弹睡觉提示；空闲显示安静入口 **Mindful Check-in /
+  正念登入**（`HONESTY_IDLE_ENTRY`），可再开时长三选一。
+- **同日再补登**：不切回睡态、不播 `dormantWake`；只走时长 → 呼吸引导 → 记账 → 桥接。
 
 ---
 
 ## 三、明确排除的做法
 
-- 不做成"选完时长直接开始计时"（原始提议里"Yes 则音乐/timer 直接激活"的
-  简化版本不采纳，必须经过正常 Arrival Practice）。
-- 不做拒绝后的追加挽留（不二次弹出、不当天稍后提醒）。
-- 不做 Yes/No 视觉权重不对等的设计。
+- 不做成"选完时长直接开始计时"。
+- 不做拒绝后的追加挽留。
+- 不做 Yes/No 视觉权重不对等。
 
 ---
 
-## 四、Cursor 实现 Prompt
+## 四、实现落点
 
-```
-在 Honesty Check-in 的 dormantWake 动作播放完成、DORMANT 状态清除之后，
-新增一个桥接邀请 CTA：
-
-1. 展示时机：dormantWake 播放完成的下一拍，非模态文案条样式（复用现有
-   MindfulAcknowledgeToast 或同级组件），不是弹窗。
-2. 文案："要不要现在也坐一会儿？"/"Want to sit for a bit now too?"，接入前
-   需过 EMOTION_BIBLE 四项观察式自检。
-3. 两个选项视觉权重相同（参考 Reflection Skip/Continue 同级按钮样式）：
-   - 选 Yes：进入正常的 Sit with Yin 触发链路，完整走 Arrival Practice
-     （Notice → 呼吸 → Choose）→ Companion Mode → 计时开始，不允许跳过
-     任何环节直接开始计时。
-   - 选 No 或忽略：直接回到 idle-breathing，不触发任何后续提醒或二次弹出。
-4. 频率限制：每次 Honesty Check-in 完成后最多出现一次，当天不重复弹出，
-   与用户选择 Yes 或 No 无关。
-5. 严禁实现"选完时长直接开始计时"的简化版本——Honesty Check-in 本身的
-   补登边界不变，这个 CTA 是独立的、可拒绝的邀请，不是 Honesty Check-in
-   流程的一部分。
-6. 补充单元测试：CTA 只在 dormantWake 完成后出现一次；选 No 后当天不再
-   出现；选 Yes 后正确进入完整 Arrival Practice（不跳过 Notice/Choose）。
-7. 更新 TEST_TRACKER.md 新增此项为待人工测试；更新 PRODUCT_MOMENTS.md
-   中 Arrive 相关小节，补充这条桥接逻辑与 Honesty Check-in 的边界说明。
-```
+- `HonestyBridgeCtaController` / `HonestyBridgeCtaUI`（Welcome + 邀请同面板）
+- `HonestyCheckInController.syncIdleEntry` + `#honesty-idle-entry`
+- 定稿边界见 `PRODUCT_MOMENTS.md` Arrive；测试见 `TEST_TRACKER.md`

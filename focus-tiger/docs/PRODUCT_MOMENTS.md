@@ -42,7 +42,7 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 - **定义**：一天开始，或准备开始一项新任务前，先花几秒钟觉察当前状态，而不是立刻扎进专注计时。
 - **对应现有实现**：
   - Honesty Check-in / DORMANT 唤醒仪式（按天、可忽略）——与 Arrival Practice **并存、不改名**。
-  - **Honesty 桥接 CTA**（2026-07-19 拍板，见 `HONESTY_BRIDGE_CTA.md`）：补登仪式结束后可出现一次轻量邀请「要不要现在也坐一会儿？」；Yes → 完整 Arrival Practice → Companion Mode（**不**跳过、**不**直接开表、**不**自动开 Ambient）；No / 忽略 → idle，当天不再弹出。桥接**不是** Honesty 流程的一部分，Honesty 本身仍仅补登。
+  - **Honesty 桥接 CTA**（2026-07-19，见 `HONESTY_BRIDGE_CTA.md`）：每次补登结束后**立刻**出现邀请（顶行 thanks 回显 +「要不要现在也坐一会儿？」）；Yes → 完整 Arrival → Companion（**不**直接开表 / Ambient）；No → idle。允许当天多次补登、多次桥接。桥接**不是** Honesty 流程的一部分。
   - Arrival Practice（TASKS.md 任务十，✅ v2）：点击 Sit with Yin 后 → 欢迎 / Notice 状态点选（不落库）/ ~5s 呼吸 / Choose（图标+次要打字，落库回显）→ Companion Mode → 再 Sit 计时。全程可跳过。详规见 `ARRIVE_MOMENT_DESIGN.md`；会话粒度见 `CORE_LOOP.md`。
 - **不做什么**：不做「每日打卡义务」式强制入口；Notice 不做跨会话情绪统计；不加角色语音；**不**把 Honesty 改成选时长即开计时。
 
@@ -100,8 +100,8 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 机制见仓库根目录 / `docs/ONBOARDING_HINTS.md`：
 
-1. **即时提示**：各关键界面首次出现时，阿寅旁一行小字气泡；完成该步操作后记入 `focus-tiger.hints-seen.v1` 并隐藏。
-2. **补救「?」**：左下角常驻，按当前场景复述对应一句，不受已读限制。
+1. **即时提示**：各关键界面首次出现时，阿寅旁一行小字气泡；完成该步操作后记入 `focus-tiger.hints-seen.v1` 并隐藏。**点击气泡本身须立刻消失**（自动条同时记已读）。
+2. **补救「?」**：左下角常驻，按当前场景复述对应一句，不受已读限制；点开后的气泡同样可点击立刻关闭。
 
 覆盖 SCENARIO_TESTS 主路径与回流（DORMANT、Honesty 可略过、Sit / How shall we sit?、Arrival 各步、Companion、Sound、Rise、Reflection 等）。产品壳 `?product=1` 仍显示提示与「?」（属产品表面）；实验室另有「清空引导提示已读」。
 

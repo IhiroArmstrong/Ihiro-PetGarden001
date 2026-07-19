@@ -101,6 +101,11 @@ export class HonestyBridgeCtaUI {
     if (!this.root) return;
     this.root.replaceChildren();
 
+    const thanks = document.createElement('div');
+    thanks.style.cssText =
+      'font-size:13px;line-height:1.45;color:rgba(74,58,40,.78);text-align:center;margin-bottom:8px;';
+    thanks.textContent = t('HONESTY_CHECKIN_THANKS');
+
     const prompt = document.createElement('div');
     prompt.style.cssText =
       'font-size:16px;line-height:1.55;color:#2c1f14;text-align:center;font-weight:600;margin-bottom:14px;';
@@ -122,6 +127,6 @@ export class HonestyBridgeCtaUI {
     noBtn.addEventListener('click', () => this.handlers.onNo?.());
 
     row.append(yesBtn, noBtn);
-    this.root.append(prompt, row);
+    this.root.append(thanks, prompt, row);
   }
 }
