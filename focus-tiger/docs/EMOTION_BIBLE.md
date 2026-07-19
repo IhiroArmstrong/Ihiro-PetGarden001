@@ -50,7 +50,7 @@
 | `WakeUp` | 唤醒起身（伸懒腰变体） | 否（17 帧一次性） | 调试入口 / 历史多日沉睡叙事键 | **90** | **已实现（2D）**：播 `stretch-reminder` 同源伸懒腰（情绪键 `wakeUp`，**8 fps**）→ idle；**不**接 halo。与 Honesty 的 `dormant-wake` **刻意区分** |
 | `dormantWake` | Honesty Check-in 唤醒（深睡 → 清醒坐姿） | 否（16 帧一次性正放） | 用户选时长后**立刻**播放（与呼吸倒计时同期）；播完**定格末帧**至倒计时结束；按所选时长等同一次已完成会话 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：选时长 → `dormant-wake`（**3 fps**）→ 定格末帧；倒计时结束离 DORMANT。离开定格默认 **520ms** cross-fade。Arrival Breath 不再落入 idle——改放慢 `Smiling`（见 0.50） |
 | `MilestoneGlow` | 里程碑金辉时刻（仪式性纪念反馈） | 否（约 10s 一次性序列） | 长期里程碑节点达成时触发（连续练习 7/21/100 天、累计时长节点等；具体节点与 Backlog「纪念奖励系统」统一设计）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **素材与调试预览已接入**：主候选 `milestone-glow` / `deep-breath-glow`（27 帧，**4 fps**，2026-07-19 放慢 2×；闭目呼吸 + 金光 + 金色蝴蝶已烧录）；简化备选 **`breath-halo-hq`**（16 帧，**pingpong** 循环，2026-07-20：正放扩展 + 倒放收回，完整一吸一呼）——已登记 manifest，**不接业务触发**。实际使用哪套等里程碑逻辑排期再定。`playEmotion('milestoneGlow')` 仅供调试；备选可点调试「breath-halo-hq 备选」；播放期归零实时金光。**待实现**：真实里程碑判定与业务触发，归属 Backlog「纪念奖励系统」 |
-| `IntentionSet` | Arrival Choose 确认点头 | 否（约 3.7s 一次性） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；**门闩与 Companion 在确认瞬间立即打开**，动画并行不挡流程） | **已实现（2D 主线）**：改用 **16:9 `nod-bow`**（`intentionNod`），不再用 1:1 `palms-together`（画幅/衔接易跳）。短淡入回 idle。合十素材仅调试保留。 |
+| `IntentionSet` | Arrival Choose 确认点头 | 否（nod-bow **pingpong** 一整轮，约 7s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；**门闩与 Companion 在确认瞬间立即打开**，动画并行不挡流程） | **已实现（2D 主线）**：**16:9 `nod-bow` pingpong**（正放鞠躬→倒放回坐姿）；进出与前后动画用 **约 1s CapCut 叠化**（`CAPCUT_DISSOLVE_MS`）。旧 `palms-together` 仅调试保留。 |
 
 ### 1.3 动态效果层（可叠加）
 
@@ -90,6 +90,21 @@
 3. **正倒放或连贯其它序列**（如合十正放→倒放落闭目，末帧可接 idle）
 
 持续循环（`Idle` / `Sleeping`）不按此带，各自有独立节奏（见 PRINCIPLES）。
+
+### 1.6 序列衔接：CapCut 式叠代（2026-07-20）
+
+两个情绪序列**无法自然衔接**时（画幅不同、姿态跳变、末/首帧对不齐），**禁止闪切**，一律用叠代溶解：
+
+1. 定格 A 末帧 + B 首帧  
+2. 双层透明度交叉淡化，默认 **`CAPCUT_DISSOLVE_MS` = 1000ms**  
+3. 溶解完成后再推进 B 的帧动画（`freezeUntilCrossFadeEnds`）
+
+| 常量 | 值 | 用途 |
+|---|---|---|
+| `CAPCUT_DISSOLVE_MS` | 1000 | 无法衔接时的默认叠代 |
+| `MICRO_CROSS_FADE_MS` | 180 | 同源可衔接（idle 内眨眼、同画幅 IntentionNod 等） |
+
+`EmotionController._finishOneShot`：一次性 → idle **默认** CapCut；同源微表情须显式传 `returnCrossFadeMs: MICRO_CROSS_FADE_MS`。权威表述见 `PRINCIPLES.md`；实现见 `ARCHITECTURE.md`「播放机制」与 `SpriteSequencePlayer`。
 
 ---
 
@@ -605,8 +620,9 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.53 | 2026-07-20 | Arrival Dolly：Choose/合十期间保持推近，idle 淡入后再拉回；避免与 displayFit 叠成跳动 |
 | 0.54 | 2026-07-20 | Idle：恢复 PRINCIPLES——默认仅呼吸×5→眨眼；调试面板列出全部 `SPRITE_SEQUENCES` 逐条试播 |
 | 0.55 | 2026-07-20 | IntentionSet→idle：CapCut 式 **1s** 叠代溶解（定格两帧交叉淡化）后再呼吸 / 拉 Dolly |
-| 0.55 | 2026-07-20 | 候选陪伴手势（gaze/tea/yawn/ear/`blink-breathe`）入库 `companionGestureCatalog`，**不**进 Idle 池；调试「组合试播」去掉 `restart idle`（修闭目帧假闪） |
-| 0.56 | 2026-07-20 | `breath-halo-hq` / `blink-breathe` 改 pingpong；张望 A+B 合并为单一组合试播；`blinkBreathe` 接入 Rise 点击 |
-| 0.57 | 2026-07-20 | pingpong 顶点补 2 拍停留；Choose 改 16:9 `intentionNod`（去合十）；Sit dock 抬 z-index 防 Honesty 抢点；Choose 确认立刻开门闩 |
+| 0.56 | 2026-07-20 | 候选陪伴手势（gaze/tea/yawn/ear/`blink-breathe`）入库 `companionGestureCatalog`，**不**进 Idle 池；调试「组合试播」去掉 `restart idle`（修闭目帧假闪） |
+| 0.57 | 2026-07-20 | `breath-halo-hq` / `blink-breathe` 改 pingpong；张望 A+B 合并为单一组合试播；`blinkBreathe` 接入 Rise 点击 |
+| 0.58 | 2026-07-20 | **CapCut 式叠代**定为硬性衔接标准（§1.6 / PRINCIPLES / ARCHITECTURE）；`_finishOneShot` 默认 `CAPCUT_DISSOLVE_MS` |
+| 0.59 | 2026-07-20 | pingpong 顶点补 2 拍停留；Choose 改 16:9 `intentionNod`（去合十）；Sit dock 抬 z-index 防 Honesty 抢点；Choose 确认立刻开门闩 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

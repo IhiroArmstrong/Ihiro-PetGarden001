@@ -177,10 +177,14 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   });
 
   assert.equal(plays[0].name, 'intentionNod');
-  assert.equal(plays[0].options.returnCrossFadeMs, 180);
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
+  assert.equal(plays[0].options.crossFadeMs, 1000);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
-  assert.equal(plays[1].options.crossFadeMs, 180);
+  assert.equal(plays[1].options.crossFadeMs, 1000);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
@@ -211,6 +215,8 @@ test('nodGreeting plays once and returns to idle breathing', () => {
   assert.equal(plays[0].name, 'nodGreeting');
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
@@ -240,8 +246,10 @@ test('curiousTilt plays blinkSmile once and returns to idle breathing', () => {
 
   assert.equal(plays[0].name, 'blinkSmile');
   assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.returnCrossFadeMs, 180);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 180);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });

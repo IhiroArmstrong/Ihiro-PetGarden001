@@ -224,9 +224,10 @@ test('palmsTogether / breathHaloHq / lotus backlog sequences are registered', ()
   assert.equal(SPRITE_SEQUENCES.breathHaloHq.preload, false);
   assert.equal(SPRITE_SEQUENCES.breathHaloHq.loop, true);
   assert.equal(SPRITE_SEQUENCES.breathHaloHq.loopMode, 'pingpong');
-  assert.equal(SPRITE_SEQUENCES.breathHaloHq.frameHolds?.[16], 250);
+  assert.equal(SPRITE_SEQUENCES.breathHaloHq.frameHolds?.[16], 750);
   assert.equal(SPRITE_SEQUENCES.intentionNod.animation, 'nod-bow');
   assert.equal(SPRITE_SEQUENCES.intentionNod.frameCount, 13);
+  assert.equal(SPRITE_SEQUENCES.intentionNod.loopMode, 'pingpong');
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.animation, 'lotus-front-rising');
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.frameCount, 7);
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.preload, false);

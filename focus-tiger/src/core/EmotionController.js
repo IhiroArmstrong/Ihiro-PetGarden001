@@ -21,12 +21,20 @@ export const DORMANT_WAKE_CROSS_FADE_MS = 180;
  */
 export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = 520;
 /**
+ * CapCut 式叠代溶解：两序列无法像素衔接时，定格两端帧做交叉淡化。
+ * 默认用于一次性情绪 → idle；同源微表情可改用 MICRO_CROSS_FADE_MS。
+ * 见 PRINCIPLES「序列衔接：CapCut 式叠代」与 ARCHITECTURE「播放机制」。
+ */
+export const CAPCUT_DISSOLVE_MS = 1000;
+/** 同源可衔接时的短交叉淡入（如 idle 内眨眼、同画幅子序列）。 */
+export const MICRO_CROSS_FADE_MS = 180;
+/** @deprecated 请用 CAPCUT_DISSOLVE_MS */
+export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
+/**
  * Arrival Breath（"Let's arrive together."）用眨眼微笑的播放帧率。
  * 默认 blink-smile 为 8fps；此处放慢约 2×，并保持微笑、不落入 idle-breathing。
  */
 export const ARRIVAL_BREATH_SMILE_FPS = 4;
-/** IntentionSet 合十末帧 → idle：CapCut 式约 1s 叠代溶解（两帧定格交叉淡化）。 */
-export const INTENTION_SET_RETURN_CROSS_FADE_MS = 1000;
 export const MILESTONE_GLOW_HOLD_MS = 2500;
 
 const BAKED_EFFECT_EMOTIONS = new Set([
@@ -257,8 +265,8 @@ export class EmotionController {
         }
       },
 
-      // Arrival Choose 确认：16:9 点头（intentionNod）；播完开门闩。
-      // 合十 palms-together 仅调试保留，不再接业务。
+      // Arrival Choose 确认：16:9 点头 pingpong（正放鞠躬→倒放回坐姿）；
+      // 与前后动画转场用 1s CapCut 叠化。合十 palms-together 仅调试保留。
       intentionSet: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -276,10 +284,14 @@ export class EmotionController {
           this._oneShotPlayOpts(
             {
               ...options,
-              loop: false,
-              loopMode: 'none',
-              // 16:9 与 idle 同画幅，短淡入即可；勿再用合十 1s displayFit 溶解。
-              returnCrossFadeMs: options.returnCrossFadeMs ?? 180
+              loop: true,
+              loopMode: 'pingpong',
+              maxCycles: 1,
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false,
+              // 与前后（Breath 微笑 / idle）无法像素对齐 → 1s 叠化
+              returnCrossFadeMs:
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
             },
             'intentionSet'
           )
@@ -407,7 +419,10 @@ export class EmotionController {
               ...options,
               loop: false,
               loopMode: 'none',
-              crossFadeMs: options.crossFadeMs ?? 180
+              crossFadeMs: options.crossFadeMs ?? MICRO_CROSS_FADE_MS,
+              // 同源微表情：回 idle 用短淡入，不用 CapCut 1s
+              returnCrossFadeMs:
+                options.returnCrossFadeMs ?? MICRO_CROSS_FADE_MS
             },
             'blinkSmile'
           )
@@ -466,12 +481,22 @@ export class EmotionController {
           holdLastFrame: holdPose ? true : options.holdLastFrame,
           onComplete: () => {
             callerOnComplete?.('blinkSmile');
-            if (!holdPose) this.playEmotion(returnKey);
+            if (!holdPose) {
+              this.playEmotion(returnKey, {
+                crossFadeMs: MICRO_CROSS_FADE_MS,
+                freezeUntilCrossFadeEnds: false
+              });
+            }
           }
         });
         if (!started) {
           callerOnComplete?.('blinkSmile');
-          if (!holdPose) this.playEmotion(returnKey);
+          if (!holdPose) {
+            this.playEmotion(returnKey, {
+              crossFadeMs: MICRO_CROSS_FADE_MS,
+              freezeUntilCrossFadeEnds: false
+            });
+          }
         }
       },
       // 唤醒起身（调试 / 历史键）：伸懒腰 stretch-reminder 同源，与 Honesty 睡醒区分。
@@ -644,6 +669,8 @@ export class EmotionController {
 
   /**
    * 一次性序列收尾：正式路径回落 idle；调试 holdPose 时定格末帧、不硬切默认闭目。
+   * 默认 CapCut 式叠代溶解（见 CAPCUT_DISSOLVE_MS）；同源微表情请显式传
+   * `returnCrossFadeMs: MICRO_CROSS_FADE_MS`；硬切传 `0`。
    * @param {EmotionOptions} options
    * @param {string} [tag]
    */
@@ -652,11 +679,16 @@ export class EmotionController {
       options.onComplete(tag);
     }
     if (!options.holdPose) {
-      const crossFadeMs = Number(options.returnCrossFadeMs);
-      if (Number.isFinite(crossFadeMs) && crossFadeMs > 0) {
+      const raw = options.returnCrossFadeMs;
+      const crossFadeMs =
+        raw === 0 || raw === '0'
+          ? 0
+          : Number.isFinite(Number(raw))
+            ? Number(raw)
+            : CAPCUT_DISSOLVE_MS;
+      if (crossFadeMs > 0) {
         this.playEmotion('idle', {
           crossFadeMs,
-          // CapCut 式：溶解期间定格 idle 首帧，避免呼吸动起来抢戏
           freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       } else {

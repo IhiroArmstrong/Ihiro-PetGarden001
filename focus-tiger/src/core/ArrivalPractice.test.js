@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  ARRIVAL_NOTICE_REPLY_MS,
   ARRIVAL_STEPS,
   advanceArrivalStep,
   createArrivalPracticeState,
@@ -10,6 +11,11 @@ import {
   skipArrivalChoose,
   skipArrivalPracticeEntirely
 } from './ArrivalPractice.js';
+
+test('notice reply dwell is long enough to read the observation line', () => {
+  assert.ok(ARRIVAL_NOTICE_REPLY_MS >= 2000);
+  assert.ok(ARRIVAL_NOTICE_REPLY_MS <= 3500);
+});
 
 test('arrival practice advances welcome → notice → breath → choose → ready', () => {
   let state = createArrivalPracticeState();

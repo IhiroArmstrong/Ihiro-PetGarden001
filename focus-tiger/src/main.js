@@ -20,8 +20,10 @@ import { PoseManager } from './character/PoseManager.js';
 import { MoodController } from './core/MoodController.js';
 import {
   ARRIVAL_BREATH_SMILE_FPS,
+  CAPCUT_DISSOLVE_MS,
   EmotionController
 } from './core/EmotionController.js';
+
 import { FocusVisualizer } from './feedback/FocusVisualizer.js';
 import { TransitionFX } from './feedback/TransitionFX.js';
 import { Ambience } from './feedback/Ambience.js';
@@ -477,7 +479,7 @@ async function init() {
         syncOnboardingAutoHints();
       },
       // Choose 确认：立刻开门闩 + Companion（避免点头被打断导致永远无 Rise）；
-      // 16:9 点头并行播放，不阻塞流程。
+      // 16:9 点头 pingpong 并行；与前后动画 1s CapCut 叠化。
       onIntentionSetPlay: (done) => {
         done?.();
         emotionController.playEmotion('intentionSet', {
@@ -485,7 +487,7 @@ async function init() {
             lightProgression.clearArrivalAtmosphere();
             window.setTimeout(() => {
               lightProgression.releaseDolly();
-            }, 220);
+            }, CAPCUT_DISSOLVE_MS + 40);
           }
         });
       },

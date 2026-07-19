@@ -15,6 +15,8 @@ export const ARRIVAL_STEPS = Object.freeze({
 
 export const ARRIVAL_WELCOME_MS = 2000;
 export const ARRIVAL_BREATH_MS = 5000;
+/** Notice 点选后：仅展示观察式短句的停留（须够读完；勿继续展示整屏图标区）。 */
+export const ARRIVAL_NOTICE_REPLY_MS = 2400;
 
 /** Notice：身心状态图标（仅当次回应，不落库） */
 export const NOTICE_OPTIONS = Object.freeze([

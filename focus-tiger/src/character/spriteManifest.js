@@ -216,7 +216,7 @@ export const SPRITE_SEQUENCES = {
   // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。
   // 2026-07-20：以 16 帧 HQ 替换旧 breath-halo-expand（17 帧）；不绑定 emotion key / 业务触发。
   // 正放仅「扩展」半拍不完整 → pingpong 倒放收回，完整一吸一呼并可循环。
-  // 倒放起始（扩展顶点末帧）额外停约 2 拍，避免到顶立刻收回像跳动。
+  // 倒放起始（扩展顶点末帧）额外停约 6 拍（~0.75s），避免到顶立刻收回像跳动。
   breathHaloHq: {
     animation: 'breath-halo-hq',
     frameCount: 16,
@@ -225,7 +225,7 @@ export const SPRITE_SEQUENCES = {
     loop: true,
     loopMode: 'pingpong',
     holdLastFrame: false,
-    frameHolds: { 16: Math.round((1000 / 8) * 2) }
+    frameHolds: { 16: Math.round((1000 / 8) * 6) }
   },
 
   // Arrival Choose 确认：16:9 轻量点头（nod-bow）；不再用 1:1 palms-together（画幅/衔接易跳）。
@@ -253,13 +253,15 @@ export const SPRITE_SEQUENCES = {
     }
   },
 
-  // IntentionSet 正式序列（Choose 确认）—— 16:9 nod-bow。
+  // IntentionSet 正式序列（Choose 确认）—— 16:9 nod-bow pingpong：
+  // 正放鞠躬 → 倒放回坐姿，才能衔接后续 idle / Companion。
+  // 一次完整 pingpong ≈ 2×13 拍 @ 3.5fps；转场用 1s CapCut 叠化（见 EmotionController）。
   intentionNod: {
     animation: 'nod-bow',
     frameCount: 13,
     fps: 3.5,
-    loop: false,
-    loopMode: 'none',
+    loop: true,
+    loopMode: 'pingpong',
     holdLastFrame: false
   },
 
