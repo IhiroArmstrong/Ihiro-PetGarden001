@@ -7,11 +7,13 @@
 
 ---
 
-## 回归锁工作法（2026-07-19 · 方法级强制）
+## 回归锁工作法（2026-07-19 · 方法级强制；2026-07-20 增补「防改坏」）
 
-> **背景**：多次出现「上次已修 → 再测又无正确效果」。常见根因不是神秘回滚，而是 Agent **只验 Happy Path、门闩静默失败、文档互斥、修复长期未 commit**。完整门禁见 `.cursor/rules/focus-tiger-regression-lock.mdc`（alwaysApply）。
+> **背景**：两类事故反复出现——（1）「上次已修 → 再测又无正确效果」（假修好）；（2）「重写编排/转场后，原先已好的观感坏了」（把好的改坏，例 Idle 眨眼闪一下）。  
+> 常见根因不是神秘回滚，而是 Agent **只验 Happy Path、门闩静默失败、无保护面重写、修复长期未 commit**。  
+> 完整门禁见 `.cursor/rules/focus-tiger-regression-lock.mdc`（alwaysApply）。
 
-**Agent 交互修复收尾必须满足**：
+### A. 防假修好（交互修复收尾）
 
 1. 主路径 + **至少一条回流路径**（Rise 后再进、叠层后再开、同日第二场等）  
 2. 用户可点控件不得对应逻辑静默 `return`（未就绪则禁用）  
@@ -19,7 +21,20 @@
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
 5. **立刻本地 commit（不必再问）**：用户反馈修复 / 回归锁收尾后 Agent **自动** `git commit`；**仍禁止**未确认 `git push`
 
-**禁止**：用「单元测试绿了 / 我改过了」代替回流验收；禁止在未过门禁时写「已修好」。
+### B. 防把好的改坏（重写 / 改转场开工必做）
+
+1. **改前列「已好清单」**：用户或文档已认可什么（例：呼吸→眨眼不闪、Sit 不打开 Honesty）。改完逐条自检；写不进单测的进 TEST_TRACKER 必测回归。  
+2. **重写 ≠ 从零设计**：换实现须**继承**旧观感契约（不闪、不硬切、溶解期定格、顶点停留等），除非任务书明确「允许牺牲某某」。  
+3. **单测锁契约、不锁实现细节**（例：眨眼切入必须 `crossFade + freezeUntilCrossFadeEnds`）。  
+4. **任务声明保护面**：开工回复 / Task Brief 写清本次保护面（不动 / 必须复测的邻接体验）。一次一任务管改动范围；保护面管别踩坏邻接。
+
+### C. 高风险面（门闩 + 序列衔接）
+
+触及门闩/叠层/Sit·Rise **或** Idle 呼吸↔眨眼、`play()` cross-fade、Choose/Rise 叠化、pingpong 顶点停留时，默认高回归风险，须显式复检。清单以规则文件为准。
+
+**禁止**：用「单元测试绿了 / 我改过了」代替回流验收与已好清单；禁止在未过门禁时写「已修好」。
+
+**一句话**：防假修好靠回流路径；防把好的改坏靠「改前不变量 + 重写继承契约 + 衔接进高风险表」。
 
 ---
 
@@ -27,19 +42,23 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 02:10（UTC+8）
+**最后更新时间**：2026-07-20 04:15（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Idle 眨眼闪一下（回归）**：breath×5→blink 重写时 crossfade 未配 `freezeUntilCrossFadeEnds`；已修并加单测锁
+- **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **桌面右侧栏**不挡 Yin
+- **Idle 眨眼**：闭目↔睁眼改 **1s CapCut 叠代**（原 180ms 仍闪）
+- **「?」补救**：加大立体化 + 首次 `help-affordance` 气泡
+- **Idle 眨眼闪一下（回归）**：breath×5→blink 须 `freezeUntilCrossFadeEnds`
 - **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
 - **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
 - **pingpong 顶点停留**：`blink-breathe` / `breath-halo-hq` 末帧补约 2 拍
 - **SCENARIO_TESTS 文档收敛**：权威仅 `focus-tiger/docs/SCENARIO_TESTS.md`；根目录改指针；720 底稿归档
 - **Rise → `blink-breathe` pingpong**；张望整段组合试播
 - **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
+- **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
 - Honesty 拍板 B；Companion 短句提示
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
