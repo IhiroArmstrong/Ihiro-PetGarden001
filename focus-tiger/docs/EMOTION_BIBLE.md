@@ -58,9 +58,9 @@
 
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
-| `Breathing` | 呼吸起伏 | 是 | 默认开启；叠加于**任意**基底姿态（`Idle` / `Smiling` / `Sleeping` 等） | **1**（持续底层动态；一次性高优先级效果播放时不中断，与之共存） | **已实现**：`DynamicMotion.js`（`scale.y` + `position.y` 正弦波，约 3.5s 周期） |
-| `Rotation` | 缓慢旋转 | 是 | 默认开启；绕 Y 轴缓慢旋转，增加陈列感 | **1** | **已实现**：`DynamicMotion.js`（约 48s 一圈） |
-| `Hover` | 庆祝悬浮 | 是 | 仅当基底姿态为 `Celebrating` 时叠加：整体上抬 + 缓慢上下摆动 | **2**（附属于庆祝态） | **已实现**：`DynamicMotion.js` |
+| `Breathing` | 呼吸起伏（3D） | 是 | **仅 3D 奖励柜**：默认开启；叠加于任意 3D 基底姿态。2D 主线呼吸由 `idle-breathing` 帧序列承载，不走本项 | **1** | **已实现（3D）**：`DynamicMotion.js`；**2D 调试 UI 已移除开关** |
+| `Rotation` | 缓慢旋转（3D） | 是 | **仅 3D 奖励柜**：绕 Y 轴缓慢旋转，增加陈列感；2D 主线不做同等替代 | **1** | **已实现（3D）**：`DynamicMotion.js`；**2D 调试 UI 已移除开关** |
+| `Hover` | 庆祝悬浮（3D） | 是 | **仅 3D 奖励柜**：基底为 `Celebrating` 时整体上抬 + 缓慢上下摆动 | **2**（附属于庆祝态） | **已实现（3D）**：`DynamicMotion.js`；**2D 调试 UI 已移除开关** |
 | `Blink` | 眨眼 | 否（单次触发后自动结束） | 调试可手工播；**亦由 IdleOrchestrator 在每 5 次呼吸循环后自动插入一次**（偶尔看看） | **5**（微表情；不抢占基底姿态） | **已实现（2D）**：`blink-smile`；Idle 固定节奏插入 + 调试面板 |
 | `SnoringZZZ` | 打呼噜 ZZZ | 是 | 仅当基底姿态为 `Sleeping` 时叠加：ZZZ 图标漂浮 + `rotation.x` 微倾 | **3**（附属于瞌睡态） | **待实现**：`DESIGN.md` 已定义语义，无代码 |
 
@@ -80,8 +80,8 @@
 MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (80)
     >  SessionComplete (70)  >  Sleeping (60)  >  IntentionSet (55)  >  Smiling (50)  >  Idle (10)
 
-动态效果层：Hover / SnoringZZZ 附属于对应基底；Blink (5) 可穿插于 Idle/Smiling；
-Breathing / Rotation (1) 默认始终叠加，除非显式关闭。
+动态效果层：Blink (5) 可穿插于 Idle/Smiling；SnoringZZZ 附属于 Sleeping。
+3D 奖励柜另有 Breathing / Rotation / Hover（DynamicMotion）；2D 主界面不暴露、不叠加。
 ```
 
 **关键场景说明**（均来自已确认产品设计，非新增玩法）：

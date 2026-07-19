@@ -655,7 +655,8 @@ export class EmotionController {
   }
 
   /**
-   * 调试面板：情绪按钮 + 动态效果层开关，全部走 playEmotion。
+   * 调试面板：2D 情绪按钮（走 playEmotion）。
+   * 3D DynamicMotion（旋转/呼吸起伏/悬浮）仅保留给奖励柜场景，不在 2D 主界面暴露开关。
    * @param {HTMLElement} container
    */
   createDebugUI(container) {
@@ -723,75 +724,6 @@ export class EmotionController {
       group.appendChild(btn);
     });
 
-    const layerGroup = document.createElement('div');
-    layerGroup.id = 'dynamic-motion-debug-ui';
-    layerGroup.style.cssText =
-      'display:flex;flex-direction:column;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid #c4a882;';
-
-    const title = document.createElement('div');
-    title.textContent = '动态效果层';
-    title.style.cssText = 'font-size:11px;color:#5c4a32;font-weight:600;';
-    layerGroup.appendChild(title);
-
-    const layerItems = [
-      {
-        id: 'dm-rotation',
-        emotionKey: 'rotation',
-        label: '绕 Y 轴旋转',
-        get: () => this.dynamicMotion.isRotationEnabled()
-      },
-      {
-        id: 'dm-breathing',
-        emotionKey: 'breathing',
-        label: '呼吸起伏',
-        get: () => this.dynamicMotion.isBreathingEnabled()
-      },
-      {
-        id: 'dm-hover',
-        emotionKey: 'hover',
-        label: '悬浮（仅庆祝态）',
-        get: () => this.dynamicMotion.isHoverEnabled()
-      },
-      {
-        id: 'dm-eye-tracking',
-        emotionKey: 'eyeTracking',
-        label: '眼睛跟随鼠标',
-        get: () => this.eyeTracking?.isEnabled() ?? false,
-        skip: !this.eyeTracking
-      }
-    ];
-
-    layerItems.forEach(({ id, emotionKey, label, get, skip }) => {
-      if (skip) return;
-      const row = document.createElement('label');
-      row.htmlFor = id;
-      row.style.cssText =
-        'display:flex;align-items:center;gap:6px;font-size:11px;color:#2c1f14;cursor:pointer;';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = id;
-      checkbox.checked = get();
-      checkbox.addEventListener('change', () => {
-        this.playEmotion(emotionKey, { enabled: checkbox.checked });
-      });
-
-      const text = document.createElement('span');
-      text.textContent = label;
-
-      row.appendChild(checkbox);
-      row.appendChild(text);
-      layerGroup.appendChild(row);
-    });
-
-    const hint = document.createElement('div');
-    hint.id = 'dm-hover-hint';
-    hint.style.cssText = 'font-size:10px;color:#8b7355;line-height:1.3;';
-    hint.textContent =
-      '眼睛跟随：请先切「坐禅微笑」；闭眼/欢呼时自动隐藏。悬浮仅庆祝姿态生效。';
-    layerGroup.appendChild(hint);
-
-    group.appendChild(layerGroup);
     container.appendChild(group);
     return group;
   }

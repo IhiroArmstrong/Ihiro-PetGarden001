@@ -1,4 +1,5 @@
-// 职责：动态效果层——绕 Y 轴旋转、呼吸起伏、庆祝态悬浮。
+// 职责：3D 奖励柜动态效果层——绕 Y 轴旋转、呼吸起伏、庆祝态悬浮。
+// 2D 主界面不叠加本层；调试开关已从 EmotionController.createDebugUI 移除。
 // 变换叠加在 PoseManager 归一化对齐之后的 mount 节点上，不修改各姿态 root 的 position/scale。
 
 import * as THREE from 'three';
