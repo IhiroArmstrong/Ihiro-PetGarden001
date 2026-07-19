@@ -110,5 +110,6 @@
   "HINT_RISE_BUTTON": "Rising early is welcome too.",
   "HINT_REFLECTION": "Answer if you like — skipping is fine.",
   "HINT_IDLE_AFTER_SESSION": "Sit again whenever you like.",
+  "HINT_HELP_AFFORDANCE": "Not sure what to tap next? Start here.",
   "HINT_HELP_FALLBACK": "Sit with Yin when you are ready."
 }

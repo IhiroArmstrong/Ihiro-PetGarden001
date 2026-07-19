@@ -8,6 +8,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   ARRIVAL_BREATH_MS,
+  ARRIVAL_NOTICE_REPLY_MS,
   ARRIVAL_STEPS,
   ARRIVAL_WELCOME_MS,
   CHOOSE_OPTIONS,
@@ -70,7 +71,9 @@ export class ArrivalPracticeUI {
   /**
    * @param {HTMLElement} container
    * @param {object} [handlers]
-   * @param {() => void} [handlers.onReady] 流程到达 Companion Mode 门闩
+   * @param {(info?: { skipped?: boolean, chose?: boolean }) => void} [handlers.onReady]
+   *   流程结束：`skipped` = Skip — begin / Sit 整体跳过（应直接开计时）；
+   *   `chose` = 走完 Choose（应展开 Companion 三选一）。
    * @param {() => void} [handlers.onWelcome] 欢迎 beat 开始（可播 blink-smile）
    * @param {() => void} [handlers.onCancel] 外部关闭
    * @param {() => void} [handlers.onBegin] Arrival 开始（光影冷灰氛围）
@@ -79,7 +82,7 @@ export class ArrivalPracticeUI {
    * @param {() => void} [handlers.onAfterBreath] 离开呼吸进入 Choose
    * @param {() => void} [handlers.onChooseConfirmed] Choose 确认（坐垫光晕等氛围）
    * @param {(done: () => void) => void} [handlers.onIntentionSetPlay]
-   *   Choose 确认后播合十；`done` 后再进 Companion Mode。缺省则立即 onReady。
+   *   Choose 确认后播点头；`done` 后再进 Companion Mode。缺省则立即 onReady。
    * @param {() => void} [handlers.onClearLight] 结束/跳过时清氛围
    */
   constructor(container, handlers = {}) {
@@ -130,9 +133,9 @@ export class ArrivalPracticeUI {
     }, ARRIVAL_WELCOME_MS);
   }
 
-  hide() {
+  hide({ clearLight = true } = {}) {
     this._clearTimers();
-    this.handlers.onClearLight?.();
+    if (clearLight) this.handlers.onClearLight?.();
     if (this.root) {
       this.root.remove();
       this.root = null;
@@ -150,19 +153,21 @@ export class ArrivalPracticeUI {
     this.hide();
   }
 
-  _finishReady({ chose = false } = {}) {
+  _finishReady({ chose = false, skipped = false } = {}) {
     if (chose) this.handlers.onChooseConfirmed?.();
-    this.hide();
+    // 点选意图后还要播点头：先别清 Dolly/氛围，等淡入 idle 后再拉回。
+    this.hide({ clearLight: !chose });
+    const payload = { chose: Boolean(chose), skipped: Boolean(skipped) };
     if (chose && typeof this.handlers.onIntentionSetPlay === 'function') {
-      this.handlers.onIntentionSetPlay(() => this.handlers.onReady?.());
+      this.handlers.onIntentionSetPlay(() => this.handlers.onReady?.(payload));
       return;
     }
-    this.handlers.onReady?.();
+    this.handlers.onReady?.(payload);
   }
 
   _skipEntirely() {
     this.state = skipArrivalPracticeEntirely(this.state);
-    this._finishReady({ chose: false });
+    this._finishReady({ chose: false, skipped: true });
   }
 
   _ensureRoot() {
@@ -224,6 +229,16 @@ export class ArrivalPracticeUI {
     }
 
     if (this.state.step === ARRIVAL_STEPS.NOTICE) {
+      // 点选后：收起整屏图标区，只留 Yin 观察式短句，避免「框还在那里不动」的卡住感。
+      if (this._noticeReply) {
+        const reply = document.createElement('div');
+        reply.style.cssText =
+          'font-size:15px;line-height:1.55;color:#6b4a32;text-align:center;padding:8px 4px 4px;';
+        reply.textContent = this._noticeReply;
+        this.root.append(reply, footer);
+        return;
+      }
+
       const title = document.createElement('div');
       title.style.cssText =
         'font-size:14px;line-height:1.5;color:#4a3a28;text-align:center;margin-bottom:12px;';
@@ -237,15 +252,7 @@ export class ArrivalPracticeUI {
         this._renderNoticeReplyThenAdvance();
       });
 
-      this.root.append(title, grid);
-      if (this._noticeReply) {
-        const reply = document.createElement('div');
-        reply.style.cssText =
-          'margin-top:12px;font-size:14px;line-height:1.5;color:#6b4a32;text-align:center;';
-        reply.textContent = this._noticeReply;
-        this.root.appendChild(reply);
-      }
-      this.root.appendChild(footer);
+      this.root.append(title, grid, footer);
       return;
     }
 
@@ -330,7 +337,7 @@ export class ArrivalPracticeUI {
       this.state = advanceArrivalStep(this.state);
       this._noticeReply = '';
       this._render();
-    }, 1200);
+    }, ARRIVAL_NOTICE_REPLY_MS);
   }
 
   /**

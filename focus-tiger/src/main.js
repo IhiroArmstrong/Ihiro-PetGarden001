@@ -10,6 +10,7 @@ import {
   FocusSession,
   shouldSuppressAwayReminders,
   canBeginFocusOnCompanionModeSelect,
+  shouldBeginFocusOnArrivalReady,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
@@ -401,9 +402,9 @@ async function init() {
     } else if (scene.isDormant) {
       ids = ['dormant-open'];
     } else if (scene.hasEverCompletedSession) {
-      ids = ['idle-after-session'];
+      ids = ['idle-after-session', 'help-affordance'];
     } else {
-      ids = ['sit-button', 'how-shall-we-sit'];
+      ids = ['sit-button', 'how-shall-we-sit', 'help-affordance'];
     }
     onboardingHints.syncVisibleAutos(ids);
     // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
@@ -492,12 +493,11 @@ async function init() {
         });
       },
       onClearLight: () => lightProgression.clearArrivalEffects(),
-      onReady: () => {
+      onReady: (info = {}) => {
         pendingChoose = arrivalPractice.getChooseResult();
         arrivalGateReady = true;
         companionModePicker.setArrivalReady(true);
         companionModePicker.setPostSessionOverlayActive(false);
-        companionModePicker.open();
         onboardingHints?.markSeen('notice');
         onboardingHints?.markSeen('breathing');
         onboardingHints?.markSeen('choose');
@@ -505,6 +505,13 @@ async function init() {
         onboardingHints?.markSeen('sit-button');
         onboardingHints?.markSeen('dormant-open');
         onboardingHints?.markSeen('honesty-optional');
+        // Skip — begin / Sit 整体跳过 =「直接开始」：用记忆模式立刻计时 → Rise。
+        // 完整走完 Choose 才展开三选一（勿半卡在门闩就绪却仍显示 Sit）。
+        if (shouldBeginFocusOnArrivalReady(info)) {
+          beginFocusWithMode(companionModePicker.getSelectedMode());
+        } else {
+          companionModePicker.open();
+        }
         syncOnboardingAutoHints();
       }
     }

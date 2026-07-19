@@ -31,9 +31,10 @@
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
+| `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **16** 个可自动提示 + **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+共 **17** 个可自动提示 + **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
 ### 音乐与光效（对应 ambient-soundscape 文案）
 
@@ -43,7 +44,8 @@
 
 ## 二、补救入口设计
 
-- **位置**：左下角极小「?」（与右下 Sound 对仗，不抢主视觉），常驻。
+- **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
+- **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），点「?」或点气泡即记已读。
 - **交互**：按**当前界面**只复述上表对应一句；无匹配时用 `help-fallback`。
 - **与即时提示**：即时「用完即隐藏」；补救不受已读限制。
 
@@ -68,7 +70,7 @@
 2. 不做集中式引导流程；每条独立触发。
 3. 每条独立记忆已读。
 4. 提示无需单独「知道了」按钮；**点击气泡立刻关闭**（见上节）；完成对应操作亦记已读。
-5. 「?」足够小、安静，不像帮助中心。
+5. 「?」安静但可发现（立体、约 52px）；不做帮助中心。
 
 ---
 

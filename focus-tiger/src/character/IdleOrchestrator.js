@@ -10,10 +10,11 @@
  *
  * 回归锁（2026-07-20）：呼吸↔眨眼 **必须** cross-fade + freezeUntilCrossFadeEnds。
  * 只淡入却让新序列在溶解期跑帧 = 切换一刻「闪一下」（与调试变体假闪同类）。
+ * 闭目呼吸 ↔ 睁眼眨眼 画幅/姿态不衔接 → 用 CapCut 式约 1s 叠代（非 180ms 微切）。
  */
 
-/** 与 dormantWake → idle 一致的回落交叉淡入时长。 */
-export const IDLE_VARIANT_CROSS_FADE_MS = 180;
+/** 闭目↔睁眼不衔接：与 EmotionController.CAPCUT_DISSOLVE_MS 同值（避免循环 import）。 */
+export const IDLE_VARIANT_CROSS_FADE_MS = 1000;
 
 /** 两次眨眼之间，idle-breathing 完整 pingpong 循环次数。 */
 export const IDLE_BREATH_CYCLES_BEFORE_BLINK = 5;

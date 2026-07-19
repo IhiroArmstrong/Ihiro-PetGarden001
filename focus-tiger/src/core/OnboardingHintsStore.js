@@ -24,6 +24,7 @@ export const HINT_IDS = Object.freeze([
   'rise-button',
   'reflection',
   'idle-after-session',
+  'help-affordance',
   'help-fallback'
 ]);
 
@@ -45,6 +46,7 @@ export const HINT_LOCALE_KEYS = Object.freeze({
   'rise-button': 'HINT_RISE_BUTTON',
   'reflection': 'HINT_REFLECTION',
   'idle-after-session': 'HINT_IDLE_AFTER_SESSION',
+  'help-affordance': 'HINT_HELP_AFFORDANCE',
   'help-fallback': 'HINT_HELP_FALLBACK'
 });
 

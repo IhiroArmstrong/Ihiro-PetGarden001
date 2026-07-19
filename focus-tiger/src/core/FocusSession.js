@@ -41,6 +41,15 @@ export function shouldAutoStartFocusOnModeSelect(mode) {
 }
 
 /**
+ * Arrival 结束时是否立刻开计时（Skip — begin / Sit 整体跳过）。
+ * 完整走完 Choose 时为 false → 展开 Companion；跳过则为 true → Rise。
+ * @param {{ skipped?: boolean }} info
+ */
+export function shouldBeginFocusOnArrivalReady({ skipped = false } = {}) {
+  return Boolean(skipped);
+}
+
+/**
  * 点选自动开计时模式后，是否真正允许 beginFocus。
  * 未过 Arrival 门闩时必须为 false，且 UI 侧应禁用点选（禁止静默 return）。
  * @param {object} gates

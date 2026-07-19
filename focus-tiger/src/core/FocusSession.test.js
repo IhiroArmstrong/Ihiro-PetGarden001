@@ -9,6 +9,7 @@ import {
   shouldSuppressAwayReminders,
   shouldAutoStartFocusOnModeSelect,
   canBeginFocusOnCompanionModeSelect,
+  shouldBeginFocusOnArrivalReady,
   resolveCompanionHintClick
 } from './FocusSession.js';
 
@@ -78,6 +79,13 @@ test('Here & Now and Flow State auto-start focus; Offline Space does not', () =>
     shouldAutoStartFocusOnModeSelect(COMPANION_MODE_STEP_AWAY),
     false
   );
+});
+
+test('Skip — begin begins focus; Choose complete opens Companion instead', () => {
+  // 回归锁：禁止 Skip begin 后门闩就绪却仍显示 Sit（半卡态）
+  assert.equal(shouldBeginFocusOnArrivalReady({ skipped: true }), true);
+  assert.equal(shouldBeginFocusOnArrivalReady({ skipped: false }), false);
+  assert.equal(shouldBeginFocusOnArrivalReady({}), false);
 });
 
 test('auto-start mode still requires Arrival gate before beginFocus', () => {
