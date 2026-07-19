@@ -18,14 +18,14 @@ export const HONESTY_DURATION_OPTIONS = Object.freeze([
 const PANEL_CSS = [
   'position:absolute',
   'left:50%',
-  'bottom:96px',
+  'bottom:118px',
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
-  'padding:20px 22px 16px',
-  'border:1px solid rgba(255,248,235,.55)',
+  'padding:20px 22px 18px',
+  'border:1px solid rgba(255,248,235,.65)',
   'border-radius:20px',
-  'background:linear-gradient(165deg,rgba(255,253,247,.97) 0%,rgba(250,244,232,.94) 55%,rgba(244,234,216,.92) 100%)',
-  'box-shadow:0 1px 0 rgba(255,255,255,.75) inset,0 -1px 0 rgba(139,115,85,.12) inset,0 14px 36px rgba(44,31,20,.16),0 4px 10px rgba(44,31,20,.08)',
+  'background:linear-gradient(165deg,rgba(255,253,247,.98) 0%,rgba(250,244,232,.95) 55%,rgba(244,234,216,.93) 100%)',
+  'box-shadow:0 2px 0 rgba(255,255,255,.88) inset,0 -2px 0 rgba(139,115,85,.16) inset,0 2px 0 rgba(180,150,110,.35),0 14px 36px rgba(44,31,20,.18),0 4px 10px rgba(44,31,20,.1)',
   'color:#2c1f14',
   'transition:opacity 260ms ease,transform 260ms ease',
   'opacity:0',
@@ -40,12 +40,12 @@ const CHOICE_BTN_CSS = [
   'line-height:1.4',
   'font-weight:560',
   'color:#3a2a1c',
-  'background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(248,241,228,.88) 100%)',
-  'border:1px solid rgba(139,115,85,.28)',
+  'background:linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(248,241,228,.9) 55%,rgba(236,224,204,.88) 100%)',
+  'border:1px solid rgba(139,115,85,.32)',
   'border-radius:14px',
   'cursor:pointer',
   'text-align:center',
-  'box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 3px 8px rgba(44,31,20,.08)',
+  'box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 -1px 0 rgba(139,115,85,.12) inset,0 2px 0 rgba(180,150,110,.28),0 4px 10px rgba(44,31,20,.1)',
   'transition:transform 120ms ease,box-shadow 120ms ease'
 ].join(';');
 
@@ -136,6 +136,7 @@ export class HonestyCheckInUI {
     this._render();
     this._fadeIn();
     window.clearTimeout(this._breathTimer);
+    // 时长须与 HonestyBridgeCtaController.HONESTY_THANKS_MS 对齐
     this._breathTimer = window.setTimeout(() => this.hide(), 3200);
   }
 

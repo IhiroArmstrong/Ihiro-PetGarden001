@@ -28,6 +28,7 @@ export class HonestyCheckInController {
    * @param {HonestyCheckInUI} deps.ui
    * @param {(level: number) => void} [deps.applyFocusGlow]
    * @param {() => void} [deps.clearFocusGlow]
+   * @param {() => void} [deps.onCheckInComplete] 补登仪式结束（记账 + 离 DORMANT）后；桥接 CTA 挂这里
    */
   constructor({
     store,
@@ -35,7 +36,8 @@ export class HonestyCheckInController {
     emotionController,
     ui,
     applyFocusGlow = () => {},
-    clearFocusGlow = () => {}
+    clearFocusGlow = () => {},
+    onCheckInComplete = () => {}
   }) {
     this.store = store;
     this.stateManager = stateManager;
@@ -43,6 +45,7 @@ export class HonestyCheckInController {
     this.ui = ui;
     this.applyFocusGlow = applyFocusGlow;
     this.clearFocusGlow = clearFocusGlow;
+    this.onCheckInComplete = onCheckInComplete;
     /** @type {number | null} */
     this._pendingMinutes = null;
     this._busy = false;
@@ -176,5 +179,8 @@ export class HonestyCheckInController {
     if (this.stateManager.state === STATES.DORMANT) {
       this.stateManager.setState(STATES.IDLE);
     }
+
+    // 桥接 CTA 独立于补登：仅仪式路径触发，不由此开计时。
+    this.onCheckInComplete();
   }
 }

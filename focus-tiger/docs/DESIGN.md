@@ -459,6 +459,16 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
   - 英文：`Thank you for bringing that calm back here.`
   - 中文：`谢谢你把那份平静带回来。`
 
+#### 6. Honesty 桥接 CTA（2026-07-19 拍板）
+
+> 详规：`HONESTY_BRIDGE_CTA.md`。**加桥接，非合并**——不把 Honesty 改成选时长即开计时。
+
+- 补登仪式（呼吸 + `dormantWake`）与 thanks 结束后，可出现一次轻量邀请（观察式：`Want to sit for a bit now too?` /「要不要现在也坐一会儿？」）。
+- **Yes** → 完整 Arrival Practice → Companion Mode（与 Sit 门闩未就绪路径相同）；**不**自动开 Ambient / timer。
+- **No / 忽略** → idle；无二次挽留。
+- **当日最多展示一次**（与 Yes/No 无关）；独立存储键，不占共享提醒池。
+- 与 Companion Mode 边界不变：Honesty = 事后补登；桥接 = 可选进入正式会话入口。
+
 ---
 
 

@@ -152,3 +152,32 @@ test('honesty duration select sits up and holds pose; breath end leaves DORMANT'
   );
   assert.equal(emotionCalls.filter((c) => c.key === 'idle').length, 0);
 });
+
+test('honesty breath complete invokes onCheckInComplete for bridge hook', () => {
+  const store = new DailyCompletionStore({
+    storage: createStorage(),
+    now: () => new Date(2026, 6, 16, 12)
+  });
+  const stateManager = new StateManager();
+  stateManager.setState(STATES.DORMANT);
+  let completeCalls = 0;
+  const ui = {
+    handlers: {},
+    startBreathGuide() {},
+    showThanks() {}
+  };
+  const controller = new HonestyCheckInController({
+    store,
+    stateManager,
+    emotionController: { playEmotion() {} },
+    ui,
+    onCheckInComplete: () => {
+      completeCalls += 1;
+    }
+  });
+
+  ui.handlers.onDurationSelect(10);
+  ui.handlers.onBreathComplete();
+  assert.equal(completeCalls, 1);
+  assert.equal(stateManager.state, STATES.IDLE);
+});

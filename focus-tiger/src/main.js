@@ -40,13 +40,15 @@ import { DailyCompletionStore } from './core/DailyCompletionStore.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import { HonestyCheckInController } from './core/HonestyCheckInController.js';
 import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
+import { HonestyBridgeStore } from './core/HonestyBridgeStore.js';
+import { HonestyBridgeCtaController } from './core/HonestyBridgeCtaController.js';
+import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
 import { recordIntention } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
-
 const DEMO_SESSION_MINUTES = 1;
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
 
@@ -208,7 +210,10 @@ async function init() {
 
   // Honesty Check-in / DORMANT：当日零完成 → 打瞌睡 + 可忽略补登提示
   let honestyGlowLevel = null;
+  /** @type {HonestyBridgeCtaController | null} */
+  let honestyBridge = null;
   const dailyCompletionStore = new DailyCompletionStore();
+  const honestyBridgeStore = new HonestyBridgeStore();
   const honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
@@ -226,6 +231,9 @@ async function init() {
       if (stateManager.state !== STATES.FOCUSING) {
         tigerCharacter.setFocusLevel(0);
       }
+    },
+    onCheckInComplete: () => {
+      honestyBridge?.onHonestyCheckInComplete();
     }
   });
 
@@ -343,6 +351,40 @@ async function init() {
     window.__lightProgression = lightProgression;
   }
 
+  /**
+   * 与 Sit / hint 门闩未就绪路径相同：完整 Arrival，不跳过、不开计时、不开 Ambient。
+   */
+  function startArrivalPracticeFromChrome() {
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    companionModePicker.setArrivalReady(false);
+    companionModePicker.setPostSessionOverlayActive(true);
+    companionModePicker.hide();
+    arrivalPractice.start();
+  }
+
+  const honestyBridgeUI = new HonestyBridgeCtaUI(
+    document.getElementById('ui-overlay')
+  );
+  honestyBridge = new HonestyBridgeCtaController({
+    store: honestyBridgeStore,
+    ui: honestyBridgeUI,
+    onAccept: () => {
+      if (completionPending) return;
+      if (stateManager.state === STATES.FOCUSING) return;
+      if (arrivalPractice.isOpen()) return;
+      startArrivalPracticeFromChrome();
+    },
+    onDecline: () => {
+      emotionController.playEmotion('idle');
+    }
+  });
+  if (import.meta.env.DEV) {
+    window.__honestyBridge = honestyBridge;
+    window.__honestyBridgeStore = honestyBridgeStore;
+  }
+
   function endFocusChrome() {
     attentionSignals.setEnabled(false);
     mindfulReminderController.stopSession();
@@ -376,6 +418,7 @@ async function init() {
 
   function beginFocusWithMode(companionMode) {
     sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
     honestyCheckInUI.hide();
     honestyGlowLevel = null;
     currentSessionIntention = pendingChoose?.text ?? '';
@@ -431,18 +474,14 @@ async function init() {
     if (completionPending) return;
     if (stateManager.state === STATES.FOCUSING) return;
     if (arrivalPractice.isOpen()) return;
-    sessionEndFlow.cancelPending();
-    honestyCheckInUI.hide();
-    companionModePicker.setArrivalReady(false);
-    companionModePicker.setPostSessionOverlayActive(true);
-    companionModePicker.hide();
-    arrivalPractice.start();
+    startArrivalPracticeFromChrome();
   };
 
   const focusInput = new FocusInput(
     () => {
       if (completionPending) return false;
       sessionEndFlow.cancelPending();
+      honestyBridge?.hide();
       honestyCheckInUI.hide();
 
       if (arrivalPractice.isOpen()) {
@@ -451,10 +490,7 @@ async function init() {
       }
 
       if (!arrivalGateReady) {
-        companionModePicker.setArrivalReady(false);
-        companionModePicker.setPostSessionOverlayActive(true);
-        companionModePicker.hide();
-        arrivalPractice.start();
+        startArrivalPracticeFromChrome();
         return false;
       }
 
@@ -472,6 +508,7 @@ async function init() {
       completionPending = false;
       honestyGlowLevel = null;
       tigerCharacter.setFocusLevel(0);
+      honestyBridge?.hide();
       honestyCheckIn.onIncompleteSessionEnded();
       companionModePicker.setIdleChromeVisible(true);
       sessionEndFlow.onSessionEnded({
