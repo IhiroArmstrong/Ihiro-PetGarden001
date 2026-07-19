@@ -33,6 +33,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Idle 眨眼闪一下（回归）**：breath×5→blink 重写时 crossfade 未配 `freezeUntilCrossFadeEnds`；已修并加单测锁
 - **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
 - **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
 - **pingpong 顶点停留**：`blink-breathe` / `breath-halo-hq` 末帧补约 2 拍

@@ -7,6 +7,9 @@
  * （那些是独立候选情绪序列，见 companionGestureCatalog，勿绑本编排器）。
  *
  * EmotionController 只负责在 idle 生命周期 start，在非 idle 表现前 stop。
+ *
+ * 回归锁（2026-07-20）：呼吸↔眨眼 **必须** cross-fade + freezeUntilCrossFadeEnds。
+ * 只淡入却让新序列在溶解期跑帧 = 切换一刻「闪一下」（与调试变体假闪同类）。
  */
 
 /** 与 dormantWake → idle 一致的回落交叉淡入时长。 */
@@ -45,7 +48,7 @@ export class IdleOrchestrator {
     this._active = false;
     /** @type {'idle'|'breathing'|'blink'} */
     this._phase = 'idle';
-    /** 本轮还需完成的呼吸 pingpong 次数（到 0 则眨眼） */
+    /** 本轮呼吸阶段目标循环次数（status 用） */
     this._breathsRemaining = 0;
     this._generation = 0;
   }
@@ -54,13 +57,14 @@ export class IdleOrchestrator {
    * 启动（或重启）闭目呼吸 → 偶发眨眼 节奏。
    * @param {object} [playOptions]
    * @param {number} [playOptions.crossFadeMs]
+   * @param {boolean} [playOptions.freezeUntilCrossFadeEnds]
    */
   start(playOptions = {}) {
     this._active = true;
     this._generation += 1;
-    this._breathsRemaining = this.breathCyclesBeforeBlink;
     this._phase = 'breathing';
-    this._playNextBreath(playOptions);
+    this._breathsRemaining = this.breathCyclesBeforeBlink;
+    this._playBreathBlock(playOptions);
   }
 
   /** 离开 idle：打断编排，让其他表现接管。 */
@@ -112,31 +116,29 @@ export class IdleOrchestrator {
   }
 
   /**
-   * 逐次播放 1 个完整 pingpong；扣减剩余次数，到 0 后眨眼。
+   * 连续播 N 次完整呼吸 pingpong（一次 play，避免逐次 restart 接缝），再眨眼。
    * @param {object} [playOptions]
    */
-  _playNextBreath(playOptions = {}) {
+  _playBreathBlock(playOptions = {}) {
     if (!this._active) return;
     const gen = this._generation;
     this._phase = 'breathing';
+    this._breathsRemaining = this.breathCyclesBeforeBlink;
 
-    if (this._breathsRemaining <= 0) {
-      this._playBlink();
-      return;
-    }
+    const crossFadeMs = playOptions.crossFadeMs;
+    const freezeDuringFade =
+      Number(crossFadeMs) > 0 && playOptions.freezeUntilCrossFadeEnds !== false;
 
     const started = this.player.play(this.baseSequence, {
-      crossFadeMs: playOptions.crossFadeMs,
-      maxCycles: 1,
+      crossFadeMs,
+      // 溶解期间定格呼吸首帧，避免与上一姿态叠跑造成闪一下
+      freezeUntilCrossFadeEnds: freezeDuringFade,
+      maxCycles: this.breathCyclesBeforeBlink,
       holdLastFrame: true,
       onComplete: () => {
         if (!this._active || gen !== this._generation) return;
-        this._breathsRemaining -= 1;
-        if (this._breathsRemaining <= 0) {
-          this._playBlink();
-        } else {
-          this._playNextBreath();
-        }
+        this._breathsRemaining = 0;
+        this._playBlink();
       }
     });
     if (!started) {
@@ -156,15 +158,23 @@ export class IdleOrchestrator {
       loopMode: 'none',
       holdLastFrame: true,
       crossFadeMs: this.crossFadeMs,
+      // 关键：溶解期必须定格眨眼第 1 帧，否则淡入同时跑帧 = 切换闪一下
+      freezeUntilCrossFadeEnds: this.crossFadeMs > 0,
       onComplete: () => {
         if (!this._active || gen !== this._generation) return;
         this._breathsRemaining = this.breathCyclesBeforeBlink;
-        this._playNextBreath({ crossFadeMs: this.crossFadeMs });
+        this._playBreathBlock({
+          crossFadeMs: this.crossFadeMs,
+          freezeUntilCrossFadeEnds: true
+        });
       }
     });
     if (!started) {
       this._breathsRemaining = this.breathCyclesBeforeBlink;
-      this._playNextBreath({ crossFadeMs: this.crossFadeMs });
+      this._playBreathBlock({
+        crossFadeMs: this.crossFadeMs,
+        freezeUntilCrossFadeEnds: true
+      });
     }
   }
 }

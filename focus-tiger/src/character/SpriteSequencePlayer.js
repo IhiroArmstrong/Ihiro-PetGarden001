@@ -33,6 +33,8 @@ import {
  * @property {Record<number, number>} [frameHolds] 单帧额外停留时长覆盖（覆盖清单）；
  *   键为 1 基帧号（与帧文件名序号一致），值为该帧在 fps 间隔之上额外停留的毫秒数
  * @property {number} [crossFadeMs] 从当前可见帧交叉淡入新序列首帧的时长
+ * @property {boolean} [freezeUntilCrossFadeEnds]
+ *   true 时：溶解期间定格新序列第 1 帧，不推进动画（CapCut 式两帧叠代）
  * @property {number} [maxCycles] 循环序列最多完整循环次数；达到后触发 onComplete（pingpong/forward）
  * @property {(sequenceName: string) => void} [onComplete] 非循环序列播完，或循环达 maxCycles 时回调
  */
@@ -267,13 +269,19 @@ export class SpriteSequencePlayer {
 
     // 立即打断当前序列（满足「中途打断切换」要求）
     this._cancelRaf();
-    this._resetCrossFade();
+    // 取消进行中的溶解计时，但先别把主图 opacity 强行拉回 1——
+    // 否则在随后设 opacity:0 之前可能闪一帧新内容（Idle 眨眼切换曾踩坑）。
+    this._cancelCrossFadeTimers();
     if (shouldCrossFade) {
+      this.outgoingImgEl.style.transition = 'none';
       this.outgoingImgEl.src = previousSrc;
       this.outgoingImgEl.style.opacity = '1';
+      this.imgEl.style.transition = 'none';
       this.imgEl.style.opacity = '0';
       this._outgoingDisplayFit = this._currentDisplayFit;
       this._applyDisplayFit(this.outgoingImgEl, this._outgoingDisplayFit);
+    } else {
+      this._resetCrossFade();
     }
 
     this._currentName = name;
@@ -299,11 +307,31 @@ export class SpriteSequencePlayer {
 
     this._show();
     this._renderFrame(0);
-    if (shouldCrossFade) this._startCrossFade(crossFadeMs);
+
+    const freezeUntilCrossFadeEnds =
+      shouldCrossFade && Boolean(options.freezeUntilCrossFadeEnds);
+
+    if (shouldCrossFade) {
+      this._startCrossFade(crossFadeMs, () => {
+        if (freezeUntilCrossFadeEnds && this._playing) {
+          this._beginPlaybackClock();
+        }
+      });
+    }
+
     this._playing = true;
-    this._lastFrameTime = performance.now();
-    this._raf = requestAnimationFrame(this._tick);
+    if (!freezeUntilCrossFadeEnds) {
+      this._beginPlaybackClock();
+    }
     return true;
+  }
+
+  /** 启动 rAF 换帧时钟（溶解结束后或无溶解时调用）。 */
+  _beginPlaybackClock() {
+    this._lastFrameTime = performance.now();
+    if (!this._raf) {
+      this._raf = requestAnimationFrame(this._tick);
+    }
   }
 
   /**
@@ -544,13 +572,16 @@ export class SpriteSequencePlayer {
     return true;
   }
 
-  /** @param {number} durationMs */
-  _startCrossFade(durationMs) {
+  /**
+   * @param {number} durationMs
+   * @param {(() => void) | null} [onDone]
+   */
+  _startCrossFade(durationMs, onDone = null) {
     // 强制提交首帧的 opacity:0，再在下一绘制帧开始双层交叉淡入淡出。
     void this.outgoingImgEl.offsetWidth;
     this._crossFadeRaf = requestAnimationFrame(() => {
       this._crossFadeRaf = 0;
-      const transition = `opacity ${durationMs}ms ease`;
+      const transition = `opacity ${durationMs}ms ease-in-out`;
       this.outgoingImgEl.style.transition = transition;
       this.imgEl.style.transition = transition;
       this.outgoingImgEl.style.opacity = '0';
@@ -560,11 +591,14 @@ export class SpriteSequencePlayer {
         this.outgoingImgEl.style.transition = 'none';
         this.imgEl.style.transition = 'none';
         this.outgoingImgEl.removeAttribute('src');
+        this.outgoingImgEl.style.transform = '';
+        this._outgoingDisplayFit = null;
+        if (typeof onDone === 'function') onDone();
       }, durationMs + 34);
     });
   }
 
-  _resetCrossFade() {
+  _cancelCrossFadeTimers() {
     if (this._crossFadeRaf) {
       cancelAnimationFrame(this._crossFadeRaf);
       this._crossFadeRaf = 0;
@@ -573,6 +607,10 @@ export class SpriteSequencePlayer {
       globalThis.clearTimeout(this._crossFadeTimer);
       this._crossFadeTimer = null;
     }
+  }
+
+  _resetCrossFade() {
+    this._cancelCrossFadeTimers();
     this.outgoingImgEl.style.transition = 'none';
     this.outgoingImgEl.style.opacity = '0';
     this.outgoingImgEl.style.transform = '';

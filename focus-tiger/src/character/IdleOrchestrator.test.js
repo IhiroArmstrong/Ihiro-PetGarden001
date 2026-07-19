@@ -32,7 +32,7 @@ function createHarness() {
   return { player, calls };
 }
 
-test('plays one pingpong breath at a time, blinks after N, then repeats', () => {
+test('plays one continuous breath block then blinks with freeze cross-fade', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
@@ -41,25 +41,25 @@ test('plays one pingpong breath at a time, blinks after N, then repeats', () => 
 
   orchestrator.start();
   assert.equal(harness.calls[0].name, 'idleBreathing');
-  assert.equal(harness.calls[0].options.maxCycles, 1);
+  // 一次 play 连续 N 次 pingpong，避免逐次 restart 接缝
+  assert.equal(harness.calls[0].options.maxCycles, 3);
   assert.equal(orchestrator.getStatus().breathsRemaining, 3);
-
-  harness.calls.at(-1).options.onComplete();
-  assert.equal(harness.calls.at(-1).name, 'idleBreathing');
-  assert.equal(orchestrator.getStatus().breathsRemaining, 2);
-
-  harness.calls.at(-1).options.onComplete();
-  assert.equal(orchestrator.getStatus().breathsRemaining, 1);
 
   harness.calls.at(-1).options.onComplete();
   const blinkCall = harness.calls.at(-1);
   assert.equal(blinkCall.name, 'blinkSmile');
   assert.equal(blinkCall.options.loopMode, 'none');
   assert.equal(blinkCall.options.crossFadeMs, IDLE_VARIANT_CROSS_FADE_MS);
+  // 回归锁：溶解期必须定格，否则切换闪一下
+  assert.equal(blinkCall.options.freezeUntilCrossFadeEnds, true);
   assert.equal(orchestrator.getStatus().phase, 'blink');
 
   blinkCall.options.onComplete();
-  assert.equal(harness.calls.at(-1).name, 'idleBreathing');
+  const breathAgain = harness.calls.at(-1);
+  assert.equal(breathAgain.name, 'idleBreathing');
+  assert.equal(breathAgain.options.maxCycles, 3);
+  assert.equal(breathAgain.options.crossFadeMs, IDLE_VARIANT_CROSS_FADE_MS);
+  assert.equal(breathAgain.options.freezeUntilCrossFadeEnds, true);
   assert.equal(orchestrator.getStatus().breathsRemaining, 3);
 });
 
@@ -104,5 +104,5 @@ test('setTiming restarts with new breath cycle count', () => {
   orchestrator.setTiming({ breathCyclesBeforeBlink: 2 });
   assert.equal(orchestrator.breathCyclesBeforeBlink, 2);
   assert.equal(orchestrator.getStatus().breathsRemaining, 2);
-  assert.equal(harness.calls.at(-1).options.maxCycles, 1);
+  assert.equal(harness.calls.at(-1).options.maxCycles, 2);
 });
