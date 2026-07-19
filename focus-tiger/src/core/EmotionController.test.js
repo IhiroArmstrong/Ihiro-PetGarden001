@@ -177,10 +177,11 @@ test('intentionSet plays palmsTogether then returns to idle', () => {
   });
 
   assert.equal(plays[0].name, 'palmsTogether');
-  assert.equal(plays[0].options.returnCrossFadeMs, 280);
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
-  assert.equal(plays[1].options.crossFadeMs, 280);
+  assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
@@ -359,4 +360,57 @@ test('leaving dormantWake injects a longer cross-fade into the next emotion', ()
   const idlePlay = plays.filter((p) => p.name === 'idleBreathing').at(-1);
   assert.ok(idlePlay);
   assert.equal(idlePlay.options.crossFadeMs, LEAVE_DORMANT_WAKE_CROSS_FADE_MS);
+});
+
+test('blinkBreathe plays pingpong loop for Rise transition', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('blinkBreathe');
+  assert.equal(plays[0].name, 'blinkBreathe');
+  assert.equal(plays[0].options.loop, true);
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(controller.getCurrentEmotionKey(), 'blinkBreathe');
+});
+
+test('blinkBreathe maxCycles finishes back to idle', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer,
+    idleOrchestrator: {
+      start() {},
+      isActive() {
+        return false;
+      },
+      stop() {}
+    }
+  });
+
+  controller.playEmotion('blinkBreathe', { maxCycles: 1 });
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(typeof plays[0].options.onComplete, 'function');
+  plays[0].options.onComplete();
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });

@@ -6,11 +6,17 @@ import { EMOTION_KEYS } from './EmotionController.js';
 
 function createHarness() {
   const calls = [];
+  let currentKey = null;
   const emotionController = {
     playEmotion(key, options = {}) {
       calls.push({ key, options });
+      currentKey = key;
       return true;
-    }
+    },
+    getCurrentEmotionKey() {
+      return currentKey;
+    },
+    idleOrchestrator: null
   };
   const stateManager = new StateManager();
   let celebrateDone = 0;
@@ -19,7 +25,13 @@ function createHarness() {
       celebrateDone += 1;
     }
   });
-  return { calls, stateManager, mood, getCelebrateDone: () => celebrateDone };
+  return {
+    calls,
+    stateManager,
+    mood,
+    emotionController,
+    getCelebrateDone: () => celebrateDone
+  };
 }
 
 test('DORMANT maps to sleeping emotion', () => {
@@ -36,4 +48,14 @@ test('CELEBRATE maps to celebrating and forwards onComplete', () => {
   assert.equal(typeof last?.options?.onComplete, 'function');
   last.options.onComplete();
   assert.equal(getCelebrateDone(), 1);
+});
+
+test('IDLE does not overwrite blinkBreathe Rise transition', () => {
+  const { calls, stateManager, emotionController } = createHarness();
+  stateManager.setState(STATES.FOCUSING);
+  emotionController.playEmotion(EMOTION_KEYS.BLINK_BREATHE);
+  const before = calls.length;
+  stateManager.setState(STATES.IDLE);
+  assert.equal(calls.length, before);
+  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.BLINK_BREATHE);
 });

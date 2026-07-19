@@ -146,13 +146,14 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 候选轻量手势：睁眼微笑坐禅下边眨眼边深呼吸（Rise 过渡候选）。
+  // 候选轻量手势：睁眼微笑坐禅下边眨眼边深呼吸（Rise 过渡）。
+  // 正放末帧不完整 → pingpong 倒放回首帧，可无缝循环。
   blinkBreathe: {
     animation: 'blink-breathe',
     frameCount: 13,
     fps: 8,
-    loop: false,
-    loopMode: 'none',
+    loop: true,
+    loopMode: 'pingpong',
     holdLastFrame: false
   },
 
@@ -210,15 +211,16 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: true
   },
 
-  // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展（一吸一呼），无蝴蝶/莲花。
+  // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。
   // 2026-07-20：以 16 帧 HQ 替换旧 breath-halo-expand（17 帧）；不绑定 emotion key / 业务触发。
+  // 正放仅「扩展」半拍不完整 → pingpong 倒放收回，完整一吸一呼并可循环。
   breathHaloHq: {
     animation: 'breath-halo-hq',
     frameCount: 16,
     fps: 8,
     preload: false,
-    loop: false,
-    loopMode: 'none',
+    loop: true,
+    loopMode: 'pingpong',
     holdLastFrame: false
   },
 

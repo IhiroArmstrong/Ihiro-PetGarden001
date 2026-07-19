@@ -25,8 +25,8 @@ export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = 520;
  * 默认 blink-smile 为 8fps；此处放慢约 2×，并保持微笑、不落入 idle-breathing。
  */
 export const ARRIVAL_BREATH_SMILE_FPS = 4;
-/** IntentionSet 合十末帧 → idle 的交叉淡入（须在 Dolly 拉回之前完成）。 */
-export const INTENTION_SET_RETURN_CROSS_FADE_MS = 280;
+/** IntentionSet 合十末帧 → idle：CapCut 式约 1s 叠代溶解（两帧定格交叉淡化）。 */
+export const INTENTION_SET_RETURN_CROSS_FADE_MS = 1000;
 export const MILESTONE_GLOW_HOLD_MS = 2500;
 
 const BAKED_EFFECT_EMOTIONS = new Set([
@@ -165,7 +165,8 @@ export class EmotionController {
             return;
           }
           this.idleOrchestrator.start({
-            crossFadeMs: options.crossFadeMs
+            crossFadeMs: options.crossFadeMs,
+            freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds
           });
         } else if (this.spritePlayer) {
           this.spritePlayer.play('idleBreathing', options);
@@ -191,6 +192,38 @@ export class EmotionController {
             playOpts.fps = options.fps;
           }
           this.spritePlayer.play('blinkSmile', playOpts);
+        }
+      },
+      // Rise 后轻量过渡：blink-breathe pingpong 循环（可 maxCycles 后回落）。
+      blinkBreathe: (options = {}) => {
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] blinkBreathe: spritePlayer 未接入，回落 idle'
+          );
+          this._finishOneShot(options, 'blinkBreathe');
+          return;
+        }
+        const playOpts = {
+          crossFadeMs: options.crossFadeMs ?? 180,
+          loop: true,
+          loopMode: 'pingpong'
+        };
+        if (Number.isFinite(options.fps) && options.fps > 0) {
+          playOpts.fps = options.fps;
+        }
+        const maxCycles = Number(options.maxCycles);
+        if (Number.isFinite(maxCycles) && maxCycles > 0) {
+          playOpts.maxCycles = maxCycles;
+          playOpts.onComplete = () => this._finishOneShot(options, 'blinkBreathe');
+        } else if (typeof options.onComplete === 'function') {
+          playOpts.onComplete = () => options.onComplete('blinkBreathe');
+        }
+        const started = this.spritePlayer.play('blinkBreathe', playOpts);
+        if (!started && Number.isFinite(maxCycles) && maxCycles > 0) {
+          this._finishOneShot(options, 'blinkBreathe');
         }
       },
       celebrating: (options = {}) => {
@@ -620,12 +653,15 @@ export class EmotionController {
     }
     if (!options.holdPose) {
       const crossFadeMs = Number(options.returnCrossFadeMs);
-      this.playEmotion(
-        'idle',
-        Number.isFinite(crossFadeMs) && crossFadeMs > 0
-          ? { crossFadeMs }
-          : undefined
-      );
+      if (Number.isFinite(crossFadeMs) && crossFadeMs > 0) {
+        this.playEmotion('idle', {
+          crossFadeMs,
+          // CapCut 式：溶解期间定格 idle 首帧，避免呼吸动起来抢戏
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      } else {
+        this.playEmotion('idle');
+      }
     }
   }
 
@@ -725,6 +761,7 @@ export class EmotionController {
       { key: 'idle', label: '坐禅闭眼' },
       { key: 'sleeping', label: '睡着了' },
       { key: 'smiling', label: '坐禅微笑' },
+      { key: 'blinkBreathe', label: '眨眼深呼吸(Rise)' },
       { key: 'celebrating', label: '庆祝(随机v1/v2)' },
       { key: 'intentionSet', label: '合十确认' },
       { key: 'tPose', label: 'T-Pose' },
@@ -884,7 +921,7 @@ export class EmotionController {
     chainHint.style.cssText =
       'max-width:168px;font-size:10px;line-height:1.35;color:#8b7355;';
     chainHint.textContent =
-      '张望 A/B 等链式试播：离开 Idle 后连续播，末帧定格。不自动、不回呼吸（避免闭目帧一闪）。';
+      '张望整段链式试播：离开 Idle 后连续播，末帧定格。不自动、不回呼吸（避免闭目帧一闪）。';
     group.appendChild(chainHint);
 
     COMPANION_GESTURE_CHAINS.forEach(({ id, label, sequences }) => {
@@ -924,13 +961,24 @@ export class EmotionController {
     this._use2DMainline();
 
     const run = () => {
-      this.spritePlayer.play(sequenceName, {
-        loop: false,
-        loopMode: 'none',
-        holdLastFrame: true,
-        // 调试切条：短淡入即可；0 可避免与闭目基底叠闪
-        crossFadeMs: 0
-      });
+      const loopMode = def.loopMode ?? 'none';
+      // pingpong / forward 清单：按定义循环试播（如 breath-halo-hq、blink-breathe）
+      if (loopMode === 'pingpong' || loopMode === 'forward') {
+        this.spritePlayer.play(sequenceName, {
+          loop: true,
+          loopMode,
+          holdLastFrame: false,
+          crossFadeMs: 0
+        });
+      } else {
+        this.spritePlayer.play(sequenceName, {
+          loop: false,
+          loopMode: 'none',
+          holdLastFrame: true,
+          // 调试切条：短淡入即可；0 可避免与闭目基底叠闪
+          crossFadeMs: 0
+        });
+      }
       this._currentEmotionKey = `debug:${sequenceName}`;
     };
 
@@ -1014,6 +1062,7 @@ export const EMOTION_KEYS = Object.freeze({
   IDLE: 'idle',
   SLEEPING: 'sleeping',
   SMILING: 'smiling',
+  BLINK_BREATHE: 'blinkBreathe',
   CELEBRATING: 'celebrating',
   INTENTION_SET: EMOTIONS.intentionSet,
   INCENSE_COMPLETE: 'incenseComplete',

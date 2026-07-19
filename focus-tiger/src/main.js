@@ -20,7 +20,8 @@ import { PoseManager } from './character/PoseManager.js';
 import { MoodController } from './core/MoodController.js';
 import {
   ARRIVAL_BREATH_SMILE_FPS,
-  EmotionController
+  EmotionController,
+  INTENTION_SET_RETURN_CROSS_FADE_MS
 } from './core/EmotionController.js';
 import { FocusVisualizer } from './feedback/FocusVisualizer.js';
 import { TransitionFX } from './feedback/TransitionFX.js';
@@ -129,7 +130,7 @@ async function init() {
     dynamicMotion,
     incenseGreeting,
     transitionFX,
-    // EyeTracking 实时瞳孔跟随已废弃（见 CORE_LOOP.md）；gaze 张望走 IdleOrchestrator。
+    // EyeTracking 已废弃；正式 Idle 仅呼吸×5→眨眼。张望等素材仅调试面板试播。
     eyeTracking: null,
     spritePlayer,
     idleOrchestrator
@@ -291,6 +292,14 @@ async function init() {
     syncCompanionPostSessionChrome();
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
+    // Rise 过渡播完后：若仍是当日零完成，收回到 Sleeping；否则回 Idle 呼吸。
+    if (emotionController.getCurrentEmotionKey() === 'blinkBreathe') {
+      if (stateManager.state === STATES.DORMANT) {
+        emotionController.playEmotion('sleeping');
+      } else {
+        emotionController.playEmotion('idle');
+      }
+    }
     syncOnboardingAutoHints();
     syncHonestyIdleEntry();
   };
@@ -450,7 +459,8 @@ async function init() {
         onboardingHints?.maybeShowAuto('breathing');
       },
       onAfterBreath: () => {
-        lightProgression.endBreath();
+        // 只收呼吸光环，保持 Dolly 推近至合十→idle 淡入完成，避免缓缓拉回造成跳动。
+        lightProgression.endBreath({ releaseDolly: false });
         onboardingHints?.markSeen('breathing');
         syncOnboardingAutoHints();
       },
@@ -470,7 +480,14 @@ async function init() {
       // 合十动作与坐垫 CSS 光晕叠加；跳过 Choose 时不播。
       onIntentionSetPlay: (done) => {
         emotionController.playEmotion('intentionSet', {
-          onComplete: () => done?.()
+          onComplete: () => {
+            // 先收暖色氛围，Dolly 等 idle 淡入结束再拉回（与合十同尺度衔接）。
+            lightProgression.clearArrivalAtmosphere();
+            window.setTimeout(() => {
+              lightProgression.releaseDolly();
+            }, INTENTION_SET_RETURN_CROSS_FADE_MS + 40);
+            done?.();
+          }
         });
       },
       onClearLight: () => lightProgression.clearArrivalEffects(),
@@ -687,6 +704,9 @@ async function init() {
       honestyBridge?.hide();
       honestyCheckIn.onIncompleteSessionEnded();
       companionModePicker.setIdleChromeVisible(true);
+      // Rise：角色切到 blink-breathe pingpong（完整一吸一呼可循环），再进 Reflection。
+      // MoodController 在 IDLE 时不覆盖 blinkBreathe；DORMANT 睡态在其后再写也不抢本过渡。
+      emotionController.playEmotion('blinkBreathe');
       sessionEndFlow.onSessionEnded({
         completed: false,
         intention: currentSessionIntention,

@@ -27,19 +27,19 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 00:40（UTC+8）
+**最后更新时间**：2026-07-20 01:45（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Idle 确认**：仅呼吸×5→眨眼；候选手势（gaze/tea/yawn/ear/`blink-breathe`）入库作场景情绪素材，**不**进 Idle 随机池；调试「组合试播」不再 restart idle（修闭目帧假闪）
-- **`breath-halo-hq`** 替换 `breath-halo-expand` 作 MilestoneGlow 简化备选（旧帧归档）
-- **IntentionSet 合十衔接**：`palms-together` 正放→倒放回闭目；**960×960 vs idle 1056×864** 用 `displayFit` 对齐大小/落点后再 280ms 淡入；一次性时长标准 `ONE_SHOT_DURATION_SEC`
-- **Idle**：正式仅呼吸×5→眨眼（已关自动张望）；右上调试面板列出全部入库序列逐条试播
-- **Honesty 拍板 B**（2026-07-19）：补登结束立刻出桥接（Welcome 同屏）；首次零完成仍自动提示；空闲 **Mindful Check-in** 可同日再补登；每次补登都出桥接。定稿 `HONESTY_BRIDGE_CTA.md`
-- Companion 提示短句：`"Pick one — the timer starts."`（展开三选一时出气泡）
-- Rise 角色动画：候选 `blink-breathe` 已入库可调试试播；**尚未接线** Rise
+- **Rise → `blink-breathe` pingpong**：点起身后角色切眨眼深呼吸循环；Reflection 结束后回 Idle / Sleeping
+- **`breath-halo-hq` / `blink-breathe`**：均改为 pingpong（正放+倒放完整一拍，可循环）
+- **张望组合试播**：A+B 合并为单一 `gazeLookAround`（p1→p2→p3→p4）
+- **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
+- **`breath-halo-hq`** 作 MilestoneGlow 简化备选（旧 expand 已归档）
+- **IntentionSet 合十衔接**：`palms-together` 正放→倒放；`displayFit` + 溶解
+- Honesty 拍板 B；Companion 短句提示
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 

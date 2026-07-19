@@ -25,9 +25,22 @@ export class MoodController {
       // 仅在用户主动开始专注（FOCUSING）或其它情绪打断时离开光环。
       if (state === STATES.IDLE) {
         const current = this.emotionController.getCurrentEmotionKey();
-        if (current === 'haloBreathing' || current === 'dormantWake') {
+        // Rise 后 blinkBreathe pingpong 过渡；Honesty 光环/睡醒定格也不被 IDLE 冲掉
+        if (
+          current === 'haloBreathing' ||
+          current === 'dormantWake' ||
+          current === 'blinkBreathe'
+        ) {
           return;
         }
+      }
+      // 已在闭目坐禅编排中则勿重启，否则呼吸×5→眨眼计数会被反复清零。
+      const current = this.emotionController.getCurrentEmotionKey();
+      if (
+        current === 'idle' &&
+        this.emotionController.idleOrchestrator?.isActive?.()
+      ) {
+        return;
       }
       this.emotionController.playEmotion(EMOTION_KEYS.IDLE);
       return;

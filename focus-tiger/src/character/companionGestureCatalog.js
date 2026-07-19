@@ -11,21 +11,20 @@
  */
 
 /**
- * 多段衔接试播（张望 A/B）。单段素材见 SPRITE_SEQUENCES。
+ * 多段衔接试播（张望整段）。单段素材见 SPRITE_SEQUENCES。
  * @type {ReadonlyArray<CompanionGestureChain>}
  */
 export const COMPANION_GESTURE_CHAINS = Object.freeze([
   Object.freeze({
-    id: 'gazeLookA',
-    label: '张望A (p1→p2)',
-    sequences: Object.freeze(['gazeP1CenterBlinkLeft', 'gazeP2LeftToUp']),
-    notes: '中→眨→左→上；候选看向某处 / 生命感'
-  }),
-  Object.freeze({
-    id: 'gazeLookB',
-    label: '张望B (p3→p4)',
-    sequences: Object.freeze(['gazeP3TowardRight', 'gazeP4RightToDown']),
-    notes: '右→下；候选看向某处 / 生命感'
+    id: 'gazeLookAround',
+    label: '张望 (p1→p2→p3→p4)',
+    sequences: Object.freeze([
+      'gazeP1CenterBlinkLeft',
+      'gazeP2LeftToUp',
+      'gazeP3TowardRight',
+      'gazeP4RightToDown'
+    ]),
+    notes: '中→眨→左→上→右→下；整段看向某处 / 生命感（A+B 合并）'
   })
 ]);
 
@@ -56,6 +55,6 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     id: 'blinkBreathe',
     sequence: 'blinkBreathe',
     label: '眨眼深呼吸',
-    suggestedUses: 'Rise 后轻量过渡、仍像坐禅；不抢 Celebrating / SessionComplete'
+    suggestedUses: 'Rise 后轻量过渡（pingpong 循环）；不抢 Celebrating / SessionComplete'
   })
 ]);

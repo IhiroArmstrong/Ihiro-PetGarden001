@@ -222,6 +222,8 @@ test('palmsTogether / breathHaloHq / lotus backlog sequences are registered', ()
   assert.equal(SPRITE_SEQUENCES.breathHaloHq.animation, 'breath-halo-hq');
   assert.equal(SPRITE_SEQUENCES.breathHaloHq.frameCount, 16);
   assert.equal(SPRITE_SEQUENCES.breathHaloHq.preload, false);
+  assert.equal(SPRITE_SEQUENCES.breathHaloHq.loop, true);
+  assert.equal(SPRITE_SEQUENCES.breathHaloHq.loopMode, 'pingpong');
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.animation, 'lotus-front-rising');
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.frameCount, 7);
   assert.equal(SPRITE_SEQUENCES.lotusFrontRising.preload, false);
@@ -252,5 +254,6 @@ test('teaDrinking, earWiggleHeadTouch, blinkBreathe companion gestures are regis
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.animation, 'blink-breathe');
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.frameCount, 13);
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.fps, 8);
-  assert.equal(SPRITE_SEQUENCES.blinkBreathe.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.blinkBreathe.loop, true);
+  assert.equal(SPRITE_SEQUENCES.blinkBreathe.loopMode, 'pingpong');
 });

@@ -49,8 +49,8 @@
 | `SessionComplete` | 每次专注完成的轻量情绪确认 | 否（约 3.5s） | 每次完成用户设定的专注会话均触发；温和摆尾致意（光环/粒子已烧录在帧内）；若本次同时满足「当日首次达标」，由 `Celebrating` 替代，不叠加播放 | **70**（高于基底姿态、低于 `IncenseComplete` / `Celebrating`） | **已实现（2D 主线）**：`session-complete` 28 帧（**8 fps** ≈3.5s，ONE_SHOT light 带）；`playEmotion('sessionComplete')`；同日后续达标接线完成；播放期临时归零 FocusVisualizer / Rim Light，播完回归 idle-breathing 后恢复 |
 | `WakeUp` | 唤醒起身（伸懒腰变体） | 否（17 帧一次性） | 调试入口 / 历史多日沉睡叙事键 | **90** | **已实现（2D）**：播 `stretch-reminder` 同源伸懒腰（情绪键 `wakeUp`，**8 fps**）→ idle；**不**接 halo。与 Honesty 的 `dormant-wake` **刻意区分** |
 | `dormantWake` | Honesty Check-in 唤醒（深睡 → 清醒坐姿） | 否（16 帧一次性正放） | 用户选时长后**立刻**播放（与呼吸倒计时同期）；播完**定格末帧**至倒计时结束；按所选时长等同一次已完成会话 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：选时长 → `dormant-wake`（**3 fps**）→ 定格末帧；倒计时结束离 DORMANT。离开定格默认 **520ms** cross-fade。Arrival Breath 不再落入 idle——改放慢 `Smiling`（见 0.50） |
-| `MilestoneGlow` | 里程碑金辉时刻（仪式性纪念反馈） | 否（约 10s 一次性序列） | 长期里程碑节点达成时触发（连续练习 7/21/100 天、累计时长节点等；具体节点与 Backlog「纪念奖励系统」统一设计）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **素材与调试预览已接入**：主候选 `milestone-glow` / `deep-breath-glow`（27 帧，**4 fps**，2026-07-19 放慢 2×；闭目呼吸 + 金光 + 金色蝴蝶已烧录）；简化备选 **`breath-halo-hq`**（16 帧，2026-07-20 替换旧 `breath-halo-expand`；闭目呼吸 + 脑后金环一吸一呼扩展，无蝴蝶/莲花）——已登记 manifest，**不接业务触发**。实际使用哪套等里程碑逻辑排期再定。`playEmotion('milestoneGlow')` 仅供调试；备选可点调试「金环呼吸(HQ备选)」；播放期归零实时金光；末帧固定停留 2.5s 后回落 `idle`。**待实现**：真实里程碑判定与业务触发，归属 Backlog「纪念奖励系统」 |
-| `IntentionSet` | Arrival Choose 确认合十 | 否（正放合掌→倒放回闭目，约 6.8s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；播完后进入 Companion Mode 三选一） | **已实现（2D 主线）**：`palms-together` 素材第 1 帧=闭目坐禅、第 14 帧=睁眼合掌；播放列表正放再倒放回第 1 帧（**4 fps**）。**画幅**：素材为 **960×960**，idle 为 **1056×864**；经 `displayFit`（内容包围盒对齐蒲团底边）与 idle 同大同落点后 **280ms** 淡入呼吸。见 `spriteDisplayFit.js` |
+| `MilestoneGlow` | 里程碑金辉时刻（仪式性纪念反馈） | 否（约 10s 一次性序列） | 长期里程碑节点达成时触发（连续练习 7/21/100 天、累计时长节点等；具体节点与 Backlog「纪念奖励系统」统一设计）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **素材与调试预览已接入**：主候选 `milestone-glow` / `deep-breath-glow`（27 帧，**4 fps**，2026-07-19 放慢 2×；闭目呼吸 + 金光 + 金色蝴蝶已烧录）；简化备选 **`breath-halo-hq`**（16 帧，**pingpong** 循环，2026-07-20：正放扩展 + 倒放收回，完整一吸一呼）——已登记 manifest，**不接业务触发**。实际使用哪套等里程碑逻辑排期再定。`playEmotion('milestoneGlow')` 仅供调试；备选可点调试「breath-halo-hq 备选」；播放期归零实时金光。**待实现**：真实里程碑判定与业务触发，归属 Backlog「纪念奖励系统」 |
+| `IntentionSet` | Arrival Choose 确认合十 | 否（正放合掌→倒放回闭目，约 6.8s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；播完后进入 Companion Mode 三选一） | **已实现（2D 主线）**：`palms-together` 正放→倒放回闭目（**4 fps**）；`displayFit` 对齐 idle 画幅；回落用 **约 1s CapCut 式叠代溶解**（末帧与 idle 首帧定格交叉淡化）后再呼吸。见 `INTENTION_SET_RETURN_CROSS_FADE_MS` |
 
 ### 1.3 动态效果层（可叠加）
 
@@ -160,13 +160,13 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 >
 > **候选陪伴手势（已入库 · 非 Idle）** — 见 `companionGestureCatalog.js`；调试用「入库素材 / 组合试播」，**勿**经 IdleOrchestrator。未来可接 Rise / Recover / 互动等场景：
 >
-> | id / 序列 | 建议场景用途（未接线） |
+> | id / 序列 | 建议场景用途 |
 > |---|---|
-> | `gazeLookA`（p1→p2）、`gazeLookB`（p3→p4） | 看向某处、生命感 |
+> | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感（调试「组合试播」整段） |
 > | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮 |
-> | `blinkBreathe` | Rise 后轻量过渡候选 |
+> | `blinkBreathe` | **已接线 Rise**：点起身后 `playEmotion('blinkBreathe')` pingpong 循环；Reflection 结束后回 Idle / Sleeping |
 
 ---
 
@@ -604,6 +604,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.52 | 2026-07-20 | `IntentionSet`：960×960 相对 idle 1056×864 的 `displayFit` 同大同落点 + 280ms 淡入；见 `spriteDisplayFit.js` |
 | 0.53 | 2026-07-20 | Arrival Dolly：Choose/合十期间保持推近，idle 淡入后再拉回；避免与 displayFit 叠成跳动 |
 | 0.54 | 2026-07-20 | Idle：恢复 PRINCIPLES——默认仅呼吸×5→眨眼；调试面板列出全部 `SPRITE_SEQUENCES` 逐条试播 |
+| 0.55 | 2026-07-20 | IntentionSet→idle：CapCut 式 **1s** 叠代溶解（定格两帧交叉淡化）后再呼吸 / 拉 Dolly |
 | 0.55 | 2026-07-20 | 候选陪伴手势（gaze/tea/yawn/ear/`blink-breathe`）入库 `companionGestureCatalog`，**不**进 Idle 池；调试「组合试播」去掉 `restart idle`（修闭目帧假闪） |
+| 0.56 | 2026-07-20 | `breath-halo-hq` / `blink-breathe` 改 pingpong；张望 A+B 合并为单一组合试播；`blinkBreathe` 接入 Rise 点击 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
