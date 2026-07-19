@@ -14,32 +14,34 @@
 /**
  * @typedef {object} SpriteSequenceDef
  * @property {string} animation 动作名（kebab-case，对应素材目录段，如 'wave-hello'）
- * @property {number} frameCount 帧数（frame_001 起连续编号）
+ * @property {number} frameCount 帧数（frame_001 起连续编号；有 frameIndices 时仍表示素材目录最大帧号，供预加载）
  * @property {number} [startFrame] 可选起始帧号；用于从同一素材目录注册子序列
+ * @property {number[]} [frameIndices] 可选自定义播放顺序（1 基帧号，可重复/跳过）；缺省为 startFrame 起连续 frameCount 帧
  * @property {number} fps 播放帧率
  * @property {boolean} [preload] 是否纳入启动预加载；未绑定候选素材应设为 false
  * @property {boolean} loop 是否循环播放（持续待机类为 true）
  * @property {'none'|'forward'|'pingpong'} [loopMode] 循环方向模式
  * @property {boolean} holdLastFrame 非循环时：播完是否停在最后一帧（false = 播完隐藏让位给底层态）
- * @property {Record<number, number>} [frameHolds] 单帧停留时长覆盖：键为 **1 基帧号**
- *   （与帧文件名序号一致，如 8 对应 `frame_008.png`），值为该帧在 fps 基础间隔之上
+ * @property {Record<number, number>} [frameHolds] 单帧停留时长覆盖：键为 **播放列表中的 1 基序号**
+ *   （与帧文件名序号在无 frameIndices 时一致），值为该帧在 fps 基础间隔之上
  *   **额外**停留的毫秒数。未设置的帧按 fps 均匀播放。
  */
 
 /**
- * wave-hello 抬手最高点（第 8 帧 `frame_008.png`：掌心完全张开、位置最高）
- * 的额外停留时长（ms）。观感调整建议范围 300–600。
+ * wave-hello 顶点摇摆段（素材 008–012）：抬手到位后的左右摇摆。
+ * 播放时该段播两遍，再放手；不再对单帧做额外 hold（避免最高点「完全重复一帧」）。
  */
-export const WAVE_HELLO_PEAK_HOLD_MS = 400;
+export const WAVE_HELLO_SWAY_FRAMES = Object.freeze([8, 9, 10, 11, 12]);
 
 /** @type {Record<string, SpriteSequenceDef>} */
 export const SPRITE_SEQUENCES = {
   // 基础观照者坐姿：素材为半程呼吸，正放后倒放组成完整循环。
+  // IdleOrchestrator：完整 pingpong ×5 → 单次眨眼 → 再 ×5…（表示偶尔看看）。
   idleBreathing: {
     animation: 'idle-breathing',
     frameCount: 21,
-    // 半程呼吸 + pingpong；帧率偏低以免持续态看起来抖
-    fps: 5,
+    // 2026-07-19：相对原 5fps 放慢 2×
+    fps: 2.5,
     loop: true,
     loopMode: 'pingpong',
     holdLastFrame: false
@@ -55,16 +57,70 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // Idle 张望组合 A 的前半：中心 → 眨眼 → 看向左（末帧停在「左」）。
+  gazeP1CenterBlinkLeft: {
+    animation: 'gaze-p1-center-blink-left',
+    frameCount: 15,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Idle 张望组合 A 的后半：由左转向上看（与 p1 末帧方向衔接）。
+  gazeP2LeftToUp: {
+    animation: 'gaze-p2-left-to-up',
+    frameCount: 13,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Idle 张望组合 B 的前半：转向右看。
+  gazeP3TowardRight: {
+    animation: 'gaze-p3-toward-right',
+    frameCount: 13,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Idle 张望组合 B 的后半：由右转向下（与 p3 衔接；不与「回中」强拼）。
+  gazeP4RightToDown: {
+    animation: 'gaze-p4-right-to-down',
+    frameCount: 25,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Idle「犯困」变体：无聊打哈欠伸展；勿与 stretchReminder / dormantWake 混用。
+  yawnStretch: {
+    animation: 'yawn-stretch',
+    frameCount: 16,
+    fps: 10,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
   // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。
-  // 一次性反馈动作：播完不停留，隐藏 overlay 回落到当前基底态（Idle）。
+  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold（观感上的完全重复帧）。
   waveHello: {
     animation: 'wave-hello',
     frameCount: 19,
+    frameIndices: [
+      1, 2, 3, 4, 5, 6, 7,
+      ...WAVE_HELLO_SWAY_FRAMES,
+      ...WAVE_HELLO_SWAY_FRAMES,
+      13, 14, 15, 16, 17, 18, 19
+    ],
     fps: 12,
     loop: false,
-    holdLastFrame: false,
-    // 抬手顶点定格：让「打招呼」的招牌瞬间被看清，再继续回摆
-    frameHolds: { 8: WAVE_HELLO_PEAK_HOLD_MS }
+    holdLastFrame: false
   },
 
   // 完整庆祝（EMOTION_BIBLE: Celebrating）——起身 → 小金光伴随慢速舞 → 结尾施礼。
@@ -93,10 +149,11 @@ export const SPRITE_SEQUENCES = {
   // （特效已烧录，无独立 DOM 叠加层）。当前仅供调试预览，约 24MB 不进启动预加载；
   // 末帧由 EmotionController 固定停留后再 onComplete 回落 idle。
   // 备选素材见 breathHaloExpand（更简化、无蝴蝶）；选用哪个等里程碑逻辑排期再定。
+  // 2026-07-19：金光蝴蝶叙事至少放慢 2×（原 8fps → 4）。
   milestoneGlow: {
     animation: 'milestone-glow',
     frameCount: 27,
-    fps: 8,
+    fps: 4,
     preload: false,
     loop: false,
     loopMode: 'none',
@@ -180,28 +237,40 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // 调试 / 历史 WakeUp：伸懒腰式清醒（同源 stretch-reminder 素材，独立情绪键）。
+  // 与 Honesty 的 dormant-wake（侧卧深睡→坐姿）刻意区分；勿再共用 dormant-wake。
+  wakeUp: {
+    animation: 'stretch-reminder',
+    frameCount: 17,
+    fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true,
+    frameHolds: { 17: 280 }
+  },
+
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。
   // 首尾帧衔接经抽样确认可直接 forward 接回；若试播有跳帧感再改 pingpong。
+  // 2026-07-19：至少放慢 3×（原 4fps → 1），睡态宜极缓。
   sleeping: {
     animation: 'sleeping',
     frameCount: 8,
-    // 持续睡态宜慢；过快会像抖动
-    fps: 4,
+    fps: 1,
     loop: true,
     loopMode: 'forward',
     holdLastFrame: false
   },
 
   // Honesty Check-in / DORMANT 唤醒：深睡 → 完全清醒坐姿，一次性正放。
-  // 末帧短暂停留并保留至 onComplete，由 EmotionController 交叉淡入 idle-breathing。
+  // 末帧定格；2026-07-19：再放慢 2×（6 → 3 fps），暂不接闭眼呼吸 / 金光 / halo。
   dormantWake: {
     animation: 'dormant-wake',
     frameCount: 16,
-    fps: 12,
+    fps: 3,
     loop: false,
     loopMode: 'none',
     holdLastFrame: true,
-    frameHolds: { 16: 160 }
+    frameHolds: { 16: 320 }
   },
 
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。
@@ -210,7 +279,8 @@ export const SPRITE_SEQUENCES = {
     animation: 'halo-breathing',
     startFrame: 1,
     frameCount: 6,
-    fps: 10,
+    // 2026-07-19：至少放慢 2×（原 10 → 5）
+    fps: 5,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false
@@ -219,7 +289,7 @@ export const SPRITE_SEQUENCES = {
     animation: 'halo-breathing',
     startFrame: 7,
     frameCount: 24,
-    fps: 8,
+    fps: 4,
     loop: true,
     loopMode: 'pingpong',
     holdLastFrame: false
@@ -230,7 +300,7 @@ export const SPRITE_SEQUENCES = {
     animation: 'halo-breathing',
     startFrame: 1,
     frameCount: 30,
-    fps: 8,
+    fps: 4,
     preload: false,
     loop: true,
     loopMode: 'pingpong',
@@ -248,13 +318,16 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 点头致意（鼠标靠近触发）：一次性正放，播完由 EmotionController 回归 idle-breathing。
+  // 点头致意（鼠标靠近）：放慢以免像打瞌睡点头；末帧额外停留约 2 帧时长。
   nodGreeting: {
     animation: 'nod-greeting',
     frameCount: 23,
-    fps: 12,
+    fps: 6,
     loop: false,
     loopMode: 'none',
-    holdLastFrame: false
+    holdLastFrame: false,
+    // 末帧 = 基础间隔 + 2×间隔 → 共约 3 倍停留（「多重复 2 次」）
+    frameHolds: { 23: Math.round((1000 / 6) * 2) }
   },
 
   // 歪头思考（鼠标在老虎附近静止触发）：一次性正放，播完回归 idle-breathing。

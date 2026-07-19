@@ -9,6 +9,7 @@ import { createPostProcessing } from './core/PostProcessing.js';
 import {
   FocusSession,
   shouldSuppressAwayReminders,
+  canBeginFocusOnCompanionModeSelect,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
 import { StateManager, STATES } from './core/StateManager.js';
@@ -25,7 +26,6 @@ import { FocusHUD } from './ui/FocusHUD.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { LightProgression } from './effects/LightProgression.js';
 import { DynamicMotion } from './effects/DynamicMotion.js';
-import { EyeTracking } from './effects/EyeTracking.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { IdleOrchestrator } from './character/IdleOrchestrator.js';
@@ -105,14 +105,6 @@ async function init() {
   });
   await incenseGreeting.init();
 
-  const eyeTracking = new EyeTracking({
-    container: app,
-    canvas,
-    camera,
-    poseManager
-  });
-  eyeTracking.bind();
-
   const focusSession = new FocusSession(DEMO_SESSION_MINUTES);
   const stateManager = new StateManager();
   const transitionFX = new TransitionFX(scene);
@@ -128,7 +120,8 @@ async function init() {
     dynamicMotion,
     incenseGreeting,
     transitionFX,
-    eyeTracking,
+    // EyeTracking 实时瞳孔跟随已废弃（见 CORE_LOOP.md）；gaze 张望走 IdleOrchestrator。
+    eyeTracking: null,
     spritePlayer,
     idleOrchestrator
   });
@@ -139,7 +132,6 @@ async function init() {
     window.__poseManager = poseManager;
     window.__dynamicMotion = dynamicMotion;
     window.__emotionController = emotionController;
-    window.__eyeTracking = eyeTracking;
     window.__spritePlayer = spritePlayer;
     window.__idleOrchestrator = idleOrchestrator;
     window.__i18n = { t, tPool, setLocale, getLocale };
@@ -231,9 +223,12 @@ async function init() {
     }
   });
 
+  /** 在 beginFocusWithMode 定义后填入 onModeSelected */
+  const companionModeHandlers = {};
   const companionModePicker = new CompanionModePicker(
     document.getElementById('ui-overlay'),
-    focusButton
+    focusButton,
+    companionModeHandlers
   );
 
   function syncCompanionPostSessionChrome() {
@@ -262,16 +257,30 @@ async function init() {
     honestyShowPrompt();
     syncCompanionPostSessionChrome();
   };
+  const honestyShowDuration = honestyCheckInUI.showDurationChoices.bind(
+    honestyCheckInUI
+  );
+  honestyCheckInUI.showDurationChoices = () => {
+    companionModePicker.hide();
+    honestyShowDuration();
+    syncCompanionPostSessionChrome();
+  };
   const honestyHide = honestyCheckInUI.hide.bind(honestyCheckInUI);
   honestyCheckInUI.hide = () => {
     honestyHide();
     syncCompanionPostSessionChrome();
   };
 
+  // 调试「Honesty唤醒」→ 直接打开时长三选一（不经 Sit with Yin）
+  emotionController.setDebugHonestyWakeHandler(() => {
+    honestyCheckIn.openDurationChoices({ force: true });
+  });
+
   const acrossToolsIdleGuard = new AcrossToolsIdleGuard();
   const ambientSoundscape = new AmbientSoundscapeController();
+  // 挂 body：避免落在 pointer-events:none 的 ui-overlay 栈内，并压过调试栏
   const ambientSoundscapeUI = new AmbientSoundscapeUI(
-    document.getElementById('ui-overlay'),
+    document.body,
     ambientSoundscape
   );
 
@@ -285,6 +294,7 @@ async function init() {
     window.__companionModePicker = companionModePicker;
     window.__acrossToolsIdleGuard = acrossToolsIdleGuard;
     window.__ambientSoundscape = ambientSoundscape;
+    window.__ambientSoundscapeUI = ambientSoundscapeUI;
   }
 
   let completionPending = false;
@@ -318,6 +328,7 @@ async function init() {
       onReady: () => {
         pendingChoose = arrivalPractice.getChooseResult();
         arrivalGateReady = true;
+        companionModePicker.setArrivalReady(true);
         companionModePicker.setPostSessionOverlayActive(false);
         companionModePicker.open();
       }
@@ -373,6 +384,7 @@ async function init() {
       });
     }
     companionModePicker.setIdleChromeVisible(false);
+    companionModePicker.setArrivalReady(false);
     focusSession.start({ companionMode });
     mindfulReminderController.startSession({
       suppressAwayReminders: shouldSuppressAwayReminders(companionMode),
@@ -391,7 +403,24 @@ async function init() {
     }
     stateManager.setState(STATES.FOCUSING);
     completionPending = false;
+    // 自动开计时路径须同步主按钮 → Rise（事件触发时 focusInput 已初始化）
+    focusInput.beginFocusing(focusButton);
   }
+
+  companionModeHandlers.onModeSelected = (mode) => {
+    if (
+      !canBeginFocusOnCompanionModeSelect({
+        mode,
+        arrivalGateReady,
+        completionPending,
+        arrivalOpen: arrivalPractice.isOpen(),
+        isFocusing: stateManager.state === STATES.FOCUSING
+      })
+    ) {
+      return;
+    }
+    beginFocusWithMode(mode);
+  };
 
   const focusInput = new FocusInput(
     () => {
@@ -405,6 +434,7 @@ async function init() {
       }
 
       if (!arrivalGateReady) {
+        companionModePicker.setArrivalReady(false);
         companionModePicker.setPostSessionOverlayActive(true);
         companionModePicker.hide();
         arrivalPractice.start();
@@ -418,6 +448,7 @@ async function init() {
       companionModePicker.hide();
       arrivalPractice.hide();
       arrivalGateReady = false;
+      companionModePicker.setArrivalReady(false);
       pendingChoose = null;
       endFocusChrome();
       focusSession.stop();
@@ -501,7 +532,6 @@ async function init() {
     dynamicMotion.update(delta);
     transitionFX.update(delta);
     incenseGreeting.update(delta);
-    eyeTracking.update(delta);
 
     const tigerPos = tigerCharacter.getWorldPosition();
     transitionFX.setTigerPosition(tigerPos);

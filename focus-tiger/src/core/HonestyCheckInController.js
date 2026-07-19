@@ -125,6 +125,27 @@ export class HonestyCheckInController {
   _onPromptClick() {
     if (this._busy) return;
     if (this.stateManager.state === STATES.FOCUSING) return;
+    this.openDurationChoices();
+  }
+
+  /**
+   * 直接打开「补登多久」三选一（不经 Sit with Yin / 不经可忽略提示）。
+   * 调试面板「Honesty唤醒」与提示点击共用此入口。
+   * @param {{ force?: boolean }} [options] force：打断进行中的呼吸引导并重开
+   */
+  openDurationChoices({ force = false } = {}) {
+    if (this.stateManager.state === STATES.FOCUSING) return;
+    if (this.stateManager.state === STATES.CELEBRATE) return;
+    if (this._busy && !force) return;
+
+    this._busy = false;
+    this._pendingMinutes = null;
+
+    // 仪式需要睡态视觉；与 Sit with Yin / Arrival 无关。
+    if (this.stateManager.state !== STATES.DORMANT) {
+      this.stateManager.setState(STATES.DORMANT);
+    }
+
     this.ui.showDurationChoices();
   }
 
@@ -133,7 +154,12 @@ export class HonestyCheckInController {
     if (this._busy) return;
     this._busy = true;
     this._pendingMinutes = minutes;
-    // 呼吸引导期间保持 sleeping 循环；结束后再播放“睡 → 醒”的专属过渡。
+
+    // 倒计时开始：立刻播 dormant-wake 坐起并定格末帧；
+    // 暂不接闭眼坐禅呼吸（转场衔接不成，2026-07-19）。
+    this.emotionController.playEmotion(EMOTION_KEYS.DORMANT_WAKE, {
+      holdPose: true
+    });
     this.ui.startBreathGuide(HONESTY_BREATH_MS);
   }
 
@@ -142,18 +168,13 @@ export class HonestyCheckInController {
     this._pendingMinutes = null;
 
     this.store.recordCompletion(minutes);
-
-    const glow = focusLevelForHonestyMinutes(minutes);
-    this.applyFocusGlow(glow);
-    this.emotionController.playEmotion(EMOTION_KEYS.DORMANT_WAKE, {
-      focusLevel: glow,
-      onComplete: () => {
-        this.clearFocusGlow();
-        this.stateManager.setState(STATES.IDLE);
-      }
-    });
-
+    this.clearFocusGlow();
     this.ui.showThanks();
     this._busy = false;
+
+    // 已在坐姿（dormant-wake 末帧定格）；补登完成只需离开 DORMANT。
+    if (this.stateManager.state === STATES.DORMANT) {
+      this.stateManager.setState(STATES.IDLE);
+    }
   }
 }

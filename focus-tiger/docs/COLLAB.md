@@ -68,7 +68,9 @@ COLLAB.md（本文档，协作层）
    → 该任务的Brief结项，进入下一个任务
 ```
 
-**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。
+**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。用户书面测试意见只写进表格 **「用户反馈」列**，禁止混入「测试步骤」（见文首「用户测试反馈记入规则」，2026-07-19 起）。
+
+**回归锁约定（2026-07-19）**：交互类修复不得只验 Happy Path；须含回流路径、禁止可点却静默失败、门闩失败用例或人工锁路径、同主题行步骤不互斥；收尾 **自动本地 commit**（不必再问），**push 仍须用户明确要求**。详见 `PROCESS.md`「回归锁工作法」与 `.cursor/rules/focus-tiger-regression-lock.mdc`。
 ---
 
 ## 四、什么时候需要更新TASKS.md（判断标准）

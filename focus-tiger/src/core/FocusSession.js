@@ -29,6 +29,39 @@ export function shouldSuppressAwayReminders(mode) {
   );
 }
 
+/**
+ * 选中 Companion 模式后是否立即开始 Focus / 计时。
+ * Here & Now / Flow State：是；Offline Space：否（仍须再点 Sit）。
+ * @param {string} mode
+ */
+export function shouldAutoStartFocusOnModeSelect(mode) {
+  return (
+    mode === COMPANION_MODE_STAY || mode === COMPANION_MODE_ACROSS_TOOLS
+  );
+}
+
+/**
+ * 点选自动开计时模式后，是否真正允许 beginFocus。
+ * 未过 Arrival 门闩时必须为 false，且 UI 侧应禁用点选（禁止静默 return）。
+ * @param {object} gates
+ * @param {string} gates.mode
+ * @param {boolean} gates.arrivalGateReady
+ * @param {boolean} [gates.completionPending]
+ * @param {boolean} [gates.arrivalOpen]
+ * @param {boolean} [gates.isFocusing]
+ */
+export function canBeginFocusOnCompanionModeSelect({
+  mode,
+  arrivalGateReady,
+  completionPending = false,
+  arrivalOpen = false,
+  isFocusing = false
+}) {
+  if (!shouldAutoStartFocusOnModeSelect(mode)) return false;
+  if (completionPending || arrivalOpen || isFocusing) return false;
+  return Boolean(arrivalGateReady);
+}
+
 export class FocusSession {
   constructor(targetMinutes = 25) {
     this.targetMinutes = targetMinutes;

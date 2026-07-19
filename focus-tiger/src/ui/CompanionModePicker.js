@@ -1,6 +1,7 @@
 /**
  * Companion Mode 三选一：按钮下弱化提示 + 向上展开面板。
- * 选模式只写入预选并收起，不开始计时；Sit 才真正开会话。
+ * Here & Now / Flow State：选中后立即开始 Focus+计时；
+ * Offline Space：只写入预选并收起，须再点 Sit 开会话。
  * Choose / Session Intention 已迁至 Arrival Practice（ARRIVE_MOMENT_DESIGN v2）。
  */
 
@@ -10,7 +11,9 @@ import {
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS,
   COMPANION_MODE_STORAGE_KEY,
-  isValidCompanionMode
+  isValidCompanionMode,
+  shouldAutoStartFocusOnModeSelect,
+  canBeginFocusOnCompanionModeSelect
 } from '../core/FocusSession.js';
 
 function readStoredMode() {
@@ -35,15 +38,23 @@ export class CompanionModePicker {
   /**
    * @param {HTMLElement} overlayRoot
    * @param {HTMLElement} focusButton
+   * @param {object} [handlers]
+   * @param {(mode: import('../core/FocusSession.js').CompanionMode) => void} [handlers.onModeSelected]
    */
-  constructor(overlayRoot, focusButton) {
+  constructor(overlayRoot, focusButton, handlers = {}) {
     this.overlayRoot = overlayRoot;
     this.focusButton = focusButton;
+    this.handlers = handlers;
     /** @type {import('../core/FocusSession.js').CompanionMode} */
     this.selected = readStoredMode();
     this._expanded = false;
     this._idleVisible = true;
     this._postSessionOverlay = false;
+    /**
+     * Arrival Practice 门闩：未就绪时禁止展开/点选，避免「选了 Here & Now
+     * 却被 main 静默 return」的假失效。
+     */
+    this._arrivalReady = false;
     /** Rise 后优先显示提问；用户再选模式后改为模式名 */
     this._preferQuestionHint = true;
 
@@ -116,8 +127,22 @@ export class CompanionModePicker {
     this._syncHintAvailability();
   }
 
+  /**
+   * Arrival 门闩：仅在就绪后允许展开三选一 / 自动开计时点选。
+   * @param {boolean} ready
+   */
+  setArrivalReady(ready) {
+    this._arrivalReady = Boolean(ready);
+    if (!this._arrivalReady) {
+      this._expanded = false;
+      this._syncExpanded();
+    }
+    this._syncHintAvailability();
+  }
+
   _syncHintAvailability() {
-    const allowHint = this._idleVisible && !this._postSessionOverlay;
+    const allowHint =
+      this._idleVisible && !this._postSessionOverlay && this._arrivalReady;
     this.hintBtn.disabled = !allowHint;
     this.hintBtn.setAttribute('aria-disabled', allowHint ? 'false' : 'true');
     this.hintBtn.style.opacity = allowHint ? '' : '0.45';
@@ -126,7 +151,7 @@ export class CompanionModePicker {
 
   open() {
     this.setIdleChromeVisible(true);
-    if (this._postSessionOverlay) return;
+    if (this._postSessionOverlay || !this._arrivalReady) return;
     this._expanded = true;
     this._syncExpanded();
     this._syncHintLabel();
@@ -178,11 +203,26 @@ export class CompanionModePicker {
    */
   _selectMode(mode) {
     if (!isValidCompanionMode(mode)) return;
+    if (!this._arrivalReady || this._postSessionOverlay) return;
     this.selected = mode;
     writeStoredMode(mode);
     this._preferQuestionHint = false;
     this._expanded = false;
     this._render();
+    if (shouldAutoStartFocusOnModeSelect(mode)) {
+      // 与 main 共用同一门闩语义；未就绪时不应走到这里（setArrivalReady 会禁点选）。
+      if (
+        canBeginFocusOnCompanionModeSelect({
+          mode,
+          arrivalGateReady: this._arrivalReady,
+          completionPending: false,
+          arrivalOpen: false,
+          isFocusing: false
+        })
+      ) {
+        this.handlers.onModeSelected?.(mode);
+      }
+    }
   }
 
   _render() {
@@ -249,9 +289,10 @@ export class CompanionModePicker {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 14px;
         pointer-events: none;
-        width: min(440px, calc(100vw - 32px));
+        /* 右侧留出 Sound FAB 空间，避免窄屏把音乐按钮挤掉 */
+        width: min(400px, calc(100vw - 140px));
       }
       .session-start-dock > * {
         pointer-events: auto;
@@ -263,26 +304,33 @@ export class CompanionModePicker {
         transform: none !important;
       }
       #btn-focus:active {
-        transform: scale(0.97) !important;
+        transform: translateY(2px) scale(0.985) !important;
       }
       .session-start-dock__hint {
         border: none;
-        background: transparent;
-        color: rgba(44, 31, 20, 0.78);
+        background: rgba(255, 252, 245, 0.88);
+        color: #2c1f14;
         font-size: 13px;
+        font-weight: 560;
         letter-spacing: 0.02em;
         cursor: pointer;
-        padding: 2px 8px;
-        text-decoration: underline;
-        text-decoration-color: rgba(44, 31, 20, 0.22);
-        text-underline-offset: 3px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.85) inset,
+          0 2px 0 rgba(180, 150, 110, 0.22),
+          0 6px 14px rgba(44, 31, 20, 0.12);
+        text-decoration: none;
         max-width: 100%;
         line-height: 1.35;
         text-align: center;
       }
       .session-start-dock__hint:hover,
       .session-start-dock__hint.is-expanded {
-        color: rgba(44, 31, 20, 0.78);
+        color: #2c1f14;
+        background: rgba(255, 252, 245, 0.96);
+        filter: brightness(1.02);
       }
       .session-start-dock__hint[hidden] {
         display: none !important;
@@ -290,30 +338,50 @@ export class CompanionModePicker {
       .session-start-dock__panel {
         order: -1;
         width: 100%;
-        padding: 12px;
-        border-radius: 14px;
-        background: rgba(255, 252, 245, 0.96);
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        box-shadow: 0 10px 28px rgba(44, 31, 20, 0.1);
+        padding: 14px;
+        border-radius: 16px;
+        background: linear-gradient(165deg, rgba(255, 253, 247, 0.98) 0%, rgba(250, 244, 232, 0.95) 100%);
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        box-shadow:
+          0 2px 0 rgba(255, 255, 255, 0.85) inset,
+          0 -1px 0 rgba(139, 115, 85, 0.12) inset,
+          0 2px 0 rgba(180, 150, 110, 0.28),
+          0 12px 28px rgba(44, 31, 20, 0.14);
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 10px;
       }
       .session-start-dock__panel[hidden] {
         display: none !important;
       }
       .session-start-dock__option {
         text-align: left;
-        padding: 10px 12px;
-        border-radius: 10px;
-        border: 1px solid transparent;
-        background: rgba(255, 255, 255, 0.55);
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 241, 228, 0.88) 100%);
         color: #2c1f14;
         cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 2px 0 rgba(180, 150, 110, 0.2),
+          0 3px 8px rgba(44, 31, 20, 0.08);
+        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      }
+      .session-start-dock__option:active {
+        transform: translateY(1px);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 1px 0 rgba(180, 150, 110, 0.18),
+          0 1px 3px rgba(44, 31, 20, 0.1);
       }
       .session-start-dock__option.is-selected {
-        border-color: rgba(139, 115, 85, 0.4);
-        background: rgba(224, 185, 121, 0.28);
+        border-color: rgba(139, 115, 85, 0.48);
+        background: linear-gradient(180deg, rgba(255, 246, 230, 0.98) 0%, rgba(224, 185, 121, 0.34) 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.85) inset,
+          0 2px 0 rgba(160, 120, 70, 0.28),
+          0 4px 10px rgba(44, 31, 20, 0.1);
       }
       .session-start-dock__option-title {
         font-size: 13px;
@@ -324,7 +392,7 @@ export class CompanionModePicker {
         margin-top: 4px;
         font-size: 11px;
         line-height: 1.45;
-        color: rgba(74, 58, 40, 0.72);
+        color: rgba(74, 58, 40, 0.78);
       }
     `;
     document.head.appendChild(style);

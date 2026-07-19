@@ -74,7 +74,36 @@ test('timed completion records minutes and leaves DORMANT', () => {
   assert.equal(stateManager.state, STATES.IDLE);
 });
 
-test('honesty breathing keeps sleeping until dormantWake completes', () => {
+test('openDurationChoices shows duration UI without Sit with Yin', () => {
+  const store = new DailyCompletionStore({
+    storage: createStorage(),
+    now: () => new Date(2026, 6, 16, 12)
+  });
+  const stateManager = new StateManager();
+  stateManager.setState(STATES.IDLE);
+  let durationShown = 0;
+  const ui = {
+    handlers: {},
+    hide() {},
+    showPrompt() {},
+    showDurationChoices() {
+      durationShown += 1;
+    }
+  };
+  const controller = new HonestyCheckInController({
+    store,
+    stateManager,
+    emotionController: { playEmotion() {} },
+    ui
+  });
+
+  controller.openDurationChoices({ force: true });
+
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(durationShown, 1);
+});
+
+test('honesty duration select sits up and holds pose; breath end leaves DORMANT', () => {
   const store = new DailyCompletionStore({
     storage: createStorage(),
     now: () => new Date(2026, 6, 16, 12)
@@ -107,14 +136,19 @@ test('honesty breathing keeps sleeping until dormantWake completes', () => {
 
   ui.handlers.onDurationSelect(20);
   assert.equal(guideStarted, 1);
-  assert.deepEqual(emotionCalls, []);
+  assert.equal(emotionCalls[0].key, 'dormantWake');
+  assert.equal(emotionCalls[0].options.holdPose, true);
   assert.equal(stateManager.state, STATES.DORMANT);
+  // 暂不接闭眼坐禅呼吸转场
+  assert.equal(typeof emotionCalls[0].options.onComplete, 'undefined');
 
   ui.handlers.onBreathComplete();
-  assert.equal(emotionCalls[0].key, 'dormantWake');
-  assert.equal(stateManager.state, STATES.DORMANT);
-
-  emotionCalls[0].options.onComplete();
+  assert.equal(store.hasCompletedToday(), true);
   assert.equal(glowCleared, 1);
   assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(
+    emotionCalls.filter((c) => c.key === 'dormantWake').length,
+    1
+  );
+  assert.equal(emotionCalls.filter((c) => c.key === 'idle').length, 0);
 });

@@ -50,7 +50,8 @@ test('non-looping sequence completes on its last frame', () => {
   assert.deepEqual(state, {
     frameIndex: 1,
     direction: 1,
-    complete: false
+    complete: false,
+    cycleComplete: false
   });
 
   state = advanceSpriteFrame({
@@ -59,7 +60,23 @@ test('non-looping sequence completes on its last frame', () => {
     loopMode: SPRITE_LOOP_MODES.NONE
   });
   assert.equal(state.complete, true);
+  assert.equal(state.cycleComplete, true);
   assert.equal(state.frameIndex, 1);
+});
+
+test('pingpong reports cycleComplete after a full round-trip', () => {
+  let state = { frameIndex: 0, direction: 1 };
+  const frameCount = 3;
+  let cycles = 0;
+  for (let i = 0; i < 20; i += 1) {
+    state = advanceSpriteFrame({
+      ...state,
+      frameCount,
+      loopMode: SPRITE_LOOP_MODES.PINGPONG
+    });
+    if (state.cycleComplete) cycles += 1;
+  }
+  assert.equal(cycles >= 1, true);
 });
 
 test('halo breathing scheme A is intro then pingpong loop', () => {
@@ -95,10 +112,30 @@ test('blink smile is registered as a pingpong smiling baseline', () => {
   assert.equal(SPRITE_SEQUENCES.blinkSmile.loop, true);
 });
 
+
+test('wakeUp uses stretch-reminder asset, distinct from dormantWake', () => {
+  assert.equal(SPRITE_SEQUENCES.wakeUp.animation, 'stretch-reminder');
+  assert.equal(SPRITE_SEQUENCES.wakeUp.frameCount, 17);
+  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'dormant-wake');
+  assert.notEqual(SPRITE_SEQUENCES.wakeUp.animation, SPRITE_SEQUENCES.dormantWake.animation);
+});
+
+test('wave hello repeats peak sway once and has no peak frame hold', () => {
+  const definition = SPRITE_SEQUENCES.waveHello;
+
+  assert.equal(definition.frameCount, 19);
+  assert.ok(!definition.frameHolds);
+  assert.deepEqual(definition.frameIndices?.slice(7, 17), [
+    8, 9, 10, 11, 12, 8, 9, 10, 11, 12
+  ]);
+  assert.equal(definition.frameIndices?.length, 7 + 5 + 5 + 7);
+});
+
 test('dormant wake is a one-shot 16-frame transition that holds its final pose', () => {
   const definition = SPRITE_SEQUENCES.dormantWake;
 
   assert.equal(definition.frameCount, 16);
+  assert.equal(definition.fps, 3);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.holdLastFrame, true);
   assert.ok(definition.frameHolds[16] > 0);
@@ -112,15 +149,18 @@ test('milestone glow is an on-demand one-shot that holds its final pose', () => 
   assert.equal(definition.preload, false);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.holdLastFrame, true);
+  assert.equal(definition.fps, 4);
 });
 
-test('nod greeting is a one-shot 23-frame sequence', () => {
+test('nod greeting is a slowed one-shot with last-frame hold (~2 extra beats)', () => {
   const definition = SPRITE_SEQUENCES.nodGreeting;
 
   assert.equal(definition.frameCount, 23);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.loop, false);
+  assert.equal(definition.fps, 6);
   assert.equal(definition.holdLastFrame, false);
+  assert.equal(definition.frameHolds[23], Math.round((1000 / 6) * 2));
 });
 
 test('tilt think is a one-shot 20-frame sequence', () => {
@@ -171,4 +211,14 @@ test('palmsTogether / breathHaloExpand / lotus backlog sequences are registered'
   assert.equal(SPRITE_SEQUENCES.lotusChestHalo.animation, 'lotus-chest-halo');
   assert.equal(SPRITE_SEQUENCES.lotusChestHalo.frameCount, 10);
   assert.equal(SPRITE_SEQUENCES.lotusChestHalo.preload, false);
+});
+
+test('gaze lookaround and yawn-stretch idle variants are registered', () => {
+  assert.equal(SPRITE_SEQUENCES.gazeP1CenterBlinkLeft.frameCount, 15);
+  assert.equal(SPRITE_SEQUENCES.gazeP2LeftToUp.frameCount, 13);
+  assert.equal(SPRITE_SEQUENCES.gazeP3TowardRight.frameCount, 13);
+  assert.equal(SPRITE_SEQUENCES.gazeP4RightToDown.frameCount, 25);
+  assert.equal(SPRITE_SEQUENCES.yawnStretch.animation, 'yawn-stretch');
+  assert.equal(SPRITE_SEQUENCES.yawnStretch.frameCount, 16);
+  assert.equal(SPRITE_SEQUENCES.yawnStretch.loopMode, 'none');
 });

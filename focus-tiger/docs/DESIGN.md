@@ -79,7 +79,11 @@ v5.0：数据驱动一只角色的状态(自然休憩/金色庆祝/打盹/欢呼
 > **设计原则澄清（2026-07-15 修正）**：产品核心视觉**不是**"老虎从灰/原色渐变到金色"。
 > 老虎本体固有色（orange/white/black tiger stripes、面部五官等原始配色）在整个专注过程中**始终保持恒定**，不做色相/明度渐变。
 > 随专注进度变化的是：角色**周围**的金色光环/光晕强度，以及该光环对角色**表面**产生的金色环境光反射（衣物边缘、褶皱高光处的 Rim Light 边缘高光）。
-> **正式服装同步（2026-07-17）**：衣着以 `CHARACTER_BIBLE.md` 及最新 `wave-hello`、`tilt-think` 素材为准，是低饱和暖浅灰（light stone gray / light greige）的棉麻单肩斜襟禅修服；布面有细密交织纹与轻微竹节肌理，主体偏哑光，仅在凸起纤维和层叠褶皱边缘保留克制的自然微光，以承接金色 Rim Light。不得生成旧版深红/藏红布料、红色镶边或高亮丝绸质感。
+> **正式服装同步（2026-07-17）**：衣着以 `CHARACTER_BIBLE.md` 及最新 `wave-hello`、`tilt-think` 素材为准，是低饱和暖浅灰（light stone gray / light greige）的棉麻单肩斜襟禅修服 / 茶服风；布面有细密交织纹与轻微竹节肌理，主体偏哑光，仅在凸起纤维和层叠褶皱边缘保留克制的自然微光，以承接金色 Rim Light。不得生成旧版深红/藏红布料、红色镶边或高亮丝绸质感。
+>
+> **3D Idle 模型同步（2026-07-18）**：`public/models/tiger-meditate-closed.glb` 已替换为无红边、单色暖浅灰棉麻版本（源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb`）。旧「灰棉麻 + 深红镶边」仅历史备份（`tiger-meditate-closed.crimson-trim-307k.glb`），不代表正式衣着。奖励柜等 3D 展示须与圣经一致。
+>
+> **压缩质量校正（2026-07-19）**：勿用默认 `optimize --texture-compress webp` 压到 ~300KB（织物细节会损）。正式运行时约 **1.6MB**（1024/512 贴图 + lossless WebP + Draco、不减面），与其它姿态 ~2MB 级视觉预算同档；完整配方见 `art-reference/models/sources/README.md`。若本机已装 Khronos `ktx`，可改回 KTX2/UASTC 以更接近 legacy 2.1MB。
 
 ```
 这是整个产品唯一的核心视觉语言，必须做到位，其他细节可以简化。
@@ -135,8 +139,9 @@ v5.0：数据驱动一只角色的状态(自然休憩/金色庆祝/打盹/欢呼
 完整庆祝 → CELEBRATE状态触发，舒展/轻跳/鼓掌+光环扩散，每日首次达标播放一次
 打瞌睡  → DORMANT状态触发，蜷缩+眼睛闭合，持续到当日首次完成
           （正常计时完成或 Honesty Check-in 均可）
-眨眼    → 自然休憩/金光渐显状态下随机触发，每15-30s一次，增加生命感
-唤醒起身 → Honesty Check-in 呼吸引导结束后的 16 帧睡醒过渡动作
+眨眼    → 闭目坐禅：`idle-breathing`（约 2.5fps）×5 完整循环后插一次 `blink-smile`，再 ×5…（偶尔看看）；无其它 Idle 变体（见 PRINCIPLES）
+唤醒起身 → Honesty：`dormant-wake`（深睡→坐姿，情绪键 `dormantWake`）；调试/历史 `wakeUp`：伸懒腰变体（与 Honesty **不同源**）。金光/halo 暂不接在 Honesty 睡醒后（2026-07-19）
+睡着了  → DORMANT 睡态循环；**约 1 fps** 极缓（持续态节奏原则）
           （深睡到清醒坐姿 + 对接既有金色 Rim Light / 光环系统；见下方唤醒仪式）
 ```
 
@@ -225,7 +230,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（温和邀请，非冷术语 Companion Mode）。其下弱化提示 **How shall we sit? / 这次怎么陪你？** 向上展开三选项卡片（标题始终可见说明文案；桌面可用原生 `title` 作补充悬停提示）。选一项只写入预选并收起，**不**自动开计时；直接点 Sit 用当前预选（含记忆）立刻开始；**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后提示回到提问文案；反思面板提供 Skip / Skip all / Continue。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**。其下弱化提示 **How shall we sit? / 这次怎么陪你？** 向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。**Here & Now / Flow State：选中后立即开始 Focus 与计时**（不必再点 Sit）。**Offline Space：只预选并收起，须再点 Sit 才开计时**（用户需离开屏幕前确认）。直接点 Sit 仍可用当前预选（含记忆）立刻开始。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 
@@ -309,7 +314,7 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 
 - **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
 - 用户可在**专注会话进行中**开启 / 关闭 / 切换；**默认关闭**；
-- UI：**与主 CTA（Sit with Yin）同系朱红立体按钮**（右下角，带短文案如 Sound / 背景音），点击展开曲目面板；首次进入专注时可出现一次可忽略轻提示（`localStorage` 记忆，不重复）；不采用难发现的小灰图标；
+- UI：**与主 CTA（Sit with Yin）同系朱红立体按钮**（右下角 Sound / 背景音；挂 `document.body`、高 z-index）。**进入应用即始终可见**；未 FOCUSING 时点击不展开面板，显示英文提示 `AMBIENT_REQUIRES_FOCUS`（须先进入陪伴专注模式）。FOCUSING 后可展开曲目/音量；首次进入专注可出现一次可忽略轻提示；
 - 不得做成开始会话的必选项，也不得因未开启而削弱完成反馈或制造「少做了一步」的暗示。
 
 #### 2. 播放时长作为独立「在场置信信号」
@@ -436,11 +441,10 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 #### 3. 交互流程
 
 1. 用户点击提示后，展示时长选项：`[10 mins]` / `[20 mins]` / `[30+ mins]`；
-2. 选择后，进入约 **10 秒**的呼吸引导；期间保持 `sleeping` 循环，不提前切到清醒坐姿；
-3. 呼吸引导结束后，触发老虎「唤醒」反馈：
-   - `sleeping` 以 180ms cross-fade 接入 `dormant-wake` 001–016（深睡 → 完全清醒坐姿；情绪键 `dormantWake`，与历史 `wakeUp` 拆开），末帧短暂停留后再以 180ms cross-fade 回归 `idle-breathing`；
-   - **金光 / Rim Light 激活**：对接既有视觉系统——老虎本体固有色不变，金色环境光反射随进度增强；**禁止**另起一套独立光效逻辑（Rim Light 重构未就绪时可用 `FocusVisualizer` / `setFocusLevel` 占位）；
-4. 唤醒后，本次打卡按用户选择的时长，**等同于完成一次对应时长的专注会话**，正常计入当天已完成记录；与正常计时完成的会话一视同仁，不做「次等」「手动」等特殊标记。
+2. 选择后，进入约 **10 秒**的呼吸引导；**同时立刻**播放 `dormant-wake` 坐起（情绪键 `dormantWake`，**3 fps**），**不再**在倒计时期间保持 `sleeping`；
+3. 坐起后**定格末帧**至倒计时结束（**2026-07-19**：暂不接闭眼坐禅呼吸淡入，转场衔接不成）；
+4. 呼吸引导结束后记账并离开 DORMANT（**勿**再播一遍睡醒）；本次打卡按所选时长**等同于完成一次专注会话**，正常计入当天已完成记录，与正常计时一视同仁；
+5. 视觉边界：调试/历史键 `wakeUp` 用伸懒腰（`stretch-reminder` 同源），**不得**与 Honesty 共用 `dormant-wake`；**2026-07-19** 本路径暂不接 TransitionFX / `haloBreathing` / FocusVisualizer 叠光；金色 Rim Light 仍走既有系统（未就绪时可用占位）。
 
 #### 4. 频率与限频边界
 

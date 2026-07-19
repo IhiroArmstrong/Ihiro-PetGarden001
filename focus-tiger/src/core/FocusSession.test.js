@@ -6,7 +6,9 @@ import {
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS,
-  shouldSuppressAwayReminders
+  shouldSuppressAwayReminders,
+  shouldAutoStartFocusOnModeSelect,
+  canBeginFocusOnCompanionModeSelect
 } from './FocusSession.js';
 
 test('elapsed time uses wall-clock timestamps, not tick accumulation', () => {
@@ -63,4 +65,56 @@ test('acrossTools suppresses away reminders like stepAway', () => {
   const session = new FocusSession(25);
   session.start({ companionMode: COMPANION_MODE_ACROSS_TOOLS });
   assert.equal(session.isAcrossToolsMode(), true);
+});
+
+test('Here & Now and Flow State auto-start focus; Offline Space does not', () => {
+  assert.equal(shouldAutoStartFocusOnModeSelect(COMPANION_MODE_STAY), true);
+  assert.equal(
+    shouldAutoStartFocusOnModeSelect(COMPANION_MODE_ACROSS_TOOLS),
+    true
+  );
+  assert.equal(
+    shouldAutoStartFocusOnModeSelect(COMPANION_MODE_STEP_AWAY),
+    false
+  );
+});
+
+test('auto-start mode still requires Arrival gate before beginFocus', () => {
+  assert.equal(
+    canBeginFocusOnCompanionModeSelect({
+      mode: COMPANION_MODE_STAY,
+      arrivalGateReady: true
+    }),
+    true
+  );
+  assert.equal(
+    canBeginFocusOnCompanionModeSelect({
+      mode: COMPANION_MODE_ACROSS_TOOLS,
+      arrivalGateReady: true
+    }),
+    true
+  );
+  // 回归锁：Rise 后 / 未过 Arrival 时不得静默「选了却不开计时」
+  assert.equal(
+    canBeginFocusOnCompanionModeSelect({
+      mode: COMPANION_MODE_STAY,
+      arrivalGateReady: false
+    }),
+    false
+  );
+  assert.equal(
+    canBeginFocusOnCompanionModeSelect({
+      mode: COMPANION_MODE_STEP_AWAY,
+      arrivalGateReady: true
+    }),
+    false
+  );
+  assert.equal(
+    canBeginFocusOnCompanionModeSelect({
+      mode: COMPANION_MODE_STAY,
+      arrivalGateReady: true,
+      isFocusing: true
+    }),
+    false
+  );
 });
