@@ -51,6 +51,18 @@
 
 - **Pending 2c**：`cloak-sleep` 进 DORMANT——**2a 已入库**；**2b 已拍板**「当日首次进 DORMANT 播一次」；**正式接线等 Prompt 1 测完再说**
 - **Rise → `rise-stretch-casual` pingpong**（替换 blink-breathe；倒放回闭目衔接 idle）；`blink-breathe` 仅调试
+- **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **底部横排矮条**（点头后再展开，不挡鞠躬）
+- **Idle 偶尔看看**：改 `idle-eye-glance`（勿用 blink-smile 睁眼）；Safari 叠化前 decode + 双 rAF
+- **「?」补救**：加大立体化 + 首次 `help-affordance` 气泡
+- **Idle 眨眼闪一下（回归）**：breath×5→一瞥 须 `freezeUntilCrossFadeEnds`
+- **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
+- **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
+- **pingpong 顶点停留**：`rise-stretch-casual` / `blink-breathe` / `breath-halo-hq` 末帧补约 2 拍
+- **SCENARIO_TESTS 文档收敛**：权威仅 `focus-tiger/docs/SCENARIO_TESTS.md`；根目录改指针；720 底稿归档
+- **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
+- **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
+- Honesty 拍板 B；Companion 短句提示
+- **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（整合 7/19 防假修好+自动 commit 与 7/20 防改坏）
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
