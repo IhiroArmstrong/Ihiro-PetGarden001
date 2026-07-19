@@ -1,22 +1,23 @@
 /**
  * IdleOrchestrator —— 闭目坐禅呼吸与偶发眨眼的固定编排。
  *
- * 正式节奏（2026-07-19 / 2026-07-20 确认）：
- *   idle-breathing 完整 pingpong × N（默认 5）→ 单次 blink-smile → 再呼吸 × N → …
- * 表示 Yin「偶尔看看」。**不**插入张望 / 哈欠 / 喝茶等其它动作
- * （那些是独立候选情绪序列，见 companionGestureCatalog，勿绑本编排器）。
+ * 正式节奏（2026-07-20）：
+ *   idle-breathing 完整 pingpong × N（默认 5）→ 单次 idle-eye-glance → 再呼吸 × N → …
+ * 表示 Yin「偶尔看看」。**不**插入张望 / 哈欠 / 喝茶等其它动作。
+ *
+ * 为何不用 blink-smile：其首/末帧为睁眼微笑，与闭目 idle-breathing 硬切/叠化都会「闪一下」。
+ * idle-eye-glance 为闭↔睁↔闭微表情，与闭目基底同画幅衔接。
  *
  * EmotionController 只负责在 idle 生命周期 start，在非 idle 表现前 stop。
  *
- * 回归锁（2026-07-20）：呼吸↔眨眼 **必须** cross-fade + freezeUntilCrossFadeEnds。
- * 只淡入却让新序列在溶解期跑帧 = 切换一刻「闪一下」（与调试变体假闪同类）。
- * 闭目呼吸 ↔ 睁眼眨眼 画幅/姿态不衔接 → 用 CapCut 式约 1s 叠代（非 180ms 微切）。
+ * 回归锁：呼吸↔一瞥 **必须** cross-fade + freezeUntilCrossFadeEnds；
+ * 叠化前须等新帧 decode（Safari 未解码就淡入 = 透明/错帧闪一下）。
  */
 
-/** 闭目↔睁眼不衔接：与 EmotionController.CAPCUT_DISSOLVE_MS 同值（避免循环 import）。 */
-export const IDLE_VARIANT_CROSS_FADE_MS = 1000;
+/** 同源微表情：与 EmotionController.MICRO_CROSS_FADE_MS 同值（避免循环 import）。 */
+export const IDLE_VARIANT_CROSS_FADE_MS = 180;
 
-/** 两次眨眼之间，idle-breathing 完整 pingpong 循环次数。 */
+/** 两次一瞥之间，idle-breathing 完整 pingpong 循环次数。 */
 export const IDLE_BREATH_CYCLES_BEFORE_BLINK = 5;
 
 export class IdleOrchestrator {
@@ -24,14 +25,14 @@ export class IdleOrchestrator {
    * @param {object} deps
    * @param {import('./SpriteSequencePlayer.js').SpriteSequencePlayer} deps.player
    * @param {string} [deps.baseSequence]
-   * @param {string} [deps.blinkSequence] 偶发「看看」用的眨眼序列（默认 blinkSmile）
-   * @param {number} [deps.breathCyclesBeforeBlink] 眨眼前呼吸完整循环次数
-   * @param {number} [deps.crossFadeMs] 眨眼 ↔ 呼吸 交叉淡入
+   * @param {string} [deps.blinkSequence] 偶发「看看」（默认 idleEyeGlance）
+   * @param {number} [deps.breathCyclesBeforeBlink] 一瞥前呼吸完整循环次数
+   * @param {number} [deps.crossFadeMs] 一瞥 ↔ 呼吸 交叉淡入
    */
   constructor({
     player,
     baseSequence = 'idleBreathing',
-    blinkSequence = 'blinkSmile',
+    blinkSequence = 'idleEyeGlance',
     breathCyclesBeforeBlink = IDLE_BREATH_CYCLES_BEFORE_BLINK,
     crossFadeMs = IDLE_VARIANT_CROSS_FADE_MS
   }) {

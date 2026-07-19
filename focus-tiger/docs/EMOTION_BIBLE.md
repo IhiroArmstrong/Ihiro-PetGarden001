@@ -61,7 +61,7 @@
 | `Breathing` | 呼吸起伏（3D） | 是 | **仅 3D 奖励柜**：默认开启；叠加于任意 3D 基底姿态。2D 主线呼吸由 `idle-breathing` 帧序列承载，不走本项 | **1** | **已实现（3D）**：`DynamicMotion.js`；**2D 调试 UI 已移除开关** |
 | `Rotation` | 缓慢旋转（3D） | 是 | **仅 3D 奖励柜**：绕 Y 轴缓慢旋转，增加陈列感；2D 主线不做同等替代 | **1** | **已实现（3D）**：`DynamicMotion.js`；**2D 调试 UI 已移除开关** |
 | `Hover` | 庆祝悬浮（3D） | 是 | **仅 3D 奖励柜**：基底为 `Celebrating` 时整体上抬 + 缓慢上下摆动 | **2**（附属于庆祝态） | **已实现（3D）**：`DynamicMotion.js`；**2D 调试 UI 已移除开关** |
-| `Blink` | 眨眼 | 否（单次触发后自动结束） | 调试可手工播；**亦由 IdleOrchestrator 在每 5 次呼吸循环后自动插入一次**（偶尔看看） | **5**（微表情；不抢占基底姿态） | **已实现（2D）**：`blink-smile`；Idle 固定节奏插入 + 调试面板 |
+| `Blink` | 眨眼 | 否（单次触发后自动结束） | 调试可手工播 | **5**（微表情；不抢占基底姿态） | **已实现（2D）**：调试 `blink-smile`；**Idle「偶尔看看」改用 `idle-eye-glance`**（闭↔睁↔闭，避免 blink-smile 睁眼与闭目 idle 叠化闪一下） |
 | `SnoringZZZ` | 打呼噜 ZZZ | 是 | 仅当基底姿态为 `Sleeping` 时叠加：ZZZ 图标漂浮 + `rotation.x` 微倾 | **3**（附属于瞌睡态） | **待实现**：`DESIGN.md` 已定义语义，无代码 |
 
 ### 1.4 调试专用（不面向用户）
@@ -168,8 +168,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 >
 > **正式默认（唯一）**
 > 1. `idle-breathing` 完整 pingpong **×5**（约 **2.5 fps**）
-> 2. 单次眨眼 `blink-smile`（`loopMode: none`；180ms cross-fade）
-> 3. 回到步骤 1 —— **偶尔看看 = 眨眼**
+> 2. 单次一瞥 `idle-eye-glance`（`loopMode: none`；180ms cross-fade + freeze）
+> 3. 回到步骤 1 —— **偶尔看看 = 闭目基底上的睁眼一瞥**（勿用 `blink-smile`，其首末睁眼与 idle 不衔接）
 >
 > **禁止**把张望 / 哈欠 / 喝茶 / 摇耳等挂进 Idle 随机池或自动插入（衔接多有问题；产品决定逐条验收后再接线景）。
 >
@@ -531,7 +531,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 行为 | 节奏建议 |
 |---|---|
 | 缓慢呼吸 | 持续（`idle-breathing`） |
-| 眨眼（偶尔看看） | Idle：呼吸 pingpong ×5 → `blink-smile` 单次 → 再 ×5… |
+| 眨眼（偶尔看看） | Idle：呼吸 pingpong ×5 → `idle-eye-glance` 单次 → 再 ×5… |
 | 一瞥 / 张望 A·B / 哈欠 | **正式 Idle 已删除**；素材可留库，默认不调度 |
 | 睁眼看向用户 | 每 5–10 秒随机；每次停留 0.8–1.5 秒（确认式短暂眼神交流，非机械固定间隔）——部分由张望/一瞥素材承载 |
 | 耳朵轻微抖动 | 每 15–30 秒随机 |

@@ -397,22 +397,37 @@ export class CompanionModePicker {
       .session-start-dock__panel[hidden] {
         display: none !important;
       }
-      /* 桌面：三选一挪到右侧，Sit 仍居中，避免大框挡住 Yin 鞠躬/呼吸 */
+      /* 桌面：底部横排三选一（矮条），勿用右侧竖栏盖住 Yin 半身/鞠躬 */
       @media (min-width: 900px) {
         .session-start-dock {
-          width: auto;
-          max-width: min(360px, calc(100vw - 140px));
+          width: min(640px, calc(100vw - 160px));
         }
         .session-start-dock__panel {
-          position: fixed;
-          left: auto;
-          right: max(24px, env(safe-area-inset-right, 0px));
-          bottom: 120px;
-          width: min(300px, 28vw);
-          max-height: min(52vh, 420px);
-          overflow-y: auto;
-          order: 0;
-          z-index: 16;
+          position: static;
+          order: -1;
+          width: 100%;
+          max-height: none;
+          overflow: visible;
+          flex-direction: row;
+          align-items: stretch;
+          gap: 8px;
+          padding: 10px;
+        }
+        .session-start-dock__option {
+          flex: 1 1 0;
+          min-width: 0;
+          padding: 10px 8px;
+        }
+        .session-start-dock__option-title {
+          font-size: 12px;
+        }
+        .session-start-dock__option-hint {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          font-size: 10px;
+          line-height: 1.35;
         }
       }
       .session-start-dock__option {

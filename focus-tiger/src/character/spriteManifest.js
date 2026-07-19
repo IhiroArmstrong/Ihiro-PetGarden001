@@ -54,7 +54,8 @@ export const ONE_SHOT_DURATION_SEC = Object.freeze({
 /** @type {Record<string, SpriteSequenceDef>} */
 export const SPRITE_SEQUENCES = {
   // 基础观照者坐姿：素材为半程呼吸，正放后倒放组成完整循环。
-  // IdleOrchestrator：完整 pingpong ×5 → 单次眨眼 → 再 ×5…（表示偶尔看看）。
+  // IdleOrchestrator：完整 pingpong ×5 → 单次 idle-eye-glance → 再 ×5…（偶尔看看）。
+  // 勿用 blink-smile：其首末为睁眼微笑，与闭目呼吸叠化会闪。
   idleBreathing: {
     animation: 'idle-breathing',
     frameCount: 21,
@@ -69,7 +70,7 @@ export const SPRITE_SEQUENCES = {
   idleEyeGlance: {
     animation: 'idle-eye-glance',
     frameCount: 8,
-    fps: 12,
+    fps: 8,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false

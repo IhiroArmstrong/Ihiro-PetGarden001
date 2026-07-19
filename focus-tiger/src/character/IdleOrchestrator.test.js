@@ -47,7 +47,7 @@ test('plays one continuous breath block then blinks with freeze cross-fade', () 
 
   harness.calls.at(-1).options.onComplete();
   const blinkCall = harness.calls.at(-1);
-  assert.equal(blinkCall.name, 'blinkSmile');
+  assert.equal(blinkCall.name, 'idleEyeGlance');
   assert.equal(blinkCall.options.loopMode, 'none');
   assert.equal(blinkCall.options.crossFadeMs, IDLE_VARIANT_CROSS_FADE_MS);
   // 回归锁：溶解期必须定格，否则切换闪一下
@@ -67,6 +67,7 @@ test('default idle has no variant pool / no random scheduling API', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({ player: harness.player });
   assert.equal(orchestrator.breathCyclesBeforeBlink, IDLE_BREATH_CYCLES_BEFORE_BLINK);
+  assert.equal(orchestrator.blinkSequence, 'idleEyeGlance');
   assert.equal(typeof orchestrator.forcePlayVariant, 'undefined');
   assert.equal('variants' in orchestrator, false);
 });
@@ -81,7 +82,7 @@ test('stop during blink prevents automatic return to breathing', () => {
   orchestrator.start();
   harness.calls[0].options.onComplete();
   const blinkCall = harness.calls.at(-1);
-  assert.equal(blinkCall.name, 'blinkSmile');
+  assert.equal(blinkCall.name, 'idleEyeGlance');
   orchestrator.stop();
   blinkCall.options.onComplete();
 

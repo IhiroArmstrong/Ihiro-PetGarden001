@@ -49,10 +49,10 @@
 
 **近期落地（待人工测试）**：
 
-- **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **桌面右侧栏**不挡 Yin
-- **Idle 眨眼**：闭目↔睁眼改 **1s CapCut 叠代**（原 180ms 仍闪）
+- **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **底部横排矮条**（点头后再展开，不挡鞠躬）
+- **Idle 偶尔看看**：改 `idle-eye-glance`（勿用 blink-smile 睁眼）；Safari 叠化前 decode + 双 rAF
 - **「?」补救**：加大立体化 + 首次 `help-affordance` 气泡
-- **Idle 眨眼闪一下（回归）**：breath×5→blink 须 `freezeUntilCrossFadeEnds`
+- **Idle 眨眼闪一下（回归）**：breath×5→一瞥 须 `freezeUntilCrossFadeEnds`
 - **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
 - **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
 - **pingpong 顶点停留**：`blink-breathe` / `breath-halo-hq` 末帧补约 2 拍

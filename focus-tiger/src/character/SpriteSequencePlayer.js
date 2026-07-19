@@ -311,15 +311,31 @@ export class SpriteSequencePlayer {
     const freezeUntilCrossFadeEnds =
       shouldCrossFade && Boolean(options.freezeUntilCrossFadeEnds);
 
+    this._playing = true;
+
     if (shouldCrossFade) {
-      this._startCrossFade(crossFadeMs, () => {
-        if (freezeUntilCrossFadeEnds && this._playing) {
-          this._beginPlaybackClock();
-        }
-      });
+      const beginFade = () => {
+        if (!this._playing || this._currentName !== name) return;
+        this._startCrossFade(crossFadeMs, () => {
+          if (freezeUntilCrossFadeEnds && this._playing) {
+            this._beginPlaybackClock();
+          }
+        });
+      };
+      // Safari：新帧未 decode 就淡入会先绘透明/错帧 →「闪一下」。定格叠代时等解码。
+      if (
+        freezeUntilCrossFadeEnds &&
+        typeof this.imgEl.decode === 'function'
+      ) {
+        this.imgEl
+          .decode()
+          .catch(() => {})
+          .finally(beginFade);
+      } else {
+        beginFade();
+      }
     }
 
-    this._playing = true;
     if (!freezeUntilCrossFadeEnds) {
       this._beginPlaybackClock();
     }
@@ -536,6 +552,8 @@ export class SpriteSequencePlayer {
     const path = this._frames[index];
     if (!path) return;
     // 命中预加载缓存时，赋值 src 不会触发网络请求，浏览器直接复用解码结果
+    // sync：叠代淡入前尽量避免 Safari 异步解码导致的透明闪帧
+    this.imgEl.decoding = 'sync';
     this.imgEl.src = path;
   }
 
@@ -577,24 +595,28 @@ export class SpriteSequencePlayer {
    * @param {(() => void) | null} [onDone]
    */
   _startCrossFade(durationMs, onDone = null) {
-    // 强制提交首帧的 opacity:0，再在下一绘制帧开始双层交叉淡入淡出。
+    // 强制提交首帧的 opacity:0。Safari 单次 rAF 常不够，需双 rAF 再开 transition，
+    // 否则会跳过起点直接淡入 → 闪一下。
     void this.outgoingImgEl.offsetWidth;
+    void this.imgEl.offsetWidth;
     this._crossFadeRaf = requestAnimationFrame(() => {
-      this._crossFadeRaf = 0;
-      const transition = `opacity ${durationMs}ms ease-in-out`;
-      this.outgoingImgEl.style.transition = transition;
-      this.imgEl.style.transition = transition;
-      this.outgoingImgEl.style.opacity = '0';
-      this.imgEl.style.opacity = '1';
-      this._crossFadeTimer = globalThis.setTimeout(() => {
-        this._crossFadeTimer = null;
-        this.outgoingImgEl.style.transition = 'none';
-        this.imgEl.style.transition = 'none';
-        this.outgoingImgEl.removeAttribute('src');
-        this.outgoingImgEl.style.transform = '';
-        this._outgoingDisplayFit = null;
-        if (typeof onDone === 'function') onDone();
-      }, durationMs + 34);
+      this._crossFadeRaf = requestAnimationFrame(() => {
+        this._crossFadeRaf = 0;
+        const transition = `opacity ${durationMs}ms ease-in-out`;
+        this.outgoingImgEl.style.transition = transition;
+        this.imgEl.style.transition = transition;
+        this.outgoingImgEl.style.opacity = '0';
+        this.imgEl.style.opacity = '1';
+        this._crossFadeTimer = globalThis.setTimeout(() => {
+          this._crossFadeTimer = null;
+          this.outgoingImgEl.style.transition = 'none';
+          this.imgEl.style.transition = 'none';
+          this.outgoingImgEl.removeAttribute('src');
+          this.outgoingImgEl.style.transform = '';
+          this._outgoingDisplayFit = null;
+          if (typeof onDone === 'function') onDone();
+        }, durationMs + 34);
+      });
     });
   }
 

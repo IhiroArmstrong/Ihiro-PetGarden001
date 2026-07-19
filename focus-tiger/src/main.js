@@ -479,12 +479,19 @@ async function init() {
         lightProgression.beginArrival();
         syncOnboardingAutoHints();
       },
-      // Choose 确认：立刻开门闩 + Companion（避免点头被打断导致永远无 Rise）；
+      // Choose 确认：立刻开门闩（Sit 可用）；点头播完后再展开 Companion，避免挡鞠躬。
       // 16:9 点头 pingpong 并行；与前后动画 1s CapCut 叠化。
       onIntentionSetPlay: (done) => {
         done?.();
         emotionController.playEmotion('intentionSet', {
           onComplete: () => {
+            if (
+              stateManager.state !== STATES.FOCUSING &&
+              arrivalGateReady &&
+              !completionPending
+            ) {
+              companionModePicker.open();
+            }
             lightProgression.clearArrivalAtmosphere();
             window.setTimeout(() => {
               lightProgression.releaseDolly();
@@ -506,10 +513,10 @@ async function init() {
         onboardingHints?.markSeen('dormant-open');
         onboardingHints?.markSeen('honesty-optional');
         // Skip — begin / Sit 整体跳过 =「直接开始」：用记忆模式立刻计时 → Rise。
-        // 完整走完 Choose 才展开三选一（勿半卡在门闩就绪却仍显示 Sit）。
+        // Choose 确认：只开门闩；面板改在 intentionSet 播完后展开（见上）。
         if (shouldBeginFocusOnArrivalReady(info)) {
           beginFocusWithMode(companionModePicker.getSelectedMode());
-        } else {
+        } else if (!info.chose) {
           companionModePicker.open();
         }
         syncOnboardingAutoHints();
