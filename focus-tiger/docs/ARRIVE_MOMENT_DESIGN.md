@@ -31,17 +31,18 @@
   ↓
 Notice：状态点选（1次点击）
   🧘 Calm　🌤️ Okay　🌊 Busy Mind　🔥 Stressed　🌧️ Low Energy　😶 Not Sure
-  Yin 回应一句观察式短句（见第三节），不做分析、不做建议
+  Yin 回应一句观察式短句（约 0.9s，**仅短句、收起图标区**），不做分析、不做建议
   ↓
-一次呼吸（~5秒，无倒计时，无复杂动画，用户跟随呼吸律动）
+一次呼吸（~5秒；角色保持放慢的眨眼微笑，**不**切 idle-breathing / **不**播合十）
   "Let's arrive together."
+  视觉：`blink-smile` @ **4 fps** pingpong（欢迎步仍为默认 8fps）；Choose 确认用 16:9 点头（不再合十）
   ↓
 Choose：今天做什么（图标点选为主，次要打字入口）
   📖 Reading　💻 Deep Work　🎨 Creative Work　🧘 Meditation　📝 Writing　☕ Just One Small Step
   （或点"自己写"展开一行可选文本输入）
-  ↓（确认瞬间：`IntentionSet` / palms-together 合十 + 坐垫 CSS 光晕叠加；跳过 Choose 不播）
+  ↓（确认瞬间：立刻开门闩 + Companion；并行播 16:9 `intentionNod` 点头 + 坐垫光晕；跳过 Choose 不播）
   ↓（Arrival Practice 到此结束）
-Companion Mode 三选一（独立组件，不合并进 Arrival Practice；合十播完后再单独展开）
+Companion Mode 三选一（独立组件，不合并进 Arrival Practice）
   ↓
 确认 → 计时开始
   ↓
@@ -49,7 +50,7 @@ Companion Mode 三选一（独立组件，不合并进 Arrival Practice；合十
   （开头回显 Choose 内容，两条路径都回显；Notice 状态永不回显、永不落库）
 ```
 
-**Choose 确认视觉（2026-07-18）**：原计划仅「坐垫处一次性 CSS 光晕」（`LightProgression.onChooseConfirmed`）。现有真实合十素材后，**保留两者叠加**——CSS 光晕仍为氛围层，`playEmotion('intentionSet')` 为角色动作层；不删除已有 CSS 实现。跳过 Choose 时两者均不触发。
+**Choose 确认视觉（2026-07-20）**：改用 **16:9 nod-bow**（不再合十）；Companion 门闩在确认瞬间打开（动画不挡流程）。Dolly 在点头回 idle 后拉回。跳过 Choose 时立刻清氛围并拉回。
 
 ---
 

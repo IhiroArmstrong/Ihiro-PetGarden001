@@ -27,19 +27,18 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 01:50（UTC+8）
+**最后更新时间**：2026-07-20 02:10（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **SCENARIO_TESTS 文档收敛**：权威仅 `focus-tiger/docs/SCENARIO_TESTS.md`；根目录改指针；720 底稿归档；补 Honesty 桥接 / 靠近不点头 / 场景 N
-- **Rise → `blink-breathe` pingpong**：点起身后角色切眨眼深呼吸循环；Reflection 结束后回 Idle / Sleeping
-- **`breath-halo-hq` / `blink-breathe`**：均改为 pingpong（正放+倒放完整一拍，可循环）
-- **张望组合试播**：A+B 合并为单一 `gazeLookAround`（p1→p2→p3→p4）
+- **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
+- **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
+- **pingpong 顶点停留**：`blink-breathe` / `breath-halo-hq` 末帧补约 2 拍
+- **SCENARIO_TESTS 文档收敛**：权威仅 `focus-tiger/docs/SCENARIO_TESTS.md`；根目录改指针；720 底稿归档
+- **Rise → `blink-breathe` pingpong**；张望整段组合试播
 - **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
-- **`breath-halo-hq`** 作 MilestoneGlow 简化备选（旧 expand 已归档）
-- **IntentionSet 合十衔接**：`palms-together` 正放→倒放；`displayFit` + 溶解
 - Honesty 拍板 B；Companion 短句提示
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：

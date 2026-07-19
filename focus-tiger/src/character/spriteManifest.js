@@ -148,13 +148,15 @@ export const SPRITE_SEQUENCES = {
 
   // 候选轻量手势：睁眼微笑坐禅下边眨眼边深呼吸（Rise 过渡）。
   // 正放末帧不完整 → pingpong 倒放回首帧，可无缝循环。
+  // 深吸顶点（末帧）额外停约 2 拍，避免到顶立刻倒放像跳动。
   blinkBreathe: {
     animation: 'blink-breathe',
     frameCount: 13,
     fps: 8,
     loop: true,
     loopMode: 'pingpong',
-    holdLastFrame: false
+    holdLastFrame: false,
+    frameHolds: { 13: Math.round((1000 / 8) * 2) }
   },
 
   // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。
@@ -214,6 +216,7 @@ export const SPRITE_SEQUENCES = {
   // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。
   // 2026-07-20：以 16 帧 HQ 替换旧 breath-halo-expand（17 帧）；不绑定 emotion key / 业务触发。
   // 正放仅「扩展」半拍不完整 → pingpong 倒放收回，完整一吸一呼并可循环。
+  // 倒放起始（扩展顶点末帧）额外停约 2 拍，避免到顶立刻收回像跳动。
   breathHaloHq: {
     animation: 'breath-halo-hq',
     frameCount: 16,
@@ -221,13 +224,14 @@ export const SPRITE_SEQUENCES = {
     preload: false,
     loop: true,
     loopMode: 'pingpong',
-    holdLastFrame: false
+    holdLastFrame: false,
+    frameHolds: { 16: Math.round((1000 / 8) * 2) }
   },
 
-  // Arrival Choose 确认合十（EMOTION_BIBLE: IntentionSet）。
-  // 素材第 1 帧=闭目坐禅（手在膝上），第 14 帧=睁眼合掌。
-  // 正放→倒放回第 1 帧；960×960 画幅经 displayFit 对齐 1056×864 idle，再淡入呼吸。
-  // 时长：27 拍 @ 4fps ≈ 6.8s（ONE_SHOT ack 带；对齐 dormantWake / milestoneGlow）。
+  // Arrival Choose 确认：16:9 轻量点头（nod-bow）；不再用 1:1 palms-together（画幅/衔接易跳）。
+  // 素材与 MindfulAcknowledge 同源，但 emotion key 仍为 intentionSet（触发点不同）。
+  // 13 拍 @ 3.5fps ≈ 3.7s；无 displayFit，可直接接 idle。
+  // palms-together 仅保留调试试播（历史合十素材）。
   palmsTogether: {
     animation: 'palms-together',
     frameCount: 14,
@@ -247,6 +251,16 @@ export const SPRITE_SEQUENCES = {
       height: 960,
       content: { x: 45, y: 163, w: 913, h: 734 }
     }
+  },
+
+  // IntentionSet 正式序列（Choose 确认）—— 16:9 nod-bow。
+  intentionNod: {
+    animation: 'nod-bow',
+    frameCount: 13,
+    fps: 3.5,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
   },
 
   // 环境细节解锁·莲花池首朵（Backlog 纪念奖励）——仅入库，无触发逻辑。

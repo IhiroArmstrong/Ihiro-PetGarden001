@@ -24,7 +24,7 @@ export const COMPANION_GESTURE_CHAINS = Object.freeze([
       'gazeP3TowardRight',
       'gazeP4RightToDown'
     ]),
-    notes: '中→眨→左→上→右→下；整段看向某处 / 生命感（A+B 合并）'
+    notes: '中→眨→左→上→右→下；整段看向某处。若将来要循环，末帧与首帧衔接可能需再调'
   })
 ]);
 

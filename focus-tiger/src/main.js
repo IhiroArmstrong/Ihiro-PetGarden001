@@ -20,8 +20,7 @@ import { PoseManager } from './character/PoseManager.js';
 import { MoodController } from './core/MoodController.js';
 import {
   ARRIVAL_BREATH_SMILE_FPS,
-  EmotionController,
-  INTENTION_SET_RETURN_CROSS_FADE_MS
+  EmotionController
 } from './core/EmotionController.js';
 import { FocusVisualizer } from './feedback/FocusVisualizer.js';
 import { TransitionFX } from './feedback/TransitionFX.js';
@@ -451,7 +450,7 @@ async function init() {
       onBreath: () => {
         lightProgression.beginBreath();
         // Breath「Let's arrive together」：放慢眨眼微笑并保持，不落入 idle-breathing（硬切闭目不连贯）。
-        // 合十 palms-together 仅给 Choose 确认（intentionSet），不在此步使用。
+        // Choose 确认用 intentionNod（16:9 点头），不在此步播放。
         emotionController.playEmotion('smiling', {
           fps: ARRIVAL_BREATH_SMILE_FPS
         });
@@ -477,16 +476,16 @@ async function init() {
         lightProgression.beginArrival();
         syncOnboardingAutoHints();
       },
-      // 合十动作与坐垫 CSS 光晕叠加；跳过 Choose 时不播。
+      // Choose 确认：立刻开门闩 + Companion（避免点头被打断导致永远无 Rise）；
+      // 16:9 点头并行播放，不阻塞流程。
       onIntentionSetPlay: (done) => {
+        done?.();
         emotionController.playEmotion('intentionSet', {
           onComplete: () => {
-            // 先收暖色氛围，Dolly 等 idle 淡入结束再拉回（与合十同尺度衔接）。
             lightProgression.clearArrivalAtmosphere();
             window.setTimeout(() => {
               lightProgression.releaseDolly();
-            }, INTENTION_SET_RETURN_CROSS_FADE_MS + 40);
-            done?.();
+            }, 220);
           }
         });
       },

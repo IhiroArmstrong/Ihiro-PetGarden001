@@ -257,7 +257,8 @@ export class EmotionController {
         }
       },
 
-      // Arrival Choose 确认合十：播完不抢 Companion Mode；由调用方在 onComplete 里开门闩。
+      // Arrival Choose 确认：16:9 点头（intentionNod）；播完开门闩。
+      // 合十 palms-together 仅调试保留，不再接业务。
       intentionSet: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -271,15 +272,14 @@ export class EmotionController {
         this._leaveIdleBaseline();
         this._use2DMainline();
         const started = this.spritePlayer.play(
-          'palmsTogether',
+          'intentionNod',
           this._oneShotPlayOpts(
             {
               ...options,
               loop: false,
               loopMode: 'none',
-              // 合十末帧已 displayFit 对齐 idle；短淡入掩盖残余像素差。
-              // Dolly 须等本淡入结束后再拉回（见 main onIntentionSetPlay）。
-              returnCrossFadeMs: INTENTION_SET_RETURN_CROSS_FADE_MS
+              // 16:9 与 idle 同画幅，短淡入即可；勿再用合十 1s displayFit 溶解。
+              returnCrossFadeMs: options.returnCrossFadeMs ?? 180
             },
             'intentionSet'
           )
@@ -763,7 +763,7 @@ export class EmotionController {
       { key: 'smiling', label: '坐禅微笑' },
       { key: 'blinkBreathe', label: '眨眼深呼吸(Rise)' },
       { key: 'celebrating', label: '庆祝(随机v1/v2)' },
-      { key: 'intentionSet', label: '合十确认' },
+      { key: 'intentionSet', label: 'Choose点头确认' },
       { key: 'tPose', label: 'T-Pose' },
       { key: 'incenseComplete', label: '一炷香完成' },
       { key: 'milestoneGlow', label: '里程碑金辉' },
@@ -796,7 +796,8 @@ export class EmotionController {
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
       breathHaloHq: 'breath-halo-hq 备选',
-      palmsTogether: 'palms-together 合十',
+      palmsTogether: 'palms-together 合十(仅调试)',
+      intentionNod: 'intention-nod Choose点头',
       lotusFrontRising: 'lotus-front-rising',
       lotusChestHalo: 'lotus-chest-halo',
       sessionComplete: 'session-complete',

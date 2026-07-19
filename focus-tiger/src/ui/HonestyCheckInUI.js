@@ -18,7 +18,8 @@ export const HONESTY_DURATION_OPTIONS = Object.freeze([
 const PANEL_CSS = [
   'position:absolute',
   'left:50%',
-  'bottom:118px',
+  /* 抬高以免盖住 Sit dock（bottom≈28–80px）；Sit z-index 已抬到 16，几何上也要让开 */
+  'bottom:168px',
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:20px 22px 18px',
@@ -178,7 +179,8 @@ export class HonestyCheckInUI {
     btn.style.cssText = [
       'position:absolute',
       'left:50%',
-      'bottom:74px',
+      /* 放在 Sit 上方空隙，勿压住 Sit（dock z16）；原先 bottom:74px 会抢走 Sit 点击 */
+      'bottom:100px',
       'transform:translateX(-50%)',
       'padding:6px 12px',
       'font-size:12px',

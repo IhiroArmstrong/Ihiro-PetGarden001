@@ -300,7 +300,8 @@ export class CompanionModePicker {
         left: 50%;
         bottom: 28px;
         transform: translateX(-50%);
-        z-index: 12;
+        /* 须高于 Honesty 面板(z15) / 再补登入口(z14)，否则点击 Sit 会被抢走打开 Mindful Check-in */
+        z-index: 16;
         display: flex;
         flex-direction: column;
         align-items: center;
