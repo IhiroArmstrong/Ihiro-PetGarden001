@@ -17,6 +17,14 @@ test('gaze lookaround is a single combined chain (p1→p4)', () => {
   ]);
 });
 
+test('cloakSleep oneshot is listed for DORMANT entry (pending wire)', () => {
+  const cloak = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'cloakSleep');
+  assert.ok(cloak);
+  assert.equal(cloak.sequence, 'cloakSleep');
+  assert.match(cloak.suggestedUses, /DORMANT/);
+  assert.match(cloak.suggestedUses, /2c|待接线/);
+});
+
 test('riseStretchCasual oneshot is listed for Rise; blinkBreathe retained as debug', () => {
   const rise = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'riseStretchCasual');
   assert.ok(rise);

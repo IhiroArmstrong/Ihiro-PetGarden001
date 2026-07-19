@@ -37,7 +37,7 @@
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
 | `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | 默认态；当日尚未产生显著专注数据；非 `Sleeping` / 非庆祝播放中 / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`（2026-07-18：单色暖浅灰棉麻、无红边），`PoseManager` 中 `IDLE_CLOSED_EYES`；2D 主线默认隐藏 canvas，正式情绪由 `idle-breathing` 等序列承载；Idle 自发变体见下文「IdleOrchestrator 自发变体」 |
-| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'forward'`） | 当天（用户本地自然日）尚未完成任何一次专注会话（正常计时或 Honesty Check-in 均算完成）→ 对应产品 `DORMANT`；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：`sleeping` 8 帧循环，**约 1 fps**（2026-07-19：相对早期 4 fps 至少放慢 3×）；`playEmotion('sleeping')`；首尾帧 forward 可接受。3D `tiger-sleeping.glb` 仍作垫底。DORMANT / Honesty Check-in 已联动 |
+| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'forward'`） | 当天（用户本地自然日）尚未完成任何一次专注会话（正常计时或 Honesty Check-in 均算完成）→ 对应产品 `DORMANT`；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：`sleeping` 8 帧循环，**约 1 fps**（2026-07-19：相对早期 4 fps 至少放慢 3×）；`playEmotion('sleeping')`；首尾帧 forward 可接受。3D `tiger-sleeping.glb` 仍作垫底。DORMANT / Honesty Check-in 已联动。**进睡过渡候选**：`cloak-sleep`（34 帧，`cloakSleep`）已入库可调试试播；**产品拍板（2026-07-20）**：当日**首次**进入 DORMANT 播一次再落入 `sleeping`——**2c 尚未接线** |
 | `Smiling` | 坐禅微笑基底（观照者回归态） | 是（`blink-smile` pingpong） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现（2D 主线）**：`blink-smile` 12 帧 pingpong；`playEmotion('smiling')`；3D `tiger-meditate-smile.glb` 仅作垫底且主线默认隐藏 canvas。日期戳持续基底仍待完整接通 |
 | `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放，不循环） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完回归 `Idle` / idle-breathing） | **已实现（2D 主线）**：两套变体素材——`celebrate-dance`（57 帧）与 `celebrate-dance-v2`（60 帧）；`playEmotion('celebrating')` 每次触发时 50/50 随机选用其一（MVP 不做轮换记账）；`loopMode: none`，播完由 EmotionController 回归 idle-breathing。3D `tiger-happy-jump.glb` 仍作垫底。日期戳防刷与 `Smiling` 持续基底仍待完整接通。本序列即主界面 Celebrating 的正式幅度上限；禁止另加更娱乐化的街机式狂欢动作 |
 
@@ -181,6 +181,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 > | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮 |
+> | `cloakSleep` | **进 DORMANT 过渡（已入库）**：披毯入睡；**拍板**当日首次进 DORMANT 播一次→`sleeping`；**2c 待接线**；≠ Rise |
 > | `blinkBreathe` | 调试候选；**Rise 主路径已改** `riseStretchCasual` |
 > | `riseStretchCasual` | **已接线 Rise（中途主动结束）**：`playEmotion('riseStretchCasual')` pingpong（正放伸懒腰→随意坐→倒放回闭目）；Reflection 结束后回 Idle / Sleeping；**不**用于达标 Celebrating / SessionComplete |
 
@@ -269,7 +270,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 | 刺激源 | 老虎反应 | 备注 |
 |---|---|---|
-| 夜晚使用 | 披着小毯子，动作放缓 | |
+| 夜晚使用 | 披着小毯子，动作放缓 | 素材候选：`cloak-sleep`（见 Sleeping 行）；进 DORMANT 过渡已拍板「当日首次播一次」，正式接线见 2c |
 | 清晨使用 | 打哈欠、伸懒腰 | |
 | 无互动约 10 分钟 | **加权随机**（非五五开）：**70%** 闭眼继续冥想（不主动引起注意）；**30%** 看向用户方向并挥挥手（挥手复用情绪键 `welcomeBack`） | **中间层级·已确认**。设计原则：轻量、不打扰；禁止频繁弹窗或紧迫感呼唤。**备注**：挥手相对主动、引人注意；若与安静冥想等概率随机，长期使用会显得频繁呼唤用户，与「不打扰、不干扰专注」原则存在张力。以安静冥想为主、挥手为偶尔小变化，既保留生命感随机性，又不破坏安静陪伴基调。 |
 | 无互动约 24 小时 | 自然进入睡眠状态，打呼噜 | **长时间层级**。沿用「不制造焦虑」修正：角色有独立生活节奏，中性「无互动时长」触发；非「不专注」评判或因果报应 |
@@ -625,6 +626,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.57 | 2026-07-20 | `breath-halo-hq` / `blink-breathe` 改 pingpong；张望 A+B 合并为单一组合试播；`blinkBreathe` 接入 Rise 点击 |
 | 0.58 | 2026-07-20 | **CapCut 式叠代**定为硬性衔接标准（§1.6 / PRINCIPLES / ARCHITECTURE）；`_finishOneShot` 默认 `CAPCUT_DISSOLVE_MS` |
 | 0.59 | 2026-07-20 | pingpong 顶点补 2 拍停留；Choose 改 16:9 `intentionNod`（去合十）；Sit dock 抬 z-index 防 Honesty 抢点；Choose 确认立刻开门闩 |
-| 0.60 | 2026-07-20 | Rise 主路径改 `riseStretchCasual`（`rise-stretch-casual` pingpong）替换 `blinkBreathe`；倒放回闭目衔接 idle；`cloak-sleep` 仍待进 DORMANT 时机确认 |
+| 0.60 | 2026-07-20 | Rise 主路径改 `riseStretchCasual`（`rise-stretch-casual` pingpong）替换 `blinkBreathe`；倒放回闭目衔接 idle |
+| 0.61 | 2026-07-20 | `cloak-sleep` 入库-only（`cloakSleep`）；**2b 拍板**：当日首次进 DORMANT 播一次→`sleeping`；**2c 未接线** |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

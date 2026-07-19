@@ -361,6 +361,18 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // 进入 DORMANT 过渡（候选）：披上斗篷→睡着。一次性正放；**尚未接业务触发**。
+  // 产品拍板（2b）：当日首次进入 DORMANT 播一次，再落入 sleeping 循环（2c 待接线）。
+  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
+  cloakSleep: {
+    animation: 'cloak-sleep',
+    frameCount: 34,
+    fps: 6,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true
+  },
+
   // Honesty Check-in / DORMANT 唤醒：深睡 → 完全清醒坐姿，一次性正放。
   // 末帧定格；2026-07-19：再放慢 2×（6 → 3 fps），暂不接闭眼呼吸 / 金光 / halo。
   dormantWake: {

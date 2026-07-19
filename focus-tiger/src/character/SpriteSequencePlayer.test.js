@@ -246,6 +246,14 @@ test('gaze lookaround and yawn-stretch idle variants are registered', () => {
   assert.equal(SPRITE_SEQUENCES.yawnStretch.loopMode, 'none');
 });
 
+test('cloakSleep is registered for DORMANT entry (not wired yet)', () => {
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.frameCount, 34);
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.fps, 6);
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.holdLastFrame, true);
+});
+
 test('teaDrinking, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
   assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
   assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);

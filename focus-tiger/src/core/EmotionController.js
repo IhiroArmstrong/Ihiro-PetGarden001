@@ -872,6 +872,7 @@ export class EmotionController {
       stretchReminder: 'stretch-reminder',
       wakeUp: 'wakeUp(=stretch)',
       sleeping: 'sleeping',
+      cloakSleep: 'cloak-sleep 披毯入睡(候选)',
       dormantWake: 'dormant-wake 纯动画',
       haloBreathingIntro: 'halo-breathing intro',
       haloBreathingLoop: 'halo-breathing loop',

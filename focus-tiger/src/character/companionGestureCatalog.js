@@ -52,6 +52,13 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     suggestedUses: '亲密互动回应 / 偶发俏皮（幅度大，宜少用）'
   }),
   Object.freeze({
+    id: 'cloakSleep',
+    sequence: 'cloakSleep',
+    label: '披毯入睡',
+    suggestedUses:
+      '进 DORMANT 过渡（已拍板：当日首次进 DORMANT 播一次→sleeping）；2c 待接线；≠ Rise'
+  }),
+  Object.freeze({
     id: 'riseStretchCasual',
     sequence: 'riseStretchCasual',
     label: 'Rise 伸懒腰',

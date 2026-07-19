@@ -2,70 +2,50 @@
 
 > **源 zip（仓库根）**
 > - `rise-stretch-casual-transparent.zip`（39 帧）→ **Prompt 1 已执行（2026-07-20）**
-> - `cloak-sleep-transparent.zip`（34 帧）→ Prompt 2 待分阶段执行
+> - `cloak-sleep-transparent.zip`（34 帧）→ **Prompt 2a 已入库；2b 已拍板；2c 待接线**
 >
-> **归档位置**：本文件亦可复制到 `focus-tiger/docs/`。素材帧：
-> `public/sprites/tiger-cub/monk-robe-default/{animation}/frame_NNN.png`。
+> **归档**：`focus-tiger/docs/NEW_ASSETS_2026-07-19-B.md`（与根目录同步）。
 
 ---
 
 ## 产品拍板（2026-07-20）
 
-| 素材 | 场景 | 与现有关系 |
+| 素材 | 场景 | 状态 |
 |---|---|---|
-| `rise-stretch-casual` | **Rise（中途主动结束）** 过渡动画 | **替换** `blinkBreathe` 的 Rise 接线；`blink-breathe` 素材与调试入口保留 |
-| `cloak-sleep` | **进入 Sleeping / DORMANT** 的过渡 | 贴合 EMOTION_BIBLE「夜晚披小毯子」+ 现有 `sleeping` 循环；播完应落入 `sleeping` |
-
-**回 Idle**：`rise-stretch-casual` 用 `loopMode: 'pingpong'`（播放器倒放，不另导倒序 PNG）。
+| `rise-stretch-casual` | Rise（中途主动结束）；替换 `blinkBreathe` | **已接线** |
+| `cloak-sleep` | 进入 Sleeping / DORMANT 过渡 | **2a 已入库**；**2b = ① 当日首次进 DORMANT 播一次**；**2c 未接线** |
 
 ---
 
-## Prompt 1：rise-stretch-casual → 替换 Rise 的 blinkBreathe
+## Prompt 1：rise-stretch-casual → Rise
 
-**状态：已执行（2026-07-20）**
-
-- 入库 `public/sprites/.../rise-stretch-casual/`（39 帧）
-- `spriteManifest.riseStretchCasual`：8 fps、pingpong、末帧 hold 2 拍
-- Rise：`playEmotion('riseStretchCasual')`；MoodController 护键；Reflection 结束后回 Idle/Sleeping
-- 时长：单程 ≈4.9s；完整 pingpong ≈9.6s；`MANUAL_END_PAUSE_MS` 仍 300（动画与 Reflection 并行）
-- 单测 + TEST_TRACKER / SCENARIO C / EMOTION_BIBLE 已更新
+**状态：已执行（2026-07-20）** — 见 commit / TEST_TRACKER「rise-stretch-casual」。
 
 ---
 
-## Prompt 2：cloak-sleep → 进入 DORMANT / sleeping 过渡
+## Prompt 2：cloak-sleep → 进入 DORMANT
 
-**状态：计划中（见下方分阶段）**
+### 2a 入库-only — **已执行（2026-07-20）**
 
-素材：`cloak-sleep-transparent.zip`（34帧，拿到斗篷→披上→睡着）
+- 路径：`public/sprites/tiger-cub/monk-robe-default/cloak-sleep/frame_001–034.png`
+- manifest：`cloakSleep`，6 fps，`loopMode: none`，`holdLastFrame: true`（≈5.7s）
+- 调试：入库素材列表「cloak-sleep 披毯入睡(候选)」；**不**经 MoodController / 日切自动触发
+- 与 Rise / `riseStretchCasual` 互斥（文档与 catalog 已写明）
 
-```
-将 cloak-sleep（34帧）入库：
-sprites/{characterId}/{outfitId}/cloak-sleep/frame_NNN.png
+### 2b 接入时机 — **已拍板**
 
-背景：作为从「有活动状态」进入 sleeping/DORMANT 的正式过渡，贴合 EMOTION_BIBLE
-「夜晚披小毯子」与现有 sleeping 持续循环；取代硬切或仅靠短 cross-fade。
+> **① 当日首次进入 DORMANT 时播一次**，播完落入 `sleeping` 持续循环。  
+> 不采用「仅夜晚」或「每次 Rise 后仍 DORMANT 再播」作为默认。
 
-要求：
-1. 入库并登记 manifest（建议 loopMode: none，一次性正放）。先确认接入时机再接线，
-   勿擅自接死——候选时机（产品择一或组合，实现前须书面确认）：
-   - 日切 / 当日零完成进入 DORMANT 时播一次；
-   - 仅「夜晚」时段（若已有时段逻辑）；
-   - 未达标 Rise / Reflection 结束后若仍应回 DORMANT 时播一次。
-2. 若接线：播完必须落入 `sleeping` 持续循环，不要播完又跳回 Idle 再切睡；
-   末帧与 sleeping 首帧用 CapCut 叠化或可接受的短 cross-fade。
-3. 与 rise-stretch-casual / Celebrating 互斥：进睡过渡不抢 Rise 主路径，Rise 不播本段。
-4. 更新 EMOTION_BIBLE：sleeping/DORMANT 条目下记录本候选及「待确认接入时机」；
-   「夜晚披小毯子」行可交叉引用本序列。
-5. 更新 TEST_TRACKER（入库后即可「待人工测试」试播；正式接线另开一行写触发条件）。
-```
+### 2c 接线 — **待办（等 Prompt 1 人工测通过后再开）**
 
-### Prompt 2 分阶段计划（建议）
+实现要点（备忘，防忘上下文）：
 
-| 阶段 | 做什么 | 何时 |
-|---|---|---|
-| **2a 入库-only** | 解压 PNG → manifest（`cloakSleep`，`loopMode: none`）+ 调试试播按钮；EMOTION_BIBLE 记「候选」；TEST_TRACKER 一行「调试试播」 | 可紧接 Prompt 1 之后（不触生产触发） |
-| **2b 产品择时机** | 书面确认下列之一（或组合）：① 日切/零完成进 DORMANT 播一次；② 仅夜晚；③ 中途 Rise→Reflection 结束后仍 DORMANT 时播 | **须你拍板后再动 2c** |
-| **2c 接线** | `playEmotion('cloakSleep')` → onComplete → `sleeping`；与 Rise/`riseStretchCasual` 互斥；回流：睡态 → Honesty wake 仍走 `dormantWake` | 2b 确认后 |
-| **2d 验收** | 主路径进睡 + 回流 Honesty 唤醒；末帧→`sleeping` 不闪；TEST_TRACKER 正式触发行 | 2c 后人工测 |
+1. 当日首次 `STATES.DORMANT` / `playEmotion('sleeping')` 入口：先 `cloakSleep`，`onComplete` → `sleeping`（CapCut 或短 cross-fade）。
+2. 同日再次进入睡态：直接 `sleeping`，不重复披毯。
+3. 须有「本自然日已播过 cloakSleep」日期戳（可复用 / 旁路 `DailyCompletionStore` 或独立 key）。
+4. 与 Rise/`riseStretchCasual`、Celebrating、Honesty `dormantWake` 互斥；唤醒仍走 `dormantWake`。
+5. 单测：首次 DORMANT → cloakSleep；同日第二次 → 直接 sleeping。
+6. TEST_TRACKER 正式触发行 + SCENARIO（零完成开场）。
 
-**默认建议（供 2b 拍板）**：优先 **① 当日首次进入 DORMANT 播一次**（开场/日切），避免每次 Rise 都披毯；③ 可作增强但与 Rise 伸懒腰叙事略叠，宜二选一或降频。
+### 2d 验收 — 2c 之后人工测
