@@ -38,8 +38,8 @@ export const INCENSE_GREETING_CONFIG = {
   },
   /** 右下角水印裁切区域（相对图片宽高的比例，PixMiller 标记） */
   watermarkCrop: {
-    widthRatio: 0.32,
-    heightRatio: 0.11
+    widthRatio: 0.22,
+    heightRatio: 0.12
   }
 };
 
@@ -381,6 +381,21 @@ export class IncenseGreeting {
     return root;
   }
 
+  /**
+   * DOM 叠层须用已去水印的贴图（CanvasTexture），禁止直链源 PNG——
+   * 否则会绕过 prepareLotusTexture，把 PixMiller 角标露在 Yin 袍面上。
+   */
+  _lotusDomSrc() {
+    const image = this._lotusTexture?.image;
+    if (image && typeof image.toDataURL === 'function') {
+      return image.toDataURL('image/png');
+    }
+    if (image instanceof HTMLImageElement && image.src) {
+      return image.src;
+    }
+    return LOTUS_TEXTURE_PATH;
+  }
+
   _playDomIncense() {
     const root = this._ensureFxRoot();
     this._disposeDomLotus();
@@ -389,7 +404,7 @@ export class IncenseGreeting {
     const lotus = document.createElement('img');
     lotus.alt = '';
     lotus.draggable = false;
-    lotus.src = LOTUS_TEXTURE_PATH;
+    lotus.src = this._lotusDomSrc();
     lotus.style.cssText = [
       'position:absolute',
       'left:22%',
