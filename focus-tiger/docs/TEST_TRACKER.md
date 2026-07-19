@@ -8,7 +8,13 @@
 
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 演示会话时长当前为 **`DEMO_SESSION_MINUTES = 1`**（`src/main.js`）。  
-右上角 `#emotion-debug-ui` 情绪调试面板常驻；DEV 下可用 `window.__*` 全局句柄。
+
+| 链接 | 用途 |
+|---|---|
+| `http://127.0.0.1:5173/` | **实验室**：右上角 `#emotion-debug-ui`；DEV 下 `window.__*` |
+| `http://127.0.0.1:5173/?product=1` | **产品壳**：隐藏调试面板，走用户场景故事（见仓库根目录 `SCENARIO_TESTS.md`） |
+
+用户场景串联剧本：仓库根目录 **`SCENARIO_TESTS.md`**（与本表互补，非替代）。
 
 ### 用户测试反馈记入规则（2026-07-19 起）
 
@@ -93,6 +99,8 @@
 | CharacterConfig 路径拼接 | 纯后端 | 仅单元测试覆盖 | `CharacterConfig.test.js`；无换装 UI | — | `src/character/CharacterConfig.js` | 2026-07-18 |
 | SpriteSequencePlayer | 纯后端+渲染 | 仅单元测试覆盖 | `SpriteSequencePlayer.test.js`；预加载/打断/帧停留/子序列 | — | `src/character/SpriteSequencePlayer.js` | 2026-07-18 |
 | EmotionController 映射桥 | 纯后端+桥接 | 仅单元测试覆盖 | `EmotionController.test.js`；业务只调 `playEmotion` | — | `src/core/EmotionController.js` | 2026-07-18 |
+| 用户场景剧本 SCENARIO_TESTS（A–G + I–M） | UI可见 | 待人工测试 | 用 **`?product=1`** 走故事：A 首晨（DORMANT→sleeping→Sit→Arrival→Here & Now→1min 庆祝→Reflection）；C Rise 未达标进 Reflection；E Offline 须再 Sit 且无 Re-focus；L 同日第二场仅 SessionComplete。实验室 `/` 可对照强制触发。已知缺口：自动 Incense、10min 挥手。 | 2026-07-19：Cursor 对照代码后已改剧本（A8 庆祝分流已接线；A9 Incense 仍未接线；B4 Re-focus 占共享额度；Idle 无 gaze/yawn）。 | `SCENARIO_TESTS.md` · `http://127.0.0.1:5173/?product=1` | 2026-07-19 |
+| 产品壳链接 ?product=1（隐藏调试面板） | UI可见 | 待人工测试 | 打开 `/?product=1`：无右上角情绪调试条；Sit / How shall we sit? / Honesty / Arrival / Sound 仍可用。打开 `/`：调试面板在。 | — | `http://127.0.0.1:5173/?product=1` vs `/` | 2026-07-19 |
 | 3D Idle GLB 换装（无红边单色灰棉麻） | UI可见 | 待人工测试 | 1) `npm run dev` 打开应用。2) 调试面板点 **T-Pose**（或临时让 PoseManager 显示 canvas）以露出 3D 垫底。3) 确认阿寅闭目坐禅袍为**单色暖浅灰棉麻 / 茶服风**，**无深红镶边/红里子**；棉麻织纹应清晰（勿呈糊成一团的过度压缩感）。4) 刷新后默认 2D 主线仍隐藏 3D；路径仍为 `/models/tiger-meditate-closed.glb`（约 **1.6MB**，非 292KB）。 | — | `http://127.0.0.1:5173/` · `#emotion-debug-ui` T-Pose · 源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb` | 2026-07-19 |
 
 ---

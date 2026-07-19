@@ -125,7 +125,13 @@ async function init() {
     spritePlayer,
     idleOrchestrator
   });
-  emotionController.createDebugUI(document.body);
+  // 实验室默认挂调试面板；?product=1 或 ?mode=product → 产品壳（场景故事测）
+  const productChrome =
+    new URLSearchParams(window.location.search).get('product') === '1' ||
+    new URLSearchParams(window.location.search).get('mode') === 'product';
+  if (!productChrome) {
+    emotionController.createDebugUI(document.body);
+  }
 
   if (import.meta.env.DEV) {
     window.__incenseGreeting = incenseGreeting;
