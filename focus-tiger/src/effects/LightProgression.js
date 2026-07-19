@@ -146,18 +146,39 @@ export class LightProgression {
     this._breathHalo.style.animation = `ft-breath-halo ${GOLD_BREATH_PERIOD_SEC}s ease-in-out infinite`;
   }
 
-  endBreath() {
+  /**
+   * 结束呼吸 beat。
+   * @param {{ releaseDolly?: boolean }} [opts]
+   *   `releaseDolly` 默认 true：拉回视差。Choose/合十期间应传 false，
+   *   等合十→idle 淡入完成后再 `releaseDolly()`，避免推近回拉与角色切换叠成跳动。
+   */
+  endBreath({ releaseDolly = true } = {}) {
     this._breathActive = false;
-    this._applyDolly(false);
+    if (releaseDolly) this._applyDolly(false);
     if (this._breathHalo) {
       this._breathHalo.style.animation = 'none';
       this._breathHalo.style.display = 'none';
     }
   }
 
-  /** Choose 确认：坐垫处一次性 fade-in 光晕（播完自行隐藏，不被 clear 打断）。 */
+  /** 呼吸结束后的视差拉回（可在合十淡入 idle 完成后再调）。 */
+  releaseDolly() {
+    this._applyDolly(false);
+  }
+
+  /**
+   * 只收 Arrival 氛围（暖色背景 / 呼吸光环），不拉回 Dolly。
+   * 合十→idle 淡入期间保持推近，避免与角色切换叠成跳动。
+   */
+  clearArrivalAtmosphere() {
+    this.endBreath({ releaseDolly: false });
+    this._setWarmth(0, false);
+    if (this._backdrop) this._backdrop.style.opacity = '0';
+  }
+
+  /** Choose 确认：坐垫光晕；保持 Dolly 推近，不在此拉回。 */
   onChooseConfirmed() {
-    this.endBreath();
+    this.endBreath({ releaseDolly: false });
     this._ensureCushion();
     const el = this._cushion;
     el.style.display = 'block';
@@ -172,11 +193,10 @@ export class LightProgression {
     el.addEventListener('animationend', onEnd);
   }
 
-  /** Arrival 结束或跳过：清背景/呼吸氛围；坐垫光晕若在播则让其自然结束。 */
+  /** Arrival 结束或跳过：清氛围并拉回 Dolly。 */
   clearArrivalEffects() {
-    this.endBreath();
-    this._setWarmth(0, false);
-    if (this._backdrop) this._backdrop.style.opacity = '0';
+    this.clearArrivalAtmosphere();
+    this.releaseDolly();
   }
 
   /**

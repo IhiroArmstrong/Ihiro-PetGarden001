@@ -56,6 +56,19 @@ export class AmbientSoundscapeUI {
     this.nudgeEl = document.createElement('p');
     this.nudgeEl.className = 'ambient-soundscape__nudge';
     this.nudgeEl.hidden = true;
+    this.nudgeEl.setAttribute('role', 'button');
+    this.nudgeEl.tabIndex = 0;
+    this.nudgeEl.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._dismissNudgeOrBlockedTip();
+    });
+    this.nudgeEl.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        this._dismissNudgeOrBlockedTip();
+      }
+    });
 
     this.toggleBtn = document.createElement('button');
     this.toggleBtn.type = 'button';
@@ -123,7 +136,8 @@ export class AmbientSoundscapeUI {
       this._hideNudge();
     } else {
       this._clearBlockedTip();
-      this._maybeShowNudge();
+      // 首次 FOCUSING 旁白改由 OnboardingHintsUI（ambient-soundscape）锚定 Sound FAB；
+      // 此处不再叠一层 AMBIENT_NUDGE，避免双提示、且与漫画气泡样式统一。
     }
     this._refreshFab();
   }
@@ -150,7 +164,7 @@ export class AmbientSoundscapeUI {
     this._nudgeVisible = false;
     this.nudgeEl.hidden = false;
     this.nudgeEl.classList.add('is-blocked-tip');
-    this.nudgeEl.textContent = t('AMBIENT_REQUIRES_FOCUS');
+    this.nudgeEl.textContent = t('HINT_AMBIENT_GATED');
     this.handlers.onBlockedTip?.();
     window.clearTimeout(this._blockedTipTimer);
     this._blockedTipTimer = window.setTimeout(() => {
@@ -194,13 +208,22 @@ export class AmbientSoundscapeUI {
     markNudgeSeen();
   }
 
+  /** 点击 Sound 旁气泡：立刻关掉（含 gated 阻塞提示）。 */
+  _dismissNudgeOrBlockedTip() {
+    if (this.nudgeEl.classList.contains('is-blocked-tip')) {
+      this._clearBlockedTip();
+      return;
+    }
+    this._dismissNudge();
+  }
+
   _renderPanel() {
     this.titleEl.textContent = t('AMBIENT_TITLE');
     this.toggleBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
     if (this._nudgeVisible) {
       this.nudgeEl.textContent = t('AMBIENT_NUDGE');
     } else if (this.nudgeEl.classList.contains('is-blocked-tip') && !this.nudgeEl.hidden) {
-      this.nudgeEl.textContent = t('AMBIENT_REQUIRES_FOCUS');
+      this.nudgeEl.textContent = t('HINT_AMBIENT_GATED');
     }
 
     this.trackRow.replaceChildren();
@@ -319,22 +342,42 @@ export class AmbientSoundscapeUI {
         opacity: 1;
       }
       .ambient-soundscape__nudge {
+        position: relative;
         margin: 0;
         max-width: min(260px, calc(100vw - 48px));
-        padding: 8px 12px;
-        border-radius: 12px;
-        background: rgba(255, 252, 245, 0.96);
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        box-shadow: 0 6px 18px rgba(44, 31, 20, 0.1);
-        color: #4a3a28;
-        font-size: 12px;
+        padding: 9px 14px;
+        border-radius: 16px 16px 4px 16px;
+        background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
+        border: 1.5px solid rgba(92, 122, 108, 0.45);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.65) inset,
+          0 6px 16px rgba(40, 64, 52, 0.14);
+        color: #3a5348;
+        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
+        font-size: 12.5px;
+        font-style: italic;
+        font-weight: 500;
         line-height: 1.45;
-        text-align: right;
+        text-align: left;
+        cursor: pointer;
+        filter: drop-shadow(0 2px 4px rgba(40, 64, 52, 0.08));
+      }
+      .ambient-soundscape__nudge::after {
+        content: "";
+        position: absolute;
+        right: 28px;
+        bottom: -8px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 8px 7px 0 7px;
+        border-color: #dceae2 transparent transparent transparent;
+        filter: drop-shadow(0 1px 0 rgba(92, 122, 108, 0.35));
       }
       .ambient-soundscape__nudge.is-blocked-tip {
         text-align: left;
-        border-color: rgba(139, 46, 46, 0.28);
-        background: rgba(255, 248, 240, 0.98);
+        border-color: rgba(92, 122, 108, 0.45);
+        background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
       }
       .ambient-soundscape__nudge[hidden] {
         display: none !important;

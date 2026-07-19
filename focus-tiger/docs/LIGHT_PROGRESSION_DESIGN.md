@@ -27,8 +27,8 @@ Shader，这次只是把"渐变"这个时间维度加进去。
 | 阶段 | 视觉变化 | 实现方式 |
 |---|---|---|
 | Welcome/Notice | 背景冷灰色调；用户点选状态图标后，背景微微泛暖 | 背景容器 CSS 渐变色 transition，点选事件触发一次颜色过渡（约1-2秒） |
-| 呼吸 beat | 画面轻微"推近"感（三层视差）；呼吸律动时光环虚影随吸气/呼气明暗 | 背景层 `scale→1.06`、Yin `#sprite-overlay` `scale→1.12`（UI 不缩放）；外围 DOM 光环 **4s** 周期脉动（不染皮毛） |
-| Choose 确认 | 角色脚下坐垫处轻轻亮起一圈光；角色播合十 `intentionSet` | 坐垫 CSS 光晕（`LightProgression.onChooseConfirmed`）与 `palms-together` **叠加保留**——氛围层 + 动作层分工；跳过 Choose 时两者均不触发 |
+| 呼吸 beat | 画面轻微"推近"感（三层视差）；呼吸律动时光环虚影随吸气/呼气明暗 | 背景层 `scale→1.06`、Yin `#sprite-overlay` `scale→1.12`（UI 不缩放）；外围 DOM 光环 **4s** 周期脉动（不染皮毛）。**推近保持到 Choose 合十→idle 淡入完成后再拉回**（2026-07-20），避免与角色切换叠成跳动 |
+| Choose 确认 | 角色脚下坐垫处轻轻亮起一圈光；角色播合十 `intentionSet` | 坐垫 CSS 光晕与 `palms-together` 叠加；合十期保持 Dolly 推近；淡入 idle 后再 `releaseDolly` |
 
 以上均为氛围层，不影响 Arrival Practice 已定的跳过机制、数据存储规则（见
 ARRIVE_MOMENT_DESIGN.md），纯视觉增强，不改变交互逻辑。

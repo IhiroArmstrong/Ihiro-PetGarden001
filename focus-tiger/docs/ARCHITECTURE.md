@@ -181,6 +181,8 @@ focus-tiger/
 
 这些 3D 资产予以**完整保留，不废弃、不删除**，原因：该批模型视觉上呈现「塑胶公仔」质感，适合用作后续「奖励系统」中的可 360 度展示虚拟公仔奖品。此场景恰好是 3D 技术的优势场景（静态展示、任意角度观赏），不涉及此前主线开发中遇到的动画穿插、姿态切换等工程难题。已实现的「绕 Y 轴缓慢旋转」效果，在「奖品展示柜」场景下是合适的展示方式，予以保留复用。
 
+**正式衣着（2026-07-18）**：Idle 闭目坐禅运行时 `public/models/tiger-meditate-closed.glb` 须为单色暖浅灰棉麻禅修服 / 茶服风、**无红边**；权威描述见 `CHARACTER_BIBLE.md` Costume。旧深红镶边版本仅历史备份。后续奖励柜换装或新姿态 GLB 不得回退到红边/双色袍。
+
 ### 历史说明：3D 多姿态 GLB 方案（保留，非主线）
 
 角色的视觉表现分为两个正交的层（下列描述对应已实现的 3D 代码，供奖励场景复用）：
@@ -246,9 +248,19 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 ### 播放机制
 
-当前采用 `SpriteSequencePlayer`：单 `<img>` + `requestAnimationFrame` 逐帧换图，
-支持 `none` / `forward` / `pingpong`、逐帧额外停留、完成回调与立即打断；
-跨序列切换可启用双 `<img>` 短时 cross-fade（如同源 sleeping → dormantWake）。
+当前采用 `SpriteSequencePlayer`：主 `<img>` + `requestAnimationFrame` 逐帧换图，
+支持 `none` / `forward` / `pingpong`、逐帧额外停留、完成回调与立即打断。
+
+**跨序列衔接（CapCut 式叠代，2026-07-20）**
+
+| 情况 | 做法 |
+|---|---|
+| 两序列无法自然衔接（画幅/姿态跳变） | 双 `<img>` **叠代溶解**：定格末帧↔首帧，默认 **`CAPCUT_DISSOLVE_MS`（1000ms）** `ease-in-out`；`freezeUntilCrossFadeEnds: true` 时溶解期间不推进新序列帧 |
+| 同源可衔接（同画幅微表情、子序列） | 可用短 cross-fade（`MICRO_CROSS_FADE_MS` ≈180ms）或不冻帧 |
+| 调试验收 | `holdPose` 定格末帧，可不回落 idle |
+
+一次性情绪经 `EmotionController._finishOneShot` 回落 idle 时**默认**走 CapCut 溶解；禁止业务路径闪切。详见 `PRINCIPLES.md`「序列衔接：CapCut 式叠代」。
+
 清单可用 `startFrame + frameCount` 从同一素材目录注册子序列；例如
 `halo-breathing` 可拆成 001–006 一次性过渡与 007–030 呼吸循环，而无需复制素材。
 尚未绑定的候选序列须设 `preload: false`，避免增加首屏下载与解码成本；首次技术试播时

@@ -10,7 +10,7 @@ export const MEDITATION_CUSHION_CONFIG = {
   rimRadiusTop: 0.99,
   rimRadiusBottom: 1.02,
   rimHeight: 0.033,
-  /** 较深暖橙色，与袈裟朱红区分、作为清晰地面参照 */
+  /** 较深暖橙色，与阿寅单色灰棉麻袍区分、作为清晰地面参照 */
   bodyColor: '#d9722d',
   rimColor: '#c05820',
   roughness: 0.9,

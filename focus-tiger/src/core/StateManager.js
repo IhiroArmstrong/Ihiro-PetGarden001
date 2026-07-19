@@ -17,6 +17,7 @@ export class StateManager {
 
   setState(nextState) {
     // TODO(Task 2): 校验状态流转是否合法，非法流转应拒绝并给出警告
+    if (nextState === this.state) return;
     this.state = nextState;
     this._listeners.forEach((cb) => cb(nextState));
   }

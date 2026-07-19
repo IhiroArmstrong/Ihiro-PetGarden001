@@ -1,5 +1,5 @@
 // 职责：场景图组装——老虎挂载点。
-// 默认闭眼坐禅 GLB（Yin001 灰棉麻袈裟）已自带蒲团，故不再创建程序化 MeditationCushion。
+// 默认闭眼坐禅 GLB（阿寅 · 单色暖浅灰棉麻禅修服/茶服风，无红边）已自带蒲团，故不再创建程序化 MeditationCushion。
 
 import * as THREE from 'three';
 import { COLORS } from '../utils/Constants.js';

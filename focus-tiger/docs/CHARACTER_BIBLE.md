@@ -1,6 +1,8 @@
 Focus Tiger Master Character Prompt V1.0 (MVP)
 
 > **服装设定更新（2026-07-17）**：依据最新入库的 `wave-hello`、`tilt-think` 等正式动画及 `art-reference/outfit-monk-robe/grey-cotton-linen-kasaya-fabric-ref.jpg`，默认服装已由旧版深红色造型修订为暖浅灰棉麻单肩禅修服。本次更新用于确保后续图生视频 Prompt 与当前正式素材一致，避免再次生成旧服装。
+>
+> **3D 正式模型同步（2026-07-18）**：闭目坐禅运行时 GLB 已替换为「单色暖浅灰棉麻禅修服 / 茶服风、无红边」版本。源文件（gitignore）：`art-reference/models/sources/yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb`；运行时稳定路径仍为 `public/models/tiger-meditate-closed.glb`。旧「灰棉麻 + 深红镶边」3D 仅作历史备份，**不再**代表正式衣着。2D `monk-robe-default` 序列、图生视频 Prompt 与 3D 奖励柜展示须与本节 Costume 一致。
 
 ## 角色正式名称（Display Name）
 
@@ -130,13 +132,13 @@ The eyes are the emotional center of the character.
 Costume
 ====================
 
-The tiger wears a coordinated modern Zen-inspired meditation outfit: an asymmetrical upper wrap with a matching loose lower garment.
+The tiger wears a coordinated modern Zen-inspired meditation outfit: an asymmetrical upper wrap with a matching loose lower garment — visually close to a quiet cotton-linen tea robe / contemporary kasaya-inspired wrap, but original and non-religious.
 
 It is NOT an authentic Buddhist monk robe.
 
-It is an original contemporary design inspired by mindfulness.
+It is an original contemporary design inspired by mindfulness and tea-house calm.
 
-Warm light stone-gray / light greige color, low in saturation, with a soft natural warmth rather than a cold blue-gray.
+**Monochrome** warm light stone-gray / light greige only — one quiet grey family for the whole garment (no second accent color on the cloth).
 
 Natural cotton-linen woven fabric with a clearly visible fine crosshatch weave and subtle slub texture.
 
@@ -150,7 +152,9 @@ Relaxed, child-friendly tailoring with softly rolled edges; never stiff, ceremon
 
 No crimson, maroon, burgundy, saffron, or other saturated red fabric.
 
-No contrasting red trim or decorative border.
+No contrasting red trim, lining flash, or decorative border (including the historical 3D “crimson trim” variant — superseded 2026-07-18).
+
+No dual-tone or color-blocked robe panels.
 
 Simple.
 
@@ -169,6 +173,8 @@ No monk hat.
 No traditional monk clothing.
 
 The design should communicate mindfulness rather than religion.
+
+**Canonical 3D reference (Idle closed eyes):** `public/models/tiger-meditate-closed.glb` ← source `yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb`.
 
 ====================
 Meditation Cushion
@@ -360,7 +366,7 @@ Use the same character. The tiger gently closes its eyes while being petted on t
 1. **关于 Output Requirements 中提及的 Rive animation**：项目已确认当前技术路线为 2D PNG 序列（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`），未采用 Rive。本文档中该项要求视为面向未来多种技术形态的通用素材规范，不代表当前实际技术选型。
 
 2. **关于服装标识与「一炷香」完成反馈中的莲花动画，需明确区分**：
-   - **当前正式服装**：以 `wave-hello`、`tilt-think` 等已入库素材为准，不显示莲花刺绣、宗教标识或装饰性镶边；未经单独批准，不应在后续图生视频素材中自行添加。
+   - **当前正式服装**：以本节 Costume + 2D `wave-hello` / `tilt-think` 等已入库素材 + 3D `tiger-meditate-closed.glb`（无红边单色灰棉麻）为准；不显示莲花刺绣、宗教标识或装饰性镶边；未经单独批准，不应在后续图生视频素材中自行添加。
    - **「一炷香」完成反馈莲花**：一次性触发的临时视觉特效（渐显–停留–消失），与角色主体服装无关，是独立的动效资源（见 `EMOTION_BIBLE.md`）。
 
 3. **关于 Meditation Cushion（蒲团）描述**：本文档中描述的蒲团设计（natural woven fabric, warm beige, minimalist）应作为此前开发中用于验证悬浮效果的地面参照物（「蒲团 / 打坐台」）的正式美术定稿依据，两者为同一设计对象，后续视觉实现应以本文档描述为准。
@@ -381,7 +387,7 @@ Focus Tiger 优先面向海外市场，不同市场对角色造型与装扮的�
 
 ### 默认角色权威性
 
-本文档中的 **Focus Tiger Master Character Prompt V1.0 (MVP)**（含 2026-07-17 正式服装修订）继续作为默认角色 `tiger-cub` 与默认装扮 `monk-robe-default` 的权威设定来源。用户可见的正式显示名为中文「阿寅」、英文「Yin」（见上文「角色正式名称」）；`characterId = 'tiger-cub'` 仅作工程标识，二者不同层。任何默认角色素材仍须遵循本文档规定的比例、性格、服装、色彩、品牌标识和 Suffix Prompt 方法，不因架构可替换而降低一致性要求。
+本文档中的 **Focus Tiger Master Character Prompt V1.0 (MVP)**（含 2026-07-17 正式服装修订与 2026-07-18 无红边 3D 同步）继续作为默认角色 `tiger-cub` 与默认装扮 `monk-robe-default` 的权威设定来源。用户可见的正式显示名为中文「阿寅」、英文「Yin」（见上文「角色正式名称」）；`characterId = 'tiger-cub'` 仅作工程标识，二者不同层。任何默认角色素材仍须遵循本文档规定的比例、性格、服装、色彩、品牌标识和 Suffix Prompt 方法，不因架构可替换而降低一致性要求。
 
 ### 未来变体约束
 
