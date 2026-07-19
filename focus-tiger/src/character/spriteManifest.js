@@ -147,7 +147,7 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 候选轻量手势：睁眼微笑坐禅下边眨眼边深呼吸（Rise 过渡）。
+  // 候选轻量手势：睁眼微笑坐禅下边眨眼边深呼吸（调试保留；Rise 主路径已改 riseStretchCasual）。
   // 正放末帧不完整 → pingpong 倒放回首帧，可无缝循环。
   // 深吸顶点（末帧）额外停约 2 拍，避免到顶立刻倒放像跳动。
   blinkBreathe: {
@@ -158,6 +158,19 @@ export const SPRITE_SEQUENCES = {
     loopMode: 'pingpong',
     holdLastFrame: false,
     frameHolds: { 13: Math.round((1000 / 8) * 2) }
+  },
+
+  // Rise 主路径：闭目坐禅 → 伸懒腰 → 随意日常坐姿；pingpong 倒放回闭目首帧衔接 idle。
+  // 单程 39 帧 @ 8fps ≈ 4.9s；完整 pingpong ≈ 9.6s（+末帧 2 拍停留）。
+  // 随意坐姿顶点（末帧）停约 2 拍，避免到顶立刻倒放像跳动。
+  riseStretchCasual: {
+    animation: 'rise-stretch-casual',
+    frameCount: 39,
+    fps: 8,
+    loop: true,
+    loopMode: 'pingpong',
+    holdLastFrame: false,
+    frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
   // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。

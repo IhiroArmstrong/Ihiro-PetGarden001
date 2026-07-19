@@ -246,7 +246,7 @@ test('gaze lookaround and yawn-stretch idle variants are registered', () => {
   assert.equal(SPRITE_SEQUENCES.yawnStretch.loopMode, 'none');
 });
 
-test('teaDrinking, earWiggleHeadTouch, blinkBreathe companion gestures are registered', () => {
+test('teaDrinking, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
   assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
   assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);
   assert.equal(SPRITE_SEQUENCES.teaDrinking.fps, 8);
@@ -255,6 +255,12 @@ test('teaDrinking, earWiggleHeadTouch, blinkBreathe companion gestures are regis
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.frameCount, 54);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.fps, 10);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.animation, 'rise-stretch-casual');
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.frameCount, 39);
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.loop, true);
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.loopMode, 'pingpong');
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.frameHolds?.[39], 250);
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.animation, 'blink-breathe');
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.frameCount, 13);
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.fps, 8);

@@ -25,10 +25,11 @@ export class MoodController {
       // 仅在用户主动开始专注（FOCUSING）或其它情绪打断时离开光环。
       if (state === STATES.IDLE) {
         const current = this.emotionController.getCurrentEmotionKey();
-        // Rise 后 blinkBreathe pingpong 过渡；Honesty 光环/睡醒定格也不被 IDLE 冲掉
+        // Rise 后 riseStretchCasual（及调试 blinkBreathe）pingpong；Honesty 光环/睡醒定格也不被 IDLE 冲掉
         if (
           current === 'haloBreathing' ||
           current === 'dormantWake' ||
+          current === 'riseStretchCasual' ||
           current === 'blinkBreathe'
         ) {
           return;

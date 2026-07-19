@@ -52,9 +52,16 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     suggestedUses: '亲密互动回应 / 偶发俏皮（幅度大，宜少用）'
   }),
   Object.freeze({
+    id: 'riseStretchCasual',
+    sequence: 'riseStretchCasual',
+    label: 'Rise 伸懒腰',
+    suggestedUses:
+      '中途 Rise 主路径（pingpong；倒放回闭目衔接 idle）；不抢 Celebrating / SessionComplete'
+  }),
+  Object.freeze({
     id: 'blinkBreathe',
     sequence: 'blinkBreathe',
     label: '眨眼深呼吸',
-    suggestedUses: 'Rise 后轻量过渡（pingpong 循环）；不抢 Celebrating / SessionComplete'
+    suggestedUses: '调试候选；Rise 主路径已改 riseStretchCasual'
   })
 ]);

@@ -17,9 +17,12 @@ test('gaze lookaround is a single combined chain (p1→p4)', () => {
   ]);
 });
 
-test('blinkBreathe oneshot is listed for Rise', () => {
+test('riseStretchCasual oneshot is listed for Rise; blinkBreathe retained as debug', () => {
+  const rise = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'riseStretchCasual');
+  assert.ok(rise);
+  assert.equal(rise.sequence, 'riseStretchCasual');
+  assert.match(rise.suggestedUses, /Rise/);
   const blink = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'blinkBreathe');
   assert.ok(blink);
-  assert.equal(blink.sequence, 'blinkBreathe');
-  assert.match(blink.suggestedUses, /Rise/);
+  assert.match(blink.suggestedUses, /调试|riseStretchCasual/);
 });

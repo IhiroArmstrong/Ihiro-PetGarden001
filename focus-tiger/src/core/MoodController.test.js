@@ -50,7 +50,17 @@ test('CELEBRATE maps to celebrating and forwards onComplete', () => {
   assert.equal(getCelebrateDone(), 1);
 });
 
-test('IDLE does not overwrite blinkBreathe Rise transition', () => {
+test('IDLE does not overwrite riseStretchCasual Rise transition', () => {
+  const { calls, stateManager, emotionController } = createHarness();
+  stateManager.setState(STATES.FOCUSING);
+  emotionController.playEmotion(EMOTION_KEYS.RISE_STRETCH_CASUAL);
+  const before = calls.length;
+  stateManager.setState(STATES.IDLE);
+  assert.equal(calls.length, before);
+  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.RISE_STRETCH_CASUAL);
+});
+
+test('IDLE does not overwrite blinkBreathe debug transition', () => {
   const { calls, stateManager, emotionController } = createHarness();
   stateManager.setState(STATES.FOCUSING);
   emotionController.playEmotion(EMOTION_KEYS.BLINK_BREATHE);

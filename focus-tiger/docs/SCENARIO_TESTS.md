@@ -66,9 +66,9 @@
 
 1. 开始新会话，进行到一半，点 **Rise**。
 2. 不应播放 Celebrating，不应播放 IncenseGreeting。
-3. 短暂留白后淡入 Reflection（主动结束约 `MANUAL_END_PAUSE_MS = 300`）。
+3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。
-5. 三问正常可跳过。
+5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
 
 ---
 

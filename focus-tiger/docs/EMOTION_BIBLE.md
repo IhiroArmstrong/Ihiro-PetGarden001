@@ -181,7 +181,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 > | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮 |
-> | `blinkBreathe` | **已接线 Rise**：点起身后 `playEmotion('blinkBreathe')` pingpong 循环；Reflection 结束后回 Idle / Sleeping |
+> | `blinkBreathe` | 调试候选；**Rise 主路径已改** `riseStretchCasual` |
+> | `riseStretchCasual` | **已接线 Rise（中途主动结束）**：`playEmotion('riseStretchCasual')` pingpong（正放伸懒腰→随意坐→倒放回闭目）；Reflection 结束后回 Idle / Sleeping；**不**用于达标 Celebrating / SessionComplete |
 
 ---
 
@@ -624,5 +625,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.57 | 2026-07-20 | `breath-halo-hq` / `blink-breathe` 改 pingpong；张望 A+B 合并为单一组合试播；`blinkBreathe` 接入 Rise 点击 |
 | 0.58 | 2026-07-20 | **CapCut 式叠代**定为硬性衔接标准（§1.6 / PRINCIPLES / ARCHITECTURE）；`_finishOneShot` 默认 `CAPCUT_DISSOLVE_MS` |
 | 0.59 | 2026-07-20 | pingpong 顶点补 2 拍停留；Choose 改 16:9 `intentionNod`（去合十）；Sit dock 抬 z-index 防 Honesty 抢点；Choose 确认立刻开门闩 |
+| 0.60 | 2026-07-20 | Rise 主路径改 `riseStretchCasual`（`rise-stretch-casual` pingpong）替换 `blinkBreathe`；倒放回闭目衔接 idle；`cloak-sleep` 仍待进 DORMANT 时机确认 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

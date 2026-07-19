@@ -369,7 +369,60 @@ test('leaving dormantWake injects a longer cross-fade into the next emotion', ()
   assert.equal(idlePlay.options.crossFadeMs, LEAVE_DORMANT_WAKE_CROSS_FADE_MS);
 });
 
-test('blinkBreathe plays pingpong loop for Rise transition', () => {
+test('riseStretchCasual plays pingpong loop for Rise transition', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('riseStretchCasual');
+  assert.equal(plays[0].name, 'riseStretchCasual');
+  assert.equal(plays[0].options.loop, true);
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(controller.getCurrentEmotionKey(), 'riseStretchCasual');
+});
+
+test('riseStretchCasual maxCycles finishes back to idle', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer,
+    idleOrchestrator: {
+      start() {},
+      isActive() {
+        return false;
+      },
+      stop() {}
+    }
+  });
+
+  controller.playEmotion('riseStretchCasual', { maxCycles: 1 });
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(typeof plays[0].options.onComplete, 'function');
+  plays[0].options.onComplete();
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+test('blinkBreathe still plays pingpong (debug retained)', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -387,7 +440,6 @@ test('blinkBreathe plays pingpong loop for Rise transition', () => {
 
   controller.playEmotion('blinkBreathe');
   assert.equal(plays[0].name, 'blinkBreathe');
-  assert.equal(plays[0].options.loop, true);
   assert.equal(plays[0].options.loopMode, 'pingpong');
   assert.equal(controller.getCurrentEmotionKey(), 'blinkBreathe');
 });

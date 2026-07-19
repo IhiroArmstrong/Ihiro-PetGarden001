@@ -202,7 +202,7 @@ export class EmotionController {
           this.spritePlayer.play('blinkSmile', playOpts);
         }
       },
-      // Rise 后轻量过渡：blink-breathe pingpong 循环（可 maxCycles 后回落）。
+      // 调试保留：blink-breathe pingpong（Rise 主路径已改 riseStretchCasual）。
       blinkBreathe: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
@@ -232,6 +232,39 @@ export class EmotionController {
         const started = this.spritePlayer.play('blinkBreathe', playOpts);
         if (!started && Number.isFinite(maxCycles) && maxCycles > 0) {
           this._finishOneShot(options, 'blinkBreathe');
+        }
+      },
+      // Rise 主路径：伸懒腰→随意坐姿 pingpong；倒放回闭目首帧后可叠化进 idle。
+      riseStretchCasual: (options = {}) => {
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
+        if (!this.spritePlayer) {
+          console.warn(
+            '[EmotionController] riseStretchCasual: spritePlayer 未接入，回落 idle'
+          );
+          this._finishOneShot(options, 'riseStretchCasual');
+          return;
+        }
+        const playOpts = {
+          crossFadeMs: options.crossFadeMs ?? 180,
+          loop: true,
+          loopMode: 'pingpong'
+        };
+        if (Number.isFinite(options.fps) && options.fps > 0) {
+          playOpts.fps = options.fps;
+        }
+        const maxCycles = Number(options.maxCycles);
+        if (Number.isFinite(maxCycles) && maxCycles > 0) {
+          playOpts.maxCycles = maxCycles;
+          playOpts.onComplete = () =>
+            this._finishOneShot(options, 'riseStretchCasual');
+        } else if (typeof options.onComplete === 'function') {
+          playOpts.onComplete = () => options.onComplete('riseStretchCasual');
+        }
+        const started = this.spritePlayer.play('riseStretchCasual', playOpts);
+        if (!started && Number.isFinite(maxCycles) && maxCycles > 0) {
+          this._finishOneShot(options, 'riseStretchCasual');
         }
       },
       celebrating: (options = {}) => {
@@ -793,7 +826,8 @@ export class EmotionController {
       { key: 'idle', label: '坐禅闭眼' },
       { key: 'sleeping', label: '睡着了' },
       { key: 'smiling', label: '坐禅微笑' },
-      { key: 'blinkBreathe', label: '眨眼深呼吸(Rise)' },
+      { key: 'riseStretchCasual', label: 'Rise伸懒腰(正式)' },
+      { key: 'blinkBreathe', label: '眨眼深呼吸(调试)' },
       { key: 'celebrating', label: '庆祝(随机v1/v2)' },
       { key: 'intentionSet', label: 'Choose点头确认' },
       { key: 'tPose', label: 'T-Pose' },
@@ -822,6 +856,7 @@ export class EmotionController {
       yawnStretch: 'yawn-stretch 哈欠',
       teaDrinking: 'tea-drinking 喝茶',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
+      riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
       waveHello: 'wave-hello 挥手',
       celebrateDance: 'celebrate-dance v1',
@@ -1096,6 +1131,7 @@ export const EMOTION_KEYS = Object.freeze({
   SLEEPING: 'sleeping',
   SMILING: 'smiling',
   BLINK_BREATHE: 'blinkBreathe',
+  RISE_STRETCH_CASUAL: 'riseStretchCasual',
   CELEBRATING: 'celebrating',
   INTENTION_SET: EMOTIONS.intentionSet,
   INCENSE_COMPLETE: 'incenseComplete',

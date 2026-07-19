@@ -295,7 +295,8 @@ async function init() {
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
     // Rise 过渡播完后：若仍是当日零完成，收回到 Sleeping；否则回 Idle 呼吸。
-    if (emotionController.getCurrentEmotionKey() === 'blinkBreathe') {
+    const riseKey = emotionController.getCurrentEmotionKey();
+    if (riseKey === 'riseStretchCasual' || riseKey === 'blinkBreathe') {
       if (stateManager.state === STATES.DORMANT) {
         emotionController.playEmotion('sleeping');
       } else {
@@ -719,9 +720,9 @@ async function init() {
       honestyBridge?.hide();
       honestyCheckIn.onIncompleteSessionEnded();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：角色切到 blink-breathe pingpong（完整一吸一呼可循环），再进 Reflection。
-      // MoodController 在 IDLE 时不覆盖 blinkBreathe；DORMANT 睡态在其后再写也不抢本过渡。
-      emotionController.playEmotion('blinkBreathe');
+      // Rise：伸懒腰→随意坐姿 pingpong（倒放回闭目首帧可衔接 idle），再进 Reflection。
+      // MoodController 在 IDLE 时不覆盖 riseStretchCasual；DORMANT 睡态在其后再写也不抢本过渡。
+      emotionController.playEmotion('riseStretchCasual');
       sessionEndFlow.onSessionEnded({
         completed: false,
         intention: currentSessionIntention,
