@@ -1,7 +1,10 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-07-19（Cursor 对照 `focus-tiger` 实现）
+最近代码核对：2026-07-20（文档收敛 + 增量对照 `focus-tiger` 实现）
+
+**权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
+仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
 
@@ -16,10 +19,10 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–G |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–G / I–N |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
-语言切换：**无应用内设置**；仅实验室页打开控制台执行 `__i18n.setLocale('zh')` / `'en'`（需非 `?product=1` 的 DEV 构建，或临时在控制台仍可用若已暴露——product 模式仍加载同一 bundle，DEV 下 `__i18n` 仍可用）。
+语言切换：**无应用内设置**；DEV 控制台 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下仍可用，同一 bundle）。
 
 ---
 
@@ -31,11 +34,12 @@
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）
    c. 呼吸 beat（~5 秒，无倒计时）
-   d. Choose：六个活动图标；点 "Deep Work" → `palms-together` 正放合掌再倒放回闭目（约 6–7s）
+   d. Choose：六个活动图标；点 "Deep Work" → `palms-together`（合十确认；实现可能含正放/回落，以观感为准）
 4. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**（不是旧稿 Stay here / I'll step away / …）。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。
 5. 计时开始后，可展开右下角 Ambient Soundscape，选一首播放（未计时时点 Sound 应提示须先进入专注，不展开面板）。
 6. 全程观察 Idle：**仅**「呼吸 ×5 → blink-smile」固定节奏。  
-   **Idle**：仅呼吸×5→眨眼。候选手势（gaze/tea/yawn/ear/blink-breathe）用实验室「入库素材 / 组合试播」逐条看，不自动出现。
+   **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**（素材可在，见 `companionGestureCatalog`；测序列用实验室 / `__spritePlayer.play(...)`）。看不到它们不算失败。  
+   **靠近区不应自动播点头**（`nodGreeting` 已拆除靠近触发；调试「点头致意」可手工播）。
 7. 达到目标时长 → **当日首次**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。
 8. **同日第二次达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
    （旧稿「每日首次庆祝限制尚未接通」已过时——代码已接线。）
@@ -68,13 +72,17 @@
 
 ---
 
-## 场景 D：请假一天后的 Honesty Check-in
+## 场景 D：请假一天后的 Honesty Check-in（含桥接 CTA）
 
 1. 模拟「次日零完成」：可用无完成记录的浏览器配置 / 清相关 localStorage 后刷新（见下方强制手段）。
 2. 当日 DORMANT，可忽略提示；这次点进 Honesty。
 3. 选时长 10 / 20 / 30+（选 20）。
-4. **实际顺序**：选时长后 **立刻**播 `dormant-wake`（睡→坐起，非 stretch），与约 **10 秒**呼吸倒计时**并行**（不是「先呼吸再伸懒腰」）。
-5. DORMANT 清除后仍可再点 Sit 做正式会话，两者不冲突。  
+4. **实际顺序**：选时长后 **立刻**播 `dormant-wake`（睡→坐起，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。
+5. 补登结束（记账、离 DORMANT）后：**立刻**出现 Honesty **桥接 CTA**（「要不要现在也坐一会儿？」Yes / No 同级；Welcome 回显可与邀请同屏一小会儿）。  
+   - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
+   - **No** → idle，无二次挽留。  
+   - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。
+6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
    **已知**：Honesty 路径暂不接 halo / 金光。
 
 ---
@@ -107,7 +115,7 @@
 ## 场景 G：语言切换
 
 1. **无应用内语言设置 UI**。在 DEV 控制台：`__i18n.setLocale('zh')`，再 `setLocale('en')`。
-2. 重走 Arrival + Reflection，确认欢迎 / Notice / Choose / 回显 / 三问无英文残留、无 `{intention}` 未替换。
+2. 重走 Arrival + Reflection（及 Honesty 桥接文案若出现），确认欢迎 / Notice / Choose / 回显 / 三问 / 桥接无英文残留、无 `{intention}` 未替换。
 3. 切回英文再确认。
 
 ---
@@ -127,6 +135,7 @@
 | **K** | Offline Space：点选后 HUD **不应**走动，再点 Sit 才计时 | 与 Here & Now / Flow 分流 |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |
+| **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
 
 ---
 
@@ -135,52 +144,50 @@
 | 需求 | 入口 |
 |---|---|
 | 眨眼 | 实验室面板「眨眼」或 `playEmotion('blink')` |
-| Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 | 实验室对应按钮 |
+| Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
 | 一炷香莲花 | 实验室「模拟一炷香」（业务未接线） |
-| Honesty 睡醒 | 实验室「Honesty唤醒」或走 Honesty UI |
-| gaze / yawn | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等 / `'yawnStretch'`（无面板按钮） |
+| Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接 DEV：`__honestyBridge` |
+| gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |
 | Idle 加速眨眼 | DEV：`__idleOrchestrator.setTiming({ breathCyclesBeforeBlink: 1 })` |
-| 清当日完成（模拟 DORMANT） | DEV：视 `DailyCompletionStore` 存储键清 localStorage 后刷新（或 `__dailyCompletionStore` 若已暴露） |
+| 清当日完成（模拟 DORMANT） | DEV：清 `DailyCompletionStore` 相关 localStorage 后刷新（或 `__dailyCompletionStore`） |
 
 说明：`#emotion-debug-ui` 当前在**非** `?product=1` 时挂载；`window.__*` 仅 `import.meta.env.DEV`。
 
 ---
 
-## 2026-07-19 代码核对摘要（Cursor Prompt 执行结果）
+## 2026-07-20 增量核对摘要（文档收敛执行结果）
 
-1. **已知缺口核对**  
-   - A8「首次庆祝未接线」→ **文档过时，已接线**。  
-   - A9 自动 Incense → **确未接线**（仅调试）。  
-   - E 10 分钟挥手 → **确未接线**。  
-   - A6 Idle → **仅**呼吸×眨眼；候选手势见调试「入库素材」。  
-2. **数值（如实）**  
-   - Re-focus 展示阈值：60s  
-   - Across-tools idle：30min（1_800_000 ms）  
+1. **相对 720 / 07-19 摘要的漂移**  
+   - Idle：正式编排仍为 **呼吸×5→眨眼**；**无** gaze/yawn/tea/ear 随机池（`IdleOrchestrator`）。docs 曾误写「已入随机池」→ 已纠正。  
+   - 靠近 **不再**自动 `nodGreeting`。  
+   - Honesty **桥接 CTA** 已落地：每次补登后立刻出现；Yes → 完整 Arrival。  
+   - Offline 须再 Sit；Here & Now / Flow 选中即开计时 — 仍成立。  
+2. **数值（如实，2026-07-20）**  
+   - Re-focus 展示阈值：60s（`REFOCUS_DISPLAY_THRESHOLD_MS`）  
+   - Across-tools idle：30min（`ACROSS_TOOLS_IDLE_THRESHOLD_MS = 1_800_000`）  
    - Honesty 呼吸：10_000 ms（与 dormant-wake 并行）  
-   - 演示会话：1 分钟  
-3. **EyeTracking** → 回退干净。  
-4. **强制触发** → 见上表；候选手势用调试「入库素材 / 组合试播」（勿经 Idle 随机池）。  
-5. **TEST_TRACKER** → 已补「场景剧本 / 产品壳链接」说明行；不重复堆功能点。
+   - 演示会话：1 分钟（`DEMO_SESSION_MINUTES`）  
+   - 共享提醒额度：3（`SHARED_DAILY_REMINDER_LIMIT`）  
+   - 主动 Rise 留白：300 ms（`MANUAL_END_PAUSE_MS`）  
+3. **EyeTracking** → 仍为回退干净（null / no-op）。  
+4. **强制触发** → 见上表；Idle 无 `forcePlayVariant`。  
+5. **文档收敛** → 权威仅 docs；根目录改指针；720 归档。  
+6. **TEST_TRACKER** → 场景行已同步权威路径与增量要点。
 
 ---
 
-## 给 Cursor 的 Prompt
+## 给 Cursor 的 Prompt（增量核对；勿整份重写）
 
 ```
-请对照 SCENARIO_TESTS.md 里的场景 A–G（及建议补充 I–M），逐条核对当前代码实现是否与描述一致，
-重点关注：
-1. 每个场景里标注「已知缺口」的步骤，确认代码现状确实如描述（没有被偷偷实现
-   又没更新文档，或者反过来文档过时了）。
-2. 场景 G/F 涉及的宽松 idle 兜底阈值等具体数值，请如实报告代码里当前的实际
-   数值，不要假设。
-3. 场景 H 请确认 EyeTracking 回退是否彻底（界面上不应再有任何瞳孔跟随鼠标
-   的表现）。
-4. 对于场景里依赖概率触发的步骤（idle 变体、blink-smile 等），请提供一个
-   仅调试环境可用的「强制触发」入口或参数，方便测试时不用干等概率命中，
-   同时确保这个调试入口不会出现在生产构建里。
-5. 核对完成后，在 TEST_TRACKER.md 里补充/更新对应功能行的状态，不要重复
-   已有条目。
-6. 区分实验室链接与 ?product=1 产品壳；Agent 自测故事时优先用产品壳走主路径，
-   回流路径至少测 Rise→再 Arrival 一条。
+对照 focus-tiger/docs/SCENARIO_TESTS.md（权威）与当前代码，做增量核对，不要重写整份剧本：
+
+1. 只核对可能漂移的条目：Idle 是否仍无随机变体池、Honesty 桥接 CTA、
+   靠近是否还自动 nodGreeting、Offline Space 须再 Sit、Here & Now/Flow 选中即开计时。
+2. 如实报告 ACROSS_TOOLS_IDLE / Re-focus / Honesty 呼吸 / DEMO_SESSION 等常量数值。
+3. 确认 EyeTracking 仍为 no-op / null。
+4. 更新「调试强制触发」表；生产构建不得暴露强制入口。
+5. 保持仓库根 SCENARIO_TESTS.md 为指向 docs 的指针；勿复活 720 双源。
+6. 更新 TEST_TRACKER 场景行（勿重复条目）；改完后本地 commit，勿 push。
+7. Agent 自测故事优先 ?product=1；回流至少测 Rise→再 Arrival / hint 一条。
 ```

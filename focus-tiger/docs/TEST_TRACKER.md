@@ -12,9 +12,9 @@
 | 链接 | 用途 |
 |---|---|
 | `http://127.0.0.1:5173/` | **实验室**：右上角 `#emotion-debug-ui`；DEV 下 `window.__*` |
-| `http://127.0.0.1:5173/?product=1` | **产品壳**：隐藏调试面板，走用户场景故事（见仓库根目录 `SCENARIO_TESTS.md`） |
+| `http://127.0.0.1:5173/?product=1` | **产品壳**：隐藏调试面板，走用户场景故事（见 `focus-tiger/docs/SCENARIO_TESTS.md`） |
 
-用户场景串联剧本：仓库根目录 **`SCENARIO_TESTS.md`**（与本表互补，非替代）。
+用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。
 
 ### 用户测试反馈记入规则（2026-07-19 起）
 
@@ -106,7 +106,7 @@
 | EmotionController 映射桥 | 纯后端+桥接 | 仅单元测试覆盖 | `EmotionController.test.js`；业务只调 `playEmotion` | — | `src/core/EmotionController.js` | 2026-07-18 |
 | 分散式即时提示 + 「?」补救（ONBOARDING_HINTS v3） | UI可见 | 待人工测试 | 1) 清空已读后硬刷新。2) FOCUSING：Rise / Sound 旁尖角气泡。3) **点气泡本身 → 立刻消失**（自动条记已读，不再自动出）。4) Reflection：面板上方、不挡 Skip；点气泡也可关。5) 「?」补救后再点气泡应立刻关。 | 2026-07-19：Rise/Sound 无锚点、Reflection 挡 Skip、样式像按钮 → 已改。**同日追加：Hints 必须点击立刻消失**（已写入 `ONBOARDING_HINTS.md`）。请复测点击关闭。 | `ONBOARDING_HINTS.md` · 实验室「清空引导提示已读」 | 2026-07-19 |
 | Ambient 播放缓亮 Rim（presenceBoost + playing lift） | UI可见 | 待人工测试 | FOCUSING 后开 Sound 选曲：阿寅边缘金光应**很快**比未播放时更亮一点，并随播放略增。关曲/暂停应变暗回 focusLevel。 | 2026-07-19：文案称音乐会加亮；原仅有慢累计 boost，已加正在播放 lift 0.1。请复测体感。 | Sound 面板 · DEMO 1min 会话 | 2026-07-19 |
-| 用户场景剧本 SCENARIO_TESTS（A–G + I–M） | UI可见 | 待人工测试 | 用 **`?product=1`** 走故事：A 首晨（DORMANT→sleeping→Sit→Arrival→Here & Now→1min 庆祝→Reflection）；C Rise 未达标进 Reflection；E Offline 须再 Sit 且无 Re-focus；L 同日第二场仅 SessionComplete。实验室 `/` 可对照强制触发。已知缺口：自动 Incense、10min 挥手。 | 2026-07-19：Cursor 对照代码后已改剧本。2026-07-20：Idle 五变体已回正式池，测变体用调试强制入口。 | `SCENARIO_TESTS.md` · `http://127.0.0.1:5173/?product=1` | 2026-07-20 |
+| 用户场景剧本 SCENARIO_TESTS（A–G + I–N） | UI可见 | 待人工测试 | 权威：`focus-tiger/docs/SCENARIO_TESTS.md`。用 **`?product=1`** 走故事：A 首晨；D Honesty 补登后桥接 Yes→Arrival；C Rise→Reflection；E Offline 须再 Sit；L 同日第二场仅 SessionComplete；N 靠近不自动点头。实验室 `/` 对照强制触发。已知缺口：自动 Incense、10min 挥手。 | 2026-07-19：对照代码改剧本。**2026-07-20**：文档收敛（根目录改指针、720 归档）；Idle 仍为呼吸×5→眨眼（无随机变体池）；补 Honesty 桥接与场景 N。 | `focus-tiger/docs/SCENARIO_TESTS.md` · `http://127.0.0.1:5173/?product=1` | 2026-07-20 |
 | 产品壳链接 ?product=1（隐藏调试面板） | UI可见 | 待人工测试 | 打开 `/?product=1`：无右上角情绪调试条；Sit / How shall we sit? / Honesty / Arrival / Sound 仍可用。打开 `/`：调试面板在。 | — | `http://127.0.0.1:5173/?product=1` vs `/` | 2026-07-19 |
 | 3D Idle GLB 换装（无红边单色灰棉麻） | UI可见 | 待人工测试 | 1) `npm run dev` 打开应用。2) 调试面板点 **T-Pose**（或临时让 PoseManager 显示 canvas）以露出 3D 垫底。3) 确认阿寅闭目坐禅袍为**单色暖浅灰棉麻 / 茶服风**，**无深红镶边/红里子**；棉麻织纹应清晰（勿呈糊成一团的过度压缩感）。4) 刷新后默认 2D 主线仍隐藏 3D；路径仍为 `/models/tiger-meditate-closed.glb`（约 **1.6MB**，非 292KB）。 | — | `http://127.0.0.1:5173/` · `#emotion-debug-ui` T-Pose · 源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb` | 2026-07-19 |
 
