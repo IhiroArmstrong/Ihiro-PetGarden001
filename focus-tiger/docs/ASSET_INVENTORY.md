@@ -82,7 +82,7 @@
 | sleeping | 8 | 960×960 | 3.9 | sleeping | 已接线 · DORMANT；**1 fps**（≥3× 慢于早期 4） |
 | dormant-wake | 16 | 960×960 | 7.8 | dormantWake | 已接线 · **仅 Honesty**；**3 fps**；定格末帧；暂不接 idle 淡入 / halo |
 | halo-breathing | 30 | 1056×864 | 25.0 | haloBreathing* | 已接线 · 唤醒后奖励 |
-| nod-greeting | 23 | 1056×864 | 14.0 | nodGreeting | 已接线 · 靠近；**6 fps** + 末帧多停 2 拍 |
+| nod-greeting | 23 | 1056×864 | 14.0 | nodGreeting | 素材+调试保留；**靠近自动触发已拆除**（2026-07-19）；**6 fps** + 末帧多停 2 拍 |
 | tilt-think | 20 | 1056×864 | 11.3 | tiltThink | 存量；curiousTilt 默认已改 blink-smile（2026-07-19） |
 | palms-together | 14 | 960×960 | 8.6 | palmsTogether | 已接线 · intentionSet · **2026-07-19 12:56 新算法重抠已替换，待复测** |
 | milestone-glow | 27 | 1056×864 | 24.0 | milestoneGlow | 仅调试；**4 fps**（2026-07-19 放慢 2×） |

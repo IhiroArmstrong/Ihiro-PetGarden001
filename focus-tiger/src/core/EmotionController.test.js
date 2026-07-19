@@ -6,7 +6,7 @@ import {
   MILESTONE_GLOW_HOLD_MS
 } from './EmotionController.js';
 
-test('dormantWake cross-fades from sleeping into halo breathing reward', () => {
+test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', () => {
   const plays = [];
   const stops = [];
   const spritePlayer = {
@@ -18,10 +18,16 @@ test('dormantWake cross-fades from sleeping into halo breathing reward', () => {
       stops.push(options);
     }
   };
+  const bursts = [];
   const controller = new EmotionController({
     poseManager: { setPose() {}, setCanvasHidden() {} },
     dynamicMotion: { setBreathingEnabled() {} },
     incenseGreeting: {},
+    transitionFX: {
+      playCelebrateBurst() {
+        bursts.push(1);
+      }
+    },
     spritePlayer
   });
   let completed = 0;
@@ -46,21 +52,13 @@ test('dormantWake cross-fades from sleeping into halo breathing reward', () => {
       plays[0].options.crossFadeMs,
       DORMANT_WAKE_CROSS_FADE_MS
     );
+    assert.equal(bursts.length, 0);
 
     plays[0].options.onComplete();
 
-    assert.equal(plays[1].name, 'haloBreathingIntro');
-    assert.equal(
-      plays[1].options.crossFadeMs,
-      DORMANT_WAKE_CROSS_FADE_MS
-    );
-    assert.equal(completed, 0);
-
-    plays[1].options.onComplete();
-
-    assert.equal(plays[2].name, 'haloBreathingLoop');
+    assert.equal(plays[1].name, 'idleBreathing');
     assert.equal(completed, 1);
-    assert.equal(controller.getCurrentEmotionKey(), 'haloBreathing');
+    assert.equal(controller.getCurrentEmotionKey(), 'idle');
   } finally {
     globalThis.window = previousWindow;
   }
@@ -214,7 +212,7 @@ test('nodGreeting plays once and returns to idle breathing', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('curiousTilt plays tiltThink once and returns to idle breathing', () => {
+test('curiousTilt plays blinkSmile once and returns to idle breathing', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -237,7 +235,8 @@ test('curiousTilt plays tiltThink once and returns to idle breathing', () => {
     }
   });
 
-  assert.equal(plays[0].name, 'tiltThink');
+  assert.equal(plays[0].name, 'blinkSmile');
+  assert.equal(plays[0].options.loopMode, 'none');
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
   assert.equal(completed, 1);
@@ -293,4 +292,35 @@ test('stretchReminder plays once and returns to idle breathing', () => {
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+
+test('holdPose keeps last frame and does not auto-return to idle', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+  let completed = 0;
+  controller.playEmotion('nodGreeting', {
+    holdPose: true,
+    onComplete: () => {
+      completed += 1;
+    }
+  });
+  assert.equal(plays[0].name, 'nodGreeting');
+  assert.equal(plays[0].options.holdLastFrame, true);
+  plays[0].options.onComplete();
+  assert.equal(completed, 1);
+  assert.equal(plays.length, 1);
+  assert.equal(controller.getCurrentEmotionKey(), 'nodGreeting');
 });

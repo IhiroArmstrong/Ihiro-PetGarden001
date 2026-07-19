@@ -124,7 +124,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 
-> **`nodGreeting`（点头致意）说明**：属**响应行为**。由 `PointerInteraction` 鼠标进入靠近区触发；一次性正放 23 帧，播完回归 `idle-breathing`。**2026-07-19**：fps **6**（原 12 放慢一倍），末帧额外停留约 2 帧时长，避免像打瞌睡点头。
+> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）。调试面板「点头致意」可手工播；播完回归 `idle-breathing`。**fps 6** + 末帧多停约 2 拍。默认 Idle 仅为呼吸×5→眨眼，禁止把点头编入自主节奏。
 
 > **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；180ms cross-fade 进出，播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。
 
@@ -165,7 +165,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 | 刺激源 | 老虎反应 | 备注 |
 |---|---|---|
-| 鼠标靠近 | 礼貌点头致意（2D `nod-greeting`）；可叠加耳朵轻颤等微表情 | **事件触发**：进入靠近阈值播一次 `nodGreeting`，播完回归 `idle-breathing`。阈值与节流见 `PointerInteraction`（`nearRadiusFactor` / `lookAtRetriggerMs`）。与下方「眼睛跟随鼠标」区分——本条为进入范围的**一次性**礼貌反应 |
+| 鼠标靠近 | **默认不反应**（不再自动点头） | **2026-07-19**：用户反馈开局默认态不应出现点头 → 已从 `PointerInteraction` 靠近链路拆除 `nodGreeting`。素材与调试「点头致意」保留；勿再把靠近点头编入 Idle 自主节奏。 |
 | 眼睛跟随鼠标（持续追踪） | — | **已放弃，原因见 `CORE_LOOP.md`「已废弃：EyeTracking 实时瞳孔跟随鼠标」**。不再做实时瞳孔叠层跟随；看向某处改由 Idle 离散张望（gaze-p1～p4）等序列表达。 |
 | 鼠标停留并点击头顶 | 微笑、眯眼 | |
 | 抚摸头顶（按住左键滑动） | **分阶段递进**（见下表） | 欢呼（`Celebrating`）播放期间摸头**忽略、不排队**。阈值可按手感微调 |
@@ -190,7 +190,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 **已放弃，原因见 `CORE_LOOP.md`「已废弃：EyeTracking 实时瞳孔跟随鼠标」。**  
 不再维护独立瞳孔叠层 / 实时跟随实现要点。角色视线变化用 Idle 张望序列（gaze-p1～p4）等一次性动画表达。
 
-> **`lookAtCursor`**：历史靠近占位键；正式靠近反应走 `nodGreeting`。持续瞳孔跟随语义已放弃（同上）；键保留为兼容空操作，勿再接视觉。
+> **`lookAtCursor`**：历史靠近占位键；靠近自动点头已拆除（见上）。持续瞳孔跟随语义已放弃（同上）；键保留为兼容空操作，勿再接视觉。
 
 ### 专注会话相关
 
@@ -559,6 +559,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.41 | 2026-07-19 | **正式放弃** EyeTracking 实时瞳孔跟随（`eyeTracking` / 持续跟随语义的 `lookAtCursor`）；原因与结论见 `CORE_LOOP.md`；Idle gaze-p1～p4 不受影响 |
 | 0.42 | 2026-07-19 | Companion：Here & Now / Flow State 选中即开计时；Offline Space 仍须 Sit。`curiousTilt` 视觉改 `blink-smile`（停用托腮 `tilt-think` 默认） |
 | 0.43 | 2026-07-19 | `nodGreeting` 放慢至 6fps + 末帧多停 2 拍；`wakeUp` 曾误接 `dormant-wake`；Honesty `dormantWake` 6fps、暂不接金光/halo |
+| 0.44 | 2026-07-19 | 靠近区**不再**自动触发 `nodGreeting`（开局默认态不得点头）；素材与调试入口保留 |
 | 0.44 | 2026-07-19 | `wakeUp` 改接伸懒腰（`stretch-reminder` 同源，独立键）；Honesty 独占 `dormant-wake`，两调试按钮动画不再重复 |
 | 0.44 | 2026-07-19 | 调试姿态 `holdPose` 定格末帧；回归原则改为「类似坐禅即可」，不连贯勿硬切默认闭目（见 `PRINCIPLES`） |
 | 0.45 | 2026-07-19 | `Sleeping` 至少放慢 3×（4→**1 fps**）；持续态极缓写入 PRINCIPLES；DESIGN Honesty 独占 dormant-wake / wakeUp 伸懒腰 / 暂不接金光 |

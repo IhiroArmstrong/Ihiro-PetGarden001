@@ -7,7 +7,7 @@
  *
  * 渲染方式（已确认 · 决定 2A）：单个 `<img>` 元素逐帧替换 `.src`。
  * - 透明 PNG 天然支持，硬件合成，无需在同一画布里做图层混合
- *   （眼睛跟随的独立瞳孔图层由 `EyeTracking` 另行叠加，不在此合成）。
+ *   （历史：眼睛跟随独立瞳孔图层曾由 `EyeTracking` 叠加；该功能已废弃，见 CORE_LOOP.md）。
  * - 帧全部经 `new Image()` 预加载进浏览器缓存，切帧命中缓存，避免首帧/切帧闪烁。
  * - 保留的 `Breathing` 呼吸效果后续用 CSS transform 叠加在 overlay 之上即可。
  *
@@ -29,7 +29,8 @@ import { buildFramePaths } from './CharacterConfig.js';
  * @property {Record<number, number>} [frameHolds] 单帧额外停留时长覆盖（覆盖清单）；
  *   键为 1 基帧号（与帧文件名序号一致），值为该帧在 fps 间隔之上额外停留的毫秒数
  * @property {number} [crossFadeMs] 从当前可见帧交叉淡入新序列首帧的时长
- * @property {(sequenceName: string) => void} [onComplete] 非循环序列播完回调（循环序列不触发）
+ * @property {number} [maxCycles] 循环序列最多完整循环次数；达到后触发 onComplete（pingpong/forward）
+ * @property {(sequenceName: string) => void} [onComplete] 非循环序列播完，或循环达 maxCycles 时回调
  */
 
 export const SPRITE_LOOP_MODES = Object.freeze({
@@ -59,30 +60,67 @@ export function advanceSpriteFrame({
     return {
       frameIndex: 0,
       direction: 1,
-      complete: loopMode === SPRITE_LOOP_MODES.NONE
+      complete: loopMode === SPRITE_LOOP_MODES.NONE,
+      cycleComplete: loopMode !== SPRITE_LOOP_MODES.NONE
     };
   }
 
   if (loopMode === SPRITE_LOOP_MODES.PINGPONG) {
     if (direction === 1) {
       if (frameIndex < frameCount - 1) {
-        return { frameIndex: frameIndex + 1, direction: 1, complete: false };
+        return {
+          frameIndex: frameIndex + 1,
+          direction: 1,
+          complete: false,
+          cycleComplete: false
+        };
       }
-      return { frameIndex: frameCount - 2, direction: -1, complete: false };
+      return {
+        frameIndex: frameCount - 2,
+        direction: -1,
+        complete: false,
+        cycleComplete: false
+      };
     }
     if (frameIndex > 0) {
-      return { frameIndex: frameIndex - 1, direction: -1, complete: false };
+      return {
+        frameIndex: frameIndex - 1,
+        direction: -1,
+        complete: false,
+        cycleComplete: false
+      };
     }
-    return { frameIndex: 0, direction: 1, complete: false };
+    // 倒放回到首帧并准备下一轮正放 → 完成一整次 pingpong 循环
+    return {
+      frameIndex: 0,
+      direction: 1,
+      complete: false,
+      cycleComplete: true
+    };
   }
 
   if (frameIndex < frameCount - 1) {
-    return { frameIndex: frameIndex + 1, direction: 1, complete: false };
+    return {
+      frameIndex: frameIndex + 1,
+      direction: 1,
+      complete: false,
+      cycleComplete: false
+    };
   }
   if (loopMode === SPRITE_LOOP_MODES.FORWARD) {
-    return { frameIndex: 0, direction: 1, complete: false };
+    return {
+      frameIndex: 0,
+      direction: 1,
+      complete: false,
+      cycleComplete: true
+    };
   }
-  return { frameIndex, direction: 1, complete: true };
+  return {
+    frameIndex,
+    direction: 1,
+    complete: true,
+    cycleComplete: true
+  };
 }
 
 export class SpriteSequencePlayer {
@@ -148,6 +186,8 @@ export class SpriteSequencePlayer {
     this._holdLastFrame = false;
     /** 单帧额外停留（键为 1 基帧号）@type {Record<number, number>} */
     this._frameHolds = {};
+    this._cyclesCompleted = 0;
+    this._maxCycles = 0;
     /** @type {((name: string) => void) | null} */
     this._onComplete = null;
     this._lastFrameTime = 0;
@@ -226,6 +266,8 @@ export class SpriteSequencePlayer {
     this._direction = 1;
     this._holdLastFrame = options.holdLastFrame ?? def.holdLastFrame ?? false;
     this._frameHolds = options.frameHolds ?? def.frameHolds ?? {};
+    this._cyclesCompleted = 0;
+    this._maxCycles = Math.max(0, Number(options.maxCycles) || 0);
     this._onComplete =
       typeof options.onComplete === 'function' ? options.onComplete : null;
 
@@ -265,6 +307,46 @@ export class SpriteSequencePlayer {
     return this._currentName;
   }
 
+  /**
+   * overlay 是否对用户可见（opacity > 0）。
+   * @returns {boolean}
+   */
+  isOverlayVisible() {
+    const opacity = Number.parseFloat(this.overlayEl.style.opacity || '0');
+    return opacity > 0.01;
+  }
+
+  /**
+   * 当前精灵在屏幕上的 object-fit:contain 显示框（供 EyeTracking 等叠层对齐）。
+   * overlay 不可见或尚无 naturalSize 时返回 null。
+   * @returns {{ left: number, top: number, width: number, height: number, scale: number, naturalWidth: number, naturalHeight: number } | null}
+   */
+  getDisplayRect() {
+    if (!this.isOverlayVisible()) return null;
+    const img = this.imgEl;
+    const nw = img.naturalWidth;
+    const nh = img.naturalHeight;
+    if (!nw || !nh) return null;
+
+    const container = this.overlayEl.getBoundingClientRect();
+    if (container.width < 1 || container.height < 1) return null;
+
+    const scale = Math.min(container.width / nw, container.height / nh);
+    const width = nw * scale;
+    const height = nh * scale;
+    const left = container.left + (container.width - width) * 0.5;
+    const top = container.top + (container.height - height) * 0.5;
+    return {
+      left,
+      top,
+      width,
+      height,
+      scale,
+      naturalWidth: nw,
+      naturalHeight: nh
+    };
+  }
+
   /** 释放：停止播放、移除 overlay、清空缓存。 */
   dispose() {
     this._cancelRaf();
@@ -284,7 +366,8 @@ export class SpriteSequencePlayer {
   _resolveFrames(def) {
     if (!def.animation || !def.frameCount || def.frameCount <= 0) return [];
     return buildFramePaths(def.animation, def.frameCount, {
-      startFrame: def.startFrame
+      startFrame: def.startFrame,
+      frameIndices: def.frameIndices
     });
   }
 
@@ -350,9 +433,18 @@ export class SpriteSequencePlayer {
         this._finish();
         return;
       }
+
       this._frameIndex = next.frameIndex;
       this._direction = next.direction;
       this._renderFrame(this._frameIndex);
+
+      if (next.cycleComplete && this._maxCycles > 0) {
+        this._cyclesCompleted += 1;
+        if (this._cyclesCompleted >= this._maxCycles) {
+          this._finish();
+          return;
+        }
+      }
 
       dur = this._frameDurationMs(this._frameIndex);
     }

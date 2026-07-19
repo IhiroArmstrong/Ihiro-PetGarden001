@@ -1,10 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { IdleOrchestrator } from './IdleOrchestrator.js';
+import {
+  IdleOrchestrator,
+  IDLE_VARIANT_CROSS_FADE_MS,
+  IDLE_BREATH_CYCLES_BEFORE_BLINK,
+  IDLE_OPEN_EYE_VARIANTS
+} from './IdleOrchestrator.js';
 
 function createHarness() {
-  let timerId = 0;
-  const timers = new Map();
   const calls = [];
   const player = {
     current: null,
@@ -26,80 +29,82 @@ function createHarness() {
       return this.current;
     }
   };
-  const setTimeoutFn = (callback, delay) => {
-    const id = ++timerId;
-    timers.set(id, { callback, delay });
-    return id;
-  };
-  const clearTimeoutFn = (id) => timers.delete(id);
 
-  return { player, calls, timers, setTimeoutFn, clearTimeoutFn };
+  return { player, calls };
 }
 
-test('starts breathing, inserts glance, then restarts breathing with cooldown', () => {
+test('plays one pingpong breath at a time, blinks after N, then repeats', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
-    minIntervalMs: 25_000,
-    maxIntervalMs: 45_000,
-    cooldownMs: 10_000,
-    random: () => 0.5,
-    setTimeoutFn: harness.setTimeoutFn,
-    clearTimeoutFn: harness.clearTimeoutFn
+    breathCyclesBeforeBlink: 3
   });
 
   orchestrator.start();
   assert.equal(harness.calls[0].name, 'idleBreathing');
-  const firstTimer = [...harness.timers.values()][0];
-  assert.equal(firstTimer.delay, 35_000);
+  assert.equal(harness.calls[0].options.maxCycles, 1);
+  assert.equal(orchestrator.getStatus().breathsRemaining, 3);
 
-  firstTimer.callback();
-  const glanceCall = harness.calls.at(-1);
-  assert.equal(glanceCall.name, 'idleEyeGlance');
-
-  glanceCall.options.onComplete();
+  // complete breath 1 → 2 remaining
+  harness.calls.at(-1).options.onComplete();
   assert.equal(harness.calls.at(-1).name, 'idleBreathing');
-  const nextTimer = [...harness.timers.values()].at(-1);
-  assert.equal(nextTimer.delay, 45_000);
+  assert.equal(orchestrator.getStatus().breathsRemaining, 2);
+
+  harness.calls.at(-1).options.onComplete();
+  assert.equal(orchestrator.getStatus().breathsRemaining, 1);
+
+  harness.calls.at(-1).options.onComplete();
+  const blinkCall = harness.calls.at(-1);
+  assert.equal(blinkCall.name, 'blinkSmile');
+  assert.equal(blinkCall.options.loopMode, 'none');
+  assert.equal(blinkCall.options.crossFadeMs, IDLE_VARIANT_CROSS_FADE_MS);
+  assert.equal(orchestrator.getStatus().phase, 'blink');
+
+  blinkCall.options.onComplete();
+  assert.equal(harness.calls.at(-1).name, 'idleBreathing');
+  assert.equal(orchestrator.getStatus().breathsRemaining, 3);
 });
 
-test('stop during a variant prevents automatic return to idle', () => {
+test('default pattern has no yawn / gaze random pool', () => {
+  const harness = createHarness();
+  const orchestrator = new IdleOrchestrator({ player: harness.player });
+  assert.deepEqual(orchestrator.variants, []);
+  assert.equal(orchestrator.breathCyclesBeforeBlink, IDLE_BREATH_CYCLES_BEFORE_BLINK);
+  assert.equal(IDLE_OPEN_EYE_VARIANTS.length >= 1, true);
+});
+
+test('stop during blink prevents automatic return to breathing', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
-    minIntervalMs: 1,
-    maxIntervalMs: 1,
-    random: () => 0,
-    setTimeoutFn: harness.setTimeoutFn,
-    clearTimeoutFn: harness.clearTimeoutFn
+    breathCyclesBeforeBlink: 1
   });
 
   orchestrator.start();
-  [...harness.timers.values()][0].callback();
-  const glanceCall = harness.calls.at(-1);
+  harness.calls[0].options.onComplete();
+  const blinkCall = harness.calls.at(-1);
+  assert.equal(blinkCall.name, 'blinkSmile');
   orchestrator.stop();
-  glanceCall.options.onComplete();
+  blinkCall.options.onComplete();
 
   assert.equal(orchestrator.isActive(), false);
   assert.equal(harness.calls.at(-1).type, 'stop');
+  assert.equal(
+    harness.calls.filter((c) => c.type === 'play' && c.name === 'idleBreathing')
+      .length,
+    1
+  );
 });
 
-test('does not interrupt a non-base sequence', () => {
+test('setTiming restarts with new breath cycle count', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
-    minIntervalMs: 1,
-    maxIntervalMs: 1,
-    random: () => 0,
-    setTimeoutFn: harness.setTimeoutFn,
-    clearTimeoutFn: harness.clearTimeoutFn
+    breathCyclesBeforeBlink: 5
   });
-
   orchestrator.start();
-  harness.player.current = 'celebrating';
-  const timer = [...harness.timers.values()][0];
-  timer.callback();
-
-  assert.equal(harness.calls.filter((call) => call.name === 'idleEyeGlance').length, 0);
-  assert.equal(harness.timers.size > 0, true);
+  orchestrator.setTiming({ breathCyclesBeforeBlink: 2 });
+  assert.equal(orchestrator.breathCyclesBeforeBlink, 2);
+  assert.equal(orchestrator.getStatus().breathsRemaining, 2);
+  assert.equal(harness.calls.at(-1).options.maxCycles, 1);
 });

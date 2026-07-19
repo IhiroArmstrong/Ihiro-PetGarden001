@@ -132,6 +132,32 @@ export class PointerInteraction {
   }
 
   /**
+   * 仅在 idle / smiling 基底上允许响应行为（点头等）。
+   * 调试试播其它姿态、睡觉、庆祝等期间禁止。
+   */
+  isPointerResponseAllowed() {
+    if (this.isCelebrating()) return false;
+    const key = this.emotionController.getCurrentEmotionKey?.();
+    if (!key) return true;
+    return (
+      key === EMOTION_KEYS.IDLE ||
+      key === 'idle' ||
+      key === EMOTION_KEYS.SMILING ||
+      key === 'smiling'
+    );
+  }
+
+  /**
+   * 静止好奇（curiousTilt）：仅 smiling 基底。
+   * 闭目坐禅 idle 已有「呼吸×5→眨眼」自带偶尔看看，再插 curiousTilt 会打断节奏。
+   */
+  isCuriousTiltAllowed() {
+    if (!this.isPointerResponseAllowed()) return false;
+    const key = this.emotionController.getCurrentEmotionKey?.();
+    return key === EMOTION_KEYS.SMILING || key === 'smiling';
+  }
+
+  /**
    * 刷新老虎屏幕矩形。
    * @returns {typeof this._tigerRect}
    */
@@ -267,22 +293,11 @@ export class PointerInteraction {
       }
     }
 
-    // —— 靠近 / 离开 → nodGreeting / idle ——
-    // 检测阈值已就绪（nearRadiusFactor / hysteresis / lookAtRetriggerMs）。
-    // 正式视觉：礼貌点头致意一次性序列；离开靠近区时若仍在反应中则回落 idle。
+    // —— 靠近 / 离开 ——
+    // 2026-07-19：默认态不再自动播 nodGreeting（用户反馈：开局默认动画里不应有点头）。
+    // 素材与调试「点头致意」保留；靠近区仍用于 curiousTilt（仅 smiling）等。
     if (!this._isNear && dist <= nearR) {
       this._isNear = true;
-      if (
-        !this.isCelebrating() &&
-        now - this._lastLookAtAt >= POINTER_INTERACTION_CONFIG.lookAtRetriggerMs
-      ) {
-        this._lastLookAtAt = now;
-        this._lookAtActive = true;
-        this._play(EMOTION_KEYS.NOD_GREETING, {
-          cursor: { x: clientX, y: clientY },
-          tigerCenter: { x: rect.cx, y: rect.cy }
-        });
-      }
       this._resetStillAnchor(clientX, clientY, now);
       this._circleSamples = [];
     } else if (this._isNear && dist > leaveR) {
@@ -290,12 +305,7 @@ export class PointerInteraction {
       this._stillAnchor = null;
       this._clearStillTimer();
       this._circleSamples = [];
-      if (this._lookAtActive && !this.isCelebrating()) {
-        this._lookAtActive = false;
-        this._play(EMOTION_KEYS.IDLE, { reason: 'cursorLeftNearZone' });
-      } else {
-        this._lookAtActive = false;
-      }
+      this._lookAtActive = false;
     }
 
     if (!this._isNear) return;
@@ -373,7 +383,7 @@ export class PointerInteraction {
     if (
       elapsed >= POINTER_INTERACTION_CONFIG.stillDurationMs &&
       cooldownElapsed >= POINTER_INTERACTION_CONFIG.curiousCooldownMs &&
-      !this.isCelebrating()
+      this.isCuriousTiltAllowed()
     ) {
       this._lastCuriousAt = now;
       const { x, y } = this._stillAnchor;
@@ -381,9 +391,9 @@ export class PointerInteraction {
       this._play(EMOTION_KEYS.CURIOUS_TILT, { stillMs: elapsed });
     }
 
-    // 保留既有冷却语义；若 Celebrating 正在播放，短暂后再检查但不排队动作。
+    // 保留既有冷却语义；非 idle 基底（含 Celebrating / 调试试播）时短暂后再检查但不排队动作。
     const retryNow = performance.now();
-    if (this.isCelebrating()) {
+    if (!this.isPointerResponseAllowed()) {
       this._clearStillTimer();
       this._stillTimer = globalThis.setTimeout(() => {
         this._stillTimer = null;
