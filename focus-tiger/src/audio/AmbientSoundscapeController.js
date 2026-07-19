@@ -6,8 +6,14 @@
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
 export const AUDIO_FOCUS_EQUIV_RATIO = 12 / 60;
 
-/** 听满整场最多叠加的 visual boost */
+/** 听满整场最多叠加的 visual boost（累计可闻时长） */
 export const MAX_PRESENCE_BOOST = 0.2;
+
+/**
+ * 正在可闻播放时立刻给 Rim 一层缓亮，使「音乐会让光更亮」可感知；
+ * 与累计 presenceBoost 相加，总贡献封顶见 getPresenceBoost。
+ */
+export const AUDIBLE_PLAYING_LIFT = 0.1;
 
 export const AMBIENT_TRACK_OFF = 'off';
 export const AMBIENT_TRACK_SINGING_BOWL = 'singing-bowl';
@@ -155,7 +161,12 @@ export class AmbientSoundscapeController {
   /** @param {number} targetMinutes */
   getPresenceBoost(targetMinutes) {
     if (!this._sessionActive) return 0;
-    return computePresenceBoost(this.getPlayedSeconds(), targetMinutes);
+    const cumulative = computePresenceBoost(
+      this.getPlayedSeconds(),
+      targetMinutes
+    );
+    const lift = this._isAudiblePlaying() ? AUDIBLE_PLAYING_LIFT : 0;
+    return Math.min(MAX_PRESENCE_BOOST + AUDIBLE_PLAYING_LIFT, cumulative + lift);
   }
 
   _isAudiblePlaying() {

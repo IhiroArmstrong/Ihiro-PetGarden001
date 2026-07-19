@@ -94,6 +94,19 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 ---
 
+## 5.5 分散式即时提示 + 常驻「?」补救（2026-07-19）
+
+不做集中式引导浮层 / coachmark / 分步说明书。理由：强迫读说明书会破坏 Arrive 的安静感；新用户真正需要的是**此刻下一步点哪里**。
+
+机制见仓库根目录 / `docs/ONBOARDING_HINTS.md`：
+
+1. **即时提示**：各关键界面首次出现时，阿寅旁一行小字气泡；完成该步操作后记入 `focus-tiger.hints-seen.v1` 并隐藏。
+2. **补救「?」**：左下角常驻，按当前场景复述对应一句，不受已读限制。
+
+覆盖 SCENARIO_TESTS 主路径与回流（DORMANT、Honesty 可略过、Sit / How shall we sit?、Arrival 各步、Companion、Sound、Rise、Reflection 等）。产品壳 `?product=1` 仍显示提示与「?」（属产品表面）；实验室另有「清空引导提示已读」。
+
+---
+
 ## 六、Family Edition — 存档至 Backlog（本次不展开设计）
 
 记录用户提出的方向，供未来单独立项时参考，**本文档不做交互设计**：

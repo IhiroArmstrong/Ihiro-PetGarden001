@@ -90,10 +90,25 @@ test('presenceBoost stays zero outside session and does not replace focus math',
   audio.dispatch('timeupdate');
   const boost = ctrl.getPresenceBoost(25);
   assert.ok(boost > 0);
-  assert.ok(boost <= MAX_PRESENCE_BOOST);
+  // cumulative + audible playing lift
+  assert.ok(boost <= MAX_PRESENCE_BOOST + 0.1);
 
   ctrl.endSession();
   assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
   assert.equal(ctrl.getPresenceBoost(25), 0);
   assert.equal(ctrl.getPlayedSeconds(), 0);
+});
+
+test('audible playing adds an immediate glow lift', async () => {
+  const { AUDIBLE_PLAYING_LIFT } = await import('./AmbientSoundscapeController.js');
+  let now = 0;
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({ now: () => now, audio });
+  ctrl.startSession();
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  // almost no played time yet — lift alone should still brighten rim
+  const boost = ctrl.getPresenceBoost(25);
+  assert.ok(boost >= AUDIBLE_PLAYING_LIFT - 1e-9);
+  audio.pause();
+  assert.ok(ctrl.getPresenceBoost(25) < AUDIBLE_PLAYING_LIFT);
 });

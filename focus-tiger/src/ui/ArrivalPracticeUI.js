@@ -98,6 +98,11 @@ export class ArrivalPracticeUI {
     return Boolean(this.root);
   }
 
+  /** @returns {string | null} welcome|notice|breath|choose|ready */
+  getStep() {
+    return this.state?.step ?? null;
+  }
+
   /** @returns {{ text: string, source: 'icon' | 'typed' } | null} */
   getChooseResult() {
     if (!this.state.chooseText) return null;

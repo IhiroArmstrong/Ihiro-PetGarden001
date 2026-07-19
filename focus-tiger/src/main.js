@@ -10,6 +10,8 @@ import {
   FocusSession,
   shouldSuppressAwayReminders,
   canBeginFocusOnCompanionModeSelect,
+  COMPANION_MODE_STAY,
+  COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
 import { StateManager, STATES } from './core/StateManager.js';
@@ -49,6 +51,8 @@ import { recordIntention } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
+import { createHintsSeenStore } from './core/OnboardingHintsStore.js';
+import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 const DEMO_SESSION_MINUTES = 1;
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
 
@@ -245,6 +249,8 @@ async function init() {
     companionModeHandlers
   );
 
+  let hasEndedAnySession = false;
+
   function syncCompanionPostSessionChrome() {
     // 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint → 启动 Arrival
     //（与 Sit 可点路径一致，禁止「看得见却静默」）。
@@ -256,11 +262,15 @@ async function init() {
     companionModePicker.hide();
     reflectionOpen(options);
     syncCompanionPostSessionChrome();
+    onboardingHints?.maybeShowAuto('reflection');
   };
   const reflectionOnDone = reflectionMoment.onDone;
   reflectionMoment.onDone = (result, hasAnyAnswer) => {
     reflectionOnDone?.(result, hasAnyAnswer);
     syncCompanionPostSessionChrome();
+    onboardingHints?.markSeen('reflection');
+    hasEndedAnySession = true;
+    syncOnboardingAutoHints();
   };
 
   const honestyShowPrompt = honestyCheckInUI.showPrompt.bind(honestyCheckInUI);
@@ -268,6 +278,7 @@ async function init() {
     companionModePicker.hide();
     honestyShowPrompt();
     syncCompanionPostSessionChrome();
+    syncOnboardingAutoHints();
   };
   const honestyShowDuration = honestyCheckInUI.showDurationChoices.bind(
     honestyCheckInUI
@@ -293,8 +304,96 @@ async function init() {
   // 挂 body：避免落在 pointer-events:none 的 ui-overlay 栈内，并压过调试栏
   const ambientSoundscapeUI = new AmbientSoundscapeUI(
     document.body,
-    ambientSoundscape
+    ambientSoundscape,
+    {
+      onBlockedTip: () => {
+        onboardingHints?.maybeShowAuto('ambient-gated');
+        onboardingHints?.markSeen('ambient-gated');
+      },
+      onPanelOpened: () => {
+        onboardingHints?.maybeShowAuto('ambient-soundscape');
+      },
+      onTrackChosen: () => {
+        onboardingHints?.markSeen('ambient-soundscape');
+        onboardingHints?.hideBubble();
+      }
+    }
   );
+
+  /** @type {OnboardingHintsUI | null} */
+  let onboardingHints = null;
+
+  function getOnboardingScene() {
+    const arrivalPhase = arrivalPractice?.getStep?.() ?? null;
+    return {
+      honestyVisible: honestyCheckInUI.phase === 'prompt',
+      arrivalOpen: arrivalPractice?.isOpen?.() ?? false,
+      arrivalPhase:
+        arrivalPhase === 'welcome'
+          ? 'notice'
+          : arrivalPhase === 'ready'
+            ? null
+            : arrivalPhase,
+      companionExpanded: companionModePicker?.isOpen?.() ?? false,
+      isFocusing: stateManager.state === STATES.FOCUSING,
+      reflectionOpen: reflectionMoment?.isOpen?.() ?? false,
+      ambientPanelOpen: ambientSoundscapeUI?.isPanelOpen?.() ?? false,
+      isDormant: stateManager.state === STATES.DORMANT,
+      arrivalReady: arrivalGateReady,
+      hasEverCompletedSession: hasEndedAnySession
+    };
+  }
+
+  function syncOnboardingAutoHints() {
+    if (!onboardingHints) return;
+    const scene = getOnboardingScene();
+    if (scene.reflectionOpen) {
+      onboardingHints.maybeShowAuto('reflection');
+      return;
+    }
+    if (scene.isFocusing) {
+      onboardingHints.maybeShowAuto('rise-button');
+      return;
+    }
+    if (scene.ambientPanelOpen) {
+      onboardingHints.maybeShowAuto('ambient-soundscape');
+      return;
+    }
+    if (scene.arrivalOpen) {
+      const step = arrivalPractice.getStep();
+      if (step === 'notice') onboardingHints.maybeShowAuto('notice');
+      else if (step === 'breath') onboardingHints.maybeShowAuto('breathing');
+      else if (step === 'choose') onboardingHints.maybeShowAuto('choose');
+      else if (step === 'welcome') onboardingHints.maybeShowAuto('notice');
+      return;
+    }
+    if (scene.companionExpanded) {
+      onboardingHints.maybeShowAuto('companion-mode');
+      return;
+    }
+    if (scene.honestyVisible) {
+      onboardingHints.maybeShowAuto('honesty-optional');
+      return;
+    }
+    if (scene.isDormant) {
+      onboardingHints.maybeShowAuto('dormant-open');
+      return;
+    }
+    if (scene.hasEverCompletedSession) {
+      onboardingHints.maybeShowAuto('idle-after-session');
+      return;
+    }
+    onboardingHints.maybeShowAuto('sit-button');
+    onboardingHints.maybeShowAuto('how-shall-we-sit');
+  }
+
+  onboardingHints = new OnboardingHintsUI(document.body, {
+    store: createHintsSeenStore(),
+    getScene: getOnboardingScene
+  });
+  if (import.meta.env.DEV) {
+    window.__onboardingHints = onboardingHints;
+  }
 
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
@@ -322,14 +421,33 @@ async function init() {
   const arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
-      onBegin: () => lightProgression.beginArrival(),
+      onNoticeSelected: () => {
+        lightProgression.onNoticeSelected();
+        onboardingHints?.markSeen('notice');
+        syncOnboardingAutoHints();
+      },
+      onBreath: () => {
+        lightProgression.beginBreath();
+        onboardingHints?.markSeen('notice');
+        onboardingHints?.maybeShowAuto('breathing');
+      },
+      onAfterBreath: () => {
+        lightProgression.endBreath();
+        onboardingHints?.markSeen('breathing');
+        syncOnboardingAutoHints();
+      },
+      onChooseConfirmed: () => {
+        lightProgression.onChooseConfirmed();
+        onboardingHints?.markSeen('choose');
+      },
       onWelcome: () => {
         emotionController.playEmotion('smiling');
+        syncOnboardingAutoHints();
       },
-      onNoticeSelected: () => lightProgression.onNoticeSelected(),
-      onBreath: () => lightProgression.beginBreath(),
-      onAfterBreath: () => lightProgression.endBreath(),
-      onChooseConfirmed: () => lightProgression.onChooseConfirmed(),
+      onBegin: () => {
+        lightProgression.beginArrival();
+        syncOnboardingAutoHints();
+      },
       // 合十动作与坐垫 CSS 光晕叠加；跳过 Choose 时不播。
       onIntentionSetPlay: (done) => {
         emotionController.playEmotion('intentionSet', {
@@ -343,6 +461,14 @@ async function init() {
         companionModePicker.setArrivalReady(true);
         companionModePicker.setPostSessionOverlayActive(false);
         companionModePicker.open();
+        onboardingHints?.markSeen('notice');
+        onboardingHints?.markSeen('breathing');
+        onboardingHints?.markSeen('choose');
+        onboardingHints?.markSeen('how-shall-we-sit');
+        onboardingHints?.markSeen('sit-button');
+        onboardingHints?.markSeen('dormant-open');
+        onboardingHints?.markSeen('honesty-optional');
+        syncOnboardingAutoHints();
       }
     }
   );
@@ -361,7 +487,12 @@ async function init() {
     companionModePicker.setArrivalReady(false);
     companionModePicker.setPostSessionOverlayActive(true);
     companionModePicker.hide();
+    onboardingHints?.markSeen('sit-button');
+    onboardingHints?.markSeen('how-shall-we-sit');
+    onboardingHints?.markSeen('dormant-open');
+    onboardingHints?.markSeen('honesty-optional');
     arrivalPractice.start();
+    syncOnboardingAutoHints();
   }
 
   const honestyBridgeUI = new HonestyBridgeCtaUI(
@@ -433,6 +564,10 @@ async function init() {
     companionModePicker.setIdleChromeVisible(false);
     companionModePicker.setArrivalReady(false);
     focusSession.start({ companionMode });
+    onboardingHints?.markSeen('sit-button');
+    onboardingHints?.markSeen('how-shall-we-sit');
+    onboardingHints?.markSeen('companion-mode');
+    onboardingHints?.maybeShowAuto('rise-button');
     mindfulReminderController.startSession({
       suppressAwayReminders: shouldSuppressAwayReminders(companionMode),
       getSessionElapsedSeconds: () => focusSession.getElapsedSeconds()
@@ -455,6 +590,14 @@ async function init() {
   }
 
   companionModeHandlers.onModeSelected = (mode) => {
+    onboardingHints?.markSeen('companion-mode');
+    if (mode === COMPANION_MODE_STAY) onboardingHints?.markSeen('companion-stay');
+    if (mode === COMPANION_MODE_STEP_AWAY) {
+      onboardingHints?.markSeen('companion-away');
+    }
+    if (mode === COMPANION_MODE_ACROSS_TOOLS) {
+      onboardingHints?.markSeen('companion-across-tools');
+    }
     if (
       !canBeginFocusOnCompanionModeSelect({
         mode,
@@ -518,6 +661,9 @@ async function init() {
       });
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
+      onboardingHints?.markSeen('rise-button');
+      hasEndedAnySession = true;
+      syncOnboardingAutoHints();
     }
   );
 
@@ -548,6 +694,20 @@ async function init() {
 
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty / DORMANT 无视觉
   honestyCheckIn.onAppReady();
+  syncOnboardingAutoHints();
+
+  if (!productChrome) {
+    const clearHintsBtn = document.createElement('button');
+    clearHintsBtn.type = 'button';
+    clearHintsBtn.textContent = '清空引导提示已读';
+    clearHintsBtn.style.cssText =
+      'position:fixed;top:12px;right:180px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff8f0;color:#2c1f14;border-radius:4px;';
+    clearHintsBtn.addEventListener('click', () => {
+      onboardingHints?.clearSeen();
+      syncOnboardingAutoHints();
+    });
+    document.body.appendChild(clearHintsBtn);
+  }
 
   const uiControls = new UIControls(focusInput);
   uiControls.bindAll();
