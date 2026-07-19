@@ -230,7 +230,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**。其下弱化提示 **How shall we sit? / 这次怎么陪你？** 向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。**Here & Now / Flow State：选中后立即开始 Focus 与计时**（不必再点 Sit）。**Offline Space：只预选并收起，须再点 Sit 才开计时**（用户需离开屏幕前确认）。直接点 Sit 仍可用当前预选（含记忆）立刻开始。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**。其下次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金、与 Sit 朱红同系阴影语言）向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。若门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）；Arrival 结束后自动展开三选一。**Here & Now / Flow State：选中后立即开始 Focus 与计时**（不必再点 Sit）。**Offline Space：只预选并收起，须再点 Sit 才开计时**（用户需离开屏幕前确认）。直接点 Sit 仍可用当前预选（含记忆）立刻开始。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁；此时点 hint 同样会启动 Arrival。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 

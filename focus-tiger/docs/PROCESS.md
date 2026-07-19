@@ -33,7 +33,7 @@
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
-- Companion Mode：Here & Now / Flow State 选中即开计时；Offline Space 须再 Sit；**Arrival 门闩未就绪时禁用三选一**（`canBeginFocusOnCompanionModeSelect` 防静默失败）
+- Companion Mode：Here & Now / Flow State 选中即开计时；Offline Space 须再 Sit；**Arrival 门闩未就绪时三选一不可点选**；**「How shall we sit?」未就绪时点即启动 Arrival**（`resolveCompanionHintClick` 防静默失败）
 - Honesty `dormantWake`：选时长即坐起（**3 fps**）定格末帧；暂不接闭眼呼吸淡入 / 金光 / halo
 - 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`

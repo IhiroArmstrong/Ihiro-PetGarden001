@@ -13,7 +13,8 @@ import {
   COMPANION_MODE_STORAGE_KEY,
   isValidCompanionMode,
   shouldAutoStartFocusOnModeSelect,
-  canBeginFocusOnCompanionModeSelect
+  canBeginFocusOnCompanionModeSelect,
+  resolveCompanionHintClick
 } from '../core/FocusSession.js';
 
 function readStoredMode() {
@@ -40,6 +41,7 @@ export class CompanionModePicker {
    * @param {HTMLElement} focusButton
    * @param {object} [handlers]
    * @param {(mode: import('../core/FocusSession.js').CompanionMode) => void} [handlers.onModeSelected]
+   * @param {() => void} [handlers.onNeedArrival] 门闩未就绪时 hint 点击 → 启动 Arrival
    */
   constructor(overlayRoot, focusButton, handlers = {}) {
     this.overlayRoot = overlayRoot;
@@ -51,8 +53,8 @@ export class CompanionModePicker {
     this._idleVisible = true;
     this._postSessionOverlay = false;
     /**
-     * Arrival Practice 门闩：未就绪时禁止展开/点选，避免「选了 Here & Now
-     * 却被 main 静默 return」的假失效。
+     * Arrival Practice 门闩：未就绪时禁止展开/点选三选一；
+     * hint 本身仍可点 → 走 onNeedArrival（禁止静默无反馈）。
      */
     this._arrivalReady = false;
     /** Rise 后优先显示提问；用户再选模式后改为模式名 */
@@ -72,12 +74,7 @@ export class CompanionModePicker {
     this.hintBtn.type = 'button';
     this.hintBtn.className = 'session-start-dock__hint';
     this.hintBtn.setAttribute('aria-expanded', 'false');
-    this.hintBtn.addEventListener('click', () => {
-      if (this._postSessionOverlay) return;
-      this._expanded = !this._expanded;
-      this._syncExpanded();
-      this._syncHintLabel();
-    });
+    this.hintBtn.addEventListener('click', () => this._onHintClick());
 
     const parent = focusButton.parentElement;
     if (parent) {
@@ -90,6 +87,7 @@ export class CompanionModePicker {
     this._unsubLocale = onLocaleChange(() => this._render());
     this._injectStyles();
     this._render();
+    this._syncHintAvailability();
   }
 
   /** @returns {import('../core/FocusSession.js').CompanionMode} */
@@ -141,12 +139,30 @@ export class CompanionModePicker {
   }
 
   _syncHintAvailability() {
-    const allowHint =
-      this._idleVisible && !this._postSessionOverlay && this._arrivalReady;
+    // 仅叠层 / 专注中隐藏时禁用 hint；门闩未就绪时仍可点 → 启动 Arrival。
+    const allowHint = this._idleVisible && !this._postSessionOverlay;
     this.hintBtn.disabled = !allowHint;
     this.hintBtn.setAttribute('aria-disabled', allowHint ? 'false' : 'true');
-    this.hintBtn.style.opacity = allowHint ? '' : '0.45';
-    this.hintBtn.style.pointerEvents = allowHint ? '' : 'none';
+    this.hintBtn.classList.toggle('is-gated', !allowHint);
+    this.hintBtn.classList.toggle('is-awaiting-arrival', allowHint && !this._arrivalReady);
+    this.hintBtn.style.opacity = '';
+    this.hintBtn.style.pointerEvents = '';
+  }
+
+  _onHintClick() {
+    const action = resolveCompanionHintClick({
+      idleVisible: this._idleVisible,
+      postSessionOverlay: this._postSessionOverlay,
+      arrivalReady: this._arrivalReady
+    });
+    if (action === 'ignore') return;
+    if (action === 'needArrival') {
+      this.handlers.onNeedArrival?.();
+      return;
+    }
+    this._expanded = !this._expanded;
+    this._syncExpanded();
+    this._syncHintLabel();
   }
 
   open() {
@@ -276,10 +292,7 @@ export class CompanionModePicker {
   }
 
   _injectStyles() {
-    if (document.getElementById('session-start-dock-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'session-start-dock-styles';
-    style.textContent = `
+    const css = `
       .session-start-dock {
         position: absolute;
         left: 50%;
@@ -306,31 +319,58 @@ export class CompanionModePicker {
       #btn-focus:active {
         transform: translateY(2px) scale(0.985) !important;
       }
+      /* 次要立体钮：暖米金，与 Sit 朱红同系阴影语言、不抢主 CTA */
       .session-start-dock__hint {
-        border: none;
-        background: rgba(255, 252, 245, 0.88);
-        color: #2c1f14;
-        font-size: 13px;
-        font-weight: 560;
+        border: 1px solid rgba(139, 90, 55, 0.38);
+        background: linear-gradient(180deg, #fff8ec 0%, #f0dfc4 45%, #e4c9a0 100%);
+        color: #4a3224;
+        font-size: 14px;
+        font-weight: 600;
         letter-spacing: 0.02em;
         cursor: pointer;
-        padding: 6px 14px;
+        padding: 9px 20px;
         border-radius: 999px;
-        border: 1px solid rgba(139, 115, 85, 0.28);
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.85) inset,
-          0 2px 0 rgba(180, 150, 110, 0.22),
-          0 6px 14px rgba(44, 31, 20, 0.12);
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 -1px 0 rgba(120, 80, 40, 0.12) inset,
+          0 3px 0 rgba(160, 118, 72, 0.42),
+          0 8px 18px rgba(44, 31, 20, 0.16);
         text-decoration: none;
         max-width: 100%;
         line-height: 1.35;
         text-align: center;
+        transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
       }
       .session-start-dock__hint:hover,
       .session-start-dock__hint.is-expanded {
-        color: #2c1f14;
-        background: rgba(255, 252, 245, 0.96);
-        filter: brightness(1.02);
+        color: #3a261c;
+        filter: brightness(1.04);
+      }
+      .session-start-dock__hint:active:not(:disabled) {
+        transform: translateY(2px) scale(0.985);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 -1px 0 rgba(120, 80, 40, 0.14) inset,
+          0 1px 0 rgba(160, 118, 72, 0.35),
+          0 3px 8px rgba(44, 31, 20, 0.12);
+      }
+      .session-start-dock__hint.is-awaiting-arrival {
+        /* 门闩未就绪仍可点（启动 Arrival）；略强调为可行动次要钮 */
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.95) inset,
+          0 -1px 0 rgba(120, 80, 40, 0.14) inset,
+          0 3px 0 rgba(168, 110, 58, 0.48),
+          0 10px 20px rgba(44, 31, 20, 0.18);
+      }
+      .session-start-dock__hint.is-gated,
+      .session-start-dock__hint:disabled {
+        cursor: default;
+        filter: none;
+        opacity: 0.55;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 1px 0 rgba(160, 118, 72, 0.2),
+          0 2px 6px rgba(44, 31, 20, 0.08);
       }
       .session-start-dock__hint[hidden] {
         display: none !important;
@@ -395,6 +435,13 @@ export class CompanionModePicker {
         color: rgba(74, 58, 40, 0.78);
       }
     `;
-    document.head.appendChild(style);
+    let style = document.getElementById('session-start-dock-styles');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'session-start-dock-styles';
+      document.head.appendChild(style);
+    }
+    // 始终写入最新 CSS，避免 Vite HMR 留下旧「扁平弱化」样式
+    style.textContent = css;
   }
 }

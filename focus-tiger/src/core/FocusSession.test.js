@@ -8,7 +8,8 @@ import {
   COMPANION_MODE_ACROSS_TOOLS,
   shouldSuppressAwayReminders,
   shouldAutoStartFocusOnModeSelect,
-  canBeginFocusOnCompanionModeSelect
+  canBeginFocusOnCompanionModeSelect,
+  resolveCompanionHintClick
 } from './FocusSession.js';
 
 test('elapsed time uses wall-clock timestamps, not tick accumulation', () => {
@@ -116,5 +117,40 @@ test('auto-start mode still requires Arrival gate before beginFocus', () => {
       isFocusing: true
     }),
     false
+  );
+});
+
+test('companion hint click never silently no-ops when idle and visible', () => {
+  assert.equal(
+    resolveCompanionHintClick({
+      idleVisible: true,
+      postSessionOverlay: false,
+      arrivalReady: false
+    }),
+    'needArrival'
+  );
+  assert.equal(
+    resolveCompanionHintClick({
+      idleVisible: true,
+      postSessionOverlay: false,
+      arrivalReady: true
+    }),
+    'toggle'
+  );
+  assert.equal(
+    resolveCompanionHintClick({
+      idleVisible: true,
+      postSessionOverlay: true,
+      arrivalReady: false
+    }),
+    'ignore'
+  );
+  assert.equal(
+    resolveCompanionHintClick({
+      idleVisible: false,
+      postSessionOverlay: false,
+      arrivalReady: true
+    }),
+    'ignore'
   );
 });

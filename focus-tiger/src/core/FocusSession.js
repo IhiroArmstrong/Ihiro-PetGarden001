@@ -62,6 +62,27 @@ export function canBeginFocusOnCompanionModeSelect({
   return Boolean(arrivalGateReady);
 }
 
+/**
+ * 「How shall we sit?」hint 点击裁决：禁止可点却静默无反馈。
+ * - ignore：叠层中 / 专注中隐藏 → 不响应
+ * - needArrival：门闩未就绪 → 启动 Arrival（有明确结果）
+ * - toggle：已就绪 → 展开/收起三选一
+ * @param {object} gates
+ * @param {boolean} gates.idleVisible
+ * @param {boolean} gates.postSessionOverlay
+ * @param {boolean} gates.arrivalReady
+ * @returns {'ignore' | 'needArrival' | 'toggle'}
+ */
+export function resolveCompanionHintClick({
+  idleVisible,
+  postSessionOverlay,
+  arrivalReady
+}) {
+  if (!idleVisible || postSessionOverlay) return 'ignore';
+  if (!arrivalReady) return 'needArrival';
+  return 'toggle';
+}
+
 export class FocusSession {
   constructor(targetMinutes = 25) {
     this.targetMinutes = targetMinutes;

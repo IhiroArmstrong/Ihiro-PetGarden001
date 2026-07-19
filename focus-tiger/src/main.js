@@ -223,7 +223,7 @@ async function init() {
     }
   });
 
-  /** 在 beginFocusWithMode 定义后填入 onModeSelected */
+  /** 在 beginFocusWithMode 定义后填入 onModeSelected / onNeedArrival */
   const companionModeHandlers = {};
   const companionModePicker = new CompanionModePicker(
     document.getElementById('ui-overlay'),
@@ -420,6 +420,19 @@ async function init() {
       return;
     }
     beginFocusWithMode(mode);
+  };
+
+  /** hint 在门闩未就绪时启动 Arrival，禁止「点了没反应」 */
+  companionModeHandlers.onNeedArrival = () => {
+    if (completionPending) return;
+    if (stateManager.state === STATES.FOCUSING) return;
+    if (arrivalPractice.isOpen()) return;
+    sessionEndFlow.cancelPending();
+    honestyCheckInUI.hide();
+    companionModePicker.setArrivalReady(false);
+    companionModePicker.setPostSessionOverlayActive(true);
+    companionModePicker.hide();
+    arrivalPractice.start();
   };
 
   const focusInput = new FocusInput(
