@@ -8,12 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test \"src/**/*.test.js\"",
-    "test:smoke": "node --test src/core/scenario-smoke.test.js"
+    "test:smoke": "node --test src/core/scenario-smoke.test.js",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium"
   },
   "dependencies": {
     "three": "^0.178.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "vite": "^6.3.5"
   }
 }

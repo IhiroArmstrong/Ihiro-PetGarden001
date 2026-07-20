@@ -20,7 +20,7 @@
 2. 用户可点控件不得对应逻辑静默 `return`（未就绪则禁用）  
 3. 门闩类失败用例 + **确认修复 bug 须留回归锚**（不限门闩；无法自动化 → TEST_TRACKER 人工锁）  
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
-5. 声称修好前先跑 **`npm run test:smoke`**（不过不得声称修好）  
+5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过）  
 6. **立刻本地 commit（不必再问）**：用户反馈修复 / 回归锁收尾后 Agent **自动** `git commit`；**仍禁止**未确认 `git push`  
 7. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
 
@@ -65,8 +65,10 @@
 - **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
 - Honesty 拍板 B；Companion 短句提示
 - **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（整合 7/19 防假修好+自动 commit 与 7/20 防改坏；§6.1 场景冒烟已落地）
-- **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（声称修好前必跑；观感仍人工）
-- **下一步工具（后排）**：DEV「一键清空本地状态」；共享资源对照表（见 `DEV_WORKFLOW_QUALITY.md` §6.3–6.4）
+- **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（逻辑层；观感仍人工分列）
+- **Playwright 产品壳 e2e**：`e2e/product-shell.smoke.spec.js` · `npm run test:e2e`（已拍板引入；无授权费）
+- **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
+- **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 

@@ -768,7 +768,8 @@ async function init() {
   honestyCheckIn.onAppReady();
   syncOnboardingAutoHints();
 
-  if (!productChrome) {
+  // DEV 实验室调试入口（生产构建与 ?product=1 均不出现）
+  if (import.meta.env.DEV && !productChrome) {
     const clearHintsBtn = document.createElement('button');
     clearHintsBtn.type = 'button';
     clearHintsBtn.textContent = '清空引导提示已读';
@@ -779,6 +780,23 @@ async function init() {
       syncOnboardingAutoHints();
     });
     document.body.appendChild(clearHintsBtn);
+
+    const resetAllBtn = document.createElement('button');
+    resetAllBtn.type = 'button';
+    resetAllBtn.id = 'dev-reset-all-local-state';
+    resetAllBtn.textContent = '重置全部本地状态';
+    resetAllBtn.title =
+      '清空 focus-tiger.* localStorage 并刷新，等同全新用户 / 场景 A 开局';
+    resetAllBtn.style.cssText =
+      'position:fixed;top:12px;right:320px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff0f0;color:#2c1f14;border-radius:4px;';
+    resetAllBtn.addEventListener('click', async () => {
+      const { clearAllFocusTigerLocalState } = await import(
+        './core/localStateKeys.js'
+      );
+      clearAllFocusTigerLocalState();
+      window.location.reload();
+    });
+    document.body.appendChild(resetAllBtn);
   }
 
   const uiControls = new UIControls(focusInput);

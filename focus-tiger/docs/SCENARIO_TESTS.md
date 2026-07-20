@@ -8,7 +8,11 @@
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
 
-**自动化冒烟（2026-07-20）**：场景 A–D 的**确定性逻辑**已有控制器级冒烟 `src/core/scenario-smoke.test.js`（`npm run test:smoke`）。各场景标题下注明「已自动化 / 仍须人工」。概率与观感步骤仍靠本剧本人工走。
+**自动化冒烟（2026-07-20）**：
+- 逻辑层：`src/core/scenario-smoke.test.js`（`npm run test:smoke`）
+- 浏览器壳：`e2e/product-shell.smoke.spec.js`（`npm run test:e2e`，Playwright）
+- **二者全绿 ≠ 序列观感通过**（Idle 不闪等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
+各场景标题下注明「已自动化 / 仍须人工」。
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
 
