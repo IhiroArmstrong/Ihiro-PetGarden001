@@ -27,9 +27,12 @@
   --color-ink-muted: rgba(74, 58, 40, 0.78);
   --color-ink-faint: rgba(46, 43, 40, 0.1);
 
-  /* Accent — Sit CTA family stays vermillion; cushion orange for kit accents */
+  /* Accent — cushion orange for primary CTA (Sit / Rise); was vermillion */
   --color-accent: #b5623a;
   --color-accent-soft: rgba(181, 98, 58, 0.22);
+  --color-cta-top: #c47a4e;
+  --color-cta-bottom: #8f4a2c;
+  --color-cta-edge: #7a3f24;
   --color-highlight: #d64545;
   --color-gold: #f0c36a;
   --color-gold-glow: rgba(240, 195, 106, 0.55);

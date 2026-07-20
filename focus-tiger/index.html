@@ -68,9 +68,14 @@
         transform: translateX(-50%);
         pointer-events: auto;
         padding: 13px 36px;
-        border: 1px solid rgba(255, 220, 200, 0.28);
+        border: 1px solid rgba(255, 230, 210, 0.35);
         border-radius: 26px;
-        background: linear-gradient(180deg, #a53a3a 0%, #8b2e2e 42%, #6f2424 100%);
+        background: linear-gradient(
+          180deg,
+          var(--color-cta-top, #c47a4e) 0%,
+          var(--color-accent, #b5623a) 48%,
+          var(--color-cta-bottom, #8f4a2c) 100%
+        );
         color: #fff;
         font-size: 16px;
         font-weight: 600;
@@ -78,9 +83,9 @@
         cursor: pointer;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.28) inset,
-          0 -2px 0 rgba(0, 0, 0, 0.18) inset,
-          0 2px 0 #5a1e1e,
-          0 8px 18px rgba(44, 31, 20, 0.28);
+          0 -2px 0 rgba(80, 40, 20, 0.18) inset,
+          0 2px 0 var(--color-cta-edge, #7a3f24),
+          0 8px 18px rgba(44, 31, 20, 0.2);
         transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
       }
       #btn-focus:hover {
@@ -90,9 +95,9 @@
         transform: translateX(-50%) translateY(2px) scale(0.985);
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.18) inset,
-          0 -1px 0 rgba(0, 0, 0, 0.2) inset,
-          0 1px 0 #5a1e1e,
-          0 3px 8px rgba(44, 31, 20, 0.22);
+          0 -1px 0 rgba(80, 40, 20, 0.2) inset,
+          0 1px 0 var(--color-cta-edge, #7a3f24),
+          0 3px 8px rgba(44, 31, 20, 0.18);
       }
       #loading-mask {
         position: fixed;

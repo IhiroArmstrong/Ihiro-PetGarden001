@@ -112,7 +112,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
-| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径（产品舞台 v6）**：`http://127.0.0.1:8765/ui-kit/demo.html?v=20260721f`（须见 **v6**）。核对：① 彩色闭目坐禅帧（非灰 3D poster）；② Sit 为蒲团橙而非朱红；③ Arrival 文案框与三选一内边距更疏、不挤。**真产品壳**：`/?product=1` 看引导气泡暖米。**回流**：Component lab → Back。 | 2026-07-21：…v5 产品舞台。**同日截图反馈**：红按钮不协调；文案框太拥挤；灰老虎应用动画帧替代 → 已改 v6（cushion-orange Sit / 加疏 / idle frame_010），请用 `?v=20260721f` 复测。 | `ui-kit/demo.html?v=20260721f` · `/?product=1` | 2026-07-21 |
+| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径（产品舞台 v6）**：`http://127.0.0.1:8765/ui-kit/demo.html?v=20260721f`。**产品壳 Sit/Sound**：`npm run dev` → `/` 或 `/?product=1`，Sit with Yin / Rise / Sound 应为**蒲团橙**（非朱红）；How shall we sit? 仍暖米金。**回流**：开计时变 Rise 再回 Sit，色仍为橙。 | 2026-07-21：…v6。**同日书面**：同意产品壳 Sit 也改蒲团橙 → 已改 `#btn-focus` + Sound 同系 + PRINCIPLES/DESIGN；请硬刷新看产品壳。 | `/` · `/?product=1` · demo `?v=20260721f` | 2026-07-21 |
 | Arrival Practice / Notice「What is present…」点选后 | UI可见 | 已通过 | Sit → Notice：点 Calm → 图标收起，**短句须能读完**（约 2.4s）再进呼吸。 | 2026-07-20：书面确认框收起 OK。**同日再反馈**：`a calm presence…` 来不及看就消失→已加长至 2.4s，请复测。**2026-07-20 晚**：用户书面「测试 OK」。 | `http://localhost:5173/` · Sit → Calm | 2026-07-20 |
 | Arrival Practice / Choose 点头 pingpong→idle | UI可见 | 待人工测试 | Choose → **nod-bow pingpong**（正放鞠躬→倒放回坐姿）→ Companion 立刻可展；进出用 **约 1s 叠化**。 | 2026-07-20：用户要求加倒放 pingpong + 前后 1s 叠化。已改，请复测。 | `http://localhost:5173/` · Sit → Choose | 2026-07-20 |
 | Arrival Practice / 抵达练习（Welcome → Notice → Breath → Choose） | UI可见 | 待人工测试 | Breath 推近；Choose 点头 + 坐垫光晕；Companion 马上可用；点头↔idle **1s 叠化**后再拉回视距。 | 2026-07-20：点头改 pingpong + CapCut 1s。 | `http://localhost:5173/` · Sit | 2026-07-20 |

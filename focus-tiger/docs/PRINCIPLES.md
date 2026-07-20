@@ -202,7 +202,7 @@ Focus Tiger 允许用户手动补登在其他场景（如其他冥想 App、线�
 金色光环/环境光(随focusLevel渐强)：蜜金过渡 #e0b979 → 满值纯金 #f0c060
 条纹色：深金/赭石 #8b6914
 环境雾色：水墨浅灰 #e8e6e1，背景基调随focusLevel从冷调转暖调
-强调色：朱红 #8b2e2e（用于关键 CTA 按钮，如 "Sit with Yin"）
+强调色：蒲团橙 #b5623a（用于关键 CTA 按钮，如 "Sit with Yin"；原朱红 #8b2e2e 已退役）
 UI文字：墨色 #2c1f14
 ```
 

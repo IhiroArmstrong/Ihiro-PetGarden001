@@ -22,9 +22,12 @@
   --color-surface-border: rgba(139, 115, 85, 0.22);
   --color-surface-border-strong: rgba(139, 115, 85, 0.48);
 
-  /* Accent from cushion / robe trim */
+  /* Accent from cushion / robe trim — primary CTA */
   --color-accent: #b5623a;
   --color-accent-soft: rgba(181, 98, 58, 0.22);
+  --color-cta-top: #c47a4e;
+  --color-cta-bottom: #8f4a2c;
+  --color-cta-edge: #7a3f24;
 
   /* Ink — Companion title / product textInk */
   --color-ink: #2c1f14;

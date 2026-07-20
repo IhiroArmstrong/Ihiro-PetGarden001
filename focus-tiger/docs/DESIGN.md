@@ -230,7 +230,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**。其下次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金、与 Sit 朱红同系阴影语言）向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。若门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完再**展开三选一（桌面 ≥900px：底部**横排矮条**，不挡 Yin）。**Skip — begin / Sit 二次跳过**：跳过仪式后**立刻用记忆模式开计时**，按钮变 **Rise**（不再半卡在「门闩就绪但仍显示 Sit」）。**Here & Now / Flow State：选中后立即开始 Focus 与计时**（不必再点 Sit）。**Offline Space：只预选并收起，须再点 Sit 才开计时**（用户需离开屏幕前确认）。直接点 Sit 仍可用当前预选（含记忆）立刻开始。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁；此时点 hint 同样会启动 Arrival。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其下次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金、与 Sit 同系阴影语言）向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。若门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完再**展开三选一（桌面 ≥900px：底部**横排矮条**，不挡 Yin）。**Skip — begin / Sit 二次跳过**：跳过仪式后**立刻用记忆模式开计时**，按钮变 **Rise**（不再半卡在「门闩就绪但仍显示 Sit」）。**Here & Now / Flow State：选中后立即开始 Focus 与计时**（不必再点 Sit）。**Offline Space：只预选并收起，须再点 Sit 才开计时**（用户需离开屏幕前确认）。直接点 Sit 仍可用当前预选（含记忆）立刻开始。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁；此时点 hint 同样会启动 Arrival。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 
@@ -314,7 +314,7 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 
 - **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
 - 用户可在**专注会话进行中**开启 / 关闭 / 切换；**默认关闭**；
-- UI：**与主 CTA（Sit with Yin）同系朱红立体按钮**（右下角 Sound / 背景音；挂 `document.body`、高 z-index）。**进入应用即始终可见**；未 FOCUSING 时点击不展开面板，显示英文提示 `AMBIENT_REQUIRES_FOCUS`（须先进入陪伴专注模式）。FOCUSING 后可展开曲目/音量；首次进入专注可出现一次可忽略轻提示；
+- UI：**与主 CTA（Sit with Yin）同系蒲团橙立体按钮**（右下角 Sound / 背景音；挂 `document.body`、高 z-index）。**进入应用即始终可见**；未 FOCUSING 时点击不展开面板，显示英文提示 `AMBIENT_REQUIRES_FOCUS`（须先进入陪伴专注模式）。FOCUSING 后可展开曲目/音量；首次进入专注可出现一次可忽略轻提示；
 - 不得做成开始会话的必选项，也不得因未开启而削弱完成反馈或制造「少做了一步」的暗示。
 
 #### 2. 播放时长作为独立「在场置信信号」
@@ -405,7 +405,7 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 `achievement-modal` / `collection-shelf` / `daily-quest-card` / 完整「打卡圈」产品化 → 纪念奖励系统排期前**只作视觉探索**，不得顺手挂进主会话路径（见 `PROCESS.md` Backlog「纪念奖励系统」）。
 
-Sit / Sound 朱红立体主 CTA 暂保留；次要文案面已按 Companion 模式统一。
+Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 
 ---
 

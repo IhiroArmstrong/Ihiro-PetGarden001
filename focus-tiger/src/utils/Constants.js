@@ -11,7 +11,8 @@ export const COLORS = {
   focusGoldFull: '#f0c060',
   stripeColor: '#8b6914',
   ambienceFog: '#e8e6e1',
-  accentRed: '#8b2e2e',
+  /** Primary CTA (Sit / Rise) — cushion orange; was vermillion #8b2e2e */
+  accentRed: '#b5623a',
   textInk: '#2c1f14'
 };
 

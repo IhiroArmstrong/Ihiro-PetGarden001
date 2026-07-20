@@ -1,5 +1,5 @@
 /**
- * 背景音入口：与 Sit with Yin 同系朱红立体按钮 + 可选曲目面板。
+ * 背景音入口：与 Sit with Yin 同系蒲团橙立体按钮 + 可选曲目面板。
  * 进入应用后右下角**始终可见**；未 FOCUSING 时点击不展开，仅提示需先进入专注模式。
  * 首次真正进入专注时可出现一次可忽略轻提示（localStorage 记忆）。
  */
@@ -302,9 +302,14 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__fab {
         padding: 12px 22px;
         min-height: 48px;
-        border: 1px solid rgba(255, 220, 200, 0.28);
+        border: 1px solid rgba(255, 230, 210, 0.35);
         border-radius: 24px;
-        background: linear-gradient(180deg, #a53a3a 0%, #8b2e2e 42%, #6f2424 100%);
+        background: linear-gradient(
+          180deg,
+          var(--color-cta-top, #c47a4e) 0%,
+          var(--color-accent, #b5623a) 48%,
+          var(--color-cta-bottom, #8f4a2c) 100%
+        );
         color: #fff;
         font-size: 16px;
         line-height: 1.2;
@@ -312,9 +317,9 @@ export class AmbientSoundscapeUI {
         cursor: pointer;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.28) inset,
-          0 -2px 0 rgba(0, 0, 0, 0.18) inset,
-          0 2px 0 #5a1e1e,
-          0 8px 18px rgba(44, 31, 20, 0.28);
+          0 -2px 0 rgba(80, 40, 20, 0.18) inset,
+          0 2px 0 var(--color-cta-edge, #7a3f24),
+          0 8px 18px rgba(44, 31, 20, 0.2);
         opacity: 1;
         transition: transform 120ms ease, box-shadow 160ms ease, filter 160ms ease, opacity 160ms ease;
       }
@@ -328,16 +333,16 @@ export class AmbientSoundscapeUI {
         transform: translateY(2px) scale(0.985);
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.18) inset,
-          0 -1px 0 rgba(0, 0, 0, 0.2) inset,
-          0 1px 0 #5a1e1e,
-          0 3px 8px rgba(44, 31, 20, 0.22);
+          0 -1px 0 rgba(80, 40, 20, 0.2) inset,
+          0 1px 0 var(--color-cta-edge, #7a3f24),
+          0 3px 8px rgba(44, 31, 20, 0.18);
       }
       .ambient-soundscape__fab.is-active {
-        background: linear-gradient(180deg, #8f3232 0%, #6e2424 45%, #5a1e1e 100%);
+        background: linear-gradient(180deg, #a86a42 0%, #8f4a2c 45%, #6e3a24 100%);
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.22) inset,
-          0 -2px 0 rgba(0, 0, 0, 0.2) inset,
-          0 2px 0 #4a1818,
+          0 -2px 0 rgba(80, 40, 20, 0.2) inset,
+          0 2px 0 #5a3018,
           0 8px 18px rgba(44, 31, 20, 0.28),
           0 0 0 2px rgba(240, 192, 96, 0.55);
         opacity: 1;
@@ -433,7 +438,7 @@ export class AmbientSoundscapeUI {
       }
       .ambient-soundscape__volume input {
         width: 100%;
-        accent-color: #8b2e2e;
+        accent-color: var(--color-accent, #b5623a);
       }
     `;
     document.head.appendChild(style);
