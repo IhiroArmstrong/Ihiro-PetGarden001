@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test \"src/**/*.test.js\""
+    "test": "node --test \"src/**/*.test.js\"",
+    "test:smoke": "node --test src/core/scenario-smoke.test.js"
   },
   "dependencies": {
     "three": "^0.178.0"

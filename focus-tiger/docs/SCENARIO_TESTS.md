@@ -8,6 +8,8 @@
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
 
+**自动化冒烟（2026-07-20）**：场景 A–D 的**确定性逻辑**已有控制器级冒烟 `src/core/scenario-smoke.test.js`（`npm run test:smoke`）。各场景标题下注明「已自动化 / 仍须人工」。概率与观感步骤仍靠本剧本人工走。
+
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
 
 ---
@@ -28,33 +30,47 @@
 
 ## 场景 A：Kelly 的第一个早晨（全新用户，当日 DORMANT）
 
-1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **睡着**（`sleeping` / DORMANT），**不是** idle-breathing。
+> **自动化（控制器级）**：A1 / A3–A4 门闩 / A7–A8 完成反馈 / 计时达标 → `src/core/scenario-smoke.test.js`（`npm run test:smoke`）。  
+> **仍须人工**：睡着观感、Honesty 文案、Arrival 气泡时长、合十动画、Ambient、Idle 呼吸×5→眨眼观感、Celebrating 动画本身。
+
+1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **睡着**（`sleeping` / DORMANT），**不是** idle-breathing。  
+   *[逻辑：DORMANT 门闩已自动化 smoke A1]*
 2. 应看到 Honesty Check-in 可忽略提示（文案键 `HONESTY_CHECKIN_PROMPT`，大意「Practiced elsewhere today?」）。Kelly 决定直接开始，不理会提示，点击 **Sit with Yin**。
 3. Arrival Practice 展开：
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）
    c. 呼吸 beat（~5 秒，无倒计时）
-   d. Choose：六个活动图标；点 "Deep Work" → `palms-together`（合十确认；实现可能含正放/回落，以观感为准）
-4. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**（不是旧稿 Stay here / I'll step away / …）。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。
+   d. Choose：六个活动图标；点 "Deep Work" → `palms-together`（合十确认；实现可能含正放/回落，以观感为准）  
+   *[逻辑：Notice→Choose→READY + Here & Now 可 begin / 门闩失败 已自动化 smoke A3–A4]*
+4. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**（不是旧稿 Stay here / I'll step away / …）。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。  
+   *[逻辑：选中即开 + Offline 不开 已自动化；真实 HUD 开表仍人工]*
 5. 计时开始后，可展开右下角 Ambient Soundscape，选一首播放（未计时时点 Sound 应提示须先进入专注，不展开面板）。
 6. 全程观察 Idle：**仅**「呼吸 ×5 → blink-smile」固定节奏。  
    **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**（素材可在，见 `companionGestureCatalog`；测序列用实验室 / `__spritePlayer.play(...)`）。看不到它们不算失败。  
-   **靠近区不应自动播点头**（`nodGreeting` 已拆除靠近触发；调试「点头致意」可手工播）。
-7. 达到目标时长 → **当日首次**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。
+   **靠近区不应自动播点头**（`nodGreeting` 已拆除靠近触发；调试「点头致意」可手工播）。  
+   *[概率/观感：不纳入冒烟]*
+7. 达到目标时长 → **当日首次**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。  
+   *[逻辑：首次→celebrating 已自动化 smoke A7–A8；动画观感仍人工]*
 8. **同日第二次达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
-   （旧稿「每日首次庆祝限制尚未接通」已过时——代码已接线。）
+   （旧稿「每日首次庆祝限制尚未接通」已过时——代码已接线。）  
+   *[逻辑：二次→sessionComplete 已自动化]*
 9. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**，仅调试面板「模拟一炷香」。首次完成**不要**期待自动莲花。
 10. 进入 Reflection Moment：开头回显本次 Choose（文案键类似 `Chosen direction: {text}`，以 locale 为准），三问可独立跳过。
-11. 回到非 DORMANT；今日 Honesty 提示不应再因零完成自动出现。
+11. 回到非 DORMANT；今日 Honesty 提示不应再因零完成自动出现。  
+    *[逻辑：有完成后离 DORMANT 已自动化 smoke A1]*
 
 ---
 
 ## 场景 B：分心后自己走神又回来（Recover / Re-focus Acknowledge）
 
+> **自动化**：模式抑制门闩 + `handleAttentionReturn` 在 Here & Now 触发 / Offline 抑制 → smoke B。  
+> **仍须人工**：真实切标签页 >60s、toast 文案、nod-bow 观感。
+
 1. 当天再开一场（Arrival → Companion 选 **Here & Now**）。
 2. 计时中切换到其他标签页 **超过 60 秒**（`REFOCUS_DISPLAY_THRESHOLD_MS = 60000`）再切回。
 3. 应观察到：非模态观察式文案 + `nod-bow`（`mindfulAcknowledge` / refocus）。
-4. **纠正旧稿**：Re-focus **会**占用与 MindfulAcknowledge / stretchReminder **共享**的每日提醒额度（`SHARED_DAILY_REMINDER_LIMIT = 3`）；每场会话最多 1 次 Re-focus（`REFOCUS_PER_SESSION_LIMIT = 1`）。
+4. **纠正旧稿**：Re-focus **会**占用与 MindfulAcknowledge / stretchReminder **共享**的每日提醒额度（`SHARED_DAILY_REMINDER_LIMIT = 3`）；每场会话最多 1 次 Re-focus（`REFOCUS_PER_SESSION_LIMIT = 1`）。  
+   *[逻辑：Stay 触发 / Offline·Flow 抑制 已自动化 smoke B]*
 5. 继续完成本次会话。
 
 强制触发（实验室 / DEV）：会话 FOCUSING 且非 Offline/Flow 抑制离开提醒时，控制台  
@@ -64,24 +80,35 @@
 
 ## 场景 C：中途主动放弃（未达标）
 
+> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection + 意图回显 → smoke C；回流 hint→needArrival → smoke J。  
+> **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
+
 1. 开始新会话，进行到一半，点 **Rise**。
-2. 不应播放 Celebrating，不应播放 IncenseGreeting。
-3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。
-4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。
+2. 不应播放 Celebrating，不应播放 IncenseGreeting。  
+   *[逻辑：未达标不 `recordCompletion` 已自动化]*
+3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。  
+   *[逻辑：pause 时长 + Reflection open 已自动化；序列观感仍人工]*
+4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
+   *[逻辑：intention echo 已自动化]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
 
 ---
 
 ## 场景 D：请假一天后的 Honesty Check-in（含桥接 CTA）
 
+> **自动化**：选 20 → dormantWake(holdPose) → 记账离 DORMANT → 桥接 Yes→Arrival / No→idle / 同日再出 → smoke D。  
+> **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
+
 1. 模拟「次日零完成」：可用无完成记录的浏览器配置 / 清相关 localStorage 后刷新（见下方强制手段）。
 2. 当日 DORMANT，可忽略提示；这次点进 Honesty。
 3. 选时长 10 / 20 / 30+（选 20）。
-4. **实际顺序**：选时长后 **立刻**播 `dormant-wake`（睡→坐起，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。
+4. **实际顺序**：选时长后 **立刻**播 `dormant-wake`（睡→坐起，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
+   *[逻辑：dormantWake + holdPose 已自动化]*
 5. 补登结束（记账、离 DORMANT）后：**立刻**出现 Honesty **桥接 CTA**（「要不要现在也坐一会儿？」Yes / No 同级；Welcome 回显可与邀请同屏一小会儿）。  
    - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
    - **No** → idle，无二次挽留。  
-   - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。
+   - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。  
+   *[逻辑：桥接 Yes/No/同日再出 已自动化；Yes 后完整 Arrival UI 仍人工]*
 6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
    **已知**：Honesty 路径暂不接 halo / 金光。
 

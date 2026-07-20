@@ -88,7 +88,8 @@ alwaysApply: true
 
 - 交互修复 = 主路径 + **回流路径**；禁止只验一次 Happy Path 就声称修好。  
 - 门闩未就绪 → UI 禁用，禁止可点却静默 `return`。  
-- 门闩行为须有失败用例单测（或 TEST_TRACKER 标明人工锁路径）。  
+- 门闩行为须有失败用例单测；**确认修复的 bug 须留回归锚**（不限门闩；或 TEST_TRACKER 标明人工锁路径）。  
+- 声称修好前先跑 **`npm run test:smoke`**（场景 A–D 控制器冒烟）。  
 - 同主题 TEST_TRACKER 行禁止互斥步骤。  
 - **防把好的改坏**：改前列已好清单；重写须继承观感契约；序列衔接（Idle 眨眼、cross-fade、Choose/Rise 叠化）进高风险表。  
 - 用户反馈修复 / 回归锁收尾后 **自动本地 commit**（不必再问）；**仍禁止**未确认 push。
