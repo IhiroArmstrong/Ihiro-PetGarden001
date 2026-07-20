@@ -316,6 +316,28 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 ---
 
+## 工程加固四步（2026-07-21 拍板）
+
+> **背景**：记录在案的缺陷里，门闩/时序与 DOM 手动渲染约各占三成，序列观感另占约四成。  
+> **不采纳**：全仓 Lit 化、为 Lit 引入重构建链、用 Lit 重写 Emotion / Idle / 序列播放。
+
+| 步 | 内容 | 状态 |
+|---|---|---|
+| **1** | **JSDoc + 门闩/共享资源契约**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4 | 进行中（Gate facade 已落地；UI 模块 JSDoc 增量补） |
+| **2** | **门闩显式化**：`SessionUiGate`（`src/core/SessionUiGate.js`）集中持有 `arrivalGateReady` / `completionPending` / `postSessionOverlayActive`；失败用例锁「未就绪不得 begin」 | **本轮已落地** |
+| **3** | **继续回归锁**：主路径 + 回流 + `test:smoke` / `test:e2e` + TEST_TRACKER 观感分列（见 `DEV_WORKFLOW_QUALITY.md`） | 常驻，不替代 |
+| **4** | **Lit 仅试点一个 Bug 灾区 UI**（候选：`CompanionModePicker` 或 `ArrivalPracticeUI`）；迁完测通再定是否扩 | **未开工**；须单独 Task Brief |
+
+**边界**：
+
+- **可用 Lit**：复杂叠层 UI（频繁状态 ↔ DOM）；新模块若确为复杂 UI 亦可从第一天用 Lit。
+- **禁止 Lit**：`EmotionController` / `IdleOrchestrator` / `SpriteSequencePlayer` / 计时与跨工具专注逻辑 —— 继续纯 JS + 现有 core 边界。
+- **渐进**：禁止 Big Bang 全盘重写；试点失败可回退，不得牵连情绪主线。
+
+纯裁决函数仍在 `FocusSession.js`（`canBeginFocusOnCompanionModeSelect` 等）；`SessionUiGate` 只收束可变态并组合调用，供 `main.js` 装配。DEV：`window.__sessionUiGate`。
+
+---
+
 ## Focus Confidence 数据层与视觉层的接口约定
 
 - 数据层(负责监听Page Visibility、window焦点、idle检测,计算Focus Confidence分值与Flow Continuity百分比)应作为独立的数据适配模块存在,不与MoodController或PoseManager直接耦合

@@ -10,13 +10,11 @@ import {
   FocusSession,
   resolveDemoSessionMinutes,
   shouldSuppressAwayReminders,
-  canBeginFocusOnCompanionModeSelect,
-  shouldBeginFocusOnArrivalReady,
-  resolveRiseClickDuringFocus,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
+import { SessionUiGate } from './core/SessionUiGate.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -297,10 +295,33 @@ async function init() {
     honestyCheckIn.syncIdleEntry();
   }
 
+  /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
+  const sessionUiGate = new SessionUiGate();
+  if (import.meta.env.DEV) {
+    window.__sessionUiGate = sessionUiGate;
+  }
+
+  /**
+   * 同步 Reflection 等叠层占用 → Gate + Companion UI。
+   * 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint 展开三选一
+   *（禁止「看得见却静默」）。
+   */
   function syncCompanionPostSessionChrome() {
-    // 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint 展开三选一
-    //（禁止「看得见却静默」）。
-    companionModePicker.setPostSessionOverlayActive(reflectionMoment.isOpen());
+    const active = reflectionMoment.isOpen();
+    sessionUiGate.setPostSessionOverlayActive(active);
+    companionModePicker.setPostSessionOverlayActive(active);
+  }
+
+  /** @param {boolean} ready */
+  function syncArrivalGateReady(ready) {
+    sessionUiGate.setArrivalGateReady(ready);
+    companionModePicker.setArrivalReady(ready);
+  }
+
+  /** @param {boolean} active */
+  function syncPostSessionOverlayForArrival(active) {
+    sessionUiGate.setPostSessionOverlayActive(active);
+    companionModePicker.setPostSessionOverlayActive(active);
   }
 
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
@@ -401,7 +422,7 @@ async function init() {
       reflectionOpen: reflectionMoment?.isOpen?.() ?? false,
       ambientPanelOpen: ambientSoundscapeUI?.isPanelOpen?.() ?? false,
       isDormant: stateManager.state === STATES.DORMANT,
-      arrivalReady: arrivalGateReady,
+      arrivalReady: sessionUiGate.arrivalGateReady,
       hasEverCompletedSession: hasEndedAnySession
     };
   }
@@ -435,9 +456,6 @@ async function init() {
     window.__ambientSoundscapeUI = ambientSoundscapeUI;
   }
 
-  let completionPending = false;
-  /** Arrival Practice 完成后才允许 Sit 真正开计时 */
-  let arrivalGateReady = false;
   /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
   let pendingChoose = null;
   /** @type {string} 本次会话 Choose 内容；达标与未达标结束均回显 */
@@ -490,8 +508,8 @@ async function init() {
           onComplete: () => {
             if (
               stateManager.state !== STATES.FOCUSING &&
-              arrivalGateReady &&
-              !completionPending
+              sessionUiGate.arrivalGateReady &&
+              !sessionUiGate.completionPending
             ) {
               companionModePicker.open();
             }
@@ -505,9 +523,8 @@ async function init() {
       onClearLight: () => lightProgression.clearArrivalEffects(),
       onReady: (info = {}) => {
         pendingChoose = arrivalPractice.getChooseResult();
-        arrivalGateReady = true;
-        companionModePicker.setArrivalReady(true);
-        companionModePicker.setPostSessionOverlayActive(false);
+        syncArrivalGateReady(true);
+        syncPostSessionOverlayForArrival(false);
         onboardingHints?.markSeen('notice');
         onboardingHints?.markSeen('breathing');
         onboardingHints?.markSeen('choose');
@@ -517,7 +534,7 @@ async function init() {
         onboardingHints?.markSeen('honesty-optional');
         // Skip — begin / Sit 整体跳过 =「直接开始」：用记忆模式立刻计时 → Rise。
         // Choose 确认：只开门闩；面板改在 intentionSet 播完后展开（见上）。
-        if (shouldBeginFocusOnArrivalReady(info)) {
+        if (sessionUiGate.shouldBeginFocusOnArrivalReady(info)) {
           beginFocusWithMode(companionModePicker.getSelectedMode());
         } else if (!info.chose) {
           companionModePicker.open();
@@ -539,8 +556,8 @@ async function init() {
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     honestyCheckInUI.hideIdleEntry();
-    companionModePicker.setArrivalReady(false);
-    companionModePicker.setPostSessionOverlayActive(true);
+    syncArrivalGateReady(false);
+    syncPostSessionOverlayForArrival(true);
     companionModePicker.hide();
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
@@ -557,9 +574,14 @@ async function init() {
     store: honestyBridgeStore,
     ui: honestyBridgeUI,
     onAccept: () => {
-      if (completionPending) return;
-      if (stateManager.state === STATES.FOCUSING) return;
-      if (arrivalPractice.isOpen()) return;
+      if (
+        !sessionUiGate.canStartArrivalFromChrome({
+          isFocusing: stateManager.state === STATES.FOCUSING,
+          arrivalOpen: arrivalPractice.isOpen()
+        })
+      ) {
+        return;
+      }
       honestyCheckInUI.hideIdleEntry();
       startArrivalPracticeFromChrome();
     },
@@ -584,14 +606,14 @@ async function init() {
 
   function beginSessionCompleteIfNeeded() {
     if (
-      completionPending ||
+      sessionUiGate.completionPending ||
       stateManager.state !== STATES.FOCUSING ||
       !focusSession.hasReachedTarget()
     ) {
       return;
     }
 
-    completionPending = true;
+    sessionUiGate.setCompletionPending(true);
     endFocusChrome();
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
@@ -615,14 +637,14 @@ async function init() {
     currentSessionIntention = pendingChoose?.text ?? '';
     currentIntentionSource = pendingChoose?.source === 'icon' ? 'icon' : 'typed';
     pendingChoose = null;
-    arrivalGateReady = false;
+    sessionUiGate.clearArrivalGateForFocusStart();
     if (currentSessionIntention) {
       recordIntention(currentSessionIntention, {
         source: currentIntentionSource
       });
     }
     companionModePicker.setIdleChromeVisible(false);
-    companionModePicker.setArrivalReady(false);
+    syncArrivalGateReady(false);
     focusSession.start({ companionMode });
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
@@ -646,7 +668,7 @@ async function init() {
       });
     }
     stateManager.setState(STATES.FOCUSING);
-    completionPending = false;
+    sessionUiGate.setCompletionPending(false);
     // 自动开计时路径须同步主按钮 → Rise（事件触发时 focusInput 已初始化）
     focusInput.beginFocusing(focusButton);
   }
@@ -661,10 +683,7 @@ async function init() {
       onboardingHints?.markSeen('companion-across-tools');
     }
     if (
-      !canBeginFocusOnCompanionModeSelect({
-        mode,
-        arrivalGateReady,
-        completionPending,
+      !sessionUiGate.canBeginFocusOnCompanionModeSelect(mode, {
         arrivalOpen: arrivalPractice.isOpen(),
         isFocusing: stateManager.state === STATES.FOCUSING
       })
@@ -676,9 +695,14 @@ async function init() {
 
   /** 门闩未就绪时选 Here & Now / Flow State → 启动 Arrival（禁止 HUD 静默无反应） */
   companionModeHandlers.onAutoStartNeedsArrival = () => {
-    if (completionPending) return;
-    if (stateManager.state === STATES.FOCUSING) return;
-    if (arrivalPractice.isOpen()) return;
+    if (
+      !sessionUiGate.canStartArrivalFromChrome({
+        isFocusing: stateManager.state === STATES.FOCUSING,
+        arrivalOpen: arrivalPractice.isOpen()
+      })
+    ) {
+      return;
+    }
     startArrivalPracticeFromChrome();
   };
 
@@ -692,7 +716,7 @@ async function init() {
 
   const focusInput = new FocusInput(
     () => {
-      if (completionPending) return false;
+      if (sessionUiGate.completionPending) return false;
       sessionEndFlow.cancelPending();
       honestyBridge?.hide();
       honestyCheckInUI.hide();
@@ -702,7 +726,11 @@ async function init() {
         return false;
       }
 
-      if (!arrivalGateReady) {
+      const sitAction = sessionUiGate.resolveSitClickWhenIdle({
+        isFocusing: stateManager.state === STATES.FOCUSING
+      });
+      if (sitAction === 'ignore') return false;
+      if (sitAction === 'start-arrival') {
         startArrivalPracticeFromChrome();
         return false;
       }
@@ -711,8 +739,7 @@ async function init() {
       return true;
     },
     () => {
-      const riseAction = resolveRiseClickDuringFocus({
-        completionPending,
+      const riseAction = sessionUiGate.resolveRiseClickDuringFocus({
         state: stateManager.state,
         hasReachedTarget: focusSession.hasReachedTarget()
       });
@@ -724,12 +751,11 @@ async function init() {
 
       companionModePicker.hide();
       arrivalPractice.hide();
-      arrivalGateReady = false;
-      companionModePicker.setArrivalReady(false);
+      syncArrivalGateReady(false);
       pendingChoose = null;
       endFocusChrome();
       focusSession.stop();
-      completionPending = false;
+      sessionUiGate.setCompletionPending(false);
       honestyGlowLevel = null;
       tigerCharacter.setFocusLevel(0);
       honestyBridge?.hide();
@@ -753,14 +779,14 @@ async function init() {
   );
 
   function finishCompletedSession() {
-    if (!completionPending) return;
+    if (!sessionUiGate.completionPending) return;
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
     stateManager.setState(STATES.IDLE);
     honestyGlowLevel = null;
     tigerCharacter.setFocusLevel(0);
     focusInput.resetButton(focusButton);
-    completionPending = false;
+    sessionUiGate.setCompletionPending(false);
     companionModePicker.setIdleChromeVisible(true);
     sessionEndFlow.onSessionEnded({
       completed: true,

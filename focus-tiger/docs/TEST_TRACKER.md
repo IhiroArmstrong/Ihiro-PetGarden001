@@ -91,7 +91,7 @@
 | 可选 | e2e **Skip — begin** 一键开表（不经逐步 Skip） | FocusSession 行「半卡 Sit」 |
 | 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L179](#L179)** Idle（**已通过**） · **[L182](#L182)** Re-focus · **[L183](#L183)** Celebrating / SessionComplete（**已通过**） · **[L178–L185](#L178)** 场景 checklist |
 
-**命令**：`cd focus-tiger && npm run test:smoke`（**14** 条：9 scenario + 5 重置 L-logic）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
+**命令**：`cd focus-tiger && npm run test:smoke`（**21** 条量级：scenario + 重置 L-logic + **SessionUiGate**）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
 
 ---
 
@@ -166,6 +166,7 @@
 | SpriteSequencePlayer | 纯后端+渲染 | 仅单元测试覆盖 | `SpriteSequencePlayer.test.js`；预加载/打断/帧停留/子序列 | — | `src/character/SpriteSequencePlayer.js` | 2026-07-18 |
 | EmotionController 映射桥 | 纯后端+桥接 | 仅单元测试覆盖 | `EmotionController.test.js`；业务只调 `playEmotion` | — | `src/core/EmotionController.js` | 2026-07-18 |
 | CapCut 式叠代默认（one-shot→idle） | 纯后端+桥接 | 仅单元测试覆盖 | `_finishOneShot` 默认 `CAPCUT_DISSOLVE_MS`；`returnCrossFadeMs: MICRO` 可缩短；`EmotionController.test.js` | — | PRINCIPLES / EMOTION_BIBLE §1.6 | 2026-07-20 |
+| SessionUiGate（Arrival/叠层/完成中门闩 facade） | 纯后端 | 仅单元测试覆盖 | `SessionUiGate.test.js` + 并入 `npm run test:smoke`：未就绪不得 begin；Sit 未就绪 → start-arrival；叠层 hint ignore | — | `src/core/SessionUiGate.js` · DEV `__sessionUiGate` · `SHARED_RESOURCES` §4 | 2026-07-21 |
 | 分散式即时提示 + 「?」补救（ONBOARDING_HINTS v3） | UI可见 | 待人工测试 | **主路径**：实验室点「清空引导提示已读」→ 左下角 **?** 右侧出现 `help-affordance`；其它控件旁仍有分散提示。**回流**：点 ? 关闭 affordance 后再点 ?。**不含**下方两行尖角/补救文案观感。 | 2026-07-20：help-affordance 缺、点 ? 无反馈→已修。**2026-07-20 用户书面**：help-affordance 尖角未对准 ?；点 ? 不应复述 Sit 类文案。 | `#onboarding-hint-help` · 实验室「清空引导提示已读」 | 2026-07-20 |
 | 人工 · help-affordance 尖角对准 ? | UI可见 | 待人工测试 | 1) 清空引导提示已读。2) `help-affordance` 气泡在 **? 右侧**，**左侧尖角须对准 ? 圆心**（窄屏 clamp 后亦须对准）。3) 回流：缩放窗口后再看尖角。 | 2026-07-20 用户书面：如图，hint 指向没有对准按钮。 | `?product=1` 或 `/` · `#onboarding-hint-help` | 2026-07-20 |
 | 人工 · 点 ? 补救展示本页全部 hints | UI可见 | 待人工测试 | 1) 先完成一轮操作让 Sit / How shall we sit 等提示**已读消失**。2) 点左下角 **?**。3) 须**同时**出现：? 旁元文案 + **Sit 上方**「点击与阿寅同坐」+ **How shall we sit? 旁**「也可以从这里开始」等各控件锚点提示（FOCUSING 时则为 Rise + Sound 旁）。4) 点单个气泡只关该条，不记已读。5) 回流：关闭全部后再点 ? 仍全部出现。 | 2026-07-20 用户书面：点 ? 只有元文案，没有 hint 说的「都在页面上」的效果。 | `#onboarding-hint-help` · 实验室「清空引导提示已读」或先点掉自动提示 | 2026-07-20 |

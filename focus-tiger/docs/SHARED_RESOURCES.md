@@ -60,10 +60,13 @@
 
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|
-| `arrivalGateReady` | Arrival 完成 / Skip | Companion 点选是否可 begin |
-| `setPostSessionOverlayActive` | Honesty / Reflection / Arrival 叠层 | hint 是否 ignore；Sit 抢点 |
-| `canBeginFocusOnCompanionModeSelect` | Companion 点选 | Here & Now / Flow 即开；Offline 再 Sit |
-| `resolveCompanionHintClick` | 「How shall we sit?」 | toggle 展开三选一；禁静默 ignore |
+| **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
+| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady` | Companion 点选是否可 begin；Sit 未就绪 → Arrival |
+| `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin |
+| `postSessionOverlayActive` | Gate + Companion（Reflection 等；Arrival chrome 同步） | hint 是否 ignore；Sit 抢点 |
+| `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装 | Here & Now / Flow 即开；**未就绪必须 false** |
+| `resolveCompanionHintClick` | `FocusSession` + Gate 包装 | toggle 展开三选一；禁静默 ignore |
+| `resolveSitClickWhenIdle` | Gate | 未就绪 → `start-arrival`；就绪 → `begin-focus` |
 
 ---
 
