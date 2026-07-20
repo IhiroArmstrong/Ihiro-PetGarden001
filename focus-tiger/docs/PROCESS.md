@@ -45,7 +45,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 12:00（UTC+8）
+**最后更新时间**：2026-07-20 13:40（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -60,7 +60,9 @@
 - **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
 - **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
 - **pingpong 顶点停留**：`rise-stretch-casual` / `blink-breathe` / `breath-halo-hq` 末帧补约 2 拍
-- **SCENARIO_TESTS 文档收敛**：权威仅 `focus-tiger/docs/SCENARIO_TESTS.md`；根目录改指针；720 底稿归档
+- **文档根指针收敛**：`SCENARIO_TESTS` / `HONESTY_BRIDGE_CTA` / `ONBOARDING_HINTS` 权威均在 `focus-tiger/docs/`；仓库根同名文件仅为指针；720 底稿归档
+- **3D Idle 警示/历史备份入库**：`tiger-meditate-closed.webp-292k.glb`、`tiger-meditate-closed.crimson-trim-307k.glb`（非正式运行时；见 `ASSET_INVENTORY.md`）
+- **NEW_ASSETS_2026-07-18-B**：眼动/哈欠入库 Prompt 归档（正式 Idle 不调度）
 - **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
 - **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
 - Honesty 拍板 B；Companion 短句提示
