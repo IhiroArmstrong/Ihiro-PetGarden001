@@ -75,7 +75,7 @@
 - **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now 开表；Offline 须再 Sit — `e2e/scenario-a.companion.spec.js`
 - **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
 - **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
-- **工程加固四步（2026-07-21 拍板）**：见 `ARCHITECTURE.md` — ① JSDoc+契约（**Companion / Arrival UI / FocusInput 对外 JSDoc 已补**） ② **`SessionUiGate` 已落地** ③ 回归锁常驻 ④ Lit 仅试点 Companion/Arrival（**未开工**）；禁止全仓 Lit / 动 Emotion·Idle 主线
+- **工程加固四步（2026-07-21 拍板）**：见 `ARCHITECTURE.md` — ① JSDoc+契约（Companion / Arrival UI / FocusInput 已补） ② **`SessionUiGate` 已落地** ③ 回归锁常驻 ④ Lit 试点 = **`OnboardingHintsUI`**（按 DOM 灾区密度选定；**Brief 已写、代码未开工**）；禁止全仓 Lit / 动 Emotion·Idle 主线
 - **SessionUiGate**：`arrivalGateReady` / `completionPending` / 叠层占用收束；失败用例并入 `npm run test:smoke`
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
