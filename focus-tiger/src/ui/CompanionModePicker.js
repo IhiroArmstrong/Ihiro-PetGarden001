@@ -1,8 +1,14 @@
 /**
- * Companion Mode 三选一：按钮下弱化提示 + 向上展开面板。
- * Here & Now / Flow State：选中后立即开始 Focus+计时；
- * Offline Space：只写入预选并收起，须再点 Sit 开会话。
- * Choose / Session Intention 已迁至 Arrival Practice（ARRIVE_MOMENT_DESIGN v2）。
+ * Companion Mode 三选一：Sit 旁「How shall we sit?」hint + 向上展开面板。
+ *
+ * - Here & Now / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
+ * - Offline Space：只写入预选并收起，须再点 Sit
+ * - 门闩未就绪时选自动开表模式 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
+ * - Choose / Session Intention 在 Arrival Practice（见 ARRIVE_MOMENT_DESIGN v2）
+ *
+ * 权威门闩可变源：`SessionUiGate`；本类持有 UI 侧副本（`_arrivalReady` /
+ * `_postSessionOverlay`），由 `main.js` 的 sync* 与 Gate 对齐。
+ * @see docs/SHARED_RESOURCES.md §4
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -17,6 +23,17 @@ import {
   resolveCompanionHintClick
 } from '../core/FocusSession.js';
 
+/**
+ * @typedef {object} CompanionModePickerHandlers
+ * @property {(mode: import('../core/FocusSession.js').CompanionMode) => void} [onModeSelected]
+ *   门闩就绪且为自动开表模式时调用
+ * @property {() => void} [onAutoStartNeedsArrival]
+ *   门闩未就绪时点 Here & Now / Flow State → 启动 Arrival
+ * @property {(expanded: boolean) => void} [onExpandedChange]
+ *   面板展开/收起（驱动 companion-mode 气泡等）
+ */
+
+/** @returns {import('../core/FocusSession.js').CompanionMode} */
 function readStoredMode() {
   try {
     const raw = localStorage.getItem(COMPANION_MODE_STORAGE_KEY);
@@ -27,6 +44,7 @@ function readStoredMode() {
   return COMPANION_MODE_STAY;
 }
 
+/** @param {import('../core/FocusSession.js').CompanionMode} mode */
 function writeStoredMode(mode) {
   try {
     localStorage.setItem(COMPANION_MODE_STORAGE_KEY, mode);
@@ -37,28 +55,35 @@ function writeStoredMode(mode) {
 
 export class CompanionModePicker {
   /**
-   * @param {HTMLElement} overlayRoot
-   * @param {HTMLElement} focusButton
-   * @param {object} [handlers]
-   * @param {(mode: import('../core/FocusSession.js').CompanionMode) => void} [handlers.onModeSelected]
-   * @param {() => void} [handlers.onNeedArrival] 门闩未就绪时 hint 点击 → 启动 Arrival
-   * @param {(expanded: boolean) => void} [handlers.onExpandedChange] 面板展开/收起（驱动 companion-mode 气泡）
+   * 将 Sit 按钮包入 dock，并在其下挂 hint / 三选一面板。
+   * @param {HTMLElement} overlayRoot 现保留入参；dock 挂在 `focusButton` 父节点
+   * @param {HTMLElement} focusButton Sit / Rise 主按钮
+   * @param {CompanionModePickerHandlers} [handlers]
    */
   constructor(overlayRoot, focusButton, handlers = {}) {
     this.overlayRoot = overlayRoot;
     this.focusButton = focusButton;
+    /** @type {CompanionModePickerHandlers} */
     this.handlers = handlers;
     /** @type {import('../core/FocusSession.js').CompanionMode} */
     this.selected = readStoredMode();
+    /** @type {boolean} 三选一面板是否展开 */
     this._expanded = false;
+    /** @type {boolean} 空闲 chrome：显示 hint；专注中隐藏 */
     this._idleVisible = true;
+    /**
+     * Reflection / Arrival 等叠层占用（与 SessionUiGate.postSessionOverlayActive 对齐）。
+     * 为 true 时 hint 禁用且不可展开。
+     * @type {boolean}
+     */
     this._postSessionOverlay = false;
     /**
-     * Arrival Practice 门闩：未就绪时禁止展开/点选三选一；
-     * hint 本身仍可点 → 走 onNeedArrival（禁止静默无反馈）。
+     * Arrival 门闩 UI 副本（与 SessionUiGate.arrivalGateReady 对齐）。
+     * 未就绪：Here & Now / Flow 走 `onAutoStartNeedsArrival`；hint 仍可展开看选项。
+     * @type {boolean}
      */
     this._arrivalReady = false;
-    /** Rise 后优先显示提问；用户再选模式后改为模式名 */
+    /** Rise 后优先显示提问文案；用户再选模式后改为模式名 */
     this._preferQuestionHint = true;
 
     this.dock = document.createElement('div');
@@ -91,14 +116,18 @@ export class CompanionModePicker {
     this._syncHintAvailability();
   }
 
-  /** @returns {import('../core/FocusSession.js').CompanionMode} */
+  /**
+   * 当前预选 / 已选 Companion 模式（持久化 key：`COMPANION_MODE_STORAGE_KEY`）。
+   * @returns {import('../core/FocusSession.js').CompanionMode}
+   */
   getSelectedMode() {
     return this.selected;
   }
 
   /**
-   * 空闲态：显示「模式提示」；专注中：只保留 Sit/Rise 按钮，隐藏提示与三选一面板。
+   * 空闲态：显示 hint；专注中：只保留 Sit/Rise，隐藏 hint 与三选一面板。
    * @param {boolean} visible
+   * @returns {void}
    */
   setIdleChromeVisible(visible) {
     this._idleVisible = Boolean(visible);
@@ -114,8 +143,10 @@ export class CompanionModePicker {
   }
 
   /**
-   * 反思 / Honesty / Arrival 等底部叠层打开时：收起三选一并禁止再展开。
+   * Reflection / Arrival 等底部叠层打开时：收起三选一，并禁用 hint（禁止可点却静默）。
+   * Honesty 气泡期间通常不挡 hint（由 `main.js` sync 决定是否传入 true）。
    * @param {boolean} active
+   * @returns {void}
    */
   setPostSessionOverlayActive(active) {
     this._postSessionOverlay = Boolean(active);
@@ -127,8 +158,10 @@ export class CompanionModePicker {
   }
 
   /**
-   * Arrival 门闩：仅在就绪后允许展开三选一 / 自动开计时点选。
+   * 同步 Arrival 门闩 UI 副本。未就绪时收起面板；hint 仍可展开看三选一。
+   * 自动开表点选是否 begin 由 `_selectMode` + `canBeginFocusOnCompanionModeSelect` 裁决。
    * @param {boolean} ready
+   * @returns {void}
    */
   setArrivalReady(ready) {
     this._arrivalReady = Boolean(ready);
@@ -140,12 +173,10 @@ export class CompanionModePicker {
   }
 
   _syncHintAvailability() {
-    // 仅叠层 / 专注中隐藏时禁用 hint；门闩未就绪时仍可点 → 启动 Arrival。
     const allowHint = this._idleVisible && !this._postSessionOverlay;
     this.hintBtn.disabled = !allowHint;
     this.hintBtn.setAttribute('aria-disabled', allowHint ? 'false' : 'true');
     this.hintBtn.classList.toggle('is-gated', !allowHint);
-    this.hintBtn.classList.toggle('is-awaiting-arrival', allowHint && !this._arrivalReady);
     this.hintBtn.style.opacity = '';
     this.hintBtn.style.pointerEvents = '';
   }
@@ -153,36 +184,47 @@ export class CompanionModePicker {
   _onHintClick() {
     const action = resolveCompanionHintClick({
       idleVisible: this._idleVisible,
-      postSessionOverlay: this._postSessionOverlay,
-      arrivalReady: this._arrivalReady
+      postSessionOverlay: this._postSessionOverlay
     });
     if (action === 'ignore') return;
-    if (action === 'needArrival') {
-      this.handlers.onNeedArrival?.();
-      return;
-    }
     this._expanded = !this._expanded;
     this._syncExpanded();
     this._syncHintLabel();
   }
 
+  /**
+   * 展开三选一面板（叠层占用中则 no-op）。会先恢复空闲 chrome。
+   * @returns {void}
+   */
   open() {
     this.setIdleChromeVisible(true);
-    if (this._postSessionOverlay || !this._arrivalReady) return;
+    if (this._postSessionOverlay) return;
     this._expanded = true;
     this._syncExpanded();
     this._syncHintLabel();
   }
 
+  /**
+   * 仅收起三选一面板（不改 idle chrome / 门闩）。
+   * @returns {void}
+   */
   hide() {
     this._expanded = false;
     this._syncExpanded();
   }
 
+  /**
+   * 三选一面板是否展开（非「门闩是否就绪」）。
+   * @returns {boolean}
+   */
   isOpen() {
     return this._expanded;
   }
 
+  /**
+   * 取消 locale 订阅。不移除已挂入的 dock DOM。
+   * @returns {void}
+   */
   dispose() {
     this._unsubLocale();
   }
@@ -221,12 +263,18 @@ export class CompanionModePicker {
    */
   _selectMode(mode) {
     if (!isValidCompanionMode(mode)) return;
-    if (!this._arrivalReady || this._postSessionOverlay) return;
+    if (this._postSessionOverlay) return;
     this.selected = mode;
     writeStoredMode(mode);
     this._preferQuestionHint = false;
     this._expanded = false;
     this._render();
+    if (!this._arrivalReady) {
+      if (shouldAutoStartFocusOnModeSelect(mode)) {
+        this.handlers.onAutoStartNeedsArrival?.();
+      }
+      return;
+    }
     if (shouldAutoStartFocusOnModeSelect(mode)) {
       // 与 main 共用同一门闩语义；未就绪时不应走到这里（setArrivalReady 会禁点选）。
       if (

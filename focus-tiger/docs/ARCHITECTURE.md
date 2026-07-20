@@ -323,7 +323,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 | 步 | 内容 | 状态 |
 |---|---|---|
-| **1** | **JSDoc + 门闩/共享资源契约**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4 | 进行中（Gate facade 已落地；UI 模块 JSDoc 增量补） |
+| **1** | **JSDoc + 门闩/共享资源契约**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4 | **进行中**：Gate + **`CompanionModePicker` / `ArrivalPracticeUI` / `FocusInput` 对外 JSDoc 已补**；其余 UI 增量 |
 | **2** | **门闩显式化**：`SessionUiGate`（`src/core/SessionUiGate.js`）集中持有 `arrivalGateReady` / `completionPending` / `postSessionOverlayActive`；失败用例锁「未就绪不得 begin」 | **本轮已落地** |
 | **3** | **继续回归锁**：主路径 + 回流 + `test:smoke` / `test:e2e` + TEST_TRACKER 观感分列（见 `DEV_WORKFLOW_QUALITY.md`） | 常驻，不替代 |
 | **4** | **Lit 仅试点一个 Bug 灾区 UI**（候选：`CompanionModePicker` 或 `ArrivalPracticeUI`）；迁完测通再定是否扩 | **未开工**；须单独 Task Brief |

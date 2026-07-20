@@ -1,8 +1,14 @@
 /**
- * Arrival Practice UI —— Sit 之后的欢迎 / Notice / 呼吸 / Choose 面板。
+ * Arrival Practice UI —— Sit 之后的 Welcome / Notice / Breath / Choose 叠层。
  *
- * 跳过方案（已采纳）：与 Reflection 同级——每步 Skip + 全程「Skip — begin」；
- * 欢迎/呼吸可自动前进；不强制点选图标。
+ * 跳过方案：每步 Skip + 全程「Skip — begin」；欢迎/呼吸可自动前进；不强制点选图标。
+ * 结束经 `onReady({ skipped, chose })` 交给 `main.js` / `SessionUiGate`：
+ * - `skipped: true` → 立刻开计时
+ * - `chose: true` → 开门闩并（通常）播点头后展开 Companion
+ *
+ * 状态机纯函数在 `ArrivalPractice.js`；本类只负责 DOM 与定时器。
+ * @see docs/ARRIVE_MOMENT_DESIGN.md
+ * @see docs/SHARED_RESOURCES.md §4
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -22,6 +28,27 @@ import {
   skipArrivalChoose,
   skipArrivalPracticeEntirely
 } from '../core/ArrivalPractice.js';
+
+/**
+ * @typedef {object} ArrivalReadyInfo
+ * @property {boolean} [skipped] Skip — begin / Sit 整体跳过 → 应直接开计时
+ * @property {boolean} [chose] 走完 Choose → 应展开 Companion（点头可并行）
+ */
+
+/**
+ * @typedef {object} ArrivalPracticeUIHandlers
+ * @property {(info?: ArrivalReadyInfo) => void} [onReady] 流程结束（面板已 hide）
+ * @property {() => void} [onWelcome] 欢迎 beat 开始（可播 smiling）
+ * @property {() => void} [onCancel] 外部关闭（若接线）
+ * @property {() => void} [onBegin] Arrival 开始（光影冷灰氛围）
+ * @property {() => void} [onNoticeSelected] Notice 点选后（背景微暖）
+ * @property {() => void} [onBreath] 呼吸 beat（推近 + 光环）
+ * @property {() => void} [onAfterBreath] 离开呼吸进入 Choose
+ * @property {() => void} [onChooseConfirmed] Choose 确认（坐垫光晕等）
+ * @property {(done: () => void) => void} [onIntentionSetPlay]
+ *   Choose 确认后播点头；调用 `done` 后再 `onReady`。缺省则立即 onReady。
+ * @property {() => void} [onClearLight] 结束/跳过时清氛围
+ */
 
 const PANEL_CSS = [
   'position:absolute',
@@ -69,44 +96,47 @@ const QUIET_BTN_CSS = [
 
 export class ArrivalPracticeUI {
   /**
-   * @param {HTMLElement} container
-   * @param {object} [handlers]
-   * @param {(info?: { skipped?: boolean, chose?: boolean }) => void} [handlers.onReady]
-   *   流程结束：`skipped` = Skip — begin / Sit 整体跳过（应直接开计时）；
-   *   `chose` = 走完 Choose（应展开 Companion 三选一）。
-   * @param {() => void} [handlers.onWelcome] 欢迎 beat 开始（可播 blink-smile）
-   * @param {() => void} [handlers.onCancel] 外部关闭
-   * @param {() => void} [handlers.onBegin] Arrival 开始（光影冷灰氛围）
-   * @param {() => void} [handlers.onNoticeSelected] Notice 点选后（背景微暖）
-   * @param {() => void} [handlers.onBreath] 呼吸 beat（推近 + 光环脉动）
-   * @param {() => void} [handlers.onAfterBreath] 离开呼吸进入 Choose
-   * @param {() => void} [handlers.onChooseConfirmed] Choose 确认（坐垫光晕等氛围）
-   * @param {(done: () => void) => void} [handlers.onIntentionSetPlay]
-   *   Choose 确认后播点头；`done` 后再进 Companion Mode。缺省则立即 onReady。
-   * @param {() => void} [handlers.onClearLight] 结束/跳过时清氛围
+   * @param {HTMLElement} container 通常为 `#ui-overlay`
+   * @param {ArrivalPracticeUIHandlers} [handlers]
    */
   constructor(container, handlers = {}) {
     this.container = container;
+    /** @type {ArrivalPracticeUIHandlers} */
     this.handlers = handlers;
+    /** @type {HTMLElement | null} */
     this.root = null;
     this.state = createArrivalPracticeState();
+    /** @type {string} Notice 观察式短句（展示用） */
     this._noticeReply = '';
+    /** @type {boolean} Choose 是否显示自由输入 */
     this._showTyped = false;
+    /** @type {number | null} */
     this._timer = null;
+    /** @type {number | null} */
     this._breathInterval = null;
     this._unsubLocale = onLocaleChange(() => this._render());
   }
 
+  /**
+   * 面板是否挂在 DOM 上（进行中）。
+   * @returns {boolean}
+   */
   isOpen() {
     return Boolean(this.root);
   }
 
-  /** @returns {string | null} welcome|notice|breath|choose|ready */
+  /**
+   * 当前步骤；无面板时为 `null`。
+   * @returns {'welcome' | 'notice' | 'breath' | 'choose' | 'ready' | null}
+   */
   getStep() {
     return this.state?.step ?? null;
   }
 
-  /** @returns {{ text: string, source: 'icon' | 'typed' } | null} */
+  /**
+   * Choose 结果（供会话意图回显）；未选则为 `null`。
+   * @returns {{ text: string, source: 'icon' | 'typed' } | null}
+   */
   getChooseResult() {
     if (!this.state.chooseText) return null;
     return {
@@ -115,6 +145,10 @@ export class ArrivalPracticeUI {
     };
   }
 
+  /**
+   * 从 Welcome 开始一轮 Arrival；会触发 `onBegin` / `onWelcome`。
+   * @returns {void}
+   */
   start() {
     this._clearTimers();
     this.state = createArrivalPracticeState();
@@ -133,6 +167,12 @@ export class ArrivalPracticeUI {
     }, ARRIVAL_WELCOME_MS);
   }
 
+  /**
+   * 关闭面板并清定时器。
+   * @param {object} [options]
+   * @param {boolean} [options.clearLight=true] 是否调用 `onClearLight`
+   * @returns {void}
+   */
   hide({ clearLight = true } = {}) {
     this._clearTimers();
     if (clearLight) this.handlers.onClearLight?.();
@@ -142,12 +182,20 @@ export class ArrivalPracticeUI {
     }
   }
 
-  /** 外部 Sit：整体跳过到 Companion Mode 门闩。 */
+  /**
+   * 外部 Sit：整体 Skip — begin（`onReady({ skipped: true })`），由 Gate 立刻开计时。
+   * 面板未开时为 no-op。
+   * @returns {void}
+   */
   skipToBegin() {
     if (!this.root) return;
     this._skipEntirely();
   }
 
+  /**
+   * 取消 locale 订阅并 hide。
+   * @returns {void}
+   */
   dispose() {
     this._unsubLocale();
     this.hide();
