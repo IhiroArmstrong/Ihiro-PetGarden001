@@ -45,7 +45,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 13:40（UTC+8）
+**最后更新时间**：2026-07-20 16:15（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -68,7 +68,7 @@
 - Honesty 拍板 B；Companion 短句提示
 - **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（整合 7/19 防假修好+自动 commit 与 7/20 防改坏；§6.1 场景冒烟已落地）
 - **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（逻辑层；观感仍人工分列）
-- **Playwright 产品壳 e2e**：`e2e/product-shell.smoke.spec.js` · `npm run test:e2e`（已拍板引入；无授权费）
+- **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now 开表；Offline 须再 Sit — `e2e/scenario-a.companion.spec.js`
 - **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
 - **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
 

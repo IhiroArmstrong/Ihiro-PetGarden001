@@ -25,7 +25,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        // 优先用本机 Chrome，避免 CI/Agent 沙箱无法下载 Playwright Chromium。
+        channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome'
+      }
     }
   ]
 });

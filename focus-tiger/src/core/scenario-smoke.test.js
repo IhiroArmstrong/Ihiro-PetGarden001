@@ -313,6 +313,17 @@ test('smoke C: Rise incomplete → no completion record; Reflection after MANUAL
   }
 });
 
+test('smoke I: How shall we sit? gate not ready → needArrival (Honesty must not block hint)', () => {
+  // SCENARIO_TESTS I — Honesty 提示期间 postSessionOverlay 仍为 false，hint 不得静默 ignore
+  const action = resolveCompanionHintClick({
+    idleVisible: true,
+    postSessionOverlay: false,
+    arrivalReady: false
+  });
+  assert.equal(action, 'needArrival');
+  assert.notEqual(action, 'ignore');
+});
+
 test('smoke J回流: Rise 后门闩未就绪 → hint 须再走 Arrival（非静默）', () => {
   // SCENARIO_TESTS 建议补充 J
   assert.equal(

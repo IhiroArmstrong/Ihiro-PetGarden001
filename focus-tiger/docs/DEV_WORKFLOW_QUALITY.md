@@ -252,7 +252,7 @@
 |---|---|
 | 是否引入 | **要**（用户拍板：无额外工具授权费则加上） |
 | 费用 | Playwright 开源；本机下载 Chromium，**无 SaaS 授权费** |
-| 范围 v1 | 产品壳入口冒烟（`?product=1` 可见 Sit）；扩展场景逐步加 |
+| 范围 v1 | 产品壳入口冒烟（`?product=1` 可见 Sit）；**Task 1 已扩** A/I/K Companion DOM（见 `scenario-a.companion.spec.js`） |
 | 命令 | `npm run test:e2e`（与 `test:smoke` 并列；交互修复收尾两者都要绿） |
 
 #### 技术选型（更新）
@@ -294,7 +294,7 @@
 - [ ] 非交互类改动的轻量门禁是否区分  
 - [ ] 多 Agent 并行基线约定  
 - [ ] 反面教材短表  
-- [ ] Playwright：把场景 A 主路径更多 DOM 步骤纳入 e2e（渐进，不替代观感人工）  
+- [ ] Playwright：Honesty 桥接 Yes 后见 Arrival DOM（D/N；Task 3 候选）  
 
 **晋级路径**（约束力从弱到强）：
 

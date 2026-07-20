@@ -29,6 +29,7 @@ npm-debug.log*
 coverage/
 playwright-report/
 test-results/
+focus-tiger/.playwright-browsers/
 
 # Large local art sources (keep on disk; do not push)
 focus-tiger/art-reference/models/sources/*

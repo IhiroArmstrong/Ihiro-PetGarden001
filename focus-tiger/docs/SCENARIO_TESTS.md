@@ -8,9 +8,12 @@
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
 
-**自动化冒烟（2026-07-20）**：
-- 逻辑层：`src/core/scenario-smoke.test.js`（`npm run test:smoke`）
-- 浏览器壳：`e2e/product-shell.smoke.spec.js`（`npm run test:e2e`，Playwright）
+**自动化冒烟（2026-07-20，Task 1 扩 A/I/K DOM）**：
+- 逻辑层：`src/core/scenario-smoke.test.js`（`npm run test:smoke`）— A–D + **I** + J 回流
+- 浏览器壳：`e2e/product-shell.smoke.spec.js` + `e2e/scenario-a.companion.spec.js`（`npm run test:e2e`）
+  - **I**：hint 未就绪 → 打开 Arrival（非静默）
+  - **A**：Arrival Skip → Here & Now → HUD 计时开始
+  - **K**：Offline 选中不开表 → 再 Sit 才开
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下注明「已自动化 / 仍须人工」。
 
@@ -35,6 +38,7 @@
 ## 场景 A：Kelly 的第一个早晨（全新用户，当日 DORMANT）
 
 > **自动化（控制器级）**：A1 / A3–A4 门闩 / A7–A8 完成反馈 / 计时达标 → `src/core/scenario-smoke.test.js`（`npm run test:smoke`）。  
+> **自动化（DOM · Task 1）**：Arrival Skip → Here & Now 开表 → `e2e/scenario-a.companion.spec.js`（**不含**达标/Celebrating）。  
 > **仍须人工**：睡着观感、Honesty 文案、Arrival 气泡时长、合十动画、Ambient、Idle 呼吸×5→眨眼观感、Celebrating 动画本身。
 
 1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **睡着**（`sleeping` / DORMANT），**不是** idle-breathing。  
@@ -161,9 +165,9 @@
 
 | ID | 故事 | 为何补 |
 |---|---|---|
-| **I** | 点 **How shall we sit?**（未过 Arrival）→ 应启动 Arrival；Honesty 提示开着时仍可点 | 回归锁：禁静默无反馈 |
-| **J** | Rise 后再点 hint → 再走 Arrival；再选 Here & Now → 立刻计时 | 回流路径 |
-| **K** | Offline Space：点选后 HUD **不应**走动，再点 Sit 才计时 | 与 Here & Now / Flow 分流 |
+| **I** | 点 **How shall we sit?**（未过 Arrival）→ 应启动 Arrival；Honesty 提示开着时仍可点 | 回归锁：禁静默无反馈 · **已自动化** smoke I + e2e hint→Arrival |
+| **J** | Rise 后再点 hint → 再走 Arrival；再选 Here & Now → 立刻计时 | 回流路径 · **逻辑** smoke J |
+| **K** | Offline Space：点选后 HUD **不应**走动，再点 Sit 才计时 | 与 Here & Now / Flow 分流 · **已自动化** e2e K |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
