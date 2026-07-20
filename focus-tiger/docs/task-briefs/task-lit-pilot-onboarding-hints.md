@@ -2,6 +2,7 @@
 
 **日期**：2026-07-21  
 **状态**：目标已拍板 · **代码已落地（2026-07-21）** · 待人工复测  
+**扩面**：人工复测通过后 **先停在本试点**（2026-07-21 拍板）；不扩 Honesty / Companion / Arrival 等，除非另有书面决定。  
 **所属路线**：`ARCHITECTURE.md`「工程加固四步」· 步 4  
 **实现**：`lit` 依赖；`src/ui/ft-onboarding-hint-bubble.js`；`OnboardingHintsUI` 装配 API 不变。
 
