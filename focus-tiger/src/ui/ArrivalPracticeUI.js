@@ -58,11 +58,11 @@ const PANEL_CSS = [
   'width:min(460px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:18px 20px 14px',
-  'border:1px solid rgba(139,115,85,.2)',
+  'border:1px solid var(--color-surface-border, rgba(139,115,85,.2))',
   'border-radius:18px',
-  'background:rgba(255,252,245,.94)',
+  'background:linear-gradient(180deg, var(--color-surface-warm-top, rgba(255,255,255,.96)) 0%, var(--color-surface-warm, #f8f1e4) 100%)',
   'box-shadow:0 10px 30px rgba(44,31,20,.12)',
-  'color:#2c1f14',
+  'color:var(--text-primary, #2c1f14)',
   'transition:opacity 240ms ease,transform 240ms ease',
   'opacity:0',
   'pointer-events:auto'
@@ -75,10 +75,10 @@ const CHIP_CSS = [
   'gap:4px',
   'padding:10px 6px',
   'border-radius:12px',
-  'border:1px solid rgba(139,115,85,.22)',
+  'border:1px solid var(--color-surface-border, rgba(139,115,85,.22))',
   'background:rgba(255,255,255,.7)',
   'cursor:pointer',
-  'color:#2c1f14',
+  'color:var(--text-primary, #2c1f14)',
   'font-size:11px',
   'line-height:1.3',
   'min-width:0'
@@ -87,9 +87,9 @@ const CHIP_CSS = [
 const QUIET_BTN_CSS = [
   'padding:6px 12px',
   'font-size:12px',
-  'color:rgba(74,58,40,.78)',
+  'color:var(--text-secondary, rgba(74,58,40,.78))',
   'background:transparent',
-  'border:1px solid rgba(139,115,85,.28)',
+  'border:1px solid var(--color-surface-border, rgba(139,115,85,.28))',
   'border-radius:14px',
   'cursor:pointer'
 ].join(';');

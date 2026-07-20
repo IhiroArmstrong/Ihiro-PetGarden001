@@ -390,7 +390,8 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 > **路径**：`focus-tiger/ui-kit/`（`tokens.css` + Shadow DOM Web Components + `demo.html`）  
 > **产品壳 token**：`src/styles/design-tokens.css`（已挂 `index.html`）  
 > **配色权威（2026-07-21 采纳）**：**Companion Mode 三选一文案框**（暖米卡片 + `#2c1f14` 标题 + `rgba(74,58,40,0.78)` 说明）为统一颜色模式；UI Kit 与产品壳同源。  
-> **预览**：`cd focus-tiger/ui-kit && python3 -m http.server 8765` → `http://127.0.0.1:8765/demo.html?v=20260721d`。
+> **预览（产品舞台）**：在 `focus-tiger/` 下 `python3 -m http.server 8765` → `http://127.0.0.1:8765/ui-kit/demo.html?v=20260721e`（Yin poster + Companion 三选一，效果一目了然）。组件清单在舞台右下角「Component lab」。  
+> **真产品壳**：`npm run dev` → `/?product=1`。
 
 ### 与产品定位的对齐
 

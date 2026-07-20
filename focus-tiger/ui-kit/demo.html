@@ -3,147 +3,266 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Focus Tiger · UI Kit Demo · v4 companion palette</title>
+    <title>Focus Tiger · Product UI color stage · v5</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <link rel="stylesheet" href="./tokens.css?v=20260721d" />
+    <link rel="stylesheet" href="./tokens.css?v=20260721e" />
     <style>
-      * {
-        box-sizing: border-box;
-      }
-      body {
+      * { box-sizing: border-box; }
+      html, body {
         margin: 0;
-        min-height: 100vh;
+        height: 100%;
+        overflow: hidden;
         background: var(--color-bg);
-        color: var(--text-primary);
         font-family: var(--font-family);
-        padding: 2rem 1.5rem 4rem;
-        line-height: 1.5;
-      }
-      /* Yin stays the visual hero — keep UI demo secondary */
-      .hero {
-        display: grid;
-        place-items: center;
-        margin-bottom: 2rem;
-      }
-      .hero img {
-        width: min(220px, 55vw);
-        height: auto;
-        filter: drop-shadow(0 12px 28px rgba(46, 43, 40, 0.12));
-      }
-      h1 {
-        font-size: 1.35rem;
-        font-weight: 700;
-        text-align: center;
-        margin: 0 0 0.35rem;
         color: var(--text-primary);
       }
-      .ver {
-        text-align: center;
-        font-size: 0.75rem;
-        color: var(--color-accent);
-        font-weight: 600;
-        margin: 0 0 0.75rem;
+      /* Product-like stage: Yin is the hero */
+      .stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
       }
-      .lede {
-        text-align: center;
-        color: var(--text-secondary);
-        max-width: 36rem;
-        margin: 0 auto 2rem;
-        font-size: 0.95rem;
+      .stage__scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 35%;
+        z-index: 1;
+        pointer-events: none;
       }
-      .note {
-        max-width: 40rem;
-        margin: 0 auto 2.5rem;
-        padding: 0.85rem 1rem;
+      .stage__veil {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(
+          180deg,
+          rgba(232, 230, 225, 0.15) 0%,
+          rgba(232, 230, 225, 0.05) 40%,
+          rgba(232, 230, 225, 0.55) 100%
+        );
+        pointer-events: none;
+      }
+      .stage__ui {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+      }
+      .stage__ui > * {
+        pointer-events: auto;
+      }
+      .banner {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        max-width: min(420px, calc(100vw - 24px));
+        padding: 8px 14px;
+        border-radius: 999px;
         background: var(--color-surface-warm);
-        border-radius: var(--radius-md);
-        border: 1px solid var(--color-ink-faint);
-        font-size: 0.85rem;
+        border: 1px solid var(--color-surface-border);
+        box-shadow: var(--shadow-soft);
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-align: center;
+      }
+      .banner strong {
         color: var(--text-primary);
+        font-weight: 700;
       }
-      section {
-        max-width: 720px;
-        margin: 0 auto 2.25rem;
+      .hud-slot {
+        position: absolute;
+        top: 56px;
+        left: 20px;
       }
-      section h2 {
+      /* Companion-like three options — same recipe as product shell */
+      .companion-panel {
+        position: absolute;
+        left: 50%;
+        bottom: 118px;
+        transform: translateX(-50%);
+        width: min(640px, calc(100vw - 48px));
+        padding: 10px;
+        border-radius: 16px;
+        background: linear-gradient(
+          165deg,
+          rgba(255, 253, 247, 0.98) 0%,
+          rgba(250, 244, 232, 0.95) 100%
+        );
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        box-shadow:
+          0 2px 0 rgba(255, 255, 255, 0.85) inset,
+          0 12px 28px rgba(44, 31, 20, 0.14);
+        display: flex;
+        gap: 8px;
+      }
+      .companion-option {
+        flex: 1 1 0;
+        min-width: 0;
+        text-align: left;
+        padding: 10px 8px;
+        border-radius: 12px;
+        border: 1px solid var(--color-surface-border);
+        background: linear-gradient(
+          180deg,
+          var(--color-surface-warm-top) 0%,
+          var(--color-surface-warm) 100%
+        );
+        color: var(--text-primary);
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 3px 8px rgba(44, 31, 20, 0.08);
+      }
+      .companion-option.is-selected {
+        border-color: var(--color-surface-border-strong);
+        background: linear-gradient(
+          180deg,
+          var(--color-surface-warm-selected-top) 0%,
+          var(--color-surface-warm-selected-end) 100%
+        );
+      }
+      .companion-option__title {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0 0 4px;
+      }
+      .companion-option__hint {
+        margin: 0;
+        font-size: 10px;
+        line-height: 1.35;
+        color: var(--text-secondary);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+      .dock {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: min(400px, calc(100vw - 48px));
+      }
+      /* Match product shell Sit + How shall we sit? (not outline secondary) */
+      .btn-sit {
+        width: 100%;
+        appearance: none;
+        border: 1px solid rgba(255, 220, 200, 0.28);
+        border-radius: 26px;
+        padding: 13px 36px;
+        background: linear-gradient(180deg, #a53a3a 0%, #8b2e2e 42%, #6f2424 100%);
+        color: #fff;
+        font: inherit;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.28) inset,
+          0 -2px 0 rgba(0, 0, 0, 0.18) inset,
+          0 2px 0 #5a1e1e,
+          0 8px 18px rgba(44, 31, 20, 0.28);
+      }
+      .btn-how {
+        width: 100%;
+        appearance: none;
+        border: 1px solid rgba(139, 90, 55, 0.38);
+        border-radius: 999px;
+        padding: 9px 20px;
+        background: linear-gradient(180deg, #fff8ec 0%, #f0dfc4 45%, #e4c9a0 100%);
+        color: #4a3224;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 -1px 0 rgba(120, 80, 40, 0.12) inset,
+          0 3px 0 rgba(160, 118, 72, 0.42),
+          0 8px 18px rgba(44, 31, 20, 0.16);
+      }
+      /* Copy card floating like Arrival */
+      .arrival-slot {
+        position: absolute;
+        left: 50%;
+        bottom: 210px;
+        transform: translateX(-50%);
+        width: min(420px, calc(100vw - 48px));
+      }
+      .lab-toggle {
+        position: absolute;
+        right: 16px;
+        bottom: 20px;
+        z-index: 30;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: var(--radius-pill);
+        border: 1px solid var(--color-surface-border);
+        background: var(--color-surface-warm);
+        color: var(--text-primary);
+        cursor: pointer;
+        box-shadow: var(--shadow-soft);
+      }
+      .lab {
+        display: none;
+        position: absolute;
+        inset: 0;
+        z-index: 40;
+        overflow: auto;
+        background: rgba(232, 230, 225, 0.97);
+        padding: 1.5rem;
+      }
+      .lab.is-open { display: block; }
+      .lab h2 {
         font-size: 0.8rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--text-secondary);
-        font-weight: 600;
-        margin: 0 0 0.85rem;
+        margin: 1.5rem 0 0.75rem;
       }
-      .row {
+      .lab .row {
         display: flex;
         flex-wrap: wrap;
-        gap: 1.25rem;
+        gap: 1rem;
         align-items: flex-start;
       }
-      .col {
-        flex: 1 1 280px;
-      }
-      .panel {
-        background: rgba(255, 255, 255, 0.35);
-        border-radius: var(--radius-lg);
-        padding: 1.1rem;
-        border: 1px solid var(--color-ink-faint);
-      }
-      .panel h3 {
-        margin: 0 0 0.75rem;
-        font-size: 0.95rem;
-        color: var(--text-primary);
-      }
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.65rem;
-        margin-top: 0.85rem;
-      }
-      .badge-demo {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-      }
-      code {
-        font-size: 0.8em;
-        background: var(--color-panel);
-        padding: 0.1em 0.35em;
-        border-radius: 4px;
-      }
-      /* Surface vs control chrome comparison */
       .swatch-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
-      }
-      @media (max-width: 560px) {
-        .swatch-row { grid-template-columns: 1fr; }
+        max-width: 640px;
       }
       .swatch {
         border-radius: var(--radius-lg);
         border: 1px solid var(--color-ink-faint);
-        padding: 1rem 1.1rem;
-        min-height: 7.5rem;
+        padding: 1rem;
       }
-      .swatch-control {
-        background: var(--color-panel);
-      }
+      .swatch-control { background: var(--color-panel); }
       .swatch-prose {
-        background: var(--color-surface-warm);
+        background: linear-gradient(
+          180deg,
+          var(--color-surface-warm-top) 0%,
+          var(--color-surface-warm) 100%
+        );
       }
       .swatch .tag {
         font-size: 0.7rem;
-        letter-spacing: 0.06em;
         text-transform: uppercase;
+        letter-spacing: 0.06em;
         color: var(--text-secondary);
-        margin: 0 0 0.55rem;
+        margin: 0 0 0.5rem;
         font-weight: 600;
       }
       .swatch .primary-sample {
         color: var(--text-primary);
-        font-size: var(--font-size-md);
         font-weight: 600;
         margin: 0 0 0.35rem;
       }
@@ -152,46 +271,75 @@
         font-size: var(--font-size-sm);
         margin: 0;
       }
-      .swatch-control .hint {
-        margin-top: 0.75rem;
-        height: 10px;
-        border-radius: var(--radius-pill);
-        background: var(--color-accent);
-        width: 42%;
-      }
     </style>
   </head>
   <body>
-    <div class="hero">
-      <!-- Placeholder only; product uses real 2D/3D Yin -->
+    <div class="stage">
+      <!-- Same poster family as product shell -->
       <img
-        id="yin-hero"
-        alt="Yin — mindful companion (placeholder)"
-        width="220"
-        height="220"
+        class="stage__scene"
+        src="../public/textures/poster-idle.png"
+        alt=""
       />
-    </div>
-    <h1>Focus Tiger UI Kit</h1>
-    <p class="ver">v4 · Companion Mode palette adopted as canonical</p>
-    <p class="lede">
-      Calm chrome derived from Yin’s robe, cushion, and vermillion mark.
-      Page wash stays soft so Yin remains the focus; copy cards use a warmer beige.
-    </p>
-    <p class="note">
-      <strong>Scope:</strong> Design laboratory only — not wired into the product
-      shell (<code>index.html</code> / Arrival / Companion). Achievement shelf,
-      collection, and daily quest cards are visual explorations for the memorial
-      rewards Backlog; do not treat this demo as shipped product UI.
-    </p>
+      <div class="stage__veil" aria-hidden="true"></div>
 
-    <section>
-      <h2>0. Surfaces — control vs prose</h2>
+      <p class="banner">
+        <strong>v5 product stage</strong>
+        — Companion cream + ink on Yin. Open real app:
+        <code style="font-size:11px">/?product=1</code>
+      </p>
+
+      <div class="stage__ui">
+        <div class="hud-slot">
+          <tiger-hud mode="calm" streak-count="12" session-count="2"></tiger-hud>
+        </div>
+
+        <div class="arrival-slot">
+          <tooltip-card title="What is present right now?">
+            Notice one thing in the room. No need to get it right.
+          </tooltip-card>
+        </div>
+
+        <div class="companion-panel" role="radiogroup" aria-label="How shall we sit?">
+          <button type="button" class="companion-option" data-mode="here">
+            <p class="companion-option__title">Here &amp; Now</p>
+            <p class="companion-option__hint">
+              Keep this screen open. Rest your eyes on Yin’s breathing.
+            </p>
+          </button>
+          <button type="button" class="companion-option" data-mode="offline">
+            <p class="companion-option__title">Offline Space</p>
+            <p class="companion-option__hint">
+              Lock your phone or put it aside. Yin will stay here in quiet.
+            </p>
+          </button>
+          <button type="button" class="companion-option is-selected" data-mode="flow">
+            <p class="companion-option__title">Flow State</p>
+            <p class="companion-option__hint">
+              Minimize the window and move freely across your tools.
+            </p>
+          </button>
+        </div>
+
+        <div class="dock">
+          <button type="button" class="btn-sit">Sit with Yin</button>
+          <button type="button" class="btn-how">How shall we sit?</button>
+        </div>
+      </div>
+
+      <button type="button" class="lab-toggle" id="lab-toggle">Component lab</button>
+    </div>
+
+    <div class="lab" id="lab" hidden>
+      <button type="button" class="lab-toggle" id="lab-close" style="position:sticky;top:0;right:0;float:right">
+        Back to product stage
+      </button>
+      <h2>0. Surfaces</h2>
       <div class="swatch-row">
         <div class="swatch swatch-control">
           <p class="tag">--color-panel · controls</p>
           <p class="primary-sample">Track / chip chrome</p>
-          <p class="secondary-sample">Not for long copy — progress fill below</p>
-          <div class="hint" aria-hidden="true"></div>
+          <p class="secondary-sample">Not for long copy</p>
         </div>
         <div class="swatch swatch-prose">
           <p class="tag">--color-surface-warm · copy cards</p>
@@ -199,151 +347,42 @@
           <p class="secondary-sample">Secondary: a quiet hint · just now</p>
         </div>
       </div>
-    </section>
-
-    <section>
-      <h2>1. tiger-hud</h2>
+      <h2>Buttons / progress / quest</h2>
       <div class="row">
-        <div class="col panel">
-          <h3>calm — hover for numbers</h3>
-          <tiger-hud
-            mode="calm"
-            streak-count="12"
-            session-count="2"
-          ></tiger-hud>
-        </div>
-        <div class="col panel">
-          <h3>celebrate — auto → calm</h3>
-          <tiger-hud
-            id="hud-celebrate"
-            mode="calm"
-            streak-count="12"
-            session-count="2"
-          ></tiger-hud>
-          <div class="actions">
-            <primary-button id="btn-hud-celebrate">Trigger celebrate</primary-button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>2. streak-meter</h2>
-      <div class="row">
-        <div class="col panel">
-          <h3>calm — 5 of 7 lit</h3>
-          <streak-meter mode="calm" filled="5" total="7"></streak-meter>
-        </div>
-        <div class="col panel">
-          <h3>fill to complete → gold breath</h3>
-          <streak-meter id="meter-fill" mode="calm" filled="6" total="7"></streak-meter>
-          <div class="actions">
-            <primary-button id="btn-meter-complete">Light last day</primary-button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>3–4. Buttons</h2>
-      <div class="panel row" style="gap: 0.75rem; align-items: center">
         <primary-button>Sit with Yin</primary-button>
         <secondary-button>Not now</secondary-button>
+        <progress-bar mode="daily" value="42" label="Today’s shared sitting"></progress-bar>
       </div>
-    </section>
-
-    <section>
-      <h2>5. tooltip-card / dialog-box</h2>
+      <h2>daily-quest / collection</h2>
       <div class="row">
-        <div class="col">
-          <tooltip-card title="A quiet note">
-            You’ve returned. Yin is still here, breathing with you.
-          </tooltip-card>
-        </div>
-        <div class="col">
-          <div class="actions" style="margin-bottom: 0.75rem">
-            <secondary-button id="btn-open-dialog">Open dialog</secondary-button>
-          </div>
-          <dialog-box id="demo-dialog" title="Before you sit">
-            Notice one thing in the room. No need to get it right.
-          </dialog-box>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>6. notification-badge</h2>
-      <div class="panel badge-demo">
-        Something new
-        <notification-badge pulse></notification-badge>
-        <span>— use sparingly; not persistent chrome</span>
-      </div>
-    </section>
-
-    <section>
-      <h2>7. progress-bar</h2>
-      <div class="row">
-        <div class="col panel">
-          <h3>mode="daily" — quiet</h3>
-          <progress-bar mode="daily" value="42" label="Today’s shared sitting"></progress-bar>
-        </div>
-        <div class="col panel">
-          <h3>mode="quest" — soft pulse</h3>
-          <progress-bar mode="quest" value="68" label="A gentle challenge"></progress-bar>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>8. achievement-modal (Backlog exploration)</h2>
-      <div class="panel">
-        <primary-button id="btn-achievement">Show keepsake moment</primary-button>
-        <achievement-modal
-          id="demo-achievement"
-          message="You've sat with Yin for 7 days."
-          subtext="A soft cloak joins your shared path."
-        ></achievement-modal>
-      </div>
-    </section>
-
-    <section>
-      <h2>9. collection-shelf (Backlog exploration)</h2>
-      <div class="panel">
+        <daily-quest-card></daily-quest-card>
         <collection-shelf></collection-shelf>
       </div>
-    </section>
-
-    <section>
-      <h2>10. daily-quest-card (exploration)</h2>
-      <div class="panel">
-        <daily-quest-card></daily-quest-card>
-        <p style="margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--text-secondary)">
-          Click an unfinished row for a tiny wink — no modal, no fanfare.
-        </p>
-      </div>
-    </section>
+    </div>
 
     <script type="module">
-      import "./index.js?v=20260721d";
-      import { YIN_SILHOUETTE_SVG } from "./components/_shared.js?v=20260721d";
+      import "./index.js?v=20260721e";
 
-      document.getElementById("yin-hero").src = YIN_SILHOUETTE_SVG;
-
-      document.getElementById("btn-hud-celebrate").addEventListener("ft-click", () => {
-        document.getElementById("hud-celebrate").setAttribute("mode", "celebrate");
+      const panel = document.querySelector(".companion-panel");
+      panel.addEventListener("click", (e) => {
+        const btn = e.target.closest(".companion-option");
+        if (!btn) return;
+        panel.querySelectorAll(".companion-option").forEach((el) => {
+          el.classList.toggle("is-selected", el === btn);
+        });
       });
 
-      document.getElementById("btn-meter-complete").addEventListener("ft-click", () => {
-        document.getElementById("meter-fill").setAttribute("filled", "7");
-      });
-
-      document.getElementById("btn-open-dialog").addEventListener("ft-click", () => {
-        document.getElementById("demo-dialog").setAttribute("open", "");
-      });
-
-      document.getElementById("btn-achievement").addEventListener("ft-click", () => {
-        document.getElementById("demo-achievement").setAttribute("open", "");
-      });
+      const lab = document.getElementById("lab");
+      const openLab = () => {
+        lab.hidden = false;
+        lab.classList.add("is-open");
+      };
+      const closeLab = () => {
+        lab.classList.remove("is-open");
+        lab.hidden = true;
+      };
+      document.getElementById("lab-toggle").addEventListener("click", openLab);
+      document.getElementById("lab-close").addEventListener("click", closeLab);
     </script>
   </body>
 </html>

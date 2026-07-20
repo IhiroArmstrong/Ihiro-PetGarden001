@@ -24,12 +24,16 @@ export class FtOnboardingHintBubble extends LitElement {
       box-sizing: border-box;
       padding: 9px 14px;
       border-radius: 16px 16px 16px 4px;
-      border: 1.5px solid rgba(92, 122, 108, 0.45);
-      background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
+      border: 1.5px solid var(--color-surface-border, rgba(139, 115, 85, 0.35));
+      background: linear-gradient(
+        165deg,
+        var(--color-surface-warm-top, rgba(255, 255, 255, 0.96)) 0%,
+        var(--color-surface-warm, #f8f1e4) 100%
+      );
       box-shadow:
         0 1px 0 rgba(255, 255, 255, 0.65) inset,
-        0 6px 16px rgba(40, 64, 52, 0.14);
-      color: #3a5348;
+        0 6px 16px rgba(44, 31, 20, 0.12);
+      color: var(--text-primary, #2c1f14);
       font-family:
         'Iowan Old Style', 'Palatino Linotype', Palatino, 'Songti SC',
         'Noto Serif SC', Georgia, serif;
@@ -41,12 +45,12 @@ export class FtOnboardingHintBubble extends LitElement {
       text-align: left;
       pointer-events: auto;
       cursor: pointer;
-      filter: drop-shadow(0 2px 4px rgba(40, 64, 52, 0.08));
+      filter: drop-shadow(0 2px 4px rgba(44, 31, 20, 0.08));
       --tip-x: 50%;
       --tip-y: 50%;
     }
     :host(:hover) {
-      filter: brightness(1.02) drop-shadow(0 2px 4px rgba(40, 64, 52, 0.1));
+      filter: brightness(1.02) drop-shadow(0 2px 4px rgba(44, 31, 20, 0.1));
     }
     :host::after {
       content: '';
@@ -60,35 +64,36 @@ export class FtOnboardingHintBubble extends LitElement {
       bottom: -8px;
       transform: translateX(-50%);
       border-width: 8px 7px 0 7px;
-      border-color: #dceae2 transparent transparent transparent;
-      filter: drop-shadow(0 1px 0 rgba(92, 122, 108, 0.35));
+      border-color: var(--color-surface-warm, #f8f1e4) transparent transparent transparent;
+      filter: drop-shadow(0 1px 0 rgba(139, 115, 85, 0.28));
     }
     :host([data-tip='top'])::after {
       left: var(--tip-x, 50%);
       top: -8px;
       transform: translateX(-50%);
       border-width: 0 7px 8px 7px;
-      border-color: transparent transparent #eef6f1 transparent;
+      border-color: transparent transparent var(--color-surface-warm-top, #fffef9) transparent;
     }
     :host([data-tip='right'])::after {
       right: -8px;
       top: var(--tip-y, 50%);
       transform: translateY(-50%);
       border-width: 7px 0 7px 8px;
-      border-color: transparent transparent transparent #dceae2;
+      border-color: transparent transparent transparent var(--color-surface-warm, #f8f1e4);
     }
     :host([data-tip='left'])::after {
       left: -8px;
       top: var(--tip-y, 50%);
       transform: translateY(-50%);
       border-width: 7px 8px 7px 0;
-      border-color: transparent #dceae2 transparent transparent;
+      border-color: transparent var(--color-surface-warm, #f8f1e4) transparent transparent;
     }
     :host(:not([open])) {
       display: none !important;
     }
     .label {
       display: block;
+      color: var(--text-secondary, rgba(74, 58, 40, 0.78));
     }
   `;
 
