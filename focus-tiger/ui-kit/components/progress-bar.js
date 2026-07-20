@@ -34,7 +34,7 @@ const STYLE = `
 .caption {
   margin-top: 0.4rem;
   font-size: var(--font-size-sm);
-  color: var(--color-ink-muted);
+  color: var(--text-secondary);
 }
 `;
 

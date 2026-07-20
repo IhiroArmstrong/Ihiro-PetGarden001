@@ -48,7 +48,7 @@ const STYLE = `
 }
 .cap {
   font-size: var(--font-size-sm);
-  color: var(--color-ink-muted);
+  color: var(--text-secondary);
   text-align: center;
 }
 `;

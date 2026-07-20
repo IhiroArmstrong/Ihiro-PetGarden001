@@ -68,7 +68,7 @@ const STYLE = `
   bottom: -1.6rem;
   transform: translateX(-50%);
   font-size: var(--font-size-sm);
-  color: var(--color-ink-muted);
+  color: var(--text-secondary);
   white-space: nowrap;
   opacity: 0;
   transition: opacity 220ms var(--ease-calm);

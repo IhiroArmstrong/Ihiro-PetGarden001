@@ -18,7 +18,7 @@ const STYLE = `
 .card {
   position: relative;
   width: min(340px, calc(100vw - 2rem));
-  background: var(--color-bg);
+  background: var(--color-surface-warm);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lift);
   border: 1px solid var(--color-ink-faint);
@@ -57,11 +57,11 @@ const STYLE = `
   font-weight: 600;
   line-height: 1.4;
   margin: 0 0 0.35rem;
+  color: var(--text-primary);
 }
 .sub {
   font-size: var(--font-size-sm);
-  color: var(--color-ink);
-  opacity: 0.85;
+  color: var(--text-secondary);
   margin: 0 0 1.1rem;
   line-height: 1.45;
 }

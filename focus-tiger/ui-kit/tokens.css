@@ -12,8 +12,11 @@
 :root {
   /* Surfaces — warm, quiet, never competing with Yin */
   --color-bg: #f7f5f1;
+  /* Control chrome only (tracks, dots, thumbnail wells) — not for prose cards */
   --color-panel: #e4e1db;
   --color-panel-soft: rgba(228, 225, 219, 0.92);
+  /* Prose containers (tooltip / dialog / copy cards) */
+  --color-surface-warm: #ede6d8;
 
   /* Accent from cushion / robe trim */
   --color-accent: #b5623a;
@@ -21,9 +24,11 @@
 
   /* Ink / linework */
   --color-ink: #2e2b28;
-  /* Secondary text: prefer opacity on full ink over gray-on-gray panels */
   --color-ink-muted: rgba(46, 43, 40, 0.72);
   --color-ink-faint: rgba(46, 43, 40, 0.1);
+  /* Text on warm surfaces — prefer these over blanket opacity hacks */
+  --text-primary: rgba(46, 43, 40, 0.92);
+  --text-secondary: rgba(46, 43, 40, 0.65);
 
   /* Highlight — vermillion; notifications / milestones only */
   --color-highlight: #d64545;

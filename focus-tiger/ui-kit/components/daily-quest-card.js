@@ -8,7 +8,7 @@ const STYLE = `
   max-width: 320px;
 }
 .card {
-  background: var(--color-panel);
+  background: var(--color-surface-warm);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-ink-faint);
   box-shadow: var(--shadow-soft);
@@ -29,6 +29,7 @@ const STYLE = `
   margin: 0;
   font-size: var(--font-size-md);
   font-weight: 600;
+  color: var(--text-primary);
 }
 .list {
   list-style: none;
@@ -42,7 +43,7 @@ const STYLE = `
   align-items: center;
   gap: 0.6rem;
   font-size: var(--font-size-sm);
-  color: var(--color-ink);
+  color: var(--text-primary);
 }
 .check {
   width: 22px;
@@ -70,9 +71,6 @@ const STYLE = `
   opacity: 0.9;
   transform: scale(1);
   animation: wink 600ms var(--ease-calm) 1;
-}
-.row:not([data-done="1"]) .text {
-  opacity: 0.85;
 }
 @keyframes wink {
   0% { transform: scale(0.85); opacity: 0.4; }

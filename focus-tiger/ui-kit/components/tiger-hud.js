@@ -49,12 +49,12 @@ const STYLE = `
   min-width: 9.5rem;
   padding: 0.55rem 0.75rem;
   border-radius: var(--radius-md);
-  background: var(--color-panel-soft);
+  background: var(--color-surface-warm);
   border: 1px solid var(--color-ink-faint);
   box-shadow: var(--shadow-soft);
   font-size: var(--font-size-sm);
   line-height: 1.45;
-  color: var(--color-ink);
+  color: var(--text-primary);
   opacity: 0;
   pointer-events: none;
   transition: opacity 220ms var(--ease-calm);
@@ -65,7 +65,7 @@ const STYLE = `
   opacity: 1;
 }
 .stats strong {
-  color: var(--color-ink);
+  color: var(--text-primary);
   font-weight: 700;
 }
 :host([mode="celebrate"]) .halo {

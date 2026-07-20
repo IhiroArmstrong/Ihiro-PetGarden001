@@ -112,7 +112,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
-| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径**：打开 **`http://127.0.0.1:8765/demo.html?v=20260721b`**（标题旁应见橙色 **v2 · panel text contrast fix**）。对照文案框灰底+炭灰字；另测 calm/celebrate。**回流**：achievement 开→关再开。 | 2026-07-21：用户书面建议统一 UI…**同日测后**：灰底不能灰字→已改。**同日再反馈**：看了但没更新（疑浏览器缓存 ES Module）→ 已加 v2 标记 + query 防缓存，请用带 `?v=20260721b` 的链接。 | `http://127.0.0.1:8765/demo.html?v=20260721b` | 2026-07-21 |
+| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径**：打开 **`http://127.0.0.1:8765/demo.html?v=20260721c`**（标题下应见橙色 **v3 · warm prose surfaces**）。§0 对比：左 `--color-panel` 控件灰 vs 右 `--color-surface-warm` 米色文案底；米色上 primary/secondary 均须清晰。再扫 tooltip / dialog / daily-quest / achievement。**回流**：achievement 开→关再开。 | 2026-07-21：…灰底不能灰字。**同日**：没更新→加 v2 防缓存。**同日再反馈**：整页底色与 Yin 和谐宜保留；文案框改用米色表面 + text-primary/secondary（panel 仅控件）→ 已按此改 v3，请用 `?v=20260721c` 复测。 | `http://127.0.0.1:8765/demo.html?v=20260721c` | 2026-07-21 |
 | Arrival Practice / Notice「What is present…」点选后 | UI可见 | 已通过 | Sit → Notice：点 Calm → 图标收起，**短句须能读完**（约 2.4s）再进呼吸。 | 2026-07-20：书面确认框收起 OK。**同日再反馈**：`a calm presence…` 来不及看就消失→已加长至 2.4s，请复测。**2026-07-20 晚**：用户书面「测试 OK」。 | `http://localhost:5173/` · Sit → Calm | 2026-07-20 |
 | Arrival Practice / Choose 点头 pingpong→idle | UI可见 | 待人工测试 | Choose → **nod-bow pingpong**（正放鞠躬→倒放回坐姿）→ Companion 立刻可展；进出用 **约 1s 叠化**。 | 2026-07-20：用户要求加倒放 pingpong + 前后 1s 叠化。已改，请复测。 | `http://localhost:5173/` · Sit → Choose | 2026-07-20 |
 | Arrival Practice / 抵达练习（Welcome → Notice → Breath → Choose） | UI可见 | 待人工测试 | Breath 推近；Choose 点头 + 坐垫光晕；Companion 马上可用；点头↔idle **1s 叠化**后再拉回视距。 | 2026-07-20：点头改 pingpong + CapCut 1s。 | `http://localhost:5173/` · Sit | 2026-07-20 |

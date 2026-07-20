@@ -2,11 +2,11 @@ const PANEL_STYLE = `
 :host {
   display: block;
   font-family: var(--font-family);
-  color: var(--color-ink);
+  color: var(--text-primary);
 }
 .card {
   position: relative;
-  background: var(--color-panel);
+  background: var(--color-surface-warm);
   border: 1px solid var(--color-ink-faint);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
@@ -47,13 +47,12 @@ const PANEL_STYLE = `
 .title {
   font-size: var(--font-size-md);
   font-weight: 600;
-  color: var(--color-ink);
+  color: var(--text-primary);
   margin: 0 0 0.35rem;
 }
 .body {
   font-size: var(--font-size-sm);
-  /* Panel is robe-gray — body must stay full ink, not muted gray-on-gray */
-  color: var(--color-ink);
+  color: var(--text-primary);
   line-height: 1.5;
   margin: 0;
 }
@@ -69,12 +68,11 @@ const PANEL_STYLE = `
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--color-ink);
-  opacity: 0.72;
+  color: var(--text-secondary);
 }
 .close:hover {
   background: var(--color-ink-faint);
-  opacity: 1;
+  color: var(--text-primary);
 }
 .close svg {
   width: 14px;

@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Focus Tiger · UI Kit Demo · v2 contrast</title>
+    <title>Focus Tiger · UI Kit Demo · v3 surfaces</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <link rel="stylesheet" href="./tokens.css?v=20260721b" />
+    <link rel="stylesheet" href="./tokens.css?v=20260721c" />
     <style>
       * {
         box-sizing: border-box;
@@ -14,7 +14,7 @@
         margin: 0;
         min-height: 100vh;
         background: var(--color-bg);
-        color: var(--color-ink);
+        color: var(--text-primary);
         font-family: var(--font-family);
         padding: 2rem 1.5rem 4rem;
         line-height: 1.5;
@@ -35,6 +35,7 @@
         font-weight: 700;
         text-align: center;
         margin: 0 0 0.35rem;
+        color: var(--text-primary);
       }
       .ver {
         text-align: center;
@@ -45,8 +46,7 @@
       }
       .lede {
         text-align: center;
-        color: var(--color-ink);
-        opacity: 0.8;
+        color: var(--text-secondary);
         max-width: 36rem;
         margin: 0 auto 2rem;
         font-size: 0.95rem;
@@ -55,11 +55,11 @@
         max-width: 40rem;
         margin: 0 auto 2.5rem;
         padding: 0.85rem 1rem;
-        background: var(--color-panel);
+        background: var(--color-surface-warm);
         border-radius: var(--radius-md);
         border: 1px solid var(--color-ink-faint);
         font-size: 0.85rem;
-        color: var(--color-ink);
+        color: var(--text-primary);
       }
       section {
         max-width: 720px;
@@ -69,7 +69,7 @@
         font-size: 0.8rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--color-ink-muted);
+        color: var(--text-secondary);
         font-weight: 600;
         margin: 0 0 0.85rem;
       }
@@ -91,6 +91,7 @@
       .panel h3 {
         margin: 0 0 0.75rem;
         font-size: 0.95rem;
+        color: var(--text-primary);
       }
       .actions {
         display: flex;
@@ -103,13 +104,60 @@
         align-items: center;
         gap: 0.4rem;
         font-size: 0.9rem;
-        color: var(--color-ink-muted);
+        color: var(--text-secondary);
       }
       code {
         font-size: 0.8em;
         background: var(--color-panel);
         padding: 0.1em 0.35em;
         border-radius: 4px;
+      }
+      /* Surface vs control chrome comparison */
+      .swatch-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      @media (max-width: 560px) {
+        .swatch-row { grid-template-columns: 1fr; }
+      }
+      .swatch {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-ink-faint);
+        padding: 1rem 1.1rem;
+        min-height: 7.5rem;
+      }
+      .swatch-control {
+        background: var(--color-panel);
+      }
+      .swatch-prose {
+        background: var(--color-surface-warm);
+      }
+      .swatch .tag {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        margin: 0 0 0.55rem;
+        font-weight: 600;
+      }
+      .swatch .primary-sample {
+        color: var(--text-primary);
+        font-size: var(--font-size-md);
+        font-weight: 600;
+        margin: 0 0 0.35rem;
+      }
+      .swatch .secondary-sample {
+        color: var(--text-secondary);
+        font-size: var(--font-size-sm);
+        margin: 0;
+      }
+      .swatch-control .hint {
+        margin-top: 0.75rem;
+        height: 10px;
+        border-radius: var(--radius-pill);
+        background: var(--color-accent);
+        width: 42%;
       }
     </style>
   </head>
@@ -124,10 +172,10 @@
       />
     </div>
     <h1>Focus Tiger UI Kit</h1>
-    <p class="ver">v2 · panel text contrast fix — if you still see gray-on-gray, hard-refresh</p>
+    <p class="ver">v3 · warm prose surfaces + text tokens</p>
     <p class="lede">
       Calm chrome derived from Yin’s robe, cushion, and vermillion mark.
-      Numbers stay quiet; celebrate lasts ≤ 1.2s, then returns to calm.
+      Page wash stays soft so Yin remains the focus; copy cards use a warmer beige.
     </p>
     <p class="note">
       <strong>Scope:</strong> Design laboratory only — not wired into the product
@@ -135,6 +183,23 @@
       collection, and daily quest cards are visual explorations for the memorial
       rewards Backlog; do not treat this demo as shipped product UI.
     </p>
+
+    <section>
+      <h2>0. Surfaces — control vs prose</h2>
+      <div class="swatch-row">
+        <div class="swatch swatch-control">
+          <p class="tag">--color-panel · controls</p>
+          <p class="primary-sample">Track / chip chrome</p>
+          <p class="secondary-sample">Not for long copy — progress fill below</p>
+          <div class="hint" aria-hidden="true"></div>
+        </div>
+        <div class="swatch swatch-prose">
+          <p class="tag">--color-surface-warm · copy cards</p>
+          <p class="primary-sample">Primary: you’ve returned to sit with Yin.</p>
+          <p class="secondary-sample">Secondary: a quiet hint · just now</p>
+        </div>
+      </div>
+    </section>
 
     <section>
       <h2>1. tiger-hud</h2>
@@ -252,15 +317,15 @@
       <h2>10. daily-quest-card (exploration)</h2>
       <div class="panel">
         <daily-quest-card></daily-quest-card>
-        <p style="margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--color-ink)">
+        <p style="margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--text-secondary)">
           Click an unfinished row for a tiny wink — no modal, no fanfare.
         </p>
       </div>
     </section>
 
     <script type="module">
-      import "./index.js?v=20260721b";
-      import { YIN_SILHOUETTE_SVG } from "./components/_shared.js?v=20260721b";
+      import "./index.js?v=20260721c";
+      import { YIN_SILHOUETTE_SVG } from "./components/_shared.js?v=20260721c";
 
       document.getElementById("yin-hero").src = YIN_SILHOUETTE_SVG;
 
