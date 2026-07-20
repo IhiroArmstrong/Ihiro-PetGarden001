@@ -51,6 +51,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Celebrating 未见舞（2026-07-21）**：Honesty 不再占庆祝戳；达标后 Rise 走完成反馈；庆祝中 Rise 忽略 — 待复测观感
 - **DEV 一键重置**：改为 **L-logic**（`localStateKeys.test.js` 并入 `test:smoke`）；TEST_TRACKER 不再要求人工逐 key
 - **Pending 2c**：`cloak-sleep` 进 DORMANT——**2a 已入库**；**2b 已拍板**「当日首次进 DORMANT 播一次」；**正式接线等 Prompt 1 测完再说**
 - **Rise → `rise-stretch-casual` pingpong**（替换 blink-breathe；倒放回闭目衔接 idle）；`blink-breathe` 仅调试

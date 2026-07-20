@@ -12,7 +12,7 @@
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
-| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | DORMANT / Honesty / 首次 Celebrating vs SessionComplete / 场景 A·D·L |
+| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | DORMANT / Honesty / 完成列表；内含 `celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳） |
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显 |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |
@@ -34,7 +34,7 @@
 | `idle` / IdleOrchestrator 接管 | `MoodController` IDLE、`IdleOrchestrator` | 呼吸×5→眨眼；勿另开 Idle 变体池 |
 | `sleeping` | DORMANT / `MoodController` | 场景 A 开局睡着观感 |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
-| `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback` | 当日首次 vs 二次达标 |
+| `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback` | `hasCelebratedToday`：首次计时达标 Celebrating；已庆祝过 → SessionComplete；Honesty 不占戳 |
 | `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |

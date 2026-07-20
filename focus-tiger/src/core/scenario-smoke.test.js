@@ -147,17 +147,21 @@ test('smoke A3–A4: Arrival Notice→Choose Deep Work → Here & Now can begin;
   );
 });
 
-test('smoke A7–A8: first completion → celebrating; second → sessionComplete only', () => {
-  // SCENARIO_TESTS A7 / A8 / L
+test('smoke A7–A8: first timed → celebrating; after celebrate stamp → sessionComplete; Honesty alone does not block dance', () => {
+  // SCENARIO_TESTS A7 / A8 / L；Honesty 补登不占庆祝戳
   const store = new DailyCompletionStore({
     storage: createStorage(),
     now: () => new Date(2026, 6, 20, 9)
   });
 
+  store.recordCompletion(20);
+  assert.equal(store.hasCompletedToday(), true);
+  assert.equal(store.hasCelebratedToday(), false);
+
   let celebrations = 0;
   const emotions = [];
   const first = triggerSessionCompletionFeedback({
-    hasCompletedToday: store.hasCompletedToday(),
+    hasCelebratedToday: store.hasCelebratedToday(),
     emotionController: {
       playEmotion(key) {
         emotions.push(key);
@@ -165,15 +169,17 @@ test('smoke A7–A8: first completion → celebrating; second → sessionComplet
     },
     startCelebrating: () => {
       celebrations += 1;
+      store.markCelebratedToday();
     },
     onComplete: () => {}
   });
   assert.equal(first, 'celebrating');
   assert.equal(celebrations, 1);
+  assert.equal(store.hasCelebratedToday(), true);
 
   store.recordCompletion(1);
   const second = triggerSessionCompletionFeedback({
-    hasCompletedToday: store.hasCompletedToday(),
+    hasCelebratedToday: store.hasCelebratedToday(),
     emotionController: {
       playEmotion(key) {
         emotions.push(key);
@@ -313,26 +319,22 @@ test('smoke C: Rise incomplete → no completion record; Reflection after MANUAL
   }
 });
 
-test('smoke I: How shall we sit? gate not ready → needArrival (Honesty must not block hint)', () => {
-  // SCENARIO_TESTS I — Honesty 提示期间 postSessionOverlay 仍为 false，hint 不得静默 ignore
+test('smoke I: How shall we sit? gate not ready → toggle panel (Honesty must not block hint)', () => {
   const action = resolveCompanionHintClick({
     idleVisible: true,
-    postSessionOverlay: false,
-    arrivalReady: false
+    postSessionOverlay: false
   });
-  assert.equal(action, 'needArrival');
+  assert.equal(action, 'toggle');
   assert.notEqual(action, 'ignore');
 });
 
-test('smoke J回流: Rise 后门闩未就绪 → hint 须再走 Arrival（非静默）', () => {
-  // SCENARIO_TESTS 建议补充 J
+test('smoke J回流: Rise 后门闩未就绪 → hint 仍须展开三选一（非静默）', () => {
   assert.equal(
     resolveCompanionHintClick({
       idleVisible: true,
-      postSessionOverlay: false,
-      arrivalReady: false
+      postSessionOverlay: false
     }),
-    'needArrival'
+    'toggle'
   );
 });
 

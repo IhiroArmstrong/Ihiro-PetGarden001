@@ -12,6 +12,7 @@ import {
   shouldSuppressAwayReminders,
   canBeginFocusOnCompanionModeSelect,
   shouldBeginFocusOnArrivalReady,
+  resolveRiseClickDuringFocus,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
@@ -593,12 +594,14 @@ async function init() {
     completionPending = true;
     endFocusChrome();
     focusSession.pause();
-    // 本次记账发生在反馈播完后，因此这里读取的是“完成本次之前”的自然日状态。
-    // 当日首次只播 Celebrating；同日后续只播 SessionComplete，二者不叠加。
+    // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
     triggerSessionCompletionFeedback({
-      hasCompletedToday: dailyCompletionStore.hasCompletedToday(),
+      hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
       emotionController,
-      startCelebrating: () => stateManager.setState(STATES.CELEBRATE),
+      startCelebrating: () => {
+        dailyCompletionStore.markCelebratedToday();
+        stateManager.setState(STATES.CELEBRATE);
+      },
       onComplete: finishCompletedSession
     });
   }
@@ -708,6 +711,17 @@ async function init() {
       return true;
     },
     () => {
+      const riseAction = resolveRiseClickDuringFocus({
+        completionPending,
+        state: stateManager.state,
+        hasReachedTarget: focusSession.hasReachedTarget()
+      });
+      if (riseAction === 'ignore') return false;
+      if (riseAction === 'complete') {
+        beginSessionCompleteIfNeeded();
+        return false;
+      }
+
       companionModePicker.hide();
       arrivalPractice.hide();
       arrivalGateReady = false;

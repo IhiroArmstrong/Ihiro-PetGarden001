@@ -40,6 +40,39 @@ test('honesty and timer completions share one list without source tags', () => {
   assert.equal(sessions[1].durationMinutes, 30);
 });
 
+test('Honesty completion does not mark celebrated; markCelebratedToday is separate', () => {
+  const store = new DailyCompletionStore({
+    storage: createStorage(),
+    now: () => new Date(2026, 6, 16, 11)
+  });
+
+  store.recordCompletion(20);
+  assert.equal(store.hasCompletedToday(), true);
+  assert.equal(store.hasCelebratedToday(), false);
+
+  store.markCelebratedToday();
+  assert.equal(store.hasCelebratedToday(), true);
+  store.markCelebratedToday();
+  assert.equal(store.hasCelebratedToday(), true);
+});
+
+test('celebrated flag resets with the next local calendar day', () => {
+  let now = new Date(2026, 6, 16, 22);
+  const storage = createStorage();
+  const store = new DailyCompletionStore({
+    storage,
+    now: () => now
+  });
+
+  store.recordCompletion(10);
+  store.markCelebratedToday();
+  assert.equal(store.hasCelebratedToday(), true);
+
+  now = new Date(2026, 6, 17, 1);
+  assert.equal(store.hasCompletedToday(), false);
+  assert.equal(store.hasCelebratedToday(), false);
+});
+
 test('lazy resets on the next local calendar day', () => {
   let now = new Date(2026, 6, 16, 22);
   const storage = createStorage();

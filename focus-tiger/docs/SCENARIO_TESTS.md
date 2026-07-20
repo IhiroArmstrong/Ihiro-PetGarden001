@@ -57,10 +57,11 @@
    **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**（素材可在，见 `companionGestureCatalog`；测序列用实验室 / `__spritePlayer.play(...)`）。看不到它们不算失败。  
    **靠近区不应自动播点头**（`nodGreeting` 已拆除靠近触发；调试「点头致意」可手工播）。  
    *[概率/观感：不纳入冒烟]*
-7. 达到目标时长 → **当日首次**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。  
-   *[逻辑：首次→celebrating 已自动化 smoke A7–A8；动画观感仍人工]*
-8. **同日第二次达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
-   （旧稿「每日首次庆祝限制尚未接通」已过时——代码已接线。）  
+7. 达到目标时长 → **当日首次计时达标**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。  
+   **勿提前点 Rise**（未达标会走未完成路径）；已达标后再点 Rise 也会进完成反馈。  
+   Honesty 补登**不**占庆祝戳：可先 Honesty，再计时仍应见舞。  
+   *[逻辑：celebrated 戳 + smoke A7–A8；动画观感仍人工]*
+8. **同日第二次计时达标**（已播过 Celebrating）：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
    *[逻辑：二次→sessionComplete 已自动化]*
 9. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**，仅调试面板「模拟一炷香」。首次完成**不要**期待自动莲花。
 10. 进入 Reflection Moment：开头回显本次 Choose（文案键类似 `Chosen direction: {text}`，以 locale 为准），三问可独立跳过。
@@ -94,7 +95,7 @@
 3. 确认 HUD 在计时、按钮为 **Rise**。
 4. 切到 **其它 Safari 标签**，停留约 **70–90 秒**（必须 **&gt;60s**；不要只留 10s）。
 5. 切回 Focus Tiger：应见 **非模态观察式文案** + **`nod-bow` 点头鞠躬**（不是摆尾）。
-6. Offline Space / Flow State 下重复离开 &gt;60s：**不应**出现 Re-focus。
+6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
 7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
 
 *[逻辑：Stay 触发 / Offline·Flow 抑制 → smoke B]*

@@ -102,6 +102,27 @@ export function resolveCompanionHintClick({ idleVisible, postSessionOverlay }) {
   return 'toggle';
 }
 
+/**
+ * Rise 点击在专注中的裁决（防达标后误走「未完成」）。
+ * - ignore：庆祝进行中，勿打断
+ * - complete：已墙钟达标 → 走完成反馈（Celebrating / SessionComplete）
+ * - incomplete：未达标主动起身
+ * @param {object} gates
+ * @param {boolean} gates.completionPending
+ * @param {string} gates.state
+ * @param {boolean} gates.hasReachedTarget
+ * @returns {'ignore' | 'complete' | 'incomplete'}
+ */
+export function resolveRiseClickDuringFocus({
+  completionPending,
+  state,
+  hasReachedTarget
+}) {
+  if (completionPending || state === 'CELEBRATE') return 'ignore';
+  if (hasReachedTarget) return 'complete';
+  return 'incomplete';
+}
+
 export class FocusSession {
   constructor(targetMinutes = 25) {
     this.targetMinutes = targetMinutes;

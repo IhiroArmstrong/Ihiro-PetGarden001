@@ -5,7 +5,7 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 export class FocusInput {
   /**
    * @param {() => (boolean|void)} onStart 返回 false 表示延后开始（如先选 Companion Mode）
-   * @param {() => void} onStop
+   * @param {() => (boolean|void)} onStop 返回 false 表示取消起身（达标完成 / 庆祝中忽略）
    */
   constructor(onStart, onStop) {
     this.onStart = onStart;
@@ -26,9 +26,11 @@ export class FocusInput {
           buttonElement.textContent = this._buttonLabel();
         }
       } else {
-        this.onStop();
-        this._focusing = false;
-        buttonElement.textContent = this._buttonLabel();
+        const cancelled = this.onStop() === false;
+        if (!cancelled) {
+          this._focusing = false;
+          buttonElement.textContent = this._buttonLabel();
+        }
       }
     });
     onLocaleChange(() => {

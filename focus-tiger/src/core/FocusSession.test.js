@@ -12,6 +12,7 @@ import {
   shouldBeginFocusOnArrivalReady,
   resolveCompanionHintClick,
   resolveDemoSessionMinutes,
+  resolveRiseClickDuringFocus,
   DEMO_SESSION_MINUTES_DEFAULT
 } from './FocusSession.js';
 
@@ -169,4 +170,39 @@ test('resolveDemoSessionMinutes defaults to 1; ?sessionMinutes=5 for Re-focus ta
   assert.equal(resolveDemoSessionMinutes('?sessionMinutes=0'), 1);
   assert.equal(resolveDemoSessionMinutes('?sessionMinutes=999'), 90);
   assert.equal(resolveDemoSessionMinutes('?sessionMinutes=nope'), 1);
+});
+
+test('resolveRiseClickDuringFocus: ignore celebrate; complete when target reached; else incomplete', () => {
+  assert.equal(
+    resolveRiseClickDuringFocus({
+      completionPending: true,
+      state: 'FOCUSING',
+      hasReachedTarget: true
+    }),
+    'ignore'
+  );
+  assert.equal(
+    resolveRiseClickDuringFocus({
+      completionPending: false,
+      state: 'CELEBRATE',
+      hasReachedTarget: true
+    }),
+    'ignore'
+  );
+  assert.equal(
+    resolveRiseClickDuringFocus({
+      completionPending: false,
+      state: 'FOCUSING',
+      hasReachedTarget: true
+    }),
+    'complete'
+  );
+  assert.equal(
+    resolveRiseClickDuringFocus({
+      completionPending: false,
+      state: 'FOCUSING',
+      hasReachedTarget: false
+    }),
+    'incomplete'
+  );
 });

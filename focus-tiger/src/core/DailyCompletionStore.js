@@ -1,6 +1,7 @@
 /**
  * 当日已完成专注会话记录（正常计时与 Honesty Check-in 共用）。
- * 不做 source / verified 等区分字段——诚实机制下一视同仁。
+ * 会话列表一视同仁（无 source 标签）；**Celebrating 日期戳**单独记，
+ * 避免 Honesty 补登占掉「当日首次达标庆祝」却不播舞。
  */
 
 import { getLocalDateKey } from '../utils/localDate.js';
@@ -17,7 +18,11 @@ function getDefaultStorage() {
 
 /**
  * @typedef {{ completedAt: number, durationMinutes: number }} CompletionSession
- * @typedef {{ dateKey: string, sessions: CompletionSession[] }} DailyCompletionState
+ * @typedef {{
+ *   dateKey: string,
+ *   sessions: CompletionSession[],
+ *   celebrated?: boolean
+ * }} DailyCompletionState
  */
 
 export class DailyCompletionStore {
@@ -38,13 +43,29 @@ export class DailyCompletionStore {
     /** @type {DailyCompletionState} */
     this._memoryState = {
       dateKey: getLocalDateKey(this.now()),
-      sessions: []
+      sessions: [],
+      celebrated: false
     };
   }
 
   /** 当天是否已有至少一条完成记录（含 Honesty Check-in）。 */
   hasCompletedToday() {
     return this._getTodayState().sessions.length > 0;
+  }
+
+  /**
+   * 当日是否已播过完整 Celebrating（与「是否有完成记录」解耦）。
+   * Honesty 补登只写 sessions，不置本戳。
+   */
+  hasCelebratedToday() {
+    return this._getTodayState().celebrated === true;
+  }
+
+  /** 标记当日已触发 Celebrating；同日再调无副作用。 */
+  markCelebratedToday() {
+    const state = this._getTodayState();
+    if (state.celebrated) return;
+    this._writeState({ ...state, celebrated: true });
   }
 
   /**
@@ -63,7 +84,8 @@ export class DailyCompletionStore {
     };
     const next = {
       dateKey: state.dateKey,
-      sessions: [...state.sessions, entry]
+      sessions: [...state.sessions, entry],
+      celebrated: state.celebrated === true
     };
     this._writeState(next);
     return entry;
@@ -76,9 +98,11 @@ export class DailyCompletionStore {
 
   /** @returns {DailyCompletionState} */
   getState() {
+    const state = this._getTodayState();
     return {
-      dateKey: this._getTodayState().dateKey,
-      sessions: this.getTodaySessions()
+      dateKey: state.dateKey,
+      sessions: this.getTodaySessions(),
+      celebrated: state.celebrated === true
     };
   }
 
@@ -87,7 +111,7 @@ export class DailyCompletionStore {
     const stored = this._readState();
     if (stored.dateKey === today) return stored;
 
-    const reset = { dateKey: today, sessions: [] };
+    const reset = { dateKey: today, sessions: [], celebrated: false };
     this._writeState(reset);
     return reset;
   }
@@ -110,7 +134,8 @@ export class DailyCompletionStore {
               Number.isFinite(s.completedAt) &&
               Number.isFinite(s.durationMinutes) &&
               s.durationMinutes > 0
-          )
+          ),
+          celebrated: parsed.celebrated === true
         };
       }
     } catch {
@@ -120,10 +145,14 @@ export class DailyCompletionStore {
   }
 
   _writeState(state) {
-    this._memoryState = state;
+    this._memoryState = {
+      dateKey: state.dateKey,
+      sessions: state.sessions,
+      celebrated: state.celebrated === true
+    };
     if (!this.storage) return;
     try {
-      this.storage.setItem(this.storageKey, JSON.stringify(state));
+      this.storage.setItem(this.storageKey, JSON.stringify(this._memoryState));
     } catch {
       // 持久化失败时仍保留本次运行期状态
     }

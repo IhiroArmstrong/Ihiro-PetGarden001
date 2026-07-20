@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 
 import { triggerSessionCompletionFeedback } from './session-completion-feedback.js';
 
-test('completed non-first session triggers sessionComplete without celebrating', () => {
+test('already celebrated → sessionComplete without celebrating', () => {
   const emotions = [];
   let celebrations = 0;
   const onComplete = () => {};
 
   const selected = triggerSessionCompletionFeedback({
-    hasCompletedToday: true,
+    hasCelebratedToday: true,
     emotionController: {
       playEmotion(key, options) {
         emotions.push({ key, options });
@@ -28,12 +28,12 @@ test('completed non-first session triggers sessionComplete without celebrating',
   assert.equal(emotions[0].options.onComplete, onComplete);
 });
 
-test('first completion starts celebrating without sessionComplete', () => {
+test('not yet celebrated → celebrating without sessionComplete', () => {
   const emotions = [];
   let celebrations = 0;
 
   const selected = triggerSessionCompletionFeedback({
-    hasCompletedToday: false,
+    hasCelebratedToday: false,
     emotionController: {
       playEmotion(key) {
         emotions.push(key);
