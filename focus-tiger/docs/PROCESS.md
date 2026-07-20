@@ -234,13 +234,13 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
 2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
-3. `git add` 相关文件 → `git commit`（message 带 Task 关键词，便于对照速览）  
+3. `git add` 相关文件 → **自动本地** `git commit`（message 带 Task 关键词，便于对照速览；**不必再问要不要 commit**）  
 4. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
 5. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
 
 Agent / Cursor 侧约定：
 
-- **用户反馈修复 / 回归锁**收尾：过完工门禁后 **自动本地 `git commit`**，不必再问「要不要 commit」。  
+- **所有实质性 Task** 收尾：过完对应门禁后 **自动本地 `git commit`**，不必再问「要不要 commit」。  
 - **未经用户口头/书面确认不得 `git push`**。  
 - 完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 
