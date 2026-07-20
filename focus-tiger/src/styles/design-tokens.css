@@ -1,20 +1,18 @@
 /**
- * Focus Tiger · UI Kit design tokens
- * Canonical prose/control roles match Companion Mode cards (product shell).
- * Source of truth for values also mirrored in src/styles/design-tokens.css.
+ * Focus Tiger · canonical design tokens
+ * Reference: Companion Mode three-option cards (product shell, 2026-07-21 adopted).
+ * Keep in sync with focus-tiger/ui-kit/tokens.css prose/control roles.
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Quicksand:wght@500;600&display=swap");
-
 :root {
-  /* Page wash — soft, Yin-friendly */
+  /* Page wash — soft, Yin-friendly (product shell #e8e6e1 family) */
   --color-bg: #e8e6e1;
 
-  /* Control chrome only (tracks, dots, thumbnail wells) — not for prose cards */
+  /* Control chrome only (tracks, chips) — not for long copy */
   --color-panel: #e4e1db;
   --color-panel-soft: rgba(228, 225, 219, 0.92);
 
-  /* Prose containers — Companion Mode option-card cream */
+  /* Prose / option cards — Companion Mode cream */
   --color-surface-warm: #f8f1e4;
   --color-surface-warm-top: rgba(255, 255, 255, 0.96);
   --color-surface-warm-selected-top: #fff6e6;
@@ -22,25 +20,20 @@
   --color-surface-border: rgba(139, 115, 85, 0.22);
   --color-surface-border-strong: rgba(139, 115, 85, 0.48);
 
-  /* Accent from cushion / robe trim */
-  --color-accent: #b5623a;
-  --color-accent-soft: rgba(181, 98, 58, 0.22);
-
-  /* Ink — Companion title / product textInk */
+  /* Text on warm surfaces (Companion titles / hints) */
   --color-ink: #2c1f14;
-  --color-ink-muted: rgba(74, 58, 40, 0.78);
-  --color-ink-faint: rgba(46, 43, 40, 0.1);
   --text-primary: #2c1f14;
   --text-secondary: rgba(74, 58, 40, 0.78);
+  --color-ink-muted: rgba(74, 58, 40, 0.78);
+  --color-ink-faint: rgba(46, 43, 40, 0.1);
 
-  /* Highlight — vermillion; notifications / milestones only */
+  /* Accent — Sit CTA family stays vermillion; cushion orange for kit accents */
+  --color-accent: #b5623a;
+  --color-accent-soft: rgba(181, 98, 58, 0.22);
   --color-highlight: #d64545;
-
-  /* Gold — achievement flash only; never a resident chrome color */
   --color-gold: #f0c36a;
   --color-gold-glow: rgba(240, 195, 106, 0.55);
 
-  /* Halo / incense metaphor */
   --color-halo: rgba(181, 98, 58, 0.28);
   --color-halo-bright: rgba(240, 195, 106, 0.45);
 
@@ -52,7 +45,7 @@
   --shadow-soft: 0 8px 24px rgba(44, 31, 20, 0.08);
   --shadow-lift: 0 12px 32px rgba(44, 31, 20, 0.12);
 
-  --font-family: "Nunito", "Quicksand", system-ui, sans-serif;
+  --font-family: "Nunito", "Quicksand", "Noto Sans SC", system-ui, sans-serif;
   --font-size-sm: 0.8125rem;
   --font-size-md: 0.9375rem;
   --font-size-lg: 1.125rem;

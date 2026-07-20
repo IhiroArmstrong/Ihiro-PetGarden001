@@ -6,8 +6,12 @@ const PANEL_STYLE = `
 }
 .card {
   position: relative;
-  background: var(--color-surface-warm);
-  border: 1px solid var(--color-ink-faint);
+  background: linear-gradient(
+    180deg,
+    var(--color-surface-warm-top, rgba(255, 255, 255, 0.96)) 0%,
+    var(--color-surface-warm) 100%
+  );
+  border: 1px solid var(--color-surface-border, var(--color-ink-faint));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   padding: 1rem 1.15rem 1.1rem;

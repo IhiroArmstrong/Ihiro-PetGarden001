@@ -482,9 +482,13 @@ export class CompanionModePicker {
         text-align: left;
         padding: 12px 14px;
         border-radius: 12px;
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 241, 228, 0.88) 100%);
-        color: #2c1f14;
+        border: 1px solid var(--color-surface-border, rgba(139, 115, 85, 0.22));
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.96) 0%,
+          var(--color-surface-warm, #f8f1e4) 100%
+        );
+        color: var(--text-primary, #2c1f14);
         cursor: pointer;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.9) inset,
@@ -500,8 +504,12 @@ export class CompanionModePicker {
           0 1px 3px rgba(44, 31, 20, 0.1);
       }
       .session-start-dock__option.is-selected {
-        border-color: rgba(139, 115, 85, 0.48);
-        background: linear-gradient(180deg, rgba(255, 246, 230, 0.98) 0%, rgba(224, 185, 121, 0.34) 100%);
+        border-color: var(--color-surface-border-strong, rgba(139, 115, 85, 0.48));
+        background: linear-gradient(
+          180deg,
+          var(--color-surface-warm-selected-top, #fff6e6) 0%,
+          var(--color-surface-warm-selected-end, rgba(224, 185, 121, 0.34)) 100%
+        );
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.85) inset,
           0 2px 0 rgba(160, 120, 70, 0.28),
@@ -511,12 +519,13 @@ export class CompanionModePicker {
         font-size: 13px;
         font-weight: 600;
         line-height: 1.4;
+        color: var(--text-primary, #2c1f14);
       }
       .session-start-dock__option-hint {
         margin-top: 4px;
         font-size: 11px;
         line-height: 1.45;
-        color: rgba(74, 58, 40, 0.78);
+        color: var(--text-secondary, rgba(74, 58, 40, 0.78));
       }
     `;
     let style = document.getElementById('session-start-dock-styles');
