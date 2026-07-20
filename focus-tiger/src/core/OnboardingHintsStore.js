@@ -25,6 +25,7 @@ export const HINT_IDS = Object.freeze([
   'reflection',
   'idle-after-session',
   'help-affordance',
+  'help-remedy',
   'help-fallback'
 ]);
 
@@ -47,6 +48,7 @@ export const HINT_LOCALE_KEYS = Object.freeze({
   'reflection': 'HINT_REFLECTION',
   'idle-after-session': 'HINT_IDLE_AFTER_SESSION',
   'help-affordance': 'HINT_HELP_AFFORDANCE',
+  'help-remedy': 'HINT_HELP_REMEDY',
   'help-fallback': 'HINT_HELP_FALLBACK'
 });
 
@@ -176,6 +178,23 @@ export function resolveAutoHintIds(scene = {}) {
     scene.reflectionOpen || scene.isFocusing || scene.arrivalOpen;
   if (!skipHelpAffordance && !ids.includes('help-affordance')) {
     ids.push('help-affordance');
+  }
+  return ids;
+}
+
+/**
+ * 点「?」补救：当前场景应展示的全部操作提示（忽略已读；不含 help-affordance / help-remedy）。
+ * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
+ * @returns {string[]}
+ */
+export function resolveRemedyHintIds(scene = {}) {
+  const ids = resolveAutoHintIds(scene).filter(
+    (id) => id !== 'help-affordance' && id !== 'help-remedy'
+  );
+  if (scene.companionExpanded) {
+    for (const id of ['companion-stay', 'companion-away', 'companion-across-tools']) {
+      if (!ids.includes(id)) ids.push(id);
+    }
   }
   return ids;
 }

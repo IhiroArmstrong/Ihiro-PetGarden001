@@ -6,7 +6,8 @@ import {
   normalizeHintsSeen,
   createHintsSeenStore,
   resolveHintForScene,
-  resolveAutoHintIds
+  resolveAutoHintIds,
+  resolveRemedyHintIds
 } from './OnboardingHintsStore.js';
 
 test('normalizeHintsSeen only keeps known hintIds', () => {
@@ -77,6 +78,21 @@ test('resolveHintForScene picks the most specific surface', () => {
     'idle-after-session'
   );
   assert.equal(resolveHintForScene({}), 'sit-button');
+});
+
+test('resolveRemedyHintIds lists scene hints without help-affordance and expands companion panel', () => {
+  assert.deepEqual(resolveRemedyHintIds({}), ['sit-button', 'how-shall-we-sit']);
+  assert.deepEqual(resolveRemedyHintIds({ isFocusing: true }), [
+    'rise-button',
+    'ambient-soundscape'
+  ]);
+  assert.deepEqual(resolveRemedyHintIds({ companionExpanded: true }), [
+    'companion-mode',
+    'companion-stay',
+    'companion-away',
+    'companion-across-tools'
+  ]);
+  assert.ok(!resolveRemedyHintIds({}).includes('help-affordance'));
 });
 
 test('resolveAutoHintIds includes help-affordance on idle chrome including DORMANT', () => {

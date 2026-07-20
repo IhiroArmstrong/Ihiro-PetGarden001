@@ -111,5 +111,6 @@
   "HINT_REFLECTION": "Answer if you like — skipping is fine.",
   "HINT_IDLE_AFTER_SESSION": "Sit again whenever you like.",
   "HINT_HELP_AFFORDANCE": "Not sure what to tap next? Start here.",
+  "HINT_HELP_REMEDY": "All the tips for this screen are on the page now.",
   "HINT_HELP_FALLBACK": "Sit with Yin when you are ready."
 }

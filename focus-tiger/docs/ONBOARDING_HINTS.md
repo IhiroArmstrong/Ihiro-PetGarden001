@@ -18,7 +18,7 @@
 | `dormant-open` | A1 睡着的阿寅 | "Yin is resting. Sit when you feel ready." / 「阿寅在歇着。准备好了，再同坐。」 | 当日 DORMANT 且尚未开始过会话 | 点 Sit / How shall we sit? / 进入 Honesty | 是 |
 | `honesty-optional` | A2 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次看到 Honesty 可忽略提示 | 点 Sit 忽略，或点进补登 | 是 |
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
-| `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? 且门闩未就绪 | 点该钮或完成 Arrival | 是 |
+| `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
 | `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | 首次 Notice | 点选图标或 Skip | 是 |
 | `breathing` | A3c | "Just breathe with Yin. Nothing else to do." / 「跟着阿寅呼吸就好，不用做别的。」 | 首次呼吸 beat | 呼吸结束或 Skip | 是 |
 | `choose` | A3d | "Choose one — or type your own." / 「选一个，也可以自己写。」 | 首次 Choose | 确认/Skip | 是 |
@@ -32,9 +32,10 @@
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
 | `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
+| `help-remedy` | 点「?」补救 | "All the tips for this screen are on the page now." / 「本页的操作提示，现在都在页面上了。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **17** 个可自动提示 + **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+共 **17** 个可自动提示 + **1** 个点「?」元文案 + **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
@@ -45,8 +46,8 @@
 ## 二、补救入口设计
 
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
-- **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），点「?」或点气泡即记已读。
-- **交互**：按**当前界面**只复述上表对应一句；无匹配时用 `help-fallback`。
+- **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），锚在「?」**右侧**、尖角指向「?」；点「?」或点气泡即记已读。
+- **交互**：点「?」强制展示**本页全部**操作提示（`resolveRemedyHintIds`，忽略已读）：各控件旁气泡 + `help-remedy` 元文案（「本页的操作提示，现在都在页面上了」）。补救期间 `syncVisibleAutos` 不会清掉这些气泡。
 - **与即时提示**：即时「用完即隐藏」；补救不受已读限制。
 
 ### 气泡视觉（与按钮/输入框区分）

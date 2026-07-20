@@ -8,7 +8,7 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   HINT_LOCALE_KEYS,
   createHintsSeenStore,
-  resolveHintForScene
+  resolveRemedyHintIds
 } from '../core/OnboardingHintsStore.js';
 
 /**
@@ -68,8 +68,13 @@ const HINT_ANCHORS = Object.freeze({
   'idle-after-session': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
   'help-affordance': {
     selector: '#onboarding-hint-help',
-    placement: 'above',
-    tip: 'bottom'
+    placement: 'right',
+    tip: 'left'
+  },
+  'help-remedy': {
+    selector: '#onboarding-hint-help',
+    placement: 'right',
+    tip: 'left'
   },
   'help-fallback': { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
 });
@@ -102,8 +107,8 @@ export class OnboardingHintsUI {
     this._visibleIds = new Set();
     /** @type {Map<string, ReturnType<typeof setTimeout>>} */
     this._hideTimers = new Map();
-    /** @type {string | null} 补救当前条 */
-    this._remedyId = null;
+    /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
+    this._remedyIds = new Set();
 
     this.helpBtn = document.createElement('button');
     this.helpBtn.type = 'button';
@@ -125,7 +130,10 @@ export class OnboardingHintsUI {
     this._unsubLocale = onLocaleChange(() => {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
       for (const hintId of this._visibleIds) {
-        this._paint(hintId, { remedy: this._remedyId === hintId });
+        this._paint(hintId, {
+          remedy: this._remedyIds.has(hintId),
+          anchorNearHelp: hintId === 'help-remedy' && this._remedyIds.has('help-remedy')
+        });
       }
     });
   }
@@ -137,7 +145,7 @@ export class OnboardingHintsUI {
   maybeShowAuto(hintId) {
     if (!HINT_LOCALE_KEYS[hintId]) return false;
     if (this.store.isSeen(hintId)) return false;
-    if (this._remedyId) return false;
+    if (this._remedyIds.size > 0) return false;
     this._paint(hintId, { remedy: false });
     return true;
   }
@@ -150,7 +158,7 @@ export class OnboardingHintsUI {
   syncVisibleAutos(hintIds) {
     const want = new Set(hintIds.filter((id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id)));
     for (const id of [...this._visibleIds]) {
-      if (this._remedyId === id) continue;
+      if (this._remedyIds.has(id)) continue;
       if (!want.has(id)) this.hideBubble(id);
     }
     for (const id of want) {
@@ -169,12 +177,21 @@ export class OnboardingHintsUI {
     }
   }
 
-  /** 补救：按当前场景强制展示（忽略已读）；气泡锚在「?」旁便于感知点击反馈。 */
+  /** 补救：强制展示本页全部操作提示（忽略已读）+「?」旁元文案。 */
   showRemedy() {
     const scene = this.getScene() || {};
-    const hintId = resolveHintForScene(scene);
-    this._remedyId = hintId;
-    this._paint(hintId, { remedy: true, anchorNearHelp: true });
+    const sceneIds = resolveRemedyHintIds(scene);
+    const nextRemedy = new Set(['help-remedy', ...sceneIds]);
+
+    for (const id of [...this._remedyIds]) {
+      if (!nextRemedy.has(id)) this.hideBubble(id);
+    }
+    this._remedyIds = nextRemedy;
+
+    for (const id of sceneIds) {
+      this._paint(id, { remedy: true });
+    }
+    this._paint('help-remedy', { remedy: true, anchorNearHelp: true });
   }
 
   /**
@@ -193,12 +210,12 @@ export class OnboardingHintsUI {
       bubble.textContent = '';
     }
     this._visibleIds.delete(hintId);
-    if (this._remedyId === hintId) this._remedyId = null;
+    if (this._remedyIds.has(hintId)) this._remedyIds.delete(hintId);
   }
 
   clearSeen() {
     this.store.clear();
-    this._remedyId = null;
+    this._remedyIds.clear();
   }
 
   repositionAll() {
@@ -282,7 +299,7 @@ export class OnboardingHintsUI {
    * @param {string} hintId
    */
   _dismissByUser(hintId) {
-    if (this._remedyId === hintId) {
+    if (this._remedyIds.has(hintId)) {
       this.hideBubble(hintId);
       return;
     }
@@ -353,6 +370,20 @@ export class OnboardingHintsUI {
 
     left = Math.max(12, Math.min(left, vw - br.width - 12));
     top = Math.max(12, Math.min(top, vh - br.height - 12));
+
+    if (anchor) {
+      const ar = anchor.getBoundingClientRect();
+      const anchorCenterX = ar.left + ar.width / 2;
+      const anchorCenterY = ar.top + ar.height / 2;
+      const tipX = Math.max(18, Math.min(anchorCenterX - left, br.width - 18));
+      const tipY = Math.max(18, Math.min(anchorCenterY - top, br.height - 18));
+      bubble.style.setProperty('--tip-x', `${Math.round(tipX)}px`);
+      bubble.style.setProperty('--tip-y', `${Math.round(tipY)}px`);
+    } else {
+      bubble.style.removeProperty('--tip-x');
+      bubble.style.removeProperty('--tip-y');
+    }
+
     bubble.style.left = `${Math.round(left)}px`;
     bubble.style.top = `${Math.round(top)}px`;
   }
@@ -396,7 +427,7 @@ export class OnboardingHintsUI {
       }
       /* 尖角朝下 → 指向下方锚点 */
       .onboarding-hint-bubble[data-tip="bottom"]::after {
-        left: 50%;
+        left: var(--tip-x, 50%);
         bottom: -8px;
         transform: translateX(-50%);
         border-width: 8px 7px 0 7px;
@@ -404,7 +435,7 @@ export class OnboardingHintsUI {
         filter: drop-shadow(0 1px 0 rgba(92, 122, 108, 0.35));
       }
       .onboarding-hint-bubble[data-tip="top"]::after {
-        left: 50%;
+        left: var(--tip-x, 50%);
         top: -8px;
         transform: translateX(-50%);
         border-width: 0 7px 8px 7px;
@@ -412,14 +443,14 @@ export class OnboardingHintsUI {
       }
       .onboarding-hint-bubble[data-tip="right"]::after {
         right: -8px;
-        top: 50%;
+        top: var(--tip-y, 50%);
         transform: translateY(-50%);
         border-width: 7px 0 7px 8px;
         border-color: transparent transparent transparent #dceae2;
       }
       .onboarding-hint-bubble[data-tip="left"]::after {
         left: -8px;
-        top: 50%;
+        top: var(--tip-y, 50%);
         transform: translateY(-50%);
         border-width: 7px 8px 7px 0;
         border-color: transparent #dceae2 transparent transparent;

@@ -12,7 +12,7 @@ import {
  * 不跑到 1 分钟达标 / Celebrating；序列观感仍人工。
  */
 
-test('scenario I: hint opens Arrival when gate not ready (no silent no-op)', async ({
+test('scenario I: hint opens companion panel when gate not ready (no silent no-op)', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -23,9 +23,22 @@ test('scenario I: hint opens Arrival when gate not ready (no silent no-op)', asy
 
   await hint.click();
 
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(page.locator('#arrival-practice')).toBeHidden();
+});
+
+test('scenario I2: Here & Now before Arrival gate opens Arrival (HUD stays idle)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('.session-start-dock__hint').click();
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expect(page.locator('#arrival-practice')).toBeVisible({
     timeout: 15_000
   });
+  await expectFocusSessionInactive(page);
 });
 
 test('scenario A: Arrival → Here & Now starts focus timer', async ({ page }) => {
