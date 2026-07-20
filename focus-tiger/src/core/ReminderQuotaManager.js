@@ -4,7 +4,8 @@ export { getLocalDateKey };
 
 export const SHARED_DAILY_REMINDER_LIMIT = 3;
 
-const DEFAULT_STORAGE_KEY = 'focus-tiger.reminder-quota.v1';
+/** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
+export const REMINDER_QUOTA_STORAGE_KEY = 'focus-tiger.reminder-quota.v1';
 
 function getDefaultStorage() {
   try {
@@ -25,7 +26,7 @@ export class ReminderQuotaManager {
   constructor({
     dailyLimit = SHARED_DAILY_REMINDER_LIMIT,
     storage = getDefaultStorage(),
-    storageKey = DEFAULT_STORAGE_KEY,
+    storageKey = REMINDER_QUOTA_STORAGE_KEY,
     now = () => new Date()
   } = {}) {
     this.dailyLimit = dailyLimit;

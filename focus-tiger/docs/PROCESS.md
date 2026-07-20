@@ -45,12 +45,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-20 16:15（UTC+8）
+**最后更新时间**：2026-07-21（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **DEV 一键重置**：改为 **L-logic**（`localStateKeys.test.js` 并入 `test:smoke`）；TEST_TRACKER 不再要求人工逐 key
 - **Pending 2c**：`cloak-sleep` 进 DORMANT——**2a 已入库**；**2b 已拍板**「当日首次进 DORMANT 播一次」；**正式接线等 Prompt 1 测完再说**
 - **Rise → `rise-stretch-casual` pingpong**（替换 blink-breathe；倒放回闭目衔接 idle）；`blink-breathe` 仅调试
 - **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **底部横排矮条**（点头后再展开，不挡鞠躬）
@@ -74,7 +75,7 @@
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
-- Companion Mode：Here & Now / Flow State 选中即开计时；Offline Space 须再 Sit；**Arrival 门闩未就绪时三选一不可点选**；**「How shall we sit?」未就绪时点即启动 Arrival**（`resolveCompanionHintClick` 防静默失败）
+- Companion Mode：Here & Now / Flow State 选中即开计时（须 Arrival 门闩就绪）；Offline Space 须再 Sit；**「How shall we sit?」随时展开三选一**（`resolveCompanionHintClick` → toggle；**Sit** 未就绪时仍走 Arrival）
 - Honesty `dormantWake`：选时长即坐起（**3 fps**）定格末帧；暂不接闭眼呼吸淡入 / 金光 / halo
 - 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`

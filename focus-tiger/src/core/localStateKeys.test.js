@@ -1,6 +1,31 @@
+/**
+ * DEV「一键重置全部本地状态」· L-logic
+ *
+ * 用户无法逐项核对 localStorage 是否回到新用户；本文件锁：
+ * 1) 白名单与各模块 STORAGE_KEY 完全一致（防漏清）
+ * 2) 脏状态 clear 后 Store 读数等同全新用户
+ * 3) sessionStorage 一次性 toast / boot-idle 标记行为
+ *
+ * 按钮可见性（实验室有 / ?product=1 无）见 e2e/product-shell.smoke.spec.js。
+ * 跑法：`npm test` 或 `npm run test:smoke`
+ */
+
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import { DailyCompletionStore, DAILY_COMPLETION_STORAGE_KEY } from './DailyCompletionStore.js';
+import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
+import { HonestyBridgeStore, HONESTY_BRIDGE_STORAGE_KEY } from './HonestyBridgeStore.js';
+import {
+  createHintsSeenStore,
+  HINTS_SEEN_STORAGE_KEY
+} from './OnboardingHintsStore.js';
+import {
+  ReminderQuotaManager,
+  REMINDER_QUOTA_STORAGE_KEY
+} from './ReminderQuotaManager.js';
+import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
+import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
   clearAllFocusTigerLocalState,
@@ -12,28 +37,53 @@ import {
   DEV_BOOT_IDLE_SESSION_KEY
 } from './localStateKeys.js';
 
-test('clearAllFocusTigerLocalState removes every known Focus Tiger key', () => {
-  const map = new Map();
-  for (const key of FOCUS_TIGER_LOCAL_STORAGE_KEYS) {
-    map.set(key, 'x');
-  }
-  map.set('unrelated.app.v1', 'keep');
-
-  const storage = {
+function createMapStorage(seed = {}) {
+  const map = new Map(Object.entries(seed));
+  return {
+    getItem(key) {
+      return map.has(key) ? map.get(key) : null;
+    },
+    setItem(key, value) {
+      map.set(key, String(value));
+    },
     removeItem(key) {
       map.delete(key);
     },
-    getItem(key) {
-      return map.has(key) ? map.get(key) : null;
-    }
+    _map: map
   };
+}
 
-  const cleared = clearAllFocusTigerLocalState(storage);
-  assert.equal(cleared.length, FOCUS_TIGER_LOCAL_STORAGE_KEYS.length);
-  for (const key of FOCUS_TIGER_LOCAL_STORAGE_KEYS) {
-    assert.equal(map.has(key), false);
+/**
+ * AmbientSoundscapeUI 的 key（不从此处 import UI 模块，避免 node 测拖进 DOM/i18n）。
+ * 须与 `AmbientSoundscapeUI.AMBIENT_NUDGE_STORAGE_KEY` / SHARED_RESOURCES 字面量一致。
+ */
+const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
+
+/** 各模块导出的 localStorage key —— 与白名单必须集合相等。 */
+const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
+  DAILY_COMPLETION_STORAGE_KEY,
+  HONESTY_BRIDGE_STORAGE_KEY,
+  INTENTION_STORAGE_KEY,
+  REFLECTION_STORAGE_KEY,
+  COMPANION_MODE_STORAGE_KEY,
+  REMINDER_QUOTA_STORAGE_KEY,
+  HINTS_SEEN_STORAGE_KEY,
+  AMBIENT_NUDGE_STORAGE_KEY
+]);
+
+test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {
+  const whitelist = new Set(FOCUS_TIGER_LOCAL_STORAGE_KEYS);
+  const modules = new Set(MODULE_LOCAL_STORAGE_KEYS);
+
+  assert.equal(whitelist.size, FOCUS_TIGER_LOCAL_STORAGE_KEYS.length, 'whitelist has duplicates');
+  assert.equal(modules.size, MODULE_LOCAL_STORAGE_KEYS.length, 'module keys have duplicates');
+
+  for (const key of modules) {
+    assert.ok(whitelist.has(key), `whitelist missing module key: ${key}`);
   }
-  assert.equal(map.get('unrelated.app.v1'), 'keep');
+  for (const key of whitelist) {
+    assert.ok(modules.has(key), `whitelist orphan (no module export): ${key}`);
+  }
 });
 
 test('FOCUS_TIGER_LOCAL_STORAGE_KEYS stays kebab focus-tiger.*.v1 style', () => {
@@ -42,27 +92,97 @@ test('FOCUS_TIGER_LOCAL_STORAGE_KEYS stays kebab focus-tiger.*.v1 style', () => 
   }
 });
 
-test('dev session flags are one-shot consume', () => {
-  const map = new Map();
-  const storage = {
-    setItem(key, value) {
-      map.set(key, value);
-    },
-    getItem(key) {
-      return map.has(key) ? map.get(key) : null;
-    },
-    removeItem(key) {
-      map.delete(key);
-    }
+test('clearAllFocusTigerLocalState removes every known Focus Tiger key', () => {
+  const storage = createMapStorage();
+  for (const key of FOCUS_TIGER_LOCAL_STORAGE_KEYS) {
+    storage.setItem(key, 'dirty');
+  }
+  storage.setItem('unrelated.app.v1', 'keep');
+
+  const cleared = clearAllFocusTigerLocalState(storage);
+  assert.equal(cleared.length, FOCUS_TIGER_LOCAL_STORAGE_KEYS.length);
+  for (const key of FOCUS_TIGER_LOCAL_STORAGE_KEYS) {
+    assert.equal(storage.getItem(key), null);
+  }
+  assert.equal(storage.getItem('unrelated.app.v1'), 'keep');
+});
+
+test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)', () => {
+  const storage = createMapStorage();
+
+  const dirtyCompletions = new DailyCompletionStore({ storage });
+  dirtyCompletions.recordCompletion(20);
+  assert.equal(dirtyCompletions.hasCompletedToday(), true);
+
+  const dirtyBridge = new HonestyBridgeStore({ storage });
+  dirtyBridge.markShown();
+  assert.equal(dirtyBridge.hasShownToday(), true);
+
+  const dirtyQuota = new ReminderQuotaManager({ storage, dailyLimit: 3 });
+  assert.equal(dirtyQuota.tryConsume(), true);
+  assert.equal(dirtyQuota.tryConsume(), true);
+  assert.equal(dirtyQuota.tryConsume(), true);
+  assert.equal(dirtyQuota.tryConsume(), false);
+
+  storage.setItem(COMPANION_MODE_STORAGE_KEY, 'stay');
+  storage.setItem(INTENTION_STORAGE_KEY, JSON.stringify([{ text: 'x' }]));
+  storage.setItem(REFLECTION_STORAGE_KEY, JSON.stringify([{ text: 'y' }]));
+  storage.setItem(AMBIENT_NUDGE_STORAGE_KEY, '1');
+
+  const hintsBag = {
+    getItem: (k) => storage.getItem(k),
+    setItem: (k, v) => storage.setItem(k, v),
+    removeItem: (k) => storage.removeItem(k)
   };
+  const dirtyHints = createHintsSeenStore(
+    () => JSON.parse(hintsBag.getItem(HINTS_SEEN_STORAGE_KEY) || '{}'),
+    (value) => hintsBag.setItem(HINTS_SEEN_STORAGE_KEY, JSON.stringify(value))
+  );
+  dirtyHints.markSeen('sit-button');
+  assert.equal(dirtyHints.isSeen('sit-button'), true);
 
-  markDevResetToast(storage);
-  assert.equal(map.get(DEV_RESET_TOAST_SESSION_KEY), '1');
-  assert.equal(consumeDevResetToast(storage), true);
-  assert.equal(consumeDevResetToast(storage), false);
+  clearAllFocusTigerLocalState(storage);
 
-  markDevBootIdle(storage);
-  assert.equal(map.get(DEV_BOOT_IDLE_SESSION_KEY), '1');
-  assert.equal(consumeDevBootIdle(storage), true);
-  assert.equal(consumeDevBootIdle(storage), false);
+  // 新实例 = 刷新后的新用户（内存缓存不会自动失效）
+  const freshCompletions = new DailyCompletionStore({ storage });
+  assert.equal(freshCompletions.hasCompletedToday(), false);
+  assert.deepEqual(freshCompletions.getTodaySessions(), []);
+
+  const freshBridge = new HonestyBridgeStore({ storage });
+  assert.equal(freshBridge.hasShownToday(), false);
+
+  const freshQuota = new ReminderQuotaManager({ storage, dailyLimit: 3 });
+  assert.equal(freshQuota.tryConsume(), true);
+
+  assert.equal(storage.getItem(COMPANION_MODE_STORAGE_KEY), null);
+  assert.equal(storage.getItem(INTENTION_STORAGE_KEY), null);
+  assert.equal(storage.getItem(REFLECTION_STORAGE_KEY), null);
+  assert.equal(storage.getItem(AMBIENT_NUDGE_STORAGE_KEY), null);
+
+  const freshHints = createHintsSeenStore(
+    () => JSON.parse(storage.getItem(HINTS_SEEN_STORAGE_KEY) || '{}'),
+    (value) => storage.setItem(HINTS_SEEN_STORAGE_KEY, JSON.stringify(value))
+  );
+  assert.equal(freshHints.isSeen('sit-button'), false);
+});
+
+test('dev session flags are one-shot consume (sessionStorage, not wiped by clear)', () => {
+  const session = createMapStorage();
+  const local = createMapStorage({
+    [DAILY_COMPLETION_STORAGE_KEY]: '{"sessions":[]}'
+  });
+
+  markDevResetToast(session);
+  markDevBootIdle(session);
+  clearAllFocusTigerLocalState(local);
+
+  // clear 只动 localStorage；session 标记仍在，供刷新后 toast / idle boot
+  assert.equal(session.getItem(DEV_RESET_TOAST_SESSION_KEY), '1');
+  assert.equal(session.getItem(DEV_BOOT_IDLE_SESSION_KEY), '1');
+  assert.equal(local.getItem(DAILY_COMPLETION_STORAGE_KEY), null);
+
+  assert.equal(consumeDevResetToast(session), true);
+  assert.equal(consumeDevResetToast(session), false);
+  assert.equal(consumeDevBootIdle(session), true);
+  assert.equal(consumeDevBootIdle(session), false);
 });

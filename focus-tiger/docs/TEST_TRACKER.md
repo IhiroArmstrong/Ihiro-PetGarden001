@@ -79,7 +79,7 @@
 | Sleeping 太慢/太快、MilestoneGlow 等 | **有问题** | 观感 | **[L145](#L145)** Sleeping · **[L127](#L127)** MilestoneGlow |
 | Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L131](#L131)** Ambient Soundscape · **[L179](#L179)** `人工 · Ambient Sound 入口` |
 
-**§B 未单列、但在场景 checklist 里测的项**（见 **L176–L183**）：**[L176](#L176)** A1 睡着/DORMANT（**已通过**） · **[L181](#L181)** Celebrating 观感 · **[L182](#L182)** Honesty 桥接完整 Arrival（**已通过**） · **[L183](#L183)** DEV 一键重置。
+**§B 未单列、但在场景 checklist 里测的项**（见 **L176–L183**）：**[L176](#L176)** A1 睡着/DORMANT（**已通过**） · **[L181](#L181)** Celebrating 观感 · **[L182](#L182)** Honesty 桥接完整 Arrival（**已通过**） · **[L183](#L183)** DEV 一键重置（**L-logic / 仅单元测试**，勿人工逐 key）。
 
 #### C. 下一步自动化（未做 · 排 Task 2/3）
 
@@ -90,7 +90,7 @@
 | 可选 | e2e **Skip — begin** 一键开表（不经逐步 Skip） | FocusSession 行「半卡 Sit」 |
 | 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L177](#L177)** Idle（**已通过**） · **[L180](#L180)** Re-focus · **[L181](#L181)** Celebrating · **[L176–L183](#L176)** 场景 checklist |
 
-**命令**：`cd focus-tiger && npm run test:smoke`（9 条）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
+**命令**：`cd focus-tiger && npm run test:smoke`（**14** 条：9 scenario + 5 重置 L-logic）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
 
 ---
 
@@ -169,7 +169,7 @@
 | 人工 · 点 ? 补救展示本页全部 hints | UI可见 | 待人工测试 | 1) 先完成一轮操作让 Sit / How shall we sit 等提示**已读消失**。2) 点左下角 **?**。3) 须**同时**出现：? 旁元文案 + **Sit 上方**「点击与阿寅同坐」+ **How shall we sit? 旁**「也可以从这里开始」等各控件锚点提示（FOCUSING 时则为 Rise + Sound 旁）。4) 点单个气泡只关该条，不记已读。5) 回流：关闭全部后再点 ? 仍全部出现。 | 2026-07-20 用户书面：点 ? 只有元文案，没有 hint 说的「都在页面上」的效果。 | `#onboarding-hint-help` · 实验室「清空引导提示已读」或先点掉自动提示 | 2026-07-20 |
 | Ambient 播放缓亮 Rim（presenceBoost + playing lift） | UI可见 | 有问题 | FOCUSING 后开 Sound 选曲：阿寅边缘金光应**很快**比未播放时更亮一点，并随播放略增。关曲/暂停应变暗回 focusLevel。 | 2026-07-19：文案称音乐会加亮；原仅有慢累计 boost，已加正在播放 lift 0.1。**2026-07-20**：用户反馈实际**未见**光效变化；Sound hint 已改不写加亮，底层 Rim 是否可见仍待复测/拍板。 | Sound 面板 · DEMO 1min 会话 | 2026-07-20 |
 | 用户场景剧本 SCENARIO_TESTS（A–G + I–N） | UI可见 | 待人工测试 | 权威：`focus-tiger/docs/SCENARIO_TESTS.md`。用 **`?product=1`** 走完整故事串。逻辑冒烟：`npm run test:smoke`；浏览器壳：`npm run test:e2e`。**观感子项已拆成下方独立行，勿只勾本行。** | 2026-07-20：拆分观感六行，避免「一行测过＝全测过」假象。 | `SCENARIO_TESTS.md` · `?product=1` | 2026-07-20 |
-| 场景冒烟自动化 scenario-smoke（A–D + I/J · 逻辑层） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（**9 条**）：门闩/完成反馈/Re-focus 抑制/Rise→Reflection/Honesty 桥接/**I hint→toggle 三选一**。**不含**序列观感。详见文首「自动化回归锁 vs 近几日用户 bug」。 | 2026-07-20：Task 1 补 smoke I。锁逻辑不锁观感。 | `src/core/scenario-smoke.test.js` | 2026-07-20 |
+| 场景冒烟自动化 scenario-smoke（A–D + I/J · 逻辑层） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（**14** 条）：门闩/完成反馈/Re-focus 抑制/Rise→Reflection/Honesty 桥接/**I hint→toggle** + **DEV 重置 L-logic**（`localStateKeys.test.js`）。**不含**序列观感。 | 2026-07-20：Task 1 补 smoke I。**2026-07-21**：并入重置白名单/新用户读数。 | `scenario-smoke.test.js` · `localStateKeys.test.js` | 2026-07-21 |
 | 人工 · How shall we sit? 立刻展开三选一 | UI可见 | 待人工测试 | 1) `?product=1` 重置本地状态。2) **不要点 Sit**，直接点 **How shall we sit?**。3) 须**立刻**出现 Here & Now / Offline Space / Flow State 三选一，**不是**「What is present right now?」Arrival 框。4) 回流：Rise 结束后再点 hint 仍展开三选一。 | 2026-07-20 用户书面：点 How shall we sit? 出 Arrival 框不对，应出三选项；记得原来就是这样后来改坏了。 | `?product=1` · `.session-start-dock__hint` | 2026-07-20 |
 | 浏览器 e2e 产品壳冒烟（Playwright） | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e`（**2 条**）：`?product=1` 见 Sit、无调试面板；实验室有「重置全部本地状态」。 | — | `e2e/product-shell.smoke.spec.js` | 2026-07-20 |
 | 浏览器 e2e 场景 A/I/K Companion DOM（Playwright） | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e`（**3 条**）：**I** hint 开 Arrival；**A** Here & Now 开表；**K** Offline 须再 Sit。**不**含 Celebrating/Choose 点头/Safari 布局。 | 2026-07-20：Task 1 落地；与 Companion/FocusSession 用户 bug 部分重叠，见文首对照表 B 节「仍须人工」项。 | `e2e/scenario-a.companion.spec.js` | 2026-07-20 |
@@ -180,7 +180,7 @@
 | 人工 · Re-focus 真实切页 >60s | UI可见 | 待人工测试 | 1) 打开 **`http://localhost:5173/?sessionMinutes=5`**（不要只用默认 1 分钟）。2) Here & Now 开表计时中。3) 切到其它标签 **约 70–90 秒**（必须 **&gt;60s**；约 10s 回来**应无反应**）。4) 切回 → **观察式文案 + nod-bow**（不是摆尾）。5) Offline/Flow 同操作不应出现。 | 2026-07-20 晚：2 分钟回来见摆尾；约 10s 回来无反应（门槛正确）。待按 `?sessionMinutes=5` + 离开&gt;60s 复测。 | `/?sessionMinutes=5` · `SCENARIO_TESTS` 场景 B | 2026-07-20 |
 | 人工 · Celebrating / 同日 SessionComplete 观感 | UI可见 | 待人工测试 | 1) 当日零完成：跑满 DEMO 1 分钟 → **Celebrating** 舞再回坐姿。2) 同日再跑一场达标 → **只** SessionComplete 摆尾，不再完整 Celebrating。逻辑已冒烟；本行只验动画观感。 | — | `?product=1` · 演示 1 分钟 | 2026-07-20 |
 | 人工 · Honesty 桥接后完整 Arrival UI | UI可见 | 已通过 | 1) 重置本地状态 → DORMANT。2) 走 Honesty 选 20 → 呼吸结束。3) 桥接点 **Yes** → 须走完整 Arrival（Welcome→Notice→Breath→Choose）再 Companion，**不**直接开表。4) 另测 **No** → idle、无二次挽留。 | 2026-07-20 晚：用户书面「测试 OK」。 | `?product=1` · 或实验室 Honesty | 2026-07-20 |
-| DEV 一键重置全部本地状态 | UI可见 | 待人工测试 | 1) 打开 `/`（勿 `?product=1`）。2) 点「重置全部本地状态」→ **确认弹窗**说明刷新后为睡着+Honesty。3) 刷新后底部 toast 提示「场景 A 正常开局」；**不是 bug**。4) 要测 idle 请点「**重置并 idle 坐禅**」。5) `?product=1` / build **不得**出现按钮。 | 2026-07-20：用户反馈重置后仍见 Honesty→实为场景 A 正确开局；已加说明+idle 快捷入口。 | `/` · `#dev-reset-all-local-state` · `#dev-reset-all-local-state-idle` | 2026-07-20 |
+| DEV 一键重置全部本地状态 | 纯后端 | 仅单元测试覆盖 | **L-logic**（勿人工逐 key）：`npm run test:smoke` → `localStateKeys.test.js` 锁白名单=各模块 STORAGE_KEY、脏态 clear 后 Store 等同新用户、session toast/boot-idle 一次性。按钮壳：`e2e/product-shell.smoke.spec.js`（实验室可见；`?product=1` 不可见）。 | 2026-07-20：重置后 Honesty=场景 A 正确开局。**2026-07-21**：用户书面——人工难验「参数是否复原」→ 应 L-logic；已改仅单元测试。 | `src/core/localStateKeys.test.js` · `#dev-reset-all-local-state` | 2026-07-21 |
 | 产品壳链接 ?product=1（隐藏调试面板） | UI可见 | 待人工测试 | 打开 `/?product=1`：无右上角情绪调试条；Sit / How shall we sit? / Honesty / Arrival / Sound 仍可用。打开 `/`：调试面板在。 | — | `http://127.0.0.1:5173/?product=1` vs `/` | 2026-07-19 |
 | 3D Idle GLB 换装（无红边单色灰棉麻） | UI可见 | 待人工测试 | 1) `npm run dev` 打开应用。2) 调试面板点 **T-Pose**（或临时让 PoseManager 显示 canvas）以露出 3D 垫底。3) 确认阿寅闭目坐禅袍为**单色暖浅灰棉麻 / 茶服风**，**无深红镶边/红里子**；棉麻织纹应清晰（勿呈糊成一团的过度压缩感）。4) 刷新后默认 2D 主线仍隐藏 3D；路径仍为 `/models/tiger-meditate-closed.glb`（约 **1.6MB**，非 292KB）。 | — | `http://127.0.0.1:5173/` · `#emotion-debug-ui` T-Pose · 源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb` | 2026-07-19 |
 

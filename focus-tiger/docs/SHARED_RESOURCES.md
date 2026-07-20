@@ -21,7 +21,8 @@
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 
-一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
+一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
+**验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
 
 ---
 
@@ -62,7 +63,7 @@
 | `arrivalGateReady` | Arrival 完成 / Skip | Companion 点选是否可 begin |
 | `setPostSessionOverlayActive` | Honesty / Reflection / Arrival 叠层 | hint 是否 ignore；Sit 抢点 |
 | `canBeginFocusOnCompanionModeSelect` | Companion 点选 | Here & Now / Flow 即开；Offline 再 Sit |
-| `resolveCompanionHintClick` | 「How shall we sit?」 | needArrival vs toggle；禁静默 |
+| `resolveCompanionHintClick` | 「How shall we sit?」 | toggle 展开三选一；禁静默 ignore |
 
 ---
 

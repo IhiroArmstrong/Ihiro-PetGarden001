@@ -10,12 +10,13 @@ import {
   AMBIENT_TRACKS
 } from '../audio/AmbientSoundscapeController.js';
 
-const NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
+/** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
+export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
 const BLOCKED_TIP_MS = 4200;
 
 function hasSeenNudge() {
   try {
-    return localStorage.getItem(NUDGE_STORAGE_KEY) === '1';
+    return localStorage.getItem(AMBIENT_NUDGE_STORAGE_KEY) === '1';
   } catch {
     return true;
   }
@@ -23,7 +24,7 @@ function hasSeenNudge() {
 
 function markNudgeSeen() {
   try {
-    localStorage.setItem(NUDGE_STORAGE_KEY, '1');
+    localStorage.setItem(AMBIENT_NUDGE_STORAGE_KEY, '1');
   } catch {
     /* ignore */
   }

@@ -231,7 +231,7 @@
 
 | 层 | 测什么 | 现状 | **不能**代替什么 |
 |---|---|---|---|
-| L-logic | 状态机 / 门闩 / Store | `scenario-smoke` 8 条 · `npm run test:smoke` | 序列观感、叠化是否闪、气泡时长 |
+| L-logic | 状态机 / 门闩 / Store / **DEV 重置白名单** | `scenario-smoke` + `localStateKeys.test.js` · `npm run test:smoke` | 序列观感、叠化是否闪、气泡时长 |
 | L-contract | Idle/Sprite 契约（freeze、crossFade） | IdleOrchestrator 等单测已有部分 | 真人眼看到的「闪一下」 |
 | L-browser | 真 DOM / 入口可见 | Playwright 产品壳冒烟（见下） | 动画帧级观感 |
 | L-eyes | 睡着/眨眼/庆祝/Arrival 时长等 | **仅人工** · TEST_TRACKER 分列 | — |
@@ -274,6 +274,7 @@
 | L3 | §4 注意事项 3：先用此按钮排除脏状态 | **已写入** |
 
 实现：`src/core/localStateKeys.js` + `main.js` 按钮 `#dev-reset-all-local-state`。  
+**L-logic 回归**（2026-07-21）：`localStateKeys.test.js` 并入 `npm run test:smoke`——锁白名单与各模块 STORAGE_KEY 集合相等、脏态 clear 后 Store 等同新用户；按钮可见性仍靠 e2e。**勿**要求人工逐 key 验收。  
 **为何曾标后排**：当时优先做 §6.1 冒烟减轻手工负担，**不是**技术做不了。现已实施，取消后排。
 
 ### 6.4 共享资源对照表 · **已落地**
