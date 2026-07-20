@@ -54,7 +54,7 @@ const STYLE = `
   box-shadow: var(--shadow-soft);
   font-size: var(--font-size-sm);
   line-height: 1.45;
-  color: var(--color-ink-muted);
+  color: var(--color-ink);
   opacity: 0;
   pointer-events: none;
   transition: opacity 220ms var(--ease-calm);
@@ -66,7 +66,7 @@ const STYLE = `
 }
 .stats strong {
   color: var(--color-ink);
-  font-weight: 600;
+  font-weight: 700;
 }
 :host([mode="celebrate"]) .halo {
   animation: hud-fill-pulse var(--duration-celebrate) var(--ease-calm) forwards;

@@ -47,11 +47,13 @@ const PANEL_STYLE = `
 .title {
   font-size: var(--font-size-md);
   font-weight: 600;
+  color: var(--color-ink);
   margin: 0 0 0.35rem;
 }
 .body {
   font-size: var(--font-size-sm);
-  color: var(--color-ink-muted);
+  /* Panel is robe-gray — body must stay full ink, not muted gray-on-gray */
+  color: var(--color-ink);
   line-height: 1.5;
   margin: 0;
 }
@@ -67,11 +69,12 @@ const PANEL_STYLE = `
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--color-ink-muted);
+  color: var(--color-ink);
+  opacity: 0.72;
 }
 .close:hover {
   background: var(--color-ink-faint);
-  color: var(--color-ink);
+  opacity: 1;
 }
 .close svg {
   width: 14px;

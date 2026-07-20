@@ -21,7 +21,8 @@
 
   /* Ink / linework */
   --color-ink: #2e2b28;
-  --color-ink-muted: rgba(46, 43, 40, 0.55);
+  /* Secondary text: prefer opacity on full ink over gray-on-gray panels */
+  --color-ink-muted: rgba(46, 43, 40, 0.72);
   --color-ink-faint: rgba(46, 43, 40, 0.1);
 
   /* Highlight — vermillion; notifications / milestones only */

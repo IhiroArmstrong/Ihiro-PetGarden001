@@ -397,6 +397,7 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 - **宁静型游戏化**：`mode="calm" | "celebrate"`；celebrate ≤ **1.2s** 后自动回 calm；禁止常驻闪烁、跳动、强对比色块。
 - **数值默认弱化**：HUD / 光点隐喻优先，悬停或达成时刻才露出数字；文案第二人称陪伴式，禁止经验值 / 等级 / 连击黑话。
 - **Token**：`--color-bg` `#F7F5F1`、`--color-panel` `#E4E1DB`、`--color-accent` `#B5623A`、`--color-ink` `#2E2B28`、`--color-highlight` `#D64545`（慎用）、`--color-gold` `#F0C36A`（仅短暂闪光）。
+- **对比度（2026-07-21）**：灰底面板（`--color-panel`）上的正文必须用 `--color-ink`，禁止再用偏灰的 muted 字色（灰上灰看不清）。
 
 ### 明确不接线（仍属 Backlog）
 

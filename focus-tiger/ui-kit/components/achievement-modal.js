@@ -60,7 +60,8 @@ const STYLE = `
 }
 .sub {
   font-size: var(--font-size-sm);
-  color: var(--color-ink-muted);
+  color: var(--color-ink);
+  opacity: 0.85;
   margin: 0 0 1.1rem;
   line-height: 1.45;
 }

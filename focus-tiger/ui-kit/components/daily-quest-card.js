@@ -42,7 +42,7 @@ const STYLE = `
   align-items: center;
   gap: 0.6rem;
   font-size: var(--font-size-sm);
-  color: var(--color-ink-muted);
+  color: var(--color-ink);
 }
 .check {
   width: 22px;
@@ -71,8 +71,8 @@ const STYLE = `
   transform: scale(1);
   animation: wink 600ms var(--ease-calm) 1;
 }
-.row[data-done="1"] .text {
-  color: var(--color-ink);
+.row:not([data-done="1"]) .text {
+  opacity: 0.85;
 }
 @keyframes wink {
   0% { transform: scale(0.85); opacity: 0.4; }
