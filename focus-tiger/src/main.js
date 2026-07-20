@@ -8,6 +8,7 @@ import { createScene } from './core/Scene.js';
 import { createPostProcessing } from './core/PostProcessing.js';
 import {
   FocusSession,
+  resolveDemoSessionMinutes,
   shouldSuppressAwayReminders,
   canBeginFocusOnCompanionModeSelect,
   shouldBeginFocusOnArrivalReady,
@@ -62,7 +63,8 @@ import {
   resolveAutoHintIds
 } from './core/OnboardingHintsStore.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
-const DEMO_SESSION_MINUTES = 1;
+/** 默认 1 分钟；场景 B 真实切页 Re-focus 用 `?sessionMinutes=5`。 */
+const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
 
 function revealScene({ showCanvas = false } = {}) {
@@ -270,7 +272,7 @@ async function init() {
     }
   });
 
-  /** 在 beginFocusWithMode 定义后填入 onModeSelected / onNeedArrival / onExpandedChange */
+  /** 在 beginFocusWithMode 定义后填入 onModeSelected / onAutoStartNeedsArrival / onExpandedChange */
   const companionModeHandlers = {};
   const companionModePicker = new CompanionModePicker(
     document.getElementById('ui-overlay'),
@@ -295,8 +297,8 @@ async function init() {
   }
 
   function syncCompanionPostSessionChrome() {
-    // 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint → 启动 Arrival
-    //（与 Sit 可点路径一致，禁止「看得见却静默」）。
+    // 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint 展开三选一
+    //（禁止「看得见却静默」）。
     companionModePicker.setPostSessionOverlayActive(reflectionMoment.isOpen());
   }
 
@@ -669,20 +671,20 @@ async function init() {
     beginFocusWithMode(mode);
   };
 
+  /** 门闩未就绪时选 Here & Now / Flow State → 启动 Arrival（禁止 HUD 静默无反应） */
+  companionModeHandlers.onAutoStartNeedsArrival = () => {
+    if (completionPending) return;
+    if (stateManager.state === STATES.FOCUSING) return;
+    if (arrivalPractice.isOpen()) return;
+    startArrivalPracticeFromChrome();
+  };
+
   companionModeHandlers.onExpandedChange = (expanded) => {
     if (expanded) {
       onboardingHints?.maybeShowAuto('companion-mode');
       requestAnimationFrame(() => onboardingHints?.repositionAll());
     }
     syncOnboardingAutoHints();
-  };
-
-  /** hint 在门闩未就绪时启动 Arrival，禁止「点了没反应」 */
-  companionModeHandlers.onNeedArrival = () => {
-    if (completionPending) return;
-    if (stateManager.state === STATES.FOCUSING) return;
-    if (arrivalPractice.isOpen()) return;
-    startArrivalPracticeFromChrome();
   };
 
   const focusInput = new FocusInput(

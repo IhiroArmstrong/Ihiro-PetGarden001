@@ -10,6 +10,23 @@ export const ACROSS_TOOLS_IDLE_THRESHOLD_MS = 30 * 60 * 1000;
 
 export const COMPANION_MODE_STORAGE_KEY = 'focus-tiger.companion-mode.v1';
 
+/** 默认演示会话时长（分钟）；真实切页测 Re-focus 须更长，见 `?sessionMinutes=`。 */
+export const DEMO_SESSION_MINUTES_DEFAULT = 1;
+
+/**
+ * 解析演示/测试会话目标分钟数。
+ * `?sessionMinutes=5` → 5；缺省/非法 → 默认 1；夹在 1–90。
+ * @param {string} [search]
+ * @returns {number}
+ */
+export function resolveDemoSessionMinutes(search = '') {
+  const raw = new URLSearchParams(search).get('sessionMinutes');
+  if (raw == null || raw === '') return DEMO_SESSION_MINUTES_DEFAULT;
+  const n = Number.parseInt(raw, 10);
+  if (!Number.isFinite(n)) return DEMO_SESSION_MINUTES_DEFAULT;
+  return Math.min(90, Math.max(1, n));
+}
+
 /** @typedef {'stay' | 'stepAway' | 'acrossTools'} CompanionMode */
 
 /** @param {string} mode */
@@ -51,7 +68,7 @@ export function shouldBeginFocusOnArrivalReady({ skipped = false } = {}) {
 
 /**
  * 点选自动开计时模式后，是否真正允许 beginFocus。
- * 未过 Arrival 门闩时必须为 false，且 UI 侧应禁用点选（禁止静默 return）。
+ * 未过 Arrival 门闩时必须为 false；UI 侧选 Here & Now / Flow State 应启动 Arrival（禁止 HUD 静默无反应）。
  * @param {object} gates
  * @param {string} gates.mode
  * @param {boolean} gates.arrivalGateReady
@@ -74,21 +91,14 @@ export function canBeginFocusOnCompanionModeSelect({
 /**
  * 「How shall we sit?」hint 点击裁决：禁止可点却静默无反馈。
  * - ignore：叠层中 / 专注中隐藏 → 不响应
- * - needArrival：门闩未就绪 → 启动 Arrival（有明确结果）
- * - toggle：已就绪 → 展开/收起三选一
+ * - toggle：展开/收起三选一（门闩未就绪亦可先看选项；开计时仍受 canBeginFocusOnCompanionModeSelect 约束）
  * @param {object} gates
  * @param {boolean} gates.idleVisible
  * @param {boolean} gates.postSessionOverlay
- * @param {boolean} gates.arrivalReady
- * @returns {'ignore' | 'needArrival' | 'toggle'}
+ * @returns {'ignore' | 'toggle'}
  */
-export function resolveCompanionHintClick({
-  idleVisible,
-  postSessionOverlay,
-  arrivalReady
-}) {
+export function resolveCompanionHintClick({ idleVisible, postSessionOverlay }) {
   if (!idleVisible || postSessionOverlay) return 'ignore';
-  if (!arrivalReady) return 'needArrival';
   return 'toggle';
 }
 

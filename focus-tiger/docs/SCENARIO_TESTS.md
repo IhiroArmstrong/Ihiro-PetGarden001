@@ -72,23 +72,38 @@
 ## 场景 B：分心后自己走神又回来（Recover / Re-focus Acknowledge）
 
 > **自动化**：模式抑制门闩 + `handleAttentionReturn` 在 Here & Now 触发 / Offline 抑制 → smoke B。  
-> **仍须人工**：真实切标签页 >60s、toast 文案、nod-bow 观感。
+> **人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。
 
-1. 当天再开一场（Arrival → Companion 选 **Here & Now**）。
-2. 计时中切换到其他标签页 **超过 60 秒**（`REFOCUS_DISPLAY_THRESHOLD_MS = 60000`）再切回。
-3. 应观察到：非模态观察式文案 + `nod-bow`（`mindfulAcknowledge` / refocus）。
-4. **纠正旧稿**：Re-focus **会**占用与 MindfulAcknowledge / stretchReminder **共享**的每日提醒额度（`SHARED_DAILY_REMINDER_LIMIT = 3`）；每场会话最多 1 次 Re-focus（`REFOCUS_PER_SESSION_LIMIT = 1`）。  
-   *[逻辑：Stay 触发 / Offline·Flow 抑制 已自动化 smoke B]*
-5. 继续完成本次会话。
+### 频率门槛（先记住，否则会以为「坏了」）
 
-强制触发（实验室 / DEV）：会话 FOCUSING 且非 Offline/Flow 抑制离开提醒时，控制台  
-`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`。
+| 离开时长 | 回来时应看到 |
+|---|---|
+| **&lt; 20s** | **无反应**（连内部记账都不做）——你测的约 10s 属于此档，**正确** |
+| 20–60s | 只内部记账，**仍无**文案 / nod-bow |
+| **&gt; 60s** | 才展示：观察式 toast + `nod-bow`（Re-focus） |
+
+### 为何默认 `http://localhost:5173/` 测不了真实切页 Re-focus
+
+默认 `DEMO_SESSION_MINUTES = 1`：计时用**墙钟**（切走也在走）。离开 **&gt;60s** 再回来时，会话往往已达标 → 先播 **SessionComplete 摆尾 / Celebrating**，**不是** Re-focus。这不是 bug，是演示时长与 Re-focus 门槛冲突。
+
+### 用户测试步骤（推荐）
+
+1. 打开：**`http://localhost:5173/?sessionMinutes=5`**（可选再加 `&product=1` 藏调试条）。  
+   → 本场目标 **5 分钟**，离开 70s 后仍应在 FOCUSING。
+2. Arrival → Companion 选 **Here & Now**（或 Skip — begin 开表）。
+3. 确认 HUD 在计时、按钮为 **Rise**。
+4. 切到 **其它 Safari 标签**，停留约 **70–90 秒**（必须 **&gt;60s**；不要只留 10s）。
+5. 切回 Focus Tiger：应见 **非模态观察式文案** + **`nod-bow` 点头鞠躬**（不是摆尾）。
+6. Offline Space / Flow State 下重复离开 &gt;60s：**不应**出现 Re-focus。
+7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
+
+*[逻辑：Stay 触发 / Offline·Flow 抑制 → smoke B]*
 
 ---
 
 ## 场景 C：中途主动放弃（未达标）
 
-> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection + 意图回显 → smoke C；回流 hint→needArrival → smoke J。  
+> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection + 意图回显 → smoke C；回流 hint→toggle 三选一 → smoke J。  
 > **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
 
 1. 开始新会话，进行到一半，点 **Rise**。
@@ -165,8 +180,8 @@
 
 | ID | 故事 | 为何补 |
 |---|---|---|
-| **I** | 点 **How shall we sit?**（未过 Arrival）→ 应启动 Arrival；Honesty 提示开着时仍可点 | 回归锁：禁静默无反馈 · **已自动化** smoke I + e2e hint→Arrival |
-| **J** | Rise 后再点 hint → 再走 Arrival；再选 Here & Now → 立刻计时 | 回流路径 · **逻辑** smoke J |
+| **I** | 点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival | 回归锁：禁静默无反馈 · **已自动化** smoke I + e2e hint→`.session-start-dock__panel` |
+| **J** | Rise 后再点 hint → **仍展开三选一**（非静默）；再选 Here & Now（门闩就绪后）→ 立刻计时 | 回流路径 · **逻辑** smoke J |
 | **K** | Offline Space：点选后 HUD **不应**走动，再点 Sit 才计时 | 与 Here & Now / Flow 分流 · **已自动化** e2e K |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |

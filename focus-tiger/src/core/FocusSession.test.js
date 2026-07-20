@@ -10,7 +10,9 @@ import {
   shouldAutoStartFocusOnModeSelect,
   canBeginFocusOnCompanionModeSelect,
   shouldBeginFocusOnArrivalReady,
-  resolveCompanionHintClick
+  resolveCompanionHintClick,
+  resolveDemoSessionMinutes,
+  DEMO_SESSION_MINUTES_DEFAULT
 } from './FocusSession.js';
 
 test('elapsed time uses wall-clock timestamps, not tick accumulation', () => {
@@ -132,34 +134,39 @@ test('companion hint click never silently no-ops when idle and visible', () => {
   assert.equal(
     resolveCompanionHintClick({
       idleVisible: true,
-      postSessionOverlay: false,
-      arrivalReady: false
-    }),
-    'needArrival'
-  );
-  assert.equal(
-    resolveCompanionHintClick({
-      idleVisible: true,
-      postSessionOverlay: false,
-      arrivalReady: true
+      postSessionOverlay: false
     }),
     'toggle'
   );
-  // Reflection 等真正叠层才 ignore；Honesty 不得再挡 hint（见 main sync）
   assert.equal(
     resolveCompanionHintClick({
       idleVisible: true,
-      postSessionOverlay: true,
-      arrivalReady: false
+      postSessionOverlay: false
+    }),
+    'toggle'
+  );
+  assert.equal(
+    resolveCompanionHintClick({
+      idleVisible: true,
+      postSessionOverlay: true
     }),
     'ignore'
   );
   assert.equal(
     resolveCompanionHintClick({
       idleVisible: false,
-      postSessionOverlay: false,
-      arrivalReady: true
+      postSessionOverlay: false
     }),
     'ignore'
   );
+});
+
+test('resolveDemoSessionMinutes defaults to 1; ?sessionMinutes=5 for Re-focus tab tests', () => {
+  assert.equal(resolveDemoSessionMinutes(''), DEMO_SESSION_MINUTES_DEFAULT);
+  assert.equal(resolveDemoSessionMinutes('?product=1'), 1);
+  assert.equal(resolveDemoSessionMinutes('?sessionMinutes=5'), 5);
+  assert.equal(resolveDemoSessionMinutes('?sessionMinutes=5&product=1'), 5);
+  assert.equal(resolveDemoSessionMinutes('?sessionMinutes=0'), 1);
+  assert.equal(resolveDemoSessionMinutes('?sessionMinutes=999'), 90);
+  assert.equal(resolveDemoSessionMinutes('?sessionMinutes=nope'), 1);
 });
