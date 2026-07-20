@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   IdleOrchestrator,
-  IDLE_VARIANT_CROSS_FADE_MS,
+  IDLE_BREATH_GLANCE_SEAM_MS,
   IDLE_BREATH_CYCLES_BEFORE_BLINK
 } from './IdleOrchestrator.js';
 
@@ -32,7 +32,7 @@ function createHarness() {
   return { player, calls };
 }
 
-test('plays one continuous breath block then blinks with freeze cross-fade', () => {
+test('plays one continuous breath block then blinks with same-pose hard cut (no cross-fade)', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
@@ -49,17 +49,16 @@ test('plays one continuous breath block then blinks with freeze cross-fade', () 
   const blinkCall = harness.calls.at(-1);
   assert.equal(blinkCall.name, 'idleEyeGlance');
   assert.equal(blinkCall.options.loopMode, 'none');
-  assert.equal(blinkCall.options.crossFadeMs, IDLE_VARIANT_CROSS_FADE_MS);
-  // 回归锁：溶解期必须定格，否则切换闪一下
-  assert.equal(blinkCall.options.freezeUntilCrossFadeEnds, true);
+  assert.equal(blinkCall.options.crossFadeMs, IDLE_BREATH_GLANCE_SEAM_MS);
+  assert.equal(blinkCall.options.freezeUntilCrossFadeEnds, false);
   assert.equal(orchestrator.getStatus().phase, 'blink');
 
   blinkCall.options.onComplete();
   const breathAgain = harness.calls.at(-1);
   assert.equal(breathAgain.name, 'idleBreathing');
   assert.equal(breathAgain.options.maxCycles, 3);
-  assert.equal(breathAgain.options.crossFadeMs, IDLE_VARIANT_CROSS_FADE_MS);
-  assert.equal(breathAgain.options.freezeUntilCrossFadeEnds, true);
+  assert.equal(breathAgain.options.crossFadeMs, IDLE_BREATH_GLANCE_SEAM_MS);
+  assert.equal(breathAgain.options.freezeUntilCrossFadeEnds, false);
   assert.equal(orchestrator.getStatus().breathsRemaining, 3);
 });
 

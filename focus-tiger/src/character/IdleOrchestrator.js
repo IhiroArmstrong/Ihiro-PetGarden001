@@ -6,16 +6,21 @@
  * 表示 Yin「偶尔看看」。**不**插入张望 / 哈欠 / 喝茶等其它动作。
  *
  * 为何不用 blink-smile：其首/末帧为睁眼微笑，与闭目 idle-breathing 硬切/叠化都会「闪一下」。
- * idle-eye-glance 为闭↔睁↔闭微表情，与闭目基底同画幅衔接。
+ * idle-eye-glance 为闭↔睁↔闭微表情，与闭目基底同画幅、衔接处坐姿一致。
+ *
+ * **衔接转场**：呼吸 ↔ 一瞥 **同姿同尺寸** → **硬切**（crossFadeMs = 0）。
+ * 叠化/溶解仅用于衔接处前后帧差异大或画幅不同（见 PRINCIPLES / CAPCUT_DISSOLVE_MS）；
+ * 此处滥用 cross-fade 会在 180ms 内混两帧 → 肉眼「闪一下」。
  *
  * EmotionController 只负责在 idle 生命周期 start，在非 idle 表现前 stop。
- *
- * 回归锁：呼吸↔一瞥 **必须** cross-fade + freezeUntilCrossFadeEnds；
- * 叠化前须等新帧 decode（Safari 未解码就淡入 = 透明/错帧闪一下）。
+ * 从其它情绪回落 idle 时，仍可由 start(playOptions) 传入 crossFadeMs（仅首段呼吸）。
  */
 
-/** 同源微表情：与 EmotionController.MICRO_CROSS_FADE_MS 同值（避免循环 import）。 */
+/** 同源微表情 / 其它路径仍可用 ~180ms；呼吸↔一瞥 **不用**。 */
 export const IDLE_VARIANT_CROSS_FADE_MS = 180;
+
+/** 呼吸 ↔ idle-eye-glance：衔接处同姿同尺寸，禁止叠化。 */
+export const IDLE_BREATH_GLANCE_SEAM_MS = 0;
 
 /** 两次一瞥之间，idle-breathing 完整 pingpong 循环次数。 */
 export const IDLE_BREATH_CYCLES_BEFORE_BLINK = 5;
@@ -27,14 +32,14 @@ export class IdleOrchestrator {
    * @param {string} [deps.baseSequence]
    * @param {string} [deps.blinkSequence] 偶发「看看」（默认 idleEyeGlance）
    * @param {number} [deps.breathCyclesBeforeBlink] 一瞥前呼吸完整循环次数
-   * @param {number} [deps.crossFadeMs] 一瞥 ↔ 呼吸 交叉淡入
+   * @param {number} [deps.crossFadeMs] 呼吸 ↔ 一瞥 衔接（默认同姿硬切 0）
    */
   constructor({
     player,
     baseSequence = 'idleBreathing',
     blinkSequence = 'idleEyeGlance',
     breathCyclesBeforeBlink = IDLE_BREATH_CYCLES_BEFORE_BLINK,
-    crossFadeMs = IDLE_VARIANT_CROSS_FADE_MS
+    crossFadeMs = IDLE_BREATH_GLANCE_SEAM_MS
   }) {
     if (!player) throw new Error('[IdleOrchestrator] 需要 SpriteSequencePlayer');
 
@@ -127,13 +132,15 @@ export class IdleOrchestrator {
     this._phase = 'breathing';
     this._breathsRemaining = this.breathCyclesBeforeBlink;
 
-    const crossFadeMs = playOptions.crossFadeMs;
+    const crossFadeMs =
+      playOptions.crossFadeMs !== undefined
+        ? playOptions.crossFadeMs
+        : this.crossFadeMs;
     const freezeDuringFade =
       Number(crossFadeMs) > 0 && playOptions.freezeUntilCrossFadeEnds !== false;
 
     const started = this.player.play(this.baseSequence, {
       crossFadeMs,
-      // 溶解期间定格呼吸首帧，避免与上一姿态叠跑造成闪一下
       freezeUntilCrossFadeEnds: freezeDuringFade,
       maxCycles: this.breathCyclesBeforeBlink,
       holdLastFrame: true,
@@ -160,14 +167,13 @@ export class IdleOrchestrator {
       loopMode: 'none',
       holdLastFrame: true,
       crossFadeMs: this.crossFadeMs,
-      // 关键：溶解期必须定格眨眼第 1 帧，否则淡入同时跑帧 = 切换闪一下
       freezeUntilCrossFadeEnds: this.crossFadeMs > 0,
       onComplete: () => {
         if (!this._active || gen !== this._generation) return;
         this._breathsRemaining = this.breathCyclesBeforeBlink;
         this._playBreathBlock({
           crossFadeMs: this.crossFadeMs,
-          freezeUntilCrossFadeEnds: true
+          freezeUntilCrossFadeEnds: this.crossFadeMs > 0
         });
       }
     });
@@ -175,7 +181,7 @@ export class IdleOrchestrator {
       this._breathsRemaining = this.breathCyclesBeforeBlink;
       this._playBreathBlock({
         crossFadeMs: this.crossFadeMs,
-        freezeUntilCrossFadeEnds: true
+        freezeUntilCrossFadeEnds: this.crossFadeMs > 0
       });
     }
   }

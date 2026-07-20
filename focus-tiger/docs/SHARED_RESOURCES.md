@@ -48,7 +48,7 @@
 
 | 资源 | 谁用 | 改动时保护 |
 |---|---|---|
-| `IdleOrchestrator` | `EmotionController` idle 路径 | 呼吸×N→眨眼；切入须 `crossFade` + `freezeUntilCrossFadeEnds`（7/20 Idle 闪一下事故） |
+| `IdleOrchestrator` | `EmotionController` idle 路径 | 呼吸×N→一瞥；**同姿衔接硬切**（crossFadeMs=0）；叠化仅用于与其它情绪回落 idle |
 | `SpriteSequencePlayer.play` | Emotion / Idle / 调试 | CapCut 溶解、`_resetCrossFade` 顺序、pingpong `frameHolds` |
 | `CAPCUT_DISSOLVE_MS` (~1s) | Choose / Rise / IntentionSet 等不衔接切 | 禁止无故改短已调停顿 |
 | `companionGestureCatalog` | 候选手势清单 | **不**进 Idle 随机池 |
