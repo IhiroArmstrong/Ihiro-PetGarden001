@@ -22,7 +22,8 @@
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
 5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过）  
 6. **立刻本地 commit（不必再问）**：用户反馈修复 / 回归锁收尾后 Agent **自动** `git commit`；**仍禁止**未确认 `git push`  
-7. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
+7. **相关项目文档同批纳入（N15）**：至少更新 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md。**禁止**只改代码、文档滞后；缺文档或未 commit → 视为未完成  
+8. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
 
 ### B. 防把好的改坏（重写 / 改转场开工必做）
 
@@ -51,24 +52,24 @@
 
 **近期落地（待人工测试）**：
 
+- **Idle 两段 pingpong（2026-07-20 验收通过）**：`idleBreathClosed` ×2 → `idleBlinkArc` ×1；同源 51 帧素材；段间硬切；用户书面测试 OK
+- **N15（2026-07-21）**：Bug 修复 = 代码/措施 + **相关文档同批** + **立刻本地 commit**（强制；见 `DEV_WORKFLOW_QUALITY.md`）
 - **Celebrating / 同日 SessionComplete（2026-07-21）**：**已复测通过**（首次舞 + 同日二次只摆尾）
-- **DEV 一键重置**：改为 **L-logic**（`localStateKeys.test.js` 并入 `test:smoke`）；TEST_TRACKER 不再要求人工逐 key
+- **DEV 一键重置**：改为 **L-logic**（`localStateKeys.test.js` 并入 `test:smoke`）；另有「重置并 idle 坐禅」快捷入口
 - **Pending 2c**：`cloak-sleep` 进 DORMANT——**2a 已入库**；**2b 已拍板**「当日首次进 DORMANT 播一次」；**正式接线等 Prompt 1 测完再说**
-- **Rise → `rise-stretch-casual` pingpong**（替换 blink-breathe；倒放回闭目衔接 idle）；`blink-breathe` 仅调试
+- **Rise → `rise-stretch-casual` one-shot**（Reflection 期间 holdPose）；`blink-breathe` 仅调试
 - **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **底部横排矮条**（点头后再展开，不挡鞠躬）
-- **Idle 偶尔看看**：改 `idle-eye-glance`（勿用 blink-smile 睁眼）；Safari 叠化前 decode + 双 rAF
+- **Idle 编排**：闭目 pingpong ×2 → 睁眼弧 ×1（取代旧 breath×5→idle-eye-glance 切序列）
 - **「?」补救**：加大立体化 + 首次 `help-affordance` 气泡
-- **Idle 眨眼闪一下（回归）**：breath×5→一瞥 须 `freezeUntilCrossFadeEnds`
 - **Sit 误开 Honesty**：抬 Sit dock z-index + 抬高 Honesty 面板（点击层叠抢点，**不是**没 commit）
 - **Choose**：去合十，改 16:9 `intentionNod`；确认瞬间立刻开门闩（修 Reading 后偶发无 Rise）
 - **pingpong 顶点停留**：`rise-stretch-casual` / `blink-breathe` / `breath-halo-hq` 末帧补约 2 拍
 - **文档根指针收敛**：`SCENARIO_TESTS` / `HONESTY_BRIDGE_CTA` / `ONBOARDING_HINTS` 权威均在 `focus-tiger/docs/`；仓库根同名文件仅为指针；720 底稿归档
 - **3D Idle 警示/历史备份入库**：`tiger-meditate-closed.webp-292k.glb`、`tiger-meditate-closed.crimson-trim-307k.glb`（非正式运行时；见 `ASSET_INVENTORY.md`）
 - **NEW_ASSETS_2026-07-18-B**：眼动/哈欠入库 Prompt 归档（正式 Idle 不调度）
-- **Idle 确认**：仅呼吸×5→眨眼；候选手势入库、**不**进 Idle 随机池
 - **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
 - Honesty 拍板 B；Companion 短句提示
-- **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（整合 7/19 防假修好+自动 commit 与 7/20 防改坏；§6.1 场景冒烟已落地）
+- **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（含 N6/N15 立刻 commit + 文档同步；§6.1 场景冒烟已落地）
 - **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（逻辑层；观感仍人工分列）
 - **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now 开表；Offline 须再 Sit — `e2e/scenario-a.companion.spec.js`
 - **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
@@ -236,13 +237,15 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
 2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
-3. `git add` 相关文件 → **自动本地** `git commit`（message 带 Task 关键词，便于对照速览；**不必再问要不要 commit**）  
-4. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
-5. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
+3. **同步相关权威文档**（N15：按触及面更新 `EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` 等；禁止只改代码）  
+4. `git add` 相关文件（**代码 + 文档**）→ **立刻自动本地** `git commit`（message 带 Task / Fix 关键词；**不必再问要不要 commit**）  
+5. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
+6. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
 
 Agent / Cursor 侧约定：
 
 - **所有实质性 Task** 收尾：过完对应门禁后 **自动本地 `git commit`**，不必再问「要不要 commit」。  
+- **Bug 修复**：代码或修正措施落地后，**同回合**文档 + **立刻** commit（N15）；缺一不可。  
 - **未经用户口头/书面确认不得 `git push`**。  
 - 完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 

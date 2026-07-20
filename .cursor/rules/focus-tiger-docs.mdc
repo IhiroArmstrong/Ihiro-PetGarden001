@@ -93,20 +93,23 @@ alwaysApply: true
 - 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（场景 A–D 逻辑 + 产品壳 DOM；全绿 ≠ 序列观感通过）。  
 - 同主题 TEST_TRACKER 行禁止互斥步骤；**观感子项须分列**，禁止笼统一行勾选假完成。  
 - **防把好的改坏**：改前列已好清单；重写须继承观感契约；序列衔接（Idle 眨眼、cross-fade、Choose/Rise 叠化）进高风险表。  
-- **所有实质性 Task 收尾后自动本地 commit**（不必再问；交互修复 / 文档 / 调研 / 素材 / 回归锁均适用）；**仍禁止**未确认 push。 
+- **所有实质性 Task 收尾后自动本地 commit**（不必再问；交互修复 / 文档 / 调研 / 素材 / 回归锁均适用）；**仍禁止**未确认 push。  
+- **Bug 修复一体包（N15）**：代码或修正措施 + **相关项目文档同批更新**（至少 `TEST_TRACKER`；按触及面扩权威 md）+ **立刻本地 commit**；缺一 = 未完成，不得写「已修好」。  
 - 每次任务汇报末尾须有独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）。
 
 ## Git 同步（半自动，禁止静默 push）
 
-实质性 Task 结束后（与 `PROCESS.md`「当前进度速览」维护规则对齐）：
+实质性 Task / Bug 修复结束后（与 `PROCESS.md`「当前进度速览」维护规则对齐）：
 
 1. 更新速览  
-2. **所有实质性 Task**：收尾后 **自动** `git commit`（message 含关键词），**不必询问** 
-3. 其它大范围/素材/不确定范围改动：先说明将提交路径再 commit  
-4. 可选运行 `./scripts/git-sync-safe.sh` 做推送前体检  
-5. **仅当用户明确要求 push 时**再执行 `./scripts/git-sync-safe.sh --push` 或 `git push`  
+2. **同步相关权威文档**（N15；至少 `TEST_TRACKER`）  
+3. **所有实质性 Task**：收尾后 **自动** `git commit`（**代码 + 文档**；message 含关键词），**不必询问**  
+4. 其它大范围/素材/不确定范围改动：先说明将提交路径再 commit  
+5. 可选运行 `./scripts/git-sync-safe.sh` 做推送前体检  
+6. **仅当用户明确要求 push 时**再执行 `./scripts/git-sync-safe.sh --push` 或 `git push`  
 
 `stop` 提醒钩子只允许使用本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
 
 禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程。  
-**注意**：「尽快 commit」与「每次问要不要」矛盾——本地 commit 固化基线；真正需人工闸门的是 **push**。
+**注意**：「尽快 commit」与「每次问要不要」矛盾——本地 commit 固化基线；真正需人工闸门的是 **push**。  
+**注意**：只改代码、文档不进 commit = 假完成（下一会话权威口径仍是旧的）。
