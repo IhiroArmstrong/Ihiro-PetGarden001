@@ -18,7 +18,8 @@ import {
  */
 const HINT_ANCHORS = Object.freeze({
   'dormant-open': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
-  'honesty-optional': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
+  // 锚在 Sit 侧边，避免 Honesty / 桥接面板在上方时被盖住
+  'honesty-optional': { selector: '#btn-focus', placement: 'right', tip: 'left' },
   'sit-button': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
   'how-shall-we-sit': {
     selector: '.session-start-dock__hint',
@@ -136,7 +137,7 @@ export class OnboardingHintsUI {
   maybeShowAuto(hintId) {
     if (!HINT_LOCALE_KEYS[hintId]) return false;
     if (this.store.isSeen(hintId)) return false;
-    this._remedyId = null;
+    if (this._remedyId) return false;
     this._paint(hintId, { remedy: false });
     return true;
   }
@@ -168,12 +169,12 @@ export class OnboardingHintsUI {
     }
   }
 
-  /** 补救：按当前场景强制展示（忽略已读）。 */
+  /** 补救：按当前场景强制展示（忽略已读）；气泡锚在「?」旁便于感知点击反馈。 */
   showRemedy() {
     const scene = this.getScene() || {};
     const hintId = resolveHintForScene(scene);
     this._remedyId = hintId;
-    this._paint(hintId, { remedy: true });
+    this._paint(hintId, { remedy: true, anchorNearHelp: true });
   }
 
   /**
@@ -197,6 +198,7 @@ export class OnboardingHintsUI {
 
   clearSeen() {
     this.store.clear();
+    this._remedyId = null;
   }
 
   repositionAll() {
@@ -218,15 +220,16 @@ export class OnboardingHintsUI {
 
   /**
    * @param {string} hintId
-   * @param {{ remedy?: boolean }} [opts]
+   * @param {{ remedy?: boolean, anchorNearHelp?: boolean }} [opts]
    */
-  _paint(hintId, { remedy = false } = {}) {
+  _paint(hintId, { remedy = false, anchorNearHelp = false } = {}) {
     const bubble = this._ensureBubble(hintId);
     const key = HINT_LOCALE_KEYS[hintId] || HINT_LOCALE_KEYS['help-fallback'];
     bubble.textContent = t(key);
     bubble.hidden = false;
     bubble.dataset.hintId = hintId;
     bubble.dataset.remedy = remedy ? '1' : '0';
+    bubble.dataset.remedyAnchor = anchorNearHelp ? 'help' : '';
     bubble.setAttribute('aria-label', `${t(key)}. ${t('HINT_DISMISS_ARIA')}`);
     bubble.title = t('HINT_DISMISS_ARIA');
     const anchor = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
@@ -291,7 +294,12 @@ export class OnboardingHintsUI {
     if (!bubble || bubble.hidden) return;
 
     const cfg = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
-    const anchor = resolveAnchorEl(cfg.selector);
+    const useHelpAnchor =
+      bubble.dataset.remedy === '1' && bubble.dataset.remedyAnchor === 'help';
+    const anchorCfg = useHelpAnchor
+      ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
+      : cfg;
+    const anchor = resolveAnchorEl(anchorCfg.selector);
     const gap = 12;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -315,15 +323,23 @@ export class OnboardingHintsUI {
       bubble.dataset.tip = 'bottom';
     } else {
       const ar = anchor.getBoundingClientRect();
-      if (cfg.placement === 'left') {
+      if (anchorCfg.placement === 'left') {
         left = ar.left - br.width - gap;
         top = ar.top + (ar.height - br.height) / 2;
         bubble.dataset.tip = 'right';
-      } else if (cfg.placement === 'right') {
+        if (left < 12) {
+          left = ar.right + gap;
+          bubble.dataset.tip = 'left';
+        }
+      } else if (anchorCfg.placement === 'right') {
         left = ar.right + gap;
         top = ar.top + (ar.height - br.height) / 2;
         bubble.dataset.tip = 'left';
-      } else if (cfg.placement === 'below') {
+        if (left + br.width > vw - 12) {
+          left = ar.left - br.width - gap;
+          bubble.dataset.tip = 'right';
+        }
+      } else if (anchorCfg.placement === 'below') {
         left = ar.left + (ar.width - br.width) / 2;
         top = ar.bottom + gap;
         bubble.dataset.tip = 'top';
@@ -416,6 +432,7 @@ export class OnboardingHintsUI {
         left: 20px;
         bottom: 28px;
         z-index: 22;
+        pointer-events: auto;
         width: 52px;
         height: 52px;
         border-radius: 50%;

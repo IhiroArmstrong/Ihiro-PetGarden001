@@ -14,6 +14,70 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.ambient-nudge.seen.v1'
 ]);
 
+/** sessionStorage：重置后首屏 toast（不写入 localStorage，避免被清空逻辑误伤）。 */
+export const DEV_RESET_TOAST_SESSION_KEY = 'focus-tiger.dev-reset-toast.v1';
+
+/** sessionStorage：DEV 重置后直接进入 idle 坐禅（测动画用）。 */
+export const DEV_BOOT_IDLE_SESSION_KEY = 'focus-tiger.dev-boot-idle.v1';
+
+function getSessionStorage() {
+  try {
+    return globalThis.sessionStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ */
+export function markDevResetToast(storage = getSessionStorage()) {
+  try {
+    storage?.setItem(DEV_RESET_TOAST_SESSION_KEY, '1');
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @returns {boolean}
+ */
+export function consumeDevResetToast(storage = getSessionStorage()) {
+  try {
+    if (storage?.getItem(DEV_RESET_TOAST_SESSION_KEY) !== '1') return false;
+    storage.removeItem(DEV_RESET_TOAST_SESSION_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ */
+export function markDevBootIdle(storage = getSessionStorage()) {
+  try {
+    storage?.setItem(DEV_BOOT_IDLE_SESSION_KEY, '1');
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @returns {boolean}
+ */
+export function consumeDevBootIdle(storage = getSessionStorage()) {
+  try {
+    if (storage?.getItem(DEV_BOOT_IDLE_SESSION_KEY) !== '1') return false;
+    storage.removeItem(DEV_BOOT_IDLE_SESSION_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * 清空本项目相关 localStorage（仅 focus-tiger.* 白名单）。
  * @param {Storage | { removeItem(key: string): void, getItem?: Function }} [storage]

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {
   IdleOrchestrator,
   IDLE_BREATH_GLANCE_SEAM_MS,
-  IDLE_BREATH_CYCLES_BEFORE_BLINK
+  IDLE_BREATH_PINGPONG_CYCLES,
+  IDLE_BLINK_PINGPONG_CYCLES
 } from './IdleOrchestrator.js';
 
 function createHarness() {
@@ -32,77 +33,78 @@ function createHarness() {
   return { player, calls };
 }
 
-test('plays one continuous breath block then blinks with same-pose hard cut (no cross-fade)', () => {
+test('plays closed breath pingpong x2 then blink arc pingpong x1 with hard cut', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
-    breathCyclesBeforeBlink: 3
+    breathPingpongCycles: 2,
+    blinkPingpongCycles: 1
   });
 
   orchestrator.start();
-  assert.equal(harness.calls[0].name, 'idleBreathing');
-  // 一次 play 连续 N 次 pingpong，避免逐次 restart 接缝
-  assert.equal(harness.calls[0].options.maxCycles, 3);
-  assert.equal(orchestrator.getStatus().breathsRemaining, 3);
+  assert.equal(harness.calls[0].name, 'idleBreathClosed');
+  assert.equal(harness.calls[0].options.maxCycles, 2);
+  assert.equal(harness.calls[0].options.loopMode, 'pingpong');
+  assert.equal(harness.calls[0].options.crossFadeMs, IDLE_BREATH_GLANCE_SEAM_MS);
+  assert.equal(orchestrator.getStatus().phase, 'breath');
 
-  harness.calls.at(-1).options.onComplete();
+  harness.calls[0].options.onComplete();
   const blinkCall = harness.calls.at(-1);
-  assert.equal(blinkCall.name, 'idleEyeGlance');
-  assert.equal(blinkCall.options.loopMode, 'none');
+  assert.equal(blinkCall.name, 'idleBlinkArc');
+  assert.equal(blinkCall.options.maxCycles, 1);
+  assert.equal(blinkCall.options.loopMode, 'pingpong');
   assert.equal(blinkCall.options.crossFadeMs, IDLE_BREATH_GLANCE_SEAM_MS);
-  assert.equal(blinkCall.options.freezeUntilCrossFadeEnds, false);
   assert.equal(orchestrator.getStatus().phase, 'blink');
 
   blinkCall.options.onComplete();
   const breathAgain = harness.calls.at(-1);
-  assert.equal(breathAgain.name, 'idleBreathing');
-  assert.equal(breathAgain.options.maxCycles, 3);
-  assert.equal(breathAgain.options.crossFadeMs, IDLE_BREATH_GLANCE_SEAM_MS);
-  assert.equal(breathAgain.options.freezeUntilCrossFadeEnds, false);
-  assert.equal(orchestrator.getStatus().breathsRemaining, 3);
+  assert.equal(breathAgain.name, 'idleBreathClosed');
+  assert.equal(breathAgain.options.maxCycles, 2);
 });
 
-test('default idle has no variant pool / no random scheduling API', () => {
+test('default cycle counts match product spec', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({ player: harness.player });
-  assert.equal(orchestrator.breathCyclesBeforeBlink, IDLE_BREATH_CYCLES_BEFORE_BLINK);
-  assert.equal(orchestrator.blinkSequence, 'idleEyeGlance');
-  assert.equal(typeof orchestrator.forcePlayVariant, 'undefined');
-  assert.equal('variants' in orchestrator, false);
+  assert.equal(orchestrator.breathPingpongCycles, IDLE_BREATH_PINGPONG_CYCLES);
+  assert.equal(orchestrator.blinkPingpongCycles, IDLE_BLINK_PINGPONG_CYCLES);
+  assert.equal(IDLE_BREATH_PINGPONG_CYCLES, 2);
+  assert.equal(IDLE_BLINK_PINGPONG_CYCLES, 1);
 });
 
 test('stop during blink prevents automatic return to breathing', () => {
   const harness = createHarness();
   const orchestrator = new IdleOrchestrator({
     player: harness.player,
-    breathCyclesBeforeBlink: 1
+    breathPingpongCycles: 1
   });
 
   orchestrator.start();
   harness.calls[0].options.onComplete();
   const blinkCall = harness.calls.at(-1);
-  assert.equal(blinkCall.name, 'idleEyeGlance');
+  assert.equal(blinkCall.name, 'idleBlinkArc');
   orchestrator.stop();
   blinkCall.options.onComplete();
 
   assert.equal(orchestrator.isActive(), false);
-  assert.equal(harness.calls.at(-1).type, 'stop');
   assert.equal(
-    harness.calls.filter((c) => c.type === 'play' && c.name === 'idleBreathing')
+    harness.calls.filter((c) => c.type === 'play' && c.name === 'idleBreathClosed')
       .length,
     1
   );
 });
 
-test('setTiming restarts with new breath cycle count', () => {
+test('setTiming restarts with new breath pingpong cycle count', () => {
   const harness = createHarness();
-  const orchestrator = new IdleOrchestrator({
-    player: harness.player,
-    breathCyclesBeforeBlink: 5
-  });
+  const orchestrator = new IdleOrchestrator({ player: harness.player });
   orchestrator.start();
-  orchestrator.setTiming({ breathCyclesBeforeBlink: 2 });
-  assert.equal(orchestrator.breathCyclesBeforeBlink, 2);
-  assert.equal(orchestrator.getStatus().breathsRemaining, 2);
-  assert.equal(harness.calls.at(-1).options.maxCycles, 2);
+  orchestrator.setTiming({ breathPingpongCycles: 1 });
+  assert.equal(orchestrator.breathPingpongCycles, 1);
+  assert.equal(harness.calls.at(-1).options.maxCycles, 1);
+});
+
+test('no variant pool / no random scheduling API', () => {
+  const harness = createHarness();
+  const orchestrator = new IdleOrchestrator({ player: harness.player });
+  assert.equal(typeof orchestrator.forcePlayVariant, 'undefined');
+  assert.equal('variants' in orchestrator, false);
 });

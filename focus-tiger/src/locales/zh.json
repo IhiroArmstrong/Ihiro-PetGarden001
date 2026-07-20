@@ -106,7 +106,7 @@
   "HINT_COMPANION_AWAY": "离开时提醒会暂停。准备开始时再点同坐。",
   "HINT_COMPANION_ACROSS": "这个方式下，离开提醒会保持关闭。",
   "HINT_AMBIENT_GATED": "同坐开始后，声音才会打开。",
-  "HINT_AMBIENT_SOUNDSCAPE": "播放音乐时，阿寅的光会慢慢亮一点。",
+  "HINT_AMBIENT_SOUNDSCAPE": "背景音可选——选一首顺耳的就好。",
   "HINT_RISE_BUTTON": "中途起身，也完全可以。",
   "HINT_REFLECTION": "愿意就答；跳过也可以。",
   "HINT_IDLE_AFTER_SESSION": "想再坐的时候，随时可以。",

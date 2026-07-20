@@ -369,7 +369,7 @@ test('leaving dormantWake injects a longer cross-fade into the next emotion', ()
   assert.equal(idlePlay.options.crossFadeMs, LEAVE_DORMANT_WAKE_CROSS_FADE_MS);
 });
 
-test('riseStretchCasual plays pingpong loop for Rise transition', () => {
+test('riseStretchCasual plays once (no pingpong loop) for Rise transition', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -385,14 +385,15 @@ test('riseStretchCasual plays pingpong loop for Rise transition', () => {
     spritePlayer
   });
 
-  controller.playEmotion('riseStretchCasual');
+  controller.playEmotion('riseStretchCasual', { holdPose: true });
   assert.equal(plays[0].name, 'riseStretchCasual');
-  assert.equal(plays[0].options.loop, true);
-  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.holdLastFrame, true);
   assert.equal(controller.getCurrentEmotionKey(), 'riseStretchCasual');
 });
 
-test('riseStretchCasual maxCycles finishes back to idle', () => {
+test('riseStretchCasual one-shot without holdPose finishes back to idle', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -415,8 +416,8 @@ test('riseStretchCasual maxCycles finishes back to idle', () => {
     }
   });
 
-  controller.playEmotion('riseStretchCasual', { maxCycles: 1 });
-  assert.equal(plays[0].options.maxCycles, 1);
+  controller.playEmotion('riseStretchCasual');
+  assert.equal(plays[0].options.loop, false);
   assert.equal(typeof plays[0].options.onComplete, 'function');
   plays[0].options.onComplete();
   assert.equal(controller.getCurrentEmotionKey(), 'idle');

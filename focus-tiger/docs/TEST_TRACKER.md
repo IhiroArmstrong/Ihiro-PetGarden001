@@ -63,16 +63,22 @@
 
 #### B. 代码已修或已改，但自动化**锁不住**（必须继续人工 / TEST_TRACKER 分列）
 
-| 用户反馈 / bug 主题 | 状态 | 为何自动化帮不上 | 下一步 |
+> **本表 = bug 主题索引**（为何自动化帮不上、该去测哪一行）。**不是**可执行步骤本身。  
+> **行号** = 下方 `## 功能清单` 表格在 **本文件** 中的当前行号（Cursor / GitHub 可 `#L166` 跳转）。增删功能行后须同步改本表。  
+> **场景 checklist**（A1 DORMANT、重置按钮等）在 **L172–L179** 的 `人工 · …` 块，与 §B 互补、勿混为一谈。
+
+| 用户反馈 / bug 主题 | 状态 | 为何自动化帮不上 | 功能清单行号 → 去测 |
 |---|---|---|---|
-| Idle 呼吸→眨眼/一瞥 **闪一下** | 待人工测试 | L-eyes / L-contract；e2e 不看像素 | 人工 · Idle 不闪行；`IdleOrchestrator.test.js` 契约已有部分 |
-| Safari Companion **底部横排**仍挡/错位 | 待人工测试 | e2e 未测 WebKit 布局 | **你 Safari 复测** Companion 行 |
-| Choose **pingpong + 1s 叠化** | 待人工测试 | 动画帧级 | 人工走 Arrival Choose 行 |
-| Notice 短句 **2.4s 可读** | 待人工测试 | 时长观感 | 人工 · Notice 行 |
-| Idle 突然东张西望 | 待人工测试 | 已关随机池；无自动调度单测 | 确认默认只有呼吸×5→一瞥 |
-| 靠近自动点头 | 待人工测试 | 行为已拆；无 e2e | 硬刷新确认开局无 nod |
-| Rise → **LightProgression** 金晕 | **有问题** | 视觉 + 产品语义 | **仍待修/待你确认** |
-| Sleeping 太慢/太快、MilestoneGlow、Ambient 找不到 等 | **有问题**或待人工 | 观感/入口 | 按各行原步骤复测 |
+| Idle 呼吸→眨眼/一瞥 **闪一下** | 已通过 | L-eyes / L-contract；e2e 不看像素 | **[L173](#L173)** `人工 · Idle 统一 pingpong 不闪` · **[L139](#L139)** `IdleOrchestrator / 坐禅闭眼` · 契约 `IdleOrchestrator.test.js` |
+| Safari Companion **底部横排**仍挡/错位 | 待人工测试 | e2e 未测 WebKit 布局 | **[L120](#L120)** `Companion Mode`（须 **Safari** 复测） |
+| Choose **pingpong + 1s 叠化** | 待人工测试 | 动画帧级 | **[L114](#L114)** `Arrival Choose 点头 pingpong→idle` · 可选 **[L115](#L115)** 完整 Arrival 串联 |
+| Notice 短句 **2.4s 可读** | 待人工测试 | 时长观感 | **[L113](#L113)** `Notice 点选后` · **[L174](#L174)** `人工 · Notice 短句可读完` |
+| Idle 突然东张西望 | 待人工测试 | 已关随机池；无自动调度单测 | **[L117](#L117)** `调试面板 · 全入库素材` · **[L134](#L134)** `idle / 坐禅闭眼呼吸基底` |
+| 靠近自动点头 | 待人工测试 | 行为已拆；无 e2e | **[L133](#L133)** `PointerInteraction · 靠近点头 nodGreeting` |
+| Rise → **LightProgression** 金晕 | **有问题** | 视觉 + 产品语义 | **[L138](#L138)** `LightProgression / 光影物理渐进` |
+| Sleeping 太慢/太快、MilestoneGlow、Ambient 找不到 等 | **有问题**或待人工 | 观感/入口 | **[L145](#L145)** Sleeping · **[L127](#L127)** MilestoneGlow · **[L131](#L131)** Ambient Soundscape · **[L175](#L175)** `人工 · Ambient Sound 入口` |
+
+**§B 未单列、但在场景 checklist 里测的项**（见 **L172–L179**）：**[L172](#L172)** A1 睡着/DORMANT · **[L177](#L177)** Celebrating 观感 · **[L178](#L178)** Honesty 桥接完整 Arrival · **[L179](#L179)** DEV 一键重置。
 
 #### C. 下一步自动化（未做 · 排 Task 2/3）
 
@@ -81,7 +87,7 @@
 | Task 2 | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock） | 场景 E/F；Offline/Flow 模式矩阵 |
 | Task 3 | Playwright **Honesty 桥接 Yes → Arrival DOM** | 场景 D/N；补登回流 |
 | 可选 | e2e **Skip — begin** 一键开表（不经逐步 Skip） | FocusSession 行「半卡 Sit」 |
-| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 |
+| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L173](#L173)** Idle · **[L176](#L176)** Re-focus · **[L177](#L177)** Celebrating · **[L172–L179](#L172)** 场景 checklist |
 
 **命令**：`cd focus-tiger && npm run test:smoke`（9 条）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
 
@@ -99,7 +105,8 @@
 ## 功能清单
 
 > 首次回溯盘点：2026-07-18。凡用户从未书面确认「已通过」的 UI 项一律标「待人工测试」。
-> **列约定**：`测试步骤` = 怎么测；`用户反馈` = 用户书面测试意见（日期 + 原话要点）。二者禁止混写。
+> **列约定**：`测试步骤` = 怎么测；`用户反馈` = 用户书面测试意见（日期 + 原话要点）。二者禁止混写。  
+> **行号**：本表各行号供文首 §A / §B 索引跳转；改表后须同步更新 §B「功能清单行号」列。
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
@@ -111,7 +118,7 @@
 | 一次性情绪时长标准（ack / light） | UI可见 | 待人工测试 | 调试面板抽查：`合十确认`≈6–7s；`sessionComplete`≈3.5s；`nodBow`/`stretchReminder`/`waveHello` 明显慢于旧版「一闪」。Celebrating 仍约 5s。 | 2026-07-19：用户要求统一时长带；不足则放慢/重复/正倒放。 | `#emotion-debug-ui` | 2026-07-19 |
 | 14 套新抠图算法整批替换 | UI可见 | 待人工测试 | 用调试面板或对应触发点抽查：`palms-together`、`celebrate-dance-v2`、`session-complete`、`nod-bow`、`stretch-reminder`、`milestone-glow`、gaze-p1～p4、`yawn-stretch`、`breath-halo-hq`（已替 expand）、lotus-*。确认角色边缘无灰白斑/脏底，四角透明。 | 2026-07-19：用户用新算法重跑全部 14 套并统一重打包；旧版已全部替换。2026-07-20：`breath-halo-expand`→`breath-halo-hq`。 | `#emotion-debug-ui` · 路径见 `ASSET_INVENTORY.md` 增量表 | 2026-07-20 |
 | Companion Mode / 陪伴模式三选一（Here & Now · Offline Space · Flow State） | UI可见 | 待人工测试 | **主路径**：Choose 确认 → **点头鞠躬全程可见** → 播完后底部**横排**三选一（Safari 桌面）。Here & Now / Flow State 点选即计时；Offline 再 Sit。**回流**：Rise 后再 hint → Arrival。 | 2026-07-20：右侧竖栏仍挡一半→改底部矮横排 + 点头后再展开。请 Safari 复测。**自动化**：e2e A/K 锁开表/Offline 门闩；**不**锁 Safari 布局与点头动画。 | 底部 Sit 旁 dock · DEV：`__companionModePicker` | 2026-07-20 |
-| Honesty Check-in / Mindful Check-in · DORMANT 唤醒 | UI可见 | 待人工测试 | **首次零完成**：睡着 + 可忽略提示 → 选时长 → dormant-wake → 立刻桥接。**同日再补登**：空闲 **Mindful Check-in** → 选时长（不睡、不播 dormant-wake）→ 呼吸 → 再出桥接。 | 2026-07-19 拍板 B：首次自动提示；之后空闲入口多次补登。请复测入口与再补登无睡态。 | 零完成自动 · `#honesty-idle-entry` · DEV：`__honestyCheckIn` | 2026-07-19 |
+| Honesty Check-in / Mindful Check-in · DORMANT 唤醒 | UI可见 | 待人工测试 | **首次零完成**：睡着 + 可忽略提示 → 选时长 → dormant-wake → 立刻桥接。**同日再补登**：空闲 **Mindful Check-in** → 选时长（不睡、不播 dormant-wake）→ 呼吸 → 再出桥接。 | 2026-07-19 拍板 B：首次自动提示；之后空闲入口多次补登。请复测入口与再补登无睡态。**2026-07-20**：用户反馈 Honesty 提示气泡盖住上方文字框 → 已改锚 Sit **右侧**（窄屏自动翻左），点进补登后收起。 | 零完成自动 · `#honesty-idle-entry` · DEV：`__honestyCheckIn` | 2026-07-20 |
 | Honesty 桥接 CTA（补登后邀请再坐） | UI可见 | 待人工测试 | **主路径**：补登结束 → **立刻**出现（顶行 Welcome +「要不要现在也坐一会儿？」Yes/No）。Yes → 完整 Arrival → Companion。No → idle。**回流**：同日再补登 → **应再出**桥接。 | 2026-07-19：立刻出现、每次可出、Welcome 并入桥接顶行。请硬刷新复测。 | DEV：`__honestyBridge` | 2026-07-19 |
 | Tiger Reflection Moment / 结束反思 | UI可见 | 待人工测试 | 正常完成或主动 Rise 结束会话 → 留白约 400ms（完成）/ 300ms（主动）后淡入面板。可选回显本次意图。Q1–Q3：Continue / Skip / Skip all / Esc。非空答案写入 `focus-tiger.reflections.v1`（最近 5 条）；全跳过不落库。 | — | 会话结束后自动 · 单测：`TigerReflectionMoment.test.js` · DEV：`__reflectionMoment` | 2026-07-18 |
 | 完成反馈 · 每日首次 Celebrating | UI可见 | 待人工测试 | 确保当日尚无完成记录 → Arrival + 选模式 → Sit → 等 **1 分钟**达标 → 播 `celebrate-dance`（约 57 帧）→ 回 idle-breathing → 进入 Reflection。 | — | 生产路径经 `triggerSessionCompletionFeedback` · 亦可调试面板「庆祝跳舞」 | 2026-07-18 |
@@ -124,15 +131,15 @@
 | Ambient Soundscape / 禅意背景音 | UI可见 | 有问题 | 进应用右下角即有 **Sound**；未开计时点按→英文提示须先进入专注模式，不展开面板。FOCUSING 后可正常选曲。演示会话 **`DEMO_SESSION_MINUTES=1`**，约 1 分钟达标会停计时并进 Reflection——非音乐故障。 | 2026-07-19：找不到；要始终有按钮→已改常驻 Sound。请复测入口可见性与未计时时的提示。 | 右下角 · `__ambientSoundscapeUI` | 2026-07-19 |
 | EyeTracking / 正式瞳孔 PNG | UI可见 | 有问题 | 运行时已卸下 `pupil-left/right` 叠加跟随；调试勾选已移除。Idle 张望 gaze-p1～p4 **不受影响**。 | 2026-07-19 实测截图：瞳孔叠图错位（楔形/月牙状色块，含闭目帧幽灵瞳孔）；**已决定放弃，不再返工**。结论见 `CORE_LOOP.md`「已废弃：EyeTracking 实时瞳孔跟随鼠标」。 | 已废弃 · 历史素材可留 `/textures/eye-pupils/` 但不接线 | 2026-07-19 |
 | PointerInteraction · 靠近点头 nodGreeting | UI可见 | 待人工测试 | **默认靠近不再点头**。开局 / idle：指针移入靠近区 → **不应**播 `nod-greeting`。调试面板「点头致意」仍可手工播（**6 fps**，末帧多停约 2 拍）→ 回 idle。 | 2026-07-19：曾要放慢点头→已改。**同日再反馈**：开局默认态仍见点头 → 根因是靠近区仍自动 `nodGreeting`（Idle 节奏改动也曾长期未 commit）。已拆除靠近自动点头；请硬刷新确认默认只有呼吸/眨眼。 | 全屏命中层 · DEV：`__pointerInteraction` · 调试「点头致意」 | 2026-07-19 |
-| idle / 坐禅闭眼呼吸基底 | UI可见 | 待人工测试 | 点「坐禅闭眼」后须明显变慢；完整呼吸×5（约1–1.5分钟）后应眨眼；可用 `breathCyclesBeforeBlink:1` 加速确认。**默认态不应出现点头**。idle 下不再触发 curiousTilt。 | 2026-07-19 复测要求：确认变慢与呼吸×5→眨眼节奏可见。**同日**：用户反馈开局仍有点头 → 已拆靠近自动点头；Idle 编排修复一并 commit。 | 调试「坐禅闭眼」 · `__idleOrchestrator.getStatus()` | 2026-07-19 |
+| idle / 坐禅闭眼呼吸基底 | UI可见 | 已通过 | 点「坐禅闭眼」或「重置并 idle 坐禅」：**闭目 pingpong ×2**（frame 1–19）→ **睁眼弧 pingpong ×1**（frame 1–33）→ 往复；同素材硬切、不叠化。 | 2026-07-20：切分两段 pingpong。**2026-07-20 用户书面**：坐禅闭眼 / idle 坐禅各情况测试 OK。 | 调试「坐禅闭眼」 · `__idleOrchestrator` · `#dev-reset-all-local-state-idle` | 2026-07-20 |
 | PointerInteraction · 静止好奇 curiousTilt | UI可见 | 待人工测试 | 靠近区静止 **4s** → 播 **blink-smile** 单次（已替换托腮 tilt-think）→ 180ms 淡回 idle。冷却 6s。 | 2026-07-19：打坐↔托腮仍很跳→已换眨眼类；请确认衔接是否顺。 | 全屏命中层 · DEV：`__pointerInteraction` | 2026-07-19 |
 | PointerInteraction · 抚摸 / 轻点 / 绕圈（检测已接线、无正式精灵） | UI可见 | 待人工测试 | 头部拖动 ≥14px → `petHead`（控制台占位）。头部点击位移 ≤10px → `smileSquint`（占位）。约 1.4s 内绕圈 ~1.75π → `dizzyBlink`（占位）。确认检测触发即可；目前无完整 2D 动画。 | — | 同上 · 单测：`PointerInteraction.test.js` | 2026-07-18 |
 | FocusSession + Focus HUD（Sit with Yin / Rise） | UI可见 | 待人工测试 | **主路径**：Sit → **Skip — begin** → 立刻计时且按钮变 **Rise**（记忆 Companion 模式）。Choose 完整走完 → 右侧 Companion → 选模式开计时。**回流**：Rise → Reflection → 再 Sit。 | 2026-07-20：Skip begin 半卡 Sit→已改为直接开始；请复测主路径+回流。**自动化**：e2e A 锁 Here & Now 开表；**未**锁 Skip — begin 一键路径。 | `#focus-hud` · `#btn-focus` | 2026-07-20 |
 | LightProgression / 光影物理渐进 | UI可见 | 有问题 | Arrival：冷→暖背景、Notice 升温、Breath 视差 Dolly（背景 1.06 / Yin 1.12）+ 呼吸光环、Choose 坐垫光晕。FOCUSING：DOM Rim 跟踪 focusLevel（+ ambient boost）与约 4s 呼吸脉冲。Re-focus：Recover 扰动后约 5s 平复。 | 2026-07-19：用户反馈 Rise 后页面动画无变化。文档（`DESIGN.md`）规定 FOCUSING 有金光随 focusLevel、IDLE 无光环——Rise 应收起 Rim；角色姿态已改接 rise-stretch-casual（原 blink-breathe）。待确认：金晕是否淡出。 | 随 Arrival / Re-focus 自动 · DEV：`__lightProgression` · 单测：`LightProgression.test.js` | 2026-07-20 |
-| IdleOrchestrator / 坐禅闭眼 | UI可见 | 待人工测试 | 点「坐禅闭眼」→ 呼吸×5→**idle-eye-glance**一瞥→再呼吸；**同姿衔接应硬切、不叠化**（勿 180ms cross-fade）。加速：`__idleOrchestrator.setTiming({breathCyclesBeforeBlink:1})`。 | 2026-07-20：曾用 cross-fade 仍闪。**2026-07-20 用户反馈**：呼吸→眨眼中间仍闪一下→根因同姿滥用叠化；已改 crossFadeMs=0，请复测。 | `#emotion-debug-ui` · `__idleOrchestrator` | 2026-07-20 |
+| IdleOrchestrator / 坐禅闭眼 | UI可见 | 已通过 | 点「坐禅闭眼」→ `idleBreathClosed` ×2 pingpong → `idleBlinkArc` ×1 pingpong → 循环；段间**硬切**不叠化。回流：Celebrating / Rise 后再 idle。 | 2026-07-20：切分帧界 4433/6937。**2026-07-20 用户书面**：各情况测试 OK。 | `#emotion-debug-ui` · `__idleOrchestrator` | 2026-07-20 |
 | 候选陪伴手势 · 逐条试播 | UI可见 | 待人工测试 | 调试「入库素材」点：`tea-drinking` / `yawn-stretch` / `ear-wiggle` / gaze-p* —— **应直接播该条并定格末帧**；**不应**先闪一下闭目坐禅。**`blink-breathe` / `breath-halo-hq` 为 pingpong 循环**（不定格）。张望用「组合试播」**整段** `张望 (p1→p2→p3→p4)`（不再分 A/B）。 | 2026-07-20：合并张望 A+B；pingpong 清单尊重 loopMode。 | `#emotion-debug-ui` · 入库素材 / 组合试播 | 2026-07-20 |
 | blink-breathe 眨眼深呼吸 | UI可见 | 已通过 | 调试面板仍可 pingpong 试播；**不再**作为 Rise 主路径。 | 2026-07-20：用户书面「测试 OK了」。同日产品拍板：Rise 改接 `rise-stretch-casual`。 | `#emotion-debug-ui` | 2026-07-20 |
-| rise-stretch-casual / 中途 Rise 伸懒腰 | UI可见 | 待人工测试 | **主路径**：Sit → Skip begin → 中途点 **Rise** → 播伸懒腰→随意坐（pingpong，末帧约 2 拍停）→ ~300ms 后 Reflection；达标结束**不**播本段。**回流**：关 Reflection → 倒放/叠化回 Idle；再 Sit / Arrival。时长：单程≈4.9s @8fps；完整 pingpong≈9.6s。 | — | Rise · 调试「Rise伸懒腰(正式)」· `playEmotion('riseStretchCasual')` | 2026-07-20 |
+| rise-stretch-casual / 中途 Rise 伸懒腰 | UI可见 | 已通过 | **主路径**：Sit → Skip begin → 中途点 **Rise** → 伸懒腰→箕坐**正放一次**（不 pingpong 循环；末帧约 2 拍停）→ ~300ms 后 Reflection。**回流**：关 Reflection → 叠化回 Idle/Sleeping；再 Sit / Arrival。达标结束**不**播本段。 | 2026-07-20：用户反馈循环播放不妥→已改正放一次。**2026-07-20 用户书面**：Sit → Skip begin → 中途 Rise，动画只播一遍、不再循环，测试 OK。 | Rise · 调试「Rise伸懒腰(正式)」· `playEmotion('riseStretchCasual')` | 2026-07-20 |
 | cloak-sleep / 披毯入睡（进 DORMANT 候选） | UI可见 | 待人工测试 | **仅调试试播**（尚未接 DORMANT）：调试「入库素材」点 `cloak-sleep 披毯入睡(候选)` → 34 帧正放 @6fps≈5.7s → 定格末帧。**已拍板未接线**：当日首次进 DORMANT 播一次再 `sleeping`（2c）。 | — | `#emotion-debug-ui` · 入库素材 `cloakSleep` | 2026-07-20 |
 | MilestoneGlow 备选 breath-halo-hq | UI可见 | 待人工测试 | 调试「breath-halo-hq」→ pingpong；**顶点停留约 6 拍（~0.75s）**。 | 2026-07-20：用户反馈顶点仍需延长→已从 2 拍加到 6 拍，请复测。 | `#emotion-debug-ui` | 2026-07-20 |
 | Sleeping / DORMANT 睡态循环 | UI可见 | 有问题 | 当日零完成或调试「睡着了」→ `sleeping` 8 帧循环（**1 fps**）。 | 2026-07-19：播放太快须至少放慢 3×→已改 **1 fps**（原 4），请复测是否够慢、安宁。 | 零完成自动 / `#emotion-debug-ui` | 2026-07-19 |
@@ -144,7 +151,7 @@
 | dormantWake / Honesty 睡醒序列 | UI可见 | 待人工测试 | 调试「Honesty唤醒」或走完 Honesty → **`dormant-wake` 16 帧**（**3 fps**）→ 定格末帧；**不**淡入闭眼呼吸、**不**自动接光环金光。与「唤醒(伸懒腰)」**视觉不同**。 | 2026-07-19：去掉闭眼呼吸转场；再慢 2×。请复测。 | Honesty / `#emotion-debug-ui` | 2026-07-19 |
 | lookAtCursor / wakeUp / snoringZZZ 等 | 纯后端+调试 | 有问题 | `wakeUp` 播伸懒腰（`stretch-reminder` 同源，调试标「唤醒(伸懒腰)」）；Honesty 独占 `dormant-wake`。`lookAtCursor` 仍空操作；snoringZZZ 仍占位。 | 2026-07-19：唤醒与 Honesty 动画重复→已改 `wakeUp` 接伸懒腰。请对比两按钮确认不同。库内尚无第二套「侧卧睡醒」素材。 | EmotionController 调试面板 | 2026-07-19 |
 | haloBreathing / 光环呼吸奖励 | UI可见 | 待人工测试 | 调试面板播「光环呼吸奖励」：intro + loop。**fps 已放慢 2×**（intro 5 / loop 4，原 10/8）。Honesty 路径暂不自动接。 | 2026-07-19：播放太快须至少放慢 2×→已改，请复测。 | `#emotion-debug-ui` | 2026-07-19 |
-| blink / 眨眼变体 | UI可见 | 待人工测试 | 调试可手工播；**Idle 每 5 次呼吸后自动插一次**（偶尔看看）。 | — | 调试 / Idle 固定节奏 | 2026-07-19 |
+| blink / 眨眼变体 | UI可见 | 已通过 | Idle 眨眼由 `idleBlinkArc`（×1 pingpong）插入闭目段（×2）之间；调试 blink-smile 仍可手工播。 | 2026-07-20：两段 pingpong 编排。**2026-07-20 用户书面**：idle 坐禅测试 OK。 | 调试 / Idle 编排 | 2026-07-20 |
 | tPose / 显示 3D 垫底（调试） | UI可见 | 待人工测试 | 调试面板 T-Pose → 短暂露出 3D canvas。确认 2D 主线默认隐藏 3D。 | — | `#emotion-debug-ui` | 2026-07-18 |
 | ArrivalPractice 状态机 | 纯后端 | 仅单元测试覆盖 | `npm test` → `ArrivalPractice.test.js` | — | `src/core/ArrivalPractice.js` | 2026-07-18 |
 | DailyCompletionStore | 纯后端 | 仅单元测试覆盖 | `DailyCompletionStore.test.js`；与 Honesty / 完成分流共用 | — | `src/core/DailyCompletionStore.js` | 2026-07-18 |
@@ -156,20 +163,20 @@
 | SpriteSequencePlayer | 纯后端+渲染 | 仅单元测试覆盖 | `SpriteSequencePlayer.test.js`；预加载/打断/帧停留/子序列 | — | `src/character/SpriteSequencePlayer.js` | 2026-07-18 |
 | EmotionController 映射桥 | 纯后端+桥接 | 仅单元测试覆盖 | `EmotionController.test.js`；业务只调 `playEmotion` | — | `src/core/EmotionController.js` | 2026-07-18 |
 | CapCut 式叠代默认（one-shot→idle） | 纯后端+桥接 | 仅单元测试覆盖 | `_finishOneShot` 默认 `CAPCUT_DISSOLVE_MS`；`returnCrossFadeMs: MICRO` 可缩短；`EmotionController.test.js` | — | PRINCIPLES / EMOTION_BIBLE §1.6 | 2026-07-20 |
-| 分散式即时提示 + 「?」补救（ONBOARDING_HINTS v3） | UI可见 | 待人工测试 | 1) 清空已读后硬刷新：左下角 **更大立体「?」** + 气泡 **"Not sure what to tap next? Start here."**。2) 点「?」出当前场景提示；点气泡关闭。3) FOCUSING：Rise / Sound 旁气泡。 | 2026-07-20：「?」太小不立体、缺自身 hint→已加大立体化并加 `help-affordance`。请复测。 | `#onboarding-hint-help` · 实验室「清空引导提示已读」 | 2026-07-20 |
-| Ambient 播放缓亮 Rim（presenceBoost + playing lift） | UI可见 | 待人工测试 | FOCUSING 后开 Sound 选曲：阿寅边缘金光应**很快**比未播放时更亮一点，并随播放略增。关曲/暂停应变暗回 focusLevel。 | 2026-07-19：文案称音乐会加亮；原仅有慢累计 boost，已加正在播放 lift 0.1。请复测体感。 | Sound 面板 · DEMO 1min 会话 | 2026-07-19 |
+| 分散式即时提示 + 「?」补救（ONBOARDING_HINTS v3） | UI可见 | 待人工测试 | 1) 实验室点「清空引导提示已读」：**? 上方**应出现 `help-affordance`；点 **?** 应在 **? 右侧**出现当前场景提示（DORMANT 亦同）。2) FOCUSING：Rise / Sound 旁气泡。3) Honesty optional 在 Sit 侧锚。4) Sound hint 不写加亮光效。 | 2026-07-20：help-affordance 缺、点 ? 无反馈→DORMANT 亦展示 help-affordance；? 补救改锚 ? 右侧；清空时重置气泡。请复测。 | `#onboarding-hint-help` · 实验室「清空引导提示已读」 | 2026-07-20 |
+| Ambient 播放缓亮 Rim（presenceBoost + playing lift） | UI可见 | 有问题 | FOCUSING 后开 Sound 选曲：阿寅边缘金光应**很快**比未播放时更亮一点，并随播放略增。关曲/暂停应变暗回 focusLevel。 | 2026-07-19：文案称音乐会加亮；原仅有慢累计 boost，已加正在播放 lift 0.1。**2026-07-20**：用户反馈实际**未见**光效变化；Sound hint 已改不写加亮，底层 Rim 是否可见仍待复测/拍板。 | Sound 面板 · DEMO 1min 会话 | 2026-07-20 |
 | 用户场景剧本 SCENARIO_TESTS（A–G + I–N） | UI可见 | 待人工测试 | 权威：`focus-tiger/docs/SCENARIO_TESTS.md`。用 **`?product=1`** 走完整故事串。逻辑冒烟：`npm run test:smoke`；浏览器壳：`npm run test:e2e`。**观感子项已拆成下方独立行，勿只勾本行。** | 2026-07-20：拆分观感六行，避免「一行测过＝全测过」假象。 | `SCENARIO_TESTS.md` · `?product=1` | 2026-07-20 |
 | 场景冒烟自动化 scenario-smoke（A–D + I/J · 逻辑层） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（**9 条**）：门闩/完成反馈/Re-focus 抑制/Rise→Reflection/Honesty 桥接/**I hint→needArrival**。**不含**序列观感。详见文首「自动化回归锁 vs 近几日用户 bug」。 | 2026-07-20：Task 1 补 smoke I。锁逻辑不锁观感。 | `src/core/scenario-smoke.test.js` | 2026-07-20 |
 | 浏览器 e2e 产品壳冒烟（Playwright） | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e`（**2 条**）：`?product=1` 见 Sit、无调试面板；实验室有「重置全部本地状态」。 | — | `e2e/product-shell.smoke.spec.js` | 2026-07-20 |
 | 浏览器 e2e 场景 A/I/K Companion DOM（Playwright） | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e`（**3 条**）：**I** hint 开 Arrival；**A** Here & Now 开表；**K** Offline 须再 Sit。**不**含 Celebrating/Choose 点头/Safari 布局。 | 2026-07-20：Task 1 落地；与 Companion/FocusSession 用户 bug 部分重叠，见文首对照表 B 节「仍须人工」项。 | `e2e/scenario-a.companion.spec.js` | 2026-07-20 |
 | 人工 · A1 睡着 / DORMANT 开局观感 | UI可见 | 待人工测试 | 1) 实验室点「重置全部本地状态」或清完 localStorage。2) 开 `?product=1`。3) 确认阿寅是 **睡着**（sleeping），不是 idle 呼吸。4) 可忽略 Honesty 提示可见。 | — | `?product=1` · 重置按钮在 `/` | 2026-07-20 |
-| 人工 · Idle 呼吸×5→眨眼不闪（序列） | UI可见 | 待人工测试 | 1) 进入 idle（或 `setTiming({ breathCyclesBeforeBlink: 1 })` 加速）。2) 等呼吸块结束切一瞥。3) **切换瞬间不得闪白/叠化混帧**（同姿应直接切帧，无 180ms 淡入淡出）。4) 一瞥结束回呼吸再验一次。5) 回流：Rise 后再 idle 复测。 | 2026-07-20：用户书面「呼吸到眨眼仍闪一下」→已去掉同姿 cross-fade。 | `/` 或 `?product=1` · DEV `__idleOrchestrator` | 2026-07-20 |
+| 人工 · Idle 统一 pingpong 不闪（序列） | UI可见 | 已通过 | 1) 「坐禅闭眼」或「重置并 idle 坐禅」。2) 闭目段 ×2 + 睁眼弧 ×1 循环，段间无闪白/叠化。3) 回流：Rise 后再 idle。 | 2026-07-20：切分降睁眼频率。**2026-07-20 用户书面**：各情况测试 OK。 | `/` · DEV `__idleOrchestrator` | 2026-07-20 |
 | 人工 · Arrival Notice 观察短句可读完 | UI可见 | 待人工测试 | 1) Sit → Notice 点 Okay（或 Calm）。2) 观察式短句须能读完（约 2.4s）再进呼吸。3) 回流：Rise → 再 Sit → 再点一次 Notice。 | — | `?product=1` · Sit → Notice | 2026-07-20 |
 | 人工 · Ambient Sound 入口 | UI可见 | 待人工测试 | 1) 未 FOCUSING：点右下角 Sound → 英文提示须先专注，**不**展开面板。2) Arrival→Companion Here & Now 开计时后 → Sound 可展开选曲。 | — | `?product=1` · 右下角 Sound | 2026-07-20 |
 | 人工 · Re-focus 真实切页 >60s | UI可见 | 待人工测试 | 1) Here & Now 计时中。2) 切到其它标签 **>60s** 再回来。3) 见观察式文案 + nod-bow（mindfulAcknowledge/refocus）。4) Offline/Flow 下同操作**不应**出现。加速：DEV `__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress）。 | — | `?product=1` · 或 DEV 强制触发 | 2026-07-20 |
 | 人工 · Celebrating / 同日 SessionComplete 观感 | UI可见 | 待人工测试 | 1) 当日零完成：跑满 DEMO 1 分钟 → **Celebrating** 舞再回坐姿。2) 同日再跑一场达标 → **只** SessionComplete 摆尾，不再完整 Celebrating。逻辑已冒烟；本行只验动画观感。 | — | `?product=1` · 演示 1 分钟 | 2026-07-20 |
 | 人工 · Honesty 桥接后完整 Arrival UI | UI可见 | 待人工测试 | 1) 重置本地状态 → DORMANT。2) 走 Honesty 选 20 → 呼吸结束。3) 桥接点 **Yes** → 须走完整 Arrival（Welcome→Notice→Breath→Choose）再 Companion，**不**直接开表。4) 另测 **No** → idle、无二次挽留。 | — | `?product=1` · 或实验室 Honesty | 2026-07-20 |
-| DEV 一键重置全部本地状态 | UI可见 | 待人工测试 | 1) 打开 `/`（勿 `?product=1`）。2) 见「重置全部本地状态」。3) 先制造脏状态（完成一场或点 hints）。4) 点重置 → 刷新后等同全新用户（睡着/零完成/hints 未读）。5) `npm run build` 产物或 `?product=1` **不得**出现该按钮。 | — | `/` · `#dev-reset-all-local-state` | 2026-07-20 |
+| DEV 一键重置全部本地状态 | UI可见 | 待人工测试 | 1) 打开 `/`（勿 `?product=1`）。2) 点「重置全部本地状态」→ **确认弹窗**说明刷新后为睡着+Honesty。3) 刷新后底部 toast 提示「场景 A 正常开局」；**不是 bug**。4) 要测 idle 请点「**重置并 idle 坐禅**」。5) `?product=1` / build **不得**出现按钮。 | 2026-07-20：用户反馈重置后仍见 Honesty→实为场景 A 正确开局；已加说明+idle 快捷入口。 | `/` · `#dev-reset-all-local-state` · `#dev-reset-all-local-state-idle` | 2026-07-20 |
 | 产品壳链接 ?product=1（隐藏调试面板） | UI可见 | 待人工测试 | 打开 `/?product=1`：无右上角情绪调试条；Sit / How shall we sit? / Honesty / Arrival / Sound 仍可用。打开 `/`：调试面板在。 | — | `http://127.0.0.1:5173/?product=1` vs `/` | 2026-07-19 |
 | 3D Idle GLB 换装（无红边单色灰棉麻） | UI可见 | 待人工测试 | 1) `npm run dev` 打开应用。2) 调试面板点 **T-Pose**（或临时让 PoseManager 显示 canvas）以露出 3D 垫底。3) 确认阿寅闭目坐禅袍为**单色暖浅灰棉麻 / 茶服风**，**无深红镶边/红里子**；棉麻织纹应清晰（勿呈糊成一团的过度压缩感）。4) 刷新后默认 2D 主线仍隐藏 3D；路径仍为 `/models/tiger-meditate-closed.glb`（约 **1.6MB**，非 292KB）。 | — | `http://127.0.0.1:5173/` · `#emotion-debug-ui` T-Pose · 源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb` | 2026-07-19 |
 

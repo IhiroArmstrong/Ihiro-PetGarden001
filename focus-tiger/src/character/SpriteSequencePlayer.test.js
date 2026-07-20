@@ -266,8 +266,8 @@ test('teaDrinking, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are regis
   assert.equal(SPRITE_SEQUENCES.riseStretchCasual.animation, 'rise-stretch-casual');
   assert.equal(SPRITE_SEQUENCES.riseStretchCasual.frameCount, 39);
   assert.equal(SPRITE_SEQUENCES.riseStretchCasual.fps, 8);
-  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.loop, true);
-  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.loopMode, 'pingpong');
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.loop, false);
+  assert.equal(SPRITE_SEQUENCES.riseStretchCasual.loopMode, 'none');
   assert.equal(SPRITE_SEQUENCES.riseStretchCasual.frameHolds?.[39], 250);
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.animation, 'blink-breathe');
   assert.equal(SPRITE_SEQUENCES.blinkBreathe.frameCount, 13);

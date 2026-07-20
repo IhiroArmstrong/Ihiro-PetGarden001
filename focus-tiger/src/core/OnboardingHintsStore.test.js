@@ -5,7 +5,8 @@ import {
   HINT_IDS,
   normalizeHintsSeen,
   createHintsSeenStore,
-  resolveHintForScene
+  resolveHintForScene,
+  resolveAutoHintIds
 } from './OnboardingHintsStore.js';
 
 test('normalizeHintsSeen only keeps known hintIds', () => {
@@ -76,4 +77,29 @@ test('resolveHintForScene picks the most specific surface', () => {
     'idle-after-session'
   );
   assert.equal(resolveHintForScene({}), 'sit-button');
+});
+
+test('resolveAutoHintIds includes help-affordance on idle chrome including DORMANT', () => {
+  assert.deepEqual(resolveAutoHintIds({ isDormant: true }), [
+    'dormant-open',
+    'help-affordance'
+  ]);
+  assert.deepEqual(resolveAutoHintIds({ honestyVisible: true }), [
+    'honesty-optional',
+    'help-affordance'
+  ]);
+  assert.deepEqual(resolveAutoHintIds({}), [
+    'sit-button',
+    'how-shall-we-sit',
+    'help-affordance'
+  ]);
+  assert.deepEqual(resolveAutoHintIds({ isFocusing: true }), [
+    'rise-button',
+    'ambient-soundscape'
+  ]);
+  assert.deepEqual(resolveAutoHintIds({ reflectionOpen: true }), ['reflection']);
+  assert.deepEqual(
+    resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'choose' }),
+    ['choose']
+  );
 });

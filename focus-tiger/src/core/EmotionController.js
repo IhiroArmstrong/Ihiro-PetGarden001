@@ -234,7 +234,7 @@ export class EmotionController {
           this._finishOneShot(options, 'blinkBreathe');
         }
       },
-      // Rise 主路径：伸懒腰→随意坐姿 pingpong；倒放回闭目首帧后可叠化进 idle。
+      // Rise 主路径：伸懒腰→随意坐姿，正放一次；Reflection 期间 holdPose 定格末帧。
       riseStretchCasual: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
@@ -246,24 +246,20 @@ export class EmotionController {
           this._finishOneShot(options, 'riseStretchCasual');
           return;
         }
-        const playOpts = {
-          crossFadeMs: options.crossFadeMs ?? 180,
-          loop: true,
-          loopMode: 'pingpong'
-        };
+        const playOpts = this._oneShotPlayOpts(
+          {
+            ...options,
+            loop: false,
+            loopMode: 'none',
+            crossFadeMs: options.crossFadeMs ?? 180
+          },
+          'riseStretchCasual'
+        );
         if (Number.isFinite(options.fps) && options.fps > 0) {
           playOpts.fps = options.fps;
         }
-        const maxCycles = Number(options.maxCycles);
-        if (Number.isFinite(maxCycles) && maxCycles > 0) {
-          playOpts.maxCycles = maxCycles;
-          playOpts.onComplete = () =>
-            this._finishOneShot(options, 'riseStretchCasual');
-        } else if (typeof options.onComplete === 'function') {
-          playOpts.onComplete = () => options.onComplete('riseStretchCasual');
-        }
         const started = this.spritePlayer.play('riseStretchCasual', playOpts);
-        if (!started && Number.isFinite(maxCycles) && maxCycles > 0) {
+        if (!started) {
           this._finishOneShot(options, 'riseStretchCasual');
         }
       },

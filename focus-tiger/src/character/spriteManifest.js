@@ -53,24 +53,45 @@ export const ONE_SHOT_DURATION_SEC = Object.freeze({
 
 /** @type {Record<string, SpriteSequenceDef>} */
 export const SPRITE_SEQUENCES = {
-  // 基础观照者坐姿：素材为半程呼吸，正放后倒放组成完整循环。
-  // IdleOrchestrator：完整 pingpong ×5 → 单次 idle-eye-glance → 再 ×5…（偶尔看看）。
-  // 勿用 blink-smile：其首末为睁眼微笑，与闭目呼吸叠化会闪。
-  idleBreathing: {
+  // 同源 idle-breathing（51 帧）切分编排 —— IdleOrchestrator：闭目 pingpong ×2 → 睁眼弧 ×1。
+  // 帧界（videoframe 时间戳）：闭目段至 4433（frame_019）；睁眼弧至 6646/6937 前（frame_033）。
+  idleBreathClosed: {
     animation: 'idle-breathing',
-    frameCount: 21,
-    // 2026-07-19：相对原 5fps 放慢 2×
-    fps: 2.5,
+    startFrame: 1,
+    frameCount: 19,
+    fps: 4,
     loop: true,
     loopMode: 'pingpong',
     holdLastFrame: false
   },
 
-  // 基础闲置的自发变体：闭眼 → 睁眼一瞥 → 闭眼；由 IdleOrchestrator 插入。
+  idleBlinkArc: {
+    animation: 'idle-breathing',
+    startFrame: 1,
+    frameCount: 33,
+    fps: 4,
+    loop: true,
+    loopMode: 'pingpong',
+    holdLastFrame: false
+  },
+
+  // 完整 51 帧弧线；调试试播，正式 Idle 走 idleBreathClosed + idleBlinkArc。
+  idleBreathing: {
+    animation: 'idle-breathing',
+    frameCount: 51,
+    fps: 4,
+    preload: false,
+    loop: true,
+    loopMode: 'pingpong',
+    holdLastFrame: false
+  },
+
+  // 历史 Idle 变体（8 帧）；正式 Idle 已并入 idle-breathing，仅调试手工试播。
   idleEyeGlance: {
     animation: 'idle-eye-glance',
     frameCount: 8,
     fps: 8,
+    preload: false,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false
@@ -160,15 +181,14 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 13: Math.round((1000 / 8) * 2) }
   },
 
-  // Rise 主路径：闭目坐禅 → 伸懒腰 → 随意日常坐姿；pingpong 倒放回闭目首帧衔接 idle。
-  // 单程 39 帧 @ 8fps ≈ 4.9s；完整 pingpong ≈ 9.6s（+末帧 2 拍停留）。
-  // 随意坐姿顶点（末帧）停约 2 拍，避免到顶立刻倒放像跳动。
+  // Rise 主路径：闭目坐禅 → 伸懒腰 → 随意日常坐姿；正放一次（不 pingpong 循环）。
+  // 39 帧 @ 8fps ≈ 4.9s；末帧停约 2 拍后 holdPose 定格至 Reflection 结束。
   riseStretchCasual: {
     animation: 'rise-stretch-casual',
     frameCount: 39,
     fps: 8,
-    loop: true,
-    loopMode: 'pingpong',
+    loop: false,
+    loopMode: 'none',
     holdLastFrame: false,
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },

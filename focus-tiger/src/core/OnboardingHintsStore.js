@@ -139,3 +139,43 @@ export function resolveHintForScene(scene = {}) {
   if (scene.arrivalReady) return 'companion-mode';
   return 'sit-button';
 }
+
+/**
+ * 当前场景应自动展示的 hintId 列表（不含已读过滤；补救「?」见 resolveHintForScene）。
+ * Reflection / FOCUSING / Arrival 进行中不抢戏 help-affordance。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string[]}
+ */
+export function resolveAutoHintIds(scene = {}) {
+  /** @type {string[]} */
+  let ids = [];
+  if (scene.reflectionOpen) {
+    ids = ['reflection'];
+  } else if (scene.isFocusing) {
+    ids = ['rise-button', 'ambient-soundscape'];
+  } else if (scene.ambientPanelOpen) {
+    ids = ['ambient-soundscape'];
+  } else if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    if (phase === 'breath') ids = ['breathing'];
+    else if (phase === 'choose') ids = ['choose'];
+    else ids = ['notice'];
+  } else if (scene.companionExpanded) {
+    ids = ['companion-mode'];
+  } else if (scene.honestyVisible) {
+    ids = ['honesty-optional'];
+  } else if (scene.isDormant) {
+    ids = ['dormant-open'];
+  } else if (scene.hasEverCompletedSession) {
+    ids = ['idle-after-session'];
+  } else {
+    ids = ['sit-button', 'how-shall-we-sit'];
+  }
+
+  const skipHelpAffordance =
+    scene.reflectionOpen || scene.isFocusing || scene.arrivalOpen;
+  if (!skipHelpAffordance && !ids.includes('help-affordance')) {
+    ids.push('help-affordance');
+  }
+  return ids;
+}

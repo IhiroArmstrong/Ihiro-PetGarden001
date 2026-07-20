@@ -27,7 +27,7 @@
 | `companion-away` | E Offline Space | "Check-ins pause while you are away. Sit again when ready to begin." / 「离开时提醒会暂停。准备开始时再点同坐。」 | 首次看到该选项 | 点选 Offline Space | 是 |
 | `companion-across-tools` | F Flow State | "Away reminders stay off in this mode." / 「这个方式下，离开提醒会保持关闭。」 | 首次看到该选项 | 点选 Flow State | 是 |
 | `ambient-gated` | A5 未计时点 Sound | "Sound opens after sitting begins." / 「同坐开始后，声音才会打开。」 | 首次在未 FOCUSING 时点 Sound | 看到提示后即记已读 | 是 |
-| `ambient-soundscape` | A5 Sound FAB / 面板 | "Playing music gently brightens Yin's glow." / 「播放音乐时，阿寅的光会慢慢亮一点。」 | 首次进入 FOCUSING 见到 Sound，或首次展开曲目面板 | 选曲或关面板 / 本场结束 | 是 |
+| `ambient-soundscape` | A5 Sound FAB / 面板 | "Optional background music — pick what feels right." / 「背景音可选——选一首顺耳的就好。」 | 首次进入 FOCUSING 见到 Sound，或首次展开曲目面板 | 选曲或关面板 / 本场结束 | 是 |
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
@@ -36,9 +36,9 @@
 
 共 **17** 个可自动提示 + **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
-### 音乐与光效（对应 ambient-soundscape 文案）
+### 音乐提示（对应 ambient-soundscape 文案）
 
-代码已有 `presenceBoost`（可闻播放时长叠 Rim）。v3 起另加：**正在播放时**立刻给边缘光一层缓亮 lift，使文案与体感一致（见实现）。
+提示只说明**可选背景音**与选曲入口；**不**在 hint 中承诺光效变化（`presenceBoost` 等为底层叠加，用户未感知时不写进引导文案）。
 
 ---
 
@@ -52,6 +52,7 @@
 ### 气泡视觉（与按钮/输入框区分）
 
 - 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；Sound → FAB；Reflection → 面板**上方**，不挡 Skip）。
+- **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - 浅绿灰填充 + 斜体衬线，避免与 Continue / 输入框同款米黄圆角胶囊。
 - 可同时显示多条未读提示（例如 FOCUSING 时 Rise + Sound 各一条）。
 

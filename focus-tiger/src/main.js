@@ -57,7 +57,10 @@ import { recordIntention } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
-import { createHintsSeenStore } from './core/OnboardingHintsStore.js';
+import {
+  createHintsSeenStore,
+  resolveAutoHintIds
+} from './core/OnboardingHintsStore.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 const DEMO_SESSION_MINUTES = 1;
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
@@ -78,6 +81,23 @@ function revealScene({ showCanvas = false } = {}) {
       { once: true }
     );
   }
+}
+
+/** DEV 实验室：重置/引导类一次性 toast（不进入业务 localStorage）。 */
+function showDevLabToast(message, durationMs = 8000) {
+  const existing = document.getElementById('dev-lab-toast');
+  existing?.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'dev-lab-toast';
+  toast.textContent = message;
+  toast.style.cssText =
+    'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:22;' +
+    'max-width:min(92vw,520px);padding:12px 16px;font-size:13px;line-height:1.45;' +
+    'background:rgba(44,31,20,0.92);color:#fff8f0;border-radius:10px;' +
+    'box-shadow:0 8px 24px rgba(0,0,0,0.18);pointer-events:none;';
+  document.body.appendChild(toast);
+  globalThis.setTimeout(() => toast.remove(), durationMs);
 }
 
 async function init() {
@@ -244,7 +264,9 @@ async function init() {
     },
     onCheckInComplete: () => {
       honestyCheckInUI.hideIdleEntry();
+      onboardingHints?.markSeen('honesty-optional');
       honestyBridge?.onHonestyCheckInComplete();
+      syncOnboardingAutoHints();
     }
   });
 
@@ -319,8 +341,10 @@ async function init() {
   );
   honestyCheckInUI.showDurationChoices = () => {
     companionModePicker.hide();
+    onboardingHints?.markSeen('honesty-optional');
     honestyShowDuration();
     syncCompanionPostSessionChrome();
+    syncOnboardingAutoHints();
   };
   const honestyHide = honestyCheckInUI.hide.bind(honestyCheckInUI);
   honestyCheckInUI.hide = () => {
@@ -381,32 +405,7 @@ async function init() {
 
   function syncOnboardingAutoHints() {
     if (!onboardingHints) return;
-    const scene = getOnboardingScene();
-    /** @type {string[]} */
-    let ids = [];
-    if (scene.reflectionOpen) {
-      ids = ['reflection'];
-    } else if (scene.isFocusing) {
-      // Rise 锚在主按钮；Sound 锚在 FAB——两句可同时出现（文档各有独立 hintId）
-      ids = ['rise-button', 'ambient-soundscape'];
-    } else if (scene.ambientPanelOpen) {
-      ids = ['ambient-soundscape'];
-    } else if (scene.arrivalOpen) {
-      const step = arrivalPractice.getStep();
-      if (step === 'breath') ids = ['breathing'];
-      else if (step === 'choose') ids = ['choose'];
-      else ids = ['notice'];
-    } else if (scene.companionExpanded) {
-      ids = ['companion-mode'];
-    } else if (scene.honestyVisible) {
-      ids = ['honesty-optional'];
-    } else if (scene.isDormant) {
-      ids = ['dormant-open'];
-    } else if (scene.hasEverCompletedSession) {
-      ids = ['idle-after-session', 'help-affordance'];
-    } else {
-      ids = ['sit-button', 'how-shall-we-sit', 'help-affordance'];
-    }
+    const ids = resolveAutoHintIds(getOnboardingScene());
     onboardingHints.syncVisibleAutos(ids);
     // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
     requestAnimationFrame(() => onboardingHints?.repositionAll());
@@ -720,9 +719,9 @@ async function init() {
       honestyBridge?.hide();
       honestyCheckIn.onIncompleteSessionEnded();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：伸懒腰→随意坐姿 pingpong（倒放回闭目首帧可衔接 idle），再进 Reflection。
+      // Rise：伸懒腰→随意坐姿正放一次，Reflection 期间定格箕坐；关面板后再回 idle/sleeping。
       // MoodController 在 IDLE 时不覆盖 riseStretchCasual；DORMANT 睡态在其后再写也不抢本过渡。
-      emotionController.playEmotion('riseStretchCasual');
+      emotionController.playEmotion('riseStretchCasual', { holdPose: true });
       sessionEndFlow.onSessionEnded({
         completed: false,
         intention: currentSessionIntention,
@@ -768,6 +767,31 @@ async function init() {
   honestyCheckIn.onAppReady();
   syncOnboardingAutoHints();
 
+  if (import.meta.env.DEV && !productChrome) {
+    void (async () => {
+      const {
+        consumeDevBootIdle,
+        consumeDevResetToast
+      } = await import('./core/localStateKeys.js');
+
+      if (consumeDevBootIdle()) {
+        stateManager.setState(STATES.IDLE);
+        honestyCheckInUI.hide();
+        honestyCheckInUI.hideIdleEntry();
+        honestyBridge?.hide();
+        emotionController.playEmotion('idle', { restart: true });
+        syncCompanionPostSessionChrome();
+        syncOnboardingAutoHints();
+        syncHonestyIdleEntry();
+      } else if (consumeDevResetToast()) {
+        showDevLabToast(
+          '已重置为全新用户：当日零完成 → 阿寅睡着 + Honesty 提示（场景 A 正常开局）。要测 idle 呼吸请点「重置并 idle 坐禅」或调试「坐禅闭眼」。',
+          12_000
+        );
+      }
+    })();
+  }
+
   // DEV 实验室调试入口（生产构建与 ?product=1 均不出现）
   if (import.meta.env.DEV && !productChrome) {
     const clearHintsBtn = document.createElement('button');
@@ -777,6 +801,7 @@ async function init() {
       'position:fixed;top:12px;right:180px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff8f0;color:#2c1f14;border-radius:4px;';
     clearHintsBtn.addEventListener('click', () => {
       onboardingHints?.clearSeen();
+      onboardingHints?.hideBubble();
       syncOnboardingAutoHints();
     });
     document.body.appendChild(clearHintsBtn);
@@ -786,17 +811,55 @@ async function init() {
     resetAllBtn.id = 'dev-reset-all-local-state';
     resetAllBtn.textContent = '重置全部本地状态';
     resetAllBtn.title =
-      '清空 focus-tiger.* localStorage 并刷新，等同全新用户 / 场景 A 开局';
+      '清空 focus-tiger.* localStorage 并刷新 → 场景 A：睡着 + Honesty 提示（不是 idle 呼吸）';
     resetAllBtn.style.cssText =
       'position:fixed;top:12px;right:320px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff0f0;color:#2c1f14;border-radius:4px;';
     resetAllBtn.addEventListener('click', async () => {
-      const { clearAllFocusTigerLocalState } = await import(
-        './core/localStateKeys.js'
+      const confirmed = globalThis.confirm(
+        '将清空全部 focus-tiger 本地数据并刷新。\n\n' +
+          '刷新后 = 场景 A 全新用户：\n' +
+          '• 当日零完成\n' +
+          '• 阿寅睡着（DORMANT）\n' +
+          '• 显示 Honesty 可忽略提示\n\n' +
+          '（不是 idle 呼吸坐禅。要测 idle 请用「重置并 idle 坐禅」。）\n\n' +
+          '确定重置？'
       );
+      if (!confirmed) return;
+
+      const {
+        clearAllFocusTigerLocalState,
+        markDevResetToast
+      } = await import('./core/localStateKeys.js');
       clearAllFocusTigerLocalState();
+      markDevResetToast();
       window.location.reload();
     });
     document.body.appendChild(resetAllBtn);
+
+    const resetIdleBtn = document.createElement('button');
+    resetIdleBtn.type = 'button';
+    resetIdleBtn.id = 'dev-reset-all-local-state-idle';
+    resetIdleBtn.textContent = '重置并 idle 坐禅';
+    resetIdleBtn.title =
+      '清空 localStorage 并刷新后直接进入 idle pingpong（测动画 / 跳过 DORMANT）';
+    resetIdleBtn.style.cssText =
+      'position:fixed;top:12px;right:470px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #2e6b8b;background:#f0f8ff;color:#2c1f14;border-radius:4px;';
+    resetIdleBtn.addEventListener('click', async () => {
+      const confirmed = globalThis.confirm(
+        '将清空全部 focus-tiger 本地数据并刷新，然后直接进入 idle 坐禅 pingpong（不显示 DORMANT / Honesty）。\n\n' +
+          '用于测 idle 动画。确定？'
+      );
+      if (!confirmed) return;
+
+      const {
+        clearAllFocusTigerLocalState,
+        markDevBootIdle
+      } = await import('./core/localStateKeys.js');
+      clearAllFocusTigerLocalState();
+      markDevBootIdle();
+      window.location.reload();
+    });
+    document.body.appendChild(resetIdleBtn);
   }
 
   const uiControls = new UIControls(focusInput);

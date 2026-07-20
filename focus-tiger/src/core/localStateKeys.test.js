@@ -3,7 +3,13 @@ import assert from 'node:assert/strict';
 
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
-  clearAllFocusTigerLocalState
+  clearAllFocusTigerLocalState,
+  markDevResetToast,
+  consumeDevResetToast,
+  markDevBootIdle,
+  consumeDevBootIdle,
+  DEV_RESET_TOAST_SESSION_KEY,
+  DEV_BOOT_IDLE_SESSION_KEY
 } from './localStateKeys.js';
 
 test('clearAllFocusTigerLocalState removes every known Focus Tiger key', () => {
@@ -34,4 +40,29 @@ test('FOCUS_TIGER_LOCAL_STORAGE_KEYS stays kebab focus-tiger.*.v1 style', () => 
   for (const key of FOCUS_TIGER_LOCAL_STORAGE_KEYS) {
     assert.match(key, /^focus-tiger\.[a-z0-9.-]+\.v1$/);
   }
+});
+
+test('dev session flags are one-shot consume', () => {
+  const map = new Map();
+  const storage = {
+    setItem(key, value) {
+      map.set(key, value);
+    },
+    getItem(key) {
+      return map.has(key) ? map.get(key) : null;
+    },
+    removeItem(key) {
+      map.delete(key);
+    }
+  };
+
+  markDevResetToast(storage);
+  assert.equal(map.get(DEV_RESET_TOAST_SESSION_KEY), '1');
+  assert.equal(consumeDevResetToast(storage), true);
+  assert.equal(consumeDevResetToast(storage), false);
+
+  markDevBootIdle(storage);
+  assert.equal(map.get(DEV_BOOT_IDLE_SESSION_KEY), '1');
+  assert.equal(consumeDevBootIdle(storage), true);
+  assert.equal(consumeDevBootIdle(storage), false);
 });

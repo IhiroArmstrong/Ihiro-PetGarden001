@@ -71,8 +71,8 @@
 
 | 目录 | 帧数 | 尺寸 | 约 MB | Manifest key | 状态 |
 |---|---:|---|---:|---|---|
-| idle-breathing | 21 | 1056×864 | 13.4 | idleBreathing | 已接线 · Idle；**2.5 fps**；×5→眨眼 |
-| idle-eye-glance | 8 | 1056×864 | 4.8 | idleEyeGlance | 已接线 · Idle 变体 |
+| idle-breathing | 51 | 1056×864 | ~38 | idleBreathing / idleBreathClosed / idleBlinkArc | 已接线 · Idle 切分：闭 19 帧 ×2 + 弧 33 帧 ×1 pingpong |
+| idle-eye-glance | 8 | 1056×864 | 4.8 | idleEyeGlance | 入库 · **仅调试**（正式 Idle 已并入 idle-breathing） |
 | gaze-p1-center-blink-left | 15 | — | — | gazeP1CenterBlinkLeft | 入库 · **仅调试**（正式 Idle 不自动播） |
 | gaze-p2-left-to-up | 13 | — | — | gazeP2LeftToUp | 入库 · 调试张望 A |
 | gaze-p3-toward-right | 13 | — | — | gazeP3TowardRight | 入库 · 调试张望 B |
