@@ -6,33 +6,33 @@
  *   <script type="module" src="./index.js"></script>
  */
 
-import { TigerHud, TIGER_HUD_TAG } from "./components/tiger-hud.js?v=20260721e";
-import { StreakMeter, STREAK_METER_TAG } from "./components/streak-meter.js?v=20260721e";
-import { PrimaryButton, PRIMARY_BUTTON_TAG } from "./components/primary-button.js?v=20260721e";
-import { SecondaryButton, SECONDARY_BUTTON_TAG } from "./components/secondary-button.js?v=20260721e";
+import { TigerHud, TIGER_HUD_TAG } from "./components/tiger-hud.js?v=20260721f";
+import { StreakMeter, STREAK_METER_TAG } from "./components/streak-meter.js?v=20260721f";
+import { PrimaryButton, PRIMARY_BUTTON_TAG } from "./components/primary-button.js?v=20260721f";
+import { SecondaryButton, SECONDARY_BUTTON_TAG } from "./components/secondary-button.js?v=20260721f";
 import {
   TooltipCard,
   DialogBox,
   TOOLTIP_CARD_TAG,
   DIALOG_BOX_TAG,
-} from "./components/tooltip-card.js?v=20260721e";
+} from "./components/tooltip-card.js?v=20260721f";
 import {
   NotificationBadge,
   NOTIFICATION_BADGE_TAG,
-} from "./components/notification-badge.js?v=20260721e";
-import { ProgressBar, PROGRESS_BAR_TAG } from "./components/progress-bar.js?v=20260721e";
+} from "./components/notification-badge.js?v=20260721f";
+import { ProgressBar, PROGRESS_BAR_TAG } from "./components/progress-bar.js?v=20260721f";
 import {
   AchievementModal,
   ACHIEVEMENT_MODAL_TAG,
-} from "./components/achievement-modal.js?v=20260721e";
+} from "./components/achievement-modal.js?v=20260721f";
 import {
   CollectionShelf,
   COLLECTION_SHELF_TAG,
-} from "./components/collection-shelf.js?v=20260721e";
+} from "./components/collection-shelf.js?v=20260721f";
 import {
   DailyQuestCard,
   DAILY_QUEST_CARD_TAG,
-} from "./components/daily-quest-card.js?v=20260721e";
+} from "./components/daily-quest-card.js?v=20260721f";
 
 function define(tag, Ctor) {
   if (!customElements.get(tag)) {

@@ -5,17 +5,20 @@ const STYLE = `
 }
 button {
   appearance: none;
-  border: none;
+  border: 1px solid rgba(255, 230, 210, 0.35);
   cursor: pointer;
   font: inherit;
   font-weight: 600;
   font-size: var(--font-size-md);
   letter-spacing: 0.02em;
   color: #fff;
-  background: var(--color-accent);
-  padding: 0.7rem 1.55rem;
+  background: linear-gradient(180deg, #c47a4e 0%, var(--color-accent) 48%, #8f4a2c 100%);
+  padding: 0.75rem 1.6rem;
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-soft);
+  box-shadow:
+    var(--shadow-soft),
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 2px 0 #7a3f24;
   transition:
     transform var(--duration-press) var(--ease-calm),
     box-shadow var(--duration-press) var(--ease-calm),

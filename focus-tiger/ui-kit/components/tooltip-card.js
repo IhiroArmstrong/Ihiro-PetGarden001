@@ -14,7 +14,7 @@ const PANEL_STYLE = `
   border: 1px solid var(--color-surface-border, var(--color-ink-faint));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  padding: 1rem 1.15rem 1.1rem;
+  padding: 1.35rem 1.45rem 1.3rem;
   animation: enter var(--duration-enter) var(--ease-calm) both;
   overflow: hidden;
 }
@@ -22,7 +22,7 @@ const PANEL_STYLE = `
   position: absolute;
   width: 28px;
   height: 28px;
-  opacity: 0.14;
+  opacity: 0.1;
   pointer-events: none;
 }
 .stripes::before,
@@ -46,19 +46,22 @@ const PANEL_STYLE = `
   left: 14px;
   top: 8px;
 }
-.stripes.tl { top: 8px; left: 8px; }
-.stripes.br { bottom: 8px; right: 8px; transform: rotate(180deg); }
+.stripes.tl { top: 10px; left: 10px; }
+.stripes.br { bottom: 10px; right: 10px; transform: rotate(180deg); }
 .title {
   font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.65rem;
+  padding-right: 0.5rem;
+  line-height: 1.4;
 }
 .body {
   font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  line-height: 1.5;
+  color: var(--text-secondary);
+  line-height: 1.55;
   margin: 0;
+  padding-right: 0.25rem;
 }
 .close {
   position: absolute;
