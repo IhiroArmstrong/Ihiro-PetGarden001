@@ -326,7 +326,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 | **1** | **JSDoc + 门闩/共享资源契约**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4 | **进行中**：Gate + **`CompanionModePicker` / `ArrivalPracticeUI` / `FocusInput` 对外 JSDoc 已补**；其余 UI 增量 |
 | **2** | **门闩显式化**：`SessionUiGate`（`src/core/SessionUiGate.js`）集中持有 `arrivalGateReady` / `completionPending` / `postSessionOverlayActive`；失败用例锁「未就绪不得 begin」 | **已落地** |
 | **3** | **继续回归锁**：主路径 + 回流 + `test:smoke` / `test:e2e` + TEST_TRACKER 观感分列（见 `DEV_WORKFLOW_QUALITY.md`） | 常驻，不替代 |
-| **4** | **Lit 仅试点一个 DOM 灾区 UI**：**`OnboardingHintsUI`**（分散提示 + `?` 补救；DOM/手动渲染类 bug 最多） | **目标已拍板**；Brief：`docs/task-briefs/task-lit-pilot-onboarding-hints.md`；**未开工代码** |
+| **4** | **Lit 仅试点一个 DOM 灾区 UI**：**`OnboardingHintsUI`**（分散提示 + `?` 补救；DOM/手动渲染类 bug 最多） | **代码已落地**：`lit` + `ft-onboarding-hint-bubble`；Brief 同上；待人工复测 |
 
 **边界**：
 

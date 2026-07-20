@@ -1,9 +1,9 @@
 # Task Brief · Lit 试点：OnboardingHintsUI
 
 **日期**：2026-07-21  
-**状态**：目标已拍板 · **代码未开工**（等本 Brief 确认后动手）  
+**状态**：目标已拍板 · **代码已落地（2026-07-21）** · 待人工复测  
 **所属路线**：`ARCHITECTURE.md`「工程加固四步」· 步 4  
-**选定依据**：记录在案的缺陷中，**DOM 没同步 / 手动渲染**类在 `OnboardingHintsUI` 最密（affordance 缺、尖角错位、点 ? 未铺开全部 hints）；**不**选 Companion / Arrival（主痛点是门闩，已由 `SessionUiGate` 收束）。
+**实现**：`lit` 依赖；`src/ui/ft-onboarding-hint-bubble.js`；`OnboardingHintsUI` 装配 API 不变。
 
 ---
 

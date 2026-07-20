@@ -1,7 +1,9 @@
 /**
  * 分散式即时提示气泡 + 角落「?」补救入口。
- * 气泡锚定到对应控件旁，漫画尖角样式，避免与输入框/按钮同形。
+ * 气泡为 Lit 组件 `ft-onboarding-hint-bubble`（响应式文案/尖角/显隐）；
+ * 本类保留装配 API、锚定与补救集合逻辑。
  * @see ONBOARDING_HINTS.md
+ * @see docs/task-briefs/task-lit-pilot-onboarding-hints.md
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -10,6 +12,7 @@ import {
   createHintsSeenStore,
   resolveRemedyHintIds
 } from '../core/OnboardingHintsStore.js';
+import './ft-onboarding-hint-bubble.js';
 
 /**
  * hintId → 锚定目标与尖角朝向。
@@ -101,7 +104,7 @@ export class OnboardingHintsUI {
     this.store = store;
     this.getScene = getScene;
     this.mountRoot = mountRoot;
-    /** @type {Map<string, HTMLElement>} */
+    /** @type {Map<string, import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble>} */
     this._bubbles = new Map();
     /** @type {Set<string>} */
     this._visibleIds = new Set();
@@ -109,6 +112,8 @@ export class OnboardingHintsUI {
     this._hideTimers = new Map();
     /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
     this._remedyIds = new Set();
+    /** @type {Map<string, { remedy: boolean, anchorNearHelp: boolean }>} */
+    this._paintMeta = new Map();
 
     this.helpBtn = document.createElement('button');
     this.helpBtn.type = 'button';
@@ -122,7 +127,7 @@ export class OnboardingHintsUI {
     });
 
     mountRoot.append(this.helpBtn);
-    this._injectStyles();
+    this._injectHelpStyles();
     this._onReposition = () => this.repositionAll();
     window.addEventListener('resize', this._onReposition);
     window.addEventListener('scroll', this._onReposition, true);
@@ -130,10 +135,8 @@ export class OnboardingHintsUI {
     this._unsubLocale = onLocaleChange(() => {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
       for (const hintId of this._visibleIds) {
-        this._paint(hintId, {
-          remedy: this._remedyIds.has(hintId),
-          anchorNearHelp: hintId === 'help-remedy' && this._remedyIds.has('help-remedy')
-        });
+        const meta = this._paintMeta.get(hintId) || { remedy: false, anchorNearHelp: false };
+        this._paint(hintId, meta);
       }
     });
   }
@@ -141,6 +144,7 @@ export class OnboardingHintsUI {
   /**
    * 未读则自动展示；已读则 no-op。可与其它未读提示并存（如 Rise + Sound）。
    * @param {string} hintId
+   * @returns {boolean}
    */
   maybeShowAuto(hintId) {
     if (!HINT_LOCALE_KEYS[hintId]) return false;
@@ -154,6 +158,7 @@ export class OnboardingHintsUI {
    * 仅保留 listed 中的自动提示（已读的不会出现）；关掉不在列表里的自动气泡。
    * 补救气泡若正显示且不在列表中也会被关掉——调用方应在补救后勿立刻 sync 清掉。
    * @param {string[]} hintIds
+   * @returns {void}
    */
   syncVisibleAutos(hintIds) {
     const want = new Set(hintIds.filter((id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id)));
@@ -169,6 +174,7 @@ export class OnboardingHintsUI {
   /**
    * 标记已读并隐藏（若当前正显示该条）。
    * @param {string} hintId
+   * @returns {void}
    */
   markSeen(hintId) {
     this.store.markSeen(hintId);
@@ -196,6 +202,7 @@ export class OnboardingHintsUI {
 
   /**
    * @param {string} [hintId] 省略则关掉全部
+   * @returns {void}
    */
   hideBubble(hintId) {
     if (!hintId) {
@@ -206,10 +213,11 @@ export class OnboardingHintsUI {
     this._hideTimers.delete(hintId);
     const bubble = this._bubbles.get(hintId);
     if (bubble) {
-      bubble.hidden = true;
-      bubble.textContent = '';
+      bubble.open = false;
+      bubble.message = '';
     }
     this._visibleIds.delete(hintId);
+    this._paintMeta.delete(hintId);
     if (this._remedyIds.has(hintId)) this._remedyIds.delete(hintId);
   }
 
@@ -242,51 +250,49 @@ export class OnboardingHintsUI {
   _paint(hintId, { remedy = false, anchorNearHelp = false } = {}) {
     const bubble = this._ensureBubble(hintId);
     const key = HINT_LOCALE_KEYS[hintId] || HINT_LOCALE_KEYS['help-fallback'];
-    bubble.textContent = t(key);
-    bubble.hidden = false;
+    const message = t(key);
+    this._paintMeta.set(hintId, { remedy, anchorNearHelp });
+
+    bubble.message = message;
+    bubble.open = true;
+    bubble.remedy = remedy;
     bubble.dataset.hintId = hintId;
     bubble.dataset.remedy = remedy ? '1' : '0';
     bubble.dataset.remedyAnchor = anchorNearHelp ? 'help' : '';
-    bubble.setAttribute('aria-label', `${t(key)}. ${t('HINT_DISMISS_ARIA')}`);
+    bubble.setAttribute('aria-label', `${message}. ${t('HINT_DISMISS_ARIA')}`);
     bubble.title = t('HINT_DISMISS_ARIA');
     const anchor = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
-    bubble.dataset.tip = anchor.tip;
+    bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (anchor.tip);
     this._visibleIds.add(hintId);
-    this._positionBubble(hintId);
+    const place = () => this._positionBubble(hintId);
+    place();
+    void bubble.updateComplete.then(place);
 
     window.clearTimeout(this._hideTimers.get(hintId));
     this._hideTimers.set(
       hintId,
       window.setTimeout(
         () => {
-          if (bubble.dataset.remedy === '1') this.hideBubble(hintId);
+          if (bubble.remedy) this.hideBubble(hintId);
         },
         remedy ? 8000 : 14000
       )
     );
   }
 
+  /**
+   * @param {string} hintId
+   * @returns {import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble}
+   */
   _ensureBubble(hintId) {
     let bubble = this._bubbles.get(hintId);
     if (bubble) return bubble;
-    bubble = document.createElement('div');
+    bubble = /** @type {import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble} */ (
+      document.createElement('ft-onboarding-hint-bubble')
+    );
     bubble.className = 'onboarding-hint-bubble';
-    bubble.setAttribute('role', 'button');
-    bubble.setAttribute('tabindex', '0');
-    bubble.setAttribute('aria-live', 'polite');
-    bubble.hidden = true;
-    bubble.title = ''; // 由 _paint 写入可点关闭提示
-    const dismiss = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+    bubble.addEventListener('ft-hint-dismiss', () => {
       this._dismissByUser(hintId);
-    };
-    bubble.addEventListener('click', dismiss);
-    bubble.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        this._dismissByUser(hintId);
-      }
     });
     this.mountRoot.appendChild(bubble);
     this._bubbles.set(hintId, bubble);
@@ -308,7 +314,7 @@ export class OnboardingHintsUI {
 
   _positionBubble(hintId) {
     const bubble = this._bubbles.get(hintId);
-    if (!bubble || bubble.hidden) return;
+    if (!bubble || !bubble.open) return;
 
     const cfg = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
     const useHelpAnchor =
@@ -323,7 +329,6 @@ export class OnboardingHintsUI {
     const maxW = Math.min(300, vw - 24);
 
     bubble.style.maxWidth = `${maxW}px`;
-    // 先放到屏外量宽高
     bubble.style.left = '0px';
     bubble.style.top = '0px';
     bubble.style.right = 'auto';
@@ -333,43 +338,46 @@ export class OnboardingHintsUI {
     const br = bubble.getBoundingClientRect();
     let left;
     let top;
+    /** @type {string} */
+    let tip = 'bottom';
 
     if (!anchor) {
       left = (vw - br.width) / 2;
       top = vh - br.height - 118;
-      bubble.dataset.tip = 'bottom';
+      tip = 'bottom';
     } else {
       const ar = anchor.getBoundingClientRect();
       if (anchorCfg.placement === 'left') {
         left = ar.left - br.width - gap;
         top = ar.top + (ar.height - br.height) / 2;
-        bubble.dataset.tip = 'right';
+        tip = 'right';
         if (left < 12) {
           left = ar.right + gap;
-          bubble.dataset.tip = 'left';
+          tip = 'left';
         }
       } else if (anchorCfg.placement === 'right') {
         left = ar.right + gap;
         top = ar.top + (ar.height - br.height) / 2;
-        bubble.dataset.tip = 'left';
+        tip = 'left';
         if (left + br.width > vw - 12) {
           left = ar.left - br.width - gap;
-          bubble.dataset.tip = 'right';
+          tip = 'right';
         }
       } else if (anchorCfg.placement === 'below') {
         left = ar.left + (ar.width - br.width) / 2;
         top = ar.bottom + gap;
-        bubble.dataset.tip = 'top';
+        tip = 'top';
       } else {
-        // above
         left = ar.left + (ar.width - br.width) / 2;
         top = ar.top - br.height - gap;
-        bubble.dataset.tip = 'bottom';
+        tip = 'bottom';
       }
     }
 
     left = Math.max(12, Math.min(left, vw - br.width - 12));
     top = Math.max(12, Math.min(top, vh - br.height - 12));
+
+    bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (tip);
 
     if (anchor) {
       const ar = anchor.getBoundingClientRect();
@@ -377,87 +385,22 @@ export class OnboardingHintsUI {
       const anchorCenterY = ar.top + ar.height / 2;
       const tipX = Math.max(18, Math.min(anchorCenterX - left, br.width - 18));
       const tipY = Math.max(18, Math.min(anchorCenterY - top, br.height - 18));
-      bubble.style.setProperty('--tip-x', `${Math.round(tipX)}px`);
-      bubble.style.setProperty('--tip-y', `${Math.round(tipY)}px`);
+      bubble.tipX = `${Math.round(tipX)}px`;
+      bubble.tipY = `${Math.round(tipY)}px`;
     } else {
-      bubble.style.removeProperty('--tip-x');
-      bubble.style.removeProperty('--tip-y');
+      bubble.tipX = '50%';
+      bubble.tipY = '50%';
     }
 
     bubble.style.left = `${Math.round(left)}px`;
     bubble.style.top = `${Math.round(top)}px`;
   }
 
-  _injectStyles() {
+  _injectHelpStyles() {
     if (document.getElementById('onboarding-hint-styles')) return;
     const style = document.createElement('style');
     style.id = 'onboarding-hint-styles';
     style.textContent = `
-      .onboarding-hint-bubble {
-        position: fixed;
-        z-index: 26;
-        padding: 9px 14px;
-        border-radius: 16px 16px 16px 4px;
-        border: 1.5px solid rgba(92, 122, 108, 0.45);
-        background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.65) inset,
-          0 6px 16px rgba(40, 64, 52, 0.14);
-        color: #3a5348;
-        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
-        font-size: 12.5px;
-        font-style: italic;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        line-height: 1.45;
-        text-align: left;
-        pointer-events: auto;
-        cursor: pointer;
-        filter: drop-shadow(0 2px 4px rgba(40, 64, 52, 0.08));
-      }
-      .onboarding-hint-bubble:hover {
-        filter: brightness(1.02) drop-shadow(0 2px 4px rgba(40, 64, 52, 0.1));
-      }
-      .onboarding-hint-bubble::after {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-style: solid;
-      }
-      /* 尖角朝下 → 指向下方锚点 */
-      .onboarding-hint-bubble[data-tip="bottom"]::after {
-        left: var(--tip-x, 50%);
-        bottom: -8px;
-        transform: translateX(-50%);
-        border-width: 8px 7px 0 7px;
-        border-color: #dceae2 transparent transparent transparent;
-        filter: drop-shadow(0 1px 0 rgba(92, 122, 108, 0.35));
-      }
-      .onboarding-hint-bubble[data-tip="top"]::after {
-        left: var(--tip-x, 50%);
-        top: -8px;
-        transform: translateX(-50%);
-        border-width: 0 7px 8px 7px;
-        border-color: transparent transparent #eef6f1 transparent;
-      }
-      .onboarding-hint-bubble[data-tip="right"]::after {
-        right: -8px;
-        top: var(--tip-y, 50%);
-        transform: translateY(-50%);
-        border-width: 7px 0 7px 8px;
-        border-color: transparent transparent transparent #dceae2;
-      }
-      .onboarding-hint-bubble[data-tip="left"]::after {
-        left: -8px;
-        top: var(--tip-y, 50%);
-        transform: translateY(-50%);
-        border-width: 7px 8px 7px 0;
-        border-color: transparent #dceae2 transparent transparent;
-      }
-      .onboarding-hint-bubble[hidden] {
-        display: none !important;
-      }
       .onboarding-hint-help {
         position: fixed;
         left: 20px;
