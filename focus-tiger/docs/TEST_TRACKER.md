@@ -79,7 +79,7 @@
 | Sleeping 太慢/太快、MilestoneGlow 等 | **有问题** | 观感 | **[L145](#L145)** Sleeping · **[L127](#L127)** MilestoneGlow |
 | Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L131](#L131)** Ambient Soundscape · **[L179](#L179)** `人工 · Ambient Sound 入口` |
 
-**§B 未单列、但在场景 checklist 里测的项**（见 **L176–L183**）：**[L176](#L176)** A1 睡着/DORMANT（**已通过**） · **[L181](#L181)** Celebrating 观感 · **[L182](#L182)** Honesty 桥接完整 Arrival（**已通过**） · **[L183](#L183)** DEV 一键重置（**L-logic / 仅单元测试**，勿人工逐 key）。
+**§B 未单列、但在场景 checklist 里测的项**（见 **L176–L183**）：**[L176](#L176)** A1 睡着/DORMANT（**已通过**） · **[L181](#L181)** Celebrating 观感（**已通过**；同日二次摆尾见 **[L126](#L126)**） · **[L182](#L182)** Honesty 桥接完整 Arrival（**已通过**） · **[L183](#L183)** DEV 一键重置（**L-logic / 仅单元测试**，勿人工逐 key）。
 
 #### C. 下一步自动化（未做 · 排 Task 2/3）
 
@@ -88,7 +88,7 @@
 | Task 2 | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock） | 场景 E/F；Offline/Flow 模式矩阵 |
 | Task 3 | Playwright **Honesty 桥接 Yes → Arrival DOM** | 场景 D/N；补登回流 |
 | 可选 | e2e **Skip — begin** 一键开表（不经逐步 Skip） | FocusSession 行「半卡 Sit」 |
-| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L177](#L177)** Idle（**已通过**） · **[L180](#L180)** Re-focus · **[L181](#L181)** Celebrating · **[L176–L183](#L176)** 场景 checklist |
+| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L177](#L177)** Idle（**已通过**） · **[L180](#L180)** Re-focus · **[L181](#L181)** Celebrating（**已通过**） · **[L126](#L126)** 同日二次 SessionComplete · **[L176–L183](#L176)** 场景 checklist |
 
 **命令**：`cd focus-tiger && npm run test:smoke`（**14** 条：9 scenario + 5 重置 L-logic）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
 
@@ -122,8 +122,8 @@
 | Honesty Check-in / Mindful Check-in · DORMANT 唤醒 | UI可见 | 待人工测试 | **首次零完成**：睡着 + 可忽略提示 → 选时长 → dormant-wake → 立刻桥接。**同日再补登**：空闲 **Mindful Check-in** → 选时长（不睡、不播 dormant-wake）→ 呼吸 → 再出桥接。 | 2026-07-19 拍板 B：首次自动提示；之后空闲入口多次补登。请复测入口与再补登无睡态。**2026-07-20**：用户反馈 Honesty 提示气泡盖住上方文字框 → 已改锚 Sit **右侧**（窄屏自动翻左），点进补登后收起。 | 零完成自动 · `#honesty-idle-entry` · DEV：`__honestyCheckIn` | 2026-07-20 |
 | Honesty 桥接 CTA（补登后邀请再坐） | UI可见 | 已通过 | **主路径**：补登结束 → **立刻**出现（顶行 Welcome +「要不要现在也坐一会儿？」Yes/No）。Yes → 完整 Arrival → Companion。No → idle。**回流**：同日再补登 → **应再出**桥接。 | 2026-07-19：立刻出现、每次可出、Welcome 并入桥接顶行。请硬刷新复测。**2026-07-20 晚**：用户书面「Honesty 桥接后完整 Arrival UI 测试 OK」。 | DEV：`__honestyBridge` | 2026-07-20 |
 | Tiger Reflection Moment / 结束反思 | UI可见 | 待人工测试 | 正常完成或主动 Rise 结束会话 → 留白约 400ms（完成）/ 300ms（主动）后淡入面板。可选回显本次意图。Q1–Q3：Continue / Skip / Skip all / Esc。非空答案写入 `focus-tiger.reflections.v1`（最近 5 条）；全跳过不落库。 | — | 会话结束后自动 · 单测：`TigerReflectionMoment.test.js` · DEV：`__reflectionMoment` | 2026-07-18 |
-| 完成反馈 · 每日首次 Celebrating | UI可见 | 待人工测试 | **须等计时自动达标**（勿提前点 Rise；达标后点 Rise 也会进完成反馈）。当日可先 Honesty 补登；**首次计时达标**仍须 Celebrating（Honesty 不占庆祝戳）。播 `celebrate-dance` → idle → Reflection。 | 2026-07-21：用户书面——多日多次 focus 超 1 分钟从未见 Celebrating 舞。**已修待复测**：Honesty 误占庆祝戳 + Rise 打断达标。 | `triggerSessionCompletionFeedback` · 调试「庆祝跳舞」 | 2026-07-21 |
-| 完成反馈 · 同日后续 SessionComplete | UI可见 | 待人工测试 | 当日**已播过** Celebrating 后，再跑一轮 1 分钟达标 → 只播 `session-complete` 摆尾，**不**再 Celebrating。 | 2026-07-21：同 Celebrating 行用户反馈；**已修待复测**（庆祝戳与完成记录解耦）。 | 同上 · 调试「完成摆尾」 | 2026-07-21 |
+| 完成反馈 · 每日首次 Celebrating | UI可见 | 已通过 | **须等计时自动达标**（勿提前点 Rise；达标后点 Rise 也会进完成反馈）。当日可先 Honesty 补登；**首次计时达标**仍须 Celebrating（Honesty 不占庆祝戳）。播 `celebrate-dance` → idle → Reflection。 | 2026-07-21：用户书面——多日多次 focus 超 1 分钟从未见 Celebrating 舞；已修。**2026-07-21 复测**：`/` 满 1 分钟见舞；`/?sessionMinutes=5` 满 5 分钟见舞。 | `triggerSessionCompletionFeedback` · 调试「庆祝跳舞」 | 2026-07-21 |
+| 完成反馈 · 同日后续 SessionComplete | UI可见 | 待人工测试 | 当日**已播过** Celebrating 后，再跑一轮 1 分钟达标 → 只播 `session-complete` 摆尾，**不**再 Celebrating。 | 2026-07-21：同 Celebrating 行用户反馈；庆祝戳已解耦。首次舞已验收；**本行同日二次摆尾仍待测**。 | 同上 · 调试「完成摆尾」 | 2026-07-21 |
 | IncenseComplete / 今日一炷香（莲花+金斑） | UI可见 | 待人工测试 | 右上角调试面板点「模拟一炷香」→ DOM 叠层莲花渐显 + 金色粒子（在 2D Yin 前方）。**业务会话结束尚未自动接线**（仅调试入口）。**重点**：莲花右下角不得再出现 PixMiller 水印。 | 2026-07-19：立体荷花 + 金光斑点浮动效果**建议保留**，并用于后续「荷花持续增加、最终布满画面」的成长场景（Backlog 成长场景须复用本效果，勿删）。产品方向已记入 EMOTION_BIBLE。**同日用户反馈**：莲花图有 PixMiller 水印未抠掉→已从 `textures/lotus.png` 清除，且 DOM 叠层改用去水印 Canvas 贴图（此前直链源图绕过裁切）。请硬刷新后点「模拟一炷香」复测。 | `#emotion-debug-ui` · `playEmotion('incenseComplete')` · 实现：`IncenseGreeting.js` DOM 叠层 | 2026-07-19 |
 | MilestoneGlow / 里程碑金辉 | UI可见 | 有问题 | 调试面板点「里程碑金辉」→ `milestone-glow` 27 帧（金光+蝴蝶）→ 末帧停约 2.5s → 回落。播放期归零实时金光。真实里程碑判定属 Backlog。 | 2026-07-19：金光蝴蝶须放慢 2×→已改 **4 fps**（原 8），请复测。 | `#emotion-debug-ui` · `playEmotion('milestoneGlow')` | 2026-07-19 |
 | MindfulAcknowledge / 20 分钟阶段确认 | UI可见 | 待人工测试 | Companion = Here & Now，开一场会话并保持页面 ≥ **20 分钟墙钟** → `nod-bow` + 非模态 toast（`MINDFUL_FOCUS_MILESTONE` 池）。与强反馈冲突时静默让位。共享日额度最多 3 次（`focus-tiger.reminder-quota.v1`）。演示会话仅 1 分钟时建议用调试按钮或 `__mindfulReminderController`。 | — | 生产长计时 / 调试面板正念确认 · DEV：`__mindfulReminderController` · `__reminderQuotaManager` | 2026-07-18 |
@@ -178,7 +178,7 @@
 | 人工 · Arrival Notice 观察短句可读完 | UI可见 | 已通过 | 1) Sit → Notice 点 Okay（或 Calm）。2) 观察式短句须能读完（约 2.4s）再进呼吸。3) 回流：Rise → 再 Sit → 再点一次 Notice。 | 2026-07-20 晚：用户书面「测试 OK」。 | `?product=1` · Sit → Notice | 2026-07-20 |
 | 人工 · Ambient Sound 入口 | UI可见 | 已通过 | 1) 未 FOCUSING：点右下角 Sound → 英文提示须先专注，**不**展开面板。2) Arrival→Companion Here & Now 开计时后 → Sound 可展开选曲。 | 2026-07-20 晚：用户书面「测试 OK」。 | `?product=1` · 右下角 Sound | 2026-07-20 |
 | 人工 · Re-focus 真实切页 >60s | UI可见 | 待人工测试 | 1) **`/?sessionMinutes=5`**。2) **Here & Now** 开表 → 切走 **70–90s** → **须有**观察式文案 + nod-bow。3) **对照 Flow State**（或 Offline）：同样切走 &gt;60s → **须无** Re-focus（无文案、无 nod-bow；timer 可继续）。约 10s 回来无反应属正确。 | 2026-07-21：用户书面 Here&Now/Sit 路径 **测试 OK**；Flow「貌似不对、不匹配」→ 预期本就不同（Flow 抑制离开提醒）。待确认 Flow 下是否「安静无 nod-bow」。 | `/?sessionMinutes=5` · 场景 B / F | 2026-07-21 |
-| 人工 · Celebrating / 同日 SessionComplete 观感 | UI可见 | 待人工测试 | 1) 实验室「重置全部本地状态」。2) 可先 Honesty 或不做。3) Sit→Companion→等 DEMO **满 1 分钟自动达标**（也可达标后再点 Rise）→ 须见 **Celebrating 舞**。4) 同日再达标 → 只摆尾。 | 2026-07-21：用户书面——这几天很多次 focus 超过一分钟，从未见过 Celebrating 舞。**已修待复测**。 | `?product=1` · 演示 1 分钟 | 2026-07-21 |
+| 人工 · Celebrating / 同日 SessionComplete 观感 | UI可见 | 已通过 | 1) 实验室「重置全部本地状态」。2) 可先 Honesty 或不做。3) Sit→Companion→等 DEMO **满 1 分钟自动达标**（也可达标后再点 Rise）→ 须见 **Celebrating 舞**。4) 同日再达标 → 只摆尾。 | 2026-07-21：用户书面——这几天很多次 focus 超过一分钟，从未见过 Celebrating 舞；已修。**2026-07-21 复测**：`http://localhost:5173` 满 1 分钟见 Celebrating 舞；`/?sessionMinutes=5` 满 5 分钟见舞。步骤 4 同日二次摆尾见 L126。 | `/` · `/?sessionMinutes=5` | 2026-07-21 |
 | 人工 · Honesty 桥接后完整 Arrival UI | UI可见 | 已通过 | 1) 重置本地状态 → DORMANT。2) 走 Honesty 选 20 → 呼吸结束。3) 桥接点 **Yes** → 须走完整 Arrival（Welcome→Notice→Breath→Choose）再 Companion，**不**直接开表。4) 另测 **No** → idle、无二次挽留。 | 2026-07-20 晚：用户书面「测试 OK」。 | `?product=1` · 或实验室 Honesty | 2026-07-20 |
 | DEV 一键重置全部本地状态 | 纯后端 | 仅单元测试覆盖 | **L-logic**（勿人工逐 key）：`npm run test:smoke` → `localStateKeys.test.js` 锁白名单=各模块 STORAGE_KEY、脏态 clear 后 Store 等同新用户、session toast/boot-idle 一次性。按钮壳：`e2e/product-shell.smoke.spec.js`（实验室可见；`?product=1` 不可见）。 | 2026-07-20：重置后 Honesty=场景 A 正确开局。**2026-07-21**：用户书面——人工难验「参数是否复原」→ 应 L-logic；已改仅单元测试。 | `src/core/localStateKeys.test.js` · `#dev-reset-all-local-state` | 2026-07-21 |
 | 产品壳链接 ?product=1（隐藏调试面板） | UI可见 | 待人工测试 | 打开 `/?product=1`：无右上角情绪调试条；Sit / How shall we sit? / Honesty / Arrival / Sound 仍可用。打开 `/`：调试面板在。 | — | `http://127.0.0.1:5173/?product=1` vs `/` | 2026-07-19 |
