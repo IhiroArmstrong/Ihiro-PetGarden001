@@ -6,33 +6,33 @@
  *   <script type="module" src="./index.js"></script>
  */
 
-import { TigerHud, TIGER_HUD_TAG } from "./components/tiger-hud.js";
-import { StreakMeter, STREAK_METER_TAG } from "./components/streak-meter.js";
-import { PrimaryButton, PRIMARY_BUTTON_TAG } from "./components/primary-button.js";
-import { SecondaryButton, SECONDARY_BUTTON_TAG } from "./components/secondary-button.js";
+import { TigerHud, TIGER_HUD_TAG } from "./components/tiger-hud.js?v=20260721b";
+import { StreakMeter, STREAK_METER_TAG } from "./components/streak-meter.js?v=20260721b";
+import { PrimaryButton, PRIMARY_BUTTON_TAG } from "./components/primary-button.js?v=20260721b";
+import { SecondaryButton, SECONDARY_BUTTON_TAG } from "./components/secondary-button.js?v=20260721b";
 import {
   TooltipCard,
   DialogBox,
   TOOLTIP_CARD_TAG,
   DIALOG_BOX_TAG,
-} from "./components/tooltip-card.js";
+} from "./components/tooltip-card.js?v=20260721b";
 import {
   NotificationBadge,
   NOTIFICATION_BADGE_TAG,
-} from "./components/notification-badge.js";
-import { ProgressBar, PROGRESS_BAR_TAG } from "./components/progress-bar.js";
+} from "./components/notification-badge.js?v=20260721b";
+import { ProgressBar, PROGRESS_BAR_TAG } from "./components/progress-bar.js?v=20260721b";
 import {
   AchievementModal,
   ACHIEVEMENT_MODAL_TAG,
-} from "./components/achievement-modal.js";
+} from "./components/achievement-modal.js?v=20260721b";
 import {
   CollectionShelf,
   COLLECTION_SHELF_TAG,
-} from "./components/collection-shelf.js";
+} from "./components/collection-shelf.js?v=20260721b";
 import {
   DailyQuestCard,
   DAILY_QUEST_CARD_TAG,
-} from "./components/daily-quest-card.js";
+} from "./components/daily-quest-card.js?v=20260721b";
 
 function define(tag, Ctor) {
   if (!customElements.get(tag)) {

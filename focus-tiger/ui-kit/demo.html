@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Focus Tiger · UI Kit Demo</title>
-    <link rel="stylesheet" href="./tokens.css" />
+    <title>Focus Tiger · UI Kit Demo · v2 contrast</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <link rel="stylesheet" href="./tokens.css?v=20260721b" />
     <style>
       * {
         box-sizing: border-box;
@@ -35,9 +36,17 @@
         text-align: center;
         margin: 0 0 0.35rem;
       }
+      .ver {
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--color-accent);
+        font-weight: 600;
+        margin: 0 0 0.75rem;
+      }
       .lede {
         text-align: center;
-        color: var(--color-ink-muted);
+        color: var(--color-ink);
+        opacity: 0.8;
         max-width: 36rem;
         margin: 0 auto 2rem;
         font-size: 0.95rem;
@@ -50,7 +59,7 @@
         border-radius: var(--radius-md);
         border: 1px solid var(--color-ink-faint);
         font-size: 0.85rem;
-        color: var(--color-ink-muted);
+        color: var(--color-ink);
       }
       section {
         max-width: 720px;
@@ -115,6 +124,7 @@
       />
     </div>
     <h1>Focus Tiger UI Kit</h1>
+    <p class="ver">v2 · panel text contrast fix — if you still see gray-on-gray, hard-refresh</p>
     <p class="lede">
       Calm chrome derived from Yin’s robe, cushion, and vermillion mark.
       Numbers stay quiet; celebrate lasts ≤ 1.2s, then returns to calm.
@@ -242,15 +252,15 @@
       <h2>10. daily-quest-card (exploration)</h2>
       <div class="panel">
         <daily-quest-card></daily-quest-card>
-        <p style="margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--color-ink-muted)">
+        <p style="margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--color-ink)">
           Click an unfinished row for a tiny wink — no modal, no fanfare.
         </p>
       </div>
     </section>
 
     <script type="module">
-      import "./index.js";
-      import { YIN_SILHOUETTE_SVG } from "./components/_shared.js";
+      import "./index.js?v=20260721b";
+      import { YIN_SILHOUETTE_SVG } from "./components/_shared.js?v=20260721b";
 
       document.getElementById("yin-hero").src = YIN_SILHOUETTE_SVG;
 

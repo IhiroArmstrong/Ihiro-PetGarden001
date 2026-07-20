@@ -112,7 +112,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
-| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径**：打开 demo → 对照 calm / celebrate；**重点复测文案框**（`tooltip-card` / `dialog-box`）：灰底上正文须为炭灰、可读，不得灰字叠灰底。另：`tiger-hud` 悬停数字、celebrate ≤1.2s、streak 满圈金光、progress daily 静 vs quest 脉动。**回流**：achievement-modal 开→关后再开。**非子项**：可行性评估，非产品壳已换肤。 | 2026-07-21：用户书面建议统一 UI 风格与组件库；同意落地设计实验层，**未**替换产品壳。**同日测后**：文案框若底色改灰，前景字体就不能再用灰色，否则看不清 → 已改正文为 `--color-ink`，请硬刷新复测。 | `http://127.0.0.1:8765/demo.html`（`cd focus-tiger/ui-kit && python3 -m http.server 8765`） | 2026-07-21 |
+| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径**：打开 **`http://127.0.0.1:8765/demo.html?v=20260721b`**（标题旁应见橙色 **v2 · panel text contrast fix**）。对照文案框灰底+炭灰字；另测 calm/celebrate。**回流**：achievement 开→关再开。 | 2026-07-21：用户书面建议统一 UI…**同日测后**：灰底不能灰字→已改。**同日再反馈**：看了但没更新（疑浏览器缓存 ES Module）→ 已加 v2 标记 + query 防缓存，请用带 `?v=20260721b` 的链接。 | `http://127.0.0.1:8765/demo.html?v=20260721b` | 2026-07-21 |
 | Arrival Practice / Notice「What is present…」点选后 | UI可见 | 已通过 | Sit → Notice：点 Calm → 图标收起，**短句须能读完**（约 2.4s）再进呼吸。 | 2026-07-20：书面确认框收起 OK。**同日再反馈**：`a calm presence…` 来不及看就消失→已加长至 2.4s，请复测。**2026-07-20 晚**：用户书面「测试 OK」。 | `http://localhost:5173/` · Sit → Calm | 2026-07-20 |
 | Arrival Practice / Choose 点头 pingpong→idle | UI可见 | 待人工测试 | Choose → **nod-bow pingpong**（正放鞠躬→倒放回坐姿）→ Companion 立刻可展；进出用 **约 1s 叠化**。 | 2026-07-20：用户要求加倒放 pingpong + 前后 1s 叠化。已改，请复测。 | `http://localhost:5173/` · Sit → Choose | 2026-07-20 |
 | Arrival Practice / 抵达练习（Welcome → Notice → Breath → Choose） | UI可见 | 待人工测试 | Breath 推近；Choose 点头 + 坐垫光晕；Companion 马上可用；点头↔idle **1s 叠化**后再拉回视距。 | 2026-07-20：点头改 pingpong + CapCut 1s。 | `http://localhost:5173/` · Sit | 2026-07-20 |
