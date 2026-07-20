@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Tiger · UI Kit Demo</title>
+    <link rel="stylesheet" href="./tokens.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--color-bg);
+        color: var(--color-ink);
+        font-family: var(--font-family);
+        padding: 2rem 1.5rem 4rem;
+        line-height: 1.5;
+      }
+      /* Yin stays the visual hero — keep UI demo secondary */
+      .hero {
+        display: grid;
+        place-items: center;
+        margin-bottom: 2rem;
+      }
+      .hero img {
+        width: min(220px, 55vw);
+        height: auto;
+        filter: drop-shadow(0 12px 28px rgba(46, 43, 40, 0.12));
+      }
+      h1 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 0 0 0.35rem;
+      }
+      .lede {
+        text-align: center;
+        color: var(--color-ink-muted);
+        max-width: 36rem;
+        margin: 0 auto 2rem;
+        font-size: 0.95rem;
+      }
+      .note {
+        max-width: 40rem;
+        margin: 0 auto 2.5rem;
+        padding: 0.85rem 1rem;
+        background: var(--color-panel);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-ink-faint);
+        font-size: 0.85rem;
+        color: var(--color-ink-muted);
+      }
+      section {
+        max-width: 720px;
+        margin: 0 auto 2.25rem;
+      }
+      section h2 {
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-ink-muted);
+        font-weight: 600;
+        margin: 0 0 0.85rem;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        align-items: flex-start;
+      }
+      .col {
+        flex: 1 1 280px;
+      }
+      .panel {
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: var(--radius-lg);
+        padding: 1.1rem;
+        border: 1px solid var(--color-ink-faint);
+      }
+      .panel h3 {
+        margin: 0 0 0.75rem;
+        font-size: 0.95rem;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        margin-top: 0.85rem;
+      }
+      .badge-demo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        color: var(--color-ink-muted);
+      }
+      code {
+        font-size: 0.8em;
+        background: var(--color-panel);
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero">
+      <!-- Placeholder only; product uses real 2D/3D Yin -->
+      <img
+        id="yin-hero"
+        alt="Yin — mindful companion (placeholder)"
+        width="220"
+        height="220"
+      />
+    </div>
+    <h1>Focus Tiger UI Kit</h1>
+    <p class="lede">
+      Calm chrome derived from Yin’s robe, cushion, and vermillion mark.
+      Numbers stay quiet; celebrate lasts ≤ 1.2s, then returns to calm.
+    </p>
+    <p class="note">
+      <strong>Scope:</strong> Design laboratory only — not wired into the product
+      shell (<code>index.html</code> / Arrival / Companion). Achievement shelf,
+      collection, and daily quest cards are visual explorations for the memorial
+      rewards Backlog; do not treat this demo as shipped product UI.
+    </p>
+
+    <section>
+      <h2>1. tiger-hud</h2>
+      <div class="row">
+        <div class="col panel">
+          <h3>calm — hover for numbers</h3>
+          <tiger-hud
+            mode="calm"
+            streak-count="12"
+            session-count="2"
+          ></tiger-hud>
+        </div>
+        <div class="col panel">
+          <h3>celebrate — auto → calm</h3>
+          <tiger-hud
+            id="hud-celebrate"
+            mode="calm"
+            streak-count="12"
+            session-count="2"
+          ></tiger-hud>
+          <div class="actions">
+            <primary-button id="btn-hud-celebrate">Trigger celebrate</primary-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. streak-meter</h2>
+      <div class="row">
+        <div class="col panel">
+          <h3>calm — 5 of 7 lit</h3>
+          <streak-meter mode="calm" filled="5" total="7"></streak-meter>
+        </div>
+        <div class="col panel">
+          <h3>fill to complete → gold breath</h3>
+          <streak-meter id="meter-fill" mode="calm" filled="6" total="7"></streak-meter>
+          <div class="actions">
+            <primary-button id="btn-meter-complete">Light last day</primary-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3–4. Buttons</h2>
+      <div class="panel row" style="gap: 0.75rem; align-items: center">
+        <primary-button>Sit with Yin</primary-button>
+        <secondary-button>Not now</secondary-button>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. tooltip-card / dialog-box</h2>
+      <div class="row">
+        <div class="col">
+          <tooltip-card title="A quiet note">
+            You’ve returned. Yin is still here, breathing with you.
+          </tooltip-card>
+        </div>
+        <div class="col">
+          <div class="actions" style="margin-bottom: 0.75rem">
+            <secondary-button id="btn-open-dialog">Open dialog</secondary-button>
+          </div>
+          <dialog-box id="demo-dialog" title="Before you sit">
+            Notice one thing in the room. No need to get it right.
+          </dialog-box>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. notification-badge</h2>
+      <div class="panel badge-demo">
+        Something new
+        <notification-badge pulse></notification-badge>
+        <span>— use sparingly; not persistent chrome</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>7. progress-bar</h2>
+      <div class="row">
+        <div class="col panel">
+          <h3>mode="daily" — quiet</h3>
+          <progress-bar mode="daily" value="42" label="Today’s shared sitting"></progress-bar>
+        </div>
+        <div class="col panel">
+          <h3>mode="quest" — soft pulse</h3>
+          <progress-bar mode="quest" value="68" label="A gentle challenge"></progress-bar>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>8. achievement-modal (Backlog exploration)</h2>
+      <div class="panel">
+        <primary-button id="btn-achievement">Show keepsake moment</primary-button>
+        <achievement-modal
+          id="demo-achievement"
+          message="You've sat with Yin for 7 days."
+          subtext="A soft cloak joins your shared path."
+        ></achievement-modal>
+      </div>
+    </section>
+
+    <section>
+      <h2>9. collection-shelf (Backlog exploration)</h2>
+      <div class="panel">
+        <collection-shelf></collection-shelf>
+      </div>
+    </section>
+
+    <section>
+      <h2>10. daily-quest-card (exploration)</h2>
+      <div class="panel">
+        <daily-quest-card></daily-quest-card>
+        <p style="margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--color-ink-muted)">
+          Click an unfinished row for a tiny wink — no modal, no fanfare.
+        </p>
+      </div>
+    </section>
+
+    <script type="module">
+      import "./index.js";
+      import { YIN_SILHOUETTE_SVG } from "./components/_shared.js";
+
+      document.getElementById("yin-hero").src = YIN_SILHOUETTE_SVG;
+
+      document.getElementById("btn-hud-celebrate").addEventListener("ft-click", () => {
+        document.getElementById("hud-celebrate").setAttribute("mode", "celebrate");
+      });
+
+      document.getElementById("btn-meter-complete").addEventListener("ft-click", () => {
+        document.getElementById("meter-fill").setAttribute("filled", "7");
+      });
+
+      document.getElementById("btn-open-dialog").addEventListener("ft-click", () => {
+        document.getElementById("demo-dialog").setAttribute("open", "");
+      });
+
+      document.getElementById("btn-achievement").addEventListener("ft-click", () => {
+        document.getElementById("demo-achievement").setAttribute("open", "");
+      });
+    </script>
+  </body>
+</html>

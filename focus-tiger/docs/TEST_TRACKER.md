@@ -66,21 +66,21 @@
 
 > **本表 = bug 主题索引**（为何自动化帮不上、该去测哪一行）。**不是**可执行步骤本身。  
 > **行号** = 下方 `## 功能清单` 表格在 **本文件** 中的当前行号（Cursor / GitHub 可 `#L166` 跳转）。增删功能行后须同步改本表。  
-> **场景 checklist**（A1 DORMANT、重置按钮等）在 **L176–L183** 的 `人工 · …` / DEV 重置块，与 §B 互补、勿混为一谈。
+> **场景 checklist**（A1 DORMANT、重置按钮等）在 **L178–L185** 的 `人工 · …` / DEV 重置块，与 §B 互补、勿混为一谈。
 
 | 用户反馈 / bug 主题 | 状态 | 为何自动化帮不上 | 功能清单行号 → 去测 |
 |---|---|---|---|
-| Idle 呼吸→眨眼/一瞥 **闪一下** | 已通过 | L-eyes / L-contract；e2e 不看像素 | **[L177](#L177)** `人工 · Idle 统一 pingpong 不闪` · **[L140](#L140)** `IdleOrchestrator / 坐禅闭眼` · 契约 `IdleOrchestrator.test.js` |
-| Safari Companion **底部横排**仍挡/错位 | 待人工测试 | e2e 未测 WebKit 布局 | **[L120](#L120)** `Companion Mode`（须 **Safari** 复测） |
-| Choose **pingpong + 1s 叠化** | 待人工测试 | 动画帧级 | **[L114](#L114)** `Arrival Choose 点头 pingpong→idle` · 可选 **[L115](#L115)** 完整 Arrival 串联 |
-| Notice 短句 **2.4s 可读** | 已通过 | 时长观感 | **[L113](#L113)** `Notice 点选后` · **[L178](#L178)** `人工 · Notice 短句可读完` |
-| Idle 突然东张西望 | 待人工测试 | 已关随机池；无自动调度单测 | **[L117](#L117)** `调试面板 · 全入库素材` · **[L134](#L134)** `idle / 坐禅闭眼呼吸基底` |
-| 靠近自动点头 | 待人工测试 | 行为已拆；无 e2e | **[L133](#L133)** `PointerInteraction · 靠近点头 nodGreeting` |
-| Rise → **LightProgression** 金晕 | **有问题** | 视觉 + 产品语义 | **[L138](#L138)** `LightProgression / 光影物理渐进` |
-| Sleeping 太慢/太快、MilestoneGlow 等 | **有问题** | 观感 | **[L145](#L145)** Sleeping · **[L127](#L127)** MilestoneGlow |
-| Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L131](#L131)** Ambient Soundscape · **[L179](#L179)** `人工 · Ambient Sound 入口` |
+| Idle 呼吸→眨眼/一瞥 **闪一下** | 已通过 | L-eyes / L-contract；e2e 不看像素 | **[L179](#L179)** `人工 · Idle 统一 pingpong 不闪` · **[L142](#L142)** `IdleOrchestrator / 坐禅闭眼` · 契约 `IdleOrchestrator.test.js` |
+| Safari Companion **底部横排**仍挡/错位 | 待人工测试 | e2e 未测 WebKit 布局 | **[L123](#L123)** `Companion Mode`（须 **Safari** 复测） |
+| Choose **pingpong + 1s 叠化** | 待人工测试 | 动画帧级 | **[L117](#L117)** `Arrival Choose 点头 pingpong→idle` · 可选 **[L118](#L118)** 完整 Arrival 串联 |
+| Notice 短句 **2.4s 可读** | 已通过 | 时长观感 | **[L116](#L116)** `Notice 点选后` · **[L180](#L180)** `人工 · Notice 短句可读完` |
+| Idle 突然东张西望 | 待人工测试 | 已关随机池；无自动调度单测 | **[L119](#L119)** `调试面板 · 全入库素材` · **[L137](#L137)** `idle / 坐禅闭眼呼吸基底` |
+| 靠近自动点头 | 待人工测试 | 行为已拆；无 e2e | **[L136](#L136)** `PointerInteraction · 靠近点头 nodGreeting` |
+| Rise → **LightProgression** 金晕 | **有问题** | 视觉 + 产品语义 | **[L141](#L141)** `LightProgression / 光影物理渐进` |
+| Sleeping 太慢/太快、MilestoneGlow 等 | **有问题** | 观感 | **[L148](#L148)** Sleeping · **[L130](#L130)** MilestoneGlow |
+| Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L134](#L134)** Ambient Soundscape · **[L181](#L181)** `人工 · Ambient Sound 入口` |
 
-**§B 未单列、但在场景 checklist 里测的项**（见 **L176–L183**）：**[L176](#L176)** A1 睡着/DORMANT（**已通过**） · **[L181](#L181)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L182](#L182)** Honesty 桥接完整 Arrival（**已通过**） · **[L183](#L183)** DEV 一键重置（**L-logic / 仅单元测试**，勿人工逐 key）。
+**§B 未单列、但在场景 checklist 里测的项**（见 **L178–L185**）：**[L178](#L178)** A1 睡着/DORMANT（**已通过**） · **[L183](#L183)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L184](#L184)** Honesty 桥接完整 Arrival（**已通过**） · **[L185](#L185)** DEV 一键重置（**L-logic / 仅单元测试**，勿人工逐 key）。
 
 #### C. 下一步自动化（未做 · 排 Task 2/3）
 
@@ -89,7 +89,7 @@
 | Task 2 | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock） | 场景 E/F；Offline/Flow 模式矩阵 |
 | Task 3 | Playwright **Honesty 桥接 Yes → Arrival DOM** | 场景 D/N；补登回流 |
 | 可选 | e2e **Skip — begin** 一键开表（不经逐步 Skip） | FocusSession 行「半卡 Sit」 |
-| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L177](#L177)** Idle（**已通过**） · **[L180](#L180)** Re-focus · **[L181](#L181)** Celebrating / SessionComplete（**已通过**） · **[L176–L183](#L176)** 场景 checklist |
+| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L179](#L179)** Idle（**已通过**） · **[L182](#L182)** Re-focus · **[L183](#L183)** Celebrating / SessionComplete（**已通过**） · **[L178–L185](#L178)** 场景 checklist |
 
 **命令**：`cd focus-tiger && npm run test:smoke`（**14** 条：9 scenario + 5 重置 L-logic）· `npm run test:e2e`（5 条）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
 
@@ -112,6 +112,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
+| UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径**：打开 demo → 对照 calm / celebrate；`tiger-hud` 悬停出数字、点 Trigger celebrate ≤1.2s 回 calm；`streak-meter` 点 Light last day 见金光呼吸一次；primary/secondary 按压缩放；progress daily 静 vs quest 脉动一眼可辨。**回流**：achievement-modal 打开→Continue quietly 柔和退出后再开。**非子项**：勿当作产品壳已换肤；成就/图鉴/每日任务仅设计探索、未接线主 App。 | 2026-07-21：用户书面建议统一 UI 风格与组件库；同意落地设计实验层，**未**替换产品壳。 | `focus-tiger/ui-kit/demo.html`（需本地静态服，如 `cd focus-tiger/ui-kit && python3 -m http.server 8765` → `http://127.0.0.1:8765/demo.html`；纯 `file://` 下 ES Module 常被浏览器拦截） | 2026-07-21 |
 | Arrival Practice / Notice「What is present…」点选后 | UI可见 | 已通过 | Sit → Notice：点 Calm → 图标收起，**短句须能读完**（约 2.4s）再进呼吸。 | 2026-07-20：书面确认框收起 OK。**同日再反馈**：`a calm presence…` 来不及看就消失→已加长至 2.4s，请复测。**2026-07-20 晚**：用户书面「测试 OK」。 | `http://localhost:5173/` · Sit → Calm | 2026-07-20 |
 | Arrival Practice / Choose 点头 pingpong→idle | UI可见 | 待人工测试 | Choose → **nod-bow pingpong**（正放鞠躬→倒放回坐姿）→ Companion 立刻可展；进出用 **约 1s 叠化**。 | 2026-07-20：用户要求加倒放 pingpong + 前后 1s 叠化。已改，请复测。 | `http://localhost:5173/` · Sit → Choose | 2026-07-20 |
 | Arrival Practice / 抵达练习（Welcome → Notice → Breath → Choose） | UI可见 | 待人工测试 | Breath 推近；Choose 点头 + 坐垫光晕；Companion 马上可用；点头↔idle **1s 叠化**后再拉回视距。 | 2026-07-20：点头改 pingpong + CapCut 1s。 | `http://localhost:5173/` · Sit | 2026-07-20 |

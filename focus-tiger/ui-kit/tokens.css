@@ -1,0 +1,57 @@
+/**
+ * Focus Tiger · UI Kit design tokens
+ * Derived from Yin (robe gray, cushion orange, vermillion mark, gold halo).
+ * Load this file on the host page; Shadow DOM components read via var(--*).
+ *
+ * Scope: design laboratory under focus-tiger/ui-kit/.
+ * Not wired into the product shell yet — see demo.html.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Quicksand:wght@500;600&display=swap");
+
+:root {
+  /* Surfaces — warm, quiet, never competing with Yin */
+  --color-bg: #f7f5f1;
+  --color-panel: #e4e1db;
+  --color-panel-soft: rgba(228, 225, 219, 0.92);
+
+  /* Accent from cushion / robe trim */
+  --color-accent: #b5623a;
+  --color-accent-soft: rgba(181, 98, 58, 0.22);
+
+  /* Ink / linework */
+  --color-ink: #2e2b28;
+  --color-ink-muted: rgba(46, 43, 40, 0.55);
+  --color-ink-faint: rgba(46, 43, 40, 0.1);
+
+  /* Highlight — vermillion; notifications / milestones only */
+  --color-highlight: #d64545;
+
+  /* Gold — achievement flash only; never a resident chrome color */
+  --color-gold: #f0c36a;
+  --color-gold-glow: rgba(240, 195, 106, 0.55);
+
+  /* Halo / incense metaphor */
+  --color-halo: rgba(181, 98, 58, 0.28);
+  --color-halo-bright: rgba(240, 195, 106, 0.45);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 8px 24px rgba(46, 43, 40, 0.08);
+  --shadow-lift: 0 12px 32px rgba(46, 43, 40, 0.12);
+
+  --font-family: "Nunito", "Quicksand", system-ui, sans-serif;
+  --font-size-sm: 0.8125rem;
+  --font-size-md: 0.9375rem;
+  --font-size-lg: 1.125rem;
+
+  --ease-calm: cubic-bezier(0.33, 0.1, 0.25, 1);
+  --duration-enter: 200ms;
+  --duration-press: 300ms;
+  --duration-celebrate: 1200ms;
+
+  --z-modal: 1000;
+}

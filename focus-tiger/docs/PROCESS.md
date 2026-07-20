@@ -52,6 +52,7 @@
 
 **近期落地（待人工测试）**：
 
+- **UI Kit 设计实验（2026-07-21）**：`focus-tiger/ui-kit/` — 统一 `tokens.css` + 10 个 Shadow DOM Web Components + `demo.html`；calm/celebrate ≤1.2s；**未**替换产品壳；成就/图鉴/每日任务仅视觉探索（Backlog）
 - **Idle 两段 pingpong（2026-07-20 验收通过）**：`idleBreathClosed` ×2 → `idleBlinkArc` ×1；同源 51 帧素材；段间硬切；用户书面测试 OK
 - **N15（2026-07-21）**：Bug 修复 = 代码/措施 + **相关文档同批** + **立刻本地 commit**（强制；见 `DEV_WORKFLOW_QUALITY.md`）
 - **Celebrating / 同日 SessionComplete（2026-07-21）**：**已复测通过**（首次舞 + 同日二次只摆尾）

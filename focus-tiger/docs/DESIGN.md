@@ -385,6 +385,27 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 ---
 
+## 🎨 UI Kit 设计实验（2026-07-21）
+
+> **路径**：`focus-tiger/ui-kit/`（`tokens.css` + Shadow DOM Web Components + `demo.html`）  
+> **状态**：设计实验室，**尚未**接入产品壳（`index.html` / Arrival / Companion / Sit）。  
+> **预览**：`cd focus-tiger/ui-kit && python3 -m http.server 8765` → 打开 `http://127.0.0.1:8765/demo.html`。
+
+### 与产品定位的对齐
+
+- **阿寅唯一高保真焦点**：组件只做从僧袍灰 / 蒲团橙 / 朱砂 / 金晕提炼的安静 chrome，不与角色抢视觉权重。
+- **宁静型游戏化**：`mode="calm" | "celebrate"`；celebrate ≤ **1.2s** 后自动回 calm；禁止常驻闪烁、跳动、强对比色块。
+- **数值默认弱化**：HUD / 光点隐喻优先，悬停或达成时刻才露出数字；文案第二人称陪伴式，禁止经验值 / 等级 / 连击黑话。
+- **Token**：`--color-bg` `#F7F5F1`、`--color-panel` `#E4E1DB`、`--color-accent` `#B5623A`、`--color-ink` `#2E2B28`、`--color-highlight` `#D64545`（慎用）、`--color-gold` `#F0C36A`（仅短暂闪光）。
+
+### 明确不接线（仍属 Backlog）
+
+`achievement-modal` / `collection-shelf` / `daily-quest-card` / 完整「打卡圈」产品化 → 纪念奖励系统排期前**只作视觉探索**，不得顺手挂进主会话路径（见 `PROCESS.md` Backlog「纪念奖励系统」）。
+
+现有产品按钮仍沿用朱红立体 Sit / Sound 样式；是否逐步迁到 UI Kit token，待人工看过 demo 后再拍板。
+
+---
+
 ## 🌫️ 视觉反馈系统设计规范
 
 ### 场景构成(替代原盆景三分区)
