@@ -100,3 +100,15 @@ test('ignores non-positive duration', () => {
   assert.equal(store.recordCompletion(-5), null);
   assert.equal(store.hasCompletedToday(), false);
 });
+
+test('getTodayTotalMinutes sums completed sessions for shared-sitting bar', () => {
+  const store = new DailyCompletionStore({
+    storage: createStorage(),
+    now: () => new Date(2026, 6, 16, 11)
+  });
+
+  assert.equal(store.getTodayTotalMinutes(), 0);
+  store.recordCompletion(10);
+  store.recordCompletion(5);
+  assert.equal(store.getTodayTotalMinutes(), 15);
+});

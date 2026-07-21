@@ -96,6 +96,14 @@ export class DailyCompletionStore {
     return [...this._getTodayState().sessions];
   }
 
+  /** Sum of today's completed session minutes (Honesty + timed; no source split). */
+  getTodayTotalMinutes() {
+    return this.getTodaySessions().reduce(
+      (sum, session) => sum + (Number(session.durationMinutes) || 0),
+      0
+    );
+  }
+
   /** @returns {DailyCompletionState} */
   getState() {
     const state = this._getTodayState();

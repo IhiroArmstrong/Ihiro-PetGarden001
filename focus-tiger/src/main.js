@@ -31,6 +31,7 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import { FOCUS_SESSION_DEFAULT_MINUTES } from './utils/Constants.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { LightProgression } from './effects/LightProgression.js';
 import { DynamicMotion } from './effects/DynamicMotion.js';
@@ -947,7 +948,10 @@ async function init() {
 
     beginSessionCompleteIfNeeded();
 
-    focusHUD.render(focusSession, stateManager);
+    focusHUD.render(focusSession, stateManager, {
+      todayCompletedMinutes: dailyCompletionStore.getTodayTotalMinutes(),
+      softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES
+    });
     composer.render();
   }
 

@@ -64,8 +64,9 @@
       #focus-hud .ft-hud {
         position: relative;
         display: flex;
-        align-items: center;
-        gap: 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
         padding: 14px 20px 14px 14px;
         border-radius: 20px;
         background: var(--color-panel-soft, rgba(228, 225, 219, 0.92));
@@ -73,6 +74,17 @@
         box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
         outline: none;
         --ft-hud-fill: 0;
+        min-width: 220px;
+      }
+      #focus-hud .ft-hud__row {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      #focus-hud .ft-hud__bar {
+        width: 100%;
+        max-width: none;
+        --font-family: inherit;
       }
       #focus-hud .ft-hud__gauge {
         position: relative;
