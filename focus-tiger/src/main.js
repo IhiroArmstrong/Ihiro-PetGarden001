@@ -284,6 +284,9 @@ async function init() {
     onPracticeDay: () => {
       practiceDaysStore.markToday();
     },
+    notifyUser: () => {
+      mindfulToast.show(t('HONESTY_PENDING_LOST'));
+    },
     now
   });
 

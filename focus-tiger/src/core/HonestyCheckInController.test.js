@@ -230,3 +230,85 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
   assert.equal(completeCalls, 1);
   assert.equal(stateManager.state, STATES.IDLE);
 });
+
+test('breath complete without pending minutes aborts: no record, toast, reopen duration', () => {
+  const warns = [];
+  const orig = console.warn;
+  console.warn = (...args) => {
+    warns.push(args.map(String).join(' '));
+  };
+
+  let notifyCalls = 0;
+  let completeCalls = 0;
+  let durationShown = 0;
+  let hideCalls = 0;
+  const { controller, store, stateManager, ui } = createControllerDeps({
+    ui: createUi({
+      hide() {
+        hideCalls += 1;
+        this.phase = 'hidden';
+      },
+      showDurationChoices() {
+        durationShown += 1;
+        this.phase = 'duration';
+      }
+    }),
+    extra: {
+      notifyUser: () => {
+        notifyCalls += 1;
+      },
+      onCheckInComplete: () => {
+        completeCalls += 1;
+      }
+    }
+  });
+
+  try {
+    stateManager.setState(STATES.IDLE);
+    ui.handlers.onDurationSelect(20);
+    assert.equal(controller._pendingMinutes, 20);
+
+    // 模拟 force 重开 / 竞态清掉 pending 后呼吸仍回调
+    controller._pendingMinutes = null;
+    ui.handlers.onBreathComplete();
+
+    assert.equal(store.hasCompletedToday(), false);
+    assert.equal(completeCalls, 0);
+    assert.equal(notifyCalls, 1);
+    assert.equal(durationShown >= 1, true);
+    assert.equal(ui.phase, 'duration');
+    assert.equal(controller._busy, false);
+    assert.match(warns.join('\n'), /without pending minutes/);
+    assert.equal(hideCalls >= 1, true);
+  } finally {
+    console.warn = orig;
+  }
+});
+
+test('openDurationChoices force cancels in-flight breath before reopening', () => {
+  let hideCalls = 0;
+  let durationShown = 0;
+  const { controller, stateManager, ui } = createControllerDeps({
+    ui: createUi({
+      hide() {
+        hideCalls += 1;
+        this.phase = 'hidden';
+      },
+      showDurationChoices() {
+        durationShown += 1;
+        this.phase = 'duration';
+      }
+    })
+  });
+  stateManager.setState(STATES.IDLE);
+  ui.handlers.onDurationSelect(10);
+  assert.equal(controller._busy, true);
+  assert.equal(controller._pendingMinutes, 10);
+
+  controller.openDurationChoices({ force: true });
+  assert.equal(controller._busy, false);
+  assert.equal(controller._pendingMinutes, null);
+  assert.equal(hideCalls >= 1, true);
+  assert.equal(durationShown >= 1, true);
+  assert.equal(ui.phase, 'duration');
+});

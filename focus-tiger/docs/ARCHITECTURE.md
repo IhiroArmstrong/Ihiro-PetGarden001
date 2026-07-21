@@ -47,6 +47,9 @@ StateManager(唯一状态源) → MoodController(只管播哪个动画)
 TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 ```
 
+合法转移（产品路径）：`IDLE ↔ DORMANT`、`IDLE → FOCUSING → CELEBRATE|IDLE`、`CELEBRATE → IDLE`。  
+`setState` **不阻断**非法转移，但 `console.warn`（`LEGAL_STATE_TRANSITIONS`）；`BREAK` 枚举保留、当前未使用。边角观察：`docs/EDGE_CASES.md`。
+
 ---
 
 ## 项目目录结构 v5.0

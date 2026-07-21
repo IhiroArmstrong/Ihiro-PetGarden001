@@ -112,6 +112,7 @@
   "HINT_CHOOSE": "Choose one — or type your own.",
   "HINT_COMPANION_MODE": "Pick one — the timer starts.",
   "HONESTY_IDLE_ENTRY": "Mindful Check-in",
+  "HONESTY_PENDING_LOST": "Something went sideways — please choose a duration again.",
   "HINT_COMPANION_STAY": "Yin stays quiet nearby unless you are away a while.",
   "HINT_COMPANION_AWAY": "Check-ins pause while you are away. Sit again when ready to begin.",
   "HINT_COMPANION_ACROSS": "Away reminders stay off in this mode.",

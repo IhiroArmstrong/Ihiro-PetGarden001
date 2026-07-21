@@ -35,6 +35,7 @@ export class HonestyCheckInController {
    * @param {() => void} [deps.clearFocusGlow]
    * @param {() => void} [deps.onCheckInComplete] 补登仪式结束（记账）后；桥接 CTA 挂这里
    * @param {() => void} [deps.onPracticeDay] 计时达标或 Honesty 记账后标记练习日（光点圈）
+   * @param {() => void} [deps.notifyUser] 非模态提示（如 toast）；pending 丢失 abort 时由 main 注入文案
    * @param {() => Date} [deps.now]
    * @param {number} [deps.dormantIdleMs]
    */
@@ -48,6 +49,7 @@ export class HonestyCheckInController {
     clearFocusGlow = () => {},
     onCheckInComplete = () => {},
     onPracticeDay = () => {},
+    notifyUser = () => {},
     now = () => new Date(),
     dormantIdleMs = DORMANT_IDLE_MS
   }) {
@@ -60,6 +62,7 @@ export class HonestyCheckInController {
     this.clearFocusGlow = clearFocusGlow;
     this.onCheckInComplete = onCheckInComplete;
     this.onPracticeDay = onPracticeDay;
+    this.notifyUser = notifyUser;
     this.now = now;
     this.dormantIdleMs = dormantIdleMs;
     /** @type {number | null} */
@@ -185,7 +188,8 @@ export class HonestyCheckInController {
     this._busy = false;
     this._pendingMinutes = null;
     this.ui.hideIdleEntry();
-
+    // 取消进行中的呼吸计时，避免 force 重开后 onBreathComplete 带着空 pending 触发
+    this.ui.hide();
     this.ui.showDurationChoices();
   }
 
@@ -205,8 +209,21 @@ export class HonestyCheckInController {
   }
 
   _onBreathComplete() {
-    const minutes = this._pendingMinutes ?? 30;
+    const minutes = this._pendingMinutes;
     this._pendingMinutes = null;
+
+    if (!Number.isFinite(minutes) || minutes <= 0) {
+      console.warn(
+        '[HonestyCheckIn] breath complete without pending minutes; aborting record'
+      );
+      this._busy = false;
+      this.clearFocusGlow();
+      this.ui.hide();
+      // 兜底：非模态提示 + 重开时长三选一（禁止白屏/卡住；禁止静默记 30 分钟）
+      this.notifyUser();
+      this.openDurationChoices({ force: true });
+      return;
+    }
 
     this.store.recordCompletion(minutes);
     this.onPracticeDay();

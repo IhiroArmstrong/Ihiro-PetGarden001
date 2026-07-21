@@ -112,6 +112,7 @@
   "HINT_CHOOSE": "选一个，也可以自己写。",
   "HINT_COMPANION_MODE": "选一个，计时就会开始。",
   "HONESTY_IDLE_ENTRY": "正念登入",
+  "HONESTY_PENDING_LOST": "刚才没记上 —— 请再选一次时长。",
   "HINT_COMPANION_STAY": "你在时阿寅不多打扰；离开一阵才会轻轻留意。",
   "HINT_COMPANION_AWAY": "离开时提醒会暂停。准备开始时再点同坐。",
   "HINT_COMPANION_ACROSS": "这个方式下，离开提醒会保持关闭。",
