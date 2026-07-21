@@ -1,10 +1,10 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
-import { focusLevelToIncenseVars } from './focusHudIncense.js';
+import { focusLevelToHaloVars } from './focusHudHalo.js';
 
-export { focusLevelToIncenseVars };
+export { focusLevelToHaloVars };
 
 /**
- * Soft chrome HUD: incense-scale glow for focus; digits muted until hover / focus-within.
+ * Soft chrome HUD: gold progress ring + breathing center light; digits muted until hover.
  * Keeps #hud-state / #hud-time / #hud-level for e2e + a11y.
  */
 export class FocusHUD {
@@ -18,10 +18,10 @@ export class FocusHUD {
     if (!this.root) return;
     this.root.innerHTML = `
       <div class="ft-hud" tabindex="0" aria-label="${t('HUD_ARIA_LABEL')}">
-        <div class="ft-hud__incense" aria-hidden="true">
+        <div class="ft-hud__gauge" aria-hidden="true">
+          <div class="ft-hud__ring-track"></div>
           <div class="ft-hud__ring"></div>
-          <div class="ft-hud__smoke"></div>
-          <div class="ft-hud__bowl"></div>
+          <div class="ft-hud__core"></div>
         </div>
         <div class="ft-hud__meta">
           <span id="hud-state" class="ft-hud__state">${t('STATE_IDLE')}</span>
@@ -36,7 +36,7 @@ export class FocusHUD {
     `;
     this.wrapEl = this.root.querySelector('.ft-hud');
     this.ringEl = this.root.querySelector('.ft-hud__ring');
-    this.smokeEl = this.root.querySelector('.ft-hud__smoke');
+    this.coreEl = this.root.querySelector('.ft-hud__core');
     this.stateEl = this.root.querySelector('#hud-state');
     this.levelEl = this.root.querySelector('#hud-level');
     this.timeEl = this.root.querySelector('#hud-time');
@@ -63,7 +63,7 @@ export class FocusHUD {
     if (!this.root || !this.stateEl) return;
 
     const level = focusSession.getFocusLevel();
-    const vars = focusLevelToIncenseVars(level);
+    const vars = focusLevelToHaloVars(level);
     const focusing = stateManager.state === 'FOCUSING';
 
     this.levelEl.textContent = `${Math.round(level * 100)}%`;
@@ -78,9 +78,9 @@ export class FocusHUD {
       this.ringEl.style.setProperty('--ft-hud-fill', String(vars.fill));
       this.ringEl.style.opacity = String(vars.ringOpacity);
     }
-    if (this.smokeEl) {
-      this.smokeEl.style.opacity = String(vars.smokeOpacity);
-      this.smokeEl.style.setProperty('--ft-hud-fill', String(vars.fill));
+    if (this.coreEl) {
+      this.coreEl.style.opacity = String(vars.coreOpacity);
+      this.coreEl.style.setProperty('--ft-hud-fill', String(vars.fill));
     }
   }
 }
