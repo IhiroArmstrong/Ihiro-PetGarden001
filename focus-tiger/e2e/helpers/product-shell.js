@@ -64,6 +64,8 @@ export async function expectFocusSessionActive(page) {
 
 export async function expectFocusSessionInactive(page) {
   await expect(page.locator('#btn-focus')).toContainText(/Sit with Yin|与阿寅同坐/i);
-  await expect(page.locator('#hud-state')).toContainText(/Idle|Asleep|空闲|沉睡/i);
+  await expect(page.locator('#hud-state')).toContainText(
+    /Calm|Idle|Asleep|沉静|空闲|沉睡/i
+  );
   await expect(page.locator('#hud-time')).toHaveText('00:00');
 }

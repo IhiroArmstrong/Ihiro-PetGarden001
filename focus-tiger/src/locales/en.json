@@ -15,6 +15,7 @@
   "HUD_LABEL_STATE": "Status",
   "HUD_LABEL_LEVEL": "Focus",
   "HUD_LABEL_TIME": "Time",
+  "HUD_ARIA_LABEL": "Session presence — incense glow; hover for focus percent",
   "STATE_IDLE": "Calm",
   "STATE_FOCUSING": "Focusing",
   "STATE_BREAK": "Break",

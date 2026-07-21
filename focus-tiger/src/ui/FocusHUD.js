@@ -1,21 +1,42 @@
-import { COLORS } from '../utils/Constants.js';
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { focusLevelToIncenseVars } from './focusHudIncense.js';
 
+export { focusLevelToIncenseVars };
+
+/**
+ * Soft chrome HUD: incense-scale glow for focus; digits muted until hover / focus-within.
+ * Keeps #hud-state / #hud-time / #hud-level for e2e + a11y.
+ */
 export class FocusHUD {
   constructor(rootElement) {
     this.root = rootElement;
     this._ensureElements();
-    // 语言切换时重建标签（数值由 render 每帧回填）
     onLocaleChange(() => this._ensureElements());
   }
 
   _ensureElements() {
     if (!this.root) return;
     this.root.innerHTML = `
-      <div class="hud-status">${t('HUD_LABEL_STATE')}: <span id="hud-state">${t('STATE_IDLE')}</span></div>
-      <div class="hud-level">${t('HUD_LABEL_LEVEL')}: <span id="hud-level">0%</span></div>
-      <div class="hud-time">${t('HUD_LABEL_TIME')}: <span id="hud-time">00:00</span></div>
+      <div class="ft-hud" tabindex="0" aria-label="${t('HUD_ARIA_LABEL')}">
+        <div class="ft-hud__incense" aria-hidden="true">
+          <div class="ft-hud__ring"></div>
+          <div class="ft-hud__smoke"></div>
+          <div class="ft-hud__bowl"></div>
+        </div>
+        <div class="ft-hud__meta">
+          <span id="hud-state" class="ft-hud__state">${t('STATE_IDLE')}</span>
+          <span id="hud-time" class="ft-hud__time">00:00</span>
+        </div>
+        <div class="ft-hud__detail" role="status">
+          <span class="ft-hud__detail-line">
+            ${t('HUD_LABEL_LEVEL')}: <span id="hud-level">0%</span>
+          </span>
+        </div>
+      </div>
     `;
+    this.wrapEl = this.root.querySelector('.ft-hud');
+    this.ringEl = this.root.querySelector('.ft-hud__ring');
+    this.smokeEl = this.root.querySelector('.ft-hud__smoke');
     this.stateEl = this.root.querySelector('#hud-state');
     this.levelEl = this.root.querySelector('#hud-level');
     this.timeEl = this.root.querySelector('#hud-time');
@@ -39,12 +60,27 @@ export class FocusHUD {
   }
 
   render(focusSession, stateManager) {
-    if (!this.root) return;
+    if (!this.root || !this.stateEl) return;
 
     const level = focusSession.getFocusLevel();
+    const vars = focusLevelToIncenseVars(level);
+    const focusing = stateManager.state === 'FOCUSING';
+
     this.levelEl.textContent = `${Math.round(level * 100)}%`;
     this.timeEl.textContent = this._formatTime(focusSession.getElapsedSeconds());
     this.stateEl.textContent = this._stateLabel(stateManager.state);
-    this.stateEl.style.color = level > 0.5 ? COLORS.focusGoldMid : COLORS.textInk;
+
+    if (this.wrapEl) {
+      this.wrapEl.dataset.focusing = focusing ? '1' : '0';
+      this.wrapEl.style.setProperty('--ft-hud-fill', String(vars.fill));
+    }
+    if (this.ringEl) {
+      this.ringEl.style.setProperty('--ft-hud-fill', String(vars.fill));
+      this.ringEl.style.opacity = String(vars.ringOpacity);
+    }
+    if (this.smokeEl) {
+      this.smokeEl.style.opacity = String(vars.smokeOpacity);
+      this.smokeEl.style.setProperty('--ft-hud-fill', String(vars.fill));
+    }
   }
 }

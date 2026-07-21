@@ -15,6 +15,7 @@
   "HUD_LABEL_STATE": "状态",
   "HUD_LABEL_LEVEL": "专注度",
   "HUD_LABEL_TIME": "时长",
+  "HUD_ARIA_LABEL": "会话陪伴——香雾光环；悬停可看专注百分比",
   "STATE_IDLE": "沉静",
   "STATE_FOCUSING": "专注中",
   "STATE_BREAK": "休息",

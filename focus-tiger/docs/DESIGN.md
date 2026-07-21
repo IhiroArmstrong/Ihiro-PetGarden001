@@ -407,6 +407,8 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 
+**产品壳 FocusHUD（2026-07-21）**：左上角改为「香炉刻度」隐喻——碗身 + 轻烟高度/金环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。回归：`FocusHUD.test.js` + e2e `#hud-state` / `#hud-time`。
+
 ---
 
 ## 🌫️ 视觉反馈系统设计规范
