@@ -370,58 +370,44 @@ export class CompanionModePicker {
       #btn-focus:active {
         transform: translateY(2px) scale(0.985) !important;
       }
-      /* 次要立体钮：暖米金，与 Sit 朱红同系阴影语言、不抢主 CTA */
+      /* 次要钮：描边软 UI（对齐 ui-kit secondary-button）；不抢 Sit 主 CTA */
       .session-start-dock__hint {
-        border: 1px solid rgba(139, 90, 55, 0.38);
-        background: linear-gradient(180deg, #fff8ec 0%, #f0dfc4 45%, #e4c9a0 100%);
-        color: #4a3224;
+        border: 1.5px solid var(--color-ink, #2c1f14);
+        background: transparent;
+        color: var(--color-ink, #2c1f14);
         font-size: 14px;
         font-weight: 600;
         letter-spacing: 0.02em;
         cursor: pointer;
         padding: 9px 20px;
         border-radius: 999px;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.92) inset,
-          0 -1px 0 rgba(120, 80, 40, 0.12) inset,
-          0 3px 0 rgba(160, 118, 72, 0.42),
-          0 8px 18px rgba(44, 31, 20, 0.16);
+        box-shadow: none;
         text-decoration: none;
         max-width: 100%;
         line-height: 1.35;
         text-align: center;
-        transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+        transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
       }
       .session-start-dock__hint:hover,
       .session-start-dock__hint.is-expanded {
-        color: #3a261c;
-        filter: brightness(1.04);
+        color: var(--color-ink, #2c1f14);
+        background: var(--color-ink-faint, rgba(46, 43, 40, 0.1));
+        filter: none;
       }
       .session-start-dock__hint:active:not(:disabled) {
-        transform: translateY(2px) scale(0.985);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.7) inset,
-          0 -1px 0 rgba(120, 80, 40, 0.14) inset,
-          0 1px 0 rgba(160, 118, 72, 0.35),
-          0 3px 8px rgba(44, 31, 20, 0.12);
+        transform: scale(0.97);
+        box-shadow: none;
       }
       .session-start-dock__hint.is-awaiting-arrival {
-        /* 门闩未就绪仍可点（启动 Arrival）；略强调为可行动次要钮 */
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.95) inset,
-          0 -1px 0 rgba(120, 80, 40, 0.14) inset,
-          0 3px 0 rgba(168, 110, 58, 0.48),
-          0 10px 20px rgba(44, 31, 20, 0.18);
+        border-color: var(--color-accent, #b5623a);
+        box-shadow: none;
       }
       .session-start-dock__hint.is-gated,
       .session-start-dock__hint:disabled {
         cursor: default;
         filter: none;
-        opacity: 0.55;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.7) inset,
-          0 1px 0 rgba(160, 118, 72, 0.2),
-          0 2px 6px rgba(44, 31, 20, 0.08);
+        opacity: 0.4;
+        box-shadow: none;
       }
       .session-start-dock__hint[hidden] {
         display: none !important;

@@ -13,6 +13,7 @@
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | DORMANT / Honesty / 完成列表；内含 `celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳） |
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐光点圈（7 点）；计时达标 / Honesty 记账时 `markToday`；无断签惩罚文案 |
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显 |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |

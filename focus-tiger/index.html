@@ -79,12 +79,20 @@
       #focus-hud .ft-hud__row {
         display: flex;
         align-items: center;
-        gap: 18px;
+        gap: 14px;
       }
       #focus-hud .ft-hud__bar {
         width: 100%;
         max-width: none;
         --font-family: inherit;
+      }
+      #focus-hud .ft-hud__streak {
+        flex-shrink: 0;
+        --meter-size: 64px;
+        margin-left: auto;
+      }
+      #focus-hud .ft-hud__streak::part(label) {
+        font-size: 0.7rem;
       }
       #focus-hud .ft-hud__gauge {
         position: relative;

@@ -29,6 +29,7 @@ export class HonestyCheckInController {
    * @param {(level: number) => void} [deps.applyFocusGlow]
    * @param {() => void} [deps.clearFocusGlow]
    * @param {() => void} [deps.onCheckInComplete] 补登仪式结束（记账 + 离 DORMANT）后；桥接 CTA 挂这里
+   * @param {() => void} [deps.onPracticeDay] 计时达标或 Honesty 记账后标记练习日（光点圈）
    */
   constructor({
     store,
@@ -37,7 +38,8 @@ export class HonestyCheckInController {
     ui,
     applyFocusGlow = () => {},
     clearFocusGlow = () => {},
-    onCheckInComplete = () => {}
+    onCheckInComplete = () => {},
+    onPracticeDay = () => {}
   }) {
     this.store = store;
     this.stateManager = stateManager;
@@ -46,6 +48,7 @@ export class HonestyCheckInController {
     this.applyFocusGlow = applyFocusGlow;
     this.clearFocusGlow = clearFocusGlow;
     this.onCheckInComplete = onCheckInComplete;
+    this.onPracticeDay = onPracticeDay;
     /** @type {number | null} */
     this._pendingMinutes = null;
     this._busy = false;
@@ -70,6 +73,7 @@ export class HonestyCheckInController {
    */
   onTimedSessionCompleted(durationMinutes) {
     this.store.recordCompletion(durationMinutes);
+    this.onPracticeDay();
     this.ui.hide();
     this._busy = false;
     this._pendingMinutes = null;
@@ -200,6 +204,7 @@ export class HonestyCheckInController {
     this._pendingMinutes = null;
 
     this.store.recordCompletion(minutes);
+    this.onPracticeDay();
     this.clearFocusGlow();
     this._busy = false;
 

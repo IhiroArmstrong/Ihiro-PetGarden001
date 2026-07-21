@@ -17,6 +17,7 @@
   "HUD_LABEL_TIME": "Time",
   "HUD_ARIA_LABEL": "Session presence — gold ring; hover for focus percent",
   "HUD_PROGRESS_SHARED_SITTING": "Today's shared sitting",
+  "HUD_STREAK_HOVER": "Recent days you've sat together",
   "STATE_IDLE": "Calm",
   "STATE_FOCUSING": "Focusing",
   "STATE_BREAK": "Break",

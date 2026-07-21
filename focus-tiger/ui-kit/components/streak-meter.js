@@ -80,7 +80,7 @@ const STYLE = `
 
 export class StreakMeter extends HTMLElement {
   static get observedAttributes() {
-    return ["mode", "filled", "total", "silhouette-src"];
+    return ["mode", "filled", "total", "silhouette-src", "label"];
   }
 
   constructor() {
@@ -128,7 +128,9 @@ export class StreakMeter extends HTMLElement {
     const total = Math.max(1, parseInt(this.getAttribute("total") || "7", 10));
     const filled = Math.min(total, Math.max(0, parseInt(this.getAttribute("filled") || "0", 10)));
     this._img.src = this.getAttribute("silhouette-src") || YIN_SILHOUETTE_SVG;
-    this._label.textContent = `Days you've practiced: ${filled} of ${total}`;
+    const custom = this.getAttribute("label");
+    this._label.textContent =
+      custom || `Days you've practiced: ${filled} of ${total}`;
 
     this._ring.innerHTML = "";
     for (let i = 0; i < total; i++) {

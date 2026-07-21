@@ -46,6 +46,10 @@ import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
+import {
+  PracticeDaysStore,
+  PRACTICE_STREAK_RING_TOTAL
+} from './core/PracticeDaysStore.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import { HonestyCheckInController } from './core/HonestyCheckInController.js';
 import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
@@ -245,6 +249,7 @@ async function init() {
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
   const dailyCompletionStore = new DailyCompletionStore();
+  const practiceDaysStore = new PracticeDaysStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
@@ -269,6 +274,9 @@ async function init() {
       onboardingHints?.markSeen('honesty-optional');
       honestyBridge?.onHonestyCheckInComplete();
       syncOnboardingAutoHints();
+    },
+    onPracticeDay: () => {
+      practiceDaysStore.markToday();
     }
   });
 
@@ -450,6 +458,7 @@ async function init() {
     window.__attentionSignals = attentionSignals;
     window.__reflectionMoment = reflectionMoment;
     window.__dailyCompletionStore = dailyCompletionStore;
+    window.__practiceDaysStore = practiceDaysStore;
     window.__honestyCheckIn = honestyCheckIn;
     window.__companionModePicker = companionModePicker;
     window.__acrossToolsIdleGuard = acrossToolsIdleGuard;
@@ -950,7 +959,9 @@ async function init() {
 
     focusHUD.render(focusSession, stateManager, {
       todayCompletedMinutes: dailyCompletionStore.getTodayTotalMinutes(),
-      softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES
+      softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
+      practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
+      practiceRingTotal: PRACTICE_STREAK_RING_TOTAL
     });
     composer.render();
   }

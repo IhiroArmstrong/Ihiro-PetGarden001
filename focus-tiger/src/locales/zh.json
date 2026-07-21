@@ -17,6 +17,7 @@
   "HUD_LABEL_TIME": "时长",
   "HUD_ARIA_LABEL": "会话陪伴——金环光点；悬停可看专注百分比",
   "HUD_PROGRESS_SHARED_SITTING": "今日同坐",
+  "HUD_STREAK_HOVER": "近日同坐的日子",
   "STATE_IDLE": "沉静",
   "STATE_FOCUSING": "专注中",
   "STATE_BREAK": "休息",

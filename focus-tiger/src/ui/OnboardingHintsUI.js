@@ -13,6 +13,14 @@ import {
   resolveRemedyHintIds
 } from '../core/OnboardingHintsStore.js';
 import './ft-onboarding-hint-bubble.js';
+import {
+  NotificationBadge,
+  NOTIFICATION_BADGE_TAG
+} from '../../ui-kit/components/notification-badge.js';
+
+if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
+  customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
+}
 
 /**
  * hintId → 锚定目标与尖角朝向。
@@ -119,14 +127,21 @@ export class OnboardingHintsUI {
     this.helpBtn.type = 'button';
     this.helpBtn.id = 'onboarding-hint-help';
     this.helpBtn.className = 'onboarding-hint-help';
-    this.helpBtn.textContent = '?';
     this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
+    const helpMark = document.createElement('span');
+    helpMark.className = 'onboarding-hint-help__mark';
+    helpMark.textContent = '?';
+    this.helpBadge = document.createElement(NOTIFICATION_BADGE_TAG);
+    this.helpBadge.className = 'onboarding-hint-help__badge';
+    this.helpBadge.setAttribute('aria-hidden', 'true');
+    this.helpBtn.append(helpMark, this.helpBadge);
     this.helpBtn.addEventListener('click', () => {
       this.markSeen('help-affordance');
       this.showRemedy();
     });
 
     mountRoot.append(this.helpBtn);
+    this._syncHelpBadge();
     this._injectHelpStyles();
     this._onReposition = () => this.repositionAll();
     window.addEventListener('resize', this._onReposition);
@@ -181,6 +196,16 @@ export class OnboardingHintsUI {
     if (this._visibleIds.has(hintId)) {
       this.hideBubble(hintId);
     }
+    if (hintId === 'help-affordance') this._syncHelpBadge();
+  }
+
+  /** Vermillion mark only while help-affordance unseen — never persistent chrome noise. */
+  _syncHelpBadge() {
+    if (!this.helpBadge) return;
+    const show = !this.store.isSeen('help-affordance');
+    this.helpBadge.hidden = !show;
+    if (show) this.helpBadge.setAttribute('pulse', '');
+    else this.helpBadge.removeAttribute('pulse');
   }
 
   /** 补救：强制展示本页全部操作提示（忽略已读）+「?」旁元文案。 */
@@ -424,6 +449,19 @@ export class OnboardingHintsUI {
           0 10px 22px rgba(44, 31, 20, 0.18);
         opacity: 1;
         transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+      }
+      .onboarding-hint-help__mark {
+        display: block;
+        line-height: 52px;
+        text-align: center;
+      }
+      .onboarding-hint-help__badge {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+      }
+      .onboarding-hint-help__badge[hidden] {
+        display: none !important;
       }
       .onboarding-hint-help:hover {
         filter: brightness(1.04);

@@ -14,6 +14,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { DailyCompletionStore, DAILY_COMPLETION_STORAGE_KEY } from './DailyCompletionStore.js';
+import {
+  PracticeDaysStore,
+  PRACTICE_DAYS_STORAGE_KEY
+} from './PracticeDaysStore.js';
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
 import { HonestyBridgeStore, HONESTY_BRIDGE_STORAGE_KEY } from './HonestyBridgeStore.js';
 import {
@@ -62,6 +66,7 @@ const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
 /** 各模块导出的 localStorage key —— 与白名单必须集合相等。 */
 const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_COMPLETION_STORAGE_KEY,
+  PRACTICE_DAYS_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
   INTENTION_STORAGE_KEY,
   REFLECTION_STORAGE_KEY,
@@ -114,6 +119,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   dirtyCompletions.recordCompletion(20);
   assert.equal(dirtyCompletions.hasCompletedToday(), true);
 
+  const dirtyPractice = new PracticeDaysStore({ storage });
+  dirtyPractice.markToday();
+  assert.ok(dirtyPractice.getRecentStreakDays() >= 1);
+
   const dirtyBridge = new HonestyBridgeStore({ storage });
   dirtyBridge.markShown();
   assert.equal(dirtyBridge.hasShownToday(), true);
@@ -147,6 +156,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   const freshCompletions = new DailyCompletionStore({ storage });
   assert.equal(freshCompletions.hasCompletedToday(), false);
   assert.deepEqual(freshCompletions.getTodaySessions(), []);
+
+  const freshPractice = new PracticeDaysStore({ storage });
+  assert.equal(freshPractice.getRecentStreakDays(), 0);
+  assert.equal(freshPractice.getRingFilled(7), 0);
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);
