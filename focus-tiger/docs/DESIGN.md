@@ -312,7 +312,7 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 
 - **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
 - **默认开启** Mer-Ka-Ba（偏好存 `focus-tiger.ambient-pref.v1`）；用户关掉后刷新仍保持关闭；
-- UI 拆成两处：**右上米色圆形音符钮**（随时静音/恢复；在播时图标带斜杠）+ **专注中右下角蒲团橙 Sound**（展开曲目/音量，恢复旧版）；
+- UI 拆成两处：**右上米色圆形音符钮**（随时静音/恢复；在播时图标带斜杠）+ **右下角蒲团橙 Sound**（**始终可见**；专注后可展开曲目/音量，未专注点击提示先 Sit）；
 - 浏览器若拦截自动播放：点右上音符钮解锁；不得因未开音乐削弱完成反馈。
 
 #### 2. 播放时长作为独立「在场置信信号」

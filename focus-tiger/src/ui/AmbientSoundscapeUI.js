@@ -1,7 +1,7 @@
 /**
  * 背景音 UI：
- * - 左上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/恢复，默认开播 Mer-Ka-Ba
- * - 专注中右下角 **Sound** 蒲团橙按钮 → 曲目/音量面板（恢复旧行为）
+ * - 右上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/恢复，默认开播 Mer-Ka-Ba
+ * - 右下角 **Sound** 蒲团橙按钮始终可见；专注后可展开曲目/音量（恢复旧行为）
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -12,6 +12,7 @@ import {
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
+const BLOCKED_TIP_MS = 4200;
 
 const MUSIC_ICON_ON = `<svg class="ambient-soundscape__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>`;
 
@@ -48,10 +49,11 @@ export class AmbientSoundscapeUI {
     this._expanded = false;
     this._sessionActive = false;
     this._nudgeVisible = false;
+    this._blockedTipTimer = null;
 
     this.root = document.createElement('div');
     this.root.id = 'ambient-soundscape';
-    this.root.className = 'ambient-soundscape';
+    this.root.className = 'ambient-soundscape is-gated';
 
     this.muteBtn = document.createElement('button');
     this.muteBtn.type = 'button';
@@ -63,7 +65,6 @@ export class AmbientSoundscapeUI {
 
     this.focusChrome = document.createElement('div');
     this.focusChrome.className = 'ambient-soundscape__focus-chrome';
-    this.focusChrome.hidden = true;
 
     this.nudgeEl = document.createElement('p');
     this.nudgeEl.className = 'ambient-soundscape__nudge';
@@ -73,12 +74,12 @@ export class AmbientSoundscapeUI {
     this.nudgeEl.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
-      this._dismissNudge();
+      this._dismissNudgeOrBlockedTip();
     });
     this.nudgeEl.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        this._dismissNudge();
+        this._dismissNudgeOrBlockedTip();
       }
     });
 
@@ -87,7 +88,10 @@ export class AmbientSoundscapeUI {
     this.soundBtn.className = 'ambient-soundscape__fab';
     this.soundBtn.setAttribute('aria-expanded', 'false');
     this.soundBtn.addEventListener('click', () => {
-      if (!this._sessionActive) return;
+      if (!this._sessionActive) {
+        this._showBlockedTip();
+        return;
+      }
       this._dismissNudge();
       this._expanded = !this._expanded;
       this._renderPanel();
@@ -127,20 +131,24 @@ export class AmbientSoundscapeUI {
     this._unsubLocale = onLocaleChange(() => this._renderPanel());
     this._injectStyles();
     this._renderPanel();
+    this.setSessionActive(false);
   }
 
   /**
-   * @param {boolean} focusing 计时是否进行中（显示右下角 Sound + 可开面板）
+   * @param {boolean} focusing 计时是否进行中（Sound 可展开曲目面板）
    */
   setSessionActive(focusing) {
     this._sessionActive = Boolean(focusing);
-    this.focusChrome.hidden = !this._sessionActive;
     this.root.classList.toggle('is-armed', this._sessionActive);
+    this.root.classList.toggle('is-gated', !this._sessionActive);
 
     if (!this._sessionActive) {
       this._expanded = false;
       this.panel.hidden = true;
       this.soundBtn.setAttribute('aria-expanded', 'false');
+      this._hideNudge();
+    } else {
+      this._clearBlockedTip();
     }
     this._refreshMuteBtn();
     this._renderPanel();
@@ -203,6 +211,38 @@ export class AmbientSoundscapeUI {
     if (!this._nudgeVisible && hasSeenNudge()) return;
     this._hideNudge();
     markNudgeSeen();
+  }
+
+  _showBlockedTip() {
+    this._expanded = false;
+    this.panel.hidden = true;
+    this.soundBtn.setAttribute('aria-expanded', 'false');
+    this._nudgeVisible = false;
+    this.nudgeEl.hidden = false;
+    this.nudgeEl.classList.add('is-blocked-tip');
+    this.nudgeEl.textContent = t('HINT_AMBIENT_GATED');
+    window.clearTimeout(this._blockedTipTimer);
+    this._blockedTipTimer = window.setTimeout(() => {
+      this._clearBlockedTip();
+    }, BLOCKED_TIP_MS);
+  }
+
+  _clearBlockedTip() {
+    window.clearTimeout(this._blockedTipTimer);
+    this._blockedTipTimer = null;
+    if (this.nudgeEl.classList.contains('is-blocked-tip')) {
+      this.nudgeEl.classList.remove('is-blocked-tip');
+      this.nudgeEl.hidden = true;
+      this.nudgeEl.textContent = '';
+    }
+  }
+
+  _dismissNudgeOrBlockedTip() {
+    if (this.nudgeEl.classList.contains('is-blocked-tip')) {
+      this._clearBlockedTip();
+      return;
+    }
+    this._dismissNudge();
   }
 
   _renderPanel() {
@@ -287,9 +327,12 @@ export class AmbientSoundscapeUI {
   }
 
   _injectStyles() {
-    if (document.getElementById('ambient-soundscape-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'ambient-soundscape-styles';
+    let style = document.getElementById('ambient-soundscape-styles');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'ambient-soundscape-styles';
+      document.head.appendChild(style);
+    }
     style.textContent = `
       .ambient-soundscape {
         position: fixed;
@@ -344,14 +387,15 @@ export class AmbientSoundscapeUI {
         position: fixed;
         right: 16px;
         bottom: 28px;
+        z-index: 23;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
         pointer-events: none;
       }
-      .ambient-soundscape__focus-chrome[hidden] {
-        display: none !important;
+      .ambient-soundscape.is-gated .ambient-soundscape__fab {
+        opacity: 0.72;
       }
       .ambient-soundscape__fab {
         pointer-events: auto;
@@ -391,6 +435,16 @@ export class AmbientSoundscapeUI {
           0 2px 0 #5a3018,
           0 8px 18px rgba(44, 31, 20, 0.28),
           0 0 0 2px rgba(240, 192, 96, 0.55);
+        opacity: 1;
+      }
+      .ambient-soundscape__nudge.is-blocked-tip {
+        border-color: rgba(139, 115, 85, 0.35);
+        background: linear-gradient(
+          165deg,
+          rgba(255, 255, 255, 0.96) 0%,
+          #f8f1e4 100%
+        );
+        color: rgba(74, 58, 40, 0.78);
       }
       .ambient-soundscape__nudge {
         position: relative;
@@ -460,6 +514,5 @@ export class AmbientSoundscapeUI {
         accent-color: var(--color-accent, #b5623a);
       }
     `;
-    document.head.appendChild(style);
   }
 }
