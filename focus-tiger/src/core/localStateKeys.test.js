@@ -19,10 +19,6 @@ import {
   FOCUS_SESSION_END_STORAGE_KEY
 } from './FocusSessionEndStore.js';
 import {
-  DormantCloakSleepStore,
-  DORMANT_CLOAK_SLEEP_STORAGE_KEY
-} from './DormantCloakSleepStore.js';
-import {
   PracticeDaysStore,
   PRACTICE_DAYS_STORAGE_KEY
 } from './PracticeDaysStore.js';
@@ -76,7 +72,6 @@ const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_COMPLETION_STORAGE_KEY,
   FOCUS_SESSION_END_STORAGE_KEY,
-  DORMANT_CLOAK_SLEEP_STORAGE_KEY,
   PRACTICE_DAYS_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
   INTENTION_STORAGE_KEY,

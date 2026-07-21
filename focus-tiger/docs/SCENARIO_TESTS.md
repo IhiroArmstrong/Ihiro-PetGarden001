@@ -13,7 +13,7 @@
 - 浏览器壳：`e2e/product-shell.smoke.spec.js` + `e2e/scenario-a.companion.spec.js`（`npm run test:e2e`）
   - **I**：hint 未就绪 → 打开 Arrival（非静默）
   - **A**：Arrival Skip → Here & Now → HUD 计时开始
-  - **K**：Offline 选中不开表 → 再 Sit 才开
+  - **K**：Offline 选中即开表（与 Here & Now / Flow 一致） · `e2e/scenario-a.companion.spec.js`
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下注明「已自动化 / 仍须人工」。
 
@@ -43,7 +43,7 @@
 
 1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **Idle 闭目坐禅**，**不是** sleeping。  
    *[逻辑：零完成 → Idle + Honesty prompt 已自动化 smoke A1]*
-2. 应看到 Honesty Check-in 可忽略提示（文案键 `HONESTY_CHECKIN_PROMPT`，大意「Quiet time elsewhere can live here too.」——邀请式，非盘问）。Kelly 决定直接开始，不理会提示，点击 **Sit with Yin**。
+2. Idle 时见 **Honesty Check-in** 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 **Sit with Yin** 开始本场计时。
 3. 右下角应有显眼 **「关闭音乐」**（默认 Mer-Ka-Ba；若浏览器拦自动播放，点一次按钮或页面即可解锁）。随时可关，不必先 Sit。
 4. Arrival Practice 展开：
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
@@ -51,8 +51,7 @@
    c. 呼吸 beat（~5 秒，无倒计时）
    d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
    *[逻辑：Notice→Choose→READY + Here & Now 可 begin / 门闩失败 已自动化 smoke A3–A4]*
-5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。  
-   *[逻辑：选中即开 + Offline 不开 已自动化；真实 HUD 开表仍人工]*
+5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。**任一模式选中后即开始 Focus+计时**（不必再点 Sit；用户已点 Sit 进入 Arrival 即视为开始）。
 6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。
 7. 全程观察 Idle：**仅**闭目 pingpong → 眨眼弧固定节奏。  
    **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**。  
@@ -120,14 +119,16 @@
 
 ## 场景 D：请假一天后的 Honesty Check-in（含桥接 CTA）
 
-> **自动化**：选 20 → dormantWake(holdPose) → 记账离 DORMANT → 桥接 Yes→Arrival / No→idle / 同日再出 → smoke D。  
+> **自动化**：  
+> - **D sleep→wake 串联**：距上次专注 ≥2h → `sync` 进 DORMANT（`cloakSleep`→`sleeping`）→ Honesty 选 20 → `dormantWake` → 离 DORMANT → 桥接 Yes → smoke `D sleep→wake` + `dormantIdle` chain。  
+> - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → 桥接 Yes/No / 同日再出 → smoke D。  
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
-1. 模拟「次日零完成」：可用无完成记录的浏览器配置 / 清相关 localStorage 后刷新（见下方强制手段）。
-2. 当日 DORMANT，可忽略提示；这次点进 Honesty。
+1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，或 DEV 改 `focus-tiger.focus-session-end.v1` 后刷新 / 回前台（见下方强制手段）。新用户无结束记录**不会**自动睡。
+2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）。
 3. 选时长 10 / 20 / 30+（选 20）。
-4. **实际顺序**：选时长后 **立刻**播 `dormant-wake`（睡→坐起，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
-   *[逻辑：dormantWake + holdPose 已自动化]*
+4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
+   *[逻辑：2h→cloak→wake→离 DORMANT 已自动化 smoke D sleep→wake / dormantIdle chain]*
 5. 补登结束（记账、离 DORMANT）后：**立刻**出现 Honesty **桥接 CTA**（「要不要现在也坐一会儿？」Yes / No 同级；Welcome 回显可与邀请同屏一小会儿）。  
    - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
    - **No** → idle，无二次挽留。  
@@ -135,12 +136,13 @@
    *[逻辑：桥接 Yes/No/同日再出 已自动化；Yes 后完整 Arrival UI 仍人工]*
 6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
    **已知**：Honesty 路径暂不接 halo / 金光。
+   **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
 
 ---
 
 ## 场景 E：Offline Space（I'll step away）
 
-1. Arrival 后 Companion 选 **Offline Space** → **只预选，须再点 Sit** 才开计时。
+1. Arrival 后 Companion 选 **Offline Space** → **选中即开计时**（与 Here & Now / Flow 一致；已点 Sit 进入 Arrival 即视为开始）。
 2. 离开电脑一段时间。
 3. **已知缺口**：约 10 分钟无互动自动 `welcomeBack` / wave-hello **未接线**（仅调试「挥手欢迎」）。回来没看到挥手 = 已知状态。  
    离开期间**不应**出现 Re-focus（`suppressAwayReminders`）。
@@ -201,7 +203,8 @@
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |
 | Idle 加速眨眼 | DEV：`__idleOrchestrator.setTiming({ breathCyclesBeforeBlink: 1 })` |
-| 清当日完成（模拟 DORMANT） | DEV：清 `DailyCompletionStore` 相关 localStorage 后刷新（或 `__dailyCompletionStore`） |
+| 清当日完成（模拟 DORMANT） | DEV：清 `DailyCompletionStore` 相关 localStorage 后刷新（或 `__dailyCompletionStore`）——**仅**清零完成记录；**不会**单独进睡 |
+| 模拟 ≥2h 后进 DORMANT | DEV：设 `focus-tiger.focus-session-end.v1` = `{"lastEndedAt": <≥2h 前 epoch ms>}` 后刷新或切回前台；或坐完一场后把系统时间拨快 |
 
 说明：`#emotion-debug-ui` 当前在**非** `?product=1` 时挂载；`window.__*` 仅 `import.meta.env.DEV`。
 

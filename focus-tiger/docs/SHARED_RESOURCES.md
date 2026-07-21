@@ -14,7 +14,6 @@
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | Honesty / 完成列表；内含 `celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳） |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.dormant-cloak-sleep.v1` | `DormantCloakSleepStore` | 当日是否已播 `cloakSleep` 正放；跨自然日重置 |
 | `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐光点圈（7 点）；计时达标 / Honesty 记账时 `markToday`；无断签惩罚文案 |
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显 |

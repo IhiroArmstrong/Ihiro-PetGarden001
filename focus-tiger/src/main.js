@@ -49,7 +49,6 @@ import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
 import { FocusSessionEndStore } from './core/FocusSessionEndStore.js';
-import { DormantCloakSleepStore } from './core/DormantCloakSleepStore.js';
 import {
   PracticeDaysStore,
   PRACTICE_STREAK_RING_TOTAL
@@ -255,7 +254,6 @@ async function init() {
   const now = () => new Date();
   const dailyCompletionStore = new DailyCompletionStore({ now });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
-  const dormantCloakSleepStore = new DormantCloakSleepStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const honestyCheckInUI = new HonestyCheckInUI(
@@ -856,8 +854,7 @@ async function init() {
   }
 
   const moodController = new MoodController(stateManager, emotionController, {
-    onCelebrateComplete: finishCompletedSession,
-    dormantCloakSleepStore
+    onCelebrateComplete: finishCompletedSession
   });
   // StateManager 初始 IDLE 不会主动发 onChange；显式启动 observer baseline。
   moodController.handleStateChange(stateManager.state);

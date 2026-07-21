@@ -14,15 +14,9 @@ export class MoodController {
    * @param {import('./EmotionController.js').EmotionController} emotionController
    * @param {object} [hooks]
    * @param {() => void} [hooks.onCelebrateComplete] Celebrating 2D 弧线播完并已回归 idle 后回调
-   * @param {import('./DormantCloakSleepStore.js').DormantCloakSleepStore | null} [hooks.dormantCloakSleepStore]
    */
-  constructor(
-    stateManager,
-    emotionController,
-    { onCelebrateComplete, dormantCloakSleepStore = null } = {}
-  ) {
+  constructor(stateManager, emotionController, { onCelebrateComplete } = {}) {
     this.emotionController = emotionController;
-    this.dormantCloakSleepStore = dormantCloakSleepStore;
     this.onCelebrateComplete =
       typeof onCelebrateComplete === 'function' ? onCelebrateComplete : null;
     stateManager.onChange((state) => this.handleStateChange(state));
@@ -62,6 +56,7 @@ export class MoodController {
     }
 
     if (state === STATES.DORMANT) {
+      // 仅在实际发生「非 DORMANT → DORMANT」转换时触发（StateManager 同态 setState 为 no-op）。
       this._playDormantEntryVisual();
       return;
     }
@@ -70,22 +65,12 @@ export class MoodController {
   }
 
   _playDormantEntryVisual() {
-    const cloakStore = this.dormantCloakSleepStore;
-    const playCloakTransition =
-      cloakStore && !cloakStore.hasPlayedCloakSleepToday();
-
-    if (playCloakTransition) {
-      cloakStore.markCloakSleepPlayedToday();
-      this.emotionController.playEmotion(EMOTION_KEYS.CLOAK_SLEEP, {
-        onComplete: () => {
-          this.emotionController.playEmotion(EMOTION_KEYS.SLEEPING, {
-            crossFadeMs: CAPCUT_DISSOLVE_MS
-          });
-        }
-      });
-      return;
-    }
-
-    this.emotionController.playEmotion(EMOTION_KEYS.SLEEPING);
+    this.emotionController.playEmotion(EMOTION_KEYS.CLOAK_SLEEP, {
+      onComplete: () => {
+        this.emotionController.playEmotion(EMOTION_KEYS.SLEEPING, {
+          crossFadeMs: CAPCUT_DISSOLVE_MS
+        });
+      }
+    });
   }
 }

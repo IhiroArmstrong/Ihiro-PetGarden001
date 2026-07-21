@@ -34,10 +34,10 @@ function createHarness() {
   };
 }
 
-test('DORMANT maps to sleeping emotion', () => {
+test('DORMANT transition plays cloakSleep entry', () => {
   const { calls, stateManager } = createHarness();
   stateManager.setState(STATES.DORMANT);
-  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.SLEEPING);
+  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.CLOAK_SLEEP);
 });
 
 test('CELEBRATE maps to celebrating and forwards onComplete', () => {

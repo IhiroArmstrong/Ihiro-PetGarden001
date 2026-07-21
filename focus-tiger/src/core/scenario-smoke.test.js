@@ -32,6 +32,7 @@ import {
 import { HonestyBridgeCtaController } from './HonestyBridgeCtaController.js';
 import { HonestyBridgeStore } from './HonestyBridgeStore.js';
 import { HonestyCheckInController } from './HonestyCheckInController.js';
+import { MoodController } from './MoodController.js';
 import {
   MANUAL_END_PAUSE_MS,
   SessionEndFlow
@@ -417,5 +418,89 @@ test('smoke D: honesty 20min → dormantWake + bridge Yes→Arrival / No→idle;
   bridge.onHonestyCheckInComplete();
   bridgeUi.handlers.onNo();
   assert.equal(idleFalls, 1);
+  assert.equal(arrivalStarts, 1);
+});
+
+/**
+ * 场景 D 主链路（用户步骤）：距上次专注 ≥2h → 惰性 DORMANT（cloakSleep）
+ * → Honesty 选 20 → dormantWake → 呼吸结束离 DORMANT → 桥接 Yes。
+ * 不手工 setState(DORMANT)；与 dormantIdle 串联契约互补。
+ */
+test('smoke D sleep→wake: 2h idle → cloakSleep → Honesty wake → bridge Yes', () => {
+  const ended = Date.parse('2026-07-21T07:00:00');
+  const day = () => new Date(Date.parse('2026-07-21T09:00:01'));
+  const storage = createStorage();
+  const store = new DailyCompletionStore({ storage, now: day });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now: day });
+  focusSessionEndStore.recordSessionEnded(ended);
+
+  const emotionCalls = [];
+  let currentKey = null;
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      currentKey = key;
+      if (key === 'cloakSleep' && typeof options.onComplete === 'function') {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return currentKey;
+    },
+    idleOrchestrator: null
+  };
+
+  const stateManager = new StateManager();
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+
+  let arrivalStarts = 0;
+  const honestyUi = createHonestyUi({ startBreathGuide() {} });
+  const bridgeUi = { handlers: {}, show() {}, hide() {} };
+  const bridge = new HonestyBridgeCtaController({
+    store: new HonestyBridgeStore({ storage: createStorage(), now: day }),
+    ui: bridgeUi,
+    onAccept: () => {
+      arrivalStarts += 1;
+    },
+    onDecline: () => {}
+  });
+  const honesty = new HonestyCheckInController({
+    store,
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui: honestyUi,
+    now: day,
+    onCheckInComplete: () => {
+      bridge.onHonestyCheckInComplete();
+    }
+  });
+
+  // 步骤 1–2：满 2h → 进睡（披毯）
+  honesty.syncDormantState();
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(
+    emotionCalls.some((c) => c.key === 'cloakSleep'),
+    true,
+    '须先播 cloakSleep 进睡'
+  );
+  assert.equal(emotionCalls.at(-1)?.key, 'sleeping');
+
+  // 步骤 3–4：Honesty 选 20 → dormantWake + 呼吸
+  honesty.openDurationChoices();
+  honestyUi.handlers.onDurationSelect(20);
+  const wake = emotionCalls.find((c) => c.key === 'dormantWake');
+  assert.ok(wake, '须从真实 DORMANT 播 dormantWake');
+  assert.equal(wake.options.holdPose, true);
+
+  // 步骤 5：呼吸结束 → 离 DORMANT + 桥接
+  honestyUi.handlers.onBreathComplete();
+  assert.equal(store.hasCompletedToday(), true);
+  assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(bridge.isVisible(), true);
+
+  bridgeUi.handlers.onYes();
   assert.equal(arrivalStarts, 1);
 });

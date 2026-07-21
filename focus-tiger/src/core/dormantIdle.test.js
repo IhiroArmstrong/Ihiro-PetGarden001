@@ -4,7 +4,6 @@ import assert from 'node:assert/strict';
 import { HonestyCheckInController } from './HonestyCheckInController.js';
 import { DailyCompletionStore } from './DailyCompletionStore.js';
 import { FocusSessionEndStore } from './FocusSessionEndStore.js';
-import { DormantCloakSleepStore } from './DormantCloakSleepStore.js';
 import { MoodController } from './MoodController.js';
 import { StateManager, STATES } from './StateManager.js';
 import { EMOTION_KEYS } from './EmotionController.js';
@@ -64,6 +63,32 @@ function createHonestyHarness({
   return { controller, stateManager, focusSessionEndStore, store, ui, now };
 }
 
+function createMoodHarness() {
+  const calls = [];
+  let currentKey = null;
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      calls.push({ key, options });
+      currentKey = key;
+      if (
+        key === EMOTION_KEYS.CLOAK_SLEEP &&
+        typeof options.onComplete === 'function'
+      ) {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return currentKey;
+    },
+    idleOrchestrator: null
+  };
+  const stateManager = new StateManager();
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+  return { calls, stateManager, mood, emotionController };
+}
+
 test('syncDormantState: no focus history stays IDLE on app ready', () => {
   const { controller, stateManager } = createHonestyHarness();
   controller.onAppReady();
@@ -92,14 +117,37 @@ test('syncDormantState: recent session end stays IDLE', () => {
   assert.equal(stateManager.state, STATES.IDLE);
 });
 
-test('first DORMANT entry plays cloakSleep then sleeping; same-day re-entry skips cloak', () => {
+test('non-DORMANT to DORMANT transition plays cloakSleep then sleeping', () => {
+  const { calls, stateManager } = createMoodHarness();
+  stateManager.setState(STATES.DORMANT);
+  assert.deepEqual(
+    calls.map((c) => c.key),
+    [EMOTION_KEYS.IDLE, EMOTION_KEYS.CLOAK_SLEEP, EMOTION_KEYS.SLEEPING]
+  );
+});
+
+test('each wake then re-enter DORMANT replays cloakSleep transition', () => {
+  const { calls, stateManager } = createMoodHarness();
+  stateManager.setState(STATES.DORMANT);
+  stateManager.setState(STATES.IDLE);
+  stateManager.setState(STATES.DORMANT);
+  assert.equal(
+    calls.filter((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP).length,
+    2
+  );
+});
+
+test('cross midnight while still DORMANT does not replay cloakSleep', () => {
   const calls = [];
   let currentKey = null;
   const emotionController = {
     playEmotion(key, options = {}) {
       calls.push({ key, options });
       currentKey = key;
-      if (key === EMOTION_KEYS.CLOAK_SLEEP && typeof options.onComplete === 'function') {
+      if (
+        key === EMOTION_KEYS.CLOAK_SLEEP &&
+        typeof options.onComplete === 'function'
+      ) {
         options.onComplete('cloakSleep');
       }
       return true;
@@ -109,27 +157,118 @@ test('first DORMANT entry plays cloakSleep then sleeping; same-day re-entry skip
     },
     idleOrchestrator: null
   };
+
+  const storage = createStorage();
+  const ended = Date.parse('2026-07-20T10:00:00');
+  let nowMs = Date.parse('2026-07-20T22:00:00');
+  const now = () => new Date(nowMs);
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  focusSessionEndStore.recordSessionEnded(ended);
   const stateManager = new StateManager();
-  const cloakStore = new DormantCloakSleepStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 21, 15)
-  });
-  const mood = new MoodController(stateManager, emotionController, {
-    dormantCloakSleepStore: cloakStore
-  });
+  const mood = new MoodController(stateManager, emotionController);
   mood.handleStateChange(stateManager.state);
 
-  stateManager.setState(STATES.DORMANT);
-  assert.deepEqual(
-    calls.map((c) => c.key),
-    [EMOTION_KEYS.IDLE, EMOTION_KEYS.CLOAK_SLEEP, EMOTION_KEYS.SLEEPING]
-  );
-  assert.equal(cloakStore.hasPlayedCloakSleepToday(), true);
+  const controller = new HonestyCheckInController({
+    store: new DailyCompletionStore({ storage, now }),
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui: createUi(),
+    now
+  });
 
-  const countBefore = calls.length;
-  stateManager.setState(STATES.IDLE);
-  stateManager.setState(STATES.DORMANT);
-  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.SLEEPING);
-  assert.equal(calls.filter((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP).length, 1);
-  assert.ok(calls.length > countBefore);
+  controller.syncDormantState();
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(
+    calls.filter((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP).length,
+    1
+  );
+
+  const countAfterFirst = calls.length;
+  nowMs = Date.parse('2026-07-21T08:00:00');
+  controller.syncDormantState();
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(calls.length, countAfterFirst);
+  assert.equal(
+    calls.filter((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP).length,
+    1
+  );
+});
+
+/**
+ * 串联契约：2h 惰性进睡（cloakSleep）→ Honesty 选时长（dormantWake）→ 呼吸结束离 DORMANT。
+ * 补足「睡下」与「唤醒」原先分测、未串一条链的缺口。
+ */
+test('chain: 2h idle → cloakSleep → Honesty dormantWake → leave DORMANT', () => {
+  const emotionCalls = [];
+  let currentKey = null;
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      currentKey = key;
+      if (
+        key === EMOTION_KEYS.CLOAK_SLEEP &&
+        typeof options.onComplete === 'function'
+      ) {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return currentKey;
+    },
+    idleOrchestrator: null
+  };
+
+  const storage = createStorage();
+  const ended = Date.parse('2026-07-21T10:00:00');
+  const now = () => new Date(Date.parse('2026-07-21T12:00:01'));
+  const store = new DailyCompletionStore({ storage, now });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  focusSessionEndStore.recordSessionEnded(ended);
+  const stateManager = new StateManager();
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+
+  let breathStarted = 0;
+  const ui = createUi({
+    startBreathGuide() {
+      breathStarted += 1;
+      this.phase = 'breath';
+    }
+  });
+  const controller = new HonestyCheckInController({
+    store,
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui,
+    now
+  });
+
+  // 1) 惰性进睡
+  controller.syncDormantState();
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(
+    emotionCalls.filter((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP).length,
+    1
+  );
+  assert.equal(emotionCalls.at(-1)?.key, EMOTION_KEYS.SLEEPING);
+
+  // 2) Honesty 选时长 → 睡醒（不经手动 setState）
+  controller.openDurationChoices();
+  ui.handlers.onDurationSelect(20);
+  assert.equal(breathStarted, 1);
+  const wake = emotionCalls.find((c) => c.key === EMOTION_KEYS.DORMANT_WAKE);
+  assert.ok(wake);
+  assert.equal(wake.options.holdPose, true);
+  assert.equal(stateManager.state, STATES.DORMANT);
+
+  // 3) 呼吸结束 → 记账离 DORMANT（Honesty 不刷新 focus-session-end）
+  const lastEndedBefore = focusSessionEndStore.getLastEndedAt();
+  ui.handlers.onBreathComplete();
+  assert.equal(store.hasCompletedToday(), true);
+  assert.equal(store.getTodaySessions()[0].durationMinutes, 20);
+  assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(focusSessionEndStore.getLastEndedAt(), lastEndedBefore);
 });
