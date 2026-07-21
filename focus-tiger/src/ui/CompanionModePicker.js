@@ -406,8 +406,39 @@ export class CompanionModePicker {
       .session-start-dock > * {
         pointer-events: auto;
       }
-      #honesty-idle-entry[hidden] {
+      #honesty-idle-entry[hidden],
+      #micro-ritual-idle-entry[hidden] {
         display: none !important;
+      }
+      /* 微仪式：与 Honesty 同柱、更轻（无立体描边阴影），Sit 上方 order:-1 */
+      .session-start-dock__micro-ritual-entry {
+        order: -1;
+        align-self: center;
+        flex-shrink: 0;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary, rgba(74, 58, 40, 0.78));
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        padding: 4px 10px;
+        border-radius: 999px;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-color: rgba(139, 115, 85, 0.35);
+        max-width: 100%;
+        line-height: 1.35;
+        text-align: center;
+        white-space: normal;
+        transition: color 120ms ease, text-decoration-color 120ms ease;
+      }
+      .session-start-dock__micro-ritual-entry:hover {
+        color: var(--color-ink, #2c1f14);
+        text-decoration-color: rgba(139, 115, 85, 0.55);
+      }
+      .session-start-dock__micro-ritual-entry:active {
+        transform: translateY(1px);
       }
       .session-start-dock__honesty-entry {
         order: -2;

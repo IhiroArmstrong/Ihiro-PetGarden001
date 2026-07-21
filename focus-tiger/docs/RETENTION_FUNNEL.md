@@ -103,6 +103,20 @@
 
 ---
 
+### R5 · 微仪式完成 — `micro_ritual_complete`
+
+| 字段 | 说明 |
+|---|---|
+| 事件名 | `micro_ritual_complete` |
+| 触发语义 | Idle「一分钟呼吸」微仪式**墙钟到点**（约 60s；e2e 可用 `?microRitualMs=`）；中途安静离开**不**触发 |
+| 建议 payload | `{ durationMinutes: 1 }` |
+| 实现 | **占位已接**：`main.js` `completeMicroRitual` → `trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, …)`；**仅** `console.log`，**不**写入 `RetentionFunnelStore`、**不**触发 `first_session_complete` / 指标计算 |
+| 状态 | 待正式分析工具 |
+
+**人工对照（可选）**：Idle 点「一分钟呼吸」→ 等到结束 → Console 见一次 `micro_ritual_complete`；中途 Leave → **不应**见该事件。
+
+---
+
 ## 实现落点清单（插入点 · 2026-07-22）
 
 | 事件 | 建议插入点（模块 / 时机） | 本次 |
@@ -114,9 +128,10 @@
 | `dormant_bridge_shown` | `HonestyBridgeCtaController._reveal` | ✅ 占位 |
 | `dormant_bridge_accepted` | `HonestyBridgeCtaController._answer(true)` | ✅ 占位 |
 | `dormant_bridge_declined` | `HonestyBridgeCtaController._answer(false)` | ✅ 占位 |
+| `micro_ritual_complete` | `main.js` `completeMicroRitual`（微仪式计时结束；不经 `noteSessionComplete`） | ✅ 占位 |
 
 Sink：`src/core/RetentionTelemetry.js` → `trackRetentionEvent` → **仅** `console.log('[RetentionTelemetry]', …)`（**正式分析工具暂不选型**，先本地观察）。  
-持久化：`focus-tiger.retention-funnel.v1`（首次打开戳、已打 dayN / first_session 标记）；纳入 DEV 一键重置白名单。
+持久化：`focus-tiger.retention-funnel.v1`（首次打开戳、已打 dayN / first_session 标记）；**不含** `micro_ritual_complete` 去重戳（可同日多次）；纳入 DEV 一键重置白名单。
 
 ---
 

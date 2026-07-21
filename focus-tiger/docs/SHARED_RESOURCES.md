@@ -12,16 +12,16 @@
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
-| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
+| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty 经既有 `onPracticeDay` → `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key** |)
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key** |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显 |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
-| `focus-tiger.reminder-preference.v1` | `reminderPreference` | 应用内提醒时间偏好 `{ hour, minute }`；`evaluateInAppReminderBanner` 只返回候选（boolean + `reminder.gentle_waiting`），**未接 UI**、不占浏览器 Notification |
+| `focus-tiger.reminder-preference.v1` | `reminderPreference` | 应用内提醒时间偏好 `{ hour, minute }`；`evaluateInAppReminderBanner` 只返回候选（boolean + `reminder.gentle_waiting`），**未接 UI**、不占浏览器 Notification；「今日已完成」含 Honesty / **微仪式** |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认 Mer-Ka-Ba 开） |
@@ -70,7 +70,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `idle` / IdleOrchestrator 接管 | `MoodController` IDLE、`IdleOrchestrator` | 呼吸×5→眨眼；勿另开 Idle 变体池 |
 | `sleeping` | 调试「睡着了」/ 显式 DORMANT | **不再**作零完成开场；开场默认 Idle |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
-| `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback` | `hasCelebratedToday`：首次计时达标 Celebrating；已庆祝过 → SessionComplete；Honesty 不占戳 |
+| `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback`；微仪式直接 `playEmotion('sessionComplete')` | `hasCelebratedToday`：首次**计时**达标 Celebrating；已庆祝过 → SessionComplete；Honesty / **微仪式**不占戳、永不 Celebrating |
 | `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |
@@ -99,7 +99,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
 | `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Sit 未就绪 → Arrival |
 | `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
-| `postSessionOverlayActive` | **单一入口** `main.js` `resyncSessionChrome()`：`computePostSessionOverlayActive(sources)`（数组 + `some()`）→ Gate + Companion | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
+| `postSessionOverlayActive` | **单一入口** `main.js` `resyncSessionChrome()`：`computePostSessionOverlayActive(sources)`（数组 + `some()`）→ Gate + Companion | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
 | `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装；Picker 经 handlers 注入真门闩 | Here & Now / Flow / Offline 即开；**未就绪必须 false** |
 | Companion 点选写 storage | **仅** Gate 通过后（`commit-begin` / `commit-arrival`） | **禁止**先写 storage 再静默 return（`resolveCompanionModeSelectCommit`） |
 | `resolveCompanionHintClick` | `FocusSession` + Gate 包装 | toggle 展开三选一；禁静默 ignore |

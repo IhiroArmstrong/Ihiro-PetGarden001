@@ -31,6 +31,32 @@ test('trackRetentionEvent logs with stable prefix (no third-party)', () => {
   assert.deepEqual(lines[0], ['[RetentionTelemetry]', 'demo_event', { a: 1 }]);
 });
 
+test('MICRO_RITUAL_COMPLETE constant is stable and trackRetentionEvent logs it without store mutation', () => {
+  const storage = createStorage();
+  const store = new RetentionFunnelStore({ storage });
+  const before = store.getState();
+  /** @type {unknown[]} */
+  const lines = [];
+
+  assert.equal(
+    RETENTION_EVENTS.MICRO_RITUAL_COMPLETE,
+    'micro_ritual_complete'
+  );
+  trackRetentionEvent(
+    RETENTION_EVENTS.MICRO_RITUAL_COMPLETE,
+    { durationMinutes: 1 },
+    { log: (...args) => lines.push(args) }
+  );
+
+  assert.deepEqual(lines[0], [
+    '[RetentionTelemetry]',
+    'micro_ritual_complete',
+    { durationMinutes: 1 }
+  ]);
+  assert.deepEqual(store.getState(), before);
+  assert.equal(storage.getItem(RETENTION_FUNNEL_STORAGE_KEY), null);
+});
+
 test('calendarDaysBetween uses local calendar keys', () => {
   assert.equal(calendarDaysBetween('2026-07-22', '2026-07-22'), 0);
   assert.equal(calendarDaysBetween('2026-07-22', '2026-07-23'), 1);

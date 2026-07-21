@@ -64,11 +64,17 @@ import { HonestyBridgeStore } from './core/HonestyBridgeStore.js';
 import { HonestyBridgeCtaController } from './core/HonestyBridgeCtaController.js';
 import {
   RetentionFunnelStore,
-  RETENTION_EVENTS
+  RETENTION_EVENTS,
+  trackRetentionEvent
 } from './core/RetentionTelemetry.js';
 import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
+import { MicroRitualUI } from './ui/MicroRitualUI.js';
+import {
+  MICRO_RITUAL_DURATION_MINUTES,
+  resolveMicroRitualMs
+} from './core/MicroRitual.js';
 import { recordIntention } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
@@ -80,6 +86,8 @@ import {
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 /** 默认 1 分钟；场景 B 真实切页 Re-focus 用 `?sessionMinutes=5`。 */
 const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
+/** 微仪式默认 60s；e2e 用 `?microRitualMs=1500` 缩短。 */
+const MICRO_RITUAL_MS = resolveMicroRitualMs(location.search);
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
 
 function revealScene({ showCanvas = false } = {}) {
@@ -262,6 +270,8 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
+  /** @type {MicroRitualUI | null} */
+  let microRitualUI = null;
   const now = () => new Date();
   const dailyCompletionStore = new DailyCompletionStore({ now });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
@@ -313,6 +323,38 @@ async function init() {
     companionModeHandlers
   );
 
+  microRitualUI = new MicroRitualUI(document.getElementById('ui-overlay'), {
+    onIdleEntryClick: () => {
+      if (
+        stateManager.state === STATES.FOCUSING ||
+        stateManager.state === STATES.CELEBRATE ||
+        arrivalPractice?.isOpen?.() ||
+        reflectionMoment?.isOpen?.() ||
+        microRitualUI?.isOpen?.()
+      ) {
+        return;
+      }
+      beginMicroRitualChrome();
+      microRitualUI.startBreath(MICRO_RITUAL_MS);
+    },
+    onBreathStart: () => {
+      lightProgression.beginBreath();
+      emotionController.playEmotion('smiling', {
+        fps: ARRIVAL_BREATH_SMILE_FPS
+      });
+      resyncSessionChrome();
+    },
+    onComplete: () => {
+      completeMicroRitual();
+    },
+    onLeave: () => {
+      leaveMicroRitualQuietly();
+    }
+  });
+  if (import.meta.env.DEV) {
+    window.__microRitualUI = microRitualUI;
+  }
+
   let hasEndedAnySession = false;
 
   function syncHonestyIdleEntry() {
@@ -320,13 +362,35 @@ async function init() {
       arrivalPractice?.isOpen?.() ||
       honestyBridge?.isVisible?.() ||
       reflectionMoment?.isOpen?.() ||
+      microRitualUI?.isOpen?.() ||
       stateManager.state === STATES.FOCUSING ||
       stateManager.state === STATES.CELEBRATE;
     if (blocked) {
       honestyCheckInUI.hideIdleEntry();
+    } else {
+      honestyCheckIn.syncIdleEntry();
+    }
+    syncMicroRitualIdleEntry();
+  }
+
+  function syncMicroRitualIdleEntry() {
+    const honestyBusy =
+      honestyCheckInUI.phase === 'duration' ||
+      honestyCheckInUI.phase === 'breath' ||
+      honestyCheckInUI.phase === 'thanks';
+    const blocked =
+      arrivalPractice?.isOpen?.() ||
+      honestyBridge?.isVisible?.() ||
+      reflectionMoment?.isOpen?.() ||
+      microRitualUI?.isOpen?.() ||
+      honestyBusy ||
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE;
+    if (blocked) {
+      microRitualUI?.hideIdleEntry();
       return;
     }
-    honestyCheckIn.syncIdleEntry();
+    microRitualUI?.showIdleEntry();
   }
 
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
@@ -343,7 +407,8 @@ async function init() {
   function getPostSessionOverlaySources() {
     return [
       () => arrivalPractice.isOpen(),
-      () => reflectionMoment.isOpen()
+      () => reflectionMoment.isOpen(),
+      () => microRitualUI?.isOpen() === true
     ];
   }
 
@@ -375,6 +440,60 @@ async function init() {
     companionModePicker.setArrivalReady(ready);
   }
 
+  function setFocusButtonEnabled(enabled) {
+    focusButton.disabled = !enabled;
+    focusButton.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+    focusButton.style.pointerEvents = enabled ? '' : 'none';
+    focusButton.style.opacity = enabled ? '' : '0.45';
+  }
+
+  /**
+   * 微仪式进行中：收起 Idle chrome、禁 Sit；离开/完成后由 endMicroRitualChrome 还原。
+   */
+  function beginMicroRitualChrome() {
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    honestyCheckInUI.hideIdleEntry();
+    companionModePicker.hide();
+    companionModePicker.setIdleChromeVisible(false);
+    setFocusButtonEnabled(false);
+    microRitualUI?.hideIdleEntry();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
+  function endMicroRitualChrome() {
+    lightProgression.endBreath({ releaseDolly: true });
+    lightProgression.clearArrivalEffects();
+    setFocusButtonEnabled(true);
+    companionModePicker.setIdleChromeVisible(true);
+    resyncSessionChrome();
+    syncHonestyIdleEntry();
+    syncOnboardingAutoHints();
+  }
+
+  function completeMicroRitual() {
+    dailyCompletionStore.recordCompletion(MICRO_RITUAL_DURATION_MINUTES);
+    practiceDaysStore.markToday(MICRO_RITUAL_DURATION_MINUTES);
+    trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
+      durationMinutes: MICRO_RITUAL_DURATION_MINUTES
+    });
+    mindfulToast.show(t('micro_ritual.complete'));
+    endMicroRitualChrome();
+    emotionController.playEmotion('sessionComplete', {
+      onComplete: () => {
+        syncHonestyIdleEntry();
+      }
+    });
+  }
+
+  function leaveMicroRitualQuietly() {
+    endMicroRitualChrome();
+    emotionController.playEmotion('idle');
+    syncHonestyIdleEntry();
+  }
+
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
   reflectionMoment.open = (options) => {
     companionModePicker.hide();
@@ -403,6 +522,7 @@ async function init() {
   const honestyShowPrompt = honestyCheckInUI.showPrompt.bind(honestyCheckInUI);
   honestyCheckInUI.showPrompt = () => {
     companionModePicker.hide();
+    microRitualUI?.hideIdleEntry();
     honestyShowPrompt();
     resyncSessionChrome();
     syncOnboardingAutoHints();
@@ -412,6 +532,7 @@ async function init() {
   );
   honestyCheckInUI.showDurationChoices = () => {
     companionModePicker.hide();
+    microRitualUI?.hideIdleEntry();
     onboardingHints?.markSeen('honesty-optional');
     honestyShowDuration();
     resyncSessionChrome();
@@ -421,6 +542,15 @@ async function init() {
   honestyCheckInUI.hide = () => {
     honestyHide();
     resyncSessionChrome();
+    syncHonestyIdleEntry();
+  };
+
+  const honestyStartBreath = honestyCheckInUI.startBreathGuide.bind(
+    honestyCheckInUI
+  );
+  honestyCheckInUI.startBreathGuide = (durationMs) => {
+    microRitualUI?.hideIdleEntry();
+    honestyStartBreath(durationMs);
   };
 
   // 调试「Honesty唤醒」→ 直接打开时长三选一（不经 Sit with Yin）
@@ -727,6 +857,8 @@ async function init() {
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     honestyCheckInUI.hideIdleEntry();
+    microRitualUI?.hideIdleEntry();
+    microRitualUI?.hide();
     honestyGlowLevel = null;
     currentSessionIntention = pendingChoose?.text ?? '';
     currentIntentionSource = pendingChoose?.source === 'icon' ? 'icon' : 'typed';
@@ -928,6 +1060,7 @@ async function init() {
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
   honestyCheckIn.onAppReady();
   retentionFunnelStore.noteAppOpen();
+  syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
   if (import.meta.env.DEV && !productChrome) {

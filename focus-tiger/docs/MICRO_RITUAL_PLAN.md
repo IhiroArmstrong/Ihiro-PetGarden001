@@ -1,8 +1,20 @@
-# MICRO_RITUAL_PLAN.md — 「一分钟呼吸」微仪式方案（调研 · 未实现）
+# MICRO_RITUAL_PLAN.md — 「一分钟呼吸」微仪式方案
 
-> **状态**：只读调研 + 方案草案。**本文件不含实现代码**；实现须另开任务，待人工确认本方案后再动手。  
+> **状态**：**UI 已接入（2026-07-22）**。实现：`MicroRitualUI` + `main.completeMicroRitual`；e2e `e2e/micro-ritual.spec.js`。观感节奏仍待人工验收。  
 > **创建**：2026-07-22  
-> **范围**：独立于 Companion 三选一（Here & Now / Offline Space / Flow State）的 Idle 平级入口；约 1 分钟呼吸微仪式。
+> **范围**：独立于 Companion 三选一的 Idle 平级入口；约 1 分钟呼吸微仪式。
+
+---
+
+## 已拍板实现口径（2026-07-22）
+
+1. Store：`recordCompletion(1)`，**不**加 `source`。  
+2. PracticeDays：`markToday(1)`。  
+3. 留存：`trackRetentionEvent('micro_ritual_complete')` 仅 console 占位；**不** `noteSessionComplete`。  
+4. 同日可多次；每次直接 `sessionComplete`（从不 Celebrating）。  
+5. 中途 Leave：不记账、无提示。  
+6. 入口：`#micro-ritual-idle-entry`（dock `order: -1`，轻量下划线）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath`。  
+7. e2e 缩短：`?microRitualMs=1500`。
 
 ---
 
