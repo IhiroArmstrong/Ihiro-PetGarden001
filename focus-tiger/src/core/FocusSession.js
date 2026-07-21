@@ -47,14 +47,24 @@ export function shouldSuppressAwayReminders(mode) {
 }
 
 /**
- * 选中 Companion 模式后是否立即开始 Focus / 计时。
- * Here & Now / Flow State：是；Offline Space：否（仍须再点 Sit）。
+ * 选中 Companion 模式后是否立即开始 Focus / 计时（须 Arrival 门闩就绪）。
+ * 三模式均在点选或 Arrival 鞠躬后开表；差异在会话内行为（离开提醒等），不在二次 Sit。
  * @param {string} mode
  */
 export function shouldAutoStartFocusOnModeSelect(mode) {
-  return (
-    mode === COMPANION_MODE_STAY || mode === COMPANION_MODE_ACROSS_TOOLS
-  );
+  return isValidCompanionMode(mode);
+}
+
+/**
+ * Arrival Choose 鞠躬结束后：用记忆模式直接开表（三模式皆然）。
+ * @param {{ chose?: boolean, storedMode?: string }} info
+ */
+export function shouldAutoStartFocusAfterArrivalNod({
+  chose = false,
+  storedMode = COMPANION_MODE_STAY
+} = {}) {
+  if (!chose) return false;
+  return isValidCompanionMode(storedMode);
 }
 
 /**

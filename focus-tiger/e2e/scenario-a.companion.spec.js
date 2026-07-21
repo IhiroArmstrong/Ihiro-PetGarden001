@@ -75,16 +75,12 @@ test('scenario A3: preselect Here & Now → Skip — begin starts timer without 
   await expectFocusSessionActive(page);
 });
 
-test('scenario K: Offline Space preselect does not start timer until second Sit', async ({
+test('scenario K: Offline Space after Arrival starts focus timer without second Sit', async ({
   page
 }) => {
   await openFreshProductShell(page);
   await advanceArrivalToCompanionPicker(page);
   await selectCompanionMode(page, /Offline Space|离线/i);
 
-  await expectFocusSessionInactive(page);
-  await expect(page.locator('.session-start-dock__panel')).toBeHidden();
-
-  await page.locator('#btn-focus').click();
   await expectFocusSessionActive(page);
 });

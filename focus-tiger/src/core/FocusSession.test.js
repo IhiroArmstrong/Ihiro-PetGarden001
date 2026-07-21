@@ -11,6 +11,7 @@ import {
   canBeginFocusOnCompanionModeSelect,
   shouldBeginFocusOnArrivalReady,
   shouldBeginFocusAfterArrivalReady,
+  shouldAutoStartFocusAfterArrivalNod,
   resolveCompanionHintClick,
   resolveDemoSessionMinutes,
   resolveRiseClickDuringFocus,
@@ -73,7 +74,7 @@ test('acrossTools suppresses away reminders like stepAway', () => {
   assert.equal(session.isAcrossToolsMode(), true);
 });
 
-test('Here & Now and Flow State auto-start focus; Offline Space does not', () => {
+test('Here & Now, Offline Space, and Flow State all auto-start focus when gate ready', () => {
   assert.equal(shouldAutoStartFocusOnModeSelect(COMPANION_MODE_STAY), true);
   assert.equal(
     shouldAutoStartFocusOnModeSelect(COMPANION_MODE_ACROSS_TOOLS),
@@ -81,7 +82,7 @@ test('Here & Now and Flow State auto-start focus; Offline Space does not', () =>
   );
   assert.equal(
     shouldAutoStartFocusOnModeSelect(COMPANION_MODE_STEP_AWAY),
-    false
+    true
   );
 });
 
@@ -113,13 +114,44 @@ test('Skip — begin begins focus; Choose alone opens Companion; preselect auto-
       chose: true,
       pendingAutoStartMode: COMPANION_MODE_STEP_AWAY
     }),
-    false
+    true
   );
   assert.equal(
     shouldBeginFocusAfterArrivalReady({
       skipped: false,
       chose: true,
       pendingAutoStartMode: null
+    }),
+    false
+  );
+});
+
+test('Choose 鞠躬后：三模式记忆皆自动开表', () => {
+  assert.equal(
+    shouldAutoStartFocusAfterArrivalNod({
+      chose: true,
+      storedMode: COMPANION_MODE_STAY
+    }),
+    true
+  );
+  assert.equal(
+    shouldAutoStartFocusAfterArrivalNod({
+      chose: true,
+      storedMode: COMPANION_MODE_ACROSS_TOOLS
+    }),
+    true
+  );
+  assert.equal(
+    shouldAutoStartFocusAfterArrivalNod({
+      chose: true,
+      storedMode: COMPANION_MODE_STEP_AWAY
+    }),
+    true
+  );
+  assert.equal(
+    shouldAutoStartFocusAfterArrivalNod({
+      chose: false,
+      storedMode: COMPANION_MODE_STAY
     }),
     false
   );
@@ -153,7 +185,7 @@ test('auto-start mode still requires Arrival gate before beginFocus', () => {
       mode: COMPANION_MODE_STEP_AWAY,
       arrivalGateReady: true
     }),
-    false
+    true
   );
   assert.equal(
     canBeginFocusOnCompanionModeSelect({

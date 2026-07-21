@@ -65,7 +65,7 @@
 - **N15（2026-07-21）**：Bug 修复 = 代码/措施 + **相关文档同批** + **立刻本地 commit**（强制；见 `DEV_WORKFLOW_QUALITY.md`）
 - **Celebrating / 同日 SessionComplete（2026-07-21）**：**已复测通过**（首次舞 + 同日二次只摆尾）
 - **DEV 一键重置**：改为 **L-logic**（`localStateKeys.test.js` 并入 `test:smoke`）；另有「重置并 idle 坐禅」快捷入口
-- **Pending 2c**：`cloak-sleep` 进 DORMANT——**2a 已入库**；**2b 已拍板**「当日首次进 DORMANT 播一次」；**正式接线等 Prompt 1 测完再说**
+- **cloak-sleep 进 DORMANT（2c）**：已接线；当日首次/转换播披毯→sleeping；**2026-07-22** 人工 OK（含 sleep→wake）
 - **Rise → `rise-stretch-casual` one-shot**（Reflection 期间 holdPose）；`blink-breathe` 仅调试
 - **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **底部横排矮条**（点头后再展开，不挡鞠躬）
 - **Idle 编排**：闭目 pingpong ×2 → 睁眼弧 ×1（取代旧 breath×5→idle-eye-glance 切序列）
@@ -80,7 +80,9 @@
 - Honesty 拍板 B；Companion 短句提示
 - **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（含 N6/N15 立刻 commit + 文档同步；§6.1 场景冒烟已落地）
 - **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（逻辑层；观感仍人工分列）
-- **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now 开表；Offline 须再 Sit — `e2e/scenario-a.companion.spec.js`
+- **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now / Offline / Flow **点选即开表**（含 Arrival 后预选）— `e2e/scenario-a.companion.spec.js`
+- **Offline Space 统一开表（2026-07-21/22）**：三 Companion 模式点选/鞠躬后均自动 Focusing，**无需**二次 Sit；差异仅在离开提醒等会话内行为
+- **dormantWake 试替（2026-07-21；人工 OK 2026-07-22）**：Honesty 睡醒改 `cloak-sleep` **倒放** @6fps；披毯入睡 + sleep→wake 串联已书面通过
 - **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
 - **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
 - **RESPONSIVE_LAYOUT.md（2026-07-21）**：移动浏览器权威基线——功能对等（竖/横屏逐步可操作、禁按钮失灵）、竖屏 P1 + 可建议横屏；`TEST_TRACKER` / `DEV_WORKFLOW_QUALITY` 已挂窄屏验收
@@ -90,14 +92,14 @@
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
-- Companion Mode：Here & Now / Flow State 选中即开计时（须 Arrival 门闩就绪）；Offline Space 须再 Sit；**「How shall we sit?」随时展开三选一**（`resolveCompanionHintClick` → toggle；**Sit** 未就绪时仍走 Arrival）
-- Honesty `dormantWake`：选时长即坐起（**3 fps**）定格末帧；暂不接闭眼呼吸淡入 / 金光 / halo
+- Companion Mode：Here & Now / Offline Space / Flow State **均**选中即开计时（须 Arrival 门闩就绪）；**「How shall we sit?」随时展开三选一**（`resolveCompanionHintClick` → toggle；**Sit** 未就绪时仍走 Arrival）
+- Honesty `dormantWake`：选时长即播 `cloak-sleep` **倒放**（**6 fps**）定格末帧；暂不接闭眼呼吸淡入 / 金光 / halo
 - 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`
 - 闭目坐禅 3D Idle 运行时已换为「单色暖浅灰棉麻禅修服 / 茶服风、无红边」：源文件（gitignore）`art-reference/models/sources/yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb`；运行时稳定路径仍为 `public/models/tiger-meditate-closed.glb`（约 **1.6MB**：贴图 1024/512 + lossless WebP + Draco、不减面；避免默认 WebP 压到 ~300KB 损伤织物细节）。旧「灰棉麻 + 深红镶边」保留为历史备份；2D 主线与图生视频 / 奖励柜 3D 统一以 `CHARACTER_BIBLE.md` Costume 为准
 - IdleOrchestrator：闭目坐禅 = `idle-breathing`（**2.5 fps**）×5 → 单次眨眼 → 往复；张望/喝茶等为候选手势（非 Idle 池）
 - Ambient Sound FAB：进应用即可见（body、z-index 22）；未 FOCUSING 点击提示须先进入专注模式；FOCUSING 才可开面板
-- 双唤醒视觉分离：Honesty `dormantWake` 独占 `dormant-wake`；调试 `wakeUp` 用伸懒腰（stretch-reminder 同源）；Honesty 暂不接金光/halo
+- 双唤醒视觉分离：Honesty `dormantWake` 走 `cloak-sleep` 倒放；调试 `wakeUp` 用伸懒腰（stretch-reminder 同源）；Honesty 暂不接金光/halo
 - IdleOrchestrator 五变体池曾接入后又撤回：现为候选陪伴手势目录（`companionGestureCatalog`），正式 Idle 仍仅呼吸×眨眼
 - 动态效果层：`DynamicMotion`（呼吸起伏、绕 Y 轴旋转、庆祝悬浮）— **仅 3D 奖励柜**；2D 主界面调试面板已移除对应开关
 - 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子），经 `playEmotion('incenseComplete')` 触发

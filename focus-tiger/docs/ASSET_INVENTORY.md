@@ -110,7 +110,7 @@
 | celebrating | dance + dance-v2 | 已接线 · 50/50 |
 | intentionSet | palms-together | 已接线 · Choose 确认 |
 | sessionComplete / mindfulAcknowledge / stretchReminder | 上表 | 已接线 |
-| dormantWake → idle | dormant-wake | 已接线；**暂不**自动接 halo（2026-07-19） |
+| dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake 保留素材未删） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-07-21 试替倒放） |
 | haloBreathing | halo-breathing | 调试可单独播；Honesty 暂不自动接 |
 | welcomeBack / nodGreeting / curiousTilt | wave-hello / nod-greeting / **blink-smile** | 已接线（curiousTilt 不再默认 tilt-think） |
 | milestoneGlow | milestone-glow（备选 breath-halo-hq 未用） | 仅调试 |

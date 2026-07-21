@@ -44,7 +44,7 @@
 1. 当日首次 `STATES.DORMANT` / `playEmotion('sleeping')` 入口：先 `cloakSleep`，`onComplete` → `sleeping`（CapCut 或短 cross-fade）。
 2. 同日再次进入睡态：直接 `sleeping`，不重复披毯。
 3. 须有「本自然日已播过 cloakSleep」日期戳（可复用 / 旁路 `DailyCompletionStore` 或独立 key）。
-4. 与 Rise/`riseStretchCasual`、Celebrating、Honesty `dormantWake` 互斥；唤醒仍走 `dormantWake`。
+4. 与 Rise/`riseStretchCasual`、Celebrating、Honesty `dormantWake` 互斥；唤醒仍走 `dormantWake`（**2026-07-21**：`dormantWake` 已试接 `cloak-sleep` **倒放**）。
 5. 单测：首次 DORMANT → cloakSleep；同日第二次 → 直接 sleeping。
 6. TEST_TRACKER 正式触发行 + SCENARIO（零完成开场）。
 

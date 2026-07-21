@@ -176,27 +176,35 @@ export class HonestyCheckInUI {
     btn.type = 'button';
     btn.id = 'honesty-idle-entry';
     btn.hidden = true;
-    btn.style.cssText = [
-      'position:absolute',
-      'left:50%',
-      /* 放在 Sit 上方空隙，勿压住 Sit（dock z16）；原先 bottom:74px 会抢走 Sit 点击 */
-      'bottom:100px',
-      'transform:translateX(-50%)',
-      'padding:6px 12px',
-      'font-size:12px',
-      'font-weight:500',
-      'color:rgba(74,58,40,.72)',
-      'background:transparent',
-      'border:none',
-      'border-radius:10px',
-      'cursor:pointer',
-      'text-decoration:underline',
-      'text-underline-offset:3px',
-      'z-index:14',
-      'pointer-events:auto'
-    ].join(';');
+    const dock = document.getElementById('session-start-dock');
+    if (dock) {
+      btn.className = 'session-start-dock__honesty-entry';
+      dock.insertBefore(btn, dock.firstChild);
+    } else {
+      btn.style.cssText = [
+        'position:absolute',
+        'left:50%',
+        'bottom:calc(max(16px, env(safe-area-inset-bottom, 0px)) + 120px)',
+        'transform:translateX(-50%)',
+        'padding:6px 12px',
+        'font-size:12px',
+        'font-weight:500',
+        'color:rgba(74,58,40,.72)',
+        'background:transparent',
+        'border:none',
+        'border-radius:10px',
+        'cursor:pointer',
+        'text-decoration:underline',
+        'text-underline-offset:3px',
+        'z-index:14',
+        'pointer-events:auto',
+        'max-width:calc(100vw - 48px)',
+        'white-space:normal',
+        'text-align:center'
+      ].join(';');
+      this.container.appendChild(btn);
+    }
     btn.addEventListener('click', () => this.handlers.onIdleEntryClick?.());
-    this.container.appendChild(btn);
     this.idleEntryBtn = btn;
   }
 
