@@ -12,7 +12,8 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.companion-mode.v1',
   'focus-tiger.reminder-quota.v1',
   'focus-tiger.hints-seen.v1',
-  'focus-tiger.ambient-nudge.seen.v1'
+  'focus-tiger.ambient-nudge.seen.v1',
+  'focus-tiger.ambient-pref.v1'
 ]);
 
 /** sessionStorage：重置后首屏 toast（不写入 localStorage，避免被清空逻辑误伤）。 */

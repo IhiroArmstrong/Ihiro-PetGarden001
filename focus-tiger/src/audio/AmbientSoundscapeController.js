@@ -1,6 +1,9 @@
 /**
  * 禅意背景音：本页 <audio> 播放 + 实际可闻播放时长 → presenceBoost。
  * 不探测其他 App；不参与达标；会话内累计，不做长期存储。
+ *
+ * 产品口径（2026-07-21）：进入应用默认播放 Mer-Ka-Ba；用户可随时一键开关；
+ * 偏好写入 localStorage；会话结束不停播（presence 累计仍随会话清零）。
  */
 
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
@@ -18,6 +21,12 @@ export const AUDIBLE_PLAYING_LIFT = 0.1;
 export const AMBIENT_TRACK_OFF = 'off';
 export const AMBIENT_TRACK_SINGING_BOWL = 'singing-bowl';
 export const AMBIENT_TRACK_RAIN = 'rain';
+
+/** 默认曲目：Mer-Ka-Ba（工程 id 仍为 singing-bowl） */
+export const DEFAULT_AMBIENT_TRACK_ID = AMBIENT_TRACK_SINGING_BOWL;
+
+/** 与 `localStateKeys.js` 白名单同步。 */
+export const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 
 /** MVP 仅两档；磬等第三曲待 CC0 素材 */
 export const AMBIENT_TRACKS = [
@@ -46,21 +55,69 @@ export function computePresenceBoost(playedSeconds, targetMinutes) {
   );
 }
 
+/**
+ * @param {unknown} raw
+ * @returns {{ enabled: boolean, trackId: string }}
+ */
+export function normalizeAmbientPref(raw) {
+  const trackIds = new Set(AMBIENT_TRACKS.map((t) => t.id));
+  let enabled = true;
+  let trackId = DEFAULT_AMBIENT_TRACK_ID;
+  if (raw && typeof raw === 'object') {
+    if (typeof raw.enabled === 'boolean') enabled = raw.enabled;
+    if (typeof raw.trackId === 'string' && trackIds.has(raw.trackId)) {
+      trackId = raw.trackId;
+    }
+  }
+  return { enabled, trackId };
+}
+
+function readAmbientPref(storage) {
+  try {
+    const raw = storage?.getItem?.(AMBIENT_PREF_STORAGE_KEY);
+    if (!raw) return normalizeAmbientPref(null);
+    return normalizeAmbientPref(JSON.parse(raw));
+  } catch {
+    return normalizeAmbientPref(null);
+  }
+}
+
+function writeAmbientPref(storage, pref) {
+  try {
+    storage?.setItem?.(AMBIENT_PREF_STORAGE_KEY, JSON.stringify(pref));
+  } catch {
+    /* ignore */
+  }
+}
+
 export class AmbientSoundscapeController {
   /**
    * @param {object} [options]
    * @param {() => number} [options.now] 可注入时钟（测试）
    * @param {HTMLAudioElement} [options.audio] 可注入 audio 元素
+   * @param {Storage | { getItem?: Function, setItem?: Function }} [options.storage]
    */
-  constructor({ now = () => Date.now(), audio = null } = {}) {
+  constructor({
+    now = () => Date.now(),
+    audio = null,
+    storage = typeof localStorage !== 'undefined' ? localStorage : null
+  } = {}) {
     this._now = now;
+    this._storage = storage;
     this._audio = audio || (typeof Audio !== 'undefined' ? new Audio() : null);
+    const pref = readAmbientPref(storage);
+    this._wantEnabled = pref.enabled;
+    this._preferredTrackId = pref.trackId;
     this._trackId = AMBIENT_TRACK_OFF;
     this._sessionActive = false;
     this._playedAccumulated = 0;
     /** @type {number | null} */
     this._segmentStartedAt = null;
     this._volume = 0.45;
+    /** 浏览器拦截自动播放后，等待一次用户手势再试 */
+    this._needsGestureUnlock = false;
+    /** @type {(() => void) | null} */
+    this._gestureUnlockHandler = null;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
@@ -77,26 +134,30 @@ export class AmbientSoundscapeController {
     }
   }
 
-  /** 专注会话开始（可听时长从 0 计） */
+  /** 用户偏好：是否希望播放背景音乐 */
+  wantsEnabled() {
+    return this._wantEnabled;
+  }
+
+  getPreferredTrackId() {
+    return this._preferredTrackId;
+  }
+
+  /** 专注会话开始（可听时长从 0 计；不停播既有曲目） */
   startSession() {
     this._endCreditSegment();
     this._sessionActive = true;
     this._playedAccumulated = 0;
     this._segmentStartedAt = null;
+    this._syncCreditSegment();
   }
 
-  /** 会话结束：停播并清零会话累计 */
+  /** 会话结束：清零会话累计；不停播、不改用户曲目偏好 */
   endSession() {
     this._endCreditSegment();
     this._sessionActive = false;
     this._playedAccumulated = 0;
     this._segmentStartedAt = null;
-    this._trackId = AMBIENT_TRACK_OFF;
-    if (this._audio) {
-      this._audio.pause();
-      this._audio.removeAttribute('src');
-      this._audio.load();
-    }
   }
 
   getTrackId() {
@@ -107,20 +168,61 @@ export class AmbientSoundscapeController {
     return this._volume;
   }
 
+  /** 当前是否可闻播放中 */
+  isAudiblePlaying() {
+    return this._isAudiblePlaying();
+  }
+
+  needsGestureUnlock() {
+    return this._needsGestureUnlock;
+  }
+
   /**
-   * @param {string} trackId off | singing-bowl | rain
+   * App 就绪：按偏好尝试默认开播 Mer-Ka-Ba（或上次曲目）。
    * @returns {Promise<void>}
    */
-  async setTrack(trackId) {
+  async startPreferredTrack() {
+    if (!this._wantEnabled) {
+      await this.setTrack(AMBIENT_TRACK_OFF, { persist: false });
+      return;
+    }
+    await this.setTrack(this._preferredTrackId, { persist: false });
+  }
+
+  /**
+   * 一键开关：关→开播偏好曲；开→关闭。
+   * @returns {Promise<boolean>} 切换后是否希望开启
+   */
+  async toggleEnabled() {
+    this._wantEnabled = !this._wantEnabled;
+    this._persistPref();
+    if (this._wantEnabled) {
+      await this.setTrack(this._preferredTrackId, { persist: false });
+    } else {
+      await this.setTrack(AMBIENT_TRACK_OFF, { persist: false });
+    }
+    return this._wantEnabled;
+  }
+
+  /**
+   * @param {string} trackId off | singing-bowl | rain
+   * @param {{ persist?: boolean }} [options]
+   * @returns {Promise<void>}
+   */
+  async setTrack(trackId, { persist = true } = {}) {
     const id = trackId || AMBIENT_TRACK_OFF;
     if (id === AMBIENT_TRACK_OFF) {
       this._endCreditSegment();
       this._trackId = AMBIENT_TRACK_OFF;
+      this._wantEnabled = false;
+      this._needsGestureUnlock = false;
+      this._teardownGestureUnlock();
       if (this._audio) {
         this._audio.pause();
         this._audio.removeAttribute('src');
         this._audio.load();
       }
+      if (persist) this._persistPref();
       return;
     }
 
@@ -129,13 +231,21 @@ export class AmbientSoundscapeController {
 
     this._endCreditSegment();
     this._trackId = id;
+    this._preferredTrackId = id;
+    this._wantEnabled = true;
     this._audio.src = track.src;
     this._audio.loop = true;
     this._audio.volume = this._volume;
+    if (persist) this._persistPref();
+
     try {
       await this._audio.play();
+      this._needsGestureUnlock = false;
+      this._teardownGestureUnlock();
     } catch {
-      // 浏览器自动播放策略：需用户手势；UI 已由点击触发，失败则保持选中待重试
+      // 浏览器自动播放策略：标记待手势解锁；UI 点「打开音乐」会再试
+      this._needsGestureUnlock = true;
+      this._installGestureUnlock();
     }
     this._syncCreditSegment();
   }
@@ -169,8 +279,44 @@ export class AmbientSoundscapeController {
     return Math.min(MAX_PRESENCE_BOOST + AUDIBLE_PLAYING_LIFT, cumulative + lift);
   }
 
+  _persistPref() {
+    writeAmbientPref(this._storage, {
+      enabled: this._wantEnabled,
+      trackId: this._preferredTrackId
+    });
+  }
+
+  _installGestureUnlock() {
+    if (typeof document === 'undefined') return;
+    if (this._gestureUnlockHandler) return;
+    this._gestureUnlockHandler = () => {
+      if (!this._wantEnabled || !this._needsGestureUnlock) {
+        this._teardownGestureUnlock();
+        return;
+      }
+      void this.setTrack(this._preferredTrackId, { persist: false });
+    };
+    document.addEventListener('pointerdown', this._gestureUnlockHandler, {
+      once: true,
+      capture: true
+    });
+  }
+
+  _teardownGestureUnlock() {
+    if (!this._gestureUnlockHandler || typeof document === 'undefined') {
+      this._gestureUnlockHandler = null;
+      return;
+    }
+    document.removeEventListener(
+      'pointerdown',
+      this._gestureUnlockHandler,
+      { capture: true }
+    );
+    this._gestureUnlockHandler = null;
+  }
+
   _isAudiblePlaying() {
-    if (!this._sessionActive || !this._audio) return false;
+    if (!this._audio) return false;
     if (this._trackId === AMBIENT_TRACK_OFF) return false;
     if (this._audio.paused) return false;
     if (this._audio.muted || this._audio.volume <= 0) return false;
@@ -183,6 +329,10 @@ export class AmbientSoundscapeController {
   }
 
   _syncCreditSegment() {
+    if (!this._sessionActive) {
+      this._endCreditSegment();
+      return;
+    }
     if (this._isAudiblePlaying()) {
       if (this._segmentStartedAt == null) {
         this._segmentStartedAt = this._now();

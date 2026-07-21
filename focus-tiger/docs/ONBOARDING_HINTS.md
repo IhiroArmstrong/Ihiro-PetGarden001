@@ -15,8 +15,8 @@
 
 | hintId | 场景（对应故事） | 提示 EN / ZH | 自动出现时机 | 完成操作后记已读 | 补救可调 |
 |---|---|---|---|---|---|
-| `dormant-open` | A1 睡着的阿寅 | "Yin is resting. Sit when you feel ready." / 「阿寅在歇着。准备好了，再同坐。」 | 当日 DORMANT 且尚未开始过会话 | 点 Sit / How shall we sit? / 进入 Honesty | 是 |
-| `honesty-optional` | A2 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次看到 Honesty 可忽略提示 | 点 Sit 忽略，或点进补登 | 是 |
+| `dormant-open` | （历史）睡着开场 | 保留 id；开场已改 Idle，基本不自动触发 | — | — | 兼容 |
+| `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次看到 Honesty 可忽略提示 | 点 Sit 忽略，或点进补登 | 是 |
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
 | `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
 | `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | 首次 Notice | 点选图标或 Skip | 是 |
@@ -26,8 +26,8 @@
 | `companion-stay` | A4 Here & Now | "Yin stays quiet nearby unless you are away a while." / 「你在时阿寅不多打扰；离开一阵才会轻轻留意。」 | 首次看到该选项（面板打开） | 点选 Here & Now | 是 |
 | `companion-away` | E Offline Space | "Check-ins pause while you are away. Sit again when ready to begin." / 「离开时提醒会暂停。准备开始时再点同坐。」 | 首次看到该选项 | 点选 Offline Space | 是 |
 | `companion-across-tools` | F Flow State | "Away reminders stay off in this mode." / 「这个方式下，离开提醒会保持关闭。」 | 首次看到该选项 | 点选 Flow State | 是 |
-| `ambient-gated` | A5 未计时点 Sound | "Sound opens after sitting begins." / 「同坐开始后，声音才会打开。」 | 首次在未 FOCUSING 时点 Sound | 看到提示后即记已读 | 是 |
-| `ambient-soundscape` | A5 Sound FAB / 面板 | "Optional background music — pick what feels right." / 「背景音可选——选一首顺耳的就好。」 | 首次进入 FOCUSING 见到 Sound，或首次展开曲目面板 | 选曲或关面板 / 本场结束 | 是 |
+| `ambient-gated` | （历史）未计时点 Sound | 已废止 FOCUSING 门闩；保留 id | — | — | 兼容 |
+| `ambient-soundscape` | 默认音乐 / 曲目 | "Music is on by default — tap to mute anytime." / 「默认有音乐——随时可点按钮关掉。」 | 首次 FOCUSING 或展开曲目面板 | 开关音乐 / 关面板 | 是 |
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
@@ -39,7 +39,7 @@
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
-提示只说明**可选背景音**与选曲入口；**不**在 hint 中承诺光效变化（`presenceBoost` 等为底层叠加，用户未感知时不写进引导文案）。
+提示说明**默认有背景音乐**与一键开关；**不**在 hint 中承诺光效变化（`presenceBoost` 等为底层叠加，用户未感知时不写进引导文案）。
 
 ---
 

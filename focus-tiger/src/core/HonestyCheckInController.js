@@ -1,8 +1,10 @@
 /**
- * Honesty Check-in / DORMANT 唤醒编排。
+ * Honesty Check-in 编排。
  *
  * - 不调用 ReminderQuotaManager（用户主动发起，不占共享提醒池）
- * - 未达标起身（Rise）：回到 DORMANT（若当日仍零完成），无失败/未完成类文案
+ * - 开场 / 零完成默认基底为 Idle（闭目坐禅），不再自动进 DORMANT 睡态
+ * - 未达标起身（Rise）：若当日仍零完成 → 回 Idle（无失败/未完成类文案）
+ * - DORMANT / dormantWake 仍保留给调试「睡着了」路径
  */
 
 import { STATES } from './StateManager.js';
@@ -28,7 +30,7 @@ export class HonestyCheckInController {
    * @param {HonestyCheckInUI} deps.ui
    * @param {(level: number) => void} [deps.applyFocusGlow]
    * @param {() => void} [deps.clearFocusGlow]
-   * @param {() => void} [deps.onCheckInComplete] 补登仪式结束（记账 + 离 DORMANT）后；桥接 CTA 挂这里
+   * @param {() => void} [deps.onCheckInComplete] 补登仪式结束（记账）后；桥接 CTA 挂这里
    * @param {() => void} [deps.onPracticeDay] 计时达标或 Honesty 记账后标记练习日（光点圈）
    */
   constructor({
@@ -61,14 +63,14 @@ export class HonestyCheckInController {
     };
   }
 
-  /** App 就绪后调用：按当日完成记录进入/离开 DORMANT，并在需要时展示可忽略提示。 */
+  /** App 就绪后调用：零完成保持 Idle + 可忽略 Honesty 提示；有完成则离任何残留 DORMANT。 */
   onAppReady() {
-    this.syncDormantState({ showPromptIfDormant: true });
+    this.syncDormantState({ showPromptIfZeroCompletions: true });
     this.syncIdleEntry();
   }
 
   /**
-   * 正常计时达标完成时写入同一套完成记录，并离开 DORMANT。
+   * 正常计时达标完成时写入同一套完成记录，并离开 DORMANT（若有）。
    * @param {number} durationMinutes
    */
   onTimedSessionCompleted(durationMinutes) {
@@ -85,7 +87,7 @@ export class HonestyCheckInController {
 
   /**
    * 用户主动结束且未达标：不写完成记录、无失败文案；
-   * 若当日仍零完成则保持/回到 DORMANT。
+   * 若当日仍零完成则回 Idle（闭目坐禅），不再落入 Sleeping。
    */
   onIncompleteSessionEnded() {
     this.ui.hide();
@@ -93,11 +95,6 @@ export class HonestyCheckInController {
     this._pendingMinutes = null;
     this.clearFocusGlow();
     this.ui.hideIdleEntry();
-
-    if (!this.store.hasCompletedToday()) {
-      this.stateManager.setState(STATES.DORMANT);
-      return;
-    }
 
     if (
       this.stateManager.state === STATES.FOCUSING ||
@@ -110,9 +107,15 @@ export class HonestyCheckInController {
 
   /**
    * @param {object} [options]
-   * @param {boolean} [options.showPromptIfDormant]
+   * @param {boolean} [options.showPromptIfZeroCompletions]
+   * @param {boolean} [options.showPromptIfDormant] 兼容旧调用名
    */
-  syncDormantState({ showPromptIfDormant = false } = {}) {
+  syncDormantState({
+    showPromptIfZeroCompletions = false,
+    showPromptIfDormant = false
+  } = {}) {
+    const showPrompt = showPromptIfZeroCompletions || showPromptIfDormant;
+
     if (this.store.hasCompletedToday()) {
       if (this.stateManager.state === STATES.DORMANT) {
         this.stateManager.setState(STATES.IDLE);
@@ -124,21 +127,25 @@ export class HonestyCheckInController {
 
     this.ui.hideIdleEntry();
 
+    // 产品口径（2026-07-21）：开场 / 零完成默认 Idle 闭目坐禅，不上 Sleeping。
+    // 若残留 DORMANT（调试睡着后），收回 Idle——补登进行中勿打断。
     if (
+      !this._busy &&
+      this.stateManager.state === STATES.DORMANT &&
       this.stateManager.state !== STATES.FOCUSING &&
       this.stateManager.state !== STATES.CELEBRATE
     ) {
-      this.stateManager.setState(STATES.DORMANT);
+      this.stateManager.setState(STATES.IDLE);
     }
 
-    if (showPromptIfDormant && !this._busy) {
+    if (showPrompt && !this._busy) {
       this.ui.showPrompt();
     }
   }
 
   /**
    * 同日再补登入口：仅当日已有完成、且空闲无叠层仪式时显示。
-   * 首次零完成仍走 DORMANT 自动提示，不显示本入口。
+   * 首次零完成走自动 Honesty 提示，不显示本入口。
    */
   syncIdleEntry() {
     const canShow =
@@ -163,7 +170,7 @@ export class HonestyCheckInController {
 
   /**
    * 直接打开「补登多久」三选一（不经 Sit with Yin / 不经可忽略提示）。
-   * 调试面板「Honesty唤醒」、DORMANT 提示点击、同日再补登入口共用。
+   * 调试面板「Honesty唤醒」、零完成提示点击、同日再补登入口共用。
    * @param {{ force?: boolean }} [options] force：打断进行中的呼吸引导并重开
    */
   openDurationChoices({ force = false } = {}) {
@@ -175,10 +182,8 @@ export class HonestyCheckInController {
     this._pendingMinutes = null;
     this.ui.hideIdleEntry();
 
-    // 仅当日零完成的唤醒仪式才切 DORMANT 睡态；同日再补登保持当前坐姿。
-    if (!this.store.hasCompletedToday() && this.stateManager.state !== STATES.DORMANT) {
-      this.stateManager.setState(STATES.DORMANT);
-    }
+    // 不再为补登强制切入 Sleeping；已在 Idle 则保持坐姿。
+    // 仅当调试已处于 DORMANT 时，选时长才播 dormantWake。
 
     this.ui.showDurationChoices();
   }
@@ -190,7 +195,7 @@ export class HonestyCheckInController {
     this._pendingMinutes = minutes;
     this.ui.hideIdleEntry();
 
-    // 睡态补登：立刻播 dormant-wake；同日再补登已在坐姿，只走呼吸引导。
+    // 仅从睡态补登才播 dormant-wake；开场 Idle / 同日再补登只走呼吸引导。
     if (this.stateManager.state === STATES.DORMANT) {
       this.emotionController.playEmotion(EMOTION_KEYS.DORMANT_WAKE, {
         holdPose: true
@@ -208,7 +213,6 @@ export class HonestyCheckInController {
     this.clearFocusGlow();
     this._busy = false;
 
-    // 已在坐姿（dormant-wake 末帧定格或本已 idle）；补登完成只需离开 DORMANT。
     if (this.stateManager.state === STATES.DORMANT) {
       this.stateManager.setState(STATES.IDLE);
     }

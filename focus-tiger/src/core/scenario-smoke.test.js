@@ -80,8 +80,8 @@ function createQuotaStub({ allow = true } = {}) {
 
 // ─── 场景 A：Kelly 第一个早晨（主链路契约）─────────────────────────────
 
-test('smoke A1: zero completions → DORMANT prompt path; after record → not dormant', () => {
-  // SCENARIO_TESTS A1 / A11
+test('smoke A1: zero completions → Idle + Honesty prompt; after record → still idle', () => {
+  // SCENARIO_TESTS A1 / A11 — 开场 Idle（不上 Sleeping）
   const store = new DailyCompletionStore({
     storage: createStorage(),
     now: () => new Date(2026, 6, 20, 8)
@@ -97,7 +97,7 @@ test('smoke A1: zero completions → DORMANT prompt path; after record → not d
 
   assert.equal(store.hasCompletedToday(), false);
   controller.onAppReady();
-  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(stateManager.state, STATES.IDLE);
   assert.equal(ui.phase, 'prompt');
 
   store.recordCompletion(1);
@@ -267,7 +267,7 @@ test('smoke C: Rise incomplete → no completion record; Reflection after MANUAL
   stateManager.setState(STATES.FOCUSING);
   honesty.onIncompleteSessionEnded();
   assert.equal(store.hasCompletedToday(), false);
-  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(stateManager.state, STATES.IDLE);
 
   const intention = '💻 Deep Work';
   assert.equal(

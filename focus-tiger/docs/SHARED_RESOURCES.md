@@ -21,6 +21,7 @@
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
+| `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认 Mer-Ka-Ba 开） |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
@@ -33,7 +34,7 @@
 |---|---|---|
 | `EmotionController` 单例（`main.js` 注入） | `MoodController`、Honesty、MindfulReminder、PointerInteraction、调试面板、会话完成反馈 | 改优先级 / holdPose / 回落 idle 会影响全部响应情绪 |
 | `idle` / IdleOrchestrator 接管 | `MoodController` IDLE、`IdleOrchestrator` | 呼吸×5→眨眼；勿另开 Idle 变体池 |
-| `sleeping` | DORMANT / `MoodController` | 场景 A 开局睡着观感 |
+| `sleeping` | 调试「睡着了」/ 显式 DORMANT | **不再**作零完成开场；开场默认 Idle |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
 | `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback` | `hasCelebratedToday`：首次计时达标 Celebrating；已庆祝过 → SessionComplete；Honesty 不占戳 |
 | `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |

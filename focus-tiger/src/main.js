@@ -245,7 +245,7 @@ async function init() {
   );
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
 
-  // Honesty Check-in / DORMANT：当日零完成 → 打瞌睡 + 可忽略补登提示
+  // Honesty Check-in：当日零完成 → Idle 闭目坐禅 + 可忽略补登提示（不开 Sleeping）
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
@@ -355,14 +355,10 @@ async function init() {
     syncCompanionPostSessionChrome();
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
-    // Rise 过渡播完后：若仍是当日零完成，收回到 Sleeping；否则回 Idle 呼吸。
+    // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
     const riseKey = emotionController.getCurrentEmotionKey();
     if (riseKey === 'riseStretchCasual' || riseKey === 'blinkBreathe') {
-      if (stateManager.state === STATES.DORMANT) {
-        emotionController.playEmotion('sleeping');
-      } else {
-        emotionController.playEmotion('idle');
-      }
+      emotionController.playEmotion('idle');
     }
     syncOnboardingAutoHints();
     syncHonestyIdleEntry();
@@ -403,20 +399,20 @@ async function init() {
     document.body,
     ambientSoundscape,
     {
-      onBlockedTip: () => {
-        // 未计时点 Sound：本地 nudge（已改漫画气泡样式）展示 AMBIENT_REQUIRES_FOCUS；
-        // 同时写入 hints-seen，避免「?」补救与自动提示重复抢戏。
-        onboardingHints?.store?.markSeen?.('ambient-gated');
-      },
       onPanelOpened: () => {
         onboardingHints?.maybeShowAuto('ambient-soundscape');
       },
       onTrackChosen: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
+      },
+      onToggleMusic: () => {
+        onboardingHints?.markSeen('ambient-soundscape');
+        onboardingHints?.hideBubble('ambient-soundscape');
       }
     }
   );
+  void ambientSoundscapeUI.bootDefaultMusic();
 
   /** @type {OnboardingHintsUI | null} */
   let onboardingHints = null;
@@ -798,8 +794,8 @@ async function init() {
       honestyBridge?.hide();
       honestyCheckIn.onIncompleteSessionEnded();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：伸懒腰→随意坐姿正放一次，Reflection 期间定格箕坐；关面板后再回 idle/sleeping。
-      // MoodController 在 IDLE 时不覆盖 riseStretchCasual；DORMANT 睡态在其后再写也不抢本过渡。
+      // Rise：伸懒腰→随意坐姿正放一次，Reflection 期间定格箕坐；关面板后再回 idle。
+      // MoodController 在 IDLE 时不覆盖 riseStretchCasual。
       emotionController.playEmotion('riseStretchCasual', { holdPose: true });
       sessionEndFlow.onSessionEnded({
         completed: false,
@@ -842,7 +838,7 @@ async function init() {
   // StateManager 初始 IDLE 不会主动发 onChange；显式启动 observer baseline。
   moodController.handleStateChange(stateManager.state);
 
-  // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty / DORMANT 无视觉
+  // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
   honestyCheckIn.onAppReady();
   syncOnboardingAutoHints();
 
@@ -864,7 +860,7 @@ async function init() {
         syncHonestyIdleEntry();
       } else if (consumeDevResetToast()) {
         showDevLabToast(
-          '已重置为全新用户：当日零完成 → 阿寅睡着 + Honesty 提示（场景 A 正常开局）。要测 idle 呼吸请点「重置并 idle 坐禅」或调试「坐禅闭眼」。',
+          '已重置为全新用户：当日零完成 → Idle 闭目坐禅 + Honesty 提示（场景 A 正常开局）。调试「睡着了」仍可试 Sleeping。',
           12_000
         );
       }

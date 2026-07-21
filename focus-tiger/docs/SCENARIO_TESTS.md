@@ -35,38 +35,38 @@
 
 ---
 
-## 场景 A：Kelly 的第一个早晨（全新用户，当日 DORMANT）
+## 场景 A：Kelly 的第一个早晨（全新用户，当日零完成 → Idle）
 
 > **自动化（控制器级）**：A1 / A3–A4 门闩 / A7–A8 完成反馈 / 计时达标 → `src/core/scenario-smoke.test.js`（`npm run test:smoke`）。  
 > **自动化（DOM · Task 1）**：Arrival Skip → Here & Now 开表 → `e2e/scenario-a.companion.spec.js`（**不含**达标/Celebrating）。  
-> **仍须人工**：睡着观感、Honesty 文案、Arrival 气泡时长、合十动画、Ambient、Idle 呼吸×5→眨眼观感、Celebrating 动画本身。
+> **仍须人工**：Idle 开场观感、Honesty 文案、默认音乐与开关按钮、Arrival 气泡时长、Ambient、Idle 呼吸观感、Celebrating 动画本身。
 
-1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **睡着**（`sleeping` / DORMANT），**不是** idle-breathing。  
-   *[逻辑：DORMANT 门闩已自动化 smoke A1]*
+1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **Idle 闭目坐禅**，**不是** sleeping。  
+   *[逻辑：零完成 → Idle + Honesty prompt 已自动化 smoke A1]*
 2. 应看到 Honesty Check-in 可忽略提示（文案键 `HONESTY_CHECKIN_PROMPT`，大意「Quiet time elsewhere can live here too.」——邀请式，非盘问）。Kelly 决定直接开始，不理会提示，点击 **Sit with Yin**。
-3. Arrival Practice 展开：
+3. 右下角应有显眼 **「关闭音乐」**（默认 Mer-Ka-Ba；若浏览器拦自动播放，点一次按钮或页面即可解锁）。随时可关，不必先 Sit。
+4. Arrival Practice 展开：
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）
    c. 呼吸 beat（~5 秒，无倒计时）
-   d. Choose：六个活动图标；点 "Deep Work" → `palms-together`（合十确认；实现可能含正放/回落，以观感为准）  
+   d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
    *[逻辑：Notice→Choose→READY + Here & Now 可 begin / 门闩失败 已自动化 smoke A3–A4]*
-4. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**（不是旧稿 Stay here / I'll step away / …）。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。  
+5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。Kelly 选 **Here & Now** → **选中后立即开始 Focus+计时**（不必再点 Sit）。  
    *[逻辑：选中即开 + Offline 不开 已自动化；真实 HUD 开表仍人工]*
-5. 计时开始后，可展开右下角 Ambient Soundscape，选一首播放（未计时时点 Sound 应提示须先进入专注，不展开面板）。
-6. 全程观察 Idle：**仅**「呼吸 ×5 → blink-smile」固定节奏。  
-   **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**（素材可在，见 `companionGestureCatalog`；测序列用实验室 / `__spritePlayer.play(...)`）。看不到它们不算失败。  
-   **靠近区不应自动播点头**（`nodGreeting` 已拆除靠近触发；调试「点头致意」可手工播）。  
+6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。
+7. 全程观察 Idle：**仅**闭目 pingpong → 眨眼弧固定节奏。  
+   **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**。  
+   **靠近区不应自动播点头**。  
    *[概率/观感：不纳入冒烟]*
-7. 达到目标时长 → **当日首次计时达标**：Celebrating（`celebrate-dance` / `celebrate-dance-v2` 随机）→ 回落坐姿。  
-   **勿提前点 Rise**（未达标会走未完成路径）；已达标后再点 Rise 也会进完成反馈。  
-   Honesty 补登**不**占庆祝戳：可先 Honesty，再计时仍应见舞。  
+8. 达到目标时长 → **当日首次计时达标**：Celebrating → 回落坐姿。  
+   **勿提前点 Rise**；Honesty 补登**不**占庆祝戳。  
    *[逻辑：celebrated 戳 + smoke A7–A8；动画观感仍人工]*
-8. **同日第二次计时达标**（已播过 Celebrating）：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
+9. **同日第二次计时达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
    *[逻辑：二次→sessionComplete 已自动化]*
-9. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**，仅调试面板「模拟一炷香」。首次完成**不要**期待自动莲花。
-10. 进入 Reflection Moment：开头回显本次 Choose（文案键类似 `Chosen direction: {text}`，以 locale 为准），三问可独立跳过。
-11. 回到非 DORMANT；今日 Honesty 提示不应再因零完成自动出现。  
-    *[逻辑：有完成后离 DORMANT 已自动化 smoke A1]*
+10. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**。
+11. 进入 Reflection Moment：开头回显本次 Choose，三问可独立跳过。
+12. 回到 Idle；今日 Honesty 提示不应再因零完成自动出现。  
+    *[逻辑：有完成后不再出零完成 prompt 已自动化 smoke A1]*
 
 ---
 

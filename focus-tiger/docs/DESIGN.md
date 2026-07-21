@@ -112,12 +112,11 @@ v5.0：数据驱动一只角色的状态(自然休憩/金色庆祝/打盹/欢呼
   光环：向外扩散一次金色光波(TransitionFX负责，只播一次，不循环)
   时长：3-5秒后自动回落到"自然休憩"或下一次FOCUSING起点，不停留在庆祝态
 
-状态四・打瞌睡(DORMANT，当日自然日尚未完成任何一次专注会话)
-  判定：当天（用户本地自然日）尚无任何「已完成」记录——无论正常计时完成，
-        还是 Honesty Check-in 手动打卡完成；有一次即离开 DORMANT
+状态四・打瞌睡(DORMANT，**仅调试 / 显式切入**；2026-07-21 起零完成开场不再自动进入)
+  判定：不再由「当日零完成」自动触发；登录后第一幕固定 Idle 闭目坐禅（uplifting）
   毛色：保持本体固有色，眼睛完全闭合，呈蜷缩打瞌睡姿态(区别于打坐的挺直坐姿)
-  （历史口径「连续 N 天未专注」已由 2026-07-16 Honesty Check-in 定稿取代，见下方唤醒仪式）
-  这是唯一的非专注陪伴姿态，语气克制，不做委屈/生病的拟人化苦情设计
+  （历史口径「零完成 → Sleeping」已由 2026-07-21 产品反馈废止：看起来 not uplifting）
+  语气克制，不做委屈/生病的拟人化苦情设计
   (v4.0"挂点滴"式的苦情设计不再适用，见下方"防挫败感机制"章节)
 ```
 
@@ -135,14 +134,12 @@ v5.0：数据驱动一只角色的状态(自然休憩/金色庆祝/打盹/欢呼
 
 ### 动作清单(Actions.js)
 ```
-坐禅    → 基础姿态，循环呼吸动画(腹部轻微scale，4s循环)
+坐禅    → 基础姿态，循环呼吸动画；**登录后第一幕默认**
 完整庆祝 → CELEBRATE状态触发，舒展/轻跳/鼓掌+光环扩散，每日首次达标播放一次
-打瞌睡  → DORMANT状态触发，蜷缩+眼睛闭合，持续到当日首次完成
-          （正常计时完成或 Honesty Check-in 均可）
+打瞌睡  → 仅调试 / 显式 DORMANT；**不再**作为零完成自动开场
 眨眼    → 闭目坐禅：`idle-breathing`（约 2.5fps）×5 完整循环后插一次 `blink-smile`，再 ×5…（偶尔看看）；无其它 Idle 变体（见 PRINCIPLES）
-唤醒起身 → Honesty：`dormant-wake`（深睡→坐姿，情绪键 `dormantWake`）；调试/历史 `wakeUp`：伸懒腰变体（与 Honesty **不同源**）。金光/halo 暂不接在 Honesty 睡醒后（2026-07-19）
-睡着了  → DORMANT 睡态循环；**约 1 fps** 极缓（持续态节奏原则）
-          （深睡到清醒坐姿 + 对接既有金色 Rim Light / 光环系统；见下方唤醒仪式）
+唤醒起身 → Honesty 自睡态：`dormant-wake`；自 Idle 补登不播睡醒。调试/历史 `wakeUp`：伸懒腰变体
+睡着了  → 调试睡态循环；**约 1 fps** 极缓（持续态节奏原则）
 ```
 
 ### 动作幅度的场景边界（主界面 vs 奖励柜）
@@ -295,8 +292,9 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 ### 禅意背景音（Ambient Soundscape）
 
-> **2026-07-16 定稿；MVP 运行时已落地**（`AmbientSoundscapeController` + 角落展开 UI；曲目：Mer-Ka-Ba / Meditation Impromptu 02）  
-> 与 Companion Mode **天然互补**，但**不是** Companion Mode 的子功能：Stay here / step-away / working-across-tools 均可选用；默认关闭，不强制开启。
+> **2026-07-16 定稿；MVP 运行时已落地**（`AmbientSoundscapeController` + 角落 UI；曲目：Mer-Ka-Ba / Meditation Impromptu 02）  
+> **2026-07-21**：默认开播 Mer-Ka-Ba；右下角显眼「打开/关闭音乐」随时可点（不再门闩于 FOCUSING）。  
+> 与 Companion Mode **天然互补**，但**不是** Companion Mode 的子功能：Stay here / step-away / working-across-tools 均可选用。
 
 #### 背景与动机
 
@@ -313,16 +311,17 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 #### 1. 可选性与呈现
 
 - **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
-- 用户可在**专注会话进行中**开启 / 关闭 / 切换；**默认关闭**；
-- UI：**与主 CTA（Sit with Yin）同系蒲团橙立体按钮**（右下角 Sound / 背景音；挂 `document.body`、高 z-index）。**进入应用即始终可见**；未 FOCUSING 时点击不展开面板，显示英文提示 `AMBIENT_REQUIRES_FOCUS`（须先进入陪伴专注模式）。FOCUSING 后可展开曲目/音量；首次进入专注可出现一次可忽略轻提示；
-- 不得做成开始会话的必选项，也不得因未开启而削弱完成反馈或制造「少做了一步」的暗示。
+- **默认开启** Mer-Ka-Ba（偏好存 `focus-tiger.ambient-pref.v1`）；用户关掉后刷新仍保持关闭；
+- UI：右下角**显眼主按钮**「打开音乐 / 关闭音乐」（一键立刻开关）+ 次要「曲目」展开选轨/音量。**进入应用即始终可见、随时可点**（不再门闩于 FOCUSING）；
+- 浏览器若拦截自动播放：首次点击页面或音乐按钮会解锁；不得因未开音乐削弱完成反馈。
 
 #### 2. 播放时长作为独立「在场置信信号」
 
 - 追踪该音频的**实际播放时长**（真正处于可闻播放态的累计秒数；实现上以 `<audio>` 的 `timeupdate` 为心跳，配合可闻态墙钟段累计）；
 - **不计入**：从未开启、暂停、静音（含音量为 0 且未真正出声的等价态）、会话未运行等期间；
 - **不是**「控件保持打开的墙钟时长」——只有真实播出才累加；
-- 该信号仅在**当前会话内**使用，不做长期存储或历史统计；
+- 该信号仅在**当前会话内**使用；曲目开关偏好可长期存储；
+- 会话结束**不停播**背景音乐（仅清零 presence 累计）；
 - 该信号与 Page Visibility / blur / idle 等既有 Focus Confidence 信号**并列、独立**；不替代墙钟会话计时，也不单独决定会话是否达标。
 
 #### 3. 数据流向：音频时长 → 光效强度（锦上添花）
@@ -449,35 +448,35 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 > **2026-07-16 定稿**：取代原「连续 N 天未专注 → 1 分钟唤醒且不计会话」口径。  
 > 上位原则见 `PRINCIPLES.md`「诚实机制（Honesty System）」；情绪键与观察式文案见 `EMOTION_BIBLE.md`。
 
-#### 1. DORMANT 状态定义
+#### 1. 与「零完成」的关系（2026-07-21）
 
-- **进入条件**：当天（用户本地自然日）尚未完成过任何一次专注会话——无论正常计时完成，还是本功能手动打卡完成。
-- **离开条件**：当日出现任意一次「已完成」记录（正常计时或 Honesty Check-in）后，不再处于 DORMANT。
-- **视觉**：对应「打瞌睡」表现；具体 2D 序列 / 素材待播放器支持后实现。实现阶段可先完成交互逻辑与状态判断，视觉用现有占位。
+- **开场视觉**：当日零完成 → **Idle 闭目坐禅**（不上 Sleeping / 不自动进 DORMANT）。
+- **Honesty 提示**：零完成仍可展示可忽略补登提示（非强制）；从 Idle 点进选时长 → 呼吸引导 → 记账（**不**播 `dormantWake`）。
+- **DORMANT / Sleeping**：仅调试面板或显式状态；从睡态补登仍播 `dormantWake`。
+- **离开「零完成」**：当日任意一次已完成记录后，Honesty 自动提示不再出现。
 
 #### 2. 触发时机与呈现
 
-用户打开 App，若检测到当前处于 DORMANT：
+用户打开 App，若当日零完成：
 
 - 展示一个**不打扰、可忽略**的轻量提示（非强制弹窗、不反复追问）；
 - 触发口径是「当日零完成」（含**当日首次打开**、**首次安装**），**不是**「离开 App 很久才回来」；故文案须用**邀请式能力说明**，禁止盘问「你今天是不是在别处练过」。
-- 英文（`HONESTY_CHECKIN_PROMPT`）：`Yin is resting, but always here for you. Quiet time elsewhere can live here too.`
-- 中文：`阿寅正在休息，但它一直在等你。别处的静心，也可以记在这里。`
+- 英文（`HONESTY_CHECKIN_PROMPT`）：`Yin is sitting with you. Quiet time elsewhere can live here too.`
+- 中文：`阿寅正闭目同坐。别处的静心，也可以记在这里。`
 - 用户可直接忽略（不点击），正常使用 App 其他功能；忽略不触发任何提示或劝导。
 
 #### 3. 交互流程
 
 1. 用户点击提示后，展示时长选项：`[10 mins]` / `[20 mins]` / `[30+ mins]`；
-2. 选择后，进入约 **10 秒**的呼吸引导；**同时立刻**播放 `dormant-wake` 坐起（情绪键 `dormantWake`，**3 fps**），**不再**在倒计时期间保持 `sleeping`；
-3. 坐起后**定格末帧**至倒计时结束（**2026-07-19**：暂不接闭眼坐禅呼吸淡入，转场衔接不成）；
-4. 呼吸引导结束后记账并离开 DORMANT（**勿**再播一遍睡醒）；本次打卡按所选时长**等同于完成一次专注会话**，正常计入当天已完成记录，与正常计时一视同仁；
-5. 视觉边界：调试/历史键 `wakeUp` 用伸懒腰（`stretch-reminder` 同源），**不得**与 Honesty 共用 `dormant-wake`；**2026-07-19** 本路径暂不接 TransitionFX / `haloBreathing` / FocusVisualizer 叠光；金色 Rim Light 仍走既有系统（未就绪时可用占位）。
+2. 选择后，进入约 **10 秒**的呼吸引导；若当前已在 Idle，**不**播睡醒；仅调试睡态下立刻播 `dormant-wake`；
+3. 呼吸引导结束后记账（**勿**再播一遍睡醒）；本次打卡按所选时长**等同于完成一次专注会话**；
+4. 视觉边界：调试/历史键 `wakeUp` 用伸懒腰（`stretch-reminder` 同源），**不得**与 Honesty 睡醒共用 `dormant-wake`。
 
 #### 4. 频率与限频边界
 
 - **不占用**此前拍板的「共享提醒池每日 3 次」额度：本功能是用户主动发起，不是系统主动提醒，性质不同，不得混用同一限频逻辑。
 - 用户可在一天内多次使用（若确实多次在别处完成练习），**不设人为次数上限**。
-- 每次成功完成后仍按当日「已完成」规则影响 DORMANT：首次完成后当日即离开 DORMANT；同日后续 Honesty Check-in 仍可作为等价会话记录与反馈入口（是否触发当日完整 `Celebrating` 仍遵守「每日首次达标仅一次」规则）。
+- 首次完成后当日 Honesty 自动提示不再出现；同日后续仍可通过空闲 **Mindful Check-in** 入口再补登。
 
 #### 5. 语言与完成反馈
 
@@ -594,7 +593,7 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 | 浏览器标签是否切走 | Page Visibility API (`visibilitychange`) | Stay 模式下可用；**不得**在 step-away / across-tools 下当作分心惩罚依据 |
 | 窗口是否失焦 | `window.blur` / `window.focus` 原生事件 | 同上 |
 | 长时间无操作(idle) | 监听 mousemove/keydown 等事件,超时未触发判定为idle | 仅判断"有无活动",不记录具体输入内容；across-tools 下仅作宽松兜底 |
-| 本页禅意背景音实际播放时长 | 已落地（见上文「禅意背景音」） | 独立在场置信信号；仅追踪 Focus Tiger 自播音频，**绝不**探测其他 App；默认关闭，作光效叠加而非达标真值 |
+| 本页禅意背景音实际播放时长 | 已落地（见上文「禅意背景音」） | 独立在场置信信号；仅追踪 Focus Tiger 自播音频；**默认开播 Mer-Ka-Ba**，可随时一键关闭；作光效叠加而非达标真值 |
 
 **Interruptions(干扰事件)机制**:
 系统不直接告知用户"你不专注",而是客观记录中性事件"今日中断次数:N次"。V1阶段的Interruption事件来源限定为:标签页切换(visibilitychange触发)、窗口失焦(blur事件)、长时间idle超时。这个列表设计为可扩展结构,未来可持续加入新的事件源而不改变核心机制。**在 Companion Mode 的 step-away / across-tools 子模式下，visibility / blur 不得计入此类中断叙事。**

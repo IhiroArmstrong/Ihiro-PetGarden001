@@ -62,6 +62,7 @@ function createMapStorage(seed = {}) {
  * 须与 `AmbientSoundscapeUI.AMBIENT_NUDGE_STORAGE_KEY` / SHARED_RESOURCES 字面量一致。
  */
 const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
+const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 
 /** 各模块导出的 localStorage key —— 与白名单必须集合相等。 */
 const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
@@ -73,7 +74,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   COMPANION_MODE_STORAGE_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
   HINTS_SEEN_STORAGE_KEY,
-  AMBIENT_NUDGE_STORAGE_KEY
+  AMBIENT_NUDGE_STORAGE_KEY,
+  AMBIENT_PREF_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {
@@ -137,6 +139,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   storage.setItem(INTENTION_STORAGE_KEY, JSON.stringify([{ text: 'x' }]));
   storage.setItem(REFLECTION_STORAGE_KEY, JSON.stringify([{ text: 'y' }]));
   storage.setItem(AMBIENT_NUDGE_STORAGE_KEY, '1');
+  storage.setItem(
+    AMBIENT_PREF_STORAGE_KEY,
+    JSON.stringify({ enabled: false, trackId: 'rain' })
+  );
 
   const hintsBag = {
     getItem: (k) => storage.getItem(k),
@@ -171,6 +177,7 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   assert.equal(storage.getItem(INTENTION_STORAGE_KEY), null);
   assert.equal(storage.getItem(REFLECTION_STORAGE_KEY), null);
   assert.equal(storage.getItem(AMBIENT_NUDGE_STORAGE_KEY), null);
+  assert.equal(storage.getItem(AMBIENT_PREF_STORAGE_KEY), null);
 
   const freshHints = createHintsSeenStore(
     () => JSON.parse(storage.getItem(HINTS_SEEN_STORAGE_KEY) || '{}'),

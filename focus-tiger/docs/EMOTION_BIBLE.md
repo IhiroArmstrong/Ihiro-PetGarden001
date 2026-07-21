@@ -36,8 +36,8 @@
 
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
-| `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | 默认态；当日尚未产生显著专注数据；非 `Sleeping` / 非庆祝播放中 / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`（2026-07-18：单色暖浅灰棉麻、无红边），`PoseManager` 中 `IDLE_CLOSED_EYES`；2D 主线默认隐藏 canvas，正式情绪由 `idle-breathing` 等序列承载；Idle 自发变体见下文「IdleOrchestrator 自发变体」 |
-| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'forward'`） | 当天（用户本地自然日）尚未完成任何一次专注会话（正常计时或 Honesty Check-in 均算完成）→ 对应产品 `DORMANT`；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：`sleeping` 8 帧循环，**约 1 fps**（2026-07-19：相对早期 4 fps 至少放慢 3×）；`playEmotion('sleeping')`；首尾帧 forward 可接受。3D `tiger-sleeping.glb` 仍作垫底。DORMANT / Honesty Check-in 已联动。**进睡过渡候选**：`cloak-sleep`（34 帧，`cloakSleep`）已入库可调试试播；**产品拍板（2026-07-20）**：当日**首次**进入 DORMANT 播一次再落入 `sleeping`——**2c 尚未接线** |
+| `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | **默认开场与日常基底**（含当日零完成 / 登录后第一幕）；非庆祝播放中 / 非调试 Sleeping / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`（2026-07-18：单色暖浅灰棉麻、无红边），`PoseManager` 中 `IDLE_CLOSED_EYES`；2D 主线默认隐藏 canvas，正式情绪由 `idle-breathing` 等序列承载；Idle 自发变体见下文「IdleOrchestrator 自发变体」 |
+| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'forward'`） | **不再**作为零完成自动开场；仅调试面板「睡着了」或显式 `STATES.DORMANT` 时；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：`sleeping` 8 帧循环，**约 1 fps**；`playEmotion('sleeping')`。产品口径（2026-07-21）：登录后第一幕必须是 Idle 闭目坐禅，Sleeping 看起来 not uplifting。**进睡过渡候选**：`cloak-sleep` 仍待 2c |
 | `Smiling` | 坐禅微笑基底（观照者回归态） | 是（`blink-smile` pingpong） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现（2D 主线）**：`blink-smile` 12 帧 pingpong；`playEmotion('smiling')`；3D `tiger-meditate-smile.glb` 仅作垫底且主线默认隐藏 canvas。日期戳持续基底仍待完整接通 |
 | `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放，不循环） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完回归 `Idle` / idle-breathing） | **已实现（2D 主线）**：两套变体素材——`celebrate-dance`（57 帧）与 `celebrate-dance-v2`（60 帧）；`playEmotion('celebrating')` 每次触发时 50/50 随机选用其一（MVP 不做轮换记账）；`loopMode: none`，播完由 EmotionController 回归 idle-breathing。3D `tiger-happy-jump.glb` 仍作垫底。日期戳防刷与 `Smiling` 持续基底仍待完整接通。本序列即主界面 Celebrating 的正式幅度上限；禁止另加更娱乐化的街机式狂欢动作 |
 
@@ -123,11 +123,11 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 **关键场景说明**（均来自已确认产品设计，非新增玩法）：
 
 1. **完成反馈分级**：每次完成均有轻量 `SessionComplete`；当日首次达标时由完整 `Celebrating`（`celebrate-dance` / `celebrate-dance-v2` 50/50 变体，一次性弧线）取代（不叠加）；同日后续完成继续播放 `SessionComplete`，不重复完整庆祝。所有一次性反馈结束后自动回到 `Idle`（idle-breathing）坐姿呼吸基底；`Smiling` 日期戳持续基底仍待完整接通。
-2. **当日尚未完成任何练习**：`Sleeping`（DORMANT）覆盖 `Idle`；用户可通过正常开始专注，或通过 Honesty Check-in 唤醒离开该态；完成后 `dormantWake` → 非 DORMANT 基底。
+2. **当日尚未完成任何练习（2026-07-21）**：开场与回流默认 **`Idle` 闭目坐禅**（不上 `Sleeping`）；可忽略 Honesty 提示仍可出现。`Sleeping` / `DORMANT` 仅调试或显式切入；从睡态 Honesty 仍可 `dormantWake`，从 Idle 补登不播睡醒。
 3. **一炷香完成 vs 专注达标**：`IncenseComplete` 与 `Celebrating` **相互独立**、强度分级（轻量确认 vs 完整庆祝），不共用完整庆祝资源；可同一天先后发生，各自遵守「每日一次」类限制。
 4. **每日总结氛围**（雪花 / 花瓣）与实时姿态是**两条独立信号轴**（`DESIGN.md`），可同时叠加，不并入本表姿态状态机。
 5. **专注金光**（`focusLevel` 驱动的金色光环/环境光反射强度、金粒子）由 `FocusVisualizer` / 动态效果层驱动，**不是**独立基底姿态；与 `Idle` 等姿态正交叠加。角色本体固有色恒定不变（2026-07-15 视觉原则，见 DESIGN.md「视觉状态」章节）。**金光呼吸律动**为光环通用行为：金光强弱同步 4 秒呼吸循环（吸气时微微收敛、亮部聚焦；呼气时向外柔和晕染），不是死板静止的光圈（2026-07-15 拍板，定义见 DESIGN.md）。**例外（播放期互斥）**：`Celebrating` / `SessionComplete` / `MilestoneGlow` 等已烧录金光的一次性叙事动画播放期间，临时归零实时金光层，播完回落后再恢复（见 `PRINCIPLES.md`「金色光效分层原则」）。
-6. **禅意背景音 → 光效叠加（MVP 已落地）**：可选 Ambient Soundscape（见 `DESIGN.md`「禅意背景音」）将**本页自播音频的实际播放时长**按比例叠加为 Rim Light / 金光强度的增强输入（`12s/分钟` 等效、上限 `0.20`）；**不替代** `focusLevel` 主路径，不参与达标判定，默认关闭。技术边界：只追踪 Focus Tiger 自己的播放器，禁止假设或依赖跨 App 音频探测。本信号**不是**情绪姿态键，不进入本表优先级裁决。
+6. **禅意背景音 → 光效叠加（MVP 已落地；2026-07-21 默认开播）**：Ambient Soundscape（见 `DESIGN.md`「禅意背景音」）**默认播放 Mer-Ka-Ba**，右下角显眼「打开/关闭音乐」随时可关；会话内实际播放时长按比例叠加 Rim Light（`12s/分钟` 等效、上限 `0.20`）；**不替代** `focusLevel`，不参与达标。技术边界：只追踪 Focus Tiger 自己的播放器。本信号**不是**情绪姿态键。
 7. **里程碑仪式 vs 每日庆祝**：`MilestoneGlow`（仪式性、静观，老虎全程闭目坐禅不做动作）与 `Celebrating`（社交性、互动感，睁眼看向用户）分工明确、不叠加。若里程碑达成与当日首次达标同刻发生，只播 `MilestoneGlow`，`Celebrating` 不补发但日期戳照常记账（避免同日稍后再触发完整庆祝）。序列结束后金光与蝴蝶一同淡去，回归坐姿呼吸基底，遵守「观照者而非情绪本身」闭环。
 
 ---
@@ -251,8 +251,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 同日后续完成专注会话 | 双手合十或温和点头 | 继续使用 `SessionComplete`，不重复完整庆祝 |
 | 用户中断专注 | 安静等待、偶尔张望 | **措辞与表现修正**：不以「托腮思考、略显失落」为设计；按「不制造焦虑原则」定为**中性等待感**，不表现因用户离开而产生的失落/难过，强调「我在这里陪着你」而非「你让我失望了」 |
 | 用户重新回来 | 开心挥手欢迎 | 情绪键 `welcomeBack`（2D 序列 `wave-hello`）；一次性播放，播完回落 `Idle` |
-| 当日尚未完成任何练习（DORMANT） | 打瞌睡表现 + 可忽略轻量提示 | 提示文案：`Quiet time elsewhere can live here too.` / 「别处的静心，也可以记在这里。」（邀请式，非盘问；含首日/当日首次打开）；可忽略、非强制；详见下方 Honesty Check-in |
-| 用户完成 Honesty Check-in | 选时长后立刻 `dormantWake` 坐起并定格末帧（呼吸倒计时同期）→ 完成后离开 DORMANT | 按所选时长等同一次已完成会话；观察式完成文案；**不占用**共享提醒池；**暂不接**闭眼坐禅呼吸淡入 / 金光 / halo（2026-07-19） |
+| 当日尚未完成任何练习 | **Idle 闭目坐禅**（不上 Sleeping）+ 可忽略 Honesty 轻量提示 | 提示文案：`Quiet time elsewhere can live here too.` / 「别处的静心，也可以记在这里。」（邀请式；含首日）；可忽略、非强制 |
+| 用户完成 Honesty Check-in | 已在 Idle：选时长 → 呼吸引导 → 记账（**不**播 dormantWake）。仅调试睡态：选时长 → `dormantWake` → 离 DORMANT | 按所选时长等同一次已完成会话；观察式完成文案；**不占用**共享提醒池 |
 
 #### DORMANT 唤醒仪式（Honesty Check-in Ritual）
 
@@ -262,7 +262,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 - **视觉对接**：唤醒时的金色效果必须走既有光环 / Rim Light / FocusVisualizer 路径，禁止另起独立光效；Rim Light 重构未就绪时可用 `setFocusLevel` 占位。
 - **限频**：用户主动发起，不扣减 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 共享提醒池。
 - **文案键（已接入 i18n）**：
-  - 提示：`HONESTY_CHECKIN_PROMPT` — EN `Yin is resting, but always here for you. Quiet time elsewhere can live here too.` / ZH `阿寅正在休息，但它一直在等你。别处的静心，也可以记在这里。`（邀请式能力说明；禁止「今天在别处修行了吗？」式盘问）
+  - 提示：`HONESTY_CHECKIN_PROMPT` — EN `Yin is sitting with you. Quiet time elsewhere can live here too.` / ZH `阿寅正闭目同坐。别处的静心，也可以记在这里。`（邀请式；禁止盘问）
   - 完成：`HONESTY_CHECKIN_THANKS` — EN `Thank you for bringing that calm back here.` / ZH `谢谢你把那份平静带回来。`
 - **禁止**：任何验证性、怀疑性、次等标记类文案或 UI；未达标主动结束时亦不出现「未完成 / 失败」类提示，安静返回即可。
 

@@ -6,7 +6,10 @@ import {
   AUDIO_FOCUS_EQUIV_RATIO,
   MAX_PRESENCE_BOOST,
   AMBIENT_TRACK_SINGING_BOWL,
-  AMBIENT_TRACK_OFF
+  AMBIENT_TRACK_OFF,
+  AMBIENT_PREF_STORAGE_KEY,
+  DEFAULT_AMBIENT_TRACK_ID,
+  normalizeAmbientPref
 } from './AmbientSoundscapeController.js';
 
 function createMockAudio() {
@@ -43,6 +46,15 @@ function createMockAudio() {
   };
 }
 
+function createMapStorage(initial = {}) {
+  const map = new Map(Object.entries(initial));
+  return {
+    getItem: (k) => (map.has(k) ? map.get(k) : null),
+    setItem: (k, v) => map.set(k, String(v)),
+    removeItem: (k) => map.delete(k)
+  };
+}
+
 test('computePresenceBoost uses 12s-per-minute ratio and 0.20 cap', () => {
   assert.equal(AUDIO_FOCUS_EQUIV_RATIO, 12 / 60);
   assert.equal(MAX_PRESENCE_BOOST, 0.2);
@@ -52,12 +64,21 @@ test('computePresenceBoost uses 12s-per-minute ratio and 0.20 cap', () => {
   assert.equal(computePresenceBoost(25 * 60, 25), 0.2);
 });
 
-test('played seconds accumulate only while audible', async () => {
+test('normalizeAmbientPref defaults to Mer-Ka-Ba enabled', () => {
+  assert.deepEqual(normalizeAmbientPref(null), {
+    enabled: true,
+    trackId: DEFAULT_AMBIENT_TRACK_ID
+  });
+  assert.equal(DEFAULT_AMBIENT_TRACK_ID, AMBIENT_TRACK_SINGING_BOWL);
+});
+
+test('played seconds accumulate only while audible and session active', async () => {
   let now = 1_000_000;
   const audio = createMockAudio();
   const ctrl = new AmbientSoundscapeController({
     now: () => now,
-    audio
+    audio,
+    storage: createMapStorage()
   });
   ctrl.startSession();
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
@@ -76,25 +97,28 @@ test('played seconds accumulate only while audible', async () => {
   assert.ok(Math.abs(ctrl.getPlayedSeconds() - 15) < 1e-6);
 });
 
-test('presenceBoost stays zero outside session and does not replace focus math', async () => {
+test('presenceBoost stays zero outside session; endSession keeps track playing', async () => {
   let now = 0;
   const audio = createMockAudio();
-  const ctrl = new AmbientSoundscapeController({ now: () => now, audio });
+  const ctrl = new AmbientSoundscapeController({
+    now: () => now,
+    audio,
+    storage: createMapStorage()
+  });
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
   now += 60_000;
   assert.equal(ctrl.getPresenceBoost(25), 0);
 
   ctrl.startSession();
-  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
   now += 60_000;
   audio.dispatch('timeupdate');
   const boost = ctrl.getPresenceBoost(25);
   assert.ok(boost > 0);
-  // cumulative + audible playing lift
   assert.ok(boost <= MAX_PRESENCE_BOOST + 0.1);
 
   ctrl.endSession();
-  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.wantsEnabled(), true);
   assert.equal(ctrl.getPresenceBoost(25), 0);
   assert.equal(ctrl.getPlayedSeconds(), 0);
 });
@@ -103,7 +127,11 @@ test('audible playing adds an immediate glow lift', async () => {
   const { AUDIBLE_PLAYING_LIFT } = await import('./AmbientSoundscapeController.js');
   let now = 0;
   const audio = createMockAudio();
-  const ctrl = new AmbientSoundscapeController({ now: () => now, audio });
+  const ctrl = new AmbientSoundscapeController({
+    now: () => now,
+    audio,
+    storage: createMapStorage()
+  });
   ctrl.startSession();
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
   // almost no played time yet — lift alone should still brighten rim
@@ -111,4 +139,37 @@ test('audible playing adds an immediate glow lift', async () => {
   assert.ok(boost >= AUDIBLE_PLAYING_LIFT - 1e-9);
   audio.pause();
   assert.ok(ctrl.getPresenceBoost(25) < AUDIBLE_PLAYING_LIFT);
+});
+
+test('toggleEnabled persists preference and stops or starts Mer-Ka-Ba', async () => {
+  const storage = createMapStorage();
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({ audio, storage });
+  await ctrl.startPreferredTrack();
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.wantsEnabled(), true);
+
+  await ctrl.toggleEnabled();
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.wantsEnabled(), false);
+  const raw = JSON.parse(storage.getItem(AMBIENT_PREF_STORAGE_KEY));
+  assert.equal(raw.enabled, false);
+
+  await ctrl.toggleEnabled();
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.wantsEnabled(), true);
+});
+
+test('startPreferredTrack respects stored mute preference', async () => {
+  const storage = createMapStorage({
+    [AMBIENT_PREF_STORAGE_KEY]: JSON.stringify({
+      enabled: false,
+      trackId: AMBIENT_TRACK_SINGING_BOWL
+    })
+  });
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({ audio, storage });
+  await ctrl.startPreferredTrack();
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.wantsEnabled(), false);
 });

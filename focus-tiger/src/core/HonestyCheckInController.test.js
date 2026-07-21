@@ -43,7 +43,7 @@ test('30+ honesty minutes map to full placeholder glow; 10 and 20 are lower', ()
   assert.equal(focusLevelForHonestyMinutes(30), 1);
 });
 
-test('incomplete end keeps DORMANT without recording when day has zero completions', () => {
+test('incomplete end returns to IDLE without recording when day has zero completions', () => {
   const store = new DailyCompletionStore({
     storage: createStorage(),
     now: () => new Date(2026, 6, 16, 12)
@@ -62,7 +62,7 @@ test('incomplete end keeps DORMANT without recording when day has zero completio
   controller.onIncompleteSessionEnded();
 
   assert.equal(store.hasCompletedToday(), false);
-  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(stateManager.state, STATES.IDLE);
 });
 
 test('timed completion records minutes and leaves DORMANT', () => {
@@ -109,8 +109,38 @@ test('openDurationChoices shows duration UI without Sit with Yin', () => {
 
   controller.openDurationChoices({ force: true });
 
-  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(stateManager.state, STATES.IDLE);
   assert.equal(durationShown, 1);
+});
+
+test('zero-completion honesty from Idle skips dormantWake', () => {
+  const store = new DailyCompletionStore({
+    storage: createStorage(),
+    now: () => new Date(2026, 6, 16, 12)
+  });
+  const stateManager = new StateManager();
+  stateManager.setState(STATES.IDLE);
+  const emotionCalls = [];
+  const ui = createUi();
+  const controller = new HonestyCheckInController({
+    store,
+    stateManager,
+    emotionController: {
+      playEmotion(key) {
+        emotionCalls.push(key);
+      }
+    },
+    ui
+  });
+
+  controller.onAppReady();
+  assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(ui.phase, 'prompt');
+
+  controller.openDurationChoices();
+  ui.handlers.onDurationSelect(20);
+  assert.equal(emotionCalls.includes('dormantWake'), false);
+  assert.equal(stateManager.state, STATES.IDLE);
 });
 
 test('honesty duration select sits up and holds pose; breath end leaves DORMANT', () => {
