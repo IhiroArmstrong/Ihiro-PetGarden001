@@ -52,6 +52,7 @@
 
 **近期落地（待人工测试）**：
 
+- **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：只读 `DailyCompletionStore`——**仅当日** `dateKey` + `sessions[{completedAt,durationMinutes}]` + `celebrated`；换日重置，**不够** 7 格周视图。候选挂载位置已列 TEST_TRACKER / 待确认；**未实现 UI**。相邻：`PracticeDaysStore` 有多日日期键（见 `SHARED_RESOURCES` §1.1）
 - **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。
 - **开场 Idle + 默认 Mer-Ka-Ba（2026-07-21）**：登录后第一幕改为闭目坐禅（不上 Sleeping）；默认开播背景音乐，右下角显眼「打开/关闭音乐」随时可关
 - **Honesty 首屏措辞（2026-07-21）**：邀请式补登提示仍挂零完成；开场视觉已改 Idle
@@ -207,6 +208,7 @@
 
 **已知的开放决策 / 待确认事项**：
 
+- **「本周陪伴」7 格热力图（数据源 + 挂载位）**：确认是否扩展 `DailyCompletionStore` 保留多日 / 改用或扩展 `PracticeDaysStore` / 新建周视图 store；挂载候选见 TEST_TRACKER 行（Reflection 后 / Idle 角等），**勿自行定最终位**
 - across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）
 - Idle 五变体相对权重已写入 EMOTION_BIBLE（gaze 1.0 / tea 0.5 / yawn 0.3 / ear 0.2）；试玩后可再调
 - **回归姿态（2026-07-19 已拍板软化）**：一次性情绪播完回归「类似坐禅」即可，不强制像素对齐默认闭目 idle 第 1 帧（见 `PRINCIPLES.md`）

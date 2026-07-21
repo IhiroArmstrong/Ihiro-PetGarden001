@@ -4,7 +4,7 @@
 > - §2.3 = 已知踩过坑的具体点（事故清单）  
 > - 本表 = 当前共享资源分别被谁用（开工查波及面）  
 > **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。  
-> **创建**：2026-07-20
+> **创建**：2026-07-22（§1.1 DailyCompletion 字段快照）
 
 ---
 
@@ -12,9 +12,9 @@
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
-| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | Honesty / 完成列表；内含 `celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳） |
+| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐光点圈（7 点）；计时达标 / Honesty 记账时 `markToday`；无断签惩罚文案 |
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐日期键集合（最多约 90 天 `YYYY-MM-DD`）；HUD `streak-meter` 用连续天数填 7 点环；计时 / Honesty 记账时 `markToday`；无断签惩罚文案。与 DailyCompletion **分 key** |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显 |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |
@@ -26,6 +26,23 @@
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
+
+### 1.1 DailyCompletionStore 字段快照（2026-07-22 只读调研）
+
+持久化形状（`DailyCompletionState` + `CompletionSession`，见 `src/core/DailyCompletionStore.js`）：
+
+| 层级 | 字段 | 类型 | 含义 |
+|---|---|---|---|
+| 日态 | `dateKey` | `string` | 本地自然日 `YYYY-MM-DD`（`getLocalDateKey`） |
+| 日态 | `sessions` | `CompletionSession[]` | 当日完成列表（计时与 Honesty **同一列表、无 source**） |
+| 日态 | `celebrated` | `boolean`（可选，读时归一） | 当日是否已播过完整 Celebrating；与「有无完成」解耦 |
+| 会话 | `completedAt` | `number` | 完成时刻 epoch ms |
+| 会话 | `durationMinutes` | `number` | 正数分钟；≤0 不入账 |
+
+公开读 API：`hasCompletedToday()`、`hasCelebratedToday()`、`getTodaySessions()`、`getTodayTotalMinutes()`、`getState()`。  
+**无**：多日历史、按周查询、`达标` 布尔、会话来源标签。换日后旧日 `sessions` **被覆盖丢弃**。
+
+相邻对照（非本 Store）：`PracticeDaysStore` 存多日 `days: string[]`，可回答「某日是否同坐过」，但公开 API 目前是 streak / ring filled，**不是**日历周格；且无时长。若做「本周陪伴」热力图，须另开任务扩展其一或新建周视图查询，**勿假设** DailyCompletion 已够用。
 
 ---
 

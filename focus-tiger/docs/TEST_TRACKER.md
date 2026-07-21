@@ -166,6 +166,7 @@
 | tPose / 显示 3D 垫底（调试） | UI可见 | 待人工测试 | 调试面板 T-Pose → 短暂露出 3D canvas。确认 2D 主线默认隐藏 3D。 | — | `#emotion-debug-ui` | 2026-07-18 |
 | ArrivalPractice 状态机 | 纯后端 | 仅单元测试覆盖 | `npm test` → `ArrivalPractice.test.js` | — | `src/core/ArrivalPractice.js` | 2026-07-18 |
 | DailyCompletionStore | 纯后端 | 仅单元测试覆盖 | `DailyCompletionStore.test.js`；与 Honesty / 完成分流共用 | — | `src/core/DailyCompletionStore.js` | 2026-07-18 |
+| 「本周陪伴」热力图 · 数据结构/挂载位调研（第 1 步） | 纯文档 | 仅单元测试覆盖 | **无 UI**。结论：`DailyCompletionStore` **仅当日**（`dateKey` + `sessions[{completedAt,durationMinutes}]` + `celebrated`；换日惰性重置）→ **不够**画本周 7 格。无「达标」字段、无 source。相邻 `PracticeDaysStore` 有多日 `days[]`（见 `SHARED_RESOURCES` §1.1）。**候选挂载（未拍板）**：① Reflection `onDone` 后短暂角标 ② Idle 常驻一角（避开 FocusHUD 左上 / Sound 右下 / Sit·Honesty dock 底中 / 音符右上）③ Reflection 面板内收尾一角 ④ HUD 旁替换或并列现有 streak-meter。实现须另任务。 | 2026-07-22：用户要求先确认数据结构再实现；本行只锁调研口径 | `SHARED_RESOURCES` §1.1 · `DailyCompletionStore.js` · `PracticeDaysStore.js` | 2026-07-22 |
 | SessionIntentionStore | 纯后端 | 仅单元测试覆盖 | `SessionIntentionStore.test.js`；Choose 写入 `intentions.v1` | — | `src/core/SessionIntentionStore.js` | 2026-07-18 |
 | ReminderQuotaManager | 纯后端 | 仅单元测试覆盖 | `ReminderQuotaManager.test.js`；三类提醒共享自然日额度 | — | `src/core/ReminderQuotaManager.js` | 2026-07-18 |
 | session-completion-feedback 分流逻辑 | 纯后端 | 仅单元测试覆盖 | `session-completion-feedback.test.js`；首日 Celebrating vs 同日 SessionComplete | — | `src/core/session-completion-feedback.js` | 2026-07-18 |
@@ -212,6 +213,7 @@
 
 ## 明确未纳入本表（尚未实现，勿当已交付）
 
+- **「本周陪伴」7 格日历热力图 UI**（调研已记上行；数据源扩展 + 挂载位拍板后另开任务）
 - Focus Confidence V1（可信度分值 / idle 检测完整链路）
 - 鼻子 Boop / 拉尾巴 / 抚摸分阶段递进
 - 无互动约 10 分钟自主 `welcomeBack` 挥手
