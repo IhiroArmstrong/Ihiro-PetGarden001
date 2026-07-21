@@ -346,17 +346,19 @@ export class CompanionModePicker {
       .session-start-dock {
         position: absolute;
         left: 50%;
-        bottom: 28px;
+        bottom: max(16px, env(safe-area-inset-bottom, 0px));
         transform: translateX(-50%);
         /* 须高于 Honesty 面板(z15) / 再补登入口(z14)，否则点击 Sit 会被抢走打开 Mindful Check-in */
         z-index: 16;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 14px;
+        gap: 10px;
         pointer-events: none;
-        /* 右侧留出 Sound FAB 空间，避免窄屏把音乐按钮挤掉 */
-        width: min(400px, calc(100vw - 140px));
+        /* 左右留 ? / Sound；勿过窄以致 Sit 文案被裁 */
+        width: min(400px, calc(100vw - 112px));
+        box-sizing: border-box;
+        padding-inline: 4px;
       }
       .session-start-dock > * {
         pointer-events: auto;
@@ -366,6 +368,18 @@ export class CompanionModePicker {
         left: auto !important;
         bottom: auto !important;
         transform: none !important;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        text-align: center;
+        line-height: 1.3;
+        padding: 12px 20px;
+        word-break: normal;
+        overflow-wrap: anywhere;
       }
       #btn-focus:active {
         transform: translateY(2px) scale(0.985) !important;
@@ -529,6 +543,22 @@ export class CompanionModePicker {
         font-size: 11px;
         line-height: 1.45;
         color: var(--text-secondary, rgba(74, 58, 40, 0.78));
+      }
+      /* 窄屏 P1：主 CTA 完整可读，略缩字号与边距 */
+      @media (max-width: 479px) {
+        .session-start-dock {
+          width: min(400px, calc(100vw - 100px));
+          gap: 8px;
+        }
+        #btn-focus {
+          font-size: 15px;
+          padding: 11px 16px;
+          letter-spacing: 0.01em;
+        }
+        .session-start-dock__hint {
+          font-size: 13px;
+          padding: 8px 14px;
+        }
       }
     `;
     let style = document.getElementById('session-start-dock-styles');

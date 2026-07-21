@@ -7,7 +7,8 @@ import {
   createHintsSeenStore,
   resolveHintForScene,
   resolveAutoHintIds,
-  resolveRemedyHintIds
+  resolveRemedyHintIds,
+  selectExclusiveAutoHintIds
 } from './OnboardingHintsStore.js';
 
 test('normalizeHintsSeen only keeps known hintIds', () => {
@@ -93,6 +94,33 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
     'companion-across-tools'
   ]);
   assert.ok(!resolveRemedyHintIds({}).includes('help-affordance'));
+});
+
+test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () => {
+  assert.deepEqual(
+    selectExclusiveAutoHintIds(
+      ['sit-button', 'how-shall-we-sit', 'help-affordance'],
+      { maxConcurrent: 1 }
+    ),
+    ['help-affordance']
+  );
+  assert.deepEqual(
+    selectExclusiveAutoHintIds(['rise-button', 'ambient-soundscape'], {
+      maxConcurrent: 1
+    }),
+    ['rise-button']
+  );
+  assert.deepEqual(
+    selectExclusiveAutoHintIds(['how-shall-we-sit', 'sit-button'], {
+      maxConcurrent: 1
+    }),
+    ['sit-button']
+  );
+  assert.deepEqual(selectExclusiveAutoHintIds([], { maxConcurrent: 1 }), []);
+  assert.deepEqual(
+    selectExclusiveAutoHintIds(['sit-button', 'sit-button'], { maxConcurrent: 1 }),
+    ['sit-button']
+  );
 });
 
 test('resolveAutoHintIds includes help-affordance on idle chrome including DORMANT', () => {

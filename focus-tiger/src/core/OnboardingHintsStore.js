@@ -143,6 +143,55 @@ export function resolveHintForScene(scene = {}) {
 }
 
 /**
+ * 自动提示互斥优先级（数值越高越优先同时展示）。
+ * 窄屏 / 全局自动路径：同一时刻最多 1 条；点「?」补救不受此限。
+ * @see RESPONSIVE_LAYOUT.md §4.5 / task-responsive-narrow-onboarding-sit.md
+ */
+export const AUTO_HINT_PRIORITY = Object.freeze({
+  'help-affordance': 100,
+  reflection: 95,
+  'sit-button': 90,
+  'rise-button': 90,
+  'dormant-open': 90,
+  'idle-after-session': 88,
+  notice: 85,
+  breathing: 85,
+  choose: 85,
+  'companion-mode': 85,
+  'honesty-optional': 80,
+  'how-shall-we-sit': 70,
+  'ambient-soundscape': 60,
+  'ambient-gated': 55,
+  'companion-stay': 50,
+  'companion-away': 50,
+  'companion-across-tools': 50,
+  'help-remedy': 40,
+  'help-fallback': 30
+});
+
+/**
+ * 从候选自动 hint 中选出至多 maxConcurrent 条（按 AUTO_HINT_PRIORITY，同权保留原序）。
+ * @param {string[]} candidateIds
+ * @param {{ maxConcurrent?: number }} [opts]
+ * @returns {string[]}
+ */
+export function selectExclusiveAutoHintIds(candidateIds, { maxConcurrent = 1 } = {}) {
+  const max = Math.max(0, Number(maxConcurrent) || 0);
+  if (max === 0 || !Array.isArray(candidateIds) || candidateIds.length === 0) return [];
+  const seen = new Set();
+  /** @type {{ id: string, i: number, p: number }[]} */
+  const ranked = [];
+  for (let i = 0; i < candidateIds.length; i++) {
+    const id = candidateIds[i];
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    ranked.push({ id, i, p: AUTO_HINT_PRIORITY[id] ?? 40 });
+  }
+  ranked.sort((a, b) => b.p - a.p || a.i - b.i);
+  return ranked.slice(0, max).map((row) => row.id);
+}
+
+/**
  * 当前场景应自动展示的 hintId 列表（不含已读过滤；补救「?」见 resolveHintForScene）。
  * Reflection / FOCUSING / Arrival 进行中不抢戏 help-affordance。
  * @param {Parameters<typeof resolveHintForScene>[0]} scene

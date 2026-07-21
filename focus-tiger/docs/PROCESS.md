@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）。
 
 ---
 
@@ -82,6 +82,8 @@
 - **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now 开表；Offline 须再 Sit — `e2e/scenario-a.companion.spec.js`
 - **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
 - **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
+- **RESPONSIVE_LAYOUT.md（2026-07-21）**：移动浏览器权威基线——功能对等（竖/横屏逐步可操作、禁按钮失灵）、竖屏 P1 + 可建议横屏；`TEST_TRACKER` / `DEV_WORKFLOW_QUALITY` 已挂窄屏验收
+- **响应式 UI 两项已立项（2026-07-21 用户拍板）**：① **Task 1 代码已落地**（互斥 + Sit 防截断，待人工）→ `task-responsive-narrow-onboarding-sit.md`；② 横屏建议 UI → `task-responsive-landscape-suggest.md`（Task 1 人工后再做）。见 `TASKS.md` 响应式节
 - **工程加固四步（2026-07-21 拍板）**：见 `ARCHITECTURE.md` — ① JSDoc ② SessionUiGate ③ 回归锁 ④ Lit 试点 **`OnboardingHintsUI` 已接线**；**复测通过后先停试点、不扩面**（须另拍板才扩）；待人工复测尖角/补救全铺；禁止全仓 Lit / 动 Emotion·Idle
 - **SessionUiGate**：`arrivalGateReady` / `completionPending` / 叠层占用收束；失败用例并入 `npm run test:smoke`
 
@@ -149,6 +151,9 @@
 - Phase 0 清单中的持久化（除当日完成记录外）/ PWA 等（见 `TASKS.md`；DORMANT 唤醒仪式已摘出，见上条）
 
 **正在进行 / 最近决定的事项**：
+
+- **响应式 UI Task 1（代码已落地 · 待人工）**：窄屏 onboarding 互斥 + Sit 不截断 — Brief `task-responsive-narrow-onboarding-sit.md`；`TEST_TRACKER` 两行待复测
+- **响应式 UI Task 2（待开发，排在 Task 1 人工验收后）**：竖屏横屏建议条 — Brief `task-responsive-landscape-suggest.md`
 
 - 技术路线已从「3D 多姿态 GLB 主线」切换为「2D PNG 序列主线」；3D 定位为奖励柜
 - `EMOTION_BIBLE` 持续扩充：互动清单、MindfulAcknowledge、自主/响应分层、多语言规范
@@ -405,7 +410,7 @@ Agent / Cursor 侧约定：
 
 ### UI Engineer（界面工程师）
 
-- **职责**：HUD、按钮、debug 面板、PWA 配置、响应式布局
+- **职责**：HUD、按钮、debug 面板、PWA 配置、响应式布局（窄屏基线见 **`RESPONSIVE_LAYOUT.md`**）
 - **禁止**：不改动 3D 场景内部逻辑
 - **对应文件范围**：`input/UIControls.js`、`ui/`（`FocusHUD.js`、`RewardToast.js`、`Screenshot.js`）、`index.html`、`vite.config.js`
 

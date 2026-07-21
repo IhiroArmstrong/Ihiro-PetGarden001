@@ -10,7 +10,8 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   HINT_LOCALE_KEYS,
   createHintsSeenStore,
-  resolveRemedyHintIds
+  resolveRemedyHintIds,
+  selectExclusiveAutoHintIds
 } from '../core/OnboardingHintsStore.js';
 import './ft-onboarding-hint-bubble.js';
 import {
@@ -101,6 +102,14 @@ function resolveAnchorEl(selectorList) {
   return null;
 }
 
+/** @returns {boolean} */
+function isNarrowViewport() {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 899px)').matches;
+}
+
+/** 自动提示同时最多几条（补救除外）。始终 1，对齐 RESPONSIVE_LAYOUT P1。 */
+const AUTO_HINT_MAX_CONCURRENT = 1;
+
 export class OnboardingHintsUI {
   /**
    * @param {HTMLElement} mountRoot 通常 document.body
@@ -120,6 +129,8 @@ export class OnboardingHintsUI {
     this._hideTimers = new Map();
     /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
     this._remedyIds = new Set();
+    /** @type {string[]} 最近一次 sync 的候选自动 id（未读过滤后），供 dismiss 后串行下一条 */
+    this._lastAutoWant = [];
     /** @type {Map<string, { remedy: boolean, anchorNearHelp: boolean }>} */
     this._paintMeta = new Map();
     /** @type {HTMLElement | null} */
@@ -161,7 +172,8 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 未读则自动展示；已读则 no-op。可与其它未读提示并存（如 Rise + Sound）。
+   * 未读则自动展示；已读则 no-op。
+   * 自动路径互斥：同时最多 AUTO_HINT_MAX_CONCURRENT 条（优先级见 selectExclusiveAutoHintIds）。
    * @param {string} hintId
    * @returns {boolean}
    */
@@ -169,25 +181,62 @@ export class OnboardingHintsUI {
     if (!HINT_LOCALE_KEYS[hintId]) return false;
     if (this.store.isSeen(hintId)) return false;
     if (this._remedyIds.size > 0) return false;
+
+    const otherAutos = [...this._visibleIds].filter(
+      (id) => id !== hintId && !this._remedyIds.has(id)
+    );
+    if (otherAutos.length > 0) {
+      const winner = selectExclusiveAutoHintIds([hintId, ...otherAutos], {
+        maxConcurrent: AUTO_HINT_MAX_CONCURRENT
+      })[0];
+      if (winner !== hintId) return false;
+      for (const id of otherAutos) {
+        if (id !== winner) this.hideBubble(id);
+      }
+    }
+
     this._paint(hintId, { remedy: false });
     return true;
   }
 
   /**
    * 仅保留 listed 中的自动提示（已读的不会出现）；关掉不在列表里的自动气泡。
-   * 补救气泡若正显示且不在列表中也会被关掉——调用方应在补救后勿立刻 sync 清掉。
+   * 自动路径经互斥后同时最多 1 条；补救气泡若正显示且不在列表中也会被关掉——调用方应在补救后勿立刻 sync 清掉。
    * @param {string[]} hintIds
    * @returns {void}
    */
   syncVisibleAutos(hintIds) {
-    const want = new Set(hintIds.filter((id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id)));
+    const want = hintIds.filter((id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id));
+    this._lastAutoWant = want;
+    const show = selectExclusiveAutoHintIds(want, {
+      maxConcurrent: AUTO_HINT_MAX_CONCURRENT
+    });
+    const showSet = new Set(show);
+
     for (const id of [...this._visibleIds]) {
       if (this._remedyIds.has(id)) continue;
-      if (!want.has(id)) this.hideBubble(id);
+      if (!showSet.has(id)) this.hideBubble(id);
     }
-    for (const id of want) {
+    for (const id of show) {
       this.maybeShowAuto(id);
     }
+  }
+
+  /**
+   * 当前自动气泡关掉后，从 _lastAutoWant 串行下一条（仍受互斥）。
+   * @returns {void}
+   */
+  _promoteNextAuto() {
+    if (this._remedyIds.size > 0) return;
+    const openAutos = [...this._visibleIds].filter((id) => !this._remedyIds.has(id));
+    if (openAutos.length > 0) return;
+    const want = (this._lastAutoWant || []).filter(
+      (id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id)
+    );
+    const next = selectExclusiveAutoHintIds(want, {
+      maxConcurrent: AUTO_HINT_MAX_CONCURRENT
+    });
+    for (const id of next) this.maybeShowAuto(id);
   }
 
   /**
@@ -334,7 +383,7 @@ export class OnboardingHintsUI {
 
   /**
    * 用户点击/键盘关闭：立刻消失。
-   * 自动提示记已读（不再自动出现）；补救仅隐藏，不改已读。
+   * 自动提示记已读（不再自动出现）并串行下一条；补救仅隐藏，不改已读。
    * @param {string} hintId
    */
   _dismissByUser(hintId) {
@@ -343,6 +392,7 @@ export class OnboardingHintsUI {
       return;
     }
     this.markSeen(hintId);
+    this._promoteNextAuto();
   }
 
   _positionBubble(hintId) {
@@ -352,9 +402,20 @@ export class OnboardingHintsUI {
     const cfg = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
     const useHelpAnchor =
       bubble.dataset.remedy === '1' && bubble.dataset.remedyAnchor === 'help';
-    const anchorCfg = useHelpAnchor
+    let anchorCfg = useHelpAnchor
       ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
-      : cfg;
+      : { ...cfg };
+
+    // 窄屏：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
+    if (
+      !useHelpAnchor &&
+      isNarrowViewport() &&
+      anchorCfg.placement === 'above' &&
+      /#btn-focus/.test(String(anchorCfg.selector))
+    ) {
+      anchorCfg = { ...anchorCfg, placement: 'right', tip: 'left' };
+    }
+
     const anchor = resolveAnchorEl(anchorCfg.selector);
     const gap = 12;
     const vw = window.innerWidth;

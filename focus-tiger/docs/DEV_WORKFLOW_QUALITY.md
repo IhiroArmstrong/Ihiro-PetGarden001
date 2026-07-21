@@ -101,6 +101,13 @@
 - Choose / Rise / IntentionSet 等进出叠化（无法像素衔接时默认 `CAPCUT_DISSOLVE_MS`）  
 - pingpong 顶点 `frameHolds`（已调过的停留勿无故缩短）
 
+**窄屏 / 移动浏览器**（权威 `RESPONSIVE_LAYOUT.md`）
+
+- `session-start-dock` / 主 CTA 截断或不可点  
+- `OnboardingHintsUI` 多气泡挡 Sit / Rise  
+- Honesty / Reflection / Arrival 底栏与固定 chrome 抢点击（z-index / `pointer-events`）  
+- 竖屏 **375×667** 与 **横屏** 各走通相关核心路径（功能对等，非观感完美）
+
 ### 2.4 任务汇报（每次收尾回复）
 
 | # | 规范 |

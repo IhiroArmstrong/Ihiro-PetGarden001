@@ -9,6 +9,8 @@
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 演示会话时长默认 **`DEMO_SESSION_MINUTES = 1`**；可用 **`?sessionMinutes=5`** 拉长（场景 B Re-focus 真实切页须用）。  
 
+**窄屏验收（2026-07-21 起）**：凡 **UI 可见**改动，测试步骤须含 **375×667 竖屏**（DevTools 设备模式即可）；触及底部 dock / 引导气泡 / 叠层底栏时，另加 **横屏**一步。标准见 **`RESPONSIVE_LAYOUT.md`**（功能对等 + 竖屏 P1，不要求每 Task 手机完美）。  
+
 | 链接 | 用途 |
 |---|---|
 | `http://127.0.0.1:5173/` | **实验室**：右上角 `#emotion-debug-ui`；DEV 下 `window.__*` |
@@ -192,6 +194,8 @@
 | DEV 一键重置全部本地状态 | 纯后端 | 仅单元测试覆盖 | **L-logic**（勿人工逐 key）：`npm run test:smoke` → `localStateKeys.test.js` 锁白名单=各模块 STORAGE_KEY、脏态 clear 后 Store 等同新用户、session toast/boot-idle 一次性。按钮壳：`e2e/product-shell.smoke.spec.js`（实验室可见；`?product=1` 不可见）。 | 2026-07-20：重置后 Honesty=场景 A 正确开局。**2026-07-21**：用户书面——人工难验「参数是否复原」→ 应 L-logic；已改仅单元测试。 | `src/core/localStateKeys.test.js` · `#dev-reset-all-local-state` | 2026-07-21 |
 | 产品壳链接 ?product=1（隐藏调试面板） | UI可见 | 待人工测试 | 打开 `/?product=1`：无右上角情绪调试条；Sit / How shall we sit? / Honesty / Arrival / Sound 仍可用。打开 `/`：调试面板在。 | — | `http://127.0.0.1:5173/?product=1` vs `/` | 2026-07-19 |
 | 人工 · "Or begin from here." hint 侧面显示 | UI可见 | 待人工测试 | 1) `?product=1` 重置本地状态进入 Idle。2) 确认「Or begin from here.」onboarding hint 气泡从 **Sit 按钮右侧**弹出（不再从上方遮住 Sit 按钮）。3) 回流：Rise 后再看 idle chrome，hint 若再次显示仍应在侧面。 | 2026-07-21：用户书面——「Or begin from here.」挡住 Sit 按钮，应改到侧面；已改 OnboardingHintsUI.js `how-shall-we-sit` placement→right。 | `?product=1` · `.session-start-dock__hint` | 2026-07-21 |
+| 窄屏 · 自动 onboarding 互斥（≤1 条） | UI可见 | 待人工测试 | **主路径（375×667）**：实验室清空引导已读 → `/?product=1`。冷启动同一时刻自动气泡 **≤1**（优先 `help-affordance`，关掉后串行 Sit / How shall we sit? 等）。**回流**：点气泡关掉 → 下一条出现；点 **?** 仍同时见本页全部补救 hints + 用途简介卡。**横屏 667×375**：自动仍 ≤1、不退化。**桌面 ≥900**：互斥同样生效；尖角对准 ?。 | 2026-07-21：用户同意 Task 1；截图去掉叠加后观感可。自动化：`selectExclusiveAutoHintIds` 单测。 | `?product=1` · DevTools 375×667 | 2026-07-21 |
+| 窄屏 · Sit with Yin 主 CTA 不截断 | UI可见 | 待人工测试 | **主路径（375×667）**：`#btn-focus` 须完整显示 **Sit with Yin**（禁止「Sit w…」）；可点进 Arrival。切中文后「与阿寅同坐」亦完整。**回流**：Rise → 再 Idle 仍完整。**横屏**：不退化。 | 2026-07-21：Task 1；dock 加宽 + white-space normal。 | `?product=1` · `#btn-focus` | 2026-07-21 |
 | 人工 · Sound gated 提示文案（非专注时点 Sound） | UI可见 | 待人工测试 | 1) `?product=1`，**不**点 Sit（未专注）。2) 点右下角 **Sound 按钮**，须出现提示：**「Track selection opens once you sit.」**（不再说「Sound opens after sitting begins.」）。3) 回流：Sit 开计时 → 点 Sound 须正常打开面板，无提示。 | 2026-07-21：用户书面——刚登录就有音乐，「Sound opens after sitting begins.」不合适；已改 en.json HINT_AMBIENT_GATED。 | `?product=1` · `.ambient-soundscape__fab`（未专注） | 2026-07-21 |
 | 3D Idle GLB 换装（无红边单色灰棉麻） | UI可见 | 待人工测试 | 1) `npm run dev` 打开应用。2) 调试面板点 **T-Pose**（或临时让 PoseManager 显示 canvas）以露出 3D 垫底。3) 确认阿寅闭目坐禅袍为**单色暖浅灰棉麻 / 茶服风**，**无深红镶边/红里子**；棉麻织纹应清晰（勿呈糊成一团的过度压缩感）。4) 刷新后默认 2D 主线仍隐藏 3D；路径仍为 `/models/tiger-meditate-closed.glb`（约 **1.6MB**，非 292KB）。 | — | `http://127.0.0.1:5173/` · `#emotion-debug-ui` T-Pose · 源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb` | 2026-07-19 |
 

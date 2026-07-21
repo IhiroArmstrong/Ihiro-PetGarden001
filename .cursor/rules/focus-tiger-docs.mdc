@@ -30,6 +30,7 @@ alwaysApply: true
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/CHARACTER_BIBLE.md` | 角色 Master Prompt 全文归档 + 项目关联澄清（Rive/莲花/蒲团/Suffix） |
 | `docs/DESIGN.md` | 产品语义与玩法（专注、一炷香、沉睡唤醒等） |
+| `docs/RESPONSIVE_LAYOUT.md` | **移动浏览器布局基线**：功能对等（竖/横屏）、竖屏 P1、可建议横屏；断点与验收矩阵 |
 | `docs/PROCESS.md` | 协作流程、角色边界、**Backlog**、文首「当前进度速览」（重大进展后更新） |
 | `docs/DEV_WORKFLOW_QUALITY.md` | **如何改善开发工作流来保证开发质量**：原则/规范/指引/注意事项；防假修好+防改坏叙事权威；门禁仍以 regression-lock 规则为准 |
 | `docs/SHARED_RESOURCES.md` | 共享资源对照表（localStorage / EmotionController / Idle）；与 §2.3 高风险面互补 |

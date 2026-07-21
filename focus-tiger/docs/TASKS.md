@@ -162,6 +162,19 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 响应式 / 移动浏览器（2026-07-21 立项）
+
+> 权威基线：`RESPONSIVE_LAYOUT.md`。用户 2026-07-21 书面同意两项 **分拆** UI Task，**一次只做一个**。
+
+| 顺序 | Task | Brief | 状态 |
+|---|---|---|---|
+| **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
+| **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
+
+**共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。
+
+---
+
 ## 📍 Phase 2 及以后：待评估
 
 ```
