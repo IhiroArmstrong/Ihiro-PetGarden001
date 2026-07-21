@@ -188,6 +188,28 @@ export class EmotionController {
           this.spritePlayer.play('sleeping');
         }
       },
+      // 进 DORMANT 过渡（2c）：披毯入睡正放；默认 onComplete 后由 MoodController 接 sleeping。
+      cloakSleep: (options = {}) => {
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        this.poseManager.setPose(POSE_KEYS.SLEEPING);
+        if (!this.spritePlayer) {
+          options.onComplete?.('cloakSleep');
+          this.playEmotion('sleeping');
+          return;
+        }
+        const started = this.spritePlayer.play('cloakSleep', {
+          crossFadeMs: options.crossFadeMs,
+          holdLastFrame: false,
+          onComplete: () => {
+            options.onComplete?.('cloakSleep');
+          }
+        });
+        if (!started) {
+          options.onComplete?.('cloakSleep');
+          this.playEmotion('sleeping');
+        }
+      },
       smiling: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
@@ -546,7 +568,7 @@ export class EmotionController {
           this._finishOneShot(options, 'wakeUp');
         }
       },
-      // Honesty Check-in 唤醒：sleeping → dormant-wake → idle（暂不接金光/halo）。
+      // Honesty Check-in 唤醒：sleeping → cloak-sleep 倒放 → 定格合掌坐姿（暂不接金光/halo）。
       dormantWake: (options = {}) => {
         this._leaveIdleBaseline({ clear: false });
         this.dynamicMotion.setBreathingEnabled(true);
@@ -869,7 +891,7 @@ export class EmotionController {
       wakeUp: 'wakeUp(=stretch)',
       sleeping: 'sleeping',
       cloakSleep: 'cloak-sleep 披毯入睡(候选)',
-      dormantWake: 'dormant-wake 纯动画',
+      dormantWake: 'cloak-sleep 倒放唤醒',
       haloBreathingIntro: 'halo-breathing intro',
       haloBreathingLoop: 'halo-breathing loop',
       haloBreathingPingpong: 'halo-breathing pingpong',
@@ -1137,6 +1159,7 @@ export const EMOTION_KEYS = Object.freeze({
   WELCOME_BACK: 'welcomeBack',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',
+  CLOAK_SLEEP: 'cloakSleep',
   HALO_BREATHING: 'haloBreathing',
   BLINK: 'blink',
   BREATHING: 'breathing',

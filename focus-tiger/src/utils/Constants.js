@@ -19,6 +19,10 @@ export const COLORS = {
 export const FOCUS_SESSION_DEFAULT_MINUTES = 25;
 /** @deprecated 2026-07-16 Honesty Check-in：DORMANT 改为「当日零完成」，不再用连续天数。 */
 export const DORMANT_TRIGGER_DAYS = 3;
+
+/** 距最近一次专注会话结束超过该小时数 → 惰性判定进入 DORMANT（滚动窗口，非自然日）。 */
+export const DORMANT_IDLE_HOURS = 2;
+export const DORMANT_IDLE_MS = DORMANT_IDLE_HOURS * 60 * 60 * 1000;
 /** @deprecated 2026-07-16：Honesty Check-in 使用约 10 秒呼吸引导，见 HonestyCheckInUI。 */
 export const WAKE_UP_RITUAL_MINUTES = 1;
 

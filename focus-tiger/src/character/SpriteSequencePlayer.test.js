@@ -4,6 +4,7 @@ import {
   advanceSpriteFrame,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
+import { buildFramePaths } from './CharacterConfig.js';
 import { SPRITE_SEQUENCES } from './spriteManifest.js';
 
 function collectFrames({ frameCount, loopMode, steps }) {
@@ -116,8 +117,19 @@ test('blink smile is registered as a pingpong smiling baseline', () => {
 test('wakeUp uses stretch-reminder asset, distinct from dormantWake', () => {
   assert.equal(SPRITE_SEQUENCES.wakeUp.animation, 'stretch-reminder');
   assert.equal(SPRITE_SEQUENCES.wakeUp.frameCount, 17);
-  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'dormant-wake');
+  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
   assert.notEqual(SPRITE_SEQUENCES.wakeUp.animation, SPRITE_SEQUENCES.dormantWake.animation);
+});
+
+test('dormantWake plays cloak-sleep in reverse (34 → 001)', () => {
+  const definition = SPRITE_SEQUENCES.dormantWake;
+  const paths = buildFramePaths(definition.animation, definition.frameCount, {
+    frameIndices: definition.frameIndices
+  });
+
+  assert.equal(paths.length, 34);
+  assert.match(paths[0], /frame_034\.png$/);
+  assert.match(paths[33], /frame_001\.png$/);
 });
 
 test('wave hello repeats peak sway once and has no peak frame hold', () => {
@@ -132,14 +144,17 @@ test('wave hello repeats peak sway once and has no peak frame hold', () => {
   assert.equal(definition.frameIndices?.length, 7 + 5 + 5 + 7);
 });
 
-test('dormant wake is a one-shot 16-frame transition that holds its final pose', () => {
+test('dormant wake is cloak-sleep reverse one-shot that holds final pose', () => {
   const definition = SPRITE_SEQUENCES.dormantWake;
 
-  assert.equal(definition.frameCount, 16);
-  assert.equal(definition.fps, 3);
+  assert.equal(definition.animation, 'cloak-sleep');
+  assert.equal(definition.frameCount, 34);
+  assert.equal(definition.fps, 6);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.holdLastFrame, true);
-  assert.ok(definition.frameHolds[16] > 0);
+  assert.equal(definition.frameIndices[0], 34);
+  assert.equal(definition.frameIndices[33], 1);
+  assert.ok(definition.frameHolds[34] > 0);
 });
 
 test('milestone glow is an on-demand one-shot that holds its final pose', () => {
@@ -246,7 +261,7 @@ test('gaze lookaround and yawn-stretch idle variants are registered', () => {
   assert.equal(SPRITE_SEQUENCES.yawnStretch.loopMode, 'none');
 });
 
-test('cloakSleep is registered for DORMANT entry (not wired yet)', () => {
+test('cloakSleep is registered for DORMANT entry', () => {
   assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.cloakSleep.frameCount, 34);
   assert.equal(SPRITE_SEQUENCES.cloakSleep.fps, 6);

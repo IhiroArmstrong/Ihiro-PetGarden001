@@ -15,6 +15,14 @@ import assert from 'node:assert/strict';
 
 import { DailyCompletionStore, DAILY_COMPLETION_STORAGE_KEY } from './DailyCompletionStore.js';
 import {
+  FocusSessionEndStore,
+  FOCUS_SESSION_END_STORAGE_KEY
+} from './FocusSessionEndStore.js';
+import {
+  DormantCloakSleepStore,
+  DORMANT_CLOAK_SLEEP_STORAGE_KEY
+} from './DormantCloakSleepStore.js';
+import {
   PracticeDaysStore,
   PRACTICE_DAYS_STORAGE_KEY
 } from './PracticeDaysStore.js';
@@ -67,6 +75,8 @@ const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 /** 各模块导出的 localStorage key —— 与白名单必须集合相等。 */
 const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_COMPLETION_STORAGE_KEY,
+  FOCUS_SESSION_END_STORAGE_KEY,
+  DORMANT_CLOAK_SLEEP_STORAGE_KEY,
   PRACTICE_DAYS_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
   INTENTION_STORAGE_KEY,

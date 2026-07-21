@@ -3,7 +3,10 @@
 // 本类绝不自行存储/维护专注状态，只持有对 stateManager / emotionController 的引用。
 
 import { STATES } from './StateManager.js';
-import { EMOTION_KEYS } from './EmotionController.js';
+import {
+  CAPCUT_DISSOLVE_MS,
+  EMOTION_KEYS
+} from './EmotionController.js';
 
 export class MoodController {
   /**
@@ -11,9 +14,15 @@ export class MoodController {
    * @param {import('./EmotionController.js').EmotionController} emotionController
    * @param {object} [hooks]
    * @param {() => void} [hooks.onCelebrateComplete] Celebrating 2D 弧线播完并已回归 idle 后回调
+   * @param {import('./DormantCloakSleepStore.js').DormantCloakSleepStore | null} [hooks.dormantCloakSleepStore]
    */
-  constructor(stateManager, emotionController, { onCelebrateComplete } = {}) {
+  constructor(
+    stateManager,
+    emotionController,
+    { onCelebrateComplete, dormantCloakSleepStore = null } = {}
+  ) {
     this.emotionController = emotionController;
+    this.dormantCloakSleepStore = dormantCloakSleepStore;
     this.onCelebrateComplete =
       typeof onCelebrateComplete === 'function' ? onCelebrateComplete : null;
     stateManager.onChange((state) => this.handleStateChange(state));
@@ -21,11 +30,8 @@ export class MoodController {
 
   handleStateChange(state) {
     if (state === STATES.IDLE || state === STATES.FOCUSING) {
-      // Honesty 唤醒后会立刻切到 IDLE，但视觉应停留在 halo-breathing 奖励；
-      // 仅在用户主动开始专注（FOCUSING）或其它情绪打断时离开光环。
       if (state === STATES.IDLE) {
         const current = this.emotionController.getCurrentEmotionKey();
-        // Rise 后 riseStretchCasual 箕坐定格（及调试 blinkBreathe pingpong）；Honesty 光环/睡醒也不被 IDLE 冲掉
         if (
           current === 'haloBreathing' ||
           current === 'dormantWake' ||
@@ -35,7 +41,6 @@ export class MoodController {
           return;
         }
       }
-      // 已在闭目坐禅编排中则勿重启，否则呼吸×5→眨眼计数会被反复清零。
       const current = this.emotionController.getCurrentEmotionKey();
       if (
         current === 'idle' &&
@@ -57,10 +62,30 @@ export class MoodController {
     }
 
     if (state === STATES.DORMANT) {
-      this.emotionController.playEmotion(EMOTION_KEYS.SLEEPING);
+      this._playDormantEntryVisual();
       return;
     }
 
     // TODO(Task 2): FOCUSING / 庆祝后 Smiling 与日期戳的完整映射
+  }
+
+  _playDormantEntryVisual() {
+    const cloakStore = this.dormantCloakSleepStore;
+    const playCloakTransition =
+      cloakStore && !cloakStore.hasPlayedCloakSleepToday();
+
+    if (playCloakTransition) {
+      cloakStore.markCloakSleepPlayedToday();
+      this.emotionController.playEmotion(EMOTION_KEYS.CLOAK_SLEEP, {
+        onComplete: () => {
+          this.emotionController.playEmotion(EMOTION_KEYS.SLEEPING, {
+            crossFadeMs: CAPCUT_DISSOLVE_MS
+          });
+        }
+      });
+      return;
+    }
+
+    this.emotionController.playEmotion(EMOTION_KEYS.SLEEPING);
   }
 }

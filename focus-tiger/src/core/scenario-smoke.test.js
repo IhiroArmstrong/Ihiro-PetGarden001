@@ -19,6 +19,7 @@ import {
   selectArrivalNotice
 } from './ArrivalPractice.js';
 import { DailyCompletionStore } from './DailyCompletionStore.js';
+import { FocusSessionEndStore } from './FocusSessionEndStore.js';
 import {
   COMPANION_MODE_ACROSS_TOOLS,
   COMPANION_MODE_STAY,
@@ -80,25 +81,36 @@ function createQuotaStub({ allow = true } = {}) {
 
 // ─── 场景 A：Kelly 第一个早晨（主链路契约）─────────────────────────────
 
-test('smoke A1: zero completions → Idle + Honesty prompt; after record → still idle', () => {
+test('smoke A1: zero completions → Idle + Honesty entry button; after record → still idle', () => {
   // SCENARIO_TESTS A1 / A11 — 开场 Idle（不上 Sleeping）
+  let idleEntryShown = 0;
+  const storage = createStorage();
+  const now = () => new Date(2026, 6, 20, 8);
   const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 20, 8)
+    storage,
+    now
   });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
   const stateManager = new StateManager();
-  const ui = createHonestyUi();
+  const ui = createHonestyUi({
+    showIdleEntry() {
+      idleEntryShown += 1;
+    }
+  });
   const controller = new HonestyCheckInController({
     store,
+    focusSessionEndStore,
     stateManager,
     emotionController: { playEmotion() {} },
-    ui
+    ui,
+    now
   });
 
   assert.equal(store.hasCompletedToday(), false);
   controller.onAppReady();
   assert.equal(stateManager.state, STATES.IDLE);
-  assert.equal(ui.phase, 'prompt');
+  assert.equal(ui.phase, 'hidden');
+  assert.equal(idleEntryShown, 1);
 
   store.recordCompletion(1);
   controller.syncDormantState();
@@ -142,8 +154,7 @@ test('smoke A3–A4: Arrival Notice→Choose Deep Work → Here & Now can begin;
       mode: COMPANION_MODE_STEP_AWAY,
       arrivalGateReady: true
     }),
-    false,
-    'Offline Space 须再点 Sit'
+    true
   );
 });
 
@@ -253,16 +264,18 @@ test('smoke B: Here & Now allows refocus; Offline/Flow suppress away reminders',
 
 test('smoke C: Rise incomplete → no completion record; Reflection after MANUAL_END_PAUSE; intention echo', () => {
   // SCENARIO_TESTS C1–C4
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 20, 10)
-  });
+  const storage = createStorage();
+  const now = () => new Date(2026, 6, 20, 10);
+  const store = new DailyCompletionStore({ storage, now });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
   const stateManager = new StateManager();
   const honesty = new HonestyCheckInController({
     store,
+    focusSessionEndStore,
     stateManager,
     emotionController: { playEmotion() {} },
-    ui: createHonestyUi()
+    ui: createHonestyUi(),
+    now
   });
   stateManager.setState(STATES.FOCUSING);
   honesty.onIncompleteSessionEnded();
@@ -343,10 +356,12 @@ test('smoke J回流: Rise 后门闩未就绪 → hint 仍须展开三选一（�
 test('smoke D: honesty 20min → dormantWake + bridge Yes→Arrival / No→idle; same-day again', () => {
   // SCENARIO_TESTS D3–D5 / N
   const day = () => new Date(2026, 6, 21, 9);
+  const storage = createStorage();
   const store = new DailyCompletionStore({
-    storage: createStorage(),
+    storage,
     now: day
   });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now: day });
   const stateManager = new StateManager();
   stateManager.setState(STATES.DORMANT);
   const emotionCalls = [];
@@ -373,6 +388,7 @@ test('smoke D: honesty 20min → dormantWake + bridge Yes→Arrival / No→idle;
   });
   const honesty = new HonestyCheckInController({
     store,
+    focusSessionEndStore,
     stateManager,
     emotionController: {
       playEmotion(key, options = {}) {
@@ -380,6 +396,7 @@ test('smoke D: honesty 20min → dormantWake + bridge Yes→Arrival / No→idle;
       }
     },
     ui: honestyUi,
+    now: day,
     onCheckInComplete: () => {
       bridge.onHonestyCheckInComplete();
     }

@@ -6,6 +6,7 @@ import {
   HonestyCheckInController
 } from './HonestyCheckInController.js';
 import { DailyCompletionStore } from './DailyCompletionStore.js';
+import { FocusSessionEndStore } from './FocusSessionEndStore.js';
 import { StateManager, STATES } from './StateManager.js';
 
 function createStorage() {
@@ -37,6 +38,27 @@ function createUi(overrides = {}) {
   };
 }
 
+function createControllerDeps({
+  storage = createStorage(),
+  now = () => new Date(2026, 6, 16, 12),
+  stateManager = new StateManager(),
+  emotionController = { playEmotion() {} },
+  ui = createUi(),
+  extra = {}
+} = {}) {
+  const store = new DailyCompletionStore({ storage, now });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  const controller = new HonestyCheckInController({
+    store,
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui,
+    ...extra
+  });
+  return { controller, store, focusSessionEndStore, stateManager, ui };
+}
+
 test('30+ honesty minutes map to full placeholder glow; 10 and 20 are lower', () => {
   assert.equal(focusLevelForHonestyMinutes(10), 0.4);
   assert.equal(focusLevelForHonestyMinutes(20), 0.7);
@@ -44,20 +66,7 @@ test('30+ honesty minutes map to full placeholder glow; 10 and 20 are lower', ()
 });
 
 test('incomplete end returns to IDLE without recording when day has zero completions', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
-  const stateManager = new StateManager();
-  const ui = createUi();
-
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
-    emotionController: { playEmotion() {} },
-    ui
-  });
-
+  const { controller, store, stateManager } = createControllerDeps();
   stateManager.setState(STATES.FOCUSING);
   controller.onIncompleteSessionEnded();
 
@@ -66,19 +75,8 @@ test('incomplete end returns to IDLE without recording when day has zero complet
 });
 
 test('timed completion records minutes and leaves DORMANT', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
-  const stateManager = new StateManager();
+  const { controller, store, stateManager } = createControllerDeps();
   stateManager.setState(STATES.DORMANT);
-
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
-    emotionController: { playEmotion() {} },
-    ui: createUi()
-  });
 
   controller.onTimedSessionCompleted(25);
   assert.equal(store.hasCompletedToday(), true);
@@ -87,25 +85,16 @@ test('timed completion records minutes and leaves DORMANT', () => {
 });
 
 test('openDurationChoices shows duration UI without Sit with Yin', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
-  const stateManager = new StateManager();
-  stateManager.setState(STATES.IDLE);
   let durationShown = 0;
-  const ui = createUi({
-    showDurationChoices() {
-      durationShown += 1;
-      this.phase = 'duration';
-    }
+  const { controller, stateManager } = createControllerDeps({
+    ui: createUi({
+      showDurationChoices() {
+        durationShown += 1;
+        this.phase = 'duration';
+      }
+    })
   });
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
-    emotionController: { playEmotion() {} },
-    ui
-  });
+  stateManager.setState(STATES.IDLE);
 
   controller.openDurationChoices({ force: true });
 
@@ -114,28 +103,26 @@ test('openDurationChoices shows duration UI without Sit with Yin', () => {
 });
 
 test('zero-completion honesty from Idle skips dormantWake', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
-  const stateManager = new StateManager();
-  stateManager.setState(STATES.IDLE);
+  let idleEntryShown = 0;
   const emotionCalls = [];
-  const ui = createUi();
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
+  const { controller, stateManager, ui } = createControllerDeps({
+    ui: createUi({
+      showIdleEntry() {
+        idleEntryShown += 1;
+      }
+    }),
     emotionController: {
       playEmotion(key) {
         emotionCalls.push(key);
       }
-    },
-    ui
+    }
   });
+  stateManager.setState(STATES.IDLE);
 
   controller.onAppReady();
   assert.equal(stateManager.state, STATES.IDLE);
-  assert.equal(ui.phase, 'prompt');
+  assert.equal(ui.phase, 'hidden');
+  assert.equal(idleEntryShown, 1);
 
   controller.openDurationChoices();
   ui.handlers.onDurationSelect(20);
@@ -144,33 +131,27 @@ test('zero-completion honesty from Idle skips dormantWake', () => {
 });
 
 test('honesty duration select sits up and holds pose; breath end leaves DORMANT', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
-  const stateManager = new StateManager();
-  stateManager.setState(STATES.DORMANT);
   const emotionCalls = [];
   let guideStarted = 0;
   let glowCleared = 0;
-  const ui = createUi({
-    startBreathGuide() {
-      guideStarted += 1;
-    }
-  });
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
+  const { controller, store, stateManager, ui } = createControllerDeps({
+    ui: createUi({
+      startBreathGuide() {
+        guideStarted += 1;
+      }
+    }),
     emotionController: {
       playEmotion(key, options = {}) {
         emotionCalls.push({ key, options });
       }
     },
-    ui,
-    clearFocusGlow: () => {
-      glowCleared += 1;
+    extra: {
+      clearFocusGlow: () => {
+        glowCleared += 1;
+      }
     }
   });
+  stateManager.setState(STATES.DORMANT);
 
   ui.handlers.onDurationSelect(20);
   assert.equal(guideStarted, 1);
@@ -191,34 +172,33 @@ test('honesty duration select sits up and holds pose; breath end leaves DORMANT'
 });
 
 test('same-day re-entry skips sleep wake; still records and fires bridge hook', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
+  const storage = createStorage();
+  const now = () => new Date(2026, 6, 16, 12);
+  const store = new DailyCompletionStore({ storage, now });
   store.recordCompletion(10);
-  const stateManager = new StateManager();
-  stateManager.setState(STATES.IDLE);
   const emotionCalls = [];
   let completeCalls = 0;
   let idleEntryShown = 0;
-  const ui = createUi({
-    showIdleEntry() {
-      idleEntryShown += 1;
-    }
-  });
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
+  const { controller, stateManager, ui } = createControllerDeps({
+    storage,
+    now,
+    ui: createUi({
+      showIdleEntry() {
+        idleEntryShown += 1;
+      }
+    }),
     emotionController: {
       playEmotion(key) {
         emotionCalls.push(key);
       }
     },
-    ui,
-    onCheckInComplete: () => {
-      completeCalls += 1;
+    extra: {
+      onCheckInComplete: () => {
+        completeCalls += 1;
+      }
     }
   });
+  stateManager.setState(STATES.IDLE);
 
   controller.syncIdleEntry();
   assert.equal(idleEntryShown, 1);
@@ -235,23 +215,15 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
 });
 
 test('honesty breath complete invokes onCheckInComplete for bridge hook', () => {
-  const store = new DailyCompletionStore({
-    storage: createStorage(),
-    now: () => new Date(2026, 6, 16, 12)
-  });
-  const stateManager = new StateManager();
-  stateManager.setState(STATES.DORMANT);
   let completeCalls = 0;
-  const ui = createUi();
-  const controller = new HonestyCheckInController({
-    store,
-    stateManager,
-    emotionController: { playEmotion() {} },
-    ui,
-    onCheckInComplete: () => {
-      completeCalls += 1;
+  const { controller, stateManager, ui } = createControllerDeps({
+    extra: {
+      onCheckInComplete: () => {
+        completeCalls += 1;
+      }
     }
   });
+  stateManager.setState(STATES.DORMANT);
 
   ui.handlers.onDurationSelect(10);
   ui.handlers.onBreathComplete();

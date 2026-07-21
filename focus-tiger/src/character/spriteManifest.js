@@ -381,8 +381,7 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 进入 DORMANT 过渡（候选）：披上斗篷→睡着。一次性正放；**尚未接业务触发**。
-  // 产品拍板（2b）：当日首次进入 DORMANT 播一次，再落入 sleeping 循环（2c 待接线）。
+  // 进入 DORMANT 过渡：披上斗篷→睡着。一次性正放；当日首次进 DORMANT 播一次（2c 已接线）。
   // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
   cloakSleep: {
     animation: 'cloak-sleep',
@@ -393,16 +392,18 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: true
   },
 
-  // Honesty Check-in / DORMANT 唤醒：深睡 → 完全清醒坐姿，一次性正放。
-  // 末帧定格；2026-07-19：再放慢 2×（6 → 3 fps），暂不接闭眼呼吸 / 金光 / halo。
+  // Honesty Check-in / DORMANT 唤醒：`cloak-sleep` **倒放**（睡态揭毯 → 合掌坐姿）。
+  // 与 cloakSleep 正放同源；播放列表末帧 = 素材 frame_001（清醒合掌）。
+  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）；2026-07-21 试替 dormant-wake 正放。
   dormantWake: {
-    animation: 'dormant-wake',
-    frameCount: 16,
-    fps: 3,
+    animation: 'cloak-sleep',
+    frameCount: 34,
+    frameIndices: Array.from({ length: 34 }, (_, i) => 34 - i),
+    fps: 6,
     loop: false,
     loopMode: 'none',
     holdLastFrame: true,
-    frameHolds: { 16: 320 }
+    frameHolds: { 34: 320 }
   },
 
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。

@@ -11,6 +11,7 @@ import {
   resolveDemoSessionMinutes,
   shouldSuppressAwayReminders,
   shouldAutoStartFocusOnModeSelect,
+  shouldAutoStartFocusAfterArrivalNod,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
@@ -47,6 +48,8 @@ import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
+import { FocusSessionEndStore } from './core/FocusSessionEndStore.js';
+import { DormantCloakSleepStore } from './core/DormantCloakSleepStore.js';
 import {
   PracticeDaysStore,
   PRACTICE_STREAK_RING_TOTAL
@@ -249,7 +252,10 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
-  const dailyCompletionStore = new DailyCompletionStore();
+  const now = () => new Date();
+  const dailyCompletionStore = new DailyCompletionStore({ now });
+  const focusSessionEndStore = new FocusSessionEndStore({ now });
+  const dormantCloakSleepStore = new DormantCloakSleepStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const honestyCheckInUI = new HonestyCheckInUI(
@@ -257,6 +263,7 @@ async function init() {
   );
   const honestyCheckIn = new HonestyCheckInController({
     store: dailyCompletionStore,
+    focusSessionEndStore,
     stateManager,
     emotionController,
     ui: honestyCheckInUI,
@@ -278,7 +285,8 @@ async function init() {
     },
     onPracticeDay: () => {
       practiceDaysStore.markToday();
-    }
+    },
+    now
   });
 
   /** 在 beginFocusWithMode 定义后填入 onModeSelected / onAutoStartNeedsArrival / onExpandedChange */
@@ -326,6 +334,8 @@ async function init() {
   let pendingAutoStartMode = null;
   /** Choose 点头期间已开表则勿再展开 Companion */
   let suppressCompanionOpenAfterNod = false;
+  /** 本轮 Arrival 是否完整走过 Choose（供鞠躬结束后自动开表判定） */
+  let arrivalChoseThisRun = false;
 
   /** @param {boolean} ready */
   function syncArrivalGateReady(ready) {
@@ -524,9 +534,20 @@ async function init() {
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
-              companionModePicker.open();
+              const mode = companionModePicker.getSelectedMode();
+              if (
+                shouldAutoStartFocusAfterArrivalNod({
+                  chose: arrivalChoseThisRun,
+                  storedMode: mode
+                })
+              ) {
+                beginFocusWithMode(mode);
+              } else {
+                companionModePicker.open();
+              }
             }
             suppressCompanionOpenAfterNod = false;
+            arrivalChoseThisRun = false;
             lightProgression.clearArrivalAtmosphere();
             window.setTimeout(() => {
               lightProgression.releaseDolly();
@@ -537,6 +558,7 @@ async function init() {
       onClearLight: () => lightProgression.clearArrivalEffects(),
       onReady: (info = {}) => {
         pendingChoose = arrivalPractice.getChooseResult();
+        arrivalChoseThisRun = Boolean(info.chose);
         syncArrivalGateReady(true);
         syncPostSessionOverlayForArrival(false);
         onboardingHints?.markSeen('notice');
@@ -580,6 +602,7 @@ async function init() {
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     honestyCheckInUI.hideIdleEntry();
+    arrivalChoseThisRun = false;
     pendingAutoStartMode =
       autoStartMode && shouldAutoStartFocusOnModeSelect(autoStartMode)
         ? autoStartMode
@@ -833,7 +856,8 @@ async function init() {
   }
 
   const moodController = new MoodController(stateManager, emotionController, {
-    onCelebrateComplete: finishCompletedSession
+    onCelebrateComplete: finishCompletedSession,
+    dormantCloakSleepStore
   });
   // StateManager 初始 IDLE 不会主动发 onChange；显式启动 observer baseline。
   moodController.handleStateChange(stateManager.state);
@@ -886,7 +910,7 @@ async function init() {
     resetAllBtn.id = 'dev-reset-all-local-state';
     resetAllBtn.textContent = '重置全部本地状态';
     resetAllBtn.title =
-      '清空 focus-tiger.* localStorage 并刷新 → 场景 A：睡着 + Honesty 提示（不是 idle 呼吸）';
+      '清空 focus-tiger.* localStorage 并刷新 → 场景 A：零完成 Idle 坐禅 + Honesty 入口（不是自动 DORMANT）';
     resetAllBtn.style.cssText =
       'position:fixed;top:12px;right:320px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff0f0;color:#2c1f14;border-radius:4px;';
     resetAllBtn.addEventListener('click', async () => {
@@ -894,9 +918,9 @@ async function init() {
         '将清空全部 focus-tiger 本地数据并刷新。\n\n' +
           '刷新后 = 场景 A 全新用户：\n' +
           '• 当日零完成\n' +
-          '• 阿寅睡着（DORMANT）\n' +
-          '• 显示 Honesty 可忽略提示\n\n' +
-          '（不是 idle 呼吸坐禅。要测 idle 请用「重置并 idle 坐禅」。）\n\n' +
+          '• 阿寅 Idle 闭目坐禅（无专注结束记录 → 不自动 DORMANT）\n' +
+          '• Honesty 正念登入小钮可见\n\n' +
+          '（DORMANT 需距上次专注结束 ≥2h；要测 idle 动画请用「重置并 idle 坐禅」。）\n\n' +
           '确定重置？'
       );
       if (!confirmed) return;
@@ -943,6 +967,7 @@ async function init() {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       beginSessionCompleteIfNeeded();
+      honestyCheckIn.syncDormantState();
     }
   });
 
