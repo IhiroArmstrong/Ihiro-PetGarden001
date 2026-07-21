@@ -52,7 +52,7 @@
         pointer-events: none;
         z-index: 10;
       }
-      /* Soft chrome HUD — gold ring + breathing core; digits secondary (see DESIGN.md UI Kit) */
+      /* Soft chrome HUD — gold ring + breathing core; ~2× for glanceability */
       #focus-hud {
         position: absolute;
         top: 18px;
@@ -65,9 +65,9 @@
         position: relative;
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 8px 12px 8px 8px;
-        border-radius: var(--radius-md, 14px);
+        gap: 18px;
+        padding: 14px 20px 14px 14px;
+        border-radius: 20px;
         background: var(--color-panel-soft, rgba(228, 225, 219, 0.92));
         border: 1px solid var(--color-ink-faint, rgba(46, 43, 40, 0.1));
         box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
@@ -76,8 +76,8 @@
       }
       #focus-hud .ft-hud__gauge {
         position: relative;
-        width: 44px;
-        height: 44px;
+        width: 88px;
+        height: 88px;
         flex-shrink: 0;
       }
       #focus-hud .ft-hud__ring-track,
@@ -85,49 +85,52 @@
         position: absolute;
         inset: 0;
         border-radius: 50%;
-        mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px));
         -webkit-mask: radial-gradient(
           farthest-side,
-          transparent calc(100% - 5px),
-          #000 calc(100% - 4px)
+          transparent calc(100% - 9px),
+          #000 calc(100% - 8px)
         );
       }
       #focus-hud .ft-hud__ring-track {
         background: conic-gradient(
           from -90deg,
-          rgba(139, 115, 85, 0.18) 0deg,
-          rgba(139, 115, 85, 0.18) 360deg
+          rgba(74, 58, 40, 0.28) 0deg,
+          rgba(74, 58, 40, 0.28) 360deg
         );
       }
       #focus-hud .ft-hud__ring {
         background: conic-gradient(
           from -90deg,
-          var(--color-gold, #f0c36a) calc(var(--ft-hud-fill) * 360deg),
+          #d4922a calc(var(--ft-hud-fill) * 360deg),
           transparent 0
         );
-        opacity: 0.22;
+        opacity: 0.85;
         transition: opacity 400ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
       }
       #focus-hud .ft-hud__core {
         position: absolute;
         left: 50%;
         top: 50%;
-        width: calc(7px + var(--ft-hud-fill) * 5px);
-        height: calc(7px + var(--ft-hud-fill) * 5px);
+        width: calc(16px + var(--ft-hud-fill) * 10px);
+        height: calc(16px + var(--ft-hud-fill) * 10px);
         margin: 0;
         border-radius: 50%;
         background: radial-gradient(
           circle at 50% 45%,
-          rgba(255, 245, 220, 0.95) 0%,
-          var(--color-gold, #f0c36a) 42%,
-          rgba(240, 195, 106, 0.25) 70%,
-          transparent 78%
+          #fff6e0 0%,
+          #e8a84a 38%,
+          #c47a4e 72%,
+          rgba(196, 122, 78, 0.15) 100%
         );
-        box-shadow: 0 0 calc(4px + var(--ft-hud-fill) * 6px) rgba(240, 195, 106, 0.35);
-        opacity: 0.28;
-        transform: translate(-50%, -50%);
+        box-shadow:
+          0 0 0 2px rgba(212, 146, 42, 0.35),
+          0 0 calc(8px + var(--ft-hud-fill) * 10px) rgba(212, 146, 42, 0.55);
+        opacity: 0.92;
+        transform: translate(-50%, -50%) scale(0.72);
         transform-origin: center;
-        animation: ft-hud-breathe 4s var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)) infinite;
+        animation: ft-hud-breathe 4s ease-in-out infinite;
+        will-change: transform;
         transition:
           width 400ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
           height 400ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
@@ -138,27 +141,25 @@
       @keyframes ft-hud-breathe {
         0%,
         100% {
-          transform: translate(-50%, -50%) scale(0.9);
-          filter: brightness(0.95);
+          transform: translate(-50%, -50%) scale(0.68);
         }
         50% {
-          transform: translate(-50%, -50%) scale(1.12);
-          filter: brightness(1.08);
+          transform: translate(-50%, -50%) scale(1.28);
         }
       }
       #focus-hud .ft-hud[data-focusing='0'] .ft-hud__core {
-        animation-duration: 5.5s;
+        animation-duration: 5s;
       }
       #focus-hud .ft-hud__meta {
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        min-width: 4.5rem;
+        gap: 4px;
+        min-width: 7.5rem;
         line-height: 1.25;
       }
       #focus-hud .ft-hud__state {
-        font-size: var(--font-size-sm, 0.8125rem);
-        font-weight: 600;
+        font-size: 1.25rem;
+        font-weight: 700;
         color: var(--text-secondary, rgba(74, 58, 40, 0.78));
         letter-spacing: 0.01em;
       }
@@ -166,7 +167,7 @@
         color: var(--text-primary, #2c1f14);
       }
       #focus-hud .ft-hud__time {
-        font-size: 0.75rem;
+        font-size: 1.125rem;
         font-variant-numeric: tabular-nums;
         color: var(--color-ink-muted, rgba(74, 58, 40, 0.78));
         opacity: 0.55;
@@ -180,14 +181,14 @@
       #focus-hud .ft-hud__detail {
         position: absolute;
         left: 0;
-        top: calc(100% + 6px);
-        min-width: 9rem;
-        padding: 0.45rem 0.65rem;
+        top: calc(100% + 8px);
+        min-width: 11rem;
+        padding: 0.55rem 0.8rem;
         border-radius: var(--radius-sm, 10px);
         background: var(--color-surface-warm, #f8f1e4);
         border: 1px solid var(--color-surface-border, rgba(139, 115, 85, 0.22));
         box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
-        font-size: var(--font-size-sm, 0.8125rem);
+        font-size: 1rem;
         color: var(--text-primary, #2c1f14);
         opacity: 0;
         pointer-events: none;
