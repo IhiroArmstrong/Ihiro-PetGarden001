@@ -173,3 +173,49 @@ test('startPreferredTrack respects stored mute preference', async () => {
   assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
   assert.equal(ctrl.wantsEnabled(), false);
 });
+
+test('toggle off wins race when play() resolves after stop', async () => {
+  /** @type {(() => void) | null} */
+  let releasePlay = null;
+  const audio = createMockAudio();
+  audio.play = () =>
+    new Promise((resolve) => {
+      releasePlay = () => {
+        audio.paused = false;
+        audio.dispatch('play');
+        audio.dispatch('playing');
+        resolve(undefined);
+      };
+    });
+
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage()
+  });
+
+  const start = ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL, { persist: false });
+  await ctrl.toggleEnabled();
+  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(audio.paused, true);
+
+  releasePlay?.();
+  await start;
+  assert.equal(audio.paused, true);
+  assert.equal(ctrl.isAudiblePlaying(), false);
+});
+
+test('toggleEnabled stops audible playback immediately', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage()
+  });
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.isAudiblePlaying(), true);
+
+  await ctrl.toggleEnabled();
+  assert.equal(audio.paused, true);
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  assert.equal(ctrl.wantsEnabled(), false);
+});

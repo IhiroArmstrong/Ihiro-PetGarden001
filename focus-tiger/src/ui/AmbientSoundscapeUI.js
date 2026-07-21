@@ -72,10 +72,7 @@ export class AmbientSoundscapeUI {
     this.toggleBtn.className = 'ambient-soundscape__fab';
     this.toggleBtn.addEventListener('click', () => {
       this._dismissNudge();
-      void this.controller.toggleEnabled().then(() => {
-        this._renderPanel();
-        this.handlers.onToggleMusic?.();
-      });
+      void this._onToggleClick();
     });
 
     this.tracksBtn = document.createElement('button');
@@ -159,6 +156,26 @@ export class AmbientSoundscapeUI {
     this._maybeShowDefaultOnNudge();
   }
 
+  /**
+   * 主按钮：若自动播放被拦且尚未出声，先解锁播放；否则正常开关。
+   */
+  async _onToggleClick() {
+    const ctrl = this.controller;
+    if (
+      ctrl.needsGestureUnlock() &&
+      ctrl.wantsEnabled() &&
+      !ctrl.isAudiblePlaying()
+    ) {
+      await ctrl.startPreferredTrack();
+      this._renderPanel();
+      this.handlers.onToggleMusic?.();
+      return;
+    }
+    await ctrl.toggleEnabled();
+    this._renderPanel();
+    this.handlers.onToggleMusic?.();
+  }
+
   _maybeShowDefaultOnNudge() {
     if (hasSeenNudge()) return;
     if (!this.controller.wantsEnabled()) {
@@ -232,14 +249,15 @@ export class AmbientSoundscapeUI {
   }
 
   _refreshFab() {
-    const on = this.controller.wantsEnabled();
-    this.toggleBtn.classList.toggle('is-active', on);
+    const ctrl = this.controller;
+    const audible = ctrl.isAudiblePlaying();
+    this.toggleBtn.classList.toggle('is-active', audible);
     this.toggleBtn.classList.remove('is-gated');
-    const label = on ? t('AMBIENT_MUSIC_OFF') : t('AMBIENT_MUSIC_ON');
-    this.toggleBtn.textContent = on ? `♫  ${label}` : `♪  ${label}`;
+    const label = audible ? t('AMBIENT_MUSIC_OFF') : t('AMBIENT_MUSIC_ON');
+    this.toggleBtn.textContent = audible ? `♫  ${label}` : `♪  ${label}`;
     this.toggleBtn.setAttribute(
       'aria-label',
-      on ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
+      audible ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
     );
   }
 

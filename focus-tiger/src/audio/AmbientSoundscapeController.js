@@ -114,7 +114,9 @@ export class AmbientSoundscapeController {
     /** @type {number | null} */
     this._segmentStartedAt = null;
     this._volume = 0.45;
-    /** 浏览器拦截自动播放后，等待一次用户手势再试 */
+    /** 每次停止/切换意图递增，作废进行中的 play() */
+    this._playbackEpoch = 0;
+    /** 浏览器拦截自动播放后，等待用户在音乐按钮上再试 */
     this._needsGestureUnlock = false;
     /** @type {(() => void) | null} */
     this._gestureUnlockHandler = null;
@@ -190,18 +192,43 @@ export class AmbientSoundscapeController {
   }
 
   /**
-   * 一键开关：关→开播偏好曲；开→关闭。
+   * 一键开关：关→停播；开→播偏好曲。
    * @returns {Promise<boolean>} 切换后是否希望开启
    */
   async toggleEnabled() {
-    this._wantEnabled = !this._wantEnabled;
-    this._persistPref();
     if (this._wantEnabled) {
-      await this.setTrack(this._preferredTrackId, { persist: false });
-    } else {
-      await this.setTrack(AMBIENT_TRACK_OFF, { persist: false });
+      this._wantEnabled = false;
+      this._persistPref();
+      this._stopPlayback({ persist: false });
+      return false;
     }
-    return this._wantEnabled;
+    this._wantEnabled = true;
+    this._persistPref();
+    await this.setTrack(this._preferredTrackId, { persist: false });
+    return true;
+  }
+
+  /**
+   * 彻底停播（同步）；作废进行中的 play()。
+   * @param {{ persist?: boolean }} [options]
+   */
+  _stopPlayback({ persist = true } = {}) {
+    this._playbackEpoch += 1;
+    this._endCreditSegment();
+    this._trackId = AMBIENT_TRACK_OFF;
+    this._needsGestureUnlock = false;
+    this._teardownGestureUnlock();
+    if (this._audio) {
+      this._audio.pause();
+      this._audio.currentTime = 0;
+      this._audio.removeAttribute('src');
+      try {
+        this._audio.load();
+      } catch {
+        /* ignore */
+      }
+    }
+    if (persist) this._persistPref();
   }
 
   /**
@@ -212,17 +239,8 @@ export class AmbientSoundscapeController {
   async setTrack(trackId, { persist = true } = {}) {
     const id = trackId || AMBIENT_TRACK_OFF;
     if (id === AMBIENT_TRACK_OFF) {
-      this._endCreditSegment();
-      this._trackId = AMBIENT_TRACK_OFF;
       this._wantEnabled = false;
-      this._needsGestureUnlock = false;
-      this._teardownGestureUnlock();
-      if (this._audio) {
-        this._audio.pause();
-        this._audio.removeAttribute('src');
-        this._audio.load();
-      }
-      if (persist) this._persistPref();
+      this._stopPlayback({ persist });
       return;
     }
 
@@ -233,20 +251,29 @@ export class AmbientSoundscapeController {
     this._trackId = id;
     this._preferredTrackId = id;
     this._wantEnabled = true;
+    const epoch = this._playbackEpoch;
     this._audio.src = track.src;
     this._audio.loop = true;
     this._audio.volume = this._volume;
+    this._audio.muted = this._volume <= 0;
     if (persist) this._persistPref();
 
     try {
       await this._audio.play();
-      this._needsGestureUnlock = false;
-      this._teardownGestureUnlock();
     } catch {
-      // 浏览器自动播放策略：标记待手势解锁；UI 点「打开音乐」会再试
+      if (epoch !== this._playbackEpoch) return;
+      // 浏览器自动播放策略：等用户在音乐按钮上再点一次
       this._needsGestureUnlock = true;
-      this._installGestureUnlock();
+      return;
     }
+
+    if (epoch !== this._playbackEpoch || this._trackId !== id) {
+      this._audio.pause();
+      return;
+    }
+
+    this._needsGestureUnlock = false;
+    this._teardownGestureUnlock();
     this._syncCreditSegment();
   }
 
@@ -286,32 +313,7 @@ export class AmbientSoundscapeController {
     });
   }
 
-  _installGestureUnlock() {
-    if (typeof document === 'undefined') return;
-    if (this._gestureUnlockHandler) return;
-    this._gestureUnlockHandler = () => {
-      if (!this._wantEnabled || !this._needsGestureUnlock) {
-        this._teardownGestureUnlock();
-        return;
-      }
-      void this.setTrack(this._preferredTrackId, { persist: false });
-    };
-    document.addEventListener('pointerdown', this._gestureUnlockHandler, {
-      once: true,
-      capture: true
-    });
-  }
-
   _teardownGestureUnlock() {
-    if (!this._gestureUnlockHandler || typeof document === 'undefined') {
-      this._gestureUnlockHandler = null;
-      return;
-    }
-    document.removeEventListener(
-      'pointerdown',
-      this._gestureUnlockHandler,
-      { capture: true }
-    );
     this._gestureUnlockHandler = null;
   }
 
