@@ -21,9 +21,9 @@
 
 | 批次 | 项 | 状态 |
 |---|---|---|
-| 1 | #6 StateManager 合法转移 warn（不阻断） | **本回合已做** |
-| 2 | #4 Honesty `?? 30` → warn + abort + toast + 重开时长 | **本回合已做** |
-| 3 | #1/#2/#3/#7/#10 门闩一体包 | **方案待确认，未动手** |
+| 1 | #6 StateManager 合法转移 warn（不阻断） | **已做** |
+| 2 | #4 Honesty `?? 30` → warn + abort + toast + 重开时长 | **已做**（待人工测） |
+| 3 | #1/#2/#3/#7/#10 门闩一体包 | **已做**（待人工验收 Companion→计时） |
 | 4–5 | 其余中项（Sit 禁用、Emotion fallback 等） | 等 1–3 验收后再排 |
 
 ---
@@ -62,8 +62,9 @@
 
 | 原 # | 摘要 | 处理 |
 |---|---|---|
-| 6 | StateManager 无合法转移校验 | warn-only；见 `StateManager.js` + `StateManager.test.js` |
+| 6 | StateManager 无合法转移校验 | warn-only；见 `StateManager.js` + `StateManager.test.js`；**BREAK 枚举已删**（无生产引用） |
 | 4 | Honesty `_pendingMinutes ?? 30` | abort + `HONESTY_PENDING_LOST` toast + 重开时长；`openDurationChoices({force})` 先 `ui.hide()` 清呼吸计时 |
+| 1/2/3/7/10 | 门闩双检 / overlay 双 writer / Bridge 静默 | `resyncSessionChrome` + Picker 真门闩 + 未通过不写 storage |
 
 ---
 

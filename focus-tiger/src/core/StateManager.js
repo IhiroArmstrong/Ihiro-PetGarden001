@@ -4,14 +4,12 @@
 export const STATES = Object.freeze({
   IDLE: 'IDLE',
   FOCUSING: 'FOCUSING',
-  BREAK: 'BREAK',
   CELEBRATE: 'CELEBRATE',
   DORMANT: 'DORMANT'
 });
 
 /**
  * 产品语义下允许的下一状态（同源同态由 setState 早退，不进本表）。
- * BREAK 仍保留在枚举中，但当前产品路径未使用 → 进出 BREAK 均视为非法并 warn。
  *
  * @type {Readonly<Record<string, ReadonlyArray<string>>>}
  */
@@ -19,8 +17,7 @@ export const LEGAL_STATE_TRANSITIONS = Object.freeze({
   [STATES.IDLE]: Object.freeze([STATES.FOCUSING, STATES.DORMANT]),
   [STATES.FOCUSING]: Object.freeze([STATES.IDLE, STATES.CELEBRATE]),
   [STATES.CELEBRATE]: Object.freeze([STATES.IDLE]),
-  [STATES.DORMANT]: Object.freeze([STATES.IDLE]),
-  [STATES.BREAK]: Object.freeze([])
+  [STATES.DORMANT]: Object.freeze([STATES.IDLE])
 });
 
 /**

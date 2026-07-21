@@ -1,13 +1,13 @@
 /**
  * Companion Mode 三选一：Sit 旁「How shall we sit?」hint + 向上展开面板。
  *
- * - Here & Now / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
- * - Offline Space：只写入预选并收起，须再点 Sit
- * - 门闩未就绪时选自动开表模式 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
+ * - Here & Now / Offline Space / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
+ * - 门闩未就绪时三模式点选 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
  * - Choose / Session Intention 在 Arrival Practice（见 ARRIVE_MOMENT_DESIGN v2）
  *
- * 权威门闩可变源：`SessionUiGate`；本类持有 UI 侧副本（`_arrivalReady` /
- * `_postSessionOverlay`），由 `main.js` 的 sync* 与 Gate 对齐。
+ * 权威门闩：`SessionUiGate`（经 handlers 注入真裁决）。本类 `_arrivalReady` /
+ * `_postSessionOverlay` 仅为 UI 投影，由 `main.js` `resyncSessionChrome` 对齐。
+ * **硬性**：点选未通过 Gate → **不**写 `companion-mode` storage。
  * @see docs/SHARED_RESOURCES.md §4
  */
 
@@ -18,19 +18,24 @@ import {
   COMPANION_MODE_ACROSS_TOOLS,
   COMPANION_MODE_STORAGE_KEY,
   isValidCompanionMode,
-  shouldAutoStartFocusOnModeSelect,
-  canBeginFocusOnCompanionModeSelect,
   resolveCompanionHintClick
 } from '../core/FocusSession.js';
+import { resolveCompanionModeSelectCommit } from '../core/SessionUiGate.js';
 
 /**
  * @typedef {object} CompanionModePickerHandlers
+ * @property {(mode: import('../core/FocusSession.js').CompanionMode) => boolean} [canBeginFocus]
+ *   真门闩：是否允许开表（须含 completionPending / arrivalOpen / isFocusing）
+ * @property {(mode: import('../core/FocusSession.js').CompanionMode) => 'ignore' | 'start-arrival'} [resolveNeedsArrival]
+ *   真门闩：未就绪时是否应启动 Arrival
  * @property {(mode: import('../core/FocusSession.js').CompanionMode) => void} [onModeSelected]
- *   门闩就绪且为自动开表模式时调用
- * @property {() => void} [onAutoStartNeedsArrival]
- *   门闩未就绪时点 Here & Now / Flow State → 启动 Arrival
+ *   Gate 已通过且已 commit storage 后调用 → beginFocus
+ * @property {(mode: import('../core/FocusSession.js').CompanionMode) => boolean} [onAutoStartNeedsArrival]
+ *   Gate 允许开 Arrival 时调用；返回 true 表示已启动（Picker 再 commit storage）
  * @property {(expanded: boolean) => void} [onExpandedChange]
  *   面板展开/收起（驱动 companion-mode 气泡等）
+ * @property {() => void} [onSelectRejected]
+ *   点选被门闩拒绝（禁止静默）
  */
 
 /** @returns {import('../core/FocusSession.js').CompanionMode} */
@@ -79,10 +84,15 @@ export class CompanionModePicker {
     this._postSessionOverlay = false;
     /**
      * Arrival 门闩 UI 副本（与 SessionUiGate.arrivalGateReady 对齐）。
-     * 未就绪：Here & Now / Flow 走 `onAutoStartNeedsArrival`；hint 仍可展开看选项。
+     * 未就绪：hint 仍可展开看三选一；点选裁决走 handlers 真门闩。
      * @type {boolean}
      */
     this._arrivalReady = false;
+    /**
+     * 选项是否可点（叠层 / 完成中时禁用，禁止可点却静默）。
+     * @type {boolean}
+     */
+    this._optionSelectEnabled = true;
     /** Rise 后优先显示提问文案；用户再选模式后改为模式名 */
     this._preferQuestionHint = true;
 
@@ -159,7 +169,6 @@ export class CompanionModePicker {
 
   /**
    * 同步 Arrival 门闩 UI 副本。未就绪时收起面板；hint 仍可展开看三选一。
-   * 自动开表点选是否 begin 由 `_selectMode` + `canBeginFocusOnCompanionModeSelect` 裁决。
    * @param {boolean} ready
    * @returns {void}
    */
@@ -170,6 +179,18 @@ export class CompanionModePicker {
       this._syncExpanded();
     }
     this._syncHintAvailability();
+  }
+
+  /**
+   * 叠层 / 完成中等：禁用三选一选项（禁止可点却静默）。
+   * @param {boolean} enabled
+   * @returns {void}
+   */
+  setOptionSelectEnabled(enabled) {
+    const next = Boolean(enabled);
+    if (next === this._optionSelectEnabled) return;
+    this._optionSelectEnabled = next;
+    this._render();
   }
 
   _syncHintAvailability() {
@@ -259,36 +280,53 @@ export class CompanionModePicker {
   }
 
   /**
+   * Gate 已通过后才写入 selected + storage。
    * @param {import('../core/FocusSession.js').CompanionMode} mode
    */
-  _selectMode(mode) {
-    if (!isValidCompanionMode(mode)) return;
-    if (this._postSessionOverlay) return;
+  _commitMode(mode) {
     this.selected = mode;
     writeStoredMode(mode);
     this._preferQuestionHint = false;
     this._expanded = false;
     this._render();
-    if (!this._arrivalReady) {
-      if (shouldAutoStartFocusOnModeSelect(mode)) {
-        this.handlers.onAutoStartNeedsArrival?.();
+  }
+
+  /**
+   * @param {import('../core/FocusSession.js').CompanionMode} mode
+   */
+  _selectMode(mode) {
+    if (!isValidCompanionMode(mode)) return;
+    if (this._postSessionOverlay || !this._optionSelectEnabled) {
+      this.handlers.onSelectRejected?.();
+      return;
+    }
+
+    const canBegin = Boolean(this.handlers.canBeginFocus?.(mode));
+    const needsArrivalAction =
+      this.handlers.resolveNeedsArrival?.(mode) ?? 'ignore';
+    const commit = resolveCompanionModeSelectCommit({
+      canBegin,
+      needsArrivalAction
+    });
+
+    if (commit === 'commit-begin') {
+      this._commitMode(mode);
+      this.handlers.onModeSelected?.(mode);
+      return;
+    }
+
+    if (commit === 'commit-arrival') {
+      // 先开 Arrival（传入 mode）；仅当 handler 确认启动成功后再写 storage
+      const started = this.handlers.onAutoStartNeedsArrival?.(mode);
+      if (started) {
+        this._commitMode(mode);
+      } else {
+        this.handlers.onSelectRejected?.();
       }
       return;
     }
-    if (shouldAutoStartFocusOnModeSelect(mode)) {
-      // 与 main 共用同一门闩语义；未就绪时不应走到这里（setArrivalReady 会禁点选）。
-      if (
-        canBeginFocusOnCompanionModeSelect({
-          mode,
-          arrivalGateReady: this._arrivalReady,
-          completionPending: false,
-          arrivalOpen: false,
-          isFocusing: false
-        })
-      ) {
-        this.handlers.onModeSelected?.(mode);
-      }
-    }
+
+    this.handlers.onSelectRejected?.();
   }
 
   _render() {
@@ -314,6 +352,9 @@ export class CompanionModePicker {
       }
     ];
 
+    const optionsEnabled =
+      this._optionSelectEnabled && !this._postSessionOverlay;
+
     for (const opt of options) {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -322,6 +363,8 @@ export class CompanionModePicker {
       const selected = this.selected === opt.mode;
       btn.setAttribute('aria-checked', selected ? 'true' : 'false');
       if (selected) btn.classList.add('is-selected');
+      btn.disabled = !optionsEnabled;
+      btn.setAttribute('aria-disabled', optionsEnabled ? 'false' : 'true');
 
       const label = t(opt.labelKey);
       const description = t(opt.hintKey);
@@ -363,23 +406,64 @@ export class CompanionModePicker {
       .session-start-dock > * {
         pointer-events: auto;
       }
+      #honesty-idle-entry[hidden] {
+        display: none !important;
+      }
+      .session-start-dock__honesty-entry {
+        order: -2;
+        align-self: center;
+        flex-shrink: 0;
+        border: 1px solid rgba(139, 115, 85, 0.38);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 252, 244, 0.98) 0%,
+          rgba(245, 234, 214, 0.96) 100%
+        );
+        color: var(--color-ink, #2c1f14);
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        padding: 8px 18px;
+        border-radius: 999px;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 2px 0 rgba(165, 130, 85, 0.2),
+          0 3px 8px rgba(44, 31, 20, 0.08);
+        text-decoration: none;
+        max-width: 100%;
+        line-height: 1.35;
+        text-align: center;
+        white-space: normal;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .session-start-dock__honesty-entry:hover {
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 2px 0 rgba(165, 130, 85, 0.26),
+          0 4px 10px rgba(44, 31, 20, 0.12);
+      }
+      .session-start-dock__honesty-entry:active {
+        transform: translateY(1px) scale(0.98);
+      }
       #btn-focus {
         position: static !important;
         left: auto !important;
         bottom: auto !important;
         transform: none !important;
         box-sizing: border-box;
-        width: 100%;
+        align-self: center;
+        width: auto;
         max-width: 100%;
         min-width: 0;
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         text-align: center;
         line-height: 1.3;
-        padding: 12px 20px;
+        padding: 13px 36px;
+        font-size: 16px;
         word-break: normal;
-        overflow-wrap: anywhere;
       }
       #btn-focus:active {
         transform: translateY(2px) scale(0.985) !important;
@@ -552,8 +636,9 @@ export class CompanionModePicker {
         }
         #btn-focus {
           font-size: 15px;
-          padding: 11px 16px;
+          padding: 11px 28px;
           letter-spacing: 0.01em;
+          white-space: normal;
         }
         .session-start-dock__hint {
           font-size: 13px;

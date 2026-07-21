@@ -17,14 +17,13 @@ test('isLegalStateTransition covers product paths', () => {
   assert.equal(isLegalStateTransition(STATES.DORMANT, STATES.IDLE), true);
 });
 
-test('isLegalStateTransition rejects known illegal / unused BREAK hops', () => {
+test('isLegalStateTransition rejects known illegal hops; BREAK removed', () => {
   assert.equal(isLegalStateTransition(STATES.IDLE, STATES.CELEBRATE), false);
   assert.equal(isLegalStateTransition(STATES.DORMANT, STATES.CELEBRATE), false);
   assert.equal(isLegalStateTransition(STATES.DORMANT, STATES.FOCUSING), false);
   assert.equal(isLegalStateTransition(STATES.CELEBRATE, STATES.FOCUSING), false);
-  assert.equal(isLegalStateTransition(STATES.IDLE, STATES.BREAK), false);
-  assert.equal(isLegalStateTransition(STATES.BREAK, STATES.IDLE), false);
-  assert.equal(LEGAL_STATE_TRANSITIONS[STATES.BREAK].length, 0);
+  assert.equal(STATES.BREAK, undefined);
+  assert.equal(LEGAL_STATE_TRANSITIONS.BREAK, undefined);
 });
 
 test('setState applies illegal transition but warns', () => {

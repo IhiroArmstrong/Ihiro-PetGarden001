@@ -16,7 +16,7 @@ import {
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
-import { SessionUiGate } from './core/SessionUiGate.js';
+import { SessionUiGate, computePostSessionOverlayActive } from './core/SessionUiGate.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -321,14 +321,30 @@ async function init() {
   }
 
   /**
-   * 同步 Reflection 等叠层占用 → Gate + Companion UI。
-   * 仅 Reflection 挡住 hint；Honesty 提示期间仍允许点 hint 展开三选一
-   *（禁止「看得见却静默」）。
+   * 叠层占用源（可扩展：追加 `() => otherOverlay.isOpen()` 即可，无需改聚合函数）。
+   * Honesty 提示/时长**故意不列入**——仍允许点 hint 展开三选一（禁止「看得见却静默」）。
+   * @returns {Array<() => boolean>}
    */
-  function syncCompanionPostSessionChrome() {
-    const active = reflectionMoment.isOpen();
-    sessionUiGate.setPostSessionOverlayActive(active);
-    companionModePicker.setPostSessionOverlayActive(active);
+  function getPostSessionOverlaySources() {
+    return [
+      () => arrivalPractice.isOpen(),
+      () => reflectionMoment.isOpen()
+    ];
+  }
+
+  /**
+   * 单一入口：按源聚合 overlay → Gate + Companion UI 投影；并禁用完成中选项。
+   * 禁止 Reflection-only / Arrival-only 双路互相覆盖。
+   */
+  function resyncSessionChrome() {
+    const overlayActive = computePostSessionOverlayActive(
+      getPostSessionOverlaySources()
+    );
+    sessionUiGate.setPostSessionOverlayActive(overlayActive);
+    companionModePicker.setPostSessionOverlayActive(overlayActive);
+    companionModePicker.setOptionSelectEnabled(
+      !overlayActive && !sessionUiGate.completionPending
+    );
   }
 
   /** 先点 Here & Now / Flow 再进 Arrival 时记住，结束后自动开表（禁止再逼点 Sit） */
@@ -344,18 +360,12 @@ async function init() {
     companionModePicker.setArrivalReady(ready);
   }
 
-  /** @param {boolean} active */
-  function syncPostSessionOverlayForArrival(active) {
-    sessionUiGate.setPostSessionOverlayActive(active);
-    companionModePicker.setPostSessionOverlayActive(active);
-  }
-
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
   reflectionMoment.open = (options) => {
     companionModePicker.hide();
     honestyCheckInUI.hideIdleEntry();
     reflectionOpen(options);
-    syncCompanionPostSessionChrome();
+    resyncSessionChrome();
     // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
     onboardingHints?.syncVisibleAutos(['reflection']);
     requestAnimationFrame(() => onboardingHints?.repositionAll());
@@ -363,7 +373,7 @@ async function init() {
   const reflectionOnDone = reflectionMoment.onDone;
   reflectionMoment.onDone = (result, hasAnyAnswer) => {
     reflectionOnDone?.(result, hasAnyAnswer);
-    syncCompanionPostSessionChrome();
+    resyncSessionChrome();
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
@@ -379,7 +389,7 @@ async function init() {
   honestyCheckInUI.showPrompt = () => {
     companionModePicker.hide();
     honestyShowPrompt();
-    syncCompanionPostSessionChrome();
+    resyncSessionChrome();
     syncOnboardingAutoHints();
   };
   const honestyShowDuration = honestyCheckInUI.showDurationChoices.bind(
@@ -389,13 +399,13 @@ async function init() {
     companionModePicker.hide();
     onboardingHints?.markSeen('honesty-optional');
     honestyShowDuration();
-    syncCompanionPostSessionChrome();
+    resyncSessionChrome();
     syncOnboardingAutoHints();
   };
   const honestyHide = honestyCheckInUI.hide.bind(honestyCheckInUI);
   honestyCheckInUI.hide = () => {
     honestyHide();
-    syncCompanionPostSessionChrome();
+    resyncSessionChrome();
   };
 
   // 调试「Honesty唤醒」→ 直接打开时长三选一（不经 Sit with Yin）
@@ -561,7 +571,7 @@ async function init() {
         pendingChoose = arrivalPractice.getChooseResult();
         arrivalChoseThisRun = Boolean(info.chose);
         syncArrivalGateReady(true);
-        syncPostSessionOverlayForArrival(false);
+        resyncSessionChrome();
         onboardingHints?.markSeen('notice');
         onboardingHints?.markSeen('breathing');
         onboardingHints?.markSeen('choose');
@@ -610,13 +620,13 @@ async function init() {
         : null;
     suppressCompanionOpenAfterNod = false;
     syncArrivalGateReady(false);
-    syncPostSessionOverlayForArrival(true);
     companionModePicker.hide();
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
     onboardingHints?.markSeen('dormant-open');
     onboardingHints?.markSeen('honesty-optional');
     arrivalPractice.start();
+    resyncSessionChrome();
     syncOnboardingAutoHints();
   }
 
@@ -633,6 +643,7 @@ async function init() {
           arrivalOpen: arrivalPractice.isOpen()
         })
       ) {
+        mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
         return;
       }
       honestyCheckInUI.hideIdleEntry();
@@ -667,6 +678,7 @@ async function init() {
     }
 
     sessionUiGate.setCompletionPending(true);
+    resyncSessionChrome();
     endFocusChrome();
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
@@ -722,9 +734,26 @@ async function init() {
     }
     stateManager.setState(STATES.FOCUSING);
     sessionUiGate.setCompletionPending(false);
+    resyncSessionChrome();
     // 自动开计时路径须同步主按钮 → Rise（事件触发时 focusInput 已初始化）
     focusInput.beginFocusing(focusButton);
   }
+
+  companionModeHandlers.canBeginFocus = (mode) =>
+    sessionUiGate.canBeginFocusOnCompanionModeSelect(mode, {
+      arrivalOpen: arrivalPractice.isOpen(),
+      isFocusing: stateManager.state === STATES.FOCUSING
+    });
+
+  companionModeHandlers.resolveNeedsArrival = (mode) =>
+    sessionUiGate.resolveAutoStartNeedsArrival(mode, {
+      arrivalOpen: arrivalPractice.isOpen(),
+      isFocusing: stateManager.state === STATES.FOCUSING
+    });
+
+  companionModeHandlers.onSelectRejected = () => {
+    mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
+  };
 
   companionModeHandlers.onModeSelected = (mode) => {
     onboardingHints?.markSeen('companion-mode');
@@ -741,24 +770,27 @@ async function init() {
         isFocusing: stateManager.state === STATES.FOCUSING
       })
     ) {
+      // Picker 已 commit；竞态下仍拒绝开表时给反馈（禁止静默）
+      mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
       return;
     }
     beginFocusWithMode(mode);
   };
 
-  /** 门闩未就绪时选 Here & Now / Flow State → 启动 Arrival（禁止 HUD 静默无反应） */
-  companionModeHandlers.onAutoStartNeedsArrival = () => {
+  /** 门闩未就绪时选模式 → 启动 Arrival；返回是否已启动（Picker 凭此写 storage） */
+  companionModeHandlers.onAutoStartNeedsArrival = (mode) => {
     if (
       !sessionUiGate.canStartArrivalFromChrome({
         isFocusing: stateManager.state === STATES.FOCUSING,
         arrivalOpen: arrivalPractice.isOpen()
       })
     ) {
-      return;
+      return false;
     }
     startArrivalPracticeFromChrome({
-      autoStartMode: companionModePicker.getSelectedMode()
+      autoStartMode: mode
     });
+    return true;
   };
 
   companionModeHandlers.onExpandedChange = (expanded) => {
@@ -813,6 +845,7 @@ async function init() {
       endFocusChrome();
       focusSession.stop();
       sessionUiGate.setCompletionPending(false);
+      resyncSessionChrome();
       honestyGlowLevel = null;
       tigerCharacter.setFocusLevel(0);
       honestyBridge?.hide();
@@ -844,6 +877,7 @@ async function init() {
     tigerCharacter.setFocusLevel(0);
     focusInput.resetButton(focusButton);
     sessionUiGate.setCompletionPending(false);
+    resyncSessionChrome();
     companionModePicker.setIdleChromeVisible(true);
     sessionEndFlow.onSessionEnded({
       completed: true,
@@ -879,7 +913,7 @@ async function init() {
         honestyCheckInUI.hideIdleEntry();
         honestyBridge?.hide();
         emotionController.playEmotion('idle', { restart: true });
-        syncCompanionPostSessionChrome();
+        resyncSessionChrome();
         syncOnboardingAutoHints();
         syncHonestyIdleEntry();
       } else if (consumeDevResetToast()) {

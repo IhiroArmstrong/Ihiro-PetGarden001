@@ -64,12 +64,15 @@
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
-| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady` | Companion 点选是否可 begin；Sit 未就绪 → Arrival |
-| `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin |
-| `postSessionOverlayActive` | Gate + Companion（Reflection 等；Arrival chrome 同步） | hint 是否 ignore；Sit 抢点 |
-| `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装 | Here & Now / Flow 即开；**未就绪必须 false** |
+| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Sit 未就绪 → Arrival |
+| `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
+| `postSessionOverlayActive` | **单一入口** `main.js` `resyncSessionChrome()`：`computePostSessionOverlayActive(sources)`（数组 + `some()`）→ Gate + Companion | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
+| `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装；Picker 经 handlers 注入真门闩 | Here & Now / Flow / Offline 即开；**未就绪必须 false** |
+| Companion 点选写 storage | **仅** Gate 通过后（`commit-begin` / `commit-arrival`） | **禁止**先写 storage 再静默 return（`resolveCompanionModeSelectCommit`） |
 | `resolveCompanionHintClick` | `FocusSession` + Gate 包装 | toggle 展开三选一；禁静默 ignore |
 | `resolveSitClickWhenIdle` | Gate | 未就绪 → `start-arrival`；就绪 → `begin-focus` |
+
+扩展第三种叠层：在 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
 
 ---
 

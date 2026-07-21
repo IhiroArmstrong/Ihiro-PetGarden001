@@ -48,7 +48,7 @@ TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 ```
 
 合法转移（产品路径）：`IDLE ↔ DORMANT`、`IDLE → FOCUSING → CELEBRATE|IDLE`、`CELEBRATE → IDLE`。  
-`setState` **不阻断**非法转移，但 `console.warn`（`LEGAL_STATE_TRANSITIONS`）；`BREAK` 枚举保留、当前未使用。边角观察：`docs/EDGE_CASES.md`。
+`setState` **不阻断**非法转移，但 `console.warn`（`LEGAL_STATE_TRANSITIONS`）。`BREAK` 已从枚举删除（无生产路径）。边角观察：`docs/EDGE_CASES.md`。
 
 ---
 
@@ -90,7 +90,7 @@ focus-tiger/
 │  │  ├─ Scene.js               # 场景图组装(老虎、莲花、光环挂载点)
 │  │  ├─ PostProcessing.js      # shader pass 管理(金色光晕、柔焦)
 │  │  ├─ FocusSession.js        # 专注会话：计时、focusLevel计算
-│  │  ├─ StateManager.js        # 全局状态机：IDLE/FOCUSING/BREAK/CELEBRATE/DORMANT
+│  │  ├─ StateManager.js        # 全局状态机：IDLE/FOCUSING/CELEBRATE/DORMANT
 │  │  ├─ Milestone.js           # 里程碑：连续天数、累计时长
 │  │  └─ MoodController.js      # 只负责把StateManager的状态翻译成"该播哪个动画"，
 │  │                            # 自己不存状态(职责边界见上方说明)

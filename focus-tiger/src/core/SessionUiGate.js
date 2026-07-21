@@ -32,6 +32,39 @@ import {
  * @typedef {'ignore' | 'start-arrival'} CompanionNeedsArrivalAction
  */
 
+/**
+ * 叠层占用聚合：任一源为真 → overlay active。
+ * 源可为 boolean 或 `() => boolean`，便于 main 用数组扩展第三种叠层而不改本函数。
+ *
+ * @param {Iterable<boolean | (() => boolean)>} sources
+ * @returns {boolean}
+ */
+export function computePostSessionOverlayActive(sources) {
+  return Array.from(sources).some((s) =>
+    typeof s === 'function' ? Boolean(s()) : Boolean(s)
+  );
+}
+
+/**
+ * Companion 点选是否允许写入 storage / 提交 selected。
+ * - commit-begin：Gate 允许开表
+ * - commit-arrival：Gate 允许启动 Arrival
+ * - reject：未通过 → **禁止**写 storage
+ *
+ * @param {object} info
+ * @param {boolean} info.canBegin
+ * @param {'ignore' | 'start-arrival'} info.needsArrivalAction
+ * @returns {'commit-begin' | 'commit-arrival' | 'reject'}
+ */
+export function resolveCompanionModeSelectCommit({
+  canBegin,
+  needsArrivalAction
+}) {
+  if (canBegin) return 'commit-begin';
+  if (needsArrivalAction === 'start-arrival') return 'commit-arrival';
+  return 'reject';
+}
+
 export class SessionUiGate {
   constructor() {
     /** @type {boolean} Arrival 完成（含 Skip）后才允许自动开计时 */

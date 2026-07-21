@@ -5,7 +5,11 @@ import {
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './FocusSession.js';
-import { SessionUiGate } from './SessionUiGate.js';
+import {
+  SessionUiGate,
+  computePostSessionOverlayActive,
+  resolveCompanionModeSelectCommit
+} from './SessionUiGate.js';
 
 describe('SessionUiGate', () => {
   it('未就绪时 canBeginFocusOnCompanionModeSelect 必须为 false（失败契约）', () => {
@@ -21,7 +25,7 @@ describe('SessionUiGate', () => {
     );
   });
 
-  it('门闩就绪后 Here & Now / Flow 可 begin；Offline 仍不可', () => {
+  it('门闩就绪后三模式均可 begin', () => {
     const gate = new SessionUiGate();
     gate.setArrivalGateReady(true);
     assert.equal(
@@ -34,7 +38,7 @@ describe('SessionUiGate', () => {
     );
     assert.equal(
       gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STEP_AWAY),
-      false
+      true
     );
   });
 
@@ -84,7 +88,7 @@ describe('SessionUiGate', () => {
     gate.setArrivalGateReady(false);
     assert.equal(
       gate.resolveAutoStartNeedsArrival(COMPANION_MODE_STEP_AWAY),
-      'ignore'
+      'start-arrival'
     );
   });
 
@@ -101,5 +105,54 @@ describe('SessionUiGate', () => {
     assert.equal(gate.canStartArrivalFromChrome({ isFocusing: true }), false);
     gate.setCompletionPending(true);
     assert.equal(gate.canStartArrivalFromChrome(), false);
+  });
+});
+
+describe('computePostSessionOverlayActive', () => {
+  it('aggregates with some(); third source works without changing helper', () => {
+    assert.equal(computePostSessionOverlayActive([false, false]), false);
+    assert.equal(computePostSessionOverlayActive([false, true]), true);
+    assert.equal(
+      computePostSessionOverlayActive([() => false, () => true]),
+      true
+    );
+    // 扩展第三种叠层：只追加源，不改聚合函数
+    assert.equal(
+      computePostSessionOverlayActive([false, false, () => true]),
+      true
+    );
+    assert.equal(
+      computePostSessionOverlayActive([false, false, () => false]),
+      false
+    );
+  });
+});
+
+describe('resolveCompanionModeSelectCommit', () => {
+  it('reject 时不得 commit（契约：未通过不写 storage）', () => {
+    assert.equal(
+      resolveCompanionModeSelectCommit({
+        canBegin: false,
+        needsArrivalAction: 'ignore'
+      }),
+      'reject'
+    );
+  });
+
+  it('Gate 通过开表 / 开 Arrival 才 commit', () => {
+    assert.equal(
+      resolveCompanionModeSelectCommit({
+        canBegin: true,
+        needsArrivalAction: 'ignore'
+      }),
+      'commit-begin'
+    );
+    assert.equal(
+      resolveCompanionModeSelectCommit({
+        canBegin: false,
+        needsArrivalAction: 'start-arrival'
+      }),
+      'commit-arrival'
+    );
   });
 });

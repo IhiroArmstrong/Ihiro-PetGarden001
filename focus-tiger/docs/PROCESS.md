@@ -52,7 +52,7 @@
 
 **近期落地（待人工测试）**：
 
-- **静默失败排查 · 批 1–2（2026-07-22）**：`StateManager` 非法转移 **warn 不阻断**；Honesty 禁 `_pendingMinutes ?? 30`（toast + 重开时长）。其余小项进 `EDGE_CASES.md`；批 3 门闩一体包 **方案待确认**。
+- **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。
 - **开场 Idle + 默认 Mer-Ka-Ba（2026-07-21）**：登录后第一幕改为闭目坐禅（不上 Sleeping）；默认开播背景音乐，右下角显眼「打开/关闭音乐」随时可关
 - **Honesty 首屏措辞（2026-07-21）**：邀请式补登提示仍挂零完成；开场视觉已改 Idle
 - **UI Kit / 主 CTA（2026-07-21）**：产品壳 **Sit / Sound** 由朱红改为**蒲团橙**（与 Yin 坐垫同系）；v6 产品舞台 + Companion 暖米文案面；成就/图鉴仍仅探索（Backlog）

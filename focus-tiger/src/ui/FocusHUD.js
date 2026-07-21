@@ -89,7 +89,6 @@ export class FocusHUD {
     const labelKeys = {
       IDLE: 'STATE_IDLE',
       FOCUSING: 'STATE_FOCUSING',
-      BREAK: 'STATE_BREAK',
       CELEBRATE: 'STATE_CELEBRATE',
       DORMANT: 'STATE_DORMANT'
     };
