@@ -34,8 +34,8 @@ const HINT_ANCHORS = Object.freeze({
   'sit-button': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
   'how-shall-we-sit': {
     selector: '.session-start-dock__hint',
-    placement: 'above',
-    tip: 'bottom'
+    placement: 'right',
+    tip: 'left'
   },
   notice: { selector: '#arrival-practice, #btn-focus', placement: 'above', tip: 'bottom' },
   breathing: { selector: '#arrival-practice, #btn-focus', placement: 'above', tip: 'bottom' },

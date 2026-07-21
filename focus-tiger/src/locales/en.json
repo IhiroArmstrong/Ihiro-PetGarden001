@@ -115,7 +115,7 @@
   "HINT_COMPANION_STAY": "Yin stays quiet nearby unless you are away a while.",
   "HINT_COMPANION_AWAY": "Check-ins pause while you are away. Sit again when ready to begin.",
   "HINT_COMPANION_ACROSS": "Away reminders stay off in this mode.",
-  "HINT_AMBIENT_GATED": "Sound opens after sitting begins.",
+  "HINT_AMBIENT_GATED": "Track selection opens once you sit.",
   "HINT_AMBIENT_SOUNDSCAPE": "Music is on by default — tap to mute anytime.",
   "HINT_RISE_BUTTON": "Rising early is welcome too.",
   "HINT_REFLECTION": "Answer if you like — skipping is fine.",

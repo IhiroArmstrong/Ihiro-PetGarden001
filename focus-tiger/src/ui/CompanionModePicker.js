@@ -370,10 +370,14 @@ export class CompanionModePicker {
       #btn-focus:active {
         transform: translateY(2px) scale(0.985) !important;
       }
-      /* 次要钮：描边软 UI（对齐 ui-kit secondary-button）；不抢 Sit 主 CTA */
+      /* 次要钮：米色立体 secondary button；不抢 Sit 主 CTA */
       .session-start-dock__hint {
-        border: 1.5px solid var(--color-ink, #2c1f14);
-        background: transparent;
+        border: 1px solid rgba(139, 115, 85, 0.32);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 252, 244, 0.97) 0%,
+          var(--color-surface-warm, #f5ead6) 100%
+        );
         color: var(--color-ink, #2c1f14);
         font-size: 14px;
         font-weight: 600;
@@ -381,26 +385,39 @@ export class CompanionModePicker {
         cursor: pointer;
         padding: 9px 20px;
         border-radius: 999px;
-        box-shadow: none;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.88) inset,
+          0 2px 0 rgba(165, 130, 85, 0.22),
+          0 3px 8px rgba(44, 31, 20, 0.1);
         text-decoration: none;
         max-width: 100%;
         line-height: 1.35;
         text-align: center;
-        transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
+        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
       }
       .session-start-dock__hint:hover,
       .session-start-dock__hint.is-expanded {
         color: var(--color-ink, #2c1f14);
-        background: var(--color-ink-faint, rgba(46, 43, 40, 0.1));
+        background: linear-gradient(
+          180deg,
+          #fffcf4 0%,
+          #ede0c4 100%
+        );
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.88) inset,
+          0 2px 0 rgba(165, 130, 85, 0.28),
+          0 4px 10px rgba(44, 31, 20, 0.12);
         filter: none;
       }
       .session-start-dock__hint:active:not(:disabled) {
-        transform: scale(0.97);
-        box-shadow: none;
+        transform: translateY(1px) scale(0.98);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 1px 0 rgba(165, 130, 85, 0.18),
+          0 1px 3px rgba(44, 31, 20, 0.1);
       }
       .session-start-dock__hint.is-awaiting-arrival {
         border-color: var(--color-accent, #b5623a);
-        box-shadow: none;
       }
       .session-start-dock__hint.is-gated,
       .session-start-dock__hint:disabled {
