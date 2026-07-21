@@ -34,6 +34,7 @@ alwaysApply: true
 | `docs/PROCESS.md` | 协作流程、角色边界、**Backlog**、文首「当前进度速览」（重大进展后更新） |
 | `docs/DEV_WORKFLOW_QUALITY.md` | **如何改善开发工作流来保证开发质量**：原则/规范/指引/注意事项；防假修好+防改坏叙事权威；门禁仍以 regression-lock 规则为准 |
 | `docs/SHARED_RESOURCES.md` | 共享资源对照表（localStorage / EmotionController / Idle）；与 §2.3 高风险面互补 |
+| `docs/RETENTION_FUNNEL.md` | **留存漏斗故事骨架**：首次打开 / 首次完成 / dayN 回访 / Honesty 桥接事件名与占位接线；无第三方 |
 | `docs/COLLAB.md` | Task Brief / 文档更新协作约定 |
 | `docs/TASKS.md` | 任务序列（按需查，勿全文常驻上下文） |
 | `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；用户书面意见进 **「用户反馈」列**（勿混入测试步骤）；完成任务时须更新并在回复中说明需测项 |

@@ -72,6 +72,8 @@ test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () =>
   });
   let shown = 0;
   let accepted = 0;
+  /** @type {string[]} */
+  const tracked = [];
   const ui = {
     handlers: {},
     show() {
@@ -83,6 +85,7 @@ test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () =>
   const controller = new HonestyBridgeCtaController({
     store,
     ui,
+    trackEvent: (event) => tracked.push(event),
     onAccept: () => {
       accepted += 1;
     }
@@ -90,8 +93,13 @@ test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () =>
 
   controller.onHonestyCheckInComplete();
   assert.equal(shown, 1);
+  assert.deepEqual(tracked, ['dormant_bridge_shown']);
   ui.handlers.onYes();
   assert.equal(accepted, 1);
+  assert.deepEqual(tracked, [
+    'dormant_bridge_shown',
+    'dormant_bridge_accepted'
+  ]);
 
   controller.onHonestyCheckInComplete();
   controller.hide();

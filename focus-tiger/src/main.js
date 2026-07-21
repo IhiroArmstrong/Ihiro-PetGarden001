@@ -58,6 +58,10 @@ import { HonestyCheckInController } from './core/HonestyCheckInController.js';
 import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
 import { HonestyBridgeStore } from './core/HonestyBridgeStore.js';
 import { HonestyBridgeCtaController } from './core/HonestyBridgeCtaController.js';
+import {
+  RetentionFunnelStore,
+  RETENTION_EVENTS
+} from './core/RetentionTelemetry.js';
 import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
@@ -256,6 +260,7 @@ async function init() {
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const honestyBridgeStore = new HonestyBridgeStore();
+  const retentionFunnelStore = new RetentionFunnelStore({ now });
   const honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
@@ -283,6 +288,9 @@ async function init() {
     },
     onPracticeDay: () => {
       practiceDaysStore.markToday();
+    },
+    onSessionRecorded: ({ durationMinutes }) => {
+      retentionFunnelStore.noteSessionComplete({ durationMinutes });
     },
     notifyUser: () => {
       mindfulToast.show(t('HONESTY_PENDING_LOST'));
@@ -636,6 +644,15 @@ async function init() {
   honestyBridge = new HonestyBridgeCtaController({
     store: honestyBridgeStore,
     ui: honestyBridgeUI,
+    trackEvent: (event) => {
+      if (event === RETENTION_EVENTS.DORMANT_BRIDGE_SHOWN) {
+        retentionFunnelStore.trackBridgeShown();
+        return;
+      }
+      if (event === RETENTION_EVENTS.DORMANT_BRIDGE_ACCEPTED) {
+        retentionFunnelStore.trackBridgeAccepted();
+      }
+    },
     onAccept: () => {
       if (
         !sessionUiGate.canStartArrivalFromChrome({
@@ -657,6 +674,7 @@ async function init() {
   if (import.meta.env.DEV) {
     window.__honestyBridge = honestyBridge;
     window.__honestyBridgeStore = honestyBridgeStore;
+    window.__retentionFunnel = retentionFunnelStore;
   }
 
   function endFocusChrome() {
@@ -898,6 +916,7 @@ async function init() {
 
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
   honestyCheckIn.onAppReady();
+  retentionFunnelStore.noteAppOpen();
   syncOnboardingAutoHints();
 
   if (import.meta.env.DEV && !productChrome) {

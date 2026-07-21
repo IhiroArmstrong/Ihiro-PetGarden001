@@ -52,6 +52,7 @@
 
 **近期落地（待人工测试）**：
 
+- **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return` / `dormant_bridge_shown|accepted`
 - **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：只读 `DailyCompletionStore`——**仅当日** `dateKey` + `sessions[{completedAt,durationMinutes}]` + `celebrated`；换日重置，**不够** 7 格周视图。候选挂载位置已列 TEST_TRACKER / 待确认；**未实现 UI**。相邻：`PracticeDaysStore` 有多日日期键（见 `SHARED_RESOURCES` §1.1）
 - **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。

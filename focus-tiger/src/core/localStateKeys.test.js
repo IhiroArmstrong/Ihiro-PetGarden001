@@ -25,6 +25,10 @@ import {
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
 import { HonestyBridgeStore, HONESTY_BRIDGE_STORAGE_KEY } from './HonestyBridgeStore.js';
 import {
+  RetentionFunnelStore,
+  RETENTION_FUNNEL_STORAGE_KEY
+} from './RetentionTelemetry.js';
+import {
   createHintsSeenStore,
   HINTS_SEEN_STORAGE_KEY
 } from './OnboardingHintsStore.js';
@@ -74,6 +78,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_SESSION_END_STORAGE_KEY,
   PRACTICE_DAYS_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
+  RETENTION_FUNNEL_STORAGE_KEY,
   INTENTION_STORAGE_KEY,
   REFLECTION_STORAGE_KEY,
   COMPANION_MODE_STORAGE_KEY,
@@ -134,6 +139,13 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   dirtyBridge.markShown();
   assert.equal(dirtyBridge.hasShownToday(), true);
 
+  const dirtyRetention = new RetentionFunnelStore({
+    storage,
+    track: () => {}
+  });
+  dirtyRetention.noteAppOpen();
+  assert.ok(dirtyRetention.getState().firstOpenAt != null);
+
   const dirtyQuota = new ReminderQuotaManager({ storage, dailyLimit: 3 });
   assert.equal(dirtyQuota.tryConsume(), true);
   assert.equal(dirtyQuota.tryConsume(), true);
@@ -174,6 +186,9 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);
+
+  const freshRetention = new RetentionFunnelStore({ storage });
+  assert.equal(freshRetention.getState().firstOpenAt, null);
 
   const freshQuota = new ReminderQuotaManager({ storage, dailyLimit: 3 });
   assert.equal(freshQuota.tryConsume(), true);

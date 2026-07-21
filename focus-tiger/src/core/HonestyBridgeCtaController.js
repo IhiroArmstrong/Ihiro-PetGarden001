@@ -25,6 +25,7 @@ export class HonestyBridgeCtaController {
    * @param {{ show: () => void, hide: () => void }} deps.ui
    * @param {() => void} deps.onAccept  Yes → 完整 Arrival（由 main 接线）
    * @param {() => void} [deps.onDecline] No / 忽略
+   * @param {(event: string) => void} [deps.trackEvent] 留存占位（shown / accepted）
    * @param {(ms: number, fn: () => void) => number} [deps.schedule]
    * @param {(id: number) => void} [deps.cancelSchedule]
    */
@@ -33,6 +34,7 @@ export class HonestyBridgeCtaController {
     ui,
     onAccept,
     onDecline = () => {},
+    trackEvent = () => {},
     schedule = (ms, fn) => window.setTimeout(fn, ms),
     cancelSchedule = (id) => window.clearTimeout(id)
   }) {
@@ -40,6 +42,7 @@ export class HonestyBridgeCtaController {
     this.ui = ui;
     this.onAccept = onAccept;
     this.onDecline = onDecline;
+    this.trackEvent = trackEvent;
     this.schedule = schedule;
     this.cancelSchedule = cancelSchedule;
     /** @type {number | null} */
@@ -88,6 +91,7 @@ export class HonestyBridgeCtaController {
     this._visible = true;
     // 诊断用：记录「曾展示过」，但不再据此拦截同日再次出现
     this.store?.markShown?.();
+    this.trackEvent('dormant_bridge_shown');
     this.ui.show();
   }
 
@@ -96,6 +100,7 @@ export class HonestyBridgeCtaController {
     this._visible = false;
     this.ui.hide();
     if (accepted) {
+      this.trackEvent('dormant_bridge_accepted');
       this.onAccept();
       return;
     }
