@@ -108,7 +108,7 @@ alwaysApply: true
 5. 可选运行 `./scripts/git-sync-safe.sh` 做推送前体检  
 6. **仅当用户明确要求 push 时**再执行 `./scripts/git-sync-safe.sh --push` 或 `git push`  
 
-`stop` 提醒钩子只允许使用本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
+`stop` 的 Git 同步 macOS 通知钩子已关闭（`hooks.json` 的 `stop` 为空）。若日后重新启用，只允许本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
 
 禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程。  
 **注意**：「尽快 commit」与「每次问要不要」矛盾——本地 commit 固化基线；真正需人工闸门的是 **push**。  

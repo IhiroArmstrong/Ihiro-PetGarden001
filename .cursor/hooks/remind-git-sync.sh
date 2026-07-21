@@ -1,17 +1,10 @@
 #!/usr/bin/env bash
-# Agent 回合结束时：若有未提交改动，通过 macOS 系统通知提醒同步节奏。
-# 始终返回空 JSON，不使用 followup_message，避免自动启动额外模型回合。
+# [DISABLED 2026-07-21] 曾用于 Agent stop → macOS 系统通知提醒 Git 同步。
+# 已从 `.cursor/hooks.json` 的 stop 列表移除；保留脚本便于日后按需重新挂回。
+# 若重新启用：在 hooks.json 的 stop 中加入
+#   { "command": ".cursor/hooks/remind-git-sync.sh" }
+# 并确保始终只输出 `{}`，禁止 followup_message。
 set -euo pipefail
 
 cat >/dev/null
-
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-cd "$ROOT"
-
-if [[ -n "$(git status --porcelain 2>/dev/null || true)" ]]; then
-  /usr/bin/osascript >/dev/null 2>&1 <<'APPLESCRIPT' || true
-display notification "工作区有未提交改动。实质性 Task 完成后请更新 PROCESS.md 并 commit；仅在明确要求时 push。" with title "Focus Tiger · Git 同步提醒"
-APPLESCRIPT
-fi
-
 echo '{}'

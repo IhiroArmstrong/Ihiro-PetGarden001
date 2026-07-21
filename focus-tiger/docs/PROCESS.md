@@ -108,7 +108,7 @@
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
 - 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
-- Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`、Agent `stop` 的 macOS 系统通知钩子（只返回 `{}`，不启动额外模型回合，**不**自动 push）
+- Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`；Agent `stop` 的 macOS 系统通知钩子已于 **2026-07-21 关闭**（脚本仍保留于 `.cursor/hooks/remind-git-sync.sh`，hooks.json 的 `stop` 为空；**不**自动 push）
 - `wave-hello` 挥手序列已替换为新服装正式版（19 帧，`frame_001.png` ～ `frame_019.png`）；旧深红袈裟 14 帧素材已下线移除；`SpriteSequencePlayer` 对接与 `playEmotion('welcomeBack')` 接线保持不变（分层路径规范见 `ARCHITECTURE.md`）
 - `CHARACTER_BIBLE` Master Character Prompt 已按 `wave-hello`、`tilt-think` 等正式素材同步为暖浅灰棉麻单肩斜襟服装，补全颜色、织纹、光泽与剪裁约束，并明确排除旧版深红布料、红色镶边及未获批准的服装莲花刺绣；`DESIGN.md` 材质说明同步更新
 - `SpriteSequencePlayer` 首版：单 `<img>` 预加载换帧、rAF 帧率控制、循环/末帧停留、立即打断、播放完成回调、逐帧额外停留配置；`waveHello` 已经 `playEmotion('welcomeBack')` 接线，第 8 帧抬手顶点额外停留 400ms，并完成 Vite 浏览器运行验收（播放、循环、停止、播完淡出回落 `Idle`）
@@ -159,7 +159,7 @@
 - **架构决策已落地**：为应对角色/装扮市场接受度不确定性，提前预留「角色/装扮可替换」扩展点（`CharacterConfig`）；当前仍固定单一角色（小老虎僧袍造型），不做用户可选换装 UI，仅解耦素材路径与情绪触发逻辑
 - **非模态提醒额度与 Re-focus 阈值已拍板并实现（2026-07-16）**：正念阶段确认 / 伸懒腰判定维持会话墙钟 20 分钟、活跃累计 2 小时（离开时暂停、两场会话间隔 ≥30 分钟重置累计）；三类提醒共用本地自然日额度、合计每日最多 3 次；Re-focus 每场会话最多 1 次；离开满 20 秒只内部记账，超过 60 秒并返回才允许展示。具名常量与单元测试已落地
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
-- **Git 提醒已优化（2026-07-15）**：原 `stop` hook 使用 `followup_message`，会自动提交新用户消息并产生额外 Agent/credits 用量；现改为本地 macOS 系统通知，hook 始终输出 `{}`，保留可见提醒但不再触发模型回合；`loop_limit` 已移除（无自动循环）
+- **Git 提醒已关闭（2026-07-21）**：此前 `stop` hook 曾用 `followup_message`（耗 credits），后改为 macOS `display notification` 且只返回 `{}`；现按用户要求从 `hooks.json` 卸下，不再发系统通知；脚本保留便于日后挂回
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
 - **视觉原则修正已拍板（2026-07-15）**：角色本体固有色恒定不变，金色进度改由外围光环/环境光反射（Rim Light）表达，禁止本体重着色。改动范围：只改文档确立新原则（`DESIGN` / `PRINCIPLES` / `ARCHITECTURE` / `EMOTION_BIBLE` / `TASKS` 已同步），2D 主线金色表达定义为「金色光晕 overlay + 粒子」写入 `ARCHITECTURE`；3D shader（`TigerCharacter` 灰→金插值、`Constants` 命名）仅留 TODO 标注不重构，重构并入未来「奖励柜」任务；历史任务书保留原文 + 顶部注记
 - **产品定位 V1.0 已定稿（2026-07-15）**：角色对外统一为 Mindful Companion，不采用喂养、健康退化、照料责任或宠物收集叙事；`daily practice` 改为 `regular practice, at your own pace`；庆祝统一为「短暂、温暖、有情感」；每次完成轻量确认、每日首次达标完整庆祝、长期里程碑纪念奖励；「小老虎更健康」改为共同经历增加、环境细节解锁与永久纪念物
