@@ -78,7 +78,8 @@ test('played seconds accumulate only while audible and session active', async ()
   const ctrl = new AmbientSoundscapeController({
     now: () => now,
     audio,
-    storage: createMapStorage()
+    storage: createMapStorage(),
+    mountToDocument: false
   });
   ctrl.startSession();
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
@@ -103,7 +104,8 @@ test('presenceBoost stays zero outside session; endSession keeps track playing',
   const ctrl = new AmbientSoundscapeController({
     now: () => now,
     audio,
-    storage: createMapStorage()
+    storage: createMapStorage(),
+    mountToDocument: false
   });
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
   now += 60_000;
@@ -130,7 +132,8 @@ test('audible playing adds an immediate glow lift', async () => {
   const ctrl = new AmbientSoundscapeController({
     now: () => now,
     audio,
-    storage: createMapStorage()
+    storage: createMapStorage(),
+    mountToDocument: false
   });
   ctrl.startSession();
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
@@ -144,7 +147,7 @@ test('audible playing adds an immediate glow lift', async () => {
 test('toggleEnabled persists preference and stops or starts Mer-Ka-Ba', async () => {
   const storage = createMapStorage();
   const audio = createMockAudio();
-  const ctrl = new AmbientSoundscapeController({ audio, storage });
+  const ctrl = new AmbientSoundscapeController({ audio, storage, mountToDocument: false });
   await ctrl.startPreferredTrack();
   assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
   assert.equal(ctrl.wantsEnabled(), true);
@@ -168,7 +171,7 @@ test('startPreferredTrack respects stored mute preference', async () => {
     })
   });
   const audio = createMockAudio();
-  const ctrl = new AmbientSoundscapeController({ audio, storage });
+  const ctrl = new AmbientSoundscapeController({ audio, storage, mountToDocument: false });
   await ctrl.startPreferredTrack();
   assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
   assert.equal(ctrl.wantsEnabled(), false);
@@ -190,7 +193,8 @@ test('toggle off wins race when play() resolves after stop', async () => {
 
   const ctrl = new AmbientSoundscapeController({
     audio,
-    storage: createMapStorage()
+    storage: createMapStorage(),
+    mountToDocument: false
   });
 
   const start = ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL, { persist: false });
@@ -205,17 +209,18 @@ test('toggle off wins race when play() resolves after stop', async () => {
   assert.equal(ctrl.isAudiblePlaying(), false);
 });
 
-test('toggleEnabled stops audible playback immediately', async () => {
+test('toggleFromUi mutes even when wantsEnabled already false but still audible', async () => {
   const audio = createMockAudio();
   const ctrl = new AmbientSoundscapeController({
     audio,
-    storage: createMapStorage()
+    storage: createMapStorage(),
+    mountToDocument: false
   });
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  ctrl._wantEnabled = false;
   assert.equal(ctrl.isAudiblePlaying(), true);
 
-  await ctrl.toggleEnabled();
-  assert.equal(audio.paused, true);
+  await ctrl.toggleFromUi();
   assert.equal(ctrl.isAudiblePlaying(), false);
   assert.equal(ctrl.wantsEnabled(), false);
 });

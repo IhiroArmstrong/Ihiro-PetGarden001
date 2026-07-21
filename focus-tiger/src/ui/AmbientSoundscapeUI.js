@@ -1,6 +1,7 @@
 /**
- * 背景音入口：显眼「打开/关闭音乐」一键开关 + 可选曲目面板。
- * 进入应用即可见、随时可点；默认开播 Mer-Ka-Ba（见 AmbientSoundscapeController）。
+ * 背景音 UI：
+ * - 左上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/恢复，默认开播 Mer-Ka-Ba
+ * - 专注中右下角 **Sound** 蒲团橙按钮 → 曲目/音量面板（恢复旧行为）
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -11,6 +12,10 @@ import {
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
+
+const MUSIC_ICON_ON = `<svg class="ambient-soundscape__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>`;
+
+const MUSIC_ICON_MUTE = `<svg class="ambient-soundscape__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/><path d="M4 4 L20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 
 function hasSeenNudge() {
   try {
@@ -41,14 +46,24 @@ export class AmbientSoundscapeUI {
     this.controller = controller;
     this.handlers = handlers;
     this._expanded = false;
-    /** 计时是否进行中（仅影响 presence 记账侧；UI 不再门闩） */
     this._sessionActive = false;
     this._nudgeVisible = false;
 
     this.root = document.createElement('div');
     this.root.id = 'ambient-soundscape';
     this.root.className = 'ambient-soundscape';
-    this.root.hidden = false;
+
+    this.muteBtn = document.createElement('button');
+    this.muteBtn.type = 'button';
+    this.muteBtn.className = 'ambient-soundscape__mute';
+    this.muteBtn.addEventListener('click', () => {
+      this._dismissNudge();
+      void this._onMuteClick();
+    });
+
+    this.focusChrome = document.createElement('div');
+    this.focusChrome.className = 'ambient-soundscape__focus-chrome';
+    this.focusChrome.hidden = true;
 
     this.nudgeEl = document.createElement('p');
     this.nudgeEl.className = 'ambient-soundscape__nudge';
@@ -67,19 +82,12 @@ export class AmbientSoundscapeUI {
       }
     });
 
-    this.toggleBtn = document.createElement('button');
-    this.toggleBtn.type = 'button';
-    this.toggleBtn.className = 'ambient-soundscape__fab';
-    this.toggleBtn.addEventListener('click', () => {
-      this._dismissNudge();
-      void this._onToggleClick();
-    });
-
-    this.tracksBtn = document.createElement('button');
-    this.tracksBtn.type = 'button';
-    this.tracksBtn.className = 'ambient-soundscape__tracks-btn';
-    this.tracksBtn.setAttribute('aria-expanded', 'false');
-    this.tracksBtn.addEventListener('click', () => {
+    this.soundBtn = document.createElement('button');
+    this.soundBtn.type = 'button';
+    this.soundBtn.className = 'ambient-soundscape__fab';
+    this.soundBtn.setAttribute('aria-expanded', 'false');
+    this.soundBtn.addEventListener('click', () => {
+      if (!this._sessionActive) return;
       this._dismissNudge();
       this._expanded = !this._expanded;
       this._renderPanel();
@@ -105,13 +113,15 @@ export class AmbientSoundscapeUI {
     this.volumeInput.max = '100';
     this.volumeInput.value = String(Math.round(controller.getVolume() * 100));
     this.volumeInput.addEventListener('input', () => {
+      if (!this._sessionActive) return;
       controller.setVolume(Number(this.volumeInput.value) / 100);
-      this._refreshFab();
+      this._refreshMuteBtn();
     });
     this.volumeLabel.appendChild(this.volumeInput);
 
     this.panel.append(this.titleEl, this.trackRow, this.volumeLabel);
-    this.root.append(this.nudgeEl, this.panel, this.toggleBtn, this.tracksBtn);
+    this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
+    this.root.append(this.muteBtn, this.focusChrome);
     overlayRoot.appendChild(this.root);
 
     this._unsubLocale = onLocaleChange(() => this._renderPanel());
@@ -120,58 +130,55 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * @param {boolean} focusing 计时是否进行中（presence 侧；UI 始终可开关音乐）
+   * @param {boolean} focusing 计时是否进行中（显示右下角 Sound + 可开面板）
    */
   setSessionActive(focusing) {
     this._sessionActive = Boolean(focusing);
-    this.root.hidden = false;
+    this.focusChrome.hidden = !this._sessionActive;
     this.root.classList.toggle('is-armed', this._sessionActive);
-    this.root.classList.remove('is-gated');
-    if (this._sessionActive) {
-      // 首次 FOCUSING 旁白改由 OnboardingHintsUI（ambient-soundscape）锚定；
-      // 此处不再叠一层 AMBIENT_NUDGE。
+
+    if (!this._sessionActive) {
+      this._expanded = false;
+      this.panel.hidden = true;
+      this.soundBtn.setAttribute('aria-expanded', 'false');
     }
-    this._refreshFab();
+    this._refreshMuteBtn();
+    this._renderPanel();
   }
 
-  /** @returns {boolean} FAB 是否挂在页面上（现为始终 true，除非 dispose） */
   isVisible() {
     return !this.root.hidden;
   }
 
-  /** @returns {boolean} 是否已开始专注会话（presence） */
   isSessionActive() {
     return this._sessionActive;
   }
 
-  /** Ambient 曲目面板是否展开 */
   isPanelOpen() {
-    return Boolean(this._expanded && !this.panel.hidden);
+    return Boolean(
+      this._expanded && this._sessionActive && !this.panel.hidden
+    );
   }
 
-  /** App 就绪后：尝试默认开播，并刷新按钮文案 */
   async bootDefaultMusic() {
     await this.controller.startPreferredTrack();
     this._renderPanel();
     this._maybeShowDefaultOnNudge();
   }
 
-  /**
-   * 主按钮：若自动播放被拦且尚未出声，先解锁播放；否则正常开关。
-   */
-  async _onToggleClick() {
+  async _onMuteClick() {
     const ctrl = this.controller;
     if (
       ctrl.needsGestureUnlock() &&
       ctrl.wantsEnabled() &&
       !ctrl.isAudiblePlaying()
     ) {
-      await ctrl.startPreferredTrack();
+      await ctrl.unmute();
       this._renderPanel();
       this.handlers.onToggleMusic?.();
       return;
     }
-    await ctrl.toggleEnabled();
+    await ctrl.toggleFromUi();
     this._renderPanel();
     this.handlers.onToggleMusic?.();
   }
@@ -200,8 +207,6 @@ export class AmbientSoundscapeUI {
 
   _renderPanel() {
     this.titleEl.textContent = t('AMBIENT_TITLE');
-    this.tracksBtn.setAttribute('aria-label', t('AMBIENT_TRACKS_ARIA'));
-    this.tracksBtn.textContent = t('AMBIENT_TRACKS_LABEL');
     if (this._nudgeVisible) {
       this.nudgeEl.textContent = t('AMBIENT_DEFAULT_ON_NUDGE');
     }
@@ -231,6 +236,7 @@ export class AmbientSoundscapeUI {
       if (selected) btn.classList.add('is-selected');
       btn.textContent = t(opt.labelKey);
       btn.addEventListener('click', () => {
+        if (!this._sessionActive) return;
         this._dismissNudge();
         void this.controller.setTrack(opt.id).then(() => {
           this._renderPanel();
@@ -240,25 +246,40 @@ export class AmbientSoundscapeUI {
       this.trackRow.appendChild(btn);
     }
 
-    this.panel.hidden = !this._expanded;
-    this.tracksBtn.setAttribute(
+    this.panel.hidden = !this._expanded || !this._sessionActive;
+    this.soundBtn.setAttribute(
       'aria-expanded',
-      this._expanded ? 'true' : 'false'
+      this._expanded && this._sessionActive ? 'true' : 'false'
     );
-    this._refreshFab();
+    this._refreshMuteBtn();
+    this._refreshSoundFab();
   }
 
-  _refreshFab() {
+  _refreshMuteBtn() {
     const ctrl = this.controller;
     const audible = ctrl.isAudiblePlaying();
-    this.toggleBtn.classList.toggle('is-active', audible);
-    this.toggleBtn.classList.remove('is-gated');
-    const label = audible ? t('AMBIENT_MUSIC_OFF') : t('AMBIENT_MUSIC_ON');
-    this.toggleBtn.textContent = audible ? `♫  ${label}` : `♪  ${label}`;
-    this.toggleBtn.setAttribute(
+    const showSlash = audible || ctrl.wantsEnabled();
+    this.muteBtn.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
+    this.muteBtn.classList.toggle('is-muted', showSlash);
+    this.muteBtn.setAttribute(
       'aria-label',
-      audible ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
+      showSlash ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
     );
+    this.muteBtn.setAttribute(
+      'aria-pressed',
+      showSlash ? 'true' : 'false'
+    );
+  }
+
+  _refreshSoundFab() {
+    const on =
+      this._sessionActive &&
+      this.controller.wantsEnabled() &&
+      this.controller.isAudiblePlaying();
+    this.soundBtn.classList.toggle('is-active', on);
+    const label = t('AMBIENT_FAB_LABEL');
+    this.soundBtn.textContent = on ? `♫  ${label}` : `♪  ${label}`;
+    this.soundBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
   }
 
   dispose() {
@@ -272,25 +293,72 @@ export class AmbientSoundscapeUI {
     style.textContent = `
       .ambient-soundscape {
         position: fixed;
+        inset: 0;
+        z-index: 22;
+        pointer-events: none;
+        font-family: 'Noto Sans SC', system-ui, sans-serif;
+      }
+      .ambient-soundscape__mute {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        pointer-events: auto;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        border-radius: 50%;
+        background: linear-gradient(
+          165deg,
+          rgba(255, 252, 245, 0.98) 0%,
+          rgba(245, 235, 220, 0.96) 100%
+        );
+        color: rgba(92, 72, 52, 0.82);
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.75) inset,
+          0 4px 14px rgba(44, 31, 20, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+      }
+      .ambient-soundscape__mute:hover {
+        color: rgba(72, 54, 38, 0.92);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.8) inset,
+          0 6px 16px rgba(44, 31, 20, 0.14);
+      }
+      .ambient-soundscape__mute:active {
+        transform: scale(0.96);
+      }
+      .ambient-soundscape__mute.is-muted {
+        color: rgba(120, 92, 68, 0.55);
+      }
+      .ambient-soundscape__icon-svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+      .ambient-soundscape__focus-chrome {
+        position: fixed;
         right: 16px;
         bottom: 28px;
-        z-index: 22;
-        pointer-events: auto;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
-        font-family: 'Noto Sans SC', system-ui, sans-serif;
+        pointer-events: none;
       }
-      .ambient-soundscape[hidden] {
+      .ambient-soundscape__focus-chrome[hidden] {
         display: none !important;
       }
       .ambient-soundscape__fab {
-        padding: 14px 26px;
-        min-height: 52px;
-        min-width: 148px;
-        border: 1px solid rgba(255, 230, 210, 0.45);
-        border-radius: 26px;
+        pointer-events: auto;
+        padding: 12px 22px;
+        min-height: 48px;
+        border: 1px solid rgba(255, 230, 210, 0.35);
+        border-radius: 24px;
         background: linear-gradient(
           180deg,
           var(--color-cta-top, #c47a4e) 0%,
@@ -298,29 +366,22 @@ export class AmbientSoundscapeUI {
           var(--color-cta-bottom, #8f4a2c) 100%
         );
         color: #fff;
-        font-size: 17px;
-        font-weight: 600;
+        font-size: 16px;
         line-height: 1.2;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.02em;
         cursor: pointer;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.28) inset,
           0 -2px 0 rgba(80, 40, 20, 0.18) inset,
           0 2px 0 var(--color-cta-edge, #7a3f24),
-          0 10px 22px rgba(44, 31, 20, 0.28);
-        opacity: 1;
-        transition: transform 120ms ease, box-shadow 160ms ease, filter 160ms ease, opacity 160ms ease;
+          0 8px 18px rgba(44, 31, 20, 0.2);
+        transition: transform 120ms ease, box-shadow 160ms ease, filter 160ms ease;
       }
       .ambient-soundscape__fab:hover {
-        filter: brightness(1.06);
+        filter: brightness(1.05);
       }
       .ambient-soundscape__fab:active {
         transform: translateY(2px) scale(0.985);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.18) inset,
-          0 -1px 0 rgba(80, 40, 20, 0.2) inset,
-          0 1px 0 var(--color-cta-edge, #7a3f24),
-          0 3px 8px rgba(44, 31, 20, 0.18);
       }
       .ambient-soundscape__fab.is-active {
         background: linear-gradient(180deg, #a86a42 0%, #8f4a2c 45%, #6e3a24 100%);
@@ -328,35 +389,19 @@ export class AmbientSoundscapeUI {
           0 1px 0 rgba(255, 255, 255, 0.22) inset,
           0 -2px 0 rgba(80, 40, 20, 0.2) inset,
           0 2px 0 #5a3018,
-          0 10px 22px rgba(44, 31, 20, 0.3),
-          0 0 0 2px rgba(240, 192, 96, 0.65);
-        opacity: 1;
-      }
-      .ambient-soundscape__tracks-btn {
-        padding: 6px 12px;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        border-radius: 14px;
-        background: rgba(255, 252, 245, 0.92);
-        color: #5a4636;
-        font-size: 12px;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(44, 31, 20, 0.08);
-      }
-      .ambient-soundscape__tracks-btn:hover {
-        background: #fff;
+          0 8px 18px rgba(44, 31, 20, 0.28),
+          0 0 0 2px rgba(240, 192, 96, 0.55);
       }
       .ambient-soundscape__nudge {
         position: relative;
         margin: 0;
+        pointer-events: auto;
         max-width: min(260px, calc(100vw - 48px));
         padding: 9px 14px;
         border-radius: 16px 16px 4px 16px;
         background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
         border: 1.5px solid rgba(92, 122, 108, 0.45);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.65) inset,
-          0 6px 16px rgba(40, 64, 52, 0.14);
+        box-shadow: 0 6px 16px rgba(40, 64, 52, 0.14);
         color: #3a5348;
         font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
         font-size: 12.5px;
@@ -365,24 +410,12 @@ export class AmbientSoundscapeUI {
         line-height: 1.45;
         text-align: left;
         cursor: pointer;
-        filter: drop-shadow(0 2px 4px rgba(40, 64, 52, 0.08));
-      }
-      .ambient-soundscape__nudge::after {
-        content: "";
-        position: absolute;
-        right: 28px;
-        bottom: -8px;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 8px 7px 0 7px;
-        border-color: #dceae2 transparent transparent transparent;
-        filter: drop-shadow(0 1px 0 rgba(92, 122, 108, 0.35));
       }
       .ambient-soundscape__nudge[hidden] {
         display: none !important;
       }
       .ambient-soundscape__panel {
+        pointer-events: auto;
         width: min(240px, calc(100vw - 40px));
         padding: 12px;
         border-radius: 14px;

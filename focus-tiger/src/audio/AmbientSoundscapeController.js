@@ -1,8 +1,8 @@
 /**
- * 禅意背景音：本页 <audio> 播放 + 实际可闻播放时长 → presenceBoost。
+ * 禅意背景音：DOM <audio> 播放 + 实际可闻播放时长 → presenceBoost。
  * 不探测其他 App；不参与达标；会话内累计，不做长期存储。
  *
- * 产品口径（2026-07-21）：进入应用默认播放 Mer-Ka-Ba；用户可随时一键开关；
+ * 产品口径（2026-07-21）：进入应用默认播放 Mer-Ka-Ba；用户可随时静音；
  * 偏好写入 localStorage；会话结束不停播（presence 累计仍随会话清零）。
  */
 
@@ -96,15 +96,22 @@ export class AmbientSoundscapeController {
    * @param {() => number} [options.now] 可注入时钟（测试）
    * @param {HTMLAudioElement} [options.audio] 可注入 audio 元素
    * @param {Storage | { getItem?: Function, setItem?: Function }} [options.storage]
+   * @param {boolean} [options.mountToDocument] 测试可设为 false
    */
   constructor({
     now = () => Date.now(),
     audio = null,
-    storage = typeof localStorage !== 'undefined' ? localStorage : null
+    storage = typeof localStorage !== 'undefined' ? localStorage : null,
+    mountToDocument = true
   } = {}) {
     this._now = now;
     this._storage = storage;
-    this._audio = audio || (typeof Audio !== 'undefined' ? new Audio() : null);
+    this._mountToDocument = mountToDocument;
+    this._audio =
+      audio ||
+      (typeof document !== 'undefined'
+        ? this._createAudioElement(mountToDocument)
+        : null);
     const pref = readAmbientPref(storage);
     this._wantEnabled = pref.enabled;
     this._preferredTrackId = pref.trackId;
@@ -116,23 +123,13 @@ export class AmbientSoundscapeController {
     this._volume = 0.45;
     /** 每次停止/切换意图递增，作废进行中的 play() */
     this._playbackEpoch = 0;
-    /** 浏览器拦截自动播放后，等待用户在音乐按钮上再试 */
+    /** 浏览器拦截自动播放后，等待用户在静音按钮上再试 */
     this._needsGestureUnlock = false;
-    /** @type {(() => void) | null} */
-    this._gestureUnlockHandler = null;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
     if (this._audio) {
-      this._audio.loop = true;
-      this._audio.preload = 'auto';
-      this._audio.volume = this._volume;
-      this._audio.addEventListener('timeupdate', this._boundTimeUpdate);
-      this._audio.addEventListener('play', this._boundPlayState);
-      this._audio.addEventListener('playing', this._boundPlayState);
-      this._audio.addEventListener('pause', this._boundPlayState);
-      this._audio.addEventListener('ended', this._boundPlayState);
-      this._audio.addEventListener('volumechange', this._boundPlayState);
+      this._wireAudioListeners(this._audio);
     }
   }
 
@@ -185,27 +182,45 @@ export class AmbientSoundscapeController {
    */
   async startPreferredTrack() {
     if (!this._wantEnabled) {
-      await this.setTrack(AMBIENT_TRACK_OFF, { persist: false });
+      this.mute();
       return;
     }
+    await this.unmute();
+  }
+
+  /** 同步静音：无论 wantsEnabled / 实际是否在播，一律停掉。 */
+  mute() {
+    this._wantEnabled = false;
+    this._needsGestureUnlock = false;
+    this._stopPlayback({ persist: true });
+  }
+
+  /** 按偏好曲重新开播。 */
+  async unmute() {
+    this._wantEnabled = true;
+    this._persistPref();
     await this.setTrack(this._preferredTrackId, { persist: false });
   }
 
   /**
-   * 一键开关：关→停播；开→播偏好曲。
+   * UI 静音钮：可闻或在播偏好 → 静音；否则尝试开播。
    * @returns {Promise<boolean>} 切换后是否希望开启
    */
-  async toggleEnabled() {
-    if (this._wantEnabled) {
-      this._wantEnabled = false;
-      this._persistPref();
-      this._stopPlayback({ persist: false });
+  async toggleFromUi() {
+    if (this.isAudiblePlaying() || this._wantEnabled) {
+      this.mute();
       return false;
     }
-    this._wantEnabled = true;
-    this._persistPref();
-    await this.setTrack(this._preferredTrackId, { persist: false });
+    await this.unmute();
     return true;
+  }
+
+  /**
+   * @deprecated 使用 toggleFromUi / mute / unmute
+   * @returns {Promise<boolean>}
+   */
+  async toggleEnabled() {
+    return this.toggleFromUi();
   }
 
   /**
@@ -217,17 +232,37 @@ export class AmbientSoundscapeController {
     this._endCreditSegment();
     this._trackId = AMBIENT_TRACK_OFF;
     this._needsGestureUnlock = false;
-    this._teardownGestureUnlock();
-    if (this._audio) {
-      this._audio.pause();
-      this._audio.currentTime = 0;
-      this._audio.removeAttribute('src');
+
+    const prev = this._audio;
+    if (prev) {
       try {
-        this._audio.load();
+        prev.pause();
       } catch {
         /* ignore */
       }
+      prev.currentTime = 0;
+      prev.src = '';
+      prev.removeAttribute('src');
+      prev.muted = true;
+      try {
+        prev.load();
+      } catch {
+        /* ignore */
+      }
+      if (this._mountToDocument && prev.parentNode) {
+        prev.parentNode.removeChild(prev);
+      }
     }
+
+    if (this._mountToDocument && typeof document !== 'undefined') {
+      this._audio = this._createAudioElement(true);
+      this._wireAudioListeners(this._audio);
+    } else if (prev && !this._mountToDocument) {
+      this._audio = prev;
+    } else {
+      this._audio = null;
+    }
+
     if (persist) this._persistPref();
   }
 
@@ -240,6 +275,7 @@ export class AmbientSoundscapeController {
     const id = trackId || AMBIENT_TRACK_OFF;
     if (id === AMBIENT_TRACK_OFF) {
       this._wantEnabled = false;
+      this._needsGestureUnlock = false;
       this._stopPlayback({ persist });
       return;
     }
@@ -252,28 +288,31 @@ export class AmbientSoundscapeController {
     this._preferredTrackId = id;
     this._wantEnabled = true;
     const epoch = this._playbackEpoch;
-    this._audio.src = track.src;
-    this._audio.loop = true;
-    this._audio.volume = this._volume;
-    this._audio.muted = this._volume <= 0;
+    const player = this._audio;
+    player.muted = false;
+    player.loop = true;
+    player.volume = this._volume;
+    player.src = track.src;
     if (persist) this._persistPref();
 
     try {
-      await this._audio.play();
+      await player.play();
     } catch {
       if (epoch !== this._playbackEpoch) return;
-      // 浏览器自动播放策略：等用户在音乐按钮上再点一次
       this._needsGestureUnlock = true;
       return;
     }
 
     if (epoch !== this._playbackEpoch || this._trackId !== id) {
-      this._audio.pause();
+      try {
+        player.pause();
+      } catch {
+        /* ignore */
+      }
       return;
     }
 
     this._needsGestureUnlock = false;
-    this._teardownGestureUnlock();
     this._syncCreditSegment();
   }
 
@@ -306,15 +345,35 @@ export class AmbientSoundscapeController {
     return Math.min(MAX_PRESENCE_BOOST + AUDIBLE_PLAYING_LIFT, cumulative + lift);
   }
 
+  _createAudioElement(mountToDocument) {
+    const el = document.createElement('audio');
+    el.setAttribute('preload', 'auto');
+    el.loop = true;
+    el.volume = this._volume;
+    el.style.cssText =
+      'position:absolute;width:0;height:0;opacity:0;pointer-events:none';
+    el.setAttribute('aria-hidden', 'true');
+    if (mountToDocument && document.body) {
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  /** @param {HTMLAudioElement} audio */
+  _wireAudioListeners(audio) {
+    audio.addEventListener('timeupdate', this._boundTimeUpdate);
+    audio.addEventListener('play', this._boundPlayState);
+    audio.addEventListener('playing', this._boundPlayState);
+    audio.addEventListener('pause', this._boundPlayState);
+    audio.addEventListener('ended', this._boundPlayState);
+    audio.addEventListener('volumechange', this._boundPlayState);
+  }
+
   _persistPref() {
     writeAmbientPref(this._storage, {
       enabled: this._wantEnabled,
       trackId: this._preferredTrackId
     });
-  }
-
-  _teardownGestureUnlock() {
-    this._gestureUnlockHandler = null;
   }
 
   _isAudiblePlaying() {
