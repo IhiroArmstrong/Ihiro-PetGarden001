@@ -24,7 +24,7 @@ function createStorage(seed = {}) {
   };
 }
 
-test('get/set reminder preference round-trips; null clears', () => {
+test('get/set reminder preference round-trips; null clears (no enabled field)', () => {
   const storage = createStorage();
   assert.equal(getReminderPreference({ storage }), null);
 
@@ -36,8 +36,33 @@ test('get/set reminder preference round-trips; null clears', () => {
   assert.equal(storage.getItem(REMINDER_PREFERENCE_STORAGE_KEY), null);
 });
 
+test('presence means on: unrecognized extra fields ignored, shape stays { hour, minute }', () => {
+  const storage = createStorage({
+    [REMINDER_PREFERENCE_STORAGE_KEY]: JSON.stringify({
+      hour: 8,
+      minute: 15,
+      enabled: false
+    })
+  });
+  // 存在即代表已开启；不读取/不保留 enabled 字段
+  assert.deepEqual(getReminderPreference({ storage }), { hour: 8, minute: 15 });
+});
+
 test('unset reminder time → banner candidate does not show', () => {
   const storage = createStorage();
+  const result = evaluateInAppReminderBanner({
+    storage,
+    now: () => new Date(2026, 6, 22, 18, 0),
+    hasCompletedToday: () => false
+  });
+  assert.deepEqual(result, { shouldShow: false, messageKey: null });
+});
+
+test('cleared (null) preference → banner candidate does not show', () => {
+  const storage = createStorage();
+  setReminderPreference({ hour: 9, minute: 0 }, { storage });
+  setReminderPreference(null, { storage });
+
   const result = evaluateInAppReminderBanner({
     storage,
     now: () => new Date(2026, 6, 22, 18, 0),

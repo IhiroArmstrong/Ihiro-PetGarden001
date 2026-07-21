@@ -37,6 +37,16 @@ import {
   WeeklyPracticeHeatmap,
   WEEKLY_PRACTICE_HEATMAP_DAYS
 } from './ui/WeeklyPracticeHeatmap.js';
+import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
+import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
+import {
+  InAppReminderBannerController,
+  isReminderBusySession
+} from './core/InAppReminderBannerController.js';
+import {
+  evaluateInAppReminderBanner,
+  REMINDER_GENTLE_WAITING_MESSAGE_KEY
+} from './core/reminderPreference.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from './utils/Constants.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { LightProgression } from './effects/LightProgression.js';
@@ -234,6 +244,30 @@ async function init() {
   const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
     document.getElementById('ui-overlay')
   );
+  /** @type {Date | null} */
+  let reminderNowOverride = null;
+  const reminderNow = () => reminderNowOverride ?? new Date();
+  const inAppReminderBannerController = new InAppReminderBannerController({
+    // 方案 A suppress（默认）；方案 B 改为 busyPolicy: 'defer'
+    busyPolicy: 'suppress'
+  });
+  /** Assigned after Arrival / stores are ready. */
+  let syncInAppReminderBanner = () => {};
+  const inAppReminderBannerUI = new InAppReminderBannerUI(
+    document.getElementById('ui-overlay'),
+    {
+      onDismiss: () => {
+        inAppReminderBannerController.dismiss();
+        syncInAppReminderBanner();
+      }
+    }
+  );
+  // 方案 A：右上角时钟图标，挂 body（与 Ambient 静音钮同排），非 Idle-only chrome
+  const reminderPreferenceUI = new ReminderPreferenceUI(document.body, {
+    onPreferenceChange: () => {
+      syncInAppReminderBanner();
+    }
+  });
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -425,6 +459,7 @@ async function init() {
     companionModePicker.setOptionSelectEnabled(
       !overlayActive && !sessionUiGate.completionPending
     );
+    syncInAppReminderBanner();
   }
 
   /** 先点 Here & Now / Flow 再进 Arrival 时记住，结束后自动开表（禁止再逼点 Sit） */
@@ -746,6 +781,45 @@ async function init() {
   if (import.meta.env.DEV) {
     window.__arrivalPractice = arrivalPractice;
     window.__lightProgression = lightProgression;
+  }
+
+  syncInAppReminderBanner = () => {
+    const candidate = evaluateInAppReminderBanner({
+      now: reminderNow,
+      hasCompletedToday: () => dailyCompletionStore.hasCompletedToday()
+    });
+    const busy = isReminderBusySession({
+      state: stateManager.state,
+      arrivalOpen: Boolean(arrivalPractice?.isOpen?.()),
+      reflectionOpen: Boolean(reflectionMoment?.isOpen?.()),
+      microRitualOpen: Boolean(microRitualUI?.isOpen?.())
+    });
+    const decision = inAppReminderBannerController.resolve(candidate, {
+      isBusySession: busy
+    });
+    if (decision.action === 'show') {
+      inAppReminderBannerUI.show(
+        decision.messageKey || REMINDER_GENTLE_WAITING_MESSAGE_KEY
+      );
+    } else if (inAppReminderBannerUI.isVisible()) {
+      inAppReminderBannerUI.hide({ silent: true });
+    }
+  };
+
+  if (import.meta.env.DEV) {
+    window.__inAppReminder = {
+      sync: () => syncInAppReminderBanner(),
+      setNow: (value) => {
+        reminderNowOverride =
+          value == null ? null : value instanceof Date ? value : new Date(value);
+      },
+      clearNow: () => {
+        reminderNowOverride = null;
+      },
+      controller: inAppReminderBannerController,
+      settings: reminderPreferenceUI,
+      banner: inAppReminderBannerUI
+    };
   }
 
   /**
@@ -1165,8 +1239,11 @@ async function init() {
     if (document.visibilityState === 'visible') {
       beginSessionCompleteIfNeeded();
       honestyCheckIn.syncDormantState();
+      syncInAppReminderBanner();
     }
   });
+
+  syncInAppReminderBanner();
 
   const clock = new THREE.Clock();
 
@@ -1214,6 +1291,10 @@ async function init() {
     });
     composer.render();
   }
+
+  stateManager.onChange(() => {
+    syncInAppReminderBanner();
+  });
 
   animate();
 }

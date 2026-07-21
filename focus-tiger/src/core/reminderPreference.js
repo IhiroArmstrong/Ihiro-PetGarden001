@@ -1,9 +1,17 @@
 /**
  * 应用内提醒时间偏好（本地存储）+ 横幅候选判定。
  *
- * 不涉及浏览器 Notification 权限；不渲染 UI。
- * 调用方（日后）可在 App 启动 / visibilitychange→visible 时调用
- * `evaluateInAppReminderBanner`，再决定是否展示横幅。
+ * 不涉及浏览器 Notification 权限；不渲染 UI（纯逻辑）。
+ * 设置入口见 `src/ui/ReminderPreferenceUI.js`（方案 A：右上角时钟图标，
+ * 挂 `document.body`，与 Ambient 静音钮同排）；候选展示由
+ * `src/ui/InAppReminderBannerUI.js`（#ui-overlay 顶部居中横幅）渲染。
+ * 调用方在 App 启动 / visibilitychange→visible / 状态切换时调用
+ * `evaluateInAppReminderBanner`，再决定是否展示横幅（见 `main.js`
+ * `syncInAppReminderBanner`）。
+ *
+ * 形状：`{ hour, minute }` 或 `null`；**无 `enabled` 字段**——
+ * 有值即代表已开启提醒，`null`/未设置代表关闭。关闭时直接
+ * `setReminderPreference(null)` 清除存储，禁止改用 `enabled:false` 混合形状。
  *
  * 「今日已完成」目前用 `DailyCompletionStore.hasCompletedToday()`
  *（计时会话与 Honesty 共用；微仪式若另开任务再扩展）。
@@ -15,7 +23,7 @@ import { DailyCompletionStore } from './DailyCompletionStore.js';
 export const REMINDER_PREFERENCE_STORAGE_KEY =
   'focus-tiger.reminder-preference.v1';
 
-/** i18n 占位 key；正文由 locales 后续补充，禁止在此硬编码句子。 */
+/** i18n key；正文在 locales，禁止硬编码句子。 */
 export const REMINDER_GENTLE_WAITING_MESSAGE_KEY = 'reminder.gentle_waiting';
 
 /**
@@ -73,7 +81,7 @@ export function getReminderPreference({
 }
 
 /**
- * 写入提醒时间；传 `null` 清除。非法值不写入，返回 false。
+ * 写入提醒时间；传 `null` 清除（代表关闭）。非法值不写入，返回 false。
  * @param {ReminderTimePreference | null} preference
  * @param {object} [options]
  * @param {Storage | null} [options.storage]
@@ -126,7 +134,7 @@ export function isAtOrPastReminderTime(now, preference) {
 /**
  * 横幅候选判定（纯逻辑，不渲染）。
  * 触发条件（同时满足）：
- * 1) 已设置提醒时间
+ * 1) 已设置提醒时间（非 null）
  * 2) 当前本地时分 ≥ 提醒时分
  * 3) 今日尚未完成（正式会话 / Honesty；微仪式另任务）
  *

@@ -129,5 +129,11 @@
   "HINT_HELP_FALLBACK": "准备好了，就与阿寅同坐。",
   "HINT_APP_PURPOSE_TITLE": "这个空间能帮你什么",
   "HINT_APP_PURPOSE_BODY": "Focus Tiger 是一位游戏化的正念伙伴，帮你通过规律练习、按自己的节奏，培养专注、觉察与心流。",
-  "HINT_APP_PURPOSE_DISMISS": "知道了"
+  "HINT_APP_PURPOSE_DISMISS": "知道了",
+  "reminder.setting_title": "什么时候提醒你",
+  "reminder.gentle_waiting": "阿寅在等你",
+  "reminder.enable_label": "开启提醒",
+  "reminder.time_label": "时间",
+  "reminder.settings_aria": "提醒时间",
+  "reminder.banner_dismiss_aria": "关闭提醒"
 }
