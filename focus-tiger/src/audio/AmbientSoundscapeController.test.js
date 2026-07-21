@@ -224,3 +224,28 @@ test('toggleFromUi mutes even when wantsEnabled already false but still audible'
   assert.equal(ctrl.isAudiblePlaying(), false);
   assert.equal(ctrl.wantsEnabled(), false);
 });
+
+test('volume is initialized before DOM audio element is created', () => {
+  const prevDoc = globalThis.document;
+  globalThis.document = {
+    createElement: () => createMockAudio(),
+    body: { appendChild() {} }
+  };
+  let volumeAtCreate;
+  const proto = AmbientSoundscapeController.prototype;
+  const original = proto._createAudioElement;
+  proto._createAudioElement = function (mountToDocument) {
+    volumeAtCreate = this._volume;
+    return createMockAudio();
+  };
+  try {
+    new AmbientSoundscapeController({
+      storage: createMapStorage(),
+      mountToDocument: false
+    });
+    assert.equal(volumeAtCreate, 0.45);
+  } finally {
+    proto._createAudioElement = original;
+    globalThis.document = prevDoc;
+  }
+});

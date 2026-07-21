@@ -107,6 +107,7 @@ export class AmbientSoundscapeController {
     this._now = now;
     this._storage = storage;
     this._mountToDocument = mountToDocument;
+    this._volume = 0.45;
     this._audio =
       audio ||
       (typeof document !== 'undefined'
@@ -120,7 +121,6 @@ export class AmbientSoundscapeController {
     this._playedAccumulated = 0;
     /** @type {number | null} */
     this._segmentStartedAt = null;
-    this._volume = 0.45;
     /** 每次停止/切换意图递增，作废进行中的 play() */
     this._playbackEpoch = 0;
     /** 浏览器拦截自动播放后，等待用户在静音按钮上再试 */
@@ -349,7 +349,8 @@ export class AmbientSoundscapeController {
     const el = document.createElement('audio');
     el.setAttribute('preload', 'auto');
     el.loop = true;
-    el.volume = this._volume;
+    const vol = Number(this._volume);
+    el.volume = Number.isFinite(vol) ? Math.min(1, Math.max(0, vol)) : 0.45;
     el.style.cssText =
       'position:absolute;width:0;height:0;opacity:0;pointer-events:none';
     el.setAttribute('aria-hidden', 'true');
