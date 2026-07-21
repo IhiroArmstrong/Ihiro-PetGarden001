@@ -36,6 +36,11 @@ import {
   ReminderQuotaManager,
   REMINDER_QUOTA_STORAGE_KEY
 } from './ReminderQuotaManager.js';
+import {
+  getReminderPreference,
+  setReminderPreference,
+  REMINDER_PREFERENCE_STORAGE_KEY
+} from './reminderPreference.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import {
@@ -83,6 +88,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   REFLECTION_STORAGE_KEY,
   COMPANION_MODE_STORAGE_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
+  REMINDER_PREFERENCE_STORAGE_KEY,
   HINTS_SEEN_STORAGE_KEY,
   AMBIENT_NUDGE_STORAGE_KEY,
   AMBIENT_PREF_STORAGE_KEY
@@ -152,6 +158,15 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   assert.equal(dirtyQuota.tryConsume(), true);
   assert.equal(dirtyQuota.tryConsume(), false);
 
+  assert.equal(
+    setReminderPreference({ hour: 18, minute: 0 }, { storage }),
+    true
+  );
+  assert.deepEqual(getReminderPreference({ storage }), {
+    hour: 18,
+    minute: 0
+  });
+
   storage.setItem(COMPANION_MODE_STORAGE_KEY, 'stay');
   storage.setItem(INTENTION_STORAGE_KEY, JSON.stringify([{ text: 'x' }]));
   storage.setItem(REFLECTION_STORAGE_KEY, JSON.stringify([{ text: 'y' }]));
@@ -192,6 +207,8 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
 
   const freshQuota = new ReminderQuotaManager({ storage, dailyLimit: 3 });
   assert.equal(freshQuota.tryConsume(), true);
+
+  assert.equal(getReminderPreference({ storage }), null);
 
   assert.equal(storage.getItem(COMPANION_MODE_STORAGE_KEY), null);
   assert.equal(storage.getItem(INTENTION_STORAGE_KEY), null);

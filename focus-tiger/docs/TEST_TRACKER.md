@@ -172,6 +172,7 @@
 | 「一分钟呼吸」微仪式 · 方案调研 | 纯文档 | 仅单元测试覆盖 | **无 UI / 无实现**。结论见 `MICRO_RITUAL_PLAN.md`：Arrival ~5s breath 可延展为 60s（定时器+吸呼文案+smiling@4fps+LightProgression）；记账建议 `recordCompletion(1)`，Store **尚无**轻/正式 `source` 区分（反馈层用 SessionComplete、禁 Celebrating）；Idle 插入点推荐仿 Honesty 入 `#session-start-dock`（order -1）。实现须另任务 + 人工确认开放决策。 | 2026-07-22：用户要求先调研方案、不动代码 | `docs/MICRO_RITUAL_PLAN.md` | 2026-07-22 |
 | SessionIntentionStore | 纯后端 | 仅单元测试覆盖 | `SessionIntentionStore.test.js`；Choose 写入 `intentions.v1` | — | `src/core/SessionIntentionStore.js` | 2026-07-18 |
 | ReminderQuotaManager | 纯后端 | 仅单元测试覆盖 | `ReminderQuotaManager.test.js`；三类提醒共享自然日额度 | — | `src/core/ReminderQuotaManager.js` | 2026-07-18 |
+| 应用内提醒偏好 + 横幅候选判定 | 纯后端 | 仅单元测试覆盖 | **无 UI、无浏览器 Notification**。`get/setReminderPreference`（`reminder-preference.v1`）；`evaluateInAppReminderBanner`：未设置 / 未到时 / 今日已完成 → 不触发；全满足 → `{ shouldShow: true, messageKey: 'reminder.gentle_waiting' }`。完成判定：`DailyCompletionStore.hasCompletedToday()`（含 Honesty）。未接启动/visibility/横幅渲染。 | — | `reminderPreference.test.js` · `SHARED_RESOURCES` | 2026-07-22 |
 | session-completion-feedback 分流逻辑 | 纯后端 | 仅单元测试覆盖 | `session-completion-feedback.test.js`；首日 Celebrating vs 同日 SessionComplete | — | `src/core/session-completion-feedback.js` | 2026-07-18 |
 | AttentionSignals | 纯后端 | 仅单元测试覆盖 | `AttentionSignals.test.js`；20s 记账 / 60s 回归展示 | — | `src/input/AttentionSignals.js` | 2026-07-18 |
 | CharacterConfig 路径拼接 | 纯后端 | 仅单元测试覆盖 | `CharacterConfig.test.js`；无换装 UI | — | `src/character/CharacterConfig.js` | 2026-07-18 |
