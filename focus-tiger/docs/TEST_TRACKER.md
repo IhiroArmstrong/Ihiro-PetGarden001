@@ -169,7 +169,8 @@
 | DailyCompletionStore | 纯后端 | 仅单元测试覆盖 | `DailyCompletionStore.test.js`；与 Honesty / 完成分流共用 | — | `src/core/DailyCompletionStore.js` | 2026-07-18 |
 | 留存漏斗骨架 RetentionTelemetry | 纯后端 | 仅单元测试覆盖 | **无 UI、无第三方**。`RETENTION_FUNNEL.md` 节点骨架；`console.log('[RetentionTelemetry]', …)` 占位。事件：`app_first_open` / `first_session_complete`（含 `secondsSinceFirstOpen`）/ `day1\|3\|7\|30_return` / `dormant_bridge_shown\|accepted`。接线：`main.noteAppOpen`、`HonestyCheckIn.onSessionRecorded`、桥接 `trackEvent`。storage `retention-funnel.v1` 纳入 DEV 重置。 | — | `RetentionTelemetry.test.js` · `docs/RETENTION_FUNNEL.md` | 2026-07-22 |
 | 「本周陪伴」热力图 · 数据结构/挂载位调研（第 1 步） | 纯文档 | 仅单元测试覆盖 | **无 UI**。结论：`DailyCompletionStore` **仅当日**不够。数据源已改为扩展 `PracticeDaysStore`（见下行）。**候选挂载（未拍板）**：① Reflection `onDone` 后短暂角标 ② Idle 常驻一角（避开 FocusHUD 左上 / Sound 右下 / Sit·Honesty dock 底中 / 音符右上）③ Reflection 面板内收尾一角 ④ HUD 旁替换或并列现有 streak-meter。 | 2026-07-22：用户要求先确认数据结构再实现 | `SHARED_RESOURCES` §1.1–1.2 | 2026-07-22 |
-| PracticeDaysStore 多日时长 + getLastNDays（热力图 Store） | 纯后端 | 仅单元测试覆盖 | `days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`markToday(minutes)` 同日累加；`getLastNDays(7)` 缺口补 0；窗口仍 90。写入仍走 Honesty/`onPracticeDay`。**无 UI**。 | — | `PracticeDaysStore.test.js` · `SHARED_RESOURCES` §1.2 | 2026-07-22 |
+| PracticeDaysStore 多日时长 + getLastNDays（热力图 Store） | 纯后端 | 仅单元测试覆盖 | `days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`markToday(minutes)` 同日累加；`getLastNDays(7)` 缺口补 0；窗口仍 90。写入仍走 Honesty/`onPracticeDay`。 | — | `PracticeDaysStore.test.js` · `SHARED_RESOURCES` §1.2 | 2026-07-22 |
+| 「本周陪伴」7 格热力图 UI（Idle 常驻） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 左下（`?` 上方）见 `#weekly-practice-heatmap` 横排 7 格；亮=`null\|>0`（暖蒲团橙 token），暗=浅 `ink-faint`；无文案/感叹号/点击。**回流**：Sit→Focusing → 热力图隐藏；Rise 回 Idle 再出现。**窄屏 375**：不与 Sit/Sound/`?` 重叠。e2e：`weekly-practice-heatmap.spec.js`。 | — | `?product=1` · `#weekly-practice-heatmap` | 2026-07-22 |
 | 「一分钟呼吸」微仪式 · 方案调研 | 纯文档 | 仅单元测试覆盖 | **无 UI / 无实现**。结论见 `MICRO_RITUAL_PLAN.md`：Arrival ~5s breath 可延展为 60s（定时器+吸呼文案+smiling@4fps+LightProgression）；记账建议 `recordCompletion(1)`，Store **尚无**轻/正式 `source` 区分（反馈层用 SessionComplete、禁 Celebrating）；Idle 插入点推荐仿 Honesty 入 `#session-start-dock`（order -1）。实现须另任务 + 人工确认开放决策。 | 2026-07-22：用户要求先调研方案、不动代码 | `docs/MICRO_RITUAL_PLAN.md` | 2026-07-22 |
 | SessionIntentionStore | 纯后端 | 仅单元测试覆盖 | `SessionIntentionStore.test.js`；Choose 写入 `intentions.v1` | — | `src/core/SessionIntentionStore.js` | 2026-07-18 |
 | ReminderQuotaManager | 纯后端 | 仅单元测试覆盖 | `ReminderQuotaManager.test.js`；三类提醒共享自然日额度 | — | `src/core/ReminderQuotaManager.js` | 2026-07-18 |
@@ -218,7 +219,7 @@
 
 ## 明确未纳入本表（尚未实现，勿当已交付）
 
-- **「本周陪伴」7 格日历热力图 UI**（Store 已扩 `getLastNDays`；挂载位拍板后另开任务）
+- 「本周陪伴」热力图 hover 详情 / tooltip / 点击下钻（当前纯展示）
 - Focus Confidence V1（可信度分值 / idle 检测完整链路）
 - 鼻子 Boop / 拉尾巴 / 抚摸分阶段递进
 - 无互动约 10 分钟自主 `welcomeBack` 挥手

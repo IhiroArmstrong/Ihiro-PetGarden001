@@ -33,6 +33,10 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import {
+  WeeklyPracticeHeatmap,
+  WEEKLY_PRACTICE_HEATMAP_DAYS
+} from './ui/WeeklyPracticeHeatmap.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from './utils/Constants.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { LightProgression } from './effects/LightProgression.js';
@@ -219,6 +223,9 @@ async function init() {
   poseManager.setCanvasHidden(true);
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
+  const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
+    document.getElementById('ui-overlay')
+  );
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -1063,6 +1070,10 @@ async function init() {
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL
+    });
+    weeklyPracticeHeatmap.render({
+      visible: stateManager.state === STATES.IDLE,
+      days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
     });
     composer.render();
   }

@@ -14,7 +14,7 @@
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + 热力图只读 `getLastNDays`；计时 / Honesty 经既有 `onPracticeDay` → `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key** |)
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty 经既有 `onPracticeDay` → `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key** |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显 |
@@ -58,7 +58,7 @@
 
 公开 API：`markToday(durationMinutes?)`（同日累加）、`getRecentStreakDays()` / `getRingFilled()`（仍按「有条目」计连续日）、`getLastNDays(n)`（含今天共 n 天，**缺日补** `{ date, totalMinutes: 0 }`，旧→新）。  
 迁移：`migratePracticeDaysEntries`；读到旧 `days: string[]` 时转 `{ date, totalMinutes: null }` 并写回。  
-**无 UI**（本轮）；周热力图渲染另任务。
+UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle 隐藏。
 
 ---
 
