@@ -286,8 +286,8 @@ async function init() {
       honestyBridge?.onHonestyCheckInComplete();
       syncOnboardingAutoHints();
     },
-    onPracticeDay: () => {
-      practiceDaysStore.markToday();
+    onPracticeDay: ({ durationMinutes } = {}) => {
+      practiceDaysStore.markToday(durationMinutes);
     },
     onSessionRecorded: ({ durationMinutes }) => {
       retentionFunnelStore.noteSessionComplete({ durationMinutes });

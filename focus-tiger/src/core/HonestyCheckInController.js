@@ -34,7 +34,8 @@ export class HonestyCheckInController {
    * @param {(level: number) => void} [deps.applyFocusGlow]
    * @param {() => void} [deps.clearFocusGlow]
    * @param {() => void} [deps.onCheckInComplete] 补登仪式结束（记账）后；桥接 CTA 挂这里
-   * @param {() => void} [deps.onPracticeDay] 计时达标或 Honesty 记账后标记练习日（光点圈）
+   * @param {(detail: { durationMinutes: number }) => void} [deps.onPracticeDay]
+   *   计时达标或 Honesty 记账后标记练习日（光点圈 + 当日累计分钟）
    * @param {(detail: { durationMinutes: number }) => void} [deps.onSessionRecorded]
    *   完成写入后（计时 / Honesty）；留存 `first_session_complete` 挂这里
    * @param {() => void} [deps.notifyUser] 非模态提示（如 toast）；pending 丢失 abort 时由 main 注入文案
@@ -93,7 +94,7 @@ export class HonestyCheckInController {
   onTimedSessionCompleted(durationMinutes) {
     this.focusSessionEndStore.recordSessionEnded();
     const entry = this.store.recordCompletion(durationMinutes);
-    this.onPracticeDay();
+    this.onPracticeDay({ durationMinutes });
     if (entry) {
       this.onSessionRecorded({ durationMinutes: entry.durationMinutes });
     }
@@ -233,7 +234,7 @@ export class HonestyCheckInController {
     }
 
     const entry = this.store.recordCompletion(minutes);
-    this.onPracticeDay();
+    this.onPracticeDay({ durationMinutes: minutes });
     if (entry) {
       this.onSessionRecorded({ durationMinutes: entry.durationMinutes });
     }

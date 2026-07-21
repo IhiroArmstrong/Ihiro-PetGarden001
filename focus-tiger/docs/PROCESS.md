@@ -56,7 +56,8 @@
 - **应用内提醒偏好 + 横幅候选判定（2026-07-22）**：`reminderPreference` 本地存 `{ hour, minute }`；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；**未接 UI / 未接 visibility**；完成判定暂用 `DailyCompletionStore.hasCompletedToday()`（含 Honesty；微仪式另任务）
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return` / `dormant_bridge_shown|accepted`
 - **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
-- **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：只读 `DailyCompletionStore`——**仅当日** `dateKey` + `sessions[{completedAt,durationMinutes}]` + `celebrated`；换日重置，**不够** 7 格周视图。候选挂载位置已列 TEST_TRACKER / 待确认；**未实现 UI**。相邻：`PracticeDaysStore` 有多日日期键（见 `SHARED_RESOURCES` §1.1）
+- **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`。**无 UI**；见 `SHARED_RESOURCES` §1.2
+- **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：只读 `DailyCompletionStore`——**仅当日** `dateKey` + `sessions[{completedAt,durationMinutes}]` + `celebrated`；换日重置，**不够** 7 格周视图。候选挂载位置已列 TEST_TRACKER / 待确认；**未实现 UI**。相邻：`PracticeDaysStore` 现已带多日时长（§1.2）
 - **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。
 - **开场 Idle + 默认 Mer-Ka-Ba（2026-07-21）**：登录后第一幕改为闭目坐禅（不上 Sleeping）；默认开播背景音乐，右下角显眼「打开/关闭音乐」随时可关
 - **Honesty 首屏措辞（2026-07-21）**：邀请式补登提示仍挂零完成；开场视觉已改 Idle
@@ -213,7 +214,7 @@
 **已知的开放决策 / 待确认事项**：
 
 - **应用内提醒横幅**：偏好存取与候选判定已落地；设置入口位置、启动/回前台接线、横幅 UI、i18n 正文（`reminder.gentle_waiting`）待另任务确认后再接
-- **「本周陪伴」7 格热力图（数据源 + 挂载位）**：确认是否扩展 `DailyCompletionStore` 保留多日 / 改用或扩展 `PracticeDaysStore` / 新建周视图 store；挂载候选见 TEST_TRACKER 行（Reflection 后 / Idle 角等），**勿自行定最终位**
+- **「本周陪伴」7 格热力图（挂载位 + UI）**：Store 层已扩（`getLastNDays`）；挂载候选见 TEST_TRACKER（Reflection 后 / Idle 角等），**勿自行定最终位**；UI 另开任务
 - across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）
 - Idle 五变体相对权重已写入 EMOTION_BIBLE（gaze 1.0 / tea 0.5 / yawn 0.3 / ear 0.2）；试玩后可再调
 - **回归姿态（2026-07-19 已拍板软化）**：一次性情绪播完回归「类似坐禅」即可，不强制像素对齐默认闭目 idle 第 1 帧（见 `PRINCIPLES.md`）
