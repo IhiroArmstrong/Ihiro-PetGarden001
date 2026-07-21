@@ -122,6 +122,8 @@ export class OnboardingHintsUI {
     this._remedyIds = new Set();
     /** @type {Map<string, { remedy: boolean, anchorNearHelp: boolean }>} */
     this._paintMeta = new Map();
+    /** @type {HTMLElement | null} */
+    this.purposeCard = null;
 
     this.helpBtn = document.createElement('button');
     this.helpBtn.type = 'button';
@@ -141,6 +143,7 @@ export class OnboardingHintsUI {
     });
 
     mountRoot.append(this.helpBtn);
+    this._ensurePurposeCard();
     this._syncHelpBadge();
     this._injectHelpStyles();
     this._onReposition = () => this.repositionAll();
@@ -149,6 +152,7 @@ export class OnboardingHintsUI {
 
     this._unsubLocale = onLocaleChange(() => {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
+      this._refreshPurposeCardCopy();
       for (const hintId of this._visibleIds) {
         const meta = this._paintMeta.get(hintId) || { remedy: false, anchorNearHelp: false };
         this._paint(hintId, meta);
@@ -208,7 +212,7 @@ export class OnboardingHintsUI {
     else this.helpBadge.removeAttribute('pulse');
   }
 
-  /** 补救：强制展示本页全部操作提示（忽略已读）+「?」旁元文案。 */
+  /** 补救：强制展示本页全部操作提示（忽略已读）+「?」旁元文案 + App 用途简介卡。 */
   showRemedy() {
     const scene = this.getScene() || {};
     const sceneIds = resolveRemedyHintIds(scene);
@@ -223,6 +227,7 @@ export class OnboardingHintsUI {
       this._paint(id, { remedy: true });
     }
     this._paint('help-remedy', { remedy: true, anchorNearHelp: true });
+    this._showPurposeCard();
   }
 
   /**
@@ -255,6 +260,7 @@ export class OnboardingHintsUI {
     for (const hintId of this._visibleIds) {
       this._positionBubble(hintId);
     }
+    this._positionPurposeCard();
   }
 
   dispose() {
@@ -265,6 +271,8 @@ export class OnboardingHintsUI {
     this._hideTimers.clear();
     for (const bubble of this._bubbles.values()) bubble.remove();
     this._bubbles.clear();
+    this.purposeCard?.remove();
+    this.purposeCard = null;
     this.helpBtn.remove();
   }
 
@@ -421,6 +429,84 @@ export class OnboardingHintsUI {
     bubble.style.top = `${Math.round(top)}px`;
   }
 
+  _ensurePurposeCard() {
+    if (this.purposeCard) return this.purposeCard;
+    const card = document.createElement('aside');
+    card.id = 'onboarding-app-purpose';
+    card.className = 'onboarding-app-purpose';
+    card.hidden = true;
+    card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-labelledby', 'onboarding-app-purpose-title');
+
+    const title = document.createElement('h2');
+    title.id = 'onboarding-app-purpose-title';
+    title.className = 'onboarding-app-purpose__title';
+
+    const body = document.createElement('p');
+    body.className = 'onboarding-app-purpose__body';
+
+    const dismiss = document.createElement('button');
+    dismiss.type = 'button';
+    dismiss.className = 'onboarding-app-purpose__dismiss';
+    dismiss.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._hidePurposeCard();
+    });
+
+    card.append(title, body, dismiss);
+    this.mountRoot.appendChild(card);
+    this.purposeCard = card;
+    this._purposeTitleEl = title;
+    this._purposeBodyEl = body;
+    this._purposeDismissEl = dismiss;
+    this._refreshPurposeCardCopy();
+    return card;
+  }
+
+  _refreshPurposeCardCopy() {
+    if (!this.purposeCard) return;
+    this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
+    this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
+    this._purposeDismissEl.textContent = t('HINT_APP_PURPOSE_DISMISS');
+  }
+
+  _showPurposeCard() {
+    this._ensurePurposeCard();
+    this._refreshPurposeCardCopy();
+    this.purposeCard.hidden = false;
+    this._positionPurposeCard();
+  }
+
+  _hidePurposeCard() {
+    if (this.purposeCard) this.purposeCard.hidden = true;
+  }
+
+  _positionPurposeCard() {
+    const card = this.purposeCard;
+    if (!card || card.hidden) return;
+    const help = this.helpBtn;
+    const gap = 14;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxW = Math.min(320, vw - 24);
+    card.style.maxWidth = `${maxW}px`;
+    card.style.left = '0px';
+    card.style.top = '0px';
+
+    const cr = card.getBoundingClientRect();
+    const hr = help.getBoundingClientRect();
+    let left = hr.left;
+    let top = hr.top - cr.height - gap;
+    if (top < 12) {
+      top = hr.bottom + gap;
+    }
+    left = Math.max(12, Math.min(left, vw - cr.width - 12));
+    top = Math.max(12, Math.min(top, vh - cr.height - 12));
+    card.style.left = `${Math.round(left)}px`;
+    card.style.top = `${Math.round(top)}px`;
+  }
+
   _injectHelpStyles() {
     if (document.getElementById('onboarding-hint-styles')) return;
     const style = document.createElement('style');
@@ -473,6 +559,57 @@ export class OnboardingHintsUI {
           0 -1px 0 rgba(120, 80, 40, 0.14) inset,
           0 1px 0 rgba(160, 118, 72, 0.35),
           0 4px 10px rgba(44, 31, 20, 0.12);
+      }
+      .onboarding-app-purpose {
+        position: fixed;
+        z-index: 27;
+        box-sizing: border-box;
+        padding: 14px 16px 12px;
+        border-radius: 16px;
+        border: 1.5px solid rgba(92, 122, 108, 0.5);
+        background: linear-gradient(165deg, #eef6f1 0%, #d4e6db 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 10px 28px rgba(40, 64, 52, 0.16);
+        color: #3a5348;
+        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
+        pointer-events: auto;
+      }
+      .onboarding-app-purpose[hidden] {
+        display: none !important;
+      }
+      .onboarding-app-purpose__title {
+        margin: 0 0 8px;
+        font-size: 15px;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: 0.01em;
+        color: #2f463c;
+      }
+      .onboarding-app-purpose__body {
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-style: italic;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #3a5348;
+      }
+      .onboarding-app-purpose__dismiss {
+        display: inline-block;
+        margin: 0;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(92, 122, 108, 0.45);
+        background: rgba(255, 255, 255, 0.55);
+        color: #2f463c;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        font-style: normal;
+        cursor: pointer;
+      }
+      .onboarding-app-purpose__dismiss:hover {
+        background: rgba(255, 255, 255, 0.8);
       }
     `;
     document.head.appendChild(style);

@@ -353,16 +353,12 @@ export class AmbientSoundscapeUI {
         max-width: min(260px, calc(100vw - 48px));
         padding: 9px 14px;
         border-radius: 16px 16px 4px 16px;
-        background: linear-gradient(
-          165deg,
-          var(--color-surface-warm-top, rgba(255, 255, 255, 0.96)) 0%,
-          var(--color-surface-warm, #f8f1e4) 100%
-        );
-        border: 1.5px solid var(--color-surface-border, rgba(139, 115, 85, 0.35));
+        background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
+        border: 1.5px solid rgba(92, 122, 108, 0.45);
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.65) inset,
-          0 6px 16px rgba(44, 31, 20, 0.12);
-        color: var(--text-secondary, rgba(74, 58, 40, 0.78));
+          0 6px 16px rgba(40, 64, 52, 0.14);
+        color: #3a5348;
         font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
         font-size: 12.5px;
         font-style: italic;
@@ -370,7 +366,7 @@ export class AmbientSoundscapeUI {
         line-height: 1.45;
         text-align: left;
         cursor: pointer;
-        filter: drop-shadow(0 2px 4px rgba(44, 31, 20, 0.08));
+        filter: drop-shadow(0 2px 4px rgba(40, 64, 52, 0.08));
       }
       .ambient-soundscape__nudge::after {
         content: "";
@@ -381,17 +377,13 @@ export class AmbientSoundscapeUI {
         height: 0;
         border-style: solid;
         border-width: 8px 7px 0 7px;
-        border-color: var(--color-surface-warm, #f8f1e4) transparent transparent transparent;
-        filter: drop-shadow(0 1px 0 rgba(139, 115, 85, 0.28));
+        border-color: #dceae2 transparent transparent transparent;
+        filter: drop-shadow(0 1px 0 rgba(92, 122, 108, 0.35));
       }
       .ambient-soundscape__nudge.is-blocked-tip {
         text-align: left;
-        border-color: var(--color-surface-border, rgba(139, 115, 85, 0.35));
-        background: linear-gradient(
-          165deg,
-          var(--color-surface-warm-top, rgba(255, 255, 255, 0.96)) 0%,
-          var(--color-surface-warm, #f8f1e4) 100%
-        );
+        border-color: rgba(92, 122, 108, 0.45);
+        background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
       }
       .ambient-soundscape__nudge[hidden] {
         display: none !important;

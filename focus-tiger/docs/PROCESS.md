@@ -54,6 +54,7 @@
 
 - **Honesty 首屏措辞（2026-07-21）**：`HONESTY_CHECKIN_PROMPT` 由盘问式「Practiced elsewhere today?」改为邀请式「Quiet time elsewhere can live here too.」；触发仍是当日零完成（含首访），非「离开很久才回来」
 - **UI Kit / 主 CTA（2026-07-21）**：产品壳 **Sit / Sound** 由朱红改为**蒲团橙**（与 Yin 坐垫同系）；v6 产品舞台 + Companion 暖米文案面；成就/图鉴仍仅探索（Backlog）
+- **Hints 薄荷绿恢复 + 「?」用途简介（2026-07-21）**：提示气泡从奶油米黄改回浅绿灰（与控件米黄区分）；点「?」另出非遮罩 App 用途简介卡
 - **FocusHUD 金环+呼吸光（2026-07-21）**：左上角弱化数字感——金环进度 + 中心呼吸光点跟 focusLevel（已弃香炉碗/烟）；琥珀金加对比、光点明显一张一缩、整块约 2×；% 悬停才露；时长默认淡；见 `DESIGN.md` UI Kit 节
 - **FocusHUD 今日同坐 progress-bar（2026-07-21）**：UI Kit 软条挂入 HUD 下方；「今日同坐」= 已完成+当前会话 / 25 分钟软顶；专注中轻脉冲；**不**接线 daily-quest-card
 - **Companion 预选回流开表（2026-07-21）**：先点 Here & Now / Flow → Arrival → Skip begin 或 Choose 后**自动 Focusing**（`pendingAutoStartMode`）；不再逼点 Sit。e2e A2/A3
