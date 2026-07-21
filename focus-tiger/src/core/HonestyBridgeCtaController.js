@@ -104,6 +104,7 @@ export class HonestyBridgeCtaController {
       this.onAccept();
       return;
     }
+    this.trackEvent('dormant_bridge_declined');
     this.onDecline();
   }
 }

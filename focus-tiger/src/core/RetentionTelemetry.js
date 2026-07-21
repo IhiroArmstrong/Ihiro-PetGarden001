@@ -17,7 +17,8 @@ export const RETENTION_EVENTS = Object.freeze({
   DAY7_RETURN: 'day7_return',
   DAY30_RETURN: 'day30_return',
   DORMANT_BRIDGE_SHOWN: 'dormant_bridge_shown',
-  DORMANT_BRIDGE_ACCEPTED: 'dormant_bridge_accepted'
+  DORMANT_BRIDGE_ACCEPTED: 'dormant_bridge_accepted',
+  DORMANT_BRIDGE_DECLINED: 'dormant_bridge_declined'
 });
 
 /** @type {readonly number[]} */
@@ -219,6 +220,10 @@ export class RetentionFunnelStore {
 
   trackBridgeAccepted() {
     this.track(RETENTION_EVENTS.DORMANT_BRIDGE_ACCEPTED, {});
+  }
+
+  trackBridgeDeclined() {
+    this.track(RETENTION_EVENTS.DORMANT_BRIDGE_DECLINED, {});
   }
 
   /** @returns {RetentionFunnelState} */

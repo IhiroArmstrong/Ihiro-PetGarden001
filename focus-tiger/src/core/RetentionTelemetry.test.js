@@ -123,7 +123,7 @@ test('noteSessionComplete once with secondsSinceFirstOpen', () => {
   assert.deepEqual(events, []);
 });
 
-test('bridge helpers emit shown / accepted names', () => {
+test('bridge helpers emit shown / accepted / declined names', () => {
   /** @type {string[]} */
   const events = [];
   const store = new RetentionFunnelStore({
@@ -132,8 +132,10 @@ test('bridge helpers emit shown / accepted names', () => {
   });
   store.trackBridgeShown();
   store.trackBridgeAccepted();
+  store.trackBridgeDeclined();
   assert.deepEqual(events, [
     RETENTION_EVENTS.DORMANT_BRIDGE_SHOWN,
-    RETENTION_EVENTS.DORMANT_BRIDGE_ACCEPTED
+    RETENTION_EVENTS.DORMANT_BRIDGE_ACCEPTED,
+    RETENTION_EVENTS.DORMANT_BRIDGE_DECLINED
   ]);
 });

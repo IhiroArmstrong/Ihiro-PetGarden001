@@ -105,3 +105,36 @@ test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () =>
   controller.hide();
   assert.equal(controller.isVisible(), false);
 });
+
+test('No declines bridge and tracks dormant_bridge_declined', () => {
+  const store = new HonestyBridgeStore({
+    storage: createStorage(),
+    now: () => new Date(2026, 6, 19, 12)
+  });
+  let declined = 0;
+  /** @type {string[]} */
+  const tracked = [];
+  const ui = {
+    handlers: {},
+    show() {},
+    hide() {}
+  };
+
+  const controller = new HonestyBridgeCtaController({
+    store,
+    ui,
+    trackEvent: (event) => tracked.push(event),
+    onAccept: () => {},
+    onDecline: () => {
+      declined += 1;
+    }
+  });
+
+  controller.onHonestyCheckInComplete();
+  ui.handlers.onNo();
+  assert.equal(declined, 1);
+  assert.deepEqual(tracked, [
+    'dormant_bridge_shown',
+    'dormant_bridge_declined'
+  ]);
+});

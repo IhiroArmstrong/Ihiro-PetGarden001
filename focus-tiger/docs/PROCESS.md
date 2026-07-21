@@ -55,7 +55,7 @@
 - **「本周陪伴」7 格热力图 UI（2026-07-22）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)`；亮格=`null|/>0`；无文案/无点击；e2e `weekly-practice-heatmap.spec.js`
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：只读文档 `MICRO_RITUAL_PLAN.md`（未实现）。可复用 Arrival/Honesty 呼吸引导延展至 60s；建议完成后 `recordCompletion(1)` + **SessionComplete 摆尾**（禁 Celebrating）；Idle 平级钮推荐挂 `#session-start-dock`（仿 Honesty）。待人工确认开放决策后再开实现任务
 - **应用内提醒偏好 + 横幅候选判定（2026-07-22）**：`reminderPreference` 本地存 `{ hour, minute }`；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；**未接 UI / 未接 visibility**；完成判定暂用 `DailyCompletionStore.hasCompletedToday()`（含 Honesty；微仪式另任务）
-- **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return` / `dormant_bridge_shown|accepted`
+- **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined`
 - **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
 - **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`。**无 UI**；见 `SHARED_RESOURCES` §1.2
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：只读 `DailyCompletionStore`——**仅当日** `dateKey` + `sessions[{completedAt,durationMinutes}]` + `celebrated`；换日重置，**不够** 7 格周视图。候选挂载位置已列 TEST_TRACKER / 待确认；**未实现 UI**。相邻：`PracticeDaysStore` 现已带多日时长（§1.2）

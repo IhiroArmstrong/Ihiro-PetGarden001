@@ -1,7 +1,7 @@
 # RETENTION_FUNNEL.md — 留存故事（漏斗节点骨架）
 
 创建日期：2026-07-22  
-最近代码核对：2026-07-22（骨架 + 本地 `console.log` 埋点占位；**未**接第三方分析）
+最近代码核对：2026-07-22（补 `dormant_bridge_declined`；dayN 窗口口径确认；正式工具暂不选型）
 
 **权威路径**：`focus-tiger/docs/RETENTION_FUNNEL.md`
 
@@ -86,22 +86,20 @@
 | 实现 | **占位已接**：同 `noteAppOpen()` |
 | 状态 | 待正式分析工具 |
 
-> **口径备注（待产品拍板）**：当前占位采用「打开时若 `daysSinceFirstOpen >= N` 且该档未打过 → 打 `dayN_return`」（迟到打开仍计入该档）。若日后改为「必须恰好在第 N 天打开才算」，改 `RetentionFunnelStore` 判定即可，本文档同步改口径。
+> **口径（2026-07-22 确认）**：采用「窗口内首次返回」——打开时若 `daysSinceFirstOpen >= N` 且该档未打过 → 打 `dayN_return`（迟到打开仍计入该档）。**不**改为「必须恰好在第 N 天打开」。
 
 ---
 
-### R4 · 场景 D 惰性桥接 — `dormant_bridge_shown` / `dormant_bridge_accepted`
+### R4 · 场景 D 惰性桥接 — `dormant_bridge_shown` / `dormant_bridge_accepted` / `dormant_bridge_declined`
 
 | 字段 | 说明 |
 |---|---|
-| 事件名 | `dormant_bridge_shown` · `dormant_bridge_accepted` |
-| 触发语义 | Honesty 补登结束后桥接 CTA **展示** / 用户点 **Yes**（接受 → 完整 Arrival） |
-| 建议 payload | shown：`{}`（可后续加 source）；accepted：`{}` |
-| 实现 | **占位已接**：`HonestyBridgeCtaController._reveal` / `_answer(true)` 经可选 `trackEvent` |
+| 事件名 | `dormant_bridge_shown` · `dormant_bridge_accepted` · `dormant_bridge_declined` |
+| 触发语义 | Honesty 补登结束后桥接 CTA **展示** / 用户点 **Yes**（→ 完整 Arrival）/ 用户点 **No**（→ idle，无二次挽留） |
+| 建议 payload | shown / accepted / declined：`{}`（可后续加 source） |
+| 实现 | **占位已接**：`HonestyBridgeCtaController._reveal` / `_answer(true)` / `_answer(false)` 经可选 `trackEvent` |
 | 对照剧本 | `SCENARIO_TESTS.md` 场景 D · `HONESTY_BRIDGE_CTA.md` |
-| 状态 | 待正式分析工具 |
-
-**未埋（有意）**：`dormant_bridge_declined`（No）— 本骨架未列；若产品要拒答率，另开任务。
+| 状态 | 本地 `console.log` 观察期（正式工具暂不选型） |
 
 ---
 
@@ -115,8 +113,9 @@
 | （备选，未用） | `DailyCompletionStore.recordCompletion` 内部 — 更集中但会耦合 Store↔遥测；测试注入更重 | ⏭ 未接 |
 | `dormant_bridge_shown` | `HonestyBridgeCtaController._reveal` | ✅ 占位 |
 | `dormant_bridge_accepted` | `HonestyBridgeCtaController._answer(true)` | ✅ 占位 |
+| `dormant_bridge_declined` | `HonestyBridgeCtaController._answer(false)` | ✅ 占位 |
 
-Sink：`src/core/RetentionTelemetry.js` → `trackRetentionEvent` → **仅** `console.log('[RetentionTelemetry]', …)`。  
+Sink：`src/core/RetentionTelemetry.js` → `trackRetentionEvent` → **仅** `console.log('[RetentionTelemetry]', …)`（**正式分析工具暂不选型**，先本地观察）。  
 持久化：`focus-tiger.retention-funnel.v1`（首次打开戳、已打 dayN / first_session 标记）；纳入 DEV 一键重置白名单。
 
 ---
@@ -142,6 +141,5 @@ Sink：`src/core/RetentionTelemetry.js` → `trackRetentionEvent` → **仅** `c
 
 ## 下一步（待拍板后再做）
 
-1. 选定分析工具 → 把 `trackRetentionEvent` 的 sink 换成正式 SDK（保持事件名稳定）。
-2. 是否补 `dormant_bridge_declined`、是否改 dayN「恰好第 N 天」口径。
-3. 是否在 `SCENARIO_TESTS` 增补「跨日回访」故事 R（与本文档对齐）。
+1. 本地观察一段时间后，再选定分析工具 → 只换 `trackRetentionEvent` 的 sink（保持事件名稳定）。
+2. 是否在 `SCENARIO_TESTS` 增补「跨日回访」故事 R（与本文档对齐）。

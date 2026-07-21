@@ -658,6 +658,10 @@ async function init() {
       }
       if (event === RETENTION_EVENTS.DORMANT_BRIDGE_ACCEPTED) {
         retentionFunnelStore.trackBridgeAccepted();
+        return;
+      }
+      if (event === RETENTION_EVENTS.DORMANT_BRIDGE_DECLINED) {
+        retentionFunnelStore.trackBridgeDeclined();
       }
     },
     onAccept: () => {
