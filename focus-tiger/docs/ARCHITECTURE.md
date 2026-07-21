@@ -68,6 +68,13 @@ focus-tiger/
 │     ├─ task00-brief-project-scaffold.md
 │     └─ task01-brief-gray-to-gold-visual.md
 │
+├─ cloud/                         # Cloudflare Workers API（独立包；与 Vite 前端解耦）
+│  ├─ README.md                   # wrangler dev + curl 验收
+│  ├─ wrangler.jsonc
+│  ├─ package.json                # name: focus-tiger-cloud
+│  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
+│     # 2026-07-22：仅 mock + 校验 + 内存限流；未接前端 / 未部署正式逻辑
+│
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建
 │  └─ tiger-turnaround/
 │

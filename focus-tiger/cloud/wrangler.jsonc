@@ -1,0 +1,16 @@
+/**
+ * Focus Tiger · Cloudflare Workers (API stubs)
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ *
+ * TODO: bind KV for distributed rate limiting, e.g.
+ * "kv_namespaces": [{ "binding": "RATE_LIMIT_KV", "id": "..." }]
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "focus-tiger-cloud",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-07-21",
+	"observability": {
+		"enabled": true
+	}
+}
