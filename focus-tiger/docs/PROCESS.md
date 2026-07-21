@@ -52,6 +52,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Honesty 首屏措辞（2026-07-21）**：`HONESTY_CHECKIN_PROMPT` 由盘问式「Practiced elsewhere today?」改为邀请式「Quiet time elsewhere can live here too.」；触发仍是当日零完成（含首访），非「离开很久才回来」
 - **UI Kit / 主 CTA（2026-07-21）**：产品壳 **Sit / Sound** 由朱红改为**蒲团橙**（与 Yin 坐垫同系）；v6 产品舞台 + Companion 暖米文案面；成就/图鉴仍仅探索（Backlog）
 - **FocusHUD 香炉隐喻（2026-07-21）**：左上角弱化数字感——碗+烟+金环跟 focusLevel；% 悬停才露；时长默认淡；见 `DESIGN.md` UI Kit 节
 - **Idle 两段 pingpong（2026-07-20 验收通过）**：`idleBreathClosed` ×2 → `idleBlinkArc` ×1；同源 51 帧素材；段间硬切；用户书面测试 OK

@@ -91,7 +91,7 @@
 ### 任务五：沉睡态(DORMANT) + Honesty Check-in 唤醒仪式（✅ 2D 主链路已实现；Rim Light 正式路径待替换占位）
 ```
 目标：当日自然日尚无任何已完成会话 → DORMANT（打瞌睡）；
-     用户可忽略或点击「Did you practice elsewhere?」补登 10/20/30+ 分钟；
+     用户可忽略或点击「Quiet time elsewhere can live here too.」补登 10/20/30+ 分钟；
      10s 呼吸引导后 dormantWake（16 帧睡醒过渡 + 既有 FocusVisualizer），并按所选时长等同一次已完成会话。
 
 已落地：DailyCompletionStore、HonestyCheckInController/UI、dormantWake 情绪键、

@@ -43,7 +43,7 @@
 
 1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **睡着**（`sleeping` / DORMANT），**不是** idle-breathing。  
    *[逻辑：DORMANT 门闩已自动化 smoke A1]*
-2. 应看到 Honesty Check-in 可忽略提示（文案键 `HONESTY_CHECKIN_PROMPT`，大意「Practiced elsewhere today?」）。Kelly 决定直接开始，不理会提示，点击 **Sit with Yin**。
+2. 应看到 Honesty Check-in 可忽略提示（文案键 `HONESTY_CHECKIN_PROMPT`，大意「Quiet time elsewhere can live here too.」——邀请式，非盘问）。Kelly 决定直接开始，不理会提示，点击 **Sit with Yin**。
 3. Arrival Practice 展开：
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）

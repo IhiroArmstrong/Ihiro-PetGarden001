@@ -251,7 +251,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 同日后续完成专注会话 | 双手合十或温和点头 | 继续使用 `SessionComplete`，不重复完整庆祝 |
 | 用户中断专注 | 安静等待、偶尔张望 | **措辞与表现修正**：不以「托腮思考、略显失落」为设计；按「不制造焦虑原则」定为**中性等待感**，不表现因用户离开而产生的失落/难过，强调「我在这里陪着你」而非「你让我失望了」 |
 | 用户重新回来 | 开心挥手欢迎 | 情绪键 `welcomeBack`（2D 序列 `wave-hello`）；一次性播放，播完回落 `Idle` |
-| 当日尚未完成任何练习（DORMANT） | 打瞌睡表现 + 可忽略轻量提示 | 提示文案：`Did you practice elsewhere?` / 「刚刚在别处修行了吗？」；可忽略、非强制；详见下方 Honesty Check-in |
+| 当日尚未完成任何练习（DORMANT） | 打瞌睡表现 + 可忽略轻量提示 | 提示文案：`Quiet time elsewhere can live here too.` / 「别处的静心，也可以记在这里。」（邀请式，非盘问；含首日/当日首次打开）；可忽略、非强制；详见下方 Honesty Check-in |
 | 用户完成 Honesty Check-in | 选时长后立刻 `dormantWake` 坐起并定格末帧（呼吸倒计时同期）→ 完成后离开 DORMANT | 按所选时长等同一次已完成会话；观察式完成文案；**不占用**共享提醒池；**暂不接**闭眼坐禅呼吸淡入 / 金光 / halo（2026-07-19） |
 
 #### DORMANT 唤醒仪式（Honesty Check-in Ritual）
@@ -262,7 +262,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 - **视觉对接**：唤醒时的金色效果必须走既有光环 / Rim Light / FocusVisualizer 路径，禁止另起独立光效；Rim Light 重构未就绪时可用 `setFocusLevel` 占位。
 - **限频**：用户主动发起，不扣减 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 共享提醒池。
 - **文案键（已接入 i18n）**：
-  - 提示：`HONESTY_CHECKIN_PROMPT` — EN `Did you practice elsewhere?` / ZH `刚刚在别处修行了吗？`
+  - 提示：`HONESTY_CHECKIN_PROMPT` — EN `Yin is resting, but always here for you. Quiet time elsewhere can live here too.` / ZH `阿寅正在休息，但它一直在等你。别处的静心，也可以记在这里。`（邀请式能力说明；禁止「今天在别处修行了吗？」式盘问）
   - 完成：`HONESTY_CHECKIN_THANKS` — EN `Thank you for bringing that calm back here.` / ZH `谢谢你把那份平静带回来。`
 - **禁止**：任何验证性、怀疑性、次等标记类文案或 UI；未达标主动结束时亦不出现「未完成 / 失败」类提示，安静返回即可。
 
@@ -628,5 +628,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.59 | 2026-07-20 | pingpong 顶点补 2 拍停留；Choose 改 16:9 `intentionNod`（去合十）；Sit dock 抬 z-index 防 Honesty 抢点；Choose 确认立刻开门闩 |
 | 0.60 | 2026-07-20 | Rise 主路径改 `riseStretchCasual`（`rise-stretch-casual` pingpong）替换 `blinkBreathe`；倒放回闭目衔接 idle |
 | 0.61 | 2026-07-20 | `cloak-sleep` 入库-only（`cloakSleep`）；**2b 拍板**：当日首次进 DORMANT 播一次→`sleeping`；**2c 未接线** |
+| 0.62 | 2026-07-21 | `HONESTY_CHECKIN_PROMPT`：盘问式「Practiced elsewhere today?」→ 邀请式「Quiet time elsewhere can live here too.」；明确触发=当日零完成（含首访），非「离开很久」 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
