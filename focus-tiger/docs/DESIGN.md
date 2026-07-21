@@ -229,7 +229,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其下次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金、与 Sit 同系阴影语言）向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。若门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完再**展开三选一（桌面 ≥900px：底部**横排矮条**，不挡 Yin）。**Skip — begin / Sit 二次跳过**：跳过仪式后**立刻用记忆模式开计时**，按钮变 **Rise**（不再半卡在「门闩就绪但仍显示 Sit」）。**Here & Now / Flow State：选中后立即开始 Focus 与计时**（不必再点 Sit）。**Offline Space：只预选并收起，须再点 Sit 才开计时**（用户需离开屏幕前确认）。直接点 Sit 仍可用当前预选（含记忆）立刻开始。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁；此时点 hint 同样会启动 Arrival。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其下次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金、与 Sit 同系阴影语言）向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。若门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完再**展开三选一（桌面 ≥900px：底部**横排矮条**，不挡 Yin）。**Skip — begin / Sit 二次跳过**：跳过仪式后**立刻用记忆模式开计时**，按钮变 **Rise**（不再半卡在「门闩就绪但仍显示 Sit」）。**Here & Now / Offline Space / Flow State：选中或 Arrival 鞠躬后均立即开始 Focus 与计时**（用户已点 Sit 即视为开始，禁止再逼点第二次 Sit）。三模式差异在**会话内**行为（离开提醒、idle 兜底等），不在开表门闩。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁；此时点 hint 同样会启动 Arrival。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 
@@ -529,7 +529,7 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 | 姿态 | 触发信号 | 说明 |
 |---|---|---|
 | IDLE_CLOSED_EYES | 默认态 / 当日尚未产生显著专注数据 | 日常展示,叠加旋转+呼吸+可能的金粒子(专注一般时) |
-| SLEEPING | 连续多日未开启专注会话(瞌睡态) | 叠加打呼噜 ZZZ 图标漂浮效果,rotation.x 微倾 |
+| SLEEPING | 距最近一次专注结束 ≥ `DORMANT_IDLE_HOURS`（默认 2h，滚动窗口）进入 DORMANT；当日首次播 `cloak-sleep` 过渡 | 叠加打呼噜 ZZZ 图标漂浮效果,rotation.x 微倾 |
 | IDLE_SMILING | 当日已触发过一次 CELEBRATING | 持续展示至当天结束,次日重置回 IDLE_CLOSED_EYES |
 | CELEBRATING | 专注数据首次达标(当日) | 一次性播放,播放完自动切换为 IDLE_SMILING |
 | T_POSE | 仅调试用 | 不面向最终用户 |
