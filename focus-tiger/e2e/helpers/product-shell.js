@@ -42,6 +42,17 @@ export async function advanceArrivalToCompanionPicker(page) {
   throw new Error('Companion picker did not open within timeout');
 }
 
+/**
+ * Arrival 已打开时点「Skip — begin」，立刻结束抵达练习。
+ * @param {import('@playwright/test').Page} page
+ */
+export async function skipArrivalBegin(page) {
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await arrival.getByRole('button', { name: /Skip — begin|跳过，直接开始|跳过并开始/i }).click();
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+}
+
 /** @param {import('@playwright/test').Page} page @param {RegExp|string} label */
 export async function selectCompanionMode(page, label) {
   const panel = page.locator('.session-start-dock__panel');

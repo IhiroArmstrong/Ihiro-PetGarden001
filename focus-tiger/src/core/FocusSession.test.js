@@ -10,6 +10,7 @@ import {
   shouldAutoStartFocusOnModeSelect,
   canBeginFocusOnCompanionModeSelect,
   shouldBeginFocusOnArrivalReady,
+  shouldBeginFocusAfterArrivalReady,
   resolveCompanionHintClick,
   resolveDemoSessionMinutes,
   resolveRiseClickDuringFocus,
@@ -84,11 +85,44 @@ test('Here & Now and Flow State auto-start focus; Offline Space does not', () =>
   );
 });
 
-test('Skip — begin begins focus; Choose complete opens Companion instead', () => {
+test('Skip — begin begins focus; Choose alone opens Companion; preselect auto-mode resumes', () => {
   // 回归锁：禁止 Skip begin 后门闩就绪却仍显示 Sit（半卡态）
   assert.equal(shouldBeginFocusOnArrivalReady({ skipped: true }), true);
   assert.equal(shouldBeginFocusOnArrivalReady({ skipped: false }), false);
   assert.equal(shouldBeginFocusOnArrivalReady({}), false);
+  // 先选 Flow / Here & Now → Arrival → Choose/鞠躬后必须开表，禁止再逼点 Sit
+  assert.equal(
+    shouldBeginFocusAfterArrivalReady({
+      skipped: false,
+      chose: true,
+      pendingAutoStartMode: COMPANION_MODE_ACROSS_TOOLS
+    }),
+    true
+  );
+  assert.equal(
+    shouldBeginFocusAfterArrivalReady({
+      skipped: false,
+      chose: true,
+      pendingAutoStartMode: COMPANION_MODE_STAY
+    }),
+    true
+  );
+  assert.equal(
+    shouldBeginFocusAfterArrivalReady({
+      skipped: false,
+      chose: true,
+      pendingAutoStartMode: COMPANION_MODE_STEP_AWAY
+    }),
+    false
+  );
+  assert.equal(
+    shouldBeginFocusAfterArrivalReady({
+      skipped: false,
+      chose: true,
+      pendingAutoStartMode: null
+    }),
+    false
+  );
 });
 
 test('auto-start mode still requires Arrival gate before beginFocus', () => {

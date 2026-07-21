@@ -58,12 +58,33 @@ export function shouldAutoStartFocusOnModeSelect(mode) {
 }
 
 /**
- * Arrival 结束时是否立刻开计时（Skip — begin / Sit 整体跳过）。
- * 完整走完 Choose 时为 false → 展开 Companion；跳过则为 true → Rise。
+ * Arrival 结束时是否立刻开计时。
+ * - Skip — begin / Sit 整体跳过 → true
+ * - 先点选 Here & Now / Flow 再走 Arrival（含一步步 Choose）→ true（禁止再逼点 Sit）
+ * - Sit 进 Arrival 且完整 Choose、无预选自动模式 → false → 展开 Companion
+ * @param {{ skipped?: boolean, chose?: boolean, pendingAutoStartMode?: string | null }} info
+ */
+export function shouldBeginFocusAfterArrivalReady({
+  skipped = false,
+  pendingAutoStartMode = null
+} = {}) {
+  if (Boolean(skipped)) return true;
+  if (
+    pendingAutoStartMode &&
+    shouldAutoStartFocusOnModeSelect(pendingAutoStartMode)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * @deprecated 用 `shouldBeginFocusAfterArrivalReady`（含预选自动开表回流）
+ * Arrival 结束时是否立刻开计时（仅 Skip — begin）。
  * @param {{ skipped?: boolean }} info
  */
 export function shouldBeginFocusOnArrivalReady({ skipped = false } = {}) {
-  return Boolean(skipped);
+  return shouldBeginFocusAfterArrivalReady({ skipped });
 }
 
 /**

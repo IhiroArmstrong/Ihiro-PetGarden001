@@ -4,7 +4,8 @@
  * 跳过方案：每步 Skip + 全程「Skip — begin」；欢迎/呼吸可自动前进；不强制点选图标。
  * 结束经 `onReady({ skipped, chose })` 交给 `main.js` / `SessionUiGate`：
  * - `skipped: true` → 立刻开计时
- * - `chose: true` → 开门闩并（通常）播点头后展开 Companion
+ * - 先点选 Here & Now / Flow 再进 Arrival → 结束后立刻开计时（含 `chose`）
+ * - `chose: true` 且无预选自动模式 → 开门闩并（通常）播点头后展开 Companion
  *
  * 状态机纯函数在 `ArrivalPractice.js`；本类只负责 DOM 与定时器。
  * @see docs/ARRIVE_MOMENT_DESIGN.md

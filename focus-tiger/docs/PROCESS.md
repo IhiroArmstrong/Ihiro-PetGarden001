@@ -56,7 +56,8 @@
 - **UI Kit / 主 CTA（2026-07-21）**：产品壳 **Sit / Sound** 由朱红改为**蒲团橙**（与 Yin 坐垫同系）；v6 产品舞台 + Companion 暖米文案面；成就/图鉴仍仅探索（Backlog）
 - **FocusHUD 金环+呼吸光（2026-07-21）**：左上角弱化数字感——金环进度 + 中心呼吸光点跟 focusLevel（已弃香炉碗/烟）；琥珀金加对比、光点明显一张一缩、整块约 2×；% 悬停才露；时长默认淡；见 `DESIGN.md` UI Kit 节
 - **FocusHUD 今日同坐 progress-bar（2026-07-21）**：UI Kit 软条挂入 HUD 下方；「今日同坐」= 已完成+当前会话 / 25 分钟软顶；专注中轻脉冲；**不**接线 daily-quest-card
-- **UI Kit 再纳入（2026-07-21）**：`streak-meter` 7 点环（近日同坐）；`notification-badge` 仅「?」未读；「How shall we sit?」改 secondary 描边；Honesty Yes/No 仍同级
+- **Companion 预选回流开表（2026-07-21）**：先点 Here & Now / Flow → Arrival → Skip begin 或 Choose 后**自动 Focusing**（`pendingAutoStartMode`）；不再逼点 Sit。e2e A2/A3
+
 - **Idle 两段 pingpong（2026-07-20 验收通过）**：`idleBreathClosed` ×2 → `idleBlinkArc` ×1；同源 51 帧素材；段间硬切；用户书面测试 OK
 - **N15（2026-07-21）**：Bug 修复 = 代码/措施 + **相关文档同批** + **立刻本地 commit**（强制；见 `DEV_WORKFLOW_QUALITY.md`）
 - **Celebrating / 同日 SessionComplete（2026-07-21）**：**已复测通过**（首次舞 + 同日二次只摆尾）

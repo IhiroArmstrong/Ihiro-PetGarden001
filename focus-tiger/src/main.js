@@ -10,6 +10,7 @@ import {
   FocusSession,
   resolveDemoSessionMinutes,
   shouldSuppressAwayReminders,
+  shouldAutoStartFocusOnModeSelect,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
@@ -321,6 +322,11 @@ async function init() {
     companionModePicker.setPostSessionOverlayActive(active);
   }
 
+  /** 先点 Here & Now / Flow 再进 Arrival 时记住，结束后自动开表（禁止再逼点 Sit） */
+  let pendingAutoStartMode = null;
+  /** Choose 点头期间已开表则勿再展开 Companion */
+  let suppressCompanionOpenAfterNod = false;
+
   /** @param {boolean} ready */
   function syncArrivalGateReady(ready) {
     sessionUiGate.setArrivalGateReady(ready);
@@ -517,12 +523,14 @@ async function init() {
         emotionController.playEmotion('intentionSet', {
           onComplete: () => {
             if (
+              !suppressCompanionOpenAfterNod &&
               stateManager.state !== STATES.FOCUSING &&
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
               companionModePicker.open();
             }
+            suppressCompanionOpenAfterNod = false;
             lightProgression.clearArrivalAtmosphere();
             window.setTimeout(() => {
               lightProgression.releaseDolly();
@@ -542,10 +550,18 @@ async function init() {
         onboardingHints?.markSeen('sit-button');
         onboardingHints?.markSeen('dormant-open');
         onboardingHints?.markSeen('honesty-optional');
-        // Skip — begin / Sit 整体跳过 =「直接开始」：用记忆模式立刻计时 → Rise。
-        // Choose 确认：只开门闩；面板改在 intentionSet 播完后展开（见上）。
-        if (sessionUiGate.shouldBeginFocusOnArrivalReady(info)) {
-          beginFocusWithMode(companionModePicker.getSelectedMode());
+        const resumeMode = pendingAutoStartMode;
+        pendingAutoStartMode = null;
+        const beginNow = sessionUiGate.shouldBeginFocusOnArrivalReady({
+          ...info,
+          pendingAutoStartMode: resumeMode
+        });
+        if (beginNow) {
+          // 预选 Here & Now / Flow 后走完 Choose：开表并跳过「再点一次模式 / Sit」
+          if (info.chose && resumeMode) {
+            suppressCompanionOpenAfterNod = true;
+          }
+          beginFocusWithMode(resumeMode || companionModePicker.getSelectedMode());
         } else if (!info.chose) {
           companionModePicker.open();
         }
@@ -560,12 +576,19 @@ async function init() {
 
   /**
    * 与 Sit / hint 门闩未就绪路径相同：完整 Arrival，不跳过、不开计时、不开 Ambient。
+   * @param {{ autoStartMode?: string | null }} [opts]
+   *   先点选 Here & Now / Flow 再进 Arrival 时传入，结束后自动开表。
    */
-  function startArrivalPracticeFromChrome() {
+  function startArrivalPracticeFromChrome({ autoStartMode = null } = {}) {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     honestyCheckInUI.hideIdleEntry();
+    pendingAutoStartMode =
+      autoStartMode && shouldAutoStartFocusOnModeSelect(autoStartMode)
+        ? autoStartMode
+        : null;
+    suppressCompanionOpenAfterNod = false;
     syncArrivalGateReady(false);
     syncPostSessionOverlayForArrival(true);
     companionModePicker.hide();
@@ -713,7 +736,9 @@ async function init() {
     ) {
       return;
     }
-    startArrivalPracticeFromChrome();
+    startArrivalPracticeFromChrome({
+      autoStartMode: companionModePicker.getSelectedMode()
+    });
   };
 
   companionModeHandlers.onExpandedChange = (expanded) => {
@@ -763,6 +788,8 @@ async function init() {
       arrivalPractice.hide();
       syncArrivalGateReady(false);
       pendingChoose = null;
+      pendingAutoStartMode = null;
+      suppressCompanionOpenAfterNod = false;
       endFocusChrome();
       focusSession.stop();
       sessionUiGate.setCompletionPending(false);

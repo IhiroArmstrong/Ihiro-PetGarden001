@@ -13,7 +13,7 @@ import {
   canBeginFocusOnCompanionModeSelect,
   resolveCompanionHintClick,
   resolveRiseClickDuringFocus,
-  shouldBeginFocusOnArrivalReady,
+  shouldBeginFocusAfterArrivalReady,
   shouldAutoStartFocusOnModeSelect
 } from './FocusSession.js';
 
@@ -133,13 +133,13 @@ export class SessionUiGate {
   }
 
   /**
-   * Arrival 结束时是否立刻开计时（Skip — begin）。
+   * Arrival 结束时是否立刻开计时（Skip — begin，或预选 Here & Now / Flow 回流）。
    *
-   * @param {{ skipped?: boolean }} [info]
+   * @param {{ skipped?: boolean, pendingAutoStartMode?: string | null }} [info]
    * @returns {boolean}
    */
   shouldBeginFocusOnArrivalReady(info) {
-    return shouldBeginFocusOnArrivalReady(info);
+    return shouldBeginFocusAfterArrivalReady(info);
   }
 
   /**

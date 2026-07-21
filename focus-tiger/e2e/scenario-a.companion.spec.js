@@ -4,7 +4,8 @@ import {
   expectFocusSessionActive,
   expectFocusSessionInactive,
   openFreshProductShell,
-  selectCompanionMode
+  selectCompanionMode,
+  skipArrivalBegin
 } from './helpers/product-shell.js';
 
 /**
@@ -45,6 +46,32 @@ test('scenario A: Arrival → Here & Now starts focus timer', async ({ page }) =
   await openFreshProductShell(page);
   await advanceArrivalToCompanionPicker(page);
   await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expectFocusSessionActive(page);
+});
+
+test('scenario A2: preselect Flow → Skip — begin starts timer without Sit', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('.session-start-dock__hint').click();
+  await selectCompanionMode(page, /Flow State|心流/i);
+  await expect(page.locator('#arrival-practice')).toBeVisible({
+    timeout: 15_000
+  });
+  await skipArrivalBegin(page);
+  await expectFocusSessionActive(page);
+});
+
+test('scenario A3: preselect Here & Now → Skip — begin starts timer without Sit', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('.session-start-dock__hint').click();
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expect(page.locator('#arrival-practice')).toBeVisible({
+    timeout: 15_000
+  });
+  await skipArrivalBegin(page);
   await expectFocusSessionActive(page);
 });
 
