@@ -106,11 +106,17 @@ export class TigerReflectionMoment {
     ].join(';');
 
     this.echoEl = document.createElement('div');
+    this.echoEl.dataset.testid = 'reflection-intention-echo';
     this.echoEl.style.cssText = [
-      'font-size:13px',
+      'font-size:14px',
       'line-height:1.55',
-      'color:rgba(74,58,40,.78)',
-      'margin-bottom:10px'
+      'font-weight:600',
+      'color:#5c4330',
+      'margin-bottom:12px',
+      'padding:8px 10px',
+      'border-radius:10px',
+      'background:rgba(212,165,116,.14)',
+      'border:1px solid rgba(139,115,85,.18)'
     ].join(';');
 
     this.questionEl = document.createElement('div');

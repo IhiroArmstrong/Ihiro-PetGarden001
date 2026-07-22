@@ -8,6 +8,7 @@ import {
   intentionEchoKey,
   normalizeIntentionText,
   recordIntention,
+  resolveSessionIntentionLatch,
   trimIntentions
 } from './SessionIntentionStore.js';
 import { getStorage, setStorage } from '../utils/Storage.js';
@@ -99,4 +100,25 @@ test('echo text matches the stored intention text by source', () => {
   } finally {
     globalThis.localStorage = previous;
   }
+});
+
+test('resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch', () => {
+  const fromChoose = resolveSessionIntentionLatch(
+    { text: '', source: 'typed' },
+    { text: '📖 Reading', source: 'icon' },
+    { clearIfEmpty: true }
+  );
+  assert.equal(fromChoose.text, '📖 Reading');
+  assert.equal(fromChoose.source, 'icon');
+
+  const afterSecondBegin = resolveSessionIntentionLatch(fromChoose, null, {
+    clearIfEmpty: false
+  });
+  assert.equal(afterSecondBegin.text, '📖 Reading');
+  assert.equal(afterSecondBegin.source, 'icon');
+
+  const cleared = resolveSessionIntentionLatch(fromChoose, null, {
+    clearIfEmpty: true
+  });
+  assert.equal(cleared.text, '');
 });

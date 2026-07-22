@@ -90,7 +90,10 @@ import {
   breathCyclePeriodSec,
   resolveMicroRitualMs
 } from './core/MicroRitual.js';
-import { recordIntention } from './core/SessionIntentionStore.js';
+import {
+  recordIntention,
+  resolveSessionIntentionLatch
+} from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
@@ -781,6 +784,18 @@ async function init() {
       onClearLight: () => lightProgression.clearArrivalEffects(),
       onReady: (info = {}) => {
         pendingChoose = arrivalPractice.getChooseResult();
+        // 本轮 Arrival 结果立刻闩上：有 Choose 则锁定；Skip/未选则清空。
+        // 勿等到 beginFocus 才写入——二次 beginFocus 曾用 `?? ''` 把已选意图抹掉。
+        const latched = resolveSessionIntentionLatch(
+          {
+            text: currentSessionIntention,
+            source: currentIntentionSource
+          },
+          pendingChoose,
+          { clearIfEmpty: true }
+        );
+        currentSessionIntention = latched.text;
+        currentIntentionSource = latched.source;
         arrivalChoseThisRun = Boolean(info.chose);
         syncArrivalGateReady(true);
         resyncSessionChrome();
@@ -865,6 +880,10 @@ async function init() {
     honestyCheckInUI.hide();
     honestyCheckInUI.hideIdleEntry();
     microRitualUI?.hideIdleEntry();
+    // 新一轮 Arrival：清掉上场未消费的 Choose，避免错挂到本场 Reflection
+    pendingChoose = null;
+    currentSessionIntention = '';
+    currentIntentionSource = 'typed';
     arrivalChoseThisRun = false;
     pendingAutoStartMode =
       autoStartMode && shouldAutoStartFocusOnModeSelect(autoStartMode)
@@ -978,8 +997,17 @@ async function init() {
     microRitualUI?.hideIdleEntry();
     microRitualUI?.hide();
     honestyGlowLevel = null;
-    currentSessionIntention = pendingChoose?.text ?? '';
-    currentIntentionSource = pendingChoose?.source === 'icon' ? 'icon' : 'typed';
+    // 只在仍有 pending Choose 时写入；空 pending 不得把已闩意图抹成 ''（二次 beginFocus 回归锁）
+    const latched = resolveSessionIntentionLatch(
+      {
+        text: currentSessionIntention,
+        source: currentIntentionSource
+      },
+      pendingChoose,
+      { clearIfEmpty: false }
+    );
+    currentSessionIntention = latched.text;
+    currentIntentionSource = latched.source;
     pendingChoose = null;
     sessionUiGate.clearArrivalGateForFocusStart();
     if (currentSessionIntention) {

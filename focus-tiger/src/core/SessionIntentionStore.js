@@ -58,6 +58,39 @@ export function intentionEchoKey(source) {
 }
 
 /**
+ * 合并本场 Choose → 会话意图闩（供 Reflection 回显）。
+ * - pending 非空：覆盖
+ * - pending 空且 `clearIfEmpty`：清空（Arrival Skip / 未选）
+ * - pending 空且不清空：**保留**现闩（防止二次 `beginFocus` 把已记下的意图抹成 ''）
+ *
+ * @param {{ text?: string, source?: string } | null | undefined} current
+ * @param {{ text?: string, source?: string } | null | undefined} pending
+ * @param {{ clearIfEmpty?: boolean }} [options]
+ * @returns {{ text: string, source: 'icon' | 'typed' }}
+ */
+export function resolveSessionIntentionLatch(
+  current,
+  pending,
+  { clearIfEmpty = false } = {}
+) {
+  const pendingText = normalizeIntentionText(pending?.text);
+  if (pendingText) {
+    return {
+      text: pendingText,
+      source: normalizeIntentionSource(pending?.source)
+    };
+  }
+  if (clearIfEmpty) {
+    return { text: '', source: 'typed' };
+  }
+  const keep = normalizeIntentionText(current?.text);
+  return {
+    text: keep,
+    source: keep ? normalizeIntentionSource(current?.source) : 'typed'
+  };
+}
+
+/**
  * 非空才写入；空字符串返回 null 且不触碰存储。
  * @param {unknown} text
  * @param {object} [options]

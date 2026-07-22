@@ -80,3 +80,34 @@ export async function expectFocusSessionInactive(page) {
   );
   await expect(page.locator('#hud-time')).toHaveText('00:00');
 }
+
+/**
+ * Sit → 逐步 Skip 到 Choose → 点 Reading → 等开表。
+ * 须等 intentionNod pingpong + CapCut 叠化结束（约数秒）。
+ */
+export async function chooseReadingAndAwaitFocus(page) {
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+
+  const skipStep = arrival.getByRole('button', { name: /^Skip$/i });
+  const deadline = Date.now() + 60_000;
+  while (Date.now() < deadline) {
+    if (await arrival.getByRole('button', { name: /Reading|阅读/i }).isVisible()) {
+      break;
+    }
+    if (await arrival.isVisible() && (await skipStep.isVisible())) {
+      await skipStep.click();
+      await page.waitForTimeout(200);
+      continue;
+    }
+    await page.waitForTimeout(300);
+  }
+
+  await arrival.getByRole('button', { name: /Reading|阅读/i }).click();
+  // intentionNod pingpong + CapCut 1s；开表后主按钮变 Rise
+  await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
+    timeout: 45_000
+  });
+  await expectFocusSessionActive(page);
+}
