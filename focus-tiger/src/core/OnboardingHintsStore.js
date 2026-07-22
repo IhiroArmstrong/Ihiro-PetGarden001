@@ -3,60 +3,13 @@
  * @see ONBOARDING_HINTS.md
  */
 
+import { HINT_IDS, HINT_LOCALE_KEYS } from './onboardingHintRegistry.js';
+
 export const HINTS_SEEN_STORAGE_KEY = 'focus-tiger.hints-seen.v1';
 
-/** @typedef {string} HintId */
+/** @typedef {import('./onboardingHintRegistry.js').OnboardingHintRegistryEntry['id']} HintId */
 
-export const HINT_IDS = Object.freeze([
-  'dormant-open',
-  'honesty-optional',
-  'honesty-bridge',
-  'sit-button',
-  'how-shall-we-sit',
-  'notice',
-  'breathing',
-  'choose',
-  'companion-mode',
-  'companion-stay',
-  'companion-away',
-  'companion-across-tools',
-  'ambient-gated',
-  'ambient-soundscape',
-  'rise-button',
-  'reflection',
-  'idle-after-session',
-  'weekly-heatmap',
-  'micro-ritual',
-  'help-affordance',
-  'help-remedy',
-  'help-fallback'
-]);
-
-/** @type {Record<string, string>} hintId → i18n key */
-export const HINT_LOCALE_KEYS = Object.freeze({
-  'dormant-open': 'HINT_DORMANT_OPEN',
-  'honesty-optional': 'HINT_HONESTY_OPTIONAL',
-  'honesty-bridge': 'HINT_HONESTY_BRIDGE',
-  'sit-button': 'HINT_SIT_BUTTON',
-  'how-shall-we-sit': 'HINT_HOW_SHALL_WE_SIT',
-  'notice': 'HINT_NOTICE',
-  'breathing': 'HINT_BREATHING',
-  'choose': 'HINT_CHOOSE',
-  'companion-mode': 'HINT_COMPANION_MODE',
-  'companion-stay': 'HINT_COMPANION_STAY',
-  'companion-away': 'HINT_COMPANION_AWAY',
-  'companion-across-tools': 'HINT_COMPANION_ACROSS',
-  'ambient-gated': 'HINT_AMBIENT_GATED',
-  'ambient-soundscape': 'HINT_AMBIENT_SOUNDSCAPE',
-  'rise-button': 'HINT_RISE_BUTTON',
-  'reflection': 'HINT_REFLECTION',
-  'idle-after-session': 'HINT_IDLE_AFTER_SESSION',
-  'weekly-heatmap': 'HINT_WEEKLY_HEATMAP',
-  'micro-ritual': 'HINT_MICRO_RITUAL',
-  'help-affordance': 'HINT_HELP_AFFORDANCE',
-  'help-remedy': 'HINT_HELP_REMEDY',
-  'help-fallback': 'HINT_HELP_FALLBACK'
-});
+export { HINT_IDS, HINT_LOCALE_KEYS };
 
 /**
  * @param {unknown} raw

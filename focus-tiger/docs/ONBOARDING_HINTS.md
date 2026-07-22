@@ -1,7 +1,7 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
 创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-07-22（ambient-soundscape 锚点改右上 mute；anchor map 抽至 `onboardingHintAnchors.js` + 单测）
+最后更新：2026-07-22（Registry SSOT：`onboardingHintRegistry.js`；`hints:doc-check` 锁 md 锚点块；`anchorGroup` ambient）
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
 1. **即时提示**：每个功能第一次真正出现时，用阿寅自己的文字气泡多带一句极简说明，用完即隐藏。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
@@ -40,6 +40,39 @@
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
 共 **20** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+
+<!-- onboarding-hints-registry:anchors:begin -->
+
+> **机器块 · 勿手改**。真源：`src/core/onboardingHintRegistry.js`。刷新：`npm run hints:doc-sync`。
+
+| hintId | localeKey | selector | placement | tip | anchorGroup |
+|---|---|---|---|---|---|
+| `dormant-open` | `HINT_DORMANT_OPEN` | `#btn-focus` | above | bottom | — |
+| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `#btn-focus` | right | left | — |
+| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `#honesty-bridge-cta` | above | bottom | — |
+| `sit-button` | `HINT_SIT_BUTTON` | `#btn-focus` | above | bottom | — |
+| `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `.session-start-dock__hint` | right | left | — |
+| `notice` | `HINT_NOTICE` | `#arrival-practice, #btn-focus` | above | bottom | — |
+| `breathing` | `HINT_BREATHING` | `#arrival-practice, #btn-focus` | above | bottom | — |
+| `choose` | `HINT_CHOOSE` | `#arrival-practice, #btn-focus` | above | bottom | — |
+| `companion-mode` | `HINT_COMPANION_MODE` | `.session-start-dock__panel, .session-start-dock__hint` | above | bottom | — |
+| `companion-stay` | `HINT_COMPANION_STAY` | `.session-start-dock__panel` | above | bottom | — |
+| `companion-away` | `HINT_COMPANION_AWAY` | `.session-start-dock__panel` | above | bottom | — |
+| `companion-across-tools` | `HINT_COMPANION_ACROSS` | `.session-start-dock__panel` | above | bottom | — |
+| `ambient-gated` | `HINT_AMBIENT_GATED` | `.ambient-soundscape__fab` | left | right | `ambient` |
+| `ambient-soundscape` | `HINT_AMBIENT_SOUNDSCAPE` | `.ambient-soundscape__mute` | below | top | `ambient` |
+| `rise-button` | `HINT_RISE_BUTTON` | `#btn-focus` | above | bottom | — |
+| `reflection` | `HINT_REFLECTION` | `#tiger-reflection-moment` | above | bottom | — |
+| `idle-after-session` | `HINT_IDLE_AFTER_SESSION` | `#btn-focus` | above | bottom | — |
+| `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `#weekly-practice-heatmap` | right | left | — |
+| `micro-ritual` | `HINT_MICRO_RITUAL` | `#micro-ritual-idle-entry` | right | left | — |
+| `help-affordance` | `HINT_HELP_AFFORDANCE` | `#onboarding-hint-help` | right | left | — |
+| `help-remedy` | `HINT_HELP_REMEDY` | `#onboarding-hint-help` | right | left | — |
+| `help-fallback` | `HINT_HELP_FALLBACK` | `#btn-focus` | above | bottom | — |
+
+<!-- onboarding-hints-registry:anchors:end -->
+
+
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
@@ -81,6 +114,16 @@
 3. 每条独立记忆已读。
 4. 操作提示气泡无需单独「知道了」；**点击气泡立刻关闭**。例外：点「?」弹出的 **App 用途简介卡**可有「知道了 / Got it」关闭钮（非分步教程）。
 5. 「?」安静但可发现（立体、约 52px）；不做帮助中心（无目录式 FAQ）。
+
+### anchor 校验分层（2026-07-22 拍板 · Registry）
+
+| 层级 | 手段 | 状态 |
+|---|---|---|
+| **(1) Registry SSOT** | `onboardingHintRegistry.js` 派生 `HINT_IDS` / `HINT_LOCALE_KEYS` / `ONBOARDING_HINT_ANCHORS`；`onboardingHintRegistry.test.js` 锁 1:1 + locale + `anchorGroup` 内 selector 互异 | **已落地** |
+| **(2) md 锚点块同步** | `npm run hints:doc-check`（`test:smoke` + CI 独立 required check）；`npm run hints:doc-sync` 刷新 §一后机器块 | **已落地** |
+| **(3) DOM 视觉位置** | Playwright `boundingBox` 验证气泡尖角是否对准锚控件 | **Backlog** — 见 `PROCESS.md`「Hints anchor e2e bounding rect」 |
+
+**新增 hint 工作流**：改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → `npm run test:smoke`。若 anchor 与已有 hint 相邻/可能重叠，评估 `anchorGroup`（见 registry 文件头 PR checklist）。
 
 ---
 
