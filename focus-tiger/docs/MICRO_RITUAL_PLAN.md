@@ -16,6 +16,7 @@
 6. 入口：`#micro-ritual-idle-entry`（dock `order: -1`，**青绿立体 secondary**，与 Honesty/Hint 同柱；dock `gap: 16px`）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath({ periodSec: 5 })`（文案 2.5s×2 同拍）。
 7. e2e 缩短：`?microRitualMs=1500`。
 8. **吸/呼同拍（2026-07-22）**：文案相位驱动光环周期与 Yin 轻量 `scaleY`；**不**切 idle-breathing（帧级胸腔素材未按引导相位切分）。像素级胸腔与文案 1:1 需专用素材或帧界标定，属后续增强。
+9. **HUD 直播（2026-07-22 午 · 用户反馈）**：进行中左上 FocusHUD `#hud-time` / Focusing 态 / 今日同坐条 / 金环随墙钟推进（`resolveFocusHudLiveView`）；**仍不启** `FocusSession` / Rise / Celebrating。完成 toast 用 `MindfulAcknowledgeToast` **`placement: 'center'`**（画面中部，非底栏夹缝）。
 
 ---
 
@@ -26,8 +27,8 @@
 | 入口 | Idle 独立按钮（不经 Companion） | Sit / How shall we sit? |
 | 时长 | 约 **60s** 引导呼吸 | DEMO 默认 1 分钟或 `?sessionMinutes=`；产品目标可达更长 |
 | Arrival | **不走** Notice→Choose→Companion | 完整 Arrival Practice |
-| 计时器 | **不启** `FocusSession` / HUD Focusing / Rise | `FocusSession` 墙钟达标 |
-| 完成反馈 | **轻量** `SessionComplete` 摆尾（见 §4） | 当日首次达标 `Celebrating`；同日后续 `SessionComplete` |
+| 计时器 | **不启** `FocusSession` / Rise；**HUD 直播**墙钟与同坐条（算专注观感） | `FocusSession` 墙钟达标 |
+| 完成反馈 | **轻量** `SessionComplete` 摆尾 + **中置** toast（见 §4） | 当日首次达标 `Celebrating`；同日后续 `SessionComplete` |
 | Reflection | **不进** Reflection Moment | 达标 / 中途 Rise 均可进 |
 
 微仪式是「随时可做的一小口气」，不是缩短版 Focus，也不是 Honesty 补登。

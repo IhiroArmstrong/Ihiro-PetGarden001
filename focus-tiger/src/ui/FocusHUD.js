@@ -1,6 +1,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { focusLevelToHaloVars } from './focusHudHalo.js';
 import { sharedSittingProgressPercent } from './sharedSittingProgress.js';
+import { resolveFocusHudLiveView } from './focusHudLive.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from '../utils/Constants.js';
 import {
   PRACTICE_STREAK_RING_TOTAL
@@ -15,6 +16,7 @@ import {
 } from '../../ui-kit/components/streak-meter.js';
 
 export { focusLevelToHaloVars };
+export { resolveFocusHudLiveView } from './focusHudLive.js';
 
 if (!customElements.get(PROGRESS_BAR_TAG)) {
   customElements.define(PROGRESS_BAR_TAG, ProgressBar);
@@ -102,23 +104,29 @@ export class FocusHUD {
    *   todayCompletedMinutes?: number,
    *   softTargetMinutes?: number,
    *   practiceRingFilled?: number,
-   *   practiceRingTotal?: number
+   *   practiceRingTotal?: number,
+   *   liveElapsedSeconds?: number | null,
+   *   treatAsFocusing?: boolean,
+   *   focusLevelOverride?: number | null
    * }} [opts]
    */
   render(focusSession, stateManager, opts = {}) {
     if (!this.root || !this.stateEl) return;
 
-    const level = focusSession.getFocusLevel();
-    const vars = focusLevelToHaloVars(level);
-    const focusing = stateManager.state === 'FOCUSING';
+    const live = resolveFocusHudLiveView({
+      state: stateManager.state,
+      sessionElapsedSeconds: focusSession.getElapsedSeconds(),
+      sessionFocusLevel: focusSession.getFocusLevel(),
+      liveElapsedSeconds: opts.liveElapsedSeconds,
+      treatAsFocusing: opts.treatAsFocusing,
+      focusLevelOverride: opts.focusLevelOverride
+    });
+    const vars = focusLevelToHaloVars(live.level);
     const softTarget =
       opts.softTargetMinutes ?? FOCUS_SESSION_DEFAULT_MINUTES;
-    const liveMinutes = focusing
-      ? focusSession.getElapsedSeconds() / 60
-      : 0;
     const barValue = sharedSittingProgressPercent({
       completedMinutes: opts.todayCompletedMinutes ?? 0,
-      liveSessionMinutes: liveMinutes,
+      liveSessionMinutes: live.liveSessionMinutes,
       softTargetMinutes: softTarget
     });
     const ringTotal = opts.practiceRingTotal ?? PRACTICE_STREAK_RING_TOTAL;
@@ -127,12 +135,12 @@ export class FocusHUD {
       Math.max(0, opts.practiceRingFilled ?? 0)
     );
 
-    this.levelEl.textContent = `${Math.round(level * 100)}%`;
-    this.timeEl.textContent = this._formatTime(focusSession.getElapsedSeconds());
-    this.stateEl.textContent = this._stateLabel(stateManager.state);
+    this.levelEl.textContent = `${Math.round(live.level * 100)}%`;
+    this.timeEl.textContent = this._formatTime(live.elapsedSeconds);
+    this.stateEl.textContent = this._stateLabel(live.displayState);
 
     if (this.wrapEl) {
-      this.wrapEl.dataset.focusing = focusing ? '1' : '0';
+      this.wrapEl.dataset.focusing = live.focusing ? '1' : '0';
       this.wrapEl.style.setProperty('--ft-hud-fill', String(vars.fill));
     }
     if (this.ringEl) {
@@ -144,7 +152,7 @@ export class FocusHUD {
       this.coreEl.style.setProperty('--ft-hud-fill', String(vars.fill));
     }
     if (this.barEl) {
-      this.barEl.setAttribute('mode', focusing ? 'quest' : 'daily');
+      this.barEl.setAttribute('mode', live.focusing ? 'quest' : 'daily');
       this.barEl.setAttribute('value', String(barValue));
       this.barEl.setAttribute('label', t('HUD_PROGRESS_SHARED_SITTING'));
     }

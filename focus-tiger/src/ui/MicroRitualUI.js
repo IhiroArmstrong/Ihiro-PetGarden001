@@ -59,12 +59,27 @@ export class MicroRitualUI {
     this._breathTimer = null;
     this._breathInterval = null;
     this._durationMs = MICRO_RITUAL_MS_DEFAULT;
+    /** @type {number | null} */
+    this._startedAt = null;
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
   }
 
   /** @returns {boolean} */
   isOpen() {
     return this.phase !== 'hidden';
+  }
+
+  /** 墙钟已过秒数（夹在 0…时长）；未开仪式 → 0。供 FocusHUD 直播。 */
+  getElapsedSeconds() {
+    if (this.phase !== 'breath' || this._startedAt == null) return 0;
+    const elapsedMs = Date.now() - this._startedAt;
+    return Math.min(this._durationMs, Math.max(0, elapsedMs)) / 1000;
+  }
+
+  /** 0…1，相对本轮仪式目标时长。 */
+  getProgress() {
+    if (!(this._durationMs > 0)) return 0;
+    return Math.min(1, this.getElapsedSeconds() / (this._durationMs / 1000));
   }
 
   showIdleEntry() {
@@ -100,6 +115,7 @@ export class MicroRitualUI {
   leave() {
     if (this.phase === 'hidden') return;
     this._clearTimers();
+    this._startedAt = null;
     this.phase = 'hidden';
     this._teardown();
     this.handlers.onLeave?.();
@@ -107,6 +123,7 @@ export class MicroRitualUI {
 
   hide() {
     this._clearTimers();
+    this._startedAt = null;
     this.phase = 'hidden';
     if (!this.root) return;
     this.root.style.opacity = '0';
@@ -187,11 +204,11 @@ export class MicroRitualUI {
   /** @param {number} durationMs */
   _runBreathTimer(durationMs) {
     this._clearTimers();
-    const startedAt = Date.now();
+    this._startedAt = Date.now();
     this._breathInterval = window.setInterval(() => {
       const phaseEl = this.root?.querySelector('[data-micro-ritual-breath-phase]');
       if (!phaseEl) return;
-      const elapsed = Date.now() - startedAt;
+      const elapsed = Date.now() - (this._startedAt ?? Date.now());
       const inhale = isInhalePhase(elapsed, MICRO_RITUAL_BREATH_PHASE_MS);
       phaseEl.textContent = t(
         inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'

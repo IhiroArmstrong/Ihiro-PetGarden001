@@ -520,7 +520,10 @@ async function init() {
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes: MICRO_RITUAL_DURATION_MINUTES
     });
-    mindfulToast.show(t('micro_ritual.complete'));
+    mindfulToast.show(t('micro_ritual.complete'), {
+      placement: 'center',
+      visibleMs: 4_500
+    });
     endMicroRitualChrome();
     emotionController.playEmotion('sessionComplete', {
       onComplete: () => {
@@ -1267,10 +1270,16 @@ async function init() {
     focusSession.tick(delta);
     mindfulReminderController.update(delta);
 
+    const microOpen = microRitualUI?.isOpen() === true;
+    const microElapsed = microOpen ? microRitualUI.getElapsedSeconds() : null;
+    const microProgress = microOpen ? microRitualUI.getProgress() : null;
+
     const focusLevel =
-      honestyGlowLevel != null && stateManager.state !== STATES.FOCUSING
-        ? honestyGlowLevel
-        : focusSession.getFocusLevel();
+      microProgress != null
+        ? microProgress
+        : honestyGlowLevel != null && stateManager.state !== STATES.FOCUSING
+          ? honestyGlowLevel
+          : focusSession.getFocusLevel();
     const presenceBoost =
       stateManager.state === STATES.FOCUSING
         ? ambientSoundscape.getPresenceBoost(focusSession.targetMinutes)
@@ -1296,10 +1305,13 @@ async function init() {
       todayCompletedMinutes: dailyCompletionStore.getTodayTotalMinutes(),
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
-      practiceRingTotal: PRACTICE_STREAK_RING_TOTAL
+      practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
+      treatAsFocusing: microOpen,
+      liveElapsedSeconds: microElapsed,
+      focusLevelOverride: microProgress
     });
     weeklyPracticeHeatmap.render({
-      visible: stateManager.state === STATES.IDLE,
+      visible: stateManager.state === STATES.IDLE && !microOpen,
       days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
     });
     composer.render();

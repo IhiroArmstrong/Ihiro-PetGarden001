@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test \"src/**/*.test.js\"",
-    "test:smoke": "node --test src/core/scenario-smoke.test.js src/core/localStateKeys.test.js src/core/SessionUiGate.test.js src/ui/focusHudHalo.test.js src/ui/sharedSittingProgress.test.js src/core/PracticeDaysStore.test.js src/ui/WeeklyPracticeHeatmap.test.js",
+    "test:smoke": "node --test src/core/scenario-smoke.test.js src/core/localStateKeys.test.js src/core/SessionUiGate.test.js src/ui/focusHudHalo.test.js src/ui/focusHudLive.test.js src/ui/sharedSittingProgress.test.js src/core/PracticeDaysStore.test.js src/ui/WeeklyPracticeHeatmap.test.js",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install chromium"
   },

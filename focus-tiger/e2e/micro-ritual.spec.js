@@ -17,7 +17,7 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     }
   });
 
-  await page.goto('/?product=1&microRitualMs=1500');
+  await page.goto('/?product=1&microRitualMs=2800');
   await page.evaluate(() => {
     for (const key of Object.keys(localStorage)) {
       if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
@@ -46,11 +46,44 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
   // Sit 进行中须禁用（禁止可点却静默）
   await expect(page.locator('#btn-focus')).toBeDisabled();
 
+  // HUD 须直播墙钟（算专注内容；仍不启 FocusSession）
+  // floor 秒：须等到 ≥1s 才离开 00:00
+  await expect(page.locator('#hud-state')).toContainText(/Focusing|专注中/i);
+  await expect
+    .poll(async () => page.locator('#hud-time').textContent(), {
+      timeout: 4_000
+    })
+    .toMatch(/^00:0[1-9]$|^00:[1-5]\d$/);
+
   await expect
     .poll(async () => page.locator('#mindful-acknowledge-toast').textContent(), {
       timeout: 10_000
     })
     .toMatch(/Today counts, too|今天，也算数/i);
+
+  await expect(page.locator('#mindful-acknowledge-toast')).toHaveAttribute(
+    'data-placement',
+    'center'
+  );
+  await expect
+    .poll(async () => {
+      return page.locator('#mindful-acknowledge-toast').evaluate((el) => {
+        const s = getComputedStyle(el);
+        return {
+          opacity: Number(s.opacity),
+          top: s.top,
+          zIndex: Number(s.zIndex)
+        };
+      });
+    }, { timeout: 3_000 })
+    .toMatchObject({
+      opacity: 1
+    });
+  const toastBox = await page.locator('#mindful-acknowledge-toast').boundingBox();
+  expect(toastBox).toBeTruthy();
+  // 中置：大致在视口中部偏上（非底栏夹缝）
+  expect(toastBox.y).toBeGreaterThan(200);
+  expect(toastBox.y + toastBox.height).toBeLessThan(620);
 
   await expect(ritual).toBeHidden({ timeout: 8_000 });
 
