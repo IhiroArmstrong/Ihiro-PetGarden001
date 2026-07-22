@@ -103,7 +103,7 @@
 
 ## 场景 C：中途主动放弃（未达标）
 
-> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection + 意图回显 → smoke C；回流 hint→toggle 三选一 → smoke J。  
+> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection open → smoke C（**仅**锁 `SessionEndFlow.onSessionEnded` 向 `ReflectionMoment.open` 传入 `intention` / `intentionSource`）；**Choose → Rise → Reflection 意图回显 DOM 可见性**（含 Skip — begin 反向）→ e2e `reflection-intention-echo.spec.js`；回流 hint→toggle 三选一 → smoke J。  
 > **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
 
 1. 开始新会话，进行到一半，点 **Rise**。
@@ -112,7 +112,7 @@
 3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。  
    *[逻辑：pause 时长 + Reflection open 已自动化；序列观感仍人工]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
-   *[逻辑：intention echo 已自动化]*
+   *[逻辑：Choose→Rise→Reflection 顶部 `[data-testid=reflection-intention-echo]` DOM 回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；`SessionEndFlow` 入参传递 → smoke C（非完整用户链）]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
 
 ---
