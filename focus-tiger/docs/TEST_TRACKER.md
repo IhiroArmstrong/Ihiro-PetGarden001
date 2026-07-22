@@ -79,7 +79,7 @@
 | Idle 突然东张西望 | 已通过 | 已关随机池；无自动调度单测 | **[L123](#L123)** `调试面板 · 全入库素材` · **[L140](#L140)** `idle / 坐禅闭眼呼吸基底` |
 | 靠近自动点头 | 已通过 | 行为已拆；无 e2e | **[L139](#L139)** `PointerInteraction · 靠近点头 nodGreeting` |
 | Rise → **LightProgression** 金晕 | 已通过 | 视觉 + 产品语义 | **[L149](#L149)** `LightProgression / 光影物理渐进` |
-| Sleeping 太慢/太快、MilestoneGlow 等 | **有问题** | 观感 | **[L156](#L156)** Sleeping · **[L133](#L133)** MilestoneGlow |
+| MilestoneGlow 金辉节奏 | **有问题** | 观感（Sleeping 已关单） | **[L134](#L134)** MilestoneGlow（4 fps 复测） |
 | Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L137](#L137)** Ambient Soundscape · **[L206](#L206)** `人工 · 静音图标 + Sound` |
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L203–L209**）：**[L203](#L203)** A1 Idle 开局（**已通过**） · **[L208](#L208)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L209](#L209)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
@@ -101,8 +101,10 @@
 
 - **仅单元测试覆盖**：无用户可见变化，逻辑对错已由自动化测试验证，用户不需要点开看。
 - **待人工测试**：已实现，单元测试（如有）已通过，但视觉/体验效果需要用户亲自看一遍才能确认。
-- **已通过**：用户亲自测试确认没问题。
+- **已通过**：用户亲自测试确认没问题（或缺陷已按用户要求撤销/回退，且代码核对确认到位）。
 - **有问题**：用户测试后发现瑕疵，需写清楚问题内容，退回处理。
+- **已放弃/不适用**：产品已决定不做或卸下；**不**再排人工验收，也不挡 `develop`→`main` 合并。
+- **不挡合并（仅调试）**：只在实验室调试面板 / 兼容空键出现，**产品壳 `?product=1` 正式用户路径看不到**；可留技术债，不挡合并。
 
 ---
 
@@ -136,7 +138,7 @@
 | Re-focus Acknowledge / 回归确认 | UI可见 | 已通过 | **用户路径**见场景 B：开 **`/?sessionMinutes=5`**。**Here & Now**：切走 **&gt;60s** → toast + nod-bow。**Flow State / Offline**：同样切走 **&gt;60s** → **不应**出现 Re-focus（离开是预期）。**&lt;20s 无反应属正确**。 | 2026-07-20 晚：DEMO/10s 门槛说明。**2026-07-21**：用户书面 Sit/Here&Now 切页 **测试 OK**；Flow State「结果不对、不匹配」→ 产品预期即与 Here & Now **不同**：Flow **故意无**文案+nod-bow。**同日晚**：用户确认原 8 条独立行批次全部关闭。 | `/?sessionMinutes=5` · **单元/控制器** smoke B（**非**真实切页） | 2026-07-21 |
 | stretchReminder / 舒展提醒 | UI可见 | 待人工测试 | 会话活跃累计满 **2 小时**（离开暂停；两场间隔 ≥30 分钟重置）→ `stretch-reminder` 17 帧 + toast。占共享日额度。演示短会话建议调试面板触发。 | — | 调试面板 / 生产长计时 · DEV：`__mindfulReminderController` | 2026-07-18 |
 | Ambient Soundscape / 静音图标 + Sound | UI可见 | 已通过 | **静音**：右上米色圆形 **音符钮**（在播=音符+斜杠，点一下即静音）。**Sound**：右下蒲团橙 **Sound** **始终可见**；**Sit 开计时后**可展开选曲/音量；未专注点 Sound 会提示先开始专注。**主路径**：默认 Mer-Ka-Ba；音符静音/恢复；专注后 Sound 换曲；**Yin idle 闭目坐禅可见**。**回流**：关→刷新仍关；Rise 后 Sound 仍可见但不可开面板。 | **2026-07-20**：原「Ambient Sound 入口」书面测试 OK。**2026-07-21**：整页空白已修（`_volume` 初始化）。**同日晚**：用户确认原 8 条独立行批次全部关闭（含 Ambient 观感验收）。**2026-07-21 晚**：用户书面——点击右上音乐按钮，背景音乐可自如开关，测试 OK。 | 右上 `.ambient-soundscape__mute` · 右下 `.ambient-soundscape__fab` | 2026-07-21 |
-| EyeTracking / 正式瞳孔 PNG | UI可见 | 有问题 | 运行时已卸下 `pupil-left/right` 叠加跟随；调试勾选已移除。Idle 张望 gaze-p1～p4 **不受影响**。 | 2026-07-19 实测截图：瞳孔叠图错位（楔形/月牙状色块，含闭目帧幽灵瞳孔）；**已决定放弃，不再返工**。结论见 `CORE_LOOP.md`「已废弃：EyeTracking 实时瞳孔跟随鼠标」。 | 已废弃 · 历史素材可留 `/textures/eye-pupils/` 但不接线 | 2026-07-19 |
+| EyeTracking / 正式瞳孔 PNG | UI可见 | 已放弃/不适用 | 运行时已卸下 `pupil-left/right` 叠加跟随；调试勾选已移除。Idle 张望 gaze-p1～p4 **不受影响**。**不再排人工验收**。 | 2026-07-19 实测错位；**已决定放弃**。**2026-07-22**：状态改为「已放弃/不适用」（不挡合并）。结论见 `CORE_LOOP.md`。 | 已废弃 · `/textures/eye-pupils/` 可不接线 | 2026-07-22 |
 | PointerInteraction · 靠近点头 nodGreeting | UI可见 | 已通过 | **默认靠近不再点头**。开局 / idle：指针移入靠近区 → **不应**播 `nod-greeting`。调试面板「点头致意」仍可手工播（**6 fps**，末帧多停约 2 拍）→ 回 idle。 | 2026-07-19：曾要放慢点头→已改。**同日再反馈**：开局默认态仍见点头 → 根因是靠近区仍自动 `nodGreeting`；已拆除靠近自动点头。**2026-07-21**：用户书面——默认只有呼吸/眨眼、靠近不再自动点头，测试 OK。 | 全屏命中层 · DEV：`__pointerInteraction` · 调试「点头致意」 | 2026-07-21 |
 | idle / 坐禅闭眼呼吸基底 | UI可见 | 已通过 | 点「坐禅闭眼」或「重置并 idle 坐禅」：**闭目 pingpong ×2**（frame 1–19）→ **睁眼弧 pingpong ×1**（frame 1–33）→ 往复；同素材硬切、不叠化。 | 2026-07-20：切分两段 pingpong。**2026-07-20 用户书面**：坐禅闭眼 / idle 坐禅各情况测试 OK。 | 调试「坐禅闭眼」 · `__idleOrchestrator` · `#dev-reset-all-local-state-idle` | 2026-07-20 |
 | PointerInteraction · 静止好奇 curiousTilt | UI可见 | 待人工测试 | 靠近区静止 **4s** → 播 **blink-smile** 单次（已替换托腮 tilt-think）→ 180ms 淡回 idle。冷却 6s。 | 2026-07-19：打坐↔托腮仍很跳→已换眨眼类；请确认衔接是否顺。 | 全屏命中层 · DEV：`__pointerInteraction` | 2026-07-19 |
@@ -162,7 +164,7 @@
 | smiling / blink-smile（欢迎与调试） | UI可见 | 待人工测试 | Arrival Welcome 自动播；或调试「坐禅微笑」。pingpong。Celebrating 后持久 Smiling 基底**未接线**（回 Idle）。 | — | Arrival / 调试面板 | 2026-07-18 |
 | welcomeBack / wave-hello 挥手 | UI可见 | 待人工测试 | 调试面板播「挥手欢迎」→ 抬手 → 顶点摇摆 008–012 **播两遍** → 放手（共约 24 拍播放列表）；**无**最高点单帧 hold。**10 分钟自主挥手未接线。** | 2026-07-19：最高处完全重复那一帧须删；最高处左右摇摆须多重复一遍再放手。已改，请复测。 | `#emotion-debug-ui` · `playEmotion('welcomeBack')` | 2026-07-19 |
 | dormantWake / Honesty 睡醒序列 | UI可见 | 已通过 | **主路径**：进 DORMANT 后「Honesty唤醒」选时长 → **`cloak-sleep` 34 帧倒放**（**6 fps** ≈5.7s）→ 定格末帧 + **约 10s 呼吸**并行。**回流**：定格后桥接 Yes/No。**对比**：「唤醒(伸懒腰)」仍走 stretch-reminder，视觉须不同。**不**淡入闭眼呼吸、**不**自动接光环金光。 | **2026-07-21**：用户希望用斗篷倒放替换原 dormant-wake。**2026-07-22**：用户书面——Honesty唤醒(流程)选时长 → 倒放睡醒 + 10s 呼吸 → 离睡着态，**测试 OK**。 | Honesty / `#emotion-debug-ui` · `playEmotion('dormantWake')` | 2026-07-22 |
-| lookAtCursor / wakeUp / snoringZZZ 等 | 纯后端+调试 | 有问题 | `wakeUp` 播伸懒腰（`stretch-reminder` 同源，调试标「唤醒(伸懒腰)」）；Honesty `dormantWake` 现走 **cloak-sleep 倒放**（≠ wakeUp）。`lookAtCursor` 仍空操作；snoringZZZ 仍占位。 | 2026-07-19：唤醒与 Honesty 动画重复→已改 `wakeUp` 接伸懒腰。**2026-07-21**：Honesty 睡醒改 cloak-sleep 倒放。请对比两按钮确认不同。 | EmotionController 调试面板 | 2026-07-21 |
+| lookAtCursor / wakeUp / snoringZZZ 等 | 纯后端+调试 | 不挡合并（仅调试） | **正式用户（`?product=1`）看不到这三项**：产品路径 Honesty 睡醒走 `dormantWake`；舒展提醒走 `stretchReminder`；`main.js` **不**调用 `wakeUp` / `lookAtCursor` / `snoringZZZ`。`wakeUp` 仅实验室调试钮「唤醒(伸懒腰)」；`lookAtCursor` 兼容空操作；`snoringZZZ` unimplemented。调试对比两唤醒钮可自愿抽查，**非合并门禁**。 | 2026-07-19/21：与 Honesty 视觉分离。**2026-07-22**：确认仅调试/占位 → 标「不挡合并（仅调试）」。 | `#emotion-debug-ui`（实验室 `/`；产品壳隐藏） | 2026-07-22 |
 | haloBreathing / 光环呼吸奖励 | UI可见 | 待人工测试 | 调试面板播「光环呼吸奖励」：intro + loop。**fps 已放慢 2×**（intro 5 / loop 4，原 10/8）。Honesty 路径暂不自动接。 | 2026-07-19：播放太快须至少放慢 2×→已改，请复测。 | `#emotion-debug-ui` | 2026-07-19 |
 | blink / 眨眼变体 | UI可见 | 已通过 | Idle 眨眼由 `idleBlinkArc`（×1 pingpong）插入闭目段（×2）之间；调试 blink-smile 仍可手工播。 | 2026-07-20：两段 pingpong 编排。**2026-07-20 用户书面**：idle 坐禅测试 OK。 | 调试 / Idle 编排 | 2026-07-20 |
 | tPose / 显示 3D 垫底（调试） | UI可见 | 待人工测试 | 调试面板 T-Pose → 短暂露出 3D canvas。确认 2D 主线默认隐藏 3D。 | — | `#emotion-debug-ui` | 2026-07-18 |
@@ -174,7 +176,7 @@
 | 「本周陪伴」7 格热力图 UI（Idle 常驻） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 左下（`?` 上方）见 `#weekly-practice-heatmap` 横排 7 格；亮=`null\|/>0`（暖蒲团橙 token），暗=浅 `ink-faint`；无文案/感叹号/点击。**回流**：Sit→Focusing → 热力图隐藏；Rise 回 Idle 再出现。**窄屏 375**：不与 Sit/Sound/`?` 重叠。**DOM**：e2e `weekly-practice-heatmap.spec.js`（Idle 7 格 / Focusing 隐藏 / localStorage seed 亮暗；**非** Hint tip、**非**真实练习后变亮、**非**窄屏重叠）。**Hint**：点「?」须见 `weekly-heatmap` tip（EN「A quiet week…」）——仍人工。 | **2026-07-22**：用户书面——点「?」后箭头指 7 格热力图仍无 Hint → **已补登记** `weekly-heatmap`；请复测。 | `?product=1` · `#weekly-practice-heatmap` | 2026-07-22 |
 | 「一分钟呼吸」微仪式 · 方案调研 | 纯文档 | 仅单元测试覆盖 | 方案见 `MICRO_RITUAL_PLAN.md`。**实现已另开下行**。 | 2026-07-22：先调研后实现 | `docs/MICRO_RITUAL_PLAN.md` | 2026-07-22 |
 | 「一分钟呼吸」微仪式 · Idle 接入 | UI可见 | 待人工测试 | **主路径**：立体入口 → 吸↔呼文案 + smiling@4fps + **4s 独立光环**（不同拍）约 60s → 中下部 toast + SessionComplete 摆尾 → 记账。进行中 FocusHUD 直播。**回流**：Leave 安静退出。桥接时入口隐藏。**DOM**：e2e `micro-ritual.spec.js`（缩短墙钟主路径：入口→呼吸文案→toast+记账+回流；Leave 不记账；**非** smiling@4fps / 摆尾节奏观感）。 | 2026-07-22：实现+HUD/toast。**同日晚用户书面**：主路径除同拍/质感外基本 OK；同拍须 undo；入口间距基本 OK 但四钮质感须协调。 | `?product=1` · `#micro-ritual-idle-entry` | 2026-07-22 |
-| 「一分钟呼吸」· 吸呼相位与 smiling 节奏 | UI可见 | 有问题 | ~~文案↔光环/Yin 同拍~~ **已按用户要求撤销**（回 4s 独立光环 + smiling@4fps，无 scaleY）。现验收：吸/呼约 2.5s 交替；光环自然脉动；勿硬切 idle 闭目。 | **2026-07-22**：用户书面「吸呼同拍观感不行；需要 undo」。已撤销。 | 同上 · `?microRitualMs=15000` | 2026-07-22 |
+| 「一分钟呼吸」· 吸呼相位与 smiling 节奏 | UI可见 | 已通过 | ~~文案↔光环/Yin 同拍~~ **已撤销**。当前实现：吸/呼文案约 **2.5s** 交替；光环 **独立 4s**（`GOLD_BREATH_PERIOD_SEC`）；smiling@4fps；**无** Yin `scaleY` / `ft-yin-guided-breath`；`beginBreath()` 不再传 `periodSec`。 | **2026-07-22**：用户书面「同拍不行；需要 undo」→ `736fdc1` 撤销。**同日代码核对关单**：`LightProgression` / `main.js` / `MicroRitualUI` 无同拍残留；缺陷（错误同拍）已关闭。入口质感等见相邻「待人工测试」行。 | 同上 · `?microRitualMs=15000` | 2026-07-22 |
 | 「一分钟呼吸」· HUD 墙钟与完成 toast 中置 | UI可见 | 待人工测试 | **主路径**：点一分钟呼吸 → 左上 `#hud-time` 从 00:00 递增、状态呈 Focusing/专注中、今日同坐条与金环随进度推进；到点完成文案在**画面中下部约 62%**（避开脸、非底栏夹缝），仍可见摆尾。**回流**：Leave → HUD 回 Calm/00:00（未记账）。**DOM**：e2e 锁 `#hud-time` 递增 + toast `data-placement=center` + boundingBox 大致中置（**非**精确 62% 视觉验收；**非**金环/同坐条脉冲观感）。 | 2026-07-22 午：用户书面仪表不动 + toast 不显眼。**同日复测**：基本 OK；toast 42% 挡脸偏高 → 已下移 62%。**同日又书面**：以 Honesty 补登成功 toast 位置为准，微仪式须同位置（共享常量）。 | 同上 | 2026-07-22 |
 | 「一分钟呼吸」· Idle 入口立体钮与 dock 间距 | UI可见 | 待人工测试 | 四钮**同族立体质感**：Honesty / 一分钟呼吸 / How shall we sit? 次级同尺寸（13px、9×20、同 inset+底边阴影）；Sit 略大主 CTA（15px、11×28）但同一圆角/内高光/底边语言。色可不同（米/青绿/蒲团橙）。gap≈16px。 | **2026-07-22**：用户书面「基本 OK，但颜色、大小、质感还需和谐协调；颜色可以不同；目前质感不统一」。已改同族质感，**须复测**。 | `?product=1` · `#session-start-dock` | 2026-07-22 |
 | 「一分钟呼吸」· SessionComplete 摆尾（禁 Celebrating） | UI可见 | 待人工测试 | 微仪式结束后只见 **摆尾**，**不见** Celebrating 舞；即便当日尚无正式 Focus 达标也如此。同日第二次微仪式仍只摆尾。 | **2026-07-22**：用户书面——一分钟呼吸结束后「好像只有撅屁摇尾，没有跳舞」；问是否原设计。**口径确认：是**（见 `MICRO_RITUAL_PLAN`：从不 Celebrating）。跳舞仅正式 Sit→计时**墙钟达标**当日首次。**同日午**：用户书面「其它方面测试 OK」。 | 同上 | 2026-07-22 |

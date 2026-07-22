@@ -66,6 +66,7 @@
 
 **近期落地（待人工测试）**：
 
+- **TEST_TRACKER 合并前清理（2026-07-22）**：EyeTracking → **已放弃/不适用**；微仪式吸呼同拍行 → 代码核对 `736fdc1` 撤销到位后 **关单（已通过）**；`lookAtCursor` / `wakeUp` / `snoringZZZ` → **不挡合并（仅调试）**（产品壳不可见）。仍开、须人工：**MilestoneGlow**；场景 **O/P**（见 `SCENARIO_TESTS.md`）。不采用书面豁免开 PR。
 - **Hints anchor 校验分层（2026-07-22）**：方案 (1) `HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 双向对齐单测已落地；方案 (2) 语义分组暂缓；方案 (3) e2e bounding rect 写入 Backlog（`PROCESS.md`）
 - **Hints 补登记 + 关闭说明（2026-07-22）**：用户拍板——热力图 / 一分钟呼吸 / Honesty 桥接 / Idle Sound（`ambient-gated`）写入 `ONBOARDING_HINTS`；`help-remedy` 英中文增加「点气泡关掉；下次点 ?」。点「?」补救须铺齐；桥接场景不出 micro-ritual tip。
 - **Honesty 补登成功 toast（2026-07-22）**：用户拍板——成功记账也加轻量确认（对齐微仪式）。`HONESTY_CHECKIN_RECORDED`（EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」）居中 toast ≈4.5s + 桥接并存；abort 仍只出 `HONESTY_PENDING_LOST`。单测锁 `notifyRecorded`。**同日书面**：文案锁定现稿，勿改。
