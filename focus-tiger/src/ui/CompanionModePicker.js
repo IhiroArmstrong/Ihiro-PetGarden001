@@ -153,6 +153,15 @@ export class CompanionModePicker {
   }
 
   /**
+   * Honesty 桥接 CTA 可见时：CSS 强制隐藏 Honesty / 微仪式入口，避免盖住 Yes/No。
+   * @param {boolean} active
+   * @returns {void}
+   */
+  setHonestyBridgeActive(active) {
+    this.dock?.classList.toggle('is-honesty-bridge-active', Boolean(active));
+  }
+
+  /**
    * Reflection / Arrival 等底部叠层打开时：收起三选一，并禁用 hint（禁止可点却静默）。
    * Honesty 气泡期间通常不挡 hint（由 `main.js` sync 决定是否传入 true）。
    * @param {boolean} active
@@ -408,6 +417,11 @@ export class CompanionModePicker {
       }
       #honesty-idle-entry[hidden],
       #micro-ritual-idle-entry[hidden] {
+        display: none !important;
+      }
+      /* 桥接 Yes/No 期间强制收起会叠层的次要入口（防漏 sync） */
+      .session-start-dock.is-honesty-bridge-active #honesty-idle-entry,
+      .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry {
         display: none !important;
       }
       /* 微仪式：与 Honesty / How shall we sit? 同级立体 secondary；青绿系区分「呼吸」 */

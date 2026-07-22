@@ -40,6 +40,8 @@ export class HonestyCheckInController {
    *   完成写入后（计时 / Honesty）；留存 `first_session_complete` 挂这里
    * @param {() => void} [deps.notifyUser] 非模态提示（如 toast）；pending 丢失 abort 时由 main 注入文案
    * @param {() => void} [deps.notifyRecorded] 补登成功记账后的轻量确认（如 toast）；abort 不得调用
+   * @param {() => boolean} [deps.isIdleEntryBlocked]
+   *   外部叠层占用（如 Honesty 桥接 Yes/No）时禁止再出示入口；防 dock 钮盖住桥接
    * @param {() => Date} [deps.now]
    * @param {number} [deps.dormantIdleMs]
    */
@@ -56,6 +58,7 @@ export class HonestyCheckInController {
     onSessionRecorded = () => {},
     notifyUser = () => {},
     notifyRecorded = () => {},
+    isIdleEntryBlocked = () => false,
     now = () => new Date(),
     dormantIdleMs = DORMANT_IDLE_MS
   }) {
@@ -71,11 +74,14 @@ export class HonestyCheckInController {
     this.onSessionRecorded = onSessionRecorded;
     this.notifyUser = notifyUser;
     this.notifyRecorded = notifyRecorded;
+    this.isIdleEntryBlocked = isIdleEntryBlocked;
     this.now = now;
     this.dormantIdleMs = dormantIdleMs;
     /** @type {number | null} */
     this._pendingMinutes = null;
     this._busy = false;
+    /** 点开 Honesty 至桥接结束（或 abort 后离开）期间为 true，入口保持隐藏 */
+    this._checkInFlowOpen = false;
 
     this.ui.handlers = {
       onPromptClick: () => this._onPromptClick(),
@@ -102,8 +108,7 @@ export class HonestyCheckInController {
       this.onSessionRecorded({ durationMinutes: entry.durationMinutes });
     }
     this.ui.hide();
-    this._busy = false;
-    this._pendingMinutes = null;
+    this.endCheckInFlow();
     if (this.stateManager.state === STATES.DORMANT) {
       this.stateManager.setState(STATES.IDLE);
     }
@@ -116,8 +121,7 @@ export class HonestyCheckInController {
   onIncompleteSessionEnded() {
     this.focusSessionEndStore.recordSessionEnded();
     this.ui.hide();
-    this._busy = false;
-    this._pendingMinutes = null;
+    this.endCheckInFlow();
     this.clearFocusGlow();
 
     if (
@@ -135,7 +139,7 @@ export class HonestyCheckInController {
    * @param {object} [_options] 保留兼容；showPrompt* 已废弃
    */
   syncDormantState(_options = {}) {
-    if (this._busy) {
+    if (this._busy || this._checkInFlowOpen) {
       this.syncIdleEntry();
       return;
     }
@@ -165,10 +169,13 @@ export class HonestyCheckInController {
 
   /**
    * Honesty Check-in 入口：Idle 时始终显示小钮（含零完成开局），点进时长三选一。
+   * 点开后至桥接 Yes/No（或 abort 离开）期间入口保持隐藏。
    */
   syncIdleEntry() {
     const canShow =
       !this._busy &&
+      !this._checkInFlowOpen &&
+      !this.isIdleEntryBlocked() &&
       this.ui.phase === 'hidden' &&
       this.stateManager.state !== STATES.FOCUSING &&
       this.stateManager.state !== STATES.CELEBRATE &&
@@ -178,6 +185,16 @@ export class HonestyCheckInController {
       return;
     }
     this.ui.hideIdleEntry();
+  }
+
+  /**
+   * 桥接 Yes/No / 取消后调用：结束补登占用，允许再出示 Honesty 入口。
+   * 不自行 sync UI——由 main `syncHonestyIdleEntry` 在叠层状态就绪后统一投影。
+   */
+  endCheckInFlow() {
+    this._busy = false;
+    this._checkInFlowOpen = false;
+    this._pendingMinutes = null;
   }
 
   _onPromptClick() {
@@ -198,6 +215,7 @@ export class HonestyCheckInController {
 
     this._busy = false;
     this._pendingMinutes = null;
+    this._checkInFlowOpen = true;
     this.ui.hideIdleEntry();
     // 取消进行中的呼吸计时，避免 force 重开后 onBreathComplete 带着空 pending 触发
     this.ui.hide();
@@ -208,6 +226,7 @@ export class HonestyCheckInController {
   _onDurationSelect(minutes) {
     if (this._busy) return;
     this._busy = true;
+    this._checkInFlowOpen = true;
     this._pendingMinutes = minutes;
     this.ui.hideIdleEntry();
 
@@ -242,7 +261,8 @@ export class HonestyCheckInController {
       this.onSessionRecorded({ durationMinutes: entry.durationMinutes });
     }
     this.clearFocusGlow();
-    this._busy = false;
+    // 保持 _busy：入口须藏到桥接 Yes/No（endCheckInFlow）；否则会叠住 Yes/No
+    this.ui.hideIdleEntry();
 
     if (this.stateManager.state === STATES.DORMANT) {
       this.stateManager.setState(STATES.IDLE);

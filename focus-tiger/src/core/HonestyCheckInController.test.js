@@ -239,6 +239,53 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
   assert.equal(completeCalls, 1);
   assert.equal(recordedNotifyCalls, 1);
   assert.equal(stateManager.state, STATES.IDLE);
+  // 桥接未答前保持占用，避免 Honesty 入口叠住 Yes/No
+  assert.equal(controller._busy, true);
+  assert.equal(controller._checkInFlowOpen, true);
+  controller.endCheckInFlow();
+  assert.equal(controller._busy, false);
+  assert.equal(controller._checkInFlowOpen, false);
+});
+
+test('idle entry stays hidden while check-in flow open or bridge blocks', () => {
+  let shown = 0;
+  let hidden = 0;
+  let bridgeBlocks = false;
+  const { controller, stateManager, ui } = createControllerDeps({
+    ui: createUi({
+      showIdleEntry() {
+        shown += 1;
+      },
+      hideIdleEntry() {
+        hidden += 1;
+      }
+    }),
+    extra: {
+      isIdleEntryBlocked: () => bridgeBlocks
+    }
+  });
+  stateManager.setState(STATES.IDLE);
+
+  controller.syncIdleEntry();
+  assert.equal(shown, 1);
+
+  controller.openDurationChoices();
+  assert.equal(controller._checkInFlowOpen, true);
+  controller.syncIdleEntry();
+  assert.equal(hidden >= 1, true);
+
+  ui.handlers.onDurationSelect(10);
+  ui.handlers.onBreathComplete();
+  assert.equal(controller._busy, true);
+  const shownBeforeBridge = shown;
+  bridgeBlocks = true;
+  controller.syncIdleEntry();
+  assert.equal(shown, shownBeforeBridge);
+
+  bridgeBlocks = false;
+  controller.endCheckInFlow();
+  controller.syncIdleEntry();
+  assert.equal(shown, shownBeforeBridge + 1);
 });
 
 test('breath complete without pending minutes aborts: no record, toast, reopen duration', () => {

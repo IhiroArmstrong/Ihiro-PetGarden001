@@ -26,6 +26,7 @@ export class HonestyBridgeCtaController {
    * @param {() => void} deps.onAccept  Yes → 完整 Arrival（由 main 接线）
    * @param {() => void} [deps.onDecline] No / 忽略
    * @param {() => void} [deps.onShown] 面板已展示（供 main 收起会挡 Yes/No 的 Idle 入口）
+   * @param {() => void} [deps.onHidden] 面板关闭（Yes/No/cancel）；供 main `endCheckInFlow`
    * @param {(event: string) => void} [deps.trackEvent] 留存占位（shown / accepted）
    * @param {(ms: number, fn: () => void) => number} [deps.schedule]
    * @param {(id: number) => void} [deps.cancelSchedule]
@@ -36,6 +37,7 @@ export class HonestyBridgeCtaController {
     onAccept,
     onDecline = () => {},
     onShown = () => {},
+    onHidden = () => {},
     trackEvent = () => {},
     schedule = (ms, fn) => window.setTimeout(fn, ms),
     cancelSchedule = (id) => window.clearTimeout(id)
@@ -45,6 +47,7 @@ export class HonestyBridgeCtaController {
     this.onAccept = onAccept;
     this.onDecline = onDecline;
     this.onShown = onShown;
+    this.onHidden = onHidden;
     this.trackEvent = trackEvent;
     this.schedule = schedule;
     this.cancelSchedule = cancelSchedule;
@@ -82,8 +85,10 @@ export class HonestyBridgeCtaController {
 
   hide() {
     this.cancelPending();
+    const wasVisible = this._visible;
     this._visible = false;
     this.ui.hide();
+    if (wasVisible) this.onHidden();
   }
 
   isVisible() {
@@ -102,8 +107,10 @@ export class HonestyBridgeCtaController {
 
   /** @param {boolean} accepted */
   _answer(accepted) {
+    const wasVisible = this._visible;
     this._visible = false;
     this.ui.hide();
+    if (wasVisible) this.onHidden();
     if (accepted) {
       this.trackEvent('dormant_bridge_accepted');
       this.onAccept();

@@ -20,7 +20,8 @@ const PANEL_CSS = [
   'transition:opacity 260ms ease,transform 260ms ease',
   'opacity:0',
   'pointer-events:auto',
-  'z-index:15'
+  /* 须高于 session-start-dock(z16)，否则 Honesty / 微仪式入口会盖住 Yes/No */
+  'z-index:18'
 ].join(';');
 
 /** Reflection 同级按钮权重（不做主次强调）。 */

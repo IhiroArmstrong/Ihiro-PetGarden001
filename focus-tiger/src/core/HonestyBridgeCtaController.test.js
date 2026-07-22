@@ -90,6 +90,39 @@ test('bridge onShown fires after reveal so Idle entries can hide', () => {
   assert.equal(controller.isVisible(), true);
 });
 
+test('bridge onHidden fires on Yes/No and hide()', () => {
+  let hiddenHooks = 0;
+  const ui = {
+    handlers: {},
+    show() {},
+    hide() {}
+  };
+  const controller = new HonestyBridgeCtaController({
+    store: new HonestyBridgeStore({
+      storage: createStorage(),
+      now: () => new Date(2026, 6, 22, 12)
+    }),
+    ui,
+    onAccept: () => {},
+    onDecline: () => {},
+    onHidden: () => {
+      hiddenHooks += 1;
+      assert.equal(controller.isVisible(), false);
+    }
+  });
+
+  controller.onHonestyCheckInComplete();
+  ui.handlers.onNo();
+  assert.equal(hiddenHooks, 1);
+
+  controller.onHonestyCheckInComplete();
+  controller.hide();
+  assert.equal(hiddenHooks, 2);
+
+  controller.hide();
+  assert.equal(hiddenHooks, 2);
+});
+
 test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () => {
   const store = new HonestyBridgeStore({
     storage: createStorage(),

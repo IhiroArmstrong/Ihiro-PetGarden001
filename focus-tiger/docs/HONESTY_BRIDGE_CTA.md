@@ -29,7 +29,7 @@
   - Yes → 完整 Arrival Practice → Companion Mode（不跳过、不直接开表/Ambient）
   - No / 忽略 → idle，无二次挽留
 - **频率**：**每次**补登完成后都可出现（**不限**当日一次）。
-- **叠层（2026-07-22）**：桥接面板可见时须收起会挡 Yes/No 的 Idle 入口（如 `#micro-ritual-idle-entry`）；Sit / How shall we sit? 可仍留在面板下方。`HonestyBridgeCtaController.onShown` → `syncHonestyIdleEntry`。
+- **叠层（2026-07-22）**：桥接面板可见时须收起会挡 Yes/No 的 Idle 入口（`#honesty-idle-entry`、`#micro-ritual-idle-entry`）；Sit / How shall we sit? 可仍留在面板下方。实现：`HonestyBridgeCtaController.onShown` → `syncHonestyIdleEntry`；dock 类 `is-honesty-bridge-active` CSS 强制隐藏；桥接面板 `z-index:18`（高于 dock 16）。Honesty 一点即藏入口，直至桥接 Yes/No（`endCheckInFlow`）。
 
 ### Honesty 同日多次补登（2026-07-19 拍板 B）
 
