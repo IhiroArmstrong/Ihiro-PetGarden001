@@ -52,6 +52,7 @@
 
 **近期落地（待人工测试）**：
 
+- **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。仍开：Reflection（待说明测什么）、Safari Companion 横排（仅 Safari）、「?」朱砂红点（用户倾向改挂系统通知/alert，待拍板）
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（Sit 上方轻量下划线）→ 60s Arrival 风格吸/呼 + smiling@4fps + 呼吸光环 → `recordCompletion(1)` + `markToday(1)` + SessionComplete 摆尾 + toast `micro_ritual.complete`；中途 Leave 安静退出；留存仅 `micro_ritual_complete` console 占位（不抢 `first_session_complete`）。e2e：`e2e/micro-ritual.spec.js`（`?microRitualMs=`）；**动画节奏待人工**
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
 - **应用内提醒偏好 + 横幅 UI 方案 A 已定稿并实现（2026-07-22）**：用户拍板方案 A——设置入口为**右上角时钟图标**（`ReminderPreferenceUI`，挂 `document.body`，紧邻 Ambient 静音钮：静音 `right:14px`，本钮 `right:66px`），**不进热力图 cluster**、始终可见（非 Idle-only）；横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；`InAppReminderBannerController` 忙碌时默认 `busyPolicy:'suppress'`（隐藏不排队；`defer` 方案 B 备选未启用）；已接 `resyncSessionChrome` / `visibilitychange` 回前台 / 冷启动 / `stateManager.onChange`；完成判定用 `DailyCompletionStore.hasCompletedToday()`（含 Honesty / 微仪式）；DEV：`window.__inAppReminder`
@@ -215,6 +216,7 @@
 
 **已知的开放决策 / 待确认事项**：
 
+- **「?」朱砂红点用途（2026-07-22）**：用户书面——红点应「用于系统里面的通知，或者 alert 之类的」。现实现仍挂 onboarding「?」未读提示。待拍板：改挂应用内提醒/通知，还是保留引导未读角标。
 - **应用内提醒横幅 · 待确认**：方案 A（右上角入口 + `busyPolicy:'suppress'`）已实现并接线完毕，**待人工浏览器验收**（见 `TEST_TRACKER`）；**开放决策**：忙碌抑制策略 suppress（方案 A，隐藏不排队，当前默认）vs defer（方案 B，忙时记 pending、回非忙碌态后补展示一次）——目前采用 suppress，如需改为 defer 只需 `InAppReminderBannerController` 构造参数 `busyPolicy: 'defer'`（逻辑已实现并有单测覆盖，仅未启用）
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
 - across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）

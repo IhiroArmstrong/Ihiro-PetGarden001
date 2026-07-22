@@ -102,7 +102,7 @@ hintId：见第一节表
 4. **点击气泡立刻消失**（硬性）：自动提示点击 = markSeen + 隐藏；补救点击仅隐藏。pointer-events 可点；无需单独「知道了」按钮。
 5. 禁止教程类 UI（遮罩、高亮、箭头、分步导航）。
 6. 文案用第一节已过观察式自检的中英稿，写入 locales。
-7. 确认 Ambient 播放时 Rim 有可见缓亮（累计 presenceBoost + 正在播放 lift）；补单测。
+7. ~~确认 Ambient 播放时 Rim 有可见缓亮（累计 presenceBoost + 正在播放 lift）；补单测。~~ **（2026-07-22 关包）**：用户书面砍掉「音乐会加亮」宣传；不再以可见缓亮为验收口径。
 8. 实验室 debug 面板增加「清空 hints-seen」；仅非 ?product=1。
 9. 单元测试：首次显示、已读不再自动显示、补救始终可调、hintId 互不干扰、resolveScene、点击关闭。
 10. 更新 TEST_TRACKER.md；更新 PRODUCT_MOMENTS.md 说明为何不做集中式引导。
