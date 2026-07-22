@@ -8,12 +8,14 @@
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
 
-**自动化冒烟（2026-07-20，Task 1 扩 A/I/K DOM）**：
+**自动化冒烟（2026-07-20，Task 1 扩 A/I/K DOM；2026-07-22 扩 O/P）**：
 - 逻辑层：`src/core/scenario-smoke.test.js`（`npm run test:smoke`）— A–D + **I** + J 回流
-- 浏览器壳：`e2e/product-shell.smoke.spec.js` + `e2e/scenario-a.companion.spec.js`（`npm run test:e2e`）
+- 浏览器壳：`e2e/product-shell.smoke.spec.js` + `e2e/scenario-a.companion.spec.js` + `e2e/weekly-practice-heatmap.spec.js` + `e2e/in-app-reminder.spec.js`（`npm run test:e2e`）
   - **I**：hint 未就绪 → 打开 Arrival（非静默）
   - **A**：Arrival Skip → Here & Now → HUD 计时开始
   - **K**：Offline 选中即开表（与 Here & Now / Flow 一致） · `e2e/scenario-a.companion.spec.js`
+  - **O**：Idle 7 格热力图可见 / Focusing 隐藏 · `e2e/weekly-practice-heatmap.spec.js`
+  - **P**：设提醒 → 回前台 → 横幅 → 关闭不重复 · `e2e/in-app-reminder.spec.js`
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下注明「已自动化 / 仍须人工」。
 
@@ -28,7 +30,7 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–G / I–N |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
 语言切换：**无应用内设置**；DEV 控制台 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下仍可用，同一 bundle）。
@@ -103,7 +105,7 @@
 
 ## 场景 C：中途主动放弃（未达标）
 
-> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection open → smoke C（**仅**锁 `SessionEndFlow.onSessionEnded` 向 `ReflectionMoment.open` 传入 `intention` / `intentionSource`）；**Choose → Rise → Reflection 意图回显 DOM 可见性**（含 Skip — begin 反向）→ e2e `reflection-intention-echo.spec.js`；回流 hint→toggle 三选一 → smoke J。  
+> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection open → smoke C（**仅**锁 `SessionEndFlow.onSessionEnded` 向 `ReflectionMoment.open` 传入 `intention` / `intentionSource`）；**Choose → Rise → Reflection 意图回显 DOM 主路径**（有 Choose 须见回显 / Skip — begin 无回显）→ e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁；该 Bug 见下）；**二次 beginFocus + 空 pending 不抹闩**（2026-07-22 Reading 回显 Bug 红绿对照）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`；回流 hint→toggle 三选一 → smoke J。  
 > **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
 
 1. 开始新会话，进行到一半，点 **Rise**。
@@ -112,7 +114,7 @@
 3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。  
    *[逻辑：pause 时长 + Reflection open 已自动化；序列观感仍人工]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
-   *[逻辑：Choose→Rise→Reflection 顶部 `[data-testid=reflection-intention-echo]` DOM 回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；`SessionEndFlow` 入参传递 → smoke C（非完整用户链）]*
+   *[逻辑：主路径 DOM——Choose→Rise→Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显 → e2e `reflection-intention-echo.spec.js`（**非**本次 Bug 回归锁）；Skip — begin 无回显 → 同文件反向用例；`SessionEndFlow` 入参传递 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`（§7 红绿对照证据）]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
 
 ---
@@ -179,7 +181,77 @@
 
 ---
 
-## 建议补充的故事（相对 A–G）
+## 场景 O：Idle 左下「本周陪伴」7 格热力图
+
+> **用户故事**：Kelly 回到 Idle，左下角 quietly 看见最近 7 天「同坐」痕迹——亮格是来过的一天，暗格是安静日；**不是**断签惩罚、**不是**计分榜，也**不能**点开查详情。  
+> **自动化**：`e2e/weekly-practice-heatmap.spec.js`（3 条）。  
+> **仍须人工**：亮/暗对比是否「不羞辱」、375 窄屏与 dock / Sound / `?` 是否重叠、Hint 尖角是否对准热力图。
+
+1. 打开 `?product=1`，处于 **Idle**（未 Sit / 未 Focusing）。
+2. 左下（`#onboarding-hint-help` 上方）见 `#weekly-practice-heatmap-cluster`：横排 **7 个小格** `#weekly-practice-heatmap`。
+3. **读图**：亮格 = 该日 `PracticeDaysStore` 有记录且 `totalMinutes === null`（旧数据未知）或 `> 0`；暗格 = 真零或未练（浅灰 `--color-ink-faint`）。**无**文案、感叹号、点击、hover 详情。
+4. **Hint（可选）**：点左下 `?` → 应见 `weekly-heatmap` tip（EN「A quiet week of shared sitting…」/ ZH「近日同坐的日子…」），尖角指向 7 格区域。
+5. **让格子变亮（人工 seed 或真实练习）**：完成任一场计时 / Honesty / 一分钟呼吸 → 回 Idle → 对应「今日」格应变亮（e2e 用 localStorage seed 测混合亮暗）。
+6. **回流 · 非 Idle 隐藏**：Sit → 选模式开 Focusing → 热力图 **隐藏**；Rise 回 Idle → **再出现**。
+7. **已知边界**：不可点击下钻；与 HUD 左上 streak-meter（7 点环）分工不同——热力图 = 7 **日**格，streak = 近日节奏环。
+
+---
+
+## 场景 P：应用内提醒（设置 +  gentle 横幅）
+
+> **用户故事**：Kelly 想在固定时分被轻轻提醒「今天还没同坐」。她在 Idle 左下热力图旁设好时间；到点且今日尚未完成时，顶部出现非模态横幅「Yin is waiting / 阿寅在等你」，可 × 关闭；关闭后**本页**不再重复。  
+> **自动化**：`e2e/in-app-reminder.spec.js`（入口面板 + 设时→回前台→横幅→关闭不重复 + Focusing 期间隐藏）。  
+> **仍须人工**：横幅视觉是否够「轻」（不像系统弹窗）、忙碌期策略拍板后复测对应分支。
+
+### P1 · 设置提醒（Idle 左下时钟）
+
+1. Idle 下见 `#weekly-practice-heatmap-cluster` 内 **时钟按钮** `#reminder-preference-toggle`（热力图右侧；**仅 Idle 可见**，Focusing 时整簇隐藏）。
+2. 点击展开面板 `#reminder-preference-panel`：
+   - 标题：`reminder.setting_title`（EN "When should I remind you" / ZH「什么时候提醒你」）
+   - 勾选 **Remind me / 开启提醒** → 写入 `{ hour, minute }` 到 `focus-tiger.reminder-preference.v1`
+   - **Time** 选择器设时（如 09:00）
+3. 取消勾选 → 清除偏好（`null` = 关闭提醒；**无**单独 `enabled` 字段）。
+4. 点击面板外或再点时钟 → 面板收起。
+
+### P2 · 到点横幅（主路径 + 回流）
+
+**触发条件（须同时满足）**：
+
+- 已设置提醒时间（偏好非 `null`）
+- 当前本地时分 **≥** 设定时分
+- **今日尚未完成**（`DailyCompletionStore.hasCompletedToday()`：含计时 / Honesty / 微仪式）
+
+**何时评估**：App **冷启动**；浏览器标签从后台 **切回前台**（`visibilitychange` → visible）；状态从忙碌回到 Idle 等（见 P3）。
+
+5. 设好提醒且已过设定时分、今日零完成 → 顶部居中 `#in-app-reminder-banner` 出现，文案 `reminder.gentle_waiting`（EN "Yin is waiting" / ZH「阿寅在等你」），右侧 **×** 可关。
+6. 点 × 关闭 → **本页会话内不再出现**（即使条件仍满足）。
+7. **回流**：再次 `sync` / 切后台再回前台 → 仍不重复；**完整刷新**或新开 App → 若条件仍满足，**可再次出现**。
+8. **负例**：未到设定时分 → 不出现；今日已完成任一会话 → 不出现；未勾选开启 → 不出现。
+
+### P3 · 忙碌期策略（开放决策 · 非用户可见「第 4 步」）
+
+> **说明**：下列 **suppress / defer** 是**研发任务书里的产品决策项**（实现提醒 UI 时的第 4 条需求：「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是** SCENARIO_TESTS 里的「步骤 4」，也**不是**用户在产品里能点的某个「第 4 步」。当前代码默认 **`suppress`**（`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`）。
+
+**忙碌态** = Arrival 开着 / Focusing / Celebrating / Reflection / 微仪式进行中。
+
+| 策略 | 行为 | 人工怎么验 |
+|---|---|---|
+| **suppress**（当前默认） | 忙碌时 **不展示、不排队**；下次启动或回前台再重新判断 | 到点横幅已出现后 → Sit 开 Focusing → 横幅 **立刻隐藏**；Rise 回 Idle 且仍满足条件 → **可再次出现**（若本页未 dismiss） |
+| **defer**（备选，未启用） | 忙碌时 **挂起一次**；回到非忙碌 Idle 后 **补展示一次** | 须 DEV 改 `busyPolicy: 'defer'` 后复测：Focusing 期间到点 → 不展示；Rise 回 Idle → **应补弹一次** |
+
+拍板前：场景 P 的 e2e 按 **suppress** 断言（Focusing 期间 banner hidden）。
+
+### DEV 辅助（勿当生产路径）
+
+| 需求 | 入口 |
+|---|---|
+| 模拟「当前时刻」 | `__inAppReminder.setNow(new Date(2026, 6, 22, 18, 0))` |
+| 手动重评横幅 | `__inAppReminder.sync()` |
+| 清除时间 override | `__inAppReminder.clearNow()` |
+
+---
+
+## 建议补充的故事（相对 A–G；O/P 已升格为正式场景）
 
 | ID | 故事 | 为何补 |
 |---|---|---|
@@ -189,6 +261,8 @@
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
+| **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint | **已升格** → 见上文「场景 O」；e2e `weekly-practice-heatmap.spec.js` |
+| **P** | 应用内提醒：设时、回前台横幅、关闭不重复、忙碌 suppress | **已升格** → 见上文「场景 P」；e2e `in-app-reminder.spec.js` |
 
 ---
 

@@ -8,8 +8,8 @@ import {
 
 /**
  * 回归：Arrival Choose Reading → Rise → Reflection 顶部须回显意图（真实 DOM）。
- * 锁住「二次 beginFocus 把意图抹成空」类假修好。
- * smoke C 仅锁 SessionEndFlow 入参；本文件锁 Choose→Rise→Reflection 完整用户链。
+ * 锁主路径「有 Choose 则见回显 / Skip — begin 无回显」；**非**「二次 beginFocus 抹空」Bug 回归锁
+ * （该 Bug → SessionIntentionStore.test.js · resolveSessionIntentionLatch 用例 · §7 红绿对照）。
  */
 
 async function riseAndAwaitReflection(page) {
