@@ -81,9 +81,9 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     });
   const toastBox = await page.locator('#mindful-acknowledge-toast').boundingBox();
   expect(toastBox).toBeTruthy();
-  // 中置：大致在视口中部偏上（非底栏夹缝）
-  expect(toastBox.y).toBeGreaterThan(200);
-  expect(toastBox.y + toastBox.height).toBeLessThan(620);
+  // 中置偏低：胸口/蒲团一带（避开脸；非底栏夹缝）
+  expect(toastBox.y).toBeGreaterThan(320);
+  expect(toastBox.y + toastBox.height).toBeLessThan(700);
 
   await expect(ritual).toBeHidden({ timeout: 8_000 });
 

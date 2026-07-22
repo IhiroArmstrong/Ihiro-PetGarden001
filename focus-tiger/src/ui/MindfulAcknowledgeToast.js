@@ -23,8 +23,9 @@ const BASE_CSS = [
  */
 function placementCss(placement) {
   if (placement === 'center') {
+    // 下移到胸口/蒲团一带：避开脸部（原 42% 偏高挡脸）
     return [
-      'top:42%',
+      'top:62%',
       'bottom:auto',
       'z-index:40',
       'padding:14px 22px',
@@ -95,7 +96,7 @@ export class MindfulAcknowledgeToast {
     this.element.style.opacity = '0';
     this.element.style.transform =
       this._placement === 'center'
-        ? 'translate(-50%,-42%)'
+        ? 'translate(-50%,-40%)'
         : 'translate(-50%,10px)';
   }
 
