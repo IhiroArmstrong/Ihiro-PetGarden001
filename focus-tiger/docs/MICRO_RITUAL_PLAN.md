@@ -224,9 +224,9 @@ Idle 点「一分钟呼吸」
 | **E** | 塞进 Companion **面板内**第四项 | **否决**——任务要求独立于三选一 |
 
 **推荐 A**：`#micro-ritual-idle-entry`（名待定），样式可接近 `.session-start-dock__honesty-entry` 但略弱于 Honesty（或同级），文案 i18n 另定。  
-可见性：仅 Idle chrome 显示；Focusing / Arrival / Reflection / 微仪式进行中隐藏或禁用（禁止可点静默）。
+可见性：仅 Idle chrome 显示；Focusing / Arrival / Reflection / Honesty 桥接 / 微仪式进行中隐藏或禁用（禁止可点静默；**桥接时尤其须收起**，否则 dock `z-index:16` 会叠住桥接 Yes/No）。
 
-保护面：Honesty 小钮常驻、Sit 文案不被裁切（窄屏）、hint 展开三选一、dock z-index 高于 Honesty 面板。
+保护面：Honesty 小钮常驻、Sit 文案不被裁切（窄屏）、hint 展开三选一、dock z-index 高于 Honesty 面板；**Honesty 桥接 CTA 期间微仪式入口须 hidden**。
 
 ---
 

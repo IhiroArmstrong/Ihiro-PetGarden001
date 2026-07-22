@@ -25,6 +25,7 @@ export class HonestyBridgeCtaController {
    * @param {{ show: () => void, hide: () => void }} deps.ui
    * @param {() => void} deps.onAccept  Yes → 完整 Arrival（由 main 接线）
    * @param {() => void} [deps.onDecline] No / 忽略
+   * @param {() => void} [deps.onShown] 面板已展示（供 main 收起会挡 Yes/No 的 Idle 入口）
    * @param {(event: string) => void} [deps.trackEvent] 留存占位（shown / accepted）
    * @param {(ms: number, fn: () => void) => number} [deps.schedule]
    * @param {(id: number) => void} [deps.cancelSchedule]
@@ -34,6 +35,7 @@ export class HonestyBridgeCtaController {
     ui,
     onAccept,
     onDecline = () => {},
+    onShown = () => {},
     trackEvent = () => {},
     schedule = (ms, fn) => window.setTimeout(fn, ms),
     cancelSchedule = (id) => window.clearTimeout(id)
@@ -42,6 +44,7 @@ export class HonestyBridgeCtaController {
     this.ui = ui;
     this.onAccept = onAccept;
     this.onDecline = onDecline;
+    this.onShown = onShown;
     this.trackEvent = trackEvent;
     this.schedule = schedule;
     this.cancelSchedule = cancelSchedule;
@@ -93,6 +96,8 @@ export class HonestyBridgeCtaController {
     this.store?.markShown?.();
     this.trackEvent('dormant_bridge_shown');
     this.ui.show();
+    // 须在 isVisible=true 之后：收起 dock 上会叠住 Yes/No 的入口（如一分钟呼吸）
+    this.onShown();
   }
 
   /** @param {boolean} accepted */

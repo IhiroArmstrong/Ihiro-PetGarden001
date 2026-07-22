@@ -337,6 +337,8 @@ async function init() {
       honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
       honestyBridge?.onHonestyCheckInComplete();
+      // onShown 亦会 sync；此处双保险，避免桥接挡住一分钟呼吸入口
+      syncHonestyIdleEntry();
       syncOnboardingAutoHints();
     },
     onPracticeDay: ({ durationMinutes } = {}) => {
@@ -838,6 +840,7 @@ async function init() {
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     honestyCheckInUI.hideIdleEntry();
+    microRitualUI?.hideIdleEntry();
     arrivalChoseThisRun = false;
     pendingAutoStartMode =
       autoStartMode && shouldAutoStartFocusOnModeSelect(autoStartMode)
@@ -852,6 +855,7 @@ async function init() {
     onboardingHints?.markSeen('honesty-optional');
     arrivalPractice.start();
     resyncSessionChrome();
+    syncHonestyIdleEntry();
     syncOnboardingAutoHints();
   }
 
@@ -873,6 +877,9 @@ async function init() {
       if (event === RETENTION_EVENTS.DORMANT_BRIDGE_DECLINED) {
         retentionFunnelStore.trackBridgeDeclined();
       }
+    },
+    onShown: () => {
+      syncHonestyIdleEntry();
     },
     onAccept: () => {
       if (

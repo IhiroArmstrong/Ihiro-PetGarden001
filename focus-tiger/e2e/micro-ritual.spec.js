@@ -130,3 +130,39 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   await expect(entry).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
 });
+
+test('bridge CTA hides micro-ritual entry over Yes/No; No restores entry', async ({
+  page
+}) => {
+  await page.goto('/?product=1');
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
+  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+
+  const entry = page.locator('#micro-ritual-idle-entry');
+  await expect(entry).toBeVisible({ timeout: 15_000 });
+
+  const bridgeReady = await page.evaluate(() => {
+    const bridge = window.__honestyBridge;
+    if (!bridge?.onHonestyCheckInComplete) return false;
+    bridge.onHonestyCheckInComplete();
+    return bridge.isVisible() === true;
+  });
+  expect(bridgeReady).toBe(true);
+
+  const bridge = page.locator('#honesty-bridge-cta');
+  await expect(bridge).toBeVisible({ timeout: 5_000 });
+  await expect(bridge).toContainText(
+    /Want to sit for a bit now too|要不要现在也坐一会儿/
+  );
+  // 回归：一分钟呼吸不得叠在 Yes/No 上（dock z16 > 桥接 z15）
+  await expect(entry).toBeHidden();
+
+  await bridge.getByRole('button', { name: /^(No|先不用)$/i }).click();
+  await expect(bridge).toBeHidden({ timeout: 5_000 });
+  await expect(entry).toBeVisible({ timeout: 10_000 });
+});

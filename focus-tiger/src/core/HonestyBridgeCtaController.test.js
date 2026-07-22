@@ -65,6 +65,31 @@ test('bridge appears immediately after check-in; same day can offer again', () =
   assert.equal(shown, 2);
 });
 
+test('bridge onShown fires after reveal so Idle entries can hide', () => {
+  let shownHooks = 0;
+  const ui = {
+    handlers: {},
+    show() {},
+    hide() {}
+  };
+  const controller = new HonestyBridgeCtaController({
+    store: new HonestyBridgeStore({
+      storage: createStorage(),
+      now: () => new Date(2026, 6, 22, 12)
+    }),
+    ui,
+    onAccept: () => {},
+    onShown: () => {
+      shownHooks += 1;
+      assert.equal(controller.isVisible(), true);
+    }
+  });
+
+  controller.onHonestyCheckInComplete();
+  assert.equal(shownHooks, 1);
+  assert.equal(controller.isVisible(), true);
+});
+
 test('Yes accepts Arrival hook; hide/cancelPending prevents stale reveal', () => {
   const store = new HonestyBridgeStore({
     storage: createStorage(),
