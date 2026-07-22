@@ -35,5 +35,11 @@ focus-tiger/.playwright-browsers/
 focus-tiger/art-reference/models/sources/*
 !focus-tiger/art-reference/models/sources/README.md
 
-# Ingested sprite source archives — frames live under public/sprites/
+# Ingested sprite / video source archives — frames live under public/sprites/
 *-transparent.zip
+*_transparent_bg.zip
+*_transparent.zip
+*transparent*.zip
+
+# Local scratch notes at repo root (authoritative text belongs under focus-tiger/docs/)
+/*.rtf
