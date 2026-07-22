@@ -1,23 +1,24 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-07-20（文档收敛 + 增量对照 `focus-tiger` 实现）
+最近代码核对：2026-07-22（自动化口径收紧：标明单元 / 控制器集成 / DOM 用户链路；修正 Offline/K 与 Skip — begin 过时描述）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
 
-**自动化冒烟（2026-07-20，Task 1 扩 A/I/K DOM；2026-07-22 扩 O/P）**：
-- 逻辑层：`src/core/scenario-smoke.test.js`（`npm run test:smoke`）— A–D + **I** + J 回流
-- 浏览器壳：`e2e/product-shell.smoke.spec.js` + `e2e/scenario-a.companion.spec.js` + `e2e/weekly-practice-heatmap.spec.js` + `e2e/in-app-reminder.spec.js`（`npm run test:e2e`）
-  - **I**：hint 未就绪 → 打开 Arrival（非静默）
-  - **A**：Arrival Skip → Here & Now → HUD 计时开始
-  - **K**：Offline 选中即开表（与 Here & Now / Flow 一致） · `e2e/scenario-a.companion.spec.js`
-  - **O**：Idle 7 格热力图可见 / Focusing 隐藏 · `e2e/weekly-practice-heatmap.spec.js`
-  - **P**：设提醒 → 回前台 → 横幅 → 关闭不重复 · `e2e/in-app-reminder.spec.js`
+**自动化冒烟（2026-07-20，Task 1 扩 A/I/K DOM；2026-07-22 扩 O/P / 意图回显）**：
+- **单元 / 控制器集成**（无浏览器）：`src/core/scenario-smoke.test.js` 等（`npm run test:smoke`）— A–D 门闩与控制器接线 + **I/J** hint 纯函数；**不是**完整用户故事
+- **浏览器 DOM 用户链路**（`npm run test:e2e`，约 **20** 条跨 6 文件）：
+  - `e2e/product-shell.smoke.spec.js` — 产品壳 Sit / 无调试条；实验室重置钮可见
+  - `e2e/scenario-a.companion.spec.js` — **I** hint→三选一面板；**I2** 预选→开 Arrival；**A** Arrival 后 Here & Now 开表；**A2/A3** 预选+Skip — begin 开表；**K** Offline 选中即开表
+  - `e2e/reflection-intention-echo.spec.js` — Choose→Rise→Reflection 顶部回显有/无（主路径 DOM；**非**二次 beginFocus 抹闩 Bug）
+  - `e2e/weekly-practice-heatmap.spec.js` — Idle 7 格可见 / Focusing 隐藏 / localStorage seed 亮暗
+  - `e2e/in-app-reminder.spec.js` — 时钟入口面板 + 设时→回前台→横幅→关闭不重复 + Focusing 隐藏（suppress）
+  - `e2e/micro-ritual.spec.js` — 微仪式主路径 / Leave 不记账 / 桥接叠层隐藏入口（经 `__honestyBridge` 注入，**非**完整 Honesty 补登链）
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
-各场景标题下注明「已自动化 / 仍须人工」。
+各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
 
@@ -39,12 +40,12 @@
 
 ## 场景 A：Kelly 的第一个早晨（全新用户，当日零完成 → Idle）
 
-> **自动化（控制器级）**：A1 / A3–A4 门闩 / A7–A8 完成反馈 / 计时达标 → `src/core/scenario-smoke.test.js`（`npm run test:smoke`）。  
-> **自动化（DOM · Task 1）**：Arrival Skip → Here & Now 开表 → `e2e/scenario-a.companion.spec.js`（**不含**达标/Celebrating）。  
+> **单元 / 控制器集成**：A1 `HonestyCheckInController` 开局 Idle；A3–A4 `ArrivalPractice` 状态机步进 + `canBeginFocusOnCompanionModeSelect` 门闩；A7–A8 `triggerSessionCompletionFeedback` 分流；计时达标 `FocusSession.hasReachedTarget` → `scenario-smoke.test.js`。  
+> **DOM 用户链路**：Arrival 后 Here & Now 开表 / 预选+Skip — begin 开表 / Offline 开表 → `e2e/scenario-a.companion.spec.js`（**到开表为止**；**不含**达标 / Celebrating / Reflection）。  
 > **仍须人工**：Idle 开场观感、Honesty 文案、默认音乐与开关按钮、Arrival 气泡时长、Ambient、Idle 呼吸观感、Celebrating 动画本身。
 
 1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **Idle 闭目坐禅**，**不是** sleeping。  
-   *[逻辑：零完成 → Idle + Honesty prompt 已自动化 smoke A1]*
+   *[单元/控制器：零完成 → `HonestyCheckInController.onAppReady` 保持 IDLE + 调 `showIdleEntry` → smoke A1；**非** Idle 序列 DOM / 闭目观感]*
 2. Idle 时见 **Honesty Check-in** 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 **Sit with Yin** 开始本场计时。
 3. 右下角应有显眼 **「关闭音乐」**（默认 Mer-Ka-Ba；若浏览器拦自动播放，点一次按钮或页面即可解锁）。随时可关，不必先 Sit。
 4. Arrival Practice 展开：
@@ -52,7 +53,7 @@
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）
    c. 呼吸 beat（~5 秒，无倒计时）
    d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
-   *[逻辑：Notice→Choose→READY + Here & Now 可 begin / 门闩失败 已自动化 smoke A3–A4]*
+   *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
 5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。**任一模式选中后即开始 Focus+计时**（不必再点 Sit；用户已点 Sit 进入 Arrival 即视为开始）。
 6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。
 7. 全程观察 Idle：**仅**闭目 pingpong → 眨眼弧固定节奏。  
@@ -61,19 +62,21 @@
    *[概率/观感：不纳入冒烟]*
 8. 达到目标时长 → **当日首次计时达标**：Celebrating → 回落坐姿。  
    **勿提前点 Rise**；Honesty 补登**不**占庆祝戳。  
-   *[逻辑：celebrated 戳 + smoke A7–A8；动画观感仍人工]*
+   *[单元：`triggerSessionCompletionFeedback` + celebrated 戳 → smoke A7–A8；**非** Celebrating 动画 DOM]*
 9. **同日第二次计时达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
-   *[逻辑：二次→sessionComplete 已自动化]*
+   *[单元：同 smoke A7–A8 第二次调用返回 `sessionComplete`；**非**摆尾序列观感]*
 10. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**。
-11. 进入 Reflection Moment：开头回显本次 Choose，三问可独立跳过。
+11. 进入 Reflection Moment：开头回显本次 Choose，三问可独立跳过。  
+    *[DOM 用户链路（有/无回显）→ 场景 C / `reflection-intention-echo.spec.js`；本场景 e2e A **未**跑到 Reflection]*
 12. 回到 Idle；今日 Honesty 提示不应再因零完成自动出现。  
-    *[逻辑：有完成后不再出零完成 prompt 已自动化 smoke A1]*
+    *[单元/控制器：smoke A1 在 `recordCompletion` 后断言仍 IDLE；**未**断言旧版零完成长句 prompt 的 DOM 消失（该 UI 已改为常驻小钮）]*
 
 ---
 
 ## 场景 B：分心后自己走神又回来（Recover / Re-focus Acknowledge）
 
-> **自动化**：模式抑制门闩 + `handleAttentionReturn` 在 Here & Now 触发 / Offline 抑制 → smoke B。  
+> **单元 / 控制器集成**：`shouldSuppressAwayReminders` 模式门闩 + `MindfulReminderController.handleAttentionReturn` 在 Here & Now 触发 emotion / Offline·Flow 抑制 → smoke B。  
+> **未覆盖**：真实切标签页、toast DOM、nod-bow 序列。  
 > **人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。
 
 ### 频率门槛（先记住，否则会以为「坏了」）
@@ -99,43 +102,46 @@
 6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
 7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
 
-*[逻辑：Stay 触发 / Offline·Flow 抑制 → smoke B]*
+*[单元/控制器：Stay 触发 / Offline·Flow 抑制 → smoke B；**非**真实 visibility 切页]*
 
 ---
 
 ## 场景 C：中途主动放弃（未达标）
 
-> **自动化**：未达标不记账 + `MANUAL_END_PAUSE_MS` 后 Reflection open → smoke C（**仅**锁 `SessionEndFlow.onSessionEnded` 向 `ReflectionMoment.open` 传入 `intention` / `intentionSource`）；**Choose → Rise → Reflection 意图回显 DOM 主路径**（有 Choose 须见回显 / Skip — begin 无回显）→ e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁；该 Bug 见下）；**二次 beginFocus + 空 pending 不抹闩**（2026-07-22 Reading 回显 Bug 红绿对照）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`；回流 hint→toggle 三选一 → smoke J。  
+> **单元 / 控制器集成**：未达标不记账（`HonestyCheckInController.onIncompleteSessionEnded`）+ `MANUAL_END_PAUSE_MS` 后 `SessionEndFlow.onSessionEnded` 向 mock `ReflectionMoment.open` 传入 `intention` / `intentionSource` → smoke C（**仅**下游接线入参；**不**从 Choose 写入意图闩）。  
+> **DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Rise → 无回显 → e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁）。  
+> **单元（Bug 回归锁）**：二次 beginFocus + 空 pending 不抹闩 → `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`。  
+> **单元（回流门闩，非 Rise 集成）**：`resolveCompanionHintClick` → toggle → smoke J（**同** smoke I 纯函数；**不**模拟 Rise 后再点 hint 的 DOM）。  
 > **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
 
 1. 开始新会话，进行到一半，点 **Rise**。
 2. 不应播放 Celebrating，不应播放 IncenseGreeting。  
-   *[逻辑：未达标不 `recordCompletion` 已自动化]*
+   *[单元/控制器：`onIncompleteSessionEnded` 不 `recordCompletion` → smoke C；**非** Celebrating 抑制的 DOM]*
 3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。  
-   *[逻辑：pause 时长 + Reflection open 已自动化；序列观感仍人工]*
+   *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；**非** rise-stretch 序列 / 面板淡入观感]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
-   *[逻辑：主路径 DOM——Choose→Rise→Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显 → e2e `reflection-intention-echo.spec.js`（**非**本次 Bug 回归锁）；Skip — begin 无回显 → 同文件反向用例；`SessionEndFlow` 入参传递 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`（§7 红绿对照证据）]*
+   *[DOM 用户链路：Choose→Rise→Reflection 顶部回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；下游入参 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
 
 ---
 
 ## 场景 D：请假一天后的 Honesty Check-in（含桥接 CTA）
 
-> **自动化**：  
-> - **D sleep→wake 串联**：距上次专注 ≥2h → `sync` 进 DORMANT（`cloakSleep`→`sleeping`）→ Honesty 选 20 → `dormantWake` → 离 DORMANT → 桥接 Yes → smoke `D sleep→wake` + `dormantIdle` chain。  
-> - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → 桥接 Yes/No / 同日再出 → smoke D。  
+> **单元 / 控制器集成**：  
+> - **D sleep→wake**：距上次专注 ≥2h → `sync` 进 DORMANT（`cloakSleep`→`sleeping`）→ Honesty 选 20 → `dormantWake` → 离 DORMANT → 桥接 Yes 回调 → smoke `D sleep→wake` + `dormantIdle` chain（harness 调控制器；**非**披毯/睡姿 DOM）。  
+> - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → `HonestyBridgeCtaController` Yes→`onAccept` / No→`onDecline` / 同日再 `onHonestyCheckInComplete` → smoke D（**非**桥接按钮 DOM / Yes 后完整 Arrival UI）。  
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
 1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，或 DEV 改 `focus-tiger.focus-session-end.v1` 后刷新 / 回前台（见下方强制手段）。新用户无结束记录**不会**自动睡。
 2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）。
 3. 选时长 10 / 20 / 30+（选 20）。
 4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
-   *[逻辑：2h→cloak→wake→离 DORMANT 已自动化 smoke D sleep→wake / dormantIdle chain]*
+   *[单元/控制器：2h→cloak→wake→离 DORMANT → smoke D sleep→wake / dormantIdle chain；**非** cloak-sleep 倒放观感]*
 5. 补登结束（记账、离 DORMANT）后：**立刻**出现 Honesty **桥接 CTA**（「要不要现在也坐一会儿？」Yes / No 同级；Welcome 回显可与邀请同屏一小会儿）。  
    - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
    - **No** → idle，无二次挽留。  
    - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。  
-   *[逻辑：桥接 Yes/No/同日再出 已自动化；Yes 后完整 Arrival UI 仍人工]*
+   *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；DOM 叠层隐藏 Honesty/微仪式入口（经 `__honestyBridge` 注入）→ e2e `micro-ritual.spec.js` bridge 行；**非**真实补登→桥接完整用户链；Yes 后完整 Arrival UI 仍人工]*
 6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
    **已知**：Honesty 路径暂不接 halo / 金光。
    **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
@@ -184,7 +190,8 @@
 ## 场景 O：Idle 左下「本周陪伴」7 格热力图
 
 > **用户故事**：Kelly 回到 Idle，左下角 quietly 看见最近 7 天「同坐」痕迹——亮格是来过的一天，暗格是安静日；**不是**断签惩罚、**不是**计分榜，也**不能**点开查详情。  
-> **自动化**：`e2e/weekly-practice-heatmap.spec.js`（3 条）。  
+> **DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（3 条：Idle 7 格可见；Focusing 隐藏；localStorage seed 亮/暗）。  
+> **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、375 窄屏重叠。  
 > **仍须人工**：亮/暗对比是否「不羞辱」、375 窄屏与 dock / Sound / `?` 是否重叠、Hint 尖角是否对准热力图。
 
 1. 打开 `?product=1`，处于 **Idle**（未 Sit / 未 Focusing）。
@@ -200,7 +207,8 @@
 ## 场景 P：应用内提醒（设置 +  gentle 横幅）
 
 > **用户故事**：Kelly 想在固定时分被轻轻提醒「今天还没同坐」。她在 Idle 左下热力图旁设好时间；到点且今日尚未完成时，顶部出现非模态横幅「Yin is waiting / 阿寅在等你」，可 × 关闭；关闭后**本页**不再重复。  
-> **自动化**：`e2e/in-app-reminder.spec.js`（入口面板 + 设时→回前台→横幅→关闭不重复 + Focusing 期间隐藏）。  
+> **DOM 用户链路**：`e2e/in-app-reminder.spec.js`（3 条：时钟入口+面板标题；设时→`visibilitychange` 回前台→横幅文案→× 关闭本页不重复；Focusing 期间 banner hidden / suppress）。  
+> **未覆盖**：取消勾选清空偏好、完整刷新后再出现、未到时/今日已完成负例、defer 策略。  
 > **仍须人工**：横幅视觉是否够「轻」（不像系统弹窗）、忙碌期策略拍板后复测对应分支。
 
 ### P1 · 设置提醒（Idle 左下时钟）
@@ -255,14 +263,14 @@
 
 | ID | 故事 | 为何补 |
 |---|---|---|
-| **I** | 点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival | 回归锁：禁静默无反馈 · **已自动化** smoke I + e2e hint→`.session-start-dock__panel` |
-| **J** | Rise 后再点 hint → **仍展开三选一**（非静默）；再选 Here & Now（门闩就绪后）→ 立刻计时 | 回流路径 · **逻辑** smoke J |
-| **K** | Offline Space：点选后 HUD **不应**走动，再点 Sit 才计时 | 与 Here & Now / Flow 分流 · **已自动化** e2e K |
+| **I** | 点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival | 回归锁：禁静默无反馈 · **单元** smoke I（`resolveCompanionHintClick`→toggle）+ **DOM** e2e I（hint→`.session-start-dock__panel`，不出 Arrival）；**「Honesty 开着时仍可点」未自动化**（仍人工看文案/动效） |
+| **J** | Rise 后再点 hint → **仍展开三选一**（非静默）；再选 Here & Now（门闩就绪后）→ 立刻计时 | 回流 · **单元** smoke J = 与 I 同纯函数（**不**模拟 Rise DOM）；开表回流 DOM 见 e2e A |
+| **K** | Offline Space：Arrival 后点选 → **立刻 Focusing**（与 Here & Now / Flow 一致；**禁止**再逼点 Sit） | **DOM** e2e K（选中即开表）；**单元** `shouldAutoStartFocusOnModeSelect` / smoke A4 |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
-| **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint | **已升格** → 见上文「场景 O」；e2e `weekly-practice-heatmap.spec.js` |
-| **P** | 应用内提醒：设时、回前台横幅、关闭不重复、忙碌 suppress | **已升格** → 见上文「场景 P」；e2e `in-app-reminder.spec.js` |
+| **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint | **已升格** → 见上文「场景 O」；e2e 锁可见/隐藏/seed 亮暗（**非** Hint） |
+| **P** | 应用内提醒：设时、回前台横幅、关闭不重复、忙碌 suppress | **已升格** → 见上文「场景 P」；e2e 锁主路径+suppress（**非** defer/负例） |
 
 ---
 
@@ -290,7 +298,7 @@
    - Idle：正式编排仍为 **呼吸×5→眨眼**；**无** gaze/yawn/tea/ear 随机池（`IdleOrchestrator`）。docs 曾误写「已入随机池」→ 已纠正。  
    - 靠近 **不再**自动 `nodGreeting`。  
    - Honesty **桥接 CTA** 已落地：每次补登后立刻出现；Yes → 完整 Arrival。  
-   - Offline 须再 Sit；Here & Now / Flow 选中即开计时 — 仍成立。  
+   - Offline / Here & Now / Flow：**选中即开计时**（Offline **不再**须二次 Sit；见 e2e K）。  
 2. **数值（如实，2026-07-20）**  
    - Re-focus 展示阈值：60s（`REFOCUS_DISPLAY_THRESHOLD_MS`）  
    - Across-tools idle：30min（`ACROSS_TOOLS_IDLE_THRESHOLD_MS = 1_800_000`）  

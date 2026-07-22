@@ -71,6 +71,7 @@
 - **Honesty 补登成功 toast（2026-07-22）**：用户拍板——成功记账也加轻量确认（对齐微仪式）。`HONESTY_CHECKIN_RECORDED`（EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」）居中 toast ≈4.5s + 桥接并存；abort 仍只出 `HONESTY_PENDING_LOST`。单测锁 `notifyRecorded`。**同日书面**：文案锁定现稿，勿改。
 - **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。同日续：**Reflection / Safari** 主路径顺利后关包；随后用户反馈「多日点 Reading 从未见意图回显」→ 已加固闩逻辑 + e2e（待人工复测回显米色条）。仍开：「?」朱砂红点用途拍板
 - **Reflection 意图回显加固（2026-07-22）**：根因候选为 `beginFocusWithMode` 用 `pendingChoose?.text ?? ''` 在二次开表时抹掉已选意图；现改为 Arrival `onReady` 立刻闩上 + 空 pending 不抹 + 回显样式加强；e2e `reflection-intention-echo.spec.js`
+- **自动化口径核对（2026-07-22）**：通读 `SCENARIO_TESTS` / `TEST_TRACKER`，凡「已自动化/已覆盖/已锁住」改为标明单元 / 控制器集成 / DOM 用户链路及测到源头或仅下游；修正 Offline/K 过时故事、Skip — begin 已有 e2e A2/A3、smoke J≠Reflection、e2e 约 20 条等
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（青绿立体 secondary，Sit 上方）→ 60s 吸/呼 + smiling@4fps + 光环 **4s（不同拍）** → 记账 + SessionComplete + 中置 toast；HUD 直播；桥接时入口隐藏。**同日晚**：用户书面——撤销吸呼同拍；四钮改同族立体质感（次级同尺寸，Sit 略大）。e2e：`micro-ritual.spec.js`；**质感和谐待复测**
 - **「?」朱砂未读点（2026-07-22）**：用户确认保留「?」角朱砂点表示未读；不改挂提醒/通知
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
