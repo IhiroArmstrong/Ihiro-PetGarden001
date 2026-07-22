@@ -1,5 +1,14 @@
 const DEFAULT_VISIBLE_MS = 4_000;
 
+/** 补登成功 / 微仪式完成等「也算数」类确认：同一套中置（勿各写百分比）。 */
+export const MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE = 'center';
+
+/**
+ * 中置锚点（相对 #ui-overlay）：胸口/蒲团一带，避开脸。
+ * Honesty `HONESTY_CHECKIN_RECORDED` 与 `micro_ritual.complete` 必须同值。
+ */
+export const MINDFUL_TOAST_CENTER_TOP = '62%';
+
 const BASE_CSS = [
   'position:absolute',
   'left:50%',
@@ -23,9 +32,8 @@ const BASE_CSS = [
  */
 function placementCss(placement) {
   if (placement === 'center') {
-    // 下移到胸口/蒲团一带：避开脸部（原 42% 偏高挡脸）
     return [
-      'top:62%',
+      `top:${MINDFUL_TOAST_CENTER_TOP}`,
       'bottom:auto',
       'z-index:40',
       'padding:14px 22px',

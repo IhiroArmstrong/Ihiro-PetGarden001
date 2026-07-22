@@ -58,7 +58,10 @@ import { t, tPool, setLocale, getLocale, onLocaleChange } from './locales/i18n.j
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
-import { MindfulAcknowledgeToast } from './ui/MindfulAcknowledgeToast.js';
+import {
+  MindfulAcknowledgeToast,
+  MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
+} from './ui/MindfulAcknowledgeToast.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
@@ -333,11 +336,16 @@ async function init() {
         tigerCharacter.setFocusLevel(0);
       }
     },
+    isIdleEntryBlocked: () =>
+      honestyBridge?.isVisible?.() === true ||
+      arrivalPractice?.isOpen?.() === true ||
+      reflectionMoment?.isOpen?.() === true ||
+      microRitualUI?.isOpen?.() === true,
     onCheckInComplete: () => {
       honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
       honestyBridge?.onHonestyCheckInComplete();
-      // onShown 亦会 sync；此处双保险，避免桥接挡住一分钟呼吸入口
+      // onShown 亦会 sync；此处双保险，避免桥接挡住一分钟呼吸 / Honesty 入口
       syncHonestyIdleEntry();
       syncOnboardingAutoHints();
     },
@@ -351,8 +359,9 @@ async function init() {
       mindfulToast.show(t('HONESTY_PENDING_LOST'));
     },
     notifyRecorded: () => {
+      // 与微仪式 complete 共用同一中置锚点（MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE）
       mindfulToast.show(t('HONESTY_CHECKIN_RECORDED'), {
-        placement: 'center',
+        placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
         visibleMs: 4_500
       });
     },
@@ -405,9 +414,11 @@ async function init() {
   let hasEndedAnySession = false;
 
   function syncHonestyIdleEntry() {
+    const bridgeVisible = honestyBridge?.isVisible?.() === true;
+    companionModePicker.setHonestyBridgeActive(bridgeVisible);
     const blocked =
       arrivalPractice?.isOpen?.() ||
-      honestyBridge?.isVisible?.() ||
+      bridgeVisible ||
       reflectionMoment?.isOpen?.() ||
       microRitualUI?.isOpen?.() ||
       stateManager.state === STATES.FOCUSING ||
@@ -528,7 +539,7 @@ async function init() {
       durationMinutes: MICRO_RITUAL_DURATION_MINUTES
     });
     mindfulToast.show(t('micro_ritual.complete'), {
-      placement: 'center',
+      placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
       visibleMs: 4_500
     });
     endMicroRitualChrome();
@@ -894,6 +905,9 @@ async function init() {
     onShown: () => {
       syncHonestyIdleEntry();
       syncOnboardingAutoHints();
+    },
+    onHidden: () => {
+      honestyCheckIn.endCheckInFlow();
     },
     onAccept: () => {
       onboardingHints?.markSeen('honesty-bridge');

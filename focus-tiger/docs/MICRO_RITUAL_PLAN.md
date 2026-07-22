@@ -16,7 +16,7 @@
 6. 入口：`#micro-ritual-idle-entry`（dock `order: -1`，**青绿立体 secondary**，与 Honesty/Hint 同柱；dock `gap: 16px`）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath({ periodSec: 5 })`（文案 2.5s×2 同拍）。
 7. e2e 缩短：`?microRitualMs=1500`。
 8. **吸/呼同拍（2026-07-22）**：文案相位驱动光环周期与 Yin 轻量 `scaleY`；**不**切 idle-breathing（帧级胸腔素材未按引导相位切分）。像素级胸腔与文案 1:1 需专用素材或帧界标定，属后续增强。
-9. **HUD 直播（2026-07-22 午 · 用户反馈）**：进行中左上 FocusHUD `#hud-time` / Focusing 态 / 今日同坐条 / 金环随墙钟推进（`resolveFocusHudLiveView`）；**仍不启** `FocusSession` / Rise / Celebrating。完成 toast 用 `MindfulAcknowledgeToast` **`placement: 'center'`**（约 **62%** 高度、胸口/蒲团一带，避开脸；非底栏夹缝）。
+9. **HUD 直播（2026-07-22 午 · 用户反馈）**：进行中左上 FocusHUD `#hud-time` / Focusing 态 / 今日同坐条 / 金环随墙钟推进（`resolveFocusHudLiveView`）；**仍不启** `FocusSession` / Rise / Celebrating。完成 toast 用 `MindfulAcknowledgeToast` **`MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE`**（与 Honesty `HONESTY_CHECKIN_RECORDED` **同一中置锚点** ≈62%，胸口/蒲团一带；非底栏夹缝）。
 
 ---
 
