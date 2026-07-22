@@ -3,16 +3,17 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。
 
 ---
 
-## 回归锁工作法（2026-07-19 · 方法级强制；2026-07-20 增补「防改坏」）
+## 回归锁工作法（2026-07-19 · 方法级强制；2026-07-20 增补「防改坏」；2026-07-22 升格 §7「AI 修复验收规范」）
 
 > **叙事全文**：`DEV_WORKFLOW_QUALITY.md`（原则 / 规范 / 指引 / 注意事项；两次讨论整合，后续可逐步完善）。  
 > **背景**：两类事故反复出现——（1）「上次已修 → 再测又无正确效果」（假修好）；（2）「重写编排/转场后，原先已好的观感坏了」（把好的改坏，例 Idle 眨眼闪一下）。  
 > 常见根因不是神秘回滚，而是 Agent **只验 Happy Path、门闩静默失败、无保护面重写、修复长期未 commit**。  
-> 完整门禁见 `.cursor/rules/focus-tiger-regression-lock.mdc`（alwaysApply）。
+> 完整门禁见 `.cursor/rules/focus-tiger-regression-lock.mdc`（alwaysApply）。  
+> **Bug close 口径**：§A–C = 研发收尾；**声称「已修复」以 §D（= `DEV_WORKFLOW_QUALITY.md` §7）为准**——本地 commit / 本地冒烟绿 **不等于** 修复完成。
 
 ### A. 防假修好（交互修复收尾）
 
@@ -20,10 +21,12 @@
 2. 用户可点控件不得对应逻辑静默 `return`（未就绪则禁用）  
 3. 门闩类失败用例 + **确认修复 bug 须留回归锚**（不限门闩；无法自动化 → TEST_TRACKER 人工锁）  
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
-5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过）  
-6. **立刻本地 commit（不必再问）**：用户反馈修复 / 回归锁收尾后 Agent **自动** `git commit`；**仍禁止**未确认 `git push`  
-7. **相关项目文档同批纳入（N15）**：至少更新 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md。**禁止**只改代码、文档滞后；缺文档或未 commit → 视为未完成  
-8. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
+5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过；**禁止**仅用「已绿」总结句——须附命令与 pass/fail 或 CI 链接）  
+6. **立刻本地 commit（不必再问）**：用户反馈修复 / 回归锁收尾后 Agent **自动** `git commit`；**仍禁止**未确认 `git push`（**Bug close 的 push 见 §D**）  
+7. **完成且验证通过后，不得跨任务周期停留在未 commit 状态**：代码和纯文档一视同仁；如 `docs:check` / 对应测试已过，就应在本任务结束前 commit  
+8. **一个 commit = 一个逻辑完整改动**：功能、bug 修复、文档更新各自成提交单元；message 必须说明 **改了什么 + 为什么改**，禁止 `update docs` / `misc` / `wip`
+9. **相关项目文档同批纳入（N15）**：至少更新 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md。**禁止**只改代码、文档滞后；缺文档或未 commit → 视为未完成  
+10. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
 
 ### B. 防把好的改坏（重写 / 改转场开工必做）
 
@@ -36,9 +39,20 @@
 
 触及门闩/叠层/Sit·Rise **或** Idle 呼吸↔眨眼、`play()` cross-fade、Choose/Rise 叠化、pingpong 顶点停留时，默认高回归风险，须显式复检。清单以规则文件为准。
 
-**禁止**：用「单元测试绿了 / 我改过了」代替回流验收与已好清单；禁止在未过门禁时写「已修好」。
+**禁止**：用「单元测试绿了 / 我改过了」代替回流验收与已好清单；禁止在未过门禁时写「已修好」；**禁止**在未完成 §D checklist 时写「已修复」。
 
-**一句话**：防假修好靠回流路径；防把好的改坏靠「改前不变量 + 重写继承契约 + 衔接进高风险表」。
+### D. AI 修复验收规范（Bug close · 2026-07-22 · 强制）
+
+> 叙事全文：`DEV_WORKFLOW_QUALITY.md` §7。与 §A 并行：**§A = 研发收尾最低线；§D = 向用户声称 Bug 已修复的充分必要条件**。
+
+1. **人工复测**仅作体验确认，不能作唯一正确性证据；用户可感知 Bug 须有自动化断言 DOM/界面文本等可见状态  
+2. **「已绿」须可验证**：附实际命令 + 原始 pass/fail，或 CI run 链接；禁止自然语言自证  
+3. **新增回归用例须红绿对照**：修复前必失败（附输出）→ 修复后必通过；Bug 存在时不失败 → 重写用例  
+4. **push + CI 是声称已修复的硬性前提**：须 commit hash + 远端分支名 + CI 状态/链接；本地 commit 不算修复完成  
+5. **文档口径须与覆盖层一致**：「已自动化/已覆盖/已锁住」须标明单元/集成/用户链路；同步核对 `SCENARIO_TESTS.md` / `TEST_TRACKER.md`  
+6. 报告「已修复」时回复须含 **「Bug 修复验收（§7 checklist）」** 五项；任一项「未完成」→ 不得写「已修复」
+
+**一句话**：防假修好靠回流路径；防把好的改坏靠「改前不变量 + 重写继承契约 + 衔接进高风险表」；**Bug close 靠 §7 五证（红 / CI 绿 / push / 文档口径 / 人工体验确认）**。
 
 ---
 
@@ -52,6 +66,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Hints anchor 校验分层（2026-07-22）**：方案 (1) `HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 双向对齐单测已落地；方案 (2) 语义分组暂缓；方案 (3) e2e bounding rect 写入 Backlog（`PROCESS.md`）
 - **Hints 补登记 + 关闭说明（2026-07-22）**：用户拍板——热力图 / 一分钟呼吸 / Honesty 桥接 / Idle Sound（`ambient-gated`）写入 `ONBOARDING_HINTS`；`help-remedy` 英中文增加「点气泡关掉；下次点 ?」。点「?」补救须铺齐；桥接场景不出 micro-ritual tip。
 - **Honesty 补登成功 toast（2026-07-22）**：用户拍板——成功记账也加轻量确认（对齐微仪式）。`HONESTY_CHECKIN_RECORDED`（EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」）居中 toast ≈4.5s + 桥接并存；abort 仍只出 `HONESTY_PENDING_LOST`。单测锁 `notifyRecorded`。**同日书面**：文案锁定现稿，勿改。
 - **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。同日续：**Reflection / Safari** 主路径顺利后关包；随后用户反馈「多日点 Reading 从未见意图回显」→ 已加固闩逻辑 + e2e（待人工复测回显米色条）。仍开：「?」朱砂红点用途拍板
@@ -242,6 +257,7 @@
 - 节奏敲击正念小游戏（「数字木鱼」）
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
 - 角色边界待观察事项
+- **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 
 ---
 
@@ -272,14 +288,17 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
 2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
 3. **同步相关权威文档**（N15：按触及面更新 `EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` 等；禁止只改代码）  
-4. `git add` 相关文件（**代码 + 文档**）→ **立刻自动本地** `git commit`（message 带 Task / Fix 关键词；**不必再问要不要 commit**）  
+4. `git add` 相关文件（**代码 + 文档**）→ **立刻自动本地** `git commit`（**本任务一旦完成且验证通过，不得拖到下个任务周期**；**不必再问要不要 commit**）  
 5. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
 6. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
 
 Agent / Cursor 侧约定：
 
 - **所有实质性 Task** 收尾：过完对应门禁后 **自动本地 `git commit`**，不必再问「要不要 commit」。  
+- **每个 commit 对应一个逻辑完整改动**（功能 / bug 修复 / 文档更新）；不要按时间片零碎提交，也不要把多个已完成任务糊成一个提交。  
+- **commit message 必须说明 what + why**；`update docs`、`misc fix`、`wip` 等无信息量 message 不合格。  
 - **Bug 修复**：代码或修正措施落地后，**同回合**文档 + **立刻** commit（N15）；缺一不可。  
+- **纯文档改动同样遵守**：如 `ARCHITECTURE.md`、`SCENARIO_TESTS.md`、`PROCESS.md` 之类只要验证通过（至少 `docs:check` / 自检通过），也必须在该任务收尾前 commit。  
 - **未经用户口头/书面确认不得 `git push`**。  
 - 完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 
@@ -395,6 +414,15 @@ Agent / Cursor 侧约定：
 - **复杂度评级**：低（浏览器键盘事件监听 + 节奏规律性分析，技术成熟）
 - **价值定位**：锦上添花的可选玩法，非核心刚需
 - **排期**：待 2D 情绪系统主线稳定后，再评估是否开发
+
+### Backlog:Hints anchor e2e bounding rect（Onboarding 提示 DOM 视觉校验）
+
+> **背景（2026-07-22 拍板）**：`HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 机械对齐单测已落地（层级 1）；语义分组测试（层级 2）暂缓，待 md 表是否变机器可读真源再定。本项为层级 3——**唯一能验证「代码配置 = 实际 DOM 视觉位置」** 的手段；前两层均不触碰这一环。
+
+- **目标**：Playwright e2e 在典型场景（Idle / FOCUSING / 点 ? 补救）下，对关键 hint（至少 `ambient-soundscape` vs `ambient-gated`、`help-affordance`、`honesty-optional`）取气泡与锚控件的 `boundingBox`，断言尖角侧/相对位置符合 `placement` / `tip` 配置。
+- **前置**：层级 (1) 对齐单测稳定；人工复测 `TEST_TRACKER` 中 hints 锚点相关行通过。
+- **不在范围**：不做语义分组手写表（见 `ONBOARDING_HINTS.md` §三 anchor 校验分层）；不替代人工观感验收（窄屏 clamp、互斥串行等）。
+- **排期**：**明确 Backlog，非无限延期**；建议排在窄屏 hints 互斥人工 OK 之后、`Lit` 试点扩面拍板之前评估工作量。
 
 ### Backlog:角色边界待观察事项（暂不处理,后续观察）
 
