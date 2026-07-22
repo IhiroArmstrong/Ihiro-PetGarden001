@@ -95,7 +95,8 @@ alwaysApply: true
 - 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（场景 A–D 逻辑 + 产品壳 DOM；全绿 ≠ 序列观感通过）。  
 - 同主题 TEST_TRACKER 行禁止互斥步骤；**观感子项须分列**，禁止笼统一行勾选假完成。  
 - **防把好的改坏**：改前列已好清单；重写须继承观感契约；序列衔接（Idle 眨眼、cross-fade、Choose/Rise 叠化）进高风险表。  
-- **所有实质性 Task 收尾后可自动本地 commit**（交互修复 / 文档 / 调研 / 素材 / 回归锁均适用）：提交到**当前工作分支**（`develop` / `feature/*` / `fix/*`）；**commit 后同回合须汇报** hash + 分支 + 涉及文件（禁止静默提交；并行会话同规）；**禁止**任何会话自动合并进 `main`；**仍禁止**未确认 push。详见 regression-lock「Commit 汇报与分支门禁」。  
+- **所有实质性 Task 收尾后可自动本地 commit**（交互修复 / 文档 / 调研 / 素材 / 回归锁均适用）：提交到**当前工作分支**（`develop` / `feature/*` / `fix/*`）；**commit 后同回合须汇报** hash + 分支 + 涉及文件（禁止静默提交；并行会话同规）；**禁止**任何会话自动合并进 `main`；**仍禁止**未确认 push。详见 regression-lock「Commit 汇报与分支门禁」。 
+- **跨会话指令冲突**：开 PR / 合并 `main` / push 前（距上次同类操作约 10–15 分钟以上）须先查仓库客观状态；发现更晚 PR/tip/CI 活动须先问用户。见 `WORKFLOW.md` 与 regression-lock「跨会话指令冲突处理」。 
 - **已完成且验证通过的改动不得跨任务周期悬置未 commit**：代码与纯文档一视同仁；验证方式按任务类型取 `docs:check` / 相关测试 / 对应自检。  
 - **每个 commit 对应一个逻辑完整改动**（功能 / bug 修复 / 文档更新），而不是按时间片零碎提交。  
 - **commit message 必须写明 what + why**；禁止 `update docs` / `misc fix` / `wip` 之类无信息量提交。  
