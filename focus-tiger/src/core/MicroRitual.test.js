@@ -4,7 +4,6 @@ import {
   MICRO_RITUAL_BREATH_PHASE_MS,
   MICRO_RITUAL_MS_DEFAULT,
   MICRO_RITUAL_MS_MIN,
-  breathCyclePeriodSec,
   isInhalePhase,
   resolveMicroRitualMs
 } from './MicroRitual.js';
@@ -36,19 +35,11 @@ describe('resolveMicroRitualMs', () => {
   });
 });
 
-describe('breath phase sync helpers', () => {
-  it('isInhalePhase: even segments inhale, odd exhale', () => {
+describe('isInhalePhase', () => {
+  it('even segments inhale, odd exhale', () => {
     assert.equal(isInhalePhase(0), true);
     assert.equal(isInhalePhase(MICRO_RITUAL_BREATH_PHASE_MS - 1), true);
     assert.equal(isInhalePhase(MICRO_RITUAL_BREATH_PHASE_MS), false);
     assert.equal(isInhalePhase(MICRO_RITUAL_BREATH_PHASE_MS * 2), true);
-  });
-
-  it('breathCyclePeriodSec is 2× phase (text + halo/Yin same beat)', () => {
-    assert.equal(breathCyclePeriodSec(2500), 5);
-    assert.equal(
-      breathCyclePeriodSec(MICRO_RITUAL_BREATH_PHASE_MS),
-      (2 * MICRO_RITUAL_BREATH_PHASE_MS) / 1000
-    );
   });
 });

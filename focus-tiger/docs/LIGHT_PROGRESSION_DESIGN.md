@@ -27,7 +27,7 @@ Shader，这次只是把"渐变"这个时间维度加进去。
 | 阶段 | 视觉变化 | 实现方式 |
 |---|---|---|
 | Welcome/Notice | 背景冷灰色调；用户点选状态图标后，背景微微泛暖 | 背景容器 CSS 渐变色 transition，点选事件触发一次颜色过渡（约1-2秒） |
-| 呼吸 beat | 画面轻微"推近"感（三层视差）；呼吸律动时光环虚影随吸气/呼气明暗；引导文案场景 Yin 轻量 `scaleY` 同拍 | 背景层 `scale→1.06`、Yin `#sprite-overlay` `scale→1.12`（UI 不缩放）；外围 DOM 光环默认 **4s**（FOCUSING Rim 仍用 `GOLD_BREATH_PERIOD_SEC`）。**Arrival / 微仪式引导**：`beginBreath({ periodSec: 5 })`（文案 2.5s×2）— 前半吸收敛、后半呼晕开，与 Inhale/Exhale 同拍；Yin `ft-yin-guided-breath` 吸略扩、呼收回。**推近保持到 Choose 合十→idle 淡入完成后再拉回**（2026-07-20），避免与角色切换叠成跳动 |
+| 呼吸 beat | 画面轻微"推近"感（三层视差）；呼吸律动时光环虚影随吸气/呼气明暗 | 背景层 `scale→1.06`、Yin `#sprite-overlay` `scale→1.12`（UI 不缩放）；外围 DOM 光环 **4s** 周期脉动（不染皮毛）。**推近保持到 Choose 合十→idle 淡入完成后再拉回**（2026-07-20），避免与角色切换叠成跳动。~~引导文案同拍 periodSec / Yin scaleY~~ **已撤销**（2026-07-22 用户反馈） |
 | Choose 确认 | 角色脚下坐垫处轻轻亮起一圈光；角色播合十 `intentionSet` | 坐垫 CSS 光晕与 `palms-together` 叠加；合十期保持 Dolly 推近；淡入 idle 后再 `releaseDolly` |
 
 以上均为氛围层，不影响 Arrival Practice 已定的跳过机制、数据存储规则（见

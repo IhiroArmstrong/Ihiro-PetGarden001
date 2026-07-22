@@ -34,18 +34,6 @@ export function isInhalePhase(
 }
 
 /**
- * 完整吸+呼周期（秒），供光环 / Yin 引导起伏与文案同拍。
- * @param {number} [phaseMs]
- * @returns {number}
- */
-export function breathCyclePeriodSec(
-  phaseMs = MICRO_RITUAL_BREATH_PHASE_MS
-) {
-  const phase = Math.max(1, Number(phaseMs) || MICRO_RITUAL_BREATH_PHASE_MS);
-  return (2 * phase) / 1000;
-}
-
-/**
  * `?microRitualMs=1500` → 1.5s（e2e）；缺省/非法 → 60s；夹在 MIN–DEFAULT。
  * @param {string} [search]
  * @returns {number}

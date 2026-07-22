@@ -424,81 +424,88 @@ export class CompanionModePicker {
       .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry {
         display: none !important;
       }
-      /* 微仪式：与 Honesty / How shall we sit? 同级立体 secondary；青绿系区分「呼吸」 */
-      .session-start-dock__micro-ritual-entry {
-        order: -1;
+      /* 次级立体 pill 共用质感（尺寸/描边/内高光/底边）；色相可不同 */
+      .session-start-dock__honesty-entry,
+      .session-start-dock__micro-ritual-entry,
+      .session-start-dock__hint {
         align-self: center;
         flex-shrink: 0;
-        border: 1px solid rgba(90, 120, 100, 0.42);
-        background: linear-gradient(
-          180deg,
-          rgba(236, 246, 238, 0.98) 0%,
-          rgba(198, 220, 204, 0.96) 100%
-        );
-        color: #24352a;
+        box-sizing: border-box;
+        border-radius: 999px;
+        border: 1px solid rgba(139, 115, 85, 0.36);
+        padding: 9px 20px;
         font-size: 13px;
         font-weight: 650;
         letter-spacing: 0.02em;
-        cursor: pointer;
-        padding: 8px 18px;
-        border-radius: 999px;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.88) inset,
-          0 2px 0 rgba(90, 120, 100, 0.22),
-          0 3px 8px rgba(44, 31, 20, 0.08);
-        text-decoration: none;
-        max-width: 100%;
         line-height: 1.35;
         text-align: center;
         white-space: normal;
-        transition: transform 120ms ease, box-shadow 120ms ease;
-      }
-      .session-start-dock__micro-ritual-entry:hover {
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.92) inset,
-          0 2px 0 rgba(90, 120, 100, 0.28),
-          0 4px 10px rgba(44, 31, 20, 0.12);
-      }
-      .session-start-dock__micro-ritual-entry:active {
-        transform: translateY(1px) scale(0.98);
-      }
-      .session-start-dock__honesty-entry {
-        order: -2;
-        align-self: center;
-        flex-shrink: 0;
-        border: 1px solid rgba(139, 115, 85, 0.38);
+        max-width: 100%;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--color-ink, #2c1f14);
         background: linear-gradient(
           180deg,
           rgba(255, 252, 244, 0.98) 0%,
           rgba(245, 234, 214, 0.96) 100%
         );
-        color: var(--color-ink, #2c1f14);
-        font-size: 13px;
-        font-weight: 650;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        padding: 8px 18px;
-        border-radius: 999px;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.9) inset,
-          0 2px 0 rgba(165, 130, 85, 0.2),
+          0 2px 0 rgba(165, 130, 85, 0.22),
           0 3px 8px rgba(44, 31, 20, 0.08);
-        text-decoration: none;
-        max-width: 100%;
-        line-height: 1.35;
-        text-align: center;
-        white-space: normal;
-        transition: transform 120ms ease, box-shadow 120ms ease;
+        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
       }
-      .session-start-dock__honesty-entry:hover {
+      .session-start-dock__honesty-entry:hover,
+      .session-start-dock__micro-ritual-entry:hover,
+      .session-start-dock__hint:hover,
+      .session-start-dock__hint.is-expanded {
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.92) inset,
-          0 2px 0 rgba(165, 130, 85, 0.26),
+          0 2px 0 rgba(165, 130, 85, 0.28),
           0 4px 10px rgba(44, 31, 20, 0.12);
       }
-      .session-start-dock__honesty-entry:active {
+      .session-start-dock__honesty-entry:active,
+      .session-start-dock__micro-ritual-entry:active,
+      .session-start-dock__hint:active:not(:disabled) {
         transform: translateY(1px) scale(0.98);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 1px 0 rgba(165, 130, 85, 0.18),
+          0 1px 3px rgba(44, 31, 20, 0.1);
       }
+      .session-start-dock__micro-ritual-entry {
+        order: -1;
+        border-color: rgba(110, 140, 118, 0.42);
+        background: linear-gradient(
+          180deg,
+          rgba(244, 248, 243, 0.98) 0%,
+          rgba(214, 228, 216, 0.96) 100%
+        );
+        color: #2a352c;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 2px 0 rgba(110, 140, 118, 0.22),
+          0 3px 8px rgba(44, 31, 20, 0.08);
+      }
+      .session-start-dock__micro-ritual-entry:hover {
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 2px 0 rgba(110, 140, 118, 0.28),
+          0 4px 10px rgba(44, 31, 20, 0.12);
+      }
+      .session-start-dock__honesty-entry {
+        order: -2;
+      }
+      .session-start-dock__hint:hover,
+      .session-start-dock__hint.is-expanded {
+        background: linear-gradient(
+          180deg,
+          #fffcf4 0%,
+          #ede0c4 100%
+        );
+        filter: none;
+      }
+      /* Sit 主 CTA：同族立体语言，略大一档，不抢成另一套材质 */
       #btn-focus {
         position: static !important;
         left: auto !important;
@@ -513,59 +520,40 @@ export class CompanionModePicker {
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: center;
-        line-height: 1.3;
-        padding: 13px 36px;
-        font-size: 16px;
+        line-height: 1.35;
+        padding: 11px 28px;
+        font-size: 15px;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 230, 210, 0.38);
+        background: linear-gradient(
+          180deg,
+          var(--color-cta-top, #c47a4e) 0%,
+          var(--color-accent, #b5623a) 48%,
+          var(--color-cta-bottom, #8f4a2c) 100%
+        );
+        color: #fff;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.32) inset,
+          0 2px 0 var(--color-cta-edge, #7a3f24),
+          0 3px 8px rgba(44, 31, 20, 0.14);
         word-break: normal;
+        transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+      }
+      #btn-focus:hover {
+        filter: brightness(1.04);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.36) inset,
+          0 2px 0 var(--color-cta-edge, #7a3f24),
+          0 4px 10px rgba(44, 31, 20, 0.16);
       }
       #btn-focus:active {
-        transform: translateY(2px) scale(0.985) !important;
-      }
-      /* 次要钮：米色立体 secondary button；不抢 Sit 主 CTA */
-      .session-start-dock__hint {
-        border: 1px solid rgba(139, 115, 85, 0.32);
-        background: linear-gradient(
-          180deg,
-          rgba(255, 252, 244, 0.97) 0%,
-          var(--color-surface-warm, #f5ead6) 100%
-        );
-        color: var(--color-ink, #2c1f14);
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        padding: 9px 20px;
-        border-radius: 999px;
+        transform: translateY(1px) scale(0.98) !important;
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.88) inset,
-          0 2px 0 rgba(165, 130, 85, 0.22),
-          0 3px 8px rgba(44, 31, 20, 0.1);
-        text-decoration: none;
-        max-width: 100%;
-        line-height: 1.35;
-        text-align: center;
-        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
-      }
-      .session-start-dock__hint:hover,
-      .session-start-dock__hint.is-expanded {
-        color: var(--color-ink, #2c1f14);
-        background: linear-gradient(
-          180deg,
-          #fffcf4 0%,
-          #ede0c4 100%
-        );
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.88) inset,
-          0 2px 0 rgba(165, 130, 85, 0.28),
-          0 4px 10px rgba(44, 31, 20, 0.12);
-        filter: none;
-      }
-      .session-start-dock__hint:active:not(:disabled) {
-        transform: translateY(1px) scale(0.98);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.7) inset,
-          0 1px 0 rgba(165, 130, 85, 0.18),
-          0 1px 3px rgba(44, 31, 20, 0.1);
+          0 1px 0 rgba(255, 255, 255, 0.2) inset,
+          0 1px 0 var(--color-cta-edge, #7a3f24),
+          0 1px 3px rgba(44, 31, 20, 0.12);
       }
       .session-start-dock__hint.is-awaiting-arrival {
         border-color: var(--color-accent, #b5623a);
@@ -685,16 +673,18 @@ export class CompanionModePicker {
       @media (max-width: 479px) {
         .session-start-dock {
           width: min(400px, calc(100vw - 100px));
-          gap: 8px;
+          gap: 12px;
         }
         #btn-focus {
-          font-size: 15px;
-          padding: 11px 28px;
+          font-size: 14px;
+          padding: 10px 22px;
           letter-spacing: 0.01em;
           white-space: normal;
         }
+        .session-start-dock__honesty-entry,
+        .session-start-dock__micro-ritual-entry,
         .session-start-dock__hint {
-          font-size: 13px;
+          font-size: 12px;
           padding: 8px 14px;
         }
       }

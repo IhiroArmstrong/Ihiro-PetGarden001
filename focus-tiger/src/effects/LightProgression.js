@@ -31,16 +31,9 @@ function ensureKeyframes() {
   70% { opacity: 0.45; filter: brightness(0.85) blur(0.2px); transform: scale(0.997); }
   100% { opacity: 0; filter: brightness(1) blur(0); transform: scale(1); }
 }
-/* 前半周期 = Inhale（金光收敛）；后半 = Exhale（向外晕染）。周期须与文案相位 ×2 对齐。 */
 @keyframes ft-breath-halo {
-  0%, 45% { opacity: 0.2; transform: translate(-50%, 0) scale(0.93); }
-  55%, 100% { opacity: 0.48; transform: translate(-50%, 0) scale(1.05); }
-}
-/* Yin 躯干轻量起伏：吸气略扩、呼气收回；与文案同拍。--ft-dolly-scale 由 beginBreath 写入。 */
-@keyframes ft-yin-guided-breath {
-  0%, 100% { transform: translateZ(0) scale(var(--ft-dolly-scale, 1.12)) scaleY(1); }
-  45% { transform: translateZ(0) scale(var(--ft-dolly-scale, 1.12)) scaleY(1.03); }
-  55% { transform: translateZ(0) scale(var(--ft-dolly-scale, 1.12)) scaleY(1.03); }
+  0%, 100% { opacity: 0.18; transform: translate(-50%, 0) scale(0.94); }
+  50% { opacity: 0.48; transform: translate(-50%, 0) scale(1.05); }
 }
 @keyframes ft-cushion-glow {
   0% { opacity: 0; transform: translate(-50%, 0) scale(0.7); }
@@ -124,8 +117,6 @@ export class LightProgression {
     this._warmth = 0;
     this._rimElapsed = 0;
     this._focusLevel = 0;
-    /** @type {number} */
-    this._breathPeriodSec = GOLD_BREATH_PERIOD_SEC;
     ensureKeyframes();
     this._ensureBackdrop();
     this._ensureRimGlow();
@@ -144,26 +135,15 @@ export class LightProgression {
   }
 
   /**
-   * 呼吸 beat：三层视差推近（背景慢 / Yin 快 / UI 不动）+ 光环脉动 + Yin 轻量吸/呼起伏。
+   * 呼吸 beat：三层视差推近（背景慢 / Yin 快 / UI 不动）+ 4s 光环脉动。
    * 光环在角色外围，不染皮毛固有色。
-   * @param {{ periodSec?: number }} [opts]
-   *   `periodSec` 完整吸+呼周期（秒）。默认 `GOLD_BREATH_PERIOD_SEC`（FOCUSING 金光仍 4s）。
-   *   引导文案场景应传入 `2 × 相位 ms`（如微仪式 / Arrival 2.5s → 5s），与 Inhale/Exhale 同拍。
    */
-  beginBreath({ periodSec = GOLD_BREATH_PERIOD_SEC } = {}) {
+  beginBreath() {
     this._breathActive = true;
-    const period = Math.max(
-      0.5,
-      Number(periodSec) || GOLD_BREATH_PERIOD_SEC
-    );
-    this._breathPeriodSec = period;
     this._applyDolly(true);
     this._ensureBreathHalo();
     this._breathHalo.style.display = 'block';
-    this._breathHalo.style.animation = 'none';
-    void this._breathHalo.offsetWidth;
-    this._breathHalo.style.animation = `ft-breath-halo ${period}s ease-in-out infinite`;
-    this._startYinGuidedBreath(period);
+    this._breathHalo.style.animation = `ft-breath-halo ${GOLD_BREATH_PERIOD_SEC}s ease-in-out infinite`;
   }
 
   /**
@@ -174,19 +154,7 @@ export class LightProgression {
    */
   endBreath({ releaseDolly = true } = {}) {
     this._breathActive = false;
-    this._stopYinGuidedBreath();
-    if (releaseDolly) {
-      this._applyDolly(false);
-    } else {
-      // 保持 Dolly 推近：清动画后写回推近 scale，避免掉回 1
-      const overlay = this.getSpriteOverlay();
-      if (overlay) {
-        const yinScale = dollyScaleForLayer('yin', true);
-        overlay.style.setProperty('--ft-dolly-scale', String(yinScale));
-        overlay.style.transition = 'none';
-        overlay.style.transform = `translateZ(0) scale(${yinScale})`;
-      }
-    }
+    if (releaseDolly) this._applyDolly(false);
     if (this._breathHalo) {
       this._breathHalo.style.animation = 'none';
       this._breathHalo.style.display = 'none';
@@ -299,37 +267,10 @@ export class LightProgression {
 
     const overlay = this.getSpriteOverlay();
     if (overlay) {
-      const yinScale = dollyScaleForLayer('yin', dollyIn);
-      overlay.style.setProperty('--ft-dolly-scale', String(yinScale));
+      overlay.style.transition = `transform ${ms}ms ${ease}`;
       overlay.style.transformOrigin = '50% 55%';
-      // 引导呼吸动画占用 transform；仅在非动画时写 inline transform
-      if (!overlay.style.animation || overlay.style.animation === 'none') {
-        overlay.style.transition = `transform ${ms}ms ${ease}`;
-        overlay.style.transform = `translateZ(0) scale(${yinScale})`;
-      }
+      overlay.style.transform = `translateZ(0) scale(${dollyScaleForLayer('yin', dollyIn)})`;
     }
-  }
-
-  /**
-   * 引导呼吸期间：Yin 与文案同拍的轻量 scaleY（叠在 Dolly scale 上）。
-   * @param {number} periodSec
-   */
-  _startYinGuidedBreath(periodSec) {
-    const overlay = this.getSpriteOverlay();
-    if (!overlay) return;
-    const yinScale = dollyScaleForLayer('yin', true);
-    overlay.style.setProperty('--ft-dolly-scale', String(yinScale));
-    overlay.style.transformOrigin = '50% 55%';
-    overlay.style.transition = 'none';
-    overlay.style.animation = 'none';
-    void overlay.offsetWidth;
-    overlay.style.animation = `ft-yin-guided-breath ${periodSec}s ease-in-out infinite`;
-  }
-
-  _stopYinGuidedBreath() {
-    const overlay = this.getSpriteOverlay();
-    if (!overlay) return;
-    overlay.style.animation = 'none';
   }
 
   _ensureBackdrop() {
