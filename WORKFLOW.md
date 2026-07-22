@@ -36,6 +36,19 @@ feature/*        ●        ●
    `git checkout develop`  
    以免误在 `main` 上开发。
 
+### Agent / 自动 commit 汇报（禁止静默提交）
+
+> **权威门禁全文**：[`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。本节与该条款 **口径必须一致**；冲突时以 regression-lock 为准，并回写本文。
+
+1. **允许自动 commit 的范围**：已验证通过的任务收尾后，Agent 可自动 `git commit` 到**当前工作分支**（`develop` 或对应的 `feature/*` / `fix/*`）。  
+2. **禁止静默提交**：每次 commit 后，**必须在当次会话回复**明确写出：  
+   - **commit hash**  
+   - **分支名**  
+   - **涉及文件**（或 `git show --stat` 摘要）  
+   并行会话执行的 commit 同样须汇报；缺此项 = 视同未汇报。  
+3. **禁止自动合并进 `main`**：`git merge … → main` 等操作永远需要用户明确指令。  
+4. **`git push`**：日常仍须用户明确要求（Bug close §7 的「已修复」另须 push + CI，见 regression-lock）。
+
 ---
 
 ## 何时可以把 `develop` 合并进 `main`？
@@ -68,7 +81,10 @@ npm run test:e2e      # Playwright 产品壳 DOM 冒烟
 
 ### 推荐合并步骤
 
+> **注意**：若 GitHub 已对 `main` 开启 **branch protection**（禁止直接 push、要求 PR），下方本地 `git merge --no-ff` **不能**代替「经 PR 合入」；应开 PR：`develop` → `main`，通过检查后再合并。未开保护时，本地 merge + `git push origin main` 仍可用，但须用户明确指令（见上节第 3 条）。
+
 ```bash
+# 无 branch protection 时（须用户明确授权合并进 main）
 git checkout main
 git pull origin main          # 若已与远程同步
 git merge --no-ff develop -m "release: <简述本次稳定点>"
@@ -156,7 +172,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 文档 |
 |---|---|
-| 回归锁、交互修复完工门禁 | `focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`、`.cursor/rules/focus-tiger-regression-lock.mdc` |
+| 回归锁、交互修复完工门禁、**commit 汇报 / 禁止静默提交** | [`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md)、[`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)（「Commit 汇报与分支门禁」） |
 | 场景测试剧本 | `focus-tiger/docs/SCENARIO_TESTS.md` |
 | 功能点验收表 | `focus-tiger/docs/TEST_TRACKER.md` |
 | Task / 角色分工 | `focus-tiger/docs/PROCESS.md`、`focus-tiger/docs/COLLAB.md` |
