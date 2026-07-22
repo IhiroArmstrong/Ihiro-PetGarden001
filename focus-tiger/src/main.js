@@ -378,6 +378,7 @@ async function init() {
       ) {
         return;
       }
+      onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
       microRitualUI.startBreath(MICRO_RITUAL_MS);
     },
@@ -637,6 +638,7 @@ async function init() {
     const arrivalPhase = arrivalPractice?.getStep?.() ?? null;
     return {
       honestyVisible: honestyCheckInUI.phase === 'prompt',
+      honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
       arrivalOpen: arrivalPractice?.isOpen?.() ?? false,
       arrivalPhase:
         arrivalPhase === 'welcome'
@@ -650,7 +652,9 @@ async function init() {
       ambientPanelOpen: ambientSoundscapeUI?.isPanelOpen?.() ?? false,
       isDormant: stateManager.state === STATES.DORMANT,
       arrivalReady: sessionUiGate.arrivalGateReady,
-      hasEverCompletedSession: hasEndedAnySession
+      hasEverCompletedSession: hasEndedAnySession,
+      weeklyHeatmapVisible: weeklyPracticeHeatmap?.isVisible?.() === true,
+      microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true
     };
   }
 
@@ -889,8 +893,10 @@ async function init() {
     },
     onShown: () => {
       syncHonestyIdleEntry();
+      syncOnboardingAutoHints();
     },
     onAccept: () => {
+      onboardingHints?.markSeen('honesty-bridge');
       if (
         !sessionUiGate.canStartArrivalFromChrome({
           isFocusing: stateManager.state === STATES.FOCUSING,
@@ -904,8 +910,10 @@ async function init() {
       startArrivalPracticeFromChrome();
     },
     onDecline: () => {
+      onboardingHints?.markSeen('honesty-bridge');
       emotionController.playEmotion('idle');
       syncHonestyIdleEntry();
+      syncOnboardingAutoHints();
     }
   });
   if (import.meta.env.DEV) {
@@ -971,6 +979,9 @@ async function init() {
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
     onboardingHints?.markSeen('companion-mode');
+    onboardingHints?.markSeen('weekly-heatmap');
+    onboardingHints?.markSeen('micro-ritual');
+    onboardingHints?.markSeen('ambient-gated');
     onboardingHints?.maybeShowAuto('rise-button');
     onboardingHints?.maybeShowAuto('ambient-soundscape');
     requestAnimationFrame(() => onboardingHints?.repositionAll());

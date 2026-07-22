@@ -1,6 +1,7 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
-创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）
+创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
+最后更新：2026-07-22（补登记：weekly-heatmap / micro-ritual / honesty-bridge / Idle ambient-gated；help-remedy 含「点气泡关掉、再点 ?」）
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
 1. **即时提示**：每个功能第一次真正出现时，用阿寅自己的文字气泡多带一句极简说明，用完即隐藏。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
@@ -17,6 +18,7 @@
 |---|---|---|---|---|---|
 | `dormant-open` | （历史）睡着开场 | 保留 id；开场已改 Idle，基本不自动触发 | — | — | 兼容 |
 | `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次看到 Honesty 可忽略提示 | 点 Sit 忽略，或点进补登 | 是 |
+| `honesty-bridge` | Honesty 桥接 Yes/No | "Yes begins Arrival; No stays with idle. Either is fine." / 「选 Yes 进入到达练习；选 No 继续闲坐。都可以。」 | 首次桥接面板可见 | 点 Yes / No | 是 |
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
 | `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
 | `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | 首次 Notice | 点选图标或 Skip | 是 |
@@ -26,16 +28,18 @@
 | `companion-stay` | A4 Here & Now | "Yin stays quiet nearby unless you are away a while." / 「你在时阿寅不多打扰；离开一阵才会轻轻留意。」 | 首次看到该选项（面板打开） | 点选 Here & Now | 是 |
 | `companion-away` | E Offline Space | "Check-ins pause while you are away. Sit again when ready to begin." / 「离开时提醒会暂停。准备开始时再点同坐。」 | 首次看到该选项 | 点选 Offline Space | 是 |
 | `companion-across-tools` | F Flow State | "Away reminders stay off in this mode." / 「这个方式下，离开提醒会保持关闭。」 | 首次看到该选项 | 点选 Flow State | 是 |
-| `ambient-gated` | （历史）未计时点 Sound | 已废止 FOCUSING 门闩；保留 id | — | — | 兼容 |
+| `ambient-gated` | Idle 下 Sound | "Track selection opens once you sit." / 「同坐开始后，曲目选择才会打开。」 | Idle / 桥接等非 Focusing 表面 | 开计时 / 点气泡 | 是 |
 | `ambient-soundscape` | 默认音乐 / 曲目 | "Music is on by default — tap to mute anytime." / 「默认有音乐——随时可点按钮关掉。」 | 首次 FOCUSING 或展开曲目面板 | 开关音乐 / 关面板 | 是 |
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
+| `weekly-heatmap` | Idle 左下 7 格 | "A quiet week of shared sitting — lit days you practiced." / 「近日同坐的日子——亮起的格，是你来过的日子。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
+| `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |
 | `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
-| `help-remedy` | 点「?」补救 | "All the tips for this screen are on the page now." / 「本页的操作提示，现在都在页面上了。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
+| `help-remedy` | 点「?」补救 | "All the tips… Click a tip to dismiss it; tap ? anytime you want them again." / 「本页…点一下气泡即可关掉；下次需要时再点问号。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **17** 个可自动提示 + **1** 个点「?」元文案 + **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+共 **20** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
@@ -48,7 +52,7 @@
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
 - **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），锚在「?」**右侧**、尖角指向「?」；点「?」或点气泡即记已读。
 - **交互**：点「?」同时做三件事：
-  1. 强制展示**本页全部**操作提示（`resolveRemedyHintIds`，忽略已读）：各控件旁气泡 + `help-remedy` 元文案；
+  1. 强制展示**本页全部**操作提示（`resolveRemedyHintIds`，忽略已读）：各控件旁气泡 + `help-remedy` 元文案（含「点气泡关掉；下次点 ?」）；
   2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
   3. 补救期间 `syncVisibleAutos` 不会清掉这些气泡。
 - **与即时提示**：即时「用完即隐藏」；补救不受已读限制。简介卡**不是**分步教程 / 遮罩 coachmark（仍遵守第三节禁令）。

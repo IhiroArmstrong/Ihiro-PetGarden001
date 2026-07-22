@@ -10,6 +10,7 @@ export const HINTS_SEEN_STORAGE_KEY = 'focus-tiger.hints-seen.v1';
 export const HINT_IDS = Object.freeze([
   'dormant-open',
   'honesty-optional',
+  'honesty-bridge',
   'sit-button',
   'how-shall-we-sit',
   'notice',
@@ -24,6 +25,8 @@ export const HINT_IDS = Object.freeze([
   'rise-button',
   'reflection',
   'idle-after-session',
+  'weekly-heatmap',
+  'micro-ritual',
   'help-affordance',
   'help-remedy',
   'help-fallback'
@@ -33,6 +36,7 @@ export const HINT_IDS = Object.freeze([
 export const HINT_LOCALE_KEYS = Object.freeze({
   'dormant-open': 'HINT_DORMANT_OPEN',
   'honesty-optional': 'HINT_HONESTY_OPTIONAL',
+  'honesty-bridge': 'HINT_HONESTY_BRIDGE',
   'sit-button': 'HINT_SIT_BUTTON',
   'how-shall-we-sit': 'HINT_HOW_SHALL_WE_SIT',
   'notice': 'HINT_NOTICE',
@@ -47,6 +51,8 @@ export const HINT_LOCALE_KEYS = Object.freeze({
   'rise-button': 'HINT_RISE_BUTTON',
   'reflection': 'HINT_REFLECTION',
   'idle-after-session': 'HINT_IDLE_AFTER_SESSION',
+  'weekly-heatmap': 'HINT_WEEKLY_HEATMAP',
+  'micro-ritual': 'HINT_MICRO_RITUAL',
   'help-affordance': 'HINT_HELP_AFFORDANCE',
   'help-remedy': 'HINT_HELP_REMEDY',
   'help-fallback': 'HINT_HELP_FALLBACK'
@@ -110,9 +116,29 @@ export function createHintsSeenStore(
 }
 
 /**
+ * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated）。
+ * @param {string[]} ids
+ * @param {object} scene
+ * @returns {void}
+ */
+export function appendIdleChromeHintIds(ids, scene = {}) {
+  if (!Array.isArray(ids)) return;
+  if (scene.weeklyHeatmapVisible && !ids.includes('weekly-heatmap')) {
+    ids.push('weekly-heatmap');
+  }
+  if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
+    ids.push('micro-ritual');
+  }
+  if (!ids.includes('ambient-gated') && !ids.includes('ambient-soundscape')) {
+    ids.push('ambient-gated');
+  }
+}
+
+/**
  * 补救入口：当前 UI 场景 → 应展示的 hintId。
  * @param {object} scene
  * @param {boolean} [scene.honestyVisible]
+ * @param {boolean} [scene.honestyBridgeVisible]
  * @param {boolean} [scene.arrivalOpen]
  * @param {string | null} [scene.arrivalPhase] welcome|notice|breath|choose
  * @param {boolean} [scene.companionExpanded]
@@ -122,6 +148,8 @@ export function createHintsSeenStore(
  * @param {boolean} [scene.isDormant]
  * @param {boolean} [scene.arrivalReady]
  * @param {boolean} [scene.hasEverCompletedSession]
+ * @param {boolean} [scene.weeklyHeatmapVisible]
+ * @param {boolean} [scene.microRitualEntryVisible]
  */
 export function resolveHintForScene(scene = {}) {
   if (scene.reflectionOpen) return 'reflection';
@@ -135,6 +163,7 @@ export function resolveHintForScene(scene = {}) {
     return 'notice';
   }
   if (scene.companionExpanded) return 'companion-mode';
+  if (scene.honestyBridgeVisible) return 'honesty-bridge';
   if (scene.honestyVisible) return 'honesty-optional';
   if (scene.isDormant) return 'dormant-open';
   if (scene.hasEverCompletedSession) return 'idle-after-session';
@@ -158,9 +187,12 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   breathing: 85,
   choose: 85,
   'companion-mode': 85,
+  'honesty-bridge': 82,
   'honesty-optional': 80,
   'how-shall-we-sit': 70,
+  'micro-ritual': 58,
   'ambient-soundscape': 60,
+  'weekly-heatmap': 56,
   'ambient-gated': 55,
   'companion-stay': 50,
   'companion-away': 50,
@@ -213,14 +245,25 @@ export function resolveAutoHintIds(scene = {}) {
     else ids = ['notice'];
   } else if (scene.companionExpanded) {
     ids = ['companion-mode'];
+  } else if (scene.honestyBridgeVisible) {
+    ids = ['honesty-bridge'];
+    if (scene.hasEverCompletedSession) {
+      ids.push('idle-after-session');
+    } else {
+      ids.push('sit-button', 'how-shall-we-sit');
+    }
+    appendIdleChromeHintIds(ids, scene);
   } else if (scene.honestyVisible) {
     ids = ['honesty-optional'];
   } else if (scene.isDormant) {
     ids = ['dormant-open'];
+    appendIdleChromeHintIds(ids, scene);
   } else if (scene.hasEverCompletedSession) {
     ids = ['idle-after-session'];
+    appendIdleChromeHintIds(ids, scene);
   } else {
     ids = ['sit-button', 'how-shall-we-sit'];
+    appendIdleChromeHintIds(ids, scene);
   }
 
   const skipHelpAffordance =

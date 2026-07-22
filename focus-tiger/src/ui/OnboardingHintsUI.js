@@ -32,6 +32,11 @@ const HINT_ANCHORS = Object.freeze({
   'dormant-open': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
   // 锚在 Sit 侧边，避免 Honesty / 桥接面板在上方时被盖住
   'honesty-optional': { selector: '#btn-focus', placement: 'right', tip: 'left' },
+  'honesty-bridge': {
+    selector: '#honesty-bridge-cta',
+    placement: 'above',
+    tip: 'bottom'
+  },
   'sit-button': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
   'how-shall-we-sit': {
     selector: '.session-start-dock__hint',
@@ -78,6 +83,16 @@ const HINT_ANCHORS = Object.freeze({
     tip: 'bottom'
   },
   'idle-after-session': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
+  'weekly-heatmap': {
+    selector: '#weekly-practice-heatmap',
+    placement: 'right',
+    tip: 'left'
+  },
+  'micro-ritual': {
+    selector: '#micro-ritual-idle-entry',
+    placement: 'right',
+    tip: 'left'
+  },
   'help-affordance': {
     selector: '#onboarding-hint-help',
     placement: 'right',

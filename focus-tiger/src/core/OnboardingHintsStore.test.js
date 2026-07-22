@@ -8,7 +8,8 @@ import {
   resolveHintForScene,
   resolveAutoHintIds,
   resolveRemedyHintIds,
-  selectExclusiveAutoHintIds
+  selectExclusiveAutoHintIds,
+  appendIdleChromeHintIds
 } from './OnboardingHintsStore.js';
 
 test('normalizeHintsSeen only keeps known hintIds', () => {
@@ -72,6 +73,10 @@ test('resolveHintForScene picks the most specific surface', () => {
     resolveHintForScene({ companionExpanded: true }),
     'companion-mode'
   );
+  assert.equal(
+    resolveHintForScene({ honestyBridgeVisible: true }),
+    'honesty-bridge'
+  );
   assert.equal(resolveHintForScene({ honestyVisible: true }), 'honesty-optional');
   assert.equal(resolveHintForScene({ isDormant: true }), 'dormant-open');
   assert.equal(
@@ -81,8 +86,40 @@ test('resolveHintForScene picks the most specific surface', () => {
   assert.equal(resolveHintForScene({}), 'sit-button');
 });
 
+test('appendIdleChromeHintIds adds heatmap / micro-ritual / ambient-gated', () => {
+  /** @type {string[]} */
+  const ids = ['sit-button'];
+  appendIdleChromeHintIds(ids, {
+    weeklyHeatmapVisible: true,
+    microRitualEntryVisible: true
+  });
+  assert.deepEqual(ids, [
+    'sit-button',
+    'weekly-heatmap',
+    'micro-ritual',
+    'ambient-gated'
+  ]);
+});
+
 test('resolveRemedyHintIds lists scene hints without help-affordance and expands companion panel', () => {
-  assert.deepEqual(resolveRemedyHintIds({}), ['sit-button', 'how-shall-we-sit']);
+  assert.deepEqual(resolveRemedyHintIds({}), [
+    'sit-button',
+    'how-shall-we-sit',
+    'ambient-gated'
+  ]);
+  assert.deepEqual(
+    resolveRemedyHintIds({
+      weeklyHeatmapVisible: true,
+      microRitualEntryVisible: true
+    }),
+    [
+      'sit-button',
+      'how-shall-we-sit',
+      'weekly-heatmap',
+      'micro-ritual',
+      'ambient-gated'
+    ]
+  );
   assert.deepEqual(resolveRemedyHintIds({ isFocusing: true }), [
     'rise-button',
     'ambient-soundscape'
@@ -93,6 +130,20 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
     'companion-away',
     'companion-across-tools'
   ]);
+  assert.deepEqual(
+    resolveRemedyHintIds({
+      honestyBridgeVisible: true,
+      weeklyHeatmapVisible: true,
+      microRitualEntryVisible: false
+    }),
+    [
+      'honesty-bridge',
+      'sit-button',
+      'how-shall-we-sit',
+      'weekly-heatmap',
+      'ambient-gated'
+    ]
+  );
   assert.ok(!resolveRemedyHintIds({}).includes('help-affordance'));
 });
 
@@ -126,6 +177,7 @@ test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () =>
 test('resolveAutoHintIds includes help-affordance on idle chrome including DORMANT', () => {
   assert.deepEqual(resolveAutoHintIds({ isDormant: true }), [
     'dormant-open',
+    'ambient-gated',
     'help-affordance'
   ]);
   assert.deepEqual(resolveAutoHintIds({ honestyVisible: true }), [
@@ -135,8 +187,23 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   assert.deepEqual(resolveAutoHintIds({}), [
     'sit-button',
     'how-shall-we-sit',
+    'ambient-gated',
     'help-affordance'
   ]);
+  assert.deepEqual(
+    resolveAutoHintIds({
+      weeklyHeatmapVisible: true,
+      microRitualEntryVisible: true
+    }),
+    [
+      'sit-button',
+      'how-shall-we-sit',
+      'weekly-heatmap',
+      'micro-ritual',
+      'ambient-gated',
+      'help-affordance'
+    ]
+  );
   assert.deepEqual(resolveAutoHintIds({ isFocusing: true }), [
     'rise-button',
     'ambient-soundscape'
@@ -145,5 +212,19 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   assert.deepEqual(
     resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'choose' }),
     ['choose']
+  );
+  assert.deepEqual(
+    resolveAutoHintIds({
+      honestyBridgeVisible: true,
+      weeklyHeatmapVisible: true
+    }),
+    [
+      'honesty-bridge',
+      'sit-button',
+      'how-shall-we-sit',
+      'weekly-heatmap',
+      'ambient-gated',
+      'help-affordance'
+    ]
   );
 });

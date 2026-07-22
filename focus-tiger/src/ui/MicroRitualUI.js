@@ -69,6 +69,11 @@ export class MicroRitualUI {
     return this.phase !== 'hidden';
   }
 
+  /** @returns {boolean} */
+  isIdleEntryVisible() {
+    return Boolean(this.idleEntryBtn && !this.idleEntryBtn.hidden);
+  }
+
   /** 墙钟已过秒数（夹在 0…时长）；未开仪式 → 0。供 FocusHUD 直播。 */
   getElapsedSeconds() {
     if (this.phase !== 'breath' || this._startedAt == null) return 0;

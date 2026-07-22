@@ -52,6 +52,11 @@ export class WeeklyPracticeHeatmap {
     return this.cluster;
   }
 
+  /** @returns {boolean} */
+  isVisible() {
+    return this._visible === true;
+  }
+
   /**
    * @param {object} opts
    * @param {boolean} opts.visible  only Idle
