@@ -29,8 +29,10 @@ feature/*        ●        ●
 
 1. **默认**：在 **`develop`** 上工作，或从 `develop` 切 `feature/…` / `fix/…` 分支。  
 2. **禁止**：直接向 **`main`** 提交（含「顺手改一行」）。  
-3. **小步提交**：功能/修复在各自分支上本地 commit；合并进 `develop` 前确保相关文档（至少 `TEST_TRACKER`）已更新。  
-4. **克隆仓库后**建议执行一次：  
+3. **小步提交，但按逻辑完整改动切分**：功能/修复/文档更新在各自分支上本地 commit；每个 commit 对应一个完整改动单元，而不是按时间点零散提交。  
+4. **完成且验证通过后立即 commit**：无论代码还是纯文档，只要本任务的校验已通过（如 `docs:check`、相关测试、自检清单），不得把改动带到下一个任务周期仍未 commit。  
+5. **commit message 必须说明 what + why**：至少能看出「改了什么、为什么改」；禁止 `update docs`、`misc fix`、`wip` 这类无信息量 message。  
+6. **克隆仓库后**建议执行一次：  
    `git checkout develop`  
    以免误在 `main` 上开发。
 
@@ -62,7 +64,7 @@ npm run test:e2e      # Playwright 产品壳 DOM 冒烟
 
 - 无 **已知回归**（含门闩静默失败、已验收观感被改坏）  
 - 触及行为/情绪/架构时，权威 md 已与代码同批更新（N15）  
-- 合并前在 `develop` 上完成 **本地 commit**；`git push` 仍须团队约定后执行  
+- 合并前在 `develop` / `feature/*` / `fix/*` 上完成 **本地 commit**；且这些 commit 已按**逻辑完整改动**组织、message 可读；`git push` 仍须团队约定后执行  
 
 ### 推荐合并步骤
 
@@ -167,6 +169,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
 | 修 bug | 从 `develop` 切 `fix/…` |
+| 纯文档更新 | 在 `develop` 或 `feature/…` 上改、跑 `docs:check`、**立刻 commit** |
 | 发布稳定版 | 过门禁 → `main` ← merge `develop` → 可选 `git tag` |
 | 稳定版紧急修 | 从 `main` 切 `hotfix/…` → 合并回 `main` + `develop` |
 | 开发改坏了 | `develop` 上 revert / reset；**不要**先动 `main` |
