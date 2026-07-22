@@ -1,7 +1,7 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
 创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-07-22（补登记：weekly-heatmap / micro-ritual / honesty-bridge / Idle ambient-gated；help-remedy 含「点气泡关掉、再点 ?」）
+最后更新：2026-07-22（ambient-soundscape 锚点改右上 mute；anchor map 抽至 `onboardingHintAnchors.js` + 单测）
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
 1. **即时提示**：每个功能第一次真正出现时，用阿寅自己的文字气泡多带一句极简说明，用完即隐藏。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
@@ -59,7 +59,7 @@
 
 ### 气泡视觉（与按钮/输入框区分）
 
-- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；Sound → FAB；Reflection → 面板**上方**，不挡 Skip）。
+- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐** → 右上 `.ambient-soundscape__mute`；**Idle Sound gated** → 右下 `.ambient-soundscape__fab`；Reflection → 面板**上方**，不挡 Skip）。
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
 - **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**仍可同时铺开本页全部 hints（不受互斥）。

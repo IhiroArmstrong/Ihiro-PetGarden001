@@ -13,6 +13,7 @@ import {
   resolveRemedyHintIds,
   selectExclusiveAutoHintIds
 } from '../core/OnboardingHintsStore.js';
+import { ONBOARDING_HINT_ANCHORS } from './onboardingHintAnchors.js';
 import './ft-onboarding-hint-bubble.js';
 import {
   NotificationBadge,
@@ -24,87 +25,9 @@ if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
 }
 
 /**
- * hintId → 锚定目标与尖角朝向。
- * placement: 气泡相对锚点的方位；tip: CSS 尖角朝向（指向锚点）。
- * @type {Record<string, { selector: string, placement: string, tip: string }>}
+ * hintId → 锚定目标与尖角朝向（权威 map：`onboardingHintAnchors.js`）。
  */
-const HINT_ANCHORS = Object.freeze({
-  'dormant-open': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
-  // 锚在 Sit 侧边，避免 Honesty / 桥接面板在上方时被盖住
-  'honesty-optional': { selector: '#btn-focus', placement: 'right', tip: 'left' },
-  'honesty-bridge': {
-    selector: '#honesty-bridge-cta',
-    placement: 'above',
-    tip: 'bottom'
-  },
-  'sit-button': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
-  'how-shall-we-sit': {
-    selector: '.session-start-dock__hint',
-    placement: 'right',
-    tip: 'left'
-  },
-  notice: { selector: '#arrival-practice, #btn-focus', placement: 'above', tip: 'bottom' },
-  breathing: { selector: '#arrival-practice, #btn-focus', placement: 'above', tip: 'bottom' },
-  choose: { selector: '#arrival-practice, #btn-focus', placement: 'above', tip: 'bottom' },
-  'companion-mode': {
-    selector: '.session-start-dock__panel, .session-start-dock__hint',
-    placement: 'above',
-    tip: 'bottom'
-  },
-  'companion-stay': {
-    selector: '.session-start-dock__panel',
-    placement: 'above',
-    tip: 'bottom'
-  },
-  'companion-away': {
-    selector: '.session-start-dock__panel',
-    placement: 'above',
-    tip: 'bottom'
-  },
-  'companion-across-tools': {
-    selector: '.session-start-dock__panel',
-    placement: 'above',
-    tip: 'bottom'
-  },
-  'ambient-gated': {
-    selector: '.ambient-soundscape__fab',
-    placement: 'left',
-    tip: 'right'
-  },
-  'ambient-soundscape': {
-    selector: '.ambient-soundscape__fab',
-    placement: 'left',
-    tip: 'right'
-  },
-  'rise-button': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
-  reflection: {
-    selector: '#tiger-reflection-moment',
-    placement: 'above',
-    tip: 'bottom'
-  },
-  'idle-after-session': { selector: '#btn-focus', placement: 'above', tip: 'bottom' },
-  'weekly-heatmap': {
-    selector: '#weekly-practice-heatmap',
-    placement: 'right',
-    tip: 'left'
-  },
-  'micro-ritual': {
-    selector: '#micro-ritual-idle-entry',
-    placement: 'right',
-    tip: 'left'
-  },
-  'help-affordance': {
-    selector: '#onboarding-hint-help',
-    placement: 'right',
-    tip: 'left'
-  },
-  'help-remedy': {
-    selector: '#onboarding-hint-help',
-    placement: 'right',
-    tip: 'left'
-  },
-  'help-fallback': { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
-});
+const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 
 function resolveAnchorEl(selectorList) {
   for (const sel of String(selectorList)
