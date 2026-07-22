@@ -20,6 +20,7 @@
 | 2026-07-22 | AI 修复验收：红绿对照、可验证证据、push+CI 才算完成 | **§7 AI 修复验收规范**（Bug close 硬性 checklist） |
 | 2026-07-22 | 任何任务一旦完成且验证通过，必须立即 commit；commit 按逻辑完整改动组织并说明 what/why | **§2 / §3 / §3.5 Git 节奏补强** |
 | 2026-07-22 | 废止「不必询问 commit」；可自动 commit + 同回合汇报；禁静默提交与自动合并 main | **§2.4 / §3.5 + regression-lock「Commit 汇报」** |
+| 2026-07-22 | CI workflow 本身缺 `npm ci` 导致假红；基础设施 Bug 也须红绿证据 | **§7.7 CI 基础设施案例** |
 
 **一句话（整套机制）**：  
 回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）。
@@ -367,6 +368,7 @@
 | 2026-07-22 | §7 升格至 `focus-tiger-regression-lock.mdc` + `PROCESS.md` §D |
 | 2026-07-22 | 补强 commit 纪律：验证通过后不得跨任务周期悬置未 commit；commit 按逻辑完整改动组织；message 必须写 what + why；纯文档任务同样适用 |
 | 2026-07-22 | 对齐 regression-lock「Commit 汇报与分支门禁」：可自动 commit + 同回合汇报 hash/分支/文件；禁止静默提交与自动合并进 `main` |
+| 2026-07-22 | 新增 §7.7：CI 缺 `npm ci` 假红案例；红 [`29916112037`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29916112037) → 绿 [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318) @ `7b90283` |
 
 ---
 
@@ -427,3 +429,19 @@
 ```
 
 任一项为「未完成」→ 回复正文**不得**写「已修复 / 已修好」，只可写诚实进度（如「本地已改，CI 尚未跑」）。
+
+### 7.7 案例：CI 基础设施本身也可能有 Bug（须留红绿证据）
+
+> **教训**：§7 的红绿对照不只适用于产品代码。**CI workflow / 门禁脚本**漏步骤时，也会在「代码正确、本地全绿」时给出假红；修基础设施同样要记红绿，禁止只写「加了 npm ci」就当完成。
+
+**事故（2026-07-22）**：`develop` 首次成功 push 后，`focus-tiger doc-contract check` 在 tip `60c129a` 上 **failure**（非产品逻辑回归）。
+
+| 项 | 记录 |
+|---|---|
+| **症状** | Job 步 `Behavioral contracts (gate + scenario smoke)` 失败 |
+| **红（修复前）** | CI：[`29916112037`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29916112037) / [`29915316012`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29915316012) → `ERR_MODULE_NOT_FOUND: Cannot find package 'three'`（`PoseManager.js`）。本地复现：暂时移走 `node_modules/three` 后跑同切片 → 同错。根因：workflow **未** `npm ci`；`scenario-smoke` → `HonestyCheckInController` → `EmotionController` → `PoseManager` → `three`。本地有 `node_modules` 故一直绿。 |
+| **修** | `7b90283`：workflow 增加 `npm ci`（+ npm cache）；`DOC_CODE_CONTRACT` / `TEST_TRACKER` / `PROCESS` 注明依赖 |
+| **绿（修复后 · CI）** | push `7b90283` @ `develop` → [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318) → **completed / success**（`head_sha=7b90283…`） |
+| **口径** | 此例证明：本地绿 ≠ CI 绿；CI 红 ≠ 产品 Bug。基础设施修复也走「红输出 + 绿 CI 链接」归档。 |
+
+**注意**：本案例**不**单独 close「意图回显」产品 Bug——该 Bug 另有单元 / e2e / 人工复测门闩；本条只锁 **doc-contract workflow 缺依赖** 这一基础设施问题。
