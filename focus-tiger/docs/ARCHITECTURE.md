@@ -47,8 +47,33 @@ StateManager(唯一状态源) → MoodController(只管播哪个动画)
 TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 ```
 
-合法转移（产品路径）：`IDLE ↔ DORMANT`、`IDLE → FOCUSING → CELEBRATE|IDLE`、`CELEBRATE → IDLE`。  
+<!-- state-machine-contract:begin -->
+
+> **机器块 · 勿手改**。真源：`src/core/StateManager.js`（`STATES` + `LEGAL_STATE_TRANSITIONS`）。刷新：`npm run state:doc-sync`。
+
+合法转移（产品路径）：`IDLE ↔ DORMANT`、`IDLE → FOCUSING → CELEBRATE|IDLE`、`CELEBRATE → IDLE`。
+
 `setState` **不阻断**非法转移，但 `console.warn`（`LEGAL_STATE_TRANSITIONS`）。`BREAK` 已从枚举删除（无生产路径）。边角观察：`docs/EDGE_CASES.md`。
+
+### `STATES`
+
+| enum key | value |
+|---|---|
+| `IDLE` | `IDLE` |
+| `FOCUSING` | `FOCUSING` |
+| `CELEBRATE` | `CELEBRATE` |
+| `DORMANT` | `DORMANT` |
+
+### `LEGAL_STATE_TRANSITIONS`
+
+| from | allowed next |
+|---|---|
+| `IDLE` | `FOCUSING`, `DORMANT` |
+| `FOCUSING` | `IDLE`, `CELEBRATE` |
+| `CELEBRATE` | `IDLE` |
+| `DORMANT` | `IDLE` |
+
+<!-- state-machine-contract:end -->
 
 ---
 
@@ -333,7 +358,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 | 步 | 内容 | 状态 |
 |---|---|---|
-| **1** | **JSDoc + 门闩/共享资源契约**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4 | **进行中**：Gate + **`CompanionModePicker` / `ArrivalPracticeUI` / `FocusInput` 对外 JSDoc 已补**；其余 UI 增量 |
+| **1** | **JSDoc + 门闩/共享资源契约 + 文档-代码对齐**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4；结构契约见 **`DOC_CODE_CONTRACT.md`**（`npm run docs:check`） | **已落地（门闩 + hints）**：`sessionUiGateContractRegistry.js` + `onboardingHintRegistry.js`；其余 UI JSDoc 增量 |
 | **2** | **门闩显式化**：`SessionUiGate`（`src/core/SessionUiGate.js`）集中持有 `arrivalGateReady` / `completionPending` / `postSessionOverlayActive`；失败用例锁「未就绪不得 begin」 | **已落地** |
 | **3** | **继续回归锁**：主路径 + 回流 + `test:smoke` / `test:e2e` + TEST_TRACKER 观感分列（见 `DEV_WORKFLOW_QUALITY.md`） | 常驻，不替代 |
 | **4** | **Lit 仅试点一个 DOM 灾区 UI**：**`OnboardingHintsUI`**（分散提示 + `?` 补救；DOM/手动渲染类 bug 最多） | **代码已落地**：`lit` + `ft-onboarding-hint-bubble`；**人工复测通过后先停在试点，不扩其它模块**（2026-07-21 拍板）；待人工复测 |

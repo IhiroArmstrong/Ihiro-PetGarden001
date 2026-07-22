@@ -1,0 +1,11 @@
+{
+  "name": "zen-tiger-pet-garden",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "test:smoke": "cd focus-tiger && npm run test:smoke"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

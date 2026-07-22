@@ -72,8 +72,6 @@
 
 <!-- onboarding-hints-registry:anchors:end -->
 
-
-
 ### 音乐提示（对应 ambient-soundscape 文案）
 
 提示说明**默认有背景音乐**与一键开关；**不**在 hint 中承诺光效变化（`presenceBoost` 等为底层叠加，用户未感知时不写进引导文案）。

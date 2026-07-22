@@ -1,0 +1,50 @@
+name: focus-tiger doc-contract check
+
+on:
+  push:
+    paths:
+      - 'focus-tiger/src/core/onboardingHintRegistry.js'
+      - 'focus-tiger/src/core/sessionUiGateContractRegistry.js'
+      - 'focus-tiger/src/core/SessionUiGate.js'
+      - 'focus-tiger/src/core/FocusSession.js'
+      - 'focus-tiger/src/core/StateManager.js'
+      - 'focus-tiger/docs/ONBOARDING_HINTS.md'
+      - 'focus-tiger/docs/SHARED_RESOURCES.md'
+      - 'focus-tiger/docs/ARCHITECTURE.md'
+      - 'focus-tiger/docs/DOC_CODE_CONTRACT.md'
+      - 'focus-tiger/scripts/*-doc-check.js'
+      - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/package.json'
+      - '.github/workflows/focus-tiger-doc-contract-check.yml'
+  pull_request:
+    paths:
+      - 'focus-tiger/src/core/onboardingHintRegistry.js'
+      - 'focus-tiger/src/core/sessionUiGateContractRegistry.js'
+      - 'focus-tiger/src/core/SessionUiGate.js'
+      - 'focus-tiger/src/core/FocusSession.js'
+      - 'focus-tiger/src/core/StateManager.js'
+      - 'focus-tiger/docs/ONBOARDING_HINTS.md'
+      - 'focus-tiger/docs/SHARED_RESOURCES.md'
+      - 'focus-tiger/docs/ARCHITECTURE.md'
+      - 'focus-tiger/docs/DOC_CODE_CONTRACT.md'
+      - 'focus-tiger/scripts/*-doc-check.js'
+      - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/package.json'
+      - '.github/workflows/focus-tiger-doc-contract-check.yml'
+
+jobs:
+  docs-check:
+    name: docs:check + test:smoke contract slice
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: focus-tiger
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Structural alignment (registry ↔ markdown)
+        run: npm run docs:check
+      - name: Behavioral contracts (gate + scenario smoke)
+        run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js

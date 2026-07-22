@@ -4,7 +4,8 @@
 > - §2.3 = 已知踩过坑的具体点（事故清单）  
 > - 本表 = 当前共享资源分别被谁用（开工查波及面）  
 > **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。  
-> **更新**：2026-07-22（§1.2 PracticeDays 多日时长）
+> **§4 机器块**：由 `sessionUiGateContractRegistry.js` 生成；`npm run gate:doc-sync`；详见 `DOC_CODE_CONTRACT.md`。  
+> **更新**：2026-07-22（§4 文档-代码对齐机器块）
 
 ---
 
@@ -93,6 +94,38 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 ---
 
 ## 4. 门闩 / 叠层共享状态（非 storage）
+
+<!-- session-ui-gate-contract:begin -->
+
+> **机器块 · 勿手改**。真源：`src/core/sessionUiGateContractRegistry.js`。刷新：`npm run gate:doc-sync`。
+
+### 门闩字段（可变态）
+
+| id | setter | readers | impact |
+|---|---|---|---|
+| `arrivalGateReady` | `setArrivalGateReady` | Gate ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Sit 未就绪 → Arrival |
+| `completionPending` | `setCompletionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
+| `postSessionOverlayActive` | `setPostSessionOverlayActive` | main `resyncSessionChrome()` → `computePostSessionOverlayActive(sources)` | hint 是否 ignore；选项禁用。源含 Arrival / Reflection / 微仪式；Honesty 不列入 |
+
+### 行为契约（失败即 bug）
+
+| contractId | api | when | must | testAnchor |
+|---|---|---|---|---|
+| `begin-focus-arrival-not-ready` | `canBeginFocusOnCompanionModeSelect` | arrivalGateReady === false | return false（禁止静默开表；UI 应启动 Arrival 或禁用） | `SessionUiGate.test.js` |
+| `begin-focus-gates-block` | `canBeginFocusOnCompanionModeSelect` | completionPending || arrivalOpen || isFocusing | return false | `SessionUiGate.test.js` |
+| `sit-idle-not-ready` | `resolveSitClickWhenIdle` | arrivalGateReady === false | return 'start-arrival'（不得 'begin-focus'） | `SessionUiGate.test.js` |
+| `auto-start-needs-arrival` | `resolveAutoStartNeedsArrival` | 自动开表模式 && arrivalGateReady === false | return 'start-arrival' | `SessionUiGate.test.js` |
+| `hint-overlay-ignore` | `resolveCompanionHintClick` | postSessionOverlayActive === true | return 'ignore'（UI 应禁用，禁止可点无反馈） | `SessionUiGate.test.js` |
+| `companion-commit-reject` | `resolveCompanionModeSelectCommit` | canBegin === false && needsArrivalAction === ignore | return 'reject'（禁止写 companion-mode storage） | `SessionUiGate.test.js` |
+| `overlay-aggregate-some` | `computePostSessionOverlayActive` | 任一源为 true | return true（扩展第三叠层只追加源，不改聚合函数） | `SessionUiGate.test.js` |
+
+### `resolveCompanionModeSelectCommit` 合法结果
+
+- `commit-begin`
+- `commit-arrival`
+- `reject`
+
+<!-- session-ui-gate-contract:end -->
 
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|

@@ -53,9 +53,12 @@ export function replaceAnchorBlock(md) {
 
   if (start !== -1 && end !== -1 && end >= start) {
     const afterEnd = end + END.length;
-    const tail = md.slice(afterEnd).replace(/^\n+/, '');
-    const head = md.slice(0, start).replace(/\n+$/, '\n\n');
-    return head + block + (tail ? `\n\n${tail}` : '\n\n');
+    const before = md.slice(0, start).replace(/\n+$/, '');
+    const after = md.slice(afterEnd).replace(/^\n+/, '');
+    const normalizedBlock = block.replace(/\n+$/, '\n');
+    return after
+      ? `${before}\n\n${normalizedBlock}\n${after}`
+      : `${before}\n\n${normalizedBlock}\n`;
   }
 
   const anchor = md.indexOf(INSERT_AFTER);
@@ -87,7 +90,6 @@ export function runHintsDocCheck({ write = false } = {}) {
     console.error('[hints:doc-check] ONBOARDING_HINTS.md anchor block is out of sync with registry.');
     console.error('Run: cd focus-tiger && npm run hints:doc-sync');
     console.error('Then commit the updated docs/ONBOARDING_HINTS.md anchor block.');
-    process.exitCode = 1;
     return false;
   }
 
@@ -95,5 +97,12 @@ export function runHintsDocCheck({ write = false } = {}) {
   return true;
 }
 
-const write = process.argv.includes('--write');
-runHintsDocCheck({ write });
+const isCli =
+  process.argv[1] &&
+  fileURLToPath(import.meta.url) === process.argv[1];
+
+if (isCli) {
+  const write = process.argv.includes('--write');
+  const ok = runHintsDocCheck({ write });
+  if (!ok && !write) process.exitCode = 1;
+}
