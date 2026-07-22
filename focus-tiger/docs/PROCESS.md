@@ -22,10 +22,10 @@
 3. 门闩类失败用例 + **确认修复 bug 须留回归锚**（不限门闩；无法自动化 → TEST_TRACKER 人工锁）  
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
 5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过；**禁止**仅用「已绿」总结句——须附命令与 pass/fail 或 CI 链接）  
-6. **立刻本地 commit（不必再问）**：用户反馈修复 / 回归锁收尾后 Agent **自动** `git commit`；**仍禁止**未确认 `git push`（**Bug close 的 push 见 §D**）  
+6. **立刻本地 commit（可自动，须汇报）**：用户反馈修复 / 回归锁收尾后，Agent 可 **自动** `git commit` 到当前工作分支（`develop` / `feature/*` / `fix/*`）；**同回合须汇报** hash + 分支 + 涉及文件（禁止静默提交；并行会话同规）；**禁止**任何会话自动合并进 `main`；**仍禁止**未确认 `git push`（**Bug close 的 push 见 §D**）。权威条款见 regression-lock「Commit 汇报与分支门禁」与仓库根 `WORKFLOW.md`  
 7. **完成且验证通过后，不得跨任务周期停留在未 commit 状态**：代码和纯文档一视同仁；如 `docs:check` / 对应测试已过，就应在本任务结束前 commit  
 8. **一个 commit = 一个逻辑完整改动**：功能、bug 修复、文档更新各自成提交单元；message 必须说明 **改了什么 + 为什么改**，禁止 `update docs` / `misc` / `wip`
-9. **相关项目文档同批纳入（N15）**：至少更新 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md。**禁止**只改代码、文档滞后；缺文档或未 commit → 视为未完成  
+9. **相关项目文档同批纳入（N15）**：至少更新 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md。**禁止**只改代码、文档滞后；缺文档、未 commit、或未汇报 commit → 视为未完成  
 10. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
 
 ### B. 防把好的改坏（重写 / 改转场开工必做）
@@ -71,6 +71,7 @@
 - **Honesty 补登成功 toast（2026-07-22）**：用户拍板——成功记账也加轻量确认（对齐微仪式）。`HONESTY_CHECKIN_RECORDED`（EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」）居中 toast ≈4.5s + 桥接并存；abort 仍只出 `HONESTY_PENDING_LOST`。单测锁 `notifyRecorded`。**同日书面**：文案锁定现稿，勿改。
 - **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。同日续：**Reflection / Safari** 主路径顺利后关包；随后用户反馈「多日点 Reading 从未见意图回显」→ 已加固闩逻辑 + e2e（待人工复测回显米色条）。仍开：「?」朱砂红点用途拍板
 - **Reflection 意图回显加固（2026-07-22）**：根因候选为 `beginFocusWithMode` 用 `pendingChoose?.text ?? ''` 在二次开表时抹掉已选意图；现改为 Arrival `onReady` 立刻闩上 + 空 pending 不抹 + 回显样式加强；e2e `reflection-intention-echo.spec.js`
+- **Commit 汇报门禁对齐（2026-07-22）**：废止「不必询问 commit」口径；改为可自动 commit 到当前工作分支 + **同回合汇报** hash/分支/文件；禁止静默提交与自动合并进 `main`。已对齐 `focus-tiger-regression-lock` / `WORKFLOW.md` / `focus-tiger-docs` / `DEV_WORKFLOW_QUALITY` / 本文
 - **自动化口径核对（2026-07-22）**：通读 `SCENARIO_TESTS` / `TEST_TRACKER`，凡「已自动化/已覆盖/已锁住」改为标明单元 / 控制器集成 / DOM 用户链路及测到源头或仅下游；修正 Offline/K 过时故事、Skip — begin 已有 e2e A2/A3、smoke J≠Reflection、e2e 约 20 条等
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（青绿立体 secondary，Sit 上方）→ 60s 吸/呼 + smiling@4fps + 光环 **4s（不同拍）** → 记账 + SessionComplete + 中置 toast；HUD 直播；桥接时入口隐藏。**同日晚**：用户书面——撤销吸呼同拍；四钮改同族立体质感（次级同尺寸，Sit 略大）。e2e：`micro-ritual.spec.js`；**质感和谐待复测**
 - **「?」朱砂未读点（2026-07-22）**：用户确认保留「?」角朱砂点表示未读；不改挂提醒/通知
@@ -289,21 +290,22 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
 2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
 3. **同步相关权威文档**（N15：按触及面更新 `EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` 等；禁止只改代码）  
-4. `git add` 相关文件（**代码 + 文档**）→ **立刻自动本地** `git commit`（**本任务一旦完成且验证通过，不得拖到下个任务周期**；**不必再问要不要 commit**）  
+4. `git add` 相关文件（**代码 + 文档**）→ **立刻自动本地** `git commit`（**本任务一旦完成且验证通过，不得拖到下个任务周期**）→ **同回合汇报** hash + 分支 + 涉及文件（禁止静默提交）  
 5. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
-6. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）
+6. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）  
+7. **合并进 `main`** 永远须你明确指令；任何会话不得自动执行  
 
 Agent / Cursor 侧约定：
 
-- **所有实质性 Task** 收尾：过完对应门禁后 **自动本地 `git commit`**，不必再问「要不要 commit」。  
+- **所有实质性 Task** 收尾：过完对应门禁后可 **自动本地 `git commit`** 到当前工作分支；**同回合必须汇报** commit hash、分支名、涉及文件（并行会话同规）。  
 - **每个 commit 对应一个逻辑完整改动**（功能 / bug 修复 / 文档更新）；不要按时间片零碎提交，也不要把多个已完成任务糊成一个提交。  
 - **commit message 必须说明 what + why**；`update docs`、`misc fix`、`wip` 等无信息量 message 不合格。  
-- **Bug 修复**：代码或修正措施落地后，**同回合**文档 + **立刻** commit（N15）；缺一不可。  
-- **纯文档改动同样遵守**：如 `ARCHITECTURE.md`、`SCENARIO_TESTS.md`、`PROCESS.md` 之类只要验证通过（至少 `docs:check` / 自检通过），也必须在该任务收尾前 commit。  
-- **未经用户口头/书面确认不得 `git push`**。  
+- **Bug 修复**：代码或修正措施落地后，**同回合**文档 + **立刻** commit + **汇报**（N15）；缺一不可。  
+- **纯文档改动同样遵守**：如 `ARCHITECTURE.md`、`SCENARIO_TESTS.md`、`PROCESS.md` 之类只要验证通过（至少 `docs:check` / 自检通过），也必须在该任务收尾前 commit 并汇报。  
+- **未经用户口头/书面确认不得 `git push`**；**不得自动合并进 `main`**。  
 - 完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 
-闸门放在 **push**，不放在本地 commit：本地提交可回滚，未提交的「已修」才是假基线。
+闸门放在 **push** 与 **合并进 `main`**，不放在本地 commit：本地提交可回滚，未提交的「已修」才是假基线；静默 commit 不汇报 = 视同未汇报。
 
 ### 明确不做的自动化
 
