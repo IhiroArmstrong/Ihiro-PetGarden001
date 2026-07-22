@@ -29,6 +29,10 @@ import {
   skipArrivalChoose,
   skipArrivalPracticeEntirely
 } from '../core/ArrivalPractice.js';
+import {
+  MICRO_RITUAL_BREATH_PHASE_MS,
+  isInhalePhase
+} from '../core/MicroRitual.js';
 
 /**
  * @typedef {object} ArrivalReadyInfo
@@ -248,7 +252,7 @@ export class ArrivalPracticeUI {
       const phaseEl = this.root?.querySelector('[data-arrival-breath-phase]');
       if (!phaseEl) return;
       const elapsed = Date.now() - startedAt;
-      const inhale = Math.floor(elapsed / 2500) % 2 === 0;
+      const inhale = isInhalePhase(elapsed, MICRO_RITUAL_BREATH_PHASE_MS);
       phaseEl.textContent = t(
         inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'
       );

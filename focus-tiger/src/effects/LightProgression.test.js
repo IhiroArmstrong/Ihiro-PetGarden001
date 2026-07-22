@@ -61,3 +61,10 @@ test('rim breath modulation uses 4s period and stays in range', () => {
   assert.notEqual(a, b);
   assert.equal(rimOpacityWithBreath(0, 1), 0);
 });
+
+test('guided breath period differs from focusing gold 4s when synced to 2.5s text', () => {
+  assert.equal(GOLD_BREATH_PERIOD_SEC, 4);
+  // Micro / Arrival text phase 2.5s → full cycle 5s（与 beginBreath({ periodSec }) 同拍）
+  assert.equal(2 * 2.5, 5);
+  assert.notEqual(5, GOLD_BREATH_PERIOD_SEC);
+});

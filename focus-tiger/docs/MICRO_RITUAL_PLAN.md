@@ -13,8 +13,9 @@
 3. 留存：`trackRetentionEvent('micro_ritual_complete')` 仅 console 占位；**不** `noteSessionComplete`。  
 4. 同日可多次；每次直接 `sessionComplete`（从不 Celebrating）。  
 5. 中途 Leave：不记账、无提示。  
-6. 入口：`#micro-ritual-idle-entry`（dock `order: -1`，轻量下划线）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath`。  
+6. 入口：`#micro-ritual-idle-entry`（dock `order: -1`，**青绿立体 secondary**，与 Honesty/Hint 同柱；dock `gap: 16px`）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath({ periodSec: 5 })`（文案 2.5s×2 同拍）。
 7. e2e 缩短：`?microRitualMs=1500`。
+8. **吸/呼同拍（2026-07-22）**：文案相位驱动光环周期与 Yin 轻量 `scaleY`；**不**切 idle-breathing（帧级胸腔素材未按引导相位切分）。像素级胸腔与文案 1:1 需专用素材或帧界标定，属后续增强。
 
 ---
 

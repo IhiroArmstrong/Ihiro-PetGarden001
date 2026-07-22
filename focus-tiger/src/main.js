@@ -82,7 +82,9 @@ import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
 import { MicroRitualUI } from './ui/MicroRitualUI.js';
 import {
+  MICRO_RITUAL_BREATH_PHASE_MS,
   MICRO_RITUAL_DURATION_MINUTES,
+  breathCyclePeriodSec,
   resolveMicroRitualMs
 } from './core/MicroRitual.js';
 import { recordIntention } from './core/SessionIntentionStore.js';
@@ -372,7 +374,9 @@ async function init() {
       microRitualUI.startBreath(MICRO_RITUAL_MS);
     },
     onBreathStart: () => {
-      lightProgression.beginBreath();
+      lightProgression.beginBreath({
+        periodSec: breathCyclePeriodSec(MICRO_RITUAL_BREATH_PHASE_MS)
+      });
       emotionController.playEmotion('smiling', {
         fps: ARRIVAL_BREATH_SMILE_FPS
       });
@@ -685,7 +689,9 @@ async function init() {
         syncOnboardingAutoHints();
       },
       onBreath: () => {
-        lightProgression.beginBreath();
+        lightProgression.beginBreath({
+          periodSec: breathCyclePeriodSec(MICRO_RITUAL_BREATH_PHASE_MS)
+        });
         // Breath「Let's arrive together」：放慢眨眼微笑并保持，不落入 idle-breathing（硬切闭目不连贯）。
         // Choose 确认用 intentionNod（16:9 点头），不在此步播放。
         emotionController.playEmotion('smiling', {

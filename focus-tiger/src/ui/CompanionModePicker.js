@@ -396,7 +396,7 @@ export class CompanionModePicker {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 16px;
         pointer-events: none;
         /* 左右留 ? / Sound；勿过窄以致 Sit 文案被裁 */
         width: min(400px, calc(100vw - 112px));
@@ -410,35 +410,43 @@ export class CompanionModePicker {
       #micro-ritual-idle-entry[hidden] {
         display: none !important;
       }
-      /* 微仪式：与 Honesty 同柱、更轻（无立体描边阴影），Sit 上方 order:-1 */
+      /* 微仪式：与 Honesty / How shall we sit? 同级立体 secondary；青绿系区分「呼吸」 */
       .session-start-dock__micro-ritual-entry {
         order: -1;
         align-self: center;
         flex-shrink: 0;
-        border: none;
-        background: transparent;
-        color: var(--text-secondary, rgba(74, 58, 40, 0.78));
-        font-size: 12px;
-        font-weight: 500;
+        border: 1px solid rgba(90, 120, 100, 0.42);
+        background: linear-gradient(
+          180deg,
+          rgba(236, 246, 238, 0.98) 0%,
+          rgba(198, 220, 204, 0.96) 100%
+        );
+        color: #24352a;
+        font-size: 13px;
+        font-weight: 650;
         letter-spacing: 0.02em;
         cursor: pointer;
-        padding: 4px 10px;
+        padding: 8px 18px;
         border-radius: 999px;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        text-decoration-color: rgba(139, 115, 85, 0.35);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.88) inset,
+          0 2px 0 rgba(90, 120, 100, 0.22),
+          0 3px 8px rgba(44, 31, 20, 0.08);
+        text-decoration: none;
         max-width: 100%;
         line-height: 1.35;
         text-align: center;
         white-space: normal;
-        transition: color 120ms ease, text-decoration-color 120ms ease;
+        transition: transform 120ms ease, box-shadow 120ms ease;
       }
       .session-start-dock__micro-ritual-entry:hover {
-        color: var(--color-ink, #2c1f14);
-        text-decoration-color: rgba(139, 115, 85, 0.55);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 2px 0 rgba(90, 120, 100, 0.28),
+          0 4px 10px rgba(44, 31, 20, 0.12);
       }
       .session-start-dock__micro-ritual-entry:active {
-        transform: translateY(1px);
+        transform: translateY(1px) scale(0.98);
       }
       .session-start-dock__honesty-entry {
         order: -2;

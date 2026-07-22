@@ -6,7 +6,8 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   MICRO_RITUAL_BREATH_PHASE_MS,
-  MICRO_RITUAL_MS_DEFAULT
+  MICRO_RITUAL_MS_DEFAULT,
+  isInhalePhase
 } from '../core/MicroRitual.js';
 
 const PANEL_CSS = [
@@ -191,8 +192,7 @@ export class MicroRitualUI {
       const phaseEl = this.root?.querySelector('[data-micro-ritual-breath-phase]');
       if (!phaseEl) return;
       const elapsed = Date.now() - startedAt;
-      const inhale =
-        Math.floor(elapsed / MICRO_RITUAL_BREATH_PHASE_MS) % 2 === 0;
+      const inhale = isInhalePhase(elapsed, MICRO_RITUAL_BREATH_PHASE_MS);
       phaseEl.textContent = t(
         inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'
       );

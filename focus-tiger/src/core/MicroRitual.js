@@ -19,6 +19,33 @@ export const MICRO_RITUAL_DURATION_MINUTES = 1;
 export const MICRO_RITUAL_MS_MIN = 500;
 
 /**
+ * 文案相位：偶数段 = Inhale，奇数段 = Exhale（与 UI 文案键一致）。
+ * @param {number} elapsedMs
+ * @param {number} [phaseMs]
+ * @returns {boolean}
+ */
+export function isInhalePhase(
+  elapsedMs,
+  phaseMs = MICRO_RITUAL_BREATH_PHASE_MS
+) {
+  const phase = Math.max(1, Number(phaseMs) || MICRO_RITUAL_BREATH_PHASE_MS);
+  const t = Math.max(0, Number(elapsedMs) || 0);
+  return Math.floor(t / phase) % 2 === 0;
+}
+
+/**
+ * 完整吸+呼周期（秒），供光环 / Yin 引导起伏与文案同拍。
+ * @param {number} [phaseMs]
+ * @returns {number}
+ */
+export function breathCyclePeriodSec(
+  phaseMs = MICRO_RITUAL_BREATH_PHASE_MS
+) {
+  const phase = Math.max(1, Number(phaseMs) || MICRO_RITUAL_BREATH_PHASE_MS);
+  return (2 * phase) / 1000;
+}
+
+/**
  * `?microRitualMs=1500` → 1.5s（e2e）；缺省/非法 → 60s；夹在 MIN–DEFAULT。
  * @param {string} [search]
  * @returns {number}

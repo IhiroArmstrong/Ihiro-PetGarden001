@@ -29,6 +29,10 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
   const entry = page.locator('#micro-ritual-idle-entry');
   await expect(entry).toBeVisible({ timeout: 15_000 });
   await expect(entry).toContainText(/A minute of breath|一分钟呼吸/i);
+  // 立体按钮（非下划线轻链）：须有可见边框/背景，不抢 Sit 主 CTA
+  await expect(entry).toHaveCSS('border-radius', '999px');
+  const bg = await entry.evaluate((el) => getComputedStyle(el).backgroundImage);
+  expect(bg).toMatch(/gradient/i);
 
   await entry.click();
 
