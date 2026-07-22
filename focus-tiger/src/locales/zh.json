@@ -113,6 +113,7 @@
   "HINT_COMPANION_MODE": "选一个，计时就会开始。",
   "HONESTY_IDLE_ENTRY": "诚实补登",
   "HONESTY_PENDING_LOST": "刚才没记上 —— 请再选一次时长。",
+  "HONESTY_CHECKIN_RECORDED": "别处的静心，也算数。",
   "micro_ritual.button": "一分钟呼吸",
   "micro_ritual.complete": "今天，也算数",
   "micro_ritual.leave": "离开",

@@ -1,7 +1,7 @@
 # HONESTY_BRIDGE_CTA.md — Honesty Check-in 桥接 CTA 定稿
 
 创建日期：2026-07-19  
-最后更新：2026-07-19（用户拍板：立刻出桥接 + Welcome 同屏一小会儿；同日可多次补登）
+最后更新：2026-07-22（成功记账轻量 toast `HONESTY_CHECKIN_RECORDED`）
 
 ---
 
@@ -21,6 +21,9 @@
 - **出现时机**：补登呼吸/坐起结束 → **立刻**出桥接（不空等 3.2s）。
   Welcome 文案（「欢迎回来。阿寅醒来了。」 / `HONESTY_CHECKIN_THANKS`）作为桥接
   面板顶部轻量回显，与邀请同屏一小会儿——可称 Welcome 条，勿依赖单独 thanks 相位。
+- **记账确认 toast（2026-07-22）**：成功记账后立刻出非模态 toast（`HONESTY_CHECKIN_RECORDED`：
+  EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」），样式对齐微仪式
+  （居中、约 4.5s）；与桥接并存。**abort / pending 丢失**只出 `HONESTY_PENDING_LOST`，不出本句。
 - **文案**：中文「要不要现在也坐一会儿？」/ EN: "Want to sit for a bit now too?"
 - **两个选项**（Yes / No 同级）：
   - Yes → 完整 Arrival Practice → Companion Mode（不跳过、不直接开表/Ambient）

@@ -39,6 +39,7 @@ export class HonestyCheckInController {
    * @param {(detail: { durationMinutes: number }) => void} [deps.onSessionRecorded]
    *   完成写入后（计时 / Honesty）；留存 `first_session_complete` 挂这里
    * @param {() => void} [deps.notifyUser] 非模态提示（如 toast）；pending 丢失 abort 时由 main 注入文案
+   * @param {() => void} [deps.notifyRecorded] 补登成功记账后的轻量确认（如 toast）；abort 不得调用
    * @param {() => Date} [deps.now]
    * @param {number} [deps.dormantIdleMs]
    */
@@ -54,6 +55,7 @@ export class HonestyCheckInController {
     onPracticeDay = () => {},
     onSessionRecorded = () => {},
     notifyUser = () => {},
+    notifyRecorded = () => {},
     now = () => new Date(),
     dormantIdleMs = DORMANT_IDLE_MS
   }) {
@@ -68,6 +70,7 @@ export class HonestyCheckInController {
     this.onPracticeDay = onPracticeDay;
     this.onSessionRecorded = onSessionRecorded;
     this.notifyUser = notifyUser;
+    this.notifyRecorded = notifyRecorded;
     this.now = now;
     this.dormantIdleMs = dormantIdleMs;
     /** @type {number | null} */
@@ -246,6 +249,8 @@ export class HonestyCheckInController {
     }
 
     this.ui.hide();
+    // 轻量确认（类似微仪式 toast）；须在桥接前，abort 路径不得调用
+    this.notifyRecorded();
     this.onCheckInComplete();
   }
 }

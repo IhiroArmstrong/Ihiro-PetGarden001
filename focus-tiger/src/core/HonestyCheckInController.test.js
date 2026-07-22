@@ -178,6 +178,7 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
   store.recordCompletion(10);
   const emotionCalls = [];
   let completeCalls = 0;
+  let recordedNotifyCalls = 0;
   let idleEntryShown = 0;
   const { controller, stateManager, ui } = createControllerDeps({
     storage,
@@ -195,6 +196,9 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
     extra: {
       onCheckInComplete: () => {
         completeCalls += 1;
+      },
+      notifyRecorded: () => {
+        recordedNotifyCalls += 1;
       }
     }
   });
@@ -211,15 +215,20 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
 
   ui.handlers.onBreathComplete();
   assert.equal(completeCalls, 1);
+  assert.equal(recordedNotifyCalls, 1);
   assert.equal(store.hasCompletedToday(), true);
 });
 
 test('honesty breath complete invokes onCheckInComplete for bridge hook', () => {
   let completeCalls = 0;
+  let recordedNotifyCalls = 0;
   const { controller, stateManager, ui } = createControllerDeps({
     extra: {
       onCheckInComplete: () => {
         completeCalls += 1;
+      },
+      notifyRecorded: () => {
+        recordedNotifyCalls += 1;
       }
     }
   });
@@ -228,6 +237,7 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
   ui.handlers.onDurationSelect(10);
   ui.handlers.onBreathComplete();
   assert.equal(completeCalls, 1);
+  assert.equal(recordedNotifyCalls, 1);
   assert.equal(stateManager.state, STATES.IDLE);
 });
 
@@ -239,6 +249,7 @@ test('breath complete without pending minutes aborts: no record, toast, reopen d
   };
 
   let notifyCalls = 0;
+  let recordedNotifyCalls = 0;
   let completeCalls = 0;
   let durationShown = 0;
   let hideCalls = 0;
@@ -256,6 +267,9 @@ test('breath complete without pending minutes aborts: no record, toast, reopen d
     extra: {
       notifyUser: () => {
         notifyCalls += 1;
+      },
+      notifyRecorded: () => {
+        recordedNotifyCalls += 1;
       },
       onCheckInComplete: () => {
         completeCalls += 1;
@@ -275,6 +289,7 @@ test('breath complete without pending minutes aborts: no record, toast, reopen d
     assert.equal(store.hasCompletedToday(), false);
     assert.equal(completeCalls, 0);
     assert.equal(notifyCalls, 1);
+    assert.equal(recordedNotifyCalls, 0);
     assert.equal(durationShown >= 1, true);
     assert.equal(ui.phase, 'duration');
     assert.equal(controller._busy, false);

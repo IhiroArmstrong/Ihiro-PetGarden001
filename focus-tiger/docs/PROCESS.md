@@ -52,6 +52,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Honesty 补登成功 toast（2026-07-22）**：用户拍板——成功记账也加轻量确认（对齐微仪式）。`HONESTY_CHECKIN_RECORDED`（EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」）居中 toast ≈4.5s + 桥接并存；abort 仍只出 `HONESTY_PENDING_LOST`。单测锁 `notifyRecorded`。
 - **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。同日续：**Reflection 结束三问** + **Safari Companion 横排**用户书面基本顺利 → 已关；意图回显口径写明为「本场 Choose → Reflection 面板顶」。仍开：「?」朱砂红点（用户倾向改挂系统通知/alert，待拍板）
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（青绿立体 secondary，Sit 上方）→ 60s 吸/呼文案 + smiling@4fps + **光环/Yin 与文案同拍（5s 周期）** → `recordCompletion(1)` + `markToday(1)` + SessionComplete 摆尾 + **中置** toast；进行中 **FocusHUD 直播**墙钟/同坐条/金环（不启 FocusSession）；中途 Leave 安静退出；留存仅 `micro_ritual_complete`。e2e：`e2e/micro-ritual.spec.js`；**同日午**：修仪表不动 + toast 底栏夹缝不显眼
 - **「?」朱砂未读点（2026-07-22）**：用户确认保留「?」角朱砂点表示未读；不改挂提醒/通知

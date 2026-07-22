@@ -350,6 +350,12 @@ async function init() {
     notifyUser: () => {
       mindfulToast.show(t('HONESTY_PENDING_LOST'));
     },
+    notifyRecorded: () => {
+      mindfulToast.show(t('HONESTY_CHECKIN_RECORDED'), {
+        placement: 'center',
+        visibleMs: 4_500
+      });
+    },
     now
   });
 
