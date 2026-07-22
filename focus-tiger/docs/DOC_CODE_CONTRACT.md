@@ -120,7 +120,7 @@ git commit --no-verify -m "…"
 仅用于：紧急热修、已知局部 WIP 且你**主动承担**未跑回归的风险。  
 **禁止**习惯性 `--no-verify`——它与「文档-代码对齐」机制的目标直接冲突；若钩子因环境问题失败，应先修环境或修测试，而不是跳过。
 
-**CI**：`.github/workflows/focus-tiger-doc-contract-check.yml`（push/PR 路径触发 `docs:check` + 门闩/场景切片）。
+**CI**：`.github/workflows/focus-tiger-doc-contract-check.yml`（push/PR 路径触发；须先 `npm ci`，再 `docs:check` + 门闩/场景切片）。`scenario-smoke` 经 `HonestyCheckInController` → `EmotionController` → `PoseManager` 依赖 `three`，缺安装会 `ERR_MODULE_NOT_FOUND`。
 
 ---
 
