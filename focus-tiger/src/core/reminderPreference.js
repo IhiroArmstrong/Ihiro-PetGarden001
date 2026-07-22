@@ -2,8 +2,8 @@
  * 应用内提醒时间偏好（本地存储）+ 横幅候选判定。
  *
  * 不涉及浏览器 Notification 权限；不渲染 UI（纯逻辑）。
- * 设置入口见 `src/ui/ReminderPreferenceUI.js`（方案 A：右上角时钟图标，
- * 挂 `document.body`，与 Ambient 静音钮同排）；候选展示由
+ * 设置入口见 `src/ui/ReminderPreferenceUI.js`（Idle 热力图簇旁的小型时钟图标）；
+ * 候选展示由
  * `src/ui/InAppReminderBannerUI.js`（#ui-overlay 顶部居中横幅）渲染。
  * 调用方在 App 启动 / visibilitychange→visible / 状态切换时调用
  * `evaluateInAppReminderBanner`，再决定是否展示横幅（见 `main.js`

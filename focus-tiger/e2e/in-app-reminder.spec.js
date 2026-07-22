@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
-  expectFocusSessionActive,
   openFreshProductShell,
   selectCompanionMode
 } from './helpers/product-shell.js';
@@ -14,18 +13,31 @@ const TIME = '#reminder-preference-time';
 const BANNER = '#in-app-reminder-banner';
 const DISMISS = '#in-app-reminder-banner-dismiss';
 
-test('top-right reminder toggle (next to ambient mute) opens panel with setting title', async ({
+async function simulateReturnToForeground(page) {
+  await page.evaluate(() => {
+    let state = 'hidden';
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => state
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    state = 'visible';
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+}
+
+test('idle heatmap cluster shows reminder toggle beside heatmap and opens panel', async ({
   page
 }) => {
   await openFreshProductShell(page);
 
   const toggle = page.locator(TOGGLE);
   await expect(toggle).toBeVisible({ timeout: 15_000 });
-  // 方案 A：右上角，与 ambient 静音钮（right:14px）同排，本钮 right:66px
-  await expect(page.locator('#reminder-preference')).toHaveCSS(
-    'position',
-    'fixed'
-  );
+  const heatmapBox = await page.locator('#weekly-practice-heatmap').boundingBox();
+  const toggleBox = await toggle.boundingBox();
+  expect(heatmapBox).toBeTruthy();
+  expect(toggleBox).toBeTruthy();
+  expect(toggleBox.x).toBeGreaterThan((heatmapBox?.x ?? 0) - 60);
 
   await toggle.click();
   const panel = page.locator(PANEL);
@@ -35,21 +47,33 @@ test('top-right reminder toggle (next to ambient mute) opens panel with setting 
   );
 });
 
-test('dismiss banner via __inAppReminder stays hidden this page session (no repeat)', async ({
+test('set reminder time → return to foreground → show banner → dismiss → no repeat this page session', async ({
   page
 }) => {
   await openFreshProductShell(page);
   await expect(page.locator(TOGGLE)).toBeVisible({ timeout: 15_000 });
+  await page.evaluate(() => {
+    window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
+    window.__inAppReminder.sync();
+  });
+  await expect(page.locator(BANNER)).toBeHidden();
 
-  // 无 enabled 字段：有值即代表已开启
+  await page.locator(TOGGLE).click();
+  await page.locator(ENABLED).check();
+  await page.locator(TIME).fill('09:00');
+
   await page.evaluate((storageKey) => {
-    localStorage.setItem(storageKey, JSON.stringify({ hour: 9, minute: 0 }));
+    const stored = JSON.parse(localStorage.getItem(storageKey) || 'null');
+    if (!stored || stored.hour !== 9 || stored.minute !== 0) {
+      throw new Error('reminder preference not stored from UI');
+    }
   }, REMINDER_KEY);
 
   await page.evaluate(() => {
     window.__inAppReminder.setNow(new Date(2026, 6, 22, 18, 0, 0));
-    window.__inAppReminder.sync();
   });
+
+  await simulateReturnToForeground(page);
 
   const banner = page.locator(BANNER);
   await expect(banner).toBeVisible({ timeout: 5_000 });
@@ -62,11 +86,7 @@ test('dismiss banner via __inAppReminder stays hidden this page session (no repe
   await page.evaluate(() => window.__inAppReminder.sync());
   await expect(banner).toBeHidden();
 
-  // visibilitychange 回前台再评也不应再展示
-  await page.evaluate(() => {
-    document.dispatchEvent(new Event('visibilitychange'));
-    window.__inAppReminder.sync();
-  });
+  await simulateReturnToForeground(page);
   await expect(banner).toBeHidden();
 });
 
@@ -90,7 +110,8 @@ test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
 
   await advanceArrivalToCompanionPicker(page);
   await selectCompanionMode(page, /Here & Now|当下同坐/i);
-  await expectFocusSessionActive(page);
+  await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i);
+  await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
 
   await expect(page.locator(BANNER)).toBeHidden();
 });

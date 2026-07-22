@@ -268,12 +268,14 @@ async function init() {
       }
     }
   );
-  // 方案 A：右上角时钟图标，挂 body（与 Ambient 静音钮同排），非 Idle-only chrome
-  const reminderPreferenceUI = new ReminderPreferenceUI(document.body, {
-    onPreferenceChange: () => {
-      syncInAppReminderBanner();
+  const reminderPreferenceUI = new ReminderPreferenceUI(
+    weeklyPracticeHeatmap.getClusterEl(),
+    {
+      onPreferenceChange: () => {
+        syncInAppReminderBanner();
+      }
     }
-  });
+  );
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -1367,6 +1369,9 @@ async function init() {
       visible: stateManager.state === STATES.IDLE && !microOpen,
       days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
     });
+    reminderPreferenceUI.setVisible(
+      stateManager.state === STATES.IDLE && !microOpen
+    );
     composer.render();
   }
 

@@ -74,7 +74,7 @@
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（青绿立体 secondary，Sit 上方）→ 60s 吸/呼 + smiling@4fps + 光环 **4s（不同拍）** → 记账 + SessionComplete + 中置 toast；HUD 直播；桥接时入口隐藏。**同日晚**：用户书面——撤销吸呼同拍；四钮改同族立体质感（次级同尺寸，Sit 略大）。e2e：`micro-ritual.spec.js`；**质感和谐待复测**
 - **「?」朱砂未读点（2026-07-22）**：用户确认保留「?」角朱砂点表示未读；不改挂提醒/通知
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
-- **应用内提醒偏好 + 横幅 UI 方案 A 已定稿并实现（2026-07-22）**：用户拍板方案 A——设置入口为**右上角时钟图标**（`ReminderPreferenceUI`，挂 `document.body`，紧邻 Ambient 静音钮：静音 `right:14px`，本钮 `right:66px`），**不进热力图 cluster**、始终可见（非 Idle-only）；横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；`InAppReminderBannerController` 忙碌时默认 `busyPolicy:'suppress'`（隐藏不排队；`defer` 方案 B 备选未启用）；已接 `resyncSessionChrome` / `visibilitychange` 回前台 / 冷启动 / `stateManager.onChange`；完成判定用 `DailyCompletionStore.hasCompletedToday()`（含 Honesty / 微仪式）；DEV：`window.__inAppReminder`
+- **应用内提醒偏好 + 横幅 UI 已接入（2026-07-22）**：设置入口改为 **Idle 热力图簇旁的小型时钟图标**（`ReminderPreferenceUI`，挂 `WeeklyPracticeHeatmap` cluster，Idle-only）；点击展开轻量面板，含「开启提醒」+ 时间选择器，标题键 `reminder.setting_title`。横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；已接冷启动 / `visibilitychange` 回前台 / 状态切换重评；关闭后本页会话内不再重复；DEV：`window.__inAppReminder`
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined` / **`micro_ritual_complete`**
 - **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
 - **「本周陪伴」7 格热力图 UI（2026-07-22）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)`；亮格=`null|/>0`；无文案/无点击；e2e `weekly-practice-heatmap.spec.js`
@@ -236,7 +236,7 @@
 **已知的开放决策 / 待确认事项**：
 
 - **「?」朱砂红点用途（2026-07-22）**：用户书面——红点应「用于系统里面的通知，或者 alert 之类的」。现实现仍挂 onboarding「?」未读提示。待拍板：改挂应用内提醒/通知，还是保留引导未读角标。
-- **应用内提醒横幅 · 待确认**：方案 A（右上角入口 + `busyPolicy:'suppress'`）已实现并接线完毕，**待人工浏览器验收**（见 `TEST_TRACKER`）；**开放决策**：忙碌抑制策略 suppress（方案 A，隐藏不排队，当前默认）vs defer（方案 B，忙时记 pending、回非忙碌态后补展示一次）——目前采用 suppress，如需改为 defer 只需 `InAppReminderBannerController` 构造参数 `busyPolicy: 'defer'`（逻辑已实现并有单测覆盖，仅未启用）
+- **应用内提醒横幅 · 待确认**：设置入口现已移至 **热力图旁**，主路径与 e2e 已补；**开放决策**仅剩忙碌期策略二选一：`suppress`（隐藏不排队）vs `defer`（忙时记 pending、回非忙碌态后补展示一次）。两套逻辑都已实现并有单测覆盖，待拍板后固定最终口径
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
 - across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）
 - Idle 五变体相对权重已写入 EMOTION_BIBLE（gaze 1.0 / tea 0.5 / yawn 0.3 / ear 0.2）；试玩后可再调

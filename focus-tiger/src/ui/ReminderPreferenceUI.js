@@ -1,8 +1,5 @@
 /**
- * 应用内提醒设置 · 右上角时钟图标入口（方案 A）。
- *
- * 挂 `document.body`：与 Ambient 静音钮同排（静音 `right:14px`，
- * 本钮 `right:66px`），始终可见（非 Idle-only chrome）。
+ * 应用内提醒设置 · 挂在 Idle 热力图簇旁的小型时钟图标。
  *
  * 偏好形状：`{ hour, minute }` 或 `null`（见 `reminderPreference.js`）；
  * **无 `enabled` 字段**——勾选开→写入 `{ hour, minute }`；
@@ -62,10 +59,12 @@ export class ReminderPreferenceUI {
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._expanded = false;
+    this._visible = true;
 
     this.root = document.createElement('div');
     this.root.id = 'reminder-preference';
     this.root.className = 'reminder-pref';
+    this.root.hidden = false;
 
     this.toggleBtn = document.createElement('button');
     this.toggleBtn.type = 'button';
@@ -131,6 +130,14 @@ export class ReminderPreferenceUI {
     return this._expanded && !this.panel.hidden;
   }
 
+  setVisible(visible) {
+    const next = visible === true;
+    if (this._visible === next) return;
+    this._visible = next;
+    if (!next) this._expanded = false;
+    this._render();
+  }
+
   closePanel() {
     if (!this._expanded) return;
     this._expanded = false;
@@ -183,7 +190,8 @@ export class ReminderPreferenceUI {
     this.timeInput.disabled = !enabled;
     this.timeRow.classList.toggle('is-disabled', !enabled);
 
-    this.panel.hidden = !this._expanded;
+    this.root.hidden = !this._visible;
+    this.panel.hidden = !this._visible || !this._expanded;
     if (this._expanded) {
       this.panel.style.opacity = '0';
       this.panel.style.transform = 'translateY(-8px)';
@@ -202,11 +210,10 @@ export class ReminderPreferenceUI {
     }
     style.textContent = `
       .reminder-pref {
-        position: fixed;
-        top: 14px;
-        right: 66px;
-        z-index: 22;
-        pointer-events: none;
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        pointer-events: auto;
         font-family: 'Noto Sans SC', system-ui, sans-serif;
       }
       .reminder-pref__toggle {
@@ -254,8 +261,8 @@ export class ReminderPreferenceUI {
       }
       .reminder-pref__panel {
         position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
+        left: 0;
+        bottom: calc(100% + 10px);
         z-index: 22;
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
@@ -314,7 +321,11 @@ export class ReminderPreferenceUI {
       }
       @media (max-width: 420px) {
         .reminder-pref {
-          right: 60px;
+          order: 2;
+        }
+        .reminder-pref__panel {
+          left: auto;
+          right: 0;
         }
       }
     `;
