@@ -3,9 +3,9 @@
  *
  * 关闭后本页会话不再展示；完整刷新或新开 App 重置。
  *
- * 会话忙碌时两种策略（产品确认前默认 suppress）：
- * - suppress（方案 A）：忙时隐藏，不排队；下次 visibility / 启动再评
- * - defer（方案 B）：忙时记 pending，回非忙碌后再展示一次
+ * 会话忙碌时两种策略（**2026-07-23 已拍板 suppress**；defer 仅对照/单测）：
+ * - suppress（产品路径）：忙时隐藏，不排队；下次 visibility / 启动再评
+ * - defer（未启用）：忙时记 pending，回非忙碌后再展示一次
  */
 
 /**
@@ -44,7 +44,7 @@ export function resolveBusySessionPolicy(policy = 'suppress') {
 export class InAppReminderBannerController {
   /**
    * @param {object} [options]
-   * @param {'suppress' | 'defer'} [options.busyPolicy] 默认 suppress（方案 A）
+   * @param {'suppress' | 'defer'} [options.busyPolicy] 产品路径固定 suppress（2026-07-23 拍板）
    */
   constructor({ busyPolicy = 'suppress' } = {}) {
     /** 本页会话内用户已关横幅 */

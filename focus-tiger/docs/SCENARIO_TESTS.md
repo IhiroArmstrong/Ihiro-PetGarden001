@@ -236,18 +236,18 @@
 7. **回流**：再次 `sync` / 切后台再回前台 → 仍不重复；**完整刷新**或新开 App → 若条件仍满足，**可再次出现**。
 8. **负例**：未到设定时分 → 不出现；今日已完成任一会话 → 不出现；未勾选开启 → 不出现。
 
-### P3 · 忙碌期策略（开放决策 · 非用户可见「第 4 步」）
+### P3 · 忙碌期策略（**已拍板 suppress** · 非用户可见「第 4 步」）
 
-> **说明**：下列 **suppress / defer** 是**研发任务书里的产品决策项**（实现提醒 UI 时的第 4 条需求：「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是** SCENARIO_TESTS 里的「步骤 4」，也**不是**用户在产品里能点的某个「第 4 步」。当前代码默认 **`suppress`**（`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`）。
+> **说明**：下列对照表记录产品决策（「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是**场景步骤序号。**2026-07-23 已拍板**：**`suppress`**——忙碌期隐藏横幅、**不**做 `defer` 延迟弹出。权威接线：`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`（见 `TEST_TRACKER` L186 / `SHARED_RESOURCES`）。
 
 **忙碌态** = Arrival 开着 / Focusing / Celebrating / Reflection / 微仪式进行中。
 
 | 策略 | 行为 | 人工怎么验 |
 |---|---|---|
-| **suppress**（当前默认） | 忙碌时 **不展示、不排队**；下次启动或回前台再重新判断 | 到点横幅已出现后 → Sit 开 Focusing → 横幅 **立刻隐藏**；Rise 回 Idle 且仍满足条件 → **可再次出现**（若本页未 dismiss） |
-| **defer**（备选，未启用） | 忙碌时 **挂起一次**；回到非忙碌 Idle 后 **补展示一次** | 须 DEV 改 `busyPolicy: 'defer'` 后复测：Focusing 期间到点 → 不展示；Rise 回 Idle → **应补弹一次** |
+| **suppress**（**已拍板 · 产品路径**） | 忙碌时 **不展示、不排队**；下次启动或回前台再重新判断 | 到点横幅已出现后 → Sit 开 Focusing → 横幅 **立刻隐藏**；Rise 回 Idle 且仍满足条件 → **可再次出现**（若本页未 dismiss） |
+| **defer**（**未启用 · 仅对照/单测**） | 忙碌时 **挂起一次**；回到非忙碌 Idle 后 **补展示一次** | 产品路径**不测**；若 DEV 临时改 `busyPolicy: 'defer'` 才验补弹 |
 
-拍板前：场景 P 的 e2e 按 **suppress** 断言（Focusing 期间 banner hidden）。
+场景 P 的 e2e **按 suppress 断言**（Focusing 期间 banner hidden）。
 
 ### DEV 辅助（勿当生产路径）
 

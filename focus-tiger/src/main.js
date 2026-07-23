@@ -254,7 +254,7 @@ async function init() {
   let reminderNowOverride = null;
   const reminderNow = () => reminderNowOverride ?? new Date();
   const inAppReminderBannerController = new InAppReminderBannerController({
-    // 方案 A suppress（默认）；方案 B 改为 busyPolicy: 'defer'
+    // 2026-07-23 已拍板：suppress（忙碌隐藏、不排队）；勿改 defer 到产品路径
     busyPolicy: 'suppress'
   });
   /** Assigned after Arrival / stores are ready. */

@@ -119,6 +119,11 @@ git tag -a v0.x.y -m "稳定发布点说明"
 
 **最终点击合并的动作，始终由项目负责人本人在 GitHub 网页上执行**；Agent 不得代为合并进 `main`。
 
+### 临时门槛与后续 CI（PR #2 起）
+
+- **临时**：在「CI 全量 smoke + e2e」落地前，合并进 `main` 可接受 **本机** `npm run test:smoke` + `npm run test:e2e` 全绿，加上现有 CI **`focus-tiger doc-contract check`** 绿（见 `PROCESS.md` 合并门禁拍板）。  
+- **后续**：须另开 PR 把完整 `test:smoke` / `test:e2e` 纳入 GitHub Actions；目标与范围见 `PROCESS.md` Backlog「CI 全量 test:smoke + test:e2e」。**禁止**把「长期只靠本机手跑」当成常态。
+
 ---
 
 ## 「改坏了什么」如何快速恢复？
