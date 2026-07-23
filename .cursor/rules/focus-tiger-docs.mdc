@@ -92,7 +92,7 @@ alwaysApply: true
 **勿在本文件复述** commit / 合并 main / §7 等完整条款；只保留指向：
 
 - 交互修复完工门禁、Commit 汇报与分支门禁、Bug close §7 → `focus-tiger-regression-lock.mdc`
-- 分支模型 / 合并 main / 跨会话冲突 → 仓库根 `WORKFLOW.md`
+- 分支模型 / 合并 main / 跨会话冲突 / 并行 worktree → 仓库根 `WORKFLOW.md`
 - 质量叙事（why/how）→ `DEV_WORKFLOW_QUALITY.md`
 
 ## Git 同步（半自动，禁止静默 push）

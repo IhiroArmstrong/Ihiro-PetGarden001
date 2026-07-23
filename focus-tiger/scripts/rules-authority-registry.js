@@ -194,6 +194,36 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-parallel-worktree',
+    title: '并行 Cursor 会话须用 git worktree 隔离写操作',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '并行 Cursor 会话：必须用 git worktree 隔离写操作',
+    ssotMustContain: [
+      /并行写必须独立 worktree/,
+      /git worktree add/,
+      /禁止两 worktree 同时检出同一分支/
+    ],
+    topicSignals: [
+      /并行 Cursor 会话/,
+      /git worktree/,
+      /并行写必须独立 worktree/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /并行写必须独立 worktree/,
+      /一 worktree\s*↔\s*一分支/,
+      /禁止两 worktree 同时检出同一分支/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'same-checkout-parallel-write-ok',
+        pattern: /(?:可以|允许|应当)(?:多个|两个)(?:Agent|会话).*(?:同一|同一个)(?:目录|checkout|工作树).*(?:同时写|并行写)/,
+        note: '禁止主张同目录并行写可接受；须 worktree 隔离'
+      }
+    ]
+  },
+  {
     id: 'regression-gate',
     title: '交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…）',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',

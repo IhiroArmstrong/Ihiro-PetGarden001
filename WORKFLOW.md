@@ -48,6 +48,17 @@ feature/*        ●        ●
 2. **发现更晚活动 → 先问用户**：若同仓库已有更晚相关活动（例如已存在同方向 PR、远端 tip 已前进、CI 刚变红/变绿、其他分支上有更新的合并门禁相关提交），须 **先向用户确认**，不得按手头旧指令执行到底。  
 3. **可查的客观信号（不依赖读其他会话）**：开放中的 PR、PR tip SHA、CI run 状态与时间、`git log` / `origin/*` 与本地 tip 对比、最近 push 时间戳等。
 
+### 并行 Cursor 会话：必须用 git worktree 隔离写操作
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-parallel-worktree`）。「跨会话指令冲突」管的是 PR / push / 合 `main` 的冷静；**本条管的是文件系统隔离**。二者互补，不互相替代。
+
+1. **并行写必须独立 worktree**：两个（及以上）Cursor Agent 会话若会同时改文件、`git commit`、或切分支，**禁止**共用同一份 checkout 目录。须用 `git worktree add` 为每个写会话挂独立工作目录（可共享同一 `.git` 历史），并在 Cursor 中分别打开对应目录。  
+2. **只读可共用主仓**：仅查文档 / log / 状态、不写盘、不切分支的会话，可继续使用主仓库目录。  
+3. **一 worktree ↔ 一分支 ↔ 一主任务**：新建任务默认 `git worktree add -b feature/<topic>|<fix>/<topic>|<chore>/<topic> <并列目录> <基线>`；基线通常为 `develop` tip，拆分/续作已有主题时用该主题分支 tip。目录与主仓**并列**（如 `../Zen-tiger-Pet-garden001-wt-<short>`），不要塞进主仓内部。  
+4. **禁止两 worktree 同时检出同一分支**（Git 硬限制）；共享契约文件（如 `TEST_TRACKER.md`、`PROCESS.md`、locale 大文件）同一时间只允许一个会话改。  
+5. **合回主线**：功能分支经 PR（或团队约定的本地 merge）进入 `develop`；`main` 仍只走 PR + 负责人网页合并（见上文合并门禁）。push 仍须用户明确授权。  
+6. **结束后清理**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。
+
 ---
 
 ## 何时可以把 `develop` 合并进 `main`？
@@ -202,7 +213,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / 跨会话冲突 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / 跨会话冲突 / 并行 worktree | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 场景测试剧本 | `focus-tiger/docs/SCENARIO_TESTS.md` |
@@ -216,6 +227,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 我想… | 做法 |
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
+| 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
 | 修 bug | 从 `develop` 切 `fix/…` |
 | 纯文档更新 | 在 `develop` 或 `feature/…` 上改、跑 `docs:check`、**立刻 commit** |
 | 发布稳定版 | 过门禁 → `main` ← merge `develop` → 可选 `git tag` |
