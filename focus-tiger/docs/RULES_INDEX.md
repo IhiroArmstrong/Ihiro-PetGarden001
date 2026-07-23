@@ -41,7 +41,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|---|---|
 | `git-branch-model` | 分支模型（main / develop / feature / fix / hotfix） | `WORKFLOW.md` | 分支模型 |
 | `git-merge-main` | 合并 develop → main 的门禁与谁点合并 | `WORKFLOW.md` | 何时可以把 `develop` 合并进 `main`？ |
-| `git-agent-commit` | Agent 自动 commit / 汇报 / 禁止静默提交 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
+| `git-agent-commit` | Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
 | `regression-gate` | 交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…） | `.cursor/rules/focus-tiger-regression-lock.mdc` | 交互修复完工门禁 |
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
@@ -56,7 +56,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|---|
 | `git-branch-model` | 「分支职责见 `WORKFLOW.md`」 | 再抄一份五列表 |
 | `git-merge-main` | 「合并 main 门禁见 `WORKFLOW.md`」 | 另造「须 N 人审批」等未立项条款；Agent 代点合并 |
-| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」 | 主张「先问再 commit」的平行口径；完整抄 5 条门禁；主张可以自动 push |
+| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总**） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注 |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
@@ -134,3 +134,4 @@ cd focus-tiger && npm run rules:doc-sync
 | 日期 | 说明 |
 |---|---|
 | 2026-07-23 | 初版：盘点规则文档、指定主题 SSOT、接入 `rules:doc-check`，收敛 commit/跨会话等平行复述 |
+| 2026-07-23 | 补强 `git-agent-commit`：Git 同步 / 批量 push 须「分级汇总」（commit 列表 + 高风险单独标注）；与 Cursor user rule 对齐方向 |

@@ -114,20 +114,23 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'git-agent-commit',
-    title: 'Agent 自动 commit / 汇报 / 禁止静默提交 / push 与禁自动合 main',
+    title: 'Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
     ssotSection: 'Commit 汇报与分支门禁',
     ssotMustContain: [
       /允许自动 commit 的范围/,
       /禁止静默提交/,
       /禁止自动合并进 `main`/,
-      /`git push` 仍须用户明确要求/
+      /`git push` 仍须用户明确要求/,
+      /Git 同步汇总/,
+      /高风险标注/
     ],
     topicSignals: [
       /允许自动 commit/,
       /可自动(?:本地)?(?:\s*`?git commit`?| commit)/,
       /禁止静默提交/,
-      /Commit 汇报与分支门禁/
+      /Commit 汇报与分支门禁/,
+      /Git 同步汇总/
     ],
     mustCite: [
       /focus-tiger-regression-lock\.mdc|regression-lock|Commit 汇报与分支门禁/
@@ -136,7 +139,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /允许自动 commit 的范围/,
       /禁止静默提交/,
       /禁止自动合并进 `main`/,
-      /并行会话同规/
+      /并行会话同规/,
+      /Git 同步汇总/
     ],
     restatementThreshold: 3,
     forbiddenOutsideSsot: [
