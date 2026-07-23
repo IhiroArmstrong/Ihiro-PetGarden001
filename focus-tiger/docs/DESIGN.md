@@ -413,7 +413,8 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 | 用法 | 属性 | 颜色 | 说明 |
 |---|---|---|---|
 | 默认 / 稀缺通知 | （无 `tone`）+ 可选 `pulse` 一次 | `--color-highlight` 朱红 | 里程碑等；**勿**作 onboarding 常驻线索 |
-| Onboarding **click** 线索 | `tone="hint"` + `pulse="loop"` | `#5c7a6c`（提示铬，已有） | 持续缩放脉冲；点后展开 hint 气泡；见 `ONBOARDING_HINTS.md` §〇 |
+| Onboarding **click** 线索 | `tone="hint"` + `pulse="loop"` | `#5c7a6c` | 未读脉冲 |
+| Onboarding **peeked**（simple） | `tone="hint"` + `state="static"` | 同色 opacity≈0.4，约 5px | 已看文案、相关操作前；无动效 |
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 

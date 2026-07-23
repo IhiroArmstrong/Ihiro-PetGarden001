@@ -1,12 +1,12 @@
 /**
  * Onboarding hints — 机器可读真源（SSOT）。
  *
- * 派生：HINT_IDS、HINT_LOCALE_KEYS、ONBOARDING_HINT_ANCHORS、HINT_TRIGGER_MODES（勿手写第二份）。
+ * 派生：HINT_IDS、HINT_LOCALE_KEYS、ONBOARDING_HINT_ANCHORS、HINT_TRIGGER_MODES、HINT_TIERS（勿手写第二份）。
  * 叙述/场景：ONBOARDING_HINTS.md §一（人工）；锚点机器对照块由 `npm run hints:doc-sync` 生成。
  *
  * PR checklist：新增 hint 时若 anchor 所在 DOM 区域与已有 hint 相邻/可能视觉重叠，
  * 必须评估是否需要 anchorGroup（同组内 selector 不得相同）。
- * 新增 hint 必须声明 triggerMode（勿在 UI 里散落 if/else 判断交互模式）。
+ * 新增 hint 必须声明 triggerMode；仅 click 须声明 tier（auto/manual/legacy 禁止填 tier）。
  *
  * @see ONBOARDING_HINTS.md
  */
@@ -15,10 +15,17 @@
 
 /**
  * @typedef {'auto'|'click'|'manual'|'legacy'} HintTriggerMode
- * - auto：时机/状态性，首次出现主动弹出气泡
- * - click：探索性，默认只显示脉冲圆点，点击后展开气泡
+ * - auto：时机/状态性，首次出现主动弹出气泡（无圆点）
+ * - click：探索性，默认脉冲圆点；已读语义由 tier 决定
  * - manual：从不自动出现（仅「?」补救等用户主动路径）
  * - legacy：历史兼容 id，基本不调度
+ */
+
+/**
+ * @typedef {'simple'|'detailed'} HintTier
+ * 仅 triggerMode=click 填写。auto/manual/legacy 无圆点，不适用 peek/static/done 圆点语义。
+ * - simple：看过文案 → 静止弱化圆点；相关操作完成 → 圆点移除
+ * - detailed：预览≠已读；进入详情页 → 圆点移除
  */
 
 /**
@@ -27,6 +34,7 @@
  * @property {string} localeKey
  * @property {HintAnchor} anchor
  * @property {HintTriggerMode} triggerMode
+ * @property {HintTier} [tier] 仅 click 必填；其余省略（null）
  * @property {string} [anchorGroup] 同组 selector 须两两不同（结构性约束，非产品语义表）
  */
 
@@ -68,6 +76,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'quick-start',
     localeKey: 'HINT_QUICK_START',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: {
       selector: '#quick-start-focus',
       placement: 'above',
@@ -78,6 +87,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'how-shall-we-sit',
     localeKey: 'HINT_HOW_SHALL_WE_SIT',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: {
       selector: '.session-start-dock__hint',
       placement: 'right',
@@ -158,6 +168,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'ambient-gated',
     localeKey: 'HINT_AMBIENT_GATED',
     triggerMode: 'click',
+    tier: 'simple',
     anchorGroup: 'ambient',
     anchor: {
       selector: '.ambient-soundscape__fab',
@@ -169,6 +180,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'ambient-soundscape',
     localeKey: 'HINT_AMBIENT_SOUNDSCAPE',
     triggerMode: 'click',
+    tier: 'simple',
     anchorGroup: 'ambient',
     anchor: {
       selector: '.ambient-soundscape__mute',
@@ -180,6 +192,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'rise-button',
     localeKey: 'HINT_RISE_BUTTON',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
   },
   {
@@ -196,12 +209,14 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'idle-after-session',
     localeKey: 'HINT_IDLE_AFTER_SESSION',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
   },
   {
     id: 'weekly-heatmap',
     localeKey: 'HINT_WEEKLY_HEATMAP',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: {
       selector: '#weekly-practice-heatmap',
       placement: 'right',
@@ -212,6 +227,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'in-app-reminder',
     localeKey: 'HINT_IN_APP_REMINDER',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: {
       selector: '#reminder-preference-toggle',
       placement: 'right',
@@ -222,6 +238,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'micro-ritual',
     localeKey: 'HINT_MICRO_RITUAL',
     triggerMode: 'click',
+    tier: 'simple',
     anchor: {
       selector: '#micro-ritual-idle-entry',
       placement: 'right',
@@ -232,6 +249,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'focus-hud-ring',
     localeKey: 'HINT_FOCUS_HUD_RING',
     triggerMode: 'click',
+    tier: 'simple',
     anchorGroup: 'focus-hud',
     anchor: {
       selector: '#focus-hud .ft-hud__gauge',
@@ -243,6 +261,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'focus-hud-progress',
     localeKey: 'HINT_FOCUS_HUD_PROGRESS',
     triggerMode: 'click',
+    tier: 'simple',
     anchorGroup: 'focus-hud',
     anchor: {
       selector: '#focus-hud .ft-hud__bar',
@@ -254,6 +273,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'focus-hud-streak',
     localeKey: 'HINT_FOCUS_HUD_STREAK',
     triggerMode: 'click',
+    tier: 'simple',
     anchorGroup: 'focus-hud',
     anchor: {
       selector: '#focus-hud .ft-hud__streak',
@@ -275,6 +295,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'help-affordance',
     localeKey: 'HINT_HELP_AFFORDANCE',
     triggerMode: 'click',
+    tier: 'detailed',
     anchor: {
       selector: '#onboarding-hint-help',
       placement: 'right',
@@ -326,6 +347,19 @@ export const HINT_TRIGGER_MODES = Object.freeze(
 );
 
 /**
+ * click hint → tier；非 click 不在表内（getHintTier 返回 null）。
+ * @type {Readonly<Record<string, HintTier>>}
+ */
+export const HINT_TIERS = Object.freeze(
+  Object.fromEntries(
+    ONBOARDING_HINT_REGISTRY.filter((e) => e.tier != null).map((e) => [
+      e.id,
+      e.tier
+    ])
+  )
+);
+
+/**
  * @param {string} hintId
  * @returns {HintTriggerMode}
  */
@@ -339,4 +373,20 @@ export function getHintTriggerMode(hintId) {
  */
 export function isClickTriggerHint(hintId) {
   return getHintTriggerMode(hintId) === 'click';
+}
+
+/**
+ * @param {string} hintId
+ * @returns {HintTier | null} 非 click 为 null（无圆点语义）
+ */
+export function getHintTier(hintId) {
+  return HINT_TIERS[hintId] ?? null;
+}
+
+/**
+ * @param {string} hintId
+ * @returns {boolean}
+ */
+export function isDetailedHint(hintId) {
+  return getHintTier(hintId) === 'detailed';
 }

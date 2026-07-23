@@ -1,44 +1,60 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
 创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-07-30（合入 `triggerMode` click 圆点；首次登录右上音符薄荷绿提示；窄屏 `narrow-drawer-menu` 仍有效）
+最后更新：2026-07-30（`triggerMode` + `tier` peeked/static/done；首次登录右上音符薄荷绿提示；窄屏 `narrow-drawer-menu`）
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
-1. **即时提示**：每个功能第一次真正出现时，按 `triggerMode` 用阿寅文字气泡或控件旁脉冲圆点引导，用完即隐藏。
+1. **即时提示**：每个功能第一次真正出现时，按 `triggerMode` 用阿寅文字气泡或控件旁脉冲圆点引导；click 的已读语义由独立字段 `tier` 决定。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
 
 原则：不强迫用户读说明书；尽量做成**傻瓜交互式**开头——每一步只回答「此刻点哪里 / 可以跳过吗 / 点了会发生什么」。
 
 ---
 
-## 〇、触发模式（`triggerMode` · Registry 字段）
+## 〇、触发模式与圆点层级（Registry）
 
-真源：`onboardingHintRegistry.js` 每条必填 `triggerMode`；UI **禁止**用散落 if/else 硬编码哪些 hint 走哪种模式。派生：`HINT_TRIGGER_MODES` / `getHintTriggerMode()` / `isClickTriggerHint()`。
+真源：`onboardingHintRegistry.js`。UI **禁止**散落 if/else 硬编码模式/层级。
 
-| 模式 | 默认表现 | 适用 |
-|---|---|---|
-| **`auto`** | 首次出现**主动弹出**薄荷绿气泡 | 状态性 / 时机性：不主动说可能漏掉关键信息或误判系统状态 |
-| **`click`** | 控件旁**薄荷绿脉冲圆点**；点击（或键盘 Enter/Space）后展开原气泡 | 可选、探索性、不影响理解「此刻已发生什么」 |
-| **`manual`** | 从不自动出现 | 仅「?」补救等用户主动路径（`help-remedy` / `help-fallback`） |
-| **`legacy`** | 基本不调度 | 历史兼容 id（`dormant-open`） |
+### `triggerMode`（怎么出现）
 
-### click 模式交互规范
+| 模式 | 默认表现 |
+|---|---|
+| **`auto`** | 首次出现**主动弹出**薄荷绿气泡（**无圆点**） |
+| **`click`** | 控件旁薄荷绿圆点；预览/已读由 **`tier`** 决定 |
+| **`manual`** | 从不自动出现（仅「?」补救） |
+| **`legacy`** | 基本不调度 |
 
-1. **默认**：只显示圆点徽标（复用 UI Kit `notification-badge`，`tone="hint"` + `pulse="loop"`），**不**主动弹出气泡。
-2. **动画**：持续缩放脉冲（约 2s 一周期、`scale(1)→1.28`），克制、不抢主 CTA；**禁止**用 `--color-highlight` 朱红（避免与错误/警告混淆）。
-3. **颜色**：圆点使用既有提示铬色 **`#5c7a6c`**（与气泡描边 `rgba(92,122,108,…)` 同系），对比页底 `#e8e6e1` 足够；不新造色值。
-4. **展开**：点击圆点 → 复用 `ft-onboarding-hint-bubble` + 既有 anchor 定位；同时最多一条已展开的 click 气泡（与 auto 气泡互斥时优先收起 auto）。
-5. **收起**：点气泡本身 = **记已读**（`hints-seen`）+ 圆点消失；点圆点再次 / 点气泡外 = **仅收起气泡、不记已读**，圆点保留。实验室「清空引导提示已读」仍清全部 `hints-seen`。
-6. **无障碍**：圆点 `role="button"`、`tabindex="0"`、`aria-label` = `HINT_BADGE_ARIA`（「有新提示，点击查看」）、`aria-expanded` 随展开状态。
-7. **互斥**：`selectExclusiveAutoHintIds` **只**对 `triggerMode === 'auto'` 候选生效；click 圆点可与当前那条 auto 气泡并存（圆点不占互斥席）。
+### `tier`（仅 `triggerMode: click`；其余省略 = null）
 
-### 各 hint 归类（2026-07-23 定稿）
+**auto / manual / legacy 不填 `tier`**：无圆点，不适用 peek / static / done 圆点语义。
+
+| tier | 已读语义（混合 α+β） |
+|---|---|
+| **`simple`** | 悬停或点圆点 → 预览 tip；关框（点外 / 点气泡 / 失焦）→ **`peeked`**：圆点改**静止弱化**（约 5–6px、opacity ≈0.4、无动效）。相关操作 `markSeen` → **`done`**，圆点**彻底移除** |
+| **`detailed`** | 悬停/点圆点 → 浅层预览（仍脉冲）；点「了解此空间」或二次点圆点 / Enter → 详情页（用途简介卡）→ **`done`**，圆点移除。仅关预览 ≠ 已读 |
+
+存储：`focus-tiger.hints-seen.v1` 值为 `'peeked' \| 'done'`（旧 `true` 迁为 `done`）。
 
 **click（圆点触发）**：`how-shall-we-sit` · `ambient-soundscape`（首次登录右上音符）· `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `micro-ritual` · `in-app-reminder` · `quick-start` · `focus-hud-*` · `help-affordance`
 
 **auto（保留主动弹出）**：`sit-button` · `honesty-optional` · `honesty-bridge` · `notice` · `breathing` · `choose` · `companion-mode` · `companion-stay` · `companion-away` · `companion-across-tools` · `reflection`  
-理由摘要：计时/分叉/Arrival beat「此刻怎么做」、Companion 选模——漏了会误判系统状态。音乐改为 **click 圆点**（opt-in，不主动挡操作）。
+理由摘要：计时/分叉/Arrival beat「此刻怎么做」、Companion 选模——漏了会误判系统状态。音乐为 **click 圆点**（opt-in，不主动挡操作）。
 
-**manual / legacy（不改交互 · 避免误以为漏改）**：`help-remedy` · `help-fallback`（仅点「?」）；`dormant-open`（开场已改 Idle，基本不自动触发）。
+### click 七条 tier 定稿
+
+| hintId | tier |
+|---|---|
+| `help-affordance` | **detailed** |
+| `how-shall-we-sit` · `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `micro-ritual` | **simple** |
+
+### 触屏 / 键盘（摘要）
+
+- **触屏 simple**：点圆点 = 预览；点外或点气泡 = peeked 静止。
+- **触屏 detailed**：第一次点圆点 = 预览 +「了解此空间」；点 CTA 或再点圆点 = 详情 → done。点「?」开简介卡 = done。
+- **键盘**：Tab/focus = 预览；simple 失焦/Esc/点气泡 = peeked；detailed Enter（圆点上或 CTA）= 详情 → done。
+
+### auto 主动弹出（保留）
+
+`sit-button` · `honesty-optional` · `honesty-bridge` · `notice` · `breathing` · `choose` · `companion-mode` · `companion-stay` · `companion-away` · `companion-across-tools` · `ambient-soundscape` · `reflection` — **无 tier**。
 
 ---
 
@@ -79,10 +95,9 @@
 
 > **机器块 · 勿手改**。真源：`src/core/onboardingHintRegistry.js`。刷新：`npm run hints:doc-sync`。
 
-| hintId | localeKey | selector | placement | tip | anchorGroup |
-|---|---|---|---|---|---|
-| _(regenerate via `npm run hints:doc-sync`) | | | | | |
-
+| hintId | localeKey | triggerMode | tier | selector | placement | tip | anchorGroup |
+|---|---|---|---|---|---|---|---|
+| _(regenerate via `npm run hints:doc-sync`) | | | | | | | |
 <!-- onboarding-hints-registry:anchors:end -->
 
 ### 音乐提示（对应 ambient-soundscape 文案）
@@ -94,7 +109,7 @@
 ## 二、补救入口设计
 
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
-- **首次空闲**：`help-affordance` 为 **click** 模式——「?」旁薄荷绿脉冲圆点；点圆点展开气泡，或点「?」直接进补救并记已读。
+- **首次空闲**：`help-affordance` 为 **click + detailed**——「?」旁脉冲圆点；悬停/点圆点 = 浅层 tip；点「了解此空间」或点「?」（开简介卡）= done，圆点消失。
 - **交互**：点「?」同时做三件事：
   1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ **「更多提示」芯片**（`#ft-hint-catalog-chip`）。**窄屏 Idle（抽屉关闭）**：芯片一次性展开 `narrow-drawer-menu`（文案列出抽屉内功能：呼吸 / How shall we sit? / Sound / Reminder / 近日同坐格），**禁止**再出「还有 3 条 / 2 条」倒计时，也**禁止**在抽屉未开时用尖角去指抽屉内控件（会误指主球）。**宽屏 / 抽屉已开**：仍可逐条展开其余 tip（同时最多主条 + 1）。窄屏抬离主球带时须**堆叠错开**（`_liftBubblesAboveNarrowHomeCtas`），且须 **lift→separate**（禁止 separate 后再统一抬到同一 Y，会把错开抵消）；
   2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
@@ -143,9 +158,10 @@
 
 ```
 localStorage key: focus-tiger.hints-seen.v1
-结构：{ [hintId: string]: true }
-hintId：见第一节表
-规则：首次对应操作完成后写入 true；**用户点击气泡关闭也写入 true**（自动提示）；补救入口不受已读限制。
+结构：{ [hintId: string]: 'peeked' | 'done' }  （旧 true 读入迁为 'done'）
+- done：不再 auto；click 圆点移除（相关操作完成 / detailed 进详情）
+- peeked：仅 click+simple；圆点静止弱化，相关操作前仍显示
+规则：自动提示点气泡关闭 → done；simple 预览关框 → peeked；实验室「清空」清全部。补救入口不受已读限制铺开。
 ```
 
 ---

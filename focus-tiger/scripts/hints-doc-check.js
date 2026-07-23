@@ -26,15 +26,16 @@ export function renderHintsAnchorMarkdownBlock() {
     '',
     '> **机器块 · 勿手改**。真源：`src/core/onboardingHintRegistry.js`。刷新：`npm run hints:doc-sync`。',
     '',
-    '| hintId | localeKey | triggerMode | selector | placement | tip | anchorGroup |',
-    '|---|---|---|---|---|---|---|'
+    '| hintId | localeKey | triggerMode | tier | selector | placement | tip | anchorGroup |',
+    '|---|---|---|---|---|---|---|---|'
   ];
 
   for (const entry of ONBOARDING_HINT_REGISTRY) {
-    const { id, localeKey, triggerMode, anchor, anchorGroup } = entry;
+    const { id, localeKey, triggerMode, tier, anchor, anchorGroup } = entry;
     const group = anchorGroup ?? '';
+    const tierCell = tier ? `\`${tier}\`` : '—';
     lines.push(
-      `| \`${id}\` | \`${localeKey}\` | \`${triggerMode}\` | \`${anchor.selector}\` | ${anchor.placement} | ${anchor.tip} | ${group ? `\`${group}\`` : '—'} |`
+      `| \`${id}\` | \`${localeKey}\` | \`${triggerMode}\` | ${tierCell} | \`${anchor.selector}\` | ${anchor.placement} | ${anchor.tip} | ${group ? `\`${group}\`` : '—'} |`
     );
   }
 

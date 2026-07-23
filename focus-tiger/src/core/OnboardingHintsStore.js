@@ -1,5 +1,7 @@
 /**
  * 分散式即时提示已读记忆：focus-tiger.hints-seen.v1
+ * 值：'peeked'（simple 看过文案、圆点静止弱化）| 'done'（操作完成/进详情，圆点移除）
+ * 旧布尔 true 读入时迁为 'done'。
  * @see ONBOARDING_HINTS.md
  */
 
@@ -9,25 +11,29 @@ export const HINTS_SEEN_STORAGE_KEY = 'focus-tiger.hints-seen.v1';
 
 /** @typedef {import('./onboardingHintRegistry.js').OnboardingHintRegistryEntry['id']} HintId */
 
+/** @typedef {'peeked'|'done'} HintAckState */
+
 export { HINT_IDS, HINT_LOCALE_KEYS };
 
 /**
  * @param {unknown} raw
- * @returns {Record<string, true>}
+ * @returns {Record<string, HintAckState>}
  */
 export function normalizeHintsSeen(raw) {
   if (!raw || typeof raw !== 'object') return {};
-  /** @type {Record<string, true>} */
+  /** @type {Record<string, HintAckState>} */
   const out = {};
   for (const id of HINT_IDS) {
-    if (raw[id] === true) out[id] = true;
+    const v = raw[id];
+    if (v === true || v === 'done') out[id] = 'done';
+    else if (v === 'peeked') out[id] = 'peeked';
   }
   return out;
 }
 
 /**
  * @param {() => unknown} [read]
- * @param {(value: Record<string, true>) => void} [write]
+ * @param {(value: Record<string, HintAckState>) => void} [write]
  */
 export function createHintsSeenStore(
   read = () => {
@@ -48,13 +54,49 @@ export function createHintsSeenStore(
   let cache = normalizeHintsSeen(read());
 
   return {
+    /**
+     * 完全完成（不再 auto、圆点移除）。兼容旧名 isSeen。
+     * @param {string} hintId
+     */
     isSeen(hintId) {
-      return cache[hintId] === true;
+      return cache[hintId] === 'done';
     },
+    /** @param {string} hintId */
+    isDone(hintId) {
+      return cache[hintId] === 'done';
+    },
+    /** @param {string} hintId */
+    isPeeked(hintId) {
+      return cache[hintId] === 'peeked';
+    },
+    /**
+     * @param {string} hintId
+     * @returns {HintAckState | null}
+     */
+    getAck(hintId) {
+      return cache[hintId] ?? null;
+    },
+    /**
+     * simple：看过文案后停闪弱化。已 done 不降级。
+     * @param {string} hintId
+     * @returns {boolean}
+     */
+    markPeeked(hintId) {
+      if (!HINT_IDS.includes(hintId)) return false;
+      if (cache[hintId] === 'done' || cache[hintId] === 'peeked') return false;
+      cache = { ...cache, [hintId]: 'peeked' };
+      write(cache);
+      return true;
+    },
+    /**
+     * 相关操作完成 / 进详情页。兼容旧 markSeen。
+     * @param {string} hintId
+     * @returns {boolean}
+     */
     markSeen(hintId) {
       if (!HINT_IDS.includes(hintId)) return false;
-      if (cache[hintId]) return false;
-      cache = { ...cache, [hintId]: true };
+      if (cache[hintId] === 'done') return false;
+      cache = { ...cache, [hintId]: 'done' };
       write(cache);
       return true;
     },

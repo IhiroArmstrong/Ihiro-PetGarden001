@@ -111,6 +111,8 @@
   "HINT_HELP_ARIA": "Show a quiet tip for this moment",
   "HINT_DISMISS_ARIA": "Click to dismiss",
   "HINT_BADGE_ARIA": "New tip available — click to view",
+  "HINT_BADGE_PEEKED_ARIA": "Tip reviewed — still available until you use this control",
+  "HINT_DETAIL_CTA": "Learn about this space",
   "HINT_DORMANT_OPEN": "Yin is resting. Sit when you feel ready.",
   "HINT_HONESTY_OPTIONAL": "This check-in is optional — Sit still works.",
   "HINT_HONESTY_BRIDGE": "Yes begins Arrival; No stays with idle. Either is fine.",
@@ -161,5 +163,7 @@
   "HINT_QUICK_START": "Skip Arrival — sit with your last mode right away.",
   "HINT_FOCUS_HUD_RING": "This ring soft-fills as you sit — a quiet presence, not a scoreboard.",
   "HINT_FOCUS_HUD_PROGRESS": "Today's shared sitting — how long you've been here today.",
-  "HINT_FOCUS_HUD_STREAK": "Recent days you practiced — one lit dot per day, not per session."
+  "HINT_FOCUS_HUD_STREAK": "Recent days you practiced — one lit dot per day, not per session.",
+  "HINT_LEARN_SPACE": "Learn about this space",
+  "HINT_LEARN_SPACE_ARIA": "Open a short introduction"
 }

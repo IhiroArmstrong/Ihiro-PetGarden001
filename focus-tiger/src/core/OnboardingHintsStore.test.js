@@ -20,15 +20,17 @@ test('normalizeHintsSeen only keeps known hintIds', () => {
   const n = normalizeHintsSeen({
     'sit-button': true,
     junk: true,
-    notice: false
+    notice: false,
+    'how-shall-we-sit': 'peeked'
   });
-  assert.equal(n['sit-button'], true);
+  assert.equal(n['sit-button'], 'done');
   assert.equal(n.junk, undefined);
   assert.equal(n.notice, undefined);
+  assert.equal(n['how-shall-we-sit'], 'peeked');
 });
 
 test('markSeen is first-write-only and ids do not interfere', () => {
-  /** @type {Record<string, true>} */
+  /** @type {Record<string, string>} */
   let saved = {};
   const store = createHintsSeenStore(
     () => saved,
@@ -40,15 +42,42 @@ test('markSeen is first-write-only and ids do not interfere', () => {
   assert.equal(store.markSeen('sit-button'), true);
   assert.equal(store.markSeen('sit-button'), false);
   assert.equal(store.isSeen('sit-button'), true);
+  assert.equal(store.isDone('sit-button'), true);
   assert.equal(store.isSeen('notice'), false);
   store.markSeen('notice');
   assert.equal(store.isSeen('notice'), true);
   assert.equal(store.isSeen('sit-button'), true);
 });
 
+test('markPeeked then markSeen: static then done (hybrid α+β)', () => {
+  /** @type {Record<string, string>} */
+  let saved = {};
+  const store = createHintsSeenStore(
+    () => saved,
+    (v) => {
+      saved = v;
+    }
+  );
+  assert.equal(store.markPeeked('how-shall-we-sit'), true);
+  assert.equal(store.isPeeked('how-shall-we-sit'), true);
+  assert.equal(store.isDone('how-shall-we-sit'), false);
+  assert.equal(store.isSeen('how-shall-we-sit'), false);
+  assert.equal(store.getAck('how-shall-we-sit'), 'peeked');
+  assert.equal(store.markPeeked('how-shall-we-sit'), false);
+  assert.equal(store.markSeen('how-shall-we-sit'), true);
+  assert.equal(store.isPeeked('how-shall-we-sit'), false);
+  assert.equal(store.isDone('how-shall-we-sit'), true);
+  assert.equal(store.getAck('how-shall-we-sit'), 'done');
+});
+
+test('legacy boolean true migrates to done', () => {
+  const n = normalizeHintsSeen({ 'rise-button': true });
+  assert.equal(n['rise-button'], 'done');
+});
+
 test('clear resets all seen flags', () => {
-  /** @type {Record<string, true>} */
-  let saved = { 'sit-button': true, notice: true };
+  /** @type {Record<string, string>} */
+  let saved = { 'sit-button': 'done', notice: 'done', 'ambient-gated': 'peeked' };
   const store = createHintsSeenStore(
     () => saved,
     (v) => {
@@ -59,6 +88,7 @@ test('clear resets all seen flags', () => {
   assert.deepEqual(store.getAll(), {});
   for (const id of HINT_IDS) {
     assert.equal(store.isSeen(id), false);
+    assert.equal(store.isPeeked(id), false);
   }
 });
 

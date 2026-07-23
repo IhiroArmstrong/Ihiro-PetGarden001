@@ -88,10 +88,10 @@ npm run test:e2e:visibility  # 改 setSuppressed / park / hide 后：整表 e2e 
 
 ### H-01：Onboarding hints
 
-- **SSOT**：`src/core/onboardingHintRegistry.js`（含 `triggerMode`：`auto` / `click` / `manual` / `legacy`）
-- **生成块**：`docs/ONBOARDING_HINTS.md` 锚点表（含 `triggerMode` 列）
+- **SSOT**：`src/core/onboardingHintRegistry.js`（含 `triggerMode`；**仅 click** 填 `tier`：`simple` / `detailed`）
+- **生成块**：`docs/ONBOARDING_HINTS.md` 锚点表（含 `triggerMode` + `tier` 列；非 click 为 —）
 - **脚本**：`scripts/hints-doc-check.js`
-- **行为**：click 圆点 vs auto 气泡见 `ONBOARDING_HINTS.md` §〇；UI 须读 Registry，禁止散落 if/else 硬编码模式
+- **行为**：click 圆点 peek/static/done 见 `ONBOARDING_HINTS.md` §〇；auto 无圆点、无 tier；UI 须读 Registry，禁止散落 if/else
 
 ### S-01：StateManager 合法转移
 

@@ -7,13 +7,17 @@ import {
   HINT_IDS,
   HINT_LOCALE_KEYS,
   HINT_TRIGGER_MODES,
+  HINT_TIERS,
   ONBOARDING_HINT_ANCHORS,
   ONBOARDING_HINT_REGISTRY,
   getHintTriggerMode,
-  isClickTriggerHint
+  getHintTier,
+  isClickTriggerHint,
+  isDetailedHint
 } from './onboardingHintRegistry.js';
 
 const VALID_TRIGGER_MODES = new Set(['auto', 'click', 'manual', 'legacy']);
+const VALID_TIERS = new Set(['simple', 'detailed']);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const LOCALES_DIR = join(__dirname, '../locales');
@@ -52,14 +56,60 @@ test('every registry entry has a valid triggerMode', () => {
   }
 });
 
-test('confirmed click-trigger hints use triggerMode click', () => {
-  const clickIds = [
+test('tier only on click hints; auto/manual/legacy omit tier (null)', () => {
+  for (const entry of ONBOARDING_HINT_REGISTRY) {
+    if (entry.triggerMode === 'click') {
+      assert.ok(
+        entry.tier && VALID_TIERS.has(entry.tier),
+        `${entry.id}: click must declare tier simple|detailed`
+      );
+      assert.equal(getHintTier(entry.id), entry.tier);
+      assert.equal(HINT_TIERS[entry.id], entry.tier);
+    } else {
+      assert.equal(
+        entry.tier,
+        undefined,
+        `${entry.id}: non-click must not set tier (no badge semantics)`
+      );
+      assert.equal(getHintTier(entry.id), null);
+    }
+  }
+});
+
+test('click tier map: help-affordance detailed; other click hints simple', () => {
+  assert.equal(getHintTier('help-affordance'), 'detailed');
+  assert.equal(isDetailedHint('help-affordance'), true);
+  for (const id of [
     'how-shall-we-sit',
     'ambient-gated',
+    'ambient-soundscape',
     'rise-button',
     'idle-after-session',
     'weekly-heatmap',
     'micro-ritual',
+    'quick-start',
+    'in-app-reminder',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak'
+  ]) {
+    assert.equal(getHintTier(id), 'simple', id);
+    assert.equal(isDetailedHint(id), false, id);
+  }
+  assert.equal(Object.keys(HINT_TIERS).length, 13);
+});
+
+test('confirmed click-trigger hints use triggerMode click', () => {
+  const clickIds = [
+    'how-shall-we-sit',
+    'ambient-gated',
+    'ambient-soundscape',
+    'rise-button',
+    'idle-after-session',
+    'weekly-heatmap',
+    'micro-ritual',
+    'quick-start',
+    'in-app-reminder',
     'help-affordance'
   ];
   for (const id of clickIds) {
@@ -72,7 +122,7 @@ test('companion mode detail hints stay auto (behavior differences)', () => {
     assert.equal(getHintTriggerMode(id), 'auto', id);
   }
   assert.equal(getHintTriggerMode('companion-mode'), 'auto');
-  assert.equal(getHintTriggerMode('ambient-soundscape'), 'auto');
+  assert.equal(getHintTriggerMode('ambient-soundscape'), 'click');
 });
 
 test('every registry entry has localeKey present in en.json and zh.json', () => {

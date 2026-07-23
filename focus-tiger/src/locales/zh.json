@@ -111,6 +111,8 @@
   "HINT_HELP_ARIA": "查看此刻的一小句提示",
   "HINT_DISMISS_ARIA": "点击即可关闭",
   "HINT_BADGE_ARIA": "有新提示，点击查看",
+  "HINT_BADGE_PEEKED_ARIA": "已看过提示 — 用过此控件后才会消失",
+  "HINT_DETAIL_CTA": "了解此空间",
   "HINT_DORMANT_OPEN": "阿寅在歇着。准备好了，再同坐。",
   "HINT_HONESTY_OPTIONAL": "这段补登可以略过，直接同坐也行。",
   "HINT_HONESTY_BRIDGE": "选 Yes 进入到达练习；选 No 继续闲坐。都可以。",
@@ -161,5 +163,7 @@
   "HINT_QUICK_START": "跳过到达练习，用上次的方式立刻同坐。",
   "HINT_FOCUS_HUD_RING": "同坐时金环慢慢亮起——轻柔陪伴，不是计分板。",
   "HINT_FOCUS_HUD_PROGRESS": "今日同坐——今天已经一起待了多久。",
-  "HINT_FOCUS_HUD_STREAK": "近日同坐的日子——一天只亮一点，不是按次数。"
+  "HINT_FOCUS_HUD_STREAK": "近日同坐的日子——一天只亮一点，不是按次数。",
+  "HINT_LEARN_SPACE": "了解此空间",
+  "HINT_LEARN_SPACE_ARIA": "打开用途简介"
 }

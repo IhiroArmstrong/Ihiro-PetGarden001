@@ -25,6 +25,14 @@ const STYLE = `
 :host([tone="hint"][pulse]) .dot {
   animation: soft-scale-pulse 2s var(--ease-calm) infinite;
 }
+/* simple peeked：静止弱化 — 一眼可辨「已读未完成操作」 */
+:host([tone="hint"][state="static"]) .dot {
+  width: 5px;
+  height: 5px;
+  opacity: 0.4;
+  animation: none !important;
+  transform: none;
+}
 @keyframes soft-pulse {
   0% { box-shadow: 0 0 0 0 var(--color-highlight); opacity: 1; }
   100% { box-shadow: 0 0 0 8px transparent; opacity: 0.85; }
@@ -36,8 +44,9 @@ const STYLE = `
 `;
 
 /**
- * Small notice mark — vermillion by default (milestones / help discovery);
- * `tone="hint"` + continuous pulse for onboarding click-trigger clues.
+ * Small notice mark — vermillion by default (milestones);
+ * `tone="hint"` + `pulse="loop"` for unread onboarding clues;
+ * `tone="hint"` + `state="static"` for peeked simple (no pulse, smaller/fainter).
  */
 export class NotificationBadge extends HTMLElement {
   static get observedAttributes() {
