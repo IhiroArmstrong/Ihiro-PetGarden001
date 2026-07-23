@@ -1,12 +1,44 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
 创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-07-27（窄屏抽屉关闭：补救目录折叠为一次性 `narrow-drawer-menu`；抽屉锚 tip 不得乱指主球）
+最后更新：2026-07-30（合入 `triggerMode` click 圆点；首次登录右上音符薄荷绿提示；窄屏 `narrow-drawer-menu` 仍有效）
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
-1. **即时提示**：每个功能第一次真正出现时，用阿寅自己的文字气泡多带一句极简说明，用完即隐藏。
+1. **即时提示**：每个功能第一次真正出现时，按 `triggerMode` 用阿寅文字气泡或控件旁脉冲圆点引导，用完即隐藏。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
 
 原则：不强迫用户读说明书；尽量做成**傻瓜交互式**开头——每一步只回答「此刻点哪里 / 可以跳过吗 / 点了会发生什么」。
+
+---
+
+## 〇、触发模式（`triggerMode` · Registry 字段）
+
+真源：`onboardingHintRegistry.js` 每条必填 `triggerMode`；UI **禁止**用散落 if/else 硬编码哪些 hint 走哪种模式。派生：`HINT_TRIGGER_MODES` / `getHintTriggerMode()` / `isClickTriggerHint()`。
+
+| 模式 | 默认表现 | 适用 |
+|---|---|---|
+| **`auto`** | 首次出现**主动弹出**薄荷绿气泡 | 状态性 / 时机性：不主动说可能漏掉关键信息或误判系统状态 |
+| **`click`** | 控件旁**薄荷绿脉冲圆点**；点击（或键盘 Enter/Space）后展开原气泡 | 可选、探索性、不影响理解「此刻已发生什么」 |
+| **`manual`** | 从不自动出现 | 仅「?」补救等用户主动路径（`help-remedy` / `help-fallback`） |
+| **`legacy`** | 基本不调度 | 历史兼容 id（`dormant-open`） |
+
+### click 模式交互规范
+
+1. **默认**：只显示圆点徽标（复用 UI Kit `notification-badge`，`tone="hint"` + `pulse="loop"`），**不**主动弹出气泡。
+2. **动画**：持续缩放脉冲（约 2s 一周期、`scale(1)→1.28`），克制、不抢主 CTA；**禁止**用 `--color-highlight` 朱红（避免与错误/警告混淆）。
+3. **颜色**：圆点使用既有提示铬色 **`#5c7a6c`**（与气泡描边 `rgba(92,122,108,…)` 同系），对比页底 `#e8e6e1` 足够；不新造色值。
+4. **展开**：点击圆点 → 复用 `ft-onboarding-hint-bubble` + 既有 anchor 定位；同时最多一条已展开的 click 气泡（与 auto 气泡互斥时优先收起 auto）。
+5. **收起**：点气泡本身 = **记已读**（`hints-seen`）+ 圆点消失；点圆点再次 / 点气泡外 = **仅收起气泡、不记已读**，圆点保留。实验室「清空引导提示已读」仍清全部 `hints-seen`。
+6. **无障碍**：圆点 `role="button"`、`tabindex="0"`、`aria-label` = `HINT_BADGE_ARIA`（「有新提示，点击查看」）、`aria-expanded` 随展开状态。
+7. **互斥**：`selectExclusiveAutoHintIds` **只**对 `triggerMode === 'auto'` 候选生效；click 圆点可与当前那条 auto 气泡并存（圆点不占互斥席）。
+
+### 各 hint 归类（2026-07-23 定稿）
+
+**click（圆点触发）**：`how-shall-we-sit` · `ambient-soundscape`（首次登录右上音符）· `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `micro-ritual` · `in-app-reminder` · `quick-start` · `focus-hud-*` · `help-affordance`
+
+**auto（保留主动弹出）**：`sit-button` · `honesty-optional` · `honesty-bridge` · `notice` · `breathing` · `choose` · `companion-mode` · `companion-stay` · `companion-away` · `companion-across-tools` · `reflection`  
+理由摘要：计时/分叉/Arrival beat「此刻怎么做」、Companion 选模——漏了会误判系统状态。音乐改为 **click 圆点**（opt-in，不主动挡操作）。
+
+**manual / legacy（不改交互 · 避免误以为漏改）**：`help-remedy` · `help-fallback`（仅点「?」）；`dormant-open`（开场已改 Idle，基本不自动触发）。
 
 ---
 
@@ -30,7 +62,7 @@
 | `companion-away` | E Offline Space | "Check-ins pause while you are away. Sit again when ready to begin." / 「离开时提醒会暂停。准备开始时再点同坐。」 | 首次看到该选项 | 点选 Offline Space | 是 |
 | `companion-across-tools` | F Flow State | "Away reminders stay off in this mode." / 「这个方式下，离开提醒会保持关闭。」 | 首次看到该选项 | 点选 Flow State | 是 |
 | `ambient-gated` | Idle 下 Sound | "Track selection opens once you sit." / 「同坐开始后，曲目选择才会打开。」 | Idle / 桥接等非 Focusing 表面 | 开计时 / 点气泡 | 是 |
-| `ambient-soundscape` | 背景音乐 opt-in | "Music stays off until you tap — tap the note to play." / 「音乐默认关闭——点音符按钮才会播放。」 | 首次 FOCUSING 或展开曲目面板 | 开关音乐 / 关面板 | 是 |
+| `ambient-soundscape` | 背景音乐 opt-in（首次登录右上） | "If your environment allows, tap here to play music — it may make the experience better." / 「若环境允许，点这里播放音乐，体验可能更好。」 | Idle 右上音符薄荷绿圆点；点圆点出说明 | 点音符开 Soundscape / 选曲 / 关面板 | 是 |
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
@@ -49,47 +81,20 @@
 
 | hintId | localeKey | selector | placement | tip | anchorGroup |
 |---|---|---|---|---|---|
-| `dormant-open` | `HINT_DORMANT_OPEN` | `#btn-focus` | above | bottom | — |
-| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `#honesty-idle-entry` | above | bottom | — |
-| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `#honesty-bridge-cta` | above | bottom | — |
-| `sit-button` | `HINT_SIT_BUTTON` | `#btn-focus` | above | bottom | — |
-| `quick-start` | `HINT_QUICK_START` | `#quick-start-focus` | above | bottom | — |
-| `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `.session-start-dock__hint` | right | left | — |
-| `notice` | `HINT_NOTICE` | `#arrival-practice, #btn-focus` | above | bottom | — |
-| `breathing` | `HINT_BREATHING` | `#arrival-practice, #btn-focus` | above | bottom | — |
-| `choose` | `HINT_CHOOSE` | `#arrival-practice, #btn-focus` | above | bottom | — |
-| `companion-mode` | `HINT_COMPANION_MODE` | `.session-start-dock__panel, .session-start-dock__hint` | above | bottom | — |
-| `companion-stay` | `HINT_COMPANION_STAY` | `.session-start-dock__panel` | above | bottom | — |
-| `companion-away` | `HINT_COMPANION_AWAY` | `.session-start-dock__panel` | above | bottom | — |
-| `companion-across-tools` | `HINT_COMPANION_ACROSS` | `.session-start-dock__panel` | above | bottom | — |
-| `ambient-gated` | `HINT_AMBIENT_GATED` | `.ambient-soundscape__fab` | left | right | `ambient` |
-| `ambient-soundscape` | `HINT_AMBIENT_SOUNDSCAPE` | `.ambient-soundscape__mute` | below | top | `ambient` |
-| `rise-button` | `HINT_RISE_BUTTON` | `#btn-focus` | above | bottom | — |
-| `reflection` | `HINT_REFLECTION` | `#tiger-reflection-moment` | above | bottom | — |
-| `idle-after-session` | `HINT_IDLE_AFTER_SESSION` | `#btn-focus` | above | bottom | — |
-| `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `#weekly-practice-heatmap` | right | left | — |
-| `in-app-reminder` | `HINT_IN_APP_REMINDER` | `#reminder-preference-toggle` | right | left | — |
-| `micro-ritual` | `HINT_MICRO_RITUAL` | `#micro-ritual-idle-entry` | right | left | — |
-| `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
-| `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
-| `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
-| `narrow-drawer-menu` | `HINT_NARROW_DRAWER_MENU` | `.ft-narrow-grabber` | above | bottom | — |
-| `help-affordance` | `HINT_HELP_AFFORDANCE` | `#onboarding-hint-help` | right | left | — |
-| `help-remedy` | `HINT_HELP_REMEDY` | `#onboarding-hint-help` | right | left | — |
-| `help-fallback` | `HINT_HELP_FALLBACK` | `#btn-focus` | above | bottom | — |
+| _(regenerate via `npm run hints:doc-sync`) | | | | | |
 
 <!-- onboarding-hints-registry:anchors:end -->
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
-提示说明**默认有背景音乐**与一键开关；**不**在 hint 中承诺光效变化（`presenceBoost` 等为底层叠加，用户未感知时不写进引导文案）。
+音乐 **默认关闭（opt-in）**。首次 Idle：右上音符旁薄荷绿脉冲圆点；点圆点见说明，点音符打开 Soundscape 选曲。**不**在 hint 中承诺光效变化。
 
 ---
 
 ## 二、补救入口设计
 
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
-- **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），锚在「?」**右侧**、尖角指向「?」；点「?」或点气泡即记已读。
+- **首次空闲**：`help-affordance` 为 **click** 模式——「?」旁薄荷绿脉冲圆点；点圆点展开气泡，或点「?」直接进补救并记已读。
 - **交互**：点「?」同时做三件事：
   1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ **「更多提示」芯片**（`#ft-hint-catalog-chip`）。**窄屏 Idle（抽屉关闭）**：芯片一次性展开 `narrow-drawer-menu`（文案列出抽屉内功能：呼吸 / How shall we sit? / Sound / Reminder / 近日同坐格），**禁止**再出「还有 3 条 / 2 条」倒计时，也**禁止**在抽屉未开时用尖角去指抽屉内控件（会误指主球）。**宽屏 / 抽屉已开**：仍可逐条展开其余 tip（同时最多主条 + 1）。窄屏抬离主球带时须**堆叠错开**（`_liftBubblesAboveNarrowHomeCtas`），且须 **lift→separate**（禁止 separate 后再统一抬到同一 Y，会把错开抵消）；
   2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
@@ -101,7 +106,7 @@
 - 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐 / Soundscape** → 右上 `.ambient-soundscape__mute`（窄屏 Idle remap `#ft-narrow-mute-btn`）；**Idle Sound gated** 历史锚 → 右下 `.ambient-soundscape__fab`（宽屏 FAB 已藏，gated 文案主要经菜单/抽屉 Sound 路径；宽屏以右上音符开面板）；Reflection → 面板**上方**，不挡 Skip）。
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
-- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**：窄屏抽屉关闭时主条 + 一次性「更多提示」→ 抽屉说明；宽屏/抽屉开着时可逐条展开。抽屉锚 tip（热力图 / 呼吸 / How / Sound gated / 提醒）在抽屉关闭时不自动出现。
+- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1；2026-07-23/30 收窄）**：仅 **`triggerMode: auto`** 路径同一时刻**最多 1 条**气泡（`selectExclusiveAutoHintIds`）；**click** 圆点可并存。用户关掉 auto 气泡后串行下一条 auto。点「?」**补救**：窄屏抽屉关闭时主条 + 一次性「更多提示」→ 抽屉说明；宽屏/抽屉开着时可逐条展开。抽屉锚 tip 在抽屉关闭时不自动出现。
 - **微仪式进行中（2026-07-29）**：`microRitualOpen` 时**不出** `sit-button` / `idle-after-session` 等指 Sit 的自动 tip（Sit chrome 已藏）。无可见锚点时**禁止**把 tip 丢到画面空白处（`_positionBubble` 直接收起）。
 - App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」上方。
 

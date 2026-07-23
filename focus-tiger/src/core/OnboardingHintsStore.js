@@ -92,7 +92,7 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
     ids.push('quick-start');
   }
   if (!ids.includes('ambient-gated') && !ids.includes('ambient-soundscape')) {
-    ids.push('ambient-gated');
+    ids.push('ambient-soundscape');
   }
 }
 
