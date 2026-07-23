@@ -121,7 +121,7 @@ export const RULE_AUTHORITY_TOPICS = [
       /允许自动 commit 的范围/,
       /禁止静默提交/,
       /禁止自动合并进 `main`/,
-      /`git push` 仍须用户明确要求/,
+      /声称「已修复 \/ 已修好」须有 push \+ CI 证据|push 本身仍须用户明确授权/,
       /Git 同步汇总/,
       /高风险标注/
     ],
