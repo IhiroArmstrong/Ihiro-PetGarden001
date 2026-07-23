@@ -39,24 +39,11 @@
    为新目标重写编排 / 转场时，默认继承旧观感契约；允许牺牲须任务书写明。
 
 4. **闸门放在 push / 合并进 main，不放在本地 commit**  
-   **所有 tasks 收尾**（交互修复 / 文档 / 调研 / 素材 / 回归锁）→ 可 **自动本地 commit** 到当前工作分支（`develop` / `feature/*` / `fix/*`）；**commit 后同回合须汇报** hash + 分支 + 涉及文件（禁止静默提交；并行会话同规）；**合并进 `main` 永远须用户明确指令**；`git push` → **仍须用户明确要求**（Bug close §7 除外）。  
-   （曾出现「尽快 commit」与「先问要不要」互相拆台；「不必询问」已改为「可自动 commit + 必须汇报」。权威门禁见 `focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」。）
+   规范性条款（SSOT）：`focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」（见 `RULES_INDEX.md` → `git-agent-commit`）。分支与合并 `main`：仓库根 `WORKFLOW.md`。  
+   （曾出现「尽快 commit」与「先问要不要」互相拆台；「不必询问」口径已废止，改为「可自动 commit + 必须汇报」。）
 
-4c. **验证通过后的改动，不得跨任务周期停留在未 commit 状态**  
-   不论是代码还是纯文档，只要该轮改动已经达到「本任务完成 + 已做对应验证」（如 `docs:check`、相关单测、冒烟、自检清单），就必须**在结束该任务前立即 commit**。  
-   **禁止**把「已经完成且验证通过」的改动留到下一个任务再一起交。
-
-4d. **一个 commit = 一个逻辑完整改动，而不是一个时间片**  
-   一个功能、一次 bug 修复、一次文档更新，各自形成可解释、可回滚的提交单元。  
-   **禁止**按「我刚顺手改了这几处」切成零碎 commit；也**禁止**把互不相干的多个已完成任务糊成一个提交。
-
-4e. **commit message 必须同时交代 what + why**  
-   至少让后来者看得出「改了什么」与「为什么现在要这样改」。  
-   `update docs`、`misc fix`、`wip` 这类无信息量 message 不算合格。
-
-4b. **修 Bug 的交付物是「代码/措施 + 文档 + 本地 commit」一体包**  
-   凡修正了代码，或已有明确修正措施（含流程/文档口径纠正）：**必须立刻本地 commit**，且**同批纳入相关项目文档**（至少 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md）。  
-   **禁止**：只改代码、文档滞后到「下次再说」；**禁止**：修完却把 commit 留到用户催问。
+4b–4e. **N15 一体包、验证后不得悬置未 commit、commit 粒度与 message**  
+   展开见下文 N6 / N15 / N16 表与 regression-lock；此处不平行复述完整门禁列表。
 
 5. **单元测试绿 ≠ 用户可感知验收通过**  
    视觉、计时、按钮文案仍须 `TEST_TRACKER`「待人工测试」；Agent 自测只算研发自检。
@@ -188,20 +175,9 @@
 
 ### 3.5 Git 节奏（与质量的关系）
 
-| 动作 | 谁决定 | 目的 |
-|---|---|---|
-| 本地 `git commit` | Agent 在**已验证通过的实质性 task 收尾时可自动执行**；**同回合须汇报** hash + 分支 + 文件（并行会话同规） | 固化基线，防多会话冲掉；**已完成且验证通过的改动不得跨任务周期悬置**；禁止静默提交 |
-| 合并进 `main` | **仅用户明确指令**；任何会话不得自动执行 | 稳定可发布闸门（见仓库根 `WORKFLOW.md`） |
-| `git push` | **仅用户明确要求**（Bug close §7 另须 push + CI） | 远程闸门；避免半成品上远程 |
+> **SSOT**：`focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」+ `WORKFLOW.md`（分支 / 合并 main）。索引：`RULES_INDEX.md`。
 
-补充纪律：
-
-- **commit 单位**按「逻辑完整改动」划分，不按时间片划分。  
-- **纯文档任务同样适用**：只要 `docs:check` 或相应校验已通过，就应当立即 commit，并同回合汇报。  
-- 代码改动默认在 `develop` 或 `feature/*` / `fix/*` 分支完成并 commit；只有经过验证、确认稳定的改动才进入 `main`（分支职责见仓库根 `WORKFLOW.md`）。  
-
-其它大范围 / 素材 / 不确定范围改动：可先说明将提交路径再 commit（见 `PROCESS.md` Git 同步）。  
-禁止：post-commit 自动 push、保存即 commit、静默 commit 不汇报、任何会话自动合并进 `main`、未经确认推大体量抽帧 / `node_modules`、用 `update docs` / `misc fix` / `wip` 之类 message 交差。
+质量含义一句话：本地 commit 固化可回滚基线；远程闸门在 push 与合并 `main`。操作顺序见 `PROCESS.md`「Git 同步节奏」。勿在叙事文档再抄完整门禁列表。
 
 ---
 
@@ -241,6 +217,7 @@
 
 | 文档 / 规则 | 关系 |
 |---|---|
+| `RULES_INDEX.md` | **规则主题 → 唯一权威来源**；写新流程/Git/门禁规则前先查；`rules:doc-check` 防平行复述 |
 | `.cursor/rules/focus-tiger-regression-lock.mdc` | **强制门禁**（Agent 每次加载）；含 **§7 AI 修复验收规范**（Bug close checklist） |
 | `PROCESS.md`「回归锁工作法」 | 项目流程中的 **A/B/C 摘要** |
 | `COLLAB.md` | 协作侧交叉约定 |
@@ -248,6 +225,7 @@
 | `PRINCIPLES.md` | 产品与工程红线（一次一任务、路径 ASCII 等）；本文件不替代 |
 | `ARCHITECTURE.md` / `EMOTION_BIBLE.md` / `SHARED_RESOURCES.md` | 改什么模块、情绪契约、共享波及面；本文件管「怎么改才不丢质量」 |
 | `SCENARIO_TESTS.md` | 场景步骤与自动化覆盖对照；§7 要求修复时同步核对「已自动化」口径 |
+| `DOC_CODE_CONTRACT.md` | 文档↔代码结构对齐；本文件管质量方法叙事 |
 
 ---
 
@@ -440,7 +418,7 @@
 |---|---|
 | **症状** | Job 步 `Behavioral contracts (gate + scenario smoke)` 失败 |
 | **红（修复前）** | CI：[`29916112037`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29916112037) / [`29915316012`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29915316012) → `ERR_MODULE_NOT_FOUND: Cannot find package 'three'`（`PoseManager.js`）。本地复现：暂时移走 `node_modules/three` 后跑同切片 → 同错。根因：workflow **未** `npm ci`；`scenario-smoke` → `HonestyCheckInController` → `EmotionController` → `PoseManager` → `three`。本地有 `node_modules` 故一直绿。 |
-| **修** | `7b90283`：workflow 增加 `npm ci`（+ npm cache）；`DOC_CODE_CONTRACT` / `TEST_TRACKER` / `PROCESS` 注明依赖 |
+| **修** | `7b90283`：workflow 增加 `npm ci`（+ npm cache）；`DOC_CODE_CONTRACT.md` / `TEST_TRACKER` / `PROCESS` 注明依赖 |
 | **绿（修复后 · CI）** | push `7b90283` @ `develop` → [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318) → **completed / success**（`head_sha=7b90283…`） |
 | **口径** | 此例证明：本地绿 ≠ CI 绿；CI 红 ≠ 产品 Bug。基础设施修复也走「红输出 + 绿 CI 链接」归档。 |
 

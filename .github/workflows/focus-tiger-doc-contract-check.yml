@@ -12,7 +12,15 @@ on:
       - 'focus-tiger/docs/SHARED_RESOURCES.md'
       - 'focus-tiger/docs/ARCHITECTURE.md'
       - 'focus-tiger/docs/DOC_CODE_CONTRACT.md'
+      - 'focus-tiger/docs/RULES_INDEX.md'
+      - 'focus-tiger/docs/PROCESS.md'
+      - 'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md'
+      - 'focus-tiger/docs/COLLAB.md'
+      - 'WORKFLOW.md'
+      - '.cursor/rules/focus-tiger-regression-lock.mdc'
+      - '.cursor/rules/focus-tiger-docs.mdc'
       - 'focus-tiger/scripts/*-doc-check.js'
+      - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
       - 'focus-tiger/package.json'
       - '.github/workflows/focus-tiger-doc-contract-check.yml'
@@ -27,7 +35,15 @@ on:
       - 'focus-tiger/docs/SHARED_RESOURCES.md'
       - 'focus-tiger/docs/ARCHITECTURE.md'
       - 'focus-tiger/docs/DOC_CODE_CONTRACT.md'
+      - 'focus-tiger/docs/RULES_INDEX.md'
+      - 'focus-tiger/docs/PROCESS.md'
+      - 'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md'
+      - 'focus-tiger/docs/COLLAB.md'
+      - 'WORKFLOW.md'
+      - '.cursor/rules/focus-tiger-regression-lock.mdc'
+      - '.cursor/rules/focus-tiger-docs.mdc'
       - 'focus-tiger/scripts/*-doc-check.js'
+      - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
       - 'focus-tiger/package.json'
       - '.github/workflows/focus-tiger-doc-contract-check.yml'
@@ -52,5 +68,7 @@ jobs:
         run: npm ci
       - name: Structural alignment (registry ↔ markdown)
         run: npm run docs:check
+      - name: Rules-authority contradiction unit smoke
+        run: node --test scripts/rules-authority-doc-check.test.js
       - name: Behavioral contracts (gate + scenario smoke)
         run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js

@@ -16,6 +16,8 @@
     "gate:doc-sync": "node scripts/gate-contract-doc-check.js --write",
     "state:doc-check": "node scripts/state-machine-doc-check.js",
     "state:doc-sync": "node scripts/state-machine-doc-check.js --write",
+    "rules:doc-check": "node scripts/rules-authority-doc-check.js",
+    "rules:doc-sync": "node scripts/rules-authority-doc-check.js --write",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install chromium"
   },

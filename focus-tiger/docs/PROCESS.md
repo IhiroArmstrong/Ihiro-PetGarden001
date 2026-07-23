@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。
 
 ---
 
@@ -22,11 +22,8 @@
 3. 门闩类失败用例 + **确认修复 bug 须留回归锚**（不限门闩；无法自动化 → TEST_TRACKER 人工锁）  
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
 5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过；**禁止**仅用「已绿」总结句——须附命令与 pass/fail 或 CI 链接）  
-6. **立刻本地 commit（可自动，须汇报）**：用户反馈修复 / 回归锁收尾后，Agent 可 **自动** `git commit` 到当前工作分支（`develop` / `feature/*` / `fix/*`）；**同回合须汇报** hash + 分支 + 涉及文件（禁止静默提交；并行会话同规）；**禁止**任何会话自动合并进 `main`；**仍禁止**未确认 `git push`（**Bug close 的 push 见 §D**）。权威条款见 regression-lock「Commit 汇报与分支门禁」与仓库根 `WORKFLOW.md`  
-7. **完成且验证通过后，不得跨任务周期停留在未 commit 状态**：代码和纯文档一视同仁；如 `docs:check` / 对应测试已过，就应在本任务结束前 commit  
-8. **一个 commit = 一个逻辑完整改动**：功能、bug 修复、文档更新各自成提交单元；message 必须说明 **改了什么 + 为什么改**，禁止 `update docs` / `misc` / `wip`
-9. **相关项目文档同批纳入（N15）**：至少更新 `TEST_TRACKER`；触及行为/情绪/架构/共享资源时同步对应权威 md。**禁止**只改代码、文档滞后；缺文档、未 commit、或未汇报 commit → 视为未完成  
-10. 每次任务汇报末尾独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）
+6. **本地 commit / 汇报 / push / 禁自动合 main**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」（`RULES_INDEX` → `git-agent-commit`）；**不在此复述**  
+7. **相关项目文档同批纳入（N15）** 与 **「待你决定 / 待你知道」（N14）**：见同上 regression-lock / `DEV_WORKFLOW_QUALITY.md`
 
 ### B. 防把好的改坏（重写 / 改转场开工必做）
 
@@ -60,12 +57,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-22（UTC+8）
+**最后更新时间**：2026-07-23（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **规则主题权威索引（2026-07-23）**：新增 `RULES_INDEX.md` + `rules-authority-registry.js` + `rules:doc-check`（并入 `docs:check` / CI）。每个工作流规则主题指定唯一 SSOT；非权威处改为短引用。收敛 `WORKFLOW` / regression-lock / `PROCESS` / docs.mdc / `DEV` / `COLLAB` 上 commit / 跨会话等平行复述。冲突不以 mtime 为准。
 - **TEST_TRACKER 合并前清理（2026-07-22）**：EyeTracking → **已放弃/不适用**；微仪式吸呼同拍行 → 代码核对 `736fdc1` 撤销到位后 **关单（已通过）**；`lookAtCursor` / `wakeUp` / `snoringZZZ` → **不挡合并（仅调试）**（产品壳不可见）。仍开、须人工：**MilestoneGlow**；场景 **O/P**（见 `SCENARIO_TESTS.md`）。不采用书面豁免开 PR。
 - **Hints anchor 校验分层（2026-07-22）**：方案 (1) `HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 双向对齐单测已落地；方案 (2) 语义分组暂缓；方案 (3) e2e bounding rect 写入 Backlog（`PROCESS.md`）
 - **Hints 补登记 + 关闭说明（2026-07-22）**：用户拍板——热力图 / 一分钟呼吸 / Honesty 桥接 / Idle Sound（`ambient-gated`）写入 `ONBOARDING_HINTS`；`help-remedy` 英中文增加「点气泡关掉；下次点 ?」。点「?」补救须铺齐；桥接场景不出 micro-ritual tip。
@@ -284,7 +282,9 @@
 
 ## Git 同步节奏（本地 ↔ GitHub）
 
-Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」——素材体积大、文案/产品决策迭代快，误推代价高。
+> **政策 SSOT**：Agent commit / 汇报 / push / 禁自动合 main → [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。分支模型与合并 `main` → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md)。本节只写**操作顺序**，不复述门禁条文。
+
+Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」。
 
 ### 推荐流程（半自动 + 人工拍板）
 
@@ -292,30 +292,20 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
 2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
-3. **同步相关权威文档**（N15：按触及面更新 `EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` 等；禁止只改代码）  
-4. `git add` 相关文件（**代码 + 文档**）→ **立刻自动本地** `git commit`（**本任务一旦完成且验证通过，不得拖到下个任务周期**）→ **同回合汇报** hash + 分支 + 涉及文件（禁止静默提交）  
-5. 运行仓库根目录脚本做推送前体检：`./scripts/git-sync-safe.sh`  
-6. **在你明确同意后**再 `./scripts/git-sync-safe.sh --push`（或手动 `git push`）  
-7. **合并进 `main`** 永远须你明确指令；任何会话不得自动执行  
+3. **同步相关权威文档**（N15：按触及面更新对应权威 md；禁止只改代码）  
+4. 按 regression-lock「Commit 汇报与分支门禁」完成本地 commit + 同回合汇报  
+5. 可选推送前体检：`./scripts/git-sync-safe.sh`  
+6. **仅在你明确同意后**再 push（见 SSOT）  
+7. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）
 
-Agent / Cursor 侧约定：
-
-- **所有实质性 Task** 收尾：过完对应门禁后可 **自动本地 `git commit`** 到当前工作分支；**同回合必须汇报** commit hash、分支名、涉及文件（并行会话同规）。  
-- **每个 commit 对应一个逻辑完整改动**（功能 / bug 修复 / 文档更新）；不要按时间片零碎提交，也不要把多个已完成任务糊成一个提交。  
-- **commit message 必须说明 what + why**；`update docs`、`misc fix`、`wip` 等无信息量 message 不合格。  
-- **Bug 修复**：代码或修正措施落地后，**同回合**文档 + **立刻** commit + **汇报**（N15）；缺一不可。  
-- **纯文档改动同样遵守**：如 `ARCHITECTURE.md`、`SCENARIO_TESTS.md`、`PROCESS.md` 之类只要验证通过（至少 `docs:check` / 自检通过），也必须在该任务收尾前 commit 并汇报。  
-- **未经用户口头/书面确认不得 `git push`**；**不得自动合并进 `main`**。  
-- 完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
-
-闸门放在 **push** 与 **合并进 `main`**，不放在本地 commit：本地提交可回滚，未提交的「已修」才是假基线；静默 commit 不汇报 = 视同未汇报。
+完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 
 ### 明确不做的自动化
 
 | 方式 | 本项目态度 |
 |---|---|
-| `post-commit` 钩子自动 `push` | ❌ 禁止：易推送未审改动、大体量素材、密钥 |
-| 保存文件自动 commit | ❌ 禁止：历史噪声大 |
+| `post-commit` 钩子自动 `push` | ❌ 禁止 |
+| 保存文件自动 commit | ❌ 禁止 |
 | CI 自动 commit 业务代码 | ❌ 禁止 |
 | IDE「定时同步远程」 | ❌ 不推荐 |
 

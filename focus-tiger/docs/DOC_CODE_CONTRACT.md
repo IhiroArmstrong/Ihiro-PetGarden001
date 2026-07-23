@@ -3,14 +3,17 @@
 创建日期：2026-07-22  
 目的：把「文档已过时但没人发现」变成 **CI / 冒烟会主动报错**，而不是靠人工记得核对。
 
-本机制分两层：
+本机制分两层（另有一层**规则文档互相对齐**，见下）：
 
 | 层 | 手段 | 检测命令 |
 |---|---|---|
 | **(a) 代码即文档** | 代码内 SSOT registry → 自动生成 md 机器块 → diff | `npm run docs:check` |
 | **(b) 契约测试** | 行为断言即活文档；改坏契约 → 测试红 | `npm run test:smoke`（含门闩 / Store / 场景串联） |
+| **(c) 规则权威对齐** | 每个规则主题一份 SSOT；非 SSOT 禁止完整复述 / 禁止矛盾短语 | `npm run rules:doc-check`（已并入 `docs:check`） |
 
-`docs:check` **不替代** `test:smoke`：前者锁**结构**（字段、枚举、锚点表），后者锁**行为**（门闩 false 时不得 begin、无静默 return）。
+`docs:check` **不替代** `test:smoke`：前者锁**结构**（字段、枚举、锚点表、规则权威），后者锁**行为**（门闩 false 时不得 begin、无静默 return）。
+
+规则主题索引（写新流程规则前先查）：[`RULES_INDEX.md`](./RULES_INDEX.md)。真源：`scripts/rules-authority-registry.js`。
 
 ---
 

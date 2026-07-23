@@ -36,22 +36,13 @@ feature/*        ●        ●
    `git checkout develop`  
    以免误在 `main` 上开发。
 
-### Agent / 自动 commit 汇报（禁止静默提交）
+### Agent / 自动 commit、push、禁自动合 main
 
-> **权威门禁全文**：[`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。本节与该条款 **口径必须一致**；冲突时以 regression-lock 为准，并回写本文。
-
-1. **允许自动 commit 的范围**：已验证通过的任务收尾后，Agent 可自动 `git commit` 到**当前工作分支**（`develop` 或对应的 `feature/*` / `fix/*`）。  
-2. **禁止静默提交**：每次 commit 后，**必须在当次会话回复**明确写出：  
-   - **commit hash**  
-   - **分支名**  
-   - **涉及文件**（或 `git show --stat` 摘要）  
-   并行会话执行的 commit 同样须汇报；缺此项 = 视同未汇报。  
-3. **禁止自动合并进 `main`**：`git merge … → main` 等操作永远需要用户明确指令。  
-4. **`git push`**：日常仍须用户明确要求（Bug close §7 的「已修复」另须 push + CI，见 regression-lock）。
+> **权威（SSOT）**：[`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。本文**不**复述条款；主题索引见 [`focus-tiger/docs/RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md) `git-agent-commit`。
 
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
-> **强制门禁摘要**亦见 [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「跨会话指令冲突处理」。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-cross-session`）。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。门禁文件只保留指针，勿在别处再抄全文。
 
 1. **冷却后再查状态**：执行「开 PR」「合并进 `main`」「`git push` 到远程」等有一定不可逆性的操作前，若距上一次同类操作已超过约 **10–15 分钟**，须先核对仓库当前状态与最近的 commit / PR / CI 历史，确认没有更晚的、可能冲突的状态变化；**禁止**机械执行可能已过时的早期指令。  
 2. **发现更晚活动 → 先问用户**：若同仓库已有更晚相关活动（例如已存在同方向 PR、远端 tip 已前进、CI 刚变红/变绿、其他分支上有更新的合并门禁相关提交），须 **先向用户确认**，不得按手头旧指令执行到底。  
@@ -204,9 +195,11 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 ## 与现有流程的关系
 
-| 主题 | 文档 |
+| 主题 | 权威（SSOT） |
 |---|---|
-| 回归锁、交互修复完工门禁、**commit 汇报 / 禁止静默提交**、**跨会话指令冲突** | [`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md)、[`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)（「Commit 汇报与分支门禁」「跨会话指令冲突处理」）；本文同主题小节 |
+| 分支 / 合并 main / 跨会话冲突 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
+| 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 场景测试剧本 | `focus-tiger/docs/SCENARIO_TESTS.md` |
 | 功能点验收表 | `focus-tiger/docs/TEST_TRACKER.md` |
 | Task / 角色分工 | `focus-tiger/docs/PROCESS.md`、`focus-tiger/docs/COLLAB.md` |

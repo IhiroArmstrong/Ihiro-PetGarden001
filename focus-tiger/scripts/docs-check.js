@@ -10,6 +10,7 @@
 import { runGateContractDocCheck } from './gate-contract-doc-check.js';
 import { runHintsDocCheck } from './hints-doc-check.js';
 import { runStateMachineDocCheck } from './state-machine-doc-check.js';
+import { runRulesAuthorityDocCheck } from './rules-authority-doc-check.js';
 
 function main() {
   let ok = true;
@@ -17,6 +18,7 @@ function main() {
   if (!runHintsDocCheck()) ok = false;
   if (!runGateContractDocCheck()) ok = false;
   if (!runStateMachineDocCheck()) ok = false;
+  if (!runRulesAuthorityDocCheck()) ok = false;
 
   if (!ok) {
     console.error('\n[docs:check] FAILED — doc machine blocks out of sync with code SSOT.');

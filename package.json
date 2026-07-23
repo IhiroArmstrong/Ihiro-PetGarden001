@@ -16,7 +16,9 @@
     "gate:doc-check": "cd focus-tiger && npm run gate:doc-check",
     "gate:doc-sync": "cd focus-tiger && npm run gate:doc-sync",
     "state:doc-check": "cd focus-tiger && npm run state:doc-check",
-    "state:doc-sync": "cd focus-tiger && npm run state:doc-sync"
+    "state:doc-sync": "cd focus-tiger && npm run state:doc-sync",
+    "rules:doc-check": "cd focus-tiger && npm run rules:doc-check",
+    "rules:doc-sync": "cd focus-tiger && npm run rules:doc-sync"
   },
   "devDependencies": {
     "husky": "^9.1.7"
