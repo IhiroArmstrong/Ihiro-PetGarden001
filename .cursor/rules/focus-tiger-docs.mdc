@@ -97,7 +97,7 @@ alwaysApply: true
 
 ## Git 同步（半自动，禁止静默 push）
 
-操作节奏摘要见 `PROCESS.md`「Git 同步节奏」。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main`）。  
+操作节奏摘要见 `PROCESS.md`「Git 同步节奏」（含口令「请安排下班前的 Git 同步」）。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main`）与 regression-lock 第 6–7 条。  
 `stop` 的 Git 同步 macOS 通知钩子已关闭（`hooks.json` 的 `stop` 为空）。若日后重新启用，只允许本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
 
 禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程、静默 commit 不汇报。详见 regression-lock 与 `WORKFLOW.md`。  

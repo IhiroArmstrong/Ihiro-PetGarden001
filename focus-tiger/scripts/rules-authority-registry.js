@@ -123,7 +123,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /禁止自动合并进 `main`/,
       /声称「已修复 \/ 已修好」须有 push \+ CI 证据|push 本身仍须用户明确授权/,
       /Git 同步汇总/,
-      /高风险标注/
+      /高风险标注/,
+      /请安排下班前的 Git 同步/
     ],
     topicSignals: [
       /允许自动 commit/,
