@@ -128,6 +128,15 @@ export class AmbientSoundscapeUI {
     this.root.append(this.muteBtn, this.focusChrome);
     overlayRoot.appendChild(this.root);
 
+    this._onDocPointer = (event) => {
+      if (!this._expanded || !this._sessionActive) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root.contains(target)) return;
+      this._expanded = false;
+      this._renderPanel();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
+
     this._unsubLocale = onLocaleChange(() => this._renderPanel());
     this._injectStyles();
     this._renderPanel();
@@ -328,6 +337,7 @@ export class AmbientSoundscapeUI {
   }
 
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
   }
 

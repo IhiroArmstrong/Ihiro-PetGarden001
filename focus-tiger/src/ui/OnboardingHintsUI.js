@@ -160,6 +160,25 @@ export class OnboardingHintsUI {
         this._paint(hintId, meta);
       }
     });
+
+    // 点 ? 后的用途卡 / 补救气泡：点框外空白收起
+    this._onDocPointer = (event) => {
+      const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
+      const remedyOpen = this._remedyIds.size > 0;
+      if (!purposeOpen && !remedyOpen) return;
+      const el = /** @type {Element | null} */ (
+        event.target instanceof Element ? event.target : event.target?.parentElement
+      );
+      if (!el) return;
+      if (this.helpBtn.contains(el)) return;
+      if (el.closest('#ft-narrow-help-btn')) return;
+      if (this.purposeCard?.contains(el)) return;
+      if (el.closest('ft-onboarding-hint-bubble')) return;
+      this._hidePurposeCard();
+      for (const id of [...this._remedyIds]) this.hideBubble(id);
+      this._remedyIds.clear();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
   }
 
   /**
