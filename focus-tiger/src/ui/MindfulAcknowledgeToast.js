@@ -32,8 +32,13 @@ const BASE_CSS = [
  */
 function placementCss(placement) {
   if (placement === 'center') {
+    const narrow =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(max-width: 479px)').matches;
+    // Narrow + Honesty bridge share the lower third — lift toast to upper band.
+    const top = narrow ? '22%' : MINDFUL_TOAST_CENTER_TOP;
     return [
-      `top:${MINDFUL_TOAST_CENTER_TOP}`,
+      `top:${top}`,
       'bottom:auto',
       'z-index:40',
       'padding:14px 22px',

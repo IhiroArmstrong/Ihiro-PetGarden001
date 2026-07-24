@@ -494,11 +494,16 @@ async function init() {
       !overlayActive && !sessionUiGate.completionPending
     );
     companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
-    const focusing = stateManager.state === STATES.FOCUSING;
+    const focusing =
+      stateManager.state === STATES.FOCUSING ||
+      microRitualUI?.isOpen?.() === true;
     narrowIdleShell.setIdle(!focusing);
     const honestyBusy =
       Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
-    narrowIdleShell.setSuppressed(overlayActive || honestyBusy);
+    const bridgeVisible = honestyBridge?.isVisible?.() === true;
+    narrowIdleShell.setSuppressed(
+      overlayActive || honestyBusy || bridgeVisible
+    );
     syncInAppReminderBanner();
   }
 
@@ -657,6 +662,28 @@ async function init() {
     }
   );
   void ambientSoundscapeUI.bootDefaultMusic();
+
+  narrowIdleShell.setHandlers({
+    onMute: () => ambientSoundscapeUI.toggleMuteFromUi(),
+    onCompanion: () => {
+      companionModePicker.open();
+    },
+    onReminder: () => {
+      reminderPreferenceUI.openPanel();
+    },
+    onQuickStart: () => {
+      const el = document.getElementById('quick-start-focus');
+      if (!el || el.disabled || el.hidden) return;
+      const prev = el.style.pointerEvents;
+      el.style.pointerEvents = 'auto';
+      el.click();
+      el.style.pointerEvents = prev;
+    },
+    onClearStage: () => {
+      companionModePicker.hide();
+      reminderPreferenceUI.closePanel();
+    }
+  });
 
   /** @type {OnboardingHintsUI | null} */
   let onboardingHints = null;
@@ -934,10 +961,14 @@ async function init() {
     },
     onShown: () => {
       syncHonestyIdleEntry();
+      resyncSessionChrome();
       syncOnboardingAutoHints();
     },
     onHidden: () => {
       honestyCheckIn.endCheckInFlow();
+      resyncSessionChrome();
+      syncHonestyIdleEntry();
+      syncOnboardingAutoHints();
     },
     onAccept: () => {
       onboardingHints?.markSeen('honesty-bridge');
