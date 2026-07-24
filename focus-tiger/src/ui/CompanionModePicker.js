@@ -112,17 +112,32 @@ export class CompanionModePicker {
     this.hintBtn.setAttribute('aria-expanded', 'false');
     this.hintBtn.addEventListener('click', () => this._onHintClick());
 
+    /** ⚡ Quick Start：跳过 Arrival，用记忆 Companion 模式立刻 Focusing */
+    this.quickStartBtn = document.createElement('button');
+    this.quickStartBtn.type = 'button';
+    this.quickStartBtn.id = 'quick-start-focus';
+    this.quickStartBtn.className = 'session-start-dock__quick-start';
+    this.quickStartBtn.textContent = '⚡';
+    this.quickStartBtn.addEventListener('click', () => {
+      this.handlers.onQuickStart?.();
+    });
+
     const parent = focusButton.parentElement;
     if (parent) {
       parent.insertBefore(this.dock, focusButton);
       this.dock.appendChild(this.panel);
       this.dock.appendChild(focusButton);
+      this.dock.appendChild(this.quickStartBtn);
       this.dock.appendChild(this.hintBtn);
     }
 
-    this._unsubLocale = onLocaleChange(() => this._render());
+    this._unsubLocale = onLocaleChange(() => {
+      this._render();
+      this._syncQuickStartLabel();
+    });
     this._injectStyles();
     this._render();
+    this._syncQuickStartLabel();
     this._syncHintAvailability();
   }
 
@@ -148,8 +163,10 @@ export class CompanionModePicker {
       this._preferQuestionHint = true;
     }
     this.hintBtn.hidden = !this._idleVisible;
+    if (this.quickStartBtn) this.quickStartBtn.hidden = !this._idleVisible;
     this._syncHintAvailability();
     this._syncHintLabel();
+    this._syncQuickStartLabel();
   }
 
   /**
@@ -276,6 +293,13 @@ export class CompanionModePicker {
       return;
     }
     this.hintBtn.textContent = t(this._hintLabelKey());
+  }
+
+  _syncQuickStartLabel() {
+    if (!this.quickStartBtn) return;
+    this.quickStartBtn.textContent = '⚡';
+    this.quickStartBtn.setAttribute('aria-label', t('QUICK_START_ARIA'));
+    this.quickStartBtn.title = t('QUICK_START_ARIA');
   }
 
   _hintLabelKey() {
@@ -421,7 +445,42 @@ export class CompanionModePicker {
       }
       /* 桥接 Yes/No 期间强制收起会叠层的次要入口（防漏 sync） */
       .session-start-dock.is-honesty-bridge-active #honesty-idle-entry,
-      .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry {
+      .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry,
+      .session-start-dock.is-honesty-bridge-active #quick-start-focus {
+        display: none !important;
+      }
+      .session-start-dock__quick-start {
+        pointer-events: auto;
+        flex: 0 0 auto;
+        align-self: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: linear-gradient(
+          165deg,
+          rgba(255, 252, 245, 0.98) 0%,
+          rgba(245, 235, 220, 0.96) 100%
+        );
+        color: rgba(92, 72, 52, 0.88);
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.75) inset,
+          0 4px 12px rgba(44, 31, 20, 0.1);
+      }
+      .session-start-dock__quick-start:hover {
+        color: rgba(72, 54, 38, 0.95);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.8) inset,
+          0 6px 16px rgba(44, 31, 20, 0.14);
+      }
+      .session-start-dock__quick-start:active {
+        transform: scale(0.96);
+      }
+      .session-start-dock__quick-start[hidden] {
         display: none !important;
       }
       /* 次级立体 pill 共用质感（尺寸/描边/内高光/底边）；色相可不同 */

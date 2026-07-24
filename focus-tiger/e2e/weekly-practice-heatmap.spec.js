@@ -2,8 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
   expectFocusSessionActive,
-  openFreshProductShell,
-  selectCompanionMode
+  openFreshProductShell
 } from './helpers/product-shell.js';
 
 const HEATMAP = '#weekly-practice-heatmap';
@@ -153,7 +152,6 @@ test('non-Idle (Focusing) hides weekly heatmap', async ({ page }) => {
   await expect(page.locator(HEATMAP)).toBeVisible({ timeout: 15_000 });
 
   await advanceArrivalToCompanionPicker(page);
-  await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expectFocusSessionActive(page);
 
   await expect(page.locator(HEATMAP)).toBeHidden();

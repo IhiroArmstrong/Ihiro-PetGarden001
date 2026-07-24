@@ -42,14 +42,15 @@ test('scenario I2: Here & Now before Arrival gate opens Arrival (HUD stays idle)
   await expectFocusSessionInactive(page);
 });
 
-test('scenario A: Arrival → Here & Now starts focus timer', async ({ page }) => {
+test('scenario A: Arrival Choose completes → focus timer starts', async ({
+  page
+}) => {
   await openFreshProductShell(page);
   await advanceArrivalToCompanionPicker(page);
-  await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expectFocusSessionActive(page);
 });
 
-test('scenario A2: preselect Flow → Skip — begin starts timer without Sit', async ({
+test('scenario A2: preselect Flow → Quick Start starts timer', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -62,7 +63,7 @@ test('scenario A2: preselect Flow → Skip — begin starts timer without Sit', 
   await expectFocusSessionActive(page);
 });
 
-test('scenario A3: preselect Here & Now → Skip — begin starts timer without Sit', async ({
+test('scenario A3: preselect Here & Now → Quick Start starts timer', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -75,12 +76,15 @@ test('scenario A3: preselect Here & Now → Skip — begin starts timer without 
   await expectFocusSessionActive(page);
 });
 
-test('scenario K: Offline Space after Arrival starts focus timer without second Sit', async ({
+test('scenario K: Offline Space after Arrival Choose starts focus without second Sit', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await advanceArrivalToCompanionPicker(page);
-  await selectCompanionMode(page, /Offline Space|离线/i);
-
+  await page.locator('.session-start-dock__hint').click();
+  await selectCompanionMode(page, /Offline Space|离线空间|Offline/i);
+  await expect(page.locator('#arrival-practice')).toBeVisible({
+    timeout: 15_000
+  });
+  await skipArrivalBegin(page);
   await expectFocusSessionActive(page);
 });

@@ -1083,6 +1083,38 @@ async function init() {
     beginFocusWithMode(mode);
   };
 
+  /** ⚡ Quick Start：跳过 Arrival（若开着）并以记忆 Companion 模式立刻 Focusing */
+  companionModeHandlers.onQuickStart = () => {
+    if (sessionUiGate.completionPending) return;
+    if (stateManager.state === STATES.FOCUSING) return;
+    if (
+      reflectionMoment?.isOpen?.() ||
+      microRitualUI?.isOpen?.() ||
+      honestyBridge?.isVisible?.()
+    ) {
+      return;
+    }
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    companionModePicker.hide();
+    onboardingHints?.markSeen('sit-button');
+    onboardingHints?.markSeen('how-shall-we-sit');
+    if (arrivalPractice.isOpen()) {
+      arrivalPractice.skipToBegin();
+      return;
+    }
+    // Idle 且无 Arrival：直接开表（不走仪式）
+    pendingChoose = null;
+    currentSessionIntention = '';
+    currentIntentionSource = 'typed';
+    arrivalChoseThisRun = false;
+    pendingAutoStartMode = null;
+    suppressCompanionOpenAfterNod = false;
+    syncArrivalGateReady(true);
+    beginFocusWithMode(companionModePicker.getSelectedMode());
+  };
+
   /** 门闩未就绪时选模式 → 启动 Arrival；返回是否已启动（Picker 凭此写 storage） */
   companionModeHandlers.onAutoStartNeedsArrival = (mode) => {
     if (
@@ -1115,7 +1147,7 @@ async function init() {
       honestyCheckInUI.hide();
 
       if (arrivalPractice.isOpen()) {
-        arrivalPractice.skipToBegin();
+        // 仪式进行中：Sit 不再充当 Skip — begin；快速开表请用 ⚡ Quick Start
         return false;
       }
 

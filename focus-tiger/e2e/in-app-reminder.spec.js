@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
-  openFreshProductShell,
-  selectCompanionMode
+  openFreshProductShell
 } from './helpers/product-shell.js';
 
 const REMINDER_KEY = 'focus-tiger.reminder-preference.v1';
@@ -111,7 +110,6 @@ test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
   await expect(page.locator(BANNER)).toBeVisible({ timeout: 10_000 });
 
   await advanceArrivalToCompanionPicker(page);
-  await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i);
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
 

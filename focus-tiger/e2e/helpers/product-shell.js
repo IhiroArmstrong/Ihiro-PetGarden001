@@ -13,44 +13,32 @@ export async function openFreshProductShell(page) {
 }
 
 /**
- * Sit → 逐步 Skip Arrival → Companion 三选一面板展开。
- * 使用真实 Skip 按钮（非 DEV 强制），跳过 Choose 以避开 intentionSet 动画等待。
+ * Sit → Notice 点选 → Breath → Choose → 鞠躬后自动 Focusing。
+ * （Arrival 已无 Skip；快速开表用 `quickStartFocus`。）
  */
 export async function advanceArrivalToCompanionPicker(page) {
-  await page.locator('#btn-focus').click();
-  const arrival = page.locator('#arrival-practice');
-  await expect(arrival).toBeVisible({ timeout: 15_000 });
-
-  const skipStep = arrival.getByRole('button', { name: /^Skip$/i });
-  const panel = page.locator('.session-start-dock__panel');
-
-  const deadline = Date.now() + 45_000;
-  while (Date.now() < deadline) {
-    if (await panel.isVisible()) return;
-
-    if (await arrival.isVisible()) {
-      if (await skipStep.isVisible()) {
-        await skipStep.click();
-        await page.waitForTimeout(200);
-        continue;
-      }
-    }
-
-    await page.waitForTimeout(300);
-  }
-
-  throw new Error('Companion picker did not open within timeout');
+  await chooseReadingAndAwaitFocus(page);
 }
 
 /**
- * Arrival 已打开时点「Skip — begin」，立刻结束抵达练习。
+ * ⚡ Quick Start：跳过 Arrival（或先 Sit 再跳过），立刻 Focusing。
  * @param {import('@playwright/test').Page} page
  */
+export async function quickStartFocus(page) {
+  const quick = page.locator('#quick-start-focus');
+  await expect(quick).toBeVisible({ timeout: 15_000 });
+  await quick.click();
+  await expect(page.locator('#arrival-practice')).toBeHidden({ timeout: 15_000 });
+}
+
+/** @deprecated 使用 `quickStartFocus`；Arrival 开着时点 ⚡ 等价旧 Skip — begin */
 export async function skipArrivalBegin(page) {
   const arrival = page.locator('#arrival-practice');
-  await expect(arrival).toBeVisible({ timeout: 15_000 });
-  await arrival.getByRole('button', { name: /Skip — begin|跳过，直接开始|跳过并开始/i }).click();
-  await expect(arrival).toBeHidden({ timeout: 15_000 });
+  if (!(await arrival.isVisible().catch(() => false))) {
+    await page.locator('#btn-focus').click();
+    await expect(arrival).toBeVisible({ timeout: 15_000 });
+  }
+  await quickStartFocus(page);
 }
 
 /** @param {import('@playwright/test').Page} page @param {RegExp|string} label */
@@ -82,30 +70,23 @@ export async function expectFocusSessionInactive(page) {
 }
 
 /**
- * Sit → 逐步 Skip 到 Choose → 点 Reading → 等开表。
- * 须等 intentionNod pingpong + CapCut 叠化结束（约数秒）。
+ * Sit → Notice → Breath → Choose Reading → 等开表（鞠躬后自动 Focusing）。
  */
 export async function chooseReadingAndAwaitFocus(page) {
   await page.locator('#btn-focus').click();
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
 
-  const skipStep = arrival.getByRole('button', { name: /^Skip$/i });
-  const deadline = Date.now() + 60_000;
-  while (Date.now() < deadline) {
-    if (await arrival.getByRole('button', { name: /Reading|阅读/i }).isVisible()) {
-      break;
-    }
-    if (await arrival.isVisible() && (await skipStep.isVisible())) {
-      await skipStep.click();
-      await page.waitForTimeout(200);
-      continue;
-    }
-    await page.waitForTimeout(300);
-  }
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
 
-  await arrival.getByRole('button', { name: /Reading|阅读/i }).click();
-  // intentionNod pingpong + CapCut 1s；开表后主按钮变 Rise
+  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
+  await expect(reading).toBeVisible({ timeout: 20_000 });
+  await reading.click();
+
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 45_000
   });
