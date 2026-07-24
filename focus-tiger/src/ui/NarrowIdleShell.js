@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v2';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v3';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -21,8 +21,10 @@ export class NarrowIdleShell {
    *   getHudTimeEl?: () => HTMLElement | null,
    *   handlers?: {
    *     onMute?: () => void | Promise<void>,
+   *     onSound?: () => void,
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
+   *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
    *   }
@@ -74,9 +76,26 @@ export class NarrowIdleShell {
   clearStage() {
     document.body.classList.remove(
       'ft-narrow-stage-companion',
-      'ft-narrow-stage-reminder'
+      'ft-narrow-stage-reminder',
+      'ft-narrow-stage-sound'
     );
     this.handlers.onClearStage?.();
+  }
+
+  /**
+   * Mirror ambient mute state onto the ActionBar ♪ (parked mute btn is invisible).
+   * @param {{ musicOn?: boolean }} [state]
+   * @returns {void}
+   */
+  syncMuteVisual(state = {}) {
+    const muteBtn = this.actionBar?.querySelector('[data-proxy="mute"]');
+    if (!muteBtn) return;
+    const musicOn = state.musicOn !== false;
+    muteBtn.classList.toggle('is-music-off', !musicOn);
+    muteBtn.setAttribute(
+      'aria-label',
+      musicOn ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
+    );
   }
 
   /**
@@ -367,10 +386,8 @@ export class NarrowIdleShell {
       {
         proxy: 'honesty',
         label: () => t('HONESTY_IDLE_ENTRY'),
-        visible: () => {
-          const el = document.getElementById('honesty-idle-entry');
-          return Boolean(el && !el.hidden);
-        }
+        // Always list while drawer is open — never drop for space. Proxy opens check-in.
+        visible: () => Boolean(document.getElementById('honesty-idle-entry'))
       },
       {
         proxy: 'breath',
@@ -389,7 +406,7 @@ export class NarrowIdleShell {
         }
       },
       {
-        proxy: 'music',
+        proxy: 'sound',
         label: () => t('AMBIENT_FAB_LABEL'),
         visible: () => true
       },
@@ -444,8 +461,14 @@ export class NarrowIdleShell {
    * @returns {void}
    */
   _proxy(key) {
-    if (key === 'mute' || key === 'music') {
+    if (key === 'mute') {
       void this.handlers.onMute?.();
+      return;
+    }
+    if (key === 'sound' || key === 'music') {
+      this.clearStage();
+      document.body.classList.add('ft-narrow-stage-sound');
+      this.handlers.onSound?.();
       return;
     }
     if (key === 'companion') {
@@ -464,11 +487,23 @@ export class NarrowIdleShell {
       this.handlers.onQuickStart?.();
       return;
     }
+    if (key === 'honesty') {
+      const el = document.getElementById('honesty-idle-entry');
+      if (el && !el.disabled && !el.hidden) {
+        const prev = el.style.pointerEvents;
+        el.style.pointerEvents = 'auto';
+        el.click();
+        el.style.pointerEvents = prev;
+        return;
+      }
+      // Entry may be attribute-hidden while Idle drawer is open — still open check-in.
+      this.handlers.onHonesty?.();
+      return;
+    }
 
     const map = {
       help: () => document.getElementById('onboarding-hint-help'),
       sit: () => document.getElementById('btn-focus'),
-      honesty: () => document.getElementById('honesty-idle-entry'),
       breath: () => document.getElementById('micro-ritual-idle-entry')
     };
     const el = map[key]?.();
@@ -527,6 +562,19 @@ export class NarrowIdleShell {
         font-size: 18px;
         font-weight: 600;
         cursor: pointer;
+        position: relative;
+      }
+      .ft-narrow-action-bar__btn.is-music-off::after {
+        content: '';
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        top: 50%;
+        height: 2px;
+        background: rgba(74, 58, 40, 0.72);
+        transform: rotate(-32deg);
+        border-radius: 1px;
+        pointer-events: none;
       }
       .ft-narrow-action-bar__center {
         flex: 1 1 auto;
@@ -591,8 +639,8 @@ export class NarrowIdleShell {
         left: 0;
         right: 0;
         bottom: 0;
-        max-height: min(78vh, 560px);
-        padding: 10px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+        max-height: min(82vh, 580px);
+        padding: 8px 14px calc(12px + env(safe-area-inset-bottom, 0px));
         border-radius: 22px 22px 0 0;
         background: linear-gradient(180deg, #fffcf6 0%, #f4ebe0 100%);
         border: 1px solid rgba(139, 115, 85, 0.22);
@@ -642,23 +690,25 @@ export class NarrowIdleShell {
         padding: 0;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 6px;
       }
       .ft-narrow-sheet__item {
         width: 100%;
         box-sizing: border-box;
-        padding: 14px 16px;
-        border-radius: 14px;
+        /* Compact (~half of prior 14×16) so all Idle actions fit on 375 */
+        padding: 7px 12px;
+        min-height: 36px;
+        border-radius: 11px;
         border: 1px solid rgba(139, 115, 85, 0.28);
         background: linear-gradient(180deg, #fffdf8 0%, #f6ecdc 100%);
         color: #2c1f14;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: 650;
         text-align: left;
         cursor: pointer;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.85) inset,
-          0 2px 0 rgba(180, 150, 110, 0.2);
+          0 1px 0 rgba(180, 150, 110, 0.18);
       }
       .ft-narrow-sheet__item.is-primary {
         border-color: rgba(255, 230, 210, 0.4);
@@ -675,8 +725,8 @@ export class NarrowIdleShell {
           0 2px 0 var(--color-cta-edge, #7a3f24);
       }
       .ft-narrow-sheet__heatmap {
-        margin: 0 0 14px;
-        padding: 10px 12px;
+        margin: 0 0 10px;
+        padding: 8px 10px;
         border-radius: 12px;
         background: rgba(228, 225, 219, 0.55);
         border: 1px solid rgba(46, 43, 40, 0.08);
@@ -737,7 +787,7 @@ export class NarrowIdleShell {
           display: none !important;
         }
 
-        /* Stage companion / reminder panels on-canvas after drawer pick */
+        /* Stage companion / reminder / sound panels on-canvas after drawer pick */
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #session-start-dock {
           left: 50% !important;
           right: auto !important;
@@ -747,6 +797,7 @@ export class NarrowIdleShell {
           opacity: 1 !important;
           pointer-events: auto !important;
           z-index: 32 !important;
+        }
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #micro-ritual-idle-entry,
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #quick-start-focus,
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #btn-focus {
@@ -760,9 +811,30 @@ export class NarrowIdleShell {
           bottom: max(88px, env(safe-area-inset-bottom, 0px)) !important;
           transform: translateX(-50%) !important;
           opacity: 1 !important;
+          visibility: visible !important;
           pointer-events: auto !important;
           z-index: 32 !important;
           position: fixed !important;
+        }
+
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__focus-chrome {
+          left: auto !important;
+          right: 14px !important;
+          top: auto !important;
+          bottom: max(96px, env(safe-area-inset-bottom, 0px)) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          position: fixed !important;
+          z-index: 32 !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__nudge {
+          display: block !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__fab {
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
         }
 
         body.ft-narrow-shell #sprite-overlay {

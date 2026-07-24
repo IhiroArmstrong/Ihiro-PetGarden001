@@ -116,6 +116,76 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   });
 });
 
+test('375 drawer: Honesty always listed; Sound tip + Reminder panel respond', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
+    timeout: 15_000
+  });
+
+  await page.locator('.ft-narrow-grabber').click();
+  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+  // Honesty must remain in the drawer (never dropped for space)
+  const honestyItem = page.locator('.ft-narrow-sheet__item', {
+    hasText: /Honesty Check-in|诚实补登|Honesty/i
+  });
+  await expect(honestyItem).toBeVisible();
+
+  // Sound → gated tip visible on-canvas (not silent / not parked off-screen)
+  await page
+    .locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
+    .click();
+  await expect
+    .poll(async () => {
+      return page.evaluate(() => {
+        const nudge = document.querySelector('.ambient-soundscape__nudge');
+        if (!nudge || nudge.hidden) return null;
+        const r = nudge.getBoundingClientRect();
+        const staged = document.body.classList.contains('ft-narrow-stage-sound');
+        return {
+          staged,
+          text: (nudge.textContent || '').trim(),
+          left: r.left,
+          top: r.top,
+          w: r.width,
+          onScreen: r.width > 0 && r.left >= 0 && r.left < window.innerWidth
+        };
+      });
+    })
+    .toMatchObject({
+      staged: true,
+      onScreen: true
+    });
+  const tip = await page.evaluate(() => {
+    const nudge = document.querySelector('.ambient-soundscape__nudge');
+    return (nudge?.textContent || '').trim();
+  });
+  expect(tip.length).toBeGreaterThan(8);
+
+  // Re-open drawer → Reminder panel must appear on-screen
+  await page.locator('.ft-narrow-grabber').click();
+  await page
+    .locator('.ft-narrow-sheet__item', {
+      hasText: /When should I remind you|何时提醒|remind/i
+    })
+    .click();
+  await expect(page.locator('#reminder-preference-panel')).toBeVisible({
+    timeout: 5_000
+  });
+  const reminderBox = await page.locator('#reminder-preference-panel').boundingBox();
+  expect(reminderBox).toBeTruthy();
+  expect(reminderBox.x).toBeGreaterThanOrEqual(0);
+  expect(reminderBox.x + reminderBox.width).toBeLessThanOrEqual(375 + 2);
+  expect(reminderBox.y).toBeGreaterThanOrEqual(0);
+  expect(reminderBox.y).toBeLessThan(667);
+});
+
 test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);

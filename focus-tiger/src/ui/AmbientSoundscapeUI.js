@@ -188,6 +188,26 @@ export class AmbientSoundscapeUI {
     await this._onMuteClick();
   }
 
+  /**
+   * Narrow drawer 「Sound」— Idle shows gated tip; Focusing opens track panel.
+   * Caller must stage `.ambient-soundscape__focus-chrome` so tip/panel are visible.
+   */
+  activateSoundFromNarrow() {
+    if (!this._sessionActive) {
+      this._showBlockedTip();
+      return;
+    }
+    this._dismissNudge();
+    this._expanded = true;
+    this._renderPanel();
+    this.handlers.onPanelOpened?.();
+  }
+
+  /** Whether ambient preference wants music on (for ActionBar ♪ slash). */
+  wantsMusicOn() {
+    return this.controller.wantsEnabled();
+  }
+
   async _onMuteClick() {
     const ctrl = this.controller;
     if (
@@ -248,6 +268,16 @@ export class AmbientSoundscapeUI {
       this.nudgeEl.classList.remove('is-blocked-tip');
       this.nudgeEl.hidden = true;
       this.nudgeEl.textContent = '';
+    }
+    document.body.classList.remove('ft-narrow-stage-sound');
+  }
+
+  /** Narrow shell clearStage — dismiss gated tip / collapse idle panel staging. */
+  clearNarrowSoundStage() {
+    this._clearBlockedTip();
+    if (!this._sessionActive && this._expanded) {
+      this._expanded = false;
+      this._renderPanel();
     }
   }
 
