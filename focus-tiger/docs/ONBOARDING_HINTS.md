@@ -29,7 +29,7 @@
 | `companion-away` | E Offline Space | "Check-ins pause while you are away. Sit again when ready to begin." / 「离开时提醒会暂停。准备开始时再点同坐。」 | 首次看到该选项 | 点选 Offline Space | 是 |
 | `companion-across-tools` | F Flow State | "Away reminders stay off in this mode." / 「这个方式下，离开提醒会保持关闭。」 | 首次看到该选项 | 点选 Flow State | 是 |
 | `ambient-gated` | Idle 下 Sound | "Track selection opens once you sit." / 「同坐开始后，曲目选择才会打开。」 | Idle / 桥接等非 Focusing 表面 | 开计时 / 点气泡 | 是 |
-| `ambient-soundscape` | 默认音乐 / 曲目 | "Music is on by default — tap to mute anytime." / 「默认有音乐——随时可点按钮关掉。」 | 首次 FOCUSING 或展开曲目面板 | 开关音乐 / 关面板 | 是 |
+| `ambient-soundscape` | 背景音乐 opt-in | "Music stays off until you tap — tap the note to play." / 「音乐默认关闭——点音符按钮才会播放。」 | 首次 FOCUSING 或展开曲目面板 | 开关音乐 / 关面板 | 是 |
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
