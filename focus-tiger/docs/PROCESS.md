@@ -119,6 +119,7 @@
 - **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
 - **RESPONSIVE_LAYOUT.md（2026-07-21）**：移动浏览器权威基线——功能对等（竖/横屏逐步可操作、禁按钮失灵）、竖屏 P1 + 可建议横屏；`TEST_TRACKER` / `DEV_WORKFLOW_QUALITY` 已挂窄屏验收
 - **响应式 UI 两项已立项（2026-07-21 用户拍板）**：① **Task 1 代码已落地**（互斥 + Sit 防截断，待人工）→ `task-responsive-narrow-onboarding-sit.md`；② 横屏建议 UI → `task-responsive-landscape-suggest.md`（Task 1 人工后再做）。见 `TASKS.md` 响应式节
+- **窄宽屏单代码线（2026-07-25 排期约束）**：值得做（消分叉漏修），**现在不做**。触发：`feature/wide-idle-more-menu` 七项人工验收通过并 push 后立刻排为响应式 Task 3（见 `TASKS.md`）；禁止与未验收修复叠加重构。
 - **工程加固四步（2026-07-21 拍板）**：见 `ARCHITECTURE.md` — ① JSDoc ② SessionUiGate ③ 回归锁 ④ Lit 试点 **`OnboardingHintsUI` 已接线**；**复测通过后先停试点、不扩面**（须另拍板才扩）；待人工复测尖角/补救全铺；禁止全仓 Lit / 动 Emotion·Idle
 - **SessionUiGate**：`arrivalGateReady` / `completionPending` / 叠层占用收束；失败用例并入 `npm run test:smoke`
 

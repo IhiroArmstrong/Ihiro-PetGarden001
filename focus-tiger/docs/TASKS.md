@@ -170,8 +170,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
 | **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
+| **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | 待写 Brief（合并 `NarrowIdleShell` + `WideIdleMoreMenu` 为断点驱动的同一套入口编排；抽屉 vs ⋯ 是交互范式差，不是两套业务） | **已立项 · 有触发条件**：`feature/wide-idle-more-menu` 宽屏清场 **7 项人工验收通过并 push** 之后立刻排期开工（**禁止**无限挂起；**禁止**与本次修复叠加重构） |
 
 **共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。
+
+> **2026-07-25 架构拍板（用户同意倾向 + 排期约束）**：窄屏抽屉与宽屏 ⋯ 菜单长期分分支维护是分叉漏修的结构性成因；值得合并成响应式单线，但须等本次宽屏修复人工验收 + push 后再开重构，避免与未验收修复叠风险。见 `PROCESS.md` 速览 / `RESPONSIVE_LAYOUT.md`。
 
 ---
 

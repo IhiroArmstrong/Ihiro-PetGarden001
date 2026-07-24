@@ -2,7 +2,7 @@
 # RESPONSIVE_LAYOUT.md
 
 > **版本**：1.0  
-> **最后更新**：2026-07-21  
+> **最后更新**：2026-07-25  
 > **状态**：布局与窄屏交互的**权威基线**；细则冲突时以本文为准（产品语义仍服从 `PRODUCT_POSITIONING.md` / `PRINCIPLES.md`）
 
 本文档定义：桌面优先前提下，**主流手机浏览器**（含竖屏与横屏）应达到何种可用标准；开发、设计与验收如何收口。
@@ -18,6 +18,12 @@
 | `TEST_TRACKER.md` | UI 可见项须附窄屏测试步骤 |
 
 **非目标（维持 Backlog，勿混进当前 Task）**：原生 App、系统级 Focus Mode、后台计时、PWA 安装强推。见 `PROCESS.md` Backlog。
+
+### 工程债 · 窄宽屏单代码线（2026-07-25 排期）
+
+当前实现：≤479 = `NarrowIdleShell`（抽屉）；≥480 = `WideIdleMoreMenu`（⋯ Popover）。业务应共享，壳形态可因断点不同——**禁止**长期用两条 git 分支分别演进同一套 chrome/audio 修复（分叉漏修根因）。
+
+**已拍板**：合并为响应式单代码线 **值得做**，但 **等** `feature/wide-idle-more-menu` 人工七项验收通过并 push 后再开 Task（`TASKS.md` 响应式 Task 3）。勿与未验收修复叠加重构。
 
 ---
 
