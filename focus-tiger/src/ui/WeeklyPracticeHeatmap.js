@@ -126,6 +126,7 @@ export class WeeklyPracticeHeatmap {
       .weekly-practice-heatmap-cluster {
         position: absolute;
         left: 18px;
+        /* Idle：?（52）上方留 18；宽屏时旁开居中 dock */
         bottom: calc(28px + 52px + 18px);
         z-index: 12;
         display: flex;
@@ -133,6 +134,17 @@ export class WeeklyPracticeHeatmap {
         align-items: center;
         gap: 8px;
         pointer-events: none;
+      }
+      /*
+       * 窄屏 P1（≤479 / 375）：居中 dock 会盖住原左下簇（z16 > z12）。
+       * 改挂到左上 HUD 下方，避开四钮 dock / ? / Sound；桌面（≥480）仍用原 bottom。
+       */
+      @media (max-width: 479px) {
+        .weekly-practice-heatmap-cluster {
+          top: calc(12px + 128px + 10px);
+          bottom: auto;
+          left: 12px;
+        }
       }
       .weekly-practice-heatmap {
         display: flex;

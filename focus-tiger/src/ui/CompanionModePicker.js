@@ -669,23 +669,25 @@ export class CompanionModePicker {
         line-height: 1.45;
         color: var(--text-secondary, rgba(74, 58, 40, 0.78));
       }
-      /* 窄屏 P1：主 CTA 完整可读，略缩字号与边距 */
+      /* 窄屏 P1：主 CTA 完整可读；钮间距加大；胶囊限宽以免压住左簇 / 右 Sound */
       @media (max-width: 479px) {
         .session-start-dock {
-          width: min(400px, calc(100vw - 100px));
-          gap: 12px;
+          width: min(400px, calc(100vw - 120px));
+          gap: 16px;
         }
         #btn-focus {
           font-size: 14px;
-          padding: 10px 22px;
+          padding: 10px 14px;
           letter-spacing: 0.01em;
           white-space: normal;
+          max-width: min(100%, 120px);
         }
         .session-start-dock__honesty-entry,
         .session-start-dock__micro-ritual-entry,
         .session-start-dock__hint {
           font-size: 12px;
-          padding: 8px 14px;
+          padding: 8px 10px;
+          max-width: min(100%, 120px);
         }
       }
     `;

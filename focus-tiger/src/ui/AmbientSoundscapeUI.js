@@ -345,6 +345,7 @@ export class AmbientSoundscapeUI {
         position: fixed;
         top: 14px;
         right: 14px;
+        z-index: 24;
         pointer-events: auto;
         width: 44px;
         height: 44px;
@@ -393,6 +394,28 @@ export class AmbientSoundscapeUI {
         align-items: flex-end;
         gap: 8px;
         pointer-events: none;
+      }
+      /* 窄屏：略缩 mute / Sound，给 HUD 与 dock 胶囊让出边距（勿上移 FAB，以免撞 Sit） */
+      @media (max-width: 479px) {
+        .ambient-soundscape__mute {
+          top: 10px;
+          right: 10px;
+          width: 40px;
+          height: 40px;
+        }
+        .ambient-soundscape__icon-svg {
+          width: 20px;
+          height: 20px;
+        }
+        .ambient-soundscape__focus-chrome {
+          right: 12px;
+          bottom: 24px;
+        }
+        .ambient-soundscape__fab {
+          padding: 10px 14px;
+          min-height: 44px;
+          font-size: 14px;
+        }
       }
       .ambient-soundscape.is-gated .ambient-soundscape__fab {
         opacity: 0.72;

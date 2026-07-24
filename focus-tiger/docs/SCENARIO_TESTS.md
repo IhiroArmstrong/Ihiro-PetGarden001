@@ -187,17 +187,19 @@
 
 ---
 
-## 场景 O：Idle 左下「本周陪伴」7 格热力图
+## 场景 O：Idle「本周陪伴」7 格热力图
 
-> **用户故事**：Kelly 回到 Idle，左下角 quietly 看见最近 7 天「同坐」痕迹——亮格是来过的一天，暗格是安静日；**不是**断签惩罚、**不是**计分榜，也**不能**点开查详情。  
-> **DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（3 条：Idle 7 格可见；Focusing 隐藏；localStorage seed 亮/暗）。  
-> **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、375 窄屏重叠。  
-> **仍须人工**：亮/暗对比是否「不羞辱」、375 窄屏与 dock / Sound / `?` 是否重叠、Hint 尖角是否对准热力图。
+> **用户故事**：Kelly 回到 Idle，quietly 看见最近 7 天「同坐」痕迹——亮格是来过的一天，暗格是安静日；**不是**断签惩罚、**不是**计分榜，也**不能**点开查详情。  
+> **DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（4 条：Idle 7 格；Focusing 隐藏；seed 亮/暗；**375 几何不重叠** HUD/mute/dock/Sound）。  
+> **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮。  
+> **仍须人工**：亮/暗「不羞辱」、Hint 尖角；**375 复测**——窄屏簇在 Calm 卡下方（非左下盖 dock），宽屏仍左下 `?` 上方。  
+> **2026-07-24**：用户 DevTools 375 确认时钟/7 格与 dock 重叠 → 窄屏改挂 HUD 下 + dock/HUD/mute 收窄（`fix/scenario-o-375-chrome-layout`）。
 
 1. 打开 `?product=1`，处于 **Idle**（未 Sit / 未 Focusing）。
-2. 左下（`#onboarding-hint-help` 上方）见 `#weekly-practice-heatmap-cluster`：横排 **7 个小格** `#weekly-practice-heatmap`。
+2. **宽屏**：左下（`#onboarding-hint-help` 上方）见 `#weekly-practice-heatmap-cluster`：横排 **7 个小格** + 时钟。  
+   **375×667**：簇在左上 **Calm / Today's shared sitting 卡下方**（仍含 7 格 + 时钟）；**不得**被 Honesty / 一分钟呼吸 / Sit 盖住。
 3. **读图**：亮格 = 该日 `PracticeDaysStore` 有记录且 `totalMinutes === null`（旧数据未知）或 `> 0`；暗格 = 真零或未练（浅灰 `--color-ink-faint`）。**无**文案、感叹号、点击、hover 详情。
-4. **Hint（可选）**：点左下 `?` → 应见 `weekly-heatmap` tip（EN「A quiet week of shared sitting…」/ ZH「近日同坐的日子…」），尖角指向 7 格区域。
+4. **Hint（可选）**：点左下 `?` → 应见 `weekly-heatmap` tip（EN「A quiet week of shared sitting…」/ ZH「近日同坐的日子…」），尖角指向 7 格区域（窄屏尖角目标随簇上移）。
 5. **让格子变亮（人工 seed 或真实练习）**：完成任一场计时 / Honesty / 一分钟呼吸 → 回 Idle → 对应「今日」格应变亮（e2e 用 localStorage seed 测混合亮暗）。
 6. **回流 · 非 Idle 隐藏**：Sit → 选模式开 Focusing → 热力图 **隐藏**；Rise 回 Idle → **再出现**。
 7. **已知边界**：不可点击下钻；与 HUD 左上 streak-meter（7 点环）分工不同——热力图 = 7 **日**格，streak = 近日节奏环。
@@ -269,7 +271,7 @@
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
-| **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint | **已升格** → 见上文「场景 O」；e2e 锁可见/隐藏/seed 亮暗（**非** Hint） |
+| **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint；窄屏挂点 | **已升格** → 见上文「场景 O」；e2e 锁可见/隐藏/seed 亮暗/**375 几何**（**非** Hint） |
 | **P** | 应用内提醒：设时、回前台横幅、关闭不重复、忙碌 suppress | **已升格** → 见上文「场景 P」；e2e 锁主路径+suppress（**非** defer/负例） |
 
 ---
