@@ -29,13 +29,31 @@ if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
  */
 const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 
+/** Wide Idle parks these into ⋯ — remap hints to the more button when parked. */
+const WIDE_PARKED_ANCHOR_RE =
+  /honesty-idle-entry|micro-ritual-idle-entry|session-start-dock__hint|ambient-soundscape__fab|reminder-preference-toggle/;
+
 function resolveAnchorEl(selectorList) {
+  const widePark = document.body.classList.contains('ft-wide-park-secondary');
   for (const sel of String(selectorList)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)) {
+    if (widePark && WIDE_PARKED_ANCHOR_RE.test(sel)) {
+      const more = document.getElementById('ft-wide-more-btn');
+      if (more && !more.hidden && more.getClientRects().length > 0) return more;
+    }
     const el = document.querySelector(sel);
-    if (el && !el.hidden && el.getClientRects().length > 0) return el;
+    if (el && !el.hidden && el.getClientRects().length > 0) {
+      // Off-canvas park (left: -10000px) still has a rect — skip those
+      const r = el.getBoundingClientRect();
+      const vw = document.documentElement.clientWidth;
+      const vh = document.documentElement.clientHeight;
+      if (r.right < 0 || r.bottom < 0 || r.left > vw || r.top > vh) {
+        continue;
+      }
+      return el;
+    }
   }
   return null;
 }

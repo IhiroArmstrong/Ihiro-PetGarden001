@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 
 /** 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。 */
 export async function openFreshProductShell(page) {
+  // Default to wide Idle chrome (≥480). Narrow specs override with setViewportSize after.
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/?product=1');
   await page.evaluate(() => {
     for (const key of Object.keys(localStorage)) {
@@ -10,6 +12,72 @@ export async function openFreshProductShell(page) {
   });
   await page.reload();
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+}
+
+/**
+ * Wide Idle (≥480)：若 ⋯ 存在且未 hidden，则打开向上菜单。
+ * @returns {Promise<boolean>} true = 已打开宽屏更多菜单
+ */
+export async function openWideMoreMenuIfPresent(page) {
+  const canOpen = await page.evaluate(() => {
+    const btn = document.getElementById('ft-wide-more-btn');
+    return Boolean(btn && !btn.hidden);
+  });
+  if (!canOpen) return false;
+  await page.locator('#ft-wide-more-btn').click({ force: true });
+  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+    timeout: 5_000
+  });
+  return true;
+}
+
+/**
+ * 展开 Companion「How shall we sit?」：宽屏走 ⋯ 菜单，窄屏点 hint。
+ */
+export async function openCompanionHint(page) {
+  if (await openWideMoreMenuIfPresent(page)) {
+    await page.locator('#ft-wide-more-menu [data-proxy="companion"]').click();
+  } else {
+    await page.locator('.session-start-dock__hint').evaluate((el) => {
+      /** @type {HTMLButtonElement} */ (el).click();
+    });
+  }
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 10_000
+  });
+}
+
+/**
+ * 经宽屏 ⋯（若有）打开 Honesty / 呼吸 / 提醒等代理入口。
+ * @param {import('@playwright/test').Page} page
+ * @param {'honesty'|'breath'|'reminder'|'sound'} proxy
+ */
+export async function clickWideMoreProxyOrDirect(page, proxy) {
+  const direct = {
+    honesty: '#honesty-idle-entry',
+    breath: '#micro-ritual-idle-entry',
+    reminder: '#reminder-preference-toggle',
+    sound: '.ambient-soundscape__fab'
+  }[proxy];
+  if (await openWideMoreMenuIfPresent(page)) {
+    await page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`).click();
+    return;
+  }
+  if (proxy === 'reminder') {
+    const opened = await page.evaluate(() => {
+      const ui = window.__inAppReminder?.settings;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (opened) return;
+  }
+  await page.locator(direct).evaluate((el) => {
+    el.style.pointerEvents = 'auto';
+    /** @type {HTMLElement} */ (el).click();
+  });
 }
 
 /**

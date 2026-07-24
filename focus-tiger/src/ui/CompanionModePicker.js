@@ -463,10 +463,8 @@ export class CompanionModePicker {
       #micro-ritual-idle-entry[hidden] {
         display: none !important;
       }
-      /* 桥接 Yes/No 期间强制收起会叠层的次要入口（防漏 sync） */
-      .session-start-dock.is-honesty-bridge-active #honesty-idle-entry,
-      .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry,
-      .session-start-dock.is-honesty-bridge-active #quick-start-focus {
+      /* Honesty bridge: also hide ⋯ (Sit stays; ⚡ already CSS-hidden) */
+      .session-start-dock.is-honesty-bridge-active #ft-wide-more {
         display: none !important;
       }
       .session-start-dock__quick-start {

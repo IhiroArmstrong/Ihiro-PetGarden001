@@ -16,6 +16,7 @@
   "NARROW_SHEET_TITLE": "Sit options",
   "NARROW_SHEET_CLOSE": "Close",
   "NARROW_SHEET_SWIPE_HINT": "Swipe up for options",
+  "WIDE_MORE_ARIA": "More sit options",
   "AMBIENT_NUDGE": "Optional: a quiet soundscape can keep you company.",
   "AMBIENT_DEFAULT_ON_NUDGE": "Music is on — tap anytime to turn it off.",
   "AMBIENT_REQUIRES_FOCUS": "Start a companion focus mode first — then Sound can open.",

@@ -57,8 +57,8 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
 test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   page
 }) => {
-  await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
   await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
     timeout: 15_000
   });

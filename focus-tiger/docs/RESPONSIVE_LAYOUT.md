@@ -104,10 +104,11 @@
 - 底部：`padding-bottom: env(safe-area-inset-bottom)`（?、session-start-dock、Honesty 底栏）。
 - 主内容区：老虎序列保持可见；窄屏允许略缩 HUD，**不允许**裁切到无法辨认状态。
 
-### 4.3 底部 chrome 预算（竖屏 narrow）
+### 4.3 底部 chrome 预算（竖屏 narrow / 宽屏 Idle）
 
 - 底部固定 UI（dock、?、Sound、叠层底栏）合计建议不超过视口高度 **~32%**；超出时优先：缩间距 → 折行 → 隐藏非关键装饰，**最后**才考虑建议横屏提示。
 - `session-start-dock` 宽度策略：保证主按钮完整；与 Sound FAB、? 三者**不得**互相挤到截断主 CTA。
+- **宽屏 Idle（≥480）清场**：底栏常驻仅 **Sit + ⚡ Quick Start + ⋯**；Honesty / 一分钟呼吸 / How shall we sit / Sound FAB / 提醒时钟收入 **⋯ 向上 Popover**（`WideIdleMoreMenu`）。左下 **?** 与热力图**不**进此次清场。Arrival 进行中：仅 ⚡；Sit 与 ⋯ 均收。窄屏仍由 `NarrowIdleShell` 上滑抽屉负责，形态不必一致。
 
 ### 4.4 z-index 与点击
 

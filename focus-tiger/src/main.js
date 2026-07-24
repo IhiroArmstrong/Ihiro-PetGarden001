@@ -34,6 +34,7 @@ import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
 import { NarrowIdleShell } from './ui/NarrowIdleShell.js';
+import { WideIdleMoreMenu } from './ui/WideIdleMoreMenu.js';
 import {
   WeeklyPracticeHeatmap,
   WEEKLY_PRACTICE_HEATMAP_DAYS
@@ -387,6 +388,9 @@ async function init() {
     focusButton,
     companionModeHandlers
   );
+  /** Wide ≥480 Idle declutter (Sit + ⚡ + ⋯); inert on narrow where NarrowIdleShell owns chrome. */
+  const wideIdleMoreMenu = new WideIdleMoreMenu();
+  window.__wideIdleMoreMenu = wideIdleMoreMenu;
 
   microRitualUI = new MicroRitualUI(document.getElementById('ui-overlay'), {
     onIdleEntryClick: () => {
@@ -439,6 +443,15 @@ async function init() {
       honestyCheckIn.syncIdleEntry();
     }
     syncMicroRitualIdleEntry();
+    const honestyBusy =
+      Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
+    const overlayActive = computePostSessionOverlayActive(
+      getPostSessionOverlaySources()
+    );
+    // Bridge can appear without a full resync — keep wide ⋯ suppressed with dock pills
+    wideIdleMoreMenu.setSuppressed(
+      overlayActive || honestyBusy || bridgeVisible
+    );
   }
 
   function syncMicroRitualIdleEntry() {
@@ -495,10 +508,14 @@ async function init() {
     );
     companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
     const focusing = stateManager.state === STATES.FOCUSING;
-    narrowIdleShell.setIdle(!focusing);
     const honestyBusy =
       Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
-    narrowIdleShell.setSuppressed(overlayActive || honestyBusy);
+    const bridgeVisible = honestyBridge?.isVisible?.() === true;
+    const chromeSuppressed = overlayActive || honestyBusy || bridgeVisible;
+    narrowIdleShell.setIdle(!focusing);
+    narrowIdleShell.setSuppressed(chromeSuppressed);
+    wideIdleMoreMenu.setIdle(!focusing);
+    wideIdleMoreMenu.setSuppressed(chromeSuppressed);
     syncInAppReminderBanner();
   }
 
@@ -657,6 +674,27 @@ async function init() {
     }
   );
   void ambientSoundscapeUI.bootDefaultMusic();
+
+  wideIdleMoreMenu.setHandlers({
+    onCompanion: () => {
+      companionModePicker.open();
+    },
+    onClearCompanion: () => {
+      companionModePicker.hide();
+    },
+    onReminder: () => {
+      reminderPreferenceUI.openPanel();
+    },
+    onSound: () => {
+      const fab = document.querySelector('.ambient-soundscape__fab');
+      if (fab && !fab.disabled) {
+        const prev = fab.style.pointerEvents;
+        fab.style.pointerEvents = 'auto';
+        fab.click();
+        fab.style.pointerEvents = prev;
+      }
+    }
+  });
 
   /** @type {OnboardingHintsUI | null} */
   let onboardingHints = null;

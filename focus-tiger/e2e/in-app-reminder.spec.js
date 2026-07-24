@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
+  clickWideMoreProxyOrDirect,
   openFreshProductShell
 } from './helpers/product-shell.js';
 
@@ -11,6 +12,11 @@ const ENABLED = '#reminder-preference-enabled';
 const TIME = '#reminder-preference-time';
 const BANNER = '#in-app-reminder-banner';
 const DISMISS = '#in-app-reminder-banner-dismiss';
+
+async function openReminderPanel(page) {
+  await clickWideMoreProxyOrDirect(page, 'reminder');
+  await expect(page.locator(PANEL)).toBeVisible({ timeout: 5_000 });
+}
 
 async function simulateReturnToForeground(page) {
   await page.evaluate(() => {
@@ -25,22 +31,18 @@ async function simulateReturnToForeground(page) {
   });
 }
 
-test('idle heatmap cluster shows reminder toggle beside heatmap and opens panel', async ({
+test('idle heatmap stays; reminder opens via wide ⋯ (or direct toggle on narrow)', async ({
   page
 }) => {
   await openFreshProductShell(page);
 
-  const toggle = page.locator(TOGGLE);
-  await expect(toggle).toBeVisible({ timeout: 15_000 });
-  const heatmapBox = await page.locator('#weekly-practice-heatmap').boundingBox();
-  const toggleBox = await toggle.boundingBox();
-  expect(heatmapBox).toBeTruthy();
-  expect(toggleBox).toBeTruthy();
-  expect(toggleBox.x).toBeGreaterThan((heatmapBox?.x ?? 0) - 60);
+  await expect(page.locator('#weekly-practice-heatmap')).toBeVisible({
+    timeout: 15_000
+  });
+  // Toggle remains in DOM (parked on wide Idle ≥480)
+  await expect(page.locator(TOGGLE)).toBeAttached();
 
-  await toggle.click();
-  const panel = page.locator(PANEL);
-  await expect(panel).toBeVisible();
+  await openReminderPanel(page);
   await expect(page.locator('#reminder-preference-title')).toContainText(
     /When should I remind you|什么时候提醒你/
   );
@@ -50,14 +52,14 @@ test('set reminder time → return to foreground → show banner → dismiss →
   page
 }) => {
   await openFreshProductShell(page);
-  await expect(page.locator(TOGGLE)).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator(TOGGLE)).toBeAttached({ timeout: 15_000 });
   await page.evaluate(() => {
     window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
     window.__inAppReminder.sync();
   });
   await expect(page.locator(BANNER)).toBeHidden();
 
-  await page.locator(TOGGLE).click();
+  await openReminderPanel(page);
   await page.locator(ENABLED).check();
   await page.locator(TIME).fill('09:00');
 

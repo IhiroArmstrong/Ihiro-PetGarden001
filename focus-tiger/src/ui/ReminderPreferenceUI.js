@@ -130,6 +130,13 @@ export class ReminderPreferenceUI {
     return this._expanded && !this.panel.hidden;
   }
 
+  /** Open the preference panel (wide ⋯ menu / narrow drawer entry). */
+  openPanel() {
+    if (!this._visible) this.setVisible(true);
+    this._expanded = true;
+    this._render();
+  }
+
   setVisible(visible) {
     const next = visible === true;
     if (this._visible === next) return;

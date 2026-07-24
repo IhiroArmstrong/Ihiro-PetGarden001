@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
+import { clickWideMoreProxyOrDirect } from './helpers/product-shell.js';
 
 /**
  * 「一分钟呼吸」微仪式 DOM 主路径。
@@ -27,14 +28,9 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeVisible({ timeout: 15_000 });
-  await expect(entry).toContainText(/A minute of breath|一分钟呼吸/i);
-  // 立体按钮（非下划线轻链）：须有可见边框/背景，不抢 Sit 主 CTA
-  await expect(entry).toHaveCSS('border-radius', '999px');
-  const bg = await entry.evaluate((el) => getComputedStyle(el).backgroundImage);
-  expect(bg).toMatch(/gradient/i);
-
-  await entry.click();
+  await expect(entry).toBeAttached({ timeout: 15_000 });
+  // Wide Idle parks the pill; open via ⋯ (or direct on narrow)
+  await clickWideMoreProxyOrDirect(page, 'breath');
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
@@ -120,8 +116,9 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     .poll(() => retentionLogs.length, { timeout: 5_000 })
     .toBeGreaterThan(0);
 
-  // 回流：入口再次可见；Sit 恢复；不进 Reflection
-  await expect(entry).toBeVisible({ timeout: 10_000 });
+  // 回流：⋯ 再出；入口仍在 DOM（宽屏停靠）；Sit 恢复；不进 Reflection
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
+  await expect(entry).toBeAttached();
   await expect(page.locator('#btn-focus')).toBeEnabled();
   await expect(page.locator('#btn-focus')).toContainText(/Sit with Yin|与阿寅同坐/i);
   await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
@@ -138,8 +135,8 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeVisible({ timeout: 15_000 });
-  await entry.click();
+  await expect(entry).toBeAttached({ timeout: 15_000 });
+  await clickWideMoreProxyOrDirect(page, 'breath');
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
@@ -160,7 +157,8 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   await expect(page.locator('#mindful-acknowledge-toast')).not.toContainText(
     /Today counts|今天，也算数/
   );
-  await expect(entry).toBeVisible();
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
+  await expect(entry).toBeAttached();
   await expect(page.locator('#btn-focus')).toBeEnabled();
 });
 
@@ -178,8 +176,9 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
 
   const microEntry = page.locator('#micro-ritual-idle-entry');
   const honestyEntry = page.locator('#honesty-idle-entry');
-  await expect(microEntry).toBeVisible({ timeout: 15_000 });
-  await expect(honestyEntry).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 15_000 });
+  await expect(microEntry).toBeAttached();
+  await expect(honestyEntry).toBeAttached();
 
   const bridgeReady = await page.evaluate(() => {
     const bridge = window.__honestyBridge;
@@ -194,17 +193,19 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await expect(bridge).toContainText(
     /Want to sit for a bit now too|要不要现在也坐一会儿/
   );
-  // 回归：Honesty / 一分钟呼吸均不得叠在 Yes/No 上（dock z16；桥接已抬至 z18）
+  // 回归：Honesty / 一分钟呼吸均不得叠在 Yes/No 上；⋯ 亦收起
   await expect(microEntry).toBeHidden();
   await expect(honestyEntry).toBeHidden();
+  await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
   await expect(page.locator('#session-start-dock')).toHaveClass(
     /is-honesty-bridge-active/
   );
 
   await bridge.getByRole('button', { name: /^(No|先不用)$/i }).click();
   await expect(bridge).toBeHidden({ timeout: 5_000 });
-  await expect(microEntry).toBeVisible({ timeout: 10_000 });
-  await expect(honestyEntry).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
+  await expect(microEntry).toBeAttached();
+  await expect(honestyEntry).toBeAttached();
 });
 
 test('Honesty Check-in click hides entry until duration panel open', async ({
@@ -220,8 +221,8 @@ test('Honesty Check-in click hides entry until duration panel open', async ({
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const honestyEntry = page.locator('#honesty-idle-entry');
-  await expect(honestyEntry).toBeVisible({ timeout: 15_000 });
-  await honestyEntry.click();
+  await expect(honestyEntry).toBeAttached({ timeout: 15_000 });
+  await clickWideMoreProxyOrDirect(page, 'honesty');
 
   await expect(page.locator('#honesty-check-in')).toBeVisible({ timeout: 5_000 });
   await expect(honestyEntry).toBeHidden();

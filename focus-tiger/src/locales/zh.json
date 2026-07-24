@@ -16,6 +16,7 @@
   "NARROW_SHEET_TITLE": "同坐选项",
   "NARROW_SHEET_CLOSE": "关闭",
   "NARROW_SHEET_SWIPE_HINT": "上滑打开选项",
+  "WIDE_MORE_ARIA": "更多同坐选项",
   "AMBIENT_NUDGE": "可选：一点安静的背景音，也可以陪着你。",
   "AMBIENT_DEFAULT_ON_NUDGE": "音乐已开启——随时可点按钮关掉。",
   "AMBIENT_REQUIRES_FOCUS": "请先进入一种陪伴专注模式，然后才能打开背景音。",
