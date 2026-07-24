@@ -1,8 +1,10 @@
 # DEV_WORKFLOW_QUALITY section 6 archive note
 
-> Archive note of the 2026-07-20 discussion. The authoritative text has since been folded into `DEV_WORKFLOW_QUALITY.md`; do not maintain this file as a parallel rules source.
+> Archive note of the 2026-07-20 discussion (and 2026-07-25 §6.6 addendum draft).  
+> Authoritative text lives in `DEV_WORKFLOW_QUALITY.md` §6（含 §6.6）+ `WORKFLOW.md`「长期并存功能分支的同步纪律」；  
+> **do not** maintain this file or any `DEV_WORKFLOW_QUALITY_SUPPLEMENT*` as a parallel rules source.
 
-# DEV_WORKFLOW_QUALITY_SUPPLEMENT.md — 第 6 节正式补充
+# DEV_WORKFLOW_QUALITY_SUPPLEMENT.md — 第 6 节正式补充（历史稿）
 
 来源：2026-07-20 讨论，针对"整套回归锁机制全靠纪律、没有自动化强制"这一结构性
 缺口的补强。建议直接合并进 DEV_WORKFLOW_QUALITY.md 第 6 节「待完善」，替换掉

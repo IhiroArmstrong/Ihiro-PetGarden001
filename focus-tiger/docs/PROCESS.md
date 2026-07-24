@@ -74,6 +74,7 @@
 - **CI doc-contract 缺依赖红（2026-07-22）**：远端 `develop` 推上后 workflow **failure**（缺 `npm ci` → `three` `ERR_MODULE_NOT_FOUND`）。修于 `7b90283`；CI 绿 [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318)（**success**）。红绿归档见 `DEV_WORKFLOW_QUALITY.md` §7.7
 - **跨会话指令冲突处理（2026-07-22）**：开 PR / 合并 `main` / push 前若距上次同类操作超过约 10–15 分钟，须先查仓库客观状态（开放 PR、tip、CI、`origin/*`）；发现更晚活动须先问用户。写入 `WORKFLOW.md` + `focus-tiger-regression-lock.mdc`（不要求读其他会话对话）
 - **Commit 汇报门禁对齐（2026-07-22）**：废止「不必询问 commit」口径；改为可自动 commit 到当前工作分支 + **同回合汇报** hash/分支/文件；禁止静默提交与自动合并进 `main`。已对齐 `focus-tiger-regression-lock` / `WORKFLOW.md` / `focus-tiger-docs` / `DEV_WORKFLOW_QUALITY` / 本文
+- **姊妹分支同步纪律（2026-07-25）**：宽/窄屏长期并存失步事故升格为 §6.6 / N17；操作 SSOT 在 `WORKFLOW.md`「长期并存功能分支的同步纪律」（`git-sibling-branch-sync`）；禁止平行 `DEV_WORKFLOW_QUALITY_SUPPLEMENT*`
 - **自动化口径核对（2026-07-22）**：通读 `SCENARIO_TESTS` / `TEST_TRACKER`，凡「已自动化/已覆盖/已锁住」改为标明单元 / 控制器集成 / DOM 用户链路及测到源头或仅下游；修正 Offline/K 过时故事、Skip — begin 已有 e2e A2/A3、smoke J≠Reflection、e2e 约 20 条等
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（青绿立体 secondary，Sit 上方）→ 60s 吸/呼 + smiling@4fps + 光环 **4s（不同拍）** → 记账 + SessionComplete + 中置 toast；HUD 直播；桥接时入口隐藏。**同日晚**：用户书面——撤销吸呼同拍；四钮改同族立体质感（次级同尺寸，Sit 略大）。e2e：`micro-ritual.spec.js`；**质感和谐待复测**
 - **「?」朱砂未读点（2026-07-22）**：用户确认保留「?」角朱砂点表示未读；不改挂提醒/通知

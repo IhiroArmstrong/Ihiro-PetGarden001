@@ -59,6 +59,17 @@ feature/*        ●        ●
 5. **合回主线**：功能分支经 PR（或团队约定的本地 merge）进入 `develop`；`main` 仍只走 PR + 负责人网页合并（见上文合并门禁）。push 仍须用户明确授权。  
 6. **结束后清理**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。
 
+### 长期并存功能分支的同步纪律
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-sibling-branch-sync`）。叙事与事故背景见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) §6.6；规范编号 **N17**。  
+> 与「并行 Cursor 会话 / worktree」互补：**worktree 管隔离写盘**；本条管**长期并存姊妹分支的内容是否失步**。
+
+1. **修复落地即对照姊妹线（B1）**：存在长期并存的功能分支（例：窄屏抽屉 vs 宽屏 More 菜单，同属 Idle chrome 响应式变体）时，任一分支有**修复性** commit 落地，Agent 须在同次收尾前检查：另一条（或多条）姊妹分支是否基于同一逻辑、是否需要合入同一修复。禁止等到用户再说「是不是又漏了」。  
+2. **共享入口修复须写进汇报清单（B2）**：触及 Sound / Honesty / Companion / 其它 §2.3 高风险面共享入口的修复，收尾「待你决定 / 待你知道」须点名：还有哪些活跃分支可能基于同一套逻辑、是否也要修。禁止默认「这次只改了当前分支」。  
+3. **合回单线 vs 继续并行 → 用户拍板（B3）**：若两条分支本质是同一功能的响应式变体，Agent 应**提出**评估合回 `develop`（或单 feature 线）+ 断点处理差异的选项，**不得**自行决定长期并行或擅自 merge 策略。  
+
+**反面教材**：`feature/wide-idle-more-menu` 建在窄屏初版 tip 上、未跟随后续窄屏修复 → 宽屏复现已修 bug（2026-07-21）。
+
 ---
 
 ## 何时可以把 `develop` 合并进 `main`？
@@ -213,7 +224,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / 跨会话冲突 / 并行 worktree | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / 跨会话冲突 / 并行 worktree / 姊妹分支同步 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 场景测试剧本 | `focus-tiger/docs/SCENARIO_TESTS.md` |
@@ -228,6 +239,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
+| 修 bug（且有姊妹功能分支） | 修完后对照姊妹线是否需同修；写入「待你决定 / 待你知道」（见「长期并存功能分支的同步纪律」） |
 | 修 bug | 从 `develop` 切 `fix/…` |
 | 纯文档更新 | 在 `develop` 或 `feature/…` 上改、跑 `docs:check`、**立刻 commit** |
 | 发布稳定版 | 过门禁 → `main` ← merge `develop` → 可选 `git tag` |
