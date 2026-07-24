@@ -77,7 +77,9 @@ test('set reminder time → return to foreground → show banner → dismiss →
 
   const banner = page.locator(BANNER);
   await expect(banner).toBeVisible({ timeout: 5_000 });
-  await expect(banner).toContainText(/Yin is waiting|阿寅在等你/);
+  await expect(banner).toContainText(
+    /Yin is right here when you're ready\.|你准备好了，阿寅就在这儿。/
+  );
 
   await page.locator(DISMISS).click();
   await expect(banner).toBeHidden({ timeout: 3_000 });
