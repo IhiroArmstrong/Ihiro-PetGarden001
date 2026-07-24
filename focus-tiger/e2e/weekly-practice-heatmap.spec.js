@@ -119,8 +119,8 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
 test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
   page
 }) => {
-  await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
   await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
     timeout: 15_000
   });
@@ -205,8 +205,8 @@ test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
 });
 
 test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
   await expect(page.locator('#ft-narrow-mute-btn')).toBeVisible({
     timeout: 15_000
   });
@@ -255,8 +255,8 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
 });
 
 test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
 
   // Sit is parked — open via drawer primary
   await page.locator('.ft-narrow-grabber').click();

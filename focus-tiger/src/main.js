@@ -690,14 +690,17 @@ async function init() {
     onReminder: () => {
       reminderPreferenceUI.openPanel();
     },
+    onHonesty: () => {
+      honestyCheckIn.openDurationChoices({ force: true });
+    },
     onSound: () => {
-      const fab = document.querySelector('.ambient-soundscape__fab');
-      if (fab && !fab.disabled) {
-        const prev = fab.style.pointerEvents;
-        fab.style.pointerEvents = 'auto';
-        fab.click();
-        fab.style.pointerEvents = prev;
-      }
+      // Align with narrow drawer: open Soundscape panel, never FAB / gated tip.
+      ambientSoundscapeUI.activateSoundFromNarrow();
+    },
+    onClearStage: () => {
+      companionModePicker.hide();
+      reminderPreferenceUI.closePanel();
+      ambientSoundscapeUI.clearNarrowSoundStage();
     }
   });
 
@@ -732,6 +735,11 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       ambientSoundscapeUI.clearNarrowSoundStage();
+      document.body.classList.remove(
+        'ft-wide-stage-sound',
+        'ft-wide-stage-companion',
+        'ft-wide-stage-reminder'
+      );
     }
   });
   narrowIdleShell.syncMuteVisual({

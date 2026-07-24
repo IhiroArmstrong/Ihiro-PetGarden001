@@ -137,7 +137,7 @@ export class AmbientSoundscapeUI {
       if (this.root.contains(target)) return;
       this._expanded = false;
       this._narrowForcedPanel = false;
-      document.body.classList.remove('ft-narrow-stage-sound');
+      document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
       this._renderPanel();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
@@ -282,7 +282,7 @@ export class AmbientSoundscapeUI {
   clearNarrowSoundStage() {
     this._narrowForcedPanel = false;
     this._clearBlockedTip();
-    document.body.classList.remove('ft-narrow-stage-sound');
+    document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
     if (this._expanded && !this._sessionActive) {
       this._expanded = false;
       this._renderPanel();

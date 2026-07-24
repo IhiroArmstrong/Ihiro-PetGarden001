@@ -17,7 +17,9 @@ export class WideIdleMoreMenu {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onSound?: () => void,
+   *     onHonesty?: () => void,
    *     onClearCompanion?: () => void,
+   *     onClearStage?: () => void,
    *   }
    * }} [options]
    */
@@ -57,7 +59,10 @@ export class WideIdleMoreMenu {
    */
   setIdle(idle) {
     this._idle = Boolean(idle);
-    if (!this._idle) this.closeMenu();
+    if (!this._idle) {
+      this.closeMenu();
+      this.clearStage();
+    }
     this._sync();
   }
 
@@ -69,7 +74,10 @@ export class WideIdleMoreMenu {
    */
   setSuppressed(suppressed) {
     this._suppressed = Boolean(suppressed);
-    if (this._suppressed) this.closeMenu();
+    if (this._suppressed) {
+      this.closeMenu();
+      this.clearStage();
+    }
     this._sync();
   }
 
@@ -95,6 +103,19 @@ export class WideIdleMoreMenu {
   }
 
   /**
+   * Dismiss staged secondary panels (Soundscape / companion / reminder).
+   * @returns {void}
+   */
+  clearStage() {
+    document.body.classList.remove(
+      'ft-wide-stage-sound',
+      'ft-wide-stage-companion',
+      'ft-wide-stage-reminder'
+    );
+    this.handlers.onClearStage?.();
+  }
+
+  /**
    * @returns {boolean}
    */
   isMenuOpen() {
@@ -111,7 +132,7 @@ export class WideIdleMoreMenu {
     document.removeEventListener('keydown', this._onKeyDown, true);
     this.wrap?.remove();
     document.getElementById(STYLE_ID)?.remove();
-    document.body.classList.remove('ft-wide-park-secondary', 'ft-wide-more-open');
+    document.body.classList.remove('ft-wide-park-secondary', 'ft-wide-more-open', 'ft-wide-stage-sound', 'ft-wide-stage-companion', 'ft-wide-stage-reminder');
   }
 
   _isWide() {
@@ -229,10 +250,8 @@ export class WideIdleMoreMenu {
       {
         proxy: 'honesty',
         label: () => t('HONESTY_IDLE_ENTRY'),
-        visible: () => {
-          const el = document.getElementById('honesty-idle-entry');
-          return Boolean(el && !el.hidden);
-        }
+        // Always list — entry may be attribute-hidden in DORMANT/busy.
+        visible: () => true
       },
       {
         proxy: 'breath',
@@ -285,21 +304,39 @@ export class WideIdleMoreMenu {
    */
   _proxy(key) {
     if (key === 'companion') {
+      this.clearStage();
+      document.body.classList.add('ft-wide-stage-companion');
       this.handlers.onClearCompanion?.();
       this.handlers.onCompanion?.();
       return;
     }
     if (key === 'reminder') {
+      this.clearStage();
+      document.body.classList.add('ft-wide-stage-reminder');
       this.handlers.onReminder?.();
       return;
     }
     if (key === 'sound') {
+      this.clearStage();
+      document.body.classList.add('ft-wide-stage-sound');
       this.handlers.onSound?.();
+      return;
+    }
+    if (key === 'honesty') {
+      this.clearStage();
+      const el = document.getElementById('honesty-idle-entry');
+      if (el && !el.disabled && !el.hidden) {
+        const prev = el.style.pointerEvents;
+        el.style.pointerEvents = 'auto';
+        el.click();
+        el.style.pointerEvents = prev;
+        return;
+      }
+      this.handlers.onHonesty?.();
       return;
     }
 
     const map = {
-      honesty: () => document.getElementById('honesty-idle-entry'),
       breath: () => document.getElementById('micro-ritual-idle-entry')
     };
     const el = map[key]?.();
@@ -434,6 +471,37 @@ export class WideIdleMoreMenu {
           pointer-events: none !important;
           z-index: -1 !important;
         }
+
+      /* Wide Idle: stage Soundscape panel on-canvas (never red FAB / gated tip-only) */
+      @media (min-width: 480px) {
+        body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__focus-chrome {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          width: min(300px, calc(100vw - 48px)) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
+          align-items: stretch !important;
+        }
+        body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__panel {
+          display: block !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+        }
+        body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__fab,
+        body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__nudge {
+          display: none !important;
+        }
+        body.ft-wide-park-secondary.ft-wide-stage-reminder #weekly-practice-heatmap-cluster {
+          /* reminder panel lives near cluster; keep cluster findable */
+        }
+      }
       }
     `;
     document.head.appendChild(style);

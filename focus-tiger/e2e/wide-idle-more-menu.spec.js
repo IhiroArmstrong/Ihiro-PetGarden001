@@ -73,3 +73,82 @@ test('wide Focusing: more hidden; Sound FAB returns', async ({ page }) => {
   await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
   await expect(page.locator('.ambient-soundscape__fab')).toBeInViewport();
 });
+
+test('wide Idle: ⋯ Sound opens Soundscape panel (not FAB); Honesty always listed', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  // Simulate DORMANT-ish honesty entry hide — menu must still list Honesty
+  await page.evaluate(() => {
+    const el = document.getElementById('honesty-idle-entry');
+    if (el) el.hidden = true;
+  });
+  const more = page.locator('#ft-wide-more-btn');
+  await more.click();
+  await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toBeVisible();
+  await expect(page.locator('#ft-wide-more-menu [data-proxy="sound"]')).toBeVisible();
+  await page.locator('#ft-wide-more-menu [data-proxy="sound"]').click();
+  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
+  // Gated tip-only path must not be the result
+  await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(0);
+});
+
+test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
+  await openFreshProductShell(page);
+  const playing = await page.evaluate(() => {
+    const audios = [...document.querySelectorAll('audio')];
+    const anyAudible = audios.some(
+      (a) => !a.paused && !a.muted && a.volume > 0 && a.currentSrc
+    );
+    const nudge = document.querySelector('.ambient-soundscape__nudge');
+    const nudgeText = (nudge && !nudge.hidden ? nudge.textContent : '') || '';
+    const ctrl = window.__ambientSoundscape;
+    return {
+      anyAudible,
+      nudgeSuggestsOn: /Music is on|音乐已开/i.test(nudgeText),
+      want: ctrl?.wantsEnabled?.() ?? false,
+      audible: ctrl?.isAudiblePlaying?.() ?? false
+    };
+  });
+  expect(playing.anyAudible).toBe(false);
+  expect(playing.nudgeSuggestsOn).toBe(false);
+  expect(playing.want).toBe(false);
+  expect(playing.audible).toBe(false);
+});
+
+test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }) => {
+  await openFreshProductShell(page);
+  const more = page.locator('#ft-wide-more-btn');
+  await expect(more).toBeVisible();
+  await expect(page.locator('body')).toHaveClass(/ft-wide-park-secondary/);
+  await page.locator('#onboarding-hint-help').click();
+  // Remedy tips (data-remedy=1); parked How/Honesty/Sound/Reminder remap to ⋯
+  const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
+  await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
+  const near = await page.evaluate(() => {
+    const moreEl = document.getElementById('ft-wide-more-btn');
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
+    ].filter((el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    if (!moreEl || bubbles.length === 0) {
+      return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
+    }
+    const mr = moreEl.getBoundingClientRect();
+    const hit = bubbles.some((b) => {
+      const r = b.getBoundingClientRect();
+      const cx = (r.left + r.right) / 2;
+      const cy = (r.top + r.bottom) / 2;
+      const mcx = (mr.left + mr.right) / 2;
+      const mcy = (mr.top + mr.bottom) / 2;
+      return Math.hypot(cx - mcx, cy - mcy) < 260;
+    });
+    return { ok: hit, bubbleCount: bubbles.length };
+  });
+  expect(near.ok, JSON.stringify(near)).toBe(true);
+});
