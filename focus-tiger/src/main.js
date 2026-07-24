@@ -507,7 +507,9 @@ async function init() {
       !overlayActive && !sessionUiGate.completionPending
     );
     companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
-    const focusing = stateManager.state === STATES.FOCUSING;
+    const focusing =
+      stateManager.state === STATES.FOCUSING ||
+      microRitualUI?.isOpen?.() === true;
     const honestyBusy =
       Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
     const bridgeVisible = honestyBridge?.isVisible?.() === true;
@@ -693,6 +695,28 @@ async function init() {
         fab.click();
         fab.style.pointerEvents = prev;
       }
+    }
+  });
+
+  narrowIdleShell.setHandlers({
+    onMute: () => ambientSoundscapeUI.toggleMuteFromUi(),
+    onCompanion: () => {
+      companionModePicker.open();
+    },
+    onReminder: () => {
+      reminderPreferenceUI.openPanel();
+    },
+    onQuickStart: () => {
+      const el = document.getElementById('quick-start-focus');
+      if (!el || el.disabled || el.hidden) return;
+      const prev = el.style.pointerEvents;
+      el.style.pointerEvents = 'auto';
+      el.click();
+      el.style.pointerEvents = prev;
+    },
+    onClearStage: () => {
+      companionModePicker.hide();
+      reminderPreferenceUI.closePanel();
     }
   });
 
@@ -972,10 +996,14 @@ async function init() {
     },
     onShown: () => {
       syncHonestyIdleEntry();
+      resyncSessionChrome();
       syncOnboardingAutoHints();
     },
     onHidden: () => {
       honestyCheckIn.endCheckInFlow();
+      resyncSessionChrome();
+      syncHonestyIdleEntry();
+      syncOnboardingAutoHints();
     },
     onAccept: () => {
       onboardingHints?.markSeen('honesty-bridge');

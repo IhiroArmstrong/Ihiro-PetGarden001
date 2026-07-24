@@ -63,6 +63,41 @@ function isNarrowViewport() {
   return typeof window !== 'undefined' && window.matchMedia('(max-width: 899px)').matches;
 }
 
+/**
+ * Narrow Idle shell parks dock/help/?/heatmap off-screen — remap tips to visible chrome.
+ * @param {{ selector: string, placement: string, tip: string }} anchorCfg
+ * @param {boolean} useHelpAnchor
+ */
+function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
+  if (useHelpAnchor || /onboarding-hint-help/.test(String(anchorCfg.selector))) {
+    return {
+      selector: '#ft-narrow-help-btn',
+      placement: 'below',
+      tip: 'top'
+    };
+  }
+  const sel = String(anchorCfg.selector || '');
+  if (/ambient-soundscape__mute/.test(sel)) {
+    return {
+      selector: '#ft-narrow-mute-btn',
+      placement: 'below',
+      tip: 'top'
+    };
+  }
+  if (
+    /btn-focus|session-start-dock__hint|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape|reminder-preference|quick-start/.test(
+      sel
+    )
+  ) {
+    return {
+      selector: '.ft-narrow-grabber',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  return anchorCfg;
+}
+
 /** 自动提示同时最多几条（补救除外）。始终 1，对齐 RESPONSIVE_LAYOUT P1。 */
 const AUTO_HINT_MAX_CONCURRENT = 1;
 
@@ -362,10 +397,16 @@ export class OnboardingHintsUI {
       ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
       : { ...cfg };
 
+    // 窄屏 Idle 壳：锚点改到可见 ActionBar / grabber（旧 dock 已停泊屏外）
+    if (document.body.classList.contains('ft-narrow-idle')) {
+      anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor);
+    }
+
     // 窄屏：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
     if (
       !useHelpAnchor &&
       isNarrowViewport() &&
+      !document.body.classList.contains('ft-narrow-idle') &&
       anchorCfg.placement === 'above' &&
       /#btn-focus/.test(String(anchorCfg.selector))
     ) {
@@ -502,7 +543,10 @@ export class OnboardingHintsUI {
   _positionPurposeCard() {
     const card = this.purposeCard;
     if (!card || card.hidden) return;
-    const help = this.helpBtn;
+    const help =
+      (document.body.classList.contains('ft-narrow-idle') &&
+        document.getElementById('ft-narrow-help-btn')) ||
+      this.helpBtn;
     const gap = 14;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -512,11 +556,11 @@ export class OnboardingHintsUI {
     card.style.top = '0px';
 
     const cr = card.getBoundingClientRect();
-    const hr = help.getBoundingClientRect();
+    const hr = help?.getBoundingClientRect?.() || { left: 12, top: 12, bottom: 52, width: 40, height: 40 };
     let left = hr.left;
-    let top = hr.top - cr.height - gap;
-    if (top < 12) {
-      top = hr.bottom + gap;
+    let top = hr.bottom + gap;
+    if (top + cr.height > vh - 12) {
+      top = Math.max(12, hr.top - cr.height - gap);
     }
     left = Math.max(12, Math.min(left, vw - cr.width - 12));
     top = Math.max(12, Math.min(top, vh - cr.height - 12));

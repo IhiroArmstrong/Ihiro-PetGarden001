@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v2';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -19,6 +19,13 @@ export class NarrowIdleShell {
    *   root?: HTMLElement,
    *   getHudStateEl?: () => HTMLElement | null,
    *   getHudTimeEl?: () => HTMLElement | null,
+   *   handlers?: {
+   *     onMute?: () => void | Promise<void>,
+   *     onCompanion?: () => void,
+   *     onReminder?: () => void,
+   *     onQuickStart?: () => void,
+   *     onClearStage?: () => void,
+   *   }
    * }} [options]
    */
   constructor(options = {}) {
@@ -27,6 +34,7 @@ export class NarrowIdleShell {
       options.getHudStateEl || (() => document.getElementById('hud-state'));
     this._getHudTimeEl =
       options.getHudTimeEl || (() => document.getElementById('hud-time'));
+    this.handlers = options.handlers || {};
 
     this._mq =
       typeof window.matchMedia === 'function'
@@ -51,25 +59,66 @@ export class NarrowIdleShell {
   }
 
   /**
+   * Inject runtime handlers after controllers exist (main.js).
+   * @param {NarrowIdleShell['handlers']} handlers
+   * @returns {void}
+   */
+  setHandlers(handlers) {
+    this.handlers = { ...this.handlers, ...handlers };
+  }
+
+  /**
+   * Clear companion/reminder staging classes.
+   * @returns {void}
+   */
+  clearStage() {
+    document.body.classList.remove(
+      'ft-narrow-stage-companion',
+      'ft-narrow-stage-reminder'
+    );
+    this.handlers.onClearStage?.();
+  }
+
+  /**
    * @param {boolean} idle
    * @returns {void}
    */
   setIdle(idle) {
     this._idle = Boolean(idle);
-    if (!this._idle) this.closeSheet();
+    if (!this._idle) {
+      this.closeSheet();
+      this.clearStage();
+    }
     this._syncMode();
+    this._syncAmbientFocusChrome();
   }
 
   /**
-   * Arrival / Honesty / Reflection overlays: park the shell so bottom bubbles stay usable.
+   * Arrival / Honesty / Reflection / Honesty-bridge: hide ActionBar + grabber,
+   * but keep legacy chrome parked so dock pills do not poke through overlays.
    * @param {boolean} suppressed
    * @returns {void}
    */
   setSuppressed(suppressed) {
     this._suppressed = Boolean(suppressed);
-    if (this._suppressed) this.closeSheet();
+    if (this._suppressed) {
+      this.closeSheet();
+      this.clearStage();
+    }
     this.shell?.classList.toggle('is-suppressed', this._suppressed);
     this._syncMode();
+    this._syncAmbientFocusChrome();
+  }
+
+  /**
+   * Narrow Focusing: hide Sound FAB/nudge via class (more reliable than media CSS alone).
+   * @returns {void}
+   */
+  _syncAmbientFocusChrome() {
+    const hideFab = this._isNarrow() && !this._idle;
+    document
+      .querySelector('.ambient-soundscape__focus-chrome')
+      ?.classList.toggle('ft-narrow-hide-fab', hideFab);
   }
 
   /**
@@ -109,7 +158,12 @@ export class NarrowIdleShell {
     });
     this.shell?.remove();
     document.getElementById(STYLE_ID)?.remove();
-    document.body.classList.remove('ft-narrow-shell', 'ft-narrow-idle');
+    document.body.classList.remove(
+      'ft-narrow-shell',
+      'ft-narrow-park',
+      'ft-narrow-idle',
+      'ft-narrow-focusing'
+    );
   }
 
   _isNarrow() {
@@ -118,14 +172,20 @@ export class NarrowIdleShell {
 
   _syncMode() {
     const narrow = this._isNarrow();
-    const idleChrome = narrow && this._idle && !this._suppressed;
+    // Park legacy chrome whenever Idle on narrow — including Arrival / Honesty overlays
+    // (suppress only hides ActionBar; unparking dock caused pills under Arrival).
+    const park = narrow && this._idle;
+    const idleChrome = park && !this._suppressed;
+    const focusing = narrow && !this._idle;
     document.body.classList.toggle('ft-narrow-shell', narrow);
+    document.body.classList.toggle('ft-narrow-park', park);
     document.body.classList.toggle('ft-narrow-idle', idleChrome);
+    document.body.classList.toggle('ft-narrow-focusing', focusing);
     if (this.shell) {
       this.shell.hidden = !narrow || Boolean(this._suppressed);
     }
     if (!narrow || this._suppressed) this.closeSheet();
-    if (narrow && !this._suppressed) this._syncActionBarFromHud();
+    if (idleChrome) this._syncActionBarFromHud();
   }
 
   _build() {
@@ -137,14 +197,14 @@ export class NarrowIdleShell {
     this.actionBar = document.createElement('header');
     this.actionBar.className = 'ft-narrow-action-bar';
     this.actionBar.innerHTML = `
-      <button type="button" class="ft-narrow-action-bar__btn" data-proxy="help" aria-label="">
+      <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-help-btn" data-proxy="help" aria-label="">
         ?
       </button>
       <div class="ft-narrow-action-bar__center" aria-live="polite">
         <span class="ft-narrow-action-bar__time" data-role="time">00:00</span>
         <span class="ft-narrow-action-bar__state" data-role="state"></span>
       </div>
-      <button type="button" class="ft-narrow-action-bar__btn" data-proxy="mute" aria-label="">
+      <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-mute-btn" data-proxy="mute" aria-label="">
         ♪
       </button>
     `;
@@ -294,7 +354,15 @@ export class NarrowIdleShell {
           document.getElementById('btn-focus')?.textContent?.trim() ||
           t('BTN_FOCUS_START'),
         primary: true,
-          visible: () => Boolean(document.getElementById('btn-focus'))
+        visible: () => Boolean(document.getElementById('btn-focus'))
+      },
+      {
+        proxy: 'quickstart',
+        label: () => t('QUICK_START_ARIA'),
+        visible: () => {
+          const el = document.getElementById('quick-start-focus');
+          return Boolean(el && !el.hidden);
+        }
       },
       {
         proxy: 'honesty',
@@ -321,9 +389,9 @@ export class NarrowIdleShell {
         }
       },
       {
-        proxy: 'sound',
+        proxy: 'music',
         label: () => t('AMBIENT_FAB_LABEL'),
-        visible: () => Boolean(document.querySelector('.ambient-soundscape__fab'))
+        visible: () => true
       },
       {
         proxy: 'reminder',
@@ -376,19 +444,35 @@ export class NarrowIdleShell {
    * @returns {void}
    */
   _proxy(key) {
+    if (key === 'mute' || key === 'music') {
+      void this.handlers.onMute?.();
+      return;
+    }
+    if (key === 'companion') {
+      this.clearStage();
+      document.body.classList.add('ft-narrow-stage-companion');
+      this.handlers.onCompanion?.();
+      return;
+    }
+    if (key === 'reminder') {
+      this.clearStage();
+      document.body.classList.add('ft-narrow-stage-reminder');
+      this.handlers.onReminder?.();
+      return;
+    }
+    if (key === 'quickstart') {
+      this.handlers.onQuickStart?.();
+      return;
+    }
+
     const map = {
       help: () => document.getElementById('onboarding-hint-help'),
-      mute: () => document.querySelector('.ambient-soundscape__mute'),
       sit: () => document.getElementById('btn-focus'),
       honesty: () => document.getElementById('honesty-idle-entry'),
-      breath: () => document.getElementById('micro-ritual-idle-entry'),
-      companion: () => document.querySelector('.session-start-dock__hint'),
-      sound: () => document.querySelector('.ambient-soundscape__fab'),
-      reminder: () => document.getElementById('reminder-preference-toggle')
+      breath: () => document.getElementById('micro-ritual-idle-entry')
     };
     const el = map[key]?.();
     if (!el || el.disabled) return;
-    // Temporarily allow the hidden control to receive the synthetic click
     const prev = el.style.pointerEvents;
     el.style.pointerEvents = 'auto';
     el.click();
@@ -404,7 +488,8 @@ export class NarrowIdleShell {
       .ft-narrow-idle-shell {
         position: fixed;
         inset: 0;
-        z-index: 21;
+        /* Above ambient (z22) so ActionBar ♪ / ? are clickable */
+        z-index: 30;
         pointer-events: none;
       }
       .ft-narrow-idle-shell > * {
@@ -493,7 +578,7 @@ export class NarrowIdleShell {
         border-radius: 999px;
         background: rgba(74, 58, 40, 0.28);
       }
-      body.ft-narrow-shell:not(.ft-narrow-idle) .ft-narrow-grabber {
+      body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber {
         display: none;
       }
       .ft-narrow-sheet-backdrop {
@@ -618,21 +703,66 @@ export class NarrowIdleShell {
         opacity: 0.78;
       }
 
+      /* Applied by JS on narrow Focusing — hide Sound FAB / nudge / panel */
+      .ambient-soundscape__focus-chrome.ft-narrow-hide-fab {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        position: fixed !important;
+        left: -9999px !important;
+        right: auto !important;
+        top: 0 !important;
+        bottom: auto !important;
+      }
+
       /* —— Hide legacy Idle chrome on narrow idle; enlarge Yin —— */
       @media (max-width: 479px) {
-        body.ft-narrow-shell.ft-narrow-idle #focus-hud,
-        body.ft-narrow-shell.ft-narrow-idle #session-start-dock,
-        body.ft-narrow-shell.ft-narrow-idle #onboarding-hint-help,
-        body.ft-narrow-shell.ft-narrow-idle #weekly-practice-heatmap-cluster,
-        body.ft-narrow-shell.ft-narrow-idle .ambient-soundscape__mute,
-        body.ft-narrow-shell.ft-narrow-idle .ambient-soundscape__focus-chrome,
-        body.ft-narrow-shell.ft-narrow-idle .onboarding-hint-badge {
+        /* Park whenever Idle (incl. Arrival / Honesty overlays) */
+        body.ft-narrow-shell.ft-narrow-park #focus-hud,
+        body.ft-narrow-shell.ft-narrow-park #session-start-dock,
+        body.ft-narrow-shell.ft-narrow-park #onboarding-hint-help,
+        body.ft-narrow-shell.ft-narrow-park #weekly-practice-heatmap-cluster,
+        body.ft-narrow-shell.ft-narrow-park .ambient-soundscape__mute,
+        body.ft-narrow-shell.ft-narrow-park .ambient-soundscape__focus-chrome,
+        body.ft-narrow-shell.ft-narrow-park .onboarding-hint-badge {
           opacity: 0 !important;
           pointer-events: none !important;
-          /* Keep in layout tree for proxy .click(); pull off-screen */
           position: fixed !important;
           left: -9999px !important;
+          right: auto !important;
           top: 0 !important;
+          bottom: auto !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park .ambient-soundscape__nudge {
+          display: none !important;
+        }
+
+        /* Stage companion / reminder panels on-canvas after drawer pick */
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #session-start-dock {
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(72px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #micro-ritual-idle-entry,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #quick-start-focus,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #btn-focus {
+          display: none !important;
+        }
+
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-reminder #weekly-practice-heatmap-cluster {
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(88px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
+          position: fixed !important;
         }
 
         body.ft-narrow-shell #sprite-overlay {
@@ -640,31 +770,59 @@ export class NarrowIdleShell {
           transform-origin: center 55%;
         }
 
-        /* Focusing: keep Rise only, still use ActionBar for time */
-        body.ft-narrow-shell:not(.ft-narrow-idle) #honesty-idle-entry,
-        body.ft-narrow-shell:not(.ft-narrow-idle) #micro-ritual-idle-entry,
-        body.ft-narrow-shell:not(.ft-narrow-idle) .session-start-dock__hint,
-        body.ft-narrow-shell:not(.ft-narrow-idle) #quick-start-focus,
-        body.ft-narrow-shell:not(.ft-narrow-idle) #weekly-practice-heatmap-cluster,
-        body.ft-narrow-shell:not(.ft-narrow-idle) #onboarding-hint-help,
-        body.ft-narrow-shell:not(.ft-narrow-idle) .ambient-soundscape__mute {
+        /* Focusing: restore FocusHUD timer; Rise visible; no Sound FAB clutter */
+        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-action-bar,
+        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber {
+          display: none !important;
+        }
+        body.ft-narrow-shell.ft-narrow-focusing #honesty-idle-entry,
+        body.ft-narrow-shell.ft-narrow-focusing #micro-ritual-idle-entry,
+        body.ft-narrow-shell.ft-narrow-focusing .session-start-dock__hint,
+        body.ft-narrow-shell.ft-narrow-focusing #quick-start-focus,
+        body.ft-narrow-shell.ft-narrow-focusing #weekly-practice-heatmap-cluster,
+        body.ft-narrow-shell.ft-narrow-focusing #onboarding-hint-help,
+        body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__focus-chrome,
+        body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__fab,
+        body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__nudge,
+        body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__panel {
           opacity: 0 !important;
+          visibility: hidden !important;
           pointer-events: none !important;
           position: fixed !important;
           left: -9999px !important;
+          right: auto !important;
+          top: 0 !important;
+          bottom: auto !important;
         }
-        body.ft-narrow-shell:not(.ft-narrow-idle) #focus-hud {
-          /* ActionBar mirrors state/time; hide bulky card */
-          opacity: 0 !important;
-          pointer-events: none !important;
+        body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__mute {
+          opacity: 1 !important;
+          pointer-events: auto !important;
           position: fixed !important;
-          left: -9999px !important;
+          left: auto !important;
+          right: 12px !important;
+          top: max(12px, env(safe-area-inset-top, 0px)) !important;
+          z-index: 24 !important;
         }
-        body.ft-narrow-shell:not(.ft-narrow-idle) #session-start-dock {
+        body.ft-narrow-shell.ft-narrow-focusing #focus-hud {
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          position: absolute !important;
+          left: 12px !important;
+          top: 12px !important;
+          max-width: calc(100vw - 68px);
+        }
+        body.ft-narrow-shell.ft-narrow-focusing #session-start-dock {
           bottom: max(20px, env(safe-area-inset-bottom, 0px));
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          position: absolute !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
         }
-        body.ft-narrow-shell:not(.ft-narrow-idle) #btn-focus {
+        body.ft-narrow-shell.ft-narrow-focusing #btn-focus {
           max-width: min(100%, 200px);
+          opacity: 1 !important;
+          pointer-events: auto !important;
         }
       }
     `;

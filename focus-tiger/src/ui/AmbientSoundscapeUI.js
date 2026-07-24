@@ -174,6 +174,11 @@ export class AmbientSoundscapeUI {
     this._maybeShowDefaultOnNudge();
   }
 
+  /** Narrow ActionBar / drawer entry — same as tapping the mute note. */
+  async toggleMuteFromUi() {
+    await this._onMuteClick();
+  }
+
   async _onMuteClick() {
     const ctrl = this.controller;
     if (
