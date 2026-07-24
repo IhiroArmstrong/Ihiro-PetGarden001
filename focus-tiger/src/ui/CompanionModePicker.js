@@ -93,6 +93,8 @@ export class CompanionModePicker {
      * @type {boolean}
      */
     this._optionSelectEnabled = true;
+    /** Arrival 进行中：隐藏 Sit，避免盖住 Notice/Choose（⚡ 保留） */
+    this._arrivalActive = false;
     /** Rise 后优先显示提问文案；用户再选模式后改为模式名 */
     this._preferQuestionHint = true;
 
@@ -167,6 +169,24 @@ export class CompanionModePicker {
     this._syncHintAvailability();
     this._syncHintLabel();
     this._syncQuickStartLabel();
+    this._syncSitVisibility();
+  }
+
+  /**
+   * Arrival Practice 打开时隐藏 Sit 主钮（z16 dock 会盖住 z15 气泡图标格）。
+   * Focusing 时 `_idleVisible=false`，Sit/Rise 仍显示。
+   * @param {boolean} active
+   * @returns {void}
+   */
+  setArrivalActive(active) {
+    this._arrivalActive = Boolean(active);
+    this._syncSitVisibility();
+  }
+
+  _syncSitVisibility() {
+    if (!this.focusButton) return;
+    const hideSit = this._arrivalActive && this._idleVisible;
+    this.focusButton.hidden = hideSit;
   }
 
   /**

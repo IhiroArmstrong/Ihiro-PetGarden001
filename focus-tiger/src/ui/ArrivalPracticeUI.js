@@ -57,7 +57,8 @@ import {
 const ROOT_CSS = [
   'position:absolute',
   'left:50%',
-  'bottom:108px',
+  // 须高于 dock（⚡ + How shall we sit?）；Sit 在 Arrival 中会隐藏，仍给足余量防重叠
+  'bottom:max(148px, calc(env(safe-area-inset-bottom, 0px) + 132px))',
   'z-index:15',
   'width:min(420px,calc(100vw - 40px))',
   'transform:translate(-50%, 8px)',

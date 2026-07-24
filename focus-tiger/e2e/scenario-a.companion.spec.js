@@ -42,6 +42,20 @@ test('scenario I2: Here & Now before Arrival gate opens Arrival (HUD stays idle)
   await expectFocusSessionInactive(page);
 });
 
+test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stays', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#btn-focus')).toBeHidden();
+  await expect(page.locator('#quick-start-focus')).toBeVisible();
+  await expect(
+    arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
+  ).toBeVisible({ timeout: 8_000 });
+});
+
 test('scenario A: Arrival Choose completes → focus timer starts', async ({
   page
 }) => {

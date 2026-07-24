@@ -190,19 +190,19 @@
 ## 场景 O：Idle「本周陪伴」7 格热力图
 
 > **用户故事**：Kelly 回到 Idle，quietly 看见最近 7 天「同坐」痕迹——亮格是来过的一天，暗格是安静日；**不是**断签惩罚、**不是**计分榜，也**不能**点开查详情。  
-> **DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（4 条：Idle 7 格；Focusing 隐藏；seed 亮/暗；**375 几何不重叠** HUD/mute/dock/Sound）。  
-> **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮。  
-> **仍须人工**：亮/暗「不羞辱」、Hint 尖角；**375 复测**——窄屏簇在 Calm 卡下方（非左下盖 dock），宽屏仍左下 `?` 上方。  
-> **2026-07-24**：用户 DevTools 375 确认时钟/7 格与 dock 重叠 → 窄屏改挂 HUD 下 + dock/HUD/mute 收窄（`fix/scenario-o-375-chrome-layout`）。
+> **DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（Idle 7 格；Focusing 隐藏；seed 亮/暗；**375 ActionBar + 抽屉**）。  
+> **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、上滑手势物理滑动（e2e 点 grabber）。  
+> **仍须人工**：亮/暗「不羞辱」；**375 新壳观感**（ActionBar / Yin 居中放大 / 上滑抽屉 / 底栏干净）；宽屏仍左下簇。  
+> **2026-07-24**：用户 DevTools 375 确认重叠 → 抬簇未过观感；同日改 **NarrowIdleShell**（ActionBar + BottomOptionsDrawer）。
 
-1. 打开 `?product=1`，处于 **Idle**（未 Sit / 未 Focusing）。
-2. **宽屏**：左下（`#onboarding-hint-help` 上方）见 `#weekly-practice-heatmap-cluster`：横排 **7 个小格** + 时钟。  
-   **375×667**：簇在左上 **Calm / Today's shared sitting 卡下方**（仍含 7 格 + 时钟）；**不得**被 Honesty / 一分钟呼吸 / Sit 盖住。
-3. **读图**：亮格 = 该日 `PracticeDaysStore` 有记录且 `totalMinutes === null`（旧数据未知）或 `> 0`；暗格 = 真零或未练（浅灰 `--color-ink-faint`）。**无**文案、感叹号、点击、hover 详情。
-4. **Hint（可选）**：点左下 `?` → 应见 `weekly-heatmap` tip（EN「A quiet week of shared sitting…」/ ZH「近日同坐的日子…」），尖角指向 7 格区域（窄屏尖角目标随簇上移）。
-5. **让格子变亮（人工 seed 或真实练习）**：完成任一场计时 / Honesty / 一分钟呼吸 → 回 Idle → 对应「今日」格应变亮（e2e 用 localStorage seed 测混合亮暗）。
-6. **回流 · 非 Idle 隐藏**：Sit → 选模式开 Focusing → 热力图 **隐藏**；Rise 回 Idle → **再出现**。
-7. **已知边界**：不可点击下钻；与 HUD 左上 streak-meter（7 点环）分工不同——热力图 = 7 **日**格，streak = 近日节奏环。
+1. 打开 `?product=1`，处于 **Idle**。
+2. **宽屏**：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟）。  
+   **375×667**：见顶栏 ActionBar（? · 时间/Calm · ♪）、底中「上滑打开选项」；主画布无 Honesty/呼吸/Sit/How/Sound 散落钮；上滑或点 grabber → 抽屉含 **Sit with Yin（主）** 与其它选项；7 格在抽屉内只读展示。
+3. **读图**：亮格 = `totalMinutes === null` 或 `> 0`；暗格 = 真零。**无**点击下钻。
+4. **Hint（可选）**：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。
+5. **让格子变亮**：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。
+6. **回流**：开 Focusing → 抽屉/grabber 收起，**Rise** 仍可见可点；Rise 回 Idle → grabber 再出现。
+7. **已知边界**：热力图仍不可下钻；与 HUD streak（宽屏卡内 7 点环）分工不同。
 
 ---
 

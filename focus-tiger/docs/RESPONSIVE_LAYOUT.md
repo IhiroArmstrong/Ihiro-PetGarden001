@@ -148,7 +148,7 @@
 
 1. 桌面宽屏（≥900px）主路径 + 回流。  
 2. **375×667 竖屏** + **一种横屏**（DevTools 设备模式即可）走通 §五 中与本次改动相关的行。  
-   - **场景 O（2026-07-24）**：`≤479px` 时 `#weekly-practice-heatmap-cluster` 挂在 FocusHUD **下方**（避免盖住居中 dock）；`≥480px` 仍左下 `?` 上方。HUD 窄屏略缩；dock 胶囊限宽；右上 mute / 右下 Sound 与邻件 ≥8px 间隙。  
+   - **场景 O（2026-07-24）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 上滑 `BottomOptionsDrawer`；主画布清场、Yin 放大居中；7 格进抽屉只读条。`≥480px` 仍左下簇 + 原 dock。  
 3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏步骤（勿笼统一行「手机看一下」）。  
 4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代窄屏人工）。  
 5. 可选后续：Playwright `viewport` 用例锁「Sit 可点、无静默 return」（与 `DEV_WORKFLOW_QUALITY.md` §6 对齐）。

@@ -33,6 +33,7 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import { NarrowIdleShell } from './ui/NarrowIdleShell.js';
 import {
   WeeklyPracticeHeatmap,
   WEEKLY_PRACTICE_HEATMAP_DAYS
@@ -247,6 +248,14 @@ async function init() {
   poseManager.setCanvasHidden(true);
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
+  const narrowIdleShell = new NarrowIdleShell({
+    root: document.body,
+    getHudStateEl: () => document.getElementById('hud-state'),
+    getHudTimeEl: () => document.getElementById('hud-time')
+  });
+  if (import.meta.env.DEV) {
+    window.__narrowIdleShell = narrowIdleShell;
+  }
   const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
     document.getElementById('ui-overlay')
   );
@@ -484,6 +493,12 @@ async function init() {
     companionModePicker.setOptionSelectEnabled(
       !overlayActive && !sessionUiGate.completionPending
     );
+    companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
+    const focusing = stateManager.state === STATES.FOCUSING;
+    narrowIdleShell.setIdle(!focusing);
+    const honestyBusy =
+      Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
+    narrowIdleShell.setSuppressed(overlayActive || honestyBusy);
     syncInAppReminderBanner();
   }
 
