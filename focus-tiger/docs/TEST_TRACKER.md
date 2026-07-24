@@ -18,6 +18,55 @@
 
 用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。
 
+### 近期验收计划（P0 / P1 / P2 · 2026-07-25）
+
+> **用途**：从「待人工测试 / 有问题」全量里分出**该先测什么**，避免 40+ 条无限挂着却无排期。  
+> **行号** = 下方「功能清单」表在本文件中的当前行号。增删行后须同步改本节。  
+> **2026-07-25 用户拍板**：本轮只走 **P0**；P1 / P2 暂不处理。L186 / L196 已降级（见下），不再占验收队列。
+
+#### P0 · 本周主战场（产品壳主路径 + 刚改须复测）
+
+一次性走完即可；操作清单见会话回复（与场景 C/O/P 同格式）。
+
+| 行 | 功能 | 为何在 P0 |
+|---|---|---|
+| **[L174](#L174)** | Arrival · 轻量气泡 + ⚡ Quick Start | 07-24 修 Sit/Notice 重叠，**须复测** |
+| **[L227](#L227)** | 「本周陪伴」7 格热力图（场景 **O**） | 07-24 375 窄屏壳，**须复测** |
+| **[L237](#L237)** | 应用内提醒设置 + 横幅（场景 **P**） | 流程 OK；**新文案**须复测 |
+| **[L256](#L256)** | 用户场景剧本 SCENARIO_TESTS | 总包；本轮至少走完 **C + O + P** |
+| **[L182](#L182)** | Honesty 桥接 CTA 叠层 | 入口隐藏 / z18 修过，**须复测** |
+| **[L249](#L249)** | 门闩一体包 · Companion 点选→开表 | 主路径 + Rise 回流 |
+| **[L258](#L258)** | How shall we sit? 立刻展开三选一 | 07-20 起待测；与门闩同批 |
+| **[L279](#L279)** | Offline 禁止二次 Sit | 一次 Sit 即 Focusing |
+
+#### P1 · 接下来 1–2 周产品壳收口（本轮不测）
+
+| 行 | 功能 | 备注 |
+|---|---|---|
+| L181 | Honesty 补登成功 toast | 文案已锁；同屏观感 |
+| L197 | FocusSession + Focus HUD | 随 ⚡ 改动 |
+| L229 / L231 / L232 | 一分钟呼吸簇 | L233 可顺带 |
+| L248 | Honesty pending 丢失 abort | 异常回流 |
+| L254 / L273 | 点 ? 补救 hints / 音乐 tip 锚 mute | |
+| L271 / L272 | 窄屏 onboarding 互斥 / Sit 不截断 | 375 |
+| L277 | Offline Space 说明文案 | 桌面口径 |
+| **[L187](#L187)** | MilestoneGlow | **有问题**；约定 **2026-07-30 前**复测或改期 |
+
+#### P2 · 调试日 / 长会话日（本轮不测；勿与 P0 抢注意力）
+
+| 类别 | 行 |
+|---|---|
+| 实验室 / 素材观感 | L176–178、L195、L205、L209、L214–216、L219、L221、L280 |
+| 长墙钟 | L188（20min）、L190（2h）、L212（Flow 30min idle） |
+| 基建 / 实验 | L169 Workers、L170 UI Kit、L213 i18n、L269 `?product=1` 冒烟 |
+
+#### 已降级 · 不再排人工验收队列
+
+| 行 | 新状态 | 说明 |
+|---|---|---|
+| **[L186](#L186)** IncenseComplete | **已放弃/不适用** | 业务会话结束**未接线**；调试入口可留作 Backlog 素材预览，**不**作合并门禁 |
+| **[L196](#L196)** 抚摸 / 轻点 / 绕圈 | **不挡合并（仅检测逻辑）** | 无正式 2D 精灵；检测靠单测；产品壳**不**要求验动画 |
+
 ### 用户测试反馈记入规则（2026-07-19 起）
 
 凡用户书面反馈某功能相关界面/操作的测试意见（含「有问题」「建议改」「计划放弃」等），须记入功能清单表格的 **「用户反馈」列**（专用列），**禁止**混入「测试步骤」列。
@@ -67,22 +116,22 @@
 #### B. 代码已修或已改，但自动化**锁不住**（必须继续人工 / TEST_TRACKER 分列）
 
 > **本表 = bug 主题索引**（为何自动化帮不上、该去测哪一行）。**不是**可执行步骤本身。  
-> **行号** = 下方 `## 功能清单` 表格在 **本文件** 中的当前行号（Cursor / GitHub 可 `#L166` 跳转）。增删功能行后须同步改本表。  
-> **场景 checklist**（A1 DORMANT、重置按钮等）在 **L178–L185** 的 `人工 · …` / DEV 重置块，与 §B 互补、勿混为一谈。
+> **行号** = 下方 `## 功能清单` 表格在 **本文件** 中的当前行号（Cursor / GitHub 可 `#L174` 跳转）。增删功能行后须同步改本表。  
+> **场景 checklist**（A1 Idle、重置按钮等）在 **L261–L267** 的 `人工 · …` / DEV 重置块，与 §B 互补、勿混为一谈。
 
 | 用户反馈 / bug 主题 | 状态 | 为何自动化帮不上 | 功能清单行号 → 去测 |
 |---|---|---|---|
-| Idle 呼吸→眨眼/一瞥 **闪一下** | 已通过 | L-eyes / L-contract；e2e 不看像素 | **[L204](#L204)** `人工 · Idle 统一 pingpong 不闪` · **[L150](#L150)** `IdleOrchestrator / 坐禅闭眼` · 契约 `IdleOrchestrator.test.js` |
-| Safari Companion **底部横排**仍挡/错位 | 已通过 | e2e 未测 WebKit 布局 | **[L126](#L126)** `Companion Mode`（Safari 专项） |
-| Choose **pingpong + 1s 叠化** | 已通过 | 动画帧级 | **[L120](#L120)** `Arrival Choose 点头 pingpong→idle` · 可选 **[L121](#L121)** 完整 Arrival 串联 |
-| Notice 短句 **2.4s 可读** | 已通过 | 时长观感 | **[L119](#L119)** `Notice 点选后` · **[L205](#L205)** `人工 · Notice 短句可读完` |
-| Idle 突然东张西望 | 已通过 | 已关随机池；无自动调度单测 | **[L123](#L123)** `调试面板 · 全入库素材` · **[L140](#L140)** `idle / 坐禅闭眼呼吸基底` |
-| 靠近自动点头 | 已通过 | 行为已拆；无 e2e | **[L139](#L139)** `PointerInteraction · 靠近点头 nodGreeting` |
-| Rise → **LightProgression** 金晕 | 已通过 | 视觉 + 产品语义 | **[L149](#L149)** `LightProgression / 光影物理渐进` |
-| MilestoneGlow 金辉节奏 | **有问题**（**已知，不挡** PR #2→`main`） | 观感（Sleeping 已关单） | **[L136](#L136)** MilestoneGlow（4 fps；**预计 2026-07-30 前**复测） |
-| Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L137](#L137)** Ambient Soundscape · **[L206](#L206)** `人工 · 静音图标 + Sound` |
+| Idle 呼吸→眨眼/一瞥 **闪一下** | 已通过 | L-eyes / L-contract；e2e 不看像素 | **[L262](#L262)** `人工 · Idle 统一 pingpong 不闪` · **[L204](#L204)** `IdleOrchestrator / 坐禅闭眼` · 契约 `IdleOrchestrator.test.js` |
+| Safari Companion **底部横排**仍挡/错位 | 已通过 | e2e 未测 WebKit 布局 | **[L179](#L179)** `Companion Mode`（Safari 专项） |
+| Choose **pingpong + 1s 叠化** | 已通过 | 动画帧级 | **[L172](#L172)** `Arrival Choose 点头 pingpong→idle` · 可选 **[L173](#L173)** 完整 Arrival 串联 |
+| Notice 短句 **2.4s 可读** | 已通过 | 时长观感 | **[L171](#L171)** `Notice 点选后` · **[L263](#L263)** `人工 · Notice 短句可读完` |
+| Idle 突然东张西望 | 已通过 | 已关随机池；无自动调度单测 | **[L176](#L176)** `调试面板 · 全入库素材` · **[L194](#L194)** `idle / 坐禅闭眼呼吸基底` |
+| 靠近自动点头 | 已通过 | 行为已拆；无 e2e | **[L193](#L193)** `PointerInteraction · 靠近点头 nodGreeting` |
+| Rise → **LightProgression** 金晕 | 已通过 | 视觉 + 产品语义 | **[L203](#L203)** `LightProgression / 光影物理渐进` |
+| MilestoneGlow 金辉节奏 | **有问题**（**已知，不挡** PR #2→`main`） | 观感（Sleeping 已关单） | **[L187](#L187)** MilestoneGlow（4 fps；**预计 2026-07-30 前**复测） |
+| Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L191](#L191)** Ambient Soundscape · **[L264](#L264)** `人工 · 静音图标 + Sound` |
 
-**§B 未单列、但在场景 checklist 里测的项**（见 **L203–L209**）：**[L203](#L203)** A1 Idle 开局（**已通过**） · **[L208](#L208)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L209](#L209)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
+**§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
 #### C. 下一步自动化（未做 · 排 Task 2/3）
 
@@ -91,7 +140,7 @@
 | Task 2 | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock） | 场景 E/F；Offline/Flow 模式矩阵 |
 | Task 3 | Playwright **真实 Honesty 补登 → 桥接 Yes → Arrival DOM**（勿仅 `__honestyBridge` 注入） | 场景 D/N；补登回流 |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
-| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L179](#L179)** Idle（**已通过**） · **[L182](#L182)** Re-focus（**已通过**） · **[L183](#L183)** Celebrating / SessionComplete（**已通过**） · **[L178–L185](#L178)** 场景 checklist |
+| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L262](#L262)** Idle（**已通过**） · **[L265](#L265)** Re-focus（**已通过**） · **[L266](#L266)** Celebrating / SessionComplete（**已通过**） · **[L261–L267](#L261)** 场景 checklist |
 
 **命令**：`cd focus-tiger && npm run test:smoke`（scenario + 重置 L-logic + **SessionUiGate** + HUD 映射等）· `npm run test:e2e`（约 **20** 条：产品壳 2 + Companion A/I/K 6 + 意图回显 2 + 热力图 3 + 提醒 3 + 微仪式/桥接 4）。Agent 环境若缺浏览器：本机先 `npm run test:e2e:install`，或 config 已默认 `channel: 'chrome'` 用系统 Chrome。
 
@@ -103,8 +152,9 @@
 - **待人工测试**：已实现，单元测试（如有）已通过，但视觉/体验效果需要用户亲自看一遍才能确认。
 - **已通过**：用户亲自测试确认没问题（或缺陷已按用户要求撤销/回退，且代码核对确认到位）。
 - **有问题**：用户测试后发现瑕疵，需写清楚问题内容，退回处理。
-- **已放弃/不适用**：产品已决定不做或卸下；**不**再排人工验收，也不挡 `develop`→`main` 合并。
+- **已放弃/不适用**：产品已决定不做或卸下（含「业务未接线、暂不验收」）；**不**再排人工验收，也不挡 `develop`→`main` 合并。
 - **不挡合并（仅调试）**：只在实验室调试面板 / 兼容空键出现，**产品壳 `?product=1` 正式用户路径看不到**；可留技术债，不挡合并。
+- **不挡合并（仅检测逻辑）**：交互检测已接线且有单测，但**无正式精灵/动画**；产品壳不排视觉验收，不挡合并（例：抚摸/轻点/绕圈占位）。
 
 ---
 
@@ -133,7 +183,7 @@
 | Tiger Reflection Moment / 结束反思 | UI可见 | 已通过 | 正常完成或主动 Rise 结束会话 → 留白约 400ms（完成）/ 300ms（主动）后淡入面板。**意图回显**：仅当**本场** Arrival Choose 有内容时，Reflection 面板**顶部**立刻显示（icon：`所选方向：{text}` / typed：`所写方向：{text}`；文案含 emoji 如 `📖 Reading`）。**不是**第二次 Choose 时头顶提示。无 Choose / 点了 **Skip — begin** → 无回显属正确。Q1–Q3：Continue / Skip / Skip all / Esc。 | **2026-07-22**：用户书面——多日点 Reading 从未见回显。已改：Choose/`onReady` 立刻闩上 + 空 pending 不抹闩 + 回显样式加强。**回归锁分工**：**DOM 用户链路** e2e `reflection-intention-echo.spec.js` 锁主路径有/无回显（**非**本次 Bug）；**单元** `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch` 锁抹闩 Bug；**控制器集成** smoke C 仅锁 `SessionEndFlow`→`open` 入参（下游接线，**非** Choose 源头）。请硬刷新后：Sit→…→点 **Reading**（勿点 Skip — begin）→ Rise → 看面板顶米色条。 **2026-07-24 用户书面（硬刷新复测）**：① Sit → Reading → Rise → Reflection 顶条见 Reading — **测试 OK**；② Skip all → 再 Sit → Skip — begin → Rise → **不得**再有 Reading 顶条 — **测试 OK**。 | 会话结束后自动 · e2e `reflection-intention-echo.spec.js`（主路径 DOM）· 单元 `SessionIntentionStore.test.js`（Bug 锁）· smoke C（下游入参）· DEV：`__reflectionMoment` | 2026-07-22 |
 | 完成反馈 · 每日首次 Celebrating | UI可见 | 已通过 | **须等计时自动达标**（勿提前点 Rise；达标后点 Rise 也会进完成反馈）。当日可先 Honesty 补登；**首次计时达标**仍须 Celebrating（Honesty 不占庆祝戳）。播 `celebrate-dance` → idle → Reflection。 | 2026-07-21：用户书面——多日多次 focus 超 1 分钟从未见 Celebrating 舞；已修。**2026-07-21 复测**：`/` 满 1 分钟见舞；`/?sessionMinutes=5` 满 5 分钟见舞。 | `triggerSessionCompletionFeedback` · 调试「庆祝跳舞」 | 2026-07-21 |
 | 完成反馈 · 同日后续 SessionComplete | UI可见 | 已通过 | 当日**已播过** Celebrating 后，再跑一轮 1 分钟达标 → 只播 `session-complete` 摆尾，**不**再 Celebrating。 | 2026-07-21：同 Celebrating 行用户反馈；庆祝戳已解耦。**2026-07-21 复测**：`http://localhost:5173` 同日第二次 1 分钟达标 → 只撅屁股摆尾、不再 Celebrating 舞；测试 OK。**同日晚**：`/?product=1` 再次确认同日第二次满 1 分钟 → 摆尾、非跳舞；测试 OK。 | 同上 · 调试「完成摆尾」 | 2026-07-21 |
-| IncenseComplete / 今日一炷香（莲花+金斑） | UI可见 | 待人工测试 | 右上角调试面板点「模拟一炷香」→ DOM 叠层莲花渐显 + 金色粒子（在 2D Yin 前方）。**业务会话结束尚未自动接线**（仅调试入口）。**重点**：莲花右下角不得再出现 PixMiller 水印。 | 2026-07-19：立体荷花 + 金光斑点浮动效果**建议保留**，并用于后续「荷花持续增加、最终布满画面」的成长场景（Backlog 成长场景须复用本效果，勿删）。产品方向已记入 EMOTION_BIBLE。**同日用户反馈**：莲花图有 PixMiller 水印未抠掉→已从 `textures/lotus.png` 清除，且 DOM 叠层改用去水印 Canvas 贴图（此前直链源图绕过裁切）。请硬刷新后点「模拟一炷香」复测。 | `#emotion-debug-ui` · `playEmotion('incenseComplete')` · 实现：`IncenseGreeting.js` DOM 叠层 | 2026-07-19 |
+| IncenseComplete / 今日一炷香（莲花+金斑） | UI可见 | 已放弃/不适用 | **业务会话结束未接线**，正式路径看不到；**不再排人工验收**，不挡合并。调试面板「模拟一炷香」可自愿预览（DOM 莲花+金粒子；水印已清），效果保留给 Backlog 成长场景复用，勿删实现。 | 2026-07-19：建议保留效果给荷花成长场景。同日清 PixMiller 水印。**2026-07-25**：用户拍板降级——业务未接线 →「已放弃/不适用」，退出近期验收队列。 | `#emotion-debug-ui` · `playEmotion('incenseComplete')` · 实现：`IncenseGreeting.js` | 2026-07-25 |
 | MilestoneGlow / 里程碑金辉 | UI可见 | 有问题 | 调试面板点「里程碑金辉」→ `milestone-glow` 27 帧（金光+蝴蝶）→ 末帧停约 2.5s → 回落。播放期归零实时金光。真实里程碑判定属 Backlog。 | 2026-07-19：金光蝴蝶须放慢 2×→已改 **4 fps**（原 8），请复测。**2026-07-23（合并门禁书面）**：**已知问题，不影响此次合并**（PR #2 `develop`→`main`）；产品壳正式路径不可见，仅调试面板。**回头复测**：预计 **2026-07-30 前**，在下一轮调试面板情绪素材节奏清理时专测 4 fps + 末帧停留观感；到期未测须改期并再写本列，禁止无限挂起。 | `#emotion-debug-ui` · `playEmotion('milestoneGlow')` | 2026-07-19 |
 | MindfulAcknowledge / 20 分钟阶段确认 | UI可见 | 待人工测试 | Companion = Here & Now，开一场会话并保持页面 ≥ **20 分钟墙钟** → `nod-bow` + 非模态 toast（`MINDFUL_FOCUS_MILESTONE` 池）。与强反馈冲突时静默让位。共享日额度最多 3 次（`focus-tiger.reminder-quota.v1`）。演示会话仅 1 分钟时建议用调试按钮或 `__mindfulReminderController`。 | — | 生产长计时 / 调试面板正念确认 · DEV：`__mindfulReminderController` · `__reminderQuotaManager` | 2026-07-18 |
 | Re-focus Acknowledge / 回归确认 | UI可见 | 已通过 | **用户路径**见场景 B：开 **`/?sessionMinutes=5`**。**Here & Now**：切走 **&gt;60s** → toast + nod-bow。**Flow State / Offline**：同样切走 **&gt;60s** → **不应**出现 Re-focus（离开是预期）。**&lt;20s 无反应属正确**。 | 2026-07-20 晚：DEMO/10s 门槛说明。**2026-07-21**：用户书面 Sit/Here&Now 切页 **测试 OK**；Flow State「结果不对、不匹配」→ 产品预期即与 Here & Now **不同**：Flow **故意无**文案+nod-bow。**同日晚**：用户确认原 8 条独立行批次全部关闭。 | `/?sessionMinutes=5` · **单元/控制器** smoke B（**非**真实切页） | 2026-07-21 |
@@ -143,7 +193,7 @@
 | PointerInteraction · 靠近点头 nodGreeting | UI可见 | 已通过 | **默认靠近不再点头**。开局 / idle：指针移入靠近区 → **不应**播 `nod-greeting`。调试面板「点头致意」仍可手工播（**6 fps**，末帧多停约 2 拍）→ 回 idle。 | 2026-07-19：曾要放慢点头→已改。**同日再反馈**：开局默认态仍见点头 → 根因是靠近区仍自动 `nodGreeting`；已拆除靠近自动点头。**2026-07-21**：用户书面——默认只有呼吸/眨眼、靠近不再自动点头，测试 OK。 | 全屏命中层 · DEV：`__pointerInteraction` · 调试「点头致意」 | 2026-07-21 |
 | idle / 坐禅闭眼呼吸基底 | UI可见 | 已通过 | 点「坐禅闭眼」或「重置并 idle 坐禅」：**闭目 pingpong ×2**（frame 1–19）→ **睁眼弧 pingpong ×1**（frame 1–33）→ 往复；同素材硬切、不叠化。 | 2026-07-20：切分两段 pingpong。**2026-07-20 用户书面**：坐禅闭眼 / idle 坐禅各情况测试 OK。 | 调试「坐禅闭眼」 · `__idleOrchestrator` · `#dev-reset-all-local-state-idle` | 2026-07-20 |
 | PointerInteraction · 静止好奇 curiousTilt | UI可见 | 待人工测试 | 靠近区静止 **4s** → 播 **blink-smile** 单次（已替换托腮 tilt-think）→ 180ms 淡回 idle。冷却 6s。 | 2026-07-19：打坐↔托腮仍很跳→已换眨眼类；请确认衔接是否顺。 | 全屏命中层 · DEV：`__pointerInteraction` | 2026-07-19 |
-| PointerInteraction · 抚摸 / 轻点 / 绕圈（检测已接线、无正式精灵） | UI可见 | 待人工测试 | 头部拖动 ≥14px → `petHead`（控制台占位）。头部点击位移 ≤10px → `smileSquint`（占位）。约 1.4s 内绕圈 ~1.75π → `dizzyBlink`（占位）。确认检测触发即可；目前无完整 2D 动画。 | — | 同上 · 单测：`PointerInteraction.test.js` | 2026-07-18 |
+| PointerInteraction · 抚摸 / 轻点 / 绕圈（检测已接线、无正式精灵） | 纯后端+占位 | 不挡合并（仅检测逻辑） | **无正式 2D 精灵**；产品壳**不**排视觉验收。检测：头部拖动 ≥14px → `petHead`；头部点击位移 ≤10px → `smileSquint`；约 1.4s 内绕圈 ~1.75π → `dizzyBlink`（控制台占位）。正确性靠 `PointerInteraction.test.js`；自愿可在实验室看 console。 | **2026-07-25**：用户拍板降级——仅验证检测逻辑，不挡合并；退出近期验收队列。 | 单测：`PointerInteraction.test.js` · DEV：`__pointerInteraction` | 2026-07-25 |
 | FocusSession + Focus HUD（Sit with Yin / Rise） | UI可见 | 待人工测试 | **主路径**：Sit → Welcome→Notice→Breath→Choose → Focusing；或 **⚡ Quick Start** → 立刻 Rise。**回流**：Rise → Reflection → 再 Sit。 | 2026-07-20：Skip begin 半卡 Sit→已改为直接开始。**2026-07-24**：Skip 双钮移除，快速开表改 ⚡；请复测。**DOM**：e2e A Choose 开表；A2/A3 预选+⚡ 开表。 | `#focus-hud` · `#btn-focus` | 2026-07-20 |
 | FocusHUD 金环+呼吸光 / 数字弱化 | UI可见 | 已通过 | **主路径**：左上角约 **2×** 大卡：金环（琥珀金、够显眼）+ 中心光点**持续一张一缩**；Sit 后环随进度走。**悬停**露 Focus %。**回流**：Rise 后环回淡。 | 2026-07-21：香炉误读→改金环+光点。**同日书面**：①圈/点看不清 ②呼吸点应不停一张一缩 ③整体太小、建议放大两倍 → 已加对比、加强呼吸、约 2×。**2026-07-22**：用户书面 A 类开放行，**测试 OK**。**单元**：`focusHudHalo.test.js`（`focusLevelToHaloVars` 填充分数→透明度映射；**非**金环/呼吸光 DOM）。e2e Companion 仅顺带断言 `#hud-state`/`#hud-time` 文案（**非**金环观感）。 | `#focus-hud` · `/?product=1` | 2026-07-22 |
 | FocusHUD 今日同坐 progress-bar | UI可见 | 已通过 | **主路径**：HUD 下方见蒲团橙软条 + 文案「Today's shared sitting / 今日同坐」；空日接近空；Sit 计时中条渐长且有**轻脉冲**。**回流**：Rise 后脉冲停；若本场未达标完成则条回落至已完成分钟。勿与 Companion 三选一抢「怎么坐」。**非** daily-quest 清单。 | 2026-07-21：UI Kit progress-bar 纳入产品壳。**2026-07-22**：用户书面 A 类，**测试 OK**。**单元**：`sharedSittingProgress.test.js`（百分比映射 helper；**非** progress-bar DOM / 脉冲观感）。 | `#focus-hud progress-bar` · `/?product=1` | 2026-07-22 |
