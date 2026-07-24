@@ -225,6 +225,36 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-sibling-branch-sync',
+    title: '长期并存功能分支的同步纪律（姊妹线不漏修）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '长期并存功能分支的同步纪律',
+    ssotMustContain: [
+      /修复落地即对照姊妹线/,
+      /共享入口修复须写进汇报清单/,
+      /合回单线 vs 继续并行/
+    ],
+    topicSignals: [
+      /长期并存功能分支/,
+      /姊妹分支/,
+      /分支分叉纪律/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /修复落地即对照姊妹线/,
+      /共享入口修复须写进汇报清单/,
+      /合回单线 vs 继续并行/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'agent-decides-parallel-strategy',
+        pattern: /(?:Agent|助手)(?:可以|应当|自行)(?:决定|拍板).{0,20}(?:并行分支|合回单线|分支策略)/,
+        note: '合回单线 vs 并行须用户拍板；Agent 不得自行定策略'
+      }
+    ]
+  },
+  {
     id: 'regression-gate',
     title: '交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…）',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',

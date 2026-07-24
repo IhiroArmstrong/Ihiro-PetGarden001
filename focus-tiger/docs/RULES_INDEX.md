@@ -44,6 +44,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
 | `git-parallel-worktree` | 并行 Cursor 会话须用 git worktree 隔离写操作 | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
+| `git-sibling-branch-sync` | 长期并存功能分支的同步纪律（姊妹线不漏修） | `WORKFLOW.md` | 长期并存功能分支的同步纪律 |
 | `regression-gate` | 交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…） | `.cursor/rules/focus-tiger-regression-lock.mdc` | 交互修复完工门禁 |
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
 | `doc-code-contract` | 文档-代码结构性对齐（docs:check） | `focus-tiger/docs/DOC_CODE_CONTRACT.md` | DOC_CODE_CONTRACT.md |
@@ -60,6 +61,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注；把「下班前 Git 同步」做成合并 main / 推进 PR |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
+| `git-sibling-branch-sync` | 「姊妹分支同步见 `WORKFLOW.md` 长期并存节」；叙事链 `DEV_WORKFLOW_QUALITY` §6.6 / N17 | 主张 Agent 可自行拍板合回单线或长期并行；只在当前分支修共享入口且不提姊妹线 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
@@ -74,7 +76,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 文档 | 角色 |
 |---|---|
-| [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、跨会话冲突、并行 worktree |
+| [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、跨会话冲突、并行 worktree、姊妹分支同步 |
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7 门禁条文 |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
@@ -139,3 +141,4 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-07-23 | 补强 `git-agent-commit`：Git 同步 / 批量 push 须「分级汇总」（commit 列表 + 高风险单独标注）；与 Cursor user rule 对齐方向 |
 | 2026-07-23 | 新增 `git-parallel-worktree`：并行 Cursor 写会话须 `git worktree` 隔离；SSOT 在 `WORKFLOW.md` |
 | 2026-07-23 | 固定口令「请安排下班前的 Git 同步」语义：只 push `develop`/`feature`/`fix` + 分级汇总；不合并 main、不推进 PR（见 regression-lock 第 7 条） |
+| 2026-07-25 | 新增 `git-sibling-branch-sync`：长期并存功能分支修复须对照姊妹线；SSOT 在 `WORKFLOW.md`；叙事 §6.6 / N17 |
