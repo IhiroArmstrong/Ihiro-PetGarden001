@@ -55,7 +55,7 @@
    d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
    *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
 5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。**任一模式选中后即开始 Focus+计时**（不必再点 Sit；用户已点 Sit 进入 Arrival 即视为开始）。
-6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。
+6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。**Rise / 达标结束 → 音乐自动停**（偏好保留；再 Sit 可再开）。
 7. 全程观察 Idle：**仅**闭目 pingpong → 眨眼弧固定节奏。  
    **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**。  
    **靠近区不应自动播点头**。  

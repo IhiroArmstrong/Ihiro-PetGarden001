@@ -2,8 +2,9 @@
  * 禅意背景音：DOM <audio> 播放 + 实际可闻播放时长 → presenceBoost。
  * 不探测其他 App；不参与达标；会话内累计，不做长期存储。
  *
- * 产品口径（2026-07-21）：进入应用默认播放 Mer-Ka-Ba；用户可随时静音；
- * 偏好写入 localStorage；会话结束不停播（presence 累计仍随会话清零）。
+ * 产品口径（2026-07-25）：进入应用默认播放 Mer-Ka-Ba；用户可随时静音；
+ * 偏好写入 localStorage；**Rise / 会话结束自动停播**（不清掉存储偏好；下次 Sit 仍可按偏好开播）；
+ * presence 累计随会话清零。
  */
 
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
@@ -142,21 +143,32 @@ export class AmbientSoundscapeController {
     return this._preferredTrackId;
   }
 
-  /** 专注会话开始（可听时长从 0 计；不停播既有曲目） */
+  /** 专注会话开始：可听时长从 0 计；若存储偏好开启则恢复播放 */
   startSession() {
     this._endCreditSegment();
     this._sessionActive = true;
     this._playedAccumulated = 0;
     this._segmentStartedAt = null;
     this._syncCreditSegment();
+    const pref = readAmbientPref(this._storage);
+    if (pref.enabled) {
+      this._wantEnabled = true;
+      this._preferredTrackId = pref.trackId || this._preferredTrackId;
+      void this.setTrack(this._preferredTrackId, { persist: false });
+    }
   }
 
-  /** 会话结束：清零会话累计；不停播、不改用户曲目偏好 */
+  /**
+   * 会话结束（Rise / 达标）：清零会话累计并停播。
+   * 不改写 localStorage 偏好——下次 Sit 仍可按偏好自动开播。
+   */
   endSession() {
     this._endCreditSegment();
     this._sessionActive = false;
     this._playedAccumulated = 0;
     this._segmentStartedAt = null;
+    this._wantEnabled = false;
+    this._stopPlayback({ persist: false });
   }
 
   getTrackId() {

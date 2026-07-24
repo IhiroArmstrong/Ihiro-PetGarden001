@@ -98,13 +98,14 @@ test('played seconds accumulate only while audible and session active', async ()
   assert.ok(Math.abs(ctrl.getPlayedSeconds() - 15) < 1e-6);
 });
 
-test('presenceBoost stays zero outside session; endSession keeps track playing', async () => {
+test('presenceBoost stays zero outside session; endSession stops playback', async () => {
   let now = 0;
+  const storage = createMapStorage();
   const audio = createMockAudio();
   const ctrl = new AmbientSoundscapeController({
     now: () => now,
     audio,
-    storage: createMapStorage(),
+    storage,
     mountToDocument: false
   });
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
@@ -119,10 +120,17 @@ test('presenceBoost stays zero outside session; endSession keeps track playing',
   assert.ok(boost <= MAX_PRESENCE_BOOST + 0.1);
 
   ctrl.endSession();
-  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
-  assert.equal(ctrl.wantsEnabled(), true);
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  assert.equal(ctrl.wantsEnabled(), false);
   assert.equal(ctrl.getPresenceBoost(25), 0);
   assert.equal(ctrl.getPlayedSeconds(), 0);
+  // Stored preference stays on so next Sit can resume
+  const stored = JSON.parse(storage.getItem('focus-tiger.ambient-pref.v1'));
+  assert.equal(stored.enabled, true);
+  assert.equal(stored.trackId, AMBIENT_TRACK_SINGING_BOWL);
+
+  ctrl.startSession();
+  assert.equal(ctrl.wantsEnabled(), true);
 });
 
 test('audible playing adds an immediate glow lift', async () => {
