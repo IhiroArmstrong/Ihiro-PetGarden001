@@ -50,6 +50,8 @@ export class AmbientSoundscapeUI {
     this._sessionActive = false;
     this._nudgeVisible = false;
     this._blockedTipTimer = null;
+    /** Narrow drawer forced the Soundscape panel open while Idle. */
+    this._narrowForcedPanel = false;
 
     this.root = document.createElement('div');
     this.root.id = 'ambient-soundscape';
@@ -117,7 +119,7 @@ export class AmbientSoundscapeUI {
     this.volumeInput.max = '100';
     this.volumeInput.value = String(Math.round(controller.getVolume() * 100));
     this.volumeInput.addEventListener('input', () => {
-      if (!this._sessionActive) return;
+      if (!this._sessionActive && !this._narrowForcedPanel) return;
       controller.setVolume(Number(this.volumeInput.value) / 100);
       this._refreshMuteBtn();
     });
@@ -129,10 +131,13 @@ export class AmbientSoundscapeUI {
     overlayRoot.appendChild(this.root);
 
     this._onDocPointer = (event) => {
-      if (!this._expanded || !this._sessionActive) return;
+      if (!this._expanded) return;
+      if (!this._sessionActive && !this._narrowForcedPanel) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
       this._expanded = false;
+      this._narrowForcedPanel = false;
+      document.body.classList.remove('ft-narrow-stage-sound');
       this._renderPanel();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
@@ -173,7 +178,9 @@ export class AmbientSoundscapeUI {
 
   isPanelOpen() {
     return Boolean(
-      this._expanded && this._sessionActive && !this.panel.hidden
+      this._expanded &&
+        !this.panel.hidden &&
+        (this._sessionActive || this._narrowForcedPanel)
     );
   }
 
@@ -189,17 +196,17 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * Narrow drawer 「Sound」— Idle shows gated tip; Focusing opens track panel.
-   * Caller must stage `.ambient-soundscape__focus-chrome` so tip/panel are visible.
+   * Narrow drawer 「Sound」— open the Soundscape track panel immediately
+   * (same selection box as desktop Sound). Hide FAB; do not show gated tip-only.
+   * Caller stages `.ambient-soundscape__focus-chrome` so the panel is on-canvas.
    */
   activateSoundFromNarrow() {
-    if (!this._sessionActive) {
-      this._showBlockedTip();
-      return;
-    }
+    this._clearBlockedTip();
+    this._narrowForcedPanel = true;
     this._dismissNudge();
     this._expanded = true;
     this._renderPanel();
+    this.panel.hidden = false;
     this.handlers.onPanelOpened?.();
   }
 
@@ -269,13 +276,14 @@ export class AmbientSoundscapeUI {
       this.nudgeEl.hidden = true;
       this.nudgeEl.textContent = '';
     }
-    document.body.classList.remove('ft-narrow-stage-sound');
   }
 
-  /** Narrow shell clearStage — dismiss gated tip / collapse idle panel staging. */
+  /** Narrow shell clearStage — dismiss gated tip / collapse forced Idle panel. */
   clearNarrowSoundStage() {
+    this._narrowForcedPanel = false;
     this._clearBlockedTip();
-    if (!this._sessionActive && this._expanded) {
+    document.body.classList.remove('ft-narrow-stage-sound');
+    if (this._expanded && !this._sessionActive) {
       this._expanded = false;
       this._renderPanel();
     }
@@ -320,7 +328,7 @@ export class AmbientSoundscapeUI {
       if (selected) btn.classList.add('is-selected');
       btn.textContent = t(opt.labelKey);
       btn.addEventListener('click', () => {
-        if (!this._sessionActive) return;
+        if (!this._sessionActive && !this._narrowForcedPanel) return;
         this._dismissNudge();
         void this.controller.setTrack(opt.id).then(() => {
           this._renderPanel();
@@ -330,10 +338,13 @@ export class AmbientSoundscapeUI {
       this.trackRow.appendChild(btn);
     }
 
-    this.panel.hidden = !this._expanded || !this._sessionActive;
+    this.panel.hidden =
+      !this._expanded || !(this._sessionActive || this._narrowForcedPanel);
     this.soundBtn.setAttribute(
       'aria-expanded',
-      this._expanded && this._sessionActive ? 'true' : 'false'
+      this._expanded && (this._sessionActive || this._narrowForcedPanel)
+        ? 'true'
+        : 'false'
     );
     this._refreshMuteBtn();
     this._refreshSoundFab();

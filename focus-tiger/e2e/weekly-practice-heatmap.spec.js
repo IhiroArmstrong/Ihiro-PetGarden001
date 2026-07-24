@@ -116,7 +116,7 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   });
 });
 
-test('375 drawer: Honesty always listed; Sound tip + Reminder panel respond', async ({
+test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -137,36 +137,54 @@ test('375 drawer: Honesty always listed; Sound tip + Reminder panel respond', as
   });
   await expect(honestyItem).toBeVisible();
 
-  // Sound → gated tip visible on-canvas (not silent / not parked off-screen)
+  // Sound → Soundscape track panel on-canvas (not red FAB, not tip-only)
   await page
     .locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
     .click();
+  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+    timeout: 5_000
+  });
   await expect
     .poll(async () => {
       return page.evaluate(() => {
-        const nudge = document.querySelector('.ambient-soundscape__nudge');
-        if (!nudge || nudge.hidden) return null;
-        const r = nudge.getBoundingClientRect();
-        const staged = document.body.classList.contains('ft-narrow-stage-sound');
+        const panel = document.querySelector('.ambient-soundscape__panel');
+        const fab = document.querySelector('.ambient-soundscape__fab');
+        if (!panel || panel.hidden) return null;
+        const pr = panel.getBoundingClientRect();
+        const fr = fab?.getBoundingClientRect();
+        const fabHidden =
+          !fab ||
+          getComputedStyle(fab).display === 'none' ||
+          getComputedStyle(fab).visibility === 'hidden' ||
+          (fr && (fr.width < 1 || fr.right < 0));
         return {
-          staged,
-          text: (nudge.textContent || '').trim(),
-          left: r.left,
-          top: r.top,
-          w: r.width,
-          onScreen: r.width > 0 && r.left >= 0 && r.left < window.innerWidth
+          staged: document.body.classList.contains('ft-narrow-stage-sound'),
+          title: (
+            panel.querySelector('.ambient-soundscape__title')?.textContent || ''
+          ).trim(),
+          tracks: panel.querySelectorAll('.ambient-soundscape__track').length,
+          panelOnScreen:
+            pr.width > 40 && pr.left >= 0 && pr.left < window.innerWidth,
+          fabHidden
         };
       });
     })
     .toMatchObject({
       staged: true,
-      onScreen: true
+      panelOnScreen: true,
+      fabHidden: true
     });
-  const tip = await page.evaluate(() => {
-    const nudge = document.querySelector('.ambient-soundscape__nudge');
-    return (nudge?.textContent || '').trim();
+  const panelMeta = await page.evaluate(() => {
+    const panel = document.querySelector('.ambient-soundscape__panel');
+    return {
+      title: (
+        panel?.querySelector('.ambient-soundscape__title')?.textContent || ''
+      ).trim(),
+      tracks: panel?.querySelectorAll('.ambient-soundscape__track').length ?? 0
+    };
   });
-  expect(tip.length).toBeGreaterThan(8);
+  expect(panelMeta.title.length).toBeGreaterThan(2);
+  expect(panelMeta.tracks).toBeGreaterThanOrEqual(2);
 
   // Re-open drawer → Reminder panel must appear on-screen
   await page.locator('.ft-narrow-grabber').click();

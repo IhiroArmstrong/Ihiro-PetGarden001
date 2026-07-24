@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v3';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v4';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -817,24 +817,38 @@ export class NarrowIdleShell {
           position: fixed !important;
         }
 
+        /* Idle drawer Sound: Soundscape track panel only — never the red FAB */
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__focus-chrome {
-          left: auto !important;
-          right: 14px !important;
+          left: 50% !important;
+          right: auto !important;
           top: auto !important;
-          bottom: max(96px, env(safe-area-inset-bottom, 0px)) !important;
+          bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
           position: fixed !important;
           z-index: 32 !important;
+          align-items: stretch !important;
+          width: min(280px, calc(100vw - 32px)) !important;
         }
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__nudge {
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__panel {
           display: block !important;
-        }
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__fab {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
+          position: relative !important;
+          left: auto !important;
+          right: auto !important;
+          bottom: auto !important;
+          width: 100% !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__fab,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__nudge {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
         }
 
         body.ft-narrow-shell #sprite-overlay {
