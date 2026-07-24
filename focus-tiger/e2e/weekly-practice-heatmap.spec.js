@@ -220,8 +220,23 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
       return {};
     }
   });
-  // Default wants music on
-  expect(before.enabled !== false).toBeTruthy();
+  // Opt-in: fresh product shell starts with music off
+  expect(before.enabled === false || before.enabled == null).toBeTruthy();
+
+  await page.locator('#ft-narrow-mute-btn').click({ force: true });
+  await expect
+    .poll(async () => {
+      return page.evaluate(() => {
+        try {
+          return JSON.parse(
+            localStorage.getItem('focus-tiger.ambient-pref.v1') || '{}'
+          ).enabled;
+        } catch {
+          return null;
+        }
+      });
+    })
+    .toBe(true);
 
   await page.locator('#ft-narrow-mute-btn').click({ force: true });
   await expect

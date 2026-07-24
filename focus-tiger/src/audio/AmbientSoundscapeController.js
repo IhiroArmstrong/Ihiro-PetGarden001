@@ -2,9 +2,9 @@
  * 禅意背景音：DOM <audio> 播放 + 实际可闻播放时长 → presenceBoost。
  * 不探测其他 App；不参与达标；会话内累计，不做长期存储。
  *
- * 产品口径（2026-07-25）：进入应用默认播放 Mer-Ka-Ba；用户可随时静音；
- * 偏好写入 localStorage；**Rise / 会话结束自动停播**（不清掉存储偏好；下次 Sit 仍可按偏好开播）；
- * presence 累计随会话清零。
+ * 产品口径（2026-07-25）：**不自动开播**——须用户点音符钮 / Sound 选曲才出声；
+ * 偏好写入 localStorage（默认 `enabled: false`，记住上次曲目）；
+ * **Rise / 会话结束自动停播**（不清掉存储偏好）；presence 累计随会话清零。
  */
 
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
@@ -62,7 +62,8 @@ export function computePresenceBoost(playedSeconds, targetMinutes) {
  */
 export function normalizeAmbientPref(raw) {
   const trackIds = new Set(AMBIENT_TRACKS.map((t) => t.id));
-  let enabled = true;
+  // Opt-in：无存储时默认关；有存储则尊重 enabled
+  let enabled = false;
   let trackId = DEFAULT_AMBIENT_TRACK_ID;
   if (raw && typeof raw === 'object') {
     if (typeof raw.enabled === 'boolean') enabled = raw.enabled;
@@ -143,24 +144,18 @@ export class AmbientSoundscapeController {
     return this._preferredTrackId;
   }
 
-  /** 专注会话开始：可听时长从 0 计；若存储偏好开启则恢复播放 */
+  /** 专注会话开始：可听时长从 0 计；不自动开播（须用户点音乐钮） */
   startSession() {
     this._endCreditSegment();
     this._sessionActive = true;
     this._playedAccumulated = 0;
     this._segmentStartedAt = null;
     this._syncCreditSegment();
-    const pref = readAmbientPref(this._storage);
-    if (pref.enabled) {
-      this._wantEnabled = true;
-      this._preferredTrackId = pref.trackId || this._preferredTrackId;
-      void this.setTrack(this._preferredTrackId, { persist: false });
-    }
   }
 
   /**
    * 会话结束（Rise / 达标）：清零会话累计并停播。
-   * 不改写 localStorage 偏好——下次 Sit 仍可按偏好自动开播。
+   * 不改写 localStorage 偏好——用户曾开过音乐时，下次可再点开。
    */
   endSession() {
     this._endCreditSegment();
@@ -189,15 +184,12 @@ export class AmbientSoundscapeController {
   }
 
   /**
-   * App 就绪：按偏好尝试默认开播 Mer-Ka-Ba（或上次曲目）。
+   * App 就绪：只同步偏好到 UI，**绝不**自动开播（须用户点音符 / Sound）。
+   * 旧版若曾默认写入 enabled:true，此处一并静音并持久化为关，避免幽灵自动播放。
    * @returns {Promise<void>}
    */
   async startPreferredTrack() {
-    if (!this._wantEnabled) {
-      this.mute();
-      return;
-    }
-    await this.unmute();
+    this.mute();
   }
 
   /** 同步静音：无论 wantsEnabled / 实际是否在播，一律停掉。 */

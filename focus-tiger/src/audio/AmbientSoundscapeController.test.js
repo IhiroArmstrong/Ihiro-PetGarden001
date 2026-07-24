@@ -64,12 +64,16 @@ test('computePresenceBoost uses 12s-per-minute ratio and 0.20 cap', () => {
   assert.equal(computePresenceBoost(25 * 60, 25), 0.2);
 });
 
-test('normalizeAmbientPref defaults to Mer-Ka-Ba enabled', () => {
+test('normalizeAmbientPref defaults to Mer-Ka-Ba track off (opt-in)', () => {
   assert.deepEqual(normalizeAmbientPref(null), {
-    enabled: true,
+    enabled: false,
     trackId: DEFAULT_AMBIENT_TRACK_ID
   });
   assert.equal(DEFAULT_AMBIENT_TRACK_ID, AMBIENT_TRACK_SINGING_BOWL);
+  assert.deepEqual(normalizeAmbientPref({ enabled: true, trackId: AMBIENT_TRACK_SINGING_BOWL }), {
+    enabled: true,
+    trackId: AMBIENT_TRACK_SINGING_BOWL
+  });
 });
 
 test('played seconds accumulate only while audible and session active', async () => {
@@ -124,13 +128,15 @@ test('presenceBoost stays zero outside session; endSession stops playback', asyn
   assert.equal(ctrl.wantsEnabled(), false);
   assert.equal(ctrl.getPresenceBoost(25), 0);
   assert.equal(ctrl.getPlayedSeconds(), 0);
-  // Stored preference stays on so next Sit can resume
+  // Stored preference stays on so user can tap music again later
   const stored = JSON.parse(storage.getItem('focus-tiger.ambient-pref.v1'));
   assert.equal(stored.enabled, true);
   assert.equal(stored.trackId, AMBIENT_TRACK_SINGING_BOWL);
 
   ctrl.startSession();
-  assert.equal(ctrl.wantsEnabled(), true);
+  // Sit must not auto-resume — still quiet until explicit unmute
+  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(ctrl.isAudiblePlaying(), false);
 });
 
 test('audible playing adds an immediate glow lift', async () => {
@@ -157,18 +163,41 @@ test('toggleEnabled persists preference and stops or starts Mer-Ka-Ba', async ()
   const audio = createMockAudio();
   const ctrl = new AmbientSoundscapeController({ audio, storage, mountToDocument: false });
   await ctrl.startPreferredTrack();
+  // Boot never autoplays — prefer stays off until explicit unmute
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.wantsEnabled(), false);
+
+  await ctrl.toggleEnabled();
   assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
   assert.equal(ctrl.wantsEnabled(), true);
+  const onRaw = JSON.parse(storage.getItem(AMBIENT_PREF_STORAGE_KEY));
+  assert.equal(onRaw.enabled, true);
 
   await ctrl.toggleEnabled();
   assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
   assert.equal(ctrl.wantsEnabled(), false);
-  const raw = JSON.parse(storage.getItem(AMBIENT_PREF_STORAGE_KEY));
-  assert.equal(raw.enabled, false);
+  const offRaw = JSON.parse(storage.getItem(AMBIENT_PREF_STORAGE_KEY));
+  assert.equal(offRaw.enabled, false);
+});
 
-  await ctrl.toggleEnabled();
-  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
-  assert.equal(ctrl.wantsEnabled(), true);
+test('startPreferredTrack never autoplays even if storage says enabled', async () => {
+  const storage = createMapStorage({
+    [AMBIENT_PREF_STORAGE_KEY]: JSON.stringify({
+      enabled: true,
+      trackId: AMBIENT_TRACK_SINGING_BOWL
+    })
+  });
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({ audio, storage, mountToDocument: false });
+  assert.equal(ctrl.wantsEnabled(), true); // constructor still reads storage
+  await ctrl.startPreferredTrack();
+  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  // Migrate old default-on → persisted off
+  const stored = JSON.parse(storage.getItem(AMBIENT_PREF_STORAGE_KEY));
+  assert.equal(stored.enabled, false);
+  assert.equal(stored.trackId, AMBIENT_TRACK_SINGING_BOWL);
 });
 
 test('startPreferredTrack respects stored mute preference', async () => {

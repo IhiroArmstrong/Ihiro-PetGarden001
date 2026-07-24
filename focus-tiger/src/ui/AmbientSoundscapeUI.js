@@ -1,7 +1,7 @@
 /**
  * 背景音 UI：
- * - 右上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/恢复，默认开播 Mer-Ka-Ba
- * - 右下角 **Sound** 蒲团橙按钮始终可见；专注后可展开曲目/音量（恢复旧行为）
+ * - 右上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/开播（须用户点开，默认关）
+ * - 右下角 **Sound** 蒲团橙按钮始终可见；专注后可展开曲目/音量
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -185,9 +185,9 @@ export class AmbientSoundscapeUI {
   }
 
   async bootDefaultMusic() {
+    // Opt-in：开局不同步自动播放；只刷新钮态
     await this.controller.startPreferredTrack();
     this._renderPanel();
-    this._maybeShowDefaultOnNudge();
   }
 
   /** Narrow ActionBar / drawer entry — same as tapping the mute note. */

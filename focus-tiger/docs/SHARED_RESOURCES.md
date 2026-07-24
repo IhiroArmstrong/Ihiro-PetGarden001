@@ -25,7 +25,7 @@
 | `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` | 应用内提醒时间偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
-| `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认 Mer-Ka-Ba 开） |
+| `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认关 / opt-in；曲目默认 Mer-Ka-Ba） |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。

@@ -42,12 +42,12 @@
 
 > **单元 / 控制器集成**：A1 `HonestyCheckInController` 开局 Idle；A3–A4 `ArrivalPractice` 状态机步进 + `canBeginFocusOnCompanionModeSelect` 门闩；A7–A8 `triggerSessionCompletionFeedback` 分流；计时达标 `FocusSession.hasReachedTarget` → `scenario-smoke.test.js`。  
 > **DOM 用户链路**：Arrival 后 Here & Now 开表 / 预选+Skip — begin 开表 / Offline 开表 → `e2e/scenario-a.companion.spec.js`（**到开表为止**；**不含**达标 / Celebrating / Reflection）。  
-> **仍须人工**：Idle 开场观感、Honesty 文案、默认音乐与开关按钮、Arrival 气泡时长、Ambient、Idle 呼吸观感、Celebrating 动画本身。
+> **仍须人工**：Idle 开场观感、Honesty 文案、背景音乐 opt-in 与开关按钮、Arrival 气泡时长、Ambient、Idle 呼吸观感、Celebrating 动画本身。
 
 1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **Idle 闭目坐禅**，**不是** sleeping。  
    *[单元/控制器：零完成 → `HonestyCheckInController.onAppReady` 保持 IDLE + 调 `showIdleEntry` → smoke A1；**非** Idle 序列 DOM / 闭目观感]*
 2. Idle 时见 **Honesty Check-in** 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 **Sit with Yin** 开始本场计时。
-3. 右下角应有显眼 **「关闭音乐」**（默认 Mer-Ka-Ba；若浏览器拦自动播放，点一次按钮或页面即可解锁）。随时可关，不必先 Sit。
+3. 打开产品后**不应自动有音乐**；右上音符钮可**点开**轻柔背景音（默认曲目 Mer-Ka-Ba；若浏览器拦播放，再点一次解锁）。随时可关，不必先 Sit。
 4. Arrival Practice 展开：
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）
    b. Notice：六个状态图标；点 "Okay" → 观察式回应（实际文案以 locale 为准，例如 en：「An ordinary steadiness is here.」）
@@ -55,7 +55,7 @@
    d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
    *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
 5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。**任一模式选中后即开始 Focus+计时**（不必再点 Sit；用户已点 Sit 进入 Arrival 即视为开始）。
-6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。**Rise / 达标结束 → 音乐自动停**（偏好保留；再 Sit 可再开）。
+6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。**Rise / 达标结束 → 音乐自动停**；再 Sit **也不**自动再开，须再点音符 / Sound。
 7. 全程观察 Idle：**仅**闭目 pingpong → 眨眼弧固定节奏。  
    **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**。  
    **靠近区不应自动播点头**。  
