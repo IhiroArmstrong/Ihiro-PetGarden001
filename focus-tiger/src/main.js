@@ -702,12 +702,23 @@ async function init() {
   });
 
   narrowIdleShell.setHandlers({
-    onMute: () => ambientSoundscapeUI.toggleMuteFromUi(),
+    onMute: async () => {
+      await ambientSoundscapeUI.toggleMuteFromUi();
+      narrowIdleShell.syncMuteVisual({
+        musicOn: ambientSoundscapeUI.wantsMusicOn()
+      });
+    },
+    onSound: () => {
+      ambientSoundscapeUI.activateSoundFromNarrow();
+    },
     onCompanion: () => {
       companionModePicker.open();
     },
     onReminder: () => {
       reminderPreferenceUI.openPanel();
+    },
+    onHonesty: () => {
+      honestyCheckIn.openDurationChoices({ force: true });
     },
     onQuickStart: () => {
       const el = document.getElementById('quick-start-focus');
@@ -720,7 +731,11 @@ async function init() {
     onClearStage: () => {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
+      ambientSoundscapeUI.clearNarrowSoundStage();
     }
+  });
+  narrowIdleShell.syncMuteVisual({
+    musicOn: ambientSoundscapeUI.wantsMusicOn()
   });
 
   /** @type {OnboardingHintsUI | null} */
