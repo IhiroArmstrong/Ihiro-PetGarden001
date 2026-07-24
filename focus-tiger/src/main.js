@@ -282,6 +282,9 @@ async function init() {
     {
       onPreferenceChange: () => {
         syncInAppReminderBanner();
+      },
+      onClose: () => {
+        document.body.classList.remove('ft-narrow-stage-reminder');
       }
     }
   );
@@ -1178,6 +1181,9 @@ async function init() {
   };
 
   companionModeHandlers.onExpandedChange = (expanded) => {
+    if (!expanded) {
+      document.body.classList.remove('ft-narrow-stage-companion');
+    }
     if (expanded) {
       onboardingHints?.maybeShowAuto('companion-mode');
       requestAnimationFrame(() => onboardingHints?.repositionAll());

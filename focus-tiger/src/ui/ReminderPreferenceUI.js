@@ -55,6 +55,7 @@ export class ReminderPreferenceUI {
    * @param {HTMLElement} mountRoot 通常传 `document.body`
    * @param {object} [handlers]
    * @param {() => void} [handlers.onPreferenceChange]
+   * @param {() => void} [handlers.onClose] 面板收起（含点外侧）
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -76,6 +77,7 @@ export class ReminderPreferenceUI {
     this.toggleBtn.addEventListener('click', () => {
       this._expanded = !this._expanded;
       this._render();
+      if (!this._expanded) this.handlers.onClose?.();
     });
 
     this.panel = document.createElement('div');
@@ -118,6 +120,7 @@ export class ReminderPreferenceUI {
       if (this.root.contains(/** @type {Node} */ (event.target))) return;
       this._expanded = false;
       this._render();
+      this.handlers.onClose?.();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
 
@@ -149,6 +152,7 @@ export class ReminderPreferenceUI {
     if (!this._expanded) return;
     this._expanded = false;
     this._render();
+    this.handlers.onClose?.();
   }
 
   dispose() {

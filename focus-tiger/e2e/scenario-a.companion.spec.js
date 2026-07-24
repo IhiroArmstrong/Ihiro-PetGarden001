@@ -30,6 +30,16 @@ test('scenario I: hint opens companion panel when gate not ready (no silent no-o
   await expect(page.locator('#arrival-practice')).toBeHidden();
 });
 
+test('companion panel dismisses on outside click', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.locator('.session-start-dock__hint').click();
+  const panel = page.locator('.session-start-dock__panel');
+  await expect(panel).toBeVisible({ timeout: 5_000 });
+  // Empty upper-left canvas (away from dock / ActionBar)
+  await page.mouse.click(28, 140);
+  await expect(panel).toBeHidden({ timeout: 3_000 });
+});
+
 test('scenario I2: Here & Now before Arrival gate opens Arrival (HUD stays idle)', async ({
   page
 }) => {

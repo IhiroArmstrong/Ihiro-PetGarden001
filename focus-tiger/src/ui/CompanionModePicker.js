@@ -141,6 +141,15 @@ export class CompanionModePicker {
     this._render();
     this._syncQuickStartLabel();
     this._syncHintAvailability();
+
+    // 轻量功能框：点面板外空白收起（本能预期）
+    this._onDocPointer = (event) => {
+      if (!this._expanded) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.dock?.contains(target)) return;
+      this.hide();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
   }
 
   /**
@@ -293,6 +302,7 @@ export class CompanionModePicker {
    * @returns {void}
    */
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
   }
 

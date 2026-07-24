@@ -68,6 +68,16 @@ export class HonestyCheckInUI {
     this._breathTimer = null;
     this._breathInterval = null;
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
+
+    // prompt / 时长三选一：点框外收起（呼吸引导进行中不关）
+    this._onDocPointer = (event) => {
+      if (this.phase !== 'prompt' && this.phase !== 'duration') return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root?.contains(target)) return;
+      if (this.idleEntryBtn?.contains(target)) return;
+      this.hide();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
   }
 
   showPrompt() {
@@ -161,6 +171,7 @@ export class HonestyCheckInUI {
   }
 
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubscribeLocale();
     window.clearTimeout(this._breathTimer);
     window.clearInterval(this._breathInterval);
