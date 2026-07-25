@@ -225,8 +225,8 @@
    - 勾选 **Remind me / 开启提醒** → 写入 `{ hour, minute }` 到 `focus-tiger.reminder-preference.v1`
    - **Time** 选择器设时（如 09:00）；**过去时分允许保存**（非「只能选此刻之后」）
    - 常显说明 `#reminder-preference-daily-blurb`（`reminder.daily_blurb`）：明示这是**每天**的时分，到点且今日未练会出顶部轻提示
-   - 若已开启且时分已过、今日未练 → `#reminder-preference-status` 出 `reminder.past_time_note`（软提示，不拦保存）
-   - 若今日已练 → status 出 `reminder.practiced_today_note`；**时间框仍可改**（留给以后的日子），不得灰掉锁定
+   - 若已开启且时分已过、今日未练 → `#reminder-preference-status` 出 `reminder.past_time_note`（软提示，不拦保存）；须为 **callout**（衬底+左边线，非斜体灰字），与 `daily_blurb` 可区分
+   - 若今日已练 → status 出 `reminder.practiced_today_note`（同样 callout 显眼）；**时间框仍可改**（留给以后的日子），不得灰掉锁定
 3. 取消勾选 → 清除偏好（`null` = 关闭提醒；**无**单独 `enabled` 字段）。
 4. 点击面板外或再点时钟 → 面板收起。
 

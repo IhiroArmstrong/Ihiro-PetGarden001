@@ -124,7 +124,9 @@ export class ReminderPreferenceUI {
 
     this.statusEl = document.createElement('p');
     this.statusEl.id = 'reminder-preference-status';
-    this.statusEl.className = 'reminder-pref__status';
+    this.statusEl.className =
+      'reminder-pref__status reminder-pref__status--callout';
+    this.statusEl.setAttribute('role', 'status');
     this.statusEl.hidden = true;
 
     this.panel.append(
@@ -386,11 +388,32 @@ export class ReminderPreferenceUI {
         font-style: italic;
         color: rgba(44, 31, 20, 0.62);
       }
-      .reminder-pref__status {
-        margin: 8px 0 0;
-        font-size: 12px;
-        line-height: 1.45;
-        color: rgba(92, 72, 52, 0.88);
+      /* Soft status callout: must read distinct from italic daily_blurb
+         (B/C notes were easy to miss as plain gray body text). */
+      .reminder-pref__status--callout {
+        margin: 10px 0 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        font-style: normal;
+        font-weight: 560;
+        letter-spacing: 0.01em;
+        color: #3a2a1c;
+        background: rgba(196, 154, 92, 0.16);
+        border: 1px solid rgba(139, 115, 85, 0.32);
+        border-left: 3px solid rgba(180, 118, 62, 0.72);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+      }
+      .reminder-pref__status--callout[data-note='reminder.past_time_note'] {
+        background: rgba(210, 150, 72, 0.15);
+        border-color: rgba(170, 120, 55, 0.34);
+        border-left-color: rgba(190, 120, 48, 0.78);
+      }
+      .reminder-pref__status--callout[data-note='reminder.practiced_today_note'] {
+        background: rgba(130, 150, 110, 0.18);
+        border-color: rgba(100, 125, 90, 0.34);
+        border-left-color: rgba(95, 130, 85, 0.78);
       }
       .reminder-pref__status[hidden] {
         display: none !important;

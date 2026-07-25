@@ -63,6 +63,7 @@ test('enabled past time shows soft note; practiced today note keeps time editabl
 
   const status = page.locator('#reminder-preference-status');
   await expect(status).toBeVisible();
+  await expect(status).toHaveClass(/reminder-pref__status--callout/);
   await expect(status).toHaveAttribute(
     'data-note',
     'reminder.past_time_note'
@@ -70,6 +71,13 @@ test('enabled past time shows soft note; practiced today note keeps time editabl
   await expect(status).toContainText(
     /already passed today|今天已经过了/
   );
+  // Callout must not look like plain italic blurb (user: B/C notes too easy to miss).
+  await expect(status).toHaveCSS('font-style', 'normal');
+  const statusBg = await status.evaluate(
+    (el) => getComputedStyle(el).backgroundColor
+  );
+  expect(statusBg).not.toBe('rgba(0, 0, 0, 0)');
+  expect(statusBg).not.toBe('transparent');
   await expect(page.locator('#reminder-preference-daily-blurb')).toContainText(
     /Each day at this time|每天到这个时分/
   );
