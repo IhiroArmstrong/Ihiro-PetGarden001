@@ -116,6 +116,61 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   });
 });
 
+test('375 park: ? remedy tips remap near ActionBar / grabber', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await expect(page.locator('body')).toHaveClass(/ft-narrow-park/, {
+    timeout: 15_000
+  });
+  await page.locator('#ft-narrow-help-btn').click();
+  const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
+  await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
+
+  const layout = await page.evaluate(() => {
+    const help = document.getElementById('ft-narrow-help-btn');
+    const grabber = document.querySelector('.ft-narrow-grabber');
+    const center = document.querySelector('.ft-narrow-action-bar__center');
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
+    ].filter((el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    if (!help || !grabber || bubbles.length < 2) {
+      return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
+    }
+    const anchors = [help, grabber, center].filter(Boolean);
+    const nearVisible = bubbles.every((b) => {
+      const r = b.getBoundingClientRect();
+      const cx = (r.left + r.right) / 2;
+      const cy = (r.top + r.bottom) / 2;
+      if (cx < 0 || cy < 0 || cx > 375 || cy > 667) return false;
+      return anchors.some((a) => {
+        const ar = a.getBoundingClientRect();
+        const ax = (ar.left + ar.right) / 2;
+        const ay = (ar.top + ar.bottom) / 2;
+        return Math.hypot(cx - ax, cy - ay) < 280;
+      });
+    });
+    const centers = bubbles.map((b) => {
+      const r = b.getBoundingClientRect();
+      return `${Math.round((r.left + r.right) / 2)},${Math.round(
+        (r.top + r.bottom) / 2
+      )}`;
+    });
+    const unique = new Set(centers).size;
+    return {
+      ok: nearVisible && unique >= Math.min(2, bubbles.length),
+      nearVisible,
+      unique,
+      bubbleCount: bubbles.length
+    };
+  });
+  expect(layout.ok, JSON.stringify(layout)).toBe(true);
+});
+
 test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
   page
 }) => {

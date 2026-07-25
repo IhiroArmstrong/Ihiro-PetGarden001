@@ -38,8 +38,13 @@ const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 const WIDE_PARKED_ANCHOR_RE =
   /honesty-idle-entry|micro-ritual-idle-entry|session-start-dock__hint|ambient-soundscape__fab|reminder-preference-toggle/;
 
+/** Narrow Idle parks legacy chrome off-canvas — remap to ActionBar / grabber. */
+const NARROW_PARKED_ANCHOR_RE =
+  /btn-focus|session-start-dock|arrival-practice|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape__fab|ambient-soundscape__focus-chrome|ambient-soundscape__nudge|reminder-preference|quick-start|focus-hud|onboarding-hint-help/;
+
 function resolveAnchorEl(selectorList) {
   const widePark = document.body.classList.contains('ft-wide-park-secondary');
+  const narrowPark = document.body.classList.contains('ft-narrow-park');
   for (const sel of String(selectorList)
     .split(',')
     .map((s) => s.trim())
@@ -47,6 +52,20 @@ function resolveAnchorEl(selectorList) {
     if (widePark && WIDE_PARKED_ANCHOR_RE.test(sel)) {
       const more = document.getElementById('ft-wide-more-btn');
       if (more && !more.hidden && more.getClientRects().length > 0) return more;
+    }
+    if (narrowPark && NARROW_PARKED_ANCHOR_RE.test(sel)) {
+      const remapped = remapNarrowParkedSelector(sel);
+      if (remapped) {
+        const el = document.querySelector(remapped);
+        if (el && !el.hidden && el.getClientRects().length > 0) {
+          const r = el.getBoundingClientRect();
+          const vw = document.documentElement.clientWidth;
+          const vh = document.documentElement.clientHeight;
+          if (!(r.right < 0 || r.bottom < 0 || r.left > vw || r.top > vh)) {
+            return el;
+          }
+        }
+      }
     }
     const el = document.querySelector(sel);
     if (el && !el.hidden && el.getClientRects().length > 0) {
@@ -63,9 +82,24 @@ function resolveAnchorEl(selectorList) {
   return null;
 }
 
+/**
+ * @param {string} sel
+ * @returns {string | null}
+ */
+function remapNarrowParkedSelector(sel) {
+  if (/onboarding-hint-help/.test(sel)) return '#ft-narrow-help-btn';
+  if (/ambient-soundscape__mute/.test(sel)) return '#ft-narrow-mute-btn';
+  if (/focus-hud/.test(sel)) return '.ft-narrow-action-bar__center';
+  if (NARROW_PARKED_ANCHOR_RE.test(sel)) return '.ft-narrow-grabber';
+  return null;
+}
+
 /** @returns {boolean} */
 function isNarrowViewport() {
-  return typeof window !== 'undefined' && window.matchMedia('(max-width: 899px)').matches;
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(max-width: 479px)').matches
+  );
 }
 
 /**
@@ -89,11 +123,14 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'top'
     };
   }
-  if (
-    /btn-focus|session-start-dock__hint|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape|reminder-preference|quick-start/.test(
-      sel
-    )
-  ) {
+  if (/focus-hud/.test(sel)) {
+    return {
+      selector: '.ft-narrow-action-bar__center',
+      placement: 'below',
+      tip: 'top'
+    };
+  }
+  if (NARROW_PARKED_ANCHOR_RE.test(sel)) {
     return {
       selector: '.ft-narrow-grabber',
       placement: 'above',
@@ -439,16 +476,19 @@ export class OnboardingHintsUI {
       ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
       : { ...cfg };
 
-    // 窄屏 Idle 壳：锚点改到可见 ActionBar / grabber（旧 dock 已停泊屏外）
-    if (document.body.classList.contains('ft-narrow-idle')) {
+    // 窄屏 park：锚点改到可见 ActionBar / grabber（旧 dock 已停泊屏外）
+    if (
+      document.body.classList.contains('ft-narrow-park') ||
+      document.body.classList.contains('ft-narrow-idle')
+    ) {
       anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor);
     }
 
-    // 窄屏：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
+    // 窄屏非 park：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
     if (
       !useHelpAnchor &&
       isNarrowViewport() &&
-      !document.body.classList.contains('ft-narrow-idle') &&
+      !document.body.classList.contains('ft-narrow-park') &&
       anchorCfg.placement === 'above' &&
       /#btn-focus/.test(String(anchorCfg.selector))
     ) {
@@ -504,6 +544,22 @@ export class OnboardingHintsUI {
         left = ar.left + (ar.width - br.width) / 2;
         top = ar.top - br.height - gap;
         tip = 'bottom';
+      }
+    }
+
+    // 窄屏补救：多条同锚（grabber）时向上错开，避免叠成一团
+    if (
+      bubble.dataset.remedy === '1' &&
+      document.body.classList.contains('ft-narrow-park') &&
+      anchor
+    ) {
+      const openRemedy = [...this._remedyIds].filter((id) => {
+        const b = this._bubbles.get(id);
+        return Boolean(b?.open);
+      });
+      const idx = openRemedy.indexOf(hintId);
+      if (idx > 0) {
+        top -= idx * Math.min(52, Math.max(36, Math.round(br.height * 0.55)));
       }
     }
 
