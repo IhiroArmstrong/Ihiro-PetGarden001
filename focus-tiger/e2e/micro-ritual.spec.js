@@ -240,6 +240,51 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await expect(honestyEntry).toBeAttached();
 });
 
+test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/?product=1');
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible({
+    timeout: 60_000
+  });
+
+  const bridgeReady = await page.evaluate(() => {
+    const bridge = window.__honestyBridge;
+    if (!bridge?.onHonestyCheckInComplete) return false;
+    bridge.onHonestyCheckInComplete();
+    return bridge.isVisible() === true;
+  });
+  expect(bridgeReady).toBe(true);
+
+  const bridge = page.locator('#honesty-bridge-cta');
+  await expect(bridge).toBeVisible({ timeout: 5_000 });
+  // 图4：桥接时 ActionBar 时间仍可见（勿 suppress）
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  await expect(page.locator('.ft-narrow-action-bar__time')).toBeVisible();
+  // 不自动出 honesty-bridge tip
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')
+  ).toHaveCount(0);
+
+  // 补救 tip：点 tip 不得关掉 Yes/No
+  await page.locator('#ft-narrow-help-btn').click();
+  const tip = page.locator(
+    'ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]'
+  );
+  await expect(tip).toBeVisible({ timeout: 8_000 });
+  await tip.click();
+  await expect(tip).toBeHidden({ timeout: 3_000 });
+  await expect(bridge).toBeVisible();
+  await expect(bridge.getByRole('button', { name: /^(Yes|好啊)$/i })).toBeVisible();
+});
+
 test('Honesty Check-in click hides entry until duration panel open', async ({
   page
 }) => {

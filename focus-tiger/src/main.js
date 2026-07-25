@@ -515,11 +515,15 @@ async function init() {
     const honestyBusy =
       Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
     const bridgeVisible = honestyBridge?.isVisible?.() === true;
-    const chromeSuppressed = overlayActive || honestyBusy || bridgeVisible;
+    // 桥接 Yes/No：须保留 ActionBar 时间（图4）；勿因 bridge  alone 收起窄屏顶栏
+    const chromeSuppressed = overlayActive || honestyBusy;
     narrowIdleShell.setIdle(!focusing);
     narrowIdleShell.setSuppressed(chromeSuppressed);
     wideIdleMoreMenu.setIdle(!focusing);
-    wideIdleMoreMenu.setSuppressed(chromeSuppressed);
+    // Wide ⋯ 仍须在桥接时收起，避免挡 Yes/No
+    wideIdleMoreMenu.setSuppressed(
+      chromeSuppressed || bridgeVisible
+    );
     syncInAppReminderBanner();
   }
 

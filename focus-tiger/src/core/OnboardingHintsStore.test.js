@@ -252,13 +252,10 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
       honestyBridgeVisible: true,
       weeklyHeatmapVisible: true
     }),
-    [
-      'honesty-bridge',
-      'sit-button',
-      'how-shall-we-sit',
-      'weekly-heatmap',
-      'ambient-gated',
-      'help-affordance'
-    ]
+    []
+  );
+  assert.equal(
+    resolveHintForScene({ honestyBridgeVisible: true }),
+    'honesty-bridge'
   );
 });

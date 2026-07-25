@@ -75,6 +75,18 @@ export class HonestyCheckInUI {
       const target = /** @type {Node} */ (event.target);
       if (this.root?.contains(target)) return;
       if (this.idleEntryBtn?.contains(target)) return;
+      // Tip / ? / 用途卡：只关 tip，不得关掉时长三选一（同 Arrival 图1）
+      const el =
+        event.target instanceof Element
+          ? event.target
+          : /** @type {Element | null} */ (event.target?.parentElement);
+      if (
+        el?.closest?.(
+          'ft-onboarding-hint-bubble, #onboarding-hint-help, #ft-narrow-help-btn, #onboarding-app-purpose'
+        )
+      ) {
+        return;
+      }
       this.hide();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);

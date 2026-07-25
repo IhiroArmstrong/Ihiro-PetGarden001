@@ -216,16 +216,11 @@ export function resolveAutoHintIds(scene = {}) {
     // Arrival 进行中不自动出 tip（Notice/Breath/Choose 会挡选择格；点 tip
     // 曾被外侧取消误吃）。补救「?」仍经 resolveHintForScene / remedy 列表。
     ids = [];
+  } else if (scene.honestyBridgeVisible) {
+    // 桥接 Yes/No：不自动出 tip（图4：游离 tip 易挡/误关）；? 补救仍可出 honesty-bridge
+    ids = [];
   } else if (scene.companionExpanded) {
     ids = ['companion-mode'];
-  } else if (scene.honestyBridgeVisible) {
-    ids = ['honesty-bridge'];
-    if (scene.hasEverCompletedSession) {
-      ids.push('idle-after-session');
-    } else {
-      ids.push('sit-button', 'how-shall-we-sit');
-    }
-    appendIdleChromeHintIds(ids, scene);
   } else if (scene.honestyVisible) {
     ids = ['honesty-optional'];
   } else if (scene.isDormant) {
@@ -240,7 +235,10 @@ export function resolveAutoHintIds(scene = {}) {
   }
 
   const skipHelpAffordance =
-    scene.reflectionOpen || scene.isFocusing || scene.arrivalOpen;
+    scene.reflectionOpen ||
+    scene.isFocusing ||
+    scene.arrivalOpen ||
+    scene.honestyBridgeVisible;
   if (!skipHelpAffordance && !ids.includes('help-affordance')) {
     ids.push('help-affordance');
   }
@@ -261,6 +259,18 @@ export function resolveRemedyHintIds(scene = {}) {
     const arrivalId =
       phase === 'breath' ? 'breathing' : phase === 'choose' ? 'choose' : 'notice';
     if (!ids.includes(arrivalId)) ids.push(arrivalId);
+  }
+  if (scene.honestyBridgeVisible) {
+    // 自动不出 tip；? 补救仍须 honesty-bridge + Idle 入口说明
+    if (!ids.includes('honesty-bridge')) ids.unshift('honesty-bridge');
+    if (scene.hasEverCompletedSession) {
+      if (!ids.includes('idle-after-session')) ids.push('idle-after-session');
+    } else {
+      for (const id of ['sit-button', 'how-shall-we-sit']) {
+        if (!ids.includes(id)) ids.push(id);
+      }
+    }
+    appendIdleChromeHintIds(ids, scene);
   }
   if (scene.companionExpanded) {
     for (const id of ['companion-stay', 'companion-away', 'companion-across-tools']) {
