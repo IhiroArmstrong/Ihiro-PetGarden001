@@ -30,6 +30,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'WORKFLOW.md',
   '.cursor/rules/focus-tiger-regression-lock.mdc',
   '.cursor/rules/focus-tiger-docs.mdc',
+  '.cursor/rules/focus-tiger-browser-energy.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -342,6 +343,36 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'last-mtime-wins',
         pattern: /以最后修改时间(?:更晚)?的文档为准/,
         note: '文档冲突不以 mtime 为准，而以 RULES_INDEX 指定的 SSOT 为准'
+      }
+    ]
+  },
+  {
+    id: 'browser-energy',
+    title: '预览浏览器与能耗（默认 Safari；内置 Browser 限时）',
+    ssotPath: '.cursor/rules/focus-tiger-browser-energy.mdc',
+    ssotSection: 'Focus Tiger · 预览浏览器与能耗',
+    ssotMustContain: [
+      /请用户用 \*\*Safari\*\* 打开/,
+      /最长 10 分钟/,
+      /窄屏 \/ 响应式视口/
+    ],
+    topicSignals: [
+      /内置 Browser|Cursor 内置浏览器|browser-energy/,
+      /预览浏览器与能耗/,
+      /cursor-ide-browser/
+    ],
+    mustCite: [/focus-tiger-browser-energy\.mdc|browser-energy/],
+    restatementFingerprints: [
+      /最长 10 分钟/,
+      /请用户用 \*\*Safari\*\* 打开/,
+      /禁止.*?擅自调用 Cursor 内置 Browser/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'default-cursor-browser',
+        pattern: /默认(?:使用|用)\s*Cursor\s*(?:内置\s*)?Browser/,
+        note: '默认外置 Safari，不得写成默认用 Cursor 内置 Browser'
       }
     ]
   }

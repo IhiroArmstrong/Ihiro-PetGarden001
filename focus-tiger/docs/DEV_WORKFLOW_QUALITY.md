@@ -219,6 +219,7 @@
 |---|---|
 | `RULES_INDEX.md` | **规则主题 → 唯一权威来源**；写新流程/Git/门禁规则前先查；`rules:doc-check` 防平行复述 |
 | `.cursor/rules/focus-tiger-regression-lock.mdc` | **强制门禁**（Agent 每次加载）；含 **§7 AI 修复验收规范**（Bug close checklist） |
+| `.cursor/rules/focus-tiger-browser-energy.mdc` | **预览浏览器与能耗** SSOT（见 `RULES_INDEX` → `browser-energy`） |
 | `PROCESS.md`「回归锁工作法」 | 项目流程中的 **A/B/C 摘要** |
 | `COLLAB.md` | 协作侧交叉约定 |
 | `TEST_TRACKER.md` | 验收与用户反馈登记 |

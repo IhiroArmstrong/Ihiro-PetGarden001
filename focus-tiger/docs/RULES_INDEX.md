@@ -48,6 +48,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
 | `doc-code-contract` | 文档-代码结构性对齐（docs:check） | `focus-tiger/docs/DOC_CODE_CONTRACT.md` | DOC_CODE_CONTRACT.md |
 | `rules-authority` | 规则主题权威索引（本机制） | `focus-tiger/docs/RULES_INDEX.md` | 规则主题 → 权威来源 |
+| `browser-energy` | 预览浏览器与能耗（默认 Safari；内置 Browser 限时） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
 
 <!-- rules-authority-index:end -->
 
@@ -63,6 +64,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
+| `browser-energy` | 「预览浏览器见 `focus-tiger-browser-energy.mdc`」 | 复述完整限时条款；主张把内置 Browser 当默认预览方式 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -76,6 +78,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|
 | [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、跨会话冲突、并行 worktree |
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7 门禁条文 |
+| [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；内置 Browser 限时） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
@@ -139,3 +142,4 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-07-23 | 补强 `git-agent-commit`：Git 同步 / 批量 push 须「分级汇总」（commit 列表 + 高风险单独标注）；与 Cursor user rule 对齐方向 |
 | 2026-07-23 | 新增 `git-parallel-worktree`：并行 Cursor 写会话须 `git worktree` 隔离；SSOT 在 `WORKFLOW.md` |
 | 2026-07-23 | 固定口令「请安排下班前的 Git 同步」语义：只 push `develop`/`feature`/`fix` + 分级汇总；不合并 main、不推进 PR（见 regression-lock 第 7 条） |
+| 2026-07-25 | 新增 `browser-energy`：默认 Safari 预览；Cursor 内置 Browser 仅窄屏特例且最长 10 分钟（SSOT：`focus-tiger-browser-energy.mdc`） |

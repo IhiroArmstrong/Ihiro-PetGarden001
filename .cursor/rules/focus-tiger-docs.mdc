@@ -74,6 +74,7 @@ alwaysApply: true
 - 不要在情绪主线任务里实现纪念奖励/成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
+- 预览浏览器与能耗 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
 
 ## TEST_TRACKER 日常维护（Part 2）
 
