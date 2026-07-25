@@ -6,7 +6,8 @@
  *
  * 结束经 `onReady({ skipped, chose })` 交给 `main.js` / `SessionUiGate`：
  * - `skipped: true` → Quick Start → 立刻开计时
- * - `chose: true` 且无预选自动模式 → 开门闩并（通常）播点头后展开 Companion
+ * - `chose: true` 且无预选自动模式 → 开门闩；点头后展开 Companion 点选开表
+ * - 预选 Here & Now / Flow 再走完 → onReady 可直接 beginFocus（suppress Companion）
  *
  * 状态机纯函数在 `ArrivalPractice.js`；本类只负责 DOM 与定时器。
  */

@@ -13,11 +13,44 @@ export async function openFreshProductShell(page) {
 }
 
 /**
- * Sit → Notice 点选 → Breath → Choose → 鞠躬后自动 Focusing。
+ * Sit → Notice 点选 → Breath → Choose → 鞠躬后 Companion → Here & Now 开表。
  * （Arrival 已无 Skip；快速开表用 `quickStartFocus`。）
  */
 export async function advanceArrivalToCompanionPicker(page) {
   await chooseReadingAndAwaitFocus(page);
+}
+
+/**
+ * Sit → Notice → Breath → Choose Reading → 鞠躬后 Companion 面板可见（尚未 Focusing）。
+ */
+export async function chooseReadingAndOpenCompanion(page) {
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+
+  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
+  await expect(reading).toBeVisible({ timeout: 20_000 });
+  await reading.click();
+
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 45_000
+  });
+  await expectFocusSessionInactive(page);
+}
+
+/**
+ * Sit → Notice → Breath → Choose Reading → Companion 点 Here & Now → Focusing。
+ */
+export async function chooseReadingAndAwaitFocus(page) {
+  await chooseReadingAndOpenCompanion(page);
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expectFocusSessionActive(page);
 }
 
 /**
@@ -100,28 +133,4 @@ export async function advanceArrivalToCompanionPanel(page) {
     timeout: 15_000
   });
   await expectFocusSessionInactive(page);
-}
-
-/**
- * Sit → Notice → Breath → Choose Reading → 等开表（鞠躬后自动 Focusing）。
- */
-export async function chooseReadingAndAwaitFocus(page) {
-  await page.locator('#btn-focus').click();
-  const arrival = page.locator('#arrival-practice');
-  await expect(arrival).toBeVisible({ timeout: 15_000 });
-
-  const noticePick = arrival.getByRole('button', {
-    name: /Not Sure|不确定|Calm|平静/i
-  });
-  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
-  await noticePick.first().click();
-
-  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
-  await expect(reading).toBeVisible({ timeout: 20_000 });
-  await reading.click();
-
-  await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
-    timeout: 45_000
-  });
-  await expectFocusSessionActive(page);
 }

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
-  advanceArrivalToCompanionPanel,
+  chooseReadingAndOpenCompanion,
   expectFocusSessionActive,
   expectFocusSessionInactive,
   openFreshProductShell,
@@ -101,7 +101,7 @@ test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stay
   ).toBeVisible({ timeout: 8_000 });
 });
 
-test('scenario A: Arrival Choose completes → focus timer starts', async ({
+test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -110,15 +110,26 @@ test('scenario A: Arrival Choose completes → focus timer starts', async ({
 });
 
 /**
- * L249 门闩就绪契约：Arrival 走完到 Companion 可选后，点 Here & Now → Focusing，
- * **不得**再开 Arrival Notice（与 I2「未就绪 → Arrival」对照）。
+ * L249：Choose Reading 后 Companion 仍开着 → 点 Here & Now → Focusing，无 Notice。
  */
-test('scenario A4: gate ready → Here & Now starts focus (no Arrival Notice)', async ({
+test('scenario A4: after Choose, Here & Now starts focus (no Arrival Notice)', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await advanceArrivalToCompanionPanel(page);
+  await chooseReadingAndOpenCompanion(page);
   await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expect(page.locator('#arrival-practice')).toBeHidden({
+    timeout: 5_000
+  });
+  await expectFocusSessionActive(page);
+});
+
+test('scenario A4b: after Choose, Flow State starts focus (no Arrival Notice)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await chooseReadingAndOpenCompanion(page);
+  await selectCompanionMode(page, /Flow State|心流/i);
   await expect(page.locator('#arrival-practice')).toBeHidden({
     timeout: 5_000
   });
