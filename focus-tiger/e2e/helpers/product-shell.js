@@ -70,6 +70,39 @@ export async function expectFocusSessionInactive(page) {
 }
 
 /**
+ * Sit → Notice → Breath → Choose「自己写」空 Enter（chose:false）
+ * → 门闩就绪并展开 Companion（不自动开表）。
+ */
+export async function advanceArrivalToCompanionPanel(page) {
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+
+  const writeOwn = arrival.getByRole('button', {
+    name: /Write your own|自己写/i
+  });
+  await expect(writeOwn).toBeVisible({ timeout: 20_000 });
+  await writeOwn.click();
+
+  const intention = arrival.locator('input[type="text"]');
+  await expect(intention).toBeVisible({ timeout: 5_000 });
+  await intention.focus();
+  await intention.press('Enter');
+
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 15_000
+  });
+  await expectFocusSessionInactive(page);
+}
+
+/**
  * Sit → Notice → Breath → Choose Reading → 等开表（鞠躬后自动 Focusing）。
  */
 export async function chooseReadingAndAwaitFocus(page) {

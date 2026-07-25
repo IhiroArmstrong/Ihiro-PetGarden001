@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
+  advanceArrivalToCompanionPanel,
   expectFocusSessionActive,
   expectFocusSessionInactive,
   openFreshProductShell,
@@ -71,6 +72,22 @@ test('scenario A: Arrival Choose completes → focus timer starts', async ({
 }) => {
   await openFreshProductShell(page);
   await advanceArrivalToCompanionPicker(page);
+  await expectFocusSessionActive(page);
+});
+
+/**
+ * L249 门闩就绪契约：Arrival 走完到 Companion 可选后，点 Here & Now → Focusing，
+ * **不得**再开 Arrival Notice（与 I2「未就绪 → Arrival」对照）。
+ */
+test('scenario A4: gate ready → Here & Now starts focus (no Arrival Notice)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await advanceArrivalToCompanionPanel(page);
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expect(page.locator('#arrival-practice')).toBeHidden({
+    timeout: 5_000
+  });
   await expectFocusSessionActive(page);
 });
 
