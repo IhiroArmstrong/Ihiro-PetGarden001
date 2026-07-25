@@ -1250,12 +1250,17 @@ async function init() {
   };
 
   companionModeHandlers.onExpandedChange = (expanded) => {
-    if (!expanded) {
-      document.body.classList.remove('ft-narrow-stage-companion');
-    }
     if (expanded) {
+      // Choose 鞠躬后 open() 也须 stage：否则窄屏 park 下三选一在屏外，误读成「没 Focusing」
+      document.body.classList.remove(
+        'ft-narrow-stage-sound',
+        'ft-narrow-stage-reminder'
+      );
+      document.body.classList.add('ft-narrow-stage-companion');
       onboardingHints?.maybeShowAuto('companion-mode');
       requestAnimationFrame(() => onboardingHints?.repositionAll());
+    } else {
+      document.body.classList.remove('ft-narrow-stage-companion');
     }
     syncOnboardingAutoHints();
   };
