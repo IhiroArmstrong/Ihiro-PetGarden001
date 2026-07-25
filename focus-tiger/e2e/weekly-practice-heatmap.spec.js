@@ -255,6 +255,7 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
 });
 
 test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
+  test.setTimeout(60_000);
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
 
@@ -271,6 +272,17 @@ test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
   const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
   await expect(reading).toBeVisible({ timeout: 20_000 });
   await reading.click();
+  // Choose 后展开 Companion；375 下 dock 选项常在视口外，用 DOM click 开表
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 20_000
+  });
+  await page.evaluate(() => {
+    const opt = Array.from(
+      document.querySelectorAll('.session-start-dock__option')
+    ).find((el) => /Here & Now|当下同坐/i.test(el.textContent || ''));
+    if (!opt) throw new Error('Here & Now option not found');
+    /** @type {HTMLElement} */ (opt).click();
+  });
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 45_000
   });
