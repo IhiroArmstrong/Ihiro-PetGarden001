@@ -167,6 +167,15 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     }
   },
   {
+    id: 'in-app-reminder',
+    localeKey: 'HINT_IN_APP_REMINDER',
+    anchor: {
+      selector: '#reminder-preference-toggle',
+      placement: 'right',
+      tip: 'left'
+    }
+  },
+  {
     id: 'micro-ritual',
     localeKey: 'HINT_MICRO_RITUAL',
     anchor: {

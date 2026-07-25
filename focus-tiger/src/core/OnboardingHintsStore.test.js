@@ -86,7 +86,7 @@ test('resolveHintForScene picks the most specific surface', () => {
   assert.equal(resolveHintForScene({}), 'sit-button');
 });
 
-test('appendIdleChromeHintIds adds heatmap / micro-ritual / ambient-gated', () => {
+test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / ambient-gated', () => {
   /** @type {string[]} */
   const ids = ['sit-button'];
   appendIdleChromeHintIds(ids, {
@@ -96,6 +96,7 @@ test('appendIdleChromeHintIds adds heatmap / micro-ritual / ambient-gated', () =
   assert.deepEqual(ids, [
     'sit-button',
     'weekly-heatmap',
+    'in-app-reminder',
     'micro-ritual',
     'ambient-gated'
   ]);
@@ -116,6 +117,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'micro-ritual',
       'ambient-gated'
     ]
@@ -141,6 +143,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'ambient-gated'
     ]
   );
@@ -199,6 +202,7 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'micro-ritual',
       'ambient-gated',
       'help-affordance'
@@ -223,6 +227,7 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'ambient-gated',
       'help-affordance'
     ]

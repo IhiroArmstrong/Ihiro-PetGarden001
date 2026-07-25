@@ -131,6 +131,7 @@
   "HINT_REFLECTION": "愿意就答；跳过也可以。",
   "HINT_IDLE_AFTER_SESSION": "想再坐的时候，随时可以。",
   "HINT_WEEKLY_HEATMAP": "近日同坐的日子——亮起的格，是你来过的日子。",
+  "HINT_IN_APP_REMINDER": "设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。",
   "HINT_MICRO_RITUAL": "一分钟呼吸——轻轻练一下，不必完整同坐。",
   "HINT_HELP_AFFORDANCE": "不知下一步点什么？先点这里。",
   "HINT_HELP_REMEDY": "本页的操作提示，现在都在页面上了。点一下气泡即可关掉；下次需要时再点问号。",
@@ -142,6 +143,9 @@
   "reminder.gentle_waiting": "你准备好了，阿寅就在这儿。",
   "reminder.enable_label": "开启提醒",
   "reminder.time_label": "时间",
+  "reminder.daily_blurb": "每天到这个时分，若今天还没同坐，页面顶部会出现一句轻提示。",
+  "reminder.past_time_note": "这个时分今天已经过了——若还没同坐，轻提示会马上出现。",
+  "reminder.practiced_today_note": "今天已经同坐过了——今天不会再提醒。仍可改时间，留给以后的日子。",
   "reminder.settings_aria": "提醒时间",
   "reminder.banner_dismiss_aria": "关闭提醒"
 }

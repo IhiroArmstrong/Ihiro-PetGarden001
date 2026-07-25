@@ -79,6 +79,9 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
   if (scene.weeklyHeatmapVisible && !ids.includes('weekly-heatmap')) {
     ids.push('weekly-heatmap');
   }
+  if (scene.weeklyHeatmapVisible && !ids.includes('in-app-reminder')) {
+    ids.push('in-app-reminder');
+  }
   if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
     ids.push('micro-ritual');
   }
@@ -144,6 +147,7 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'honesty-optional': 80,
   'how-shall-we-sit': 70,
   'micro-ritual': 58,
+  'in-app-reminder': 57,
   'ambient-soundscape': 60,
   'weekly-heatmap': 56,
   'ambient-gated': 55,
