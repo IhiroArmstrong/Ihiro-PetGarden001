@@ -3,9 +3,13 @@ import assert from 'node:assert/strict';
 
 import {
   REMINDER_GENTLE_WAITING_MESSAGE_KEY,
+  REMINDER_DAILY_BLURB_MESSAGE_KEY,
+  REMINDER_PAST_TIME_NOTE_KEY,
+  REMINDER_PRACTICED_TODAY_NOTE_KEY,
   REMINDER_PREFERENCE_STORAGE_KEY,
   evaluateInAppReminderBanner,
   getReminderPreference,
+  resolveReminderPreferencePanelNotes,
   setReminderPreference
 } from './reminderPreference.js';
 
@@ -109,4 +113,46 @@ test('set + past time + not completed → shows with gentle_waiting key', () => 
     messageKey: REMINDER_GENTLE_WAITING_MESSAGE_KEY
   });
   assert.equal(result.messageKey, 'reminder.gentle_waiting');
+});
+
+test('panel notes: daily blurb always; past time soft note when enabled and not completed', () => {
+  const notes = resolveReminderPreferencePanelNotes({
+    enabled: true,
+    preference: { hour: 9, minute: 0 },
+    now: () => new Date(2026, 6, 22, 16, 4),
+    hasCompletedToday: () => false
+  });
+  assert.equal(notes.dailyBlurbKey, REMINDER_DAILY_BLURB_MESSAGE_KEY);
+  assert.equal(notes.statusNoteKey, REMINDER_PAST_TIME_NOTE_KEY);
+});
+
+test('panel notes: practiced today wins over past-time note; time still editable (UI)', () => {
+  const notes = resolveReminderPreferencePanelNotes({
+    enabled: true,
+    preference: { hour: 9, minute: 0 },
+    now: () => new Date(2026, 6, 22, 16, 4),
+    hasCompletedToday: () => true
+  });
+  assert.equal(notes.dailyBlurbKey, REMINDER_DAILY_BLURB_MESSAGE_KEY);
+  assert.equal(notes.statusNoteKey, REMINDER_PRACTICED_TODAY_NOTE_KEY);
+});
+
+test('panel notes: future time + not completed → no status soft note', () => {
+  const notes = resolveReminderPreferencePanelNotes({
+    enabled: true,
+    preference: { hour: 20, minute: 0 },
+    now: () => new Date(2026, 6, 22, 16, 4),
+    hasCompletedToday: false
+  });
+  assert.equal(notes.statusNoteKey, null);
+});
+
+test('panel notes: disabled → no status soft note even if past', () => {
+  const notes = resolveReminderPreferencePanelNotes({
+    enabled: false,
+    preference: { hour: 9, minute: 0 },
+    now: () => new Date(2026, 6, 22, 16, 4),
+    hasCompletedToday: false
+  });
+  assert.equal(notes.statusNoteKey, null);
 });

@@ -4,12 +4,15 @@
  * 偏好形状：`{ hour, minute }` 或 `null`（见 `reminderPreference.js`）；
  * **无 `enabled` 字段**——勾选开→写入 `{ hour, minute }`；
  * 取消勾选→`setReminderPreference(null)` 清除。
+ *
+ * 面板文案：常显「每日时分」说明；情境软提示（已过时分 / 今日已练）可保存、可改时。
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   getReminderPreference,
-  setReminderPreference
+  setReminderPreference,
+  resolveReminderPreferencePanelNotes
 } from '../core/reminderPreference.js';
 
 const CLOCK_ICON = `<svg class="reminder-pref__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm.75 3.5h-1.5v5.25l4.25 2.55.75-1.23-3.5-2.1V7.5z"/></svg>`;
@@ -56,6 +59,9 @@ export class ReminderPreferenceUI {
    * @param {object} [handlers]
    * @param {() => void} [handlers.onPreferenceChange]
    * @param {() => void} [handlers.onClose] 面板收起（含点外侧）
+   * @param {() => void} [handlers.onOpen] 面板展开（含首次发现 Hint 记已读）
+   * @param {() => boolean} [handlers.hasCompletedToday]
+   * @param {() => Date} [handlers.now]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -77,7 +83,8 @@ export class ReminderPreferenceUI {
     this.toggleBtn.addEventListener('click', () => {
       this._expanded = !this._expanded;
       this._render();
-      if (!this._expanded) this.handlers.onClose?.();
+      if (this._expanded) this.handlers.onOpen?.();
+      else this.handlers.onClose?.();
     });
 
     this.panel = document.createElement('div');
@@ -111,12 +118,22 @@ export class ReminderPreferenceUI {
     this.timeInput.addEventListener('change', () => this._onTimeChange());
     this.timeInput.addEventListener('input', () => this._onTimeChange());
 
-    this.helpEl = document.createElement('p');
-    this.helpEl.className = 'reminder-pref__help';
-    this.helpEl.id = 'reminder-preference-help';
-    this.helpEl.hidden = true;
+    this.blurbEl = document.createElement('p');
+    this.blurbEl.id = 'reminder-preference-daily-blurb';
+    this.blurbEl.className = 'reminder-pref__blurb';
 
-    this.panel.append(this.titleEl, this.enableRow, this.timeRow, this.helpEl);
+    this.statusEl = document.createElement('p');
+    this.statusEl.id = 'reminder-preference-status';
+    this.statusEl.className = 'reminder-pref__status';
+    this.statusEl.hidden = true;
+
+    this.panel.append(
+      this.titleEl,
+      this.enableRow,
+      this.timeRow,
+      this.blurbEl,
+      this.statusEl
+    );
     this.root.append(this.toggleBtn, this.panel);
     mountRoot.appendChild(this.root);
 
@@ -138,11 +155,13 @@ export class ReminderPreferenceUI {
     return this._expanded && !this.panel.hidden;
   }
 
-  /** Open the preference panel (wide ⋯ menu / narrow drawer entry). */
+  /** Open the preference panel (narrow drawer entry). */
   openPanel() {
     if (!this._visible) this.setVisible(true);
+    const wasOpen = this._expanded;
     this._expanded = true;
     this._render();
+    if (!wasOpen) this.handlers.onOpen?.();
   }
 
   setVisible(visible) {
@@ -150,6 +169,11 @@ export class ReminderPreferenceUI {
     if (this._visible === next) return;
     this._visible = next;
     if (!next) this._expanded = false;
+    this._render();
+  }
+
+  /** Re-evaluate soft notes after practice / clock override changes. */
+  refresh() {
     this._render();
   }
 
@@ -184,17 +208,25 @@ export class ReminderPreferenceUI {
     const parsed = parseTimeInputValue(this.timeInput.value);
     if (!parsed) return;
     setReminderPreference(parsed);
+    this._render();
     this.handlers.onPreferenceChange?.();
   }
 
   _render() {
     const pref = getReminderPreference();
     const enabled = Boolean(pref);
+    const displayPref = pref || DEFAULT_TIME;
+    const notes = resolveReminderPreferencePanelNotes({
+      enabled,
+      preference: enabled ? displayPref : null,
+      now: this.handlers.now || (() => new Date()),
+      hasCompletedToday: this.handlers.hasCompletedToday || (() => false)
+    });
 
     this.titleEl.textContent = t('reminder.setting_title');
     this.enableLabelText.textContent = t('reminder.enable_label');
     this.timeLabelText.textContent = t('reminder.time_label');
-    this.helpEl.textContent = t('reminder.panel_hint');
+    this.blurbEl.textContent = t(notes.dailyBlurbKey);
     this.toggleBtn.setAttribute('aria-label', t('reminder.settings_aria'));
     this.toggleBtn.setAttribute(
       'aria-expanded',
@@ -203,10 +235,20 @@ export class ReminderPreferenceUI {
     this.toggleBtn.classList.toggle('is-armed', enabled);
 
     this.enableInput.checked = enabled;
-    this.timeInput.value = toTimeInputValue(pref || DEFAULT_TIME);
+    this.timeInput.value = toTimeInputValue(displayPref);
+    // 今日已练：时间仍可改（留给以后的日子）；仅「未开启」时禁用
     this.timeInput.disabled = !enabled;
     this.timeRow.classList.toggle('is-disabled', !enabled);
-    this.helpEl.hidden = !enabled;
+
+    if (notes.statusNoteKey) {
+      this.statusEl.hidden = false;
+      this.statusEl.textContent = t(notes.statusNoteKey);
+      this.statusEl.dataset.note = notes.statusNoteKey;
+    } else {
+      this.statusEl.hidden = true;
+      this.statusEl.textContent = '';
+      delete this.statusEl.dataset.note;
+    }
 
     this.root.hidden = !this._visible;
     this.panel.hidden = !this._visible || !this._expanded;
@@ -337,14 +379,20 @@ export class ReminderPreferenceUI {
         font-size: 14px;
         box-sizing: border-box;
       }
-      .reminder-pref__help {
-        margin: 10px 0 0;
+      .reminder-pref__blurb {
+        margin: 12px 0 0;
         font-size: 12px;
         line-height: 1.45;
-        color: rgba(74, 58, 40, 0.72);
         font-style: italic;
+        color: rgba(44, 31, 20, 0.62);
       }
-      .reminder-pref__help[hidden] {
+      .reminder-pref__status {
+        margin: 8px 0 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: rgba(92, 72, 52, 0.88);
+      }
+      .reminder-pref__status[hidden] {
         display: none !important;
       }
       @media (max-width: 420px) {

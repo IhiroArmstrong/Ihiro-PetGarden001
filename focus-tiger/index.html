@@ -60,6 +60,7 @@
         pointer-events: auto;
         font-family: var(--font-family, "Nunito", system-ui, sans-serif);
         color: var(--text-primary, #2c1f14);
+        overflow: visible;
       }
       #focus-hud .ft-hud {
         position: relative;
@@ -75,11 +76,13 @@
         outline: none;
         --ft-hud-fill: 0;
         min-width: 220px;
+        overflow: visible;
       }
       #focus-hud .ft-hud__row {
         display: flex;
         align-items: center;
         gap: 14px;
+        overflow: visible;
       }
       #focus-hud .ft-hud__bar {
         width: 100%;
@@ -90,9 +93,13 @@
         flex-shrink: 0;
         --meter-size: 64px;
         margin-left: auto;
+        position: relative;
+        z-index: 2;
+        overflow: visible;
       }
       #focus-hud .ft-hud__streak::part(label) {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
+        line-height: 1.5;
       }
       #focus-hud .ft-hud__gauge {
         position: relative;
@@ -202,6 +209,7 @@
         position: absolute;
         left: 0;
         top: calc(100% + 8px);
+        z-index: 3;
         min-width: 11rem;
         padding: 0.55rem 0.8rem;
         border-radius: var(--radius-sm, 10px);

@@ -277,17 +277,8 @@ async function init() {
       }
     }
   );
-  const reminderPreferenceUI = new ReminderPreferenceUI(
-    weeklyPracticeHeatmap.getClusterEl(),
-    {
-      onPreferenceChange: () => {
-        syncInAppReminderBanner();
-      },
-      onClose: () => {
-        document.body.classList.remove('ft-narrow-stage-reminder');
-      }
-    }
-  );
+  /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday). */
+  let reminderPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -328,6 +319,22 @@ async function init() {
   let microRitualUI = null;
   const now = () => new Date();
   const dailyCompletionStore = new DailyCompletionStore({ now });
+  reminderPreferenceUI = new ReminderPreferenceUI(
+    weeklyPracticeHeatmap.getClusterEl(),
+    {
+      onPreferenceChange: () => {
+        syncInAppReminderBanner();
+      },
+      onOpen: () => {
+        onboardingHints?.markSeen('in-app-reminder');
+      },
+      onClose: () => {
+        document.body.classList.remove('ft-narrow-stage-reminder');
+      },
+      hasCompletedToday: () => dailyCompletionStore.hasCompletedToday(),
+      now: reminderNow
+    }
+  );
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const honestyBridgeStore = new HonestyBridgeStore();
@@ -950,6 +957,7 @@ async function init() {
   }
 
   syncInAppReminderBanner = () => {
+    reminderPreferenceUI?.refresh?.();
     const candidate = evaluateInAppReminderBanner({
       now: reminderNow,
       hasCompletedToday: () => dailyCompletionStore.hasCompletedToday()

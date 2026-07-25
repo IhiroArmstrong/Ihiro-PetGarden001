@@ -13,6 +13,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   ARRIVAL_BREATH_MS,
   ARRIVAL_NOTICE_REPLY_MS,
@@ -143,6 +144,7 @@ export class ArrivalPracticeUI {
     this._unsubLocale = onLocaleChange(() => this._render());
 
     // Notice / Choose 选择格：点框外空白取消（对齐 Companion / Honesty 轻量框本能）
+    // tip / ? / 用途卡 ≠ 空白（§8 N18：点 tip 只关 tip，不关面板）
     this._onDocPointer = (event) => {
       if (!this._canDismissSelectionOnOutside()) return;
       const target = /** @type {Node} */ (event.target);
@@ -154,15 +156,7 @@ export class ArrivalPracticeUI {
       ) {
         return;
       }
-      // Tip / ? / 用途卡：只关 tip，不得取消 Arrival（pointerdown 早于 tip click）
-      if (
-        target instanceof Element &&
-        target.closest(
-          'ft-onboarding-hint-bubble, #onboarding-hint-help, #ft-narrow-help-btn, #onboarding-app-purpose'
-        )
-      ) {
-        return;
-      }
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       this._cancelFromOutside();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);

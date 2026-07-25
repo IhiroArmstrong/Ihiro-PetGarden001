@@ -30,6 +30,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'WORKFLOW.md',
   '.cursor/rules/focus-tiger-regression-lock.mdc',
   '.cursor/rules/focus-tiger-docs.mdc',
+  '.cursor/rules/focus-tiger-browser-energy.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -225,36 +226,6 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
-    id: 'git-sibling-branch-sync',
-    title: '长期并存功能分支的同步纪律（姊妹线不漏修）',
-    ssotPath: 'WORKFLOW.md',
-    ssotSection: '长期并存功能分支的同步纪律',
-    ssotMustContain: [
-      /修复落地即对照姊妹线/,
-      /共享入口修复须写进汇报清单/,
-      /合回单线 vs 继续并行/
-    ],
-    topicSignals: [
-      /长期并存功能分支/,
-      /姊妹分支/,
-      /分支分叉纪律/
-    ],
-    mustCite: [/WORKFLOW\.md/],
-    restatementFingerprints: [
-      /修复落地即对照姊妹线/,
-      /共享入口修复须写进汇报清单/,
-      /合回单线 vs 继续并行/
-    ],
-    restatementThreshold: 2,
-    forbiddenOutsideSsot: [
-      {
-        id: 'agent-decides-parallel-strategy',
-        pattern: /(?:Agent|助手)(?:可以|应当|自行)(?:决定|拍板).{0,20}(?:并行分支|合回单线|分支策略)/,
-        note: '合回单线 vs 并行须用户拍板；Agent 不得自行定策略'
-      }
-    ]
-  },
-  {
     id: 'regression-gate',
     title: '交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…）',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
@@ -372,6 +343,36 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'last-mtime-wins',
         pattern: /以最后修改时间(?:更晚)?的文档为准/,
         note: '文档冲突不以 mtime 为准，而以 RULES_INDEX 指定的 SSOT 为准'
+      }
+    ]
+  },
+  {
+    id: 'browser-energy',
+    title: '预览浏览器与能耗（默认 Safari；内置 Browser 限时）',
+    ssotPath: '.cursor/rules/focus-tiger-browser-energy.mdc',
+    ssotSection: 'Focus Tiger · 预览浏览器与能耗',
+    ssotMustContain: [
+      /请用户用 \*\*Safari\*\* 打开/,
+      /最长 10 分钟/,
+      /窄屏 \/ 响应式视口/
+    ],
+    topicSignals: [
+      /内置 Browser|Cursor 内置浏览器|browser-energy/,
+      /预览浏览器与能耗/,
+      /cursor-ide-browser/
+    ],
+    mustCite: [/focus-tiger-browser-energy\.mdc|browser-energy/],
+    restatementFingerprints: [
+      /最长 10 分钟/,
+      /请用户用 \*\*Safari\*\* 打开/,
+      /禁止.*?擅自调用 Cursor 内置 Browser/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'default-cursor-browser',
+        pattern: /默认(?:使用|用)\s*Cursor\s*(?:内置\s*)?Browser/,
+        note: '默认外置 Safari，不得写成默认用 Cursor 内置 Browser'
       }
     ]
   }
