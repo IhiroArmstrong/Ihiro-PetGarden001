@@ -155,12 +155,12 @@
 
 ### 6.2 每个 UI Task 的最低门禁
 
-1. 桌面宽屏（≥900px）主路径 + 回流。  
+1. 桌面宽屏（≥900px）主路径 + 回流；触及 Idle chrome / Arrival / Honesty / Hints 时，步骤须含 **`DEV_WORKFLOW_QUALITY.md` §9「宽屏故事最小集」**（非仅「⋯ / 清场」烟测）。  
 2. **375×667 竖屏** + **一种横屏**（DevTools 设备模式即可）走通 §五 中与本次改动相关的行。  
-   - **场景 O（2026-07-24）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 上滑 `BottomOptionsDrawer`；主画布清场、Yin 放大居中；7 格进抽屉只读条。`≥480px` 仍左下簇 + 原 dock。  
-   - **触及 Idle chrome / Arrival / Honesty / Hints**：`TEST_TRACKER` 步骤须含 **`DEV_WORKFLOW_QUALITY.md` §8「375 故事最小集」**（Sit→Notice；Choose→Focusing HUD；? 补救无乱指；叠层期顶栏约定）——**禁止**只验壳切换（有没有 ActionBar / ⋯）就当窄屏通过。  
-3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏步骤（勿笼统一行「手机看一下」）；关单须注明「375 故事是否测过」（§8 N20）。  
-4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代窄屏人工）。  
+   - **场景 O（2026-07-24）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 上滑 `BottomOptionsDrawer`；主画布清场、Yin 放大居中；7 格进抽屉只读条。`≥480px` 目标壳为 Sit+⚡+⋯（见 §9；未合入前旧竖排 dock 仍须走故事）。  
+   - **触及 Idle chrome / Arrival / Honesty / Hints**：`TEST_TRACKER` 步骤须含 **§8「375 故事最小集」**——**禁止**只验壳切换（有没有 ActionBar / ⋯）就当窄屏通过。  
+3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏与宽屏故事步骤（勿笼统一行「手机/桌面看一下」）；关单须注明双视口故事是否测过（§8 N20 / §9 N24）。  
+4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代人工故事）。  
 5. 可选后续：Playwright `viewport` 用例锁「Sit 可点、无静默 return」（与 `DEV_WORKFLOW_QUALITY.md` §6 对齐）。
 
 ### 6.2b 双壳共享不变量（摘要）
@@ -172,6 +172,9 @@
 | Hints remap | park 后 tip / ? 补救锚到当前可见宿主，禁止旧坐标 |
 | Sit 显隐 | Arrival（含 Breath）开着 → Sit 隐藏或不可点；双壳同语义 |
 | FocusHUD vs ActionBar | Focusing / 叠层期顶栏时间归属写死；宽窄一致 |
+
+故事矩阵：`DEV_WORKFLOW_QUALITY.md` **§8（窄）** / **§9（宽）**。
+
 ### 6.3 实现禁忌
 
 - 禁止仅用 `pointer-events: none` 在父级误伤子按钮。  
@@ -243,11 +246,9 @@
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| 1.5 | 2026-07-25 | §6.2：宽屏故事最小集（对齐 `DEV_WORKFLOW_QUALITY` §9）；关单双视口对称 |
+| 1.4 | 2026-07-25 | §6.2 / 6.2b：375 故事最小集 + 双壳不变量摘要（对齐 `DEV_WORKFLOW_QUALITY` §8） |
 | 1.3 | 2026-07-25 | §4.1：澄清「桌面拖最窄 ≠ 窄屏抽屉」；须 DevTools ≤479 / 375 |
 | 1.2 | 2026-07-21 | Task 1 代码落地：互斥 helper + dock 防截断；待人工复测 |
-<<<<<<< HEAD
 | 1.1 | 2026-07-21 | 立项 Task 1（窄屏互斥+Sit）/ Task 2（横屏建议）；见 §6.4–6.5 与 `TASKS.md` |
 | 1.0 | 2026-07-21 | 初版：原则 A 功能对等、原则 B 竖屏 P1 + 可建议横屏；断点、验收矩阵、开发/设计政策 |
-=======
-| 1.3 | 2026-07-25 | §6.2 / 6.2b：375 故事最小集 + 双壳不变量摘要（对齐 `DEV_WORKFLOW_QUALITY` §8） |
->>>>>>> 9d5dabd (docs(workflow): add narrow-screen story matrix (§8) and dual-shell invariants)

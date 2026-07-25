@@ -149,7 +149,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 1. 本次改动 touch 上表哪一行？  
 2. 「谁用」列还有谁 → 写入保护面并复测。  
 3. 若属 §2.3 事故点 → 额外跑冒烟 + 对应 TEST_TRACKER 观感行。  
-4. 若触及 Idle chrome / Arrival / Honesty / Hints → 对照 **§6 双壳不变量** + `DEV_WORKFLOW_QUALITY.md` §8（375 故事最小集）。
+4. 若触及 Idle chrome / Arrival / Honesty / Hints → 对照 **§6 双壳不变量** + `DEV_WORKFLOW_QUALITY.md` **§8（375）** 与 **§9（宽屏）** 故事最小集。
 
 ---
 
