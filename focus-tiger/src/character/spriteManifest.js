@@ -370,14 +370,16 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。
-  // 首尾帧衔接经抽样确认可直接 forward 接回；若试播有跳帧感再改 pingpong。
-  // 2026-07-19：至少放慢 3×（原 4fps → 1），睡态宜极缓。
+  // 2026-07-25：改用 cloak-sleep 末尾 030–034（与披毯入睡末帧同姿），每帧连播两拍；
+  // 播放列表先倒序 034→030，再 pingpong 往复，避免旧 sleeping/ 侧卧与披毯趴姿硬切。
+  // 原 sleeping/ 8 帧目录保留未删。睡态仍约 1 fps（极缓）。
   sleeping: {
-    animation: 'sleeping',
-    frameCount: 8,
+    animation: 'cloak-sleep',
+    frameCount: 34,
+    frameIndices: [34, 34, 33, 33, 32, 32, 31, 31, 30, 30],
     fps: 1,
     loop: true,
-    loopMode: 'forward',
+    loopMode: 'pingpong',
     holdLastFrame: false
   },
 

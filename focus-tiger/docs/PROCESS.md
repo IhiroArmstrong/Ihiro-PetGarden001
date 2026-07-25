@@ -97,7 +97,7 @@
 - **N15（2026-07-21）**：Bug 修复 = 代码/措施 + **相关文档同批** + **立刻本地 commit**（强制；见 `DEV_WORKFLOW_QUALITY.md`）
 - **Celebrating / 同日 SessionComplete（2026-07-21）**：**已复测通过**（首次舞 + 同日二次只摆尾）
 - **DEV 一键重置**：改为 **L-logic**（`localStateKeys.test.js` 并入 `test:smoke`）；另有「重置并 idle 坐禅」快捷入口
-- **cloak-sleep 进 DORMANT（2c）**：已接线；当日首次/转换播披毯→sleeping；**2026-07-22** 人工 OK（含 sleep→wake）
+- **cloak-sleep 进 DORMANT（2c）**：已接线；当日首次/转换播披毯→sleeping；**2026-07-22** 人工 OK（含 sleep→wake）；**2026-07-25** 睡姿改为 cloak-sleep 030–034 双拍 pingpong（待复测衔接）
 - **Rise → `rise-stretch-casual` one-shot**（Reflection 期间 holdPose）；`blink-breathe` 仅调试
 - **Skip — begin → 直接开计时 / Rise**（修半卡 Sit）；Choose 后 Companion **底部横排矮条**（点头后再展开，不挡鞠躬）
 - **Idle 编排**：闭目 pingpong ×2 → 睁眼弧 ×1（取代旧 breath×5→idle-eye-glance 切序列）
@@ -155,7 +155,7 @@
 - Tiger Reflection Moment（结束反思）MVP：会话结束后（正常完成在庆祝完整播放并回归坐姿后留白淡入；主动结束不播完成反馈、短暂留白后淡入）逐题展示三问（今天注意到什么 / 有哪些情绪来访 / 下次想把注意力带回什么），每题独立可跳、Skip 与 Continue 同级、Esc 整体划过；无提交/必填/进度数字等表单元素；仅非空答案本地保存最近 5 条（`focus-tiger.reflections.v1`），全部跳过不落记录，不做标签化/统计。`TigerReflectionMoment` + `ReflectionFlowState` + `SessionEndFlow` + `Storage` JSON 封装，5 项单元测试与浏览器全路径验收通过
 - Honesty Check-in / DORMANT：`DORMANT_IDLE_HOURS`（默认 **2**）滚动窗口——距最近一次专注结束（达标或 Rise）≥ 该时长 → 惰性进入 `STATES.DORMANT`；新用户无结束记录不触发；当日首次进 DORMANT 播 `cloakSleep` 正放再 `sleeping`。Honesty 从睡态补登仍走 `dormantWake`；`DailyCompletionStore` 与正常计时共用；不占共享提醒池。`getLocalDateKey` 抽至 `utils/localDate.js`
 - `Celebrating` 2D 正式素材：`celebrate-dance`（57 帧，`loopMode: none`）一次性叙事弧线（起身→慢速舞+小金光→施礼）；播完 EmotionController 回归 idle-breathing；会话结束时序改由序列 `onComplete` 驱动（不再固定 4s）
-- `Sleeping` / DORMANT 2D 正式素材：`sleeping`（8 帧，`loopMode: forward`）持续循环；首尾帧衔接抽样可接受，试播若跳帧再改 pingpong；替换原纯 GLB 占位表现
+- `Sleeping` / DORMANT 2D 正式素材：同源 `cloak-sleep` 末尾 **030–034**（每帧两拍、`loopMode: pingpong`，先 034→030）持续循环；与披毯入睡末帧同姿；旧 `sleeping/` 8 帧目录保留未删
 - 2D 主线默认隐藏 3D canvas（`PoseManager.setCanvasHidden`）；透明精灵后不再露出垫底模型；GLB 仍保留给奖励柜
 - `idle-breathing` **约 2.5 fps**（放慢 2×）+ 每 5 循环眨眼一次；`sleeping` **约 1 fps**
 - `Smiling` / `Blink` 接入 `blink-smile`；Idle 自发变体含 blink-smile；Honesty 唤醒后接 `haloBreathing` 奖励呼吸

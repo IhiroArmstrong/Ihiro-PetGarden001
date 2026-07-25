@@ -19,7 +19,7 @@
 | 仅 manifest、无业务触发 | **3**（breath-halo-hq / lotus-front-rising / lotus-chest-halo） |
 | 3D GLB（奖励柜/垫底） | 7+ |
 
-**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` **1 fps**。  
+**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **1 fps**（旧 `sleeping/` 目录保留）。  
 **2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。
 
 ---
@@ -87,7 +87,7 @@
 | session-complete | 28 | 1056×864 | 19.3 | sessionComplete | 已接线 · 同日非首次完成 |
 | nod-bow | 13 | 1056×864 | 7.6 | nodBow | 已接线 · mindfulAcknowledge |
 | stretch-reminder | 17 | 1056×864 | 10.9 | stretchReminder · wakeUp | 舒展提醒 + 调试「唤醒(伸懒腰)」同源不同键 |
-| sleeping | 8 | 960×960 | 3.9 | sleeping | 已接线 · DORMANT；**1 fps**（≥3× 慢于早期 4） |
+| sleeping（键） | 用 cloak-sleep 030–034×2 拍 | 同 cloak-sleep | — | sleeping | 已接线 · DORMANT；**1 fps** pingpong；旧 `sleeping/` 8 帧保留未删 |
 | dormant-wake | 16 | 960×960 | 7.8 | dormantWake | 已接线 · **仅 Honesty**；**3 fps**；定格末帧；暂不接 idle 淡入 / halo |
 | halo-breathing | 30 | 1056×864 | 25.0 | haloBreathing* | 已接线 · 唤醒后奖励 |
 | nod-greeting | 23 | 1056×864 | 14.0 | nodGreeting | 素材+调试保留；**靠近自动触发已拆除**（2026-07-19）；**6 fps** + 末帧多停 2 拍 |

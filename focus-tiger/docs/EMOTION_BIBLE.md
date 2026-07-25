@@ -37,7 +37,7 @@
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
 | `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | **默认开场与日常基底**（含当日零完成 / 登录后第一幕）；非庆祝播放中 / 非调试 Sleeping / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`（2026-07-18：单色暖浅灰棉麻、无红边），`PoseManager` 中 `IDLE_CLOSED_EYES`；2D 主线默认隐藏 canvas，正式情绪由 `idle-breathing` 等序列承载；Idle 自发变体见下文「IdleOrchestrator 自发变体」 |
-| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'forward'`） | **不再**作为零完成自动开场；仅调试面板「睡着了」或显式 `STATES.DORMANT` 时；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：`sleeping` 8 帧循环，**约 1 fps**；`playEmotion('sleeping')`。产品口径（2026-07-21）：登录后第一幕必须是 Idle 闭目坐禅，Sleeping 看起来 not uplifting。**进睡过渡候选**：`cloak-sleep` 仍待 2c |
+| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'pingpong'`） | **不再**作为零完成自动开场；仅调试面板「睡着了」或显式 `STATES.DORMANT` 时；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：同源 `cloak-sleep` 末尾 **030–034**，每帧连播两拍、先倒序 034→030 再 pingpong 往复，**约 1 fps**；`playEmotion('sleeping')`。与 `cloakSleep` 正放末帧同姿衔接。产品口径（2026-07-21）：登录后第一幕必须是 Idle 闭目坐禅，Sleeping 看起来 not uplifting。原 `sleeping/` 8 帧目录保留未删 |
 | `Smiling` | 坐禅微笑基底（观照者回归态） | 是（`blink-smile` pingpong） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现（2D 主线）**：`blink-smile` 12 帧 pingpong；`playEmotion('smiling')`；3D `tiger-meditate-smile.glb` 仅作垫底且主线默认隐藏 canvas。日期戳持续基底仍待完整接通 |
 | `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放，不循环） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完回归 `Idle` / idle-breathing） | **已实现（2D 主线）**：两套变体素材——`celebrate-dance`（57 帧）与 `celebrate-dance-v2`（60 帧）；`playEmotion('celebrating')` 每次触发时 50/50 随机选用其一（MVP 不做轮换记账）；`loopMode: none`，播完由 EmotionController 回归 idle-breathing。3D `tiger-happy-jump.glb` 仍作垫底。日期戳防刷与 `Smiling` 持续基底仍待完整接通。本序列即主界面 Celebrating 的正式幅度上限；禁止另加更娱乐化的街机式狂欢动作 |
 
@@ -139,7 +139,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 本文档标识符 | 代码 / GLB 现有键名 | 资源文件 |
 |---|---|---|
 | `Idle` | `IDLE_CLOSED_EYES` | `tiger-meditate-closed.glb` |
-| `Sleeping` | `sleeping`（2D）/ `SLEEPING`（3D 垫底） | `public/sprites/.../sleeping/frame_001–008.png`；GLB `tiger-sleeping.glb` |
+| `Sleeping` | `sleeping`（2D）/ `SLEEPING`（3D 垫底） | 2D：`cloak-sleep/frame_030–034`（双拍 pingpong）；旧 `sleeping/frame_001–008` 保留未删；GLB `tiger-sleeping.glb` |
 | `Smiling` | `IDLE_SMILING` | `tiger-meditate-smile.glb` |
 | `Celebrating` | `celebrating` → `celebrateDance` / `celebrateDanceV2`（2D，50/50）/ `CELEBRATING`（3D 垫底） | `public/sprites/.../celebrate-dance/frame_001–057.png`；`.../celebrate-dance-v2/frame_001–060.png`；GLB `tiger-happy-jump.glb` |
 | `IncenseComplete` | （效果模块，非姿态键） | `IncenseGreeting` |
@@ -632,5 +632,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.62 | 2026-07-21 | `HONESTY_CHECKIN_PROMPT`：盘问式「Practiced elsewhere today?」→ 邀请式「Quiet time elsewhere can live here too.」；明确触发=当日零完成（含首访），非「离开很久」 |
 | 0.63 | 2026-07-21 | `dormantWake` 试替：`cloak-sleep` **倒放**（34 帧 @ 6fps）取代 `dormant-wake` 正放；末帧定格合掌坐姿；原 dormant-wake 素材保留 |
 | 0.64 | 2026-07-22 | Honesty 成功记账轻量 toast `HONESTY_CHECKIN_RECORDED`（对齐微仪式；abort 仍用 `HONESTY_PENDING_LOST`） |
+| 0.65 | 2026-07-25 | `Sleeping` 睡姿循环改 `cloak-sleep` 末尾 030–034 双拍 pingpong（先 034→030），接续披毯入睡末帧；弃用旧 `sleeping/` 8 帧主线 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
