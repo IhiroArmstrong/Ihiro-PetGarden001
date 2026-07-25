@@ -170,7 +170,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
 | **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
-| **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | 待写 Brief（合并 `NarrowIdleShell` + `WideIdleMoreMenu` 为断点驱动的同一套入口编排；抽屉 vs ⋯ 是交互范式差，不是两套业务） | **已立项 · 有触发条件**：`feature/wide-idle-more-menu` 宽屏清场 **7 项人工验收通过并 push** 之后立刻排期开工（**禁止**无限挂起；**禁止**与本次修复叠加重构） |
+| **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | 待写 Brief（合并 `NarrowIdleShell` + `WideIdleMoreMenu` 为断点驱动的同一套入口编排；抽屉 vs ⋯ 是交互范式差，不是两套业务） | **已立项 · 有触发条件**：`feature/wide-idle-more-menu` **push** 后，仍须等 **⑦ 场景 O（375 故事）收口**（另线 `fix/scenario-o-375-chrome-layout`）再排期开工。**2026-07-25 晚拍板**：宽屏 ①–⑥⑧ OK 可先 push 备份；**禁止**仅凭 push、⑦ 未收口就开 Task 3；**禁止**与未验收修复叠加重构 |
 
 **共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。
 

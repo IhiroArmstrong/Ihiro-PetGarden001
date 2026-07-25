@@ -65,6 +65,7 @@
 
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
 - **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。
+- **wide-idle 宽屏清场验收（2026-07-25 晚）**：P0 ①–⑥⑧ 宽屏 **测试 OK**；⑦ 场景 O（375）**仍有问题**，另线 `fix/scenario-o-375-chrome-layout`。用户拍板：**可 push** `feature/wide-idle-more-menu` 备份；**Task 3 须等 ⑦ 收口**后再开（勿仅凭 push）。
 - **规则主题权威索引（2026-07-23）**：新增 `RULES_INDEX.md` + `rules-authority-registry.js` + `rules:doc-check`（并入 `docs:check` / CI）。每个工作流规则主题指定唯一 SSOT；非权威处改为短引用。收敛 `WORKFLOW` / regression-lock / `PROCESS` / docs.mdc / `DEV` / `COLLAB` 上 commit / 跨会话等平行复述。冲突不以 mtime 为准。
 - **合并门禁拍板（2026-07-23 · PR #2）**：本次 `develop`→`main` 接受「本地 `test:smoke`+`test:e2e` 全绿 + CI 仅 doc-contract」；**后续任务**须把完整 smoke/e2e 纳入 CI（见 Backlog「CI 全量 smoke + e2e」）。提醒忙碌策略拍板 **`suppress`**。MilestoneGlow（L136）书面为**已知问题、不挡此次合并**，预计 **2026-07-30 前**复测。
 - **TEST_TRACKER 合并前清理（2026-07-22）**：EyeTracking → **已放弃/不适用**；微仪式吸呼同拍行 → 代码核对 `736fdc1` 撤销到位后 **关单（已通过）**；`lookAtCursor` / `wakeUp` / `snoringZZZ` → **不挡合并（仅调试）**（产品壳不可见）。仍开、须人工：场景 **C/O/P**（用户正走）；MilestoneGlow 见上行「已知不挡」。不采用书面豁免开 PR（本条 MilestoneGlow 为合并门禁显式记录，非豁免开 PR）。

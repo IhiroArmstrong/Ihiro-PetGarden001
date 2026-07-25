@@ -23,7 +23,7 @@
 
 当前实现：≤479 = `NarrowIdleShell`（抽屉）；≥480 = `WideIdleMoreMenu`（⋯ Popover）。业务应共享，壳形态可因断点不同——**禁止**长期用两条 git 分支分别演进同一套 chrome/audio 修复（分叉漏修根因）。
 
-**已拍板**：合并为响应式单代码线 **值得做**，但 **等** `feature/wide-idle-more-menu` 人工七项验收通过并 push 后再开 Task（`TASKS.md` 响应式 Task 3）。勿与未验收修复叠加重构。
+**已拍板**：合并为响应式单代码线 **值得做**，但 **等** `feature/wide-idle-more-menu` **push** **且** **⑦ 场景 O（375 故事）收口** 后再开 Task（`TASKS.md` 响应式 Task 3）。**2026-07-25 晚**：宽屏 P0 ①–⑥⑧ 已 OK，可先 push 备份；⑦ 另线 `fix/scenario-o-375-chrome-layout`——**禁止**仅凭 wide-idle push 开 Task 3。勿与未验收修复叠加重构。
 
 ---
 
