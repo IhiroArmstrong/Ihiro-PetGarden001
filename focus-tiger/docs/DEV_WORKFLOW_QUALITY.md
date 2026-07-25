@@ -21,6 +21,7 @@
 | 2026-07-22 | 任何任务一旦完成且验证通过，必须立即 commit；commit 按逻辑完整改动组织并说明 what/why | **§2 / §3 / §3.5 Git 节奏补强** |
 | 2026-07-22 | 废止「不必询问 commit」；可自动 commit + 同回合汇报；禁静默提交与自动合并 main | **§2.4 / §3.5 + regression-lock「Commit 汇报」** |
 | 2026-07-22 | CI workflow 本身缺 `npm ci` 导致假红；基础设施 Bug 也须红绿证据 | **§7.7 CI 基础设施案例** |
+| 2026-07-25 | 窄屏多图连爆：验收停在壳切换、外侧取消未锁 tip、双壳契约滞后 | **§8 窄屏故事矩阵** |
 
 **一句话（整套机制）**：  
 回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）。
@@ -105,12 +106,13 @@
 - Choose / Rise / IntentionSet 等进出叠化（无法像素衔接时默认 `CAPCUT_DISSOLVE_MS`）  
 - pingpong 顶点 `frameHolds`（已调过的停留勿无故缩短）
 
-**窄屏 / 移动浏览器**（权威 `RESPONSIVE_LAYOUT.md`）
+**窄屏 / 移动浏览器**（权威 `RESPONSIVE_LAYOUT.md`；故事矩阵见 **§8**）
 
 - `session-start-dock` / 主 CTA 截断或不可点  
 - `OnboardingHintsUI` 多气泡挡 Sit / Rise  
 - Honesty / Reflection / Arrival 底栏与固定 chrome 抢点击（z-index / `pointer-events`）  
-- 竖屏 **375×667** 与 **横屏** 各走通相关核心路径（功能对等，非观感完美）
+- 竖屏 **375×667** 与 **横屏** 各走通相关核心路径（功能对等，非观感完美）  
+- **禁止**只验「有没有 ActionBar / ⋯」就当窄屏通过——须走 **§8.4 375 故事最小集**
 
 ### 2.4 任务汇报（每次收尾回复）
 
@@ -129,6 +131,10 @@
 ```
 
 两条可各列多条 bullet；标题字面须可被扫读到，勿改成「小结」「Next」等模糊替代。
+
+### 2.5 窄屏故事矩阵（N17–N20）
+
+触及 Idle chrome / Arrival / Honesty / Hints 时，须遵守 **§8**：375 故事最小集（N17）、外侧取消须锁「点 tip 只关 tip」（N18）、双壳共享契约（N19）、关单须注明 375 故事是否测过（N20）。布局权威仍为 `RESPONSIVE_LAYOUT.md`；不变量表见 `SHARED_RESOURCES.md` §6。
 
 ---
 
@@ -228,7 +234,8 @@
 | `COLLAB.md` | 协作侧交叉约定 |
 | `TEST_TRACKER.md` | 验收与用户反馈登记 |
 | `PRINCIPLES.md` | 产品与工程红线（一次一任务、路径 ASCII 等）；本文件不替代 |
-| `ARCHITECTURE.md` / `EMOTION_BIBLE.md` / `SHARED_RESOURCES.md` | 改什么模块、情绪契约、共享波及面；本文件管「怎么改才不丢质量」 |
+| `ARCHITECTURE.md` / `EMOTION_BIBLE.md` / `SHARED_RESOURCES.md` | 改什么模块、情绪契约、共享波及面；本文件管「怎么改才不丢质量」；**双壳不变量**见 `SHARED_RESOURCES` §6 + `RESPONSIVE_LAYOUT` |
+| `RESPONSIVE_LAYOUT.md` | 窄/宽壳布局权威；§8 要求 chrome 类任务走 375 **故事**而非仅壳切换烟测 |
 | `SCENARIO_TESTS.md` | 场景步骤与自动化覆盖对照；§7 要求修复时同步核对「已自动化」口径 |
 | `DOC_CODE_CONTRACT.md` | 文档↔代码结构对齐；本文件管质量方法叙事 |
 
@@ -352,6 +359,7 @@
 | 2026-07-22 | 补强 commit 纪律：验证通过后不得跨任务周期悬置未 commit；commit 按逻辑完整改动组织；message 必须写 what + why；纯文档任务同样适用 |
 | 2026-07-22 | 对齐 regression-lock「Commit 汇报与分支门禁」：可自动 commit + 同回合汇报 hash/分支/文件；禁止静默提交与自动合并进 `main` |
 | 2026-07-22 | 新增 §7.7：CI 缺 `npm ci` 假红案例；红 [`29916112037`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29916112037) → 绿 [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318) @ `7b90283` |
+| 2026-07-25 | 新增 §8「窄屏故事矩阵」：根因六条 + N17–N20（375 故事最小集 / tip 回归 / 双壳契约 / 关单话术）；不变量落盘 `SHARED_RESOURCES` §6 |
 
 ---
 
@@ -428,3 +436,101 @@
 | **口径** | 此例证明：本地绿 ≠ CI 绿；CI 红 ≠ 产品 Bug。基础设施修复也走「红输出 + 绿 CI 链接」归档。 |
 
 **注意**：本案例**不**单独 close「意图回显」产品 Bug——该 Bug 另有单元 / e2e / 人工复测门闩；本条只锁 **doc-contract workflow 缺依赖** 这一基础设施问题。
+
+---
+
+## 8. 窄屏故事矩阵
+
+> **地位**：窄屏 / 双壳验收的**工作流规范**（叙事 + 强制口径）。布局细则仍以 `RESPONSIVE_LAYOUT.md` 为准；共享不变量落在 `SHARED_RESOURCES.md` §6。  
+> **来源**：2026-07-25 窄屏连爆复盘（布局烟测通过、用户故事成片红）。  
+> **一句话**：窄屏验收 = **完整用户故事矩阵**，不是「有没有 ActionBar / 有没有 ⋯」的壳切换烟测。
+
+### 8.1 事故总判（2026-07-25）
+
+近期验收把「窄屏」当成**布局开关烟测**（有没有 ActionBar / 有没有 ⋯），没有当成**完整用户故事矩阵**（Sit→Arrival→鞠躬开表、Honesty 桥接、点 ? 补救、叠层期间 chrome）。宽屏路径测得较满，窄屏只验了壳切换，所以一走故事就成片暴露。
+
+### 8.2 流程根因（按权重）
+
+1. **窄屏验收口径过窄（最大根因）**  
+   §9 / 场景 O 一类对照停在「375 → ActionBar + 抽屉」「≥480 → ⋯ 回来」，**没要求**在 375 上走通：Notice / Choose / 鞠躬后 Focusing HUD / Honesty 桥接顶栏 / 点 ? 补救。结果：宽屏人工可标「测试 OK」，窄屏仍是半成品验收。
+
+2. **新交互只验 Happy Path，没锁「邻接可点物」**  
+   外侧取消 Notice/Choose 修过并测过「点空白 → 回 Idle」，但**已好清单 / 保护面缺了**：点 tip / 点气泡 ≠ 点空白。tip 落在选择框之上时，点击冒泡被当成外侧 →「点 hint 框面板也没了」。典型假修好：主路径绿，回流 / 邻接路径未锁。
+
+3. **双壳（窄 park / 宽 park）缺少共享契约**  
+   宽屏做了 park → tip remap 到 ⋯；窄屏有 remap 函数，但补救 ? 仍可能指到 park 掉的旧按钮坐标；Arrival / Honesty 叠层时 ActionBar / `#focus-hud` 被 suppress，却**没写清**「叠层期顶栏时间谁负责」。等于：壳换了，Hints / HUD 契约没同步升格成跨壳不变量。
+
+4. **自动化覆盖层与人工验收错位**  
+   `test:smoke` / 多数 e2e 锁的是宽屏或「抽屉里有没有 Honesty」一类 DOM，**很少锁**：375 × Arrival tip 点击、375 × Choose 后 `#focus-hud`、375 × ? 补救锚点、375 × Arrival Breath 时 Sit 必须 `hidden`。于是：e2e 绿、宽屏 OK、窄屏故事红——符合「全绿 ≠ 观感/故事通过」，但流程上仍把窄屏当成「附带一眼」。
+
+5. **「Arrival 开着藏 Sit」验收未在 375 回流钉死**  
+   文档写过 Arrival 开着须藏 Sit，但 Breath（Inhale）仍见 Sit——说明只验了某一瞬间，或宽屏过了、**窄屏未作回流复测**。保护面写了，验收矩阵没落到 375。
+
+6. **并行专题叠加，共享面滞后**  
+   窄壳 → 宽屏 ⋯ → 外侧取消 → hint 补全，多专题串行/并行。每个专题的「已好清单」多写本专题，少写 Hints × 双壳、HUD × 叠层 × 窄 ActionBar。共享面变成最后才被窄屏故事打穿的债。
+
+### 8.3 与回归锁的对照
+
+| 原则 | 这次怎么被违背 |
+|---|---|
+| 修好 ≠ 只通 Happy Path | 外侧取消通了，tip 点击未测 |
+| 已好清单 / 保护面 | 双壳、Hints、HUD 未列为跨任务不变量 |
+| 单元 / e2e 绿 ≠ 可感知通过 | 缺 375×故事 断言与人工分列 |
+| 一次一任务管范围，保护面管邻接 | 范围切对了，邻接复测（尤其 375）没跟上 |
+
+### 8.4 工作流规范（强制 · 建议补进工作流落地）
+
+以下四条自 2026-07-25 起视为本文件规范；Agent / 人工验收均须遵守。
+
+#### N17 · 375 故事最小集（chrome 类任务默认步骤）
+
+凡改动 **Idle chrome / Arrival / Honesty / Hints** 的任务，`TEST_TRACKER` 测试步骤**默认包含「375 故事最小集」**（DevTools **375×667**，`/?product=1`），不得只写「窄屏看一下壳」或只勾 §9 壳切换。
+
+**375 故事最小集**（每条至少主路径；触及改动的子项须写明回流）：
+
+| # | 故事 | 最低可见结果 |
+|---|---|---|
+| S1 | Sit → Notice（选择格可见；可外侧取消回 Idle） | 面板在；点空白取消后回 Idle |
+| S2 | Notice → Breath → Choose → 鞠躬 → Focusing | 见 Focusing HUD（`#focus-hud` 或约定顶栏时间）；计时可读 |
+| S3 | 点 **?** 补救 | tip 锚点正确（无乱指 park 掉的旧按钮）；可关 |
+| S4 | Arrival / Honesty **叠层期间** chrome | 顶栏时间归属写死且可见约定成立；Sit 按契约显隐（见双壳不变量） |
+| S5 |（若本任务触及）Honesty 桥接 / 回流再进 | 与宽屏门闩行为一致，无静默失败 |
+
+壳切换烟测（375↔≥480 看 ActionBar / ⋯）**可以**保留，但**不替代**上表。
+
+#### N18 · 「外侧取消」类修复须锁 tip 邻接
+
+凡「点空白 / 外侧取消」类修复，必须追加回归（优先 e2e；确无法自动化 → `TEST_TRACKER` 永久人工锁路径）：
+
+> **点 tip / hint 气泡 → 只关 tip，不关面板**（Notice / Choose / Companion / Honesty 等选择格仍在）。
+
+禁止只验「点空白 → 回 Idle」就宣称外侧取消修好。保护面须显式写：点 tip ≠ 点空白。
+
+#### N19 · 双壳共享契约（不变量落盘）
+
+下列契约是**跨壳不变量**，须写在权威表里，**不是**各专题自己的实现细节：
+
+| 契约 | 含义 | 权威落盘 |
+|---|---|---|
+| **Hints remap** | park 后 tip / ? 补救锚点必须 remap 到当前可见宿主（窄：ActionBar `?` 等；宽：⋯ 等），禁止仍指旧坐标 | `SHARED_RESOURCES.md` §6 + `RESPONSIVE_LAYOUT.md` |
+| **Sit 显隐** | Arrival（含 Breath）开着时 Sit / 等价主 CTA 须按契约隐藏或不可点；NarrowIdleShell 与宽屏 dock **同一语义** | 同上 |
+| **FocusHUD vs ActionBar** | Focusing / 叠层期：谁负责顶栏时间、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄改一侧必须勾另一侧 | 同上 |
+
+宽屏或窄屏改一侧 chrome → 开工保护面与收尾复测**必须勾另一侧**（至少 375 故事最小集相关行 + 一侧 ≥480 对照）。
+
+#### N20 · 关单话术（chrome 行）
+
+涉及 Idle chrome / Arrival / Honesty / Hints / dock / ActionBar 的 `TEST_TRACKER` 行：
+
+- **禁止**仅凭「宽屏人工 OK」关单或改「已通过」。  
+- 用户反馈 / 状态变更时须**注明「375 故事是否测过」**（测过哪些最小集行 / 未测则仍「待人工测试」或「有问题」）。  
+- 可写：「宽屏 OK；**375 故事未测 → 仍待测**」——诚实半通过，禁止暗示整行已关。
+
+### 8.5 收尾自检（触及窄屏 / chrome 时追加）
+
+在 §3.3 通用门禁之外追加：
+
+- [ ] `TEST_TRACKER` 步骤含 **375 故事最小集**（N17），非仅壳切换  
+- [ ] 若为外侧取消类：已加「点 tip 只关 tip」回归（N18）  
+- [ ] 双壳不变量已对照 `SHARED_RESOURCES` §6；改一侧已勾另一侧（N19）  
+- [ ] 关单 / 状态文案未用「宽屏 OK」单独关闭 chrome 行（N20）

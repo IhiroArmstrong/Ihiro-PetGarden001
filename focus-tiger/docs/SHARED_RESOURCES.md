@@ -5,7 +5,7 @@
 > - 本表 = 当前共享资源分别被谁用（开工查波及面）  
 > **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。  
 > **§4 机器块**：由 `sessionUiGateContractRegistry.js` 生成；`npm run gate:doc-sync`；详见 `DOC_CODE_CONTRACT.md`。  
-> **更新**：2026-07-22（§4 文档-代码对齐机器块）
+> **更新**：2026-07-25（§6 双壳共享契约不变量）
 
 ---
 
@@ -148,4 +148,20 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 
 1. 本次改动 touch 上表哪一行？  
 2. 「谁用」列还有谁 → 写入保护面并复测。  
-3. 若属 §2.3 事故点 → 额外跑冒烟 + 对应 TEST_TRACKER 观感行。
+3. 若属 §2.3 事故点 → 额外跑冒烟 + 对应 TEST_TRACKER 观感行。  
+4. 若触及 Idle chrome / Arrival / Honesty / Hints → 对照 **§6 双壳不变量** + `DEV_WORKFLOW_QUALITY.md` §8（375 故事最小集）。
+
+---
+
+## 6. 双壳共享契约（窄 / 宽不变量 · 2026-07-25）
+
+> **地位**：跨 `NarrowIdleShell`（≤479）与宽屏 dock / ⋯（≥480）的**共享不变量**。改一侧必须勾另一侧。  
+> **工作流**：`DEV_WORKFLOW_QUALITY.md` §8（N19）；布局细则：`RESPONSIVE_LAYOUT.md`。
+
+| 契约 | 不变量 | 波及 / 复测 |
+|---|---|---|
+| **Hints remap** | 控件 park 后，onboarding tip /「?」补救锚点必须 remap 到**当前可见宿主**（窄：ActionBar `?` 等；宽：⋯ 菜单等）。禁止仍指向 park 掉的旧按钮坐标。 | 改 park / ActionBar / ⋯ / Hints → 375 + ≥480 各点一次「?」补救 |
+| **Sit 显隐** | Arrival（含 Notice / Breath / Choose）打开期间，Sit / 等价主 CTA 须按契约 **hidden 或明确不可点**；窄抽屉主钮与宽屏 `#btn-focus` **同一语义**。 | 375：Sit→Breath 仍不得见可点 Sit；宽屏对照 |
+| **FocusHUD vs ActionBar** | Focusing 或约定叠层期：顶栏时间由谁负责、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄须有书面一致结果；禁止一侧有计时、另一侧顶栏空白无约定。 | Choose→鞠躬后 Focusing：375 见 HUD/约定顶栏；≥480 对照 |
+
+外侧取消邻接（点 tip 只关 tip、不关面板）属交互回归，见 `DEV_WORKFLOW_QUALITY.md` §8 N18，不单列为本表第三壳。
