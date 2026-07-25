@@ -202,7 +202,7 @@
 
 1. 打开 `?product=1`，处于 **Idle**。
 2. **宽屏**：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟）。  
-   **375×667**：见顶栏 ActionBar（? · 时间/Calm · ♪）；主画布下方三**圆球**横排 **Sit（蒲团）/ Quick Start（⚡）/ Honesty（勾选）**；底中「上滑打开选项」；上滑或点 grabber → 抽屉含 **呼吸 / How shall we sit? / Sound / Reminder**（**不含** Sit / Quick Start / Honesty）；7 格在抽屉内只读展示。
+   **375×667**：见顶栏 ActionBar（? · 时间/Calm · ♪）；主画布下方三**圆球**横排 **Sit（圆相）/ Quick Start（一笔）/ Honesty（水墨心）**；底中「上滑打开选项」；上滑或点 grabber → 抽屉含 **呼吸 / How shall we sit? / Sound / Reminder**（**不含** Sit / Quick Start / Honesty）；7 格在抽屉内只读展示。
 3. **读图**：亮格 = `totalMinutes === null` 或 `> 0`；暗格 = 真零。**无**点击下钻。
 4. **Hint（可选）**：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。
 5. **让格子变亮**：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。

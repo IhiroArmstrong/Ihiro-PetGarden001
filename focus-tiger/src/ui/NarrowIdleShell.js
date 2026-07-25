@@ -1,20 +1,24 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v6';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v7';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
 
-/** Sit ball: soft zafu / cushion (蒲团) — matches primary CTA metaphor */
-const SIT_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><ellipse cx="12" cy="16.2" rx="8.2" ry="3.6" fill="currentColor" opacity="0.38"/><ellipse cx="12" cy="13.6" rx="7" ry="3.2" fill="currentColor"/></svg>`;
+/**
+ * Zen ink totems for narrow home balls (水墨图腾):
+ * Sit → Enso 圆相；Quick → rising 一笔；Honesty → soft seal / ink heart.
+ */
+const SIT_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M17.55 7.1C19.05 8.95 19.8 11.25 19.15 13.6C18.15 17.25 14.85 19.75 11.05 19.6C7.05 19.45 4.1 16.4 4 12.45C3.9 8.4 7.1 5.1 11.1 4.9C13.3 4.8 15.3 5.6 16.8 6.9" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.15 6.55C16.95 7.2 17.5 8.05 17.8 9" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.48"/></svg>`;
 
-/** Honesty ball: quiet check-in acknowledgment */
-const HONESTY_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6.5 12.2l3.8 3.8 7.2-8.2" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const QUICK_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M8.2 18.4C10.1 15.6 11.5 12.7 12.85 9.7C13.55 8.15 14.35 6.55 15.55 4.95C15.85 4.55 16.4 4.85 16.2 5.35C15.45 7.55 14.25 10.15 13.05 12.55C11.85 14.95 10.35 17.05 8.55 18.75C8.2 19.05 7.9 18.75 8.2 18.4Z" fill="currentColor"/><path d="M14.95 5.55C15.85 5.05 16.55 5.45 16.45 6.35" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" opacity="0.72"/></svg>`;
+
+const HONESTY_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M12 17.35C9.35 14.95 7.05 12.85 7.05 10.45C7.05 8.85 8.2 7.7 9.65 7.7C10.6 7.7 11.4 8.2 12 8.9C12.6 8.2 13.4 7.7 14.35 7.7C15.8 7.7 16.95 8.85 16.95 10.45C16.95 12.85 14.65 14.95 12 17.35Z" fill="currentColor"/><circle cx="14.15" cy="9.55" r="1.15" fill="currentColor" opacity="0.28"/></svg>`;
 
 /**
  * Narrow Idle shell (≤479 / 375):
  * - Minimal ActionBar: ? · Calm/time · mute
- * - Home primary balls: Sit (cushion) · Quick Start (⚡) · Honesty (check)
+ * - Home primary balls: Sit (enso) · Quick Start (ink stroke) · Honesty (ink heart/seal)
  * - Swipe-up BottomOptionsDrawer for secondary Idle controls
  *   (breath / How shall we sit? / Sound / Reminder + week strip)
  *
@@ -250,7 +254,7 @@ export class NarrowIdleShell {
         <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${SIT_BALL_ICON}</span>
       </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-quick" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
-        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">⚡</span>
+        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${QUICK_BALL_ICON}</span>
       </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-honesty" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
         <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${HONESTY_BALL_ICON}</span>
@@ -600,6 +604,12 @@ export class NarrowIdleShell {
   }
 
   _injectStyles() {
+    // Drop prior style tags if STYLE_ID was bumped (HMR / hot reload)
+    for (const el of document.querySelectorAll(
+      'style[id^="ft-narrow-idle-shell-styles"]'
+    )) {
+      if (el.id !== STYLE_ID) el.remove();
+    }
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -745,8 +755,12 @@ export class NarrowIdleShell {
           0 6px 14px rgba(44, 31, 20, 0.16);
       }
       .ft-narrow-home-ctas__btn.is-quick {
-        /* Match desktop #quick-start-focus lightning ball */
-        font-size: 20px;
+        /* Rising ink stroke — quiet motion, not industrial lightning */
+        color: rgba(74, 52, 36, 0.9);
+      }
+      .ft-narrow-home-ctas__btn.is-honesty {
+        /* Soft cinnabar seal / ink heart */
+        color: rgba(148, 62, 48, 0.9);
       }
       .ft-narrow-home-ctas__icon {
         display: inline-flex;
