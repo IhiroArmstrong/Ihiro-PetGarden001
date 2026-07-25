@@ -44,9 +44,14 @@ test('FocusHUD hover shows Focus % detail and streak tooltip above progress bar'
       h: r.height,
       top: r.top,
       bottom: r.bottom,
-      inView: r.top >= 0 && r.bottom <= window.innerHeight && r.width > 8
+      scrollH: label.scrollHeight,
+      clientH: label.clientHeight,
+      inView: r.top >= 0 && r.bottom <= window.innerHeight && r.width > 8,
+      // Descenders must fit: no internal clip (scrollHeight ≈ clientHeight)
+      unclipped: label.scrollHeight <= label.clientHeight + 1
     };
   });
   expect(geometry?.inView).toBe(true);
   expect(geometry?.h).toBeGreaterThan(8);
+  expect(geometry?.unclipped).toBe(true);
 });

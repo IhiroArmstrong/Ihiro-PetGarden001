@@ -8,11 +8,13 @@ const STYLE = `
   --meter-size: 140px;
   position: relative;
   z-index: 2;
+  overflow: visible;
 }
 .wrap {
   position: relative;
   width: var(--meter-size);
   height: var(--meter-size);
+  overflow: visible;
 }
 .sil {
   position: absolute;
@@ -66,31 +68,37 @@ const STYLE = `
   40% { opacity: 0.9; transform: scale(1.05); }
   100% { opacity: 0; transform: scale(1.12); }
 }
-/* Below the meter, above progress-bar via host z-index (FocusHUD sibling paint order). */
+/*
+ * Host-level tooltip (not inside .wrap): flex row / fixed wrap height must not
+ * clip descenders (y / g). Extra padding-bottom keeps glyphs fully inside the card.
+ */
 .label {
   position: absolute;
   left: 50%;
-  top: calc(100% + 8px);
+  top: calc(var(--meter-size) + 8px);
   transform: translateX(-50%);
   z-index: 3;
-  max-width: 11rem;
-  padding: 0.4rem 0.65rem;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(12.5rem, 70vw);
+  padding: 0.45rem 0.7rem 0.55rem;
   border-radius: 10px;
   background: var(--color-surface-warm, #f8f1e4);
   border: 1px solid var(--color-surface-border, rgba(139, 115, 85, 0.22));
   box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
   font-size: var(--font-size-sm, 0.75rem);
-  line-height: 1.35;
+  line-height: 1.5;
   color: var(--text-primary, #2c1f14);
   white-space: normal;
   text-align: center;
+  overflow: visible;
   pointer-events: none;
   opacity: 0;
   transition: opacity 220ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
 }
 :host(:hover) .label,
 :host(:focus-within) .label,
-.wrap:hover .label {
+.wrap:hover ~ .label {
   opacity: 1;
 }
 `;
@@ -109,8 +117,8 @@ export class StreakMeter extends HTMLElement {
         <div class="breath" part="breath" aria-hidden="true"></div>
         <div class="ring" part="ring"></div>
         <div class="sil"><img alt="" /></div>
-        <div class="label" part="label"></div>
       </div>
+      <div class="label" part="label"></div>
     `;
     this._ring = this._root.querySelector(".ring");
     this._img = this._root.querySelector(".sil img");
