@@ -260,3 +260,37 @@ test('scenario K: Offline Space starts focus without Arrival', async ({
   });
   await expectFocusSessionActive(page);
 });
+
+test('Choose write-your-own: → confirm commits typed text', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+
+  const writeOwn = arrival.getByRole('button', {
+    name: /Write your own|自己写/i
+  });
+  await expect(writeOwn).toBeVisible({ timeout: 20_000 });
+  await writeOwn.click();
+
+  const input = arrival.locator('#arrival-choose-typed-input');
+  const confirm = arrival.locator('#arrival-choose-typed-confirm');
+  await expect(input).toBeVisible();
+  await expect(confirm).toBeVisible();
+  await expect(arrival.locator('#arrival-choose-typed-hint')).toContainText(
+    /Tap → or press Enter|点右箭头，或按回车/
+  );
+  await input.fill('Good');
+  await confirm.click();
+
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 15_000
+  });
+});

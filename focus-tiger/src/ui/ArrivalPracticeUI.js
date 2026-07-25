@@ -401,26 +401,61 @@ export class ArrivalPracticeUI {
       this.root.append(typedToggle);
 
       if (this._showTyped) {
+        const row = document.createElement('div');
+        row.className = 'arrival-practice__typed-row';
+        row.style.cssText =
+          'display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;';
+
         const input = document.createElement('input');
         input.type = 'text';
+        input.id = 'arrival-choose-typed-input';
         input.style.cssText =
-          'width:100%;box-sizing:border-box;padding:9px 12px;font-size:14px;border-radius:12px;border:1px solid rgba(139,115,85,.28);background:rgba(255,252,245,.8);color:#2c1f14;outline:none;';
+          'flex:1 1 auto;min-width:0;box-sizing:border-box;padding:9px 12px;font-size:14px;border-radius:12px;border:1px solid rgba(139,115,85,.28);background:rgba(255,252,245,.8);color:#2c1f14;outline:none;';
         input.placeholder = t('SESSION_INTENTION_PLACEHOLDER');
-        input.addEventListener('keydown', (event) => {
-          if (event.key !== 'Enter') return;
+
+        const commitTyped = ({ allowEmptySkip }) => {
           const text = input.value.trim();
           if (!text) {
+            if (!allowEmptySkip) return;
             this.state = skipArrivalChoose(this.state);
             this._finishReady({ chose: false });
-          } else {
-            this.state = selectArrivalChoose(this.state, {
-              text,
-              source: 'typed'
-            });
-            this._finishReady({ chose: true });
+            return;
           }
+          this.state = selectArrivalChoose(this.state, {
+            text,
+            source: 'typed'
+          });
+          this._finishReady({ chose: true });
+        };
+
+        input.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter') return;
+          event.preventDefault();
+          // Empty Enter keeps skip→Companion latch path (e2e / Quick path).
+          commitTyped({ allowEmptySkip: true });
         });
-        this.root.appendChild(input);
+
+        const confirmBtn = document.createElement('button');
+        confirmBtn.type = 'button';
+        confirmBtn.id = 'arrival-choose-typed-confirm';
+        confirmBtn.className = 'arrival-practice__typed-confirm';
+        confirmBtn.textContent = '→';
+        confirmBtn.setAttribute('aria-label', t('ARRIVAL_CHOOSE_CONFIRM_ARIA'));
+        confirmBtn.style.cssText =
+          'flex:0 0 auto;width:44px;height:44px;padding:0;border-radius:12px;border:1px solid rgba(139,115,85,.28);background:rgba(255,252,245,.92);color:#4a3a28;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.7) inset;';
+        confirmBtn.addEventListener('click', () => {
+          commitTyped({ allowEmptySkip: false });
+        });
+
+        const hint = document.createElement('p');
+        hint.id = 'arrival-choose-typed-hint';
+        hint.className = 'arrival-practice__typed-hint';
+        hint.style.cssText =
+          'margin:8px 0 0;width:100%;font-size:12px;line-height:1.45;color:rgba(44,31,20,.62);text-align:left;';
+        hint.textContent = t('ARRIVAL_CHOOSE_CONFIRM_HINT');
+
+        row.append(input, confirmBtn);
+        this.root.append(row, hint);
         window.setTimeout(() => input.focus({ preventScroll: true }), 30);
       }
     }

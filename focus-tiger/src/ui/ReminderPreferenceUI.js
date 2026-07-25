@@ -107,16 +107,55 @@ export class ReminderPreferenceUI {
     this.enableRow.append(this.enableInput, this.enableLabelText);
     this.enableInput.addEventListener('change', () => this._onEnableChange());
 
-    this.timeRow = document.createElement('label');
+    this.timeRow = document.createElement('div');
     this.timeRow.className = 'reminder-pref__time';
     this.timeLabelText = document.createElement('span');
+    this.timeLabelText.className = 'reminder-pref__time-label';
+
+    this.timeControls = document.createElement('div');
+    this.timeControls.className = 'reminder-pref__time-controls';
+
     this.timeInput = document.createElement('input');
     this.timeInput.type = 'time';
     this.timeInput.id = 'reminder-preference-time';
     this.timeInput.step = '60';
-    this.timeRow.append(this.timeLabelText, this.timeInput);
-    this.timeInput.addEventListener('change', () => this._onTimeChange());
-    this.timeInput.addEventListener('input', () => this._onTimeChange());
+    // Native picker commit still saves; mid-edit `input` no longer auto-writes
+    // so → / Enter remain the clear "saved" affordance.
+    this.timeInput.addEventListener('change', () => this._commitTime({ flash: false }));
+    this.timeInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      this._commitTime({ flash: true });
+    });
+
+    this.confirmBtn = document.createElement('button');
+    this.confirmBtn.type = 'button';
+    this.confirmBtn.id = 'reminder-preference-confirm';
+    this.confirmBtn.className = 'reminder-pref__confirm';
+    this.confirmBtn.textContent = '→';
+    this.confirmBtn.addEventListener('click', () => {
+      this._commitTime({ flash: true });
+    });
+
+    this.timeControls.append(this.timeInput, this.confirmBtn);
+
+    this.confirmHintEl = document.createElement('p');
+    this.confirmHintEl.id = 'reminder-preference-confirm-hint';
+    this.confirmHintEl.className = 'reminder-pref__confirm-hint';
+
+    this.savedBriefEl = document.createElement('p');
+    this.savedBriefEl.id = 'reminder-preference-saved';
+    this.savedBriefEl.className = 'reminder-pref__saved';
+    this.savedBriefEl.setAttribute('role', 'status');
+    this.savedBriefEl.hidden = true;
+
+    this.timeRow.append(
+      this.timeLabelText,
+      this.timeControls,
+      this.confirmHintEl,
+      this.savedBriefEl
+    );
+    this._savedFlashUntil = 0;
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.id = 'reminder-preference-daily-blurb';
@@ -188,6 +227,7 @@ export class ReminderPreferenceUI {
 
   dispose() {
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    window.clearTimeout(this._savedFlashTimer);
     this._unsubLocale();
     this.root.remove();
   }
@@ -205,13 +245,20 @@ export class ReminderPreferenceUI {
     this.handlers.onPreferenceChange?.();
   }
 
-  _onTimeChange() {
+  _commitTime({ flash }) {
     if (!this.enableInput.checked) return;
     const parsed = parseTimeInputValue(this.timeInput.value);
     if (!parsed) return;
     setReminderPreference(parsed);
+    if (flash) {
+      this._savedFlashUntil = Date.now() + 1600;
+    }
     this._render();
     this.handlers.onPreferenceChange?.();
+  }
+
+  _onTimeChange() {
+    this._commitTime({ flash: false });
   }
 
   _render() {
@@ -228,6 +275,8 @@ export class ReminderPreferenceUI {
     this.titleEl.textContent = t('reminder.setting_title');
     this.enableLabelText.textContent = t('reminder.enable_label');
     this.timeLabelText.textContent = t('reminder.time_label');
+    this.confirmHintEl.textContent = t('reminder.confirm_hint');
+    this.confirmBtn.setAttribute('aria-label', t('reminder.confirm_aria'));
     this.blurbEl.textContent = t(notes.dailyBlurbKey);
     this.toggleBtn.setAttribute('aria-label', t('reminder.settings_aria'));
     this.toggleBtn.setAttribute(
@@ -240,7 +289,18 @@ export class ReminderPreferenceUI {
     this.timeInput.value = toTimeInputValue(displayPref);
     // 今日已练：时间仍可改（留给以后的日子）；仅「未开启」时禁用
     this.timeInput.disabled = !enabled;
+    this.confirmBtn.disabled = !enabled;
     this.timeRow.classList.toggle('is-disabled', !enabled);
+    this.confirmHintEl.hidden = !enabled;
+
+    const showSaved = Date.now() < this._savedFlashUntil;
+    this.savedBriefEl.hidden = !showSaved;
+    this.savedBriefEl.textContent = showSaved ? t('reminder.saved_brief') : '';
+    if (showSaved) {
+      const remain = this._savedFlashUntil - Date.now();
+      window.clearTimeout(this._savedFlashTimer);
+      this._savedFlashTimer = window.setTimeout(() => this._render(), remain + 20);
+    }
 
     if (notes.statusNoteKey) {
       this.statusEl.hidden = false;
@@ -253,8 +313,9 @@ export class ReminderPreferenceUI {
     }
 
     this.root.hidden = !this._visible;
+    const wasPanelHidden = this.panel.hidden;
     this.panel.hidden = !this._visible || !this._expanded;
-    if (this._expanded) {
+    if (this._expanded && wasPanelHidden) {
       this.panel.style.opacity = '0';
       this.panel.style.transform = 'translateY(-8px)';
       this.panel.getBoundingClientRect();
@@ -371,8 +432,14 @@ export class ReminderPreferenceUI {
       .reminder-pref__time.is-disabled {
         opacity: 0.45;
       }
+      .reminder-pref__time-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .reminder-pref__time input[type='time'] {
-        width: 100%;
+        flex: 1 1 auto;
+        min-width: 0;
         padding: 8px 10px;
         border-radius: 10px;
         border: 1px solid rgba(139, 115, 85, 0.3);
@@ -380,6 +447,43 @@ export class ReminderPreferenceUI {
         color: #2c1f14;
         font-size: 14px;
         box-sizing: border-box;
+      }
+      .reminder-pref__confirm {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.3);
+        background: rgba(255, 252, 245, 0.95);
+        color: #4a3a28;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+      }
+      .reminder-pref__confirm:disabled {
+        cursor: default;
+        opacity: 0.45;
+      }
+      .reminder-pref__confirm-hint {
+        margin: 0;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: rgba(44, 31, 20, 0.58);
+      }
+      .reminder-pref__confirm-hint[hidden] {
+        display: none !important;
+      }
+      .reminder-pref__saved {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 560;
+        line-height: 1.35;
+        color: rgba(95, 130, 85, 0.95);
+      }
+      .reminder-pref__saved[hidden] {
+        display: none !important;
       }
       .reminder-pref__blurb {
         margin: 12px 0 0;

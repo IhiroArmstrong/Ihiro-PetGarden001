@@ -203,8 +203,12 @@ export async function advanceArrivalToCompanionPanel(page) {
   await expect(writeOwn).toBeVisible({ timeout: 20_000 });
   await writeOwn.click();
 
-  const intention = arrival.locator('input[type="text"]');
+  const intention = arrival.locator('#arrival-choose-typed-input');
   await expect(intention).toBeVisible({ timeout: 5_000 });
+  await expect(arrival.locator('#arrival-choose-typed-confirm')).toBeVisible();
+  await expect(arrival.locator('#arrival-choose-typed-hint')).toContainText(
+    /Tap → or press Enter|点右箭头，或按回车/
+  );
   await intention.focus();
   await intention.press('Enter');
 

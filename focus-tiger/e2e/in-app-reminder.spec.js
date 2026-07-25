@@ -45,6 +45,17 @@ test('idle: reminder entry opens panel with daily blurb (wide ⋯ or direct)', a
   await expect(page.locator('#reminder-preference-daily-blurb')).toContainText(
     /Each day at this time|每天到这个时分/
   );
+  await page.locator(ENABLED).check();
+  await expect(page.locator('#reminder-preference-confirm')).toBeVisible();
+  await expect(page.locator('#reminder-preference-confirm-hint')).toContainText(
+    /Tap → or press Enter to save|点右箭头，或按回车保存/
+  );
+  await page.locator(TIME).fill('09:30');
+  await page.locator('#reminder-preference-confirm').click();
+  await expect(page.locator('#reminder-preference-saved')).toBeVisible();
+  await expect(page.locator('#reminder-preference-saved')).toContainText(
+    /Saved|已保存/
+  );
 });
 
 test('enabled past time shows soft note; practiced today note keeps time editable', async ({

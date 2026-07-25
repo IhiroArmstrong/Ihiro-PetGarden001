@@ -39,7 +39,7 @@ Notice：状态点选（1次点击）
   ↓
 Choose：今天做什么（图标点选为主，次要打字入口）
   📖 Reading　💻 Deep Work　🎨 Creative Work　🧘 Meditation　📝 Writing　☕ Just One Small Step
-  （或点"自己写"展开一行可选文本输入）
+  （或点"自己写"展开一行可选文本输入 + **→** 确认钮；说明「点右箭头或按回车」；空 Enter 仍可跳过 Choose）
   ↓（确认瞬间：立刻开门闩 + Companion；并行播 16:9 `intentionNod` 点头 + 坐垫光晕；跳过 Choose 不播）
   ↓（Arrival Practice 到此结束）
 Companion Mode 三选一（独立组件，不合并进 Arrival Practice）
