@@ -3,6 +3,7 @@ import {
   advanceArrivalToCompanionPicker,
   expectFocusSessionActive,
   expectFocusSessionInactive,
+  openCompanionHint,
   openFreshProductShell,
   selectCompanionMode,
   skipArrivalBegin
@@ -11,6 +12,7 @@ import {
 /**
  * SCENARIO_TESTS 场景 A / I / K · 产品壳 DOM 主路径（到 Companion 开表为止）。
  * 不跑到 1 分钟达标 / Celebrating；序列观感仍人工。
+ * 宽屏 Idle：How shall we sit? 停泊在 ⋯ 内，须经 `openCompanionHint`（勿直点 parked hint）。
  */
 
 test('scenario I: hint opens companion panel when gate not ready (no silent no-op)', async ({
@@ -18,11 +20,7 @@ test('scenario I: hint opens companion panel when gate not ready (no silent no-o
 }) => {
   await openFreshProductShell(page);
 
-  const hint = page.locator('.session-start-dock__hint');
-  await expect(hint).toBeVisible();
-  await expect(hint).toBeEnabled();
-
-  await hint.click();
+  await openCompanionHint(page);
 
   await expect(page.locator('.session-start-dock__panel')).toBeVisible({
     timeout: 5_000
@@ -32,7 +30,7 @@ test('scenario I: hint opens companion panel when gate not ready (no silent no-o
 
 test('companion panel dismisses on outside click', async ({ page }) => {
   await openFreshProductShell(page);
-  await page.locator('.session-start-dock__hint').click();
+  await openCompanionHint(page);
   const panel = page.locator('.session-start-dock__panel');
   await expect(panel).toBeVisible({ timeout: 5_000 });
   // Empty upper-left canvas (away from dock / ActionBar)
@@ -44,7 +42,7 @@ test('scenario I2: Here & Now before Arrival gate opens Arrival (HUD stays idle)
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('.session-start-dock__hint').click();
+  await openCompanionHint(page);
   await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expect(page.locator('#arrival-practice')).toBeVisible({
     timeout: 15_000
@@ -78,7 +76,7 @@ test('scenario A2: preselect Flow → Quick Start starts timer', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('.session-start-dock__hint').click();
+  await openCompanionHint(page);
   await selectCompanionMode(page, /Flow State|心流/i);
   await expect(page.locator('#arrival-practice')).toBeVisible({
     timeout: 15_000
@@ -91,7 +89,7 @@ test('scenario A3: preselect Here & Now → Quick Start starts timer', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('.session-start-dock__hint').click();
+  await openCompanionHint(page);
   await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expect(page.locator('#arrival-practice')).toBeVisible({
     timeout: 15_000
@@ -104,7 +102,7 @@ test('scenario K: Offline Space starts focus without Arrival', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('.session-start-dock__hint').click();
+  await openCompanionHint(page);
   await selectCompanionMode(page, /Offline Space|离线空间|Offline/i);
   await expect(page.locator('#arrival-practice')).toBeHidden({
     timeout: 5_000

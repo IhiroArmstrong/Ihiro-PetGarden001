@@ -143,6 +143,11 @@
   "reminder.gentle_waiting": "Yin is right here when you're ready.",
   "reminder.enable_label": "Remind me",
   "reminder.time_label": "Time",
+  "reminder.panel_hint": "When this time arrives and you haven't practiced yet today, a gentle note appears at the top of the page.",
   "reminder.settings_aria": "Reminder time",
-  "reminder.banner_dismiss_aria": "Dismiss reminder"
+  "reminder.banner_dismiss_aria": "Dismiss reminder",
+  "HINT_QUICK_START": "Skip Arrival — sit with your last mode right away.",
+  "HINT_FOCUS_HUD_RING": "This ring soft-fills as you sit — a quiet presence, not a scoreboard.",
+  "HINT_FOCUS_HUD_PROGRESS": "Today's shared sitting — how long you've been here today.",
+  "HINT_FOCUS_HUD_STREAK": "Recent days you practiced — one lit dot per day, not per session."
 }

@@ -69,7 +69,7 @@ export function createHintsSeenStore(
 }
 
 /**
- * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated）。
+ * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated / Quick Start）。
  * @param {string[]} ids
  * @param {object} scene
  * @returns {void}
@@ -82,8 +82,23 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
   if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
     ids.push('micro-ritual');
   }
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
+  }
   if (!ids.includes('ambient-gated') && !ids.includes('ambient-soundscape')) {
     ids.push('ambient-gated');
+  }
+}
+
+/**
+ * Focusing 表面 HUD 三控件 tip。
+ * @param {string[]} ids
+ * @returns {void}
+ */
+export function appendFocusHudHintIds(ids) {
+  if (!Array.isArray(ids)) return;
+  for (const id of ['focus-hud-ring', 'focus-hud-progress', 'focus-hud-streak']) {
+    if (!ids.includes(id)) ids.push(id);
   }
 }
 
@@ -103,6 +118,7 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
  * @param {boolean} [scene.hasEverCompletedSession]
  * @param {boolean} [scene.weeklyHeatmapVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
+ * @param {boolean} [scene.quickStartVisible]
  */
 export function resolveHintForScene(scene = {}) {
   if (scene.reflectionOpen) return 'reflection';
@@ -143,6 +159,10 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'honesty-bridge': 82,
   'honesty-optional': 80,
   'how-shall-we-sit': 70,
+  'quick-start': 68,
+  'focus-hud-ring': 66,
+  'focus-hud-progress': 65,
+  'focus-hud-streak': 64,
   'micro-ritual': 58,
   'ambient-soundscape': 60,
   'weekly-heatmap': 56,
@@ -189,6 +209,7 @@ export function resolveAutoHintIds(scene = {}) {
     ids = ['reflection'];
   } else if (scene.isFocusing) {
     ids = ['rise-button', 'ambient-soundscape'];
+    appendFocusHudHintIds(ids);
   } else if (scene.ambientPanelOpen) {
     ids = ['ambient-soundscape'];
   } else if (scene.arrivalOpen) {
@@ -241,5 +262,10 @@ export function resolveRemedyHintIds(scene = {}) {
       if (!ids.includes(id)) ids.push(id);
     }
   }
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
+  }
+  // HUD chrome is on-screen in Idle and Focusing — ? must explain it for first visit.
+  appendFocusHudHintIds(ids);
   return ids;
 }

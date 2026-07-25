@@ -35,11 +35,19 @@
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
 | `weekly-heatmap` | Idle 左下 7 格 | "A quiet week of shared sitting — lit days you practiced." / 「近日同坐的日子——亮起的格，是你来过的日子。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
 | `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |
+| `quick-start` | Idle ⚡ | "Skip Arrival — sit with your last mode right away." / 「跳过到达练习，用上次的方式立刻同坐。」 | Idle ⚡ 可见 | 点 ⚡ / 点气泡 | 是 |
+| `focus-hud-ring` | Focusing HUD 金环 | "This ring soft-fills as you sit — a quiet presence, not a scoreboard." / 「同坐时金环慢慢亮起——轻柔陪伴，不是计分板。」 | Focusing 自动；任何场景点 ? 补救 | 点气泡 / 读完 | 是 |
+| `focus-hud-progress` | Focusing HUD 今日同坐条 | "Today's shared sitting — how long you've been here today." / 「今日同坐——今天已经一起待了多久。」 | Focusing 自动；点 ? 补救 | 点气泡 | 是 |
+| `focus-hud-streak` | Focusing HUD 7 点环 | "Recent days you practiced — one lit dot per day, not per session." / 「近日同坐的日子——一天只亮一点，不是按次数。」 | Focusing 自动；点 ? 补救 | 点气泡 | 是 |
 | `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
 | `help-remedy` | 点「?」补救 | "All the tips… Click a tip to dismiss it; tap ? anytime you want them again." / 「本页…点一下气泡即可关掉；下次需要时再点问号。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **20** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+共 **24** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+
+**首次发现 · 蓝点（2026-07-25）**：`quick-start` / `focus-hud-*` 未读时，对应控件角上显示**软钢蓝**小点（`.ft-hint-discovery-dot`，`#5b9bb5`），与「?」角**朱砂** `notification-badge` 分工：蓝点 = 引导未读；朱砂 = 帮助入口未读。点 tip 关闭或完成对应操作后蓝点消失。
+
+**用途简介卡避让（2026-07-25）**：点「?」同时出用途卡 + 本页 tips 时，用途卡须自动挪开，**不得**挡住热力图 / 呼吸等 tip 全文（`resolvePurposeCardAwayFromTips`）。
 
 <!-- onboarding-hints-registry:anchors:begin -->
 
@@ -66,6 +74,10 @@
 | `idle-after-session` | `HINT_IDLE_AFTER_SESSION` | `#btn-focus` | above | bottom | — |
 | `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `#weekly-practice-heatmap` | right | left | — |
 | `micro-ritual` | `HINT_MICRO_RITUAL` | `#micro-ritual-idle-entry` | right | left | — |
+| `quick-start` | `HINT_QUICK_START` | `#quick-start-focus` | above | bottom | — |
+| `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
+| `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
+| `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
 | `help-affordance` | `HINT_HELP_AFFORDANCE` | `#onboarding-hint-help` | right | left | — |
 | `help-remedy` | `HINT_HELP_REMEDY` | `#onboarding-hint-help` | right | left | — |
 | `help-fallback` | `HINT_HELP_FALLBACK` | `#btn-focus` | above | bottom | — |

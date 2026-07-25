@@ -176,6 +176,45 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     }
   },
   {
+    id: 'quick-start',
+    localeKey: 'HINT_QUICK_START',
+    anchor: {
+      selector: '#quick-start-focus',
+      placement: 'above',
+      tip: 'bottom'
+    }
+  },
+  {
+    id: 'focus-hud-ring',
+    localeKey: 'HINT_FOCUS_HUD_RING',
+    anchorGroup: 'focus-hud',
+    anchor: {
+      selector: '#focus-hud .ft-hud__gauge',
+      placement: 'below',
+      tip: 'top'
+    }
+  },
+  {
+    id: 'focus-hud-progress',
+    localeKey: 'HINT_FOCUS_HUD_PROGRESS',
+    anchorGroup: 'focus-hud',
+    anchor: {
+      selector: '#focus-hud .ft-hud__bar',
+      placement: 'below',
+      tip: 'top'
+    }
+  },
+  {
+    id: 'focus-hud-streak',
+    localeKey: 'HINT_FOCUS_HUD_STREAK',
+    anchorGroup: 'focus-hud',
+    anchor: {
+      selector: '#focus-hud .ft-hud__streak',
+      placement: 'left',
+      tip: 'right'
+    }
+  },
+  {
     id: 'help-affordance',
     localeKey: 'HINT_HELP_AFFORDANCE',
     anchor: {

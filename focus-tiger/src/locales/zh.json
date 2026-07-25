@@ -143,6 +143,11 @@
   "reminder.gentle_waiting": "你准备好了，阿寅就在这儿。",
   "reminder.enable_label": "开启提醒",
   "reminder.time_label": "时间",
+  "reminder.panel_hint": "到点且今天还没练习时，页面顶部会出现一句轻声提醒。",
   "reminder.settings_aria": "提醒时间",
-  "reminder.banner_dismiss_aria": "关闭提醒"
+  "reminder.banner_dismiss_aria": "关闭提醒",
+  "HINT_QUICK_START": "跳过到达练习，用上次的方式立刻同坐。",
+  "HINT_FOCUS_HUD_RING": "同坐时金环慢慢亮起——轻柔陪伴，不是计分板。",
+  "HINT_FOCUS_HUD_PROGRESS": "今日同坐——今天已经一起待了多久。",
+  "HINT_FOCUS_HUD_STREAK": "近日同坐的日子——一天只亮一点，不是按次数。"
 }

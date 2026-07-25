@@ -111,7 +111,12 @@ export class ReminderPreferenceUI {
     this.timeInput.addEventListener('change', () => this._onTimeChange());
     this.timeInput.addEventListener('input', () => this._onTimeChange());
 
-    this.panel.append(this.titleEl, this.enableRow, this.timeRow);
+    this.helpEl = document.createElement('p');
+    this.helpEl.className = 'reminder-pref__help';
+    this.helpEl.id = 'reminder-preference-help';
+    this.helpEl.hidden = true;
+
+    this.panel.append(this.titleEl, this.enableRow, this.timeRow, this.helpEl);
     this.root.append(this.toggleBtn, this.panel);
     mountRoot.appendChild(this.root);
 
@@ -189,6 +194,7 @@ export class ReminderPreferenceUI {
     this.titleEl.textContent = t('reminder.setting_title');
     this.enableLabelText.textContent = t('reminder.enable_label');
     this.timeLabelText.textContent = t('reminder.time_label');
+    this.helpEl.textContent = t('reminder.panel_hint');
     this.toggleBtn.setAttribute('aria-label', t('reminder.settings_aria'));
     this.toggleBtn.setAttribute(
       'aria-expanded',
@@ -200,6 +206,7 @@ export class ReminderPreferenceUI {
     this.timeInput.value = toTimeInputValue(pref || DEFAULT_TIME);
     this.timeInput.disabled = !enabled;
     this.timeRow.classList.toggle('is-disabled', !enabled);
+    this.helpEl.hidden = !enabled;
 
     this.root.hidden = !this._visible;
     this.panel.hidden = !this._visible || !this._expanded;
@@ -329,6 +336,16 @@ export class ReminderPreferenceUI {
         color: #2c1f14;
         font-size: 14px;
         box-sizing: border-box;
+      }
+      .reminder-pref__help {
+        margin: 10px 0 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: rgba(74, 58, 40, 0.72);
+        font-style: italic;
+      }
+      .reminder-pref__help[hidden] {
+        display: none !important;
       }
       @media (max-width: 420px) {
         .reminder-pref {

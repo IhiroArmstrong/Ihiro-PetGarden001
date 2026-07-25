@@ -46,6 +46,11 @@ test('idle heatmap stays; reminder opens via wide ⋯ (or direct toggle on narro
   await expect(page.locator('#reminder-preference-title')).toContainText(
     /When should I remind you|什么时候提醒你/
   );
+  await page.locator(ENABLED).check();
+  await expect(page.locator('#reminder-preference-help')).toBeVisible();
+  await expect(page.locator('#reminder-preference-help')).toContainText(
+    /When this time arrives|到点且今天还没练习/
+  );
 });
 
 test('set reminder time → return to foreground → show banner → dismiss → no repeat this page session', async ({

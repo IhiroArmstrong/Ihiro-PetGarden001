@@ -769,7 +769,11 @@ async function init() {
       arrivalReady: sessionUiGate.arrivalGateReady,
       hasEverCompletedSession: hasEndedAnySession,
       weeklyHeatmapVisible: weeklyPracticeHeatmap?.isVisible?.() === true,
-      microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true
+      microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true,
+      quickStartVisible: (() => {
+        const el = document.getElementById('quick-start-focus');
+        return Boolean(el && !el.hidden && el.getClientRects().length > 0);
+      })()
     };
   }
 
@@ -778,7 +782,10 @@ async function init() {
     const ids = resolveAutoHintIds(getOnboardingScene());
     onboardingHints.syncVisibleAutos(ids);
     // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
-    requestAnimationFrame(() => onboardingHints?.repositionAll());
+    requestAnimationFrame(() => {
+      onboardingHints?.repositionAll();
+      onboardingHints?.syncDiscoveryDots();
+    });
   }
 
   onboardingHints = new OnboardingHintsUI(document.body, {
@@ -1207,6 +1214,7 @@ async function init() {
     companionModePicker.hide();
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
+    onboardingHints?.markSeen('quick-start');
     if (arrivalPractice.isOpen()) {
       arrivalPractice.skipToBegin();
       return;

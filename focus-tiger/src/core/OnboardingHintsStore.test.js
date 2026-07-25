@@ -86,17 +86,19 @@ test('resolveHintForScene picks the most specific surface', () => {
   assert.equal(resolveHintForScene({}), 'sit-button');
 });
 
-test('appendIdleChromeHintIds adds heatmap / micro-ritual / ambient-gated', () => {
+test('appendIdleChromeHintIds adds heatmap / micro-ritual / quick-start / ambient-gated', () => {
   /** @type {string[]} */
   const ids = ['sit-button'];
   appendIdleChromeHintIds(ids, {
     weeklyHeatmapVisible: true,
-    microRitualEntryVisible: true
+    microRitualEntryVisible: true,
+    quickStartVisible: true
   });
   assert.deepEqual(ids, [
     'sit-button',
     'weekly-heatmap',
     'micro-ritual',
+    'quick-start',
     'ambient-gated'
   ]);
 });
@@ -105,30 +107,44 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
   assert.deepEqual(resolveRemedyHintIds({}), [
     'sit-button',
     'how-shall-we-sit',
-    'ambient-gated'
+    'ambient-gated',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak'
   ]);
   assert.deepEqual(
     resolveRemedyHintIds({
       weeklyHeatmapVisible: true,
-      microRitualEntryVisible: true
+      microRitualEntryVisible: true,
+      quickStartVisible: true
     }),
     [
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
       'micro-ritual',
-      'ambient-gated'
+      'quick-start',
+      'ambient-gated',
+      'focus-hud-ring',
+      'focus-hud-progress',
+      'focus-hud-streak'
     ]
   );
   assert.deepEqual(resolveRemedyHintIds({ isFocusing: true }), [
     'rise-button',
-    'ambient-soundscape'
+    'ambient-soundscape',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak'
   ]);
   assert.deepEqual(resolveRemedyHintIds({ companionExpanded: true }), [
     'companion-mode',
     'companion-stay',
     'companion-away',
-    'companion-across-tools'
+    'companion-across-tools',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak'
   ]);
   assert.deepEqual(
     resolveRemedyHintIds({
@@ -141,7 +157,10 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
-      'ambient-gated'
+      'ambient-gated',
+      'focus-hud-ring',
+      'focus-hud-progress',
+      'focus-hud-streak'
     ]
   );
   assert.ok(!resolveRemedyHintIds({}).includes('help-affordance'));
@@ -206,7 +225,10 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   );
   assert.deepEqual(resolveAutoHintIds({ isFocusing: true }), [
     'rise-button',
-    'ambient-soundscape'
+    'ambient-soundscape',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak'
   ]);
   assert.deepEqual(resolveAutoHintIds({ reflectionOpen: true }), ['reflection']);
   assert.deepEqual(

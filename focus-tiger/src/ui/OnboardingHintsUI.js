@@ -19,6 +19,11 @@ import {
   NotificationBadge,
   NOTIFICATION_BADGE_TAG
 } from '../../ui-kit/components/notification-badge.js';
+import {
+  HINT_DISCOVERY_DOT_COLOR,
+  resolvePurposeCardAwayFromTips,
+  syncAllDiscoveryDots
+} from './hintDiscoveryDots.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -148,6 +153,7 @@ export class OnboardingHintsUI {
     this._ensurePurposeCard();
     this._syncHelpBadge();
     this._injectHelpStyles();
+    this.syncDiscoveryDots();
     this._onReposition = () => this.repositionAll();
     window.addEventListener('resize', this._onReposition);
     window.addEventListener('scroll', this._onReposition, true);
@@ -159,6 +165,7 @@ export class OnboardingHintsUI {
         const meta = this._paintMeta.get(hintId) || { remedy: false, anchorNearHelp: false };
         this._paint(hintId, meta);
       }
+      this.syncDiscoveryDots();
     });
 
     // 点 ? 后的用途卡 / 补救气泡：点框外空白收起
@@ -230,6 +237,7 @@ export class OnboardingHintsUI {
     for (const id of show) {
       this.maybeShowAuto(id);
     }
+    this.syncDiscoveryDots();
   }
 
   /**
@@ -260,6 +268,7 @@ export class OnboardingHintsUI {
       this.hideBubble(hintId);
     }
     if (hintId === 'help-affordance') this._syncHelpBadge();
+    this.syncDiscoveryDots();
   }
 
   /** Vermillion mark only while help-affordance unseen — never persistent chrome noise. */
@@ -269,6 +278,11 @@ export class OnboardingHintsUI {
     this.helpBadge.hidden = !show;
     if (show) this.helpBadge.setAttribute('pulse', '');
     else this.helpBadge.removeAttribute('pulse');
+  }
+
+  /** Soft blue dots on unread Quick Start / Focusing HUD chrome. */
+  syncDiscoveryDots() {
+    syncAllDiscoveryDots(this.store);
   }
 
   /** 补救：强制展示本页全部操作提示（忽略已读）+「?」旁元文案 + App 用途简介卡。 */
@@ -287,6 +301,12 @@ export class OnboardingHintsUI {
     }
     this._paint('help-remedy', { remedy: true, anchorNearHelp: true });
     this._showPurposeCard();
+    this.syncDiscoveryDots();
+    // Tips paint async (Lit); resolve purpose-card collisions after layout.
+    requestAnimationFrame(() => {
+      this.repositionAll();
+      requestAnimationFrame(() => this.repositionAll());
+    });
   }
 
   /**
@@ -313,6 +333,8 @@ export class OnboardingHintsUI {
   clearSeen() {
     this.store.clear();
     this._remedyIds.clear();
+    this._syncHelpBadge();
+    this.syncDiscoveryDots();
   }
 
   repositionAll() {
@@ -320,6 +342,7 @@ export class OnboardingHintsUI {
       this._positionBubble(hintId);
     }
     this._positionPurposeCard();
+    this.syncDiscoveryDots();
   }
 
   dispose() {
@@ -583,8 +606,21 @@ export class OnboardingHintsUI {
     }
     left = Math.max(12, Math.min(left, vw - cr.width - 12));
     top = Math.max(12, Math.min(top, vh - cr.height - 12));
-    card.style.left = `${Math.round(left)}px`;
-    card.style.top = `${Math.round(top)}px`;
+
+    /** @type {Array<{ left: number, top: number, right: number, bottom: number }>} */
+    const tipRects = [];
+    for (const hintId of this._visibleIds) {
+      const bubble = this._bubbles.get(hintId);
+      if (!bubble || !bubble.open || bubble.hidden) continue;
+      tipRects.push(bubble.getBoundingClientRect());
+    }
+    const resolved = resolvePurposeCardAwayFromTips(
+      { left, top, width: cr.width, height: cr.height },
+      tipRects,
+      { vw, vh, gap: 12 }
+    );
+    card.style.left = `${Math.round(resolved.left)}px`;
+    card.style.top = `${Math.round(resolved.top)}px`;
   }
 
   _injectHelpStyles() {
@@ -690,6 +726,30 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__dismiss:hover {
         background: rgba(255, 255, 255, 0.8);
+      }
+      .ft-hint-discovery-dot {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: ${HINT_DISCOVERY_DOT_COLOR};
+        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.9);
+        pointer-events: none;
+        z-index: 2;
+      }
+      #focus-hud .ft-hud__gauge,
+      #focus-hud .ft-hud__bar,
+      #focus-hud .ft-hud__streak {
+        position: relative;
+      }
+      #focus-hud .ft-hud__gauge > .ft-hint-discovery-dot {
+        top: 2px;
+        right: 2px;
+      }
+      #quick-start-focus {
+        position: relative;
       }
     `;
     document.head.appendChild(style);

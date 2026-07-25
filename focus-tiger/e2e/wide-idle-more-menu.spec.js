@@ -124,12 +124,17 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible();
   await expect(page.locator('body')).toHaveClass(/ft-wide-park-secondary/);
+  await expect(page.locator('#quick-start-focus .ft-hint-discovery-dot')).toBeVisible({
+    timeout: 8_000
+  });
   await page.locator('#onboarding-hint-help').click();
   // Remedy tips (data-remedy=1); parked How/Honesty/Sound/Reminder remap to ⋯
   const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
   await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
-  const near = await page.evaluate(() => {
+  await expect(page.locator('#onboarding-app-purpose')).toBeVisible();
+  const layout = await page.evaluate(() => {
     const moreEl = document.getElementById('ft-wide-more-btn');
+    const purpose = document.getElementById('onboarding-app-purpose');
     const bubbles = [
       ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
     ].filter((el) => {
@@ -148,7 +153,32 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
       const mcy = (mr.top + mr.bottom) / 2;
       return Math.hypot(cx - mcx, cy - mcy) < 260;
     });
-    return { ok: hit, bubbleCount: bubbles.length };
+    let purposeBlocksTip = false;
+    if (purpose && !purpose.hidden) {
+      const pr = purpose.getBoundingClientRect();
+      purposeBlocksTip = bubbles.some((b) => {
+        const r = b.getBoundingClientRect();
+        const pad = 8;
+        return !(
+          pr.right + pad < r.left ||
+          pr.left - pad > r.right ||
+          pr.bottom + pad < r.top ||
+          pr.top - pad > r.bottom
+        );
+      });
+    }
+    const hasQuick = bubbles.some((b) => b.dataset.hintId === 'quick-start');
+    const hasHud = bubbles.some((b) =>
+      String(b.dataset.hintId || '').startsWith('focus-hud-')
+    );
+    return {
+      ok: hit && !purposeBlocksTip && hasQuick && hasHud,
+      hit,
+      purposeBlocksTip,
+      hasQuick,
+      hasHud,
+      bubbleCount: bubbles.length
+    };
   });
-  expect(near.ok, JSON.stringify(near)).toBe(true);
+  expect(layout.ok, JSON.stringify(layout)).toBe(true);
 });
