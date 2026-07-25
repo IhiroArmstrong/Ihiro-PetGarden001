@@ -43,7 +43,8 @@ import {
  * @typedef {object} ArrivalPracticeUIHandlers
  * @property {(info?: ArrivalReadyInfo) => void} [onReady] 流程结束（面板已 hide）
  * @property {() => void} [onWelcome] 欢迎 beat 开始（可播 smiling）
- * @property {() => void} [onCancel] 外部关闭（若接线）
+ * @property {() => void} [onCancel]
+ *   Notice / Choose 选择框点外侧空白取消（回 Idle；不开表、不 Skip begin）
  * @property {() => void} [onBegin] Arrival 开始（光影冷灰氛围）
  * @property {() => void} [onNoticeSelected] Notice 点选后（背景微暖）
  * @property {() => void} [onBreath] 呼吸 beat（推近 + 光环）
@@ -139,6 +140,45 @@ export class ArrivalPracticeUI {
     /** @type {number | null} */
     this._breathInterval = null;
     this._unsubLocale = onLocaleChange(() => this._render());
+
+    // Notice / Choose 选择格：点框外空白取消（对齐 Companion / Honesty 轻量框本能）
+    this._onDocPointer = (event) => {
+      if (!this._canDismissSelectionOnOutside()) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root?.contains(target)) return;
+      // ⚡ Quick Start 须走 skipToBegin，勿先被外侧取消吃掉
+      if (
+        target instanceof Element &&
+        target.closest('#quick-start-focus')
+      ) {
+        return;
+      }
+      this._cancelFromOutside();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
+  }
+
+  /**
+   * Notice 图标格 / Choose 图标格可点外侧取消；Welcome / 短句 / Breath 不可。
+   * @returns {boolean}
+   */
+  _canDismissSelectionOnOutside() {
+    if (!this.root) return false;
+    if (this.state.step === ARRIVAL_STEPS.CHOOSE) return true;
+    if (this.state.step === ARRIVAL_STEPS.NOTICE && !this._noticeReply) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * 点外侧取消本轮 Arrival（不开表）。
+   * @returns {void}
+   */
+  _cancelFromOutside() {
+    if (!this.root) return;
+    this.hide({ clearLight: true });
+    this.handlers.onCancel?.();
   }
 
   /**
@@ -215,6 +255,7 @@ export class ArrivalPracticeUI {
    * @returns {void}
    */
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
     this.hide();
   }

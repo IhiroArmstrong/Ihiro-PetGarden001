@@ -53,6 +53,40 @@ test('scenario I2: Here & Now before Arrival gate opens Arrival (HUD stays idle)
   await expectFocusSessionInactive(page);
 });
 
+test('Arrival Notice dismisses on outside click (back to Idle)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(
+    arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
+  ).toBeVisible({ timeout: 8_000 });
+  await page.mouse.click(28, 140);
+  await expect(arrival).toBeHidden({ timeout: 5_000 });
+  await expectFocusSessionInactive(page);
+  await expect(page.locator('#btn-focus')).toBeVisible();
+});
+
+test('Arrival Choose dismisses on outside click (back to Idle)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await arrival
+    .getByRole('button', { name: /Not Sure|不确定|Calm|平静/i })
+    .first()
+    .click();
+  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
+  await expect(reading).toBeVisible({ timeout: 20_000 });
+  await page.mouse.click(28, 140);
+  await expect(arrival).toBeHidden({ timeout: 5_000 });
+  await expectFocusSessionInactive(page);
+});
+
 test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stays', async ({
   page
 }) => {

@@ -838,6 +838,18 @@ async function init() {
         });
       },
       onClearLight: () => lightProgression.clearArrivalEffects(),
+      onCancel: () => {
+        // Notice / Choose 点外侧：取消仪式回 Idle（禁止当成 Skip — begin）
+        pendingAutoStartMode = null;
+        arrivalChoseThisRun = false;
+        suppressCompanionOpenAfterNod = false;
+        pendingChoose = null;
+        syncArrivalGateReady(false);
+        resyncSessionChrome();
+        syncHonestyIdleEntry();
+        syncOnboardingAutoHints();
+        emotionController.playEmotion('idle');
+      },
       onReady: (info = {}) => {
         pendingChoose = arrivalPractice.getChooseResult();
         // 本轮 Arrival 结果立刻闩上：有 Choose 则锁定；Skip/未选则清空。
