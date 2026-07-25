@@ -2,7 +2,7 @@
 # RESPONSIVE_LAYOUT.md
 
 > **版本**：1.0  
-> **最后更新**：2026-07-21  
+> **最后更新**：2026-07-25  
 > **状态**：布局与窄屏交互的**权威基线**；细则冲突时以本文为准（产品语义仍服从 `PRODUCT_POSITIONING.md` / `PRINCIPLES.md`）
 
 本文档定义：桌面优先前提下，**主流手机浏览器**（含竖屏与横屏）应达到何种可用标准；开发、设计与验收如何收口。
@@ -149,10 +149,20 @@
 1. 桌面宽屏（≥900px）主路径 + 回流。  
 2. **375×667 竖屏** + **一种横屏**（DevTools 设备模式即可）走通 §五 中与本次改动相关的行。  
    - **场景 O（2026-07-24）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 上滑 `BottomOptionsDrawer`；主画布清场、Yin 放大居中；7 格进抽屉只读条。`≥480px` 仍左下簇 + 原 dock。  
-3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏步骤（勿笼统一行「手机看一下」）。  
+   - **触及 Idle chrome / Arrival / Honesty / Hints**：`TEST_TRACKER` 步骤须含 **`DEV_WORKFLOW_QUALITY.md` §8「375 故事最小集」**（Sit→Notice；Choose→Focusing HUD；? 补救无乱指；叠层期顶栏约定）——**禁止**只验壳切换（有没有 ActionBar / ⋯）就当窄屏通过。  
+3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏步骤（勿笼统一行「手机看一下」）；关单须注明「375 故事是否测过」（§8 N20）。  
 4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代窄屏人工）。  
 5. 可选后续：Playwright `viewport` 用例锁「Sit 可点、无静默 return」（与 `DEV_WORKFLOW_QUALITY.md` §6 对齐）。
 
+### 6.2b 双壳共享不变量（摘要）
+
+权威表：`SHARED_RESOURCES.md` §6。改窄或宽一侧 chrome 时必须勾另一侧：
+
+| 契约 | 一句话 |
+|---|---|
+| Hints remap | park 后 tip / ? 补救锚到当前可见宿主，禁止旧坐标 |
+| Sit 显隐 | Arrival（含 Breath）开着 → Sit 隐藏或不可点；双壳同语义 |
+| FocusHUD vs ActionBar | Focusing / 叠层期顶栏时间归属写死；宽窄一致 |
 ### 6.3 实现禁忌
 
 - 禁止仅用 `pointer-events: none` 在父级误伤子按钮。  
@@ -227,3 +237,4 @@
 | 1.0 | 2026-07-21 | 初版：原则 A 功能对等、原则 B 竖屏 P1 + 可建议横屏；断点、验收矩阵、开发/设计政策 |
 | 1.1 | 2026-07-21 | 立项 Task 1（窄屏互斥+Sit）/ Task 2（横屏建议）；见 §6.4–6.5 与 `TASKS.md` |
 | 1.2 | 2026-07-21 | Task 1 代码落地：互斥 helper + dock 防截断；待人工复测 |
+| 1.3 | 2026-07-25 | §6.2 / 6.2b：375 故事最小集 + 双壳不变量摘要（对齐 `DEV_WORKFLOW_QUALITY` §8） |
