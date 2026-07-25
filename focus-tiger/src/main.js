@@ -11,7 +11,6 @@ import {
   resolveDemoSessionMinutes,
   shouldSuppressAwayReminders,
   shouldAutoStartFocusOnModeSelect,
-  shouldAutoStartFocusAfterArrivalNod,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
@@ -854,7 +853,8 @@ async function init() {
         lightProgression.beginArrival();
         syncOnboardingAutoHints();
       },
-      // Choose 确认：立刻开门闩（Sit 可用）；点头播完后再展开 Companion，避免挡鞠躬。
+      // Choose 确认：立刻开门闩；点头播完后展开 Companion 点选开表（L249）。
+      // 预选 Here & Now / Flow 回流：onReady 已 beginFocus 时 suppress，勿再展开。
       // 16:9 点头 pingpong 并行；与前后动画 1s CapCut 叠化。
       onIntentionSetPlay: (done) => {
         done?.();
@@ -866,17 +866,7 @@ async function init() {
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
-              const mode = companionModePicker.getSelectedMode();
-              if (
-                shouldAutoStartFocusAfterArrivalNod({
-                  chose: arrivalChoseThisRun,
-                  storedMode: mode
-                })
-              ) {
-                beginFocusWithMode(mode);
-              } else {
-                companionModePicker.open();
-              }
+              companionModePicker.open();
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
