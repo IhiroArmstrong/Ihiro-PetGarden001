@@ -229,7 +229,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其旁 **⚡ Quick Start**（`#quick-start-focus`）可跳过 Arrival、用记忆 Companion 模式立刻 Focusing。次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金）向上展开三选项。**须先完成 Arrival Practice（或点 ⚡）**，Here & Now / Flow 三选一才可在门闩就绪后展开开表；门闩未就绪时点这两项：**启动 Arrival**（禁止静默无反馈）。**Offline Space：点选即开计时，跳过 Arrival Notice/Choose**（别处练习语境，无「当下觉察」仪式）。Sit 默认走 **Welcome → Notice → Breath → Choose**（轻量气泡/字幕，**非**重型模态；**无**面板内 Skip / Skip — begin）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完**后三模式均立即 Focusing（或展开 Companion，视路径）。**Here & Now / Flow State：选中或 Arrival 鞠躬后立即开始 Focus 与计时**；**Offline Space：选中即 Focusing，不经 Arrival**。三模式差异在**会话内**行为与是否走仪式，不在二次 Sit。**专注中隐藏模式提示与三选一面板与 ⚡**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival（若再选 Here & Now / Flow / Sit）。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其旁 **⚡ Quick Start**（`#quick-start-focus`）可跳过 Arrival、用记忆 Companion 模式立刻 Focusing。次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金）向上展开三选项。**须先完成 Arrival Practice（或点 ⚡）**，Here & Now / Flow 三选一才可在门闩就绪后展开开表；门闩未就绪时点这两项：**启动 Arrival**（禁止静默无反馈）。**Offline Space：点选即开计时，跳过 Arrival Notice/Choose**（别处练习语境，无「当下觉察」仪式）。Sit 默认走 **Welcome → Notice → Breath → Choose**（轻量气泡/字幕，**非**重型模态；**无**面板内 Skip / Skip — begin）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完**后三模式均立即 Focusing（或展开 Companion，视路径）。**Here & Now / Flow State：选中或 Arrival 鞠躬后立即开始 Focus 与计时**；**Offline Space：选中即 Focusing，不经 Arrival**。三模式差异在**会话内**行为与是否走仪式，不在二次 Sit。**专注中隐藏模式提示与三选一面板与 ⚡**（Sit 按钮变为 Rise 并保留可见）。**Arrival/⚡ 解锁后的门闩跨 Focusing→Rise 保持**：回流再点 Here & Now / Flow → **立刻 Focusing**（不得再逼进 Notice）。**Sit** 在 Idle 下始终走 Arrival（重新抵达）；冷启动未解锁时 Here & Now / Flow 仍启动 Arrival。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 
@@ -408,7 +408,7 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 
-**产品壳 FocusHUD（2026-07-21；同日改版）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停「近日同坐的日子」；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。**首次引导（2026-07-25）**：未读时金环 / 今日同坐条 / 7 点环角上有**软钢蓝**发现点 + onboarding tip（一日一点，非按次）；「?」角仍用朱砂未读点。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
+**产品壳 FocusHUD（2026-07-21；同日改版）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停浮层「近日同坐的日子」，须盖过下方今日同坐条；空心点保持浅描边可见；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
 
 **「本周陪伴」7 格热力图（2026-07-22；窄屏壳 2026-07-24）**：仅 **Idle** 可见。**宽屏**：左下角（`#onboarding-hint-help` 上方）。**窄屏（≤479px）**：主画布不散落按钮——`NarrowIdleShell` ActionBar + 上滑抽屉；7 格在抽屉内只读展示。数据 `PracticeDaysStore.getLastNDays(7)`；亮格 = `totalMinutes === null \|\| totalMinutes > 0`；暗格浅洗。非 Idle 隐藏。`#weekly-practice-heatmap` / `#ft-narrow-idle-shell`。
 

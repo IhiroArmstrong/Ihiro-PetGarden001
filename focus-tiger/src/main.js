@@ -1121,14 +1121,13 @@ async function init() {
     currentSessionIntention = latched.text;
     currentIntentionSource = latched.source;
     pendingChoose = null;
-    sessionUiGate.clearArrivalGateForFocusStart();
+    // Arrival/⚡ 解锁后保持门闩：Rise 回流点 Here & Now / Flow 须立刻 Focusing（勿清 false）
     if (currentSessionIntention) {
       recordIntention(currentSessionIntention, {
         source: currentIntentionSource
       });
     }
     companionModePicker.setIdleChromeVisible(false);
-    syncArrivalGateReady(false);
     focusSession.start({ companionMode });
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
@@ -1296,7 +1295,7 @@ async function init() {
 
       companionModePicker.hide();
       arrivalPractice.hide();
-      syncArrivalGateReady(false);
+      // 保持 arrivalGateReady：本场若经 Arrival/⚡ 解锁，回流 Companion 可直接开表
       pendingChoose = null;
       pendingAutoStartMode = null;
       suppressCompanionOpenAfterNod = false;

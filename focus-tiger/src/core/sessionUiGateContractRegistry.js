@@ -73,10 +73,17 @@ export const SESSION_UI_GATE_BEHAVIOR_CONTRACTS = Object.freeze([
     testAnchor: 'SessionUiGate.test.js'
   },
   {
-    id: 'sit-idle-not-ready',
+    id: 'sit-idle-always-arrival',
     api: 'resolveSitClickWhenIdle',
-    when: 'arrivalGateReady === false',
-    must: "return 'start-arrival'（不得 'begin-focus'）",
+    when: 'Idle 且非完成中 / 非 Focusing',
+    must: "return 'start-arrival'（Sit 始终仪式；开表走 Companion/⚡）",
+    testAnchor: 'SessionUiGate.test.js'
+  },
+  {
+    id: 'arrival-gate-persists-across-focus',
+    api: 'arrivalGateReady',
+    when: 'Arrival/⚡ 已 setArrivalGateReady(true) 后 beginFocus / Rise',
+    must: '保持 true（回流 Here & Now / Flow 立刻 begin；禁止清门闩逼进 Notice）',
     testAnchor: 'SessionUiGate.test.js'
   },
   {

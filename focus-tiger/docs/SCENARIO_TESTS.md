@@ -15,7 +15,7 @@
   - `e2e/scenario-a.companion.spec.js` — **I** hint→三选一面板；**I2** 预选→开 Arrival；**A** Arrival 后 Here & Now 开表；**A2/A3** 预选+Skip — begin 开表；**K** Offline 选中即开表
   - `e2e/reflection-intention-echo.spec.js` — Choose→Rise→Reflection 顶部回显有/无（主路径 DOM；**非**二次 beginFocus 抹闩 Bug）
   - `e2e/weekly-practice-heatmap.spec.js` — Idle 7 格可见 / Focusing 隐藏 / localStorage seed 亮暗
-  - `e2e/in-app-reminder.spec.js` — 时钟入口面板 + 设时→回前台→横幅→关闭不重复 + Focusing 隐藏（suppress）
+  - `e2e/in-app-reminder.spec.js` — 时钟入口面板（含每日说明）+ 设时→回前台→横幅→关闭不重复 + Focusing 隐藏（suppress）+ 已过/已练软提示
   - `e2e/micro-ritual.spec.js` — 微仪式主路径 / Leave 不记账 / 桥接叠层隐藏入口（经 `__honestyBridge` 注入，**非**完整 Honesty 补登链）
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
@@ -54,7 +54,11 @@
    c. 呼吸 beat（~5 秒，无倒计时）
    d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
    *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
-5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。**任一模式选中后即开始 Focus+计时**（不必再点 Sit；用户已点 Sit 进入 Arrival 即视为开始）。
+5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。  
+   - **Sit→Choose 走完**：鞠躬后**展开 Companion**；点任一模式 → **立刻** Focusing（不必再点 Sit）。  
+   - **门闩已就绪**后点选任一模式 → **立刻** Focusing。  
+   - **门闩未就绪**：点 **Here & Now / Flow** → **启动 Arrival**（Notice「What is present…」属设计，e2e I2）。点 **Offline Space** → **跳过 Arrival 即开表**（e2e K）。  
+   - 预选 Here & Now / Flow 再走完 Arrival / ⚡ → 可直接开表（不必再点选）。
 6. 计时开始后，可用「曲目」切换背景音；主按钮仍可一键开关。**Rise / 达标结束 → 音乐自动停**；再 Sit **也不**自动再开，须再点音符 / Sound。
 7. 全程观察 Idle：**仅**闭目 pingpong → 眨眼弧固定节奏。  
    **张望 gaze / yawn / tea / ear-wiggle 不在正式 Idle 编排中**。  
@@ -208,18 +212,21 @@
 
 ## 场景 P：应用内提醒（设置 +  gentle 横幅）
 
-> **用户故事**：Kelly 想在固定时分被轻轻提醒「今天还没同坐」。她在 Idle 左下热力图旁设好时间；到点且今日尚未完成时，顶部出现非模态横幅「Yin is right here when you're ready. / 你准备好了，阿寅就在这儿。」（陪伴在场、无「在等你」紧逼感），可 × 关闭；关闭后**本页**不再重复。  
-> **DOM 用户链路**：`e2e/in-app-reminder.spec.js`（3 条：时钟入口+面板标题；设时→`visibilitychange` 回前台→横幅文案→× 关闭本页不重复；Focusing 期间 banner hidden / suppress）。  
-> **未覆盖**：取消勾选清空偏好、完整刷新后再出现、未到时/今日已完成负例、defer 策略。  
-> **仍须人工**：横幅视觉是否够「轻」（不像系统弹窗）、忙碌期策略拍板后复测对应分支。
+> **用户故事**：Kelly 想在**每天**固定时分被轻轻提醒「今天还没同坐」。她在 Idle 左下热力图旁设好时间；到点且今日尚未完成时，顶部出现非模态横幅「Yin is right here when you're ready. / 你准备好了，阿寅就在这儿。」（陪伴在场、无「在等你」紧逼感），可 × 关闭；关闭后**本页**不再重复。  
+> **DOM 用户链路**：`e2e/in-app-reminder.spec.js`（4 条：时钟入口+面板标题+**每日说明文案**；设时→`visibilitychange` 回前台→横幅文案→× 关闭本页不重复；Focusing 期间 banner hidden / suppress；**已过时分软提示 + 今日已练说明且时间仍可改**）。  
+> **未覆盖**：取消勾选清空偏好、完整刷新后再出现、未到时负例、defer 策略、onboarding Hint 气泡观感。  
+> **仍须人工**：横幅视觉是否够「轻」（不像系统弹窗）；面板「每日」说明 + 软提示可读；忙碌期策略拍板后复测对应分支。
 
 ### P1 · 设置提醒（Idle 左下时钟）
 
-1. Idle 下见 `#weekly-practice-heatmap-cluster` 内 **时钟按钮** `#reminder-preference-toggle`（热力图右侧；**仅 Idle 可见**，Focusing 时整簇隐藏）。
+1. Idle 下见 `#weekly-practice-heatmap-cluster` 内 **时钟按钮** `#reminder-preference-toggle`（热力图右侧；**仅 Idle 可见**，Focusing 时整簇隐藏）。首次可见可出 onboarding Hint `in-app-reminder`（「设一个每天的时分…」）；点「?」补救 Idle 时亦应含本 tip。
 2. 点击展开面板 `#reminder-preference-panel`：
    - 标题：`reminder.setting_title`（EN "When should I remind you" / ZH「什么时候提醒你」）
    - 勾选 **Remind me / 开启提醒** → 写入 `{ hour, minute }` 到 `focus-tiger.reminder-preference.v1`
-   - **Time** 选择器设时（如 09:00）
+   - **Time** 选择器设时（如 09:00）；**过去时分允许保存**（非「只能选此刻之后」）
+   - 常显说明 `#reminder-preference-daily-blurb`（`reminder.daily_blurb`）：明示这是**每天**的时分，到点且今日未练会出顶部轻提示
+   - 若已开启且时分已过、今日未练 → `#reminder-preference-status` 出 `reminder.past_time_note`（软提示，不拦保存）
+   - 若今日已练 → status 出 `reminder.practiced_today_note`；**时间框仍可改**（留给以后的日子），不得灰掉锁定
 3. 取消勾选 → 清除偏好（`null` = 关闭提醒；**无**单独 `enabled` 字段）。
 4. 点击面板外或再点时钟 → 面板收起。
 
@@ -266,7 +273,7 @@
 | ID | 故事 | 为何补 |
 |---|---|---|
 | **I** | 点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival | 回归锁：禁静默无反馈 · **单元** smoke I（`resolveCompanionHintClick`→toggle）+ **DOM** e2e I（hint→`.session-start-dock__panel`，不出 Arrival）；**「Honesty 开着时仍可点」未自动化**（仍人工看文案/动效） |
-| **J** | Rise 后再点 hint → **仍展开三选一**（非静默）；再选 Here & Now（门闩就绪后）→ 立刻计时 | 回流 · **单元** smoke J = 与 I 同纯函数（**不**模拟 Rise DOM）；开表回流 DOM 见 e2e A |
+| **J** | Rise 后再点 hint → **仍展开三选一**；再选 Here & Now → **立刻 Focusing**（不得再 Notice；门闩在 Arrival/⚡ 后跨会话保持） | 回流 · **DOM** e2e J；**单元** gate persist + smoke J hint toggle |
 | **K** | Offline Space：点选 → **立刻 Focusing**，**不**出 Arrival（禁止再逼点 Sit / Notice/Choose） | **DOM** e2e K（选中即开表且 Arrival hidden）；**单元** `shouldSkipArrivalOnModeSelect` / Offline canBegin 门闩 |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |

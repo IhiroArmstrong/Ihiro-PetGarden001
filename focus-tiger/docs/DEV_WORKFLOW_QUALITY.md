@@ -202,6 +202,10 @@
 6. **同主题行互斥会制造假回归**  
    例：A 行「须再点 Sit」、B 行「点选即开计时」——先对齐文档。
 
+6.1 **验收步骤与代码契约漂移 = 假回归**（2026-07-25 · L249 / Scenario J）  
+   曾误把「Rise 后 Here & Now → Notice」写成对照，与用户回流预期冲突。正确契约：**Arrival/⚡ 解锁后跨 Focusing→Rise 保持门闩**；回流 hint→Here & Now → **立刻 Focusing**（e2e J）；冷启动未解锁仍走 Arrival（e2e I2）。  
+   **须**：步骤与 `SCENARIO_TESTS` / TEST_TRACKER 同行对齐；禁止 beginFocus/Rise 清掉 `arrivalGateReady`。
+
 7. **问「要不要现在 commit？」会推迟最佳时机**  
    已废止。勿在反馈修复收尾再问；直接本地 commit。
 
@@ -219,6 +223,7 @@
 |---|---|
 | `RULES_INDEX.md` | **规则主题 → 唯一权威来源**；写新流程/Git/门禁规则前先查；`rules:doc-check` 防平行复述 |
 | `.cursor/rules/focus-tiger-regression-lock.mdc` | **强制门禁**（Agent 每次加载）；含 **§7 AI 修复验收规范**（Bug close checklist） |
+| `.cursor/rules/focus-tiger-browser-energy.mdc` | **预览浏览器与能耗** SSOT（见 `RULES_INDEX` → `browser-energy`） |
 | `PROCESS.md`「回归锁工作法」 | 项目流程中的 **A/B/C 摘要** |
 | `COLLAB.md` | 协作侧交叉约定 |
 | `TEST_TRACKER.md` | 验收与用户反馈登记 |
