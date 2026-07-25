@@ -273,7 +273,7 @@
 | ID | 故事 | 为何补 |
 |---|---|---|
 | **I** | 点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival | 回归锁：禁静默无反馈 · **单元** smoke I（`resolveCompanionHintClick`→toggle）+ **DOM** e2e I（hint→`.session-start-dock__panel`，不出 Arrival）；**「Honesty 开着时仍可点」未自动化**（仍人工看文案/动效） |
-| **J** | Rise 后再点 hint → **仍展开三选一**（非静默）；再选 Here & Now（门闩就绪后）→ 立刻计时 | 回流 · **单元** smoke J = 与 I 同纯函数（**不**模拟 Rise DOM）；开表回流 DOM 见 e2e A |
+| **J** | Rise 后再点 hint → **仍展开三选一**；再选 Here & Now → **立刻 Focusing**（不得再 Notice；门闩在 Arrival/⚡ 后跨会话保持） | 回流 · **DOM** e2e J；**单元** gate persist + smoke J hint toggle |
 | **K** | Offline Space：点选 → **立刻 Focusing**，**不**出 Arrival（禁止再逼点 Sit / Notice/Choose） | **DOM** e2e K（选中即开表且 Arrival hidden）；**单元** `shouldSkipArrivalOnModeSelect` / Offline canBegin 门闩 |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |

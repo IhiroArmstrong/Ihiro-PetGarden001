@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
+  chooseReadingAndAwaitFocus,
   chooseReadingAndOpenCompanion,
   expectFocusSessionActive,
   expectFocusSessionInactive,
   openFreshProductShell,
+  riseSkipReflectionToIdle,
   selectCompanionMode,
   skipArrivalBegin
 } from './helpers/product-shell.js';
@@ -130,6 +132,24 @@ test('scenario A4b: after Choose, Flow State starts focus (no Arrival Notice)', 
   await openFreshProductShell(page);
   await chooseReadingAndOpenCompanion(page);
   await selectCompanionMode(page, /Flow State|心流/i);
+  await expect(page.locator('#arrival-practice')).toBeHidden({
+    timeout: 5_000
+  });
+  await expectFocusSessionActive(page);
+});
+
+/**
+ * Scenario J / L249 回流：Arrival→Focus→Rise 后，再点 Here & Now 须立刻 Focusing（不得再 Notice）。
+ */
+test('scenario J: after Rise, Here & Now starts focus without Notice', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await chooseReadingAndAwaitFocus(page);
+  await riseSkipReflectionToIdle(page);
+
+  await page.locator('.session-start-dock__hint').click();
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expect(page.locator('#arrival-practice')).toBeHidden({
     timeout: 5_000
   });

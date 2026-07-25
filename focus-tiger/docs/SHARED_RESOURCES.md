@@ -114,7 +114,8 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `begin-focus-arrival-not-ready` | `canBeginFocusOnCompanionModeSelect` | arrivalGateReady === false && mode 非 Offline Space | return false（Here & Now / Flow：禁止静默开表；UI 应启动 Arrival） | `SessionUiGate.test.js` |
 | `offline-skip-arrival` | `canBeginFocusOnCompanionModeSelect / resolveAutoStartNeedsArrival` | mode === Offline Space（stepAway）&& arrivalGateReady === false | canBegin true；needsArrival 'ignore'（禁止进 Arrival Notice/Choose） | `SessionUiGate.test.js` |
 | `begin-focus-gates-block` | `canBeginFocusOnCompanionModeSelect` | completionPending || arrivalOpen || isFocusing | return false | `SessionUiGate.test.js` |
-| `sit-idle-not-ready` | `resolveSitClickWhenIdle` | arrivalGateReady === false | return 'start-arrival'（不得 'begin-focus'） | `SessionUiGate.test.js` |
+| `sit-idle-always-arrival` | `resolveSitClickWhenIdle` | Idle 且非完成中 / 非 Focusing | return 'start-arrival'（Sit 始终仪式；开表走 Companion/⚡） | `SessionUiGate.test.js` |
+| `arrival-gate-persists-across-focus` | `arrivalGateReady` | Arrival/⚡ 已 setArrivalGateReady(true) 后 beginFocus / Rise | 保持 true（回流 Here & Now / Flow 立刻 begin；禁止清门闩逼进 Notice） | `SessionUiGate.test.js` |
 | `auto-start-needs-arrival` | `resolveAutoStartNeedsArrival` | Here & Now / Flow && arrivalGateReady === false | return 'start-arrival' | `SessionUiGate.test.js` |
 | `hint-overlay-ignore` | `resolveCompanionHintClick` | postSessionOverlayActive === true | return 'ignore'（UI 应禁用，禁止可点无反馈） | `SessionUiGate.test.js` |
 | `companion-commit-reject` | `resolveCompanionModeSelectCommit` | canBegin === false && needsArrivalAction === ignore | return 'reject'（禁止写 companion-mode storage） | `SessionUiGate.test.js` |
@@ -131,13 +132,13 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
-| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Sit 未就绪 → Arrival |
+| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
 | `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
 | `postSessionOverlayActive` | **单一入口** `main.js` `resyncSessionChrome()`：`computePostSessionOverlayActive(sources)`（数组 + `some()`）→ Gate + Companion | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
 | `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装；Picker 经 handlers 注入真门闩 | Here & Now / Flow 须门闩；**Offline 跳过 Arrival**；未就绪 Here&Now/Flow 必须 false |
 | Companion 点选写 storage | **仅** Gate 通过后（`commit-begin` / `commit-arrival`） | **禁止**先写 storage 再静默 return（`resolveCompanionModeSelectCommit`） |
 | `resolveCompanionHintClick` | `FocusSession` + Gate 包装 | toggle 展开三选一；禁静默 ignore |
-| `resolveSitClickWhenIdle` | Gate | 未就绪 → `start-arrival`；就绪 → `begin-focus` |
+| `resolveSitClickWhenIdle` | Gate | Idle → 始终 `start-arrival`（开表走 Companion / ⚡） |
 
 扩展第三种叠层：在 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
 

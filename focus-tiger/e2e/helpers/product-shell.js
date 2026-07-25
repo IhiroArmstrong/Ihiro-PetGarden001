@@ -103,6 +103,18 @@ export async function expectFocusSessionInactive(page) {
 }
 
 /**
+ * Focusing 中点 Rise → 等 Reflection → Skip all → 回到 Idle chrome。
+ */
+export async function riseSkipReflectionToIdle(page) {
+  await page.locator('#btn-focus').click();
+  const reflection = page.locator('#tiger-reflection-moment');
+  await expect(reflection).toBeVisible({ timeout: 15_000 });
+  await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
+  await expect(reflection).toBeHidden({ timeout: 10_000 });
+  await expectFocusSessionInactive(page);
+}
+
+/**
  * Sit → Notice → Breath → Choose「自己写」空 Enter（chose:false）
  * → 门闩就绪并展开 Companion（不自动开表）。
  */

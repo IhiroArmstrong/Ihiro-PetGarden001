@@ -75,13 +75,35 @@ describe('SessionUiGate', () => {
     );
   });
 
-  it('resolveSitClickWhenIdle：未就绪 → start-arrival，不得 begin-focus', () => {
+  it('resolveSitClickWhenIdle：Idle 始终 start-arrival（门闩就绪亦不跳过仪式）', () => {
     const gate = new SessionUiGate();
     assert.equal(gate.resolveSitClickWhenIdle(), 'start-arrival');
     gate.setArrivalGateReady(true);
-    assert.equal(gate.resolveSitClickWhenIdle(), 'begin-focus');
+    assert.equal(
+      gate.resolveSitClickWhenIdle(),
+      'start-arrival',
+      'Sit = 重新抵达；开表走 Companion / ⚡'
+    );
     gate.setCompletionPending(true);
     assert.equal(gate.resolveSitClickWhenIdle(), 'ignore');
+  });
+
+  it('Arrival 解锁后 clearArrivalGateForFocusStart / AfterRise 不得关掉门闩', () => {
+    const gate = new SessionUiGate();
+    gate.setArrivalGateReady(true);
+    gate.clearArrivalGateForFocusStart();
+    assert.equal(gate.arrivalGateReady, true);
+    assert.equal(
+      gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STAY),
+      true
+    );
+    gate.clearArrivalGateAfterRise();
+    assert.equal(gate.arrivalGateReady, true);
+    assert.equal(
+      gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STAY),
+      true,
+      'Scenario J：Rise 后 Here & Now 须可 begin'
+    );
   });
 
   it('resolveAutoStartNeedsArrival：Here & Now 未就绪 → start-arrival；Offline → ignore', () => {
