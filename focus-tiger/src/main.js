@@ -553,6 +553,7 @@ async function init() {
     honestyCheckInUI.hideIdleEntry();
     companionModePicker.hide();
     companionModePicker.setIdleChromeVisible(false);
+    companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
     microRitualUI?.hideIdleEntry();
     resyncSessionChrome();
@@ -562,6 +563,7 @@ async function init() {
   function endMicroRitualChrome() {
     lightProgression.endBreath({ releaseDolly: true });
     lightProgression.clearArrivalEffects();
+    companionModePicker.setMicroRitualActive(false);
     setFocusButtonEnabled(true);
     companionModePicker.setIdleChromeVisible(true);
     resyncSessionChrome();

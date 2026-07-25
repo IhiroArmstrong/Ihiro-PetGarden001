@@ -13,6 +13,74 @@ export async function openFreshProductShell(page) {
 }
 
 /**
+ * 若宽屏 ⋯ 可见则打开 More 菜单。
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<boolean>}
+ */
+export async function openWideMoreMenuIfPresent(page) {
+  const canOpen = await page.evaluate(() => {
+    const btn = document.getElementById('ft-wide-more-btn');
+    return Boolean(btn && !btn.hidden);
+  });
+  if (!canOpen) return false;
+  await page.locator('#ft-wide-more-btn').click({ force: true });
+  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+    timeout: 5_000
+  });
+  return true;
+}
+
+/**
+ * 经宽屏 ⋯（若有）打开 Honesty / 呼吸 / 提醒等代理入口；否则点 dock 直钮。
+ * @param {import('@playwright/test').Page} page
+ * @param {'honesty'|'breath'|'reminder'|'sound'} proxy
+ */
+export async function clickWideMoreProxyOrDirect(page, proxy) {
+  const direct = {
+    honesty: '#honesty-idle-entry',
+    breath: '#micro-ritual-idle-entry',
+    reminder: '#reminder-preference-toggle',
+    sound: '.ambient-soundscape__fab'
+  }[proxy];
+  if (await openWideMoreMenuIfPresent(page)) {
+    await page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`).click();
+    return;
+  }
+  if (proxy === 'reminder') {
+    const opened = await page.evaluate(() => {
+      const ui = window.__inAppReminder?.settings;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (opened) return;
+  }
+  await page.locator(direct).evaluate((el) => {
+    el.style.pointerEvents = 'auto';
+    /** @type {HTMLElement} */ (el).click();
+  });
+}
+
+/**
+ * 展开 Companion「How shall we sit?」：宽屏走 ⋯ 菜单，窄屏点 hint。
+ * @param {import('@playwright/test').Page} page
+ */
+export async function openCompanionHint(page) {
+  if (await openWideMoreMenuIfPresent(page)) {
+    await page.locator('#ft-wide-more-menu [data-proxy="companion"]').click();
+  } else {
+    await page.locator('.session-start-dock__hint').evaluate((el) => {
+      /** @type {HTMLButtonElement} */ (el).click();
+    });
+  }
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 10_000
+  });
+}
+
+/**
  * Sit → Notice 点选 → Breath → Choose → 鞠躬后 Companion → Here & Now 开表。
  * （Arrival 已无 Skip；快速开表用 `quickStartFocus`。）
  */

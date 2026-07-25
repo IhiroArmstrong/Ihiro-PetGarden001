@@ -258,22 +258,9 @@ test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
   await openFreshProductShell(page);
   await page.setViewportSize({ width: 375, height: 667 });
 
-  // Sit is parked — open via drawer primary
+  // Sit/⚡ parked — Quick Start via drawer → Focusing（本用例只锁 HUD/FAB，不测 Arrival）
   await page.locator('.ft-narrow-grabber').click();
-  await page.locator('.ft-narrow-sheet__item.is-primary').click();
-  const arrival = page.locator('#arrival-practice');
-  await expect(arrival).toBeVisible({ timeout: 15_000 });
-  const noticePick = arrival.getByRole('button', {
-    name: /Not Sure|不确定|Calm|平静/i
-  });
-  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
-  await noticePick.first().click();
-  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
-  await expect(reading).toBeVisible({ timeout: 20_000 });
-  await reading.click();
-  await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
-    timeout: 45_000
-  });
+  await page.locator('.ft-narrow-sheet__item[data-proxy="quickstart"]').click();
   await expectFocusSessionActive(page);
 
   const report = await page.evaluate(() => {

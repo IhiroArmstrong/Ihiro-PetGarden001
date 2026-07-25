@@ -39,8 +39,8 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     ritual.locator('[data-micro-ritual-breath-phase]')
   ).toContainText(/Inhale|Exhale|吸气|呼气/i);
 
-  // Sit 进行中须禁用（禁止可点却静默）
-  await expect(page.locator('#btn-focus')).toBeDisabled();
+  // Sit 进行中须隐藏（与 Arrival 同契约；窄屏 focusing 布局不得只禁用仍露出）
+  await expect(page.locator('#btn-focus')).toBeHidden();
 
   // HUD 须直播墙钟（算专注内容；仍不启 FocusSession）
   // floor 秒：须等到 ≥1s 才离开 00:00
@@ -119,9 +119,39 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
   // 回流：⋯ 再出；入口仍在 DOM（宽屏停靠）；Sit 恢复；不进 Reflection
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
   await expect(entry).toBeAttached();
+  await expect(page.locator('#btn-focus')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
   await expect(page.locator('#btn-focus')).toContainText(/Sit with Yin|与阿寅同坐/i);
   await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
+});
+
+test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/?product=1&microRitualMs=60000');
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
+  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
+    timeout: 60_000
+  });
+  await page.locator('.ft-narrow-grabber').click();
+  const breathRow = page.locator('.ft-narrow-sheet__item[data-proxy="breath"]');
+  await expect(breathRow).toBeVisible({ timeout: 5_000 });
+  await breathRow.click();
+
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
+  // 图5 回归：窄屏 focusing 布局不得仍露出 Sit；HUD 仍直播
+  await expect(page.locator('#btn-focus')).toBeHidden();
+  await expect(page.locator('#session-start-dock')).toBeHidden();
+  await expect(page.locator('#hud-state')).toContainText(/Focusing|专注中/i);
+  await expect(page.locator('#focus-hud')).toBeVisible();
 });
 
 test('micro ritual: quiet leave does not record', async ({ page }) => {
@@ -140,6 +170,7 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('#btn-focus')).toBeHidden();
   await ritual.locator('[data-micro-ritual-leave]').click();
   await expect(ritual).toBeHidden({ timeout: 5_000 });
 
@@ -159,6 +190,7 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   );
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
   await expect(entry).toBeAttached();
+  await expect(page.locator('#btn-focus')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
 });
 

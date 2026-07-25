@@ -97,6 +97,8 @@ export class CompanionModePicker {
     this._optionSelectEnabled = true;
     /** Arrival 进行中：隐藏 Sit，避免盖住 Notice/Choose（⚡ 保留） */
     this._arrivalActive = false;
+    /** 一分钟呼吸进行中：隐藏 Sit（与 Arrival 同契约；窄屏 focusing 布局会否则把禁用 Sit 露出来） */
+    this._microRitualActive = false;
     /** Rise 后优先显示提问文案；用户再选模式后改为模式名 */
     this._preferQuestionHint = true;
 
@@ -194,9 +196,23 @@ export class CompanionModePicker {
     this._syncSitVisibility();
   }
 
+  /**
+   * 一分钟呼吸进行中隐藏 Sit（复用 Arrival 文案叠层时不得仍见主 CTA）。
+   * 正式 Focusing 仍走 `_idleVisible=false` + Rise 可见。
+   * @param {boolean} active
+   * @returns {void}
+   */
+  setMicroRitualActive(active) {
+    this._microRitualActive = Boolean(active);
+    this._syncSitVisibility();
+    // Hide empty dock (Sit alone remains after idle chrome off); Arrival keeps dock for ⚡
+    if (this.dock) this.dock.hidden = this._microRitualActive;
+  }
+
   _syncSitVisibility() {
     if (!this.focusButton) return;
-    const hideSit = this._arrivalActive && this._idleVisible;
+    const hideForArrival = this._arrivalActive && this._idleVisible;
+    const hideSit = hideForArrival || this._microRitualActive;
     this.focusButton.hidden = hideSit;
   }
 
