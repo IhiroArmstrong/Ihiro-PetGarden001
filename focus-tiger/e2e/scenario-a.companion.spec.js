@@ -73,7 +73,7 @@ test('Arrival Notice dismisses on outside click (back to Idle)', async ({
 
 /**
  * §8 N18 / 场景 O 图1：点 tip 只关 tip，不得把 Notice 选择格一并外侧取消掉。
- * 375：抽屉 Sit → Notice → 等 notice tip → 点 tip。
+ * 375：主屏 Sit → Notice → 等 notice tip → 点 tip。
  */
 test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
   page
@@ -82,8 +82,7 @@ test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
 
-  await page.locator('.ft-narrow-grabber').click();
-  await page.locator('.ft-narrow-sheet__item.is-primary').click();
+  await page.locator('#ft-narrow-home-sit').click();
 
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });

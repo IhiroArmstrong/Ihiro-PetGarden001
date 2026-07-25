@@ -57,12 +57,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-25（UTC+8）
+**最后更新时间**：2026-07-26（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **窄屏主屏三主钮（2026-07-26）**：用户书面——375 首页底部太空；`NarrowIdleShell` 主画布放 **Sit with Yin / Quick Start / Honesty Check-in**，抽屉删这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。e2e 已锁；待人工观感。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
 - **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。**提醒**：完整 W1–W8 人工验收推迟到 `feature/wide-idle-more-menu` 合并时单独做，勿与窄屏 O 修复混验。
 - **规则主题权威索引（2026-07-23）**：新增 `RULES_INDEX.md` + `rules-authority-registry.js` + `rules:doc-check`（并入 `docs:check` / CI）。每个工作流规则主题指定唯一 SSOT；非权威处改为短引用。收敛 `WORKFLOW` / regression-lock / `PROCESS` / docs.mdc / `DEV` / `COLLAB` 上 commit / 跨会话等平行复述。冲突不以 mtime 为准。

@@ -52,9 +52,9 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
 
 /**
  * Scenario O narrow lock (≤479 / 375):
- * ActionBar + swipe drawer — canvas chrome cleared; Yin dominant.
+ * ActionBar + home primary CTAs + swipe drawer (secondary only).
  */
-test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
+test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -63,6 +63,12 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
     timeout: 15_000
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-sit')).toContainText(
+    /Sit with Yin|与阿寅同坐/i
+  );
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
   await expect(page.locator('.ft-narrow-grabber')).toBeVisible();
 
   // Legacy Idle canvas chrome is parked off-screen while narrow idle
@@ -98,12 +104,22 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
     'aria-hidden',
     'false'
   );
+  // Sit / Quick Start / Honesty moved to home — must NOT remain in drawer
   await expect(
-    page.locator('.ft-narrow-sheet__item.is-primary')
-  ).toBeVisible();
-  await expect(page.locator('.ft-narrow-sheet__item.is-primary')).toContainText(
-    /Sit with Yin|与阿寅同坐/i
-  );
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Sit with Yin|与阿寅同坐/i
+    })
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Quick Start|快速开始/i
+    })
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Honesty Check-in|诚实补登/i
+    })
+  ).toHaveCount(0);
 
   // How shall we sit? must stage companion options (not silent)
   await page
@@ -116,7 +132,7 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   });
 });
 
-test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
+test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -125,17 +141,22 @@ test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
     timeout: 15_000
   });
 
+  // Honesty lives on home canvas (not in the drawer)
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-honesty')).toContainText(
+    /Honesty Check-in|诚实补登|Honesty/i
+  );
+
   await page.locator('.ft-narrow-grabber').click();
   await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
     'aria-hidden',
     'false'
   );
-
-  // Honesty must remain in the drawer (never dropped for space)
-  const honestyItem = page.locator('.ft-narrow-sheet__item', {
-    hasText: /Honesty Check-in|诚实补登|Honesty/i
-  });
-  await expect(honestyItem).toBeVisible();
+  await expect(
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Honesty Check-in|诚实补登/i
+    })
+  ).toHaveCount(0);
 
   // Sound → Soundscape track panel on-canvas (not red FAB, not tip-only)
   await page
@@ -259,9 +280,8 @@ test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
 
-  // Sit is parked — open via drawer primary
-  await page.locator('.ft-narrow-grabber').click();
-  await page.locator('.ft-narrow-sheet__item.is-primary').click();
+  // Sit is on home canvas (no longer drawer primary)
+  await page.locator('#ft-narrow-home-sit').click();
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
   const noticePick = arrival.getByRole('button', {

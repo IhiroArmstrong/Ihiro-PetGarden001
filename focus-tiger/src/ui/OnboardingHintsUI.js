@@ -66,8 +66,31 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'top'
     };
   }
+  // Primary home CTAs (moved out of the drawer)
+  if (/#btn-focus|btn-focus/.test(sel)) {
+    return {
+      selector: '#ft-narrow-home-sit',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/quick-start/.test(sel)) {
+    return {
+      selector: '#ft-narrow-home-quickstart',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/honesty-idle/.test(sel)) {
+    return {
+      selector: '#ft-narrow-home-honesty',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  // Secondary / parked controls → swipe grabber
   if (
-    /btn-focus|session-start-dock__hint|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape|reminder-preference|quick-start/.test(
+    /session-start-dock__hint|weekly-practice|micro-ritual|ambient-soundscape|reminder-preference/.test(
       sel
     )
   ) {
