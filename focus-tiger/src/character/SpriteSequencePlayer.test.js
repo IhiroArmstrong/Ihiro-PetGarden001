@@ -269,6 +269,20 @@ test('cloakSleep is registered for DORMANT entry', () => {
   assert.equal(SPRITE_SEQUENCES.cloakSleep.holdLastFrame, true);
 });
 
+test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
+  const definition = SPRITE_SEQUENCES.sleeping;
+  assert.equal(definition.animation, 'cloak-sleep');
+  assert.equal(definition.frameCount, 34);
+  assert.equal(definition.fps, 1);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.PINGPONG);
+  assert.deepEqual(definition.frameIndices, [34, 34, 33, 33, 32, 32, 31, 31, 30, 30]);
+  const paths = buildFramePaths(definition.animation, definition.frameCount, {
+    frameIndices: definition.frameIndices
+  });
+  assert.match(paths[0], /cloak-sleep\/frame_034\.png$/);
+  assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
+});
+
 test('teaDrinking, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
   assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
   assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);
