@@ -213,10 +213,9 @@ export function resolveAutoHintIds(scene = {}) {
   } else if (scene.ambientPanelOpen) {
     ids = ['ambient-soundscape'];
   } else if (scene.arrivalOpen) {
-    const phase = scene.arrivalPhase;
-    if (phase === 'breath') ids = ['breathing'];
-    else if (phase === 'choose') ids = ['choose'];
-    else ids = ['notice'];
+    // Arrival 进行中不自动出 tip（Notice/Breath/Choose 会挡选择格；点 tip
+    // 曾被外侧取消误吃）。补救「?」仍经 resolveHintForScene / remedy 列表。
+    ids = [];
   } else if (scene.companionExpanded) {
     ids = ['companion-mode'];
   } else if (scene.honestyBridgeVisible) {
@@ -257,6 +256,12 @@ export function resolveRemedyHintIds(scene = {}) {
   const ids = resolveAutoHintIds(scene).filter(
     (id) => id !== 'help-affordance' && id !== 'help-remedy'
   );
+  if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    const arrivalId =
+      phase === 'breath' ? 'breathing' : phase === 'choose' ? 'choose' : 'notice';
+    if (!ids.includes(arrivalId)) ids.push(arrivalId);
+  }
   if (scene.companionExpanded) {
     for (const id of ['companion-stay', 'companion-away', 'companion-across-tools']) {
       if (!ids.includes(id)) ids.push(id);

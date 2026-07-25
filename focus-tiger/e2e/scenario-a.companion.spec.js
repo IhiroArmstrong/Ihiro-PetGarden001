@@ -71,6 +71,42 @@ test('Arrival Notice dismisses on outside click (back to Idle)', async ({
   await expect(page.locator('#btn-focus')).toBeVisible();
 });
 
+test('Arrival Notice: tip click dismisses tip only, not Arrival', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(
+    arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
+  ).toBeVisible({ timeout: 8_000 });
+  // Inject open tip chrome (auto Arrival tips suppressed); pointerdown must not cancel Arrival
+  await page.evaluate(() => {
+    const tip = document.createElement('ft-onboarding-hint-bubble');
+    tip.id = 'ft-e2e-arrival-tip-guard';
+    tip.setAttribute('open', '');
+    tip.message = 'A tap is enough — or skip ahead.';
+    tip.style.cssText =
+      'position:fixed;left:48px;top:200px;width:140px;height:44px;z-index:10000;';
+    document.body.appendChild(tip);
+  });
+  // Dispatch pointerdown (Arrival listens on capture); tip click alone is too late
+  await page.evaluate(() => {
+    const tip = document.getElementById('ft-e2e-arrival-tip-guard');
+    tip.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true, cancelable: true })
+    );
+  });
+  await expect(arrival).toBeVisible();
+  await expect(
+    arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
+  ).toBeVisible();
+  // Blank outside still cancels (regression lock)
+  await page.mouse.click(28, 140);
+  await expect(arrival).toBeHidden({ timeout: 5_000 });
+});
+
 test('Arrival Choose dismisses on outside click (back to Idle)', async ({
   page
 }) => {

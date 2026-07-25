@@ -154,6 +154,15 @@ export class ArrivalPracticeUI {
       ) {
         return;
       }
+      // Tip / ? / 用途卡：只关 tip，不得取消 Arrival（pointerdown 早于 tip click）
+      if (
+        target instanceof Element &&
+        target.closest(
+          'ft-onboarding-hint-bubble, #onboarding-hint-help, #ft-narrow-help-btn, #onboarding-app-purpose'
+        )
+      ) {
+        return;
+      }
       this._cancelFromOutside();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);

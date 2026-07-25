@@ -232,8 +232,20 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   ]);
   assert.deepEqual(resolveAutoHintIds({ reflectionOpen: true }), ['reflection']);
   assert.deepEqual(
+    resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'notice' }),
+    []
+  );
+  assert.deepEqual(
+    resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'breath' }),
+    []
+  );
+  assert.deepEqual(
     resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'choose' }),
-    ['choose']
+    []
+  );
+  assert.equal(
+    resolveHintForScene({ arrivalOpen: true, arrivalPhase: 'notice' }),
+    'notice'
   );
   assert.deepEqual(
     resolveAutoHintIds({
