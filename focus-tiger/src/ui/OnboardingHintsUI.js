@@ -10,7 +10,8 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   HINT_LOCALE_KEYS,
   createHintsSeenStore,
-  resolveRemedyHintIds,
+  resolvePrimaryRemedyHintId,
+  resolveRemedyCatalogHintIds,
   selectExclusiveAutoHintIds
 } from '../core/OnboardingHintsStore.js';
 import { ONBOARDING_HINT_ANCHORS } from './onboardingHintAnchors.js';
@@ -162,6 +163,10 @@ export class OnboardingHintsUI {
     this._hideTimers = new Map();
     /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
     this._remedyIds = new Set();
+    /** @type {string[]} 补救目录（主条之外；点 help-remedy「还有 N 条」展开） */
+    this._catalogPending = [];
+    /** @type {boolean} */
+    this._catalogExpanded = false;
     /** @type {string[]} 最近一次 sync 的候选自动 id（未读过滤后），供 dismiss 后串行下一条 */
     this._lastAutoWant = [];
     /** @type {Map<string, { remedy: boolean, anchorNearHelp: boolean }>} */
@@ -221,6 +226,8 @@ export class OnboardingHintsUI {
       this._hidePurposeCard();
       for (const id of [...this._remedyIds]) this.hideBubble(id);
       this._remedyIds.clear();
+      this._catalogPending = [];
+      this._catalogExpanded = false;
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
   }
@@ -322,24 +329,85 @@ export class OnboardingHintsUI {
     syncAllDiscoveryDots(this.store);
   }
 
-  /** 补救：强制展示本页全部操作提示（忽略已读）+「?」旁元文案 + App 用途简介卡。 */
+  /** 补救：情境单条 +「还有 N 条」目录（图9）；展开后才画全量。用途简介卡仍同出。 */
   showRemedy() {
     const scene = this.getScene() || {};
-    const sceneIds = resolveRemedyHintIds(scene);
-    const nextRemedy = new Set(['help-remedy', ...sceneIds]);
+    const primary = resolvePrimaryRemedyHintId(scene);
+    const catalog = resolveRemedyCatalogHintIds(scene);
+    this._catalogPending = catalog;
+    this._catalogExpanded = false;
+
+    const nextRemedy = new Set(['help-remedy', primary]);
 
     for (const id of [...this._remedyIds]) {
       if (!nextRemedy.has(id)) this.hideBubble(id);
     }
     this._remedyIds = nextRemedy;
 
-    for (const id of sceneIds) {
-      this._paint(id, { remedy: true });
-    }
-    this._paint('help-remedy', { remedy: true, anchorNearHelp: true });
+    this._paint(primary, { remedy: true });
+    this._paintHelpRemedyMeta(catalog.length);
     this._showPurposeCard();
     this.syncDiscoveryDots();
-    // Tips paint async (Lit); resolve purpose-card collisions after layout.
+    requestAnimationFrame(() => {
+      this.repositionAll();
+      requestAnimationFrame(() => this.repositionAll());
+    });
+  }
+
+  /**
+   * @param {number} catalogCount
+   * @returns {void}
+   */
+  _paintHelpRemedyMeta(catalogCount) {
+    const n = Math.max(0, Number(catalogCount) || 0);
+    const bubble = this._ensureBubble('help-remedy');
+    const message =
+      n > 0
+        ? String(t('HINT_HELP_REMEDY_MORE')).replace(/\{n\}/g, String(n))
+        : t('HINT_HELP_REMEDY');
+    this._paintMeta.set('help-remedy', {
+      remedy: true,
+      anchorNearHelp: true,
+      catalogCount: n
+    });
+    bubble.message = message;
+    bubble.open = true;
+    bubble.remedy = true;
+    bubble.dataset.hintId = 'help-remedy';
+    bubble.dataset.remedy = '1';
+    bubble.dataset.remedyAnchor = 'help';
+    bubble.dataset.catalogExpand = n > 0 && !this._catalogExpanded ? '1' : '0';
+    bubble.setAttribute('aria-label', `${message}. ${t('HINT_DISMISS_ARIA')}`);
+    bubble.title = t('HINT_DISMISS_ARIA');
+    const anchor = HINT_ANCHORS['help-remedy'] || HINT_ANCHORS['help-fallback'];
+    bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (anchor.tip);
+    this._visibleIds.add('help-remedy');
+    this._remedyIds.add('help-remedy');
+    const place = () => this._positionBubble('help-remedy');
+    place();
+    void bubble.updateComplete.then(place);
+
+    window.clearTimeout(this._hideTimers.get('help-remedy'));
+    this._hideTimers.set(
+      'help-remedy',
+      window.setTimeout(() => {
+        if (bubble.remedy) this.hideBubble('help-remedy');
+      }, 12000)
+    );
+  }
+
+  /** 展开补救目录：画出剩余 tip。 */
+  expandRemedyCatalog() {
+    if (this._catalogExpanded) return;
+    const ids = [...this._catalogPending];
+    this._catalogExpanded = true;
+    this._catalogPending = [];
+    for (const id of ids) {
+      this._remedyIds.add(id);
+      this._paint(id, { remedy: true });
+    }
+    this._paintHelpRemedyMeta(0);
+    // 全量 tip 后须再避让用途卡（与 showRemedy 同）
     requestAnimationFrame(() => {
       this.repositionAll();
       requestAnimationFrame(() => this.repositionAll());
@@ -457,6 +525,15 @@ export class OnboardingHintsUI {
    * @param {string} hintId
    */
   _dismissByUser(hintId) {
+    // 「还有 N 条」：点 help-remedy 先展开目录，不直接关掉
+    if (
+      hintId === 'help-remedy' &&
+      !this._catalogExpanded &&
+      this._catalogPending.length > 0
+    ) {
+      this.expandRemedyCatalog();
+      return;
+    }
     if (this._remedyIds.has(hintId)) {
       this.hideBubble(hintId);
       return;

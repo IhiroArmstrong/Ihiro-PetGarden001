@@ -8,6 +8,8 @@ import {
   resolveHintForScene,
   resolveAutoHintIds,
   resolveRemedyHintIds,
+  resolvePrimaryRemedyHintId,
+  resolveRemedyCatalogHintIds,
   selectExclusiveAutoHintIds,
   appendIdleChromeHintIds
 } from './OnboardingHintsStore.js';
@@ -164,6 +166,40 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
     ]
   );
   assert.ok(!resolveRemedyHintIds({}).includes('help-affordance'));
+});
+
+test('resolvePrimaryRemedyHintId is one contextual tip (fig9)', () => {
+  assert.equal(resolvePrimaryRemedyHintId({}), 'sit-button');
+  assert.equal(
+    resolvePrimaryRemedyHintId({ narrowSheetOpen: true }),
+    'sit-button'
+  );
+  assert.equal(
+    resolvePrimaryRemedyHintId({ companionExpanded: true }),
+    'companion-mode'
+  );
+  assert.equal(
+    resolvePrimaryRemedyHintId({
+      arrivalOpen: true,
+      arrivalPhase: 'breath'
+    }),
+    'breathing'
+  );
+  assert.equal(
+    resolvePrimaryRemedyHintId({ honestyBridgeVisible: true }),
+    'honesty-bridge'
+  );
+  assert.equal(resolvePrimaryRemedyHintId({ isFocusing: true }), 'rise-button');
+});
+
+test('resolveRemedyCatalogHintIds excludes primary', () => {
+  const catalog = resolveRemedyCatalogHintIds({ companionExpanded: true });
+  assert.ok(!catalog.includes('companion-mode'));
+  assert.ok(catalog.includes('companion-stay'));
+  assert.ok(catalog.length >= 3);
+  const idleCatalog = resolveRemedyCatalogHintIds({});
+  assert.ok(!idleCatalog.includes('sit-button'));
+  assert.ok(idleCatalog.includes('how-shall-we-sit'));
 });
 
 test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () => {

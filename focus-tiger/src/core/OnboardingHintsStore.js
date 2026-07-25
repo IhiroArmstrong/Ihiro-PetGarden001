@@ -119,6 +119,8 @@ export function appendFocusHudHintIds(ids) {
  * @param {boolean} [scene.weeklyHeatmapVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
  * @param {boolean} [scene.quickStartVisible]
+ * @param {boolean} [scene.narrowPark]
+ * @param {boolean} [scene.narrowSheetOpen]
  */
 export function resolveHintForScene(scene = {}) {
   if (scene.reflectionOpen) return 'reflection';
@@ -138,6 +140,43 @@ export function resolveHintForScene(scene = {}) {
   if (scene.hasEverCompletedSession) return 'idle-after-session';
   if (scene.arrivalReady) return 'companion-mode';
   return 'sit-button';
+}
+
+/**
+ * 点「?」补救：当前场景最相关的 **1** 条（图7 / 图9 情境单条）。
+ * Idle → Sit；窄屏抽屉开着仍以 Sit 为主（抽屉内可见）；Companion → Pick one。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string}
+ */
+export function resolvePrimaryRemedyHintId(scene = {}) {
+  if (scene.reflectionOpen) return 'reflection';
+  if (scene.isFocusing) return 'rise-button';
+  if (scene.ambientPanelOpen) return 'ambient-soundscape';
+  if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    if (phase === 'breath') return 'breathing';
+    if (phase === 'choose') return 'choose';
+    return 'notice';
+  }
+  if (scene.companionExpanded) return 'companion-mode';
+  if (scene.honestyBridgeVisible) return 'honesty-bridge';
+  if (scene.honestyVisible) return 'honesty-optional';
+  // 窄屏抽屉开着：主路径仍是 Sit（在抽屉列表里）；尖角可 remap 到 grabber/行
+  if (scene.narrowSheetOpen) return 'sit-button';
+  if (scene.isDormant) return 'dormant-open';
+  if (scene.hasEverCompletedSession) return 'idle-after-session';
+  // Idle（含窄屏 park：Sit tip remap → grabber）
+  return 'sit-button';
+}
+
+/**
+ * 补救目录：全量列表去掉主条（供「还有 N 条」展开）。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string[]}
+ */
+export function resolveRemedyCatalogHintIds(scene = {}) {
+  const primary = resolvePrimaryRemedyHintId(scene);
+  return resolveRemedyHintIds(scene).filter((id) => id !== primary);
 }
 
 /**
@@ -247,6 +286,7 @@ export function resolveAutoHintIds(scene = {}) {
 
 /**
  * 点「?」补救：当前场景应展示的全部操作提示（忽略已读；不含 help-affordance / help-remedy）。
+ * UI 默认只先画 `resolvePrimaryRemedyHintId`；其余经「还有 N 条」展开本列表。
  * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
  * @returns {string[]}
  */

@@ -509,6 +509,7 @@ async function init() {
       !overlayActive && !sessionUiGate.completionPending
     );
     companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
+    const arrivalOpen = Boolean(arrivalPractice?.isOpen?.());
     const focusing =
       stateManager.state === STATES.FOCUSING ||
       microRitualUI?.isOpen?.() === true;
@@ -519,6 +520,8 @@ async function init() {
     const chromeSuppressed = overlayActive || honestyBusy;
     narrowIdleShell.setIdle(!focusing);
     narrowIdleShell.setSuppressed(chromeSuppressed);
+    // 窄屏 Arrival：park 整 dock 会藏掉 ⚡；单独 stage 只露出 Quick Start（图8 / W3）
+    narrowIdleShell.setArrivalOpen(arrivalOpen);
     wideIdleMoreMenu.setIdle(!focusing);
     // Wide ⋯ 仍须在桥接时收起，避免挡 Yes/No
     wideIdleMoreMenu.setSuppressed(
@@ -778,7 +781,9 @@ async function init() {
       quickStartVisible: (() => {
         const el = document.getElementById('quick-start-focus');
         return Boolean(el && !el.hidden && el.getClientRects().length > 0);
-      })()
+      })(),
+      narrowPark: document.body.classList.contains('ft-narrow-park'),
+      narrowSheetOpen: narrowIdleShell?.isSheetOpen?.() === true
     };
   }
 

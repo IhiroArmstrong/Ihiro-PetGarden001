@@ -116,7 +116,39 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   });
 });
 
-test('375 park: ? remedy tips remap near ActionBar / grabber', async ({
+test('375 Arrival: Quick Start stays on-canvas; Sit stays hidden', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
+    timeout: 15_000
+  });
+  await page.locator('.ft-narrow-grabber').click();
+  await page.locator('.ft-narrow-sheet__item[data-proxy="sit"]').click();
+
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('body')).toHaveClass(
+    /ft-narrow-stage-arrival-quick-start/
+  );
+  await expect(page.locator('#btn-focus')).toBeHidden();
+  const quick = page.locator('#quick-start-focus');
+  await expect(quick).toBeVisible({ timeout: 5_000 });
+  const box = await quick.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(375);
+  expect(box.y).toBeGreaterThan(200);
+
+  await quick.click();
+  await expectFocusSessionActive(page);
+  await expect(page.locator('#arrival-practice')).toBeHidden({
+    timeout: 5_000
+  });
+});
+
+test('375 park: ? remedy shows one primary tip + catalog expand', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -128,17 +160,44 @@ test('375 park: ? remedy tips remap near ActionBar / grabber', async ({
   const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
   await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
 
-  const layout = await page.evaluate(() => {
-    const help = document.getElementById('ft-narrow-help-btn');
-    const grabber = document.querySelector('.ft-narrow-grabber');
-    const center = document.querySelector('.ft-narrow-action-bar__center');
+  const before = await page.evaluate(() => {
     const bubbles = [
       ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
     ].filter((el) => {
       const r = el.getBoundingClientRect();
       return r.width > 0 && r.height > 0;
     });
-    if (!help || !grabber || bubbles.length < 2) {
+    const ids = bubbles.map((b) => b.dataset.hintId);
+    const helpMeta = document.querySelector(
+      'ft-onboarding-hint-bubble[data-hint-id="help-remedy"]'
+    );
+    return {
+      count: bubbles.length,
+      ids,
+      catalogExpand: helpMeta?.dataset.catalogExpand || '0'
+    };
+  });
+  expect(before.count).toBeLessThanOrEqual(3);
+  expect(before.count).toBeGreaterThanOrEqual(2);
+  expect(before.ids).toContain('sit-button');
+  expect(before.ids).toContain('help-remedy');
+  expect(before.catalogExpand).toBe('1');
+
+  await page
+    .locator('ft-onboarding-hint-bubble[data-hint-id="help-remedy"]')
+    .click();
+
+  const after = await page.evaluate(() => {
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
+    ].filter((el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    const help = document.getElementById('ft-narrow-help-btn');
+    const grabber = document.querySelector('.ft-narrow-grabber');
+    const center = document.querySelector('.ft-narrow-action-bar__center');
+    if (!help || !grabber || bubbles.length < 3) {
       return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
     }
     const anchors = [help, grabber, center].filter(Boolean);
@@ -154,21 +213,15 @@ test('375 park: ? remedy tips remap near ActionBar / grabber', async ({
         return Math.hypot(cx - ax, cy - ay) < 280;
       });
     });
-    const centers = bubbles.map((b) => {
-      const r = b.getBoundingClientRect();
-      return `${Math.round((r.left + r.right) / 2)},${Math.round(
-        (r.top + r.bottom) / 2
-      )}`;
-    });
-    const unique = new Set(centers).size;
     return {
-      ok: nearVisible && unique >= Math.min(2, bubbles.length),
-      nearVisible,
-      unique,
+      ok: nearVisible,
       bubbleCount: bubbles.length
     };
   });
-  expect(layout.ok, JSON.stringify(layout)).toBe(true);
+  expect(after.ok, after.reason || 'tips not near ActionBar/grabber').toBe(
+    true
+  );
+  expect(after.bubbleCount).toBeGreaterThanOrEqual(3);
 });
 
 test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({

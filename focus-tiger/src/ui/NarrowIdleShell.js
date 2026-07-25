@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v4';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v5';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -44,6 +44,8 @@ export class NarrowIdleShell {
         : null;
     this._idle = true;
     this._suppressed = false;
+    /** Arrival open: surface ⚡ only (W3 / fig8); not cleared by drawer clearStage. */
+    this._arrivalOpen = false;
     this._sheetOpen = false;
     this._touchStartY = null;
     this._localeUnsub = null;
@@ -130,6 +132,32 @@ export class NarrowIdleShell {
   }
 
   /**
+   * Arrival Practice open: keep Sit/How/Honesty parked; stage ⚡ Quick Start on-canvas (fig8).
+   * Independent of drawer `clearStage` so suppress does not wipe it.
+   * @param {boolean} open
+   * @returns {void}
+   */
+  setArrivalOpen(open) {
+    this._arrivalOpen = Boolean(open);
+    this._syncArrivalQuickStartStage();
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  isSheetOpen() {
+    return Boolean(this._sheetOpen);
+  }
+
+  _syncArrivalQuickStartStage() {
+    const show = this._isNarrow() && this._idle && this._arrivalOpen;
+    document.body.classList.toggle(
+      'ft-narrow-stage-arrival-quick-start',
+      show
+    );
+  }
+
+  /**
    * Narrow Focusing: hide Sound FAB/nudge via class (more reliable than media CSS alone).
    * @returns {void}
    */
@@ -181,7 +209,8 @@ export class NarrowIdleShell {
       'ft-narrow-shell',
       'ft-narrow-park',
       'ft-narrow-idle',
-      'ft-narrow-focusing'
+      'ft-narrow-focusing',
+      'ft-narrow-stage-arrival-quick-start'
     );
   }
 
@@ -200,6 +229,7 @@ export class NarrowIdleShell {
     document.body.classList.toggle('ft-narrow-park', park);
     document.body.classList.toggle('ft-narrow-idle', idleChrome);
     document.body.classList.toggle('ft-narrow-focusing', focusing);
+    this._syncArrivalQuickStartStage();
     if (this.shell) {
       this.shell.hidden = !narrow || Boolean(this._suppressed);
     }
@@ -802,6 +832,52 @@ export class NarrowIdleShell {
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #quick-start-focus,
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #btn-focus {
           display: none !important;
+        }
+
+        /*
+         * Arrival (fig8 / W3): keep Sit·How·Honesty parked; surface ⚡ only.
+         * Parent dock must unpark (opacity on parent would hide children).
+         */
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #session-start-dock {
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(28px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          border: none !important;
+          padding: 0 !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #btn-focus,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .session-start-dock__hint,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .session-start-dock__panel,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #honesty-idle-entry,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #micro-ritual-idle-entry,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .ft-wide-more,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #ft-wide-more-btn,
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .session-start-dock__cta-row > :not(#quick-start-focus) {
+          display: none !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #quick-start-focus {
+          display: inline-flex !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          position: relative !important;
+          left: auto !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: auto !important;
+          transform: none !important;
         }
 
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-reminder #weekly-practice-heatmap-cluster {

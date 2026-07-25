@@ -128,10 +128,30 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
     timeout: 8_000
   });
   await page.locator('#onboarding-hint-help').click();
-  // Remedy tips (data-remedy=1); parked How/Honesty/Sound/Reminder remap to ⋯
+  // 情境单条：先出主 tip +「还有 N 条」；展开后再验 parked remap
   const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
   await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
   await expect(page.locator('#onboarding-app-purpose')).toBeVisible();
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
+  ).toBeVisible();
+  // 展开目录前关掉用途卡，避免与全量 tip 抢位（用途卡可随时再点 ?）
+  const purposeGotIt = page.locator('#onboarding-app-purpose button');
+  if (await purposeGotIt.isVisible()) {
+    await purposeGotIt.click();
+  }
+  await page
+    .locator('ft-onboarding-hint-bubble[data-hint-id="help-remedy"]')
+    .click();
+  await expect
+    .poll(async () => {
+      return page.evaluate(() => {
+        return document.querySelectorAll(
+          'ft-onboarding-hint-bubble[data-remedy="1"]'
+        ).length;
+      });
+    })
+    .toBeGreaterThanOrEqual(5);
   const layout = await page.evaluate(() => {
     const moreEl = document.getElementById('ft-wide-more-btn');
     const purpose = document.getElementById('onboarding-app-purpose');
