@@ -135,7 +135,7 @@
   "HINT_MICRO_RITUAL": "A minute of breath — soft practice, no full Focus.",
   "HINT_HELP_AFFORDANCE": "Not sure what to tap next? Start here.",
   "HINT_HELP_REMEDY": "All the tips for this screen are on the page now. Click a tip to dismiss it; tap ? anytime you want them again.",
-  "HINT_HELP_REMEDY_MORE": "One tip for now. {n} more — tap this bubble to show them. Tap ? anytime you want tips again.",
+  "HINT_HELP_REMEDY_MORE": "{n} more tips — tap here",
   "HINT_HELP_FALLBACK": "Sit with Yin when you are ready.",
   "HINT_APP_PURPOSE_TITLE": "What this space is for",
   "HINT_APP_PURPOSE_BODY": "Focus Tiger is a gamified mindfulness companion that helps you cultivate focus, presence, and flow through regular practice, at your own pace.",

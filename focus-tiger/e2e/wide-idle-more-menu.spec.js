@@ -135,14 +135,15 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
   ).toBeVisible();
-  // 展开目录前关掉用途卡，避免与全量 tip 抢位（用途卡可随时再点 ?）
-  const purposeGotIt = page.locator('#onboarding-app-purpose button');
-  if (await purposeGotIt.isVisible()) {
-    await purposeGotIt.click();
-  }
-  await page
-    .locator('ft-onboarding-hint-bubble[data-hint-id="help-remedy"]')
-    .click();
+  // 用途卡可能被「还有 N 条」芯片挡住；直接关掉再展开目录
+  await page.evaluate(() => {
+    const card = document.getElementById('onboarding-app-purpose');
+    if (card) card.hidden = true;
+  });
+  await expect(page.locator('#ft-hint-catalog-chip')).toBeVisible({
+    timeout: 5_000
+  });
+  await page.locator('#ft-hint-catalog-chip').click();
   await expect
     .poll(async () => {
       return page.evaluate(() => {

@@ -148,7 +148,7 @@ test('375 Arrival: Quick Start stays on-canvas; Sit stays hidden', async ({
   });
 });
 
-test('375 park: ? remedy shows one primary tip + catalog expand', async ({
+test('375 park: ? remedy shows one primary tip + catalog chip', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -168,24 +168,29 @@ test('375 park: ? remedy shows one primary tip + catalog expand', async ({
       return r.width > 0 && r.height > 0;
     });
     const ids = bubbles.map((b) => b.dataset.hintId);
-    const helpMeta = document.querySelector(
-      'ft-onboarding-hint-bubble[data-hint-id="help-remedy"]'
-    );
+    const chip = document.getElementById('ft-hint-catalog-chip');
+    const chipRect = chip?.getBoundingClientRect();
     return {
       count: bubbles.length,
       ids,
-      catalogExpand: helpMeta?.dataset.catalogExpand || '0'
+      chipVisible: Boolean(
+        chip &&
+          !chip.hidden &&
+          chipRect &&
+          chipRect.width > 0 &&
+          chipRect.top >= 0 &&
+          chipRect.top < 667
+      ),
+      chipText: chip?.textContent?.trim() || ''
     };
   });
-  expect(before.count).toBeLessThanOrEqual(3);
-  expect(before.count).toBeGreaterThanOrEqual(2);
+  expect(before.count).toBeLessThanOrEqual(2);
+  expect(before.count).toBeGreaterThanOrEqual(1);
   expect(before.ids).toContain('sit-button');
-  expect(before.ids).toContain('help-remedy');
-  expect(before.catalogExpand).toBe('1');
+  expect(before.chipVisible).toBe(true);
+  expect(before.chipText).toMatch(/more|还有/i);
 
-  await page
-    .locator('ft-onboarding-hint-bubble[data-hint-id="help-remedy"]')
-    .click();
+  await page.locator('#ft-hint-catalog-chip').click();
 
   const after = await page.evaluate(() => {
     const bubbles = [
@@ -197,6 +202,7 @@ test('375 park: ? remedy shows one primary tip + catalog expand', async ({
     const help = document.getElementById('ft-narrow-help-btn');
     const grabber = document.querySelector('.ft-narrow-grabber');
     const center = document.querySelector('.ft-narrow-action-bar__center');
+    const chip = document.getElementById('ft-hint-catalog-chip');
     if (!help || !grabber || bubbles.length < 3) {
       return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
     }
@@ -215,13 +221,15 @@ test('375 park: ? remedy shows one primary tip + catalog expand', async ({
     });
     return {
       ok: nearVisible,
-      bubbleCount: bubbles.length
+      bubbleCount: bubbles.length,
+      chipHidden: !chip || chip.hidden
     };
   });
   expect(after.ok, after.reason || 'tips not near ActionBar/grabber').toBe(
     true
   );
   expect(after.bubbleCount).toBeGreaterThanOrEqual(3);
+  expect(after.chipHidden).toBe(true);
 });
 
 test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({

@@ -869,6 +869,8 @@ export class NarrowIdleShell {
         }
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #quick-start-focus {
           display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;

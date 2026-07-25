@@ -501,6 +501,9 @@ export class CompanionModePicker {
         pointer-events: auto;
         flex: 0 0 auto;
         align-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         width: 44px;
         height: 44px;
         padding: 0;
@@ -514,6 +517,7 @@ export class CompanionModePicker {
         color: rgba(92, 72, 52, 0.88);
         font-size: 18px;
         line-height: 1;
+        text-align: center;
         cursor: pointer;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.75) inset,
