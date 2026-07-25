@@ -6,6 +6,8 @@ const STYLE = `
   font-family: var(--font-family);
   color: var(--color-ink);
   --meter-size: 140px;
+  position: relative;
+  z-index: 2;
 }
 .wrap {
   position: relative;
@@ -34,17 +36,19 @@ const STYLE = `
   height: 10px;
   margin: -5px;
   border-radius: 50%;
-  background: var(--color-panel);
-  border: 1.5px solid var(--color-ink-faint);
+  background: rgba(255, 252, 245, 0.95);
+  border: 1.5px solid rgba(74, 58, 40, 0.28);
   left: 50%;
   top: 50%;
   transform: rotate(var(--a)) translateY(calc(var(--meter-size) / -2 + 8px));
-  transition: background 320ms var(--ease-calm), box-shadow 320ms var(--ease-calm);
+  transition: background 320ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
+    box-shadow 320ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
+    border-color 320ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
 }
 .dot[data-lit="1"] {
-  background: var(--color-accent);
+  background: var(--color-accent, #b5623a);
   border-color: transparent;
-  box-shadow: 0 0 10px var(--color-accent-soft);
+  box-shadow: 0 0 10px var(--color-accent-soft, rgba(181, 98, 58, 0.22));
 }
 .breath {
   position: absolute;
@@ -52,27 +56,40 @@ const STYLE = `
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(circle, var(--color-gold-glow), transparent 68%);
+  background: radial-gradient(circle, var(--color-gold-glow, rgba(212, 146, 42, 0.55)), transparent 68%);
 }
 :host([mode="celebrate"]) .breath {
-  animation: breath-glow var(--duration-celebrate) var(--ease-calm) forwards;
+  animation: breath-glow var(--duration-celebrate, 1.2s) var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)) forwards;
 }
 @keyframes breath-glow {
   0% { opacity: 0; transform: scale(0.9); }
   40% { opacity: 0.9; transform: scale(1.05); }
   100% { opacity: 0; transform: scale(1.12); }
 }
+/* Below the meter, above progress-bar via host z-index (FocusHUD sibling paint order). */
 .label {
   position: absolute;
   left: 50%;
-  bottom: -1.6rem;
+  top: calc(100% + 8px);
   transform: translateX(-50%);
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  white-space: nowrap;
+  z-index: 3;
+  max-width: 11rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 10px;
+  background: var(--color-surface-warm, #f8f1e4);
+  border: 1px solid var(--color-surface-border, rgba(139, 115, 85, 0.22));
+  box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
+  font-size: var(--font-size-sm, 0.75rem);
+  line-height: 1.35;
+  color: var(--text-primary, #2c1f14);
+  white-space: normal;
+  text-align: center;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 220ms var(--ease-calm);
+  transition: opacity 220ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
 }
+:host(:hover) .label,
+:host(:focus-within) .label,
 .wrap:hover .label {
   opacity: 1;
 }
@@ -104,6 +121,7 @@ export class StreakMeter extends HTMLElement {
     if (!this.hasAttribute("mode")) this.setAttribute("mode", "calm");
     if (!this.hasAttribute("total")) this.setAttribute("total", "7");
     if (!this.hasAttribute("filled")) this.setAttribute("filled", "0");
+    if (!this.hasAttribute("tabindex")) this.setAttribute("tabindex", "0");
     this._render();
   }
 
@@ -131,6 +149,8 @@ export class StreakMeter extends HTMLElement {
     const custom = this.getAttribute("label");
     this._label.textContent =
       custom || `Days you've practiced: ${filled} of ${total}`;
+    this.setAttribute("title", this._label.textContent);
+    this.setAttribute("aria-label", this._label.textContent);
 
     this._ring.innerHTML = "";
     for (let i = 0; i < total; i++) {

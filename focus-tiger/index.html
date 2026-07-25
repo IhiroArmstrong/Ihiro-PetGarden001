@@ -90,6 +90,8 @@
         flex-shrink: 0;
         --meter-size: 64px;
         margin-left: auto;
+        position: relative;
+        z-index: 2;
       }
       #focus-hud .ft-hud__streak::part(label) {
         font-size: 0.7rem;
@@ -202,6 +204,7 @@
         position: absolute;
         left: 0;
         top: calc(100% + 8px);
+        z-index: 3;
         min-width: 11rem;
         padding: 0.55rem 0.8rem;
         border-radius: var(--radius-sm, 10px);

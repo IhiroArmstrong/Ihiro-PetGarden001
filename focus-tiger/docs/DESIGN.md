@@ -408,7 +408,7 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 
-**产品壳 FocusHUD（2026-07-21；同日改版）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停「近日同坐的日子」；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
+**产品壳 FocusHUD（2026-07-21；同日改版）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停浮层「近日同坐的日子」，须盖过下方今日同坐条；空心点保持浅描边可见；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
 
 **「本周陪伴」7 格热力图（2026-07-22；窄屏壳 2026-07-24）**：仅 **Idle** 可见。**宽屏**：左下角（`#onboarding-hint-help` 上方）。**窄屏（≤479px）**：主画布不散落按钮——`NarrowIdleShell` ActionBar + 上滑抽屉；7 格在抽屉内只读展示。数据 `PracticeDaysStore.getLastNDays(7)`；亮格 = `totalMinutes === null \|\| totalMinutes > 0`；暗格浅洗。非 Idle 隐藏。`#weekly-practice-heatmap` / `#ft-narrow-idle-shell`。
 
