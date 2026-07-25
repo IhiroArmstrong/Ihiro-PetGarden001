@@ -156,7 +156,7 @@
 - `Celebrating` 2D 正式素材：`celebrate-dance`（57 帧，`loopMode: none`）一次性叙事弧线（起身→慢速舞+小金光→施礼）；播完 EmotionController 回归 idle-breathing；会话结束时序改由序列 `onComplete` 驱动（不再固定 4s）
 - `Sleeping` / DORMANT 2D 正式素材：同源 `cloak-sleep` 末尾 **030–034**（每帧两拍、`loopMode: pingpong`，先 034→030）持续循环；与披毯入睡末帧同姿；旧 `sleeping/` 8 帧目录保留未删
 - 2D 主线默认隐藏 3D canvas（`PoseManager.setCanvasHidden`）；透明精灵后不再露出垫底模型；GLB 仍保留给奖励柜
-- `idle-breathing` **约 2.5 fps**（放慢 2×）+ 每 5 循环眨眼一次；`sleeping` **约 1 fps**
+- `idle-breathing` **约 2.5 fps**（放慢 2×）+ 每 5 循环眨眼一次；`sleeping` **约 2 fps**
 - `Smiling` / `Blink` 接入 `blink-smile`；Idle 自发变体含 blink-smile；Honesty 唤醒后接 `haloBreathing` 奖励呼吸
 - 一炷香莲花/金斑改 DOM 叠层（`#incense-fx-overlay` z-index 4），保证在 2D Yin 前方
 - Honesty Check-in UI：Mindful Check-in 标题加粗加深、呼吸面板与 Sit with Yin 按钮立体化

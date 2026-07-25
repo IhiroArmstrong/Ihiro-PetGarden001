@@ -273,7 +273,7 @@ test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
   const definition = SPRITE_SEQUENCES.sleeping;
   assert.equal(definition.animation, 'cloak-sleep');
   assert.equal(definition.frameCount, 34);
-  assert.equal(definition.fps, 1);
+  assert.equal(definition.fps, 2);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.PINGPONG);
   assert.deepEqual(definition.frameIndices, [34, 34, 33, 33, 32, 32, 31, 31, 30, 30]);
   const paths = buildFramePaths(definition.animation, definition.frameCount, {
