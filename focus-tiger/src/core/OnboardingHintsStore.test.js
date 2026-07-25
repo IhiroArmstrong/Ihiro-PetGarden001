@@ -102,6 +102,21 @@ test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / ambient-g
   ]);
 });
 
+test('appendIdleChromeHintIds adds honesty idle entry + quick-start balls', () => {
+  /** @type {string[]} */
+  const ids = ['sit-button'];
+  appendIdleChromeHintIds(ids, {
+    honestyIdleEntryVisible: true,
+    quickStartVisible: true
+  });
+  assert.deepEqual(ids, [
+    'sit-button',
+    'honesty-optional',
+    'quick-start',
+    'ambient-gated'
+  ]);
+});
+
 test('resolveRemedyHintIds lists scene hints without help-affordance and expands companion panel', () => {
   assert.deepEqual(resolveRemedyHintIds({}), [
     'sit-button',

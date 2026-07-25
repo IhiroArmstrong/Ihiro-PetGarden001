@@ -111,6 +111,7 @@
   "HINT_HONESTY_OPTIONAL": "这段补登可以略过，直接同坐也行。",
   "HINT_HONESTY_BRIDGE": "选 Yes 进入到达练习；选 No 继续闲坐。都可以。",
   "HINT_SIT_BUTTON": "点击与阿寅同坐。",
+  "HINT_QUICK_START": "跳过到达练习——用上次的同坐方式立刻开始。",
   "HINT_HOW_SHALL_WE_SIT": "也可以从这里开始。",
   "HINT_NOTICE": "点一下就好，也可以跳过。",
   "HINT_BREATHING": "跟着阿寅呼吸就好，不用做别的。",

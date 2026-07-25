@@ -17,9 +17,10 @@
 | hintId | 场景（对应故事） | 提示 EN / ZH | 自动出现时机 | 完成操作后记已读 | 补救可调 |
 |---|---|---|---|---|---|
 | `dormant-open` | （历史）睡着开场 | 保留 id；开场已改 Idle，基本不自动触发 | — | — | 兼容 |
-| `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次看到 Honesty 可忽略提示 | 点 Sit 忽略，或点进补登 | 是 |
+| `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次见到 Honesty 入口（含窄屏 Honesty 圆球） | 点 Sit 忽略，或点进补登 | 是 |
 | `honesty-bridge` | Honesty 桥接 Yes/No | "Yes begins Arrival; No stays with idle. Either is fine." / 「选 Yes 进入到达练习；选 No 继续闲坐。都可以。」 | 首次桥接面板可见 | 点 Yes / No | 是 |
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
+| `quick-start` | Idle ⚡ Quick Start | "Skip Arrival — begin with your last way of sitting." / 「跳过到达练习——用上次的同坐方式立刻开始。」 | Idle 且 ⚡ / 窄屏闪电球可见 | 点 ⚡ / Quick Start 球 | 是 |
 | `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
 | `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | 首次 Notice | 点选图标或 Skip | 是 |
 | `breathing` | A3c | "Just breathe with Yin. Nothing else to do." / 「跟着阿寅呼吸就好，不用做别的。」 | 首次呼吸 beat | 呼吸结束或 Skip | 是 |
@@ -40,7 +41,7 @@
 | `help-remedy` | 点「?」补救 | "All the tips… Click a tip to dismiss it; tap ? anytime you want them again." / 「本页…点一下气泡即可关掉；下次需要时再点问号。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **21** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+共 **22** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
 <!-- onboarding-hints-registry:anchors:begin -->
 
@@ -49,9 +50,10 @@
 | hintId | localeKey | selector | placement | tip | anchorGroup |
 |---|---|---|---|---|---|
 | `dormant-open` | `HINT_DORMANT_OPEN` | `#btn-focus` | above | bottom | — |
-| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `#btn-focus` | right | left | — |
+| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `#honesty-idle-entry` | above | bottom | — |
 | `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `#honesty-bridge-cta` | above | bottom | — |
 | `sit-button` | `HINT_SIT_BUTTON` | `#btn-focus` | above | bottom | — |
+| `quick-start` | `HINT_QUICK_START` | `#quick-start-focus` | above | bottom | — |
 | `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `.session-start-dock__hint` | right | left | — |
 | `notice` | `HINT_NOTICE` | `#arrival-practice, #btn-focus` | above | bottom | — |
 | `breathing` | `HINT_BREATHING` | `#arrival-practice, #btn-focus` | above | bottom | — |

@@ -714,8 +714,14 @@ async function init() {
 
   function getOnboardingScene() {
     const arrivalPhase = arrivalPractice?.getStep?.() ?? null;
+    const quickEl = document.getElementById('quick-start-focus');
+    const honestyEntry = document.getElementById('honesty-idle-entry');
     return {
       honestyVisible: honestyCheckInUI.phase === 'prompt',
+      honestyIdleEntryVisible: Boolean(
+        honestyEntry && !honestyEntry.hidden && honestyEntry.isConnected
+      ),
+      quickStartVisible: Boolean(quickEl && !quickEl.hidden && quickEl.isConnected),
       honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
       arrivalOpen: arrivalPractice?.isOpen?.() ?? false,
       arrivalPhase:
@@ -1174,6 +1180,7 @@ async function init() {
     companionModePicker.hide();
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
+    onboardingHints?.markSeen('quick-start');
     if (arrivalPractice.isOpen()) {
       arrivalPractice.skipToBegin();
       return;

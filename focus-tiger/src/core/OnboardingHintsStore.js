@@ -76,6 +76,12 @@ export function createHintsSeenStore(
  */
 export function appendIdleChromeHintIds(ids, scene = {}) {
   if (!Array.isArray(ids)) return;
+  if (scene.honestyIdleEntryVisible && !ids.includes('honesty-optional')) {
+    ids.push('honesty-optional');
+  }
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
+  }
   if (scene.weeklyHeatmapVisible && !ids.includes('weekly-heatmap')) {
     ids.push('weekly-heatmap');
   }
@@ -106,6 +112,8 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
  * @param {boolean} [scene.hasEverCompletedSession]
  * @param {boolean} [scene.weeklyHeatmapVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
+ * @param {boolean} [scene.honestyIdleEntryVisible]
+ * @param {boolean} [scene.quickStartVisible]
  */
 export function resolveHintForScene(scene = {}) {
   if (scene.reflectionOpen) return 'reflection';
@@ -146,6 +154,7 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'honesty-bridge': 82,
   'honesty-optional': 80,
   'how-shall-we-sit': 70,
+  'quick-start': 68,
   'micro-ritual': 58,
   'in-app-reminder': 57,
   'ambient-soundscape': 60,

@@ -64,11 +64,20 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
-  await expect(page.locator('#ft-narrow-home-sit')).toContainText(
+  await expect(page.locator('#ft-narrow-home-sit')).toHaveAttribute(
+    'aria-label',
     /Sit with Yin|与阿寅同坐/i
   );
   await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-quickstart')).toHaveAttribute(
+    'aria-label',
+    /Quick Start|快速开始/i
+  );
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
+    'aria-label',
+    /Honesty Check-in|诚实补登/i
+  );
   await expect(page.locator('.ft-narrow-grabber')).toBeVisible();
 
   // Legacy Idle canvas chrome is parked off-screen while narrow idle
@@ -141,9 +150,10 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
     timeout: 15_000
   });
 
-  // Honesty lives on home canvas (not in the drawer)
+  // Honesty lives on home canvas as a ball (not in the drawer)
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
-  await expect(page.locator('#ft-narrow-home-honesty')).toContainText(
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
+    'aria-label',
     /Honesty Check-in|诚实补登|Honesty/i
   );
 

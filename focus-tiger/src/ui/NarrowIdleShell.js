@@ -1,14 +1,20 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v5';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v6';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
 
+/** Sit ball: soft zafu / cushion (蒲团) — matches primary CTA metaphor */
+const SIT_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><ellipse cx="12" cy="16.2" rx="8.2" ry="3.6" fill="currentColor" opacity="0.38"/><ellipse cx="12" cy="13.6" rx="7" ry="3.2" fill="currentColor"/></svg>`;
+
+/** Honesty ball: quiet check-in acknowledgment */
+const HONESTY_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M6.5 12.2l3.8 3.8 7.2-8.2" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
 /**
  * Narrow Idle shell (≤479 / 375):
  * - Minimal ActionBar: ? · Calm/time · mute
- * - Home primary CTAs on canvas: Sit with Yin · Quick Start · Honesty
+ * - Home primary balls: Sit (cushion) · Quick Start (⚡) · Honesty (check)
  * - Swipe-up BottomOptionsDrawer for secondary Idle controls
  *   (breath / How shall we sit? / Sound / Reminder + week strip)
  *
@@ -234,15 +240,21 @@ export class NarrowIdleShell {
       </button>
     `;
 
-    // Three most-used Idle actions live on the home canvas (not in the drawer).
+    // Three primary Idle balls on the home canvas (not in the drawer).
     this.homeCtas = document.createElement('nav');
     this.homeCtas.className = 'ft-narrow-home-ctas';
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-narrow-home-ctas__btn is-primary" id="ft-narrow-home-sit" data-proxy="sit"></button>
-      <button type="button" class="ft-narrow-home-ctas__btn" id="ft-narrow-home-quickstart" data-proxy="quickstart"></button>
-      <button type="button" class="ft-narrow-home-ctas__btn" id="ft-narrow-home-honesty" data-proxy="honesty"></button>
+      <button type="button" class="ft-narrow-home-ctas__btn is-primary" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
+        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${SIT_BALL_ICON}</span>
+      </button>
+      <button type="button" class="ft-narrow-home-ctas__btn is-quick" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
+        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">⚡</span>
+      </button>
+      <button type="button" class="ft-narrow-home-ctas__btn is-honesty" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
+        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${HONESTY_BALL_ICON}</span>
+      </button>
     `;
 
     this.grabber = document.createElement('button');
@@ -411,8 +423,8 @@ export class NarrowIdleShell {
   }
 
   /**
-   * Keep home Sit / Quick Start / Honesty labels + enablement in sync with
-   * the parked legacy controls they proxy.
+   * Keep home Sit / Quick Start / Honesty enablement in sync with
+   * the parked legacy controls they proxy. Balls use icons + aria-label.
    * @returns {void}
    */
   _refreshHomeCtas() {
@@ -420,8 +432,10 @@ export class NarrowIdleShell {
 
     const focusEl = document.getElementById('btn-focus');
     if (this.sitHomeBtn) {
-      this.sitHomeBtn.textContent =
+      const sitLabel =
         focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
+      this.sitHomeBtn.setAttribute('aria-label', sitLabel);
+      this.sitHomeBtn.title = sitLabel;
       const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
       this.sitHomeBtn.disabled = !sitOk;
       this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
@@ -430,7 +444,9 @@ export class NarrowIdleShell {
 
     const quickEl = document.getElementById('quick-start-focus');
     if (this.quickHomeBtn) {
-      this.quickHomeBtn.textContent = t('QUICK_START_ARIA');
+      const qsLabel = t('QUICK_START_ARIA');
+      this.quickHomeBtn.setAttribute('aria-label', qsLabel);
+      this.quickHomeBtn.title = qsLabel;
       const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
       this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
       this.quickHomeBtn.disabled = !qsOk;
@@ -439,7 +455,9 @@ export class NarrowIdleShell {
 
     const honestyEl = document.getElementById('honesty-idle-entry');
     if (this.honestyHomeBtn) {
-      this.honestyHomeBtn.textContent = t('HONESTY_IDLE_ENTRY');
+      const honestyLabel = t('HONESTY_IDLE_ENTRY');
+      this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
+      this.honestyHomeBtn.title = honestyLabel;
       // Element may be attribute-hidden while busy — still show home entry;
       // _proxy opens check-in via handler when needed (same as former drawer).
       this.honestyHomeBtn.hidden = !honestyEl;
@@ -668,52 +686,76 @@ export class NarrowIdleShell {
         left: 50%;
         bottom: max(52px, calc(36px + env(safe-area-inset-bottom, 0px)));
         transform: translateX(-50%);
-        width: min(300px, calc(100vw - 40px));
+        width: min(280px, calc(100vw - 48px));
         display: flex;
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
         visibility: hidden;
         pointer-events: none;
       }
       .ft-narrow-home-ctas__btn {
-        width: 100%;
+        flex: 0 0 auto;
         box-sizing: border-box;
-        min-height: 44px;
-        padding: 11px 18px;
-        border-radius: 14px;
+        width: 56px;
+        height: 56px;
+        min-height: 56px;
+        padding: 0;
+        border-radius: 50%;
         border: 1px solid rgba(139, 115, 85, 0.28);
-        background: linear-gradient(180deg, #fffdf8 0%, #f6ecdc 100%);
-        color: #2c1f14;
-        font-size: 14px;
-        font-weight: 650;
-        text-align: center;
+        background: linear-gradient(
+          165deg,
+          rgba(255, 252, 245, 0.98) 0%,
+          rgba(245, 235, 220, 0.96) 100%
+        );
+        color: rgba(92, 72, 52, 0.9);
+        font-size: 22px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.85) inset,
-          0 2px 0 rgba(180, 150, 110, 0.2);
+          0 1px 0 rgba(255, 255, 255, 0.75) inset,
+          0 4px 12px rgba(44, 31, 20, 0.1);
       }
       .ft-narrow-home-ctas__btn:disabled,
       .ft-narrow-home-ctas__btn[aria-disabled="true"] {
         opacity: 0.45;
         cursor: not-allowed;
       }
+      .ft-narrow-home-ctas__btn:active:not(:disabled) {
+        transform: scale(0.96);
+      }
       .ft-narrow-home-ctas__btn.is-primary {
-        border-color: rgba(255, 230, 210, 0.4);
+        border-color: rgba(255, 230, 210, 0.45);
         background: linear-gradient(
           180deg,
           var(--color-cta-top, #c47a4e) 0%,
           var(--color-accent, #b5623a) 48%,
           var(--color-cta-bottom, #8f4a2c) 100%
         );
-        color: #fff;
-        font-size: 15px;
-        font-weight: 700;
+        color: #fff8f2;
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.28) inset,
-          0 2px 0 var(--color-cta-edge, #7a3f24);
+          0 3px 0 var(--color-cta-edge, #7a3f24),
+          0 6px 14px rgba(44, 31, 20, 0.16);
+      }
+      .ft-narrow-home-ctas__btn.is-quick {
+        /* Match desktop #quick-start-focus lightning ball */
+        font-size: 20px;
+      }
+      .ft-narrow-home-ctas__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+      .ft-narrow-home-ctas__svg {
+        display: block;
       }
       .ft-narrow-grabber {
         position: absolute;

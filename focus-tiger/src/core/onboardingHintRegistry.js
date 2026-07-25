@@ -30,7 +30,11 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
   {
     id: 'honesty-optional',
     localeKey: 'HINT_HONESTY_OPTIONAL',
-    anchor: { selector: '#btn-focus', placement: 'right', tip: 'left' }
+    anchor: {
+      selector: '#honesty-idle-entry',
+      placement: 'above',
+      tip: 'bottom'
+    }
   },
   {
     id: 'honesty-bridge',
@@ -45,6 +49,15 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'sit-button',
     localeKey: 'HINT_SIT_BUTTON',
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
+  },
+  {
+    id: 'quick-start',
+    localeKey: 'HINT_QUICK_START',
+    anchor: {
+      selector: '#quick-start-focus',
+      placement: 'above',
+      tip: 'bottom'
+    }
   },
   {
     id: 'how-shall-we-sit',
