@@ -129,6 +129,13 @@ export class InAppReminderBannerUI {
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
       }
+      /* 窄屏 Idle：横幅须在 ActionBar 下方，禁止贴顶被裁（图11） */
+      body.ft-narrow-shell.ft-narrow-idle .in-app-reminder-banner,
+      body.ft-narrow-shell.ft-narrow-park .in-app-reminder-banner {
+        top: calc(env(safe-area-inset-top, 0px) + 58px);
+        z-index: 34;
+        max-width: min(340px, calc(100vw - 24px));
+      }
       .in-app-reminder-banner.is-visible {
         opacity: 1;
         transform: translate(-50%, 0);

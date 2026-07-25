@@ -1,7 +1,7 @@
 /**
  * 背景音 UI：
- * - 右上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/恢复，默认开播 Mer-Ka-Ba
- * - 右下角 **Sound** 蒲团橙按钮始终可见；专注后可展开曲目/音量（恢复旧行为）
+ * - 右上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/开播（须用户点开，默认关）
+ * - 右下角 **Sound** 蒲团橙按钮始终可见；专注后可展开曲目/音量
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -50,6 +50,8 @@ export class AmbientSoundscapeUI {
     this._sessionActive = false;
     this._nudgeVisible = false;
     this._blockedTipTimer = null;
+    /** Narrow drawer forced the Soundscape panel open while Idle. */
+    this._narrowForcedPanel = false;
 
     this.root = document.createElement('div');
     this.root.id = 'ambient-soundscape';
@@ -117,7 +119,7 @@ export class AmbientSoundscapeUI {
     this.volumeInput.max = '100';
     this.volumeInput.value = String(Math.round(controller.getVolume() * 100));
     this.volumeInput.addEventListener('input', () => {
-      if (!this._sessionActive) return;
+      if (!this._sessionActive && !this._narrowForcedPanel) return;
       controller.setVolume(Number(this.volumeInput.value) / 100);
       this._refreshMuteBtn();
     });
@@ -127,6 +129,18 @@ export class AmbientSoundscapeUI {
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
     this.root.append(this.muteBtn, this.focusChrome);
     overlayRoot.appendChild(this.root);
+
+    this._onDocPointer = (event) => {
+      if (!this._expanded) return;
+      if (!this._sessionActive && !this._narrowForcedPanel) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root.contains(target)) return;
+      this._expanded = false;
+      this._narrowForcedPanel = false;
+      document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
+      this._renderPanel();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
 
     this._unsubLocale = onLocaleChange(() => this._renderPanel());
     this._injectStyles();
@@ -164,14 +178,41 @@ export class AmbientSoundscapeUI {
 
   isPanelOpen() {
     return Boolean(
-      this._expanded && this._sessionActive && !this.panel.hidden
+      this._expanded &&
+        !this.panel.hidden &&
+        (this._sessionActive || this._narrowForcedPanel)
     );
   }
 
   async bootDefaultMusic() {
+    // Opt-in：开局不同步自动播放；只刷新钮态
     await this.controller.startPreferredTrack();
     this._renderPanel();
-    this._maybeShowDefaultOnNudge();
+  }
+
+  /** Narrow ActionBar / drawer entry — same as tapping the mute note. */
+  async toggleMuteFromUi() {
+    await this._onMuteClick();
+  }
+
+  /**
+   * Narrow drawer 「Sound」— open the Soundscape track panel immediately
+   * (same selection box as desktop Sound). Hide FAB; do not show gated tip-only.
+   * Caller stages `.ambient-soundscape__focus-chrome` so the panel is on-canvas.
+   */
+  activateSoundFromNarrow() {
+    this._clearBlockedTip();
+    this._narrowForcedPanel = true;
+    this._dismissNudge();
+    this._expanded = true;
+    this._renderPanel();
+    this.panel.hidden = false;
+    this.handlers.onPanelOpened?.();
+  }
+
+  /** Whether ambient preference wants music on (for ActionBar ♪ slash). */
+  wantsMusicOn() {
+    return this.controller.wantsEnabled();
   }
 
   async _onMuteClick() {
@@ -237,6 +278,17 @@ export class AmbientSoundscapeUI {
     }
   }
 
+  /** Narrow shell clearStage — dismiss gated tip / collapse forced Idle panel. */
+  clearNarrowSoundStage() {
+    this._narrowForcedPanel = false;
+    this._clearBlockedTip();
+    document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
+    if (this._expanded && !this._sessionActive) {
+      this._expanded = false;
+      this._renderPanel();
+    }
+  }
+
   _dismissNudgeOrBlockedTip() {
     if (this.nudgeEl.classList.contains('is-blocked-tip')) {
       this._clearBlockedTip();
@@ -276,7 +328,7 @@ export class AmbientSoundscapeUI {
       if (selected) btn.classList.add('is-selected');
       btn.textContent = t(opt.labelKey);
       btn.addEventListener('click', () => {
-        if (!this._sessionActive) return;
+        if (!this._sessionActive && !this._narrowForcedPanel) return;
         this._dismissNudge();
         void this.controller.setTrack(opt.id).then(() => {
           this._renderPanel();
@@ -286,10 +338,13 @@ export class AmbientSoundscapeUI {
       this.trackRow.appendChild(btn);
     }
 
-    this.panel.hidden = !this._expanded || !this._sessionActive;
+    this.panel.hidden =
+      !this._expanded || !(this._sessionActive || this._narrowForcedPanel);
     this.soundBtn.setAttribute(
       'aria-expanded',
-      this._expanded && this._sessionActive ? 'true' : 'false'
+      this._expanded && (this._sessionActive || this._narrowForcedPanel)
+        ? 'true'
+        : 'false'
     );
     this._refreshMuteBtn();
     this._refreshSoundFab();
@@ -323,6 +378,7 @@ export class AmbientSoundscapeUI {
   }
 
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
   }
 
@@ -345,6 +401,7 @@ export class AmbientSoundscapeUI {
         position: fixed;
         top: 14px;
         right: 14px;
+        z-index: 24;
         pointer-events: auto;
         width: 44px;
         height: 44px;
@@ -393,6 +450,28 @@ export class AmbientSoundscapeUI {
         align-items: flex-end;
         gap: 8px;
         pointer-events: none;
+      }
+      /* 窄屏：略缩 mute / Sound，给 HUD 与 dock 胶囊让出边距（勿上移 FAB，以免撞 Sit） */
+      @media (max-width: 479px) {
+        .ambient-soundscape__mute {
+          top: 10px;
+          right: 10px;
+          width: 40px;
+          height: 40px;
+        }
+        .ambient-soundscape__icon-svg {
+          width: 20px;
+          height: 20px;
+        }
+        .ambient-soundscape__focus-chrome {
+          right: 12px;
+          bottom: 24px;
+        }
+        .ambient-soundscape__fab {
+          padding: 10px 14px;
+          min-height: 44px;
+          font-size: 14px;
+        }
       }
       .ambient-soundscape.is-gated .ambient-soundscape__fab {
         opacity: 0.72;

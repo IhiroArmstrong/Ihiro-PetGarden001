@@ -187,7 +187,7 @@ Idle 点「一分钟呼吸」
 - 调用：`playEmotion('sessionComplete', { onComplete: … })`。  
 - **禁止** `startCelebrating` / `STATES.CELEBRATE` / `markCelebratedToday`。  
 - 播完回归 Idle 呼吸基底（现有 one-shot → idle 叠化契约）。  
-- **不**打开 Reflection Moment；**不**把微仪式叠层算进「未就绪却可点」的静默门闩——进行中须禁用 Sit / Companion / 再次点微仪式，或明确 Skip。
+- **不**打开 Reflection Moment；**不**把微仪式叠层算进「未就绪却可点」的静默门闩——进行中须**隐藏** Sit（与 Arrival 同契约；禁止仅禁用仍露出），并禁用 Companion / 再次点微仪式，或明确 Leave。
 
 ---
 

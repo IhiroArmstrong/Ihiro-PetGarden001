@@ -141,7 +141,7 @@ v5.0：数据驱动一只角色的状态(自然休憩/金色庆祝/打盹/欢呼
 打瞌睡  → 仅调试 / 显式 DORMANT；**不再**作为零完成自动开场
 眨眼    → 闭目坐禅：`idle-breathing`（约 2.5fps）×5 完整循环后插一次 `blink-smile`，再 ×5…（偶尔看看）；无其它 Idle 变体（见 PRINCIPLES）
 唤醒起身 → Honesty 自睡态：`dormant-wake`；自 Idle 补登不播睡醒。调试/历史 `wakeUp`：伸懒腰变体
-睡着了  → 调试睡态循环；**约 1 fps** 极缓（持续态节奏原则）
+睡着了  → 调试睡态循环；**约 2 fps** 极缓（持续态节奏原则）
 ```
 
 ### 动作幅度的场景边界（主界面 vs 奖励柜）
@@ -229,7 +229,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其下次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金、与 Sit 同系阴影语言）向上展开三选项。**须先完成（或 Skip）Arrival Practice**，三选一才可展开。若门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完再**展开三选一（桌面 ≥900px：底部**横排矮条**，不挡 Yin）。**Skip — begin / Sit 二次跳过**：跳过仪式后**立刻用记忆模式开计时**，按钮变 **Rise**（不再半卡在「门闩就绪但仍显示 Sit」）。**Here & Now / Offline Space / Flow State：选中或 Arrival 鞠躬后均立即开始 Focus 与计时**（用户已点 Sit 即视为开始，禁止再逼点第二次 Sit）。三模式差异在**会话内**行为（离开提醒、idle 兜底等），不在开表门闩。**专注中隐藏模式提示与三选一面板**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival，三选一才会重新解锁；此时点 hint 同样会启动 Arrival。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其旁 **⚡ Quick Start**（`#quick-start-focus`）可跳过 Arrival、用记忆 Companion 模式立刻 Focusing。次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金）向上展开三选项。**须先完成 Arrival Practice（或点 ⚡）**，Here & Now / Flow 三选一才可在门闩就绪后展开开表；门闩未就绪时点这两项：**启动 Arrival**（禁止静默无反馈）。**Offline Space：点选即开计时，跳过 Arrival Notice/Choose**（别处练习语境，无「当下觉察」仪式）。Sit 默认走 **Welcome → Notice → Breath → Choose**（轻量气泡/字幕，**非**重型模态；**无**面板内 Skip / Skip — begin）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完**后三模式均立即 Focusing（或展开 Companion，视路径）。**Here & Now / Flow State：选中或 Arrival 鞠躬后立即开始 Focus 与计时**；**Offline Space：选中即 Focusing，不经 Arrival**。三模式差异在**会话内**行为与是否走仪式，不在二次 Sit。**专注中隐藏模式提示与三选一面板与 ⚡**（Sit 按钮变为 Rise 并保留可见）。**Arrival/⚡ 解锁后的门闩跨 Focusing→Rise 保持**：回流再点 Here & Now / Flow → **立刻 Focusing**（不得再逼进 Notice）。**Sit** 在 Idle 下始终走 Arrival（重新抵达）；冷启动未解锁时 Here & Now / Flow 仍启动 Arrival。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 
@@ -313,8 +313,8 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 #### 1. 可选性与呈现
 
 - **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
-- **默认开启** Mer-Ka-Ba（偏好存 `focus-tiger.ambient-pref.v1`）；用户关掉后刷新仍保持关闭；
-- UI 拆成两处：**右上米色圆形音符钮**（随时静音/恢复；在播时图标带斜杠）+ **右下角蒲团橙 Sound**（**始终可见**；专注后可展开曲目/音量，未专注点击提示先 Sit）；
+- **默认关闭（opt-in）**（2026-07-25 拍板）：登录 / 打开产品后**不**自动播背景音乐；须用户点右上音符钮（或 Sound 选曲）才开播。偏好存 `focus-tiger.ambient-pref.v1`（无存储时 `enabled: false`；默认曲目仍为 Mer-Ka-Ba）；
+- UI 拆成两处：**右上米色圆形音符钮**（随时开/关；在播时图标带斜杠）+ **右下角蒲团橙 Sound**（**始终可见**；专注后可展开曲目/音量，未专注点击提示先 Sit）；
 - 浏览器若拦截自动播放：点右上音符钮解锁；不得因未开音乐削弱完成反馈。
 
 #### 2. 播放时长作为独立「在场置信信号」
@@ -323,7 +323,7 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 - **不计入**：从未开启、暂停、静音（含音量为 0 且未真正出声的等价态）、会话未运行等期间；
 - **不是**「控件保持打开的墙钟时长」——只有真实播出才累加；
 - 该信号仅在**当前会话内**使用；曲目开关偏好可长期存储；
-- 会话结束**不停播**背景音乐（仅清零 presence 累计）；
+- **会话结束（Rise / 达标）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）——下次 **Sit 也不自动再开**，须再点音符 / Sound；
 - 该信号与 Page Visibility / blur / idle 等既有 Focus Confidence 信号**并列、独立**；不替代墙钟会话计时，也不单独决定会话是否达标。
 
 #### 3. 数据流向：音频时长 → 光效强度（锦上添花）
@@ -408,9 +408,9 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 
-**产品壳 FocusHUD（2026-07-21；同日改版）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停「近日同坐的日子」；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
+**产品壳 FocusHUD（2026-07-21；同日改版）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停浮层「近日同坐的日子」，须盖过下方今日同坐条；空心点保持浅描边可见；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
 
-**「本周陪伴」7 格热力图（2026-07-22）**：仅 **Idle** 常驻于左下角（`#onboarding-hint-help` 上方，避开 FocusHUD / 音符 / Sit·Honesty / Sound / streak-meter）。数据 `PracticeDaysStore.getLastNDays(7)`；亮格 = `totalMinutes === null \|\| totalMinutes > 0`（`--color-accent` 软透明）；暗格 = `--color-ink-faint` 浅洗，**无**红/警示/感叹号/文案/点击。非 Idle 隐藏。`#weekly-practice-heatmap`。
+**「本周陪伴」7 格热力图（2026-07-22；窄屏壳 2026-07-24）**：仅 **Idle** 可见。**宽屏**：左下角（`#onboarding-hint-help` 上方）。**窄屏（≤479px）**：主画布不散落按钮——`NarrowIdleShell` ActionBar + 上滑抽屉；7 格在抽屉内只读展示。数据 `PracticeDaysStore.getLastNDays(7)`；亮格 = `totalMinutes === null \|\| totalMinutes > 0`；暗格浅洗。非 Idle 隐藏。`#weekly-practice-heatmap` / `#ft-narrow-idle-shell`。
 
 ---
 

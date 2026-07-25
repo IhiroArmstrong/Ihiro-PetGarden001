@@ -221,6 +221,42 @@
       #focus-hud .ft-hud__detail-line {
         display: block;
       }
+      /* 窄屏 P1：HUD 略缩，为右上 mute 音符留清晰间距（RESPONSIVE_LAYOUT §7） */
+      @media (max-width: 479px) {
+        #focus-hud {
+          top: 12px;
+          left: 12px;
+          /* 12 left + 14 right + 44 mute + 12 gap */
+          max-width: calc(100vw - 12px - 14px - 44px - 12px);
+        }
+        #focus-hud .ft-hud {
+          min-width: 0;
+          width: 100%;
+          box-sizing: border-box;
+          padding: 10px 12px 10px 10px;
+          gap: 8px;
+        }
+        #focus-hud .ft-hud__row {
+          gap: 8px;
+        }
+        #focus-hud .ft-hud__gauge {
+          width: 64px;
+          height: 64px;
+        }
+        #focus-hud .ft-hud__streak {
+          --meter-size: 48px;
+        }
+        #focus-hud .ft-hud__meta {
+          min-width: 0;
+          flex: 1 1 auto;
+        }
+        #focus-hud .ft-hud__state {
+          font-size: 1.05rem;
+        }
+        #focus-hud .ft-hud__time {
+          font-size: 1rem;
+        }
+      }
       #btn-focus {
         position: absolute;
         bottom: 32px;

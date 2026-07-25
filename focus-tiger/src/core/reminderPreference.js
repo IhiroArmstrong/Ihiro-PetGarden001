@@ -24,6 +24,7 @@ export const REMINDER_PREFERENCE_STORAGE_KEY =
   'focus-tiger.reminder-preference.v1';
 
 /** i18n key；正文在 locales，禁止硬编码句子。 */
+/** Banner copy key — presence, not “waiting” pressure (`PRINCIPLES` 不制造焦虑). */
 export const REMINDER_GENTLE_WAITING_MESSAGE_KEY = 'reminder.gentle_waiting';
 
 /**

@@ -69,7 +69,7 @@ export function createHintsSeenStore(
 }
 
 /**
- * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated）。
+ * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated / Quick Start）。
  * @param {string[]} ids
  * @param {object} scene
  * @returns {void}
@@ -82,8 +82,23 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
   if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
     ids.push('micro-ritual');
   }
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
+  }
   if (!ids.includes('ambient-gated') && !ids.includes('ambient-soundscape')) {
     ids.push('ambient-gated');
+  }
+}
+
+/**
+ * Focusing 表面 HUD 三控件 tip。
+ * @param {string[]} ids
+ * @returns {void}
+ */
+export function appendFocusHudHintIds(ids) {
+  if (!Array.isArray(ids)) return;
+  for (const id of ['focus-hud-ring', 'focus-hud-progress', 'focus-hud-streak']) {
+    if (!ids.includes(id)) ids.push(id);
   }
 }
 
@@ -103,6 +118,9 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
  * @param {boolean} [scene.hasEverCompletedSession]
  * @param {boolean} [scene.weeklyHeatmapVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
+ * @param {boolean} [scene.quickStartVisible]
+ * @param {boolean} [scene.narrowPark]
+ * @param {boolean} [scene.narrowSheetOpen]
  */
 export function resolveHintForScene(scene = {}) {
   if (scene.reflectionOpen) return 'reflection';
@@ -125,6 +143,43 @@ export function resolveHintForScene(scene = {}) {
 }
 
 /**
+ * 点「?」补救：当前场景最相关的 **1** 条（图7 / 图9 情境单条）。
+ * Idle → Sit；窄屏抽屉开着仍以 Sit 为主（抽屉内可见）；Companion → Pick one。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string}
+ */
+export function resolvePrimaryRemedyHintId(scene = {}) {
+  if (scene.reflectionOpen) return 'reflection';
+  if (scene.isFocusing) return 'rise-button';
+  if (scene.ambientPanelOpen) return 'ambient-soundscape';
+  if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    if (phase === 'breath') return 'breathing';
+    if (phase === 'choose') return 'choose';
+    return 'notice';
+  }
+  if (scene.companionExpanded) return 'companion-mode';
+  if (scene.honestyBridgeVisible) return 'honesty-bridge';
+  if (scene.honestyVisible) return 'honesty-optional';
+  // 窄屏抽屉开着：主路径仍是 Sit（在抽屉列表里）；尖角可 remap 到 grabber/行
+  if (scene.narrowSheetOpen) return 'sit-button';
+  if (scene.isDormant) return 'dormant-open';
+  if (scene.hasEverCompletedSession) return 'idle-after-session';
+  // Idle（含窄屏 park：Sit tip remap → grabber）
+  return 'sit-button';
+}
+
+/**
+ * 补救目录：全量列表去掉主条（供「还有 N 条」展开）。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string[]}
+ */
+export function resolveRemedyCatalogHintIds(scene = {}) {
+  const primary = resolvePrimaryRemedyHintId(scene);
+  return resolveRemedyHintIds(scene).filter((id) => id !== primary);
+}
+
+/**
  * 自动提示互斥优先级（数值越高越优先同时展示）。
  * 窄屏 / 全局自动路径：同一时刻最多 1 条；点「?」补救不受此限。
  * @see RESPONSIVE_LAYOUT.md §4.5 / task-responsive-narrow-onboarding-sit.md
@@ -143,6 +198,10 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'honesty-bridge': 82,
   'honesty-optional': 80,
   'how-shall-we-sit': 70,
+  'quick-start': 68,
+  'focus-hud-ring': 66,
+  'focus-hud-progress': 65,
+  'focus-hud-streak': 64,
   'micro-ritual': 58,
   'ambient-soundscape': 60,
   'weekly-heatmap': 56,
@@ -189,23 +248,18 @@ export function resolveAutoHintIds(scene = {}) {
     ids = ['reflection'];
   } else if (scene.isFocusing) {
     ids = ['rise-button', 'ambient-soundscape'];
+    appendFocusHudHintIds(ids);
   } else if (scene.ambientPanelOpen) {
     ids = ['ambient-soundscape'];
   } else if (scene.arrivalOpen) {
-    const phase = scene.arrivalPhase;
-    if (phase === 'breath') ids = ['breathing'];
-    else if (phase === 'choose') ids = ['choose'];
-    else ids = ['notice'];
+    // Arrival 进行中不自动出 tip（Notice/Breath/Choose 会挡选择格；点 tip
+    // 曾被外侧取消误吃）。补救「?」仍经 resolveHintForScene / remedy 列表。
+    ids = [];
+  } else if (scene.honestyBridgeVisible) {
+    // 桥接 Yes/No：不自动出 tip（图4：游离 tip 易挡/误关）；? 补救仍可出 honesty-bridge
+    ids = [];
   } else if (scene.companionExpanded) {
     ids = ['companion-mode'];
-  } else if (scene.honestyBridgeVisible) {
-    ids = ['honesty-bridge'];
-    if (scene.hasEverCompletedSession) {
-      ids.push('idle-after-session');
-    } else {
-      ids.push('sit-button', 'how-shall-we-sit');
-    }
-    appendIdleChromeHintIds(ids, scene);
   } else if (scene.honestyVisible) {
     ids = ['honesty-optional'];
   } else if (scene.isDormant) {
@@ -220,7 +274,10 @@ export function resolveAutoHintIds(scene = {}) {
   }
 
   const skipHelpAffordance =
-    scene.reflectionOpen || scene.isFocusing || scene.arrivalOpen;
+    scene.reflectionOpen ||
+    scene.isFocusing ||
+    scene.arrivalOpen ||
+    scene.honestyBridgeVisible;
   if (!skipHelpAffordance && !ids.includes('help-affordance')) {
     ids.push('help-affordance');
   }
@@ -229,6 +286,7 @@ export function resolveAutoHintIds(scene = {}) {
 
 /**
  * 点「?」补救：当前场景应展示的全部操作提示（忽略已读；不含 help-affordance / help-remedy）。
+ * UI 默认只先画 `resolvePrimaryRemedyHintId`；其余经「还有 N 条」展开本列表。
  * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
  * @returns {string[]}
  */
@@ -236,10 +294,33 @@ export function resolveRemedyHintIds(scene = {}) {
   const ids = resolveAutoHintIds(scene).filter(
     (id) => id !== 'help-affordance' && id !== 'help-remedy'
   );
+  if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    const arrivalId =
+      phase === 'breath' ? 'breathing' : phase === 'choose' ? 'choose' : 'notice';
+    if (!ids.includes(arrivalId)) ids.push(arrivalId);
+  }
+  if (scene.honestyBridgeVisible) {
+    // 自动不出 tip；? 补救仍须 honesty-bridge + Idle 入口说明
+    if (!ids.includes('honesty-bridge')) ids.unshift('honesty-bridge');
+    if (scene.hasEverCompletedSession) {
+      if (!ids.includes('idle-after-session')) ids.push('idle-after-session');
+    } else {
+      for (const id of ['sit-button', 'how-shall-we-sit']) {
+        if (!ids.includes(id)) ids.push(id);
+      }
+    }
+    appendIdleChromeHintIds(ids, scene);
+  }
   if (scene.companionExpanded) {
     for (const id of ['companion-stay', 'companion-away', 'companion-across-tools']) {
       if (!ids.includes(id)) ids.push(id);
     }
   }
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
+  }
+  // HUD chrome is on-screen in Idle and Focusing — ? must explain it for first visit.
+  appendFocusHudHintIds(ids);
   return ids;
 }

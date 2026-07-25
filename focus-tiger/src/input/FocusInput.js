@@ -2,7 +2,7 @@
  * 专注信号来源（MVP：手动 Sit / Rise 按钮）。
  *
  * 装配方（`main.js`）在 `onStart` / `onStop` 内用 `SessionUiGate` 裁决：
- * - Sit：未就绪 → Arrival；就绪 → beginFocus；Arrival 已开 → skipToBegin
+ * - Sit：未就绪 → Arrival；就绪 → beginFocus；Arrival 已开 → 不跳过（请用 Quick Start）
  * - Rise：庆祝中 ignore；已达标 → 完成反馈；否则未达标起身
  *
  * 本类只维护按钮文案与 `_focusing` 显示态，不持有 Arrival / Companion 门闩。
@@ -61,7 +61,7 @@ export class FocusInput {
   }
 
   /**
-   * Companion / Skip — begin 等路径已开计时时调用：按钮切到 Rise，无需再点 Sit。
+   * Companion / Quick Start 等路径已开计时时调用：按钮切到 Rise，无需再点 Sit。
    * @param {HTMLElement | null} [buttonElement=this._button]
    * @returns {void}
    */

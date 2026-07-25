@@ -32,7 +32,7 @@ test('Choose Reading then Rise shows intention echo on Reflection', async ({
   await expect(echo).toContainText(/Reading|阅读/i);
 });
 
-test('Skip — begin then Rise does not show intention echo on Reflection', async ({
+test('Quick Start then Rise does not show intention echo on Reflection', async ({
   page
 }) => {
   await openFreshProductShell(page);

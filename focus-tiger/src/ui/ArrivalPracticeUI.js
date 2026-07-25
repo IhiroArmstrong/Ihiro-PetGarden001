@@ -1,15 +1,15 @@
 /**
- * Arrival Practice UI —— Sit 之后的 Welcome / Notice / Breath / Choose 叠层。
+ * Arrival Practice UI —— Sit 之后的 Welcome / Notice / Breath / Choose。
  *
- * 跳过方案：每步 Skip + 全程「Skip — begin」；欢迎/呼吸可自动前进；不强制点选图标。
+ * 设计对齐 `ARRIVE_MOMENT_DESIGN.md` v2：轻量观察式气泡 / 字幕，**不是**重型模态卡片。
+ * 无每步 Skip / Skip — begin；快速开表改走 dock 旁 ⚡ Quick Start（`skipToBegin`）。
+ *
  * 结束经 `onReady({ skipped, chose })` 交给 `main.js` / `SessionUiGate`：
- * - `skipped: true` → 立刻开计时
- * - 先点选 Here & Now / Flow 再进 Arrival → 结束后立刻开计时（含 `chose`）
- * - `chose: true` 且无预选自动模式 → 开门闩并（通常）播点头后展开 Companion
+ * - `skipped: true` → Quick Start → 立刻开计时
+ * - `chose: true` 且无预选自动模式 → 开门闩；点头后展开 Companion 点选开表
+ * - 预选 Here & Now / Flow 再走完 → onReady 可直接 beginFocus（suppress Companion）
  *
  * 状态机纯函数在 `ArrivalPractice.js`；本类只负责 DOM 与定时器。
- * @see docs/ARRIVE_MOMENT_DESIGN.md
- * @see docs/SHARED_RESOURCES.md §4
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -36,7 +36,7 @@ import {
 
 /**
  * @typedef {object} ArrivalReadyInfo
- * @property {boolean} [skipped] Skip — begin / Sit 整体跳过 → 应直接开计时
+ * @property {boolean} [skipped] Quick Start / 整体跳过 → 应直接开计时
  * @property {boolean} [chose] 走完 Choose → 应展开 Companion（点头可并行）
  */
 
@@ -44,7 +44,8 @@ import {
  * @typedef {object} ArrivalPracticeUIHandlers
  * @property {(info?: ArrivalReadyInfo) => void} [onReady] 流程结束（面板已 hide）
  * @property {() => void} [onWelcome] 欢迎 beat 开始（可播 smiling）
- * @property {() => void} [onCancel] 外部关闭（若接线）
+ * @property {() => void} [onCancel]
+ *   Notice / Choose 选择框点外侧空白取消（回 Idle；不开表、不 Skip begin）
  * @property {() => void} [onBegin] Arrival 开始（光影冷灰氛围）
  * @property {() => void} [onNoticeSelected] Notice 点选后（背景微暖）
  * @property {() => void} [onBreath] 呼吸 beat（推近 + 光环）
@@ -55,22 +56,42 @@ import {
  * @property {() => void} [onClearLight] 结束/跳过时清氛围
  */
 
-const PANEL_CSS = [
+const ROOT_CSS = [
   'position:absolute',
   'left:50%',
-  'bottom:96px',
+  // 须高于 dock（⚡ + How shall we sit?）；Sit 在 Arrival 中会隐藏，仍给足余量防重叠
+  'bottom:max(148px, calc(env(safe-area-inset-bottom, 0px) + 132px))',
   'z-index:15',
-  'width:min(460px,calc(100vw - 48px))',
-  'transform:translate(-50%, 12px)',
-  'padding:18px 20px 14px',
-  'border:1px solid var(--color-surface-border, rgba(139,115,85,.2))',
-  'border-radius:18px',
-  'background:linear-gradient(180deg, var(--color-surface-warm-top, rgba(255,255,255,.96)) 0%, var(--color-surface-warm, #f8f1e4) 100%)',
-  'box-shadow:0 10px 30px rgba(44,31,20,.12)',
+  'width:min(420px,calc(100vw - 40px))',
+  'transform:translate(-50%, 8px)',
+  'padding:0',
+  'border:none',
+  'border-radius:0',
+  'background:transparent',
+  'box-shadow:none',
   'color:var(--text-primary, #2c1f14)',
   'transition:opacity 240ms ease,transform 240ms ease',
   'opacity:0',
-  'pointer-events:auto'
+  'pointer-events:auto',
+  'display:flex',
+  'flex-direction:column',
+  'align-items:center',
+  'gap:12px'
+].join(';');
+
+const SUBTITLE_CSS = [
+  'max-width:100%',
+  'padding:10px 16px',
+  'border-radius:18px',
+  'background:rgba(255,252,245,0.72)',
+  'backdrop-filter:blur(8px)',
+  '-webkit-backdrop-filter:blur(8px)',
+  'border:1px solid rgba(139,115,85,0.14)',
+  'box-shadow:0 4px 18px rgba(44,31,20,0.06)',
+  'font-size:15px',
+  'line-height:1.55',
+  'color:#4a3a28',
+  'text-align:center'
 ].join(';');
 
 const CHIP_CSS = [
@@ -78,10 +99,10 @@ const CHIP_CSS = [
   'flex-direction:column',
   'align-items:center',
   'gap:4px',
-  'padding:10px 6px',
-  'border-radius:12px',
-  'border:1px solid var(--color-surface-border, rgba(139,115,85,.22))',
-  'background:rgba(255,255,255,.7)',
+  'padding:8px 4px',
+  'border-radius:14px',
+  'border:1px solid rgba(139,115,85,0.16)',
+  'background:rgba(255,252,245,0.55)',
   'cursor:pointer',
   'color:var(--text-primary, #2c1f14)',
   'font-size:11px',
@@ -94,7 +115,7 @@ const QUIET_BTN_CSS = [
   'font-size:12px',
   'color:var(--text-secondary, rgba(74,58,40,.78))',
   'background:transparent',
-  'border:1px solid var(--color-surface-border, rgba(139,115,85,.28))',
+  'border:1px solid rgba(139,115,85,0.22)',
   'border-radius:14px',
   'cursor:pointer'
 ].join(';');
@@ -120,10 +141,57 @@ export class ArrivalPracticeUI {
     /** @type {number | null} */
     this._breathInterval = null;
     this._unsubLocale = onLocaleChange(() => this._render());
+
+    // Notice / Choose 选择格：点框外空白取消（对齐 Companion / Honesty 轻量框本能）
+    this._onDocPointer = (event) => {
+      if (!this._canDismissSelectionOnOutside()) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root?.contains(target)) return;
+      // ⚡ Quick Start 须走 skipToBegin，勿先被外侧取消吃掉
+      if (
+        target instanceof Element &&
+        target.closest('#quick-start-focus')
+      ) {
+        return;
+      }
+      // Tip / ? / 用途卡：只关 tip，不得取消 Arrival（pointerdown 早于 tip click）
+      if (
+        target instanceof Element &&
+        target.closest(
+          'ft-onboarding-hint-bubble, #onboarding-hint-help, #ft-narrow-help-btn, #onboarding-app-purpose'
+        )
+      ) {
+        return;
+      }
+      this._cancelFromOutside();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
   }
 
   /**
-   * 面板是否挂在 DOM 上（进行中）。
+   * Notice 图标格 / Choose 图标格可点外侧取消；Welcome / 短句 / Breath 不可。
+   * @returns {boolean}
+   */
+  _canDismissSelectionOnOutside() {
+    if (!this.root) return false;
+    if (this.state.step === ARRIVAL_STEPS.CHOOSE) return true;
+    if (this.state.step === ARRIVAL_STEPS.NOTICE && !this._noticeReply) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * 点外侧取消本轮 Arrival（不开表）。
+   * @returns {void}
+   */
+  _cancelFromOutside() {
+    if (!this.root) return;
+    this.hide({ clearLight: true });
+    this.handlers.onCancel?.();
+  }
+
+  /**
    * @returns {boolean}
    */
   isOpen() {
@@ -131,7 +199,6 @@ export class ArrivalPracticeUI {
   }
 
   /**
-   * 当前步骤；无面板时为 `null`。
    * @returns {'welcome' | 'notice' | 'breath' | 'choose' | 'ready' | null}
    */
   getStep() {
@@ -139,7 +206,6 @@ export class ArrivalPracticeUI {
   }
 
   /**
-   * Choose 结果（供会话意图回显）；未选则为 `null`。
    * @returns {{ text: string, source: 'icon' | 'typed' } | null}
    */
   getChooseResult() {
@@ -151,7 +217,7 @@ export class ArrivalPracticeUI {
   }
 
   /**
-   * 从 Welcome 开始一轮 Arrival；会触发 `onBegin` / `onWelcome`。
+   * 从 Welcome 开始一轮 Arrival（含 Notice → Breath → Choose）。
    * @returns {void}
    */
   start() {
@@ -173,9 +239,8 @@ export class ArrivalPracticeUI {
   }
 
   /**
-   * 关闭面板并清定时器。
    * @param {object} [options]
-   * @param {boolean} [options.clearLight=true] 是否调用 `onClearLight`
+   * @param {boolean} [options.clearLight=true]
    * @returns {void}
    */
   hide({ clearLight = true } = {}) {
@@ -188,8 +253,7 @@ export class ArrivalPracticeUI {
   }
 
   /**
-   * 外部 Sit：整体 Skip — begin（`onReady({ skipped: true })`），由 Gate 立刻开计时。
-   * 面板未开时为 no-op。
+   * Quick Start：整体跳过仪式并 `onReady({ skipped: true })`。
    * @returns {void}
    */
   skipToBegin() {
@@ -198,17 +262,16 @@ export class ArrivalPracticeUI {
   }
 
   /**
-   * 取消 locale 订阅并 hide。
    * @returns {void}
    */
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
     this.hide();
   }
 
   _finishReady({ chose = false, skipped = false } = {}) {
     if (chose) this.handlers.onChooseConfirmed?.();
-    // 点选意图后还要播点头：先别清 Dolly/氛围，等淡入 idle 后再拉回。
     this.hide({ clearLight: !chose });
     const payload = { chose: Boolean(chose), skipped: Boolean(skipped) };
     if (chose && typeof this.handlers.onIntentionSetPlay === 'function') {
@@ -227,7 +290,8 @@ export class ArrivalPracticeUI {
     if (this.root) return;
     this.root = document.createElement('div');
     this.root.id = 'arrival-practice';
-    this.root.style.cssText = PANEL_CSS;
+    this.root.className = 'arrival-practice arrival-practice--bubble';
+    this.root.style.cssText = ROOT_CSS;
     this.container.appendChild(this.root);
   }
 
@@ -243,6 +307,14 @@ export class ArrivalPracticeUI {
     window.clearInterval(this._breathInterval);
     this._timer = null;
     this._breathInterval = null;
+  }
+
+  _subtitle(text) {
+    const el = document.createElement('div');
+    el.className = 'arrival-practice__subtitle';
+    el.style.cssText = SUBTITLE_CSS;
+    el.textContent = text;
+    return el;
   }
 
   _startBreath() {
@@ -270,33 +342,18 @@ export class ArrivalPracticeUI {
     if (!this.root) return;
     this.root.replaceChildren();
 
-    const footer = this._buildFooter();
-
     if (this.state.step === ARRIVAL_STEPS.WELCOME) {
-      const bubble = document.createElement('div');
-      bubble.style.cssText =
-        'font-size:16px;line-height:1.55;color:#4a3a28;text-align:center;margin-bottom:12px;';
-      bubble.textContent = t('ARRIVAL_WELCOME');
-      this.root.append(bubble, footer);
+      this.root.append(this._subtitle(t('ARRIVAL_WELCOME')));
       return;
     }
 
     if (this.state.step === ARRIVAL_STEPS.NOTICE) {
-      // 点选后：收起整屏图标区，只留 Yin 观察式短句，避免「框还在那里不动」的卡住感。
       if (this._noticeReply) {
-        const reply = document.createElement('div');
-        reply.style.cssText =
-          'font-size:15px;line-height:1.55;color:#6b4a32;text-align:center;padding:8px 4px 4px;';
-        reply.textContent = this._noticeReply;
-        this.root.append(reply, footer);
+        this.root.append(this._subtitle(this._noticeReply));
         return;
       }
 
-      const title = document.createElement('div');
-      title.style.cssText =
-        'font-size:14px;line-height:1.5;color:#4a3a28;text-align:center;margin-bottom:12px;';
-      title.textContent = t('ARRIVAL_NOTICE_PROMPT');
-
+      this.root.append(this._subtitle(t('ARRIVAL_NOTICE_PROMPT')));
       const grid = this._iconGrid(NOTICE_OPTIONS, (opt) => {
         this.state = selectArrivalNotice(this.state, opt.id);
         const option = getNoticeOption(opt.id);
@@ -304,24 +361,19 @@ export class ArrivalPracticeUI {
         this.handlers.onNoticeSelected?.();
         this._renderNoticeReplyThenAdvance();
       });
-
-      this.root.append(title, grid, footer);
+      this.root.append(grid);
       return;
     }
 
     if (this.state.step === ARRIVAL_STEPS.BREATH) {
-      const title = document.createElement('div');
-      title.style.cssText =
-        'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:10px;font-weight:560;';
-      title.textContent = t('ARRIVAL_BREATH_GUIDE');
-
+      this.root.append(this._subtitle(t('ARRIVAL_BREATH_GUIDE')));
       const phaseEl = document.createElement('div');
       phaseEl.dataset.arrivalBreathPhase = '1';
+      phaseEl.className = 'arrival-practice__breath-phase';
       phaseEl.style.cssText =
-        'font-size:15px;letter-spacing:.06em;color:#6b4a32;text-align:center;font-weight:560;';
+        'font-size:14px;letter-spacing:.06em;color:rgba(107,74,50,0.88);text-align:center;font-weight:520;';
       phaseEl.textContent = t('HONESTY_BREATH_INHALE');
-
-      this.root.append(title, phaseEl, footer);
+      this.root.append(phaseEl);
       this.handlers.onBreath?.();
       this._startBreath();
       return;
@@ -329,37 +381,36 @@ export class ArrivalPracticeUI {
 
     if (this.state.step === ARRIVAL_STEPS.CHOOSE) {
       this.handlers.onAfterBreath?.();
-      const title = document.createElement('div');
-      title.style.cssText =
-        'font-size:14px;line-height:1.5;color:#4a3a28;text-align:center;margin-bottom:12px;';
-      title.textContent = t('ARRIVAL_CHOOSE_PROMPT');
+      this.root.append(this._subtitle(t('ARRIVAL_CHOOSE_PROMPT')));
 
       const grid = this._iconGrid(CHOOSE_OPTIONS, (opt) => {
         const option = getChooseOption(opt.id);
-        const label = option ? `${option.emoji} ${t(option.labelKey)}` : t(opt.labelKey);
+        const label = option
+          ? `${option.emoji} ${t(option.labelKey)}`
+          : t(opt.labelKey);
         this.state = selectArrivalChoose(this.state, {
           text: label,
           source: 'icon'
         });
         this._finishReady({ chose: true });
       });
+      this.root.append(grid);
 
       const typedToggle = document.createElement('button');
       typedToggle.type = 'button';
-      typedToggle.style.cssText = `${QUIET_BTN_CSS};margin-top:10px;width:100%;`;
+      typedToggle.style.cssText = QUIET_BTN_CSS;
       typedToggle.textContent = t('ARRIVAL_CHOOSE_WRITE_OWN');
       typedToggle.addEventListener('click', () => {
         this._showTyped = !this._showTyped;
         this._render();
       });
-
-      this.root.append(title, grid, typedToggle);
+      this.root.append(typedToggle);
 
       if (this._showTyped) {
         const input = document.createElement('input');
         input.type = 'text';
         input.style.cssText =
-          'width:100%;box-sizing:border-box;margin-top:10px;padding:9px 12px;font-size:14px;border-radius:10px;border:1px solid rgba(139,115,85,.3);background:rgba(255,255,255,.75);color:#2c1f14;outline:none;';
+          'width:100%;box-sizing:border-box;padding:9px 12px;font-size:14px;border-radius:12px;border:1px solid rgba(139,115,85,.28);background:rgba(255,252,245,.8);color:#2c1f14;outline:none;';
         input.placeholder = t('SESSION_INTENTION_PLACEHOLDER');
         input.addEventListener('keydown', (event) => {
           if (event.key !== 'Enter') return;
@@ -378,8 +429,6 @@ export class ArrivalPracticeUI {
         this.root.appendChild(input);
         window.setTimeout(() => input.focus({ preventScroll: true }), 30);
       }
-
-      this.root.appendChild(footer);
     }
   }
 
@@ -399,8 +448,9 @@ export class ArrivalPracticeUI {
    */
   _iconGrid(options, onPick) {
     const grid = document.createElement('div');
+    grid.className = 'arrival-practice__icons';
     grid.style.cssText =
-      'display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;';
+      'display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;';
     for (const opt of options) {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -415,46 +465,5 @@ export class ArrivalPracticeUI {
       grid.appendChild(btn);
     }
     return grid;
-  }
-
-  _buildFooter() {
-    const footer = document.createElement('div');
-    footer.style.cssText =
-      'display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;';
-
-    const skipStep = document.createElement('button');
-    skipStep.type = 'button';
-    skipStep.style.cssText = QUIET_BTN_CSS;
-    skipStep.textContent = t('ARRIVAL_SKIP_STEP');
-    skipStep.addEventListener('click', () => this._onSkipStep());
-
-    const skipAll = document.createElement('button');
-    skipAll.type = 'button';
-    skipAll.style.cssText = QUIET_BTN_CSS;
-    skipAll.textContent = t('ARRIVAL_SKIP_BEGIN');
-    skipAll.addEventListener('click', () => this._skipEntirely());
-
-    footer.append(skipStep, skipAll);
-    return footer;
-  }
-
-  _onSkipStep() {
-    this._clearTimers();
-    if (this.state.step === ARRIVAL_STEPS.NOTICE) {
-      this.state = { ...this.state, noticeId: null };
-      this.state = advanceArrivalStep(this.state);
-      this._noticeReply = '';
-      this._render();
-      return;
-    }
-    if (this.state.step === ARRIVAL_STEPS.CHOOSE) {
-      this.state = skipArrivalChoose(this.state);
-      this._finishReady({ chose: false });
-      return;
-    }
-    if (this.state.step === ARRIVAL_STEPS.WELCOME || this.state.step === ARRIVAL_STEPS.BREATH) {
-      this.state = advanceArrivalStep(this.state);
-      this._render();
-    }
   }
 }

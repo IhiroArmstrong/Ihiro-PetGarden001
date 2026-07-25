@@ -14,7 +14,8 @@ import {
   resolveCompanionHintClick,
   resolveRiseClickDuringFocus,
   shouldBeginFocusAfterArrivalReady,
-  shouldAutoStartFocusOnModeSelect
+  shouldAutoStartFocusOnModeSelect,
+  shouldSkipArrivalOnModeSelect
 } from './FocusSession.js';
 
 /**
@@ -119,19 +120,22 @@ export class SessionUiGate {
   }
 
   /**
-   * 开计时前清 Arrival 门闩（beginFocus 路径）。
+   * @deprecated 2026-07-25：Arrival/⚡ 解锁后须跨 Focusing→Rise 保持，
+   * 以便回流点 Here & Now / Flow 立刻开表（勿在 beginFocus 清门闩）。
+   * 保留 API 以免外部误用；现为 no-op。
    * @returns {void}
    */
   clearArrivalGateForFocusStart() {
-    this._arrivalGateReady = false;
+    /* intentionally no-op — see setArrivalGateReady / Arrival cancel */
   }
 
   /**
-   * Rise / 主动结束：清门闩，避免回流误开表。
+   * @deprecated 2026-07-25：Rise 后不得清门闩（Scenario J / 用户回流）。
+   * 保留 API；现为 no-op。
    * @returns {void}
    */
   clearArrivalGateAfterRise() {
-    this._arrivalGateReady = false;
+    /* intentionally no-op */
   }
 
   /**
@@ -192,8 +196,8 @@ export class SessionUiGate {
   }
 
   /**
-   * Sit 点击（Arrival 面板未开）：未就绪 → 启动 Arrival；就绪 → begin。
-   * **失败契约**：门闩未就绪不得返回 `begin-focus`。
+   * Sit 点击（Arrival 面板未开）：Idle 下始终启动 Arrival（重新抵达）。
+   * Companion / ⚡ 才用 `arrivalGateReady` 直接开表；Sit 不因门闩就绪而跳过仪式。
    *
    * @param {SessionUiGateExternal} [ext]
    * @returns {SitIdleAction}
@@ -201,12 +205,12 @@ export class SessionUiGate {
   resolveSitClickWhenIdle(ext = {}) {
     if (this._completionPending) return 'ignore';
     if (ext.isFocusing) return 'ignore';
-    if (!this._arrivalGateReady) return 'start-arrival';
-    return 'begin-focus';
+    return 'start-arrival';
   }
 
   /**
-   * 自动开计时模式点选但门闩未过：应启动 Arrival（禁止 HUD 静默）。
+   * 自动开计时模式点选但门闩未过：Here & Now / Flow → 启动 Arrival；
+   * Offline Space → ignore（由 canBegin 直接开表，禁止进 Notice/Choose）。
    *
    * @param {string} mode
    * @param {SessionUiGateExternal} [ext]
@@ -214,6 +218,7 @@ export class SessionUiGate {
    */
   resolveAutoStartNeedsArrival(mode, ext = {}) {
     if (!shouldAutoStartFocusOnModeSelect(mode)) return 'ignore';
+    if (shouldSkipArrivalOnModeSelect(mode)) return 'ignore';
     if (this._completionPending || ext.isFocusing || ext.arrivalOpen) {
       return 'ignore';
     }

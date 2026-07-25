@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
+import { clickWideMoreProxyOrDirect } from './helpers/product-shell.js';
 
 /**
  * 「一分钟呼吸」微仪式 DOM 主路径。
@@ -27,14 +28,9 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeVisible({ timeout: 15_000 });
-  await expect(entry).toContainText(/A minute of breath|一分钟呼吸/i);
-  // 立体按钮（非下划线轻链）：须有可见边框/背景，不抢 Sit 主 CTA
-  await expect(entry).toHaveCSS('border-radius', '999px');
-  const bg = await entry.evaluate((el) => getComputedStyle(el).backgroundImage);
-  expect(bg).toMatch(/gradient/i);
-
-  await entry.click();
+  await expect(entry).toBeAttached({ timeout: 15_000 });
+  // Wide Idle parks the pill; open via ⋯ (or direct on narrow)
+  await clickWideMoreProxyOrDirect(page, 'breath');
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
@@ -43,8 +39,8 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     ritual.locator('[data-micro-ritual-breath-phase]')
   ).toContainText(/Inhale|Exhale|吸气|呼气/i);
 
-  // Sit 进行中须禁用（禁止可点却静默）
-  await expect(page.locator('#btn-focus')).toBeDisabled();
+  // Sit 进行中须隐藏（与 Arrival 同契约；窄屏 focusing 布局不得只禁用仍露出）
+  await expect(page.locator('#btn-focus')).toBeHidden();
 
   // HUD 须直播墙钟（算专注内容；仍不启 FocusSession）
   // floor 秒：须等到 ≥1s 才离开 00:00
@@ -120,11 +116,42 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     .poll(() => retentionLogs.length, { timeout: 5_000 })
     .toBeGreaterThan(0);
 
-  // 回流：入口再次可见；Sit 恢复；不进 Reflection
-  await expect(entry).toBeVisible({ timeout: 10_000 });
+  // 回流：⋯ 再出；入口仍在 DOM（宽屏停靠）；Sit 恢复；不进 Reflection
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
+  await expect(entry).toBeAttached();
+  await expect(page.locator('#btn-focus')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
   await expect(page.locator('#btn-focus')).toContainText(/Sit with Yin|与阿寅同坐/i);
   await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
+});
+
+test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/?product=1&microRitualMs=60000');
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
+  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
+    timeout: 60_000
+  });
+  await page.locator('.ft-narrow-grabber').click();
+  const breathRow = page.locator('.ft-narrow-sheet__item[data-proxy="breath"]');
+  await expect(breathRow).toBeVisible({ timeout: 5_000 });
+  await breathRow.click();
+
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
+  // 图5 回归：窄屏 focusing 布局不得仍露出 Sit；HUD 仍直播
+  await expect(page.locator('#btn-focus')).toBeHidden();
+  await expect(page.locator('#session-start-dock')).toBeHidden();
+  await expect(page.locator('#hud-state')).toContainText(/Focusing|专注中/i);
+  await expect(page.locator('#focus-hud')).toBeVisible();
 });
 
 test('micro ritual: quiet leave does not record', async ({ page }) => {
@@ -138,11 +165,12 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeVisible({ timeout: 15_000 });
-  await entry.click();
+  await expect(entry).toBeAttached({ timeout: 15_000 });
+  await clickWideMoreProxyOrDirect(page, 'breath');
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('#btn-focus')).toBeHidden();
   await ritual.locator('[data-micro-ritual-leave]').click();
   await expect(ritual).toBeHidden({ timeout: 5_000 });
 
@@ -160,7 +188,9 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   await expect(page.locator('#mindful-acknowledge-toast')).not.toContainText(
     /Today counts|今天，也算数/
   );
-  await expect(entry).toBeVisible();
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
+  await expect(entry).toBeAttached();
+  await expect(page.locator('#btn-focus')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
 });
 
@@ -178,8 +208,9 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
 
   const microEntry = page.locator('#micro-ritual-idle-entry');
   const honestyEntry = page.locator('#honesty-idle-entry');
-  await expect(microEntry).toBeVisible({ timeout: 15_000 });
-  await expect(honestyEntry).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 15_000 });
+  await expect(microEntry).toBeAttached();
+  await expect(honestyEntry).toBeAttached();
 
   const bridgeReady = await page.evaluate(() => {
     const bridge = window.__honestyBridge;
@@ -194,17 +225,64 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await expect(bridge).toContainText(
     /Want to sit for a bit now too|要不要现在也坐一会儿/
   );
-  // 回归：Honesty / 一分钟呼吸均不得叠在 Yes/No 上（dock z16；桥接已抬至 z18）
+  // 回归：Honesty / 一分钟呼吸均不得叠在 Yes/No 上；⋯ 亦收起
   await expect(microEntry).toBeHidden();
   await expect(honestyEntry).toBeHidden();
+  await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
   await expect(page.locator('#session-start-dock')).toHaveClass(
     /is-honesty-bridge-active/
   );
 
   await bridge.getByRole('button', { name: /^(No|先不用)$/i }).click();
   await expect(bridge).toBeHidden({ timeout: 5_000 });
-  await expect(microEntry).toBeVisible({ timeout: 10_000 });
-  await expect(honestyEntry).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
+  await expect(microEntry).toBeAttached();
+  await expect(honestyEntry).toBeAttached();
+});
+
+test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/?product=1');
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible({
+    timeout: 60_000
+  });
+
+  const bridgeReady = await page.evaluate(() => {
+    const bridge = window.__honestyBridge;
+    if (!bridge?.onHonestyCheckInComplete) return false;
+    bridge.onHonestyCheckInComplete();
+    return bridge.isVisible() === true;
+  });
+  expect(bridgeReady).toBe(true);
+
+  const bridge = page.locator('#honesty-bridge-cta');
+  await expect(bridge).toBeVisible({ timeout: 5_000 });
+  // 图4：桥接时 ActionBar 时间仍可见（勿 suppress）
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  await expect(page.locator('.ft-narrow-action-bar__time')).toBeVisible();
+  // 不自动出 honesty-bridge tip
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')
+  ).toHaveCount(0);
+
+  // 补救 tip：点 tip 不得关掉 Yes/No
+  await page.locator('#ft-narrow-help-btn').click();
+  const tip = page.locator(
+    'ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]'
+  );
+  await expect(tip).toBeVisible({ timeout: 8_000 });
+  await tip.click();
+  await expect(tip).toBeHidden({ timeout: 3_000 });
+  await expect(bridge).toBeVisible();
+  await expect(bridge.getByRole('button', { name: /^(Yes|好啊)$/i })).toBeVisible();
 });
 
 test('Honesty Check-in click hides entry until duration panel open', async ({
@@ -220,8 +298,8 @@ test('Honesty Check-in click hides entry until duration panel open', async ({
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const honestyEntry = page.locator('#honesty-idle-entry');
-  await expect(honestyEntry).toBeVisible({ timeout: 15_000 });
-  await honestyEntry.click();
+  await expect(honestyEntry).toBeAttached({ timeout: 15_000 });
+  await clickWideMoreProxyOrDirect(page, 'honesty');
 
   await expect(page.locator('#honesty-check-in')).toBeVisible({ timeout: 5_000 });
   await expect(honestyEntry).toBeHidden();

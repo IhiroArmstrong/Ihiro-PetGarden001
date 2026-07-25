@@ -11,7 +11,6 @@ import {
   resolveDemoSessionMinutes,
   shouldSuppressAwayReminders,
   shouldAutoStartFocusOnModeSelect,
-  shouldAutoStartFocusAfterArrivalNod,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
@@ -33,6 +32,8 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import { NarrowIdleShell } from './ui/NarrowIdleShell.js';
+import { WideIdleMoreMenu } from './ui/WideIdleMoreMenu.js';
 import {
   WeeklyPracticeHeatmap,
   WEEKLY_PRACTICE_HEATMAP_DAYS
@@ -247,6 +248,14 @@ async function init() {
   poseManager.setCanvasHidden(true);
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
+  const narrowIdleShell = new NarrowIdleShell({
+    root: document.body,
+    getHudStateEl: () => document.getElementById('hud-state'),
+    getHudTimeEl: () => document.getElementById('hud-time')
+  });
+  if (import.meta.env.DEV) {
+    window.__narrowIdleShell = narrowIdleShell;
+  }
   const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
     document.getElementById('ui-overlay')
   );
@@ -273,6 +282,9 @@ async function init() {
     {
       onPreferenceChange: () => {
         syncInAppReminderBanner();
+      },
+      onClose: () => {
+        document.body.classList.remove('ft-narrow-stage-reminder');
       }
     }
   );
@@ -378,6 +390,9 @@ async function init() {
     focusButton,
     companionModeHandlers
   );
+  /** Wide ≥480 Idle declutter (Sit + ⚡ + ⋯); inert on narrow where NarrowIdleShell owns chrome. */
+  const wideIdleMoreMenu = new WideIdleMoreMenu();
+  window.__wideIdleMoreMenu = wideIdleMoreMenu;
 
   microRitualUI = new MicroRitualUI(document.getElementById('ui-overlay'), {
     onIdleEntryClick: () => {
@@ -430,6 +445,15 @@ async function init() {
       honestyCheckIn.syncIdleEntry();
     }
     syncMicroRitualIdleEntry();
+    const honestyBusy =
+      Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
+    const overlayActive = computePostSessionOverlayActive(
+      getPostSessionOverlaySources()
+    );
+    // Bridge can appear without a full resync — keep wide ⋯ suppressed with dock pills
+    wideIdleMoreMenu.setSuppressed(
+      overlayActive || honestyBusy || bridgeVisible
+    );
   }
 
   function syncMicroRitualIdleEntry() {
@@ -484,6 +508,25 @@ async function init() {
     companionModePicker.setOptionSelectEnabled(
       !overlayActive && !sessionUiGate.completionPending
     );
+    companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
+    const arrivalOpen = Boolean(arrivalPractice?.isOpen?.());
+    const focusing =
+      stateManager.state === STATES.FOCUSING ||
+      microRitualUI?.isOpen?.() === true;
+    const honestyBusy =
+      Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
+    const bridgeVisible = honestyBridge?.isVisible?.() === true;
+    // 桥接 Yes/No：须保留 ActionBar 时间（图4）；勿因 bridge  alone 收起窄屏顶栏
+    const chromeSuppressed = overlayActive || honestyBusy;
+    narrowIdleShell.setIdle(!focusing);
+    narrowIdleShell.setSuppressed(chromeSuppressed);
+    // 窄屏 Arrival：park 整 dock 会藏掉 ⚡；单独 stage 只露出 Quick Start（图8 / W3）
+    narrowIdleShell.setArrivalOpen(arrivalOpen);
+    wideIdleMoreMenu.setIdle(!focusing);
+    // Wide ⋯ 仍须在桥接时收起，避免挡 Yes/No
+    wideIdleMoreMenu.setSuppressed(
+      chromeSuppressed || bridgeVisible
+    );
     syncInAppReminderBanner();
   }
 
@@ -517,6 +560,7 @@ async function init() {
     honestyCheckInUI.hideIdleEntry();
     companionModePicker.hide();
     companionModePicker.setIdleChromeVisible(false);
+    companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
     microRitualUI?.hideIdleEntry();
     resyncSessionChrome();
@@ -526,6 +570,7 @@ async function init() {
   function endMicroRitualChrome() {
     lightProgression.endBreath({ releaseDolly: true });
     lightProgression.clearArrivalEffects();
+    companionModePicker.setMicroRitualActive(false);
     setFocusButtonEnabled(true);
     companionModePicker.setIdleChromeVisible(true);
     resyncSessionChrome();
@@ -643,6 +688,72 @@ async function init() {
   );
   void ambientSoundscapeUI.bootDefaultMusic();
 
+  wideIdleMoreMenu.setHandlers({
+    onCompanion: () => {
+      companionModePicker.open();
+    },
+    onClearCompanion: () => {
+      companionModePicker.hide();
+    },
+    onReminder: () => {
+      reminderPreferenceUI.openPanel();
+    },
+    onHonesty: () => {
+      honestyCheckIn.openDurationChoices({ force: true });
+    },
+    onSound: () => {
+      // Align with narrow drawer: open Soundscape panel, never FAB / gated tip.
+      ambientSoundscapeUI.activateSoundFromNarrow();
+    },
+    onClearStage: () => {
+      companionModePicker.hide();
+      reminderPreferenceUI.closePanel();
+      ambientSoundscapeUI.clearNarrowSoundStage();
+    }
+  });
+
+  narrowIdleShell.setHandlers({
+    onMute: async () => {
+      await ambientSoundscapeUI.toggleMuteFromUi();
+      narrowIdleShell.syncMuteVisual({
+        musicOn: ambientSoundscapeUI.wantsMusicOn()
+      });
+    },
+    onSound: () => {
+      ambientSoundscapeUI.activateSoundFromNarrow();
+    },
+    onCompanion: () => {
+      companionModePicker.open();
+    },
+    onReminder: () => {
+      reminderPreferenceUI.openPanel();
+    },
+    onHonesty: () => {
+      honestyCheckIn.openDurationChoices({ force: true });
+    },
+    onQuickStart: () => {
+      const el = document.getElementById('quick-start-focus');
+      if (!el || el.disabled || el.hidden) return;
+      const prev = el.style.pointerEvents;
+      el.style.pointerEvents = 'auto';
+      el.click();
+      el.style.pointerEvents = prev;
+    },
+    onClearStage: () => {
+      companionModePicker.hide();
+      reminderPreferenceUI.closePanel();
+      ambientSoundscapeUI.clearNarrowSoundStage();
+      document.body.classList.remove(
+        'ft-wide-stage-sound',
+        'ft-wide-stage-companion',
+        'ft-wide-stage-reminder'
+      );
+    }
+  });
+  narrowIdleShell.syncMuteVisual({
+    musicOn: ambientSoundscapeUI.wantsMusicOn()
+  });
+
   /** @type {OnboardingHintsUI | null} */
   let onboardingHints = null;
 
@@ -666,7 +777,13 @@ async function init() {
       arrivalReady: sessionUiGate.arrivalGateReady,
       hasEverCompletedSession: hasEndedAnySession,
       weeklyHeatmapVisible: weeklyPracticeHeatmap?.isVisible?.() === true,
-      microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true
+      microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true,
+      quickStartVisible: (() => {
+        const el = document.getElementById('quick-start-focus');
+        return Boolean(el && !el.hidden && el.getClientRects().length > 0);
+      })(),
+      narrowPark: document.body.classList.contains('ft-narrow-park'),
+      narrowSheetOpen: narrowIdleShell?.isSheetOpen?.() === true
     };
   }
 
@@ -675,7 +792,10 @@ async function init() {
     const ids = resolveAutoHintIds(getOnboardingScene());
     onboardingHints.syncVisibleAutos(ids);
     // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
-    requestAnimationFrame(() => onboardingHints?.repositionAll());
+    requestAnimationFrame(() => {
+      onboardingHints?.repositionAll();
+      onboardingHints?.syncDiscoveryDots();
+    });
   }
 
   onboardingHints = new OnboardingHintsUI(document.body, {
@@ -744,7 +864,8 @@ async function init() {
         lightProgression.beginArrival();
         syncOnboardingAutoHints();
       },
-      // Choose 确认：立刻开门闩（Sit 可用）；点头播完后再展开 Companion，避免挡鞠躬。
+      // Choose 确认：立刻开门闩；点头播完后展开 Companion 点选开表（L249）。
+      // 预选 Here & Now / Flow 回流：onReady 已 beginFocus 时 suppress，勿再展开。
       // 16:9 点头 pingpong 并行；与前后动画 1s CapCut 叠化。
       onIntentionSetPlay: (done) => {
         done?.();
@@ -756,17 +877,7 @@ async function init() {
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
-              const mode = companionModePicker.getSelectedMode();
-              if (
-                shouldAutoStartFocusAfterArrivalNod({
-                  chose: arrivalChoseThisRun,
-                  storedMode: mode
-                })
-              ) {
-                beginFocusWithMode(mode);
-              } else {
-                companionModePicker.open();
-              }
+              companionModePicker.open();
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
@@ -778,6 +889,18 @@ async function init() {
         });
       },
       onClearLight: () => lightProgression.clearArrivalEffects(),
+      onCancel: () => {
+        // Notice / Choose 点外侧：取消仪式回 Idle（禁止当成 Skip — begin）
+        pendingAutoStartMode = null;
+        arrivalChoseThisRun = false;
+        suppressCompanionOpenAfterNod = false;
+        pendingChoose = null;
+        syncArrivalGateReady(false);
+        resyncSessionChrome();
+        syncHonestyIdleEntry();
+        syncOnboardingAutoHints();
+        emotionController.playEmotion('idle');
+      },
       onReady: (info = {}) => {
         pendingChoose = arrivalPractice.getChooseResult();
         // 本轮 Arrival 结果立刻闩上：有 Choose 则锁定；Skip/未选则清空。
@@ -919,10 +1042,14 @@ async function init() {
     },
     onShown: () => {
       syncHonestyIdleEntry();
+      resyncSessionChrome();
       syncOnboardingAutoHints();
     },
     onHidden: () => {
       honestyCheckIn.endCheckInFlow();
+      resyncSessionChrome();
+      syncHonestyIdleEntry();
+      syncOnboardingAutoHints();
     },
     onAccept: () => {
       onboardingHints?.markSeen('honesty-bridge');
@@ -1005,14 +1132,13 @@ async function init() {
     currentSessionIntention = latched.text;
     currentIntentionSource = latched.source;
     pendingChoose = null;
-    sessionUiGate.clearArrivalGateForFocusStart();
+    // Arrival/⚡ 解锁后保持门闩：Rise 回流点 Here & Now / Flow 须立刻 Focusing（勿清 false）
     if (currentSessionIntention) {
       recordIntention(currentSessionIntention, {
         source: currentIntentionSource
       });
     }
     companionModePicker.setIdleChromeVisible(false);
-    syncArrivalGateReady(false);
     focusSession.start({ companionMode });
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
@@ -1083,6 +1209,39 @@ async function init() {
     beginFocusWithMode(mode);
   };
 
+  /** ⚡ Quick Start：跳过 Arrival（若开着）并以记忆 Companion 模式立刻 Focusing */
+  companionModeHandlers.onQuickStart = () => {
+    if (sessionUiGate.completionPending) return;
+    if (stateManager.state === STATES.FOCUSING) return;
+    if (
+      reflectionMoment?.isOpen?.() ||
+      microRitualUI?.isOpen?.() ||
+      honestyBridge?.isVisible?.()
+    ) {
+      return;
+    }
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    companionModePicker.hide();
+    onboardingHints?.markSeen('sit-button');
+    onboardingHints?.markSeen('how-shall-we-sit');
+    onboardingHints?.markSeen('quick-start');
+    if (arrivalPractice.isOpen()) {
+      arrivalPractice.skipToBegin();
+      return;
+    }
+    // Idle 且无 Arrival：直接开表（不走仪式）
+    pendingChoose = null;
+    currentSessionIntention = '';
+    currentIntentionSource = 'typed';
+    arrivalChoseThisRun = false;
+    pendingAutoStartMode = null;
+    suppressCompanionOpenAfterNod = false;
+    syncArrivalGateReady(true);
+    beginFocusWithMode(companionModePicker.getSelectedMode());
+  };
+
   /** 门闩未就绪时选模式 → 启动 Arrival；返回是否已启动（Picker 凭此写 storage） */
   companionModeHandlers.onAutoStartNeedsArrival = (mode) => {
     if (
@@ -1101,8 +1260,16 @@ async function init() {
 
   companionModeHandlers.onExpandedChange = (expanded) => {
     if (expanded) {
+      // Choose 鞠躬后 open() 也须 stage：否则窄屏 park 下三选一在屏外，误读成「没 Focusing」
+      document.body.classList.remove(
+        'ft-narrow-stage-sound',
+        'ft-narrow-stage-reminder'
+      );
+      document.body.classList.add('ft-narrow-stage-companion');
       onboardingHints?.maybeShowAuto('companion-mode');
       requestAnimationFrame(() => onboardingHints?.repositionAll());
+    } else {
+      document.body.classList.remove('ft-narrow-stage-companion');
     }
     syncOnboardingAutoHints();
   };
@@ -1115,7 +1282,7 @@ async function init() {
       honestyCheckInUI.hide();
 
       if (arrivalPractice.isOpen()) {
-        arrivalPractice.skipToBegin();
+        // 仪式进行中：Sit 不再充当 Skip — begin；快速开表请用 ⚡ Quick Start
         return false;
       }
 
@@ -1144,7 +1311,7 @@ async function init() {
 
       companionModePicker.hide();
       arrivalPractice.hide();
-      syncArrivalGateReady(false);
+      // 保持 arrivalGateReady：本场若经 Arrival/⚡ 解锁，回流 Companion 可直接开表
       pendingChoose = null;
       pendingAutoStartMode = null;
       suppressCompanionOpenAfterNod = false;

@@ -1,8 +1,10 @@
 /**
  * Companion Mode 三选一：Sit 旁「How shall we sit?」hint + 向上展开面板。
  *
- * - Here & Now / Offline Space / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
- * - 门闩未就绪时三模式点选 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
+ * - Here & Now / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
+ * - Offline Space：跳过 Arrival，选中即开表（别处练习，无 Notice/Choose）
+ * - 门闩未就绪时 Here & Now / Flow 点选 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
+ * - Offline 门闩未就绪 → 仍直接 begin（`shouldSkipArrivalOnModeSelect`）
  * - Choose / Session Intention 在 Arrival Practice（见 ARRIVE_MOMENT_DESIGN v2）
  *
  * 权威门闩：`SessionUiGate`（经 handlers 注入真裁决）。本类 `_arrivalReady` /
@@ -93,6 +95,10 @@ export class CompanionModePicker {
      * @type {boolean}
      */
     this._optionSelectEnabled = true;
+    /** Arrival 进行中：隐藏 Sit，避免盖住 Notice/Choose（⚡ 保留） */
+    this._arrivalActive = false;
+    /** 一分钟呼吸进行中：隐藏 Sit（与 Arrival 同契约；窄屏 focusing 布局会否则把禁用 Sit 露出来） */
+    this._microRitualActive = false;
     /** Rise 后优先显示提问文案；用户再选模式后改为模式名 */
     this._preferQuestionHint = true;
 
@@ -112,18 +118,42 @@ export class CompanionModePicker {
     this.hintBtn.setAttribute('aria-expanded', 'false');
     this.hintBtn.addEventListener('click', () => this._onHintClick());
 
+    /** ⚡ Quick Start：跳过 Arrival，用记忆 Companion 模式立刻 Focusing */
+    this.quickStartBtn = document.createElement('button');
+    this.quickStartBtn.type = 'button';
+    this.quickStartBtn.id = 'quick-start-focus';
+    this.quickStartBtn.className = 'session-start-dock__quick-start';
+    this.quickStartBtn.textContent = '⚡';
+    this.quickStartBtn.addEventListener('click', () => {
+      this.handlers.onQuickStart?.();
+    });
+
     const parent = focusButton.parentElement;
     if (parent) {
       parent.insertBefore(this.dock, focusButton);
       this.dock.appendChild(this.panel);
       this.dock.appendChild(focusButton);
+      this.dock.appendChild(this.quickStartBtn);
       this.dock.appendChild(this.hintBtn);
     }
 
-    this._unsubLocale = onLocaleChange(() => this._render());
+    this._unsubLocale = onLocaleChange(() => {
+      this._render();
+      this._syncQuickStartLabel();
+    });
     this._injectStyles();
     this._render();
+    this._syncQuickStartLabel();
     this._syncHintAvailability();
+
+    // 轻量功能框：点面板外空白收起（本能预期）
+    this._onDocPointer = (event) => {
+      if (!this._expanded) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.dock?.contains(target)) return;
+      this.hide();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
   }
 
   /**
@@ -148,8 +178,42 @@ export class CompanionModePicker {
       this._preferQuestionHint = true;
     }
     this.hintBtn.hidden = !this._idleVisible;
+    if (this.quickStartBtn) this.quickStartBtn.hidden = !this._idleVisible;
     this._syncHintAvailability();
     this._syncHintLabel();
+    this._syncQuickStartLabel();
+    this._syncSitVisibility();
+  }
+
+  /**
+   * Arrival Practice 打开时隐藏 Sit 主钮（z16 dock 会盖住 z15 气泡图标格）。
+   * Focusing 时 `_idleVisible=false`，Sit/Rise 仍显示。
+   * @param {boolean} active
+   * @returns {void}
+   */
+  setArrivalActive(active) {
+    this._arrivalActive = Boolean(active);
+    this._syncSitVisibility();
+  }
+
+  /**
+   * 一分钟呼吸进行中隐藏 Sit（复用 Arrival 文案叠层时不得仍见主 CTA）。
+   * 正式 Focusing 仍走 `_idleVisible=false` + Rise 可见。
+   * @param {boolean} active
+   * @returns {void}
+   */
+  setMicroRitualActive(active) {
+    this._microRitualActive = Boolean(active);
+    this._syncSitVisibility();
+    // Hide empty dock (Sit alone remains after idle chrome off); Arrival keeps dock for ⚡
+    if (this.dock) this.dock.hidden = this._microRitualActive;
+  }
+
+  _syncSitVisibility() {
+    if (!this.focusButton) return;
+    const hideForArrival = this._arrivalActive && this._idleVisible;
+    const hideSit = hideForArrival || this._microRitualActive;
+    this.focusButton.hidden = hideSit;
   }
 
   /**
@@ -256,6 +320,7 @@ export class CompanionModePicker {
    * @returns {void}
    */
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
   }
 
@@ -276,6 +341,13 @@ export class CompanionModePicker {
       return;
     }
     this.hintBtn.textContent = t(this._hintLabelKey());
+  }
+
+  _syncQuickStartLabel() {
+    if (!this.quickStartBtn) return;
+    this.quickStartBtn.textContent = '⚡';
+    this.quickStartBtn.setAttribute('aria-label', t('QUICK_START_ARIA'));
+    this.quickStartBtn.title = t('QUICK_START_ARIA');
   }
 
   _hintLabelKey() {
@@ -421,7 +493,46 @@ export class CompanionModePicker {
       }
       /* 桥接 Yes/No 期间强制收起会叠层的次要入口（防漏 sync） */
       .session-start-dock.is-honesty-bridge-active #honesty-idle-entry,
-      .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry {
+      .session-start-dock.is-honesty-bridge-active #micro-ritual-idle-entry,
+      .session-start-dock.is-honesty-bridge-active #quick-start-focus {
+        display: none !important;
+      }
+      .session-start-dock__quick-start {
+        pointer-events: auto;
+        flex: 0 0 auto;
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: linear-gradient(
+          165deg,
+          rgba(255, 252, 245, 0.98) 0%,
+          rgba(245, 235, 220, 0.96) 100%
+        );
+        color: rgba(92, 72, 52, 0.88);
+        font-size: 18px;
+        line-height: 1;
+        text-align: center;
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.75) inset,
+          0 4px 12px rgba(44, 31, 20, 0.1);
+      }
+      .session-start-dock__quick-start:hover {
+        color: rgba(72, 54, 38, 0.95);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.8) inset,
+          0 6px 16px rgba(44, 31, 20, 0.14);
+      }
+      .session-start-dock__quick-start:active {
+        transform: scale(0.96);
+      }
+      .session-start-dock__quick-start[hidden] {
         display: none !important;
       }
       /* 次级立体 pill 共用质感（尺寸/描边/内高光/底边）；色相可不同 */
@@ -669,23 +780,25 @@ export class CompanionModePicker {
         line-height: 1.45;
         color: var(--text-secondary, rgba(74, 58, 40, 0.78));
       }
-      /* 窄屏 P1：主 CTA 完整可读，略缩字号与边距 */
+      /* 窄屏 P1：主 CTA 完整可读；钮间距加大；胶囊限宽以免压住左簇 / 右 Sound */
       @media (max-width: 479px) {
         .session-start-dock {
-          width: min(400px, calc(100vw - 100px));
-          gap: 12px;
+          width: min(400px, calc(100vw - 120px));
+          gap: 16px;
         }
         #btn-focus {
           font-size: 14px;
-          padding: 10px 22px;
+          padding: 10px 14px;
           letter-spacing: 0.01em;
           white-space: normal;
+          max-width: min(100%, 120px);
         }
         .session-start-dock__honesty-entry,
         .session-start-dock__micro-ritual-entry,
         .session-start-dock__hint {
           font-size: 12px;
-          padding: 8px 14px;
+          padding: 8px 10px;
+          max-width: min(100%, 120px);
         }
       }
     `;
