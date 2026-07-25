@@ -13,6 +13,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   ARRIVAL_BREATH_MS,
   ARRIVAL_NOTICE_REPLY_MS,
@@ -143,10 +144,12 @@ export class ArrivalPracticeUI {
     this._unsubLocale = onLocaleChange(() => this._render());
 
     // Notice / Choose 选择格：点框外空白取消（对齐 Companion / Honesty 轻量框本能）
+    // tip / ? / 用途卡 ≠ 空白（§8 N18：点 tip 只关 tip，不关面板）
     this._onDocPointer = (event) => {
       if (!this._canDismissSelectionOnOutside()) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root?.contains(target)) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       // ⚡ Quick Start 须走 skipToBegin，勿先被外侧取消吃掉
       if (
         target instanceof Element &&

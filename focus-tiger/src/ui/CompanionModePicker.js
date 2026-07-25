@@ -14,6 +14,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
@@ -144,11 +145,12 @@ export class CompanionModePicker {
     this._syncQuickStartLabel();
     this._syncHintAvailability();
 
-    // 轻量功能框：点面板外空白收起（本能预期）
+    // 轻量功能框：点面板外空白收起（本能预期）；tip / ? 不算空白（§8 N18）
     this._onDocPointer = (event) => {
       if (!this._expanded) return;
       const target = /** @type {Node} */ (event.target);
       if (this.dock?.contains(target)) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       this.hide();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
