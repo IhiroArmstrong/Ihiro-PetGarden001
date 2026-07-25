@@ -229,7 +229,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
 可整合进已拍板、待开发的 Check-in / Session Intention 流程。
 
-**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其旁 **⚡ Quick Start**（`#quick-start-focus`）可跳过 Arrival、用记忆 Companion 模式立刻 Focusing。次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金）向上展开三选项。**须先完成 Arrival Practice（或点 ⚡）**，三选一才可在门闩就绪后展开；门闩未就绪时点 hint：**启动 Arrival**（禁止静默无反馈）。Sit 默认走 **Welcome → Notice → Breath → Choose**（轻量气泡/字幕，**非**重型模态；**无**面板内 Skip / Skip — begin）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完**后三模式均立即 Focusing（或展开 Companion，视路径）。**Here & Now / Offline Space / Flow State：选中或 Arrival 鞠躬后均立即开始 Focus 与计时**。三模式差异在**会话内**行为，不在开表门闩。**专注中隐藏模式提示与三选一面板与 ⚡**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival。
+**当前交互（已落地）**：主入口仍为 **Sit with Yin / 与阿寅同坐**（蒲团橙立体主 CTA）。其旁 **⚡ Quick Start**（`#quick-start-focus`）可跳过 Arrival、用记忆 Companion 模式立刻 Focusing。次要立体钮 **How shall we sit? / 这次怎么陪你？**（暖米金）向上展开三选项。**须先完成 Arrival Practice（或点 ⚡）**，Here & Now / Flow 三选一才可在门闩就绪后展开开表；门闩未就绪时点这两项：**启动 Arrival**（禁止静默无反馈）。**Offline Space：点选即开计时，跳过 Arrival Notice/Choose**（别处练习语境，无「当下觉察」仪式）。Sit 默认走 **Welcome → Notice → Breath → Choose**（轻量气泡/字幕，**非**重型模态；**无**面板内 Skip / Skip — begin）。**完整走完 Choose** 后立刻开门闩；**点头鞠躬播完**后三模式均立即 Focusing（或展开 Companion，视路径）。**Here & Now / Flow State：选中或 Arrival 鞠躬后立即开始 Focus 与计时**；**Offline Space：选中即 Focusing，不经 Arrival**。三模式差异在**会话内**行为与是否走仪式，不在二次 Sit。**专注中隐藏模式提示与三选一面板与 ⚡**（Sit 按钮变为 Rise 并保留可见）。Rise 后须再走 Arrival（若再选 Here & Now / Flow / Sit）。
 
 **对外短名（用户可见，2026-07-16 文案定稿）**
 

@@ -172,13 +172,21 @@ test('auto-start mode still requires Arrival gate before beginFocus', () => {
     }),
     true
   );
-  // 回归锁：Rise 后 / 未过 Arrival 时不得静默「选了却不开计时」
+  // 回归锁：Rise 后 / 未过 Arrival 时 Here & Now 不得静默「选了却不开计时」
   assert.equal(
     canBeginFocusOnCompanionModeSelect({
       mode: COMPANION_MODE_STAY,
       arrivalGateReady: false
     }),
     false
+  );
+  // Offline Space：跳过 Arrival，门闩未就绪亦可 begin
+  assert.equal(
+    canBeginFocusOnCompanionModeSelect({
+      mode: COMPANION_MODE_STEP_AWAY,
+      arrivalGateReady: false
+    }),
+    true
   );
   assert.equal(
     canBeginFocusOnCompanionModeSelect({

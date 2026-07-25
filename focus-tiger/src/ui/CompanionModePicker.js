@@ -1,8 +1,10 @@
 /**
  * Companion Mode 三选一：Sit 旁「How shall we sit?」hint + 向上展开面板。
  *
- * - Here & Now / Offline Space / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
- * - 门闩未就绪时三模式点选 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
+ * - Here & Now / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时
+ * - Offline Space：跳过 Arrival，选中即开表（别处练习，无 Notice/Choose）
+ * - 门闩未就绪时 Here & Now / Flow 点选 → `onAutoStartNeedsArrival`（禁止 HUD 静默）
+ * - Offline 门闩未就绪 → 仍直接 begin（`shouldSkipArrivalOnModeSelect`）
  * - Choose / Session Intention 在 Arrival Practice（见 ARRIVE_MOMENT_DESIGN v2）
  *
  * 权威门闩：`SessionUiGate`（经 handlers 注入真裁决）。本类 `_arrivalReady` /

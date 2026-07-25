@@ -14,7 +14,8 @@ import {
   resolveCompanionHintClick,
   resolveRiseClickDuringFocus,
   shouldBeginFocusAfterArrivalReady,
-  shouldAutoStartFocusOnModeSelect
+  shouldAutoStartFocusOnModeSelect,
+  shouldSkipArrivalOnModeSelect
 } from './FocusSession.js';
 
 /**
@@ -206,7 +207,8 @@ export class SessionUiGate {
   }
 
   /**
-   * 自动开计时模式点选但门闩未过：应启动 Arrival（禁止 HUD 静默）。
+   * 自动开计时模式点选但门闩未过：Here & Now / Flow → 启动 Arrival；
+   * Offline Space → ignore（由 canBegin 直接开表，禁止进 Notice/Choose）。
    *
    * @param {string} mode
    * @param {SessionUiGateExternal} [ext]
@@ -214,6 +216,7 @@ export class SessionUiGate {
    */
   resolveAutoStartNeedsArrival(mode, ext = {}) {
     if (!shouldAutoStartFocusOnModeSelect(mode)) return 'ignore';
+    if (shouldSkipArrivalOnModeSelect(mode)) return 'ignore';
     if (this._completionPending || ext.isFocusing || ext.arrivalOpen) {
       return 'ignore';
     }

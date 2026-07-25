@@ -113,7 +113,7 @@
 - **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（含 N6/N15 立刻 commit + 文档同步；§6.1 场景冒烟已落地）
 - **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（逻辑层；观感仍人工分列）
 - **Playwright 场景 A/I/K DOM（Task 1）**：hint→Arrival；Here & Now / Offline / Flow **点选即开表**（含 Arrival 后预选）— `e2e/scenario-a.companion.spec.js`
-- **Offline Space 统一开表（2026-07-21/22）**：三 Companion 模式点选/鞠躬后均自动 Focusing，**无需**二次 Sit；差异仅在离开提醒等会话内行为
+- **Offline Space 跳过 Arrival（2026-07-25）**：点选 Offline → **立刻 Focusing**，**不**进 Notice/Choose；Here & Now / Flow 门闩未就绪仍走 Arrival；差异在仪式与离开提醒，不在二次 Sit
 - **dormantWake 试替（2026-07-21；人工 OK 2026-07-22）**：Honesty 睡醒改 `cloak-sleep` **倒放** @6fps；披毯入睡 + sleep→wake 串联已书面通过
 - **DEV 一键重置本地状态** + **`docs/SHARED_RESOURCES.md`**（原 §6.3 / 6.4，已落地）
 - **下一步（渐进）**：Playwright 扩更多 DOM 场景步骤；序列观感仍靠契约单测 + TEST_TRACKER 分列人工行
@@ -124,7 +124,7 @@
 
 **已完成并验收通过的功能**（按仓库/对话实际交付填写，不含未落地的设计）：
 
-- Companion Mode：Here & Now / Offline Space / Flow State **均**选中即开计时（须 Arrival 门闩就绪）；**「How shall we sit?」随时展开三选一**（`resolveCompanionHintClick` → toggle；**Sit** 未就绪时仍走 Arrival）
+- Companion Mode：Here & Now / Flow **选中即开计时**（须 Arrival 门闩就绪）；**Offline 跳过 Arrival 即开**；**「How shall we sit?」随时展开三选一**（`resolveCompanionHintClick` → toggle；**Sit** 未就绪时仍走 Arrival）
 - Honesty `dormantWake`：选时长即播 `cloak-sleep` **倒放**（**6 fps**）定格末帧；暂不接闭眼呼吸淡入 / 金光 / halo
 - 3D 场景骨架与专注基础环：Renderer / Scene、`FocusSession` 计时、随 focusLevel 变化的金色视觉反馈（历史实现为材质插值，按 2026-07-15 视觉原则该做法已废弃，重构并入「奖励柜」任务）、`StateManager` + HUD、主按钮「Sit with Yin / Rise」（与阿寅同坐 / 起身）交互
 - 多姿态 GLB：`PoseManager` 预加载、包围盒归一化对齐、姿态切换过渡；调试与正式入口已收敛到 `EmotionController`

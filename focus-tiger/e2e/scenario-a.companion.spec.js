@@ -100,15 +100,14 @@ test('scenario A3: preselect Here & Now → Quick Start starts timer', async ({
   await expectFocusSessionActive(page);
 });
 
-test('scenario K: Offline Space after Arrival Choose starts focus without second Sit', async ({
+test('scenario K: Offline Space starts focus without Arrival', async ({
   page
 }) => {
   await openFreshProductShell(page);
   await page.locator('.session-start-dock__hint').click();
   await selectCompanionMode(page, /Offline Space|离线空间|Offline/i);
-  await expect(page.locator('#arrival-practice')).toBeVisible({
-    timeout: 15_000
+  await expect(page.locator('#arrival-practice')).toBeHidden({
+    timeout: 5_000
   });
-  await skipArrivalBegin(page);
   await expectFocusSessionActive(page);
 });
