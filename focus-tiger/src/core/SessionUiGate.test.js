@@ -12,7 +12,7 @@ import {
 } from './SessionUiGate.js';
 
 describe('SessionUiGate', () => {
-  it('未就绪时 canBeginFocusOnCompanionModeSelect 必须为 false（失败契约）', () => {
+  it('未就绪时 Here & Now / Flow 不得 begin；Offline 可跳过 Arrival', () => {
     const gate = new SessionUiGate();
     assert.equal(gate.arrivalGateReady, false);
     assert.equal(
@@ -22,6 +22,11 @@ describe('SessionUiGate', () => {
     assert.equal(
       gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_ACROSS_TOOLS),
       false
+    );
+    assert.equal(
+      gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STEP_AWAY),
+      true,
+      'Offline Space 跳过 Arrival'
     );
   });
 
@@ -50,6 +55,11 @@ describe('SessionUiGate', () => {
       gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STAY),
       false
     );
+    assert.equal(
+      gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STEP_AWAY),
+      false,
+      'Offline 在完成中仍不得 begin'
+    );
     gate.setCompletionPending(false);
     assert.equal(
       gate.canBeginFocusOnCompanionModeSelect(COMPANION_MODE_STAY, {
@@ -74,7 +84,7 @@ describe('SessionUiGate', () => {
     assert.equal(gate.resolveSitClickWhenIdle(), 'ignore');
   });
 
-  it('resolveAutoStartNeedsArrival：未就绪选 Here & Now → start-arrival', () => {
+  it('resolveAutoStartNeedsArrival：Here & Now 未就绪 → start-arrival；Offline → ignore', () => {
     const gate = new SessionUiGate();
     assert.equal(
       gate.resolveAutoStartNeedsArrival(COMPANION_MODE_STAY),
@@ -88,6 +98,11 @@ describe('SessionUiGate', () => {
     gate.setArrivalGateReady(false);
     assert.equal(
       gate.resolveAutoStartNeedsArrival(COMPANION_MODE_STEP_AWAY),
+      'ignore',
+      'Offline 不得进 Arrival'
+    );
+    assert.equal(
+      gate.resolveAutoStartNeedsArrival(COMPANION_MODE_ACROSS_TOOLS),
       'start-arrival'
     );
   });

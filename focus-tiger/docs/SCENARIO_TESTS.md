@@ -150,7 +150,7 @@
 
 ## 场景 E：Offline Space（I'll step away）
 
-1. Arrival 后 Companion 选 **Offline Space** → **选中即开计时**（与 Here & Now / Flow 一致；已点 Sit 进入 Arrival 即视为开始）。
+1. Companion 选 **Offline Space** → **选中即开计时**，**不**出现 Arrival Notice/Choose（与 Here & Now / Flow「未就绪先 Arrival」不同）。
 2. 离开电脑一段时间。
 3. **已知缺口**：约 10 分钟无互动自动 `welcomeBack` / wave-hello **未接线**（仅调试「挥手欢迎」）。回来没看到挥手 = 已知状态。  
    离开期间**不应**出现 Re-focus（`suppressAwayReminders`）。
@@ -267,7 +267,7 @@
 |---|---|---|
 | **I** | 点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival | 回归锁：禁静默无反馈 · **单元** smoke I（`resolveCompanionHintClick`→toggle）+ **DOM** e2e I（hint→`.session-start-dock__panel`，不出 Arrival）；**「Honesty 开着时仍可点」未自动化**（仍人工看文案/动效） |
 | **J** | Rise 后再点 hint → **仍展开三选一**（非静默）；再选 Here & Now（门闩就绪后）→ 立刻计时 | 回流 · **单元** smoke J = 与 I 同纯函数（**不**模拟 Rise DOM）；开表回流 DOM 见 e2e A |
-| **K** | Offline Space：Arrival 后点选 → **立刻 Focusing**（与 Here & Now / Flow 一致；**禁止**再逼点 Sit） | **DOM** e2e K（选中即开表）；**单元** `shouldAutoStartFocusOnModeSelect` / smoke A4 |
+| **K** | Offline Space：点选 → **立刻 Focusing**，**不**出 Arrival（禁止再逼点 Sit / Notice/Choose） | **DOM** e2e K（选中即开表且 Arrival hidden）；**单元** `shouldSkipArrivalOnModeSelect` / Offline canBegin 门闩 |
 | **L** | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense | 纠正旧 A8/A9 |
 | **M** | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 | 分清测「功能」还是测「产品表面」 |
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |

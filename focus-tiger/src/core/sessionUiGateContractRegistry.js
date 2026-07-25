@@ -54,8 +54,15 @@ export const SESSION_UI_GATE_BEHAVIOR_CONTRACTS = Object.freeze([
   {
     id: 'begin-focus-arrival-not-ready',
     api: 'canBeginFocusOnCompanionModeSelect',
-    when: 'arrivalGateReady === false',
-    must: 'return false（禁止静默开表；UI 应启动 Arrival 或禁用）',
+    when: 'arrivalGateReady === false && mode 非 Offline Space',
+    must: 'return false（Here & Now / Flow：禁止静默开表；UI 应启动 Arrival）',
+    testAnchor: 'SessionUiGate.test.js'
+  },
+  {
+    id: 'offline-skip-arrival',
+    api: 'canBeginFocusOnCompanionModeSelect / resolveAutoStartNeedsArrival',
+    when: 'mode === Offline Space（stepAway）&& arrivalGateReady === false',
+    must: "canBegin true；needsArrival 'ignore'（禁止进 Arrival Notice/Choose）",
     testAnchor: 'SessionUiGate.test.js'
   },
   {
@@ -75,7 +82,7 @@ export const SESSION_UI_GATE_BEHAVIOR_CONTRACTS = Object.freeze([
   {
     id: 'auto-start-needs-arrival',
     api: 'resolveAutoStartNeedsArrival',
-    when: '自动开表模式 && arrivalGateReady === false',
+    when: 'Here & Now / Flow && arrivalGateReady === false',
     must: "return 'start-arrival'",
     testAnchor: 'SessionUiGate.test.js'
   },
