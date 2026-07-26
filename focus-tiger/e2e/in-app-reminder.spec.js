@@ -144,7 +144,7 @@ test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
       JSON.stringify({ hour: 0, minute: 0 })
     );
   }, REMINDER_KEY);
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   await page.evaluate(() => {

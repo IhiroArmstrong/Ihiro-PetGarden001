@@ -1,7 +1,17 @@
 import { expect } from '@playwright/test';
 
-/** 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。 */
-export async function openFreshProductShell(page) {
+/**
+ * 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。
+ * 一律 `domcontentloaded`（禁止默认 `load`——CI 上情绪序列等重资源会挂死导航）。
+ * @param {import('@playwright/test').Page} page
+ * @param {{ query?: Record<string, string | number | boolean> }} [opts]
+ */
+export async function openFreshProductShell(page, opts = {}) {
+  const params = new URLSearchParams({ product: '1' });
+  for (const [key, value] of Object.entries(opts.query || {})) {
+    if (value === undefined || value === null) continue;
+    params.set(key, String(value));
+  }
   // Wipe before every document start (incl. first paint) — avoids CI double-navigation.
   await page.addInitScript(() => {
     try {
@@ -12,8 +22,9 @@ export async function openFreshProductShell(page) {
       /* ignore */
     }
   });
-  // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`
-  await page.goto('/?product=1', { waitUntil: 'domcontentloaded' });
+  await page.goto(`/?${params.toString()}`, {
+    waitUntil: 'domcontentloaded'
+  });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 }
 

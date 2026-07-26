@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
+import { openFreshProductShell } from './helpers/product-shell.js';
 
 /**
  * 「一分钟呼吸」微仪式 DOM 主路径。
@@ -17,14 +18,7 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     }
   });
 
-  await page.goto('/?product=1&microRitualMs=2800');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+  await openFreshProductShell(page, { query: { microRitualMs: 2800 } });
 
   const entry = page.locator('#micro-ritual-idle-entry');
   await expect(entry).toBeVisible({ timeout: 15_000 });
@@ -128,14 +122,7 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
 });
 
 test('micro ritual: quiet leave does not record', async ({ page }) => {
-  await page.goto('/?product=1&microRitualMs=60000');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+  await openFreshProductShell(page, { query: { microRitualMs: 60000 } });
 
   const entry = page.locator('#micro-ritual-idle-entry');
   await expect(entry).toBeVisible({ timeout: 15_000 });
@@ -167,27 +154,25 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
 test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   page
 }) => {
-  await page.goto('/?product=1');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+  await openFreshProductShell(page);
 
   const microEntry = page.locator('#micro-ritual-idle-entry');
   const honestyEntry = page.locator('#honesty-idle-entry');
   await expect(microEntry).toBeVisible({ timeout: 15_000 });
   await expect(honestyEntry).toBeVisible({ timeout: 15_000 });
 
+  // Injects visible bridge (not real Honesty 补登). Requires `__honestyBridge` in
+  // production builds too — CI uses vite preview where DEV hooks were missing.
   const bridgeReady = await page.evaluate(() => {
     const bridge = window.__honestyBridge;
     if (!bridge?.onHonestyCheckInComplete) return false;
     bridge.onHonestyCheckInComplete();
     return bridge.isVisible() === true;
   });
-  expect(bridgeReady).toBe(true);
+  expect(
+    bridgeReady,
+    'window.__honestyBridge missing or inject failed (CI preview must expose hook)'
+  ).toBe(true);
 
   const bridge = page.locator('#honesty-bridge-cta');
   await expect(bridge).toBeVisible({ timeout: 5_000 });
@@ -210,14 +195,7 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
 test('Honesty Check-in click hides entry until duration panel open', async ({
   page
 }) => {
-  await page.goto('/?product=1');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+  await openFreshProductShell(page);
 
   const honestyEntry = page.locator('#honesty-idle-entry');
   await expect(honestyEntry).toBeVisible({ timeout: 15_000 });
@@ -236,13 +214,7 @@ test('375 micro ritual: home Sit unavailable while breath runs', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto('/?product=1&microRitualMs=60000');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
+  await openFreshProductShell(page, { query: { microRitualMs: 60000 } });
   await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
     timeout: 15_000
   });

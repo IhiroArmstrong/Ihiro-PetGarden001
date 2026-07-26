@@ -39,7 +39,7 @@ async function seedMixedPracticeDaysAndReload(page) {
       })
     );
   }, PRACTICE_DAYS_KEY);
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 }
 

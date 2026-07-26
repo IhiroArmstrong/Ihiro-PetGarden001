@@ -19,6 +19,7 @@ on:
       - 'focus-tiger/scripts/run-visibility-e2e.js'
       - 'focus-tiger/scripts/visibility-contract-doc-check.js'
       - 'focus-tiger/package.json'
+      - 'focus-tiger/playwright.config.js'
       - '.github/workflows/focus-tiger-visibility-contract.yml'
   pull_request:
     paths:
@@ -36,6 +37,7 @@ on:
       - 'focus-tiger/scripts/run-visibility-e2e.js'
       - 'focus-tiger/scripts/visibility-contract-doc-check.js'
       - 'focus-tiger/package.json'
+      - 'focus-tiger/playwright.config.js'
       - '.github/workflows/focus-tiger-visibility-contract.yml'
 
 jobs:
