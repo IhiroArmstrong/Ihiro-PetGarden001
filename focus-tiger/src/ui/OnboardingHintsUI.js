@@ -20,11 +20,6 @@ import {
   NotificationBadge,
   NOTIFICATION_BADGE_TAG
 } from '../../ui-kit/components/notification-badge.js';
-import {
-  HINT_DISCOVERY_DOT_COLOR,
-  resolvePurposeCardAwayFromTips,
-  syncAllDiscoveryDots
-} from './hintDiscoveryDots.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -35,78 +30,24 @@ if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
  */
 const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 
-/** Wide Idle parks these into ⋯ — remap hints to the more button when parked. */
-const WIDE_PARKED_ANCHOR_RE =
-  /honesty-idle-entry|micro-ritual-idle-entry|session-start-dock__hint|ambient-soundscape__fab|reminder-preference-toggle/;
-
-/** Narrow Idle parks legacy chrome off-canvas — remap to ActionBar / grabber. */
-const NARROW_PARKED_ANCHOR_RE =
-  /btn-focus|session-start-dock|arrival-practice|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape__fab|ambient-soundscape__focus-chrome|ambient-soundscape__nudge|reminder-preference|quick-start|focus-hud|onboarding-hint-help/;
-
 function resolveAnchorEl(selectorList) {
-  const widePark = document.body.classList.contains('ft-wide-park-secondary');
-  const narrowPark = document.body.classList.contains('ft-narrow-park');
   for (const sel of String(selectorList)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)) {
-    if (widePark && WIDE_PARKED_ANCHOR_RE.test(sel)) {
-      const more = document.getElementById('ft-wide-more-btn');
-      if (more && !more.hidden && more.getClientRects().length > 0) return more;
-    }
-    if (narrowPark && NARROW_PARKED_ANCHOR_RE.test(sel)) {
-      const remapped = remapNarrowParkedSelector(sel);
-      if (remapped) {
-        const el = document.querySelector(remapped);
-        if (el && !el.hidden && el.getClientRects().length > 0) {
-          const r = el.getBoundingClientRect();
-          const vw = document.documentElement.clientWidth;
-          const vh = document.documentElement.clientHeight;
-          if (!(r.right < 0 || r.bottom < 0 || r.left > vw || r.top > vh)) {
-            return el;
-          }
-        }
-      }
-    }
     const el = document.querySelector(sel);
-    if (el && !el.hidden && el.getClientRects().length > 0) {
-      // Off-canvas park (left: -10000px) still has a rect — skip those
-      const r = el.getBoundingClientRect();
-      const vw = document.documentElement.clientWidth;
-      const vh = document.documentElement.clientHeight;
-      if (r.right < 0 || r.bottom < 0 || r.left > vw || r.top > vh) {
-        continue;
-      }
-      return el;
-    }
+    if (el && !el.hidden && el.getClientRects().length > 0) return el;
   }
-  return null;
-}
-
-/**
- * @param {string} sel
- * @returns {string | null}
- */
-function remapNarrowParkedSelector(sel) {
-  if (/onboarding-hint-help/.test(sel)) return '#ft-narrow-help-btn';
-  if (/ambient-soundscape__mute/.test(sel)) return '#ft-narrow-mute-btn';
-  if (/focus-hud/.test(sel)) return '.ft-narrow-action-bar__center';
-  if (NARROW_PARKED_ANCHOR_RE.test(sel)) return '.ft-narrow-grabber';
   return null;
 }
 
 /** @returns {boolean} */
 function isNarrowViewport() {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(max-width: 479px)').matches
-  );
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 899px)').matches;
 }
 
 /**
  * Narrow Idle shell parks dock/help/?/heatmap off-screen — remap tips to visible chrome.
- * Home CTAs (Sit/Quick Start/Honesty) now live as on-canvas PNG balls; HUD/secondary
- * controls remap to the ActionBar center or swipe grabber.
  * @param {{ selector: string, placement: string, tip: string }} anchorCfg
  * @param {boolean} useHelpAnchor
  */
@@ -126,14 +67,7 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'top'
     };
   }
-  if (/focus-hud/.test(sel)) {
-    return {
-      selector: '.ft-narrow-action-bar__center',
-      placement: 'below',
-      tip: 'top'
-    };
-  }
-  // Primary home CTAs (moved out of the drawer onto the home canvas)
+  // Primary home CTAs (moved out of the drawer)
   if (/#btn-focus|btn-focus/.test(sel)) {
     return {
       selector: '#ft-narrow-home-sit',
@@ -167,13 +101,6 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'bottom'
     };
   }
-  if (NARROW_PARKED_ANCHOR_RE.test(sel)) {
-    return {
-      selector: '.ft-narrow-grabber',
-      placement: 'above',
-      tip: 'bottom'
-    };
-  }
   return anchorCfg;
 }
 
@@ -199,10 +126,12 @@ export class OnboardingHintsUI {
     this._hideTimers = new Map();
     /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
     this._remedyIds = new Set();
-    /** @type {string[]} 补救目录（主条之外；点「还有 N 条」芯片展开） */
+    /** @type {string[]} 补救目录（主条之外；点「还有 N 条」芯片逐条展开） */
     this._catalogPending = [];
-    /** @type {boolean} */
-    this._catalogExpanded = false;
+    /** @type {string | null} 情境主条 id（展开目录时保留，不替换） */
+    this._remedyPrimaryId = null;
+    /** @type {string | null} 当前由芯片展开的那一条（同时最多主条 + 1） */
+    this._catalogShownId = null;
     /** @type {HTMLButtonElement | null} */
     this._catalogChip = null;
     /** @type {string[]} 最近一次 sync 的候选自动 id（未读过滤后），供 dismiss 后串行下一条 */
@@ -233,7 +162,6 @@ export class OnboardingHintsUI {
     this._ensurePurposeCard();
     this._syncHelpBadge();
     this._injectHelpStyles();
-    this.syncDiscoveryDots();
     this._onReposition = () => this.repositionAll();
     window.addEventListener('resize', this._onReposition);
     window.addEventListener('scroll', this._onReposition, true);
@@ -245,7 +173,6 @@ export class OnboardingHintsUI {
         const meta = this._paintMeta.get(hintId) || { remedy: false, anchorNearHelp: false };
         this._paint(hintId, meta);
       }
-      this.syncDiscoveryDots();
     });
 
     // 点 ? 后的用途卡 / 补救气泡：点框外空白收起
@@ -268,7 +195,8 @@ export class OnboardingHintsUI {
       for (const id of [...this._remedyIds]) this.hideBubble(id);
       this._remedyIds.clear();
       this._catalogPending = [];
-      this._catalogExpanded = false;
+      this._remedyPrimaryId = null;
+      this._catalogShownId = null;
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
   }
@@ -322,7 +250,6 @@ export class OnboardingHintsUI {
     for (const id of show) {
       this.maybeShowAuto(id);
     }
-    this.syncDiscoveryDots();
   }
 
   /**
@@ -353,7 +280,6 @@ export class OnboardingHintsUI {
       this.hideBubble(hintId);
     }
     if (hintId === 'help-affordance') this._syncHelpBadge();
-    this.syncDiscoveryDots();
   }
 
   /** Vermillion mark only while help-affordance unseen — never persistent chrome noise. */
@@ -365,18 +291,14 @@ export class OnboardingHintsUI {
     else this.helpBadge.removeAttribute('pulse');
   }
 
-  /** Soft blue dots on unread Quick Start / Focusing HUD chrome. */
-  syncDiscoveryDots() {
-    syncAllDiscoveryDots(this.store);
-  }
-
-  /** 补救：情境单条 +「还有 N 条」常驻芯片（图9/图12）；展开后才画全量。用途简介卡仍同出。 */
+  /** 补救：情境主条 +「还有 N 条」芯片；点芯片逐条展开（同时最多主条 + 1）。用途简介卡仍同出。 */
   showRemedy() {
     const scene = this.getScene() || {};
     const primary = resolvePrimaryRemedyHintId(scene);
     const catalog = resolveRemedyCatalogHintIds(scene);
     this._catalogPending = catalog;
-    this._catalogExpanded = false;
+    this._remedyPrimaryId = primary;
+    this._catalogShownId = null;
 
     const nextRemedy = new Set([primary]);
 
@@ -389,7 +311,6 @@ export class OnboardingHintsUI {
     this._paint(primary, { remedy: true });
     this._syncCatalogChip(catalog.length);
     this._showPurposeCard();
-    this.syncDiscoveryDots();
     requestAnimationFrame(() => {
       this.repositionAll();
       this._positionCatalogChip();
@@ -401,13 +322,13 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 短标签芯片「还有 N 条」——不自动消失，锚在可见 ? 旁（图12）。
+   * 短标签芯片「还有 N 条」——不自动消失，锚在可见 ? 旁。
    * @param {number} catalogCount
    * @returns {void}
    */
   _syncCatalogChip(catalogCount) {
     const n = Math.max(0, Number(catalogCount) || 0);
-    if (n <= 0 || this._catalogExpanded) {
+    if (n <= 0) {
       this._hideCatalogChip();
       return;
     }
@@ -474,21 +395,35 @@ export class OnboardingHintsUI {
     chip.style.top = `${Math.round(top)}px`;
   }
 
-  /** 展开补救目录：画出剩余 tip。 */
+  /**
+   * 展开补救目录：一次只画下一条（替换上一条目录 tip，保留主条）。
+   * 避免窄屏多 tip 同锚到主球/grabber 叠成乱指。
+   */
   expandRemedyCatalog() {
-    if (this._catalogExpanded) return;
-    const ids = [...this._catalogPending];
-    this._catalogExpanded = true;
-    this._catalogPending = [];
-    this._hideCatalogChip();
-    for (const id of ids) {
-      this._remedyIds.add(id);
-      this._paint(id, { remedy: true });
+    if (this._catalogPending.length === 0) {
+      this._hideCatalogChip();
+      return;
     }
-    // 全量 tip 后须再避让用途卡（与 showRemedy 同）
+    const prevCatalog = this._catalogShownId;
+    if (
+      prevCatalog &&
+      prevCatalog !== this._remedyPrimaryId &&
+      this._visibleIds.has(prevCatalog)
+    ) {
+      this.hideBubble(prevCatalog);
+    }
+    const next = this._catalogPending.shift();
+    this._catalogShownId = next;
+    this._remedyIds.add(next);
+    this._paint(next, { remedy: true });
+    this._syncCatalogChip(this._catalogPending.length);
     requestAnimationFrame(() => {
       this.repositionAll();
-      requestAnimationFrame(() => this.repositionAll());
+      this._positionCatalogChip();
+      requestAnimationFrame(() => {
+        this.repositionAll();
+        this._positionCatalogChip();
+      });
     });
   }
 
@@ -511,25 +446,67 @@ export class OnboardingHintsUI {
     this._visibleIds.delete(hintId);
     this._paintMeta.delete(hintId);
     if (this._remedyIds.has(hintId)) this._remedyIds.delete(hintId);
+    if (this._catalogShownId === hintId) this._catalogShownId = null;
+    if (this._remedyPrimaryId === hintId) this._remedyPrimaryId = null;
   }
 
   clearSeen() {
     this.store.clear();
     this._remedyIds.clear();
     this._catalogPending = [];
-    this._catalogExpanded = false;
+    this._remedyPrimaryId = null;
+    this._catalogShownId = null;
     this._hideCatalogChip();
-    this._syncHelpBadge();
-    this.syncDiscoveryDots();
   }
 
   repositionAll() {
     for (const hintId of this._visibleIds) {
       this._positionBubble(hintId);
     }
+    this._separateOpenRemedyBubbles();
     this._positionPurposeCard();
     this._positionCatalogChip();
-    this.syncDiscoveryDots();
+  }
+
+  /**
+   * 补救同时最多主条+1；若仍矩形相交则把下方气泡上推，避免窄屏底部乱叠。
+   * @returns {void}
+   */
+  _separateOpenRemedyBubbles() {
+    const gap = 10;
+    const vh = window.innerHeight;
+    /** @type {{ id: string, bubble: import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble, top: number, bottom: number, height: number }[]} */
+    const items = [];
+    for (const id of this._visibleIds) {
+      if (!this._remedyIds.has(id)) continue;
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      items.push({
+        id,
+        bubble,
+        top: r.top,
+        bottom: r.bottom,
+        height: r.height
+      });
+    }
+    if (items.length < 2) return;
+    items.sort((a, b) => a.top - b.top || a.id.localeCompare(b.id));
+    for (let i = 1; i < items.length; i++) {
+      const prev = items[i - 1];
+      const cur = items[i];
+      if (cur.top >= prev.bottom + gap) continue;
+      let top = prev.bottom + gap;
+      if (top + cur.height > vh - 12) {
+        top = Math.max(12, vh - cur.height - 12);
+      }
+      cur.bubble.style.top = `${Math.round(top)}px`;
+      const nr = cur.bubble.getBoundingClientRect();
+      cur.top = nr.top;
+      cur.bottom = nr.bottom;
+      cur.height = nr.height;
+    }
   }
 
   dispose() {
@@ -612,15 +589,6 @@ export class OnboardingHintsUI {
    * @param {string} hintId
    */
   _dismissByUser(hintId) {
-    // 「还有 N 条」：点 help-remedy 先展开目录，不直接关掉
-    if (
-      hintId === 'help-remedy' &&
-      !this._catalogExpanded &&
-      this._catalogPending.length > 0
-    ) {
-      this.expandRemedyCatalog();
-      return;
-    }
     if (this._remedyIds.has(hintId)) {
       this.hideBubble(hintId);
       return;
@@ -640,19 +608,15 @@ export class OnboardingHintsUI {
       ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
       : { ...cfg };
 
-    // 窄屏 park：锚点改到可见 ActionBar / grabber（旧 dock 已停泊屏外）
-    if (
-      document.body.classList.contains('ft-narrow-park') ||
-      document.body.classList.contains('ft-narrow-idle')
-    ) {
+    // 窄屏 Idle 壳：锚点改到可见 ActionBar / grabber（旧 dock 已停泊屏外）
+    if (document.body.classList.contains('ft-narrow-idle')) {
       anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor);
     }
 
-    // 窄屏非 park：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
+    // 窄屏：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
     if (
       !useHelpAnchor &&
       isNarrowViewport() &&
-      !document.body.classList.contains('ft-narrow-park') &&
       !document.body.classList.contains('ft-narrow-idle') &&
       anchorCfg.placement === 'above' &&
       /#btn-focus/.test(String(anchorCfg.selector))
@@ -709,34 +673,6 @@ export class OnboardingHintsUI {
         left = ar.left + (ar.width - br.width) / 2;
         top = ar.top - br.height - gap;
         tip = 'bottom';
-      }
-    }
-
-    // 窄屏补救：多条「同一最终锚点」（如 grabber）时向上错开，避免叠成一团。
-    // 注意：按最终 remap 后的锚点分组，而非全部 remedy 条目——不同锚点（home
-    // CTA / mute / help）各自独立排开，避免因目录条目增多而把某条错位推出
-    // 判定阈值（见 §8.6 / weekly-practice-heatmap.spec.js「375 park」回归）。
-    if (
-      bubble.dataset.remedy === '1' &&
-      document.body.classList.contains('ft-narrow-park') &&
-      anchor
-    ) {
-      const sameAnchor = [...this._remedyIds].filter((id) => {
-        const b = this._bubbles.get(id);
-        if (!b?.open) return false;
-        if (id === hintId) return true;
-        const otherCfg = HINT_ANCHORS[id] || HINT_ANCHORS['help-fallback'];
-        const otherUseHelp =
-          b.dataset.remedy === '1' && b.dataset.remedyAnchor === 'help';
-        let otherAnchorCfg = otherUseHelp
-          ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
-          : { ...otherCfg };
-        otherAnchorCfg = remapNarrowIdleHintAnchor(otherAnchorCfg, otherUseHelp);
-        return String(otherAnchorCfg.selector) === String(anchorCfg.selector);
-      });
-      const idx = sameAnchor.indexOf(hintId);
-      if (idx > 0) {
-        top -= idx * Math.min(52, Math.max(36, Math.round(br.height * 0.55)));
       }
     }
 
@@ -839,59 +775,15 @@ export class OnboardingHintsUI {
     }
     left = Math.max(12, Math.min(left, vw - cr.width - 12));
     top = Math.max(12, Math.min(top, vh - cr.height - 12));
-
-    /** @type {Array<{ left: number, top: number, right: number, bottom: number }>} */
-    const tipRects = [];
-    for (const hintId of this._visibleIds) {
-      const bubble = this._bubbles.get(hintId);
-      if (!bubble || !bubble.open || bubble.hidden) continue;
-      tipRects.push(bubble.getBoundingClientRect());
-    }
-    const resolved = resolvePurposeCardAwayFromTips(
-      { left, top, width: cr.width, height: cr.height },
-      tipRects,
-      { vw, vh, gap: 12 }
-    );
-    card.style.left = `${Math.round(resolved.left)}px`;
-    card.style.top = `${Math.round(resolved.top)}px`;
+    card.style.left = `${Math.round(left)}px`;
+    card.style.top = `${Math.round(top)}px`;
   }
 
   _injectHelpStyles() {
-    if (document.getElementById('onboarding-hint-styles-v2')) return;
-    document.getElementById('onboarding-hint-styles')?.remove();
+    if (document.getElementById('onboarding-hint-styles')) return;
     const style = document.createElement('style');
-    style.id = 'onboarding-hint-styles-v2';
+    style.id = 'onboarding-hint-styles';
     style.textContent = `
-      .ft-hint-catalog-chip {
-        position: fixed;
-        z-index: 28;
-        box-sizing: border-box;
-        max-width: min(220px, calc(100vw - 24px));
-        padding: 8px 12px;
-        border-radius: 999px;
-        border: 1.5px solid rgba(92, 122, 108, 0.55);
-        background: linear-gradient(165deg, #eef6f1 0%, #d4e6db 100%);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.7) inset,
-          0 6px 16px rgba(40, 64, 52, 0.16);
-        color: #2f463c;
-        font-family: "Nunito", "Noto Sans SC", system-ui, sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        line-height: 1.2;
-        letter-spacing: 0.01em;
-        cursor: pointer;
-        pointer-events: auto;
-      }
-      .ft-hint-catalog-chip[hidden] {
-        display: none !important;
-      }
-      .ft-hint-catalog-chip:hover {
-        filter: brightness(1.03);
-      }
-      .ft-hint-catalog-chip:active {
-        transform: scale(0.97);
-      }
       .onboarding-hint-help {
         position: fixed;
         left: 20px;
@@ -1019,30 +911,6 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__dismiss:hover {
         background: rgba(255, 255, 255, 0.8);
-      }
-      .ft-hint-discovery-dot {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: ${HINT_DISCOVERY_DOT_COLOR};
-        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.9);
-        pointer-events: none;
-        z-index: 2;
-      }
-      #focus-hud .ft-hud__gauge,
-      #focus-hud .ft-hud__bar,
-      #focus-hud .ft-hud__streak {
-        position: relative;
-      }
-      #focus-hud .ft-hud__gauge > .ft-hint-discovery-dot {
-        top: 2px;
-        right: 2px;
-      }
-      #quick-start-focus {
-        position: relative;
       }
     `;
     document.head.appendChild(style);

@@ -22,9 +22,9 @@
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
 | `quick-start` | Idle ⚡ Quick Start | "Skip Arrival — begin with your last way of sitting." / 「跳过到达练习——用上次的同坐方式立刻开始。」 | Idle 且 ⚡ / 窄屏闪电球可见 | 点 ⚡ / Quick Start 球 | 是 |
 | `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
-| `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | **不自动**（Arrival 进行中安静；2026-07-25） | 点选图标或补救关掉 tip | 是（点 ?） |
-| `breathing` | A3c | "Just breathe with Yin. Nothing else to do." / 「跟着阿寅呼吸就好，不用做别的。」 | **不自动**（同上） | 呼吸结束或补救关掉 tip | 是（点 ?） |
-| `choose` | A3d | "Choose one — or type your own." / 「选一个，也可以自己写。」 | **不自动**（同上） | 确认或补救关掉 tip | 是（点 ?） |
+| `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | 首次 Notice | 点选图标或 Skip | 是 |
+| `breathing` | A3c | "Just breathe with Yin. Nothing else to do." / 「跟着阿寅呼吸就好，不用做别的。」 | 首次呼吸 beat | 呼吸结束或 Skip | 是 |
+| `choose` | A3d | "Choose one — or type your own." / 「选一个，也可以自己写。」 | 首次 Choose | 确认/Skip | 是 |
 | `companion-mode` | A4 面板 | "Pick one — the timer starts." / 「选一个，计时就会开始。」 | 首次展开三选一 | 点选任一模式 | 是 |
 | `companion-stay` | A4 Here & Now | "Yin stays quiet nearby unless you are away a while." / 「你在时阿寅不多打扰；离开一阵才会轻轻留意。」 | 首次看到该选项（面板打开） | 点选 Here & Now | 是 |
 | `companion-away` | E Offline Space | "Check-ins pause while you are away. Sit again when ready to begin." / 「离开时提醒会暂停。准备开始时再点同坐。」 | 首次看到该选项 | 点选 Offline Space | 是 |
@@ -37,19 +37,11 @@
 | `weekly-heatmap` | Idle 左下 7 格 | "A quiet week of shared sitting — lit days you practiced." / 「近日同坐的日子——亮起的格，是你来过的日子。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
 | `in-app-reminder` | Idle 热力图旁时钟 | "Set a daily time — Yin leaves a gentle note if you haven't practiced yet." / 「设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。」 | Idle 热力图簇可见 | 开面板 / 开计时 / 点气泡 | 是 |
 | `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |
-| `quick-start` | Idle ⚡ | "Skip Arrival — sit with your last mode right away." / 「跳过到达练习，用上次的方式立刻同坐。」 | Idle ⚡ 可见 | 点 ⚡ / 点气泡 | 是 |
-| `focus-hud-ring` | Focusing HUD 金环 | "This ring soft-fills as you sit — a quiet presence, not a scoreboard." / 「同坐时金环慢慢亮起——轻柔陪伴，不是计分板。」 | Focusing 自动；任何场景点 ? 补救 | 点气泡 / 读完 | 是 |
-| `focus-hud-progress` | Focusing HUD 今日同坐条 | "Today's shared sitting — how long you've been here today." / 「今日同坐——今天已经一起待了多久。」 | Focusing 自动；点 ? 补救 | 点气泡 | 是 |
-| `focus-hud-streak` | Focusing HUD 7 点环 | "Recent days you practiced — one lit dot per day, not per session." / 「近日同坐的日子——一天只亮一点，不是按次数。」 | Focusing 自动；点 ? 补救 | 点气泡 | 是 |
 | `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
 | `help-remedy` | 点「?」补救 | "All the tips… Click a tip to dismiss it; tap ? anytime you want them again." / 「本页…点一下气泡即可关掉；下次需要时再点问号。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **24** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
-
-**首次发现 · 蓝点（2026-07-25）**：`quick-start` / `focus-hud-*` 未读时，对应控件角上显示**软钢蓝**小点（`.ft-hint-discovery-dot`，`#5b9bb5`），与「?」角**朱砂** `notification-badge` 分工：蓝点 = 引导未读；朱砂 = 帮助入口未读。点 tip 关闭或完成对应操作后蓝点消失。
-
-**用途简介卡避让（2026-07-25）**：点「?」同时出用途卡 + 本页 tips 时，用途卡须自动挪开，**不得**挡住热力图 / 呼吸等 tip 全文（`resolvePurposeCardAwayFromTips`）。
+共 **22** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
 <!-- onboarding-hints-registry:anchors:begin -->
 
@@ -78,9 +70,6 @@
 | `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `#weekly-practice-heatmap` | right | left | — |
 | `in-app-reminder` | `HINT_IN_APP_REMINDER` | `#reminder-preference-toggle` | right | left | — |
 | `micro-ritual` | `HINT_MICRO_RITUAL` | `#micro-ritual-idle-entry` | right | left | — |
-| `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
-| `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
-| `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
 | `help-affordance` | `HINT_HELP_AFFORDANCE` | `#onboarding-hint-help` | right | left | — |
 | `help-remedy` | `HINT_HELP_REMEDY` | `#onboarding-hint-help` | right | left | — |
 | `help-fallback` | `HINT_HELP_FALLBACK` | `#btn-focus` | above | bottom | — |
@@ -98,8 +87,8 @@
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
 - **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），锚在「?」**右侧**、尖角指向「?」；点「?」或点气泡即记已读。
 - **交互**：点「?」同时做三件事：
-  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ 常驻 **「还有 N 条」芯片**（`#ft-hint-catalog-chip`，短文案 `HINT_HELP_REMEDY_MORE`）；点芯片再展开其余（`resolveRemedyCatalogHintIds`）。避免一次铺开叠成乱指；
-  2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；  
+  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ 常驻 **「还有 N 条」芯片**（`#ft-hint-catalog-chip`）；点芯片**逐条**展开其余（`resolveRemedyCatalogHintIds`）——同时最多 **主条 + 1** 条目录 tip，再点芯片替换下一条并递减 N。**禁止**一次铺开全部（窄屏会叠在主球/grabber 上乱指）；
+  2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
   3. 补救期间 `syncVisibleAutos` 不会清掉这些气泡。
 - **与即时提示**：即时「用完即隐藏」；补救不受已读限制。简介卡**不是**分步教程 / 遮罩 coachmark（仍遵守第三节禁令）。
 
@@ -108,7 +97,7 @@
 - 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐** → 右上 `.ambient-soundscape__mute`；**Idle Sound gated** → 右下 `.ambient-soundscape__fab`；Reflection → 面板**上方**，不挡 Skip）。
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
-- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**先出主条 +「还有 N 条」芯片，点芯片后再铺开其余（避免重叠乱指）。
+- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**先出主条 +「还有 N 条」芯片，点芯片**逐条**展开其余（同时最多主条+1；避免重叠乱指）。
 - App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」上方。
 
 ### 点击关闭（硬性）

@@ -12,24 +12,19 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: 'list',
-  // CI Vite cold start + openFreshProductShell (goto+reload+60s Sit) needs >30s default.
+  // CI Vite cold start + openFreshProductShell needs >30s default.
   timeout: process.env.CI ? 120_000 : 60_000,
   expect: {
     timeout: process.env.CI ? 20_000 : 10_000
   },
   use: {
-<<<<<<< HEAD
+    // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5179',
-    trace: 'on-first-retry'
-=======
-    baseURL: 'http://127.0.0.1:5173',
     trace: 'on-first-retry',
     navigationTimeout: process.env.CI ? 60_000 : 30_000,
     actionTimeout: process.env.CI ? 30_000 : 15_000
->>>>>>> ac28501 (fix(e2e): raise CI Playwright timeouts; open product shell in one navigation)
   },
   webServer: {
-    // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     command: 'npm run dev -- --host 127.0.0.1 --port 5179',
     url: 'http://127.0.0.1:5179/',
     reuseExistingServer: !process.env.CI,
