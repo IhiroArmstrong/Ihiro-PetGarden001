@@ -226,3 +226,47 @@ test('Honesty Check-in click hides entry until duration panel open', async ({
   await expect(page.locator('#honesty-check-in')).toBeVisible({ timeout: 5_000 });
   await expect(honestyEntry).toBeHidden();
 });
+
+/**
+ * micro-ritual-sit-unavailable (narrow): scenario O ⑤ — during a minute of breath,
+ * home Sit ball must not remain clickable/visible (shell Focusing hides home CTAs;
+ * legacy #btn-focus stays disabled).
+ */
+test('375 micro ritual: home Sit unavailable while breath runs', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto('/?product=1&microRitualMs=60000');
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
+    timeout: 15_000
+  });
+  await expect(page.locator('#ft-narrow-home-sit')).toBeVisible();
+
+  await page.locator('.ft-narrow-grabber').click();
+  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+    'aria-hidden',
+    'false'
+  );
+  await page
+    .locator('.ft-narrow-sheet__item', {
+      hasText: /A minute of breath|一分钟呼吸/i
+    })
+    .click();
+
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
+  await expect(
+    ritual.locator('[data-micro-ritual-breath-phase]')
+  ).toContainText(/Inhale|Exhale|吸气|呼气/i);
+
+  await expect(page.locator('#ft-narrow-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeHidden();
+  await expect(page.locator('#btn-focus')).toBeDisabled();
+});

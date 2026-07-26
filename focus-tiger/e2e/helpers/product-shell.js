@@ -2,13 +2,14 @@ import { expect } from '@playwright/test';
 
 /** 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。 */
 export async function openFreshProductShell(page) {
-  await page.goto('/?product=1');
+  // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`（串测偶发 30s timeout）
+  await page.goto('/?product=1', { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => {
     for (const key of Object.keys(localStorage)) {
       if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
     }
   });
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 }
 

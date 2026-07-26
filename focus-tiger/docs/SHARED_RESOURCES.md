@@ -172,8 +172,8 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `arrival-sit-hidden` | arrival-open | both | Sit | hidden | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/scenario-a.companion.spec.js › Arrival open: Sit hidden…; Quick Start stays` | `e2e/scenario-a.companion.spec.js › 375 Arrival: home Sit hidden; home Quick Start stays visible` |
 | `arrival-quickstart-visible` | arrival-open | both | QuickStart | visible | `#quick-start-focus` | `#ft-narrow-home-quickstart` | **locked** | `e2e/scenario-a.companion.spec.js › Arrival open: Sit hidden…; Quick Start stays` | `e2e/scenario-a.companion.spec.js › 375 Arrival: home Sit hidden; home Quick Start stays visible` |
 | `arrival-honesty-home-hidden` | arrival-open | narrow | Honesty | hidden | — | `#ft-narrow-home-honesty` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 Arrival: home Sit hidden; home Quick Start stays visible` |
-| `arrival-breath-sit-still-hidden` | arrival-breath | both | Sit | hidden | `#btn-focus` | `#ft-narrow-home-sit` | **gap-both** | — | — |
-| `micro-ritual-sit-unavailable` | micro-ritual-open | both | Sit | disabled | `#btn-focus` | `#ft-narrow-home-sit` | **gap-narrow** | `e2e/micro-ritual.spec.js › micro ritual: entry → breath → complete…` | — |
+| `arrival-breath-sit-still-hidden` | arrival-breath | both | Sit | hidden | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/scenario-a.companion.spec.js › Arrival Breath: Sit stays hidden; Quick Start stays (wide)` | `e2e/scenario-a.companion.spec.js › 375 Arrival Breath: home Sit stays hidden; Quick Start stays` |
+| `micro-ritual-sit-unavailable` | micro-ritual-open | both | Sit | disabled | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/micro-ritual.spec.js › micro ritual: entry → breath → complete…` | `e2e/micro-ritual.spec.js › 375 micro ritual: home Sit unavailable while breath runs` |
 | `honesty-bridge-entries-hidden` | honesty-bridge-visible | both | Honesty+MicroRitualEntry | hidden | `#honesty-idle-entry, #micro-ritual-idle-entry` | `#ft-narrow-home-honesty` | **gap-narrow** | `e2e/micro-ritual.spec.js › bridge CTA hides dock entries over Yes/No; No restores entries` | — |
 | `honesty-panel-entry-hidden` | honesty-check-in-open | both | HonestyEntry | hidden | `#honesty-idle-entry` | `#ft-narrow-home-honesty` | **gap-narrow** | `e2e/micro-ritual.spec.js › Honesty Check-in click hides entry until duration panel open` | — |
 | `focusing-narrow-home-ctas-hidden` | focusing | narrow | HomeCtas+Grabber | hidden | — | `#ft-narrow-home-ctas, .ft-narrow-grabber` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD and hides Sound FAB` |
@@ -184,13 +184,11 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 
 ### 当前假绿缺口（须逐条补锚）
 
-- **`arrival-breath-sit-still-hidden`** (gap-both) — 现有 e2e 只在 Notice 瞬间断言 Sit hidden，未钉 Breath/Inhale 阶段。须补宽+窄锚点
-- **`micro-ritual-sit-unavailable`** (gap-narrow) — 宽屏锁 #btn-focus:disabled。窄屏 Focusing 壳会藏整排 home CTAs，但无 375 e2e 断言 #ft-narrow-home-sit 不可点/不可见
-- **`honesty-bridge-entries-hidden`** (gap-narrow) — 宽屏锁 dock 两入口 hidden。窄屏 Honesty 已上主球；桥接可见时须锁 #ft-narrow-home-honesty（及抽屉呼吸若可见）
-- **`honesty-panel-entry-hidden`** (gap-narrow) — 窄屏主球须与 dock 入口同语义
-- **`focusing-focus-hud-visible`** (gap-wide) — 窄屏已锁 HUD 可见。宽屏多数用例只断言 #btn-focus 文案 Rise，未显式 toBeVisible(#focus-hud)
-- **`choose-bow-companion-in-viewport`** (gap-wide) — 窄屏已锁 toBeInViewport + ft-narrow-stage-companion。宽屏 A4 仅属性可见（宽屏通常不 park，风险较低，但仍非视口锚）
-- **`heatmap-hidden-when-focusing`** (gap-narrow) — 现用例默认视口（通常 ≥480）。375 Focusing 路径未断言热力图 hidden
+- **`honesty-bridge-entries-hidden`** (gap-narrow) — 宽屏已锁。窄屏桥接期整壳 suppress 通常已藏主球——缺 e2e 锚；不挡 PR#2 用户主路径（桥接已人工 OK）
+- **`honesty-panel-entry-hidden`** (gap-narrow) — 行为多半已由 honestyBusy suppress 覆盖；缺窄屏主球 e2e。P1 合并后补
+- **`focusing-focus-hud-visible`** (gap-wide) — 窄屏已锁。宽屏缺显式 #focus-hud toBeVisible——覆盖债，不挡 375/场景 O 合并
+- **`choose-bow-companion-in-viewport`** (gap-wide) — 窄屏用户路径已锁 toBeInViewport。宽屏 A4 属性可见即可（不 park）；P2
+- **`heatmap-hidden-when-focusing`** (gap-narrow) — 375 Focusing 未单断言热力图 hidden；主路径已 park 进抽屉。P2 覆盖债
 
 ### Suppress / hide 变更触发路径（CI）
 

@@ -44,24 +44,30 @@ test('locked contracts have required test anchors', () => {
   }
 });
 
-test('gap list is non-empty until Breath / micro-ritual / bridge narrow anchors land', () => {
+test('gap list tracks only post-PR#2 P1/P2 coverage debt (class-2)', () => {
   const gaps = listVisibilityLockGaps();
-  const ids = gaps.map((c) => c.id);
-  // Structural scan: these were identified as wide-only or unanchored as of 2026-07-26
-  for (const expected of [
-    'arrival-breath-sit-still-hidden',
-    'micro-ritual-sit-unavailable',
-    'honesty-bridge-entries-hidden',
-    'honesty-panel-entry-hidden',
-    'focusing-focus-hud-visible',
+  const ids = gaps.map((c) => c.id).sort();
+  assert.deepEqual(ids, [
     'choose-bow-companion-in-viewport',
-    'heatmap-hidden-when-focusing'
-  ]) {
-    assert.ok(
-      ids.includes(expected),
-      `expected gap ${expected} still tracked (got: ${ids.join(', ')})`
-    );
-  }
+    'focusing-focus-hud-visible',
+    'heatmap-hidden-when-focusing',
+    'honesty-bridge-entries-hidden',
+    'honesty-panel-entry-hidden'
+  ]);
+  // Class-1 merge blockers must be locked (not in gap list)
+  const all = VISIBILITY_CONTRACTS.map((c) => c.id);
+  assert.ok(all.includes('arrival-breath-sit-still-hidden'));
+  assert.ok(all.includes('micro-ritual-sit-unavailable'));
+  assert.equal(
+    VISIBILITY_CONTRACTS.find((c) => c.id === 'arrival-breath-sit-still-hidden')
+      ?.lockStatus,
+    'locked'
+  );
+  assert.equal(
+    VISIBILITY_CONTRACTS.find((c) => c.id === 'micro-ritual-sit-unavailable')
+      ?.lockStatus,
+    'locked'
+  );
 });
 
 test('listVisibilityE2eSpecFiles returns e2e specs only', () => {
