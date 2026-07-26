@@ -7,7 +7,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   // CI: 2 workers — workers:1 + first-attempt timeout storms cancelled jobs.
@@ -20,17 +20,17 @@ export default defineConfig({
   },
   use: {
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
-    baseURL: 'http://127.0.0.1:5179',
+    baseURL: 'http://127.0.0.1:5180',
     trace: 'on-first-retry',
     navigationTimeout: process.env.CI ? 30_000 : 30_000,
     actionTimeout: process.env.CI ? 20_000 : 15_000
   },
   // Prefer plain Node static server over vite preview — preview has hung
   // mid-suite under Chromium navigation storms (goto timeout cascades).
-  // Never reuse a stray :5179.
+  // Never reuse a stray :5180.
   webServer: {
-    command: 'npm run build && node scripts/e2e-static-server.js',
-    url: 'http://127.0.0.1:5179/',
+    command: 'npm run build && FT_E2E_PORT=5180 node scripts/e2e-static-server.js',
+    url: 'http://127.0.0.1:5180/',
     reuseExistingServer: false,
     timeout: 180_000
   },

@@ -14,14 +14,14 @@ export default defineConfig({
   timeout: 90_000,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:5179',
+    baseURL: 'http://127.0.0.1:5180',
     trace: 'on',
     navigationTimeout: 30_000
   },
   webServer: {
     command:
-      'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
-    url: 'http://127.0.0.1:5179/',
+      'npm run build && npx vite preview --host 127.0.0.1 --port 5180 --strictPort',
+    url: 'http://127.0.0.1:5180/',
     reuseExistingServer: false,
     timeout: 180_000
   },
