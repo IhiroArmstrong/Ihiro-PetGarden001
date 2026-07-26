@@ -70,6 +70,9 @@
 | `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `#weekly-practice-heatmap` | right | left | — |
 | `in-app-reminder` | `HINT_IN_APP_REMINDER` | `#reminder-preference-toggle` | right | left | — |
 | `micro-ritual` | `HINT_MICRO_RITUAL` | `#micro-ritual-idle-entry` | right | left | — |
+| `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
+| `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
+| `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
 | `help-affordance` | `HINT_HELP_AFFORDANCE` | `#onboarding-hint-help` | right | left | — |
 | `help-remedy` | `HINT_HELP_REMEDY` | `#onboarding-hint-help` | right | left | — |
 | `help-fallback` | `HINT_HELP_FALLBACK` | `#btn-focus` | above | bottom | — |
