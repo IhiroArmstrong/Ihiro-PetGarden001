@@ -90,7 +90,7 @@
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
 - **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），锚在「?」**右侧**、尖角指向「?」；点「?」或点气泡即记已读。
 - **交互**：点「?」同时做三件事：
-  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ 常驻 **「还有 N 条」芯片**（`#ft-hint-catalog-chip`）；点芯片**逐条**展开其余（`resolveRemedyCatalogHintIds`）——同时最多 **主条 + 1** 条目录 tip，再点芯片替换下一条并递减 N。**禁止**一次铺开全部（窄屏会叠在主球/grabber 上乱指）；
+  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ 常驻 **「还有 N 条」芯片**（`#ft-hint-catalog-chip`）；点芯片**逐条**展开其余（`resolveRemedyCatalogHintIds`）——同时最多 **主条 + 1** 条目录 tip，再点芯片替换下一条并递减 N。**禁止**一次铺开全部（窄屏会叠在主球/grabber 上乱指）。窄屏抬离主球带时须**堆叠错开**（`_liftBubblesAboveNarrowHomeCtas`），且须 **lift→separate**（禁止 separate 后再统一抬到同一 Y，会把错开抵消）；
   2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
   3. 补救期间 `syncVisibleAutos` 不会清掉这些气泡。
 - **与即时提示**：即时「用完即隐藏」；补救不受已读限制。简介卡**不是**分步教程 / 遮罩 coachmark（仍遵守第三节禁令）。

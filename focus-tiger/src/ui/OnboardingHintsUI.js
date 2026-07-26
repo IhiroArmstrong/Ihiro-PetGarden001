@@ -392,8 +392,7 @@ export class OnboardingHintsUI {
 
     this._paint(primary, { remedy: true });
     this._syncCatalogChip(catalog.length);
-    this._separateOpenRemedyBubbles();
-    this._liftBubblesAboveNarrowHomeCtas();
+    this._resolveRemedyBubbleLayout();
     this._showPurposeCard();
     this.syncDiscoveryDots();
     requestAnimationFrame(() => {
@@ -502,8 +501,7 @@ export class OnboardingHintsUI {
     this._remedyIds.add(next);
     this._paint(next, { remedy: true });
     this._syncCatalogChip(this._catalogPending.length);
-    this._separateOpenRemedyBubbles();
-    this._liftBubblesAboveNarrowHomeCtas();
+    this._resolveRemedyBubbleLayout();
     requestAnimationFrame(() => {
       this.repositionAll();
       this._positionCatalogChip();
@@ -552,11 +550,24 @@ export class OnboardingHintsUI {
     for (const hintId of this._visibleIds) {
       this._positionBubble(hintId);
     }
-    this._separateOpenRemedyBubbles();
-    this._liftBubblesAboveNarrowHomeCtas();
+    this._resolveRemedyBubbleLayout();
     this._positionPurposeCard();
     this._positionCatalogChip();
     this.syncDiscoveryDots();
+  }
+
+  /**
+   * Lift above home balls **then** separate. Old order (separate→lift) collapsed
+   * multiple tips onto the same CTA-top Y and recreated overlaps (375 park chip).
+   * @returns {void}
+   */
+  _resolveRemedyBubbleLayout() {
+    // Two passes: lift may stack; separate may nudge; lift again if separate
+    // pushed a tip back into the CTA band.
+    this._liftBubblesAboveNarrowHomeCtas();
+    this._separateOpenRemedyBubbles();
+    this._liftBubblesAboveNarrowHomeCtas();
+    this._separateOpenRemedyBubbles();
   }
 
   /**
@@ -598,32 +609,47 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 窄屏 Idle：任何 open tip 若与主球带相交，上抬到球带上方（防被球挡住）。
+   * 窄屏 Idle/park：open tip 与主球带相交则上抬。多条同时抬升时**堆叠**错开，
+   * 禁止全部落到同一 `cta.top - height`（会抵消 `_separateOpenRemedyBubbles`）。
    * @returns {void}
    */
   _liftBubblesAboveNarrowHomeCtas() {
-    if (!document.body.classList.contains('ft-narrow-idle')) return;
+    if (
+      !document.body.classList.contains('ft-narrow-idle') &&
+      !document.body.classList.contains('ft-narrow-park')
+    ) {
+      return;
+    }
     const cta = document.getElementById('ft-narrow-home-ctas');
     const cr = cta?.getBoundingClientRect?.();
     if (!cr || cr.width <= 0 || cr.height <= 0) return;
     const gap = 12;
+    /** @type {import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble[]} */
+    const needLift = [];
     for (const id of this._visibleIds) {
       const bubble = this._bubbles.get(id);
       if (!bubble || !bubble.open) continue;
-      // Lit tip/layout can settle after first paint — iterate a few times.
-      for (let pass = 0; pass < 3; pass++) {
-        const r = bubble.getBoundingClientRect();
-        if (r.width <= 0 || r.height <= 0) break;
-        const overlaps =
-          r.left < cr.right &&
-          r.right > cr.left &&
-          r.top < cr.bottom &&
-          r.bottom > cr.top;
-        if (!overlaps) break;
-        const top = Math.max(12, cr.top - r.height - gap);
-        bubble.style.top = `${Math.round(top)}px`;
-        bubble.tip = 'bottom';
-      }
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      const overlaps =
+        r.left < cr.right &&
+        r.right > cr.left &&
+        r.top < cr.bottom &&
+        r.bottom > cr.top;
+      if (overlaps) needLift.push(bubble);
+    }
+    if (needLift.length === 0) return;
+    // Bottom tip stays closest to the balls; others stack upward.
+    needLift.sort(
+      (a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top
+    );
+    let ceiling = cr.top - gap;
+    for (const bubble of needLift) {
+      const r = bubble.getBoundingClientRect();
+      const top = Math.max(12, ceiling - r.height);
+      bubble.style.top = `${Math.round(top)}px`;
+      bubble.tip = 'bottom';
+      ceiling = top - gap;
     }
   }
 
