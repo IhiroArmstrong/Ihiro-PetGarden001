@@ -9,9 +9,14 @@ import { expect } from '@playwright/test';
  */
 export async function openFreshProductShell(page, opts = {}) {
   const path = opts.path ?? '/?product=1';
-  // Wipe before every document start (incl. first paint) — avoids CI double-navigation.
+  // Wipe focus-tiger.* once per browser context (before first paint).
+  // Must NOT wipe again on later reload/goto in the same context — helpers such as
+  // seedMixedPracticeDaysAndReload set storage then reload; a per-navigation wipe
+  // would erase the seed and false-fail heatmap lit asserts (null→lit).
   await page.addInitScript(() => {
     try {
+      if (sessionStorage.getItem('__ftE2eStorageGate') === '1') return;
+      sessionStorage.setItem('__ftE2eStorageGate', '1');
       for (const key of Object.keys(localStorage)) {
         if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
       }
