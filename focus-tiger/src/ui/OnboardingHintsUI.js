@@ -251,7 +251,8 @@ export class OnboardingHintsUI {
     // 点 ? 后的用途卡 / 补救气泡：点框外空白收起
     this._onDocPointer = (event) => {
       const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
-      const remedyOpen = this._remedyIds.size > 0;
+      const chipOpen = Boolean(this._catalogChip && !this._catalogChip.hidden);
+      const remedyOpen = this._remedyIds.size > 0 || chipOpen;
       if (!purposeOpen && !remedyOpen) return;
       const el = /** @type {Element | null} */ (
         event.target instanceof Element ? event.target : event.target?.parentElement
@@ -473,40 +474,6 @@ export class OnboardingHintsUI {
     chip.style.top = `${Math.round(top)}px`;
   }
 
-  /** @deprecated 保留兼容；目录改走芯片 */
-  _paintHelpRemedyMeta(catalogCount) {
-    const n = Math.max(0, Number(catalogCount) || 0);
-    if (n > 0) {
-      this.hideBubble('help-remedy');
-      this._syncCatalogChip(n);
-      return;
-    }
-    this._hideCatalogChip();
-    const bubble = this._ensureBubble('help-remedy');
-    const message = t('HINT_HELP_REMEDY');
-    this._paintMeta.set('help-remedy', {
-      remedy: true,
-      anchorNearHelp: true,
-      catalogCount: 0
-    });
-    bubble.message = message;
-    bubble.open = true;
-    bubble.remedy = true;
-    bubble.dataset.hintId = 'help-remedy';
-    bubble.dataset.remedy = '1';
-    bubble.dataset.remedyAnchor = 'help';
-    bubble.dataset.catalogExpand = '0';
-    bubble.setAttribute('aria-label', `${message}. ${t('HINT_DISMISS_ARIA')}`);
-    bubble.title = t('HINT_DISMISS_ARIA');
-    const anchor = HINT_ANCHORS['help-remedy'] || HINT_ANCHORS['help-fallback'];
-    bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (anchor.tip);
-    this._visibleIds.add('help-remedy');
-    this._remedyIds.add('help-remedy');
-    const place = () => this._positionBubble('help-remedy');
-    place();
-    void bubble.updateComplete.then(place);
-  }
-
   /** 展开补救目录：画出剩余 tip。 */
   expandRemedyCatalog() {
     if (this._catalogExpanded) return;
@@ -549,6 +516,9 @@ export class OnboardingHintsUI {
   clearSeen() {
     this.store.clear();
     this._remedyIds.clear();
+    this._catalogPending = [];
+    this._catalogExpanded = false;
+    this._hideCatalogChip();
     this._syncHelpBadge();
     this.syncDiscoveryDots();
   }
@@ -566,6 +536,9 @@ export class OnboardingHintsUI {
     this._unsubLocale();
     window.removeEventListener('resize', this._onReposition);
     window.removeEventListener('scroll', this._onReposition, true);
+    if (this._onDocPointer) {
+      document.removeEventListener('pointerdown', this._onDocPointer, true);
+    }
     for (const timer of this._hideTimers.values()) window.clearTimeout(timer);
     this._hideTimers.clear();
     for (const bubble of this._bubbles.values()) bubble.remove();
@@ -984,6 +957,35 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose[hidden] {
         display: none !important;
+      }
+      .ft-hint-catalog-chip {
+        position: fixed;
+        z-index: 28;
+        box-sizing: border-box;
+        max-width: min(220px, calc(100vw - 24px));
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(92, 122, 108, 0.55);
+        background: linear-gradient(165deg, #eef6f1 0%, #d4e6db 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 6px 16px rgba(40, 64, 52, 0.16);
+        color: #2f463c;
+        font-family: "Nunito", "Noto Sans SC", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.2;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+      .ft-hint-catalog-chip[hidden] {
+        display: none !important;
+      }
+      .ft-hint-catalog-chip:hover {
+        filter: brightness(1.03);
+      }
+      .ft-hint-catalog-chip:active {
+        transform: scale(0.97);
       }
       .onboarding-app-purpose__title {
         margin: 0 0 8px;

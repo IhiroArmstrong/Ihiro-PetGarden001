@@ -347,4 +347,7 @@ test('375 micro ritual: home Sit unavailable while breath runs', async ({
   await expect(page.locator('#ft-narrow-home-sit')).toBeHidden();
   await expect(page.locator('#ft-narrow-home-ctas')).toBeHidden();
   await expect(page.locator('#btn-focus')).toBeDisabled();
+  // Legacy dock Sit must not resurface via ft-narrow-focusing CSS (O⑤)
+  await expect(page.locator('#btn-focus')).not.toBeInViewport();
+  await expect(page.locator('body')).toHaveClass(/ft-narrow-hide-sit-dock/);
 });

@@ -220,6 +220,16 @@ test('resolveRemedyCatalogHintIds excludes primary', () => {
   assert.ok(idleCatalog.includes('how-shall-we-sit'));
 });
 
+test('resolveRemedyCatalogHintIds splits Idle / Arrival / Focusing', () => {
+  const catalog = resolveRemedyCatalogHintIds({});
+  assert.ok(!catalog.includes('sit-button'));
+  assert.ok(catalog.length >= 1);
+  assert.deepEqual(
+    resolveRemedyCatalogHintIds({ isFocusing: true }),
+    resolveRemedyHintIds({ isFocusing: true }).filter((id) => id !== 'rise-button')
+  );
+});
+
 test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () => {
   assert.deepEqual(
     selectExclusiveAutoHintIds(

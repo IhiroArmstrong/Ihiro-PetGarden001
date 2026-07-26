@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v10';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v11';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -216,7 +216,8 @@ export class NarrowIdleShell {
       'ft-narrow-shell',
       'ft-narrow-park',
       'ft-narrow-idle',
-      'ft-narrow-focusing'
+      'ft-narrow-focusing',
+      'ft-narrow-hide-sit-dock'
     );
   }
 
@@ -233,10 +234,15 @@ export class NarrowIdleShell {
     const idleChrome = park && !this._suppressed;
     const focusing = narrow && !this._idle;
     const shellVisible = narrow && (idleChrome || keepQs);
+    // Micro-ritual (and similar): shell uses focusing chrome for FocusHUD, but
+    // suppress is on — must NOT resurface legacy Sit/dock (O⑤ / L234).
+    const hideSitDock =
+      narrow && this._suppressed && !this._idle && !this._keepQuickStart;
     document.body.classList.toggle('ft-narrow-shell', narrow);
     document.body.classList.toggle('ft-narrow-park', park);
     document.body.classList.toggle('ft-narrow-idle', idleChrome);
     document.body.classList.toggle('ft-narrow-focusing', focusing);
+    document.body.classList.toggle('ft-narrow-hide-sit-dock', hideSitDock);
     if (this.shell) {
       this.shell.hidden = !shellVisible;
       this.shell.classList.toggle(
@@ -1112,6 +1118,19 @@ export class NarrowIdleShell {
           max-width: min(100%, 200px);
           opacity: 1 !important;
           pointer-events: auto !important;
+        }
+
+        /* Micro-ritual / overlay-while-focusing: FocusHUD stays; legacy Sit gone */
+        body.ft-narrow-shell.ft-narrow-hide-sit-dock #session-start-dock,
+        body.ft-narrow-shell.ft-narrow-hide-sit-dock #btn-focus {
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+          position: fixed !important;
+          left: -9999px !important;
+          right: auto !important;
+          top: 0 !important;
+          bottom: auto !important;
         }
       }
     `;
