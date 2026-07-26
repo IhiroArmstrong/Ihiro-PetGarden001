@@ -1086,9 +1086,11 @@ async function init() {
       syncOnboardingAutoHints();
     }
   });
+  // E2E injects bridge via `__honestyBridge` (micro-ritual.spec.js). Must work in
+  // CI `vite preview` production builds where `import.meta.env.DEV === false`.
+  window.__honestyBridge = honestyBridge;
+  window.__honestyBridgeStore = honestyBridgeStore;
   if (import.meta.env.DEV) {
-    window.__honestyBridge = honestyBridge;
-    window.__honestyBridgeStore = honestyBridgeStore;
     window.__retentionFunnel = retentionFunnelStore;
   }
 

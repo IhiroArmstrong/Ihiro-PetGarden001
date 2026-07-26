@@ -146,7 +146,7 @@
    - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
    - **No** → idle，无二次挽留。  
    - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。  
-   *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；DOM 叠层隐藏 Honesty/微仪式入口（经 `__honestyBridge` 注入）→ e2e `micro-ritual.spec.js` bridge 行；**非**真实补登→桥接完整用户链；Yes 后完整 Arrival UI 仍人工]*
+   *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；DOM 叠层隐藏 Honesty/微仪式入口（经 `__honestyBridge` 注入）→ e2e `micro-ritual.spec.js` bridge 行；**非**真实补登→桥接完整用户链；Yes 后完整 Arrival UI 仍人工。**CI**：`__honestyBridge` 须在 `vite preview` 生产构建可用（勿仅 DEV 挂载）]*
 6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
    **已知**：Honesty 路径暂不接 halo / 金光。
    **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
@@ -292,14 +292,14 @@
 | 眨眼 | 实验室面板「眨眼」或 `playEmotion('blink')` |
 | Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
 | 一炷香莲花 | 实验室「模拟一炷香」（业务未接线） |
-| Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接 DEV：`__honestyBridge` |
+| Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接注入：`__honestyBridge`（**生产构建也挂载**，供 CI `vite preview` e2e） |
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |
 | Idle 加速眨眼 | DEV：`__idleOrchestrator.setTiming({ breathCyclesBeforeBlink: 1 })` |
 | 清当日完成（模拟 DORMANT） | DEV：清 `DailyCompletionStore` 相关 localStorage 后刷新（或 `__dailyCompletionStore`）——**仅**清零完成记录；**不会**单独进睡 |
 | 模拟 ≥2h 后进 DORMANT | DEV：设 `focus-tiger.focus-session-end.v1` = `{"lastEndedAt": <≥2h 前 epoch ms>}` 后刷新或切回前台；或坐完一场后把系统时间拨快 |
 
-说明：`#emotion-debug-ui` 当前在**非** `?product=1` 时挂载；`window.__*` 仅 `import.meta.env.DEV`。
+说明：`#emotion-debug-ui` 当前在**非** `?product=1` 时挂载；多数 `window.__*` 仍仅 `import.meta.env.DEV`。例外：`__honestyBridge` / `__honestyBridgeStore` 在生产构建也挂载（e2e 注入桥接可见态；非完整补登链）。
 
 ---
 

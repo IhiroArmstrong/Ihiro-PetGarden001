@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
-import { clickWideMoreProxyOrDirect } from './helpers/product-shell.js';
+import { clickWideMoreProxyOrDirect, openFreshProductShell } from './helpers/product-shell.js';
+
 
 /**
  * 「一分钟呼吸」微仪式 DOM 主路径。
@@ -197,14 +198,7 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
 test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   page
 }) => {
-  await page.goto('/?product=1');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+  await openFreshProductShell(page);
 
   const microEntry = page.locator('#micro-ritual-idle-entry');
   const honestyEntry = page.locator('#honesty-idle-entry');
@@ -212,13 +206,18 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await expect(microEntry).toBeAttached();
   await expect(honestyEntry).toBeAttached();
 
+  // Injects visible bridge (not real Honesty 补登). Requires `__honestyBridge` in
+  // production builds too — CI uses vite preview where DEV hooks were missing.
   const bridgeReady = await page.evaluate(() => {
     const bridge = window.__honestyBridge;
     if (!bridge?.onHonestyCheckInComplete) return false;
     bridge.onHonestyCheckInComplete();
     return bridge.isVisible() === true;
   });
-  expect(bridgeReady).toBe(true);
+  expect(
+    bridgeReady,
+    'window.__honestyBridge missing or inject failed (CI preview must expose hook)'
+  ).toBe(true);
 
   const bridge = page.locator('#honesty-bridge-cta');
   await expect(bridge).toBeVisible({ timeout: 5_000 });
@@ -244,15 +243,9 @@ test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', asyn
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto('/?product=1');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
+  await openFreshProductShell(page);
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible({
-    timeout: 60_000
+    timeout: 15_000
   });
 
   const bridgeReady = await page.evaluate(() => {
@@ -261,7 +254,10 @@ test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', asyn
     bridge.onHonestyCheckInComplete();
     return bridge.isVisible() === true;
   });
-  expect(bridgeReady).toBe(true);
+  expect(
+    bridgeReady,
+    'window.__honestyBridge missing or inject failed (CI preview must expose hook)'
+  ).toBe(true);
 
   const bridge = page.locator('#honesty-bridge-cta');
   await expect(bridge).toBeVisible({ timeout: 5_000 });
