@@ -503,7 +503,40 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
   expect(after.ids.length).toBeGreaterThan(1);
   expect(after.chipVisible).toBe(true);
   expect(after.chipN).toBe(before.chipN - 1);
-  expect(after.overlapPairs).toBe(0);
+  // Separation runs after paint — poll so CI does not race the first layout.
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const bubbles = [
+            ...document.querySelectorAll('ft-onboarding-hint-bubble')
+          ].filter((b) => {
+            if (b.open === false) return false;
+            const r = b.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+          });
+          const rects = bubbles.map((b) => b.getBoundingClientRect());
+          let overlapPairs = 0;
+          for (let i = 0; i < rects.length; i++) {
+            for (let j = i + 1; j < rects.length; j++) {
+              const a = rects[i];
+              const b = rects[j];
+              const ix = Math.max(
+                0,
+                Math.min(a.right, b.right) - Math.max(a.left, b.left)
+              );
+              const iy = Math.max(
+                0,
+                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+              );
+              if (ix * iy > 40) overlapPairs += 1;
+            }
+          }
+          return overlapPairs;
+        }),
+      { timeout: 5_000 }
+    )
+    .toBe(0);
 
   // Grabber-anchored catalog tips must sit above home CTAs (not behind the balls).
   // Wait for lift rAF passes after catalog expand.
