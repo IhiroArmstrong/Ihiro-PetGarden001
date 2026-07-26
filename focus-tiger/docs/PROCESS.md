@@ -63,7 +63,7 @@
 
 **近期落地（待人工测试）**：
 
-- **本地 Cursor 能耗护栏（2026-07-26）**：根目录新增 `.cursorignore` + `.cursorindexingignore`（挡住 `public/sprites` 等大素材索引）；操作与并行 Agent / Cloud 衔接见「本地 Cursor 能耗」。非产品 UI，无需 TEST_TRACKER 人工项。
+- **本地 Cursor 能耗护栏（2026-07-26）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。同日拍板：Cloud 启用须提醒「独立会话」；任务起过 Vite/Playwright 须在收尾提醒手动确认已关（alwaysApply：`focus-tiger-browser-energy.mdc`）。非产品 UI，无需 TEST_TRACKER 人工项。
 - **窄屏主屏三主钮（2026-07-26）**：用户书面——375 首页底部太空；`NarrowIdleShell` 主画布放 **Sit with Yin / Quick Start / Honesty Check-in**，抽屉删这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。e2e 已锁；待人工观感。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
@@ -342,7 +342,21 @@
 | jobs 衔接 | 用 PR 描述 / 分支名 / `TEST_TRACKER`「用户反馈」列当交接面；不要假设「Cloud 会接着本机 Agent 的上下文继续」 |
 | 冲突风险 | 避免本机与 Cloud **同时改同一分支或同一共享契约文件**；Cloud 开 PR → 本机 review/merge，或本机先 push 再让 Cloud 基于新 tip |
 
+**强制提醒（用户 2026-07-26 拍板 · alwaysApply 见 `focus-tiger-browser-energy.mdc`）**：启用 / 建议 / 正在跑 Cloud 时，Agent 须在用户可见回复中写明：
+
+> **这是一个新的、和本机完全独立的会话**——两边不会自动同步对话上下文。
+
+并按「检查最新 git 状态、避免同时改同一分支或共享契约文件」协调；**禁止**假设两边会自动接上下文。
+
 长任务、重 e2e、大范围搜索优先 Cloud；本机留给短改 + Safari 人工验收。
+
+### 任务结束：开发服务器 / 测试进程收尾提醒
+
+用户拍板养成习惯（2026-07-26）：凡任务起过 **Vite / Playwright**（或同类长期进程），收尾「待你知道」须提醒：
+
+> **进程收尾**：这次若起过开发服务器 / Playwright，请到终端或 Process Explorer 确认已关，避免后台持续耗电。
+
+门禁条文 SSOT：`.cursor/rules/focus-tiger-browser-energy.mdc`「进程收尾提醒」。
 
 ---
 
