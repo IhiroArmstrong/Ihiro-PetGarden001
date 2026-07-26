@@ -143,16 +143,37 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
   await expect(page.locator('#ft-hint-catalog-chip')).toBeVisible({
     timeout: 5_000
   });
+  // Catalog expands one tip at a time (primary + 1), not a flood.
+  const beforeN = await page.evaluate(() => {
+    const chip = document.getElementById('ft-hint-catalog-chip');
+    const m = (chip?.textContent || '').match(/(\d+)/);
+    return m ? Number(m[1]) : 0;
+  });
+  expect(beforeN).toBeGreaterThan(0);
   await page.locator('#ft-hint-catalog-chip').click();
-  await expect
-    .poll(async () => {
-      return page.evaluate(() => {
-        return document.querySelectorAll(
-          'ft-onboarding-hint-bubble[data-remedy="1"]'
-        ).length;
-      });
-    })
-    .toBeGreaterThanOrEqual(5);
+  const afterClick = await page.evaluate(() => {
+    const bubbles = [
+      ...document.querySelectorAll(
+        'ft-onboarding-hint-bubble[data-remedy="1"]'
+      )
+    ].filter((el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    const chip = document.getElementById('ft-hint-catalog-chip');
+    const m = (chip?.textContent || '').match(/(\d+)/);
+    return {
+      count: bubbles.length,
+      chipN: m ? Number(m[1]) : 0,
+      chipVisible: Boolean(chip && !chip.hidden)
+    };
+  });
+  expect(afterClick.count).toBeGreaterThanOrEqual(1);
+  expect(afterClick.count).toBeLessThanOrEqual(3);
+  if (beforeN > 1) {
+    expect(afterClick.chipVisible).toBe(true);
+    expect(afterClick.chipN).toBe(beforeN - 1);
+  }
   const layout = await page.evaluate(() => {
     const moreEl = document.getElementById('ft-wide-more-btn');
     const purpose = document.getElementById('onboarding-app-purpose');
