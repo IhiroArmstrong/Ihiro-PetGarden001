@@ -42,6 +42,7 @@ jobs:
   visibility-e2e:
     name: visibility registry + e2e anchors
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: focus-tiger
