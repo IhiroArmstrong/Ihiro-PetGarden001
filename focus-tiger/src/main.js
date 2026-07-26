@@ -1394,7 +1394,13 @@ async function init() {
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
-  if (import.meta.env.DEV && !productChrome) {
+  // Lab chrome: vite `serve` (DEV) or local Playwright `vite build --mode development`
+  // (MODE=development but DEV still false on any `build`). Product shell / CI prod build: off.
+  const labDevChrome =
+    (import.meta.env.DEV || import.meta.env.MODE === 'development') &&
+    !productChrome;
+
+  if (labDevChrome) {
     void (async () => {
       const {
         consumeDevBootIdle,
@@ -1419,8 +1425,8 @@ async function init() {
     })();
   }
 
-  // DEV 实验室调试入口（生产构建与 ?product=1 均不出现）
-  if (import.meta.env.DEV && !productChrome) {
+  // DEV / local e2e development-mode 实验室调试入口（CI production preview 与 ?product=1 均不出现）
+  if (labDevChrome) {
     const clearHintsBtn = document.createElement('button');
     clearHintsBtn.type = 'button';
     clearHintsBtn.textContent = '清空引导提示已读';
