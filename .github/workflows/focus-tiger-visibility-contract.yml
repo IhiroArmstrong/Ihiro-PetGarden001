@@ -19,6 +19,7 @@ on:
       - 'focus-tiger/scripts/run-visibility-e2e.js'
       - 'focus-tiger/scripts/visibility-contract-doc-check.js'
       - 'focus-tiger/package.json'
+      - 'focus-tiger/playwright.config.js'
       - '.github/workflows/focus-tiger-visibility-contract.yml'
   pull_request:
     paths:
@@ -36,15 +37,16 @@ on:
       - 'focus-tiger/scripts/run-visibility-e2e.js'
       - 'focus-tiger/scripts/visibility-contract-doc-check.js'
       - 'focus-tiger/package.json'
+      - 'focus-tiger/playwright.config.js'
       - '.github/workflows/focus-tiger-visibility-contract.yml'
 
 jobs:
   visibility-e2e:
     name: visibility registry + e2e anchors
     runs-on: ubuntu-latest
-    # Almost every anchor still: first attempt ~test-timeout then retry ~35–55s green.
-    # 90m died on the last heatmap rows; 120m leaves margin until nav flake is fixed.
-    timeout-minutes: 120
+    # Green+high-flaky accepted for PR#2; keep budget for 2 workers + retries.
+    # Post-merge: PROCESS Backlog「降低 visibility CI flaky 率」.
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: focus-tiger
