@@ -133,10 +133,11 @@
 ```markdown
 ### 待你决定 / 待你知道
 - **待你决定**：…（需拍板 / 选方案 / 是否继续下一步；无则写「无」）
-- **待你知道**：…（已做完但须知情：commit、未 push、TEST_TRACKER 待测项、已知未覆盖等；无则写「无」）
+- **待你知道**：…（已做完但须知情：commit、未 push、TEST_TRACKER 待测项、已知未覆盖、**Vite/Playwright 进程收尾**、**Cloud 独立会话**等；无则写「无」）
 ```
 
-两条可各列多条 bullet；标题字面须可被扫读到，勿改成「小结」「Next」等模糊替代。
+两条可各列多条 bullet；标题字面须可被扫读到，勿改成「小结」「Next」等模糊替代。  
+起过 Vite/Playwright 或启用/建议 Cloud 时的强制提醒句 → `RULES_INDEX` → `browser-energy`（勿在本文复述全文）。
 
 ### 2.5 双视口故事矩阵（N17–N24）
 

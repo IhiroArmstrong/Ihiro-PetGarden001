@@ -348,18 +348,22 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'browser-energy',
-    title: '预览浏览器与能耗（默认 Safari；内置 Browser 限时）',
+    title: '预览浏览器与能耗（默认 Safari；内置 Browser 限时；进程收尾 / Cloud 独立会话提醒）',
     ssotPath: '.cursor/rules/focus-tiger-browser-energy.mdc',
     ssotSection: 'Focus Tiger · 预览浏览器与能耗',
     ssotMustContain: [
       /请用户用 \*\*Safari\*\* 打开/,
       /最长 10 分钟/,
-      /窄屏 \/ 响应式视口/
+      /窄屏 \/ 响应式视口/,
+      /进程收尾提醒/,
+      /和本机完全独立的会话/
     ],
     topicSignals: [
       /内置 Browser|Cursor 内置浏览器|browser-energy/,
       /预览浏览器与能耗/,
-      /cursor-ide-browser/
+      /cursor-ide-browser/,
+      /进程收尾/,
+      /完全独立的会话/
     ],
     mustCite: [/focus-tiger-browser-energy\.mdc|browser-energy/],
     restatementFingerprints: [

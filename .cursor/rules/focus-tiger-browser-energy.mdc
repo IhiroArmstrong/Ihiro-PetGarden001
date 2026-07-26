@@ -1,19 +1,20 @@
 ---
-description: 预览浏览器能耗约定——默认 Safari；Cursor 内置 Browser 仅窄屏特例且最长 10 分钟
+description: 预览浏览器与能耗——默认 Safari；内置 Browser 限时；Vite/Playwright 收尾提醒；Cloud 独立会话提醒
 alwaysApply: true
 ---
 
 # Focus Tiger · 预览浏览器与能耗
 
-目的：降低 Cursor 内置 Browser / 长时间 Vite 造成的 macOS 累计能耗。
+目的：降低 Cursor 内置 Browser / 长时间 Vite / 残留 Playwright / 本机↔Cloud 误假设造成的 macOS 累计能耗与协作混乱。
 
-索引与并行 Agent 的治本操作（`.cursorignore` / worktree 窗口 / Cloud 衔接）见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」——本文件只约束预览浏览器与 Vite 生命周期。
+索引、并行 worktree 窗口、ignore 操作见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。本文件为 **预览浏览器 + 本地进程收尾汇报 + Cloud 独立会话提醒** 的 alwaysApply 门禁。
 
 ## 默认（强制）
 
 1. 一般预览、人工验收、给用户打开页面 → **只提供本地 URL**，请用户用 **Safari** 打开。  
 2. Agent **禁止**擅自调用 Cursor 内置 Browser（含 `cursor-ide-browser` MCP：`browser_navigate` 等）或 Simple Browser。  
-3. Agent 起的 Vite / `npm run dev`：测完或本回合结束前须停掉；禁止过夜挂着。
+3. Agent 起的 Vite / `npm run dev`：测完或本回合结束前须**尽量自己停掉**；禁止过夜挂着。  
+4. Agent 起的 Playwright / `npm run test:e2e` 等测试进程：测完须停掉；若会话中断可能导致残留，须在汇报里按下方「进程收尾提醒」写明。
 
 ## 唯一可不事先请示的例外
 
@@ -27,10 +28,34 @@ alwaysApply: true
 - 到点、或本回合收尾（先到为准）：必须 **关掉内置 Browser**（关 tab / `browser_lock` unlock 并结束导航会话）。  
 - 若本回合为窄屏测试而起了 Vite：关 Browser 时一并停 Vite（除非用户当场要求继续留着）。
 
+## 进程收尾提醒（强制 · 养成习惯）
+
+凡本回合**启动过**下列任一者，任务收尾「待你知道」**必须**用醒目句提醒用户手动确认已关（即使 Agent 自认已停——防会话中断残留）：
+
+- Vite / `npm run dev`（含任意 port）  
+- Playwright / `npm run test:e2e` / `npm exec playwright`  
+- 其它长期挂起的本地 server / watch
+
+推荐句式（可按实况改端口/命令）：
+
+> **进程收尾**：这次若起过开发服务器 / Playwright，请到终端或 Process Explorer 确认已关，避免后台持续耗电。
+
+未起过上述进程 → 不必写本条。
+
+## Cloud Agent 独立会话提醒（强制）
+
+启用、建议、或正在以 **Cloud Agent** 工作时：
+
+1. **首次用户可见回复**（或本机 Agent 建议改用 Cloud 时）须明确提醒：  
+   > **这是一个新的、和本机完全独立的会话**——两边不会自动同步对话上下文。  
+2. 协调按既有规则：先查最新 git 状态（分支 tip / 开放 PR / 是否已有人在改同一文件）；**避免**本机与 Cloud 同时改同一分支或同一共享契约文件（`TEST_TRACKER.md`、`PROCESS.md`、locale 大文件等）。衔接面 = Git 分支 + PR + 权威 md。详见 `PROCESS.md`「同一帐号：本机 Cursor + Cloud Agent」与 `WORKFLOW.md` 跨会话 / 并行 worktree 节。
+
 ## 诚实边界
 
-规则约束 **Agent 在会话内的行为**。会话中断后无法保证硬杀；残留进程按用户指示清理。勿声称「已有 OS 级自动关浏览器」。
+规则约束 **Agent 在会话内的行为**。会话中断后无法保证硬杀；残留进程按用户指示清理。勿声称「已有 OS 级自动关浏览器 / 自动关 Vite」。
 
-## 汇报
+## 汇报（并入 N14「待你知道」）
 
-若本回合开过内置 Browser：在「待你知道」写明打开原因、约何时关、Vite 是否已停。
+- 若本回合开过内置 Browser：写明打开原因、约何时关、Vite 是否已停。  
+- 若本回合起过 Vite / Playwright：必须含上方「进程收尾提醒」。  
+- 若本回合为 Cloud 或建议启用 Cloud：必须含「独立会话」提醒句。

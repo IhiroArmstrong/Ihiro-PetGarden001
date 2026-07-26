@@ -121,6 +121,8 @@ alwaysApply: true
 ### 待你决定 / 待你知道
 - **待你决定**：…（需拍板则列条；否则写「无」）
 - **待你知道**：…（commit、未 push、待人工测项、未覆盖路径等；否则写「无」）
+  - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）  
+  - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）
 
 禁止只在正文段落里夹带「你可以决定要不要…」「顺便说一下已 commit」。无事项仍须输出该标题并写「无」。细则见 `DEV_WORKFLOW_QUALITY.md` §2.4 / §3.4。  
 触及**长期并存姊妹功能分支**或共享入口修复时，清单还须按 `WORKFLOW.md`「长期并存功能分支的同步纪律」（N17 / `git-sibling-branch-sync`）写明波及面。
