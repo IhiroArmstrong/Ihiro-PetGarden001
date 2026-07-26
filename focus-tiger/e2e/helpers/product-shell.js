@@ -25,15 +25,23 @@ export async function openFreshProductShell(page, opts = {}) {
     }
   });
 
+  // Keep inner retries inside the Playwright test timeout.
+  // Local default timeout is 60s — 3×45s goto would close the browser mid-retry
+  // ("Target page, context or browser has been closed") and look like env flakes.
+  const isCi = Boolean(process.env.CI);
+  const attempts = isCi ? 3 : 2;
+  const gotoMs = isCi ? 30_000 : 15_000;
+  const sitMs = isCi ? 20_000 : 12_000;
+
   let lastErr;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
     try {
       // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`
       await page.goto(path, {
         waitUntil: 'domcontentloaded',
-        timeout: 45_000
+        timeout: gotoMs
       });
-      await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 20_000 });
+      await expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs });
       return;
     } catch (err) {
       lastErr = err;

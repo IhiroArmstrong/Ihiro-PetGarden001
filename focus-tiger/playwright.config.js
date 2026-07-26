@@ -12,8 +12,8 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: 'list',
-  // CI: helper retries navigations; keep room for Arrival/Companion paths.
-  timeout: process.env.CI ? 90_000 : 60_000,
+  // Keep room for Arrival/Companion paths + openFreshProductShell retries.
+  timeout: 90_000,
   expect: {
     timeout: process.env.CI ? 20_000 : 10_000
   },
@@ -21,11 +21,11 @@ export default defineConfig({
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5179',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 60_000 : 30_000,
+    navigationTimeout: process.env.CI ? 60_000 : 20_000,
     actionTimeout: process.env.CI ? 30_000 : 15_000
   },
   // CI: prefer static preview — vite `dev` on Actions has hung mid-suite (goto timeout storms).
-  // Local: keep `dev` for fast HMR while writing tests.
+  // Local: keep `dev`, but never reuse a stray server (port contention / half-dead Vite).
   webServer: process.env.CI
     ? {
         command:
@@ -35,9 +35,9 @@ export default defineConfig({
         timeout: 180_000
       }
     : {
-        command: 'npm run dev -- --host 127.0.0.1 --port 5179',
+        command: 'npm run dev -- --host 127.0.0.1 --port 5179 --strictPort',
         url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: true,
+        reuseExistingServer: false,
         timeout: 120_000
       },
   projects: [
