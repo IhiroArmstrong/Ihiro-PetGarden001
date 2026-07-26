@@ -1093,10 +1093,6 @@ async function init() {
   if (import.meta.env.DEV) {
     window.__retentionFunnel = retentionFunnelStore;
   }
-  // E2E injects bridge via `__honestyBridge` (micro-ritual.spec.js). Must work in
-  // CI `vite preview` production builds where `import.meta.env.DEV === false`.
-  window.__honestyBridge = honestyBridge;
-  window.__honestyBridgeStore = honestyBridgeStore;
 
   function endFocusChrome() {
     attentionSignals.setEnabled(false);

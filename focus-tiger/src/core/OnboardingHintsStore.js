@@ -336,36 +336,3 @@ export function resolveRemedyHintIds(scene = {}) {
   appendFocusHudHintIds(ids);
   return ids;
 }
-
-/**
- * 点「?」补救：当前场景最相关的 **1** 条（情境主条；其余进目录芯片）。
- * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
- * @returns {string}
- */
-export function resolvePrimaryRemedyHintId(scene = {}) {
-  if (scene.reflectionOpen) return 'reflection';
-  if (scene.isFocusing) return 'rise-button';
-  if (scene.ambientPanelOpen) return 'ambient-soundscape';
-  if (scene.arrivalOpen) {
-    const phase = scene.arrivalPhase;
-    if (phase === 'breath') return 'breathing';
-    if (phase === 'choose') return 'choose';
-    return 'notice';
-  }
-  if (scene.companionExpanded) return 'companion-mode';
-  if (scene.honestyBridgeVisible) return 'honesty-bridge';
-  if (scene.honestyVisible) return 'honesty-optional';
-  if (scene.isDormant) return 'dormant-open';
-  if (scene.hasEverCompletedSession) return 'idle-after-session';
-  return 'sit-button';
-}
-
-/**
- * 补救目录：全量列表去掉主条（供「还有 N 条」芯片**逐条**展开）。
- * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
- * @returns {string[]}
- */
-export function resolveRemedyCatalogHintIds(scene = {}) {
-  const primary = resolvePrimaryRemedyHintId(scene);
-  return resolveRemedyHintIds(scene).filter((id) => id !== primary);
-}
