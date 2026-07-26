@@ -237,8 +237,9 @@
 
 **下一步计划**：
 
+- **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列优先，可同周推进。
-- **合并前（若尚未做）**：将 `fix/scenario-o-375-chrome-layout`（含三主钮 / Class-1 Sit hide / visibility 导航与 `__honestyBridge` 等）合入 `develop`，再合 PR #2；勿只合旧 tip 的 `develop`。
+- **回 `chore/split-hints-from-pr2` / hints 拆分线时**：先核 `git stash` 里「`On chore/split-hints-from-pr2: temp prd untracked`」再动手（见 Backlog「stash · chore/split-hints-from-pr2」）；**禁止**未核就 drop。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
 - Companion Mode 与 Session Intention 已在同一预开始 dock 视觉合并（意图在上、三选一在下）；暂不另建独立 BeginPanel 类
@@ -276,6 +277,7 @@
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 - **CI 全量 `test:smoke` + `test:e2e`**（PR #2 后下一工程 PR；勿长期依赖本机手跑；目标 2026-07-30 前有草稿/可合并 CI）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘）
+- **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
 
 ---
 
@@ -531,6 +533,15 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **验收**：新 CI run 链接 + pass/flaky/fail 计数；文档写明是否仍依赖 `retries: 1`。
 - **不在范围**：不把「降 flaky」写成产品观感验收通过；不替代 Class-2 visibility gap（`honesty-bridge-entries-hidden` 等）的产品补锁。
 - **排期**：**PR #2 → `main` 合并后立刻开工**（可与「CI 全量 smoke + e2e」同周并行）；建议分支名 `fix/visibility-ci-flaky` 或并入全量 CI 工程 PR 的首个 commit 组。
+
+### Backlog:stash · chore/split-hints-from-pr2（回 hints 拆分线时先核）
+
+> **背景（2026-07-27）**：主线 CI / `develop` 收尾时，仓库仍留有一条 stash：`On chore/split-hints-from-pr2: temp prd untracked`。用户书面：**先不动**；等以后回到 hints 拆分（`chore/split-hints-from-pr2` 或同等任务）时再一并确认内容与去留。对话约定**不会**跨会话自动执行，故写入本 Backlog 作持久提醒。
+
+- **触发**：任何会话开始处理 hints 从 PR#2 拆分 / `chore/split-hints-from-pr2` / 相关 untracked PRD 入库前。
+- **必做**：`git stash list` → 找到该条 → `git stash show`（含 untracked）核对文件与内容 → 再决定 **pop / 选择性检出 / drop**。
+- **禁止**：未核对就 `stash drop`；勿与 `develop` 上已处理的 `wip other`（已 drop）混淆。
+- **排期**：挂在 hints 拆分线开工门闩上，非无限延期；不阻塞 PR #2 → `main`。
 
 ### Backlog:Hints anchor e2e bounding rect（Onboarding 提示 DOM 视觉校验）
 
