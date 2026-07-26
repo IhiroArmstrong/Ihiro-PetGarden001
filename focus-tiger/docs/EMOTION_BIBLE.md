@@ -634,5 +634,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.64 | 2026-07-22 | Honesty 成功记账轻量 toast `HONESTY_CHECKIN_RECORDED`（对齐微仪式；abort 仍用 `HONESTY_PENDING_LOST`） |
 | 0.65 | 2026-07-25 | `Sleeping` 睡姿循环改 `cloak-sleep` 末尾 030–034 双拍 pingpong（先 034→030），接续披毯入睡末帧；弃用旧 `sleeping/` 8 帧主线 |
 | 0.66 | 2026-07-25 | `Sleeping` 节奏 **1→2 fps**（用户反馈过慢；仍属极缓） |
+| 0.67 | 2026-07-26 | 冷启动 `onAppReady` 禁进 DORMANT / 不播 `cloakSleep`（开场即睡回归）；live 2h sync 仍可披毯进睡 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
