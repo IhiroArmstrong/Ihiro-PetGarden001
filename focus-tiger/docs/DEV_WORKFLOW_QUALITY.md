@@ -416,7 +416,8 @@
 | W3 | 上线会改开场 / 冷启动视觉的功能（如惰性 DORMANT）→ 开工已好清单须含「第一幕 Idle」；单测须锁 `onAppReady` 不进睡 |
 | W4 | 发现权威 md 互斥口径 → **同任务**改齐，禁止留下「调试 only」与「自动 2h」并行 |
 
-**本事故落地**：`onAppReady` → `allowEnterDormant: false`；`dormantIdle` + smoke A1b；`TEST_TRACKER`「开场即睡」行；对齐 `DESIGN` / `EMOTION_BIBLE` / `SHARED_RESOURCES`。
+**本事故落地**：`onAppReady` → `allowEnterDormant: false`；`dormantIdle` + smoke A1b；`TEST_TRACKER`「开场即睡」行；对齐 `DESIGN` / `EMOTION_BIBLE` / `SHARED_RESOURCES`。  
+**产品拍板（2026-07-26）**：回前台（切标签再回来）且 ≥2h → **继续披毯进睡**；冷启动第一幕仍 Idle。二者勿再混为一谈。
 
 ---
 

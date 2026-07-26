@@ -96,7 +96,7 @@ export class HonestyCheckInController {
   /**
    * App 冷启动就绪：第一幕固定 Idle（uplifting）。
    * 即使本地仍有 ≥2h 前的 focus-session-end，也**不**立刻进 DORMANT / 播 cloakSleep。
-   * 2h 惰性进睡仍由回前台 / Rise 后 `syncDormantState()` 触发（见「开场即睡」回归锚）。
+   * 回前台 / Rise 后 `syncDormantState()` 仍可进睡（**2026-07-26 拍板**：≥2h 回前台继续披毯）。
    */
   onAppReady() {
     this.syncDormantState({ allowEnterDormant: false });
