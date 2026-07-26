@@ -739,17 +739,29 @@ export class OnboardingHintsUI {
       }
     }
 
-    // 窄屏补救：多条同锚（grabber）时向上错开，避免叠成一团
+    // 窄屏补救：多条「同一最终锚点」（如 grabber）时向上错开，避免叠成一团。
+    // 注意：按最终 remap 后的锚点分组，而非全部 remedy 条目——不同锚点（home
+    // CTA / mute / help）各自独立排开，避免因目录条目增多而把某条错位推出
+    // 判定阈值（见 §8.6 / weekly-practice-heatmap.spec.js「375 park」回归）。
     if (
       bubble.dataset.remedy === '1' &&
       document.body.classList.contains('ft-narrow-park') &&
       anchor
     ) {
-      const openRemedy = [...this._remedyIds].filter((id) => {
+      const sameAnchor = [...this._remedyIds].filter((id) => {
         const b = this._bubbles.get(id);
-        return Boolean(b?.open);
+        if (!b?.open) return false;
+        if (id === hintId) return true;
+        const otherCfg = HINT_ANCHORS[id] || HINT_ANCHORS['help-fallback'];
+        const otherUseHelp =
+          b.dataset.remedy === '1' && b.dataset.remedyAnchor === 'help';
+        let otherAnchorCfg = otherUseHelp
+          ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
+          : { ...otherCfg };
+        otherAnchorCfg = remapNarrowIdleHintAnchor(otherAnchorCfg, otherUseHelp);
+        return String(otherAnchorCfg.selector) === String(anchorCfg.selector);
       });
-      const idx = openRemedy.indexOf(hintId);
+      const idx = sameAnchor.indexOf(hintId);
       if (idx > 0) {
         top -= idx * Math.min(52, Math.max(36, Math.round(br.height * 0.55)));
       }
