@@ -163,6 +163,32 @@ test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stay
 });
 
 /**
+ * W3 / arrival-breath-sit-still-hidden (wide): Sit stays hidden through Breath/Inhale,
+ * not only the Notice frame.
+ */
+test('Arrival Breath: Sit stays hidden; Quick Start stays (wide)', async ({
+  page
+}) => {
+  test.setTimeout(90_000);
+  await openFreshProductShell(page);
+  await page.locator('#btn-focus').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await arrival
+    .getByRole('button', { name: /Calm|平静|Not Sure|不确定/i })
+    .first()
+    .click();
+  await expect(
+    arrival.locator('[data-arrival-breath-phase]')
+  ).toBeVisible({ timeout: 8_000 });
+  await expect(
+    arrival.getByText(/Inhale|Exhale|吸气|呼气/i).first()
+  ).toBeVisible();
+  await expect(page.locator('#btn-focus')).toBeHidden();
+  await expect(page.locator('#quick-start-focus')).toBeVisible();
+});
+
+/**
  * W3 / L174 on narrow: home Sit ball hides; home Quick Start ball must stay.
  * (Wide e2e above only locks `#quick-start-focus` — insufficient after home CTAs.)
  */
@@ -185,6 +211,33 @@ test('375 Arrival: home Sit hidden; home Quick Start stays visible', async ({
   await expect(
     arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
   ).toBeVisible({ timeout: 8_000 });
+});
+
+/**
+ * arrival-breath-sit-still-hidden (narrow): same contract through Breath/Inhale.
+ */
+test('375 Arrival Breath: home Sit stays hidden; Quick Start stays', async ({
+  page
+}) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await page.locator('#ft-narrow-home-sit').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await arrival
+    .getByRole('button', { name: /Calm|平静|Not Sure|不确定/i })
+    .first()
+    .click();
+  await expect(
+    arrival.locator('[data-arrival-breath-phase]')
+  ).toBeVisible({ timeout: 8_000 });
+  await expect(page.locator('#ft-narrow-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-narrow-idle-shell')).toHaveClass(
+    /is-arrival-quick/
+  );
 });
 
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
