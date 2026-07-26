@@ -281,7 +281,7 @@ export function resolvePrimaryRemedyHintId(scene = {}) {
 }
 
 /**
- * 补救目录：全量列表去掉主条（供「还有 N 条」芯片展开）。
+ * 补救目录：全量列表去掉主条（供「还有 N 条」芯片**逐条**展开）。
  * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
  * @returns {string[]}
  */

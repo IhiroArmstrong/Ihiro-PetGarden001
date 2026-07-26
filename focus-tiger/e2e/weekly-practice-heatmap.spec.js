@@ -415,8 +415,8 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
 });
 
 /**
- * Fig12 / L259: ? remedy shows one primary tip + persistent「还有 N 条」chip
- * (not a flood of overlapping tips).
+ * Fig12 / L259: ? remedy shows one primary tip + persistent「还有 N 条」chip;
+ * chip expands **one tip at a time** (not a flood of overlapping tips).
  */
 test('375 park: ? remedy shows one primary tip + catalog chip', async ({
   page
@@ -439,6 +439,7 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
     const chipRect = chip?.getBoundingClientRect();
+    const chipMatch = (chip?.textContent || '').match(/(\d+)/);
     return {
       count: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
@@ -450,7 +451,8 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
           chipRect.top >= 0 &&
           chipRect.top < 667
       ),
-      chipText: chip?.textContent?.trim() || ''
+      chipText: chip?.textContent?.trim() || '',
+      chipN: chipMatch ? Number(chipMatch[1]) : 0
     };
   });
   expect(before.count).toBeLessThanOrEqual(2);
@@ -458,6 +460,7 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
   expect(before.ids).toContain('sit-button');
   expect(before.chipVisible).toBe(true);
   expect(before.chipText).toMatch(/more|还有/i);
+  expect(before.chipN).toBeGreaterThanOrEqual(2);
 
   await page.locator('#ft-hint-catalog-chip').click();
 
@@ -470,11 +473,35 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
       return r.width > 0 && r.height > 0;
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
+    const chipMatch = (chip?.textContent || '').match(/(\d+)/);
+    const rects = bubbles.map((b) => {
+      const r = b.getBoundingClientRect();
+      return { id: b.dataset.hintId, left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+    });
+    let overlapPairs = 0;
+    for (let i = 0; i < rects.length; i++) {
+      for (let j = i + 1; j < rects.length; j++) {
+        const a = rects[i];
+        const b = rects[j];
+        const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+        const iy = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+        if (ix * iy > 40) overlapPairs += 1;
+      }
+    }
     return {
       bubbleCount: bubbles.length,
-      chipHidden: !chip || chip.hidden
+      ids: bubbles.map((b) => b.dataset.hintId),
+      chipVisible: Boolean(chip && !chip.hidden),
+      chipN: chipMatch ? Number(chipMatch[1]) : 0,
+      overlapPairs
     };
   });
-  expect(after.bubbleCount).toBeGreaterThanOrEqual(3);
-  expect(after.chipHidden).toBe(true);
+  // Serial expand: still at most primary + one catalog tip (no flood).
+  expect(after.bubbleCount).toBeLessThanOrEqual(2);
+  expect(after.bubbleCount).toBeGreaterThanOrEqual(1);
+  expect(after.ids).toContain('sit-button');
+  expect(after.ids.length).toBeGreaterThan(1);
+  expect(after.chipVisible).toBe(true);
+  expect(after.chipN).toBe(before.chipN - 1);
+  expect(after.overlapPairs).toBe(0);
 });

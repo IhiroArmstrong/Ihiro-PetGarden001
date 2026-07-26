@@ -126,10 +126,12 @@ export class OnboardingHintsUI {
     this._hideTimers = new Map();
     /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
     this._remedyIds = new Set();
-    /** @type {string[]} 补救目录（主条之外；点「还有 N 条」芯片展开） */
+    /** @type {string[]} 补救目录（主条之外；点「还有 N 条」芯片逐条展开） */
     this._catalogPending = [];
-    /** @type {boolean} */
-    this._catalogExpanded = false;
+    /** @type {string | null} 情境主条 id（展开目录时保留，不替换） */
+    this._remedyPrimaryId = null;
+    /** @type {string | null} 当前由芯片展开的那一条（同时最多主条 + 1） */
+    this._catalogShownId = null;
     /** @type {HTMLButtonElement | null} */
     this._catalogChip = null;
     /** @type {string[]} 最近一次 sync 的候选自动 id（未读过滤后），供 dismiss 后串行下一条 */
@@ -193,7 +195,8 @@ export class OnboardingHintsUI {
       for (const id of [...this._remedyIds]) this.hideBubble(id);
       this._remedyIds.clear();
       this._catalogPending = [];
-      this._catalogExpanded = false;
+      this._remedyPrimaryId = null;
+      this._catalogShownId = null;
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
   }
@@ -288,13 +291,14 @@ export class OnboardingHintsUI {
     else this.helpBadge.removeAttribute('pulse');
   }
 
-  /** 补救：情境单条 +「还有 N 条」常驻芯片；展开后才画全量。用途简介卡仍同出。 */
+  /** 补救：情境主条 +「还有 N 条」芯片；点芯片逐条展开（同时最多主条 + 1）。用途简介卡仍同出。 */
   showRemedy() {
     const scene = this.getScene() || {};
     const primary = resolvePrimaryRemedyHintId(scene);
     const catalog = resolveRemedyCatalogHintIds(scene);
     this._catalogPending = catalog;
-    this._catalogExpanded = false;
+    this._remedyPrimaryId = primary;
+    this._catalogShownId = null;
 
     const nextRemedy = new Set([primary]);
 
@@ -324,7 +328,7 @@ export class OnboardingHintsUI {
    */
   _syncCatalogChip(catalogCount) {
     const n = Math.max(0, Number(catalogCount) || 0);
-    if (n <= 0 || this._catalogExpanded) {
+    if (n <= 0) {
       this._hideCatalogChip();
       return;
     }
@@ -391,20 +395,35 @@ export class OnboardingHintsUI {
     chip.style.top = `${Math.round(top)}px`;
   }
 
-  /** 展开补救目录：画出剩余 tip。 */
+  /**
+   * 展开补救目录：一次只画下一条（替换上一条目录 tip，保留主条）。
+   * 避免窄屏多 tip 同锚到主球/grabber 叠成乱指。
+   */
   expandRemedyCatalog() {
-    if (this._catalogExpanded) return;
-    const ids = [...this._catalogPending];
-    this._catalogExpanded = true;
-    this._catalogPending = [];
-    this._hideCatalogChip();
-    for (const id of ids) {
-      this._remedyIds.add(id);
-      this._paint(id, { remedy: true });
+    if (this._catalogPending.length === 0) {
+      this._hideCatalogChip();
+      return;
     }
+    const prevCatalog = this._catalogShownId;
+    if (
+      prevCatalog &&
+      prevCatalog !== this._remedyPrimaryId &&
+      this._visibleIds.has(prevCatalog)
+    ) {
+      this.hideBubble(prevCatalog);
+    }
+    const next = this._catalogPending.shift();
+    this._catalogShownId = next;
+    this._remedyIds.add(next);
+    this._paint(next, { remedy: true });
+    this._syncCatalogChip(this._catalogPending.length);
     requestAnimationFrame(() => {
       this.repositionAll();
-      requestAnimationFrame(() => this.repositionAll());
+      this._positionCatalogChip();
+      requestAnimationFrame(() => {
+        this.repositionAll();
+        this._positionCatalogChip();
+      });
     });
   }
 
@@ -427,13 +446,16 @@ export class OnboardingHintsUI {
     this._visibleIds.delete(hintId);
     this._paintMeta.delete(hintId);
     if (this._remedyIds.has(hintId)) this._remedyIds.delete(hintId);
+    if (this._catalogShownId === hintId) this._catalogShownId = null;
+    if (this._remedyPrimaryId === hintId) this._remedyPrimaryId = null;
   }
 
   clearSeen() {
     this.store.clear();
     this._remedyIds.clear();
     this._catalogPending = [];
-    this._catalogExpanded = false;
+    this._remedyPrimaryId = null;
+    this._catalogShownId = null;
     this._hideCatalogChip();
   }
 
@@ -441,8 +463,50 @@ export class OnboardingHintsUI {
     for (const hintId of this._visibleIds) {
       this._positionBubble(hintId);
     }
+    this._separateOpenRemedyBubbles();
     this._positionPurposeCard();
     this._positionCatalogChip();
+  }
+
+  /**
+   * 补救同时最多主条+1；若仍矩形相交则把下方气泡上推，避免窄屏底部乱叠。
+   * @returns {void}
+   */
+  _separateOpenRemedyBubbles() {
+    const gap = 10;
+    const vh = window.innerHeight;
+    /** @type {{ id: string, bubble: import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble, top: number, bottom: number, height: number }[]} */
+    const items = [];
+    for (const id of this._visibleIds) {
+      if (!this._remedyIds.has(id)) continue;
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      items.push({
+        id,
+        bubble,
+        top: r.top,
+        bottom: r.bottom,
+        height: r.height
+      });
+    }
+    if (items.length < 2) return;
+    items.sort((a, b) => a.top - b.top || a.id.localeCompare(b.id));
+    for (let i = 1; i < items.length; i++) {
+      const prev = items[i - 1];
+      const cur = items[i];
+      if (cur.top >= prev.bottom + gap) continue;
+      let top = prev.bottom + gap;
+      if (top + cur.height > vh - 12) {
+        top = Math.max(12, vh - cur.height - 12);
+      }
+      cur.bubble.style.top = `${Math.round(top)}px`;
+      const nr = cur.bubble.getBoundingClientRect();
+      cur.top = nr.top;
+      cur.bottom = nr.bottom;
+      cur.height = nr.height;
+    }
   }
 
   dispose() {
