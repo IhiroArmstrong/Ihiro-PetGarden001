@@ -30,22 +30,16 @@ export async function openFreshProductShell(page, opts = {}) {
     }
   });
 
-  // Prefer a short, reliable first paint over burning the full test timeout
-  // inside openFresh (that pattern was ~1.6m first-red + ~35s retry-green per
-  // test and cancelled the visibility job before the suite finished).
+  // Static dist server + single local attempt. Do NOT about:blank between
+  // retries — that raced with in-flight goto ("interrupted by about:blank").
   const isCi = Boolean(process.env.CI);
-  const attempts = isCi ? 2 : 2;
-  const gotoMs = isCi ? 20_000 : 25_000;
-  const sitMs = isCi ? 35_000 : 25_000;
+  const attempts = isCi ? 2 : 1;
+  const gotoMs = isCi ? 25_000 : 45_000;
+  const sitMs = isCi ? 35_000 : 30_000;
 
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
-      if (attempt > 0) {
-        await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
-      }
-      // domcontentloaded: wait for document parse; avoid default `load` hangs on
-      // emotion assets, and avoid `commit` returning before #btn-focus exists.
       await page.goto(path, {
         waitUntil: 'domcontentloaded',
         timeout: gotoMs
