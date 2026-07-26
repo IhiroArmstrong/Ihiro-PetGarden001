@@ -12,19 +12,17 @@ export async function openFreshProductShell(page, opts = {}) {
     if (value === undefined || value === null) continue;
     params.set(key, String(value));
   }
-  // Wipe before every document start (incl. first paint) — avoids CI double-navigation.
-  await page.addInitScript(() => {
-    try {
-      for (const key of Object.keys(localStorage)) {
-        if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-      }
-    } catch {
-      /* ignore */
-    }
-  });
+  // Clear + reload (not addInitScript): init scripts survive reload and would wipe
+  // intentional seeds (e.g. practice-days heatmap). Both navs use domcontentloaded.
   await page.goto(`/?${params.toString()}`, {
     waitUntil: 'domcontentloaded'
   });
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 }
 

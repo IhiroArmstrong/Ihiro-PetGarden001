@@ -10,8 +10,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  // CI: parallel after nav uses domcontentloaded (1 worker + load-timeout flakes burned 40m).
-  workers: process.env.CI ? 4 : 1,
+  // CI: 2 workers (4 overloaded vite preview → domcontentloaded 30s storms).
+  workers: process.env.CI ? 2 : 1,
   reporter: 'list',
   // CI preview is static/fast; keep budget above openFreshProductShell's 60s Sit wait.
   timeout: process.env.CI ? 90_000 : 60_000,
@@ -21,7 +21,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:5173',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 30_000 : 30_000,
+    navigationTimeout: process.env.CI ? 60_000 : 30_000,
     actionTimeout: process.env.CI ? 20_000 : 15_000
   },
   // CI: static preview (build happens in the workflow before Playwright).
