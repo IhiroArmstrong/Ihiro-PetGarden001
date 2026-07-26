@@ -438,7 +438,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **目标**：另开 PR（建议 `feature/ci-full-smoke-e2e`），在 GitHub Actions 上对 `push`/`pull_request`（至少 `develop` 与指向 `main` 的 PR）自动跑：
   1. `cd focus-tiger && npm ci`
   2. `npm run test:smoke`（含 `docs:check`）
-  3. `npm run test:e2e`（Playwright；需安装浏览器 / 可用系统 Chrome 策略与本地对齐）
+  3. `npm run test:e2e`（Playwright；本地默认自带 Chromium；CI 建议 `PLAYWRIGHT_CHANNEL=chrome` 作系统 Chrome 兜底）
 - **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
 - **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工，目标 **2026-07-30 前** 至少有草稿 workflow 或可合并的 CI PR。

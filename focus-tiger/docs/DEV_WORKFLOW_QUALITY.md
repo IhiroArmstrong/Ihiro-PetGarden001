@@ -297,6 +297,7 @@
 | 费用 | Playwright 开源；本机下载 Chromium，**无 SaaS 授权费** |
 | 范围 v1 | 产品壳入口冒烟（`?product=1` 可见 Sit）；**Task 1 已扩** A/I/K Companion DOM（见 `scenario-a.companion.spec.js`） |
 | 命令 | `npm run test:e2e`（与 `test:smoke` 并列；交互修复收尾两者都要绿） |
+| 浏览器 | 本地默认 **Playwright 自带 Chromium**（`npm run test:e2e:install`）；勿默认 `channel: 'chrome'`（Cursor 子进程唤起系统 Chrome 易触发 macOS abort 弹窗）。系统 Chrome 兜底：`PLAYWRIGHT_CHANNEL=chrome` |
 
 #### 技术选型（更新）
 
@@ -369,6 +370,7 @@
 | 2026-07-22 | 新增 §7.7：CI 缺 `npm ci` 假红案例；红 [`29916112037`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29916112037) → 绿 [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318) @ `7b90283` |
 | 2026-07-25 | 新增 §8「窄屏故事矩阵」：根因六条 + N17–N20（375 故事最小集 / tip 回归 / 双壳契约 / 关单话术）；不变量落盘 `SHARED_RESOURCES` §6 |
 | 2026-07-25 | 新增 §9「宽屏故事矩阵」：对称原则 + 宽屏盲区评估 + N21–N24（≥480 故事最小集 / Popover·tip 邻接 / 双壳勾窄 / 关单话术） |
+| 2026-07-26 | §8.2 增 3c：并行分支丢 `ca20d07` stage + A4 不锁视口假绿；N17 S2 改为鞠躬→三选一在视口→点选→Focusing |
 
 ---
 
@@ -474,6 +476,10 @@
 3b. **把控件挪到新宿主后，e2e 仍只锁旧选择器（2026-07-26）**  
    L174 / W3 已验收「Arrival 开着时 ⚡ Quick Start 仍可见」。窄屏把三主钮搬到 `#ft-narrow-home-*` 后，`setSuppressed(true)` **整壳隐藏**连 Quick Start 球一起藏掉；而既有 e2e 仍只断言宽屏 dock `#quick-start-focus`（默认视口），**375 不红 → 假绿**。根因是：改宿主时未把「用户可见宿主」写进已好清单 / 未补窄屏回归锚。
 
+3c. **并行分支丢已验收修复 + e2e 不锁视口（2026-07-26）**  
+   `ca20d07`（鞠躬后 `ft-narrow-stage-companion`，三选一进视口）已在 `develop` / wide-idle 验收；`fix/scenario-o-375-chrome-layout` 从更早点分叉后**未 cherry-pick**，又叠 home 三球。用户侧表现为「鞠躬后没弹出三选一」（只剩 Sit/⚡/Honesty）。既有 A4 只断言 `.session-start-dock__panel` **属性可见**，park 下 DOM 可见但屏外仍**假绿**；含 `toBeInViewport` 的 375 e2e 只在 develop，本分支没有 → 丢修复不红。  
+   **流程教训**：① 并行专题开工前对高风险契约（鞠躬→三选一 stage）做 merge-base / cherry-pick 核对；② 窄屏「可见」必须锁 **视口内**（`toBeInViewport` / stage class），禁止只锁 `hidden` 属性；③ 改 chrome 宿主时「已好清单」须显式含鞠躬后 Companion。
+
 4. **自动化覆盖层与人工验收错位**  
    `test:smoke` / 多数 e2e 锁的是宽屏或「抽屉里有没有 Honesty」一类 DOM，**很少锁**：375 × Arrival tip 点击、375 × Choose 后 `#focus-hud`、375 × ? 补救锚点、375 × Arrival Breath 时 Sit 必须 `hidden`。于是：e2e 绿、宽屏 OK、窄屏故事红——符合「全绿 ≠ 观感/故事通过」，但流程上仍把窄屏当成「附带一眼」。
 
@@ -505,7 +511,7 @@
 | # | 故事 | 最低可见结果 |
 |---|---|---|
 | S1 | Sit → Notice（选择格可见；可外侧取消回 Idle） | 面板在；点空白取消后回 Idle |
-| S2 | Notice → Breath → Choose → 鞠躬 → Focusing | 见 Focusing HUD（`#focus-hud` 或约定顶栏时间）；计时可读 |
+| S2 | Notice → Breath → Choose → 鞠躬 → **Companion 三选一在视口** → 点选 → Focusing | 鞠躬后见 Here & Now / Offline / Flow（**非**直接 Focusing；窄屏须 `ft-narrow-stage-companion` / 面板 `toBeInViewport`）；点选后见 Focusing HUD |
 | S3 | 点 **?** 补救 | tip 锚点正确（无乱指 park 掉的旧按钮）；可关 |
 | S4 | Arrival / Honesty **叠层期间** chrome | 顶栏时间归属写死且可见约定成立；Sit 按契约显隐（见双壳不变量） |
 | S5 |（若本任务触及）Honesty 桥接 / 回流再进 | 与宽屏门闩行为一致，无静默失败 |

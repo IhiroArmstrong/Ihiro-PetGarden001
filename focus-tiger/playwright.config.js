@@ -27,8 +27,13 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        // 优先用本机 Chrome，避免 CI/Agent 沙箱无法下载 Playwright Chromium。
-        channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome'
+        // 本地默认：Playwright 自带 Chromium（不唤起系统 Chrome，避免 Cursor 子进程
+        // 触发 macOS TransformProcessType abort 弹窗）。
+        // 需要真实系统 Chrome 时：PLAYWRIGHT_CHANNEL=chrome npm run test:e2e
+        // （CI 兜底可显式设该环境变量。）
+        ...(process.env.PLAYWRIGHT_CHANNEL
+          ? { channel: process.env.PLAYWRIGHT_CHANNEL }
+          : {})
       }
     }
   ]

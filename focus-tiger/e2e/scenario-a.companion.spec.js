@@ -169,6 +169,44 @@ test('scenario A: Arrival Choose → Companion → Here & Now starts timer', asy
 });
 
 /**
+ * 图2 / ca20d07 回归：375 Choose 鞠躬后须 stage Companion（三选一在视口内），
+ * 尚未 Focusing；点选后才见 FocusHUD。禁止屏外「假死」+ 只剩 home 三球。
+ * （宽屏 A4 只锁 panel 可见属性不够——park 下 DOM 可见但屏外仍假绿。）
+ */
+test('375 Choose bow: Companion staged in viewport then Here & Now focuses', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await page.locator('#ft-narrow-home-sit').click();
+
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
+  await expect(reading).toBeVisible({ timeout: 20_000 });
+  await reading.click();
+
+  const panel = page.locator('.session-start-dock__panel');
+  await expect(panel).toBeVisible({ timeout: 45_000 });
+  await expect(panel).toBeInViewport();
+  await expect(page.locator('body')).toHaveClass(/ft-narrow-stage-companion/);
+  await expect(page.locator('#hud-state')).toContainText(
+    /Calm|Idle|Asleep|沉静|空闲|沉睡/i
+  );
+  await expectFocusSessionInactive(page);
+
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expectFocusSessionActive(page);
+  await expect(page.locator('#focus-hud')).toBeVisible();
+  await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
+});
+
+/**
  * L249：Choose Reading 后 Companion 仍开着 → 点 Here & Now → Focusing，无 Notice。
  */
 test('scenario A4: after Choose, Here & Now starts focus (no Arrival Notice)', async ({

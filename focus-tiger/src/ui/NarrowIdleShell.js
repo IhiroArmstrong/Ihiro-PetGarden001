@@ -139,7 +139,19 @@ export class NarrowIdleShell {
       Boolean(opts.keepQuickStart) && this._suppressed;
     if (this._suppressed) {
       this.closeSheet();
-      this.clearStage();
+      // Arrival / Honesty suppress must not park an already-expanded Companion
+      // trio off-canvas again (Choose bow → open() sets ft-narrow-stage-companion).
+      const companionExpanded =
+        document.querySelector('.session-start-dock__panel:not([hidden])') !=
+        null;
+      if (companionExpanded) {
+        document.body.classList.remove(
+          'ft-narrow-stage-reminder',
+          'ft-narrow-stage-sound'
+        );
+      } else {
+        this.clearStage();
+      }
     }
     this._syncMode();
     this._syncAmbientFocusChrome();
