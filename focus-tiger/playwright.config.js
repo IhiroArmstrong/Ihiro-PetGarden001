@@ -26,11 +26,11 @@ export default defineConfig({
     navigationTimeout: process.env.CI ? 25_000 : 30_000,
     actionTimeout: process.env.CI ? 20_000 : 15_000
   },
-  // Prefer static preview — vite `dev` hangs mid-suite (goto/click storms).
+  // Prefer plain Node static server over vite preview — preview has hung
+  // mid-suite under Chromium navigation storms (goto timeout cascades).
   // Never reuse a stray :5179.
   webServer: {
-    command:
-      'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
+    command: 'npm run build && node scripts/e2e-static-server.js',
     url: 'http://127.0.0.1:5179/',
     reuseExistingServer: false,
     timeout: 180_000

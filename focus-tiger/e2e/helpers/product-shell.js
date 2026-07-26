@@ -30,25 +30,24 @@ export async function openFreshProductShell(page, opts = {}) {
     }
   });
 
-  // Keep inner retries inside the Playwright test timeout.
-  // Local default timeout is 60s — 3×45s goto would close the browser mid-retry
-  // ("Target page, context or browser has been closed") and look like env flakes.
+  // Prefer a short, reliable first paint over burning the full test timeout
+  // inside openFresh (that pattern was ~1.6m first-red + ~35s retry-green per
+  // test and cancelled the visibility job before the suite finished).
   const isCi = Boolean(process.env.CI);
-  const attempts = isCi ? 3 : 2;
-  const gotoMs = isCi ? 30_000 : 35_000;
-  const sitMs = isCi ? 20_000 : 20_000;
+  const attempts = isCi ? 2 : 2;
+  const gotoMs = isCi ? 20_000 : 25_000;
+  const sitMs = isCi ? 35_000 : 25_000;
 
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
-      // Abort any prior hung navigation before retrying.
       if (attempt > 0) {
         await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
       }
-      // `commit` returns once headers arrive — less likely to hang on a wedged
-      // vite preview connection than waiting for full `domcontentloaded`.
+      // domcontentloaded: wait for document parse; avoid default `load` hangs on
+      // emotion assets, and avoid `commit` returning before #btn-focus exists.
       await page.goto(path, {
-        waitUntil: 'commit',
+        waitUntil: 'domcontentloaded',
         timeout: gotoMs
       });
       await expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs });
