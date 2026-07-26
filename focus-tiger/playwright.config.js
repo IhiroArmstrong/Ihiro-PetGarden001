@@ -24,12 +24,22 @@ export default defineConfig({
     navigationTimeout: process.env.CI ? 60_000 : 30_000,
     actionTimeout: process.env.CI ? 30_000 : 15_000
   },
-  webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 5179',
-    url: 'http://127.0.0.1:5179/',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000
-  },
+  // CI: prefer static preview — vite `dev` on Actions has hung mid-suite (goto timeout storms).
+  // Local: keep `dev` for fast HMR while writing tests.
+  webServer: process.env.CI
+    ? {
+        command:
+          'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
+        url: 'http://127.0.0.1:5179/',
+        reuseExistingServer: false,
+        timeout: 180_000
+      }
+    : {
+        command: 'npm run dev -- --host 127.0.0.1 --port 5179',
+        url: 'http://127.0.0.1:5179/',
+        reuseExistingServer: true,
+        timeout: 120_000
+      },
   projects: [
     {
       name: 'chromium',
