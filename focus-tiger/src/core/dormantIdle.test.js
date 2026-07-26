@@ -95,6 +95,60 @@ test('syncDormantState: no focus history stays IDLE on app ready', () => {
   assert.equal(stateManager.state, STATES.IDLE);
 });
 
+/**
+ * 回归锚「开场即睡」：陈旧 focus-session-end ≥2h 时，冷启动仍须 Idle，
+ * 不得 IDLE→DORMANT 重播 cloakSleep（用户要第一幕有精神的坐禅，不是披毯入睡）。
+ */
+test('onAppReady: stale ≥2h end timestamp stays IDLE (no cloak cold open)', () => {
+  const ended = Date.parse('2026-07-21T10:00:00');
+  const now = () => new Date(Date.parse('2026-07-21T13:00:00'));
+  const emotionCalls = [];
+  const storage = createStorage();
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  focusSessionEndStore.recordSessionEnded(ended);
+  const stateManager = new StateManager();
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      if (
+        key === EMOTION_KEYS.CLOAK_SLEEP &&
+        typeof options.onComplete === 'function'
+      ) {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return emotionCalls.at(-1)?.key ?? null;
+    },
+    idleOrchestrator: null
+  };
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+
+  const controller = new HonestyCheckInController({
+    store: new DailyCompletionStore({ storage, now }),
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui: createUi(),
+    now
+  });
+
+  controller.onAppReady();
+  assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(
+    emotionCalls.some((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP),
+    false,
+    '冷启动不得播 cloakSleep'
+  );
+  assert.equal(
+    emotionCalls.some((c) => c.key === EMOTION_KEYS.SLEEPING),
+    false,
+    '冷启动不得进 sleeping'
+  );
+});
+
 test('syncDormantState: enters DORMANT after idle window elapsed', () => {
   const ended = Date.parse('2026-07-21T10:00:00');
   const now = () => new Date(Date.parse('2026-07-21T12:00:01'));
@@ -104,6 +158,54 @@ test('syncDormantState: enters DORMANT after idle window elapsed', () => {
   });
   controller.syncDormantState();
   assert.equal(stateManager.state, STATES.DORMANT);
+});
+
+test('live sync after cold open: stale ≥2h may still enter DORMANT with cloak', () => {
+  const ended = Date.parse('2026-07-21T10:00:00');
+  const now = () => new Date(Date.parse('2026-07-21T13:00:00'));
+  const emotionCalls = [];
+  const storage = createStorage();
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  focusSessionEndStore.recordSessionEnded(ended);
+  const stateManager = new StateManager();
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      if (
+        key === EMOTION_KEYS.CLOAK_SLEEP &&
+        typeof options.onComplete === 'function'
+      ) {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return emotionCalls.at(-1)?.key ?? null;
+    },
+    idleOrchestrator: null
+  };
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+
+  const controller = new HonestyCheckInController({
+    store: new DailyCompletionStore({ storage, now }),
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui: createUi(),
+    now
+  });
+
+  controller.onAppReady();
+  assert.equal(stateManager.state, STATES.IDLE);
+
+  // 回前台 / 显式 live sync：仍可进睡（保留 2h 惰性契约）
+  controller.syncDormantState();
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.equal(
+    emotionCalls.some((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP),
+    true
+  );
 });
 
 test('syncDormantState: recent session end stays IDLE', () => {

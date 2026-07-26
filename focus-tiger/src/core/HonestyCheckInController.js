@@ -2,7 +2,9 @@
  * Honesty Check-in 编排 + DORMANT 惰性同步。
  *
  * - 不调用 ReminderQuotaManager（用户主动发起，不占共享提醒池）
- * - 零完成 / 新用户开场默认 Idle；DORMANT 由「距上次专注结束 ≥ DORMANT_IDLE_HOURS」惰性判定
+ * - 零完成 / 新用户 / **冷启动第一幕**默认 Idle（uplifting；不上 Sleeping / 不披毯）
+ * - DORMANT 由「距上次专注结束 ≥ DORMANT_IDLE_HOURS」惰性判定，但**仅**在回前台 / Rise 后等
+ *   `syncDormantState({ allowEnterDormant: true })` 路径进入；`onAppReady` 禁止进睡
  * - 未达标 Rise：记专注结束时刻 → Idle；2h 后再 sync 可进 DORMANT
  * - Honesty 从 DORMANT 唤醒仍走 dormantWake（E1–E7）
  */
@@ -91,9 +93,13 @@ export class HonestyCheckInController {
     };
   }
 
-  /** App 就绪 / 回前台：惰性同步 DORMANT ↔ Idle。 */
+  /**
+   * App 冷启动就绪：第一幕固定 Idle（uplifting）。
+   * 即使本地仍有 ≥2h 前的 focus-session-end，也**不**立刻进 DORMANT / 播 cloakSleep。
+   * 2h 惰性进睡仍由回前台 / Rise 后 `syncDormantState()` 触发（见「开场即睡」回归锚）。
+   */
   onAppReady() {
-    this.syncDormantState();
+    this.syncDormantState({ allowEnterDormant: false });
   }
 
   /**
@@ -136,9 +142,14 @@ export class HonestyCheckInController {
 
   /**
    * 惰性判定是否应处于 DORMANT；在 App 就绪、回前台、Rise 结束后调用。
-   * @param {object} [_options] 保留兼容；showPrompt* 已废弃
+   * @param {object} [options]
+   * @param {boolean} [options.allowEnterDormant=true]
+   *   false：允许离 DORMANT→Idle，但**禁止**新进入 DORMANT（冷启动第一幕）。
+   *   showPrompt* 已废弃，忽略。
    */
-  syncDormantState(_options = {}) {
+  syncDormantState(options = {}) {
+    const allowEnterDormant = options.allowEnterDormant !== false;
+
     if (this._busy || this._checkInFlowOpen) {
       this.syncIdleEntry();
       return;
@@ -157,7 +168,7 @@ export class HonestyCheckInController {
     });
 
     if (shouldDormant) {
-      if (state !== STATES.DORMANT) {
+      if (allowEnterDormant && state !== STATES.DORMANT) {
         this.stateManager.setState(STATES.DORMANT);
       }
     } else if (state === STATES.DORMANT) {
