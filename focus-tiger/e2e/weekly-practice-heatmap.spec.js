@@ -504,7 +504,7 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
   expect(after.chipVisible).toBe(true);
   expect(after.chipN).toBe(before.chipN - 1);
   expect(after.overlapPairs).toBe(0);
-}
+
   // Grabber-anchored catalog tips must sit above home CTAs (not behind the balls).
   const clearance = await page.evaluate(() => {
     const cta = document.getElementById('ft-narrow-home-ctas')?.getBoundingClientRect();
