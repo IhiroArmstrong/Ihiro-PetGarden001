@@ -135,6 +135,31 @@ test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stay
   ).toBeVisible({ timeout: 8_000 });
 });
 
+/**
+ * W3 / L174 on narrow: home Sit ball hides; home Quick Start ball must stay.
+ * (Wide e2e above only locks `#quick-start-focus` — insufficient after home CTAs.)
+ */
+test('375 Arrival: home Sit hidden; home Quick Start stays visible', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await page.locator('#ft-narrow-home-sit').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#ft-narrow-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
+  const qs = page.locator('#ft-narrow-home-quickstart');
+  await expect(qs).toBeVisible();
+  await expect(qs).toBeEnabled();
+  await expect(page.locator('#ft-narrow-idle-shell')).toHaveClass(
+    /is-arrival-quick/
+  );
+  await expect(
+    arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
+  ).toBeVisible({ timeout: 8_000 });
+});
+
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
   page
 }) => {

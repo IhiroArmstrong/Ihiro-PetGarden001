@@ -162,6 +162,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 |---|---|---|
 | **Hints remap** | 控件 park 后，onboarding tip /「?」补救锚点必须 remap 到**当前可见宿主**（窄：ActionBar `?` 等；宽：⋯ 菜单等）。禁止仍指向 park 掉的旧按钮坐标。 | 改 park / ActionBar / ⋯ / Hints → 375 + ≥480 各点一次「?」补救 |
 | **Sit 显隐** | Arrival（含 Notice / Breath / Choose）打开期间，Sit / 等价主 CTA 须按契约 **hidden 或明确不可点**；窄屏 `#ft-narrow-home-sit` 与宽屏 `#btn-focus` **同一语义**（壳 suppress 或 hidden）。 | 375：Sit→Breath 仍不得见可点 Sit；宽屏对照 |
+| **Quick Start 显隐** | Arrival 全程 **⚡ / Quick Start 须仍可见可点**（W3 / L174）。窄屏用户可见宿主 = `#ft-narrow-home-quickstart`（`setSuppressed(..., { keepQuickStart })`）；**禁止**只断言已 park 的 `#quick-start-focus`。Honesty / Reflection 全叠层仍可整壳 suppress。 | e2e `375 Arrival: home Sit hidden; home Quick Start stays` |
 | **FocusHUD vs ActionBar** | Focusing 或约定叠层期：顶栏时间由谁负责、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄须有书面一致结果；禁止一侧有计时、另一侧顶栏空白无约定。 | Choose→鞠躬后 Focusing：375 见 HUD/约定顶栏；≥480 对照 |
 
 外侧取消邻接（点 tip 只关 tip、不关面板）属交互回归，见 `DEV_WORKFLOW_QUALITY.md` §8 N18；实现：`src/ui/outsideDismissGuard.js`（Arrival / Companion / Honesty 共用）。不单列为本表第三壳。

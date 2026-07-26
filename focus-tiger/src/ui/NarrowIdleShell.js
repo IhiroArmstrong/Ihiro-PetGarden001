@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v9';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v10';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -52,6 +52,7 @@ export class NarrowIdleShell {
         : null;
     this._idle = true;
     this._suppressed = false;
+    this._keepQuickStart = false;
     this._sheetOpen = false;
     this._touchStartY = null;
     this._localeUnsub = null;
@@ -123,18 +124,23 @@ export class NarrowIdleShell {
   }
 
   /**
-   * Arrival / Honesty / Reflection / Honesty-bridge: hide ActionBar + grabber,
-   * but keep legacy chrome parked so dock pills do not poke through overlays.
+   * Overlay chrome policy (narrow):
+   * - Full suppress (Reflection / Honesty busy / bridge / micro-ritual): hide shell.
+   * - Arrival (`keepQuickStart`): hide ActionBar / grabber / Sit / Honesty, but
+   *   **keep Quick Start** (W3 / L174 — ⚡ must stay while Sit is hidden).
+   * Legacy dock stays parked either way.
    * @param {boolean} suppressed
+   * @param {{ keepQuickStart?: boolean }} [opts]
    * @returns {void}
    */
-  setSuppressed(suppressed) {
+  setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
+    this._keepQuickStart =
+      Boolean(opts.keepQuickStart) && this._suppressed;
     if (this._suppressed) {
       this.closeSheet();
       this.clearStage();
     }
-    this.shell?.classList.toggle('is-suppressed', this._suppressed);
     this._syncMode();
     this._syncAmbientFocusChrome();
   }
@@ -204,20 +210,25 @@ export class NarrowIdleShell {
     // Park legacy chrome whenever Idle on narrow — including Arrival / Honesty overlays
     // (suppress only hides ActionBar; unparking dock caused pills under Arrival).
     const park = narrow && this._idle;
+    const keepQs = Boolean(this._keepQuickStart);
     const idleChrome = park && !this._suppressed;
     const focusing = narrow && !this._idle;
+    const shellVisible = narrow && (idleChrome || keepQs);
     document.body.classList.toggle('ft-narrow-shell', narrow);
     document.body.classList.toggle('ft-narrow-park', park);
     document.body.classList.toggle('ft-narrow-idle', idleChrome);
     document.body.classList.toggle('ft-narrow-focusing', focusing);
     if (this.shell) {
-      this.shell.hidden = !narrow || Boolean(this._suppressed);
+      this.shell.hidden = !shellVisible;
+      this.shell.classList.toggle(
+        'is-suppressed',
+        Boolean(this._suppressed) && !keepQs
+      );
+      this.shell.classList.toggle('is-arrival-quick', keepQs);
     }
     if (!narrow || this._suppressed) this.closeSheet();
-    if (idleChrome) {
-      this._syncActionBarFromHud();
-      this._refreshHomeCtas();
-    }
+    if (idleChrome) this._syncActionBarFromHud();
+    if (idleChrome || keepQs) this._refreshHomeCtas();
   }
 
   _build() {
@@ -459,13 +470,19 @@ export class NarrowIdleShell {
       const honestyLabel = t('HONESTY_IDLE_ENTRY');
       this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
       this.honestyHomeBtn.title = honestyLabel;
-      // Always offer Honesty on Idle home. `#honesty-idle-entry` is often
-      // attribute-hidden (or not yet created until first syncIdleEntry) —
-      // must NOT dim the ball via disabled/opacity. `_proxy` uses onHonesty.
-      // Shell `setSuppressed` already hides the row during Arrival / overlays.
-      this.honestyHomeBtn.hidden = false;
+      // Idle home: always offer Honesty (entry may be missing / attribute-hidden).
+      // Arrival keepQuickStart: hide Honesty (W3 — only ⚡ stays with Sit).
+      const showHonesty = !this._keepQuickStart;
+      this.honestyHomeBtn.hidden = !showHonesty;
       this.honestyHomeBtn.disabled = false;
       this.honestyHomeBtn.setAttribute('aria-disabled', 'false');
+    }
+
+    // Arrival: Sit already mirrors #btn-focus[hidden]; force Quick Start on.
+    if (this._keepQuickStart && this.quickHomeBtn) {
+      this.quickHomeBtn.hidden = false;
+      this.quickHomeBtn.disabled = false;
+      this.quickHomeBtn.setAttribute('aria-disabled', 'false');
     }
   }
 
@@ -624,6 +641,15 @@ export class NarrowIdleShell {
         visibility: hidden;
         pointer-events: none;
       }
+      /* Arrival: only Quick Start ball stays (W3) — hide ActionBar / grabber / Sit / Honesty */
+      .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-action-bar,
+      .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-grabber {
+        display: none !important;
+      }
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
+        display: none !important;
+      }
       .ft-narrow-action-bar {
         position: absolute;
         top: max(10px, env(safe-area-inset-top, 0px));
@@ -688,15 +714,18 @@ export class NarrowIdleShell {
       }
       .ft-narrow-home-ctas {
         position: absolute;
-        left: 50%;
+        left: 0;
+        right: 0;
         bottom: max(52px, calc(36px + env(safe-area-inset-bottom, 0px)));
-        transform: translateX(-50%);
-        width: min(320px, calc(100vw - 32px));
+        transform: none;
+        width: auto;
+        padding: 0 16px;
+        box-sizing: border-box;
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
-        gap: 14px;
+        gap: 0;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
         visibility: hidden;

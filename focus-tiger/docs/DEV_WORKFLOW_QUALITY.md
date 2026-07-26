@@ -471,6 +471,9 @@
 3. **双壳（窄 park / 宽 park）缺少共享契约**  
    宽屏做了 park → tip remap 到 ⋯；窄屏有 remap 函数，但补救 ? 仍可能指到 park 掉的旧按钮坐标；Arrival / Honesty 叠层时 ActionBar / `#focus-hud` 被 suppress，却**没写清**「叠层期顶栏时间谁负责」。等于：壳换了，Hints / HUD 契约没同步升格成跨壳不变量。
 
+3b. **把控件挪到新宿主后，e2e 仍只锁旧选择器（2026-07-26）**  
+   L174 / W3 已验收「Arrival 开着时 ⚡ Quick Start 仍可见」。窄屏把三主钮搬到 `#ft-narrow-home-*` 后，`setSuppressed(true)` **整壳隐藏**连 Quick Start 球一起藏掉；而既有 e2e 仍只断言宽屏 dock `#quick-start-focus`（默认视口），**375 不红 → 假绿**。根因是：改宿主时未把「用户可见宿主」写进已好清单 / 未补窄屏回归锚。
+
 4. **自动化覆盖层与人工验收错位**  
    `test:smoke` / 多数 e2e 锁的是宽屏或「抽屉里有没有 Honesty」一类 DOM，**很少锁**：375 × Arrival tip 点击、375 × Choose 后 `#focus-hud`、375 × ? 补救锚点、375 × Arrival Breath 时 Sit 必须 `hidden`。于是：e2e 绿、宽屏 OK、窄屏故事红——符合「全绿 ≠ 观感/故事通过」，但流程上仍把窄屏当成「附带一眼」。
 
@@ -592,7 +595,7 @@
 |---|---|---|
 | W1 | Idle 清场形态 | 常驻 **Sit + ⚡ + ⋯**；How / Honesty / Sound FAB / 提醒**不在**底栏常驻簇（已 park）；左下 `?` + 热力图仍在 |
 | W2 | Sit → Notice → Breath → Choose → 鞠躬 → Focusing | 左上 `#focus-hud` 进入 Focusing、计时走动；`#btn-focus` 呈 Rise |
-| W3 | Arrival 全程（含 **Breath / Inhale**） | **Sit 与 ⋯ 隐藏**（或明确不可点）；**⚡ 仍可见**可 Quick Start；不得中途又露出可点 Sit |
+| W3 | Arrival 全程（含 **Breath / Inhale**） | **Sit 与 ⋯ 隐藏**（或明确不可点）；**⚡ 仍可见**可 Quick Start；不得中途又露出可点 Sit。**窄屏**：用户可见宿主是 `#ft-narrow-home-quickstart`（勿只断言 dock 里已 park 的 `#quick-start-focus`） |
 | W4 | ⋯ Popover 代理入口 | 打开 ⋯ → 至少抽测：**Honesty**（进补登/时长）、**How shall we sit?**（三选一）、**Sound**（**直接** Soundscape 选曲面，禁止只抬红色 FAB）、**提醒**（设置面板）——点选后 Popover 收起、真实面板出现 |
 | W5 | 点 **?** 补救 / tip 锚点 | park 后 tip 须 remap 到可见宿主（常为 ⋯ 或仍可见的 `?`）；禁止乱指已 park 旧坐标 |
 | W6 | 邻接可点物（外侧 / tip / Popover） | 见 **N22** |

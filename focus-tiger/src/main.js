@@ -510,9 +510,12 @@ async function init() {
     const honestyBusy =
       Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
     const bridgeVisible = honestyBridge?.isVisible?.() === true;
-    narrowIdleShell.setSuppressed(
-      overlayActive || honestyBusy || bridgeVisible
-    );
+    const arrivalOpen = Boolean(arrivalPractice?.isOpen?.());
+    // Arrival: suppress ActionBar/Sit/Honesty but keep narrow Quick Start (W3).
+    // Reflection / Honesty busy / bridge: full shell suppress.
+    narrowIdleShell.setSuppressed(overlayActive || honestyBusy || bridgeVisible, {
+      keepQuickStart: arrivalOpen
+    });
     syncInAppReminderBanner();
   }
 
