@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
 
 ---
 
@@ -63,6 +63,7 @@
 
 **近期落地（待人工测试）**：
 
+- **本地 Cursor 能耗护栏（2026-07-26）**：根目录新增 `.cursorignore` + `.cursorindexingignore`（挡住 `public/sprites` 等大素材索引）；操作与并行 Agent / Cloud 衔接见「本地 Cursor 能耗」。非产品 UI，无需 TEST_TRACKER 人工项。
 - **窄屏主屏三主钮（2026-07-26）**：用户书面——375 首页底部太空；`NarrowIdleShell` 主画布放 **Sit with Yin / Quick Start / Honesty Check-in**，抽屉删这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。e2e 已锁；待人工观感。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
@@ -288,6 +289,60 @@
 各 Task Brief 统一存放于 `docs/task-briefs/`（目录结构见 ARCHITECTURE.md）。
 
 命名建议：`task{编号}-brief-{关键词}`
+
+---
+
+## 本地 Cursor 能耗（索引 · 并行 Agent · Cloud）
+
+> 预览浏览器限时仍以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) 为准。本节管 **Process Explorer 里 Shared / Agent / Renderer 偏高** 时的治本操作。
+
+### 先读 Process Explorer 再动手
+
+`Cmd+Shift+P` → **Developer: Open Process Explorer**。常见分层：
+
+| 现象 | 含义 | 优先动作 |
+|---|---|---|
+| `window` / `gpu-process` + **Agents** 偏高 | 本地 Agent / Renderer 在算 | 等本批 Agent 跑完；勿再叠开新本地 Agent |
+| 某 worktree 下有 `npm run dev` / Playwright | 子进程在烧 CPU/GPU | 测完立刻停 Vite / 测完停 e2e；勿过夜挂着 |
+| 多个 `…-wt-…` 窗口同时开着 | 每个窗口 ≈ 一套 extension-host + 索引 watcher | 关掉当前不用的 worktree 窗口（目录可留盘） |
+| 空闲仍长期偏高 | 多半是索引扫大素材 | 收紧根目录 ignore 后 **Resync Index** |
+
+本仓大头：`focus-tiger/public/sprites`（约数百 MB、六百余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**。
+
+### 收紧 ignore（具体操作）
+
+仓库根已提供两份文件（gitignore 语法）：
+
+1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env` 等。
+2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出索引**；需要时仍可 `@` 或打开。放：`public/sprites|audio|models|…`、`art-reference/`、`package-lock.json`。
+
+合入 / 拉取后，对**每个仍打开的** Cursor 窗口：
+
+1. `Cursor Settings` → **Indexing & Docs**（或 Indexing）→ **Resync Index** / Re-index  
+2. Process Explorer 再看空闲时 Shared CPU 是否明显下降  
+3. 若某 worktree 窗口长期不用：直接 **关闭该窗口**（比只停 Agent 更省）
+
+改 ignore 后**不必**重启整个 Cursor；Resync 即可。改完若某 Agent 需要读某帧路径，用 `@focus-tiger/public/sprites/…` 显式拉取（因在 indexingignore，不会被语义搜索挖出来）。
+
+### 本地 Agent vs worktree 窗口（不是同一物）
+
+- **worktree 窗口** = Cursor 打开的一个工作目录（常对应 `git worktree`，如 `…-wt-wide-idle`）。有自己的 extension-host / 文件监视 / 索引负载。  
+- **Agent** = 挂在某个窗口上的 AI 会话（本地 Agent 吃本机 CPU；Cloud Agent 吃远端）。  
+- 并行写仍须一任务一 worktree（见 `WORKFLOW.md`）；**能耗上**同时开 3–4 个本地 Agent + 多个 worktree 窗口 = Process Explorer 里 Shared 飙高的正常原因，**正确性可以隔离，电量不会**。
+
+建议：日常本地 **≤1–2 个写 Agent**；其余长任务丢 **Cloud Agent**。任务跑完关掉多余窗口；Vite / Playwright 由 Agent 或你手动停掉。
+
+### 同一帐号：本机 Cursor + Cloud Agent
+
+| 面 | 结论 |
+|---|---|
+| 帐号 / 额度 | 同一 Cursor 帐号可同时用本机与 Cloud；额度共享，无「两头不能同登」问题 |
+| 对话记忆 | **不共享**——Cloud 读不到本机 Agent 聊天原文，反之亦然 |
+| 代码统一 | 靠 **Git 分支 + push/PR + 权威 md**（`TEST_TRACKER` / `PROCESS` 等）衔接；与远端同事协作相同 |
+| jobs 衔接 | 用 PR 描述 / 分支名 / `TEST_TRACKER`「用户反馈」列当交接面；不要假设「Cloud 会接着本机 Agent 的上下文继续」 |
+| 冲突风险 | 避免本机与 Cloud **同时改同一分支或同一共享契约文件**；Cloud 开 PR → 本机 review/merge，或本机先 push 再让 Cloud 基于新 tip |
+
+长任务、重 e2e、大范围搜索优先 Cloud；本机留给短改 + Safari 人工验收。
 
 ---
 
