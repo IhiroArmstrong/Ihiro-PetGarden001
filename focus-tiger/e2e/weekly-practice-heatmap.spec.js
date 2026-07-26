@@ -64,6 +64,11 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
+  // Canvas order: Quick Start · Sit with Yin · Honesty
+  const homeOrder = await page
+    .locator('#ft-narrow-home-ctas [data-proxy]')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('data-proxy')));
+  expect(homeOrder).toEqual(['quickstart', 'sit', 'honesty']);
   await expect(page.locator('#ft-narrow-home-sit')).toHaveAttribute(
     'aria-label',
     /Sit with Yin|与阿寅同坐/i
@@ -74,9 +79,18 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     /Quick Start|快速开始/i
   );
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeEnabled();
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
+    'aria-disabled',
+    'false'
+  );
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
     'aria-label',
     /Honesty Check-in|诚实补登/i
+  );
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveCSS(
+    'opacity',
+    '1'
   );
   await expect(page.locator('.ft-narrow-grabber')).toBeVisible();
 

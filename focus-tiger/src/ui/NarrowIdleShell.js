@@ -1,19 +1,21 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v8';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v9';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
+/** Display size for home PNG totems (assets are full-res; CSS scales). */
+const HOME_CTA_PX = 72;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
-const ICON_SIT = '/icons/icon-sit-with-yin.png';
-const ICON_QUICK = '/icons/icon-quick-start.png';
-const ICON_HONESTY = '/icons/icon-honesty-checkin.png';
+const ICON_SIT = '/icons/icon-sit-with-yin.png?v=2';
+const ICON_QUICK = '/icons/icon-quick-start.png?v=2';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=2';
 
 /**
  * Narrow Idle shell (≤479 / 375):
  * - Minimal ActionBar: ? · Calm/time · mute
- * - Home primary balls: Sit / Quick Start / Honesty (PNG zen totems)
+ * - Home primary balls: Quick Start / Sit with Yin / Honesty (PNG zen totems)
  * - Swipe-up BottomOptionsDrawer for secondary Idle controls
  *   (breath / How shall we sit? / Sound / Reminder + week strip)
  *
@@ -245,14 +247,14 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
-        <img class="ft-narrow-home-ctas__img" src="${ICON_SIT}" alt="" width="64" height="64" draggable="false" decoding="async" />
-      </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
-        <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="64" height="64" draggable="false" decoding="async" />
+        <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+      </button>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
-        <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="64" height="64" draggable="false" decoding="async" />
+        <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
     `;
 
@@ -422,8 +424,9 @@ export class NarrowIdleShell {
   }
 
   /**
-   * Keep home Sit / Quick Start / Honesty enablement in sync with
+   * Keep home Quick Start / Sit / Honesty enablement in sync with
    * the parked legacy controls they proxy. Balls use icons + aria-label.
+   * Order on canvas: Quick Start · Sit with Yin · Honesty.
    * @returns {void}
    */
   _refreshHomeCtas() {
@@ -452,20 +455,17 @@ export class NarrowIdleShell {
       this.quickHomeBtn.setAttribute('aria-disabled', qsOk ? 'false' : 'true');
     }
 
-    const honestyEl = document.getElementById('honesty-idle-entry');
     if (this.honestyHomeBtn) {
       const honestyLabel = t('HONESTY_IDLE_ENTRY');
       this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
       this.honestyHomeBtn.title = honestyLabel;
-      // Element may be attribute-hidden while busy — still show home entry;
-      // _proxy opens check-in via handler when needed (same as former drawer).
-      this.honestyHomeBtn.hidden = !honestyEl;
-      const honestyOk = Boolean(honestyEl) && !honestyEl.disabled;
-      this.honestyHomeBtn.disabled = !honestyOk;
-      this.honestyHomeBtn.setAttribute(
-        'aria-disabled',
-        honestyOk ? 'false' : 'true'
-      );
+      // Always offer Honesty on Idle home. `#honesty-idle-entry` is often
+      // attribute-hidden (or not yet created until first syncIdleEntry) —
+      // must NOT dim the ball via disabled/opacity. `_proxy` uses onHonesty.
+      // Shell `setSuppressed` already hides the row during Arrival / overlays.
+      this.honestyHomeBtn.hidden = false;
+      this.honestyHomeBtn.disabled = false;
+      this.honestyHomeBtn.setAttribute('aria-disabled', 'false');
     }
   }
 
@@ -691,24 +691,28 @@ export class NarrowIdleShell {
         left: 50%;
         bottom: max(52px, calc(36px + env(safe-area-inset-bottom, 0px)));
         transform: translateX(-50%);
-        width: min(300px, calc(100vw - 40px));
+        width: min(320px, calc(100vw - 32px));
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
         visibility: hidden;
         pointer-events: none;
       }
-      /* PNG assets already include the sphere + glyph + margin — no CSS ball chrome */
+      /* PNG assets already include the sphere + glyph — no CSS ball chrome.
+         display:inline-flex would otherwise beat UA [hidden]{display:none}. */
+      .ft-narrow-home-ctas__btn.is-asset[hidden] {
+        display: none !important;
+      }
       .ft-narrow-home-ctas__btn.is-asset {
         flex: 0 0 auto;
         box-sizing: border-box;
-        width: 64px;
-        height: 64px;
-        min-height: 64px;
+        width: ${HOME_CTA_PX}px;
+        height: ${HOME_CTA_PX}px;
+        min-height: ${HOME_CTA_PX}px;
         padding: 0;
         border: none;
         border-radius: 0;
