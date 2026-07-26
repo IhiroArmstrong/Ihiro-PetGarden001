@@ -2,14 +2,18 @@ import { expect } from '@playwright/test';
 
 /** 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。 */
 export async function openFreshProductShell(page) {
-  // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`（串测偶发 30s timeout）
-  await page.goto('/?product=1', { waitUntil: 'domcontentloaded' });
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+  // Wipe before every document start (incl. first paint) — avoids CI double-navigation.
+  await page.addInitScript(() => {
+    try {
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+      }
+    } catch {
+      /* ignore */
     }
   });
-  await page.reload({ waitUntil: 'domcontentloaded' });
+  // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`
+  await page.goto('/?product=1', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 }
 
