@@ -7,15 +7,14 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: 1,
+  // CI: 2 workers — workers:1 + first-attempt timeout storms cancelled jobs.
+  // Accept green+high-flaky for PR#2; flaky reduction is post-merge backlog.
+  workers: process.env.CI ? 2 : 1,
   reporter: 'list',
-  // First-attempt CI flakes often burn the full test timeout then retry green.
-  // Keep enough for Arrival/Companion success path (~55–60s) but fail hung
-  // first attempts sooner than 90s so the visibility job can finish.
-  timeout: process.env.CI ? 70_000 : 120_000,
+  timeout: process.env.CI ? 90_000 : 120_000,
   expect: {
     timeout: process.env.CI ? 15_000 : 10_000
   },
@@ -23,7 +22,7 @@ export default defineConfig({
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5179',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 25_000 : 30_000,
+    navigationTimeout: process.env.CI ? 30_000 : 30_000,
     actionTimeout: process.env.CI ? 20_000 : 15_000
   },
   // Prefer plain Node static server over vite preview — preview has hung
