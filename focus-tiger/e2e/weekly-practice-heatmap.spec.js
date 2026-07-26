@@ -249,90 +249,6 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
   expect(reminderBox.y).toBeLessThan(667);
 });
 
-test('375 park: ? remedy shows one primary tip + catalog chip', async ({
-  page
-}) => {
-  await openFreshProductShell(page);
-  await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page.locator('body')).toHaveClass(/ft-narrow-park/, {
-    timeout: 15_000
-  });
-  await page.locator('#ft-narrow-help-btn').click();
-  const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
-  await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
-
-  const before = await page.evaluate(() => {
-    const bubbles = [
-      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
-    ].filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    const ids = bubbles.map((b) => b.dataset.hintId);
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    const chipRect = chip?.getBoundingClientRect();
-    return {
-      count: bubbles.length,
-      ids,
-      chipVisible: Boolean(
-        chip &&
-          !chip.hidden &&
-          chipRect &&
-          chipRect.width > 0 &&
-          chipRect.top >= 0 &&
-          chipRect.top < 667
-      ),
-      chipText: chip?.textContent?.trim() || ''
-    };
-  });
-  expect(before.count).toBeLessThanOrEqual(2);
-  expect(before.count).toBeGreaterThanOrEqual(1);
-  expect(before.ids).toContain('sit-button');
-  expect(before.chipVisible).toBe(true);
-  expect(before.chipText).toMatch(/more|还有/i);
-
-  await page.locator('#ft-hint-catalog-chip').click();
-
-  const after = await page.evaluate(() => {
-    const bubbles = [
-      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
-    ].filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    const help = document.getElementById('ft-narrow-help-btn');
-    const grabber = document.querySelector('.ft-narrow-grabber');
-    const center = document.querySelector('.ft-narrow-action-bar__center');
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    if (!help || !grabber || bubbles.length < 3) {
-      return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
-    }
-    const anchors = [help, grabber, center].filter(Boolean);
-    const nearVisible = bubbles.every((b) => {
-      const r = b.getBoundingClientRect();
-      const cx = (r.left + r.right) / 2;
-      const cy = (r.top + r.bottom) / 2;
-      if (cx < 0 || cy < 0 || cx > 375 || cy > 667) return false;
-      return anchors.some((a) => {
-        const ar = a.getBoundingClientRect();
-        const ax = (ar.left + ar.right) / 2;
-        const ay = (ar.top + ar.bottom) / 2;
-        return Math.hypot(cx - ax, cy - ay) < 280;
-      });
-    });
-    return {
-      ok: nearVisible,
-      bubbleCount: bubbles.length,
-      chipHidden: !chip || chip.hidden
-    };
-  });
-  expect(after.ok, after.reason || 'tips not near ActionBar/grabber').toBe(
-    true
-  );
-  expect(after.bubbleCount).toBeGreaterThanOrEqual(3);
-  expect(after.chipHidden).toBe(true);
-});
-
 test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
@@ -502,7 +418,7 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
  * Fig12 / L259: ? remedy shows one primary tip + persistent「还有 N 条」chip;
  * chip expands **one tip at a time** (not a flood of overlapping tips).
  */
-test('375 park: ? remedy shows one primary tip + catalog chip', async ({
+test('375 park: ? remedy primary + catalog chip expands one tip at a time', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
