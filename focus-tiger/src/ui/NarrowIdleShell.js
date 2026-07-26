@@ -1,24 +1,19 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v7';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v8';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
 
-/**
- * Zen ink totems for narrow home balls (水墨图腾):
- * Sit → Enso 圆相；Quick → rising 一笔；Honesty → soft seal / ink heart.
- */
-const SIT_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M17.55 7.1C19.05 8.95 19.8 11.25 19.15 13.6C18.15 17.25 14.85 19.75 11.05 19.6C7.05 19.45 4.1 16.4 4 12.45C3.9 8.4 7.1 5.1 11.1 4.9C13.3 4.8 15.3 5.6 16.8 6.9" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.15 6.55C16.95 7.2 17.5 8.05 17.8 9" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.48"/></svg>`;
-
-const QUICK_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M7.4 18.85C9.55 15.55 11.15 12.2 12.7 8.75C13.5 6.95 14.45 5.15 15.85 3.55C16.2 3.15 16.85 3.55 16.55 4.1C15.55 6.65 14.15 9.55 12.8 12.3C11.5 14.95 9.85 17.35 7.8 19.25C7.45 19.55 7.1 19.2 7.4 18.85Z" fill="currentColor"/><path d="M15.05 4.35C16.15 3.65 17.05 4.15 16.9 5.25C16.55 6.55 15.85 7.45 15.15 8.05" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" opacity="0.55"/></svg>`;
-
-const HONESTY_BALL_ICON = `<svg class="ft-narrow-home-ctas__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M12 17.35C9.35 14.95 7.05 12.85 7.05 10.45C7.05 8.85 8.2 7.7 9.65 7.7C10.6 7.7 11.4 8.2 12 8.9C12.6 8.2 13.4 7.7 14.35 7.7C15.8 7.7 16.95 8.85 16.95 10.45C16.95 12.85 14.65 14.95 12 17.35Z" fill="currentColor"/><circle cx="14.15" cy="9.55" r="1.15" fill="currentColor" opacity="0.28"/></svg>`;
+/** UI icon assets (not sprite frames) — `public/icons/` */
+const ICON_SIT = '/icons/icon-sit-with-yin.png';
+const ICON_QUICK = '/icons/icon-quick-start.png';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png';
 
 /**
  * Narrow Idle shell (≤479 / 375):
  * - Minimal ActionBar: ? · Calm/time · mute
- * - Home primary balls: Sit (enso) · Quick Start (ink stroke) · Honesty (ink heart/seal)
+ * - Home primary balls: Sit / Quick Start / Honesty (PNG zen totems)
  * - Swipe-up BottomOptionsDrawer for secondary Idle controls
  *   (breath / How shall we sit? / Sound / Reminder + week strip)
  *
@@ -250,14 +245,14 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-narrow-home-ctas__btn is-primary" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
-        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${SIT_BALL_ICON}</span>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_SIT}" alt="" width="64" height="64" draggable="false" decoding="async" />
       </button>
-      <button type="button" class="ft-narrow-home-ctas__btn is-quick" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
-        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${QUICK_BALL_ICON}</span>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="64" height="64" draggable="false" decoding="async" />
       </button>
-      <button type="button" class="ft-narrow-home-ctas__btn is-honesty" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
-        <span class="ft-narrow-home-ctas__icon" aria-hidden="true">${HONESTY_BALL_ICON}</span>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="64" height="64" draggable="false" decoding="async" />
       </button>
     `;
 
@@ -696,80 +691,52 @@ export class NarrowIdleShell {
         left: 50%;
         bottom: max(52px, calc(36px + env(safe-area-inset-bottom, 0px)));
         transform: translateX(-50%);
-        width: min(280px, calc(100vw - 48px));
+        width: min(300px, calc(100vw - 40px));
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 18px;
+        gap: 16px;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
         visibility: hidden;
         pointer-events: none;
       }
-      .ft-narrow-home-ctas__btn {
+      /* PNG assets already include the sphere + glyph + margin — no CSS ball chrome */
+      .ft-narrow-home-ctas__btn.is-asset {
         flex: 0 0 auto;
         box-sizing: border-box;
-        width: 56px;
-        height: 56px;
-        min-height: 56px;
+        width: 64px;
+        height: 64px;
+        min-height: 64px;
         padding: 0;
-        border-radius: 50%;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        background: linear-gradient(
-          165deg,
-          rgba(255, 252, 245, 0.98) 0%,
-          rgba(245, 235, 220, 0.96) 100%
-        );
-        color: rgba(92, 72, 52, 0.9);
-        font-size: 22px;
-        line-height: 1;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        color: inherit;
+        line-height: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 4px 12px rgba(44, 31, 20, 0.1);
+        box-shadow: none;
       }
-      .ft-narrow-home-ctas__btn:disabled,
-      .ft-narrow-home-ctas__btn[aria-disabled="true"] {
+      .ft-narrow-home-ctas__btn.is-asset:disabled,
+      .ft-narrow-home-ctas__btn.is-asset[aria-disabled="true"] {
         opacity: 0.45;
         cursor: not-allowed;
       }
-      .ft-narrow-home-ctas__btn:active:not(:disabled) {
+      .ft-narrow-home-ctas__btn.is-asset:active:not(:disabled) {
         transform: scale(0.96);
       }
-      .ft-narrow-home-ctas__btn.is-primary {
-        border-color: rgba(255, 230, 210, 0.45);
-        background: linear-gradient(
-          180deg,
-          var(--color-cta-top, #c47a4e) 0%,
-          var(--color-accent, #b5623a) 48%,
-          var(--color-cta-bottom, #8f4a2c) 100%
-        );
-        color: #fff8f2;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.28) inset,
-          0 3px 0 var(--color-cta-edge, #7a3f24),
-          0 6px 14px rgba(44, 31, 20, 0.16);
-      }
-      .ft-narrow-home-ctas__btn.is-quick {
-        /* Rising ink stroke — quiet motion, not industrial lightning */
-        color: rgba(74, 52, 36, 0.9);
-      }
-      .ft-narrow-home-ctas__btn.is-honesty {
-        /* Soft cinnabar seal / ink heart */
-        color: rgba(148, 62, 48, 0.9);
-      }
-      .ft-narrow-home-ctas__icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-      }
-      .ft-narrow-home-ctas__svg {
+      .ft-narrow-home-ctas__img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
         display: block;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
       }
       .ft-narrow-grabber {
         position: absolute;
