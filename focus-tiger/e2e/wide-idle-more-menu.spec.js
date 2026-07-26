@@ -209,16 +209,12 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
         );
       });
     }
-    const hasQuick = bubbles.some((b) => b.dataset.hintId === 'quick-start');
-    const hasHud = bubbles.some((b) =>
-      String(b.dataset.hintId || '').startsWith('focus-hud-')
-    );
+    // One-tip catalog: do not require quick-start + focus-hud simultaneously.
+    // Remap lock = at least one visible remedy tip near the ⋯ button.
     return {
-      ok: hit && !purposeBlocksTip && hasQuick && hasHud,
+      ok: hit && !purposeBlocksTip,
       hit,
       purposeBlocksTip,
-      hasQuick,
-      hasHud,
       bubbleCount: bubbles.length
     };
   });
