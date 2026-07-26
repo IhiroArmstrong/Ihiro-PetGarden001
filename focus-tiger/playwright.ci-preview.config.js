@@ -1,6 +1,7 @@
 // @ts-check
 /**
- * Local / one-off: production `vite preview` (DEV=false) to mirror CI visibility.
+ * Local / one-off: production build + static server (DEV=false hooks).
+ * Same harness as playwright.config.js webServer — not vite preview.
  * Usage:
  *   npx playwright test e2e/micro-ritual.spec.js -g "bridge CTA" \\
  *     --config=playwright.ci-preview.config.js --retries=0
@@ -19,8 +20,7 @@ export default defineConfig({
     navigationTimeout: 30_000
   },
   webServer: {
-    command:
-      'npm run build && npx vite preview --host 127.0.0.1 --port 5180 --strictPort',
+    command: 'npm run build && FT_E2E_PORT=5180 node scripts/e2e-static-server.js',
     url: 'http://127.0.0.1:5180/',
     reuseExistingServer: false,
     timeout: 180_000
