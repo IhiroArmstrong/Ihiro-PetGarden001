@@ -41,9 +41,14 @@ export async function openFreshProductShell(page, opts = {}) {
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
-      // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`
+      // Abort any prior hung navigation before retrying.
+      if (attempt > 0) {
+        await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
+      }
+      // `commit` returns once headers arrive — less likely to hang on a wedged
+      // vite preview connection than waiting for full `domcontentloaded`.
       await page.goto(path, {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'commit',
         timeout: gotoMs
       });
       await expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs });

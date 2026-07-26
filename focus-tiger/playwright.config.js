@@ -12,22 +12,21 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: 'list',
-  // Keep room for Arrival/Companion paths + openFreshProductShell retries.
-  // Local slightly higher: mid-suite preview nav can stall ~25s × 2 attempts.
-  timeout: process.env.CI ? 90_000 : 120_000,
+  // First-attempt CI flakes often burn the full test timeout then retry green.
+  // Keep enough for Arrival/Companion success path (~55–60s) but fail hung
+  // first attempts sooner than 90s so the visibility job can finish.
+  timeout: process.env.CI ? 70_000 : 120_000,
   expect: {
-    timeout: process.env.CI ? 20_000 : 10_000
+    timeout: process.env.CI ? 15_000 : 10_000
   },
   use: {
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5179',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 60_000 : 30_000,
-    actionTimeout: process.env.CI ? 30_000 : 15_000
+    navigationTimeout: process.env.CI ? 25_000 : 30_000,
+    actionTimeout: process.env.CI ? 20_000 : 15_000
   },
   // Prefer static preview — vite `dev` hangs mid-suite (goto/click storms).
-  // Always production build: lighter + matches CI. Lab `#dev-reset-all-local-state`
-  // is asserted only when present (see product-shell.smoke.spec.js).
   // Never reuse a stray :5179.
   webServer: {
     command:
