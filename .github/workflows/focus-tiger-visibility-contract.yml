@@ -42,7 +42,7 @@ jobs:
   visibility-e2e:
     name: visibility registry + e2e anchors
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     defaults:
       run:
         working-directory: focus-tiger
@@ -59,7 +59,11 @@ jobs:
         run: npm run visibility:doc-check
       - name: Registry unit contracts
         run: node --test src/core/visibilityContractRegistry.test.js
+      - name: Build product shell for preview
+        run: npm run build
       - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
       - name: Full visibility e2e anchor set
         run: npm run test:e2e:visibility
+        env:
+          CI: true

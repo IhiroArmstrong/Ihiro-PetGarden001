@@ -12,26 +12,25 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: 'list',
-  // CI Vite cold start + openFreshProductShell (goto+reload+60s Sit) needs >30s default.
-  timeout: process.env.CI ? 120_000 : 60_000,
+  // CI preview is static/fast; keep budget above openFreshProductShell's 60s Sit wait.
+  timeout: process.env.CI ? 90_000 : 60_000,
   expect: {
-    timeout: process.env.CI ? 20_000 : 10_000
+    timeout: process.env.CI ? 15_000 : 10_000
   },
   use: {
     baseURL: 'http://127.0.0.1:5173',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 60_000 : 30_000,
-    actionTimeout: process.env.CI ? 30_000 : 15_000
+    navigationTimeout: process.env.CI ? 45_000 : 30_000,
+    actionTimeout: process.env.CI ? 20_000 : 15_000
   },
-  // CI: prefer static preview — vite `dev` on Actions has hung mid-suite (goto timeout storms).
+  // CI: static preview (build happens in the workflow before Playwright).
   // Local: keep `dev` for fast HMR while writing tests.
   webServer: process.env.CI
     ? {
-        command:
-          'npm run build && npx vite preview --host 127.0.0.1 --port 5173 --strictPort',
+        command: 'npx vite preview --host 127.0.0.1 --port 5173 --strictPort',
         url: 'http://127.0.0.1:5173/',
         reuseExistingServer: false,
-        timeout: 180_000
+        timeout: 120_000
       }
     : {
         command: 'npm run dev -- --host 127.0.0.1 --port 5173',
