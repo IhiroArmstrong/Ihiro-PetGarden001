@@ -8,9 +8,9 @@ const SWIPE_CLOSE_PX = 48;
 const HOME_CTA_PX = 72;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
-const ICON_SIT = '/icons/icon-sit-with-yin.png?v=2';
-const ICON_QUICK = '/icons/icon-quick-start.png?v=2';
-const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=2';
+const ICON_SIT = '/icons/icon-sit-with-yin.png?v=3';
+const ICON_QUICK = '/icons/icon-quick-start.png?v=3';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=3';
 
 /**
  * Narrow Idle shell (≤479 / 375):
@@ -795,6 +795,8 @@ export class NarrowIdleShell {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
+        /* PR#2 前试看：略提对比/饱和、微压亮度，让橙系图案更深更清晰；不改 PNG。 */
+        filter: contrast(1.22) saturate(1.38) brightness(0.95);
       }
       .ft-narrow-grabber {
         position: absolute;

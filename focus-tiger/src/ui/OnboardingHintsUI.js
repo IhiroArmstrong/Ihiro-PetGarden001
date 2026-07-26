@@ -392,6 +392,8 @@ export class OnboardingHintsUI {
 
     this._paint(primary, { remedy: true });
     this._syncCatalogChip(catalog.length);
+    this._separateOpenRemedyBubbles();
+    this._liftBubblesAboveNarrowHomeCtas();
     this._showPurposeCard();
     this.syncDiscoveryDots();
     requestAnimationFrame(() => {
@@ -548,10 +550,78 @@ export class OnboardingHintsUI {
     for (const hintId of this._visibleIds) {
       this._positionBubble(hintId);
     }
+    this._separateOpenRemedyBubbles();
+    this._liftBubblesAboveNarrowHomeCtas();
     this._positionPurposeCard();
     this._positionCatalogChip();
     this.syncDiscoveryDots();
   }
+
+  /**
+   * 补救同时最多主条+1；若仍矩形相交则把**上方**气泡再上推（勿把下方气泡推进主球带）。
+   * @returns {void}
+   */
+  _separateOpenRemedyBubbles() {
+    const gap = 10;
+    /** @type {{ id: string, bubble: import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble, top: number, bottom: number, height: number }[]} */
+    const items = [];
+    for (const id of this._visibleIds) {
+      if (!this._remedyIds.has(id)) continue;
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      items.push({
+        id,
+        bubble,
+        top: r.top,
+        bottom: r.bottom,
+        height: r.height
+      });
+    }
+    if (items.length < 2) return;
+    items.sort((a, b) => a.top - b.top || a.id.localeCompare(b.id));
+    // Bottom-up: keep lower tip, push overlapping upper tips further up.
+    for (let i = items.length - 2; i >= 0; i--) {
+      const below = items[i + 1];
+      const cur = items[i];
+      if (cur.bottom + gap <= below.top) continue;
+      const top = Math.max(12, below.top - gap - cur.height);
+      cur.bubble.style.top = `${Math.round(top)}px`;
+      const nr = cur.bubble.getBoundingClientRect();
+      cur.top = nr.top;
+      cur.bottom = nr.bottom;
+      cur.height = nr.height;
+    }
+  }
+
+  /**
+   * 窄屏 Idle：任何 open tip 若与主球带相交，上抬到球带上方（防被球挡住）。
+   * @returns {void}
+   */
+  _liftBubblesAboveNarrowHomeCtas() {
+    if (!document.body.classList.contains('ft-narrow-idle')) return;
+    const cta = document.getElementById('ft-narrow-home-ctas');
+    const cr = cta?.getBoundingClientRect?.();
+    if (!cr || cr.width <= 0 || cr.height <= 0) return;
+    const gap = 12;
+    for (const id of this._visibleIds) {
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      const overlaps =
+        r.left < cr.right &&
+        r.right > cr.left &&
+        r.top < cr.bottom &&
+        r.bottom > cr.top;
+      if (!overlaps) continue;
+      const top = Math.max(12, cr.top - r.height - gap);
+      bubble.style.top = `${Math.round(top)}px`;
+      bubble.tip = 'bottom';
+    }
+  }
+
 
   dispose() {
     this._unsubLocale();

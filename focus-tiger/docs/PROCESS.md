@@ -57,7 +57,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-26（UTC+8）
+**最后更新时间**：2026-07-27（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -237,6 +237,8 @@
 
 **下一步计划**：
 
+- **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列优先，可同周推进。
+- **合并前（若尚未做）**：将 `fix/scenario-o-375-chrome-layout`（含三主钮 / Class-1 Sit hide / visibility 导航与 `__honestyBridge` 等）合入 `develop`，再合 PR #2；勿只合旧 tip 的 `develop`。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
 - Companion Mode 与 Session Intention 已在同一预开始 dock 视觉合并（意图在上、三选一在下）；暂不另建独立 BeginPanel 类
@@ -273,6 +275,7 @@
 - 角色边界待观察事项
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 - **CI 全量 `test:smoke` + `test:e2e`**（PR #2 后下一工程 PR；勿长期依赖本机手跑；目标 2026-07-30 前有草稿/可合并 CI）
+- **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘）
 
 ---
 
@@ -514,6 +517,20 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
 - **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工，目标 **2026-07-30 前** 至少有草稿 workflow 或可合并的 CI PR。
+
+### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
+
+> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修**已有** visibility workflow 的稳定性，全量项补**尚未**进 CI 的整套 smoke/e2e。
+
+- **目标**：把 visibility suite 的 flaky（首轮红、retry 翻绿）压到可接受水平（建议目标：连续 2～3 次 CI run 上 flaky ≤ 约 20%，且无「仅靠 retry 才绿」的系统性风暴）；墙钟须稳定落在 job `timeout-minutes` 内。
+- **处理方向（优先序，可组合）**：
+  1. **Workers**：先试 `workers: 1`（或保持 2 并对比）；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
+  2. **导航策略**：继续收紧——一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；必要时对 `goto` 做有界重试（与 seed 不冲突：勿用会跨 reload 清 `focus-tiger.*` 的 `addInitScript`）。
+  3. **预算**：在「不靠无限拉长 timeout 掩盖」前提下，核对 `navigationTimeout` / 单测 `timeout` / job 上限是否匹配真实 preview 冷启动。
+  4. **可观测性**：区分「产品断言失败」vs「preview/导航环境噪声」；失败日志须一眼看出类别。
+- **验收**：新 CI run 链接 + pass/flaky/fail 计数；文档写明是否仍依赖 `retries: 1`。
+- **不在范围**：不把「降 flaky」写成产品观感验收通过；不替代 Class-2 visibility gap（`honesty-bridge-entries-hidden` 等）的产品补锁。
+- **排期**：**PR #2 → `main` 合并后立刻开工**（可与「CI 全量 smoke + e2e」同周并行）；建议分支名 `fix/visibility-ci-flaky` 或并入全量 CI 工程 PR 的首个 commit 组。
 
 ### Backlog:Hints anchor e2e bounding rect（Onboarding 提示 DOM 视觉校验）
 

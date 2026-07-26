@@ -100,7 +100,7 @@
 - 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐** → 右上 `.ambient-soundscape__mute`；**Idle Sound gated** → 右下 `.ambient-soundscape__fab`；Reflection → 面板**上方**，不挡 Skip）。
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
-- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**先出主条 +「还有 N 条」芯片，点芯片**逐条**展开其余（同时最多主条+1；避免重叠乱指）。
+- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**先出主条 +「还有 N 条」芯片，点芯片**逐条**展开其余（同时最多主条+1；避免重叠乱指）。窄屏 Idle：次要 tip 锚在 `#ft-narrow-home-ctas` **上方**（勿锚 grabber 以免被主球挡住）；气泡 z-index 高于壳。
 - App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」上方。
 
 ### 点击关闭（硬性）

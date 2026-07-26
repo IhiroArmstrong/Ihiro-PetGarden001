@@ -5,10 +5,15 @@ import { expect } from '@playwright/test';
  * CI `vite preview` 上「每个用例首次导航」常挂到 expect 超时；内部短重试，
  * 避免外层 1.1m 红 + 33s retry 把 visibility job 拖死。
  * @param {import('@playwright/test').Page} page
- * @param {{ path?: string }} [opts]
+ * @param {{ path?: string, query?: Record<string, string | number | boolean> }} [opts]
  */
 export async function openFreshProductShell(page, opts = {}) {
-  const path = opts.path ?? '/?product=1';
+  const params = new URLSearchParams({ product: '1' });
+  for (const [key, value] of Object.entries(opts.query || {})) {
+    if (value === undefined || value === null) continue;
+    params.set(key, String(value));
+  }
+  const path = opts.path ?? `/?${params.toString()}`;
   // Wipe focus-tiger.* once per browser context (before first paint).
   // Must NOT wipe again on later reload/goto in the same context — helpers such as
   // seedMixedPracticeDaysAndReload set storage then reload; a per-navigation wipe
@@ -30,8 +35,8 @@ export async function openFreshProductShell(page, opts = {}) {
   // ("Target page, context or browser has been closed") and look like env flakes.
   const isCi = Boolean(process.env.CI);
   const attempts = isCi ? 3 : 2;
-  const gotoMs = isCi ? 30_000 : 15_000;
-  const sitMs = isCi ? 20_000 : 12_000;
+  const gotoMs = isCi ? 30_000 : 25_000;
+  const sitMs = isCi ? 20_000 : 15_000;
 
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {

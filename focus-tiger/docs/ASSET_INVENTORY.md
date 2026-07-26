@@ -166,11 +166,11 @@
 
 | 文件 | 约尺寸 | 用途 | 接线 |
 |---|---|---|---|
-| `icon-sit-with-yin.png` | ~396×396 RGBA（收紧内边距后） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
-| `icon-quick-start.png` | ~383×383 RGBA | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
-| `icon-honesty-checkin.png` | ~386×386 RGBA | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
+| `icon-sit-with-yin.png` | ~417×417 RGBA（**v2** 扁平，无灰底/投影） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
+| `icon-quick-start.png` | ~402×402 RGBA（**v2**） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
+| `icon-honesty-checkin.png` | ~409×409 RGBA（**v2**） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
 
-圆形图腾已收紧 PNG 内边距；窄屏显示约 **72×72 CSS px**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉与显隐同步。
+**v2（2026-07-26 夜）**：替换 v1（白 badge 底+投影）；不两版并存。圆形边缘几何裁切，素材约 **6%** 边距；窄屏显示约 **72×72 CSS px**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=3`。
 
 ---
 

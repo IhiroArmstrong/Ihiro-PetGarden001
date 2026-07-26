@@ -21,25 +21,18 @@ export default defineConfig({
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5179',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 60_000 : 20_000,
+    navigationTimeout: process.env.CI ? 60_000 : 30_000,
     actionTimeout: process.env.CI ? 30_000 : 15_000
   },
-  // CI: prefer static preview — vite `dev` on Actions has hung mid-suite (goto timeout storms).
-  // Local: keep `dev`, but never reuse a stray server (port contention / half-dead Vite).
-  webServer: process.env.CI
-    ? {
-        command:
-          'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
-        url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: false,
-        timeout: 180_000
-      }
-    : {
-        command: 'npm run dev -- --host 127.0.0.1 --port 5179 --strictPort',
-        url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: false,
-        timeout: 120_000
-      },
+  // Prefer static preview for the full suite — vite `dev` hangs mid-suite
+  // (goto/click timeout storms) both locally and on CI. Never reuse a stray :5179.
+  webServer: {
+    command:
+      'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
+    url: 'http://127.0.0.1:5179/',
+    reuseExistingServer: false,
+    timeout: 180_000
+  },
   projects: [
     {
       name: 'chromium',
