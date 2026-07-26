@@ -11,12 +11,14 @@ import { runGateContractDocCheck } from './gate-contract-doc-check.js';
 import { runHintsDocCheck } from './hints-doc-check.js';
 import { runStateMachineDocCheck } from './state-machine-doc-check.js';
 import { runRulesAuthorityDocCheck } from './rules-authority-doc-check.js';
+import { runVisibilityContractDocCheck } from './visibility-contract-doc-check.js';
 
 function main() {
   let ok = true;
 
   if (!runHintsDocCheck()) ok = false;
   if (!runGateContractDocCheck()) ok = false;
+  if (!runVisibilityContractDocCheck()) ok = false;
   if (!runStateMachineDocCheck()) ok = false;
   if (!runRulesAuthorityDocCheck()) ok = false;
 

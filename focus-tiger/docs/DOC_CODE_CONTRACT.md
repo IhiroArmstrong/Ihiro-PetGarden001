@@ -39,6 +39,7 @@
 | **D-03** | `HonestyBridgeStore` 当日 `shown` | `SCENARIO_TESTS` D、`HONESTY_BRIDGE_CTA.md` | **(b)** | `HonestyBridgeStore.test.js` + `scenario-smoke` D |
 | **D-04** | `resolveSessionIntentionLatch`（空 pending 不抹闩） | `SHARED_RESOURCES` §1 intentions 行 | **(b)** | `SessionIntentionStore.test.js` + `scenario-smoke` C |
 | **A-01** | 场景 A–D / I / J 主链路串联 | `SCENARIO_TESTS.md` | **(b)** | `scenario-smoke.test.js` |
+| **V-01** | 跨视口可见性（状态 × 视口 × 用户可见宿主） | `SHARED_RESOURCES` §6 机器块、`DEV_WORKFLOW_QUALITY` §8.6 / N25 | **(a)+(b)** | `visibilityContractRegistry.js` + `visibility:doc-check` + `npm run test:e2e:visibility`（改 suppress/hide 时 CI 整表） |
 
 ### 暂未纳入（已知风险 / 不宜形式主义）
 
@@ -48,6 +49,7 @@
 | **E-02** | Idle 编排（呼吸×5→眨眼、cross-fade 不闪） | 像素级观感无法从 JSDoc 导出；契约在 `IdleOrchestrator` 实现细节 | **暂无自动化手段**；`DEV_WORKFLOW_QUALITY` §6.1 人工锁 |
 | **C-01** | `CAPCUT_DISSOLVE_MS` / 帧停留 | 数值调参属观感，非枚举结构 | 常量 JSDoc + 人工回归；不进 `docs:check` |
 | **N-01** | Arrival Practice 逐步 UI 文案 / 气泡时长 | 叙事文案在 locale + 产品稿，非机器枚举 | `ArrivalPractice.js` 步骤常量 + 人工 `SCENARIO_TESTS` A3 |
+| **V-gap** | Visibility 表中 `gap-*` 行 | 已盘点、未全锁；禁止把 gap 当 locked | 见 `listVisibilityLockGaps()`；补锚后改 `lockStatus` 并 `visibility:doc-sync` |
 | **P-01** | `ARCHITECTURE.md` 目录树 / 角色文件表 | 组织性文档，变更频率低，自动生成 ROI 低 | 人工维护；触及时在 PR 自检 |
 | **R-01** | `SHARED_RESOURCES` §1 各 key「谁读写」叙述列 | 自然语言波及面，无法可靠从代码提取 | §1 表格**叙述列**仍手写；**key 列表**由 L-01 契约测试锁 |
 
@@ -59,10 +61,12 @@
 
 ```bash
 cd focus-tiger
-npm run docs:check      # CI / test:smoke 末尾强制
+npm run docs:check      # CI / test:smoke 末尾强制（含 visibility §6）
 npm run hints:doc-sync  # ONBOARDING_HINTS 机器块
 npm run gate:doc-sync   # SHARED_RESOURCES §4 机器块
+npm run visibility:doc-sync  # SHARED_RESOURCES §6 可见性机器块
 npm run state:doc-sync  # ARCHITECTURE 状态机机器块
+npm run test:e2e:visibility  # 改 setSuppressed / park / hide 后：整表 e2e 锚点
 ```
 
 ### G-01～G-04：SessionUiGate
@@ -73,6 +77,14 @@ npm run state:doc-sync  # ARCHITECTURE 状态机机器块
 - **行为锁**：`SessionUiGate.test.js`、`scenario-smoke.test.js`
 
 §4 **人工叙述表**（「谁设 / 谁读 / 波及」）保留在机器块之后，供开工查波及面；**字段 id / 行为 must** 以机器块为准。
+
+### V-01：跨视口可见性
+
+- **SSOT**：`src/core/visibilityContractRegistry.js`
+- **生成块**：`docs/SHARED_RESOURCES.md` §6 内 `<!-- visibility-contract:begin -->` … `end`
+- **脚本**：`scripts/visibility-contract-doc-check.js` + `scripts/run-visibility-e2e.js`
+- **行为锁**：各行 `testAnchorWide` / `testAnchorNarrow`；CI：`.github/workflows/focus-tiger-visibility-contract.yml`
+- **工作流**：`DEV_WORKFLOW_QUALITY.md` §8.6 / N25（验收 OK = 宽+窄自动化同任务）
 
 ### H-01：Onboarding hints
 
@@ -123,7 +135,10 @@ git commit --no-verify -m "…"
 仅用于：紧急热修、已知局部 WIP 且你**主动承担**未跑回归的风险。  
 **禁止**习惯性 `--no-verify`——它与「文档-代码对齐」机制的目标直接冲突；若钩子因环境问题失败，应先修环境或修测试，而不是跳过。
 
-**CI**：`.github/workflows/focus-tiger-doc-contract-check.yml`（push/PR 路径触发；须先 `npm ci`，再 `docs:check` + 门闩/场景切片）。`scenario-smoke` 经 `HonestyCheckInController` → `EmotionController` → `PoseManager` 依赖 `three`，缺安装会 `ERR_MODULE_NOT_FOUND`。
+**CI**：
+
+- `.github/workflows/focus-tiger-doc-contract-check.yml`（结构 `docs:check` + 门闩行为切片；须先 `npm ci`）。`scenario-smoke` 经 `HonestyCheckInController` → `EmotionController` → `PoseManager` 依赖 `three`，缺安装会 `ERR_MODULE_NOT_FOUND`。
+- `.github/workflows/focus-tiger-visibility-contract.yml`（改 `setSuppressed` / park / hide 相关路径时跑 **整表** `npm run test:e2e:visibility`，非仅本任务新用例）。
 
 ---
 

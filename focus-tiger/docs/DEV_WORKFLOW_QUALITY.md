@@ -79,6 +79,7 @@
 | N13 | 交互修复收尾、声称「已修好」**之前**，须先跑通 **`npm run test:smoke` 与 `npm run test:e2e`**；不过 → 并入 N5，不得声称修好。二者全绿仍**不**等于序列观感通过（见 §6.1 覆盖分层） |
 | N15 | **Bug 修复一体包（强制）**：代码或修正措施落地后，**同回合**更新相关项目文档，并**立刻本地 commit**（文档与代码进同一 commit 或紧随其后的 Docs commit，禁止隔夜/隔会话）。文档最低：`TEST_TRACKER`（用户反馈列 + 步骤对齐）；另按触及面更新 `EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `PROCESS` 速览 / `ASSET_INVENTORY` 等。缺文档或未 commit → 视为**未完成**，不得写「已修好」 |
 | N16 | **commit 粒度与 message**：每个 commit 必须对应**一个逻辑完整改动**（功能 / bug 修复 / 文档更新），message 须说明 **what + why**；禁止 `update docs` / `misc` / `wip` 之类无信息量提交 |
+| N25 | **可见性验收 OK = 宽+窄自动化同任务**（见 §8.6）：不得只写 `TEST_TRACKER`；须进 `visibilityContractRegistry` + 双视口锚点；改 suppress/hide → 整表 `test:e2e:visibility` |
 
 ### 2.2 防把好的改坏（重写 / 改转场开工）
 
@@ -371,6 +372,7 @@
 | 2026-07-25 | 新增 §8「窄屏故事矩阵」：根因六条 + N17–N20（375 故事最小集 / tip 回归 / 双壳契约 / 关单话术）；不变量落盘 `SHARED_RESOURCES` §6 |
 | 2026-07-25 | 新增 §9「宽屏故事矩阵」：对称原则 + 宽屏盲区评估 + N21–N24（≥480 故事最小集 / Popover·tip 邻接 / 双壳勾窄 / 关单话术） |
 | 2026-07-26 | §8.2 增 3c：并行分支丢 `ca20d07` stage + A4 不锁视口假绿；N17 S2 改为鞠躬→三选一在视口→点选→Focusing |
+| 2026-07-26 | §8.6 / N25：Visibility Contract Registry；验收 OK 须同任务双视口自动化；suppress 变更 CI 整表 e2e |
 
 ---
 
@@ -533,8 +535,9 @@
 | 契约 | 含义 | 权威落盘 |
 |---|---|---|
 | **Hints remap** | park 后 tip / ? 补救锚点必须 remap 到当前可见宿主（窄：ActionBar `?` 等；宽：⋯ 等），禁止仍指旧坐标 | `SHARED_RESOURCES.md` §6 + `RESPONSIVE_LAYOUT.md` |
-| **Sit 显隐** | Arrival（含 Breath）开着时 Sit / 等价主 CTA 须按契约隐藏或不可点；NarrowIdleShell 与宽屏 dock **同一语义** | 同上 |
-| **FocusHUD vs ActionBar** | Focusing / 叠层期：谁负责顶栏时间、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄改一侧必须勾另一侧 | 同上 |
+| **Sit 显隐** | Arrival（含 Breath）开着时 Sit / 等价主 CTA 须按契约隐藏或不可点；NarrowIdleShell 与宽屏 dock **同一语义** | `SHARED_RESOURCES.md` §6 **机器块**（`arrival-sit-hidden` 等） |
+| **Quick Start 显隐** | Arrival 全程 ⚡ 可见；窄屏宿主 `#ft-narrow-home-quickstart` | 同上（`arrival-quickstart-visible`） |
+| **FocusHUD vs ActionBar** | Focusing / 叠层期：谁负责顶栏时间、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄改一侧必须勾另一侧 | 同上 + `focusing-*` 行 |
 
 宽屏或窄屏改一侧 chrome → 开工保护面与收尾复测**必须勾另一侧**（至少 375 故事最小集相关行 + 一侧 ≥480 对照）。
 
@@ -556,6 +559,30 @@
 - [ ] 双壳不变量已对照 `SHARED_RESOURCES` §6；改一侧已勾另一侧（N19）  
 - [ ] 关单 / 状态文案未用「宽屏 OK」单独关闭 chrome 行（N20）  
 - [ ] 若本任务亦动宽屏 chrome：已对照 **§9**（或注明宽屏故事未测）
+
+### 8.6 跨视口可见性契约（Visibility Contract · N25）
+
+> **地位**：结构性预防「只锁宽屏选择器 → 窄屏假绿」（2026-07-26 Quick Start 丢失根因）。  
+> **SSOT**：`src/core/visibilityContractRegistry.js` → `SHARED_RESOURCES.md` §6 机器块。  
+> **检测**：`npm run visibility:doc-check`（并入 `docs:check`）；改 suppress/hide → CI `npm run test:e2e:visibility`。
+
+#### N25 · 「验收 OK」=「宽+窄自动化锁住」同任务发生（强制）
+
+凡用户书面或人工验收某条**可见性**规则为 OK（某元素在某状态 × 某视口须可见/隐藏/不可点）：
+
+1. **同一任务内**必须立刻：  
+   - 在 `visibilityContractRegistry.js` 增/改对应行（宽屏 `wideSelector` + 窄屏 `narrowSelector`；`viewport: both` 时两者皆必填）；  
+   - 补 **宽屏与窄屏** Playwright 锚点（或将该行标 `gap-*` 并在回复中明示「未锁视口」——**禁止**把未锁行写成 `locked`）；  
+   - `npm run visibility:doc-sync`；  
+   - 相关 e2e 进 `test:e2e:visibility` 派生列表（锚点文件自动收录）。  
+2. **禁止**只把结论写进 `TEST_TRACKER`「用户反馈 / 已通过」却无 registry 行 + 双视口锚点——文字记录 ≠ 锁住。  
+3. **禁止**「验收 OK」与「自动化锁住」之间留时间差（不可「下个任务再补 e2e」）。  
+4. 改 `setSuppressed` / `hidden` / park / `is-arrival-quick` 等全局显隐开关时：本地与 CI 须跑 **整表** `test:e2e:visibility`，不得只跑本任务新增用例。
+
+收尾自检追加：
+
+- [ ] 本任务若有「人工验收 OK」的显隐结论 → registry 行 + 宽/窄锚点已同批落地（或诚实 `gap-*`）  
+- [ ] 若改了 suppress/hide 面 → 已跑 `npm run test:e2e:visibility`
 
 ---
 
