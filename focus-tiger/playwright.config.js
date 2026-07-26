@@ -7,13 +7,13 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: 'list',
-  // CI Vite cold start + openFreshProductShell needs >30s default.
-  timeout: process.env.CI ? 120_000 : 60_000,
+  // CI: helper retries navigations; keep room for Arrival/Companion paths.
+  timeout: process.env.CI ? 90_000 : 60_000,
   expect: {
     timeout: process.env.CI ? 20_000 : 10_000
   },

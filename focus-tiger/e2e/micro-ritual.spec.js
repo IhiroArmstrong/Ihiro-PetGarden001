@@ -19,14 +19,9 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     }
   });
 
-  await page.goto('/?product=1&microRitualMs=2800');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
+  await openFreshProductShell(page, {
+    path: '/?product=1&microRitualMs=2800'
   });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const entry = page.locator('#micro-ritual-idle-entry');
   await expect(entry).toBeAttached({ timeout: 15_000 });
@@ -130,15 +125,11 @@ test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto('/?product=1&microRitualMs=60000');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
+  await openFreshProductShell(page, {
+    path: '/?product=1&microRitualMs=60000'
   });
-  await page.reload();
   await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
-    timeout: 60_000
+    timeout: 15_000
   });
   await page.locator('.ft-narrow-grabber').click();
   const breathRow = page.locator('.ft-narrow-sheet__item[data-proxy="breath"]');
@@ -156,14 +147,9 @@ test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
 });
 
 test('micro ritual: quiet leave does not record', async ({ page }) => {
-  await page.goto('/?product=1&microRitualMs=60000');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
+  await openFreshProductShell(page, {
+    path: '/?product=1&microRitualMs=60000'
   });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
 
   const entry = page.locator('#micro-ritual-idle-entry');
   await expect(entry).toBeAttached({ timeout: 15_000 });
@@ -284,14 +270,7 @@ test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', asyn
 test('Honesty Check-in click hides entry until duration panel open', async ({
   page
 }) => {
-  await page.goto('/?product=1');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+  await openFreshProductShell(page);
 
   const honestyEntry = page.locator('#honesty-idle-entry');
   await expect(honestyEntry).toBeAttached({ timeout: 15_000 });
@@ -310,13 +289,9 @@ test('375 micro ritual: home Sit unavailable while breath runs', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto('/?product=1&microRitualMs=60000');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
-    }
+  await openFreshProductShell(page, {
+    path: '/?product=1&microRitualMs=60000'
   });
-  await page.reload();
   await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
     timeout: 15_000
   });

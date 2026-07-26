@@ -1,7 +1,14 @@
 import { expect } from '@playwright/test';
 
-/** 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。 */
-export async function openFreshProductShell(page) {
+/**
+ * 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。
+ * CI `vite preview` 上「每个用例首次导航」常挂到 expect 超时；内部短重试，
+ * 避免外层 1.1m 红 + 33s retry 把 visibility job 拖死。
+ * @param {import('@playwright/test').Page} page
+ * @param {{ path?: string }} [opts]
+ */
+export async function openFreshProductShell(page, opts = {}) {
+  const path = opts.path ?? '/?product=1';
   // Wipe before every document start (incl. first paint) — avoids CI double-navigation.
   await page.addInitScript(() => {
     try {
@@ -12,9 +19,22 @@ export async function openFreshProductShell(page) {
       /* ignore */
     }
   });
-  // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`
-  await page.goto('/?product=1', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
+
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      // domcontentloaded：避免 Vite 产品壳重资源挂住 `load`
+      await page.goto(path, {
+        waitUntil: 'domcontentloaded',
+        timeout: 45_000
+      });
+      await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 20_000 });
+      return;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr;
 }
 
 /**
