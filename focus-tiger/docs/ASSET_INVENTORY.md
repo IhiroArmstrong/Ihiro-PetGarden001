@@ -166,11 +166,11 @@
 
 | 文件 | 约尺寸 | 用途 | 接线 |
 |---|---|---|---|
-| `icon-sit-with-yin.png` | ~417×417 RGBA（**v2** 扁平，无灰底/投影） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
-| `icon-quick-start.png` | ~402×402 RGBA（**v2**） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
-| `icon-honesty-checkin.png` | ~409×409 RGBA（**v2**） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
+| `icon-sit-with-yin.png` | 480×480 RGBA（**v3** kraft 米褐底 + 深棕禅圆） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
+| `icon-quick-start.png` | 480×480 RGBA（**v3** kraft 米褐底 + 深棕火焰） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
+| `icon-honesty-checkin.png` | 480×480 RGBA（**v3** kraft 米褐底 + 深棕爱心双手） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
 
-**v2（2026-07-26 夜）**：替换 v1（白 badge 底+投影）；不两版并存。圆形边缘几何裁切，素材约 **6%** 边距；窄屏显示约 **72×72 CSS px**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=3`。
+**v3（2026-07-26）**：用户拍板采用统一 **kraft 米褐圆底 + 深棕图腾** sheet 抠图版；替换 v2；不两版并存。正方形透明 PNG；窄屏显示约 **72×72 CSS px**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=4`。Prompt / 文件名表见 `BUTTON_ICONS_PROMPT.md`。源 sheet：`art-reference/button-icons/sheet-brown-tan-v3.png`。
 
 ---
 
@@ -178,5 +178,6 @@
 
 - 进度叙事：`PROCESS.md`「当前进度速览」  
 - 情绪语义：`EMOTION_BIBLE.md`  
+- 三主钮图标 Prompt：`BUTTON_ICONS_PROMPT.md`  
 - 本次入库 Prompt：`NEW_ASSETS_2026-07-18.md`  
 - 路径规范：`ARCHITECTURE.md` · `PRINCIPLES.md`（ASCII kebab-case）

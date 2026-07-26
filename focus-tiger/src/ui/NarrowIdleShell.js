@@ -8,9 +8,9 @@ const SWIPE_CLOSE_PX = 48;
 const HOME_CTA_PX = 72;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
-const ICON_SIT = '/icons/icon-sit-with-yin.png?v=3';
-const ICON_QUICK = '/icons/icon-quick-start.png?v=3';
-const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=3';
+const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
+const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
 
 /**
  * Narrow Idle shell (≤479 / 375):
