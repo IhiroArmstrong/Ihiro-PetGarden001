@@ -502,6 +502,8 @@ export class OnboardingHintsUI {
     this._remedyIds.add(next);
     this._paint(next, { remedy: true });
     this._syncCatalogChip(this._catalogPending.length);
+    this._separateOpenRemedyBubbles();
+    this._liftBubblesAboveNarrowHomeCtas();
     requestAnimationFrame(() => {
       this.repositionAll();
       this._positionCatalogChip();
@@ -608,17 +610,20 @@ export class OnboardingHintsUI {
     for (const id of this._visibleIds) {
       const bubble = this._bubbles.get(id);
       if (!bubble || !bubble.open) continue;
-      const r = bubble.getBoundingClientRect();
-      if (r.width <= 0 || r.height <= 0) continue;
-      const overlaps =
-        r.left < cr.right &&
-        r.right > cr.left &&
-        r.top < cr.bottom &&
-        r.bottom > cr.top;
-      if (!overlaps) continue;
-      const top = Math.max(12, cr.top - r.height - gap);
-      bubble.style.top = `${Math.round(top)}px`;
-      bubble.tip = 'bottom';
+      // Lit tip/layout can settle after first paint — iterate a few times.
+      for (let pass = 0; pass < 3; pass++) {
+        const r = bubble.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) break;
+        const overlaps =
+          r.left < cr.right &&
+          r.right > cr.left &&
+          r.top < cr.bottom &&
+          r.bottom > cr.top;
+        if (!overlaps) break;
+        const top = Math.max(12, cr.top - r.height - gap);
+        bubble.style.top = `${Math.round(top)}px`;
+        bubble.tip = 'bottom';
+      }
     }
   }
 

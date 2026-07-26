@@ -819,8 +819,10 @@ async function init() {
     window.__onboardingHints = onboardingHints;
   }
 
-  // Reminder e2e seeds “practiced today” via `__dailyCompletionStore` on preview builds.
+  // Reminder / companion e2e hooks — must work in `vite preview` (DEV=false),
+  // same contract as `__honestyBridge`.
   window.__dailyCompletionStore = dailyCompletionStore;
+  window.__companionModePicker = companionModePicker;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
@@ -828,7 +830,6 @@ async function init() {
     window.__reflectionMoment = reflectionMoment;
     window.__practiceDaysStore = practiceDaysStore;
     window.__honestyCheckIn = honestyCheckIn;
-    window.__companionModePicker = companionModePicker;
     window.__acrossToolsIdleGuard = acrossToolsIdleGuard;
     window.__ambientSoundscape = ambientSoundscape;
     window.__ambientSoundscapeUI = ambientSoundscapeUI;

@@ -35,8 +35,8 @@ export async function openFreshProductShell(page, opts = {}) {
   // ("Target page, context or browser has been closed") and look like env flakes.
   const isCi = Boolean(process.env.CI);
   const attempts = isCi ? 3 : 2;
-  const gotoMs = isCi ? 30_000 : 25_000;
-  const sitMs = isCi ? 20_000 : 15_000;
+  const gotoMs = isCi ? 30_000 : 35_000;
+  const sitMs = isCi ? 20_000 : 20_000;
 
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {

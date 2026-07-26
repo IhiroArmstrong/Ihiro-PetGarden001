@@ -13,7 +13,8 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   // Keep room for Arrival/Companion paths + openFreshProductShell retries.
-  timeout: 90_000,
+  // Local slightly higher: mid-suite preview nav can stall ~25s × 2 attempts.
+  timeout: process.env.CI ? 90_000 : 120_000,
   expect: {
     timeout: process.env.CI ? 20_000 : 10_000
   },
@@ -25,24 +26,16 @@ export default defineConfig({
     actionTimeout: process.env.CI ? 30_000 : 15_000
   },
   // Prefer static preview — vite `dev` hangs mid-suite (goto/click storms).
-  // CI: production build (DEV=false) so visibility hooks like __honestyBridge are real.
-  // Local: development-mode build so lab `#dev-reset-all-local-state` still exists,
-  // while keeping preview’s stable static server (never reuse a stray :5179).
-  webServer: process.env.CI
-    ? {
-        command:
-          'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
-        url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: false,
-        timeout: 180_000
-      }
-    : {
-        command:
-          'npx vite build --mode development && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
-        url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: false,
-        timeout: 180_000
-      },
+  // Always production build: lighter + matches CI. Lab `#dev-reset-all-local-state`
+  // is asserted only when present (see product-shell.smoke.spec.js).
+  // Never reuse a stray :5179.
+  webServer: {
+    command:
+      'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
+    url: 'http://127.0.0.1:5179/',
+    reuseExistingServer: false,
+    timeout: 180_000
+  },
   projects: [
     {
       name: 'chromium',
