@@ -463,6 +463,7 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
   expect(before.chipN).toBeGreaterThanOrEqual(2);
 
   await page.locator('#ft-hint-catalog-chip').click();
+  await page.waitForTimeout(250);
 
   const after = await page.evaluate(() => {
     const bubbles = [
@@ -504,4 +505,36 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
   expect(after.chipVisible).toBe(true);
   expect(after.chipN).toBe(before.chipN - 1);
   expect(after.overlapPairs).toBe(0);
+
+  // Grabber-anchored catalog tips must sit above home CTAs (not behind the balls).
+  const clearance = await page.evaluate(() => {
+    const cta = document.getElementById('ft-narrow-home-ctas')?.getBoundingClientRect();
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble')
+    ].filter((b) => {
+      if (b.open === false) return false;
+      const r = b.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    if (!cta || cta.height <= 0) return { ok: false, reason: 'no-cta' };
+    for (const b of bubbles) {
+      const r = b.getBoundingClientRect();
+      const overlaps =
+        r.left < cta.right &&
+        r.right > cta.left &&
+        r.top < cta.bottom &&
+        r.bottom > cta.top;
+      if (overlaps) {
+        return {
+          ok: false,
+          reason: 'overlap',
+          id: b.dataset.hintId,
+          tipBottom: r.bottom,
+          ctaTop: cta.top
+        };
+      }
+    }
+    return { ok: true };
+  });
+  expect(clearance, JSON.stringify(clearance)).toEqual({ ok: true });
 });

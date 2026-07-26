@@ -89,14 +89,15 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'bottom'
     };
   }
-  // Secondary / parked controls → swipe grabber
+  // Secondary / parked controls → above home CTA cluster (not grabber:
+  // tips above grabber land inside the ball band and get covered).
   if (
     /session-start-dock__hint|weekly-practice|micro-ritual|ambient-soundscape|reminder-preference/.test(
       sel
     )
   ) {
     return {
-      selector: '.ft-narrow-grabber',
+      selector: '#ft-narrow-home-ctas',
       placement: 'above',
       tip: 'bottom'
     };
@@ -464,17 +465,17 @@ export class OnboardingHintsUI {
       this._positionBubble(hintId);
     }
     this._separateOpenRemedyBubbles();
+    this._liftBubblesAboveNarrowHomeCtas();
     this._positionPurposeCard();
     this._positionCatalogChip();
   }
 
   /**
-   * 补救同时最多主条+1；若仍矩形相交则把下方气泡上推，避免窄屏底部乱叠。
+   * 补救同时最多主条+1；若仍矩形相交则把**上方**气泡再上推（勿把下方气泡推进主球带）。
    * @returns {void}
    */
   _separateOpenRemedyBubbles() {
     const gap = 10;
-    const vh = window.innerHeight;
     /** @type {{ id: string, bubble: import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble, top: number, bottom: number, height: number }[]} */
     const items = [];
     for (const id of this._visibleIds) {
@@ -493,19 +494,44 @@ export class OnboardingHintsUI {
     }
     if (items.length < 2) return;
     items.sort((a, b) => a.top - b.top || a.id.localeCompare(b.id));
-    for (let i = 1; i < items.length; i++) {
-      const prev = items[i - 1];
+    // Bottom-up: keep lower tip, push overlapping upper tips further up.
+    for (let i = items.length - 2; i >= 0; i--) {
+      const below = items[i + 1];
       const cur = items[i];
-      if (cur.top >= prev.bottom + gap) continue;
-      let top = prev.bottom + gap;
-      if (top + cur.height > vh - 12) {
-        top = Math.max(12, vh - cur.height - 12);
-      }
+      if (cur.bottom + gap <= below.top) continue;
+      const top = Math.max(12, below.top - gap - cur.height);
       cur.bubble.style.top = `${Math.round(top)}px`;
       const nr = cur.bubble.getBoundingClientRect();
       cur.top = nr.top;
       cur.bottom = nr.bottom;
       cur.height = nr.height;
+    }
+  }
+
+  /**
+   * 窄屏 Idle：任何 open tip 若与主球带相交，上抬到球带上方（防被球挡住）。
+   * @returns {void}
+   */
+  _liftBubblesAboveNarrowHomeCtas() {
+    if (!document.body.classList.contains('ft-narrow-idle')) return;
+    const cta = document.getElementById('ft-narrow-home-ctas');
+    const cr = cta?.getBoundingClientRect?.();
+    if (!cr || cr.width <= 0 || cr.height <= 0) return;
+    const gap = 12;
+    for (const id of this._visibleIds) {
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      const overlaps =
+        r.left < cr.right &&
+        r.right > cr.left &&
+        r.top < cr.bottom &&
+        r.bottom > cr.top;
+      if (!overlaps) continue;
+      const top = Math.max(12, cr.top - r.height - gap);
+      bubble.style.top = `${Math.round(top)}px`;
+      bubble.tip = 'bottom';
     }
   }
 
@@ -679,12 +705,39 @@ export class OnboardingHintsUI {
     left = Math.max(12, Math.min(left, vw - br.width - 12));
     top = Math.max(12, Math.min(top, vh - br.height - 12));
 
+    // 窄屏 Idle：主球壳 z-index 高于 tip；grabber 上方 tip 会落进主球带并被挡住。
+    // 与主球带相交时上抬到球带上方，尖角仍朝下指底部 chrome。
+    let liftedAboveHomeCtas = false;
+    if (document.body.classList.contains('ft-narrow-idle')) {
+      const cta = document.getElementById('ft-narrow-home-ctas');
+      const cr = cta?.getBoundingClientRect?.();
+      if (cr && cr.width > 0 && cr.height > 0) {
+        const bubbleBottom = top + br.height;
+        const overlapsCta =
+          left < cr.right &&
+          left + br.width > cr.left &&
+          top < cr.bottom &&
+          bubbleBottom > cr.top;
+        if (overlapsCta) {
+          top = Math.max(12, cr.top - br.height - gap);
+          tip = 'bottom';
+          top = Math.max(12, Math.min(top, vh - br.height - 12));
+          liftedAboveHomeCtas = true;
+        }
+      }
+    }
+
     bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (tip);
 
     if (anchor) {
       const ar = anchor.getBoundingClientRect();
-      const anchorCenterX = ar.left + ar.width / 2;
-      const anchorCenterY = ar.top + ar.height / 2;
+      const tipAnchor =
+        liftedAboveHomeCtas
+          ? document.getElementById('ft-narrow-home-ctas')?.getBoundingClientRect?.() ||
+            ar
+          : ar;
+      const anchorCenterX = tipAnchor.left + tipAnchor.width / 2;
+      const anchorCenterY = tipAnchor.top + tipAnchor.height / 2;
       const tipX = Math.max(18, Math.min(anchorCenterX - left, br.width - 18));
       const tipY = Math.max(18, Math.min(anchorCenterY - top, br.height - 18));
       bubble.tipX = `${Math.round(tipX)}px`;

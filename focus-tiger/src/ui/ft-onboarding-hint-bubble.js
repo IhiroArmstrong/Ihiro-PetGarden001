@@ -20,7 +20,8 @@ export class FtOnboardingHintBubble extends LitElement {
   static styles = css`
     :host {
       position: fixed;
-      z-index: 26;
+      /* Above NarrowIdleShell chrome (home CTAs ~30) so tips stay readable */
+      z-index: 34;
       box-sizing: border-box;
       padding: 9px 14px;
       border-radius: 16px 16px 16px 4px;
