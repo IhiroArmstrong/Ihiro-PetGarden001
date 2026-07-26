@@ -15,13 +15,13 @@ export default defineConfig({
   timeout: 90_000,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:5180',
+    baseURL: 'http://127.0.0.1:5199',
     trace: 'on',
     navigationTimeout: 30_000
   },
   webServer: {
-    command: 'npm run build && FT_E2E_PORT=5180 node scripts/e2e-static-server.js',
-    url: 'http://127.0.0.1:5180/',
+    command: 'npm run build && FT_E2E_PORT=5199 node scripts/ft-playwright-static-5199.js',
+    url: 'http://127.0.0.1:5199/',
     reuseExistingServer: false,
     timeout: 180_000
   },
