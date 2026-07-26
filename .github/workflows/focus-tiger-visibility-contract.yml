@@ -42,7 +42,8 @@ jobs:
   visibility-e2e:
     name: visibility registry + e2e anchors
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # Preview first-attempt flakes often burn ~1.1m then retry ~30s; 25m cut the suite mid-run.
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: focus-tiger
