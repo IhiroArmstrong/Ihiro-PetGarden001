@@ -7,6 +7,8 @@ alwaysApply: true
 
 目的：降低 Cursor 内置 Browser / 长时间 Vite 造成的 macOS 累计能耗。
 
+索引与并行 Agent 的治本操作（`.cursorignore` / worktree 窗口 / Cloud 衔接）见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」——本文件只约束预览浏览器与 Vite 生命周期。
+
 ## 默认（强制）
 
 1. 一般预览、人工验收、给用户打开页面 → **只提供本地 URL**，请用户用 **Safari** 打开。  
