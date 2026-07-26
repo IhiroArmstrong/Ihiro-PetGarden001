@@ -24,15 +24,25 @@ export default defineConfig({
     navigationTimeout: process.env.CI ? 60_000 : 30_000,
     actionTimeout: process.env.CI ? 30_000 : 15_000
   },
-  // Prefer static preview for the full suite — vite `dev` hangs mid-suite
-  // (goto/click timeout storms) both locally and on CI. Never reuse a stray :5179.
-  webServer: {
-    command:
-      'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
-    url: 'http://127.0.0.1:5179/',
-    reuseExistingServer: false,
-    timeout: 180_000
-  },
+  // Prefer static preview — vite `dev` hangs mid-suite (goto/click storms).
+  // CI: production build (DEV=false) so visibility hooks like __honestyBridge are real.
+  // Local: development-mode build so lab `#dev-reset-all-local-state` still exists,
+  // while keeping preview’s stable static server (never reuse a stray :5179).
+  webServer: process.env.CI
+    ? {
+        command:
+          'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
+        url: 'http://127.0.0.1:5179/',
+        reuseExistingServer: false,
+        timeout: 180_000
+      }
+    : {
+        command:
+          'npx vite build --mode development && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
+        url: 'http://127.0.0.1:5179/',
+        reuseExistingServer: false,
+        timeout: 180_000
+      },
   projects: [
     {
       name: 'chromium',

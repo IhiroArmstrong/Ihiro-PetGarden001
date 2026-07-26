@@ -819,12 +819,13 @@ async function init() {
     window.__onboardingHints = onboardingHints;
   }
 
+  // Reminder e2e seeds “practiced today” via `__dailyCompletionStore` on preview builds.
+  window.__dailyCompletionStore = dailyCompletionStore;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
     window.__attentionSignals = attentionSignals;
     window.__reflectionMoment = reflectionMoment;
-    window.__dailyCompletionStore = dailyCompletionStore;
     window.__practiceDaysStore = practiceDaysStore;
     window.__honestyCheckIn = honestyCheckIn;
     window.__companionModePicker = companionModePicker;
@@ -986,21 +987,21 @@ async function init() {
     }
   };
 
-  if (import.meta.env.DEV) {
-    window.__inAppReminder = {
-      sync: () => syncInAppReminderBanner(),
-      setNow: (value) => {
-        reminderNowOverride =
-          value == null ? null : value instanceof Date ? value : new Date(value);
-      },
-      clearNow: () => {
-        reminderNowOverride = null;
-      },
-      controller: inAppReminderBannerController,
-      settings: reminderPreferenceUI,
-      banner: inAppReminderBannerUI
-    };
-  }
+  // E2E clocks the reminder via `__inAppReminder` (in-app-reminder.spec.js).
+  // Must work in `vite preview` production builds where `import.meta.env.DEV === false`.
+  window.__inAppReminder = {
+    sync: () => syncInAppReminderBanner(),
+    setNow: (value) => {
+      reminderNowOverride =
+        value == null ? null : value instanceof Date ? value : new Date(value);
+    },
+    clearNow: () => {
+      reminderNowOverride = null;
+    },
+    controller: inAppReminderBannerController,
+    settings: reminderPreferenceUI,
+    banner: inAppReminderBannerUI
+  };
 
   /**
    * 与 Sit / hint 门闩未就绪路径相同：完整 Arrival，不跳过、不开计时、不开 Ambient。
