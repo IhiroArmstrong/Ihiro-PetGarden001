@@ -42,9 +42,9 @@ jobs:
   visibility-e2e:
     name: visibility registry + e2e anchors
     runs-on: ubuntu-latest
-    # Preview first-attempt flakes historically burned ~1.1m then retry ~30s.
-    # openFreshProductShell now retries navigations; keep headroom for cold CI.
-    timeout-minutes: 60
+    # Suite ~36 anchors; preview still flakes some Arrival paths (fail~90s→retry~40s).
+    # 60m died mid-heatmap after bridges already first-try green — need headroom.
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: focus-tiger
