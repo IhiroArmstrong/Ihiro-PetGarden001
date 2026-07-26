@@ -57,14 +57,16 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-25（UTC+8）
+**最后更新时间**：2026-07-26（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **窄屏主屏三主钮（2026-07-26）**：用户书面——375 首页底部太空；`NarrowIdleShell` 主画布放 **Sit with Yin / Quick Start / Honesty Check-in**，抽屉删这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。e2e 已锁；待人工观感。
+- **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
-- **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。
+- **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。**提醒**：完整 W1–W8 人工验收推迟到 `feature/wide-idle-more-menu` 合并时单独做，勿与窄屏 O 修复混验。
 - **wide-idle 宽屏清场验收（2026-07-25 晚）**：P0 ①–⑥⑧ 宽屏 **测试 OK**；⑦ 场景 O（375）**仍有问题**，另线 `fix/scenario-o-375-chrome-layout`。用户拍板：**可 push** `feature/wide-idle-more-menu` 备份；**Task 3 须等 ⑦ 收口**后再开（勿仅凭 push）。
 - **规则主题权威索引（2026-07-23）**：新增 `RULES_INDEX.md` + `rules-authority-registry.js` + `rules:doc-check`（并入 `docs:check` / CI）。每个工作流规则主题指定唯一 SSOT；非权威处改为短引用。收敛 `WORKFLOW` / regression-lock / `PROCESS` / docs.mdc / `DEV` / `COLLAB` 上 commit / 跨会话等平行复述。冲突不以 mtime 为准。
 - **合并门禁拍板（2026-07-23 · PR #2）**：本次 `develop`→`main` 接受「本地 `test:smoke`+`test:e2e` 全绿 + CI 仅 doc-contract」；**后续任务**须把完整 smoke/e2e 纳入 CI（见 Backlog「CI 全量 smoke + e2e」）。提醒忙碌策略拍板 **`suppress`**。MilestoneGlow（L136）书面为**已知问题、不挡此次合并**，预计 **2026-07-30 前**复测。
@@ -206,6 +208,7 @@
 - **非模态提醒额度与 Re-focus 阈值已拍板并实现（2026-07-16）**：正念阶段确认 / 伸懒腰判定维持会话墙钟 20 分钟、活跃累计 2 小时（离开时暂停、两场会话间隔 ≥30 分钟重置累计）；三类提醒共用本地自然日额度、合计每日最多 3 次；Re-focus 每场会话最多 1 次；离开满 20 秒只内部记账，超过 60 秒并返回才允许展示。具名常量与单元测试已落地
 - **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
 - **Git 提醒已关闭（2026-07-21）**：此前 `stop` hook 曾用 `followup_message`（耗 credits），后改为 macOS `display notification` 且只返回 `{}`；现按用户要求从 `hooks.json` 卸下，不再发系统通知；脚本保留便于日后挂回
+- **Agent 终端权限收紧（2026-07-26）**：仓库级 `.cursor/permissions.json` 取代裸 `git`/`gh` always；`beforeShellExecution` 硬门禁破坏性 git/gh（见「Git 同步节奏」）
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
 - **视觉原则修正已拍板（2026-07-15）**：角色本体固有色恒定不变，金色进度改由外围光环/环境光反射（Rim Light）表达，禁止本体重着色。改动范围：只改文档确立新原则（`DESIGN` / `PRINCIPLES` / `ARCHITECTURE` / `EMOTION_BIBLE` / `TASKS` 已同步），2D 主线金色表达定义为「金色光晕 overlay + 粒子」写入 `ARCHITECTURE`；3D shader（`TigerCharacter` 灰→金插值、`Constants` 命名）仅留 TODO 标注不重构，重构并入未来「奖励柜」任务；历史任务书保留原文 + 顶部注记
 - **产品定位 V1.0 已定稿（2026-07-15）**：角色对外统一为 Mindful Companion，不采用喂养、健康退化、照料责任或宠物收集叙事；`daily practice` 改为 `regular practice, at your own pace`；庆祝统一为「短暂、温暖、有情感」；每次完成轻量确认、每日首次达标完整庆祝、长期里程碑纪念奖励；「小老虎更健康」改为共同经历增加、环境细节解锁与永久纪念物
@@ -293,6 +296,8 @@
 > **政策 SSOT**：Agent commit / 汇报 / push / 禁自动合 main → [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。分支模型与合并 `main` → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md)。本节只写**操作顺序**，不复述门禁条文。
 
 Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」。
+
+**Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——不依赖 Auto-review 的 `autoRun.block_instructions`。
 
 ### 推荐流程（半自动 + 人工拍板）
 
@@ -436,7 +441,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **目标**：另开 PR（建议 `feature/ci-full-smoke-e2e`），在 GitHub Actions 上对 `push`/`pull_request`（至少 `develop` 与指向 `main` 的 PR）自动跑：
   1. `cd focus-tiger && npm ci`
   2. `npm run test:smoke`（含 `docs:check`）
-  3. `npm run test:e2e`（Playwright；需安装浏览器 / 可用系统 Chrome 策略与本地对齐）
+  3. `npm run test:e2e`（Playwright；本地默认自带 Chromium；CI 建议 `PLAYWRIGHT_CHANNEL=chrome` 作系统 Chrome 兜底）
 - **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
 - **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工，目标 **2026-07-30 前** 至少有草稿 workflow 或可合并的 CI PR。

@@ -2,7 +2,7 @@
 # RESPONSIVE_LAYOUT.md
 
 > **版本**：1.0  
-> **最后更新**：2026-07-25  
+> **最后更新**：2026-07-26  
 > **状态**：布局与窄屏交互的**权威基线**；细则冲突时以本文为准（产品语义仍服从 `PRODUCT_POSITIONING.md` / `PRINCIPLES.md`）
 
 本文档定义：桌面优先前提下，**主流手机浏览器**（含竖屏与横屏）应达到何种可用标准；开发、设计与验收如何收口。
@@ -158,7 +158,7 @@
 
 1. 桌面宽屏（≥900px）主路径 + 回流；触及 Idle chrome / Arrival / Honesty / Hints 时，步骤须含 **`DEV_WORKFLOW_QUALITY.md` §9「宽屏故事最小集」**（非仅「⋯ / 清场」烟测）。  
 2. **375×667 竖屏** + **一种横屏**（DevTools 设备模式即可）走通 §五 中与本次改动相关的行。  
-   - **场景 O（2026-07-24）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 上滑 `BottomOptionsDrawer`；主画布清场、Yin 放大居中；7 格进抽屉只读条。`≥480px` 目标壳为 Sit+⚡+⋯（见 §9；未合入前旧竖排 dock 仍须走故事）。  
+   - **场景 O（2026-07-24；主 CTA 上屏 2026-07-26）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 主画布三主钮（顺序 **Quick Start · Sit with Yin · Honesty**；约 72px PNG）+ 上滑 `BottomOptionsDrawer`（次要：呼吸 / How / Sound / Reminder；7 格只读条）；Yin 放大居中。`≥480px` 目标壳为 Sit+⚡+⋯（见 §9；未合入前旧竖排 dock 仍须走故事）。  
    - **触及 Idle chrome / Arrival / Honesty / Hints**：`TEST_TRACKER` 步骤须含 **§8「375 故事最小集」**——**禁止**只验壳切换（有没有 ActionBar / ⋯）就当窄屏通过。  
 3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏与宽屏故事步骤（勿笼统一行「手机/桌面看一下」）；关单须注明双视口故事是否测过（§8 N20 / §9 N24）。  
 4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代人工故事）。  
@@ -247,6 +247,7 @@
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| 1.6 | 2026-07-26 | 窄屏主画布三主钮（Sit / Quick Start / Honesty）；抽屉精简为次要项 |
 | 1.5 | 2026-07-25 | §6.2：宽屏故事最小集（对齐 `DEV_WORKFLOW_QUALITY` §9）；关单双视口对称 |
 | 1.4 | 2026-07-25 | §6.2 / 6.2b：375 故事最小集 + 双壳不变量摘要（对齐 `DEV_WORKFLOW_QUALITY` §8） |
 | 1.3 | 2026-07-25 | §4.1：澄清「桌面拖最窄 ≠ 窄屏抽屉」；须 DevTools ≤479 / 375 |

@@ -312,6 +312,16 @@ export class ReminderPreferenceUI {
       delete this.statusEl.dataset.note;
     }
 
+    if (notes.statusNoteKey) {
+      this.statusEl.hidden = false;
+      this.statusEl.textContent = t(notes.statusNoteKey);
+      this.statusEl.dataset.note = notes.statusNoteKey;
+    } else {
+      this.statusEl.hidden = true;
+      this.statusEl.textContent = '';
+      delete this.statusEl.dataset.note;
+    }
+
     this.root.hidden = !this._visible;
     const wasPanelHidden = this.panel.hidden;
     this.panel.hidden = !this._visible || !this._expanded;

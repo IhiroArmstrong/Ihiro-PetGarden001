@@ -76,8 +76,14 @@ export function createHintsSeenStore(
  */
 export function appendIdleChromeHintIds(ids, scene = {}) {
   if (!Array.isArray(ids)) return;
+  if (scene.honestyIdleEntryVisible && !ids.includes('honesty-optional')) {
+    ids.push('honesty-optional');
+  }
   if (scene.weeklyHeatmapVisible && !ids.includes('weekly-heatmap')) {
     ids.push('weekly-heatmap');
+  }
+  if (scene.weeklyHeatmapVisible && !ids.includes('in-app-reminder')) {
+    ids.push('in-app-reminder');
   }
   if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
     ids.push('micro-ritual');
@@ -118,6 +124,7 @@ export function appendFocusHudHintIds(ids) {
  * @param {boolean} [scene.hasEverCompletedSession]
  * @param {boolean} [scene.weeklyHeatmapVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
+ * @param {boolean} [scene.honestyIdleEntryVisible]
  * @param {boolean} [scene.quickStartVisible]
  * @param {boolean} [scene.narrowPark]
  * @param {boolean} [scene.narrowSheetOpen]
@@ -203,6 +210,7 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'focus-hud-progress': 65,
   'focus-hud-streak': 64,
   'micro-ritual': 58,
+  'in-app-reminder': 57,
   'ambient-soundscape': 60,
   'weekly-heatmap': 56,
   'ambient-gated': 55,
@@ -252,9 +260,13 @@ export function resolveAutoHintIds(scene = {}) {
   } else if (scene.ambientPanelOpen) {
     ids = ['ambient-soundscape'];
   } else if (scene.arrivalOpen) {
-    // Arrival 进行中不自动出 tip（Notice/Breath/Choose 会挡选择格；点 tip
-    // 曾被外侧取消误吃）。补救「?」仍经 resolveHintForScene / remedy 列表。
-    ids = [];
+    // Notice/Breath/Choose 自动出 1 条阶段 tip；§8 N18 outsideDismissGuard 已修
+    // 「点 tip 被外侧取消误吃 Notice」，故安全恢复自动展示。补救「?」仍经
+    // resolveHintForScene / remedy 列表。
+    const phase = scene.arrivalPhase;
+    if (phase === 'breath') ids = ['breathing'];
+    else if (phase === 'choose') ids = ['choose'];
+    else ids = ['notice'];
   } else if (scene.honestyBridgeVisible) {
     // 桥接 Yes/No：不自动出 tip（图4：游离 tip 易挡/误关）；? 补救仍可出 honesty-bridge
     ids = [];

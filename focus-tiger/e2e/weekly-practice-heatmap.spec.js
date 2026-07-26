@@ -52,9 +52,9 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
 
 /**
  * Scenario O narrow lock (≤479 / 375):
- * ActionBar + swipe drawer — canvas chrome cleared; Yin dominant.
+ * ActionBar + home primary CTAs + swipe drawer (secondary only).
  */
-test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
+test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -63,6 +63,35 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
     timeout: 15_000
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
+  // Canvas order: Quick Start · Sit with Yin · Honesty
+  const homeOrder = await page
+    .locator('#ft-narrow-home-ctas [data-proxy]')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('data-proxy')));
+  expect(homeOrder).toEqual(['quickstart', 'sit', 'honesty']);
+  await expect(page.locator('#ft-narrow-home-sit')).toHaveAttribute(
+    'aria-label',
+    /Sit with Yin|与阿寅同坐/i
+  );
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-quickstart')).toHaveAttribute(
+    'aria-label',
+    /Quick Start|快速开始/i
+  );
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeEnabled();
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
+    'aria-disabled',
+    'false'
+  );
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
+    'aria-label',
+    /Honesty Check-in|诚实补登/i
+  );
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveCSS(
+    'opacity',
+    '1'
+  );
   await expect(page.locator('.ft-narrow-grabber')).toBeVisible();
 
   // Legacy Idle canvas chrome is parked off-screen while narrow idle
@@ -98,12 +127,22 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
     'aria-hidden',
     'false'
   );
+  // Sit / Quick Start / Honesty moved to home — must NOT remain in drawer
   await expect(
-    page.locator('.ft-narrow-sheet__item.is-primary')
-  ).toBeVisible();
-  await expect(page.locator('.ft-narrow-sheet__item.is-primary')).toContainText(
-    /Sit with Yin|与阿寅同坐/i
-  );
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Sit with Yin|与阿寅同坐/i
+    })
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Quick Start|快速开始/i
+    })
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Honesty Check-in|诚实补登/i
+    })
+  ).toHaveCount(0);
 
   // How shall we sit? must stage companion options (not silent)
   await page
@@ -116,36 +155,98 @@ test('375 viewport: narrow ActionBar + drawer; no dock canvas chrome', async ({
   });
 });
 
-test('375 Arrival: Quick Start stays on-canvas; Sit stays hidden', async ({
+test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async ({
   page
 }) => {
-  await openFreshProductShell(page);
   await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
+  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
     timeout: 15_000
   });
-  await page.locator('.ft-narrow-grabber').click();
-  await page.locator('.ft-narrow-sheet__item[data-proxy="sit"]').click();
 
-  const arrival = page.locator('#arrival-practice');
-  await expect(arrival).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('body')).toHaveClass(
-    /ft-narrow-stage-arrival-quick-start/
+  // Honesty lives on home canvas as a ball (not in the drawer)
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
+    'aria-label',
+    /Honesty Check-in|诚实补登|Honesty/i
   );
-  await expect(page.locator('#btn-focus')).toBeHidden();
-  const quick = page.locator('#quick-start-focus');
-  await expect(quick).toBeVisible({ timeout: 5_000 });
-  const box = await quick.boundingBox();
-  expect(box).toBeTruthy();
-  expect(box.x).toBeGreaterThanOrEqual(0);
-  expect(box.x + box.width).toBeLessThanOrEqual(375);
-  expect(box.y).toBeGreaterThan(200);
 
-  await quick.click();
-  await expectFocusSessionActive(page);
-  await expect(page.locator('#arrival-practice')).toBeHidden({
+  await page.locator('.ft-narrow-grabber').click();
+  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+    'aria-hidden',
+    'false'
+  );
+  await expect(
+    page.locator('.ft-narrow-sheet__item', {
+      hasText: /Honesty Check-in|诚实补登/i
+    })
+  ).toHaveCount(0);
+
+  // Sound → Soundscape track panel on-canvas (not red FAB, not tip-only)
+  await page
+    .locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
+    .click();
+  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
     timeout: 5_000
   });
+  await expect
+    .poll(async () => {
+      return page.evaluate(() => {
+        const panel = document.querySelector('.ambient-soundscape__panel');
+        const fab = document.querySelector('.ambient-soundscape__fab');
+        if (!panel || panel.hidden) return null;
+        const pr = panel.getBoundingClientRect();
+        const fr = fab?.getBoundingClientRect();
+        const fabHidden =
+          !fab ||
+          getComputedStyle(fab).display === 'none' ||
+          getComputedStyle(fab).visibility === 'hidden' ||
+          (fr && (fr.width < 1 || fr.right < 0));
+        return {
+          staged: document.body.classList.contains('ft-narrow-stage-sound'),
+          title: (
+            panel.querySelector('.ambient-soundscape__title')?.textContent || ''
+          ).trim(),
+          tracks: panel.querySelectorAll('.ambient-soundscape__track').length,
+          panelOnScreen:
+            pr.width > 40 && pr.left >= 0 && pr.left < window.innerWidth,
+          fabHidden
+        };
+      });
+    })
+    .toMatchObject({
+      staged: true,
+      panelOnScreen: true,
+      fabHidden: true
+    });
+  const panelMeta = await page.evaluate(() => {
+    const panel = document.querySelector('.ambient-soundscape__panel');
+    return {
+      title: (
+        panel?.querySelector('.ambient-soundscape__title')?.textContent || ''
+      ).trim(),
+      tracks: panel?.querySelectorAll('.ambient-soundscape__track').length ?? 0
+    };
+  });
+  expect(panelMeta.title.length).toBeGreaterThan(2);
+  expect(panelMeta.tracks).toBeGreaterThanOrEqual(2);
+
+  // Re-open drawer → Reminder panel must appear on-screen
+  await page.locator('.ft-narrow-grabber').click();
+  await page
+    .locator('.ft-narrow-sheet__item', {
+      hasText: /When should I remind you|何时提醒|remind/i
+    })
+    .click();
+  await expect(page.locator('#reminder-preference-panel')).toBeVisible({
+    timeout: 5_000
+  });
+  const reminderBox = await page.locator('#reminder-preference-panel').boundingBox();
+  expect(reminderBox).toBeTruthy();
+  expect(reminderBox.x).toBeGreaterThanOrEqual(0);
+  expect(reminderBox.x + reminderBox.width).toBeLessThanOrEqual(375 + 2);
+  expect(reminderBox.y).toBeGreaterThanOrEqual(0);
+  expect(reminderBox.y).toBeLessThan(667);
 });
 
 test('375 park: ? remedy shows one primary tip + catalog chip', async ({
@@ -232,97 +333,9 @@ test('375 park: ? remedy shows one primary tip + catalog chip', async ({
   expect(after.chipHidden).toBe(true);
 });
 
-test('375 drawer: Honesty listed; Soundscape panel + Reminder respond', async ({
-  page
-}) => {
-  await openFreshProductShell(page);
-  await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
-    timeout: 15_000
-  });
-
-  await page.locator('.ft-narrow-grabber').click();
-  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
-    'aria-hidden',
-    'false'
-  );
-
-  // Honesty must remain in the drawer (never dropped for space)
-  const honestyItem = page.locator('.ft-narrow-sheet__item', {
-    hasText: /Honesty Check-in|诚实补登|Honesty/i
-  });
-  await expect(honestyItem).toBeVisible();
-
-  // Sound → Soundscape track panel on-canvas (not red FAB, not tip-only)
-  await page
-    .locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
-    .click();
-  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
-    timeout: 5_000
-  });
-  await expect
-    .poll(async () => {
-      return page.evaluate(() => {
-        const panel = document.querySelector('.ambient-soundscape__panel');
-        const fab = document.querySelector('.ambient-soundscape__fab');
-        if (!panel || panel.hidden) return null;
-        const pr = panel.getBoundingClientRect();
-        const fr = fab?.getBoundingClientRect();
-        const fabHidden =
-          !fab ||
-          getComputedStyle(fab).display === 'none' ||
-          getComputedStyle(fab).visibility === 'hidden' ||
-          (fr && (fr.width < 1 || fr.right < 0));
-        return {
-          staged: document.body.classList.contains('ft-narrow-stage-sound'),
-          title: (
-            panel.querySelector('.ambient-soundscape__title')?.textContent || ''
-          ).trim(),
-          tracks: panel.querySelectorAll('.ambient-soundscape__track').length,
-          panelOnScreen:
-            pr.width > 40 && pr.left >= 0 && pr.left < window.innerWidth,
-          fabHidden
-        };
-      });
-    })
-    .toMatchObject({
-      staged: true,
-      panelOnScreen: true,
-      fabHidden: true
-    });
-  const panelMeta = await page.evaluate(() => {
-    const panel = document.querySelector('.ambient-soundscape__panel');
-    return {
-      title: (
-        panel?.querySelector('.ambient-soundscape__title')?.textContent || ''
-      ).trim(),
-      tracks: panel?.querySelectorAll('.ambient-soundscape__track').length ?? 0
-    };
-  });
-  expect(panelMeta.title.length).toBeGreaterThan(2);
-  expect(panelMeta.tracks).toBeGreaterThanOrEqual(2);
-
-  // Re-open drawer → Reminder panel must appear on-screen
-  await page.locator('.ft-narrow-grabber').click();
-  await page
-    .locator('.ft-narrow-sheet__item', {
-      hasText: /When should I remind you|何时提醒|remind/i
-    })
-    .click();
-  await expect(page.locator('#reminder-preference-panel')).toBeVisible({
-    timeout: 5_000
-  });
-  const reminderBox = await page.locator('#reminder-preference-panel').boundingBox();
-  expect(reminderBox).toBeTruthy();
-  expect(reminderBox.x).toBeGreaterThanOrEqual(0);
-  expect(reminderBox.x + reminderBox.width).toBeLessThanOrEqual(375 + 2);
-  expect(reminderBox.y).toBeGreaterThanOrEqual(0);
-  expect(reminderBox.y).toBeLessThan(667);
-});
-
 test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
-  await openFreshProductShell(page);
   await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
   await expect(page.locator('#ft-narrow-mute-btn')).toBeVisible({
     timeout: 15_000
   });
@@ -371,12 +384,36 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
 });
 
 test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
-  await openFreshProductShell(page);
+  test.setTimeout(60_000);
   await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
 
-  // Sit/⚡ parked — Quick Start via drawer → Focusing（本用例只锁 HUD/FAB，不测 Arrival）
-  await page.locator('.ft-narrow-grabber').click();
-  await page.locator('.ft-narrow-sheet__item[data-proxy="quickstart"]').click();
+  // Sit is on home canvas (no longer drawer primary)
+  await page.locator('#ft-narrow-home-sit').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
+  await expect(reading).toBeVisible({ timeout: 20_000 });
+  await reading.click();
+  // Choose 后展开 Companion；375 下 dock 选项常在视口外，用 DOM click 开表
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 20_000
+  });
+  await page.evaluate(() => {
+    const opt = Array.from(
+      document.querySelectorAll('.session-start-dock__option')
+    ).find((el) => /Here & Now|当下同坐/i.test(el.textContent || ''));
+    if (!opt) throw new Error('Here & Now option not found');
+    /** @type {HTMLElement} */ (opt).click();
+  });
+  await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
+    timeout: 45_000
+  });
   await expectFocusSessionActive(page);
 
   const report = await page.evaluate(() => {

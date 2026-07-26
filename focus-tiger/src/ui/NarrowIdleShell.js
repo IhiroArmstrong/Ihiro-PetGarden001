@@ -1,15 +1,23 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v5';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v10';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
+/** Display size for home PNG totems (assets are full-res; CSS scales). */
+const HOME_CTA_PX = 72;
+
+/** UI icon assets (not sprite frames) — `public/icons/` */
+const ICON_SIT = '/icons/icon-sit-with-yin.png?v=2';
+const ICON_QUICK = '/icons/icon-quick-start.png?v=2';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=2';
 
 /**
  * Narrow Idle shell (≤479 / 375):
  * - Minimal ActionBar: ? · Calm/time · mute
- * - Yin centered / slightly enlarged; bottom canvas clear
- * - Swipe-up BottomOptionsDrawer proxies existing Idle controls
+ * - Home primary balls: Quick Start / Sit with Yin / Honesty (PNG zen totems)
+ * - Swipe-up BottomOptionsDrawer for secondary Idle controls
+ *   (breath / How shall we sit? / Sound / Reminder + week strip)
  *
  * Desktop (≥480) is untouched. Focusing keeps Rise via #btn-focus.
  */
@@ -44,8 +52,7 @@ export class NarrowIdleShell {
         : null;
     this._idle = true;
     this._suppressed = false;
-    /** Arrival open: surface ⚡ only (W3 / fig8); not cleared by drawer clearStage. */
-    this._arrivalOpen = false;
+    this._keepQuickStart = false;
     this._sheetOpen = false;
     this._touchStartY = null;
     this._localeUnsub = null;
@@ -56,9 +63,11 @@ export class NarrowIdleShell {
     this._bind();
     this._syncMode();
     this._syncActionBarFromHud();
+    this._refreshHomeCtas();
     this._localeUnsub = onLocaleChange(() => {
       this._refreshLabels();
       this._syncActionBarFromHud();
+      this._refreshHomeCtas();
     });
   }
 
@@ -115,31 +124,37 @@ export class NarrowIdleShell {
   }
 
   /**
-   * Arrival / Honesty / Reflection / Honesty-bridge: hide ActionBar + grabber,
-   * but keep legacy chrome parked so dock pills do not poke through overlays.
+   * Overlay chrome policy (narrow):
+   * - Full suppress (Reflection / Honesty busy / bridge / micro-ritual): hide shell.
+   * - Arrival (`keepQuickStart`): hide ActionBar / grabber / Sit / Honesty, but
+   *   **keep Quick Start** (W3 / L174 — ⚡ must stay while Sit is hidden).
+   * Legacy dock stays parked either way.
    * @param {boolean} suppressed
+   * @param {{ keepQuickStart?: boolean }} [opts]
    * @returns {void}
    */
-  setSuppressed(suppressed) {
+  setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
+    this._keepQuickStart =
+      Boolean(opts.keepQuickStart) && this._suppressed;
     if (this._suppressed) {
       this.closeSheet();
-      this.clearStage();
+      // Arrival / Honesty suppress must not park an already-expanded Companion
+      // trio off-canvas again (Choose bow → open() sets ft-narrow-stage-companion).
+      const companionExpanded =
+        document.querySelector('.session-start-dock__panel:not([hidden])') !=
+        null;
+      if (companionExpanded) {
+        document.body.classList.remove(
+          'ft-narrow-stage-reminder',
+          'ft-narrow-stage-sound'
+        );
+      } else {
+        this.clearStage();
+      }
     }
-    this.shell?.classList.toggle('is-suppressed', this._suppressed);
     this._syncMode();
     this._syncAmbientFocusChrome();
-  }
-
-  /**
-   * Arrival Practice open: keep Sit/How/Honesty parked; stage ⚡ Quick Start on-canvas (fig8).
-   * Independent of drawer `clearStage` so suppress does not wipe it.
-   * @param {boolean} open
-   * @returns {void}
-   */
-  setArrivalOpen(open) {
-    this._arrivalOpen = Boolean(open);
-    this._syncArrivalQuickStartStage();
   }
 
   /**
@@ -147,14 +162,6 @@ export class NarrowIdleShell {
    */
   isSheetOpen() {
     return Boolean(this._sheetOpen);
-  }
-
-  _syncArrivalQuickStartStage() {
-    const show = this._isNarrow() && this._idle && this._arrivalOpen;
-    document.body.classList.toggle(
-      'ft-narrow-stage-arrival-quick-start',
-      show
-    );
   }
 
   /**
@@ -209,8 +216,7 @@ export class NarrowIdleShell {
       'ft-narrow-shell',
       'ft-narrow-park',
       'ft-narrow-idle',
-      'ft-narrow-focusing',
-      'ft-narrow-stage-arrival-quick-start'
+      'ft-narrow-focusing'
     );
   }
 
@@ -223,18 +229,25 @@ export class NarrowIdleShell {
     // Park legacy chrome whenever Idle on narrow — including Arrival / Honesty overlays
     // (suppress only hides ActionBar; unparking dock caused pills under Arrival).
     const park = narrow && this._idle;
+    const keepQs = Boolean(this._keepQuickStart);
     const idleChrome = park && !this._suppressed;
     const focusing = narrow && !this._idle;
+    const shellVisible = narrow && (idleChrome || keepQs);
     document.body.classList.toggle('ft-narrow-shell', narrow);
     document.body.classList.toggle('ft-narrow-park', park);
     document.body.classList.toggle('ft-narrow-idle', idleChrome);
     document.body.classList.toggle('ft-narrow-focusing', focusing);
-    this._syncArrivalQuickStartStage();
     if (this.shell) {
-      this.shell.hidden = !narrow || Boolean(this._suppressed);
+      this.shell.hidden = !shellVisible;
+      this.shell.classList.toggle(
+        'is-suppressed',
+        Boolean(this._suppressed) && !keepQs
+      );
+      this.shell.classList.toggle('is-arrival-quick', keepQs);
     }
     if (!narrow || this._suppressed) this.closeSheet();
     if (idleChrome) this._syncActionBarFromHud();
+    if (idleChrome || keepQs) this._refreshHomeCtas();
   }
 
   _build() {
@@ -255,6 +268,23 @@ export class NarrowIdleShell {
       </div>
       <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-mute-btn" data-proxy="mute" aria-label="">
         ♪
+      </button>
+    `;
+
+    // Three primary Idle balls on the home canvas (not in the drawer).
+    this.homeCtas = document.createElement('nav');
+    this.homeCtas.className = 'ft-narrow-home-ctas';
+    this.homeCtas.id = 'ft-narrow-home-ctas';
+    this.homeCtas.setAttribute('aria-label', '');
+    this.homeCtas.innerHTML = `
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+      </button>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+      </button>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
+        <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
     `;
 
@@ -284,6 +314,7 @@ export class NarrowIdleShell {
     `;
 
     this.shell.appendChild(this.actionBar);
+    this.shell.appendChild(this.homeCtas);
     this.shell.appendChild(this.grabber);
     this.shell.appendChild(this.backdrop);
     this.shell.appendChild(this.sheet);
@@ -293,6 +324,9 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
+    this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
+    this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
+    this.honestyHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-honesty');
     this._refreshLabels();
   }
 
@@ -312,7 +346,11 @@ export class NarrowIdleShell {
       this.grabber.setAttribute('aria-label', t('NARROW_SHEET_SWIPE_HINT'));
       this.grabber.textContent = t('NARROW_SHEET_SWIPE_HINT');
     }
+    if (this.homeCtas) {
+      this.homeCtas.setAttribute('aria-label', t('NARROW_SHEET_TITLE'));
+    }
     this.sheet?.setAttribute('aria-label', t('NARROW_SHEET_TITLE'));
+    this._refreshHomeCtas();
   }
 
   _bind() {
@@ -322,6 +360,12 @@ export class NarrowIdleShell {
     this.actionBar?.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-proxy]');
       if (!btn) return;
+      this._proxy(btn.getAttribute('data-proxy'));
+    });
+
+    this.homeCtas?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-proxy]');
+      if (!btn || btn.disabled || btn.hidden) return;
       this._proxy(btn.getAttribute('data-proxy'));
     });
 
@@ -377,13 +421,28 @@ export class NarrowIdleShell {
     });
 
     const hudRoot = document.getElementById('focus-hud');
-    if (hudRoot && typeof MutationObserver !== 'undefined') {
-      this._hudObserver = new MutationObserver(() => this._syncActionBarFromHud());
-      this._hudObserver.observe(hudRoot, {
-        subtree: true,
-        characterData: true,
-        childList: true
+    const dockRoot = document.getElementById('session-start-dock');
+    if (typeof MutationObserver !== 'undefined') {
+      this._hudObserver = new MutationObserver(() => {
+        this._syncActionBarFromHud();
+        this._refreshHomeCtas();
       });
+      if (hudRoot) {
+        this._hudObserver.observe(hudRoot, {
+          subtree: true,
+          characterData: true,
+          childList: true,
+          attributes: true
+        });
+      }
+      // Honesty / Quick Start mount after the shell — keep home CTAs in sync
+      if (dockRoot) {
+        this._hudObserver.observe(dockRoot, {
+          subtree: true,
+          childList: true,
+          attributes: true
+        });
+      }
     }
   }
 
@@ -394,31 +453,62 @@ export class NarrowIdleShell {
     if (this.timeEl) this.timeEl.textContent = time;
   }
 
+  /**
+   * Keep home Quick Start / Sit / Honesty enablement in sync with
+   * the parked legacy controls they proxy. Balls use icons + aria-label.
+   * Order on canvas: Quick Start · Sit with Yin · Honesty.
+   * @returns {void}
+   */
+  _refreshHomeCtas() {
+    if (!this.homeCtas) return;
+
+    const focusEl = document.getElementById('btn-focus');
+    if (this.sitHomeBtn) {
+      const sitLabel =
+        focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
+      this.sitHomeBtn.setAttribute('aria-label', sitLabel);
+      this.sitHomeBtn.title = sitLabel;
+      const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
+      this.sitHomeBtn.disabled = !sitOk;
+      this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
+      this.sitHomeBtn.hidden = !focusEl || focusEl.hidden;
+    }
+
+    const quickEl = document.getElementById('quick-start-focus');
+    if (this.quickHomeBtn) {
+      const qsLabel = t('QUICK_START_ARIA');
+      this.quickHomeBtn.setAttribute('aria-label', qsLabel);
+      this.quickHomeBtn.title = qsLabel;
+      const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
+      this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
+      this.quickHomeBtn.disabled = !qsOk;
+      this.quickHomeBtn.setAttribute('aria-disabled', qsOk ? 'false' : 'true');
+    }
+
+    if (this.honestyHomeBtn) {
+      const honestyLabel = t('HONESTY_IDLE_ENTRY');
+      this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
+      this.honestyHomeBtn.title = honestyLabel;
+      // Idle home: always offer Honesty (entry may be missing / attribute-hidden).
+      // Arrival keepQuickStart: hide Honesty (W3 — only ⚡ stays with Sit).
+      const showHonesty = !this._keepQuickStart;
+      this.honestyHomeBtn.hidden = !showHonesty;
+      this.honestyHomeBtn.disabled = false;
+      this.honestyHomeBtn.setAttribute('aria-disabled', 'false');
+    }
+
+    // Arrival: Sit already mirrors #btn-focus[hidden]; force Quick Start on.
+    if (this._keepQuickStart && this.quickHomeBtn) {
+      this.quickHomeBtn.hidden = false;
+      this.quickHomeBtn.disabled = false;
+      this.quickHomeBtn.setAttribute('aria-disabled', 'false');
+    }
+  }
+
   _refreshDrawerItems() {
     if (!this.listEl) return;
+    // Sit / Quick Start / Honesty live on the home canvas — drawer is secondary only.
     const items = [
-      {
-        proxy: 'sit',
-        label: () =>
-          document.getElementById('btn-focus')?.textContent?.trim() ||
-          t('BTN_FOCUS_START'),
-        primary: true,
-        visible: () => Boolean(document.getElementById('btn-focus'))
-      },
-      {
-        proxy: 'quickstart',
-        label: () => t('QUICK_START_ARIA'),
-        visible: () => {
-          const el = document.getElementById('quick-start-focus');
-          return Boolean(el && !el.hidden);
-        }
-      },
-      {
-        proxy: 'honesty',
-        label: () => t('HONESTY_IDLE_ENTRY'),
-        // Always list while drawer is open — never drop for space. Proxy opens check-in.
-        visible: () => Boolean(document.getElementById('honesty-idle-entry'))
-      },
       {
         proxy: 'breath',
         label: () => t('micro_ritual.button'),
@@ -454,7 +544,7 @@ export class NarrowIdleShell {
       const li = document.createElement('li');
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = `ft-narrow-sheet__item${item.primary ? ' is-primary' : ''}`;
+      btn.className = 'ft-narrow-sheet__item';
       btn.dataset.proxy = item.proxy;
       btn.textContent = item.label();
       li.appendChild(btn);
@@ -545,6 +635,12 @@ export class NarrowIdleShell {
   }
 
   _injectStyles() {
+    // Drop prior style tags if STYLE_ID was bumped (HMR / hot reload)
+    for (const el of document.querySelectorAll(
+      'style[id^="ft-narrow-idle-shell-styles"]'
+    )) {
+      if (el.id !== STYLE_ID) el.remove();
+    }
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -563,6 +659,15 @@ export class NarrowIdleShell {
       .ft-narrow-idle-shell.is-suppressed {
         visibility: hidden;
         pointer-events: none;
+      }
+      /* Arrival: only Quick Start ball stays (W3) — hide ActionBar / grabber / Sit / Honesty */
+      .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-action-bar,
+      .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-grabber {
+        display: none !important;
+      }
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
+        display: none !important;
       }
       .ft-narrow-action-bar {
         position: absolute;
@@ -626,10 +731,69 @@ export class NarrowIdleShell {
         font-size: 0.78rem;
         color: rgba(74, 58, 40, 0.72);
       }
+      .ft-narrow-home-ctas {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: max(52px, calc(36px + env(safe-area-inset-bottom, 0px)));
+        transform: none;
+        width: auto;
+        padding: 0 16px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        gap: 0;
+      }
+      .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
+        visibility: hidden;
+        pointer-events: none;
+      }
+      /* PNG assets already include the sphere + glyph — no CSS ball chrome.
+         display:inline-flex would otherwise beat UA [hidden]{display:none}. */
+      .ft-narrow-home-ctas__btn.is-asset[hidden] {
+        display: none !important;
+      }
+      .ft-narrow-home-ctas__btn.is-asset {
+        flex: 0 0 auto;
+        box-sizing: border-box;
+        width: ${HOME_CTA_PX}px;
+        height: ${HOME_CTA_PX}px;
+        min-height: ${HOME_CTA_PX}px;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        color: inherit;
+        line-height: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: none;
+      }
+      .ft-narrow-home-ctas__btn.is-asset:disabled,
+      .ft-narrow-home-ctas__btn.is-asset[aria-disabled="true"] {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .ft-narrow-home-ctas__btn.is-asset:active:not(:disabled) {
+        transform: scale(0.96);
+      }
+      .ft-narrow-home-ctas__img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
+      }
       .ft-narrow-grabber {
         position: absolute;
         left: 50%;
-        bottom: max(10px, env(safe-area-inset-bottom, 0px));
+        bottom: max(6px, env(safe-area-inset-bottom, 0px));
         transform: translateX(-50%);
         width: min(220px, calc(100vw - 64px));
         min-height: 36px;
@@ -656,8 +820,16 @@ export class NarrowIdleShell {
         border-radius: 999px;
         background: rgba(74, 58, 40, 0.28);
       }
-      body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber {
+      body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber,
+      body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-home-ctas {
         display: none;
+      }
+      /* Staging secondary panels: tuck home CTAs so they do not fight the panel */
+      body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion .ft-narrow-home-ctas,
+      body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-reminder .ft-narrow-home-ctas,
+      body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ft-narrow-home-ctas {
+        visibility: hidden;
+        pointer-events: none;
       }
       .ft-narrow-sheet-backdrop {
         position: absolute;
@@ -834,54 +1006,6 @@ export class NarrowIdleShell {
           display: none !important;
         }
 
-        /*
-         * Arrival (fig8 / W3): keep Sit·How·Honesty parked; surface ⚡ only.
-         * Parent dock must unpark (opacity on parent would hide children).
-         */
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #session-start-dock {
-          left: 50% !important;
-          right: auto !important;
-          top: auto !important;
-          bottom: max(28px, env(safe-area-inset-bottom, 0px)) !important;
-          transform: translateX(-50%) !important;
-          opacity: 1 !important;
-          pointer-events: auto !important;
-          z-index: 32 !important;
-          display: flex !important;
-          flex-direction: row !important;
-          align-items: center !important;
-          justify-content: center !important;
-          gap: 0 !important;
-          background: transparent !important;
-          box-shadow: none !important;
-          border: none !important;
-          padding: 0 !important;
-        }
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #btn-focus,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .session-start-dock__hint,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .session-start-dock__panel,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #honesty-idle-entry,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #micro-ritual-idle-entry,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .ft-wide-more,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #ft-wide-more-btn,
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start .session-start-dock__cta-row > :not(#quick-start-focus) {
-          display: none !important;
-        }
-        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-arrival-quick-start #quick-start-focus {
-          display: inline-flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          opacity: 1 !important;
-          visibility: visible !important;
-          pointer-events: auto !important;
-          position: relative !important;
-          left: auto !important;
-          right: auto !important;
-          top: auto !important;
-          bottom: auto !important;
-          transform: none !important;
-        }
-
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-reminder #weekly-practice-heatmap-cluster {
           left: 50% !important;
           right: auto !important;
@@ -936,7 +1060,8 @@ export class NarrowIdleShell {
 
         /* Focusing: restore FocusHUD timer; Rise visible; no Sound FAB clutter */
         body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-action-bar,
-        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber {
+        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber,
+        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-home-ctas {
           display: none !important;
         }
         body.ft-narrow-shell.ft-narrow-focusing #honesty-idle-entry,

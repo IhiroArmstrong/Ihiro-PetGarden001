@@ -5,6 +5,7 @@ on:
     paths:
       - 'focus-tiger/src/core/onboardingHintRegistry.js'
       - 'focus-tiger/src/core/sessionUiGateContractRegistry.js'
+      - 'focus-tiger/src/core/visibilityContractRegistry.js'
       - 'focus-tiger/src/core/SessionUiGate.js'
       - 'focus-tiger/src/core/FocusSession.js'
       - 'focus-tiger/src/core/StateManager.js'
@@ -28,6 +29,7 @@ on:
     paths:
       - 'focus-tiger/src/core/onboardingHintRegistry.js'
       - 'focus-tiger/src/core/sessionUiGateContractRegistry.js'
+      - 'focus-tiger/src/core/visibilityContractRegistry.js'
       - 'focus-tiger/src/core/SessionUiGate.js'
       - 'focus-tiger/src/core/FocusSession.js'
       - 'focus-tiger/src/core/StateManager.js'

@@ -277,7 +277,7 @@ async function init() {
       }
     }
   );
-  /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday). */
+  /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday; cluster mount needs heatmap only). */
   let reminderPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
@@ -523,12 +523,14 @@ async function init() {
     const honestyBusy =
       Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
     const bridgeVisible = honestyBridge?.isVisible?.() === true;
-    // 桥接 Yes/No：须保留 ActionBar 时间（图4）；勿因 bridge  alone 收起窄屏顶栏
+    // 桥接 Yes/No：须保留 ActionBar 时间（图4）；勿因 bridge alone 收起窄屏顶栏
+    // Arrival: suppress ActionBar/Sit/Honesty but keep narrow Quick Start (W3);
+    // Reflection / Honesty busy: full shell suppress. Bridge alone is exempt.
     const chromeSuppressed = overlayActive || honestyBusy;
     narrowIdleShell.setIdle(!focusing);
-    narrowIdleShell.setSuppressed(chromeSuppressed);
-    // 窄屏 Arrival：park 整 dock 会藏掉 ⚡；单独 stage 只露出 Quick Start（图8 / W3）
-    narrowIdleShell.setArrivalOpen(arrivalOpen);
+    narrowIdleShell.setSuppressed(chromeSuppressed, {
+      keepQuickStart: arrivalOpen
+    });
     wideIdleMoreMenu.setIdle(!focusing);
     // Wide ⋯ 仍须在桥接时收起，避免挡 Yes/No
     wideIdleMoreMenu.setSuppressed(
@@ -766,8 +768,14 @@ async function init() {
 
   function getOnboardingScene() {
     const arrivalPhase = arrivalPractice?.getStep?.() ?? null;
+    const quickEl = document.getElementById('quick-start-focus');
+    const honestyEntry = document.getElementById('honesty-idle-entry');
     return {
       honestyVisible: honestyCheckInUI.phase === 'prompt',
+      honestyIdleEntryVisible: Boolean(
+        honestyEntry && !honestyEntry.hidden && honestyEntry.isConnected
+      ),
+      quickStartVisible: Boolean(quickEl && !quickEl.hidden && quickEl.isConnected),
       honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
       arrivalOpen: arrivalPractice?.isOpen?.() ?? false,
       arrivalPhase:
@@ -1152,6 +1160,7 @@ async function init() {
     onboardingHints?.markSeen('how-shall-we-sit');
     onboardingHints?.markSeen('companion-mode');
     onboardingHints?.markSeen('weekly-heatmap');
+    onboardingHints?.markSeen('in-app-reminder');
     onboardingHints?.markSeen('micro-ritual');
     onboardingHints?.markSeen('ambient-gated');
     onboardingHints?.maybeShowAuto('rise-button');
@@ -1268,7 +1277,8 @@ async function init() {
 
   companionModeHandlers.onExpandedChange = (expanded) => {
     if (expanded) {
-      // Choose 鞠躬后 open() 也须 stage：否则窄屏 park 下三选一在屏外，误读成「没 Focusing」
+      // Choose 鞠躬后 open() 也须 stage：否则窄屏 park 下三选一在屏外，
+      // 只剩 home 三球，误读成「没弹出三选一」（ca20d07；本分支曾丢此修复）。
       document.body.classList.remove(
         'ft-narrow-stage-sound',
         'ft-narrow-stage-reminder'

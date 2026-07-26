@@ -1,0 +1,64 @@
+name: focus-tiger visibility-contract e2e
+
+# When suppress / park / hide chrome changes, run the full Visibility Contract
+# e2e anchor set (not only the new feature's own tests).
+on:
+  push:
+    paths:
+      - 'focus-tiger/src/ui/NarrowIdleShell.js'
+      - 'focus-tiger/src/ui/CompanionModePicker.js'
+      - 'focus-tiger/src/ui/HonestyCheckInUI.js'
+      - 'focus-tiger/src/ui/MicroRitualUI.js'
+      - 'focus-tiger/src/ui/OnboardingHintsUI.js'
+      - 'focus-tiger/src/main.js'
+      - 'focus-tiger/src/core/visibilityContractRegistry.js'
+      - 'focus-tiger/e2e/scenario-a.companion.spec.js'
+      - 'focus-tiger/e2e/weekly-practice-heatmap.spec.js'
+      - 'focus-tiger/e2e/micro-ritual.spec.js'
+      - 'focus-tiger/e2e/helpers/product-shell.js'
+      - 'focus-tiger/scripts/run-visibility-e2e.js'
+      - 'focus-tiger/scripts/visibility-contract-doc-check.js'
+      - 'focus-tiger/package.json'
+      - '.github/workflows/focus-tiger-visibility-contract.yml'
+  pull_request:
+    paths:
+      - 'focus-tiger/src/ui/NarrowIdleShell.js'
+      - 'focus-tiger/src/ui/CompanionModePicker.js'
+      - 'focus-tiger/src/ui/HonestyCheckInUI.js'
+      - 'focus-tiger/src/ui/MicroRitualUI.js'
+      - 'focus-tiger/src/ui/OnboardingHintsUI.js'
+      - 'focus-tiger/src/main.js'
+      - 'focus-tiger/src/core/visibilityContractRegistry.js'
+      - 'focus-tiger/e2e/scenario-a.companion.spec.js'
+      - 'focus-tiger/e2e/weekly-practice-heatmap.spec.js'
+      - 'focus-tiger/e2e/micro-ritual.spec.js'
+      - 'focus-tiger/e2e/helpers/product-shell.js'
+      - 'focus-tiger/scripts/run-visibility-e2e.js'
+      - 'focus-tiger/scripts/visibility-contract-doc-check.js'
+      - 'focus-tiger/package.json'
+      - '.github/workflows/focus-tiger-visibility-contract.yml'
+
+jobs:
+  visibility-e2e:
+    name: visibility registry + e2e anchors
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: focus-tiger
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: focus-tiger/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Structural visibility block (docs:check slice)
+        run: npm run visibility:doc-check
+      - name: Registry unit contracts
+        run: node --test src/core/visibilityContractRegistry.test.js
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+      - name: Full visibility e2e anchor set
+        run: npm run test:e2e:visibility

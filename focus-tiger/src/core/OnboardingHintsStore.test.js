@@ -88,7 +88,7 @@ test('resolveHintForScene picks the most specific surface', () => {
   assert.equal(resolveHintForScene({}), 'sit-button');
 });
 
-test('appendIdleChromeHintIds adds heatmap / micro-ritual / quick-start / ambient-gated', () => {
+test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / quick-start / ambient-gated', () => {
   /** @type {string[]} */
   const ids = ['sit-button'];
   appendIdleChromeHintIds(ids, {
@@ -99,7 +99,23 @@ test('appendIdleChromeHintIds adds heatmap / micro-ritual / quick-start / ambien
   assert.deepEqual(ids, [
     'sit-button',
     'weekly-heatmap',
+    'in-app-reminder',
     'micro-ritual',
+    'quick-start',
+    'ambient-gated'
+  ]);
+});
+
+test('appendIdleChromeHintIds adds honesty idle entry + quick-start balls', () => {
+  /** @type {string[]} */
+  const ids = ['sit-button'];
+  appendIdleChromeHintIds(ids, {
+    honestyIdleEntryVisible: true,
+    quickStartVisible: true
+  });
+  assert.deepEqual(ids, [
+    'sit-button',
+    'honesty-optional',
     'quick-start',
     'ambient-gated'
   ]);
@@ -124,6 +140,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'micro-ritual',
       'quick-start',
       'ambient-gated',
@@ -159,6 +176,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'ambient-gated',
       'focus-hud-ring',
       'focus-hud-progress',
@@ -254,6 +272,7 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
       'sit-button',
       'how-shall-we-sit',
       'weekly-heatmap',
+      'in-app-reminder',
       'micro-ritual',
       'ambient-gated',
       'help-affordance'
@@ -269,15 +288,15 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   assert.deepEqual(resolveAutoHintIds({ reflectionOpen: true }), ['reflection']);
   assert.deepEqual(
     resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'notice' }),
-    []
+    ['notice']
   );
   assert.deepEqual(
     resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'breath' }),
-    []
+    ['breathing']
   );
   assert.deepEqual(
     resolveAutoHintIds({ arrivalOpen: true, arrivalPhase: 'choose' }),
-    []
+    ['choose']
   );
   assert.equal(
     resolveHintForScene({ arrivalOpen: true, arrivalPhase: 'notice' }),

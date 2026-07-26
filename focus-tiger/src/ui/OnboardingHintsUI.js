@@ -105,6 +105,8 @@ function isNarrowViewport() {
 
 /**
  * Narrow Idle shell parks dock/help/?/heatmap off-screen — remap tips to visible chrome.
+ * Home CTAs (Sit/Quick Start/Honesty) now live as on-canvas PNG balls; HUD/secondary
+ * controls remap to the ActionBar center or swipe grabber.
  * @param {{ selector: string, placement: string, tip: string }} anchorCfg
  * @param {boolean} useHelpAnchor
  */
@@ -129,6 +131,40 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       selector: '.ft-narrow-action-bar__center',
       placement: 'below',
       tip: 'top'
+    };
+  }
+  // Primary home CTAs (moved out of the drawer onto the home canvas)
+  if (/#btn-focus|btn-focus/.test(sel)) {
+    return {
+      selector: '#ft-narrow-home-sit',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/quick-start/.test(sel)) {
+    return {
+      selector: '#ft-narrow-home-quickstart',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/honesty-idle/.test(sel)) {
+    return {
+      selector: '#ft-narrow-home-honesty',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  // Secondary / parked controls → swipe grabber
+  if (
+    /session-start-dock__hint|weekly-practice|micro-ritual|ambient-soundscape|reminder-preference/.test(
+      sel
+    )
+  ) {
+    return {
+      selector: '.ft-narrow-grabber',
+      placement: 'above',
+      tip: 'bottom'
     };
   }
   if (NARROW_PARKED_ANCHOR_RE.test(sel)) {
@@ -644,6 +680,7 @@ export class OnboardingHintsUI {
       !useHelpAnchor &&
       isNarrowViewport() &&
       !document.body.classList.contains('ft-narrow-park') &&
+      !document.body.classList.contains('ft-narrow-idle') &&
       anchorCfg.placement === 'above' &&
       /#btn-focus/.test(String(anchorCfg.selector))
     ) {

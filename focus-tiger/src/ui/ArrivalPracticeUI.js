@@ -149,6 +149,7 @@ export class ArrivalPracticeUI {
       if (!this._canDismissSelectionOnOutside()) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root?.contains(target)) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       // ⚡ Quick Start 须走 skipToBegin，勿先被外侧取消吃掉
       if (
         target instanceof Element &&
@@ -156,7 +157,6 @@ export class ArrivalPracticeUI {
       ) {
         return;
       }
-      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       this._cancelFromOutside();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);

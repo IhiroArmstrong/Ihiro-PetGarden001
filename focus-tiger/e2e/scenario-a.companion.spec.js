@@ -98,6 +98,38 @@ test('Arrival Notice: tip click dismisses tip only, not Arrival', async ({
   await expect(arrival).toBeHidden({ timeout: 5_000 });
 });
 
+/**
+ * §8 N18 / 场景 O 图1：点 tip 只关 tip，不得把 Notice 选择格一并外侧取消掉。
+ * 375：主屏 Sit → Notice → 等 notice tip → 点 tip。
+ */
+test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
+  page
+}) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+
+  await page.locator('#ft-narrow-home-sit').click();
+
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  const noticePick = arrival.getByRole('button', {
+    name: /Calm|平静|Not Sure|不确定/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+
+  const tip = page.locator(
+    'ft-onboarding-hint-bubble[data-hint-id="notice"][open]'
+  );
+  await expect(tip).toBeVisible({ timeout: 12_000 });
+  await tip.click();
+
+  await expect(tip).toBeHidden({ timeout: 5_000 });
+  await expect(arrival).toBeVisible();
+  await expect(noticePick.first()).toBeVisible();
+  await expectFocusSessionInactive(page);
+});
+
 test('Arrival Choose dismisses on outside click (back to Idle)', async ({
   page
 }) => {
@@ -130,6 +162,31 @@ test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stay
   ).toBeVisible({ timeout: 8_000 });
 });
 
+/**
+ * W3 / L174 on narrow: home Sit ball hides; home Quick Start ball must stay.
+ * (Wide e2e above only locks `#quick-start-focus` — insufficient after home CTAs.)
+ */
+test('375 Arrival: home Sit hidden; home Quick Start stays visible', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await page.locator('#ft-narrow-home-sit').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#ft-narrow-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
+  const qs = page.locator('#ft-narrow-home-quickstart');
+  await expect(qs).toBeVisible();
+  await expect(qs).toBeEnabled();
+  await expect(page.locator('#ft-narrow-idle-shell')).toHaveClass(
+    /is-arrival-quick/
+  );
+  await expect(
+    arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
+  ).toBeVisible({ timeout: 8_000 });
+});
+
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
   page
 }) => {
@@ -154,19 +211,16 @@ test('scenario A4: after Choose, Here & Now starts focus (no Arrival Notice)', a
 });
 
 /**
- * 图2 回归：375 Choose 鞠躬后须 stage Companion（三选一在视口内），
- * 尚未 Focusing；点选后才见 FocusHUD。禁止屏外「假死」Calm。
+ * 图2 / ca20d07 回归：375 Choose 鞠躬后须 stage Companion（三选一在视口内），
+ * 尚未 Focusing；点选后才见 FocusHUD。禁止屏外「假死」+ 只剩 home 三球。
+ * （宽屏 A4 只锁 panel 可见属性不够——park 下 DOM 可见但屏外仍假绿。）
  */
 test('375 Choose bow: Companion staged in viewport then Here & Now focuses', async ({
   page
 }) => {
-  await openFreshProductShell(page);
   await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
-    timeout: 15_000
-  });
-  await page.locator('.ft-narrow-grabber').click();
-  await page.locator('.ft-narrow-sheet__item.is-primary').click();
+  await openFreshProductShell(page);
+  await page.locator('#ft-narrow-home-sit').click();
 
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
@@ -182,6 +236,7 @@ test('375 Choose bow: Companion staged in viewport then Here & Now focuses', asy
   const panel = page.locator('.session-start-dock__panel');
   await expect(panel).toBeVisible({ timeout: 45_000 });
   await expect(panel).toBeInViewport();
+  await expect(page.locator('body')).toHaveClass(/ft-narrow-stage-companion/);
   await expect(page.locator('#hud-state')).toContainText(
     /Calm|Idle|Asleep|沉静|空闲|沉睡/i
   );

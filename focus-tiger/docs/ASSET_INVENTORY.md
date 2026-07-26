@@ -159,6 +159,21 @@
 
 ---
 
+## UI 图标（非序列帧）
+
+> **路径**：`public/icons/`（**不是** `public/sprites/{characterId}/...`）。  
+> **入库**：2026-07-26 · 窄屏 Idle 主画布三主钮。
+
+| 文件 | 约尺寸 | 用途 | 接线 |
+|---|---|---|---|
+| `icon-sit-with-yin.png` | ~396×396 RGBA（收紧内边距后） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
+| `icon-quick-start.png` | ~383×383 RGBA | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
+| `icon-honesty-checkin.png` | ~386×386 RGBA | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
+
+圆形图腾已收紧 PNG 内边距；窄屏显示约 **72×72 CSS px**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉与显隐同步。
+
+---
+
 ## 相关文档
 
 - 进度叙事：`PROCESS.md`「当前进度速览」  

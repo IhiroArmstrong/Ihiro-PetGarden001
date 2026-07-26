@@ -17,9 +17,10 @@
 | hintId | 场景（对应故事） | 提示 EN / ZH | 自动出现时机 | 完成操作后记已读 | 补救可调 |
 |---|---|---|---|---|---|
 | `dormant-open` | （历史）睡着开场 | 保留 id；开场已改 Idle，基本不自动触发 | — | — | 兼容 |
-| `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次看到 Honesty 可忽略提示 | 点 Sit 忽略，或点进补登 | 是 |
+| `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次见到 Honesty 入口（含窄屏 Honesty 圆球） | 点 Sit 忽略，或点进补登 | 是 |
 | `honesty-bridge` | Honesty 桥接 Yes/No | "Yes begins Arrival; No stays with idle. Either is fine." / 「选 Yes 进入到达练习；选 No 继续闲坐。都可以。」 | 首次桥接面板可见 | 点 Yes / No | 是 |
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
+| `quick-start` | Idle ⚡ Quick Start | "Skip Arrival — begin with your last way of sitting." / 「跳过到达练习——用上次的同坐方式立刻开始。」 | Idle 且 ⚡ / 窄屏闪电球可见 | 点 ⚡ / Quick Start 球 | 是 |
 | `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
 | `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | **不自动**（Arrival 进行中安静；2026-07-25） | 点选图标或补救关掉 tip | 是（点 ?） |
 | `breathing` | A3c | "Just breathe with Yin. Nothing else to do." / 「跟着阿寅呼吸就好，不用做别的。」 | **不自动**（同上） | 呼吸结束或补救关掉 tip | 是（点 ?） |
@@ -34,6 +35,7 @@
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
 | `weekly-heatmap` | Idle 左下 7 格 | "A quiet week of shared sitting — lit days you practiced." / 「近日同坐的日子——亮起的格，是你来过的日子。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
+| `in-app-reminder` | Idle 热力图旁时钟 | "Set a daily time — Yin leaves a gentle note if you haven't practiced yet." / 「设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。」 | Idle 热力图簇可见 | 开面板 / 开计时 / 点气泡 | 是 |
 | `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |
 | `quick-start` | Idle ⚡ | "Skip Arrival — sit with your last mode right away." / 「跳过到达练习，用上次的方式立刻同坐。」 | Idle ⚡ 可见 | 点 ⚡ / 点气泡 | 是 |
 | `focus-hud-ring` | Focusing HUD 金环 | "This ring soft-fills as you sit — a quiet presence, not a scoreboard." / 「同坐时金环慢慢亮起——轻柔陪伴，不是计分板。」 | Focusing 自动；任何场景点 ? 补救 | 点气泡 / 读完 | 是 |
@@ -56,9 +58,10 @@
 | hintId | localeKey | selector | placement | tip | anchorGroup |
 |---|---|---|---|---|---|
 | `dormant-open` | `HINT_DORMANT_OPEN` | `#btn-focus` | above | bottom | — |
-| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `#btn-focus` | right | left | — |
+| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `#honesty-idle-entry` | above | bottom | — |
 | `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `#honesty-bridge-cta` | above | bottom | — |
 | `sit-button` | `HINT_SIT_BUTTON` | `#btn-focus` | above | bottom | — |
+| `quick-start` | `HINT_QUICK_START` | `#quick-start-focus` | above | bottom | — |
 | `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `.session-start-dock__hint` | right | left | — |
 | `notice` | `HINT_NOTICE` | `#arrival-practice, #btn-focus` | above | bottom | — |
 | `breathing` | `HINT_BREATHING` | `#arrival-practice, #btn-focus` | above | bottom | — |
@@ -73,8 +76,8 @@
 | `reflection` | `HINT_REFLECTION` | `#tiger-reflection-moment` | above | bottom | — |
 | `idle-after-session` | `HINT_IDLE_AFTER_SESSION` | `#btn-focus` | above | bottom | — |
 | `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `#weekly-practice-heatmap` | right | left | — |
+| `in-app-reminder` | `HINT_IN_APP_REMINDER` | `#reminder-preference-toggle` | right | left | — |
 | `micro-ritual` | `HINT_MICRO_RITUAL` | `#micro-ritual-idle-entry` | right | left | — |
-| `quick-start` | `HINT_QUICK_START` | `#quick-start-focus` | above | bottom | — |
 | `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
 | `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
 | `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |

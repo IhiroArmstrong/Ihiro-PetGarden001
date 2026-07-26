@@ -81,6 +81,7 @@
 | N15 | **Bug 修复一体包（强制）**：代码或修正措施落地后，**同回合**更新相关项目文档，并**立刻本地 commit**（文档与代码进同一 commit 或紧随其后的 Docs commit，禁止隔夜/隔会话）。文档最低：`TEST_TRACKER`（用户反馈列 + 步骤对齐）；另按触及面更新 `EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `PROCESS` 速览 / `ASSET_INVENTORY` 等。缺文档或未 commit → 视为**未完成**，不得写「已修好」 |
 | N16 | **commit 粒度与 message**：每个 commit 必须对应**一个逻辑完整改动**（功能 / bug 修复 / 文档更新），message 须说明 **what + why**；禁止 `update docs` / `misc` / `wip` 之类无信息量提交 |
 | N17 | **姊妹功能分支不漏修**（§6.6）：长期并存的功能分支（如窄屏/宽屏变体）在任一分支有**修复性** commit 落地时，须同步检查另一条是否需合入同一修复；触及共享入口（Sound / Honesty / Companion 等 §2.3）的修复，收尾「待你决定 / 待你知道」须写明波及哪些姊妹分支；合回单线 vs 继续并行须**用户拍板**（Agent 不自行定分支策略）。操作条文 SSOT：`WORKFLOW.md`「长期并存功能分支的同步纪律」 |
+| N25 | **可见性验收 OK = 宽+窄自动化同任务**（见 §8.6）：不得只写 `TEST_TRACKER`；须进 `visibilityContractRegistry` + 双视口锚点；改 suppress/hide → 整表 `test:e2e:visibility` |
 
 ### 2.2 防把好的改坏（重写 / 改转场开工）
 
@@ -299,6 +300,7 @@
 | 费用 | Playwright 开源；本机下载 Chromium，**无 SaaS 授权费** |
 | 范围 v1 | 产品壳入口冒烟（`?product=1` 可见 Sit）；**Task 1 已扩** A/I/K Companion DOM（见 `scenario-a.companion.spec.js`） |
 | 命令 | `npm run test:e2e`（与 `test:smoke` 并列；交互修复收尾两者都要绿） |
+| 浏览器 | 本地默认 **Playwright 自带 Chromium**（`npm run test:e2e:install`）；勿默认 `channel: 'chrome'`（Cursor 子进程唤起系统 Chrome 易触发 macOS abort 弹窗）。系统 Chrome 兜底：`PLAYWRIGHT_CHANNEL=chrome` |
 
 #### 技术选型（更新）
 
@@ -386,6 +388,8 @@
 | 2026-07-25 | 合并 SUPPLEMENT_1 §6.6：分支分叉纪律 B1–B3；升格 N17；SSOT 写入 `WORKFLOW.md`；删除根目录平行补充稿；章节按 6.1→6.6 数字序 |
 | 2026-07-25 | 新增 §8「窄屏故事矩阵」：根因六条 + N17–N20（375 故事最小集 / tip 回归 / 双壳契约 / 关单话术）；不变量落盘 `SHARED_RESOURCES` §6 |
 | 2026-07-25 | 新增 §9「宽屏故事矩阵」：对称原则 + 宽屏盲区评估 + N21–N24（≥480 故事最小集 / Popover·tip 邻接 / 双壳勾窄 / 关单话术） |
+| 2026-07-26 | §8.2 增 3c：并行分支丢 `ca20d07` stage + A4 不锁视口假绿；N17 S2 改为鞠躬→三选一在视口→点选→Focusing |
+| 2026-07-26 | §8.6 / N25：Visibility Contract Registry；验收 OK 须同任务双视口自动化；suppress 变更 CI 整表 |
 
 ---
 
@@ -488,6 +492,13 @@
 3. **双壳（窄 park / 宽 park）缺少共享契约**  
    宽屏做了 park → tip remap 到 ⋯；窄屏有 remap 函数，但补救 ? 仍可能指到 park 掉的旧按钮坐标；Arrival / Honesty 叠层时 ActionBar / `#focus-hud` 被 suppress，却**没写清**「叠层期顶栏时间谁负责」。等于：壳换了，Hints / HUD 契约没同步升格成跨壳不变量。
 
+3b. **把控件挪到新宿主后，e2e 仍只锁旧选择器（2026-07-26）**  
+   L174 / W3 已验收「Arrival 开着时 ⚡ Quick Start 仍可见」。窄屏把三主钮搬到 `#ft-narrow-home-*` 后，`setSuppressed(true)` **整壳隐藏**连 Quick Start 球一起藏掉；而既有 e2e 仍只断言宽屏 dock `#quick-start-focus`（默认视口），**375 不红 → 假绿**。根因是：改宿主时未把「用户可见宿主」写进已好清单 / 未补窄屏回归锚。
+
+3c. **并行分支丢已验收修复 + e2e 不锁视口（2026-07-26）**  
+   `ca20d07`（鞠躬后 `ft-narrow-stage-companion`，三选一进视口）已在 `develop` / wide-idle 验收；`fix/scenario-o-375-chrome-layout` 从更早点分叉后**未 cherry-pick**，又叠 home 三球。用户侧表现为「鞠躬后没弹出三选一」（只剩 Sit/⚡/Honesty）。既有 A4 只断言 `.session-start-dock__panel` **属性可见**，park 下 DOM 可见但屏外仍**假绿**；含 `toBeInViewport` 的 375 e2e 只在 develop，本分支没有 → 丢修复不红。  
+   **流程教训**：① 并行专题开工前对高风险契约（鞠躬→三选一 stage）做 merge-base / cherry-pick 核对；② 窄屏「可见」必须锁 **视口内**（`toBeInViewport` / stage class），禁止只锁 `hidden` 属性；③ 改 chrome 宿主时「已好清单」须显式含鞠躬后 Companion。
+
 4. **自动化覆盖层与人工验收错位**  
    `test:smoke` / 多数 e2e 锁的是宽屏或「抽屉里有没有 Honesty」一类 DOM，**很少锁**：375 × Arrival tip 点击、375 × Choose 后 `#focus-hud`、375 × ? 补救锚点、375 × Arrival Breath 时 Sit 必须 `hidden`。于是：e2e 绿、宽屏 OK、窄屏故事红——符合「全绿 ≠ 观感/故事通过」，但流程上仍把窄屏当成「附带一眼」。
 
@@ -519,7 +530,7 @@
 | # | 故事 | 最低可见结果 |
 |---|---|---|
 | S1 | Sit → Notice（选择格可见；可外侧取消回 Idle） | 面板在；点空白取消后回 Idle |
-| S2 | Notice → Breath → Choose → 鞠躬 → Focusing | 见 Focusing HUD（`#focus-hud` 或约定顶栏时间）；计时可读 |
+| S2 | Notice → Breath → Choose → 鞠躬 → **Companion 三选一在视口** → 点选 → Focusing | 鞠躬后见 Here & Now / Offline / Flow（**非**直接 Focusing；窄屏须 `ft-narrow-stage-companion` / 面板 `toBeInViewport`）；点选后见 Focusing HUD |
 | S3 | 点 **?** 补救 | tip 锚点正确（无乱指 park 掉的旧按钮）；可关 |
 | S4 | Arrival / Honesty **叠层期间** chrome | 顶栏时间归属写死且可见约定成立；Sit 按契约显隐（见双壳不变量） |
 | S5 |（若本任务触及）Honesty 桥接 / 回流再进 | 与宽屏门闩行为一致，无静默失败 |
@@ -541,8 +552,9 @@
 | 契约 | 含义 | 权威落盘 |
 |---|---|---|
 | **Hints remap** | park 后 tip / ? 补救锚点必须 remap 到当前可见宿主（窄：ActionBar `?` 等；宽：⋯ 等），禁止仍指旧坐标 | `SHARED_RESOURCES.md` §6 + `RESPONSIVE_LAYOUT.md` |
-| **Sit 显隐** | Arrival（含 Breath）开着时 Sit / 等价主 CTA 须按契约隐藏或不可点；NarrowIdleShell 与宽屏 dock **同一语义** | 同上 |
-| **FocusHUD vs ActionBar** | Focusing / 叠层期：谁负责顶栏时间、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄改一侧必须勾另一侧 | 同上 |
+| **Sit 显隐** | Arrival（含 Breath）开着时 Sit / 等价主 CTA 须按契约隐藏或不可点；NarrowIdleShell 与宽屏 dock **同一语义** | `SHARED_RESOURCES.md` §6 **机器块**（`arrival-sit-hidden` 等） |
+| **Quick Start 显隐** | Arrival 全程 ⚡ 可见；窄屏宿主 `#ft-narrow-home-quickstart` | 同上（`arrival-quickstart-visible`） |
+| **FocusHUD vs ActionBar** | Focusing / 叠层期：谁负责顶栏时间、何时 suppress ActionBar、何时露出 `#focus-hud`——宽/窄改一侧必须勾另一侧 | 同上 + `focusing-*` 行 |
 
 宽屏或窄屏改一侧 chrome → 开工保护面与收尾复测**必须勾另一侧**（至少 375 故事最小集相关行 + 一侧 ≥480 对照）。
 
@@ -564,6 +576,30 @@
 - [ ] 双壳不变量已对照 `SHARED_RESOURCES` §6；改一侧已勾另一侧（N19）  
 - [ ] 关单 / 状态文案未用「宽屏 OK」单独关闭 chrome 行（N20）  
 - [ ] 若本任务亦动宽屏 chrome：已对照 **§9**（或注明宽屏故事未测）
+
+### 8.6 跨视口可见性契约（Visibility Contract · N25）
+
+> **地位**：结构性预防「只锁宽屏选择器 → 窄屏假绿」（2026-07-26 Quick Start 丢失根因）。  
+> **SSOT**：`src/core/visibilityContractRegistry.js` → `SHARED_RESOURCES.md` §6 机器块。  
+> **检测**：`npm run visibility:doc-check`（并入 `docs:check`）；改 suppress/hide → CI `npm run test:e2e:visibility`。
+
+#### N25 · 「验收 OK」=「宽+窄自动化锁住」同任务发生（强制）
+
+凡用户书面或人工验收某条**可见性**规则为 OK（某元素在某状态 × 某视口须可见/隐藏/不可点）：
+
+1. **同一任务内**必须立刻：  
+   - 在 `visibilityContractRegistry.js` 增/改对应行（宽屏 `wideSelector` + 窄屏 `narrowSelector`；`viewport: both` 时两者皆必填）；  
+   - 补 **宽屏与窄屏** Playwright 锚点（或将该行标 `gap-*` 并在回复中明示「未锁视口」——**禁止**把未锁行写成 `locked`）；  
+   - `npm run visibility:doc-sync`；  
+   - 相关 e2e 进 `test:e2e:visibility` 派生列表（锚点文件自动收录）。  
+2. **禁止**只把结论写进 `TEST_TRACKER`「用户反馈 / 已通过」却无 registry 行 + 双视口锚点——文字记录 ≠ 锁住。  
+3. **禁止**「验收 OK」与「自动化锁住」之间留时间差（不可「下个任务再补 e2e」）。  
+4. 改 `setSuppressed` / `hidden` / park / `is-arrival-quick` 等全局显隐开关时：本地与 CI 须跑 **整表** `test:e2e:visibility`，不得只跑本任务新增用例。
+
+收尾自检追加：
+
+- [ ] 本任务若有「人工验收 OK」的显隐结论 → registry 行 + 宽/窄锚点已同批落地（或诚实 `gap-*`）  
+- [ ] 若改了 suppress/hide 面 → 已跑 `npm run test:e2e:visibility`
 
 ---
 
@@ -595,6 +631,8 @@
 
 分支未合入目标壳时，仍须跑故事最小集；只是 W1/W4 形态描述随壳变化。
 
+> **人工验收提醒（强制）**：`feature/wide-idle-more-menu`（新宽屏 Popover / Sit+⚡+⋯）**准备合并进主开发线时**，才是 §9 **完整 W1–W8** 第一次被真正拿来验证的时机。那是一次**新的、独立的人工验收**，**禁止**与窄屏 375 chrome Bug 修复（§8 / 场景 O）的验收混在同一批关单话术里。Agent 在该合并 / Task 3 开工或验收回合须**明确提醒**用户。
+
 ### 9.3 工作流规范（强制）
 
 #### N21 · ≥480 故事最小集（chrome 类任务默认步骤）
@@ -607,7 +645,7 @@
 |---|---|---|
 | W1 | Idle 清场形态 | 常驻 **Sit + ⚡ + ⋯**；How / Honesty / Sound FAB / 提醒**不在**底栏常驻簇（已 park）；左下 `?` + 热力图仍在 |
 | W2 | Sit → Notice → Breath → Choose → 鞠躬 → Focusing | 左上 `#focus-hud` 进入 Focusing、计时走动；`#btn-focus` 呈 Rise |
-| W3 | Arrival 全程（含 **Breath / Inhale**） | **Sit 与 ⋯ 隐藏**（或明确不可点）；**⚡ 仍可见**可 Quick Start；不得中途又露出可点 Sit |
+| W3 | Arrival 全程（含 **Breath / Inhale**） | **Sit 与 ⋯ 隐藏**（或明确不可点）；**⚡ 仍可见**可 Quick Start；不得中途又露出可点 Sit。**窄屏**：用户可见宿主是 `#ft-narrow-home-quickstart`（勿只断言 dock 里已 park 的 `#quick-start-focus`） |
 | W4 | ⋯ Popover 代理入口 | 打开 ⋯ → 至少抽测：**Honesty**（进补登/时长）、**How shall we sit?**（三选一）、**Sound**（**直接** Soundscape 选曲面，禁止只抬红色 FAB）、**提醒**（设置面板）——点选后 Popover 收起、真实面板出现 |
 | W5 | 点 **?** 补救 / tip 锚点 | park 后 tip 须 remap 到可见宿主（常为 ⋯ 或仍可见的 `?`）；禁止乱指已 park 旧坐标 |
 | W6 | 邻接可点物（外侧 / tip / Popover） | 见 **N22** |

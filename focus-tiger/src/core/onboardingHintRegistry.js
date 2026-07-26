@@ -30,7 +30,11 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
   {
     id: 'honesty-optional',
     localeKey: 'HINT_HONESTY_OPTIONAL',
-    anchor: { selector: '#btn-focus', placement: 'right', tip: 'left' }
+    anchor: {
+      selector: '#honesty-idle-entry',
+      placement: 'above',
+      tip: 'bottom'
+    }
   },
   {
     id: 'honesty-bridge',
@@ -45,6 +49,15 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     id: 'sit-button',
     localeKey: 'HINT_SIT_BUTTON',
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
+  },
+  {
+    id: 'quick-start',
+    localeKey: 'HINT_QUICK_START',
+    anchor: {
+      selector: '#quick-start-focus',
+      placement: 'above',
+      tip: 'bottom'
+    }
   },
   {
     id: 'how-shall-we-sit',
@@ -167,21 +180,21 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     }
   },
   {
+    id: 'in-app-reminder',
+    localeKey: 'HINT_IN_APP_REMINDER',
+    anchor: {
+      selector: '#reminder-preference-toggle',
+      placement: 'right',
+      tip: 'left'
+    }
+  },
+  {
     id: 'micro-ritual',
     localeKey: 'HINT_MICRO_RITUAL',
     anchor: {
       selector: '#micro-ritual-idle-entry',
       placement: 'right',
       tip: 'left'
-    }
-  },
-  {
-    id: 'quick-start',
-    localeKey: 'HINT_QUICK_START',
-    anchor: {
-      selector: '#quick-start-focus',
-      placement: 'above',
-      tip: 'bottom'
     }
   },
   {
