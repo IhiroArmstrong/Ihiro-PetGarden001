@@ -788,6 +788,8 @@ export class NarrowIdleShell {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
+        /* PR#2 前试看：略提对比/饱和、微压亮度，让橙系图案更深更清晰；不改 PNG。 */
+        filter: contrast(1.22) saturate(1.38) brightness(0.95);
       }
       .ft-narrow-grabber {
         position: absolute;
