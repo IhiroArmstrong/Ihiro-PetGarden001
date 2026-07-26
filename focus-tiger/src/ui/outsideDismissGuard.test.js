@@ -22,6 +22,18 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
     assert.equal(shouldIgnoreOutsideDismissTarget(purpose), true);
     assert.equal(shouldIgnoreOutsideDismissTarget(help), true);
     assert.equal(shouldIgnoreOutsideDismissTarget(narrowHelp), true);
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#ft-narrow-home-quickstart' ? {} : null)
+      }),
+      true
+    );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#ft-hint-catalog-chip' ? {} : null)
+      }),
+      true
+    );
     assert.equal(shouldIgnoreOutsideDismissTarget(blank), false);
     assert.equal(shouldIgnoreOutsideDismissTarget(null), false);
   });

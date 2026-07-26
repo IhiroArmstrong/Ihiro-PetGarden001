@@ -413,3 +413,68 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
     expect(flags.byDate[date], `expected dim for ${date}`).toBe('0');
   }
 });
+
+/**
+ * Fig12 / L259: ? remedy shows one primary tip + persistent「还有 N 条」chip
+ * (not a flood of overlapping tips).
+ */
+test('375 park: ? remedy shows one primary tip + catalog chip', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
+    timeout: 15_000
+  });
+
+  await page.locator('#ft-narrow-help-btn').click();
+
+  const before = await page.evaluate(() => {
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble')
+    ].filter((b) => {
+      if (b.open === false) return false;
+      const r = b.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    const chip = document.getElementById('ft-hint-catalog-chip');
+    const chipRect = chip?.getBoundingClientRect();
+    return {
+      count: bubbles.length,
+      ids: bubbles.map((b) => b.dataset.hintId),
+      chipVisible: Boolean(
+        chip &&
+          !chip.hidden &&
+          chipRect &&
+          chipRect.width > 0 &&
+          chipRect.top >= 0 &&
+          chipRect.top < 667
+      ),
+      chipText: chip?.textContent?.trim() || ''
+    };
+  });
+  expect(before.count).toBeLessThanOrEqual(2);
+  expect(before.count).toBeGreaterThanOrEqual(1);
+  expect(before.ids).toContain('sit-button');
+  expect(before.chipVisible).toBe(true);
+  expect(before.chipText).toMatch(/more|还有/i);
+
+  await page.locator('#ft-hint-catalog-chip').click();
+
+  const after = await page.evaluate(() => {
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble')
+    ].filter((b) => {
+      if (b.open === false) return false;
+      const r = b.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    });
+    const chip = document.getElementById('ft-hint-catalog-chip');
+    return {
+      bubbleCount: bubbles.length,
+      chipHidden: !chip || chip.hidden
+    };
+  });
+  expect(after.bubbleCount).toBeGreaterThanOrEqual(3);
+  expect(after.chipHidden).toBe(true);
+});

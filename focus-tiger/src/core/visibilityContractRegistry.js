@@ -144,7 +144,7 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     lockStatus: 'locked',
     source: 'TEST_TRACKER L234 / 场景 O ⑤ · PR#2 merge-class-1',
     notes:
-      '宽屏 #btn-focus:disabled；窄屏 home Sit / home CTAs 须 hidden。场景 O 用户书面「a minute breath 期间仍见 Sit」'
+      '宽屏 #btn-focus:disabled；窄屏 home Sit / home CTAs 须 hidden，且不得经 ft-narrow-focusing 把旧 Sit 拉回视口（ft-narrow-hide-sit-dock）。场景 O 用户书面「a minute breath 期间仍见 Sit」'
   },
   {
     id: 'honesty-bridge-entries-hidden',

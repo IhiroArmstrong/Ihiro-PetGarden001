@@ -213,6 +213,22 @@ test('375 Arrival Breath: home Sit stays hidden; Quick Start stays', async ({
   );
 });
 
+/**
+ * Arrival keepQuickStart: home ⚡ must begin Focus (not silent no-op when dock ⚡ is hidden).
+ */
+test('375 Arrival: home Quick Start begins focus', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await page.locator('#ft-narrow-home-sit').click();
+  const arrival = page.locator('#arrival-practice');
+  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
+  await page.locator('#ft-narrow-home-quickstart').click();
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await expectFocusSessionActive(page);
+});
+
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
   page
 }) => {

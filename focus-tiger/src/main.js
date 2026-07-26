@@ -695,12 +695,10 @@ async function init() {
       honestyCheckIn.openDurationChoices({ force: true });
     },
     onQuickStart: () => {
-      const el = document.getElementById('quick-start-focus');
-      if (!el || el.disabled || el.hidden) return;
-      const prev = el.style.pointerEvents;
-      el.style.pointerEvents = 'auto';
-      el.click();
-      el.style.pointerEvents = prev;
+      // Call the real handler — do not proxy via #quick-start-focus.
+      // Arrival keepQuickStart parks/hides the dock ⚡ while the home ball stays;
+      // clicking a [hidden] button was a silent no-op (user: Arrival ⚡ 没反应).
+      companionModeHandlers.onQuickStart?.();
     },
     onClearStage: () => {
       companionModePicker.hide();

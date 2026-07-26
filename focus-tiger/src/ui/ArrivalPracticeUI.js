@@ -151,9 +151,11 @@ export class ArrivalPracticeUI {
       if (this.root?.contains(target)) return;
       if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       // ⚡ Quick Start 须走 skipToBegin，勿先被外侧取消吃掉
+      // （窄屏宿主是 #ft-narrow-home-quickstart，dock #quick-start-focus 可能已 park）
       if (
         target instanceof Element &&
-        target.closest('#quick-start-focus')
+        (target.closest('#quick-start-focus') ||
+          target.closest('#ft-narrow-home-quickstart'))
       ) {
         return;
       }

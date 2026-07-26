@@ -8,6 +8,8 @@ import {
   resolveHintForScene,
   resolveAutoHintIds,
   resolveRemedyHintIds,
+  resolvePrimaryRemedyHintId,
+  resolveRemedyCatalogHintIds,
   selectExclusiveAutoHintIds,
   appendIdleChromeHintIds
 } from './OnboardingHintsStore.js';
@@ -163,6 +165,22 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
     ]
   );
   assert.ok(!resolveRemedyHintIds({}).includes('help-affordance'));
+});
+
+test('resolvePrimaryRemedyHintId + catalog split Idle / Arrival / Focusing', () => {
+  assert.equal(resolvePrimaryRemedyHintId({}), 'sit-button');
+  assert.equal(
+    resolvePrimaryRemedyHintId({ arrivalOpen: true, arrivalPhase: 'breath' }),
+    'breathing'
+  );
+  assert.equal(resolvePrimaryRemedyHintId({ isFocusing: true }), 'rise-button');
+  const catalog = resolveRemedyCatalogHintIds({});
+  assert.ok(!catalog.includes('sit-button'));
+  assert.ok(catalog.length >= 1);
+  assert.deepEqual(
+    resolveRemedyCatalogHintIds({ isFocusing: true }),
+    resolveRemedyHintIds({ isFocusing: true }).filter((id) => id !== 'rise-button')
+  );
 });
 
 test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () => {
