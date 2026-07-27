@@ -38,10 +38,14 @@ jobs:
           if [ "$merge_exit" -ne 0 ]; then
             echo "conflict=true" >> "$GITHUB_OUTPUT"
             git diff --name-only --diff-filter=U | tee conflict_files.txt
-            git merge --abort
+            if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+              git merge --abort
+            fi
             exit 1
           fi
-          git merge --abort
+          if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+            git merge --abort
+          fi
           echo "conflict=false" >> "$GITHUB_OUTPUT"
 
       - name: Comment conflict files on PR
