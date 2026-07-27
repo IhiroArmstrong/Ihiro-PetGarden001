@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v11';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v12';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -8,9 +8,9 @@ const SWIPE_CLOSE_PX = 48;
 const HOME_CTA_PX = 72;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
-const ICON_SIT = '/icons/icon-sit-with-yin.png?v=3';
-const ICON_QUICK = '/icons/icon-quick-start.png?v=3';
-const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=3';
+const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
+const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
 
 /**
  * Narrow Idle shell (≤479 / 375):
@@ -788,8 +788,6 @@ export class NarrowIdleShell {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
-        /* PR#2 前试看：略提对比/饱和、微压亮度，让橙系图案更深更清晰；不改 PNG。 */
-        filter: contrast(1.22) saturate(1.38) brightness(0.95);
       }
       .ft-narrow-grabber {
         position: absolute;

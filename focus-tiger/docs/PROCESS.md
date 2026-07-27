@@ -63,7 +63,7 @@
 
 **近期落地（待人工测试）**：
 
-- **窄屏主屏三主钮（2026-07-26）**：用户书面——375 首页底部太空；`NarrowIdleShell` 主画布放 **Sit with Yin / Quick Start / Honesty Check-in**，抽屉删这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。e2e 已锁；待人工观感。
+- **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
 - **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。**提醒**：完整 W1–W8 人工验收推迟到 `feature/wide-idle-more-menu` 合并时单独做，勿与窄屏 O 修复混验。

@@ -162,15 +162,17 @@
 ## UI 图标（非序列帧）
 
 > **路径**：`public/icons/`（**不是** `public/sprites/{characterId}/...`）。  
-> **入库**：2026-07-26 · 窄屏 Idle 主画布三主钮。
+> **入库**：2026-07-26 · 窄屏 Idle 主画布三主钮；**2026-07-27** 换 **v3** cream 底图腾。
 
 | 文件 | 约尺寸 | 用途 | 接线 |
 |---|---|---|---|
-| `icon-sit-with-yin.png` | ~417×417 RGBA（**v2** 扁平，无灰底/投影） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
-| `icon-quick-start.png` | ~402×402 RGBA（**v2**） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
-| `icon-honesty-checkin.png` | ~409×409 RGBA（**v2**） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
+| `icon-sit-with-yin.png` | ~398×398 RGBA（**v3** cream 底 + 金 ensō） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
+| `icon-quick-start.png` | ~397×397 RGBA（**v3**） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
+| `icon-honesty-checkin.png` | ~396×396 RGBA（**v3**） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
 
-**v2（2026-07-26 夜）**：替换 v1（白 badge 底+投影）；不两版并存。圆形边缘几何裁切，素材约 **6%** 边距；窄屏显示约 **72×72 CSS px**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=3`。
+**v3（2026-07-27）**：替换 v2（橙褐底扁平）；不两版并存。圆形 cream 底 + 金图腾，素材内边距约 **17–21%** 直径（@72 CSS px 约 12–15px）；窄屏显示仍约 **72×72**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=4`。已去掉 v2 试看用的 CSS `contrast/saturate` filter（按素材原色显示）。
+
+**边距观感**：相对 v2「收紧」版，v3 图腾在 72px 下略偏疏（Quick Start 火焰左右留白更多）。若嫌小，可再出一版压到约 **10–12%** 边距，或把 `HOME_CTA_PX` 提到 80——**待用户拍板**，本次未改显示尺寸。
 
 ---
 
