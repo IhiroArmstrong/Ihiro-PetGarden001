@@ -21,7 +21,9 @@
     "rules:doc-check": "node scripts/rules-authority-doc-check.js",
     "rules:doc-sync": "node scripts/rules-authority-doc-check.js --write",
     "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test e2e/product-shell.smoke.spec.js e2e/scenario-a.companion.spec.js --grep \"product shell shows|lab shell exposes|scenario A: Arrival\"",
     "test:e2e:visibility": "node scripts/run-visibility-e2e.js",
+    "test:pr-smoke": "npm run test:smoke && npm run test:e2e:smoke",
     "test:e2e:install": "playwright install chromium"
   },
   "dependencies": {

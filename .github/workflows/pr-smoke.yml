@@ -1,0 +1,44 @@
+name: PR smoke (logic + browser shell)
+
+# Fast gate for every PR → develop: startup, render, core state path.
+# Full e2e / visibility / doc-contract run separately (pre-merge or scheduled).
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'focus-tiger/**'
+      - '.github/workflows/pr-smoke.yml'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+
+jobs:
+  pr-smoke:
+    name: test:pr-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: focus-tiger
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: focus-tiger/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Logic smoke (node --test subset)
+        run: npm run test:smoke
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Browser smoke (Playwright subset)
+        run: npm run test:e2e:smoke
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CHANNEL: ''
