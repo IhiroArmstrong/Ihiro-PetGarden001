@@ -221,6 +221,20 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
       '窄屏用户路径已锁 toBeInViewport。宽屏 A4 属性可见即可（不 park）；P2'
   },
   {
+    id: 'companion-stage-honesty-entry-hidden',
+    state: 'companion-staged-narrow',
+    viewport: 'narrow',
+    role: 'HonestyIdleEntry',
+    must: 'hidden',
+    narrowSelector: '#honesty-idle-entry',
+    testAnchorNarrow:
+      'e2e/scenario-a.companion.spec.js › 375 companion stage: Honesty dock entry stays hidden',
+    lockStatus: 'locked',
+    source: '用户书面 2026-07-27 · How shall we sit 误出 Honesty',
+    notes:
+      'stage companion 只亮三选一；Honesty 在主球，dock pill 须 display:none'
+  },
+  {
     id: 'idle-narrow-three-home-balls',
     state: 'idle',
     viewport: 'narrow',

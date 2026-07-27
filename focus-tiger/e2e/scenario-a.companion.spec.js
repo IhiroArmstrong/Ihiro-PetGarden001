@@ -310,11 +310,43 @@ test('375 Choose bow: Companion staged in viewport then Here & Now focuses', asy
     /Calm|Idle|Asleep|沉静|空闲|沉睡/i
   );
   await expectFocusSessionInactive(page);
+  // Dock Honesty pill must stay hidden — home ball owns Honesty on narrow.
+  await expect(page.locator('#honesty-idle-entry')).toBeHidden();
 
   await selectCompanionMode(page, /Here & Now|当下同坐/i);
   await expectFocusSessionActive(page);
   await expect(page.locator('#focus-hud')).toBeVisible();
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
+});
+
+});
+
+/**
+ * 2026-07-27 回归：抽屉 How shall we sit → stage companion 时，
+ * dock 的 Honesty Check-in  pill 不得再浮到三选一上方（主球已承担 Honesty）。
+ */
+test('375 companion stage: Honesty dock entry stays hidden', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
+    timeout: 15_000
+  });
+  await page.locator('.ft-narrow-grabber').click();
+  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+    'aria-hidden',
+    'false'
+  );
+  await page
+    .locator('.ft-narrow-sheet__item[data-proxy="companion"]')
+    .click();
+  await expect(page.locator('body')).toHaveClass(/ft-narrow-stage-companion/);
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible();
+  await expect(page.locator('.session-start-dock__panel')).toBeInViewport();
+  await expect(page.locator('#honesty-idle-entry')).toBeHidden();
+  // Home Honesty ball is tucked while companion is staged — not the dock pill.
+  await expect(page.locator('#ft-narrow-home-honesty')).not.toBeVisible();
 });
 
 test('scenario A4b: after Choose, Flow State starts focus (no Arrival Notice)', async ({

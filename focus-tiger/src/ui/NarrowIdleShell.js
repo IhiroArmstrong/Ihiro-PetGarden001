@@ -35,6 +35,7 @@ export class NarrowIdleShell {
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
+   *     onSheetChange?: (open: boolean) => void,
    *   }
    * }} [options]
    */
@@ -176,6 +177,14 @@ export class NarrowIdleShell {
   }
 
   /**
+   * Whether the secondary options drawer sheet is open.
+   * @returns {boolean}
+   */
+  isSheetOpen() {
+    return Boolean(this._sheetOpen);
+  }
+
+  /**
    * @returns {void}
    */
   openSheet() {
@@ -185,6 +194,7 @@ export class NarrowIdleShell {
     this.sheet?.setAttribute('aria-hidden', 'false');
     this.backdrop?.removeAttribute('hidden');
     this._refreshDrawerItems();
+    this.handlers.onSheetChange?.(true);
   }
 
   /**
@@ -195,6 +205,7 @@ export class NarrowIdleShell {
     this.shell?.classList.remove('is-sheet-open');
     this.sheet?.setAttribute('aria-hidden', 'true');
     this.backdrop?.setAttribute('hidden', '');
+    this.handlers.onSheetChange?.(false);
   }
 
   /**
@@ -1006,6 +1017,8 @@ export class NarrowIdleShell {
           pointer-events: auto !important;
           z-index: 32 !important;
         }
+        /* Home balls already cover Sit / Quick / Honesty — never re-surface dock pills */
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #honesty-idle-entry,
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #micro-ritual-idle-entry,
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #quick-start-focus,
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #btn-focus {
