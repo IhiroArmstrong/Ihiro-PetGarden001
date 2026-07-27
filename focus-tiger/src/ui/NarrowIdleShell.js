@@ -1037,6 +1037,16 @@ export class NarrowIdleShell {
           z-index: 32 !important;
           position: fixed !important;
         }
+        /* Panel viewport-centered when staged — toggle sits off-center in cluster */
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-reminder .reminder-pref__panel {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          bottom: calc(max(88px, env(safe-area-inset-bottom, 0px)) + 54px) !important;
+          width: min(260px, calc(100vw - 32px)) !important;
+          translate: -50% 0 !important;
+          z-index: 33 !important;
+        }
 
         /* Idle drawer Sound: Soundscape track panel only — never the red FAB */
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__focus-chrome {
