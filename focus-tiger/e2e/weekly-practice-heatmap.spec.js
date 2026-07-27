@@ -415,8 +415,8 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
 });
 
 /**
- * Fig12 / L259: ? remedy shows one primary tip + persistent「还有 N 条」chip;
- * chip expands **one tip at a time** (not a flood of overlapping tips).
+ * Fig12 / L259: ? remedy shows one primary tip +「More tips」chip;
+ * on narrow park, chip expands **one** drawer-menu tip (not 3 more / 2 more cascade).
  */
 test('375 park: ? remedy primary + catalog chip expands one tip at a time', async ({
   page
@@ -439,7 +439,6 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
     const chipRect = chip?.getBoundingClientRect();
-    const chipMatch = (chip?.textContent || '').match(/(\d+)/);
     return {
       count: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
@@ -451,16 +450,16 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
           chipRect.top >= 0 &&
           chipRect.top < 667
       ),
-      chipText: chip?.textContent?.trim() || '',
-      chipN: chipMatch ? Number(chipMatch[1]) : 0
+      chipText: chip?.textContent?.trim() || ''
     };
   });
   expect(before.count).toBeLessThanOrEqual(2);
   expect(before.count).toBeGreaterThanOrEqual(1);
   expect(before.ids).toContain('sit-button');
   expect(before.chipVisible).toBe(true);
-  expect(before.chipText).toMatch(/more|还有/i);
-  expect(before.chipN).toBeGreaterThanOrEqual(2);
+  expect(before.chipText).toMatch(/more tips|更多提示/i);
+  // One-shot: no countdown "N more tips"
+  expect(before.chipText).not.toMatch(/\d+\s*more|还有\s*\d+/i);
 
   await page.locator('#ft-hint-catalog-chip').click();
 
@@ -473,18 +472,29 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
       return r.width > 0 && r.height > 0;
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
-    const chipMatch = (chip?.textContent || '').match(/(\d+)/);
     const rects = bubbles.map((b) => {
       const r = b.getBoundingClientRect();
-      return { id: b.dataset.hintId, left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+      return {
+        id: b.dataset.hintId,
+        left: r.left,
+        top: r.top,
+        right: r.right,
+        bottom: r.bottom
+      };
     });
     let overlapPairs = 0;
     for (let i = 0; i < rects.length; i++) {
       for (let j = i + 1; j < rects.length; j++) {
         const a = rects[i];
         const b = rects[j];
-        const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
-        const iy = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+        const ix = Math.max(
+          0,
+          Math.min(a.right, b.right) - Math.max(a.left, b.left)
+        );
+        const iy = Math.max(
+          0,
+          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+        );
         if (ix * iy > 40) overlapPairs += 1;
       }
     }
@@ -492,17 +502,16 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
       bubbleCount: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
       chipVisible: Boolean(chip && !chip.hidden),
-      chipN: chipMatch ? Number(chipMatch[1]) : 0,
       overlapPairs
     };
   });
-  // Serial expand: still at most primary + one catalog tip (no flood).
+  // Primary + one drawer intro; chip gone (no 3 more / 2 more).
   expect(after.bubbleCount).toBeLessThanOrEqual(2);
   expect(after.bubbleCount).toBeGreaterThanOrEqual(1);
-  expect(after.ids).toContain('sit-button');
-  expect(after.ids.length).toBeGreaterThan(1);
-  expect(after.chipVisible).toBe(true);
-  expect(after.chipN).toBe(before.chipN - 1);
+  expect(after.ids).toContain('narrow-drawer-menu');
+  expect(after.chipVisible).toBe(false);
+  expect(after.overlapPairs).toBe(0);
+
   // Separation runs after paint — poll so CI does not race the first layout.
   await expect
     .poll(
@@ -538,8 +547,7 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
     )
     .toBe(0);
 
-  // Grabber-anchored catalog tips must sit above home CTAs (not behind the balls).
-  // Wait for lift rAF passes after catalog expand.
+  // Grabber-anchored drawer intro must sit above home CTAs (not behind the balls).
   await expect
     .poll(
       async () =>

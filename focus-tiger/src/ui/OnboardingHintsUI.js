@@ -155,25 +155,56 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'bottom'
     };
   }
-  // Secondary / parked controls → swipe grabber
-  if (
-    /session-start-dock__hint|weekly-practice|micro-ritual|ambient-soundscape|reminder-preference/.test(
-      sel
-    )
-  ) {
+  if (/ft-narrow-grabber|narrow-drawer/.test(sel)) {
     return {
       selector: '.ft-narrow-grabber',
       placement: 'above',
       tip: 'bottom'
     };
   }
-  if (NARROW_PARKED_ANCHOR_RE.test(sel)) {
-    return {
-      selector: '.ft-narrow-grabber',
-      placement: 'above',
-      tip: 'bottom'
-    };
+  // Drawer open: point at sheet rows / heatmap clone (not parked off-screen originals).
+  const drawerOpen = Boolean(
+    document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
+  );
+  if (drawerOpen) {
+    if (/weekly-practice/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__heatmap',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/session-start-dock__hint|how-shall/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="companion"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/micro-ritual/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="breath"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/ambient-soundscape|ambient-gated/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="sound"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/reminder-preference/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="reminder"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
   }
+  // Drawer closed: never remap parked controls onto home CTAs (would mis-point).
+  // Callers must not paint drawer-parked tips while the sheet is closed.
   return anchorCfg;
 }
 
@@ -391,7 +422,9 @@ export class OnboardingHintsUI {
     this._remedyIds = nextRemedy;
 
     this._paint(primary, { remedy: true });
-    this._syncCatalogChip(catalog.length);
+    this._syncCatalogChip(catalog.length, {
+      oneShot: catalog.length === 1 && catalog[0] === 'narrow-drawer-menu'
+    });
     this._resolveRemedyBubbleLayout();
     this._showPurposeCard();
     this.syncDiscoveryDots();
@@ -407,10 +440,12 @@ export class OnboardingHintsUI {
 
   /**
    * 短标签芯片「还有 N 条」——不自动消失，锚在可见 ? 旁（图12）。
+   * 窄屏一次性抽屉说明时用无计数文案（禁止 3 more / 2 more）。
    * @param {number} catalogCount
+   * @param {{ oneShot?: boolean }} [opts]
    * @returns {void}
    */
-  _syncCatalogChip(catalogCount) {
+  _syncCatalogChip(catalogCount, opts = {}) {
     const n = Math.max(0, Number(catalogCount) || 0);
     if (n <= 0) {
       this._hideCatalogChip();
@@ -418,10 +453,10 @@ export class OnboardingHintsUI {
     }
     const chip = this._ensureCatalogChip();
     chip.hidden = false;
-    chip.textContent = String(t('HINT_HELP_REMEDY_MORE')).replace(
-      /\{n\}/g,
-      String(n)
-    );
+    const oneShot = Boolean(opts.oneShot) || this._catalogPending[0] === 'narrow-drawer-menu';
+    chip.textContent = oneShot
+      ? String(t('HINT_HELP_REMEDY_MORE_ONE'))
+      : String(t('HINT_HELP_REMEDY_MORE')).replace(/\{n\}/g, String(n));
     chip.setAttribute('aria-label', chip.textContent);
     this._positionCatalogChip();
   }
@@ -481,7 +516,7 @@ export class OnboardingHintsUI {
 
   /**
    * 展开补救目录：一次只画下一条（替换上一条目录 tip，保留主条）。
-   * 避免窄屏多 tip 同锚到主球/grabber 叠成乱指。
+   * `narrow-drawer-menu` 为一次性：展开后清空目录、关掉芯片（无 3 more / 2 more）。
    */
   expandRemedyCatalog() {
     if (this._catalogPending.length === 0) {
@@ -497,10 +532,15 @@ export class OnboardingHintsUI {
       this.hideBubble(prevCatalog);
     }
     const next = this._catalogPending.shift();
+    if (next === 'narrow-drawer-menu') {
+      this._catalogPending = [];
+    }
     this._catalogShownId = next;
     this._remedyIds.add(next);
     this._paint(next, { remedy: true });
-    this._syncCatalogChip(this._catalogPending.length);
+    this._syncCatalogChip(this._catalogPending.length, {
+      oneShot: next === 'narrow-drawer-menu'
+    });
     this._resolveRemedyBubbleLayout();
     requestAnimationFrame(() => {
       this.repositionAll();

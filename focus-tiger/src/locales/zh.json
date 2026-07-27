@@ -139,6 +139,8 @@
   "HINT_HELP_AFFORDANCE": "不知下一步点什么？先点这里。",
   "HINT_HELP_REMEDY": "本页的操作提示，现在都在页面上了。点一下气泡即可关掉；下次需要时再点问号。",
   "HINT_HELP_REMEDY_MORE": "还有 {n} 条 — 点这里",
+  "HINT_HELP_REMEDY_MORE_ONE": "更多提示 — 点这里",
+  "HINT_NARROW_DRAWER_MENU": "上滑拉开屏幕下方的抽屉菜单。里面还有：一分钟呼吸、How shall we sit?、声音、提醒，以及近日同坐的小格。",
   "HINT_HELP_FALLBACK": "准备好了，就与阿寅同坐。",
   "HINT_APP_PURPOSE_TITLE": "这个空间能帮你什么",
   "HINT_APP_PURPOSE_BODY": "Focus Tiger 是一位游戏化的正念伙伴，帮你通过规律练习、按自己的节奏，培养专注、觉察与心流。",

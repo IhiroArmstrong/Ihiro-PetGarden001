@@ -11,7 +11,9 @@ import {
   resolvePrimaryRemedyHintId,
   resolveRemedyCatalogHintIds,
   selectExclusiveAutoHintIds,
-  appendIdleChromeHintIds
+  appendIdleChromeHintIds,
+  filterHintsForNarrowDrawer,
+  isDrawerParkedHintId
 } from './OnboardingHintsStore.js';
 
 test('normalizeHintsSeen only keeps known hintIds', () => {
@@ -227,6 +229,43 @@ test('resolveRemedyCatalogHintIds splits Idle / Arrival / Focusing', () => {
   assert.deepEqual(
     resolveRemedyCatalogHintIds({ isFocusing: true }),
     resolveRemedyHintIds({ isFocusing: true }).filter((id) => id !== 'rise-button')
+  );
+});
+
+test('narrow park catalog folds drawer tips into one-shot narrow-drawer-menu', () => {
+  const folded = resolveRemedyCatalogHintIds({
+    narrowPark: true,
+    narrowDrawerOpen: false,
+    weeklyHeatmapVisible: true,
+    microRitualEntryVisible: true
+  });
+  assert.deepEqual(folded, ['narrow-drawer-menu']);
+  assert.ok(!folded.some(isDrawerParkedHintId));
+
+  const openDrawer = resolveRemedyCatalogHintIds({
+    narrowPark: true,
+    narrowDrawerOpen: true,
+    weeklyHeatmapVisible: true,
+    microRitualEntryVisible: true
+  });
+  assert.ok(!openDrawer.includes('narrow-drawer-menu'));
+  assert.ok(openDrawer.includes('weekly-heatmap'));
+});
+
+test('filterHintsForNarrowDrawer strips parked tips when drawer closed', () => {
+  assert.deepEqual(
+    filterHintsForNarrowDrawer(
+      ['sit-button', 'weekly-heatmap', 'how-shall-we-sit', 'help-affordance'],
+      { narrowPark: true, narrowDrawerOpen: false }
+    ),
+    ['sit-button', 'help-affordance']
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      narrowPark: true,
+      narrowDrawerOpen: false,
+      weeklyHeatmapVisible: true
+    }).includes('weekly-heatmap')
   );
 });
 

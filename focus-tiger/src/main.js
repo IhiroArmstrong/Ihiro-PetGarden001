@@ -755,6 +755,9 @@ async function init() {
         'ft-wide-stage-companion',
         'ft-wide-stage-reminder'
       );
+    },
+    onSheetChange: () => {
+      syncOnboardingAutoHints();
     }
   });
   narrowIdleShell.syncMuteVisual({
