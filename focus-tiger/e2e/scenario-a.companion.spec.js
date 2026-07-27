@@ -319,8 +319,6 @@ test('375 Choose bow: Companion staged in viewport then Here & Now focuses', asy
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
 });
 
-});
-
 /**
  * 2026-07-27 回归：抽屉 How shall we sit → stage companion 时，
  * dock 的 Honesty Check-in  pill 不得再浮到三选一上方（主球已承担 Honesty）。

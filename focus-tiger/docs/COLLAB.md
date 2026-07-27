@@ -89,4 +89,20 @@ COLLAB.md（本文档，协作层）
 ```
 
 ---
-*版本：1.0 · 建立于Task 1开发启动前*
+
+## 五、Agent / Cursor · Git 同步约定（2026-07-27）
+
+一批修复或任务在本地 **commit 验证通过后**，Agent **应尽快 push** 到对应远程分支（`develop` / `feature/*` / `fix/*`），**不要**在仅本地存在的分支上积攒多笔未推送 commit。
+
+**原因**：另一 Agent 或协作者可能基于较早快照合并同名分支（例：`fix/scenario-o-375-chrome-layout` 合并到 `726fc28` 时，遗漏了其后两笔仅存在于 reflog 的 commit），导致修复丢失、需 cherry-pick 补救。
+
+| 动作 | 约定 |
+|---|---|
+| 本地 `git commit` | 验证通过后执行（见 `focus-tiger-regression-lock.mdc`） |
+| `git push` | 用户明确要求 **或** 任务书写明「完成后 push develop」时执行；**一批修复收尾默认应 push**，勿长期只留本地 |
+| 多 Agent 并行 | 开工前 `git pull`；完工后 push，减少「已合并但缺 commit」窗口 |
+
+细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
+
+---
+*版本：1.1 · 2026-07-27 增补 Agent push 约定*
