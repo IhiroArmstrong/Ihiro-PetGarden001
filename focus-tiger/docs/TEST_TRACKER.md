@@ -6,6 +6,15 @@
 
 **权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。
 
+**人工验收唯一基线（2026-07-29 起 · 强制 · SSOT）**：关单级 / 可写入本表「用户反馈」或据以改状态的**人工验收**，**只认 `origin/develop` 当前 tip**。
+
+1. **必须**报出验收时的 **commit hash**（建议先 `git fetch origin develop`，再对照 `git rev-parse origin/develop`）。  
+2. 该 hash **必须等于**当时的 `origin/develop` tip。  
+3. **缺 hash、或 hash ≠ `origin/develop` tip**（含在 `feature/*` / `fix/*` / 过时 worktree / 未 fetch 的本地 develop 上测）→ 该次验收结论 **一律无效**，**必须**在同步到 tip 后 **重新验证**；禁止据此标「已通过」或关闭「有问题」。  
+4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。
+
+协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`。
+
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 演示会话时长默认 **`DEMO_SESSION_MINUTES = 1`**；可用 **`?sessionMinutes=5`** 拉长（场景 B Re-focus 真实切页须用）。  
 

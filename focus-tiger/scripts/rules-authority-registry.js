@@ -36,6 +36,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
   'focus-tiger/docs/COLLAB.md',
   'focus-tiger/docs/TEST_TRACKER.md',
+  'focus-tiger/docs/Z_INDEX.md',
   'focus-tiger/docs/DOC_CODE_CONTRACT.md',
   'focus-tiger/docs/PRINCIPLES.md',
   'focus-tiger/docs/ARCHITECTURE.md'
@@ -379,6 +380,87 @@ export const RULE_AUTHORITY_TOPICS = [
         note: '默认外置 Safari，不得写成默认用 Cursor 内置 Browser'
       }
     ]
+  },
+  {
+    id: 'qa-develop-tip',
+    title: '人工验收只认 origin/develop tip',
+    ssotPath: 'focus-tiger/docs/TEST_TRACKER.md',
+    ssotSection: '人工验收唯一基线',
+    ssotMustContain: [
+      /人工验收唯一基线/,
+      /只认 `origin\/develop` 当前 tip/,
+      /一律无效/
+    ],
+    topicSignals: [
+      /人工验收唯一基线/,
+      /只认 `origin\/develop`/,
+      /qa-develop-tip/
+    ],
+    mustCite: [/TEST_TRACKER\.md/],
+    restatementFingerprints: [
+      /人工验收唯一基线/,
+      /一律无效/,
+      /必须等于.*origin\/develop tip/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: ['focus-tiger/docs/COLLAB.md'],
+    forbiddenOutsideSsot: [
+      {
+        id: 'feature-branch-counts-as-acceptance',
+        pattern:
+          /(?:feature|fix)\s*分支上(?:的)?(?:人工)?验收(?:结论)?\s*(?:即|就算|视为|算)\s*(?:正式|关单|有效)/,
+        note: 'feature/fix 试跑不得写成正式/关单验收；SSOT 在 TEST_TRACKER'
+      }
+    ]
+  },
+  {
+    id: 'branch-freshness',
+    title: 'Agent 邀测 / 声称 develop 行为前须 check:branch-freshness',
+    ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
+    ssotSection: '分支新鲜度（强制 · 验收 / 声称 develop 行为之前）',
+    ssotMustContain: [
+      /check:branch-freshness/,
+      /behind origin\/develop/,
+      /behind > 0/
+    ],
+    topicSignals: [
+      /check:branch-freshness/,
+      /分支新鲜度/,
+      /behind origin\/develop/
+    ],
+    mustCite: [
+      /focus-tiger-regression-lock\.mdc|regression-lock|分支新鲜度/
+    ],
+    restatementFingerprints: [
+      /check:branch-freshness/,
+      /behind > 0/,
+      /禁止用本次结果代表 develop/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: []
+  },
+  {
+    id: 'z-index-registry',
+    title: '产品 z-index 层叠登记',
+    ssotPath: 'focus-tiger/docs/Z_INDEX.md',
+    ssotSection: 'Z_INDEX.md — 产品层叠登记',
+    ssotMustContain: [
+      /产品层叠登记/,
+      /NarrowIdleShell/,
+      /常用冲突带/
+    ],
+    topicSignals: [
+      /Z_INDEX\.md/,
+      /z-index 登记|层叠登记/,
+      /z-index-registry/
+    ],
+    mustCite: [/Z_INDEX\.md/],
+    restatementFingerprints: [
+      /常用冲突带/,
+      /NarrowIdleShell.*30/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: []
   }
 ];
 

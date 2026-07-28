@@ -114,6 +114,30 @@ alwaysApply: true
 
 任一项「未完成」→ 回复正文**不得**写「已修复 / 已修好」，只可写诚实进度（如「本地已改，CI 尚未跑」）。
 
+## 分支新鲜度（强制 · 验收 / 声称 develop 行为之前）
+
+> **索引**：`RULES_INDEX.md` → `branch-freshness`。人工验收基线 SSOT：`TEST_TRACKER.md`「人工验收唯一基线」（`qa-develop-tip`）。
+
+凡下列任一情形，**之前必须**先执行（建议先 `git fetch origin develop`）：
+
+```bash
+cd focus-tiger && npm run check:branch-freshness
+```
+
+触发情形：
+
+1. **起开发服务器给人验收**（`npm run dev` / Vite / 预览 URL 交给用户测）  
+2. **声称**已验证 / 已复现 / 代表 **`develop` 现状**的行为或验收结论  
+3. **正式邀测**（请用户按 TEST_TRACKER 做关单级人工验收）
+
+强制要求：
+
+- 汇报里**必须写出**脚本给出的 **`behind origin/develop` 落后数**（及当前分支名）。  
+- **`behind > 0`**：**禁止**用本次结果代表 develop 现状；**禁止**邀用户做关单级验收；只可写诚实进度（例：「本分支落后 origin/develop N commits，请先合入/变基后再验」）。  
+- **`behind === 0`** 且邀正式验收时：验收 hash 仍须等于 **`origin/develop` tip**（见 `TEST_TRACKER`）；feature 自检不等于正式验收。
+
+未跑脚本、未报落后数 → 视同未完成新鲜度前置。
+
 ## 任务汇报门禁（每次收尾 · N14）
 
 完成**任何**任务（交互修复 / 文档 / 调研 / 素材）的用户可见回复时，**末尾必须**有独立小节：
@@ -123,6 +147,7 @@ alwaysApply: true
 - **待你知道**：…（commit、未 push、待人工测项、未覆盖路径等；否则写「无」）
   - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）  
   - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）
+  - 若本回合起过给人验收的预览、或正式邀测 / 声称 develop 行为 → **必须**含 `check:branch-freshness` 的落后数（见上节「分支新鲜度」）
 
 禁止只在正文段落里夹带「你可以决定要不要…」「顺便说一下已 commit」。无事项仍须输出该标题并写「无」。细则见 `DEV_WORKFLOW_QUALITY.md` §2.4 / §3.4。  
 触及**长期并存姊妹功能分支**或共享入口修复时，清单还须按 `WORKFLOW.md`「长期并存功能分支的同步纪律」（N17 / `git-sibling-branch-sync`）写明波及面。

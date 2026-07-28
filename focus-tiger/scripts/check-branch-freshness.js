@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * Manual habit helper: how many commits is HEAD behind origin/develop?
- * Not wired into CI or git hooks — run when you want a freshness check.
+ * Branch freshness vs origin/develop.
+ * Agent gate (regression-lock「分支新鲜度」): required before inviting user QA
+ * or claiming verified develop behavior. Not a git hook / CI job — Agent must run it.
  *
  * Usage: cd focus-tiger && npm run check:branch-freshness
- * (Optionally: git fetch origin develop  first, so origin/develop is current.)
+ * Prefer: git fetch origin develop  first, so origin/develop is current.
  */
 import { execSync } from 'node:child_process'
 

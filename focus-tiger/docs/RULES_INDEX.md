@@ -49,6 +49,9 @@ cd focus-tiger && npm run rules:doc-sync
 | `doc-code-contract` | 文档-代码结构性对齐（docs:check） | `focus-tiger/docs/DOC_CODE_CONTRACT.md` | DOC_CODE_CONTRACT.md |
 | `rules-authority` | 规则主题权威索引（本机制） | `focus-tiger/docs/RULES_INDEX.md` | 规则主题 → 权威来源 |
 | `browser-energy` | 预览浏览器与能耗（默认 Safari；内置 Browser 限时；进程收尾 / Cloud 独立会话提醒） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
+| `qa-develop-tip` | 人工验收只认 origin/develop tip | `focus-tiger/docs/TEST_TRACKER.md` | 人工验收唯一基线 |
+| `branch-freshness` | Agent 邀测 / 声称 develop 行为前须 check:branch-freshness | `.cursor/rules/focus-tiger-regression-lock.mdc` | 分支新鲜度（强制 · 验收 / 声称 develop 行为之前） |
+| `z-index-registry` | 产品 z-index 层叠登记 | `focus-tiger/docs/Z_INDEX.md` | Z_INDEX.md — 产品层叠登记 |
 
 <!-- rules-authority-index:end -->
 
@@ -65,6 +68,9 @@ cd focus-tiger && npm run rules:doc-sync
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
 | `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话见 `focus-tiger-browser-energy.mdc`」 | 复述完整限时条款；主张把内置 Browser 当默认预览方式；起过 Vite/Playwright 却不在「待你知道」提醒收尾 |
+| `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；`COLLAB` 可一行引用 | 主张 feature/fix 试跑即正式关单验收 |
+| `branch-freshness` | 「邀测前 freshness 见 regression-lock「分支新鲜度」」 | 落后 >0 仍声称代表 develop / 正式邀测却不报落后数 |
+| `z-index-registry` | 「层叠见 `Z_INDEX.md`」 | 平行另造第二份 z-index 分配表 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -77,15 +83,16 @@ cd focus-tiger && npm run rules:doc-sync
 | 文档 | 角色 |
 |---|---|
 | [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、跨会话冲突、并行 worktree |
-| [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7 门禁条文 |
+| [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7、**分支新鲜度**门禁条文 |
 | [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；内置 Browser 限时；Vite/Playwright 收尾提醒；Cloud 独立会话提醒） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
-| [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定 |
+| [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；验收 tip 规则引用 `TEST_TRACKER` |
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
-| [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则（产品验收，非 Git 政策） |
+| [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip |
+| [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 |
 | [`SCENARIO_TESTS.md`](./SCENARIO_TESTS.md) | 场景剧本权威 |
 | `./scripts/git-sync-safe.sh`（仓库根） | 推送前体检脚本（非政策正文） |
 
@@ -144,3 +151,4 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-07-23 | 固定口令「请安排下班前的 Git 同步」语义：只 push `develop`/`feature`/`fix` + 分级汇总；不合并 main、不推进 PR（见 regression-lock 第 7 条） |
 | 2026-07-25 | 新增 `browser-energy`：默认 Safari 预览；Cursor 内置 Browser 仅窄屏特例且最长 10 分钟（SSOT：`focus-tiger-browser-energy.mdc`） |
 | 2026-07-26 | 扩展 `browser-energy`：Vite/Playwright 进程收尾提醒 + Cloud「独立会话」提醒（用户拍板养成习惯） |
+| 2026-07-29 | 新增 `qa-develop-tip`（关单验收只认 `origin/develop` tip）、`branch-freshness`（邀测前 `check:branch-freshness`）、`z-index-registry`（`Z_INDEX.md`） |
