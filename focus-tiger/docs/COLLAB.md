@@ -92,6 +92,8 @@ COLLAB.md（本文档，协作层）
 
 ## 五、并行 Agent 协作规则
 
+> **SSOT**：并行 Cursor 写会话须用 git worktree 隔离 → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)「并行 Cursor 会话：必须用 git worktree 隔离写操作」（`RULES_INDEX` → `git-parallel-worktree`）。本节为协作约定摘要，不另立平行规则。
+>
 > **由来（2026-07-27）**：两个并行 Cursor 会话在同一 worktree（`wt-docs-6.6`）上互不知情地各自推进，验证基线与实际 `develop` 状态对不上。以下规则用于物理隔离，避免再踩同一坑。
 
 1. **单 worktree / 单分支单写者**：同一 worktree、同一分支，同一时间只能有一个 Agent/会话在写。并行开发必须开不同 worktree + 不同分支，禁止两个会话挤在同一 worktree 或同一分支上各干各的。
