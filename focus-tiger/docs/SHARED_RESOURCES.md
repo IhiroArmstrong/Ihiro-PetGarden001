@@ -213,6 +213,6 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 契约 | 不变量 | 波及 / 复测 |
 |---|---|---|
 | **Hints remap** | 控件 park 后，onboarding tip /「?」补救锚点必须 remap 到**当前可见宿主**（窄：ActionBar `?` 等；宽：⋯ 菜单等）。禁止仍指向 park 掉的旧按钮坐标。 | 改 park / ActionBar / ⋯ / Hints → 375 + ≥480 各点一次「?」补救 |
-| **FocusHUD vs ActionBar（语义）** | Focusing / 叠层期顶栏时间由谁负责——宽/窄须书面一致；细则显隐见机器块 `focusing-*` 行。 | Choose→鞠躬→点选后 Focusing |
+| **FocusHUD vs ActionBar（语义）** | **窄屏**：ActionBar（? · **本机墙钟** · ♪）在 Idle / Arrival / Focusing / 叠层 suppress 下**常显**；会话累计时长只在 `#focus-hud`。宽屏仍用 FocusHUD。细则显隐见机器块 `focusing-*` 行。 | Choose→鞠躬→点选后 Focusing；375 顶栏须见墙钟而非 `00:00` |
 
 外侧取消邻接（点 tip 只关 tip、不关面板）属交互回归，见 `DEV_WORKFLOW_QUALITY.md` §8 N18；实现：`src/ui/outsideDismissGuard.js`（Arrival / Companion / Honesty 共用）。不单列为本表第三壳。

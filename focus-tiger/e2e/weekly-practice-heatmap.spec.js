@@ -360,11 +360,36 @@ test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
   expect(report.hud?.w).toBeGreaterThan(40);
   expect(report.hud?.left).toBeGreaterThanOrEqual(0);
   expect(report.hud?.left).toBeLessThan(80);
+  // ActionBar stays; FocusHUD sits below it
+  expect(report.hud?.top).toBeGreaterThanOrEqual(60);
   expect(report.hideFab).toBe(true);
   expect(report.chromeVisibility).toBe('hidden');
-  // Mute note visible top-right
-  expect(report.mute?.w).toBeGreaterThan(20);
-  expect(report.mute?.left).toBeGreaterThan(200);
+  // ActionBar owns ? · wall clock · ♪ (no duplicate floating mute)
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  const clockOk = await page.evaluate(() => {
+    const shown = document
+      .querySelector('.ft-narrow-action-bar__time')
+      ?.textContent?.trim();
+    if (!shown || !/^\d{1,2}:\d{2}$/.test(shown)) return { ok: false, shown };
+    const now = new Date();
+    const candidates = [0, -1, 1].map((minDelta) => {
+      const d = new Date(now.getTime() + minDelta * 60_000);
+      try {
+        return d.toLocaleTimeString(undefined, {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      } catch {
+        const h = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+      }
+    });
+    return { ok: candidates.includes(shown), shown, candidates };
+  });
+  expect(clockOk, JSON.stringify(clockOk)).toMatchObject({ ok: true });
+  await expect(page.locator('#ft-narrow-mute-btn')).toBeVisible();
 });
 
 test('non-Idle (Focusing) hides weekly heatmap', async ({ page }) => {

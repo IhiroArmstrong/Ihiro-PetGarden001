@@ -1,11 +1,13 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v13';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v14';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
 /** Display size for home PNG totems (assets are full-res; CSS scales). */
 const HOME_CTA_PX = 72;
+/** ActionBar center clock — wall time, not FocusHUD session elapsed. */
+const WALL_CLOCK_TICK_MS = 1_000;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
@@ -14,7 +16,9 @@ const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
 
 /**
  * Narrow Idle shell (≤479 / 375):
- * - Minimal ActionBar: ? · Calm/time · mute
+ * - Minimal ActionBar: ? · **wall clock** · mute — always visible on narrow
+ *   (Idle / Arrival / Focusing / suppress overlays). Session elapsed stays on
+ *   `#focus-hud` only; ActionBar never mirrors `#hud-time`.
  * - Home primary balls: Quick Start / Sit with Yin / Honesty (PNG zen totems)
  * - Swipe-up BottomOptionsDrawer for secondary Idle controls
  *   (breath / How shall we sit? / Sound / Reminder + week strip)
@@ -26,7 +30,6 @@ export class NarrowIdleShell {
    * @param {{
    *   root?: HTMLElement,
    *   getHudStateEl?: () => HTMLElement | null,
-   *   getHudTimeEl?: () => HTMLElement | null,
    *   handlers?: {
    *     onSound?: () => void,
    *     onCompanion?: () => void,
@@ -42,8 +45,6 @@ export class NarrowIdleShell {
     this.root = options.root || document.body;
     this._getHudStateEl =
       options.getHudStateEl || (() => document.getElementById('hud-state'));
-    this._getHudTimeEl =
-      options.getHudTimeEl || (() => document.getElementById('hud-time'));
     this.handlers = options.handlers || {};
 
     this._mq =
@@ -57,16 +58,20 @@ export class NarrowIdleShell {
     this._touchStartY = null;
     this._localeUnsub = null;
     this._hudObserver = null;
+    this._wallClockTimer = null;
 
     this._injectStyles();
     this._build();
     this._bind();
     this._syncMode();
-    this._syncActionBarFromHud();
+    this._syncActionBarStateFromHud();
+    this._tickWallClock();
+    this._startWallClock();
     this._refreshHomeCtas();
     this._localeUnsub = onLocaleChange(() => {
       this._refreshLabels();
-      this._syncActionBarFromHud();
+      this._syncActionBarStateFromHud();
+      this._tickWallClock();
       this._refreshHomeCtas();
     });
   }
@@ -126,9 +131,10 @@ export class NarrowIdleShell {
 
   /**
    * Overlay chrome policy (narrow):
-   * - Full suppress (Reflection / Honesty busy / bridge / micro-ritual): hide shell.
-   * - Arrival (`keepQuickStart`): hide ActionBar / grabber / Sit / Honesty, but
-   *   **keep Quick Start** (W3 / L174 — ⚡ must stay while Sit is hidden).
+   * - Full suppress (Reflection / Honesty busy): hide grabber / home / sheet;
+   *   **ActionBar (? · wall clock · ♪) stays visible**.
+   * - Arrival (`keepQuickStart`): hide grabber / Sit / Honesty, but
+   *   **keep ActionBar + Quick Start** (W3 / L174 — ⚡ must stay while Sit is hidden).
    * Legacy dock stays parked either way.
    * @param {boolean} suppressed
    * @param {{ keepQuickStart?: boolean }} [opts]
@@ -213,6 +219,7 @@ export class NarrowIdleShell {
    */
   destroy() {
     this._localeUnsub?.();
+    this._stopWallClock();
     this._hudObserver?.disconnect();
     this._mq?.removeEventListener?.('change', this._onMqChange);
     this.root?.removeEventListener('touchstart', this._onTouchStart, {
@@ -239,12 +246,14 @@ export class NarrowIdleShell {
   _syncMode() {
     const narrow = this._isNarrow();
     // Park legacy chrome whenever Idle on narrow — including Arrival / Honesty overlays
-    // (suppress only hides ActionBar; unparking dock caused pills under Arrival).
+    // (suppress must not unpark dock pills under Arrival).
     const park = narrow && this._idle;
     const keepQs = Boolean(this._keepQuickStart);
     const idleChrome = park && !this._suppressed;
     const focusing = narrow && !this._idle;
-    const shellVisible = narrow && (idleChrome || keepQs);
+    // ActionBar stays mounted on every narrow flow (Idle / Arrival / Focusing /
+    // suppress). Grabber / home balls still follow idleChrome / keepQs.
+    const shellVisible = narrow;
     // Micro-ritual (and similar): shell uses focusing chrome for FocusHUD, but
     // suppress is on — must NOT resurface legacy Sit/dock (O⑤ / L234).
     const hideSitDock =
@@ -263,7 +272,10 @@ export class NarrowIdleShell {
       this.shell.classList.toggle('is-arrival-quick', keepQs);
     }
     if (!narrow || this._suppressed) this.closeSheet();
-    if (idleChrome) this._syncActionBarFromHud();
+    if (narrow) {
+      this._syncActionBarStateFromHud();
+      this._tickWallClock();
+    }
     if (idleChrome || keepQs) this._refreshHomeCtas();
   }
 
@@ -441,7 +453,7 @@ export class NarrowIdleShell {
     const dockRoot = document.getElementById('session-start-dock');
     if (typeof MutationObserver !== 'undefined') {
       this._hudObserver = new MutationObserver(() => {
-        this._syncActionBarFromHud();
+        this._syncActionBarStateFromHud();
         this._refreshHomeCtas();
       });
       if (hudRoot) {
@@ -463,11 +475,54 @@ export class NarrowIdleShell {
     }
   }
 
-  _syncActionBarFromHud() {
+  /**
+   * ActionBar state label mirrors FocusHUD (Calm / Focusing / …).
+   * Time is **not** mirrored — see {@link _tickWallClock}.
+   * @returns {void}
+   */
+  _syncActionBarStateFromHud() {
     const state = this._getHudStateEl()?.textContent?.trim() || t('STATE_IDLE');
-    const time = this._getHudTimeEl()?.textContent?.trim() || '00:00';
     if (this.stateEl) this.stateEl.textContent = state;
-    if (this.timeEl) this.timeEl.textContent = time;
+  }
+
+  /**
+   * Format local wall clock for ActionBar (HH:MM, 24h, locale-aware digits).
+   * @param {Date} [now]
+   * @returns {string}
+   */
+  _formatWallClock(now = new Date()) {
+    try {
+      return now.toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    } catch {
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+  }
+
+  /** @returns {void} */
+  _tickWallClock() {
+    if (this.timeEl) this.timeEl.textContent = this._formatWallClock();
+  }
+
+  /** @returns {void} */
+  _startWallClock() {
+    this._stopWallClock();
+    this._wallClockTimer = setInterval(() => {
+      this._tickWallClock();
+    }, WALL_CLOCK_TICK_MS);
+  }
+
+  /** @returns {void} */
+  _stopWallClock() {
+    if (this._wallClockTimer != null) {
+      clearInterval(this._wallClockTimer);
+      this._wallClockTimer = null;
+    }
   }
 
   /**
@@ -669,12 +724,14 @@ export class NarrowIdleShell {
       .ft-narrow-idle-shell > * {
         pointer-events: auto;
       }
-      .ft-narrow-idle-shell.is-suppressed {
+      .ft-narrow-idle-shell.is-suppressed .ft-narrow-grabber,
+      .ft-narrow-idle-shell.is-suppressed .ft-narrow-home-ctas,
+      .ft-narrow-idle-shell.is-suppressed .ft-narrow-sheet,
+      .ft-narrow-idle-shell.is-suppressed .ft-narrow-sheet-backdrop {
         visibility: hidden;
         pointer-events: none;
       }
-      /* Arrival: only Quick Start ball stays (W3) — hide ActionBar / grabber / Sit / Honesty */
-      .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-action-bar,
+      /* Arrival: Quick Start ball stays (W3); ActionBar (? · clock · ♪) stays too */
       .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-grabber {
         display: none !important;
       }
@@ -1083,8 +1140,7 @@ export class NarrowIdleShell {
           transform-origin: center 55%;
         }
 
-        /* Focusing: restore FocusHUD timer; Rise visible; no Sound FAB clutter */
-        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-action-bar,
+        /* Focusing: ActionBar stays (wall clock + ? + ♪); hide grabber / home */
         body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber,
         body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-home-ctas {
           display: none !important;
@@ -1108,16 +1164,15 @@ export class NarrowIdleShell {
           top: 0 !important;
           bottom: auto !important;
         }
+        /* ActionBar ♪ owns Sound entry on narrow — hide duplicate floating mute */
         body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__mute {
-          opacity: 1 !important;
-          pointer-events: auto !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
           position: fixed !important;
-          left: auto !important;
-          right: 12px !important;
-          top: max(12px, env(safe-area-inset-top, 0px)) !important;
-          z-index: 24 !important;
+          left: -9999px !important;
         }
-        /* Focusing: top-right note opens Soundscape — stage panel like Idle Sound */
+        /* Focusing: ActionBar ♪ opens Soundscape — stage panel like Idle Sound */
         body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__focus-chrome {
           left: 50% !important;
           right: auto !important;
@@ -1141,12 +1196,16 @@ export class NarrowIdleShell {
         body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__nudge {
           display: none !important;
         }
+        /* Session timer stays on FocusHUD, below persistent ActionBar */
         body.ft-narrow-shell.ft-narrow-focusing #focus-hud {
           opacity: 1 !important;
           pointer-events: auto !important;
           position: absolute !important;
           left: 12px !important;
-          top: 12px !important;
+          top: max(
+            68px,
+            calc(10px + env(safe-area-inset-top, 0px) + 48px + 8px)
+          ) !important;
           max-width: calc(100vw - 68px);
         }
         body.ft-narrow-shell.ft-narrow-focusing #session-start-dock {
