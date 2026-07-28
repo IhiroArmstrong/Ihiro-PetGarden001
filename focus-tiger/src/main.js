@@ -15,7 +15,8 @@ import {
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
-import { SessionUiGate, computePostSessionOverlayActive } from './core/SessionUiGate.js';
+import { SessionUiGate } from './core/SessionUiGate.js';
+import { createSessionChromeSync } from './core/sessionChromeSync.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -217,8 +218,6 @@ async function init() {
     window.__i18n = { t, tPool, setLocale, getLocale };
     window.__THREE = THREE;
   }
-
-  console.info('[PoseManager] alignment records:', poseManager.alignmentRecords);
 
   PoseManager.setLoadingMaskVisible(false);
 
@@ -436,53 +435,6 @@ async function init() {
 
   let hasEndedAnySession = false;
 
-  function syncHonestyIdleEntry() {
-    const bridgeVisible = honestyBridge?.isVisible?.() === true;
-    companionModePicker.setHonestyBridgeActive(bridgeVisible);
-    const blocked =
-      arrivalPractice?.isOpen?.() ||
-      bridgeVisible ||
-      reflectionMoment?.isOpen?.() ||
-      microRitualUI?.isOpen?.() ||
-      stateManager.state === STATES.FOCUSING ||
-      stateManager.state === STATES.CELEBRATE;
-    if (blocked) {
-      honestyCheckInUI.hideIdleEntry();
-    } else {
-      honestyCheckIn.syncIdleEntry();
-    }
-    syncMicroRitualIdleEntry();
-    const honestyBusy =
-      Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
-    const overlayActive = computePostSessionOverlayActive(
-      getPostSessionOverlaySources()
-    );
-    // Bridge can appear without a full resync — keep wide ⋯ suppressed with dock pills
-    wideIdleMoreMenu.setSuppressed(
-      overlayActive || honestyBusy || bridgeVisible
-    );
-  }
-
-  function syncMicroRitualIdleEntry() {
-    const honestyBusy =
-      honestyCheckInUI.phase === 'duration' ||
-      honestyCheckInUI.phase === 'breath' ||
-      honestyCheckInUI.phase === 'thanks';
-    const blocked =
-      arrivalPractice?.isOpen?.() ||
-      honestyBridge?.isVisible?.() ||
-      reflectionMoment?.isOpen?.() ||
-      microRitualUI?.isOpen?.() ||
-      honestyBusy ||
-      stateManager.state === STATES.FOCUSING ||
-      stateManager.state === STATES.CELEBRATE;
-    if (blocked) {
-      microRitualUI?.hideIdleEntry();
-      return;
-    }
-    microRitualUI?.showIdleEntry();
-  }
-
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
   const sessionUiGate = new SessionUiGate();
   if (import.meta.env.DEV) {
@@ -490,54 +442,27 @@ async function init() {
   }
 
   /**
-   * 叠层占用源（可扩展：追加 `() => otherOverlay.isOpen()` 即可，无需改聚合函数）。
-   * Honesty 提示/时长**故意不列入**——仍允许点 hint 展开三选一（禁止「看得见却静默」）。
-   * @returns {Array<() => boolean>}
+   * Idle 入口 + 叠层门闩 / 窄宽壳投影（等价抽离；见 sessionChromeSync.js）。
+   * Honesty 提示/时长**故意不列入** overlay 源——仍允许点 hint 展开三选一。
    */
-  function getPostSessionOverlaySources() {
-    return [
-      () => arrivalPractice.isOpen(),
-      () => reflectionMoment.isOpen(),
-      () => microRitualUI?.isOpen() === true
-    ];
-  }
-
-  /**
-   * 单一入口：按源聚合 overlay → Gate + Companion UI 投影；并禁用完成中选项。
-   * 禁止 Reflection-only / Arrival-only 双路互相覆盖。
-   */
-  function resyncSessionChrome() {
-    const overlayActive = computePostSessionOverlayActive(
-      getPostSessionOverlaySources()
-    );
-    sessionUiGate.setPostSessionOverlayActive(overlayActive);
-    companionModePicker.setPostSessionOverlayActive(overlayActive);
-    companionModePicker.setOptionSelectEnabled(
-      !overlayActive && !sessionUiGate.completionPending
-    );
-    companionModePicker.setArrivalActive(Boolean(arrivalPractice?.isOpen?.()));
-    const arrivalOpen = Boolean(arrivalPractice?.isOpen?.());
-    const focusing =
-      stateManager.state === STATES.FOCUSING ||
-      microRitualUI?.isOpen?.() === true;
-    const honestyBusy =
-      Boolean(honestyCheckInUI?.phase) && honestyCheckInUI.phase !== 'hidden';
-    const bridgeVisible = honestyBridge?.isVisible?.() === true;
-    // 桥接 Yes/No：须保留 ActionBar 时间（图4）；勿因 bridge alone 收起窄屏顶栏
-    // Arrival: suppress ActionBar/Sit/Honesty but keep narrow Quick Start (W3);
-    // Reflection / Honesty busy: full shell suppress. Bridge alone is exempt.
-    const chromeSuppressed = overlayActive || honestyBusy;
-    narrowIdleShell.setIdle(!focusing);
-    narrowIdleShell.setSuppressed(chromeSuppressed, {
-      keepQuickStart: arrivalOpen
-    });
-    wideIdleMoreMenu.setIdle(!focusing);
-    // Wide ⋯ 仍须在桥接时收起，避免挡 Yes/No
-    wideIdleMoreMenu.setSuppressed(
-      chromeSuppressed || bridgeVisible
-    );
-    syncInAppReminderBanner();
-  }
+  const {
+    syncHonestyIdleEntry,
+    resyncSessionChrome,
+    syncArrivalGateReady
+  } = createSessionChromeSync({
+    getHonestyBridge: () => honestyBridge,
+    getArrivalPractice: () => arrivalPractice,
+    getReflectionMoment: () => reflectionMoment,
+    getMicroRitualUI: () => microRitualUI,
+    honestyCheckInUI,
+    honestyCheckIn,
+    companionModePicker,
+    narrowIdleShell,
+    wideIdleMoreMenu,
+    stateManager,
+    sessionUiGate,
+    syncInAppReminderBanner: () => syncInAppReminderBanner()
+  });
 
   /** 先点 Here & Now / Flow 再进 Arrival 时记住，结束后自动开表（禁止再逼点 Sit） */
   let pendingAutoStartMode = null;
@@ -545,12 +470,6 @@ async function init() {
   let suppressCompanionOpenAfterNod = false;
   /** 本轮 Arrival 是否完整走过 Choose（供鞠躬结束后自动开表判定） */
   let arrivalChoseThisRun = false;
-
-  /** @param {boolean} ready */
-  function syncArrivalGateReady(ready) {
-    sessionUiGate.setArrivalGateReady(ready);
-    companionModePicker.setArrivalReady(ready);
-  }
 
   function setFocusButtonEnabled(enabled) {
     focusButton.disabled = !enabled;

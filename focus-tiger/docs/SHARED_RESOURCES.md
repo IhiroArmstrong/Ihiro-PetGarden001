@@ -133,15 +133,16 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
-| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
+| **`sessionChromeSync`**（壳层投影） | `main.js` → `createSessionChromeSync`；`isHonestyPhaseBusy` / `isHonestyUiBusy` | Idle Honesty/微仪式入口显隐 + `resyncSessionChrome`（含窄宽壳 `setSuppressed`）；单测 `sessionChromeSync.test.js` |
+| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（经 `syncArrivalGateReady`） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
 | `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
-| `postSessionOverlayActive` | **单一入口** `main.js` `resyncSessionChrome()`：`computePostSessionOverlayActive(sources)`（数组 + `some()`）→ Gate + Companion | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
+| `postSessionOverlayActive` | **单一入口** `sessionChromeSync.resyncSessionChrome()`：`computePostSessionOverlayActive(sources)` → Gate + Companion + 窄宽壳 | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
 | `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装；Picker 经 handlers 注入真门闩 | Here & Now / Flow 须门闩；**Offline 跳过 Arrival**；未就绪 Here&Now/Flow 必须 false |
 | Companion 点选写 storage | **仅** Gate 通过后（`commit-begin` / `commit-arrival`） | **禁止**先写 storage 再静默 return（`resolveCompanionModeSelectCommit`） |
 | `resolveCompanionHintClick` | `FocusSession` + Gate 包装 | toggle 展开三选一；禁静默 ignore |
 | `resolveSitClickWhenIdle` | Gate | Idle → 始终 `start-arrival`（开表走 Companion / ⚡） |
 
-扩展第三种叠层：在 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
+扩展第三种叠层：在 `sessionChromeSync` 的 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
 
 ---
 
