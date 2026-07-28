@@ -170,6 +170,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
+| `sessionChromeSync` 从 main 等价抽离（Idle 入口 + 叠层投影） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（含 `sessionChromeSync.test.js`）：`isHonestyPhaseBusy` / Idle 入口显隐 / `resyncSessionChrome` 投影。无 UI 变化。 | — | — | 2026-07-28 |
 | Cloudflare Workers API 骨架（cloud/ stub） | 纯后端 | 待人工测试 | **主路径**：`cd focus-tiger/cloud && npm install && npm run dev` → `curl` 两个 POST（见 `cloud/README.md`）须返回固定 mock。**校验**：缺字段 → 400。**回流**：连续超限请求 → 429（阈值写死 60/min；内存限流）。**本步不测前端**（未接线）。请 review 暂定字段：`daily-message` 要 `locale`+`localDate`；`emotion-weight` 要 `emotionKey`+`sessionPhase`。 | — | `http://127.0.0.1:8787` · `cloud/README.md` | 2026-07-22 |
 | UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径（产品舞台 v6）**：`http://127.0.0.1:8765/ui-kit/demo.html?v=20260721f`。**产品壳 Sit/Sound**：`npm run dev` → `/` 或 `/?product=1`，Sit with Yin / Rise / Sound 应为**蒲团橙**（非朱红）；How shall we sit? 仍暖米金。**回流**：开计时变 Rise 再回 Sit，色仍为橙。 | 2026-07-21：…v6。**同日书面**：同意产品壳 Sit 也改蒲团橙 → 已改 `#btn-focus` + Sound 同系 + PRINCIPLES/DESIGN；请硬刷新看产品壳。 | `/` · `/?product=1` · demo `?v=20260721f` | 2026-07-21 |
 | Arrival Practice / Notice「What is present…」点选后 | UI可见 | 已通过 | Sit → Notice：点 Calm → 图标收起，**短句须能读完**（约 2.4s）再进呼吸。 | 2026-07-20：书面确认框收起 OK。**同日再反馈**：`a calm presence…` 来不及看就消失→已加长至 2.4s，请复测。**2026-07-20 晚**：用户书面「测试 OK」。 | `http://localhost:5173/` · Sit → Calm | 2026-07-20 |

@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test \"src/**/*.test.js\"",
-    "test:smoke": "node --test src/core/scenario-smoke.test.js src/core/localStateKeys.test.js src/core/SessionUiGate.test.js src/ui/focusHudHalo.test.js src/ui/focusHudLive.test.js src/ui/sharedSittingProgress.test.js src/core/PracticeDaysStore.test.js src/ui/WeeklyPracticeHeatmap.test.js src/core/onboardingHintRegistry.test.js src/core/OnboardingHintsStore.test.js src/ui/hintDiscoveryDots.test.js src/core/sessionUiGateContractRegistry.test.js src/core/visibilityContractRegistry.test.js src/ui/outsideDismissGuard.test.js && npm run docs:check",
+    "test:smoke": "node --test src/core/scenario-smoke.test.js src/core/localStateKeys.test.js src/core/SessionUiGate.test.js src/core/sessionChromeSync.test.js src/ui/focusHudHalo.test.js src/ui/focusHudLive.test.js src/ui/sharedSittingProgress.test.js src/core/PracticeDaysStore.test.js src/ui/WeeklyPracticeHeatmap.test.js src/core/onboardingHintRegistry.test.js src/core/OnboardingHintsStore.test.js src/ui/hintDiscoveryDots.test.js src/core/sessionUiGateContractRegistry.test.js src/core/visibilityContractRegistry.test.js src/ui/outsideDismissGuard.test.js && npm run docs:check",
     "docs:check": "node scripts/docs-check.js",
     "hints:doc-check": "node scripts/hints-doc-check.js",
     "hints:doc-sync": "node scripts/hints-doc-check.js --write",
