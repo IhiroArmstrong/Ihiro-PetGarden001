@@ -61,7 +61,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|---|
 | `git-branch-model` | 「分支职责见 `WORKFLOW.md`」 | 再抄一份五列表 |
 | `git-merge-main` | 「合并 main 门禁见 `WORKFLOW.md`」 | 另造「须 N 人审批」等未立项条款；Agent 代点合并 |
-| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注；把「下班前 Git 同步」做成合并 main / 推进 PR |
+| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条：只推非运行时） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注；把「下班前 Git 同步」做成合并 main / 推进 PR；把业务代码/状态机/待确认 diff **默认一并 flush**；下班汇总不标「有/无业务逻辑改动」 |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
@@ -152,3 +152,4 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-07-25 | 新增 `browser-energy`：默认 Safari 预览；Cursor 内置 Browser 仅窄屏特例且最长 10 分钟（SSOT：`focus-tiger-browser-energy.mdc`） |
 | 2026-07-26 | 扩展 `browser-energy`：Vite/Playwright 进程收尾提醒 + Cloud「独立会话」提醒（用户拍板养成习惯） |
 | 2026-07-29 | 新增 `qa-develop-tip`（关单验收只认 `origin/develop` tip）、`branch-freshness`（邀测前 `check:branch-freshness`）、`z-index-registry`（`Z_INDEX.md`） |
+| 2026-07-29 | 收窄「请安排下班前的 Git 同步」：默认可推仅非运行时（文档/规则/脚本注释）；业务代码·状态机·待确认 diff 单独列出不 flush；汇总须标有无业务逻辑改动（regression-lock 第 7 条） |

@@ -126,7 +126,10 @@ export const RULE_AUTHORITY_TOPICS = [
       /声称「已修复 \/ 已修好」须有 push \+ CI 证据|push 本身仍须用户明确授权/,
       /Git 同步汇总/,
       /高风险标注/,
-      /请安排下班前的 Git 同步/
+      /请安排下班前的 Git 同步/,
+      /非运行时/,
+      /禁止默认 flush/,
+      /业务逻辑\/代码改动/
     ],
     topicSignals: [
       /允许自动 commit/,
@@ -162,6 +165,12 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'auto-push-allowed',
         pattern: /(?:^|[^\u4e00-\u9fff])(?:允许|可以|应当)(?:post-commit\s*)?自动\s*(?:`?git\s*)?push/,
         note: '禁止 post-commit / 未经确认自动 push'
+      },
+      {
+        id: 'eod-sync-flush-all',
+        pattern:
+          /下班前(?:的)?\s*Git\s*同步.{0,120}(?:尚未推送的本地\s*commit\s*)?全部\s*(?:`?push`?|推送|flush)/,
+        note: '下班前口令已收窄为只推非运行时；禁止复述「全部 push / flush」'
       }
     ],
     // Historical changelog lines that quote deprecated phrases are OK if marked 废止
