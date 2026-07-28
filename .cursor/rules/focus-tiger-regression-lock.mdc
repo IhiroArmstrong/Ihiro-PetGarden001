@@ -65,7 +65,7 @@ alwaysApply: true
 - [ ] **主路径**已跑通（浏览器或等价）  
 - [ ] **回流路径**已跑通（结束/关闭/二次进入至少一条）  
 - [ ] **静默失败已消除**（不可点或有明确结果）  
-- [ ] **自动化冒烟已跑通**：`cd focus-tiger && npm run test:smoke` **且** `npm run test:e2e`；不过 → 不得声称修好。二者全绿 ≠ 序列观感通过  
+- [ ] **自动化冒烟已跑通**：本地 `cd focus-tiger && npm run test:smoke` **且** `npm run test:e2e:smoke`（或 `test:e2e:changed -- <相关 spec>`）；不过 → 不得声称修好。冒烟全绿 ≠ 序列观感通过。全量 `test:e2e` / `test:e2e:visibility` **不在本门禁本地跑**（见 §7「绿（CI）」与 `scripts/e2e-ci-guard.js`；仅 CI 或 `RUN_E2E_LOCAL=true`）  
 - [ ] **回归锚已补**：门闩失败用例 / 观感契约 / **本次确认修复 bug 的自动化回归**；确无法自动化 → TEST_TRACKER 标明「须人工锁路径」（不限于门闩类）；**观感子项须分列，禁止笼统一行**  
 - [ ] **已好清单**（若本次为重写/改转场）已逐条自检  
 - [ ] **TEST_TRACKER**：用户原话进「用户反馈」列；测试步骤与其它行不冲突；状态「待人工测试」  
@@ -77,7 +77,7 @@ alwaysApply: true
 
 未通过门禁 → 不得在回复里写「已修好 / 已修正」，只可写「主路径已改，回流路径尚未验证」等诚实状态。
 
-**冒烟说明**：`test:smoke` = 控制器逻辑；`test:e2e` = Playwright DOM 壳。Idle 闪一下等序列观感仍靠契约单测 + 人工分列行。见 `DEV_WORKFLOW_QUALITY.md` §6.1。
+**冒烟说明**：本地 `test:smoke` = 控制器逻辑；本地 `test:e2e:smoke` / `test:e2e:changed` = 轻量 Playwright。全量 `test:e2e` / `test:e2e:visibility` 由 **CI** 承接（如 `focus-tiger-e2e-full.yml` / visibility workflow；本地有守卫，见 `scripts/e2e-ci-guard.js`）。Idle 闪一下等序列观感仍靠契约单测 + 人工分列行。见 `DEV_WORKFLOW_QUALITY.md` §6.1。
 
 **口径分层**：上列门禁 = **研发收尾最低线**（含本地冒烟 + 本地 commit）。**声称 Bug「已修复 / 已修好」** 还须满足下文 **§7 AI 修复验收规范**——本地 commit / 本地测试绿 **不等于** 修复完成。
 
@@ -107,7 +107,7 @@ alwaysApply: true
 完成任何 Bug 修复并向用户报告「已修复」时，回复须含独立小节 **「Bug 修复验收（§7 checklist）」**，**逐项**列出（某一项做不到须写「**未完成**」，禁止省略）：
 
 - [ ] **红**：新增/相关自动化用例在修复前被证明会失败（附失败输出）
-- [ ] **绿（CI）**：修复后该用例及相关测试在 **CI**（非本地）跑绿（附命令+输出或 CI 链接）
+- [ ] **绿（CI）**：修复后相关用例在 **CI**（非本地）跑绿（附 CI run 链接）。触及 Playwright 壳/主路径时，须含 PR smoke（`test:pr-smoke` = 本地冒烟同款的 `test:smoke` + `test:e2e:smoke`）。声称覆盖完整用户链路或合并前验收时，另须全量 `test:e2e` 的 CI 绿（附该 run 链接，如 `focus-tiger-e2e-full.yml`）。本地仅允许 `test:e2e:smoke` / `test:e2e:changed`；全量仅 CI 或 `RUN_E2E_LOCAL=true`
 - [ ] **push**：代码已 push 到共享分支（附 commit hash + 分支名）
 - [ ] **文档口径**：覆盖范围描述已同步核对并修正（`SCENARIO_TESTS.md` / `TEST_TRACKER.md` 等）
 - [ ] **人工复测**：已完成（**仅**体验确认，**不替代**以上四项）
@@ -169,7 +169,7 @@ alwaysApply: true
 | 本地冒烟（N13） | **必须** | 研发自检；**不能**替代 CI 绿 |
 | 合并进 `main` | **禁止自动**；须用户明确指令 | **禁止自动**；须用户明确指令 |
 | `git push` / 远程同步 | **仍须用户明确授权**（固化基线不依赖 push）；执行时须附 **Git 同步汇总**（见上第 6 条） | **证据上必须已 push**（§7 claim gate）；**执行 push 仍须用户明确授权**，附 hash + 分支名 + 同步汇总 |
-| CI 跑相关测试 | — | **必须**（附 run 链接或 pass/fail 输出） |
+| CI 跑相关测试 | — | **必须**（附 CI run 链接）。「相关」= 至少 PR smoke（`test:pr-smoke`）；声称完整用户链路 / 合并前验收时另须全量 `test:e2e` CI 绿（独立 run 链接）。日常收尾不强制等全量 CI |
 | §7 checklist 五项 | — | **回复必列**；缺项 = 未完成 |
 
 ## 高回归风险面（触及须显式复检）
@@ -198,3 +198,5 @@ alwaysApply: true
 - **改动范围**：仍只改本任务。  
 - **保护面**：邻接已好体验须列入已好清单并复测。  
 - **验收矩阵**：本任务行为的主路径 + 回流路径 +（若重写）已好清单逐条。
+
+如涉及运行测试/CI相关任务，参考 testing-strategy 规则。
