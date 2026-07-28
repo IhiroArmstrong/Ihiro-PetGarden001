@@ -607,10 +607,16 @@ async function init() {
       onTrackChosen: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
+        narrowIdleShell.syncMuteVisual({
+          musicOn: ambientSoundscapeUI.wantsMusicOn()
+        });
       },
       onToggleMusic: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
+        narrowIdleShell.syncMuteVisual({
+          musicOn: ambientSoundscapeUI.wantsMusicOn()
+        });
       }
     }
   );
@@ -641,14 +647,11 @@ async function init() {
   });
 
   narrowIdleShell.setHandlers({
-    onMute: async () => {
-      await ambientSoundscapeUI.toggleMuteFromUi();
+    onSound: () => {
+      ambientSoundscapeUI.activateSoundFromNarrow();
       narrowIdleShell.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
-    },
-    onSound: () => {
-      ambientSoundscapeUI.activateSoundFromNarrow();
     },
     onCompanion: () => {
       companionModePicker.open();

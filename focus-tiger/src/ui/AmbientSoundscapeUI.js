@@ -1,7 +1,7 @@
 /**
  * 背景音 UI：
- * - 右上米色 **音乐图标**（音符 / 音符+斜杠）随时静音/开播（须用户点开，默认关）
- * - 右下角 **Sound** 蒲团橙按钮始终可见；专注后可展开曲目/音量
+ * - 右上米色 **音符钮**（窄屏 Idle 由 ActionBar ♪ 代理）→ 与菜单 / 抽屉 **Sound** 同效：打开曲目/音量面板
+ * - 右下蒲团橙 Sound FAB 仅作遗留 DOM（宽屏永久藏起，避免与右上音符重复）
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -62,7 +62,7 @@ export class AmbientSoundscapeUI {
     this.muteBtn.className = 'ambient-soundscape__mute';
     this.muteBtn.addEventListener('click', () => {
       this._dismissNudge();
-      void this._onMuteClick();
+      this.openSoundPanelFromNote();
     });
 
     this.focusChrome = document.createElement('div');
@@ -190,15 +190,27 @@ export class AmbientSoundscapeUI {
     this._renderPanel();
   }
 
-  /** Narrow ActionBar / drawer entry — same as tapping the mute note. */
+  /**
+   * Legacy helper — prefer {@link openSoundPanelFromNote} / menu Sound.
+   * Kept for tests that still exercise direct preference toggle.
+   */
   async toggleMuteFromUi() {
     await this._onMuteClick();
   }
 
   /**
-   * Narrow drawer 「Sound」— open the Soundscape track panel immediately
-   * (same selection box as desktop Sound). Hide FAB; do not show gated tip-only.
-   * Caller stages `.ambient-soundscape__focus-chrome` so the panel is on-canvas.
+   * Top-right note (and ActionBar ♪ proxy) — same effect as menu / drawer Sound.
+   * Stages the Soundscape panel on-canvas; never gated tip-only.
+   */
+  openSoundPanelFromNote() {
+    this._stageSoundPanelHost();
+    this.activateSoundFromNarrow();
+  }
+
+  /**
+   * Narrow drawer / wide ⋯ 「Sound」— open the Soundscape track panel immediately
+   * (same selection box). Hide FAB; do not show gated tip-only.
+   * Caller may also stage body classes; {@link openSoundPanelFromNote} stages itself.
    */
   activateSoundFromNarrow() {
     this._clearBlockedTip();
@@ -208,6 +220,24 @@ export class AmbientSoundscapeUI {
     this._renderPanel();
     this.panel.hidden = false;
     this.handlers.onPanelOpened?.();
+  }
+
+  /** Ensure focus-chrome + panel are positioned on-canvas (narrow / wide / Focusing). */
+  _stageSoundPanelHost() {
+    const body = document.body;
+    if (body.classList.contains('ft-narrow-shell')) {
+      body.classList.remove(
+        'ft-narrow-stage-companion',
+        'ft-narrow-stage-reminder'
+      );
+      body.classList.add('ft-narrow-stage-sound');
+      return;
+    }
+    body.classList.remove(
+      'ft-wide-stage-companion',
+      'ft-wide-stage-reminder'
+    );
+    body.classList.add('ft-wide-stage-sound');
   }
 
   /** Whether ambient preference wants music on (for ActionBar ♪ slash). */
@@ -356,14 +386,13 @@ export class AmbientSoundscapeUI {
     const showSlash = audible || ctrl.wantsEnabled();
     this.muteBtn.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
     this.muteBtn.classList.toggle('is-muted', showSlash);
+    // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
+    this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
     this.muteBtn.setAttribute(
-      'aria-label',
-      showSlash ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
+      'aria-expanded',
+      this.isPanelOpen() ? 'true' : 'false'
     );
-    this.muteBtn.setAttribute(
-      'aria-pressed',
-      showSlash ? 'true' : 'false'
-    );
+    this.muteBtn.removeAttribute('aria-pressed');
   }
 
   _refreshSoundFab() {
@@ -475,6 +504,45 @@ export class AmbientSoundscapeUI {
       }
       .ambient-soundscape.is-gated .ambient-soundscape__fab {
         opacity: 0.72;
+      }
+      /* Wide: keep only top-right note — never show duplicate Sound FAB */
+      @media (min-width: 480px) {
+        .ambient-soundscape__fab {
+          position: fixed !important;
+          left: -10000px !important;
+          top: 0 !important;
+          width: 1px !important;
+          height: 1px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          z-index: -1 !important;
+        }
+        /* Focusing / Idle: stage panel from top-right note (no FAB) */
+        body.ft-wide-stage-sound .ambient-soundscape__focus-chrome {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          width: min(300px, calc(100vw - 48px)) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
+          align-items: stretch !important;
+        }
+        body.ft-wide-stage-sound .ambient-soundscape__panel {
+          display: block !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+        }
+        body.ft-wide-stage-sound .ambient-soundscape__nudge {
+          display: none !important;
+        }
       }
       .ambient-soundscape__fab {
         pointer-events: auto;
