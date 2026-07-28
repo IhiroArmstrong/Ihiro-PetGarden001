@@ -25,7 +25,8 @@
     "test:e2e:changed": "node scripts/run-e2e-changed.js",
     "test:e2e:visibility": "node scripts/e2e-ci-guard.js visibility && node scripts/run-visibility-e2e.js",
     "test:pr-smoke": "npm run test:smoke && npm run test:e2e:smoke",
-    "test:e2e:install": "playwright install chromium"
+    "test:e2e:install": "playwright install chromium",
+    "check:branch-freshness": "node scripts/check-branch-freshness.js"
   },
   "dependencies": {
     "lit": "^3.3.3",
