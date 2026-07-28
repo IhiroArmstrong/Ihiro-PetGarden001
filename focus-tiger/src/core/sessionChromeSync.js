@@ -153,9 +153,10 @@ export function createSessionChromeSync(deps) {
       getMicroRitualUI()?.isOpen?.() === true;
     const honestyBusy = isHonestyUiBusy(honestyCheckInUI?.phase);
     const bridgeVisible = getHonestyBridge()?.isVisible?.() === true;
-    // 桥接 Yes/No：须保留 ActionBar 时间；勿因 bridge alone 收起窄屏顶栏
-    // Arrival: suppress ActionBar/Sit/Honesty but keep narrow Quick Start;
-    // Reflection / Honesty busy: full shell suppress. Bridge alone is exempt.
+    // 桥接 Yes/No：须保留 ActionBar；勿因 bridge alone 收起窄屏顶栏
+    // Arrival: keep ActionBar + Quick Start; hide Sit/Honesty/grabber.
+    // Reflection / Honesty busy: suppress grabber/home/sheet; ActionBar stays.
+    // ActionBar time = wall clock (not FocusHUD session elapsed).
     const chromeSuppressed = overlayActive || honestyBusy;
     narrowIdleShell.setIdle(!focusing);
     narrowIdleShell.setSuppressed(chromeSuppressed, {
