@@ -172,7 +172,7 @@
 |---|---|
 | Hints remap | park 后 tip / ? 补救锚到当前可见宿主，禁止旧坐标 |
 | Sit 显隐 | Arrival（含 Breath）开着 → Sit 隐藏或不可点；双壳同语义 |
-| FocusHUD vs ActionBar | Focusing / 叠层期顶栏时间归属写死；宽窄一致 |
+| FocusHUD vs ActionBar | **窄屏**：ActionBar = 常显本机墙钟 + ? + ♪；`#focus-hud` = 会话计时（Focusing 下移避免叠顶栏）。宽屏仍 FocusHUD |
 
 故事矩阵：`DEV_WORKFLOW_QUALITY.md` **§8（窄）** / **§9（宽）**。
 
