@@ -17,7 +17,9 @@ jobs:
   e2e-full:
     name: npm run test:e2e (full)
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Was 60: suite cancelled mid-run under workers:2 + retry storms (~59m).
+    # Raise first; tighten after we observe wall-clock with --workers=1.
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: focus-tiger
@@ -43,8 +45,10 @@ jobs:
 
       # Equivalent to `npm run test:e2e` (guard + playwright test), with CI reporters
       # for Actions annotations + HTML artifact. package.json script only uses `list`.
+      # --workers=1: override playwright.config.js CI default (2) for this job only —
+      # dual Chromium goto storms on ubuntu-latest were canceling the 60m budget.
       - name: Full Playwright e2e
-        run: node scripts/e2e-ci-guard.js full && npx playwright test --reporter=list,html,github
+        run: node scripts/e2e-ci-guard.js full && npx playwright test --reporter=list,html,github --workers=1
         env:
           CI: 'true'
           PLAYWRIGHT_CHANNEL: ''
