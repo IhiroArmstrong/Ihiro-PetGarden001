@@ -1494,6 +1494,11 @@ async function init() {
     syncInAppReminderBanner();
   });
 
+  // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
+  // and the product shell can now be safely queried/clicked.
+  window.__FT_APP_READY__ = true;
+  window.dispatchEvent(new Event('ft:app-ready'));
+
   animate();
 }
 
