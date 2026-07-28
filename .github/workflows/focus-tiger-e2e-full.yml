@@ -17,9 +17,11 @@ jobs:
   e2e-full:
     name: npm run test:e2e (full)
     runs-on: ubuntu-latest
-    # Was 60: suite cancelled mid-run under workers:2 + retry storms (~59m).
-    # Raise first; tighten after we observe wall-clock with --workers=1.
-    timeout-minutes: 90
+    # Was 60 (workers:2 retry storms), then 90 (workers:1 still cancelled mid-suite
+    # under first-attempt page.goto timeout → retry storms, ~90m). Raise to 120 so
+    # the job can finish and report pass/flaky instead of wall-clock cancel.
+    # Not a flaky root-cause fix — goto/domcontentloaded jitter is tracked separately.
+    timeout-minutes: 120
     defaults:
       run:
         working-directory: focus-tiger
