@@ -95,6 +95,7 @@ alwaysApply: true
 - 交互修复完工门禁、Commit 汇报与分支门禁、Bug close §7 → `focus-tiger-regression-lock.mdc`
 - 分支模型 / 合并 main / 跨会话冲突 / 并行 worktree / **姊妹分支同步** → 仓库根 `WORKFLOW.md`
 - 质量叙事（why/how）→ `DEV_WORKFLOW_QUALITY.md`
+- 如涉及运行测试/CI相关任务，参考 testing-strategy 规则。
 
 ## Git 同步（半自动，禁止静默 push）
 
