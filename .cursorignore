@@ -1,0 +1,40 @@
+# Cursor: fully hide from AI (indexing + @ + Agent read).
+# Prefer this for secrets, deps, build junk, and archives Agents never need.
+# Large *tracked* binaries that Agents may still @-mention → `.cursorindexingignore`.
+
+# Dependencies & build
+node_modules/
+dist/
+.vite/
+.tools/
+.cache/
+coverage/
+
+# Test / Playwright artifacts (browsers are huge on disk)
+playwright-report/
+test-results/
+focus-tiger/.playwright-browsers/
+**/playwright/.cache/
+
+# Logs / env
+*.log
+npm-debug.log*
+.env
+.env.*
+!.env.example
+
+# Local art source dumps & zip archives (frames already under public/sprites/)
+focus-tiger/art-reference/models/sources/
+*-transparent.zip
+*_transparent_bg.zip
+*_transparent.zip
+*transparent*.zip
+*.pkg
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.rtf
