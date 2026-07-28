@@ -1,6 +1,13 @@
 {
   "version": 1,
   "hooks": {
-    "stop": []
+    "stop": [],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/gate-destructive-shell.sh",
+        "matcher": "git\\s+(push|reset|clean|rebase|merge)\\b|gh\\s+pr\\s+merge\\b|gh\\s+repo\\s+delete\\b",
+        "failClosed": true
+      }
+    ]
   }
 }

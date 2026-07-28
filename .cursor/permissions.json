@@ -1,0 +1,35 @@
+{
+  // Repo terminal allowlist for Cursor Agent (Allowlist / Auto-review).
+  // Prefix match: never put bare "git" or "gh" here — that would auto-allow push/merge/delete.
+  // This key fully replaces the in-app terminal allowlist for this workspace.
+  // Destructive git/gh: omitted here + hard-gated by .cursor/hooks/gate-destructive-shell.sh
+  // (beforeShellExecution). Do not rely on autoRun.block_instructions unless Run Mode is Auto-review.
+  "terminalAllowlist": [
+    "cd",
+    "echo",
+
+    "git status",
+    "git diff",
+    "git log",
+    "git show",
+    "git rev-parse",
+    "git branch",
+    "git add",
+    "git commit",
+    "git stash list",
+
+    "gh pr view",
+    "gh pr list",
+    "gh pr checks",
+    "gh pr status",
+    "gh issue list",
+    "gh issue view",
+    "gh run list",
+    "gh run view",
+    "gh api",
+
+    "npm run",
+    "npm test",
+    "npm install"
+  ]
+}
