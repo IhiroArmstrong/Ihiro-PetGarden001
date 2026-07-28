@@ -363,3 +363,25 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
     'honesty-bridge'
   );
 });
+
+test('micro-ritual open suppresses sit-targeting auto hints', () => {
+  assert.deepEqual(
+    resolveAutoHintIds({
+      microRitualOpen: true,
+      hasEverCompletedSession: true
+    }),
+    []
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      microRitualOpen: true,
+      hasEverCompletedSession: false
+    }).includes('sit-button')
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      microRitualOpen: true,
+      hasEverCompletedSession: true
+    }).includes('idle-after-session')
+  );
+});

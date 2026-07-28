@@ -706,6 +706,7 @@ async function init() {
             : arrivalPhase,
       companionExpanded: companionModePicker?.isOpen?.() ?? false,
       isFocusing: stateManager.state === STATES.FOCUSING,
+      microRitualOpen: microRitualUI?.isOpen?.() === true,
       reflectionOpen: reflectionMoment?.isOpen?.() ?? false,
       ambientPanelOpen: ambientSoundscapeUI?.isPanelOpen?.() ?? false,
       isDormant: stateManager.state === STATES.DORMANT,
