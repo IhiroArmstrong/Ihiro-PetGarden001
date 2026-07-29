@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **本地桌面 APP 打包选型入计划（2026-07-30 · 决策未拍板）**：记为 **v1 阻塞开放决策**；候选 Electron / Tauri / PWA·薄壳；连带云端联网与离线降级产品面；**优先级高于 CI 细节**。见开放决策 + Backlog「本地桌面 APP 打包选型」；`TASKS.md` 任务六加交叉引用。无代码改动，无 TEST_TRACKER 行。
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
@@ -243,8 +244,9 @@
 
 **下一步计划**：
 
+- **v1 阻塞 · 本地桌面 APP 打包选型（决策，优先于 CI 细节）**：不必本周拍板实现，但须在 v1 稳定版「想办法打包」之前选定 Electron / Tauri / PWA·壳；选型会影响云端 API 调用方式与离线降级产品面。见开放决策与 Backlog「本地桌面 APP 打包选型」——**排期优先级高于**「CI 全量 smoke + e2e」与「降低 visibility CI flaky 率」（CI 仍要做，但不挡打包选型讨论）。
 - **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
-- **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列优先，可同周推进。
+- **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列推进——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论/决策**（实现可后置）。
 - **回 `chore/split-hints-from-pr2` / hints 拆分线时**：先核 `git stash` 里「`On chore/split-hints-from-pr2: temp prd untracked`」再动手（见 Backlog「stash · chore/split-hints-from-pr2」）；**禁止**未核就 drop。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
@@ -254,10 +256,11 @@
 - 补正式瞳孔 PNG，调 `EyeTracking` 锚点与偏移 → **已放弃（2026-07-19）**，见 `CORE_LOOP.md`；勿再排期返工
 - 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
-- 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做）
+- 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做；**PWA 任务六**须服从下方「本地桌面 APP 打包选型」，勿单独默认成最终交付形态）
 
 **已知的开放决策 / 待确认事项**：
 
+- **本地桌面 APP 打包选型（2026-07-30 · v1 阻塞 · 未拍板）**：从 `develop`/`main` 导出稳定版后需要「双击能跑」的电脑版；分支含 **Electron**（Web 原样打包、成熟、体积大）/ **Tauri**（轻量、需 Rust 学习成本）/ **PWA 或薄壳**（成本最低，体验弱于原生壳）。连带产品决策：若依赖云端关键算法，核心功能是否必须联网；离线时降级体验与 UI 告知是否提前设计。**不必立刻实现**，但须尽早选型——越晚适配（文件路径、原生菜单、API base URL、离线缓存边界）越大。详情见 Backlog「本地桌面 APP 打包选型」；**优先级高于 CI 细节**。
 - **「?」朱砂红点用途（2026-07-22）**：用户书面——红点应「用于系统里面的通知，或者 alert 之类的」。现实现仍挂 onboarding「?」未读提示。待拍板：改挂应用内提醒/通知，还是保留引导未读角标。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
@@ -272,6 +275,7 @@
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
+- **本地桌面 APP 打包选型（v1 阻塞 · 决策优先于 CI 细节）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 - **荷花成长场景**（复用 `IncenseComplete` 立体荷花 + 金斑浮动；荷花持续增加至布满画面）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
@@ -281,8 +285,8 @@
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
 - 角色边界待观察事项
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
-- **CI 全量 `test:smoke` + `test:e2e`**（PR #2 后下一工程 PR；勿长期依赖本机手跑；目标 2026-07-30 前有草稿/可合并 CI）
-- **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘）
+- **CI 全量 `test:smoke` + `test:e2e`**（工程重要，但**排期次于**「本地桌面 APP 打包选型」决策；勿长期依赖本机手跑）
+- **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
 - **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
 
 ---
@@ -515,6 +519,29 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **价值定位**：锦上添花的可选玩法，非核心刚需
 - **排期**：待 2D 情绪系统主线稳定后，再评估是否开发
 
+### Backlog:本地桌面 APP 打包选型（v1 阻塞 · 决策优先于 CI 细节）
+
+> **背景（2026-07-30）**：产品目标含「本地可以跑的电脑版 APP」。从 `develop`/`main` 导出稳定版之后「想办法打包」背后有多条技术分支；越早定越好，因为会影响开发中的适配细节（云端服务调用方式、离线能力要求、资源路径、原生菜单等）。**不必立刻拍板实现**，但须作为 **v1 阻塞项**列入计划，且**决策优先级高于**「CI 全量 smoke + e2e」与「降低 visibility CI flaky 率」（CI 工程仍推进，但不挡本选型讨论）。
+
+**候选（未选型）**：
+
+| 路径 | 要点 |
+|---|---|
+| **Electron** | Web 技术栈原样打包；生态成熟；体积大；路径/菜单/`file://` 等适配面明确 |
+| **Tauri** | 更轻量；团队若无 Rust 经验则有学习成本 |
+| **PWA / 薄壳** | 「双击图标能跑」成本最低；体验通常弱于原生壳；与 `TASKS.md` 任务六相关但**不得**默认当成最终桌面交付形态 |
+
+**连带产品决策（非纯技术）**：
+
+- 若核心体验依赖「云端关键算法」（见 `cloud/` Workers 骨架），本地 APP 是否必须联网才能用核心功能；
+- 离线时的降级体验与 UI 告知（明确「离线不可用 / 部分可用」）是否提前设计——属产品面，不是事后补丁。
+
+**适配面提示（选型后可能触及）**：API base URL / CORS 与桌面 origin、资源与用户数据路径、离线缓存边界（与旧「PWA service worker 缓存 3D」口径对齐或废止）、原生菜单与窗口生命周期、自动更新策略。
+
+- **状态**：**开放决策**；未开工实现。
+- **不在范围**：本条不立项写 Electron/Tauri 脚手架；不替代 Browser First 插件方向（见上条）；不把手机原生 App 混入本决策。
+- **排期**：**v1 阻塞 · 决策尽早**；实现可排在稳定 Web 版导出之后，但选型讨论须排在「只靠 CI 细节收口再谈打包」之前。拍板后同步 `ARCHITECTURE.md` / `TASKS.md` 任务六，并更新本开放决策条。
+
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
 
 > **背景（2026-07-23 · PR #2 合并门禁拍板）**：本次 `develop`→`main` **临时接受**「本地 `npm run test:smoke` + `npm run test:e2e` 全绿 + CI 仅 `focus-tiger doc-contract check`」。仓库目前**没有**跑完整 smoke / Playwright e2e 的 workflow；合并门槛不应长期依赖人工在本机手跑。
@@ -525,11 +552,11 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
   3. `npm run test:e2e`（Playwright；本地默认自带 Chromium；CI 建议 `PLAYWRIGHT_CHANNEL=chrome` 作系统 Chrome 兜底）
 - **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
-- **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工，目标 **2026-07-30 前** 至少有草稿 workflow 或可合并的 CI PR。
+- **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工。**相对「本地桌面 APP 打包选型」**：本项为工程护栏，**决策优先级次于**打包选型（可并行推进实现，但争排期时先排打包讨论）。
 
 ### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
 
-> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修**已有** visibility workflow 的稳定性，全量项补**尚未**进 CI 的整套 smoke/e2e。
+> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修**已有** visibility workflow 的稳定性，全量项补**尚未**进 CI 的整套 smoke/e2e。**决策优先级次于**「本地桌面 APP 打包选型」（见上条）。
 
 - **目标**：把 visibility suite 的 flaky（首轮红、retry 翻绿）压到可接受水平（建议目标：连续 2～3 次 CI run 上 flaky ≤ 约 20%，且无「仅靠 retry 才绿」的系统性风暴）；墙钟须稳定落在 job `timeout-minutes` 内。
 - **处理方向（优先序，可组合）**：
