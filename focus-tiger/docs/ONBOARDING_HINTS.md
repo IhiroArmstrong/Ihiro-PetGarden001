@@ -97,7 +97,35 @@
 
 | hintId | localeKey | triggerMode | tier | selector | placement | tip | anchorGroup |
 |---|---|---|---|---|---|---|---|
-| _(regenerate via `npm run hints:doc-sync`) | | | | | | | |
+| `dormant-open` | `HINT_DORMANT_OPEN` | `legacy` | — | `#btn-focus` | above | bottom | — |
+| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `auto` | — | `#honesty-idle-entry` | above | bottom | — |
+| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `auto` | — | `#honesty-bridge-cta` | above | bottom | — |
+| `sit-button` | `HINT_SIT_BUTTON` | `auto` | — | `#btn-focus` | above | bottom | — |
+| `quick-start` | `HINT_QUICK_START` | `click` | `simple` | `#quick-start-focus` | above | bottom | — |
+| `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `click` | `simple` | `.session-start-dock__hint` | right | left | — |
+| `notice` | `HINT_NOTICE` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
+| `breathing` | `HINT_BREATHING` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
+| `choose` | `HINT_CHOOSE` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
+| `companion-mode` | `HINT_COMPANION_MODE` | `auto` | — | `.session-start-dock__panel, .session-start-dock__hint` | above | bottom | — |
+| `companion-stay` | `HINT_COMPANION_STAY` | `auto` | — | `.session-start-dock__panel` | above | bottom | — |
+| `companion-away` | `HINT_COMPANION_AWAY` | `auto` | — | `.session-start-dock__panel` | above | bottom | — |
+| `companion-across-tools` | `HINT_COMPANION_ACROSS` | `auto` | — | `.session-start-dock__panel` | above | bottom | — |
+| `ambient-gated` | `HINT_AMBIENT_GATED` | `click` | `simple` | `.ambient-soundscape__fab` | left | right | `ambient` |
+| `ambient-soundscape` | `HINT_AMBIENT_SOUNDSCAPE` | `click` | `simple` | `.ambient-soundscape__mute` | below | top | `ambient` |
+| `rise-button` | `HINT_RISE_BUTTON` | `click` | `simple` | `#btn-focus` | above | bottom | — |
+| `reflection` | `HINT_REFLECTION` | `auto` | — | `#tiger-reflection-moment` | above | bottom | — |
+| `idle-after-session` | `HINT_IDLE_AFTER_SESSION` | `click` | `simple` | `#btn-focus` | above | bottom | — |
+| `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `click` | `simple` | `#weekly-practice-heatmap` | right | left | — |
+| `in-app-reminder` | `HINT_IN_APP_REMINDER` | `click` | `simple` | `#reminder-preference-toggle` | right | left | — |
+| `micro-ritual` | `HINT_MICRO_RITUAL` | `click` | `simple` | `#micro-ritual-idle-entry` | right | left | — |
+| `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `click` | `simple` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
+| `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `click` | `simple` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
+| `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `click` | `simple` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
+| `narrow-drawer-menu` | `HINT_NARROW_DRAWER_MENU` | `manual` | — | `.ft-narrow-grabber` | above | bottom | — |
+| `help-affordance` | `HINT_HELP_AFFORDANCE` | `click` | `detailed` | `#onboarding-hint-help` | right | left | — |
+| `help-remedy` | `HINT_HELP_REMEDY` | `manual` | — | `#onboarding-hint-help` | right | left | — |
+| `help-fallback` | `HINT_HELP_FALLBACK` | `manual` | — | `#btn-focus` | above | bottom | — |
+
 <!-- onboarding-hints-registry:anchors:end -->
 
 ### 音乐提示（对应 ambient-soundscape 文案）

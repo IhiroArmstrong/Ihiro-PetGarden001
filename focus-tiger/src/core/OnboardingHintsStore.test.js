@@ -366,9 +366,6 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   ]);
   assert.deepEqual(resolveAutoHintIds({ companionExpanded: true }), [
     'companion-mode',
-    'companion-stay',
-    'companion-away',
-    'companion-across-tools',
     'help-affordance'
   ]);
   assert.deepEqual(resolveAutoHintIds({ reflectionOpen: true }), ['reflection']);
