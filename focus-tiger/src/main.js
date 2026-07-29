@@ -72,7 +72,10 @@ import {
   PRACTICE_STREAK_RING_TOTAL
 } from './core/PracticeDaysStore.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
-import { HonestyCheckInController } from './core/HonestyCheckInController.js';
+import {
+  HonestyCheckInController,
+  resolveHonestyBreathMs
+} from './core/HonestyCheckInController.js';
 import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
 import { HonestyBridgeStore } from './core/HonestyBridgeStore.js';
 import { HonestyBridgeCtaController } from './core/HonestyBridgeCtaController.js';
@@ -106,6 +109,8 @@ import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
 /** 微仪式默认 60s；e2e 用 `?microRitualMs=1500` 缩短。 */
 const MICRO_RITUAL_MS = resolveMicroRitualMs(location.search);
+/** Honesty 呼吸默认 10s；e2e 用 `?honestyBreathMs=1500` 缩短。 */
+const HONESTY_BREATH_MS_RESOLVED = resolveHonestyBreathMs(location.search);
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
 
 function revealScene({ showCanvas = false } = {}) {
@@ -349,6 +354,7 @@ async function init() {
     stateManager,
     emotionController,
     ui: honestyCheckInUI,
+    breathMs: HONESTY_BREATH_MS_RESOLVED,
     applyFocusGlow: (level) => {
       honestyGlowLevel = level;
       tigerCharacter.setFocusLevel(level);

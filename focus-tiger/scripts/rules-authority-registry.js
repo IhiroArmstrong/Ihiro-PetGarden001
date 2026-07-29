@@ -116,6 +116,39 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-semver-release',
+    title: '语义化版本与稳定发布点（tag，非 release 分支）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '语义化版本与稳定发布点',
+    ssotMustContain: [
+      /SemVer 2\.0\.0/,
+      /annotated Git tag/,
+      /v1\.0\.0/,
+      /不.*切 `release\//
+    ],
+    topicSignals: [
+      /语义化版本|SemVer/,
+      /稳定发布点|稳定版标记/,
+      /git-semver-release/,
+      /release\/1\.0|release\/<major>/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /annotated Git tag/,
+      /第一个交给用户的稳定版/,
+      /不.*切 `release\//
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'default-cut-release-branch',
+        pattern: /(?:应当|应该|须|需要|默认要)\s*(?:切|开|建)\s*`?release\//,
+        note: '开发阶段默认不切 release 分支；稳定版用 annotated tag',
+        exemptIfLineMatches: /禁止|主张|不建议|勿/
+      }
+    ]
+  },
+  {
     id: 'git-agent-commit',
     title: 'Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',

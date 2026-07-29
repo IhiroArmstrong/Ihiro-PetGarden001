@@ -14,8 +14,27 @@ import { EMOTION_KEYS } from './EmotionController.js';
 import { shouldEnterDormantIdle } from './dormantTrigger.js';
 import { DORMANT_IDLE_MS } from '../utils/Constants.js';
 
-/** 与 HonestyCheckInUI.HONESTY_BREATH_MS 保持一致。 */
+/** 产品默认呼吸引导时长（ms）；与 HonestyCheckInUI 倒计时一致。 */
 export const HONESTY_BREATH_MS = 10_000;
+
+/** e2e / 调试最短时长（ms）；过短会让相位几乎看不见。 */
+export const HONESTY_BREATH_MS_MIN = 500;
+
+/**
+ * `?honestyBreathMs=1500` → 1.5s（e2e）；缺省/非法 → 10s；夹在 MIN–DEFAULT。
+ * @param {string} [search]
+ * @returns {number}
+ */
+export function resolveHonestyBreathMs(search = '') {
+  const raw = new URLSearchParams(search).get('honestyBreathMs');
+  if (raw == null || raw === '') return HONESTY_BREATH_MS;
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return HONESTY_BREATH_MS;
+  return Math.min(
+    HONESTY_BREATH_MS,
+    Math.max(HONESTY_BREATH_MS_MIN, Math.round(n))
+  );
+}
 
 /** 所选时长 → 临时 focusLevel 占位（Rim Light 重构前对接既有 FocusVisualizer）。 */
 export function focusLevelForHonestyMinutes(minutes) {
@@ -46,6 +65,7 @@ export class HonestyCheckInController {
    *   外部叠层占用（如 Honesty 桥接 Yes/No）时禁止再出示入口；防 dock 钮盖住桥接
    * @param {() => Date} [deps.now]
    * @param {number} [deps.dormantIdleMs]
+   * @param {number} [deps.breathMs] 呼吸引导墙钟；e2e 用 `resolveHonestyBreathMs`
    */
   constructor({
     store,
@@ -62,7 +82,8 @@ export class HonestyCheckInController {
     notifyRecorded = () => {},
     isIdleEntryBlocked = () => false,
     now = () => new Date(),
-    dormantIdleMs = DORMANT_IDLE_MS
+    dormantIdleMs = DORMANT_IDLE_MS,
+    breathMs = HONESTY_BREATH_MS
   }) {
     this.store = store;
     this.focusSessionEndStore = focusSessionEndStore;
@@ -79,6 +100,9 @@ export class HonestyCheckInController {
     this.isIdleEntryBlocked = isIdleEntryBlocked;
     this.now = now;
     this.dormantIdleMs = dormantIdleMs;
+    this.breathMs = Number.isFinite(breathMs)
+      ? Math.max(HONESTY_BREATH_MS_MIN, breathMs)
+      : HONESTY_BREATH_MS;
     /** @type {number | null} */
     this._pendingMinutes = null;
     this._busy = false;
@@ -246,7 +270,7 @@ export class HonestyCheckInController {
         holdPose: true
       });
     }
-    this.ui.startBreathGuide(HONESTY_BREATH_MS);
+    this.ui.startBreathGuide(this.breathMs);
   }
 
   _onBreathComplete() {
