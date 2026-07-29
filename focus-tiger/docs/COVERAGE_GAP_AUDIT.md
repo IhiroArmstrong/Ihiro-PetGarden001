@@ -8,7 +8,7 @@
 近几轮工作重点是 CI 基建与 flaky；**全绿 ≠ 产品功能都有对应测试**。
 
 **维护**：补上表内缺口（实现 Task 2/3 或扩 smoke）后，同回合更新本文件对应行；重大重排时同步 `TEST_TRACKER` §C。  
-**扩 smoke 分类 / Honesty·i18n 发布口径**：§7–§10（2026-07-30；分类回合**不改** `package.json`）。
+**扩 smoke 分类 / Honesty·i18n 发布口径**：§7–§10（2026-07-30）。**扩 smoke 脚本已落地**：`test:smoke` = `src/**/*.test.js` + `docs:check`（A+A′；无 `test:regression`）。
 
 ---
 
@@ -104,11 +104,11 @@
 |---|---|---|---|
 | **1** | **Task 3** | ✅ **已落地**（2026-07-30）：Playwright 真实 Honesty 补登 → 桥接 Yes → Arrival（`e2e/honesty-bridge-real-path.spec.js`；`?honestyBreathMs=`） | 场景 D/N |
 | **2** | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E/F + `MindfulReminderController` / `AcrossToolsIdleGuard` 并入 `test:smoke` | 场景 E/F |
-| **3** | **扩 smoke** | **分类已落 §7**（A/A′ 可原样并入；B=`test:regression` 空集）。**改 `package.json` 待下一回合** | 防 PR 冒烟漏跑 |
+| **3** | **扩 smoke** | ✅ **已落地**（2026-07-30）：`test:smoke` = `node --test "src/**/*.test.js" && docs:check`（A+A′；B 空集）。实测 **319** pass · **~343ms**（改前 132/~158ms） | 防 PR 冒烟漏跑 |
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做** | — | 见下方「永不自动化 / 人工锁」 | — |
 
-**优先级理由（简 · 与发布复盘对齐）**：Task 2/3 已落地。余下最便宜且堵「假安全感」的是 **扩 smoke（§7）**；Honesty 产品可用性已确认（§8）；永不自动化见 §5。
+**优先级理由（简 · 与发布复盘对齐）**：Task 2/3 + **扩 smoke（§7）** 已落地；Honesty 产品可用性已确认（§8）；永不自动化见 §5；i18n 见 §9（v1.0 English only）。
 
 ---
 
@@ -146,8 +146,9 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 ## 7. 扩 smoke 分类（unit\* → 并入评估 · 2026-07-30）
 
-> **本回合只落分类，不改 `package.json`。** 实测：`npm test` 全量 **308** pass · **~345ms**；现行 `test:smoke` **121** pass · **~148ms**（另加 `docs:check`）。  
-> 结论：**不需要**新建 `test:regression` 中间层——没有「慢到拖垮 PR 冒烟」的 unit\*；并入成本 = 改脚本清单（零业务改动）。
+> **分类回合**只落清单、不改脚本。实测当时：`npm test` 全量 **308** pass · **~345ms**；当时 `test:smoke` **121** pass · **~148ms**。  
+> **落地（2026-07-30）**：`package.json` → `test:smoke` = `node --test "src/**/*.test.js" && npm run docs:check`（等价 A+A′ 全并入）。确认：**319** pass · **~343ms**（改前本机 tip：**132** / **~158ms**）。**不建** `test:regression`。  
+> 结论：**不需要**新建 `test:regression` 中间层——没有「慢到拖垮 PR 冒烟」的 unit\*。
 
 ### 7.1 已在 `test:smoke`（勿重复）
 
@@ -201,11 +202,11 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 **空集。** 无文件因时长或依赖重而需要第三层。若未来单测墙钟化或起真实浏览器，再单开中间层。
 
-### 7.5 建议落地方式（下一回合改代码时）
+### 7.5 落地方式（已执行 · 2026-07-30）
 
-1. 先把 **§7.2** 整批追加进 `package.json` → `test:smoke`（或改成 `node --test "src/**/*.test.js" && npm run docs:check`，等价「smoke = 全 unit + docs」）。  
-2. 本地确认 `npm run test:pr-smoke` 时长仍可接受（预期 unit 段仍 \<1s）。  
-3. **不要**为凑层数建空的 `test:regression`。
+1. ✅ `package.json` → `test:smoke` = `node --test "src/**/*.test.js" && npm run docs:check`。  
+2. ✅ 本地确认时长仍可接受（unit 段 ~343ms ≪ 拖慢门槛）。  
+3. ✅ **未**建空的 `test:regression`。
 
 ---
 
@@ -221,7 +222,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 **产品结论**：**功能本身可用**（人工已验收 + 现有真实链 e2e）。  
 → **不是** v1 release-blocker（无需为「会不会通」再挡发布）。  
-→ 剩余：扩 smoke 纳入 Honesty unit\*（门禁假安全感）；排版/睡姿观感仍人工（§5）。
+→ 剩余：Honesty unit\* **已随扩 smoke 进门禁**；排版/睡姿观感仍人工（§5）。
 
 ---
 
@@ -297,7 +298,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 **阻塞 v1（测试 / i18n 面）**
 
-1. 按 §7 把 A（及可选 A′）unit\* **并入** `test:smoke`  
+1. ✅ 按 §7 把 A+A′ unit\* **并入** `test:smoke`（`src/**/*.test.js`）  
 2. Honesty 真实链：**已确认可用**（§8）  
 3. 「永不自动化」清单：**§5**  
 4. **i18n**：v1.0.0 **English-only 对外**已定；自动化锁「不露多语入口」即可；**不**挡在 zh 人工验收  

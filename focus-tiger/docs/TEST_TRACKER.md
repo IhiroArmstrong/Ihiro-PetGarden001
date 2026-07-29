@@ -153,7 +153,7 @@
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
-#### C. 下一步自动化（未做 · 排扩 smoke）
+#### C. 下一步自动化（扩 smoke ✅ · 余下见审计）
 
 > **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、**§7 unit\*→smoke 分类**、§8 Honesty v1 评估、§9 i18n、§10 发布影响）。本表 §C 只排期；改覆盖结论先改审计文档。
 
@@ -161,7 +161,7 @@
 |---|---|---|
 | **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入）。**产品**：链路可用，**不**挡 v1（审计 §8） | 场景 D/N |
 | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E（Offline 舒展暂停 + 墙钟仍走 + 无 Re-focus）/ smoke F（AcrossTools 30min 一次 idle + 活动重置）；`MindfulReminderController.test` + `AcrossToolsIdleGuard.test` **并入** `test:smoke` | 场景 E/F |
-| **扩 smoke**（下一 · 分类已落） | ✅ **分类**见审计 **§7**（A/A′ 可原样并入；`test:regression` **空集**）。**尚未**改 `package.json`。AcrossTools 已入烟 | 防 PR 冒烟漏跑 |
+| **扩 smoke** | ✅ **已落地**（2026-07-30）：`test:smoke` = 全 `src/**/*.test.js` + `docs:check`（A+A′；`test:regression` 空集）。**319** pass · ~343ms | 防 PR 冒烟漏跑 |
 | **i18n**（v1.0 English only · 架构保留） | ✅ **已落地**（2026-07-30）：仅 `en` ready；Language 隐藏；zh draft staged；unit+e2e 锁 | 场景 G |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
