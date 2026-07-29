@@ -1,4 +1,8 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  WIDE_STAGE_CLASS,
+  listSecondaryChromeEntries
+} from '../core/idleChromeOrchestration.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles';
 const WIDE_MQ = '(min-width: 480px)';
@@ -108,9 +112,9 @@ export class WideIdleMoreMenu {
    */
   clearStage() {
     document.body.classList.remove(
-      'ft-wide-stage-sound',
-      'ft-wide-stage-companion',
-      'ft-wide-stage-reminder'
+      WIDE_STAGE_CLASS.sound,
+      WIDE_STAGE_CLASS.companion,
+      WIDE_STAGE_CLASS.reminder
     );
     this.handlers.onClearStage?.();
   }
@@ -132,7 +136,13 @@ export class WideIdleMoreMenu {
     document.removeEventListener('keydown', this._onKeyDown, true);
     this.wrap?.remove();
     document.getElementById(STYLE_ID)?.remove();
-    document.body.classList.remove('ft-wide-park-secondary', 'ft-wide-more-open', 'ft-wide-stage-sound', 'ft-wide-stage-companion', 'ft-wide-stage-reminder');
+    document.body.classList.remove(
+      'ft-wide-park-secondary',
+      'ft-wide-more-open',
+      WIDE_STAGE_CLASS.sound,
+      WIDE_STAGE_CLASS.companion,
+      WIDE_STAGE_CLASS.reminder
+    );
   }
 
   _isWide() {
@@ -246,45 +256,21 @@ export class WideIdleMoreMenu {
 
   _refreshItems() {
     if (!this.listEl) return;
-    const items = [
-      {
-        proxy: 'honesty',
-        label: () => t('HONESTY_IDLE_ENTRY'),
-        // Always list — entry may be attribute-hidden in DORMANT/busy.
-        visible: () => true
-      },
-      {
-        proxy: 'breath',
-        label: () => t('micro_ritual.button'),
-        visible: () => {
-          const el = document.getElementById('micro-ritual-idle-entry');
-          return Boolean(el && !el.hidden);
-        }
-      },
-      {
-        proxy: 'companion',
-        label: () => t('COMPANION_MODE_HINT'),
-        visible: () => {
-          const el = document.querySelector('.session-start-dock__hint');
-          return Boolean(el && !el.hidden && !el.disabled);
-        }
-      },
-      {
-        proxy: 'sound',
-        label: () => t('AMBIENT_FAB_LABEL'),
-        visible: () => true
-      },
-      {
-        proxy: 'reminder',
-        label: () => t('reminder.setting_title'),
-        visible: () =>
-          Boolean(document.getElementById('reminder-preference-toggle'))
-      }
-    ];
+    const microEl = document.getElementById('micro-ritual-idle-entry');
+    const companionEl = document.querySelector('.session-start-dock__hint');
+    const entries = listSecondaryChromeEntries('wide-more', {
+      microRitualVisible: Boolean(microEl && !microEl.hidden),
+      companionVisible: Boolean(companionEl && !companionEl.hidden),
+      companionEnabled: Boolean(
+        companionEl && !companionEl.hidden && !companionEl.disabled
+      ),
+      reminderAvailable: Boolean(
+        document.getElementById('reminder-preference-toggle')
+      )
+    });
 
     this.listEl.innerHTML = '';
-    for (const item of items) {
-      if (item.visible && !item.visible()) continue;
+    for (const item of entries) {
       const li = document.createElement('li');
       li.setAttribute('role', 'none');
       const btn = document.createElement('button');
@@ -292,7 +278,7 @@ export class WideIdleMoreMenu {
       btn.className = 'ft-wide-more__item';
       btn.setAttribute('role', 'menuitem');
       btn.dataset.proxy = item.proxy;
-      btn.textContent = item.label();
+      btn.textContent = t(item.labelKey);
       li.appendChild(btn);
       this.listEl.appendChild(li);
     }
@@ -305,20 +291,20 @@ export class WideIdleMoreMenu {
   _proxy(key) {
     if (key === 'companion') {
       this.clearStage();
-      document.body.classList.add('ft-wide-stage-companion');
+      document.body.classList.add(WIDE_STAGE_CLASS.companion);
       this.handlers.onClearCompanion?.();
       this.handlers.onCompanion?.();
       return;
     }
     if (key === 'reminder') {
       this.clearStage();
-      document.body.classList.add('ft-wide-stage-reminder');
+      document.body.classList.add(WIDE_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
       return;
     }
     if (key === 'sound') {
       this.clearStage();
-      document.body.classList.add('ft-wide-stage-sound');
+      document.body.classList.add(WIDE_STAGE_CLASS.sound);
       this.handlers.onSound?.();
       return;
     }

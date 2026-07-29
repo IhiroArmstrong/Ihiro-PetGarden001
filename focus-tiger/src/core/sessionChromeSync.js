@@ -7,6 +7,7 @@
 
 import { computePostSessionOverlayActive } from './SessionUiGate.js';
 import { STATES } from './StateManager.js';
+import { resolveShellChromeProjection } from './idleChromeOrchestration.js';
 
 /**
  * Honesty 时长/呼吸/致谢阶段占用中（挡住微仪式 Idle 入口）。
@@ -129,10 +130,18 @@ export function createSessionChromeSync(deps) {
     const overlayActive = computePostSessionOverlayActive(
       getPostSessionOverlaySources()
     );
+    const focusing =
+      stateManager.state === STATES.FOCUSING ||
+      getMicroRitualUI()?.isOpen?.() === true;
     // Bridge can appear without a full resync — keep wide ⋯ suppressed with dock pills
-    wideIdleMoreMenu.setSuppressed(
-      overlayActive || honestyBusy || bridgeVisible
-    );
+    const { wide } = resolveShellChromeProjection({
+      focusing,
+      overlayActive,
+      honestyBusy,
+      arrivalOpen: Boolean(getArrivalPractice()?.isOpen?.()),
+      bridgeVisible
+    });
+    wideIdleMoreMenu.setSuppressed(wide.suppressed);
   }
 
   function resyncSessionChrome() {
@@ -157,14 +166,20 @@ export function createSessionChromeSync(deps) {
     // Arrival: keep ActionBar + Quick Start; hide Sit/Honesty/grabber.
     // Reflection / Honesty busy: suppress grabber/home/sheet; ActionBar stays.
     // ActionBar time = wall clock (not FocusHUD session elapsed).
-    const chromeSuppressed = overlayActive || honestyBusy;
-    narrowIdleShell.setIdle(!focusing);
-    narrowIdleShell.setSuppressed(chromeSuppressed, {
-      keepQuickStart: arrivalOpen
+    // Projection SSOT: idleChromeOrchestration.resolveShellChromeProjection
+    const { narrow, wide } = resolveShellChromeProjection({
+      focusing,
+      overlayActive,
+      honestyBusy,
+      arrivalOpen,
+      bridgeVisible
     });
-    wideIdleMoreMenu.setIdle(!focusing);
-    // Wide ⋯ 仍须在桥接时收起，避免挡 Yes/No
-    wideIdleMoreMenu.setSuppressed(chromeSuppressed || bridgeVisible);
+    narrowIdleShell.setIdle(narrow.idle);
+    narrowIdleShell.setSuppressed(narrow.suppressed, {
+      keepQuickStart: Boolean(narrow.keepQuickStart)
+    });
+    wideIdleMoreMenu.setIdle(wide.idle);
+    wideIdleMoreMenu.setSuppressed(wide.suppressed);
     syncInAppReminderBanner();
   }
 
