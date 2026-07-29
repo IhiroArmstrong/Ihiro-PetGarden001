@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **i18n v1 可点切语拍板（2026-07-30）**：选「可点切语」；下一回合做 A+B+C。六语意向 en/es/zh/ja/de/fr——**工程扩槽低风险**；齐声称四语有**文案审校风险**，建议完整启用先 en+zh、余语 ready 再露。见 `COVERAGE_GAP_AUDIT.md` §9.5–§9.6。
+- **i18n「审完再露」拍板（2026-07-30）**：es/ja/de/fr 未 `ready` **不进**选择器、不发版声称；拒机翻先上。下一回合 A+B+C 仍以 en+zh 完整可点。见 `COVERAGE_GAP_AUDIT.md` §9.6。
+- **i18n v1 可点切语拍板（2026-07-30）**：选「可点切语」；下一回合做 A+B+C。六语意向 en/es/zh/ja/de/fr；完整启用先 en+zh。见 `COVERAGE_GAP_AUDIT.md` §9.5–§9.6。
 - **i18n 多语言口径修订（2026-07-30）**：设计意图=要多语言；**零覆盖应补 A+B**。切语 UI 已拍板进 v1。见 `COVERAGE_GAP_AUDIT.md` §9。
 - **扩 smoke 分类 + Honesty/i18n 发布口径（2026-07-30）**：审计 §7–§10——unit\* 均可原样并入 smoke（全量 ~345ms；**不建** `test:regression`）；Honesty 真实链**可用、不挡 v1**。§9 已按「多语言意图」修订。**本回合不改** `package.json`。见 `COVERAGE_GAP_AUDIT.md`。
 - **自动化缺口 · Task 2 已落地（2026-07-30）**：smoke E/F + MindfulReminder / AcrossTools 并入 `test:smoke`。下一：按 §7 **改脚本**扩 smoke。见 `COVERAGE_GAP_AUDIT.md`。
