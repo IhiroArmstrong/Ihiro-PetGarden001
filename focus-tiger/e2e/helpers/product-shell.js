@@ -34,8 +34,9 @@ export async function openFreshProductShell(page, opts = {}) {
   // retries — that raced with in-flight goto ("interrupted by about:blank").
   const isCi = Boolean(process.env.CI);
   const attempts = isCi ? 2 : 1;
-  const gotoMs = isCi ? 25_000 : 45_000;
-  const sitMs = isCi ? 35_000 : 30_000;
+  const gotoMs = isCi ? 40_000 : 45_000;
+  const readyMs = isCi ? 35_000 : 30_000;
+  const sitMs = isCi ? 15_000 : 10_000;
 
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {
@@ -43,6 +44,9 @@ export async function openFreshProductShell(page, opts = {}) {
       await page.goto(path, {
         waitUntil: 'domcontentloaded',
         timeout: gotoMs
+      });
+      await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
+        timeout: readyMs
       });
       await expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs });
       return;
