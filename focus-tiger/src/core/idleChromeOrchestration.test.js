@@ -188,19 +188,20 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty; includes breath/companion/reminder/language', () => {
+  it('narrow drawer omits honesty; includes breath/companion/reminder (no language while en-only)', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'reminder', 'language']
+      ['breath', 'companion', 'reminder']
     );
+    assert.ok(!entries.some((e) => e.proxy === 'language'));
   });
 
-  it('wide more lists honesty first', () => {
+  it('wide more lists honesty first (no language while en-only)', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['honesty', 'breath', 'companion', 'reminder', 'language']
+      ['honesty', 'breath', 'companion', 'reminder']
     );
   });
 
@@ -212,12 +213,12 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(!entries.some((e) => e.proxy === 'companion'));
   });
 
-  it('language remains when secondary gates off (Sound is not a menu row)', () => {
+  it('language omitted when secondary gates off and only English is ready', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', {
       microRitualVisible: false,
       companionVisible: false,
       reminderAvailable: false
     });
-    assert.deepEqual(entries.map((e) => e.proxy), ['language']);
+    assert.deepEqual(entries.map((e) => e.proxy), []);
   });
 });

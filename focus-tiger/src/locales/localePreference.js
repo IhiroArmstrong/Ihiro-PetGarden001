@@ -65,3 +65,12 @@ export function listPickerLocales() {
     nativeLabel: LOCALE_CATALOG[id].nativeLabel
   }));
 }
+
+/**
+ * Offer Language chrome only when switching is meaningful (≥2 ready locales).
+ * v1.0.0: only `en` ready → hide menu; later flip zh/es/… to ready → row reappears.
+ * @returns {boolean}
+ */
+export function shouldOfferLanguagePicker() {
+  return listReadyLocaleIds().length >= 2;
+}

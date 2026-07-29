@@ -8,6 +8,8 @@
  * @see docs/SHARED_RESOURCES.md §6
  */
 
+import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
+
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
 
 /**
@@ -267,11 +269,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
     });
   }
 
-  // Language always available on secondary surfaces (ready locales only in panel).
-  out.push({
-    proxy: 'language',
-    labelKey: 'LANGUAGE_MENU_LABEL'
-  });
+  // Language chrome only when ≥2 ready locales (v1.0.0 English-only → hidden).
+  if (shouldOfferLanguagePicker()) {
+    out.push({
+      proxy: 'language',
+      labelKey: 'LANGUAGE_MENU_LABEL'
+    });
+  }
 
   return out;
 }

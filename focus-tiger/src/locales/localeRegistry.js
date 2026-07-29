@@ -1,6 +1,9 @@
 /**
  * Locale catalog · SSOT for which languages exist and which may appear in the picker.
- * Policy: show only `ready` locales (审完再露). Draft slots may exist without dictionaries.
+ * Policy: show only `ready` locales (审完再露). Draft slots may keep dictionaries in-repo.
+ *
+ * v1.0.0 ship claim = English only (对外). Engineering keeps N-locale slots + Language UI;
+ * flip a locale to `ready` when that language is reviewed *and* we choose to claim it.
  *
  * @see docs/COVERAGE_GAP_AUDIT.md §9.6
  */
@@ -17,7 +20,8 @@
 /** @type {Readonly<Record<LocaleId, LocaleCatalogEntry>>} */
 export const LOCALE_CATALOG = Object.freeze({
   en: { status: 'ready', nativeLabel: 'English' },
-  zh: { status: 'ready', nativeLabel: '中文' },
+  // zh.json kept loaded for future flip; not ready for v1.0.0 English-only ship claim
+  zh: { status: 'draft', nativeLabel: '中文' },
   es: { status: 'draft', nativeLabel: 'Español' },
   ja: { status: 'draft', nativeLabel: '日本語' },
   de: { status: 'draft', nativeLabel: 'Deutsch' },

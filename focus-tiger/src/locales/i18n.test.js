@@ -1,5 +1,6 @@
 /**
  * i18n unit · Task A — key parity, setLocale notify, fallback, ready-only.
+ * v1.0.0 ship: only `en` is ready (English-only claim); zh stays loaded as draft.
  */
 
 import test from 'node:test';
@@ -18,7 +19,8 @@ import {
   normalizeLocalePreference,
   readLocalePreference,
   writeLocalePreference,
-  listPickerLocales
+  listPickerLocales,
+  shouldOfferLanguagePicker
 } from './localePreference.js';
 
 function memoryStorage(seed = {}) {
@@ -37,11 +39,16 @@ function memoryStorage(seed = {}) {
   };
 }
 
+test('v1.0.0 ready set is English only', () => {
+  assert.deepEqual(listReadyLocaleIds(), ['en']);
+  assert.equal(isReadyLocale('zh'), false);
+  assert.equal(shouldOfferLanguagePicker(), false);
+});
+
 test('ready locales have identical dictionary key sets', () => {
   const loaded = listLoadedDictionaryKeys();
   const ready = listReadyLocaleIds();
   assert.ok(ready.includes('en'));
-  assert.ok(ready.includes('zh'));
   for (const id of ready) {
     assert.ok(loaded[id], `missing loaded dictionary for ready locale ${id}`);
   }
@@ -55,20 +62,29 @@ test('ready locales have identical dictionary key sets', () => {
   }
 });
 
-test('picker lists only ready locales with native labels', () => {
+test('staged zh dictionary stays loaded and key-parity with en (future flip)', () => {
+  const loaded = listLoadedDictionaryKeys();
+  assert.ok(loaded.zh, 'zh.json must stay in DICTIONARIES for later ready flip');
+  assert.deepEqual(loaded.zh, loaded.en);
+});
+
+test('picker lists only ready locales; draft zh/es hidden', () => {
   const picker = listPickerLocales();
   assert.deepEqual(
     picker.map((p) => p.id),
     listReadyLocaleIds()
   );
+  assert.ok(!picker.some((p) => p.id === 'zh'));
   assert.ok(!picker.some((p) => p.id === 'es'));
-  assert.equal(picker.find((p) => p.id === 'zh')?.nativeLabel, '中文');
+  assert.equal(picker.find((p) => p.id === 'en')?.nativeLabel, 'English');
 });
 
 test('draft locales are not ready and normalize rejects them', () => {
   assert.equal(isReadyLocale('es'), false);
+  assert.equal(isReadyLocale('zh'), false);
   assert.equal(normalizeLocalePreference('es'), null);
-  assert.equal(normalizeLocalePreference('zh'), 'zh');
+  assert.equal(normalizeLocalePreference('zh'), null);
+  assert.equal(normalizeLocalePreference('en'), 'en');
 });
 
 test('setLocale notifies listeners and persists preference', () => {
@@ -78,48 +94,44 @@ test('setLocale notifies listeners and persists preference', () => {
 
   const seen = [];
   const unsub = onLocaleChange((locale) => seen.push(locale));
-  setLocale('zh', { persist: true, storage });
-  assert.equal(getLocale(), 'zh');
-  assert.deepEqual(seen, ['zh']);
-  assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'zh');
-  assert.equal(t('BTN_FOCUS_START'), '与阿寅同坐');
-
+  // Only en is ready — re-applying en still persists
   setLocale('en', { persist: true, storage });
   assert.equal(getLocale(), 'en');
+  assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'en');
   assert.equal(t('BTN_FOCUS_START'), 'Sit with Yin');
+  assert.deepEqual(seen, []);
   unsub();
 });
 
-test('setLocale ignores unknown / draft locales', () => {
+test('setLocale ignores unknown / draft locales (incl. zh while draft)', () => {
   const storage = memoryStorage({ [LOCALE_PREFERENCE_STORAGE_KEY]: 'en' });
   bootLocaleFromPreference(storage);
   setLocale('ja', { persist: true, storage });
   assert.equal(getLocale(), 'en');
+  setLocale('zh', { persist: true, storage });
+  assert.equal(getLocale(), 'en');
   assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'en');
 });
 
-test('bootLocaleFromPreference restores stored ready locale', () => {
+test('bootLocaleFromPreference ignores stored draft locale', () => {
   const storage = memoryStorage({ [LOCALE_PREFERENCE_STORAGE_KEY]: 'zh' });
-  assert.equal(bootLocaleFromPreference(storage), 'zh');
-  assert.equal(getLocale(), 'zh');
+  assert.equal(bootLocaleFromPreference(storage), 'en');
+  assert.equal(getLocale(), 'en');
 });
 
-test('read/write locale preference round-trip', () => {
+test('read/write locale preference round-trip (ready only)', () => {
   const storage = memoryStorage();
-  assert.equal(writeLocalePreference('zh', storage), true);
-  assert.equal(readLocalePreference(storage), 'zh');
+  assert.equal(writeLocalePreference('en', storage), true);
+  assert.equal(readLocalePreference(storage), 'en');
+  assert.equal(writeLocalePreference('zh', storage), false);
   assert.equal(writeLocalePreference('es', storage), false);
 });
 
 test('t falls back to en then key id', () => {
   const storage = memoryStorage();
   bootLocaleFromPreference(storage);
-  setLocale('zh', { persist: false, storage });
-  // existing key
   assert.ok(t('APP_TITLE').length > 0);
-  // missing key → warn + return key
   assert.equal(t('___NO_SUCH_I18N_KEY___'), '___NO_SUCH_I18N_KEY___');
-  setLocale('en', { persist: false, storage });
 });
 
 // Reset module locale so later smoke files see default en

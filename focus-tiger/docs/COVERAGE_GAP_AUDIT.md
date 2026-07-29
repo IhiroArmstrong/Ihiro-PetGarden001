@@ -61,7 +61,7 @@
 | **MilestoneGlow / IncenseComplete** | ❌ | ❌ | ❌ | — | **无自动化 / 业务未接线** | Glow 有问题行；Incense 已放弃接线 |
 | **舒展提醒 / Offline 暂停累计（场景 E）** | ✅ smoke E + MindfulReminder 入烟 | ❌ Offline 开表以外 | ❌ | Mindful\*（已入 smoke） | **逻辑已锁** | 真实离开墙钟仍人工 |
 | **Flow 30min across-tools toast（场景 F）** | ✅ smoke F + AcrossTools 入烟 | ❌ | ❌ | AcrossTools\*（已入 smoke） | **逻辑已锁** | toast DOM / 真实 30min 仍人工 |
-| **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **可点 en/zh** | 审完再露；es/ja/de/fr 未 ready；375 排版人工 |
+| **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **v1.0 English only** | 架构保留；仅 en ready；Language 隐藏；zh draft |
 | **瞳孔跟随（场景 H）** | — | — | — | stub | **N/A 已废弃** | — |
 | **Grow / 纪念奖励 / 3D 柜** | — | — | — | — | **Backlog，未接线** | 不期望有测 |
 | **Cloudflare Workers stub** | ❌ | ❌ | ❌ | — | **零（前端未接线）** | curl 人工 / 独立包 |
@@ -88,7 +88,7 @@
 4. **Ambient 实际发声与 Rise 停音** — 几乎只有「开面板 / 无 autoplay」→ 可进 smoke 扩容（行为契约，非听感）
 5. **Idle / Choose / Rise 序列观感** — 刻意不进 e2e（见 §5）
 6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ ✅ Task 2（smoke E/F；真实 30min / 切页仍人工）
-7. **场景 G i18n** — ✅ 可点切语 + unit/e2e（仅 ready：en/zh）；排版仍人工
+7. **场景 G i18n** — ✅ v1.0 English-only 对外；unit/e2e 锁不露 Language；后续语种审完再露
 8. **MilestoneGlow / Incense 业务接线** — 无或已放弃
 9. **Workers API** — 前端未接线，无测
 
@@ -227,83 +227,69 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 ## 9. i18n · 多语言可行性 / 风险 / 覆盖补齐（2026-07-30 修订）
 
-> **设计意图（用户确认）**：产品**希望有多语言**（非「v1 只发单语言」）。  
-> **纠正**：不得把「零自动化」默认解释成「推 post-v1」——**缺口应补覆盖**；缺的是测试与切语 UI，不是字典骨架。  
-> **2026-07-30 拍板**：v1 = **可点切语**（选 1：C+D）；下一回合开做 **A+B+C**（e2e 走 UI）。目标语种意向见 §9.6。
+> **设计意图**：产品**希望有多语言**（工程保留 N locale + 可点切语架构）。  
+> **2026-07-30 拍板（工程）**：可点切语 UI + 持久化 + A/B 自动化骨架；六语槽位；**审完再露**。  
+> **2026-07-30 拍板（发版对外 · 与分析师对齐）**：**v1.0.0 对外 = English only**，不声称支持中文/多语言；zh 人工验收**不**升为发布 checklist 必过项。  
+> **落地含义**：catalog 仅 `en` = `ready`；Language 菜单在 ready &lt; 2 时隐藏；`zh.json` 等仍进仓备后续 flip。
 
 ### 9.1 现状（已有 vs 缺）
 
 | 层 | 状态 | 说明 |
 |---|---|---|
-| 字典 | ✅ en/zh | `en.json` / `zh.json` **各 171 key，1:1 对齐**；总英文量约 **5.3k 字符** |
-| 运行时 API | ✅ | `t` / `tPool` / `setLocale` / `getLocale` / `onLocaleChange`（`src/locales/i18n.js`） |
-| UI 订阅刷新 | ✅ 主面 | Arrival / Honesty / Bridge / Companion / HUD / Ambient / Reflection / Hints / 窄宽壳 / Sit·Rise 等已 `onLocaleChange` |
-| 默认语言 | ✅ | `en`（海外市场） |
-| **应用内切语 UI** | ✅ | ⋯ / 抽屉 **Language** → `#language-preference-panel`（`LanguagePreferenceUI`） |
-| **locale 持久化** | ✅ | `focus-tiger.locale.v1` |
-| **浏览器语言探测** | ❌ | 可选增强；默认记忆优先，否则 en |
-| **自动化** | ✅ | `src/locales/i18n.test.js` ∈ `test:smoke`；`e2e/language-switch.spec.js` |
-
+| 字典 | ✅ en + staged zh | `en.json` / `zh.json` key 对齐；zh **draft**（不进选择器） |
+| 运行时 API | ✅ | `t` / `tPool` / `setLocale` / `getLocale` / `onLocaleChange` |
+| UI 订阅刷新 | ✅ 主面 | 主路径已 `onLocaleChange`（为后续切语保留） |
+| 默认语言 | ✅ | `en` |
+| **应用内切语 UI** | ✅ 架构在 · v1.0 隐藏 | `LanguagePreferenceUI` 保留；`shouldOfferLanguagePicker()` 在仅 en ready 时 **不露** Language 行 |
+| **locale 持久化** | ✅ | `focus-tiger.locale.v1`（仅 ready；现仅 en） |
+| **浏览器语言探测** | ❌ | 可选增强 |
+| **自动化** | ✅ | `i18n.test.js` ∈ smoke；`language-switch.spec.js` 锁「en-only 不露 Language」 |
 
 ### 9.2 可行性（结论：高 · 工程）
 
-多语言**运行时切换**在工程上已基本可行：字典齐、订阅面广、切换不必整页重载。  
-相对「从零做 i18n」，当前是 **补齐产品入口 + 锁回归 +（可选）扩语种字典**，不是重写文案体系。
+多语言**运行时切换**工程上已可行：字典/订阅/面板骨架齐全。v1.0.0 **产品面**只发 English；后续把某 locale 改 `ready` 即露出选择器（须同批更新对外声称与人工面）。
 
 ### 9.3 任务拆分 · 难度 / 风险 / 是否挡 v1
 
 | 项 | 难度 | 风险 | 状态 / 建议 | 挡 v1？ |
 |---|---|---|---|---|
-| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js` 入 smoke | — |
-| **B. e2e** | **低–中** | 低 | ✅ `language-switch.spec.js`（点 UI） | — |
-| **C. 切语 UI** + locale.v1 | **中** | 中 | ✅ Language 行 + 面板 | 人工 375 |
-| **D. 冷启动** | **低–中** | 中 | ✅ `bootLocaleFromPreference`（记忆；默认 en） | — |
-
-| **E. 人工排版** | 人工 | 中 | 每启用一种语言抽 375；德文偏长、日文换行 | 声称该语可用 → 人工必测 |
-| **F. 扩语种字典** es/ja/de/fr | **内容高** | **高（质量）** | 见 §9.6；**工程扩槽位低风险** | 仅当对外声称该语已就绪 |
+| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js`（en-only ready + staged zh 奇偶） | — |
+| **B. e2e** | **低** | 低 | ✅ 锁 Language **不出现**（English-only ship） | — |
+| **C. 切语 UI** 架构 | **中** | 低 | ✅ 面板/壳接线保留；菜单门闩 `≥2 ready` | — |
+| **D. 冷启动** | **低** | 低 | ✅ 默认 en；draft 存储忽略 | — |
+| **E. 人工排版** | 人工 | 中 | **v1.0 不要求 zh 过发布 checklist**；某语 `ready` 并声称后才必测 | 仅声称后 |
+| **F. 扩语种** zh/es/ja/de/fr | 内容 | 高 | 槽位已在；**审完 + 决定声称** → `ready` | 仅声称后 |
 
 ### 9.4 对「零覆盖」的正确姿态
 
-> 零自动化 → **补 A+B**（下一回合与 C 同批）。  
-> 切语 UI（C）已拍板进 v1，**不再**属 post-v1。
+> 切语架构与自动化已落地；**对外 English only** ≠ 删掉工程能力。  
+> 下一语种上线 = catalog `ready` + 对外文案同步 + 人工 E +（恢复）切语 e2e 正向路径。
 
-### 9.5 产品拍板（已定 · 2026-07-30）
+### 9.5 产品拍板（已定）
 
 | 项 | 决定 |
 |---|---|
-| 入口 | **v1 可点切语**（⋯ / 窄屏抽屉等次要入口；具体壳位实现时定） |
-| 自动化 | 下一回合 **A + B + C**（B 以点 UI 为主；可保留 `__i18n` 作 DEV 兜底） |
-| 记忆 | 写 locale 偏好；刷新后保持 |
+| 工程入口 | **可点切语架构保留**（⋯ / 抽屉代理 + `LanguagePreferenceUI`） |
+| v1.0.0 对外 | **English only**；不声称中文/多语言 |
+| v1.0.0 选择器 | 仅 `en` ready；Language 行隐藏（`shouldOfferLanguagePicker`） |
+| 记忆 | 写 locale 偏好（ready only） |
+| 后续 5 语 | zh / es / ja / de / fr 槽位保留；审完再露 + 同批更新声称 |
 
-### 9.6 六语意向（en / es / zh / ja / de / fr）· 风险诚实结论
+### 9.6 六语意向（en / zh / es / ja / de / fr）· 风险诚实结论
 
-用户希望：在**没有项目风险**的前提下，支持 **英语、西班牙语、汉语、日语、德语、法语**。
+| 面 | 说明 |
+|---|---|
+| **工程扩槽** | **低风险** — catalog 已含 6 id；draft 可挂字典 |
+| **v1.0.0 对外** | **English only**（分析师建议已采纳） |
+| **一次声称多语** | 仍偏高内容债 — 见旧稿；继续 **审完再露** |
 
-| 面 | 有无「项目风险」 | 说明 |
+| 阶段 | 做什么 | 用户看见 |
 |---|---|---|
-| **工程扩槽**（`DICTIONARIES` + 选择器列 6 项 + A 奇偶按「已启用 locale」） | **低** | 与做 2 语同构；不挡下一回合 A+B+C 开工 |
-| **en + zh 质量与可点切换** | **低–中** | 字典已齐；风险在壳 UI / 375，可用自动化+人工压 |
-| **一次发齐 es/ja/de/fr 并对外声称「支持六语」** | **有 · 偏高** | 见下 |
+| **v1.0.0** | 仅 `en` ready；Language 隐藏；zh 字典 staged | 英文体验；无切语入口 |
+| **后续** | 某语审完 → `ready`；Language 自动出现（≥2）；更新发版说明 | 可点切换 |
+| **对外声称** | 未 ready / 未决定声称 → **禁止**写「已支持」 | — |
 
-**为何四语「齐发声称」有风险（不是吓阻，是内容债）**
-
-1. **文案质量**：观察式正念措辞（`EMOTION_BIBLE` / `PRINCIPLES`）忌机翻腔、忌说教；现成高质量只有 **en/zh**。四语 × 171 key ≈ **4×5.3k 字符** 的审校量，无母语审 = 品牌与正念语气风险。  
-2. **维护倍率**：此后每条新 UI 键默认 ×6；漏译会静默回退 en（或露 key），易造成「半西语半英语」体验。  
-3. **布局**：德语往往更长；日/汉断行与 EN 不同 → E 人工面随语种线性增加。  
-4. **定位文档**：`PRODUCT_POSITIONING` 仍写「英文默认、中文可切」——扩六语须同批改定位，避免对外口径打架。
-
-**推荐落地（降低风险、仍朝六语走）· 2026-07-30 已拍板「审完再露」**
-
-| 阶段 | 做什么 | 选择器里用户看见 |
-|---|---|---|
-| **v1 下一回合（A+B+C）** | 架构按 **N locale** 设计；**完整启用 en + zh**；切语 UI + 持久化 + 自动化 | **English / 中文**（必有） |
-| **六语槽位** | 可增加 `es` / `ja` / `de` / `fr` 文件与注册；**未审校完不进选择器**（**禁止**灰项 Coming soon 充数——未 `ready` = 用户不可见） | 仅 `ready` 语种 |
-| **字典补齐** | 四语可先机翻草稿进仓 + 状态 `draft`；**母语/你书面审过** → `ready` 后才露出 | 随 ready 增加 |
-| **对外声称** | 未 `ready` 的语言 **禁止**写进发版说明「已支持」 | — |
-
-→ **拍板**：六语为方向；**审完再露**（非机翻先上）。下一回合 A+B+C 以 **en+zh** 为可点完整集；四语不挡该工程开工。
-
-（旧稿「终端用户实质单语言 → 自动化 post-v1」与「C 可 post-v1」**作废**。）
+（「v1 必露 en+zh」旧拍板已被本条 **English-only 发版** 覆盖；工程开放性不变。）
 
 ---
 
@@ -311,15 +297,14 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 **阻塞 v1（测试 / i18n 面）**
 
-1. 按 §7 把 A（及可选 A′）unit\* **并入** `test:smoke`（可与 i18n A 同批或紧随）  
+1. 按 §7 把 A（及可选 A′）unit\* **并入** `test:smoke`  
 2. Honesty 真实链：**已确认可用**（§8）  
 3. 「永不自动化」清单：**§5**  
-4. **i18n A+B+C**（§9.5 已拍板；下一回合做）  
-5. **en+zh** 人工抽测（E）；其他语种仅在 `ready` 后加入声称与人工面  
+4. **i18n**：v1.0.0 **English-only 对外**已定；自动化锁「不露多语入口」即可；**不**挡在 zh 人工验收  
 
-**不阻塞（post-v1 或并行内容轨）**
+**不阻塞（post-v1.0 或并行内容轨）**
 
 - Ambient 播放 e2e、Celebrating 动画 e2e、场景 E/F 真实墙钟 DOM  
-- **es/ja/de/fr 审校达 ready**（工程槽可先留；声称与选择器露出跟 ready）  
+- **zh/es/ja/de/fr 审校达 ready 并决定对外声称**  
 
 **仍阻塞 v1（产品面 · 非本审计）**：桌面壳打包选型等——见 `PROCESS.md`。

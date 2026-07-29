@@ -64,10 +64,10 @@
 
 **近期落地（待人工测试）**：
 
-- **i18n A+B+C 已落地（2026-07-30）**：可点 Language（⋯/抽屉）+ `focus-tiger.locale.v1`；unit 入 smoke；e2e `language-switch`；仅 en/zh 露出。见 `COVERAGE_GAP_AUDIT.md` §9。
-- **i18n「审完再露」拍板（2026-07-30）**：es/ja/de/fr 未 `ready` **不进**选择器、不发版声称；拒机翻先上。
-- **i18n 多语言口径修订（2026-07-30）**：设计意图=要多语言；**零覆盖应补 A+B**。切语 UI 已拍板进 v1。见 `COVERAGE_GAP_AUDIT.md` §9。
-- **扩 smoke 分类 + Honesty/i18n 发布口径（2026-07-30）**：审计 §7–§10——unit\* 均可原样并入 smoke（全量 ~345ms；**不建** `test:regression`）；Honesty 真实链**可用、不挡 v1**。§9 已按「多语言意图」修订。**本回合不改** `package.json`。见 `COVERAGE_GAP_AUDIT.md`。
+- **i18n v1.0.0 English only（2026-07-30）**：对外不声称中文/多语言；工程保留可点切语 + 六语槽；仅 `en` ready，Language 菜单隐藏；zh 字典 staged。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
+- **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 English only。见审计 §9。
+- **i18n「审完再露」拍板（2026-07-30）**：未 `ready` **不进**选择器、不发版声称；拒机翻先上。
+- **扩 smoke 分类 + Honesty 发布口径（2026-07-30）**：审计 §7–§8——unit\* 均可原样并入 smoke（全量 ~345ms；**不建** `test:regression`）；Honesty 真实链**可用、不挡 v1**。扩 smoke **改脚本待办**。见 `COVERAGE_GAP_AUDIT.md`。
 - **自动化缺口 · Task 2 已落地（2026-07-30）**：smoke E/F + MindfulReminder / AcrossTools 并入 `test:smoke`。下一：按 §7 **改脚本**扩 smoke。见 `COVERAGE_GAP_AUDIT.md`。
 - **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
 - **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`（模块矩阵 + 永不自动化清单）；Task 3→2 已落地；扩 smoke **分类已落、改脚本待办**。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。
@@ -167,7 +167,7 @@
 - `PRINCIPLES.md` 已新增「路径必须使用英文 ASCII」硬性规则：未来新增文件/目录统一采用小写 `kebab-case`，用户素材与压缩包须先按语义重命名再入库；always-applied 项目规则已同步。现存路径审计未发现中文、空格、括号或省略号，但严格 kebab-case 审计发现 281 个历史遗留路径，暂仅记录、不在本 Task 重命名
 - 产品定位文档 `PRODUCT_POSITIONING.md` 已纳入项目：确立正念伙伴（非传统电子宠物）、regular practice at your own pace、宁静型游戏化、三级完成反馈与只增不减的共同经历/纪念奖励；产品语义层级高于 `DESIGN.md`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
-- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
+- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充；**v1.0.0 对外 English only**（仅 en ready；切语 UI 架构保留，后续语种审完再露）
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`；Agent `stop` 的 macOS 系统通知钩子已于 **2026-07-21 关闭**（脚本仍保留于 `.cursor/hooks/remind-git-sync.sh`，hooks.json 的 `stop` 为空；**不**自动 push）
 - `wave-hello` 挥手序列已替换为新服装正式版（19 帧，`frame_001.png` ～ `frame_019.png`）；旧深红袈裟 14 帧素材已下线移除；`SpriteSequencePlayer` 对接与 `playEmotion('welcomeBack')` 接线保持不变（分层路径规范见 `ARCHITECTURE.md`）

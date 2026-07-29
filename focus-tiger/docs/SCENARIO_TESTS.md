@@ -190,14 +190,15 @@
 
 ## 场景 G：语言切换
 
-> **拍板 + 实现（2026-07-30）**：v1 **可点切语** + 持久化；**审完再露**（仅 en/zh 进选择器）。  
-> **自动化**：unit `i18n.test.js`（smoke）；DOM `e2e/language-switch.spec.js`（点 Language UI）。  
-> **仍须人工**：375 中文排版。
+> **拍板（2026-07-30）**：工程保留可点切语 + 六语槽；**v1.0.0 对外 English only**（仅 `en` ready；Language 菜单隐藏）。  
+> **自动化**：unit `i18n.test.js`；e2e `language-switch.spec.js`（锁不露 Language / 无 zh 选项）。  
+> **人工（v1.0）**：确认默认英文、无切语入口即可；**不**要求过一遍 zh 排版作发布 checklist。  
+> **后续某语 ready**：恢复正向切语步骤，并更新本场景与发版说明。
 
-1. 打开 `?product=1` → ⋯ / 窄屏抽屉 → **Language** → 选 **中文**。
-2. 确认 Sit / Honesty / Arrival / Companion / Reflection / 桥接等无英文残留、无 `{intention}` 未替换。
-3. 再切回 **English** 确认。刷新后语言保持（`focus-tiger.locale.v1`）。
-4. （DEV 兜底仍可用 `__i18n.setLocale`；正式验收以 UI 为准。）
+1. 打开 `?product=1` → 确认 Sit 等为英文。
+2. ⋯ / 窄屏抽屉 → **不应**出现 Language。
+3. 刷新后仍为英文。
+4. （DEV 仍可挂 `__languagePreference` / `__i18n`；正式验收以产品入口为准。）
 
 ---
 
