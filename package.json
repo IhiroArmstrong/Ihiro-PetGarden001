@@ -22,7 +22,8 @@
     "state:doc-check": "cd focus-tiger && npm run state:doc-check",
     "state:doc-sync": "cd focus-tiger && npm run state:doc-sync",
     "rules:doc-check": "cd focus-tiger && npm run rules:doc-check",
-    "rules:doc-sync": "cd focus-tiger && npm run rules:doc-sync"
+    "rules:doc-sync": "cd focus-tiger && npm run rules:doc-sync",
+    "check:branch-freshness": "cd focus-tiger && npm run check:branch-freshness"
   },
   "devDependencies": {
     "husky": "^9.1.7"

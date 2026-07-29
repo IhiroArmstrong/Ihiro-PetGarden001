@@ -9,7 +9,7 @@
  * Paths are relative to the repository root (parent of `focus-tiger/`).
  */
 
-/** @typedef {{ id: string, pattern: RegExp, note: string }} ForbiddenClaim */
+/** @typedef {{ id: string, pattern: RegExp, note: string, exemptIfLineMatches?: RegExp }} ForbiddenClaim */
 /** @typedef {{
  *   id: string,
  *   title: string,
@@ -36,6 +36,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
   'focus-tiger/docs/COLLAB.md',
   'focus-tiger/docs/TEST_TRACKER.md',
+  'focus-tiger/docs/Z_INDEX.md',
   'focus-tiger/docs/DOC_CODE_CONTRACT.md',
   'focus-tiger/docs/PRINCIPLES.md',
   'focus-tiger/docs/ARCHITECTURE.md'
@@ -125,7 +126,10 @@ export const RULE_AUTHORITY_TOPICS = [
       /声称「已修复 \/ 已修好」须有 push \+ CI 证据|push 本身仍须用户明确授权/,
       /Git 同步汇总/,
       /高风险标注/,
-      /请安排下班前的 Git 同步/
+      /请安排下班前的 Git 同步/,
+      /非运行时/,
+      /禁止默认 flush/,
+      /业务逻辑\/代码改动/
     ],
     topicSignals: [
       /允许自动 commit/,
@@ -161,6 +165,16 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'auto-push-allowed',
         pattern: /(?:^|[^\u4e00-\u9fff])(?:允许|可以|应当)(?:post-commit\s*)?自动\s*(?:`?git\s*)?push/,
         note: '禁止 post-commit / 未经确认自动 push'
+      },
+      {
+        id: 'eod-sync-flush-all',
+        pattern:
+          /下班前(?:的)?\s*Git\s*同步.{0,120}(?:尚未推送的本地\s*commit\s*)?全部\s*(?:`?push`?|推送|flush)/,
+        // Option 1: 「全部 push/flush」前 ≤120 字内若出现否定词 → 豁免（规则说明可写禁令句）。
+        // Enforced in hasForbiddenOutsideHistory via window-before-全部, not whole-line.
+        exemptIfLineMatches:
+          /禁止|不再|不要|勿|别再|不得|不可|不应|不能|未再|勿再|别把|不要把|禁止把|废止/,
+        note: '下班前口令已收窄为只推非运行时；禁止复述肯定式「全部 push / flush」（「全部」前 120 字否定词豁免）'
       }
     ],
     // Historical changelog lines that quote deprecated phrases are OK if marked 废止
@@ -379,6 +393,87 @@ export const RULE_AUTHORITY_TOPICS = [
         note: '默认外置 Safari，不得写成默认用 Cursor 内置 Browser'
       }
     ]
+  },
+  {
+    id: 'qa-develop-tip',
+    title: '人工验收只认 origin/develop tip',
+    ssotPath: 'focus-tiger/docs/TEST_TRACKER.md',
+    ssotSection: '人工验收唯一基线',
+    ssotMustContain: [
+      /人工验收唯一基线/,
+      /只认 `origin\/develop` 当前 tip/,
+      /一律无效/
+    ],
+    topicSignals: [
+      /人工验收唯一基线/,
+      /只认 `origin\/develop`/,
+      /qa-develop-tip/
+    ],
+    mustCite: [/TEST_TRACKER\.md/],
+    restatementFingerprints: [
+      /人工验收唯一基线/,
+      /一律无效/,
+      /必须等于.*origin\/develop tip/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: ['focus-tiger/docs/COLLAB.md'],
+    forbiddenOutsideSsot: [
+      {
+        id: 'feature-branch-counts-as-acceptance',
+        pattern:
+          /(?:feature|fix)\s*分支上(?:的)?(?:人工)?验收(?:结论)?\s*(?:即|就算|视为|算)\s*(?:正式|关单|有效)/,
+        note: 'feature/fix 试跑不得写成正式/关单验收；SSOT 在 TEST_TRACKER'
+      }
+    ]
+  },
+  {
+    id: 'branch-freshness',
+    title: 'Agent 邀测 / 声称 develop 行为前须 check:branch-freshness',
+    ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
+    ssotSection: '分支新鲜度（强制 · 验收 / 声称 develop 行为之前）',
+    ssotMustContain: [
+      /check:branch-freshness/,
+      /behind origin\/develop/,
+      /behind > 0/
+    ],
+    topicSignals: [
+      /check:branch-freshness/,
+      /分支新鲜度/,
+      /behind origin\/develop/
+    ],
+    mustCite: [
+      /focus-tiger-regression-lock\.mdc|regression-lock|分支新鲜度/
+    ],
+    restatementFingerprints: [
+      /check:branch-freshness/,
+      /behind > 0/,
+      /禁止用本次结果代表 develop/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: []
+  },
+  {
+    id: 'z-index-registry',
+    title: '产品 z-index 层叠登记',
+    ssotPath: 'focus-tiger/docs/Z_INDEX.md',
+    ssotSection: 'Z_INDEX.md — 产品层叠登记',
+    ssotMustContain: [
+      /产品层叠登记/,
+      /NarrowIdleShell/,
+      /常用冲突带/
+    ],
+    topicSignals: [
+      /Z_INDEX\.md/,
+      /z-index 登记|层叠登记/,
+      /z-index-registry/
+    ],
+    mustCite: [/Z_INDEX\.md/],
+    restatementFingerprints: [
+      /常用冲突带/,
+      /NarrowIdleShell.*30/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: []
   }
 ];
 
