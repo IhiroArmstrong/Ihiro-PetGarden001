@@ -48,14 +48,36 @@ const NARROW_PARKED_ANCHOR_RE =
 
 function resolveAnchorEl(selectorList) {
   const widePark = document.body.classList.contains('ft-wide-park-secondary');
+  const wideMenuOpen = document.body.classList.contains('ft-wide-more-open');
   const narrowPark = document.body.classList.contains('ft-narrow-park');
+  const narrowDrawerOpen = Boolean(
+    document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
+  );
   for (const sel of String(selectorList)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)) {
-    if (widePark && WIDE_PARKED_ANCHOR_RE.test(sel)) {
+    if (widePark && wideMenuOpen) {
+      const proxy = wideMenuProxyForSelector(sel);
+      if (proxy) {
+        const el = document.querySelector(
+          `#ft-wide-more-menu [data-proxy="${proxy}"]`
+        );
+        if (el && el.getClientRects().length > 0) return el;
+      }
+    }
+    if (widePark && !wideMenuOpen && WIDE_PARKED_ANCHOR_RE.test(sel)) {
       const more = document.getElementById('ft-wide-more-btn');
       if (more && !more.hidden && more.getClientRects().length > 0) return more;
+    }
+    if (narrowPark && narrowDrawerOpen) {
+      const proxy = narrowDrawerProxyForSelector(sel);
+      if (proxy) {
+        const el = document.querySelector(
+          `#ft-narrow-options-drawer [data-proxy="${proxy}"]`
+        );
+        if (el && el.getClientRects().length > 0) return el;
+      }
     }
     if (narrowPark && NARROW_PARKED_ANCHOR_RE.test(sel)) {
       const remapped = remapNarrowParkedSelector(sel);
@@ -73,7 +95,6 @@ function resolveAnchorEl(selectorList) {
     }
     const el = document.querySelector(sel);
     if (el && !el.hidden && el.getClientRects().length > 0) {
-      // Off-canvas park (left: -10000px) still has a rect — skip those
       const r = el.getBoundingClientRect();
       const vw = document.documentElement.clientWidth;
       const vh = document.documentElement.clientHeight;
@@ -83,6 +104,21 @@ function resolveAnchorEl(selectorList) {
       return el;
     }
   }
+  return null;
+}
+
+function wideMenuProxyForSelector(sel) {
+  if (/honesty-idle/.test(sel)) return 'honesty';
+  if (/micro-ritual/.test(sel)) return 'breath';
+  if (/session-start-dock__hint/.test(sel)) return 'companion';
+  if (/reminder-preference/.test(sel)) return 'reminder';
+  return null;
+}
+
+function narrowDrawerProxyForSelector(sel) {
+  if (/micro-ritual/.test(sel)) return 'breath';
+  if (/session-start-dock__hint/.test(sel)) return 'companion';
+  if (/reminder-preference/.test(sel)) return 'reminder';
   return null;
 }
 

@@ -2,7 +2,9 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 
 import {
   NARROW_STAGE_CLASS,
-  listSecondaryChromeEntries
+  listSecondaryChromeEntries,
+  SECONDARY_PROXY_HINT_IDS,
+  syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v14';
@@ -617,6 +619,10 @@ export class NarrowIdleShell {
       btn.className = 'ft-narrow-sheet__item';
       btn.dataset.proxy = item.proxy;
       btn.textContent = t(item.labelKey);
+      const hintId = SECONDARY_PROXY_HINT_IDS[item.proxy];
+      const showDot =
+        Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
+      syncSecondaryMenuHintDot(btn, showDot);
       li.appendChild(btn);
       this.listEl.appendChild(li);
     }
@@ -963,10 +969,11 @@ export class NarrowIdleShell {
         gap: 6px;
       }
       .ft-narrow-sheet__item {
+        position: relative;
         width: 100%;
         box-sizing: border-box;
         /* Compact (~half of prior 14×16) so all Idle actions fit on 375 */
-        padding: 7px 12px;
+        padding: 7px 28px 7px 12px;
         min-height: 36px;
         border-radius: 11px;
         border: 1px solid rgba(139, 115, 85, 0.28);
@@ -979,6 +986,23 @@ export class NarrowIdleShell {
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.85) inset,
           0 1px 0 rgba(180, 150, 110, 0.18);
+      }
+      .ft-secondary-menu-hint-dot {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        margin-top: -4px;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
+        pointer-events: none;
+        animation: ft-secondary-menu-hint-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes ft-secondary-menu-hint-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(0.85); }
       }
       .ft-narrow-sheet__item.is-primary {
         border-color: rgba(255, 230, 210, 0.4);

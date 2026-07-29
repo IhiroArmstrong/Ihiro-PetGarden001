@@ -38,9 +38,37 @@
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'sound' | 'reminder'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder'} proxy
  * @property {string} labelKey
  */
+
+/** Menu / drawer row → onboarding hint id (mint dot on first visit). */
+export const SECONDARY_PROXY_HINT_IDS = Object.freeze({
+  honesty: 'honesty-optional',
+  breath: 'micro-ritual',
+  companion: 'how-shall-we-sit',
+  reminder: 'in-app-reminder'
+});
+
+/**
+ * @param {HTMLElement} btn
+ * @param {boolean} show
+ * @returns {void}
+ */
+export function syncSecondaryMenuHintDot(btn, show) {
+  if (!btn) return;
+  let dot = btn.querySelector(':scope > .ft-secondary-menu-hint-dot');
+  if (!show) {
+    dot?.remove();
+    return;
+  }
+  if (!dot) {
+    dot = document.createElement('span');
+    dot.className = 'ft-secondary-menu-hint-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    btn.appendChild(dot);
+  }
+}
 
 /** Narrow park / stage body classes (single spelling). */
 export const NARROW_STAGE_CLASS = Object.freeze({
@@ -227,10 +255,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
     });
   }
 
-  out.push({
-    proxy: 'sound',
-    labelKey: 'AMBIENT_FAB_LABEL'
-  });
+  // Sound lives only on top-right note / narrow ♪ (2026-07-30) — not a menu row.
 
   if (visibility.reminderAvailable) {
     out.push({

@@ -199,10 +199,42 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * Top-right note (and ActionBar ♪ proxy) — same effect as menu / drawer Sound.
-   * Stages the Soundscape panel on-canvas; never gated tip-only.
+   * Top-right note (and ActionBar ♪ proxy):
+   * - audible music on → mute/stop
+   * - panel already open → close
+   * - otherwise → open Soundscape track panel
    */
   openSoundPanelFromNote() {
+    void this._onNoteClick();
+  }
+
+  /**
+   * @returns {Promise<void>}
+   */
+  async _onNoteClick() {
+    const ctrl = this.controller;
+    if (ctrl.isAudiblePlaying()) {
+      ctrl.mute();
+      this._expanded = false;
+      this._narrowForcedPanel = false;
+      document.body.classList.remove(
+        'ft-narrow-stage-sound',
+        'ft-wide-stage-sound'
+      );
+      this._renderPanel();
+      this.handlers.onToggleMusic?.();
+      return;
+    }
+    if (this.isPanelOpen()) {
+      this._expanded = false;
+      this._narrowForcedPanel = false;
+      document.body.classList.remove(
+        'ft-narrow-stage-sound',
+        'ft-wide-stage-sound'
+      );
+      this._renderPanel();
+      return;
+    }
     this._stageSoundPanelHost();
     this.activateSoundFromNarrow();
   }

@@ -1,7 +1,9 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   WIDE_STAGE_CLASS,
-  listSecondaryChromeEntries
+  listSecondaryChromeEntries,
+  SECONDARY_PROXY_HINT_IDS,
+  syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles';
@@ -94,6 +96,7 @@ export class WideIdleMoreMenu {
     this._refreshItems();
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'true');
+    this.handlers.onMenuChange?.(true);
   }
 
   /**
@@ -104,6 +107,7 @@ export class WideIdleMoreMenu {
     this._menuOpen = false;
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'false');
+    this.handlers.onMenuChange?.(false);
   }
 
   /**
@@ -293,6 +297,10 @@ export class WideIdleMoreMenu {
       btn.setAttribute('role', 'menuitem');
       btn.dataset.proxy = item.proxy;
       btn.textContent = t(item.labelKey);
+      const hintId = SECONDARY_PROXY_HINT_IDS[item.proxy];
+      const showDot =
+        Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
+      syncSecondaryMenuHintDot(btn, showDot);
       li.appendChild(btn);
       this.listEl.appendChild(li);
     }
@@ -432,10 +440,11 @@ export class WideIdleMoreMenu {
       }
       .ft-wide-more__item {
         display: block;
+        position: relative;
         width: 100%;
         box-sizing: border-box;
         text-align: left;
-        padding: 10px 12px;
+        padding: 10px 28px 10px 12px;
         border-radius: 10px;
         border: 1px solid transparent;
         background: transparent;
@@ -448,6 +457,22 @@ export class WideIdleMoreMenu {
       .ft-wide-more__item:hover {
         background: rgba(255, 246, 230, 0.9);
         border-color: rgba(139, 115, 85, 0.18);
+      }
+      .ft-secondary-menu-hint-dot {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
+        pointer-events: none;
+        animation: ft-secondary-menu-hint-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes ft-secondary-menu-hint-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(0.85); }
       }
 
       /*

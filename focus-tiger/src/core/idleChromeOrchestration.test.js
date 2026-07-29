@@ -192,7 +192,7 @@ describe('listSecondaryChromeEntries', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'sound', 'reminder']
+      ['breath', 'companion', 'reminder']
     );
   });
 
@@ -200,7 +200,7 @@ describe('listSecondaryChromeEntries', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['honesty', 'breath', 'companion', 'sound', 'reminder']
+      ['honesty', 'breath', 'companion', 'reminder']
     );
   });
 
@@ -212,15 +212,12 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(!entries.some((e) => e.proxy === 'companion'));
   });
 
-  it('sound always listed when other gates off', () => {
+  it('empty when secondary gates off (Sound is not a menu row)', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', {
       microRitualVisible: false,
       companionVisible: false,
       reminderAvailable: false
     });
-    assert.deepEqual(
-      entries.map((e) => e.proxy),
-      ['sound']
-    );
+    assert.deepEqual(entries.map((e) => e.proxy), []);
   });
 });

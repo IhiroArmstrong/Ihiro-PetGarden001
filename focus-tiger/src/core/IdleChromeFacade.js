@@ -79,7 +79,8 @@ export class IdleChromeFacade {
       onHonesty: h.onHonesty,
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
-      onSheetChange: h.onSheetChange
+      onSheetChange: h.onSheetChange,
+      isHintUnread: h.isHintUnread
     });
     this.wide.setHandlers({
       onSound: h.onSound,
@@ -87,7 +88,9 @@ export class IdleChromeFacade {
       onClearCompanion: h.onClearCompanion,
       onReminder: h.onReminder,
       onHonesty: h.onHonesty,
-      onClearStage: h.onClearStage
+      onClearStage: h.onClearStage,
+      onMenuChange: h.onMenuChange,
+      isHintUnread: h.isHintUnread
     });
   }
 

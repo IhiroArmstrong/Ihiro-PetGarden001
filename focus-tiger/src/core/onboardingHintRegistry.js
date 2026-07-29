@@ -292,6 +292,16 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     }
   },
   {
+    id: 'wide-more-menu',
+    localeKey: 'HINT_WIDE_MORE_MENU',
+    triggerMode: 'manual',
+    anchor: {
+      selector: '#ft-wide-more-btn',
+      placement: 'above',
+      tip: 'bottom'
+    }
+  },
+  {
     id: 'help-affordance',
     localeKey: 'HINT_HELP_AFFORDANCE',
     triggerMode: 'click',
