@@ -247,7 +247,7 @@
 **下一步计划**：
 
 - **自动化缺口补齐（2026-07-30 已排期 · 见 `COVERAGE_GAP_AUDIT.md`）**：**先 Task 3**（真实 Honesty→桥接→Yes→Arrival DOM）→ **Task 2**（E/F 逻辑单测进 smoke）→ **扩 smoke**（Emotion / Ambient 停音 / AcrossTools 等 unit\*）；永不自动化清单见审计 §5。排期细节 `TEST_TRACKER` §C。
-- **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。云端/离线产品面已拍板（见下），选型主要影响路径/菜单等壳适配。优先级仍高于 CI 细节争排期。见 Backlog「本地桌面 APP 打包选型」。
+- **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。「高于 CI 细节」= 与 CI 工程 Backlog **争排期时先开本决策**（非等 CI 做完）。见 Backlog「本地桌面 APP 打包选型」。
 - **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列推进——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论**（实现可后置）。
 - **回 `chore/split-hints-from-pr2` / hints 拆分线时**：先核 `git stash` 里「`On chore/split-hints-from-pr2: temp prd untracked`」再动手（见 Backlog「stash · chore/split-hints-from-pr2」）；**禁止**未核就 drop。
@@ -266,7 +266,7 @@
 
 - **语义化版本与稳定发布点（2026-07-30 已拍板）**：SemVer；首稳 `v1.0.0`；稳定版 = `main` annotated tag；开发阶段不切 `release/*`。见 `WORKFLOW.md` / `RULES_INDEX` → `git-semver-release`（非开放项，留此一行防重复开议题）。
 - **v1.0 纯本地 / v1.1 云端（2026-07-30 已拍板）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网与云端关键算法，优先保障可离线完整体验；**v1.1** 快速跟进云端算法。代码保留云端可扩展性（保留 `cloud/` 骨架与前后端解耦；**禁止**在 v1.0 把核心门闩绑死在必须成功的云请求上）。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
-- **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。云端/离线产品面已拍板（见上条），不再挡壳选型。详情见 Backlog；**优先级高于 CI 细节**。
+- **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。
 - **「?」朱砂红点用途（2026-07-22）**：用户书面——红点应「用于系统里面的通知，或者 alert 之类的」。现实现仍挂 onboarding「?」未读提示。待拍板：改挂应用内提醒/通知，还是保留引导未读角标。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
@@ -530,7 +530,8 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:本地桌面 APP 打包选型（v1 阻塞 · 壳未拍板；开会时机已定）
 
-> **背景（2026-07-30）**：产品目标含「本地可以跑的电脑版 APP」。壳选型（Electron / Tauri / PWA）仍为 **v1 阻塞**，决策优先级高于 CI 细节。  
+> **背景（2026-07-30）**：产品目标含「本地可以跑的电脑版 APP」。壳选型（Electron / Tauri / PWA）仍为 **v1 阻塞**。  
+> **「优先级高于 CI 细节」如何理解（易混 · 同日澄清）**：**不是**「等 CI 工程出现/做完再谈打包」。本仓库「CI 细节」= 已列进 Backlog 的两项工程护栏——（1）**CI 全量 `test:smoke` + `test:e2e`**；（2）**降低 visibility CI flaky 率**（排期锚点：PR #2 → `main` 合并后开工）。「高于」= **争同一段日历/Agent 注意力时，先开打包壳短决策，再/并排做 CI 工程**；CI 仍要做，不挡、也不充当打包选型的前置条件。  
 > **产品面已拍板（同日）**：**v1.0.0 纯本地**（核心不依赖联网）；**v1.1** 跟进云端算法；代码保留云端可扩展性。详见下条「v1.1 云端算法」与开放决策「v1.0 纯本地 / v1.1 云端」。
 
 **候选（壳未选型）**：
