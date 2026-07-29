@@ -190,13 +190,14 @@
 
 ## 场景 G：语言切换
 
-> **设计意图**：多语言（en 默认 / zh 可切）。见 `COVERAGE_GAP_AUDIT.md` §9。  
-> **自动化（应补，非 post-v1 默认）**：unit 奇偶+`setLocale`；e2e 经 `__i18n`（或将来切语 UI）断言关键文案。  
-> **仍须人工**：375 中文是否裁切、观感排版。
+> **拍板（2026-07-30）**：v1 **可点切语** + 持久化。意向 en/es/zh/ja/de/fr；完整启用先 **en+zh**（审计 §9.6）。  
+> **自动化（下一回合）**：unit 奇偶+`setLocale`；e2e **点切语 UI** 断言关键文案。  
+> **仍须人工**：各启用语 375 排版。
 
-1. **当前无应用内语言设置 UI**。在 DEV 控制台：`__i18n.setLocale('zh')`，再 `setLocale('en')`。（若已做切语入口，改走 UI，仍测同文案面。）
-2. 重走 Arrival + Reflection（及 Honesty 桥接文案若出现），确认欢迎 / Notice / Choose / 回显 / 三问 / 桥接无英文残留、无 `{intention}` 未替换。
-3. 切回英文再确认。
+1. 打开 `?product=1` → ⋯ / 窄屏抽屉 → **Language**（实现后的入口名以 UI 为准）→ 选 **中文**。
+2. 确认 Sit / Honesty / Arrival / Companion / Reflection / 桥接等无英文残留、无 `{intention}` 未替换。
+3. 再切回 **English** 确认。刷新后语言保持（`focus-tiger.locale.v1`）。
+4. （DEV 兜底仍可用 `__i18n.setLocale`；正式验收以 UI 为准。）
 
 ---
 
