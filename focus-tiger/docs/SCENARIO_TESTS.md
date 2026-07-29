@@ -11,7 +11,7 @@
 **功能 vs 测试覆盖缺口审计（2026-07-30）**：模块级对照、三条「绿」口径、永不自动化清单与后续 Task 顺序 → [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（与 `TEST_TRACKER` §C 互补；改覆盖结论先改审计文档）。
 
 **自动化冒烟（2026-07-20，Task 1 扩 A/I/K DOM；2026-07-22 扩 O/P / 意图回显）**：
-- **单元 / 控制器集成**（无浏览器）：`src/core/scenario-smoke.test.js` 等（`npm run test:smoke`）— A–D 门闩与控制器接线 + **I/J** hint 纯函数；**不是**完整用户故事
+- **单元 / 控制器集成**（无浏览器）：`src/core/scenario-smoke.test.js` 等（`npm run test:smoke`）— A–D 门闩与控制器接线 + **E/F** Offline 舒展暂停 / AcrossTools idle + **I/J** hint 纯函数；含 `MindfulReminderController` / `AcrossToolsIdleGuard` 专测；**不是**完整用户故事
 - **浏览器 DOM 用户链路**（`npm run test:e2e`，约 **20** 条跨 6 文件）：
   - `e2e/product-shell.smoke.spec.js` — 产品壳 Sit / 无调试条；实验室重置钮可见
   - `e2e/scenario-a.companion.spec.js` — **I** hint→三选一面板；**I2** 预选→开 Arrival；**A** Arrival 后 Here & Now 开表；**A2/A3** 预选+Skip — begin 开表；**K** Offline 选中即开表
@@ -158,6 +158,10 @@
 
 ## 场景 E：Offline Space（I'll step away）
 
+> **单元 / 控制器集成**：舒展活跃累计在 `attentionAway` 时暂停；墙钟 `getSessionElapsedSeconds` 仍可触发 mindful；`suppressAwayReminders` → 无 Re-focus → **smoke E** + `MindfulReminderController.test`（已入 `test:smoke`）。  
+> **DOM**：Offline 选中即开表 → e2e K（`scenario-a.companion.spec.js`）。  
+> **未覆盖 / 仍须人工**：真实离开墙钟、welcomeBack 未接线。
+
 1. Companion 选 **Offline Space** → **选中即开计时**，**不**出现 Arrival Notice/Choose（与 Here & Now / Flow「未就绪先 Arrival」不同）。
 2. 离开电脑一段时间。
 3. **已知缺口**：约 10 分钟无互动自动 `welcomeBack` / wave-hello **未接线**（仅调试「挥手欢迎」）。回来没看到挥手 = 已知状态。  
@@ -169,6 +173,9 @@
 ---
 
 ## 场景 F：Flow State（I'm working across tools）
+
+> **单元 / 控制器集成**：`AcrossToolsIdleGuard` 阈值后一次回调 + 键鼠活动重置计时；常量 `ACROSS_TOOLS_IDLE_THRESHOLD_MS = 1_800_000` → **smoke F** + `AcrossToolsIdleGuard.test`（已入 `test:smoke`）。Re-focus 抑制同 smoke B。  
+> **未覆盖 / 仍须人工**：toast DOM 文案、真实 30 分钟墙钟。
 
 1. Companion 选 **Flow State** → 选中即开计时。
 2. 频繁切标签（模拟多任务）；离开类 Re-focus **应全程抑制**。

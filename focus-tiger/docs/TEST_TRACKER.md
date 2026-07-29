@@ -153,15 +153,15 @@
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
-#### C. 下一步自动化（未做 · 排 Task 2→扩 smoke）
+#### C. 下一步自动化（未做 · 排扩 smoke）
 
 > **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、已拍板后续顺序）。本表 §C 只排期；改覆盖结论先改审计文档。
 
 | 优先级 | 内容 | 对应 bug/场景 |
 |---|---|---|
 | **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入） | 场景 D/N |
-| **Task 2**（下一） | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock），并入 `test:smoke` | 场景 E/F；Offline/Flow 模式矩阵 |
-| **扩 smoke** | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约、AcrossTools 阈值 mock） | 防 PR 冒烟漏跑；见审计 §4 |
+| **Task 2** | ✅ **已落地**（2026-07-30）：smoke E（Offline 舒展暂停 + 墙钟仍走 + 无 Re-focus）/ smoke F（AcrossTools 30min 一次 idle + 活动重置）；`MindfulReminderController.test` + `AcrossToolsIdleGuard.test` **并入** `test:smoke` | 场景 E/F |
+| **扩 smoke**（下一） | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约等；AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑；见审计 §4 |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
 
@@ -189,6 +189,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
+| 自动化 Task 2 · 场景 E/F 逻辑进 smoke | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`：含 smoke E（Offline 舒展暂停/墙钟/无 Re-focus）、smoke F（AcrossTools 一次 idle + 活动重置）；并入 `MindfulReminderController.test.js` + `AcrossToolsIdleGuard.test.js`。真实切页/30min toast DOM 仍人工。 | — | `scenario-smoke` E/F · `package.json` test:smoke | 2026-07-30 |
 | 自动化 Task 3 · Honesty 真实补登→桥接→Arrival e2e | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e:changed -- e2e/honesty-bridge-real-path.spec.js`：入口→时长→`?honestyBreathMs=1500` 呼吸→桥接 Yes→`#arrival-practice`；No→Idle 且无 Arrival。**禁止** `__honestyBridge` 注入。叠层/375 tip 仍见 `micro-ritual.spec.js` 注入用例。单测：`resolveHonestyBreathMs`。 | — | `e2e/honesty-bridge-real-path.spec.js` · `?honestyBreathMs=` | 2026-07-30 |
 | 响应式 Task 3 · 窄宽单代码线（总验收） | UI可见 | 待人工测试 | **关单级**（只认 `origin/develop` tip + freshness behind=0）。**禁止**与场景 O 修混验。**§8 375 故事最小集**（Idle 三球+抽屉、Sit→Arrival→Focusing HUD、Breath 藏 Sit、? 补救、tip 邻接、Honesty/微仪式）。**§9 W1–W8**（清场 Sit+⚡+⋯、Sit 全路径、Arrival 藏 Sit/⋯、⋯ 代理 Honesty/How/Sound/提醒、? remap、邻接、Focusing、桥接/Rise）。**断点** 375↔480（见上行 Facade 行）。自动化：编排/facade 单测 + smoke ≠ 关单。 | — | `?product=1` · Brief `task-responsive-single-chrome-line.md` · PR #31–#33 | 2026-07-30 |
 | `IdleChromeFacade` 窄宽统一入口（Task 3 阶段 2） | UI可见 | 待人工测试 | **主路径**：`?product=1` 宽屏 Idle 见 Sit+⚡+⋯；375 见三球+抽屉；handlers 共用。**断点**：DevTools 375↔480 来回 — 无双壳叠点；Companion 打开时改宽度**不得**被误关（release 不调 onClearStage）。**回流**：Rise 后再 Idle。自动化：`IdleChromeFacade.test.js` + smoke；**须人工锁**断点路径。完整 §8+§9 见上行总验收。 | — | `?product=1` · `createIdleChromeFacade` · PR #33 | 2026-07-30 |
@@ -218,7 +219,8 @@
 | Re-focus Acknowledge / 回归确认 | UI可见 | 已通过 | **用户路径**见场景 B：开 **`/?sessionMinutes=5`**。**Here & Now**：切走 **&gt;60s** → toast + nod-bow。**Flow State / Offline**：同样切走 **&gt;60s** → **不应**出现 Re-focus（离开是预期）。**&lt;20s 无反应属正确**。 | 2026-07-20 晚：DEMO/10s 门槛说明。**2026-07-21**：用户书面 Sit/Here&Now 切页 **测试 OK**；Flow State「结果不对、不匹配」→ 产品预期即与 Here & Now **不同**：Flow **故意无**文案+nod-bow。**同日晚**：用户确认原 8 条独立行批次全部关闭。 | `/?sessionMinutes=5` · **单元/控制器** smoke B（**非**真实切页） | 2026-07-21 |
 | stretchReminder / 舒展提醒 | UI可见 | 待人工测试 | 会话活跃累计满 **2 小时**（离开暂停；两场间隔 ≥30 分钟重置）→ `stretch-reminder` 17 帧 + toast。占共享日额度。演示短会话建议调试面板触发。 | — | 调试面板 / 生产长计时 · DEV：`__mindfulReminderController` | 2026-07-18 |
 | Ambient Soundscape / 静音图标 + Sound | UI可见 | 有问题 | **静音 / 开播**：右上米色圆形 **音符钮**（关=可点开播；在播=音符+斜杠，点一下静音）。**Sound**：右下蒲团橙 **Sound** **始终可见**；**Sit 开计时后**可展开曲目/音量；未专注点 Sound 会提示先开始专注。**主路径**：**登录/打开后默认无音乐**（须点音符才播；默认曲目仍 Mer-Ka-Ba）；专注后 Sound 换曲。**回流**：关→刷新仍关；**Rise / 达标结束 → 自动停播**；再 Sit **不**自动再开。 | **2026-07-20**…**2026-07-21 晚**：开关 OK。**2026-07-25**：用户拍板 Rise 后**自动停播**；同日再拍板 **opt-in（不默认播）**；**须复测**。 **2026-07-25 晚用户书面**：Rise 停播 + ambient opt-in（不默认播）— **测试 OK**。 **2026-07-29 用户书面（图）**：右上音符点击效果须与菜单 **Sound** 一样（开面板）；窄/宽均修；宽屏若音符类按钮重复则只留右上 → 见下行。 **2026-07-30 用户书面（图）**：Focusing 下选 Meditation Impromptu 等曲目后仍无声；疑 play() 失败仍 wantsEnabled（斜杠）或静音/手势解锁缺口。 | 右上 `.ambient-soundscape__mute` · 右下 `.ambient-soundscape__fab` · `AmbientSoundscapeController.test.js` | 2026-07-25 |
-| 右上音符开/关声景（菜单已删 Sound） | UI可见 | 待人工测试 | **主路径（≥480）**：右上音符 → 开面板；有声再点 → 静音。**曲目记忆 + 续播**：选曲有声 → 点音符静音 → 再点音符 → 面板仍高亮该曲 **且自动续播有声**（同一次点击手势）。面板显式 Off 不续播。**回流**：Rise 停播口径不变。 | **2026-07-30 再书面**：高亮对了但再开面板无声 → 静音后再开须 `unmute` 偏好曲。 | `?product=1` · `.ambient-soundscape__mute` · `.ambient-soundscape__track.is-selected` | 2026-07-30 |
+| Ambient · 三曲 Aakash Gandhi 入库 | UI可见 | 待人工测试 | **主路径**：`?product=1` → 右上音符开面板 → 见 **Dreamland / Invisible Beauty / Kiss the Sky**（另有 Mer-Ka-Ba、Meditation Impromptu）→ 选一曲应可闻。**回流**：Off / Rise 停播。 | 2026-07-30：用户同意另开分支入库（YouTube Audio Library · Aakash Gandhi）。 | `.ambient-soundscape__panel` · `/audio/ambient/*-aakash-gandhi.mp3` | 2026-07-30 |
+| 右上音符开/关声景（菜单已删 Sound） | UI可见 | 待人工测试 | **主路径（375）**：ActionBar ♪ → Soundscape 选曲面板；FAB 不可见。**Focusing**：ActionBar 常显，点 ♪ 同样开面板。**主路径（≥480）**：右上音符 → 开面板；有声再点 → 静音。**曲目记忆 + 续播**：选曲有声 → 点音符静音 → 再点音符 → 面板仍高亮该曲 **且自动续播有声**（同一次点击手势）。面板显式 Off 不续播。**回流**：Rise 停播口径不变。 | **2026-07-29**：rebase / e2e note opens。 **2026-07-30 用户书面（图4）**：删菜单 Sound；有声再点关乐。 **2026-07-30 再书面**：高亮对了但再开面板无声 → 静音后再开须 `unmute` 偏好曲。 | `?product=1` · `#ft-narrow-mute-btn` · `.ambient-soundscape__mute` · `.ambient-soundscape__track.is-selected` | 2026-07-30 |
 | ⋯/抽屉菜单删除 Sound + 行内薄荷绿 | UI可见 | 待人工测试 | **主路径**：清空 hints → 开 ⋯/抽屉 → **无 Sound 行**；Honesty/呼吸/How/提醒旁见薄荷绿脉冲。音乐仅右上音符：未播→开面板；**可闻播放中再点→关音乐**。宽屏 ? more tips：折叠为 `wide-more-menu`（对等窄屏抽屉说明）。 | **2026-07-30 用户书面（图4）**拍板删除重复 Sound；菜单项须薄荷绿；有声再点关乐。 | `#ft-wide-more-menu` · `.ft-secondary-menu-hint-dot` · `.ambient-soundscape__mute` | 2026-07-30 |
 | EyeTracking / 正式瞳孔 PNG | UI可见 | 已放弃/不适用 | 运行时已卸下 `pupil-left/right` 叠加跟随；调试勾选已移除。Idle 张望 gaze-p1～p4 **不受影响**。**不再排人工验收**。 | 2026-07-19 实测错位；**已决定放弃**。**2026-07-22**：状态改为「已放弃/不适用」（不挡合并）。结论见 `CORE_LOOP.md`。 | 已废弃 · `/textures/eye-pupils/` 可不接线 | 2026-07-22 |
 | PointerInteraction · 靠近点头 nodGreeting | UI可见 | 已通过 | **默认靠近不再点头**。开局 / idle：指针移入靠近区 → **不应**播 `nod-greeting`。调试面板「点头致意」仍可手工播（**6 fps**，末帧多停约 2 拍）→ 回 idle。 | 2026-07-19：曾要放慢点头→已改。**同日再反馈**：开局默认态仍见点头 → 根因是靠近区仍自动 `nodGreeting`；已拆除靠近自动点头。**2026-07-21**：用户书面——默认只有呼吸/眨眼、靠近不再自动点头，测试 OK。 | 全屏命中层 · DEV：`__pointerInteraction` · 调试「点头致意」 | 2026-07-21 |

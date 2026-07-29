@@ -58,8 +58,8 @@
 | **Pointer / 摸头 / 靠近点头** | ❌ | ❌ | ❌ | `PointerInteraction` | **检测逻辑** | 产品壳无正式精灵；不挡合并 |
 | **EmotionController / 情绪优先级** | ❌ | ❌ | ❌ | `EmotionController` 等\* | **仅 unit\*** | 时长带、素材抠图调试面板 = 人工 |
 | **MilestoneGlow / IncenseComplete** | ❌ | ❌ | ❌ | — | **无自动化 / 业务未接线** | Glow 有问题行；Incense 已放弃接线 |
-| **舒展提醒 / Offline 暂停累计（场景 E）** | 弱（抑制门闩） | ❌ Offline 开表以外 | ❌ | 部分 Mindful\* | **缺口（→ Task 2）** | 舒展暂停、离开行为 |
-| **Flow 30min across-tools toast（场景 F）** | ❌ | ❌ | ❌ | `AcrossToolsIdleGuard`\* | **几乎无（→ Task 2）** | mock 阈值进 smoke |
+| **舒展提醒 / Offline 暂停累计（场景 E）** | ✅ smoke E + MindfulReminder 入烟 | ❌ Offline 开表以外 | ❌ | Mindful\*（已入 smoke） | **逻辑已锁** | 真实离开墙钟仍人工 |
+| **Flow 30min across-tools toast（场景 F）** | ✅ smoke F + AcrossTools 入烟 | ❌ | ❌ | AcrossTools\*（已入 smoke） | **逻辑已锁** | toast DOM / 真实 30min 仍人工 |
 | **i18n 语言切换（场景 G）** | ❌ | ❌ | ❌ | — | **零自动化** | 只能人工 `__i18n` |
 | **瞳孔跟随（场景 H）** | — | — | — | stub | **N/A 已废弃** | — |
 | **Grow / 纪念奖励 / 3D 柜** | — | — | — | — | **Backlog，未接线** | 不期望有测 |
@@ -70,9 +70,9 @@
 ### 覆盖热力图（粗粒度）
 
 ```text
-强（smoke+DOM）     Arrival开表 · Companion门闩 · Idle窄宽壳 · 热力图 · 提醒设置/横幅 · 微仪式主路径 · Reflection回显 · **Honesty真实补登→桥接**
+强（smoke+DOM）     Arrival开表 · Companion门闩 · Idle窄宽壳 · 热力图 · 提醒设置/横幅 · 微仪式主路径 · Reflection回显 · **Honesty真实补登→桥接** · **E/F 逻辑（舒展暂停 / AcrossTools idle）**
 中（逻辑或注入）     Honesty桥接叠层(注入) · 达标分流 · Re-focus抑制 · DORMANT链 · Hints契约 · FocusHUD映射
-弱/无               Ambient播放 · 庆祝动画 · 真实切页Recover · E/F细节 · i18n · 光影观感 · Grow/3D
+弱/无               Ambient播放 · 庆祝动画 · 真实切页Recover · i18n · 光影观感 · Grow/3D
 ```
 
 ---
@@ -86,7 +86,7 @@
 3. **Honesty 真实补登 → 桥接 → Yes → Arrival** — ✅ e2e `honesty-bridge-real-path`（2026-07-30）；叠层仍可 `__honestyBridge` 注入
 4. **Ambient 实际发声与 Rise 停音** — 几乎只有「开面板 / 无 autoplay」→ 可进 smoke 扩容（行为契约，非听感）
 5. **Idle / Choose / Rise 序列观感** — 刻意不进 e2e（见 §5）
-6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ **Task 2**
+6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ ✅ Task 2（smoke E/F；真实 30min / 切页仍人工）
 7. **场景 G i18n** — 零（低 ROI；暂不排自动化）
 8. **MilestoneGlow / Incense 业务接线** — 无或已放弃
 9. **Workers API** — 前端未接线，无测
@@ -102,8 +102,8 @@
 | 顺序 | 项 | 内容 | 对应 |
 |---|---|---|---|
 | **1** | **Task 3** | ✅ **已落地**（2026-07-30）：Playwright 真实 Honesty 补登 → 桥接 Yes → Arrival（`e2e/honesty-bridge-real-path.spec.js`；`?honestyBreathMs=`） | 场景 D/N |
-| **2** | **Task 2** | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock），**并入 `test:smoke`**，不依赖墙钟 | 场景 E/F |
-| **3** | **扩 smoke** | 把关键 `unit*` 提升进 `test:smoke`：Emotion 优先级、Ambient 停音契约、AcrossTools 阈值 mock | 防 PR 冒烟漏跑 |
+| **2** | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E/F + `MindfulReminderController` / `AcrossToolsIdleGuard` 并入 `test:smoke` | 场景 E/F |
+| **3** | **扩 smoke** | 把其余关键 `unit*` 提升进 `test:smoke`：Emotion 优先级、Ambient 停音契约（AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑 |
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做** | — | 见下方「永不自动化 / 人工锁」 | — |
 
