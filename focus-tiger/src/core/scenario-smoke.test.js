@@ -119,6 +119,52 @@ test('smoke A1: zero completions → Idle + Honesty entry button; after record �
   assert.equal(stateManager.state, STATES.IDLE);
 });
 
+/**
+ * A1 延伸：陈旧结束戳 ≥2h 时冷启动仍 Idle（开场即睡回归锚）。
+ * live syncDormantState 仍可进 DORMANT（场景 D）。
+ */
+test('smoke A1b: cold open with stale ≥2h end → Idle (no DORMANT / cloak)', () => {
+  const ended = Date.parse('2026-07-20T08:00:00');
+  const now = () => new Date(Date.parse('2026-07-20T11:00:00'));
+  const storage = createStorage();
+  const store = new DailyCompletionStore({ storage, now });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  focusSessionEndStore.recordSessionEnded(ended);
+  const stateManager = new StateManager();
+  const emotionCalls = [];
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      if (key === 'cloakSleep' && typeof options.onComplete === 'function') {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return emotionCalls.at(-1)?.key ?? null;
+    },
+    idleOrchestrator: null
+  };
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+  const controller = new HonestyCheckInController({
+    store,
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui: createHonestyUi(),
+    now
+  });
+
+  controller.onAppReady();
+  assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(
+    emotionCalls.some((c) => c.key === 'cloakSleep' || c.key === 'sleeping'),
+    false,
+    '冷启动不得披毯/睡着'
+  );
+});
+
 test('smoke A3–A4: Arrival Notice→Choose Deep Work → Here & Now can begin; gate blocks when not ready', () => {
   // SCENARIO_TESTS A3c–A4 + 门闩失败（回流 Rise 未再 Arrival）
   let state = createArrivalPracticeState();

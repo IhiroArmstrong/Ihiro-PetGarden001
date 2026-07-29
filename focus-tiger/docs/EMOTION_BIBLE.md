@@ -37,7 +37,7 @@
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
 | `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | **默认开场与日常基底**（含当日零完成 / 登录后第一幕）；非庆祝播放中 / 非调试 Sleeping / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`（2026-07-18：单色暖浅灰棉麻、无红边），`PoseManager` 中 `IDLE_CLOSED_EYES`；2D 主线默认隐藏 canvas，正式情绪由 `idle-breathing` 等序列承载；Idle 自发变体见下文「IdleOrchestrator 自发变体」 |
-| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'pingpong'`） | **不再**作为零完成自动开场；仅调试面板「睡着了」或显式 `STATES.DORMANT` 时；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：同源 `cloak-sleep` 末尾 **030–034**，每帧连播两拍、先倒序 034→030 再 pingpong 往复，**约 2 fps**；`playEmotion('sleeping')`。与 `cloakSleep` 正放末帧同姿衔接。产品口径（2026-07-21）：登录后第一幕必须是 Idle 闭目坐禅，Sleeping 看起来 not uplifting。原 `sleeping/` 8 帧目录保留未删 |
+| `Sleeping` | 瞌睡（睡着了） | 是（`loopMode: 'pingpong'`） | **不再**作为零完成 / **冷启动**自动开场；仅调试面板「睡着了」、或 live sync 进 `STATES.DORMANT`（≥2h 空闲后回前台等）时；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：同源 `cloak-sleep` 末尾 **030–034**，每帧连播两拍、先倒序 034→030 再 pingpong 往复，**约 2 fps**；`playEmotion('sleeping')`。与 `cloakSleep` 正放末帧同姿衔接。产品口径（2026-07-21 / **2026-07-26**）：登录 / 刷新后第一幕必须是 Idle 闭目坐禅（有精神），Sleeping / 披毯看起来 not uplifting；`onAppReady` 禁进 DORMANT。原 `sleeping/` 8 帧目录保留未删 |
 | `Smiling` | 坐禅微笑基底（观照者回归态） | 是（`blink-smile` pingpong） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现（2D 主线）**：`blink-smile` 12 帧 pingpong；`playEmotion('smiling')`；3D `tiger-meditate-smile.glb` 仅作垫底且主线默认隐藏 canvas。日期戳持续基底仍待完整接通 |
 | `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放，不循环） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完回归 `Idle` / idle-breathing） | **已实现（2D 主线）**：两套变体素材——`celebrate-dance`（57 帧）与 `celebrate-dance-v2`（60 帧）；`playEmotion('celebrating')` 每次触发时 50/50 随机选用其一（MVP 不做轮换记账）；`loopMode: none`，播完由 EmotionController 回归 idle-breathing。3D `tiger-happy-jump.glb` 仍作垫底。日期戳防刷与 `Smiling` 持续基底仍待完整接通。本序列即主界面 Celebrating 的正式幅度上限；禁止另加更娱乐化的街机式狂欢动作 |
 
@@ -123,7 +123,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 **关键场景说明**（均来自已确认产品设计，非新增玩法）：
 
 1. **完成反馈分级**：每次完成均有轻量 `SessionComplete`；当日首次达标时由完整 `Celebrating`（`celebrate-dance` / `celebrate-dance-v2` 50/50 变体，一次性弧线）取代（不叠加）；同日后续完成继续播放 `SessionComplete`，不重复完整庆祝。所有一次性反馈结束后自动回到 `Idle`（idle-breathing）坐姿呼吸基底；`Smiling` 日期戳持续基底仍待完整接通。
-2. **当日尚未完成任何练习（2026-07-21）**：开场与回流默认 **`Idle` 闭目坐禅**（不上 `Sleeping`）；可忽略 Honesty 提示仍可出现。`Sleeping` / `DORMANT` 仅调试或显式切入；从睡态 Honesty 仍可 `dormantWake`，从 Idle 补登不播睡醒。
+2. **当日尚未完成任何练习 / 冷启动第一幕（2026-07-21；2026-07-26 加固）**：开场与刷新默认 **`Idle` 闭目坐禅**（不上 `Sleeping`、不播 `cloakSleep`）；可忽略 Honesty 提示仍可出现。`Sleeping` / `DORMANT` 可由 live 2h 惰性 sync 或调试切入；从睡态 Honesty 仍可 `dormantWake`，从 Idle 补登不播睡醒。
 3. **一炷香完成 vs 专注达标**：`IncenseComplete` 与 `Celebrating` **相互独立**、强度分级（轻量确认 vs 完整庆祝），不共用完整庆祝资源；可同一天先后发生，各自遵守「每日一次」类限制。
 4. **每日总结氛围**（雪花 / 花瓣）与实时姿态是**两条独立信号轴**（`DESIGN.md`），可同时叠加，不并入本表姿态状态机。
 5. **专注金光**（`focusLevel` 驱动的金色光环/环境光反射强度、金粒子）由 `FocusVisualizer` / 动态效果层驱动，**不是**独立基底姿态；与 `Idle` 等姿态正交叠加。角色本体固有色恒定不变（2026-07-15 视觉原则，见 DESIGN.md「视觉状态」章节）。**金光呼吸律动**为光环通用行为：金光强弱同步 4 秒呼吸循环（吸气时微微收敛、亮部聚焦；呼气时向外柔和晕染），不是死板静止的光圈（2026-07-15 拍板，定义见 DESIGN.md）。**例外（播放期互斥）**：`Celebrating` / `SessionComplete` / `MilestoneGlow` 等已烧录金光的一次性叙事动画播放期间，临时归零实时金光层，播完回落后再恢复（见 `PRINCIPLES.md`「金色光效分层原则」）。
@@ -181,7 +181,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 > | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮 |
-> | `cloakSleep` | **进 DORMANT 过渡（已入库）**：披毯入睡；**拍板**当日首次进 DORMANT 播一次→`sleeping`；**2c 待接线**；≠ Rise |
+> | `cloakSleep` | **进 DORMANT 过渡（已接线）**：live 非 DORMANT→DORMANT 时披毯→`sleeping`；**冷启动 `onAppReady` 不播**；≠ Rise |
 > | `blinkBreathe` | 调试候选；**Rise 主路径已改** `riseStretchCasual` |
 > | `riseStretchCasual` | **已接线 Rise（中途主动结束）**：`playEmotion('riseStretchCasual')` pingpong（正放伸懒腰→随意坐→倒放回闭目）；Reflection 结束后回 Idle / Sleeping；**不**用于达标 Celebrating / SessionComplete |
 
@@ -271,7 +271,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 | 刺激源 | 老虎反应 | 备注 |
 |---|---|---|
-| 夜晚使用 | 披着小毯子，动作放缓 | 素材候选：`cloak-sleep`（见 Sleeping 行）；进 DORMANT 过渡已拍板「当日首次播一次」，正式接线见 2c |
+| 夜晚使用 | 披着小毯子，动作放缓 | live 进 DORMANT 播 `cloakSleep`→`sleeping`（冷启动不播；见 Sleeping 行） |
 | 清晨使用 | 打哈欠、伸懒腰 | |
 | 无互动约 10 分钟 | **加权随机**（非五五开）：**70%** 闭眼继续冥想（不主动引起注意）；**30%** 看向用户方向并挥挥手（挥手复用情绪键 `welcomeBack`） | **中间层级·已确认**。设计原则：轻量、不打扰；禁止频繁弹窗或紧迫感呼唤。**备注**：挥手相对主动、引人注意；若与安静冥想等概率随机，长期使用会显得频繁呼唤用户，与「不打扰、不干扰专注」原则存在张力。以安静冥想为主、挥手为偶尔小变化，既保留生命感随机性，又不破坏安静陪伴基调。 |
 | 无互动约 24 小时 | 自然进入睡眠状态，打呼噜 | **长时间层级**。沿用「不制造焦虑」修正：角色有独立生活节奏，中性「无互动时长」触发；非「不专注」评判或因果报应 |
@@ -634,5 +634,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.64 | 2026-07-22 | Honesty 成功记账轻量 toast `HONESTY_CHECKIN_RECORDED`（对齐微仪式；abort 仍用 `HONESTY_PENDING_LOST`） |
 | 0.65 | 2026-07-25 | `Sleeping` 睡姿循环改 `cloak-sleep` 末尾 030–034 双拍 pingpong（先 034→030），接续披毯入睡末帧；弃用旧 `sleeping/` 8 帧主线 |
 | 0.66 | 2026-07-25 | `Sleeping` 节奏 **1→2 fps**（用户反馈过慢；仍属极缓） |
+| 0.67 | 2026-07-26 | 冷启动 `onAppReady` 禁进 DORMANT / 不播 `cloakSleep`（开场即睡回归）；**拍板**回前台 ≥2h live sync **继续披毯进睡** |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

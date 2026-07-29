@@ -309,7 +309,7 @@ async function init() {
   );
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
 
-  // Honesty Check-in：当日零完成 → Idle 闭目坐禅 + 可忽略补登提示（不开 Sleeping）
+  // Honesty Check-in：冷启动 / 零完成 → Idle 闭目坐禅 + 可忽略补登提示（不开 Sleeping / 不披毯）
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
