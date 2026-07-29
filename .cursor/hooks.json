@@ -2,10 +2,28 @@
   "version": 1,
   "hooks": {
     "stop": [],
+    "subagentStart": [
+      {
+        "command": ".cursor/hooks/deny-subagent-start.sh",
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": ".cursor/hooks/deny-subagent-start.sh",
+        "matcher": "Task",
+        "failClosed": true
+      }
+    ],
     "beforeShellExecution": [
       {
         "command": ".cursor/hooks/gate-destructive-shell.sh",
         "matcher": "git\\s+(push|reset|clean|rebase|merge)\\b|gh\\s+pr\\s+merge\\b|gh\\s+repo\\s+delete\\b",
+        "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/gate-full-e2e-dispatch.sh",
+        "matcher": "gh\\s+workflow\\s+run\\b|gh\\s+run\\s+(?:watch|rerun)\\b|\\bsleep\\s+(?:[6-9]\\d|\\d{3,})\\b",
         "failClosed": true
       }
     ]

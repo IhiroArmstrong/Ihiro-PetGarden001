@@ -76,6 +76,7 @@ alwaysApply: true
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
 - 预览浏览器与能耗 / 进程收尾 / Cloud 独立会话提醒 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
+- Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 
 ## TEST_TRACKER 日常维护（Part 2）
 

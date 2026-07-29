@@ -31,6 +31,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-regression-lock.mdc',
   '.cursor/rules/focus-tiger-docs.mdc',
   '.cursor/rules/focus-tiger-browser-energy.mdc',
+  '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -474,6 +475,38 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     restatementThreshold: 2,
     forbiddenOutsideSsot: []
+  },
+  {
+    id: 'agent-token-cost',
+    title: 'Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）',
+    ssotPath: '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+    ssotSection: 'Focus Tiger · Agent Token Cost（控 Fast Request）',
+    ssotMustContain: [
+      /禁止 Task \/ 子 Agent/,
+      /禁止轮询长 CI/,
+      /禁止擅自触发全量 e2e/,
+      /deny-subagent-start\.sh/
+    ],
+    topicSignals: [
+      /agent-token-cost/,
+      /Fast Request/,
+      /禁止轮询长 CI/,
+      /deny-subagent-start/
+    ],
+    mustCite: [/focus-tiger-agent-token-cost\.mdc|agent-token-cost/],
+    restatementFingerprints: [
+      /禁止 Task \/ 子 Agent/,
+      /禁止轮询长 CI/,
+      /禁止擅自触发全量 e2e/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'default-spawn-subagents',
+        pattern: /默认(?:使用|用|开)\s*(?:并行\s*)?(?:子\s*Agent|Task\s*explore)/,
+        note: '默认禁止子 Agent；不得写成默认可并行 explore'
+      }
+    ]
   }
 ];
 
