@@ -4,20 +4,46 @@
  * Agent gate (regression-lock「分支新鲜度」): required before inviting user QA
  * or claiming verified develop behavior. Not a git hook / CI job — Agent must run it.
  *
+ * Always runs `git fetch origin develop` first so behind/ahead counts are not
+ * based on a stale remote-tracking tip. Fetch failure aborts (exit 1) with an
+ * explicit error — never silently continue on an old origin/develop.
+ *
  * Usage: cd focus-tiger && npm run check:branch-freshness
- * Prefer: git fetch origin develop  first, so origin/develop is current.
+ *
+ * Policy: this script only reports accurate numbers (exit 0 even when behind>0).
+ * Enforcement (must not invite QA when behind>0) stays in regression-lock.mdc.
  */
 import { execSync } from 'node:child_process'
 
-function run(cmd) {
-  return execSync(cmd, { encoding: 'utf8' }).trim()
+function run(cmd, opts = {}) {
+  return execSync(cmd, { encoding: 'utf8', ...opts }).trim()
+}
+
+try {
+  run('git fetch origin develop', {
+    stdio: ['ignore', 'pipe', 'pipe']
+  })
+} catch (err) {
+  console.error(
+    'ERROR: git fetch origin develop failed — freshness check aborted.'
+  )
+  const detail = [err.stderr, err.stdout, err.message]
+    .filter(Boolean)
+    .map((s) => String(s).trim())
+    .filter(Boolean)
+    .join('\n')
+  if (detail) console.error(detail)
+  console.error(
+    'Fix network / auth / remote, then re-run: npm run check:branch-freshness'
+  )
+  process.exit(1)
 }
 
 try {
   run('git rev-parse --verify origin/develop')
 } catch {
   console.error(
-    'origin/develop not found. Run: git fetch origin develop'
+    'ERROR: origin/develop not found after fetch. Check that origin has a develop branch.'
   )
   process.exit(1)
 }
