@@ -251,12 +251,11 @@ async function init() {
     root: document.body,
     getHudStateEl: () => document.getElementById('hud-state')
   });
-  const narrowIdleShell = idleChrome.narrow;
-  const wideIdleMoreMenu = idleChrome.wide;
   if (import.meta.env.DEV) {
     window.__idleChrome = idleChrome;
-    window.__narrowIdleShell = narrowIdleShell;
-    window.__wideIdleMoreMenu = wideIdleMoreMenu;
+    // Adapters remain reachable for legacy DEV probes
+    window.__narrowIdleShell = idleChrome.narrow;
+    window.__wideIdleMoreMenu = idleChrome.wide;
   }
   const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
     document.getElementById('ui-overlay')
@@ -458,8 +457,6 @@ async function init() {
     honestyCheckIn,
     companionModePicker,
     idleChrome,
-    narrowIdleShell,
-    wideIdleMoreMenu,
     stateManager,
     sessionUiGate,
     syncInAppReminderBanner: () => syncInAppReminderBanner()
