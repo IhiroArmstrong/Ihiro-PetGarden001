@@ -64,14 +64,34 @@ test('wide Arrival: only Quick Start; Sit and ⋯ hidden', async ({ page }) => {
   await expect(page.locator('#quick-start-focus')).toBeVisible();
 });
 
-test('wide Focusing: more hidden; Sound FAB returns', async ({ page }) => {
+test('wide Focusing: more hidden; top-right note stays, Sound FAB stays hidden', async ({
+  page
+}) => {
   await openFreshProductShell(page);
   await page.locator('#quick-start-focus').click();
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 15_000
   });
   await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
-  await expect(page.locator('.ambient-soundscape__fab')).toBeInViewport();
+  await expect(page.locator('.ambient-soundscape__mute')).toBeInViewport();
+  await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
+});
+
+test('wide Idle: top-right note opens Soundscape panel (same as ⋯ Sound)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await expect(page.locator('.ambient-soundscape__mute')).toBeVisible({
+    timeout: 15_000
+  });
+  await page.locator('.ambient-soundscape__mute').click();
+  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
+  await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(
+    0
+  );
 });
 
 test('wide Idle: ⋯ Sound opens Soundscape panel (not FAB); Honesty always listed', async ({

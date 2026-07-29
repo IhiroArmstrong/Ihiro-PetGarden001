@@ -98,7 +98,7 @@
 
 ### 气泡视觉（与按钮/输入框区分）
 
-- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐** → 右上 `.ambient-soundscape__mute`；**Idle Sound gated** → 右下 `.ambient-soundscape__fab`；Reflection → 面板**上方**，不挡 Skip）。
+- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐 / Soundscape** → 右上 `.ambient-soundscape__mute`（窄屏 Idle remap `#ft-narrow-mute-btn`）；**Idle Sound gated** 历史锚 → 右下 `.ambient-soundscape__fab`（宽屏 FAB 已藏，gated 文案主要经菜单/抽屉 Sound 路径；宽屏以右上音符开面板）；Reflection → 面板**上方**，不挡 Skip）。
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
 - **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**：窄屏抽屉关闭时主条 + 一次性「更多提示」→ 抽屉说明；宽屏/抽屉开着时可逐条展开。抽屉锚 tip（热力图 / 呼吸 / How / Sound gated / 提醒）在抽屉关闭时不自动出现。

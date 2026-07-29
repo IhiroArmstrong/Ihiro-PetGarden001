@@ -249,7 +249,9 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
   expect(reminderBox.y).toBeLessThan(667);
 });
 
-test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
+test('375: ActionBar note opens Soundscape panel (same as drawer Sound)', async ({
+  page
+}) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
   await expect(page.locator('#ft-narrow-mute-btn')).toBeVisible({
@@ -269,6 +271,20 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
   expect(before.enabled === false || before.enabled == null).toBeTruthy();
 
   await page.locator('#ft-narrow-mute-btn').click({ force: true });
+  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
+  await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(
+    0
+  );
+
+  // Prefer a track inside the panel — preference flips on (not mute-toggle)
+  await page
+    .locator('.ambient-soundscape__track')
+    .filter({ hasNotText: /Off|关闭|关/i })
+    .first()
+    .click();
   await expect
     .poll(async () => {
       return page.evaluate(() => {
@@ -282,21 +298,6 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
       });
     })
     .toBe(true);
-
-  await page.locator('#ft-narrow-mute-btn').click({ force: true });
-  await expect
-    .poll(async () => {
-      return page.evaluate(() => {
-        try {
-          return JSON.parse(
-            localStorage.getItem('focus-tiger.ambient-pref.v1') || '{}'
-          ).enabled;
-        } catch {
-          return null;
-        }
-      });
-    })
-    .toBe(false);
 });
 
 test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {

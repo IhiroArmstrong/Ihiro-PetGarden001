@@ -606,10 +606,16 @@ async function init() {
       onTrackChosen: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
+        narrowIdleShell.syncMuteVisual({
+          musicOn: ambientSoundscapeUI.wantsMusicOn()
+        });
       },
       onToggleMusic: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
+        narrowIdleShell.syncMuteVisual({
+          musicOn: ambientSoundscapeUI.wantsMusicOn()
+        });
       }
     }
   );
@@ -640,14 +646,11 @@ async function init() {
   });
 
   narrowIdleShell.setHandlers({
-    onMute: async () => {
-      await ambientSoundscapeUI.toggleMuteFromUi();
+    onSound: () => {
+      ambientSoundscapeUI.activateSoundFromNarrow();
       narrowIdleShell.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
-    },
-    onSound: () => {
-      ambientSoundscapeUI.activateSoundFromNarrow();
     },
     onCompanion: () => {
       companionModePicker.open();
@@ -1493,6 +1496,11 @@ async function init() {
   stateManager.onChange(() => {
     syncInAppReminderBanner();
   });
+
+  // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
+  // and the product shell can now be safely queried/clicked.
+  window.__FT_APP_READY__ = true;
+  window.dispatchEvent(new Event('ft:app-ready'));
 
   animate();
 }
