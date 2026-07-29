@@ -773,6 +773,19 @@ export class NarrowIdleShell {
         cursor: pointer;
         position: relative;
       }
+      .ft-narrow-action-bar__btn > .ft-secondary-menu-hint-dot {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        margin-top: 0;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
+        pointer-events: none;
+        animation: ft-secondary-menu-hint-pulse 1.6s ease-in-out infinite;
+      }
       .ft-narrow-action-bar__btn.is-music-off::after {
         content: '';
         position: absolute;

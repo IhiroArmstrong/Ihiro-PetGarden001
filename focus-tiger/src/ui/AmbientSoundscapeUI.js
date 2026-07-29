@@ -7,8 +7,10 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   AMBIENT_TRACK_OFF,
-  AMBIENT_TRACKS
+  AMBIENT_TRACKS,
+  resolveAmbientPanelSelectedTrackId
 } from '../audio/AmbientSoundscapeController.js';
+import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
@@ -60,6 +62,10 @@ export class AmbientSoundscapeUI {
     this.muteBtn = document.createElement('button');
     this.muteBtn.type = 'button';
     this.muteBtn.className = 'ambient-soundscape__mute';
+    this._muteIcon = document.createElement('span');
+    this._muteIcon.className = 'ambient-soundscape__mute-icon';
+    this._muteIcon.setAttribute('aria-hidden', 'true');
+    this.muteBtn.appendChild(this._muteIcon);
     this.muteBtn.addEventListener('click', () => {
       this._dismissNudge();
       this.openSoundPanelFromNote();
@@ -374,18 +380,13 @@ export class AmbientSoundscapeUI {
       }))
     ];
 
+    const selectedId = resolveAmbientPanelSelectedTrackId(this.controller);
     for (const opt of options) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ambient-soundscape__track';
       btn.setAttribute('role', 'radio');
-      const selected =
-        opt.id === AMBIENT_TRACK_OFF
-          ? !this.controller.wantsEnabled()
-          : this.controller.wantsEnabled() &&
-            (this.controller.getTrackId() === opt.id ||
-              (this.controller.getTrackId() === AMBIENT_TRACK_OFF &&
-                this.controller.getPreferredTrackId() === opt.id));
+      const selected = opt.id === selectedId;
       btn.setAttribute('aria-checked', selected ? 'true' : 'false');
       if (selected) btn.classList.add('is-selected');
       btn.textContent = t(opt.labelKey);
@@ -412,11 +413,26 @@ export class AmbientSoundscapeUI {
     this._refreshSoundFab();
   }
 
+  /**
+   * Mint pulse on the note (same host-dot pattern as ⋯ menu rows).
+   * Survives icon refresh — icon lives in `_muteIcon`, not muteBtn.innerHTML.
+   * @param {boolean} show
+   */
+  syncHintDot(show) {
+    syncSecondaryMenuHintDot(this.muteBtn, Boolean(show));
+  }
+
   _refreshMuteBtn() {
     const ctrl = this.controller;
     const audible = ctrl.isAudiblePlaying();
     const showSlash = audible || ctrl.wantsEnabled();
-    this.muteBtn.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
+    if (!this._muteIcon) {
+      this._muteIcon = document.createElement('span');
+      this._muteIcon.className = 'ambient-soundscape__mute-icon';
+      this._muteIcon.setAttribute('aria-hidden', 'true');
+      this.muteBtn.prepend(this._muteIcon);
+    }
+    this._muteIcon.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
     this.muteBtn.classList.toggle('is-muted', showSlash);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
@@ -483,6 +499,29 @@ export class AmbientSoundscapeUI {
         align-items: center;
         justify-content: center;
         transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+      }
+      .ambient-soundscape__mute-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+      }
+      /* Same mint as ⋯ / drawer rows — on-button, not viewport-edge floating badge */
+      .ambient-soundscape__mute > .ft-secondary-menu-hint-dot {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
+        pointer-events: none;
+        animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes ft-ambient-mute-hint-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(0.85); }
       }
       .ambient-soundscape__mute:hover {
         color: rgba(72, 54, 38, 0.92);

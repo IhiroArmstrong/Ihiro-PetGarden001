@@ -9,7 +9,8 @@ import {
   AMBIENT_TRACK_OFF,
   AMBIENT_PREF_STORAGE_KEY,
   DEFAULT_AMBIENT_TRACK_ID,
-  normalizeAmbientPref
+  normalizeAmbientPref,
+  resolveAmbientPanelSelectedTrackId
 } from './AmbientSoundscapeController.js';
 
 function createMockAudio() {
@@ -74,6 +75,36 @@ test('normalizeAmbientPref defaults to Mer-Ka-Ba track off (opt-in)', () => {
     enabled: true,
     trackId: AMBIENT_TRACK_SINGING_BOWL
   });
+});
+
+test('resolveAmbientPanelSelectedTrackId keeps preferred after mute', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  ctrl.mute();
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(
+    resolveAmbientPanelSelectedTrackId(ctrl),
+    AMBIENT_TRACK_SINGING_BOWL
+  );
+});
+
+test('setTrack(off) remembers Off as preferred (distinct from mute)', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  await ctrl.setTrack(AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.getPreferredTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(resolveAmbientPanelSelectedTrackId(ctrl), AMBIENT_TRACK_OFF);
 });
 
 test('played seconds accumulate only while audible and session active', async () => {

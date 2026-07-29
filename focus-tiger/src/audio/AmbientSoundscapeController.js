@@ -69,9 +69,25 @@ export function normalizeAmbientPref(raw) {
     if (typeof raw.enabled === 'boolean') enabled = raw.enabled;
     if (typeof raw.trackId === 'string' && trackIds.has(raw.trackId)) {
       trackId = raw.trackId;
+    } else if (raw.trackId === AMBIENT_TRACK_OFF) {
+      trackId = AMBIENT_TRACK_OFF;
     }
   }
   return { enabled, trackId };
+}
+
+/**
+ * Panel radio selection: keep the last chosen track highlighted after mute/pause.
+ * Off is selected only when the user explicitly chose Off (preferred === off).
+ *
+ * @param {{ getTrackId: () => string, getPreferredTrackId: () => string }} ctrl
+ * @returns {string}
+ */
+export function resolveAmbientPanelSelectedTrackId(ctrl) {
+  const playing = ctrl.getTrackId?.() || AMBIENT_TRACK_OFF;
+  if (playing !== AMBIENT_TRACK_OFF) return playing;
+  const preferred = ctrl.getPreferredTrackId?.();
+  return preferred || DEFAULT_AMBIENT_TRACK_ID;
 }
 
 function readAmbientPref(storage) {
@@ -201,6 +217,11 @@ export class AmbientSoundscapeController {
 
   /** 按偏好曲重新开播。 */
   async unmute() {
+    if (this._preferredTrackId === AMBIENT_TRACK_OFF) {
+      this._wantEnabled = false;
+      this._persistPref();
+      return;
+    }
     this._wantEnabled = true;
     this._persistPref();
     await this.setTrack(this._preferredTrackId, { persist: false });
@@ -278,6 +299,8 @@ export class AmbientSoundscapeController {
   async setTrack(trackId, { persist = true } = {}) {
     const id = trackId || AMBIENT_TRACK_OFF;
     if (id === AMBIENT_TRACK_OFF) {
+      // Explicit Off in the panel — remember Off (mute-via-note keeps preferred track).
+      this._preferredTrackId = AMBIENT_TRACK_OFF;
       this._wantEnabled = false;
       this._needsGestureUnlock = false;
       this._stopPlayback({ persist });

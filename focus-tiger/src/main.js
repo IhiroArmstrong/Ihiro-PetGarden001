@@ -600,7 +600,7 @@ async function init() {
     ambientSoundscape,
     {
       onPanelOpened: () => {
-        onboardingHints?.maybeShowAuto('ambient-soundscape');
+        onboardingHints?.revealClickHint('ambient-soundscape');
       },
       onTrackChosen: () => {
         onboardingHints?.markSeen('ambient-soundscape');
