@@ -6,6 +6,15 @@
 
 **权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。
 
+**人工验收唯一基线（2026-07-29 起 · 强制 · SSOT）**：关单级 / 可写入本表「用户反馈」或据以改状态的**人工验收**，**只认 `origin/develop` 当前 tip**。
+
+1. **必须**报出验收时的 **commit hash**（建议先 `git fetch origin develop`，再对照 `git rev-parse origin/develop`）。  
+2. 该 hash **必须等于**当时的 `origin/develop` tip。  
+3. **缺 hash、或 hash ≠ `origin/develop` tip**（含在 `feature/*` / `fix/*` / 过时 worktree / 未 fetch 的本地 develop 上测）→ 该次验收结论 **一律无效**，**必须**在同步到 tip 后 **重新验证**；禁止据此标「已通过」或关闭「有问题」。  
+4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。
+
+协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`。
+
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 演示会话时长默认 **`DEMO_SESSION_MINUTES = 1`**；可用 **`?sessionMinutes=5`** 拉长（场景 B Re-focus 真实切页须用）。  
 
@@ -14,6 +23,13 @@
 **375 故事矩阵（2026-07-25 起）**：凡改动 **Idle chrome / Arrival / Honesty / Hints**，步骤默认含 **`DEV_WORKFLOW_QUALITY.md` §8「375 故事最小集」**（非仅壳切换烟测）。外侧取消类须含「点 tip 只关 tip、不关面板」。关单：**禁止**仅凭「宽屏人工 OK」关闭 chrome 行，须注明「375 故事是否测过」。双壳不变量见 `SHARED_RESOURCES.md` §6。  
 
 **宽屏故事矩阵（2026-07-25 起）**：同上 chrome 类任务，步骤默认含 **`DEV_WORKFLOW_QUALITY.md` §9「宽屏故事最小集」**（≥480 / 建议 ≥900；目标壳 Sit+⚡+⋯ + Popover 代理；旧竖排 dock 见 §9.2）。关单：**禁止**仅凭「375 OK」或「⋯ 在」关闭；须注明「宽屏故事是否测过」（N24）。  
+
+**`position: fixed` 全屏/半屏容器 ↔ 既有浮层（2026-07-29 起）**：凡**新增**（或大幅改写）一个 `position: fixed` 的全屏 / 半屏壳（例：`NarrowIdleShell`、底部抽屉宿主、staged 全宽层），**禁止**只给新组件自己写 e2e。必须同时：
+
+1. **手工/DevTools 检查**是否遮挡或截断已有浮层类组件（Reminder 面板、应用内提醒横幅、onboarding tip、FocusHUD 悬停浮层等——凡挂在 `#ui-overlay` 或同层 fixed 的都算）。  
+2. **给每个受影响的既有组件补一条对应窄屏视口（默认 375×667）的 e2e**（断言在视口内 / 不被裁切 / 可点），不得只靠默认宽屏视口冒烟。
+
+**为什么**：Bug1/Bug2（Reminder 面板在 375 被新壳 staged 居中裁切、`left` 为负等）说明——旧 e2e 只在默认视口锁「面板存在」，**没有 375 覆盖**时，新 fixed 容器会悄悄改布局，宽屏仍绿、窄屏已坏。壳烟测 ≠ 浮层回归。  
 
 | 链接 | 用途 |
 |---|---|
