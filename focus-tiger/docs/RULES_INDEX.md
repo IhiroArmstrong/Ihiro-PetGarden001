@@ -97,7 +97,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
 | [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip |
-| [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、自动化后续顺序 |
+| [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、unit\*→smoke 分类（§7）、Honesty/i18n 发布口径 |
 | [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 |
 | [`SCENARIO_TESTS.md`](./SCENARIO_TESTS.md) | 场景剧本权威 |
 | `./scripts/git-sync-safe.sh`（仓库根） | 推送前体检脚本（非政策正文） |

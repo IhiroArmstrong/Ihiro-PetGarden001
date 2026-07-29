@@ -155,13 +155,14 @@
 
 #### C. 下一步自动化（未做 · 排扩 smoke）
 
-> **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、已拍板后续顺序）。本表 §C 只排期；改覆盖结论先改审计文档。
+> **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、**§7 unit\*→smoke 分类**、§8 Honesty v1 评估、§9 i18n、§10 发布影响）。本表 §C 只排期；改覆盖结论先改审计文档。
 
 | 优先级 | 内容 | 对应 bug/场景 |
 |---|---|---|
-| **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入） | 场景 D/N |
+| **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入）。**产品**：链路可用，**不**挡 v1（审计 §8） | 场景 D/N |
 | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E（Offline 舒展暂停 + 墙钟仍走 + 无 Re-focus）/ smoke F（AcrossTools 30min 一次 idle + 活动重置）；`MindfulReminderController.test` + `AcrossToolsIdleGuard.test` **并入** `test:smoke` | 场景 E/F |
-| **扩 smoke**（下一） | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约等；AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑；见审计 §4 |
+| **扩 smoke**（下一 · 分类已落） | ✅ **分类**见审计 **§7**（A/A′ 可原样并入；`test:regression` **空集**）。**尚未**改 `package.json`。AcrossTools 已入烟 | 防 PR 冒烟漏跑 |
+| **i18n v1** | 终端用户实质 **默认 EN 单语言**（无切语 UI）；切换自动化 **post-v1**；若声称双语 → 人工 `__i18n`（审计 §9） | 场景 G |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
 

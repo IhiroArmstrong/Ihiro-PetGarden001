@@ -7,7 +7,8 @@
 **用途**：审计「有没有完全没有自动化的功能模块」——不只是确认现有脚本能跑。  
 近几轮工作重点是 CI 基建与 flaky；**全绿 ≠ 产品功能都有对应测试**。
 
-**维护**：补上表内缺口（实现 Task 2/3 或扩 smoke）后，同回合更新本文件对应行；重大重排时同步 `TEST_TRACKER` §C。
+**维护**：补上表内缺口（实现 Task 2/3 或扩 smoke）后，同回合更新本文件对应行；重大重排时同步 `TEST_TRACKER` §C。  
+**扩 smoke 分类 / Honesty·i18n 发布口径**：§7–§10（2026-07-30；分类回合**不改** `package.json`）。
 
 ---
 
@@ -103,11 +104,11 @@
 |---|---|---|---|
 | **1** | **Task 3** | ✅ **已落地**（2026-07-30）：Playwright 真实 Honesty 补登 → 桥接 Yes → Arrival（`e2e/honesty-bridge-real-path.spec.js`；`?honestyBreathMs=`） | 场景 D/N |
 | **2** | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E/F + `MindfulReminderController` / `AcrossToolsIdleGuard` 并入 `test:smoke` | 场景 E/F |
-| **3** | **扩 smoke** | 把其余关键 `unit*` 提升进 `test:smoke`：Emotion 优先级、Ambient 停音契约（AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑 |
+| **3** | **扩 smoke** | **分类已落 §7**（A/A′ 可原样并入；B=`test:regression` 空集）。**改 `package.json` 待下一回合** | 防 PR 冒烟漏跑 |
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做** | — | 见下方「永不自动化 / 人工锁」 | — |
 
-**优先级理由（简）**：Task 3 补最大产品故事洞；Task 2 成本低且不依赖墙钟；扩 smoke 成本最低，但应在 Task 2/3 排期明确后做，避免只堆基建文件名、不补故事。
+**优先级理由（简 · 与发布复盘对齐）**：Task 2/3 已落地。余下最便宜且堵「假安全感」的是 **扩 smoke（§7）**；Honesty 产品可用性已确认（§8）；永不自动化见 §5。
 
 ---
 
@@ -140,3 +141,117 @@ npm run test:pr-smoke       # = smoke + e2e:smoke
 npm test                    # 全部 *.test.js（含 unit*）
 # 全量 e2e：CI 或 RUN_E2E_LOCAL=true（见 e2e-ci-guard）
 ```
+
+---
+
+## 7. 扩 smoke 分类（unit\* → 并入评估 · 2026-07-30）
+
+> **本回合只落分类，不改 `package.json`。** 实测：`npm test` 全量 **308** pass · **~345ms**；现行 `test:smoke` **121** pass · **~148ms**（另加 `docs:check`）。  
+> 结论：**不需要**新建 `test:regression` 中间层——没有「慢到拖垮 PR 冒烟」的 unit\*；并入成本 = 改脚本清单（零业务改动）。
+
+### 7.1 已在 `test:smoke`（勿重复）
+
+| 文件 | 备注 |
+|---|---|
+| `scenario-smoke` · `localStateKeys` · `SessionUiGate` · `sessionChromeSync` · `idleChromeOrchestration` · `IdleChromeFacade` | 门闩 / 壳 |
+| `focusHudHalo` · `focusHudLive` · `sharedSittingProgress` · `PracticeDaysStore` · `WeeklyPracticeHeatmap` | HUD / 热力图 |
+| `onboardingHintRegistry` · `OnboardingHintsStore` · `hintDiscoveryDots` · `outsideDismissGuard` | Hints |
+| `sessionUiGateContractRegistry` · `visibilityContractRegistry` | 文档契约 registry |
+| `MindfulReminderController` · `AcrossToolsIdleGuard` | Task 2 已入烟（含审计原先点名的 AcrossTools 阈值 mock） |
+
+### 7.2 A 类 · 可原样并入 `test:smoke`（纯配置 · 零改测）
+
+审计点名 + 同等「假安全感」业务契约。单测本身均亚秒；依赖 `three` 的经 `EmotionController` → `PoseManager` 链路在本机/`npm ci` 后可跑（勿在缺 `node_modules` 环境误判为测坏）。
+
+| 文件 | 为何优先 |
+|---|---|
+| `src/core/EmotionController.test.js` | 情绪优先级 / 交叉淡入契约 |
+| `src/character/IdleOrchestrator.test.js` | 呼吸×5→眨眼不闪契约 |
+| `src/audio/AmbientSoundscapeController.test.js` | 停音 / pref / 选曲契约（非听感） |
+| `src/effects/LightProgression.test.js` | 光影逻辑 |
+| `src/core/dormantIdle.test.js` | 冷启动 / DORMANT 链 |
+| `src/core/dormantTrigger.test.js` | 2h 阈值判定 |
+| `src/core/HonestyCheckInController.test.js` | 补登控制器（成功 toast 回调等） |
+| `src/core/HonestyBridgeCtaController.test.js` | 桥接 Yes/No |
+| `src/core/HonestyBridgeStore.test.js` | 桥接存储 |
+| `src/core/session-completion-feedback.test.js` | Celebrating 分流（逻辑；动画仍人工） |
+| `src/core/ArrivalPractice.test.js` | Arrival 状态机 |
+| `src/core/FocusSession.test.js` | 计时核心 |
+| `src/core/DailyCompletionStore.test.js` | 日完成戳 |
+| `src/core/MicroRitual.test.js` | 一分钟呼吸逻辑 |
+| `src/core/StateManager.test.js` | 状态机 |
+| `src/character/SpriteSequencePlayer.test.js` | cross-fade / freeze 契约 |
+
+### 7.3 A′ 类 · 亦可原样并入（次优先 · 仍纯配置）
+
+价值略低于主路径，但仍是「有测不进门禁」洞：
+
+| 文件 | 备注 |
+|---|---|
+| `src/core/SessionIntentionStore.test.js` | Choose 意图 |
+| `src/ui/TigerReflectionMoment.test.js` | Reflection 流 |
+| `src/core/reminderPreference.test.js` · `ReminderQuotaManager.test.js` · `InAppReminderBannerController.test.js` | 提醒（e2e 已有 DOM；单测补逻辑） |
+| `src/core/RetentionTelemetry.test.js` | 遥测占位 |
+| `src/core/MoodController.test.js` | Mood 桥 |
+| `src/character/CharacterConfig.test.js` · `companionGestureCatalog.test.js` · `spriteDisplayFit.test.js` | 角色配置 / 目录 |
+| `src/input/AttentionSignals.test.js` | Recover 信号 |
+| `src/input/PointerInteraction.test.js` | 摸头逻辑（产品壳无正式精灵；仍可锁检测） |
+
+### 7.4 B 类 · 因慢 / 重依赖而不进 smoke → 评估 `test:regression`
+
+**空集。** 无文件因时长或依赖重而需要第三层。若未来单测墙钟化或起真实浏览器，再单开中间层。
+
+### 7.5 建议落地方式（下一回合改代码时）
+
+1. 先把 **§7.2** 整批追加进 `package.json` → `test:smoke`（或改成 `node --test "src/**/*.test.js" && npm run docs:check`，等价「smoke = 全 unit + docs」）。  
+2. 本地确认 `npm run test:pr-smoke` 时长仍可接受（预期 unit 段仍 \<1s）。  
+3. **不要**为凑层数建空的 `test:regression`。
+
+---
+
+## 8. Honesty 真实链路 · v1 阻塞评估（2026-07-30）
+
+**问题**：补登→桥接→Yes→Arrival 是「功能坏了」还是「只缺 e2e」？
+
+| 证据 | 结论 |
+|---|---|
+| `TEST_TRACKER` Honesty Check-in / 桥接 CTA / 场景 checklist **L267** | 用户书面 **已通过**（主路径可用） |
+| `e2e/honesty-bridge-real-path.spec.js`（Task 3） | 真实入口→时长→呼吸→Yes→Arrival / No→Idle **已锁 DOM**（禁注入） |
+| smoke D + Honesty\* unit\* | 控制器层有覆盖；unit\* 尚未全部进 smoke（见 §7） |
+
+**产品结论**：**功能本身可用**（人工已验收 + 现有真实链 e2e）。  
+→ **不是** v1 release-blocker（无需为「会不会通」再挡发布）。  
+→ 剩余：扩 smoke 纳入 Honesty unit\*（门禁假安全感）；排版/睡姿观感仍人工（§5）。
+
+---
+
+## 9. i18n · v1 范围（2026-07-30）
+
+| 事实 | 来源 |
+|---|---|
+| 默认产品语言 = **英文**（面向海外） | `PRODUCT_POSITIONING` · `PROCESS` |
+| `en.json` / `zh.json` 均已填充；无应用内语言切换 UI | `TEST_TRACKER` i18n 行 · 场景 G |
+| 切换仅 DEV：`__i18n.setLocale('zh'\|'en')` | 同上 |
+
+**发布口径建议（待你确认是否对外声称「支持中文」）**：
+
+- **终端用户 v1.0**：实质 **单语言（默认 EN）**——用户不能在 UI 里切语言。  
+- **工程**：中英字典继续同步维护（硬编码禁令不变）。  
+- **自动化**：场景 G / i18n 切换 e2e → **post-v1**（不阻塞）。  
+- **若发版材料声称双语可用**：发布前须人工走一遍 `__i18n` 中文路径（零自动化重灾区）；**不**因此把「写 i18n e2e」升为 v1 阻塞。
+
+---
+
+## 10. 对发布计划的影响（与上列对齐）
+
+**阻塞 v1（测试面）**
+
+1. 按 §7 把 A（及可选 A′）unit\* **并入** `test:smoke`（分类已完成；**改脚本待下一回合**）  
+2. Honesty 真实链：**已确认可用**（§8）——人工已过 + Task 3 e2e；不挡发布  
+3. 「永不自动化」清单：**已写入 §5**——并入发布前人工 checklist  
+
+**不阻塞（post-v1）**
+
+- Ambient 实际播放 e2e、Celebrating 动画 e2e、i18n 切换自动化（§9）、场景 E/F 真实墙钟 DOM  
+
+**仍阻塞 v1（产品面 · 非本审计）**：桌面壳打包选型等——见 `PROCESS.md`，不在本文件扩写。
