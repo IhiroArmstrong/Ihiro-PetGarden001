@@ -1,7 +1,7 @@
 # Task Brief · 窄宽屏合并为响应式单代码线
 
 **日期**：2026-07-30  
-**状态**：**阶段 0 进行中**（分支 `feature/responsive-single-chrome-line` 已开；入口对照表已写入本 Brief 附录；**尚未改业务代码**）  
+**状态**：**阶段 1 进行中**（`idleChromeOrchestration` 已落地并接线；分支 `feature/responsive-single-chrome-line` / PR #31；**阶段 2 facade 未做**）  
 **角色**：UI Engineer（Gameplay / Emotion **不**为本 Task 主改方）  
 **权威**：`RESPONSIVE_LAYOUT.md`「工程债 · 窄宽屏单代码线」· 原则 A · `SHARED_RESOURCES.md` §6 · `DEV_WORKFLOW_QUALITY.md` §8 / §9 · `Z_INDEX.md`  
 **排期依据**：用户 2026-07-25 拍板「值得合并」+ 触发条件（wide-idle 合入 develop、⑦ 场景 O 收口）已满足；2026-07-30 用户确认「安排 = 先 Brief、再开 feature」并授权写本 Brief；同日授权阶段 0（切分支 + 对照表 + freshness）。
@@ -71,12 +71,12 @@
 
 ### 阶段 1 · 共享编排（优先，可先不换 DOM）
 
-1. 抽出**纯函数或小模块**承载双壳共用决策，例如（名称实现时定稿）：  
-   - 当前 chrome stage（idle / arrival / focusing / micro-ritual / honesty-busy / companion-staged …）  
-   - 各角色 must hidden/visible/disabled（与 `visibilityContractRegistry` 对齐，勿另起第三套真源）  
-   - 「次要入口」集合：进抽屉或进 ⋯ 的同一业务列表  
-2. 两壳改为**消费同一编排结果**再映射到各自 DOM；禁止在两文件各写一份互相漂移的 if 树。  
-3. 单测锁编排：给定 stage + viewport → 期望的角色可见性（契约级，非「调用了某方法」）。
+1. ~~抽出**纯函数或小模块**~~ → **`src/core/idleChromeOrchestration.js`（2026-07-30）**：  
+   - `resolveIdleChromeStage` / `resolveShellChromeProjection` / `resolveRoleVisibility`  
+   - `listSecondaryChromeEntries`（窄抽屉 vs 宽 ⋯；Honesty 仅宽）  
+   - `NARROW_STAGE_CLASS` / `WIDE_STAGE_CLASS`  
+2. ~~两壳改为**消费同一编排结果**~~ → Narrow `_refreshDrawerItems` / Wide `_refreshItems`；`sessionChromeSync` 投影走 `resolveShellChromeProjection`。  
+3. ~~单测锁编排~~ → `idleChromeOrchestration.test.js`（含 Arrival Sit 不得 visible 失败锁）；已入 `test:smoke`。
 
 ### 阶段 2 · 单控制器 + 呈现适配器
 
@@ -160,13 +160,13 @@
 
 ## 文档同步清单（本 Task 代码收尾时）
 
-- [x] 本 Brief（已写；阶段 0 对照表已附）  
-- [x] `TASKS.md` 响应式 Task 3 → 阶段 0 / feature 已开（本回合）  
-- [x] `RESPONSIVE_LAYOUT.md` 工程债节（阶段 0 状态）  
-- [ ] `SHARED_RESOURCES.md` §6 触发路径（若路径变）  
+- [x] 本 Brief（已写；阶段 0 对照表已附；阶段 1 勾选）  
+- [x] `TASKS.md` 响应式 Task 3 → 阶段 1 / feature + PR #31  
+- [x] `RESPONSIVE_LAYOUT.md` 工程债节（阶段 1）  
+- [x] `SHARED_RESOURCES.md` §6 触发路径（含 `idleChromeOrchestration` / `sessionChromeSync` / WideIdleMoreMenu）  
 - [ ] `Z_INDEX.md`（若层级变）  
-- [x] `PROCESS.md` 速览一行（阶段 0）  
-- [ ] `TEST_TRACKER.md` 分列验收行（含 §8+§9；**阶段 1+ 代码可见改动时再登记**）  
+- [x] `PROCESS.md` 速览一行（阶段 1）  
+- [x] `TEST_TRACKER.md` 阶段 1 登记为「仅单元测试覆盖」（facade / 可见改动后再加 §8+§9 人工行）  
 - [ ] 必要时 `DOC_CODE_CONTRACT.md` 高风险面一句
 
 ---

@@ -178,7 +178,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
 | **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
-| **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | `task-briefs/task-responsive-single-chrome-line.md` | **阶段 0 进行中**（2026-07-30）。分支 `feature/responsive-single-chrome-line`；freshness behind=0；入口对照表已写入 Brief 附录。**尚未改业务代码**。下一步阶段 1：抽共享入口编排。仍禁止与未验收的同文件 chrome 修叠同一批重构。勿与冒烟清单其它「Task 3」混淆。 |
+| **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | `task-briefs/task-responsive-single-chrome-line.md` | **阶段 1 进行中**（2026-07-30）。分支 `feature/responsive-single-chrome-line`（PR #31）；`idleChromeOrchestration` 已抽共享 stage/投影/次要入口；壳与 `sessionChromeSync` 已接线。**阶段 2（facade）未做**。仍禁止与未验收的同文件 chrome 修叠同一批重构。勿与冒烟清单其它「Task 3」混淆。 |
 
 **共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。Task 3 另须 §8 + §9 故事最小集（见 Brief）。
 

@@ -133,7 +133,8 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
-| **`sessionChromeSync`**（壳层投影） | `main.js` → `createSessionChromeSync`；`isHonestyPhaseBusy` / `isHonestyUiBusy` | Idle Honesty/微仪式入口显隐 + `resyncSessionChrome`（含窄宽壳 `setSuppressed`）；单测 `sessionChromeSync.test.js` |
+| **`sessionChromeSync`**（壳层投影） | `main.js` → `createSessionChromeSync`；投影标志经 `idleChromeOrchestration.resolveShellChromeProjection`；`isHonestyPhaseBusy` / `isHonestyUiBusy` | Idle Honesty/微仪式入口显隐 + `resyncSessionChrome`（含窄宽壳 `setSuppressed`）；单测 `sessionChromeSync.test.js` + `idleChromeOrchestration.test.js` |
+| **`idleChromeOrchestration`**（双壳共享编排） | `listSecondaryChromeEntries` / `resolveRoleVisibility` / stage class 常量 | 窄抽屉与宽 ⋯ **同一业务列表**；禁止两壳各写漂移 if 树（Task 3 阶段 1） |
 | `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（经 `syncArrivalGateReady`） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
 | `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
 | `postSessionOverlayActive` | **单一入口** `sessionChromeSync.resyncSessionChrome()`：`computePostSessionOverlayActive(sources)` → Gate + Companion + 窄宽壳 | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
@@ -195,11 +196,14 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 ### Suppress / hide 变更触发路径（CI）
 
 - `focus-tiger/src/ui/NarrowIdleShell.js`
+- `focus-tiger/src/ui/WideIdleMoreMenu.js`
 - `focus-tiger/src/ui/CompanionModePicker.js`
 - `focus-tiger/src/ui/HonestyCheckInUI.js`
 - `focus-tiger/src/ui/MicroRitualUI.js`
 - `focus-tiger/src/ui/OnboardingHintsUI.js`
 - `focus-tiger/src/main.js`
+- `focus-tiger/src/core/idleChromeOrchestration.js`
+- `focus-tiger/src/core/sessionChromeSync.js`
 - `focus-tiger/src/core/visibilityContractRegistry.js`
 - `focus-tiger/e2e/scenario-a.companion.spec.js`
 - `focus-tiger/e2e/weekly-practice-heatmap.spec.js`

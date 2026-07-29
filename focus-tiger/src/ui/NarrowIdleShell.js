@@ -1,5 +1,10 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
+import {
+  NARROW_STAGE_CLASS,
+  listSecondaryChromeEntries
+} from '../core/idleChromeOrchestration.js';
+
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v14';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
@@ -91,9 +96,9 @@ export class NarrowIdleShell {
    */
   clearStage() {
     document.body.classList.remove(
-      'ft-narrow-stage-companion',
-      'ft-narrow-stage-reminder',
-      'ft-narrow-stage-sound'
+      NARROW_STAGE_CLASS.companion,
+      NARROW_STAGE_CLASS.reminder,
+      NARROW_STAGE_CLASS.sound
     );
     this.handlers.onClearStage?.();
   }
@@ -153,8 +158,8 @@ export class NarrowIdleShell {
         null;
       if (companionExpanded) {
         document.body.classList.remove(
-          'ft-narrow-stage-reminder',
-          'ft-narrow-stage-sound'
+          NARROW_STAGE_CLASS.reminder,
+          NARROW_STAGE_CLASS.sound
         );
       } else {
         this.clearStage();
@@ -580,45 +585,24 @@ export class NarrowIdleShell {
   _refreshDrawerItems() {
     if (!this.listEl) return;
     // Sit / Quick Start / Honesty live on the home canvas — drawer is secondary only.
-    const items = [
-      {
-        proxy: 'breath',
-        label: () => t('micro_ritual.button'),
-        visible: () => {
-          const el = document.getElementById('micro-ritual-idle-entry');
-          return Boolean(el && !el.hidden);
-        }
-      },
-      {
-        proxy: 'companion',
-        label: () => t('COMPANION_MODE_HINT'),
-        visible: () => {
-          const el = document.querySelector('.session-start-dock__hint');
-          return Boolean(el && !el.hidden);
-        }
-      },
-      {
-        proxy: 'sound',
-        label: () => t('AMBIENT_FAB_LABEL'),
-        visible: () => true
-      },
-      {
-        proxy: 'reminder',
-        label: () => t('reminder.setting_title'),
-        visible: () =>
-          Boolean(document.getElementById('reminder-preference-toggle'))
-      }
-    ];
+    const microEl = document.getElementById('micro-ritual-idle-entry');
+    const companionEl = document.querySelector('.session-start-dock__hint');
+    const entries = listSecondaryChromeEntries('narrow-drawer', {
+      microRitualVisible: Boolean(microEl && !microEl.hidden),
+      companionVisible: Boolean(companionEl && !companionEl.hidden),
+      reminderAvailable: Boolean(
+        document.getElementById('reminder-preference-toggle')
+      )
+    });
 
     this.listEl.innerHTML = '';
-    for (const item of items) {
-      if (item.visible && !item.visible()) continue;
+    for (const item of entries) {
       const li = document.createElement('li');
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ft-narrow-sheet__item';
       btn.dataset.proxy = item.proxy;
-      btn.textContent = item.label();
+      btn.textContent = t(item.labelKey);
       li.appendChild(btn);
       this.listEl.appendChild(li);
     }
@@ -655,19 +639,19 @@ export class NarrowIdleShell {
   _proxy(key) {
     if (key === 'mute' || key === 'sound' || key === 'music') {
       this.clearStage();
-      document.body.classList.add('ft-narrow-stage-sound');
+      document.body.classList.add(NARROW_STAGE_CLASS.sound);
       this.handlers.onSound?.();
       return;
     }
     if (key === 'companion') {
       this.clearStage();
-      document.body.classList.add('ft-narrow-stage-companion');
+      document.body.classList.add(NARROW_STAGE_CLASS.companion);
       this.handlers.onCompanion?.();
       return;
     }
     if (key === 'reminder') {
       this.clearStage();
-      document.body.classList.add('ft-narrow-stage-reminder');
+      document.body.classList.add(NARROW_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
       return;
     }

@@ -186,6 +186,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
+| `idleChromeOrchestration` 窄宽共享编排（Task 3 阶段 1） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（含 `idleChromeOrchestration.test.js` + `sessionChromeSync.test.js`）：stage×viewport 角色可见性、壳投影（Arrival keepQuickStart / bridge 宽抑窄不抑）、次要入口列表（抽屉无 Honesty、⋯ 有 Honesty）。意图：**行为不变**的提取；观感仍靠既有 §8/§9 人工与 visibility e2e。阶段 2 facade 未做。 | — | `src/core/idleChromeOrchestration.js` · PR #31 | 2026-07-30 |
 | `sessionChromeSync` 从 main 等价抽离（Idle 入口 + 叠层投影） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（含 `sessionChromeSync.test.js`）：`isHonestyPhaseBusy` / Idle 入口显隐 / `resyncSessionChrome` 投影。无 UI 变化。 | — | — | 2026-07-28 |
 | Cloudflare Workers API 骨架（cloud/ stub） | 纯后端 | 待人工测试 | **主路径**：`cd focus-tiger/cloud && npm install && npm run dev` → `curl` 两个 POST（见 `cloud/README.md`）须返回固定 mock。**校验**：缺字段 → 400。**回流**：连续超限请求 → 429（阈值写死 60/min；内存限流）。**本步不测前端**（未接线）。请 review 暂定字段：`daily-message` 要 `locale`+`localDate`；`emotion-weight` 要 `emotionKey`+`sessionPhase`。 | — | `http://127.0.0.1:8787` · `cloud/README.md` | 2026-07-22 |
 | UI Kit 设计实验（tokens + Web Components） | UI可见 | 待人工测试 | **主路径（产品舞台 v6）**：`http://127.0.0.1:8765/ui-kit/demo.html?v=20260721f`。**产品壳 Sit/Sound**：`npm run dev` → `/` 或 `/?product=1`，Sit with Yin / Rise / Sound 应为**蒲团橙**（非朱红）；How shall we sit? 仍暖米金。**回流**：开计时变 Rise 再回 Sit，色仍为橙。 | 2026-07-21：…v6。**同日书面**：同意产品壳 Sit 也改蒲团橙 → 已改 `#btn-focus` + Sound 同系 + PRINCIPLES/DESIGN；请硬刷新看产品壳。 | `/` · `/?product=1` · demo `?v=20260721f` | 2026-07-21 |
