@@ -143,6 +143,8 @@ export class AmbientSoundscapeController {
     this._playbackEpoch = 0;
     /** 浏览器拦截自动播放后，等待用户在静音按钮上再试 */
     this._needsGestureUnlock = false;
+    /** After note-mute, next note-open resumes preferred (opt-in stays silent otherwise). */
+    this._resumePreferredOnOpen = false;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
@@ -206,22 +208,47 @@ export class AmbientSoundscapeController {
    */
   async startPreferredTrack() {
     this.mute();
+    // Boot mute is not a user pause — keep cold-open opt-in silent.
+    this._resumePreferredOnOpen = false;
   }
 
   /** 同步静音：无论 wantsEnabled / 实际是否在播，一律停掉。 */
   mute() {
+    // Note-mute pauses; next note-open may resume this preferred track (not panel Off).
+    const shouldResume =
+      this._preferredTrackId !== AMBIENT_TRACK_OFF &&
+      (this._wantEnabled || this._isAudiblePlaying());
+    this._resumePreferredOnOpen = shouldResume;
     this._wantEnabled = false;
     this._needsGestureUnlock = false;
     this._stopPlayback({ persist: true });
+  }
+
+  /**
+   * Whether the next Soundscape open (from the note) should resume preferred audio.
+   * Consumed once so a cold open without prior mute stays opt-in silent.
+   * @returns {boolean}
+   */
+  consumeResumePreferredOnOpen() {
+    const next = Boolean(this._resumePreferredOnOpen);
+    this._resumePreferredOnOpen = false;
+    return next;
+  }
+
+  /** @returns {boolean} */
+  willResumePreferredOnOpen() {
+    return Boolean(this._resumePreferredOnOpen);
   }
 
   /** 按偏好曲重新开播。 */
   async unmute() {
     if (this._preferredTrackId === AMBIENT_TRACK_OFF) {
       this._wantEnabled = false;
+      this._resumePreferredOnOpen = false;
       this._persistPref();
       return;
     }
+    this._resumePreferredOnOpen = false;
     this._wantEnabled = true;
     this._persistPref();
     await this.setTrack(this._preferredTrackId, { persist: false });
@@ -303,6 +330,7 @@ export class AmbientSoundscapeController {
       this._preferredTrackId = AMBIENT_TRACK_OFF;
       this._wantEnabled = false;
       this._needsGestureUnlock = false;
+      this._resumePreferredOnOpen = false;
       this._stopPlayback({ persist });
       return;
     }

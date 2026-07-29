@@ -243,6 +243,12 @@ export class AmbientSoundscapeUI {
     }
     this._stageSoundPanelHost();
     this.activateSoundFromNarrow();
+    // Same user gesture: after note-mute, reopen resumes the remembered track with sound.
+    if (ctrl.consumeResumePreferredOnOpen()) {
+      await ctrl.unmute();
+      this._renderPanel();
+      this.handlers.onToggleMusic?.();
+    }
   }
 
   /**
@@ -414,12 +420,13 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * Mint pulse on the note (same host-dot pattern as ⋯ menu rows).
-   * Survives icon refresh — icon lives in `_muteIcon`, not muteBtn.innerHTML.
+   * Mint pulse on the note (CSS ::after + span — survives icon refresh).
    * @param {boolean} show
    */
   syncHintDot(show) {
-    syncSecondaryMenuHintDot(this.muteBtn, Boolean(show));
+    const on = Boolean(show);
+    this.muteBtn.classList.toggle('has-hint-mint', on);
+    syncSecondaryMenuHintDot(this.muteBtn, on);
   }
 
   _refreshMuteBtn() {
@@ -441,6 +448,7 @@ export class AmbientSoundscapeUI {
       this.isPanelOpen() ? 'true' : 'false'
     );
     this.muteBtn.removeAttribute('aria-pressed');
+    this.handlers.onMuteChromePainted?.();
   }
 
   _refreshSoundFab() {
@@ -506,18 +514,41 @@ export class AmbientSoundscapeUI {
         justify-content: center;
         line-height: 0;
       }
-      /* Same mint as ⋯ / drawer rows — on-button, not viewport-edge floating badge */
-      .ambient-soundscape__mute > .ft-secondary-menu-hint-dot {
+      /* Same mint as ⋯ / drawer — larger + dual paint (class ::after + span) for Safari */
+      .ambient-soundscape__mute.has-hint-mint::after {
+        content: '';
         position: absolute;
-        top: 4px;
-        right: 4px;
-        width: 8px;
-        height: 8px;
+        top: 2px;
+        right: 2px;
+        width: 11px;
+        height: 11px;
         border-radius: 50%;
         background: #6db3a0;
-        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
+        box-shadow:
+          0 0 0 2px rgba(255, 252, 245, 0.98),
+          0 0 0 3px rgba(109, 179, 160, 0.35);
         pointer-events: none;
+        z-index: 2;
         animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
+      }
+      .ambient-soundscape__mute > .ft-secondary-menu-hint-dot {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow:
+          0 0 0 2px rgba(255, 252, 245, 0.98),
+          0 0 0 3px rgba(109, 179, 160, 0.35);
+        pointer-events: none;
+        z-index: 3;
+        animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
+      }
+      /* Prefer ::after; hide duplicate span when both present */
+      .ambient-soundscape__mute.has-hint-mint > .ft-secondary-menu-hint-dot {
+        opacity: 0;
       }
       @keyframes ft-ambient-mute-hint-pulse {
         0%, 100% { opacity: 1; transform: scale(1); }

@@ -494,10 +494,9 @@ export class OnboardingHintsUI {
   _syncHostMintDots() {
     const show =
       this._remedyIds.size === 0 && !this.store.isDone('ambient-soundscape');
-    syncSecondaryMenuHintDot(
-      document.querySelector('.ambient-soundscape__mute'),
-      show
-    );
+    const mute = document.querySelector('.ambient-soundscape__mute');
+    if (mute) mute.classList.toggle('has-hint-mint', show);
+    syncSecondaryMenuHintDot(mute, show);
     syncSecondaryMenuHintDot(
       document.getElementById('ft-narrow-mute-btn'),
       show

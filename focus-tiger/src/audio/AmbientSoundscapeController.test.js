@@ -107,6 +107,24 @@ test('setTrack(off) remembers Off as preferred (distinct from mute)', async () =
   assert.equal(resolveAmbientPanelSelectedTrackId(ctrl), AMBIENT_TRACK_OFF);
 });
 
+test('note-mute sets resume-on-open; boot mute does not', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  await ctrl.startPreferredTrack();
+  assert.equal(ctrl.willResumePreferredOnOpen(), false);
+
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.isAudiblePlaying(), true);
+  ctrl.mute();
+  assert.equal(ctrl.willResumePreferredOnOpen(), true);
+  assert.equal(ctrl.consumeResumePreferredOnOpen(), true);
+  assert.equal(ctrl.willResumePreferredOnOpen(), false);
+});
+
 test('played seconds accumulate only while audible and session active', async () => {
   let now = 1_000_000;
   const audio = createMockAudio();

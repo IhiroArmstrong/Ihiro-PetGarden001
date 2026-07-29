@@ -594,27 +594,32 @@ async function init() {
 
   const acrossToolsIdleGuard = new AcrossToolsIdleGuard();
   const ambientSoundscape = new AmbientSoundscapeController();
+  // Avoid TDZ: AmbientSoundscapeUI paints during construct, before `let onboardingHints`.
+  /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
+  const onboardingHintHost = { hints: null };
   // 挂 body：避免落在 pointer-events:none 的 ui-overlay 栈内，并压过调试栏
   const ambientSoundscapeUI = new AmbientSoundscapeUI(
     document.body,
     ambientSoundscape,
     {
       onPanelOpened: () => {
-        onboardingHints?.revealClickHint('ambient-soundscape');
+        onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
       },
       onTrackChosen: () => {
-        onboardingHints?.markSeen('ambient-soundscape');
-        onboardingHints?.hideBubble('ambient-soundscape');
+        onboardingHintHost.hints?.markSeen('ambient-soundscape');
+        onboardingHintHost.hints?.hideBubble('ambient-soundscape');
         idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
       },
       onToggleMusic: () => {
-        onboardingHints?.markSeen('ambient-soundscape');
-        onboardingHints?.hideBubble('ambient-soundscape');
+        // Mute/unmute alone does not clear the discovery mint — only choosing a track does.
         idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
+      },
+      onMuteChromePainted: () => {
+        onboardingHintHost.hints?.syncDiscoveryDots();
       }
     }
   );
@@ -726,6 +731,7 @@ async function init() {
     store: createHintsSeenStore(),
     getScene: getOnboardingScene
   });
+  onboardingHintHost.hints = onboardingHints;
   if (import.meta.env.DEV) {
     window.__onboardingHints = onboardingHints;
   }
