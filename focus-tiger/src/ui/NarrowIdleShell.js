@@ -41,6 +41,7 @@ export class NarrowIdleShell {
    *     onSound?: () => void,
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
+   *     onLanguage?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -673,6 +674,12 @@ export class NarrowIdleShell {
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
+      return;
+    }
+    if (key === 'language') {
+      this.clearStage();
+      document.body.classList.add(NARROW_STAGE_CLASS.language);
+      this.handlers.onLanguage?.();
       return;
     }
     if (key === 'quickstart') {

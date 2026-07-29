@@ -7,7 +7,8 @@
 **用途**：审计「有没有完全没有自动化的功能模块」——不只是确认现有脚本能跑。  
 近几轮工作重点是 CI 基建与 flaky；**全绿 ≠ 产品功能都有对应测试**。
 
-**维护**：补上表内缺口（实现 Task 2/3 或扩 smoke）后，同回合更新本文件对应行；重大重排时同步 `TEST_TRACKER` §C。
+**维护**：补上表内缺口（实现 Task 2/3 或扩 smoke）后，同回合更新本文件对应行；重大重排时同步 `TEST_TRACKER` §C。  
+**扩 smoke 分类 / Honesty·i18n 发布口径**：§7–§10（2026-07-30）。**扩 smoke 脚本已落地**：`test:smoke` = `src/**/*.test.js` + `docs:check`（A+A′；无 `test:regression`）。
 
 ---
 
@@ -60,7 +61,7 @@
 | **MilestoneGlow / IncenseComplete** | ❌ | ❌ | ❌ | — | **无自动化 / 业务未接线** | Glow 有问题行；Incense 已放弃接线 |
 | **舒展提醒 / Offline 暂停累计（场景 E）** | ✅ smoke E + MindfulReminder 入烟 | ❌ Offline 开表以外 | ❌ | Mindful\*（已入 smoke） | **逻辑已锁** | 真实离开墙钟仍人工 |
 | **Flow 30min across-tools toast（场景 F）** | ✅ smoke F + AcrossTools 入烟 | ❌ | ❌ | AcrossTools\*（已入 smoke） | **逻辑已锁** | toast DOM / 真实 30min 仍人工 |
-| **i18n 语言切换（场景 G）** | ❌ | ❌ | ❌ | — | **零自动化** | 只能人工 `__i18n` |
+| **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **v1.0 English only** | 架构保留；仅 en ready；Language 隐藏；zh draft |
 | **瞳孔跟随（场景 H）** | — | — | — | stub | **N/A 已废弃** | — |
 | **Grow / 纪念奖励 / 3D 柜** | — | — | — | — | **Backlog，未接线** | 不期望有测 |
 | **Cloudflare Workers stub** | ❌ | ❌ | ❌ | — | **零（前端未接线）** | curl 人工 / 独立包 |
@@ -87,7 +88,7 @@
 4. **Ambient 实际发声与 Rise 停音** — 几乎只有「开面板 / 无 autoplay」→ 可进 smoke 扩容（行为契约，非听感）
 5. **Idle / Choose / Rise 序列观感** — 刻意不进 e2e（见 §5）
 6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ ✅ Task 2（smoke E/F；真实 30min / 切页仍人工）
-7. **场景 G i18n** — 零（低 ROI；暂不排自动化）
+7. **场景 G i18n** — ✅ v1.0 English-only 对外；unit/e2e 锁不露 Language；后续语种审完再露
 8. **MilestoneGlow / Incense 业务接线** — 无或已放弃
 9. **Workers API** — 前端未接线，无测
 
@@ -103,11 +104,11 @@
 |---|---|---|---|
 | **1** | **Task 3** | ✅ **已落地**（2026-07-30）：Playwright 真实 Honesty 补登 → 桥接 Yes → Arrival（`e2e/honesty-bridge-real-path.spec.js`；`?honestyBreathMs=`） | 场景 D/N |
 | **2** | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E/F + `MindfulReminderController` / `AcrossToolsIdleGuard` 并入 `test:smoke` | 场景 E/F |
-| **3** | **扩 smoke** | 把其余关键 `unit*` 提升进 `test:smoke`：Emotion 优先级、Ambient 停音契约（AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑 |
+| **3** | **扩 smoke** | ✅ **已落地**（2026-07-30）：`test:smoke` = `run-src-unit-tests.js` + `docs:check`（A+A′；B 空集；CI Node 20 安全）。实测 **319** pass · **~343ms**（改前 132/~158ms） | 防 PR 冒烟漏跑 |
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做** | — | 见下方「永不自动化 / 人工锁」 | — |
 
-**优先级理由（简）**：Task 3 补最大产品故事洞；Task 2 成本低且不依赖墙钟；扩 smoke 成本最低，但应在 Task 2/3 排期明确后做，避免只堆基建文件名、不补故事。
+**优先级理由（简 · 与发布复盘对齐）**：Task 2/3 + **扩 smoke（§7）** 已落地；Honesty 产品可用性已确认（§8）；永不自动化见 §5；i18n 见 §9（v1.0 English only）。
 
 ---
 
@@ -140,3 +141,171 @@ npm run test:pr-smoke       # = smoke + e2e:smoke
 npm test                    # 全部 *.test.js（含 unit*）
 # 全量 e2e：CI 或 RUN_E2E_LOCAL=true（见 e2e-ci-guard）
 ```
+
+---
+
+## 7. 扩 smoke 分类（unit\* → 并入评估 · 2026-07-30）
+
+> **分类回合**只落清单、不改脚本。实测当时：`npm test` 全量 **308** pass · **~345ms**；当时 `test:smoke` **121** pass · **~148ms**。  
+> **落地（2026-07-30）**：`test:smoke` / `npm test` → `node scripts/run-src-unit-tests.js`（递归收集 `src/**/*.test.js` 再交给 `node --test`；**勿**用带引号的 glob——Node 20 CI 会当成字面路径失败）。确认：**319** pass · **~343ms**（改前本机 tip：**132** / **~158ms**）。**不建** `test:regression`。  
+> 结论：**不需要**新建 `test:regression` 中间层——没有「慢到拖垮 PR 冒烟」的 unit\*。
+
+### 7.1 已在 `test:smoke`（勿重复）
+
+| 文件 | 备注 |
+|---|---|
+| `scenario-smoke` · `localStateKeys` · `SessionUiGate` · `sessionChromeSync` · `idleChromeOrchestration` · `IdleChromeFacade` | 门闩 / 壳 |
+| `focusHudHalo` · `focusHudLive` · `sharedSittingProgress` · `PracticeDaysStore` · `WeeklyPracticeHeatmap` | HUD / 热力图 |
+| `onboardingHintRegistry` · `OnboardingHintsStore` · `hintDiscoveryDots` · `outsideDismissGuard` | Hints |
+| `sessionUiGateContractRegistry` · `visibilityContractRegistry` | 文档契约 registry |
+| `MindfulReminderController` · `AcrossToolsIdleGuard` | Task 2 已入烟（含审计原先点名的 AcrossTools 阈值 mock） |
+
+### 7.2 A 类 · 可原样并入 `test:smoke`（纯配置 · 零改测）
+
+审计点名 + 同等「假安全感」业务契约。单测本身均亚秒；依赖 `three` 的经 `EmotionController` → `PoseManager` 链路在本机/`npm ci` 后可跑（勿在缺 `node_modules` 环境误判为测坏）。
+
+| 文件 | 为何优先 |
+|---|---|
+| `src/core/EmotionController.test.js` | 情绪优先级 / 交叉淡入契约 |
+| `src/character/IdleOrchestrator.test.js` | 呼吸×5→眨眼不闪契约 |
+| `src/audio/AmbientSoundscapeController.test.js` | 停音 / pref / 选曲契约（非听感） |
+| `src/effects/LightProgression.test.js` | 光影逻辑 |
+| `src/core/dormantIdle.test.js` | 冷启动 / DORMANT 链 |
+| `src/core/dormantTrigger.test.js` | 2h 阈值判定 |
+| `src/core/HonestyCheckInController.test.js` | 补登控制器（成功 toast 回调等） |
+| `src/core/HonestyBridgeCtaController.test.js` | 桥接 Yes/No |
+| `src/core/HonestyBridgeStore.test.js` | 桥接存储 |
+| `src/core/session-completion-feedback.test.js` | Celebrating 分流（逻辑；动画仍人工） |
+| `src/core/ArrivalPractice.test.js` | Arrival 状态机 |
+| `src/core/FocusSession.test.js` | 计时核心 |
+| `src/core/DailyCompletionStore.test.js` | 日完成戳 |
+| `src/core/MicroRitual.test.js` | 一分钟呼吸逻辑 |
+| `src/core/StateManager.test.js` | 状态机 |
+| `src/character/SpriteSequencePlayer.test.js` | cross-fade / freeze 契约 |
+
+### 7.3 A′ 类 · 亦可原样并入（次优先 · 仍纯配置）
+
+价值略低于主路径，但仍是「有测不进门禁」洞：
+
+| 文件 | 备注 |
+|---|---|
+| `src/core/SessionIntentionStore.test.js` | Choose 意图 |
+| `src/ui/TigerReflectionMoment.test.js` | Reflection 流 |
+| `src/core/reminderPreference.test.js` · `ReminderQuotaManager.test.js` · `InAppReminderBannerController.test.js` | 提醒（e2e 已有 DOM；单测补逻辑） |
+| `src/core/RetentionTelemetry.test.js` | 遥测占位 |
+| `src/core/MoodController.test.js` | Mood 桥 |
+| `src/character/CharacterConfig.test.js` · `companionGestureCatalog.test.js` · `spriteDisplayFit.test.js` | 角色配置 / 目录 |
+| `src/input/AttentionSignals.test.js` | Recover 信号 |
+| `src/input/PointerInteraction.test.js` | 摸头逻辑（产品壳无正式精灵；仍可锁检测） |
+
+### 7.4 B 类 · 因慢 / 重依赖而不进 smoke → 评估 `test:regression`
+
+**空集。** 无文件因时长或依赖重而需要第三层。若未来单测墙钟化或起真实浏览器，再单开中间层。
+
+### 7.5 落地方式（已执行 · 2026-07-30）
+
+1. ✅ `package.json` → `test:smoke` = `node scripts/run-src-unit-tests.js && npm run docs:check`（显式列文件，兼容 Node 20 CI）。  
+2. ✅ 本地确认时长仍可接受（unit 段 ~343ms ≪ 拖慢门槛）。  
+3. ✅ **未**建空的 `test:regression`。
+
+---
+
+## 8. Honesty 真实链路 · v1 阻塞评估（2026-07-30）
+
+**问题**：补登→桥接→Yes→Arrival 是「功能坏了」还是「只缺 e2e」？
+
+| 证据 | 结论 |
+|---|---|
+| `TEST_TRACKER` Honesty Check-in / 桥接 CTA / 场景 checklist **L267** | 用户书面 **已通过**（主路径可用） |
+| `e2e/honesty-bridge-real-path.spec.js`（Task 3） | 真实入口→时长→呼吸→Yes→Arrival / No→Idle **已锁 DOM**（禁注入） |
+| smoke D + Honesty\* unit\* | 控制器层有覆盖；unit\* 尚未全部进 smoke（见 §7） |
+
+**产品结论**：**功能本身可用**（人工已验收 + 现有真实链 e2e）。  
+→ **不是** v1 release-blocker（无需为「会不会通」再挡发布）。  
+→ 剩余：Honesty unit\* **已随扩 smoke 进门禁**；排版/睡姿观感仍人工（§5）。
+
+---
+
+## 9. i18n · 多语言可行性 / 风险 / 覆盖补齐（2026-07-30 修订）
+
+> **设计意图**：产品**希望有多语言**（工程保留 N locale + 可点切语架构）。  
+> **2026-07-30 拍板（工程）**：可点切语 UI + 持久化 + A/B 自动化骨架；六语槽位；**审完再露**。  
+> **2026-07-30 拍板（发版对外 · 与分析师对齐）**：**v1.0.0 对外 = English only**，不声称支持中文/多语言；zh 人工验收**不**升为发布 checklist 必过项。  
+> **落地含义**：catalog 仅 `en` = `ready`；Language 菜单在 ready &lt; 2 时隐藏；`zh.json` 等仍进仓备后续 flip。
+
+### 9.1 现状（已有 vs 缺）
+
+| 层 | 状态 | 说明 |
+|---|---|---|
+| 字典 | ✅ en + staged zh | `en.json` / `zh.json` key 对齐；zh **draft**（不进选择器） |
+| 运行时 API | ✅ | `t` / `tPool` / `setLocale` / `getLocale` / `onLocaleChange` |
+| UI 订阅刷新 | ✅ 主面 | 主路径已 `onLocaleChange`（为后续切语保留） |
+| 默认语言 | ✅ | `en` |
+| **应用内切语 UI** | ✅ 架构在 · v1.0 隐藏 | `LanguagePreferenceUI` 保留；`shouldOfferLanguagePicker()` 在仅 en ready 时 **不露** Language 行 |
+| **locale 持久化** | ✅ | `focus-tiger.locale.v1`（仅 ready；现仅 en） |
+| **浏览器语言探测** | ❌ | 可选增强 |
+| **自动化** | ✅ | `i18n.test.js` ∈ smoke；`language-switch.spec.js` 锁「en-only 不露 Language」 |
+
+### 9.2 可行性（结论：高 · 工程）
+
+多语言**运行时切换**工程上已可行：字典/订阅/面板骨架齐全。v1.0.0 **产品面**只发 English；后续把某 locale 改 `ready` 即露出选择器（须同批更新对外声称与人工面）。
+
+### 9.3 任务拆分 · 难度 / 风险 / 是否挡 v1
+
+| 项 | 难度 | 风险 | 状态 / 建议 | 挡 v1？ |
+|---|---|---|---|---|
+| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js`（en-only ready + staged zh 奇偶） | — |
+| **B. e2e** | **低** | 低 | ✅ 锁 Language **不出现**（English-only ship） | — |
+| **C. 切语 UI** 架构 | **中** | 低 | ✅ 面板/壳接线保留；菜单门闩 `≥2 ready` | — |
+| **D. 冷启动** | **低** | 低 | ✅ 默认 en；draft 存储忽略 | — |
+| **E. 人工排版** | 人工 | 中 | **v1.0 不要求 zh 过发布 checklist**；某语 `ready` 并声称后才必测 | 仅声称后 |
+| **F. 扩语种** zh/es/ja/de/fr | 内容 | 高 | 槽位已在；**审完 + 决定声称** → `ready` | 仅声称后 |
+
+### 9.4 对「零覆盖」的正确姿态
+
+> 切语架构与自动化已落地；**对外 English only** ≠ 删掉工程能力。  
+> 下一语种上线 = catalog `ready` + 对外文案同步 + 人工 E +（恢复）切语 e2e 正向路径。
+
+### 9.5 产品拍板（已定）
+
+| 项 | 决定 |
+|---|---|
+| 工程入口 | **可点切语架构保留**（⋯ / 抽屉代理 + `LanguagePreferenceUI`） |
+| v1.0.0 对外 | **English only**；不声称中文/多语言 |
+| v1.0.0 选择器 | 仅 `en` ready；Language 行隐藏（`shouldOfferLanguagePicker`） |
+| 记忆 | 写 locale 偏好（ready only） |
+| 后续 5 语 | zh / es / ja / de / fr 槽位保留；审完再露 + 同批更新声称 |
+
+### 9.6 六语意向（en / zh / es / ja / de / fr）· 风险诚实结论
+
+| 面 | 说明 |
+|---|---|
+| **工程扩槽** | **低风险** — catalog 已含 6 id；draft 可挂字典 |
+| **v1.0.0 对外** | **English only**（分析师建议已采纳） |
+| **一次声称多语** | 仍偏高内容债 — 见旧稿；继续 **审完再露** |
+
+| 阶段 | 做什么 | 用户看见 |
+|---|---|---|
+| **v1.0.0** | 仅 `en` ready；Language 隐藏；zh 字典 staged | 英文体验；无切语入口 |
+| **后续** | 某语审完 → `ready`；Language 自动出现（≥2）；更新发版说明 | 可点切换 |
+| **对外声称** | 未 ready / 未决定声称 → **禁止**写「已支持」 | — |
+
+（「v1 必露 en+zh」旧拍板已被本条 **English-only 发版** 覆盖；工程开放性不变。）
+
+---
+
+## 10. 对发布计划的影响（与上列对齐）
+
+**阻塞 v1（测试 / i18n 面）**
+
+1. ✅ 按 §7 把 A+A′ unit\* **并入** `test:smoke`（`run-src-unit-tests.js`）  
+2. Honesty 真实链：**已确认可用**（§8）  
+3. 「永不自动化」清单：**§5**  
+4. **i18n**：v1.0.0 **English-only 对外**已定；自动化锁「不露多语入口」即可；**不**挡在 zh 人工验收  
+
+**不阻塞（post-v1.0 或并行内容轨）**
+
+- Ambient 播放 e2e、Celebrating 动画 e2e、场景 E/F 真实墙钟 DOM  
+- **zh/es/ja/de/fr 审校达 ready 并决定对外声称**  
+
+**仍阻塞 v1（产品面 · 非本审计）**：桌面壳打包选型等——见 `PROCESS.md`。

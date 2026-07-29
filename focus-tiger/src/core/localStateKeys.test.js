@@ -41,6 +41,7 @@ import {
   setReminderPreference,
   REMINDER_PREFERENCE_STORAGE_KEY
 } from './reminderPreference.js';
+import { LOCALE_PREFERENCE_STORAGE_KEY } from '../locales/localePreference.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import {
@@ -91,7 +92,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   REMINDER_PREFERENCE_STORAGE_KEY,
   HINTS_SEEN_STORAGE_KEY,
   AMBIENT_NUDGE_STORAGE_KEY,
-  AMBIENT_PREF_STORAGE_KEY
+  AMBIENT_PREF_STORAGE_KEY,
+  LOCALE_PREFERENCE_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

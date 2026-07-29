@@ -153,15 +153,16 @@
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
-#### C. 下一步自动化（未做 · 排扩 smoke）
+#### C. 下一步自动化（扩 smoke ✅ · 余下见审计）
 
-> **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、已拍板后续顺序）。本表 §C 只排期；改覆盖结论先改审计文档。
+> **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、**§7 unit\*→smoke 分类**、§8 Honesty v1 评估、§9 i18n、§10 发布影响）。本表 §C 只排期；改覆盖结论先改审计文档。
 
 | 优先级 | 内容 | 对应 bug/场景 |
 |---|---|---|
-| **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入） | 场景 D/N |
+| **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入）。**产品**：链路可用，**不**挡 v1（审计 §8） | 场景 D/N |
 | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E（Offline 舒展暂停 + 墙钟仍走 + 无 Re-focus）/ smoke F（AcrossTools 30min 一次 idle + 活动重置）；`MindfulReminderController.test` + `AcrossToolsIdleGuard.test` **并入** `test:smoke` | 场景 E/F |
-| **扩 smoke**（下一） | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约等；AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑；见审计 §4 |
+| **扩 smoke** | ✅ **已落地**（2026-07-30）：`test:smoke` = `run-src-unit-tests.js` + `docs:check`（A+A′；`test:regression` 空集）。**319** pass · ~343ms | 防 PR 冒烟漏跑 |
+| **i18n**（v1.0 English only · 架构保留） | ✅ **已落地**（2026-07-30）：仅 `en` ready；Language 隐藏；zh draft staged；unit+e2e 锁 | 场景 G |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
 
@@ -250,7 +251,7 @@
 | Sleeping / DORMANT 睡态循环 | UI可见 | 已通过 | **自动（live）**：距上次专注结束 ≥ `DORMANT_IDLE_HOURS`（默认 **2h**）且经回前台 / Rise 后 `syncDormantState` → `STATES.DORMANT`；披毯后睡姿为 **cloak-sleep 034→030 每帧两拍 pingpong** @ **2 fps**。**冷启动 `onAppReady` 不进睡**（即使戳已 ≥2h）。新用户无结束记录**不**触发。零完成 / 刷新开局仍为 Idle。**调试**：「睡着了」→ 同 pingpong 微动。**须分列验**：① 节奏约 2 fps、仍安宁；② 与披毯末帧同姿连贯；③ Honesty 倒放唤醒仍可从睡姿接上。 | **2026-07-22**：用户书面——模拟 3h 前进睡后 HUD Asleep + sleeping 侧卧，再 Honesty 唤醒，**测试 OK**。**2026-07-25**：用户书面——披毯过渡与后续睡姿**完全不连贯**（见 cloak-sleep 行）→ 已改同源末帧 pingpong；同日再书面——节奏太慢 → 已 **1→2 fps**；同日再书面——**节奏基本合适**。衔接/唤醒仍请确认。 **2026-07-25 晚用户书面**：2 fps 节奏 + 衔接 — **测试 OK**。 **2026-07-26**：开场即睡见专行列。 | `?product=1` · DEV 改 `focus-session-end` · `#emotion-debug-ui` | 2026-07-26 |
 | DORMANT 2h 滚动触发 + sleep→wake 串联 | UI可见 | 已通过 | **单元/控制器集成**：`dormantIdle` chain + smoke `D sleep→wake`（状态机 + `playEmotion` 调用序；**非**披毯/倒放观感 DOM）。**人工主路径**：改 `focus-session-end` → 刷新见披毯→sleeping → Honesty唤醒选时长 → 倒放睡醒 + 10s 呼吸 → 离 DORMANT / 桥接。 | **2026-07-22**：用户书面——Honesty唤醒(流程) → 选时长 → cloak-sleep 倒放 + 10s 呼吸 → 离睡着态，**测试 OK**。 | `npm run test:smoke` · 实验室 `#emotion-debug-ui` | 2026-07-22 |
 | AcrossToolsIdleGuard / Flow State 闲置 toast | UI可见 | 待人工测试 | Companion 选 Flow State → Sit → **30 分钟**无鼠标/键盘 → 一次 `ACROSS_TOOLS_IDLE` toast。仅切标签页不算 idle。 | — | 生产长等待 · DEV：`__acrossToolsIdleGuard` · **单元** `AcrossToolsIdleGuard.test.js`（阈值后触发一次；**非** 30min 真实墙钟 DOM） | 2026-07-18 |
-| i18n（默认 en / 可切 zh） | UI可见 | 待人工测试 | 默认英文。控制台 `__i18n.setLocale('zh')` → 按钮、HUD、Arrival、Honesty、Companion、Reflection、Ambient、toast 刷新为中文；再 `setLocale('en')` 切回。**无应用内语言切换 UI。** | — | DEV：`window.__i18n` · `src/locales/{en,zh}.json` | 2026-07-18 |
+| i18n（v1.0 English only · 架构可扩） | UI可见 | 待人工测试 | **发版对外**：English only，不声称中文。**主路径**：`?product=1` 默认英文；⋯ / 抽屉 **无** Language。**回流**：刷新仍英文。自动化：`test:smoke`（`i18n.test.js`）；`test:e2e:changed -- e2e/language-switch.spec.js`（锁不露）。zh 排版 **非** v1.0 发布 checklist。 | **2026-07-30**：采纳分析师 English only；工程保留六语槽 + 切语 UI。 | `?product=1` · `localeRegistry` · 审计 §9 | 2026-07-30 |
 | Emotion debug UI（右上角调试面板） | UI可见 | 待人工测试 | 逐个点一次性姿态：播完应**定格末帧**，不硬切默认闭目呼吸；点「坐禅闭眼」才回 idle 循环。循环态（睡着/微笑/光环）照常循环。面板底部**不应**再出现「动态效果层」（绕 Y 轴旋转 / 呼吸起伏 / 悬浮）三项勾选。 | 2026-07-19：勿刻板切回默认闭目→已改 `holdPose`，定格末帧仍待复测。同日：动态效果层须从 2D 删除→已移除；**用户确认测试通过**。 | `#emotion-debug-ui` | 2026-07-19 |
 | smiling / blink-smile（欢迎与调试） | UI可见 | 待人工测试 | Arrival Welcome 自动播；或调试「坐禅微笑」。pingpong。Celebrating 后持久 Smiling 基底**未接线**（回 Idle）。 | — | Arrival / 调试面板 | 2026-07-18 |
 | welcomeBack / wave-hello 挥手 | UI可见 | 待人工测试 | 调试面板播「挥手欢迎」→ 抬手 → 顶点摇摆 008–012 **播两遍** → 放手（共约 24 拍播放列表）；**无**最高点单帧 hold。**10 分钟自主挥手未接线。** | 2026-07-19：最高处完全重复那一帧须删；最高处左右摇摆须多重复一遍再放手。已改，请复测。 | `#emotion-debug-ui` · `playEmotion('welcomeBack')` | 2026-07-19 |

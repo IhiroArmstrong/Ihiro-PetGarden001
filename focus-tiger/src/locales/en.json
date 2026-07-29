@@ -169,5 +169,8 @@
   "HINT_FOCUS_HUD_PROGRESS": "Today's shared sitting — how long you've been here today.",
   "HINT_FOCUS_HUD_STREAK": "Recent days you practiced — one lit dot per day, not per session.",
   "HINT_LEARN_SPACE": "Learn about this space",
-  "HINT_LEARN_SPACE_ARIA": "Open a short introduction"
+  "HINT_LEARN_SPACE_ARIA": "Open a short introduction",
+  "LANGUAGE_MENU_LABEL": "Language",
+  "LANGUAGE_SETTING_TITLE": "Language",
+  "LANGUAGE_CLOSE": "Close"
 }

@@ -76,6 +76,7 @@ export class IdleChromeFacade {
       onSound: h.onSound,
       onCompanion: h.onCompanion,
       onReminder: h.onReminder,
+      onLanguage: h.onLanguage,
       onHonesty: h.onHonesty,
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
@@ -87,6 +88,7 @@ export class IdleChromeFacade {
       onCompanion: h.onCompanion,
       onClearCompanion: h.onClearCompanion,
       onReminder: h.onReminder,
+      onLanguage: h.onLanguage,
       onHonesty: h.onHonesty,
       onClearStage: h.onClearStage,
       onMenuChange: h.onMenuChange,
@@ -134,9 +136,11 @@ export class IdleChromeFacade {
       NARROW_STAGE_CLASS.companion,
       NARROW_STAGE_CLASS.reminder,
       NARROW_STAGE_CLASS.sound,
+      NARROW_STAGE_CLASS.language,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.sound
+      WIDE_STAGE_CLASS.sound,
+      WIDE_STAGE_CLASS.language
     );
   }
 

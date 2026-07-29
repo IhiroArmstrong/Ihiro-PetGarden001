@@ -55,7 +55,8 @@ import { DynamicMotion } from './effects/DynamicMotion.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { IdleOrchestrator } from './character/IdleOrchestrator.js';
-import { t, tPool, setLocale, getLocale, onLocaleChange } from './locales/i18n.js';
+import { t, tPool, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
+import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
@@ -149,6 +150,9 @@ function showDevLabToast(message, durationMs = 8000) {
 }
 
 async function init() {
+  // Locale before UI: restore ready preference (default en).
+  bootLocaleFromPreference();
+
   // i18n：静态 HTML 已是默认语言（en）；此处接管标题/遮罩并跟随语言切换刷新
   document.title = t('APP_TITLE');
   const loadingMask = document.getElementById('loading-mask');
@@ -285,6 +289,8 @@ async function init() {
   );
   /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday; cluster mount needs heatmap only). */
   let reminderPreferenceUI = null;
+  /** @type {LanguagePreferenceUI | null} */
+  let languagePreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -336,11 +342,20 @@ async function init() {
       },
       onClose: () => {
         document.body.classList.remove('ft-narrow-stage-reminder');
+        document.body.classList.remove('ft-wide-stage-reminder');
       },
       hasCompletedToday: () => dailyCompletionStore.hasCompletedToday(),
       now: reminderNow
     }
   );
+  languagePreferenceUI = new LanguagePreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-narrow-stage-language');
+      document.body.classList.remove('ft-wide-stage-language');
+    }
+  });
+  // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
+  window.__languagePreference = languagePreferenceUI;
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const honestyBridgeStore = new HonestyBridgeStore();
@@ -647,6 +662,9 @@ async function init() {
     onReminder: () => {
       reminderPreferenceUI.openPanel();
     },
+    onLanguage: () => {
+      languagePreferenceUI.openPanel();
+    },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });
     },
@@ -666,6 +684,7 @@ async function init() {
     onClearStage: () => {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
+      languagePreferenceUI.closePanel();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },

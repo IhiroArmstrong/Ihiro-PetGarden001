@@ -64,9 +64,14 @@
 
 **近期落地（待人工测试）**：
 
-- **自动化缺口 · Task 2 已落地（2026-07-30）**：smoke E/F + MindfulReminder / AcrossTools 并入 `test:smoke`。下一：**扩 smoke**（Emotion / Ambient 停音等 unit\*）。见 `COVERAGE_GAP_AUDIT.md`。
-- **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。下一：**Task 2**（E/F 单测进 smoke）→ 扩 smoke。见 `COVERAGE_GAP_AUDIT.md`。
-- **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`（模块矩阵 + 永不自动化清单）；后续顺序已拍板 **Task 3（真实 Honesty 链）→ Task 2（E/F 单测进 smoke）→ 扩 smoke 纳入 unit\***。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。无运行时改动。
+- **i18n v1.0.0 English only（2026-07-30）**：对外不声称中文/多语言；工程保留可点切语 + 六语槽；仅 `en` ready，Language 菜单隐藏；zh 字典 staged。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
+- **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 English only。见审计 §9。
+- **i18n「审完再露」拍板（2026-07-30）**：未 `ready` **不进**选择器、不发版声称；拒机翻先上。
+- **扩 smoke 已落地（2026-07-30）**：`test:smoke` = `run-src-unit-tests.js` + `docs:check`（A+A′；**319** pass · ~343ms；不建 `test:regression`；Node 20 CI 不用带引号 glob）。见 `COVERAGE_GAP_AUDIT.md` §7。
+- **扩 smoke 分类 + Honesty 发布口径（2026-07-30）**：审计 §7–§8——unit\* 均可原样并入 smoke；Honesty 真实链**可用、不挡 v1**。见 `COVERAGE_GAP_AUDIT.md`。
+- **自动化缺口 · Task 2 已落地（2026-07-30）**：smoke E/F + MindfulReminder / AcrossTools 并入 `test:smoke`。
+- **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
+- **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`；Task 3→2 + 扩 smoke **已落地**。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。
 - **语义化版本与稳定发布点拍板（2026-07-30）**：SemVer；首稳 **`v1.0.0`**；稳定版 = `main` 上 **annotated tag**，开发阶段**不**切 `release/*`（除非未来并行维护多条已发布大版本）。SSOT：`WORKFLOW.md`「语义化版本与稳定发布点」；`RULES_INDEX` → `git-semver-release`。无运行时改动，无 TEST_TRACKER 行。
 - **v1.0 纯本地 / v1.1 云端 + 打包选型时机（2026-07-30 拍板）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；**v1.1** 跟进云端算法；代码保留云端可扩展性（`cloud/` 骨架保留、前端暂不接线）。打包选型（Electron / Tauri / PWA）仍为 **v1 阻塞**，但**开会时机已定**：v1.0.0 功能冻结前约 1 周、或你说「准备打 v1.0 / 要桌面包」时立刻开；不挡当前 UI 主线、不拖到 tag 后才选。见开放决策 / Backlog；`MVP_PRODUCT_DEFINITION` / `ARCHITECTURE` / `cloud/README` 已同步。无运行时改动。
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
@@ -163,7 +168,7 @@
 - `PRINCIPLES.md` 已新增「路径必须使用英文 ASCII」硬性规则：未来新增文件/目录统一采用小写 `kebab-case`，用户素材与压缩包须先按语义重命名再入库；always-applied 项目规则已同步。现存路径审计未发现中文、空格、括号或省略号，但严格 kebab-case 审计发现 281 个历史遗留路径，暂仅记录、不在本 Task 重命名
 - 产品定位文档 `PRODUCT_POSITIONING.md` 已纳入项目：确立正念伙伴（非传统电子宠物）、regular practice at your own pace、宁静型游戏化、三级完成反馈与只增不减的共同经历/纪念奖励；产品语义层级高于 `DESIGN.md`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
-- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充完整；产品默认语言已改为英文（面向海外市场），中文作为可切换语言保留
+- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充；**v1.0.0 对外 English only**（仅 en ready；切语 UI 架构保留，后续语种审完再露）
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`；Agent `stop` 的 macOS 系统通知钩子已于 **2026-07-21 关闭**（脚本仍保留于 `.cursor/hooks/remind-git-sync.sh`，hooks.json 的 `stop` 为空；**不**自动 push）
 - `wave-hello` 挥手序列已替换为新服装正式版（19 帧，`frame_001.png` ～ `frame_019.png`）；旧深红袈裟 14 帧素材已下线移除；`SpriteSequencePlayer` 对接与 `playEmotion('welcomeBack')` 接线保持不变（分层路径规范见 `ARCHITECTURE.md`）
@@ -248,7 +253,7 @@
 
 **下一步计划**：
 
-- **自动化缺口补齐（2026-07-30 · Task 3+2 已落地）**：下一 **扩 smoke**（Emotion / Ambient 停音等 unit\*）；永不自动化清单见 `COVERAGE_GAP_AUDIT.md` §5。排期细节 `TEST_TRACKER` §C。
+- **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
 - **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。「高于 CI 细节」= 与 CI 工程 Backlog **争排期时先开本决策**（非等 CI 做完）。见 Backlog「本地桌面 APP 打包选型」。
 - **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列推进——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论**（实现可后置）。
