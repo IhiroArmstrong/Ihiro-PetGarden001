@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **扩 smoke 分类 + Honesty/i18n 发布口径（2026-07-30）**：审计 §7–§10——unit\* 均可原样并入 smoke（全量 ~345ms；**不建** `test:regression`）；Honesty 真实链**可用、不挡 v1**；i18n 终端用户实质默认 EN 单语言、切换自动化 post-v1。**本回合不改** `package.json`。见 `COVERAGE_GAP_AUDIT.md`。
+- **i18n 多语言口径修订（2026-07-30）**：设计意图=要多语言；**零覆盖应补 A（unit）+B（e2e）**，不默认推 post-v1。切语 UI（C）是否进 v1待拍板。见 `COVERAGE_GAP_AUDIT.md` §9。
+- **扩 smoke 分类 + Honesty/i18n 发布口径（2026-07-30）**：审计 §7–§10——unit\* 均可原样并入 smoke（全量 ~345ms；**不建** `test:regression`）；Honesty 真实链**可用、不挡 v1**。§9 已按「多语言意图」修订。**本回合不改** `package.json`。见 `COVERAGE_GAP_AUDIT.md`。
 - **自动化缺口 · Task 2 已落地（2026-07-30）**：smoke E/F + MindfulReminder / AcrossTools 并入 `test:smoke`。下一：按 §7 **改脚本**扩 smoke。见 `COVERAGE_GAP_AUDIT.md`。
 - **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
 - **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`（模块矩阵 + 永不自动化清单）；Task 3→2 已落地；扩 smoke **分类已落、改脚本待办**。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。

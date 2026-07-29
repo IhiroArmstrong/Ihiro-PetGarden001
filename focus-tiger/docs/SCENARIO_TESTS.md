@@ -190,7 +190,11 @@
 
 ## 场景 G：语言切换
 
-1. **无应用内语言设置 UI**。在 DEV 控制台：`__i18n.setLocale('zh')`，再 `setLocale('en')`。
+> **设计意图**：多语言（en 默认 / zh 可切）。见 `COVERAGE_GAP_AUDIT.md` §9。  
+> **自动化（应补，非 post-v1 默认）**：unit 奇偶+`setLocale`；e2e 经 `__i18n`（或将来切语 UI）断言关键文案。  
+> **仍须人工**：375 中文是否裁切、观感排版。
+
+1. **当前无应用内语言设置 UI**。在 DEV 控制台：`__i18n.setLocale('zh')`，再 `setLocale('en')`。（若已做切语入口，改走 UI，仍测同文案面。）
 2. 重走 Arrival + Reflection（及 Honesty 桥接文案若出现），确认欢迎 / Notice / Choose / 回显 / 三问 / 桥接无英文残留、无 `{intention}` 未替换。
 3. 切回英文再确认。
 
