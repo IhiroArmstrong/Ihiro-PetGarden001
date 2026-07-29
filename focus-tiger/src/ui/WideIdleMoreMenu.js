@@ -107,6 +107,20 @@ export class WideIdleMoreMenu {
   }
 
   /**
+   * Leave wide viewport: close ⋯ + drop stage classes without onClearStage
+   * (facade breakpoint cleanup — must not hide Companion on resize).
+   * @returns {void}
+   */
+  releaseInactivePresentation() {
+    this.closeMenu();
+    document.body.classList.remove(
+      WIDE_STAGE_CLASS.sound,
+      WIDE_STAGE_CLASS.companion,
+      WIDE_STAGE_CLASS.reminder
+    );
+  }
+
+  /**
    * Dismiss staged secondary panels (Soundscape / companion / reminder).
    * @returns {void}
    */

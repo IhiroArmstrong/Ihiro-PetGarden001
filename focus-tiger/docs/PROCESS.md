@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **响应式 Task 3 阶段 1（2026-07-30）**：PR #31；`idleChromeOrchestration` 抽共享 stage / 壳投影 / 次要入口列表；`sessionChromeSync` + Narrow/Wide 壳接线。行为意图不变。阶段 2 facade 未做。
+- **响应式 Task 3 阶段 2（2026-07-30）**：`IdleChromeFacade` / `createIdleChromeFacade`；handlers 一次注册；断点释放 inactive 壳 stage class（不触发 onClearStage）。分支 `feature/responsive-idle-chrome-facade`。阶段 0/1 已合 #31/#32。
+- **响应式 Task 3 阶段 1（2026-07-30）**：PR #32 已合；`idleChromeOrchestration` 抽共享 stage / 壳投影 / 次要入口列表。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。

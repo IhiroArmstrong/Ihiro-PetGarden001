@@ -1,7 +1,7 @@
 # Task Brief · 窄宽屏合并为响应式单代码线
 
 **日期**：2026-07-30  
-**状态**：**阶段 1 进行中**（`idleChromeOrchestration` 已落地并接线；分支 `feature/responsive-single-chrome-line` / PR #31；**阶段 2 facade 未做**）  
+**状态**：**阶段 2 进行中**（`IdleChromeFacade`；分支 `feature/responsive-idle-chrome-facade`；阶段 0/1 已合 #31/#32）  
 **角色**：UI Engineer（Gameplay / Emotion **不**为本 Task 主改方）  
 **权威**：`RESPONSIVE_LAYOUT.md`「工程债 · 窄宽屏单代码线」· 原则 A · `SHARED_RESOURCES.md` §6 · `DEV_WORKFLOW_QUALITY.md` §8 / §9 · `Z_INDEX.md`  
 **排期依据**：用户 2026-07-25 拍板「值得合并」+ 触发条件（wide-idle 合入 develop、⑦ 场景 O 收口）已满足；2026-07-30 用户确认「安排 = 先 Brief、再开 feature」并授权写本 Brief；同日授权阶段 0（切分支 + 对照表 + freshness）。
@@ -80,14 +80,14 @@
 
 ### 阶段 2 · 单控制器 + 呈现适配器
 
-1. `main.js` 收敛为**一个** Idle chrome 协调入口（或明确 facade），内部按 `matchMedia('(max-width: 479px)')` 启用窄/宽**呈现**：  
-   - 窄适配器：现有抽屉 / ActionBar / 三球（可保留文件名作适配器）  
-   - 宽适配器：现有 Sit+⚡+⋯  
-2. **允许**暂留两个呈现文件；**禁止**两套独立的业务 suppress / 代理语义。  
-3. 断点切换（拖宽/DevTools）：须 teardown/activate 干净，无双壳同时抢点、无残留 park class。  
-4. 代理点击：Sound / Reminder / Honesty / How / Help / mute 等**一条实现路径**，适配器只负责「点谁」。
+1. ~~`main.js` 收敛为**一个** Idle chrome 协调入口~~ → **`createIdleChromeFacade` + `IdleChromeFacade`（2026-07-30）**  
+   - 窄适配器：`NarrowIdleShell`  
+   - 宽适配器：`WideIdleMoreMenu`  
+2. ~~handlers 一次注册~~ → `idleChrome.setHandlers` 扇出；Sound/Honesty/How/Reminder/Quick Start 共用。  
+3. ~~断点切换 teardown~~ → `releaseInactivePresentation`（关抽屉/⋯ + 清 stage class，**不**调 `onClearStage`，避免 resize 误关 Companion）。  
+4. `sessionChromeSync` 优先 `idleChrome.applyShellProjection`。
 
-### 阶段 3 · 文档与验收锚
+### 阶段 3 · 文档与验收锚 / 删残留重复
 
 1. 更新 `RESPONSIVE_LAYOUT.md` 工程债节：标「实现中 / 已落地」与新模块路径。  
 2. `SHARED_RESOURCES.md` §6：触发路径表改指向新模块（若文件合并/重命名）；机器块仍以 registry 为准，跑 `visibility:doc-sync`。  
