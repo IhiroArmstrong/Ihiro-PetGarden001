@@ -88,7 +88,7 @@
 4. **Ambient 实际发声与 Rise 停音** — 几乎只有「开面板 / 无 autoplay」→ 可进 smoke 扩容（行为契约，非听感）
 5. **Idle / Choose / Rise 序列观感** — 刻意不进 e2e（见 §5）
 6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ ✅ Task 2（smoke E/F；真实 30min / 切页仍人工）
-7. **场景 G i18n** — 零（低 ROI；暂不排自动化）
+7. **场景 G i18n** — ✅ 可点切语 + unit/e2e（仅 ready：en/zh）；排版仍人工
 8. **MilestoneGlow / Incense 业务接线** — 无或已放弃
 9. **Workers API** — 前端未接线，无测
 
