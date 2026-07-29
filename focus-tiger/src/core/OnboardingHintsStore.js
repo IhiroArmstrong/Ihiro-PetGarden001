@@ -151,6 +151,36 @@ export function appendFocusHudHintIds(ids) {
 }
 
 /**
+ * 宽屏 Idle 收入 ⋯ 的 tip（菜单关闭时不得多条 tip 全 remap 到 ⋯）。
+ */
+export const WIDE_MORE_PARKED_HINT_IDS = Object.freeze([
+  'how-shall-we-sit',
+  'micro-ritual',
+  'in-app-reminder',
+  'honesty-optional',
+  'ambient-gated'
+]);
+
+/** @param {string} id */
+export function isWideMoreParkedHintId(id) {
+  return WIDE_MORE_PARKED_HINT_IDS.includes(id);
+}
+
+/**
+ * @param {string[]} ids
+ * @param {object} scene
+ * @returns {string[]}
+ */
+export function filterHintsForWideMore(ids, scene = {}) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const menuOpen = scene.wideMoreOpen || scene.wideMenuOpen;
+  if (!scene.wideParkSecondary || menuOpen) return [...ids];
+  return ids.filter(
+    (id) => !isWideMoreParkedHintId(id) && id !== 'wide-more-menu'
+  );
+}
+
+/**
  * 窄屏 Idle 抽屉内才有准锚的 tip（抽屉关闭时不得指主球 / grabber 乱指）。
  * @see ONBOARDING_HINTS.md
  */
@@ -263,8 +293,21 @@ export function resolveRemedyCatalogHintIds(scene = {}) {
     );
     return peek.length > 0 ? ['narrow-drawer-menu'] : [];
   }
+  const wideMenuOpen = scene.wideMoreOpen || scene.wideMenuOpen;
+  if (scene.wideParkSecondary && !wideMenuOpen) {
+    const peek = resolveRemedyHintIds({
+      ...scene,
+      wideParkSecondary: false
+    }).filter((id) => id !== primary && id !== 'wide-more-menu');
+    const parkedPeek = peek.filter((id) => isWideMoreParkedHintId(id));
+    if (parkedPeek.length > 0) {
+      const rest = peek.filter((id) => !isWideMoreParkedHintId(id));
+      return ['wide-more-menu', ...rest];
+    }
+  }
   return resolveRemedyHintIds(scene).filter(
-    (id) => id !== primary && id !== 'narrow-drawer-menu'
+    (id) =>
+      id !== primary && id !== 'narrow-drawer-menu' && id !== 'wide-more-menu'
   );
 }
 
@@ -364,12 +407,15 @@ export function resolveAutoHintIds(scene = {}) {
   } else if (scene.isDormant) {
     ids = ['dormant-open'];
     appendIdleChromeHintIds(ids, scene);
+    appendFocusHudHintIds(ids);
   } else if (scene.hasEverCompletedSession) {
     ids = ['idle-after-session'];
     appendIdleChromeHintIds(ids, scene);
+    appendFocusHudHintIds(ids);
   } else {
     ids = ['sit-button', 'how-shall-we-sit'];
     appendIdleChromeHintIds(ids, scene);
+    appendFocusHudHintIds(ids);
   }
 
   const skipHelpAffordance =
@@ -381,7 +427,7 @@ export function resolveAutoHintIds(scene = {}) {
   if (!skipHelpAffordance && !ids.includes('help-affordance')) {
     ids.push('help-affordance');
   }
-  return filterHintsForNarrowDrawer(ids, scene);
+  return filterHintsForWideMore(filterHintsForNarrowDrawer(ids, scene), scene);
 }
 
 /**

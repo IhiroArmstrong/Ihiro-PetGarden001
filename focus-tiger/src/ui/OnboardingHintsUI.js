@@ -31,6 +31,7 @@ import {
   resolvePurposeCardAwayFromTips,
   syncAllDiscoveryDots
 } from './hintDiscoveryDots.js';
+import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -44,18 +45,43 @@ const WIDE_PARKED_ANCHOR_RE =
 
 /** Narrow Idle parks legacy chrome off-canvas — remap to ActionBar / grabber. */
 const NARROW_PARKED_ANCHOR_RE =
-  /btn-focus|session-start-dock|arrival-practice|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape__fab|ambient-soundscape__focus-chrome|ambient-soundscape__nudge|reminder-preference|quick-start|focus-hud|onboarding-hint-help/;
+  /btn-focus|session-start-dock|arrival-practice|weekly-practice|micro-ritual|honesty-idle|ambient-soundscape__mute|ambient-soundscape__fab|ambient-soundscape__focus-chrome|ambient-soundscape__nudge|reminder-preference|quick-start|focus-hud|onboarding-hint-help/;
+
+/** Click hints that paint mint on a host control (⋯ rows / note) — no floating badge. */
+const HOST_MINT_HINT_IDS = new Set(['ambient-soundscape']);
 
 function resolveAnchorEl(selectorList) {
   const widePark = document.body.classList.contains('ft-wide-park-secondary');
+  const wideMenuOpen = document.body.classList.contains('ft-wide-more-open');
   const narrowPark = document.body.classList.contains('ft-narrow-park');
+  const narrowDrawerOpen = Boolean(
+    document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
+  );
   for (const sel of String(selectorList)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)) {
-    if (widePark && WIDE_PARKED_ANCHOR_RE.test(sel)) {
+    if (widePark && wideMenuOpen) {
+      const proxy = wideMenuProxyForSelector(sel);
+      if (proxy) {
+        const el = document.querySelector(
+          `#ft-wide-more-menu [data-proxy="${proxy}"]`
+        );
+        if (el && el.getClientRects().length > 0) return el;
+      }
+    }
+    if (widePark && !wideMenuOpen && WIDE_PARKED_ANCHOR_RE.test(sel)) {
       const more = document.getElementById('ft-wide-more-btn');
       if (more && !more.hidden && more.getClientRects().length > 0) return more;
+    }
+    if (narrowPark && narrowDrawerOpen) {
+      const proxy = narrowDrawerProxyForSelector(sel);
+      if (proxy) {
+        const el = document.querySelector(
+          `#ft-narrow-options-drawer [data-proxy="${proxy}"]`
+        );
+        if (el && el.getClientRects().length > 0) return el;
+      }
     }
     if (narrowPark && NARROW_PARKED_ANCHOR_RE.test(sel)) {
       const remapped = remapNarrowParkedSelector(sel);
@@ -73,7 +99,6 @@ function resolveAnchorEl(selectorList) {
     }
     const el = document.querySelector(sel);
     if (el && !el.hidden && el.getClientRects().length > 0) {
-      // Off-canvas park (left: -10000px) still has a rect — skip those
       const r = el.getBoundingClientRect();
       const vw = document.documentElement.clientWidth;
       const vh = document.documentElement.clientHeight;
@@ -83,6 +108,21 @@ function resolveAnchorEl(selectorList) {
       return el;
     }
   }
+  return null;
+}
+
+function wideMenuProxyForSelector(sel) {
+  if (/honesty-idle/.test(sel)) return 'honesty';
+  if (/micro-ritual/.test(sel)) return 'breath';
+  if (/session-start-dock__hint/.test(sel)) return 'companion';
+  if (/reminder-preference/.test(sel)) return 'reminder';
+  return null;
+}
+
+function narrowDrawerProxyForSelector(sel) {
+  if (/micro-ritual/.test(sel)) return 'breath';
+  if (/session-start-dock__hint/.test(sel)) return 'companion';
+  if (/reminder-preference/.test(sel)) return 'reminder';
   return null;
 }
 
@@ -444,6 +484,34 @@ export class OnboardingHintsUI {
   /** Soft blue dots on unread Quick Start / Focusing HUD chrome. */
   syncDiscoveryDots() {
     syncAllDiscoveryDots(this.store);
+    this._syncHostMintDots();
+  }
+
+  /**
+   * Mint on note / ActionBar ♪ (same #6db3a0 host pattern as ⋯ menu).
+   * Floating badge for ambient-soundscape is skipped — edge-clipped + too dim vs menu.
+   */
+  _syncHostMintDots() {
+    const show =
+      this._remedyIds.size === 0 && !this.store.isDone('ambient-soundscape');
+    const mute = document.querySelector('.ambient-soundscape__mute');
+    if (mute) mute.classList.toggle('has-hint-mint', show);
+    syncSecondaryMenuHintDot(mute, show);
+    syncSecondaryMenuHintDot(
+      document.getElementById('ft-narrow-mute-btn'),
+      show
+    );
+  }
+
+  /**
+   * Expand a click tip without requiring the floating mint badge
+   * (used when opening Soundscape from the note).
+   * @param {string} hintId
+   */
+  revealClickHint(hintId) {
+    if (!isClickTriggerHint(hintId) || this.store.isDone(hintId)) return;
+    if (this._remedyIds.size > 0) return;
+    this._expandClickHint(hintId);
   }
 
   /**
@@ -890,6 +958,11 @@ export class OnboardingHintsUI {
     if (!isClickTriggerHint(hintId)) return;
     if (this.store.isDone(hintId)) return;
     if (this._remedyIds.size > 0) return;
+
+    if (HOST_MINT_HINT_IDS.has(hintId)) {
+      this._syncHostMintDots();
+      return;
+    }
 
     const badge = this._ensureBadge(hintId);
     this._badgeIds.add(hintId);

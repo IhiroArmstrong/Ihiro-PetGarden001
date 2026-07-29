@@ -122,6 +122,7 @@
 | `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `click` | `simple` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
 | `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `click` | `simple` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
 | `narrow-drawer-menu` | `HINT_NARROW_DRAWER_MENU` | `manual` | — | `.ft-narrow-grabber` | above | bottom | — |
+| `wide-more-menu` | `HINT_WIDE_MORE_MENU` | `manual` | — | `#ft-wide-more-btn` | above | bottom | — |
 | `help-affordance` | `HINT_HELP_AFFORDANCE` | `click` | `detailed` | `#onboarding-hint-help` | right | left | — |
 | `help-remedy` | `HINT_HELP_REMEDY` | `manual` | — | `#onboarding-hint-help` | right | left | — |
 | `help-fallback` | `HINT_HELP_FALLBACK` | `manual` | — | `#btn-focus` | above | bottom | — |

@@ -12,10 +12,8 @@ export const HINT_DISCOVERY_DOT_COLOR = '#5b9bb5';
 
 /** @type {ReadonlyArray<HintDiscoveryDotHost>} */
 export const HINT_DISCOVERY_DOT_HOSTS = Object.freeze([
-  { hintId: 'quick-start', hostSelector: '#quick-start-focus' },
-  { hintId: 'focus-hud-ring', hostSelector: '#focus-hud .ft-hud__gauge' },
-  { hintId: 'focus-hud-progress', hostSelector: '#focus-hud .ft-hud__bar' },
-  { hintId: 'focus-hud-streak', hostSelector: '#focus-hud .ft-hud__streak' }
+  // 2026-07-30: steel-blue dots had pointer-events:none (Fig5). Mint click badges
+  // cover focus-hud-* / quick-start; keep empty to avoid dead dots.
 ]);
 
 /**

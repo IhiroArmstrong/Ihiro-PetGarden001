@@ -94,11 +94,10 @@ test('wide Idle: top-right note opens Soundscape panel (same as ⋯ Sound)', asy
   );
 });
 
-test('wide Idle: ⋯ Sound opens Soundscape panel (not FAB); Honesty always listed', async ({
+test('wide Idle: ⋯ has no Sound row; Honesty listed; note opens Soundscape', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  // Simulate DORMANT-ish honesty entry hide — menu must still list Honesty
   await page.evaluate(() => {
     const el = document.getElementById('honesty-idle-entry');
     if (el) el.hidden = true;
@@ -106,13 +105,16 @@ test('wide Idle: ⋯ Sound opens Soundscape panel (not FAB); Honesty always list
   const more = page.locator('#ft-wide-more-btn');
   await more.click();
   await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toBeVisible();
-  await expect(page.locator('#ft-wide-more-menu [data-proxy="sound"]')).toBeVisible();
-  await page.locator('#ft-wide-more-menu [data-proxy="sound"]').click();
+  await expect(page.locator('#ft-wide-more-menu [data-proxy="sound"]')).toHaveCount(0);
+  await expect(
+    page.locator('#ft-wide-more-menu .ft-secondary-menu-hint-dot').first()
+  ).toBeVisible({ timeout: 5_000 });
+  await page.keyboard.press('Escape');
+  await page.locator('.ambient-soundscape__mute').click();
   await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
     timeout: 5_000
   });
   await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
-  // Gated tip-only path must not be the result
   await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(0);
 });
 
@@ -144,7 +146,9 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible();
   await expect(page.locator('body')).toHaveClass(/ft-wide-park-secondary/);
-  await expect(page.locator('#quick-start-focus .ft-hint-discovery-dot')).toBeVisible({
+  await expect(
+    page.locator('.onboarding-hint-badge[data-hint-id="quick-start"]')
+  ).toBeVisible({
     timeout: 8_000
   });
   await page.locator('#onboarding-hint-help').click();

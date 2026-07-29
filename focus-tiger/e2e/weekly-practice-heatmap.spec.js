@@ -182,10 +182,14 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
     })
   ).toHaveCount(0);
 
-  // Sound → Soundscape track panel on-canvas (not red FAB, not tip-only)
-  await page
-    .locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
-    .click();
+  // Sound row removed — music via ActionBar ♪
+  await expect(
+    page.locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.ft-narrow-sheet__item .ft-secondary-menu-hint-dot').first()
+  ).toBeVisible({ timeout: 5_000 });
+  await page.locator('#ft-narrow-mute-btn').click();
   await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
     timeout: 5_000
   });

@@ -87,9 +87,25 @@ export function normalizeAmbientPref(raw) {
     if (typeof raw.enabled === 'boolean') enabled = raw.enabled;
     if (typeof raw.trackId === 'string' && trackIds.has(raw.trackId)) {
       trackId = raw.trackId;
+    } else if (raw.trackId === AMBIENT_TRACK_OFF) {
+      trackId = AMBIENT_TRACK_OFF;
     }
   }
   return { enabled, trackId };
+}
+
+/**
+ * Panel radio selection: keep the last chosen track highlighted after mute/pause.
+ * Off is selected only when the user explicitly chose Off (preferred === off).
+ *
+ * @param {{ getTrackId: () => string, getPreferredTrackId: () => string }} ctrl
+ * @returns {string}
+ */
+export function resolveAmbientPanelSelectedTrackId(ctrl) {
+  const playing = ctrl.getTrackId?.() || AMBIENT_TRACK_OFF;
+  if (playing !== AMBIENT_TRACK_OFF) return playing;
+  const preferred = ctrl.getPreferredTrackId?.();
+  return preferred || DEFAULT_AMBIENT_TRACK_ID;
 }
 
 function readAmbientPref(storage) {
@@ -145,6 +161,8 @@ export class AmbientSoundscapeController {
     this._playbackEpoch = 0;
     /** 浏览器拦截自动播放后，等待用户在静音按钮上再试 */
     this._needsGestureUnlock = false;
+    /** After note-mute, next note-open resumes preferred (opt-in stays silent otherwise). */
+    this._resumePreferredOnOpen = false;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
@@ -208,17 +226,47 @@ export class AmbientSoundscapeController {
    */
   async startPreferredTrack() {
     this.mute();
+    // Boot mute is not a user pause — keep cold-open opt-in silent.
+    this._resumePreferredOnOpen = false;
   }
 
   /** 同步静音：无论 wantsEnabled / 实际是否在播，一律停掉。 */
   mute() {
+    // Note-mute pauses; next note-open may resume this preferred track (not panel Off).
+    const shouldResume =
+      this._preferredTrackId !== AMBIENT_TRACK_OFF &&
+      (this._wantEnabled || this._isAudiblePlaying());
+    this._resumePreferredOnOpen = shouldResume;
     this._wantEnabled = false;
     this._needsGestureUnlock = false;
     this._stopPlayback({ persist: true });
   }
 
+  /**
+   * Whether the next Soundscape open (from the note) should resume preferred audio.
+   * Consumed once so a cold open without prior mute stays opt-in silent.
+   * @returns {boolean}
+   */
+  consumeResumePreferredOnOpen() {
+    const next = Boolean(this._resumePreferredOnOpen);
+    this._resumePreferredOnOpen = false;
+    return next;
+  }
+
+  /** @returns {boolean} */
+  willResumePreferredOnOpen() {
+    return Boolean(this._resumePreferredOnOpen);
+  }
+
   /** 按偏好曲重新开播。 */
   async unmute() {
+    if (this._preferredTrackId === AMBIENT_TRACK_OFF) {
+      this._wantEnabled = false;
+      this._resumePreferredOnOpen = false;
+      this._persistPref();
+      return;
+    }
+    this._resumePreferredOnOpen = false;
     this._wantEnabled = true;
     this._persistPref();
     await this.setTrack(this._preferredTrackId, { persist: false });
@@ -296,8 +344,11 @@ export class AmbientSoundscapeController {
   async setTrack(trackId, { persist = true } = {}) {
     const id = trackId || AMBIENT_TRACK_OFF;
     if (id === AMBIENT_TRACK_OFF) {
+      // Explicit Off in the panel — remember Off (mute-via-note keeps preferred track).
+      this._preferredTrackId = AMBIENT_TRACK_OFF;
       this._wantEnabled = false;
       this._needsGestureUnlock = false;
+      this._resumePreferredOnOpen = false;
       this._stopPlayback({ persist });
       return;
     }

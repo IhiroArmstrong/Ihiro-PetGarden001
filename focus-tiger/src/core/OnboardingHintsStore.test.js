@@ -330,6 +330,9 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   assert.deepEqual(resolveAutoHintIds({ isDormant: true }), [
     'dormant-open',
     'ambient-soundscape',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak',
     'help-affordance'
   ]);
   assert.deepEqual(resolveAutoHintIds({ honestyVisible: true }), [
@@ -340,6 +343,9 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
     'sit-button',
     'how-shall-we-sit',
     'ambient-soundscape',
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak',
     'help-affordance'
   ]);
   assert.deepEqual(
@@ -354,6 +360,9 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
       'in-app-reminder',
       'micro-ritual',
       'ambient-soundscape',
+      'focus-hud-ring',
+      'focus-hud-progress',
+      'focus-hud-streak',
       'help-affordance'
     ]
   );

@@ -7,8 +7,10 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   AMBIENT_TRACK_OFF,
-  AMBIENT_TRACKS
+  AMBIENT_TRACKS,
+  resolveAmbientPanelSelectedTrackId
 } from '../audio/AmbientSoundscapeController.js';
+import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
@@ -60,6 +62,10 @@ export class AmbientSoundscapeUI {
     this.muteBtn = document.createElement('button');
     this.muteBtn.type = 'button';
     this.muteBtn.className = 'ambient-soundscape__mute';
+    this._muteIcon = document.createElement('span');
+    this._muteIcon.className = 'ambient-soundscape__mute-icon';
+    this._muteIcon.setAttribute('aria-hidden', 'true');
+    this.muteBtn.appendChild(this._muteIcon);
     this.muteBtn.addEventListener('click', () => {
       this._dismissNudge();
       this.openSoundPanelFromNote();
@@ -199,12 +205,50 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * Top-right note (and ActionBar ♪ proxy) — same effect as menu / drawer Sound.
-   * Stages the Soundscape panel on-canvas; never gated tip-only.
+   * Top-right note (and ActionBar ♪ proxy):
+   * - audible music on → mute/stop
+   * - panel already open → close
+   * - otherwise → open Soundscape track panel
    */
   openSoundPanelFromNote() {
+    void this._onNoteClick();
+  }
+
+  /**
+   * @returns {Promise<void>}
+   */
+  async _onNoteClick() {
+    const ctrl = this.controller;
+    if (ctrl.isAudiblePlaying()) {
+      ctrl.mute();
+      this._expanded = false;
+      this._narrowForcedPanel = false;
+      document.body.classList.remove(
+        'ft-narrow-stage-sound',
+        'ft-wide-stage-sound'
+      );
+      this._renderPanel();
+      this.handlers.onToggleMusic?.();
+      return;
+    }
+    if (this.isPanelOpen()) {
+      this._expanded = false;
+      this._narrowForcedPanel = false;
+      document.body.classList.remove(
+        'ft-narrow-stage-sound',
+        'ft-wide-stage-sound'
+      );
+      this._renderPanel();
+      return;
+    }
     this._stageSoundPanelHost();
     this.activateSoundFromNarrow();
+    // Same user gesture: after note-mute, reopen resumes the remembered track with sound.
+    if (ctrl.consumeResumePreferredOnOpen()) {
+      await ctrl.unmute();
+      this._renderPanel();
+      this.handlers.onToggleMusic?.();
+    }
   }
 
   /**
@@ -342,18 +386,13 @@ export class AmbientSoundscapeUI {
       }))
     ];
 
+    const selectedId = resolveAmbientPanelSelectedTrackId(this.controller);
     for (const opt of options) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ambient-soundscape__track';
       btn.setAttribute('role', 'radio');
-      const selected =
-        opt.id === AMBIENT_TRACK_OFF
-          ? !this.controller.wantsEnabled()
-          : this.controller.wantsEnabled() &&
-            (this.controller.getTrackId() === opt.id ||
-              (this.controller.getTrackId() === AMBIENT_TRACK_OFF &&
-                this.controller.getPreferredTrackId() === opt.id));
+      const selected = opt.id === selectedId;
       btn.setAttribute('aria-checked', selected ? 'true' : 'false');
       if (selected) btn.classList.add('is-selected');
       btn.textContent = t(opt.labelKey);
@@ -380,11 +419,27 @@ export class AmbientSoundscapeUI {
     this._refreshSoundFab();
   }
 
+  /**
+   * Mint pulse on the note (CSS ::after + span — survives icon refresh).
+   * @param {boolean} show
+   */
+  syncHintDot(show) {
+    const on = Boolean(show);
+    this.muteBtn.classList.toggle('has-hint-mint', on);
+    syncSecondaryMenuHintDot(this.muteBtn, on);
+  }
+
   _refreshMuteBtn() {
     const ctrl = this.controller;
     const audible = ctrl.isAudiblePlaying();
     const showSlash = audible || ctrl.wantsEnabled();
-    this.muteBtn.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
+    if (!this._muteIcon) {
+      this._muteIcon = document.createElement('span');
+      this._muteIcon.className = 'ambient-soundscape__mute-icon';
+      this._muteIcon.setAttribute('aria-hidden', 'true');
+      this.muteBtn.prepend(this._muteIcon);
+    }
+    this._muteIcon.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
     this.muteBtn.classList.toggle('is-muted', showSlash);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
@@ -393,6 +448,7 @@ export class AmbientSoundscapeUI {
       this.isPanelOpen() ? 'true' : 'false'
     );
     this.muteBtn.removeAttribute('aria-pressed');
+    this.handlers.onMuteChromePainted?.();
   }
 
   _refreshSoundFab() {
@@ -451,6 +507,52 @@ export class AmbientSoundscapeUI {
         align-items: center;
         justify-content: center;
         transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+      }
+      .ambient-soundscape__mute-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+      }
+      /* Same mint as ⋯ / drawer — larger + dual paint (class ::after + span) for Safari */
+      .ambient-soundscape__mute.has-hint-mint::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow:
+          0 0 0 2px rgba(255, 252, 245, 0.98),
+          0 0 0 3px rgba(109, 179, 160, 0.35);
+        pointer-events: none;
+        z-index: 2;
+        animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
+      }
+      .ambient-soundscape__mute > .ft-secondary-menu-hint-dot {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #6db3a0;
+        box-shadow:
+          0 0 0 2px rgba(255, 252, 245, 0.98),
+          0 0 0 3px rgba(109, 179, 160, 0.35);
+        pointer-events: none;
+        z-index: 3;
+        animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
+      }
+      /* Prefer ::after; hide duplicate span when both present */
+      .ambient-soundscape__mute.has-hint-mint > .ft-secondary-menu-hint-dot {
+        opacity: 0;
+      }
+      @keyframes ft-ambient-mute-hint-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(0.85); }
       }
       .ambient-soundscape__mute:hover {
         color: rgba(72, 54, 38, 0.92);
