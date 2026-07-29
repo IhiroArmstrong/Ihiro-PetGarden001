@@ -110,11 +110,49 @@ npm run test:e2e      # Playwright 产品壳 DOM 冒烟
 git checkout main
 git pull origin main          # 若已与远程同步
 git merge --no-ff develop -m "release: <简述本次稳定点>"
-# 可选：打标签便于回滚
-git tag -a v0.x.y -m "稳定发布点说明"
+# 稳定版须打 annotated tag（见「语义化版本与稳定发布点」）
+git tag -a vX.Y.Z -m "稳定发布点说明"
 ```
 
 合并后 `main` 与 `develop` 可继续并行；`develop` **不要** 删除。
+
+---
+
+## 语义化版本与稳定发布点
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-semver-release`）。其它文档只引用，勿平行复述完整条款。
+
+### 拍板（2026-07-30）
+
+- **方案**：遵循 [SemVer 2.0.0](https://semver.org/)：`MAJOR.MINOR.PATCH`。  
+- **稳定版标记**：**在 `main` 上打 annotated Git tag**（形如 `v1.0.0`），**不**在开发阶段切 `release/1.0`（或同类）长期分支。  
+- **为何用 tag、不用 release 分支**：当前是单线演进（`develop` → `main`）；tag 轻量、可回滚定位、不增加并行合流成本。仅当未来需要**同时维护多条已发布大版本**（例：给 1.x 打补丁的同时 `develop` 已在做 2.x）时，再开 `release/<major>.<minor>`；届时须书面更新本节，不得默默开支。
+
+### 版本号含义（产品向）
+
+| 位 | 何时递增 | 例 |
+|---|---|---|
+| **MAJOR** | 对用户或本地数据有破坏性变化（须迁移/清空、去掉已依赖能力、协议不兼容） | `1.0.0` → `2.0.0` |
+| **MINOR** | 稳定线上新增用户可感知能力，且向后兼容 | `1.0.0` → `1.1.0` |
+| **PATCH** | 稳定线上 bug 修复 / 文案与观感打磨，无破坏、无新能力承诺 | `1.0.0` → `1.0.1` |
+
+### 首个稳定版与 pre-1.0
+
+- **第一个交给用户的稳定版** = **`v1.0.0`**（annotated tag 打在对应 `main` tip）。  
+- **`v1.0.0` 之前**：日常开发在 `develop`；若偶有 `develop`→`main` 的工程性合并，**可不打用户向稳定 tag**，或仅用 `v0.x.y` 作内部里程碑（`0.x` = 尚未承诺稳定对外）。`focus-tiger/package.json` 的 `"version"` 在首个稳定版前可保持 `0.0.0` / `0.x.y`。  
+- **打出 `v1.0.0` 起**：每次稳定发布须同步把 `focus-tiger/package.json` 的 `"version"` 写成**去掉 `v` 前缀**的同号（例 tag `v1.0.1` ↔ `"1.0.1"`），与 tag **同批**进该次发布相关 commit / PR（禁止只改一边）。
+
+### 发版操作要点
+
+1. 先过「合并 `develop` → `main`」门禁（见上节）；由**项目负责人**在 GitHub 完成合入（或明确授权本地 merge）。  
+2. 在**已合入的 `main` tip**上打 annotated tag 并 push tag（须用户明确授权 push；Agent **禁止**擅自 `git tag` / `git push --tags` / 开 `release/*`）：  
+   ```bash
+   git checkout main && git pull origin main
+   git tag -a vX.Y.Z -m "<一句话：本版稳定点>"
+   git push origin vX.Y.Z
+   ```  
+3. **禁止**用轻量 tag（`git tag vX.Y.Z` 无 `-a`）充当稳定版；**禁止**把稳定 tag 打在未合入 `main` 的 `develop` / feature tip 上。  
+4. 稳定版紧急修复仍走 `hotfix/*` → `main` + `develop`；修完后按 PATCH（或必要时 MINOR）再打新 tag。
 
 ---
 
@@ -225,7 +263,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / 跨会话冲突 / 并行 worktree / 姊妹分支同步 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 场景测试剧本 | `focus-tiger/docs/SCENARIO_TESTS.md` |
@@ -243,7 +281,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 修 bug（且有姊妹功能分支） | 修完后对照姊妹线是否需同修；写入「待你决定 / 待你知道」（见「长期并存功能分支的同步纪律」） |
 | 修 bug | 从 `develop` 切 `fix/…` |
 | 纯文档更新 | 在 `develop` 或 `feature/…` 上改、跑 `docs:check`、**立刻 commit** |
-| 发布稳定版 | 过门禁 → `main` ← merge `develop` → 可选 `git tag` |
+| 发布稳定版 | 过门禁 → `main` ← merge `develop` → **annotated tag** `vX.Y.Z`（首稳 = `v1.0.0`；**不**切 `release/*`） |
 | 稳定版紧急修 | 从 `main` 切 `hotfix/…` → 合并回 `main` + `develop` |
 | 开发改坏了 | `develop` 上 revert / reset；**不要**先动 `main` |
 | `main` 被误合并 | `main` 上 `git revert` 或 reset 到 tag |

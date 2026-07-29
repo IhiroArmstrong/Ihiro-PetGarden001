@@ -129,7 +129,7 @@
 | Skip — begin 半卡 Sit / 门闩静默 | `shouldBeginFocusOnArrivalReady` 等 | **单元** smoke A3–A4（`canBeginFocus` 门闩 false→不可 begin）+ **DOM** e2e **A2/A3**（预选模式 → Skip — begin → 开表，**无需**再点 Sit） | Skip 后**立刻 Rise** 的手感/动画（逻辑与 DOM 开表已锁） |
 | 同日首次 Celebrating vs 二次 SessionComplete | `session-completion-feedback` + `celebrated` 戳 | **单元** smoke A7–A8（`triggerSessionCompletionFeedback` 分流；Honesty 不挡舞）；**非**动画 DOM | **动画本身**（人工 · Celebrating 行） |
 | Rise 未达标 → Reflection + 意图回显 | `SessionEndFlow` + `resolveSessionIntentionLatch` | **控制器集成** smoke C（`SessionEndFlow` → mock `open` 入参；**非** Choose 源头）；**DOM** e2e `reflection-intention-echo.spec.js`（主路径有/无回显，**非**抹闩 Bug）；**单元** `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`（抹闩 Bug）；smoke J **只**锁 hint toggle 纯函数，**不**锁 Reflection | **rise-stretch-casual 观感**、Reflection 淡入 |
-| Honesty 桥接 Yes/No | `HonestyBridgeCtaController` | **控制器集成** smoke D（Yes→`onAccept` / No→`onDecline` 回调）；**DOM** e2e `micro-ritual.spec.js` bridge 行（经 `__honestyBridge` **注入**可见态，锁入口隐藏/No 恢复；**非**真实补登→桥接→Yes→Arrival）。**CI 须生产构建也暴露 `__honestyBridge`**（`vite preview`）。375 另锁 ActionBar 时间可见 + ? tip 不关 Yes/No | **桥接 UI 排版**、真实补登后 Yes→完整 Arrival；375 ? tip 邻接（人工若未测过） |
+| Honesty 桥接 Yes/No | `HonestyBridgeCtaController` | **控制器集成** smoke D（Yes→`onAccept` / No→`onDecline` 回调）；**DOM 真实链** `honesty-bridge-real-path.spec.js`（入口→时长→呼吸→Yes→Arrival）；**DOM 叠层** `micro-ritual.spec.js` bridge 行（经 `__honestyBridge` **注入**）。**CI 须生产构建也暴露 `__honestyBridge`**（注入用例）。375 另锁 ActionBar + ? tip 不关 Yes/No | **桥接 UI 排版**、Arrival 动画本身；375 ? tip 邻接（人工若未测过） |
 | Re-focus 在 Offline/Flow 应抑制 | `shouldSuppressAwayReminders` | **单元/控制器** smoke B（门闩 + `handleAttentionReturn` mock emotion）；**非**真实切页 | **真实切标签 >60s**（人工 · Re-focus 行） |
 | Sit 误开 Honesty | z-index / 门闩（你已标已通过） | 无专门 e2e | 维持「已通过」；自动化未单列 |
 
@@ -153,14 +153,17 @@
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
-#### C. 下一步自动化（未做 · 排 Task 2/3）
+#### C. 下一步自动化（未做 · 排 Task 2→扩 smoke）
+
+> **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、已拍板后续顺序）。本表 §C 只排期；改覆盖结论先改审计文档。
 
 | 优先级 | 内容 | 对应 bug/场景 |
 |---|---|---|
-| Task 2 | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock） | 场景 E/F；Offline/Flow 模式矩阵 |
-| Task 3 | Playwright **真实 Honesty 补登 → 桥接 Yes → Arrival DOM**（勿仅 `__honestyBridge` 注入） | 场景 D/N；补登回流 |
+| **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入） | 场景 D/N |
+| **Task 2**（下一） | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock），并入 `test:smoke` | 场景 E/F；Offline/Flow 模式矩阵 |
+| **扩 smoke** | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约、AcrossTools 阈值 mock） | 防 PR 冒烟漏跑；见审计 §4 |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
-| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L262](#L262)** Idle（**已通过**） · **[L265](#L265)** Re-focus（**已通过**） · **[L266](#L266)** Celebrating / SessionComplete（**已通过**） · **[L261–L267](#L261)** 场景 checklist |
+| **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
 
 **命令**：`cd focus-tiger && npm run test:smoke`（scenario + 重置 L-logic + **SessionUiGate** + HUD 映射等）· `npm run test:e2e`（约 **32** 条：产品壳 2 + Companion A/I/K 等 + 意图回显 2 + 热力图 7 + 提醒 4 + FocusHUD hover 1 + 微仪式/桥接 4 等）。本地默认 **Playwright 自带 Chromium**（不唤起系统 Chrome）。缺浏览器时先 `npm run test:e2e:install`。要用系统 Chrome 兜底：`PLAYWRIGHT_CHANNEL=chrome npm run test:e2e`。
 
@@ -186,6 +189,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
+| 自动化 Task 3 · Honesty 真实补登→桥接→Arrival e2e | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e:changed -- e2e/honesty-bridge-real-path.spec.js`：入口→时长→`?honestyBreathMs=1500` 呼吸→桥接 Yes→`#arrival-practice`；No→Idle 且无 Arrival。**禁止** `__honestyBridge` 注入。叠层/375 tip 仍见 `micro-ritual.spec.js` 注入用例。单测：`resolveHonestyBreathMs`。 | — | `e2e/honesty-bridge-real-path.spec.js` · `?honestyBreathMs=` | 2026-07-30 |
 | 响应式 Task 3 · 窄宽单代码线（总验收） | UI可见 | 待人工测试 | **关单级**（只认 `origin/develop` tip + freshness behind=0）。**禁止**与场景 O 修混验。**§8 375 故事最小集**（Idle 三球+抽屉、Sit→Arrival→Focusing HUD、Breath 藏 Sit、? 补救、tip 邻接、Honesty/微仪式）。**§9 W1–W8**（清场 Sit+⚡+⋯、Sit 全路径、Arrival 藏 Sit/⋯、⋯ 代理 Honesty/How/Sound/提醒、? remap、邻接、Focusing、桥接/Rise）。**断点** 375↔480（见上行 Facade 行）。自动化：编排/facade 单测 + smoke ≠ 关单。 | — | `?product=1` · Brief `task-responsive-single-chrome-line.md` · PR #31–#33 | 2026-07-30 |
 | `IdleChromeFacade` 窄宽统一入口（Task 3 阶段 2） | UI可见 | 待人工测试 | **主路径**：`?product=1` 宽屏 Idle 见 Sit+⚡+⋯；375 见三球+抽屉；handlers 共用。**断点**：DevTools 375↔480 来回 — 无双壳叠点；Companion 打开时改宽度**不得**被误关（release 不调 onClearStage）。**回流**：Rise 后再 Idle。自动化：`IdleChromeFacade.test.js` + smoke；**须人工锁**断点路径。完整 §8+§9 见上行总验收。 | — | `?product=1` · `createIdleChromeFacade` · PR #33 | 2026-07-30 |
 | `idleChromeOrchestration` 窄宽共享编排（Task 3 阶段 1） | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`（含 `idleChromeOrchestration.test.js` + `sessionChromeSync.test.js`）：stage×viewport 角色可见性、壳投影、次要入口列表。已合 PR #32。 | — | `src/core/idleChromeOrchestration.js` · PR #32 | 2026-07-30 |
