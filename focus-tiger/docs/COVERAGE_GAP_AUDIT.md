@@ -45,8 +45,8 @@
 | **达标反馈 Celebrating / SessionComplete** | ✅ A7–A8 分流 | ❌ | ❌ | `session-completion-feedback` | **仅逻辑** | 动画 DOM **零 e2e** → 只能人工 |
 | **Reflection + 意图回显** | ✅ C（mock open） | ✅ `reflection-intention-echo` | ❌ | `SessionIntentionStore` / Reflection | **主路径有 DOM** | 三问内容、淡入、rise-stretch 观感 |
 | **Recover / Re-focus** | ✅ B（抑制门闩+mock） | ❌ | ❌ | `MindfulReminder` / Attention | **仅逻辑** | 真实切标签 >60s、toast、nod-bow = **纯人工** |
-| **Honesty 补登（选时长→呼吸→记账）** | ✅ D 控制器 | 弱（入口隐藏等） | ❌ | `HonestyCheckIn*` | **控制器有；DOM 链断** | **真实补登→桥接→Yes→Arrival** 未 e2e |
-| **Honesty 桥接 CTA** | ✅ D Yes/No | ✅ 注入 `__honestyBridge` | ❌ | Bridge controllers | **叠层有 DOM（注入）** | 非真实补登入口；排版人工 |
+| **Honesty 补登（选时长→呼吸→记账）** | ✅ D 控制器 | ✅ **真实链** `honesty-bridge-real-path`（+ 入口隐藏等） | ❌ | `HonestyCheckIn*` | **DOM 主路径已锁** | 排版/睡姿观感仍人工；`?honestyBreathMs=` 缩短墙钟 |
+| **Honesty 桥接 CTA** | ✅ D Yes/No | ✅ 真实 Yes/No + 注入叠层用例 | ❌ | Bridge controllers | **真实+注入双覆盖** | 注入仍用于叠层/375 tip 邻接 |
 | **DORMANT / 睡姿 / cloakWake** | ✅ D sleep→wake | ❌ | ❌ | `dormantIdle` / Trigger | **仅逻辑** | 披毯/睡姿序列纯人工 |
 | **一分钟呼吸 / 微仪式** | — | ✅ `micro-ritual` | ❌ | `MicroRitual.test` | **DOM 主路径有** | Leave/记账边界已锁；观感人工 |
 | **本周陪伴热力图** | ✅ store+UI 单测 | ✅ `weekly-practice-heatmap` | ❌ | — | **较强** | 真练习后变亮、Hint tip 尖角 |
@@ -70,9 +70,9 @@
 ### 覆盖热力图（粗粒度）
 
 ```text
-强（smoke+DOM）     Arrival开表 · Companion门闩 · Idle窄宽壳 · 热力图 · 提醒设置/横幅 · 微仪式主路径 · Reflection回显
-中（逻辑或注入）     Honesty桥接(注入) · 达标分流 · Re-focus抑制 · DORMANT链 · Hints契约 · FocusHUD映射
-弱/无               Ambient播放 · 庆祝动画 · 真实切页Recover · 完整Honesty链 · E/F细节 · i18n · 光影观感 · Grow/3D
+强（smoke+DOM）     Arrival开表 · Companion门闩 · Idle窄宽壳 · 热力图 · 提醒设置/横幅 · 微仪式主路径 · Reflection回显 · **Honesty真实补登→桥接**
+中（逻辑或注入）     Honesty桥接叠层(注入) · 达标分流 · Re-focus抑制 · DORMANT链 · Hints契约 · FocusHUD映射
+弱/无               Ambient播放 · 庆祝动画 · 真实切页Recover · E/F细节 · i18n · 光影观感 · Grow/3D
 ```
 
 ---
@@ -83,7 +83,7 @@
 
 1. **Celebrating / SessionComplete 动画与 DOM** — 只有分流逻辑 smoke（且属下方「永不自动化」观感部分）
 2. **真实 Recover（切标签 >60s）** — 只有抑制门闩（真实墙钟属「永不自动化」）
-3. **Honesty 真实补登 → 桥接 → Yes → Arrival** — e2e 靠注入假桥接 → **Task 3**
+3. **Honesty 真实补登 → 桥接 → Yes → Arrival** — ✅ e2e `honesty-bridge-real-path`（2026-07-30）；叠层仍可 `__honestyBridge` 注入
 4. **Ambient 实际发声与 Rise 停音** — 几乎只有「开面板 / 无 autoplay」→ 可进 smoke 扩容（行为契约，非听感）
 5. **Idle / Choose / Rise 序列观感** — 刻意不进 e2e（见 §5）
 6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ **Task 2**
@@ -101,7 +101,7 @@
 
 | 顺序 | 项 | 内容 | 对应 |
 |---|---|---|---|
-| **1** | **Task 3** | Playwright **真实** Honesty 补登 → 桥接 Yes → Arrival DOM（勿仅 `__honestyBridge` 注入） | 场景 D/N |
+| **1** | **Task 3** | ✅ **已落地**（2026-07-30）：Playwright 真实 Honesty 补登 → 桥接 Yes → Arrival（`e2e/honesty-bridge-real-path.spec.js`；`?honestyBreathMs=`） | 场景 D/N |
 | **2** | **Task 2** | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock），**并入 `test:smoke`**，不依赖墙钟 | 场景 E/F |
 | **3** | **扩 smoke** | 把关键 `unit*` 提升进 `test:smoke`：Emotion 优先级、Ambient 停音契约、AcrossTools 阈值 mock | 防 PR 冒烟漏跑 |
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
