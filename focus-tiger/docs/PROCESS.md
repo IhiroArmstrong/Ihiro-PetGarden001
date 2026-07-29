@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Cloud config 路径 B（2026-07-29）**：体验优先——本地 `softScheduleConfig` + `CloudConfigClient`（默认 `mode:local`）；总原则含「不得挡交互 / 缺云端≈发版行为」。Worker **不**接主路径；启用条件与**热更愿望计数表**见 `CLOUD_CONFIG_V1.md` Backlog。CI 保留 `cloud` typecheck。**(B) 进度/账号同步**仍排除。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **本地 Cursor 能耗护栏（2026-07-26）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。同日拍板：Cloud 启用须提醒「独立会话」；任务起过 Vite/Playwright 须在收尾提醒手动确认已关（alwaysApply：`focus-tiger-browser-energy.mdc`）。非产品 UI，无需 TEST_TRACKER 人工项。
 - **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
@@ -89,7 +90,7 @@
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
 - **应用内提醒偏好 + 横幅 UI 已接入（2026-07-22）**：设置入口改为 **Idle 热力图簇旁的小型时钟图标**（`ReminderPreferenceUI`，挂 `WeeklyPracticeHeatmap` cluster，Idle-only）；点击展开轻量面板，含「开启提醒」+ 时间选择器，标题键 `reminder.setting_title`。**2026-07-25**：面板常显「每日时分」说明（`reminder.daily_blurb`）+ 已过/已练软提示；onboarding Hint `in-app-reminder`。横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；已接冷启动 / `visibilitychange` 回前台 / 状态切换重评；关闭后本页会话内不再重复；DEV：`window.__inAppReminder`。**2026-07-23**：忙碌策略拍板 **`suppress`**。
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined` / **`micro_ritual_complete`**
-- **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
+- **Cloudflare Workers 骨架（2026-07-22；路径 B 2026-07-29）**：`cloud/` stub 保留且响应对齐 `CLOUD_CONFIG_V1`；**产品不联网**。本地 SSOT：`softScheduleConfig.js`；钩子默认 local。热更启用见 Backlog「enable-cloud-config-hot-update」计数表
 - **「本周陪伴」7 格热力图 UI（2026-07-22）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)`；亮格=`null|/>0`；无文案/无点击；e2e `weekly-practice-heatmap.spec.js`
 - **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`；见 `SHARED_RESOURCES` §1.2
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：`DailyCompletionStore` 仅当日不够；数据源改 `PracticeDaysStore`
@@ -280,6 +281,7 @@
 - **CI 全量 `test:smoke` + `test:e2e`**（PR #2 后下一工程 PR；勿长期依赖本机手跑；目标 2026-07-30 前有草稿/可合并 CI）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘）
 - **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
+- **enable-cloud-config-hot-update**（路径 B；愿望计数 ≥3 再接线 Worker —— 见 `CLOUD_CONFIG_V1.md`）
 
 ---
 
@@ -414,6 +416,14 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 ---
 
 ## 后续 Backlog（暂缓事项,已记录、未开工）
+
+### Backlog:enable-cloud-config-hot-update（软调度云端热更 · 路径 B）
+
+> **权威全文**：[`CLOUD_CONFIG_V1.md`](./CLOUD_CONFIG_V1.md)。本地 SSOT 已落地；本条只管「何时接线 Worker」。
+
+- **非目标**：防盗藏素材；(B) 练习进度 / 账号同步。  
+- **触发**：每次出现「要是不用发版就能改 Celebrating 权重 / 每日 messageKey 就好了」→ 在 `CLOUD_CONFIG_V1.md` 计数表记一笔；**≥3 笔**再排期 `mode:'remote'` + 部署。  
+- **stub 防过期**：改 `cloud/**` 或契约时跑 cloud typecheck；改本地形状须同步 stub。
 
 ### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 

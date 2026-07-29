@@ -1,0 +1,41 @@
+name: Focus Tiger cloud typecheck
+
+# Keep Workers stub types/shapes from rotting while path B leaves it unwired.
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'focus-tiger/cloud/**'
+      - 'focus-tiger/docs/CLOUD_CONFIG_V1.md'
+      - '.github/workflows/focus-tiger-cloud-typecheck.yml'
+  push:
+    branches:
+      - develop
+    paths:
+      - 'focus-tiger/cloud/**'
+      - 'focus-tiger/docs/CLOUD_CONFIG_V1.md'
+      - '.github/workflows/focus-tiger-cloud-typecheck.yml'
+
+jobs:
+  cloud-typecheck:
+    name: cloud typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: focus-tiger/cloud
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: focus-tiger/cloud/package-lock.json
+
+      - name: Install cloud dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck

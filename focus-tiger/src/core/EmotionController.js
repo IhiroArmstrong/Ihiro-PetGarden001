@@ -11,6 +11,18 @@
 import { POSE_KEYS } from '../character/PoseManager.js';
 import { SPRITE_SEQUENCES } from '../character/spriteManifest.js';
 import { COMPANION_GESTURE_CHAINS } from '../character/companionGestureCatalog.js';
+import {
+  CELEBRATE_DANCE_VARIANTS,
+  DEFAULT_CELEBRATE_DANCE_WEIGHTS,
+  pickCelebrateDanceVariant
+} from './softScheduleConfig.js';
+
+/** Celebrating 权重 SSOT / 挑选：见 softScheduleConfig（CLOUD_CONFIG_V1 路径 B）。 */
+export {
+  CELEBRATE_DANCE_VARIANTS,
+  DEFAULT_CELEBRATE_DANCE_WEIGHTS,
+  pickCelebrateDanceVariant
+};
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
 /** sleeping → dormantWake 进入时的交叉淡入。 */
@@ -85,22 +97,6 @@ function pendingInteraction(emotionKey) {
       options
     );
   };
-}
-
-/** Celebrating 两个 2D 变体；MVP 每次触发 50/50，不做轮换记账。 */
-export const CELEBRATE_DANCE_VARIANTS = Object.freeze([
-  'celebrateDance',
-  'celebrateDanceV2'
-]);
-
-/**
- * @param {() => number} [random] 可注入；默认 Math.random
- * @returns {'celebrateDance' | 'celebrateDanceV2'}
- */
-export function pickCelebrateDanceVariant(random = Math.random) {
-  return random() < 0.5
-    ? CELEBRATE_DANCE_VARIANTS[0]
-    : CELEBRATE_DANCE_VARIANTS[1];
 }
 
 /** Bible 对齐的公开情绪常量；保留 camelCase 供业务层直接调用。 */

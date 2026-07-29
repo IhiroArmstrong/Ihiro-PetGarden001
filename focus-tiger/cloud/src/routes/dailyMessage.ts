@@ -5,23 +5,35 @@ import type { DailyMessageResponse } from "../types";
 const REQUIRED = ["locale", "localDate"] as const;
 
 /**
- * Stub: daily companion message.
- * Required body: { locale, localDate } — provisional; product review pending.
+ * Stub aligned with CLOUD_CONFIG_V1 A1/A2 (tech-verify keys; not incense copy).
+ * Path B: not wired to frontend; keep shape in sync with softScheduleConfig.
  */
 export async function handleDailyMessage(
 	request: Request,
 ): Promise<Response> {
+	const clone = request.clone();
 	const parsed = await requireJsonFields(request, REQUIRED);
 	if (parsed instanceof Response) {
 		return parsed;
 	}
 
-	// parsed holds locale + localDate; real logic TBD after field review.
-	void parsed;
+	const locale = String(parsed.locale);
+	const localDate = String(parsed.localDate);
+	let slot = "tech_verify";
+	try {
+		const body = (await clone.json()) as { slot?: unknown };
+		if (typeof body.slot === "string" && body.slot.trim()) {
+			slot = body.slot.trim();
+		}
+	} catch {
+		// optional slot only
+	}
+	const variantSeed = `${localDate}:${locale}:${slot}`;
 
 	const payload: DailyMessageResponse = {
-		message: "mock",
-		variantSeed: "0",
+		schemaVersion: 1,
+		messageKey: "MINDFUL_FOCUS_MILESTONE_1",
+		variantSeed,
 	};
 	return json(payload);
 }

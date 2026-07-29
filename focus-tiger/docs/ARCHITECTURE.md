@@ -94,11 +94,11 @@ focus-tiger/
 │     └─ task01-brief-gray-to-gold-visual.md
 │
 ├─ cloud/                         # Cloudflare Workers API（独立包；与 Vite 前端解耦）
-│  ├─ README.md                   # wrangler dev + curl 验收
+│  ├─ README.md                   # wrangler + 契约；路径 B 未接产品主路径
 │  ├─ wrangler.jsonc
 │  ├─ package.json                # name: focus-tiger-cloud
-│  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
-│     # 2026-07-22：仅 mock + 校验 + 内存限流；未接前端 / 未部署正式逻辑
+│  └─ src/                        # stub：daily-message / emotion-weight（形状见 CLOUD_CONFIG_V1）
+│     # 2026-07-29：路径 B——本地 softScheduleConfig 为 SSOT；cloud typecheck 防 stub 过期
 │
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建
 │  └─ tiger-turnaround/
