@@ -104,7 +104,7 @@
 |---|---|---|---|
 | **1** | **Task 3** | ✅ **已落地**（2026-07-30）：Playwright 真实 Honesty 补登 → 桥接 Yes → Arrival（`e2e/honesty-bridge-real-path.spec.js`；`?honestyBreathMs=`） | 场景 D/N |
 | **2** | **Task 2** | ✅ **已落地**（2026-07-30）：smoke E/F + `MindfulReminderController` / `AcrossToolsIdleGuard` 并入 `test:smoke` | 场景 E/F |
-| **3** | **扩 smoke** | ✅ **已落地**（2026-07-30）：`test:smoke` = `node --test "src/**/*.test.js" && docs:check`（A+A′；B 空集）。实测 **319** pass · **~343ms**（改前 132/~158ms） | 防 PR 冒烟漏跑 |
+| **3** | **扩 smoke** | ✅ **已落地**（2026-07-30）：`test:smoke` = `run-src-unit-tests.js` + `docs:check`（A+A′；B 空集；CI Node 20 安全）。实测 **319** pass · **~343ms**（改前 132/~158ms） | 防 PR 冒烟漏跑 |
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做** | — | 见下方「永不自动化 / 人工锁」 | — |
 
@@ -147,7 +147,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 ## 7. 扩 smoke 分类（unit\* → 并入评估 · 2026-07-30）
 
 > **分类回合**只落清单、不改脚本。实测当时：`npm test` 全量 **308** pass · **~345ms**；当时 `test:smoke` **121** pass · **~148ms**。  
-> **落地（2026-07-30）**：`package.json` → `test:smoke` = `node --test "src/**/*.test.js" && npm run docs:check`（等价 A+A′ 全并入）。确认：**319** pass · **~343ms**（改前本机 tip：**132** / **~158ms**）。**不建** `test:regression`。  
+> **落地（2026-07-30）**：`test:smoke` / `npm test` → `node scripts/run-src-unit-tests.js`（递归收集 `src/**/*.test.js` 再交给 `node --test`；**勿**用带引号的 glob——Node 20 CI 会当成字面路径失败）。确认：**319** pass · **~343ms**（改前本机 tip：**132** / **~158ms**）。**不建** `test:regression`。  
 > 结论：**不需要**新建 `test:regression` 中间层——没有「慢到拖垮 PR 冒烟」的 unit\*。
 
 ### 7.1 已在 `test:smoke`（勿重复）
@@ -204,7 +204,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 ### 7.5 落地方式（已执行 · 2026-07-30）
 
-1. ✅ `package.json` → `test:smoke` = `node --test "src/**/*.test.js" && npm run docs:check`。  
+1. ✅ `package.json` → `test:smoke` = `node scripts/run-src-unit-tests.js && npm run docs:check`（显式列文件，兼容 Node 20 CI）。  
 2. ✅ 本地确认时长仍可接受（unit 段 ~343ms ≪ 拖慢门槛）。  
 3. ✅ **未**建空的 `test:regression`。
 
@@ -298,7 +298,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 **阻塞 v1（测试 / i18n 面）**
 
-1. ✅ 按 §7 把 A+A′ unit\* **并入** `test:smoke`（`src/**/*.test.js`）  
+1. ✅ 按 §7 把 A+A′ unit\* **并入** `test:smoke`（`run-src-unit-tests.js`）  
 2. Honesty 真实链：**已确认可用**（§8）  
 3. 「永不自动化」清单：**§5**  
 4. **i18n**：v1.0.0 **English-only 对外**已定；自动化锁「不露多语入口」即可；**不**挡在 zh 人工验收  

@@ -67,7 +67,7 @@
 - **i18n v1.0.0 English only（2026-07-30）**：对外不声称中文/多语言；工程保留可点切语 + 六语槽；仅 `en` ready，Language 菜单隐藏；zh 字典 staged。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 English only。见审计 §9。
 - **i18n「审完再露」拍板（2026-07-30）**：未 `ready` **不进**选择器、不发版声称；拒机翻先上。
-- **扩 smoke 已落地（2026-07-30）**：`test:smoke` = `src/**/*.test.js` + `docs:check`（A+A′；**319** pass · ~343ms；不建 `test:regression`）。见 `COVERAGE_GAP_AUDIT.md` §7。
+- **扩 smoke 已落地（2026-07-30）**：`test:smoke` = `run-src-unit-tests.js` + `docs:check`（A+A′；**319** pass · ~343ms；不建 `test:regression`；Node 20 CI 不用带引号 glob）。见 `COVERAGE_GAP_AUDIT.md` §7。
 - **扩 smoke 分类 + Honesty 发布口径（2026-07-30）**：审计 §7–§8——unit\* 均可原样并入 smoke；Honesty 真实链**可用、不挡 v1**。见 `COVERAGE_GAP_AUDIT.md`。
 - **自动化缺口 · Task 2 已落地（2026-07-30）**：smoke E/F + MindfulReminder / AcrossTools 并入 `test:smoke`。
 - **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
