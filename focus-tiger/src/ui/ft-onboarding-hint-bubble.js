@@ -1,10 +1,11 @@
 /**
  * Lit 试点：单条 onboarding 提示气泡（响应式文案 / 尖角 / 显隐）。
  * 定位仍由 OnboardingHintsUI 写 left/top / --tip-*；本组件只负责渲染壳。
+ * 可选 actionLabel → 详情 CTA（detailed tier），派发 ft-hint-action。
  * @see docs/task-briefs/task-lit-pilot-onboarding-hints.md
  */
 
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 
 export class FtOnboardingHintBubble extends LitElement {
   static properties = {
@@ -14,7 +15,9 @@ export class FtOnboardingHintBubble extends LitElement {
     tipX: { type: String, attribute: false },
     tipY: { type: String, attribute: false },
     remedy: { type: Boolean, reflect: true },
-    open: { type: Boolean, reflect: true }
+    open: { type: Boolean, reflect: true },
+    /** detailed 预览内「了解更多」等 */
+    actionLabel: { type: String, attribute: 'action-label' }
   };
 
   static styles = css`
@@ -48,6 +51,9 @@ export class FtOnboardingHintBubble extends LitElement {
     }
     :host(:hover) {
       filter: brightness(1.02) drop-shadow(0 2px 4px rgba(40, 64, 52, 0.1));
+    }
+    :host([action-label]) {
+      cursor: default;
     }
     :host::after {
       content: '';
@@ -91,6 +97,24 @@ export class FtOnboardingHintBubble extends LitElement {
     .label {
       display: block;
       color: #3a5348;
+      cursor: pointer;
+    }
+    .action {
+      display: inline-block;
+      margin: 8px 0 0;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(92, 122, 108, 0.45);
+      background: rgba(255, 255, 255, 0.55);
+      color: #2f463c;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      font-style: normal;
+      cursor: pointer;
+    }
+    .action:hover {
+      background: rgba(255, 255, 255, 0.8);
     }
   `;
 
@@ -102,6 +126,7 @@ export class FtOnboardingHintBubble extends LitElement {
     this.tipY = '50%';
     this.remedy = false;
     this.open = false;
+    this.actionLabel = '';
   }
 
   /**
@@ -131,6 +156,8 @@ export class FtOnboardingHintBubble extends LitElement {
 
   /** @param {MouseEvent} event */
   _onActivate = (event) => {
+    const target = /** @type {HTMLElement | null} */ (event.target);
+    if (target?.closest?.('.action')) return;
     event.preventDefault();
     event.stopPropagation();
     this.dispatchEvent(
@@ -141,6 +168,8 @@ export class FtOnboardingHintBubble extends LitElement {
   /** @param {KeyboardEvent} event */
   _onKeydown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
+      const target = /** @type {HTMLElement | null} */ (event.target);
+      if (target?.closest?.('.action')) return;
       event.preventDefault();
       this.dispatchEvent(
         new CustomEvent('ft-hint-dismiss', { bubbles: true, composed: true })
@@ -148,8 +177,24 @@ export class FtOnboardingHintBubble extends LitElement {
     }
   };
 
+  /** @param {MouseEvent} event */
+  _onAction = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dispatchEvent(
+      new CustomEvent('ft-hint-action', { bubbles: true, composed: true })
+    );
+  };
+
   render() {
-    return html`<span class="label">${this.message}</span>`;
+    return html`
+      <span class="label">${this.message}</span>
+      ${this.actionLabel
+        ? html`<button type="button" class="action" @click=${this._onAction}>
+            ${this.actionLabel}
+          </button>`
+        : nothing}
+    `;
   }
 }
 

@@ -406,7 +406,15 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 ### 明确不接线（仍属 Backlog）
 
-`achievement-modal` / `collection-shelf` / `daily-quest-card` → 纪念奖励系统排期前**只作视觉探索**，不得顺手挂进主会话路径。**已纳入产品壳（2026-07-21）**：`progress-bar`（今日同坐）、`streak-meter`（近日同坐 7 点环，非打卡竞速）、`notification-badge`（仅「?」未读朱砂点）、主次钮视觉（Sit = primary；「How shall we sit?」= secondary 描边）。Honesty Bridge Yes/No **仍同级**（见 `HONESTY_BRIDGE_CTA.md`），不套 primary/secondary 权重差。
+`achievement-modal` / `collection-shelf` / `daily-quest-card` → 纪念奖励系统排期前**只作视觉探索**，不得顺手挂进主会话路径。**已纳入产品壳（2026-07-21）**：`progress-bar`（今日同坐）、`streak-meter`（近日同坐 7 点环，非打卡竞速）、`notification-badge`（见下）、主次钮视觉（Sit = primary；「How shall we sit?」= secondary 描边）。Honesty Bridge Yes/No **仍同级**（见 `HONESTY_BRIDGE_CTA.md`），不套 primary/secondary 权重差。
+
+**`notification-badge` 用法（2026-07-23）**：
+
+| 用法 | 属性 | 颜色 | 说明 |
+|---|---|---|---|
+| 默认 / 稀缺通知 | （无 `tone`）+ 可选 `pulse` 一次 | `--color-highlight` 朱红 | 里程碑等；**勿**作 onboarding 常驻线索 |
+| Onboarding **click** 线索 | `tone="hint"` + `pulse="loop"` | `#5c7a6c` | 未读脉冲 |
+| Onboarding **peeked**（simple） | `tone="hint"` + `state="static"` | 同色 opacity≈0.4，约 5px | 已看文案、相关操作前；无动效 |
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 

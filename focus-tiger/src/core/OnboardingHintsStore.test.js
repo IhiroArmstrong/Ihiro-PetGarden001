@@ -20,15 +20,17 @@ test('normalizeHintsSeen only keeps known hintIds', () => {
   const n = normalizeHintsSeen({
     'sit-button': true,
     junk: true,
-    notice: false
+    notice: false,
+    'how-shall-we-sit': 'peeked'
   });
-  assert.equal(n['sit-button'], true);
+  assert.equal(n['sit-button'], 'done');
   assert.equal(n.junk, undefined);
   assert.equal(n.notice, undefined);
+  assert.equal(n['how-shall-we-sit'], 'peeked');
 });
 
 test('markSeen is first-write-only and ids do not interfere', () => {
-  /** @type {Record<string, true>} */
+  /** @type {Record<string, string>} */
   let saved = {};
   const store = createHintsSeenStore(
     () => saved,
@@ -40,15 +42,42 @@ test('markSeen is first-write-only and ids do not interfere', () => {
   assert.equal(store.markSeen('sit-button'), true);
   assert.equal(store.markSeen('sit-button'), false);
   assert.equal(store.isSeen('sit-button'), true);
+  assert.equal(store.isDone('sit-button'), true);
   assert.equal(store.isSeen('notice'), false);
   store.markSeen('notice');
   assert.equal(store.isSeen('notice'), true);
   assert.equal(store.isSeen('sit-button'), true);
 });
 
+test('markPeeked then markSeen: static then done (hybrid α+β)', () => {
+  /** @type {Record<string, string>} */
+  let saved = {};
+  const store = createHintsSeenStore(
+    () => saved,
+    (v) => {
+      saved = v;
+    }
+  );
+  assert.equal(store.markPeeked('how-shall-we-sit'), true);
+  assert.equal(store.isPeeked('how-shall-we-sit'), true);
+  assert.equal(store.isDone('how-shall-we-sit'), false);
+  assert.equal(store.isSeen('how-shall-we-sit'), false);
+  assert.equal(store.getAck('how-shall-we-sit'), 'peeked');
+  assert.equal(store.markPeeked('how-shall-we-sit'), false);
+  assert.equal(store.markSeen('how-shall-we-sit'), true);
+  assert.equal(store.isPeeked('how-shall-we-sit'), false);
+  assert.equal(store.isDone('how-shall-we-sit'), true);
+  assert.equal(store.getAck('how-shall-we-sit'), 'done');
+});
+
+test('legacy boolean true migrates to done', () => {
+  const n = normalizeHintsSeen({ 'rise-button': true });
+  assert.equal(n['rise-button'], 'done');
+});
+
 test('clear resets all seen flags', () => {
-  /** @type {Record<string, true>} */
-  let saved = { 'sit-button': true, notice: true };
+  /** @type {Record<string, string>} */
+  let saved = { 'sit-button': 'done', notice: 'done', 'ambient-gated': 'peeked' };
   const store = createHintsSeenStore(
     () => saved,
     (v) => {
@@ -59,6 +88,7 @@ test('clear resets all seen flags', () => {
   assert.deepEqual(store.getAll(), {});
   for (const id of HINT_IDS) {
     assert.equal(store.isSeen(id), false);
+    assert.equal(store.isPeeked(id), false);
   }
 });
 
@@ -90,7 +120,7 @@ test('resolveHintForScene picks the most specific surface', () => {
   assert.equal(resolveHintForScene({}), 'sit-button');
 });
 
-test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / quick-start / ambient-gated', () => {
+test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / quick-start / ambient-soundscape', () => {
   /** @type {string[]} */
   const ids = ['sit-button'];
   appendIdleChromeHintIds(ids, {
@@ -104,7 +134,7 @@ test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / quick-sta
     'in-app-reminder',
     'micro-ritual',
     'quick-start',
-    'ambient-gated'
+    'ambient-soundscape'
   ]);
 });
 
@@ -119,7 +149,7 @@ test('appendIdleChromeHintIds adds honesty idle entry + quick-start balls', () =
     'sit-button',
     'honesty-optional',
     'quick-start',
-    'ambient-gated'
+    'ambient-soundscape'
   ]);
 });
 
@@ -127,7 +157,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
   assert.deepEqual(resolveRemedyHintIds({}), [
     'sit-button',
     'how-shall-we-sit',
-    'ambient-gated',
+    'ambient-soundscape',
     'focus-hud-ring',
     'focus-hud-progress',
     'focus-hud-streak'
@@ -145,7 +175,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'in-app-reminder',
       'micro-ritual',
       'quick-start',
-      'ambient-gated',
+      'ambient-soundscape',
       'focus-hud-ring',
       'focus-hud-progress',
       'focus-hud-streak'
@@ -179,7 +209,7 @@ test('resolveRemedyHintIds lists scene hints without help-affordance and expands
       'how-shall-we-sit',
       'weekly-heatmap',
       'in-app-reminder',
-      'ambient-gated',
+      'ambient-soundscape',
       'focus-hud-ring',
       'focus-hud-progress',
       'focus-hud-streak'
@@ -299,7 +329,7 @@ test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () =>
 test('resolveAutoHintIds includes help-affordance on idle chrome including DORMANT', () => {
   assert.deepEqual(resolveAutoHintIds({ isDormant: true }), [
     'dormant-open',
-    'ambient-gated',
+    'ambient-soundscape',
     'help-affordance'
   ]);
   assert.deepEqual(resolveAutoHintIds({ honestyVisible: true }), [
@@ -309,7 +339,7 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   assert.deepEqual(resolveAutoHintIds({}), [
     'sit-button',
     'how-shall-we-sit',
-    'ambient-gated',
+    'ambient-soundscape',
     'help-affordance'
   ]);
   assert.deepEqual(
@@ -323,7 +353,7 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
       'weekly-heatmap',
       'in-app-reminder',
       'micro-ritual',
-      'ambient-gated',
+      'ambient-soundscape',
       'help-affordance'
     ]
   );
@@ -333,6 +363,10 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
     'focus-hud-ring',
     'focus-hud-progress',
     'focus-hud-streak'
+  ]);
+  assert.deepEqual(resolveAutoHintIds({ companionExpanded: true }), [
+    'companion-mode',
+    'help-affordance'
   ]);
   assert.deepEqual(resolveAutoHintIds({ reflectionOpen: true }), ['reflection']);
   assert.deepEqual(

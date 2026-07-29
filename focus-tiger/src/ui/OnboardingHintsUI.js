@@ -1,9 +1,9 @@
 /**
  * 分散式即时提示气泡 + 角落「?」补救入口。
- * 气泡为 Lit 组件 `ft-onboarding-hint-bubble`（响应式文案/尖角/显隐）；
- * 本类保留装配 API、锚定与补救集合逻辑。
+ * click + tier：
+ * - simple：悬停/点圆点预览 → 关框后 peeked（静止弱化圆点）；相关操作 markSeen → 移除
+ * - detailed：预览≠已读；进详情（purpose card）→ done 移除圆点
  * @see ONBOARDING_HINTS.md
- * @see docs/task-briefs/task-lit-pilot-onboarding-hints.md
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -14,6 +14,12 @@ import {
   resolveRemedyCatalogHintIds,
   selectExclusiveAutoHintIds
 } from '../core/OnboardingHintsStore.js';
+import {
+  getHintTriggerMode,
+  getHintTier,
+  isClickTriggerHint,
+  isDetailedHint
+} from '../core/onboardingHintRegistry.js';
 import { ONBOARDING_HINT_ANCHORS } from './onboardingHintAnchors.js';
 import './ft-onboarding-hint-bubble.js';
 import {
@@ -30,9 +36,6 @@ if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
 }
 
-/**
- * hintId → 锚定目标与尖角朝向（权威 map：`onboardingHintAnchors.js`）。
- */
 const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 
 /** Wide Idle parks these into ⋯ — remap hints to the more button when parked. */
@@ -208,12 +211,19 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
   return anchorCfg;
 }
 
-/** 自动提示同时最多几条（补救除外）。始终 1，对齐 RESPONSIVE_LAYOUT P1。 */
+/** 桌面精细指针：悬停 = 预览 */
+function canHoverPreview() {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  );
+}
+
 const AUTO_HINT_MAX_CONCURRENT = 1;
 
 export class OnboardingHintsUI {
   /**
-   * @param {HTMLElement} mountRoot 通常 document.body
+   * @param {HTMLElement} mountRoot
    * @param {object} [options]
    * @param {ReturnType<typeof createHintsSeenStore>} [options.store]
    * @param {() => object} [options.getScene]
@@ -224,11 +234,17 @@ export class OnboardingHintsUI {
     this.mountRoot = mountRoot;
     /** @type {Map<string, import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble>} */
     this._bubbles = new Map();
+    /** @type {Map<string, HTMLElement>} */
+    this._badges = new Map();
     /** @type {Set<string>} */
     this._visibleIds = new Set();
+    /** @type {Set<string>} */
+    this._badgeIds = new Set();
+    /** @type {Set<string>} */
+    this._clickExpandedIds = new Set();
     /** @type {Map<string, ReturnType<typeof setTimeout>>} */
     this._hideTimers = new Map();
-    /** @type {Set<string>} 补救气泡（忽略已读；sync 不会清掉） */
+    /** @type {Set<string>} */
     this._remedyIds = new Set();
     /** @type {string[]} 补救目录（主条之外；点「还有 N 条」芯片逐条展开） */
     this._catalogPending = [];
@@ -253,23 +269,22 @@ export class OnboardingHintsUI {
     const helpMark = document.createElement('span');
     helpMark.className = 'onboarding-hint-help__mark';
     helpMark.textContent = '?';
-    this.helpBadge = document.createElement(NOTIFICATION_BADGE_TAG);
-    this.helpBadge.className = 'onboarding-hint-help__badge';
-    this.helpBadge.setAttribute('aria-hidden', 'true');
-    this.helpBtn.append(helpMark, this.helpBadge);
+    this.helpBtn.append(helpMark);
     this.helpBtn.addEventListener('click', () => {
+      // 点 ? 打开补救 + 用途简介卡 = detailed 进详情 → done
       this.markSeen('help-affordance');
       this.showRemedy();
     });
 
     mountRoot.append(this.helpBtn);
     this._ensurePurposeCard();
-    this._syncHelpBadge();
     this._injectHelpStyles();
     this.syncDiscoveryDots();
     this._onReposition = () => this.repositionAll();
+    this._onDocPointerDown = (event) => this._handleOutsidePointer(event);
     window.addEventListener('resize', this._onReposition);
     window.addEventListener('scroll', this._onReposition, true);
+    document.addEventListener('pointerdown', this._onDocPointerDown, true);
 
     this._unsubLocale = onLocaleChange(() => {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
@@ -279,6 +294,9 @@ export class OnboardingHintsUI {
         this._paint(hintId, meta);
       }
       this.syncDiscoveryDots();
+      for (const hintId of this._badgeIds) {
+        this._syncBadgeChrome(hintId);
+      }
     });
 
     // 点 ? 后的用途卡 / 补救气泡：点框外空白收起
@@ -308,18 +326,29 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 未读则自动展示；已读则 no-op。
-   * 自动路径互斥：同时最多 AUTO_HINT_MAX_CONCURRENT 条（优先级见 selectExclusiveAutoHintIds）。
    * @param {string} hintId
    * @returns {boolean}
    */
   maybeShowAuto(hintId) {
     if (!HINT_LOCALE_KEYS[hintId]) return false;
-    if (this.store.isSeen(hintId)) return false;
     if (this._remedyIds.size > 0) return false;
 
+    const mode = getHintTriggerMode(hintId);
+    if (mode === 'manual' || mode === 'legacy') return false;
+
+    if (mode === 'click') {
+      if (this.store.isDone(hintId)) return false;
+      this._showClickBadge(hintId);
+      return true;
+    }
+
+    if (this.store.isSeen(hintId)) return false;
+
     const otherAutos = [...this._visibleIds].filter(
-      (id) => id !== hintId && !this._remedyIds.has(id)
+      (id) =>
+        id !== hintId &&
+        !this._remedyIds.has(id) &&
+        getHintTriggerMode(id) === 'auto'
     );
     if (otherAutos.length > 0) {
       const winner = selectExclusiveAutoHintIds([hintId, ...otherAutos], {
@@ -336,39 +365,54 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 仅保留 listed 中的自动提示（已读的不会出现）；关掉不在列表里的自动气泡。
-   * 自动路径经互斥后同时最多 1 条；补救气泡若正显示且不在列表中也会被关掉——调用方应在补救后勿立刻 sync 清掉。
    * @param {string[]} hintIds
    * @returns {void}
    */
   syncVisibleAutos(hintIds) {
-    const want = hintIds.filter((id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id));
+    // click：!done（含 peeked 静止圆点）；auto：!done（= !isSeen）
+    const want = hintIds.filter(
+      (id) => HINT_LOCALE_KEYS[id] && !this.store.isDone(id)
+    );
     this._lastAutoWant = want;
-    const show = selectExclusiveAutoHintIds(want, {
+
+    const autoWant = want.filter((id) => getHintTriggerMode(id) === 'auto');
+    const clickWant = want.filter((id) => isClickTriggerHint(id));
+
+    const show = selectExclusiveAutoHintIds(autoWant, {
       maxConcurrent: AUTO_HINT_MAX_CONCURRENT
     });
     const showSet = new Set(show);
 
     for (const id of [...this._visibleIds]) {
       if (this._remedyIds.has(id)) continue;
+      if (this._clickExpandedIds.has(id)) continue;
       if (!showSet.has(id)) this.hideBubble(id);
     }
     for (const id of show) {
       this.maybeShowAuto(id);
     }
+
+    const clickWantSet = new Set(clickWant);
+    for (const id of [...this._badgeIds]) {
+      if (!clickWantSet.has(id)) this._hideClickBadge(id);
+    }
+    for (const id of clickWant) {
+      if (!this._clickExpandedIds.has(id)) this._showClickBadge(id);
+    }
     this.syncDiscoveryDots();
   }
 
-  /**
-   * 当前自动气泡关掉后，从 _lastAutoWant 串行下一条（仍受互斥）。
-   * @returns {void}
-   */
   _promoteNextAuto() {
     if (this._remedyIds.size > 0) return;
-    const openAutos = [...this._visibleIds].filter((id) => !this._remedyIds.has(id));
+    const openAutos = [...this._visibleIds].filter(
+      (id) => !this._remedyIds.has(id) && getHintTriggerMode(id) === 'auto'
+    );
     if (openAutos.length > 0) return;
     const want = (this._lastAutoWant || []).filter(
-      (id) => HINT_LOCALE_KEYS[id] && !this.store.isSeen(id)
+      (id) =>
+        HINT_LOCALE_KEYS[id] &&
+        !this.store.isDone(id) &&
+        getHintTriggerMode(id) === 'auto'
     );
     const next = selectExclusiveAutoHintIds(want, {
       maxConcurrent: AUTO_HINT_MAX_CONCURRENT
@@ -377,31 +421,39 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 标记已读并隐藏（若当前正显示该条）。
+   * 完全完成（操作完成 / 进详情）：圆点移除。
    * @param {string} hintId
-   * @returns {void}
    */
   markSeen(hintId) {
     this.store.markSeen(hintId);
+    this._hideClickBadge(hintId);
+    this._clickExpandedIds.delete(hintId);
     if (this._visibleIds.has(hintId)) {
       this.hideBubble(hintId);
     }
-    if (hintId === 'help-affordance') this._syncHelpBadge();
     this.syncDiscoveryDots();
   }
 
-  /** Vermillion mark only while help-affordance unseen — never persistent chrome noise. */
+  /** Legacy vermillion ? badge — unused when help-affordance is click mint badge. */
   _syncHelpBadge() {
     if (!this.helpBadge) return;
-    const show = !this.store.isSeen('help-affordance');
-    this.helpBadge.hidden = !show;
-    if (show) this.helpBadge.setAttribute('pulse', '');
-    else this.helpBadge.removeAttribute('pulse');
+    this.helpBadge.hidden = true;
+    this.helpBadge.removeAttribute('pulse');
   }
 
   /** Soft blue dots on unread Quick Start / Focusing HUD chrome. */
   syncDiscoveryDots() {
     syncAllDiscoveryDots(this.store);
+  }
+
+  /**
+   * simple：看过文案 → peeked + 静止弱化圆点。
+   * @param {string} hintId
+   */
+  markPeeked(hintId) {
+    if (getHintTier(hintId) !== 'simple') return;
+    this.store.markPeeked(hintId);
+    this._syncBadgeChrome(hintId);
   }
 
   /** 补救：情境主条 +「还有 N 条」芯片；点芯片逐条展开（同时最多主条 + 1）。用途简介卡仍同出。 */
@@ -420,6 +472,9 @@ export class OnboardingHintsUI {
     }
     this.hideBubble('help-remedy');
     this._remedyIds = nextRemedy;
+
+    for (const id of [...this._badgeIds]) this._hideClickBadge(id);
+    this._clickExpandedIds.clear();
 
     this._paint(primary, { remedy: true });
     this._syncCatalogChip(catalog.length, {
@@ -553,8 +608,7 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * @param {string} [hintId] 省略则关掉全部
-   * @returns {void}
+   * @param {string} [hintId]
    */
   hideBubble(hintId) {
     if (!hintId) {
@@ -567,9 +621,11 @@ export class OnboardingHintsUI {
     if (bubble) {
       bubble.open = false;
       bubble.message = '';
+      bubble.actionLabel = '';
     }
     this._visibleIds.delete(hintId);
     this._paintMeta.delete(hintId);
+    this._clickExpandedIds.delete(hintId);
     if (this._remedyIds.has(hintId)) this._remedyIds.delete(hintId);
     if (this._catalogShownId === hintId) this._catalogShownId = null;
     if (this._remedyPrimaryId === hintId) this._remedyPrimaryId = null;
@@ -582,6 +638,8 @@ export class OnboardingHintsUI {
     this._remedyPrimaryId = null;
     this._catalogShownId = null;
     this._hideCatalogChip();
+    this._clickExpandedIds.clear();
+    for (const id of [...this._badgeIds]) this._hideClickBadge(id);
     this._syncHelpBadge();
     this.syncDiscoveryDots();
   }
@@ -591,6 +649,9 @@ export class OnboardingHintsUI {
       this._positionBubble(hintId);
     }
     this._resolveRemedyBubbleLayout();
+    for (const hintId of this._badgeIds) {
+      this._positionBadge(hintId);
+    }
     this._positionPurposeCard();
     this._positionCatalogChip();
     this.syncDiscoveryDots();
@@ -701,10 +762,17 @@ export class OnboardingHintsUI {
     if (this._onDocPointer) {
       document.removeEventListener('pointerdown', this._onDocPointer, true);
     }
+    if (this._onDocPointerDown) {
+      document.removeEventListener('pointerdown', this._onDocPointerDown, true);
+    }
     for (const timer of this._hideTimers.values()) window.clearTimeout(timer);
     this._hideTimers.clear();
     for (const bubble of this._bubbles.values()) bubble.remove();
     this._bubbles.clear();
+    for (const badge of this._badges.values()) badge.remove();
+    this._badges.clear();
+    this._badgeIds.clear();
+    this._clickExpandedIds.clear();
     this.purposeCard?.remove();
     this.purposeCard = null;
     this._catalogChip?.remove();
@@ -725,11 +793,18 @@ export class OnboardingHintsUI {
     bubble.message = message;
     bubble.open = true;
     bubble.remedy = remedy;
+    bubble.actionLabel =
+      !remedy && isDetailedHint(hintId) ? t('HINT_DETAIL_CTA') : '';
     bubble.dataset.hintId = hintId;
     bubble.dataset.remedy = remedy ? '1' : '0';
     bubble.dataset.remedyAnchor = anchorNearHelp ? 'help' : '';
-    bubble.setAttribute('aria-label', `${message}. ${t('HINT_DISMISS_ARIA')}`);
-    bubble.title = t('HINT_DISMISS_ARIA');
+    bubble.setAttribute(
+      'aria-label',
+      bubble.actionLabel
+        ? `${message}. ${bubble.actionLabel}`
+        : `${message}. ${t('HINT_DISMISS_ARIA')}`
+    );
+    bubble.title = bubble.actionLabel || t('HINT_DISMISS_ARIA');
     const anchor = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
     bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (anchor.tip);
     this._visibleIds.add(hintId);
@@ -743,6 +818,9 @@ export class OnboardingHintsUI {
       window.setTimeout(
         () => {
           if (bubble.remedy) this.hideBubble(hintId);
+          else if (this._clickExpandedIds.has(hintId)) {
+            this._collapseClickHint(hintId, { fromTimeout: true });
+          }
         },
         remedy ? 8000 : 14000
       )
@@ -751,7 +829,6 @@ export class OnboardingHintsUI {
 
   /**
    * @param {string} hintId
-   * @returns {import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble}
    */
   _ensureBubble(hintId) {
     let bubble = this._bubbles.get(hintId);
@@ -763,14 +840,15 @@ export class OnboardingHintsUI {
     bubble.addEventListener('ft-hint-dismiss', () => {
       this._dismissByUser(hintId);
     });
+    bubble.addEventListener('ft-hint-action', () => {
+      this._openDetailedHint(hintId);
+    });
     this.mountRoot.appendChild(bubble);
     this._bubbles.set(hintId, bubble);
     return bubble;
   }
 
   /**
-   * 用户点击/键盘关闭：立刻消失。
-   * 自动提示记已读（不再自动出现）并串行下一条；补救仅隐藏，不改已读。
    * @param {string} hintId
    */
   _dismissByUser(hintId) {
@@ -786,8 +864,260 @@ export class OnboardingHintsUI {
       this.hideBubble(hintId);
       return;
     }
+    if (isClickTriggerHint(hintId)) {
+      this._collapseClickHint(hintId, { acknowledgeSimple: true });
+      return;
+    }
     this.markSeen(hintId);
     this._promoteNextAuto();
+  }
+
+  /**
+   * detailed：进详情页 → done。
+   * @param {string} hintId
+   */
+  _openDetailedHint(hintId) {
+    if (!isDetailedHint(hintId)) return;
+    this._collapseClickHint(hintId, { acknowledgeSimple: false });
+    this.markSeen(hintId);
+    this._showPurposeCard();
+  }
+
+  /**
+   * @param {string} hintId
+   */
+  _showClickBadge(hintId) {
+    if (!isClickTriggerHint(hintId)) return;
+    if (this.store.isDone(hintId)) return;
+    if (this._remedyIds.size > 0) return;
+
+    const badge = this._ensureBadge(hintId);
+    this._badgeIds.add(hintId);
+    badge.hidden = false;
+    this._syncBadgeChrome(hintId);
+    this._positionBadge(hintId);
+  }
+
+  /**
+   * @param {string} hintId
+   */
+  _hideClickBadge(hintId) {
+    const badge = this._badges.get(hintId);
+    if (badge) badge.hidden = true;
+    this._badgeIds.delete(hintId);
+  }
+
+  /**
+   * @param {string} hintId
+   */
+  _syncBadgeChrome(hintId) {
+    const badge = this._badges.get(hintId);
+    if (!badge) return;
+    const peeked = this.store.isPeeked(hintId) && getHintTier(hintId) === 'simple';
+    if (peeked) {
+      badge.setAttribute('state', 'static');
+      badge.removeAttribute('pulse');
+      badge.setAttribute('aria-label', t('HINT_BADGE_PEEKED_ARIA'));
+    } else {
+      badge.removeAttribute('state');
+      badge.setAttribute('pulse', 'loop');
+      badge.setAttribute('aria-label', t('HINT_BADGE_ARIA'));
+    }
+    badge.setAttribute(
+      'aria-expanded',
+      this._clickExpandedIds.has(hintId) ? 'true' : 'false'
+    );
+    badge.dataset.ack = this.store.getAck(hintId) || 'unread';
+  }
+
+  /**
+   * @param {string} hintId
+   */
+  _ensureBadge(hintId) {
+    let badge = this._badges.get(hintId);
+    if (badge) return badge;
+
+    badge = document.createElement(NOTIFICATION_BADGE_TAG);
+    badge.className = 'onboarding-hint-badge';
+    badge.setAttribute('tone', 'hint');
+    badge.setAttribute('tabindex', '0');
+    badge.setAttribute('role', 'button');
+    badge.dataset.hintId = hintId;
+    badge.hidden = true;
+
+    badge.addEventListener('pointerenter', () => {
+      if (!canHoverPreview()) return;
+      if (this.store.isDone(hintId)) return;
+      this._expandClickHint(hintId);
+    });
+    badge.addEventListener('pointerleave', (event) => {
+      if (!canHoverPreview()) return;
+      const related = /** @type {Node | null} */ (event.relatedTarget);
+      const bubble = this._bubbles.get(hintId);
+      if (related && bubble?.contains(related)) return;
+      this._collapseClickHint(hintId, { acknowledgeSimple: true });
+    });
+    badge.addEventListener('focus', () => {
+      if (this.store.isDone(hintId)) return;
+      this._expandClickHint(hintId);
+    });
+    badge.addEventListener('blur', (event) => {
+      const related = /** @type {Node | null} */ (event.relatedTarget);
+      const bubble = this._bubbles.get(hintId);
+      if (related && (badge.contains(related) || bubble?.contains(related))) return;
+      // detailed：失焦只关预览，仍脉冲；simple：peeked
+      this._collapseClickHint(hintId, {
+        acknowledgeSimple: getHintTier(hintId) === 'simple'
+      });
+    });
+    badge.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._onBadgeActivate(hintId);
+    });
+    badge.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        this._onBadgeActivate(hintId);
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        this._collapseClickHint(hintId, {
+          acknowledgeSimple: getHintTier(hintId) === 'simple'
+        });
+      }
+    });
+
+    this.mountRoot.appendChild(badge);
+    this._badges.set(hintId, badge);
+    return badge;
+  }
+
+  /**
+   * 触屏点圆点 = 预览；detailed 已展开时再点 / Enter = 进详情。
+   * @param {string} hintId
+   */
+  _onBadgeActivate(hintId) {
+    if (this.store.isDone(hintId)) {
+      this._hideClickBadge(hintId);
+      return;
+    }
+    if (isDetailedHint(hintId) && this._clickExpandedIds.has(hintId)) {
+      this._openDetailedHint(hintId);
+      return;
+    }
+    if (this._clickExpandedIds.has(hintId) && this._visibleIds.has(hintId)) {
+      this._collapseClickHint(hintId, { acknowledgeSimple: true });
+      return;
+    }
+    this._expandClickHint(hintId);
+  }
+
+  /**
+   * @param {string} hintId
+   */
+  _expandClickHint(hintId) {
+    if (this.store.isDone(hintId)) return;
+    for (const id of [...this._clickExpandedIds]) {
+      if (id !== hintId) {
+        this._collapseClickHint(id, {
+          acknowledgeSimple: getHintTier(id) === 'simple'
+        });
+      }
+    }
+    const otherAutos = [...this._visibleIds].filter(
+      (id) =>
+        id !== hintId &&
+        !this._remedyIds.has(id) &&
+        getHintTriggerMode(id) === 'auto'
+    );
+    for (const id of otherAutos) this.hideBubble(id);
+
+    this._clickExpandedIds.add(hintId);
+    this._paint(hintId, { remedy: false });
+    this._syncBadgeChrome(hintId);
+  }
+
+  /**
+   * @param {string} hintId
+   * @param {{ acknowledgeSimple?: boolean, fromTimeout?: boolean }} [opts]
+   */
+  _collapseClickHint(hintId, { acknowledgeSimple = false, fromTimeout = false } = {}) {
+    const wasExpanded = this._clickExpandedIds.has(hintId);
+    this._clickExpandedIds.delete(hintId);
+    window.clearTimeout(this._hideTimers.get(hintId));
+    this._hideTimers.delete(hintId);
+    const bubble = this._bubbles.get(hintId);
+    if (bubble) {
+      bubble.open = false;
+      bubble.message = '';
+      bubble.actionLabel = '';
+    }
+    this._visibleIds.delete(hintId);
+    this._paintMeta.delete(hintId);
+
+    if (
+      acknowledgeSimple &&
+      wasExpanded &&
+      getHintTier(hintId) === 'simple' &&
+      !this.store.isDone(hintId)
+    ) {
+      this.markPeeked(hintId);
+    }
+
+    if (!this.store.isDone(hintId) && this._lastAutoWant.includes(hintId)) {
+      this._showClickBadge(hintId);
+    } else {
+      this._syncBadgeChrome(hintId);
+    }
+    if (!fromTimeout) this._promoteNextAuto();
+    else this._promoteNextAuto();
+  }
+
+  /**
+   * @param {PointerEvent} event
+   */
+  _handleOutsidePointer(event) {
+    if (this._clickExpandedIds.size === 0) return;
+    const target = /** @type {Node | null} */ (event.target);
+    const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
+    for (const hintId of [...this._clickExpandedIds]) {
+      const bubble = this._bubbles.get(hintId);
+      const badge = this._badges.get(hintId);
+      if (target && bubble?.contains(target)) continue;
+      if (target && badge?.contains(target)) continue;
+      if (bubble && path.includes(bubble)) continue;
+      if (badge && path.includes(badge)) continue;
+      // simple：点外部 = peeked；detailed：只关预览仍脉冲
+      this._collapseClickHint(hintId, {
+        acknowledgeSimple: getHintTier(hintId) === 'simple'
+      });
+    }
+  }
+
+  /**
+   * @param {string} hintId
+   */
+  _positionBadge(hintId) {
+    const badge = this._badges.get(hintId);
+    if (!badge || badge.hidden) return;
+
+    const cfg = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
+    const anchor = resolveAnchorEl(cfg.selector);
+    if (!anchor) {
+      badge.hidden = true;
+      return;
+    }
+
+    const ar = anchor.getBoundingClientRect();
+    const peeked = this.store.isPeeked(hintId);
+    const size = peeked ? 6 : 10;
+    let left = ar.right - size / 2;
+    let top = ar.top - size / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - size - 8));
+    top = Math.max(8, Math.min(top, window.innerHeight - size - 8));
+    badge.style.left = `${Math.round(left)}px`;
+    badge.style.top = `${Math.round(top)}px`;
   }
 
   _positionBubble(hintId) {
@@ -1076,14 +1406,6 @@ export class OnboardingHintsUI {
         line-height: 52px;
         text-align: center;
       }
-      .onboarding-hint-help__badge {
-        position: absolute;
-        top: 6px;
-        right: 6px;
-      }
-      .onboarding-hint-help__badge[hidden] {
-        display: none !important;
-      }
       .onboarding-hint-help:hover {
         filter: brightness(1.04);
       }
@@ -1094,6 +1416,30 @@ export class OnboardingHintsUI {
           0 -1px 0 rgba(120, 80, 40, 0.14) inset,
           0 1px 0 rgba(160, 118, 72, 0.35),
           0 4px 10px rgba(44, 31, 20, 0.12);
+      }
+      .onboarding-hint-badge {
+        position: fixed;
+        z-index: 27;
+        width: 10px;
+        height: 10px;
+        padding: 4px;
+        margin: -4px;
+        box-sizing: content-box;
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+      }
+      .onboarding-hint-badge[data-ack="peeked"] {
+        width: 6px;
+        height: 6px;
+      }
+      .onboarding-hint-badge[hidden] {
+        display: none !important;
+      }
+      .onboarding-hint-badge:focus-visible {
+        outline: 2px solid #5c7a6c;
+        outline-offset: 2px;
+        border-radius: 50%;
       }
       .onboarding-app-purpose {
         position: fixed;
