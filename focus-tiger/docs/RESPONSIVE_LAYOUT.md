@@ -19,11 +19,13 @@
 
 **非目标（维持 Backlog，勿混进当前 Task）**：原生 App、系统级 Focus Mode、后台计时、PWA 安装强推。见 `PROCESS.md` Backlog。
 
-### 工程债 · 窄宽屏单代码线（2026-07-25 排期）
+### 工程债 · 窄宽屏单代码线（2026-07-25 排期 · 2026-07-30 Brief）
 
 当前实现：≤479 = `NarrowIdleShell`（抽屉）；≥480 = `WideIdleMoreMenu`（⋯ Popover）。业务应共享，壳形态可因断点不同——**禁止**长期用两条 git 分支分别演进同一套 chrome/audio 修复（分叉漏修根因）。
 
-**已拍板**：合并为响应式单代码线 **值得做**，但 **等** `feature/wide-idle-more-menu` **push** **且** **⑦ 场景 O（375 故事）收口** 后再开 Task（`TASKS.md` 响应式 Task 3）。**2026-07-25 晚**：宽屏 P0 ①–⑥⑧ 已 OK，可先 push 备份；⑦ 另线 `fix/scenario-o-375-chrome-layout`——**禁止**仅凭 wide-idle push 开 Task 3。勿与未验收修复叠加重构。
+**状态（2026-07-30）**：**Brief 已写 · 可排期开工**。任务书：`task-briefs/task-responsive-single-chrome-line.md`（`TASKS.md` 响应式 Task 3）。触发条件已满足：wide-idle 内容在 `develop` 祖先链（`feature/wide-idle-more-menu` 空壳已删）、⑦ 场景 O（375）相关修多已收口。**下一步**：开 `feature/responsive-single-chrome-line`，按 Brief 分阶段实施；**尚未写业务代码**。仍禁止与未验收的同文件 chrome 修叠同一批重构；邀测须单独跑 §9 W1–W8（勿与窄屏 O 修混验）。
+
+**沿革**：2026-07-25 拍板「值得做，但等 wide-idle push + O 收口」；2026-07-25 晚宽屏 P0 ①–⑥⑧ OK、⑦ 另线；2026-07-29 空壳分支删除、O 修进 develop。
 
 ---
 
@@ -247,6 +249,7 @@
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| 1.7 | 2026-07-30 | 工程债：Task 3 Brief 已写 · 可排期开工（`task-responsive-single-chrome-line.md`） |
 | 1.6 | 2026-07-26 | 窄屏主画布三主钮（Sit / Quick Start / Honesty）；抽屉精简为次要项 |
 | 1.5 | 2026-07-25 | §6.2：宽屏故事最小集（对齐 `DEV_WORKFLOW_QUALITY` §9）；关单双视口对称 |
 | 1.4 | 2026-07-25 | §6.2 / 6.2b：375 故事最小集 + 双壳不变量摘要（对齐 `DEV_WORKFLOW_QUALITY` §8） |
