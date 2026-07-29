@@ -1,6 +1,6 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v13';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v14';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -31,7 +31,6 @@ export class NarrowIdleShell {
    *   root?: HTMLElement,
    *   getHudStateEl?: () => HTMLElement | null,
    *   handlers?: {
-   *     onMute?: () => void | Promise<void>,
    *     onSound?: () => void,
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
@@ -100,7 +99,8 @@ export class NarrowIdleShell {
   }
 
   /**
-   * Mirror ambient mute state onto the ActionBar ♪ (parked mute btn is invisible).
+   * Mirror ambient preference onto the ActionBar ♪ slash (parked mute btn is invisible).
+   * Click opens Soundscape — slash only reflects music-on preference.
    * @param {{ musicOn?: boolean }} [state]
    * @returns {void}
    */
@@ -111,7 +111,7 @@ export class NarrowIdleShell {
     muteBtn.classList.toggle('is-music-off', !musicOn);
     muteBtn.setAttribute(
       'aria-label',
-      musicOn ? t('AMBIENT_MUSIC_OFF_ARIA') : t('AMBIENT_MUSIC_ON_ARIA')
+      t('AMBIENT_TOGGLE_ARIA')
     );
   }
 
@@ -365,7 +365,7 @@ export class NarrowIdleShell {
     const title = this.sheet?.querySelector('[data-role="sheet-title"]');
     const close = this.sheet?.querySelector('[data-role="close"]');
     if (helpBtn) helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
-    if (muteBtn) muteBtn.setAttribute('aria-label', t('AMBIENT_MUSIC_OFF_ARIA'));
+    if (muteBtn) muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
     if (title) title.textContent = t('NARROW_SHEET_TITLE');
     if (close) {
       close.textContent = '×';
@@ -653,11 +653,7 @@ export class NarrowIdleShell {
    * @returns {void}
    */
   _proxy(key) {
-    if (key === 'mute') {
-      void this.handlers.onMute?.();
-      return;
-    }
-    if (key === 'sound' || key === 'music') {
+    if (key === 'mute' || key === 'sound' || key === 'music') {
       this.clearStage();
       document.body.classList.add('ft-narrow-stage-sound');
       this.handlers.onSound?.();
@@ -1168,13 +1164,37 @@ export class NarrowIdleShell {
           top: 0 !important;
           bottom: auto !important;
         }
-        /* ActionBar ♪ owns mute on narrow — hide duplicate floating mute */
+        /* ActionBar ♪ owns Sound entry on narrow — hide duplicate floating mute */
         body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__mute {
           opacity: 0 !important;
           visibility: hidden !important;
           pointer-events: none !important;
           position: fixed !important;
           left: -9999px !important;
+        }
+        /* Focusing: ActionBar ♪ opens Soundscape — stage panel like Idle Sound */
+        body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__focus-chrome {
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
+          align-items: stretch !important;
+          position: fixed !important;
+        }
+        body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__panel {
+          display: block !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+        }
+        body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__fab,
+        body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__nudge {
+          display: none !important;
         }
         /* Session timer stays on FocusHUD, below persistent ActionBar */
         body.ft-narrow-shell.ft-narrow-focusing #focus-hud {
