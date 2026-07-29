@@ -153,14 +153,17 @@
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
-#### C. 下一步自动化（未做 · 排 Task 2/3）
+#### C. 下一步自动化（未做 · 排 Task 3→2→扩 smoke）
+
+> **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、已拍板后续顺序）。本表 §C 只排期；改覆盖结论先改审计文档。
 
 | 优先级 | 内容 | 对应 bug/场景 |
 |---|---|---|
-| Task 2 | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock） | 场景 E/F；Offline/Flow 模式矩阵 |
-| Task 3 | Playwright **真实 Honesty 补登 → 桥接 Yes → Arrival DOM**（勿仅 `__honestyBridge` 注入） | 场景 D/N；补登回流 |
+| **Task 3**（先） | Playwright **真实 Honesty 补登 → 桥接 Yes → Arrival DOM**（勿仅 `__honestyBridge` 注入） | 场景 D/N；补登回流 |
+| **Task 2** | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock），并入 `test:smoke` | 场景 E/F；Offline/Flow 模式矩阵 |
+| **扩 smoke** | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约、AcrossTools 阈值 mock） | 防 PR 冒烟漏跑；见审计 §4 |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
-| 不做 | 真实切页 60s、Celebrating 像素、Idle 闪不闪 | 留人工分列 → **[L262](#L262)** Idle（**已通过**） · **[L265](#L265)** Re-focus（**已通过**） · **[L266](#L266)** Celebrating / SessionComplete（**已通过**） · **[L261–L267](#L261)** 场景 checklist |
+| **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
 
 **命令**：`cd focus-tiger && npm run test:smoke`（scenario + 重置 L-logic + **SessionUiGate** + HUD 映射等）· `npm run test:e2e`（约 **32** 条：产品壳 2 + Companion A/I/K 等 + 意图回显 2 + 热力图 7 + 提醒 4 + FocusHUD hover 1 + 微仪式/桥接 4 等）。本地默认 **Playwright 自带 Chromium**（不唤起系统 Chrome）。缺浏览器时先 `npm run test:e2e:install`。要用系统 Chrome 兜底：`PLAYWRIGHT_CHANNEL=chrome npm run test:e2e`。
 
