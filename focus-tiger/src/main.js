@@ -249,8 +249,7 @@ async function init() {
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
   const narrowIdleShell = new NarrowIdleShell({
     root: document.body,
-    getHudStateEl: () => document.getElementById('hud-state'),
-    getHudTimeEl: () => document.getElementById('hud-time')
+    getHudStateEl: () => document.getElementById('hud-state')
   });
   if (import.meta.env.DEV) {
     window.__narrowIdleShell = narrowIdleShell;

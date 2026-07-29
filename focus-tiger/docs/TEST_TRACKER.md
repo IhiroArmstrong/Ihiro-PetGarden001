@@ -6,6 +6,15 @@
 
 **权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。
 
+**人工验收唯一基线（2026-07-29 起 · 强制 · SSOT）**：关单级 / 可写入本表「用户反馈」或据以改状态的**人工验收**，**只认 `origin/develop` 当前 tip**。
+
+1. **必须**报出验收时的 **commit hash**（建议先 `git fetch origin develop`，再对照 `git rev-parse origin/develop`）。  
+2. 该 hash **必须等于**当时的 `origin/develop` tip。  
+3. **缺 hash、或 hash ≠ `origin/develop` tip**（含在 `feature/*` / `fix/*` / 过时 worktree / 未 fetch 的本地 develop 上测）→ 该次验收结论 **一律无效**，**必须**在同步到 tip 后 **重新验证**；禁止据此标「已通过」或关闭「有问题」。  
+4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。
+
+协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`。
+
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 演示会话时长默认 **`DEMO_SESSION_MINUTES = 1`**；可用 **`?sessionMinutes=5`** 拉长（场景 B Re-focus 真实切页须用）。  
 
@@ -14,6 +23,13 @@
 **375 故事矩阵（2026-07-25 起）**：凡改动 **Idle chrome / Arrival / Honesty / Hints**，步骤默认含 **`DEV_WORKFLOW_QUALITY.md` §8「375 故事最小集」**（非仅壳切换烟测）。外侧取消类须含「点 tip 只关 tip、不关面板」。关单：**禁止**仅凭「宽屏人工 OK」关闭 chrome 行，须注明「375 故事是否测过」。双壳不变量见 `SHARED_RESOURCES.md` §6。  
 
 **宽屏故事矩阵（2026-07-25 起）**：同上 chrome 类任务，步骤默认含 **`DEV_WORKFLOW_QUALITY.md` §9「宽屏故事最小集」**（≥480 / 建议 ≥900；目标壳 Sit+⚡+⋯ + Popover 代理；旧竖排 dock 见 §9.2）。关单：**禁止**仅凭「375 OK」或「⋯ 在」关闭；须注明「宽屏故事是否测过」（N24）。  
+
+**`position: fixed` 全屏/半屏容器 ↔ 既有浮层（2026-07-29 起）**：凡**新增**（或大幅改写）一个 `position: fixed` 的全屏 / 半屏壳（例：`NarrowIdleShell`、底部抽屉宿主、staged 全宽层），**禁止**只给新组件自己写 e2e。必须同时：
+
+1. **手工/DevTools 检查**是否遮挡或截断已有浮层类组件（Reminder 面板、应用内提醒横幅、onboarding tip、FocusHUD 悬停浮层等——凡挂在 `#ui-overlay` 或同层 fixed 的都算）。  
+2. **给每个受影响的既有组件补一条对应窄屏视口（默认 375×667）的 e2e**（断言在视口内 / 不被裁切 / 可点），不得只靠默认宽屏视口冒烟。
+
+**为什么**：Bug1/Bug2（Reminder 面板在 375 被新壳 staged 居中裁切、`left` 为负等）说明——旧 e2e 只在默认视口锁「面板存在」，**没有 375 覆盖**时，新 fixed 容器会悄悄改布局，宽屏仍绿、窄屏已坏。壳烟测 ≠ 浮层回归。  
 
 | 链接 | 用途 |
 |---|---|
@@ -264,7 +280,8 @@
 | 人工 · How shall we sit? 立刻展开三选一 | UI可见 | 已通过 | 1) `?product=1` 重置本地状态。2) **不要点 Sit**，直接点 **How shall we sit?**。3) 须**立刻**出现 Here & Now / Offline Space / Flow State 三选一，**不是**「What is present right now?」Arrival 框。4) 回流：Rise 结束后再点 hint 仍展开三选一。 | 2026-07-20 用户书面：点 How shall we sit? 出 Arrival 框不对。**2026-07-25 用户书面（5174）**：**测试 OK**。 | `?product=1` · `.session-start-dock__hint` | 2026-07-25 |
 | 浏览器 e2e 产品壳冒烟（Playwright） | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e`（**2 条**）：`?product=1` 见 Sit、无调试面板；实验室有「重置全部本地状态」。 | — | `e2e/product-shell.smoke.spec.js` | 2026-07-20 |
 | 浏览器 e2e harness · storage wipe + static webServer | 纯后端 | 仅单元测试覆盖 | **2026-07-26/27 根因**：`openFreshProductShell` 曾在**每次**导航 wipe `focus-tiger.*`，heatmap seed→`reload()` 后种子被清 → `expected lit for YYYY-MM-DD`（日期来自 `shift(-6)` 相对日，**非**硬编码产品日、**非**产品 lit 逻辑错）。已改为 **每 browser context 只 wipe 一次**。全量套件：`npm run build` + **Node `scripts/e2e-static-server.js`**（替 vite preview，避中途 goto 风暴）。**`playwright.ci-preview.config.js` 已对齐同一 static server**（`:5180`，与主 harness 一致；来自 stash WIP 收尾）。e2e hook 生产构建暴露：`__honestyBridge` / `__inAppReminder` / `__dailyCompletionStore` / `__companionModePicker`。实验室 reset 钮仅 vite serve 有；preview 下该用例 skip。窄屏 catalog tip 抬升 + e2e poll。覆盖层：**DOM e2e** harness；**不**锁序列观感。 | — | `e2e/helpers/product-shell.js` · `playwright.config.js` · `playwright.ci-preview.config.js` · `scripts/e2e-static-server.js` · `src/main.js` · `OnboardingHintsUI.js` | 2026-07-27 |
-| 375 窄屏 Reminder 面板 staged 不溢出视口 | UI可见 | 待人工测试 | **375×667**：`?product=1` Idle → 上滑抽屉 → 点 Reminder → `#reminder-preference-panel` 须完全在视口内（`left ≥ 0`，右缘 ≤ 375）。**回流**：关面板 → 再开。**自动化**：e2e `weekly-practice-heatmap.spec.js` Reminder boundingBox 断言。验收须注明 **commit + worktree + 端口**（见 `COLLAB.md` §五）。 | **2026-07-27**：DevTools 见面板 `left: -50.5px` 被截断（staged 居中 + `right:0` 锚定）。已改 `ReminderPreferenceUI` 窄屏居中于 toggle。 | `?product=1` · `.ft-narrow-grabber` · `#reminder-preference-panel` · e2e `weekly-practice-heatmap.spec.js` | 2026-07-27 |
+| 375 窄屏 Reminder 面板 staged 不溢出视口 | UI可见 | 已通过 | **375×667**：`?product=1` Idle → 上滑抽屉 → 点 Reminder → `#reminder-preference-panel` 须完全在视口内（`left ≥ 0`，右缘 ≤ 375）。**回流**：关面板 → 再开。**自动化**：e2e `weekly-practice-heatmap.spec.js` Reminder boundingBox 断言。验收须注明 **commit + worktree + 端口**（见 `COLLAB.md` §五）。 | **2026-07-27**：DevTools 见面板 `left: -50.5px` 被截断。已改窄屏居中 / stage pin（`6e32bcf` → PR#10）。**2026-07-29 用户书面（wt-docs-6.6 · develop @ a1dbc9c · :5173 · 375）**：不溢出，正常了 — **测试 OK**。 | `?product=1` · `.ft-narrow-grabber` · `#reminder-preference-panel` · e2e `weekly-practice-heatmap.spec.js` | 2026-07-29 |
+| 窄屏 ActionBar · 常显本机墙钟（非会话计时） | UI可见 | 待人工测试 | **主路径（375）**：Idle / Arrival / Focusing 顶栏 ActionBar（? · 时间 · ♪）**均可见**；时间为本机墙钟（如 `12:30`），**不是** `00:00` 会话累计。Focusing 时左上 `#focus-hud` 仍显示会话 elapsed（与 ActionBar **共存、分工**）。**回流**：Rise → Idle 仍是墙钟。 | **2026-07-27 用户书面（三 Bugs · 第三）**：顶栏时有时无、总是 `00:00`，改电脑时间。**2026-07-29**：正确基线复测仍 `00:00`（未实现）。**同日**：产品拍板常显 ActionBar + 墙钟；会话计时留在 FocusHUD。 | `.ft-narrow-action-bar` · `#focus-hud` · `NarrowIdleShell` | 2026-07-29 |
 | 浏览器 e2e 场景 A/I/K Companion DOM（Playwright） | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e`：**I** hint 开面板；**I2** 未就绪 Here&Now → Arrival；**A/A4/A4b** Choose→Companion→开表；**J** Rise 后 Here&Now 开表无 Notice；**A2/A3** 预选→⚡；**K** Offline；**Notice/Choose 点外侧** → Idle；**375 tip 只关 tip**（`tip click closes tip only`）。 | 2026-07-21：Offline 二次 Sit 已废除。**2026-07-25**：补 A4 / 外侧取消 / **J 回流** / **tip≠外侧**。 | `e2e/scenario-a.companion.spec.js` | 2026-07-25 |
 | 人工 · A1 Idle 开局（非 Sleeping） | UI可见 | 已通过 | 1) 实验室「重置全部本地状态」。2) 开 `?product=1`。3) 确认阿寅是 **Idle 闭目坐禅**，**不是**睡着。4) Honesty 可忽略提示可见。5) **右上**见音符钮（默认有声，可静音）。 | **2026-07-21**：用户书面——第一幕不能睡觉；须 Idle + 默认音乐。旧「A1 睡着已通过」口径作废。**同日晚**：用户确认原 8 条独立行批次全部关闭（含本行 Idle 开局）。 | `?product=1` · 重置按钮在 `/` | 2026-07-21 |
 | 人工 · Idle 统一 pingpong 不闪（序列） | UI可见 | 已通过 | 1) 「坐禅闭眼」或「重置并 idle 坐禅」。2) 闭目段 ×2 + 睁眼弧 ×1 循环，段间无闪白/叠化。3) 回流：Rise 后再 idle。 | 2026-07-20：切分降睁眼频率。**2026-07-20 用户书面**：各情况测试 OK；**晚**：再次确认「已经解决」。 | `/` · DEV `__idleOrchestrator` | 2026-07-20 |
