@@ -9,7 +9,7 @@
  * Paths are relative to the repository root (parent of `focus-tiger/`).
  */
 
-/** @typedef {{ id: string, pattern: RegExp, note: string }} ForbiddenClaim */
+/** @typedef {{ id: string, pattern: RegExp, note: string, exemptIfLineMatches?: RegExp }} ForbiddenClaim */
 /** @typedef {{
  *   id: string,
  *   title: string,
@@ -170,7 +170,11 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'eod-sync-flush-all',
         pattern:
           /下班前(?:的)?\s*Git\s*同步.{0,120}(?:尚未推送的本地\s*commit\s*)?全部\s*(?:`?push`?|推送|flush)/,
-        note: '下班前口令已收窄为只推非运行时；禁止复述「全部 push / flush」'
+        // Option 1: 「全部 push/flush」前 ≤120 字内若出现否定词 → 豁免（规则说明可写禁令句）。
+        // Enforced in hasForbiddenOutsideHistory via window-before-全部, not whole-line.
+        exemptIfLineMatches:
+          /禁止|不再|不要|勿|别再|不得|不可|不应|不能|未再|勿再|别把|不要把|禁止把|废止/,
+        note: '下班前口令已收窄为只推非运行时；禁止复述肯定式「全部 push / flush」（「全部」前 120 字否定词豁免）'
       }
     ],
     // Historical changelog lines that quote deprecated phrases are OK if marked 废止

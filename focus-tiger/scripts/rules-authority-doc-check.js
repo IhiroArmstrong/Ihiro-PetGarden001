@@ -34,14 +34,34 @@ const INSERT_AFTER = '## 规则主题 → 权威来源';
 /**
  * Changelog / history / anti-pattern tables that quote deprecated phrases
  * are allowed when clearly marked 废止 / 禁止列 / 曾出现, etc.
+ * Per-rule `exemptIfLineMatches` (optional): after a `pattern` hit, if that
+ * regex matches the ≤120 characters *before* the「全部 push/flush」token on
+ * the same line, the hit is skipped (negation restatements like
+ * 「禁止把下班前的 Git 同步做成全部 push」).
  * @param {string} text
  * @param {RegExp} pattern
+ * @param {RegExp} [lineExempt]
  * @returns {boolean}
  */
-function hasForbiddenOutsideHistory(text, pattern) {
+export function hasForbiddenOutsideHistory(text, pattern, lineExempt = null) {
   const lines = text.split('\n');
   for (const line of lines) {
-    if (!pattern.test(line)) continue;
+    const flags = pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`;
+    const re = new RegExp(pattern.source, flags);
+    /** @type {RegExpExecArray | null} */
+    let m;
+    let found = false;
+    while ((m = re.exec(line)) !== null) {
+      if (lineExempt) {
+        const allRel = m[0].search(/全部\s*(?:`?push`?|推送|flush)/);
+        const absAll = allRel >= 0 ? m.index + allRel : m.index;
+        const windowBefore = line.slice(Math.max(0, absAll - 120), absAll);
+        if (lineExempt.test(windowBefore)) continue;
+      }
+      found = true;
+      break;
+    }
+    if (!found) continue;
     if (
       /废止|已废止|曾出现|已改为|不再使用|deprecated|矛盾|禁止列|Anti-pattern|主张「/i.test(
         line
@@ -216,7 +236,7 @@ export function runRulesAuthorityDocCheck({ write = false } = {}) {
       }
 
       for (const bad of topic.forbiddenOutsideSsot) {
-        if (hasForbiddenOutsideHistory(text, bad.pattern)) {
+        if (hasForbiddenOutsideHistory(text, bad.pattern, bad.exemptIfLineMatches)) {
           errors.push(
             `[${topic.id}] \`${rel}\` contains contradictory claim \`${bad.id}\`: ${bad.note}`
           );
