@@ -38,7 +38,7 @@
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language'} proxy
  * @property {string} labelKey
  */
 
@@ -48,6 +48,7 @@ export const SECONDARY_PROXY_HINT_IDS = Object.freeze({
   breath: 'micro-ritual',
   companion: 'how-shall-we-sit',
   reminder: 'in-app-reminder'
+  // language: no first-visit mint (always available)
 });
 
 /**
@@ -74,14 +75,16 @@ export function syncSecondaryMenuHintDot(btn, show) {
 export const NARROW_STAGE_CLASS = Object.freeze({
   companion: 'ft-narrow-stage-companion',
   reminder: 'ft-narrow-stage-reminder',
-  sound: 'ft-narrow-stage-sound'
+  sound: 'ft-narrow-stage-sound',
+  language: 'ft-narrow-stage-language'
 });
 
 /** Wide park / stage body classes (single spelling). */
 export const WIDE_STAGE_CLASS = Object.freeze({
   companion: 'ft-wide-stage-companion',
   reminder: 'ft-wide-stage-reminder',
-  sound: 'ft-wide-stage-sound'
+  sound: 'ft-wide-stage-sound',
+  language: 'ft-wide-stage-language'
 });
 
 /**
@@ -263,6 +266,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
       labelKey: 'reminder.setting_title'
     });
   }
+
+  // Language always available on secondary surfaces (ready locales only in panel).
+  out.push({
+    proxy: 'language',
+    labelKey: 'LANGUAGE_MENU_LABEL'
+  });
 
   return out;
 }

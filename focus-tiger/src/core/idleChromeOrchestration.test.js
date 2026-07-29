@@ -188,11 +188,11 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty; includes breath/companion/sound/reminder', () => {
+  it('narrow drawer omits honesty; includes breath/companion/reminder/language', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'reminder']
+      ['breath', 'companion', 'reminder', 'language']
     );
   });
 
@@ -200,7 +200,7 @@ describe('listSecondaryChromeEntries', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['honesty', 'breath', 'companion', 'reminder']
+      ['honesty', 'breath', 'companion', 'reminder', 'language']
     );
   });
 
@@ -212,12 +212,12 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(!entries.some((e) => e.proxy === 'companion'));
   });
 
-  it('empty when secondary gates off (Sound is not a menu row)', () => {
+  it('language remains when secondary gates off (Sound is not a menu row)', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', {
       microRitualVisible: false,
       companionVisible: false,
       reminderAvailable: false
     });
-    assert.deepEqual(entries.map((e) => e.proxy), []);
+    assert.deepEqual(entries.map((e) => e.proxy), ['language']);
   });
 });

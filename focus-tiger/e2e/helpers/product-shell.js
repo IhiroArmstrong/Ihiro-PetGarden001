@@ -78,14 +78,15 @@ export async function openWideMoreMenuIfPresent(page) {
 /**
  * 经宽屏 ⋯（若有）打开 Honesty / 呼吸 / 提醒等代理入口；否则点 dock 直钮。
  * @param {import('@playwright/test').Page} page
- * @param {'honesty'|'breath'|'reminder'|'sound'} proxy
+ * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
  */
 export async function clickWideMoreProxyOrDirect(page, proxy) {
   const direct = {
     honesty: '#honesty-idle-entry',
     breath: '#micro-ritual-idle-entry',
     reminder: '#reminder-preference-toggle',
-    sound: '.ambient-soundscape__fab'
+    sound: '.ambient-soundscape__fab',
+    language: '#language-preference-panel'
   }[proxy];
   if (await openWideMoreMenuIfPresent(page)) {
     await page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`).click();
@@ -101,6 +102,27 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
       return false;
     });
     if (opened) return;
+  }
+  if (proxy === 'language') {
+    const opened = await page.evaluate(() => {
+      const ui = window.__languagePreference;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (opened) return;
+    // Narrow drawer path
+    const grabber = page.locator('#ft-narrow-options-grabber, [data-proxy="sheet"]');
+    if (await grabber.first().isVisible().catch(() => false)) {
+      await grabber.first().click();
+      await page.locator('#ft-narrow-options-drawer [data-proxy="language"]').click();
+      return;
+    }
+  }
+  if (proxy === 'language') {
+    throw new Error('language preference UI not reachable');
   }
   await page.locator(direct).evaluate((el) => {
     el.style.pointerEvents = 'auto';

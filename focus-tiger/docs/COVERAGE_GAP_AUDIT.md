@@ -61,7 +61,7 @@
 | **MilestoneGlow / IncenseComplete** | ❌ | ❌ | ❌ | — | **无自动化 / 业务未接线** | Glow 有问题行；Incense 已放弃接线 |
 | **舒展提醒 / Offline 暂停累计（场景 E）** | ✅ smoke E + MindfulReminder 入烟 | ❌ Offline 开表以外 | ❌ | Mindful\*（已入 smoke） | **逻辑已锁** | 真实离开墙钟仍人工 |
 | **Flow 30min across-tools toast（场景 F）** | ✅ smoke F + AcrossTools 入烟 | ❌ | ❌ | AcrossTools\*（已入 smoke） | **逻辑已锁** | toast DOM / 真实 30min 仍人工 |
-| **i18n 语言切换（场景 G）** | ❌ | ❌ | ❌ | — | **零自动化** | 只能人工 `__i18n` |
+| **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **可点 en/zh** | 审完再露；es/ja/de/fr 未 ready；375 排版人工 |
 | **瞳孔跟随（场景 H）** | — | — | — | stub | **N/A 已废弃** | — |
 | **Grow / 纪念奖励 / 3D 柜** | — | — | — | — | **Backlog，未接线** | 不期望有测 |
 | **Cloudflare Workers stub** | ❌ | ❌ | ❌ | — | **零（前端未接线）** | curl 人工 / 独立包 |
@@ -239,10 +239,11 @@ npm test                    # 全部 *.test.js（含 unit*）
 | 运行时 API | ✅ | `t` / `tPool` / `setLocale` / `getLocale` / `onLocaleChange`（`src/locales/i18n.js`） |
 | UI 订阅刷新 | ✅ 主面 | Arrival / Honesty / Bridge / Companion / HUD / Ambient / Reflection / Hints / 窄宽壳 / Sit·Rise 等已 `onLocaleChange` |
 | 默认语言 | ✅ | `en`（海外市场） |
-| **应用内切语 UI** | ❌ → v1 做 | 拍板可点切换（§9.5） |
-| **locale 持久化** | ❌ → v1 做 | `focus-tiger.locale.v1`（与 C/D 同批） |
-| **浏览器语言探测** | ❌ | 可选；默认仍建议 **记忆优先，否则 en**（海外默认） |
-| **自动化** | ❌ → 下一回合 A+B | 无 `i18n*.test.js`；无切语 e2e |
+| **应用内切语 UI** | ✅ | ⋯ / 抽屉 **Language** → `#language-preference-panel`（`LanguagePreferenceUI`） |
+| **locale 持久化** | ✅ | `focus-tiger.locale.v1` |
+| **浏览器语言探测** | ❌ | 可选增强；默认记忆优先，否则 en |
+| **自动化** | ✅ | `src/locales/i18n.test.js` ∈ `test:smoke`；`e2e/language-switch.spec.js` |
+
 
 ### 9.2 可行性（结论：高 · 工程）
 
@@ -253,10 +254,11 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 | 项 | 难度 | 风险 | 状态 / 建议 | 挡 v1？ |
 |---|---|---|---|---|
-| **A. unit\***：全启用 locale 的 key 奇偶、`setLocale` 通知、`t` 缺键回退 | **低** | 极低 | **下一回合做**；并入 `test:smoke` | 是（声称多语言时） |
-| **B. e2e** | **低–中** | 低 | **下一回合做**：点切语 UI → 断言关键文案；回流切回 en | 是 |
-| **C. 切语 UI** + `focus-tiger.locale.v1` | **中** | 中（壳位 / 375） | **下一回合做**（拍板选 1） | 是 |
-| **D. 冷启动** | **低–中** | 中 | 与 C 同批：优先读存储；无则 **en**（探测系统语为可选增强） | 同 C |
+| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js` 入 smoke | — |
+| **B. e2e** | **低–中** | 低 | ✅ `language-switch.spec.js`（点 UI） | — |
+| **C. 切语 UI** + locale.v1 | **中** | 中 | ✅ Language 行 + 面板 | 人工 375 |
+| **D. 冷启动** | **低–中** | 中 | ✅ `bootLocaleFromPreference`（记忆；默认 en） | — |
+
 | **E. 人工排版** | 人工 | 中 | 每启用一种语言抽 375；德文偏长、日文换行 | 声称该语可用 → 人工必测 |
 | **F. 扩语种字典** es/ja/de/fr | **内容高** | **高（质量）** | 见 §9.6；**工程扩槽位低风险** | 仅当对外声称该语已就绪 |
 

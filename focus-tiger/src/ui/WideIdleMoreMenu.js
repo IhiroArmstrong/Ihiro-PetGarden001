@@ -22,6 +22,7 @@ export class WideIdleMoreMenu {
    *   handlers?: {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
+   *     onLanguage?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onClearCompanion?: () => void,
@@ -322,6 +323,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
+      return;
+    }
+    if (key === 'language') {
+      this.clearStage();
+      document.body.classList.add(WIDE_STAGE_CLASS.language);
+      this.handlers.onLanguage?.();
       return;
     }
     if (key === 'sound') {
