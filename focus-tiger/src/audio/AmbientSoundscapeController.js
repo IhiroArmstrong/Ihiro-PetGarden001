@@ -22,6 +22,9 @@ export const AUDIBLE_PLAYING_LIFT = 0.1;
 export const AMBIENT_TRACK_OFF = 'off';
 export const AMBIENT_TRACK_SINGING_BOWL = 'singing-bowl';
 export const AMBIENT_TRACK_RAIN = 'rain';
+export const AMBIENT_TRACK_DREAMLAND = 'dreamland';
+export const AMBIENT_TRACK_INVISIBLE_BEAUTY = 'invisible-beauty';
+export const AMBIENT_TRACK_KISS_THE_SKY = 'kiss-the-sky';
 
 /** 默认曲目：Mer-Ka-Ba（工程 id 仍为 singing-bowl） */
 export const DEFAULT_AMBIENT_TRACK_ID = AMBIENT_TRACK_SINGING_BOWL;
@@ -29,7 +32,7 @@ export const DEFAULT_AMBIENT_TRACK_ID = AMBIENT_TRACK_SINGING_BOWL;
 /** 与 `localStateKeys.js` 白名单同步。 */
 export const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 
-/** MVP 仅两档；磬等第三曲待 CC0 素材 */
+/** Opt-in ambient library (YouTube Audio Library / user-provided). */
 export const AMBIENT_TRACKS = [
   {
     id: AMBIENT_TRACK_SINGING_BOWL,
@@ -40,6 +43,21 @@ export const AMBIENT_TRACKS = [
     id: AMBIENT_TRACK_RAIN,
     src: '/audio/ambient/meditation-impromptu-02.mp3',
     labelKey: 'AMBIENT_TRACK_RAIN'
+  },
+  {
+    id: AMBIENT_TRACK_DREAMLAND,
+    src: '/audio/ambient/dreamland-aakash-gandhi.mp3',
+    labelKey: 'AMBIENT_TRACK_DREAMLAND'
+  },
+  {
+    id: AMBIENT_TRACK_INVISIBLE_BEAUTY,
+    src: '/audio/ambient/invisible-beauty-aakash-gandhi.mp3',
+    labelKey: 'AMBIENT_TRACK_INVISIBLE_BEAUTY'
+  },
+  {
+    id: AMBIENT_TRACK_KISS_THE_SKY,
+    src: '/audio/ambient/kiss-the-sky-aakash-gandhi.mp3',
+    labelKey: 'AMBIENT_TRACK_KISS_THE_SKY'
   }
 ];
 
@@ -271,7 +289,7 @@ export class AmbientSoundscapeController {
   }
 
   /**
-   * @param {string} trackId off | singing-bowl | rain
+   * @param {string} trackId off | known AMBIENT_TRACKS id
    * @param {{ persist?: boolean }} [options]
    * @returns {Promise<void>}
    */
