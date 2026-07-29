@@ -44,7 +44,7 @@
 - [ ] 已在本地跑过 **`cd focus-tiger && npm run test:pr-smoke`**（逻辑冒烟 + 浏览器壳子集，约 2–4 分钟）
 - [ ] （可选）合并前再跑完整套件：`npm run test:e2e` · `npm run test:e2e:visibility` · `npm run docs:check`
 
-> CI 会在 PR 上自动跑 `test:pr-smoke` 与预合并冲突检查；完整 e2e / visibility / doc-contract 仅在合并前或定时任务触发。  
+> CI：每次 PR→`develop` 都会上报 **`test:pr-smoke`**（无 `focus-tiger/**` 改动时为成功 no-op）与 **`pre-merge with develop`**。改产品代码时 smoke 含逻辑冒烟 + e2e smoke + **`npm run build` 产物检查**。完整 e2e / visibility / doc-contract 另触发。  
 > **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）；合并进 develop 后再验，勿在长期落后的 feature 分支上关单。
 
 ---
