@@ -29,12 +29,23 @@
 
 ---
 
+## 叠层 / 窄屏回归（触及则必勾）
+
+> 权威：`focus-tiger/docs/Z_INDEX.md` · `TEST_TRACKER.md` 文首「`position: fixed` 全屏/半屏容器」
+
+- [ ] **未**新增 / 大改 `position: fixed` 全屏或半屏壳 → 勾此项并跳过下面两行
+- [ ] 若有：已更新 **`Z_INDEX.md`** 对应登记行（勿随手写未登记数值）
+- [ ] 若有：已检查可能被盖住的既有浮层（Reminder 面板 / 提醒横幅 / tip / FocusHUD 悬停等），并为**每个受影响组件**补了 **375** e2e（不得只测新壳）
+
+---
+
 ## 冒烟测试
 
 - [ ] 已在本地跑过 **`cd focus-tiger && npm run test:pr-smoke`**（逻辑冒烟 + 浏览器壳子集，约 2–4 分钟）
 - [ ] （可选）合并前再跑完整套件：`npm run test:e2e` · `npm run test:e2e:visibility` · `npm run docs:check`
 
-> CI 会在 PR 上自动跑 `test:pr-smoke` 与预合并冲突检查；完整 e2e / visibility / doc-contract 仅在合并前或定时任务触发。
+> CI 会在 PR 上自动跑 `test:pr-smoke` 与预合并冲突检查；完整 e2e / visibility / doc-contract 仅在合并前或定时任务触发。  
+> **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）；合并进 develop 后再验，勿在长期落后的 feature 分支上关单。
 
 ---
 
