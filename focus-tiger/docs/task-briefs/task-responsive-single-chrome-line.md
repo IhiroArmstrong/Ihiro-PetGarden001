@@ -1,10 +1,10 @@
 # Task Brief · 窄宽屏合并为响应式单代码线
 
 **日期**：2026-07-30  
-**状态**：Brief 已写 · **可排期开工**（响应式路线 **Task 3**；**尚未开 feature / 未写业务代码**）  
+**状态**：**阶段 0 进行中**（分支 `feature/responsive-single-chrome-line` 已开；入口对照表已写入本 Brief 附录；**尚未改业务代码**）  
 **角色**：UI Engineer（Gameplay / Emotion **不**为本 Task 主改方）  
 **权威**：`RESPONSIVE_LAYOUT.md`「工程债 · 窄宽屏单代码线」· 原则 A · `SHARED_RESOURCES.md` §6 · `DEV_WORKFLOW_QUALITY.md` §8 / §9 · `Z_INDEX.md`  
-**排期依据**：用户 2026-07-25 拍板「值得合并」+ 触发条件（wide-idle 合入 develop、⑦ 场景 O 收口）已满足；2026-07-30 用户确认「安排 = 先 Brief、再开 feature」并授权写本 Brief。
+**排期依据**：用户 2026-07-25 拍板「值得合并」+ 触发条件（wide-idle 合入 develop、⑦ 场景 O 收口）已满足；2026-07-30 用户确认「安排 = 先 Brief、再开 feature」并授权写本 Brief；同日授权阶段 0（切分支 + 对照表 + freshness）。
 
 **命名澄清**：本文件 = **响应式 Task 3**。勿与 `TEST_TRACKER` / 冒烟清单里其它「Task 3」（如 Honesty 真实补登 e2e 候选）混淆。
 
@@ -64,10 +64,10 @@
 
 ### 阶段 0 · 开工门禁（Brief 执行前，可同日短回合）
 
-1. 从 `develop` 切出 **`feature/responsive-single-chrome-line`**（名称可微调，须 ASCII kebab-case）。  
-2. `npm run check:branch-freshness`；汇报落后数。落后 > 0 先合入/变基，再动代码。  
-3. （建议）在 tip 上对照 §9 **W1–W8** 快速自检并记入本 Task 的 `TEST_TRACKER` 行「基线备注」——**不**与其它修混验关单。  
-4. 列出当前 `NarrowIdleShell` / `WideIdleMoreMenu` 的 **入口清单对照表**（Sit / ⚡ / Honesty / How / Sound / Reminder / Help / 微仪式 / 热力图）写入 PR 或 Brief 附录，作为合并核对单。
+1. ~~从 `develop` 切出 **`feature/responsive-single-chrome-line`**~~ → **2026-07-30 已开**（基线 `origin/develop` tip，含 Brief commit `84c101d` / merge `5e24ba4`）。  
+2. ~~`npm run check:branch-freshness`~~ → **同日已跑**：`behind origin/develop: 0`。落后 > 0 时须先合入/变基再动代码。  
+3. （建议，未做）在 tip 上对照 §9 **W1–W8** 快速自检并记入 `TEST_TRACKER`「基线备注」——**不**与其它修混验关单。  
+4. ~~入口清单对照表~~ → **已写入本 Brief「附录 · 入口对照表」**（阶段 1 合并核对单）。
 
 ### 阶段 1 · 共享编排（优先，可先不换 DOM）
 
@@ -160,14 +160,64 @@
 
 ## 文档同步清单（本 Task 代码收尾时）
 
-- [x] 本 Brief（本次已写）  
-- [ ] `TASKS.md` 响应式 Task 3 状态 → 开发中 / 已落地（随进度）  
-- [ ] `RESPONSIVE_LAYOUT.md` 工程债节  
+- [x] 本 Brief（已写；阶段 0 对照表已附）  
+- [x] `TASKS.md` 响应式 Task 3 → 阶段 0 / feature 已开（本回合）  
+- [x] `RESPONSIVE_LAYOUT.md` 工程债节（阶段 0 状态）  
 - [ ] `SHARED_RESOURCES.md` §6 触发路径（若路径变）  
 - [ ] `Z_INDEX.md`（若层级变）  
-- [ ] `PROCESS.md` 速览一行  
-- [ ] `TEST_TRACKER.md` 分列验收行（含 §8+§9）  
+- [x] `PROCESS.md` 速览一行（阶段 0）  
+- [ ] `TEST_TRACKER.md` 分列验收行（含 §8+§9；**阶段 1+ 代码可见改动时再登记**）  
 - [ ] 必要时 `DOC_CODE_CONTRACT.md` 高风险面一句
+
+---
+
+## 附录 · 入口对照表（阶段 0 · 2026-07-30）
+
+> 基线：`feature/responsive-single-chrome-line` @ `origin/develop` tip（freshness behind=0）。  
+> 真源：`NarrowIdleShell.js` / `WideIdleMoreMenu.js` / `main.js`。阶段 1 提取编排时以此表核对「业务同一、呈现不同」。
+
+### A. 角色 × 可见宿主（Idle 默认）
+
+| 业务角色 | 窄屏 ≤479 用户可见宿主 | 宽屏 ≥480 用户可见宿主 | 代理/目标 DOM（两侧共用） |
+|---|---|---|---|
+| Sit | `#ft-narrow-home-sit`（主画布球） | `#btn-focus`（dock 常驻） | `#btn-focus` |
+| Quick Start ⚡ | `#ft-narrow-home-quickstart` | `#quick-start-focus`（常驻） | `#quick-start-focus` |
+| Honesty | `#ft-narrow-home-honesty`（主画布球） | ⋯ 菜单项 `honesty` | `#honesty-idle-entry`（或 `onHonesty`） |
+| How shall we sit? | 抽屉项 `companion` | ⋯ 菜单项 `companion` | `.session-start-dock__hint` → Companion 面板 |
+| 一分钟呼吸 | 抽屉项 `breath` | ⋯ 菜单项 `breath` | `#micro-ritual-idle-entry` |
+| Sound → Soundscape | 抽屉项 `sound` **或** ActionBar ♪（`mute`） | ⋯ 菜单项 `sound`；右上 `.ambient-soundscape__mute` 亦可开面板 | stage class + `onSound`；**禁止**只抬红色 FAB |
+| Reminder | 抽屉项 `reminder` | ⋯ 菜单项 `reminder` | `#reminder-preference-toggle` / 偏好面板 |
+| Help `?` | ActionBar `#ft-narrow-help-btn` | 左下 `#onboarding-hint-help`（**不**进 ⋯） | `#onboarding-hint-help` |
+| 7 格热力图 | 抽屉内只读克隆条 | 左下 `#weekly-practice-heatmap`（**不**进 ⋯） | `#weekly-practice-heatmap` |
+| More / 抽屉壳 | `.ft-narrow-grabber` + `#ft-narrow-options-drawer` | `#ft-wide-more-btn` + `#ft-wide-more-menu` | （呈现专用） |
+
+### B. 次要入口列表（应对齐为同一编排源）
+
+| proxy key | 窄抽屉 | 宽 ⋯ | 备注 |
+|---|---|---|---|
+| `honesty` | ❌（在主球，不在抽屉） | ✅ | 阶段 1：角色同属「Honesty」，呈现位不同 |
+| `breath` | ✅ | ✅ | 可见性跟 `#micro-ritual-idle-entry` |
+| `companion` | ✅ | ✅ | 宽另检 `!disabled` |
+| `sound` | ✅ | ✅ | 窄 ♪ 与 `sound`/`mute` 同开 Soundscape |
+| `reminder` | ✅ | ✅ | 需 `#reminder-preference-toggle` 存在 |
+
+### C. Stage / park class（断点切换时勿双开）
+
+| 用途 | 窄 | 宽 |
+|---|---|---|
+| Idle 壳激活 | `ft-narrow-shell` + `ft-narrow-park` + `ft-narrow-idle` | `ft-wide-park-secondary` |
+| Focusing | `ft-narrow-focusing`（藏主球+grabber） | ⋯ `hidden`（`setSuppressed` / idle 关） |
+| Arrival keep ⚡ | `setSuppressed(true, { keepQuickStart })` | `setSuppressed(true)`（Sit 由 Companion 藏；⋯ 藏） |
+| Stage Companion | `ft-narrow-stage-companion` | `ft-wide-stage-companion` |
+| Stage Sound | `ft-narrow-stage-sound` | `ft-wide-stage-sound` |
+| Stage Reminder | `ft-narrow-stage-reminder` | `ft-wide-stage-reminder` |
+| 微仪式藏 Sit | `ft-narrow-hide-sit-dock` 等 | `#btn-focus:disabled`（契约） |
+
+### D. 接线（`main.js`）
+
+- `new NarrowIdleShell({ root, getHudStateEl })` — 窄 MQ 激活；宽 inert。  
+- `new WideIdleMoreMenu()` — 宽 MQ 激活；窄 inert。  
+- 阶段 2 目标：单一 facade 按 MQ 启用呈现适配器；handlers（`onSound` / `onHonesty` / …）只注册一次。
 
 ---
 
@@ -178,3 +228,4 @@
 | 2026-07-25 | 立项；须等 wide-idle push **且** ⑦ 场景 O 收口；禁止仅凭 push 开工；禁止与未验收修复叠重构 |
 | 2026-07-29 | wide-idle 空壳分支删除（内容已在 develop）；O 修多已进 develop；W1–W8 完整关单改在 tip 单独排期 |
 | 2026-07-30 | 用户确认先 Brief 再 feature；**本 Brief 交付 → 状态「可排期开工」** |
+| 2026-07-30 | Brief 已随 PR #30 进 `origin/develop`；阶段 0：开 `feature/responsive-single-chrome-line` + 入口对照表 + freshness behind=0 |
