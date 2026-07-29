@@ -30,7 +30,7 @@
 | **G-02** | `completionPending` / `postSessionOverlayActive` 叠层门闩 | `SHARED_RESOURCES` §4 | **(a)+(b)** | 同上 registry + `SessionUiGate.test.js` |
 | **G-03** | `resolveCompanionModeSelectCommit`（未通过不得写 storage） | `SHARED_RESOURCES` §4 | **(a)+(b)** | registry outcomes + `SessionUiGate.test.js` |
 | **G-04** | `computePostSessionOverlayActive` 第三叠层扩展 | `SHARED_RESOURCES` §4 | **(a)+(b)** | registry + `SessionUiGate.test.js` |
-| **H-01** | Onboarding hint id / localeKey / DOM anchor | `ONBOARDING_HINTS.md` | **(a)+(b)** | `onboardingHintRegistry.js` + `onboardingHintRegistry.test.js` |
+| **H-01** | Onboarding hint id / localeKey / DOM anchor / `triggerMode` | `ONBOARDING_HINTS.md` | **(a)+(b)** | `onboardingHintRegistry.js` + `onboardingHintRegistry.test.js` |
 | **L-01** | localStorage key 白名单 ↔ 各 Store `STORAGE_KEY` | `SHARED_RESOURCES` §1、`localStateKeys.js` 注释 | **(b)** | `localStateKeys.test.js`（集合相等 + 清空回归） |
 | **S-01** | `StateManager` 合法状态迁移 | `ARCHITECTURE.md` 合法转移段 | **(a)+(b)** | `StateManager.js`（`STATES` + `LEGAL_STATE_TRANSITIONS`）+ `StateManager.test.js` |
 | **F-01** | Companion 三模式 / `shouldSuppressAwayReminders` | `SCENARIO_TESTS` B / E / F | **(b)** | `FocusSession.js` 常量 + `scenario-smoke` B |
@@ -88,9 +88,10 @@ npm run test:e2e:visibility  # 改 setSuppressed / park / hide 后：整表 e2e 
 
 ### H-01：Onboarding hints
 
-- **SSOT**：`src/core/onboardingHintRegistry.js`
-- **生成块**：`docs/ONBOARDING_HINTS.md` 锚点表
+- **SSOT**：`src/core/onboardingHintRegistry.js`（含 `triggerMode`；**仅 click** 填 `tier`：`simple` / `detailed`）
+- **生成块**：`docs/ONBOARDING_HINTS.md` 锚点表（含 `triggerMode` + `tier` 列；非 click 为 —）
 - **脚本**：`scripts/hints-doc-check.js`
+- **行为**：click 圆点 peek/static/done 见 `ONBOARDING_HINTS.md` §〇；auto 无圆点、无 tier；UI 须读 Registry，禁止散落 if/else
 
 ### S-01：StateManager 合法转移
 

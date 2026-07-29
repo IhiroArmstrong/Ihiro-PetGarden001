@@ -58,12 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-29（UTC+8）
+**最后更新时间**：2026-07-30（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **响应式 Task 3 Brief（2026-07-30）**：窄/宽合成单代码线任务书已写（`task-briefs/task-responsive-single-chrome-line.md`）；`TASKS.md` / `RESPONSIVE_LAYOUT.md` 标 **Brief 已写 · 可排期开工**。触发条件（wide-idle 入 develop、场景 O 收口）已齐；**尚未开 feature / 未改业务代码**。下一步按 Brief 阶段 0 切 `feature/responsive-single-chrome-line`。
+- **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **本地 Cursor 能耗护栏（2026-07-26）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。同日拍板：Cloud 启用须提醒「独立会话」；任务起过 Vite/Playwright 须在收尾提醒手动确认已关（alwaysApply：`focus-tiger-browser-energy.mdc`）。非产品 UI，无需 TEST_TRACKER 人工项。
@@ -95,8 +97,7 @@
 - **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`；见 `SHARED_RESOURCES` §1.2
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：`DailyCompletionStore` 仅当日不够；数据源改 `PracticeDaysStore`
 - **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。
-- **开场 Idle + 背景音乐 opt-in（2026-07-25 修订；2026-07-26 冷启动加固）**：登录 / **刷新**后第一幕为闭目坐禅（不上 Sleeping / 不披毯，即使本地有 ≥2h 结束戳）；**不**默认开播背景音乐——须点右上音符 / Sound 才出声；Rise / 达标结束自动停播
-- **开场 Idle + 背景音乐 opt-in（2026-07-29 修订）**：登录后第一幕为闭目坐禅（不上 Sleeping）；**不**默认开播背景音乐——须点右上音符（或菜单/抽屉 Sound）打开 Soundscape 选曲才出声；宽屏藏右下 Sound FAB；Rise / 达标结束自动停播
+- **开场 Idle + 背景音乐 opt-in（2026-07-25 修订；2026-07-26 冷启动加固；2026-07-29 Soundscape）**：登录 / **刷新**后第一幕为闭目坐禅（不上 Sleeping / 不披毯，即使本地有 ≥2h 结束戳）；**不**默认开播背景音乐——须点右上音符（或菜单/抽屉 Sound）打开 Soundscape 选曲才出声；宽屏藏右下 Sound FAB；Rise / 达标结束自动停播
 - **Honesty 首屏措辞（2026-07-21）**：邀请式补登提示仍挂零完成；开场视觉已改 Idle
 - **UI Kit / 主 CTA（2026-07-21）**：产品壳 **Sit / Sound** 由朱红改为**蒲团橙**（与 Yin 坐垫同系）；v6 产品舞台 + Companion 暖米文案面；成就/图鉴仍仅探索（Backlog）
 - **Hints 薄荷绿恢复 + 「?」用途简介（2026-07-21）**：提示气泡从奶油米黄改回浅绿灰（与控件米黄区分）；点「?」另出非遮罩 App 用途简介卡
