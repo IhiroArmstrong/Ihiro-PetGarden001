@@ -3,11 +3,29 @@ import assert from 'node:assert/strict';
 
 import {
   focusLevelForHonestyMinutes,
-  HonestyCheckInController
+  HonestyCheckInController,
+  resolveHonestyBreathMs,
+  HONESTY_BREATH_MS,
+  HONESTY_BREATH_MS_MIN
 } from './HonestyCheckInController.js';
 import { DailyCompletionStore } from './DailyCompletionStore.js';
 import { FocusSessionEndStore } from './FocusSessionEndStore.js';
 import { StateManager, STATES } from './StateManager.js';
+
+test('resolveHonestyBreathMs defaults to 10s; ?honestyBreathMs= for e2e shortening', () => {
+  assert.equal(resolveHonestyBreathMs(''), HONESTY_BREATH_MS);
+  assert.equal(resolveHonestyBreathMs('?honestyBreathMs=1500'), 1500);
+  assert.equal(
+    resolveHonestyBreathMs('?product=1&honestyBreathMs=800'),
+    800
+  );
+  assert.equal(resolveHonestyBreathMs('?honestyBreathMs=0'), HONESTY_BREATH_MS_MIN);
+  assert.equal(
+    resolveHonestyBreathMs('?honestyBreathMs=999999'),
+    HONESTY_BREATH_MS
+  );
+  assert.equal(resolveHonestyBreathMs('?honestyBreathMs=nope'), HONESTY_BREATH_MS);
+});
 
 function createStorage() {
   const values = new Map();
