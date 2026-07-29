@@ -19,13 +19,20 @@
 
 **非目标（维持 Backlog，勿混进当前 Task）**：原生 App、系统级 Focus Mode、后台计时、PWA 安装强推。见 `PROCESS.md` Backlog。
 
-### 工程债 · 窄宽屏单代码线（2026-07-25 排期 · 2026-07-30 Brief）
+### 工程债 · 窄宽屏单代码线（2026-07-25 排期 · 2026-07-30 落地）
 
-当前实现：≤479 = `NarrowIdleShell`（抽屉）；≥480 = `WideIdleMoreMenu`（⋯ Popover）。业务应共享，壳形态可因断点不同——**禁止**长期用两条 git 分支分别演进同一套 chrome/audio 修复（分叉漏修根因）。
+**状态（2026-07-30）**：**阶段 0–2 代码已合入 `develop`（PR #31 / #32 / #33）；阶段 3 = 文档收口 + 残留接线清理（本轮）**。
 
-**状态（2026-07-30）**：**阶段 2 进行中**（facade）。`createIdleChromeFacade` / `IdleChromeFacade`：handlers 一次注册；断点切换 `releaseInactivePresentation`（不调 onClearStage）。阶段 0/1 已合 PR #31/#32。阶段 3 未做。邀测须单独跑 §9 W1–W8（勿与窄屏 O 修混验）。
+| 层 | 模块 | 职责 |
+|---|---|---|
+| 编排 | `src/core/idleChromeOrchestration.js` | stage / 壳投影 / 次要入口列表 / stage class 常量 |
+| 门面 | `src/core/IdleChromeFacade.js` + `createIdleChromeFacade.js` | handlers 一次注册、`applyShellProjection`、断点 `releaseInactivePresentation` |
+| 呈现适配器 | `NarrowIdleShell.js`（≤479 抽屉）· `WideIdleMoreMenu.js`（≥480 ⋯） | 只负责形态；业务列表不得再分叉漂移 |
+| 同步 | `sessionChromeSync.js` | 优先 `idleChrome.applyShellProjection` |
 
-**沿革**：2026-07-25 拍板「值得做，但等 wide-idle push + O 收口」；2026-07-25 晚宽屏 P0 ①–⑥⑧ OK、⑦ 另线；2026-07-29 空壳分支删除、O 修进 develop；2026-07-30 Brief 进 develop（PR #30）并开 feature 阶段 0。
+产品形态仍因断点不同（抽屉 vs ⋯）——**禁止**再开长期姊妹分支分别修同一套 chrome/audio。关单级人工须 **§8 375 + §9 W1–W8** 分测，**禁止**与场景 O 修混验。
+
+**沿革**：2026-07-25 拍板「值得做，但等 wide-idle + O」→ 2026-07-29 条件齐 → 2026-07-30 Brief / 阶段 0–2 / 阶段 3 收口。
 
 ---
 
@@ -249,6 +256,7 @@
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| 1.11 | 2026-07-30 | 工程债：Task 3 阶段 3 收口（模块表 + 状态「已落地」） |
 | 1.10 | 2026-07-30 | 工程债：Task 3 阶段 2（`IdleChromeFacade`） |
 | 1.9 | 2026-07-30 | 工程债：Task 3 阶段 1（`idleChromeOrchestration` 共享编排） |
 | 1.8 | 2026-07-30 | 工程债：Task 3 阶段 0（feature 已开 + 入口对照表） |

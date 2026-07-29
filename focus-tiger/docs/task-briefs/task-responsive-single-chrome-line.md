@@ -1,7 +1,7 @@
 # Task Brief · 窄宽屏合并为响应式单代码线
 
 **日期**：2026-07-30  
-**状态**：**阶段 2 进行中**（`IdleChromeFacade`；分支 `feature/responsive-idle-chrome-facade`；阶段 0/1 已合 #31/#32）  
+**状态**：**阶段 0–3 完成（代码 + 文档收口）** · 关单级人工仍待 §8+§9（PR #31/#32/#33 已合 `develop`）  
 **角色**：UI Engineer（Gameplay / Emotion **不**为本 Task 主改方）  
 **权威**：`RESPONSIVE_LAYOUT.md`「工程债 · 窄宽屏单代码线」· 原则 A · `SHARED_RESOURCES.md` §6 · `DEV_WORKFLOW_QUALITY.md` §8 / §9 · `Z_INDEX.md`  
 **排期依据**：用户 2026-07-25 拍板「值得合并」+ 触发条件（wide-idle 合入 develop、⑦ 场景 O 收口）已满足；2026-07-30 用户确认「安排 = 先 Brief、再开 feature」并授权写本 Brief；同日授权阶段 0（切分支 + 对照表 + freshness）。
@@ -89,17 +89,26 @@
 
 ### 阶段 3 · 文档与验收锚 / 删残留重复
 
-1. 更新 `RESPONSIVE_LAYOUT.md` 工程债节：标「实现中 / 已落地」与新模块路径。  
-2. `SHARED_RESOURCES.md` §6：触发路径表改指向新模块（若文件合并/重命名）；机器块仍以 registry 为准，跑 `visibility:doc-sync`。  
-3. `Z_INDEX.md`：若层级有变，先改表再改代码。  
-4. `TEST_TRACKER`：新增本 Task 分列行（见下）；步骤须含 **§8 375 故事最小集 + §9 W1–W8**，禁止只写「壳切换烟测」。  
-5. 本地：`npm run test:smoke` + `npm run test:e2e:smoke`（及触及的 `test:e2e:changed`）；visibility 相关改动须能过 CI `test:e2e:visibility` 预期。  
-6. 人工验收提醒（强制，对齐 §9）：本 Task 合并/邀测时须**单独**提醒用户跑宽屏 W1–W8，**禁止**与窄屏 O 修混在同一批关单话术。
+1. ~~更新 `RESPONSIVE_LAYOUT.md`~~ → 工程债标 **已落地** + 模块路径表（2026-07-30）。  
+2. ~~`SHARED_RESOURCES.md` §6~~ → 触发路径已含 facade / orchestration（阶段 2）；阶段 3 补叙事。  
+3. ~~`Z_INDEX.md`~~ → **无层级变更**（仍由 Narrow/Wide 适配器登记；facade 不设 z-index）。  
+4. ~~`TEST_TRACKER`~~ → 新增「Task 3 单代码线」§8+§9 分列行；阶段 2 断点行保留。  
+5. 本地 smoke / e2e:smoke（阶段 3 PR）。  
+6. 人工：须**单独**跑宽屏 W1–W8 + 375 故事最小集，**禁止**与场景 O 混验。  
+7. ~~残留接线~~ → `main.js` 不再持有 `narrowIdleShell` / `wideIdleMoreMenu` 业务别名；只经 `idleChrome`（DEV 探针仍挂 `__narrowIdleShell`）。
 
-### 建议实施顺序（一次只推一阶段进可测 PR）
+---
 
-`0 门禁 → 1 共享编排（行为不变的提取）→ 2 接线 facade / 断点切换 → 3 删重复 if / 文档`。  
-每一阶段结束须冒烟绿 + 双视口抽测；禁止「大爆炸删两壳一夜重写」。
+## 文档同步清单（本 Task 代码收尾时）
+
+- [x] 本 Brief  
+- [x] `TASKS.md` → 代码已落地 · 待双视口人工验收  
+- [x] `RESPONSIVE_LAYOUT.md` 工程债节（已落地 + 模块表）  
+- [x] `SHARED_RESOURCES.md` §6  
+- [x] `Z_INDEX.md`（确认无变；见阶段 3 勾选）  
+- [x] `PROCESS.md` 速览  
+- [x] `TEST_TRACKER.md`（阶段 1 单元 / 阶段 2 断点 / 阶段 3 §8+§9 总行）  
+- [ ] 关单级人工 §8+§9（用户）
 
 ---
 
@@ -118,16 +127,16 @@
 
 ## 验收（人工 · 必测）
 
-`/?product=1` · 关单级只认 `origin/develop` tip（或本 feature 合入后的 tip）+ `check:branch-freshness` behind=0。
+`/?product=1` · 关单级只认 `origin/develop` tip + `check:branch-freshness` behind=0。
 
 | 视口 | 最低故事 |
 |---|---|
-| **375×667** | `DEV_WORKFLOW_QUALITY` §8 **375 故事最小集**（Idle 三球+抽屉、Sit→Arrival→Focusing HUD、Breath 藏 Sit、? 补救、邻接 tip、Honesty/微仪式入口） |
-| **≥480 / 建议 ≥900** | §9 **W1–W8**（清场形态、Sit 全路径、Arrival 藏 Sit/⋯、⋯ 代理 Honesty/How/Sound/提醒、? remap、邻接、Focusing、桥接/Rise 回流） |
-| **断点切换** | 375↔480 来回：无双壳叠层、无死点击、无残留 body class |
-| **回流** | Rise 后再 Idle；关闭抽屉/⋯ 再开；同日第二场会话 |
+| **375×667** | `DEV_WORKFLOW_QUALITY` §8 **375 故事最小集** |
+| **≥480 / 建议 ≥900** | §9 **W1–W8** |
+| **断点切换** | 375↔480：无双壳叠层；Companion 打开时改宽度不得误关 |
+| **回流** | Rise 后再 Idle；关闭抽屉/⋯ 再开 |
 
-自动化：既有壳/可见性 e2e **不得无故删锚**；编排提取须带失败用例（stage×viewport → 可见性）。观感子项（墙钟非 `00:00`、图标边距等）仍分列人工，全绿 ≠ 关单。
+自动化：编排/facade 单测 + smoke；全绿 ≠ 关单。
 
 ---
 
@@ -135,39 +144,10 @@
 
 | 契约 | 锁法 |
 |---|---|
-| 双壳入口同一编排结果 | 单测：stage + viewport → roles；禁止只测「调用了 NarrowIdleShell」 |
-| Arrival / Breath Sit 隐、⚡ 显 | 既有 visibility 契约 + e2e；selector 若迁宿主须同步 registry |
-| 微仪式 Sit unavailable | `micro-ritual-sit-unavailable` 双视口 |
-| ⋯ / 抽屉代理 Sound → 面板非 FAB | e2e 宽/窄各一（已有则保留） |
-| 断点切换无双壳抢点 | e2e 或 TEST_TRACKER「须人工锁路径」 |
-| Hints remap | §8/§9 人工 + 既有 hint e2e；park 后锚点不得指旧坐标 |
-
----
-
-## 风险与回退
-
-| 风险 | 缓解 |
-|---|---|
-| 提取编排时静默改 suppress 语义 | 阶段 1 以「行为不变」为门禁；先红绿对照既有 e2e |
-| z-index / fixed 壳倒挂导致点不到 ♪/? | 改前查 `Z_INDEX.md`；改后 375 Focusing + Idle 点 ActionBar |
-| 与未验收 chrome 修冲突 | 独立 feature；同文件未验收修先合入或错开 |
-| 一次 PR 过大难审 | 按阶段拆 PR；禁止大爆炸 |
-| 假绿（只测壳有没有） | TEST_TRACKER 强制故事最小集；关单 N20/N24 |
-
-回退：feature 未合入前可弃分支；已合入则按阶段 revert（优先还原 facade 接线，保留纯函数测试若无害）。
-
----
-
-## 文档同步清单（本 Task 代码收尾时）
-
-- [x] 本 Brief（已写；阶段 0 对照表已附；阶段 1 勾选）  
-- [x] `TASKS.md` 响应式 Task 3 → 阶段 1 / feature + PR #31  
-- [x] `RESPONSIVE_LAYOUT.md` 工程债节（阶段 1）  
-- [x] `SHARED_RESOURCES.md` §6 触发路径（含 `idleChromeOrchestration` / `sessionChromeSync` / WideIdleMoreMenu）  
-- [ ] `Z_INDEX.md`（若层级变）  
-- [x] `PROCESS.md` 速览一行（阶段 1）  
-- [x] `TEST_TRACKER.md` 阶段 1 登记为「仅单元测试覆盖」（facade / 可见改动后再加 §8+§9 人工行）  
-- [ ] 必要时 `DOC_CODE_CONTRACT.md` 高风险面一句
+| 双壳入口同一编排结果 | `idleChromeOrchestration.test.js` |
+| Arrival Sit 隐、⚡ 显 | visibility 契约 + e2e |
+| 断点不误关 Companion | `IdleChromeFacade.test.js` + TEST_TRACKER 人工 |
+| handlers 一次注册 | main 只调 `idleChrome.setHandlers` |
 
 ---
 
@@ -213,11 +193,12 @@
 | Stage Reminder | `ft-narrow-stage-reminder` | `ft-wide-stage-reminder` |
 | 微仪式藏 Sit | `ft-narrow-hide-sit-dock` 等 | `#btn-focus:disabled`（契约） |
 
-### D. 接线（`main.js`）
+### D. 接线（`main.js` · 阶段 2+）
 
-- `new NarrowIdleShell({ root, getHudStateEl })` — 窄 MQ 激活；宽 inert。  
-- `new WideIdleMoreMenu()` — 宽 MQ 激活；窄 inert。  
-- 阶段 2 目标：单一 facade 按 MQ 启用呈现适配器；handlers（`onSound` / `onHonesty` / …）只注册一次。
+- `createIdleChromeFacade({ root, getHudStateEl })` → `idleChrome`  
+- 适配器：`idleChrome.narrow` / `idleChrome.wide`（DEV：`__idleChrome` / `__narrowIdleShell` / `__wideIdleMoreMenu`）  
+- `idleChrome.setHandlers({…})` 一次；`sessionChromeSync({ idleChrome })` 走 `applyShellProjection`  
+- 断点：`releaseInactivePresentation`（不调 `onClearStage`）
 
 ---
 
@@ -228,4 +209,4 @@
 | 2026-07-25 | 立项；须等 wide-idle push **且** ⑦ 场景 O 收口；禁止仅凭 push 开工；禁止与未验收修复叠重构 |
 | 2026-07-29 | wide-idle 空壳分支删除（内容已在 develop）；O 修多已进 develop；W1–W8 完整关单改在 tip 单独排期 |
 | 2026-07-30 | 用户确认先 Brief 再 feature；**本 Brief 交付 → 状态「可排期开工」** |
-| 2026-07-30 | Brief 已随 PR #30 进 `origin/develop`；阶段 0：开 `feature/responsive-single-chrome-line` + 入口对照表 + freshness behind=0 |
+| 2026-07-30 | 阶段 1–2 合入 #32/#33；阶段 3 文档收口 + main 只经 `idleChrome`；误建 `fix/ambient-menu-hint-ux` 已删 |
