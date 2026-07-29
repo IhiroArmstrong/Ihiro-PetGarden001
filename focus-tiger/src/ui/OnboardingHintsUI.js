@@ -155,25 +155,56 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
       tip: 'bottom'
     };
   }
-  // Secondary / parked controls → swipe grabber
-  if (
-    /session-start-dock__hint|weekly-practice|micro-ritual|ambient-soundscape|reminder-preference/.test(
-      sel
-    )
-  ) {
+  if (/ft-narrow-grabber|narrow-drawer/.test(sel)) {
     return {
       selector: '.ft-narrow-grabber',
       placement: 'above',
       tip: 'bottom'
     };
   }
-  if (NARROW_PARKED_ANCHOR_RE.test(sel)) {
-    return {
-      selector: '.ft-narrow-grabber',
-      placement: 'above',
-      tip: 'bottom'
-    };
+  // Drawer open: point at sheet rows / heatmap clone (not parked off-screen originals).
+  const drawerOpen = Boolean(
+    document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
+  );
+  if (drawerOpen) {
+    if (/weekly-practice/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__heatmap',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/session-start-dock__hint|how-shall/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="companion"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/micro-ritual/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="breath"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/ambient-soundscape|ambient-gated/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="sound"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
+    if (/reminder-preference/.test(sel)) {
+      return {
+        selector: '.ft-narrow-sheet__item[data-proxy="reminder"]',
+        placement: 'above',
+        tip: 'bottom'
+      };
+    }
   }
+  // Drawer closed: never remap parked controls onto home CTAs (would mis-point).
+  // Callers must not paint drawer-parked tips while the sheet is closed.
   return anchorCfg;
 }
 
@@ -391,7 +422,10 @@ export class OnboardingHintsUI {
     this._remedyIds = nextRemedy;
 
     this._paint(primary, { remedy: true });
-    this._syncCatalogChip(catalog.length);
+    this._syncCatalogChip(catalog.length, {
+      oneShot: catalog.length === 1 && catalog[0] === 'narrow-drawer-menu'
+    });
+    this._resolveRemedyBubbleLayout();
     this._showPurposeCard();
     this.syncDiscoveryDots();
     requestAnimationFrame(() => {
@@ -406,10 +440,12 @@ export class OnboardingHintsUI {
 
   /**
    * 短标签芯片「还有 N 条」——不自动消失，锚在可见 ? 旁（图12）。
+   * 窄屏一次性抽屉说明时用无计数文案（禁止 3 more / 2 more）。
    * @param {number} catalogCount
+   * @param {{ oneShot?: boolean }} [opts]
    * @returns {void}
    */
-  _syncCatalogChip(catalogCount) {
+  _syncCatalogChip(catalogCount, opts = {}) {
     const n = Math.max(0, Number(catalogCount) || 0);
     if (n <= 0) {
       this._hideCatalogChip();
@@ -417,10 +453,10 @@ export class OnboardingHintsUI {
     }
     const chip = this._ensureCatalogChip();
     chip.hidden = false;
-    chip.textContent = String(t('HINT_HELP_REMEDY_MORE')).replace(
-      /\{n\}/g,
-      String(n)
-    );
+    const oneShot = Boolean(opts.oneShot) || this._catalogPending[0] === 'narrow-drawer-menu';
+    chip.textContent = oneShot
+      ? String(t('HINT_HELP_REMEDY_MORE_ONE'))
+      : String(t('HINT_HELP_REMEDY_MORE')).replace(/\{n\}/g, String(n));
     chip.setAttribute('aria-label', chip.textContent);
     this._positionCatalogChip();
   }
@@ -480,7 +516,7 @@ export class OnboardingHintsUI {
 
   /**
    * 展开补救目录：一次只画下一条（替换上一条目录 tip，保留主条）。
-   * 避免窄屏多 tip 同锚到主球/grabber 叠成乱指。
+   * `narrow-drawer-menu` 为一次性：展开后清空目录、关掉芯片（无 3 more / 2 more）。
    */
   expandRemedyCatalog() {
     if (this._catalogPending.length === 0) {
@@ -496,10 +532,16 @@ export class OnboardingHintsUI {
       this.hideBubble(prevCatalog);
     }
     const next = this._catalogPending.shift();
+    if (next === 'narrow-drawer-menu') {
+      this._catalogPending = [];
+    }
     this._catalogShownId = next;
     this._remedyIds.add(next);
     this._paint(next, { remedy: true });
-    this._syncCatalogChip(this._catalogPending.length);
+    this._syncCatalogChip(this._catalogPending.length, {
+      oneShot: next === 'narrow-drawer-menu'
+    });
+    this._resolveRemedyBubbleLayout();
     requestAnimationFrame(() => {
       this.repositionAll();
       this._positionCatalogChip();
@@ -548,10 +590,109 @@ export class OnboardingHintsUI {
     for (const hintId of this._visibleIds) {
       this._positionBubble(hintId);
     }
+    this._resolveRemedyBubbleLayout();
     this._positionPurposeCard();
     this._positionCatalogChip();
     this.syncDiscoveryDots();
   }
+
+  /**
+   * Lift above home balls **then** separate. Old order (separate→lift) collapsed
+   * multiple tips onto the same CTA-top Y and recreated overlaps (375 park chip).
+   * @returns {void}
+   */
+  _resolveRemedyBubbleLayout() {
+    // Two passes: lift may stack; separate may nudge; lift again if separate
+    // pushed a tip back into the CTA band.
+    this._liftBubblesAboveNarrowHomeCtas();
+    this._separateOpenRemedyBubbles();
+    this._liftBubblesAboveNarrowHomeCtas();
+    this._separateOpenRemedyBubbles();
+  }
+
+  /**
+   * 补救同时最多主条+1；若仍矩形相交则把**上方**气泡再上推（勿把下方气泡推进主球带）。
+   * @returns {void}
+   */
+  _separateOpenRemedyBubbles() {
+    const gap = 10;
+    /** @type {{ id: string, bubble: import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble, top: number, bottom: number, height: number }[]} */
+    const items = [];
+    for (const id of this._visibleIds) {
+      if (!this._remedyIds.has(id)) continue;
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      items.push({
+        id,
+        bubble,
+        top: r.top,
+        bottom: r.bottom,
+        height: r.height
+      });
+    }
+    if (items.length < 2) return;
+    items.sort((a, b) => a.top - b.top || a.id.localeCompare(b.id));
+    // Bottom-up: keep lower tip, push overlapping upper tips further up.
+    for (let i = items.length - 2; i >= 0; i--) {
+      const below = items[i + 1];
+      const cur = items[i];
+      if (cur.bottom + gap <= below.top) continue;
+      const top = Math.max(12, below.top - gap - cur.height);
+      cur.bubble.style.top = `${Math.round(top)}px`;
+      const nr = cur.bubble.getBoundingClientRect();
+      cur.top = nr.top;
+      cur.bottom = nr.bottom;
+      cur.height = nr.height;
+    }
+  }
+
+  /**
+   * 窄屏 Idle/park：open tip 与主球带相交则上抬。多条同时抬升时**堆叠**错开，
+   * 禁止全部落到同一 `cta.top - height`（会抵消 `_separateOpenRemedyBubbles`）。
+   * @returns {void}
+   */
+  _liftBubblesAboveNarrowHomeCtas() {
+    if (
+      !document.body.classList.contains('ft-narrow-idle') &&
+      !document.body.classList.contains('ft-narrow-park')
+    ) {
+      return;
+    }
+    const cta = document.getElementById('ft-narrow-home-ctas');
+    const cr = cta?.getBoundingClientRect?.();
+    if (!cr || cr.width <= 0 || cr.height <= 0) return;
+    const gap = 12;
+    /** @type {import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble[]} */
+    const needLift = [];
+    for (const id of this._visibleIds) {
+      const bubble = this._bubbles.get(id);
+      if (!bubble || !bubble.open) continue;
+      const r = bubble.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      const overlaps =
+        r.left < cr.right &&
+        r.right > cr.left &&
+        r.top < cr.bottom &&
+        r.bottom > cr.top;
+      if (overlaps) needLift.push(bubble);
+    }
+    if (needLift.length === 0) return;
+    // Bottom tip stays closest to the balls; others stack upward.
+    needLift.sort(
+      (a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top
+    );
+    let ceiling = cr.top - gap;
+    for (const bubble of needLift) {
+      const r = bubble.getBoundingClientRect();
+      const top = Math.max(12, ceiling - r.height);
+      bubble.style.top = `${Math.round(top)}px`;
+      bubble.tip = 'bottom';
+      ceiling = top - gap;
+    }
+  }
+
 
   dispose() {
     this._unsubLocale();
@@ -686,6 +827,12 @@ export class OnboardingHintsUI {
     const vh = window.innerHeight;
     const maxW = Math.min(300, vw - 24);
 
+    // Basic rule: no visible control → no tip (never park a tip over empty canvas).
+    if (!anchor) {
+      this.hideBubble(hintId);
+      return;
+    }
+
     bubble.style.maxWidth = `${maxW}px`;
     bubble.style.left = '0px';
     bubble.style.top = '0px';
@@ -699,11 +846,7 @@ export class OnboardingHintsUI {
     /** @type {string} */
     let tip = 'bottom';
 
-    if (!anchor) {
-      left = (vw - br.width) / 2;
-      top = vh - br.height - 118;
-      tip = 'bottom';
-    } else {
+    {
       const ar = anchor.getBoundingClientRect();
       if (anchorCfg.placement === 'left') {
         left = ar.left - br.width - gap;
@@ -738,8 +881,7 @@ export class OnboardingHintsUI {
     // 判定阈值（见 §8.6 / weekly-practice-heatmap.spec.js「375 park」回归）。
     if (
       bubble.dataset.remedy === '1' &&
-      document.body.classList.contains('ft-narrow-park') &&
-      anchor
+      document.body.classList.contains('ft-narrow-park')
     ) {
       const sameAnchor = [...this._remedyIds].filter((id) => {
         const b = this._bubbles.get(id);
@@ -765,18 +907,11 @@ export class OnboardingHintsUI {
 
     bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (tip);
 
-    if (anchor) {
-      const ar = anchor.getBoundingClientRect();
-      const anchorCenterX = ar.left + ar.width / 2;
-      const anchorCenterY = ar.top + ar.height / 2;
-      const tipX = Math.max(18, Math.min(anchorCenterX - left, br.width - 18));
-      const tipY = Math.max(18, Math.min(anchorCenterY - top, br.height - 18));
-      bubble.tipX = `${Math.round(tipX)}px`;
-      bubble.tipY = `${Math.round(tipY)}px`;
-    } else {
-      bubble.tipX = '50%';
-      bubble.tipY = '50%';
-    }
+    const ar = anchor.getBoundingClientRect();
+    const tipX = Math.max(18, Math.min(ar.left + ar.width / 2 - left, br.width - 18));
+    const tipY = Math.max(18, Math.min(ar.top + ar.height / 2 - top, br.height - 18));
+    bubble.tipX = `${Math.round(tipX)}px`;
+    bubble.tipY = `${Math.round(tipY)}px`;
 
     bubble.style.left = `${Math.round(left)}px`;
     bubble.style.top = `${Math.round(top)}px`;

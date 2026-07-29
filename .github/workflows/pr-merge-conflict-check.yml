@@ -1,0 +1,87 @@
+name: PR pre-merge conflict check
+
+# Attempt merge with latest origin/develop. Fail fast on conflicts — no auto-resolution.
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  merge-conflict-check:
+    name: pre-merge with develop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch latest develop
+        run: git fetch origin develop:refs/remotes/origin/develop
+
+      - name: Attempt merge with origin/develop
+        id: merge
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          set +e
+          git merge --no-commit --no-ff origin/develop
+          merge_exit=$?
+          set -e
+          if [ "$merge_exit" -ne 0 ]; then
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+            git diff --name-only --diff-filter=U | tee conflict_files.txt
+            if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+              git merge --abort
+            fi
+            exit 1
+          fi
+          if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+            git merge --abort
+          fi
+          echo "conflict=false" >> "$GITHUB_OUTPUT"
+
+      - name: Comment conflict files on PR
+        if: failure() && steps.merge.outputs.conflict == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let files = '';
+            try {
+              files = fs.readFileSync('conflict_files.txt', 'utf8').trim();
+            } catch (_) {
+              files = '(未能列出文件名，请本地执行 git fetch origin develop && git merge origin/develop 查看)';
+            }
+            const body = [
+              '## ⛔ 预合并冲突 — CI 已挂起',
+              '',
+              '本 PR 分支与 **`origin/develop`** 最新提交存在合并冲突，CI **不会**自动解决冲突。',
+              '',
+              '**冲突文件：**',
+              '```',
+              files || '(无 diff-filter=U 输出，可能为其它合并错误)',
+              '```',
+              '',
+              '请在本地执行：',
+              '```bash',
+              'git fetch origin develop',
+              'git merge origin/develop   # 或 git rebase origin/develop',
+              '# 手动解决上述文件后 push',
+              '```',
+              '',
+              `_Updated by workflow \`${{ github.workflow }}\` · run ${{ github.run_id }}_`
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });

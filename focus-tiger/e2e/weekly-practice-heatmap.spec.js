@@ -249,7 +249,9 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
   expect(reminderBox.y).toBeLessThan(667);
 });
 
-test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
+test('375: ActionBar note opens Soundscape panel (same as drawer Sound)', async ({
+  page
+}) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
   await expect(page.locator('#ft-narrow-mute-btn')).toBeVisible({
@@ -269,6 +271,20 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
   expect(before.enabled === false || before.enabled == null).toBeTruthy();
 
   await page.locator('#ft-narrow-mute-btn').click({ force: true });
+  await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
+  await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(
+    0
+  );
+
+  // Prefer a track inside the panel — preference flips on (not mute-toggle)
+  await page
+    .locator('.ambient-soundscape__track')
+    .filter({ hasNotText: /Off|关闭|关/i })
+    .first()
+    .click();
   await expect
     .poll(async () => {
       return page.evaluate(() => {
@@ -282,21 +298,6 @@ test('375: ActionBar mute toggles ambient preference', async ({ page }) => {
       });
     })
     .toBe(true);
-
-  await page.locator('#ft-narrow-mute-btn').click({ force: true });
-  await expect
-    .poll(async () => {
-      return page.evaluate(() => {
-        try {
-          return JSON.parse(
-            localStorage.getItem('focus-tiger.ambient-pref.v1') || '{}'
-          ).enabled;
-        } catch {
-          return null;
-        }
-      });
-    })
-    .toBe(false);
 });
 
 test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
@@ -359,11 +360,36 @@ test('375 Focusing restores FocusHUD and hides Sound FAB', async ({ page }) => {
   expect(report.hud?.w).toBeGreaterThan(40);
   expect(report.hud?.left).toBeGreaterThanOrEqual(0);
   expect(report.hud?.left).toBeLessThan(80);
+  // ActionBar stays; FocusHUD sits below it
+  expect(report.hud?.top).toBeGreaterThanOrEqual(60);
   expect(report.hideFab).toBe(true);
   expect(report.chromeVisibility).toBe('hidden');
-  // Mute note visible top-right
-  expect(report.mute?.w).toBeGreaterThan(20);
-  expect(report.mute?.left).toBeGreaterThan(200);
+  // ActionBar owns ? · wall clock · ♪ (no duplicate floating mute)
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  const clockOk = await page.evaluate(() => {
+    const shown = document
+      .querySelector('.ft-narrow-action-bar__time')
+      ?.textContent?.trim();
+    if (!shown || !/^\d{1,2}:\d{2}$/.test(shown)) return { ok: false, shown };
+    const now = new Date();
+    const candidates = [0, -1, 1].map((minDelta) => {
+      const d = new Date(now.getTime() + minDelta * 60_000);
+      try {
+        return d.toLocaleTimeString(undefined, {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      } catch {
+        const h = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+      }
+    });
+    return { ok: candidates.includes(shown), shown, candidates };
+  });
+  expect(clockOk, JSON.stringify(clockOk)).toMatchObject({ ok: true });
+  await expect(page.locator('#ft-narrow-mute-btn')).toBeVisible();
 });
 
 test('non-Idle (Focusing) hides weekly heatmap', async ({ page }) => {
@@ -415,8 +441,8 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
 });
 
 /**
- * Fig12 / L259: ? remedy shows one primary tip + persistent「还有 N 条」chip;
- * chip expands **one tip at a time** (not a flood of overlapping tips).
+ * Fig12 / L259: ? remedy shows one primary tip +「More tips」chip;
+ * on narrow park, chip expands **one** drawer-menu tip (not 3 more / 2 more cascade).
  */
 test('375 park: ? remedy primary + catalog chip expands one tip at a time', async ({
   page
@@ -439,7 +465,6 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
     const chipRect = chip?.getBoundingClientRect();
-    const chipMatch = (chip?.textContent || '').match(/(\d+)/);
     return {
       count: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
@@ -451,16 +476,16 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
           chipRect.top >= 0 &&
           chipRect.top < 667
       ),
-      chipText: chip?.textContent?.trim() || '',
-      chipN: chipMatch ? Number(chipMatch[1]) : 0
+      chipText: chip?.textContent?.trim() || ''
     };
   });
   expect(before.count).toBeLessThanOrEqual(2);
   expect(before.count).toBeGreaterThanOrEqual(1);
   expect(before.ids).toContain('sit-button');
   expect(before.chipVisible).toBe(true);
-  expect(before.chipText).toMatch(/more|还有/i);
-  expect(before.chipN).toBeGreaterThanOrEqual(2);
+  expect(before.chipText).toMatch(/more tips|更多提示/i);
+  // One-shot: no countdown "N more tips"
+  expect(before.chipText).not.toMatch(/\d+\s*more|还有\s*\d+/i);
 
   await page.locator('#ft-hint-catalog-chip').click();
 
@@ -473,18 +498,29 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
       return r.width > 0 && r.height > 0;
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
-    const chipMatch = (chip?.textContent || '').match(/(\d+)/);
     const rects = bubbles.map((b) => {
       const r = b.getBoundingClientRect();
-      return { id: b.dataset.hintId, left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+      return {
+        id: b.dataset.hintId,
+        left: r.left,
+        top: r.top,
+        right: r.right,
+        bottom: r.bottom
+      };
     });
     let overlapPairs = 0;
     for (let i = 0; i < rects.length; i++) {
       for (let j = i + 1; j < rects.length; j++) {
         const a = rects[i];
         const b = rects[j];
-        const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
-        const iy = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+        const ix = Math.max(
+          0,
+          Math.min(a.right, b.right) - Math.max(a.left, b.left)
+        );
+        const iy = Math.max(
+          0,
+          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+        );
         if (ix * iy > 40) overlapPairs += 1;
       }
     }
@@ -492,16 +528,87 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
       bubbleCount: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
       chipVisible: Boolean(chip && !chip.hidden),
-      chipN: chipMatch ? Number(chipMatch[1]) : 0,
       overlapPairs
     };
   });
-  // Serial expand: still at most primary + one catalog tip (no flood).
+  // Primary + one drawer intro; chip gone (no 3 more / 2 more).
   expect(after.bubbleCount).toBeLessThanOrEqual(2);
   expect(after.bubbleCount).toBeGreaterThanOrEqual(1);
-  expect(after.ids).toContain('sit-button');
-  expect(after.ids.length).toBeGreaterThan(1);
-  expect(after.chipVisible).toBe(true);
-  expect(after.chipN).toBe(before.chipN - 1);
+  expect(after.ids).toContain('narrow-drawer-menu');
+  expect(after.chipVisible).toBe(false);
   expect(after.overlapPairs).toBe(0);
+
+  // Separation runs after paint — poll so CI does not race the first layout.
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const bubbles = [
+            ...document.querySelectorAll('ft-onboarding-hint-bubble')
+          ].filter((b) => {
+            if (b.open === false) return false;
+            const r = b.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+          });
+          const rects = bubbles.map((b) => b.getBoundingClientRect());
+          let overlapPairs = 0;
+          for (let i = 0; i < rects.length; i++) {
+            for (let j = i + 1; j < rects.length; j++) {
+              const a = rects[i];
+              const b = rects[j];
+              const ix = Math.max(
+                0,
+                Math.min(a.right, b.right) - Math.max(a.left, b.left)
+              );
+              const iy = Math.max(
+                0,
+                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+              );
+              if (ix * iy > 40) overlapPairs += 1;
+            }
+          }
+          return overlapPairs;
+        }),
+      { timeout: 5_000 }
+    )
+    .toBe(0);
+
+  // Grabber-anchored drawer intro must sit above home CTAs (not behind the balls).
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const cta = document
+            .getElementById('ft-narrow-home-ctas')
+            ?.getBoundingClientRect();
+          const bubbles = [
+            ...document.querySelectorAll('ft-onboarding-hint-bubble')
+          ].filter((b) => {
+            if (b.open === false) return false;
+            const r = b.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+          });
+          if (!cta || cta.height <= 0) return { ok: false, reason: 'no-cta' };
+          for (const b of bubbles) {
+            const r = b.getBoundingClientRect();
+            const overlaps =
+              r.left < cta.right &&
+              r.right > cta.left &&
+              r.top < cta.bottom &&
+              r.bottom > cta.top;
+            if (overlaps) {
+              return {
+                ok: false,
+                reason: 'overlap',
+                id: b.dataset.hintId,
+                tipBottom: r.bottom,
+                ctaTop: cta.top
+              };
+            }
+          }
+          return { ok: true };
+        }),
+      { timeout: 5_000 }
+    )
+    .toEqual({ ok: true });
 });

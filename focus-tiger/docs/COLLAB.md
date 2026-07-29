@@ -89,4 +89,34 @@ COLLAB.md（本文档，协作层）
 ```
 
 ---
-*版本：1.0 · 建立于Task 1开发启动前*
+
+## 五、并行 Agent 协作规则
+
+> **SSOT**：并行 Cursor 写会话须用 git worktree 隔离 → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)「并行 Cursor 会话：必须用 git worktree 隔离写操作」（`RULES_INDEX` → `git-parallel-worktree`）。本节为协作约定摘要，不另立平行规则。
+>
+> **由来（2026-07-27）**：两个并行 Cursor 会话在同一 worktree（`wt-docs-6.6`）上互不知情地各自推进，验证基线与实际 `develop` 状态对不上。以下规则用于物理隔离，避免再踩同一坑。
+
+1. **单 worktree / 单分支单写者**：同一 worktree、同一分支，同一时间只能有一个 Agent/会话在写。并行开发必须开不同 worktree + 不同分支，禁止两个会话挤在同一 worktree 或同一分支上各干各的。
+2. **开新会话前先查现场**：开始新的 Cursor 会话前，先跑 `git worktree list` 与 `git reflog`，确认没有其他会话正在同一 worktree/分支上进行中的工作。
+3. **修复走短命分支 + PR**：修复类工作一律 `fix/*` 短命分支 + PR 合并进 `develop`，不直接在 `develop` 上改；合并后即删分支。
+4. **验收结论须带三元组**：每条测试/验收结论必须注明 **commit hash + worktree 路径 + 本地端口**（例：`6545723 · …/wt-docs-6.6 · :5173`），禁止只说「在 develop 上测到……」。
+5. **人工验收只认 `origin/develop` tip（强制）**：**SSOT** 见 [`TEST_TRACKER.md`](./TEST_TRACKER.md) 文首「人工验收唯一基线」。关单级结论若未报 hash、或 hash ≠ 当时 `origin/develop` tip → **无效**，须重新验证。feature/fix 试跑 ≠ 正式验收。
+
+---
+
+## 六、Agent / Cursor · Git 同步约定（2026-07-27）
+
+一批修复或任务在本地 **commit 验证通过后**，Agent **应尽快 push** 到对应远程分支（`develop` / `feature/*` / `fix/*`），**不要**在仅本地存在的分支上积攒多笔未推送 commit。
+
+**原因**：另一 Agent 或协作者可能基于较早快照合并同名分支（例：`fix/scenario-o-375-chrome-layout` 合并到 `726fc28` 时，遗漏了其后两笔仅存在于 reflog 的 commit），导致修复丢失、需 cherry-pick 补救。
+
+| 动作 | 约定 |
+|---|---|
+| 本地 `git commit` | 验证通过后执行（见 `focus-tiger-regression-lock.mdc`） |
+| `git push` | 用户明确要求 **或** 任务书写明「完成后 push develop」时执行；**一批修复收尾默认应 push**，勿长期只留本地 |
+| 多 Agent 并行 | 开工前 `git pull`；完工后 push，减少「已合并但缺 commit」窗口 |
+
+细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
+
+---
+*版本：1.3 · 2026-07-29 增补 §五.5 人工验收只认 `origin/develop` tip（SSOT：`TEST_TRACKER.md`）*

@@ -133,15 +133,16 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 状态 | 谁设 / 谁读 | 波及 |
 |---|---|---|
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
-| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（UI 投影） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
+| **`sessionChromeSync`**（壳层投影） | `main.js` → `createSessionChromeSync`；`isHonestyPhaseBusy` / `isHonestyUiBusy` | Idle Honesty/微仪式入口显隐 + `resyncSessionChrome`（含窄宽壳 `setSuppressed`）；单测 `sessionChromeSync.test.js` |
+| `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（经 `syncArrivalGateReady`） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
 | `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |
-| `postSessionOverlayActive` | **单一入口** `main.js` `resyncSessionChrome()`：`computePostSessionOverlayActive(sources)`（数组 + `some()`）→ Gate + Companion | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
+| `postSessionOverlayActive` | **单一入口** `sessionChromeSync.resyncSessionChrome()`：`computePostSessionOverlayActive(sources)` → Gate + Companion + 窄宽壳 | hint 是否 ignore；选项禁用。源默认含 Arrival / Reflection / **微仪式**；**Honesty 不列入**（仍可点 hint）。禁止 Reflection-only 与 Arrival-only 双路互盖 |
 | `canBeginFocusOnCompanionModeSelect` | `FocusSession` 纯函数 + Gate 包装；Picker 经 handlers 注入真门闩 | Here & Now / Flow 须门闩；**Offline 跳过 Arrival**；未就绪 Here&Now/Flow 必须 false |
 | Companion 点选写 storage | **仅** Gate 通过后（`commit-begin` / `commit-arrival`） | **禁止**先写 storage 再静默 return（`resolveCompanionModeSelectCommit`） |
 | `resolveCompanionHintClick` | `FocusSession` + Gate 包装 | toggle 展开三选一；禁静默 ignore |
 | `resolveSitClickWhenIdle` | Gate | Idle → 始终 `start-arrival`（开表走 Companion / ⚡） |
 
-扩展第三种叠层：在 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
+扩展第三种叠层：在 `sessionChromeSync` 的 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
 
 ---
 
@@ -179,6 +180,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `focusing-narrow-home-ctas-hidden` | focusing | narrow | HomeCtas+Grabber | hidden | — | `#ft-narrow-home-ctas, .ft-narrow-grabber` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD and hides Sound FAB` |
 | `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **gap-wide** | `e2e/helpers/product-shell.js › expectFocusSessionActive (Rise 文案)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
 | `choose-bow-companion-in-viewport` | after-choose-bow | both | CompanionPanel | in-viewport | `.session-start-dock__panel` | `.session-start-dock__panel` | **gap-wide** | `e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible only)` | `e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…` |
+| `companion-stage-honesty-entry-hidden` | companion-staged-narrow | narrow | HonestyIdleEntry | hidden | — | `#honesty-idle-entry` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 companion stage: Honesty dock entry stays hidden` |
 | `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |
 | `heatmap-hidden-when-focusing` | focusing | both | WeeklyHeatmap | hidden | `#weekly-practice-heatmap` | `#weekly-practice-heatmap` | **gap-narrow** | `e2e/weekly-practice-heatmap.spec.js › non-Idle (Focusing) hides weekly heatmap` | — |
 
@@ -211,6 +213,6 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 契约 | 不变量 | 波及 / 复测 |
 |---|---|---|
 | **Hints remap** | 控件 park 后，onboarding tip /「?」补救锚点必须 remap 到**当前可见宿主**（窄：ActionBar `?` 等；宽：⋯ 菜单等）。禁止仍指向 park 掉的旧按钮坐标。 | 改 park / ActionBar / ⋯ / Hints → 375 + ≥480 各点一次「?」补救 |
-| **FocusHUD vs ActionBar（语义）** | Focusing / 叠层期顶栏时间由谁负责——宽/窄须书面一致；细则显隐见机器块 `focusing-*` 行。 | Choose→鞠躬→点选后 Focusing |
+| **FocusHUD vs ActionBar（语义）** | **窄屏**：ActionBar（? · **本机墙钟** · ♪）在 Idle / Arrival / Focusing / 叠层 suppress 下**常显**；会话累计时长只在 `#focus-hud`。宽屏仍用 FocusHUD。细则显隐见机器块 `focusing-*` 行。 | Choose→鞠躬→点选后 Focusing；375 顶栏须见墙钟而非 `00:00` |
 
 外侧取消邻接（点 tip 只关 tip、不关面板）属交互回归，见 `DEV_WORKFLOW_QUALITY.md` §8 N18；实现：`src/ui/outsideDismissGuard.js`（Arrival / Companion / Honesty 共用）。不单列为本表第三壳。

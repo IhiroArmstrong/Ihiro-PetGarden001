@@ -315,9 +315,9 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 #### 1. 可选性与呈现
 
 - **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
-- **默认关闭（opt-in）**（2026-07-25 拍板）：登录 / 打开产品后**不**自动播背景音乐；须用户点右上音符钮（或 Sound 选曲）才开播。偏好存 `focus-tiger.ambient-pref.v1`（无存储时 `enabled: false`；默认曲目仍为 Mer-Ka-Ba）；
-- UI 拆成两处：**右上米色圆形音符钮**（随时开/关；在播时图标带斜杠）+ **右下角蒲团橙 Sound**（**始终可见**；专注后可展开曲目/音量，未专注点击提示先 Sit）；
-- 浏览器若拦截自动播放：点右上音符钮解锁；不得因未开音乐削弱完成反馈。
+- **默认关闭（opt-in）**（2026-07-25 拍板）：登录 / 打开产品后**不**自动播背景音乐；须用户点右上音符钮打开 Soundscape 选曲（或菜单 / 抽屉 **Sound**）才开播。偏好存 `focus-tiger.ambient-pref.v1`（无存储时 `enabled: false`；默认曲目仍为 Mer-Ka-Ba）；
+- UI：**右上米色圆形音符钮**（窄屏 Idle 为 ActionBar ♪）与菜单 / 抽屉 **Sound** **同效**——打开曲目/音量面板；图标斜杠反映「偏好开着」而非点一下静音。宽屏**不**再露出右下 Sound FAB（避免与右上音符重复）；窄屏 FAB 仍 park / Focusing 藏起；
+- 浏览器若拦截自动播放：在面板内选曲后点按解锁；不得因未开音乐削弱完成反馈。
 
 #### 2. 播放时长作为独立「在场置信信号」
 

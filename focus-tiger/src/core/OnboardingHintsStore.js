@@ -109,6 +109,36 @@ export function appendFocusHudHintIds(ids) {
 }
 
 /**
+ * 窄屏 Idle 抽屉内才有准锚的 tip（抽屉关闭时不得指主球 / grabber 乱指）。
+ * @see ONBOARDING_HINTS.md
+ */
+export const DRAWER_PARKED_HINT_IDS = Object.freeze([
+  'how-shall-we-sit',
+  'weekly-heatmap',
+  'micro-ritual',
+  'in-app-reminder',
+  'ambient-gated'
+]);
+
+/** @param {string} id */
+export function isDrawerParkedHintId(id) {
+  return DRAWER_PARKED_HINT_IDS.includes(id);
+}
+
+/**
+ * 窄屏 park 且抽屉未开：去掉抽屉锚 tip（自动路径不乱指）。
+ * @param {string[]} ids
+ * @param {object} scene
+ * @returns {string[]}
+ */
+export function filterHintsForNarrowDrawer(ids, scene = {}) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const drawerOpen = scene.narrowSheetOpen || scene.narrowDrawerOpen;
+  if (!scene.narrowPark || drawerOpen) return [...ids];
+  return ids.filter((id) => !isDrawerParkedHintId(id) && id !== 'narrow-drawer-menu');
+}
+
+/**
  * 补救入口：当前 UI 场景 → 应展示的 hintId。
  * @param {object} scene
  * @param {boolean} [scene.honestyVisible]
@@ -178,12 +208,22 @@ export function resolvePrimaryRemedyHintId(scene = {}) {
 
 /**
  * 补救目录：全量列表去掉主条（供「还有 N 条」芯片**逐条**展开）。
+ * 窄屏 park + 抽屉关闭：折叠为一次性 `narrow-drawer-menu`（禁止 3 more / 2 more 乱指）。
  * @param {Parameters<typeof resolveHintForScene>[0]} scene
  * @returns {string[]}
  */
 export function resolveRemedyCatalogHintIds(scene = {}) {
   const primary = resolvePrimaryRemedyHintId(scene);
-  return resolveRemedyHintIds(scene).filter((id) => id !== primary);
+  const drawerOpen = scene.narrowSheetOpen || scene.narrowDrawerOpen;
+  if (scene.narrowPark && !drawerOpen) {
+    const peek = resolveRemedyHintIds({ ...scene, narrowPark: false }).filter(
+      (id) => id !== primary && id !== 'narrow-drawer-menu'
+    );
+    return peek.length > 0 ? ['narrow-drawer-menu'] : [];
+  }
+  return resolveRemedyHintIds(scene).filter(
+    (id) => id !== primary && id !== 'narrow-drawer-menu'
+  );
 }
 
 /**
@@ -217,6 +257,7 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'companion-stay': 50,
   'companion-away': 50,
   'companion-across-tools': 50,
+  'narrow-drawer-menu': 45,
   'help-remedy': 40,
   'help-fallback': 30
 });
@@ -254,6 +295,10 @@ export function resolveAutoHintIds(scene = {}) {
   let ids = [];
   if (scene.reflectionOpen) {
     ids = ['reflection'];
+  } else if (scene.microRitualOpen) {
+    // Sit / home CTAs are hidden while breath runs — never auto-show sit tips
+    // (idle-after-session / sit-button would orphan over empty canvas).
+    ids = [];
   } else if (scene.isFocusing) {
     ids = ['rise-button', 'ambient-soundscape'];
     appendFocusHudHintIds(ids);
@@ -287,13 +332,14 @@ export function resolveAutoHintIds(scene = {}) {
 
   const skipHelpAffordance =
     scene.reflectionOpen ||
+    scene.microRitualOpen ||
     scene.isFocusing ||
     scene.arrivalOpen ||
     scene.honestyBridgeVisible;
   if (!skipHelpAffordance && !ids.includes('help-affordance')) {
     ids.push('help-affordance');
   }
-  return ids;
+  return filterHintsForNarrowDrawer(ids, scene);
 }
 
 /**

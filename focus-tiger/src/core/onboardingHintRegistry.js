@@ -228,6 +228,15 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     }
   },
   {
+    id: 'narrow-drawer-menu',
+    localeKey: 'HINT_NARROW_DRAWER_MENU',
+    anchor: {
+      selector: '.ft-narrow-grabber',
+      placement: 'above',
+      tip: 'bottom'
+    }
+  },
+  {
     id: 'help-affordance',
     localeKey: 'HINT_HELP_AFFORDANCE',
     anchor: {

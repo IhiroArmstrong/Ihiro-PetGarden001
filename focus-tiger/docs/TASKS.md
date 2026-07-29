@@ -162,6 +162,14 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 工程提醒（跨会话门闩）
+
+| 提醒 | 触发 | 动作 | 权威 |
+|---|---|---|---|
+| **stash · `chore/split-hints-from-pr2: temp prd untracked`** | 回到 hints 拆分 / `chore/split-hints-from-pr2` | 先 `stash list` + `stash show` 核内容，再决定保留或丢弃；**禁止未核就 drop** | `PROCESS.md` Backlog「stash · chore/split-hints-from-pr2」 |
+
+---
+
 ## 📍 响应式 / 移动浏览器（2026-07-21 立项）
 
 > 权威基线：`RESPONSIVE_LAYOUT.md`。用户 2026-07-21 书面同意两项 **分拆** UI Task，**一次只做一个**。

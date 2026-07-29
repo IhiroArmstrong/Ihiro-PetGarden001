@@ -1,0 +1,74 @@
+name: focus-tiger full e2e
+
+# Full Playwright suite on develop tip.
+# Not a PR/merge gate — manual + daily schedule only.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to test (branch / tag / SHA)'
+        required: false
+        default: 'develop'
+  schedule:
+    # Daily UTC 02:00 (no prior cron in this repo; default per task brief)
+    - cron: '0 2 * * *'
+
+jobs:
+  e2e-full:
+    name: npm run test:e2e (full)
+    runs-on: ubuntu-latest
+    # Was 60 (workers:2 retry storms), then 90 (workers:1 still cancelled mid-suite
+    # under first-attempt page.goto timeout → retry storms, ~90m). Raise to 120 so
+    # the job can finish and report pass/flaky instead of wall-clock cancel.
+    # Not a flaky root-cause fix — goto/domcontentloaded jitter is tracked separately.
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: focus-tiger
+    steps:
+      - name: Checkout develop tip (or dispatch ref)
+        uses: actions/checkout@v4
+        with:
+          # schedule always checks out the repo default branch first;
+          # pin develop (or the dispatch input) so we never silently test main.
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || 'develop' }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: focus-tiger/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      # Equivalent to `npm run test:e2e` (guard + playwright test), with CI reporters
+      # for Actions annotations + HTML artifact. package.json script only uses `list`.
+      # --workers=1: override playwright.config.js CI default (2) for this job only —
+      # dual Chromium goto storms on ubuntu-latest were canceling the 60m budget.
+      - name: Full Playwright e2e
+        run: node scripts/e2e-ci-guard.js full && npx playwright test --reporter=list,html,github --workers=1
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CHANNEL: ''
+
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-full-e2e
+          path: focus-tiger/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload Playwright test-results (traces / failures)
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results-full-e2e
+          path: focus-tiger/test-results/
+          retention-days: 14
+          if-no-files-found: ignore

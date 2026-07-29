@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
 
 ---
 
@@ -30,7 +30,8 @@
 1. **改前列「已好清单」**：用户或文档已认可什么（例：呼吸→眨眼不闪、Sit 不打开 Honesty）。改完逐条自检；写不进单测的进 TEST_TRACKER 必测回归。  
 2. **重写 ≠ 从零设计**：换实现须**继承**旧观感契约（不闪、不硬切、溶解期定格、顶点停留等），除非任务书明确「允许牺牲某某」。  
 3. **单测锁契约、不锁实现细节**（例：眨眼切入必须 `crossFade + freezeUntilCrossFadeEnds`）。  
-4. **任务声明保护面**：开工回复 / Task Brief 写清本次保护面（不动 / 必须复测的邻接体验）。一次一任务管改动范围；保护面管别踩坏邻接。
+4. **任务声明保护面**：开工回复 / Task Brief 写清本次保护面（不动 / 必须复测的邻接体验）。一次一任务管改动范围；保护面管别踩坏邻接。  
+5. **新增 `position: fixed` 全屏/半屏容器**：须检查是否遮挡/截断既有浮层（Reminder / 横幅 / tip 等），并给受影响组件补 **375 e2e**——不能只测新壳。权威条款与 Bug1/Bug2 教训见 **`TEST_TRACKER.md` 文首**「`position: fixed` 全屏/半屏容器 ↔ 既有浮层」。
 
 ### C. 高风险面（门闩 + 序列衔接）
 
@@ -57,19 +58,20 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-26（UTC+8）
+**最后更新时间**：2026-07-29（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
+- **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **本地 Cursor 能耗护栏（2026-07-26）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。同日拍板：Cloud 启用须提醒「独立会话」；任务起过 Vite/Playwright 须在收尾提醒手动确认已关（alwaysApply：`focus-tiger-browser-energy.mdc`）。非产品 UI，无需 TEST_TRACKER 人工项。
-- **窄屏主屏三主钮（2026-07-26）**：用户书面——375 首页底部太空；`NarrowIdleShell` 主画布放 **Sit with Yin / Quick Start / Honesty Check-in**，抽屉删这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。e2e 已锁；待人工观感。
+- **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
-- **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。**提醒**：完整 W1–W8 人工验收推迟到 `feature/wide-idle-more-menu` 合并时单独做，勿与窄屏 O 修复混验。
-- **wide-idle 宽屏清场验收（2026-07-25 晚）**：P0 ①–⑥⑧ 宽屏 **测试 OK**；⑦ 场景 O（375）**仍有问题**，另线 `fix/scenario-o-375-chrome-layout`。用户拍板：**可 push** `feature/wide-idle-more-menu` 备份；**Task 3 须等 ⑦ 收口**后再开（勿仅凭 push）。
+- **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。**2026-07-29**：原 `feature/wide-idle-more-menu` 已删（内容已在 develop 祖先链）；完整 W1–W8 关单验收改在 **`origin/develop` tip** 上单独排期，勿与其它修混验。
+- **wide-idle 宽屏清场验收（2026-07-25 晚 · 历史）**：P0 ①–⑥⑧ 宽屏曾在该分支 **测试 OK**；⑦ 场景 O 另线已收口进 develop。分支本身已于 2026-07-29 删除（无独有未合入 commit）。
 - **规则主题权威索引（2026-07-23）**：新增 `RULES_INDEX.md` + `rules-authority-registry.js` + `rules:doc-check`（并入 `docs:check` / CI）。每个工作流规则主题指定唯一 SSOT；非权威处改为短引用。收敛 `WORKFLOW` / regression-lock / `PROCESS` / docs.mdc / `DEV` / `COLLAB` 上 commit / 跨会话等平行复述。冲突不以 mtime 为准。
 - **合并门禁拍板（2026-07-23 · PR #2）**：本次 `develop`→`main` 接受「本地 `test:smoke`+`test:e2e` 全绿 + CI 仅 doc-contract」；**后续任务**须把完整 smoke/e2e 纳入 CI（见 Backlog「CI 全量 smoke + e2e」）。提醒忙碌策略拍板 **`suppress`**。MilestoneGlow（L136）书面为**已知问题、不挡此次合并**，预计 **2026-07-30 前**复测。
 - **TEST_TRACKER 合并前清理（2026-07-22）**：EyeTracking → **已放弃/不适用**；微仪式吸呼同拍行 → 代码核对 `736fdc1` 撤销到位后 **关单（已通过）**；`lookAtCursor` / `wakeUp` / `snoringZZZ` → **不挡合并（仅调试）**（产品壳不可见）。仍开、须人工：场景 **C/O/P**（用户正走）；MilestoneGlow 见上行「已知不挡」。不采用书面豁免开 PR（本条 MilestoneGlow 为合并门禁显式记录，非豁免开 PR）。
@@ -94,6 +96,7 @@
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：`DailyCompletionStore` 仅当日不够；数据源改 `PracticeDaysStore`
 - **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。
 - **开场 Idle + 背景音乐 opt-in（2026-07-25 修订；2026-07-26 冷启动加固）**：登录 / **刷新**后第一幕为闭目坐禅（不上 Sleeping / 不披毯，即使本地有 ≥2h 结束戳）；**不**默认开播背景音乐——须点右上音符 / Sound 才出声；Rise / 达标结束自动停播
+- **开场 Idle + 背景音乐 opt-in（2026-07-29 修订）**：登录后第一幕为闭目坐禅（不上 Sleeping）；**不**默认开播背景音乐——须点右上音符（或菜单/抽屉 Sound）打开 Soundscape 选曲才出声；宽屏藏右下 Sound FAB；Rise / 达标结束自动停播
 - **Honesty 首屏措辞（2026-07-21）**：邀请式补登提示仍挂零完成；开场视觉已改 Idle
 - **UI Kit / 主 CTA（2026-07-21）**：产品壳 **Sit / Sound** 由朱红改为**蒲团橙**（与 Yin 坐垫同系）；v6 产品舞台 + Companion 暖米文案面；成就/图鉴仍仅探索（Backlog）
 - **Hints 薄荷绿恢复 + 「?」用途简介（2026-07-21）**：提示气泡从奶油米黄改回浅绿灰（与控件米黄区分）；点「?」另出非遮罩 App 用途简介卡
@@ -238,6 +241,9 @@
 
 **下一步计划**：
 
+- **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
+- **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列优先，可同周推进。
+- **回 `chore/split-hints-from-pr2` / hints 拆分线时**：先核 `git stash` 里「`On chore/split-hints-from-pr2: temp prd untracked`」再动手（见 Backlog「stash · chore/split-hints-from-pr2」）；**禁止**未核就 drop。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
 - Companion Mode 与 Session Intention 已在同一预开始 dock 视觉合并（意图在上、三选一在下）；暂不另建独立 BeginPanel 类
@@ -274,6 +280,8 @@
 - 角色边界待观察事项
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 - **CI 全量 `test:smoke` + `test:e2e`**（PR #2 后下一工程 PR；勿长期依赖本机手跑；目标 2026-07-30 前有草稿/可合并 CI）
+- **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘）
+- **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
 
 ---
 
@@ -385,13 +393,14 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### 口令：「请安排下班前的 Git 同步」
 
-你说这句（或同等的下班前 / 批量 Git 同步授权）时，Agent 应按 regression-lock 第 7 条执行：
+你说这句（或同等的下班前 / 批量 Git 同步授权）时，Agent 应按 regression-lock 第 7 条执行（**只推非运行时收尾**；业务代码 / 状态机 /「先给 diff 等确认」类默认不随口令 flush）：
 
-1. 把当前 **`develop` + 任何活跃 `feature/*` / `fix/*`** 上尚未推送的本地 commit **全部 push** 到远端  
-2. 回复独立小节 **「Git 同步汇总」**（commit 数量、每笔摘要、涉及文件、高风险单独标注）  
-3. **不做**：合并进 `main`、推进 PR 到可合并状态；若有 PR 正等你处理，只在汇总里提一句现状  
+1. 筛出 **`develop` + 活跃 `feature/*` / `fix/*`** 上尚未推送、且属文档/规则/脚本注释等非运行时的 commit → 仅 push 这些  
+2. 业务逻辑 / 状态机 / 待确认 diff 类未推 commit → **单独成组列出，不随本次推送**  
+3. 回复 **「Git 同步汇总」**（含第 6 条分级项 + **性质标注**：本次推送有无「业务逻辑/代码改动」——合规应为「无」）  
+4. **不做**：合并进 `main`、推进 PR；若有 PR 正等你处理，只在汇总里提一句现状  
 
-操作节奏细节与政策条文仍以本节上文 + regression-lock SSOT 为准。
+完整门禁条文见 regression-lock SSOT；此处不复述。
 
 ### 明确不做的自动化
 
@@ -515,6 +524,29 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
 - **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工，目标 **2026-07-30 前** 至少有草稿 workflow 或可合并的 CI PR。
+
+### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
+
+> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修**已有** visibility workflow 的稳定性，全量项补**尚未**进 CI 的整套 smoke/e2e。
+
+- **目标**：把 visibility suite 的 flaky（首轮红、retry 翻绿）压到可接受水平（建议目标：连续 2～3 次 CI run 上 flaky ≤ 约 20%，且无「仅靠 retry 才绿」的系统性风暴）；墙钟须稳定落在 job `timeout-minutes` 内。
+- **处理方向（优先序，可组合）**：
+  1. **Workers**：先试 `workers: 1`（或保持 2 并对比）；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
+  2. **导航策略**：继续收紧——一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；必要时对 `goto` 做有界重试（与 seed 不冲突：勿用会跨 reload 清 `focus-tiger.*` 的 `addInitScript`）。
+  3. **预算**：在「不靠无限拉长 timeout 掩盖」前提下，核对 `navigationTimeout` / 单测 `timeout` / job 上限是否匹配真实 preview 冷启动。
+  4. **可观测性**：区分「产品断言失败」vs「preview/导航环境噪声」；失败日志须一眼看出类别。
+- **验收**：新 CI run 链接 + pass/flaky/fail 计数；文档写明是否仍依赖 `retries: 1`。
+- **不在范围**：不把「降 flaky」写成产品观感验收通过；不替代 Class-2 visibility gap（`honesty-bridge-entries-hidden` 等）的产品补锁。
+- **排期**：**PR #2 → `main` 合并后立刻开工**（可与「CI 全量 smoke + e2e」同周并行）；建议分支名 `fix/visibility-ci-flaky` 或并入全量 CI 工程 PR 的首个 commit 组。
+
+### Backlog:stash · chore/split-hints-from-pr2（回 hints 拆分线时先核）
+
+> **背景（2026-07-27）**：主线 CI / `develop` 收尾时，仓库仍留有一条 stash：`On chore/split-hints-from-pr2: temp prd untracked`。用户书面：**先不动**；等以后回到 hints 拆分（`chore/split-hints-from-pr2` 或同等任务）时再一并确认内容与去留。对话约定**不会**跨会话自动执行，故写入本 Backlog 作持久提醒。
+
+- **触发**：任何会话开始处理 hints 从 PR#2 拆分 / `chore/split-hints-from-pr2` / 相关 untracked PRD 入库前。
+- **必做**：`git stash list` → 找到该条 → `git stash show`（含 untracked）核对文件与内容 → 再决定 **pop / 选择性检出 / drop**。
+- **禁止**：未核对就 `stash drop`；勿与 `develop` 上已处理的 `wip other`（已 drop）混淆。
+- **排期**：挂在 hints 拆分线开工门闩上，非无限延期；不阻塞 PR #2 → `main`。
 
 ### Backlog:Hints anchor e2e bounding rect（Onboarding 提示 DOM 视觉校验）
 

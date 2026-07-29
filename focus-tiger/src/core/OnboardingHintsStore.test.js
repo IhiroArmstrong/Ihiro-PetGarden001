@@ -11,7 +11,9 @@ import {
   resolvePrimaryRemedyHintId,
   resolveRemedyCatalogHintIds,
   selectExclusiveAutoHintIds,
-  appendIdleChromeHintIds
+  appendIdleChromeHintIds,
+  filterHintsForNarrowDrawer,
+  isDrawerParkedHintId
 } from './OnboardingHintsStore.js';
 
 test('normalizeHintsSeen only keeps known hintIds', () => {
@@ -230,6 +232,43 @@ test('resolveRemedyCatalogHintIds splits Idle / Arrival / Focusing', () => {
   );
 });
 
+test('narrow park catalog folds drawer tips into one-shot narrow-drawer-menu', () => {
+  const folded = resolveRemedyCatalogHintIds({
+    narrowPark: true,
+    narrowDrawerOpen: false,
+    weeklyHeatmapVisible: true,
+    microRitualEntryVisible: true
+  });
+  assert.deepEqual(folded, ['narrow-drawer-menu']);
+  assert.ok(!folded.some(isDrawerParkedHintId));
+
+  const openDrawer = resolveRemedyCatalogHintIds({
+    narrowPark: true,
+    narrowDrawerOpen: true,
+    weeklyHeatmapVisible: true,
+    microRitualEntryVisible: true
+  });
+  assert.ok(!openDrawer.includes('narrow-drawer-menu'));
+  assert.ok(openDrawer.includes('weekly-heatmap'));
+});
+
+test('filterHintsForNarrowDrawer strips parked tips when drawer closed', () => {
+  assert.deepEqual(
+    filterHintsForNarrowDrawer(
+      ['sit-button', 'weekly-heatmap', 'how-shall-we-sit', 'help-affordance'],
+      { narrowPark: true, narrowDrawerOpen: false }
+    ),
+    ['sit-button', 'help-affordance']
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      narrowPark: true,
+      narrowDrawerOpen: false,
+      weeklyHeatmapVisible: true
+    }).includes('weekly-heatmap')
+  );
+});
+
 test('selectExclusiveAutoHintIds keeps at most one auto hint by priority', () => {
   assert.deepEqual(
     selectExclusiveAutoHintIds(
@@ -322,5 +361,27 @@ test('resolveAutoHintIds includes help-affordance on idle chrome including DORMA
   assert.equal(
     resolveHintForScene({ honestyBridgeVisible: true }),
     'honesty-bridge'
+  );
+});
+
+test('micro-ritual open suppresses sit-targeting auto hints', () => {
+  assert.deepEqual(
+    resolveAutoHintIds({
+      microRitualOpen: true,
+      hasEverCompletedSession: true
+    }),
+    []
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      microRitualOpen: true,
+      hasEverCompletedSession: false
+    }).includes('sit-button')
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      microRitualOpen: true,
+      hasEverCompletedSession: true
+    }).includes('idle-after-session')
   );
 });

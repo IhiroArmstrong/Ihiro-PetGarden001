@@ -1,7 +1,7 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
 创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-07-22（Registry SSOT：`onboardingHintRegistry.js`；`hints:doc-check` 锁 md 锚点块；`anchorGroup` ambient）
+最后更新：2026-07-27（窄屏抽屉关闭：补救目录折叠为一次性 `narrow-drawer-menu`；抽屉锚 tip 不得乱指主球）
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
 1. **即时提示**：每个功能第一次真正出现时，用阿寅自己的文字气泡多带一句极简说明，用完即隐藏。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
@@ -73,6 +73,7 @@
 | `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
 | `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
 | `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
+| `narrow-drawer-menu` | `HINT_NARROW_DRAWER_MENU` | `.ft-narrow-grabber` | above | bottom | — |
 | `help-affordance` | `HINT_HELP_AFFORDANCE` | `#onboarding-hint-help` | right | left | — |
 | `help-remedy` | `HINT_HELP_REMEDY` | `#onboarding-hint-help` | right | left | — |
 | `help-fallback` | `HINT_HELP_FALLBACK` | `#btn-focus` | above | bottom | — |
@@ -90,17 +91,18 @@
 - **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
 - **首次空闲**：自动气泡 `help-affordance`（「不知下一步点什么？先点这里」），锚在「?」**右侧**、尖角指向「?」；点「?」或点气泡即记已读。
 - **交互**：点「?」同时做三件事：
-  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ 常驻 **「还有 N 条」芯片**（`#ft-hint-catalog-chip`）；点芯片**逐条**展开其余（`resolveRemedyCatalogHintIds`）——同时最多 **主条 + 1** 条目录 tip，再点芯片替换下一条并递减 N。**禁止**一次铺开全部（窄屏会叠在主球/grabber 上乱指）；
+  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ **「更多提示」芯片**（`#ft-hint-catalog-chip`）。**窄屏 Idle（抽屉关闭）**：芯片一次性展开 `narrow-drawer-menu`（文案列出抽屉内功能：呼吸 / How shall we sit? / Sound / Reminder / 近日同坐格），**禁止**再出「还有 3 条 / 2 条」倒计时，也**禁止**在抽屉未开时用尖角去指抽屉内控件（会误指主球）。**宽屏 / 抽屉已开**：仍可逐条展开其余 tip（同时最多主条 + 1）。窄屏抬离主球带时须**堆叠错开**（`_liftBubblesAboveNarrowHomeCtas`），且须 **lift→separate**（禁止 separate 后再统一抬到同一 Y，会把错开抵消）；
   2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
   3. 补救期间 `syncVisibleAutos` 不会清掉这些气泡。
 - **与即时提示**：即时「用完即隐藏」；补救不受已读限制。简介卡**不是**分步教程 / 遮罩 coachmark（仍遵守第三节禁令）。
 
 ### 气泡视觉（与按钮/输入框区分）
 
-- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐** → 右上 `.ambient-soundscape__mute`；**Idle Sound gated** → 右下 `.ambient-soundscape__fab`；Reflection → 面板**上方**，不挡 Skip）。
+- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐 / Soundscape** → 右上 `.ambient-soundscape__mute`（窄屏 Idle remap `#ft-narrow-mute-btn`）；**Idle Sound gated** 历史锚 → 右下 `.ambient-soundscape__fab`（宽屏 FAB 已藏，gated 文案主要经菜单/抽屉 Sound 路径；宽屏以右上音符开面板）；Reflection → 面板**上方**，不挡 Skip）。
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
-- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**先出主条 +「还有 N 条」芯片，点芯片**逐条**展开其余（同时最多主条+1；避免重叠乱指）。
+- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1）**：自动路径同一时刻**最多 1 条**（`selectExclusiveAutoHintIds`：`help-affordance` > Sit/Rise 等场景关键 > How shall we sit? / Sound 等）；用户关掉后串行下一条。点「?」**补救**：窄屏抽屉关闭时主条 + 一次性「更多提示」→ 抽屉说明；宽屏/抽屉开着时可逐条展开。抽屉锚 tip（热力图 / 呼吸 / How / Sound gated / 提醒）在抽屉关闭时不自动出现。
+- **微仪式进行中（2026-07-29）**：`microRitualOpen` 时**不出** `sit-button` / `idle-after-session` 等指 Sit 的自动 tip（Sit chrome 已藏）。无可见锚点时**禁止**把 tip 丢到画面空白处（`_positionBubble` 直接收起）。
 - App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」上方。
 
 ### 点击关闭（硬性）

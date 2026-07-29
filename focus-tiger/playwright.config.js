@@ -7,39 +7,33 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: 1,
+  // CI: 2 workers — workers:1 + first-attempt timeout storms cancelled jobs.
+  // Accept green+high-flaky for PR#2; flaky reduction is post-merge backlog.
+  workers: process.env.CI ? 2 : 1,
   reporter: 'list',
-  // CI Vite cold start + openFreshProductShell needs >30s default.
-  timeout: process.env.CI ? 120_000 : 60_000,
+  timeout: process.env.CI ? 90_000 : 120_000,
   expect: {
-    timeout: process.env.CI ? 20_000 : 10_000
+    timeout: process.env.CI ? 15_000 : 10_000
   },
   use: {
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
-    baseURL: 'http://127.0.0.1:5179',
+    baseURL: 'http://127.0.0.1:5199',
     trace: 'on-first-retry',
-    navigationTimeout: process.env.CI ? 60_000 : 30_000,
-    actionTimeout: process.env.CI ? 30_000 : 15_000
+    navigationTimeout: process.env.CI ? 30_000 : 30_000,
+    actionTimeout: process.env.CI ? 20_000 : 15_000
   },
-  // CI: prefer static preview — vite `dev` on Actions has hung mid-suite (goto timeout storms).
-  // Local: keep `dev` for fast HMR while writing tests.
-  webServer: process.env.CI
-    ? {
-        command:
-          'npm run build && npx vite preview --host 127.0.0.1 --port 5179 --strictPort',
-        url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: false,
-        timeout: 180_000
-      }
-    : {
-        command: 'npm run dev -- --host 127.0.0.1 --port 5179',
-        url: 'http://127.0.0.1:5179/',
-        reuseExistingServer: true,
-        timeout: 120_000
-      },
+  // Prefer plain Node static server over vite preview — preview has hung
+  // mid-suite under Chromium navigation storms (goto timeout cascades).
+  // Never reuse a stray :5199.
+  webServer: {
+    command: 'npm run build && FT_E2E_PORT=5199 node scripts/ft-playwright-static-5199.js',
+    url: 'http://127.0.0.1:5199/',
+    reuseExistingServer: false,
+    timeout: 180_000
+  },
   projects: [
     {
       name: 'chromium',

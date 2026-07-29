@@ -59,3 +59,5 @@ alwaysApply: true
 - 若本回合开过内置 Browser：写明打开原因、约何时关、Vite 是否已停。  
 - 若本回合起过 Vite / Playwright：必须含上方「进程收尾提醒」。  
 - 若本回合为 Cloud 或建议启用 Cloud：必须含「独立会话」提醒句。
+
+如涉及运行测试/CI相关任务，参考 testing-strategy 规则。

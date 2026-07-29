@@ -536,9 +536,12 @@ export class ReminderPreferenceUI {
         .reminder-pref {
           order: 2;
         }
+        /* Center above toggle; right:0 caused left:-50px when cluster staged at 50% */
         .reminder-pref__panel {
-          left: auto;
-          right: 0;
+          left: 50%;
+          right: auto;
+          width: min(260px, calc(100vw - 32px));
+          translate: -50% 0;
         }
       }
     `;
