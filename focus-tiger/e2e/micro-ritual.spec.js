@@ -144,6 +144,44 @@ test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
   await expect(page.locator('#session-start-dock')).toBeHidden();
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注中/i);
   await expect(page.locator('#focus-hud')).toBeVisible();
+  // Sit chrome is gone — sit-targeting autos must not orphan over empty space.
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="idle-after-session"]')
+  ).toHaveCount(0);
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
+  ).toHaveCount(0);
+  // Defense: even if something tries to paint idle-after-session, no visible Sit
+  // anchor → tip must not stay open over empty canvas.
+  await page.evaluate(() => {
+    window.__onboardingHints?.maybeShowAuto?.('idle-after-session');
+  });
+  await expect
+    .poll(async () => {
+      return page.evaluate(() => {
+        const b = document.querySelector(
+          'ft-onboarding-hint-bubble[data-hint-id="idle-after-session"]'
+        );
+        if (!b || b.open === false) return 'gone';
+        const r = b.getBoundingClientRect();
+        return r.width > 0 && r.height > 0 ? 'visible' : 'gone';
+      });
+    })
+    .toBe('gone');
+  const orphanSitTip = await page.evaluate(() => {
+    const bubbles = [
+      ...document.querySelectorAll('ft-onboarding-hint-bubble')
+    ].filter((b) => b.open !== false);
+    return bubbles.map((b) => ({
+      id: b.dataset.hintId,
+      text: b.message || b.textContent?.trim() || ''
+    }));
+  });
+  expect(
+    orphanSitTip.some((b) =>
+      /Sit again whenever you like|想再坐的时候/i.test(b.text)
+    )
+  ).toBe(false);
 });
 
 test('micro ritual: quiet leave does not record', async ({ page }) => {

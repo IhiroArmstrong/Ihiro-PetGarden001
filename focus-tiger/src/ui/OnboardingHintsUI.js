@@ -827,6 +827,12 @@ export class OnboardingHintsUI {
     const vh = window.innerHeight;
     const maxW = Math.min(300, vw - 24);
 
+    // Basic rule: no visible control → no tip (never park a tip over empty canvas).
+    if (!anchor) {
+      this.hideBubble(hintId);
+      return;
+    }
+
     bubble.style.maxWidth = `${maxW}px`;
     bubble.style.left = '0px';
     bubble.style.top = '0px';
@@ -840,11 +846,7 @@ export class OnboardingHintsUI {
     /** @type {string} */
     let tip = 'bottom';
 
-    if (!anchor) {
-      left = (vw - br.width) / 2;
-      top = vh - br.height - 118;
-      tip = 'bottom';
-    } else {
+    {
       const ar = anchor.getBoundingClientRect();
       if (anchorCfg.placement === 'left') {
         left = ar.left - br.width - gap;
@@ -879,8 +881,7 @@ export class OnboardingHintsUI {
     // 判定阈值（见 §8.6 / weekly-practice-heatmap.spec.js「375 park」回归）。
     if (
       bubble.dataset.remedy === '1' &&
-      document.body.classList.contains('ft-narrow-park') &&
-      anchor
+      document.body.classList.contains('ft-narrow-park')
     ) {
       const sameAnchor = [...this._remedyIds].filter((id) => {
         const b = this._bubbles.get(id);
@@ -906,18 +907,11 @@ export class OnboardingHintsUI {
 
     bubble.tip = /** @type {'top'|'bottom'|'left'|'right'} */ (tip);
 
-    if (anchor) {
-      const ar = anchor.getBoundingClientRect();
-      const anchorCenterX = ar.left + ar.width / 2;
-      const anchorCenterY = ar.top + ar.height / 2;
-      const tipX = Math.max(18, Math.min(anchorCenterX - left, br.width - 18));
-      const tipY = Math.max(18, Math.min(anchorCenterY - top, br.height - 18));
-      bubble.tipX = `${Math.round(tipX)}px`;
-      bubble.tipY = `${Math.round(tipY)}px`;
-    } else {
-      bubble.tipX = '50%';
-      bubble.tipY = '50%';
-    }
+    const ar = anchor.getBoundingClientRect();
+    const tipX = Math.max(18, Math.min(ar.left + ar.width / 2 - left, br.width - 18));
+    const tipY = Math.max(18, Math.min(ar.top + ar.height / 2 - top, br.height - 18));
+    bubble.tipX = `${Math.round(tipX)}px`;
+    bubble.tipY = `${Math.round(tipY)}px`;
 
     bubble.style.left = `${Math.round(left)}px`;
     bubble.style.top = `${Math.round(top)}px`;

@@ -295,6 +295,10 @@ export function resolveAutoHintIds(scene = {}) {
   let ids = [];
   if (scene.reflectionOpen) {
     ids = ['reflection'];
+  } else if (scene.microRitualOpen) {
+    // Sit / home CTAs are hidden while breath runs — never auto-show sit tips
+    // (idle-after-session / sit-button would orphan over empty canvas).
+    ids = [];
   } else if (scene.isFocusing) {
     ids = ['rise-button', 'ambient-soundscape'];
     appendFocusHudHintIds(ids);
@@ -328,6 +332,7 @@ export function resolveAutoHintIds(scene = {}) {
 
   const skipHelpAffordance =
     scene.reflectionOpen ||
+    scene.microRitualOpen ||
     scene.isFocusing ||
     scene.arrivalOpen ||
     scene.honestyBridgeVisible;
