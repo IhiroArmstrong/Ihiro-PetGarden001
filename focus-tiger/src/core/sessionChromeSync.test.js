@@ -233,4 +233,45 @@ describe('createSessionChromeSync', () => {
     assert.equal(h.sessionUiGate.arrivalGateReady, true);
     assert.equal(h.get.arrivalReadyOnPicker(), true);
   });
+
+  it('resyncSessionChrome：idleChrome.applyShellProjection 优先于分壳调用', () => {
+    const sessionUiGate = new SessionUiGate();
+    let applied = null;
+    const idleChrome = {
+      applyShellProjection(p) {
+        applied = p;
+      },
+      wide: {
+        setSuppressed() {}
+      }
+    };
+    const sync = createSessionChromeSync({
+      getHonestyBridge: () => ({ isVisible: () => false }),
+      getArrivalPractice: () => ({ isOpen: () => true }),
+      getReflectionMoment: () => ({ isOpen: () => false }),
+      getMicroRitualUI: () => ({
+        isOpen: () => false,
+        hideIdleEntry() {},
+        showIdleEntry() {}
+      }),
+      honestyCheckInUI: { phase: 'hidden', hideIdleEntry() {} },
+      honestyCheckIn: { syncIdleEntry() {} },
+      companionModePicker: {
+        setHonestyBridgeActive() {},
+        setPostSessionOverlayActive() {},
+        setOptionSelectEnabled() {},
+        setArrivalReady() {},
+        setArrivalActive() {}
+      },
+      idleChrome,
+      stateManager: { state: STATES.IDLE },
+      sessionUiGate,
+      syncInAppReminderBanner() {}
+    });
+    sync.resyncSessionChrome();
+    assert.ok(applied);
+    assert.equal(applied.narrow.keepQuickStart, true);
+    assert.equal(applied.narrow.suppressed, true);
+    assert.equal(applied.wide.suppressed, true);
+  });
 });

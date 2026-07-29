@@ -23,7 +23,7 @@
 
 当前实现：≤479 = `NarrowIdleShell`（抽屉）；≥480 = `WideIdleMoreMenu`（⋯ Popover）。业务应共享，壳形态可因断点不同——**禁止**长期用两条 git 分支分别演进同一套 chrome/audio 修复（分叉漏修根因）。
 
-**状态（2026-07-30）**：**阶段 1 进行中**（共享编排已落地）。任务书：`task-briefs/task-responsive-single-chrome-line.md`；分支 / PR：`feature/responsive-single-chrome-line`（#31）。模块：`src/core/idleChromeOrchestration.js`；`sessionChromeSync` + 两壳消费同一投影 / 次要入口列表。**阶段 2 facade 未做**。邀测须单独跑 §9 W1–W8（勿与窄屏 O 修混验）。
+**状态（2026-07-30）**：**阶段 2 进行中**（facade）。`createIdleChromeFacade` / `IdleChromeFacade`：handlers 一次注册；断点切换 `releaseInactivePresentation`（不调 onClearStage）。阶段 0/1 已合 PR #31/#32。阶段 3 未做。邀测须单独跑 §9 W1–W8（勿与窄屏 O 修混验）。
 
 **沿革**：2026-07-25 拍板「值得做，但等 wide-idle push + O 收口」；2026-07-25 晚宽屏 P0 ①–⑥⑧ OK、⑦ 另线；2026-07-29 空壳分支删除、O 修进 develop；2026-07-30 Brief 进 develop（PR #30）并开 feature 阶段 0。
 
@@ -249,6 +249,7 @@
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| 1.10 | 2026-07-30 | 工程债：Task 3 阶段 2（`IdleChromeFacade`） |
 | 1.9 | 2026-07-30 | 工程债：Task 3 阶段 1（`idleChromeOrchestration` 共享编排） |
 | 1.8 | 2026-07-30 | 工程债：Task 3 阶段 0（feature 已开 + 入口对照表） |
 | 1.7 | 2026-07-30 | 工程债：Task 3 Brief 已写 · 可排期开工（`task-responsive-single-chrome-line.md`） |

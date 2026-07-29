@@ -52,11 +52,18 @@ export function isHonestyUiBusy(phase) {
  * @property {{
  *   setIdle: (v: boolean) => void,
  *   setSuppressed: (v: boolean, opts?: { keepQuickStart?: boolean }) => void
- * }} narrowIdleShell
+ * }} [narrowIdleShell]
  * @property {{
  *   setIdle: (v: boolean) => void,
  *   setSuppressed: (v: boolean) => void
- * }} wideIdleMoreMenu
+ * }} [wideIdleMoreMenu]
+ * @property {{
+ *   applyShellProjection: (p: {
+ *     narrow: { idle: boolean, suppressed: boolean, keepQuickStart?: boolean },
+ *     wide: { idle: boolean, suppressed: boolean }
+ *   }) => void,
+ *   wide?: { setSuppressed: (v: boolean) => void }
+ * }} [idleChrome]
  * @property {{ state: string }} stateManager
  * @property {{
  *   completionPending: boolean,
@@ -80,6 +87,7 @@ export function createSessionChromeSync(deps) {
     companionModePicker,
     narrowIdleShell,
     wideIdleMoreMenu,
+    idleChrome,
     stateManager,
     sessionUiGate,
     syncInAppReminderBanner
@@ -141,7 +149,13 @@ export function createSessionChromeSync(deps) {
       arrivalOpen: Boolean(getArrivalPractice()?.isOpen?.()),
       bridgeVisible
     });
-    wideIdleMoreMenu.setSuppressed(wide.suppressed);
+    if (idleChrome?.applyShellProjection) {
+      // Bridge-only path: keep full projection via facade when available,
+      // but only wide suppress must change here (narrow ActionBar stays).
+      idleChrome.wide?.setSuppressed?.(wide.suppressed);
+    } else {
+      wideIdleMoreMenu.setSuppressed(wide.suppressed);
+    }
   }
 
   function resyncSessionChrome() {
@@ -167,19 +181,24 @@ export function createSessionChromeSync(deps) {
     // Reflection / Honesty busy: suppress grabber/home/sheet; ActionBar stays.
     // ActionBar time = wall clock (not FocusHUD session elapsed).
     // Projection SSOT: idleChromeOrchestration.resolveShellChromeProjection
-    const { narrow, wide } = resolveShellChromeProjection({
+    const projection = resolveShellChromeProjection({
       focusing,
       overlayActive,
       honestyBusy,
       arrivalOpen,
       bridgeVisible
     });
-    narrowIdleShell.setIdle(narrow.idle);
-    narrowIdleShell.setSuppressed(narrow.suppressed, {
-      keepQuickStart: Boolean(narrow.keepQuickStart)
-    });
-    wideIdleMoreMenu.setIdle(wide.idle);
-    wideIdleMoreMenu.setSuppressed(wide.suppressed);
+    if (idleChrome?.applyShellProjection) {
+      idleChrome.applyShellProjection(projection);
+    } else {
+      const { narrow, wide } = projection;
+      narrowIdleShell.setIdle(narrow.idle);
+      narrowIdleShell.setSuppressed(narrow.suppressed, {
+        keepQuickStart: Boolean(narrow.keepQuickStart)
+      });
+      wideIdleMoreMenu.setIdle(wide.idle);
+      wideIdleMoreMenu.setSuppressed(wide.suppressed);
+    }
     syncInAppReminderBanner();
   }
 

@@ -91,6 +91,20 @@ export class NarrowIdleShell {
   }
 
   /**
+   * Leave narrow viewport: close sheet + drop stage classes without onClearStage
+   * (facade breakpoint cleanup — must not hide Companion on resize).
+   * @returns {void}
+   */
+  releaseInactivePresentation() {
+    this.closeSheet();
+    document.body.classList.remove(
+      NARROW_STAGE_CLASS.companion,
+      NARROW_STAGE_CLASS.reminder,
+      NARROW_STAGE_CLASS.sound
+    );
+  }
+
+  /**
    * Clear companion/reminder staging classes.
    * @returns {void}
    */

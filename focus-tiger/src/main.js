@@ -33,8 +33,7 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
-import { NarrowIdleShell } from './ui/NarrowIdleShell.js';
-import { WideIdleMoreMenu } from './ui/WideIdleMoreMenu.js';
+import { createIdleChromeFacade } from './core/createIdleChromeFacade.js';
 import {
   WeeklyPracticeHeatmap,
   WEEKLY_PRACTICE_HEATMAP_DAYS
@@ -101,6 +100,7 @@ import {
   createHintsSeenStore,
   resolveAutoHintIds
 } from './core/OnboardingHintsStore.js';
+import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 /** 默认 1 分钟；场景 B 真实切页 Re-focus 用 `?sessionMinutes=5`。 */
 const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
@@ -247,12 +247,16 @@ async function init() {
   poseManager.setCanvasHidden(true);
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
-  const narrowIdleShell = new NarrowIdleShell({
+  const idleChrome = createIdleChromeFacade({
     root: document.body,
     getHudStateEl: () => document.getElementById('hud-state')
   });
+  const narrowIdleShell = idleChrome.narrow;
+  const wideIdleMoreMenu = idleChrome.wide;
   if (import.meta.env.DEV) {
+    window.__idleChrome = idleChrome;
     window.__narrowIdleShell = narrowIdleShell;
+    window.__wideIdleMoreMenu = wideIdleMoreMenu;
   }
   const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
     document.getElementById('ui-overlay')
@@ -395,9 +399,6 @@ async function init() {
     focusButton,
     companionModeHandlers
   );
-  /** Wide ≥480 Idle declutter (Sit + ⚡ + ⋯); inert on narrow where NarrowIdleShell owns chrome. */
-  const wideIdleMoreMenu = new WideIdleMoreMenu();
-  window.__wideIdleMoreMenu = wideIdleMoreMenu;
 
   microRitualUI = new MicroRitualUI(document.getElementById('ui-overlay'), {
     onIdleEntryClick: () => {
@@ -456,6 +457,7 @@ async function init() {
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
+    idleChrome,
     narrowIdleShell,
     wideIdleMoreMenu,
     stateManager,
@@ -606,14 +608,14 @@ async function init() {
       onTrackChosen: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
-        narrowIdleShell.syncMuteVisual({
+        idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
       },
       onToggleMusic: () => {
         onboardingHints?.markSeen('ambient-soundscape');
         onboardingHints?.hideBubble('ambient-soundscape');
-        narrowIdleShell.syncMuteVisual({
+        idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
       }
@@ -621,7 +623,13 @@ async function init() {
   );
   void ambientSoundscapeUI.bootDefaultMusic();
 
-  wideIdleMoreMenu.setHandlers({
+  idleChrome.setHandlers({
+    isHintUnread: (hintId) => {
+      if (!onboardingHints?.store) return false;
+      const store = onboardingHints.store;
+      if (isClickTriggerHint(hintId)) return !store.isDone(hintId);
+      return !store.isSeen(hintId);
+    },
     onCompanion: () => {
       companionModePicker.open();
     },
@@ -635,31 +643,11 @@ async function init() {
       honestyCheckIn.openDurationChoices({ force: true });
     },
     onSound: () => {
-      // Align with narrow drawer: open Soundscape panel, never FAB / gated tip.
+      // Legacy (⋯ / drawer Sound row removed 2026-07-30); note / ♪ use openSoundPanelFromNote.
       ambientSoundscapeUI.activateSoundFromNarrow();
-    },
-    onClearStage: () => {
-      companionModePicker.hide();
-      reminderPreferenceUI.closePanel();
-      ambientSoundscapeUI.clearNarrowSoundStage();
-    }
-  });
-
-  narrowIdleShell.setHandlers({
-    onSound: () => {
-      ambientSoundscapeUI.activateSoundFromNarrow();
-      narrowIdleShell.syncMuteVisual({
+      idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
-    },
-    onCompanion: () => {
-      companionModePicker.open();
-    },
-    onReminder: () => {
-      reminderPreferenceUI.openPanel();
-    },
-    onHonesty: () => {
-      honestyCheckIn.openDurationChoices({ force: true });
     },
     onQuickStart: () => {
       // Call the real handler — do not proxy via #quick-start-focus.
@@ -671,17 +659,16 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       ambientSoundscapeUI.clearNarrowSoundStage();
-      document.body.classList.remove(
-        'ft-wide-stage-sound',
-        'ft-wide-stage-companion',
-        'ft-wide-stage-reminder'
-      );
+      idleChrome.clearAllStageClasses();
     },
     onSheetChange: () => {
       syncOnboardingAutoHints();
+    },
+    onMenuChange: () => {
+      syncOnboardingAutoHints();
     }
   });
-  narrowIdleShell.syncMuteVisual({
+  idleChrome.syncMuteVisual({
     musicOn: ambientSoundscapeUI.wantsMusicOn()
   });
 
@@ -721,7 +708,9 @@ async function init() {
         return Boolean(el && !el.hidden && el.getClientRects().length > 0);
       })(),
       narrowPark: document.body.classList.contains('ft-narrow-park'),
-      narrowSheetOpen: narrowIdleShell?.isSheetOpen?.() === true
+      narrowSheetOpen: idleChrome?.isSheetOpen?.() === true,
+      wideParkSecondary: document.body.classList.contains('ft-wide-park-secondary'),
+      wideMoreOpen: document.body.classList.contains('ft-wide-more-open')
     };
   }
 
