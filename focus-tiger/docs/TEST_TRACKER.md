@@ -153,15 +153,15 @@
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
 
-#### C. 下一步自动化（未做 · 排 Task 2→扩 smoke）
+#### C. 下一步自动化（未做 · 排扩 smoke）
 
 > **功能 vs 测试覆盖对照（缺口审计 SSOT）**：[`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（模块矩阵、三条「绿」口径、永不自动化清单、已拍板后续顺序）。本表 §C 只排期；改覆盖结论先改审计文档。
 
 | 优先级 | 内容 | 对应 bug/场景 |
 |---|---|---|
 | **Task 3** | ✅ **已落地**（2026-07-30）：`e2e/honesty-bridge-real-path.spec.js` — 真实入口→时长→`?honestyBreathMs=` 呼吸→桥接 Yes→Arrival / No→Idle；**勿**仅 `__honestyBridge` 注入（叠层用例仍可注入） | 场景 D/N |
-| **Task 2**（下一） | E/F **逻辑单测**（舒展累计暂停、Flow 30min toast mock），并入 `test:smoke` | 场景 E/F；Offline/Flow 模式矩阵 |
-| **扩 smoke** | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约、AcrossTools 阈值 mock） | 防 PR 冒烟漏跑；见审计 §4 |
+| **Task 2** | ✅ **已落地**（2026-07-30）：smoke E（Offline 舒展暂停 + 墙钟仍走 + 无 Re-focus）/ smoke F（AcrossTools 30min 一次 idle + 活动重置）；`MindfulReminderController.test` + `AcrossToolsIdleGuard.test` **并入** `test:smoke` | 场景 E/F |
+| **扩 smoke**（下一） | 关键 `unit*` 纳入 `test:smoke`（Emotion 优先级、Ambient 停音契约等；AcrossTools 已随 Task 2 入烟） | 防 PR 冒烟漏跑；见审计 §4 |
 | 可选 | e2e **Rise 后再点 hint** 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做**（永不自动化） | 真实切页 60s、Celebrating 像素、Idle 闪不闪 等 | 审计 §5 + 人工分列 → **[L262](#L262)** Idle · **[L265](#L265)** Re-focus · **[L266](#L266)** Celebrating / SessionComplete · **[L261–L267](#L261)** 场景 checklist |
 
@@ -189,6 +189,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|
+| 自动化 Task 2 · 场景 E/F 逻辑进 smoke | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`：含 smoke E（Offline 舒展暂停/墙钟/无 Re-focus）、smoke F（AcrossTools 一次 idle + 活动重置）；并入 `MindfulReminderController.test.js` + `AcrossToolsIdleGuard.test.js`。真实切页/30min toast DOM 仍人工。 | — | `scenario-smoke` E/F · `package.json` test:smoke | 2026-07-30 |
 | 自动化 Task 3 · Honesty 真实补登→桥接→Arrival e2e | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e:changed -- e2e/honesty-bridge-real-path.spec.js`：入口→时长→`?honestyBreathMs=1500` 呼吸→桥接 Yes→`#arrival-practice`；No→Idle 且无 Arrival。**禁止** `__honestyBridge` 注入。叠层/375 tip 仍见 `micro-ritual.spec.js` 注入用例。单测：`resolveHonestyBreathMs`。 | — | `e2e/honesty-bridge-real-path.spec.js` · `?honestyBreathMs=` | 2026-07-30 |
 | 响应式 Task 3 · 窄宽单代码线（总验收） | UI可见 | 待人工测试 | **关单级**（只认 `origin/develop` tip + freshness behind=0）。**禁止**与场景 O 修混验。**§8 375 故事最小集**（Idle 三球+抽屉、Sit→Arrival→Focusing HUD、Breath 藏 Sit、? 补救、tip 邻接、Honesty/微仪式）。**§9 W1–W8**（清场 Sit+⚡+⋯、Sit 全路径、Arrival 藏 Sit/⋯、⋯ 代理 Honesty/How/Sound/提醒、? remap、邻接、Focusing、桥接/Rise）。**断点** 375↔480（见上行 Facade 行）。自动化：编排/facade 单测 + smoke ≠ 关单。 | — | `?product=1` · Brief `task-responsive-single-chrome-line.md` · PR #31–#33 | 2026-07-30 |
 | `IdleChromeFacade` 窄宽统一入口（Task 3 阶段 2） | UI可见 | 待人工测试 | **主路径**：`?product=1` 宽屏 Idle 见 Sit+⚡+⋯；375 见三球+抽屉；handlers 共用。**断点**：DevTools 375↔480 来回 — 无双壳叠点；Companion 打开时改宽度**不得**被误关（release 不调 onClearStage）。**回流**：Rise 后再 Idle。自动化：`IdleChromeFacade.test.js` + smoke；**须人工锁**断点路径。完整 §8+§9 见上行总验收。 | — | `?product=1` · `createIdleChromeFacade` · PR #33 | 2026-07-30 |
