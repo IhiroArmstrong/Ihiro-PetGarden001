@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` 改为每次 PR 都上报（无产品路径时 no-op 绿）以便设 Required；PR smoke 含 `npm run build`+`dist` 校验；Dependabot + 周更 `npm audit`；根 `README` + `USER_GUIDE` / `PRIVACY_NOTICE`。崩溃监控 / 打包产物 CI 仍 Backlog。**你须在 GitHub 网页把 `test:pr-smoke` 勾成 develop Required**（Agent 无法代勾）。见 Backlog「发布前安全网」。
+- **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English only（2026-07-30）**：对外不声称中文/多语言；工程保留可点切语 + 六语槽；仅 `en` ready，Language 菜单隐藏；zh 字典 staged。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 English only。见审计 §9。
 - **i18n「审完再露」拍板（2026-07-30）**：未 `ready` **不进**选择器、不发版声称；拒机翻先上。
@@ -304,7 +304,7 @@
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 - **CI 全量 `test:smoke` + `test:e2e`**（工程重要，但**排期次于**「本地桌面 APP 打包选型」决策；勿长期依赖本机手跑）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
-- **发布前安全网**（`test:pr-smoke` Required 网页勾选；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
+- **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
 - **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
 
 ---
@@ -600,13 +600,13 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 | 项 | 谁做 | 说明 |
 |---|---|---|
-| **把 `test:pr-smoke` 勾成 develop Required** | **你 · GitHub 网页** | Settings → Branches → `develop` → Require status checks → 勾选 **`test:pr-smoke`**（保留已有 `pre-merge with develop`）。须先合入本 workflow 改动并在至少 1 个 PR 上看到该 check 名。 |
+| **把 `test:pr-smoke` 勾成 develop Required** | ✅ **已完成（2026-07-30）** | 你已 Save：`develop` Required = `pre-merge with develop` + **`test:pr-smoke`**。图1 无 Required 徽章 ≠ 没跑；勾选后 smoke **红则无法合并**（硬门闩）。 |
 | **用户指南 / 隐私短文人工过目** | 你 | `TEST_TRACKER` 对应行；关单级仍认 `origin/develop` tip。 |
 | **错误监控 / 崩溃上报** | 后续立项 | v1.0 纯本地默认**不**接 Sentry；若加须 opt-in + 字段审查（MVP §六）。在「用户崩溃你怎么知道」有答案前，至少保留本机复现路径 + Issues。 |
 | **打包产物验证 CI** | 壳选型后 | Electron / Tauri / PWA 拍板后再写「安装包可启动」门禁；选型见 Backlog「本地桌面 APP 打包选型」。 |
 
 - **不在范围**：不替代全量 e2e Backlog；不把 Dependabot PR 自动合并。
-- **排期**：Required 勾选 = **合入本改动后立刻**；监控 / 打包 CI = tag 前评估，可与打包选型同周。
+- **排期**：Required 勾选 ✅ 已完成；监控 / 打包 CI = tag 前评估，可与打包选型同周。
 
 ### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
 
