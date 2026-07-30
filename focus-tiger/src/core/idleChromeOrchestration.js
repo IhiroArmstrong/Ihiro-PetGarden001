@@ -147,7 +147,9 @@ export function resolveShellChromeProjection(input) {
     wide: {
       idle: !focusing,
       // Wide ⋯ also suppresses on Honesty bridge (narrow ActionBar stays).
-      suppressed: Boolean(chromeSuppressed || bridgeVisible)
+      suppressed: Boolean(chromeSuppressed || bridgeVisible),
+      // Arrival: keep Quick Start ball (parity with narrow keepQuickStart).
+      keepQuickStart: Boolean(arrivalOpen)
     }
   };
 }
@@ -202,21 +204,21 @@ export function resolveRoleVisibility(input) {
 
   if (stage === 'bridge') {
     // Narrow: ActionBar stays; home chrome not force-suppressed by bridge alone.
-    // Wide: ⋯ suppressed so Yes/No stay clear.
+    // Wide: ⋯ suppressed so Yes/No stay clear; Sit/Quick/Honesty stay as home balls.
     return {
       sit: 'visible',
       quickStart: 'visible',
-      honesty: narrow ? 'visible' : 'in-menu',
+      honesty: 'visible',
       moreOrGrabber: narrow ? 'visible' : 'hidden',
       actionBar: narrow ? 'visible' : 'na'
     };
   }
 
-  // idle
+  // idle — both viewports: Sit / Quick / Honesty are home balls (wide ⋯ is secondary only).
   return {
     sit: 'visible',
     quickStart: 'visible',
-    honesty: narrow ? 'visible' : 'in-menu',
+    honesty: 'visible',
     moreOrGrabber: 'visible',
     actionBar: narrow ? 'visible' : 'na'
   };
@@ -224,7 +226,7 @@ export function resolveRoleVisibility(input) {
 
 /**
  * Secondary chrome entries for drawer (narrow) or ⋯ menu (wide).
- * Honesty is home-ball on narrow — only listed on wide.
+ * Honesty is a home ball on both viewports — never listed here.
  *
  * @param {'narrow-drawer' | 'wide-more'} surface
  * @param {SecondaryEntryVisibility} visibility
@@ -238,13 +240,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
 
   /** @type {SecondaryChromeEntry[]} */
   const out = [];
-
-  if (surface === 'wide-more') {
-    out.push({
-      proxy: 'honesty',
-      labelKey: 'HONESTY_IDLE_ENTRY'
-    });
-  }
 
   if (visibility.microRitualVisible) {
     out.push({

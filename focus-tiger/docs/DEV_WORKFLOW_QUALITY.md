@@ -654,8 +654,8 @@
 
 | 壳 | 形态 | 本矩阵怎么用 |
 |---|---|---|
-| **目标壳**（产品意图 · **现行运行时**） | ≥480：`WideIdleMoreMenu`——常驻 **Sit + ⚡ + ⋯**；Honesty / 一分钟呼吸 / How / Sound / 提醒进 **向上 Popover**；左下 `?` + 热力图保留 | 下表 **W1–W8** 按字面测（**直至**宽屏三球合入） |
-| **目标壳（已拍板 · 实现待开）** | ≥480：首页 **三球**（Quick Start · Sit · Honesty，对等窄屏）+ **⋯** 次要；**代替** Sit+⚡ 文案 pill | Brief `task-wide-home-three-ball.md`；合入后改写 W1 并按新壳测 |
+| **目标壳**（产品意图 · **现行运行时**） | ≥480：`WideIdleMoreMenu`——常驻 **三球（Quick · Sit · Honesty）+ ⋯**；呼吸 / How / 提醒 / language 进 **向上 Popover**；Sit+⚡ 文案 pill 与 Honesty dock 入口 park；左下 `?` + 热力图保留 | 下表 **W1–W8** 按新壳测 |
+| **目标壳（历史 · Sit+⚡+⋯）** | ≥480：常驻 Sit + ⚡ + ⋯；Honesty 曾在 ⋯ 内 | 仅对照旧 e2e / 截图；勿再当产品意图 |
 | **旧竖排 dock**（清场未合入的工作区） | 底栏仍散落长文案次级钮 | **W1 / W4** 改为：各次级入口仍在底栏且**对应故事可走通**；**禁止**用「按钮都看得见」代替 W2/W3/W5/W6 |
 
 分支未合入目标壳时，仍须跑故事最小集；只是 W1/W4 形态描述随壳变化。
@@ -672,7 +672,7 @@
 
 | # | 故事 | 最低可见结果 |
 |---|---|---|
-| W1 | Idle 清场形态 | 常驻 **Sit + ⚡ + ⋯**；How / Honesty / Sound FAB / 提醒**不在**底栏常驻簇（已 park）；左下 `?` + 热力图仍在 |
+| W1 | Idle 清场形态 | 常驻 **三球（Quick · Sit · Honesty）+ ⋯**；How / Sound FAB / 提醒**不在**底栏常驻簇（已 park）；左下 `?` + 热力图仍在 |
 | W2 | Sit → Notice → Breath → Choose → 鞠躬 → Focusing | 左上 `#focus-hud` 进入 Focusing、计时走动；`#btn-focus` 呈 Rise |
 | W3 | Arrival 全程（含 **Breath / Inhale**） | **Sit 与 ⋯ 隐藏**（或明确不可点）；**⚡ 仍可见**可 Quick Start；不得中途又露出可点 Sit。**窄屏**：用户可见宿主是 `#ft-narrow-home-quickstart`（勿只断言 dock 里已 park 的 `#quick-start-focus`） |
 | W4 | ⋯ Popover 代理入口 | 打开 ⋯ → 至少抽测：**Honesty**（进补登/时长）、**How shall we sit?**（三选一）、**Sound**（**直接** Soundscape 选曲面，禁止只抬红色 FAB）、**提醒**（设置面板）——点选后 Popover 收起、真实面板出现 |

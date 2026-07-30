@@ -76,11 +76,18 @@ export async function openWideMoreMenuIfPresent(page) {
 }
 
 /**
- * 经宽屏 ⋯（若有）打开 Honesty / 呼吸 / 提醒等代理入口；否则点 dock 直钮。
+ * 经宽屏 ⋯（若有）打开呼吸 / 提醒等代理入口；Honesty 走首页球；否则点 dock 直钮。
  * @param {import('@playwright/test').Page} page
  * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
  */
 export async function clickWideMoreProxyOrDirect(page, proxy) {
+  if (proxy === 'honesty') {
+    const ball = page.locator('#ft-wide-home-honesty');
+    if (await ball.isVisible().catch(() => false)) {
+      await ball.click();
+      return;
+    }
+  }
   const direct = {
     honesty: '#honesty-idle-entry',
     breath: '#micro-ritual-idle-entry',

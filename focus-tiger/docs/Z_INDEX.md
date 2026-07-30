@@ -14,7 +14,7 @@
 
 | z-index | 文件 | 用途 |
 |---|---|---|
-| **-1** | `src/ui/WideIdleMoreMenu.js` | 宽屏 Idle 次要入口 park 屏外（Honesty / 微仪式 / dock hint / Sound FAB / Reminder toggle）时压到底层，避免误抢点击 |
+| **-1** | `src/ui/WideIdleMoreMenu.js` | 宽屏 Idle 次要入口 + Sit/⚡ 文案 pill park 屏外（Honesty dock / 微仪式 / dock hint / Sound FAB / Reminder toggle / `#btn-focus` / `#quick-start-focus`）时压到底层，避免误抢点击 |
 | **0** | `src/effects/LightProgression.js` | Arrival 暖光 backdrop（`#light-progression-backdrop`），最底层氛围 |
 | **1** | `index.html` | `#poster` 启动海报图 |
 | **1** | `src/ui/ReminderPreferenceUI.js` | Reminder 时钟控件根（`.reminder-pref`），相对热力图簇内叠层 |

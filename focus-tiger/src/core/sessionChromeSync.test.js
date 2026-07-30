@@ -273,5 +273,6 @@ describe('createSessionChromeSync', () => {
     assert.equal(applied.narrow.keepQuickStart, true);
     assert.equal(applied.narrow.suppressed, true);
     assert.equal(applied.wide.suppressed, true);
+    assert.equal(applied.wide.keepQuickStart, true);
   });
 });

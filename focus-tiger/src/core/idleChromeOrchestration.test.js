@@ -86,10 +86,14 @@ describe('resolveShellChromeProjection', () => {
       suppressed: false,
       keepQuickStart: false
     });
-    assert.deepEqual(p.wide, { idle: true, suppressed: false });
+    assert.deepEqual(p.wide, {
+      idle: true,
+      suppressed: false,
+      keepQuickStart: false
+    });
   });
 
-  it('Arrival → suppress + keepQuickStart on narrow; wide suppressed', () => {
+  it('Arrival → suppress + keepQuickStart on narrow and wide', () => {
     const p = resolveShellChromeProjection({
       focusing: false,
       overlayActive: true,
@@ -100,6 +104,7 @@ describe('resolveShellChromeProjection', () => {
     assert.equal(p.narrow.suppressed, true);
     assert.equal(p.narrow.keepQuickStart, true);
     assert.equal(p.wide.suppressed, true);
+    assert.equal(p.wide.keepQuickStart, true);
   });
 
   it('bridge alone → narrow not suppressed; wide suppressed (Yes/No clear)', () => {
@@ -138,11 +143,11 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
     });
   });
 
-  it('idle wide: Sit + ⚡ visible; Honesty in-menu; ⋯ visible', () => {
+  it('idle wide: Sit + ⚡ + Honesty home balls; ⋯ visible', () => {
     assert.deepEqual(resolveRoleVisibility({ stage: 'idle', viewport: 'wide' }), {
       sit: 'visible',
       quickStart: 'visible',
-      honesty: 'in-menu',
+      honesty: 'visible',
       moreOrGrabber: 'visible',
       actionBar: 'na'
     });
@@ -196,11 +201,11 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
-  it('wide more lists honesty first', () => {
+  it('wide more omits honesty (home ball); includes breath/companion/reminder/language', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['honesty', 'breath', 'companion', 'reminder', 'language']
+      ['breath', 'companion', 'reminder', 'language']
     );
   });
 

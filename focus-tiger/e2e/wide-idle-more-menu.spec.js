@@ -2,19 +2,24 @@ import { test, expect } from '@playwright/test';
 import { openFreshProductShell } from './helpers/product-shell.js';
 
 /**
- * Wide Idle (≥480) declutter: Sit + ⚡ + ⋯; secondary via upward popover.
+ * Wide Idle (≥480): three home balls (Quick · Sit · Honesty) + ⋯; secondary via popover.
  */
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
-test('wide Idle: resident Sit + Quick Start + more; secondary parked', async ({
+test('wide Idle: resident three balls + more; secondary parked', async ({
   page
 }) => {
   await openFreshProductShell(page);
 
-  await expect(page.locator('#btn-focus')).toBeVisible();
-  await expect(page.locator('#quick-start-focus')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-sit')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-honesty')).toBeVisible();
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
+
+  // Legacy pills parked off-canvas
+  await expect(page.locator('#btn-focus')).not.toBeInViewport();
+  await expect(page.locator('#quick-start-focus')).not.toBeInViewport();
 
   // Parked off-canvas — not in the visible bottom cluster
   await expect(page.locator('.session-start-dock__hint')).not.toBeInViewport();
@@ -24,6 +29,14 @@ test('wide Idle: resident Sit + Quick Start + more; secondary parked', async ({
   // Left ? / heatmap stay (out of declutter scope)
   await expect(page.locator('#onboarding-hint-help')).toBeVisible();
   await expect(page.locator('#weekly-practice-heatmap')).toBeVisible();
+});
+
+test('wide Idle: Sit ball opens Arrival', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-home-sit').click();
+  await expect(page.locator('#arrival-practice')).toBeVisible({
+    timeout: 15_000
+  });
 });
 
 test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
@@ -53,26 +66,30 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   });
 });
 
-test('wide Arrival: only Quick Start; Sit and ⋯ hidden', async ({ page }) => {
-  await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
-  await expect(page.locator('#arrival-practice')).toBeVisible({
-    timeout: 15_000
-  });
-  await expect(page.locator('#btn-focus')).toBeHidden();
-  await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
-  await expect(page.locator('#quick-start-focus')).toBeVisible();
-});
-
-test('wide Focusing: more hidden; top-right note stays, Sound FAB stays hidden', async ({
+test('wide Arrival: only Quick Start ball; Sit / Honesty / ⋯ hidden', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#quick-start-focus').click();
+  await page.locator('#ft-wide-home-sit').click();
+  await expect(page.locator('#arrival-practice')).toBeVisible({
+    timeout: 15_000
+  });
+  await expect(page.locator('#ft-wide-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-wide-home-honesty')).toBeHidden();
+  await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
+  await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
+});
+
+test('wide Focusing: more + balls hidden; top-right note stays, Sound FAB stays hidden', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-home-quickstart').click();
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 15_000
   });
   await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
+  await expect(page.locator('#ft-wide-home-ctas')).toBeHidden();
   await expect(page.locator('.ambient-soundscape__mute')).toBeInViewport();
   await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();
 });
@@ -94,18 +111,17 @@ test('wide Idle: top-right note opens Soundscape panel (same as ⋯ Sound)', asy
   );
 });
 
-test('wide Idle: ⋯ has no Sound row; Honesty listed; note opens Soundscape', async ({
+test('wide Idle: ⋯ has no Sound or Honesty row; note opens Soundscape', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.evaluate(() => {
-    const el = document.getElementById('honesty-idle-entry');
-    if (el) el.hidden = true;
-  });
   const more = page.locator('#ft-wide-more-btn');
   await more.click();
-  await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toBeVisible();
+  await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toHaveCount(
+    0
+  );
   await expect(page.locator('#ft-wide-more-menu [data-proxy="sound"]')).toHaveCount(0);
+  await expect(page.locator('#ft-wide-home-honesty')).toBeVisible();
   await expect(
     page.locator('#ft-wide-more-menu .ft-secondary-menu-hint-dot').first()
   ).toBeVisible({ timeout: 5_000 });

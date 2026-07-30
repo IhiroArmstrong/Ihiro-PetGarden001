@@ -8,13 +8,17 @@ import {
 
 const STYLE_ID = 'ft-wide-idle-more-styles';
 const WIDE_MQ = '(min-width: 480px)';
+/** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
+const HOME_CTA_PX = 72;
+const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
+const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
+const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
 
 /**
- * Wide Idle (≥480) declutter: resident Sit + ⚡ + ⋯; secondary chrome in upward popover.
- * Narrow (≤479) is owned by NarrowIdleShell — this shell stays inert there.
+ * Wide Idle (≥480): home three balls (Quick · Sit · Honesty) + ⋯ popover.
+ * Replaces Sit+⚡ text pills as primary CTAs. Narrow (≤479) is NarrowIdleShell.
  *
- * Proxies existing DOM (Honesty / breath / How / Sound FAB / reminder), same idea as
- * the narrow drawer, without the swipe-sheet form.
+ * Proxies existing DOM (Honesty / breath / How / Sound FAB / reminder).
  */
 export class WideIdleMoreMenu {
   /**
@@ -25,8 +29,11 @@ export class WideIdleMoreMenu {
    *     onLanguage?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
+   *     onQuickStart?: () => void,
    *     onClearCompanion?: () => void,
    *     onClearStage?: () => void,
+   *     onMenuChange?: (open: boolean) => void,
+   *     isHintUnread?: (id: string) => boolean,
    *   }
    * }} [options]
    */
@@ -34,6 +41,7 @@ export class WideIdleMoreMenu {
     this.handlers = options.handlers || {};
     this._idle = true;
     this._suppressed = false;
+    this._keepQuickStart = false;
     this._menuOpen = false;
     this._localeUnsub = null;
 
@@ -48,6 +56,7 @@ export class WideIdleMoreMenu {
     this._sync();
     this._localeUnsub = onLocaleChange(() => {
       this._refreshLabels();
+      this._refreshHomeCtas();
       if (this._menuOpen) this._refreshItems();
     });
   }
@@ -74,16 +83,21 @@ export class WideIdleMoreMenu {
   }
 
   /**
-   * Arrival / Honesty / Reflection / bridge: hide ⋯ (Sit already hidden by CompanionModePicker).
-   * Secondary chrome stays parked so pills do not poke through overlays.
+   * Arrival / Honesty / Reflection / bridge: hide ⋯.
+   * Arrival `keepQuickStart`: keep Quick Start ball only.
    * @param {boolean} suppressed
+   * @param {{ keepQuickStart?: boolean }} [opts]
    * @returns {void}
    */
-  setSuppressed(suppressed) {
+  setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
-    if (this._suppressed) {
+    this._keepQuickStart =
+      Boolean(opts.keepQuickStart) && this._suppressed;
+    if (this._suppressed && !this._keepQuickStart) {
       this.closeMenu();
       this.clearStage();
+    } else if (this._suppressed) {
+      this.closeMenu();
     }
     this._sync();
   }
@@ -121,7 +135,8 @@ export class WideIdleMoreMenu {
     document.body.classList.remove(
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
-      WIDE_STAGE_CLASS.reminder
+      WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.language
     );
   }
 
@@ -133,7 +148,8 @@ export class WideIdleMoreMenu {
     document.body.classList.remove(
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
-      WIDE_STAGE_CLASS.reminder
+      WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.language
     );
     this.handlers.onClearStage?.();
   }
@@ -153,14 +169,19 @@ export class WideIdleMoreMenu {
     this._mq?.removeEventListener?.('change', this._onMqChange);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     document.removeEventListener('keydown', this._onKeyDown, true);
+    this._dockObserver?.disconnect?.();
     this.wrap?.remove();
+    this.homeCtas?.remove();
+    this.ctaRow?.remove();
     document.getElementById(STYLE_ID)?.remove();
     document.body.classList.remove(
       'ft-wide-park-secondary',
       'ft-wide-more-open',
+      'ft-wide-home-ctas',
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
-      WIDE_STAGE_CLASS.reminder
+      WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.language
     );
   }
 
@@ -180,11 +201,28 @@ export class WideIdleMoreMenu {
 
     const dock = document.getElementById('session-start-dock');
     const focusBtn = document.getElementById('btn-focus');
-    const quickStart = document.getElementById('quick-start-focus');
     if (!dock || !focusBtn) return false;
 
     this.ctaRow = document.createElement('div');
     this.ctaRow.className = 'session-start-dock__cta-row';
+
+    this.homeCtas = document.createElement('nav');
+    this.homeCtas.className = 'ft-wide-home-ctas';
+    this.homeCtas.id = 'ft-wide-home-ctas';
+    this.homeCtas.innerHTML = `
+      <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
+        <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+      </button>
+      <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-sit" data-proxy="sit" aria-label="">
+        <img class="ft-wide-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+      </button>
+      <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-honesty" data-proxy="honesty" aria-label="">
+        <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+      </button>
+    `;
+    this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
+    this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
+    this.honestyHomeBtn = this.homeCtas.querySelector('#ft-wide-home-honesty');
 
     this.wrap = document.createElement('div');
     this.wrap.className = 'ft-wide-more';
@@ -211,14 +249,15 @@ export class WideIdleMoreMenu {
 
     this.wrap.append(this.moreBtn, this.menu);
 
-    // Sit + ⚡ + ⋯ in one row; leave hint / Honesty / breath in dock for proxy clicks
-    this.ctaRow.appendChild(focusBtn);
-    if (quickStart) this.ctaRow.appendChild(quickStart);
-    this.ctaRow.appendChild(this.wrap);
+    // Three balls + ⋯; leave hint / Honesty / breath / Sit+⚡ pills in dock for proxy
+    this.ctaRow.append(this.homeCtas, this.wrap);
     dock.appendChild(this.ctaRow);
 
     this._bindMenuEls();
+    this._bindHomeCtas();
+    this._observeDock();
     this._refreshLabels();
+    this._refreshHomeCtas();
     return true;
   }
 
@@ -238,10 +277,112 @@ export class WideIdleMoreMenu {
     });
   }
 
+  _bindHomeCtas() {
+    this.homeCtas?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-proxy]');
+      if (!btn || btn.disabled || btn.hidden) return;
+      this._proxyHome(btn.getAttribute('data-proxy'));
+    });
+  }
+
+  _observeDock() {
+    const dock = document.getElementById('session-start-dock');
+    if (!dock || typeof MutationObserver === 'undefined') return;
+    this._dockObserver = new MutationObserver(() => this._refreshHomeCtas());
+    this._dockObserver.observe(dock, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['hidden', 'disabled', 'aria-disabled', 'class']
+    });
+  }
+
   _refreshLabels() {
     if (!this.moreBtn) return;
     this.moreBtn.setAttribute('aria-label', t('WIDE_MORE_ARIA'));
     this.menu?.setAttribute('aria-label', t('WIDE_MORE_ARIA'));
+    if (this.homeCtas) {
+      this.homeCtas.setAttribute('aria-label', t('NARROW_SHEET_TITLE'));
+    }
+    this._refreshHomeCtas();
+  }
+
+  /**
+   * Keep home Quick Start / Sit / Honesty enablement in sync with parked pills.
+   * @returns {void}
+   */
+  _refreshHomeCtas() {
+    if (!this.homeCtas) return;
+
+    const focusEl = document.getElementById('btn-focus');
+    if (this.sitHomeBtn) {
+      const sitLabel =
+        focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
+      this.sitHomeBtn.setAttribute('aria-label', sitLabel);
+      this.sitHomeBtn.title = sitLabel;
+      const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
+      this.sitHomeBtn.disabled = !sitOk;
+      this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
+      this.sitHomeBtn.hidden = !focusEl || focusEl.hidden;
+    }
+
+    const quickEl = document.getElementById('quick-start-focus');
+    if (this.quickHomeBtn) {
+      const qsLabel = t('QUICK_START_ARIA');
+      this.quickHomeBtn.setAttribute('aria-label', qsLabel);
+      this.quickHomeBtn.title = qsLabel;
+      const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
+      this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
+      this.quickHomeBtn.disabled = !qsOk;
+      this.quickHomeBtn.setAttribute('aria-disabled', qsOk ? 'false' : 'true');
+    }
+
+    if (this.honestyHomeBtn) {
+      const honestyLabel = t('HONESTY_IDLE_ENTRY');
+      this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
+      this.honestyHomeBtn.title = honestyLabel;
+      const showHonesty = !this._keepQuickStart;
+      this.honestyHomeBtn.hidden = !showHonesty;
+      this.honestyHomeBtn.disabled = false;
+      this.honestyHomeBtn.setAttribute('aria-disabled', 'false');
+    }
+
+    if (this._keepQuickStart && this.quickHomeBtn) {
+      this.quickHomeBtn.hidden = false;
+      this.quickHomeBtn.disabled = false;
+      this.quickHomeBtn.setAttribute('aria-disabled', 'false');
+    }
+  }
+
+  /**
+   * @param {string | null} key
+   * @returns {void}
+   */
+  _proxyHome(key) {
+    if (key === 'quickstart') {
+      this.handlers.onQuickStart?.();
+      return;
+    }
+    if (key === 'sit') {
+      const el = document.getElementById('btn-focus');
+      if (!el || el.disabled || el.hidden) return;
+      const prev = el.style.pointerEvents;
+      el.style.pointerEvents = 'auto';
+      el.click();
+      el.style.pointerEvents = prev;
+      return;
+    }
+    if (key === 'honesty') {
+      this.clearStage();
+      const el = document.getElementById('honesty-idle-entry');
+      if (el && !el.disabled && !el.hidden) {
+        const prev = el.style.pointerEvents;
+        el.style.pointerEvents = 'auto';
+        el.click();
+        el.style.pointerEvents = prev;
+        return;
+      }
+      this.handlers.onHonesty?.();
+    }
   }
 
   _bind() {
@@ -274,16 +415,29 @@ export class WideIdleMoreMenu {
     this._ensureBuilt();
     const wide = this._isWide();
     const park = wide && this._idle;
+    const keepQs = Boolean(this._keepQuickStart);
     const showMore = park && !this._suppressed;
+    // Home balls stay for wide Idle (incl. Arrival keepQs / bridge suppress).
+    const showHome = park;
 
     document.body.classList.toggle('ft-wide-park-secondary', park);
-    document.body.classList.toggle('ft-wide-more-open', this._menuOpen && showMore);
+    document.body.classList.toggle(
+      'ft-wide-more-open',
+      this._menuOpen && showMore
+    );
+    document.body.classList.toggle('ft-wide-home-ctas', showHome);
 
+    if (this.ctaRow) this.ctaRow.hidden = !park;
+    if (this.homeCtas) {
+      this.homeCtas.hidden = !showHome;
+      this.homeCtas.classList.toggle('is-arrival-quick', keepQs);
+    }
     if (this.moreBtn) this.moreBtn.hidden = !showMore;
     if (this.menu) {
       this.menu.hidden = !(this._menuOpen && showMore);
     }
     if (!showMore) this._menuOpen = false;
+    if (park) this._refreshHomeCtas();
   }
 
   _refreshItems() {
@@ -351,16 +505,7 @@ export class WideIdleMoreMenu {
       return;
     }
     if (key === 'honesty') {
-      this.clearStage();
-      const el = document.getElementById('honesty-idle-entry');
-      if (el && !el.disabled && !el.hidden) {
-        const prev = el.style.pointerEvents;
-        el.style.pointerEvents = 'auto';
-        el.click();
-        el.style.pointerEvents = prev;
-        return;
-      }
-      this.handlers.onHonesty?.();
+      this._proxyHome('honesty');
       return;
     }
 
@@ -386,9 +531,63 @@ export class WideIdleMoreMenu {
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 12px;
         pointer-events: auto;
-        max-width: 100%;
+        max-width: min(520px, 100%);
+      }
+      .session-start-dock__cta-row[hidden] {
+        display: none !important;
+      }
+
+      .ft-wide-home-ctas {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        gap: 8px;
+        flex: 1 1 auto;
+        min-width: 0;
+        pointer-events: auto;
+      }
+      .ft-wide-home-ctas[hidden] {
+        display: none !important;
+      }
+      .ft-wide-home-ctas__btn.is-asset[hidden] {
+        display: none !important;
+      }
+      .ft-wide-home-ctas__btn.is-asset {
+        flex: 0 0 auto;
+        box-sizing: border-box;
+        width: ${HOME_CTA_PX}px;
+        height: ${HOME_CTA_PX}px;
+        min-height: ${HOME_CTA_PX}px;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        line-height: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: none;
+      }
+      .ft-wide-home-ctas__btn.is-asset:disabled,
+      .ft-wide-home-ctas__btn.is-asset[aria-disabled="true"] {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .ft-wide-home-ctas__btn.is-asset:active:not(:disabled) {
+        transform: scale(0.96);
+      }
+      .ft-wide-home-ctas__img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
       }
 
       .ft-wide-more {
@@ -496,15 +695,17 @@ export class WideIdleMoreMenu {
       }
 
       /*
-       * Park secondary Idle chrome off-canvas on wide Idle (incl. Arrival).
-       * Elements remain in DOM for proxy .click(); ? / heatmap stay untouched.
+       * Park secondary Idle chrome + legacy Sit/⚡ pills off-canvas on wide Idle
+       * (incl. Arrival). Elements remain in DOM for proxy .click().
        */
       @media (min-width: 480px) {
         body.ft-wide-park-secondary .session-start-dock__honesty-entry,
         body.ft-wide-park-secondary .session-start-dock__micro-ritual-entry,
         body.ft-wide-park-secondary .session-start-dock__hint,
         body.ft-wide-park-secondary .ambient-soundscape__fab,
-        body.ft-wide-park-secondary #reminder-preference-toggle {
+        body.ft-wide-park-secondary #reminder-preference-toggle,
+        body.ft-wide-park-secondary #btn-focus,
+        body.ft-wide-park-secondary #quick-start-focus {
           position: fixed !important;
           left: -10000px !important;
           top: 0 !important;

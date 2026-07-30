@@ -59,7 +59,7 @@ describe('IdleChromeFacade', () => {
     assert.equal(typeof narrow.state.handlers.onSound, 'function');
     assert.equal(typeof wide.state.handlers.onSound, 'function');
     assert.equal(typeof narrow.state.handlers.onQuickStart, 'function');
-    assert.equal(wide.state.handlers.onQuickStart, undefined);
+    assert.equal(typeof wide.state.handlers.onQuickStart, 'function');
     narrow.state.handlers.onSound();
     wide.state.handlers.onSound();
     assert.equal(sound, 2);
@@ -80,13 +80,14 @@ describe('IdleChromeFacade', () => {
     });
     facade.applyShellProjection({
       narrow: { idle: false, suppressed: true, keepQuickStart: true },
-      wide: { idle: false, suppressed: true }
+      wide: { idle: false, suppressed: true, keepQuickStart: true }
     });
     assert.equal(narrow.state.idle, false);
     assert.equal(narrow.state.suppressed, true);
     assert.equal(narrow.state.keepQuickStart, true);
     assert.equal(wide.state.idle, false);
     assert.equal(wide.state.suppressed, true);
+    assert.equal(wide.state.keepQuickStart, true);
     facade.destroy();
   });
 

@@ -258,6 +258,36 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
   return anchorCfg;
 }
 
+/**
+ * Wide Idle parks Sit/⚡ pills — remap primary tips to visible home balls.
+ * @param {{ selector: string, placement: string, tip: string }} anchorCfg
+ */
+function remapWideIdleHintAnchor(anchorCfg) {
+  const sel = String(anchorCfg.selector || '');
+  if (/#btn-focus|btn-focus/.test(sel)) {
+    return {
+      selector: '#ft-wide-home-sit',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/quick-start/.test(sel)) {
+    return {
+      selector: '#ft-wide-home-quickstart',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/honesty-idle/.test(sel)) {
+    return {
+      selector: '#ft-wide-home-honesty',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  return anchorCfg;
+}
+
 /** 桌面精细指针：悬停 = 预览 */
 function canHoverPreview() {
   return (
@@ -1292,6 +1322,9 @@ export class OnboardingHintsUI {
       document.body.classList.contains('ft-narrow-idle')
     ) {
       anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor);
+    } else if (document.body.classList.contains('ft-wide-park-secondary')) {
+      // 宽屏 park：Sit/⚡ pills 停泊 → 首页三球
+      anchorCfg = remapWideIdleHintAnchor(anchorCfg);
     }
 
     // 窄屏非 park：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
