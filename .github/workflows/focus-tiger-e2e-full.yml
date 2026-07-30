@@ -2,6 +2,12 @@ name: focus-tiger full e2e
 
 # Full Playwright suite on develop tip.
 # Not a PR/merge gate — manual + daily schedule only.
+#
+# IMPORTANT (GitHub Actions): `schedule` loads this YAML from the repo
+# **default branch (`main`)**, then the job checks out `develop` for app code.
+# Raising timeout / workers only on `develop` does NOT affect nightly cron until
+# the same workflow file is on `main`. See docs/ENV_CONFIG.md §3 + PROCESS Backlog.
+# No repository Secrets required for this local-shell Playwright suite.
 on:
   workflow_dispatch:
     inputs:
@@ -17,7 +23,13 @@ jobs:
   e2e-full:
     name: npm run test:e2e (full)
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Was 60 (workers:2 retry storms), then 90 (workers:1 still cancelled mid-suite
+    # under first-attempt page.goto timeout → retry storms, ~90m). Raise to 120 so
+    # the job can finish and report pass/flaky instead of wall-clock cancel.
+    # Not a flaky root-cause fix — goto/domcontentloaded jitter is tracked separately.
+    # Nightly still cancelled ~60m while main's copy of this file stayed at 60
+    # (2026-07-28..30 schedule runs) — sync this file to main to unlock 120.
+    timeout-minutes: 120
     defaults:
       run:
         working-directory: focus-tiger
@@ -43,8 +55,10 @@ jobs:
 
       # Equivalent to `npm run test:e2e` (guard + playwright test), with CI reporters
       # for Actions annotations + HTML artifact. package.json script only uses `list`.
+      # --workers=1: override playwright.config.js CI default (2) for this job only —
+      # dual Chromium goto storms on ubuntu-latest were canceling the 60m budget.
       - name: Full Playwright e2e
-        run: node scripts/e2e-ci-guard.js full && npx playwright test --reporter=list,html,github
+        run: node scripts/e2e-ci-guard.js full && npx playwright test --reporter=list,html,github --workers=1
         env:
           CI: 'true'
           PLAYWRIGHT_CHANNEL: ''
