@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` 改为每次 PR 都上报（无产品路径时 no-op 绿）以便设 Required；PR smoke 含 `npm run build`+`dist` 校验；Dependabot + 周更 `npm audit`；根 `README` + `USER_GUIDE` / `PRIVACY_NOTICE`。崩溃监控 / 打包产物 CI 仍 Backlog。**你须在 GitHub 网页把 `test:pr-smoke` 勾成 develop Required**（Agent 无法代勾）。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English only（2026-07-30）**：对外不声称中文/多语言；工程保留可点切语 + 六语槽；仅 `en` ready，Language 菜单隐藏；zh 字典 staged。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 English only。见审计 §9。
 - **i18n「审完再露」拍板（2026-07-30）**：未 `ready` **不进**选择器、不发版声称；拒机翻先上。
@@ -303,6 +304,7 @@
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 - **CI 全量 `test:smoke` + `test:e2e`**（工程重要，但**排期次于**「本地桌面 APP 打包选型」决策；勿长期依赖本机手跑）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
+- **发布前安全网**（`test:pr-smoke` Required 网页勾选；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
 - **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
 
 ---
@@ -581,6 +583,30 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
 - **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工。**相对「本地桌面 APP 打包选型」**：本项为工程护栏，**决策优先级次于**打包选型（可并行推进实现，但争排期时先排打包讨论）。
+- **已部分覆盖（2026-07-30）**：PR→`develop` 的 `test:pr-smoke` 已含逻辑冒烟 + e2e smoke + **`npm run build` 产物检查**（见「发布前安全网」）。本 Backlog 仍指**全量** `test:e2e`，勿与 PR smoke 混淆。
+
+### Backlog:发布前安全网（v1.0.0 tag 前）
+
+> **背景（2026-07-30 核实）**：轻量 PR 基建主体已在 `develop`（`pr-smoke` / `pre-merge` / 模板）。当时因 `paths` 过滤**未**把 `test:pr-smoke` 设成 Required；Dependabot、CI build、用户向说明、崩溃监控亦未齐。打包产物 CI **等壳选型后再立**。
+
+#### 已落地（工程 · 本回合）
+
+1. **`pr-smoke` Required-safe**：每次 PR→`develop` 都上报 job `test:pr-smoke`；无 `focus-tiger/**`（及本 workflow）改动时 **no-op 绿**；有产品改动时跑 smoke + **`npm run build`** + `dist/index.html` / `dist/assets` 校验。
+2. **Dependabot**：`.github/dependabot.yml`（`focus-tiger` / `cloud` npm + Actions）。
+3. **周更 `npm audit`**：`.github/workflows/dependency-audit.yml`（`audit-level=high`；schedule + dispatch；**非** PR Required）。
+4. **用户向文档**：根 `README.md`；`focus-tiger/docs/USER_GUIDE.md`；`focus-tiger/docs/PRIVACY_NOTICE.md`（对齐 MVP §六「上线前须有简明隐私说明」）。
+
+#### 仍待你 / 后续
+
+| 项 | 谁做 | 说明 |
+|---|---|---|
+| **把 `test:pr-smoke` 勾成 develop Required** | **你 · GitHub 网页** | Settings → Branches → `develop` → Require status checks → 勾选 **`test:pr-smoke`**（保留已有 `pre-merge with develop`）。须先合入本 workflow 改动并在至少 1 个 PR 上看到该 check 名。 |
+| **用户指南 / 隐私短文人工过目** | 你 | `TEST_TRACKER` 对应行；关单级仍认 `origin/develop` tip。 |
+| **错误监控 / 崩溃上报** | 后续立项 | v1.0 纯本地默认**不**接 Sentry；若加须 opt-in + 字段审查（MVP §六）。在「用户崩溃你怎么知道」有答案前，至少保留本机复现路径 + Issues。 |
+| **打包产物验证 CI** | 壳选型后 | Electron / Tauri / PWA 拍板后再写「安装包可启动」门禁；选型见 Backlog「本地桌面 APP 打包选型」。 |
+
+- **不在范围**：不替代全量 e2e Backlog；不把 Dependabot PR 自动合并。
+- **排期**：Required 勾选 = **合入本改动后立刻**；监控 / 打包 CI = tag 前评估，可与打包选型同周。
 
 ### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
 
