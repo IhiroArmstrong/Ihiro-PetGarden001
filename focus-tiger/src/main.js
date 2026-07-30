@@ -1296,8 +1296,9 @@ async function init() {
       });
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
+      // ambient-soundscape stays unread until a track is actually chosen
+      // (ONBOARDING_HINTS: only track choice clears the mint note dot).
       onboardingHints?.markSeen('rise-button');
-      onboardingHints?.markSeen('ambient-soundscape');
       hasEndedAnySession = true;
       syncOnboardingAutoHints();
     }
@@ -1322,7 +1323,6 @@ async function init() {
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
     onboardingHints?.markSeen('rise-button');
-    onboardingHints?.markSeen('ambient-soundscape');
   }
 
   const moodController = new MoodController(stateManager, emotionController, {
