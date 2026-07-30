@@ -58,6 +58,39 @@ export async function openFreshProductShell(page, opts = {}) {
 }
 
 /**
+ * 点 Sit：两侧首页三球已取代 dock pill（pill 被 park 到屏外，只留作代理源，
+ * 直接 `.click()` 会「element is outside of the viewport」）。三球都不在才回退 pill。
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<void>}
+ */
+export async function clickSitEntry(page) {
+  for (const id of ['#ft-wide-home-sit', '#ft-narrow-home-sit']) {
+    const ball = page.locator(id);
+    if (await ball.isVisible().catch(() => false)) {
+      await ball.click();
+      return;
+    }
+  }
+  await page.locator('#btn-focus').click();
+}
+
+/**
+ * 点 ⚡ Quick Start，同 `clickSitEntry` 的三球优先规则。
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<void>}
+ */
+export async function clickQuickStartEntry(page) {
+  for (const id of ['#ft-wide-home-quickstart', '#ft-narrow-home-quickstart']) {
+    const ball = page.locator(id);
+    if (await ball.isVisible().catch(() => false)) {
+      await ball.click();
+      return;
+    }
+  }
+  await page.locator('#quick-start-focus').click();
+}
+
+/**
  * 若宽屏 ⋯ 可见则打开 More 菜单。
  * @param {import('@playwright/test').Page} page
  * @returns {Promise<boolean>}
@@ -166,7 +199,7 @@ export async function advanceArrivalToCompanionPicker(page) {
  * Sit → Notice → Breath → Choose Reading → 鞠躬后 Companion 面板可见（尚未 Focusing）。
  */
 export async function chooseReadingAndOpenCompanion(page) {
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
 
@@ -200,9 +233,10 @@ export async function chooseReadingAndAwaitFocus(page) {
  * @param {import('@playwright/test').Page} page
  */
 export async function quickStartFocus(page) {
-  const quick = page.locator('#quick-start-focus');
-  await expect(quick).toBeVisible({ timeout: 15_000 });
-  await quick.click();
+  await expect(page.locator('#quick-start-focus')).toBeVisible({
+    timeout: 15_000
+  });
+  await clickQuickStartEntry(page);
   await expect(page.locator('#arrival-practice')).toBeHidden({ timeout: 15_000 });
 }
 
@@ -210,7 +244,7 @@ export async function quickStartFocus(page) {
 export async function skipArrivalBegin(page) {
   const arrival = page.locator('#arrival-practice');
   if (!(await arrival.isVisible().catch(() => false))) {
-    await page.locator('#btn-focus').click();
+    await clickSitEntry(page);
     await expect(arrival).toBeVisible({ timeout: 15_000 });
   }
   await quickStartFocus(page);
@@ -248,7 +282,7 @@ export async function expectFocusSessionInactive(page) {
  * Focusing 中点 Rise → 等 Reflection → Skip all → 回到 Idle chrome。
  */
 export async function riseSkipReflectionToIdle(page) {
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const reflection = page.locator('#tiger-reflection-moment');
   await expect(reflection).toBeVisible({ timeout: 15_000 });
   await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
@@ -261,7 +295,7 @@ export async function riseSkipReflectionToIdle(page) {
  * → 门闩就绪并展开 Companion（不自动开表）。
  */
 export async function advanceArrivalToCompanionPanel(page) {
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
 

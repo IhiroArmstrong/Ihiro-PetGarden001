@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import {
+  clickQuickStartEntry,
   clickWideMoreProxyOrDirect,
   openFreshProductShell
 } from './helpers/product-shell.js';
@@ -150,7 +151,7 @@ test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
   await simulateReturnToForeground(page);
   await expect(page.locator(BANNER)).toBeVisible({ timeout: 10_000 });
 
-  await page.locator('#quick-start-focus').click();
+  await clickQuickStartEntry(page);
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/, {
     timeout: 15_000
   });

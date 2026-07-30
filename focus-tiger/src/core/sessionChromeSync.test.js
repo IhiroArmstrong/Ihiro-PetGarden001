@@ -53,6 +53,7 @@ describe('createSessionChromeSync', () => {
     let narrowKeepQs = null;
     let wideIdle = null;
     let wideSuppressed = null;
+    let wideKeepQs = null;
 
     const honestyCheckInUI = {
       get phase() {
@@ -97,8 +98,9 @@ describe('createSessionChromeSync', () => {
       setIdle(v) {
         wideIdle = v;
       },
-      setSuppressed(v) {
+      setSuppressed(v, opts = {}) {
         wideSuppressed = v;
+        wideKeepQs = Boolean(opts.keepQuickStart);
       }
     };
     const stateManager = { state: STATES.IDLE };
@@ -167,7 +169,8 @@ describe('createSessionChromeSync', () => {
         narrowSuppressed: () => narrowSuppressed,
         narrowKeepQs: () => narrowKeepQs,
         wideIdle: () => wideIdle,
-        wideSuppressed: () => wideSuppressed
+        wideSuppressed: () => wideSuppressed,
+        wideKeepQs: () => wideKeepQs
       }
     };
   }
@@ -195,6 +198,19 @@ describe('createSessionChromeSync', () => {
     h.sync.syncHonestyIdleEntry();
     assert.equal(h.get.honestyEntryHidden(), true);
     assert.equal(h.get.microEntryVisible(), false);
+  });
+
+  it('syncHonestyIdleEntry during Arrival keeps wide keepQuickStart (no Honesty ball snap-back)', () => {
+    const h = harness();
+    h.set.arrivalOpen(true);
+    h.sync.resyncSessionChrome();
+    assert.equal(h.get.wideSuppressed(), true);
+    assert.equal(h.get.wideKeepQs(), true);
+
+    // Honesty entry sync used to call bare setSuppressed(true) and clear the latch.
+    h.sync.syncHonestyIdleEntry();
+    assert.equal(h.get.wideSuppressed(), true);
+    assert.equal(h.get.wideKeepQs(), true);
   });
 
   it('resyncSessionChrome：Reflection 叠层 → Gate + Companion + 窄宽壳对齐', () => {

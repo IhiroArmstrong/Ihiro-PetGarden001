@@ -149,12 +149,16 @@ export function createSessionChromeSync(deps) {
       arrivalOpen: Boolean(getArrivalPractice()?.isOpen?.()),
       bridgeVisible
     });
-    if (idleChrome?.applyShellProjection) {
-      // Bridge-only path: keep full projection via facade when available,
-      // but only wide suppress must change here (narrow ActionBar stays).
-      idleChrome.wide?.setSuppressed?.(wide.suppressed);
+    // Must pass keepQuickStart: a bare setSuppressed(true) clears Arrival's
+    // "⚡ only" latch and the Honesty home ball snaps back mid-Arrival.
+    if (idleChrome?.wide?.setSuppressed) {
+      idleChrome.wide.setSuppressed(wide.suppressed, {
+        keepQuickStart: Boolean(wide.keepQuickStart)
+      });
     } else {
-      wideIdleMoreMenu.setSuppressed(wide.suppressed);
+      wideIdleMoreMenu.setSuppressed(wide.suppressed, {
+        keepQuickStart: Boolean(wide.keepQuickStart)
+      });
     }
   }
 

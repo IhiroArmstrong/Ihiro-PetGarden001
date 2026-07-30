@@ -3,6 +3,7 @@ import {
   advanceArrivalToCompanionPicker,
   chooseReadingAndAwaitFocus,
   chooseReadingAndOpenCompanion,
+  clickSitEntry,
   expectFocusSessionActive,
   expectFocusSessionInactive,
   openCompanionHint,
@@ -50,7 +51,7 @@ test('Arrival Notice dismisses on outside click (back to Idle)', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
   await expect(
@@ -66,7 +67,7 @@ test('Arrival Notice: tip click dismisses tip only, not Arrival', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
   await expect(
@@ -134,7 +135,7 @@ test('Arrival Choose dismisses on outside click (back to Idle)', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
   await arrival
@@ -152,7 +153,7 @@ test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stay
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#btn-focus')).toBeHidden();
@@ -171,7 +172,7 @@ test('Arrival Breath: Sit stays hidden; Quick Start stays (wide)', async ({
 }) => {
   test.setTimeout(90_000);
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
   await arrival
@@ -417,7 +418,7 @@ test('scenario K: Offline Space starts focus without Arrival', async ({
 
 test('Choose write-your-own: → confirm commits typed text', async ({ page }) => {
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
 

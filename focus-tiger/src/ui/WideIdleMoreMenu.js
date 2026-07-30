@@ -15,6 +15,53 @@ const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
 const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
 
 /**
+ * The wide CTA row lives *inside* `#session-start-dock` (narrow mounts its balls in
+ * its own shell root instead), so the dock observer would otherwise see the balls'
+ * own `aria-disabled` / `hidden` writes and re-enter forever — an unbreakable
+ * microtask loop that freezes the main thread. Only react to mutations from
+ * outside the row.
+ * @param {MutationRecord[]} records
+ * @param {Element | null | undefined} ctaRow
+ * @returns {boolean}
+ */
+export function shouldSyncHomeCtasForRecords(records, ctaRow) {
+  if (!Array.isArray(records) || records.length === 0) return false;
+  if (!ctaRow) return true;
+  return records.some((record) => {
+    const target = record?.target;
+    if (!target) return false;
+    if (target === ctaRow) return false;
+    return !ctaRow.contains?.(target);
+  });
+}
+
+/**
+ * `setAttribute` emits a MutationRecord even when the value is unchanged, so every
+ * write must be conditional to keep observer churn down.
+ * @param {Element | null | undefined} el
+ * @param {string} name
+ * @param {string} value
+ * @returns {void}
+ */
+function setAttrIfChanged(el, name, value) {
+  if (!el) return;
+  if (el.getAttribute(name) === value) return;
+  el.setAttribute(name, value);
+}
+
+/**
+ * @param {HTMLElement | null | undefined} el
+ * @param {'hidden' | 'disabled'} prop
+ * @param {boolean} next
+ * @returns {void}
+ */
+function setBoolPropIfChanged(el, prop, next) {
+  if (!el) return;
+  if (Boolean(el[prop]) === next) return;
+  el[prop] = next;
+}
+
+/**
  * Wide Idle (≥480): home three balls (Quick · Sit · Honesty) + ⋯ popover.
  * Replaces Sit+⚡ text pills as primary CTAs. Narrow (≤479) is NarrowIdleShell.
  *
@@ -44,6 +91,7 @@ export class WideIdleMoreMenu {
     this._keepQuickStart = false;
     this._menuOpen = false;
     this._localeUnsub = null;
+    this._refreshingHomeCtas = false;
 
     this._mq =
       typeof window.matchMedia === 'function'
@@ -288,7 +336,10 @@ export class WideIdleMoreMenu {
   _observeDock() {
     const dock = document.getElementById('session-start-dock');
     if (!dock || typeof MutationObserver === 'undefined') return;
-    this._dockObserver = new MutationObserver(() => this._refreshHomeCtas());
+    this._dockObserver = new MutationObserver((records) => {
+      if (!shouldSyncHomeCtasForRecords(records, this.ctaRow)) return;
+      this._refreshHomeCtas();
+    });
     this._dockObserver.observe(dock, {
       attributes: true,
       subtree: true,
@@ -311,45 +362,68 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _refreshHomeCtas() {
-    if (!this.homeCtas) return;
+    if (!this.homeCtas || this._refreshingHomeCtas) return;
+    this._refreshingHomeCtas = true;
+    try {
+      const focusEl = document.getElementById('btn-focus');
+      if (this.sitHomeBtn) {
+        const sitLabel = focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
+        setAttrIfChanged(this.sitHomeBtn, 'aria-label', sitLabel);
+        if (this.sitHomeBtn.title !== sitLabel) this.sitHomeBtn.title = sitLabel;
+        const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
+        setBoolPropIfChanged(this.sitHomeBtn, 'disabled', !sitOk);
+        setAttrIfChanged(
+          this.sitHomeBtn,
+          'aria-disabled',
+          sitOk ? 'false' : 'true'
+        );
+        setBoolPropIfChanged(
+          this.sitHomeBtn,
+          'hidden',
+          !focusEl || focusEl.hidden
+        );
+      }
 
-    const focusEl = document.getElementById('btn-focus');
-    if (this.sitHomeBtn) {
-      const sitLabel =
-        focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
-      this.sitHomeBtn.setAttribute('aria-label', sitLabel);
-      this.sitHomeBtn.title = sitLabel;
-      const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
-      this.sitHomeBtn.disabled = !sitOk;
-      this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
-      this.sitHomeBtn.hidden = !focusEl || focusEl.hidden;
-    }
+      const quickEl = document.getElementById('quick-start-focus');
+      if (this.quickHomeBtn) {
+        const qsLabel = t('QUICK_START_ARIA');
+        setAttrIfChanged(this.quickHomeBtn, 'aria-label', qsLabel);
+        if (this.quickHomeBtn.title !== qsLabel) {
+          this.quickHomeBtn.title = qsLabel;
+        }
+        // Arrival keepQuickStart: ⚡ stays live even while the dock pill is hidden.
+        const qsOk =
+          this._keepQuickStart ||
+          (Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled);
+        setBoolPropIfChanged(
+          this.quickHomeBtn,
+          'hidden',
+          this._keepQuickStart ? false : !quickEl || quickEl.hidden
+        );
+        setBoolPropIfChanged(this.quickHomeBtn, 'disabled', !qsOk);
+        setAttrIfChanged(
+          this.quickHomeBtn,
+          'aria-disabled',
+          qsOk ? 'false' : 'true'
+        );
+      }
 
-    const quickEl = document.getElementById('quick-start-focus');
-    if (this.quickHomeBtn) {
-      const qsLabel = t('QUICK_START_ARIA');
-      this.quickHomeBtn.setAttribute('aria-label', qsLabel);
-      this.quickHomeBtn.title = qsLabel;
-      const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
-      this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
-      this.quickHomeBtn.disabled = !qsOk;
-      this.quickHomeBtn.setAttribute('aria-disabled', qsOk ? 'false' : 'true');
-    }
-
-    if (this.honestyHomeBtn) {
-      const honestyLabel = t('HONESTY_IDLE_ENTRY');
-      this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
-      this.honestyHomeBtn.title = honestyLabel;
-      const showHonesty = !this._keepQuickStart;
-      this.honestyHomeBtn.hidden = !showHonesty;
-      this.honestyHomeBtn.disabled = false;
-      this.honestyHomeBtn.setAttribute('aria-disabled', 'false');
-    }
-
-    if (this._keepQuickStart && this.quickHomeBtn) {
-      this.quickHomeBtn.hidden = false;
-      this.quickHomeBtn.disabled = false;
-      this.quickHomeBtn.setAttribute('aria-disabled', 'false');
+      if (this.honestyHomeBtn) {
+        const honestyLabel = t('HONESTY_IDLE_ENTRY');
+        setAttrIfChanged(this.honestyHomeBtn, 'aria-label', honestyLabel);
+        if (this.honestyHomeBtn.title !== honestyLabel) {
+          this.honestyHomeBtn.title = honestyLabel;
+        }
+        setBoolPropIfChanged(
+          this.honestyHomeBtn,
+          'hidden',
+          Boolean(this._keepQuickStart)
+        );
+        setBoolPropIfChanged(this.honestyHomeBtn, 'disabled', false);
+        setAttrIfChanged(this.honestyHomeBtn, 'aria-disabled', 'false');
+      }
+    } finally {
+      this._refreshingHomeCtas = false;
     }
   }
 
@@ -552,6 +626,11 @@ export class WideIdleMoreMenu {
       .ft-wide-home-ctas[hidden] {
         display: none !important;
       }
+      /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
+      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
+      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
+        display: none !important;
+      }
       .ft-wide-home-ctas__btn.is-asset[hidden] {
         display: none !important;
       }
@@ -717,6 +796,7 @@ export class WideIdleMoreMenu {
           pointer-events: none !important;
           z-index: -1 !important;
         }
+      }
 
       /* Wide Idle: stage Soundscape panel on-canvas (never red FAB / gated tip-only) */
       @media (min-width: 480px) {
@@ -747,7 +827,6 @@ export class WideIdleMoreMenu {
         body.ft-wide-park-secondary.ft-wide-stage-reminder #weekly-practice-heatmap-cluster {
           /* reminder panel lives near cluster; keep cluster findable */
         }
-      }
       }
     `;
     document.head.appendChild(style);
