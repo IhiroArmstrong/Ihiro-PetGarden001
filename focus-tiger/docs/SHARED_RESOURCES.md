@@ -26,7 +26,8 @@
 | `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
-| `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认关 / opt-in；曲目默认 Mer-Ka-Ba） |
+| `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`） |
+| IndexedDB `focus-tiger.user-ambient.v1` | `UserAmbientLibrary` | 用户上传氛围乐 blobs（非 localStorage；重置须 `clearAllUserAmbientTracks`） |
 | `focus-tiger.locale.v1` | `localePreference` / `i18n.setLocale` | 上次选用的 **ready** 语言；**v1.0.0** ready = `en` / `ja`；draft（含 zh）不写入 |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  

@@ -7,6 +7,11 @@
  * **Rise / 会话结束自动停播**（不清掉存储偏好）；presence 累计随会话清零。
  */
 
+import {
+  isUserAmbientTrackId,
+  getSharedUserAmbientLibrary
+} from './UserAmbientLibrary.js';
+
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
 export const AUDIO_FOCUS_EQUIV_RATIO = 12 / 60;
 
@@ -76,19 +81,30 @@ export function computePresenceBoost(playedSeconds, targetMinutes) {
 
 /**
  * @param {unknown} raw
+ * @param {{ knownUserTrackIds?: Iterable<string> }} [options]
  * @returns {{ enabled: boolean, trackId: string }}
  */
-export function normalizeAmbientPref(raw) {
+export function normalizeAmbientPref(raw, { knownUserTrackIds } = {}) {
   const trackIds = new Set(AMBIENT_TRACKS.map((t) => t.id));
+  const userIds = knownUserTrackIds
+    ? new Set([...knownUserTrackIds].filter(isUserAmbientTrackId))
+    : null;
   // Opt-in：无存储时默认关；有存储则尊重 enabled
   let enabled = false;
   let trackId = DEFAULT_AMBIENT_TRACK_ID;
   if (raw && typeof raw === 'object') {
     if (typeof raw.enabled === 'boolean') enabled = raw.enabled;
-    if (typeof raw.trackId === 'string' && trackIds.has(raw.trackId)) {
-      trackId = raw.trackId;
-    } else if (raw.trackId === AMBIENT_TRACK_OFF) {
-      trackId = AMBIENT_TRACK_OFF;
+    if (typeof raw.trackId === 'string') {
+      if (trackIds.has(raw.trackId)) {
+        trackId = raw.trackId;
+      } else if (raw.trackId === AMBIENT_TRACK_OFF) {
+        trackId = AMBIENT_TRACK_OFF;
+      } else if (isUserAmbientTrackId(raw.trackId)) {
+        // Keep preferred user id when unknown set not provided (boot before list).
+        if (!userIds || userIds.has(raw.trackId)) {
+          trackId = raw.trackId;
+        }
+      }
     }
   }
   return { enabled, trackId };
@@ -133,16 +149,19 @@ export class AmbientSoundscapeController {
    * @param {HTMLAudioElement} [options.audio] 可注入 audio 元素
    * @param {Storage | { getItem?: Function, setItem?: Function }} [options.storage]
    * @param {boolean} [options.mountToDocument] 测试可设为 false
+   * @param {import('./UserAmbientLibrary.js').UserAmbientLibrary} [options.userLibrary]
    */
   constructor({
     now = () => Date.now(),
     audio = null,
     storage = typeof localStorage !== 'undefined' ? localStorage : null,
-    mountToDocument = true
+    mountToDocument = true,
+    userLibrary = null
   } = {}) {
     this._now = now;
     this._storage = storage;
     this._mountToDocument = mountToDocument;
+    this._userLibrary = userLibrary || getSharedUserAmbientLibrary();
     this._volume = 0.45;
     this._audio =
       audio ||
@@ -337,7 +356,7 @@ export class AmbientSoundscapeController {
   }
 
   /**
-   * @param {string} trackId off | known AMBIENT_TRACKS id
+   * @param {string} trackId off | known AMBIENT_TRACKS id | user-*
    * @param {{ persist?: boolean }} [options]
    * @returns {Promise<void>}
    */
@@ -353,8 +372,14 @@ export class AmbientSoundscapeController {
       return;
     }
 
-    const track = AMBIENT_TRACKS.find((t) => t.id === id);
-    if (!track || !this._audio) return;
+    let src = null;
+    const builtIn = AMBIENT_TRACKS.find((t) => t.id === id);
+    if (builtIn) {
+      src = builtIn.src;
+    } else if (isUserAmbientTrackId(id) && this._userLibrary) {
+      src = await this._userLibrary.resolveSrc(id);
+    }
+    if (!src || !this._audio) return;
 
     this._endCreditSegment();
     this._trackId = id;
@@ -365,7 +390,7 @@ export class AmbientSoundscapeController {
     player.muted = false;
     player.loop = true;
     player.volume = this._volume;
-    player.src = track.src;
+    player.src = src;
     if (persist) this._persistPref();
 
     try {
@@ -387,6 +412,23 @@ export class AmbientSoundscapeController {
 
     this._needsGestureUnlock = false;
     this._syncCreditSegment();
+  }
+
+  /**
+   * After deleting a user track that was preferred / playing.
+   * @param {string} removedId
+   */
+  async onUserTrackRemoved(removedId) {
+    if (!isUserAmbientTrackId(removedId)) return;
+    if (this._trackId === removedId) {
+      this._wantEnabled = false;
+      this._stopPlayback({ persist: false });
+    }
+    if (this._preferredTrackId === removedId) {
+      this._preferredTrackId = DEFAULT_AMBIENT_TRACK_ID;
+      this._wantEnabled = false;
+      this._persistPref();
+    }
   }
 
   /** @param {number} volume 0–1 */

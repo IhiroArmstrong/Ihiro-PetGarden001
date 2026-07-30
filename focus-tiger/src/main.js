@@ -1406,7 +1406,11 @@ async function init() {
         clearAllFocusTigerLocalState,
         markDevResetToast
       } = await import('./core/localStateKeys.js');
+      const { clearAllUserAmbientTracks } = await import(
+        './audio/UserAmbientLibrary.js'
+      );
       clearAllFocusTigerLocalState();
+      await clearAllUserAmbientTracks();
       markDevResetToast();
       window.location.reload();
     });
@@ -1431,7 +1435,11 @@ async function init() {
         clearAllFocusTigerLocalState,
         markDevBootIdle
       } = await import('./core/localStateKeys.js');
+      const { clearAllUserAmbientTracks } = await import(
+        './audio/UserAmbientLibrary.js'
+      );
       clearAllFocusTigerLocalState();
+      await clearAllUserAmbientTracks();
       markDevBootIdle();
       window.location.reload();
     });

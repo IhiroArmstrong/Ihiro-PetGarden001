@@ -10,6 +10,10 @@ import {
   AMBIENT_TRACKS,
   resolveAmbientPanelSelectedTrackId
 } from '../audio/AmbientSoundscapeController.js';
+import {
+  getSharedUserAmbientLibrary,
+  mergeAmbientPanelTracks
+} from '../audio/UserAmbientLibrary.js';
 import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
@@ -54,6 +58,13 @@ export class AmbientSoundscapeUI {
     this._blockedTipTimer = null;
     /** Narrow drawer forced the Soundscape panel open while Idle. */
     this._narrowForcedPanel = false;
+
+    /** @type {{ id: string, label: string, addedAt: number }[]} */
+    this._userTracks = [];
+    this._userLibrary =
+      handlers.userLibrary ||
+      controller._userLibrary ||
+      getSharedUserAmbientLibrary();
 
     this.root = document.createElement('div');
     this.root.id = 'ambient-soundscape';
@@ -117,6 +128,39 @@ export class AmbientSoundscapeUI {
     this.trackRow.className = 'ambient-soundscape__tracks';
     this.trackRow.setAttribute('role', 'radiogroup');
 
+    this.uploadHintEl = document.createElement('p');
+    this.uploadHintEl.className = 'ambient-soundscape__upload-hint';
+    this.uploadHintEl.id = 'ambient-upload-local-hint';
+
+    this.uploadErrEl = document.createElement('p');
+    this.uploadErrEl.className = 'ambient-soundscape__upload-err';
+    this.uploadErrEl.id = 'ambient-upload-error';
+    this.uploadErrEl.hidden = true;
+
+    this.uploadRow = document.createElement('div');
+    this.uploadRow.className = 'ambient-soundscape__upload-row';
+
+    this.fileInput = document.createElement('input');
+    this.fileInput.type = 'file';
+    this.fileInput.accept = 'audio/mpeg,audio/mp4,audio/x-m4a,.mp3,.m4a';
+    this.fileInput.id = 'ambient-upload-input';
+    this.fileInput.className = 'ambient-soundscape__file-input';
+    this.fileInput.hidden = true;
+    this.fileInput.addEventListener('change', () => {
+      void this._onUploadPicked();
+    });
+
+    this.uploadBtn = document.createElement('button');
+    this.uploadBtn.type = 'button';
+    this.uploadBtn.className = 'ambient-soundscape__upload-btn';
+    this.uploadBtn.id = 'ambient-upload-btn';
+    this.uploadBtn.addEventListener('click', () => {
+      if (!this._sessionActive && !this._narrowForcedPanel) return;
+      this.uploadErrEl.hidden = true;
+      this.fileInput.click();
+    });
+    this.uploadRow.append(this.uploadBtn, this.fileInput);
+
     this.volumeLabel = document.createElement('label');
     this.volumeLabel.className = 'ambient-soundscape__volume';
     this.volumeInput = document.createElement('input');
@@ -131,7 +175,14 @@ export class AmbientSoundscapeUI {
     });
     this.volumeLabel.appendChild(this.volumeInput);
 
-    this.panel.append(this.titleEl, this.trackRow, this.volumeLabel);
+    this.panel.append(
+      this.titleEl,
+      this.uploadHintEl,
+      this.uploadRow,
+      this.uploadErrEl,
+      this.trackRow,
+      this.volumeLabel
+    );
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
     this.root.append(this.muteBtn, this.focusChrome);
     overlayRoot.appendChild(this.root);
@@ -191,8 +242,47 @@ export class AmbientSoundscapeUI {
   }
 
   async bootDefaultMusic() {
-    // Opt-in：开局不同步自动播放；只刷新钮态
+    // Opt-in：开局不同步自动播放；只刷新钮态 + 用户曲清单
+    await this._refreshUserTracks();
     await this.controller.startPreferredTrack();
+    this._renderPanel();
+  }
+
+  async _refreshUserTracks() {
+    try {
+      this._userTracks = await this._userLibrary.listMeta();
+    } catch {
+      this._userTracks = [];
+    }
+  }
+
+  async _onUploadPicked() {
+    const file = this.fileInput.files?.[0];
+    this.fileInput.value = '';
+    if (!file) return;
+    this.uploadErrEl.hidden = true;
+    const result = await this._userLibrary.addFromFile(file);
+    if (!result.ok) {
+      this.uploadErrEl.textContent = t(result.errorKey);
+      this.uploadErrEl.hidden = false;
+      return;
+    }
+    await this._refreshUserTracks();
+    await this.controller.setTrack(result.track.id);
+    this._renderPanel();
+    this.handlers.onTrackChosen?.();
+  }
+
+  /**
+   * @param {string} id
+   * @param {Event} event
+   */
+  async _onDeleteUserTrack(id, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    await this._userLibrary.remove(id);
+    await this.controller.onUserTrackRemoved(id);
+    await this._refreshUserTracks();
     this._renderPanel();
   }
 
@@ -261,9 +351,11 @@ export class AmbientSoundscapeUI {
     this._narrowForcedPanel = true;
     this._dismissNudge();
     this._expanded = true;
-    this._renderPanel();
-    this.panel.hidden = false;
-    this.handlers.onPanelOpened?.();
+    void this._refreshUserTracks().then(() => {
+      this._renderPanel();
+      this.panel.hidden = false;
+      this.handlers.onPanelOpened?.();
+    });
   }
 
   /** Ensure focus-chrome + panel are positioned on-canvas (narrow / wide / Focusing). */
@@ -373,29 +465,46 @@ export class AmbientSoundscapeUI {
 
   _renderPanel() {
     this.titleEl.textContent = t('AMBIENT_TITLE');
+    this.uploadHintEl.textContent = t('AMBIENT_UPLOAD_LOCAL_HINT');
+    this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
     if (this._nudgeVisible) {
       this.nudgeEl.textContent = t('AMBIENT_DEFAULT_ON_NUDGE');
     }
 
     this.trackRow.replaceChildren();
+    const merged = mergeAmbientPanelTracks(this._userTracks, AMBIENT_TRACKS);
     const options = [
-      { id: AMBIENT_TRACK_OFF, labelKey: 'AMBIENT_TRACK_OFF' },
-      ...AMBIENT_TRACKS.map((tr) => ({
+      { id: AMBIENT_TRACK_OFF, labelKey: 'AMBIENT_TRACK_OFF', kind: 'off' },
+      ...merged.userTracks.map((tr) => ({
         id: tr.id,
-        labelKey: tr.labelKey
+        label: tr.label,
+        kind: 'user'
+      })),
+      ...merged.builtInTracks.map((tr) => ({
+        id: tr.id,
+        labelKey: tr.labelKey,
+        kind: 'builtin'
       }))
     ];
 
     const selectedId = resolveAmbientPanelSelectedTrackId(this.controller);
     for (const opt of options) {
+      const row = document.createElement('div');
+      row.className = 'ambient-soundscape__track-row';
+
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ambient-soundscape__track';
       btn.setAttribute('role', 'radio');
+      btn.dataset.trackId = opt.id;
+      if (opt.kind === 'user') {
+        btn.dataset.userTrack = '1';
+      }
       const selected = opt.id === selectedId;
       btn.setAttribute('aria-checked', selected ? 'true' : 'false');
       if (selected) btn.classList.add('is-selected');
-      btn.textContent = t(opt.labelKey);
+      btn.textContent =
+        opt.kind === 'user' ? opt.label : t(opt.labelKey);
       btn.addEventListener('click', () => {
         if (!this._sessionActive && !this._narrowForcedPanel) return;
         this._dismissNudge();
@@ -404,7 +513,23 @@ export class AmbientSoundscapeUI {
           this.handlers.onTrackChosen?.();
         });
       });
-      this.trackRow.appendChild(btn);
+      row.appendChild(btn);
+
+      if (opt.kind === 'user') {
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'ambient-soundscape__track-delete';
+        del.dataset.deleteTrackId = opt.id;
+        del.setAttribute('aria-label', t('AMBIENT_UPLOAD_DELETE_ARIA'));
+        del.textContent = '×';
+        del.addEventListener('click', (event) => {
+          if (!this._sessionActive && !this._narrowForcedPanel) return;
+          void this._onDeleteUserTrack(opt.id, event);
+        });
+        row.appendChild(del);
+      }
+
+      this.trackRow.appendChild(row);
     }
 
     this.panel.hidden =
@@ -739,8 +864,16 @@ export class AmbientSoundscapeUI {
         display: flex;
         flex-direction: column;
         gap: 6px;
+        max-height: min(42vh, 280px);
+        overflow-y: auto;
+      }
+      .ambient-soundscape__track-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
       .ambient-soundscape__track {
+        flex: 1;
         text-align: left;
         padding: 8px 10px;
         border-radius: 8px;
@@ -753,6 +886,42 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__track.is-selected {
         border-color: rgba(139, 46, 46, 0.4);
         background: rgba(139, 46, 46, 0.1);
+      }
+      .ambient-soundscape__track-delete {
+        flex: 0 0 auto;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        border: 1px solid rgba(139, 115, 85, 0.3);
+        background: rgba(255, 252, 245, 0.95);
+        color: #6a5040;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+      }
+      .ambient-soundscape__upload-hint {
+        margin: 0 0 6px;
+        font-size: 11px;
+        line-height: 1.35;
+        color: rgba(92, 72, 52, 0.72);
+      }
+      .ambient-soundscape__upload-row {
+        margin-bottom: 6px;
+      }
+      .ambient-soundscape__upload-btn {
+        width: 100%;
+        border: 1px dashed rgba(139, 115, 85, 0.4);
+        border-radius: 8px;
+        padding: 8px 10px;
+        background: rgba(255, 252, 245, 0.75);
+        color: #2c1f14;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .ambient-soundscape__upload-err {
+        margin: 0 0 8px;
+        font-size: 11px;
+        color: #8b4a3a;
       }
       .ambient-soundscape__volume {
         display: block;
