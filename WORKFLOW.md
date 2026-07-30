@@ -60,6 +60,25 @@ feature/*        ●        ●
 6. **结束后清理**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。
 
+### 工作树占用检测与 `.ft-session-lock`（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-worktree-occupancy`）。与「并行 worktree」互补：上节要求**物理隔离**；本条要求**同一 worktree 内同一时间只服务一条工作线**，并用锁文件 + 开工检测拦住误用。
+
+1. **锁文件**：每个 worktree **根目录**放 `.ft-session-lock`（已在 `.gitignore`，**禁止** commit）。建议 JSON 字段：`task_id`（任务/分支标识）· `session_label` · `started_at`（ISO）· 可选 `pid` / `agent_note`。
+2. **写前检查（主闸 = Agent 规则）**：在本 worktree 内**写文件**或执行 `git commit` / `checkout` / `stash` / `pull` / `worktree` 变更前，须先读 `.ft-session-lock`：
+   - **不存在** → 创建本任务锁，再工作；
+   - **存在且是本会话的**（`task_id` / `session_label` 一致）→ 继续；
+   - **存在但是别人的** → **立刻停止**，向用户报告锁全文，**不做任何修改**（含禁止「顺手 stash 别人的脏树」）。
+3. **开工额外检查（三条硬规则）**：
+   1. 若 `git status` 有未提交改动，且**不是本会话本轮产生的** → 先停再问用户；禁止静默 `git stash` / `git checkout --` / `git restore` 清掉别人的工作。
+   2. 预计会跑验证或产生 git 写操作的任务，若当前是**主仓通用目录**（非专属 `…-wt-<topic>`）→ 须**主动建议**独立 worktree，不得默认在主仓开干。
+   3. 若 `git stash list` 已有条目且**不是本会话刚创建的** → 只读汇报；**禁止**对非本会话创建的 stash 做 `pop` / `drop` / 再压一层。
+4. **任务结束**：commit 完成或用户明确停止时，**只删除本会话创建的锁**。
+5. **强制清锁（僵锁）**：**禁止** Agent 因「锁看起来过期 / 几小时前 / 看起来没人在用」自动删除**别人的**锁。清锁须用户当回合写出明确授权，且**必须包含**「我确认要强制清除锁」（或 `I confirm force-clearing the lock`）。模糊的「清一下」「把锁删了」**不构成**授权。
+6. **检测脚本**：`cd focus-tiger && npm run check:worktree-occupancy`（只读报告：锁内容、脏树、stash 层数、是否主仓目录）。Agent 开工前应跑；脚本 **exit 0 仅表示报告成功**，发现别人的锁或不明脏树时 exit **2**，由规则强制停手。
+7. **辅助闸（shell，可选后续）**：`beforeShellExecution` 可对 `git checkout|stash|commit|pull|worktree` 查锁并 deny/ask（与现有 destructive / full-e2e 闸同链、只读失败即 deny）。辅助闸**不能**替代主闸（Edit/Write 不经 shell）。**禁止**为实施本条而改动 deny-subagent / gate-full-e2e / gate-destructive-shell 的现有逻辑。
+
+
 ### 长期并存功能分支的同步纪律
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-sibling-branch-sync`）。叙事与事故背景见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) §6.6；规范编号 **N17**。  
