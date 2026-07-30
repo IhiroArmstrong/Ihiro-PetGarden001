@@ -113,6 +113,8 @@ npm run deploy
 
 前端代码**未改**。接入时再定 CORS、鉴权与正式字段；本 README 中的必需字段仅为 stub 校验占位，**等待人工拍板**。
 
+**密钥 / 环境隔离**：见 [`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。客户端禁止硬编码 Secret；Worker secrets 用 `wrangler secret put`；当前 stub **无需** GitHub Actions Secrets。
+
 ### 发布节奏（2026-07-30 拍板）
 
 - **v1.0.0**：纯本地产品；**不接**本 Worker 到前端；核心练习路径不依赖联网。

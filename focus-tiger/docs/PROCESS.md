@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-30（UTC+8）
+**最后更新时间**：2026-07-31（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** workflow 已有 `schedule`（UTC 02:00）+ `workflow_dispatch` + job `timeout-minutes: 120`（在 **`develop`**）；但 GitHub **`schedule` 读默认分支 `main` 上的 YAML**，而 `main` 仍为 **60** → 近几日 nightly 约 60 分钟 **cancelled**（例：[30535254813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30535254813)）。下一步：把 `focus-tiger-e2e-full.yml` 同步进 **`main`**（须你明确授权合 `main`）。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`（客户端禁硬编码 Secret；dev/prod 分文件；`VITE_*` 仅公开配置）。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 en+ja。见审计 §9。
@@ -574,16 +575,28 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
 
-> **背景（2026-07-23 · PR #2 合并门禁拍板）**：本次 `develop`→`main` **临时接受**「本地 `npm run test:smoke` + `npm run test:e2e` 全绿 + CI 仅 `focus-tiger doc-contract check`」。仓库目前**没有**跑完整 smoke / Playwright e2e 的 workflow；合并门槛不应长期依赖人工在本机手跑。
+> **背景（2026-07-23 · PR #2 合并门禁拍板）**：本次 `develop`→`main` **临时接受**「本地 `npm run test:smoke` + `npm run test:e2e` 全绿 + CI 仅 `focus-tiger doc-contract check`」。合并门槛不应长期依赖人工在本机手跑。
 
-- **目标**：另开 PR（建议 `feature/ci-full-smoke-e2e`），在 GitHub Actions 上对 `push`/`pull_request`（至少 `develop` 与指向 `main` 的 PR）自动跑：
-  1. `cd focus-tiger && npm ci`
-  2. `npm run test:smoke`（含 `docs:check`）
-  3. `npm run test:e2e`（Playwright；本地默认自带 Chromium；CI 建议 `PLAYWRIGHT_CHANNEL=chrome` 作系统 Chrome 兜底）
-- **验收**：远端 run 链接可复现绿；失败须能区分业务断言 vs 环境噪声（参考既有 doc-contract 须 `npm ci` 的教训）。
-- **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 全绿」写成序列观感通过。
-- **排期**：**明确后续任务，非无限延期**；建议 **PR #2 合并进 `main` 后的下一个工程 PR** 开工。**相对「本地桌面 APP 打包选型」**：本项为工程护栏，**决策优先级次于**打包选型（可并行推进实现，但争排期时先排打包讨论）。
-- **已部分覆盖（2026-07-30）**：PR→`develop` 的 `test:pr-smoke` 已含逻辑冒烟 + e2e smoke + **`npm run build` 产物检查**（见「发布前安全网」）。本 Backlog 仍指**全量** `test:e2e`，勿与 PR smoke 混淆。
+#### 已落地（2026-07-28 … 2026-07-31 核实）
+
+| 项 | 状态 |
+|---|---|
+| PR→`develop` 轻量冒烟 | ✅ `pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）；Required 已勾；**解放本地 Agent** |
+| 全量 e2e workflow | ✅ `focus-tiger-e2e-full.yml`：`workflow_dispatch` + `schedule` cron `0 2 * * *`（UTC）；job 在 **`develop`** 为 **120** 分钟 + `--workers=1` |
+| 定时任务是否按 120 跑 | ❌ **未生效**：`schedule` 读 **`main` 上的 YAML**，`main` 仍为 **60** → nightly ~60m **cancelled**（非缺 API Key） |
+| Actions Secrets（API Key） | **当前不需要**：workflow **无** `secrets.*`；套件打本地静态壳。v1.1 云 E2E 再配 |
+| 环境/密钥隔离文档 | ✅ `docs/ENV_CONFIG.md` + `.env.example`（client + cloud） |
+
+#### 仍待办
+
+1. **把 `focus-tiger-e2e-full.yml`（120m + workers=1）同步到 `main`**（单独小 PR→`main`，或你授权的 `develop`→`main` 合并）——否则 cron 继续 60m 取消。
+2. 全量套件墙钟 / flaky：即使 120m 生效，仍须能跑完并区分断言失败 vs 导航噪声（与「降低 visibility flaky」互补）。
+3. （可选）是否把全量 e2e 挂到 PR→`main` / 合并门——**另议**；现设计为非 PR 门闩、夜间+手动。
+
+- **验收**：夜间或 dispatch 的远端 run 能跑完（非 cancelled）并给出 pass/flaky/fail；失败可区分业务 vs 环境。
+- **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 绿」写成序列观感通过；不为当前套件虚构 API Key。
+- **排期**：`main` workflow 同步 = **立刻可做**（等你授权合 `main`）。其余工程护栏相对「本地桌面 APP 打包选型」仍次优先。
+- **勿混淆**：本 Backlog 的「全量」≠ PR 的 `test:pr-smoke`。
 
 ### Backlog:发布前安全网（v1.0.0 tag 前）
 
