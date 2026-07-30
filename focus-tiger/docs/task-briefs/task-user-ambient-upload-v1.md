@@ -1,6 +1,6 @@
 # Task Brief · 用户上传氛围乐（v1.0.0 必交付）
 
-> **状态（2026-07-31）**：产品范围已拍板；**实现未开工**。建议分支 `feature/user-ambient-upload` + 独立 worktree。  
+> **状态（2026-07-31）**：产品范围已拍板；**实现已开工**（分支 `feature/user-ambient-upload`）。  
 > **权威口径**：`DESIGN.md`「禅意背景音」§5；排期入口 `PROCESS.md` Backlog「用户上传氛围乐」。
 
 ## 目标
