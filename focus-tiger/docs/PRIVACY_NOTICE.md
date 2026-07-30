@@ -11,6 +11,7 @@
 ## What stays on your device (typical)
 
 - Preferences (e.g. reminder settings, hint “seen” flags, locale preference)
+- Optional ambient music **you upload** (MP3/M4A) — stored only in this browser’s IndexedDB; not sent to a server; removable from the Soundscape panel or via full local reset
 - Recent session / reflection snippets the product needs to show continuity (kept limited; not mined for psychology)
 
 Exact keys and retention evolve with features; we only keep what the current feature needs.
