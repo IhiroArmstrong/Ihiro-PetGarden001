@@ -55,14 +55,14 @@ export function isHonestyUiBusy(phase) {
  * }} [narrowIdleShell]
  * @property {{
  *   setIdle: (v: boolean) => void,
- *   setSuppressed: (v: boolean) => void
+ *   setSuppressed: (v: boolean, opts?: { keepQuickStart?: boolean }) => void
  * }} [wideIdleMoreMenu]
  * @property {{
  *   applyShellProjection: (p: {
  *     narrow: { idle: boolean, suppressed: boolean, keepQuickStart?: boolean },
- *     wide: { idle: boolean, suppressed: boolean }
+ *     wide: { idle: boolean, suppressed: boolean, keepQuickStart?: boolean }
  *   }) => void,
- *   wide?: { setSuppressed: (v: boolean) => void }
+ *   wide?: { setSuppressed: (v: boolean, opts?: { keepQuickStart?: boolean }) => void }
  * }} [idleChrome]
  * @property {{ state: string }} stateManager
  * @property {{
@@ -149,12 +149,16 @@ export function createSessionChromeSync(deps) {
       arrivalOpen: Boolean(getArrivalPractice()?.isOpen?.()),
       bridgeVisible
     });
-    if (idleChrome?.applyShellProjection) {
-      // Bridge-only path: keep full projection via facade when available,
-      // but only wide suppress must change here (narrow ActionBar stays).
-      idleChrome.wide?.setSuppressed?.(wide.suppressed);
+    // Must pass keepQuickStart: a bare setSuppressed(true) clears Arrival's
+    // "⚡ only" latch and the Honesty home ball snaps back mid-Arrival.
+    if (idleChrome?.wide?.setSuppressed) {
+      idleChrome.wide.setSuppressed(wide.suppressed, {
+        keepQuickStart: Boolean(wide.keepQuickStart)
+      });
     } else {
-      wideIdleMoreMenu.setSuppressed(wide.suppressed);
+      wideIdleMoreMenu.setSuppressed(wide.suppressed, {
+        keepQuickStart: Boolean(wide.keepQuickStart)
+      });
     }
   }
 
@@ -197,7 +201,9 @@ export function createSessionChromeSync(deps) {
         keepQuickStart: Boolean(narrow.keepQuickStart)
       });
       wideIdleMoreMenu.setIdle(wide.idle);
-      wideIdleMoreMenu.setSuppressed(wide.suppressed);
+      wideIdleMoreMenu.setSuppressed(wide.suppressed, {
+        keepQuickStart: Boolean(wide.keepQuickStart)
+      });
     }
     syncInAppReminderBanner();
   }

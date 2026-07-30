@@ -30,7 +30,7 @@ export class IdleChromeFacade {
    *   wide: {
    *     setHandlers: (h: object) => void,
    *     setIdle: (v: boolean) => void,
-   *     setSuppressed: (v: boolean) => void,
+   *     setSuppressed: (v: boolean, opts?: object) => void,
    *     releaseInactivePresentation?: () => void,
    *     destroy?: () => void
    *   },
@@ -90,6 +90,7 @@ export class IdleChromeFacade {
       onReminder: h.onReminder,
       onLanguage: h.onLanguage,
       onHonesty: h.onHonesty,
+      onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
       onMenuChange: h.onMenuChange,
       isHintUnread: h.isHintUnread
@@ -99,7 +100,7 @@ export class IdleChromeFacade {
   /**
    * @param {{
    *   narrow: { idle: boolean, suppressed: boolean, keepQuickStart?: boolean },
-   *   wide: { idle: boolean, suppressed: boolean }
+   *   wide: { idle: boolean, suppressed: boolean, keepQuickStart?: boolean }
    * }} projection
    * @returns {void}
    */
@@ -110,7 +111,9 @@ export class IdleChromeFacade {
       keepQuickStart: Boolean(narrow.keepQuickStart)
     });
     this.wide.setIdle(wide.idle);
-    this.wide.setSuppressed(wide.suppressed);
+    this.wide.setSuppressed(wide.suppressed, {
+      keepQuickStart: Boolean(wide.keepQuickStart)
+    });
   }
 
   /**

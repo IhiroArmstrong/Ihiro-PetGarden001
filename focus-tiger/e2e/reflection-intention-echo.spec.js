@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
   chooseReadingAndAwaitFocus,
+  clickSitEntry,
   expectFocusSessionActive,
   openFreshProductShell,
   skipArrivalBegin
@@ -31,7 +32,7 @@ test('Quick Start then Rise does not show intention echo on Reflection', async (
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#btn-focus').click();
+  await clickSitEntry(page);
   await skipArrivalBegin(page);
   await expectFocusSessionActive(page);
 

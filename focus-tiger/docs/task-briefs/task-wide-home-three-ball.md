@@ -1,10 +1,10 @@
 # Task Brief · 宽屏首页三球统一（窄屏 ActionBar 三球迁到宽屏首页）
 
 **日期**：2026-07-30  
-**状态**：**产品已拍板（2026-07-31）** · 待开工实现（本轮只锁口径，**不**改运行时）  
+**状态**：**实现中**（`feature/wide-home-three-ball`）· 产品已拍板 2026-07-31  
 **角色**：UI Engineer  
 **权威**：`RESPONSIVE_LAYOUT.md` · `SHARED_RESOURCES.md` Idle chrome · Task 3 `task-responsive-single-chrome-line.md` · 用户 2026-07-30 书面 + **2026-07-31 同意「宽屏首页也用三球」**  
-**依赖**：`fix/onboarding-remedy-contract-and-wide-idle-menu`（PR #43）已合；基线 `origin/develop` tip（含 PR #48）。
+**依赖**：`fix/onboarding-remedy-contract-and-wide-idle-menu`（PR #43）已合；基线 `origin/develop` tip（含 PR #49）。
 
 ---
 
