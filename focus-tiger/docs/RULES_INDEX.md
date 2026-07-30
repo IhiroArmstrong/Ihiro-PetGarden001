@@ -110,6 +110,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|
 | `PRODUCT_POSITIONING.md` | 品牌与产品战略 |
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 |
+| `ENV_CONFIG.md` | 环境配置与密钥隔离（客户端禁 Secret；dev/prod；CI Secrets 时机） |
 | `PRODUCT_MOMENTS.md` | Five Moments |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
@@ -136,6 +137,9 @@ cd focus-tiger && npm run rules:doc-sync
 | 本机制 | `rules-authority-doc-check.js` ← registry |
 | 文档-代码 | `gate` / `hints` / `state` 三类 `*-doc-check.js` |
 | CI | `.github/workflows/focus-tiger-doc-contract-check.yml` |
+| PR 轻量冒烟 | `.github/workflows/pr-smoke.yml`（Required on `develop`） |
+| 全量 e2e（夜间+手动） | `.github/workflows/focus-tiger-e2e-full.yml`（**`schedule` 读 `main` YAML**；见 `ENV_CONFIG.md` §3） |
+| 环境与密钥 | `docs/ENV_CONFIG.md` |
 
 ---
 
