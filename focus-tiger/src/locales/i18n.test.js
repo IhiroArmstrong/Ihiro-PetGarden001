@@ -1,6 +1,6 @@
 /**
  * i18n unit · Task A — key parity, setLocale notify, fallback, ready-only.
- * v1.0.0 ship: only `en` is ready (English-only claim); zh stays loaded as draft.
+ * v1.0.0 ship: `en` + `ja` ready; zh stays loaded as draft (Chinese deferred).
  */
 
 import test from 'node:test';
@@ -39,16 +39,18 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('v1.0.0 ready set is English only', () => {
-  assert.deepEqual(listReadyLocaleIds(), ['en']);
+test('v1.0.0 ready set is English + Japanese', () => {
+  assert.deepEqual(listReadyLocaleIds(), ['en', 'ja']);
+  assert.equal(isReadyLocale('ja'), true);
   assert.equal(isReadyLocale('zh'), false);
-  assert.equal(shouldOfferLanguagePicker(), false);
+  assert.equal(shouldOfferLanguagePicker(), true);
 });
 
 test('ready locales have identical dictionary key sets', () => {
   const loaded = listLoadedDictionaryKeys();
   const ready = listReadyLocaleIds();
   assert.ok(ready.includes('en'));
+  assert.ok(ready.includes('ja'));
   for (const id of ready) {
     assert.ok(loaded[id], `missing loaded dictionary for ready locale ${id}`);
   }
@@ -77,6 +79,7 @@ test('picker lists only ready locales; draft zh/es hidden', () => {
   assert.ok(!picker.some((p) => p.id === 'zh'));
   assert.ok(!picker.some((p) => p.id === 'es'));
   assert.equal(picker.find((p) => p.id === 'en')?.nativeLabel, 'English');
+  assert.equal(picker.find((p) => p.id === 'ja')?.nativeLabel, '日本語');
 });
 
 test('draft locales are not ready and normalize rejects them', () => {
@@ -85,6 +88,7 @@ test('draft locales are not ready and normalize rejects them', () => {
   assert.equal(normalizeLocalePreference('es'), null);
   assert.equal(normalizeLocalePreference('zh'), null);
   assert.equal(normalizeLocalePreference('en'), 'en');
+  assert.equal(normalizeLocalePreference('ja'), 'ja');
 });
 
 test('setLocale notifies listeners and persists preference', () => {
@@ -94,23 +98,32 @@ test('setLocale notifies listeners and persists preference', () => {
 
   const seen = [];
   const unsub = onLocaleChange((locale) => seen.push(locale));
-  // Only en is ready — re-applying en still persists
+  setLocale('ja', { persist: true, storage });
+  assert.equal(getLocale(), 'ja');
+  assert.deepEqual(seen, ['ja']);
+  assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'ja');
+  assert.equal(t('BTN_FOCUS_START'), 'Yinと坐る');
+
   setLocale('en', { persist: true, storage });
   assert.equal(getLocale(), 'en');
-  assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'en');
   assert.equal(t('BTN_FOCUS_START'), 'Sit with Yin');
-  assert.deepEqual(seen, []);
   unsub();
 });
 
 test('setLocale ignores unknown / draft locales (incl. zh while draft)', () => {
   const storage = memoryStorage({ [LOCALE_PREFERENCE_STORAGE_KEY]: 'en' });
   bootLocaleFromPreference(storage);
-  setLocale('ja', { persist: true, storage });
+  setLocale('de', { persist: true, storage });
   assert.equal(getLocale(), 'en');
   setLocale('zh', { persist: true, storage });
   assert.equal(getLocale(), 'en');
   assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'en');
+});
+
+test('bootLocaleFromPreference restores stored ready locale (ja)', () => {
+  const storage = memoryStorage({ [LOCALE_PREFERENCE_STORAGE_KEY]: 'ja' });
+  assert.equal(bootLocaleFromPreference(storage), 'ja');
+  assert.equal(getLocale(), 'ja');
 });
 
 test('bootLocaleFromPreference ignores stored draft locale', () => {
@@ -123,6 +136,8 @@ test('read/write locale preference round-trip (ready only)', () => {
   const storage = memoryStorage();
   assert.equal(writeLocalePreference('en', storage), true);
   assert.equal(readLocalePreference(storage), 'en');
+  assert.equal(writeLocalePreference('ja', storage), true);
+  assert.equal(readLocalePreference(storage), 'ja');
   assert.equal(writeLocalePreference('zh', storage), false);
   assert.equal(writeLocalePreference('es', storage), false);
 });
