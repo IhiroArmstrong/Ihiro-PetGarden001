@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **用户上传氛围乐 · 正式重开仅 Backlog（2026-07-31）**：推翻 DESIGN「不做用户上传」；多首允许、清单置顶用户曲、可删自传。见 Backlog「用户上传氛围乐」；**未立项实现**。
+- **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传；不做云/EQ/在线库/拖拽）。Brief `task-user-ambient-upload-v1.md`；**实现未开工**（建议 `feature/user-ambient-upload` + 独立 worktree）。
 - **宽屏首页三球 · 产品拍板（2026-07-31）**：用户同意宽屏 Idle 首页亦用窄屏同序三球（代替 Sit+⚡ pill）；⋯ 仍为次要。Brief `task-wide-home-three-ball.md` 已锁口径；**实现未开工**（建议 `feature/wide-home-three-ball` + 独立 worktree）。PR #48 TEST_TRACKER 移植已合。
 - **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** workflow 已有 `schedule`（UTC 02:00）+ `workflow_dispatch` + job `timeout-minutes: 120`（在 **`develop`**）；但 GitHub **`schedule` 读默认分支 `main` 上的 YAML**，而 `main` 仍为 **60** → 近几日 nightly 约 60 分钟 **cancelled**（例：[30535254813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30535254813)）。下一步：把 `focus-tiger-e2e-full.yml` 同步进 **`main`**（须你明确授权合 `main`）。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`（客户端禁硬编码 Secret；dev/prod 分文件；`VITE_*` 仅公开配置）。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
@@ -257,6 +257,7 @@
 
 **下一步计划**：
 
+- **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31 升格）**：Brief `task-user-ambient-upload-v1.md`；建议 `feature/user-ambient-upload` + worktree；实现含 IDB、面板上传/删除、unit+e2e。不挡核心坐禅，但**冻结前须交付**。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
 - **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。「高于 CI 细节」= 与 CI 工程 Backlog **争排期时先开本决策**（非等 CI 做完）。见 Backlog「本地桌面 APP 打包选型」。
 - **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
@@ -277,6 +278,7 @@
 
 - **语义化版本与稳定发布点（2026-07-30 已拍板）**：SemVer；首稳 `v1.0.0`；稳定版 = `main` annotated tag；开发阶段不切 `release/*`。见 `WORKFLOW.md` / `RULES_INDEX` → `git-semver-release`（非开放项，留此一行防重复开议题）。
 - **v1.0 纯本地 / v1.1 云端（2026-07-30 已拍板）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网与云端关键算法，优先保障可离线完整体验；**v1.1** 快速跟进云端算法。代码保留云端可扩展性（保留 `cloud/` 骨架与前后端解耦；**禁止**在 v1.0 把核心门闩绑死在必须成功的云请求上）。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
+- **用户上传氛围乐（2026-07-31 已拍板）**：**v1.0.0 必交付**；砍法与 Brief 见上「最近拍板」/ Backlog；**实现未开工**（非开放产品决策，留此防重复开议题）。
 - **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。
 - **「?」朱砂红点用途（2026-07-22）**：用户书面——红点应「用于系统里面的通知，或者 alert 之类的」。现实现仍挂 onboarding「?」未读提示。待拍板：改挂应用内提醒/通知，还是保留引导未读角标。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
@@ -287,6 +289,8 @@
 - **EyeTracking**：已正式放弃（2026-07-19），原因见 `CORE_LOOP.md`；勿再开返工任务
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
+
+**最近拍板（2026-07-31）**：用户上传氛围乐 = **v1.0.0 必交付**；砍法 mp3/m4a + 合计 ≤64MiB 且 ≤10 首 + 单文件 ≤20MiB；用户曲整段在内置之上且**最近在上**；可删自传；不做云/EQ/在线库/拖拽。Brief `task-user-ambient-upload-v1.md`。
 
 **最近拍板（2026-07-30）**：v1.0.0 = 纯本地小发布；v1.1 = 云端算法跟进；代码保留云端扩展点、v1.0 不绑死云请求；打包壳选型开会时机 = 冻结前约 1 周或你点名要桌面包时。
 
@@ -530,21 +534,22 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 `DESIGN.md`「老虎的名字」保留用户可自定义改名设想（沿用 v4.0 命名交互逻辑）。**当前阶段不开发**；默认显示固定为正式名「阿寅 / Yin」（i18n `CHARACTER_NAME`）。排期前须另开 Task，明确存储、校验与观察式文案边界。
 
-### Backlog:用户上传氛围乐（多首 · 置顶用户曲 · 可删自传）
+### Backlog:用户上传氛围乐（v1.0.0 必交付 · 多首 · 最近在上 · 可删自传）
 
-> **2026-07-31 正式重开**：推翻 `DESIGN.md` 原「禅意背景音 · MVP 明确不做 → 不做用户上传音乐」。权威产品口径已改写于 `DESIGN.md`「禅意背景音」§5；**本条仅 Backlog，当前阶段不开发**。
+> **2026-07-31**：正式重开后**升格为 v1.0.0 范围内必交付**（不再是「仅 Backlog / 可不做」）。权威：`DESIGN.md`「禅意背景音」§5；实现 Brief：`docs/task-briefs/task-user-ambient-upload-v1.md`。**实现尚未开工**。
 
-**意向（已拍板）**：
+**已拍板砍法**：
 
-- 用户可上传**多首**自己喜欢的背景氛围乐（不限单首）；
-- 上传曲进入 Ambient Soundscape 清单，并排在**内置曲之前**（用户曲彼此排序：上传顺序 vs 最近优先 —— 开 Task 时拍板）；
-- 用户**只可删除自己上传的曲**；内置曲不可删。
-
-**排期前须另开 Task 明确**（未拍板）：本机存储方案（建议 IndexedDB + Object URL，勿塞超大 base64 进 localStorage）、格式白名单（如 `audio/mpeg` / `audio/mp4` / `audio/wav`）、单曲与总容量上限、刷新后可播、Safari 自动播放/手势解锁与既有 opt-in 口径、版权/「仅本地」提示文案、与 `AMBIENT_TRACKS` / `normalizeAmbientPref` / Rise 停播的回归面。
+- 多首允许；用户曲**整段**在内置曲之上；用户曲彼此 **最近在上**；
+- 仅可删自传；格式仅 **mp3 / m4a**；
+- 容量：合计 ≤ **64 MiB** 且最多 **10** 首；单文件 ≤ **20 MiB**；
+- 存储：IndexedDB + Object URL；刷新可播；重置须清用户曲；
+- **不做**：云同步、均衡器、在线曲库、复杂排序拖拽；
+- 测试：单测锁 pref + 清单合并；e2e fixture 上传→置顶→删除→刷新仍在。
 
 - **复杂度评级**：中（存储 + 清单 UI + 删除 + 偏好 trackId 兼容；不碰情绪主线）
 - **价值定位**：强个性化陪伴；与「内置曲扩充」互补
-- **排期**：待你点名开 Task；不挡 v1.0 主线除非你要求提前
+- **排期**：**v1.0.0 功能冻结前须交付**；建议 `feature/user-ambient-upload` + 独立 worktree；你点名「开工上传氛围乐」即可开干
 
 ### Backlog:节奏敲击正念小游戏（「数字木鱼」）
 
