@@ -274,6 +274,43 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-worktree-occupancy',
+    title: '工作树占用检测与 `.ft-session-lock`（一树一线）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '工作树占用检测与 `.ft-session-lock`',
+    ssotMustContain: [
+      /\.ft-session-lock/,
+      /我确认要强制清除锁/,
+      /check:worktree-occupancy/,
+      /禁止.*stash pop|禁止.*对非本会话创建的 stash/
+    ],
+    topicSignals: [
+      /工作树占用/,
+      /\.ft-session-lock/,
+      /check:worktree-occupancy/,
+      /git-worktree-occupancy/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /写前检查（主闸/,
+      /强制清锁（僵锁）/,
+      /三条硬规则/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'auto-clear-stale-lock',
+        pattern: /(?:自动|自行)(?:清除|删除|清掉).*(?:过期|僵|残留).*锁|锁.*(?:过期|几小时前).*(?:自动|自行)(?:清|删)/,
+        note: '禁止按时间戳自动清别人的占用锁；须用户明确「我确认要强制清除锁」'
+      },
+      {
+        id: 'silent-stash-others',
+        pattern: /(?:可以|允许|应当)(?:静默|直接)\s*(?:`?git\s*)?stash(?:\s+push)?.*(?:别人|其他会话|不明).*改动/,
+        note: '禁止静默 stash 别人的未提交改动'
+      }
+    ]
+  },
+  {
     id: 'regression-gate',
     title: '交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…）',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',

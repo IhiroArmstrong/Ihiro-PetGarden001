@@ -50,6 +50,13 @@ const NARROW_PARKED_ANCHOR_RE =
 /** Click hints that paint mint on a host control (⋯ rows / note) — no floating badge. */
 const HOST_MINT_HINT_IDS = new Set(['ambient-soundscape']);
 
+/**
+ * Markers standing in for chrome hidden inside ⋯ / the drawer. They describe what
+ * is *not* on screen, so they stay folded behind the chip even though their own
+ * anchor (⋯ / grabber) is visible.
+ */
+const FOLDED_MENU_HINT_IDS = new Set(['wide-more-menu', 'narrow-drawer-menu']);
+
 function resolveAnchorEl(selectorList) {
   const widePark = document.body.classList.contains('ft-wide-park-secondary');
   const wideMenuOpen = document.body.classList.contains('ft-wide-more-open');
@@ -497,9 +504,46 @@ export class OnboardingHintsUI {
     const mute = document.querySelector('.ambient-soundscape__mute');
     if (mute) mute.classList.toggle('has-hint-mint', show);
     syncSecondaryMenuHintDot(mute, show);
-    syncSecondaryMenuHintDot(
-      document.getElementById('ft-narrow-mute-btn'),
-      show
+    const narrowMute = document.getElementById('ft-narrow-mute-btn');
+    syncSecondaryMenuHintDot(narrowMute, show);
+    this._bindHostMintHover(mute);
+    this._bindHostMintHover(narrowMute);
+  }
+
+  /**
+   * Desktop hover preview for the mint note dot. These hosts carry the dot
+   * themselves instead of a floating badge, so the badge's own pointer handlers
+   * never reach them — without this, hovering the note shows nothing.
+   * @param {Element | null} host
+   */
+  _bindHostMintHover(host) {
+    const el = /** @type {HTMLElement | null} */ (host);
+    if (!el || el.dataset.ftMintHoverBound === '1') return;
+    el.dataset.ftMintHoverBound = '1';
+    const hintId = 'ambient-soundscape';
+
+    el.addEventListener('pointerenter', () => {
+      if (!canHoverPreview()) return;
+      if (this.store.isDone(hintId)) return;
+      if (this._remedyIds.size > 0) return;
+      if (this._isSoundscapePanelOpen()) return;
+      this._expandClickHint(hintId);
+    });
+    el.addEventListener('pointerleave', (event) => {
+      if (!canHoverPreview()) return;
+      const related = /** @type {Node | null} */ (event.relatedTarget);
+      const bubble = this._bubbles.get(hintId);
+      if (related && bubble?.contains(related)) return;
+      this._collapseClickHint(hintId, { acknowledgeSimple: true });
+    });
+  }
+
+  /** @returns {boolean} */
+  _isSoundscapePanelOpen() {
+    const panel = document.querySelector('.ambient-soundscape__panel');
+    return Boolean(
+      panel && !(/** @type {HTMLElement} */ (panel).hidden) &&
+        panel.getClientRects().length > 0
     );
   }
 
@@ -524,16 +568,53 @@ export class OnboardingHintsUI {
     this._syncBadgeChrome(hintId);
   }
 
-  /** 补救：情境主条 +「还有 N 条」芯片；点芯片逐条展开（同时最多主条 + 1）。用途简介卡仍同出。 */
+  /**
+   * Does this hint point at a control the user can actually see right now?
+   * Checks the literal anchors, not the ⋯ / drawer remap, so parked chrome stays
+   * folded instead of masquerading as on-screen.
+   * @param {string} hintId
+   * @returns {boolean}
+   */
+  _hasOnScreenAnchor(hintId) {
+    if (FOLDED_MENU_HINT_IDS.has(hintId)) return false;
+    const selectors = String(HINT_ANCHORS[hintId]?.selector || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    for (const sel of selectors) {
+      let el = null;
+      try {
+        el = document.querySelector(sel);
+      } catch {
+        el = null;
+      }
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      if (r.bottom <= 0 || r.right <= 0) continue;
+      if (r.top >= window.innerHeight || r.left >= window.innerWidth) continue;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * 补救契约：点「?」即出**本页此刻可见**的全部功能 hints（主条 + 可见锚点各一条）；
+   * 只有藏在 ⋯ / 抽屉里的 chrome 才折进「还有 N 条」芯片，逐条展开。用途简介卡仍同出。
+   */
   showRemedy() {
     const scene = this.getScene() || {};
     const primary = resolvePrimaryRemedyHintId(scene);
     const catalog = resolveRemedyCatalogHintIds(scene);
-    this._catalogPending = catalog;
+    const immediate = catalog.filter(
+      (id) => id !== primary && this._hasOnScreenAnchor(id)
+    );
+    const folded = catalog.filter((id) => !immediate.includes(id));
+    this._catalogPending = folded;
     this._remedyPrimaryId = primary;
     this._catalogShownId = null;
 
-    const nextRemedy = new Set([primary]);
+    const nextRemedy = new Set([primary, ...immediate]);
 
     for (const id of [...this._remedyIds]) {
       if (!nextRemedy.has(id) && id !== 'help-remedy') this.hideBubble(id);
@@ -545,8 +626,9 @@ export class OnboardingHintsUI {
     this._clickExpandedIds.clear();
 
     this._paint(primary, { remedy: true });
-    this._syncCatalogChip(catalog.length, {
-      oneShot: catalog.length === 1 && catalog[0] === 'narrow-drawer-menu'
+    for (const id of immediate) this._paint(id, { remedy: true });
+    this._syncCatalogChip(folded.length, {
+      oneShot: folded.length === 1 && FOLDED_MENU_HINT_IDS.has(folded[0])
     });
     this._resolveRemedyBubbleLayout();
     this._showPurposeCard();
@@ -638,7 +720,7 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 展开补救目录：一次只画下一条（替换上一条目录 tip，保留主条）。
+   * 展开补救目录：一次只画下一条（替换上一条目录 tip，保留主条与可见锚点条）。
    * `narrow-drawer-menu` 为一次性：展开后清空目录、关掉芯片（无 3 more / 2 more）。
    */
   expandRemedyCatalog() {

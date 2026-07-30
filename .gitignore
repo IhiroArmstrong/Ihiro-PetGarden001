@@ -43,3 +43,6 @@ focus-tiger/art-reference/models/sources/*
 
 # Local scratch notes at repo root (authoritative text belongs under focus-tiger/docs/)
 /*.rtf
+
+# Worktree session occupancy lock (Agent; never commit)
+.ft-session-lock
