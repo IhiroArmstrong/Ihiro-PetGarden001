@@ -65,8 +65,8 @@
 **近期落地（待人工测试）**：
 
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
-- **i18n v1.0.0 English only（2026-07-30）**：对外不声称中文/多语言；工程保留可点切语 + 六语槽；仅 `en` ready，Language 菜单隐藏；zh 字典 staged。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
-- **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 English only。见审计 §9。
+- **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
+- **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 en+ja。见审计 §9。
 - **i18n「审完再露」拍板（2026-07-30）**：未 `ready` **不进**选择器、不发版声称；拒机翻先上。
 - **扩 smoke 已落地（2026-07-30）**：`test:smoke` = `run-src-unit-tests.js` + `docs:check`（A+A′；**319** pass · ~343ms；不建 `test:regression`；Node 20 CI 不用带引号 glob）。见 `COVERAGE_GAP_AUDIT.md` §7。
 - **扩 smoke 分类 + Honesty 发布口径（2026-07-30）**：审计 §7–§8——unit\* 均可原样并入 smoke；Honesty 真实链**可用、不挡 v1**。见 `COVERAGE_GAP_AUDIT.md`。
@@ -169,7 +169,7 @@
 - `PRINCIPLES.md` 已新增「路径必须使用英文 ASCII」硬性规则：未来新增文件/目录统一采用小写 `kebab-case`，用户素材与压缩包须先按语义重命名再入库；always-applied 项目规则已同步。现存路径审计未发现中文、空格、括号或省略号，但严格 kebab-case 审计发现 281 个历史遗留路径，暂仅记录、不在本 Task 重命名
 - 产品定位文档 `PRODUCT_POSITIONING.md` 已纳入项目：确立正念伙伴（非传统电子宠物）、regular practice at your own pace、宁静型游戏化、三级完成反馈与只增不减的共同经历/纪念奖励；产品语义层级高于 `DESIGN.md`
 - `.cursor/rules/focus-tiger-docs.mdc`：项目级规则 `alwaysApply`，权威文档摘要兜底
-- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`zh.json` / `en.json` 均已填充；**v1.0.0 对外 English only**（仅 en ready；切语 UI 架构保留，后续语种审完再露）
+- 多语言骨架：`src/locales/i18n.js`（`t` / `tPool`）；`en` / `ja` ready，`zh` draft staged；**v1.0.0 对外 English + Japanese**（可点切语；中文延后）
 - 角色分工写入 `PROCESS.md`（Architect / Three.js / Gameplay / UI / QA）
 - Git 半自动同步护栏：`PROCESS.md`「Git 同步节奏」、`./scripts/git-sync-safe.sh`；Agent `stop` 的 macOS 系统通知钩子已于 **2026-07-21 关闭**（脚本仍保留于 `.cursor/hooks/remind-git-sync.sh`，hooks.json 的 `stop` 为空；**不**自动 push）
 - `wave-hello` 挥手序列已替换为新服装正式版（19 帧，`frame_001.png` ～ `frame_019.png`）；旧深红袈裟 14 帧素材已下线移除；`SpriteSequencePlayer` 对接与 `playEmotion('welcomeBack')` 接线保持不变（分层路径规范见 `ARCHITECTURE.md`）

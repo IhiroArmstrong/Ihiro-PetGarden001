@@ -39,7 +39,7 @@ Focus Tiger：一只陪伴你练习专注与觉察的小老虎。
 
 > Focus Tiger is a mindful digital companion that helps people cultivate focus, presence, and flow through regular practice, at their own pace.
 
-对外英文以此为默认表达。**v1.0.0 发版对外定位为 English only**（不声称支持中文/多语言）；中文等语种字典与切语架构可保留在工程内，待审校并决定声称后再露出。
+对外英文为默认表达。**v1.0.0 发版对外定位为 English + Japanese**（可点切换）；中文等语种字典可保留在工程内（draft），待审校并决定声称后再露出。
 
 ---
 

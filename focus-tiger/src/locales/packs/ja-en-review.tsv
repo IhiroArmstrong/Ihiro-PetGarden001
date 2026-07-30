@@ -1,0 +1,175 @@
+key	en	ja
+APP_TITLE	Focus Tiger	Focus Tiger
+CHARACTER_NAME	Yin	Yin
+LOADING	Loading…	読み込み中…
+BTN_FOCUS_START	Sit with Yin	Yinと坐る
+BTN_FOCUS_STOP	Rise	立つ
+AMBIENT_TITLE	Soundscape	サウンドスケープ
+AMBIENT_FAB_LABEL	Sound	音
+AMBIENT_MUSIC_ON	Turn music on	音楽をオンにする
+AMBIENT_MUSIC_OFF	Turn music off	音楽をオフにする
+AMBIENT_MUSIC_ON_ARIA	Turn background music on	背景音楽をオンにする
+AMBIENT_MUSIC_OFF_ARIA	Turn background music off	背景音楽をオフにする
+AMBIENT_TRACKS_LABEL	Tracks	トラック
+AMBIENT_TRACKS_ARIA	Choose ambient track	アンビエントトラックを選ぶ
+AMBIENT_TOGGLE_ARIA	Open ambient soundscape	アンビエントサウンドを開く
+NARROW_SHEET_TITLE	Sit options	坐のオプション
+NARROW_SHEET_CLOSE	Close	閉じる
+NARROW_SHEET_SWIPE_HINT	Swipe up for options	上にスワイプでオプション
+WIDE_MORE_ARIA	More sit options	その他の坐オプション
+AMBIENT_NUDGE	Optional: a quiet soundscape can keep you company.	任意：静かな音が、そばにいてくれます。
+AMBIENT_DEFAULT_ON_NUDGE	Tap the note anytime to play quiet music.	音符をタップすると、いつでも静かな音楽を聴けます。
+AMBIENT_REQUIRES_FOCUS	Start a companion focus mode first — then Sound can open.	先に同伴フォーカスを始めてから、音を開けます。
+AMBIENT_TRACK_OFF	Off	オフ
+AMBIENT_TRACK_SINGING_BOWL	Mer-Ka-Ba	Mer-Ka-Ba
+AMBIENT_TRACK_RAIN	Meditation Impromptu	Meditation Impromptu
+AMBIENT_TRACK_DREAMLAND	Dreamland	Dreamland
+AMBIENT_TRACK_INVISIBLE_BEAUTY	Invisible Beauty	Invisible Beauty
+AMBIENT_TRACK_KISS_THE_SKY	Kiss the Sky	Kiss the Sky
+HUD_LABEL_STATE	Status	状態
+HUD_LABEL_LEVEL	Focus	集中
+HUD_LABEL_TIME	Time	時間
+HUD_ARIA_LABEL	Session presence — gold ring; hover for focus percent	セッションの気配 — 金の輪；ホバーで集中の割合
+HUD_PROGRESS_SHARED_SITTING	Today's shared sitting	きょう、いっしょに坐った時間
+HUD_STREAK_HOVER	Recent days you've sat together	最近、いっしょに坐った日
+STATE_IDLE	Calm	穏やか
+STATE_FOCUSING	Focusing	集中中
+STATE_CELEBRATE	Celebrating	お祝い
+STATE_DORMANT	Asleep	眠り
+MINDFUL_FOCUS_MILESTONE_1	Twenty minutes have passed, one breath at a time.	二十分が、一息ずつ過ぎました。
+MINDFUL_FOCUS_MILESTONE_2	This stretch of quiet has been noticed.	この静けさのあいだが、気づかれました。
+MINDFUL_FOCUS_MILESTONE_3	Attention has stayed here for a while.	注意が、しばらくここに留まっています。
+MINDFUL_FOCUS_MILESTONE_4	Another breath arrives in this quiet moment.	また一息が、この静かな瞬間に届きます。
+STRETCH_REMINDER_1	The body has been still for a while. A little movement is welcome.	からだはしばらく静かでした。少し動いてもよいです。
+STRETCH_REMINDER_2	Two quiet hours have passed. There is room to stretch.	静かな二時間が過ぎました。伸びをする余地があります。
+STRETCH_REMINDER_3	A long stretch of stillness has passed. The body can move when ready.	長い静けさが過ぎました。準備ができたら、からだを動かせます。
+REFOCUS_ACKNOWLEDGE_1	Attention wandered for a while. Now it has returned here.	注意はしばらくさまよっていました。いま、ここに戻っています。
+REFOCUS_ACKNOWLEDGE_2	That moment has passed. Attention is back with this breath.	その瞬間は過ぎました。注意は、この息とともにあります。
+REFOCUS_ACKNOWLEDGE_3	There was a moment elsewhere. Now there is this moment of return.	よそにいた瞬間がありました。いまは、戻ってきたこの瞬間です。
+REFLECTION_Q1	What did you notice today?	きょう、何に気づきましたか？
+REFLECTION_Q2	What emotion visited you?	どんな気持ちが訪れましたか？
+REFLECTION_Q3	What would you like to return to next?	次に、どこへ戻りたいですか？
+REFLECTION_CONTINUE	Continue	続ける
+REFLECTION_SKIP	Skip	スキップ
+REFLECTION_SKIP_ALL	Skip all	すべてスキップ
+SESSION_INTENTION_PLACEHOLDER	What are you bringing attention toward? (optional)	何に注意を向けますか？（任意）
+SESSION_INTENTION_ECHO	Written direction: {text}	書いた方向：{text}
+HONESTY_CHECKIN_PROMPT	Yin is sitting with you. Quiet time elsewhere can live here too.	Yinはあなたと坐っています。よそでの静かな時間も、ここに置けます。
+HONESTY_FEATURE_TITLE	Honesty Check-in	Honesty Check-in
+HONESTY_DURATION_TITLE	Share Your Quiet Moments	静かなひとときを分かち合う
+HONESTY_DURATION_SUBTITLE	An honor-system space to bring your offline practice back to Yin.	オフラインの実践を、正直にYinのもとへ戻す場所です。
+HONESTY_DURATION_10	A brief moment (~10m)	短いひととき（約10分）
+HONESTY_DURATION_20	A deep breath (~20m)	深い一息（約20分）
+HONESTY_DURATION_30_PLUS	A long journey (30m+)	長い道のり（30分以上）
+HONESTY_BREATH_GUIDE	Take a breath to sync your peace.	一息ついて、穏やかさをそろえましょう。
+HONESTY_BREATH_INHALE	Inhale…	吸う…
+HONESTY_BREATH_EXHALE	Exhale…	吐く…
+HONESTY_CHECKIN_THANKS	Welcome back. Yin is awake.	おかえり。Yinは起きています。
+HONESTY_BRIDGE_PROMPT	Want to sit for a bit now too?	いまも、少し坐ってみますか？
+HONESTY_BRIDGE_YES	Yes	はい
+HONESTY_BRIDGE_NO	No	いいえ
+COMPANION_MODE_TITLE	How Shall We Sit?	どのように坐りますか？
+COMPANION_MODE_HINT	How Shall We Sit?	どのように坐りますか？
+COMPANION_MODE_STAY	Here & Now	いま・ここ
+COMPANION_MODE_STAY_HINT	Keep this screen open. Rest your eyes on Yin's breathing, and let the space ground you.	この画面を開いたまま。Yinの呼吸に目を休め、空間に身を置いてください。
+COMPANION_MODE_STEP_AWAY	Offline Space	オフラインの場
+COMPANION_MODE_STEP_AWAY_HINT	You'll practice elsewhere while this page keeps time. Yin stays in quiet company—leaving won't count as distraction.	よそで実践し、このページは時間を刻みます。Yinは静かに同伴し、離れても散漫とは数えません。
+COMPANION_MODE_ACROSS_TOOLS	Flow State	フロー
+COMPANION_MODE_ACROSS_TOOLS_HINT	Minimize the window and move freely across your tools. Trust your focus; Yin is always with you.	ウィンドウを最小化し、ツールのあいだを自由に。集中を信じ、Yinはいつもそばにいます。
+COMPANION_MODE_CONTINUE	Begin	はじめる
+COMPANION_SELECT_BLOCKED	Not just now — finish what's open, then choose how to sit.	いまはできません — 開いているものを終えてから、坐り方を選んでください。
+COMPANION_MODE_CANCEL	Cancel	キャンセル
+ACROSS_TOOLS_IDLE_1	The keyboard and pointer have been quiet for a long while.	キーボードとポインタが、長いあいだ静かです。
+ACROSS_TOOLS_IDLE_2	A long stretch of stillness at the desk has been noticed.	机での長い静けさが、気づかれました。
+SESSION_INTENTION_ECHO_ICON	Chosen direction: {text}	選んだ方向：{text}
+SESSION_INTENTION_ECHO_TYPED	Written direction: {text}	書いた方向：{text}
+ARRIVAL_WELCOME	Welcome back. Let's begin our practice.	おかえり。実践をはじめましょう。
+ARRIVAL_NOTICE_PROMPT	What is present right now?	いま、何がここにありますか？
+ARRIVAL_NOTICE_CALM	Calm	穏やか
+ARRIVAL_NOTICE_OKAY	Okay	まあまあ
+ARRIVAL_NOTICE_BUSY	Busy Mind	忙しい心
+ARRIVAL_NOTICE_STRESSED	Stressed	ストレス
+ARRIVAL_NOTICE_LOW	Low Energy	エネルギー低め
+ARRIVAL_NOTICE_UNSURE	Not Sure	わからない
+ARRIVAL_NOTICE_REPLY_CALM	A calm presence is here.	穏やかな気配が、ここにあります。
+ARRIVAL_NOTICE_REPLY_OKAY	An ordinary steadiness is here.	ふつうの落ち着きが、ここにあります。
+ARRIVAL_NOTICE_REPLY_BUSY	A busy mind is here today.	忙しい心が、きょうここにあります。
+ARRIVAL_NOTICE_REPLY_STRESSED	There's some stress here.	いくらかのストレスが、ここにあります。
+ARRIVAL_NOTICE_REPLY_LOW	Low energy is visiting.	低いエネルギーが、訪れています。
+ARRIVAL_NOTICE_REPLY_UNSURE	Not-knowing is welcome here.	わからないことも、ここでは歓迎です。
+ARRIVAL_BREATH_GUIDE	Let's arrive together.	いっしょに、いまに着きましょう。
+ARRIVAL_CHOOSE_PROMPT	What are you bringing attention toward?	何に注意を向けますか？
+ARRIVAL_CHOOSE_READING	Reading	読書
+ARRIVAL_CHOOSE_DEEP_WORK	Deep Work	深い仕事
+ARRIVAL_CHOOSE_CREATIVE	Creative Work	創作
+ARRIVAL_CHOOSE_MEDITATION	Meditation	瞑想
+ARRIVAL_CHOOSE_WRITING	Writing	執筆
+ARRIVAL_CHOOSE_SMALL_STEP	Just One Small Step	小さな一歩だけ
+ARRIVAL_CHOOSE_WRITE_OWN	Write your own	自分で書く
+ARRIVAL_CHOOSE_CONFIRM_HINT	Tap → or press Enter.	→ をタップ、または Enter。
+ARRIVAL_CHOOSE_CONFIRM_ARIA	Confirm what you wrote	書いた内容を確定
+ARRIVAL_SKIP_STEP	Skip	スキップ
+ARRIVAL_SKIP_BEGIN	Skip — begin	スキップ — はじめる
+QUICK_START_ARIA	Quick Start	クイックスタート
+HINT_HELP_ARIA	Show a quiet tip for this moment	この瞬間の静かなヒントを表示
+HINT_DISMISS_ARIA	Click to dismiss	クリックで閉じる
+HINT_BADGE_ARIA	New tip available — click to view	新しいヒントがあります — クリックして見る
+HINT_BADGE_PEEKED_ARIA	Tip reviewed — still available until you use this control	ヒントは確認済み — この操作を使うまで残ります
+HINT_DETAIL_CTA	Learn about this space	この場について知る
+HINT_DORMANT_OPEN	Yin is resting. Sit when you feel ready.	Yinは休んでいます。準備ができたら坐ってください。
+HINT_HONESTY_OPTIONAL	This check-in is optional — Sit still works.	このチェックインは任意です — 坐ることもできます。
+HINT_HONESTY_BRIDGE	Yes begins Arrival; No stays with idle. Either is fine.	「はい」はArrivalへ。「いいえ」はIdleのまま。どちらでも大丈夫です。
+HINT_SIT_BUTTON	Tap to sit with Yin.	タップしてYinと坐る。
+HINT_HOW_SHALL_WE_SIT	Or begin from here.	ここから始めることもできます。
+HINT_NOTICE	A tap is enough — or skip ahead.	タップだけで十分 — 先に進んでもよいです。
+HINT_BREATHING	Just breathe with Yin. Nothing else to do.	Yinといっしょに息をするだけ。ほかにすることはありません。
+HINT_CHOOSE	Choose one — or type your own.	ひとつ選ぶ — または自分で書く。
+HINT_COMPANION_MODE	Pick one — the timer starts.	ひとつ選ぶ — タイマーが始まります。
+HONESTY_IDLE_ENTRY	Honesty Check-in	Honesty Check-in
+HONESTY_PENDING_LOST	Something went sideways — please choose a duration again.	うまくいきませんでした — もう一度時間を選んでください。
+HONESTY_CHECKIN_RECORDED	Quiet time elsewhere counts, too.	よそでの静かな時間も、数えられます。
+micro_ritual.button	A minute of breath	一分の呼吸
+micro_ritual.complete	Today counts, too	きょうも、数えられます
+micro_ritual.leave	Leave	離れる
+HINT_COMPANION_STAY	Yin stays quiet nearby unless you are away a while.	長く離れない限り、Yinはそばで静かです。
+HINT_COMPANION_AWAY	Away reminders stay off. This page keeps time while you practice elsewhere.	離席リマインダーはオフ。よそで実践するあいだ、このページが時間を刻みます。
+HINT_COMPANION_ACROSS	Away reminders stay off in this mode.	このモードでは離席リマインダーはオフです。
+HINT_AMBIENT_GATED	Track selection opens once you sit.	坐りはじめると、トラックを選べます。
+HINT_AMBIENT_SOUNDSCAPE	If your environment allows, tap here to play music — it may make the experience better.	環境が許せば、ここをタップして音楽を — 体験がよくなることがあります。
+HINT_RISE_BUTTON	Rising early is welcome too.	早めに立つことも、歓迎です。
+HINT_REFLECTION	Answer if you like — skipping is fine.	答えても、スキップしても大丈夫です。
+HINT_IDLE_AFTER_SESSION	Sit again whenever you like.	また坐りたくなったら、いつでも。
+HINT_WEEKLY_HEATMAP	A quiet week of shared sitting — lit days you practiced.	いっしょに坐った静かな一週間 — 実践した日が点灯します。
+HINT_IN_APP_REMINDER	Set a daily time — Yin leaves a gentle note if you haven't practiced yet.	毎日の時刻を設定 — まだ実践していなければ、Yinがやさしいメモを残します。
+HINT_MICRO_RITUAL	A minute of breath — soft practice, no full Focus.	一分の呼吸 — やわらかな実践。フルFocusは不要です。
+HINT_HELP_AFFORDANCE	Not sure what to tap next? Start here.	次に何をタップするか迷ったら、ここから。
+HINT_HELP_REMEDY	All the tips for this screen are on the page now. Click a tip to dismiss it; tap ? anytime you want them again.	この画面のヒントは、いまページ上にあります。ヒントをクリックで閉じ、？でもう一度開けます。
+HINT_HELP_REMEDY_MORE	{n} more tips — tap here	あと {n} 件のヒント — ここをタップ
+HINT_HELP_REMEDY_MORE_ONE	More tips — tap here	ほかのヒント — ここをタップ
+HINT_WIDE_MORE_MENU	Tap ⋯ for more: Honesty check-in, a minute of breath, How shall we sit?, reminder, and language. Music stays on the note at the top right.	⋯ でほか：Honesty Check-in、一分の呼吸、どのように坐りますか？、リマインダー、言語。音楽は右上の音符です。
+HINT_NARROW_DRAWER_MENU	Pull up the drawer at the bottom of the screen. Inside you'll find: a minute of breath, How shall we sit?, Reminder, Language, and your quiet week chart.	画面下の引き出しを上に。一分の呼吸、どのように坐りますか？、リマインダー、言語、静かな一週間のチャートがあります。
+HINT_HELP_FALLBACK	Sit with Yin when you are ready.	準備ができたら、Yinと坐ってください。
+HINT_APP_PURPOSE_TITLE	What this space is for	この場の役割
+HINT_APP_PURPOSE_BODY	Focus Tiger is a gamified mindfulness companion that helps you cultivate focus, presence, and flow through regular practice, at your own pace.	Focus Tigerは、自分のペースでの定期的な実践を通じて、集中・プレゼンス・フローを育てる、ゲーム化されたマインドフルネスの同伴です。
+HINT_APP_PURPOSE_DISMISS	Got it	わかりました
+reminder.setting_title	When should I remind you	いつリマインドしますか
+reminder.gentle_waiting	Yin is right here when you're ready.	準備ができたら、Yinはここにいます。
+reminder.enable_label	Remind me	リマインドする
+reminder.time_label	Time	時刻
+reminder.confirm_hint	Tap → or press Enter to save.	→ をタップ、または Enter で保存。
+reminder.confirm_aria	Save reminder time	リマインダー時刻を保存
+reminder.saved_brief	Saved	保存しました
+reminder.daily_blurb	Each day at this time, if you haven't practiced yet, a gentle note appears at the top of the page.	毎日この時刻に、まだ実践していなければ、ページ上部にやさしいメモが出ます。
+reminder.past_time_note	That time has already passed today — you'll see the note now if you haven't practiced yet.	きょう、その時刻はもう過ぎています — まだ実践していなければ、いまメモが見えます。
+reminder.practiced_today_note	You've already practiced today — no reminder today. You can still change the time for other days.	きょうはすでに実践済み — きょうのリマインダーはありません。ほかの日のために時刻は変えられます。
+reminder.settings_aria	Reminder time	リマインダー時刻
+reminder.banner_dismiss_aria	Dismiss reminder	リマインダーを閉じる
+HINT_QUICK_START	Skip Arrival — sit with your last mode right away.	Arrivalをスキップ — 前回のモードですぐ坐る。
+HINT_FOCUS_HUD_RING	This ring soft-fills as you sit — a quiet presence, not a scoreboard.	この輪は、坐るにつれて静かに満たされます — 気配であり、スコアボードではありません。
+HINT_FOCUS_HUD_PROGRESS	Today's shared sitting — how long you've been here today.	きょういっしょに坐った時間 — きょうここにいた長さ。
+HINT_FOCUS_HUD_STREAK	Recent days you practiced — one lit dot per day, not per session.	最近実践した日 — セッションごとではなく、日ごとに一つの点。
+HINT_LEARN_SPACE	Learn about this space	この場について知る
+HINT_LEARN_SPACE_ARIA	Open a short introduction	短い紹介を開く
+LANGUAGE_MENU_LABEL	Language	言語
+LANGUAGE_SETTING_TITLE	Language	言語
+LANGUAGE_CLOSE	Close	閉じる

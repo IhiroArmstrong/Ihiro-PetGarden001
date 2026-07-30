@@ -61,7 +61,7 @@
 | **MilestoneGlow / IncenseComplete** | ❌ | ❌ | ❌ | — | **无自动化 / 业务未接线** | Glow 有问题行；Incense 已放弃接线 |
 | **舒展提醒 / Offline 暂停累计（场景 E）** | ✅ smoke E + MindfulReminder 入烟 | ❌ Offline 开表以外 | ❌ | Mindful\*（已入 smoke） | **逻辑已锁** | 真实离开墙钟仍人工 |
 | **Flow 30min across-tools toast（场景 F）** | ✅ smoke F + AcrossTools 入烟 | ❌ | ❌ | AcrossTools\*（已入 smoke） | **逻辑已锁** | toast DOM / 真实 30min 仍人工 |
-| **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **v1.0 English only** | 架构保留；仅 en ready；Language 隐藏；zh draft |
+| **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **v1.0 en+ja** | Language 可点；zh/es/de/fr draft |
 | **瞳孔跟随（场景 H）** | — | — | — | stub | **N/A 已废弃** | — |
 | **Grow / 纪念奖励 / 3D 柜** | — | — | — | — | **Backlog，未接线** | 不期望有测 |
 | **Cloudflare Workers stub** | ❌ | ❌ | ❌ | — | **零（前端未接线）** | curl 人工 / 独立包 |
@@ -88,7 +88,7 @@
 4. **Ambient 实际发声与 Rise 停音** — 几乎只有「开面板 / 无 autoplay」→ 可进 smoke 扩容（行为契约，非听感）
 5. **Idle / Choose / Rise 序列观感** — 刻意不进 e2e（见 §5）
 6. **场景 E/F 细节**（舒展暂停、30min Flow toast）→ ✅ Task 2（smoke E/F；真实 30min / 切页仍人工）
-7. **场景 G i18n** — ✅ v1.0 English-only 对外；unit/e2e 锁不露 Language；后续语种审完再露
+7. **场景 G i18n** — ✅ v1.0 en+ja 可点切语 + unit/e2e；zh 延后；日文 375 人工
 8. **MilestoneGlow / Incense 业务接线** — 无或已放弃
 9. **Workers API** — 前端未接线，无测
 
@@ -108,7 +108,7 @@
 | **可选** | — | e2e Rise 后再点 hint 回流 DOM（smoke J 目前只锁纯函数） | 场景 J |
 | **不做** | — | 见下方「永不自动化 / 人工锁」 | — |
 
-**优先级理由（简 · 与发布复盘对齐）**：Task 2/3 + **扩 smoke（§7）** 已落地；Honesty 产品可用性已确认（§8）；永不自动化见 §5；i18n 见 §9（v1.0 English only）。
+**优先级理由（简 · 与发布复盘对齐）**：Task 2/3 + **扩 smoke（§7）** 已落地；Honesty 产品可用性已确认（§8）；永不自动化见 §5；i18n 见 §9（v1.0 **en+ja**）。
 
 ---
 
@@ -229,68 +229,68 @@ npm test                    # 全部 *.test.js（含 unit*）
 ## 9. i18n · 多语言可行性 / 风险 / 覆盖补齐（2026-07-30 修订）
 
 > **设计意图**：产品**希望有多语言**（工程保留 N locale + 可点切语架构）。  
-> **2026-07-30 拍板（工程）**：可点切语 UI + 持久化 + A/B 自动化骨架；六语槽位；**审完再露**。  
-> **2026-07-30 拍板（发版对外 · 与分析师对齐）**：**v1.0.0 对外 = English only**，不声称支持中文/多语言；zh 人工验收**不**升为发布 checklist 必过项。  
-> **落地含义**：catalog 仅 `en` = `ready`；Language 菜单在 ready &lt; 2 时隐藏；`zh.json` 等仍进仓备后续 flip。
+> **2026-07-30 拍板（工程）**：可点切语 UI + 持久化 + A/B 自动化；六语槽位；**审完再露**。  
+> **2026-07-30 修订（发版对外）**：**v1.0.0 = English + Japanese**（坐禅文化共鸣；可点切换）。中文**不着急**，zh 保持 draft、不进发布 checklist。  
+> **落地含义**：catalog `en` + `ja` = `ready`；Language 菜单出现（≥2 ready）；`zh.json` 等仍进仓备后续 flip。
 
 ### 9.1 现状（已有 vs 缺）
 
 | 层 | 状态 | 说明 |
 |---|---|---|
-| 字典 | ✅ en + staged zh | `en.json` / `zh.json` key 对齐；zh **draft**（不进选择器） |
+| 字典 | ✅ en + ja；staged zh | key 对齐；zh **draft**（不进选择器） |
 | 运行时 API | ✅ | `t` / `tPool` / `setLocale` / `getLocale` / `onLocaleChange` |
-| UI 订阅刷新 | ✅ 主面 | 主路径已 `onLocaleChange`（为后续切语保留） |
+| UI 订阅刷新 | ✅ 主面 | 主路径已 `onLocaleChange` |
 | 默认语言 | ✅ | `en` |
-| **应用内切语 UI** | ✅ 架构在 · v1.0 隐藏 | `LanguagePreferenceUI` 保留；`shouldOfferLanguagePicker()` 在仅 en ready 时 **不露** Language 行 |
-| **locale 持久化** | ✅ | `focus-tiger.locale.v1`（仅 ready；现仅 en） |
+| **应用内切语 UI** | ✅ | `LanguagePreferenceUI`；`shouldOfferLanguagePicker()` → **露出** Language（en+ja） |
+| **locale 持久化** | ✅ | `focus-tiger.locale.v1`（ready only） |
 | **浏览器语言探测** | ❌ | 可选增强 |
-| **自动化** | ✅ | `i18n.test.js` ∈ smoke；`language-switch.spec.js` 锁「en-only 不露 Language」 |
+| **自动化** | ✅ | `i18n.test.js` ∈ smoke；`language-switch.spec.js` 锁 en↔ja |
 
 ### 9.2 可行性（结论：高 · 工程）
 
-多语言**运行时切换**工程上已可行：字典/订阅/面板骨架齐全。v1.0.0 **产品面**只发 English；后续把某 locale 改 `ready` 即露出选择器（须同批更新对外声称与人工面）。
+多语言**运行时切换**工程上已可行。v1.0.0 产品面声称 **English + Japanese**；其余 locale 改 `ready` 须同批更新对外声称与人工面。
 
 ### 9.3 任务拆分 · 难度 / 风险 / 是否挡 v1
 
 | 项 | 难度 | 风险 | 状态 / 建议 | 挡 v1？ |
 |---|---|---|---|---|
-| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js`（en-only ready + staged zh 奇偶） | — |
-| **B. e2e** | **低** | 低 | ✅ 锁 Language **不出现**（English-only ship） | — |
-| **C. 切语 UI** 架构 | **中** | 低 | ✅ 面板/壳接线保留；菜单门闩 `≥2 ready` | — |
-| **D. 冷启动** | **低** | 低 | ✅ 默认 en；draft 存储忽略 | — |
-| **E. 人工排版** | 人工 | 中 | **v1.0 不要求 zh 过发布 checklist**；某语 `ready` 并声称后才必测 | 仅声称后 |
-| **F. 扩语种** zh/es/ja/de/fr | 内容 | 高 | 槽位已在；**审完 + 决定声称** → `ready` | 仅声称后 |
+| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js`（en+ja ready + staged zh 奇偶） | — |
+| **B. e2e** | **低** | 低 | ✅ 点 Language → 日本語 → English | — |
+| **C. 切语 UI** | **中** | 低 | ✅ 面板 + 门闩 `≥2 ready` | — |
+| **D. 冷启动** | **低** | 低 | ✅ 默认 en；记忆 ready；draft 忽略 | — |
+| **E. 人工排版** | 人工 | 中 | **v1.0 须抽测日文 375**；zh **非**发布 checklist | 声称 ja 时须测 |
+| **F. 扩语种** zh/es/de/fr | 内容 | 高 | 槽位已在；审完 + 决定声称 → `ready` | 仅声称后 |
 
-### 9.4 对「零覆盖」的正确姿态
+### 9.4 对覆盖的正确姿态
 
-> 切语架构与自动化已落地；**对外 English only** ≠ 删掉工程能力。  
-> 下一语种上线 = catalog `ready` + 对外文案同步 + 人工 E +（恢复）切语 e2e 正向路径。
+> 切语架构 + en/ja 自动化已落地。  
+> 下一语种上线 = catalog `ready` + 对外文案同步 + 人工 E + 切语 e2e 扩断言。
 
-### 9.5 产品拍板（已定）
+### 9.5 产品拍板（已定 · 2026-07-30 修订）
 
 | 项 | 决定 |
 |---|---|
-| 工程入口 | **可点切语架构保留**（⋯ / 抽屉代理 + `LanguagePreferenceUI`） |
-| v1.0.0 对外 | **English only**；不声称中文/多语言 |
-| v1.0.0 选择器 | 仅 `en` ready；Language 行隐藏（`shouldOfferLanguagePicker`） |
+| 工程入口 | **可点切语**（⋯ / 抽屉 + `LanguagePreferenceUI`） |
+| v1.0.0 对外 | **English + Japanese**；不声称中文 |
+| v1.0.0 选择器 | `en` + `ja` ready；Language 行可见 |
 | 记忆 | 写 locale 偏好（ready only） |
-| 后续 5 语 | zh / es / ja / de / fr 槽位保留；审完再露 + 同批更新声称 |
+| 后续 | zh / es / de / fr 槽位保留；审完再露 + 同批更新声称 |
 
 ### 9.6 六语意向（en / zh / es / ja / de / fr）· 风险诚实结论
 
 | 面 | 说明 |
 |---|---|
-| **工程扩槽** | **低风险** — catalog 已含 6 id；draft 可挂字典 |
-| **v1.0.0 对外** | **English only**（分析师建议已采纳） |
-| **一次声称多语** | 仍偏高内容债 — 见旧稿；继续 **审完再露** |
+| **工程扩槽** | **低风险** — catalog 已含 6 id |
+| **v1.0.0 对外** | **English + Japanese**（日语与坐禅习惯共鸣；中文延后） |
+| **一次声称多语** | 仍偏高内容债 — 继续 **审完再露** |
 
 | 阶段 | 做什么 | 用户看见 |
 |---|---|---|
-| **v1.0.0** | 仅 `en` ready；Language 隐藏；zh 字典 staged | 英文体验；无切语入口 |
-| **后续** | 某语审完 → `ready`；Language 自动出现（≥2）；更新发版说明 | 可点切换 |
-| **对外声称** | 未 ready / 未决定声称 → **禁止**写「已支持」 | — |
+| **v1.0.0** | `en` + `ja` ready；Language 可点；zh draft staged | English / 日本語 |
+| **后续** | 某语审完 → `ready`；更新发版说明 | 选择器增加该项 |
+| **对外声称** | 未 ready → **禁止**写「已支持」 | — |
 
-（「v1 必露 en+zh」旧拍板已被本条 **English-only 发版** 覆盖；工程开放性不变。）
+（「English only」发版拍板已被本条 **en+ja** 覆盖；六语槽与切语架构不变。）
 
 ---
 
@@ -301,11 +301,11 @@ npm test                    # 全部 *.test.js（含 unit*）
 1. ✅ 按 §7 把 A+A′ unit\* **并入** `test:smoke`（`run-src-unit-tests.js`）  
 2. Honesty 真实链：**已确认可用**（§8）  
 3. 「永不自动化」清单：**§5**  
-4. **i18n**：v1.0.0 **English-only 对外**已定；自动化锁「不露多语入口」即可；**不**挡在 zh 人工验收  
+4. **i18n**：v1.0.0 **en+ja**；自动化锁切语；**日文 375 人工**进发布面；**不**挡在 zh 人工验收  
 
 **不阻塞（post-v1.0 或并行内容轨）**
 
 - Ambient 播放 e2e、Celebrating 动画 e2e、场景 E/F 真实墙钟 DOM  
-- **zh/es/ja/de/fr 审校达 ready 并决定对外声称**  
+- **zh/es/de/fr 审校达 ready 并决定对外声称**  
 
 **仍阻塞 v1（产品面 · 非本审计）**：桌面壳打包选型等——见 `PROCESS.md`。

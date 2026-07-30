@@ -9,6 +9,7 @@
 
 import zh from './zh.json' with { type: 'json' };
 import en from './en.json' with { type: 'json' };
+import ja from './ja.json' with { type: 'json' };
 import {
   DEFAULT_LOCALE,
   isReadyLocale
@@ -21,7 +22,8 @@ import {
 /** @type {Record<string, Record<string, string>>} */
 const DICTIONARIES = {
   zh,
-  en
+  en,
+  ja
 };
 
 /** @type {import('./localeRegistry.js').LocaleId} */
