@@ -138,7 +138,7 @@
 ```
 
 两条可各列多条 bullet；标题字面须可被扫读到，勿改成「小结」「Next」等模糊替代。  
-起过 Vite/Playwright 或启用/建议 Cloud 时的强制提醒句 → `RULES_INDEX` → `browser-energy`（勿在本文复述全文）。
+起过 Vite/Playwright 或启用/建议 Cloud 时的强制提醒句 → `RULES_INDEX` → `browser-energy`（勿在本文复述全文）。IDE Browser 已由 hooks 硬禁；窄屏验收用 Safari 响应式 / Playwright。
 
 ### 2.5 双视口故事矩阵（N17–N24）
 
