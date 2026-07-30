@@ -433,13 +433,13 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'browser-energy',
-    title: '预览浏览器与能耗（默认 Safari；内置 Browser 限时；进程收尾 / Cloud 独立会话提醒）',
+    title: '预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒）',
     ssotPath: '.cursor/rules/focus-tiger-browser-energy.mdc',
     ssotSection: 'Focus Tiger · 预览浏览器与能耗',
     ssotMustContain: [
-      /请用户用 \*\*Safari\*\* 打开/,
-      /最长 10 分钟/,
-      /窄屏 \/ 响应式视口/,
+      /请用户用 \*\*Safari\*\*/,
+      /deny-ide-browser-mcp/,
+      /响应式设计模式/,
       /进程收尾提醒/,
       /和本机完全独立的会话/
     ],
@@ -447,14 +447,15 @@ export const RULE_AUTHORITY_TOPICS = [
       /内置 Browser|Cursor 内置浏览器|browser-energy/,
       /预览浏览器与能耗/,
       /cursor-ide-browser/,
+      /deny-ide-browser-mcp/,
       /进程收尾/,
       /完全独立的会话/
     ],
     mustCite: [/focus-tiger-browser-energy\.mdc|browser-energy/],
     restatementFingerprints: [
-      /最长 10 分钟/,
-      /请用户用 \*\*Safari\*\* 打开/,
-      /禁止.*?擅自调用 Cursor 内置 Browser/
+      /deny-ide-browser-mcp/,
+      /请用户用 \*\*Safari\*\*/,
+      /禁止.*?调用 Cursor 内置 Browser/
     ],
     restatementThreshold: 2,
     forbiddenOutsideSsot: [
@@ -462,6 +463,11 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'default-cursor-browser',
         pattern: /默认(?:使用|用)\s*Cursor\s*(?:内置\s*)?Browser/,
         note: '默认外置 Safari，不得写成默认用 Cursor 内置 Browser'
+      },
+      {
+        id: 'allow-ide-browser-exception',
+        pattern: /(?:可不事先请示|允许|可以)(?:开|调用).*?(?:内置 Browser|cursor-ide-browser)/,
+        note: '2026-07-31 起已硬禁 IDE Browser；不得在非 SSOT 写可开特例'
       }
     ]
   },

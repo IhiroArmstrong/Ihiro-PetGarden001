@@ -13,6 +13,17 @@
         "command": ".cursor/hooks/deny-subagent-start.sh",
         "matcher": "Task",
         "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/deny-ide-browser-mcp.sh",
+        "matcher": "MCP:.*cursor-ide-browser|MCP:.*browser_",
+        "failClosed": true
+      }
+    ],
+    "beforeMCPExecution": [
+      {
+        "command": ".cursor/hooks/deny-ide-browser-mcp.sh",
+        "failClosed": true
       }
     ],
     "beforeShellExecution": [

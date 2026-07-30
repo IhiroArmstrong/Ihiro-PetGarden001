@@ -7,7 +7,7 @@ alwaysApply: true
 
 目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候，瞬间吞掉数十次 Fast Request。
 
-索引：`RULES_INDEX.md` → `agent-token-cost`。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask）。
+索引：`RULES_INDEX.md` → `agent-token-cost`。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask；**IDE Browser MCP deny** 见 `browser-energy` / `deny-ide-browser-mcp.sh`）。
 
 ## 强制（本会话）
 
