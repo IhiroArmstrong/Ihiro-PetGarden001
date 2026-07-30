@@ -32,6 +32,8 @@
 
 产品形态仍因断点不同（抽屉 vs ⋯）——**禁止**再开长期姊妹分支分别修同一套 chrome/audio。关单级人工须 **§8 375 + §9 W1–W8** 分测，**禁止**与场景 O 修混验。
 
+**产品拍板 · 宽屏首页三球（2026-07-31）**：宽屏 Idle **首页**主 CTA 改为与窄屏同序三球（Quick Start · Sit · Honesty），**代替** Sit+⚡ 文案 pill；⋯ 仍承载次要入口。运行时尚未改——实现 Brief：`task-briefs/task-wide-home-three-ball.md`。实现后须同步 `DEV_WORKFLOW_QUALITY` §9 W1 目标壳描述。
+
 **沿革**：2026-07-25 拍板「值得做，但等 wide-idle + O」→ 2026-07-29 条件齐 → 2026-07-30 Brief / 阶段 0–2 / 阶段 3 收口。
 
 ---

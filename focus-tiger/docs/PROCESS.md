@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **宽屏首页三球 · 产品拍板（2026-07-31）**：用户同意宽屏 Idle 首页亦用窄屏同序三球（代替 Sit+⚡ pill）；⋯ 仍为次要。Brief `task-wide-home-three-ball.md` 已锁口径；**实现未开工**（建议 `feature/wide-home-three-ball` + 独立 worktree）。PR #48 TEST_TRACKER 移植已合。
 - **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** workflow 已有 `schedule`（UTC 02:00）+ `workflow_dispatch` + job `timeout-minutes: 120`（在 **`develop`**）；但 GitHub **`schedule` 读默认分支 `main` 上的 YAML**，而 `main` 仍为 **60** → 近几日 nightly 约 60 分钟 **cancelled**（例：[30535254813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30535254813)）。下一步：把 `focus-tiger-e2e-full.yml` 同步进 **`main`**（须你明确授权合 `main`）。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`（客户端禁硬编码 Secret；dev/prod 分文件；`VITE_*` 仅公开配置）。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
