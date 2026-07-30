@@ -152,7 +152,7 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
     timeout: 8_000
   });
   await page.locator('#onboarding-hint-help').click();
-  // 情境单条：先出主 tip +「还有 N 条」；展开后再验 parked remap
+  // 主 tip + 可见锚点各一条立刻出；⋯ 内 chrome 折进一次性芯片，展开后再验 parked remap
   const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
   await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
   await expect(page.locator('#onboarding-app-purpose')).toBeVisible();
@@ -167,13 +167,12 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
   await expect(page.locator('#ft-hint-catalog-chip')).toBeVisible({
     timeout: 5_000
   });
-  // Catalog expands one tip at a time (primary + 1), not a flood.
-  const beforeN = await page.evaluate(() => {
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    const m = (chip?.textContent || '').match(/(\d+)/);
-    return m ? Number(m[1]) : 0;
-  });
-  expect(beforeN).toBeGreaterThan(0);
+  // On-screen controls already got their tips; the chip is a one-shot stand-in
+  // for the ⋯ chrome only, so it carries no "N more" queue.
+  const beforeChip = await page.evaluate(
+    () => document.getElementById('ft-hint-catalog-chip')?.textContent || ''
+  );
+  expect(beforeChip).not.toMatch(/\d/);
   await page.locator('#ft-hint-catalog-chip').click();
   const afterClick = await page.evaluate(() => {
     const bubbles = [
@@ -185,19 +184,13 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
       return r.width > 0 && r.height > 0;
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
-    const m = (chip?.textContent || '').match(/(\d+)/);
     return {
-      count: bubbles.length,
-      chipN: m ? Number(m[1]) : 0,
+      ids: bubbles.map((el) => el.getAttribute('data-hint-id')),
       chipVisible: Boolean(chip && !chip.hidden)
     };
   });
-  expect(afterClick.count).toBeGreaterThanOrEqual(1);
-  expect(afterClick.count).toBeLessThanOrEqual(3);
-  if (beforeN > 1) {
-    expect(afterClick.chipVisible).toBe(true);
-    expect(afterClick.chipN).toBe(beforeN - 1);
-  }
+  expect(afterClick.ids).toContain('wide-more-menu');
+  expect(afterClick.chipVisible).toBe(false);
   const layout = await page.evaluate(() => {
     const moreEl = document.getElementById('ft-wide-more-btn');
     const purpose = document.getElementById('onboarding-app-purpose');

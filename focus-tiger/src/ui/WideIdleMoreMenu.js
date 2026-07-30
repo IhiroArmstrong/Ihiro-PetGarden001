@@ -43,7 +43,7 @@ export class WideIdleMoreMenu {
         : null;
 
     this._injectStyles();
-    this._build();
+    this._ensureBuilt();
     this._bind();
     this._sync();
     this._localeUnsub = onLocaleChange(() => {
@@ -169,11 +169,19 @@ export class WideIdleMoreMenu {
     return typeof window !== 'undefined' && window.innerWidth >= 480;
   }
 
-  _build() {
+  /**
+   * Build once `#session-start-dock` exists. CompanionModePicker owns that dock and
+   * may be constructed after this shell, so a single constructor-time attempt would
+   * silently drop ⋯ forever — every _sync retries instead.
+   * @returns {boolean} true when the ⋯ button is mounted
+   */
+  _ensureBuilt() {
+    if (this.moreBtn) return true;
+
     const dock = document.getElementById('session-start-dock');
     const focusBtn = document.getElementById('btn-focus');
     const quickStart = document.getElementById('quick-start-focus');
-    if (!dock || !focusBtn) return;
+    if (!dock || !focusBtn) return false;
 
     this.ctaRow = document.createElement('div');
     this.ctaRow.className = 'session-start-dock__cta-row';
@@ -209,7 +217,25 @@ export class WideIdleMoreMenu {
     this.ctaRow.appendChild(this.wrap);
     dock.appendChild(this.ctaRow);
 
+    this._bindMenuEls();
     this._refreshLabels();
+    return true;
+  }
+
+  _bindMenuEls() {
+    this.moreBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (this._menuOpen) this.closeMenu();
+      else this.openMenu();
+    });
+
+    this.listEl?.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-proxy]');
+      if (!item) return;
+      const key = item.getAttribute('data-proxy');
+      this.closeMenu();
+      requestAnimationFrame(() => this._proxy(key));
+    });
   }
 
   _refreshLabels() {
@@ -224,20 +250,6 @@ export class WideIdleMoreMenu {
       this._sync();
     };
     this._mq?.addEventListener?.('change', this._onMqChange);
-
-    this.moreBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (this._menuOpen) this.closeMenu();
-      else this.openMenu();
-    });
-
-    this.listEl?.addEventListener('click', (e) => {
-      const item = e.target.closest('[data-proxy]');
-      if (!item) return;
-      const key = item.getAttribute('data-proxy');
-      this.closeMenu();
-      requestAnimationFrame(() => this._proxy(key));
-    });
 
     this._onDocPointer = (event) => {
       if (!this._menuOpen) return;
@@ -259,6 +271,7 @@ export class WideIdleMoreMenu {
   }
 
   _sync() {
+    this._ensureBuilt();
     const wide = this._isWide();
     const park = wide && this._idle;
     const showMore = park && !this._suppressed;
