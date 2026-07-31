@@ -460,6 +460,9 @@ async function init() {
         fps: ARRIVAL_BREATH_SMILE_FPS
       });
       resyncSessionChrome();
+      // startBreath already set phase=breath — sync tips only after isOpen()
+      // so sit-button / idle-after-session cannot orphan over hidden Sit.
+      syncOnboardingAutoHints();
     },
     onComplete: () => {
       completeMicroRitual();
@@ -530,7 +533,8 @@ async function init() {
     setFocusButtonEnabled(false);
     microRitualUI?.hideIdleEntry();
     resyncSessionChrome();
-    syncOnboardingAutoHints();
+    // Tip sync for microRitualOpen must wait until startBreath → onBreathStart
+    // (isOpen() is still false here).
   }
 
   function endMicroRitualChrome() {

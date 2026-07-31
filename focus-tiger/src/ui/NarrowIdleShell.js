@@ -7,7 +7,7 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v14';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v15';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -659,6 +659,9 @@ export class NarrowIdleShell {
    */
   _proxy(key) {
     if (key === 'mute' || key === 'sound' || key === 'music') {
+      // Close drawer first so Soundscape is not under the sheet; ActionBar ♪
+      // stays above the backdrop (z-index) so this click is not blocked.
+      this.closeSheet();
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.sound);
       this.handlers.onSound?.();
@@ -756,6 +759,7 @@ export class NarrowIdleShell {
         left: 12px;
         right: 12px;
         height: 48px;
+        z-index: 3; /* above sheet backdrop — ♪ / ? stay clickable while drawer open */
         display: flex;
         align-items: center;
         gap: 10px;
@@ -928,6 +932,7 @@ export class NarrowIdleShell {
       .ft-narrow-sheet-backdrop {
         position: absolute;
         inset: 0;
+        z-index: 1;
         background: rgba(44, 31, 20, 0.28);
       }
       .ft-narrow-sheet {
@@ -935,6 +940,7 @@ export class NarrowIdleShell {
         left: 0;
         right: 0;
         bottom: 0;
+        z-index: 2;
         max-height: min(82vh, 580px);
         padding: 8px 14px calc(12px + env(safe-area-inset-bottom, 0px));
         border-radius: 22px 22px 0 0;

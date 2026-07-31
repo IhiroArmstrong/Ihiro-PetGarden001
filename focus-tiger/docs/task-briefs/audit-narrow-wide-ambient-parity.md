@@ -28,8 +28,8 @@
 
 | 项 | 说明 | 建议 |
 |---|---|---|
-| `375 micro ritual: Sit hidden…` / sit-button tip | breath 期间仍可能出 `sit-button` tip（用例要求 count 0） | 独立 fix：`fix/micro-ritual-sit-tip` |
-| `375 home: … drawer Soundscape` | `.ft-narrow-sheet-backdrop` 挡 `#ft-narrow-mute-btn`；部分用例用 `force: true` | 独立 fix：抽屉打开时 ♪ 可点或关抽屉再点；勿长期 `force` |
+| `375 micro ritual: Sit hidden…` / sit-button tip | breath 期间曾残留 `sit-button` tip（`beginMicroRitualChrome` 在 `startBreath` 前 sync） | **已修** · `fix/375-micro-ritual-sit-tip-and-drawer-mute`：`onBreathStart` 再 sync |
+| `375 home: … drawer Soundscape` | `.ft-narrow-sheet-backdrop` 曾挡 `#ft-narrow-mute-btn`；部分用例用 `force: true` | **已修** · ActionBar z-index 高于 backdrop；♪ 先关抽屉；e2e 无 force |
 
 （均曾在干净 develop 复现线索；**非** #43 引入。本填表未重跑确认红绿。）
 
