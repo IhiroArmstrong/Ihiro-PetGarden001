@@ -17,6 +17,7 @@
 5. `CORE_LOOP.md` / `ARRIVE_MOMENT_DESIGN.md`：单次会话七步状态机与 Arrival Practice 交互详规；
 6. `DESIGN.md`：当前产品语义、体验循环与玩法；
 7. `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md`：情绪行为与角色设定；
+7a. `SCENE_ANIMATION_WIRING.md`：场景 → 动画接线表（哪一用户时刻播哪一档；v1.0.0 Slice A 范围）；
 8. `ARCHITECTURE.md`：技术实现和模块边界；
 9. `PROCESS.md` / `TASKS.md`：阶段范围、协作流程与排期。
 
