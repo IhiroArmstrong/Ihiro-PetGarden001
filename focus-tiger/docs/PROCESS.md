@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **MilestoneGlow 正式路径可接线（2026-07-31 拍板）**：用户书面——长期里程碑金辉+蝴蝶**本就是产品需要**，正式路径**完全可以接线**；不再以「仅调试预览」为终态。Brief `task-briefs/task-milestone-glow-product-wire.md`；实现另开 `feature/milestone-glow-product-wire`（排在 Ambient ⑤⑥⑩ 自动化之后或并行）。旧「7/30 前仅复测调试节奏」口径废止，改为**接线任务**；4 fps 观感随接线验收。
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。关单级人工仍须 §8+§9。
 - **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** workflow 已有 `schedule`（UTC 02:00）+ `workflow_dispatch` + job `timeout-minutes: 120`（在 **`develop`**）；但 GitHub **`schedule` 读默认分支 `main` 上的 YAML**，而 `main` 仍为 **60** → 近几日 nightly 约 60 分钟 **cancelled**（例：[30535254813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30535254813)）。下一步：把 `focus-tiger-e2e-full.yml` 同步进 **`main`**（须你明确授权合 `main`）。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`（客户端禁硬编码 Secret；dev/prod 分文件；`VITE_*` 仅公开配置）。

@@ -70,7 +70,7 @@
 | L254 / L273 | 点 ? 补救 hints / 音乐 tip 锚 mute | |
 | L271 / L272 | 窄屏 onboarding 互斥 / Sit 不截断 | 375 |
 | L277 | Offline Space 说明文案 | 桌面口径 |
-| **[L187](#L187)** | MilestoneGlow | **有问题**；约定 **2026-07-30 前**复测或改期 |
+| **[L187](#L187)** | MilestoneGlow | **待接线**（2026-07-31 拍板正式路径）；Brief 已立 |
 
 #### P2 · 调试日 / 长会话日（本轮不测；勿与 P0 抢注意力）
 
@@ -148,7 +148,7 @@
 | Idle 突然东张西望 | 已通过 | 已关随机池；无自动调度单测 | **[L176](#L176)** `调试面板 · 全入库素材` · **[L194](#L194)** `idle / 坐禅闭眼呼吸基底` |
 | 靠近自动点头 | 已通过 | 行为已拆；无 e2e | **[L193](#L193)** `PointerInteraction · 靠近点头 nodGreeting` |
 | Rise → **LightProgression** 金晕 | 已通过 | 视觉 + 产品语义 | **[L203](#L203)** `LightProgression / 光影物理渐进` |
-| MilestoneGlow 金辉节奏 | **有问题**（**已知，不挡** PR #2→`main`） | 观感（Sleeping 已关单） | **[L187](#L187)** MilestoneGlow（4 fps；**预计 2026-07-30 前**复测） |
+| MilestoneGlow 金辉仪式 | **待接线**（正式路径拍板） | 产品节点触发 + 4 fps 观感 | **[L187](#L187)** · Brief `task-milestone-glow-product-wire.md` |
 | Ambient Sound **入口**（未计时提示 / 开表后可展开） | 已通过 | 入口行为已验收 | **[L191](#L191)** Ambient Soundscape · **[L264](#L264)** `人工 · 静音图标 + Sound` |
 
 **§B 未单列、但在场景 checklist 里测的项**（见 **L261–L267**）：**[L261](#L261)** A1 Idle 开局（**已通过**） · **[L266](#L266)** Celebrating / 同日 SessionComplete 观感（**已通过**） · **[L267](#L267)** Honesty 桥接完整 Arrival（**已通过**） · DEV 一键重置（**L-logic / 仅单元测试**）。
@@ -215,7 +215,7 @@
 | 完成反馈 · 每日首次 Celebrating | UI可见 | 已通过 | **须等计时自动达标**（勿提前点 Rise；达标后点 Rise 也会进完成反馈）。当日可先 Honesty 补登；**首次计时达标**仍须 Celebrating（Honesty 不占庆祝戳）。播 `celebrate-dance` → idle → Reflection。 | 2026-07-21：用户书面——多日多次 focus 超 1 分钟从未见 Celebrating 舞；已修。**2026-07-21 复测**：`/` 满 1 分钟见舞；`/?sessionMinutes=5` 满 5 分钟见舞。 | `triggerSessionCompletionFeedback` · 调试「庆祝跳舞」 | 2026-07-21 |
 | 完成反馈 · 同日后续 SessionComplete | UI可见 | 已通过 | 当日**已播过** Celebrating 后，再跑一轮 1 分钟达标 → 只播 `session-complete` 摆尾，**不**再 Celebrating。 | 2026-07-21：同 Celebrating 行用户反馈；庆祝戳已解耦。**2026-07-21 复测**：`http://localhost:5173` 同日第二次 1 分钟达标 → 只撅屁股摆尾、不再 Celebrating 舞；测试 OK。**同日晚**：`/?product=1` 再次确认同日第二次满 1 分钟 → 摆尾、非跳舞；测试 OK。 | 同上 · 调试「完成摆尾」 | 2026-07-21 |
 | IncenseComplete / 今日一炷香（莲花+金斑） | UI可见 | 已放弃/不适用 | **业务会话结束未接线**，正式路径看不到；**不再排人工验收**，不挡合并。调试面板「模拟一炷香」可自愿预览（DOM 莲花+金粒子；水印已清），效果保留给 Backlog 成长场景复用，勿删实现。 | 2026-07-19：建议保留效果给荷花成长场景。同日清 PixMiller 水印。**2026-07-25**：用户拍板降级——业务未接线 →「已放弃/不适用」，退出近期验收队列。 | `#emotion-debug-ui` · `playEmotion('incenseComplete')` · 实现：`IncenseGreeting.js` | 2026-07-25 |
-| MilestoneGlow / 里程碑金辉 | UI可见 | 有问题 | 调试面板点「里程碑金辉」→ `milestone-glow` 27 帧（金光+蝴蝶）→ 末帧停约 2.5s → 回落。播放期归零实时金光。真实里程碑判定属 Backlog。 | 2026-07-19：金光蝴蝶须放慢 2×→已改 **4 fps**（原 8），请复测。**2026-07-23（合并门禁书面）**：**已知问题，不影响此次合并**（PR #2 `develop`→`main`）；产品壳正式路径不可见，仅调试面板。**回头复测**：预计 **2026-07-30 前**，在下一轮调试面板情绪素材节奏清理时专测 4 fps + 末帧停留观感；到期未测须改期并再写本列，禁止无限挂起。 | `#emotion-debug-ui` · `playEmotion('milestoneGlow')` | 2026-07-19 |
+| MilestoneGlow / 里程碑金辉 | UI可见 | 待人工测试 | **产品拍板（2026-07-31）**：正式路径**可接线**（非仅调试）。**现状**：调试面板仍可预览 `milestone-glow` @ **4 fps** + 末帧约 2.5s。**接线后主路径（待实现）**：约定节点（建议先 7 天）达成 → 产品壳播一次 MilestoneGlow → 同节点不重复；与 Celebrating 冲突只播 Glow。Brief `task-milestone-glow-product-wire.md`。 | **2026-07-19**：须放慢 2×→4 fps。**2026-07-23**：已知不挡 PR#2。**2026-07-30 前复测**未关。**2026-07-31 用户书面**：本就是产品需要，正式路径完全可以接线 → 升格接线任务；调试-only 终态废止。 | `?product=1` · Brief · `#emotion-debug-ui` 预览仍可用 | 2026-07-31 |
 | MindfulAcknowledge / 20 分钟阶段确认 | UI可见 | 待人工测试 | Companion = Here & Now，开一场会话并保持页面 ≥ **20 分钟墙钟** → `nod-bow` + 非模态 toast（`MINDFUL_FOCUS_MILESTONE` 池）。与强反馈冲突时静默让位。共享日额度最多 3 次（`focus-tiger.reminder-quota.v1`）。演示会话仅 1 分钟时建议用调试按钮或 `__mindfulReminderController`。 | — | 生产长计时 / 调试面板正念确认 · DEV：`__mindfulReminderController` · `__reminderQuotaManager` | 2026-07-18 |
 | Re-focus Acknowledge / 回归确认 | UI可见 | 已通过 | **用户路径**见场景 B：开 **`/?sessionMinutes=5`**。**Here & Now**：切走 **&gt;60s** → toast + nod-bow。**Flow State / Offline**：同样切走 **&gt;60s** → **不应**出现 Re-focus（离开是预期）。**&lt;20s 无反应属正确**。 | 2026-07-20 晚：DEMO/10s 门槛说明。**2026-07-21**：用户书面 Sit/Here&Now 切页 **测试 OK**；Flow State「结果不对、不匹配」→ 产品预期即与 Here & Now **不同**：Flow **故意无**文案+nod-bow。**同日晚**：用户确认原 8 条独立行批次全部关闭。 | `/?sessionMinutes=5` · **单元/控制器** smoke B（**非**真实切页） | 2026-07-21 |
 | stretchReminder / 舒展提醒 | UI可见 | 待人工测试 | 会话活跃累计满 **2 小时**（离开暂停；两场间隔 ≥30 分钟重置）→ `stretch-reminder` 17 帧 + toast。占共享日额度。演示短会话建议调试面板触发。 | — | 调试面板 / 生产长计时 · DEV：`__mindfulReminderController` | 2026-07-18 |
