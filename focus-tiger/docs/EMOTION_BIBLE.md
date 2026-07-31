@@ -252,7 +252,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 用户中断专注 | 安静等待、偶尔张望 | **措辞与表现修正**：不以「托腮思考、略显失落」为设计；按「不制造焦虑原则」定为**中性等待感**，不表现因用户离开而产生的失落/难过，强调「我在这里陪着你」而非「你让我失望了」 |
 | 用户重新回来 | 开心挥手欢迎 | 情绪键 `welcomeBack`（2D 序列 `wave-hello`）；一次性播放，播完回落 `Idle` |
 | 当日尚未完成任何练习 | **Idle 闭目坐禅**（不上 Sleeping）+ 可忽略 Honesty 轻量提示 | 提示文案：`Quiet time elsewhere can live here too.` / 「别处的静心，也可以记在这里。」（邀请式；含首日）；可忽略、非强制 |
-| 用户完成 Honesty Check-in | 已在 Idle：选时长 → 呼吸引导 → 记账（**不**播 dormantWake）。仅调试睡态：选时长 → `dormantWake` → 离 DORMANT | 按所选时长等同一次已完成会话；轻量 toast `HONESTY_CHECKIN_RECORDED`（「别处的静心，也算数」）+ 桥接；**不占用**共享提醒池 |
+| 用户完成 Honesty Check-in | 已在 Idle：选时长 → 呼吸引导 → 记账（**不**播 dormantWake）。仅调试睡态：选时长 → `dormantWake` → 离 DORMANT | 按所选时长等同一次已完成会话；轻量 toast `HONESTY_CHECKIN_RECORDED`（「别处的静心，也算数」）+ 桥接；**不占用**共享提醒池。**产品接线（2026-07-31）**：Idle 成功路径另加短 `mindfulAcknowledge`（`nod-bow`）→ 见 `SCENE_ANIMATION_WIRING.md` Slice A（实现前仍仅 toast） |
+| 应用内切换语言（ready locale 实际变化） | → `ja`：合十 `intentionSet`；→ `en`：鞠躬 `mindfulAcknowledge`；同日同目标语最多 1 次；Focusing/Celebrating 跳过 | **Slice A / v1.0.0 必交付**；详规 `SCENE_ANIMATION_WIRING.md`；**禁止** Celebrating |
 
 #### DORMANT 唤醒仪式（Honesty Check-in Ritual）
 
@@ -635,5 +636,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.65 | 2026-07-25 | `Sleeping` 睡姿循环改 `cloak-sleep` 末尾 030–034 双拍 pingpong（先 034→030），接续披毯入睡末帧；弃用旧 `sleeping/` 8 帧主线 |
 | 0.66 | 2026-07-25 | `Sleeping` 节奏 **1→2 fps**（用户反馈过慢；仍属极缓） |
 | 0.67 | 2026-07-26 | 冷启动 `onAppReady` 禁进 DORMANT / 不播 `cloakSleep`（开场即睡回归）；**拍板**回前台 ≥2h live sync **继续披毯进睡** |
+| 0.68 | 2026-07-31 | 交叉引用 `SCENE_ANIMATION_WIRING.md`：场景→动画接线表；v1.0.0 Slice A（切语合十/鞠躬、Honesty Idle 短点头）；互动表补语言切换行 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

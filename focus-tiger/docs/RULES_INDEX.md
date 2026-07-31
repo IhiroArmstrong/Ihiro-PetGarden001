@@ -118,6 +118,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `PRINCIPLES.md` | 硬性红线 |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
+| `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
 | `CHARACTER_BIBLE.md` | 角色设定 |
 | `DESIGN.md` | 产品语义与玩法 |
 | `RESPONSIVE_LAYOUT.md` | 窄屏 / 移动布局 |

@@ -20,7 +20,8 @@
 | 3D GLB（奖励柜/垫底） | 7+ |
 
 **主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **2 fps**（旧 `sleeping/` 目录保留）。  
-**2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。
+**2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。  
+**2026-07-31**：场景→产品触发对照见 **`SCENE_ANIMATION_WIRING.md`**（库存「仅调试」如何进正式路径；v1 Slice A 先接语言/Honesty Idle）。
 
 ---
 

@@ -168,6 +168,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 提醒 | 触发 | 动作 | 权威 |
 |---|---|---|---|
 | **stash · `chore/split-hints-from-pr2: temp prd untracked`** | 回到 hints 拆分 / `chore/split-hints-from-pr2` | 先 `stash list` + `stash show` 核内容，再决定保留或丢弃；**禁止未核就 drop** | `PROCESS.md` Backlog「stash · chore/split-hints-from-pr2」 |
+| **场景→动画接线 · v1 Slice A** | v1.0.0 冻结前 / 点名开工 | 实现 `feature/scene-animation-wiring-v1-slice-a`；产品稿已落盘 | `SCENE_ANIMATION_WIRING.md` · Brief `task-scene-animation-wiring-v1-slice-a.md` |
 
 ---
 
