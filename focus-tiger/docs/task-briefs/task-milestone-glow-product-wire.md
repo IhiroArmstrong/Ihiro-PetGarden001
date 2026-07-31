@@ -1,7 +1,7 @@
 # Task Brief · MilestoneGlow 正式产品路径接线
 
 **日期**：2026-07-31  
-**状态**：产品已拍板可接线 · **本 Brief 立项** · 实现另开分支（排在 Ambient ⑤⑥⑩ 自动化之后或并行，勿与对账填表 PR 混装）  
+**状态**：**实现中**（`feature/milestone-glow-product-wire`）· 首刀 streak-7  
 **角色**：Emotion / Session  
 **权威**：`EMOTION_BIBLE.md` MilestoneGlow · `DESIGN.md` 三级反馈 · Backlog「纪念奖励系统」  
 **拍板（2026-07-31 用户书面）**：长期里程碑仪式（金辉+蝴蝶）**本来就是产品需要**；正式产品路径**完全可以接线**——不再把「仅调试面板预览」当作终态。
