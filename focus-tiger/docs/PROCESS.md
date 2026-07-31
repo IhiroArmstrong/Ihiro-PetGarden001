@@ -101,7 +101,7 @@
 - **Hints anchor 校验分层（2026-07-22）**：方案 (1) `HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 双向对齐单测已落地；方案 (2) 语义分组暂缓；方案 (3) e2e bounding rect 写入 Backlog（`PROCESS.md`）
 - **Hints 补登记 + 关闭说明（2026-07-22）**：用户拍板——热力图 / 一分钟呼吸 / Honesty 桥接 / Idle Sound（`ambient-gated`）写入 `ONBOARDING_HINTS`；`help-remedy` 英中文增加「点气泡关掉；下次点 ?」。点「?」补救须铺齐；桥接场景不出 micro-ritual tip。
 - **Honesty 补登成功 toast（2026-07-22）**：用户拍板——成功记账也加轻量确认（对齐微仪式）。`HONESTY_CHECKIN_RECORDED`（EN `Quiet time elsewhere counts, too.` / ZH「别处的静心，也算数。」）居中 toast ≈4.5s + 桥接并存；abort 仍只出 `HONESTY_PENDING_LOST`。单测锁 `notifyRecorded`。**同日书面**：文案锁定现稿，勿改。
-- **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。同日续：**Reflection / Safari** 主路径顺利后关包；随后用户反馈「多日点 Reading 从未见意图回显」→ 已加固闩逻辑 + e2e（待人工复测回显米色条）。仍开：「?」朱砂红点用途拍板
+- **A 类开放行书面验收批次（2026-07-22）**：用户书面——FocusHUD 金环/今日同坐/streak、米色 How shall we sit?、hint 侧面、Sound gated、Hints 薄荷绿+用途简介、Choose pingpong+叠化、Honesty Idle 补登、LightProgression、Ambient Rim（砍宣传）均 **测试 OK** → 已关 `TEST_TRACKER`。同日续：**Reflection / Safari** 主路径顺利后关包；随后用户反馈「多日点 Reading 从未见意图回显」→ 已加固闩逻辑 + e2e（待人工复测回显米色条）。「?」朱红用途见 2026-07-23 / 7-30 click 圆点拍板（不再挂 tip 未读；见开放决策已关项）。
 - **Reflection 意图回显加固（2026-07-22）**：根因候选为 `beginFocusWithMode` 用 `pendingChoose?.text ?? ''` 在二次开表时抹掉已选意图；现改为 Arrival `onReady` 立刻闩上 + 空 pending 不抹 + 回显样式加强；e2e `reflection-intention-echo.spec.js`
 - **CI doc-contract 缺依赖红（2026-07-22）**：远端 `develop` 推上后 workflow **failure**（缺 `npm ci` → `three` `ERR_MODULE_NOT_FOUND`）。修于 `7b90283`；CI 绿 [`29919097318`](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/29919097318)（**success**）。红绿归档见 `DEV_WORKFLOW_QUALITY.md` §7.7
 - **跨会话指令冲突处理（2026-07-22）**：开 PR / 合并 `main` / push 前若距上次同类操作超过约 10–15 分钟，须先查仓库客观状态（开放 PR、tip、CI、`origin/*`）；发现更晚活动须先问用户。写入 `WORKFLOW.md` + `focus-tiger-regression-lock.mdc`（不要求读其他会话对话）
@@ -109,7 +109,7 @@
 - **姊妹分支同步纪律（2026-07-25）**：宽/窄屏长期并存失步事故升格为 §6.6 / N17；操作 SSOT 在 `WORKFLOW.md`「长期并存功能分支的同步纪律」（`git-sibling-branch-sync`）；禁止平行 `DEV_WORKFLOW_QUALITY_SUPPLEMENT*`
 - **自动化口径核对（2026-07-22）**：通读 `SCENARIO_TESTS` / `TEST_TRACKER`，凡「已自动化/已覆盖/已锁住」改为标明单元 / 控制器集成 / DOM 用户链路及测到源头或仅下游；修正 Offline/K 过时故事、Skip — begin 已有 e2e A2/A3、smoke J≠Reflection、e2e 约 20 条等
 - **「一分钟呼吸」微仪式 · Idle 接入（2026-07-22）**：`#micro-ritual-idle-entry`（青绿立体 secondary，Sit 上方）→ 60s 吸/呼 + smiling@4fps + 光环 **4s（不同拍）** → 记账 + SessionComplete + 中置 toast；HUD 直播；桥接时入口隐藏。**同日晚**：用户书面——撤销吸呼同拍；四钮改同族立体质感（次级同尺寸，Sit 略大）。e2e：`micro-ritual.spec.js`；**质感和谐待复测**
-- **「?」朱砂未读点（2026-07-22）**：用户确认保留「?」角朱砂点表示未读；不改挂提醒/通知
+- **「?」朱砂未读点（2026-07-22 → 7-23/7-30 已修订）**：7-22 曾书面保留「?」角朱砂表示 tip 未读；**现已废止**——onboarding 改薄荷绿 click 圆点（PR #30）；朱红留给真正通知/alert。见开放决策已关项与 `TEST_TRACKER` click 圆点行。
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
 - **应用内提醒偏好 + 横幅 UI 已接入（2026-07-22）**：设置入口改为 **Idle 热力图簇旁的小型时钟图标**（`ReminderPreferenceUI`，挂 `WeeklyPracticeHeatmap` cluster，Idle-only）；点击展开轻量面板，含「开启提醒」+ 时间选择器，标题键 `reminder.setting_title`。**2026-07-25**：面板常显「每日时分」说明（`reminder.daily_blurb`）+ 已过/已练软提示；onboarding Hint `in-app-reminder`。横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；已接冷启动 / `visibilitychange` 回前台 / 状态切换重评；关闭后本页会话内不再重复；DEV：`window.__inAppReminder`。**2026-07-23**：忙碌策略拍板 **`suppress`**。
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined` / **`micro_ritual_complete`**
@@ -288,7 +288,7 @@
 - **场景→动画接线 · v1.0.0 Slice A（2026-07-31 已拍板）**：产品稿 + Brief 已落；实现另开分支；**功能冻结前须交付**（见 Backlog「场景→动画接线」）。
 - **用户上传氛围乐（2026-07-31 已拍板）**：**v1.0.0 必交付**；砍法与 Brief 见上「最近拍板」/ Backlog；**实现已合 `develop`（PR #51）**（非开放产品决策，留此防重复开议题）。
 - **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。
-- **「?」朱砂红点用途（2026-07-22）**：用户书面——红点应「用于系统里面的通知，或者 alert 之类的」。现实现仍挂 onboarding「?」未读提示。待拍板：改挂应用内提醒/通知，还是保留引导未读角标。
+- **「?」未读线索 / 朱红用途（2026-07-23 / 7-30 已拍板）**：onboarding 探索性 tip 用薄荷绿 click 圆点（`triggerMode=click` / PR #30）；朱红 `--color-highlight` 留给真正通知/alert，**不再**挂在「?」钮内表示 tip 未读。详见 `ONBOARDING_HINTS.md` §〇 / `TEST_TRACKER` click 圆点 tier 行。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
 - across-tools 宽松 idle 兜底频率微调（当前常量 30 分钟，可再拍板）
