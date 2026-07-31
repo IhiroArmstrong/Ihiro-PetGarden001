@@ -669,8 +669,9 @@ async function init() {
       honestyCheckIn.openDurationChoices({ force: true });
     },
     onSound: () => {
-      // Legacy (⋯ / drawer Sound row removed 2026-07-30); note / ♪ use openSoundPanelFromNote.
-      ambientSoundscapeUI.activateSoundFromNarrow();
+      // Narrow ActionBar ♪ must share note semantics: mute when audible,
+      // close panel if open, else open (+ resume preferred after note-mute).
+      ambientSoundscapeUI.openSoundPanelFromNote();
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
@@ -765,6 +766,10 @@ async function init() {
   // same contract as `__honestyBridge`.
   window.__dailyCompletionStore = dailyCompletionStore;
   window.__companionModePicker = companionModePicker;
+  // Ambient e2e (mute↔resume / Focusing track audible) needs these in
+  // `vite preview` production builds — same contract as `__honestyBridge`.
+  window.__ambientSoundscape = ambientSoundscape;
+  window.__ambientSoundscapeUI = ambientSoundscapeUI;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
@@ -773,8 +778,6 @@ async function init() {
     window.__practiceDaysStore = practiceDaysStore;
     window.__honestyCheckIn = honestyCheckIn;
     window.__acrossToolsIdleGuard = acrossToolsIdleGuard;
-    window.__ambientSoundscape = ambientSoundscape;
-    window.__ambientSoundscapeUI = ambientSoundscapeUI;
   }
 
   /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
