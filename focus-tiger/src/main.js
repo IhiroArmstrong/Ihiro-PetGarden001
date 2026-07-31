@@ -70,10 +70,16 @@ import { DailyCompletionStore } from './core/DailyCompletionStore.js';
 import { FocusSessionEndStore } from './core/FocusSessionEndStore.js';
 import {
   PracticeDaysStore,
-  PRACTICE_STREAK_RING_TOTAL
+  PRACTICE_STREAK_RING_TOTAL,
+  countRecentPracticeStreak
 } from './core/PracticeDaysStore.js';
+import {
+  MilestoneGlowStore,
+  projectedStreakIncludingToday
+} from './core/MilestoneGlowStore.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import { resolveLocaleGreetingPlay } from './core/localeGreeting.js';
+import { getLocalDateKey } from './utils/localDate.js';
 import {
   HonestyCheckInController,
   resolveHonestyBreathMs
@@ -359,6 +365,7 @@ async function init() {
   window.__languagePreference = languagePreferenceUI;
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
+  const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
   const honestyCheckInUI = new HonestyCheckInUI(
@@ -389,10 +396,21 @@ async function init() {
     onCheckInComplete: () => {
       honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
-      honestyBridge?.onHonestyCheckInComplete();
-      // onShown 亦会 sync；此处双保险，避免桥接挡住一分钟呼吸 / Honesty 入口
-      syncHonestyIdleEntry();
-      syncOnboardingAutoHints();
+      const streak = practiceDaysStore.getRecentStreakDays();
+      const nodeId = milestoneGlowStore.claimOffer(streak);
+      const revealBridge = () => {
+        honestyBridge?.onHonestyCheckInComplete();
+        // onShown 亦会 sync；此处双保险，避免桥接挡住一分钟呼吸 / Honesty 入口
+        syncHonestyIdleEntry();
+        syncOnboardingAutoHints();
+      };
+      if (nodeId) {
+        emotionController.playEmotion('milestoneGlow', {
+          onComplete: revealBridge
+        });
+      } else {
+        revealBridge();
+      }
     },
     onPracticeDay: ({ durationMinutes } = {}) => {
       practiceDaysStore.markToday(durationMinutes);
@@ -670,8 +688,9 @@ async function init() {
       honestyCheckIn.openDurationChoices({ force: true });
     },
     onSound: () => {
-      // Legacy (⋯ / drawer Sound row removed 2026-07-30); note / ♪ use openSoundPanelFromNote.
-      ambientSoundscapeUI.activateSoundFromNarrow();
+      // Narrow ActionBar ♪ must share note semantics: mute when audible,
+      // close panel if open, else open (+ resume preferred after note-mute).
+      ambientSoundscapeUI.openSoundPanelFromNote();
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
@@ -766,17 +785,21 @@ async function init() {
   // same contract as `__honestyBridge`.
   window.__dailyCompletionStore = dailyCompletionStore;
   window.__companionModePicker = companionModePicker;
+  // Ambient e2e (mute↔resume / Focusing track audible) needs these in
+  // `vite preview` production builds — same contract as `__honestyBridge`.
+  window.__ambientSoundscape = ambientSoundscape;
+  window.__ambientSoundscapeUI = ambientSoundscapeUI;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
     window.__attentionSignals = attentionSignals;
     window.__reflectionMoment = reflectionMoment;
-    window.__practiceDaysStore = practiceDaysStore;
     window.__honestyCheckIn = honestyCheckIn;
     window.__acrossToolsIdleGuard = acrossToolsIdleGuard;
-    window.__ambientSoundscape = ambientSoundscape;
-    window.__ambientSoundscapeUI = ambientSoundscapeUI;
   }
+  // MilestoneGlow / streak e2e — production preview (CI) needs these hooks.
+  window.__milestoneGlowStore = milestoneGlowStore;
+  window.__practiceDaysStore = practiceDaysStore;
 
   /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
   let pendingChoose = null;
@@ -1083,12 +1106,28 @@ async function init() {
     endFocusChrome();
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
+    // 里程碑（如连续 7 天）同刻只播 MilestoneGlow，庆祝戳仍记账。
+    const todayKey = getLocalDateKey(now());
+    const projectedStreak = projectedStreakIncludingToday(
+      practiceDaysStore.getPracticedDateKeys(),
+      todayKey,
+      countRecentPracticeStreak
+    );
+    const milestoneNode = milestoneGlowStore.peekOffer(projectedStreak);
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
+      preferMilestoneGlow: Boolean(milestoneNode),
       emotionController,
       startCelebrating: () => {
         dailyCompletionStore.markCelebratedToday();
         stateManager.setState(STATES.CELEBRATE);
+      },
+      startMilestoneGlow: () => {
+        milestoneGlowStore.claimOffer(projectedStreak);
+        dailyCompletionStore.markCelebratedToday();
+        emotionController.playEmotion('milestoneGlow', {
+          onComplete: finishCompletedSession
+        });
       },
       onComplete: finishCompletedSession
     });

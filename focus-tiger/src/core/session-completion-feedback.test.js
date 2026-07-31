@@ -49,3 +49,31 @@ test('not yet celebrated → celebrating without sessionComplete', () => {
   assert.equal(celebrations, 1);
   assert.deepEqual(emotions, []);
 });
+
+test('preferMilestoneGlow → milestoneGlow; suppresses celebrating', () => {
+  const emotions = [];
+  let celebrations = 0;
+  let glows = 0;
+
+  const selected = triggerSessionCompletionFeedback({
+    hasCelebratedToday: false,
+    preferMilestoneGlow: true,
+    emotionController: {
+      playEmotion(key) {
+        emotions.push(key);
+      }
+    },
+    startCelebrating: () => {
+      celebrations += 1;
+    },
+    startMilestoneGlow: () => {
+      glows += 1;
+    },
+    onComplete: () => {}
+  });
+
+  assert.equal(selected, 'milestoneGlow');
+  assert.equal(glows, 1);
+  assert.equal(celebrations, 0);
+  assert.deepEqual(emotions, []);
+});
