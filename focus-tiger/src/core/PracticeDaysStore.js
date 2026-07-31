@@ -173,6 +173,11 @@ export class PracticeDaysStore {
     return countRecentPracticeStreak(keys, getLocalDateKey(this.now()));
   }
 
+  /** Practiced calendar keys only (no quiet-day fill). */
+  getPracticedDateKeys() {
+    return this._read().days.map((d) => d.date);
+  }
+
   /** Lit dots for the soft 7-day ring (capped). */
   getRingFilled(total = PRACTICE_STREAK_RING_TOTAL) {
     const cap = Math.max(1, total);
