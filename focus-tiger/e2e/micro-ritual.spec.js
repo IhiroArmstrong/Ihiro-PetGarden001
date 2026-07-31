@@ -148,6 +148,18 @@ test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="idle-after-session"]')
   ).toHaveCount(0);
+  await expect
+    .poll(async () => {
+      return page.evaluate(() => {
+        const b = document.querySelector(
+          'ft-onboarding-hint-bubble[data-hint-id="sit-button"]'
+        );
+        if (!b || b.open === false) return 'gone';
+        const r = b.getBoundingClientRect();
+        return r.width > 0 && r.height > 0 ? 'visible' : 'gone';
+      });
+    })
+    .toBe('gone');
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
   ).toHaveCount(0);

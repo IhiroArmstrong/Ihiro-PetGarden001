@@ -1,7 +1,7 @@
 # Task Brief · 375 既有 e2e 红（micro-ritual Sit tip + 抽屉挡 ♪）
 
 **日期**：2026-07-31  
-**状态**：**已排期** · 在 `feature/milestone-glow-product-wire` **之后**开工（用户确认修红须安排；本回合先接线 MilestoneGlow）  
+**状态**：**已实现** · 分支 `fix/375-micro-ritual-sit-tip-and-drawer-mute`（待合 `develop`）  
 **角色**：UI / Onboarding  
 **来源**：`audit-narrow-wide-ambient-parity.md`「已知无关本审计、另开修的既有红」；干净 develop 曾复现线索。
 
