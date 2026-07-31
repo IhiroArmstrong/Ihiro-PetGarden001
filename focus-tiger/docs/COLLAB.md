@@ -98,9 +98,17 @@ COLLAB.md（本文档，协作层）
 
 1. **单 worktree / 单分支单写者**：同一 worktree、同一分支，同一时间只能有一个 Agent/会话在写。并行开发必须开不同 worktree + 不同分支，禁止两个会话挤在同一 worktree 或同一分支上各干各的。
 2. **开新会话前先查现场**：开始新的 Cursor 会话前，先跑 `git worktree list` 与 `git reflog`，确认没有其他会话正在同一 worktree/分支上进行中的工作。
-3. **修复走短命分支 + PR**：修复类工作一律 `fix/*` 短命分支 + PR 合并进 `develop`，不直接在 `develop` 上改；合并后即删分支。
+3. **修复走短命分支 + PR**：修复类工作一律 `fix/*` 短命分支 + PR 合并进 `develop`，不直接在 `develop` 上改；合并后即删分支（删清单 = **PR head ∪ 正文 `Supersedes:` 旧支**，见下节）。
 4. **验收结论须带三元组**：每条测试/验收结论必须注明 **commit hash + worktree 路径 + 本地端口**（例：`6545723 · …/wt-docs-6.6 · :5173`），禁止只说「在 develop 上测到……」。
 5. **人工验收只认 `origin/develop` tip（强制）**：**SSOT** 见 [`TEST_TRACKER.md`](./TEST_TRACKER.md) 文首「人工验收唯一基线」。关单级结论若未报 hash、或 hash ≠ 当时 `origin/develop` tip → **无效**，须重新验证。feature/fix 试跑 ≠ 正式验收。
+
+### 分支寿命与健康度（摘要）
+
+> **SSOT**：[`PROCESS.md`](./PROCESS.md)「分支健康度」。索引 `RULES_INDEX` → `git-branch-health`。
+
+- **即时**：同主题优先刷新原分支；换名须 `Supersedes:` 并当日删旧 tip；合入后删 PR head ∪ Supersedes；开 PR 前做血统检查（勿把已重写残留的旧 tip 硬 merge 进 develop）。  
+- **开分支前**：主题可能重叠时跑 `npm run check:all-branches-health -- --topic …`，命中则先问用户。  
+- **例行（双周）**：`npm run check:all-branches-health`（提醒；**不**进 CI Required）。假 ahead、停更未 PR、空壳、疑似平行实现 → `needs_review`；有文档缺口则先 salvage 再归档。
 
 ---
 
@@ -119,4 +127,4 @@ COLLAB.md（本文档，协作层）
 细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
 
 ---
-*版本：1.3 · 2026-07-29 增补 §五.5 人工验收只认 `origin/develop` tip（SSOT：`TEST_TRACKER.md`）*
+*版本：1.4 · 2026-08-01 增补 §五「分支寿命与健康度」（SSOT：`PROCESS.md`）*

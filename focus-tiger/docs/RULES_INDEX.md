@@ -46,6 +46,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
 | `git-parallel-worktree` | 并行 Cursor 会话须用 git worktree 隔离写操作 | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-occupancy` | 工作树占用检测与 `.ft-session-lock`（一树一线） | `WORKFLOW.md` | 工作树占用检测与 `.ft-session-lock` |
+| `git-branch-health` | 分支健康度（即时纪律 + 双周普查；非 CI 硬拦） | `focus-tiger/docs/PROCESS.md` | 分支健康度 |
 | `regression-gate` | 交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…） | `.cursor/rules/focus-tiger-regression-lock.mdc` | 交互修复完工门禁 |
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
 | `doc-code-contract` | 文档-代码结构性对齐（docs:check） | `focus-tiger/docs/DOC_CODE_CONTRACT.md` | DOC_CODE_CONTRACT.md |
@@ -69,6 +70,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」 | 主张可按时间戳自动清别人的锁；主张可静默 stash 别人的脏树；完整复述清锁 SOP |
+| `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
@@ -158,6 +160,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-01 | 新增 `git-branch-health`：分支健康度即时纪律 + `check:all-branches-health` 双周普查（非 CI Required）；SSOT 在 `PROCESS.md` |
 | 2026-07-31 | 扩展 `agent-token-cost`：CI 红 / 多文件冲突本地验证预算（先摘要、问新 worktree、本地最多 1 轮、最终 push+CI）；`WORKFLOW` 并行 worktree 补 3a 短引用 |
 | 2026-07-30 | 新增 `git-worktree-occupancy`：`.ft-session-lock` + 开工三条硬规则 + `check:worktree-occupancy`；SSOT 在 `WORKFLOW.md` |
 | 2026-07-23 | 初版：盘点规则文档、指定主题 SSOT、接入 `rules:doc-check`，收敛 commit/跨会话等平行复述 |
