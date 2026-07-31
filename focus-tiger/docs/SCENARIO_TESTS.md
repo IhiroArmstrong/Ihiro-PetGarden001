@@ -193,12 +193,12 @@
 > **拍板（2026-07-30 修订）**：工程保留可点切语 + 六语槽；**v1.0.0 对外 English + Japanese**（`en`+`ja` ready；Language 可见）。中文延后（zh draft）。  
 > **自动化**：unit `i18n.test.js`；e2e `language-switch.spec.js`（en↔ja；draft 不出现）。  
 > **人工（v1.0）**：375 日文排版抽测；**不**要求 zh 过发布 checklist。  
-> **动画（2026-07-31 · Slice A）**：切到 **日本語** 应播合十（`intentionSet`）；切回 **English** 应播鞠躬（`mindfulAcknowledge`）；同日同语不重复。详规 `SCENE_ANIMATION_WIRING.md`（**实现前本步可暂无动画**）。
+> **动画（2026-07-31 · Slice A）**：切到 **日本語** 应播合十（`intentionSet`）；切回 **English** 应播鞠躬（`mindfulAcknowledge`）；同日同语不重复。详规 `SCENE_ANIMATION_WIRING.md`（`feature/scene-animation-wiring-v1-slice-a`）。
 
 1. 打开 `?product=1` → ⋯ / 窄屏抽屉 → **Language** → 选 **日本語**。
-2. 确认 Sit / Honesty / Arrival / Companion 等为日文、无 `{intention}` 未替换；**（Slice A 落地后）**阿寅播合十后回 Idle。
-3. 再切回 **English**（落地后应播鞠躬）。刷新后语言保持（`focus-tiger.locale.v1`）。
-4. （DEV 仍可挂 `__languagePreference` / `__i18n`；正式验收以 UI 为准。）
+2. 确认 Sit / Honesty / Arrival / Companion 等为日文、无 `{intention}` 未替换；阿寅播合十后回 Idle。
+3. 再切回 **English**（应播鞠躬）。刷新后语言保持（`focus-tiger.locale.v1`）。
+4. （DEV 仍可挂 `__languagePreference` / `__i18n` / `__sceneAnimationSliceA`；正式验收以 UI 为准。）
 
 ---
 

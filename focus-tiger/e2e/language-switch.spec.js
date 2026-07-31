@@ -5,11 +5,13 @@ import {
 } from './helpers/product-shell.js';
 
 const LOCALE_KEY = 'focus-tiger.locale.v1';
+const GREETING_KEY = 'focus-tiger.locale-greeting.v1';
 const PANEL = '#language-preference-panel';
 const SIT = '#btn-focus';
 
 /**
  * v1.0.0 English + Japanese: Language UI → 日本語 → back to English; persist preference.
+ * Slice A: ja → intentionSet greeting; en → mindfulAcknowledge; same-day re-pick skips.
  * Draft locales (zh/es/…) must not appear.
  */
 test('Language UI: switch to 日本語 then back to English', async ({ page }) => {
@@ -32,6 +34,12 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
   const storedJa = await page.evaluate((key) => localStorage.getItem(key), LOCALE_KEY);
   expect(storedJa).toBe('ja');
 
+  await expect
+    .poll(async () =>
+      page.evaluate(() => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null)
+    )
+    .toBe('intentionSet');
+
   await page.locator('#language-preference-en').check();
   await expect(page.locator(SIT)).toContainText(/Sit with Yin/i, {
     timeout: 5_000
@@ -39,4 +47,27 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
 
   const storedEn = await page.evaluate((key) => localStorage.getItem(key), LOCALE_KEY);
   expect(storedEn).toBe('en');
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null)
+    )
+    .toBe('mindfulAcknowledge');
+
+  const greetingRaw = await page.evaluate((key) => localStorage.getItem(key), GREETING_KEY);
+  expect(greetingRaw).toBeTruthy();
+  const greeting = JSON.parse(greetingRaw);
+  expect(greeting.locales.sort()).toEqual(['en', 'ja']);
+
+  // Same-day re-pick ja must not replay
+  await page.evaluate(() => {
+    window.__sceneAnimationSliceA.lastLocaleGreeting = 'probe';
+  });
+  await page.locator('#language-preference-ja').check();
+  await expect(page.locator(SIT)).toContainText(/Yinと坐る/, { timeout: 5_000 });
+  await page.waitForTimeout(300);
+  const afterRepeat = await page.evaluate(
+    () => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null
+  );
+  expect(afterRepeat).toBe('probe');
 });

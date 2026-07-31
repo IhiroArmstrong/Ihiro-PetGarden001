@@ -108,6 +108,8 @@ export class HonestyCheckInController {
     this._busy = false;
     /** 点开 Honesty 至桥接结束（或 abort 后离开）期间为 true，入口保持隐藏 */
     this._checkInFlowOpen = false;
+    /** Slice A：本轮是否从 DORMANT 播了 dormantWake（记账后不再叠 nod） */
+    this._wokeFromDormant = false;
 
     this.ui.handlers = {
       onPromptClick: () => this._onPromptClick(),
@@ -250,6 +252,7 @@ export class HonestyCheckInController {
 
     this._busy = false;
     this._pendingMinutes = null;
+    this._wokeFromDormant = false;
     this._checkInFlowOpen = true;
     this.ui.hideIdleEntry();
     // 取消进行中的呼吸计时，避免 force 重开后 onBreathComplete 带着空 pending 触发
@@ -265,7 +268,8 @@ export class HonestyCheckInController {
     this._pendingMinutes = minutes;
     this.ui.hideIdleEntry();
 
-    if (this.stateManager.state === STATES.DORMANT) {
+    this._wokeFromDormant = this.stateManager.state === STATES.DORMANT;
+    if (this._wokeFromDormant) {
       this.emotionController.playEmotion(EMOTION_KEYS.DORMANT_WAKE, {
         holdPose: true
       });
@@ -276,6 +280,8 @@ export class HonestyCheckInController {
   _onBreathComplete() {
     const minutes = this._pendingMinutes;
     this._pendingMinutes = null;
+    const wokeFromDormant = this._wokeFromDormant;
+    this._wokeFromDormant = false;
 
     if (!Number.isFinite(minutes) || minutes <= 0) {
       console.warn(
@@ -306,6 +312,10 @@ export class HonestyCheckInController {
     this.ui.hide();
     // 轻量确认（类似微仪式 toast）；须在桥接前，abort 路径不得调用
     this.notifyRecorded();
+    // Slice A：Idle 补登成功短点头；睡态已有 dormantWake，不再叠第二套
+    if (!wokeFromDormant) {
+      this.emotionController.playEmotion(EMOTION_KEYS.MINDFUL_ACKNOWLEDGE);
+    }
     this.onCheckInComplete();
   }
 }
