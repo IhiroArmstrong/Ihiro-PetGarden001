@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-07-31（UTC+8）
+**最后更新时间**：2026-08-01（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **分支健康度普查（2026-08-01）**：`PROCESS`「分支健康度」+ `COLLAB` 摘要；`npm run check:all-branches-health`（双周提醒，不进 CI Required）。防换名重写残留（假 ahead）；开分支可用 `--topic` 查重叠。
 - **375 修红 · micro-ritual Sit tip + 抽屉挡 ♪（2026-07-31）**：A) 呼吸开始后才 sync onboarding autos（修过早 sync 导致 `sit-button` 残留）；B) ActionBar 高于抽屉 backdrop，点 ♪ 关抽屉开 Soundscape；去掉 e2e `force: true`。Brief `fix-375-e2e-reds.md`。
 - **MilestoneGlow 产品路径接线（2026-07-31）**：连续练习 **streak-7**（及预留 21/100）达成时产品壳播 `MilestoneGlow`；与 Celebrating 同刻只播 Glow、庆祝戳仍记账；Honesty 补登跨节点时先 Glow 再桥接。`MilestoneGlowStore` + e2e `milestone-glow-product.spec.js`。
 - **场景→动画接线表 · v1.0.0 Slice A（2026-07-31 拍板）**：正式稿 `SCENE_ANIMATION_WIRING.md`；**Slice A 升格为 v1.0.0 必交付**（ja 合十 / en 鞠躬；Honesty Idle 补登短点头；微仪式完成已接线核对）。Brief `task-briefs/task-scene-animation-wiring-v1-slice-a.md`；**实现分支** `feature/scene-animation-wiring-v1-slice-a`（PR #59）。docs 合入 `develop` 见 PR #58。全表其余 Slice B/C 见 Backlog。
@@ -407,6 +408,60 @@
 > **进程收尾**：这次若起过开发服务器 / Playwright，请到终端或 Process Explorer 确认已关，避免后台持续耗电。
 
 门禁条文 SSOT：`.cursor/rules/focus-tiger-browser-energy.mdc`「进程收尾提醒」。
+
+---
+
+## 分支健康度（即时纪律 + 双周普查）
+
+> **SSOT（本节目）**。协作摘要见 [`COLLAB.md`](./COLLAB.md)「分支寿命与健康度」。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md) → `git-branch-health`。  
+> **由来（2026-08-01）**：`feature/hints-click-trigger` 停更后被换名分支平行重写合入（PR #30），旧 tip 未删，表现为「假 ahead + 大 behind」——周检若只清 `ahead=0` 空壳会漏掉。
+
+**不进 CI Required**：`npm run check:all-branches-health` 是例行提醒（有需审查时 exit 2），**禁止**接成 merge 门禁。
+
+### 即时纪律（合入 / 换名 / 开 PR）
+
+1. **优先刷新原分支**：同主题默认 `checkout` 旧支 → merge/rebase `origin/develop` → 继续；只有冲突不可控才换名新开。  
+2. **换名须 Supersedes + 当日删旧支**：新分支 / PR 正文写明 `Supersedes: <旧分支名>`；开 PR 或合入**当天**删除/归档旧远端 tip（勿只删 PR head、留下前任分支）。  
+3. **合入后删清单 = PR head ∪ Supersedes**：与 `COLLAB`「合并后即删」一致；空壳（`ahead=0` 且已是 develop 祖先）亦删。  
+4. **开 PR 前血统检查**（Agent）：tip 是否已是 `origin/develop` 祖先？develop 是否已有同 subject？硬 merge 是否会回退大模块？任一项异常 → 先汇报，禁止盲目开 PR。
+
+### 开分支前（防闷头重写）
+
+新建 `feature/*` / `fix/*` 前，若任务主题与近期分支/PR 明显重叠：
+
+```bash
+cd focus-tiger && npm run check:all-branches-health -- --topic <keywords>
+```
+
+命中「可能平行实现」→ **先问用户**再 `worktree add`，勿直接开干。
+
+### 例行（双周清单）
+
+每 **1～2 周**（可与下班前 Git 同步同日）跑一次：
+
+```bash
+cd focus-tiger && npm run check:all-branches-health
+```
+
+扫 `origin` 上 `feature/*` `fix/*` `docs/*` `chore/*`（排除 `archive/*` `backup/*` `main` `develop`）；附录列出仅本地同前缀分支。对每支输出：behind / ahead、最后提交、有无 open PR、需审查标记与（若可）主题重叠提示。
+
+### 「需审查」判定（MVP · 收紧后）
+
+任一条即标 `needs_review`（提醒，非 CI 红）：
+
+| 条件 | 含义 |
+|---|---|
+| `behind ≥ 50` 且 `ahead > 0` | **假 ahead / 重写残留**（不依赖时间——可捕 hints 类） |
+| `behind ≥ 50` 且无 open PR | 重漂移且无人跟进 |
+| 无 open PR 且 `ahead > 0` 且最后提交 **≥ 7 天** | 停更未合入 tip |
+| tip 已是 develop 祖先（`ahead=0`）且无 open PR | 空壳长命，可删 |
+| 分支名词与近 **30 天**已合入 PR 的 head/标题有实义重叠，且 tip 仍 `ahead>0` 或非祖先 | **可能已被平行实现** → 优先核实能否归档 |
+
+「≥ 14 天未更新」仅作升级措辞，**不是**唯一门槛（「behind>50 且 2 周」会漏掉约一周内的换名重写）。
+
+关键词重叠：停用词（`fix`/`feat`/`docs`/`chore`/…）+ 过短 token；命中 ≥2 个实义词或 1 个较长专名再标注。二期可再加同 subject / patch-id（本 MVP 不做）。
+
+有需审查时：先确认有无独有价值（常为文档缺口）→ 需要则从 `origin/develop` 新开短分支 salvage → **补完并合入后再**删/归档旧支（补缺口与归档分两步，勿图省事直接扔）。
 
 ---
 

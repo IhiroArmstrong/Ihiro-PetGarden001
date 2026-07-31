@@ -311,6 +311,40 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-branch-health',
+    title: '分支健康度（即时纪律 + 双周普查；非 CI 硬拦）',
+    ssotPath: 'focus-tiger/docs/PROCESS.md',
+    ssotSection: '分支健康度',
+    ssotMustContain: [
+      /check:all-branches-health/,
+      /假 ahead/,
+      /Supersedes/,
+      /不进 CI Required|不进 CI/
+    ],
+    topicSignals: [
+      /分支健康度/,
+      /check:all-branches-health/,
+      /假 ahead/,
+      /git-branch-health/
+    ],
+    mustCite: [/PROCESS\.md/],
+    restatementFingerprints: [
+      /check:all-branches-health/,
+      /假 ahead/,
+      /Supersedes/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: ['focus-tiger/docs/COLLAB.md'],
+    forbiddenOutsideSsot: [
+      {
+        id: 'branch-health-as-ci-required',
+        pattern:
+          /(?:勾成|设为|接入|写成)\s*(?:develop\s*)?Required[^。\n]{0,40}check:all-branches-health|check:all-branches-health[^。\n]{0,40}(?:勾成|设为|接入)\s*(?:develop\s*)?Required/,
+        note: '分支健康度普查不得写成 CI Required / merge 硬拦'
+      }
+    ]
+  },
+  {
     id: 'regression-gate',
     title: '交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…）',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
