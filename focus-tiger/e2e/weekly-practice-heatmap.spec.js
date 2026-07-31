@@ -274,7 +274,8 @@ test('375: ActionBar note opens Soundscape panel (same as drawer Sound)', async 
   // Opt-in: fresh product shell starts with music off
   expect(before.enabled === false || before.enabled == null).toBeTruthy();
 
-  await page.locator('#ft-narrow-mute-btn').click({ force: true });
+  // No force: ActionBar ♪ must sit above drawer backdrop when sheet is open.
+  await page.locator('#ft-narrow-mute-btn').click();
   await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
     timeout: 5_000
   });

@@ -802,6 +802,9 @@ export class OnboardingHintsUI {
       bubble.open = false;
       bubble.message = '';
       bubble.actionLabel = '';
+      // Drop id so e2e/querySelector for "active tip" do not match closed shells.
+      delete bubble.dataset.hintId;
+      bubble.removeAttribute('data-hint-id');
     }
     this._visibleIds.delete(hintId);
     this._paintMeta.delete(hintId);
