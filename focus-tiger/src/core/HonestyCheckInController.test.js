@@ -146,6 +146,11 @@ test('zero-completion honesty from Idle skips dormantWake', () => {
   ui.handlers.onDurationSelect(20);
   assert.equal(emotionCalls.includes('dormantWake'), false);
   assert.equal(stateManager.state, STATES.IDLE);
+  ui.handlers.onBreathComplete();
+  assert.ok(
+    emotionCalls.includes('mindfulAcknowledge'),
+    'Idle zero-completion path plays Slice A nod on success'
+  );
 });
 
 test('honesty duration select sits up and holds pose; breath end leaves DORMANT', () => {
@@ -187,6 +192,11 @@ test('honesty duration select sits up and holds pose; breath end leaves DORMANT'
     1
   );
   assert.equal(emotionCalls.filter((c) => c.key === 'idle').length, 0);
+  assert.equal(
+    emotionCalls.filter((c) => c.key === 'mindfulAcknowledge').length,
+    0,
+    'DORMANT wake must not stack Slice A nod'
+  );
 });
 
 test('same-day re-entry skips sleep wake; still records and fires bridge hook', () => {
@@ -235,12 +245,22 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
   assert.equal(completeCalls, 1);
   assert.equal(recordedNotifyCalls, 1);
   assert.equal(store.hasCompletedToday(), true);
+  assert.ok(
+    emotionCalls.includes('mindfulAcknowledge'),
+    'Idle honesty success should play short nod (Slice A)'
+  );
 });
 
 test('honesty breath complete invokes onCheckInComplete for bridge hook', () => {
   let completeCalls = 0;
   let recordedNotifyCalls = 0;
+  const emotionCalls = [];
   const { controller, stateManager, ui } = createControllerDeps({
+    emotionController: {
+      playEmotion(key) {
+        emotionCalls.push(key);
+      }
+    },
     extra: {
       onCheckInComplete: () => {
         completeCalls += 1;
@@ -257,6 +277,12 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
   assert.equal(completeCalls, 1);
   assert.equal(recordedNotifyCalls, 1);
   assert.equal(stateManager.state, STATES.IDLE);
+  assert.ok(emotionCalls.includes('dormantWake'));
+  assert.equal(
+    emotionCalls.includes('mindfulAcknowledge'),
+    false,
+    'DORMANT path must not stack nod after dormantWake'
+  );
   // 桥接未答前保持占用，避免 Honesty 入口叠住 Yes/No
   assert.equal(controller._busy, true);
   assert.equal(controller._checkInFlowOpen, true);

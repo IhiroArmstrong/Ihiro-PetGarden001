@@ -66,7 +66,7 @@
 
 - **375 修红 · micro-ritual Sit tip + 抽屉挡 ♪（2026-07-31）**：A) 呼吸开始后才 sync onboarding autos（修过早 sync 导致 `sit-button` 残留）；B) ActionBar 高于抽屉 backdrop，点 ♪ 关抽屉开 Soundscape；去掉 e2e `force: true`。Brief `fix-375-e2e-reds.md`。
 - **MilestoneGlow 产品路径接线（2026-07-31）**：连续练习 **streak-7**（及预留 21/100）达成时产品壳播 `MilestoneGlow`；与 Celebrating 同刻只播 Glow、庆祝戳仍记账；Honesty 补登跨节点时先 Glow 再桥接。`MilestoneGlowStore` + e2e `milestone-glow-product.spec.js`。
-- **场景→动画接线表 · v1.0.0 Slice A（2026-07-31 拍板）**：正式稿 `SCENE_ANIMATION_WIRING.md`；**Slice A 升格为 v1.0.0 必交付**（ja 合十 / en 鞠躬；Honesty Idle 补登短点头；微仪式完成已接线核对）。Brief `task-briefs/task-scene-animation-wiring-v1-slice-a.md`；实现另开 `feature/scene-animation-wiring-v1-slice-a`。全表其余 Slice B/C 见 Backlog。
+- **场景→动画接线表 · v1.0.0 Slice A（2026-07-31 拍板）**：正式稿 `SCENE_ANIMATION_WIRING.md`；**Slice A 升格为 v1.0.0 必交付**（ja 合十 / en 鞠躬；Honesty Idle 补登短点头；微仪式完成已接线核对）。Brief `task-briefs/task-scene-animation-wiring-v1-slice-a.md`；**实现分支** `feature/scene-animation-wiring-v1-slice-a`（PR #59）。docs 合入 `develop` 见 PR #58。全表其余 Slice B/C 见 Backlog。
 - **MilestoneGlow 正式路径可接线（2026-07-31 拍板）**：用户书面——长期里程碑金辉+蝴蝶**本就是产品需要**，正式路径**完全可以接线**；不再以「仅调试预览」为终态。Brief `task-briefs/task-milestone-glow-product-wire.md`；实现另开 `feature/milestone-glow-product-wire`（排在 Ambient ⑤⑥⑩ 自动化之后或并行）。旧「7/30 前仅复测调试节奏」口径废止，改为**接线任务**；4 fps 观感随接线验收。
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **Ambient 窄宽对账填表（2026-07-31）**：`audit-narrow-wide-ambient-parity.md` 10 项已按 `develop` 代码+既有 e2e/unit 填状态（1–4/7–9 ✅；5–6/10 ⚠️ 缺 DOM 听感断言；另记 micro-ritual tip / 抽屉挡 ♪ 既有红）。未重跑 Playwright（本机缺 Chromium）。

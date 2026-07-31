@@ -69,11 +69,11 @@
 | Arrival Choose 确认 | `intentionSet` → `palms-together` / nod-bow 路径（以圣经现状为准） | ack | **已接线** | 与门闩并行，不挡 Companion |
 | Arrival Welcome | `smiling` / blink-smile | — | **已接线** | |
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
-| Honesty · **Idle** 选时长并呼吸结束成功记账 | `mindfulAcknowledge`（`nod-bow`）与 toast 并行 | ack | **Slice A** | 今日缺口：仅 toast、无角色动画；**禁止** Celebrating |
+| Honesty · **Idle** 选时长并呼吸结束成功记账 | `mindfulAcknowledge`（`nod-bow`）与 toast 并行 | ack | **Slice A · 已实现** | 睡态路径不叠 nod；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | `sessionComplete` | light | **已接线**（v1 核对） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
-| 语言切换 → **日本語** | `intentionSet`（`palms-together` 合十） | ack | **Slice A** | 仅 `locale` **实际变化**时；同日同目标语最多 1 次；Focusing / Celebrating / 叠层忙碌时跳过或延后至 Idle |
-| 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow` 鞠躬） | ack | **Slice A** | 同上限频；不用 dance |
+| 语言切换 → **日本語** | `intentionSet`（`palms-together` 合十） | ack | **Slice A · 已实现** | 仅 `locale` **实际变化**时；同日同目标语最多 1 次；Focusing / Celebrating / 叠层忙碌时跳过不补发 |
+| 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow` 鞠躬） | ack | **Slice A · 已实现** | 同上限频；不用 dance |
 | 当日首次冷启动问候 | `welcomeBack` / `nodGreeting` | ack | Slice B | 须限频；勿每次刷新 |
 
 ### 5.2 Focus
@@ -140,3 +140,4 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-07-31 | 初版：全表 + v1.0.0 Slice A（语言合十/鞠躬、Honesty Idle 短认可、微仪式已接线核对）；用户拍板纳入第一版 |
+| 2026-07-31 | Slice A 实现：`localeGreeting` + Honesty Idle `mindfulAcknowledge`；表内状态改为已实现 |

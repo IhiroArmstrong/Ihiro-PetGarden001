@@ -78,6 +78,7 @@ import {
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
+import { resolveLocaleGreetingPlay } from './core/localeGreeting.js';
 import { getLocalDateKey } from './utils/localDate.js';
 import {
   HonestyCheckInController,
@@ -932,6 +933,27 @@ async function init() {
     window.__arrivalPractice = arrivalPractice;
     window.__lightProgression = lightProgression;
   }
+
+  /** Slice A：切语问候（ja 合十 / en 鞠躬）；e2e 可读 lastLocaleGreeting */
+  const sceneAnimationSliceA = {
+    lastLocaleGreeting: /** @type {string | null} */ (null)
+  };
+  window.__sceneAnimationSliceA = sceneAnimationSliceA;
+  onLocaleChange((locale) => {
+    const overlayBusy =
+      honestyCheckInUI.phase !== 'hidden' ||
+      arrivalPractice?.isOpen?.() === true ||
+      reflectionMoment?.isOpen?.() === true ||
+      microRitualUI?.isOpen?.() === true;
+    const decision = resolveLocaleGreetingPlay({
+      locale,
+      sessionState: stateManager.state,
+      overlayBusy
+    });
+    if (!decision.play || !decision.emotionKey) return;
+    sceneAnimationSliceA.lastLocaleGreeting = decision.emotionKey;
+    emotionController.playEmotion(decision.emotionKey);
+  });
 
   syncInAppReminderBanner = () => {
     reminderPreferenceUI?.refresh?.();

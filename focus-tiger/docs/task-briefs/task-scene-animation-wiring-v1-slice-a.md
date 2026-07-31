@@ -1,11 +1,11 @@
 # Task Brief · 场景→动画接线 · v1.0.0 Slice A
 
 **日期**：2026-07-31  
-**状态**：产品已拍板 · **本 Brief 立项** · 实现另开 `feature/scene-animation-wiring-v1-slice-a`（独立 worktree；勿与 Ambient / MilestoneGlow 实现混装）  
+**状态**：产品已拍板 · **Slice A 实现中 / 本分支** `feature/scene-animation-wiring-v1-slice-a`  
 **角色**：Emotion / i18n / Honesty  
 **权威**：`SCENE_ANIMATION_WIRING.md` §四–§六 · `EMOTION_BIBLE.md` 反馈分级 · `MICRO_RITUAL_PLAN.md`（微仪式已接线）
 
-**拍板（2026-07-31 用户书面）**：接线表正式进产品稿与 Backlog；**Slice A 纳入 v1.0.0 必交付**；语言切换要做，日语用鞠躬/合十（不用庆祝舞）。
+**拍板（2026-07-31 用户书面）**：接线表正式进产品稿与 Backlog；**Slice A 纳入 v1.0.0 必交付**；语言切换要做，日语用鞠躬/合十（不用庆祝舞）。**同日书面**：开工 Slice A + docs 分支经 PR 合入 `develop`。
 
 ---
 
