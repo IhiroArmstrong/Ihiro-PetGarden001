@@ -69,7 +69,7 @@
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **Ambient 窄宽对账填表（2026-07-31）**：`audit-narrow-wide-ambient-parity.md` 10 项已按 `develop` 代码+既有 e2e/unit 填状态（1–4/7–9 ✅；5–6/10 ⚠️ 缺 DOM 听感断言；另记 micro-ritual tip / 抽屉挡 ♪ 既有红）。未重跑 Playwright（本机缺 Chromium）。
 - **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。关单级人工仍须 §8+§9。
-- **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** workflow 已有 `schedule`（UTC 02:00）+ `workflow_dispatch` + job `timeout-minutes: 120`（在 **`develop`**）；但 GitHub **`schedule` 读默认分支 `main` 上的 YAML**，而 `main` 仍为 **60** → 近几日 nightly 约 60 分钟 **cancelled**（例：[30535254813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30535254813)）。下一步：把 `focus-tiger-e2e-full.yml` 同步进 **`main`**（须你明确授权合 `main`）。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`（客户端禁硬编码 Secret；dev/prod 分文件；`VITE_*` 仅公开配置）。
+- **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** `timeout-minutes: 120` 已由 PR [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47) 同步进 **`main`**（schedule 可读到 120）。但单 job 120 仍可能打满 cancel（例 dispatch [#10](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30447662309)）。**Plan A（进行中）**：2 分片 + JUnit `always()` + 砍 HTML 大报告，让取消/失败仍留下红绿清单。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 en+ja。见审计 §9。
@@ -633,20 +633,22 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 | 项 | 状态 |
 |---|---|
 | PR→`develop` 轻量冒烟 | ✅ `pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）；Required 已勾；**解放本地 Agent** |
-| 全量 e2e workflow | ✅ `focus-tiger-e2e-full.yml`：`workflow_dispatch` + `schedule` cron `0 2 * * *`（UTC）；job 在 **`develop`** 为 **120** 分钟 + `--workers=1` |
-| 定时任务是否按 120 跑 | ❌ **未生效**：`schedule` 读 **`main` 上的 YAML**，`main` 仍为 **60** → nightly ~60m **cancelled**（非缺 API Key） |
+| 全量 e2e workflow | ✅ `focus-tiger-e2e-full.yml`：`workflow_dispatch` + `schedule` cron `0 2 * * *`（UTC）；**120m** + `--workers=1` |
+| 定时任务是否按 120 跑 | ✅ **YAML 已在 `main`**（PR #47，2026-07-31）。下一 schedule / dispatch 应按 120；#11 及更早仍为合并前 60m cancel |
+| Plan A（分片+清单） | 🔨 **进行中**（`chore/e2e-full-shard-junit`）：matrix **2 shards** + JUnit **`if: always()`** + 去掉 HTML 大报告（#10 曾 ~14GB）+ summary job 打印红绿 |
 | Actions Secrets（API Key） | **当前不需要**：workflow **无** `secrets.*`；套件打本地静态壳。v1.1 云 E2E 再配 |
 | 环境/密钥隔离文档 | ✅ `docs/ENV_CONFIG.md` + `.env.example`（client + cloud） |
 
 #### 仍待办
 
-1. **把 `focus-tiger-e2e-full.yml`（120m + workers=1）同步到 `main`**（单独小 PR→`main`，或你授权的 `develop`→`main` 合并）——否则 cron 继续 60m 取消。
-2. 全量套件墙钟 / flaky：即使 120m 生效，仍须能跑完并区分断言失败 vs 导航噪声（与「降低 visibility flaky」互补）。
-3. （可选）是否把全量 e2e 挂到 PR→`main` / 合并门——**另议**；现设计为非 PR 门闩、夜间+手动。
+1. ~~把 120m workflow 同步到 `main`~~ ✅ PR #47。
+2. **合入 Plan A 并再同步 workflow→`main`**（schedule 只读 `main` YAML）：否则夜间仍是单 job，可能继续打满 120 cancel。
+3. 全量套件 flaky 根因（goto / 断言噪声）：与「降低 visibility flaky」互补；Plan A 只保证**有清单**，不声称压掉 flaky。
+4. （可选）是否把全量 e2e 挂到 PR→`main` / 合并门——**另议**；现设计为非 PR 门闩、夜间+手动。
 
-- **验收**：夜间或 dispatch 的远端 run 能跑完（非 cancelled）并给出 pass/flaky/fail；失败可区分业务 vs 环境。
-- **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 绿」写成序列观感通过；不为当前套件虚构 API Key。
-- **排期**：`main` workflow 同步 = **立刻可做**（等你授权合 `main`）。其余工程护栏相对「本地桌面 APP 打包选型」仍次优先。
+- **验收**：夜间或 dispatch 的远端 run 给出 **JUnit/注解可读的 pass/fail/flaky**（即使某 shard cancel，已跑完的 shard 仍有 artifact）；失败可区分业务 vs 环境。
+- **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 绿」写成序列观感通过；不为当前套件虚构 API Key；本机不跑全量 e2e 马拉松。
+- **排期**：Plan A = **进行中**；flaky 根因相对「本地桌面 APP 打包选型」仍次优先。
 - **勿混淆**：本 Backlog 的「全量」≠ PR 的 `test:pr-smoke`。
 
 ### Backlog:发布前安全网（v1.0.0 tag 前）
