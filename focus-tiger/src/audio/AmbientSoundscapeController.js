@@ -30,6 +30,7 @@ export const AMBIENT_TRACK_RAIN = 'rain';
 export const AMBIENT_TRACK_DREAMLAND = 'dreamland';
 export const AMBIENT_TRACK_INVISIBLE_BEAUTY = 'invisible-beauty';
 export const AMBIENT_TRACK_KISS_THE_SKY = 'kiss-the-sky';
+export const AMBIENT_TRACK_FROZEN_IN_LOVE = 'frozen-in-love';
 
 /** 默认曲目：Mer-Ka-Ba（工程 id 仍为 singing-bowl） */
 export const DEFAULT_AMBIENT_TRACK_ID = AMBIENT_TRACK_SINGING_BOWL;
@@ -63,6 +64,11 @@ export const AMBIENT_TRACKS = [
     id: AMBIENT_TRACK_KISS_THE_SKY,
     src: '/audio/ambient/kiss-the-sky-aakash-gandhi.mp3',
     labelKey: 'AMBIENT_TRACK_KISS_THE_SKY'
+  },
+  {
+    id: AMBIENT_TRACK_FROZEN_IN_LOVE,
+    src: '/audio/ambient/frozen-in-love-aakash-gandhi.mp3',
+    labelKey: 'AMBIENT_TRACK_FROZEN_IN_LOVE'
   }
 ];
 
