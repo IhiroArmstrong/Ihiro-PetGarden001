@@ -317,7 +317,7 @@ export class EmotionController {
       },
 
       // Arrival Choose 确认：16:9 点头 pingpong（正放鞠躬→倒放回坐姿）；
-      // 与前后动画转场用 1s CapCut 叠化。合十 palms-together 仅调试保留。
+      // 与前后动画转场用 1s CapCut 叠化。日语切语合十走 palmsTogether（A′），勿混用。
       intentionSet: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -676,8 +676,120 @@ export class EmotionController {
         if (!started) {
           this._finishOneShot(options, 'stretchReminder');
         }
+      },
+
+      // Slice A′：日语切语真合十（与 intentionSet/nod 解耦）
+      palmsTogether: (options = {}) => {
+        this._playCompanionSequenceOnce('palmsTogether', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
+      // Honesty 长补登 / 微仪式变体：breath-halo-hq pingpong 一次后回 Idle
+      breathHaloHq: (options = {}) => {
+        this._playCompanionSequenceOnce('breathHaloHq', options, {
+          loop: true,
+          loopMode: 'pingpong',
+          maxCycles: 1,
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+        });
+      },
+
+      yawnStretch: (options = {}) => {
+        this._playCompanionSequenceOnce('yawnStretch', options);
+      },
+      teaDrinking: (options = {}) => {
+        this._playCompanionSequenceOnce('teaDrinking', options);
+      },
+      earWiggleHeadTouch: (options = {}) => {
+        this._playCompanionSequenceOnce('earWiggleHeadTouch', options);
+      },
+
+      // Curiosity：张望整段 p1→p4，播完回 Idle（不经 IdleOrchestrator）
+      gazeLookAround: (options = {}) => {
+        const chain = COMPANION_GESTURE_CHAINS.find(
+          (c) => c.id === 'gazeLookAround'
+        );
+        const sequences = chain?.sequences ?? [
+          'gazeP1CenterBlinkLeft',
+          'gazeP2LeftToUp',
+          'gazeP3TowardRight',
+          'gazeP4RightToDown'
+        ];
+        this._playCompanionSequenceChainOnce(sequences, options, 'gazeLookAround');
       }
     };
+  }
+
+  /**
+   * Slice B 陪伴手势：播一条入库序列，结束后按 oneshot 回 Idle。
+   * @param {string} sequenceName SPRITE_SEQUENCES key
+   * @param {EmotionOptions} options
+   * @param {object} [playExtras]
+   */
+  _playCompanionSequenceOnce(sequenceName, options = {}, playExtras = {}) {
+    if (!this.spritePlayer) {
+      console.warn(
+        `[EmotionController] ${sequenceName}: spritePlayer 未接入，回落 idle`
+      );
+      this._finishOneShot(options, sequenceName);
+      return;
+    }
+    this._leaveIdleBaseline();
+    this._use2DMainline();
+    const started = this.spritePlayer.play(
+      sequenceName,
+      this._oneShotPlayOpts(
+        {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          ...playExtras
+        },
+        sequenceName
+      )
+    );
+    if (!started) {
+      this._finishOneShot(options, sequenceName);
+    }
+  }
+
+  /**
+   * @param {ReadonlyArray<string>} sequences
+   * @param {EmotionOptions} options
+   * @param {string} tag
+   */
+  _playCompanionSequenceChainOnce(sequences, options = {}, tag = 'chain') {
+    if (!this.spritePlayer || !sequences.length) {
+      this._finishOneShot(options, tag);
+      return;
+    }
+    this._leaveIdleBaseline();
+    this._use2DMainline();
+    const crossFadeMs = Number(options.crossFadeMs) || MICRO_CROSS_FADE_MS;
+    let i = 0;
+    const playNext = () => {
+      if (i >= sequences.length) {
+        this._finishOneShot(options, tag);
+        return;
+      }
+      const idx = i;
+      const name = sequences[i++];
+      const started = this.spritePlayer.play(name, {
+        loop: false,
+        loopMode: 'none',
+        crossFadeMs: idx === 0 ? crossFadeMs : MICRO_CROSS_FADE_MS,
+        freezeUntilCrossFadeEnds: true,
+        onComplete: playNext
+      });
+      if (!started) {
+        this._finishOneShot(options, tag);
+      }
+    };
+    playNext();
   }
 
   /** 2D 主线：隐藏 3D canvas，避免透明精灵后露出垫底老虎。 */
@@ -881,7 +993,7 @@ export class EmotionController {
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
       breathHaloHq: 'breath-halo-hq 备选',
-      palmsTogether: 'palms-together 合十(仅调试)',
+      palmsTogether: 'palms-together 合十(日语问候)',
       intentionNod: 'intention-nod Choose点头',
       lotusFrontRising: 'lotus-front-rising',
       lotusChestHalo: 'lotus-chest-halo',
@@ -1175,5 +1287,11 @@ export const EMOTION_KEYS = Object.freeze({
   DIZZY_BLINK: 'dizzyBlink',
   CURIOUS_TILT: 'curiousTilt',
   MINDFUL_ACKNOWLEDGE: EMOTIONS.mindfulAcknowledge,
-  STRETCH_REMINDER: EMOTIONS.stretchReminder
+  STRETCH_REMINDER: EMOTIONS.stretchReminder,
+  PALMS_TOGETHER: 'palmsTogether',
+  BREATH_HALO_HQ: 'breathHaloHq',
+  YAWN_STRETCH: 'yawnStretch',
+  TEA_DRINKING: 'teaDrinking',
+  EAR_WIGGLE_HEAD_TOUCH: 'earWiggleHeadTouch',
+  GAZE_LOOK_AROUND: 'gazeLookAround'
 });

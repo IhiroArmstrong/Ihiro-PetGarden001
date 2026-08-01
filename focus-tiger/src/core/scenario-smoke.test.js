@@ -252,7 +252,8 @@ test('smoke A7–A8: first timed → celebrating; after celebrate stamp → sess
     startCelebrating: () => {
       celebrations += 1;
     },
-    onComplete: () => {}
+    onComplete: () => {},
+    random: () => 0
   });
   assert.equal(second, 'sessionComplete');
   assert.equal(celebrations, 1);

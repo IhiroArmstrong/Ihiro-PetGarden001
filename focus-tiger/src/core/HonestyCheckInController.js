@@ -13,6 +13,10 @@ import { STATES } from './StateManager.js';
 import { EMOTION_KEYS } from './EmotionController.js';
 import { shouldEnterDormantIdle } from './dormantTrigger.js';
 import { DORMANT_IDLE_MS } from '../utils/Constants.js';
+import {
+  SCENE_ANIM_EVENTS,
+  resolveSceneAnimation
+} from './sceneAnimationDispatcher.js';
 
 /** 产品默认呼吸引导时长（ms）；与 HonestyCheckInUI 倒计时一致。 */
 export const HONESTY_BREATH_MS = 10_000;
@@ -312,9 +316,17 @@ export class HonestyCheckInController {
     this.ui.hide();
     // 轻量确认（类似微仪式 toast）；须在桥接前，abort 路径不得调用
     this.notifyRecorded();
-    // Slice A：Idle 补登成功短点头；睡态已有 dormantWake，不再叠第二套
+    // Slice A/B：Idle 补登 — ≤29 nod / ≥30 breathHaloHq；睡态已有 dormantWake，不叠
     if (!wokeFromDormant) {
-      this.emotionController.playEmotion(EMOTION_KEYS.MINDFUL_ACKNOWLEDGE);
+      const decision = resolveSceneAnimation({
+        event: SCENE_ANIM_EVENTS.HONESTY_COMPLETED,
+        sessionState: this.stateManager.state,
+        durationMinutes: minutes,
+        wokeFromDormant: false
+      });
+      if (decision.play && decision.emotionKey) {
+        this.emotionController.playEmotion(decision.emotionKey);
+      }
     }
     this.onCheckInComplete();
   }

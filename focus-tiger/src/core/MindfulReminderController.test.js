@@ -36,7 +36,9 @@ function setup({ quota = 3 } = {}) {
         return true;
       }
     },
-    getCopy: (key) => key
+    getCopy: (key) => key,
+    // stretch pool: prefer stretchReminder for stable assertions
+    random: () => 0
   });
   return { controller, emotionController, emotions, shown };
 }

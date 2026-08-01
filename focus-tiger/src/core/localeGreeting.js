@@ -1,6 +1,7 @@
 /**
- * Locale-change greeting (SCENE_ANIMATION_WIRING Slice A).
- * ja → intentionSet (合十); other ready locales → mindfulAcknowledge (鞠躬).
+ * Locale-change greeting (SCENE_ANIMATION_WIRING Slice A / A′).
+ * ja → palmsTogether（真合十；与 Arrival Choose 的 intentionSet/nod 解耦）；
+ * other ready locales → mindfulAcknowledge（鞠躬）.
  * Same local day + same target locale: at most once. Focusing/Celebrate/busy → skip, no replay.
  */
 
@@ -10,10 +11,10 @@ export const LOCALE_GREETING_STORAGE_KEY = 'focus-tiger.locale-greeting.v1';
 
 /**
  * @param {string} locale
- * @returns {'intentionSet' | 'mindfulAcknowledge'}
+ * @returns {'palmsTogether' | 'mindfulAcknowledge'}
  */
 export function emotionKeyForLocaleGreeting(locale) {
-  return locale === 'ja' ? 'intentionSet' : 'mindfulAcknowledge';
+  return locale === 'ja' ? 'palmsTogether' : 'mindfulAcknowledge';
 }
 
 /**

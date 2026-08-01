@@ -61,13 +61,22 @@ export const POINTER_INTERACTION_CONFIG = {
  * @param {THREE.Camera} deps.camera
  * @param {import('../character/PoseManager.js').PoseManager} deps.poseManager
  * @param {import('../core/EmotionController.js').EmotionController} deps.emotionController
+ * @param {() => void} [deps.onIdleNearStill] Slice B curiosity opportunity (Idle hover)
  */
 export class PointerInteraction {
-  constructor({ canvas, camera, poseManager, emotionController }) {
+  constructor({
+    canvas,
+    camera,
+    poseManager,
+    emotionController,
+    onIdleNearStill = null
+  }) {
     this.canvas = canvas;
     this.camera = camera;
     this.poseManager = poseManager;
     this.emotionController = emotionController;
+    this.onIdleNearStill =
+      typeof onIdleNearStill === 'function' ? onIdleNearStill : null;
 
     this._box = new THREE.Box3();
     this._center = new THREE.Vector3();
@@ -382,13 +391,27 @@ export class PointerInteraction {
     const cooldownElapsed = now - this._lastCuriousAt;
     if (
       elapsed >= POINTER_INTERACTION_CONFIG.stillDurationMs &&
-      cooldownElapsed >= POINTER_INTERACTION_CONFIG.curiousCooldownMs &&
-      this.isCuriousTiltAllowed()
+      cooldownElapsed >= POINTER_INTERACTION_CONFIG.curiousCooldownMs
     ) {
-      this._lastCuriousAt = now;
-      const { x, y } = this._stillAnchor;
-      this._stillAnchor = { x, y, since: now };
-      this._play(EMOTION_KEYS.CURIOUS_TILT, { stillMs: elapsed });
+      if (this.isCuriousTiltAllowed()) {
+        this._lastCuriousAt = now;
+        const { x, y } = this._stillAnchor;
+        this._stillAnchor = { x, y, since: now };
+        this._play(EMOTION_KEYS.CURIOUS_TILT, { stillMs: elapsed });
+      } else if (
+        this.onIdleNearStill &&
+        this.isPointerResponseAllowed() &&
+        !this.isCuriousTiltAllowed()
+      ) {
+        // Idle 靠近悬停：交给 Scene Animation Dispatcher（5% + 1h 冷却）
+        const key = this.emotionController.getCurrentEmotionKey?.();
+        if (key === EMOTION_KEYS.IDLE || key === 'idle' || !key) {
+          this._lastCuriousAt = now;
+          const { x, y } = this._stillAnchor;
+          this._stillAnchor = { x, y, since: now };
+          this.onIdleNearStill();
+        }
+      }
     }
 
     // 保留既有冷却语义；非 idle 基底（含 Celebrating / 调试试播）时短暂后再检查但不排队动作。
