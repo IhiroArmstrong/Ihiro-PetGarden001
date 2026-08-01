@@ -79,7 +79,7 @@
 | idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
 | blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
 | blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
-| wave-hello | 19 | waveHello | **已接线** welcomeBack（pingpong×1→Idle） | Slice B：欢迎池 60%；2026-08-01 倒放回落 |
+| wave-hello | 19 | waveHello / waveHelloWelcome | **已接线** welcomeBack→`waveHelloWelcome`（正+倒一次→Idle） | 调试可播仅正放 `waveHello`；2026-08-02 禁 player pingpong |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
@@ -120,7 +120,7 @@
 | sessionComplete / mindfulAcknowledge / stretchReminder | 上表 | 已接线 |
 | dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake 保留素材未删） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-07-21 试替倒放） |
 | haloBreathing | halo-breathing | 调试可单独播；**Slice B** 接 Honesty 长补登等 |
-| welcomeBack / nodGreeting / curiousTilt | wave-hello / nod-greeting / **blink-smile** | welcomeBack：pingpong×1 再叠 Idle；nodGreeting：正放一次（欢迎池 40%，无倒放）；curiousTilt 已改 blink-smile |
+| welcomeBack / nodGreeting / curiousTilt | waveHelloWelcome / nod-greeting / **blink-smile** | welcomeBack：烘焙正+倒一次再叠 Idle（禁 player pingpong）；nodGreeting：正放一次（欢迎池 40%）；curiousTilt 已改 blink-smile |
 | milestoneGlow | milestone-glow（备选 breath-halo-hq 未用） | **产品路径已接线**；HQ 备选待 Slice B |
 | riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |

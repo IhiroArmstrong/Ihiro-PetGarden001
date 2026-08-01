@@ -35,6 +35,24 @@
  */
 export const WAVE_HELLO_SWAY_FRAMES = Object.freeze([8, 9, 10, 11, 12]);
 
+/** 挥手正放 playlist：抬手 → 摇摆×2 → 放手（末帧坐姿）。 */
+export const WAVE_HELLO_FORWARD_INDICES = Object.freeze([
+  1, 2, 3, 4, 5, 6, 7,
+  ...WAVE_HELLO_SWAY_FRAMES,
+  ...WAVE_HELLO_SWAY_FRAMES,
+  13, 14, 15, 16, 17, 18, 19
+]);
+
+/**
+ * 欢迎池用：正放 + 倒放一次（跳过重复末帧），整段 loop:none 播完。
+ * 不用 player pingpong+maxCycles：倒放结束后引擎会 direction→1 准备下一轮正放，
+ * 而本素材 frame_001 已是抬手，观感等同「又正放一遍」。
+ */
+export const WAVE_HELLO_PINGPONG_ONCE_INDICES = Object.freeze([
+  ...WAVE_HELLO_FORWARD_INDICES,
+  ...[...WAVE_HELLO_FORWARD_INDICES].reverse().slice(1)
+]);
+
 /**
  * 一次性情绪目标时长带（秒）。
  * 舒适参考：`dormantWake` ≈5.3s、`nodGreeting` ≈3.8s、`milestoneGlow` 叙事段 ≈6.8s。
@@ -193,22 +211,27 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。
-  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold（观感上的完全重复帧）。
-  // 约 29 拍 @ 8fps ≈ 3.6s（ONE_SHOT ack 带下限）。
-  // 产品路径 welcomeBack：EmotionController 以 pingpong×1 再倒放回落坐姿后叠化 Idle
-  // （2026-08-01）；manifest 仍保留正向 playlist，由 play 选项覆盖 loopMode。
+  // 挥手欢迎（调试逐条试播）——仅正放；产品路径见 waveHelloWelcome。
+  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
   waveHello: {
     animation: 'wave-hello',
     frameCount: 19,
-    frameIndices: [
-      1, 2, 3, 4, 5, 6, 7,
-      ...WAVE_HELLO_SWAY_FRAMES,
-      ...WAVE_HELLO_SWAY_FRAMES,
-      13, 14, 15, 16, 17, 18, 19
-    ],
+    frameIndices: [...WAVE_HELLO_FORWARD_INDICES],
     fps: 8,
     loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // WelcomeBack 产品路径：正放+倒放一次烘焙进 playlist，播完 CapCut → Idle。
+  // 2026-08-02：勿用 loopMode pingpong+maxCycles（倒放后会再起正放，且 001 已抬手）。
+  waveHelloWelcome: {
+    animation: 'wave-hello',
+    frameCount: 19,
+    frameIndices: [...WAVE_HELLO_PINGPONG_ONCE_INDICES],
+    fps: 8,
+    loop: false,
+    loopMode: 'none',
     holdLastFrame: false
   },
 
