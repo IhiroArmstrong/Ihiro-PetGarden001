@@ -53,6 +53,22 @@ export const WAVE_HELLO_PINGPONG_ONCE_INDICES = Object.freeze([
   ...[...WAVE_HELLO_FORWARD_INDICES].reverse().slice(1)
 ]);
 
+
+/** ear-wiggle-head-touch：1…54 正放 playlist。 */
+export const EAR_WIGGLE_FORWARD_INDICES = Object.freeze(
+  Array.from({ length: 54 }, (_, i) => i + 1)
+);
+
+/**
+ * 正放 + 倒放一次（跳过重复末帧），整段 loop:none。
+ * 与 waveHelloWelcome 同契约：禁 player pingpong+maxCycles（倒放后会准备下一轮正放）。
+ */
+export const EAR_WIGGLE_PINGPONG_ONCE_INDICES = Object.freeze([
+  ...EAR_WIGGLE_FORWARD_INDICES,
+  ...[...EAR_WIGGLE_FORWARD_INDICES].reverse().slice(1)
+]);
+
+
 /**
  * 一次性情绪目标时长带（秒）。
  * 舒适参考：`dormantWake` ≈5.3s、`nodGreeting` ≈3.8s、`milestoneGlow` 叙事段 ≈6.8s。
@@ -177,9 +193,11 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 候选陪伴手势：耳摇 → 双手摸头顶（大幅度）。
+  // 产品路径：正放+倒放一次烘焙（禁 player pingpong），播完 CapCut → Idle。
   earWiggleHeadTouch: {
     animation: 'ear-wiggle-head-touch',
     frameCount: 54,
+    frameIndices: [...EAR_WIGGLE_PINGPONG_ONCE_INDICES],
     fps: 10,
     loop: false,
     loopMode: 'none',
@@ -211,7 +229,7 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手欢迎 · 产品路径 welcomeBack：仅正放至放手坐姿，再由 EmotionController CapCut ~1s → Idle。
+  // 挥手欢迎 · 调试仅正放；产品路径见 waveHelloWelcome。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
   waveHello: {
     animation: 'wave-hello',
@@ -223,8 +241,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 调试对照：正放+倒放烘焙（末帧=抬手 frame_001）。非产品路径——倒放看起来像再挥一次，且入库试播无 CapCut。
-  // 2026-08-02b：产品改回 waveHello 正放 + CapCut；本键仅供对照「倒放到抬手」观感。
+  // WelcomeBack 产品路径：正放+倒放一次烘焙进 playlist，播完 CapCut → Idle。
+  // 禁 player pingpong+maxCycles（倒放后引擎会准备下一轮正放）。入库试播无 CapCut——验收用姿态「挥手欢迎」。
   waveHelloWelcome: {
     animation: 'wave-hello',
     frameCount: 19,

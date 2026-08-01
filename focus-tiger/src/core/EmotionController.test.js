@@ -189,7 +189,7 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('welcomeBack plays waveHello forward once then CapCut idle (~1s)', () => {
+test('welcomeBack plays baked waveHelloWelcome once (forward+reverse) then CapCut idle', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -212,7 +212,7 @@ test('welcomeBack plays waveHello forward once then CapCut idle (~1s)', () => {
     }
   });
 
-  assert.equal(plays[0].name, 'waveHello');
+  assert.equal(plays[0].name, 'waveHelloWelcome');
   assert.equal(plays[0].options.loop, false);
   assert.equal(plays[0].options.loopMode, 'none');
   assert.notEqual(plays[0].options.loopMode, 'pingpong');
@@ -224,6 +224,35 @@ test('welcomeBack plays waveHello forward once then CapCut idle (~1s)', () => {
   assert.equal(plays[1].options.crossFadeMs, 1000);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('earWiggleHeadTouch');
+
+  assert.equal(plays[0].name, 'earWiggleHeadTouch');
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
+  assert.equal(plays[0].options.crossFadeMs, 1000);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 1000);
 });
 
 test('nodGreeting plays once forward (no reverse) then CapCut to idle', () => {

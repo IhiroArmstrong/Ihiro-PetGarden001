@@ -79,7 +79,7 @@
 | idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
 | blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
 | blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
-| wave-hello | 19 | waveHello / waveHelloWelcome | **已接线** welcomeBack→`waveHello`（正放至坐姿→~1s CapCut Idle） | `waveHelloWelcome` 仅调试对照（正+倒末帧抬手）；2026-08-02b |
+| wave-hello | 19 | waveHello / waveHelloWelcome | **已接线** welcomeBack→`waveHelloWelcome`（正+倒一次→~1s CapCut Idle） | 调试可播仅正放 `waveHello`；禁 player pingpong；2026-08-02c |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
@@ -97,7 +97,7 @@
 | breath-halo-hq | 16 | breathHaloHq | 仅清单 | **Slice B**：Glow 备选 / 长补登光环 |
 | tea-drinking | 24 | teaDrinking | 仅调试 | **Slice B**：深夜/茶歇（冷却） |
 | yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却） |
-| ear-wiggle-head-touch | 54 | earWiggleHeadTouch | 仅调试 | **Slice B**：摸头较长 |
+| ear-wiggle-head-touch | 54 | earWiggleHeadTouch | **已接线** 好奇池等（正+倒一次→~1s CapCut Idle） | Slice B；与 welcome 同契约；2026-08-02c |
 | gaze-p1…p4 | 15/13/13/25 | gazeP* | 仅调试 | **Slice B**：稀有好奇张望 |
 | lotus-front-rising | 7 | lotusFrontRising | 仅清单 | **Slice C**：Grow / 纪念 |
 | lotus-chest-halo | 10 | lotusChestHalo | 仅清单 | **Slice C**：Grow Together |
@@ -120,7 +120,7 @@
 | sessionComplete / mindfulAcknowledge / stretchReminder | 上表 | 已接线 |
 | dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake 保留素材未删） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-07-21 试替倒放） |
 | haloBreathing | halo-breathing | 调试可单独播；**Slice B** 接 Honesty 长补登等 |
-| welcomeBack / nodGreeting / curiousTilt | waveHello / nod-greeting / **blink-smile** | welcomeBack：正放 `waveHello` + CapCut（禁倒放/pingpong）；nodGreeting：正放一次（欢迎池 40%）；curiousTilt 已改 blink-smile |
+| welcomeBack / nodGreeting / curiousTilt / earWiggle | waveHelloWelcome / nod-greeting / **blink-smile** / earWiggle 烘焙正+倒 | welcomeBack/earWiggle：烘焙正+倒一次 + CapCut（禁 player pingpong）；nodGreeting：正放一次；curiousTilt：blink-smile |
 | milestoneGlow | milestone-glow（备选 breath-halo-hq 未用） | **产品路径已接线**；HQ 备选待 Slice B |
 | riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |

@@ -2,10 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   advanceSpriteFrame,
+  shouldHideOverlayOnFinish,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
 import { buildFramePaths } from './CharacterConfig.js';
-import { SPRITE_SEQUENCES, WAVE_HELLO_FORWARD_INDICES, WAVE_HELLO_PINGPONG_ONCE_INDICES } from './spriteManifest.js';
+import {
+  SPRITE_SEQUENCES,
+  WAVE_HELLO_FORWARD_INDICES,
+  WAVE_HELLO_PINGPONG_ONCE_INDICES,
+  EAR_WIGGLE_FORWARD_INDICES,
+  EAR_WIGGLE_PINGPONG_ONCE_INDICES
+} from './spriteManifest.js';
 
 function collectFrames({ frameCount, loopMode, steps }) {
   const seen = [0];
@@ -20,6 +27,21 @@ function collectFrames({ frameCount, loopMode, steps }) {
   }
   return seen;
 }
+
+test('oneshot finish keeps overlay when onComplete will CapCut to idle', () => {
+  assert.equal(
+    shouldHideOverlayOnFinish({ holdLastFrame: false, hasOnComplete: true }),
+    false
+  );
+  assert.equal(
+    shouldHideOverlayOnFinish({ holdLastFrame: false, hasOnComplete: false }),
+    true
+  );
+  assert.equal(
+    shouldHideOverlayOnFinish({ holdLastFrame: true, hasOnComplete: false }),
+    false
+  );
+});
 
 test('waveHelloWelcome bakes forward+reverse once without player pingpong', () => {
   assert.equal(SPRITE_SEQUENCES.waveHello.loopMode, 'none');
@@ -43,6 +65,21 @@ test('waveHelloWelcome bakes forward+reverse once without player pingpong', () =
     WAVE_HELLO_PINGPONG_ONCE_INDICES[WAVE_HELLO_FORWARD_INDICES.length - 1],
     19
   );
+});
+
+test('earWiggleHeadTouch bakes forward+reverse once without player pingpong', () => {
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.loop, false);
+  assert.deepEqual(
+    SPRITE_SEQUENCES.earWiggleHeadTouch.frameIndices,
+    [...EAR_WIGGLE_PINGPONG_ONCE_INDICES]
+  );
+  assert.equal(
+    EAR_WIGGLE_PINGPONG_ONCE_INDICES.length,
+    EAR_WIGGLE_FORWARD_INDICES.length * 2 - 1
+  );
+  assert.equal(EAR_WIGGLE_PINGPONG_ONCE_INDICES.at(-1), 1);
+  assert.equal(EAR_WIGGLE_PINGPONG_ONCE_INDICES[53], 54);
 });
 
 test('pingpong skips the duplicated last frame and restarts from frame 001', () => {
