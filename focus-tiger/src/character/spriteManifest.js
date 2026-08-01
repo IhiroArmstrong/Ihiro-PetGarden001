@@ -196,6 +196,8 @@ export const SPRITE_SEQUENCES = {
   // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold（观感上的完全重复帧）。
   // 约 29 拍 @ 8fps ≈ 3.6s（ONE_SHOT ack 带下限）。
+  // 产品路径 welcomeBack：EmotionController 以 pingpong×1 再倒放回落坐姿后叠化 Idle
+  // （2026-08-01）；manifest 仍保留正向 playlist，由 play 选项覆盖 loopMode。
   waveHello: {
     animation: 'wave-hello',
     frameCount: 19,
