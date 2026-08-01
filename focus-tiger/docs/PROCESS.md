@@ -700,7 +700,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 | PR→`develop` 轻量冒烟 | ✅ `pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）；Required 已勾；**解放本地 Agent** |
 | 全量 e2e workflow | ✅ `focus-tiger-e2e-full.yml`：`workflow_dispatch` + `schedule` cron `0 2 * * *`（UTC）；**120m** + `--workers=1` |
 | 定时任务是否按 120 跑 | ✅ **YAML 已在 `main`**（PR #47，2026-07-31）。下一 schedule / dispatch 应按 120；#11 及更早仍为合并前 60m cancel |
-| Plan A（分片+清单） | 🔨 **进行中**（`chore/e2e-full-shard-junit`）：matrix **2 shards** + JUnit **`if: always()`** + 去掉 HTML 大报告（#10 曾 ~14GB）+ summary job 打印红绿 |
+| Plan A（分片+清单） | ✅ **#63→main**；验 [#15](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30707227694)（~55m Failure+JUnit，非 2h cancel）。后续：修 #15 稳定红（`fix/e2e-plan-a-stable-reds`） |
 | Actions Secrets（API Key） | **当前不需要**：workflow **无** `secrets.*`；套件打本地静态壳。v1.1 云 E2E 再配 |
 | 环境/密钥隔离文档 | ✅ `docs/ENV_CONFIG.md` + `.env.example`（client + cloud） |
 

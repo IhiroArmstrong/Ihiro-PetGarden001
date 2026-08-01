@@ -786,14 +786,30 @@ async function init() {
 
   function getOnboardingScene() {
     const arrivalPhase = arrivalPractice?.getStep?.() ?? null;
-    const quickEl = document.getElementById('quick-start-focus');
     const honestyEntry = document.getElementById('honesty-idle-entry');
     return {
       honestyVisible: honestyCheckInUI.phase === 'prompt',
       honestyIdleEntryVisible: Boolean(
         honestyEntry && !honestyEntry.hidden && honestyEntry.isConnected
       ),
-      quickStartVisible: Boolean(quickEl && !quickEl.hidden && quickEl.isConnected),
+      // Prefer on-canvas ⚡ ball when dock pill is wide/narrow-parked off-screen.
+      quickStartVisible: (() => {
+        for (const id of [
+          'ft-wide-home-quickstart',
+          'ft-narrow-home-quickstart',
+          'quick-start-focus'
+        ]) {
+          const el = document.getElementById(id);
+          if (!el || el.hidden || !el.isConnected) continue;
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.right > 0) {
+            if (r.top < window.innerHeight && r.left < window.innerWidth) {
+              return true;
+            }
+          }
+        }
+        return false;
+      })(),
       honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
       arrivalOpen: arrivalPractice?.isOpen?.() ?? false,
       arrivalPhase:
@@ -812,10 +828,6 @@ async function init() {
       hasEverCompletedSession: hasEndedAnySession,
       weeklyHeatmapVisible: weeklyPracticeHeatmap?.isVisible?.() === true,
       microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true,
-      quickStartVisible: (() => {
-        const el = document.getElementById('quick-start-focus');
-        return Boolean(el && !el.hidden && el.getClientRects().length > 0);
-      })(),
       narrowPark: document.body.classList.contains('ft-narrow-park'),
       narrowSheetOpen: idleChrome?.isSheetOpen?.() === true,
       wideParkSecondary: document.body.classList.contains('ft-wide-park-secondary'),

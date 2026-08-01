@@ -156,8 +156,11 @@ test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stay
   await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
+  // Wide park keeps dock pills off-screen; the visible ⚡ is the home ball.
   await expect(page.locator('#btn-focus')).toBeHidden();
-  await expect(page.locator('#quick-start-focus')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-ctas')).toHaveClass(/is-arrival-quick/);
   await expect(
     arrival.getByRole('button', { name: /Calm|平静|Not Sure|不确定/i }).first()
   ).toBeVisible({ timeout: 8_000 });
@@ -186,7 +189,9 @@ test('Arrival Breath: Sit stays hidden; Quick Start stays (wide)', async ({
     arrival.getByText(/Inhale|Exhale|吸气|呼气/i).first()
   ).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeHidden();
-  await expect(page.locator('#quick-start-focus')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-sit')).toBeHidden();
+  await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
+  await expect(page.locator('#ft-wide-home-ctas')).toHaveClass(/is-arrival-quick/);
 });
 
 /**
