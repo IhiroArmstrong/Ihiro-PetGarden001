@@ -417,7 +417,8 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：一次性响应行为；播完淡出让位回落到 Idle。
+      // WelcomeBack（挥手欢迎）：正放抬手/摇摆/放手 → 倒放回落坐姿 → CapCut 叠化 Idle。
+      // 2026-08-01：末帧与 Idle 闭目坐姿差大，仅正放易跳；pingpong×1 后再回 Idle。
       welcomeBack: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -427,14 +428,32 @@ export class EmotionController {
         }
         this._leaveIdleBaseline();
         this._use2DMainline();
-        this.spritePlayer.play(
+        const started = this.spritePlayer.play(
           'waveHello',
-          this._oneShotPlayOpts(options, 'waveHello')
+          this._oneShotPlayOpts(
+            {
+              ...options,
+              loop: true,
+              loopMode: 'pingpong',
+              maxCycles: 1,
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false,
+              returnCrossFadeMs:
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+            },
+            'waveHello'
+          )
         );
+        if (!started) {
+          this._finishOneShot(options, 'waveHello');
+        }
       },
 
       // 点头致意：素材保留；靠近区默认不再自动触发（2026-07-19）。
-      // 调试面板可手工播；播完回归 idle-breathing。
+      // 2026-08-01：末帧已是坐姿泥印，与 Idle 差主要在睁/闭眼（CapCut 叠化即可）；
+      // 勿加 pingpong——倒放会再点一次头，观感更差。
+      // 调试面板 / 欢迎池可播；播完回归 idle-breathing。
       nodGreeting: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(

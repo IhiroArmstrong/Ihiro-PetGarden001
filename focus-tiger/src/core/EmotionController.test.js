@@ -189,7 +189,44 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('nodGreeting plays once and returns to idle breathing', () => {
+test('welcomeBack plays waveHello pingpong once then returns to idle', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+  let completed = 0;
+
+  controller.playEmotion('welcomeBack', {
+    onComplete: () => {
+      completed += 1;
+    }
+  });
+
+  assert.equal(plays[0].name, 'waveHello');
+  assert.equal(plays[0].options.loop, true);
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
+  assert.equal(plays[0].options.crossFadeMs, 1000);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(completed, 1);
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+test('nodGreeting plays once forward (no reverse) then CapCut to idle', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -213,6 +250,8 @@ test('nodGreeting plays once and returns to idle breathing', () => {
   });
 
   assert.equal(plays[0].name, 'nodGreeting');
+  // 末帧已是坐姿泥印，与 Idle 差主要在睁/闭眼；倒放会多点一次头 → 不加 pingpong
+  assert.notEqual(plays[0].options.loopMode, 'pingpong');
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
   assert.equal(plays[1].options.crossFadeMs, 1000);
