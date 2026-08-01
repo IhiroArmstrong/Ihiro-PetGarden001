@@ -80,7 +80,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |
-| `nodGreeting` | **仅调试**；靠近自动已拆 | 勿接回默认靠近 |
+| `nodGreeting` | 靠近自动已拆；**Slice B** 可进欢迎加权池 | 勿接回默认靠近；见 `SCENE_ANIMATION_WIRING` |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 
 完整键见 `EmotionController.js` 的 `EMOTIONS` / `EMOTION_KEYS`；情绪语义权威仍为 `EMOTION_BIBLE.md`。
