@@ -156,11 +156,11 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
-> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」、以及 Dispatcher **欢迎池**（同日冷启动 ~60%）。产品路径：播 `waveHelloWelcome`（**正放+倒放一次**烘焙，`loop:none`）后 **约 1s CapCut** 叠化回 `Idle`。**禁止** player `pingpong`+`maxCycles`（倒放后会准备下一轮正放）。验收须点姿态「挥手欢迎」，**勿**点入库同条（`holdLastFrame`、无叠化）。优先级低于 `Celebrating`。
+> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」（后者未接线）。**2026-08-02：不再纳入冷启动/开场欢迎池**（挥手观感未验收成功）；开场同日问候仅 `nodGreeting`。调试面板仍可播。产品路径（若手工/日后偶遇）：`waveHelloWelcome` 正放+倒放一次 → ~1s CapCut Idle；禁 player pingpong。优先级低于 `Celebrating`。
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 
-> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；欢迎池可复用（~40%）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放：末帧已是坐姿泥印，与 Idle 差主要在睁/闭眼；倒放会再点一次头）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼（**不**自动张望）；禁止把点头编入自主节奏。
+> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池唯一项**（同日 1 次，2026-08-02 起取代挥手）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
 
 > **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；180ms cross-fade 进出，播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。
 
@@ -642,5 +642,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.71 | 2026-08-01 | `WelcomeBack`：`waveHello` 改为 pingpong×1 再 CapCut 回 Idle；`nodGreeting` 对照末帧后仍正放一次（不加倒放） |
 | 0.72 | 2026-08-02 | `WelcomeBack` 改 `waveHelloWelcome` 烘焙正+倒一次（禁 player pingpong：倒放后会再正放） |
 | 0.73 | 2026-08-02 | 误诊「仅正放」撤回；根因 oneshot `_finish` hide 跳过 CapCut；`WelcomeBack`/`earWiggle` 烘焙正+倒一次 + CapCut |
+| 0.74 | 2026-08-02 | 冷启动欢迎池撤出 `welcomeBack`；开场仅 `nodGreeting`（挥手观感未验收） |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

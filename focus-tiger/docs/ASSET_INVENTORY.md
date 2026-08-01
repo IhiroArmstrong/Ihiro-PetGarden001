@@ -79,7 +79,7 @@
 | idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
 | blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
 | blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
-| wave-hello | 19 | waveHello / waveHelloWelcome | **已接线** welcomeBack→`waveHelloWelcome`（正+倒一次→~1s CapCut Idle） | 调试可播仅正放 `waveHello`；禁 player pingpong；2026-08-02c |
+| wave-hello | 19 | waveHello / waveHelloWelcome | welcomeBack→`waveHelloWelcome`（调试/日后偶遇）；**开场欢迎池已撤**（2026-08-02） | 调试可播；禁 player pingpong |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
@@ -90,7 +90,7 @@
 | dormant-wake | 16 | （旧正放） | **勿接**（保留） | 已由 cloak 倒放取代 |
 | rise-stretch-casual | 39 | riseStretchCasual | **已接线** Rise | — |
 | halo-breathing | 30 | haloBreathing* | 调试可播；业务自动未全接 | **Slice B**：Honesty 长补登 / 微仪式变体 |
-| nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；调试保留 | **Slice B**：欢迎池 40% |
+| nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；**冷启动欢迎池唯一** | Slice B 开场；2026-08-02 |
 | tilt-think | 20 | tiltThink | **勿接主路径** | 仅调试 |
 | palms-together | 14 | palmsTogether | 仅调试（Choose 已改 nod） | **Slice A′**：日语切语真合十 |
 | milestone-glow | 27 | milestoneGlow | **已接线** streak 节点 | — |

@@ -49,7 +49,7 @@
 |---|---|
 | Honesty Idle 记账成功 | ≤20（含 21–29）：mindfulAcknowledge；≥30：haloBreathing / breathHaloHq |
 | 微仪式完成 | 同档池：sessionComplete 为主 + blink-smile / 短 halo |
-| 欢迎 / 冷启动限频 | wave-hello ~60% · nodGreeting ~40%（勿靠近自动） |
+| 欢迎 / 冷启动限频 | **仅** nodGreeting（同日 1；wave-hello **已撤出开场**，2026-08-02） |
 | 同日非首次计时完成 | sessionComplete ~60% · nod/blink-smile ~40%（**禁 dance**） |
 | 舒展提醒池 | stretchReminder + yawnStretch 加权 |
 | 深夜 ≥23:00 Idle/刚结束 | yawn 或 tea（冷却 1h） |

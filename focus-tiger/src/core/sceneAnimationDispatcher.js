@@ -43,10 +43,14 @@ export const CURIOSITY_CHANCE = 0.05;
  * @typedef {{ key: string, weight: number }} WeightedEntry
  */
 
-/** @type {ReadonlyArray<WeightedEntry>} */
+/**
+ * 冷启动同日欢迎池。
+ * 2026-08-02：挥手 `welcomeBack` 观感未验收成功 → **不再纳入开场**；仅 `nodGreeting`。
+ * `welcomeBack` 仍保留情绪键（调试 / 日后 10min 偶遇等），勿从本池抽。
+ * @type {ReadonlyArray<WeightedEntry>}
+ */
 export const WELCOME_POOL = Object.freeze([
-  Object.freeze({ key: 'welcomeBack', weight: 60 }),
-  Object.freeze({ key: 'nodGreeting', weight: 40 })
+  Object.freeze({ key: 'nodGreeting', weight: 100 })
 ]);
 
 /** Light completion / micro-ritual — never celebrate-dance */
