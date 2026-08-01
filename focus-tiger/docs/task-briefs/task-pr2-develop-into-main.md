@@ -1,7 +1,7 @@
 # Task Brief · PR #2：`develop` → `main` 冲突解完并合并
 
 **日期**：2026-08-01  
-**状态**：已立项 · **未开工**（用户书面同意另开任务；本回合只建 Brief）  
+**状态**：进行中 · **冲突已解**（2026-08-01 口令开工；**不合 main**）  
 **PR**：[#2](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/2)（`develop` → `main`）  
 **分支建议**：独立 worktree + `chore/resolve-pr2-develop-main`（或在 PR 头上直接解冲突；**禁止**在主仓通用目录硬刚）  
 **权威**：仓库根 `WORKFLOW.md`（合并 `main` 门禁）· `PROCESS.md`「下一步 · PR #2」· regression-lock（禁止自动合 `main`）
@@ -50,3 +50,14 @@
 ## 开工口令
 
 你点名「开工 PR #2 / 解 develop→main 冲突」后再开 worktree 动刀。
+
+
+---
+
+## 进度（2026-08-01 开工）
+
+- Worktree：`Zen-tiger-Pet-garden001-wt-pr2-resolve` · 分支 `chore/resolve-pr2-develop-main`。  
+- 已 `merge origin/main` 进本分支；`behind main = 0`。  
+- 真冲突仅 `.cursor/hooks.json` → **取 develop（ours）完整护栏**（subagent / IDE Browser / full-e2e gate）；`focus-tiger-e2e-full.yml` 两边已一致，无冲突。  
+- 本地验证：`origin/main` ← 本 tip `--no-commit` merge → **0 conflict files**。  
+- 下一步：本分支经 PR 合入 `develop` 后，再查 PR #2 是否 `MERGEABLE`。**仍禁止**未下令合 `main`。

@@ -65,7 +65,7 @@
 **近期落地（待人工测试）**：
 
 - **PR 收口 + stash 归档（2026-08-01 晚）**：[#66](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/66) chrome Quick-only / Rise 闪 + ja 阿寅、[#67](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/67) welcome wave pingpong、[#68](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/68) stash PRD 归档均已合 `develop`。本地 5 条旧 stash 已清；唯一 PRD 草稿进 `docs/archive/stashed-prds-2026-07-24/`。已合入 `fix/*` worktree 已拆除。
-- **PR #2 另开任务（2026-08-01 用户同意）**：`develop`→`main` 仍 OPEN 且 `CONFLICTING`；摸底仅 **2 文件**真冲突（`.cursor/hooks.json`、`focus-tiger-e2e-full.yml`）。Brief：`task-briefs/task-pr2-develop-into-main.md`。**未开工**——须口令「开工 PR #2」后再解。
+- **PR #2 冲突解完进行中（2026-08-01 口令开工）**：已在 `chore/resolve-pr2-develop-main` merge `main`；hooks 取 develop 全护栏；本地证 `main`←tip **0 冲突**。经 PR 合入 `develop` 后查 #2 `MERGEABLE`。**仍不合 main**。Brief：`task-pr2-develop-into-main.md`。
 - **分支健康度普查（2026-08-01）**：`PROCESS`「分支健康度」+ `COLLAB` 摘要；`npm run check:all-branches-health`（双周提醒，不进 CI Required）。防换名重写残留（假 ahead）；开分支可用 `--topic` 查重叠。
 - **375 修红 · micro-ritual Sit tip + 抽屉挡 ♪（2026-07-31）**：A) 呼吸开始后才 sync onboarding autos（修过早 sync 导致 `sit-button` 残留）；B) ActionBar 高于抽屉 backdrop，点 ♪ 关抽屉开 Soundscape；去掉 e2e `force: true`。Brief `fix-375-e2e-reds.md`。
 - **MilestoneGlow 产品路径接线（2026-07-31）**：连续练习 **streak-7**（及预留 21/100）达成时产品壳播 `MilestoneGlow`；与 Celebrating 同刻只播 Glow、庆祝戳仍记账；Honesty 补登跨节点时先 Glow 再桥接。`MilestoneGlowStore` + e2e `milestone-glow-product.spec.js`。
@@ -271,7 +271,7 @@
 - **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31）**：已合 **`develop`（PR #51）**；Brief `task-user-ambient-upload-v1.md`。关单级人工见 `TEST_TRACKER` 对应行。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
 - **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。「高于 CI 细节」= 与 CI 工程 Backlog **争排期时先开本决策**（非等 CI 做完）。见 Backlog「本地桌面 APP 打包选型」。
-- **PR #2 合并进 `main`（另开任务 · 未开工）**：仍 OPEN / `CONFLICTING`。摸底真冲突仅 `.cursor/hooks.json` + `.github/workflows/focus-tiger-e2e-full.yml`；另须吸收 `main` 上约 10 commits（含 #63 Plan A）。Brief：`task-briefs/task-pr2-develop-into-main.md`。口令「开工 PR #2」后再动；**合 `main` 仍须你明确下令**。
+- **PR #2 合并进 `main`（冲突已解 · 待合 develop · 仍不合 main）**：分支 `chore/resolve-pr2-develop-main` 已吸收 main-only commits；hooks 冲突已解。合入 `develop` 后预期 #2 可合；**合 `main` 仍须你明确下令** + 五条件清单。Brief：`task-pr2-develop-into-main.md`。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列推进——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论**（实现可后置）。
 - **hints 拆分线 / 旧 stash PRD（2026-08-01 已清）**：原 `stash · chore/split-hints-from-pr2` 已随本地 stash 清空处理；PRD 草稿归档见 `docs/archive/stashed-prds-2026-07-24/`（非 SSOT）。回 hints 拆分时读归档即可，勿再找已删除的 stash。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
