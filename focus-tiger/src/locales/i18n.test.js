@@ -102,7 +102,8 @@ test('setLocale notifies listeners and persists preference', () => {
   assert.equal(getLocale(), 'ja');
   assert.deepEqual(seen, ['ja']);
   assert.equal(storage.getItem(LOCALE_PREFERENCE_STORAGE_KEY), 'ja');
-  assert.equal(t('BTN_FOCUS_START'), 'Yinと坐る');
+  assert.equal(t('BTN_FOCUS_START'), '阿寅と坐る');
+  assert.equal(t('CHARACTER_NAME'), '阿寅');
 
   setLocale('en', { persist: true, storage });
   assert.equal(getLocale(), 'en');
