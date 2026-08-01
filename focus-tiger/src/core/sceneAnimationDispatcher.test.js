@@ -60,19 +60,14 @@ test('light completion pool never includes celebrate dance', () => {
   );
 });
 
-test('pickWeighted respects weights (inject RNG)', () => {
-  assert.equal(
-    pickWeighted(WELCOME_POOL, () => 0),
-    'welcomeBack'
+test('WELCOME_POOL is nodGreeting only (welcomeBack out of cold-start)', () => {
+  assert.deepEqual(
+    WELCOME_POOL.map((e) => e.key),
+    ['nodGreeting']
   );
-  assert.equal(
-    pickWeighted(WELCOME_POOL, () => 0.59),
-    'welcomeBack'
-  );
-  assert.equal(
-    pickWeighted(WELCOME_POOL, () => 0.6),
-    'nodGreeting'
-  );
+  assert.equal(pickWeighted(WELCOME_POOL, () => 0), 'nodGreeting');
+  assert.equal(pickWeighted(WELCOME_POOL, () => 0.99), 'nodGreeting');
+  assert.ok(!WELCOME_POOL.some((e) => e.key === 'welcomeBack'));
 });
 
 test('canPlaySceneAnimGate blocks FOCUSING / CELEBRATE / overlay', () => {
@@ -188,7 +183,7 @@ test('WELCOME_APP once per day', () => {
     random: () => 0
   });
   assert.equal(first.play, true);
-  assert.equal(first.emotionKey, 'welcomeBack');
+  assert.equal(first.emotionKey, 'nodGreeting');
   assert.equal(readDailySceneAnimState(storage, now).welcome, true);
 
   const second = resolveSceneAnimation({

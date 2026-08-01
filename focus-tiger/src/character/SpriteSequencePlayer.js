@@ -56,6 +56,19 @@ export const SPRITE_LOOP_MODES = Object.freeze({
  * @param {'none'|'forward'|'pingpong'} state.loopMode
  * @returns {{frameIndex:number,direction:1|-1,complete:boolean}}
  */
+/**
+ * oneshot 播完是否立刻藏 overlay。
+ * 有 onComplete（常见：回 Idle CapCut）时必须保留可见末帧，否则下一 play()
+ * 因 opacity===0 跳过叠化（2026-08-02 回归：挥手正+倒后无 ~1s CapCut）。
+ * @param {{ holdLastFrame?: boolean, hasOnComplete?: boolean }} state
+ */
+export function shouldHideOverlayOnFinish({
+  holdLastFrame = false,
+  hasOnComplete = false
+} = {}) {
+  return !holdLastFrame && !hasOnComplete;
+}
+
 export function advanceSpriteFrame({
   frameIndex,
   direction,
@@ -542,8 +555,14 @@ export class SpriteSequencePlayer {
     const cb = this._onComplete;
     const name = this._currentName;
     this._onComplete = null;
-    // 不停留末帧 → 淡出 overlay，让位给底层基底态（如 3D Idle）
-    if (!this._holdLastFrame) this._hide();
+    if (
+      shouldHideOverlayOnFinish({
+        holdLastFrame: this._holdLastFrame,
+        hasOnComplete: Boolean(cb)
+      })
+    ) {
+      this._hide();
+    }
     if (cb && name) cb(name);
   }
 

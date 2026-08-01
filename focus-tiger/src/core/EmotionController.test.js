@@ -226,6 +226,35 @@ test('welcomeBack plays baked waveHelloWelcome once (forward+reverse) then CapCu
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
+test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('earWiggleHeadTouch');
+
+  assert.equal(plays[0].name, 'earWiggleHeadTouch');
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
+  assert.equal(plays[0].options.crossFadeMs, 1000);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 1000);
+});
+
 test('nodGreeting plays once forward (no reverse) then CapCut to idle', () => {
   const plays = [];
   const spritePlayer = {

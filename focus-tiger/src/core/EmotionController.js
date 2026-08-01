@@ -417,9 +417,9 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：正放 → 倒放一次（烘焙 playlist）→ CapCut 叠化 Idle。
-      // 2026-08-02：不用 player pingpong+maxCycles——倒放结束后会准备下一轮正放，
-      // 且 wave frame_001 已是抬手，观感像「又正放一遍」。见 waveHelloWelcome。
+      // WelcomeBack（挥手欢迎）：正放 → 倒放一次（烘焙 playlist）→ 约 1s CapCut 叠化 Idle。
+      // 禁 player pingpong+maxCycles（倒放后会准备下一轮正放）。
+      // CapCut 依赖播完不先 hide overlay（见 SpriteSequencePlayer._finish）。
       welcomeBack: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -723,8 +723,13 @@ export class EmotionController {
       teaDrinking: (options = {}) => {
         this._playCompanionSequenceOnce('teaDrinking', options);
       },
+      // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
-        this._playCompanionSequenceOnce('earWiggleHeadTouch', options);
+        this._playCompanionSequenceOnce('earWiggleHeadTouch', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
       },
 
       // Curiosity：张望整段 p1→p4，播完回 Idle（不经 IdleOrchestrator）
@@ -1063,7 +1068,7 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
-        // welcomeBack 须验 CapCut 回 Idle，勿 holdPose 定格抬手首帧。
+        // welcomeBack / earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
         const holdPoseKeys = new Set([
           'celebrating',
           'intentionSet',

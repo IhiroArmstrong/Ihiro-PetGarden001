@@ -93,7 +93,7 @@
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次；Focusing / Celebrating / 叠层忙碌跳过不补发 |
 | 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow`） | ack | **Slice A · 已实现** | 同上限频；不用 dance |
-| 当日首次冷启动问候 | 加权池：`welcomeBack` ~60% · `nodGreeting` ~40% | ack | **已实现**（Dispatcher 同日 1 次） | 靠近自动仍 **勿接**。`welcomeBack`：`waveHelloWelcome` **正+倒一次**（烘焙 playlist）再叠 Idle（2026-08-02；禁 player pingpong）；`nodGreeting`：正放一次即可 |
+| 当日首次冷启动问候 | **仅** `nodGreeting`（同日 1 次） | ack | **已实现**（Dispatcher） | 靠近自动仍 **勿接**。**2026-08-02**：挥手 `welcomeBack` **撤出开场欢迎池**（观感未验收成功）；键仍保留调试/日后偶遇。`nodGreeting`：正放一次 + CapCut |
 
 > **漂移注（2026-08-01）**：Slice A 规格与设计师均要求日语 = **合十**（`palms-together`）。当前实现：`emotionKeyForLocaleGreeting('ja')` → `intentionSet`，而 `EmotionController.intentionSet` 播的是 **`intentionNod`（nod-bow）**——画面上是鞠躬不是合十。`palmsTogether` 仍仅调试。**A′ 修复**：切语 ja 改为播 `palmsTogether`（或新键 `localeGreetingJa`），与 Arrival Choose 的 `intentionSet`/nod 解耦；单测锁「ja → palms 素材目录」。
 
@@ -123,7 +123,7 @@
 |---|---|---|---|---|
 | 清晨首次打开 | `yawn-stretch` / `stretchReminder` 加权 | ack | Slice B | 日限 1；本地时区早晨窗 |
 | 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案 |
-| Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | **禁止** IdleOrchestrator 默认池 |
+| Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | 口径已定；挥手触发核对属 Slice B | 见圣经时间表 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
 | 长期里程碑 | `milestoneGlow`（主）· `breathHaloHq`（备选变体） | ritual | **Glow 产品路径已接线**；HQ 备选 **Slice B/C** | Brief `task-milestone-glow-product-wire.md` |
