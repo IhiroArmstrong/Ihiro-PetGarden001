@@ -1,7 +1,7 @@
 # Task Brief · PR #2：`develop` → `main` 冲突解完并合并
 
 **日期**：2026-08-01  
-**状态**：进行中 · **冲突已解**（2026-08-01 口令开工；**不合 main**）  
+**状态**：冲突已清 · **待合 main**（#70 已合 develop；PR #2 = MERGEABLE；behind main=0；**仍须五条件 + 你下令**）  
 **PR**：[#2](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/2)（`develop` → `main`）  
 **分支建议**：独立 worktree + `chore/resolve-pr2-develop-main`（或在 PR 头上直接解冲突；**禁止**在主仓通用目录硬刚）  
 **权威**：仓库根 `WORKFLOW.md`（合并 `main` 门禁）· `PROCESS.md`「下一步 · PR #2」· regression-lock（禁止自动合 `main`）
@@ -47,10 +47,9 @@
 
 ---
 
-## 开工口令
+## 合 main 口令（冲突阶段已完成）
 
-你点名「开工 PR #2 / 解 develop→main 冲突」后再开 worktree 动刀。
-
+冲突解完已合 `develop`（#70）。合 `main` 须：**五条件清单过关** + 你明确口令「批准合 PR #2 进 main」。Agent **禁止**代合。
 
 ---
 
@@ -58,6 +57,12 @@
 
 - Worktree：`Zen-tiger-Pet-garden001-wt-pr2-resolve` · 分支 `chore/resolve-pr2-develop-main`。  
 - 已 `merge origin/main` 进本分支；`behind main = 0`。  
-- 真冲突仅 `.cursor/hooks.json` → **取 develop（ours）完整护栏**（subagent / IDE Browser / full-e2e gate）；`focus-tiger-e2e-full.yml` 两边已一致，无冲突。  
-- 本地验证：`origin/main` ← 本 tip `--no-commit` merge → **0 conflict files**。  
-- 下一步：本分支经 PR 合入 `develop` 后，再查 PR #2 是否 `MERGEABLE`。**仍禁止**未下令合 `main`。
+- 真冲突仅 `.cursor/hooks.json` → **取 develop（ours）完整护栏**；`e2e-full.yml` 两边已一致。  
+- 本地验证：`origin/main` ← tip → **0 conflict files**。
+
+## 进度（2026-08-02 · #70 已合）
+
+- [#70](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/70) 已合 `develop`（`dce954d`）。  
+- PR #2：`mergeable=MERGEABLE`；`develop` behind main = 0。  
+- Resolve worktree / 本地 `chore/resolve-pr2-develop-main` **已拆除**。  
+- **仍禁止**未过五条件、未经你下令就合 `main`。
