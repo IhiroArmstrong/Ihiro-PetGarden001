@@ -25,7 +25,9 @@ export default defineConfig({
   ],
   use: {
     ...base.use,
-    trace: 'retain-on-failure',
+    // Keep CI artifacts small (Plan A #15 traces were multi-GB). Screenshots
+    // on failure are enough for triage; JUnit carries the red/green list.
+    trace: 'off',
     video: 'off',
     screenshot: 'only-on-failure'
   }

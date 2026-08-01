@@ -27,7 +27,8 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
   await expect(page.locator('#language-preference-de')).toHaveCount(0);
 
   await page.locator('#language-preference-ja').check();
-  await expect(page.locator(SIT)).toContainText(/Yinと坐る/, {
+  // JA character name is 阿寅 (not Latin "Yin") — see CHARACTER_BIBLE / ja.json.
+  await expect(page.locator(SIT)).toContainText(/阿寅と坐る/, {
     timeout: 5_000
   });
 
@@ -64,7 +65,7 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
     window.__sceneAnimationSliceA.lastLocaleGreeting = 'probe';
   });
   await page.locator('#language-preference-ja').check();
-  await expect(page.locator(SIT)).toContainText(/Yinと坐る/, { timeout: 5_000 });
+  await expect(page.locator(SIT)).toContainText(/阿寅と坐る/, { timeout: 5_000 });
   await page.waitForTimeout(300);
   const afterRepeat = await page.evaluate(
     () => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null

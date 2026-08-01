@@ -169,6 +169,16 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
     };
   }
   const sel = String(anchorCfg.selector || '');
+  // HINT_ANCHORS.notice is `#arrival-practice, #btn-focus`. The btn-focus branch
+  // below must not win — during Arrival the Sit ball is hidden, which would
+  // hideBubble the Notice tip (full e2e #15 stable red).
+  if (/arrival-practice/.test(sel)) {
+    return {
+      selector: '#arrival-practice',
+      placement: anchorCfg.placement || 'above',
+      tip: anchorCfg.tip || 'bottom'
+    };
+  }
   if (/ambient-soundscape__mute/.test(sel)) {
     return {
       selector: '#ft-narrow-mute-btn',
@@ -264,6 +274,14 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
  */
 function remapWideIdleHintAnchor(anchorCfg) {
   const sel = String(anchorCfg.selector || '');
+  // Same Arrival guard as narrow remap (comma-listed #btn-focus fallback).
+  if (/arrival-practice/.test(sel)) {
+    return {
+      selector: '#arrival-practice',
+      placement: anchorCfg.placement || 'above',
+      tip: anchorCfg.tip || 'bottom'
+    };
+  }
   if (/#btn-focus|btn-focus/.test(sel)) {
     return {
       selector: '#ft-wide-home-sit',
@@ -284,6 +302,24 @@ function remapWideIdleHintAnchor(anchorCfg) {
       placement: 'above',
       tip: 'bottom'
     };
+  }
+  return anchorCfg;
+}
+
+/**
+ * Resolve paint/visibility anchor the same way bubbles do (wide/narrow park remaps).
+ * @param {{ selector: string, placement?: string, tip?: string }} cfg
+ * @param {{ useHelpAnchor?: boolean }} [opts]
+ */
+function resolveParkAwareAnchorCfg(cfg, { useHelpAnchor = false } = {}) {
+  let anchorCfg = { ...cfg };
+  if (
+    document.body.classList.contains('ft-narrow-park') ||
+    document.body.classList.contains('ft-narrow-idle')
+  ) {
+    anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor);
+  } else if (document.body.classList.contains('ft-wide-park-secondary')) {
+    anchorCfg = remapWideIdleHintAnchor(anchorCfg);
   }
   return anchorCfg;
 }
@@ -607,7 +643,13 @@ export class OnboardingHintsUI {
    */
   _hasOnScreenAnchor(hintId) {
     if (FOLDED_MENU_HINT_IDS.has(hintId)) return false;
-    const selectors = String(HINT_ANCHORS[hintId]?.selector || '')
+    const raw = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
+    const anchorCfg = resolveParkAwareAnchorCfg({
+      selector: String(raw.selector || ''),
+      placement: raw.placement,
+      tip: raw.tip
+    });
+    const selectors = String(anchorCfg.selector || '')
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean);
@@ -1291,13 +1333,22 @@ export class OnboardingHintsUI {
     if (!badge || badge.hidden) return;
 
     const cfg = HINT_ANCHORS[hintId] || HINT_ANCHORS['help-fallback'];
-    const anchor = resolveAnchorEl(cfg.selector);
+    const anchorCfg = resolveParkAwareAnchorCfg({
+      selector: String(cfg.selector || ''),
+      placement: cfg.placement,
+      tip: cfg.tip
+    });
+    const anchor = resolveAnchorEl(anchorCfg.selector);
     if (!anchor) {
       badge.hidden = true;
       return;
     }
 
     const ar = anchor.getBoundingClientRect();
+    if (ar.width <= 0 || ar.height <= 0) {
+      badge.hidden = true;
+      return;
+    }
     const peeked = this.store.isPeeked(hintId);
     const size = peeked ? 6 : 10;
     let left = ar.right - size / 2;
@@ -1319,15 +1370,14 @@ export class OnboardingHintsUI {
       ? { selector: '#onboarding-hint-help', placement: 'right', tip: 'left' }
       : { ...cfg };
 
-    // 窄屏 park：锚点改到可见 ActionBar / grabber（旧 dock 已停泊屏外）
-    if (
+    // 窄屏 / 宽屏 park：与 badge / ?-remedy 同用 resolveParkAwareAnchorCfg
+    if (!useHelpAnchor) {
+      anchorCfg = resolveParkAwareAnchorCfg(anchorCfg);
+    } else if (
       document.body.classList.contains('ft-narrow-park') ||
       document.body.classList.contains('ft-narrow-idle')
     ) {
-      anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor);
-    } else if (document.body.classList.contains('ft-wide-park-secondary')) {
-      // 宽屏 park：Sit/⚡ pills 停泊 → 首页三球
-      anchorCfg = remapWideIdleHintAnchor(anchorCfg);
+      anchorCfg = remapNarrowIdleHintAnchor(anchorCfg, true);
     }
 
     // 窄屏非 park：锚在主 CTA 的 above 易挡 Sit，改侧面（与 honesty-optional 策略一致）
