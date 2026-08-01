@@ -417,9 +417,9 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：正放 → 倒放一次（烘焙 playlist）→ CapCut 叠化 Idle。
-      // 2026-08-02：不用 player pingpong+maxCycles——倒放结束后会准备下一轮正放，
-      // 且 wave frame_001 已是抬手，观感像「又正放一遍」。见 waveHelloWelcome。
+      // WelcomeBack（挥手欢迎）：正放至放手坐姿（frame 19）→ 约 1s CapCut 叠化 Idle。
+      // 2026-08-02b：本素材 frame_001=抬手；全段倒放必然回到抬手，观感=「又正放」。
+      // 连贯靠 CapCut（定格坐姿末帧叠化），不用 player pingpong / 烘焙正+倒。
       welcomeBack: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -430,7 +430,7 @@ export class EmotionController {
         this._leaveIdleBaseline();
         this._use2DMainline();
         const started = this.spritePlayer.play(
-          'waveHelloWelcome',
+          'waveHello',
           this._oneShotPlayOpts(
             {
               ...options,
@@ -442,11 +442,11 @@ export class EmotionController {
               returnCrossFadeMs:
                 options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
             },
-            'waveHelloWelcome'
+            'waveHello'
           )
         );
         if (!started) {
-          this._finishOneShot(options, 'waveHelloWelcome');
+          this._finishOneShot(options, 'waveHello');
         }
       },
 
@@ -1008,7 +1008,7 @@ export class EmotionController {
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
       waveHello: 'wave-hello 挥手(仅正放)',
-      waveHelloWelcome: 'wave-hello 欢迎(正+倒)',
+      waveHelloWelcome: 'wave-hello 正+倒(末帧抬手·非产品)',
       celebrateDance: 'celebrate-dance v1',
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
@@ -1063,7 +1063,7 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
-        // welcomeBack 须验 CapCut 回 Idle，勿 holdPose 定格抬手首帧。
+        // welcomeBack 须验约 1s CapCut 回 Idle；勿点入库 waveHelloWelcome（定格抬手、无叠化）。
         const holdPoseKeys = new Set([
           'celebrating',
           'intentionSet',

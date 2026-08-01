@@ -211,7 +211,7 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手欢迎（调试逐条试播）——仅正放；产品路径见 waveHelloWelcome。
+  // 挥手欢迎 · 产品路径 welcomeBack：仅正放至放手坐姿，再由 EmotionController CapCut ~1s → Idle。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
   waveHello: {
     animation: 'wave-hello',
@@ -223,8 +223,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // WelcomeBack 产品路径：正放+倒放一次烘焙进 playlist，播完 CapCut → Idle。
-  // 2026-08-02：勿用 loopMode pingpong+maxCycles（倒放后会再起正放，且 001 已抬手）。
+  // 调试对照：正放+倒放烘焙（末帧=抬手 frame_001）。非产品路径——倒放看起来像再挥一次，且入库试播无 CapCut。
+  // 2026-08-02b：产品改回 waveHello 正放 + CapCut；本键仅供对照「倒放到抬手」观感。
   waveHelloWelcome: {
     animation: 'wave-hello',
     frameCount: 19,

@@ -288,6 +288,8 @@
 
 #### 动画 / 序列层良策（结构性缺口的对策）
 
+> **假修好测错路径（2026-08-02 · welcome CapCut）**：产品 `welcomeBack` ≠ 调试入库「正+倒」。入库 oneshot 常 `holdLastFrame` + `crossFadeMs:0`（无叠化、不定回 Idle）。素材若首帧已是抬手，倒放末帧=抬手，观感像「又正放」——勿把「不得再正放」实现成倒放到抬手。验收须点姿态键 / 产品池，并硬刷新 develop tip。
+
 1. **契约单测优先（已有 + 须守）**：凡 Idle / CapCut 溶解路径，锁 `crossFadeMs` + `freezeUntilCrossFadeEnds`（例：`IdleOrchestrator.test.js`）；禁止只测「调用了 blink」。动编排必跑相关单测。  
 2. **TEST_TRACKER 分列永久回归**：观感子项**禁止**并成笼统一行；每项有独立步骤（见本轮拆分的 6 行）。  
 3. **动高风险面开工**：已好清单须显式写序列不变量（「呼吸→眨眼不闪」）；收尾人工扫一眼邻接转场。  
