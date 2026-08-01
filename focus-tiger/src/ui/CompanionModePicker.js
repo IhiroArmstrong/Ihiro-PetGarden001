@@ -174,8 +174,10 @@ export class CompanionModePicker {
   setIdleChromeVisible(visible) {
     this._idleVisible = Boolean(visible);
     if (!this._idleVisible) {
-      this._expanded = false;
-      this._syncExpanded();
+      if (this._expanded) {
+        this._expanded = false;
+        this._syncExpanded();
+      }
     } else {
       this._preferQuestionHint = true;
     }
@@ -235,7 +237,7 @@ export class CompanionModePicker {
    */
   setPostSessionOverlayActive(active) {
     this._postSessionOverlay = Boolean(active);
-    if (this._postSessionOverlay) {
+    if (this._postSessionOverlay && this._expanded) {
       this._expanded = false;
       this._syncExpanded();
     }
@@ -305,6 +307,9 @@ export class CompanionModePicker {
    * @returns {void}
    */
   hide() {
+    // Idempotent: Idle chrome clearStage → onClearStage → hide() on every
+    // suppress resync; re-firing onExpandedChange(false) → resync loops.
+    if (!this._expanded) return;
     this._expanded = false;
     this._syncExpanded();
   }

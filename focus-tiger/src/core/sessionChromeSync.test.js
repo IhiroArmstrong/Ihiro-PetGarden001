@@ -68,6 +68,7 @@ describe('createSessionChromeSync', () => {
         honestyEntryHidden = false;
       }
     };
+    let companionOpen = false;
     const companionModePicker = {
       setHonestyBridgeActive(v) {
         bridgeActive = v;
@@ -83,6 +84,9 @@ describe('createSessionChromeSync', () => {
       },
       setArrivalActive(v) {
         arrivalActiveOnPicker = v;
+      },
+      isOpen() {
+        return companionOpen;
       }
     };
     const narrowIdleShell = {
@@ -154,6 +158,9 @@ describe('createSessionChromeSync', () => {
         },
         honestyPhase: (v) => {
           honestyPhase = v;
+        },
+        companionOpen: (v) => {
+          companionOpen = v;
         }
       },
       get: {
@@ -241,6 +248,26 @@ describe('createSessionChromeSync', () => {
     h2.sync.resyncSessionChrome();
     assert.equal(h2.get.narrowSuppressed(), false);
     assert.equal(h2.get.wideSuppressed(), true);
+  });
+
+  it('resyncSessionChrome：Honesty prompt → keepQuickStart（仅 Quick）', () => {
+    const h = harness();
+    h.set.honestyPhase('prompt');
+    h.sync.resyncSessionChrome();
+    assert.equal(h.get.narrowSuppressed(), true);
+    assert.equal(h.get.narrowKeepQs(), true);
+    assert.equal(h.get.wideSuppressed(), true);
+    assert.equal(h.get.wideKeepQs(), true);
+  });
+
+  it('resyncSessionChrome：Companion 开且 Arrival 已关 → keepQuickStart', () => {
+    const h = harness();
+    h.set.companionOpen(true);
+    h.set.arrivalOpen(false);
+    h.sync.resyncSessionChrome();
+    assert.equal(h.get.narrowSuppressed(), true);
+    assert.equal(h.get.narrowKeepQs(), true);
+    assert.equal(h.get.wideKeepQs(), true);
   });
 
   it('syncArrivalGateReady 同步 Gate 与 Companion', () => {

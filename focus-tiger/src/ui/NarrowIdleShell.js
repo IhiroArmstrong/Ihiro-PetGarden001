@@ -153,10 +153,10 @@ export class NarrowIdleShell {
 
   /**
    * Overlay chrome policy (narrow):
-   * - Full suppress (Reflection / Honesty busy): hide grabber / home / sheet;
+   * - Full suppress (Reflection): hide grabber / home / sheet;
    *   **ActionBar (? · wall clock · ♪) stays visible**.
-   * - Arrival (`keepQuickStart`): hide grabber / Sit / Honesty, but
-   *   **keep ActionBar + Quick Start** (W3 / L174 — ⚡ must stay while Sit is hidden).
+   * - Arrival / Honesty / Companion (`keepQuickStart`): hide grabber / Sit /
+   *   Honesty, but **keep ActionBar + Quick Start** (W3 — ⚡ only).
    * Legacy dock stays parked either way.
    * @param {boolean} suppressed
    * @param {{ keepQuickStart?: boolean }} [opts]
@@ -229,6 +229,10 @@ export class NarrowIdleShell {
    * @returns {void}
    */
   closeSheet() {
+    // Idempotent: wide viewport _syncMode calls closeSheet whenever !narrow;
+    // re-firing onSheetChange → syncOnboardingAutoHints on every chrome resync
+    // can stack-overflow (Choose → postChoose keepQuickStart path).
+    if (!this._sheetOpen) return;
     this._sheetOpen = false;
     this.shell?.classList.remove('is-sheet-open');
     this.sheet?.setAttribute('aria-hidden', 'true');
@@ -565,7 +569,9 @@ export class NarrowIdleShell {
       const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
       this.sitHomeBtn.disabled = !sitOk;
       this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
-      this.sitHomeBtn.hidden = !focusEl || focusEl.hidden;
+      // keepQuickStart: force-hide Sit (Honesty may leave #btn-focus visible).
+      this.sitHomeBtn.hidden =
+        Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden;
     }
 
     const quickEl = document.getElementById('quick-start-focus');
@@ -584,14 +590,14 @@ export class NarrowIdleShell {
       this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
       this.honestyHomeBtn.title = honestyLabel;
       // Idle home: always offer Honesty (entry may be missing / attribute-hidden).
-      // Arrival keepQuickStart: hide Honesty (W3 — only ⚡ stays with Sit).
+      // keepQuickStart: hide Honesty (W3 — only ⚡ stays).
       const showHonesty = !this._keepQuickStart;
       this.honestyHomeBtn.hidden = !showHonesty;
       this.honestyHomeBtn.disabled = false;
       this.honestyHomeBtn.setAttribute('aria-disabled', 'false');
     }
 
-    // Arrival: Sit already mirrors #btn-focus[hidden]; force Quick Start on.
+    // keepQuickStart: force Quick Start on (dock ⚡ may be parked/hidden).
     if (this._keepQuickStart && this.quickHomeBtn) {
       this.quickHomeBtn.hidden = false;
       this.quickHomeBtn.disabled = false;

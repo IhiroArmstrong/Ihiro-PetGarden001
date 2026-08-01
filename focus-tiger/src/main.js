@@ -526,6 +526,12 @@ async function init() {
   }
 
   /**
+   * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
+   * 仍须 Quick-only，避免三球闪回（W3）。
+   */
+  const postChooseChrome = { pending: false };
+
+  /**
    * Idle 入口 + 叠层门闩 / 窄宽壳投影（等价抽离；见 sessionChromeSync.js）。
    * Honesty 提示/时长**故意不列入** overlay 源——仍允许点 hint 展开三选一。
    */
@@ -544,6 +550,7 @@ async function init() {
     idleChrome,
     stateManager,
     sessionUiGate,
+    getPostChoosePending: () => postChooseChrome.pending,
     syncInAppReminderBanner: () => syncInAppReminderBanner()
   });
 
@@ -816,15 +823,21 @@ async function init() {
     };
   }
 
+  let _syncingOnboardingHints = false;
   function syncOnboardingAutoHints() {
-    if (!onboardingHints) return;
-    const ids = resolveAutoHintIds(getOnboardingScene());
-    onboardingHints.syncVisibleAutos(ids);
-    // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
-    requestAnimationFrame(() => {
-      onboardingHints?.repositionAll();
-      onboardingHints?.syncDiscoveryDots();
-    });
+    if (!onboardingHints || _syncingOnboardingHints) return;
+    _syncingOnboardingHints = true;
+    try {
+      const ids = resolveAutoHintIds(getOnboardingScene());
+      onboardingHints.syncVisibleAutos(ids);
+      // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
+      requestAnimationFrame(() => {
+        onboardingHints?.repositionAll();
+        onboardingHints?.syncDiscoveryDots();
+      });
+    } finally {
+      _syncingOnboardingHints = false;
+    }
   }
 
   onboardingHints = new OnboardingHintsUI(document.body, {
@@ -931,6 +944,7 @@ async function init() {
         arrivalChoseThisRun = false;
         suppressCompanionOpenAfterNod = false;
         pendingChoose = null;
+        postChooseChrome.pending = false;
         syncArrivalGateReady(false);
         resyncSessionChrome();
         syncHonestyIdleEntry();
@@ -953,7 +967,6 @@ async function init() {
         currentIntentionSource = latched.source;
         arrivalChoseThisRun = Boolean(info.chose);
         syncArrivalGateReady(true);
-        resyncSessionChrome();
         onboardingHints?.markSeen('notice');
         onboardingHints?.markSeen('breathing');
         onboardingHints?.markSeen('choose');
@@ -967,7 +980,11 @@ async function init() {
           ...info,
           pendingAutoStartMode: resumeMode
         });
+        // Arrival already hidden: latch Quick-only through nod → Companion open.
+        postChooseChrome.pending = !beginNow;
+        resyncSessionChrome();
         if (beginNow) {
+          postChooseChrome.pending = false;
           // 预选 Here & Now / Flow 后走完 Choose：开表并跳过「再点一次模式 / Sit」
           if (info.chose && resumeMode) {
             suppressCompanionOpenAfterNod = true;
@@ -1060,6 +1077,7 @@ async function init() {
         ? autoStartMode
         : null;
     suppressCompanionOpenAfterNod = false;
+    postChooseChrome.pending = false;
     syncArrivalGateReady(false);
     companionModePicker.hide();
     onboardingHints?.markSeen('sit-button');
@@ -1208,6 +1226,7 @@ async function init() {
       });
     }
     companionModePicker.setIdleChromeVisible(false);
+    postChooseChrome.pending = false;
     focusSession.start({ companionMode });
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
@@ -1342,6 +1361,9 @@ async function init() {
     } else {
       document.body.classList.remove('ft-narrow-stage-companion');
     }
+    // Companion owns Quick-only via companionExpanded; clear Choose→nod latch.
+    if (expanded) postChooseChrome.pending = false;
+    resyncSessionChrome();
     syncOnboardingAutoHints();
   };
 
@@ -1386,14 +1408,17 @@ async function init() {
       pendingChoose = null;
       pendingAutoStartMode = null;
       suppressCompanionOpenAfterNod = false;
+      postChooseChrome.pending = false;
       endFocusChrome();
       focusSession.stop();
       sessionUiGate.setCompletionPending(false);
-      resyncSessionChrome();
       honestyGlowLevel = null;
       tigerCharacter.setFocusLevel(0);
       honestyBridge?.hide();
+      // Must reach IDLE before chrome resync — otherwise shells stay in Focusing
+      // layout and #btn-focus briefly shows Sit (Rise flash of old orange pill).
       honestyCheckIn.onIncompleteSessionEnded();
+      resyncSessionChrome();
       companionModePicker.setIdleChromeVisible(true);
       // Rise：伸懒腰→随意坐姿正放一次，Reflection 期间定格箕坐；关面板后再回 idle。
       // MoodController 在 IDLE 时不覆盖 riseStretchCasual。

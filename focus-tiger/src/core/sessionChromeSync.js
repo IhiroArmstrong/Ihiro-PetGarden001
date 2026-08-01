@@ -71,6 +71,8 @@ export function isHonestyUiBusy(phase) {
  *   setArrivalGateReady: (v: boolean) => void
  * }} sessionUiGate
  * @property {() => void} syncInAppReminderBanner
+ * @property {() => boolean} [getPostChoosePending]
+ *   Choose→nod gap before Companion expands (Quick-only latch).
  */
 
 /**
@@ -90,7 +92,8 @@ export function createSessionChromeSync(deps) {
     idleChrome,
     stateManager,
     sessionUiGate,
-    syncInAppReminderBanner
+    syncInAppReminderBanner,
+    getPostChoosePending = () => false
   } = deps;
 
   function getPostSessionOverlaySources() {
@@ -141,13 +144,17 @@ export function createSessionChromeSync(deps) {
     const focusing =
       stateManager.state === STATES.FOCUSING ||
       getMicroRitualUI()?.isOpen?.() === true;
+    const companionExpanded = companionModePicker?.isOpen?.() === true;
+    const postChoosePending = Boolean(getPostChoosePending());
     // Bridge can appear without a full resync — keep wide ⋯ suppressed with dock pills
     const { wide } = resolveShellChromeProjection({
       focusing,
       overlayActive,
       honestyBusy,
       arrivalOpen: Boolean(getArrivalPractice()?.isOpen?.()),
-      bridgeVisible
+      bridgeVisible,
+      companionExpanded,
+      postChoosePending
     });
     // Must pass keepQuickStart: a bare setSuppressed(true) clears Arrival's
     // "⚡ only" latch and the Honesty home ball snaps back mid-Arrival.
@@ -180,9 +187,11 @@ export function createSessionChromeSync(deps) {
       getMicroRitualUI()?.isOpen?.() === true;
     const honestyBusy = isHonestyUiBusy(honestyCheckInUI?.phase);
     const bridgeVisible = getHonestyBridge()?.isVisible?.() === true;
+    const companionExpanded = companionModePicker?.isOpen?.() === true;
+    const postChoosePending = Boolean(getPostChoosePending());
     // 桥接 Yes/No：须保留 ActionBar；勿因 bridge alone 收起窄屏顶栏
-    // Arrival: keep ActionBar + Quick Start; hide Sit/Honesty/grabber.
-    // Reflection / Honesty busy: suppress grabber/home/sheet; ActionBar stays.
+    // Arrival / Honesty / Companion / post-Choose nod: ActionBar + Quick only.
+    // Reflection (overlay, not keepQuickStart): suppress grabber/home/sheet; ActionBar stays.
     // ActionBar time = wall clock (not FocusHUD session elapsed).
     // Projection SSOT: idleChromeOrchestration.resolveShellChromeProjection
     const projection = resolveShellChromeProjection({
@@ -190,7 +199,9 @@ export function createSessionChromeSync(deps) {
       overlayActive,
       honestyBusy,
       arrivalOpen,
-      bridgeVisible
+      bridgeVisible,
+      companionExpanded,
+      postChoosePending
     });
     if (idleChrome?.applyShellProjection) {
       idleChrome.applyShellProjection(projection);
