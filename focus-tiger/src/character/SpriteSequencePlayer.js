@@ -537,8 +537,8 @@ export class SpriteSequencePlayer {
 
   /** 非循环序列自然播完的收尾。 */
   _finish() {
+    this._cancelRaf();
     this._playing = false;
-    this._raf = 0;
     const cb = this._onComplete;
     const name = this._currentName;
     this._onComplete = null;

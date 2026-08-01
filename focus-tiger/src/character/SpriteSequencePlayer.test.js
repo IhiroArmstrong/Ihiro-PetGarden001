@@ -5,7 +5,7 @@ import {
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
 import { buildFramePaths } from './CharacterConfig.js';
-import { SPRITE_SEQUENCES } from './spriteManifest.js';
+import { SPRITE_SEQUENCES, WAVE_HELLO_FORWARD_INDICES, WAVE_HELLO_PINGPONG_ONCE_INDICES } from './spriteManifest.js';
 
 function collectFrames({ frameCount, loopMode, steps }) {
   const seen = [0];
@@ -20,6 +20,30 @@ function collectFrames({ frameCount, loopMode, steps }) {
   }
   return seen;
 }
+
+test('waveHelloWelcome bakes forward+reverse once without player pingpong', () => {
+  assert.equal(SPRITE_SEQUENCES.waveHello.loopMode, 'none');
+  assert.deepEqual(
+    SPRITE_SEQUENCES.waveHello.frameIndices,
+    [...WAVE_HELLO_FORWARD_INDICES]
+  );
+  assert.equal(SPRITE_SEQUENCES.waveHelloWelcome.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.waveHelloWelcome.loop, false);
+  assert.deepEqual(
+    SPRITE_SEQUENCES.waveHelloWelcome.frameIndices,
+    [...WAVE_HELLO_PINGPONG_ONCE_INDICES]
+  );
+  // 正放末帧 19 → 倒放从 18 起，整段以 1 收束；长度 = 2*forward - 1
+  assert.equal(
+    WAVE_HELLO_PINGPONG_ONCE_INDICES.length,
+    WAVE_HELLO_FORWARD_INDICES.length * 2 - 1
+  );
+  assert.equal(WAVE_HELLO_PINGPONG_ONCE_INDICES.at(-1), 1);
+  assert.equal(
+    WAVE_HELLO_PINGPONG_ONCE_INDICES[WAVE_HELLO_FORWARD_INDICES.length - 1],
+    19
+  );
+});
 
 test('pingpong skips the duplicated last frame and restarts from frame 001', () => {
   const seen = collectFrames({

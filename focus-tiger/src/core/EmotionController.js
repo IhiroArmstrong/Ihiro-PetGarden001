@@ -417,8 +417,9 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：正放抬手/摇摆/放手 → 倒放回落坐姿 → CapCut 叠化 Idle。
-      // 2026-08-01：末帧与 Idle 闭目坐姿差大，仅正放易跳；pingpong×1 后再回 Idle。
+      // WelcomeBack（挥手欢迎）：正放 → 倒放一次（烘焙 playlist）→ CapCut 叠化 Idle。
+      // 2026-08-02：不用 player pingpong+maxCycles——倒放结束后会准备下一轮正放，
+      // 且 wave frame_001 已是抬手，观感像「又正放一遍」。见 waveHelloWelcome。
       welcomeBack: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -429,24 +430,23 @@ export class EmotionController {
         this._leaveIdleBaseline();
         this._use2DMainline();
         const started = this.spritePlayer.play(
-          'waveHello',
+          'waveHelloWelcome',
           this._oneShotPlayOpts(
             {
               ...options,
-              loop: true,
-              loopMode: 'pingpong',
-              maxCycles: 1,
+              loop: false,
+              loopMode: 'none',
               crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
               freezeUntilCrossFadeEnds:
                 options.freezeUntilCrossFadeEnds !== false,
               returnCrossFadeMs:
                 options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
             },
-            'waveHello'
+            'waveHelloWelcome'
           )
         );
         if (!started) {
-          this._finishOneShot(options, 'waveHello');
+          this._finishOneShot(options, 'waveHelloWelcome');
         }
       },
 
@@ -1007,7 +1007,8 @@ export class EmotionController {
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
-      waveHello: 'wave-hello 挥手',
+      waveHello: 'wave-hello 挥手(仅正放)',
+      waveHelloWelcome: 'wave-hello 欢迎(正+倒)',
       celebrateDance: 'celebrate-dance v1',
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
@@ -1062,12 +1063,12 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
+        // welcomeBack 须验 CapCut 回 Idle，勿 holdPose 定格抬手首帧。
         const holdPoseKeys = new Set([
           'celebrating',
           'intentionSet',
           'milestoneGlow',
           'sessionComplete',
-          'welcomeBack',
           'nodGreeting',
           'curiousTilt',
           'mindfulAcknowledge',
