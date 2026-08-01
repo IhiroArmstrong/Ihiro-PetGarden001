@@ -49,23 +49,31 @@
 
 | 切片 | 范围 | 与 v1.0.0 关系 |
 |---|---|---|
-| **Slice A（必交付 · 已实现代码）** | 语言切换问候 + Honesty Idle 补登成功短认可；一分钟呼吸完成反馈**核对已接线** | **`v1.0.0` 功能冻结前须交付**（无新抽帧；只接现有键）· PR #59 |
-| **Slice A′（合十语义修复）** | 日语切语须播真合十 `palms-together`（见 §5.1 漂移注） | **建议冻结前修**；否则验收「合十」与画面不一致 |
-| **Slice B（库存消化 · 活跃陪伴）** | 欢迎/完成**同档**随机池；Honesty 按时长分档鼓励；微仪式轻量变体；清晨/深夜/茶歇/张望/摸头（均带冷却）；可选中央 Dispatcher | v1.0.x / 冻结后优先；**消化「仅调试」库存** |
-| **Slice C（仪式 / 成长）** | Transition 入口、荷花 `lotus-*`、Grow Together | 纪念奖励 / 大 Backlog；MilestoneGlow 产品路径已另 Brief 接线 |
+| **Slice A（必交付 · 已实现代码）** | 语言切换问候 + Honesty Idle 补登成功短认可；一分钟呼吸完成反馈**核对已接线** | **已合 develop**（PR #59） |
+| **Slice A′ + B（一批实现 · 库存消化）** | **A′** 日语真合十 + **B** 设计师清单其余项（见 §十）+ **中央 Animation Dispatcher**（事件 / 加权池 / 冷却） | **一批落地**（不拆成许多小 feature）；口令见 Brief |
+| **Slice C（仪式 / 成长）** | Transition 入口、荷花 `lotus-*`、Grow Together | 须产品面；MilestoneGlow **已接线**（勿重复立项） |
+
+**为何曾分片、现改一批（2026-08-01 澄清）**：
+
+- `playEmotion` 本身对状态机冲击通常不高；真正要管的是**档位混用、冷却、Focusing 跳过、序列衔接**——用 **Dispatcher 一次做对**，比拆十个「各播一个动画」的 PR 更干净。  
+- 因此：**除已驳回混档、已取代勿接、Slice C 缺产品面之外**，设计师清单**批量纳入 A′+B 同一实现批次**，不再人为拆碎。  
+- 仍单独标出的仅是：**已接线免重做**、**驳回项**、**勿接目录**、**荷花待 Grow**。
 
 **拍板（2026-07-31）**：
 
 - 同意写入正式产品稿并进 Backlog；**Slice A 升格为 v1.0.0 必交付**。  
 - 语言切换要做；**日语用鞠躬/合十**（不用庆祝舞）。
 
-**拍板（2026-08-01 · 用户 + 设计师整合）**：
+**拍板（2026-08-01 · 用户书面）**：
 
-- 同意把设计师「场景 × 动画」建议写入本文与 `ASSET_INVENTORY` / `PROCESS` Backlog。  
-- **库存政策**：凡未标「已取代 / 勿接」的入库序列，须落入本表某一产品触发（可分 Slice B/C），禁止长期仅调试。  
-- **驳回混档**：同日非首次完成**不得**随机进 `celebrate-dance*`（违反反馈分级）；完成变体池只许 light/ack 档。
+- 设计师建议写入本文与 `ASSET_INVENTORY` / `PROCESS`；库存须进业务。  
+- **Honesty 时长分界锁定**：补登 **≤20 min** → `nod-bow`（`mindfulAcknowledge`）；**≥30 min** → `halo-breathing`（或 `breathHaloHq` 变体）。21–29 min 归短档（nod），避免空洞。  
+- **日语 = 合十**（`palms-together`）规格正确；代码漂移须 A′ 修。  
+- **勿接**已取代目录（旧 dormant-wake / sleeping / tilt-think / blink-breathe 主路径）。  
+- **采纳中央 Animation Dispatcher**（语义事件 + 加权映射 + 冷却，默认生命感 **≥60 min** 同类最多 1 次）。  
+- **一批安排**设计师清单其余项（§十）；**驳回**同日非首次完成池混入 `celebrate-dance*`（改同档 ack/light 变体）。
 
-实现 Brief：`docs/task-briefs/task-scene-animation-wiring-v1-slice-a.md`（A）；Slice B 见 `task-scene-animation-inventory-wire-slice-b.md`。
+实现 Brief：`docs/task-briefs/task-scene-animation-wiring-v1-slice-a.md`（A）；**A′+B 一批**：`task-scene-animation-inventory-wire-slice-b.md`。
 
 ---
 
@@ -80,7 +88,7 @@
 | Arrival Choose 确认 | `intentionSet` → **`intentionNod`（nod-bow pingpong）** | ack | **已接线** | 与门闩并行；合十曾作 Choose 视觉，现改 nod（画幅衔接） |
 | Arrival Welcome | `smiling` / blink-smile | — | **已接线** | |
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
-| Honesty · **Idle** 选时长并呼吸结束成功记账 | **短时长**（建议 ≤20 min）：`mindfulAcknowledge`（`nod-bow`）；**长时长**（建议 ≥30 min）：`haloBreathing` 或 `breathHaloHq`（平静满载，**非** Celebrating） | ack / ritual-lite | **短：Slice A 已实现**；长分档 **Slice B** | 睡态路径不叠 nod；**禁止** Celebrating |
+| Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（`nod-bow`）；**≥30 min**：`haloBreathing` 或 `breathHaloHq`（平静满载，**非** Celebrating） | ack / ritual-lite | **短：Slice A 已实现**；长分档 **A′+B 一批** | 分界已拍板；睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 主：`sessionComplete`；可选同档池：`blink-smile` / 短 `haloBreathing`（加权，日限） | light / ack | **主路径已接线**；变体池 **Slice B** | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | **真合十** `palmsTogether` / 专用键（**不是** nod-bow） | ack | **Slice A 代码已接 `intentionSet`** · **语义漂移 → Slice A′** | 仅 `locale` **实际变化**；同日同目标语最多 1 次；Focusing / Celebrating / 叠层忙碌跳过不补发 |
@@ -141,16 +149,17 @@
 
 ---
 
-## 七、架构建议（Slice B · Animation Dispatcher）
+## 七、架构（A′+B 一批 · Animation Dispatcher · 已拍板）
 
-设计师建议、与现有 `EmotionController` / `companionGestureCatalog` 对齐：
+设计师建议已**采纳为实现约束**（2026-08-01），与现有 `EmotionController` / `companionGestureCatalog` 对齐：
 
-1. **业务只发语义事件**（如 `language_changed`、`honesty_recorded`、`micro_ritual_complete`、`idle_rare_life`）——禁止在 UI 控件里堆 `if (locale===ja) play…`。  
-2. **中央映射表**（可落在 `sceneAnimationDispatcher.js` 或扩展 catalog）：场景 → 单一键 **或** 加权数组；读冷却 / 同日限频。  
-3. **Cooldown + 档位门闩**：Dispatcher 内校验 Focusing / Celebrating / 叠层忙碌 / 档位，非法则 skip 不补发（与 Slice A 问候一致）。  
-4. **不另造情绪状态枚举**；仍走 `playEmotion`；新键须先改 `EMOTION_BIBLE`。
+1. **统一事件**：业务只发语义事件（如 `EVENT_LANGUAGE_CHANGED`、`EVENT_HONESTY_COMPLETED`、`EVENT_MICRO_RITUAL_COMPLETE`、`EVENT_IDLE_RARE_LIFE`）——禁止在 UI 里堆 `if (locale===ja) play…`。  
+2. **随机与权重**：Dispatcher 内配置场景 → 单一键 **或** 加权数组；读冷却 / 同日限频。  
+3. **Cooldown**：闲置类（哈欠、喝茶、稀有张望等）默认 **1 小时内同类最多 1 次**；问候类仍「同日同目标最多 1 次」。  
+4. **档位门闩**：Focusing / Celebrating / 叠层忙碌 → skip 不补发；**禁止**越级 celebrate。  
+5. **不另造情绪状态枚举**；仍走 `playEmotion`；新键须先改 `EMOTION_BIBLE`。
 
-Slice A 已有雏形：`localeGreeting.js`。Slice B 宜把 Honesty 分档、欢迎池、生命感冷却收进同一 Dispatcher，避免平行 if-else。
+Slice A 雏形：`localeGreeting.js`。A′+B 实现时应把切语、Honesty 分档、欢迎池、完成/微仪式同档池、生命感冷却**收进同一 Dispatcher**，避免平行 if-else。
 
 ---
 
@@ -187,18 +196,25 @@ Slice A 已有雏形：`localeGreeting.js`。Slice B 宜把 Honesty 分档、欢
 
 ---
 
-## 十、设计师建议采纳对照（2026-08-01）
+## 十、设计师建议采纳对照（2026-08-01 · 一批）
 
-| 建议 | 采纳 | 说明 |
-|---|---|---|
-| 日语 → palms-together；英语 → nod-bow | **采纳** | 与 Slice A 产品口径一致；代码须 A′ 对齐真合十 |
-| Honesty 短 nod / 长 halo | **采纳 · Slice B** | 阈值阈值待实现 Brief 钉死（建议 20 / 30） |
-| 微仪式结束 blink-smile 或 halo | **部分采纳 · Slice B** | 主路径保持 `sessionComplete`；变体进同档加权池 |
-| Welcome：wave 60% / nodGreeting 40% | **采纳 · Slice B** | 靠近自动仍勿接 |
-| 同日完成：sessionComplete 60% + **dance-v2 40%** | **驳回混档** | dance 仅 Celebrating；改同档 ack/light 变体 |
-| 唤醒池 stretch + yawn | **采纳 · Slice B** | 同档提醒，冷却 |
-| 深夜 tea / yawn；Milestone glow；好奇 ear/gaze | **采纳 · B/C** | Glow 已接线；其余带冷却 |
-| 中央 Animation Dispatcher | **采纳为 Slice B 架构方向** | 见 §七 |
+| # | 建议 | 状态 | 说明 |
+|---|---|---|---|
+| 1a | 日语 → palms-together | **A′ 一批** | 规格正确；修代码漂移 |
+| 1b | 英语 → nod-bow | **已接线**（Slice A） | 免重做 |
+| 2a | Honesty ≤20 nod / ≥30 halo | **A′+B 一批** | 分界已拍板；短档含 21–29 |
+| 2b | 微仪式 → blink-smile 或 halo | **一批** | 与 `sessionComplete` 同档加权；非替换唯一路径 |
+| 3a | Welcome：wave 60% / nodGreeting 40% | **一批** | 靠近自动仍勿接 |
+| 3b | 完成池：sessionComplete + **dance-v2** | **驳回混档** | 改 sessionComplete + nod/blink-smile 等同档 |
+| 3c | 唤醒/舒展：stretch + yawn | **一批** | stretch 主路径已有；池化 + yawn |
+| 4a | 深夜 ≥23:00 yawn / tea | **一批** | 冷却 1h |
+| 4b | Milestone glow | **已接线** | 免重做 |
+| 4c | Curiosity ear / gaze ≤5% | **一批** | 不经 IdleOrchestrator 默认池 |
+| 4d | Stretch Break → stretch-reminder | **已接线** | 免重做；可并入 3c 池 |
+| — | Animation Dispatcher | **一批必做** | §七 |
+| — | lotus-* | **Slice C** | 缺 Grow 产品面；不塞进本批 |
+
+**批量安排结论**：上表「一批」项 + Dispatcher + A′ = **同一实现批次**（Brief Slice B）；不因「只是触发动画」再拆十个任务——风险靠 Dispatcher 门闩/冷却一次管住，而不是靠拆 PR。
 
 ---
 
@@ -209,3 +225,4 @@ Slice A 已有雏形：`localeGreeting.js`。Slice B 宜把 Honesty 分档、欢
 | 2026-07-31 | 初版：全表 + v1.0.0 Slice A（语言合十/鞠躬、Honesty Idle 短认可、微仪式已接线核对）；用户拍板纳入第一版 |
 | 2026-07-31 | Slice A 实现：`localeGreeting` + Honesty Idle `mindfulAcknowledge`；表内状态改为已实现 |
 | 2026-08-01 | 整合设计师场景×动画建议；库存全业务接线政策；驳回完成池混入 celebrate；标注 ja 合十代码漂移（A′）；新增 Slice B Brief 指针与 Dispatcher 架构节 |
+| 2026-08-01 | 用户拍板：Honesty 20/30；日语合十；勿接已取代；Dispatcher 必做；设计师其余项**一批**进 A′+B（非整碎小任务）；Milestone/stretch/en 鞠躬标已接线免重做 |

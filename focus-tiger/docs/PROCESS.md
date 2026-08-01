@@ -67,7 +67,7 @@
 - **分支健康度普查（2026-08-01）**：`PROCESS`「分支健康度」+ `COLLAB` 摘要；`npm run check:all-branches-health`（双周提醒，不进 CI Required）。防换名重写残留（假 ahead）；开分支可用 `--topic` 查重叠。
 - **375 修红 · micro-ritual Sit tip + 抽屉挡 ♪（2026-07-31）**：A) 呼吸开始后才 sync onboarding autos（修过早 sync 导致 `sit-button` 残留）；B) ActionBar 高于抽屉 backdrop，点 ♪ 关抽屉开 Soundscape；去掉 e2e `force: true`。Brief `fix-375-e2e-reds.md`。
 - **MilestoneGlow 产品路径接线（2026-07-31）**：连续练习 **streak-7**（及预留 21/100）达成时产品壳播 `MilestoneGlow`；与 Celebrating 同刻只播 Glow、庆祝戳仍记账；Honesty 补登跨节点时先 Glow 再桥接。`MilestoneGlowStore` + e2e `milestone-glow-product.spec.js`。
-- **场景→动画 · 设计师整合 + 库存全业务政策（2026-08-01）**：用户书面 + 设计师建议写入 `SCENE_ANIMATION_WIRING.md`（欢迎/完成同档随机池、Honesty 时长分档、生命感冷却、Dispatcher）；**驳回**完成池混入 celebrate-dance。库存「仅调试」须进 Slice B/C（`ASSET_INVENTORY` 已标目标场景）。Brief `task-scene-animation-inventory-wire-slice-b.md`。**已知漂移**：日语切语规格=合十，代码仍走 `intentionSet`→nod-bow → **Slice A′**。
+- **场景→动画 · 设计师整合 + 库存全业务政策（2026-08-01）**：用户书面 + 设计师建议写入 `SCENE_ANIMATION_WIRING.md`；**同日再拍板**：Honesty 20/30、Dispatcher 必做、其余清单**一批** A′+B；驳回完成池 dance。Brief `task-scene-animation-inventory-wire-slice-b.md`。**已知漂移**：日语切语规格=合十，代码仍 nod-bow → 进一批 A′。
 - **场景→动画接线表 · v1.0.0 Slice A（2026-07-31 拍板）**：正式稿 `SCENE_ANIMATION_WIRING.md`；**Slice A 升格为 v1.0.0 必交付**（ja 合十 / en 鞠躬；Honesty Idle 补登短点头；微仪式完成已接线核对）。Brief `task-briefs/task-scene-animation-wiring-v1-slice-a.md`；**实现** PR #59 已合 `develop`。docs 见 PR #58。Slice B/C / A′ 见 Backlog。
 - **MilestoneGlow 正式路径可接线（2026-07-31 拍板）**：用户书面——长期里程碑金辉+蝴蝶**本就是产品需要**，正式路径**完全可以接线**；不再以「仅调试预览」为终态。Brief `task-briefs/task-milestone-glow-product-wire.md`；实现另开 `feature/milestone-glow-product-wire`（排在 Ambient ⑤⑥⑩ 自动化之后或并行）。旧「7/30 前仅复测调试节奏」口径废止，改为**接线任务**；4 fps 观感随接线验收。
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
@@ -299,7 +299,7 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-01）**：场景动画——设计师建议并入 `SCENE_ANIMATION_WIRING`；库存「仅调试」须进业务（Slice B/C）；完成池**禁止**混入 celebrate-dance；日语切语须真合十（**Slice A′**，现状代码仍 nod-bow）。Brief `task-scene-animation-inventory-wire-slice-b.md`。
+**最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
 
@@ -602,27 +602,26 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 `DESIGN.md`「老虎的名字」保留用户可自定义改名设想（沿用 v4.0 命名交互逻辑）。**当前阶段不开发**；默认显示固定为正式名「阿寅 / Yin」（i18n `CHARACTER_NAME`）。排期前须另开 Task，明确存储、校验与观察式文案边界。
 
-### Backlog:场景→动画接线（Slice A 已合 · A′/B/C 消化库存）
+### Backlog:场景→动画接线（Slice A 已合 · A′+B 一批 · C 荷花）
 
-> **2026-07-31**：用户书面同意正式产品稿 + 进 Backlog，并**纳入第一版**。权威：`SCENE_ANIMATION_WIRING.md`；Slice A Brief：`task-scene-animation-wiring-v1-slice-a.md`（**PR #59 已合 develop**）。  
-> **2026-08-01**：用户 + 设计师——库存动画须进业务场景；建议写入接线表；Brief `task-scene-animation-inventory-wire-slice-b.md`。
+> **2026-07-31**：正式稿 + Slice A；权威 `SCENE_ANIMATION_WIRING.md`；A 实现 PR #59 已合。  
+> **2026-08-01**：用户拍板 Honesty **20/30**、日语合十、勿接已取代、**Dispatcher 必做**、设计师其余项**一批**进 A′+B（不拆碎）；驳回完成池 dance。Brief：`task-scene-animation-inventory-wire-slice-b.md`。
 
-**问题**：多套 2D 序列入库后，正式路径只用了一部分；伙伴感偏静。Slice A 已补切语/Honesty 短点头，但仍有合十语义漂移 + 大量「仅调试」未消化。
+**问题**：库存动画偏闲；切语合十有代码漂移；缺统一调度易堆 if-else。
 
 **切片**：
 
 | 切片 | 内容 | 排期 |
 |---|---|---|
 | **Slice A** | 切语问候 + Honesty Idle 短点头 + 微仪式核对 | **已合 develop**（PR #59） |
-| **Slice A′** | 日语切语改真合十 `palms-together`（与 Choose/`intentionSet` nod 解耦） | **建议 v1.0.0 冻结前**；口令「先修日语合十 A′」 |
-| **Slice B** | 欢迎/完成同档随机池；Honesty 长补登 halo；微仪式变体；清晨/深夜/茶歇/张望/摸头（冷却）；中央 Dispatcher | v1.0.x / 冻结后优先；口令「开工场景动画 Slice B」 |
-| **Slice C** | Transition、荷花 `lotus-*`、Grow | 大 Backlog；MilestoneGlow 产品路径已另 Brief 接线 |
+| **A′ + B（一批）** | 日语真合十 + Dispatcher + 欢迎/完成/微仪式同档池 + Honesty 长档 halo + 舒展/深夜/好奇（冷却） | 文档拍板后点名开工；**一批实现** |
+| **Slice C** | Transition、荷花 `lotus-*`、Grow | 大 Backlog；MilestoneGlow **已接线**免重做 |
 
-**约束**：遵守反馈分级；切语言/Honesty **禁止** Celebrating；**禁止**同日非首次完成随机 dance；Focusing 中跳过问候；生命感须冷却。
+**约束**：反馈分级；禁完成池 dance；Focusing 跳过问候；生命感冷却默认 1h；勿接已取代目录。
 
-- **复杂度评级**：A′ 低；B 中（Dispatcher + 限频 + 冷却）；C 中–高（需产品面）
-- **价值定位**：消化库存动画、强化正念伙伴「被看见」感
-- **排期**：A 已完成；下步默认 **A′ → B → C**；独立 worktree `feature/scene-animation-inventory-wire-slice-b`（或 `fix/locale-greeting-palms-ja`）
+- **复杂度评级**：中（Dispatcher + 多场景映射；不碰状态机主语义）
+- **价值定位**：消化库存、仪式感与陪伴感；架构一次收口
+- **排期口令**：「开工场景动画 Dispatcher / Slice B」；worktree `feature/scene-animation-dispatcher-slice-b`
 
 ### Backlog:用户上传氛围乐（v1.0.0 必交付 · 多首 · 最近在上 · 可删自传）
 
