@@ -97,7 +97,9 @@ export const WIDE_STAGE_CLASS = Object.freeze({
  *   arrivalOpen: boolean,
  *   overlayActive: boolean,
  *   honestyBusy: boolean,
- *   bridgeVisible: boolean
+ *   bridgeVisible: boolean,
+ *   companionExpanded?: boolean,
+ *   postChoosePending?: boolean
  * }} input
  * @returns {IdleChromeStage}
  */
@@ -110,10 +112,41 @@ export function resolveIdleChromeStage(input) {
     bridgeVisible
   } = input;
   if (focusing) return 'focusing';
-  if (arrivalOpen) return 'arrival';
-  if (overlayActive || honestyBusy) return 'overlay-suppress';
+  // Arrival / Companion / Honesty / Choose→nod: Quick-only chrome.
+  if (
+    arrivalOpen ||
+    input.companionExpanded ||
+    honestyBusy ||
+    input.postChoosePending
+  ) {
+    return 'arrival';
+  }
+  // Reflection / micro-ritual / other post-session overlays (not honesty busy).
+  if (overlayActive) return 'overlay-suppress';
   if (bridgeVisible) return 'bridge';
   return 'idle';
+}
+
+/**
+ * When true: hide Sit / Honesty / ⋯ (or grabber), keep Quick Start ball.
+ * Arrival, Honesty check-in UI, Companion picker, and the Choose→nod gap
+ * before Companion expands (`postChoosePending`).
+ *
+ * @param {{
+ *   arrivalOpen?: boolean,
+ *   honestyBusy?: boolean,
+ *   companionExpanded?: boolean,
+ *   postChoosePending?: boolean
+ * }} input
+ * @returns {boolean}
+ */
+export function shouldKeepQuickStartOnly(input) {
+  return Boolean(
+    input.arrivalOpen ||
+      input.honestyBusy ||
+      input.companionExpanded ||
+      input.postChoosePending
+  );
 }
 
 /**
@@ -125,7 +158,9 @@ export function resolveIdleChromeStage(input) {
  *   overlayActive: boolean,
  *   honestyBusy: boolean,
  *   arrivalOpen: boolean,
- *   bridgeVisible: boolean
+ *   bridgeVisible: boolean,
+ *   companionExpanded?: boolean,
+ *   postChoosePending?: boolean
  * }} input
  * @returns {ShellChromeProjection}
  */
@@ -135,21 +170,32 @@ export function resolveShellChromeProjection(input) {
     overlayActive,
     honestyBusy,
     arrivalOpen,
-    bridgeVisible
+    bridgeVisible,
+    companionExpanded = false,
+    postChoosePending = false
   } = input;
-  const chromeSuppressed = Boolean(overlayActive || honestyBusy);
+  const keepQuickStart = shouldKeepQuickStartOnly({
+    arrivalOpen,
+    honestyBusy,
+    companionExpanded,
+    postChoosePending
+  });
+  // Arrival / Honesty / Companion / post-Choose: suppress secondary, keep Quick.
+  // Reflection / micro-ritual overlay without keepQuickStart: full suppress.
+  const chromeSuppressed = Boolean(
+    overlayActive || honestyBusy || companionExpanded || postChoosePending
+  );
   return {
     narrow: {
       idle: !focusing,
       suppressed: chromeSuppressed,
-      keepQuickStart: Boolean(arrivalOpen)
+      keepQuickStart
     },
     wide: {
       idle: !focusing,
       // Wide ⋯ also suppresses on Honesty bridge (narrow ActionBar stays).
       suppressed: Boolean(chromeSuppressed || bridgeVisible),
-      // Arrival: keep Quick Start ball (parity with narrow keepQuickStart).
-      keepQuickStart: Boolean(arrivalOpen)
+      keepQuickStart
     }
   };
 }

@@ -224,6 +224,7 @@ export class WideIdleMoreMenu {
     document.getElementById(STYLE_ID)?.remove();
     document.body.classList.remove(
       'ft-wide-park-secondary',
+      'ft-wide-show-dock-rise',
       'ft-wide-more-open',
       'ft-wide-home-ctas',
       WIDE_STAGE_CLASS.sound,
@@ -380,7 +381,8 @@ export class WideIdleMoreMenu {
         setBoolPropIfChanged(
           this.sitHomeBtn,
           'hidden',
-          !focusEl || focusEl.hidden
+          // keepQuickStart: force-hide Sit (CSS is-arrival-quick is belt).
+          Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden
         );
       }
 
@@ -493,8 +495,12 @@ export class WideIdleMoreMenu {
     const showMore = park && !this._suppressed;
     // Home balls stay for wide Idle (incl. Arrival keepQs / bridge suppress).
     const showHome = park;
+    // Dock Sit/⚡ pills only while Focusing Rise — never during Idle (prevents
+    // Sit flash if chrome sync races label reset).
+    const showDockRise = wide && !this._idle;
 
     document.body.classList.toggle('ft-wide-park-secondary', park);
+    document.body.classList.toggle('ft-wide-show-dock-rise', showDockRise);
     document.body.classList.toggle(
       'ft-wide-more-open',
       this._menuOpen && showMore
@@ -774,8 +780,10 @@ export class WideIdleMoreMenu {
       }
 
       /*
-       * Park secondary Idle chrome + legacy Sit/⚡ pills off-canvas on wide Idle
-       * (incl. Arrival). Elements remain in DOM for proxy .click().
+       * Park secondary Idle chrome off-canvas on wide Idle (incl. Arrival).
+       * Elements remain in DOM for proxy .click().
+       * Dock Sit/⚡: park whenever not Focusing Rise (ft-wide-show-dock-rise),
+       * so Idle never flashes the old orange Sit pill.
        */
       @media (min-width: 480px) {
         body.ft-wide-park-secondary .session-start-dock__honesty-entry,
@@ -783,8 +791,8 @@ export class WideIdleMoreMenu {
         body.ft-wide-park-secondary .session-start-dock__hint,
         body.ft-wide-park-secondary .ambient-soundscape__fab,
         body.ft-wide-park-secondary #reminder-preference-toggle,
-        body.ft-wide-park-secondary #btn-focus,
-        body.ft-wide-park-secondary #quick-start-focus {
+        body:not(.ft-wide-show-dock-rise) #btn-focus,
+        body:not(.ft-wide-show-dock-rise) #quick-start-focus {
           position: fixed !important;
           left: -10000px !important;
           top: 0 !important;

@@ -8,7 +8,7 @@ import {
 } from './idleChromeOrchestration.js';
 
 describe('resolveIdleChromeStage', () => {
-  it('priority: focusing > arrival > overlay > bridge > idle', () => {
+  it('priority: focusing > arrival(quick-only) > overlay > bridge > idle', () => {
     assert.equal(
       resolveIdleChromeStage({
         focusing: true,
@@ -39,6 +39,7 @@ describe('resolveIdleChromeStage', () => {
       }),
       'overlay-suppress'
     );
+    // Honesty busy shares Arrival quick-only chrome (not full overlay suppress).
     assert.equal(
       resolveIdleChromeStage({
         focusing: false,
@@ -47,7 +48,18 @@ describe('resolveIdleChromeStage', () => {
         honestyBusy: true,
         bridgeVisible: false
       }),
-      'overlay-suppress'
+      'arrival'
+    );
+    assert.equal(
+      resolveIdleChromeStage({
+        focusing: false,
+        arrivalOpen: false,
+        overlayActive: false,
+        honestyBusy: false,
+        companionExpanded: true,
+        bridgeVisible: false
+      }),
+      'arrival'
     );
     assert.equal(
       resolveIdleChromeStage({
@@ -105,6 +117,62 @@ describe('resolveShellChromeProjection', () => {
     assert.equal(p.narrow.keepQuickStart, true);
     assert.equal(p.wide.suppressed, true);
     assert.equal(p.wide.keepQuickStart, true);
+  });
+
+  it('Honesty busy → suppress + keepQuickStart (Quick only, both viewports)', () => {
+    const p = resolveShellChromeProjection({
+      focusing: false,
+      overlayActive: true,
+      honestyBusy: true,
+      arrivalOpen: false,
+      bridgeVisible: false
+    });
+    assert.equal(p.narrow.suppressed, true);
+    assert.equal(p.narrow.keepQuickStart, true);
+    assert.equal(p.wide.suppressed, true);
+    assert.equal(p.wide.keepQuickStart, true);
+  });
+
+  it('Companion expanded (post-Choose) → keepQuickStart even when Arrival closed', () => {
+    const p = resolveShellChromeProjection({
+      focusing: false,
+      overlayActive: false,
+      honestyBusy: false,
+      arrivalOpen: false,
+      bridgeVisible: false,
+      companionExpanded: true
+    });
+    assert.equal(p.narrow.suppressed, true);
+    assert.equal(p.narrow.keepQuickStart, true);
+    assert.equal(p.wide.suppressed, true);
+    assert.equal(p.wide.keepQuickStart, true);
+  });
+
+  it('postChoosePending (nod gap) → keepQuickStart before Companion opens', () => {
+    const p = resolveShellChromeProjection({
+      focusing: false,
+      overlayActive: false,
+      honestyBusy: false,
+      arrivalOpen: false,
+      bridgeVisible: false,
+      postChoosePending: true
+    });
+    assert.equal(p.narrow.keepQuickStart, true);
+    assert.equal(p.wide.keepQuickStart, true);
+  });
+
+  it('Reflection overlay alone → suppress without keepQuickStart', () => {
+    const p = resolveShellChromeProjection({
+      focusing: false,
+      overlayActive: true,
+      honestyBusy: false,
+      arrivalOpen: false,
+      bridgeVisible: false,
+      companionExpanded: false
+    });
+    assert.equal(p.narrow.suppressed, true);
+    assert.equal(p.narrow.keepQuickStart, false);
+    assert.equal(p.wide.keepQuickStart, false);
   });
 
   it('bridge alone → narrow not suppressed; wide suppressed (Yes/No clear)', () => {
