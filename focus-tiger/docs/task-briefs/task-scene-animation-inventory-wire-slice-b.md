@@ -1,7 +1,7 @@
 # Task Brief · 场景→动画 · A′ + Slice B（一批：Dispatcher + 库存消化）
 
 **日期**：2026-08-01  
-**状态**：产品已拍板 · **待点名开工实现**（本文档批次先合 `develop`）  
+**状态**：产品已拍板 · **实现中**（`feature/scene-animation-dispatcher-slice-b`）  
 **分支建议**：`feature/scene-animation-dispatcher-slice-b` + 独立 worktree  
 **权威**：`SCENE_ANIMATION_WIRING.md` §四–§五 · §七 · §九–§十 · `EMOTION_BIBLE.md` · `ASSET_INVENTORY.md`
 

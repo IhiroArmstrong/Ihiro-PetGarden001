@@ -153,6 +153,23 @@ test('zero-completion honesty from Idle skips dormantWake', () => {
   );
 });
 
+test('Idle Honesty ≥30 min plays breathHaloHq (Slice B long ack)', () => {
+  const emotionCalls = [];
+  const { controller, ui } = createControllerDeps({
+    emotionController: {
+      playEmotion(key) {
+        emotionCalls.push(key);
+      }
+    }
+  });
+  controller.onAppReady();
+  controller.openDurationChoices();
+  ui.handlers.onDurationSelect(30);
+  ui.handlers.onBreathComplete();
+  assert.ok(emotionCalls.includes('breathHaloHq'));
+  assert.equal(emotionCalls.includes('mindfulAcknowledge'), false);
+});
+
 test('honesty duration select sits up and holds pose; breath end leaves DORMANT', () => {
   const emotionCalls = [];
   let guideStarted = 0;

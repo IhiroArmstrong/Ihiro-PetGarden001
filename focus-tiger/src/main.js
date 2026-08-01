@@ -78,7 +78,10 @@ import {
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
-import { resolveLocaleGreetingPlay } from './core/localeGreeting.js';
+import {
+  SCENE_ANIM_EVENTS,
+  resolveSceneAnimation
+} from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
 import {
   HonestyCheckInController,
@@ -240,11 +243,50 @@ async function init() {
   const focusVisualizer = new FocusVisualizer(composer);
   await focusVisualizer.init(mounts.tiger);
 
+  /** Shared overlay-busy for scene Animation Dispatcher */
+  function isSceneAnimOverlayBusy() {
+    return (
+      honestyCheckInUI?.phase !== 'hidden' ||
+      arrivalPractice?.isOpen?.() === true ||
+      reflectionMoment?.isOpen?.() === true ||
+      microRitualUI?.isOpen?.() === true
+    );
+  }
+
+  function tryPlaySceneAnim(event, extra = {}) {
+    const { playOptions, ...resolveOpts } = extra;
+    const decision = resolveSceneAnimation({
+      event,
+      sessionState: stateManager.state,
+      overlayBusy: isSceneAnimOverlayBusy(),
+      ...resolveOpts
+    });
+    if (!decision.play || !decision.emotionKey) return decision;
+    sceneAnimationDispatch.lastPlay = {
+      event,
+      emotionKey: decision.emotionKey,
+      reason: decision.reason
+    };
+    emotionController.playEmotion(decision.emotionKey, playOptions || {});
+    return decision;
+  }
+
+  const sceneAnimationDispatch = {
+    lastPlay: /** @type {{ event: string, emotionKey: string, reason: string } | null} */ (
+      null
+    ),
+    tryPlay: tryPlaySceneAnim
+  };
+  window.__sceneAnimationDispatch = sceneAnimationDispatch;
+
   const pointerInteraction = new PointerInteraction({
     canvas,
     camera,
     poseManager,
-    emotionController
+    emotionController,
+    onIdleNearStill: () => {
+      tryPlaySceneAnim(SCENE_ANIM_EVENTS.CURIOSITY);
+    }
   });
   pointerInteraction.bind();
   if (import.meta.env.DEV) {
@@ -559,11 +601,20 @@ async function init() {
       visibleMs: 4_500
     });
     endMicroRitualChrome();
-    emotionController.playEmotion('sessionComplete', {
-      onComplete: () => {
-        syncHonestyIdleEntry();
+    const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE, {
+      playOptions: {
+        onComplete: () => {
+          syncHonestyIdleEntry();
+        }
       }
     });
+    if (!decision.play) {
+      emotionController.playEmotion('sessionComplete', {
+        onComplete: () => {
+          syncHonestyIdleEntry();
+        }
+      });
+    }
   }
 
   function leaveMicroRitualQuietly() {
@@ -934,25 +985,18 @@ async function init() {
     window.__lightProgression = lightProgression;
   }
 
-  /** Slice A：切语问候（ja 合十 / en 鞠躬）；e2e 可读 lastLocaleGreeting */
+  /** Slice A/A′：切语问候；e2e 可读 lastLocaleGreeting（兼容钩） */
   const sceneAnimationSliceA = {
     lastLocaleGreeting: /** @type {string | null} */ (null)
   };
   window.__sceneAnimationSliceA = sceneAnimationSliceA;
   onLocaleChange((locale) => {
-    const overlayBusy =
-      honestyCheckInUI.phase !== 'hidden' ||
-      arrivalPractice?.isOpen?.() === true ||
-      reflectionMoment?.isOpen?.() === true ||
-      microRitualUI?.isOpen?.() === true;
-    const decision = resolveLocaleGreetingPlay({
-      locale,
-      sessionState: stateManager.state,
-      overlayBusy
+    const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.LANGUAGE_CHANGED, {
+      locale
     });
-    if (!decision.play || !decision.emotionKey) return;
-    sceneAnimationSliceA.lastLocaleGreeting = decision.emotionKey;
-    emotionController.playEmotion(decision.emotionKey);
+    if (decision.play && decision.emotionKey) {
+      sceneAnimationSliceA.lastLocaleGreeting = decision.emotionKey;
+    }
   });
 
   syncInAppReminderBanner = () => {
@@ -1401,6 +1445,14 @@ async function init() {
   retentionFunnelStore.noteAppOpen();
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
+
+  // Slice B：冷启动欢迎池（同日 1 次）+ 深夜生命感（≥23:00，1h 冷却）
+  tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP);
+  tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+  });
 
   // Lab chrome: vite `serve` (DEV) or local Playwright `vite build --mode development`
   // (MODE=development but DEV still false on any `build`). Product shell / CI prod build: off.

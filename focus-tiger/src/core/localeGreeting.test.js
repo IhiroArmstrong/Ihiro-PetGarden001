@@ -27,8 +27,8 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('emotionKeyForLocaleGreeting: ja → intentionSet; en → mindfulAcknowledge', () => {
-  assert.equal(emotionKeyForLocaleGreeting('ja'), 'intentionSet');
+test('emotionKeyForLocaleGreeting: ja → palmsTogether; en → mindfulAcknowledge', () => {
+  assert.equal(emotionKeyForLocaleGreeting('ja'), 'palmsTogether');
   assert.equal(emotionKeyForLocaleGreeting('en'), 'mindfulAcknowledge');
 });
 
@@ -51,7 +51,7 @@ test('normalizeLocaleGreetingState resets locales when date rolls', () => {
   assert.deepEqual(normalized, { dateKey: today, locales: [] });
 });
 
-test('resolveLocaleGreetingPlay: first ja plays intentionSet; second ja same day skips', () => {
+test('resolveLocaleGreetingPlay: first ja plays palmsTogether; second ja same day skips', () => {
   const storage = memoryStorage();
   const now = () => new Date(2026, 6, 31, 12);
 
@@ -62,7 +62,7 @@ test('resolveLocaleGreetingPlay: first ja plays intentionSet; second ja same day
     now
   });
   assert.equal(first.play, true);
-  assert.equal(first.emotionKey, 'intentionSet');
+  assert.equal(first.emotionKey, 'palmsTogether');
   assert.equal(first.reason, 'ok');
 
   const second = resolveLocaleGreetingPlay({
@@ -109,5 +109,5 @@ test('resolveLocaleGreetingPlay: Focusing gate skips without consuming quota', (
     now
   });
   assert.equal(after.play, true);
-  assert.equal(after.emotionKey, 'intentionSet');
+  assert.equal(after.emotionKey, 'palmsTogether');
 });

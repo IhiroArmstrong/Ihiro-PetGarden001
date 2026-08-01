@@ -11,7 +11,7 @@ const SIT = '#btn-focus';
 
 /**
  * v1.0.0 English + Japanese: Language UI → 日本語 → back to English; persist preference.
- * Slice A: ja → intentionSet greeting; en → mindfulAcknowledge; same-day re-pick skips.
+ * Slice A′: ja → palmsTogether greeting; en → mindfulAcknowledge; same-day re-pick skips.
  * Draft locales (zh/es/…) must not appear.
  */
 test('Language UI: switch to 日本語 then back to English', async ({ page }) => {
@@ -38,7 +38,7 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
     .poll(async () =>
       page.evaluate(() => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null)
     )
-    .toBe('intentionSet');
+    .toBe('palmsTogether');
 
   await page.locator('#language-preference-en').check();
   await expect(page.locator(SIT)).toContainText(/Sit with Yin/i, {

@@ -1,3 +1,8 @@
+import {
+  SCENE_ANIM_EVENTS,
+  resolveSceneAnimation
+} from './sceneAnimationDispatcher.js';
+
 export const MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS = 20 * 60;
 export const STRETCH_REMINDER_THRESHOLD_SECONDS = 2 * 60 * 60;
 export const STRETCH_RESET_AFTER_INACTIVE_MS = 30 * 60 * 1000;
@@ -19,6 +24,7 @@ export class MindfulReminderController {
    * @param {{show(message: string): boolean}} deps.toast
    * @param {(poolKey: string) => string} deps.getCopy
    * @param {() => number} [deps.now]
+   * @param {() => number} [deps.random]
    * @param {(type: 'mindful' | 'stretch' | 'refocus') => void} [deps.onReminderShown]
    */
   constructor({
@@ -27,6 +33,7 @@ export class MindfulReminderController {
     toast,
     getCopy,
     now = () => Date.now(),
+    random = Math.random,
     onReminderShown = null
   }) {
     this.quotaManager = quotaManager;
@@ -34,6 +41,7 @@ export class MindfulReminderController {
     this.toast = toast;
     this.getCopy = getCopy;
     this.now = now;
+    this.random = random;
     this.onReminderShown = onReminderShown;
 
     this.sessionActive = false;
@@ -163,7 +171,7 @@ export class MindfulReminderController {
         poolKey: 'MINDFUL_FOCUS_MILESTONE'
       },
       stretch: {
-        emotionKey: 'stretchReminder',
+        emotionKey: null, // resolved via scene Animation Dispatcher pool
         poolKey: 'STRETCH_REMINDER'
       },
       refocus: {
@@ -172,7 +180,16 @@ export class MindfulReminderController {
       }
     }[type];
 
-    this.emotionController.playEmotion(config.emotionKey, { subtype: type });
+    let emotionKey = config.emotionKey;
+    if (type === 'stretch') {
+      const decision = resolveSceneAnimation({
+        event: SCENE_ANIM_EVENTS.STRETCH_REMINDER,
+        sessionState: 'FOCUSING',
+        random: this.random
+      });
+      emotionKey = decision.emotionKey || 'stretchReminder';
+    }
+    this.emotionController.playEmotion(emotionKey, { subtype: type });
     const shown = this.toast.show(this.getCopy(config.poolKey));
     if (shown) this.onReminderShown?.(type);
     return shown;

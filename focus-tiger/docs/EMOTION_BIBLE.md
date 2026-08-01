@@ -638,5 +638,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.67 | 2026-07-26 | 冷启动 `onAppReady` 禁进 DORMANT / 不播 `cloakSleep`（开场即睡回归）；**拍板**回前台 ≥2h live sync **继续披毯进睡** |
 | 0.68 | 2026-07-31 | 交叉引用 `SCENE_ANIMATION_WIRING.md`：场景→动画接线表；v1.0.0 Slice A（切语合十/鞠躬、Honesty Idle 短点头）；互动表补语言切换行 |
 | 0.69 | 2026-08-01 | 场景接线表整合设计师建议：库存须进业务（A′+B 一批 / C）；完成池禁止混入 Celebrating；日语切语目标仍为合十；Honesty 分界锁定 ≤20 / ≥30；Dispatcher 必做 |
+| 0.70 | 2026-08-01 | Slice A′+B 实现：`palmsTogether` 切语；`breathHaloHq` Honesty≥30；`sceneAnimationDispatcher` 事件/加权/冷却；完成与微仪式同档轻量池（禁 dance） |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
