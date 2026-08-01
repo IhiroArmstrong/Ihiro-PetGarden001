@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **PR 收口 + stash 归档（2026-08-01 晚）**：[#66](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/66) chrome Quick-only / Rise 闪 + ja 阿寅、[#67](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/67) welcome wave pingpong、[#68](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/68) stash PRD 归档均已合 `develop`。本地 5 条旧 stash 已清；唯一 PRD 草稿进 `docs/archive/stashed-prds-2026-07-24/`。已合入 `fix/*` worktree 已拆除。
+- **PR #2 另开任务（2026-08-01 用户同意）**：`develop`→`main` 仍 OPEN 且 `CONFLICTING`；摸底仅 **2 文件**真冲突（`.cursor/hooks.json`、`focus-tiger-e2e-full.yml`）。Brief：`task-briefs/task-pr2-develop-into-main.md`。**未开工**——须口令「开工 PR #2」后再解。
 - **分支健康度普查（2026-08-01）**：`PROCESS`「分支健康度」+ `COLLAB` 摘要；`npm run check:all-branches-health`（双周提醒，不进 CI Required）。防换名重写残留（假 ahead）；开分支可用 `--topic` 查重叠。
 - **375 修红 · micro-ritual Sit tip + 抽屉挡 ♪（2026-07-31）**：A) 呼吸开始后才 sync onboarding autos（修过早 sync 导致 `sit-button` 残留）；B) ActionBar 高于抽屉 backdrop，点 ♪ 关抽屉开 Soundscape；去掉 e2e `force: true`。Brief `fix-375-e2e-reds.md`。
 - **MilestoneGlow 产品路径接线（2026-07-31）**：连续练习 **streak-7**（及预留 21/100）达成时产品壳播 `MilestoneGlow`；与 Celebrating 同刻只播 Glow、庆祝戳仍记账；Honesty 补登跨节点时先 Glow 再桥接。`MilestoneGlowStore` + e2e `milestone-glow-product.spec.js`。
@@ -265,13 +267,13 @@
 
 **下一步计划**：
 
-- **场景→动画接线 · Slice A 已合 · A′/B 待做（2026-08-01）**：PR #59 已合；库存消化 + 设计师建议见 `SCENE_ANIMATION_WIRING` / Slice B Brief；**A′** 修日语真合十。
+- **场景→动画接线 · A′+B Dispatcher（2026-08-01）**：PR #59 / #65 等已合 `develop`；关单级人工见 `TEST_TRACKER` 场景动画行。
 - **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31）**：已合 **`develop`（PR #51）**；Brief `task-user-ambient-upload-v1.md`。关单级人工见 `TEST_TRACKER` 对应行。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
 - **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。「高于 CI 细节」= 与 CI 工程 Backlog **争排期时先开本决策**（非等 CI 做完）。见 Backlog「本地桌面 APP 打包选型」。
-- **PR #2 合并进 `main` 前（当前）**：`fix/scenario-o-375-chrome-layout` **已全部合入** `develop`（fix tip `a3cf229` 是 `develop` 祖先；`develop..fix` 为空）。**不要再做一次** fix→develop merge。主线改为：确认 PR #2 头（`develop` tip）上 doc-contract + visibility CI 为绿 → 代改 PR 标题给你确认 → 你下令后再合 `main`。
+- **PR #2 合并进 `main`（另开任务 · 未开工）**：仍 OPEN / `CONFLICTING`。摸底真冲突仅 `.cursor/hooks.json` + `.github/workflows/focus-tiger-e2e-full.yml`；另须吸收 `main` 上约 10 commits（含 #63 Plan A）。Brief：`task-briefs/task-pr2-develop-into-main.md`。口令「开工 PR #2」后再动；**合 `main` 仍须你明确下令**。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列推进——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论**（实现可后置）。
-- **回 `chore/split-hints-from-pr2` / hints 拆分线时**：先核 `git stash` 里「`On chore/split-hints-from-pr2: temp prd untracked`」再动手（见 Backlog「stash · chore/split-hints-from-pr2」）；**禁止**未核就 drop。
+- **hints 拆分线 / 旧 stash PRD（2026-08-01 已清）**：原 `stash · chore/split-hints-from-pr2` 已随本地 stash 清空处理；PRD 草稿归档见 `docs/archive/stashed-prds-2026-07-24/`（非 SSOT）。回 hints 拆分时读归档即可，勿再找已删除的 stash。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
 - Companion Mode 与 Session Intention 已在同一预开始 dock 视觉合并（意图在上、三选一在下）；暂不另建独立 BeginPanel 类
@@ -326,8 +328,9 @@
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
 - **CI 全量 `test:smoke` + `test:e2e`**（工程重要，但**排期次于**「本地桌面 APP 打包选型」决策；勿长期依赖本机手跑）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
+- **PR #2 · develop→main 冲突解完并合并**（另开任务；Brief `task-pr2-develop-into-main.md`；口令开工）
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
-- **stash · chore/split-hints-from-pr2**（回 hints 拆分线时先核；勿未核就 drop）
+- **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
 
 ---
 
@@ -750,14 +753,10 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **不在范围**：不把「降 flaky」写成产品观感验收通过；不替代 Class-2 visibility gap（`honesty-bridge-entries-hidden` 等）的产品补锁。
 - **排期**：**PR #2 → `main` 合并后立刻开工**（可与「CI 全量 smoke + e2e」同周并行）；建议分支名 `fix/visibility-ci-flaky` 或并入全量 CI 工程 PR 的首个 commit 组。
 
-### Backlog:stash · chore/split-hints-from-pr2（回 hints 拆分线时先核）
+### Backlog:stash · chore/split-hints-from-pr2（**已关闭 · 2026-08-01**）
 
-> **背景（2026-07-27）**：主线 CI / `develop` 收尾时，仓库仍留有一条 stash：`On chore/split-hints-from-pr2: temp prd untracked`。用户书面：**先不动**；等以后回到 hints 拆分（`chore/split-hints-from-pr2` 或同等任务）时再一并确认内容与去留。对话约定**不会**跨会话自动执行，故写入本 Backlog 作持久提醒。
-
-- **触发**：任何会话开始处理 hints 从 PR#2 拆分 / `chore/split-hints-from-pr2` / 相关 untracked PRD 入库前。
-- **必做**：`git stash list` → 找到该条 → `git stash show`（含 untracked）核对文件与内容 → 再决定 **pop / 选择性检出 / drop**。
-- **禁止**：未核对就 `stash drop`；勿与 `develop` 上已处理的 `wip other`（已 drop）混淆。
-- **排期**：挂在 hints 拆分线开工门闩上，非无限延期；不阻塞 PR #2 → `main`。
+> **原背景（2026-07-27）**：曾留 stash `On chore/split-hints-from-pr2: temp prd untracked`。  
+> **关闭（2026-08-01）**：本地 5 条 stash 已 `clear`；其中 PRD 草稿已归档至 `docs/archive/stashed-prds-2026-07-24/`（非 SSOT）。回 hints 拆分线时读该归档即可，**勿**再查找已删除 stash。
 
 ### Backlog:Hints anchor e2e bounding rect（Onboarding 提示 DOM 视觉校验）
 
