@@ -1,7 +1,7 @@
 # HONESTY_BRIDGE_CTA.md — Honesty Check-in 桥接 CTA 定稿
 
 创建日期：2026-07-19  
-最后更新：2026-07-25（成功记账 toast；桥接点外侧不当 No）
+最后更新：2026-08-02（桥接面板改为 Arrival 式半透明气泡，避免挡角色）
 
 ---
 
@@ -31,6 +31,7 @@
   - **点外侧空白不当作 No**（2026-07-25 拍板）：须明确点 Yes 或 No；不与轻量 popover「点外侧收起」混用。
 - **频率**：**每次**补登完成后都可出现（**不限**当日一次）。
 - **叠层（2026-07-22）**：桥接面板可见时须收起会挡 Yes/No 的 Idle 入口（`#honesty-idle-entry`、`#micro-ritual-idle-entry`）；Sit / How shall we sit? 可仍留在面板下方。实现：`HonestyBridgeCtaController.onShown` → `syncHonestyIdleEntry`；dock 类 `is-honesty-bridge-active` CSS 强制隐藏；桥接面板 `z-index:18`（高于 dock 16）。Honesty 一点即藏入口，直至桥接 Yes/No（`endCheckInFlow`）。
+- **视觉（2026-08-02）**：面板须为 **Arrival 式轻量半透明气泡**（暖米底约 0.62 透明度 + `backdrop-filter` 模糊），**禁止**近乎不透明厚重卡片挡住阿寅下半身与蒲团；Yes/No 按钮可略实一点以保证可读可点。实现：`HonestyBridgeCtaUI` `PANEL_CSS`。
 
 ### Honesty 同日多次补登（2026-07-19 拍板 B）
 

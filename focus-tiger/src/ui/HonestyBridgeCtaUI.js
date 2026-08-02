@@ -5,17 +5,23 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 
+/**
+ * 轻量半透明气泡（对齐 Arrival Notice 字幕泡）：角色动画须透出可见，
+ * 禁止近乎不透明的厚重卡片挡下半身。
+ */
 const PANEL_CSS = [
   'position:absolute',
   'left:50%',
   'bottom:118px',
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
-  'padding:20px 22px 18px',
-  'border:1px solid rgba(255,248,235,.65)',
-  'border-radius:20px',
-  'background:linear-gradient(165deg,rgba(255,253,247,.98) 0%,rgba(250,244,232,.95) 55%,rgba(244,234,216,.93) 100%)',
-  'box-shadow:0 2px 0 rgba(255,255,255,.88) inset,0 -2px 0 rgba(139,115,85,.16) inset,0 2px 0 rgba(180,150,110,.35),0 14px 36px rgba(44,31,20,.18),0 4px 10px rgba(44,31,20,.1)',
+  'padding:14px 18px 12px',
+  'border:1px solid rgba(139,115,85,.14)',
+  'border-radius:18px',
+  'background:rgba(255,252,245,.62)',
+  'backdrop-filter:blur(8px)',
+  '-webkit-backdrop-filter:blur(8px)',
+  'box-shadow:0 4px 18px rgba(44,31,20,.06)',
   'color:#2c1f14',
   'transition:opacity 260ms ease,transform 260ms ease',
   'opacity:0',
@@ -24,16 +30,17 @@ const PANEL_CSS = [
   'z-index:18'
 ].join(';');
 
-/** Reflection 同级按钮权重（不做主次强调）。 */
+/** Reflection 同级按钮权重（不做主次强调）；略实一点以保持可点可读。 */
 const EQUAL_BTN_CSS = [
   'flex:1',
   'padding:7px 16px',
   'font-size:13px',
   'color:#4a3a28',
-  'background:rgba(255,255,255,.6)',
-  'border:1px solid rgba(139,115,85,.3)',
+  'background:rgba(255,252,245,.78)',
+  'border:1px solid rgba(139,115,85,.28)',
   'border-radius:16px',
-  'cursor:pointer'
+  'cursor:pointer',
+  'box-shadow:0 1px 0 rgba(255,255,255,.7) inset'
 ].join(';');
 
 export class HonestyBridgeCtaUI {

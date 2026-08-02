@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  CAPCUT_DISSOLVE_MS,
   DORMANT_WAKE_CROSS_FADE_MS,
   EmotionController,
   LEAVE_DORMANT_WAKE_CROSS_FADE_MS,
@@ -575,4 +576,63 @@ test('blinkBreathe maxCycles finishes back to idle', () => {
   assert.equal(typeof plays[0].options.onComplete, 'function');
   plays[0].options.onComplete();
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+test('gazeLookAround chain matches lab anti-flash contract then CapCut idle', () => {
+  const plays = [];
+  const stops = [];
+  const idleStarts = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop(options) {
+      stops.push(options);
+    }
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer,
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop(options) {
+        stops.push(options);
+      },
+      start(options) {
+        idleStarts.push(options);
+      }
+    }
+  });
+
+  controller.playEmotion('gazeLookAround');
+
+  assert.deepEqual(stops, [{ clear: false }]);
+  assert.equal(plays.length, 1);
+  assert.equal(plays[0].name, 'gazeP1CenterBlinkLeft');
+  assert.equal(plays[0].options.crossFadeMs, 0);
+  assert.equal(plays[0].options.holdLastFrame, false);
+
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'gazeP2LeftToUp');
+  assert.equal(plays[1].options.crossFadeMs, 0);
+
+  plays[1].options.onComplete();
+  assert.equal(plays[2].name, 'gazeP3TowardRight');
+  assert.equal(plays[2].options.crossFadeMs, 0);
+
+  plays[2].options.onComplete();
+  assert.equal(plays[3].name, 'gazeP4RightToDown');
+  assert.equal(plays[3].options.crossFadeMs, 0);
+  assert.equal(plays[3].options.holdLastFrame, true);
+
+  plays[3].options.onComplete();
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+  assert.equal(idleStarts.length, 1);
+  assert.equal(idleStarts[0].crossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(idleStarts[0].freezeUntilCrossFadeEnds, true);
 });

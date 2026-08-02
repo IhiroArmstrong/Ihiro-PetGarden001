@@ -402,6 +402,7 @@
 | 2026-07-26 | §8.2 增 3c：并行分支丢 `ca20d07` stage + A4 不锁视口假绿；N17 S2 改为鞠躬→三选一在视口→点选→Focusing |
 | 2026-07-26 | §8.6 / N25：Visibility Contract Registry；验收 OK 须同任务双视口自动化；suppress 变更 CI 整表 |
 | 2026-07-26 | 新增 §6.7：开场即睡「修好又失效」——另案搁置 + 契约锁窄 + 文档互斥 + 功能覆盖意图 |
+| 2026-08-02 | 新增 §6.8：实验室组合试播 OK ≠ 产品路径已修（张望闪白） |
 
 ### 6.7 开场即睡：修好过一段时间又失效（2026-07-26 事故）
 
@@ -427,6 +428,34 @@
 
 **本事故落地**：`onAppReady` → `allowEnterDormant: false`；`dormantIdle` + smoke A1b；`TEST_TRACKER`「开场即睡」行；对齐 `DESIGN` / `EMOTION_BIBLE` / `SHARED_RESOURCES`。  
 **产品拍板（2026-07-26）**：回前台（切标签再回来）且 ≥2h → **继续披毯进睡**；冷启动第一幕仍 Idle。二者勿再混为一谈。
+
+### 6.8 实验室组合试播 OK ≠ 产品路径已修（2026-08-02 · 张望闪白）
+
+**现象**：Idle 好奇池随机 `gazeLookAround` 播放中闪白；调试「组合试播 · 张望整段」不闪。用户以为「上次已交 Bug」却仍见闪。
+
+**不是**实验室坏了。两条代码路径本就不共享抗闪契约：
+
+| 路径 | 离开 Idle | 段间 | 播完 |
+|---|---|---|---|
+| `_playDebugSequenceChain` | `clear: false` | `crossFadeMs: 0` | **定格末帧、不回呼吸**（注释写明避闭目一闪） |
+| 产品 `_playCompanionSequenceChainOnce`（Slice B 重接好奇池前） | 默认 `clear: true`（藏 overlay→露灰底） | `MICRO_CROSS_FADE_MS` | CapCut 回 Idle |
+
+**因果链**：
+
+1. **7/20「修」= 关自动变体，不是修转场**：正式 Idle 不再自动张望 → 闪白从产品路径消失，看起来像修好；抗闪不变量仍只在调试链。
+2. **Slice B 重接好奇池**：产品再走 `gazeLookAround`，**未**把实验室的 `clear:false` / 段间硬切迁到 `_playCompanionSequenceChainOnce`。
+3. **「实验室 OK」假绿**：验收/自测若只点组合试播，会误以为产品路径已对齐。
+4. **记入 ≠ 开修**（同日 ⋯ 脉冲点事故同型）：反馈进 `TEST_TRACKER` 后若无专修分支 + 产品路径回归锚，问题会休眠到用户再撞上。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| L1 | 调试路径修好观感后，若产品会走同素材 → **必须**把抗闪不变量写进产品播放器（或共享 helper），禁止「调试专用」 |
+| L2 | 回归锚须锁**产品**入口（如 `playEmotion('gazeLookAround')` 的 `clear`/`crossFadeMs`），禁止只锁调试链或「实验室按钮能播」 |
+| L3 | `TEST_TRACKER` 写「正式 Idle 不应自动张望」类关闭语时，若日后重接调度 → 开工已好清单须含原抗闪契约 |
+
+**本事故落地**：产品链对齐 `clear:false` + 段间硬切 + 末帧定格再 CapCut；单测锁该契约；`TEST_TRACKER` 好奇张望闪白行。
 
 ---
 

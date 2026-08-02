@@ -181,7 +181,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 >
 > | id / 序列 | 建议场景用途 |
 > |---|---|
-> | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感（调试「组合试播」整段） |
+> | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感；产品好奇池与调试「组合试播」整段**同抗闪契约**：离开 Idle `clear:false`、段间硬切、产品播完 CapCut 回 Idle（调试可定格不回） |
 > | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮（**正放+倒放一次**烘焙 → ~1s CapCut Idle；禁 player pingpong） |

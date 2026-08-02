@@ -748,7 +748,8 @@ export class EmotionController {
         });
       },
 
-      // Curiosity：张望整段 p1→p4，播完回 Idle（不经 IdleOrchestrator）
+      // Curiosity：张望整段 p1→p4，播完 CapCut 回 Idle（不经 IdleOrchestrator）。
+      // 与调试「组合试播」同不变量：离开 Idle 不清 overlay、段间硬切（避免闪白）。
       gazeLookAround: (options = {}) => {
         const chain = COMPANION_GESTURE_CHAINS.find(
           (c) => c.id === 'gazeLookAround'
@@ -759,7 +760,17 @@ export class EmotionController {
           'gazeP3TowardRight',
           'gazeP4RightToDown'
         ];
-        this._playCompanionSequenceChainOnce(sequences, options, 'gazeLookAround');
+        this._playCompanionSequenceChainOnce(
+          sequences,
+          {
+            ...options,
+            crossFadeMs: options.crossFadeMs ?? 0,
+            returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+            freezeUntilCrossFadeEnds:
+              options.freezeUntilCrossFadeEnds !== false
+          },
+          'gazeLookAround'
+        );
       }
     };
   }
@@ -798,6 +809,10 @@ export class EmotionController {
   }
 
   /**
+   * 多段陪伴链：对齐调试 `_playDebugSequenceChain` 的抗闪契约，再按 oneshot 回 Idle。
+   * - 离开 Idle：`clear: false`（保留末帧，禁止先藏 overlay）
+   * - 段间：默认硬切 `crossFadeMs: 0`（p1→p4 设计为可硬接；微叠化易闪白）
+   * - 末段：`holdLastFrame` 定格，供 CapCut 回 Idle 有稳定源帧
    * @param {ReadonlyArray<string>} sequences
    * @param {EmotionOptions} options
    * @param {string} tag
@@ -807,9 +822,11 @@ export class EmotionController {
       this._finishOneShot(options, tag);
       return;
     }
-    this._leaveIdleBaseline();
+    this._leaveIdleBaseline({ clear: false });
     this._use2DMainline();
-    const crossFadeMs = Number(options.crossFadeMs) || MICRO_CROSS_FADE_MS;
+    const entryMs = Number.isFinite(Number(options.crossFadeMs))
+      ? Number(options.crossFadeMs)
+      : 0;
     let i = 0;
     const playNext = () => {
       if (i >= sequences.length) {
@@ -818,10 +835,13 @@ export class EmotionController {
       }
       const idx = i;
       const name = sequences[i++];
+      const isLast = i >= sequences.length;
       const started = this.spritePlayer.play(name, {
         loop: false,
         loopMode: 'none',
-        crossFadeMs: idx === 0 ? crossFadeMs : MICRO_CROSS_FADE_MS,
+        holdLastFrame: isLast,
+        // 段间一律硬切；仅首段可用 options.crossFadeMs（默认 0）
+        crossFadeMs: idx === 0 ? entryMs : 0,
         freezeUntilCrossFadeEnds: true,
         onComplete: playNext
       });
