@@ -126,7 +126,7 @@
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
-| 长期里程碑 | `milestoneGlow`（主）· `breathHaloHq`（备选变体） | ritual | **Glow 产品路径已接线**；HQ 备选 **Slice B/C** | Brief `task-milestone-glow-product-wire.md` |
+| 长期里程碑 | `milestoneGlow` 变体：`milestone-glow`（streak-7）· `meditation-star-reward`（streak-21/100）；`breathHaloHq` 仍调试 | ritual | **产品路径已接线**（节点轮换） | Brief `task-milestone-glow-product-wire.md` |
 | 荷花成长 / 莲花解锁 | `lotus-front-rising` / `lotus-chest-halo` | ritual | Slice C | 须先有 Grow / 纪念奖励产品面 |
 | 旧 `dormant-wake/` 正放 | — | — | **勿接** | 已由 cloak 倒放取代；目录保留 |
 | 旧 `sleeping/` 8 帧 | — | — | **勿接** | 主线用 cloak 030–034 |
@@ -186,7 +186,8 @@
 | `breath-halo-hq` | MilestoneGlow 备选或长补登光环变体 | B |
 | `tea-drinking` / `yawn-stretch` / gaze-p* / `ear-wiggle-head-touch` | 深夜·清晨·茶歇·好奇·摸头（均冷却） | B |
 | `lotus-front-rising` / `lotus-chest-halo` | Grow / 纪念奖励解锁 | C |
-| `milestone-glow` | 连续练习节点（已产品接线） | 已接线 |
+| `milestone-glow` | 连续练习节点（streak-7） | 已接线 |
+| `meditation-star-reward` | 连续练习节点（streak-21 / streak-100） | 已接线（2026-08-03） |
 | `dormant-wake` / 旧 `sleeping/` / `tilt-think` / `blink-breathe` | — | **勿接**（已取代） |
 
 仍缺正式序列（`smileSquint` / `petHead` / `dizzyBlink` / `snoringZZZ`）→ 另立美术，不在「库存消化」范围。
@@ -227,4 +228,5 @@
 | 2026-08-02 | 切语 EN：曾 `magicBookReading` 硬切（QA OK）→ 改 `teaDrinking` 单程 + CapCut（QA OK） |
 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut |
 | 2026-08-02 | **修**：冷启动欢迎与深夜同 tick 叠播 → tea/yawn 误盖开场；`shouldAttemptLateNightOnBoot` 互斥 + §6.9 |
+| 2026-08-03 | 入库 `meditation-star-reward`；MilestoneGlow 按节点轮换（7=蝴蝶金辉 · 21/100=琉璃星石） |
 

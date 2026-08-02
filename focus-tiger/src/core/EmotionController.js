@@ -103,6 +103,26 @@ export function pickCelebrateDanceVariant(random = Math.random) {
     : CELEBRATE_DANCE_VARIANTS[1];
 }
 
+/**
+ * MilestoneGlow 序列变体（同 emotion key `milestoneGlow`）。
+ * 按 streak 节点轮换：7=金辉蝴蝶；21/100=琉璃星石。无 nodeId（调试）默认蝴蝶。
+ */
+export const MILESTONE_GLOW_VARIANT_BY_NODE = Object.freeze({
+  'streak-7': 'milestoneGlow',
+  'streak-21': 'milestoneGlowStar',
+  'streak-100': 'milestoneGlowStar'
+});
+
+/**
+ * @param {string | null | undefined} nodeId
+ * @returns {'milestoneGlow' | 'milestoneGlowStar'}
+ */
+export function pickMilestoneGlowVariant(nodeId) {
+  const id = typeof nodeId === 'string' ? nodeId : '';
+  const mapped = MILESTONE_GLOW_VARIANT_BY_NODE[id];
+  return mapped === 'milestoneGlowStar' ? 'milestoneGlowStar' : 'milestoneGlow';
+}
+
 /** Bible 对齐的公开情绪常量；保留 camelCase 供业务层直接调用。 */
 export const EMOTIONS = Object.freeze({
   milestoneGlow: 'milestoneGlow',
@@ -359,8 +379,8 @@ export class EmotionController {
       },
 
       // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
-      // 里程碑金辉时刻：当前仅供调试预览，不接真实里程碑判定。
-      // 序列末帧固定停留 2.5s，让烧录在末段的金光与蝴蝶自然收束后回落。
+      // 里程碑仪式：产品路径按 streak 节点选变体（金辉蝴蝶 / 琉璃星石）；
+      // 末帧固定停留 2.5s，让烧录特效自然收束后回落。
       milestoneGlow: (options = {}) => {
         this._cancelMilestoneHold();
         if (!this.spritePlayer) {
@@ -373,7 +393,11 @@ export class EmotionController {
         this._leaveIdleBaseline();
         this._use2DMainline();
         const holdPose = Boolean(options.holdPose);
-        const started = this.spritePlayer.play('milestoneGlow', {
+        const sequenceName =
+          typeof options.sequenceName === 'string' && options.sequenceName
+            ? options.sequenceName
+            : pickMilestoneGlowVariant(options.milestoneNodeId);
+        const started = this.spritePlayer.play(sequenceName, {
           ...options,
           loop: false,
           loopMode: 'none',
@@ -872,7 +896,7 @@ export class EmotionController {
   }
 
   /**
-   * MilestoneGlow 的金光与蝴蝶已烧录在帧中；末帧按固定时长停留后直接完成。
+   * MilestoneGlow 烧录特效（金辉蝴蝶 / 琉璃星石）在帧中；末帧按固定时长停留后直接完成。
    * @param {() => void} onComplete
    */
   _holdMilestoneLastFrame(onComplete) {
@@ -1063,6 +1087,7 @@ export class EmotionController {
       celebrateDance: 'celebrate-dance v1',
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
+      milestoneGlowStar: 'meditation-star-reward 琉璃星石',
       breathHaloHq: 'breath-halo-hq 备选',
       palmsTogether: 'palms-together 合十(调试)',
       intentionNod: 'intention-nod Choose点头',

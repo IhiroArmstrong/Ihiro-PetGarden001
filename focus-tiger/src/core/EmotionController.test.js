@@ -5,7 +5,8 @@ import {
   DORMANT_WAKE_CROSS_FADE_MS,
   EmotionController,
   LEAVE_DORMANT_WAKE_CROSS_FADE_MS,
-  MILESTONE_GLOW_HOLD_MS
+  MILESTONE_GLOW_HOLD_MS,
+  pickMilestoneGlowVariant
 } from './EmotionController.js';
 
 test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', () => {
@@ -66,6 +67,14 @@ test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', (
   }
 });
 
+test('pickMilestoneGlowVariant maps streak nodes to butterfly vs star', () => {
+  assert.equal(pickMilestoneGlowVariant('streak-7'), 'milestoneGlow');
+  assert.equal(pickMilestoneGlowVariant('streak-21'), 'milestoneGlowStar');
+  assert.equal(pickMilestoneGlowVariant('streak-100'), 'milestoneGlowStar');
+  assert.equal(pickMilestoneGlowVariant(null), 'milestoneGlow');
+  assert.equal(pickMilestoneGlowVariant(undefined), 'milestoneGlow');
+});
+
 test('milestoneGlow holds its last frame for a fixed duration then returns to idle', () => {
   const plays = [];
   const spritePlayer = {
@@ -117,6 +126,49 @@ test('milestoneGlow holds its last frame for a fixed duration then returns to id
     assert.equal(completed, 1);
     assert.equal(controller.getCurrentEmotionKey(), 'idle');
     assert.equal(controller.shouldSuppressRuntimeGlow(), false);
+  } finally {
+    globalThis.setTimeout = previousSetTimeout;
+    globalThis.clearTimeout = previousClearTimeout;
+  }
+});
+
+test('milestoneGlow picks star variant for streak-21 / streak-100 nodes', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+  const previousSetTimeout = globalThis.setTimeout;
+  const previousClearTimeout = globalThis.clearTimeout;
+  globalThis.setTimeout = (callback) => {
+    callback();
+    return 1;
+  };
+  globalThis.clearTimeout = () => {};
+
+  try {
+    controller.playEmotion('milestoneGlow', { milestoneNodeId: 'streak-7' });
+    assert.equal(plays.at(-1).name, 'milestoneGlow');
+
+    controller.playEmotion('milestoneGlow', { milestoneNodeId: 'streak-21' });
+    assert.equal(plays.at(-1).name, 'milestoneGlowStar');
+
+    controller.playEmotion('milestoneGlow', { milestoneNodeId: 'streak-100' });
+    assert.equal(plays.at(-1).name, 'milestoneGlowStar');
+
+    controller.playEmotion('milestoneGlow', {
+      sequenceName: 'milestoneGlowStar'
+    });
+    assert.equal(plays.at(-1).name, 'milestoneGlowStar');
   } finally {
     globalThis.setTimeout = previousSetTimeout;
     globalThis.clearTimeout = previousClearTimeout;
