@@ -153,7 +153,7 @@ export class WeeklyPracticeHeatmap {
         gap: 6px;
         padding: 8px 10px;
         border-radius: var(--radius-sm, 10px);
-        background: var(--color-panel-soft, rgba(228, 225, 219, 0.92));
+        background: var(--color-panel-soft, rgba(255, 252, 245, 0.62));
         border: 1px solid var(--color-ink-faint, rgba(46, 43, 40, 0.1));
         box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
         pointer-events: none;

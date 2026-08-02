@@ -618,11 +618,9 @@ export class AmbientSoundscapeUI {
         padding: 0;
         border: 1px solid rgba(139, 115, 85, 0.22);
         border-radius: 50%;
-        background: linear-gradient(
-          165deg,
-          rgba(255, 252, 245, 0.98) 0%,
-          rgba(245, 235, 220, 0.96) 100%
-        );
+        background: rgba(255, 252, 245, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: rgba(92, 72, 52, 0.82);
         cursor: pointer;
         box-shadow:
@@ -815,8 +813,8 @@ export class AmbientSoundscapeUI {
         border-color: rgba(139, 115, 85, 0.35);
         background: linear-gradient(
           165deg,
-          rgba(255, 255, 255, 0.96) 0%,
-          #f8f1e4 100%
+          rgba(255, 252, 245, 0.72) 0%,
+          rgba(255, 252, 245, 0.62) 100%
         );
         color: rgba(74, 58, 40, 0.78);
       }
@@ -846,10 +844,12 @@ export class AmbientSoundscapeUI {
         pointer-events: auto;
         width: min(240px, calc(100vw - 40px));
         padding: 12px;
-        border-radius: 14px;
-        background: rgba(255, 252, 245, 0.96);
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        box-shadow: 0 10px 28px rgba(44, 31, 20, 0.1);
+        border-radius: 18px;
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
       }
       .ambient-soundscape__panel[hidden] {
         display: none !important;
@@ -893,7 +893,7 @@ export class AmbientSoundscapeUI {
         height: 28px;
         border-radius: 8px;
         border: 1px solid rgba(139, 115, 85, 0.3);
-        background: rgba(255, 252, 245, 0.95);
+        background: rgba(255, 252, 245, 0.78);
         color: #6a5040;
         cursor: pointer;
         font-size: 16px;

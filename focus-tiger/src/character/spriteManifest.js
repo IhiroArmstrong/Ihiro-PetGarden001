@@ -229,7 +229,7 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手欢迎 · 调试仅正放；产品路径见 waveHelloWelcome。
+  // 挥手 · 入库仅素材（2026-08-02 停接线；产品 welcomeBack 空实现）。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
   waveHello: {
     animation: 'wave-hello',
@@ -241,13 +241,56 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // WelcomeBack 产品路径：正放+倒放一次烘焙进 playlist，播完 CapCut → Idle。
-  // 禁 player pingpong+maxCycles（倒放后引擎会准备下一轮正放）。入库试播无 CapCut——验收用姿态「挥手欢迎」。
+  // 旧挥手正+倒 playlist：停接线；仅入库素材对照。
+  // 禁 player pingpong+maxCycles。
   waveHelloWelcome: {
     animation: 'wave-hello',
     frameCount: 19,
     frameIndices: [...WAVE_HELLO_PINGPONG_ONCE_INDICES],
     fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 新挥手已烘焙 pingpong（38 帧）：停接线（2026-08-02）；素材+displayFit 保留，场景以后另议。
+  // 960×960 → displayFit 对齐 idle 蒲团锚点，再 scaleMul 1.5。
+  waveHelloPingpong: {
+    animation: 'wave-hello-pingpong',
+    frameCount: 38,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false,
+    displayFit: {
+      width: 960,
+      height: 960,
+      // alpha>80 收紧包围盒，减少全画幅透明边导致的偏位
+      content: { x: 50, y: 68, w: 910, h: 807 },
+      scaleMul: 1.5
+    }
+  },
+
+  // 开场试验：魔法金光五角星 → 变出书 → 翻页阅读（已烘焙 pingpong，46 帧）。
+  // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈11.5s）。
+  magicBookReading: {
+    animation: 'magic-book-reading',
+    frameCount: 46,
+    fps: 4,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Honesty 长补登试验：衣发光 → 头顶金环 → 合掌 → 金沙四散（已烘焙 pingpong，94 帧）。
+  // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈23.5s）。
+  goldenHaloPalms: {
+    animation: 'golden-halo-palms',
+    frameCount: 94,
+    fps: 4,
+    preload: false,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false
@@ -378,8 +421,9 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 阶段性 / 回归专注确认（MindfulAcknowledge，含 subtype: refocus）。
-  // 小幅点头鞠躬，一次性播放；强度刻意低于 sessionComplete 与 Celebrating。
-  // 13 拍 @ 3.5fps ≈ 3.7s（ONE_SHOT ack 带下限）。
+  // 小幅点头鞠躬；产品路径 EmotionController 以 pingpong×1 播（正放→倒放回坐姿）+ CapCut。
+  // 入库逐条试播仍可按本定义 loop:none 定格末帧。
+  // 13 拍 @ 3.5fps；一整轮 pingpong ≈ 7.4s（ONE_SHOT ack 带）。
   nodBow: {
     animation: 'nod-bow',
     frameCount: 13,

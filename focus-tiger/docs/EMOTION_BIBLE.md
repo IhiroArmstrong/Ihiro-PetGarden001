@@ -144,23 +144,27 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `Celebrating` | `celebrating` → `celebrateDance` / `celebrateDanceV2`（2D，50/50）/ `CELEBRATING`（3D 垫底） | `public/sprites/.../celebrate-dance/frame_001–057.png`；`.../celebrate-dance-v2/frame_001–060.png`；GLB `tiger-happy-jump.glb` |
 | `IncenseComplete` | （效果模块，非姿态键） | `IncenseGreeting` |
 | `SessionComplete` | `sessionComplete` → `sessionComplete`（2D） | `public/sprites/.../session-complete/frame_001–028.png` |
-| `MindfulAcknowledge` | `mindfulAcknowledge` → `nodBow`（2D；`subtype: 'refocus'` 复用） | `public/sprites/.../nod-bow/frame_001–013.png` |
+| `MindfulAcknowledge` | `mindfulAcknowledge` → `nodBow`（2D；`subtype: 'refocus'` 复用） | `public/sprites/.../nod-bow/frame_001–013.png`；**pingpong×1**（正放→倒放回坐姿）+ ~1s CapCut Idle（与 `IntentionSet` 同契约） |
 | `stretchReminder` | `stretchReminder` → `stretchReminder`（2D） | `public/sprites/.../stretch-reminder/frame_001–017.png` |
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
 | `WakeUp` | `WAKE_UP` | 2D：`stretch-reminder` 同源（调试伸懒腰唤醒） |
-| `WelcomeBack` | `welcomeBack`（2D 序列） | `public/sprites/tiger-cub/monk-robe-default/wave-hello/frame_001–019.png` |
+| `WelcomeBack` | `welcomeBack`（**停接线**） | 素材仍在：`wave-hello` / `wave-hello-pingpong`；**不播** |
+| `magicBookReading` | `magicBookReading` → 同名序列 | `public/sprites/.../magic-book-reading/frame_001–046.png`（开场欢迎池试验） |
+| `goldenHaloPalms` | `goldenHaloPalms` → 同名序列 | `public/sprites/.../golden-halo-palms/frame_001–094.png`（Honesty≥30 试验） |
 | `nodGreeting` | `nodGreeting` → `nodGreeting`（2D） | `public/sprites/.../nod-greeting/frame_001–023.png` |
 | `CuriousTilt` | `curiousTilt` → `blinkSmile`（2D；原 `tiltThink` 已停用） | `public/sprites/.../blink-smile/`（默认）；`tilt-think` 仅存量素材 |
-| `MilestoneGlow` | `milestoneGlow` → `milestoneGlow`（2D；仅调试） | 主候选 `.../milestone-glow/frame_001–027.png`；备选 `.../breath-halo-hq/frame_001–016.png`（manifest `breathHaloHq`，未接线）；旧 `breath-halo-expand` 已归档；真实里程碑触发待 Backlog「纪念奖励系统」实现 |
+| `MilestoneGlow` | `milestoneGlow` → `milestoneGlow`（2D；仅调试） | 主候选 `.../milestone-glow/frame_001–027.png`；备选 `.../breath-halo-hq/frame_001–016.png`（manifest `breathHaloHq`，调试保留）；旧 `breath-halo-expand` 已归档；真实里程碑触发待 Backlog「纪念奖励系统」实现 |
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
-> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」（后者未接线）。**2026-08-02：不再纳入冷启动/开场欢迎池**（挥手观感未验收成功）；开场同日问候仅 `nodGreeting`。调试面板仍可播。产品路径（若手工/日后偶遇）：`waveHelloWelcome` 正放+倒放一次 → ~1s CapCut Idle；禁 player pingpong。优先级低于 `Celebrating`。
+> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。**2026-08-02 晚拍板：新旧挥手暂时停接线**——`playEmotion('welcomeBack')` 不播序列；不进冷启动欢迎池；调试情绪入口已撤；入库素材钮仅保留「停接线·仅素材」标签供以后对照。建议场景（回前台 / Idle≈10min 30%）**以后另议**。优先级低于 `Celebrating`。
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 
-> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池唯一项**（同日 1 次，2026-08-02 起取代挥手）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
+> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池成员**（与 `magicBookReading` 加权；挥手已撤）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
+
+> **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验）**：已烘焙 pingpong 帧，正放一次；**fps 4**（相对初入库 8 放慢 50%）。`magicBookReading` 末帧可接 Idle → **回落硬切（无 CapCut）**；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线；验收前勿标永久产品定稿。
 
 > **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；180ms cross-fade 进出，播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。
 
@@ -177,7 +181,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 >
 > | id / 序列 | 建议场景用途 |
 > |---|---|
-> | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感（调试「组合试播」整段） |
+> | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感；产品好奇池与调试「组合试播」整段**同抗闪契约**：离开 Idle `clear:false`、段间硬切、产品播完 CapCut 回 Idle（调试可定格不回） |
 > | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮（**正放+倒放一次**烘焙 → ~1s CapCut Idle；禁 player pingpong） |
@@ -643,5 +647,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.72 | 2026-08-02 | `WelcomeBack` 改 `waveHelloWelcome` 烘焙正+倒一次（禁 player pingpong：倒放后会再正放） |
 | 0.73 | 2026-08-02 | 误诊「仅正放」撤回；根因 oneshot `_finish` hide 跳过 CapCut；`WelcomeBack`/`earWiggle` 烘焙正+倒一次 + CapCut |
 | 0.74 | 2026-08-02 | 冷启动欢迎池撤出 `welcomeBack`；开场仅 `nodGreeting`（挥手观感未验收） |
+| 0.75 | 2026-08-02 | 入库试验：`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`；欢迎池加权重开；Honesty≥30 → `goldenHaloPalms` |
+| 0.78 | 2026-08-02 | `MindfulAcknowledge`：nod-bow 改 pingpong×1 + CapCut（对齐 IntentionSet；修 Honesty＜30 / 切语 EN 鞠躬无法回 Idle） |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

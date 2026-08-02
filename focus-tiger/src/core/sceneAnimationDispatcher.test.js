@@ -43,12 +43,12 @@ test('A′ locale: ja → palmsTogether; en → mindfulAcknowledge', () => {
   assert.equal(emotionKeyForLocaleGreeting('en'), 'mindfulAcknowledge');
 });
 
-test('Honesty duration: ≤29 nod; ≥30 breathHaloHq', () => {
+test('Honesty duration: ≤29 nod; ≥30 goldenHaloPalms', () => {
   assert.equal(emotionKeyForHonestyDuration(10), 'mindfulAcknowledge');
   assert.equal(emotionKeyForHonestyDuration(20), 'mindfulAcknowledge');
   assert.equal(emotionKeyForHonestyDuration(29), 'mindfulAcknowledge');
-  assert.equal(emotionKeyForHonestyDuration(HONESTY_LONG_MIN_MINUTES), 'breathHaloHq');
-  assert.equal(emotionKeyForHonestyDuration(45), 'breathHaloHq');
+  assert.equal(emotionKeyForHonestyDuration(HONESTY_LONG_MIN_MINUTES), 'goldenHaloPalms');
+  assert.equal(emotionKeyForHonestyDuration(45), 'goldenHaloPalms');
   assert.equal(emotionKeyForHonestyDuration(0), null);
 });
 
@@ -63,12 +63,12 @@ test('light completion pool never includes celebrate dance', () => {
   );
 });
 
-test('WELCOME_POOL is nodGreeting only (welcomeBack out of cold-start)', () => {
+test('WELCOME_POOL trial is magicBookReading + nodGreeting (wave out of cold-start)', () => {
   assert.deepEqual(
     WELCOME_POOL.map((e) => e.key),
-    ['nodGreeting']
+    ['magicBookReading', 'nodGreeting']
   );
-  assert.equal(pickWeighted(WELCOME_POOL, () => 0), 'nodGreeting');
+  assert.equal(pickWeighted(WELCOME_POOL, () => 0), 'magicBookReading');
   assert.equal(pickWeighted(WELCOME_POOL, () => 0.99), 'nodGreeting');
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'welcomeBack'));
 });
@@ -148,7 +148,7 @@ test('HONESTY_COMPLETED: short nod; long halo; dormant skips', () => {
     durationMinutes: 30,
     storage
   });
-  assert.equal(long.emotionKey, 'breathHaloHq');
+  assert.equal(long.emotionKey, 'goldenHaloPalms');
 
   const dormant = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.HONESTY_COMPLETED,
@@ -197,7 +197,7 @@ test('WELCOME_APP once per day', () => {
     random: () => 0
   });
   assert.equal(first.play, true);
-  assert.equal(first.emotionKey, 'nodGreeting');
+  assert.equal(first.emotionKey, 'magicBookReading');
   assert.equal(readDailySceneAnimState(storage, now).welcome, true);
 
   const second = resolveSceneAnimation({

@@ -9,6 +9,13 @@ import {
   MICRO_RITUAL_MS_DEFAULT,
   isInhalePhase
 } from '../core/MicroRitual.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
 const PANEL_CSS = [
   'position:absolute',
@@ -17,11 +24,12 @@ const PANEL_CSS = [
   'z-index:15',
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
-  'padding:18px 20px 14px',
-  'border:1px solid var(--color-surface-border, rgba(139,115,85,.2))',
-  'border-radius:18px',
-  'background:linear-gradient(180deg, var(--color-surface-warm-top, rgba(255,255,255,.96)) 0%, var(--color-surface-warm, #f8f1e4) 100%)',
-  'box-shadow:0 10px 30px rgba(44,31,20,.12)',
+  'padding:14px 18px 12px',
+  GLASS_BORDER,
+  `border-radius:${GLASS_RADIUS}`,
+  `background:${GLASS_FILL}`,
+  GLASS_BLUR_CSS,
+  `box-shadow:${GLASS_SHADOW}`,
   'color:var(--text-primary, #2c1f14)',
   'transition:opacity 240ms ease,transform 240ms ease',
   'opacity:0',

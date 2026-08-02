@@ -694,11 +694,9 @@ export class WideIdleMoreMenu {
         padding: 0;
         border-radius: 50%;
         border: 1px solid rgba(139, 115, 85, 0.22);
-        background: linear-gradient(
-          165deg,
-          rgba(255, 252, 245, 0.98) 0%,
-          rgba(245, 235, 220, 0.96) 100%
-        );
+        background: rgba(255, 252, 245, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: rgba(92, 72, 52, 0.88);
         font-size: 22px;
         font-weight: 700;
@@ -729,14 +727,10 @@ export class WideIdleMoreMenu {
         padding: 8px;
         border-radius: 14px;
         border: 1px solid rgba(139, 115, 85, 0.28);
-        background: linear-gradient(
-          165deg,
-          rgba(255, 253, 247, 0.98) 0%,
-          rgba(250, 244, 232, 0.96) 100%
-        );
-        box-shadow:
-          0 2px 0 rgba(255, 255, 255, 0.85) inset,
-          0 12px 28px rgba(44, 31, 20, 0.14);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         z-index: 20;
       }
       .ft-wide-more__menu[hidden] {

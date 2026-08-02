@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  CAPCUT_DISSOLVE_MS,
   DORMANT_WAKE_CROSS_FADE_MS,
   EmotionController,
   LEAVE_DORMANT_WAKE_CROSS_FADE_MS,
@@ -189,7 +190,7 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('welcomeBack plays baked waveHelloWelcome once (forward+reverse) then CapCut idle', () => {
+test('welcomeBack is parked: does not play old or new wave sequences', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -212,16 +213,41 @@ test('welcomeBack plays baked waveHelloWelcome once (forward+reverse) then CapCu
     }
   });
 
-  assert.equal(plays[0].name, 'waveHelloWelcome');
+  assert.equal(plays.length, 0);
+  assert.equal(completed, 1);
+  assert.equal(controller.getCurrentEmotionKey(), 'welcomeBack');
+});
+
+test('magicBookReading plays once then hard-cuts to idle (no CapCut)', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+  let completed = 0;
+
+  controller.playEmotion('magicBookReading', {
+    onComplete: () => {
+      completed += 1;
+    }
+  });
+
+  assert.equal(plays[0].name, 'magicBookReading');
+  assert.equal(plays[0].options.returnCrossFadeMs, 0);
   assert.equal(plays[0].options.loop, false);
   assert.equal(plays[0].options.loopMode, 'none');
-  assert.notEqual(plays[0].options.loopMode, 'pingpong');
-  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
-  assert.equal(plays[0].options.crossFadeMs, 1000);
-  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
-  assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(plays[1].options.crossFadeMs, undefined);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
@@ -322,7 +348,7 @@ test('curiousTilt plays blinkSmile once and returns to idle breathing', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('mindfulAcknowledge reuses nodBow for refocus and returns to idle', () => {
+test('mindfulAcknowledge plays nodBow pingpong once then CapCut idle', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -342,9 +368,14 @@ test('mindfulAcknowledge reuses nodBow for refocus and returns to idle', () => {
 
   assert.equal(plays[0].name, 'nodBow');
   assert.equal(plays[0].options.subtype, 'refocus');
-  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
+  assert.equal(plays[0].options.crossFadeMs, 1000);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 1000);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
@@ -541,4 +572,63 @@ test('blinkBreathe maxCycles finishes back to idle', () => {
   assert.equal(typeof plays[0].options.onComplete, 'function');
   plays[0].options.onComplete();
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+test('gazeLookAround chain matches lab anti-flash contract then CapCut idle', () => {
+  const plays = [];
+  const stops = [];
+  const idleStarts = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop(options) {
+      stops.push(options);
+    }
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer,
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop(options) {
+        stops.push(options);
+      },
+      start(options) {
+        idleStarts.push(options);
+      }
+    }
+  });
+
+  controller.playEmotion('gazeLookAround');
+
+  assert.deepEqual(stops, [{ clear: false }]);
+  assert.equal(plays.length, 1);
+  assert.equal(plays[0].name, 'gazeP1CenterBlinkLeft');
+  assert.equal(plays[0].options.crossFadeMs, 0);
+  assert.equal(plays[0].options.holdLastFrame, false);
+
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'gazeP2LeftToUp');
+  assert.equal(plays[1].options.crossFadeMs, 0);
+
+  plays[1].options.onComplete();
+  assert.equal(plays[2].name, 'gazeP3TowardRight');
+  assert.equal(plays[2].options.crossFadeMs, 0);
+
+  plays[2].options.onComplete();
+  assert.equal(plays[3].name, 'gazeP4RightToDown');
+  assert.equal(plays[3].options.crossFadeMs, 0);
+  assert.equal(plays[3].options.holdLastFrame, true);
+
+  plays[3].options.onComplete();
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+  assert.equal(idleStarts.length, 1);
+  assert.equal(idleStarts[0].crossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(idleStarts[0].freezeUntilCrossFadeEnds, true);
 });

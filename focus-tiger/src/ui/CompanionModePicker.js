@@ -516,11 +516,9 @@ export class CompanionModePicker {
         padding: 0;
         border-radius: 50%;
         border: 1px solid rgba(139, 115, 85, 0.22);
-        background: linear-gradient(
-          165deg,
-          rgba(255, 252, 245, 0.98) 0%,
-          rgba(245, 235, 220, 0.96) 100%
-        );
+        background: rgba(255, 252, 245, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: rgba(92, 72, 52, 0.88);
         font-size: 18px;
         line-height: 1;
@@ -564,8 +562,8 @@ export class CompanionModePicker {
         color: var(--color-ink, #2c1f14);
         background: linear-gradient(
           180deg,
-          rgba(255, 252, 244, 0.98) 0%,
-          rgba(245, 234, 214, 0.96) 100%
+          rgba(255, 252, 245, 0.78) 0%,
+          rgba(255, 252, 245, 0.68) 100%
         );
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.9) inset,
@@ -594,16 +592,13 @@ export class CompanionModePicker {
       .session-start-dock__micro-ritual-entry {
         order: -1;
         border-color: rgba(110, 140, 118, 0.42);
-        background: linear-gradient(
-          180deg,
-          rgba(244, 248, 243, 0.98) 0%,
-          rgba(214, 228, 216, 0.96) 100%
-        );
+        background: rgba(232, 242, 234, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: #2a352c;
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.9) inset,
-          0 2px 0 rgba(110, 140, 118, 0.22),
-          0 3px 8px rgba(44, 31, 20, 0.08);
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 3px 8px rgba(44, 31, 20, 0.06);
       }
       .session-start-dock__micro-ritual-entry:hover {
         box-shadow:
@@ -690,14 +685,12 @@ export class CompanionModePicker {
         order: -1;
         width: 100%;
         padding: 14px;
-        border-radius: 16px;
-        background: linear-gradient(165deg, rgba(255, 253, 247, 0.98) 0%, rgba(250, 244, 232, 0.95) 100%);
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        box-shadow:
-          0 2px 0 rgba(255, 255, 255, 0.85) inset,
-          0 -1px 0 rgba(139, 115, 85, 0.12) inset,
-          0 2px 0 rgba(180, 150, 110, 0.28),
-          0 12px 28px rgba(44, 31, 20, 0.14);
+        border-radius: 18px;
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -743,11 +736,9 @@ export class CompanionModePicker {
         padding: 12px 14px;
         border-radius: 12px;
         border: 1px solid var(--color-surface-border, rgba(139, 115, 85, 0.22));
-        background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.96) 0%,
-          var(--color-surface-warm, #f8f1e4) 100%
-        );
+        background: rgba(255, 252, 245, 0.72);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         color: var(--text-primary, #2c1f14);
         cursor: pointer;
         box-shadow:

@@ -417,37 +417,31 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：正放 → 倒放一次（烘焙 playlist）→ 约 1s CapCut 叠化 Idle。
-      // 禁 player pingpong+maxCycles（倒放后会准备下一轮正放）。
-      // CapCut 依赖播完不先 hide overlay（见 SpriteSequencePlayer._finish）。
+      // WelcomeBack：2026-08-02 拍板 — 新旧挥手（wave-hello / wave-hello-pingpong）暂时停接线。
+      // 键与素材保留；不播序列、不进欢迎池；日后另议场景再接。
       welcomeBack: (options = {}) => {
-        if (!this.spritePlayer) {
-          console.warn(
-            '[EmotionController] welcomeBack: spritePlayer 未接入，跳过（占位）'
-          );
-          return;
-        }
-        this._leaveIdleBaseline();
-        this._use2DMainline();
-        const started = this.spritePlayer.play(
-          'waveHelloWelcome',
-          this._oneShotPlayOpts(
-            {
-              ...options,
-              loop: false,
-              loopMode: 'none',
-              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
-              freezeUntilCrossFadeEnds:
-                options.freezeUntilCrossFadeEnds !== false,
-              returnCrossFadeMs:
-                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
-            },
-            'waveHelloWelcome'
-          )
+        console.info(
+          '[EmotionController] welcomeBack parked — wave hello unwired (2026-08-02)'
         );
-        if (!started) {
-          this._finishOneShot(options, 'waveHelloWelcome');
+        if (typeof options.onComplete === 'function') {
+          options.onComplete('welcomeBack');
         }
+      },
+
+      // 开场试验：魔法书阅读（已烘焙 pingpong）→ 末帧可接 Idle，回落硬切（无 CapCut）。
+      magicBookReading: (options = {}) => {
+        this._playCompanionSequenceOnce('magicBookReading', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? 0
+        });
+      },
+
+      // Honesty≥30 试验：金环合掌金沙（已烘焙 pingpong）→ CapCut Idle。
+      goldenHaloPalms: (options = {}) => {
+        this._playCompanionSequenceOnce('goldenHaloPalms', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
       },
 
       // 点头致意：素材保留；靠近区默认不再自动触发（2026-07-19）。
@@ -654,6 +648,9 @@ export class EmotionController {
       petHead: pendingInteraction('petHead'),
       dizzyBlink: pendingInteraction('dizzyBlink'),
 
+      // Honesty 短补登 / 切语 English / Re-focus：同源 nod-bow。
+      // 须与 IntentionSet 同契约：pingpong×1（正放鞠躬→倒放回坐姿）+ CapCut 回 Idle；
+      // 仅正放会卡在鞠躬末帧，无法接 idle。
       mindfulAcknowledge: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -667,7 +664,17 @@ export class EmotionController {
         const started = this.spritePlayer.play(
           'nodBow',
           this._oneShotPlayOpts(
-            { ...options, loop: false, loopMode: 'none' },
+            {
+              ...options,
+              loop: true,
+              loopMode: 'pingpong',
+              maxCycles: 1,
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false,
+              returnCrossFadeMs:
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+            },
             'nodBow'
           )
         );
@@ -732,7 +739,8 @@ export class EmotionController {
         });
       },
 
-      // Curiosity：张望整段 p1→p4，播完回 Idle（不经 IdleOrchestrator）
+      // Curiosity：张望整段 p1→p4，播完 CapCut 回 Idle（不经 IdleOrchestrator）。
+      // 与调试「组合试播」同不变量：离开 Idle 不清 overlay、段间硬切（避免闪白）。
       gazeLookAround: (options = {}) => {
         const chain = COMPANION_GESTURE_CHAINS.find(
           (c) => c.id === 'gazeLookAround'
@@ -743,7 +751,17 @@ export class EmotionController {
           'gazeP3TowardRight',
           'gazeP4RightToDown'
         ];
-        this._playCompanionSequenceChainOnce(sequences, options, 'gazeLookAround');
+        this._playCompanionSequenceChainOnce(
+          sequences,
+          {
+            ...options,
+            crossFadeMs: options.crossFadeMs ?? 0,
+            returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+            freezeUntilCrossFadeEnds:
+              options.freezeUntilCrossFadeEnds !== false
+          },
+          'gazeLookAround'
+        );
       }
     };
   }
@@ -782,6 +800,10 @@ export class EmotionController {
   }
 
   /**
+   * 多段陪伴链：对齐调试 `_playDebugSequenceChain` 的抗闪契约，再按 oneshot 回 Idle。
+   * - 离开 Idle：`clear: false`（保留末帧，禁止先藏 overlay）
+   * - 段间：默认硬切 `crossFadeMs: 0`（p1→p4 设计为可硬接；微叠化易闪白）
+   * - 末段：`holdLastFrame` 定格，供 CapCut 回 Idle 有稳定源帧
    * @param {ReadonlyArray<string>} sequences
    * @param {EmotionOptions} options
    * @param {string} tag
@@ -791,9 +813,11 @@ export class EmotionController {
       this._finishOneShot(options, tag);
       return;
     }
-    this._leaveIdleBaseline();
+    this._leaveIdleBaseline({ clear: false });
     this._use2DMainline();
-    const crossFadeMs = Number(options.crossFadeMs) || MICRO_CROSS_FADE_MS;
+    const entryMs = Number.isFinite(Number(options.crossFadeMs))
+      ? Number(options.crossFadeMs)
+      : 0;
     let i = 0;
     const playNext = () => {
       if (i >= sequences.length) {
@@ -802,10 +826,13 @@ export class EmotionController {
       }
       const idx = i;
       const name = sequences[i++];
+      const isLast = i >= sequences.length;
       const started = this.spritePlayer.play(name, {
         loop: false,
         loopMode: 'none',
-        crossFadeMs: idx === 0 ? crossFadeMs : MICRO_CROSS_FADE_MS,
+        holdLastFrame: isLast,
+        // 段间一律硬切；仅首段可用 options.crossFadeMs（默认 0）
+        crossFadeMs: idx === 0 ? entryMs : 0,
         freezeUntilCrossFadeEnds: true,
         onComplete: playNext
       });
@@ -988,7 +1015,9 @@ export class EmotionController {
       { key: 'incenseComplete', label: '一炷香完成' },
       { key: 'milestoneGlow', label: '里程碑金辉' },
       { key: 'sessionComplete', label: '完成摆尾' },
-      { key: 'welcomeBack', label: '挥手欢迎' },
+      // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
+      { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
+      { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
       { key: 'mindfulAcknowledge', label: '正念点头鞠躬' },
@@ -1012,8 +1041,11 @@ export class EmotionController {
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
-      waveHello: 'wave-hello 挥手(仅正放)',
-      waveHelloWelcome: 'wave-hello 欢迎(正+倒)',
+      waveHello: 'wave-hello 挥手(停接线·仅素材)',
+      waveHelloWelcome: 'wave-hello 欢迎旧(停接线·仅素材)',
+      waveHelloPingpong: 'wave-hello-pingpong(停接线·仅素材)',
+      magicBookReading: 'magic-book-reading 魔法书',
+      goldenHaloPalms: 'golden-halo-palms 金环合掌',
       celebrateDance: 'celebrate-dance v1',
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
@@ -1068,7 +1100,7 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
-        // welcomeBack / earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
+        // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
         const holdPoseKeys = new Set([
           'celebrating',
           'intentionSet',
@@ -1294,6 +1326,8 @@ export const EMOTION_KEYS = Object.freeze({
   MILESTONE_GLOW: EMOTIONS.milestoneGlow,
   SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
+  MAGIC_BOOK_READING: 'magicBookReading',
+  GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',
   CLOAK_SLEEP: 'cloakSleep',

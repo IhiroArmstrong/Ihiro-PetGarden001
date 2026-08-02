@@ -131,10 +131,12 @@ export class LanguagePreferenceUI {
       }
       .language-pref__panel {
         padding: 14px 16px 12px;
-        border-radius: 14px;
-        background: rgba(255, 248, 240, 0.96);
-        box-shadow: 0 10px 28px rgba(44, 31, 20, 0.18);
-        border: 1px solid rgba(120, 90, 60, 0.18);
+        border-radius: 18px;
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
+        border: 1px solid rgba(139, 115, 85, 0.14);
         color: #3a2a1c;
         font-family: Georgia, "Times New Roman", serif;
       }
@@ -161,7 +163,7 @@ export class LanguagePreferenceUI {
       }
       .language-pref__option:has(input:checked) {
         outline: 2px solid rgba(180, 120, 60, 0.45);
-        background: rgba(255, 250, 240, 0.95);
+        background: rgba(255, 252, 245, 0.78);
       }
       .language-pref__option input {
         margin: 0;
