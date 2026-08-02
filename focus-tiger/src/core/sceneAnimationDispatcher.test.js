@@ -8,6 +8,7 @@ import {
   HONESTY_LONG_MIN_MINUTES,
   LIGHT_COMPLETE_POOL,
   WELCOME_POOL,
+  shouldAttemptLateNightOnBoot,
   pickWeighted,
   emotionKeyForHonestyDuration,
   lightPoolIsCelebrateSafe,
@@ -71,7 +72,70 @@ test('WELCOME_POOL trial is magicBookReading + nodGreeting (wave out of cold-sta
   assert.equal(pickWeighted(WELCOME_POOL, () => 0), 'magicBookReading');
   assert.equal(pickWeighted(WELCOME_POOL, () => 0.99), 'nodGreeting');
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'welcomeBack'));
+  assert.ok(!WELCOME_POOL.some((e) => e.key === 'teaDrinking'));
+  assert.ok(!WELCOME_POOL.some((e) => e.key === 'yawnStretch'));
+  assert.ok(!WELCOME_POOL.some((e) => e.key === 'stretchReminder'));
 });
+
+test('cold-start: late night deferred when welcome plays; allowed when welcome skipped', () => {
+  assert.equal(
+    shouldAttemptLateNightOnBoot({ play: true, emotionKey: 'magicBookReading' }),
+    false
+  );
+  assert.equal(
+    shouldAttemptLateNightOnBoot({ play: false, reason: 'quota' }),
+    true
+  );
+  assert.equal(shouldAttemptLateNightOnBoot(null), true);
+
+  // Composition: night boot with fresh welcome must not also resolve late-night
+  // if caller follows shouldAttemptLateNightOnBoot (main.js contract).
+  const storage = memoryStorage();
+  const night = () => new Date(2026, 7, 2, 23, 40);
+  const welcome = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.WELCOME_APP,
+    sessionState: 'IDLE',
+    storage,
+    now: night,
+    random: () => 0
+  });
+  assert.equal(welcome.play, true);
+  assert.ok(
+    ['magicBookReading', 'nodGreeting'].includes(welcome.emotionKey)
+  );
+  assert.equal(shouldAttemptLateNightOnBoot(welcome), false);
+
+  const storageQuota = memoryStorage();
+  writeWelcomePlayed(storageQuota, night);
+  const skipped = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.WELCOME_APP,
+    sessionState: 'IDLE',
+    storage: storageQuota,
+    now: night,
+    random: () => 0
+  });
+  assert.equal(skipped.play, false);
+  assert.equal(shouldAttemptLateNightOnBoot(skipped), true);
+  const late = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.LATE_NIGHT,
+    sessionState: 'IDLE',
+    storage: storageQuota,
+    now: night,
+    random: () => 0
+  });
+  assert.equal(late.play, true);
+  assert.ok(['yawnStretch', 'teaDrinking'].includes(late.emotionKey));
+});
+
+function writeWelcomePlayed(storage, now) {
+  storage.setItem(
+    SCENE_ANIM_DAILY_STORAGE_KEY,
+    JSON.stringify({
+      dateKey: `${now().getFullYear()}-${String(now().getMonth() + 1).padStart(2, '0')}-${String(now().getDate()).padStart(2, '0')}`,
+      welcome: true
+    })
+  );
+}
 
 test('canPlaySceneAnimGate blocks FOCUSING / CELEBRATE / overlay', () => {
   assert.equal(canPlaySceneAnimGate({ sessionState: 'IDLE' }), true);

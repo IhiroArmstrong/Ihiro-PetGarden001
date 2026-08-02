@@ -110,6 +110,18 @@ export function canPlaySceneAnimGate({ sessionState, overlayBusy = false }) {
 }
 
 /**
+ * Cold-start mutual exclusion: WELCOME_APP and LATE_NIGHT must not both
+ * playEmotion on the same boot tick. Late night still runs on visibilitychange,
+ * and on boot when welcome is skipped (already played today / gated).
+ *
+ * @param {{ play?: boolean } | null | undefined} welcomeDecision
+ * @returns {boolean}
+ */
+export function shouldAttemptLateNightOnBoot(welcomeDecision) {
+  return welcomeDecision?.play !== true;
+}
+
+/**
  * @param {number} minutes
  * @returns {'mindfulAcknowledge' | 'goldenHaloPalms' | null}
  */

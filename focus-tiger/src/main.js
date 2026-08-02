@@ -82,7 +82,8 @@ import {
   SCENE_ANIM_EVENTS,
   markLocaleGreetingPlayed,
   playOptionsForLocaleGreeting,
-  resolveSceneAnimation
+  resolveSceneAnimation,
+  shouldAttemptLateNightOnBoot
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
 import {
@@ -1499,9 +1500,13 @@ async function init() {
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
-  // Slice B：冷启动欢迎池（同日 1 次）+ 深夜生命感（≥23:00，1h 冷却）
-  tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP);
-  tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+  // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
+  // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
+  // 欢迎已播 → 本趟跳过深夜；欢迎跳过（配额/gate）→ 可尝试深夜。回前台仍检深夜。
+  const welcomeBoot = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP);
+  if (shouldAttemptLateNightOnBoot(welcomeBoot)) {
+    tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+  }
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return;
     tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
