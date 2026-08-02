@@ -121,6 +121,12 @@
 - 竖屏 **375×667** 与 **横屏** 各走通相关核心路径（功能对等，非观感完美）  
 - **禁止**只验「有没有 ActionBar / ⋯」就当窄屏通过——须走 **§8.4 375 故事最小集**
 
+**Hints × 次级菜单（⋯ / 抽屉）**（2026-08-02 复盘升格）
+
+- **⋯ / 抽屉打开时禁止再 promote 家用 auto tip**（`sit-button` / `idle-after-session`）：行悬停会 `_collapseClickHint` → `_promoteNextAuto`，若未压抑制，会在 Sit 球下闪「Tap to sit…」，Language（无行 tip）上更会「只剩 Sit tip」。运行时：`filterHintsForWideMore` / `filterHintsForNarrowDrawer` + `_promoteNextAuto` early-return（PR #78）。  
+- **已好清单不变量（改 Hints / 宽 ⋯ / 窄抽屉时须守）**：① 菜单刚展开、**未** hover 任何行时 Sit tip 亦不可见；② breath / companion / reminder 悬停出对应 tip；③ Language 无 tip 且不漏 Sit；④ 行间切换不闪 Sit。  
+- **禁止**只锁「Sit tip 矩形不与菜单相交」的几何条件——须锁 **可见性**（`data-hint-id="sit-button"` 不存在 / 非 `[open]`）。假绿案例：PR #76 e2e。回归锚：`e2e/wide-idle-more-menu.spec.js`（`Sit auto tip hidden while menu open` + `row hover tip matrix`）。
+
 ### 2.4 任务汇报（每次收尾回复）
 
 | # | 规范 |

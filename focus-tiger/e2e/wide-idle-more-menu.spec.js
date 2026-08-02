@@ -7,6 +7,32 @@ import { openFreshProductShell } from './helpers/product-shell.js';
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
+/** Row proxy → click-hint id (Language has none by design). */
+const WIDE_MORE_ROW_HINT = Object.freeze({
+  breath: 'micro-ritual',
+  companion: 'how-shall-we-sit',
+  reminder: 'in-app-reminder'
+});
+
+/**
+ * Sit / idle-after-session auto tip visibility (not geometry vs menu).
+ * Auto hideBubble clears `data-hint-id`; also reject `[open]` in case a shell remains.
+ * @param {import('@playwright/test').Page} page
+ */
+async function expectSitAutoTipHidden(page) {
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
+  ).toHaveCount(0);
+  await expect(
+    page.locator(
+      'ft-onboarding-hint-bubble[data-hint-id="idle-after-session"]'
+    )
+  ).toHaveCount(0);
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"][open]')
+  ).toHaveCount(0);
+}
+
 test('wide Idle: resident three balls + more; secondary parked', async ({
   page
 }) => {
@@ -134,7 +160,7 @@ test('wide Idle: ⋯ has no Sound or Honesty row; note opens Soundscape', async 
   await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(0);
 });
 
-test('wide ⋯: unread row mint only — no floating badge double / sit tip steal', async ({
+test('wide ⋯: unread row mint only — no floating badge double', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -168,23 +194,79 @@ test('wide ⋯: unread row mint only — no floating badge double / sit tip stea
   await expect(
     menu.locator('[data-proxy="language"] .ft-secondary-menu-hint-dot')
   ).toHaveCount(0);
+});
 
-  // Hover How-shall-we-sit row → that tip; Sit tip must not flash under home balls.
-  await menu.locator('[data-proxy="companion"]').hover();
-  const howTip = page.locator(
-    'ft-onboarding-hint-bubble[data-hint-id="how-shall-we-sit"]'
-  );
-  await expect(howTip).toBeVisible({ timeout: 5_000 });
-  await expect(
-    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
-  ).toHaveCount(0);
+/**
+ * Independent of row hover / geometry-vs-menu: while ⋯ is open, Sit auto tip
+ * must not be visible — including immediately after open, before any hover.
+ * (2026-08-02: prior e2e only checked "does not overlap menu rect" → false green.)
+ */
+test('wide ⋯: Sit auto tip hidden while menu open (no hover required)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  // Give Idle a beat so sit-button may auto-paint, then open ⋯ must clear it.
+  await page.waitForTimeout(500);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
 
-  // Switch hover to Language — Sit tip must stay suppressed (no flash).
-  await menu.locator('[data-proxy="language"]').hover();
+  await expectSitAutoTipHidden(page);
   await page.waitForTimeout(400);
-  await expect(
-    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
-  ).toHaveCount(0);
+  await expectSitAutoTipHidden(page);
+});
+
+/**
+ * Four-row tip matrix + row-switch: breath/companion/reminder show their tips;
+ * Language has no row tip; Sit auto tip must stay hidden across switches.
+ */
+test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+
+  const proxies = /** @type {const} */ ([
+    'breath',
+    'companion',
+    'reminder',
+    'language'
+  ]);
+
+  for (let i = 0; i < proxies.length; i++) {
+    const proxy = proxies[i];
+    await menu.locator(`[data-proxy="${proxy}"]`).hover();
+    await page.waitForTimeout(250);
+
+    const hintId = WIDE_MORE_ROW_HINT[proxy];
+    if (hintId) {
+      await expect(
+        page.locator(
+          `ft-onboarding-hint-bubble[data-hint-id="${hintId}"][open]`
+        )
+      ).toBeVisible({ timeout: 5_000 });
+    } else {
+      // Language: no dedicated tip — prior row click tips must be closed (`[open]`).
+      for (const id of Object.values(WIDE_MORE_ROW_HINT)) {
+        await expect(
+          page.locator(
+            `ft-onboarding-hint-bubble[data-hint-id="${id}"][open]`
+          )
+        ).toHaveCount(0);
+      }
+    }
+
+    await expectSitAutoTipHidden(page);
+  }
+
+  // Explicit switch path: companion → breath → reminder → language (no Sit flash).
+  for (const proxy of ['companion', 'breath', 'reminder', 'language']) {
+    await menu.locator(`[data-proxy="${proxy}"]`).hover();
+    await page.waitForTimeout(300);
+    await expectSitAutoTipHidden(page);
+  }
 });
 
 test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
