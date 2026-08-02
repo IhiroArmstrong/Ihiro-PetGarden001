@@ -564,6 +564,53 @@ export const RULE_AUTHORITY_TOPICS = [
     forbiddenOutsideSsot: []
   },
   {
+    id: 'release-blocker-ledger',
+    title: '缺陷分级 / open-blockers / 发布候选清算',
+    ssotPath: 'focus-tiger/docs/TEST_TRACKER.md',
+    ssotSection: '缺陷分级与处理承诺',
+    ssotMustContain: [
+      /缺陷分级与处理承诺/,
+      /release-blocker/,
+      /legacy-unclassified/,
+      /Fixes:/,
+      /技术性补正/,
+      /check:open-blockers/
+    ],
+    topicSignals: [
+      /check:open-blockers/,
+      /release-blocker/,
+      /legacy-unclassified/,
+      /缺陷分级与处理承诺/,
+      /发布候选门禁/
+    ],
+    mustCite: [/TEST_TRACKER\.md/],
+    restatementFingerprints: [
+      /legacy-unclassified/,
+      /技术性补正 vs 书面降级/,
+      /open-blocker:\s*id=/
+    ],
+    restatementThreshold: 2,
+    // Gate enforcement lives in regression-lock; format details stay in TEST_TRACKER.
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc'
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'reset-overdue-by-commitment-edit',
+        pattern: /(?:改|更新|微调)处理承诺.{0,20}(?:重置|清零).{0,12}(?:7\s*日|逾期)/,
+        note: '改处理承诺不得重置 7 日逾期时钟；recorded 锁定'
+      },
+      {
+        id: 'must-open-fix-branch-immediately',
+        pattern: /发现问题(?:后)?(?:必须|须)(?:立刻|立即)(?:新开|开)独立\s*`?fix\//,
+        note: '不强制发现问题立刻开独立 fix/*；强制的是分级+处理承诺'
+      }
+    ]
+  },
+  {
     id: 'z-index-registry',
     title: '产品 z-index 层叠登记',
     ssotPath: 'focus-tiger/docs/Z_INDEX.md',

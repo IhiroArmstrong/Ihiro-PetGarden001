@@ -150,6 +150,44 @@ cd focus-tiger && npm run check:branch-freshness
 
 未跑脚本、未报落后数 → 视同未完成新鲜度前置。
 
+## 发布候选门禁（强制 · open blockers）
+
+> 记录格式 SSOT：`focus-tiger/docs/TEST_TRACKER.md`「缺陷分级与处理承诺」。  
+> 索引：`RULES_INDEX.md` → `release-blocker-ledger`。
+
+### 原则
+
+1. **强制记录分级 + 处理承诺**，不强制「发现问题立刻开独立 `fix/*`」。  
+2. **允许多个缺陷进入同一 `fix/*`**；不要求一 bug 一分支。  
+3. **日常**可跑 `npm run check:open-blockers` 看清单；脚本默认 **exit 0**，不阻断开发。  
+4. **发布候选**才对「逾期未处理」或「`recorded=` 缺失/非法（MALFORMED）」的开放 `release-blocker` 硬拦。  
+5. **`Fixes: <id>` 漏标容错**：若确认已修但 commit 漏写 `Fixes:`，允许在 TEST_TRACKER 做 **`closed=` 技术性补正**（写明 commit hash +「漏标 Fixes」）——**不是**「用户书面降级为 post-v1」。二者须区分；详见 TEST_TRACKER。
+
+### 触发（须先跑脚本）
+
+在执行下列任一动作**之前**：
+
+- 合并 `develop` → `main`（含开/推进该方向 PR 时的 Agent 自查）  
+- 在 `main` 上创建或推送**稳定** annotated tag（`vX.Y.Z`）
+
+必须执行：
+
+```bash
+cd focus-tiger && npm run check:open-blockers -- --release-gate
+```
+
+### 硬拦规则
+
+- 若存在 **逾期未处理** 或 **MALFORMED**（缺/非法 `recorded=`）的开放 `release-blocker`（`--release-gate` → exit 1）：**禁止**继续合 main / 打稳定 tag。  
+- **产品放行例外**：用户**当回合书面**将该条降级为 `post-v1`（或关闭）并写明理由 → 先更新 TEST_TRACKER，再重跑 `--release-gate` 通过后方可继续。Agent **禁止**自行降级。  
+- **技术性补正例外**：确认已修但漏标 `Fixes:` → 按 TEST_TRACKER「技术性补正」写 `closed=`（**不**冒充书面降级）。  
+- **legacy-unclassified**：不因本门禁 exit 1；但 `--release-gate` 输出中的提醒句**必须**写入当次汇报（存在 N 条，建议发版前人工过目）。不得省略。
+
+### 与完工门禁 / §7 / WORKFLOW 的关系
+
+- 本门禁 **不替代** 交互修复完工门禁，也 **不替代** Bug close §7。  
+- 合 main 的其余条件仍见 `WORKFLOW.md`（可一句引用本门禁，勿复述全文）。
+
 ## 任务汇报门禁（每次收尾 · N14）
 
 完成**任何**任务（交互修复 / 文档 / 调研 / 素材）的用户可见回复时，**末尾必须**有独立小节：

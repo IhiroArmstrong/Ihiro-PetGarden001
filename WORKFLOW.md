@@ -114,6 +114,8 @@ npm run test:e2e      # Playwright 产品壳 DOM 冒烟
 
 - 无「有问题」未关闭项  
 - 本次相关行已标为「待人工测试」并完成复测，或已书面确认通过  
+- 发版前另跑 `npm run check:open-blockers -- --release-gate`（见 regression-lock「发布候选门禁」/ `RULES_INDEX` → `release-blocker-ledger`）；逾期 `release-blocker` 硬拦；`legacy-unclassified` 仅提醒不硬拦  
+
 
 ### 回归与文档
 
@@ -164,8 +166,8 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 
 ### 发版操作要点
 
-1. 先过「合并 `develop` → `main`」门禁（见上节）；由**项目负责人**在 GitHub 完成合入（或明确授权本地 merge）。  
-2. 在**已合入的 `main` tip**上打 annotated tag 并 push tag（须用户明确授权 push；Agent **禁止**擅自 `git tag` / `git push --tags` / 开 `release/*`）：  
+1. 先过「合并 `develop` → `main`」门禁（见上节）；由**项目负责人**在 GitHub 完成合入（或明确授权本地 merge）。打 tag 前须已跑 `check:open-blockers -- --release-gate`（见 regression-lock「发布候选门禁」）。
+2. 在**已合入的 `main` tip**上打 annotated tag 并 push tag（须用户明确授权 push；Agent **禁止**擅自 `git tag` / `git push --tags` / 开 `release/*`）：
    ```bash
    git checkout main && git pull origin main
    git tag -a vX.Y.Z -m "<一句话：本版稳定点>"
