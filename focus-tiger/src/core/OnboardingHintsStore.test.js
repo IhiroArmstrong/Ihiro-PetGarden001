@@ -13,6 +13,7 @@ import {
   selectExclusiveAutoHintIds,
   appendIdleChromeHintIds,
   filterHintsForNarrowDrawer,
+  filterHintsForWideMore,
   isDrawerParkedHintId
 } from './OnboardingHintsStore.js';
 
@@ -296,6 +297,29 @@ test('filterHintsForNarrowDrawer strips parked tips when drawer closed', () => {
       narrowDrawerOpen: false,
       weeklyHeatmapVisible: true
     }).includes('weekly-heatmap')
+  );
+});
+
+test('open ⋯ / drawer suppress sit-button auto (no flash under panel)', () => {
+  assert.deepEqual(
+    filterHintsForWideMore(
+      ['sit-button', 'how-shall-we-sit', 'idle-after-session', 'help-affordance'],
+      { wideParkSecondary: true, wideMoreOpen: true }
+    ),
+    ['how-shall-we-sit', 'help-affordance']
+  );
+  assert.ok(
+    !resolveAutoHintIds({
+      wideParkSecondary: true,
+      wideMoreOpen: true
+    }).includes('sit-button')
+  );
+  assert.deepEqual(
+    filterHintsForNarrowDrawer(
+      ['sit-button', 'how-shall-we-sit', 'idle-after-session', 'help-affordance'],
+      { narrowPark: true, narrowDrawerOpen: true }
+    ),
+    ['how-shall-we-sit', 'help-affordance']
   );
 });
 

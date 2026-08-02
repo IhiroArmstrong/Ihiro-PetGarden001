@@ -171,10 +171,24 @@ export function isWideMoreParkedHintId(id) {
  * @param {object} scene
  * @returns {string[]}
  */
+/**
+ * Home Sit / post-session autos that must not flash under an open ⋯ / drawer
+ * while the user hovers secondary rows (2026-08-02 QA).
+ */
+const SECONDARY_SURFACE_SUPPRESSED_AUTO_IDS = Object.freeze([
+  'sit-button',
+  'idle-after-session'
+]);
+
 export function filterHintsForWideMore(ids, scene = {}) {
   if (!Array.isArray(ids) || ids.length === 0) return [];
   const menuOpen = scene.wideMoreOpen || scene.wideMenuOpen;
-  if (!scene.wideParkSecondary || menuOpen) return [...ids];
+  if (menuOpen) {
+    return ids.filter(
+      (id) => !SECONDARY_SURFACE_SUPPRESSED_AUTO_IDS.includes(id)
+    );
+  }
+  if (!scene.wideParkSecondary) return [...ids];
   return ids.filter(
     (id) => !isWideMoreParkedHintId(id) && id !== 'wide-more-menu'
   );
@@ -206,7 +220,12 @@ export function isDrawerParkedHintId(id) {
 export function filterHintsForNarrowDrawer(ids, scene = {}) {
   if (!Array.isArray(ids) || ids.length === 0) return [];
   const drawerOpen = scene.narrowSheetOpen || scene.narrowDrawerOpen;
-  if (!scene.narrowPark || drawerOpen) return [...ids];
+  if (drawerOpen) {
+    return ids.filter(
+      (id) => !SECONDARY_SURFACE_SUPPRESSED_AUTO_IDS.includes(id)
+    );
+  }
+  if (!scene.narrowPark) return [...ids];
   return ids.filter((id) => !isDrawerParkedHintId(id) && id !== 'narrow-drawer-menu');
 }
 
