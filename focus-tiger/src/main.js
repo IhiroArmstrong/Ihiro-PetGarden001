@@ -1036,7 +1036,7 @@ async function init() {
   onLocaleChange((locale) => {
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.LANGUAGE_CHANGED, {
       locale,
-      // EN magic book: oneshot (no reverse) + hard-cut idle (same as welcome pool)
+      // EN tea: oneshot (no reverse) + ~1s CapCut idle
       playOptions: playOptionsForLocaleGreeting(locale)
     });
     if (decision.play && decision.emotionKey) {

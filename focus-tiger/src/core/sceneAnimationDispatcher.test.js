@@ -38,9 +38,9 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('A′ locale: ja → palmsTogether; en → magicBookReading', () => {
+test('A′ locale: ja → palmsTogether; en → teaDrinking', () => {
   assert.equal(emotionKeyForLocaleGreeting('ja'), 'palmsTogether');
-  assert.equal(emotionKeyForLocaleGreeting('en'), 'magicBookReading');
+  assert.equal(emotionKeyForLocaleGreeting('en'), 'teaDrinking');
 });
 
 test('Honesty duration: ≤29 nod; ≥30 goldenHaloPalms', () => {

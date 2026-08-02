@@ -11,7 +11,7 @@ const SIT = '#btn-focus';
 
 /**
  * v1.0.0 English + Japanese: Language UI → 日本語 → back to English; persist preference.
- * Slice A′: ja → palmsTogether; en → magicBookReading (oneshot hard-cut); same-day re-pick skips.
+ * Slice A′: ja → palmsTogether; en → teaDrinking (oneshot + CapCut); same-day re-pick skips.
  * Draft locales (zh/es/…) must not appear.
  */
 test('Language UI: switch to 日本語 then back to English', async ({ page }) => {
@@ -64,7 +64,7 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
     .poll(async () =>
       page.evaluate(() => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null)
     )
-    .toBe('magicBookReading');
+    .toBe('teaDrinking');
 
   const greetingRaw = await page.evaluate((key) => localStorage.getItem(key), GREETING_KEY);
   expect(greetingRaw).toBeTruthy();

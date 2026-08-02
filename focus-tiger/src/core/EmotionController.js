@@ -728,8 +728,12 @@ export class EmotionController {
       yawnStretch: (options = {}) => {
         this._playCompanionSequenceOnce('yawnStretch', options);
       },
+      // 深夜池 / 切语 English：正放一次、无倒放；默认 ~1s CapCut Idle。
       teaDrinking: (options = {}) => {
-        this._playCompanionSequenceOnce('teaDrinking', options);
+        this._playCompanionSequenceOnce('teaDrinking', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
       },
       // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
