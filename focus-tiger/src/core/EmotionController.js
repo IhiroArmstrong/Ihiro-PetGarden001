@@ -1050,6 +1050,7 @@ export class EmotionController {
       { key: 'tPose', label: 'T-Pose' },
       { key: 'incenseComplete', label: '一炷香完成' },
       { key: 'milestoneGlow', label: '里程碑金辉' },
+      { key: 'milestoneGlowStar', label: '里程碑琉璃星石' },
       { key: 'sessionComplete', label: '完成摆尾' },
       // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
@@ -1168,6 +1169,29 @@ export class EmotionController {
             .catch((error) => {
               console.warn(
                 '[EmotionController] milestoneGlow 调试素材预加载失败',
+                error
+              );
+            })
+            .finally(() => {
+              btn.disabled = false;
+            });
+          return;
+        }
+        // 情绪入口快捷键：同 MilestoneGlow emotion，强制星石变体（不等 streak-21）
+        if (key === 'milestoneGlowStar' && this.spritePlayer) {
+          btn.disabled = true;
+          void this.spritePlayer
+            .preload(['milestoneGlowStar'])
+            .then(() =>
+              this.playEmotion('milestoneGlow', {
+                ...opts,
+                sequenceName: 'milestoneGlowStar',
+                milestoneNodeId: 'streak-21'
+              })
+            )
+            .catch((error) => {
+              console.warn(
+                '[EmotionController] milestoneGlowStar 调试素材预加载失败',
                 error
               );
             })
