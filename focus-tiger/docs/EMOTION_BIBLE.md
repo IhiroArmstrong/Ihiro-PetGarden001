@@ -164,7 +164,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 > **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池成员之一**（同日 1 次，与挥手新素材 / 魔法书加权）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
 
-> **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验）**：已烘焙 pingpong 帧，正放一次。`magicBookReading` 末帧可接 Idle → **回落硬切（无 CapCut）**；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线；验收前勿标永久产品定稿。
+> **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验）**：已烘焙 pingpong 帧，正放一次；**fps 4**（相对初入库 8 放慢 50%）。`magicBookReading` 末帧可接 Idle → **回落硬切（无 CapCut）**；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线；验收前勿标永久产品定稿。
 
 > **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；180ms cross-fade 进出，播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。
 

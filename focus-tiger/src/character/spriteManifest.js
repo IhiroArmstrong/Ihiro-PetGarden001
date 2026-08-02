@@ -271,10 +271,11 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 开场试验：魔法金光五角星 → 变出书 → 翻页阅读（已烘焙 pingpong，46 帧）。
+  // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈11.5s）。
   magicBookReading: {
     animation: 'magic-book-reading',
     frameCount: 46,
-    fps: 8,
+    fps: 4,
     preload: false,
     loop: false,
     loopMode: 'none',
@@ -282,10 +283,11 @@ export const SPRITE_SEQUENCES = {
   },
 
   // Honesty 长补登试验：衣发光 → 头顶金环 → 合掌 → 金沙四散（已烘焙 pingpong，94 帧）。
+  // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈23.5s）。
   goldenHaloPalms: {
     animation: 'golden-halo-palms',
     frameCount: 94,
-    fps: 8,
+    fps: 4,
     preload: false,
     loop: false,
     loopMode: 'none',
