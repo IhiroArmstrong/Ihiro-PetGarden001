@@ -121,10 +121,10 @@ alwaysApply: true
 任何新任务开始前（尤其预计会改文件 / 跑验证 / 产生 git 写操作）：
 
 1. **确认专属 worktree**：若在主仓通用目录 → 先建议独立 worktree，不得默认开干。  
-2. **读 `.ft-session-lock`**：别人的锁 → 立刻停并汇报；无锁 → 创建本任务锁；自己的锁 → 继续。  
+2. **读 `.ft-session-lock`**：无锁 → 创建本任务锁（必填 `occupancy: "active"`）；自己的锁 → 继续并保持 `active`；别人的且 `occupancy: "releasable"` → 可接管并汇报；别人的 `active` / 缺字段 / 非法 → 立刻停并汇报。占用态**只认** `occupancy` 字段，**禁止**靠 mtime / git 时间戳猜测。  
 3. **脏树 / 异会话 stash**：非本会话改动或非本会话 stash → 只读汇报，禁止静默 stash / pop / drop / 再压一层。  
-4. **建议跑** `cd focus-tiger && npm run check:worktree-occupancy`（只读；exit 2 = 发现别人的锁或不明脏树 → 须停手问用户）。  
-5. **清锁**：只删自己的锁。强制清别人的锁须用户原话含「我确认要强制清除锁」（或 `I confirm force-clearing the lock`）；**禁止**按时间戳自动清僵锁。
+4. **建议跑** `cd focus-tiger && npm run check:worktree-occupancy`（只读；exit 2 = `active`/未知占用或不明脏树 → 须停手问用户；仅 `releasable` 且干净树可为 exit 0）。  
+5. **清锁**：只删自己的锁；若保留锁文件须先标 `occupancy: "releasable"`。强制清别人的 **`active`/未知**锁须用户原话含「我确认要强制清除锁」（或 `I confirm force-clearing the lock`）；**禁止**按时间戳自动清僵锁。
 
 ## 分支新鲜度（强制 · 验收 / 声称 develop 行为之前）
 

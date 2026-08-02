@@ -70,7 +70,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条：只推非运行时） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注；把「下班前 Git 同步」做成合并 main / 推进 PR；把业务代码/状态机/待确认 diff **默认一并 flush**；下班汇总不标「有/无业务逻辑改动」 |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
-| `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」 | 主张可按时间戳自动清别人的锁；主张可静默 stash 别人的脏树；完整复述清锁 SOP |
+| `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」 | 主张可按时间戳 / mtime / git log 推断占用态或自动清别人的锁；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP |
 | `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
@@ -162,6 +162,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-02 | 扩展 `git-worktree-occupancy`：`.ft-session-lock` 必填 `occupancy`（`active` / `releasable`），不以 mtime 猜占用；检测脚本解析并区分 exit；SSOT 在 `WORKFLOW.md` |
 | 2026-08-02 | 新增 `release-blocker-ledger`：缺陷分级 + `check:open-blockers`；发版硬闸在 regression-lock「发布候选门禁」；SSOT 记录格式在 `TEST_TRACKER` |
 | 2026-08-01 | 新增 `git-branch-health`：分支健康度即时纪律 + `check:all-branches-health` 双周普查（非 CI Required）；SSOT 在 `PROCESS.md` |
 | 2026-07-31 | 扩展 `agent-token-cost`：CI 红 / 多文件冲突本地验证预算（先摘要、问新 worktree、本地最多 1 轮、最终 push+CI）；`WORKFLOW` 并行 worktree 补 3a 短引用 |
