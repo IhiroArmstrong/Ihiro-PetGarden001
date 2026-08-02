@@ -7,11 +7,12 @@
  * Usage: cd focus-tiger && npm run check:worktree-occupancy
  *
  * Exit codes:
- *   0 — report printed; no foreign lock / no dirty-tree warning
- *   2 — foreign lock present, or working tree dirty (Agent must stop & ask)
+ *   0 — report printed; no blocking occupancy (no lock, or only releasable + clean tree)
+ *   2 — active/unknown foreign lock signal, or working tree dirty (Agent must stop & ask)
  *   1 — git / IO failure
  *
  * This script never creates, deletes, or modifies `.ft-session-lock`.
+ * Occupancy authority is the lock JSON `occupancy` field — not mtime.
  */
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join, basename } from 'node:path'
@@ -22,6 +23,35 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const FOCUS_TIGER = join(__dirname, '..')
 const REPO_ROOT = join(FOCUS_TIGER, '..')
 const LOCK_PATH = join(REPO_ROOT, '.ft-session-lock')
+
+/** @typedef {'active' | 'releasable' | 'missing' | 'invalid' | 'unparseable'} OccupancyKind */
+
+/**
+ * Parse lock body → occupancy kind (SSOT enum or degraded).
+ * @param {string} raw
+ * @returns {{ kind: OccupancyKind, parsed: object | null }}
+ */
+export function parseLockOccupancy(raw) {
+  const text = (raw || '').trim()
+  if (!text) return { kind: 'unparseable', parsed: null }
+  let parsed
+  try {
+    parsed = JSON.parse(text)
+  } catch {
+    return { kind: 'unparseable', parsed: null }
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return { kind: 'unparseable', parsed: null }
+  }
+  if (!Object.prototype.hasOwnProperty.call(parsed, 'occupancy')) {
+    return { kind: 'missing', parsed }
+  }
+  const value = parsed.occupancy
+  if (value === 'active' || value === 'releasable') {
+    return { kind: value, parsed }
+  }
+  return { kind: 'invalid', parsed }
+}
 
 function run(cmd) {
   return execSync(cmd, {
@@ -38,9 +68,9 @@ function isLikelyMainCheckout(rootPath) {
   return true
 }
 
-let exitCode = 0
+function main() {
+  let exitCode = 0
 
-try {
   const branch = run('git branch --show-current') || '(detached)'
   const head = run('git rev-parse --short HEAD')
   const porcelain = run('git status --porcelain') || ''
@@ -69,21 +99,39 @@ try {
   }
   console.log(`stash_entries: ${stashCount}`)
 
+  /** @type {OccupancyKind | 'absent'} */
+  let lockOccupancy = 'absent'
+
   if (existsSync(LOCK_PATH)) {
     const raw = readFileSync(LOCK_PATH, 'utf8')
     const st = statSync(LOCK_PATH)
+    const { kind } = parseLockOccupancy(raw)
+    lockOccupancy = kind
     console.log('lock: PRESENT')
-    console.log(`lock_mtime: ${st.mtime.toISOString()}`)
+    console.log(`lock_mtime: ${st.mtime.toISOString()} (reference only; not authority)`)
+    console.log(`lock_occupancy: ${kind}`)
     console.log('lock_body:')
     console.log(raw.trim() || '(empty)')
-    // Foreign vs self cannot be proven without Agent-supplied task_id;
-    // presence alone is a stop signal unless Agent knows it owns the lock.
-    console.log(
-      'NOTE: lock present — Agent must match task_id/session_label to this session; if foreign → STOP (exit 2).'
-    )
-    exitCode = 2
+
+    if (kind === 'releasable') {
+      console.log(
+        'NOTE: occupancy=releasable — next task MAY take over (delete/replace lock); no force-clear phrase required. Still report the prior lock summary.'
+      )
+      // releasable alone does not force exit 2
+    } else if (kind === 'active') {
+      console.log(
+        'NOTE: occupancy=active (仍在占用中) — Agent must match task_id/session_label to this session; if foreign → STOP (exit 2). Do not infer idle from mtime.'
+      )
+      exitCode = 2
+    } else {
+      console.log(
+        `NOTE: occupancy=${kind} (treat as active/unknown) — STOP if not this session; do not treat old mtime as releasable (exit 2).`
+      )
+      exitCode = 2
+    }
   } else {
     console.log('lock: absent')
+    console.log('lock_occupancy: absent')
   }
 
   if (dirtyLines.length > 0) {
@@ -107,15 +155,30 @@ try {
   }
 
   if (exitCode === 0) {
-    console.log('occupancy: clear (no lock; clean tree).')
+    if (lockOccupancy === 'releasable') {
+      console.log(
+        'occupancy: releasable handoff available (clean tree). Policy: WORKFLOW.md git-worktree-occupancy.'
+      )
+    } else {
+      console.log('occupancy: clear (no lock; clean tree).')
+    }
   } else {
     console.log(
       'occupancy: ATTENTION required (see WARN/NOTE). Policy: WORKFLOW.md git-worktree-occupancy.'
     )
   }
-  process.exit(exitCode)
-} catch (err) {
-  console.error('ERROR: check:worktree-occupancy failed')
-  console.error(err?.message || err)
-  process.exit(1)
+  return exitCode
+}
+
+const isMain =
+  process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]
+
+if (isMain) {
+  try {
+    process.exit(main())
+  } catch (err) {
+    console.error('ERROR: check:worktree-occupancy failed')
+    console.error(err?.message || err)
+    process.exit(1)
+  }
 }
