@@ -53,6 +53,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `rules-authority` | 规则主题权威索引（本机制） | `focus-tiger/docs/RULES_INDEX.md` | 规则主题 → 权威来源 |
 | `browser-energy` | 预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
 | `qa-develop-tip` | 人工验收只认 origin/develop tip | `focus-tiger/docs/TEST_TRACKER.md` | 人工验收唯一基线 |
+| `qa-pass-coverage-split` | 标「已通过」须写清 e2e/人工各覆盖哪些场景 | `focus-tiger/docs/TEST_TRACKER.md` | 标「已通过」门禁 |
 | `branch-freshness` | Agent 邀测 / 声称 develop 行为前须 check:branch-freshness | `.cursor/rules/focus-tiger-regression-lock.mdc` | 分支新鲜度（强制 · 验收 / 声称 develop 行为之前） |
 | `release-blocker-ledger` | 缺陷分级 / open-blockers / 发布候选清算 | `focus-tiger/docs/TEST_TRACKER.md` | 缺陷分级与处理承诺 |
 | `z-index-registry` | 产品 z-index 层叠登记 | `focus-tiger/docs/Z_INDEX.md` | Z_INDEX.md — 产品层叠登记 |
@@ -78,6 +79,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 `deny-ide-browser-mcp` 硬闸；起过 Vite/Playwright 却不在「待你知道」提醒收尾 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent 见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；`COLLAB` 可一行引用 | 主张 feature/fix 试跑即正式关单验收 |
+| `qa-pass-coverage-split` | 「标已通过须覆盖分工见 `TEST_TRACKER`」；regression-lock / docs.mdc 可摘要硬拦 | 主张 e2e 绿即可关单；笼统「测试 OK→已通过」且不写 e2e/人工各覆盖哪些场景 |
 | `branch-freshness` | 「邀测前 freshness 见 regression-lock「分支新鲜度」」 | 落后 >0 仍声称代表 develop / 正式邀测却不报落后数 |
 | `release-blocker-ledger` | 「缺陷分级 / `check:open-blockers` 见 `TEST_TRACKER`；发版硬闸见 regression-lock「发布候选门禁」」 | 平行发明第二套逾期/分级口径；发版前省略 legacy 提醒；把漏标 `Fixes:` 的技术性补正当成产品向「降级放行」 |
 | `z-index-registry` | 「层叠见 `Z_INDEX.md`」 | 平行另造第二份 z-index 分配表 |
@@ -102,7 +104,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；验收 tip 规则引用 `TEST_TRACKER` |
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
-| [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip；**SSOT**：缺陷分级与处理承诺（`release-blocker-ledger`） |
+| [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip；**SSOT**：标「已通过」覆盖分工（`qa-pass-coverage-split`）；**SSOT**：缺陷分级与处理承诺（`release-blocker-ledger`） |
 | [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、unit\*→smoke 分类（§7）、Honesty/i18n 发布口径 |
 | [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 |
 | [`SCENARIO_TESTS.md`](./SCENARIO_TESTS.md) | 场景剧本权威 |
@@ -162,6 +164,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-02 | 新增 `qa-pass-coverage-split`：标「已通过」须写清 e2e/自动化已锁 vs 人工已覆盖场景（防记入≠验证到位）；SSOT 在 `TEST_TRACKER`；regression-lock 摘要硬拦 |
 | 2026-08-02 | 扩展 `git-worktree-occupancy`：`.ft-session-lock` 必填 `occupancy`（`active` / `releasable`），不以 mtime 猜占用；检测脚本解析并区分 exit；SSOT 在 `WORKFLOW.md` |
 | 2026-08-02 | 新增 `release-blocker-ledger`：缺陷分级 + `check:open-blockers`；发版硬闸在 regression-lock「发布候选门禁」；SSOT 记录格式在 `TEST_TRACKER` |
 | 2026-08-01 | 新增 `git-branch-health`：分支健康度即时纪律 + `check:all-branches-health` 双周普查（非 CI Required）；SSOT 在 `PROCESS.md` |
