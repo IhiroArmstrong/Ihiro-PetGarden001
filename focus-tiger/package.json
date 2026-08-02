@@ -29,6 +29,7 @@
     "check:branch-freshness": "node scripts/check-branch-freshness.js",
     "check:worktree-occupancy": "node scripts/check-worktree-occupancy.js",
     "check:all-branches-health": "node scripts/check-all-branches-health.js",
+    "check:open-blockers": "node scripts/check-open-blockers.js",
     "locale:export-ja": "node scripts/locale-pack.js export-ja",
     "locale:import-ja": "node scripts/locale-pack.js import-ja"
   },
