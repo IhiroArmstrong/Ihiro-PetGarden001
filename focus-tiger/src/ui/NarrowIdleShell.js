@@ -94,6 +94,14 @@ export class NarrowIdleShell {
   }
 
   /**
+   * Re-paint drawer row mint dots after lab「清空引导提示已读」(sheet may be open).
+   * @returns {void}
+   */
+  refreshSecondaryHintDots() {
+    if (this._sheetOpen) this._refreshDrawerItems();
+  }
+
+  /**
    * Leave narrow viewport: close sheet + drop stage classes without onClearStage
    * (facade breakpoint cleanup — must not hide Companion on resize).
    * @returns {void}

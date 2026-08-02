@@ -17,7 +17,10 @@ import {
   markCooldown,
   readDailySceneAnimState
 } from './sceneAnimationDispatcher.js';
-import { emotionKeyForLocaleGreeting } from './localeGreeting.js';
+import {
+  emotionKeyForLocaleGreeting,
+  markLocaleGreetingPlayed
+} from './localeGreeting.js';
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -80,7 +83,7 @@ test('canPlaySceneAnimGate blocks FOCUSING / CELEBRATE / overlay', () => {
   );
 });
 
-test('LANGUAGE_CHANGED via dispatcher: ja palmsTogether; quota; gate', () => {
+test('LANGUAGE_CHANGED via dispatcher: ja palmsTogether; quota after mark; gate', () => {
   const storage = memoryStorage();
   const now = () => new Date(2026, 7, 1, 12);
 
@@ -93,6 +96,17 @@ test('LANGUAGE_CHANGED via dispatcher: ja palmsTogether; quota; gate', () => {
   });
   assert.equal(first.play, true);
   assert.equal(first.emotionKey, 'palmsTogether');
+  // Resolve does not consume — same resolve again would still allow play.
+  const stillOpen = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.LANGUAGE_CHANGED,
+    locale: 'ja',
+    sessionState: 'IDLE',
+    storage,
+    now
+  });
+  assert.equal(stillOpen.play, true);
+
+  assert.equal(markLocaleGreetingPlayed({ locale: 'ja', storage, now }), true);
 
   const again = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.LANGUAGE_CHANGED,

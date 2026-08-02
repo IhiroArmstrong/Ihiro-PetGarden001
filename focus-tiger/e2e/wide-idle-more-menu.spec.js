@@ -134,6 +134,62 @@ test('wide Idle: ⋯ has no Sound or Honesty row; note opens Soundscape', async 
   await expect(page.locator('.ambient-soundscape__nudge.is-blocked-tip')).toHaveCount(0);
 });
 
+test('wide ⋯: unread row mint only — no floating badge double / sit tip steal', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+
+  // Row host mint stays (unread).
+  await expect(
+    menu.locator('[data-proxy="companion"] .ft-secondary-menu-hint-dot')
+  ).toBeVisible({ timeout: 5_000 });
+  await expect(
+    menu.locator('[data-proxy="breath"] .ft-secondary-menu-hint-dot')
+  ).toBeVisible();
+  await expect(
+    menu.locator('[data-proxy="reminder"] .ft-secondary-menu-hint-dot')
+  ).toBeVisible();
+
+  // No second floating mint parked on those click hints while ⋯ is open.
+  await expect(
+    page.locator('.onboarding-hint-badge[data-hint-id="how-shall-we-sit"]:not([hidden])')
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.onboarding-hint-badge[data-hint-id="micro-ritual"]:not([hidden])')
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.onboarding-hint-badge[data-hint-id="in-app-reminder"]:not([hidden])')
+  ).toHaveCount(0);
+
+  // Hover How-shall-we-sit row → that tip; Sit tip must not overlay the ⋯ panel.
+  await menu.locator('[data-proxy="companion"]').hover();
+  const howTip = page.locator(
+    'ft-onboarding-hint-bubble[data-hint-id="how-shall-we-sit"]'
+  );
+  await expect(howTip).toBeVisible({ timeout: 5_000 });
+  const sitStealsMenu = await page.evaluate(() => {
+    const sit = document.querySelector(
+      'ft-onboarding-hint-bubble[data-hint-id="sit-button"]'
+    );
+    const panel = document.getElementById('ft-wide-more-menu');
+    if (!sit || !panel) return false;
+    if (sit.open === false || sit.hasAttribute('hidden')) return false;
+    const sr = sit.getBoundingClientRect();
+    const mr = panel.getBoundingClientRect();
+    if (sr.width <= 0 || sr.height <= 0) return false;
+    return !(
+      sr.right < mr.left ||
+      sr.left > mr.right ||
+      sr.bottom < mr.top ||
+      sr.top > mr.bottom
+    );
+  });
+  expect(sitStealsMenu).toBe(false);
+});
+
 test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
   await openFreshProductShell(page);
   const playing = await page.evaluate(() => {

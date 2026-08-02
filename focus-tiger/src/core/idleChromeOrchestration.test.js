@@ -4,7 +4,9 @@ import {
   resolveIdleChromeStage,
   resolveShellChromeProjection,
   resolveRoleVisibility,
-  listSecondaryChromeEntries
+  listSecondaryChromeEntries,
+  SECONDARY_PROXY_HINT_IDS,
+  secondaryProxyForHintId
 } from './idleChromeOrchestration.js';
 
 describe('resolveIdleChromeStage', () => {
@@ -249,6 +251,20 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
         resolveRoleVisibility({ stage: 'arrival', viewport }).sit,
         'visible'
       );
+    }
+  });
+});
+
+describe('secondaryProxyForHintId', () => {
+  it('inverses SECONDARY_PROXY_HINT_IDS; unknown → null', () => {
+    assert.equal(secondaryProxyForHintId('how-shall-we-sit'), 'companion');
+    assert.equal(secondaryProxyForHintId('micro-ritual'), 'breath');
+    assert.equal(secondaryProxyForHintId('in-app-reminder'), 'reminder');
+    assert.equal(secondaryProxyForHintId('honesty-optional'), 'honesty');
+    assert.equal(secondaryProxyForHintId('sit-button'), null);
+    assert.equal(secondaryProxyForHintId(''), null);
+    for (const [proxy, hintId] of Object.entries(SECONDARY_PROXY_HINT_IDS)) {
+      assert.equal(secondaryProxyForHintId(hintId), proxy);
     }
   });
 });

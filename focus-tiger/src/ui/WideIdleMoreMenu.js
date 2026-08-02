@@ -118,6 +118,14 @@ export class WideIdleMoreMenu {
   }
 
   /**
+   * Re-paint ⋯ row mint dots after lab「清空引导提示已读」(menu may already be open).
+   * @returns {void}
+   */
+  refreshSecondaryHintDots() {
+    if (this._menuOpen) this._refreshItems();
+  }
+
+  /**
    * @param {boolean} idle true when not Focusing (Arrival still counts as idle chrome)
    * @returns {void}
    */

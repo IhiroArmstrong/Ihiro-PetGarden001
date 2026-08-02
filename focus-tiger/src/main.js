@@ -80,6 +80,7 @@ import {
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import {
   SCENE_ANIM_EVENTS,
+  markLocaleGreetingPlayed,
   resolveSceneAnimation
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
@@ -267,7 +268,19 @@ async function init() {
       emotionKey: decision.emotionKey,
       reason: decision.reason
     };
-    emotionController.playEmotion(decision.emotionKey, playOptions || {});
+    const started = emotionController.playEmotion(
+      decision.emotionKey,
+      playOptions || {}
+    );
+    // Locale greeting: consume daily quota only after playEmotion starts
+    // (resolve no longer writes — avoids burning the slot when play is skipped).
+    if (
+      started &&
+      event === SCENE_ANIM_EVENTS.LANGUAGE_CHANGED &&
+      typeof resolveOpts.locale === 'string'
+    ) {
+      markLocaleGreetingPlayed({ locale: resolveOpts.locale });
+    }
     return decision;
   }
 
@@ -1529,10 +1542,27 @@ async function init() {
     clearHintsBtn.textContent = '清空引导提示已读';
     clearHintsBtn.style.cssText =
       'position:fixed;top:12px;right:180px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff8f0;color:#2c1f14;border-radius:4px;';
+    clearHintsBtn.id = 'dev-clear-hints-seen';
+    clearHintsBtn.title =
+      '仅实验室页有效（勿带 ?product=1）。清空 focus-tiger.hints-seen.v1 后刷新 tip/薄荷绿。';
     clearHintsBtn.addEventListener('click', () => {
-      onboardingHints?.clearSeen();
-      onboardingHints?.hideBubble();
+      if (!onboardingHints) {
+        showDevLabToast(
+          '引导 UI 尚未就绪，请等页面加载完再点「清空引导提示已读」。',
+          6_000
+        );
+        return;
+      }
+      onboardingHints.clearSeen();
+      onboardingHints.hideBubble();
       syncOnboardingAutoHints();
+      // Menu/drawer may already be open — repaint row mints (was silent no-op).
+      idleChrome.wide.refreshSecondaryHintDots?.();
+      idleChrome.narrow.refreshSecondaryHintDots?.();
+      showDevLabToast(
+        '已清空引导已读。测产品壳请再开 ?product=1；⋯/抽屉未读行应见薄荷绿。',
+        8_000
+      );
     });
     document.body.appendChild(clearHintsBtn);
 

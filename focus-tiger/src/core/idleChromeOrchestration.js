@@ -54,6 +54,23 @@ export const SECONDARY_PROXY_HINT_IDS = Object.freeze({
 });
 
 /**
+ * Inverse of SECONDARY_PROXY_HINT_IDS (hint → proxy key), or null.
+ * @param {string} hintId
+ * @returns {'honesty' | 'breath' | 'companion' | 'reminder' | null}
+ */
+export function secondaryProxyForHintId(hintId) {
+  if (!hintId) return null;
+  for (const [proxy, id] of Object.entries(SECONDARY_PROXY_HINT_IDS)) {
+    if (id === hintId) {
+      return /** @type {'honesty' | 'breath' | 'companion' | 'reminder'} */ (
+        proxy
+      );
+    }
+  }
+  return null;
+}
+
+/**
  * @param {HTMLElement} btn
  * @param {boolean} show
  * @returns {void}

@@ -82,7 +82,8 @@ export function writeLocaleGreetingState(storage, state) {
 
 /**
  * Decide whether to play a greeting for a locale that just became current.
- * On play: persists the locale into today's list (consume).
+ * Does **not** consume quota — call {@link markLocaleGreetingPlayed} only after
+ * `playEmotion` actually starts (avoids burning the day slot when gated/stolen).
  *
  * @param {object} opts
  * @param {string} opts.locale
@@ -105,15 +106,38 @@ export function resolveLocaleGreetingPlay({
   if (!canPlayLocaleGreetingGate({ sessionState, overlayBusy })) {
     return { play: false, emotionKey: null, reason: 'gate' };
   }
-  const todayKey = getLocalDateKey(now());
   const state = readLocaleGreetingState(storage, now);
   if (state.locales.includes(locale)) {
     return { play: false, emotionKey: null, reason: 'quota' };
   }
-  const emotionKey = emotionKeyForLocaleGreeting(locale);
+  return {
+    play: true,
+    emotionKey: emotionKeyForLocaleGreeting(locale),
+    reason: 'ok'
+  };
+}
+
+/**
+ * Persist that today's greeting for `locale` was started (consume daily quota).
+ *
+ * @param {object} opts
+ * @param {string} opts.locale
+ * @param {Storage | null | undefined} [opts.storage]
+ * @param {() => Date} [opts.now]
+ * @returns {boolean} true if newly recorded
+ */
+export function markLocaleGreetingPlayed({
+  locale,
+  storage = globalThis.localStorage,
+  now = () => new Date()
+}) {
+  if (!locale || typeof locale !== 'string') return false;
+  const todayKey = getLocalDateKey(now());
+  const state = readLocaleGreetingState(storage, now);
+  if (state.locales.includes(locale)) return false;
   writeLocaleGreetingState(storage, {
     dateKey: todayKey,
     locales: [...state.locales, locale]
   });
-  return { play: true, emotionKey, reason: 'ok' };
+  return true;
 }
