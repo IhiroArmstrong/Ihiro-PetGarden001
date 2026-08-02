@@ -7,6 +7,7 @@ import {
   canPlayLocaleGreetingGate,
   normalizeLocaleGreetingState,
   resolveLocaleGreetingPlay,
+  markLocaleGreetingPlayed,
   readLocaleGreetingState
 } from './localeGreeting.js';
 import { getLocalDateKey } from '../utils/localDate.js';
@@ -51,7 +52,7 @@ test('normalizeLocaleGreetingState resets locales when date rolls', () => {
   assert.deepEqual(normalized, { dateKey: today, locales: [] });
 });
 
-test('resolveLocaleGreetingPlay: first ja plays palmsTogether; second ja same day skips', () => {
+test('resolve alone does not consume; mark then same-day ja skips', () => {
   const storage = memoryStorage();
   const now = () => new Date(2026, 6, 31, 12);
 
@@ -64,6 +65,10 @@ test('resolveLocaleGreetingPlay: first ja plays palmsTogether; second ja same da
   assert.equal(first.play, true);
   assert.equal(first.emotionKey, 'palmsTogether');
   assert.equal(first.reason, 'ok');
+  // Resolve must not burn quota before play starts.
+  assert.deepEqual(readLocaleGreetingState(storage, now).locales, []);
+
+  assert.equal(markLocaleGreetingPlayed({ locale: 'ja', storage, now }), true);
 
   const second = resolveLocaleGreetingPlay({
     locale: 'ja',
@@ -82,6 +87,7 @@ test('resolveLocaleGreetingPlay: first ja plays palmsTogether; second ja same da
   });
   assert.equal(en.play, true);
   assert.equal(en.emotionKey, 'mindfulAcknowledge');
+  assert.equal(markLocaleGreetingPlayed({ locale: 'en', storage, now }), true);
 
   const persisted = readLocaleGreetingState(storage, now);
   assert.deepEqual(persisted.locales.sort(), ['en', 'ja']);
@@ -110,4 +116,14 @@ test('resolveLocaleGreetingPlay: Focusing gate skips without consuming quota', (
   });
   assert.equal(after.play, true);
   assert.equal(after.emotionKey, 'palmsTogether');
+  // Still unconsumed until mark — can retry same day after a failed play attempt.
+  assert.deepEqual(readLocaleGreetingState(storage, now).locales, []);
+});
+
+test('markLocaleGreetingPlayed is idempotent for same locale/day', () => {
+  const storage = memoryStorage();
+  const now = () => new Date(2026, 6, 31, 12);
+  assert.equal(markLocaleGreetingPlayed({ locale: 'ja', storage, now }), true);
+  assert.equal(markLocaleGreetingPlayed({ locale: 'ja', storage, now }), false);
+  assert.deepEqual(readLocaleGreetingState(storage, now).locales, ['ja']);
 });

@@ -80,6 +80,7 @@ import {
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import {
   SCENE_ANIM_EVENTS,
+  markLocaleGreetingPlayed,
   resolveSceneAnimation
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
@@ -267,7 +268,19 @@ async function init() {
       emotionKey: decision.emotionKey,
       reason: decision.reason
     };
-    emotionController.playEmotion(decision.emotionKey, playOptions || {});
+    const started = emotionController.playEmotion(
+      decision.emotionKey,
+      playOptions || {}
+    );
+    // Locale greeting: consume daily quota only after playEmotion starts
+    // (resolve no longer writes — avoids burning the slot when play is skipped).
+    if (
+      started &&
+      event === SCENE_ANIM_EVENTS.LANGUAGE_CHANGED &&
+      typeof resolveOpts.locale === 'string'
+    ) {
+      markLocaleGreetingPlayed({ locale: resolveOpts.locale });
+    }
     return decision;
   }
 
