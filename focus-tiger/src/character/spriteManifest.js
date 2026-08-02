@@ -229,7 +229,7 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手欢迎 · 调试仅正放；产品路径见 waveHelloWelcome。
+  // 挥手 · 入库仅素材（2026-08-02 停接线；产品 welcomeBack 空实现）。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
   waveHello: {
     animation: 'wave-hello',
@@ -241,8 +241,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // WelcomeBack 旧路径（19 帧源 + 代码烘焙正+倒）：保留调试试播对照。
-  // 禁 player pingpong+maxCycles。产品开场试验改走 waveHelloPingpong（已烘焙帧）。
+  // 旧挥手正+倒 playlist：停接线；仅入库素材对照。
+  // 禁 player pingpong+maxCycles。
   waveHelloWelcome: {
     animation: 'wave-hello',
     frameCount: 19,
@@ -253,9 +253,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 2026-08-02 新入库：挥手已烘焙 pingpong（正+倒一次，38 帧）；正放一遍即可，禁再 player pingpong。
-  // 960×960 → displayFit 对齐 idle 蒲团锚点，再 scaleMul 1.5（约再放大 50%）。
-  // 2026-08-02 晚：开场欢迎池观感不行 → 撤出冷启动；键保留调试 / 日后回前台或 10min 偶遇。
+  // 新挥手已烘焙 pingpong（38 帧）：停接线（2026-08-02）；素材+displayFit 保留，场景以后另议。
+  // 960×960 → displayFit 对齐 idle 蒲团锚点，再 scaleMul 1.5。
   waveHelloPingpong: {
     animation: 'wave-hello-pingpong',
     frameCount: 38,

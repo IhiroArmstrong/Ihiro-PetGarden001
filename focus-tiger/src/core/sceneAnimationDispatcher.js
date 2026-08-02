@@ -46,8 +46,8 @@ export const CURIOSITY_CHANCE = 0.05;
 
 /**
  * 冷启动同日欢迎池（试验 · 2026-08-02 晚修订）。
- * 挥手 `welcomeBack`（新旧素材）开场观感不行 → **撤出**；池内 `magicBookReading` + `nodGreeting`。
- * `welcomeBack` 键保留（调试 / 日后回前台或 10min 偶遇），勿从本池抽。
+ * 挥手新旧（wave-hello / wave-hello-pingpong / welcomeBack）2026-08-02 **暂时停接线**；
+ * 池内仅 `magicBookReading` + `nodGreeting`。勿把 welcomeBack 抽回本池，直至另议场景。
  * @type {ReadonlyArray<WeightedEntry>}
  */
 export const WELCOME_POOL = Object.freeze([

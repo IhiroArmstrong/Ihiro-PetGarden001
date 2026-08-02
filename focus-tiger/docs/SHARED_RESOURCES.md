@@ -84,7 +84,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |
 | `nodGreeting` | 靠近自动已拆；**欢迎池试验 40%**（与 magicBookReading） | 勿接回默认靠近 |
 | `magicBookReading` | 开场欢迎池试验（60%） | 已烘焙 pingpong；**硬切** Idle |
-| `welcomeBack` | **不在**开场池；调试可播 | 建议改接：回前台 / Idle≈10min 30%（待拍板）；新素材 960×960 + scaleMul 1.5 |
+| `welcomeBack` | **停接线**（2026-08-02）：不播新旧挥手；键保留 | 素材仍入库；场景以后另议 |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |

@@ -190,7 +190,7 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('welcomeBack plays baked waveHelloPingpong once then CapCut idle', () => {
+test('welcomeBack is parked: does not play old or new wave sequences', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -213,18 +213,9 @@ test('welcomeBack plays baked waveHelloPingpong once then CapCut idle', () => {
     }
   });
 
-  assert.equal(plays[0].name, 'waveHelloPingpong');
-  assert.equal(plays[0].options.loop, false);
-  assert.equal(plays[0].options.loopMode, 'none');
-  assert.notEqual(plays[0].options.loopMode, 'pingpong');
-  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
-  assert.equal(plays[0].options.crossFadeMs, 1000);
-  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
-  plays[0].options.onComplete();
-  assert.equal(plays[1].name, 'idleBreathing');
-  assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(plays.length, 0);
   assert.equal(completed, 1);
-  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+  assert.equal(controller.getCurrentEmotionKey(), 'welcomeBack');
 });
 
 test('magicBookReading plays once then hard-cuts to idle (no CapCut)', () => {

@@ -149,7 +149,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
 | `WakeUp` | `WAKE_UP` | 2D：`stretch-reminder` 同源（调试伸懒腰唤醒） |
-| `WelcomeBack` | `welcomeBack` → `waveHelloPingpong`（2D） | `public/sprites/.../wave-hello-pingpong/frame_001–038.png`（已烘焙正+倒；旧 `wave-hello` 19 帧保留对照） |
+| `WelcomeBack` | `welcomeBack`（**停接线**） | 素材仍在：`wave-hello` / `wave-hello-pingpong`；**不播** |
 | `magicBookReading` | `magicBookReading` → 同名序列 | `public/sprites/.../magic-book-reading/frame_001–046.png`（开场欢迎池试验） |
 | `goldenHaloPalms` | `goldenHaloPalms` → 同名序列 | `public/sprites/.../golden-halo-palms/frame_001–094.png`（Honesty≥30 试验） |
 | `nodGreeting` | `nodGreeting` → `nodGreeting`（2D） | `public/sprites/.../nod-greeting/frame_001–023.png` |
@@ -158,7 +158,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
-> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」（后者未接线）。**2026-08-02 晚**：产品路径播已烘焙 `wave-hello-pingpong`（正放一次 → ~1s CapCut；960×960 + `displayFit.scaleMul` 1.5）；**再次撤出冷启动欢迎池**（开场观感不行，与旧挥手同结论）。键保留调试；建议改接回前台 / 10min 偶遇（待拍板）。旧 `waveHelloWelcome` 仅入库对照。优先级低于 `Celebrating`。
+> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。**2026-08-02 晚拍板：新旧挥手暂时停接线**——`playEmotion('welcomeBack')` 不播序列；不进冷启动欢迎池；调试情绪入口已撤；入库素材钮仅保留「停接线·仅素材」标签供以后对照。建议场景（回前台 / Idle≈10min 30%）**以后另议**。优先级低于 `Celebrating`。
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 
@@ -648,6 +648,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.73 | 2026-08-02 | 误诊「仅正放」撤回；根因 oneshot `_finish` hide 跳过 CapCut；`WelcomeBack`/`earWiggle` 烘焙正+倒一次 + CapCut |
 | 0.74 | 2026-08-02 | 冷启动欢迎池撤出 `welcomeBack`；开场仅 `nodGreeting`（挥手观感未验收） |
 | 0.75 | 2026-08-02 | 入库试验：`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`；欢迎池加权重开；Honesty≥30 → `goldenHaloPalms` |
-| 0.76 | 2026-08-02 | 挥手再撤出开场；`waveHelloPingpong` displayFit 收紧包围盒 + `scaleMul` 1.5；开场池仅书+点头 |
+| 0.77 | 2026-08-02 | 拍板：新旧挥手暂时停接线（`welcomeBack` 空实现；情绪入口撤；欢迎池仍仅书+点头） |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

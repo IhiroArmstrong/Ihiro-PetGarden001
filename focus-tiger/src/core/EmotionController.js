@@ -417,36 +417,14 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：已烘焙 pingpong 帧（wave-hello-pingpong）正放一次 → ~1s CapCut Idle。
-      // 禁再对播放器开 pingpong（素材已含倒放）。旧 waveHelloWelcome 仅入库试播对照。
-      // CapCut 依赖播完不先 hide overlay（见 SpriteSequencePlayer._finish）。
+      // WelcomeBack：2026-08-02 拍板 — 新旧挥手（wave-hello / wave-hello-pingpong）暂时停接线。
+      // 键与素材保留；不播序列、不进欢迎池；日后另议场景再接。
       welcomeBack: (options = {}) => {
-        if (!this.spritePlayer) {
-          console.warn(
-            '[EmotionController] welcomeBack: spritePlayer 未接入，跳过（占位）'
-          );
-          return;
-        }
-        this._leaveIdleBaseline();
-        this._use2DMainline();
-        const started = this.spritePlayer.play(
-          'waveHelloPingpong',
-          this._oneShotPlayOpts(
-            {
-              ...options,
-              loop: false,
-              loopMode: 'none',
-              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
-              freezeUntilCrossFadeEnds:
-                options.freezeUntilCrossFadeEnds !== false,
-              returnCrossFadeMs:
-                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
-            },
-            'waveHelloPingpong'
-          )
+        console.info(
+          '[EmotionController] welcomeBack parked — wave hello unwired (2026-08-02)'
         );
-        if (!started) {
-          this._finishOneShot(options, 'waveHelloPingpong');
+        if (typeof options.onComplete === 'function') {
+          options.onComplete('welcomeBack');
         }
       },
 
@@ -1024,7 +1002,7 @@ export class EmotionController {
       { key: 'incenseComplete', label: '一炷香完成' },
       { key: 'milestoneGlow', label: '里程碑金辉' },
       { key: 'sessionComplete', label: '完成摆尾' },
-      { key: 'welcomeBack', label: '挥手欢迎(新pingpong)' },
+      // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
@@ -1050,9 +1028,9 @@ export class EmotionController {
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
-      waveHello: 'wave-hello 挥手(仅正放)',
-      waveHelloWelcome: 'wave-hello 欢迎(旧正+倒)',
-      waveHelloPingpong: 'wave-hello-pingpong 挥手(已烘焙)',
+      waveHello: 'wave-hello 挥手(停接线·仅素材)',
+      waveHelloWelcome: 'wave-hello 欢迎旧(停接线·仅素材)',
+      waveHelloPingpong: 'wave-hello-pingpong(停接线·仅素材)',
       magicBookReading: 'magic-book-reading 魔法书',
       goldenHaloPalms: 'golden-halo-palms 金环合掌',
       celebrateDance: 'celebrate-dance v1',
@@ -1109,7 +1087,7 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
-        // welcomeBack / earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
+        // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
         const holdPoseKeys = new Set([
           'celebrating',
           'intentionSet',

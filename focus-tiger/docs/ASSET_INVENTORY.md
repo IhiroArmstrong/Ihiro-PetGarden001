@@ -35,7 +35,7 @@
 
 | 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
 |---|---|---:|---|
-| Yin坐禅-挥手-pingpong_frames | `wave-hello-pingpong` | 38 | 开场欢迎池 → `welcomeBack`；960×960 + displayFit |
+| Yin坐禅-挥手-pingpong_frames | `wave-hello-pingpong` | 38 | **停接线**（2026-08-02）；素材保留；960×960 + displayFit |
 | Yin坐禅-魔法金光五角星-…-pingpong_frames 3 | `magic-book-reading` | 46 | 开场欢迎池 → `magicBookReading` |
 | YIn坐禅-衣服金光-…_94 | `golden-halo-palms` | 94 | Honesty≥30 → `goldenHaloPalms`（替 breathHaloHq 产品路径） |
 
@@ -90,8 +90,8 @@
 | idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
 | blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
 | blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
-| wave-hello | 19 | waveHello / waveHelloWelcome | 旧源对照 / 入库试播 | 产品开场改 `wave-hello-pingpong` |
-| wave-hello-pingpong | 38 | waveHelloPingpong → welcomeBack | **试验**：开场欢迎池 | 已烘焙正+倒；960×960 |
+| wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
+| wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
 | magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
 | golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
