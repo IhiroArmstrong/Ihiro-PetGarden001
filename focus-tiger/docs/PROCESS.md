@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-01（UTC+8）
+**最后更新时间**：2026-08-02（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -76,7 +76,7 @@
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **Ambient 窄宽对账填表（2026-07-31）**：`audit-narrow-wide-ambient-parity.md` 10 项已按 `develop` 代码+既有 e2e/unit 填状态（1–4/7–9 ✅；5–6/10 ⚠️ 缺 DOM 听感断言；另记 micro-ritual tip / 抽屉挡 ♪ 既有红）。未重跑 Playwright（本机缺 Chromium）。
 - **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。关单级人工仍须 §8+§9。
-- **CI 定时全量 + 环境密钥隔离核实（2026-07-31）**：**PR smoke** 已在每次 PR→`develop` 于 GitHub CI 跑通（解放本地 Agent；**无** API Key）。**全量 e2e** `timeout-minutes: 120` 已由 PR [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47) 同步进 **`main`**（schedule 可读到 120）。但单 job 120 仍可能打满 cancel（例 dispatch [#10](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30447662309)）。**Plan A（进行中）**：2 分片 + JUnit `always()` + 砍 HTML 大报告，让取消/失败仍留下红绿清单。当前 Playwright **不**依赖 Actions Secrets。环境隔离基线：`docs/ENV_CONFIG.md` + `.env.example`。
+- **CI 定时全量 + Plan A 收口（2026-07-31 … 2026-08-02）**：**PR smoke** 已在每次 PR→`develop` 跑通（**无** API Key）。**全量 e2e** 夜间 `schedule`（UTC 02:00）+ 手动 dispatch：YAML 在 **`main`**（120m · [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47)；Plan A 分片+JUnit · [#63](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/63)），**测 `develop` tip**。#15 稳定红已修（[#74](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/74)）；验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit 68 tests / 0 fail）。**基建任务完成**；残留 = 偶发 goto flake 根因（另项）+ 是否挂 PR 门（另议）。隔离：`ENV_CONFIG.md` + `.env.example`。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 en+ja。见审计 §9。
@@ -272,7 +272,7 @@
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
 - **v1 阻塞 · 本地桌面 APP 打包选型（壳未拍板；开会时机已定）**：Electron / Tauri / PWA·薄壳仍待选；**合理时机** = `v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策——不挡当前 UI 主线、**禁止**拖到 tag 之后才选。「高于 CI 细节」= 与 CI 工程 Backlog **争排期时先开本决策**（非等 CI 做完）。见 Backlog「本地桌面 APP 打包选型」。
 - **PR #2 合并进 `main`（技术可合 · 产品门禁未齐）**：冲突已清、#70 已合、`MERGEABLE`。**合 main 仍须你明确下令** + 五条件清单（人工走查 / 「有问题」处置 / 范围认知等）。Brief：`task-pr2-develop-into-main.md`。
-- **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。与「CI 全量 smoke + e2e」并列推进——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论**（实现可后置）。
+- **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。夜间全量 e2e / Plan A **已收口**（见上「CI 定时全量」）；与 visibility flaky **并列**的剩余工程主要是 flaky 根因——**但**若与「本地桌面 APP 打包选型」争排期，**先排打包选型讨论**（实现可后置）。
 - **hints 拆分线 / 旧 stash PRD（2026-08-01 已清）**：原 `stash · chore/split-hints-from-pr2` 已随本地 stash 清空处理；PRD 草稿归档见 `docs/archive/stashed-prds-2026-07-24/`（非 SSOT）。回 hints 拆分时读归档即可，勿再找已删除的 stash。
 - 为 Ambient Soundscape 替换正式 CC0/授权禅意音效；有合适素材后再补第三曲（磬等）
 - 为 Honesty Check-in 的 `dormantWake` 接入真实伸懒腰 2D 序列，并将占位光效替换为 Rim Light 正式路径（待核心视觉重构）
@@ -326,7 +326,7 @@
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
 - 角色边界待观察事项
 - **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
-- **CI 全量 `test:smoke` + `test:e2e`**（工程重要，但**排期次于**「本地桌面 APP 打包选型」决策；勿长期依赖本机手跑）
+- **CI 全量 `test:smoke` + `test:e2e`**（**夜间+手动全量 + Plan A 已收口**；残留 flaky 根因 / 是否挂 PR 门另议；排期次于打包选型）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
 - **PR #2 · develop→main**（冲突已清 / MERGEABLE；合 main 待五条件 + 口令；Brief `task-pr2-develop-into-main.md`）
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
@@ -700,20 +700,26 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 | PR→`develop` 轻量冒烟 | ✅ `pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）；Required 已勾；**解放本地 Agent** |
 | 全量 e2e workflow | ✅ `focus-tiger-e2e-full.yml`：`workflow_dispatch` + `schedule` cron `0 2 * * *`（UTC）；**120m** + `--workers=1` |
 | 定时任务是否按 120 跑 | ✅ **YAML 已在 `main`**（PR #47，2026-07-31）。下一 schedule / dispatch 应按 120；#11 及更早仍为合并前 60m cancel |
-| Plan A（分片+清单） | ✅ **#63→main**；验 [#15](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30707227694)（~55m Failure+JUnit，非 2h cancel）。后续：修 #15 稳定红（`fix/e2e-plan-a-stable-reds`） |
+| Plan A（分片+清单） | ✅ **#63→main**；基建验 [#15](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30707227694)（~55m + JUnit，非 2h cancel） |
+| #15 稳定红 | ✅ **#74→develop**；dispatch 绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit **68 / 0 fail** / 1 skipped） |
 | Actions Secrets（API Key） | **当前不需要**：workflow **无** `secrets.*`；套件打本地静态壳。v1.1 云 E2E 再配 |
 | 环境/密钥隔离文档 | ✅ `docs/ENV_CONFIG.md` + `.env.example`（client + cloud） |
 
-#### 仍待办
+#### 基建收口（2026-08-02）
+
+夜间自动跑 + Plan A 清单能力 **已完成**（PR #2 前工程护栏里「勿长期只靠本机手跑全量」的主目标已满足）。schedule 仍只读 **`main` YAML**、checkout **`develop` tip**——以后改 timeout/shard 须再同步 `main`。
+
+#### 仍待办（非基建阻塞）
 
 1. ~~把 120m workflow 同步到 `main`~~ ✅ PR #47。
-2. **合入 Plan A 并再同步 workflow→`main`**（schedule 只读 `main` YAML）：否则夜间仍是单 job，可能继续打满 120 cancel。
-3. 全量套件 flaky 根因（goto / 断言噪声）：与「降低 visibility flaky」互补；Plan A 只保证**有清单**，不声称压掉 flaky。
-4. （可选）是否把全量 e2e 挂到 PR→`main` / 合并门——**另议**；现设计为非 PR 门闩、夜间+手动。
+2. ~~合入 Plan A 并再同步 workflow→`main`~~ ✅ PR #63。
+3. ~~修 #15 稳定红~~ ✅ PR #74 + 验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。
+4. 全量套件 **偶发** flaky 根因（goto / 断言噪声）：与「降低 visibility flaky」互补；Plan A **有清单**，不声称压掉全部 flake。
+5. （可选）是否把全量 e2e 挂到 PR→`main` / 合并门——**另议**；现设计为非 PR 门闩、夜间+手动。
 
-- **验收**：夜间或 dispatch 的远端 run 给出 **JUnit/注解可读的 pass/fail/flaky**（即使某 shard cancel，已跑完的 shard 仍有 artifact）；失败可区分业务 vs 环境。
+- **验收（已满足）**：夜间或 dispatch 的远端 run 给出 **JUnit 可读的 pass/fail**（shard cancel 时已跑完的 shard 仍有 artifact）。
 - **不在范围**：不替代场景 C/O/P 等人工观感；不把「CI 绿」写成序列观感通过；不为当前套件虚构 API Key；本机不跑全量 e2e 马拉松。
-- **排期**：Plan A = **进行中**；flaky 根因相对「本地桌面 APP 打包选型」仍次优先。
+- **排期**：Plan A / 夜间全量 = **已收口**；残留 flaky 根因相对「本地桌面 APP 打包选型」仍次优先。
 - **勿混淆**：本 Backlog 的「全量」≠ PR 的 `test:pr-smoke`。
 
 ### Backlog:发布前安全网（v1.0.0 tag 前）
@@ -741,7 +747,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
 
-> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修**已有** visibility workflow 的稳定性，全量项补**尚未**进 CI 的整套 smoke/e2e。**决策优先级次于**「本地桌面 APP 打包选型」（见上条）。
+> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修 **visibility** workflow 稳定性；全量夜间+Plan A **已收口**（见上节），两边剩余工作都偏 **flaky 根因**。**决策优先级次于**「本地桌面 APP 打包选型」（见上条）。
 
 - **目标**：把 visibility suite 的 flaky（首轮红、retry 翻绿）压到可接受水平（建议目标：连续 2～3 次 CI run 上 flaky ≤ 约 20%，且无「仅靠 retry 才绿」的系统性风暴）；墙钟须稳定落在 job `timeout-minutes` 内。
 - **处理方向（优先序，可组合）**：

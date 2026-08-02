@@ -66,3 +66,9 @@
 - PR #2：`mergeable=MERGEABLE`；`develop` behind main = 0。  
 - Resolve worktree / 本地 `chore/resolve-pr2-develop-main` **已拆除**。  
 - **仍禁止**未过五条件、未经你下令就合 `main`。
+
+## 进度（2026-08-02 · PR #2 前 CI 护栏）
+
+- 夜间全量 e2e + Plan A（分片/JUnit）**已收口**：YAML 在 `main`（#47/#63），测 `develop` tip；#15 稳定红 #74；验绿 [30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。  
+- 合 `main` **不再**被「全量 e2e 基建未就绪」卡住；剩余工程护栏见 `PROCESS`「降低 visibility CI flaky」（合后立刻）+ 全量偶发 flake（另项）。  
+- 文档口径已同步：`PROCESS` 速览/Backlog「CI 全量」、`TEST_TRACKER`、`ENV_CONFIG`。

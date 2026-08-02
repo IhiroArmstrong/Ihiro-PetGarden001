@@ -31,8 +31,8 @@
 ## 3. 与 CI 的关系
 
 - **PR smoke**（`pr-smoke.yml`）：PR→`develop` 自动跑；解放本地 Agent；**无** Secret 依赖。
-- **全量 e2e**（`focus-tiger-e2e-full.yml`）：`schedule`（UTC 02:00）+ `workflow_dispatch`；测的是本地静态壳，**无** Secret 依赖。Plan A：`matrix` 2 shards + JUnit always + slim traces（`playwright.ci-full.config.js`）。
-- **注意**：GitHub `schedule` 使用**默认分支 `main` 上的 workflow 文件**。`timeout-minutes` / workers / **shards** 等改动若只合进 `develop`，定时任务仍读 `main` 旧 YAML。见 `PROCESS.md` Backlog「CI 全量」。
+- **全量 e2e**（`focus-tiger-e2e-full.yml`）：`schedule`（UTC 02:00）+ `workflow_dispatch`；测本地静态壳，**无** Secret。Plan A（**已在 `main`** · #63）：`matrix` 2 shards + JUnit always + slim traces（`playwright.ci-full.config.js`）。job checkout **`develop` tip**（或 dispatch `ref`）。**2026-08-02**：#15 稳定红修合 develop（#74）；dispatch 验绿 [run 30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。见 `PROCESS.md` Backlog「CI 全量」。
+- **注意**：GitHub `schedule` 使用**默认分支 `main` 上的 workflow 文件**。`timeout-minutes` / workers / **shards** 等改动若只合进 `develop`，定时任务仍读 `main` 旧 YAML。
 
 ## 4. 自检清单（接云 / 加 Key 前）
 
