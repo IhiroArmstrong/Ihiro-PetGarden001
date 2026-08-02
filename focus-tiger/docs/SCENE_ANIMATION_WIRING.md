@@ -229,4 +229,5 @@
 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut |
 | 2026-08-02 | **修**：冷启动欢迎与深夜同 tick 叠播 → tea/yawn 误盖开场；`shouldAttemptLateNightOnBoot` 互斥 + §6.9 |
 | 2026-08-03 | 入库 `meditation-star-reward`；MilestoneGlow 按节点轮换（7=蝴蝶金辉 · 21/100=琉璃星石） |
+| 2026-08-03 | `meditation-star-reward` **改用不抠图源**覆盖（用户反馈抠图毛边差；星空/白底整幅烧录） |
 
