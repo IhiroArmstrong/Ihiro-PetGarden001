@@ -31,7 +31,11 @@ import {
   resolvePurposeCardAwayFromTips,
   syncAllDiscoveryDots
 } from './hintDiscoveryDots.js';
-import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
+import {
+  SECONDARY_PROXY_HINT_IDS,
+  secondaryProxyForHintId,
+  syncSecondaryMenuHintDot
+} from '../core/idleChromeOrchestration.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -57,20 +61,28 @@ const HOST_MINT_HINT_IDS = new Set(['ambient-soundscape']);
  */
 const FOLDED_MENU_HINT_IDS = new Set(['wide-more-menu', 'narrow-drawer-menu']);
 
-function resolveAnchorEl(selectorList) {
+/**
+ * @param {string} selectorList
+ * @param {{ hintId?: string | null }} [opts]
+ *   When `hintId` is set, ⋯/drawer proxy remap only applies if that hint
+ *   owns the row (SECONDARY_PROXY_HINT_IDS). Stops sit / companion-mode tips
+ *   from stealing menu-row anchors (2026-08-01 误绑).
+ */
+function resolveAnchorEl(selectorList, { hintId = null } = {}) {
   const widePark = document.body.classList.contains('ft-wide-park-secondary');
   const wideMenuOpen = document.body.classList.contains('ft-wide-more-open');
   const narrowPark = document.body.classList.contains('ft-narrow-park');
   const narrowDrawerOpen = Boolean(
     document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
   );
+  const ownedProxy = hintId ? secondaryProxyForHintId(hintId) : null;
   for (const sel of String(selectorList)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)) {
     if (widePark && wideMenuOpen) {
       const proxy = wideMenuProxyForSelector(sel);
-      if (proxy) {
+      if (proxy && (!hintId || ownedProxy === proxy)) {
         const el = document.querySelector(
           `#ft-wide-more-menu [data-proxy="${proxy}"]`
         );
@@ -83,7 +95,7 @@ function resolveAnchorEl(selectorList) {
     }
     if (narrowPark && narrowDrawerOpen) {
       const proxy = narrowDrawerProxyForSelector(sel);
-      if (proxy) {
+      if (proxy && (!hintId || ownedProxy === proxy)) {
         const el = document.querySelector(
           `#ft-narrow-options-drawer [data-proxy="${proxy}"]`
         );
@@ -558,6 +570,7 @@ export class OnboardingHintsUI {
   syncDiscoveryDots() {
     syncAllDiscoveryDots(this.store);
     this._syncHostMintDots();
+    this._syncSecondaryMenuHostMints();
   }
 
   /**
@@ -572,27 +585,81 @@ export class OnboardingHintsUI {
     syncSecondaryMenuHintDot(mute, show);
     const narrowMute = document.getElementById('ft-narrow-mute-btn');
     syncSecondaryMenuHintDot(narrowMute, show);
-    this._bindHostMintHover(mute);
-    this._bindHostMintHover(narrowMute);
+    this._bindHostMintHover(mute, 'ambient-soundscape');
+    this._bindHostMintHover(narrowMute, 'ambient-soundscape');
   }
 
   /**
-   * Desktop hover preview for the mint note dot. These hosts carry the dot
-   * themselves instead of a floating badge, so the badge's own pointer handlers
-   * never reach them — without this, hovering the note shows nothing.
-   * @param {Element | null} host
+   * When ⋯ / drawer is open, click hints that own a row already have
+   * `.ft-secondary-menu-hint-dot` — do not also paint a floating badge
+   * (double mint / ghost pulse; 2026-08-01/02). Re-bind hover preview on rows.
    */
-  _bindHostMintHover(host) {
+  _syncSecondaryMenuHostMints() {
+    if (this._remedyIds.size > 0) return;
+    for (const hintId of Object.values(SECONDARY_PROXY_HINT_IDS)) {
+      if (!isClickTriggerHint(hintId)) continue;
+      if (this.store.isDone(hintId)) continue;
+      const host = this._secondaryMenuHostForHint(hintId);
+      if (!host) continue;
+      this._hideClickBadge(hintId);
+      this._bindHostMintHover(host, hintId);
+    }
+  }
+
+  /**
+   * @param {string} hintId
+   * @returns {HTMLElement | null}
+   */
+  _secondaryMenuHostForHint(hintId) {
+    const proxy = secondaryProxyForHintId(hintId);
+    if (!proxy) return null;
+    const wideOpen = document.body.classList.contains('ft-wide-more-open');
+    if (wideOpen) {
+      return /** @type {HTMLElement | null} */ (
+        document.querySelector(`#ft-wide-more-menu [data-proxy="${proxy}"]`)
+      );
+    }
+    const narrowOpen = Boolean(
+      document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
+    );
+    if (narrowOpen) {
+      return /** @type {HTMLElement | null} */ (
+        document.querySelector(
+          `#ft-narrow-options-drawer [data-proxy="${proxy}"]`
+        )
+      );
+    }
+    return null;
+  }
+
+  /**
+   * Desktop hover preview for host-carried mint (note / ⋯·drawer rows).
+   * Floating badge handlers never reach these hosts.
+   * @param {Element | null} host
+   * @param {string} hintId
+   */
+  _bindHostMintHover(host, hintId) {
     const el = /** @type {HTMLElement | null} */ (host);
-    if (!el || el.dataset.ftMintHoverBound === '1') return;
+    if (!el || !hintId) return;
+    if (
+      el.dataset.ftMintHoverBound === '1' &&
+      el.dataset.ftMintHoverHint === hintId
+    ) {
+      return;
+    }
     el.dataset.ftMintHoverBound = '1';
-    const hintId = 'ambient-soundscape';
+    el.dataset.ftMintHoverHint = hintId;
 
     el.addEventListener('pointerenter', () => {
       if (!canHoverPreview()) return;
       if (this.store.isDone(hintId)) return;
       if (this._remedyIds.size > 0) return;
-      if (this._isSoundscapePanelOpen()) return;
+      if (
+        hintId === 'ambient-soundscape' &&
+        this._isSoundscapePanelOpen()
+      ) {
+        return;
+      }
       this._expandClickHint(hintId);
     });
     el.addEventListener('pointerleave', (event) => {
@@ -1121,6 +1188,15 @@ export class OnboardingHintsUI {
       return;
     }
 
+    // ⋯ / drawer row already shows `.ft-secondary-menu-hint-dot` — skip floating
+    // badge so each unread row has one mint, not two (ghost pulse).
+    const menuHost = this._secondaryMenuHostForHint(hintId);
+    if (menuHost) {
+      this._hideClickBadge(hintId);
+      this._bindHostMintHover(menuHost, hintId);
+      return;
+    }
+
     const badge = this._ensureBadge(hintId);
     this._badgeIds.add(hintId);
     badge.hidden = false;
@@ -1338,9 +1414,18 @@ export class OnboardingHintsUI {
       placement: cfg.placement,
       tip: cfg.tip
     });
-    const anchor = resolveAnchorEl(anchorCfg.selector);
+    const anchor = resolveAnchorEl(anchorCfg.selector, { hintId });
     if (!anchor) {
       badge.hidden = true;
+      return;
+    }
+    // Menu/drawer host mint is the row dot — never park a floating badge on it.
+    if (
+      anchor.closest?.('#ft-wide-more-menu, #ft-narrow-options-drawer')
+    ) {
+      badge.hidden = true;
+      this._badgeIds.delete(hintId);
+      this._bindHostMintHover(/** @type {HTMLElement} */ (anchor), hintId);
       return;
     }
 
@@ -1392,7 +1477,7 @@ export class OnboardingHintsUI {
       anchorCfg = { ...anchorCfg, placement: 'right', tip: 'left' };
     }
 
-    const anchor = resolveAnchorEl(anchorCfg.selector);
+    const anchor = resolveAnchorEl(anchorCfg.selector, { hintId });
     const gap = 12;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
