@@ -41,6 +41,14 @@
 
 素材均已含倒放段：产品路径 **正放一次** + CapCut，**禁**再开 player `loopMode: pingpong`。
 
+### 2026-08-02 · 单程看书（无需倒放）
+
+| 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
+|---|---|---:|---|
+| Yin看书的单程动画-无需倒放的-cutout_frames | `book-reading` | 24 | 日语切语 → `bookReading`（单程 + CapCut）；≠ `magic-book-reading` |
+
+1056×864 RGBA；manifest `bookReading` @ 8 fps；产品路径正放一次（无倒放）。
+
 ### 2026-07-19 12:56 · 抠图算法系统性升级（整批替换）
 
 下列 **14** 套 `public/sprites/.../` 帧已由仓库根目录对应 `*-transparent.zip` 全量覆盖（帧数与目录映射不变；旧抠图版本作废）：
@@ -93,6 +101,7 @@
 | wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
 | wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
 | magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
+| book-reading | 24 | bookReading | **试验**：日语切语 | 单程无倒放 + CapCut；≠ magic-book |
 | golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
@@ -106,10 +115,10 @@
 | halo-breathing | 30 | haloBreathing* | 调试可播；业务自动未全接 | **Slice B**：Honesty 长补登 / 微仪式变体 |
 | nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；**冷启动欢迎池唯一** | Slice B 开场；2026-08-02 |
 | tilt-think | 20 | tiltThink | **勿接主路径** | 仅调试 |
-| palms-together | 14 | palmsTogether | 仅调试（Choose 已改 nod） | **Slice A′**：日语切语真合十 |
+| palms-together | 14 | palmsTogether | 仅调试（Choose 已改 nod；日语切语已改 bookReading） | 调试保留 |
 | milestone-glow | 27 | milestoneGlow | **已接线** streak 节点 | — |
 | breath-halo-hq | 16 | breathHaloHq | 仅清单 | **Slice B**：Glow 备选 / 长补登光环 |
-| tea-drinking | 24 | teaDrinking | 仅调试 | **Slice B**：深夜/茶歇（冷却） |
+| tea-drinking | 24 | teaDrinking | **试验**：English 切语 + 深夜池 | Slice B 深夜/茶歇（冷却） |
 | yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却） |
 | ear-wiggle-head-touch | 54 | earWiggleHeadTouch | **已接线** 好奇池等（正+倒一次→~1s CapCut Idle） | Slice B；与 welcome 同契约；2026-08-02c |
 | gaze-p1…p4 | 15/13/13/25 | gazeP* | 仅调试 | **Slice B**：稀有好奇张望 |

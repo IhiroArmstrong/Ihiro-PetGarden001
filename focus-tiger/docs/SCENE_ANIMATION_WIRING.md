@@ -91,11 +91,11 @@
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（**pingpong×1** + CapCut）；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
-| 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额，resolve 不预扣）；Focusing / Celebrating / 叠层忙碌跳过不补发 |
-| 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow` **pingpong×1** + CapCut） | ack | **Slice A · 已实现** | 同上限频；不用 dance |
+| 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
+| 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut |
 
-> **漂移注（2026-08-01）**：Slice A 规格与设计师均要求日语 = **合十**（`palms-together`）。当前实现：`emotionKeyForLocaleGreeting('ja')` → `intentionSet`，而 `EmotionController.intentionSet` 播的是 **`intentionNod`（nod-bow）**——画面上是鞠躬不是合十。`palmsTogether` 仍仅调试。**A′ 修复**：切语 ja 改为播 `palmsTogether`（或新键 `localeGreetingJa`），与 Arrival Choose 的 `intentionSet`/nod 解耦；单测锁「ja → palms 素材目录」。
+> **A′ 演进（2026-08-02）**：切语 ja 曾 `palmsTogether` → 现 `bookReading`（入库单程看书 + CapCut）。切语 en：`magicBookReading` 硬切（QA OK）→ `teaDrinking` + CapCut（QA OK）。`palmsTogether` 仍调试可播。
 
 ### 5.2 Focus
 
@@ -137,7 +137,7 @@
 
 ## 六、Slice A 验收口径（产品）
 
-1. **Language**：`?product=1` → Language → 日本語 → 阿寅播**合十**（`palmsTogether`）→ 回 Idle；再切 English → 播鞠躬；同日重复切同一语**不**反复播。  
+1. **Language**：`?product=1` → Language → 日本語 → 阿寅播**单程看书**（`bookReading` + CapCut）→ 回 Idle；再切 English → **喝茶**（`teaDrinking` + CapCut）；同日重复切同一语**不**反复播。  
 2. **Honesty Idle**：非睡态 → ≤29 短点头 / ≥30 `goldenHaloPalms`（试验）→ toast → 桥接；睡态仅 dormantWake，**不**叠 Celebrating。  
 3. **微仪式 / 非首次完成**：同档轻量池（可 sessionComplete / nod / blink）；中置 toast 仍在。  
 4. **禁止**：切语言或 Honesty / 轻量完成触发 `celebrating`。
@@ -180,7 +180,7 @@
 
 | 目录 / 键 | 目标业务场景 | 切片 |
 |---|---|---|
-| `palms-together` | 日语切语合十（A′）；Transition 深呼吸可选 | A′ / C |
+| `palms-together` | 调试保留；日语切语已改 `book-reading`；Transition 深呼吸可选 | C |
 | `nod-greeting` | 冷启动欢迎加权池（非靠近） | B |
 | `halo-breathing` | Honesty 长补登 / 微仪式轻量变体 | B |
 | `breath-halo-hq` | MilestoneGlow 备选或长补登光环变体 | B |
@@ -197,7 +197,7 @@
 
 | # | 建议 | 状态 | 说明 |
 |---|---|---|---|
-| 1a | 日语 → palms-together | **已实现** | `palmsTogether` 键；与 Choose nod 解耦 |
+| 1a | 日语 → book-reading | **已实现** | `bookReading`；曾 palmsTogether（A′） |
 | 1b | 英语 → nod-bow | **已接线** | 免重做 |
 | 2a | Honesty ≤20 nod / ≥30 goldenHaloPalms | **试验接线** | ≥30 → `goldenHaloPalms` oneshot；`breathHaloHq` 调试保留 |
 | 2b | 微仪式同档变体 | **已实现** | LIGHT_COMPLETE_POOL |
@@ -224,3 +224,6 @@
 | 2026-08-01 | 整合设计师场景×动画建议；库存全业务接线政策；驳回完成池混入 celebrate；标注 ja 合十代码漂移（A′）；新增 Slice B Brief 指针与 Dispatcher 架构节 |
 | 2026-08-01 | 用户拍板：Honesty 20/30；日语合十；勿接已取代；Dispatcher 必做；设计师其余项**一批**进 A′+B（非整碎小任务）；Milestone/stretch/en 鞠躬标已接线免重做 |
 | 2026-08-01 | **实现**：`sceneAnimationDispatcher` + Emotion 合十/光环/陪伴手势；main / Honesty / 完成 / 微仪式 / 舒展 / 欢迎 / 深夜 / 好奇接线；unit + language-switch e2e 钩更新 |
+| 2026-08-02 | 切语 EN：曾 `magicBookReading` 硬切（QA OK）→ 改 `teaDrinking` 单程 + CapCut（QA OK） |
+| 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut |
+

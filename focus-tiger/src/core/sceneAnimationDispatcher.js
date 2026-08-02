@@ -10,6 +10,7 @@ import { getLocalDateKey } from '../utils/localDate.js';
 import {
   LOCALE_GREETING_STORAGE_KEY,
   markLocaleGreetingPlayed,
+  playOptionsForLocaleGreeting,
   resolveLocaleGreetingPlay
 } from './localeGreeting.js';
 
@@ -370,4 +371,8 @@ export function resolveSceneAnimation({
   return { play: false, emotionKey: null, reason: 'unknown-event' };
 }
 
-export { LOCALE_GREETING_STORAGE_KEY, markLocaleGreetingPlayed };
+export {
+  LOCALE_GREETING_STORAGE_KEY,
+  markLocaleGreetingPlayed,
+  playOptionsForLocaleGreeting
+};

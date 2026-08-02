@@ -428,7 +428,8 @@ export class EmotionController {
         }
       },
 
-      // 开场试验：魔法书阅读（已烘焙 pingpong）→ 末帧可接 Idle，回落硬切（无 CapCut）。
+      // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
+      // 欢迎池 / 切语 English 均默认硬切 Idle（无 CapCut；QA 2026-08-02）。
       magicBookReading: (options = {}) => {
         this._playCompanionSequenceOnce('magicBookReading', options, {
           returnCrossFadeMs: options.returnCrossFadeMs ?? 0
@@ -727,8 +728,19 @@ export class EmotionController {
       yawnStretch: (options = {}) => {
         this._playCompanionSequenceOnce('yawnStretch', options);
       },
+      // 深夜池 / 切语 English：正放一次、无倒放；默认 ~1s CapCut Idle。
       teaDrinking: (options = {}) => {
-        this._playCompanionSequenceOnce('teaDrinking', options);
+        this._playCompanionSequenceOnce('teaDrinking', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+      // 切语 Japanese：单程看书（≠ magicBookReading）；正放一次 → ~1s CapCut Idle。
+      bookReading: (options = {}) => {
+        this._playCompanionSequenceOnce('bookReading', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
       },
       // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
@@ -1017,6 +1029,7 @@ export class EmotionController {
       { key: 'sessionComplete', label: '完成摆尾' },
       // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
+      { key: 'bookReading', label: '单程看书(日语切语)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1038,6 +1051,7 @@ export class EmotionController {
       gazeP4RightToDown: 'gaze-p4 右→下',
       yawnStretch: 'yawn-stretch 哈欠',
       teaDrinking: 'tea-drinking 喝茶',
+      bookReading: 'book-reading 单程看书',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
@@ -1050,7 +1064,7 @@ export class EmotionController {
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
       breathHaloHq: 'breath-halo-hq 备选',
-      palmsTogether: 'palms-together 合十(日语问候)',
+      palmsTogether: 'palms-together 合十(调试)',
       intentionNod: 'intention-nod Choose点头',
       lotusFrontRising: 'lotus-front-rising',
       lotusChestHalo: 'lotus-chest-halo',
@@ -1327,6 +1341,7 @@ export const EMOTION_KEYS = Object.freeze({
   SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
   MAGIC_BOOK_READING: 'magicBookReading',
+  BOOK_READING: 'bookReading',
   GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',

@@ -284,6 +284,18 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // 单程看书（无需倒放；≠ magic-book-reading 魔法书）。源：Yin看书的单程动画… → book-reading。
+  // 日语切语问候：正放一次 → CapCut Idle。
+  bookReading: {
+    animation: 'book-reading',
+    frameCount: 24,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
   // Honesty 长补登试验：衣发光 → 头顶金环 → 合掌 → 金沙四散（已烘焙 pingpong，94 帧）。
   // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈23.5s）。
   goldenHaloPalms: {

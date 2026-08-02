@@ -81,6 +81,7 @@ import { triggerSessionCompletionFeedback } from './core/session-completion-feed
 import {
   SCENE_ANIM_EVENTS,
   markLocaleGreetingPlayed,
+  playOptionsForLocaleGreeting,
   resolveSceneAnimation
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
@@ -1034,7 +1035,9 @@ async function init() {
   window.__sceneAnimationSliceA = sceneAnimationSliceA;
   onLocaleChange((locale) => {
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.LANGUAGE_CHANGED, {
-      locale
+      locale,
+      // JA book / EN tea: oneshot (no reverse) + ~1s CapCut idle
+      playOptions: playOptionsForLocaleGreeting(locale)
     });
     if (decision.play && decision.emotionKey) {
       sceneAnimationSliceA.lastLocaleGreeting = decision.emotionKey;

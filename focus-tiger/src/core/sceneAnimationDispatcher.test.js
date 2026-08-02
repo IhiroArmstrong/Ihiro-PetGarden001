@@ -38,9 +38,9 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('A′ locale: ja → palmsTogether; en → mindfulAcknowledge', () => {
-  assert.equal(emotionKeyForLocaleGreeting('ja'), 'palmsTogether');
-  assert.equal(emotionKeyForLocaleGreeting('en'), 'mindfulAcknowledge');
+test('A′ locale: ja → bookReading; en → teaDrinking', () => {
+  assert.equal(emotionKeyForLocaleGreeting('ja'), 'bookReading');
+  assert.equal(emotionKeyForLocaleGreeting('en'), 'teaDrinking');
 });
 
 test('Honesty duration: ≤29 nod; ≥30 goldenHaloPalms', () => {
@@ -83,7 +83,7 @@ test('canPlaySceneAnimGate blocks FOCUSING / CELEBRATE / overlay', () => {
   );
 });
 
-test('LANGUAGE_CHANGED via dispatcher: ja palmsTogether; quota after mark; gate', () => {
+test('LANGUAGE_CHANGED via dispatcher: ja bookReading; quota after mark; gate', () => {
   const storage = memoryStorage();
   const now = () => new Date(2026, 7, 1, 12);
 
@@ -95,7 +95,7 @@ test('LANGUAGE_CHANGED via dispatcher: ja palmsTogether; quota after mark; gate'
     now
   });
   assert.equal(first.play, true);
-  assert.equal(first.emotionKey, 'palmsTogether');
+  assert.equal(first.emotionKey, 'bookReading');
   // Resolve does not consume — same resolve again would still allow play.
   const stillOpen = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.LANGUAGE_CHANGED,
