@@ -23,3 +23,9 @@ export function playbackZoomAtIndex(
   const t = i / (n - 1);
   return start + (end - start) * t;
 }
+
+/**
+ * 1056×864 素材在 16:9 视口上 `object-fit: contain` 时先铺满高度、左右留白；
+ * 再缩放到刚好顶满宽度： (16/9) / (1056/864) = 16/11 ≈ 1.4545。
+ */
+export const MEDITATION_STAR_REWARD_WIDTH_FILL_ZOOM = 16 / 11;

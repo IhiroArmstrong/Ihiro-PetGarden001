@@ -11,6 +11,8 @@
  * 「当前生效外观」拼出。序列语义与触发规则以 `docs/EMOTION_BIBLE.md` 为准。
  */
 
+import { MEDITATION_STAR_REWARD_WIDTH_FILL_ZOOM } from './spritePlaybackZoom.js';
+
 /**
  * @typedef {object} SpriteSequenceDef
  * @property {string} animation 动作名（kebab-case，对应素材目录段，如 'wave-hello'）
@@ -349,7 +351,7 @@ export const SPRITE_SEQUENCES = {
 
   // MilestoneGlow 变体：闭目坐禅 + 空中发光琉璃星石（与 milestone-glow 同 emotion key）。
   // 产品按 streak 节点轮换（见 pickMilestoneGlowVariant）；63 帧 @ 6fps ≈10.5s 仪式带。
-  // 不抠图整幅烧录；播放期镜头 100%→158% 线性拉近。
+  // 不抠图整幅烧录；播放期镜头 100% → 刚好顶满 16:9 宽度（16/11 ≈145.45%）。
   milestoneGlowStar: {
     animation: 'meditation-star-reward',
     frameCount: 63,
@@ -358,7 +360,7 @@ export const SPRITE_SEQUENCES = {
     loop: false,
     loopMode: 'none',
     holdLastFrame: true,
-    playbackZoom: { from: 1, to: 1.58 }
+    playbackZoom: { from: 1, to: MEDITATION_STAR_REWARD_WIDTH_FILL_ZOOM }
   },
 
   // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。

@@ -239,7 +239,7 @@ test('milestoneGlowStar is meditation-star-reward ritual variant', () => {
   assert.equal(definition.holdLastFrame, true);
   assert.equal(definition.fps, 6);
   assert.equal(definition.playbackZoom?.from, 1);
-  assert.equal(definition.playbackZoom?.to, 1.58);
+  assert.equal(definition.playbackZoom?.to, 16 / 11);
 });
 
 test('nod greeting is a slowed one-shot with last-frame hold (~2 extra beats)', () => {
