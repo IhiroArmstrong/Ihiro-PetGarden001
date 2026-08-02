@@ -222,11 +222,48 @@
 
 - **仅单元测试覆盖**：无用户可见变化，逻辑对错已由自动化测试验证，用户不需要点开看。
 - **待人工测试**：已实现，单元测试（如有）已通过，但视觉/体验效果需要用户亲自看一遍才能确认。
-- **已通过**：用户亲自测试确认没问题（或缺陷已按用户要求撤销/回退，且代码核对确认到位）。
+- **已通过**：用户亲自测试确认没问题（或缺陷已按用户要求撤销/回退，且代码核对确认到位）。**改此状态前必须满足下方「标「已通过」门禁」**——禁止笼统写「已通过」。
 - **有问题**：用户测试后发现瑕疵，需写清楚问题内容，退回处理。
 - **已放弃/不适用**：产品已决定不做或卸下（含「业务未接线、暂不验收」）；**不**再排人工验收，也不挡 `develop`→`main` 合并。
 - **不挡合并（仅调试）**：只在实验室调试面板 / 兼容空键出现，**产品壳 `?product=1` 正式用户路径看不到**；可留技术债，不挡合并。
 - **不挡合并（仅检测逻辑）**：交互检测已接线且有单测，但**无正式精灵/动画**；产品壳不排视觉验收，不挡合并（例：抚摸/轻点/绕圈占位）。
+
+### 标「已通过」门禁（2026-08-02 起 · 强制 · SSOT）
+
+> 索引：`RULES_INDEX.md` → `qa-pass-coverage-split`。门禁摘要见 regression-lock「标「已通过」门禁」。  
+> **要防什么**：**记入 ≠ 验证到位**；**e2e / CI 绿 ≠ 已锁住整行用户故事**；对话里口头说过「不能笼统写已通过」却未落盘 → 下一会话又漏。
+
+把功能清单某行状态改成 **「已通过」**（关单）之前，**同一次编辑**必须同时满足下列全部条件；缺任一 → **禁止**改状态，只可保持「待人工测试」/「有问题」，并诚实写未测项。
+
+1. **用户书面确认**  
+   「用户反馈」列有用户书面「测试 OK」类确认（或用户书面要求撤销/回退缺陷且代码已核对到位）。Agent **不得**仅凭自测或自动化绿自行标「已通过」。
+
+2. **验收基线合法**（`qa-develop-tip`）  
+   该次书面确认测自当时的 **`origin/develop` tip**（须记 commit hash）。feature / fix / 过时 worktree / 非 tip 端口上的「测试 OK」**只算作者自检或阶段性反馈**，**不得**据此关单。
+
+3. **覆盖分工明示**（防笼统关单 · 强制）  
+   在「用户反馈」列（或紧挨关单句的同格附注）**逐条写清**，禁止一句「e2e 已绿 / 已覆盖 / 已锁住 / 已通过」代替：
+
+   | 必填块 | 写什么 |
+   |---|---|
+   | **e2e / 自动化已锁** | 具体场景或用例名（例：`wide-idle-more-menu`「悬停 Language 不闪 Sit tip」）；若无自动化 → 写 **「无」** |
+   | **人工已覆盖** | 用户书面确认测过的场景（主路径 / 回流 / 视口 / 故事矩阵项等） |
+   | **仍须人工 / 未测** | 尚未书面确认的场景；**若本块非空 → 不得标「已通过」** |
+
+4. **禁止的关单姿态**
+
+   - 仅凭本地或 CI **e2e / smoke 全绿**标「已通过」  
+   - 写「相关 e2e 已覆盖」却**不列**锁了哪些场景  
+   - 把部分场景 OK（或单侧视口 OK）写成整行「已通过」，却不写未测项  
+   - 用 §7 Bug close 的「绿（CI）」代替本表人工关单（§7 是「已修复」话术门禁；**本表「已通过」另须本条 + tip 人工**）
+
+5. **chrome / 双视口行**另遵守文首 N20/N24：须注明 375 故事与宽屏故事是否测过；单侧 OK 不得单独关单。
+
+**合格关单附注示例**（可压缩，但三块都要有）：  
+`关单覆盖分工 · e2e：… · 人工：…（tip \`abc1234\`）· 未测：无`
+
+**不合格（禁止）**：  
+`e2e 已绿 → 已通过` / `测试 OK → 已通过`（无 tip hash、无覆盖分工）
 
 ---
 
@@ -238,6 +275,7 @@
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
+| 标「已通过」覆盖分工门禁（`qa-pass-coverage-split`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `qa-pass-coverage-split` SSOT 在本文件「标「已通过」门禁」；禁 e2e 绿单独关单等矛盾短语。关单须写 e2e 已锁 vs 人工已覆盖；regression-lock 摘要硬拦。 | — | — | — | `TEST_TRACKER` 标已通过门禁 · `RULES_INDEX` · `rules-authority-registry.js` | 2026-08-02 |
 | `.ft-session-lock` occupancy 占用态字段 | 纯后端 | 仅单元测试覆盖 | `node --test scripts/check-worktree-occupancy.test.js`：`active`/`releasable` 解析；缺字段/非法值不得当成可接管。`npm run check:worktree-occupancy` 打印 `lock_occupancy`；`releasable`+干净树可不因锁 exit 2。政策见 `WORKFLOW.md`（`git-worktree-occupancy`）。 | — | — | — | `scripts/check-worktree-occupancy.js` · `WORKFLOW.md` | 2026-08-02 |
 | 自动化 Task 2 · 场景 E/F 逻辑进 smoke | 纯后端 | 仅单元测试覆盖 | `npm run test:smoke`：含 smoke E（Offline 舒展暂停/墙钟/无 Re-focus）、smoke F（AcrossTools 一次 idle + 活动重置）；并入 `MindfulReminderController.test.js` + `AcrossToolsIdleGuard.test.js`。真实切页/30min toast DOM 仍人工。 | — | — | — | `scenario-smoke` E/F · `package.json` test:smoke | 2026-07-30 |
 | 自动化 Task 3 · Honesty 真实补登→桥接→Arrival e2e | 纯后端 | 仅单元测试覆盖 | `npm run test:e2e:changed -- e2e/honesty-bridge-real-path.spec.js`：入口→时长→`?honestyBreathMs=1500` 呼吸→桥接 Yes→`#arrival-practice`；No→Idle 且无 Arrival。**禁止** `__honestyBridge` 注入。叠层/375 tip 仍见 `micro-ritual.spec.js` 注入用例。单测：`resolveHonestyBreathMs`。 | — | — | — | `e2e/honesty-bridge-real-path.spec.js` · `?honestyBreathMs=` | 2026-07-30 |
@@ -274,7 +312,7 @@
 | Ambient · ⑤⑥⑩ mute/续播/Focusing 可闻 e2e | 纯后端 | 仅单元测试覆盖 | `e2e/ambient-mute-resume-focusing.spec.js`：宽+375 有声→音符静音→再点续播；宽 Focusing 选曲可闻。生产构建暴露 `__ambientSoundscape`。**根因（375）**：ActionBar ♪ 曾只调 `activateSoundFromNarrow`（只开面板）→ 已改 `openSoundPanelFromNote`。本地红→修后交 CI 绿。 | — | — | — | `ambient-mute-resume-focusing.spec.js` · `main.js` onSound | 2026-07-31 |
 | 用户上传氛围乐（v1.0 必交付） | UI可见 | 待人工测试 | **主路径**：`?product=1` → 右上 ♪ 开面板 → 见「仅本机」提示 + **Add your music** → 选 **mp3/m4a** → 曲目出现在 **Off 下、内置曲之上**（最近在上）并可闻选播 → × 仅删自传。**回流**：刷新后用户曲仍在；删后再刷新须消失；超 10 首 / 合计 64MB / 单文件 20MB → 温和错误、不静默。**375**：面板可滚动、不溢出。自动化：`UserAmbientLibrary.test.js`；`test:e2e:changed -- e2e/user-ambient-upload.spec.js`。 | 2026-07-31：升格 v1.0 必交付；Brief `task-user-ambient-upload-v1.md`。 **2026-08-01 用户书面（P1-5）**：上传 mp3/m4a、列表上方可播、刷新仍在、删后消失、375 可滚 — **测试 OK**。同场图：Soundscape 开着时仍出 sit tip「タップしてYinと坐る」叠在面板上（见 ? 补救 / Hints 根因）。 | — | — | `?product=1` · `#ambient-upload-btn` · `[data-user-track]` | 2026-08-01 |
 | 右上音符开/关声景（菜单已删 Sound） | UI可见 | 有问题 | **主路径（375）**：ActionBar ♪ → Soundscape 选曲面板；FAB 不可见。**Focusing**：ActionBar 常显，点 ♪ 同样开面板。**主路径（≥480）**：右上音符 → 开面板；有声再点 → 静音。**曲目记忆 + 续播**：选曲有声 → 点音符静音 → 再点音符 → 面板仍高亮该曲 **且自动续播有声**（同一次点击手势）。面板显式 Off 不续播。**回流**：Rise 停播口径不变。 | **2026-07-29**：rebase / e2e note opens。 **2026-07-30 用户书面（图4）**：删菜单 Sound；有声再点关乐。 **2026-07-30 再书面**：高亮对了但再开面板无声 → 静音后再开须 `unmute` 偏好曲。 **2026-07-30 再书面**：右上角音乐按钮表现一切正常 — **测试 OK**（本行其余「曲目记忆+续播」若未再走仍可自愿补测）。 **2026-08-01 用户书面（P1-4）**：Focusing 选曲可闻、开面板、静音、Rise 停播等 **其它 OK**；但静音后再点音符是**重播**而非**续播**（契约写续播）— **有问题**。 | legacy-unclassified | legacy · 暂不进逾期扫描；发布前人工过目 | `?product=1` · `#ft-narrow-mute-btn` · `.ambient-soundscape__mute` · `.ambient-soundscape__track.is-selected` | 2026-08-01 |
-| ⋯/抽屉菜单删除 Sound + 行内薄荷绿 | UI可见 | 已通过 | **主路径**：清空 hints → 开 ⋯/抽屉 → **无 Sound 行**；Honesty/呼吸/How/提醒旁见薄荷绿脉冲。音乐仅右上音符：未播→开面板；**可闻播放中再点→关音乐**。宽屏 ? more tips：折叠为 `wide-more-menu`（对等窄屏抽屉说明）。 | **2026-07-30 用户书面（图4）**拍板删除重复 Sound；菜单项须薄荷绿；有声再点关乐。 **2026-08-01 用户书面（图1/图3 · Task3 §8）**：宽屏 ⋯ 菜单红框脉冲点全部是「Tap to sit with Yin」→应删除误绑点；窄屏 Sit options 抽屉右侧无脉冲点→应补上。 **2026-08-02 用户书面（日语 · 宽屏 ⋯）**：每一项仍多不需要的脉冲点 hint（附图红框）；追问昨日 Bug 为何未修。**工作流根因（查证）**：08-01 已记入本行+总验收「有问题」，同日 `fix/chrome-only-quick-and-rise-flash` 明文留下「脉冲点 / Hints …未改」——**记入 ≠ 开修**；之后欢迎 CapCut / e2e Plan A 抢排期，**无**专修 `fix/*`，故 tip 仍见。 **2026-08-02 拍板+本地修（B）**：只去误绑/双重，**保留**未读行内 `.ft-secondary-menu-hint-dot`；⋯/抽屉打开时 click hint 不再叠浮动 badge；`resolveAnchorEl` 仅允许「该 hint 所属 proxy」抢菜单锚；行上悬停预览。e2e `wide-idle-more-menu` 锁双重+Sit tip 不叠菜单。**须人工**：清空 hints→开 ⋯→每行仅一薄荷绿、悬停 How 出正确 tip、非 Sit。 **2026-08-02 用户书面**：点「清空引导提示已读」没反应、以为修无效。核对：当时 `127.0.0.1:5173` 仍是主仓 develop（无本修）；且该钮只在**无** `?product=1` 的实验室页出现。已补清空 toast + 开着的 ⋯/抽屉重绘 mint。验修请用本分支 Vite（勿混主仓 5173）。 **2026-08-02 用户书面（5175）**：上三行未读 mint OK；悬停切换仍闪 Tap to sit；末行 Language 无 mint（产品本无）。已压 ⋯/抽屉打开时 sit-button / idle-after-session auto。 **2026-08-02 用户书面（5175）**：硬刷新后开 ⋯、各行间来回悬停 — 下方不再闪 Tap to sit — **测试 OK**。上三行未读单点 + Language 无点（设计）一并确认。 | — | — | `#ft-wide-more-menu` · `.ft-secondary-menu-hint-dot` · `.ambient-soundscape__mute` | 2026-08-02 |
+| ⋯/抽屉菜单删除 Sound + 行内薄荷绿 | UI可见 | 待人工测试 | **主路径**：清空 hints → 开 ⋯/抽屉 → **无 Sound 行**；Honesty/呼吸/How/提醒旁见薄荷绿脉冲。音乐仅右上音符：未播→开面板；**可闻播放中再点→关音乐**。宽屏 ? more tips：折叠为 `wide-more-menu`（对等窄屏抽屉说明）。 | **2026-07-30 用户书面（图4）**拍板删除重复 Sound；菜单项须薄荷绿；有声再点关乐。 **2026-08-01 用户书面（图1/图3 · Task3 §8）**：宽屏 ⋯ 菜单红框脉冲点全部是「Tap to sit with Yin」→应删除误绑点；窄屏 Sit options 抽屉右侧无脉冲点→应补上。 **2026-08-02 用户书面（日语 · 宽屏 ⋯）**：每一项仍多不需要的脉冲点 hint（附图红框）；追问昨日 Bug 为何未修。**工作流根因（查证）**：08-01 已记入本行+总验收「有问题」，同日 `fix/chrome-only-quick-and-rise-flash` 明文留下「脉冲点 / Hints …未改」——**记入 ≠ 开修**；之后欢迎 CapCut / e2e Plan A 抢排期，**无**专修 `fix/*`，故 tip 仍见。 **2026-08-02 拍板+本地修（B）**：只去误绑/双重，**保留**未读行内 `.ft-secondary-menu-hint-dot`；⋯/抽屉打开时 click hint 不再叠浮动 badge；`resolveAnchorEl` 仅允许「该 hint 所属 proxy」抢菜单锚；行上悬停预览。e2e `wide-idle-more-menu` 锁双重+Sit tip 不叠菜单。**须人工**：清空 hints→开 ⋯→每行仅一薄荷绿、悬停 How 出正确 tip、非 Sit。 **2026-08-02 用户书面**：点「清空引导提示已读」没反应、以为修无效。核对：当时 `127.0.0.1:5173` 仍是主仓 develop（无本修）；且该钮只在**无** `?product=1` 的实验室页出现。已补清空 toast + 开着的 ⋯/抽屉重绘 mint。验修请用本分支 Vite（勿混主仓 5173）。 **2026-08-02 用户书面（5175）**：上三行未读 mint OK；悬停切换仍闪 Tap to sit；末行 Language 无 mint（产品本无）。已压 ⋯/抽屉打开时 sit-button / idle-after-session auto。 **2026-08-02 用户书面（5175）**：硬刷新后开 ⋯、各行间来回悬停 — 下方不再闪 Tap to sit — **测试 OK**。上三行未读单点 + Language 无点（设计）一并确认。 **2026-08-02 流程纠正**：他会话据 5175（非 `origin/develop` tip）书面 OK **笼统标「已通过」**——缺覆盖分工明示，且违反 `qa-develop-tip`；按 `qa-pass-coverage-split` **撤回关单**，改回「待人工测试」。用户 OK 反馈保留。关单前须在 tip 复测并写清：e2e 已锁（`wide-idle-more-menu` 双重/Sit tip 不叠等）vs 人工（宽屏悬停不闪 Sit tip、上三行 mint、Language 无点；可选 375 抽屉对称）。 | — | — | `#ft-wide-more-menu` · `.ft-secondary-menu-hint-dot` · `.ambient-soundscape__mute` | 2026-08-02 |
 | EyeTracking / 正式瞳孔 PNG | UI可见 | 已放弃/不适用 | 运行时已卸下 `pupil-left/right` 叠加跟随；调试勾选已移除。Idle 张望 gaze-p1～p4 **不受影响**。**不再排人工验收**。 | 2026-07-19 实测错位；**已决定放弃**。**2026-07-22**：状态改为「已放弃/不适用」（不挡合并）。结论见 `CORE_LOOP.md`。 | — | — | 已废弃 · `/textures/eye-pupils/` 可不接线 | 2026-07-22 |
 | PointerInteraction · 靠近点头 nodGreeting | UI可见 | 已通过 | **默认靠近不再点头**。开局 / idle：指针移入靠近区 → **不应**播 `nod-greeting`。调试面板「点头致意」仍可手工播（**6 fps**，末帧多停约 2 拍）→ 回 idle。 | 2026-07-19：曾要放慢点头→已改。**同日再反馈**：开局默认态仍见点头 → 根因是靠近区仍自动 `nodGreeting`；已拆除靠近自动点头。**2026-07-21**：用户书面——默认只有呼吸/眨眼、靠近不再自动点头，测试 OK。 | — | — | 全屏命中层 · DEV：`__pointerInteraction` · 调试「点头致意」 | 2026-07-21 |
 | idle / 坐禅闭眼呼吸基底 | UI可见 | 已通过 | 点「坐禅闭眼」或「重置并 idle 坐禅」：**闭目 pingpong ×2**（frame 1–19）→ **睁眼弧 pingpong ×1**（frame 1–33）→ 往复；同素材硬切、不叠化。 | 2026-07-20：切分两段 pingpong。**2026-07-20 用户书面**：坐禅闭眼 / idle 坐禅各情况测试 OK。 | — | — | 调试「坐禅闭眼」 · `__idleOrchestrator` · `#dev-reset-all-local-state-idle` | 2026-07-20 |
