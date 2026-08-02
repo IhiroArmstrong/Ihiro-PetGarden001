@@ -68,7 +68,7 @@ alwaysApply: true
 - [ ] **自动化冒烟已跑通**：本地 `cd focus-tiger && npm run test:smoke` **且** `npm run test:e2e:smoke`（或 `test:e2e:changed -- <相关 spec>`）；不过 → 不得声称修好。冒烟全绿 ≠ 序列观感通过。全量 `test:e2e` / `test:e2e:visibility` **不在本门禁本地跑**（见 §7「绿（CI）」与 `scripts/e2e-ci-guard.js`；仅 CI 或 `RUN_E2E_LOCAL=true`）  
 - [ ] **回归锚已补**：门闩失败用例 / 观感契约 / **本次确认修复 bug 的自动化回归**；确无法自动化 → TEST_TRACKER 标明「须人工锁路径」（不限于门闩类）；**观感子项须分列，禁止笼统一行**  
 - [ ] **已好清单**（若本次为重写/改转场）已逐条自检  
-- [ ] **TEST_TRACKER**：用户原话进「用户反馈」列；测试步骤与其它行不冲突；状态「待人工测试」  
+- [ ] **TEST_TRACKER**：用户原话进「用户反馈」列；测试步骤与其它行不冲突；状态「待人工测试」（**禁止**在本门禁收尾自行标「已通过」；关单见「标「已通过」门禁」/ `qa-pass-coverage-split`）  
 - [ ] **相关项目文档已同步（N15）**：至少 TEST_TRACKER；触及行为/情绪/架构/素材/共享面时同步对应权威 md（`EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` / `PROCESS` 速览等）。**禁止**只改代码、文档滞后  
 - [ ] **立刻本地 commit**（已验证通过的任务收尾后，Agent **可自动** `git commit` 到**当前工作分支**——`develop` 或对应的 `feature/*` / `fix/*`；**代码 + 文档同批**；**已完成且验证通过的改动不得跨任务周期悬置未 commit**；缺文档或未 commit → **不得**声称修好；**仍禁止**未经确认 `git push`；**禁止**任何会话自动合并进 `main`（见下文「Commit 汇报与分支门禁」）  
 - [ ] **commit 后同回合汇报**（禁止静默提交）：回复须明确写出 **commit hash**、**分支名**、**涉及文件**（或 `git show --stat` 摘要）；**并行会话**执行的 commit 同样须遵守；缺此项 = 视同未汇报  
@@ -149,6 +149,22 @@ cd focus-tiger && npm run check:branch-freshness
 - **`behind === 0`** 且邀正式验收时：验收 hash 仍须等于 **`origin/develop` tip**（见 `TEST_TRACKER`）；feature 自检不等于正式验收。
 
 未跑脚本、未报落后数 → 视同未完成新鲜度前置。
+
+## 标「已通过」门禁（强制 · 防止记入≠验证到位）
+
+> **SSOT 全文**：`focus-tiger/docs/TEST_TRACKER.md`「标「已通过」门禁」。  
+> 索引：`RULES_INDEX.md` → `qa-pass-coverage-split`。本文件只保留门禁摘要，**勿**复述完整示例表。
+
+Agent **禁止**把 `TEST_TRACKER` 功能清单状态改成「已通过」，除非 SSOT 条款全部满足。摘要硬拦：
+
+1. **用户书面确认** + 符合 **`qa-develop-tip`**（测自当时 `origin/develop` tip，须记 hash）。feature / fix 试跑「测试 OK」≠ 关单。  
+2. **同次回合覆盖分工明示**（缺则禁止改状态）：  
+   - **e2e / 自动化已锁**：列具体场景或用例名（或写「无」）  
+   - **人工已覆盖**：列用户书面确认测过的场景  
+   - **仍须人工 / 未测**：非空 → **不得**标「已通过」  
+3. **禁止**：仅凭 e2e / CI 绿关单；笼统写「已覆盖 / 已锁住 / 已通过」不列场景；用 §7「已修复」话术代替本表人工关单。
+
+研发收尾改状态时默认写「待人工测试」；**只有**走完本门禁才可写「已通过」。
 
 ## 发布候选门禁（强制 · open blockers）
 

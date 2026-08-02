@@ -549,6 +549,56 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'qa-pass-coverage-split',
+    title: '标「已通过」须写清 e2e/人工各覆盖哪些场景',
+    ssotPath: 'focus-tiger/docs/TEST_TRACKER.md',
+    ssotSection: '标「已通过」门禁',
+    ssotMustContain: [
+      /标「已通过」门禁/,
+      /覆盖分工明示/,
+      /e2e \/ 自动化已锁/,
+      /人工已覆盖/,
+      /仍须人工 \/ 未测/,
+      /记入 ≠ 验证到位/
+    ],
+    topicSignals: [
+      /qa-pass-coverage-split/,
+      /标「已通过」门禁/,
+      /覆盖分工明示/,
+      /记入 ≠ 验证到位/
+    ],
+    mustCite: [/TEST_TRACKER\.md/],
+    restatementFingerprints: [
+      /覆盖分工明示/,
+      /e2e \/ 自动化已锁/,
+      /仍须人工 \/ 未测/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md'
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'e2e-green-alone-closes-tracker',
+        pattern:
+          /(?:仅凭|只要|凭).{0,12}(?:e2e|CI).{0,16}(?:绿|通过).{0,20}(?:即可|可以|就能).{0,12}(?:已通过|关单)/,
+        note: 'e2e/CI 绿不得单独写成可标 TEST_TRACKER「已通过」；须覆盖分工 + tip 人工'
+      },
+      {
+        id: 'vague-pass-without-coverage-split',
+        pattern:
+          /(?:笼统|直接).{0,8}标「已通过」.{0,24}(?:无需|不必|不用).{0,16}(?:覆盖|场景)/,
+        note: '禁止主张可笼统标已通过而不写覆盖分工；SSOT 在 TEST_TRACKER'
+      }
+    ]
+  },
+  {
     id: 'branch-freshness',
     title: 'Agent 邀测 / 声称 develop 行为前须 check:branch-freshness',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
