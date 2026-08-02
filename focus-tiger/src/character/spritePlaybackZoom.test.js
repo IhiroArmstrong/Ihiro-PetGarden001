@@ -25,7 +25,7 @@ describe('MEDITATION_STAR_REWARD_WIDTH_FILL_ZOOM', () => {
   it('is 16/11 so 1056×864 contain fills 16:9 width', () => {
     assert.equal(MEDITATION_STAR_REWARD_WIDTH_FILL_ZOOM, 16 / 11);
     // At scale 1, plate width / viewport = (1056/864)/(16/9) = 11/16
-    assert.equal((1056 / 864) / (16 / 9), 11 / 16);
+    assert.ok(Math.abs((1056 / 864) / (16 / 9) - 11 / 16) < 1e-12);
     assert.equal(1 / (11 / 16), 16 / 11);
   });
 });
