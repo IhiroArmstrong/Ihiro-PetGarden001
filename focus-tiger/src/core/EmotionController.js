@@ -648,6 +648,9 @@ export class EmotionController {
       petHead: pendingInteraction('petHead'),
       dizzyBlink: pendingInteraction('dizzyBlink'),
 
+      // Honesty 短补登 / 切语 English / Re-focus：同源 nod-bow。
+      // 须与 IntentionSet 同契约：pingpong×1（正放鞠躬→倒放回坐姿）+ CapCut 回 Idle；
+      // 仅正放会卡在鞠躬末帧，无法接 idle。
       mindfulAcknowledge: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -661,7 +664,17 @@ export class EmotionController {
         const started = this.spritePlayer.play(
           'nodBow',
           this._oneShotPlayOpts(
-            { ...options, loop: false, loopMode: 'none' },
+            {
+              ...options,
+              loop: true,
+              loopMode: 'pingpong',
+              maxCycles: 1,
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false,
+              returnCrossFadeMs:
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+            },
             'nodBow'
           )
         );

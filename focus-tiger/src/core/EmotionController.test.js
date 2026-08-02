@@ -348,7 +348,7 @@ test('curiousTilt plays blinkSmile once and returns to idle breathing', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('mindfulAcknowledge reuses nodBow for refocus and returns to idle', () => {
+test('mindfulAcknowledge plays nodBow pingpong once then CapCut idle', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -368,9 +368,14 @@ test('mindfulAcknowledge reuses nodBow for refocus and returns to idle', () => {
 
   assert.equal(plays[0].name, 'nodBow');
   assert.equal(plays[0].options.subtype, 'refocus');
-  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(plays[0].options.returnCrossFadeMs, 1000);
+  assert.equal(plays[0].options.crossFadeMs, 1000);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, 1000);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 

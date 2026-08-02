@@ -421,8 +421,9 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 阶段性 / 回归专注确认（MindfulAcknowledge，含 subtype: refocus）。
-  // 小幅点头鞠躬，一次性播放；强度刻意低于 sessionComplete 与 Celebrating。
-  // 13 拍 @ 3.5fps ≈ 3.7s（ONE_SHOT ack 带下限）。
+  // 小幅点头鞠躬；产品路径 EmotionController 以 pingpong×1 播（正放→倒放回坐姿）+ CapCut。
+  // 入库逐条试播仍可按本定义 loop:none 定格末帧。
+  // 13 拍 @ 3.5fps；一整轮 pingpong ≈ 7.4s（ONE_SHOT ack 带）。
   nodBow: {
     animation: 'nod-bow',
     frameCount: 13,

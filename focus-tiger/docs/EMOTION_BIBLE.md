@@ -144,7 +144,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `Celebrating` | `celebrating` → `celebrateDance` / `celebrateDanceV2`（2D，50/50）/ `CELEBRATING`（3D 垫底） | `public/sprites/.../celebrate-dance/frame_001–057.png`；`.../celebrate-dance-v2/frame_001–060.png`；GLB `tiger-happy-jump.glb` |
 | `IncenseComplete` | （效果模块，非姿态键） | `IncenseGreeting` |
 | `SessionComplete` | `sessionComplete` → `sessionComplete`（2D） | `public/sprites/.../session-complete/frame_001–028.png` |
-| `MindfulAcknowledge` | `mindfulAcknowledge` → `nodBow`（2D；`subtype: 'refocus'` 复用） | `public/sprites/.../nod-bow/frame_001–013.png` |
+| `MindfulAcknowledge` | `mindfulAcknowledge` → `nodBow`（2D；`subtype: 'refocus'` 复用） | `public/sprites/.../nod-bow/frame_001–013.png`；**pingpong×1**（正放→倒放回坐姿）+ ~1s CapCut Idle（与 `IntentionSet` 同契约） |
 | `stretchReminder` | `stretchReminder` → `stretchReminder`（2D） | `public/sprites/.../stretch-reminder/frame_001–017.png` |
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
@@ -648,6 +648,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.73 | 2026-08-02 | 误诊「仅正放」撤回；根因 oneshot `_finish` hide 跳过 CapCut；`WelcomeBack`/`earWiggle` 烘焙正+倒一次 + CapCut |
 | 0.74 | 2026-08-02 | 冷启动欢迎池撤出 `welcomeBack`；开场仅 `nodGreeting`（挥手观感未验收） |
 | 0.75 | 2026-08-02 | 入库试验：`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`；欢迎池加权重开；Honesty≥30 → `goldenHaloPalms` |
-| 0.77 | 2026-08-02 | 拍板：新旧挥手暂时停接线（`welcomeBack` 空实现；情绪入口撤；欢迎池仍仅书+点头） |
+| 0.78 | 2026-08-02 | `MindfulAcknowledge`：nod-bow 改 pingpong×1 + CapCut（对齐 IntentionSet；修 Honesty＜30 / 切语 EN 鞠躬无法回 Idle） |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
