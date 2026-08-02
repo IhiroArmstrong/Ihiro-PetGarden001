@@ -429,7 +429,7 @@ export class EmotionController {
       },
 
       // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
-      // 欢迎池默认硬切 Idle；切语 English 等传入 returnCrossFadeMs: CapCut。
+      // 欢迎池 / 切语 English 均默认硬切 Idle（无 CapCut；QA 2026-08-02）。
       magicBookReading: (options = {}) => {
         this._playCompanionSequenceOnce('magicBookReading', options, {
           returnCrossFadeMs: options.returnCrossFadeMs ?? 0

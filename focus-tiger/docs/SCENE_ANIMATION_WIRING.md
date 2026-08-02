@@ -92,10 +92,10 @@
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额，resolve 不预扣）；Focusing / Celebrating / 叠层忙碌跳过不补发 |
-| 语言切换 → **English**（及日后其它 ready） | `magicBookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：告别 nod-bow 过密） | 同上限频；欢迎池同素材仍可硬切 |
+| 语言切换 → **English**（及日后其它 ready） | `magicBookReading`（单程看书、**无倒放**；回 Idle **硬切**） | ack | **Slice A · 已实现**（2026-08-02：告别 nod-bow；QA 去掉末叠化） | 同上限频；与欢迎池同硬切契约 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut |
 
-> **A′ 已落地**：切语 ja → `palmsTogether`（与 Arrival Choose 的 `intentionSet`/nod 解耦）。**2026-08-02**：切语 en → `magicBookReading` 单程 + CapCut（告别 nod-bow 过密）；欢迎池同素材仍默认硬切。
+> **A′ 已落地**：切语 ja → `palmsTogether`（与 Arrival Choose 的 `intentionSet`/nod 解耦）。**2026-08-02**：切语 en → `magicBookReading` 单程 **硬切** Idle（告别 nod-bow；QA 去掉末叠化）；欢迎池同契约。
 
 ### 5.2 Focus
 
@@ -224,5 +224,5 @@
 | 2026-08-01 | 整合设计师场景×动画建议；库存全业务接线政策；驳回完成池混入 celebrate；标注 ja 合十代码漂移（A′）；新增 Slice B Brief 指针与 Dispatcher 架构节 |
 | 2026-08-01 | 用户拍板：Honesty 20/30；日语合十；勿接已取代；Dispatcher 必做；设计师其余项**一批**进 A′+B（非整碎小任务）；Milestone/stretch/en 鞠躬标已接线免重做 |
 | 2026-08-01 | **实现**：`sceneAnimationDispatcher` + Emotion 合十/光环/陪伴手势；main / Honesty / 完成 / 微仪式 / 舒展 / 欢迎 / 深夜 / 好奇接线；unit + language-switch e2e 钩更新 |
-| 2026-08-02 | 切语 EN：`magicBookReading` 单程 + CapCut（告别 nod-bow）；`playOptionsForLocaleGreeting`；欢迎池书仍硬切 |
+| 2026-08-02 | 切语 EN：`magicBookReading` 单程硬切（告别 nod-bow；QA 去掉末 CapCut）；与欢迎池同契约 |
 

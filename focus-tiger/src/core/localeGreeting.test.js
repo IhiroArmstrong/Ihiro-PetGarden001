@@ -5,7 +5,6 @@ import {
   LOCALE_GREETING_STORAGE_KEY,
   emotionKeyForLocaleGreeting,
   playOptionsForLocaleGreeting,
-  LOCALE_GREETING_RETURN_CROSS_FADE_MS,
   canPlayLocaleGreetingGate,
   normalizeLocaleGreetingState,
   resolveLocaleGreetingPlay,
@@ -35,13 +34,9 @@ test('emotionKeyForLocaleGreeting: ja → palmsTogether; en → magicBookReading
   assert.equal(emotionKeyForLocaleGreeting('en'), 'magicBookReading');
 });
 
-test('playOptionsForLocaleGreeting: EN CapCut return; ja empty (palms defaults)', () => {
+test('playOptionsForLocaleGreeting: hard-cut (empty) for ja and en', () => {
   assert.deepEqual(playOptionsForLocaleGreeting('ja'), {});
-  assert.deepEqual(playOptionsForLocaleGreeting('en'), {
-    returnCrossFadeMs: LOCALE_GREETING_RETURN_CROSS_FADE_MS,
-    freezeUntilCrossFadeEnds: true
-  });
-  assert.equal(LOCALE_GREETING_RETURN_CROSS_FADE_MS, 1000);
+  assert.deepEqual(playOptionsForLocaleGreeting('en'), {});
 });
 
 test('canPlayLocaleGreetingGate blocks FOCUSING and CELEBRATE', () => {
