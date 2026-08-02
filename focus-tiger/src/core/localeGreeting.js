@@ -1,7 +1,7 @@
 /**
  * Locale-change greeting (SCENE_ANIMATION_WIRING Slice A / A′).
  * ja → palmsTogether（真合十；与 Arrival Choose 的 intentionSet/nod 解耦）；
- * other ready locales → mindfulAcknowledge（鞠躬）.
+ * en（及其它 ready）→ magicBookReading（单程看书，无倒放；回 Idle 约 1s CapCut）。
  * Same local day + same target locale: at most once. Focusing/Celebrate/busy → skip, no replay.
  */
 
@@ -9,12 +9,32 @@ import { getLocalDateKey } from '../utils/localDate.js';
 
 export const LOCALE_GREETING_STORAGE_KEY = 'focus-tiger.locale-greeting.v1';
 
+/** Matches EmotionController CAPCUT_DISSOLVE_MS — keep literal to avoid import cycle. */
+export const LOCALE_GREETING_RETURN_CROSS_FADE_MS = 1000;
+
 /**
  * @param {string} locale
- * @returns {'palmsTogether' | 'mindfulAcknowledge'}
+ * @returns {'palmsTogether' | 'magicBookReading'}
  */
 export function emotionKeyForLocaleGreeting(locale) {
-  return locale === 'ja' ? 'palmsTogether' : 'mindfulAcknowledge';
+  return locale === 'ja' ? 'palmsTogether' : 'magicBookReading';
+}
+
+/**
+ * playEmotion options for the locale greeting key.
+ * Welcome-pool magicBook defaults to hard-cut idle; language EN must CapCut.
+ *
+ * @param {string} locale
+ * @returns {Record<string, unknown>}
+ */
+export function playOptionsForLocaleGreeting(locale) {
+  if (emotionKeyForLocaleGreeting(locale) !== 'magicBookReading') {
+    return {};
+  }
+  return {
+    returnCrossFadeMs: LOCALE_GREETING_RETURN_CROSS_FADE_MS,
+    freezeUntilCrossFadeEnds: true
+  };
 }
 
 /**

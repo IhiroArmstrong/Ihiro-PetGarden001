@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import {
   LOCALE_GREETING_STORAGE_KEY,
   emotionKeyForLocaleGreeting,
+  playOptionsForLocaleGreeting,
+  LOCALE_GREETING_RETURN_CROSS_FADE_MS,
   canPlayLocaleGreetingGate,
   normalizeLocaleGreetingState,
   resolveLocaleGreetingPlay,
@@ -28,9 +30,18 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('emotionKeyForLocaleGreeting: ja → palmsTogether; en → mindfulAcknowledge', () => {
+test('emotionKeyForLocaleGreeting: ja → palmsTogether; en → magicBookReading', () => {
   assert.equal(emotionKeyForLocaleGreeting('ja'), 'palmsTogether');
-  assert.equal(emotionKeyForLocaleGreeting('en'), 'mindfulAcknowledge');
+  assert.equal(emotionKeyForLocaleGreeting('en'), 'magicBookReading');
+});
+
+test('playOptionsForLocaleGreeting: EN CapCut return; ja empty (palms defaults)', () => {
+  assert.deepEqual(playOptionsForLocaleGreeting('ja'), {});
+  assert.deepEqual(playOptionsForLocaleGreeting('en'), {
+    returnCrossFadeMs: LOCALE_GREETING_RETURN_CROSS_FADE_MS,
+    freezeUntilCrossFadeEnds: true
+  });
+  assert.equal(LOCALE_GREETING_RETURN_CROSS_FADE_MS, 1000);
 });
 
 test('canPlayLocaleGreetingGate blocks FOCUSING and CELEBRATE', () => {
@@ -86,7 +97,7 @@ test('resolve alone does not consume; mark then same-day ja skips', () => {
     now
   });
   assert.equal(en.play, true);
-  assert.equal(en.emotionKey, 'mindfulAcknowledge');
+  assert.equal(en.emotionKey, 'magicBookReading');
   assert.equal(markLocaleGreetingPlayed({ locale: 'en', storage, now }), true);
 
   const persisted = readLocaleGreetingState(storage, now);

@@ -257,7 +257,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 用户重新回来 | 开心挥手欢迎 | 情绪键 `welcomeBack`（2D 序列 `wave-hello`）；一次性播放，播完回落 `Idle` |
 | 当日尚未完成任何练习 | **Idle 闭目坐禅**（不上 Sleeping）+ 可忽略 Honesty 轻量提示 | 提示文案：`Quiet time elsewhere can live here too.` / 「别处的静心，也可以记在这里。」（邀请式；含首日）；可忽略、非强制 |
 | 用户完成 Honesty Check-in | 已在 Idle：选时长 → 呼吸引导 → 记账（**不**播 dormantWake）+ 短 `mindfulAcknowledge`（Slice A）。仅睡态：选时长 → `dormantWake` → 离 DORMANT（**不**叠 nod） | 按所选时长等同一次已完成会话；轻量 toast `HONESTY_CHECKIN_RECORDED` + 桥接；**不占用**共享提醒池。见 `SCENE_ANIMATION_WIRING.md` Slice A |
-| 应用内切换语言（ready locale 实际变化） | → `ja`：合十 `intentionSet`；→ `en`：鞠躬 `mindfulAcknowledge`；同日同目标语最多 1 次；Focusing/Celebrating/叠层忙碌跳过不补发 | **Slice A 已实现**；详规 `SCENE_ANIMATION_WIRING.md` / `localeGreeting.js`；**禁止** Celebrating |
+| 应用内切换语言（ready locale 实际变化） | → `ja`：合十 `palmsTogether`；→ `en`：单程看书 `magicBookReading`（无倒放，末 ~1s CapCut）；同日同目标语最多 1 次；Focusing/Celebrating/叠层忙碌跳过不补发 | **Slice A 已实现**；详规 `SCENE_ANIMATION_WIRING.md` / `localeGreeting.js`；**禁止** Celebrating；EN 不再用 nod-bow（过密） |
 
 #### DORMANT 唤醒仪式（Honesty Check-in Ritual）
 
@@ -649,5 +649,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.74 | 2026-08-02 | 冷启动欢迎池撤出 `welcomeBack`；开场仅 `nodGreeting`（挥手观感未验收） |
 | 0.75 | 2026-08-02 | 入库试验：`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`；欢迎池加权重开；Honesty≥30 → `goldenHaloPalms` |
 | 0.78 | 2026-08-02 | `MindfulAcknowledge`：nod-bow 改 pingpong×1 + CapCut（对齐 IntentionSet；修 Honesty＜30 / 切语 EN 鞠躬无法回 Idle） |
+| 0.79 | 2026-08-02 | 切语 EN：`magicBookReading` 单程 + CapCut（告别 nod-bow 过密）；ja 仍 `palmsTogether` |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

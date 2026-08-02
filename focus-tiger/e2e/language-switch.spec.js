@@ -11,7 +11,7 @@ const SIT = '#btn-focus';
 
 /**
  * v1.0.0 English + Japanese: Language UI → 日本語 → back to English; persist preference.
- * Slice A′: ja → palmsTogether greeting; en → mindfulAcknowledge; same-day re-pick skips.
+ * Slice A′: ja → palmsTogether; en → magicBookReading (oneshot + CapCut); same-day re-pick skips.
  * Draft locales (zh/es/…) must not appear.
  */
 test('Language UI: switch to 日本語 then back to English', async ({ page }) => {
@@ -19,7 +19,18 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
 
   await expect(page.locator(SIT)).toContainText(/Sit with Yin/i);
 
-  await clickWideMoreProxyOrDirect(page, 'language');
+  // Prefer API open: onboarding bubbles can intercept ⋯ → Language clicks in fresh shells.
+  const opened = await page.evaluate(() => {
+    const ui = window.__languagePreference;
+    if (ui?.openPanel) {
+      ui.openPanel();
+      return true;
+    }
+    return false;
+  });
+  if (!opened) {
+    await clickWideMoreProxyOrDirect(page, 'language');
+  }
   await expect(page.locator(PANEL)).toBeVisible({ timeout: 8_000 });
 
   await expect(page.locator('#language-preference-zh')).toHaveCount(0);
@@ -53,7 +64,7 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
     .poll(async () =>
       page.evaluate(() => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null)
     )
-    .toBe('mindfulAcknowledge');
+    .toBe('magicBookReading');
 
   const greetingRaw = await page.evaluate((key) => localStorage.getItem(key), GREETING_KEY);
   expect(greetingRaw).toBeTruthy();
