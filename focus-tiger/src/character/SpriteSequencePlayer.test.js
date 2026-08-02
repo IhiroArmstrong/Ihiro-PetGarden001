@@ -229,6 +229,17 @@ test('milestone glow is an on-demand one-shot that holds its final pose', () => 
   assert.equal(definition.fps, 4);
 });
 
+test('milestoneGlowStar is meditation-star-reward ritual variant', () => {
+  const definition = SPRITE_SEQUENCES.milestoneGlowStar;
+
+  assert.equal(definition.animation, 'meditation-star-reward');
+  assert.equal(definition.frameCount, 63);
+  assert.equal(definition.preload, false);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.holdLastFrame, true);
+  assert.equal(definition.fps, 6);
+});
+
 test('nod greeting is a slowed one-shot with last-frame hold (~2 extra beats)', () => {
   const definition = SPRITE_SEQUENCES.nodGreeting;
 

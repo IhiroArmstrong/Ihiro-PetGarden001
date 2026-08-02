@@ -462,6 +462,7 @@ async function init() {
       };
       if (nodeId) {
         emotionController.playEmotion('milestoneGlow', {
+          milestoneNodeId: nodeId,
           onComplete: revealBridge
         });
       } else {
@@ -1217,9 +1218,10 @@ async function init() {
         stateManager.setState(STATES.CELEBRATE);
       },
       startMilestoneGlow: () => {
-        milestoneGlowStore.claimOffer(projectedStreak);
+        const claimed = milestoneGlowStore.claimOffer(projectedStreak);
         dailyCompletionStore.markCelebratedToday();
         emotionController.playEmotion('milestoneGlow', {
+          milestoneNodeId: claimed,
           onComplete: finishCompletedSession
         });
       },
