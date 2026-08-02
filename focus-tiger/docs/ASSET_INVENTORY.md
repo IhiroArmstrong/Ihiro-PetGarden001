@@ -116,7 +116,8 @@
 | nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；**冷启动欢迎池唯一** | Slice B 开场；2026-08-02 |
 | tilt-think | 20 | tiltThink | **勿接主路径** | 仅调试 |
 | palms-together | 14 | palmsTogether | 仅调试（Choose 已改 nod；日语切语已改 bookReading） | 调试保留 |
-| milestone-glow | 27 | milestoneGlow | **已接线** streak 节点 | — |
+| milestone-glow | 27 | milestoneGlow | **已接线** streak-7 | — |
+| meditation-star-reward | 63 | milestoneGlowStar | **已接线** streak-21 / streak-100（同 `milestoneGlow` emotion） | 2026-08-03 入库 |
 | breath-halo-hq | 16 | breathHaloHq | 仅清单 | **Slice B**：Glow 备选 / 长补登光环 |
 | tea-drinking | 24 | teaDrinking | **试验**：English 切语 + 深夜池 | Slice B 深夜/茶歇（冷却） |
 | yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却） |
@@ -144,7 +145,7 @@
 | dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake 保留素材未删） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-07-21 试替倒放） |
 | haloBreathing | halo-breathing | 调试可单独播；**Slice B** 接 Honesty 长补登等 |
 | welcomeBack / nodGreeting / curiousTilt / earWiggle | waveHelloWelcome / nod-greeting / **blink-smile** / earWiggle 烘焙正+倒 | welcomeBack/earWiggle：烘焙正+倒一次 + CapCut（禁 player pingpong）；nodGreeting：正放一次；curiousTilt：blink-smile |
-| milestoneGlow | milestone-glow（备选 breath-halo-hq 未用） | **产品路径已接线**；HQ 备选待 Slice B |
+| milestoneGlow | milestone-glow（streak-7）· meditation-star-reward（21/100）；breath-halo-hq 仅调试 | **产品路径已接线**（节点轮换） |
 | riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
 | wakeUp | stretch-reminder（同源） | 已接线；与 Honesty 视觉分离（2026-07-19） |

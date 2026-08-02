@@ -345,6 +345,18 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: true
   },
 
+  // MilestoneGlow 变体：闭目坐禅 + 空中发光琉璃星石（与 milestone-glow 同 emotion key）。
+  // 产品按 streak 节点轮换（见 pickMilestoneGlowVariant）；63 帧 @ 6fps ≈10.5s 仪式带。
+  milestoneGlowStar: {
+    animation: 'meditation-star-reward',
+    frameCount: 63,
+    fps: 6,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true
+  },
+
   // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。
   // 2026-07-20：以 16 帧 HQ 替换旧 breath-halo-expand（17 帧）；不绑定 emotion key / 业务触发。
   // 正放仅「扩展」半拍不完整 → pingpong 倒放收回，完整一吸一呼并可循环。
