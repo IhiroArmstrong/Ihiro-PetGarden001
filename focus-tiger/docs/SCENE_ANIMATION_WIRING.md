@@ -88,12 +88,12 @@
 | Arrival Choose 确认 | `intentionSet` → **`intentionNod`（nod-bow pingpong）** | ack | **已接线** | 与门闩并行；合十曾作 Choose 视觉，现改 nod（画幅衔接） |
 | Arrival Welcome | `smiling` / blink-smile | — | **已接线** | |
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
-| Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`；**≥30 min**：`breathHaloHq` | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
+| Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额，resolve 不预扣）；Focusing / Celebrating / 叠层忙碌跳过不补发 |
 | 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow`） | ack | **Slice A · 已实现** | 同上限频；不用 dance |
-| 当日首次冷启动问候 | **仅** `nodGreeting`（同日 1 次） | ack | **已实现**（Dispatcher） | 靠近自动仍 **勿接**。**2026-08-02**：挥手 `welcomeBack` **撤出开场欢迎池**（观感未验收成功）；键仍保留调试/日后偶遇。`nodGreeting`：正放一次 + CapCut |
+| 当日首次冷启动问候 | **加权池试验**：`welcomeBack`（`wave-hello-pingpong`）40% · `magicBookReading` 40% · `nodGreeting` 20%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。素材已烘焙 pingpong → 正放一次 + CapCut；禁再 player pingpong。验收后再定权重/固化 |
 
 > **漂移注（2026-08-01）**：Slice A 规格与设计师均要求日语 = **合十**（`palms-together`）。当前实现：`emotionKeyForLocaleGreeting('ja')` → `intentionSet`，而 `EmotionController.intentionSet` 播的是 **`intentionNod`（nod-bow）**——画面上是鞠躬不是合十。`palmsTogether` 仍仅调试。**A′ 修复**：切语 ja 改为播 `palmsTogether`（或新键 `localeGreetingJa`），与 Arrival Choose 的 `intentionSet`/nod 解耦；单测锁「ja → palms 素材目录」。
 
@@ -138,7 +138,7 @@
 ## 六、Slice A 验收口径（产品）
 
 1. **Language**：`?product=1` → Language → 日本語 → 阿寅播**合十**（`palmsTogether`）→ 回 Idle；再切 English → 播鞠躬；同日重复切同一语**不**反复播。  
-2. **Honesty Idle**：非睡态 → ≤29 短点头 / ≥30 `breathHaloHq` → toast → 桥接；睡态仅 dormantWake，**不**叠 Celebrating。  
+2. **Honesty Idle**：非睡态 → ≤29 短点头 / ≥30 `goldenHaloPalms`（试验）→ toast → 桥接；睡态仅 dormantWake，**不**叠 Celebrating。  
 3. **微仪式 / 非首次完成**：同档轻量池（可 sessionComplete / nod / blink）；中置 toast 仍在。  
 4. **禁止**：切语言或 Honesty / 轻量完成触发 `celebrating`。
 
@@ -199,7 +199,7 @@
 |---|---|---|---|
 | 1a | 日语 → palms-together | **已实现** | `palmsTogether` 键；与 Choose nod 解耦 |
 | 1b | 英语 → nod-bow | **已接线** | 免重做 |
-| 2a | Honesty ≤20 nod / ≥30 halo | **已实现** | ≥30 → `breathHaloHq` oneshot |
+| 2a | Honesty ≤20 nod / ≥30 goldenHaloPalms | **试验接线** | ≥30 → `goldenHaloPalms` oneshot；`breathHaloHq` 调试保留 |
 | 2b | 微仪式同档变体 | **已实现** | LIGHT_COMPLETE_POOL |
 | 3a | Welcome：wave 60% / nodGreeting 40% | **已实现** | 同日 1 次 |
 | 3b | 完成池混入 dance-v2 | **驳回** | 已用同档 ack/light 池 |

@@ -189,7 +189,7 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
-test('welcomeBack plays baked waveHelloWelcome once (forward+reverse) then CapCut idle', () => {
+test('welcomeBack plays baked waveHelloPingpong once then CapCut idle', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -212,7 +212,7 @@ test('welcomeBack plays baked waveHelloWelcome once (forward+reverse) then CapCu
     }
   });
 
-  assert.equal(plays[0].name, 'waveHelloWelcome');
+  assert.equal(plays[0].name, 'waveHelloPingpong');
   assert.equal(plays[0].options.loop, false);
   assert.equal(plays[0].options.loopMode, 'none');
   assert.notEqual(plays[0].options.loopMode, 'pingpong');

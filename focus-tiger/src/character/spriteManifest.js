@@ -241,13 +241,52 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // WelcomeBack 产品路径：正放+倒放一次烘焙进 playlist，播完 CapCut → Idle。
-  // 禁 player pingpong+maxCycles（倒放后引擎会准备下一轮正放）。入库试播无 CapCut——验收用姿态「挥手欢迎」。
+  // WelcomeBack 旧路径（19 帧源 + 代码烘焙正+倒）：保留调试试播对照。
+  // 禁 player pingpong+maxCycles。产品开场试验改走 waveHelloPingpong（已烘焙帧）。
   waveHelloWelcome: {
     animation: 'wave-hello',
     frameCount: 19,
     frameIndices: [...WAVE_HELLO_PINGPONG_ONCE_INDICES],
     fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 2026-08-02 新入库：挥手已烘焙 pingpong（正+倒一次，38 帧）；正放一遍即可，禁再 player pingpong。
+  // 960×960 → displayFit 对齐 idle；产品 welcomeBack / 开场欢迎池试验用本序列。
+  waveHelloPingpong: {
+    animation: 'wave-hello-pingpong',
+    frameCount: 38,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false,
+    displayFit: {
+      width: 960,
+      height: 960,
+      content: { x: 0, y: 26, w: 960, h: 850 }
+    }
+  },
+
+  // 开场试验：魔法金光五角星 → 变出书 → 翻页阅读（已烘焙 pingpong，46 帧）。
+  magicBookReading: {
+    animation: 'magic-book-reading',
+    frameCount: 46,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Honesty 长补登试验：衣发光 → 头顶金环 → 合掌 → 金沙四散（已烘焙 pingpong，94 帧）。
+  goldenHaloPalms: {
+    animation: 'golden-halo-palms',
+    frameCount: 94,
+    fps: 8,
+    preload: false,
     loop: false,
     loopMode: 'none',
     holdLastFrame: false

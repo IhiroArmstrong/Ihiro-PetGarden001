@@ -45,13 +45,15 @@ export const CURIOSITY_CHANCE = 0.05;
  */
 
 /**
- * 冷启动同日欢迎池。
- * 2026-08-02：挥手 `welcomeBack` 观感未验收成功 → **不再纳入开场**；仅 `nodGreeting`。
- * `welcomeBack` 仍保留情绪键（调试 / 日后 10min 偶遇等），勿从本池抽。
+ * 冷启动同日欢迎池（试验 · 2026-08-02 晚）。
+ * 新入库已烘焙 pingpong：`welcomeBack`（wave-hello-pingpong）与 `magicBookReading`；
+ * 仍保留 `nodGreeting`。同日限 1 次；验收后再定权重/是否固化。
  * @type {ReadonlyArray<WeightedEntry>}
  */
 export const WELCOME_POOL = Object.freeze([
-  Object.freeze({ key: 'nodGreeting', weight: 100 })
+  Object.freeze({ key: 'welcomeBack', weight: 40 }),
+  Object.freeze({ key: 'magicBookReading', weight: 40 }),
+  Object.freeze({ key: 'nodGreeting', weight: 20 })
 ]);
 
 /** Light completion / micro-ritual — never celebrate-dance */
@@ -109,12 +111,12 @@ export function canPlaySceneAnimGate({ sessionState, overlayBusy = false }) {
 
 /**
  * @param {number} minutes
- * @returns {'mindfulAcknowledge' | 'breathHaloHq' | null}
+ * @returns {'mindfulAcknowledge' | 'goldenHaloPalms' | null}
  */
 export function emotionKeyForHonestyDuration(minutes) {
   if (!Number.isFinite(minutes) || minutes <= 0) return null;
   return minutes >= HONESTY_LONG_MIN_MINUTES
-    ? 'breathHaloHq'
+    ? 'goldenHaloPalms'
     : 'mindfulAcknowledge';
 }
 

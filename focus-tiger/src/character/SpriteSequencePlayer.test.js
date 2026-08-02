@@ -312,6 +312,18 @@ test('palmsTogether / breathHaloHq / lotus backlog sequences are registered', ()
   assert.equal(SPRITE_SEQUENCES.lotusChestHalo.preload, false);
 });
 
+test('2026-08-02 pingpong trial sequences are registered', () => {
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.animation, 'wave-hello-pingpong');
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.frameCount, 38);
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.loop, false);
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.displayFit?.width, 960);
+  assert.equal(SPRITE_SEQUENCES.magicBookReading.animation, 'magic-book-reading');
+  assert.equal(SPRITE_SEQUENCES.magicBookReading.frameCount, 46);
+  assert.equal(SPRITE_SEQUENCES.goldenHaloPalms.animation, 'golden-halo-palms');
+  assert.equal(SPRITE_SEQUENCES.goldenHaloPalms.frameCount, 94);
+});
+
 test('gaze lookaround and yawn-stretch idle variants are registered', () => {
   assert.equal(SPRITE_SEQUENCES.gazeP1CenterBlinkLeft.frameCount, 15);
   assert.equal(SPRITE_SEQUENCES.gazeP2LeftToUp.frameCount, 13);

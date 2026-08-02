@@ -153,7 +153,7 @@ test('zero-completion honesty from Idle skips dormantWake', () => {
   );
 });
 
-test('Idle Honesty ≥30 min plays breathHaloHq (Slice B long ack)', () => {
+test('Idle Honesty ≥30 min plays goldenHaloPalms (trial long ack)', () => {
   const emotionCalls = [];
   const { controller, ui } = createControllerDeps({
     emotionController: {
@@ -166,7 +166,7 @@ test('Idle Honesty ≥30 min plays breathHaloHq (Slice B long ack)', () => {
   controller.openDurationChoices();
   ui.handlers.onDurationSelect(30);
   ui.handlers.onBreathComplete();
-  assert.ok(emotionCalls.includes('breathHaloHq'));
+  assert.ok(emotionCalls.includes('goldenHaloPalms'));
   assert.equal(emotionCalls.includes('mindfulAcknowledge'), false);
 });
 

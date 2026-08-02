@@ -82,7 +82,9 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |
-| `nodGreeting` | 靠近自动已拆；**欢迎池 40%**（Dispatcher） | 勿接回默认靠近 |
+| `nodGreeting` | 靠近自动已拆；**欢迎池试验 20%**（与 welcomeBack / magicBookReading） | 勿接回默认靠近 |
+| `welcomeBack` / `magicBookReading` | 开场欢迎池试验（各 40%） | 已烘焙 pingpong；正放一次 + CapCut |
+| `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 

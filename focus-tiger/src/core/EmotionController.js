@@ -417,8 +417,8 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：正放 → 倒放一次（烘焙 playlist）→ 约 1s CapCut 叠化 Idle。
-      // 禁 player pingpong+maxCycles（倒放后会准备下一轮正放）。
+      // WelcomeBack（挥手欢迎）：已烘焙 pingpong 帧（wave-hello-pingpong）正放一次 → ~1s CapCut Idle。
+      // 禁再对播放器开 pingpong（素材已含倒放）。旧 waveHelloWelcome 仅入库试播对照。
       // CapCut 依赖播完不先 hide overlay（见 SpriteSequencePlayer._finish）。
       welcomeBack: (options = {}) => {
         if (!this.spritePlayer) {
@@ -430,7 +430,7 @@ export class EmotionController {
         this._leaveIdleBaseline();
         this._use2DMainline();
         const started = this.spritePlayer.play(
-          'waveHelloWelcome',
+          'waveHelloPingpong',
           this._oneShotPlayOpts(
             {
               ...options,
@@ -442,12 +442,30 @@ export class EmotionController {
               returnCrossFadeMs:
                 options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
             },
-            'waveHelloWelcome'
+            'waveHelloPingpong'
           )
         );
         if (!started) {
-          this._finishOneShot(options, 'waveHelloWelcome');
+          this._finishOneShot(options, 'waveHelloPingpong');
         }
+      },
+
+      // 开场试验：魔法书阅读（已烘焙 pingpong）→ CapCut Idle。
+      magicBookReading: (options = {}) => {
+        this._playCompanionSequenceOnce('magicBookReading', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
+      // Honesty≥30 试验：金环合掌金沙（已烘焙 pingpong）→ CapCut Idle。
+      goldenHaloPalms: (options = {}) => {
+        this._playCompanionSequenceOnce('goldenHaloPalms', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
       },
 
       // 点头致意：素材保留；靠近区默认不再自动触发（2026-07-19）。
@@ -988,7 +1006,9 @@ export class EmotionController {
       { key: 'incenseComplete', label: '一炷香完成' },
       { key: 'milestoneGlow', label: '里程碑金辉' },
       { key: 'sessionComplete', label: '完成摆尾' },
-      { key: 'welcomeBack', label: '挥手欢迎' },
+      { key: 'welcomeBack', label: '挥手欢迎(新pingpong)' },
+      { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
+      { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
       { key: 'mindfulAcknowledge', label: '正念点头鞠躬' },
@@ -1013,7 +1033,10 @@ export class EmotionController {
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
       waveHello: 'wave-hello 挥手(仅正放)',
-      waveHelloWelcome: 'wave-hello 欢迎(正+倒)',
+      waveHelloWelcome: 'wave-hello 欢迎(旧正+倒)',
+      waveHelloPingpong: 'wave-hello-pingpong 挥手(已烘焙)',
+      magicBookReading: 'magic-book-reading 魔法书',
+      goldenHaloPalms: 'golden-halo-palms 金环合掌',
       celebrateDance: 'celebrate-dance v1',
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
@@ -1294,6 +1317,8 @@ export const EMOTION_KEYS = Object.freeze({
   MILESTONE_GLOW: EMOTIONS.milestoneGlow,
   SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
+  MAGIC_BOOK_READING: 'magicBookReading',
+  GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',
   CLOAK_SLEEP: 'cloakSleep',
