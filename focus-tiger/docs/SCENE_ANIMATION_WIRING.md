@@ -91,7 +91,7 @@
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`；**≥30 min**：`breathHaloHq` | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
-| 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次；Focusing / Celebrating / 叠层忙碌跳过不补发 |
+| 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额，resolve 不预扣）；Focusing / Celebrating / 叠层忙碌跳过不补发 |
 | 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow`） | ack | **Slice A · 已实现** | 同上限频；不用 dance |
 | 当日首次冷启动问候 | **仅** `nodGreeting`（同日 1 次） | ack | **已实现**（Dispatcher） | 靠近自动仍 **勿接**。**2026-08-02**：挥手 `welcomeBack` **撤出开场欢迎池**（观感未验收成功）；键仍保留调试/日后偶遇。`nodGreeting`：正放一次 + CapCut |
 
