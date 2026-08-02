@@ -791,7 +791,7 @@ export class NarrowIdleShell {
         height: 40px;
         border-radius: 50%;
         border: 1px solid rgba(139, 115, 85, 0.22);
-        background: rgba(255, 252, 245, 0.95);
+        background: rgba(255, 252, 245, 0.72);
         color: rgba(74, 58, 40, 0.88);
         font-size: 18px;
         font-weight: 600;
@@ -958,9 +958,11 @@ export class NarrowIdleShell {
         max-height: min(82vh, 580px);
         padding: 8px 14px calc(12px + env(safe-area-inset-bottom, 0px));
         border-radius: 22px 22px 0 0;
-        background: linear-gradient(180deg, #fffcf6 0%, #f4ebe0 100%);
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        box-shadow: 0 -12px 40px rgba(44, 31, 20, 0.18);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        box-shadow: 0 -8px 28px rgba(44, 31, 20, 0.1);
         transform: translateY(110%);
         transition: transform 280ms cubic-bezier(0.33, 0.1, 0.25, 1);
         overflow: auto;

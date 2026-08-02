@@ -4,10 +4,18 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_BORDER_STRONG,
+  GLASS_FILL,
+  GLASS_FILL_STRONG,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
 /**
- * 轻量半透明气泡（对齐 Arrival Notice 字幕泡）：角色动画须透出可见，
- * 禁止近乎不透明的厚重卡片挡下半身。
+ * 轻量半透明气泡（对齐 Arrival Notice）：角色动画须透出可见。
  */
 const PANEL_CSS = [
   'position:absolute',
@@ -16,12 +24,11 @@ const PANEL_CSS = [
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:14px 18px 12px',
-  'border:1px solid rgba(139,115,85,.14)',
-  'border-radius:18px',
-  'background:rgba(255,252,245,.62)',
-  'backdrop-filter:blur(8px)',
-  '-webkit-backdrop-filter:blur(8px)',
-  'box-shadow:0 4px 18px rgba(44,31,20,.06)',
+  GLASS_BORDER,
+  `border-radius:${GLASS_RADIUS}`,
+  `background:${GLASS_FILL}`,
+  GLASS_BLUR_CSS,
+  `box-shadow:${GLASS_SHADOW}`,
   'color:#2c1f14',
   'transition:opacity 260ms ease,transform 260ms ease',
   'opacity:0',
@@ -36,8 +43,8 @@ const EQUAL_BTN_CSS = [
   'padding:7px 16px',
   'font-size:13px',
   'color:#4a3a28',
-  'background:rgba(255,252,245,.78)',
-  'border:1px solid rgba(139,115,85,.28)',
+  `background:${GLASS_FILL_STRONG}`,
+  GLASS_BORDER_STRONG,
   'border-radius:16px',
   'cursor:pointer',
   'box-shadow:0 1px 0 rgba(255,255,255,.7) inset'
