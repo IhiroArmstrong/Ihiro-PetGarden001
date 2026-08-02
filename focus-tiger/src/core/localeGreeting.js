@@ -1,6 +1,6 @@
 /**
  * Locale-change greeting (SCENE_ANIMATION_WIRING Slice A / A′).
- * ja → palmsTogether（真合十；与 Arrival Choose 的 intentionSet/nod 解耦）；
+ * ja → bookReading（单程看书，无倒放；回 Idle 约 1s CapCut）；
  * en（及其它 ready）→ teaDrinking（单程喝茶，无倒放；回 Idle 约 1s CapCut）。
  * Same local day + same target locale: at most once. Focusing/Celebrate/busy → skip, no replay.
  */
@@ -14,23 +14,20 @@ export const LOCALE_GREETING_RETURN_CROSS_FADE_MS = 1000;
 
 /**
  * @param {string} locale
- * @returns {'palmsTogether' | 'teaDrinking'}
+ * @returns {'bookReading' | 'teaDrinking'}
  */
 export function emotionKeyForLocaleGreeting(locale) {
-  return locale === 'ja' ? 'palmsTogether' : 'teaDrinking';
+  return locale === 'ja' ? 'bookReading' : 'teaDrinking';
 }
 
 /**
  * playEmotion options for the locale greeting key.
- * EN tea: oneshot + CapCut idle (EmotionController tea also defaults CapCut; keep explicit).
+ * Both JA book and EN tea use oneshot + CapCut idle.
  *
- * @param {string} locale
+ * @param {string} _locale
  * @returns {Record<string, unknown>}
  */
-export function playOptionsForLocaleGreeting(locale) {
-  if (emotionKeyForLocaleGreeting(locale) !== 'teaDrinking') {
-    return {};
-  }
+export function playOptionsForLocaleGreeting(_locale) {
   return {
     returnCrossFadeMs: LOCALE_GREETING_RETURN_CROSS_FADE_MS,
     freezeUntilCrossFadeEnds: true

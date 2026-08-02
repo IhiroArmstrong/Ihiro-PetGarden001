@@ -30,17 +30,18 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('emotionKeyForLocaleGreeting: ja → palmsTogether; en → teaDrinking', () => {
-  assert.equal(emotionKeyForLocaleGreeting('ja'), 'palmsTogether');
+test('emotionKeyForLocaleGreeting: ja → bookReading; en → teaDrinking', () => {
+  assert.equal(emotionKeyForLocaleGreeting('ja'), 'bookReading');
   assert.equal(emotionKeyForLocaleGreeting('en'), 'teaDrinking');
 });
 
-test('playOptionsForLocaleGreeting: EN CapCut return; ja empty (palms defaults)', () => {
-  assert.deepEqual(playOptionsForLocaleGreeting('ja'), {});
-  assert.deepEqual(playOptionsForLocaleGreeting('en'), {
+test('playOptionsForLocaleGreeting: CapCut return for ja and en', () => {
+  const capCut = {
     returnCrossFadeMs: LOCALE_GREETING_RETURN_CROSS_FADE_MS,
     freezeUntilCrossFadeEnds: true
-  });
+  };
+  assert.deepEqual(playOptionsForLocaleGreeting('ja'), capCut);
+  assert.deepEqual(playOptionsForLocaleGreeting('en'), capCut);
   assert.equal(LOCALE_GREETING_RETURN_CROSS_FADE_MS, 1000);
 });
 
@@ -74,7 +75,7 @@ test('resolve alone does not consume; mark then same-day ja skips', () => {
     now
   });
   assert.equal(first.play, true);
-  assert.equal(first.emotionKey, 'palmsTogether');
+  assert.equal(first.emotionKey, 'bookReading');
   assert.equal(first.reason, 'ok');
   // Resolve must not burn quota before play starts.
   assert.deepEqual(readLocaleGreetingState(storage, now).locales, []);
@@ -126,7 +127,7 @@ test('resolveLocaleGreetingPlay: Focusing gate skips without consuming quota', (
     now
   });
   assert.equal(after.play, true);
-  assert.equal(after.emotionKey, 'palmsTogether');
+  assert.equal(after.emotionKey, 'bookReading');
   // Still unconsumed until mark — can retry same day after a failed play attempt.
   assert.deepEqual(readLocaleGreetingState(storage, now).locales, []);
 });

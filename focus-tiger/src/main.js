@@ -1036,7 +1036,7 @@ async function init() {
   onLocaleChange((locale) => {
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.LANGUAGE_CHANGED, {
       locale,
-      // EN tea: oneshot (no reverse) + ~1s CapCut idle
+      // JA book / EN tea: oneshot (no reverse) + ~1s CapCut idle
       playOptions: playOptionsForLocaleGreeting(locale)
     });
     if (decision.play && decision.emotionKey) {

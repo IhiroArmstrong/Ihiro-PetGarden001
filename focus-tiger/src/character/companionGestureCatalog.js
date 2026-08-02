@@ -78,6 +78,12 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     suggestedUses: '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）'
   }),
   Object.freeze({
+    id: 'bookReading',
+    sequence: 'bookReading',
+    label: '单程看书',
+    suggestedUses: '日语切语问候；正放一次（无倒放）→ ~1s CapCut Idle；≠ magic-book-reading'
+  }),
+  Object.freeze({
     id: 'goldenHaloPalms',
     sequence: 'goldenHaloPalms',
     label: '金环合掌',

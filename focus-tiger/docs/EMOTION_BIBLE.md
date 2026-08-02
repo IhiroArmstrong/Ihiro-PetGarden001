@@ -151,6 +151,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `WakeUp` | `WAKE_UP` | 2D：`stretch-reminder` 同源（调试伸懒腰唤醒） |
 | `WelcomeBack` | `welcomeBack`（**停接线**） | 素材仍在：`wave-hello` / `wave-hello-pingpong`；**不播** |
 | `magicBookReading` | `magicBookReading` → 同名序列 | `public/sprites/.../magic-book-reading/frame_001–046.png`（开场欢迎池试验） |
+| `bookReading` | `bookReading` → 同名序列 | `public/sprites/.../book-reading/frame_001–024.png`（日语切语；单程无倒放） |
 | `goldenHaloPalms` | `goldenHaloPalms` → 同名序列 | `public/sprites/.../golden-halo-palms/frame_001–094.png`（Honesty≥30 试验） |
 | `nodGreeting` | `nodGreeting` → `nodGreeting`（2D） | `public/sprites/.../nod-greeting/frame_001–023.png` |
 | `CuriousTilt` | `curiousTilt` → `blinkSmile`（2D；原 `tiltThink` 已停用） | `public/sprites/.../blink-smile/`（默认）；`tilt-think` 仅存量素材 |
@@ -182,7 +183,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 > | id / 序列 | 建议场景用途 |
 > |---|---|
 > | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感；产品好奇池与调试「组合试播」整段**同抗闪契约**：离开 Idle `clear:false`、段间硬切、产品播完 CapCut 回 Idle（调试可定格不回） |
-> | `teaDrinking` | 会话间隙温馨确认（非完成庆祝） |
+> | `teaDrinking` | 会话间隙温馨确认 / **English 切语**（非完成庆祝） |
+> | `bookReading` | **日本語切语**单程看书（≠ `magicBookReading`） |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮（**正放+倒放一次**烘焙 → ~1s CapCut Idle；禁 player pingpong） |
 > | `cloakSleep` | **进 DORMANT 过渡（已接线）**：live 非 DORMANT→DORMANT 时披毯→`sleeping`；**冷启动 `onAppReady` 不播**；≠ Rise |
@@ -257,7 +259,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 用户重新回来 | 开心挥手欢迎 | 情绪键 `welcomeBack`（2D 序列 `wave-hello`）；一次性播放，播完回落 `Idle` |
 | 当日尚未完成任何练习 | **Idle 闭目坐禅**（不上 Sleeping）+ 可忽略 Honesty 轻量提示 | 提示文案：`Quiet time elsewhere can live here too.` / 「别处的静心，也可以记在这里。」（邀请式；含首日）；可忽略、非强制 |
 | 用户完成 Honesty Check-in | 已在 Idle：选时长 → 呼吸引导 → 记账（**不**播 dormantWake）+ 短 `mindfulAcknowledge`（Slice A）。仅睡态：选时长 → `dormantWake` → 离 DORMANT（**不**叠 nod） | 按所选时长等同一次已完成会话；轻量 toast `HONESTY_CHECKIN_RECORDED` + 桥接；**不占用**共享提醒池。见 `SCENE_ANIMATION_WIRING.md` Slice A |
-| 应用内切换语言（ready locale 实际变化） | → `ja`：合十 `palmsTogether`；→ `en`：单程喝茶 `teaDrinking`（无倒放，末 ~1s CapCut）；同日同目标语最多 1 次；Focusing/Celebrating/叠层忙碌跳过不补发 | **Slice A 已实现**；详规 `SCENE_ANIMATION_WIRING.md` / `localeGreeting.js`；**禁止** Celebrating；EN 不用 nod-bow / 已试过的 magic-book |
+| 应用内切换语言（ready locale 实际变化） | → `ja`：单程看书 `bookReading`（无倒放，末 ~1s CapCut）；→ `en`：单程喝茶 `teaDrinking`（无倒放，末 ~1s CapCut）；同日同目标语最多 1 次；Focusing/Celebrating/叠层忙碌跳过不补发 | **Slice A 已实现**；详规 `SCENE_ANIMATION_WIRING.md` / `localeGreeting.js`；**禁止** Celebrating；`book-reading` ≠ `magic-book-reading` |
 
 #### DORMANT 唤醒仪式（Honesty Check-in Ritual）
 
@@ -652,5 +654,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.79 | 2026-08-02 | 切语 EN：`magicBookReading` 单程 + CapCut（告别 nod-bow 过密）；ja 仍 `palmsTogether` |
 | 0.80 | 2026-08-02 | 切语 EN 看书：QA 去掉末尾叠化 → 与欢迎池同 **硬切** Idle |
 | 0.81 | 2026-08-02 | 切语 EN：改 `teaDrinking` 单程 + CapCut（看书硬切已 OK；换茶） |
+| 0.82 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut（合十改调试） |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

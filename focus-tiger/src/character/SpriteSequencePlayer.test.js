@@ -359,11 +359,15 @@ test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
   assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
 });
 
-test('teaDrinking, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
+test('teaDrinking, bookReading, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
   assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
   assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);
   assert.equal(SPRITE_SEQUENCES.teaDrinking.fps, 8);
   assert.equal(SPRITE_SEQUENCES.teaDrinking.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.bookReading.animation, 'book-reading');
+  assert.equal(SPRITE_SEQUENCES.bookReading.frameCount, 24);
+  assert.equal(SPRITE_SEQUENCES.bookReading.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.bookReading.loopMode, 'none');
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.animation, 'ear-wiggle-head-touch');
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.frameCount, 54);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.fps, 10);
