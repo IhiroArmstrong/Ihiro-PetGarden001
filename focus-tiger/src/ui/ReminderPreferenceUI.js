@@ -356,11 +356,9 @@ export class ReminderPreferenceUI {
         padding: 0;
         border: 1px solid rgba(139, 115, 85, 0.22);
         border-radius: 50%;
-        background: linear-gradient(
-          165deg,
-          rgba(255, 252, 245, 0.98) 0%,
-          rgba(245, 235, 220, 0.96) 100%
-        );
+        background: rgba(255, 252, 245, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: rgba(92, 72, 52, 0.82);
         cursor: pointer;
         box-shadow:
@@ -400,9 +398,11 @@ export class ReminderPreferenceUI {
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
         border-radius: 18px;
-        background: rgba(255, 252, 245, 0.92);
-        border: 1px solid rgba(139, 115, 85, 0.2);
-        box-shadow: 0 10px 30px rgba(44, 31, 20, 0.12);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         color: #2c1f14;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
         pointer-events: auto;
@@ -465,7 +465,7 @@ export class ReminderPreferenceUI {
         padding: 0;
         border-radius: 10px;
         border: 1px solid rgba(139, 115, 85, 0.3);
-        background: rgba(255, 252, 245, 0.95);
+        background: rgba(255, 252, 245, 0.78);
         color: #4a3a28;
         font-size: 18px;
         line-height: 1;

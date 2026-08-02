@@ -15,6 +15,15 @@ import {
   REFLECTION_QUESTION_KEYS
 } from './ReflectionFlowState.js';
 import { normalizeIntentionText, formatIntentionEcho, intentionEchoKey } from '../core/SessionIntentionStore.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_BORDER_STRONG,
+  GLASS_FILL,
+  GLASS_FILL_STRONG,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { REFLECTION_ANSWER_FIELDS } from './ReflectionFlowState.js';
@@ -94,11 +103,12 @@ export class TigerReflectionMoment {
       'z-index:15',
       'width:min(460px,calc(100vw - 48px))',
       'transform:translate(-50%, 12px)',
-      'padding:20px 22px 16px',
-      'border:1px solid rgba(139,115,85,.2)',
-      'border-radius:18px',
-      'background:rgba(255,252,245,.92)',
-      'box-shadow:0 10px 30px rgba(44,31,20,.12)',
+      'padding:14px 18px 12px',
+      GLASS_BORDER,
+      `border-radius:${GLASS_RADIUS}`,
+      `background:${GLASS_FILL}`,
+      GLASS_BLUR_CSS,
+      `box-shadow:${GLASS_SHADOW}`,
       'color:#2c1f14',
       `transition:opacity ${FADE_MS}ms ease,transform ${FADE_MS}ms ease`,
       'opacity:0',
@@ -135,8 +145,8 @@ export class TigerReflectionMoment {
       'padding:9px 12px',
       'font-size:14px',
       'color:#2c1f14',
-      'background:rgba(255,255,255,.75)',
-      'border:1px solid rgba(139,115,85,.3)',
+      'background:rgba(255,255,255,.55)',
+      GLASS_BORDER_STRONG,
       'border-radius:10px',
       'outline:none',
       'box-sizing:border-box'
@@ -165,10 +175,11 @@ export class TigerReflectionMoment {
       'padding:7px 16px',
       'font-size:13px',
       'color:#4a3a28',
-      'background:rgba(255,255,255,.6)',
-      'border:1px solid rgba(139,115,85,.3)',
+      `background:${GLASS_FILL_STRONG}`,
+      GLASS_BORDER_STRONG,
       'border-radius:16px',
-      'cursor:pointer'
+      'cursor:pointer',
+      'box-shadow:0 1px 0 rgba(255,255,255,.7) inset'
     ].join(';');
 
     this.skipBtn = document.createElement('button');

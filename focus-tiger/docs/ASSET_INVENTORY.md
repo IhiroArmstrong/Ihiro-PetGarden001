@@ -1,7 +1,7 @@
 # ASSET_INVENTORY.md — 美术 / 动画素材盘点
 
-**最后盘点**：2026-08-01（UTC+8）· 磁盘复扫  
-**对照上次**：2026-07-20 文档盘点（当时 26 目录 / ~566 帧）  
+**最后盘点**：2026-08-02（UTC+8）· 三套已烘焙 pingpong 入库试验  
+**对照上次**：2026-08-01 文档盘点（当时 29 目录 / ~682 帧）  
 **互动页**：同名 Canvas（聊天旁可打开）；本文档为可入库的镜像记录。
 
 扫描范围：`public/sprites/tiger-cub/monk-robe-default/`、`spriteManifest.js`、`EmotionController.js`、`public/models/`、仓库根目录 `*-transparent.zip`、`docs/NEW_ASSETS_2026-07-18*.md`。
@@ -14,9 +14,9 @@
 
 | 指标 | 数值 |
 |---|---|
-| 已安装动画目录 | **29** |
-| 磁盘 PNG 帧合计 | **682** |
-| 相对 07-20 文档新增目录 | **3**（`blink-breathe` / `cloak-sleep` / `rise-stretch-casual`；后二者主路径已接线） |
+| 已安装动画目录 | **32** |
+| 磁盘 PNG 帧合计 | **860**（+178：38+46+94） |
+| 相对 08-01 文档新增目录 | **3**（`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`） |
 | 已归档移出 public | **1**（breath-halo-expand → `art-reference/sprites-archived/`） |
 | 待业务触发（非「已取代」） | 见 §「库存→业务」；政策：**须全部接入场景**（分 Slice B/C），禁止长期仅调试 |
 | 3D GLB（奖励柜/垫底） | 7+ |
@@ -24,11 +24,22 @@
 **主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **2 fps**（旧 `sleeping/` 目录保留）。  
 **2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。  
 **2026-07-31**：场景→产品触发对照见 **`SCENE_ANIMATION_WIRING.md`**（v1 Slice A 语言/Honesty Idle）。  
-**2026-08-01**：用户 + 设计师——库存须进业务场景；接线表升格 Slice B（活跃陪伴）/ C（荷花）；**勿接**已取代目录。
+**2026-08-01**：用户 + 设计师——库存须进业务场景；接线表升格 Slice B（活跃陪伴）/ C（荷花）；**勿接**已取代目录。  
+**2026-08-02**：三套已烘焙 pingpong 试验入库；开场欢迎池加权；Honesty≥30 → `goldenHaloPalms`。
 
 ---
 
 ## 相对上次盘点的增量
+
+### 2026-08-02 · 已烘焙 pingpong 三套（试验接线）
+
+| 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
+|---|---|---:|---|
+| Yin坐禅-挥手-pingpong_frames | `wave-hello-pingpong` | 38 | **停接线**（2026-08-02）；素材保留；960×960 + displayFit |
+| Yin坐禅-魔法金光五角星-…-pingpong_frames 3 | `magic-book-reading` | 46 | 开场欢迎池 → `magicBookReading` |
+| YIn坐禅-衣服金光-…_94 | `golden-halo-palms` | 94 | Honesty≥30 → `goldenHaloPalms`（替 breathHaloHq 产品路径） |
+
+素材均已含倒放段：产品路径 **正放一次** + CapCut，**禁**再开 player `loopMode: pingpong`。
 
 ### 2026-07-19 12:56 · 抠图算法系统性升级（整批替换）
 
@@ -79,7 +90,10 @@
 | idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
 | blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
 | blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
-| wave-hello | 19 | waveHello / waveHelloWelcome | welcomeBack→`waveHelloWelcome`（调试/日后偶遇）；**开场欢迎池已撤**（2026-08-02） | 调试可播；禁 player pingpong |
+| wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
+| wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
+| magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
+| golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |

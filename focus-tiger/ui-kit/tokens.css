@@ -12,15 +12,18 @@
 
   /* Control chrome only (tracks, dots, thumbnail wells) — not for prose cards */
   --color-panel: #e4e1db;
-  --color-panel-soft: rgba(228, 225, 219, 0.92);
+  --color-panel-soft: rgba(255, 252, 245, 0.62);
 
-  /* Prose containers — Companion Mode option-card cream */
-  --color-surface-warm: #f8f1e4;
-  --color-surface-warm-top: rgba(255, 255, 255, 0.96);
-  --color-surface-warm-selected-top: #fff6e6;
+  /* Prose containers — Arrival glass (2026-08-02; tiger must show through) */
+  --color-surface-warm: rgba(255, 252, 245, 0.62);
+  --color-surface-warm-top: rgba(255, 252, 245, 0.72);
+  --color-surface-warm-selected-top: rgba(255, 246, 230, 0.78);
   --color-surface-warm-selected-end: rgba(224, 185, 121, 0.34);
-  --color-surface-border: rgba(139, 115, 85, 0.22);
-  --color-surface-border-strong: rgba(139, 115, 85, 0.48);
+  --color-surface-border: rgba(139, 115, 85, 0.14);
+  --color-surface-border-strong: rgba(139, 115, 85, 0.28);
+  --color-glass-fill: rgba(255, 252, 245, 0.62);
+  --color-glass-fill-strong: rgba(255, 252, 245, 0.78);
+  --color-glass-fill-chrome: rgba(255, 252, 245, 0.72);
 
   /* Accent from cushion / robe trim — primary CTA */
   --color-accent: #b5623a;

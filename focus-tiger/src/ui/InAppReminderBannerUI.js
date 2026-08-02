@@ -117,9 +117,11 @@ export class InAppReminderBannerUI {
         max-width: min(360px, calc(100vw - 140px));
         padding: 10px 12px 10px 16px;
         border-radius: 18px;
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        background: rgba(255, 252, 245, 0.94);
-        box-shadow: 0 8px 22px rgba(44, 31, 20, 0.1);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         color: #4a3a28;
         font-family: 'Noto Sans SC', system-ui, sans-serif;
         font-size: 14px;

@@ -70,5 +70,17 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     sequence: 'blinkBreathe',
     label: '眨眼深呼吸',
     suggestedUses: '调试候选；Rise 主路径已改 riseStretchCasual'
+  }),
+  Object.freeze({
+    id: 'magicBookReading',
+    sequence: 'magicBookReading',
+    label: '魔法书阅读',
+    suggestedUses: '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）'
+  }),
+  Object.freeze({
+    id: 'goldenHaloPalms',
+    sequence: 'goldenHaloPalms',
+    label: '金环合掌',
+    suggestedUses: 'Honesty≥30 长补登试验；已烘焙 pingpong；≠ breathHaloHq 调试备选'
   })
 ]);

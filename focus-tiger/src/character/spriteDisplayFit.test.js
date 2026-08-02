@@ -50,4 +50,24 @@ describe('spriteDisplayFit', () => {
     assert.equal(PALMS_FIT.height, 960);
     assert.equal(PALMS_FIT.content.h, 734);
   });
+
+  it('waveHelloPingpong displayFit uses scaleMul 1.5 and cushion re-anchor', () => {
+    const waveFit = SPRITE_SEQUENCES.waveHelloPingpong.displayFit;
+    assert.equal(waveFit?.width, 960);
+    assert.equal(waveFit?.scaleMul, 1.5);
+    const container = { width: 800, height: 600 };
+    const t = computeSpriteDisplayTransform(waveFit, container);
+    const withoutMul = computeSpriteDisplayTransform(
+      { ...waveFit, scaleMul: 1 },
+      container
+    );
+    assert.ok(Math.abs(t.scale / withoutMul.scale - 1.5) < 0.001);
+
+    const ref = contentScreenRect(SPRITE_DISPLAY_REFERENCE, 800, 600);
+    const src = contentScreenRect(waveFit, 800, 600);
+    const bottom = src.anchorY * t.scale + t.ty;
+    const ax = src.anchorX * t.scale + t.tx;
+    assert.ok(Math.abs(bottom - ref.anchorY) < 0.5);
+    assert.ok(Math.abs(ax - ref.anchorX) < 0.5);
+  });
 });

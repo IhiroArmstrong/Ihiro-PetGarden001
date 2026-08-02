@@ -316,7 +316,8 @@ export class HonestyCheckInController {
     this.ui.hide();
     // 轻量确认（类似微仪式 toast）；须在桥接前，abort 路径不得调用
     this.notifyRecorded();
-    // Slice A/B：Idle 补登 — ≤29 nod / ≥30 breathHaloHq；睡态已有 dormantWake，不叠
+    // Slice A/B：Idle 补登 — ≤29 nod / ≥30 goldenHaloPalms（试验）；睡态已有 dormantWake，不叠
+    // breathHaloHq 仍保留调试/备选。
     if (!wokeFromDormant) {
       const decision = resolveSceneAnimation({
         event: SCENE_ANIM_EVENTS.HONESTY_COMPLETED,
