@@ -158,11 +158,11 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
-> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」（后者未接线）。**2026-08-02 晚试验**：产品路径改播已烘焙 `wave-hello-pingpong`（38 帧正放一次 → ~1s CapCut Idle；禁再 player pingpong）；并**重新纳入**冷启动欢迎池（与 `magicBookReading` / `nodGreeting` 加权）。旧 `waveHelloWelcome`（19 帧源 + 代码烘焙）仅入库试播对照。优先级低于 `Celebrating`。
+> **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。触发源见第五部分「用户重新回来 → 开心挥手欢迎」与「无互动约 10 分钟 → 30% 挥手」（后者未接线）。**2026-08-02 晚**：产品路径播已烘焙 `wave-hello-pingpong`（正放一次 → ~1s CapCut；960×960 + `displayFit.scaleMul` 1.5）；**再次撤出冷启动欢迎池**（开场观感不行，与旧挥手同结论）。键保留调试；建议改接回前台 / 10min 偶遇（待拍板）。旧 `waveHelloWelcome` 仅入库对照。优先级低于 `Celebrating`。
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 
-> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池成员之一**（同日 1 次，与挥手新素材 / 魔法书加权）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
+> **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池成员**（与 `magicBookReading` 加权；挥手已撤）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
 
 > **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验）**：已烘焙 pingpong 帧，正放一次；**fps 4**（相对初入库 8 放慢 50%）。`magicBookReading` 末帧可接 Idle → **回落硬切（无 CapCut）**；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线；验收前勿标永久产品定稿。
 
@@ -648,5 +648,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.73 | 2026-08-02 | 误诊「仅正放」撤回；根因 oneshot `_finish` hide 跳过 CapCut；`WelcomeBack`/`earWiggle` 烘焙正+倒一次 + CapCut |
 | 0.74 | 2026-08-02 | 冷启动欢迎池撤出 `welcomeBack`；开场仅 `nodGreeting`（挥手观感未验收） |
 | 0.75 | 2026-08-02 | 入库试验：`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`；欢迎池加权重开；Honesty≥30 → `goldenHaloPalms` |
+| 0.76 | 2026-08-02 | 挥手再撤出开场；`waveHelloPingpong` displayFit 收紧包围盒 + `scaleMul` 1.5；开场池仅书+点头 |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

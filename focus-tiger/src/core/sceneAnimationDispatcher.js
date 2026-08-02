@@ -45,15 +45,14 @@ export const CURIOSITY_CHANCE = 0.05;
  */
 
 /**
- * 冷启动同日欢迎池（试验 · 2026-08-02 晚）。
- * 新入库已烘焙 pingpong：`welcomeBack`（wave-hello-pingpong）与 `magicBookReading`；
- * 仍保留 `nodGreeting`。同日限 1 次；验收后再定权重/是否固化。
+ * 冷启动同日欢迎池（试验 · 2026-08-02 晚修订）。
+ * 挥手 `welcomeBack`（新旧素材）开场观感不行 → **撤出**；池内 `magicBookReading` + `nodGreeting`。
+ * `welcomeBack` 键保留（调试 / 日后回前台或 10min 偶遇），勿从本池抽。
  * @type {ReadonlyArray<WeightedEntry>}
  */
 export const WELCOME_POOL = Object.freeze([
-  Object.freeze({ key: 'welcomeBack', weight: 40 }),
-  Object.freeze({ key: 'magicBookReading', weight: 40 }),
-  Object.freeze({ key: 'nodGreeting', weight: 20 })
+  Object.freeze({ key: 'magicBookReading', weight: 60 }),
+  Object.freeze({ key: 'nodGreeting', weight: 40 })
 ]);
 
 /** Light completion / micro-ritual — never celebrate-dance */

@@ -4,8 +4,18 @@
  * 用内容包围盒把非基准序列缩放到与 idle-breathing 同大、同落点。
  */
 
-/** @typedef {{ x: number, y: number, w: number, h: number }} ContentBounds */
-/** @typedef {{ width: number, height: number, content: ContentBounds }} SpriteDisplayFit */
+/**
+ * @typedef {{ x: number, y: number, w: number, h: number }} ContentBounds
+ * @typedef {{
+ *   width: number,
+ *   height: number,
+ *   content: ContentBounds,
+ *   scaleMul?: number
+ * }} SpriteDisplayFit
+ *
+ * `scaleMul`：在「与 idle 同高」基准上再乘的视觉倍率（如 1.5 = 再放大约 50%）。
+ * 缺省 1。仍按底边中点（蒲团）对齐，避免只放大不重锚导致飘移。
+ */
 
 /**
  * 主线基准画幅（idle-breathing / blink-smile 等 1056×864）。
@@ -93,7 +103,10 @@ export function computeSpriteDisplayTransform(
   const src = contentScreenRect(sourceFit, cw, ch);
   if (src.height < 1) return { scale: 1, tx: 0, ty: 0 };
 
-  const scale = ref.height / src.height;
+  const sizeMul = Number(sourceFit.scaleMul);
+  const mul =
+    Number.isFinite(sizeMul) && sizeMul > 0 ? sizeMul : 1;
+  const scale = (ref.height / src.height) * mul;
   // p' = p * scale + (tx, ty)；锚点（底边中点）对齐
   const tx = ref.anchorX - src.anchorX * scale;
   const ty = ref.anchorY - src.anchorY * scale;

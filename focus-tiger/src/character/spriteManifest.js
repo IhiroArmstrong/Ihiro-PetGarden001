@@ -254,7 +254,8 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 2026-08-02 新入库：挥手已烘焙 pingpong（正+倒一次，38 帧）；正放一遍即可，禁再 player pingpong。
-  // 960×960 → displayFit 对齐 idle；产品 welcomeBack / 开场欢迎池试验用本序列。
+  // 960×960 → displayFit 对齐 idle 蒲团锚点，再 scaleMul 1.5（约再放大 50%）。
+  // 2026-08-02 晚：开场欢迎池观感不行 → 撤出冷启动；键保留调试 / 日后回前台或 10min 偶遇。
   waveHelloPingpong: {
     animation: 'wave-hello-pingpong',
     frameCount: 38,
@@ -266,7 +267,9 @@ export const SPRITE_SEQUENCES = {
     displayFit: {
       width: 960,
       height: 960,
-      content: { x: 0, y: 26, w: 960, h: 850 }
+      // alpha>80 收紧包围盒，减少全画幅透明边导致的偏位
+      content: { x: 50, y: 68, w: 910, h: 807 },
+      scaleMul: 1.5
     }
   },
 

@@ -93,7 +93,7 @@
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | **真合十** `palmsTogether` | ack | **A′ 已实现**（Dispatcher） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额，resolve 不预扣）；Focusing / Celebrating / 叠层忙碌跳过不补发 |
 | 语言切换 → **English**（及日后其它 ready） | `mindfulAcknowledge`（`nod-bow`） | ack | **Slice A · 已实现** | 同上限频；不用 dance |
-| 当日首次冷启动问候 | **加权池试验**：`welcomeBack`（`wave-hello-pingpong`）40% · `magicBookReading` 40% · `nodGreeting` 20%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。已烘焙 pingpong → 正放一次；`welcomeBack`/`nodGreeting` CapCut；`magicBookReading` **硬切** Idle（末帧可衔接）。禁再 player pingpong。验收后再定权重/固化 |
+| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**挥手新旧均撤出开场**（2026-08-02 再确认）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut。禁再 player pingpong |
 
 > **漂移注（2026-08-01）**：Slice A 规格与设计师均要求日语 = **合十**（`palms-together`）。当前实现：`emotionKeyForLocaleGreeting('ja')` → `intentionSet`，而 `EmotionController.intentionSet` 播的是 **`intentionNod`（nod-bow）**——画面上是鞠躬不是合十。`palmsTogether` 仍仅调试。**A′ 修复**：切语 ja 改为播 `palmsTogether`（或新键 `localeGreetingJa`），与 Arrival Choose 的 `intentionSet`/nod 解耦；单测锁「ja → palms 素材目录」。
 
