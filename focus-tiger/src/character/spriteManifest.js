@@ -27,6 +27,8 @@
  *   **额外**停留的毫秒数。未设置的帧按 fps 均匀播放。
  * @property {import('./spriteDisplayFit.js').SpriteDisplayFit} [displayFit]
  *   非基准画幅（如 960×960 相对 1056×864）时，用内容包围盒把角色缩放到与 idle 同大同落点。
+ * @property {{ from: number, to: number }} [playbackZoom]
+ *   播放期镜头拉近：第 1 帧 `from`、末帧 `to`（线性插值，如 1 → 1.58）。
  */
 
 /**
@@ -347,6 +349,8 @@ export const SPRITE_SEQUENCES = {
 
   // MilestoneGlow 变体：闭目坐禅 + 空中发光琉璃星石（与 milestone-glow 同 emotion key）。
   // 产品按 streak 节点轮换（见 pickMilestoneGlowVariant）；63 帧 @ 6fps ≈10.5s 仪式带。
+  // 不抠图整幅烧录；播放期镜头 100% → 刚好顶满 16:9 宽度（16/11 ≈145.45%）。
+  // 算法：1056×864 contain 先铺满高度；宽占比 (1056/864)/(16/9)=11/16 → 拉近倍率 16/11。
   milestoneGlowStar: {
     animation: 'meditation-star-reward',
     frameCount: 63,
@@ -354,7 +358,8 @@ export const SPRITE_SEQUENCES = {
     preload: false,
     loop: false,
     loopMode: 'none',
-    holdLastFrame: true
+    holdLastFrame: true,
+    playbackZoom: { from: 1, to: 16 / 11 }
   },
 
   // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。

@@ -117,7 +117,7 @@
 | tilt-think | 20 | tiltThink | **勿接主路径** | 仅调试 |
 | palms-together | 14 | palmsTogether | 仅调试（Choose 已改 nod；日语切语已改 bookReading） | 调试保留 |
 | milestone-glow | 27 | milestoneGlow | **已接线** streak-7 | — |
-| meditation-star-reward | 63 | milestoneGlowStar | **已接线** streak-21 / streak-100（同 `milestoneGlow` emotion） | 2026-08-03 入库 |
+| meditation-star-reward | 63 | milestoneGlowStar | **已接线** streak-21 / streak-100（同 `milestoneGlow` emotion） | 2026-08-03 入库；**同日改用不抠图源**（星空/白底烧录整幅，替透明抠图） |
 | breath-halo-hq | 16 | breathHaloHq | 仅清单 | **Slice B**：Glow 备选 / 长补登光环 |
 | tea-drinking | 24 | teaDrinking | **试验**：English 切语 + 深夜池 | Slice B 深夜/茶歇（冷却） |
 | yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却） |
