@@ -529,6 +529,13 @@ export class OnboardingHintsUI {
 
   _promoteNextAuto() {
     if (this._remedyIds.size > 0) return;
+    // ⋯ / drawer open: never re-promote Sit tip under the panel after row hover.
+    if (
+      document.body.classList.contains('ft-wide-more-open') ||
+      document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
+    ) {
+      return;
+    }
     const openAutos = [...this._visibleIds].filter(
       (id) => !this._remedyIds.has(id) && getHintTriggerMode(id) === 'auto'
     );
