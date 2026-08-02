@@ -226,6 +226,40 @@ test('welcomeBack plays baked waveHelloPingpong once then CapCut idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
+test('magicBookReading plays once then hard-cuts to idle (no CapCut)', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+  let completed = 0;
+
+  controller.playEmotion('magicBookReading', {
+    onComplete: () => {
+      completed += 1;
+    }
+  });
+
+  assert.equal(plays[0].name, 'magicBookReading');
+  assert.equal(plays[0].options.returnCrossFadeMs, 0);
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, undefined);
+  assert.equal(completed, 1);
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
 test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
   const plays = [];
   const spritePlayer = {

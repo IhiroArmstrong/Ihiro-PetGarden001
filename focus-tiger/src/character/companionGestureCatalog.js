@@ -75,7 +75,7 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     id: 'magicBookReading',
     sequence: 'magicBookReading',
     label: '魔法书阅读',
-    suggestedUses: '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong'
+    suggestedUses: '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）'
   }),
   Object.freeze({
     id: 'goldenHaloPalms',

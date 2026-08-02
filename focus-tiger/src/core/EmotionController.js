@@ -450,12 +450,10 @@ export class EmotionController {
         }
       },
 
-      // 开场试验：魔法书阅读（已烘焙 pingpong）→ CapCut Idle。
+      // 开场试验：魔法书阅读（已烘焙 pingpong）→ 末帧可接 Idle，回落硬切（无 CapCut）。
       magicBookReading: (options = {}) => {
         this._playCompanionSequenceOnce('magicBookReading', options, {
-          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
-          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
-          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+          returnCrossFadeMs: options.returnCrossFadeMs ?? 0
         });
       },
 
