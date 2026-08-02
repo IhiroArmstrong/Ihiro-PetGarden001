@@ -93,7 +93,7 @@
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
-| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut |
+| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台仍检深夜 |
 
 > **A′ 演进（2026-08-02）**：切语 ja 曾 `palmsTogether` → 现 `bookReading`（入库单程看书 + CapCut）。切语 en：`magicBookReading` 硬切（QA OK）→ `teaDrinking` + CapCut（QA OK）。`palmsTogether` 仍调试可播。
 
@@ -122,7 +122,7 @@
 | 用户场景 | 建议键 / 素材 | 档位 | 状态 | 备注 |
 |---|---|---|---|---|
 | 清晨首次打开 | `yawn-stretch` / `stretchReminder` 加权 | ack | Slice B | 日限 1；本地时区早晨窗 |
-| 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案 |
+| 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案。**勿**与冷启动欢迎同 tick 叠播（`shouldAttemptLateNightOnBoot`） |
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
@@ -226,4 +226,5 @@
 | 2026-08-01 | **实现**：`sceneAnimationDispatcher` + Emotion 合十/光环/陪伴手势；main / Honesty / 完成 / 微仪式 / 舒展 / 欢迎 / 深夜 / 好奇接线；unit + language-switch e2e 钩更新 |
 | 2026-08-02 | 切语 EN：曾 `magicBookReading` 硬切（QA OK）→ 改 `teaDrinking` 单程 + CapCut（QA OK） |
 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut |
+| 2026-08-02 | **修**：冷启动欢迎与深夜同 tick 叠播 → tea/yawn 误盖开场；`shouldAttemptLateNightOnBoot` 互斥 + §6.9 |
 
