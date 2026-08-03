@@ -331,6 +331,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /develop-integrity/,
       /occupancy:\s*"releasable"/,
       /两层验收/,
+      /预览豁免（严格/,
+      /focus-tiger\/src\/\*\*/,
       /comm -12/,
       /origin\/develop\.\.\.HEAD/,
       /HEAD\.\.\.origin\/develop/

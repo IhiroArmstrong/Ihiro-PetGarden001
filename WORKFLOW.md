@@ -74,6 +74,8 @@ feature/*        ●        ●
    | `active` | **仍在占用中** | **否**（别人的锁 → 停手汇报；清锁须强制清锁口令） |
    | `releasable` | **已完成待释放，可以被下一个任务接管** | **可以**（下一会话可删除/覆盖为己锁，**不需要**「我确认要强制清除锁」；仍须在汇报里写明接管了哪把锁） |
 
+   > **词义澄清（强制）**：上表 `releasable` **只**表示 `.ft-session-lock` 的占用态（可被下一任务接管）。**不是**「`develop` 随时可发布 / 主干完整性」。主干合入纪律请用 **develop-integrity**，见下文「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。口语勿把二者都叫 releasable。
+
    规则：
    - **创建锁** → `occupancy` 必须为 `active`，并写 `started_at` / `updated_at`。
    - **会话中更新** `task` / 进度说明 → 保持 `active`，并刷新 `updated_at`。
@@ -170,9 +172,23 @@ git log origin/develop..HEAD --stat    # 本支将带进 develop 的变更
 git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的变更
 ```
 
+#### 预览豁免（严格 · 防滥用）
+
+可勾选「跳过 Vite/产品壳预览」**当且仅当**同时满足：
+
+1. 对 `origin/develop...HEAD` 做 `git diff --name-only`，**每一个**改动路径都**不**落在下列**运行时路径**（命中任一 → **整 PR 不得豁免**，即使同批还有 `.md`）：
+   - `focus-tiger/src/**`
+   - `focus-tiger/public/**`
+   - `focus-tiger/e2e/**`
+   - `focus-tiger/index.html`（及会进 Vite 入口的其它产品 HTML）
+   - 任意 `*.vue`；以及 `focus-tiger/src` 下的 `*.css` / `*.html`（已含于 `src/**`）
+2. **禁止**仅凭「文件后缀是 `.md`」「PR 标题写了 docs」「改的是脚本注释」自称豁免。  
+3. **允许**出现在豁免 PR 里的典型路径：`**/*.md` / `**/*.mdc`、仓库根 `WORKFLOW.md`、`.github/**`（模板/workflow 文案）、`focus-tiger/docs/**`、以及**不进产品 Vite 打包**的门禁/检测脚本（如 `focus-tiger/scripts/rules-authority-registry.js`、`docs-check` 相关）。若脚本改动会改变**产品运行时行为** → 仍不得豁免。  
+4. 豁免时仍须勾选并写清理由；仍须跑本条的 **develop 同步判定**（文件重叠则先 rebase）。
+
 #### 与 PR 模板
 
-开向 `develop` 的 PR 须勾选模板中 **「已在 feature/fix worktree 完成预览确认」** 项（见 `.github/PULL_REQUEST_TEMPLATE.md`）。未勾且无「纯文档/无 UI」豁免说明 → 审查时应拦回补做。
+开向 `develop` 的 PR 须勾选模板中合前预览项（见 `.github/PULL_REQUEST_TEMPLATE.md`）。未勾且不满足上节豁免 → 审查时应拦回补做。
 
 ---
 

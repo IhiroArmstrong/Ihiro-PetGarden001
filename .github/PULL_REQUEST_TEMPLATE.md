@@ -52,10 +52,11 @@
 
 ## 合前预览确认（合入 develop 门闩）
 
-> 权威：仓库根 `WORKFLOW.md`「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。与关单 tip 规则并列，**不是**「先合再测」。
+> 权威：仓库根 `WORKFLOW.md`「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。与关单 tip 规则并列，**不是**「先合再测」。豁免条件见该节「预览豁免（严格）」。
 
-- [ ] **已在本 PR 的 feature/fix worktree** 起过 Vite（或等价预览），用 Safari/系统浏览器确认主路径无阻塞问题；**或** 纯文档 / 无 UI / 无产品壳可见改动 → 勾此项并写一句豁免理由：_______________
-- [ ] 合入前已按 `WORKFLOW.md` 跑过 **develop 同步判定**（`git diff --name-only origin/develop...HEAD` ∪ `HEAD...origin/develop` + `comm -12`）：无需 rebase **或** 已 rebase/merge 并重测
+- [ ] **已在本 PR 的 feature/fix worktree** 起过 Vite（或等价预览），用 Safari/系统浏览器确认主路径无阻塞问题  
+  **或者** 满足豁免：`git diff --name-only origin/develop...HEAD` **不含** `focus-tiger/src/**`、`focus-tiger/public/**`、`focus-tiger/e2e/**`、产品入口 HTML、任意 `*.vue`（禁止「有个 .md 就算纯文档」；混有运行时路径 → 整 PR 不得豁免）→ 勾此项并写豁免理由：_______________
+- [ ] 合入前已按 `WORKFLOW.md` 跑过 **develop 同步判定**（`git diff --name-only origin/develop...HEAD` / `HEAD...origin/develop` + `comm -12`）：无需 rebase **或** 已 rebase/merge 并重测
 
 ---
 

@@ -72,8 +72,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条：只推非运行时） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注；把「下班前 Git 同步」做成合并 main / 推进 PR；把业务代码/状态机/待确认 diff **默认一并 flush**；下班汇总不标「有/无业务逻辑改动」 |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
-| `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」 | 主张可按时间戳 / mtime / git log 推断占用态或自动清别人的锁；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP |
-| `git-feature-merge-preview` | 「合前预览 / develop-integrity 见 `WORKFLOW.md`」；`TEST_TRACKER` / `COLLAB` / PR 模板可一行引用两层验收 | 主张合入主干后再做首次预览；把 `qa-develop-tip` 读成可替代合前预览；把 develop-integrity 与 session-lock `releasable` 混为一谈；完整平行复述 rebase/`comm -12` SOP |
+| `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`） | 主张可按时间戳 / mtime / git log 推断占用态或自动清别人的锁；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布 |
+| `git-feature-merge-preview` | 「合前预览 / **develop-integrity**（≠ session-lock `releasable`）见 `WORKFLOW.md`」；`TEST_TRACKER` / `COLLAB` / PR 模板可一行引用两层验收与严格豁免 | 主张合入主干后再做首次预览；把 `qa-develop-tip` 读成可替代合前预览；把 develop-integrity 与 session-lock `releasable` 混为一谈；笼统「纯文档」跳过预览（未按运行时路径白/黑名单）；完整平行复述 rebase/`comm -12` SOP |
 | `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
