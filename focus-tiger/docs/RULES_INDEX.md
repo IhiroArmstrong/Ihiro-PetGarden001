@@ -125,13 +125,14 @@ cd focus-tiger && npm run rules:doc-sync
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
+| `HINTS_WIRING.md` | 场景 → Hint 接线（时刻 × 互斥/门闩/批次；对标动画接线管法） |
 | `CHARACTER_BIBLE.md` | 角色设定 |
 | `DESIGN.md` | 产品语义与玩法 |
 | `RESPONSIVE_LAYOUT.md` | 窄屏 / 移动布局 |
 | `SHARED_RESOURCES.md` | 共享资源波及面 |
 | `EDGE_CASES.md` | 边角观察册 |
 | `RETENTION_FUNNEL.md` | 留存漏斗事件 |
-| `ONBOARDING_HINTS.md` / `HONESTY_BRIDGE_CTA.md` 等 | 对应功能详规 |
+| `ONBOARDING_HINTS.md` / `HONESTY_BRIDGE_CTA.md` 等 | 对应功能详规（Hints 文案/tier；接线见 `HINTS_WIRING.md`） |
 | `TASKS.md` | 任务序列（排期，非门禁） |
 
 仓库根若干同名文件（如 `SCENARIO_TESTS.md`）仅为**指针**，权威在 `focus-tiger/docs/`。
