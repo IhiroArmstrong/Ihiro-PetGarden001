@@ -104,21 +104,32 @@ export function pickCelebrateDanceVariant(random = Math.random) {
 }
 
 /**
- * MilestoneGlow 序列变体（同 emotion key `milestoneGlow`）。
- * 按 streak 节点轮换：7=金辉蝴蝶；21/100=琉璃星石。无 nodeId（调试）默认蝴蝶。
+ * MilestoneGlow 序列变体。
+ * - streak-7：金辉蝴蝶 ↔ 鹦鹉信使 **50/50**（2026-08-03 拍板）
+ * - streak-21 / streak-100：琉璃星石
+ * - 无 nodeId（调试）默认蝴蝶
  */
 export const MILESTONE_GLOW_VARIANT_BY_NODE = Object.freeze({
-  'streak-7': 'milestoneGlow',
   'streak-21': 'milestoneGlowStar',
   'streak-100': 'milestoneGlowStar'
 });
 
+/** streak-7 仪式视觉二选一（等权） */
+export const STREAK_7_MILESTONE_VISUALS = Object.freeze([
+  'milestoneGlow',
+  'parrotEarVisit'
+]);
+
 /**
  * @param {string | null | undefined} nodeId
- * @returns {'milestoneGlow' | 'milestoneGlowStar'}
+ * @param {() => number} [random] 可注入；默认 Math.random
+ * @returns {'milestoneGlow' | 'milestoneGlowStar' | 'parrotEarVisit'}
  */
-export function pickMilestoneGlowVariant(nodeId) {
+export function pickMilestoneGlowVariant(nodeId, random = Math.random) {
   const id = typeof nodeId === 'string' ? nodeId : '';
+  if (id === 'streak-7') {
+    return random() < 0.5 ? 'milestoneGlow' : 'parrotEarVisit';
+  }
   const mapped = MILESTONE_GLOW_VARIANT_BY_NODE[id];
   return mapped === 'milestoneGlowStar' ? 'milestoneGlowStar' : 'milestoneGlow';
 }
@@ -379,8 +390,8 @@ export class EmotionController {
       },
 
       // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
-      // 里程碑仪式：产品路径按 streak 节点选变体（金辉蝴蝶 / 琉璃星石）；
-      // 末帧固定停留 2.5s，让烧录特效自然收束后回落。
+      // 里程碑仪式：产品路径按 streak 节点选变体（金辉蝴蝶 / 琉璃星石 / streak-7 鹦鹉二选一）；
+      // 末帧固定停留 2.5s（鹦鹉走 CapCut 回 Idle，无末帧 hold），让烧录特效自然收束后回落。
       milestoneGlow: (options = {}) => {
         this._cancelMilestoneHold();
         if (!this.spritePlayer) {
@@ -390,13 +401,21 @@ export class EmotionController {
           this._finishOneShot(options, 'milestoneGlow');
           return;
         }
-        this._leaveIdleBaseline();
-        this._use2DMainline();
-        const holdPose = Boolean(options.holdPose);
         const sequenceName =
           typeof options.sequenceName === 'string' && options.sequenceName
             ? options.sequenceName
-            : pickMilestoneGlowVariant(options.milestoneNodeId);
+            : pickMilestoneGlowVariant(
+                options.milestoneNodeId,
+                typeof options.random === 'function' ? options.random : Math.random
+              );
+        // streak-7 稀有/等权：鹦鹉信使仍记 milestone 节点，走陪伴 CapCut 回落。
+        if (sequenceName === 'parrotEarVisit') {
+          this._implementations.parrotEarVisit(options);
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const holdPose = Boolean(options.holdPose);
         const started = this.spritePlayer.play(sequenceName, {
           ...options,
           loop: false,
