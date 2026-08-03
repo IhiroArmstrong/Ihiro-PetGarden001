@@ -322,6 +322,52 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-feature-merge-preview',
+    title: 'feature/fix 合入 develop 前须 worktree 预览确认',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: 'feature/fix 合入 develop 前：worktree 预览确认',
+    ssotMustContain: [
+      /先测后合/,
+      /develop-integrity/,
+      /occupancy:\s*"releasable"/,
+      /两层验收/,
+      /comm -12/,
+      /origin\/develop\.\.\.HEAD/,
+      /HEAD\.\.\.origin\/develop/
+    ],
+    topicSignals: [
+      /合入 develop 前/,
+      /worktree 预览确认/,
+      /git-feature-merge-preview/,
+      /develop-integrity/,
+      /先测后合/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /先测后合/,
+      /develop-integrity/,
+      /两层验收/,
+      /comm -12/
+    ],
+    restatementThreshold: 2,
+    // 交叉引用允许点名主题；完整 SOP 仍只在 WORKFLOW.md
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/TEST_TRACKER.md',
+      'focus-tiger/docs/COLLAB.md'
+    ],
+    citeExemptFiles: [
+      '.github/PULL_REQUEST_TEMPLATE.md'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'merge-first-then-test-as-default',
+        pattern: /(?:应当|应该|默认|常规).*(?:先合并|先合入).*develop.*(?:再测|再预览|再验收)|(?:先合进|先 merge 进)\s*`?develop`?.*(?:才|再).*(?:测|预览)/,
+        note: '禁止把「先合进 develop 再测」写成默认/应当路径；合前预览见 WORKFLOW.md git-feature-merge-preview'
+      }
+    ]
+  },
+  {
     id: 'git-branch-health',
     title: '分支健康度（即时纪律 + 双周普查；非 CI 硬拦）',
     ssotPath: 'focus-tiger/docs/PROCESS.md',
