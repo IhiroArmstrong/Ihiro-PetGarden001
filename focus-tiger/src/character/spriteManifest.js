@@ -528,6 +528,7 @@ export const SPRITE_SEQUENCES = {
   // 与 cloakSleep 正放同源；播放列表末帧 = 素材 frame_001（清醒合掌）。
   // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
   // 2026-08-04：曾试 starlight-cloak-wake；用户书面不如旧倒放 → **Undo**。
+  // 同日 v3 换帧后实验室试播：用户书面仍不能替换原斗篷 → 去掉试播键；素材目录保留勿接。
   dormantWake: {
     animation: 'cloak-sleep',
     frameCount: 34,
@@ -537,26 +538,6 @@ export const SPRITE_SEQUENCES = {
     loopMode: 'none',
     holdLastFrame: true,
     frameHolds: { 34: 320 }
-  },
-
-  // 实验室仅试播：星光斗篷 v3（勿接产品；cloakSleep/sleeping/dormantWake 仍为 cloak-sleep）。
-  starlightCloakSleepPreview: {
-    animation: 'starlight-cloak-sleep',
-    frameCount: 67,
-    fps: 12,
-    loop: false,
-    loopMode: 'none',
-    holdLastFrame: true,
-    preload: false
-  },
-  starlightCloakWakePreview: {
-    animation: 'starlight-cloak-wake',
-    frameCount: 67,
-    fps: 12,
-    loop: false,
-    loopMode: 'none',
-    holdLastFrame: true,
-    preload: false
   },
 
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。

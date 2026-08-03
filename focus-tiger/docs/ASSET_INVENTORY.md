@@ -21,7 +21,7 @@
 | 待业务触发（非「已取代」） | 见 §「库存→业务」；政策：**须全部接入场景**（分 Slice B/C），禁止长期仅调试 |
 | 3D GLB（奖励柜/垫底） | 7+ |
 
-**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **2 fps**（旧 `sleeping/` 目录保留；`starlight-cloak-*` 已入库（**v3 帧**）但**勿接**，待观感过关）。  
+**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **2 fps**（旧 `sleeping/` 目录保留；`starlight-cloak-*` 已入库（**v3 帧**）但**勿接归档**（用户书面暂不能替换原斗篷））。  
 **2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。  
 **2026-07-31**：场景→产品触发对照见 **`SCENE_ANIMATION_WIRING.md`**（v1 Slice A 语言/Honesty Idle）。  
 **2026-08-01**：用户 + 设计师——库存须进业务场景；接线表升格 Slice B（活跃陪伴）/ C（荷花）；**勿接**已取代目录。  
@@ -119,8 +119,8 @@
 | nod-bow | 13 | nodBow / intentionNod | **已接线** mindfulAcknowledge · Choose | en 切语；Honesty 短补登 |
 | stretch-reminder | 17 | stretchReminder · wakeUp | **已接线** 舒展提醒 | Slice B：与 yawn 同档池 |
 | cloak-sleep | 34 | cloakSleep / sleeping / dormantWake | **已接线** 披毯·睡循环·倒放唤醒 | 主线（2026-08-04 Undo 星光试替） |
-| starlight-cloak-sleep | 67 | — | **勿接**（保留） | 2026-08-04 入库；同日 **v3 帧替换**（`Yin_Starlight_Cloak_Sleep_forward_v3`）；仍勿接，待观感过关再接线 |
-| starlight-cloak-wake | 67 | — | **勿接**（保留） | = sleep 物理倒序；随 v3 同步重建；仍勿接 |
+| starlight-cloak-sleep | 67 | — | **勿接**（归档） | v3 帧在盘；2026-08-04 用户书面暂不能替换原斗篷 |
+| starlight-cloak-wake | 67 | — | **勿接**（归档） | sleep 物理倒序；同上暂不接线 |
 | sleeping（旧目录） | 8 | — | **勿接**（保留） | 已取代 |
 | dormant-wake | 16 | （旧正放） | **勿接**（保留） | 已由 cloak 倒放取代 |
 | rise-stretch-casual | 39 | riseStretchCasual | **已接线** Rise 池 ~60% | — |

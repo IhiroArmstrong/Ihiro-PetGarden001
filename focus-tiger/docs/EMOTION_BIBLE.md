@@ -664,5 +664,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.84 | 2026-08-03 | 中途 Rise：`RISE_INTERRUPT_POOL`（stretch 60% / tea 25% / book 15%）；正放 + holdPose；禁 magicBook / yawn |
 | 0.85 | 2026-08-03 | 入库 `parrotEarVisit`（鹦鹉耳边造访）；场景 A 应用内轻提醒信使；场景 B 轻完成池稀有彩蛋 |
 | 0.86 | 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶金辉 ↔ 鹦鹉信使；不做羽毛残影 |
-| 0.87 | 2026-08-04 | 入库 `starlight-cloak-sleep` / `starlight-cloak-wake`（67 帧）；曾接线后 **Undo**；同日晚 **v3 换帧**仍勿接，待观感过关 |
+| 0.87 | 2026-08-04 | 入库星光斗篷后 Undo；v3 换帧试播后用户书面暂不能替换原斗篷；产品保持 `cloak-sleep`；星光归档勿接 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
