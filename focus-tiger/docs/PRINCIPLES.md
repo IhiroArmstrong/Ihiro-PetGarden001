@@ -93,7 +93,7 @@ Focus Tiger 允许用户手动补登在其他场景（如其他冥想 App、线�
   1. 定格上一序列末帧与下一序列首帧；
   2. 双层透明度交叉淡化（叠代），默认约 **1 秒**（`CAPCUT_DISSOLVE_MS`）；
   3. 溶解完成后再启动下一序列的帧推进（`freezeUntilCrossFadeEnds`）。
-  实现见 `SpriteSequencePlayer` 双 `<img>` + `EmotionController._finishOneShot`（一次性 → idle 默认启用）。同源可衔接的微表情（如 idle 内眨眼）可用短淡入 `MICRO_CROSS_FADE_MS`（约 180ms），或调试 `holdPose` 定格不回落；
+  实现见 `SpriteSequencePlayer` 双 `<img>` + `EmotionController._finishOneShot`（一次性 → idle 默认启用）。**2026-08-03**：跨动画短淡入（曾 `MICRO_CROSS_FADE_MS` ≈180ms / dormant 520ms）一律改为 **1s CapCut**；**仅**设计为无需转场的硬切（显式 `crossFadeMs: 0`，如 Idle 闭目↔睁眼弧、gaze 段间）保持不变；
 - **不连贯序列（2026-07-19）**：若连 CapCut 溶解仍无法接受，调试路径可播完定格末帧；正式路径优先叠代溶解回落，勿为原则硬切默认闭目呼吸；
 - **调试面板验收**：右侧姿态按钮对一次性序列默认 `holdPose`（定格末帧、不自动切回默认闭目）；循环态（idle / sleeping / smiling / halo）照常循环。正式会话路径仍可在业务需要时回落 idle，但视觉上优先遵守上两条；
 - **闭目坐禅节奏（2026-07-19）**：默认 `Idle` / 调试「坐禅闭眼」= `idle-breathing`（约 **2.5 fps**）完整 pingpong **×5** → 单次 **眨眼** → 往复（约 1–1.5 分钟一次眨眼）。**禁止**哈欠/张望等 Idle 变体；**禁止**在 idle 上再插 `curiousTilt`（会清零计数）。状态机重复进入 IDLE/FOCUSING 不得重启编排。细则见 `EMOTION_BIBLE.md`；

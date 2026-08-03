@@ -292,7 +292,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 | 情况 | 做法 |
 |---|---|
 | 两序列无法自然衔接（画幅/姿态跳变） | 双 `<img>` **叠代溶解**：定格末帧↔首帧，默认 **`CAPCUT_DISSOLVE_MS`（1000ms）** `ease-in-out`；`freezeUntilCrossFadeEnds: true` 时溶解期间不推进新序列帧 |
-| 同源可衔接（同画幅微表情、子序列） | 可用短 cross-fade（`MICRO_CROSS_FADE_MS` ≈180ms）或不冻帧 |
+| 设计为无需转场（同素材族可硬接） | 显式 **`crossFadeMs: 0`**（例：Idle 闭目↔睁眼弧、gaze p1→p4 段间、魔法书回 Idle）。**勿**用短 180ms 微叠化——易闪白（2026-08-03 退役短淡入） |
 | 调试验收 | `holdPose` 定格末帧，可不回落 idle |
 
 一次性情绪经 `EmotionController._finishOneShot` 回落 idle 时**默认**走 CapCut 溶解；禁止业务路径闪切。详见 `PRINCIPLES.md`「序列衔接：CapCut 式叠代」。

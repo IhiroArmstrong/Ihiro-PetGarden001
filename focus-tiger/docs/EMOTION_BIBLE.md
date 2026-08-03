@@ -102,10 +102,10 @@
 
 | 常量 | 值 | 用途 |
 |---|---|---|
-| `CAPCUT_DISSOLVE_MS` | 1000 | 无法衔接时的默认叠代 |
-| `MICRO_CROSS_FADE_MS` | 180 | 同源可衔接（idle 内眨眼、同画幅 IntentionNod 等） |
+| `CAPCUT_DISSOLVE_MS` | 1000 | 有转场时的默认叠代（跨动画一律 1s） |
+| `MICRO_CROSS_FADE_MS` | **= CapCut**（2026-08-03） | 短淡入已退役；别名保留兼容。**硬切**仅显式 `crossFadeMs: 0` |
 
-`EmotionController._finishOneShot`：一次性 → idle **默认** CapCut；同源微表情须显式传 `returnCrossFadeMs: MICRO_CROSS_FADE_MS`。权威表述见 `PRINCIPLES.md`；实现见 `ARCHITECTURE.md`「播放机制」与 `SpriteSequencePlayer`。
+`EmotionController._finishOneShot`：一次性 → idle **默认** CapCut；**仅**设计为无需转场的衔接显式传 `0`（gaze 段间、Idle 闭目↔睁眼弧、魔法书回 Idle 等）。权威表述见 `PRINCIPLES.md`；实现见 `ARCHITECTURE.md`「播放机制」与 `SpriteSequencePlayer`。
 
 ---
 
@@ -169,15 +169,16 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 > **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验）**：已烘焙 pingpong 帧，正放一次；**fps 4**（相对初入库 8 放慢 50%）。`magicBookReading` 末帧可接 Idle → **回落硬切（无 CapCut）**；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线；验收前勿标永久产品定稿。
 
-> **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；180ms cross-fade 进出，播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。
+> **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；**进出统一 1s CapCut**（2026-08-03 退役 180ms 短淡入），播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。**不**进 `LIGHT_COMPLETE_POOL`（微仪式呼吸期已是 smiling）。
 
 > **IdleOrchestrator（2026-07-20 确认）**：属**自主行为**，不注册独立 emotion key。
 >
 > **正式默认（唯一）**
-> 1. `idle-breathing` 完整 pingpong **×5**（约 **2.5 fps**）
-> 2. 单次一瞥 `idle-eye-glance`（`loopMode: none`；180ms cross-fade + freeze）
-> 3. 回到步骤 1 —— **偶尔看看 = 闭目基底上的睁眼一瞥**（勿用 `blink-smile`，其首末睁眼与 idle 不衔接）
+> 1. 闭目呼吸 `idleBreathClosed` pingpong **×2**
+> 2. 睁眼弧 `idleBlinkArc` pingpong **×1**（段间 **硬切** `crossFadeMs: 0`——同素材族，设计为无需叠化）
+> 3. 回到步骤 1
 >
+> 从**其它情绪**回落 Idle 时用 **1s CapCut**（非段内硬切）。
 > **禁止**把张望 / 哈欠 / 喝茶 / 摇耳等挂进 Idle 随机池或自动插入（衔接多有问题；产品决定逐条验收后再接线景）。
 >
 > **候选陪伴手势（已入库 · 非 Idle）** — 见 `companionGestureCatalog.js`；调试用「入库素材 / 组合试播」，**勿**经 IdleOrchestrator。未来可接 Rise / Recover / 互动等场景：

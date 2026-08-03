@@ -542,7 +542,9 @@ async function init() {
     onBreathStart: () => {
       lightProgression.beginBreath();
       emotionController.playEmotion('smiling', {
-        fps: ARRIVAL_BREATH_SMILE_FPS
+        fps: ARRIVAL_BREATH_SMILE_FPS,
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true
       });
       resyncSessionChrome();
       // startBreath already set phase=breath — sync tips only after isOpen()
@@ -653,6 +655,8 @@ async function init() {
     endMicroRitualChrome();
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE, {
       playOptions: {
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true,
         onComplete: () => {
           syncHonestyIdleEntry();
         }
@@ -660,6 +664,8 @@ async function init() {
     });
     if (!decision.play) {
       emotionController.playEmotion('sessionComplete', {
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true,
         onComplete: () => {
           syncHonestyIdleEntry();
         }
@@ -669,7 +675,10 @@ async function init() {
 
   function leaveMicroRitualQuietly() {
     endMicroRitualChrome();
-    emotionController.playEmotion('idle');
+    emotionController.playEmotion('idle', {
+      crossFadeMs: CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: true
+    });
     syncHonestyIdleEntry();
   }
 
@@ -944,7 +953,9 @@ async function init() {
         // Breath「Let's arrive together」：放慢眨眼微笑并保持，不落入 idle-breathing（硬切闭目不连贯）。
         // Choose 确认用 intentionNod（16:9 点头），不在此步播放。
         emotionController.playEmotion('smiling', {
-          fps: ARRIVAL_BREATH_SMILE_FPS
+          fps: ARRIVAL_BREATH_SMILE_FPS,
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true
         });
         onboardingHints?.markSeen('notice');
         onboardingHints?.maybeShowAuto('breathing');
@@ -960,8 +971,11 @@ async function init() {
         onboardingHints?.markSeen('choose');
       },
       onWelcome: () => {
-        // 若仍定格在 dormantWake，playEmotion 会自动加长 cross-fade，避免硬切微笑。
-        emotionController.playEmotion('smiling');
+        // 若仍定格在 dormantWake，playEmotion 会自动注入 CapCut，避免硬切微笑。
+        emotionController.playEmotion('smiling', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true
+        });
         syncOnboardingAutoHints();
       },
       onBegin: () => {

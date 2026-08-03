@@ -212,6 +212,8 @@ test('sessionComplete and celebrating suppress runtime glow until idle resumes',
 
   controller.playEmotion('sessionComplete');
   assert.equal(controller.shouldSuppressRuntimeGlow(), true);
+  assert.equal(plays[0].name, 'sessionComplete');
+  assert.equal(plays[0].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
   plays[0].options.onComplete();
   assert.equal(controller.shouldSuppressRuntimeGlow(), false);
 
@@ -437,10 +439,11 @@ test('curiousTilt plays blinkSmile once and returns to idle breathing', () => {
 
   assert.equal(plays[0].name, 'blinkSmile');
   assert.equal(plays[0].options.loopMode, 'none');
-  assert.equal(plays[0].options.returnCrossFadeMs, 180);
+  assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[0].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
-  assert.equal(plays[1].options.crossFadeMs, 180);
+  assert.equal(plays[1].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });

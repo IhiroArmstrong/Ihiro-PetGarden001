@@ -67,6 +67,23 @@ test('light completion pool never includes celebrate dance', () => {
   );
 });
 
+test('LIGHT_COMPLETE_POOL has no curiousTilt; weights go to sessionComplete / nod / parrot', () => {
+  assert.deepEqual(
+    LIGHT_COMPLETE_POOL.map((e) => ({ key: e.key, weight: e.weight })),
+    [
+      { key: 'sessionComplete', weight: 70 },
+      { key: 'mindfulAcknowledge', weight: 30 },
+      { key: 'parrotEarVisit', weight: 8 }
+    ]
+  );
+  assert.ok(!LIGHT_COMPLETE_POOL.some((e) => e.key === 'curiousTilt'));
+  assert.equal(pickWeighted(LIGHT_COMPLETE_POOL, () => 0), 'sessionComplete');
+  assert.equal(
+    pickWeighted(LIGHT_COMPLETE_POOL, () => 0.99),
+    'parrotEarVisit'
+  );
+});
+
 test('WELCOME_POOL trial is magicBookReading + nodGreeting (wave out of cold-start)', () => {
   assert.deepEqual(
     WELCOME_POOL.map((e) => e.key),

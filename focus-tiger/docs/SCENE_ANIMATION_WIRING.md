@@ -90,7 +90,7 @@
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（**pingpong×1** + CapCut）；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
-| 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`）· **`parrotEarVisit` 稀有** | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
+| 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；呼吸期已是 smiling，再抽 blink 几乎像没播（2026-08-03 撤出） |
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台仍检深夜 |
@@ -106,7 +106,8 @@
 | 活跃 ~2h | stretch 池：`stretchReminder` / `yawnStretch` | ack | **已实现**（Dispatcher） | 勿叠 celebrate |
 | Re-focus 回来 | `mindfulAcknowledge` subtype refocus | ack | **已接线** | |
 | 中途 Rise | **加权池** `riseStretchCasual` 60% · `teaDrinking` 25% · `bookReading` 15% | ack | **已接线** | 正放一次 + `holdPose`；关 Reflection → Idle。**禁止** `magicBookReading` / yawn / celebrate；`blinkBreathe` 勿回主路径 |
-| 每次计时完成（非当日首达标） | 同档池：`sessionComplete` ~60% · nod / blink ~40% · **`parrotEarVisit` 稀有 ~7%** | light / ack / messenger | **已实现**（Dispatcher） | **禁止** `celebrate-dance*`；鹦鹉不进 Celebrating || 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档 |
+| 每次计时完成（非当日首达标） | 同档池：`sessionComplete` ~65% · nod ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** blink/`curiousTilt`） | light / ack / messenger | **已实现**（Dispatcher） | **禁止** `celebrate-dance*`；鹦鹉不进 Celebrating |
+| 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档 |
 
 ### 5.3 Recover / Transition / Reflect
 
@@ -234,4 +235,6 @@
 | 2026-08-03 | `meditation-star-reward` **改用不抠图源**覆盖（用户反馈抠图毛边差；星空/白底整幅烧录） |
 | 2026-08-03 | 入库 `parrot-ear-visit-feather`；场景 A 提醒横幅信使；场景 B `LIGHT_COMPLETE_POOL` 稀有 |
 | 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶 ↔ 鹦鹉；不做羽毛残影 |
+| 2026-08-03 | `LIGHT_COMPLETE_POOL` 撤出 `curiousTilt`；权重 → sessionComplete 70 / mindfulAcknowledge 30 / parrot 8 |
+| 2026-08-03 | 跨动画短叠化（180/520ms）统一 `CAPCUT_DISSOLVE_MS` 1s；硬切 `0`（gaze 段间 / Idle 闭目↔睁眼 / 魔法书回 Idle）保持 |
 

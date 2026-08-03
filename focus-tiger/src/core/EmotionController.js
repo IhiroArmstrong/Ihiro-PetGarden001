@@ -13,21 +13,22 @@ import { SPRITE_SEQUENCES } from '../character/spriteManifest.js';
 import { COMPANION_GESTURE_CHAINS } from '../character/companionGestureCatalog.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
-/** sleeping → dormantWake 进入时的交叉淡入。 */
-export const DORMANT_WAKE_CROSS_FADE_MS = 180;
-/**
- * 离开 Honesty `dormantWake` 定格（睁眼坐姿）→ idle / smiling 等时的交叉淡入。
- * 须明显长于普通 180ms，避免定格硬切闭目呼吸。
- */
-export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = 520;
 /**
  * CapCut 式叠代溶解：两序列无法像素衔接时，定格两端帧做交叉淡化。
- * 默认用于一次性情绪 → idle；同源微表情可改用 MICRO_CROSS_FADE_MS。
+ * 2026-08-03：凡「有转场」的跨动画衔接统一 **1000ms**（短 180/520ms 易闪白）；
+ * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧、魔法书回 Idle）保持 0。
  * 见 PRINCIPLES「序列衔接：CapCut 式叠代」与 ARCHITECTURE「播放机制」。
  */
 export const CAPCUT_DISSOLVE_MS = 1000;
-/** 同源可衔接时的短交叉淡入（如 idle 内眨眼、同画幅子序列）。 */
-export const MICRO_CROSS_FADE_MS = 180;
+/** sleeping → dormantWake 进入；与 CapCut 同长。 */
+export const DORMANT_WAKE_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
+/** 离开 Honesty `dormantWake` 定格 → idle / smiling 等；与 CapCut 同长。 */
+export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
+/**
+ * @deprecated 2026-08-03 起与 `CAPCUT_DISSOLVE_MS` 同值（短淡入已退役）。
+ * 保留别名以免旧测试 / 调用方断裂。
+ */
+export const MICRO_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 /** @deprecated 请用 CAPCUT_DISSOLVE_MS */
 export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 /**
@@ -268,7 +269,7 @@ export class EmotionController {
           return;
         }
         const playOpts = {
-          crossFadeMs: options.crossFadeMs ?? 180,
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
           loop: true,
           loopMode: 'pingpong'
         };
@@ -304,7 +305,7 @@ export class EmotionController {
             ...options,
             loop: false,
             loopMode: 'none',
-            crossFadeMs: options.crossFadeMs ?? 180
+            crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS
           },
           'riseStretchCasual'
         );
@@ -451,7 +452,14 @@ export class EmotionController {
         const started = this.spritePlayer.play(
           'sessionComplete',
           this._oneShotPlayOpts(
-            { ...options, loop: false, loopMode: 'none' },
+            {
+              ...options,
+              loop: false,
+              loopMode: 'none',
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false
+            },
             'sessionComplete'
           )
         );
@@ -510,7 +518,7 @@ export class EmotionController {
         }
       },
 
-      // 静止好奇：改用 blink-smile（更近坐禅姿态）。
+      // 静止好奇：改用 blink-smile（更近坐禅姿态）。进出统一 CapCut 1s（防闪白）。
       curiousTilt: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -527,10 +535,11 @@ export class EmotionController {
               ...options,
               loop: false,
               loopMode: 'none',
-              crossFadeMs: options.crossFadeMs ?? MICRO_CROSS_FADE_MS,
-              // 同源微表情：回 idle 用短淡入，不用 CapCut 1s
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
               returnCrossFadeMs:
-                options.returnCrossFadeMs ?? MICRO_CROSS_FADE_MS
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false
             },
             'blinkSmile'
           )
@@ -591,8 +600,8 @@ export class EmotionController {
             callerOnComplete?.('blinkSmile');
             if (!holdPose) {
               this.playEmotion(returnKey, {
-                crossFadeMs: MICRO_CROSS_FADE_MS,
-                freezeUntilCrossFadeEnds: false
+                crossFadeMs: CAPCUT_DISSOLVE_MS,
+                freezeUntilCrossFadeEnds: true
               });
             }
           }
@@ -601,8 +610,8 @@ export class EmotionController {
           callerOnComplete?.('blinkSmile');
           if (!holdPose) {
             this.playEmotion(returnKey, {
-              crossFadeMs: MICRO_CROSS_FADE_MS,
-              freezeUntilCrossFadeEnds: false
+              crossFadeMs: CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds: true
             });
           }
         }
@@ -945,8 +954,8 @@ export class EmotionController {
 
   /**
    * 一次性序列收尾：正式路径回落 idle；调试 holdPose 时定格末帧、不硬切默认闭目。
-   * 默认 CapCut 式叠代溶解（见 CAPCUT_DISSOLVE_MS）；同源微表情请显式传
-   * `returnCrossFadeMs: MICRO_CROSS_FADE_MS`；硬切传 `0`。
+   * 默认 CapCut 式叠代溶解（见 CAPCUT_DISSOLVE_MS）；硬切传 `0`
+   *（仅设计为无需转场的衔接，如 gaze 段间 / Idle 闭目↔睁眼弧）。
    * @param {EmotionOptions} options
    * @param {string} [tag]
    */
