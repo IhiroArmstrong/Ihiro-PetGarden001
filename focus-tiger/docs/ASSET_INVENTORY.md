@@ -110,7 +110,7 @@
 | wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
 | wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
 | magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
-| book-reading | 24 | bookReading | **试验**：日语切语 | 单程无倒放 + CapCut；≠ magic-book |
+| book-reading | 24 | bookReading | **已接线**：日语切语 + Rise 池 ~15% | 单程无倒放；≠ magic-book |
 | parrot-ear-visit-feather | 93 | parrotEarVisit | 提醒信使 · 轻完成稀有 · streak-7 仪式 50/50 | **不做**羽毛残影 |
 | golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
@@ -121,7 +121,7 @@
 | cloak-sleep | 34 | cloakSleep / sleeping / dormantWake | **已接线** 披毯·睡循环·倒放唤醒 | — |
 | sleeping（旧目录） | 8 | — | **勿接**（保留） | 已取代 |
 | dormant-wake | 16 | （旧正放） | **勿接**（保留） | 已由 cloak 倒放取代 |
-| rise-stretch-casual | 39 | riseStretchCasual | **已接线** Rise | — |
+| rise-stretch-casual | 39 | riseStretchCasual | **已接线** Rise 池 ~60% | — |
 | halo-breathing | 30 | haloBreathing* | 调试可播；业务自动未全接 | **Slice B**：Honesty 长补登 / 微仪式变体 |
 | nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；**冷启动欢迎池唯一** | Slice B 开场；2026-08-02 |
 | tilt-think | 20 | tiltThink | **勿接主路径** | 仅调试 |
@@ -129,8 +129,8 @@
 | milestone-glow | 27 | milestoneGlow | **已接线** streak-7（与鹦鹉 50/50） | — |
 | meditation-star-reward | 63 | milestoneGlowStar | **已接线** streak-21 / streak-100（同 `milestoneGlow` emotion） | 2026-08-03 入库；**同日改用不抠图源**（星空/白底烧录整幅，替透明抠图） |
 | breath-halo-hq | 16 | breathHaloHq | 仅清单 | **Slice B**：Glow 备选 / 长补登光环 |
-| tea-drinking | 24 | teaDrinking | **试验**：English 切语 + 深夜池 | Slice B 深夜/茶歇（冷却） |
-| yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却） |
+| tea-drinking | 24 | teaDrinking | **已接线**：English 切语 + 深夜池 + Rise 池 ~25% | Slice B；Rise holdPose |
+| yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却）；**勿**进 Rise |
 | ear-wiggle-head-touch | 54 | earWiggleHeadTouch | **已接线** 好奇池等（正+倒一次→~1s CapCut Idle） | Slice B；与 welcome 同契约；2026-08-02c |
 | gaze-p1…p4 | 15/13/13/25 | gazeP* | 仅调试 | **Slice B**：稀有好奇张望 |
 | lotus-front-rising | 7 | lotusFrontRising | 仅清单 | **Slice C**：Grow / 纪念 |

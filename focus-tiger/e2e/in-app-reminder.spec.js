@@ -114,6 +114,12 @@ test('set reminder time → return to foreground → show banner → dismiss →
   await openFreshProductShell(page);
   await expect(page.locator(BANNER)).toBeHidden();
 
+  // setNow BEFORE enabling：避免墙钟已过 09:00 时在填表瞬间就出横幅/信使，
+  // 导致后续 poll 时序列已回 Idle。
+  await page.evaluate(() => {
+    window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
+  });
+
   await openReminderPanel(page);
   await page.locator(ENABLED).check();
   await page.locator(TIME).fill('09:00');
@@ -122,6 +128,7 @@ test('set reminder time → return to foreground → show banner → dismiss →
   if (!stored) {
     throw new Error('reminder preference not stored from UI');
   }
+  await expect(page.locator(BANNER)).toBeHidden();
 
   await page.locator('body').click({ position: { x: 8, y: 8 } });
   await expect(page.locator(PANEL)).toBeHidden();
@@ -132,15 +139,18 @@ test('set reminder time → return to foreground → show banner → dismiss →
   await simulateReturnToForeground(page);
   await expect(page.locator(BANNER)).toBeVisible({ timeout: 10_000 });
 
-  // Scene A：横幅首次可见时伴随鹦鹉信使（本页一次）
+  // Scene A：横幅首次可见时伴随鹦鹉信使（欢迎池播放中可能延后到欢迎结束）
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => window.__inAppReminder?.getCurrentEmotionKey?.()),
+      { timeout: 20_000 }
+    )
+    .toBe('parrotEarVisit');
   const parrotPlayed = await page.evaluate(() => {
     return Boolean(window.__inAppReminder?.parrotMessengerPlayed);
   });
   expect(parrotPlayed).toBe(true);
-  const emotionKey = await page.evaluate(() => {
-    return window.__inAppReminder?.getCurrentEmotionKey?.() ?? null;
-  });
-  expect(emotionKey).toBe('parrotEarVisit');
 
   await page.locator(DISMISS).click();
   await expect(page.locator(BANNER)).toBeHidden();
@@ -148,8 +158,59 @@ test('set reminder time → return to foreground → show banner → dismiss →
   await expect(page.locator(BANNER)).toBeHidden();
 });
 
+test('parrot messenger replays when banner reappears after silent hide', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.evaluate(() => {
+    window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
+  });
+  await openReminderPanel(page);
+  await page.locator(ENABLED).check();
+  await page.locator(TIME).fill('09:00');
+  await page.locator('body').click({ position: { x: 8, y: 8 } });
+  await expect(page.locator(BANNER)).toBeHidden();
+
+  await page.evaluate(() => {
+    window.__inAppReminder.setNow(new Date(2026, 6, 22, 16, 4, 0));
+  });
+  await simulateReturnToForeground(page);
+  await expect(page.locator(BANNER)).toBeVisible({ timeout: 10_000 });
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => window.__inAppReminder?.getCurrentEmotionKey?.()),
+      { timeout: 20_000 }
+    )
+    .toBe('parrotEarVisit');
+
+  // Simulate suppress/hide then re-show (same eligibility; not dismiss).
+  await page.evaluate(() => {
+    window.__inAppReminder.resetParrotMessenger();
+    window.__inAppReminder.banner.hide({ silent: true });
+  });
+  await expect(page.locator(BANNER)).toBeHidden();
+  await page.evaluate(() => {
+    window.__inAppReminder.sync();
+  });
+  await expect(page.locator(BANNER)).toBeVisible({ timeout: 10_000 });
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => ({
+          key: window.__inAppReminder?.getCurrentEmotionKey?.(),
+          played: Boolean(window.__inAppReminder?.parrotMessengerPlayed)
+        })),
+      { timeout: 20_000 }
+    )
+    .toEqual({ key: 'parrotEarVisit', played: true });
+});
+
 test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
   await openFreshProductShell(page);
+  await page.evaluate(() => {
+    window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
+  });
   await openReminderPanel(page);
   await page.locator(ENABLED).check();
   await page.locator(TIME).fill('09:00');

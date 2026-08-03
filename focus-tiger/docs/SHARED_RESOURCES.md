@@ -24,7 +24,7 @@
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
-| `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` + **Scene A** `parrotEarVisit`（`parrotMessengerGate`） | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；横幅本页**首次**可见时伴随 `parrotEarVisit`（本页一次；`__inAppReminder.parrotMessengerPlayed` / `resetParrotMessenger`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |
+| `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` + **Scene A** `parrotEarVisit`（`parrotMessengerGate`） | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；横幅每次 **hidden→visible** 伴随 `parrotEarVisit`（欢迎池 live hold + pending flush，结束后补播；同页约 60s 再评到期；`__inAppReminder.parrotMessengerPlayed` / `pendingParrotMessengerAfterWelcome` / `resetParrotMessenger`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`） |
@@ -79,7 +79,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `sleeping` | 调试「睡着了」/ live DORMANT（≥2h 后回前台等） | **不再**作零完成 / **冷启动**开场；`onAppReady` 默认 Idle；披毯仅 live 进 DORMANT |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
 | `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback`；微仪式直接 `playEmotion('sessionComplete')` | `hasCelebratedToday`：首次**计时**达标 Celebrating；已庆祝过 → SessionComplete；Honesty / **微仪式**不占戳、永不 Celebrating |
-| `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |
+| `riseStretchCasual` / `teaDrinking` / `bookReading` | 中途 Rise 加权池 | 主动结束转场（holdPose）；勿与 blinkBreathe / magicBook 混淆 |
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |
 | `nodGreeting` | 靠近自动已拆；**欢迎池试验 40%**（与 magicBookReading） | 勿接回默认靠近 |

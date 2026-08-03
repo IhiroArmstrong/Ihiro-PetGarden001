@@ -37,13 +37,14 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     id: 'teaDrinking',
     sequence: 'teaDrinking',
     label: '喝茶',
-    suggestedUses: '空闲陪伴、会话间隙温馨确认（非完成庆祝）'
+    suggestedUses:
+      '空闲陪伴、会话间隙温馨确认、中途 Rise 加权池 ~25%（非完成庆祝）；English 切语'
   }),
   Object.freeze({
     id: 'yawnStretch',
     sequence: 'yawnStretch',
     label: '犯困哈欠',
-    suggestedUses: '长时间无互动后的轻提示；≠ stretchReminder / dormantWake'
+    suggestedUses: '长时间无互动后的轻提示；≠ stretchReminder / dormantWake；勿进 Rise 池'
   }),
   Object.freeze({
     id: 'earWiggleHeadTouch',
@@ -63,25 +64,27 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     sequence: 'riseStretchCasual',
     label: 'Rise 伸懒腰',
     suggestedUses:
-      '中途 Rise 主路径（正放一次→箕坐定格；Reflection 后回 idle）；不抢 Celebrating / SessionComplete'
+      '中途 Rise 加权池主项 ~60%（正放一次→末帧 holdPose；Reflection 后回 idle）；不抢 Celebrating / SessionComplete'
   }),
   Object.freeze({
     id: 'blinkBreathe',
     sequence: 'blinkBreathe',
     label: '眨眼深呼吸',
-    suggestedUses: '调试候选；Rise 主路径已改 riseStretchCasual'
+    suggestedUses: '调试候选；勿回 Rise 主路径（已改加权池）'
   }),
   Object.freeze({
     id: 'magicBookReading',
     sequence: 'magicBookReading',
     label: '魔法书阅读',
-    suggestedUses: '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）'
+    suggestedUses:
+      '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）；**勿**进 Rise 池（过长）'
   }),
   Object.freeze({
     id: 'bookReading',
     sequence: 'bookReading',
     label: '单程看书',
-    suggestedUses: '日语切语问候；正放一次（无倒放）→ ~1s CapCut Idle；≠ magic-book-reading'
+    suggestedUses:
+      '日语切语问候；中途 Rise 加权池 ~15%；正放一次 → holdPose / CapCut Idle；≠ magic-book-reading'
   }),
   Object.freeze({
     id: 'goldenHaloPalms',

@@ -84,7 +84,9 @@ import {
   markLocaleGreetingPlayed,
   playOptionsForLocaleGreeting,
   resolveSceneAnimation,
-  shouldAttemptLateNightOnBoot
+  shouldAttemptLateNightOnBoot,
+  pickRiseInterruptEmotion,
+  isRiseInterruptHoldEmotion
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
 import {
@@ -341,10 +343,32 @@ async function init() {
     // 2026-07-23 已拍板：suppress（忙碌隐藏、不排队）；勿改 defer 到产品路径
     busyPolicy: 'suppress'
   });
-  /** Scene A：本页会话内鹦鹉信使是否已伴随横幅播过一次 */
+  /**
+   * Scene A：欢迎池正在播时横幅可出、鹦鹉让位；结束后（或欢迎被打断后）补播。
+   * 只认 live emotion key——勿 sticky latch：欢迎若被打断且未走 onComplete，sticky 会永久封死信使。
+   */
+  let pendingParrotMessengerAfterWelcome = false;
+  /** E2E 观测：本页是否曾播过信使（不阻断再次播） */
   let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
+
+  const WELCOME_EMOTION_KEYS = new Set(['magicBookReading', 'nodGreeting']);
+  function isColdStartWelcomePlaying() {
+    return WELCOME_EMOTION_KEYS.has(emotionController.getCurrentEmotionKey());
+  }
+  function playParrotMessengerNow() {
+    parrotMessengerPlayedThisPageSession = true;
+    pendingParrotMessengerAfterWelcome = false;
+    emotionController.playEmotion('parrotEarVisit');
+  }
+  /** 欢迎已结束/被打断后：补播挂起的信使（不依赖 sticky latch） */
+  function flushPendingParrotMessengerAfterWelcome() {
+    if (!pendingParrotMessengerAfterWelcome) return;
+    if (isColdStartWelcomePlaying()) return;
+    if (!inAppReminderBannerUI.isVisible()) return;
+    playParrotMessengerNow();
+  }
   const inAppReminderBannerUI = new InAppReminderBannerUI(
     document.getElementById('ui-overlay'),
     {
@@ -667,7 +691,7 @@ async function init() {
     hasEndedAnySession = true;
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
     const riseKey = emotionController.getCurrentEmotionKey();
-    if (riseKey === 'riseStretchCasual' || riseKey === 'blinkBreathe') {
+    if (isRiseInterruptHoldEmotion(riseKey)) {
       emotionController.playEmotion('idle');
     }
     syncOnboardingAutoHints();
@@ -1051,6 +1075,7 @@ async function init() {
 
   syncInAppReminderBanner = () => {
     reminderPreferenceUI?.refresh?.();
+    flushPendingParrotMessengerAfterWelcome();
     const candidate = evaluateInAppReminderBanner({
       now: reminderNow,
       hasCompletedToday: () => dailyCompletionStore.hasCompletedToday()
@@ -1069,15 +1094,22 @@ async function init() {
       inAppReminderBannerUI.show(
         decision.messageKey || REMINDER_GENTLE_WAITING_MESSAGE_KEY
       );
+      const holdForWelcome = isColdStartWelcomePlaying();
       if (
         shouldPlayParrotMessengerOnBannerShow({
           action: decision.action,
           bannerWasVisible,
-          alreadyPlayedThisPageSession: parrotMessengerPlayedThisPageSession
+          holdForWelcome
         })
       ) {
-        parrotMessengerPlayedThisPageSession = true;
-        emotionController.playEmotion('parrotEarVisit');
+        playParrotMessengerNow();
+      } else if (
+        !bannerWasVisible &&
+        holdForWelcome &&
+        decision.action === 'show'
+      ) {
+        // 欢迎还在播：记下，等欢迎 onComplete / 下次 sync flush
+        pendingParrotMessengerAfterWelcome = true;
       }
     } else if (inAppReminderBannerUI.isVisible()) {
       inAppReminderBannerUI.hide({ silent: true });
@@ -1098,12 +1130,19 @@ async function init() {
     controller: inAppReminderBannerController,
     settings: reminderPreferenceUI,
     banner: inAppReminderBannerUI,
-    /** DEV/E2E：重置本页信使播放门闩（不重置横幅 dismiss） */
+    /** DEV/E2E：清观测戳（不重置横幅 dismiss） */
     resetParrotMessenger: () => {
       parrotMessengerPlayedThisPageSession = false;
+      pendingParrotMessengerAfterWelcome = false;
     },
     get parrotMessengerPlayed() {
       return parrotMessengerPlayedThisPageSession;
+    },
+    get pendingParrotMessengerAfterWelcome() {
+      return pendingParrotMessengerAfterWelcome;
+    },
+    get isColdStartWelcomePlaying() {
+      return isColdStartWelcomePlaying();
     },
     /** E2E（含 vite preview production）：观测信使开播后的 emotion key */
     getCurrentEmotionKey: () => emotionController.getCurrentEmotionKey()
@@ -1474,9 +1513,11 @@ async function init() {
       honestyCheckIn.onIncompleteSessionEnded();
       resyncSessionChrome();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：伸懒腰→随意坐姿正放一次，Reflection 期间定格箕坐；关面板后再回 idle。
-      // MoodController 在 IDLE 时不覆盖 riseStretchCasual。
-      emotionController.playEmotion('riseStretchCasual', { holdPose: true });
+      // Rise：加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%），正放一次；
+      // Reflection 期间 holdPose 定格末帧；关面板后再回 idle。
+      // MoodController 在 IDLE 时不覆盖池内键。
+      const riseEmotion = pickRiseInterruptEmotion();
+      emotionController.playEmotion(riseEmotion, { holdPose: true });
       sessionEndFlow.onSessionEnded({
         completed: false,
         intention: currentSessionIntention,
@@ -1528,7 +1569,26 @@ async function init() {
   // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
   // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
   // 欢迎已播 → 本趟跳过深夜；欢迎跳过（配额/gate）→ 可尝试深夜。回前台仍检深夜。
-  const welcomeBoot = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP);
+  // 提醒横幅可与欢迎并存文案，但鹦鹉信使不得抢 Welcome（欢迎结束后补播）。
+  const welcomeBoot = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+    playOptions: {
+      onComplete: () => {
+        // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
+        // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
+        const playMessenger =
+          pendingParrotMessengerAfterWelcome &&
+          inAppReminderBannerUI.isVisible();
+        window.setTimeout(() => {
+          if (playMessenger) {
+            playParrotMessengerNow();
+            return;
+          }
+          pendingParrotMessengerAfterWelcome = false;
+          syncInAppReminderBanner();
+        }, 0);
+      }
+    }
+  });
   if (shouldAttemptLateNightOnBoot(welcomeBoot)) {
     tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
   }
@@ -1673,6 +1733,11 @@ async function init() {
       syncInAppReminderBanner();
     }
   });
+
+  // 同页静候到期：无 tab 切换时也要能在提醒时分 hidden→show（并触发信使）。
+  window.setInterval(() => {
+    syncInAppReminderBanner();
+  }, 60_000);
 
   syncInAppReminderBanner();
 

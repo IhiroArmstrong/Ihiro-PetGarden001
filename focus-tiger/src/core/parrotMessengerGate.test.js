@@ -7,8 +7,7 @@ describe('shouldPlayParrotMessengerOnBannerShow', () => {
     assert.equal(
       shouldPlayParrotMessengerOnBannerShow({
         action: 'show',
-        bannerWasVisible: false,
-        alreadyPlayedThisPageSession: false
+        bannerWasVisible: false
       }),
       true
     );
@@ -18,8 +17,7 @@ describe('shouldPlayParrotMessengerOnBannerShow', () => {
     assert.equal(
       shouldPlayParrotMessengerOnBannerShow({
         action: 'show',
-        bannerWasVisible: true,
-        alreadyPlayedThisPageSession: false
+        bannerWasVisible: true
       }),
       false
     );
@@ -29,21 +27,31 @@ describe('shouldPlayParrotMessengerOnBannerShow', () => {
     assert.equal(
       shouldPlayParrotMessengerOnBannerShow({
         action: 'hide',
-        bannerWasVisible: false,
-        alreadyPlayedThisPageSession: false
+        bannerWasVisible: false
       }),
       false
     );
   });
 
-  it('skips after already played this page session', () => {
+  it('skips while cold-start welcome is holding the messenger', () => {
     assert.equal(
       shouldPlayParrotMessengerOnBannerShow({
         action: 'show',
         bannerWasVisible: false,
-        alreadyPlayedThisPageSession: true
+        holdForWelcome: true
       }),
       false
+    );
+  });
+
+  it('plays again on a later show after banner was hidden', () => {
+    assert.equal(
+      shouldPlayParrotMessengerOnBannerShow({
+        action: 'show',
+        bannerWasVisible: false,
+        holdForWelcome: false
+      }),
+      true
     );
   });
 });

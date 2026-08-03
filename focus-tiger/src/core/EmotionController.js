@@ -287,7 +287,7 @@ export class EmotionController {
           this._finishOneShot(options, 'blinkBreathe');
         }
       },
-      // Rise 主路径：伸懒腰→随意坐姿，正放一次；Reflection 期间 holdPose 定格末帧。
+      // Rise 加权池主项：伸懒腰→随意坐姿，正放一次；Reflection 期间 holdPose 定格末帧。
       riseStretchCasual: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();

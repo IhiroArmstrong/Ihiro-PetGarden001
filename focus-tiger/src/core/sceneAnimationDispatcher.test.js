@@ -8,8 +8,11 @@ import {
   HONESTY_LONG_MIN_MINUTES,
   LIGHT_COMPLETE_POOL,
   WELCOME_POOL,
+  RISE_INTERRUPT_POOL,
   shouldAttemptLateNightOnBoot,
   pickWeighted,
+  pickRiseInterruptEmotion,
+  isRiseInterruptHoldEmotion,
   emotionKeyForHonestyDuration,
   lightPoolIsCelebrateSafe,
   canPlaySceneAnimGate,
@@ -75,6 +78,37 @@ test('WELCOME_POOL trial is magicBookReading + nodGreeting (wave out of cold-sta
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'teaDrinking'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'yawnStretch'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'stretchReminder'));
+});
+
+test('RISE_INTERRUPT_POOL is stretch 60 / tea 25 / book 15; no magic/yawn/celebrate', () => {
+  assert.deepEqual(
+    RISE_INTERRUPT_POOL.map((e) => ({ key: e.key, weight: e.weight })),
+    [
+      { key: 'riseStretchCasual', weight: 60 },
+      { key: 'teaDrinking', weight: 25 },
+      { key: 'bookReading', weight: 15 }
+    ]
+  );
+  assert.equal(pickRiseInterruptEmotion(() => 0), 'riseStretchCasual');
+  assert.equal(pickRiseInterruptEmotion(() => 0.59), 'riseStretchCasual');
+  assert.equal(pickRiseInterruptEmotion(() => 0.6), 'teaDrinking');
+  assert.equal(pickRiseInterruptEmotion(() => 0.84), 'teaDrinking');
+  assert.equal(pickRiseInterruptEmotion(() => 0.85), 'bookReading');
+  assert.equal(pickRiseInterruptEmotion(() => 0.99), 'bookReading');
+  assert.ok(!RISE_INTERRUPT_POOL.some((e) => e.key === 'magicBookReading'));
+  assert.ok(!RISE_INTERRUPT_POOL.some((e) => e.key === 'yawnStretch'));
+  assert.ok(!RISE_INTERRUPT_POOL.some((e) => e.key === 'celebrating'));
+  assert.ok(!RISE_INTERRUPT_POOL.some((e) => e.key === 'blinkBreathe'));
+});
+
+test('isRiseInterruptHoldEmotion covers pool keys + debug blinkBreathe', () => {
+  assert.equal(isRiseInterruptHoldEmotion('riseStretchCasual'), true);
+  assert.equal(isRiseInterruptHoldEmotion('teaDrinking'), true);
+  assert.equal(isRiseInterruptHoldEmotion('bookReading'), true);
+  assert.equal(isRiseInterruptHoldEmotion('blinkBreathe'), true);
+  assert.equal(isRiseInterruptHoldEmotion('idle'), false);
+  assert.equal(isRiseInterruptHoldEmotion('magicBookReading'), false);
+  assert.equal(isRiseInterruptHoldEmotion(null), false);
 });
 
 test('cold-start: late night deferred when welcome plays; allowed when welcome skipped', () => {

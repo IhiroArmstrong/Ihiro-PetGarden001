@@ -85,6 +85,36 @@ export const CURIOSITY_POOL = Object.freeze([
 ]);
 
 /**
+ * 中途 Rise（未达标主动结束）加权池。
+ * 伸懒腰为主语义；茶 / 单程看书偶发换气。禁止 magicBookReading / yawn / celebrate。
+ * @type {ReadonlyArray<WeightedEntry>}
+ */
+export const RISE_INTERRUPT_POOL = Object.freeze([
+  Object.freeze({ key: 'riseStretchCasual', weight: 60 }),
+  Object.freeze({ key: 'teaDrinking', weight: 25 }),
+  Object.freeze({ key: 'bookReading', weight: 15 })
+]);
+
+/**
+ * @param {() => number} [random]
+ * @returns {string}
+ */
+export function pickRiseInterruptEmotion(random = Math.random) {
+  return pickWeighted(RISE_INTERRUPT_POOL, random) ?? 'riseStretchCasual';
+}
+
+/**
+ * Rise 过渡 holdPose 期间 Mood / Reflection 收尾须识别的键（含调试 blinkBreathe）。
+ * @param {string | null | undefined} key
+ * @returns {boolean}
+ */
+export function isRiseInterruptHoldEmotion(key) {
+  if (!key) return false;
+  if (key === 'blinkBreathe') return true;
+  return RISE_INTERRUPT_POOL.some((e) => e.key === key);
+}
+
+/**
  * @param {ReadonlyArray<WeightedEntry>} entries
  * @param {() => number} [random]
  * @returns {string | null}
