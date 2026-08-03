@@ -100,7 +100,8 @@ COLLAB.md（本文档，协作层）
 2. **开新会话前先查现场**：开始新的 Cursor 会话前，先跑 `git worktree list` 与 `git reflog`，确认没有其他会话正在同一 worktree/分支上进行中的工作。
 3. **修复走短命分支 + PR**：修复类工作一律 `fix/*` 短命分支 + PR 合并进 `develop`，不直接在 `develop` 上改；合并后即删分支（删清单 = **PR head ∪ 正文 `Supersedes:` 旧支**，见下节）。
 4. **验收结论须带三元组**：每条测试/验收结论必须注明 **commit hash + worktree 路径 + 本地端口**（例：`6545723 · …/wt-docs-6.6 · :5173`），禁止只说「在 develop 上测到……」。
-5. **人工验收只认 `origin/develop` tip（强制）**：**SSOT** 见 [`TEST_TRACKER.md`](./TEST_TRACKER.md) 文首「人工验收唯一基线」。关单级结论若未报 hash、或 hash ≠ 当时 `origin/develop` tip → **无效**，须重新验证。feature/fix 试跑 ≠ 正式验收。
+5. **人工验收只认 `origin/develop` tip（强制）**：**SSOT** 见 [`TEST_TRACKER.md`](./TEST_TRACKER.md) 文首「人工验收唯一基线」。关单级结论若未报 hash、或 hash ≠ 当时 `origin/develop` tip → **无效**，须重新验证。feature/fix 试跑 ≠ 正式验收。  
+6. **合前预览 ≠ 关单（强制并列）**：开 PR / 合并进 `develop` **之前**，须在 feature/fix worktree 完成预览确认（Vite → Safari URL → 确认）——**SSOT** [`WORKFLOW.md`](../../WORKFLOW.md)「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。关单 tip 规则**不**授权「先合再测」；两层门闩见该节「两层验收」。
 
 ### 分支寿命与健康度（摘要）
 

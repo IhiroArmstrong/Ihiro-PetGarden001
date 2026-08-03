@@ -57,7 +57,7 @@ feature/*        ●        ●
 3. **一 worktree ↔ 一分支 ↔ 一主任务**：新建任务默认 `git worktree add -b feature/<topic>|<fix>/<topic>|<chore>/<topic> <并列目录> <基线>`；基线通常为 `develop` tip，拆分/续作已有主题时用该主题分支 tip。目录与主仓**并列**（如 `../Zen-tiger-Pet-garden001-wt-<short>`），不要塞进主仓内部。  
 3a. **合入受阻 / 多文件冲突**：涉及 merge 冲突、CI 红且预计 ≥3 文件或多轮试错时，**先**摘要冲突类型并问是否新开 worktree/分支；**禁止**在原共用目录反复本地长验证。本地最多 1 轮冒烟级自检，最终交给 push + CI（细则：`RULES_INDEX` → `agent-token-cost` 第 6 条）。  
 4. **禁止两 worktree 同时检出同一分支**（Git 硬限制）；共享契约文件（如 `TEST_TRACKER.md`、`PROCESS.md`、locale 大文件）同一时间只允许一个会话改。  
-5. **合回主线**：功能分支经 PR（或团队约定的本地 merge）进入 `develop`；`main` 仍只走 PR + 负责人网页合并（见上文合并门禁）。push 仍须用户明确授权。  
+5. **合回主线**：功能分支经 PR（或团队约定的本地 merge）进入 `develop`——**须先满足**下文「feature/fix 合入 develop 前：worktree 预览确认」；`main` 仍只走 PR + 负责人网页合并（见合并门禁）。push 仍须用户明确授权。  
 6. **结束后清理**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。
 
@@ -73,6 +73,8 @@ feature/*        ●        ●
    |---|---|---|
    | `active` | **仍在占用中** | **否**（别人的锁 → 停手汇报；清锁须强制清锁口令） |
    | `releasable` | **已完成待释放，可以被下一个任务接管** | **可以**（下一会话可删除/覆盖为己锁，**不需要**「我确认要强制清除锁」；仍须在汇报里写明接管了哪把锁） |
+
+   > **词义澄清（强制）**：上表 `releasable` **只**表示 `.ft-session-lock` 的占用态（可被下一任务接管）。**不是**「`develop` 随时可发布 / 主干完整性」。主干合入纪律请用 **develop-integrity**，见下文「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。口语勿把二者都叫 releasable。
 
    规则：
    - **创建锁** → `occupancy` 必须为 `active`，并写 `started_at` / `updated_at`。
@@ -105,6 +107,88 @@ feature/*        ●        ●
 3. **合回单线 vs 继续并行 → 用户拍板（B3）**：若两条分支本质是同一功能的响应式变体，Agent 应**提出**评估合回 `develop`（或单 feature 线）+ 断点处理差异的选项，**不得**自行决定长期并行或擅自 merge 策略。  
 
 **反面教材**：`feature/wide-idle-more-menu` 建在窄屏初版 tip 上、未跟随后续窄屏修复 → 宽屏复现已修 bug（2026-07-21）。
+
+### feature/fix 合入 develop 前：worktree 预览确认（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-feature-merge-preview`）。  
+> 与「并行 worktree / 占用锁」互补：那些管**写盘隔离**；本条管 **合进 `develop` 之前**须在隔离分支上测过、确认没问题。  
+> 与 `qa-develop-tip`（关单只认 `origin/develop` tip）**并列、不互相替代**——见下文「两层验收」。
+
+#### 硬规则
+
+1. **先测后合**：`feature/*` / `fix/*`（及同类短命支）须在其 **worktree / 分支 tip** 上完成预览或等价自检，**用户（或任务书指定验收人）确认没问题之后**，再开 PR / 合并进 `develop`。  
+2. **禁止先合再测当默认路径**：不得把「先 merge 进 develop，再在 develop 上才第一次给人预览」当成常规流程。  
+3. **推荐动作顺序**：在 feature worktree 起 Vite（或等价预览）→ 提供本地 URL（Safari）→ 确认 → **再**决定 push / 开 PR / 合入。Agent **不得**在未经确认时擅自合并进 `develop`。
+
+#### 为什么（develop-integrity）
+
+目标：**保护 `develop` 的主干完整性（develop-integrity）**——日常集成分支应尽量保持可继续开发、可开 PR 往 `main` 走的状态，不把「未在隔离支上确认过」的改动默认冲进主干。
+
+| 先合再测的代价 | 先测后合 |
+|---|---|
+| `develop` 上出现坏 commit → 往往要 revert；并行分支（例：同时存活的 hints 簇）若已基于坏 tip 继续开发，revert 会牵连它们 | 最坏是本 feature 分支作废或重开，**对 `develop` 零影响** |
+| 他人（或下次新 worktree）从 `develop` 切出即带着坑 | 隔离性价值：坑留在短命支上 |
+
+> **词义澄清（强制）**：此处 **develop-integrity（主干完整性）≠** `.ft-session-lock` 的 `occupancy: "releasable"`（会话锁「可被下一任务接管」）。二者字面都可能被口语说成「releasable」，**禁止混用**：谈合入纪律用 **develop-integrity**；谈占用锁仍只用 `occupancy` 枚举值 `releasable`。
+
+#### 两层验收（必须并列理解）
+
+| 层 | 何时 | 基线 | 作用 |
+|---|---|---|---|
+| **合前预览确认**（本条） | **合并进 `develop` 之前** | 当前 `feature/*` / `fix/*` worktree tip + 端口 | 决定「能不能合进主干」；失败 → 不合 / 继续修 |
+| **关单级人工验收**（`qa-develop-tip`） | **已合入 `develop` 之后** | **仅**当时 `origin/develop` tip | 决定 TEST_TRACKER 能否标「已通过」/ 关闭「有问题」 |
+
+**禁止**把「关单只认 develop tip」读成「所以应该先合再测才算正式」。合前预览是 **合入门闩**；合后 tip 验收是 **关单门闩**。feature 上的试跑仍 **不得**单独当作关单证据（见 `TEST_TRACKER.md`）。
+
+#### 合入前是否须同步（rebase/merge）`develop`——可执行判断
+
+worktree 在**切出那一刻**已含当时 `develop` 的全量内容；之后 `develop` 若前进，本支**不会**自动跟上。是否须在合入前 `rebase`/`merge` `origin/develop` 并**重测**，用命令判定——**禁止**仅靠「我觉得改动挺小」跳过。
+
+在功能分支 tip 上执行（先 `git fetch origin develop`）：
+
+```bash
+# A = 本支相对 merge-base 改过的文件
+git diff --name-only origin/develop...HEAD | sort -u > /tmp/ft-ours.txt
+# B = develop 上本支尚未包含的提交所改文件（develop 相对 merge-base）
+git diff --name-only HEAD...origin/develop | sort -u > /tmp/ft-theirs.txt
+
+echo "--- commits on develop not in HEAD ---"
+git log --oneline HEAD..origin/develop
+
+echo "--- overlapping files (if any) ---"
+comm -12 /tmp/ft-ours.txt /tmp/ft-theirs.txt
+```
+
+| 判定 | 条件 | 动作 |
+|---|---|---|
+| **可直接推进合入流程**（就同步而言） | `git log -1 HEAD..origin/develop` **为空**（develop 无本支缺少的提交） | 无需为「跟上 develop」而 rebase；仍须完成本条的预览确认 |
+| **必须先 rebase/merge 再重测** | develop 有本支缺少的提交（上表 log **非空**），**且** `comm -12` 输出 **非空**（文件有交集） | 在本 worktree `rebase` 或 `merge origin/develop` → 解决冲突 → **重新**预览/冒烟 → 再开 PR / 合入 |
+| **建议仍 rebase（非文件硬拦）** | develop 前进但文件无交集 | 不强制为文件重叠；若分支**存活较久**或触及共享契约大文件，仍建议合入前同步一次并快测 |
+
+辅助对照（可读性，不替代上面的交集判定）：
+
+```bash
+git log origin/develop..HEAD --stat    # 本支将带进 develop 的变更
+git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的变更
+```
+
+#### 预览豁免（严格 · 防滥用）
+
+可勾选「跳过 Vite/产品壳预览」**当且仅当**同时满足：
+
+1. 对 `origin/develop...HEAD` 做 `git diff --name-only`，**每一个**改动路径都**不**落在下列**运行时路径**（命中任一 → **整 PR 不得豁免**，即使同批还有 `.md`）：
+   - `focus-tiger/src/**`
+   - `focus-tiger/public/**`
+   - `focus-tiger/e2e/**`
+   - `focus-tiger/index.html`（及会进 Vite 入口的其它产品 HTML）
+   - 任意 `*.vue`；以及 `focus-tiger/src` 下的 `*.css` / `*.html`（已含于 `src/**`）
+2. **禁止**仅凭「文件后缀是 `.md`」「PR 标题写了 docs」「改的是脚本注释」自称豁免。  
+3. **允许**出现在豁免 PR 里的典型路径：`**/*.md` / `**/*.mdc`、仓库根 `WORKFLOW.md`、`.github/**`（模板/workflow 文案）、`focus-tiger/docs/**`、以及**不进产品 Vite 打包**的门禁/检测脚本（如 `focus-tiger/scripts/rules-authority-registry.js`、`docs-check` 相关）。若脚本改动会改变**产品运行时行为** → 仍不得豁免。  
+4. 豁免时仍须勾选并写清理由；仍须跑本条的 **develop 同步判定**（文件重叠则先 rebase）。
+
+#### 与 PR 模板
+
+开向 `develop` 的 PR 须勾选模板中合前预览项（见 `.github/PULL_REQUEST_TEMPLATE.md`）。未勾且不满足上节豁免 → 审查时应拦回补做。
 
 ---
 
