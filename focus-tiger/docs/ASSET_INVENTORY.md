@@ -1,7 +1,7 @@
 # ASSET_INVENTORY.md — 美术 / 动画素材盘点
 
-**最后盘点**：2026-08-02（UTC+8）· 三套已烘焙 pingpong 入库试验  
-**对照上次**：2026-08-01 文档盘点（当时 29 目录 / ~682 帧）  
+**最后盘点**：2026-08-03（UTC+8）· 鹦鹉耳边造访入库  
+**对照上次**：2026-08-02 文档盘点（当时 32 目录）  
 **互动页**：同名 Canvas（聊天旁可打开）；本文档为可入库的镜像记录。
 
 扫描范围：`public/sprites/tiger-cub/monk-robe-default/`、`spriteManifest.js`、`EmotionController.js`、`public/models/`、仓库根目录 `*-transparent.zip`、`docs/NEW_ASSETS_2026-07-18*.md`。
@@ -14,9 +14,9 @@
 
 | 指标 | 数值 |
 |---|---|
-| 已安装动画目录 | **32** |
-| 磁盘 PNG 帧合计 | **860**（+178：38+46+94） |
-| 相对 08-01 文档新增目录 | **3**（`wave-hello-pingpong` / `magic-book-reading` / `golden-halo-palms`） |
+| 已安装动画目录 | **33** |
+| 磁盘 PNG 帧合计 | **953**（+93：`parrot-ear-visit-feather`） |
+| 相对 08-02 文档新增目录 | **1**（`parrot-ear-visit-feather`） |
 | 已归档移出 public | **1**（breath-halo-expand → `art-reference/sprites-archived/`） |
 | 待业务触发（非「已取代」） | 见 §「库存→业务」；政策：**须全部接入场景**（分 Slice B/C），禁止长期仅调试 |
 | 3D GLB（奖励柜/垫底） | 7+ |
@@ -25,11 +25,20 @@
 **2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。  
 **2026-07-31**：场景→产品触发对照见 **`SCENE_ANIMATION_WIRING.md`**（v1 Slice A 语言/Honesty Idle）。  
 **2026-08-01**：用户 + 设计师——库存须进业务场景；接线表升格 Slice B（活跃陪伴）/ C（荷花）；**勿接**已取代目录。  
-**2026-08-02**：三套已烘焙 pingpong 试验入库；开场欢迎池加权；Honesty≥30 → `goldenHaloPalms`。
+**2026-08-02**：三套已烘焙 pingpong 试验入库；开场欢迎池加权；Honesty≥30 → `goldenHaloPalms`。  
+**2026-08-03**：入库 `parrot-ear-visit-feather`；场景 A 应用内轻提醒信使；场景 B 轻完成池稀有彩蛋（**不**替 streak-7 MilestoneGlow）。
 
 ---
 
 ## 相对上次盘点的增量
+
+### 2026-08-03 · 鹦鹉耳边造访（禅意信使）
+
+| 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
+|---|---|---:|---|
+| Yin_Parrot_Ear_Visit_Feather_transparent | `parrot-ear-visit-feather` | 93 | **场景 A**：`#in-app-reminder-banner` 首次可见 → `parrotEarVisit`（本页一次）；**场景 B**：`LIGHT_COMPLETE_POOL` 低权重稀有彩蛋（微仪式/轻完成）；**不**进 `MilestoneGlow` streak-7 |
+
+1056×864 RGBA；manifest `parrotEarVisit` @ **8 fps** ≈11.6s；产品路径正放一次 → ~1s CapCut Idle。
 
 ### 2026-08-02 · 已烘焙 pingpong 三套（试验接线）
 
@@ -102,6 +111,7 @@
 | wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
 | magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
 | book-reading | 24 | bookReading | **试验**：日语切语 | 单程无倒放 + CapCut；≠ magic-book |
+| parrot-ear-visit-feather | 93 | parrotEarVisit | **场景 A** 应用内轻提醒信使；**场景 B** 轻完成稀有彩蛋 | 不替 streak-7 MilestoneGlow；羽毛残影另议 |
 | golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
@@ -146,6 +156,7 @@
 | haloBreathing | halo-breathing | 调试可单独播；**Slice B** 接 Honesty 长补登等 |
 | welcomeBack / nodGreeting / curiousTilt / earWiggle | waveHelloWelcome / nod-greeting / **blink-smile** / earWiggle 烘焙正+倒 | welcomeBack/earWiggle：烘焙正+倒一次 + CapCut（禁 player pingpong）；nodGreeting：正放一次；curiousTilt：blink-smile |
 | milestoneGlow | milestone-glow（streak-7）· meditation-star-reward（21/100）；breath-halo-hq 仅调试 | **产品路径已接线**（节点轮换） |
+| parrotEarVisit | parrot-ear-visit-feather | **场景 A** 提醒横幅；**场景 B** `LIGHT_COMPLETE_POOL` 稀有 |
 | riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
 | wakeUp | stretch-reminder（同源） | 已接线；与 Honesty 视觉分离（2026-07-19） |

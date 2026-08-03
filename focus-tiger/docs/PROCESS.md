@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03）**：`parrot-ear-visit-feather`（93 帧 @ 8 fps）→ `parrotEarVisit`。**场景 A**：应用内轻提醒横幅首次出现伴随信使动画（本页一次）。**场景 B（稀有）**：轻完成/微仪式池加低权重彩蛋；**不**替换 streak-7 `MilestoneGlow` 蝴蝶金辉。羽毛残影/可收集面另议。分支 `feature/parrot-ear-visit-2026-08-03`。
 - **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 已验证** → 格式生效。**④ 视觉护栏试点已开**（mint RGB + tip 几何 + tip 软快照；Brief `task-hints-visual-guardrail-pilot`）— **不**替代人工观感验收。⑤ 仍 Backlog。
 - **MilestoneGlow 琉璃星石变体入库（2026-08-03）**：`meditation-star-reward`（63 帧）进 `MilestoneGlow` 变体池——`streak-7` 仍金辉+蝴蝶；`streak-21` / `streak-100` 播星石。分支 `feature/milestone-glow-star-variant`。
 - **PR 收口 + stash 归档（2026-08-01 晚）**：[#66](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/66) chrome Quick-only / Rise 闪 + ja 阿寅、[#67](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/67) welcome wave pingpong、[#68](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/68) stash PRD 归档均已合 `develop`。本地 5 条旧 stash 已清；唯一 PRD 草稿进 `docs/archive/stashed-prds-2026-07-24/`。已合入 `fix/*` worktree 已拆除。

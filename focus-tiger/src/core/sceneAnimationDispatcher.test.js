@@ -250,6 +250,20 @@ test('SESSION_COMPLETE_LIGHT / MICRO_RITUAL pick from celebrate-safe pool', () =
   );
 });
 
+test('LIGHT_COMPLETE_POOL includes rare parrotEarVisit easter egg', () => {
+  assert.ok(LIGHT_COMPLETE_POOL.some((e) => e.key === 'parrotEarVisit'));
+  const storage = memoryStorage();
+  // weight 8/108 ≈ last bucket: roll near 1.0
+  const rare = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE,
+    sessionState: 'IDLE',
+    storage,
+    random: () => 0.999
+  });
+  assert.equal(rare.play, true);
+  assert.equal(rare.emotionKey, 'parrotEarVisit');
+});
+
 test('WELCOME_APP once per day', () => {
   const storage = memoryStorage();
   const now = () => new Date(2026, 7, 1, 9);

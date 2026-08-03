@@ -132,6 +132,16 @@ test('set reminder time → return to foreground → show banner → dismiss →
   await simulateReturnToForeground(page);
   await expect(page.locator(BANNER)).toBeVisible({ timeout: 10_000 });
 
+  // Scene A：横幅首次可见时伴随鹦鹉信使（本页一次）
+  const parrotPlayed = await page.evaluate(() => {
+    return Boolean(window.__inAppReminder?.parrotMessengerPlayed);
+  });
+  expect(parrotPlayed).toBe(true);
+  const emotionKey = await page.evaluate(() => {
+    return window.__inAppReminder?.getCurrentEmotionKey?.() ?? null;
+  });
+  expect(emotionKey).toBe('parrotEarVisit');
+
   await page.locator(DISMISS).click();
   await expect(page.locator(BANNER)).toBeHidden();
   await simulateReturnToForeground(page);

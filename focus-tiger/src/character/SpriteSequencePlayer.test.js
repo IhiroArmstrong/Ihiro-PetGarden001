@@ -372,7 +372,7 @@ test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
   assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
 });
 
-test('teaDrinking, bookReading, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
+test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
   assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
   assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);
   assert.equal(SPRITE_SEQUENCES.teaDrinking.fps, 8);
@@ -381,6 +381,11 @@ test('teaDrinking, bookReading, earWiggleHeadTouch, riseStretchCasual, blinkBrea
   assert.equal(SPRITE_SEQUENCES.bookReading.frameCount, 24);
   assert.equal(SPRITE_SEQUENCES.bookReading.fps, 8);
   assert.equal(SPRITE_SEQUENCES.bookReading.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.animation, 'parrot-ear-visit-feather');
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.frameCount, 93);
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.preload, false);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.animation, 'ear-wiggle-head-touch');
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.frameCount, 54);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.fps, 10);

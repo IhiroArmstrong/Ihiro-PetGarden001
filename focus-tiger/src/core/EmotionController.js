@@ -766,6 +766,13 @@ export class EmotionController {
           freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
+      // 禅意信使：鹦鹉飞来耳边低语 → 留羽飞走；应用内轻提醒 / 稀有完成彩蛋。
+      parrotEarVisit: (options = {}) => {
+        this._playCompanionSequenceOnce('parrotEarVisit', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
       // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
         this._playCompanionSequenceOnce('earWiggleHeadTouch', options, {
@@ -1055,6 +1062,7 @@ export class EmotionController {
       // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'bookReading', label: '单程看书(日语切语)' },
+      { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1077,6 +1085,7 @@ export class EmotionController {
       yawnStretch: 'yawn-stretch 哈欠',
       teaDrinking: 'tea-drinking 喝茶',
       bookReading: 'book-reading 单程看书',
+      parrotEarVisit: 'parrot-ear-visit-feather 鹦鹉信使',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
@@ -1391,6 +1400,7 @@ export const EMOTION_KEYS = Object.freeze({
   WELCOME_BACK: 'welcomeBack',
   MAGIC_BOOK_READING: 'magicBookReading',
   BOOK_READING: 'bookReading',
+  PARROT_EAR_VISIT: 'parrotEarVisit',
   GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',

@@ -44,6 +44,7 @@ import {
   InAppReminderBannerController,
   isReminderBusySession
 } from './core/InAppReminderBannerController.js';
+import { shouldPlayParrotMessengerOnBannerShow } from './core/parrotMessengerGate.js';
 import {
   evaluateInAppReminderBanner,
   REMINDER_GENTLE_WAITING_MESSAGE_KEY
@@ -340,6 +341,8 @@ async function init() {
     // 2026-07-23 已拍板：suppress（忙碌隐藏、不排队）；勿改 defer 到产品路径
     busyPolicy: 'suppress'
   });
+  /** Scene A：本页会话内鹦鹉信使是否已伴随横幅播过一次 */
+  let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
   const inAppReminderBannerUI = new InAppReminderBannerUI(
@@ -1061,10 +1064,21 @@ async function init() {
     const decision = inAppReminderBannerController.resolve(candidate, {
       isBusySession: busy
     });
+    const bannerWasVisible = inAppReminderBannerUI.isVisible();
     if (decision.action === 'show') {
       inAppReminderBannerUI.show(
         decision.messageKey || REMINDER_GENTLE_WAITING_MESSAGE_KEY
       );
+      if (
+        shouldPlayParrotMessengerOnBannerShow({
+          action: decision.action,
+          bannerWasVisible,
+          alreadyPlayedThisPageSession: parrotMessengerPlayedThisPageSession
+        })
+      ) {
+        parrotMessengerPlayedThisPageSession = true;
+        emotionController.playEmotion('parrotEarVisit');
+      }
     } else if (inAppReminderBannerUI.isVisible()) {
       inAppReminderBannerUI.hide({ silent: true });
     }
@@ -1083,7 +1097,16 @@ async function init() {
     },
     controller: inAppReminderBannerController,
     settings: reminderPreferenceUI,
-    banner: inAppReminderBannerUI
+    banner: inAppReminderBannerUI,
+    /** DEV/E2E：重置本页信使播放门闩（不重置横幅 dismiss） */
+    resetParrotMessenger: () => {
+      parrotMessengerPlayedThisPageSession = false;
+    },
+    get parrotMessengerPlayed() {
+      return parrotMessengerPlayedThisPageSession;
+    },
+    /** E2E（含 vite preview production）：观测信使开播后的 emotion key */
+    getCurrentEmotionKey: () => emotionController.getCurrentEmotionKey()
   };
 
   /**

@@ -333,6 +333,32 @@ test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
   assert.equal(plays[1].options.crossFadeMs, 1000);
 });
 
+test('parrotEarVisit plays once then CapCut idle (~1s)', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('parrotEarVisit');
+
+  assert.equal(plays[0].name, 'parrotEarVisit');
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(controller.getCurrentEmotionKey(), 'parrotEarVisit');
+});
+
 test('nodGreeting plays once forward (no reverse) then CapCut to idle', () => {
   const plays = [];
   const spritePlayer = {
