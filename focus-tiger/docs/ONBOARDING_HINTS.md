@@ -179,7 +179,7 @@
 |---|---|---|
 | **(1) Registry SSOT** | `onboardingHintRegistry.js` 派生 `HINT_IDS` / `HINT_LOCALE_KEYS` / `ONBOARDING_HINT_ANCHORS`；`onboardingHintRegistry.test.js` 锁 1:1 + locale + `anchorGroup` 内 selector 互异 | **已落地** |
 | **(2) md 锚点块同步** | `npm run hints:doc-check`（`test:smoke` + CI 独立 required check）；`npm run hints:doc-sync` 刷新 §一后机器块 | **已落地** |
-| **(3) DOM 视觉位置** | Playwright `boundingBox` 验证气泡尖角是否对准锚控件 | **Backlog** — 见 `PROCESS.md`「Hints anchor e2e bounding rect」 |
+| **(3) DOM 视觉位置 / 色** | tip↔锚点几何 + mint RGB；tip 元件软快照（禁全页 Yin） | **④ 试点** — `e2e/hints-visual-guardrail.spec.js`；扩全量 id 仍见 PROCESS Backlog |
 
 **新增 hint 工作流**：先对照 **`HINTS_WIRING.md`** 选场景行与批次簇 → 改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → 视需要改 `resolveAutoHintIds` / 优先级 → `npm run test:smoke`。若 anchor 与已有 hint 相邻/可能重叠，评估 `anchorGroup`（见 registry 文件头 PR checklist）。完整清单见 `HINTS_WIRING` §六。
 

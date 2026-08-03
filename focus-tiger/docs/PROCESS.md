@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 全流程已验证** → 可宣称 **接线表格式生效**（非视觉快照 / 非壳层解耦）。④⑤ 仍 Backlog。
+- **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 已验证** → 格式生效。**④ 视觉护栏试点已开**（mint RGB + tip 几何 + tip 软快照；Brief `task-hints-visual-guardrail-pilot`）— **不**替代人工观感验收。⑤ 仍 Backlog。
 - **MilestoneGlow 琉璃星石变体入库（2026-08-03）**：`meditation-star-reward`（63 帧）进 `MilestoneGlow` 变体池——`streak-7` 仍金辉+蝴蝶；`streak-21` / `streak-100` 播星石。分支 `feature/milestone-glow-star-variant`。
 - **PR 收口 + stash 归档（2026-08-01 晚）**：[#66](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/66) chrome Quick-only / Rise 闪 + ja 阿寅、[#67](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/67) welcome wave pingpong、[#68](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/68) stash PRD 归档均已合 `develop`。本地 5 条旧 stash 已清；唯一 PRD 草稿进 `docs/archive/stashed-prds-2026-07-24/`。已合入 `fix/*` worktree 已拆除。
 - **PR #2 冲突已清（2026-08-02 · #70 合 develop）**：PR #2 = `MERGEABLE`；behind main=0；resolve worktree 已拆。**合 main 仍须五条件清单 + 你明确下令**。Brief：`task-pr2-develop-into-main.md`。
@@ -328,8 +328,8 @@
 - 节奏敲击正念小游戏（「数字木鱼」）
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
 - 角色边界待观察事项
-- **Hints anchor e2e bounding rect**（Onboarding 提示：Playwright 验证 hint 气泡 DOM 位置 ↔ `onboardingHintAnchors.js` 配置；唯一链「代码配置 = 实际视觉位置」；依赖 (1) 对齐单测稳定后立项）
-- **Hints 关键 hint 窄宽视觉快照**（尖角 / mint / peeked·done；减轻纯人肉回归）— ④；中风险，须基线与抗 flaky
+- **Hints 视觉护栏 · ④ 试点**（进行中）：`e2e/hints-visual-guardrail.spec.js` — mint 色 / tip 几何 / tip 元件软快照；扩簇与 peeked 态仍待；**人工观感验收仍是关单权威**
+- **Hints anchor e2e bounding rect**（几何层并入 ④ 试点；全量关键 id 仍可扩）
 - **Hints viewport-context 解耦**（锚点判断少直接摸 Session chrome / 窄宽壳状态；架构项）— ⑤；先 Brief/试点，勿立刻全改
 - **CI 全量 `test:smoke` + `test:e2e`**（**夜间+手动全量 + Plan A 已收口**；残留 flaky 根因 / 是否挂 PR 门另议；排期次于打包选型）
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
@@ -771,12 +771,9 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:Hints anchor e2e bounding rect（Onboarding 提示 DOM 视觉校验）
 
-> **背景（2026-07-22 拍板）**：`HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 机械对齐单测已落地（层级 1）；语义分组测试（层级 2）暂缓，待 md 表是否变机器可读真源再定。本项为层级 3——**唯一能验证「代码配置 = 实际 DOM 视觉位置」** 的手段；前两层均不触碰这一环。
-
-- **目标**：Playwright e2e 在典型场景（Idle / FOCUSING / 点 ? 补救）下，对关键 hint（至少 `ambient-soundscape` vs `ambient-gated`、`help-affordance`、`honesty-optional`）取气泡与锚控件的 `boundingBox`，断言尖角侧/相对位置符合 `placement` / `tip` 配置。
-- **前置**：层级 (1) 对齐单测稳定；人工复测 `TEST_TRACKER` 中 hints 锚点相关行通过。
-- **不在范围**：不做语义分组手写表（见 `ONBOARDING_HINTS.md` §三 anchor 校验分层）；不替代人工观感验收（窄屏 clamp、互斥串行等）。
-- **排期**：**明确 Backlog，非无限延期**；建议排在窄屏 hints 互斥人工 OK 之后、`Lit` 试点扩面拍板之前评估工作量。
+> **背景（2026-07-22 拍板）**：层级 1 对齐单测已落地；本项为层级 3 几何。  
+> **进度（2026-08-03）**：与 **④ 视觉护栏试点**合并开工——`e2e/hints-visual-guardrail.spec.js` 已锁 sit tip 相对 Sit 控件、help tip 相对「?」的 boundingBox；mint 色另锁。全量关键 id（ambient / honesty 等）仍可扩。  
+> **不在范围 / 权威**：不替代人工观感关单（见 Brief `task-hints-visual-guardrail-pilot.md`）。
 
 ### Backlog:角色边界待观察事项（暂不处理,后续观察）
 
