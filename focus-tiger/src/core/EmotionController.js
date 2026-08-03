@@ -104,21 +104,32 @@ export function pickCelebrateDanceVariant(random = Math.random) {
 }
 
 /**
- * MilestoneGlow 序列变体（同 emotion key `milestoneGlow`）。
- * 按 streak 节点轮换：7=金辉蝴蝶；21/100=琉璃星石。无 nodeId（调试）默认蝴蝶。
+ * MilestoneGlow 序列变体。
+ * - streak-7：金辉蝴蝶 ↔ 鹦鹉信使 **50/50**（2026-08-03 拍板）
+ * - streak-21 / streak-100：琉璃星石
+ * - 无 nodeId（调试）默认蝴蝶
  */
 export const MILESTONE_GLOW_VARIANT_BY_NODE = Object.freeze({
-  'streak-7': 'milestoneGlow',
   'streak-21': 'milestoneGlowStar',
   'streak-100': 'milestoneGlowStar'
 });
 
+/** streak-7 仪式视觉二选一（等权） */
+export const STREAK_7_MILESTONE_VISUALS = Object.freeze([
+  'milestoneGlow',
+  'parrotEarVisit'
+]);
+
 /**
  * @param {string | null | undefined} nodeId
- * @returns {'milestoneGlow' | 'milestoneGlowStar'}
+ * @param {() => number} [random] 可注入；默认 Math.random
+ * @returns {'milestoneGlow' | 'milestoneGlowStar' | 'parrotEarVisit'}
  */
-export function pickMilestoneGlowVariant(nodeId) {
+export function pickMilestoneGlowVariant(nodeId, random = Math.random) {
   const id = typeof nodeId === 'string' ? nodeId : '';
+  if (id === 'streak-7') {
+    return random() < 0.5 ? 'milestoneGlow' : 'parrotEarVisit';
+  }
   const mapped = MILESTONE_GLOW_VARIANT_BY_NODE[id];
   return mapped === 'milestoneGlowStar' ? 'milestoneGlowStar' : 'milestoneGlow';
 }
@@ -379,8 +390,8 @@ export class EmotionController {
       },
 
       // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
-      // 里程碑仪式：产品路径按 streak 节点选变体（金辉蝴蝶 / 琉璃星石）；
-      // 末帧固定停留 2.5s，让烧录特效自然收束后回落。
+      // 里程碑仪式：产品路径按 streak 节点选变体（金辉蝴蝶 / 琉璃星石 / streak-7 鹦鹉二选一）；
+      // 末帧固定停留 2.5s（鹦鹉走 CapCut 回 Idle，无末帧 hold），让烧录特效自然收束后回落。
       milestoneGlow: (options = {}) => {
         this._cancelMilestoneHold();
         if (!this.spritePlayer) {
@@ -390,13 +401,21 @@ export class EmotionController {
           this._finishOneShot(options, 'milestoneGlow');
           return;
         }
-        this._leaveIdleBaseline();
-        this._use2DMainline();
-        const holdPose = Boolean(options.holdPose);
         const sequenceName =
           typeof options.sequenceName === 'string' && options.sequenceName
             ? options.sequenceName
-            : pickMilestoneGlowVariant(options.milestoneNodeId);
+            : pickMilestoneGlowVariant(
+                options.milestoneNodeId,
+                typeof options.random === 'function' ? options.random : Math.random
+              );
+        // streak-7 稀有/等权：鹦鹉信使仍记 milestone 节点，走陪伴 CapCut 回落。
+        if (sequenceName === 'parrotEarVisit') {
+          this._implementations.parrotEarVisit(options);
+          return;
+        }
+        this._leaveIdleBaseline();
+        this._use2DMainline();
+        const holdPose = Boolean(options.holdPose);
         const started = this.spritePlayer.play(sequenceName, {
           ...options,
           loop: false,
@@ -766,6 +785,13 @@ export class EmotionController {
           freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
+      // 禅意信使：鹦鹉飞来耳边低语 → 留羽飞走；应用内轻提醒 / 稀有完成彩蛋。
+      parrotEarVisit: (options = {}) => {
+        this._playCompanionSequenceOnce('parrotEarVisit', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
       // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
         this._playCompanionSequenceOnce('earWiggleHeadTouch', options, {
@@ -1055,6 +1081,7 @@ export class EmotionController {
       // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'bookReading', label: '单程看书(日语切语)' },
+      { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1077,6 +1104,7 @@ export class EmotionController {
       yawnStretch: 'yawn-stretch 哈欠',
       teaDrinking: 'tea-drinking 喝茶',
       bookReading: 'book-reading 单程看书',
+      parrotEarVisit: 'parrot-ear-visit-feather 鹦鹉信使',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
@@ -1391,6 +1419,7 @@ export const EMOTION_KEYS = Object.freeze({
   WELCOME_BACK: 'welcomeBack',
   MAGIC_BOOK_READING: 'magicBookReading',
   BOOK_READING: 'bookReading',
+  PARROT_EAR_VISIT: 'parrotEarVisit',
   GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',

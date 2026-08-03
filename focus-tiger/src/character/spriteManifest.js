@@ -298,6 +298,18 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // 鹦鹉耳边造访 + 彩羽（禅意信使）。源：Yin_Parrot_Ear_Visit_Feather_transparent → parrot-ear-visit-feather。
+  // 1056×864 RGBA · 93 帧 @ 8 fps ≈11.6s（messenger 叙事，偏 ritual 时长带）；正放一次 → CapCut Idle。
+  parrotEarVisit: {
+    animation: 'parrot-ear-visit-feather',
+    frameCount: 93,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
   // Honesty 长补登试验：衣发光 → 头顶金环 → 合掌 → 金沙四散（已烘焙 pingpong，94 帧）。
   // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈23.5s）。
   goldenHaloPalms: {

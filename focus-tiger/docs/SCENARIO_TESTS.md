@@ -258,7 +258,7 @@
 
 **何时评估**：App **冷启动**；浏览器标签从后台 **切回前台**（`visibilitychange` → visible）；状态从忙碌回到 Idle 等（见 P3）。
 
-5. 设好提醒且已过设定时分、今日零完成 → 顶部居中 `#in-app-reminder-banner` 出现，文案 `reminder.gentle_waiting`（EN "Yin is right here when you're ready." / ZH「你准备好了，阿寅就在这儿。」），右侧 **×** 可关。不得再用「waiting / 在等你」类紧逼措辞。
+5. 设好提醒且已过设定时分、今日零完成 → 顶部居中 `#in-app-reminder-banner` 出现，文案 `reminder.gentle_waiting`（EN "Yin is right here when you're ready." / ZH「你准备好了，阿寅就在这儿。」），右侧 **×** 可关。不得再用「waiting / 在等你」类紧逼措辞。**2026-08-03**：横幅本页首次可见时伴随 `parrotEarVisit`（鹦鹉信使）；同页不重播。
 6. 点 × 关闭 → **本页会话内不再出现**（即使条件仍满足）。
 7. **回流**：再次 `sync` / 切后台再回前台 → 仍不重复；**完整刷新**或新开 App → 若条件仍满足，**可再次出现**。
 8. **负例**：未到设定时分 → 不出现；今日已完成任一会话 → 不出现；未勾选开启 → 不出现。

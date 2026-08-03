@@ -6,7 +6,8 @@ import {
   EmotionController,
   LEAVE_DORMANT_WAKE_CROSS_FADE_MS,
   MILESTONE_GLOW_HOLD_MS,
-  pickMilestoneGlowVariant
+  pickMilestoneGlowVariant,
+  STREAK_7_MILESTONE_VISUALS
 } from './EmotionController.js';
 
 test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', () => {
@@ -67,8 +68,16 @@ test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', (
   }
 });
 
-test('pickMilestoneGlowVariant maps streak nodes to butterfly vs star', () => {
-  assert.equal(pickMilestoneGlowVariant('streak-7'), 'milestoneGlow');
+test('pickMilestoneGlowVariant maps streak nodes; streak-7 is 50/50 butterfly vs parrot', () => {
+  assert.deepEqual([...STREAK_7_MILESTONE_VISUALS], [
+    'milestoneGlow',
+    'parrotEarVisit'
+  ]);
+  assert.equal(pickMilestoneGlowVariant('streak-7', () => 0), 'milestoneGlow');
+  assert.equal(
+    pickMilestoneGlowVariant('streak-7', () => 0.5),
+    'parrotEarVisit'
+  );
   assert.equal(pickMilestoneGlowVariant('streak-21'), 'milestoneGlowStar');
   assert.equal(pickMilestoneGlowVariant('streak-100'), 'milestoneGlowStar');
   assert.equal(pickMilestoneGlowVariant(null), 'milestoneGlow');
@@ -132,7 +141,7 @@ test('milestoneGlow holds its last frame for a fixed duration then returns to id
   }
 });
 
-test('milestoneGlow picks star variant for streak-21 / streak-100 nodes', () => {
+test('milestoneGlow picks star / streak-7 butterfly-or-parrot for nodes', () => {
   const plays = [];
   const spritePlayer = {
     play(name, options = {}) {
@@ -156,8 +165,18 @@ test('milestoneGlow picks star variant for streak-21 / streak-100 nodes', () => 
   globalThis.clearTimeout = () => {};
 
   try {
-    controller.playEmotion('milestoneGlow', { milestoneNodeId: 'streak-7' });
+    controller.playEmotion('milestoneGlow', {
+      milestoneNodeId: 'streak-7',
+      random: () => 0
+    });
     assert.equal(plays.at(-1).name, 'milestoneGlow');
+
+    controller.playEmotion('milestoneGlow', {
+      milestoneNodeId: 'streak-7',
+      random: () => 0.9
+    });
+    assert.equal(plays.at(-1).name, 'parrotEarVisit');
+    assert.equal(plays.at(-1).options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
 
     controller.playEmotion('milestoneGlow', { milestoneNodeId: 'streak-21' });
     assert.equal(plays.at(-1).name, 'milestoneGlowStar');
@@ -331,6 +350,32 @@ test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
   assert.equal(plays[1].options.crossFadeMs, 1000);
+});
+
+test('parrotEarVisit plays once then CapCut idle (~1s)', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('parrotEarVisit');
+
+  assert.equal(plays[0].name, 'parrotEarVisit');
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(controller.getCurrentEmotionKey(), 'parrotEarVisit');
 });
 
 test('nodGreeting plays once forward (no reverse) then CapCut to idle', () => {

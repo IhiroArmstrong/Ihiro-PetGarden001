@@ -49,7 +49,8 @@
 | `SessionComplete` | 每次专注完成的轻量情绪确认 | 否（约 3.5s） | 每次完成用户设定的专注会话均触发；温和摆尾致意（光环/粒子已烧录在帧内）；若本次同时满足「当日首次达标」，由 `Celebrating` 替代，不叠加播放 | **70**（高于基底姿态、低于 `IncenseComplete` / `Celebrating`） | **已实现（2D 主线）**：`session-complete` 28 帧（**8 fps** ≈3.5s，ONE_SHOT light 带）；`playEmotion('sessionComplete')`；同日后续达标接线完成；播放期临时归零 FocusVisualizer / Rim Light，播完回归 idle-breathing 后恢复 |
 | `WakeUp` | 唤醒起身（伸懒腰变体） | 否（17 帧一次性） | 调试入口 / 历史多日沉睡叙事键 | **90** | **已实现（2D）**：播 `stretch-reminder` 同源伸懒腰（情绪键 `wakeUp`，**8 fps**）→ idle；**不**接 halo。与 Honesty `dormantWake` **刻意区分** |
 | `dormantWake` | Honesty Check-in 唤醒（睡态揭毯 → 合掌坐姿） | 否（34 帧 **`cloak-sleep` 倒放**） | 用户选时长后**立刻**播放（与呼吸倒计时同期）；播完**定格末帧**至倒计时结束；按所选时长等同一次已完成会话 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：选时长 → `cloak-sleep` **倒放**（**6 fps** ≈5.7s）→ 定格末帧（素材 frame_001）；倒计时结束离 DORMANT。离开定格默认 **520ms** cross-fade。Arrival Breath 不再落入 idle——改放慢 `Smiling`（见 0.50）。**2026-07-21**：试替原 `dormant-wake` 正放 |
-| `MilestoneGlow` | 里程碑仪式反馈（金辉 / 琉璃星石变体） | 否（约 10s 一次性序列） | 长期里程碑节点达成时触发（连续练习 7/21/100 天等）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **产品路径已接线**：`playEmotion('milestoneGlow', { milestoneNodeId })`。**变体池**（同 emotion key）：`streak-7` → `milestone-glow`（27 帧 @ **4 fps**，闭目 + 金光 + 蝴蝶）；`streak-21` / `streak-100` → `meditation-star-reward`（63 帧 @ **6 fps**，闭目坐禅 + 空中发光琉璃星石）。调试无 nodeId 默认蝴蝶；入库素材钮可单播星石。简化备选 **`breath-halo-hq`** 仍仅调试、不进节点轮换。播放期归零实时金光；末帧停留后回落 idle。 |
+| `MilestoneGlow` | 里程碑仪式反馈（金辉 / 琉璃星石 / streak-7 鹦鹉二选一） | 否（约 10s 一次性序列；鹦鹉 ≈11.6s + CapCut） | 长期里程碑节点达成时触发（连续练习 7/21/100 天等）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **产品路径已接线**：`playEmotion('milestoneGlow', { milestoneNodeId })`。**变体池**：`streak-7` → **50/50** `milestone-glow`（金辉+蝴蝶）或 `parrotEarVisit`（鹦鹉信使）；`streak-21` / `streak-100` → `meditation-star-reward`（琉璃星石）。调试无 nodeId 默认蝴蝶；入库素材钮可单播星石/鹦鹉。简化备选 **`breath-halo-hq`** 仍仅调试。播放期归零实时金光；蝴蝶/星石末帧停留后回落 idle；鹦鹉走 CapCut Idle。 |
+| `ParrotEarVisit` | 鹦鹉耳边造访（禅意信使） | 否（93 帧 @ **8 fps** ≈11.6s） | **场景 A**：应用内轻提醒横幅本页首次可见时伴随播放；**场景 B**：轻完成 / 微仪式池稀有彩蛋；**亦**为 `MilestoneGlow` streak-7 的 50/50 视觉之一 | **68**（独立键；作里程碑时仍由 `playEmotion('milestoneGlow')` 触发，优先级按 110 仪式路径） | **已实现（2D）**：`parrot-ear-visit-feather`；正放一次 → ~1s CapCut Idle。**不做**羽毛残影/可收集（2026-08-03 拍板） |
 | `IntentionSet` | Arrival Choose 确认点头 | 否（nod-bow **pingpong** 一整轮，约 7s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；**门闩与 Companion 在确认瞬间立即打开**，动画并行不挡流程） | **已实现（2D 主线）**：**16:9 `nod-bow` pingpong**（正放鞠躬→倒放回坐姿）；进出与前后动画用 **约 1s CapCut 叠化**（`CAPCUT_DISSOLVE_MS`）。旧 `palms-together` 仅调试保留。 |
 
 ### 1.3 动态效果层（可叠加）
@@ -155,7 +156,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `goldenHaloPalms` | `goldenHaloPalms` → 同名序列 | `public/sprites/.../golden-halo-palms/frame_001–094.png`（Honesty≥30 试验） |
 | `nodGreeting` | `nodGreeting` → `nodGreeting`（2D） | `public/sprites/.../nod-greeting/frame_001–023.png` |
 | `CuriousTilt` | `curiousTilt` → `blinkSmile`（2D；原 `tiltThink` 已停用） | `public/sprites/.../blink-smile/`（默认）；`tilt-think` 仅存量素材 |
-| `MilestoneGlow` | `milestoneGlow` → `milestoneGlow` / `milestoneGlowStar`（2D；按节点） | `streak-7`：`.../milestone-glow/frame_001–027.png`；`streak-21`/`100`：`.../meditation-star-reward/frame_001–063.png`；备选 `breath-halo-hq` 仅调试 |
+| `MilestoneGlow` | `milestoneGlow` → `milestoneGlow` / `milestoneGlowStar` /（streak-7 可委派）`parrotEarVisit` | `streak-7`：**50/50** 蝴蝶 `milestone-glow` 或鹦鹉 `parrot-ear-visit-feather`；`streak-21`/`100`：`meditation-star-reward`；备选 `breath-halo-hq` 仅调试 |
+| `ParrotEarVisit` | `parrotEarVisit` → 同名序列 | `public/sprites/.../parrot-ear-visit-feather/frame_001–093.png`（提醒信使 · 轻完成稀有 · streak-7 仪式二选一） |
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
@@ -293,7 +295,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 比 `Celebrating` **更隆重一档**的仪式性反馈，用于长期里程碑节点（连续练习 7/21/100 天、累计时长节点等），一年仅发生数次，10 秒时长不会廉价化。与 `Celebrating` 的气质分工：每日庆祝是「小老虎替你高兴」（社交性——睁眼、看你、轻拍、摆尾）；`MilestoneGlow` 是「时间的重量被看见」（仪式性——他不睁眼、不做动作、继续坐禅，只是金光与蝴蝶——或琉璃星石——来到他身边）。
 
-**变体池（2026-08-03）**：同一 emotion key；`pickMilestoneGlowVariant(nodeId)`——`streak-7` 播金辉+蝴蝶；`streak-21` / `streak-100` 播琉璃星石。气质同属闭目静观仪式，不进 Celebrating / SessionComplete 池。
+**变体池（2026-08-03）**：`pickMilestoneGlowVariant(nodeId, random)`——`streak-7` **50/50** 金辉蝴蝶 / 鹦鹉信使；`streak-21` / `streak-100` 播琉璃星石。气质同属仪式反馈（鹦鹉更灵动），不进 Celebrating / SessionComplete 池。
 
 **10 秒分镜 · 金辉+蝴蝶**（`milestone-glow`；视频源已按此产出）：
 
@@ -659,5 +661,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.82 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut（合十改调试） |
 | 0.83 | 2026-08-03 | 入库 `meditation-star-reward`；`MilestoneGlow` 变体池：streak-7 金辉蝴蝶 · streak-21/100 琉璃星石 |
 | 0.84 | 2026-08-03 | 中途 Rise：`RISE_INTERRUPT_POOL`（stretch 60% / tea 25% / book 15%）；正放 + holdPose；禁 magicBook / yawn |
-
+| 0.85 | 2026-08-03 | 入库 `parrotEarVisit`（鹦鹉耳边造访）；场景 A 应用内轻提醒信使；场景 B 轻完成池稀有彩蛋 |
+| 0.86 | 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶金辉 ↔ 鹦鹉信使；不做羽毛残影 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

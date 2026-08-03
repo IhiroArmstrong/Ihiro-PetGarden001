@@ -90,7 +90,7 @@
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（**pingpong×1** + CapCut）；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
-| 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`） | light / ack | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
+| 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` / nod / blink-smile（`curiousTilt`）· **`parrotEarVisit` 稀有** | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；见 `MICRO_RITUAL_PLAN.md` |
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台仍检深夜 |
@@ -106,8 +106,7 @@
 | 活跃 ~2h | stretch 池：`stretchReminder` / `yawnStretch` | ack | **已实现**（Dispatcher） | 勿叠 celebrate |
 | Re-focus 回来 | `mindfulAcknowledge` subtype refocus | ack | **已接线** | |
 | 中途 Rise | **加权池** `riseStretchCasual` 60% · `teaDrinking` 25% · `bookReading` 15% | ack | **已接线** | 正放一次 + `holdPose`；关 Reflection → Idle。**禁止** `magicBookReading` / yawn / celebrate；`blinkBreathe` 勿回主路径 |
-| 每次计时完成（非当日首达标） | 同档池：`sessionComplete` ~60% · nod / blink ~40% | light / ack | **已实现**（Dispatcher） | **禁止** `celebrate-dance*` |
-| 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档 |
+| 每次计时完成（非当日首达标） | 同档池：`sessionComplete` ~60% · nod / blink ~40% · **`parrotEarVisit` 稀有 ~7%** | light / ack / messenger | **已实现**（Dispatcher） | **禁止** `celebrate-dance*`；鹦鹉不进 Celebrating || 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档 |
 
 ### 5.3 Recover / Transition / Reflect
 
@@ -126,7 +125,8 @@
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
-| 长期里程碑 | `milestoneGlow` 变体：`milestone-glow`（streak-7）· `meditation-star-reward`（streak-21/100）；`breathHaloHq` 仍调试 | ritual | **产品路径已接线**（节点轮换） | Brief `task-milestone-glow-product-wire.md` |
+| 长期里程碑 | `milestoneGlow`：`streak-7` **50/50** 蝴蝶/`parrotEarVisit` · `streak-21`/`100` 琉璃星石；`breathHaloHq` 仍调试 | ritual | **产品路径已接线** | Brief `task-milestone-glow-product-wire` / `task-parrot-ear-visit` |
+| 应用内轻提醒横幅 | `parrotEarVisit`（禅意信使）+ 顶部 `#in-app-reminder-banner` | messenger | **已接线**（2026-08-03） | 横幅首次可见本页播一次；文案仍 `reminder.gentle_waiting` |
 | 荷花成长 / 莲花解锁 | `lotus-front-rising` / `lotus-chest-halo` | ritual | Slice C | 须先有 Grow / 纪念奖励产品面 |
 | 旧 `dormant-wake/` 正放 | — | — | **勿接** | 已由 cloak 倒放取代；目录保留 |
 | 旧 `sleeping/` 8 帧 | — | — | **勿接** | 主线用 cloak 030–034 |
@@ -186,8 +186,9 @@
 | `breath-halo-hq` | MilestoneGlow 备选或长补登光环变体 | B |
 | `tea-drinking` / `yawn-stretch` / gaze-p* / `ear-wiggle-head-touch` | 深夜·清晨·茶歇·好奇·摸头（均冷却） | B |
 | `lotus-front-rising` / `lotus-chest-halo` | Grow / 纪念奖励解锁 | C |
-| `milestone-glow` | 连续练习节点（streak-7） | 已接线 |
+| `milestone-glow` | 连续练习节点（streak-7 · 与鹦鹉 50/50） | 已接线 |
 | `meditation-star-reward` | 连续练习节点（streak-21 / streak-100） | 已接线（2026-08-03） |
+| `parrot-ear-visit-feather` | 应用内轻提醒信使（A）· 轻完成稀有（B）· streak-7 仪式 50/50 | 已接线（2026-08-03）；**不做**羽毛残影 |
 | `dormant-wake` / 旧 `sleeping/` / `tilt-think` / `blink-breathe` | — | **勿接**（已取代） |
 
 仍缺正式序列（`smileSquint` / `petHead` / `dizzyBlink` / `snoringZZZ`）→ 另立美术，不在「库存消化」范围。
@@ -231,4 +232,6 @@
 | 2026-08-02 | **修**：冷启动欢迎与深夜同 tick 叠播 → tea/yawn 误盖开场；`shouldAttemptLateNightOnBoot` 互斥 + §6.9 |
 | 2026-08-03 | 入库 `meditation-star-reward`；MilestoneGlow 按节点轮换（7=蝴蝶金辉 · 21/100=琉璃星石） |
 | 2026-08-03 | `meditation-star-reward` **改用不抠图源**覆盖（用户反馈抠图毛边差；星空/白底整幅烧录） |
+| 2026-08-03 | 入库 `parrot-ear-visit-feather`；场景 A 提醒横幅信使；场景 B `LIGHT_COMPLETE_POOL` 稀有 |
+| 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶 ↔ 鹦鹉；不做羽毛残影 |
 

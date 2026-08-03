@@ -61,7 +61,9 @@ export const WELCOME_POOL = Object.freeze([
 export const LIGHT_COMPLETE_POOL = Object.freeze([
   Object.freeze({ key: 'sessionComplete', weight: 60 }),
   Object.freeze({ key: 'mindfulAcknowledge', weight: 20 }),
-  Object.freeze({ key: 'curiousTilt', weight: 20 })
+  Object.freeze({ key: 'curiousTilt', weight: 20 }),
+  // 稀有彩蛋（Scene B）：鹦鹉耳边造访；≈7%（8/108）。不进 Celebrating / MilestoneGlow。
+  Object.freeze({ key: 'parrotEarVisit', weight: 8 })
 ]);
 
 /** @type {ReadonlyArray<WeightedEntry>} */
