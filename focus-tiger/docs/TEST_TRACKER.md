@@ -11,9 +11,10 @@
 1. **必须**报出验收时的 **commit hash**（建议先 `git fetch origin develop`，再对照 `git rev-parse origin/develop`）。  
 2. 该 hash **必须等于**当时的 `origin/develop` tip。  
 3. **缺 hash、或 hash ≠ `origin/develop` tip**（含在 `feature/*` / `fix/*` / 过时 worktree / 未 fetch 的本地 develop 上测）→ 该次验收结论 **一律无效**，**必须**在同步到 tip 后 **重新验证**；禁止据此标「已通过」或关闭「有问题」。  
-4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。
+4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。  
+5. **与合前预览的分工（勿读反）**：合并进 `develop` **之前**，须在 feature/fix **worktree** 完成预览确认（合入门闩）——见 `WORKFLOW.md`「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。本条 tip 规则管的是合入**之后**的关单门闩。**禁止**把「关单只认 develop tip」理解成「应先合再测才算正式」。
 
-协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`。
+协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `git-feature-merge-preview`（合前预览）。
 
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 演示会话时长默认 **`DEMO_SESSION_MINUTES = 1`**；可用 **`?sessionMinutes=5`** 拉长（场景 B Re-focus 真实切页须用）。  

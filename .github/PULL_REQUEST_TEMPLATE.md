@@ -50,13 +50,23 @@
 
 ---
 
+## 合前预览确认（合入 develop 门闩）
+
+> 权威：仓库根 `WORKFLOW.md`「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。与关单 tip 规则并列，**不是**「先合再测」。豁免条件见该节「预览豁免（严格）」。
+
+- [ ] **已在本 PR 的 feature/fix worktree** 起过 Vite（或等价预览），用 Safari/系统浏览器确认主路径无阻塞问题  
+  **或者** 满足豁免：`git diff --name-only origin/develop...HEAD` **不含** `focus-tiger/src/**`、`focus-tiger/public/**`、`focus-tiger/e2e/**`、产品入口 HTML、任意 `*.vue`（禁止「有个 .md 就算纯文档」；混有运行时路径 → 整 PR 不得豁免）→ 勾此项并写豁免理由：_______________
+- [ ] 合入前已按 `WORKFLOW.md` 跑过 **develop 同步判定**（`git diff --name-only origin/develop...HEAD` / `HEAD...origin/develop` + `comm -12`）：无需 rebase **或** 已 rebase/merge 并重测
+
+---
+
 ## 冒烟测试
 
 - [ ] 已在本地跑过 **`cd focus-tiger && npm run test:pr-smoke`**（逻辑冒烟 + 浏览器壳子集，约 2–4 分钟）
 - [ ] （可选）合并前再跑完整套件：`npm run test:e2e` · `npm run test:e2e:visibility` · `npm run docs:check`
 
 > CI：每次 PR→`develop` 都会上报 **`test:pr-smoke`**（无 `focus-tiger/**` 改动时为成功 no-op）与 **`pre-merge with develop`**。改产品代码时 smoke 含逻辑冒烟 + e2e smoke + **`npm run build` 产物检查**。完整 e2e / visibility / doc-contract 另触发。  
-> **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）；合并进 develop 后再验，勿在长期落后的 feature 分支上关单。
+> **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）——这是**合入之后**的关单门闩；**合入之前**须完成上方「合前预览确认」。勿在长期落后的 feature 分支上关单。
 
 ---
 
