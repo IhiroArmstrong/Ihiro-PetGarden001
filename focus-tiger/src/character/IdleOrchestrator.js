@@ -9,8 +9,8 @@
  * EmotionController 只负责在 idle 生命周期 start，在非 idle 表现前 stop。
  */
 
-/** 与其它情绪回落 idle 时的默认交叉淡入（秒级 CapCut 叠化见 EmotionController）。 */
-export const IDLE_VARIANT_CROSS_FADE_MS = 180;
+/** 跨动画变体进入时的默认叠化（与 CapCut 同长）。Idle 闭目↔睁眼弧仍用 `IDLE_BREATH_GLANCE_SEAM_MS=0`。 */
+export const IDLE_VARIANT_CROSS_FADE_MS = 1000;
 
 /** 闭目段 ↔ 眨眼弧：同素材族、首帧同为闭目，禁止叠化。 */
 export const IDLE_BREATH_GLANCE_SEAM_MS = 0;

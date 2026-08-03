@@ -151,7 +151,7 @@
 - **文档根指针收敛**：`SCENARIO_TESTS` / `HONESTY_BRIDGE_CTA` / `ONBOARDING_HINTS` 权威均在 `focus-tiger/docs/`；仓库根同名文件仅为指针；720 底稿归档
 - **3D Idle 警示/历史备份入库**：`tiger-meditate-closed.webp-292k.glb`、`tiger-meditate-closed.crimson-trim-307k.glb`（非正式运行时；见 `ASSET_INVENTORY.md`）
 - **NEW_ASSETS_2026-07-18-B**：眼动/哈欠入库 Prompt 归档（正式 Idle 不调度）
-- **CapCut 式叠代**：两段无法衔接的序列默认 1s 定格交叉淡化（`CAPCUT_DISSOLVE_MS`）；同源微切仍可用 `MICRO_CROSS_FADE_MS`
+- **CapCut 式叠代**：跨动画有转场一律 **1s**（`CAPCUT_DISSOLVE_MS`）；短淡入已退役。**仅**设计为无需转场的硬切（显式 `0`）保持。
 - Honesty 拍板 B；Companion 短句提示
 - **开发质量工作流文档**：`DEV_WORKFLOW_QUALITY.md`（含 N6/N15 立刻 commit + 文档同步；§6.1 场景冒烟已落地）
 - **场景 A–D 控制器冒烟**：`src/core/scenario-smoke.test.js` · `npm run test:smoke`（逻辑层；观感仍人工分列）
@@ -205,7 +205,7 @@
 - Honesty Check-in UI：Mindful Check-in 标题加粗加深、呼吸面板与 Sit with Yin 按钮立体化
 - `dormantWake` 2D 正式素材：同源 `dormant-wake` 16 帧一次性正放（深睡→完全清醒坐姿）；呼吸引导期间保持 sleeping，sleeping→wake 与 wake→idle-breathing 均采用 180ms 双图层 cross-fade；末帧短暂停留，完整回落由序列 `onComplete` 驱动，既有 FocusVisualizer 金光继续作 Rim Light 重构前占位
 - `nodGreeting` 2D 正式素材：`nod-greeting` 23 帧一次性点头致意；`PointerInteraction` 靠近检测（半径/滞后/节流）已就绪并改接本键，播完回归 idle-breathing；原 `lookAtCursor` 保留为兼容占位
-- `curiousTilt` 静止好奇：默认视觉改为 `blink-smile`（替代托腮 `tilt-think`）；靠近区静止 4 秒触发，冷却 6 秒；180ms cross-fade
+- `curiousTilt` 静止好奇：默认视觉改为 `blink-smile`（替代托腮 `tilt-think`）；靠近区静止 4 秒触发，冷却 6 秒；**1s CapCut** 进出（2026-08-03）
 - `SessionComplete` 正式动作层：`session-complete` 28 帧完整叙事摆尾（约 2s、`loopMode: none`；光环/粒子已烧录）；完成前查询 `DailyCompletionStore`，每日首次只触发 `Celebrating`，同日后续只触发 `sessionComplete`；播放期归零 FocusVisualizer / Rim Light，播完回归 idle-breathing 后再进入 Reflection Moment
 - `MilestoneGlow` 调试预览：`milestone-glow` 27 帧完整叙事（金光+蝴蝶已烧录，无独立 DOM 层）；末帧固定停留 2.5s 后回落；播放期同样归零实时金光；真实里程碑判定仍属 Backlog「纪念奖励系统」
 - Session Intention / Arrival Practice v2 MVP：Sit → 欢迎（blink-smile）/ Notice 点选（不落库）/ ~5s 呼吸 / Choose（图标+打字，`intentions.v1`+source）→ Companion Mode → 再 Sit 计时；Skip / Skip — begin；Reflection 按来源回显；见 `CORE_LOOP.md` / `ARRIVE_MOMENT_DESIGN.md`

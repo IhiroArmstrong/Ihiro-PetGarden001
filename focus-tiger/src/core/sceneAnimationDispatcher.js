@@ -56,12 +56,14 @@ export const WELCOME_POOL = Object.freeze([
   Object.freeze({ key: 'nodGreeting', weight: 40 })
 ]);
 
-/** Light completion / micro-ritual — never celebrate-dance */
+/** Light completion / micro-ritual — never celebrate-dance.
+ * 2026-08-03：撤出 `curiousTilt`（blink-smile）——微仪式呼吸期已是 smiling/blink-smile，
+ * 再抽到几乎像没播；权重并入摆尾 / 点头。鹦鹉仍稀有。
+ */
 /** @type {ReadonlyArray<WeightedEntry>} */
 export const LIGHT_COMPLETE_POOL = Object.freeze([
-  Object.freeze({ key: 'sessionComplete', weight: 60 }),
-  Object.freeze({ key: 'mindfulAcknowledge', weight: 20 }),
-  Object.freeze({ key: 'curiousTilt', weight: 20 }),
+  Object.freeze({ key: 'sessionComplete', weight: 70 }),
+  Object.freeze({ key: 'mindfulAcknowledge', weight: 30 }),
   // 稀有彩蛋（Scene B）：鹦鹉耳边造访；≈7%（8/108）。不进 Celebrating / MilestoneGlow。
   Object.freeze({ key: 'parrotEarVisit', weight: 8 })
 ]);
