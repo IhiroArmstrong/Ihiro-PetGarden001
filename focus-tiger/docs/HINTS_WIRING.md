@@ -1,14 +1,15 @@
 # HINTS_WIRING.md — 场景 → Hint 接线表
 
 创建日期：2026-08-03  
-**最后修订**：2026-08-03（③ 簇 A 全流程：校正 §4.1 + 单测锁 + 宣称格式已检验）  
+**最后修订**：2026-08-03（④ 视觉护栏试点：mint/几何/tip 软快照）  
 产品语义层级：位于 `PRODUCT_MOMENTS.md` / `ONBOARDING_HINTS.md` 之下、实现 Brief 之上——回答「**哪个用户时刻该出哪条 hint、门闩与互斥是什么**」。  
 文案、圆点 tier、补救交互细节仍以 **`ONBOARDING_HINTS.md`** 为权威；机器可读 id / 锚点 / `triggerMode` 以 **`src/core/onboardingHintRegistry.js`** 为唯一真源（`hints:doc-sync`）。
 
 > **诚实边界（2026-08-03 分析师）**：本文件 + 库存机器块 = **必要条件**，不是充分条件。  
 > - **已堵**：registry 新 tip 不登记批次簇 / 不同步库存表 → `docs:check` 失败；PR 模板批次钉。  
-> - **格式已用簇 A 真实编辑检验（2026-08-03）** → 可宣称 **接线 SSOT 格式生效**；≠ 视觉快照/壳层解耦已完成。  
-> - **未堵完**：④ 尖角/mint/peeked 快照；⑤ viewport-context 与 Session chrome 解耦。
+> - **格式已用簇 A 真实编辑检验（2026-08-03）** → 可宣称 **接线 SSOT 格式生效**。  
+> - **④ 视觉护栏试点已安排（2026-08-03）**：mint RGB + tip 几何 + tip 元件软快照（**不含** Yin 全页）；**≠** 替代人工观感验收。  
+> - **未堵完**：④ 扩簇 / peeked 态；⑤ viewport-context 与 Session chrome 解耦。
 
 ---
 
@@ -162,7 +163,7 @@
 | `SHARED_RESOURCES.md` §6 | 双壳 suppress 与 Honesty 入口 |
 | `SCENE_ANIMATION_WIRING.md` | **管理方法论姊妹篇**（一批中央契约）；领域不同 |
 | `PRODUCT_MOMENTS.md` | Five Moments；hint 服务引导而非替代 Moment |
-| `PROCESS.md` Backlog | 视觉快照 / viewport-context 解耦 / Hints anchor e2e 等 |
+| `PROCESS.md` Backlog | ④ 扩簇 / peeked；⑤ viewport-context；Hints anchor 全量几何 |
 
 ---
 
@@ -173,7 +174,7 @@
 | ① | registry ↔ 本表库存机器块 + `HINT_WIRING_BATCH_CLUSTER` 硬闸 | **已落地**（`hints:doc-check` / `docs:check`） |
 | ② | PR 模板强制批次簇 / 单 tip 例外说明 | **已落地**（`.github/PULL_REQUEST_TEMPLATE.md`） |
 | ③ | 用真实 **簇 A** 跑一遍全流程，验收本表格式是否好用 | **已验证（2026-08-03）**：校正 §4.1 与 `resolveAutoHintIds` 漂移；补 cluster A 单测；宽窄路径指既有 e2e；§五补 idle-after。**可宣称接线表格式已被真实编辑检验**（非视觉快照、非壳层解耦） |
-| ④ | 关键 hint 窄宽视觉快照（尖角 / mint / peeked） | Backlog · **不本轮**（中风险 / 需基线与抗 flaky） |
+| ④ | 关键 hint 窄宽视觉护栏（尖角几何 / mint 色 / tip 软快照） | **试点进行中（2026-08-03）**：Brief `task-hints-visual-guardrail-pilot.md`；e2e `hints-visual-guardrail.spec.js`。选型：RGB+几何为主、tip 元件软快照为辅；**禁全页 Yin**。观感关单仍人工。后续：扩簇 / peeked |
 | ⑤ | hint 锚点只吃传入 viewport-context，少直接摸壳层状态 | 架构 Backlog · **不本轮立刻全改**（偏高风险；先 Brief/试点） |
 
 ### 簇 A 试跑清单（③ · 已完成）
@@ -235,4 +236,5 @@
 | 2026-08-03 | 初版：分层、全局门闩、按表面接线摘要、批次簇 A–E、新增清单；用户拍板「合理则办」单独立项 SSOT |
 | 2026-08-03 | 分析师跟进：库存机器块硬闸、PR 批次钉、诚实边界与 ③–⑤ 排期；簇 A 试跑清单 |
 | 2026-08-03 | **③ 簇 A 全流程验证**：校正 Idle 接线表；`hintsWiringClusterA.test.js`；宣称格式已检验 |
+| 2026-08-03 | **④ 视觉护栏试点**：mint/几何/tip 软快照；Brief + e2e；明确不替代人工观感验收 |
 
