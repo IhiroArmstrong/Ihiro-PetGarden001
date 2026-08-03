@@ -1,12 +1,14 @@
 # ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
 
 创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-07-30（`triggerMode` + `tier` peeked/static/done；首次登录右上音符薄荷绿提示；窄屏 `narrow-drawer-menu`）
+最后更新：2026-08-03（文首指针 → **`HINTS_WIRING.md`** 场景接线 SSOT）  
 结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
 1. **即时提示**：每个功能第一次真正出现时，按 `triggerMode` 用阿寅文字气泡或控件旁脉冲圆点引导；click 的已读语义由独立字段 `tier` 决定。
 2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
 
 原则：不强迫用户读说明书；尽量做成**傻瓜交互式**开头——每一步只回答「此刻点哪里 / 可以跳过吗 / 点了会发生什么」。
+
+> **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**（对标 `SCENE_ANIMATION_WIRING`）。本文管文案 / tier / 补救 UX；机器锚点仍以 registry + 下方机器块为准。
 
 ---
 
@@ -179,7 +181,7 @@
 | **(2) md 锚点块同步** | `npm run hints:doc-check`（`test:smoke` + CI 独立 required check）；`npm run hints:doc-sync` 刷新 §一后机器块 | **已落地** |
 | **(3) DOM 视觉位置** | Playwright `boundingBox` 验证气泡尖角是否对准锚控件 | **Backlog** — 见 `PROCESS.md`「Hints anchor e2e bounding rect」 |
 
-**新增 hint 工作流**：改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → `npm run test:smoke`。若 anchor 与已有 hint 相邻/可能重叠，评估 `anchorGroup`（见 registry 文件头 PR checklist）。
+**新增 hint 工作流**：先对照 **`HINTS_WIRING.md`** 选场景行与批次簇 → 改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → 视需要改 `resolveAutoHintIds` / 优先级 → `npm run test:smoke`。若 anchor 与已有 hint 相邻/可能重叠，评估 `anchorGroup`（见 registry 文件头 PR checklist）。完整清单见 `HINTS_WIRING` §六。
 
 ---
 

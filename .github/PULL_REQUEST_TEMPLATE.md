@@ -20,6 +20,17 @@
 
 ---
 
+## Hints 批次（触及 onboarding tip / registry / 接线则必填）
+
+> 权威：`focus-tiger/docs/HINTS_WIRING.md` · 库存硬闸：`npm run hints:doc-check`
+
+- [ ] **未**改 hint id / 锚点 / `triggerMode` / 自动出 tip 逻辑 → 勾此项并跳过下面
+- [ ] 本次属于批次簇：**A**（Dock/Sit） / **B**（Arrival/Companion） / **C**（Ambient/次要） / **D**（Focus HUD/Rise） / **E**（Help） / **legacy** / **多簇**（写明）
+- [ ] 若「单条 tip」小 PR：写明 **例外理由**（热修 / 文案-only / …）；否则应按簇一批改
+- [ ] 已更新 `HINT_WIRING_BATCH_CLUSTER`（如有新 id）并 `npm run hints:doc-sync`
+
+---
+
 ## 验收清单（请逐项打勾）
 
 - [ ] 首屏能正常加载

@@ -2,13 +2,16 @@
  * Onboarding hints — 机器可读真源（SSOT）。
  *
  * 派生：HINT_IDS、HINT_LOCALE_KEYS、ONBOARDING_HINT_ANCHORS、HINT_TRIGGER_MODES、HINT_TIERS（勿手写第二份）。
- * 叙述/场景：ONBOARDING_HINTS.md §一（人工）；锚点机器对照块由 `npm run hints:doc-sync` 生成。
+ * 叙述/文案：ONBOARDING_HINTS.md §一（人工）；场景接线/门闩/批次：HINTS_WIRING.md。
+ * 锚点机器对照块由 `npm run hints:doc-sync` 生成。
  *
  * PR checklist：新增 hint 时若 anchor 所在 DOM 区域与已有 hint 相邻/可能视觉重叠，
  * 必须评估是否需要 anchorGroup（同组内 selector 不得相同）。
  * 新增 hint 必须声明 triggerMode；仅 click 须声明 tier（auto/manual/legacy 禁止填 tier）。
+ * 先对照 HINTS_WIRING 选场景行与批次簇，再改本 registry。
  *
  * @see ONBOARDING_HINTS.md
+ * @see HINTS_WIRING.md
  */
 
 /** @typedef {{ selector: string, placement: string, tip: string }} HintAnchor */

@@ -1,0 +1,235 @@
+# HINTS_WIRING.md — 场景 → Hint 接线表
+
+创建日期：2026-08-03  
+**最后修订**：2026-08-03（分析师跟进：CI 库存硬闸 + PR 批次钉 + 标明骨架待簇 A 验证）  
+产品语义层级：位于 `PRODUCT_MOMENTS.md` / `ONBOARDING_HINTS.md` 之下、实现 Brief 之上——回答「**哪个用户时刻该出哪条 hint、门闩与互斥是什么**」。  
+文案、圆点 tier、补救交互细节仍以 **`ONBOARDING_HINTS.md`** 为权威；机器可读 id / 锚点 / `triggerMode` 以 **`src/core/onboardingHintRegistry.js`** 为唯一真源（`hints:doc-sync`）。
+
+> **诚实边界（2026-08-03 分析师）**：本文件 + 库存机器块 = **必要条件**，不是充分条件。  
+> - **已堵**：registry 新 tip 不登记批次簇 / 不同步库存表 → `docs:check` 失败。  
+> - **未堵完**：视觉尖角/mint/peeked 仍靠人工；与 Session chrome 的耦合只是被写清，尚未解耦。  
+> - **骨架状态**：格式尚未用一次真实「批次簇全流程改动」验收；首次建议用 **簇 A** 跑通后再推广。
+
+---
+
+## 一、为什么要有这张表
+
+仓库已有 registry + `OnboardingHintsStore`，但 Hints 仍易乱，因为：
+
+1. **产品不断加 tip**，若拆成许多「各加一条」小 PR → 宽窄锚点 remap、互斥、与壳层 suppress 容易漂移。  
+2. **观感契约**（尖角、mint、peeked/done）比情绪键更脆，一改 Idle 壳就炸。  
+3. **场景门闩分散**：`resolveAutoHintIds` / 补救主条 / 窄屏 park 折叠 / 微仪式禁 Sit tip —— 若只改 UI if，难审计。
+
+目标：像场景动画 Dispatcher 一样——**先定接线契约，再一批改、一批验**；禁止无限期「感觉该加一条 tip」。
+
+**不是**：再造一套 coachmark / 集中式教程（仍遵守 `ONBOARDING_HINTS` §三禁令）。
+
+---
+
+## 二、文档分层（勿混）
+
+| 层 | 文件 | 管什么 |
+|---|---|---|
+| **交互 / 文案 / 圆点语义** | `ONBOARDING_HINTS.md` | tip 文案、tier、触屏键盘、? 补救 UX、存储 |
+| **场景接线（本文件）** | `HINTS_WIRING.md` | 时刻 × 候选 id × 互斥 / 门闩 / 宽窄规则 / 批次政策 |
+| **机器真源** | `onboardingHintRegistry.js` | id、localeKey、selector、triggerMode、tier、anchorGroup |
+| **编排实现** | `OnboardingHintsStore.js` + `OnboardingHintsUI.js` | `resolveAutoHintIds` / `selectExclusiveAutoHintIds` / park remap |
+
+改接线 → 先改本表（或当回合书面确认）→ 再改 Store / UI；改锚点/模式 → registry → `hints:doc-sync`。
+
+---
+
+## 三、全局门闩（强制）
+
+1. **auto 互斥**：同一时刻 **最多 1 条** `triggerMode: auto` 气泡（`selectExclusiveAutoHintIds` + `AUTO_HINT_PRIORITY`）。**click 圆点可并存**。  
+2. **叠层忙碌**：Arrival / Honesty 面板 / Reflection / 微仪式 / Celebrating 等 → 按 `resolveAutoHintIds` 收窄；**禁止**在 Sit chrome 已藏时仍出指 Sit 的 tip（微仪式进行中 `ids = []`）。  
+3. **无可见锚点 → 不出 tip**：禁止把气泡丢到空白画布（`_positionBubble` 无锚即收）。  
+4. **窄屏 park + 抽屉关**：? 补救「更多」折叠为一次性 `narrow-drawer-menu`；**禁止**抽屉未开时尖角乱指抽屉内控件。  
+5. **宽屏次要 chrome**：对称用 `wide-more-menu` park（见 Store）。  
+6. **Honesty 桥接可见**：自动路径勿叠 micro-ritual / Honesty 入口 tip 挡 Yes/No（入口 suppress 见 `SHARED_RESOURCES` §6）。  
+7. **补救不受已读限制**；自动 tip 点关 = `done`。
+
+优先级数字权威在代码 `AUTO_HINT_PRIORITY`（本表只摘要，改权重要改代码 + 单测）。
+
+| 档（约） | 代表 id |
+|---|---|
+| 100–90 | `help-affordance`、`reflection`、`sit-button` / `rise-button` |
+| 85–80 | Arrival beats、`companion-mode`、Honesty 桥接/可选 |
+| 70–55 | How shall we sit?、Quick Start、Focus HUD、ambient / 热力图 / 提醒 / 微仪式 |
+| ≤50 | Companion 三模式说明条 |
+
+---
+
+## 四、接线总表（按表面）
+
+图例：**自动** = `resolveAutoHintIds` 候选（再经互斥）；**click** = 圆点；**补救主条** = `resolvePrimaryRemedyHintId`；**仅 ?** = manual / catalog。
+
+### 4.1 Idle / 冷启动
+
+| 用户场景 | 候选 hintId | 方式 | 门闩 / 备注 |
+|---|---|---|---|
+| 首次空闲见「?」 | `help-affordance` | click · detailed | 优先互斥档；点 ? / 简介卡 → done |
+| 空闲从未同坐 | `sit-button` | auto | 与 help 竞优先级；点 Sit → done |
+| ⚡ Quick Start 可见 | `quick-start` | click · simple | |
+| How shall we sit? | `how-shall-we-sit` | click · simple | |
+| Honesty 入口可见 | `honesty-optional` | auto | |
+| 热力图 / 提醒 / 微仪式入口 | `weekly-heatmap` · `in-app-reminder` · `micro-ritual` | click · simple | |
+| 右上音符（opt-in 音乐） | `ambient-soundscape` | click · simple | 锚 mute；窄屏 remap ActionBar ♪ |
+| Idle 点 Sound（gated） | `ambient-gated` | click · simple | 历史 FAB 锚；宽屏主路径常经菜单/抽屉 |
+| 会话结束后再 Idle | `idle-after-session` | click · simple | |
+| 窄屏抽屉说明 | `narrow-drawer-menu` | manual | 仅 ? 补救折叠；抽屉关时不自动尖角乱指 |
+| 宽屏 ⋯ 说明 | `wide-more-menu` | manual | 对称 park |
+
+**Idle 补救主条默认**：`sit-button`（有过完成后可为 `idle-after-session`）。
+
+### 4.2 Arrival / Companion
+
+| 用户场景 | 候选 hintId | 方式 | 门闩 / 备注 |
+|---|---|---|---|
+| Notice | `notice` | auto | Arrival 开 → 补救主条随 phase |
+| Breath | `breathing` | auto | |
+| Choose | `choose` | auto | |
+| Companion 面板 | `companion-mode` + 三模式说明 | auto | 面板展开；点选模式 → done |
+| 桥接 Yes/No | `honesty-bridge` | auto（首次）/ 补救 | 桥接可见时禁挡 Yes/No 的入口 tip |
+
+### 4.3 Focusing / Rise / Reflection
+
+| 用户场景 | 候选 hintId | 方式 | 门闩 / 备注 |
+|---|---|---|---|
+| Focusing | `rise-button` · `ambient-soundscape` · Focus HUD 三条 | rise click；ambient click；HUD click | auto 互斥下 rise 优先于 HUD |
+| Reflection | `reflection` | auto | 叠层开时不抢 help-affordance |
+| 微仪式进行中 | — | — | **禁止** sit / idle-after-session 等指 Sit tip |
+
+### 4.4 「?」补救主条优先级（摘要）
+
+权威：`resolvePrimaryRemedyHintId`。顺序直觉：Reflection → Focusing(Rise) → Ambient 面板 → Arrival phase → Companion → Honesty 桥接/面板 → 窄屏抽屉开着仍 Sit → Dormant 兼容 → 有过完成 idle-after → 默认 Sit。
+
+---
+
+## 五、批次管理政策（对标动画 Dispatcher）
+
+**原则**：新增 / 大改 hint **默认进一批**（按表面簇），不拆「一 tip 一 PR」除非热修。
+
+| 簇 | 典型 id | 说明 |
+|---|---|---|
+| **A · Dock / Sit** | sit、quick-start、how-shall-we-sit、honesty-optional | 主 CTA；动则双视口 |
+| **B · Arrival / Companion** | notice…companion-* | 与门闩、stage 强耦合 |
+| **C · Ambient / 次要 chrome** | ambient-*、heatmap、reminder、micro-ritual、narrow/wide menu | park / remap 高风险 |
+| **D · Focus HUD / Rise** | focus-hud-*、rise-button | Focusing 表面 |
+| **E · Help / 补救** | help-affordance、help-remedy、用途卡 | ? 与 tip 叠层 |
+
+**一批交付最低线**：
+
+1. 本表对应行已更新（或书面「仅修文案不改接线」）。  
+2. registry + `hints:doc-sync` + locales。  
+3. 宽 **与** 窄至少一条人工或 e2e 锚路径（见 `DEV_WORKFLOW_QUALITY` §8/§9）。  
+4. `TEST_TRACKER` 登记；同主题步骤不互斥。  
+5. 触及 suppress/hide → visibility 契约 / `test:e2e:visibility` 门禁照旧。
+
+**驳回姿态**：
+
+- 无锚点仍强制出 tip。  
+- 抽屉未开尖角指抽屉内。  
+- 用 Celebrating / 动画档冒充 onboarding。  
+- 朱红 pulse 当 tip 未读（已拍板：tip = 薄荷绿 click 点）。
+
+---
+
+## 六、新增 hint 检查清单
+
+1. [ ] 本表选好 **场景行** 与 **簇**（A–E）。  
+2. [ ] `scripts/hints-doc-check.js` 的 `HINT_WIRING_BATCH_CLUSTER` 增加该 id（缺则 CI 红）。  
+3. [ ] `onboardingHintRegistry.js`：`triggerMode`（及 click→`tier`）；相邻锚评估 `anchorGroup`。  
+4. [ ] `npm run hints:doc-sync`；locales EN/JA（v1.0 ready）。  
+5. [ ] 若进 auto：更新或确认 `AUTO_HINT_PRIORITY` / `resolveAutoHintIds`。  
+6. [ ] 宽/窄 selector 与 remap（ActionBar / grabber / park）。  
+7. [ ] `ONBOARDING_HINTS.md` §一文案行。  
+8. [ ] `TEST_TRACKER` + 必要单测；`npm run test:smoke`（含 hints doc-check）。  
+9. [ ] PR 描述勾选「Hints 批次簇」（见 `.github/PULL_REQUEST_TEMPLATE.md`）。
+
+---
+
+## 七、文档关系
+
+| 文档 | 关系 |
+|---|---|
+| `ONBOARDING_HINTS.md` | 交互与文案 SSOT；本表不复述全文案 |
+| `RESPONSIVE_LAYOUT.md` | 窄屏互斥 / clamp；本表引用门闩 |
+| `SHARED_RESOURCES.md` §6 | 双壳 suppress 与 Honesty 入口 |
+| `SCENE_ANIMATION_WIRING.md` | **管理方法论姊妹篇**（一批中央契约）；领域不同 |
+| `PRODUCT_MOMENTS.md` | Five Moments；hint 服务引导而非替代 Moment |
+| `PROCESS.md` Backlog | 视觉快照 / viewport-context 解耦 / Hints anchor e2e 等 |
+
+---
+
+## 八、后续堵复发路径（分析师 · 排期）
+
+| # | 项 | 状态 |
+|---|---|---|
+| ① | registry ↔ 本表库存机器块 + `HINT_WIRING_BATCH_CLUSTER` 硬闸 | **已落地**（`hints:doc-check` / `docs:check`） |
+| ② | PR 模板强制批次簇 / 单 tip 例外说明 | **已落地**（`.github/PULL_REQUEST_TEMPLATE.md`） |
+| ③ | 用真实 **簇 A** 跑一遍全流程，验收本表格式是否好用 | **待办**（未做运行时改动前勿宣称 SSOT「已生效」） |
+| ④ | 关键 hint 窄宽视觉快照（尖角 / mint / peeked） | Backlog · 非本轮 |
+| ⑤ | hint 锚点只吃传入 viewport-context，少直接摸壳层状态 | 架构解耦 Backlog · 与文档 SSOT 分开 |
+
+### 簇 A 试跑清单（③ · 格式验收用）
+
+不改产品行为时，也可「纸上走一遍」：
+
+1. 打开库存机器块，确认簇 **A** 行：`sit-button` · `quick-start` · `how-shall-we-sit` · `honesty-optional` · `idle-after-session`。  
+2. 对照 §4.1 Idle 表与 `resolveAutoHintIds` / `AUTO_HINT_PRIORITY`：Sit 与 help 竞优先级、Honesty 可选、结束后 idle-after。  
+3. 若真改簇 A：同 PR 更新本表 §4 + cluster 映射 + registry + locales + 宽/窄各一路径（或 e2e）+ TEST_TRACKER。  
+4. 事后在本表 §八将 ③ 标为「已用簇 A 验证」。
+
+---
+
+## 八附、库存机器块（CI 硬闸）
+
+<!-- hints-wiring-registry:inventory:begin -->
+
+> **机器块 · 勿手改**。真源：`onboardingHintRegistry.js` + `HINT_WIRING_BATCH_CLUSTER`（`scripts/hints-doc-check.js`）。刷新：`npm run hints:doc-sync`。
+> 硬闸：registry 每条 hint 必须出现在本表；新增 tip 须同时改 cluster 映射，否则 `docs:check` 失败。
+
+| hintId | triggerMode | batchCluster |
+|---|---|---|
+| `dormant-open` | `legacy` | **legacy** |
+| `honesty-optional` | `auto` | **A** |
+| `honesty-bridge` | `auto` | **B** |
+| `sit-button` | `auto` | **A** |
+| `quick-start` | `click` | **A** |
+| `how-shall-we-sit` | `click` | **A** |
+| `notice` | `auto` | **B** |
+| `breathing` | `auto` | **B** |
+| `choose` | `auto` | **B** |
+| `companion-mode` | `auto` | **B** |
+| `companion-stay` | `auto` | **B** |
+| `companion-away` | `auto` | **B** |
+| `companion-across-tools` | `auto` | **B** |
+| `ambient-gated` | `click` | **C** |
+| `ambient-soundscape` | `click` | **C** |
+| `rise-button` | `click` | **D** |
+| `reflection` | `auto` | **B** |
+| `idle-after-session` | `click` | **A** |
+| `weekly-heatmap` | `click` | **C** |
+| `in-app-reminder` | `click` | **C** |
+| `micro-ritual` | `click` | **C** |
+| `focus-hud-ring` | `click` | **D** |
+| `focus-hud-progress` | `click` | **D** |
+| `focus-hud-streak` | `click` | **D** |
+| `narrow-drawer-menu` | `manual` | **C** |
+| `wide-more-menu` | `manual` | **C** |
+| `help-affordance` | `click` | **E** |
+| `help-remedy` | `manual` | **E** |
+| `help-fallback` | `manual` | **E** |
+
+<!-- hints-wiring-registry:inventory:end -->
+
+---
+
+## 九、变更记录
+
+| 日期 | 说明 |
+|---|---|
+| 2026-08-03 | 初版：分层、全局门闩、按表面接线摘要、批次簇 A–E、新增清单；用户拍板「合理则办」单独立项 SSOT |
+| 2026-08-03 | 分析师跟进：库存机器块硬闸、PR 批次钉、诚实边界与 ③–⑤ 排期；簇 A 试跑清单 |
+
