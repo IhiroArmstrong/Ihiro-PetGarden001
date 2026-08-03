@@ -113,7 +113,8 @@
 - `IdleOrchestrator`：呼吸×N → 眨眼 → 呼吸（**切换不闪**；溶解期须定格）  
 - `SpriteSequencePlayer.play` 的 cross-fade / `freezeUntilCrossFadeEnds` / `_resetCrossFade` 顺序  
 - Choose / Rise / IntentionSet 等进出叠化（无法像素衔接时默认 `CAPCUT_DISSOLVE_MS`）  
-- pingpong 顶点 `frameHolds`（已调过的停留勿无故缩短）
+- pingpong 顶点 `frameHolds`（已调过的停留勿无故缩短）  
+- oneshot `_finishOneShot`：`onComplete` **之后**仍会 trailing `idle`——在 `onComplete` 里同步 `playEmotion(下一情绪)` 会被盖掉（§6.10）；冷启动多事件须互斥（§6.9）
 
 **窄屏 / 移动浏览器**（权威 `RESPONSIVE_LAYOUT.md`；故事矩阵见 **§8**）
 
