@@ -105,7 +105,7 @@
 | 墙钟 ~20 min | `mindfulAcknowledge` | ack | **已接线** | 共享提醒池 |
 | 活跃 ~2h | stretch 池：`stretchReminder` / `yawnStretch` | ack | **已实现**（Dispatcher） | 勿叠 celebrate |
 | Re-focus 回来 | `mindfulAcknowledge` subtype refocus | ack | **已接线** | |
-| 中途 Rise | `riseStretchCasual` | ack | **已接线** | 不播完成舞；`blinkBreathe` 勿回主路径 |
+| 中途 Rise | **加权池** `riseStretchCasual` 60% · `teaDrinking` 25% · `bookReading` 15% | ack | **已接线** | 正放一次 + `holdPose`；关 Reflection → Idle。**禁止** `magicBookReading` / yawn / celebrate；`blinkBreathe` 勿回主路径 |
 | 每次计时完成（非当日首达标） | 同档池：`sessionComplete` ~60% · nod / blink ~40% | light / ack | **已实现**（Dispatcher） | **禁止** `celebrate-dance*` |
 | 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档 |
 
@@ -227,6 +227,7 @@
 | 2026-08-01 | **实现**：`sceneAnimationDispatcher` + Emotion 合十/光环/陪伴手势；main / Honesty / 完成 / 微仪式 / 舒展 / 欢迎 / 深夜 / 好奇接线；unit + language-switch e2e 钩更新 |
 | 2026-08-02 | 切语 EN：曾 `magicBookReading` 硬切（QA OK）→ 改 `teaDrinking` 单程 + CapCut（QA OK） |
 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut |
+| 2026-08-03 | 中途 Rise：加权池 stretch 60 / tea 25 / book 15（`RISE_INTERRUPT_POOL`）；勿接 magicBook |
 | 2026-08-02 | **修**：冷启动欢迎与深夜同 tick 叠播 → tea/yawn 误盖开场；`shouldAttemptLateNightOnBoot` 互斥 + §6.9 |
 | 2026-08-03 | 入库 `meditation-star-reward`；MilestoneGlow 按节点轮换（7=蝴蝶金辉 · 21/100=琉璃星石） |
 | 2026-08-03 | `meditation-star-reward` **改用不抠图源**覆盖（用户反馈抠图毛边差；星空/白底整幅烧录） |

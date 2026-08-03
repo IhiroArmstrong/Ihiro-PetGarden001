@@ -60,6 +60,26 @@ test('IDLE does not overwrite riseStretchCasual Rise transition', () => {
   assert.equal(calls.at(-1)?.key, EMOTION_KEYS.RISE_STRETCH_CASUAL);
 });
 
+test('IDLE does not overwrite teaDrinking Rise interrupt hold', () => {
+  const { calls, stateManager, emotionController } = createHarness();
+  stateManager.setState(STATES.FOCUSING);
+  emotionController.playEmotion(EMOTION_KEYS.TEA_DRINKING);
+  const before = calls.length;
+  stateManager.setState(STATES.IDLE);
+  assert.equal(calls.length, before);
+  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.TEA_DRINKING);
+});
+
+test('IDLE does not overwrite bookReading Rise interrupt hold', () => {
+  const { calls, stateManager, emotionController } = createHarness();
+  stateManager.setState(STATES.FOCUSING);
+  emotionController.playEmotion(EMOTION_KEYS.BOOK_READING);
+  const before = calls.length;
+  stateManager.setState(STATES.IDLE);
+  assert.equal(calls.length, before);
+  assert.equal(calls.at(-1)?.key, EMOTION_KEYS.BOOK_READING);
+});
+
 test('IDLE does not overwrite blinkBreathe debug transition', () => {
   const { calls, stateManager, emotionController } = createHarness();
   stateManager.setState(STATES.FOCUSING);

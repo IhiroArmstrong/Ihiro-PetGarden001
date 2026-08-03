@@ -25,12 +25,16 @@ test('cloakSleep oneshot is listed for DORMANT entry', () => {
   assert.match(cloak.suggestedUses, /sleeping/);
 });
 
-test('riseStretchCasual oneshot is listed for Rise; blinkBreathe retained as debug', () => {
+test('riseStretchCasual oneshot is listed for Rise pool; blinkBreathe retained as debug', () => {
   const rise = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'riseStretchCasual');
   assert.ok(rise);
   assert.equal(rise.sequence, 'riseStretchCasual');
-  assert.match(rise.suggestedUses, /Rise/);
+  assert.match(rise.suggestedUses, /Rise|60%/);
+  const tea = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'teaDrinking');
+  assert.match(tea.suggestedUses, /Rise|25%/);
+  const book = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'bookReading');
+  assert.match(book.suggestedUses, /Rise|15%/);
   const blink = COMPANION_GESTURE_ONESHOTS.find((g) => g.id === 'blinkBreathe');
   assert.ok(blink);
-  assert.match(blink.suggestedUses, /调试|riseStretchCasual/);
+  assert.match(blink.suggestedUses, /调试|勿回 Rise/);
 });
