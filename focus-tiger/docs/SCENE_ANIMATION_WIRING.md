@@ -87,7 +87,7 @@
 |---|---|---|---|---|
 | Arrival Choose 确认 | `intentionSet` → **`intentionNod`（nod-bow pingpong）** | ack | **已接线** | 与门闩并行；合十曾作 Choose 视觉，现改 nod（画幅衔接） |
 | Arrival Welcome | `smiling` / blink-smile | — | **已接线** | |
-| Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
+| Honesty · 睡态选时长 | `dormantWake`（`starlight-cloak-wake`） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（**pingpong×1** + CapCut）；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；呼吸期已是 smiling，再抽 blink 几乎像没播（2026-08-03 撤出） |
@@ -129,8 +129,9 @@
 | 长期里程碑 | `milestoneGlow`：`streak-7` **50/50** 蝴蝶/`parrotEarVisit` · `streak-21`/`100` 琉璃星石；`breathHaloHq` 仍调试 | ritual | **产品路径已接线** | Brief `task-milestone-glow-product-wire` / `task-parrot-ear-visit` |
 | 应用内轻提醒横幅 | `parrotEarVisit`（禅意信使）+ 顶部 `#in-app-reminder-banner` | messenger | **已接线**（2026-08-03） | 横幅首次可见本页播一次；文案仍 `reminder.gentle_waiting` |
 | 荷花成长 / 莲花解锁 | `lotus-front-rising` / `lotus-chest-halo` | ritual | Slice C | 须先有 Grow / 纪念奖励产品面 |
-| 旧 `dormant-wake/` 正放 | — | — | **勿接** | 已由 cloak 倒放取代；目录保留 |
-| 旧 `sleeping/` 8 帧 | — | — | **勿接** | 主线用 cloak 030–034 |
+| 旧 `dormant-wake/` 正放 | — | — | **勿接** | 已由 `starlight-cloak-wake` 取代；目录保留 |
+| 旧 `cloak-sleep/` 34 帧 | — | — | **勿接** | 已由 `starlight-cloak-sleep` / `-wake` 取代 |
+| 旧 `sleeping/` 8 帧 | — | — | **勿接** | 主线用 starlight-cloak-sleep 067–063 |
 | `tilt-think` | — | — | **勿接主路径** | curiousTilt 已改 blink-smile；可调试 |
 | `blink-breathe` | — | — | **勿接主路径** | Rise 已改 rise-stretch-casual |
 

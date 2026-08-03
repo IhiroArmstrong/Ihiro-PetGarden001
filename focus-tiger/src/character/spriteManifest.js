@@ -73,7 +73,7 @@ export const EAR_WIGGLE_PINGPONG_ONCE_INDICES = Object.freeze([
 
 /**
  * 一次性情绪目标时长带（秒）。
- * 舒适参考：`dormantWake` ≈5.3s、`nodGreeting` ≈3.8s、`milestoneGlow` 叙事段 ≈6.8s。
+ * 舒适参考：`dormantWake` ≈5.6s、`nodGreeting` ≈3.8s、`milestoneGlow` 叙事段 ≈6.8s。
  * 帧数不够时三选一：放慢 fps / 重复可循环段 / 正倒放或连贯其它序列。
  * 持续循环（Idle / Sleeping）不按此带。
  */
@@ -498,42 +498,41 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。
-  // 2026-07-25：改用 cloak-sleep 末尾 030–034（与披毯入睡末帧同姿），每帧连播两拍；
-  // 播放列表先倒序 034→030，再 pingpong 往复，避免旧 sleeping/ 侧卧与披毯趴姿硬切。
-  // 原 sleeping/ 8 帧目录保留未删。2026-07-25：用户反馈 1fps 过慢 → **2 fps**（仍属极缓）。
+  // 2026-08-04：改用 starlight-cloak-sleep 末尾 067–063（与披斗篷入睡末帧同姿），
+  // 每帧连播两拍；播放列表先倒序 067→063，再 pingpong。旧 cloak-sleep / sleeping/ 保留勿接。
+  // 节奏仍 **2 fps**（极缓安宁）。
   sleeping: {
-    animation: 'cloak-sleep',
-    frameCount: 34,
-    frameIndices: [34, 34, 33, 33, 32, 32, 31, 31, 30, 30],
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    frameIndices: [67, 67, 66, 66, 65, 65, 64, 64, 63, 63],
     fps: 2,
     loop: true,
     loopMode: 'pingpong',
     holdLastFrame: false
   },
 
-  // 进入 DORMANT 过渡：非 DORMANT→DORMANT 状态转换时播 cloakSleep 正放，再 sleeping。
-  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
+  // 进入 DORMANT 过渡：非 DORMANT→DORMANT 时播 cloakSleep 正放，再 sleeping。
+  // 2026-08-04：星光斗篷正放 67 帧 @ 12fps ≈ 5.6s（ack 时长带）；取代旧 cloak-sleep 34@6。
   cloakSleep: {
-    animation: 'cloak-sleep',
-    frameCount: 34,
-    fps: 6,
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    fps: 12,
     loop: false,
     loopMode: 'none',
     holdLastFrame: true
   },
 
-  // Honesty Check-in / DORMANT 唤醒：`cloak-sleep` **倒放**（睡态揭毯 → 合掌坐姿）。
-  // 与 cloakSleep 正放同源；播放列表末帧 = 素材 frame_001（清醒合掌）。
-  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）；2026-07-21 试替 dormant-wake 正放。
+  // Honesty Check-in / DORMANT 唤醒：独立入库的正放「卸斗篷苏醒」
+  // （= starlight-cloak-sleep 物理倒序帧）。末帧 = 清醒闭目坐禅（对齐 sleep 正放 frame_001）。
+  // 67 帧 @ 12fps ≈ 5.6s（ack 时长带）；2026-08-04 取代 cloak-sleep 倒放 playlist。
   dormantWake: {
-    animation: 'cloak-sleep',
-    frameCount: 34,
-    frameIndices: Array.from({ length: 34 }, (_, i) => 34 - i),
-    fps: 6,
+    animation: 'starlight-cloak-wake',
+    frameCount: 67,
+    fps: 12,
     loop: false,
     loopMode: 'none',
     holdLastFrame: true,
-    frameHolds: { 34: 320 }
+    frameHolds: { 67: 320 }
   },
 
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。

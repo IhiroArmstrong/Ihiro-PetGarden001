@@ -21,7 +21,7 @@
 | 待业务触发（非「已取代」） | 见 §「库存→业务」；政策：**须全部接入场景**（分 Slice B/C），禁止长期仅调试 |
 | 3D GLB（奖励柜/垫底） | 7+ |
 
-**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **2 fps**（旧 `sleeping/` 目录保留）。  
+**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = **starlight-cloak-sleep 067–063** 双拍 pingpong @ **2 fps**（旧 `cloak-sleep` / `sleeping/` 目录保留勿接）。  
 **2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。  
 **2026-07-31**：场景→产品触发对照见 **`SCENE_ANIMATION_WIRING.md`**（v1 Slice A 语言/Honesty Idle）。  
 **2026-08-01**：用户 + 设计师——库存须进业务场景；接线表升格 Slice B（活跃陪伴）/ C（荷花）；**勿接**已取代目录。  
@@ -118,9 +118,11 @@
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
 | nod-bow | 13 | nodBow / intentionNod | **已接线** mindfulAcknowledge · Choose | en 切语；Honesty 短补登 |
 | stretch-reminder | 17 | stretchReminder · wakeUp | **已接线** 舒展提醒 | Slice B：与 yawn 同档池 |
-| cloak-sleep | 34 | cloakSleep / sleeping / dormantWake | **已接线** 披毯·睡循环·倒放唤醒 | — |
+| starlight-cloak-sleep | 67 | cloakSleep / sleeping | **已接线** 披斗篷入睡·睡循环 | 2026-08-04 入库；取代 cloak-sleep 主线 |
+| starlight-cloak-wake | 67 | dormantWake | **已接线** 卸斗篷苏醒 | 正放物理倒序帧（≠ playlist 倒放） |
+| cloak-sleep | 34 | — | **勿接**（保留） | 已由 starlight-cloak-* 取代 |
 | sleeping（旧目录） | 8 | — | **勿接**（保留） | 已取代 |
-| dormant-wake | 16 | （旧正放） | **勿接**（保留） | 已由 cloak 倒放取代 |
+| dormant-wake | 16 | （旧正放） | **勿接**（保留） | 已由 starlight-cloak-wake 取代 |
 | rise-stretch-casual | 39 | riseStretchCasual | **已接线** Rise 池 ~60% | — |
 | halo-breathing | 30 | haloBreathing* | 调试可播；业务自动未全接 | **Slice B**：Honesty 长补登 / 微仪式变体 |
 | nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；**冷启动欢迎池唯一** | Slice B 开场；2026-08-02 |
@@ -152,12 +154,12 @@
 | celebrating | dance + dance-v2 | 已接线 · 50/50 |
 | intentionSet | **intentionNod（nod-bow）**；palms-together 不再作 Choose | 已接线 · Choose；**≠** 日语切语目标视觉 |
 | sessionComplete / mindfulAcknowledge / stretchReminder | 上表 | 已接线 |
-| dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake 保留素材未删） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-07-21 试替倒放） |
+| dormantWake → idle | starlight-cloak-wake（sleep 物理倒序正放；原 cloak-sleep 倒放 / dormant-wake 保留勿接） | 已接线 · **12 fps** · 定格末帧；**暂不**自动接 halo（2026-08-04） |
 | haloBreathing | halo-breathing | 调试可单独播；**Slice B** 接 Honesty 长补登等 |
 | welcomeBack / nodGreeting / curiousTilt / earWiggle | waveHelloWelcome / nod-greeting / **blink-smile** / earWiggle 烘焙正+倒 | welcomeBack/earWiggle：烘焙正+倒一次 + CapCut（禁 player pingpong）；nodGreeting：正放一次；curiousTilt：blink-smile |
 | milestoneGlow | streak-7：**50/50** 蝴蝶 / 鹦鹉；21/100 星石；breath-halo-hq 仅调试 | **产品路径已接线** |
 | parrotEarVisit | parrot-ear-visit-feather | 提醒 · 轻完成稀有 · streak-7 仪式二选一 |
-| riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
+| riseStretchCasual / cloakSleep | rise-stretch-casual / starlight-cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
 | wakeUp | stretch-reminder（同源） | 已接线；与 Honesty 视觉分离（2026-07-19） |
 | snoringZZZ | 无 | unimplemented |

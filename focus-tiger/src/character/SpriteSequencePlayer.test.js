@@ -178,19 +178,19 @@ test('blink smile is registered as a pingpong smiling baseline', () => {
 test('wakeUp uses stretch-reminder asset, distinct from dormantWake', () => {
   assert.equal(SPRITE_SEQUENCES.wakeUp.animation, 'stretch-reminder');
   assert.equal(SPRITE_SEQUENCES.wakeUp.frameCount, 17);
-  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'starlight-cloak-wake');
   assert.notEqual(SPRITE_SEQUENCES.wakeUp.animation, SPRITE_SEQUENCES.dormantWake.animation);
 });
 
-test('dormantWake plays cloak-sleep in reverse (34 → 001)', () => {
+test('dormantWake plays starlight-cloak-wake forward (sleep reverse frames)', () => {
   const definition = SPRITE_SEQUENCES.dormantWake;
   const paths = buildFramePaths(definition.animation, definition.frameCount, {
     frameIndices: definition.frameIndices
   });
 
-  assert.equal(paths.length, 34);
-  assert.match(paths[0], /frame_034\.png$/);
-  assert.match(paths[33], /frame_001\.png$/);
+  assert.equal(paths.length, 67);
+  assert.match(paths[0], /starlight-cloak-wake\/frame_001\.png$/);
+  assert.match(paths[66], /starlight-cloak-wake\/frame_067\.png$/);
 });
 
 test('wave hello repeats peak sway once and has no peak frame hold', () => {
@@ -205,17 +205,16 @@ test('wave hello repeats peak sway once and has no peak frame hold', () => {
   assert.equal(definition.frameIndices?.length, 7 + 5 + 5 + 7);
 });
 
-test('dormant wake is cloak-sleep reverse one-shot that holds final pose', () => {
+test('dormant wake is starlight-cloak-wake one-shot that holds final pose', () => {
   const definition = SPRITE_SEQUENCES.dormantWake;
 
-  assert.equal(definition.animation, 'cloak-sleep');
-  assert.equal(definition.frameCount, 34);
-  assert.equal(definition.fps, 6);
+  assert.equal(definition.animation, 'starlight-cloak-wake');
+  assert.equal(definition.frameCount, 67);
+  assert.equal(definition.fps, 12);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.holdLastFrame, true);
-  assert.equal(definition.frameIndices[0], 34);
-  assert.equal(definition.frameIndices[33], 1);
-  assert.ok(definition.frameHolds[34] > 0);
+  assert.equal(definition.frameIndices, undefined);
+  assert.ok(definition.frameHolds[67] > 0);
 });
 
 test('milestone glow is an on-demand one-shot that holds its final pose', () => {
@@ -351,25 +350,25 @@ test('gaze lookaround and yawn-stretch idle variants are registered', () => {
 });
 
 test('cloakSleep is registered for DORMANT entry', () => {
-  assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
-  assert.equal(SPRITE_SEQUENCES.cloakSleep.frameCount, 34);
-  assert.equal(SPRITE_SEQUENCES.cloakSleep.fps, 6);
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.frameCount, 67);
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.fps, 12);
   assert.equal(SPRITE_SEQUENCES.cloakSleep.loopMode, 'none');
   assert.equal(SPRITE_SEQUENCES.cloakSleep.holdLastFrame, true);
 });
 
-test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
+test('sleeping uses starlight-cloak-sleep tail 067→063 double-hold pingpong', () => {
   const definition = SPRITE_SEQUENCES.sleeping;
-  assert.equal(definition.animation, 'cloak-sleep');
-  assert.equal(definition.frameCount, 34);
+  assert.equal(definition.animation, 'starlight-cloak-sleep');
+  assert.equal(definition.frameCount, 67);
   assert.equal(definition.fps, 2);
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.PINGPONG);
-  assert.deepEqual(definition.frameIndices, [34, 34, 33, 33, 32, 32, 31, 31, 30, 30]);
+  assert.deepEqual(definition.frameIndices, [67, 67, 66, 66, 65, 65, 64, 64, 63, 63]);
   const paths = buildFramePaths(definition.animation, definition.frameCount, {
     frameIndices: definition.frameIndices
   });
-  assert.match(paths[0], /cloak-sleep\/frame_034\.png$/);
-  assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
+  assert.match(paths[0], /starlight-cloak-sleep\/frame_067\.png$/);
+  assert.match(paths.at(-1), /starlight-cloak-sleep\/frame_063\.png$/);
 });
 
 test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
