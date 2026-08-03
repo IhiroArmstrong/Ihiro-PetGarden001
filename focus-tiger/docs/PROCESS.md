@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：跨动画短淡入一律 1s CapCut；硬切 `0` 保持。用户书面：无闪白 / 硬切仍硬切 — **测试 OK**（关单）。轻完成池无 `curiousTilt` — **须以后慢慢碰概率**（暂不关单）。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。人工仍待复测冷启动 Welcome 优先。**工作流根因**（Welcome 误出鹦鹉）：`DEV_WORKFLOW_QUALITY` **§6.10**。
 - **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 已验证** → 格式生效。**④ 视觉护栏试点已合（PR #93）**；同日用户拍板 **保持观察、暂不扩** linux 软快照 / peeked / 更多 id。⑤ 仍 Backlog。
 - **MilestoneGlow 琉璃星石变体入库（2026-08-03）**：`meditation-star-reward`（63 帧）进 `MilestoneGlow` 变体池——`streak-7` 仍金辉+蝴蝶；`streak-21` / `streak-100` 播星石。分支 `feature/milestone-glow-star-variant`。
