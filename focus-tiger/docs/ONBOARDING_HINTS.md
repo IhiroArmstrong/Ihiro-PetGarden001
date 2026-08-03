@@ -100,11 +100,11 @@
 | hintId | localeKey | triggerMode | tier | selector | placement | tip | anchorGroup |
 |---|---|---|---|---|---|---|---|
 | `dormant-open` | `HINT_DORMANT_OPEN` | `legacy` | — | `#btn-focus` | above | bottom | — |
-| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `auto` | — | `#honesty-idle-entry` | above | bottom | — |
-| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `auto` | — | `#honesty-bridge-cta` | above | bottom | — |
 | `sit-button` | `HINT_SIT_BUTTON` | `auto` | — | `#btn-focus` | above | bottom | — |
 | `quick-start` | `HINT_QUICK_START` | `click` | `simple` | `#quick-start-focus` | above | bottom | — |
 | `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `click` | `simple` | `.session-start-dock__hint` | right | left | — |
+| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `auto` | — | `#honesty-idle-entry` | above | bottom | — |
+| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `auto` | — | `#honesty-bridge-cta` | above | bottom | — |
 | `notice` | `HINT_NOTICE` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
 | `breathing` | `HINT_BREATHING` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
 | `choose` | `HINT_CHOOSE` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
@@ -179,7 +179,7 @@
 |---|---|---|
 | **(1) Registry SSOT** | `onboardingHintRegistry.js` 派生 `HINT_IDS` / `HINT_LOCALE_KEYS` / `ONBOARDING_HINT_ANCHORS`；`onboardingHintRegistry.test.js` 锁 1:1 + locale + `anchorGroup` 内 selector 互异 | **已落地** |
 | **(2) md 锚点块同步** | `npm run hints:doc-check`（`test:smoke` + CI 独立 required check）；`npm run hints:doc-sync` 刷新 §一后机器块 | **已落地** |
-| **(3) DOM 视觉位置** | Playwright `boundingBox` 验证气泡尖角是否对准锚控件 | **Backlog** — 见 `PROCESS.md`「Hints anchor e2e bounding rect」 |
+| **(3) DOM 视觉位置 / 色** | tip↔锚点几何 + mint RGB；tip 元件软快照（禁全页 Yin） | **④ 试点** — `e2e/hints-visual-guardrail.spec.js`；扩全量 id 仍见 PROCESS Backlog |
 
 **新增 hint 工作流**：先对照 **`HINTS_WIRING.md`** 选场景行与批次簇 → 改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → 视需要改 `resolveAutoHintIds` / 优先级 → `npm run test:smoke`。若 anchor 与已有 hint 相邻/可能重叠，评估 `anchorGroup`（见 registry 文件头 PR checklist）。完整清单见 `HINTS_WIRING` §六。
 

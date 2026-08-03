@@ -50,29 +50,10 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
   },
   {
-    id: 'honesty-optional',
-    localeKey: 'HINT_HONESTY_OPTIONAL',
-    triggerMode: 'auto',
-    anchor: {
-      selector: '#honesty-idle-entry',
-      placement: 'above',
-      tip: 'bottom'
-    }
-  },
-  {
-    id: 'honesty-bridge',
-    localeKey: 'HINT_HONESTY_BRIDGE',
-    triggerMode: 'auto',
-    anchor: {
-      selector: '#honesty-bridge-cta',
-      placement: 'above',
-      tip: 'bottom'
-    }
-  },
-  {
     id: 'sit-button',
     localeKey: 'HINT_SIT_BUTTON',
     triggerMode: 'auto',
+    // Cluster A · HINTS_WIRING §4.1 cold Idle primary auto
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
   },
   {
@@ -80,6 +61,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     localeKey: 'HINT_QUICK_START',
     triggerMode: 'click',
     tier: 'simple',
+    // Cluster A · append when quickStartVisible
     anchor: {
       selector: '#quick-start-focus',
       placement: 'above',
@@ -91,10 +73,33 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     localeKey: 'HINT_HOW_SHALL_WE_SIT',
     triggerMode: 'click',
     tier: 'simple',
+    // Cluster A · cold Idle candidate; narrow drawer / wide-more park
     anchor: {
       selector: '.session-start-dock__hint',
       placement: 'right',
       tip: 'left'
+    }
+  },
+  {
+    id: 'honesty-optional',
+    localeKey: 'HINT_HONESTY_OPTIONAL',
+    triggerMode: 'auto',
+    // Cluster A · honestyVisible / honestyIdleEntryVisible
+    anchor: {
+      selector: '#honesty-idle-entry',
+      placement: 'above',
+      tip: 'bottom'
+    }
+  },
+  {
+    id: 'honesty-bridge',
+    localeKey: 'HINT_HONESTY_BRIDGE',
+    triggerMode: 'auto',
+    // Cluster B · bridge Yes/No（自动路径常空；? 补救仍可出）
+    anchor: {
+      selector: '#honesty-bridge-cta',
+      placement: 'above',
+      tip: 'bottom'
     }
   },
   {
@@ -213,6 +218,7 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     localeKey: 'HINT_IDLE_AFTER_SESSION',
     triggerMode: 'click',
     tier: 'simple',
+    // Cluster A · hasEverCompletedSession Idle（替代 sit-button）
     anchor: { selector: '#btn-focus', placement: 'above', tip: 'bottom' }
   },
   {

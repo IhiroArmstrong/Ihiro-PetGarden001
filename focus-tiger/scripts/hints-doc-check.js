@@ -65,6 +65,17 @@ export const HINT_WIRING_BATCH_CLUSTER = Object.freeze({
   'help-fallback': 'E'
 });
 
+/**
+ * @param {'A' | 'B' | 'C' | 'D' | 'E' | 'legacy'} cluster
+ * @returns {string[]}
+ */
+export function listHintIdsForWiringCluster(cluster) {
+  return Object.entries(HINT_WIRING_BATCH_CLUSTER)
+    .filter(([, c]) => c === cluster)
+    .map(([id]) => id)
+    .sort();
+}
+
 /** @returns {string} */
 export function renderHintsAnchorMarkdownBlock() {
   const lines = [
