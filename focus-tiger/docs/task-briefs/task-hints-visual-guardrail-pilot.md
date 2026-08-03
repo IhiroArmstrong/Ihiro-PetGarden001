@@ -1,10 +1,10 @@
 # Task Brief · Hints 视觉护栏试点（④）
 
 **日期**：2026-08-03  
-**状态**：试点实现中  
-**分支**：`feature/hints-visual-guardrail-pilot-2026-08-03`  
+**状态**：试点已合 `develop`（PR #93）· **观察中**（同日用户拍板：暂不扩 linux 软快照 / peeked / 更多 hintId）  
+**分支**：`feature/hints-visual-guardrail-pilot-2026-08-03`（已合）  
 **所属**：`HINTS_WIRING.md` §八 ④ · 与 Backlog「Hints anchor e2e bounding rect」合并试点  
-**拍板依据**：用户书面——有意义、中等风险则安排；用自动化早抓尖角偏移 / mint→奶油色等**机械回归**；**不**替代人工观感验收。
+**拍板依据**：用户书面——有意义、中等风险则安排；用自动化早抓尖角偏移 / mint→奶油色等**机械回归**；**不**替代人工观感验收。扩面再开条件：真实回归或另书面拍板。
 
 ---
 
