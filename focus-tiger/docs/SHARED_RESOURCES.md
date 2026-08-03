@@ -79,7 +79,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `sleeping` | 调试「睡着了」/ live DORMANT（≥2h 后回前台等） | **不再**作零完成 / **冷启动**开场；`onAppReady` 默认 Idle；披毯仅 live 进 DORMANT |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
 | `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback`；微仪式直接 `playEmotion('sessionComplete')` | `hasCelebratedToday`：首次**计时**达标 Celebrating；已庆祝过 → SessionComplete；Honesty / **微仪式**不占戳、永不 Celebrating |
-| `riseStretchCasual` | Rise 路径 | 主动结束转场；勿与 blinkBreathe 混淆 |
+| `riseStretchCasual` / `teaDrinking` / `bookReading` | 中途 Rise 加权池 | 主动结束转场（holdPose）；勿与 blinkBreathe / magicBook 混淆 |
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 共享额度；Offline/Flow 抑制离开类 |
 | `nodGreeting` | 靠近自动已拆；**欢迎池试验 40%**（与 magicBookReading） | 勿接回默认靠近 |
