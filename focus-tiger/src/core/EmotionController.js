@@ -634,7 +634,7 @@ export class EmotionController {
           this._finishOneShot(options, 'wakeUp');
         }
       },
-      // Honesty Check-in 唤醒：sleeping → starlight-cloak-wake（斗篷倒序正放）→ 定格坐禅（暂不接金光/halo）。
+      // Honesty Check-in 唤醒：sleeping → cloak-sleep 倒放 → 定格合掌坐姿（暂不接金光/halo）。
       dormantWake: (options = {}) => {
         this._leaveIdleBaseline({ clear: false });
         this.dynamicMotion.setBreathingEnabled(true);
@@ -1136,8 +1136,8 @@ export class EmotionController {
       stretchReminder: 'stretch-reminder',
       wakeUp: 'wakeUp(=stretch)',
       sleeping: 'sleeping',
-      cloakSleep: 'starlight-cloak-sleep 披斗篷入睡',
-      dormantWake: 'starlight-cloak-wake 卸斗篷苏醒',
+      cloakSleep: 'cloak-sleep 披毯入睡',
+      dormantWake: 'cloak-sleep 倒放唤醒',
       haloBreathingIntro: 'halo-breathing intro',
       haloBreathingLoop: 'halo-breathing loop',
       haloBreathingPingpong: 'halo-breathing pingpong',

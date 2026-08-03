@@ -55,7 +55,7 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
   Object.freeze({
     id: 'cloakSleep',
     sequence: 'cloakSleep',
-    label: '披斗篷入睡',
+    label: '披毯入睡',
     suggestedUses:
       '进 DORMANT 过渡（非 DORMANT→DORMANT 状态转换时播 cloakSleep→sleeping）；≠ Rise'
   }),
