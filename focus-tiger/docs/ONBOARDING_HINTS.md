@@ -100,11 +100,11 @@
 | hintId | localeKey | triggerMode | tier | selector | placement | tip | anchorGroup |
 |---|---|---|---|---|---|---|---|
 | `dormant-open` | `HINT_DORMANT_OPEN` | `legacy` | — | `#btn-focus` | above | bottom | — |
-| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `auto` | — | `#honesty-idle-entry` | above | bottom | — |
-| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `auto` | — | `#honesty-bridge-cta` | above | bottom | — |
 | `sit-button` | `HINT_SIT_BUTTON` | `auto` | — | `#btn-focus` | above | bottom | — |
 | `quick-start` | `HINT_QUICK_START` | `click` | `simple` | `#quick-start-focus` | above | bottom | — |
 | `how-shall-we-sit` | `HINT_HOW_SHALL_WE_SIT` | `click` | `simple` | `.session-start-dock__hint` | right | left | — |
+| `honesty-optional` | `HINT_HONESTY_OPTIONAL` | `auto` | — | `#honesty-idle-entry` | above | bottom | — |
+| `honesty-bridge` | `HINT_HONESTY_BRIDGE` | `auto` | — | `#honesty-bridge-cta` | above | bottom | — |
 | `notice` | `HINT_NOTICE` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
 | `breathing` | `HINT_BREATHING` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
 | `choose` | `HINT_CHOOSE` | `auto` | — | `#arrival-practice, #btn-focus` | above | bottom | — |
