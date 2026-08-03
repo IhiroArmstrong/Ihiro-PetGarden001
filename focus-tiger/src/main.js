@@ -83,7 +83,9 @@ import {
   markLocaleGreetingPlayed,
   playOptionsForLocaleGreeting,
   resolveSceneAnimation,
-  shouldAttemptLateNightOnBoot
+  shouldAttemptLateNightOnBoot,
+  pickRiseInterruptEmotion,
+  isRiseInterruptHoldEmotion
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
 import {
@@ -664,7 +666,7 @@ async function init() {
     hasEndedAnySession = true;
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
     const riseKey = emotionController.getCurrentEmotionKey();
-    if (riseKey === 'riseStretchCasual' || riseKey === 'blinkBreathe') {
+    if (isRiseInterruptHoldEmotion(riseKey)) {
       emotionController.playEmotion('idle');
     }
     syncOnboardingAutoHints();
@@ -1451,9 +1453,11 @@ async function init() {
       honestyCheckIn.onIncompleteSessionEnded();
       resyncSessionChrome();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：伸懒腰→随意坐姿正放一次，Reflection 期间定格箕坐；关面板后再回 idle。
-      // MoodController 在 IDLE 时不覆盖 riseStretchCasual。
-      emotionController.playEmotion('riseStretchCasual', { holdPose: true });
+      // Rise：加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%），正放一次；
+      // Reflection 期间 holdPose 定格末帧；关面板后再回 idle。
+      // MoodController 在 IDLE 时不覆盖池内键。
+      const riseEmotion = pickRiseInterruptEmotion();
+      emotionController.playEmotion(riseEmotion, { holdPose: true });
       sessionEndFlow.onSessionEnded({
         completed: false,
         intention: currentSessionIntention,

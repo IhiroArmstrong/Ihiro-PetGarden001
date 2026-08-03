@@ -183,13 +183,13 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 > | id / 序列 | 建议场景用途 |
 > |---|---|
 > | `gazeLookAround`（p1→p2→p3→p4） | 看向某处、生命感；产品好奇池与调试「组合试播」整段**同抗闪契约**：离开 Idle `clear:false`、段间硬切、产品播完 CapCut 回 Idle（调试可定格不回） |
-> | `teaDrinking` | 会话间隙温馨确认 / **English 切语**（非完成庆祝） |
-> | `bookReading` | **日本語切语**单程看书（≠ `magicBookReading`） |
-> | `yawnStretch` | 久无互动轻提示；≠ stretchReminder |
+> | `teaDrinking` | 会话间隙温馨确认 / **English 切语** / **中途 Rise 加权池 ~25%**（非完成庆祝） |
+> | `bookReading` | **日本語切语**单程看书（≠ `magicBookReading`） / **中途 Rise 加权池 ~15%** |
+> | `yawnStretch` | 久无互动轻提示；≠ stretchReminder；**勿**进 Rise 池 |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮（**正放+倒放一次**烘焙 → ~1s CapCut Idle；禁 player pingpong） |
 > | `cloakSleep` | **进 DORMANT 过渡（已接线）**：live 非 DORMANT→DORMANT 时披毯→`sleeping`；**冷启动 `onAppReady` 不播**；≠ Rise |
-> | `blinkBreathe` | 调试候选；**Rise 主路径已改** `riseStretchCasual` |
-> | `riseStretchCasual` | **已接线 Rise（中途主动结束）**：`playEmotion('riseStretchCasual')` pingpong（正放伸懒腰→随意坐→倒放回闭目）；Reflection 结束后回 Idle / Sleeping；**不**用于达标 Celebrating / SessionComplete |
+> | `blinkBreathe` | 调试候选；**勿回 Rise 主路径** |
+> | `riseStretchCasual` | **中途 Rise 加权池主项 ~60%**：`playEmotion` 正放一次（伸懒腰→随意坐）+ `holdPose`；Reflection 结束后回 Idle；**不**用于达标 Celebrating / SessionComplete。池定义见 `RISE_INTERRUPT_POOL`（另含 tea / book；**禁止** magicBook） |
 
 ---
 
@@ -658,5 +658,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.81 | 2026-08-02 | 切语 EN：改 `teaDrinking` 单程 + CapCut（看书硬切已 OK；换茶） |
 | 0.82 | 2026-08-02 | 入库 `book-reading`；切语 ja → `bookReading` 单程 + CapCut（合十改调试） |
 | 0.83 | 2026-08-03 | 入库 `meditation-star-reward`；`MilestoneGlow` 变体池：streak-7 金辉蝴蝶 · streak-21/100 琉璃星石 |
+| 0.84 | 2026-08-03 | 中途 Rise：`RISE_INTERRUPT_POOL`（stretch 60% / tea 25% / book 15%）；正放 + holdPose；禁 magicBook / yawn |
 
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
