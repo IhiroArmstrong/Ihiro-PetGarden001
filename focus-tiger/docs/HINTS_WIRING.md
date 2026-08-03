@@ -1,9 +1,14 @@
 # HINTS_WIRING.md — 场景 → Hint 接线表
 
 创建日期：2026-08-03  
-**最后修订**：2026-08-03（初版 · 对齐 `SCENE_ANIMATION_WIRING` 的「一批中央契约」管法）  
+**最后修订**：2026-08-03（分析师跟进：CI 库存硬闸 + PR 批次钉 + 标明骨架待簇 A 验证）  
 产品语义层级：位于 `PRODUCT_MOMENTS.md` / `ONBOARDING_HINTS.md` 之下、实现 Brief 之上——回答「**哪个用户时刻该出哪条 hint、门闩与互斥是什么**」。  
 文案、圆点 tier、补救交互细节仍以 **`ONBOARDING_HINTS.md`** 为权威；机器可读 id / 锚点 / `triggerMode` 以 **`src/core/onboardingHintRegistry.js`** 为唯一真源（`hints:doc-sync`）。
+
+> **诚实边界（2026-08-03 分析师）**：本文件 + 库存机器块 = **必要条件**，不是充分条件。  
+> - **已堵**：registry 新 tip 不登记批次簇 / 不同步库存表 → `docs:check` 失败。  
+> - **未堵完**：视觉尖角/mint/peeked 仍靠人工；与 Session chrome 的耦合只是被写清，尚未解耦。  
+> - **骨架状态**：格式尚未用一次真实「批次簇全流程改动」验收；首次建议用 **簇 A** 跑通后再推广。
 
 ---
 
@@ -133,12 +138,14 @@
 ## 六、新增 hint 检查清单
 
 1. [ ] 本表选好 **场景行** 与 **簇**（A–E）。  
-2. [ ] `onboardingHintRegistry.js`：`triggerMode`（及 click→`tier`）；相邻锚评估 `anchorGroup`。  
-3. [ ] `npm run hints:doc-sync`；locales EN/JA（v1.0 ready）。  
-4. [ ] 若进 auto：更新或确认 `AUTO_HINT_PRIORITY` / `resolveAutoHintIds`。  
-5. [ ] 宽/窄 selector 与 remap（ActionBar / grabber / park）。  
-6. [ ] `ONBOARDING_HINTS.md` §一文案行。  
-7. [ ] `TEST_TRACKER` + 必要单测；`npm run test:smoke`（含 hints doc-check）。
+2. [ ] `scripts/hints-doc-check.js` 的 `HINT_WIRING_BATCH_CLUSTER` 增加该 id（缺则 CI 红）。  
+3. [ ] `onboardingHintRegistry.js`：`triggerMode`（及 click→`tier`）；相邻锚评估 `anchorGroup`。  
+4. [ ] `npm run hints:doc-sync`；locales EN/JA（v1.0 ready）。  
+5. [ ] 若进 auto：更新或确认 `AUTO_HINT_PRIORITY` / `resolveAutoHintIds`。  
+6. [ ] 宽/窄 selector 与 remap（ActionBar / grabber / park）。  
+7. [ ] `ONBOARDING_HINTS.md` §一文案行。  
+8. [ ] `TEST_TRACKER` + 必要单测；`npm run test:smoke`（含 hints doc-check）。  
+9. [ ] PR 描述勾选「Hints 批次簇」（见 `.github/PULL_REQUEST_TEMPLATE.md`）。
 
 ---
 
@@ -151,12 +158,78 @@
 | `SHARED_RESOURCES.md` §6 | 双壳 suppress 与 Honesty 入口 |
 | `SCENE_ANIMATION_WIRING.md` | **管理方法论姊妹篇**（一批中央契约）；领域不同 |
 | `PRODUCT_MOMENTS.md` | Five Moments；hint 服务引导而非替代 Moment |
-| `PROCESS.md` Backlog | Hints anchor e2e bounding rect 等 |
+| `PROCESS.md` Backlog | 视觉快照 / viewport-context 解耦 / Hints anchor e2e 等 |
 
 ---
 
-## 八、变更记录
+## 八、后续堵复发路径（分析师 · 排期）
+
+| # | 项 | 状态 |
+|---|---|---|
+| ① | registry ↔ 本表库存机器块 + `HINT_WIRING_BATCH_CLUSTER` 硬闸 | **已落地**（`hints:doc-check` / `docs:check`） |
+| ② | PR 模板强制批次簇 / 单 tip 例外说明 | **已落地**（`.github/PULL_REQUEST_TEMPLATE.md`） |
+| ③ | 用真实 **簇 A** 跑一遍全流程，验收本表格式是否好用 | **待办**（未做运行时改动前勿宣称 SSOT「已生效」） |
+| ④ | 关键 hint 窄宽视觉快照（尖角 / mint / peeked） | Backlog · 非本轮 |
+| ⑤ | hint 锚点只吃传入 viewport-context，少直接摸壳层状态 | 架构解耦 Backlog · 与文档 SSOT 分开 |
+
+### 簇 A 试跑清单（③ · 格式验收用）
+
+不改产品行为时，也可「纸上走一遍」：
+
+1. 打开库存机器块，确认簇 **A** 行：`sit-button` · `quick-start` · `how-shall-we-sit` · `honesty-optional` · `idle-after-session`。  
+2. 对照 §4.1 Idle 表与 `resolveAutoHintIds` / `AUTO_HINT_PRIORITY`：Sit 与 help 竞优先级、Honesty 可选、结束后 idle-after。  
+3. 若真改簇 A：同 PR 更新本表 §4 + cluster 映射 + registry + locales + 宽/窄各一路径（或 e2e）+ TEST_TRACKER。  
+4. 事后在本表 §八将 ③ 标为「已用簇 A 验证」。
+
+---
+
+## 八附、库存机器块（CI 硬闸）
+
+<!-- hints-wiring-registry:inventory:begin -->
+
+> **机器块 · 勿手改**。真源：`onboardingHintRegistry.js` + `HINT_WIRING_BATCH_CLUSTER`（`scripts/hints-doc-check.js`）。刷新：`npm run hints:doc-sync`。
+> 硬闸：registry 每条 hint 必须出现在本表；新增 tip 须同时改 cluster 映射，否则 `docs:check` 失败。
+
+| hintId | triggerMode | batchCluster |
+|---|---|---|
+| `dormant-open` | `legacy` | **legacy** |
+| `honesty-optional` | `auto` | **A** |
+| `honesty-bridge` | `auto` | **B** |
+| `sit-button` | `auto` | **A** |
+| `quick-start` | `click` | **A** |
+| `how-shall-we-sit` | `click` | **A** |
+| `notice` | `auto` | **B** |
+| `breathing` | `auto` | **B** |
+| `choose` | `auto` | **B** |
+| `companion-mode` | `auto` | **B** |
+| `companion-stay` | `auto` | **B** |
+| `companion-away` | `auto` | **B** |
+| `companion-across-tools` | `auto` | **B** |
+| `ambient-gated` | `click` | **C** |
+| `ambient-soundscape` | `click` | **C** |
+| `rise-button` | `click` | **D** |
+| `reflection` | `auto` | **B** |
+| `idle-after-session` | `click` | **A** |
+| `weekly-heatmap` | `click` | **C** |
+| `in-app-reminder` | `click` | **C** |
+| `micro-ritual` | `click` | **C** |
+| `focus-hud-ring` | `click` | **D** |
+| `focus-hud-progress` | `click` | **D** |
+| `focus-hud-streak` | `click` | **D** |
+| `narrow-drawer-menu` | `manual` | **C** |
+| `wide-more-menu` | `manual` | **C** |
+| `help-affordance` | `click` | **E** |
+| `help-remedy` | `manual` | **E** |
+| `help-fallback` | `manual` | **E** |
+
+<!-- hints-wiring-registry:inventory:end -->
+
+---
+
+## 九、变更记录
 
 | 日期 | 说明 |
 |---|---|
 | 2026-08-03 | 初版：分层、全局门闩、按表面接线摘要、批次簇 A–E、新增清单；用户拍板「合理则办」单独立项 SSOT |
+| 2026-08-03 | 分析师跟进：库存机器块硬闸、PR 批次钉、诚实边界与 ③–⑤ 排期；簇 A 试跑清单 |
+
