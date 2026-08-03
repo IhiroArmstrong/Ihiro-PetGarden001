@@ -1138,6 +1138,8 @@ export class EmotionController {
       sleeping: 'sleeping',
       cloakSleep: 'cloak-sleep 披毯入睡',
       dormantWake: 'cloak-sleep 倒放唤醒',
+      starlightCloakSleepPreview: 'starlight-cloak-sleep v3(仅试播·勿接)',
+      starlightCloakWakePreview: 'starlight-cloak-wake v3(仅试播·勿接)',
       haloBreathingIntro: 'halo-breathing intro',
       haloBreathingLoop: 'halo-breathing loop',
       haloBreathingPingpong: 'halo-breathing pingpong',

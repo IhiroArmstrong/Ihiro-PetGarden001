@@ -539,6 +539,26 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 34: 320 }
   },
 
+  // 实验室仅试播：星光斗篷 v3（勿接产品；cloakSleep/sleeping/dormantWake 仍为 cloak-sleep）。
+  starlightCloakSleepPreview: {
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true,
+    preload: false
+  },
+  starlightCloakWakePreview: {
+    animation: 'starlight-cloak-wake',
+    frameCount: 67,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true,
+    preload: false
+  },
+
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。
   // Honesty Check-in 唤醒后作为奖励呼吸；也可由调试面板直接触发。
   haloBreathingIntro: {
