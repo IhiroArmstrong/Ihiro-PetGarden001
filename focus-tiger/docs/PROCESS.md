@@ -312,6 +312,8 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
+**最近拍板（2026-08-04）**：FocusHUD **否决「随风浮动」**——只保留毛玻璃隐退（Arrival 式半透明）；禁止整卡 `translate`/微旋转漂浮，以免与静置 chrome 风格不统一。见 `DESIGN.md` FocusHUD；`TEST_TRACKER`「冷启动首屏呼吸感」。
+
 **最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
