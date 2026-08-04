@@ -24,10 +24,19 @@ import {
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
 
-/** Torso-only sleep breath (cushion / camera stay fixed). */
+/** Back-only sleep breath (head + cushion + framing stay fixed). */
 export const SLEEP_BREATH_CLASS = 'ft-sleep-breathing';
 export const SLEEP_BREATH_WRAP_CLASS = 'ft-sleep-breath-wrap';
 export const SLEEP_BREATH_IMG_CLASS = 'ft-sleep-breath-img';
+/**
+ * Clip ellipse over the cloak back mound only (starlight/classic prone pose):
+ * head rests on the left; pouf below — keep both outside this region.
+ * CSS: ellipse(rx ry at cx cy) — percentages of the contain box.
+ */
+export const SLEEP_BREATH_CLIP_PATH = 'ellipse(24% 10% at 58% 49%)';
+export const SLEEP_BREATH_TRANSFORM_ORIGIN = '58% 50%';
+/** Peak vertical swell of the back layer only (1 = rest). */
+export const SLEEP_BREATH_SCALE_Y_PEAK = 1.04;
 
 /**
  * @param {string | null | undefined} sequenceName
@@ -46,11 +55,11 @@ function ensureSleepBreathStyles() {
   if (document.getElementById(SLEEP_BREATH_STYLE_ID)) return;
   const style = document.createElement('style');
   style.id = SLEEP_BREATH_STYLE_ID;
-  // clip-path 只露出腹背区域做 scaleY；底层整图不动 → 蒲团/镜头不变。
+  // 底图定格；上层仅 clip 背部做 scaleY → 头/蒲团/镜头不动。
   style.textContent = `
 @keyframes ft-sleep-torso-breath {
   0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(1.042); }
+  50% { transform: scaleY(${SLEEP_BREATH_SCALE_Y_PEAK}); }
 }
 #sprite-overlay .${SLEEP_BREATH_WRAP_CLASS} {
   position: absolute;
@@ -67,9 +76,8 @@ function ensureSleepBreathStyles() {
   object-fit: contain;
   will-change: transform;
   user-select: none;
-  /* 腹背椭圆：相对铺满 overlay 的 contain 盒；避开头部与下方蒲团 */
-  clip-path: ellipse(34% 16% at 50% 46%);
-  transform-origin: 50% 52%;
+  clip-path: ${SLEEP_BREATH_CLIP_PATH};
+  transform-origin: ${SLEEP_BREATH_TRANSFORM_ORIGIN};
   transform: scaleY(1);
 }
 #sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} {
