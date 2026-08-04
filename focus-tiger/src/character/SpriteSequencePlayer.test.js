@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   advanceSpriteFrame,
   shouldHideOverlayOnFinish,
+  shouldApplySleepBreath,
+  SLEEP_BREATH_CLASS,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
 import { buildFramePaths } from './CharacterConfig.js';
@@ -175,11 +177,11 @@ test('blink smile is registered as a pingpong smiling baseline', () => {
 });
 
 
-test('wakeUp uses stretch-reminder asset, distinct from dormantWake', () => {
-  assert.equal(SPRITE_SEQUENCES.wakeUp.animation, 'stretch-reminder');
-  assert.equal(SPRITE_SEQUENCES.wakeUp.frameCount, 17);
+test('stretchReminder uses stretch-reminder; wakeUp debug key removed', () => {
+  assert.equal(SPRITE_SEQUENCES.stretchReminder.animation, 'stretch-reminder');
+  assert.equal(SPRITE_SEQUENCES.stretchReminder.frameCount, 17);
+  assert.equal(SPRITE_SEQUENCES.wakeUp, undefined);
   assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
-  assert.notEqual(SPRITE_SEQUENCES.wakeUp.animation, SPRITE_SEQUENCES.dormantWake.animation);
 });
 
 test('dormantWake plays cloak-sleep in reverse (34 → 001)', () => {
@@ -370,6 +372,29 @@ test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
   });
   assert.match(paths[0], /cloak-sleep\/frame_034\.png$/);
   assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
+});
+
+test('product sleep/wake stay on cloak-sleep keys; starlight sequences registered', () => {
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.sleeping.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.sleeping.sleepBreath, true);
+  assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.frameCount, 67);
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.sleepBreath, true);
+  assert.deepEqual(SPRITE_SEQUENCES.starlightSleeping.frameIndices, [
+    67, 67, 66, 66, 65, 65, 64, 64, 63, 63, 62, 62, 61, 61, 60, 60, 59, 59, 58, 58
+  ]);
+  assert.equal(SPRITE_SEQUENCES.starlightDormantWake.animation, 'starlight-cloak-wake');
+  assert.equal(SPRITE_SEQUENCES.starlightDormantWake.frameCount, 67);
+});
+
+test('shouldApplySleepBreath follows sleepBreath flag', () => {
+  assert.equal(shouldApplySleepBreath('starlightSleeping', { sleepBreath: true }), true);
+  assert.equal(shouldApplySleepBreath('sleeping', { sleepBreath: true }), true);
+  assert.equal(shouldApplySleepBreath('cloakSleep', {}), false);
+  assert.equal(SLEEP_BREATH_CLASS, 'ft-sleep-breathing');
 });
 
 test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {

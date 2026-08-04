@@ -24,6 +24,39 @@ import {
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
 
+/** Soft torso swell while sleep-loop sequences play (classic + starlight). */
+export const SLEEP_BREATH_CLASS = 'ft-sleep-breathing';
+
+/**
+ * @param {string | null | undefined} sequenceName
+ * @param {{ sleepBreath?: boolean } | null | undefined} def
+ * @returns {boolean}
+ */
+export function shouldApplySleepBreath(sequenceName, def) {
+  if (def?.sleepBreath === true) return true;
+  return sequenceName === 'sleeping' || sequenceName === 'starlightSleeping';
+}
+
+const SLEEP_BREATH_STYLE_ID = 'ft-sleep-breath-style';
+
+function ensureSleepBreathStyles() {
+  if (typeof document === 'undefined') return;
+  if (document.getElementById(SLEEP_BREATH_STYLE_ID)) return;
+  const style = document.createElement('style');
+  style.id = SLEEP_BREATH_STYLE_ID;
+  style.textContent = `
+@keyframes ft-sleep-breath {
+  0%, 100% { transform: translateZ(0) scale(1, 1); }
+  50% { transform: translateZ(0) scale(1.01, 1.028); }
+}
+#sprite-overlay.${SLEEP_BREATH_CLASS} {
+  transform-origin: 50% 68%;
+  animation: ft-sleep-breath 3.6s ease-in-out infinite;
+}
+`;
+  document.head.appendChild(style);
+}
+
 /**
  * @typedef {object} PlayOptions
  * @property {boolean} [loop] 覆盖清单的循环设置
@@ -186,6 +219,7 @@ export class SpriteSequencePlayer {
     overlay.appendChild(outgoingImg);
     overlay.appendChild(img);
     container.appendChild(overlay);
+    ensureSleepBreathStyles();
 
     this.overlayEl = overlay;
     this.imgEl = img;
@@ -310,6 +344,7 @@ export class SpriteSequencePlayer {
 
     this._currentName = name;
     this._frames = frames;
+    this._setSleepBreathActive(shouldApplySleepBreath(name, def));
     this._frameIndex = 0;
     this._fps = options.fps ?? def.fps ?? 12;
     this._loopMode = this._resolveLoopMode(def, options);
@@ -388,7 +423,17 @@ export class SpriteSequencePlayer {
     this._cancelRaf();
     this._resetCrossFade();
     this._playing = false;
-    if (clear) this._hide();
+    if (clear) {
+      this._setSleepBreathActive(false);
+      this._hide();
+    }
+  }
+
+  /**
+   * @param {boolean} active
+   */
+  _setSleepBreathActive(active) {
+    this.overlayEl?.classList.toggle(SLEEP_BREATH_CLASS, Boolean(active));
   }
 
   /** @returns {boolean} */

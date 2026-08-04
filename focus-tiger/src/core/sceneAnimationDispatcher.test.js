@@ -175,7 +175,7 @@ test('cold-start: late night deferred when welcome plays; allowed when welcome s
     random: () => 0
   });
   assert.equal(late.play, true);
-  assert.ok(['yawnStretch', 'teaDrinking'].includes(late.emotionKey));
+  assert.equal(late.emotionKey, 'forceDormant');
 });
 
 function writeWelcomePlayed(storage, now) {
@@ -352,7 +352,7 @@ test('LATE_NIGHT cooldown 1h; CURIOSITY chance + cooldown', () => {
     random: () => 0
   });
   assert.equal(first.play, true);
-  assert.equal(first.emotionKey, 'yawnStretch');
+  assert.equal(first.emotionKey, 'forceDormant');
 
   // Stay within the same late-night hour window (23:xx) while cooling down
   const cool = resolveSceneAnimation({
@@ -375,7 +375,7 @@ test('LATE_NIGHT cooldown 1h; CURIOSITY chance + cooldown', () => {
     random: () => 0.9
   });
   assert.equal(after.play, true);
-  assert.equal(after.emotionKey, 'teaDrinking');
+  assert.equal(after.emotionKey, 'forceDormant');
 
   const miss = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.CURIOSITY,

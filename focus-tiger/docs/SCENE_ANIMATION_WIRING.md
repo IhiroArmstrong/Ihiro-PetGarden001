@@ -130,6 +130,7 @@
 | 应用内轻提醒横幅 | `parrotEarVisit`（禅意信使）+ 顶部 `#in-app-reminder-banner` | messenger | **已接线**（2026-08-03） | 横幅首次可见本页播一次；文案仍 `reminder.gentle_waiting` |
 | 荷花成长 / 莲花解锁 | `lotus-front-rising` / `lotus-chest-halo` | ritual | Slice C | 须先有 Grow / 纪念奖励产品面 |
 | 旧 `dormant-wake/` 正放 | — | — | **勿接** | 已由 cloak 倒放取代；目录保留 |
+| `starlight-cloak-sleep` / `-wake` | — | — | **勿接** | 2026-08-04 入库后 Undo；待更好抠图 |
 | 旧 `sleeping/` 8 帧 | — | — | **勿接** | 主线用 cloak 030–034 |
 | `tilt-think` | — | — | **勿接主路径** | curiousTilt 已改 blink-smile；可调试 |
 | `blink-breathe` | — | — | **勿接主路径** | Rise 已改 rise-stretch-casual |

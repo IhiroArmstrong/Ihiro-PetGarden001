@@ -86,9 +86,23 @@ import {
   resolveSceneAnimation,
   shouldAttemptLateNightOnBoot,
   pickRiseInterruptEmotion,
-  isRiseInterruptHoldEmotion
+  isRiseInterruptHoldEmotion,
+  LATE_NIGHT_FORCE_DORMANT_KEY
 } from './core/sceneAnimationDispatcher.js';
+import {
+  shouldIdleInactivityCloak,
+  shouldLateNightCloakOnSessionEnd,
+  isLateNightCloakHoldEmotion,
+  resolveForegroundReturnAction,
+  resolveSessionEndHoldEmotion,
+  FOREGROUND_RETURN_ACTIONS,
+  IDLE_INACTIVITY_CLOAK_MS
+} from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
+import {
+  WELLNESS_DAY_BANDS,
+  resolveWellnessDayBand
+} from './character/cloakVariant.js';
 import {
   HonestyCheckInController,
   resolveHonestyBreathMs
@@ -273,6 +287,16 @@ async function init() {
       emotionKey: decision.emotionKey,
       reason: decision.reason
     };
+    // Expand A：深夜 Idle → 进 DORMANT 披斗篷（替代旧 yawn/tea 池）。
+    if (decision.emotionKey === LATE_NIGHT_FORCE_DORMANT_KEY) {
+      if (stateManager.state === STATES.IDLE) {
+        honestyCheckIn.syncDormantState({
+          allowEnterDormant: true,
+          forceDormant: true
+        });
+      }
+      return decision;
+    }
     const started = emotionController.playEmotion(
       decision.emotionKey,
       playOptions || {}
@@ -700,7 +724,10 @@ async function init() {
     hasEndedAnySession = true;
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
     const riseKey = emotionController.getCurrentEmotionKey();
-    if (isRiseInterruptHoldEmotion(riseKey)) {
+    if (
+      isRiseInterruptHoldEmotion(riseKey) ||
+      isLateNightCloakHoldEmotion(riseKey)
+    ) {
       emotionController.playEmotion('idle');
     }
     syncOnboardingAutoHints();
@@ -1286,6 +1313,13 @@ async function init() {
       countRecentPracticeStreak
     );
     const milestoneNode = milestoneGlowStore.peekOffer(projectedStreak);
+    // Expand B：深夜达标 → 披斗篷定格进 Reflection（不做常规庆祝舞；里程碑仍优先）。
+    if (shouldLateNightCloakOnSessionEnd(now()) && !milestoneNode) {
+      dailyCompletionStore.markCelebratedToday();
+      finishCompletedSession();
+      emotionController.playEmotion('cloakSleep', { holdPose: true });
+      return;
+    }
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
       preferMilestoneGlow: Boolean(milestoneNode),
@@ -1527,10 +1561,13 @@ async function init() {
       honestyCheckIn.onIncompleteSessionEnded();
       resyncSessionChrome();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%），正放一次；
-      // Reflection 期间 holdPose 定格末帧；关面板后再回 idle。
-      // MoodController 在 IDLE 时不覆盖池内键。
-      const riseEmotion = pickRiseInterruptEmotion();
+      // Rise：白天加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%）；
+      // 深夜 Expand B：披斗篷定格 → Reflection；关面板后再回 idle。
+      // MoodController 在 IDLE 时不覆盖池内 / 披斗篷 hold 键。
+      const riseEmotion = resolveSessionEndHoldEmotion({
+        date: now(),
+        pickDaytimeRiseEmotion: pickRiseInterruptEmotion
+      });
       emotionController.playEmotion(riseEmotion, { holdPose: true });
       sessionEndFlow.onSessionEnded({
         completed: false,
@@ -1575,40 +1612,124 @@ async function init() {
   moodController.handleStateChange(stateManager.state);
 
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
-  honestyCheckIn.onAppReady();
+  // Wellness 冷启动时段（2A）：深夜可披斗篷；清晨苏醒仪式；白天仍禁 2h 戳开场即睡。
+  const wellnessBand = resolveWellnessDayBand(new Date());
+  let skipWelcomeForWellness = false;
+  if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
+    honestyCheckIn.syncDormantState({
+      allowEnterDormant: true,
+      forceDormant: true
+    });
+    mindfulToast.show(t('WELLNESS_LATE_NIGHT_REST'), { visibleMs: 5200 });
+    skipWelcomeForWellness = true;
+  } else if (wellnessBand === WELLNESS_DAY_BANDS.MORNING) {
+    honestyCheckIn.onAppReady();
+    emotionController.playEmotion('dormantWake', {
+      holdPose: true,
+      onComplete: () => {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS
+        });
+      }
+    });
+    mindfulToast.show(t('WELLNESS_MORNING_WAKE'), { visibleMs: 5200 });
+    skipWelcomeForWellness = true;
+  } else {
+    honestyCheckIn.onAppReady();
+  }
   retentionFunnelStore.noteAppOpen();
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
   // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
   // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
-  // 欢迎已播 → 本趟跳过深夜；欢迎跳过（配额/gate）→ 可尝试深夜。回前台仍检深夜。
+  // wellness 深夜披斗篷 / 清晨苏醒仪式时跳过欢迎与 yawn/tea，避免抢戏。
   // 提醒横幅可与欢迎并存文案，但鹦鹉信使不得抢 Welcome（欢迎结束后补播）。
-  const welcomeBoot = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
-    playOptions: {
-      onComplete: () => {
-        // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
-        // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
-        const playMessenger =
-          pendingParrotMessengerAfterWelcome &&
-          inAppReminderBannerUI.isVisible();
-        window.setTimeout(() => {
-          if (playMessenger) {
-            playParrotMessengerNow();
-            return;
+  const welcomeBoot = skipWelcomeForWellness
+    ? { play: false, emotionKey: null, reason: 'wellness-band' }
+    : tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+        playOptions: {
+          onComplete: () => {
+            // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
+            // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
+            const playMessenger =
+              pendingParrotMessengerAfterWelcome &&
+              inAppReminderBannerUI.isVisible();
+            window.setTimeout(() => {
+              if (playMessenger) {
+                playParrotMessengerNow();
+                return;
+              }
+              pendingParrotMessengerAfterWelcome = false;
+              syncInAppReminderBanner();
+            }, 0);
           }
-          pendingParrotMessengerAfterWelcome = false;
-          syncInAppReminderBanner();
-        }, 0);
-      }
-    }
-  });
-  if (shouldAttemptLateNightOnBoot(welcomeBoot)) {
+        }
+      });
+  if (
+    !skipWelcomeForWellness &&
+    shouldAttemptLateNightOnBoot(welcomeBoot)
+  ) {
     tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
   }
+
+  // Expand A：Idle ≥15min 无操作 → 披斗篷进 DORMANT（与深夜 LATE_NIGHT 互补）。
+  let lastUserActivityAt = Date.now();
+  const bumpUserActivity = () => {
+    lastUserActivityAt = Date.now();
+  };
+  for (const evt of ['pointerdown', 'keydown', 'touchstart']) {
+    window.addEventListener(evt, bumpUserActivity, { passive: true });
+  }
+  window.setInterval(() => {
+    if (
+      !shouldIdleInactivityCloak({
+        sessionState: stateManager.state,
+        idleMs: Date.now() - lastUserActivityAt,
+        thresholdMs: IDLE_INACTIVITY_CLOAK_MS
+      })
+    ) {
+      return;
+    }
+    honestyCheckIn.syncDormantState({
+      allowEnterDormant: true,
+      forceDormant: true
+    });
+  }, 60_000);
+
+  // 回前台：2B 长离苏醒（FOCUSING + hidden≥30min）与 2h→DORMANT（非 Focusing）互补；
+  // 深夜 LATE_NIGHT 仍可 forceDormant（仅 Idle）。
+  let pageHiddenAtMs = /** @type {number | null} */ (null);
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') return;
-    tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+    if (document.visibilityState === 'hidden') {
+      pageHiddenAtMs = Date.now();
+      return;
+    }
+    const hiddenMs =
+      pageHiddenAtMs == null ? 0 : Date.now() - pageHiddenAtMs;
+    pageHiddenAtMs = null;
+
+    beginSessionCompleteIfNeeded();
+
+    if (
+      resolveForegroundReturnAction({
+        sessionState: stateManager.state,
+        hiddenMs
+      }) === FOREGROUND_RETURN_ACTIONS.LONG_AWAY_WAKE
+    ) {
+      emotionController.playEmotion('dormantWake', {
+        holdPose: true,
+        onComplete: () => {
+          emotionController.playEmotion('idle', {
+            crossFadeMs: CAPCUT_DISSOLVE_MS
+          });
+        }
+      });
+    } else {
+      honestyCheckIn.syncDormantState();
+      tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+    }
+    syncInAppReminderBanner();
   });
 
   // Lab chrome: vite `serve` (DEV) or local Playwright `vite build --mode development`
@@ -1739,14 +1860,6 @@ async function init() {
 
   const uiControls = new UIControls(focusInput);
   uiControls.bindAll();
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      beginSessionCompleteIfNeeded();
-      honestyCheckIn.syncDormantState();
-      syncInAppReminderBanner();
-    }
-  });
 
   // 同页静候到期：无 tab 切换时也要能在提醒时分 hidden→show（并触发信使）。
   window.setInterval(() => {

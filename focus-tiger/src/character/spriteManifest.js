@@ -476,6 +476,7 @@ export const SPRITE_SEQUENCES = {
 
   // 活跃专注累计 2 小时的温和舒展提醒；与 sleeping → awake 的 dormant-wake 不同源。
   // 17 拍 @ 4fps ≈ 4.3s（ONE_SHOT ack 带）。
+  // 2026-08-04：删除未接线调试键 wakeUp（同源伸懒腰、末帧闭眼）；产品舒展仍走本键。
   stretchReminder: {
     animation: 'stretch-reminder',
     frameCount: 17,
@@ -485,22 +486,11 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 调试 / 历史 WakeUp：伸懒腰式清醒（同源 stretch-reminder 素材，独立情绪键）。
-  // 与 Honesty 的 dormant-wake（侧卧深睡→坐姿）刻意区分；勿再共用 dormant-wake。
-  wakeUp: {
-    animation: 'stretch-reminder',
-    frameCount: 17,
-    fps: 8,
-    loop: false,
-    loopMode: 'none',
-    holdLastFrame: true,
-    frameHolds: { 17: 280 }
-  },
-
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。
-  // 2026-07-25：改用 cloak-sleep 末尾 030–034（与披毯入睡末帧同姿），每帧连播两拍；
-  // 播放列表先倒序 034→030，再 pingpong 往复，避免旧 sleeping/ 侧卧与披毯趴姿硬切。
-  // 原 sleeping/ 8 帧目录保留未删。2026-07-25：用户反馈 1fps 过慢 → **2 fps**（仍属极缓）。
+  // 2026-07-25：cloak-sleep 末尾 030–034（与披毯入睡末帧同姿），每帧连播两拍；
+  // 播放列表先倒序 034→030，再 pingpong。原 sleeping/ 8 帧目录保留未删。
+  // 2026-08-04：曾试 starlight-cloak-sleep 尾帧；用户书面不如旧睡姿循环 → **Undo 回本配置**。
+  // 节奏仍 **2 fps**（极缓安宁）。sleepBreath：叠极轻 CSS 起伏，补帧间微差不足。
   sleeping: {
     animation: 'cloak-sleep',
     frameCount: 34,
@@ -508,11 +498,13 @@ export const SPRITE_SEQUENCES = {
     fps: 2,
     loop: true,
     loopMode: 'pingpong',
-    holdLastFrame: false
+    holdLastFrame: false,
+    sleepBreath: true
   },
 
   // 进入 DORMANT 过渡：非 DORMANT→DORMANT 状态转换时播 cloakSleep 正放，再 sleeping。
   // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
+  // 2026-08-04：与 starlightCloakSleep **并存**，运行时约 50/50（见 cloakVariant.js）。
   cloakSleep: {
     animation: 'cloak-sleep',
     frameCount: 34,
@@ -524,7 +516,8 @@ export const SPRITE_SEQUENCES = {
 
   // Honesty Check-in / DORMANT 唤醒：`cloak-sleep` **倒放**（睡态揭毯 → 合掌坐姿）。
   // 与 cloakSleep 正放同源；播放列表末帧 = 素材 frame_001（清醒合掌）。
-  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）；2026-07-21 试替 dormant-wake 正放。
+  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
+  // 2026-08-04：与 starlightDormantWake **并存**，约 50/50（优先匹配本轮入睡变体）。
   dormantWake: {
     animation: 'cloak-sleep',
     frameCount: 34,
@@ -534,6 +527,42 @@ export const SPRITE_SEQUENCES = {
     loopMode: 'none',
     holdLastFrame: true,
     frameHolds: { 34: 320 }
+  },
+
+  // 星光斗篷正放（v5）：与 cloakSleep 同语义；运行时 A/B。
+  starlightCloakSleep: {
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true
+  },
+
+  // 星光斗篷睡循环：末尾 067–058 双拍 pingpong（略扩幅，微可见身体起伏）+ sleepBreath CSS。
+  // 2026-08-04 用户书面：仅 067–063 时睡姿几乎静止 → 扩帧 + CSS 微呼吸。
+  starlightSleeping: {
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    frameIndices: [
+      67, 67, 66, 66, 65, 65, 64, 64, 63, 63, 62, 62, 61, 61, 60, 60, 59, 59, 58, 58
+    ],
+    fps: 2,
+    loop: true,
+    loopMode: 'pingpong',
+    holdLastFrame: false,
+    sleepBreath: true
+  },
+
+  // 星光斗篷苏醒：独立入库的正放卸斗篷（= sleep 物理倒序）。
+  starlightDormantWake: {
+    animation: 'starlight-cloak-wake',
+    frameCount: 67,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true,
+    frameHolds: { 67: 320 }
   },
 
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。

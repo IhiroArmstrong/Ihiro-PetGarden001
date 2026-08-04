@@ -45,6 +45,7 @@ test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', (
 
   try {
     controller.playEmotion('dormantWake', {
+      cloakVariant: 'classic',
       onComplete: () => {
         completed += 1;
       }
@@ -551,7 +552,10 @@ test('leaving dormantWake injects a longer cross-fade into the next emotion', ()
     spritePlayer
   });
 
-  controller.playEmotion('dormantWake', { holdPose: true });
+  controller.playEmotion('dormantWake', {
+    cloakVariant: 'classic',
+    holdPose: true
+  });
   assert.equal(controller.getCurrentEmotionKey(), 'dormantWake');
 
   controller.playEmotion('smiling');

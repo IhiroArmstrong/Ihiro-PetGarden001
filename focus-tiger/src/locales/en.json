@@ -135,6 +135,8 @@
   "HONESTY_IDLE_ENTRY": "Honesty Check-in",
   "HONESTY_PENDING_LOST": "Something went sideways — please choose a duration again.",
   "HONESTY_CHECKIN_RECORDED": "Quiet time elsewhere counts, too.",
+  "WELLNESS_MORNING_WAKE": "A new day — let's gently wake together.",
+  "WELLNESS_LATE_NIGHT_REST": "It's late. I'm resting under the cloak — you can rest too.",
   "micro_ritual.button": "A minute of breath",
   "micro_ritual.complete": "Today counts, too",
   "micro_ritual.leave": "Leave",

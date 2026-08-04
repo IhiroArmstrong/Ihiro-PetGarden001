@@ -149,6 +149,44 @@ test('onAppReady: stale ≥2h end timestamp stays IDLE (no cloak cold open)', ()
   );
 });
 
+test('forceDormant: enters DORMANT without ≥2h stamp (late-night wellness)', () => {
+  const now = () => new Date(Date.parse('2026-07-21T13:00:00'));
+  const emotionCalls = [];
+  const storage = createStorage();
+  const stateManager = new StateManager();
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      if (
+        key === EMOTION_KEYS.CLOAK_SLEEP &&
+        typeof options.onComplete === 'function'
+      ) {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return emotionCalls.at(-1)?.key ?? null;
+    },
+    idleOrchestrator: null
+  };
+  new MoodController(stateManager, emotionController);
+  const controller = new HonestyCheckInController({
+    store: new DailyCompletionStore({ storage, now }),
+    focusSessionEndStore: new FocusSessionEndStore({ storage, now }),
+    stateManager,
+    emotionController,
+    ui: createUi(),
+    now
+  });
+  controller.syncDormantState({ allowEnterDormant: true, forceDormant: true });
+  assert.equal(stateManager.state, STATES.DORMANT);
+  assert.ok(
+    emotionCalls.some((c) => c.key === EMOTION_KEYS.CLOAK_SLEEP),
+    'forceDormant 须播 cloakSleep'
+  );
+});
+
 test('syncDormantState: enters DORMANT after idle window elapsed', () => {
   const ended = Date.parse('2026-07-21T10:00:00');
   const now = () => new Date(Date.parse('2026-07-21T12:00:01'));
