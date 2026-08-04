@@ -7,13 +7,19 @@
 import { t, onLocaleChange, getLocale, setLocale } from '../locales/i18n.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 
-const STYLE_ID = 'language-preference-styles-v3';
+const STYLE_ID = 'language-preference-styles-v4';
 
-/** Base 44 → +50% to sit nearer home Sit ball visual weight. */
+/** Base 44 → +50% (user: enlarge globe). */
 const FAB_PX = Math.round(44 * 1.5);
 const FAB_ICON_PX = Math.round(22 * 1.5);
-/** Sit ≈ 72×1.155; lift so FAB center ≈ Sit center when bottoms match dock. */
-const FAB_BOTTOM_LIFT_PX = Math.round((Math.round(72 * 1.155) - FAB_PX) / 2);
+/**
+ * Wide Idle「?」lives in the heatmap cluster (40px), not the dock.
+ * Cluster bottom = 36+88+20; pad-bottom = 8 — then center-align FAB with ?.
+ * @see WeeklyPracticeHeatmap.js · OnboardingHintsUI `.weekly-practice-heatmap-cluster .onboarding-hint-help`
+ */
+const HELP_IN_CLUSTER_PX = 40;
+const CLUSTER_BOTTOM_EXPR = '36px + 88px + 20px';
+const CLUSTER_PAD_BOTTOM_PX = 8;
 
 /** Popular “language / locale” affordance — globe with meridians (not a flag). */
 const GLOBE_ICON = `<svg class="language-pref__fab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 3c2.4 2.8 3.6 5.7 3.6 9s-1.2 6.2-3.6 9c-2.4-2.8-3.6-5.7-3.6-9S9.6 5.8 12 3z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
@@ -192,10 +198,10 @@ export class LanguagePreferenceUI {
       .language-pref__fab {
         position: fixed;
         right: 16px;
-        /* Dock bottom + lift so globe center ≈ home Sit ball center */
+        /* 与左下热力簇内「?」中心平齐（非三球带） */
         bottom: calc(
-          max(36px, calc(28px + env(safe-area-inset-bottom, 0px))) +
-            ${FAB_BOTTOM_LIFT_PX}px
+          ${CLUSTER_BOTTOM_EXPR} + ${CLUSTER_PAD_BOTTOM_PX}px +
+            (${HELP_IN_CLUSTER_PX}px - ${FAB_PX}px) / 2
         );
         z-index: 16;
         width: ${FAB_PX}px;
@@ -248,10 +254,10 @@ export class LanguagePreferenceUI {
         position: fixed;
         right: 14px;
         left: auto;
-        /* Above enlarged FAB (dock bottom + lift + FAB + gap) */
+        /* Above FAB (aligned with left ? cluster) + gap */
         bottom: calc(
-          max(36px, calc(28px + env(safe-area-inset-bottom, 0px))) +
-            ${FAB_BOTTOM_LIFT_PX}px + ${FAB_PX}px + 12px
+          ${CLUSTER_BOTTOM_EXPR} + ${CLUSTER_PAD_BOTTOM_PX}px +
+            (${HELP_IN_CLUSTER_PX}px - ${FAB_PX}px) / 2 + ${FAB_PX}px + 12px
         );
         transform: none;
         z-index: 18;

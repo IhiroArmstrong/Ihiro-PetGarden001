@@ -28,23 +28,21 @@ test('wide Idle: language globe FAB opens preference panel', async ({ page }) =>
 
   const layout = await page.evaluate(() => {
     const fabEl = document.getElementById('language-preference-fab');
-    const home =
-      document.getElementById('ft-wide-home-ctas') ||
-      document.getElementById('ft-narrow-home-ctas');
+    const help = document.getElementById('onboarding-hint-help');
     const fr = fabEl?.getBoundingClientRect();
-    const hr = home?.getBoundingClientRect();
+    const hr = help?.getBoundingClientRect();
     return {
       fabH: fr?.height ?? 0,
       fabCenterY: fr ? fr.top + fr.height / 2 : null,
-      homeCenterY: hr ? hr.top + hr.height / 2 : null
+      helpCenterY: hr ? hr.top + hr.height / 2 : null
     };
   });
   expect(layout.fabH).toBeGreaterThanOrEqual(60);
   expect(layout.fabCenterY).not.toBeNull();
-  expect(layout.homeCenterY).not.toBeNull();
-  // Centers roughly level with home balls (≤28px drift)
-  expect(Math.abs(layout.fabCenterY - layout.homeCenterY)).toBeLessThanOrEqual(
-    28
+  expect(layout.helpCenterY).not.toBeNull();
+  // Centers level with left-bottom ? (≤20px drift)
+  expect(Math.abs(layout.fabCenterY - layout.helpCenterY)).toBeLessThanOrEqual(
+    20
   );
 
   await fab.click();
