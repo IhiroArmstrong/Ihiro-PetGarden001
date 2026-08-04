@@ -54,17 +54,20 @@ const SLEEP_BREATH_STYLE_ID = 'ft-sleep-breath-style';
 
 function ensureSleepBreathStyles() {
   if (typeof document === 'undefined') return;
-  if (document.getElementById(SLEEP_BREATH_STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = SLEEP_BREATH_STYLE_ID;
-  // Canvas paints a content-box-aligned back ellipse; base <img> stays still.
+  let style = document.getElementById(SLEEP_BREATH_STYLE_ID);
+  if (!style) {
+    style = document.createElement('style');
+    style.id = SLEEP_BREATH_STYLE_ID;
+    document.head.appendChild(style);
+  }
+  // Always refresh text (HMR may leave a stale tag with old clip-path rules).
   style.textContent = `
 #sprite-overlay .${SLEEP_BREATH_WRAP_CLASS} {
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
 }
 #sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} {
   opacity: 1;
@@ -77,7 +80,6 @@ function ensureSleepBreathStyles() {
   display: block;
 }
 `;
-  document.head.appendChild(style);
 }
 
 /**
@@ -382,7 +384,6 @@ export class SpriteSequencePlayer {
 
     this._currentName = name;
     this._frames = frames;
-    this._setSleepBreathActive(shouldApplySleepBreath(name, def));
     this._frameIndex = 0;
     this._fps = options.fps ?? def.fps ?? 12;
     this._loopMode = this._resolveLoopMode(def, options);
@@ -409,6 +410,8 @@ export class SpriteSequencePlayer {
 
     this._show();
     this._renderFrame(0);
+    // After first frame is on screen — breath samples img natural size + layout box.
+    this._setSleepBreathActive(shouldApplySleepBreath(name, def));
 
     const freezeUntilCrossFadeEnds =
       shouldCrossFade && Boolean(options.freezeUntilCrossFadeEnds);
@@ -471,6 +474,7 @@ export class SpriteSequencePlayer {
    * @param {boolean} active
    */
   _setSleepBreathActive(active) {
+    ensureSleepBreathStyles();
     this._sleepBreathActive = Boolean(active);
     this.breathWrapEl?.classList.toggle(SLEEP_BREATH_CLASS, this._sleepBreathActive);
     if (!this._sleepBreathActive) {
@@ -478,7 +482,13 @@ export class SpriteSequencePlayer {
       this._clearSleepBreathCanvas();
       return;
     }
-    this._startSleepBreathLoop();
+    // Decode may still be pending on first paint — kick loop; rAF retries naturalWidth.
+    const kick = () => this._startSleepBreathLoop();
+    if (typeof this.imgEl.decode === 'function' && !this.imgEl.complete) {
+      void this.imgEl.decode().then(kick).catch(kick);
+    } else {
+      kick();
+    }
   }
 
   _startSleepBreathLoop() {
@@ -510,7 +520,38 @@ export class SpriteSequencePlayer {
   }
 
   /**
-   * Paint scaled back mound only (content-box ellipse). Base <img> stays unscaled.
+   * object-fit:contain content box in **overlay layout** CSS pixels (not viewport).
+   * Avoids Dolly / getBoundingClientRect scale mismatches that miss the sprite.
+   * @returns {{ left: number, top: number, width: number, height: number } | null}
+   */
+  _layoutContainRect() {
+    const img = this.imgEl;
+    const nw = img?.naturalWidth;
+    const nh = img?.naturalHeight;
+    if (!nw || !nh) return null;
+    const layoutW = this.overlayEl.clientWidth;
+    const layoutH = this.overlayEl.clientHeight;
+    if (layoutW < 2 || layoutH < 2) return null;
+    const baseScale = Math.min(layoutW / nw, layoutH / nh);
+    let width = nw * baseScale;
+    let height = nh * baseScale;
+    let left = (layoutW - width) * 0.5;
+    let top = (layoutH - height) * 0.5;
+    const fit = computeSpriteDisplayTransform(this._currentDisplayFit, {
+      width: layoutW,
+      height: layoutH
+    });
+    if (fit.scale !== 1 || fit.tx !== 0 || fit.ty !== 0) {
+      left = left * fit.scale + fit.tx;
+      top = top * fit.scale + fit.ty;
+      width *= fit.scale;
+      height *= fit.scale;
+    }
+    return { left, top, width, height };
+  }
+
+  /**
+   * Paint scaled back mound only (layout-space ellipse). Base <img> stays unscaled.
    * @param {number} nowMs
    */
   _paintSleepBreath(nowMs) {
@@ -519,12 +560,14 @@ export class SpriteSequencePlayer {
     const img = this.imgEl;
     if (!canvas || !ctx || !img?.naturalWidth) return;
 
-    const overlay = this.overlayEl.getBoundingClientRect();
-    const layoutW = this.overlayEl.clientWidth || overlay.width;
-    const layoutH = this.overlayEl.clientHeight || overlay.height;
+    const layoutW = this.overlayEl.clientWidth;
+    const layoutH = this.overlayEl.clientHeight;
     if (layoutW < 2 || layoutH < 2) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(
+      typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
+      2
+    );
     const bw = Math.max(1, Math.round(layoutW * dpr));
     const bh = Math.max(1, Math.round(layoutH * dpr));
     if (canvas.width !== bw || canvas.height !== bh) {
@@ -535,29 +578,26 @@ export class SpriteSequencePlayer {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, layoutW, layoutH);
 
-    const display = this.getDisplayRect();
-    if (!display) return;
+    const local = this._layoutContainRect();
+    if (!local) return;
 
-    // getDisplayRect is viewport-absolute; convert to overlay-local.
-    const dx = display.left - overlay.left;
-    const dy = display.top - overlay.top;
-    const local = {
-      left: dx,
-      top: dy,
-      width: display.width,
-      height: display.height
-    };
     const { cx, cy, rx, ry } = sleepBreathEllipseInDisplayRect(local);
     const scaleY = sleepBreathScaleYAt(nowMs);
+    // Pivot at the lower edge of the back ellipse so the mound rises (inhale).
+    const pivotY = cy + ry * 0.35;
 
     ctx.save();
     ctx.beginPath();
-    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    if (typeof ctx.ellipse === 'function') {
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    } else {
+      ctx.arc(cx, cy, Math.min(rx, ry), 0, Math.PI * 2);
+    }
     ctx.clip();
-    ctx.translate(cx, cy);
+    ctx.translate(cx, pivotY);
     ctx.scale(1, scaleY);
-    ctx.translate(-cx, -cy);
-    ctx.drawImage(img, dx, dy, display.width, display.height);
+    ctx.translate(-cx, -pivotY);
+    ctx.drawImage(img, local.left, local.top, local.width, local.height);
     ctx.restore();
   }
 

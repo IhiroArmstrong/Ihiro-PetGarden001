@@ -5,18 +5,19 @@
 
 /** Fraction of the displayed sprite box (object-fit content rect). */
 export const SLEEP_BREATH_BACK = Object.freeze({
-  /** Ellipse center X within content rect (head is left; back under cloak is mid-right). */
-  cx: 0.58,
+  /** Ellipse center X within content rect (head left; cloak back mid-right). */
+  cx: 0.56,
   /** Ellipse center Y within content rect. */
-  cy: 0.48,
+  cy: 0.5,
   /** Horizontal radius as fraction of content width. */
-  rx: 0.22,
+  rx: 0.3,
   /** Vertical radius as fraction of content height. */
-  ry: 0.11
+  ry: 0.18
 });
 
-export const SLEEP_BREATH_PERIOD_MS = 3800;
-export const SLEEP_BREATH_SCALE_Y_PEAK = 1.05;
+export const SLEEP_BREATH_PERIOD_MS = 3400;
+/** Peak vertical swell — must be clearly visible on soft cloak fabric. */
+export const SLEEP_BREATH_SCALE_Y_PEAK = 1.12;
 
 /**
  * @param {number} nowMs
