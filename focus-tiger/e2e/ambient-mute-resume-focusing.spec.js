@@ -5,10 +5,11 @@ import {
 } from './helpers/product-shell.js';
 
 /**
- * Ambient parity matrix rows ⑤⑥⑩:
- * ⑤ audible → note click mutes (not panel-only)
+ * Ambient parity matrix rows ⑤⑥⑩ + hover change-track:
+ * ⑤ audible + panel open → note click mutes
  * ⑥ muted → note click resumes preferred track with sound
  * ⑩ Focusing: pick a track → audible
+ * Hover / panel-closed click while audible → open list without mute
  *
  * @see docs/task-briefs/audit-narrow-wide-ambient-parity.md
  */
@@ -83,7 +84,7 @@ test.describe('ambient ⑤⑥ note mute / resume', () => {
 
     await chooseBuiltInTrack(page, note);
 
-    // ⑤ — second note click while audible must mute
+    // ⑤ — note click while audible with panel still open must mute
     await note.click();
     await expect
       .poll(async () => {
@@ -99,6 +100,77 @@ test.describe('ambient ⑤⑥ note mute / resume', () => {
         const s = await ambientSnap(page);
         return s.anyAudible || s.audible;
       }, { timeout: 8_000 })
+      .toBe(true);
+  });
+});
+
+test.describe('ambient hover / change-track without mute', () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+
+  test('hover note opens panel while playing; switch track stays audible', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    await quickStartFocus(page);
+    const note = page.locator('.ambient-soundscape__mute');
+    await expect(note).toBeVisible({ timeout: 10_000 });
+
+    await chooseBuiltInTrack(page, note);
+    // Dismiss panel so hover must reopen without mute
+    await page.locator('body').click({ position: { x: 24, y: 200 } });
+    await expect(page.locator('.ambient-soundscape__panel')).toBeHidden({
+      timeout: 5_000
+    });
+    await expect
+      .poll(async () => {
+        const s = await ambientSnap(page);
+        return s.anyAudible || s.audible;
+      }, { timeout: 5_000 })
+      .toBe(true);
+
+    await note.hover();
+    await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+      timeout: 5_000
+    });
+    await expect
+      .poll(async () => {
+        const s = await ambientSnap(page);
+        return s.anyAudible || s.audible;
+      }, { timeout: 5_000 })
+      .toBe(true);
+
+    const other = page.locator('.ambient-soundscape__track').nth(2);
+    await expect(other).toBeVisible();
+    await other.click();
+    await expect(other).toHaveClass(/is-selected/);
+    await expect
+      .poll(async () => {
+        const s = await ambientSnap(page);
+        return s.anyAudible || s.audible;
+      }, { timeout: 8_000 })
+      .toBe(true);
+  });
+
+  test('audible + panel closed: note click opens list without mute', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    const note = page.locator('.ambient-soundscape__mute');
+    await chooseBuiltInTrack(page, note);
+    await page.locator('body').click({ position: { x: 24, y: 200 } });
+    await expect(page.locator('.ambient-soundscape__panel')).toBeHidden({
+      timeout: 5_000
+    });
+
+    await note.click();
+    await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+      timeout: 5_000
+    });
+    await expect
+      .poll(async () => {
+        const s = await ambientSnap(page);
+        return s.anyAudible || s.audible;
+      }, { timeout: 5_000 })
       .toBe(true);
   });
 });

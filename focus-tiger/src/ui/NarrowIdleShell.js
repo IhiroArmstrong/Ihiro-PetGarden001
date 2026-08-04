@@ -41,6 +41,7 @@ export class NarrowIdleShell {
    *   getHudStateEl?: () => HTMLElement | null,
    *   handlers?: {
    *     onSound?: () => void,
+   *     onSoundHover?: () => void,
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
@@ -428,6 +429,29 @@ export class NarrowIdleShell {
       this._proxy(btn.getAttribute('data-proxy'));
     });
 
+    // Desktop: hover ♪ opens Soundscape without mute (change track mid-play).
+    // Short delay so click pointerenter does not steal mute/resume.
+    const muteBtn = this.actionBar?.querySelector('#ft-narrow-mute-btn');
+    let hoverTimer = null;
+    const clearHover = () => {
+      if (hoverTimer != null) {
+        window.clearTimeout(hoverTimer);
+        hoverTimer = null;
+      }
+    };
+    muteBtn?.addEventListener('pointerenter', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      clearHover();
+      hoverTimer = window.setTimeout(() => {
+        hoverTimer = null;
+        this.closeSheet();
+        document.body.classList.add(NARROW_STAGE_CLASS.sound);
+        this.handlers.onSoundHover?.();
+      }, 180);
+    });
+    muteBtn?.addEventListener('pointerleave', clearHover);
+    muteBtn?.addEventListener('pointerdown', clearHover);
+
     this.homeCtas?.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-proxy]');
       if (!btn || btn.disabled || btn.hidden) return;
@@ -678,8 +702,16 @@ export class NarrowIdleShell {
       // Close drawer first so Soundscape is not under the sheet; ActionBar ♪
       // stays above the backdrop (z-index) so this click is not blocked.
       this.closeSheet();
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.sound);
+      // If Soundscape is already staged, do not clearStage (that calls
+      // clearNarrowSoundStage and closes the panel) — otherwise audible+click
+      // would reopen instead of mute.
+      const soundStaged = document.body.classList.contains(
+        NARROW_STAGE_CLASS.sound
+      );
+      if (!soundStaged) {
+        this.clearStage();
+        document.body.classList.add(NARROW_STAGE_CLASS.sound);
+      }
       this.handlers.onSound?.();
       return;
     }

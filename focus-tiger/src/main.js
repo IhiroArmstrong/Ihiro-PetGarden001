@@ -833,9 +833,15 @@ async function init() {
       honestyCheckIn.openDurationChoices({ force: true });
     },
     onSound: () => {
-      // Narrow ActionBar ♪ must share note semantics: mute when audible,
-      // close panel if open, else open (+ resume preferred after note-mute).
+      // Narrow ActionBar ♪: audible+panel open → mute; audible+panel closed →
+      // open list (change track); else open (+ resume after note-mute).
       ambientSoundscapeUI.openSoundPanelFromNote();
+      idleChrome.syncMuteVisual({
+        musicOn: ambientSoundscapeUI.wantsMusicOn()
+      });
+    },
+    onSoundHover: () => {
+      ambientSoundscapeUI.openSoundPanelFromHover();
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });

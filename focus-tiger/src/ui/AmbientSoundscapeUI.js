@@ -81,6 +81,18 @@ export class AmbientSoundscapeUI {
       this._dismissNudge();
       this.openSoundPanelFromNote();
     });
+    // Desktop: brief hover opens the track list without mute (change track mid-play).
+    // Delay so a real click's pointerenter does not steal mute / resume semantics.
+    this._hoverOpenTimer = null;
+    this.muteBtn.addEventListener('pointerenter', (event) => {
+      this._onNotePointerEnter(event);
+    });
+    this.muteBtn.addEventListener('pointerleave', () => {
+      this._clearHoverOpenTimer();
+    });
+    this.muteBtn.addEventListener('pointerdown', () => {
+      this._clearHoverOpenTimer();
+    });
 
     this.focusChrome = document.createElement('div');
     this.focusChrome.className = 'ambient-soundscape__focus-chrome';
@@ -190,8 +202,18 @@ export class AmbientSoundscapeUI {
     this._onDocPointer = (event) => {
       if (!this._expanded) return;
       if (!this._sessionActive && !this._narrowForcedPanel) return;
-      const target = /** @type {Node} */ (event.target);
+      const target = /** @type {Element | null} */ (
+        event.target instanceof Element
+          ? event.target
+          : event.target?.parentElement
+      );
+      if (!target) return;
+      // Note chrome is inside root; ActionBar ♪ is outside — do not dismiss on
+      // note pointerdown or click→mute / open races with a false close.
       if (this.root.contains(target)) return;
+      if (target.closest?.('#ft-narrow-mute-btn, .ambient-soundscape__mute')) {
+        return;
+      }
       this._expanded = false;
       this._narrowForcedPanel = false;
       document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
@@ -296,12 +318,62 @@ export class AmbientSoundscapeUI {
 
   /**
    * Top-right note (and ActionBar ♪ proxy):
-   * - audible music on → mute/stop
-   * - panel already open → close
-   * - otherwise → open Soundscape track panel
+   * - audible + panel open → mute/stop (explicit)
+   * - audible + panel closed → open panel only (change track; do not mute)
+   * - panel already open (silent) → close
+   * - otherwise → open Soundscape track panel (+ resume after note-mute)
    */
   openSoundPanelFromNote() {
     void this._onNoteClick();
+  }
+
+  /**
+   * Desktop hover on the note: open the track list without muting or resuming.
+   * No-op on coarse pointers (touch) — those use click semantics above.
+   */
+  openSoundPanelFromHover() {
+    if (!this._canHoverOpenPanel()) return;
+    if (this.isPanelOpen()) return;
+    this._openPanelOnly();
+  }
+
+  /**
+   * @param {PointerEvent} event
+   */
+  _onNotePointerEnter(event) {
+    if (event.pointerType && event.pointerType !== 'mouse') return;
+    if (!this._canHoverOpenPanel()) return;
+    this._clearHoverOpenTimer();
+    this._hoverOpenTimer = window.setTimeout(() => {
+      this._hoverOpenTimer = null;
+      this.openSoundPanelFromHover();
+    }, 180);
+  }
+
+  _clearHoverOpenTimer() {
+    if (this._hoverOpenTimer != null) {
+      window.clearTimeout(this._hoverOpenTimer);
+      this._hoverOpenTimer = null;
+    }
+  }
+
+  /** @returns {boolean} */
+  _canHoverOpenPanel() {
+    try {
+      return Boolean(
+        typeof window !== 'undefined' &&
+          window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  /** Open Soundscape without toggling mute / resume. */
+  _openPanelOnly() {
+    this._dismissNudge();
+    this._stageSoundPanelHost();
+    this.activateSoundFromNarrow();
   }
 
   /**
@@ -310,6 +382,12 @@ export class AmbientSoundscapeUI {
   async _onNoteClick() {
     const ctrl = this.controller;
     if (ctrl.isAudiblePlaying()) {
+      // Playing + list already open → click means mute. Playing + list closed →
+      // open list so the user can change tracks without stopping audio.
+      if (!this.isPanelOpen()) {
+        this._openPanelOnly();
+        return;
+      }
       ctrl.mute();
       this._expanded = false;
       this._narrowForcedPanel = false;
@@ -331,8 +409,7 @@ export class AmbientSoundscapeUI {
       this._renderPanel();
       return;
     }
-    this._stageSoundPanelHost();
-    this.activateSoundFromNarrow();
+    this._openPanelOnly();
     // Same user gesture: after note-mute, reopen resumes the remembered track with sound.
     if (ctrl.consumeResumePreferredOnOpen()) {
       await ctrl.unmute();
@@ -590,6 +667,7 @@ export class AmbientSoundscapeUI {
   }
 
   dispose() {
+    this._clearHoverOpenTimer();
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
   }
