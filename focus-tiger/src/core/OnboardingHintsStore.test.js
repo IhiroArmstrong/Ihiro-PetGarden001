@@ -139,6 +139,13 @@ test('appendIdleChromeHintIds adds heatmap / reminder / micro-ritual / quick-sta
   ]);
 });
 
+test('appendIdleChromeHintIds adds language-preference when language FAB visible', () => {
+  /** @type {string[]} */
+  const ids = ['sit-button'];
+  appendIdleChromeHintIds(ids, { languageFabVisible: true });
+  assert.ok(ids.includes('language-preference'));
+});
+
 test('appendIdleChromeHintIds adds honesty idle entry + quick-start balls', () => {
   /** @type {string[]} */
   const ids = ['sit-button'];

@@ -7,7 +7,13 @@
 import { t, onLocaleChange, getLocale, setLocale } from '../locales/i18n.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 
-const STYLE_ID = 'language-preference-styles-v2';
+const STYLE_ID = 'language-preference-styles-v3';
+
+/** Base 44 → +50% to sit nearer home Sit ball visual weight. */
+const FAB_PX = Math.round(44 * 1.5);
+const FAB_ICON_PX = Math.round(22 * 1.5);
+/** Sit ≈ 72×1.155; lift so FAB center ≈ Sit center when bottoms match dock. */
+const FAB_BOTTOM_LIFT_PX = Math.round((Math.round(72 * 1.155) - FAB_PX) / 2);
 
 /** Popular “language / locale” affordance — globe with meridians (not a flag). */
 const GLOBE_ICON = `<svg class="language-pref__fab-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 3c2.4 2.8 3.6 5.7 3.6 9s-1.2 6.2-3.6 9c-2.4-2.8-3.6-5.7-3.6-9S9.6 5.8 12 3z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
@@ -116,6 +122,18 @@ export class LanguagePreferenceUI {
     this.fab.hidden = !next;
   }
 
+  /**
+   * True when the Idle globe is intended on-screen (wide only; CSS hides ≤479).
+   * Used by onboarding mint sync — do not treat narrow drawer Language as FAB.
+   */
+  isFabVisible() {
+    if (!this._fabVisible || this.fab.hidden) return false;
+    if (typeof window.matchMedia === 'function') {
+      return window.matchMedia('(min-width: 480px)').matches;
+    }
+    return true;
+  }
+
   destroy() {
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale?.();
@@ -174,10 +192,14 @@ export class LanguagePreferenceUI {
       .language-pref__fab {
         position: fixed;
         right: 16px;
-        bottom: max(36px, calc(28px + env(safe-area-inset-bottom, 0px)));
+        /* Dock bottom + lift so globe center ≈ home Sit ball center */
+        bottom: calc(
+          max(36px, calc(28px + env(safe-area-inset-bottom, 0px))) +
+            ${FAB_BOTTOM_LIFT_PX}px
+        );
         z-index: 16;
-        width: 44px;
-        height: 44px;
+        width: ${FAB_PX}px;
+        height: ${FAB_PX}px;
         padding: 0;
         border-radius: 50%;
         border: 1px solid rgba(139, 115, 85, 0.14);
@@ -212,8 +234,8 @@ export class LanguagePreferenceUI {
         display: none !important;
       }
       .language-pref__fab-icon {
-        width: 22px;
-        height: 22px;
+        width: ${FAB_ICON_PX}px;
+        height: ${FAB_ICON_PX}px;
         display: block;
       }
       /* 窄屏底栏已挤；Language 仍在抽屉 / ⋯ */
@@ -226,7 +248,11 @@ export class LanguagePreferenceUI {
         position: fixed;
         right: 14px;
         left: auto;
-        bottom: max(96px, calc(env(safe-area-inset-bottom, 0px) + 88px));
+        /* Above enlarged FAB (dock bottom + lift + FAB + gap) */
+        bottom: calc(
+          max(36px, calc(28px + env(safe-area-inset-bottom, 0px))) +
+            ${FAB_BOTTOM_LIFT_PX}px + ${FAB_PX}px + 12px
+        );
         transform: none;
         z-index: 18;
         width: min(92vw, 300px);

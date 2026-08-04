@@ -20,6 +20,33 @@ test('wide Idle: language globe FAB opens preference panel', async ({ page }) =>
 
   const fab = page.locator('#language-preference-fab');
   await expect(fab).toBeVisible({ timeout: 8_000 });
+
+  const mint = page.locator(
+    '.onboarding-hint-badge[data-hint-id="language-preference"]'
+  );
+  await expect(mint).toBeVisible({ timeout: 10_000 });
+
+  const layout = await page.evaluate(() => {
+    const fabEl = document.getElementById('language-preference-fab');
+    const home =
+      document.getElementById('ft-wide-home-ctas') ||
+      document.getElementById('ft-narrow-home-ctas');
+    const fr = fabEl?.getBoundingClientRect();
+    const hr = home?.getBoundingClientRect();
+    return {
+      fabH: fr?.height ?? 0,
+      fabCenterY: fr ? fr.top + fr.height / 2 : null,
+      homeCenterY: hr ? hr.top + hr.height / 2 : null
+    };
+  });
+  expect(layout.fabH).toBeGreaterThanOrEqual(60);
+  expect(layout.fabCenterY).not.toBeNull();
+  expect(layout.homeCenterY).not.toBeNull();
+  // Centers roughly level with home balls (≤28px drift)
+  expect(Math.abs(layout.fabCenterY - layout.homeCenterY)).toBeLessThanOrEqual(
+    28
+  );
+
   await fab.click();
   await expect(page.locator(PANEL)).toBeVisible({ timeout: 5_000 });
   await page.locator('#language-preference-close').click();

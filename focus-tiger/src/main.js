@@ -464,9 +464,15 @@ async function init() {
     }
   );
   languagePreferenceUI = new LanguagePreferenceUI(document.body, {
+    onOpen: () => {
+      onboardingHints?.markSeen('language-preference');
+    },
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-language');
       document.body.classList.remove('ft-wide-stage-language');
+    },
+    onLocaleChosen: () => {
+      onboardingHints?.markSeen('language-preference');
     }
   });
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
@@ -906,6 +912,7 @@ async function init() {
       arrivalReady: sessionUiGate.arrivalGateReady,
       hasEverCompletedSession: hasEndedAnySession,
       weeklyHeatmapVisible: weeklyPracticeHeatmap?.isVisible?.() === true,
+      languageFabVisible: languagePreferenceUI?.isFabVisible?.() === true,
       microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true,
       narrowPark: document.body.classList.contains('ft-narrow-park'),
       narrowSheetOpen: idleChrome?.isSheetOpen?.() === true,
@@ -1871,6 +1878,8 @@ async function init() {
   const clock = new THREE.Clock();
   /** Tracks heatmap Idle visibility so click mints re-sync after first paint. */
   let _prevWeeklyHeatmapVisibleForHints = weeklyPracticeHeatmap.isVisible();
+  /** Tracks language FAB visibility for mint re-sync (wide Idle only). */
+  let _prevLanguageFabVisibleForHints = languagePreferenceUI.isFabVisible();
 
   function animate() {
     requestAnimationFrame(animate);
@@ -1929,12 +1938,16 @@ async function init() {
     languagePreferenceUI.setFabVisible(
       stateManager.state === STATES.IDLE && !microOpen
     );
-    // Heatmap / reminder mount after first Idle paint — re-sync click mints
-    // (weekly-heatmap, in-app-reminder) once they become on-screen.
+    // Heatmap / reminder / language FAB mount after first Idle paint — re-sync
+    // click mints once they become on-screen.
     if (
       weeklyPracticeHeatmap.isVisible() !== _prevWeeklyHeatmapVisibleForHints
     ) {
       _prevWeeklyHeatmapVisibleForHints = weeklyPracticeHeatmap.isVisible();
+      syncOnboardingAutoHints();
+    }
+    if (languagePreferenceUI.isFabVisible() !== _prevLanguageFabVisibleForHints) {
+      _prevLanguageFabVisibleForHints = languagePreferenceUI.isFabVisible();
       syncOnboardingAutoHints();
     }
     composer.render();

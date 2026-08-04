@@ -215,6 +215,7 @@
 | `reflection` | `auto` | **B** |
 | `idle-after-session` | `click` | **A** |
 | `weekly-heatmap` | `click` | **C** |
+| `language-preference` | `click` | **C** |
 | `in-app-reminder` | `click` | **C** |
 | `micro-ritual` | `click` | **C** |
 | `focus-hud-ring` | `click` | **D** |
