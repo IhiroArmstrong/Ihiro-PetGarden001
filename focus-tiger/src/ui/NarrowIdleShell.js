@@ -6,6 +6,12 @@ import {
   SECONDARY_PROXY_HINT_IDS,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
+import {
+  NARROW_COPY_ABOVE_HOME_GAP_PX,
+  NARROW_HOME_CTA_BOTTOM_PX,
+  NARROW_HOME_SIT_PX,
+  narrowHomeCopyClearanceBottomPx
+} from './homeChromeClearance.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v19';
 const NARROW_MQ = '(max-width: 479px)';
@@ -17,6 +23,10 @@ const HOME_CTA_PX = 72;
 const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.155);
 /** ActionBar center clock — wall time, not FocusHUD session elapsed. */
 const WALL_CLOCK_TICK_MS = 1_000;
+
+/** Bottom-anchored copy that coexists with `#ft-narrow-home-ctas` on Idle/Dormant. */
+const NARROW_HOME_COPY_CLEARANCE_BOTTOM = narrowHomeCopyClearanceBottomPx();
+const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
@@ -675,7 +685,7 @@ export class NarrowIdleShell {
       this.listEl.appendChild(li);
     }
 
-    // Quiet week strip: clone lit cells into the sheet (read-only)
+    // Quiet week strip: clone day columns (cell + dow + today) into the sheet
     const source = document.getElementById('weekly-practice-heatmap');
     if (this.heatmapSlot && source && !source.hidden) {
       this.heatmapSlot.hidden = false;
@@ -686,11 +696,39 @@ export class NarrowIdleShell {
       const row = document.createElement('div');
       row.className = 'ft-narrow-sheet__heatmap-row';
       row.setAttribute('aria-hidden', 'true');
-      for (const cell of source.querySelectorAll('.weekly-practice-heatmap__cell')) {
-        const clone = document.createElement('span');
-        clone.className = 'ft-narrow-sheet__heatmap-cell';
-        clone.dataset.lit = cell.dataset.lit || '0';
-        row.appendChild(clone);
+      const daySources = source.querySelectorAll('.weekly-practice-heatmap__day');
+      if (daySources.length > 0) {
+        for (const daySrc of daySources) {
+          const day = document.createElement('div');
+          day.className = 'ft-narrow-sheet__heatmap-day';
+          day.dataset.today = daySrc.dataset.today || '0';
+          const cellSrc = daySrc.querySelector('.weekly-practice-heatmap__cell');
+          const clone = document.createElement('span');
+          clone.className = 'ft-narrow-sheet__heatmap-cell';
+          clone.dataset.lit = cellSrc?.dataset.lit || '0';
+          clone.dataset.today = cellSrc?.dataset.today || day.dataset.today;
+          const dowSrc = daySrc.querySelector('.weekly-practice-heatmap__dow');
+          const dow = document.createElement('span');
+          dow.className = 'ft-narrow-sheet__heatmap-dow';
+          if (day.dataset.today === '1') {
+            dow.classList.add('ft-narrow-sheet__heatmap-dow--today');
+          }
+          dow.textContent = dowSrc?.textContent ?? '';
+          day.appendChild(clone);
+          day.appendChild(dow);
+          row.appendChild(day);
+        }
+      } else {
+        // Fallback: older markup without day columns
+        for (const cell of source.querySelectorAll(
+          '.weekly-practice-heatmap__cell'
+        )) {
+          const clone = document.createElement('span');
+          clone.className = 'ft-narrow-sheet__heatmap-cell';
+          clone.dataset.lit = cell.dataset.lit || '0';
+          clone.dataset.today = cell.dataset.today || '0';
+          row.appendChild(clone);
+        }
       }
       this.heatmapSlot.appendChild(label);
       this.heatmapSlot.appendChild(row);
@@ -1123,17 +1161,38 @@ export class NarrowIdleShell {
       .ft-narrow-sheet__heatmap-row {
         display: flex;
         gap: 6px;
+        align-items: flex-start;
+      }
+      .ft-narrow-sheet__heatmap-day {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 3px;
+        min-width: 14px;
       }
       .ft-narrow-sheet__heatmap-cell {
         width: 12px;
         height: 12px;
         border-radius: 4px;
+        box-sizing: border-box;
         background: rgba(46, 43, 40, 0.1);
       }
       .ft-narrow-sheet__heatmap-cell[data-lit="1"] {
         background: var(--color-accent, #b5623a);
         opacity: 0.78;
+      }
+      .ft-narrow-sheet__heatmap-cell[data-today="1"] {
+        box-shadow: 0 0 0 1.5px rgba(181, 98, 58, 0.62);
+      }
+      .ft-narrow-sheet__heatmap-dow {
+        font-size: 8px;
+        line-height: 1;
+        color: rgba(74, 58, 40, 0.42);
+        font-weight: 500;
+      }
+      .ft-narrow-sheet__heatmap-dow--today {
+        color: rgba(74, 58, 40, 0.78);
+        font-weight: 600;
       }
 
       /* Applied by JS on narrow Focusing — hide Sound FAB / nudge / panel */
@@ -1150,6 +1209,20 @@ export class NarrowIdleShell {
 
       /* —— Hide legacy Idle chrome on narrow idle; enlarge Yin —— */
       @media (max-width: 479px) {
+        /*
+         * Home-ball clearance belt: soft bottom copy sharing Idle/Dormant with
+         * #ft-narrow-home-ctas must clear Sit (~147px from bottom + gap).
+         * SSOT: homeChromeClearance.js — do not invent a second bottom.
+         */
+        body.ft-narrow-shell #mindful-acknowledge-toast[data-placement="bottom"],
+        body.ft-narrow-shell #honesty-bridge-cta,
+        body.ft-narrow-shell #tiger-reflection-moment,
+        body.ft-narrow-shell #arrival-practice,
+        body.ft-narrow-shell #honesty-check-in,
+        body.ft-narrow-shell #micro-ritual {
+          bottom: ${NARROW_HOME_COPY_CLEARANCE_CSS} !important;
+        }
+
         /* Park whenever Idle (incl. Arrival / Honesty overlays) */
         body.ft-narrow-shell.ft-narrow-park #focus-hud,
         body.ft-narrow-shell.ft-narrow-park #session-start-dock,

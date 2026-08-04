@@ -67,6 +67,7 @@
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
+- **「本周陪伴」今日标记 + 窄屏 toast 避让（2026-08-05）**：PR #120 合入 `develop` tip `dc415d7`（星期缩写/今日描边/Dormant 可见；窄屏底部文案 clearance belt）。Hints tip 几何仍属 #7 再设计。
 - **KnownRisky 验收清单入库（2026-08-04）**：`KNOWN_RISKY_TEST_CHECKLIST.md` 步骤 SSOT；#1 已关单（见上行）。
 - **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.12**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
@@ -128,7 +129,7 @@
 - **应用内提醒偏好 + 横幅 UI 已接入（2026-07-22）**：设置入口改为 **Idle 热力图簇旁的小型时钟图标**（`ReminderPreferenceUI`，挂 `WeeklyPracticeHeatmap` cluster，Idle-only）；点击展开轻量面板，含「开启提醒」+ 时间选择器，标题键 `reminder.setting_title`。**2026-07-25**：面板常显「每日时分」说明（`reminder.daily_blurb`）+ 已过/已练软提示；onboarding Hint `in-app-reminder`。横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；已接冷启动 / `visibilitychange` 回前台 / 状态切换重评；关闭后本页会话内不再重复；DEV：`window.__inAppReminder`。**2026-07-23**：忙碌策略拍板 **`suppress`**。
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined` / **`micro_ritual_complete`**
 - **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
-- **「本周陪伴」7 格热力图 UI（2026-07-22）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)`；亮格=`null|/>0`；无文案/无点击；e2e `weekly-practice-heatmap.spec.js`
+- **「本周陪伴」7 格热力图 UI（2026-07-22；今日标记 2026-08-04）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)` 最右=今日；亮格=`null|/>0`；星期缩写 + 今日软描边；e2e `weekly-practice-heatmap.spec.js`
 - **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`；见 `SHARED_RESOURCES` §1.2
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：`DailyCompletionStore` 仅当日不够；数据源改 `PracticeDaysStore`
 - **静默失败排查 · 批 1–3（2026-07-22）**：StateManager warn-only；Honesty 禁 `?? 30`；门闩一体包（`resyncSessionChrome` 可扩展源 + Picker Gate 通过后才写 storage；删 BREAK）。批 2–3 待人工验收。
