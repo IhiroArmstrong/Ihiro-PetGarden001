@@ -6,12 +6,12 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v2';
+const STYLE_ID = 'ft-wide-idle-more-styles-v3';
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
-/** Sit is the primary cold-start path — slight visual emphasis. */
-const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.1);
+/** Sit is the primary cold-start path — slight visual emphasis (~1.155×). */
+const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.155);
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
 const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
 const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';

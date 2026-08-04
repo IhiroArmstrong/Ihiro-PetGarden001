@@ -28,7 +28,7 @@ export function buildWeeklyHeatmapCells(days) {
   }));
 }
 
-const STYLE_ID = 'weekly-practice-heatmap-styles-v3';
+const STYLE_ID = 'weekly-practice-heatmap-styles-v4';
 
 export class WeeklyPracticeHeatmap {
   /**
@@ -131,7 +131,7 @@ export class WeeklyPracticeHeatmap {
          * 须在 home 三球带之上（球高 ~80 + dock 底边 ~36 + 缝），
          * 否则球/蒲团会盖住簇与 weekly-heatmap mint hint。
          */
-        bottom: calc(36px + 84px + 20px);
+        bottom: calc(36px + 88px + 20px);
         z-index: 12;
         display: flex;
         flex-direction: row;

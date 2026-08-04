@@ -173,9 +173,9 @@ export class SpriteSequencePlayer {
     const stage = document.createElement('div');
     stage.id = 'sprite-stage';
     stage.className = 'ft-sprite-stage';
-    // top/side/bottom：底部更多 → 角色上抬并离开球带；整体相对全屏约缩 16–18%
+    // top/side/bottom：底部更多 → 角色上抬并离开球带；整体相对全屏约缩 20–22%
     stage.style.cssText =
-      'position:absolute;top:5%;right:9%;bottom:17%;left:9%;' +
+      'position:absolute;top:6%;right:11%;bottom:20%;left:11%;' +
       'pointer-events:none;';
 
     const imageStyle =

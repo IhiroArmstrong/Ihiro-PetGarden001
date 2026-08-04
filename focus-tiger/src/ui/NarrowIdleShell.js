@@ -7,14 +7,14 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v17';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v18';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
 /** Display size for home PNG totems (assets are full-res; CSS scales). */
 const HOME_CTA_PX = 72;
-/** Sit is the primary cold-start path — slight visual emphasis. */
-const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.1);
+/** Sit is the primary cold-start path — slight visual emphasis (~1.155×). */
+const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.155);
 /** ActionBar center clock — wall time, not FocusHUD session elapsed. */
 const WALL_CLOCK_TICK_MS = 1_000;
 
@@ -1208,7 +1208,7 @@ export class NarrowIdleShell {
 
         /* 相对桌面舞台仍略放大可读；已有 stage inset，勿再 1.28 挤满竖屏 */
         body.ft-narrow-shell #sprite-overlay {
-          zoom: 1.08;
+          zoom: 1.03;
           transform-origin: center 50%;
         }
 
