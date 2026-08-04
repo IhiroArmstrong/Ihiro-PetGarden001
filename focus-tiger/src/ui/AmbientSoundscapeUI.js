@@ -329,10 +329,13 @@ export class AmbientSoundscapeUI {
 
   /**
    * Desktop hover on the note: open the track list without muting or resuming.
-   * No-op on coarse pointers (touch) — those use click semantics above.
+   * Touch / pen use click semantics. Real mouse is allowed even when DevTools /
+   * Safari Responsive Design reports `(hover: none)` for a 375 viewport.
+   * @param {{ fromMouse?: boolean }} [opts]
    */
-  openSoundPanelFromHover() {
-    if (!this._canHoverOpenPanel()) return;
+  openSoundPanelFromHover(opts = {}) {
+    const fromMouse = opts.fromMouse === true;
+    if (!fromMouse && !this._canHoverOpenPanel()) return;
     if (this.isPanelOpen()) return;
     this._openPanelOnly();
   }
@@ -341,12 +344,12 @@ export class AmbientSoundscapeUI {
    * @param {PointerEvent} event
    */
   _onNotePointerEnter(event) {
+    // Only real mouse — not touch emulation of enter.
     if (event.pointerType && event.pointerType !== 'mouse') return;
-    if (!this._canHoverOpenPanel()) return;
     this._clearHoverOpenTimer();
     this._hoverOpenTimer = window.setTimeout(() => {
       this._hoverOpenTimer = null;
-      this.openSoundPanelFromHover();
+      this.openSoundPanelFromHover({ fromMouse: true });
     }, 180);
   }
 

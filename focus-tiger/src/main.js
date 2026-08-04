@@ -841,7 +841,8 @@ async function init() {
       });
     },
     onSoundHover: () => {
-      ambientSoundscapeUI.openSoundPanelFromHover();
+      // Narrow ActionBar ♪ hover — always from real mouse (see openSoundPanelFromHover).
+      ambientSoundscapeUI.openSoundPanelFromHover({ fromMouse: true });
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });

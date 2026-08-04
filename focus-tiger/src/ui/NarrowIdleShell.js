@@ -444,6 +444,8 @@ export class NarrowIdleShell {
       clearHover();
       hoverTimer = window.setTimeout(() => {
         hoverTimer = null;
+        // Close drawer first so the Soundscape panel is not under the sheet;
+        // ActionBar stays above the backdrop (z-index) so hover is not blocked.
         this.closeSheet();
         document.body.classList.add(NARROW_STAGE_CLASS.sound);
         this.handlers.onSoundHover?.();
@@ -807,7 +809,7 @@ export class NarrowIdleShell {
         left: 12px;
         right: 12px;
         height: 48px;
-        z-index: 3; /* above sheet backdrop — ♪ / ? stay clickable while drawer open */
+        z-index: 5; /* above sheet (z2) + backdrop (z1) — ♪ / ? hoverable & clickable while drawer open */
         display: flex;
         align-items: center;
         gap: 10px;

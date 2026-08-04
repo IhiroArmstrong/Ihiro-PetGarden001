@@ -203,6 +203,39 @@ test.describe('ambient ⑤⑥ narrow ActionBar ♪', () => {
       }, { timeout: 8_000 })
       .toBe(true);
   });
+
+  test('375: hover ♪ opens Soundscape; drawer open does not block hover', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    const note = page.locator('#ft-narrow-mute-btn');
+    await expect(note).toBeVisible({ timeout: 10_000 });
+
+    await note.hover();
+    await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+      timeout: 5_000
+    });
+    // Dismiss panel
+    await page.locator('body').click({ position: { x: 24, y: 200 } });
+    await expect(page.locator('.ambient-soundscape__panel')).toBeHidden({
+      timeout: 5_000
+    });
+
+    // Open drawer — ♪ must still receive hover above backdrop
+    await page.locator('.ft-narrow-grabber').click();
+    await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+      'aria-hidden',
+      'false'
+    );
+    await note.hover();
+    await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+      timeout: 5_000
+    });
+    await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+      'aria-hidden',
+      'true'
+    );
+  });
 });
 
 test.describe('ambient ⑩ Focusing track audible', () => {
