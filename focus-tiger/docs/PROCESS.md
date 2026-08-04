@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）/ **`DEVELOP_DEBT_INVENTORY.md`**（存量验证债务）/ **[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)**（known-risky **优先人工验收步骤**）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
 
 ---
 
@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **KnownRisky 验收清单入库（2026-08-04）**：根目录 `.numbers` 迁为 `KNOWN_RISKY_TEST_CHECKLIST.md`（步骤 SSOT）；链到 `DEVELOP_DEBT_INVENTORY`。窄屏 Focusing×? tip 叠团复测失败 → 工作流根因 **§6.12**（记入≠开修；**未改运行时**）。
 - **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**已接线**：Expand A（深夜 Idle→DORMANT；Idle≥15min 无操作→DORMANT）、Expand B（深夜 Rise/达标→披斗篷 hold→Reflection）、2B（FOCUSING 且 tab 隐藏≥30min→`dormantWake`，仍 Focusing）。**2h→DORMANT 保留**（仅非 Focusing；与 2B 互补）。删除未接线调试键 `wakeUp`。睡循环：**放弃 sleepBreath 实验**，恢复原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：跨动画短淡入一律 1s CapCut；硬切 `0` 保持。用户书面：无闪白 / 硬切仍硬切 — **测试 OK**（关单）。轻完成池无 `curiousTilt` — **须以后慢慢碰概率**（暂不关单）。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。人工仍待复测冷启动 Welcome 优先。**工作流根因**（Welcome 误出鹦鹉）：`DEV_WORKFLOW_QUALITY` **§6.10**。
