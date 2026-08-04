@@ -269,7 +269,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 产品语义与交互全文见 `DESIGN.md`「DORMANT 唤醒仪式（Honesty Check-in Ritual）」；上位原则见 `PRINCIPLES.md`「诚实机制」。本节只固定情绪与文案边界。
 
-- **情绪闭环**：选时长 → **立刻** `dormantWake` 坐起（**3 fps**，呼吸倒计时同期开始）→ **定格末帧**至倒计时结束 → 记账并离开 DORMANT。**不再**在呼吸引导期间保持 `sleeping`。**2026-07-19 暂不接**闭眼坐禅呼吸淡入 / `haloBreathing` / TransitionFX 金光 / FocusVisualizer 叠光。
+- **情绪闭环**：选时长 → **立刻** `dormantWake` 坐起（经典 `cloak-sleep` 倒放 **6 fps** ≈5.7s，或星光 wake；呼吸倒计时同期开始）→ **定格末帧**至倒计时结束 → 记账并离开 DORMANT。**不再**在呼吸引导期间保持 `sleeping`。**2026-07-19 暂不接**闭眼坐禅呼吸淡入 / `haloBreathing` / TransitionFX 金光 / FocusVisualizer 叠光。
 - **视觉对接**：唤醒时的金色效果必须走既有光环 / Rim Light / FocusVisualizer 路径，禁止另起独立光效；Rim Light 重构未就绪时可用 `setFocusLevel` 占位。
 - **限频**：用户主动发起，不扣减 `MindfulAcknowledge` / `stretchReminder` / `Re-focus Acknowledge` 共享提醒池。
 - **文案键（已接入 i18n）**：
@@ -328,7 +328,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 对应情绪键：`mindfulAcknowledge` 已接 `nod-bow` 13 帧一次性序列；Re-focus 以 `subtype: 'refocus'` 复用同一键与动作，不新建独立 key。`stretchReminder` 已接 `stretch-reminder` 17 帧一次性序列。
 
-> **素材归属判定（2026-07-17）**：`stretch` 与现有 16 帧 `dormant-wake` 本质不同。前者从清醒坐姿起势，双臂向外张开舒展后回到闭眼坐姿；后者从侧卧熟睡过渡为清醒打坐。两者起始姿态、动作弧线、构图与帧数均不同，因此 `stretch` 独立归属 `stretchReminder`，不得替换或复用到 `dormantWake`。Honesty Check-in 仍沿用 `sleeping` → 10s 呼吸 → `dormantWake` 的现有链路；Rim Light / FocusVisualizer 保持现有占位方案。
+> **素材归属判定（2026-07-17）**：`stretch` 与现有 16 帧 `dormant-wake` 本质不同。前者从清醒坐姿起势，双臂向外张开舒展后回到闭眼坐姿；后者从侧卧熟睡过渡为清醒打坐。两者起始姿态、动作弧线、构图与帧数均不同，因此 `stretch` 独立归属 `stretchReminder`，不得替换或复用到 `dormantWake`。**现行 Honesty 睡态契约（2026-07-19 起）**：选时长 → **立刻** `dormantWake`（与约 10s 呼吸并行；**不**在呼吸期保持 `sleeping`）→ 定格末帧 → 记账离 DORMANT。Idle 补登不播 `dormantWake`。Rim Light / FocusVisualizer 仍为占位。
 
 ### 设计原则
 
@@ -668,5 +668,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.87 | 2026-08-04 | 星光 v5 与经典 cloak **约 50/50** 并存；苏醒优先匹配入睡变体；wellness 冷启动 2A（深夜披斗篷 / 清晨苏醒仪式） |
 | 0.88 | 2026-08-04 | 删除未接线 `wakeUp`；接线 Expand A（深夜 Idle / Idle15min 披斗篷）、Expand B（深夜 Rise/达标披斗篷）、2B（FOCUSING 长离≥30min 苏醒）；与 2h→DORMANT 互补不替换 |
 | 0.90 | 2026-08-04 | **plan A**：关掉白天 Idle 无操作披毯（删 `shouldIdleInactivityCloak`）；Expand A 仅深夜；保留 2h live / Expand B / 2B（§6.11） |
+| 0.91 | 2026-08-04 | 清掉「sleeping→10s 呼吸→dormantWake」旧句；睡态 Honesty = 选时长立刻 wake（6fps）；窄屏 `:5176` tip `0494dd6` 唤醒复确 OK |
 | 0.89 | 2026-08-04 | `Sleeping`：定格入睡末帧 + 背部 clip 层 scaleY 呼吸（头/蒲团/镜头不动；取代整图缩放与末帧 pingpong） |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
