@@ -487,17 +487,15 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。
-  // 定格披毯入睡末帧（034）；腹背起伏由 SpriteSequencePlayer 躯干 clip + scaleY 承担，
-  // **不**整图缩放、**不**换帧挪蒲团（2026-08-04 用户要求）。
+  // 睡循环：披毯末段 034→030 双持 pingpong @ 2fps（放弃 sleepBreath 实验，恢复原始）。
   sleeping: {
     animation: 'cloak-sleep',
     frameCount: 34,
-    frameIndices: [34, 34],
-    fps: 1,
+    frameIndices: [34, 34, 33, 33, 32, 32, 31, 31, 30, 30],
+    fps: 2,
     loop: true,
-    loopMode: 'forward',
-    holdLastFrame: false,
-    sleepBreath: true
+    loopMode: 'pingpong',
+    holdLastFrame: false
   },
 
   // 进入 DORMANT 过渡：非 DORMANT→DORMANT 状态转换时播 cloakSleep 正放，再 sleeping。
@@ -537,16 +535,15 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: true
   },
 
-  // 星光斗篷睡循环：定格正放末帧 067；腹背用躯干层 scaleY 呼吸（蒲团/镜头不动）。
+  // 星光斗篷睡循环：末段 067→063 双持 pingpong @ 2fps（与经典同语义；无 sleepBreath）。
   starlightSleeping: {
     animation: 'starlight-cloak-sleep',
     frameCount: 67,
-    frameIndices: [67, 67],
-    fps: 1,
+    frameIndices: [67, 67, 66, 66, 65, 65, 64, 64, 63, 63],
+    fps: 2,
     loop: true,
-    loopMode: 'forward',
-    holdLastFrame: false,
-    sleepBreath: true
+    loopMode: 'pingpong',
+    holdLastFrame: false
   },
 
   // 星光斗篷苏醒：独立入库的正放卸斗篷（= sleep 物理倒序）。

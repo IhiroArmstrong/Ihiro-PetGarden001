@@ -23,64 +23,6 @@ import {
   spriteDisplayTransformCss
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
-import {
-  SLEEP_BREATH_PERIOD_MS,
-  SLEEP_BREATH_SCALE_Y_PEAK,
-  sleepBreathScaleYAt,
-  sleepBreathEllipseInDisplayRect
-} from './spriteSleepBreath.js';
-
-/** Active class on breath canvas wrap while sleep loops play. */
-export const SLEEP_BREATH_CLASS = 'ft-sleep-breathing';
-export const SLEEP_BREATH_WRAP_CLASS = 'ft-sleep-breath-wrap';
-/** @deprecated kept for tests that imported the old CSS img class name */
-export const SLEEP_BREATH_IMG_CLASS = 'ft-sleep-breath-canvas';
-export {
-  SLEEP_BREATH_SCALE_Y_PEAK,
-  SLEEP_BREATH_PERIOD_MS
-} from './spriteSleepBreath.js';
-
-/**
- * @param {string | null | undefined} sequenceName
- * @param {{ sleepBreath?: boolean } | null | undefined} def
- * @returns {boolean}
- */
-export function shouldApplySleepBreath(sequenceName, def) {
-  if (def?.sleepBreath === true) return true;
-  return sequenceName === 'sleeping' || sequenceName === 'starlightSleeping';
-}
-
-const SLEEP_BREATH_STYLE_ID = 'ft-sleep-breath-style';
-
-function ensureSleepBreathStyles() {
-  if (typeof document === 'undefined') return;
-  let style = document.getElementById(SLEEP_BREATH_STYLE_ID);
-  if (!style) {
-    style = document.createElement('style');
-    style.id = SLEEP_BREATH_STYLE_ID;
-    document.head.appendChild(style);
-  }
-  // Always refresh text (HMR may leave a stale tag with old clip-path rules).
-  style.textContent = `
-#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS} {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 2;
-}
-#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} {
-  opacity: 1;
-}
-#sprite-overlay .${SLEEP_BREATH_IMG_CLASS} {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-`;
-}
 
 /**
  * @typedef {object} PlayOptions
@@ -241,29 +183,13 @@ export class SpriteSequencePlayer {
     img.draggable = false;
     img.style.cssText = imageStyle + 'opacity:1;';
 
-    const breathWrap = document.createElement('div');
-    breathWrap.className = SLEEP_BREATH_WRAP_CLASS;
-    breathWrap.setAttribute('aria-hidden', 'true');
-    const breathCanvas = document.createElement('canvas');
-    breathCanvas.className = SLEEP_BREATH_IMG_CLASS;
-    breathWrap.appendChild(breathCanvas);
-
     overlay.appendChild(outgoingImg);
     overlay.appendChild(img);
-    overlay.appendChild(breathWrap);
     container.appendChild(overlay);
-    ensureSleepBreathStyles();
 
     this.overlayEl = overlay;
     this.imgEl = img;
     this.outgoingImgEl = outgoingImg;
-    this.breathWrapEl = breathWrap;
-    this.breathCanvasEl = breathCanvas;
-    /** @type {CanvasRenderingContext2D | null} */
-    this._breathCtx = breathCanvas.getContext('2d');
-    this._sleepBreathActive = false;
-    this._breathRaf = 0;
-    this._onBreathFrame = this._onBreathFrame.bind(this);
 
     /** @type {ResizeObserver | null} */
     this._resizeObserver = null;
@@ -410,8 +336,6 @@ export class SpriteSequencePlayer {
 
     this._show();
     this._renderFrame(0);
-    // After first frame is on screen — breath samples img natural size + layout box.
-    this._setSleepBreathActive(shouldApplySleepBreath(name, def));
 
     const freezeUntilCrossFadeEnds =
       shouldCrossFade && Boolean(options.freezeUntilCrossFadeEnds);
@@ -464,146 +388,7 @@ export class SpriteSequencePlayer {
     this._cancelRaf();
     this._resetCrossFade();
     this._playing = false;
-    if (clear) {
-      this._setSleepBreathActive(false);
-      this._hide();
-    }
-  }
-
-  /**
-   * @param {boolean} active
-   */
-  _setSleepBreathActive(active) {
-    ensureSleepBreathStyles();
-    this._sleepBreathActive = Boolean(active);
-    this.breathWrapEl?.classList.toggle(SLEEP_BREATH_CLASS, this._sleepBreathActive);
-    if (!this._sleepBreathActive) {
-      this._stopSleepBreathLoop();
-      this._clearSleepBreathCanvas();
-      return;
-    }
-    // Decode may still be pending on first paint — kick loop; rAF retries naturalWidth.
-    const kick = () => this._startSleepBreathLoop();
-    if (typeof this.imgEl.decode === 'function' && !this.imgEl.complete) {
-      void this.imgEl.decode().then(kick).catch(kick);
-    } else {
-      kick();
-    }
-  }
-
-  _startSleepBreathLoop() {
-    if (this._breathRaf) return;
-    this._breathRaf = requestAnimationFrame(this._onBreathFrame);
-  }
-
-  _stopSleepBreathLoop() {
-    if (this._breathRaf) {
-      cancelAnimationFrame(this._breathRaf);
-      this._breathRaf = 0;
-    }
-  }
-
-  /** @param {number} now */
-  _onBreathFrame(now) {
-    this._breathRaf = 0;
-    if (!this._sleepBreathActive) return;
-    this._paintSleepBreath(now);
-    this._breathRaf = requestAnimationFrame(this._onBreathFrame);
-  }
-
-  _clearSleepBreathCanvas() {
-    const canvas = this.breathCanvasEl;
-    const ctx = this._breathCtx;
-    if (!canvas || !ctx) return;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-
-  /**
-   * object-fit:contain content box in **overlay layout** CSS pixels (not viewport).
-   * Avoids Dolly / getBoundingClientRect scale mismatches that miss the sprite.
-   * @returns {{ left: number, top: number, width: number, height: number } | null}
-   */
-  _layoutContainRect() {
-    const img = this.imgEl;
-    const nw = img?.naturalWidth;
-    const nh = img?.naturalHeight;
-    if (!nw || !nh) return null;
-    const layoutW = this.overlayEl.clientWidth;
-    const layoutH = this.overlayEl.clientHeight;
-    if (layoutW < 2 || layoutH < 2) return null;
-    const baseScale = Math.min(layoutW / nw, layoutH / nh);
-    let width = nw * baseScale;
-    let height = nh * baseScale;
-    let left = (layoutW - width) * 0.5;
-    let top = (layoutH - height) * 0.5;
-    const fit = computeSpriteDisplayTransform(this._currentDisplayFit, {
-      width: layoutW,
-      height: layoutH
-    });
-    if (fit.scale !== 1 || fit.tx !== 0 || fit.ty !== 0) {
-      left = left * fit.scale + fit.tx;
-      top = top * fit.scale + fit.ty;
-      width *= fit.scale;
-      height *= fit.scale;
-    }
-    return { left, top, width, height };
-  }
-
-  /**
-   * Paint scaled back mound only (layout-space ellipse). Base <img> stays unscaled.
-   * @param {number} nowMs
-   */
-  _paintSleepBreath(nowMs) {
-    const canvas = this.breathCanvasEl;
-    const ctx = this._breathCtx;
-    const img = this.imgEl;
-    if (!canvas || !ctx || !img?.naturalWidth) return;
-
-    const layoutW = this.overlayEl.clientWidth;
-    const layoutH = this.overlayEl.clientHeight;
-    if (layoutW < 2 || layoutH < 2) return;
-
-    const dpr = Math.min(
-      typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
-      2
-    );
-    const bw = Math.max(1, Math.round(layoutW * dpr));
-    const bh = Math.max(1, Math.round(layoutH * dpr));
-    if (canvas.width !== bw || canvas.height !== bh) {
-      canvas.width = bw;
-      canvas.height = bh;
-    }
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, layoutW, layoutH);
-
-    const local = this._layoutContainRect();
-    if (!local) return;
-
-    const { cx, cy, rx, ry } = sleepBreathEllipseInDisplayRect(local);
-    const scaleY = sleepBreathScaleYAt(nowMs);
-    // Pivot at the lower edge of the back ellipse so the mound rises (inhale).
-    const pivotY = cy + ry * 0.35;
-
-    ctx.save();
-    ctx.beginPath();
-    if (typeof ctx.ellipse === 'function') {
-      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-    } else {
-      ctx.arc(cx, cy, Math.min(rx, ry), 0, Math.PI * 2);
-    }
-    ctx.clip();
-    ctx.translate(cx, pivotY);
-    ctx.scale(1, scaleY);
-    ctx.translate(-cx, -pivotY);
-    ctx.drawImage(img, local.left, local.top, local.width, local.height);
-    ctx.restore();
-  }
-
-  /** @deprecated no-op sync hook kept so call sites stay safe */
-  _syncSleepBreathLayer() {
-    // Canvas samples this.imgEl each breath rAF; nothing to copy.
+    if (clear) this._hide();
   }
 
   /** @returns {boolean} */
@@ -676,7 +461,6 @@ export class SpriteSequencePlayer {
 
   /** 释放：停止播放、移除 overlay、清空缓存。 */
   dispose() {
-    this._setSleepBreathActive(false);
     this._cancelRaf();
     this._resetCrossFade();
     this._playing = false;
@@ -814,7 +598,6 @@ export class SpriteSequencePlayer {
     );
     this._currentZoom = zoom;
     this._applyDisplayFit(this.imgEl, this._currentDisplayFit, zoom);
-    this._syncSleepBreathLayer();
   }
 
   /**
@@ -951,7 +734,6 @@ export class SpriteSequencePlayer {
         this._outgoingZoom
       );
     }
-    this._syncSleepBreathLayer();
   }
 
   _cancelRaf() {
