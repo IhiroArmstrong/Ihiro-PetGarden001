@@ -576,7 +576,8 @@
 | P4 | 产品 companion oneshot 若与张望同属「回 Idle 不得闪白」→ 开工已好清单须显式对齐抗闪不变量（`clear` / `holdLastFrame` / freeze）；禁止只抄 `returnCrossFadeMs` 数字 |
 
 **本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 用户反馈；当时**未改运行时**。  
-**2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（未另开抗闪 `fix/*`）。P3 单测补强仍建议后补。
+**2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（关单当时未合入抗闪运行时）。  
+**后补（`fix/parrot-idle-capcut-2026-08-04`）**：落地 §6.12 **P3/P4**——`_playCompanionSequenceOnce` 对齐张望抗闪（`clear: false` + 默认 `holdLastFrame`）；`parrotEarVisit` / `earWiggleHeadTouch` 单测补 `onComplete`→idle CapCut。**不是**重开「闪白未修」关单（人工观感已在 tip `0494dd6` 关）；本笔是契约硬化，防假绿回潮。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
