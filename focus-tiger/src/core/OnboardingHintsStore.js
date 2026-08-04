@@ -127,6 +127,9 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
   if (scene.weeklyHeatmapVisible && !ids.includes('in-app-reminder')) {
     ids.push('in-app-reminder');
   }
+  if (scene.languageFabVisible && !ids.includes('language-preference')) {
+    ids.push('language-preference');
+  }
   if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
     ids.push('micro-ritual');
   }
@@ -244,6 +247,7 @@ export function filterHintsForNarrowDrawer(ids, scene = {}) {
  * @param {boolean} [scene.arrivalReady]
  * @param {boolean} [scene.hasEverCompletedSession]
  * @param {boolean} [scene.weeklyHeatmapVisible]
+ * @param {boolean} [scene.languageFabVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
  * @param {boolean} [scene.honestyIdleEntryVisible]
  * @param {boolean} [scene.quickStartVisible]
@@ -383,6 +387,7 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'in-app-reminder': 57,
   'ambient-soundscape': 60,
   'weekly-heatmap': 56,
+  'language-preference': 55,
   'ambient-gated': 55,
   'companion-stay': 50,
   'companion-away': 50,

@@ -233,6 +233,17 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     }
   },
   {
+    id: 'language-preference',
+    localeKey: 'HINT_LANGUAGE_PREFERENCE',
+    triggerMode: 'click',
+    tier: 'simple',
+    anchor: {
+      selector: '#language-preference-fab',
+      placement: 'left',
+      tip: 'right'
+    }
+  },
+  {
     id: 'in-app-reminder',
     localeKey: 'HINT_IN_APP_REMINDER',
     triggerMode: 'click',

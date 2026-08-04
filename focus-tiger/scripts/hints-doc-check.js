@@ -53,6 +53,7 @@ export const HINT_WIRING_BATCH_CLUSTER = Object.freeze({
   reflection: 'B',
   'idle-after-session': 'A',
   'weekly-heatmap': 'C',
+  'language-preference': 'C',
   'in-app-reminder': 'C',
   'micro-ritual': 'C',
   'focus-hud-ring': 'D',

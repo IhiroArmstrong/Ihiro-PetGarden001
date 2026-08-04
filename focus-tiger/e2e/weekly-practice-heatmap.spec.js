@@ -51,6 +51,49 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
 });
 
 /**
+ * Cold-start breathing regression (2026-08-04):
+ * heatmap+? cluster must sit above home balls so weekly-heatmap mint hint stays visible.
+ */
+test('wide Idle: weekly-heatmap mint badge visible above home CTAs', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.setViewportSize({ width: 1100, height: 720 });
+  await expect(page.locator(HEATMAP)).toBeVisible({ timeout: 15_000 });
+
+  // Fresh shell = unread click hints; weekly-heatmap must show mint badge
+  const badge = page.locator(
+    '.onboarding-hint-badge[data-hint-id="weekly-heatmap"]'
+  );
+  await expect(badge).toBeVisible({ timeout: 10_000 });
+
+  const layout = await page.evaluate(() => {
+    const cluster = document.getElementById('weekly-practice-heatmap-cluster');
+    const home =
+      document.getElementById('ft-wide-home-ctas') ||
+      document.getElementById('ft-narrow-home-ctas');
+    const badgeEl = document.querySelector(
+      '.onboarding-hint-badge[data-hint-id="weekly-heatmap"]'
+    );
+    const cr = cluster?.getBoundingClientRect();
+    const hr = home?.getBoundingClientRect();
+    const br = badgeEl?.getBoundingClientRect();
+    return {
+      clusterBottom: cr?.bottom ?? null,
+      homeTop: hr?.top ?? null,
+      badgeVisible:
+        Boolean(br) && br.width > 0 && br.height > 0 && br.bottom > 0,
+      badgeTop: br?.top ?? null
+    };
+  });
+  expect(layout.homeTop).not.toBeNull();
+  expect(layout.clusterBottom).not.toBeNull();
+  // Cluster (heatmap) must clear the home ball band — no vertical overlap
+  expect(layout.clusterBottom).toBeLessThan(layout.homeTop - 4);
+  expect(layout.badgeVisible).toBe(true);
+});
+
+/**
  * Scenario O narrow lock (≤479 / 375):
  * ActionBar + home primary CTAs + swipe drawer (secondary only).
  */

@@ -351,39 +351,35 @@ export class ReminderPreferenceUI {
       }
       .reminder-pref__toggle {
         pointer-events: auto;
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
         padding: 0;
-        border: 1px solid rgba(139, 115, 85, 0.22);
+        border: 1px solid rgba(139, 115, 85, 0.14);
         border-radius: 50%;
-        background: rgba(255, 252, 245, 0.72);
+        background: rgba(255, 252, 245, 0.4);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        color: rgba(92, 72, 52, 0.82);
+        color: rgba(74, 58, 40, 0.7);
         cursor: pointer;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 4px 12px rgba(44, 31, 20, 0.1);
+        box-shadow: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+        transition: transform 120ms ease, color 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+        opacity: 0.85;
       }
       .reminder-pref__toggle:hover {
         color: rgba(72, 54, 38, 0.92);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.8) inset,
-          0 6px 16px rgba(44, 31, 20, 0.14);
+        opacity: 1;
+        box-shadow: 0 2px 10px rgba(44, 31, 20, 0.08);
       }
       .reminder-pref__toggle:active {
         transform: scale(0.96);
       }
       .reminder-pref__toggle.is-armed {
         color: rgba(139, 90, 46, 0.95);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 4px 12px rgba(44, 31, 20, 0.1),
-          0 0 0 2px rgba(196, 122, 78, 0.28);
+        opacity: 1;
+        box-shadow: 0 0 0 2px rgba(196, 122, 78, 0.22);
       }
       .reminder-pref__icon-svg {
         width: 22px;

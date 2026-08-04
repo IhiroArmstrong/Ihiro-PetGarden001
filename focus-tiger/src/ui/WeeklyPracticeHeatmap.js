@@ -28,7 +28,7 @@ export function buildWeeklyHeatmapCells(days) {
   }));
 }
 
-const STYLE_ID = 'weekly-practice-heatmap-styles';
+const STYLE_ID = 'weekly-practice-heatmap-styles-v4';
 
 export class WeeklyPracticeHeatmap {
   /**
@@ -125,38 +125,54 @@ export class WeeklyPracticeHeatmap {
     style.textContent = `
       .weekly-practice-heatmap-cluster {
         position: absolute;
-        left: 18px;
-        /* Idle：?（52）上方留 18；宽屏时旁开居中 dock */
-        bottom: calc(28px + 52px + 18px);
+        left: 16px;
+        /*
+         * Idle 左下微组件：热力 + 时钟 + ? 同簇。
+         * 须在 home 三球带之上（球高 ~80 + dock 底边 ~36 + 缝），
+         * 否则球/蒲团会盖住簇与 weekly-heatmap mint hint。
+         */
+        bottom: calc(36px + 88px + 20px);
         z-index: 12;
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        padding: 8px 10px 8px 12px;
+        border-radius: 18px;
+        background: rgba(255, 252, 245, 0.42);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(139, 115, 85, 0.1);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.05);
         pointer-events: none;
+        overflow: visible;
       }
       /*
        * 窄屏 P1（≤479 / 375）：居中 dock 会盖住原左下簇（z16 > z12）。
-       * 改挂到左上 HUD 下方，避开四钮 dock / ? / Sound；桌面（≥480）仍用原 bottom。
+       * 改挂到左上 HUD 下方，避开四钮 dock / ActionBar；桌面（≥480）仍用原 bottom。
        */
       @media (max-width: 479px) {
         .weekly-practice-heatmap-cluster {
-          top: calc(12px + 128px + 10px);
+          top: calc(12px + 72px + 10px);
           bottom: auto;
           left: 12px;
+          padding: 6px 8px;
+          gap: 8px;
         }
       }
       .weekly-practice-heatmap {
+        position: relative;
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 6px;
-        padding: 8px 10px;
-        border-radius: var(--radius-sm, 10px);
-        background: var(--color-panel-soft, rgba(255, 252, 245, 0.62));
-        border: 1px solid var(--color-ink-faint, rgba(46, 43, 40, 0.1));
-        box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
         pointer-events: none;
+        overflow: visible;
       }
       .weekly-practice-heatmap[hidden] {
         display: none !important;
