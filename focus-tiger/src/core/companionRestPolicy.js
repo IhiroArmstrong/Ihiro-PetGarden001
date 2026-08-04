@@ -4,8 +4,10 @@
  * Complements (does not replace) the existing 2h → DORMANT path:
  * - Idle / non-focus + ≥2h since session end → DORMANT sleep (HonestyCheckInController)
  * - FOCUSING + tab hidden ≥ LONG_AWAY_WAKE_MS → play dormantWake on return (stay focusing)
- * - Late-night Idle / inactivity → force DORMANT cloak
+ * - Late-night Idle → force DORMANT cloak (Expand A night only; **no** daytime Idle inactivity cloak)
  * - Late-night Rise / natural end → cloak hold then Reflection (not rise stretch / celebrate)
+ *
+ * 2026-08-04 plan A: daytime Idle ≥N min no-activity → cloak **removed** (QA long-hang false sleep).
  */
 
 import { STATES } from './StateManager.js';
@@ -13,9 +15,6 @@ import { isLateNightHour } from './sceneAnimationDispatcher.js';
 
 /** Tab hidden while focusing before long-away wake on return. */
 export const LONG_AWAY_WAKE_MS = 30 * 60 * 1000;
-
-/** Idle with no pointer/key activity before Expand A cloak sleep. */
-export const IDLE_INACTIVITY_CLOAK_MS = 15 * 60 * 1000;
 
 export const FOREGROUND_RETURN_ACTIONS = Object.freeze({
   LONG_AWAY_WAKE: 'longAwayWake',
@@ -51,24 +50,6 @@ export function resolveForegroundReturnAction(opts) {
   return shouldPlayLongAwayWake(opts)
     ? FOREGROUND_RETURN_ACTIONS.LONG_AWAY_WAKE
     : FOREGROUND_RETURN_ACTIONS.SYNC_DORMANT_AND_LATE_NIGHT;
-}
-
-/**
- * Expand A: Idle long enough with no user activity → cloak / DORMANT.
- * @param {object} opts
- * @param {string} opts.sessionState
- * @param {number} opts.idleMs
- * @param {number} [opts.thresholdMs]
- * @returns {boolean}
- */
-export function shouldIdleInactivityCloak({
-  sessionState,
-  idleMs,
-  thresholdMs = IDLE_INACTIVITY_CLOAK_MS
-}) {
-  if (sessionState !== STATES.IDLE) return false;
-  if (!Number.isFinite(idleMs) || idleMs < 0) return false;
-  return idleMs >= thresholdMs;
 }
 
 /**

@@ -747,7 +747,7 @@ export class OnboardingHintsUI {
 
   /**
    * 补救契约：点「?」→ 主条 +（Idle 等）可见锚 tip；⋯/抽屉 chrome 进芯片。
-   * **Focusing**：只画主条，其余进「还有 N 条」芯片逐条展开（禁多 tip 叠团 · §6.12）。
+   * **Focusing**：只画主条，其余进「还有 N 条」芯片逐条展开（禁多 tip 叠团 · §6.13）。
    * 用途简介卡仍同出。
    */
   showRemedy() {

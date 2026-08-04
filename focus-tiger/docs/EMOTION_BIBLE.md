@@ -667,5 +667,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.86 | 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶金辉 ↔ 鹦鹉信使；不做羽毛残影 |
 | 0.87 | 2026-08-04 | 星光 v5 与经典 cloak **约 50/50** 并存；苏醒优先匹配入睡变体；wellness 冷启动 2A（深夜披斗篷 / 清晨苏醒仪式） |
 | 0.88 | 2026-08-04 | 删除未接线 `wakeUp`；接线 Expand A（深夜 Idle / Idle15min 披斗篷）、Expand B（深夜 Rise/达标披斗篷）、2B（FOCUSING 长离≥30min 苏醒）；与 2h→DORMANT 互补不替换 |
+| 0.90 | 2026-08-04 | **plan A**：关掉白天 Idle 无操作披毯（删 `shouldIdleInactivityCloak`）；Expand A 仅深夜；保留 2h live / Expand B / 2B（§6.11） |
 | 0.89 | 2026-08-04 | `Sleeping`：定格入睡末帧 + 背部 clip 层 scaleY 呼吸（头/蒲团/镜头不动；取代整图缩放与末帧 pingpong） |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

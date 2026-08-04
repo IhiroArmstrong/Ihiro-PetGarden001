@@ -299,7 +299,7 @@ export function resolvePrimaryRemedyHintId(scene = {}) {
 
 /**
  * 补救：立刻画出的 tip vs 折进「还有 N 条」芯片。
- * - **Focusing**：只画主条（通常 `rise-button`），其余一律进芯片——防窄屏 HUD 三条 tip 叠团（§6.12 / KnownRisky #1 步 7）。
+ * - **Focusing**：只画主条（通常 `rise-button`），其余一律进芯片——防窄屏 HUD 三条 tip 叠团（§6.13 / KnownRisky #1 步 7）。
  * - **其它场景**：可见锚立刻出；不可见 / park 进芯片（Idle 宽屏「可见控件各一条」契约不变）。
  *
  * @param {Parameters<typeof resolveHintForScene>[0]} scene
