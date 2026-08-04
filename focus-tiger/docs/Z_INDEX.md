@@ -38,7 +38,9 @@
 | **15** | `src/ui/TigerReflectionMoment.js` | Reflection 结束后的老虎短句叠层 |
 | **16** | `src/ui/CompanionModePicker.js` | `#session-start-dock`（Sit / Companion 三选一等）；须高于 Honesty/微仪式入口，防点穿 |
 | **16** | `src/ui/InAppReminderBannerUI.js` | Reminder 横幅默认（宽屏 / 非窄壳路径）；挂在 `#ui-overlay` 内 |
+| **16** | `src/ui/LanguagePreferenceUI.js` | 宽屏 Idle 右下语言地球钮（`.language-pref__fab`）；窄屏 CSS 隐藏 |
 | **18** | `src/ui/HonestyBridgeCtaUI.js` | Honesty 桥接 Yes/No CTA |
+| **18** | `src/ui/LanguagePreferenceUI.js` | `#language-preference` 语言面板（FAB / ⋯ / 抽屉打开） |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |
 | **20** | `src/core/EmotionController.js` | DEV 情绪调试按钮列（右上） |
 | **20** | `src/ui/WideIdleMoreMenu.js` | 宽屏 More（⋯）下拉菜单面板 |

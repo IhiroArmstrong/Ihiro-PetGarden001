@@ -1926,6 +1926,9 @@ async function init() {
     reminderPreferenceUI.setVisible(
       stateManager.state === STATES.IDLE && !microOpen
     );
+    languagePreferenceUI.setFabVisible(
+      stateManager.state === STATES.IDLE && !microOpen
+    );
     // Heatmap / reminder mount after first Idle paint — re-sync click mints
     // (weekly-heatmap, in-app-reminder) once they become on-screen.
     if (
