@@ -51,9 +51,13 @@ test('gap list tracks only post-PR#2 P1/P2 coverage debt (class-2)', () => {
     'choose-bow-companion-in-viewport',
     'focusing-focus-hud-visible',
     'heatmap-hidden-when-focusing',
-    'honesty-bridge-entries-hidden',
     'honesty-panel-entry-hidden'
   ]);
+  assert.equal(
+    VISIBILITY_CONTRACTS.find((c) => c.id === 'honesty-bridge-entries-hidden')
+      ?.lockStatus,
+    'locked'
+  );
   // Class-1 merge blockers must be locked (not in gap list)
   const all = VISIBILITY_CONTRACTS.map((c) => c.id);
   assert.ok(all.includes('arrival-breath-sit-still-hidden'));
