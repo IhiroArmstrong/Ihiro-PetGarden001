@@ -1869,6 +1869,8 @@ async function init() {
   syncInAppReminderBanner();
 
   const clock = new THREE.Clock();
+  /** Tracks heatmap Idle visibility so click mints re-sync after first paint. */
+  let _prevWeeklyHeatmapVisibleForHints = weeklyPracticeHeatmap.isVisible();
 
   function animate() {
     requestAnimationFrame(animate);
@@ -1924,6 +1926,14 @@ async function init() {
     reminderPreferenceUI.setVisible(
       stateManager.state === STATES.IDLE && !microOpen
     );
+    // Heatmap / reminder mount after first Idle paint — re-sync click mints
+    // (weekly-heatmap, in-app-reminder) once they become on-screen.
+    if (
+      weeklyPracticeHeatmap.isVisible() !== _prevWeeklyHeatmapVisibleForHints
+    ) {
+      _prevWeeklyHeatmapVisibleForHints = weeklyPracticeHeatmap.isVisible();
+      syncOnboardingAutoHints();
+    }
     composer.render();
   }
 

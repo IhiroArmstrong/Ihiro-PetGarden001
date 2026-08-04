@@ -28,7 +28,7 @@ export function buildWeeklyHeatmapCells(days) {
   }));
 }
 
-const STYLE_ID = 'weekly-practice-heatmap-styles-v2';
+const STYLE_ID = 'weekly-practice-heatmap-styles-v3';
 
 export class WeeklyPracticeHeatmap {
   /**
@@ -126,8 +126,12 @@ export class WeeklyPracticeHeatmap {
       .weekly-practice-heatmap-cluster {
         position: absolute;
         left: 16px;
-        /* Idle 左下微组件：热力 + 时钟 + ? 同簇；贴底略抬，避开 home balls */
-        bottom: max(22px, calc(14px + env(safe-area-inset-bottom, 0px)));
+        /*
+         * Idle 左下微组件：热力 + 时钟 + ? 同簇。
+         * 须在 home 三球带之上（球高 ~80 + dock 底边 ~36 + 缝），
+         * 否则球/蒲团会盖住簇与 weekly-heatmap mint hint。
+         */
+        bottom: calc(36px + 84px + 20px);
         z-index: 12;
         display: flex;
         flex-direction: row;
@@ -141,6 +145,7 @@ export class WeeklyPracticeHeatmap {
         border: 1px solid rgba(139, 115, 85, 0.1);
         box-shadow: 0 4px 18px rgba(44, 31, 20, 0.05);
         pointer-events: none;
+        overflow: visible;
       }
       /*
        * 窄屏 P1（≤479 / 375）：居中 dock 会盖住原左下簇（z16 > z12）。
@@ -156,6 +161,7 @@ export class WeeklyPracticeHeatmap {
         }
       }
       .weekly-practice-heatmap {
+        position: relative;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -166,6 +172,7 @@ export class WeeklyPracticeHeatmap {
         border: none;
         box-shadow: none;
         pointer-events: none;
+        overflow: visible;
       }
       .weekly-practice-heatmap[hidden] {
         display: none !important;

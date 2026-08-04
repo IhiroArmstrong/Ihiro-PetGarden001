@@ -7,7 +7,7 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v16';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v17';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -849,8 +849,8 @@ export class NarrowIdleShell {
         position: absolute;
         left: 0;
         right: 0;
-        /* 下移与蒲团解耦；仍在 grabber 之上 */
-        bottom: max(56px, calc(40px + env(safe-area-inset-bottom, 0px)));
+        /* 再下移与蒲团解耦；仍在 grabber 之上 */
+        bottom: max(64px, calc(48px + env(safe-area-inset-bottom, 0px)));
         transform: none;
         width: auto;
         padding: 0 16px;
@@ -1208,8 +1208,8 @@ export class NarrowIdleShell {
 
         /* 相对桌面舞台仍略放大可读；已有 stage inset，勿再 1.28 挤满竖屏 */
         body.ft-narrow-shell #sprite-overlay {
-          zoom: 1.14;
-          transform-origin: center 52%;
+          zoom: 1.08;
+          transform-origin: center 50%;
         }
 
         /* Focusing: ActionBar stays (wall clock + ? + ♪); hide grabber / home */

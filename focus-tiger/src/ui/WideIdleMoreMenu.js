@@ -625,7 +625,7 @@ export class WideIdleMoreMenu {
         pointer-events: auto;
         max-width: min(520px, 100%);
         /* 与蒲团再拉开一点，避免四球贴底缘 */
-        margin-top: 4px;
+        margin-top: 8px;
       }
       .session-start-dock__cta-row[hidden] {
         display: none !important;
