@@ -5,8 +5,9 @@
 性质：**人工验收操作步骤**——对应 `DEVELOP_DEBT_INVENTORY.md` §1 `known-risky` 优先批。  
 基线：验收前须 `git pull` 到当时 `origin/develop` tip，并跑 `npm run check:branch-freshness`（behind 须为 0 才可关单级验收）。
 
-> **SSOT**：本 MD。由根目录 `KnownRisky测试清单.numbers` **全量同步**（含步骤内 `【***测试OK】` 等批注）。  
-> 同目录 `known-risky-test-checklist.csv` 为薄导出。Numbers 确认无新批注后可删。
+> **SSOT**：仅本 MD。  
+> **不权威（勿当验收依据）**：同目录 `known-risky-test-checklist.csv`（历史薄导出，允许过期）；仓库根 `KnownRisky测试清单.numbers`（可删）。  
+> 批注与步骤只改本 MD；关单仍写 `TEST_TRACKER.md`。
 
 ---
 
@@ -15,15 +16,16 @@
 | 问题 | 答案 |
 |---|---|
 | 开始测产品，优先测什么？ | **本表**（= 债务清单里风险最高的一批） |
-| 状态标签 / 判定依据？ | 仍看 `DEVELOP_DEBT_INVENTORY.md` §1；本表步骤与 Numbers 同步 |
+| 状态标签 / 判定依据？ | 仍看 `DEVELOP_DEBT_INVENTORY.md` §1；步骤以**本 MD**为准 |
 | 关单写哪？ | `TEST_TRACKER.md` 对应行（书面反馈进「用户反馈」列） |
-| 步骤里的 `【***测试OK】`？ | **走查批注**（你在 Numbers 里写的）；不等于 TRACKER 关单 |
+| 步骤里的 `【***测试OK】`？ | **走查批注**（写在本 MD）；不等于 TRACKER 关单 |
+| CSV / Numbers？ | **不权威**；不要对照它们验收或改步骤 |
 
 **公共前置（每条默认）**：`cd focus-tiger && npm run dev` → Safari `http://127.0.0.1:5173/?product=1`（窄屏 375×667）。
 
 ---
 
-## 1. 清单（与 Numbers 同行）
+## 1. 清单
 
 | # | 功能/交互点 | 状态标签 | 需要的具体测试操作步骤 | 判定依据（摘） | 建议后续动作 |
 |---|---|---|---|---|---|
