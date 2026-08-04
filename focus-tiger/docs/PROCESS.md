@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **KnownRisky #3 Honesty 桥接 CTA（2026-08-04 关单后又回归）**：曾全步 OK（tip **`a76178f`**）。同日晚用户图：375 桥接被三球挡 Yes/No + Yin 过小 → 改回 **known-risky**；`fix/honesty-bridge-narrow-chrome-yin` 修 suppress + 窄屏 Yin 尺寸。
+- **KnownRisky #3 Honesty 桥接 CTA（2026-08-04 回归修后复测关单）**：375 三球挡 Yes/No + Yin 过小已修；用户书面 fix `:5189` · **`04b7de3`** 全部测试 OK → 清单回 **verified**。`TEST_TRACKER` 桥接「已通过」等合入 develop tip。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
 - **KnownRisky 验收清单入库（2026-08-04）**：`KNOWN_RISKY_TEST_CHECKLIST.md` 步骤 SSOT；#1 已关单（见上行）。
