@@ -585,7 +585,8 @@
 | F3 | 改 Idle park / chrome 时，开工已好清单须含 **Focusing×? 补救**（窄屏）；`ft-narrow-park` 专用错开**不得**默认当成 Focusing 已覆盖 |
 | F4 | KnownRisky / 债务走查失败 → **同回合**写回 TRACKER「用户反馈」+ 本文件指针；不得只口头说「可能没修过」 |
 
-**本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 复测反馈；清单迁入 `KNOWN_RISKY_TEST_CHECKLIST.md`；**未改运行时**（专修 Focusing 补救布局另开任务）。
+**本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 复测反馈；清单迁入 `KNOWN_RISKY_TEST_CHECKLIST.md`。  
+**专修（2026-08-04 · `fix/focusing-remedy-primary-chip-2026-08-04`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**须人工复测**后关单。
 
 ---
 

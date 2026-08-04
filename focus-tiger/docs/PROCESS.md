@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **KnownRisky 验收清单入库（2026-08-04）**：根目录 `.numbers` 迁为 `KNOWN_RISKY_TEST_CHECKLIST.md`（步骤 SSOT）；链到 `DEVELOP_DEBT_INVENTORY`。窄屏 Focusing×? tip 叠团复测失败 → 工作流根因 **§6.12**（记入≠开修；**未改运行时**）。
+- **Focusing×? tip 叠团专修（2026-08-04）**：`resolveRemedyImmediateAndFolded`——Focusing 只出主条 + N-more 芯片；e2e 已锁 375。KnownRisky Numbers **全量同步**进 `KNOWN_RISKY_TEST_CHECKLIST.md`（含 `【***测试OK】` 批注）。分支 `fix/focusing-remedy-primary-chip-2026-08-04`。
+- **KnownRisky 验收清单入库（2026-08-04）**：根目录 `.numbers` 迁为 `KNOWN_RISKY_TEST_CHECKLIST.md`（步骤 SSOT）；后已 **Numbers 全量同步**（含走查批注）。Focusing×? 见上行专修 + §6.12。
 - **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**已接线**：Expand A（深夜 Idle→DORMANT；Idle≥15min 无操作→DORMANT）、Expand B（深夜 Rise/达标→披斗篷 hold→Reflection）、2B（FOCUSING 且 tab 隐藏≥30min→`dormantWake`，仍 Focusing）。**2h→DORMANT 保留**（仅非 Focusing；与 2B 互补）。删除未接线调试键 `wakeUp`。睡循环：**放弃 sleepBreath 实验**，恢复原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.11**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。Welcome 优先顺序曾 OK（§6.10）。**2026-08-04**：刷新后鹦鹉→Idle **闪白** — 有问题；工作流根因 **§6.11**（未改运行时，待 `fix/*`）。

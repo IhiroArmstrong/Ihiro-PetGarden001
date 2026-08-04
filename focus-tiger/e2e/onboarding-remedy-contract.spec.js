@@ -113,6 +113,40 @@ test.describe('narrow ? remedy', () => {
     expect(chip).not.toBeNull();
     expect(chip).not.toMatch(/\d/);
   });
+
+  test('375 Focusing: only primary tip + N-more chip (no HUD tip pile)', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    await quickStartFocus(page);
+    await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i, {
+      timeout: 15_000
+    });
+
+    await page.locator('#ft-narrow-help-btn').click();
+
+    await expect(
+      page.locator('ft-onboarding-hint-bubble[data-remedy="1"]').first()
+    ).toBeVisible({ timeout: 8_000 });
+
+    const ids = await visibleRemedyIds(page);
+    expect(ids).toHaveLength(1);
+    expect(ids[0]).toBe('rise-button');
+    for (const banned of [
+      'focus-hud-ring',
+      'focus-hud-progress',
+      'focus-hud-streak',
+      'ambient-soundscape',
+      'weekly-heatmap'
+    ]) {
+      expect(ids).not.toContain(banned);
+    }
+
+    const chip = await catalogChipText(page);
+    expect(chip).not.toBeNull();
+    // Focusing folds multiple extras → counted "N more tips", not one-shot drawer chip.
+    expect(chip).toMatch(/\d/);
+  });
 });
 
 test.describe('mint note dot lifecycle', () => {
