@@ -1313,10 +1313,17 @@ export class NarrowIdleShell {
           pointer-events: none !important;
         }
 
-        /* 相对桌面舞台仍略放大可读；已有 stage inset，勿再 1.28 挤满竖屏 */
+        /* 窄屏恢复放大居中：宽屏冷启动 inset 留给 ≥480；手机勿叠缩。
+         * 恢复呼吸感改造前的 zoom 1.28 + 满舞台，避免 375 上 Yin 过小。 */
+        body.ft-narrow-shell #sprite-stage {
+          top: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          left: 0 !important;
+        }
         body.ft-narrow-shell #sprite-overlay {
-          zoom: 1.03;
-          transform-origin: center 50%;
+          zoom: 1.28;
+          transform-origin: center 55%;
         }
 
         /* Focusing: ActionBar stays (wall clock + ? + ♪); hide grabber / home */

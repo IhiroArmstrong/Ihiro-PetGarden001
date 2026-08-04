@@ -235,7 +235,7 @@ describe('createSessionChromeSync', () => {
     assert.equal(h.get.wideSuppressed(), true);
   });
 
-  it('resyncSessionChrome：Arrival 开 → keepQuickStart，桥接 alone 不压窄屏', () => {
+  it('resyncSessionChrome：Arrival 开 → keepQuickStart；桥接 alone 压窄屏三球（不清 ActionBar）', () => {
     const h = harness();
     h.set.arrivalOpen(true);
     h.sync.resyncSessionChrome();
@@ -246,7 +246,8 @@ describe('createSessionChromeSync', () => {
     const h2 = harness();
     h2.set.bridgeVisible(true);
     h2.sync.resyncSessionChrome();
-    assert.equal(h2.get.narrowSuppressed(), false);
+    assert.equal(h2.get.narrowSuppressed(), true);
+    assert.equal(h2.get.narrowKeepQs(), false);
     assert.equal(h2.get.wideSuppressed(), true);
   });
 

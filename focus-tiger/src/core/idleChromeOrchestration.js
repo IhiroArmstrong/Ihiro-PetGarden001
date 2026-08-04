@@ -205,7 +205,10 @@ export function resolveShellChromeProjection(input) {
   return {
     narrow: {
       idle: !focusing,
-      suppressed: chromeSuppressed,
+      // Narrow home balls (z30) sit above bridge CTA (z18 in #ui-overlay) —
+      // must full-suppress on bridge so Yes/No are not covered. ActionBar stays
+      // (setSuppressed + !keepQuickStart → is-suppressed; ActionBar exempt).
+      suppressed: Boolean(chromeSuppressed || bridgeVisible),
       keepQuickStart
     },
     wide: {
@@ -266,13 +269,13 @@ export function resolveRoleVisibility(input) {
   }
 
   if (stage === 'bridge') {
-    // Narrow: ActionBar stays; home chrome not force-suppressed by bridge alone.
-    // Wide: ⋯ suppressed so Yes/No stay clear; Sit/Quick/Honesty stay as home balls.
+    // Narrow: hide home balls + grabber (they cover Yes/No); ActionBar stays.
+    // Wide: ⋯ hidden; home balls may still show below the glass panel.
     return {
-      sit: 'visible',
-      quickStart: 'visible',
-      honesty: 'visible',
-      moreOrGrabber: narrow ? 'visible' : 'hidden',
+      sit: narrow ? 'hidden' : 'visible',
+      quickStart: narrow ? 'hidden' : 'visible',
+      honesty: narrow ? 'hidden' : 'visible',
+      moreOrGrabber: 'hidden',
       actionBar: narrow ? 'visible' : 'na'
     };
   }
