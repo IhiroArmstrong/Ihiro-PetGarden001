@@ -101,11 +101,18 @@ const STYLE = `
 .wrap:hover ~ .label {
   opacity: 1;
 }
+/* When mint pulse tip owns this control, suppress the built-in hover card
+ * (and never use native title — it duplicated the same copy). */
+:host([pulse-owns-tip]:hover) .label,
+:host([pulse-owns-tip]:focus-within) .label,
+:host([pulse-owns-tip]) .wrap:hover ~ .label {
+  opacity: 0;
+}
 `;
 
 export class StreakMeter extends HTMLElement {
   static get observedAttributes() {
-    return ["mode", "filled", "total", "silhouette-src", "label"];
+    return ["mode", "filled", "total", "silhouette-src", "label", "pulse-owns-tip"];
   }
 
   constructor() {
@@ -157,7 +164,9 @@ export class StreakMeter extends HTMLElement {
     const custom = this.getAttribute("label");
     this._label.textContent =
       custom || `Days you've practiced: ${filled} of ${total}`;
-    this.setAttribute("title", this._label.textContent);
+    // Never set native `title` — it stacked with `.label` and with the mint
+    // pulse tip (same short copy). aria-label stays for screen readers.
+    this.removeAttribute("title");
     this.setAttribute("aria-label", this._label.textContent);
 
     this._ring.innerHTML = "";

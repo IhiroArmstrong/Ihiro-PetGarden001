@@ -950,9 +950,9 @@ async function init() {
     getScene: getOnboardingScene
   });
   onboardingHintHost.hints = onboardingHints;
-  if (import.meta.env.DEV) {
-    window.__onboardingHints = onboardingHints;
-  }
+  // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
+  // same contract as `__ambientSoundscape` / `__honestyBridge`.
+  window.__onboardingHints = onboardingHints;
 
   // Reminder / companion e2e hooks — must work in `vite preview` (DEV=false),
   // same contract as `__honestyBridge`.
