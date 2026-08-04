@@ -1,5 +1,5 @@
 id,feature,status,steps,judgment,files,action
-1,Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉）,known-risky,"【前置】`cd focus-tiger && npm run dev` → Safari 打开 http://127.0.0.1:5173/?product=1；验收前确认本机已 `git pull` 到 origin/develop tip。
+1,Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉）,verified,"【前置】`cd focus-tiger && npm run dev` → Safari 打开 http://127.0.0.1:5173/?product=1；验收前确认本机已 `git pull` 到 origin/develop tip。
 
 【宽屏 ≥900】
 1) Idle：见宽屏三球（Quick · Sit · Honesty）+「⋯」，不是旧 Sit+⚡ pill。 【***测试OK】
@@ -10,13 +10,11 @@ id,feature,status,steps,judgment,files,action
 【窄屏 375×667 · Safari 响应式】
 5) Idle：主画布三球 + 底栏抽屉；无宽窄双壳叠点。【***测试OK】
 6) Sit → Arrival：Arrival 开着时 Sit 应隐藏；Breath 阶段勿再露主 Sit。【***测试OK】
-7) Focusing 时点 ? / tip：行为应符合预期（曾报 Focusing tip 问题）。
-8) Sit options / How：若有脉冲点指引，窄屏应有、且不指错控件。
-
+7) Focusing 时点 ? / tip：行为应符合预期（曾报 Focusing tip 问题）。【***5176 测试OK】（tip `0494dd6`）。
+8) Sit options / How：若有脉冲点指引，窄屏应有、且不指错控件。**2026-08-04 tip `4698eb3`**：窄屏 Hints 维持现状/延期；先看宽屏 hints。
 【断点】
-9) Companion/How 打开时，DevTools 在 375↔480 来回改宽：面板不得被误关。
-
-【通过标准】§8 375 故事最小集 + §9 W1–W8 能走通；发现的 Bugs 记回 TEST_TRACKER「用户反馈」。",TEST_TRACKER 有问题：§8/§9 关单未完；书面 Bugs 含宽屏 ⋯ 误绑 Sit tip 脉冲点、窄屏 Focusing tip、Sit options 缺点等（2026-08-01）。Facade 有单测+e2e，不等于故事矩阵关单。,IdleChromeFacade.js · idleChromeOrchestration.js · WideIdleMoreMenu · NarrowIdleShell · e2e wide-idle-more-menu,走查（§8+§9）→ 按 Bug 补测试
+9) Companion/How 打开时，DevTools 在 375↔480 来回改宽：面板不得被误关。 【***测试OK】（tip `4698eb3`）
+【通过标准】§8 375 故事最小集 + §9 W1–W8 能走通；发现的 Bugs 记回 TEST_TRACKER「用户反馈」。**2026-08-04 关单** tip `4698eb3` + 步7 tip `0494dd6` → Task3 已通过。",TEST_TRACKER Task3 已通过（2026-08-04 · tip 4698eb3 + 步7 tip 0494dd6）；步8 产品延期。,IdleChromeFacade.js · idleChromeOrchestration.js · WideIdleMoreMenu · NarrowIdleShell · e2e wide-idle-more-menu,改壳时复测；步8 延期勿当开放 Bug
 2,Honesty Check-in（Idle 补登主路径）,known-risky,"【前置】产品壳 `?product=1`；可用实验室「重置全部本地状态」做干净开局。
 
 【主路径】
