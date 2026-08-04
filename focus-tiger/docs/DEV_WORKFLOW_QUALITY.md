@@ -27,10 +27,11 @@
 | 2026-07-26 | 开场即睡「修好又失效」：另案搁置 + 契约锁窄 + 文档互斥 | **§6.7** |
 | 2026-08-02 | 实验室组合试播 OK ≠ 产品路径；冷启动欢迎×深夜叠播 | **§6.8 / §6.9** |
 | 2026-08-03 | Welcome 里误出鹦鹉信使：冷启动串扰 + onComplete 后 trailing idle 盖播 | **§6.10** |
+| 2026-08-04 | 鹦鹉→Idle 仍闪白：CapCut「统一关单」覆盖面窄于字面承诺 + 单测假绿 | **§6.11** |
 | 2026-08-04 | 窄屏 Focusing×? tip 叠团：记入≠开修 + 单测锁 id 未锁同时可见条数 | **§6.12** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **Hints 补救须锁窄屏同时可见条数**（§6.12）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **CapCut 关单须列具体情绪键**（§6.11）+ **Hints 补救须锁窄屏同时可见条数**（§6.12）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -531,6 +532,33 @@
 | C4 | e2e 断言信使时优先锁 **可见 emotion key**（或等价 DOM），勿只锁「曾调用过 play」类观测戳 |
 
 **本事故落地（代码已合 PR #96）**：欢迎期间 hold + `pending`；欢迎 `onComplete` 用 `setTimeout(0)` 补播；横幅每次 hidden→visible 可再播；约 60s 静候再评；e2e 先 `setNow` 再填表。本文件补工作流根因，供后案对照。
+
+### 6.11 鹦鹉→Idle 仍闪白 · CapCut「统一关单」覆盖面窄于字面承诺（2026-08-04）
+
+**现象**：`?product=1` 硬刷新后播鹦鹉信使，**过渡回 Idle 时闪白**。用户原话要点：上次不是已筛查并把跨动画改成 1s 叠化了吗？为什么看起来没有修正？
+
+**不是**「CapCut 常量被改回 180ms」或「鹦鹉没接线 returnCrossFadeMs」。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 字面承诺 vs 关单矩阵 | PR #102 / TRACKER「跨动画短叠化统一 1s CapCut」写「凡有转场的跨动画衔接统一 1000ms」。**关单人工覆盖**却只列：微仪式 Idle↔smiling、完成/Leave→Idle、`curiousTilt`/`blink`/`riseStretch`/`dormantWake` + 若干硬切。**未列** `parrotEarVisit`（亦未列 `teaDrinking` / `bookReading` 等同型 companion oneshot）。 |
+| B · 鹦鹉不在 PR #102 diff | 鹦鹉入库（PR #96）当天已设 `returnCrossFadeMs: CAPCUT_DISSOLVE_MS` + `freezeUntilCrossFadeEnds`。统一短淡入那笔**没改**鹦鹉路径——关单绿也**验不到**「鹦鹉修好了」。 |
+| C · 鹦鹉行 QA 验错维度 | TRACKER 鹦鹉/场景 A 书面 OK = **Welcome 优先顺序**、横幅 hidden→visible、Focusing suppress。步骤虽写「末约 1s CapCut」，**从未**有用户书面「鹦鹉→Idle 无闪白」。顺序修好 ≠ 回落叠化修好（§6.8 / §6.10 同型）。 |
+| D · 单测假绿 | `EmotionController.test.js` 用例名 `parrotEarVisit plays once then CapCut idle (~1s)` **只**断言首段 `returnCrossFadeMs` / `freezeUntilCrossFadeEnds`；**不**调用 `onComplete`、**不**断言下一笔 `idle`/`idleBreathClosed` 的 `crossFadeMs===1000`（对比同文件 `nodGreeting` 测了完整回落）。「有字段」≠ 可见叠化（§6.1 CapCut 静默跳过已警告）。 |
+| E · 抗闪不变量未推广到 companion oneshot | 张望产品链（§6.8）已对齐：`clear: false`、末段 `holdLastFrame`、再 CapCut。`_playCompanionSequenceOnce`（鹦鹉/茶/书等）仍默认 `_leaveIdleBaseline()` → **`clear: true`**，且 oneshot 末帧默认**不定格**。与已修抗闪链不对称——即使 `returnCrossFadeMs` 有值，仍可能出现藏 overlay / 末帧不稳 / 背景透出等「闪白」观感。 |
+
+**因果一句话**：**「统一 CapCut」关单用窄矩阵冒充全库契约** + **鹦鹉验收锁顺序不锁回落观感** + **单测只锁 options 字段不锁 trailing idle CapCut** → 用户以为上次已修，刷新仍见鹦鹉→Idle 闪白。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| P1 | 凡「统一 X 转场 / 一律 CapCut」类关单：`TEST_TRACKER` **必须列具体 emotion / 序列键**（含新入库 companion）；禁止只写「跨动画」却用人眼抽测 2～3 条收口 |
+| P2 | 新 oneshot 入库：验收分列 **（1）播完内容** **（2）回 Idle 叠化无闪白**；后者不得用「调试钮播过」或「冷启动顺序 OK」冒充 |
+| P3 | 契约单测：oneshot 名含「then CapCut idle」→ **必须** `onComplete()` 后断言 idle 入口 `crossFadeMs` + `freezeUntilCrossFadeEnds`（对齐 `nodGreeting`）；禁止只 assert 字段写在首段 options |
+| P4 | 产品 companion oneshot 若与张望同属「回 Idle 不得闪白」→ 开工已好清单须显式对齐抗闪不变量（`clear` / `holdLastFrame` / freeze）；禁止只抄 `returnCrossFadeMs` 数字 |
+
+**本回合落地**：查证写入本 §6.11 + `TEST_TRACKER` 用户反馈；**未改运行时**（鹦鹉→Idle 闪白专修另开 `fix/*` + 补全单测 P3）。
 
 ### 6.12 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
