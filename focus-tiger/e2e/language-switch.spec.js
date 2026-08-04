@@ -14,22 +14,64 @@ const SIT = '#btn-focus';
  * Slice A′: ja → bookReading; en → teaDrinking (oneshot + CapCut); same-day re-pick skips.
  * Draft locales (zh/es/…) must not appear.
  */
+test('wide Idle: language globe FAB opens preference panel', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.setViewportSize({ width: 1100, height: 720 });
+
+  const fab = page.locator('#language-preference-fab');
+  await expect(fab).toBeVisible({ timeout: 8_000 });
+
+  const mint = page.locator(
+    '.onboarding-hint-badge[data-hint-id="language-preference"]'
+  );
+  await expect(mint).toBeVisible({ timeout: 10_000 });
+
+  const layout = await page.evaluate(() => {
+    const fabEl = document.getElementById('language-preference-fab');
+    const help = document.getElementById('onboarding-hint-help');
+    const fr = fabEl?.getBoundingClientRect();
+    const hr = help?.getBoundingClientRect();
+    return {
+      fabH: fr?.height ?? 0,
+      fabCenterY: fr ? fr.top + fr.height / 2 : null,
+      helpCenterY: hr ? hr.top + hr.height / 2 : null
+    };
+  });
+  expect(layout.fabH).toBeGreaterThanOrEqual(60);
+  expect(layout.fabCenterY).not.toBeNull();
+  expect(layout.helpCenterY).not.toBeNull();
+  // Centers level with left-bottom ? (≤20px drift)
+  expect(Math.abs(layout.fabCenterY - layout.helpCenterY)).toBeLessThanOrEqual(
+    20
+  );
+
+  await fab.click();
+  await expect(page.locator(PANEL)).toBeVisible({ timeout: 5_000 });
+  await page.locator('#language-preference-close').click();
+  await expect(page.locator(PANEL)).toBeHidden({ timeout: 5_000 });
+});
+
 test('Language UI: switch to 日本語 then back to English', async ({ page }) => {
   await openFreshProductShell(page);
 
   await expect(page.locator(SIT)).toContainText(/Sit with Yin/i);
 
-  // Prefer API open: onboarding bubbles can intercept ⋯ → Language clicks in fresh shells.
-  const opened = await page.evaluate(() => {
-    const ui = window.__languagePreference;
-    if (ui?.openPanel) {
-      ui.openPanel();
-      return true;
+  // Prefer globe FAB (wide Idle); fall back to API / ⋯ proxy if FAB hidden.
+  const fab = page.locator('#language-preference-fab');
+  if (await fab.isVisible().catch(() => false)) {
+    await fab.click();
+  } else {
+    const opened = await page.evaluate(() => {
+      const ui = window.__languagePreference;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (!opened) {
+      await clickWideMoreProxyOrDirect(page, 'language');
     }
-    return false;
-  });
-  if (!opened) {
-    await clickWideMoreProxyOrDirect(page, 'language');
   }
   await expect(page.locator(PANEL)).toBeVisible({ timeout: 8_000 });
 

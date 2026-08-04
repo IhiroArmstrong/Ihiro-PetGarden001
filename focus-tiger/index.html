@@ -69,10 +69,13 @@
         align-items: stretch;
         gap: 12px;
         padding: 14px 20px 14px 14px;
-        border-radius: 20px;
-        background: var(--color-panel-soft, rgba(228, 225, 219, 0.92));
-        border: 1px solid var(--color-ink-faint, rgba(46, 43, 40, 0.1));
-        box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
+        border-radius: 22px;
+        /* 超柔毛玻璃：无生硬描边，隐退为轻量 HUD */
+        background: rgba(255, 252, 245, 0.48);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(139, 115, 85, 0.08);
+        box-shadow: 0 6px 22px rgba(44, 31, 20, 0.05);
         outline: none;
         --ft-hud-fill: 0;
         min-width: 220px;
@@ -186,8 +189,8 @@
       }
       #focus-hud .ft-hud__state {
         font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-secondary, rgba(74, 58, 40, 0.78));
+        font-weight: 650;
+        color: rgba(74, 58, 40, 0.62);
         letter-spacing: 0.01em;
       }
       #focus-hud .ft-hud[data-focusing="1"] .ft-hud__state {
@@ -196,8 +199,8 @@
       #focus-hud .ft-hud__time {
         font-size: 1.125rem;
         font-variant-numeric: tabular-nums;
-        color: var(--color-ink-muted, rgba(74, 58, 40, 0.78));
-        opacity: 0.55;
+        color: rgba(74, 58, 40, 0.55);
+        opacity: 0.5;
         transition: opacity 220ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
       }
       #focus-hud .ft-hud[data-focusing="1"] .ft-hud__time,

@@ -86,6 +86,7 @@ test('click tier map: help-affordance detailed; other click hints simple', () =>
     'rise-button',
     'idle-after-session',
     'weekly-heatmap',
+    'language-preference',
     'micro-ritual',
     'quick-start',
     'in-app-reminder',
@@ -96,7 +97,7 @@ test('click tier map: help-affordance detailed; other click hints simple', () =>
     assert.equal(getHintTier(id), 'simple', id);
     assert.equal(isDetailedHint(id), false, id);
   }
-  assert.equal(Object.keys(HINT_TIERS).length, 13);
+  assert.equal(Object.keys(HINT_TIERS).length, 14);
 });
 
 test('confirmed click-trigger hints use triggerMode click', () => {
@@ -107,6 +108,7 @@ test('confirmed click-trigger hints use triggerMode click', () => {
     'rise-button',
     'idle-after-session',
     'weekly-heatmap',
+    'language-preference',
     'micro-ritual',
     'quick-start',
     'in-app-reminder',

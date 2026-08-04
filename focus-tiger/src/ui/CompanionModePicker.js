@@ -477,14 +477,15 @@ export class CompanionModePicker {
       .session-start-dock {
         position: absolute;
         left: 50%;
-        bottom: max(16px, env(safe-area-inset-bottom, 0px));
+        /* 与蒲团解耦：再下移主操作带，避免三球压住蒲团下缘 */
+        bottom: max(36px, calc(28px + env(safe-area-inset-bottom, 0px)));
         transform: translateX(-50%);
         /* 须高于 Honesty 面板(z15) / 再补登入口(z14)，否则点击 Sit 会被抢走打开 Mindful Check-in */
         z-index: 16;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
+        gap: 20px;
         pointer-events: none;
         /* 左右留 ? / Sound；勿过窄以致 Sit 文案被裁 */
         width: min(400px, calc(100vw - 112px));

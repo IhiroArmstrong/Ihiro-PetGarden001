@@ -566,6 +566,8 @@ export class AmbientSoundscapeUI {
     }
     this._muteIcon.innerHTML = showSlash ? MUSIC_ICON_MUTE : MUSIC_ICON_ON;
     this.muteBtn.classList.toggle('is-muted', showSlash);
+    // 未播放时幽灵化，避免冷启动首屏抢视线
+    this.muteBtn.classList.toggle('is-ghost', !audible);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
     this.muteBtn.setAttribute(
@@ -616,20 +618,30 @@ export class AmbientSoundscapeUI {
         width: 44px;
         height: 44px;
         padding: 0;
-        border: 1px solid rgba(139, 115, 85, 0.22);
+        border: 1px solid rgba(139, 115, 85, 0.18);
         border-radius: 50%;
-        background: rgba(255, 252, 245, 0.72);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        color: rgba(92, 72, 52, 0.82);
+        background: rgba(255, 252, 245, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: rgba(92, 72, 52, 0.72);
         cursor: pointer;
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 4px 14px rgba(44, 31, 20, 0.1);
+          0 1px 0 rgba(255, 255, 255, 0.55) inset,
+          0 3px 12px rgba(44, 31, 20, 0.07);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease, opacity 180ms ease, background 180ms ease;
+      }
+      .ambient-soundscape__mute.is-ghost {
+        opacity: 0.58;
+        background: rgba(255, 252, 245, 0.32);
+        border-color: rgba(139, 115, 85, 0.12);
+        box-shadow: none;
+      }
+      .ambient-soundscape__mute.is-ghost:hover {
+        opacity: 0.9;
+        background: rgba(255, 252, 245, 0.55);
       }
       .ambient-soundscape__mute-icon {
         display: flex;

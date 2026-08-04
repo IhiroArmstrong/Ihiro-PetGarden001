@@ -6,10 +6,12 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles';
+const STYLE_ID = 'ft-wide-idle-more-styles-v3';
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
+/** Sit is the primary cold-start path — slight visual emphasis (~1.155×). */
+const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.155);
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
 const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
 const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
@@ -271,7 +273,7 @@ export class WideIdleMoreMenu {
         <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-sit" data-proxy="sit" aria-label="">
-        <img class="ft-wide-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+        <img class="ft-wide-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_SIT_PX}" height="${HOME_SIT_PX}" draggable="false" decoding="async" />
       </button>
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-honesty" data-proxy="honesty" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
@@ -619,9 +621,11 @@ export class WideIdleMoreMenu {
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        gap: 12px;
+        gap: 14px;
         pointer-events: auto;
         max-width: min(520px, 100%);
+        /* 与蒲团再拉开一点，避免四球贴底缘 */
+        margin-top: 8px;
       }
       .session-start-dock__cta-row[hidden] {
         display: none !important;
@@ -664,6 +668,11 @@ export class WideIdleMoreMenu {
         justify-content: center;
         cursor: pointer;
         box-shadow: none;
+      }
+      #ft-wide-home-sit.ft-wide-home-ctas__btn.is-asset {
+        width: ${HOME_SIT_PX}px;
+        height: ${HOME_SIT_PX}px;
+        min-height: ${HOME_SIT_PX}px;
       }
       .ft-wide-home-ctas__btn.is-asset:disabled,
       .ft-wide-home-ctas__btn.is-asset[aria-disabled="true"] {

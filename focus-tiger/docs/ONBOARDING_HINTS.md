@@ -36,7 +36,7 @@
 
 存储：`focus-tiger.hints-seen.v1` 值为 `'peeked' \| 'done'`（旧 `true` 迁为 `done`）。
 
-**click（圆点触发）**：`how-shall-we-sit` · `ambient-soundscape`（首次登录右上音符）· `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `micro-ritual` · `in-app-reminder` · `quick-start` · `focus-hud-*` · `help-affordance`
+**click（圆点触发）**：`how-shall-we-sit` · `ambient-soundscape`（首次登录右上音符）· `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `language-preference` · `micro-ritual` · `in-app-reminder` · `quick-start` · `focus-hud-*` · `help-affordance`
 
 **auto（保留主动弹出）**：`sit-button` · `honesty-optional` · `honesty-bridge` · `notice` · `breathing` · `choose` · `companion-mode` · `companion-stay` · `companion-away` · `companion-across-tools` · `reflection`  
 理由摘要：计时/分叉/Arrival beat「此刻怎么做」、Companion 选模——漏了会误判系统状态。音乐为 **click 圆点**（opt-in，不主动挡操作）。
@@ -85,13 +85,14 @@
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
 | `weekly-heatmap` | Idle 左下 7 格 | "A quiet week of shared sitting — lit days you practiced." / 「近日同坐的日子——亮起的格，是你来过的日子。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
+| `language-preference` | Idle 右下地球 | "Choose a language — English or 日本語." / 「言語を選べます…」 | 宽屏 Idle 地球 FAB 可见 | 开语言面板 / 点气泡 | 是 |
 | `in-app-reminder` | Idle 热力图旁时钟 | "Set a daily time — Yin leaves a gentle note if you haven't practiced yet." / 「设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。」 | Idle 热力图簇可见 | 开面板 / 开计时 / 点气泡 | 是 |
 | `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |
 | `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
 | `help-remedy` | 点「?」补救 | "All the tips… Click a tip to dismiss it; tap ? anytime you want them again." / 「本页…点一下气泡即可关掉；下次需要时再点问号。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
 
-共 **22** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
+共 **23** 个可自动提示 + **1** 个点「?」元文案（含关闭说明）+ **1** 个兜底。旧稿「Stay here / I'll step away」已改为产品键名。
 
 <!-- onboarding-hints-registry:anchors:begin -->
 
@@ -118,6 +119,7 @@
 | `reflection` | `HINT_REFLECTION` | `auto` | — | `#tiger-reflection-moment` | above | bottom | — |
 | `idle-after-session` | `HINT_IDLE_AFTER_SESSION` | `click` | `simple` | `#btn-focus` | above | bottom | — |
 | `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `click` | `simple` | `#weekly-practice-heatmap` | right | left | — |
+| `language-preference` | `HINT_LANGUAGE_PREFERENCE` | `click` | `simple` | `#language-preference-fab` | left | right | — |
 | `in-app-reminder` | `HINT_IN_APP_REMINDER` | `click` | `simple` | `#reminder-preference-toggle` | right | left | — |
 | `micro-ritual` | `HINT_MICRO_RITUAL` | `click` | `simple` | `#micro-ritual-idle-entry` | right | left | — |
 | `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `click` | `simple` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |

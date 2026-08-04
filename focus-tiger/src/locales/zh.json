@@ -149,6 +149,7 @@
   "HINT_REFLECTION": "愿意就答；跳过也可以。",
   "HINT_IDLE_AFTER_SESSION": "想再坐的时候，随时可以。",
   "HINT_WEEKLY_HEATMAP": "近日同坐的日子——亮起的格，是你来过的日子。",
+  "HINT_LANGUAGE_PREFERENCE": "可在此选择语言 — English 或 日本語。",
   "HINT_IN_APP_REMINDER": "设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。",
   "HINT_MICRO_RITUAL": "一分钟呼吸——轻轻练一下，不必完整同坐。",
   "HINT_HELP_AFFORDANCE": "不知下一步点什么？先点这里。",
@@ -181,5 +182,6 @@
   "HINT_LEARN_SPACE_ARIA": "打开用途简介",
   "LANGUAGE_MENU_LABEL": "语言",
   "LANGUAGE_SETTING_TITLE": "语言",
+  "LANGUAGE_FAB_ARIA": "选择语言",
   "LANGUAGE_CLOSE": "关闭"
 }

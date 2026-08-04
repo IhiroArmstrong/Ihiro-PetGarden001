@@ -149,6 +149,7 @@
   "HINT_REFLECTION": "答えても、スキップしても大丈夫です。",
   "HINT_IDLE_AFTER_SESSION": "また坐りたくなったら、いつでも。",
   "HINT_WEEKLY_HEATMAP": "いっしょに坐った静かな一週間 — 実践した日が点灯します。",
+  "HINT_LANGUAGE_PREFERENCE": "言語を選べます — English または 日本語。",
   "HINT_IN_APP_REMINDER": "毎日の時刻を設定 — まだ実践していなければ、阿寅がやさしいメモを残します。",
   "HINT_MICRO_RITUAL": "一分の呼吸 — やわらかな実践。フルFocusは不要です。",
   "HINT_HELP_AFFORDANCE": "次に何をタップするか迷ったら、ここから。",
@@ -181,5 +182,6 @@
   "HINT_LEARN_SPACE_ARIA": "短い紹介を開く",
   "LANGUAGE_MENU_LABEL": "言語",
   "LANGUAGE_SETTING_TITLE": "言語",
+  "LANGUAGE_FAB_ARIA": "言語を選ぶ",
   "LANGUAGE_CLOSE": "閉じる"
 }
