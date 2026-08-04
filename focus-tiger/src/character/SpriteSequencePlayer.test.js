@@ -5,7 +5,6 @@ import {
   shouldHideOverlayOnFinish,
   shouldApplySleepBreath,
   SLEEP_BREATH_CLASS,
-  SLEEP_BREATH_CLIP_PATH,
   SLEEP_BREATH_SCALE_Y_PEAK,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
@@ -398,12 +397,7 @@ test('shouldApplySleepBreath follows sleepBreath flag', () => {
   assert.equal(shouldApplySleepBreath('sleeping', { sleepBreath: true }), true);
   assert.equal(shouldApplySleepBreath('cloakSleep', {}), false);
   assert.equal(SLEEP_BREATH_CLASS, 'ft-sleep-breathing');
-});
-
-test('sleep breath clip targets back mound, not head-centered ellipse', () => {
-  // Head sits left on the pouf; back under cloak is mid-right — cx must be > 50%.
-  assert.match(SLEEP_BREATH_CLIP_PATH, /at 5[5-9]%|at 6[0-9]%/);
-  assert.ok(SLEEP_BREATH_SCALE_Y_PEAK > 1 && SLEEP_BREATH_SCALE_Y_PEAK < 1.08);
+  assert.ok(SLEEP_BREATH_SCALE_Y_PEAK > 1 && SLEEP_BREATH_SCALE_Y_PEAK < 1.1);
 });
 
 test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {

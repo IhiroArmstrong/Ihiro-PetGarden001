@@ -23,20 +23,22 @@ import {
   spriteDisplayTransformCss
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
+import {
+  SLEEP_BREATH_PERIOD_MS,
+  SLEEP_BREATH_SCALE_Y_PEAK,
+  sleepBreathScaleYAt,
+  sleepBreathEllipseInDisplayRect
+} from './spriteSleepBreath.js';
 
-/** Back-only sleep breath (head + cushion + framing stay fixed). */
+/** Active class on breath canvas wrap while sleep loops play. */
 export const SLEEP_BREATH_CLASS = 'ft-sleep-breathing';
 export const SLEEP_BREATH_WRAP_CLASS = 'ft-sleep-breath-wrap';
-export const SLEEP_BREATH_IMG_CLASS = 'ft-sleep-breath-img';
-/**
- * Clip ellipse over the cloak back mound only (starlight/classic prone pose):
- * head rests on the left; pouf below — keep both outside this region.
- * CSS: ellipse(rx ry at cx cy) — percentages of the contain box.
- */
-export const SLEEP_BREATH_CLIP_PATH = 'ellipse(24% 10% at 58% 49%)';
-export const SLEEP_BREATH_TRANSFORM_ORIGIN = '58% 50%';
-/** Peak vertical swell of the back layer only (1 = rest). */
-export const SLEEP_BREATH_SCALE_Y_PEAK = 1.04;
+/** @deprecated kept for tests that imported the old CSS img class name */
+export const SLEEP_BREATH_IMG_CLASS = 'ft-sleep-breath-canvas';
+export {
+  SLEEP_BREATH_SCALE_Y_PEAK,
+  SLEEP_BREATH_PERIOD_MS
+} from './spriteSleepBreath.js';
 
 /**
  * @param {string | null | undefined} sequenceName
@@ -55,12 +57,8 @@ function ensureSleepBreathStyles() {
   if (document.getElementById(SLEEP_BREATH_STYLE_ID)) return;
   const style = document.createElement('style');
   style.id = SLEEP_BREATH_STYLE_ID;
-  // 底图定格；上层仅 clip 背部做 scaleY → 头/蒲团/镜头不动。
+  // Canvas paints a content-box-aligned back ellipse; base <img> stays still.
   style.textContent = `
-@keyframes ft-sleep-torso-breath {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(${SLEEP_BREATH_SCALE_Y_PEAK}); }
-}
 #sprite-overlay .${SLEEP_BREATH_WRAP_CLASS} {
   position: absolute;
   inset: 0;
@@ -68,23 +66,15 @@ function ensureSleepBreathStyles() {
   opacity: 0;
   z-index: 1;
 }
+#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} {
+  opacity: 1;
+}
 #sprite-overlay .${SLEEP_BREATH_IMG_CLASS} {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  will-change: transform;
-  user-select: none;
-  clip-path: ${SLEEP_BREATH_CLIP_PATH};
-  transform-origin: ${SLEEP_BREATH_TRANSFORM_ORIGIN};
-  transform: scaleY(1);
-}
-#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} {
-  opacity: 1;
-}
-#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} .${SLEEP_BREATH_IMG_CLASS} {
-  animation: ft-sleep-torso-breath 3.8s ease-in-out infinite;
+  display: block;
 }
 `;
   document.head.appendChild(style);
@@ -252,12 +242,9 @@ export class SpriteSequencePlayer {
     const breathWrap = document.createElement('div');
     breathWrap.className = SLEEP_BREATH_WRAP_CLASS;
     breathWrap.setAttribute('aria-hidden', 'true');
-    const breathImg = document.createElement('img');
-    breathImg.className = SLEEP_BREATH_IMG_CLASS;
-    breathImg.alt = '';
-    breathImg.decoding = 'async';
-    breathImg.draggable = false;
-    breathWrap.appendChild(breathImg);
+    const breathCanvas = document.createElement('canvas');
+    breathCanvas.className = SLEEP_BREATH_IMG_CLASS;
+    breathWrap.appendChild(breathCanvas);
 
     overlay.appendChild(outgoingImg);
     overlay.appendChild(img);
@@ -269,8 +256,12 @@ export class SpriteSequencePlayer {
     this.imgEl = img;
     this.outgoingImgEl = outgoingImg;
     this.breathWrapEl = breathWrap;
-    this.breathImgEl = breathImg;
+    this.breathCanvasEl = breathCanvas;
+    /** @type {CanvasRenderingContext2D | null} */
+    this._breathCtx = breathCanvas.getContext('2d');
     this._sleepBreathActive = false;
+    this._breathRaf = 0;
+    this._onBreathFrame = this._onBreathFrame.bind(this);
 
     /** @type {ResizeObserver | null} */
     this._resizeObserver = null;
@@ -483,26 +474,96 @@ export class SpriteSequencePlayer {
     this._sleepBreathActive = Boolean(active);
     this.breathWrapEl?.classList.toggle(SLEEP_BREATH_CLASS, this._sleepBreathActive);
     if (!this._sleepBreathActive) {
-      this.breathImgEl?.removeAttribute('src');
+      this._stopSleepBreathLoop();
+      this._clearSleepBreathCanvas();
       return;
     }
-    this._syncSleepBreathLayer();
+    this._startSleepBreathLoop();
   }
 
-  /** Keep torso breath layer on the same frame + displayFit as the base sprite. */
-  _syncSleepBreathLayer() {
-    if (!this._sleepBreathActive || !this.breathImgEl || !this.breathWrapEl) return;
-    const src = this.imgEl.getAttribute('src');
-    if (src) {
-      this.breathImgEl.src = src;
-    } else {
-      this.breathImgEl.removeAttribute('src');
+  _startSleepBreathLoop() {
+    if (this._breathRaf) return;
+    this._breathRaf = requestAnimationFrame(this._onBreathFrame);
+  }
+
+  _stopSleepBreathLoop() {
+    if (this._breathRaf) {
+      cancelAnimationFrame(this._breathRaf);
+      this._breathRaf = 0;
     }
-    this._applyDisplayFit(
-      this.breathWrapEl,
-      this._currentDisplayFit,
-      this._currentZoom
-    );
+  }
+
+  /** @param {number} now */
+  _onBreathFrame(now) {
+    this._breathRaf = 0;
+    if (!this._sleepBreathActive) return;
+    this._paintSleepBreath(now);
+    this._breathRaf = requestAnimationFrame(this._onBreathFrame);
+  }
+
+  _clearSleepBreathCanvas() {
+    const canvas = this.breathCanvasEl;
+    const ctx = this._breathCtx;
+    if (!canvas || !ctx) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  /**
+   * Paint scaled back mound only (content-box ellipse). Base <img> stays unscaled.
+   * @param {number} nowMs
+   */
+  _paintSleepBreath(nowMs) {
+    const canvas = this.breathCanvasEl;
+    const ctx = this._breathCtx;
+    const img = this.imgEl;
+    if (!canvas || !ctx || !img?.naturalWidth) return;
+
+    const overlay = this.overlayEl.getBoundingClientRect();
+    const layoutW = this.overlayEl.clientWidth || overlay.width;
+    const layoutH = this.overlayEl.clientHeight || overlay.height;
+    if (layoutW < 2 || layoutH < 2) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const bw = Math.max(1, Math.round(layoutW * dpr));
+    const bh = Math.max(1, Math.round(layoutH * dpr));
+    if (canvas.width !== bw || canvas.height !== bh) {
+      canvas.width = bw;
+      canvas.height = bh;
+    }
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, layoutW, layoutH);
+
+    const display = this.getDisplayRect();
+    if (!display) return;
+
+    // getDisplayRect is viewport-absolute; convert to overlay-local.
+    const dx = display.left - overlay.left;
+    const dy = display.top - overlay.top;
+    const local = {
+      left: dx,
+      top: dy,
+      width: display.width,
+      height: display.height
+    };
+    const { cx, cy, rx, ry } = sleepBreathEllipseInDisplayRect(local);
+    const scaleY = sleepBreathScaleYAt(nowMs);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.translate(cx, cy);
+    ctx.scale(1, scaleY);
+    ctx.translate(-cx, -cy);
+    ctx.drawImage(img, dx, dy, display.width, display.height);
+    ctx.restore();
+  }
+
+  /** @deprecated no-op sync hook kept so call sites stay safe */
+  _syncSleepBreathLayer() {
+    // Canvas samples this.imgEl each breath rAF; nothing to copy.
   }
 
   /** @returns {boolean} */
@@ -575,6 +636,7 @@ export class SpriteSequencePlayer {
 
   /** 释放：停止播放、移除 overlay、清空缓存。 */
   dispose() {
+    this._setSleepBreathActive(false);
     this._cancelRaf();
     this._resetCrossFade();
     this._playing = false;
