@@ -8,10 +8,10 @@ import {
 } from './spriteSleepBreath.js';
 
 test('sleepBreathScaleYAt oscillates between 1 and peak', () => {
-  assert.equal(sleepBreathScaleYAt(0, 4000, 1.12), 1);
-  const mid = sleepBreathScaleYAt(2000, 4000, 1.12);
-  assert.ok(Math.abs(mid - 1.12) < 1e-9);
-  assert.equal(sleepBreathScaleYAt(4000, 4000, 1.12), 1);
+  assert.equal(sleepBreathScaleYAt(0, 4000, 1.1), 1);
+  const mid = sleepBreathScaleYAt(2000, 4000, 1.1);
+  assert.ok(Math.abs(mid - 1.1) < 1e-9);
+  assert.equal(sleepBreathScaleYAt(4000, 4000, 1.1), 1);
 });
 
 test('sleepBreathEllipseInDisplayRect places back mound mid-right of content', () => {
@@ -23,6 +23,9 @@ test('sleepBreathEllipseInDisplayRect places back mound mid-right of content', (
   });
   assert.ok(e.cx > 100 + 400 * 0.5);
   assert.ok(e.rx > 0 && e.ry > 0);
-  assert.equal(SLEEP_BREATH_BACK.cx, 0.56);
-  assert.ok(SLEEP_BREATH_SCALE_Y_PEAK > 1);
+  // Small hump ellipse — clearly right of center, modest radii
+  assert.ok(SLEEP_BREATH_BACK.cx >= 0.6);
+  assert.ok(SLEEP_BREATH_BACK.rx <= 0.18);
+  assert.ok(SLEEP_BREATH_BACK.ry <= 0.12);
+  assert.equal(SLEEP_BREATH_SCALE_Y_PEAK, 1.1);
 });

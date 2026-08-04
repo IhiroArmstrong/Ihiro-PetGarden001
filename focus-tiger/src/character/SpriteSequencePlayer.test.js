@@ -397,7 +397,7 @@ test('shouldApplySleepBreath follows sleepBreath flag', () => {
   assert.equal(shouldApplySleepBreath('sleeping', { sleepBreath: true }), true);
   assert.equal(shouldApplySleepBreath('cloakSleep', {}), false);
   assert.equal(SLEEP_BREATH_CLASS, 'ft-sleep-breathing');
-  assert.ok(SLEEP_BREATH_SCALE_Y_PEAK > 1 && SLEEP_BREATH_SCALE_Y_PEAK <= 1.15);
+  assert.ok(SLEEP_BREATH_SCALE_Y_PEAK > 1 && SLEEP_BREATH_SCALE_Y_PEAK <= 1.12);
 });
 
 test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {

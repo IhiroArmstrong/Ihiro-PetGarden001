@@ -3,21 +3,24 @@
  * Base sprite stays still; a clipped back region is vertically scaled each frame.
  */
 
-/** Fraction of the displayed sprite box (object-fit content rect). */
+/** Fraction of the displayed sprite box (object-fit content rect).
+ * Tuned to the cloak **back hump** only (user screenshot 2026-08-04):
+ * head stays left/outside; small ellipse on the mound crest.
+ */
 export const SLEEP_BREATH_BACK = Object.freeze({
-  /** Ellipse center X within content rect (head left; cloak back mid-right). */
-  cx: 0.56,
-  /** Ellipse center Y within content rect. */
-  cy: 0.5,
-  /** Horizontal radius as fraction of content width. */
-  rx: 0.3,
-  /** Vertical radius as fraction of content height. */
-  ry: 0.18
+  /** Right of the head, center of the back mound under the cloak. */
+  cx: 0.63,
+  /** Crest of the back hump (higher on the sprite). */
+  cy: 0.43,
+  /** Small horizontal radius — excludes head. */
+  rx: 0.13,
+  /** Small vertical radius — just the mound. */
+  ry: 0.09
 });
 
 export const SLEEP_BREATH_PERIOD_MS = 3400;
-/** Peak vertical swell — must be clearly visible on soft cloak fabric. */
-export const SLEEP_BREATH_SCALE_Y_PEAK = 1.12;
+/** ~10% vertical swell on the back mound only. */
+export const SLEEP_BREATH_SCALE_Y_PEAK = 1.1;
 
 /**
  * @param {number} nowMs
