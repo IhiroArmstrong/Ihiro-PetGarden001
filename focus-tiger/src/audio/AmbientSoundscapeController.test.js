@@ -77,17 +77,45 @@ test('normalizeAmbientPref defaults to Mer-Ka-Ba track off (opt-in)', () => {
   });
 });
 
-test('resolveAmbientPanelSelectedTrackId keeps preferred after mute', async () => {
+test('resolveAmbientPanelSelectedTrackId highlights Off when silent (cold / after mute)', async () => {
   const audio = createMockAudio();
+  const cold = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  // Default pref remembers Mer-Ka-Ba but panel must not imply it is active.
+  assert.equal(cold.getPreferredTrackId(), DEFAULT_AMBIENT_TRACK_ID);
+  assert.equal(cold.wantsEnabled(), false);
+  assert.equal(resolveAmbientPanelSelectedTrackId(cold), AMBIENT_TRACK_OFF);
+
+  await cold.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(
+    resolveAmbientPanelSelectedTrackId(cold),
+    AMBIENT_TRACK_SINGING_BOWL
+  );
+  cold.mute();
+  assert.equal(cold.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(cold.wantsEnabled(), false);
+  // Silent after note-mute → Off until unmute resumes playback.
+  assert.equal(resolveAmbientPanelSelectedTrackId(cold), AMBIENT_TRACK_OFF);
+  assert.equal(cold.getPreferredTrackId(), AMBIENT_TRACK_SINGING_BOWL);
+});
+
+test('resolveAmbientPanelSelectedTrackId keeps preferred while wantsEnabled (gesture unlock)', async () => {
+  const audio = createMockAudio();
+  audio.play = async () => {
+    throw new Error('autoplay blocked');
+  };
   const ctrl = new AmbientSoundscapeController({
     audio,
     storage: createMapStorage(),
     mountToDocument: false
   });
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
-  ctrl.mute();
-  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
-  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(ctrl.wantsEnabled(), true);
+  assert.equal(ctrl.needsGestureUnlock(), true);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
   assert.equal(
     resolveAmbientPanelSelectedTrackId(ctrl),
     AMBIENT_TRACK_SINGING_BOWL

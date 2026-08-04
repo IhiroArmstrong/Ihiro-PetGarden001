@@ -74,6 +74,7 @@ export class IdleChromeFacade {
     const h = this._handlers;
     this.narrow.setHandlers({
       onSound: h.onSound,
+      onSoundHover: h.onSoundHover,
       onCompanion: h.onCompanion,
       onReminder: h.onReminder,
       onLanguage: h.onLanguage,
