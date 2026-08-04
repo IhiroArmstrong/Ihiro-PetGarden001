@@ -370,6 +370,48 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-develop-small-pr-run-merge',
+    title: 'develop 文档/小 PR：CI 绿后弹 Run 合并（默认习惯）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: 'develop 文档 / 小 PR：CI 绿后弹 Run 合并',
+    ssotMustContain: [
+      /CI 绿后弹 Run 合并/,
+      /git-develop-small-pr-run-merge/,
+      /禁止.*默认只写「请你上 GitHub 合并」/,
+      /gh pr merge/,
+      /--auto --merge/,
+      /合进\s*`main`/
+    ],
+    topicSignals: [
+      /git-develop-small-pr-run-merge/,
+      /弹 Run 合并/,
+      /文档\/小 PR/,
+      /CI 绿后.*合并/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /CI 绿后弹 Run 合并/,
+      /禁止.*请你上 GitHub 合并/,
+      /--auto --merge/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/COLLAB.md',
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'default-github-hand-merge-docs',
+        pattern: /(?:文档|小)\s*PR.*(?:应当|应该|默认).*(?:请你|通知你).*(?:GitHub|网页).*合并/,
+        note: '文档/小 PR 合 develop 默认走 CI 绿后 Run 合并；勿写回「默认请你上 GitHub 手合」',
+        exemptIfLineMatches: /不适用|运行时|main|禁止|除非/
+      }
+    ]
+  },
+  {
     id: 'git-branch-health',
     title: '分支健康度（即时纪律 + 双周普查；非 CI 硬拦）',
     ssotPath: 'focus-tiger/docs/PROCESS.md',

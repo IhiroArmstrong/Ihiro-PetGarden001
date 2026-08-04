@@ -499,7 +499,8 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 4. 按 regression-lock「Commit 汇报与分支门禁」完成本地 commit + 同回合汇报  
 5. 可选推送前体检：`./scripts/git-sync-safe.sh`  
 6. **仅在你明确同意后**再 push（见 SSOT）  
-7. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）
+7. **合入 `develop` 的文档/小 PR**：CI 绿后默认走 Run 合并收尾（见 `WORKFLOW.md` / `RULES_INDEX` → `git-develop-small-pr-run-merge`）；**不要**默认只写「请上 GitHub 手合」  
+8. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）
 
 完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
 
@@ -510,7 +511,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 1. 筛出 **`develop` + 活跃 `feature/*` / `fix/*`** 上尚未推送、且属文档/规则/脚本注释等非运行时的 commit → 仅 push 这些  
 2. 业务逻辑 / 状态机 / 待确认 diff 类未推 commit → **单独成组列出，不随本次推送**  
 3. 回复 **「Git 同步汇总」**（含第 6 条分级项 + **性质标注**：本次推送有无「业务逻辑/代码改动」——合规应为「无」）  
-4. **不做**：合并进 `main`、推进 PR；若有 PR 正等你处理，只在汇总里提一句现状  
+4. **不做**：合并进 `main`、顺手推进**无关** PR；若有 PR 正等你处理，只在汇总里提一句现状。本回合刚开的 **develop 文档/小 PR** 收尾合并习惯见 `git-develop-small-pr-run-merge`（与本口令「不推进无关 PR」不冲突）。  
 
 完整门禁条文见 regression-lock SSOT；此处不复述。
 
