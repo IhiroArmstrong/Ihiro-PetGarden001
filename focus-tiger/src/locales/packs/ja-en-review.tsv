@@ -140,7 +140,15 @@ HINT_AMBIENT_SOUNDSCAPE	If your environment allows, tap here to play music — i
 HINT_RISE_BUTTON	Rising early is welcome too.	早めに立つことも、歓迎です。
 HINT_REFLECTION	Answer if you like — skipping is fine.	答えても、スキップしても大丈夫です。
 HINT_IDLE_AFTER_SESSION	Sit again whenever you like.	また坐りたくなったら、いつでも。
-HINT_WEEKLY_HEATMAP	A quiet week of shared sitting — lit days you practiced.	いっしょに坐った静かな一週間 — 実践した日が点灯します。
+HINT_WEEKLY_HEATMAP	A quiet week of shared sitting — lit days you practiced. The outlined square is today.	いっしょに坐った静かな一週間 — 実践した日が点灯します。枠線のあるマスが今日です。
+HEATMAP_ARIA_WEEK	Last seven days of shared sitting. Weekday labels under each square; the outlined square is today.	ここ七日の同席。各マス下は曜日。枠線のあるマスが今日です。
+HEATMAP_DOW_0	Su	日
+HEATMAP_DOW_1	Mo	月
+HEATMAP_DOW_2	Tu	火
+HEATMAP_DOW_3	We	水
+HEATMAP_DOW_4	Th	木
+HEATMAP_DOW_5	Fr	金
+HEATMAP_DOW_6	Sa	土
 HINT_IN_APP_REMINDER	Set a daily time — Yin leaves a gentle note if you haven't practiced yet.	毎日の時刻を設定 — まだ実践していなければ、Yinがやさしいメモを残します。
 HINT_MICRO_RITUAL	A minute of breath — soft practice, no full Focus.	一分の呼吸 — やわらかな実践。フルFocusは不要です。
 HINT_HELP_AFFORDANCE	Not sure what to tap next? Start here.	次に何をタップするか迷ったら、ここから。

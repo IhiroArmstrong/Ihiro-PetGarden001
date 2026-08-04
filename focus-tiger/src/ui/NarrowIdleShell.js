@@ -670,7 +670,7 @@ export class NarrowIdleShell {
       this.listEl.appendChild(li);
     }
 
-    // Quiet week strip: clone lit cells into the sheet (read-only)
+    // Quiet week strip: clone day columns (cell + dow + today) into the sheet
     const source = document.getElementById('weekly-practice-heatmap');
     if (this.heatmapSlot && source && !source.hidden) {
       this.heatmapSlot.hidden = false;
@@ -681,11 +681,39 @@ export class NarrowIdleShell {
       const row = document.createElement('div');
       row.className = 'ft-narrow-sheet__heatmap-row';
       row.setAttribute('aria-hidden', 'true');
-      for (const cell of source.querySelectorAll('.weekly-practice-heatmap__cell')) {
-        const clone = document.createElement('span');
-        clone.className = 'ft-narrow-sheet__heatmap-cell';
-        clone.dataset.lit = cell.dataset.lit || '0';
-        row.appendChild(clone);
+      const daySources = source.querySelectorAll('.weekly-practice-heatmap__day');
+      if (daySources.length > 0) {
+        for (const daySrc of daySources) {
+          const day = document.createElement('div');
+          day.className = 'ft-narrow-sheet__heatmap-day';
+          day.dataset.today = daySrc.dataset.today || '0';
+          const cellSrc = daySrc.querySelector('.weekly-practice-heatmap__cell');
+          const clone = document.createElement('span');
+          clone.className = 'ft-narrow-sheet__heatmap-cell';
+          clone.dataset.lit = cellSrc?.dataset.lit || '0';
+          clone.dataset.today = cellSrc?.dataset.today || day.dataset.today;
+          const dowSrc = daySrc.querySelector('.weekly-practice-heatmap__dow');
+          const dow = document.createElement('span');
+          dow.className = 'ft-narrow-sheet__heatmap-dow';
+          if (day.dataset.today === '1') {
+            dow.classList.add('ft-narrow-sheet__heatmap-dow--today');
+          }
+          dow.textContent = dowSrc?.textContent ?? '';
+          day.appendChild(clone);
+          day.appendChild(dow);
+          row.appendChild(day);
+        }
+      } else {
+        // Fallback: older markup without day columns
+        for (const cell of source.querySelectorAll(
+          '.weekly-practice-heatmap__cell'
+        )) {
+          const clone = document.createElement('span');
+          clone.className = 'ft-narrow-sheet__heatmap-cell';
+          clone.dataset.lit = cell.dataset.lit || '0';
+          clone.dataset.today = cell.dataset.today || '0';
+          row.appendChild(clone);
+        }
       }
       this.heatmapSlot.appendChild(label);
       this.heatmapSlot.appendChild(row);
@@ -1118,17 +1146,38 @@ export class NarrowIdleShell {
       .ft-narrow-sheet__heatmap-row {
         display: flex;
         gap: 6px;
+        align-items: flex-start;
+      }
+      .ft-narrow-sheet__heatmap-day {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 3px;
+        min-width: 14px;
       }
       .ft-narrow-sheet__heatmap-cell {
         width: 12px;
         height: 12px;
         border-radius: 4px;
+        box-sizing: border-box;
         background: rgba(46, 43, 40, 0.1);
       }
       .ft-narrow-sheet__heatmap-cell[data-lit="1"] {
         background: var(--color-accent, #b5623a);
         opacity: 0.78;
+      }
+      .ft-narrow-sheet__heatmap-cell[data-today="1"] {
+        box-shadow: 0 0 0 1.5px rgba(181, 98, 58, 0.62);
+      }
+      .ft-narrow-sheet__heatmap-dow {
+        font-size: 8px;
+        line-height: 1;
+        color: rgba(74, 58, 40, 0.42);
+        font-weight: 500;
+      }
+      .ft-narrow-sheet__heatmap-dow--today {
+        color: rgba(74, 58, 40, 0.78);
+        font-weight: 600;
       }
 
       /* Applied by JS on narrow Focusing — hide Sound FAB / nudge / panel */

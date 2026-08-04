@@ -84,7 +84,7 @@
 | `rise-button` | C Rise | "Rising early is welcome too." / 「中途起身，也完全可以。」 | 首次 FOCUSING 见到 Rise | 点 Rise 或完成本场 | 是 |
 | `reflection` | A10 / C | "Answer if you like — skipping is fine." / 「愿意就答；跳过也可以。」 | 首次进入 Reflection | 答完/跳过关闭 | 是 |
 | `idle-after-session` | A11 结束后 | "Sit again whenever you like." / 「想再坐的时候，随时可以。」 | 首次会话结束回到空闲 | 再次 Sit 或离开页 | 是 |
-| `weekly-heatmap` | Idle 左下 7 格 | "A quiet week of shared sitting — lit days you practiced." / 「近日同坐的日子——亮起的格，是你来过的日子。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
+| `weekly-heatmap` | Idle 左下 7 格 | "A quiet week… The outlined square is today." / 「近日同坐…描边的那格是今天。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
 | `language-preference` | Idle 右下地球 | "Choose a language — English or 日本語." / 「言語を選べます…」 | 宽屏 Idle 地球 FAB 可见 | 开语言面板 / 点气泡 | 是 |
 | `in-app-reminder` | Idle 热力图旁时钟 | "Set a daily time — Yin leaves a gentle note if you haven't practiced yet." / 「设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。」 | Idle 热力图簇可见 | 开面板 / 开计时 / 点气泡 | 是 |
 | `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |

@@ -51,6 +51,33 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
 });
 
 /**
+ * UX: rolling 7 days need weekday labels + today outline — bare squares
+ * left users unable to tell which cell is today (KnownRisky #5 feedback).
+ */
+test('Idle heatmap marks today and shows weekday labels', async ({ page }) => {
+  await openFreshProductShell(page);
+  const heatmap = page.locator(HEATMAP);
+  await expect(heatmap).toBeVisible({ timeout: 15_000 });
+
+  const days = page.locator(`${HEATMAP} .weekly-practice-heatmap__day`);
+  await expect(days).toHaveCount(7);
+
+  const todayCells = page.locator(`${CELLS}[data-today="1"]`);
+  await expect(todayCells).toHaveCount(1);
+  // Contract: getLastNDays oldest→newest → today is the rightmost cell
+  await expect(page.locator(CELLS).nth(6)).toHaveAttribute('data-today', '1');
+
+  const dows = page.locator(`${HEATMAP} .weekly-practice-heatmap__dow`);
+  await expect(dows).toHaveCount(7);
+  for (let i = 0; i < 7; i += 1) {
+    await expect(dows.nth(i)).not.toHaveText('');
+  }
+  await expect(
+    page.locator(`${HEATMAP} .weekly-practice-heatmap__dow--today`)
+  ).toHaveCount(1);
+});
+
+/**
  * Cold-start breathing regression (2026-08-04):
  * heatmap+? cluster must sit above home balls so weekly-heatmap mint hint stays visible.
  */
