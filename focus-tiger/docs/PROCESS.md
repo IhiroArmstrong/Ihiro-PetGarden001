@@ -64,8 +64,9 @@
 
 **近期落地（待人工测试）**：
 
-- **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`。窄屏 Focusing×? **测试 OK**（develop tip 关单子项）；Task3 整行仍有其它 Bugs。工作流 **§6.13**。
-- **KnownRisky 验收清单入库（2026-08-04）**：根目录 `.numbers` 迁为 `KNOWN_RISKY_TEST_CHECKLIST.md`（步骤 SSOT）；含走查批注同步。Focusing×? 见上行。
+- **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
+- **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
+- **KnownRisky 验收清单入库（2026-08-04）**：`KNOWN_RISKY_TEST_CHECKLIST.md` 步骤 SSOT；#1 已关单（见上行）。
 - **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.12**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。Welcome 优先顺序曾 OK（§6.10）。**2026-08-04**：刷新后鹦鹉→Idle **闪白** — 有问题；工作流根因 **§6.12**（未改运行时，待 `fix/*`）。
@@ -82,7 +83,7 @@
 - **MilestoneGlow 正式路径可接线（2026-07-31 拍板）**：用户书面——长期里程碑金辉+蝴蝶**本就是产品需要**，正式路径**完全可以接线**；不再以「仅调试预览」为终态。Brief `task-briefs/task-milestone-glow-product-wire.md`；实现另开 `feature/milestone-glow-product-wire`（排在 Ambient ⑤⑥⑩ 自动化之后或并行）。旧「7/30 前仅复测调试节奏」口径废止，改为**接线任务**；4 fps 观感随接线验收。
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **Ambient 窄宽对账填表（2026-07-31）**：`audit-narrow-wide-ambient-parity.md` 10 项已按 `develop` 代码+既有 e2e/unit 填状态（1–4/7–9 ✅；5–6/10 ⚠️ 缺 DOM 听感断言；另记 micro-ritual tip / 抽屉挡 ♪ 既有红）。未重跑 Playwright（本机缺 Chromium）。
-- **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。关单级人工仍须 §8+§9。
+- **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。§8+§9 壳故事已于 2026-08-04 KnownRisky #1 / Task3 关单。
 - **CI 定时全量 + Plan A 收口（2026-07-31 … 2026-08-02）**：**PR smoke** 已在每次 PR→`develop` 跑通（**无** API Key）。**全量 e2e** 夜间 `schedule`（UTC 02:00）+ 手动 dispatch：YAML 在 **`main`**（120m · [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47)；Plan A 分片+JUnit · [#63](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/63)），**测 `develop` tip**。#15 稳定红已修（[#74](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/74)）；验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit 68 tests / 0 fail）。**基建任务完成**；残留 = 偶发 goto flake 根因（另项）+ 是否挂 PR 门（另议）。隔离：`ENV_CONFIG.md` + `.env.example`。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
