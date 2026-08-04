@@ -409,6 +409,8 @@ async function init() {
   const mindfulToast = new MindfulAcknowledgeToast(
     document.getElementById('ui-overlay')
   );
+  // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
+  window.__mindfulToast = mindfulToast;
   const lightProgression = new LightProgression({
     appEl: app,
     getSpriteOverlay: () => spritePlayer.overlayEl
@@ -1913,7 +1915,12 @@ async function init() {
       focusLevelOverride: microProgress
     });
     weeklyPracticeHeatmap.render({
-      visible: stateManager.state === STATES.IDLE && !microOpen,
+      // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
+      // Hide during Focusing / overlays / micro-ritual.
+      visible:
+        (stateManager.state === STATES.IDLE ||
+          stateManager.state === STATES.DORMANT) &&
+        !microOpen,
       days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
     });
     reminderPreferenceUI.setVisible(

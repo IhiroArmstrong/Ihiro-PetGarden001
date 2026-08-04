@@ -51,6 +51,77 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
 });
 
 /**
+ * UX: rolling 7 days need weekday labels + today outline — bare squares
+ * left users unable to tell which cell is today (KnownRisky #5 feedback).
+ */
+test('Idle heatmap marks today and shows weekday labels', async ({ page }) => {
+  await openFreshProductShell(page);
+  const heatmap = page.locator(HEATMAP);
+  await expect(heatmap).toBeVisible({ timeout: 15_000 });
+
+  const days = page.locator(`${HEATMAP} .weekly-practice-heatmap__day`);
+  await expect(days).toHaveCount(7);
+
+  const todayCells = page.locator(`${CELLS}[data-today="1"]`);
+  await expect(todayCells).toHaveCount(1);
+  // Contract: getLastNDays oldest→newest → today is the rightmost cell
+  await expect(page.locator(CELLS).nth(6)).toHaveAttribute('data-today', '1');
+
+  const dows = page.locator(`${HEATMAP} .weekly-practice-heatmap__dow`);
+  await expect(dows).toHaveCount(7);
+  for (let i = 0; i < 7; i += 1) {
+    await expect(dows.nth(i)).not.toHaveText('');
+  }
+  await expect(
+    page.locator(`${HEATMAP} .weekly-practice-heatmap__dow--today`)
+  ).toHaveCount(1);
+});
+
+/**
+ * Narrow home balls (z30) sit over #ui-overlay toasts (z18) — bottom copy must
+ * clear the Sit ball band, not rely on z-index (KnownRisky #5 follow-up 2026-08-04).
+ */
+test('375: bottom mindful toast clears narrow home CTAs', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible({
+    timeout: 15_000
+  });
+
+  await page.evaluate(() => {
+    window.__mindfulToast.show(
+      "It's late. I'm resting under the cloak — you can rest too.",
+      { visibleMs: 12_000 }
+    );
+  });
+
+  const toast = page.locator(
+    '#mindful-acknowledge-toast[data-placement="bottom"]'
+  );
+  await expect(toast).toBeVisible();
+  await expect(toast).toHaveCSS('opacity', '1');
+
+  const geometry = await page.evaluate(() => {
+    const tEl = document.getElementById('mindful-acknowledge-toast');
+    const cta = document.getElementById('ft-narrow-home-ctas');
+    if (!tEl || !cta) return { ok: false, reason: 'missing-dom' };
+    const tr = tEl.getBoundingClientRect();
+    const cr = cta.getBoundingClientRect();
+    const overlapY = Math.max(
+      0,
+      Math.min(tr.bottom, cr.bottom) - Math.max(tr.top, cr.top)
+    );
+    return {
+      ok: overlapY < 4 && tr.bottom <= cr.top + 2,
+      overlapY,
+      toastBottom: tr.bottom,
+      ctaTop: cr.top
+    };
+  });
+  expect(geometry.ok, JSON.stringify(geometry)).toBe(true);
+});
+
+/**
  * Cold-start breathing regression (2026-08-04):
  * heatmap+? cluster must sit above home balls so weekly-heatmap mint hint stays visible.
  */

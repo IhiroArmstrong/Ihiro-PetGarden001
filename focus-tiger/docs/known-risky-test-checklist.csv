@@ -66,17 +66,17 @@ id,feature,status,steps,judgment,files,action
 5,「本周陪伴」热力图 UI,known-risky,"【前置】产品壳 Idle。
 
 【主路径】
-1) Idle 见「本周陪伴」7 格热力图。
-2) 宽屏：通常在左下「?」上方；窄屏：在抽屉/ActionBar 相关挂点，勿只剩看不见。
-3) 非 Idle（Focusing）：热力图应隐藏或按契约 park（不得挡 HUD）。
+1) Idle 见「本周陪伴」7 格热力图。【*测试OK】（2026-08-04 · Numbers 第7行 / 清单#5）
+2) 宽屏：通常在左下「?」上方；窄屏：在抽屉/ActionBar 相关挂点，勿只剩看不见。【*测试OK】
+3) 非 Idle（Focusing）：热力图应隐藏或按契约 park（不得挡 HUD）。【*测试OK】
 
 【真数据】
-4) 完成一场短计时（演示 1 分钟）或 Honesty 补登后回 Idle：今日格应变亮（或保持亮）。
+4) 完成一场短计时（演示 1 分钟）或 Honesty 补登后回 Idle：今日格应变亮（或保持亮）。【变亮本身 OK】；展示缺口：【需要优化】「谁能知道哪个格子是今天？毫无提示。这样不对。」→ 已开 `fix/weekly-heatmap-today-marker`（星期缩写 + 今日软描边；合入后本步通过标准改为：能一眼认出今天）。
 
 【Hint】
-5) 清空 hints 已读后，点「?」：weekly-heatmap tip 应立刻出现且尖角靠近热力图（不得等「More tips」才出、不得指空）。
+5) 清空 hints 已读后，点「?」：weekly-heatmap tip 应立刻出现且尖角靠近热力图（不得等「More tips」才出、不得指空）。【测试不行】；用户书面：Hints 问题很多，需要再设计（见清单 #7 / TEST_TRACKER 点?补救行）。
 
-【通过标准】亮暗合理；Focusing 不挡；tip 几何可接受。",有问题：场景 O 曾大段 OK，后续与窄宽壳/抽屉/Hint 锚纠缠；e2e 锁壳与 seed，真练习变亮 + tip 尖角仍脆。,WeeklyPracticeHeatmap* · PracticeDaysStore · e2e weekly-practice-heatmap,走查 → 按反馈补几何 e2e
+【通过标准】能一眼认出今天；亮暗合理；Focusing 不挡；tip 几何可接受（tip 项待 Hints 再设计）。","2026-08-04 走查：步1–3 OK；步4 变亮 OK、今日标记缺口已开 fix；步5 Hint 不行→再设计。场景 O 曾大段 OK；e2e 锁壳与 seed。",WeeklyPracticeHeatmap* · PracticeDaysStore · e2e weekly-practice-heatmap,"合入今日标记 → tip/Hints 再设计批次（勿单点硬修尖角）"
 6,应用内提醒设置 + 横幅,known-risky,"【前置】产品壳 Idle。
 
 【设置】
@@ -106,7 +106,8 @@ id,feature,status,steps,judgment,files,action
 5) Rise 后再 Focusing 点「?」仍可用。
 6) Lit 薄荷绿气泡观感可接受（护栏试点 ≠ 替代本条人工观感）。
 
-【通过标准】尖角/park/互斥不乱；文案可读。",有问题：? 补救尖角/park、Lit 薄荷绿观感。部分覆盖：见 HINTS_WIRING.md——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板保持观察、暂不扩 linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。,OnboardingHints* · HINTS_WIRING.md · e2e onboarding-remedy-contract · hints-visual-guardrail,走查观感；扩护栏前先读 HINTS_WIRING 批次政策
+【通过标准】尖角/park/互斥不乱；文案可读。
+2026-08-04（经清单#5 步5）：weekly-heatmap tip 路径 【测试不行】；用户书面「Hints 问题很多；需要再设计」。","有问题：? 补救尖角/park、Lit 薄荷绿观感；2026-08-04 产品方向：整体再设计（非单点 tip）。部分覆盖：见 HINTS_WIRING.md——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板保持观察、暂不扩 linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。",OnboardingHints* · HINTS_WIRING.md · e2e onboarding-remedy-contract · hints-visual-guardrail,"产品再设计批次（暂缓单点 tip 几何）；扩护栏前先读 HINTS_WIRING"
 8,冷启动「开场即睡」vs live DORMANT,known-risky,"【前置】需要本地有「≥2h 前」的 focus-session-end 戳。做法示例：先完成一场会话，用 DevTools/实验室改存储时间戳，或按 TEST_TRACKER「开场即睡」行说明准备。
 
 【冷启动】

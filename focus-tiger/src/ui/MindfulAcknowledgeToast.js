@@ -1,3 +1,5 @@
+import { homeClearanceBottomCss } from './homeChromeClearance.js';
+
 const DEFAULT_VISIBLE_MS = 4_000;
 
 /** 补登成功 / 微仪式完成等「也算数」类确认：同一套中置（勿各写百分比）。 */
@@ -51,8 +53,9 @@ function placementCss(placement) {
       'transform:translate(-50%,8px)'
     ].join(';');
   }
+  // Narrow: clear `#ft-narrow-home-ctas` Sit ball (shared homeChromeClearance).
   return [
-    'bottom:104px',
+    `bottom:${homeClearanceBottomCss()}`,
     'top:auto',
     'z-index:18',
     'transform:translate(-50%,10px)'
