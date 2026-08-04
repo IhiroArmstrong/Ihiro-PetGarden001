@@ -40,6 +40,8 @@ alwaysApply: true
 | `docs/COLLAB.md` | Task Brief / 文档更新协作约定 |
 | `docs/TASKS.md` | 任务序列（按需查，勿全文常驻上下文） |
 | `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；用户书面意见进 **「用户反馈」列**（勿混入测试步骤）；缺陷须填 **严重度 + 处理承诺**（`RULES_INDEX` → `release-blocker-ledger`）；**关单级人工验收只认 `origin/develop` tip**（`qa-develop-tip`）；**标「已通过」须覆盖分工明示**（e2e 锁哪些 + 人工测哪些；`qa-pass-coverage-split`）；完成任务时须更新并在回复中说明需测项 |
+| `docs/DEVELOP_DEBT_INVENTORY.md` | **develop 存量验证债务**：verified / assumed-ok / known-risky / unknown；排期用 |
+| `docs/KNOWN_RISKY_TEST_CHECKLIST.md` | **known-risky 优先人工验收步骤**（Safari / 375 / 回流）；CSV 导出见同目录 `known-risky-test-checklist.csv`；根目录 `.numbers` 不权威 |
 | `docs/COVERAGE_GAP_AUDIT.md` | **功能 vs smoke/e2e 覆盖缺口审计**：模块对照矩阵、永不自动化清单、自动化后续顺序（Task 3→2→扩 smoke）；与 `TEST_TRACKER` §C / `SCENARIO_TESTS` 互补 |
 | `docs/Z_INDEX.md` | **产品 z-index 层叠登记**（`RULES_INDEX` → `z-index-registry`）；新加 fixed / 改层级先查表 |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |

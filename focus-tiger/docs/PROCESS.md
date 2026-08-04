@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）/ **`DEVELOP_DEBT_INVENTORY.md`**（存量验证债务）/ **[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)**（known-risky **优先人工验收步骤**）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
 
 ---
 
@@ -64,9 +64,11 @@
 
 **近期落地（待人工测试）**：
 
-- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
-- **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：跨动画短淡入一律 1s CapCut；硬切 `0` 保持。用户书面：无闪白 / 硬切仍硬切 — **测试 OK**（关单）。轻完成池无 `curiousTilt` — **须以后慢慢碰概率**（暂不关单）。
-- **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。人工仍待复测冷启动 Welcome 优先。**工作流根因**（Welcome 误出鹦鹉）：`DEV_WORKFLOW_QUALITY` **§6.10**。
+- **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：`resolveRemedyImmediateAndFolded`——Focusing 只出主条 + N-more 芯片；e2e 已锁 375。KnownRisky Numbers **全量同步**进 `KNOWN_RISKY_TEST_CHECKLIST.md`。工作流 **§6.13**。
+- **KnownRisky 验收清单入库（2026-08-04）**：根目录 `.numbers` 迁为 `KNOWN_RISKY_TEST_CHECKLIST.md`（步骤 SSOT）；含走查批注同步。Focusing×? 见上行。
+- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
+- **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.12**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
+- **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。Welcome 优先顺序曾 OK（§6.10）。**2026-08-04**：刷新后鹦鹉→Idle **闪白** — 有问题；工作流根因 **§6.12**（未改运行时，待 `fix/*`）。
 - **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 已验证** → 格式生效。**④ 视觉护栏试点已合（PR #93）**；同日用户拍板 **保持观察、暂不扩** linux 软快照 / peeked / 更多 id。⑤ 仍 Backlog。
 - **MilestoneGlow 琉璃星石变体入库（2026-08-03）**：`meditation-star-reward`（63 帧）进 `MilestoneGlow` 变体池——`streak-7` 仍金辉+蝴蝶；`streak-21` / `streak-100` 播星石。分支 `feature/milestone-glow-star-variant`。
 - **PR 收口 + stash 归档（2026-08-01 晚）**：[#66](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/66) chrome Quick-only / Rise 闪 + ja 阿寅、[#67](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/67) welcome wave pingpong、[#68](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/68) stash PRD 归档均已合 `develop`。本地 5 条旧 stash 已清；唯一 PRD 草稿进 `docs/archive/stashed-prds-2026-07-24/`。已合入 `fix/*` worktree 已拆除。

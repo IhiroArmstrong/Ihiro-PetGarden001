@@ -6,6 +6,8 @@
 初稿对照过 **`1f46a57`**；合入本文件前已按 tip 刷新基线与「部分覆盖」标注。  
 性质：**只读盘点**——不改运行时、不改 `TEST_TRACKER` / `*_WIRING`；本文件可随复测结果更新标签。
 
+**人工走查步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（由根目录 KnownRisky `.numbers` 迁入；Numbers 不再权威）。
+
 ---
 
 ## 0. 目的与读法
@@ -23,6 +25,7 @@
 
 | 文档 | 管什么 | 本清单如何用 |
 |---|---|---|
+| `KNOWN_RISKY_TEST_CHECKLIST.md` | known-risky **逐步操作**（Safari / 375 / 回流） | 开始产品验收时**优先按该表走**；本文件只给标签与判定依据 |
 | `TEST_TRACKER.md` | 逐功能验收行与用户反馈 | 状态标签的主证据源（尤其「有问题 / 已通过 / 待人工」） |
 | `COVERAGE_GAP_AUDIT.md` | 自动化覆盖分层（smoke / e2e / 人工锁） | 「有没有测」≠「人验过」；本清单叠一层**验证置信度** |
 | `SCENARIO_TESTS.md` | A–P 用户故事剧本 | 场景级入口与自动化边界 |
@@ -52,7 +55,7 @@
 
 | 功能/交互点 | 状态标签 | 判定依据 | 涉及文件 | 建议后续动作 |
 |---|---|---|---|---|
-| Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉） | known-risky | `TEST_TRACKER` **有问题**：§8/§9 关单未完；书面 Bugs 含宽屏 ⋯ 误绑 Sit tip 脉冲点、窄屏 Focusing tip、Sit options 缺点等（2026-08-01）。Facade 有单测+e2e，**不等于**故事矩阵关单。 | `IdleChromeFacade.js` · `idleChromeOrchestration.js` · `WideIdleMoreMenu` · `NarrowIdleShell` · e2e `wide-idle-more-menu` | 走查（§8+§9）→ 按 Bug 补测试 |
+| Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉） | known-risky | `TEST_TRACKER` **有问题**：§8/§9 关单未完；书面 Bugs 含宽屏 ⋯ 误绑 Sit tip 脉冲点、窄屏 Focusing tip、Sit options 缺点等（2026-08-01）。**2026-08-04** KnownRisky #1 步 7 复测仍失败（Focusing×? tip 叠团）——工作流根因 `DEV_WORKFLOW_QUALITY` **§6.13**（记入≠开修；单测锁 id 未锁窄屏同时可见条数）。Facade 有单测+e2e，**不等于**故事矩阵关单。 | `IdleChromeFacade.js` · `idleChromeOrchestration.js` · `WideIdleMoreMenu` · `NarrowIdleShell` · e2e `wide-idle-more-menu` · 步骤见 `KNOWN_RISKY_TEST_CHECKLIST` #1 | 走查（§8+§9）→ **专修** Focusing 补救布局 + 按 Bug 补测试 |
 | Honesty Check-in（Idle 补登主路径） | known-risky | 曾人工 OK + 真实链 e2e；**2026-08-01 重回「有问题」**：呼吸期底栏仍三球（应 keepQuickStart）、? 补救锚虚空等。真实链绿 ≠ 叠层/chrome 契约稳。 | `HonestyCheckIn*` · `sessionChromeSync.js` · e2e `honesty-bridge-real-path` | 走查回流 → 补 chrome/叠层 e2e |
 | Honesty 桥接 CTA | known-risky | **有问题**：叠层挡 Yes/No、大文案框近乎不透明挡角色（2026-08-01/02）；半透明改动待复测。e2e 主路径有；观感/z-index 仍脆。 | `HonestyBridgeCta*` · `Z_INDEX.md` · `micro-ritual` 注入叠层用例 | 走查 → 补 375 叠层断言 |
 | Ambient Soundscape + 右上音符静音 | known-risky | **有问题**多行（L311/L315/L414）：Rise 停音、续播手势、窄屏抽屉挡 ♪ 历史红。`COVERAGE_GAP`：听感/行为几乎无 DOM 锁。**部分覆盖**：已有 `ambient-mute-resume-focusing` e2e；停音/续播全矩阵与听感仍未关单——排期勿与「从零排查 Ambient」重复。 | `AmbientSoundscape*` · e2e `ambient-mute-resume-focusing` · `user-ambient-upload` | 补测试（行为契约）+ 走查；对照已有 mute e2e |
