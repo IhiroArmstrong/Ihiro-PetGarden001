@@ -863,6 +863,9 @@ export class EmotionController {
 
   /**
    * Slice B 陪伴手势：播一条入库序列，结束后按 oneshot 回 Idle。
+   * 抗闪对齐 `_playCompanionSequenceChainOnce` / 张望（§6.8 / §6.12 P4）：
+   * - 离开 Idle：`clear: false`（保留末帧，禁止先藏 overlay）
+   * - 播完默认 `holdLastFrame` 定格，供 CapCut 回 Idle 有稳定源帧
    * @param {string} sequenceName SPRITE_SEQUENCES key
    * @param {EmotionOptions} options
    * @param {object} [playExtras]
@@ -875,7 +878,7 @@ export class EmotionController {
       this._finishOneShot(options, sequenceName);
       return;
     }
-    this._leaveIdleBaseline();
+    this._leaveIdleBaseline({ clear: false });
     this._use2DMainline();
     const started = this.spritePlayer.play(
       sequenceName,
@@ -884,7 +887,10 @@ export class EmotionController {
           ...options,
           loop: false,
           loopMode: 'none',
-          ...playExtras
+          ...playExtras,
+          // 默认定格末帧；显式 false 或 holdPose 路径仍由 _oneShotPlayOpts 收敛
+          holdLastFrame:
+            options.holdLastFrame ?? playExtras.holdLastFrame ?? true
         },
         sequenceName
       )
