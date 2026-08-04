@@ -30,7 +30,7 @@ id,feature,status,steps,judgment,files,action
 6) Honesty 时长面板打开时点左下「?」：气泡尖角须指到可见锚点，不得指虚空。
 
 【通过标准】补登能记账；呼吸期 chrome 正确；? 不指空。",曾人工 OK + 真实链 e2e；2026-08-01 重回「有问题」：呼吸期底栏仍三球（应 keepQuickStart）、? 补救锚虚空等。真实链绿 ≠ 叠层/chrome 契约稳。,HonestyCheckIn* · sessionChromeSync.js · e2e honesty-bridge-real-path,走查回流 → 补 chrome/叠层 e2e
-3,Honesty 桥接 CTA,known-risky,"【前置】产品壳；先完成一次 Honesty 补登进入桥接。
+3,Honesty 桥接 CTA,verified,"【前置】产品壳；先完成一次 Honesty 补登进入桥接。
 
 【主路径】
 1) 补登结束立刻出现桥接：顶行 thanks +「要不要现在也坐一会儿？」Yes/No。
@@ -43,7 +43,7 @@ id,feature,status,steps,judgment,files,action
 6) 同日再补登应再出桥接。
 7) 375×667：toast 与桥接同屏不互挡到不可读。
 
-【通过标准】叠层/透明度/入口 suppress 都对；Yes/No 语义正确。",有问题：叠层挡 Yes/No、大文案框近乎不透明挡角色（2026-08-01/02）；半透明改动待复测。e2e 主路径有；观感/z-index 仍脆。,HonestyBridgeCta* · Z_INDEX.md · micro-ritual 注入叠层用例,走查 → 补 375 叠层断言
+【通过标准】叠层/透明度/入口 suppress 都对；Yes/No 语义正确。 【***测试OK】 **2026-08-04 关单** tip 4698eb3 同批。",TEST_TRACKER 桥接已通过（2026-08-04 · tip 4698eb3 同批）。,HonestyBridgeCta* · Z_INDEX.md · e2e honesty-bridge-real-path,改桥接/叠层时复测
 4,Ambient Soundscape + 右上音符静音,known-risky,"【前置】产品壳；重置后默认应无音乐（opt-in）。
 
 【宽屏】
