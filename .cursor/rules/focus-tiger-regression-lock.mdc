@@ -224,6 +224,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
 2. **禁止静默提交**：commit 后**必须在当次会话回复**明确汇报：**commit hash**、**分支名**、**涉及哪些文件**（或等价的 `git show --stat` 摘要）。缺此项 = 视同未汇报。  
 3. **并行会话同规**：任何并行 Agent 会话执行的 commit，同样须遵守第 2 条汇报义务；不得因「不是主会话」而省略。  
 4. **禁止自动合并进 `main`**：涉及合并进 `main`（含 `git merge develop` → `main`、`git checkout main && git merge …` 等）的操作，**永远需要用户明确指令**；任何会话不得自动执行。  
+4a. **develop 文档/小 PR 合并习惯**：合入 `develop` 且属文档/小 PR 时，CI 绿后默认由 Agent 发起 `gh pr merge`（Cursor 可弹 **Run** 供你点）；**禁止**默认只写「请上 GitHub 手合」。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `git-develop-small-pr-run-merge`）；**勿**在本文件复述适用范围全文。  
 5. **`git push` 仍须用户明确授权**：日常与 Bug close **一律**不得未经用户明确要求就 push。声称「已修复 / 已修好」须有 push + CI 证据（§7 checklist），**但 push 本身仍须用户明确授权**（例如用户说「Git 同步」「请安排下班前的 Git 同步」或「push」）；未授权前只可写诚实进度（本地已 commit、尚未 push）。日常节奏：白天可连续自动本地 commit；用户要求同步/push 时再推远程，并附第 6–7 条。  
 6. **Git 同步 / 批量 push 须分级汇总（强制）**：用户要求「Git 同步」、或 Agent 执行一次覆盖多个本地 commit 的 push 时，回复须含独立小节 **「Git 同步汇总」**，至少包括：  
    - 本次一共多少个 commit（相对上次已推 tip，或用户指定范围）  

@@ -123,9 +123,10 @@ COLLAB.md（本文档，协作层）
 |---|---|
 | 本地 `git commit` | 验证通过后执行（见 `focus-tiger-regression-lock.mdc`） |
 | `git push` | 用户明确要求 **或** 任务书写明「完成后 push develop」时执行；**一批修复收尾默认应 push**，勿长期只留本地 |
+| 合入 `develop` 的文档/小 PR | CI 绿后默认 Agent 发起合并（可弹 Cursor **Run**）；见 `WORKFLOW.md` / `git-develop-small-pr-run-merge` |
 | 多 Agent 并行 | 开工前 `git pull`；完工后 push，减少「已合并但缺 commit」窗口 |
 
 细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
 
 ---
-*版本：1.4 · 2026-08-01 增补 §五「分支寿命与健康度」（SSOT：`PROCESS.md`）*
+*版本：1.5 · 2026-08-04 增补 develop 文档/小 PR Run 合并习惯（SSOT：`WORKFLOW.md`）*

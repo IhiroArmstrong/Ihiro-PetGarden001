@@ -190,6 +190,38 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
 
 开向 `develop` 的 PR 须勾选模板中合前预览项（见 `.github/PULL_REQUEST_TEMPLATE.md`）。未勾且不满足上节豁免 → 审查时应拦回补做。
 
+### develop 文档 / 小 PR：CI 绿后弹 Run 合并（默认习惯 · 2026-08-04）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-develop-small-pr-run-merge`）。  
+> 用户拍板：对 **合入 `develop` 的文档/小 PR**，默认不再停在「请你去 GitHub 手点 Merge」；改为 Agent 在 CI 绿后发起合并命令，由你点 Cursor 弹出的 **Run**（Auto-review）完成授权。
+
+#### 适用范围（须同时满足）
+
+1. **base = `develop`**（**不是**合进 `main`）。  
+2. **文档 / 小 PR**：相对 `origin/develop...HEAD` 的改动路径全部满足上文「预览豁免」的非运行时条件（无 `focus-tiger/src/**`、`public/**`、`e2e/**` 等运行时路径）。典型：`*.md` / `*.mdc`、`WORKFLOW.md`、`.github/**` 文案、`focus-tiger/docs/**`、纯门禁/检测脚本（不改产品运行时）。  
+3. **本回合已开出的 PR**（Agent 刚 `gh pr create` 或用户明确要推进的同一文档/小 PR）。  
+4. **push / 开 PR 本身仍须你当回合授权**（本条不授权静默 push）。
+
+#### 默认收尾动作（强制）
+
+在已 push 且 PR 已开之后，Agent **须**走合并收尾，**禁止**默认只写「请你上 GitHub 合并」就结束（除非下方「不适用」）：
+
+1. **查一次** Required checks（`pre-merge with develop`、`test:pr-smoke` 等；`gh pr checks` / `gh pr view --json statusCheckRollup`）。  
+2. **已全绿** → 立刻执行 `gh pr merge <n> --merge`（或团队当时约定的 merge 方式）。若 Cursor Auto-review 弹出 **Run** → 等你点 Run；点过即视为本 PR 合并授权。  
+3. **尚未绿** → **只做一次** `gh pr merge <n> --auto --merge`（启用 GitHub auto-merge），汇报 PR URL +「等 CI 绿后自动合 / 或你再点一次 Run」；**禁止**在本回合轮询长 CI（见 `agent-token-cost`）。  
+4. 合并成功后汇报：**PR 号**、**merge commit 短 hash**、**`origin/develop` tip**。
+
+#### 不适用（仍「通知你合并」或等你点名）
+
+- 合进 **`main`**（永远须你明确下令；见 `git-merge-main`）。  
+- **运行时 / 产品逻辑** PR（命中预览豁免黑名单任一路径）——默认仍「通知你合并」；除非你当回合写明「合理则办 / 请合 / CI 绿了就合」。  
+- 「请安排下班前的 Git 同步」口令：**仍不**顺手推进无关 PR（见 regression-lock 第 7 条）；本条只管本回合文档/小 PR 的收尾。  
+- 检查红 / 冲突 / 不可 MERGEABLE → 停手汇报，不硬合。
+
+#### 与「谁点了合并」
+
+`gh` 使用你的登录态；GitHub `mergedBy` 仍是你。Cursor **Run** = 批准 Agent 代跑合并命令，**不是**另发一套 Agent 特权。
+
 ---
 
 ## 何时可以把 `develop` 合并进 `main`？
