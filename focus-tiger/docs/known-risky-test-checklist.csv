@@ -1,3 +1,4 @@
+# NOT_AUTHORITATIVE — SSOT is KNOWN_RISKY_TEST_CHECKLIST.md; this CSV may be stale. Do not use for QA.
 id,feature,status,steps,judgment,files,action
 1,Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉）,verified,"【前置】`cd focus-tiger && npm run dev` → Safari 打开 http://127.0.0.1:5173/?product=1；验收前确认本机已 `git pull` 到 origin/develop tip。
 
