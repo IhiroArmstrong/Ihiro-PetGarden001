@@ -594,7 +594,49 @@ export class OnboardingHintsUI {
     syncAllDiscoveryDots(this.store);
     this._syncHostMintDots();
     this._syncSecondaryMenuHostMints();
+    this._syncPulseOwnedNativeTips();
     this._bindHelpPurposeHover(document.getElementById('ft-narrow-help-btn'));
+  }
+
+  /**
+   * When a mint pulse tip already covers a control, suppress duplicate native /
+   * built-in hover copy (title attribute, streak-meter .label). If the pulse is
+   * gone (done), restore the residual hover so the control is not mute.
+   * @returns {void}
+   */
+  _syncPulseOwnedNativeTips() {
+    const streakUnread =
+      isClickTriggerHint('focus-hud-streak') &&
+      !this.store.isDone('focus-hud-streak');
+    const streak = document.querySelector(
+      '#focus-hud streak-meter, streak-meter'
+    );
+    if (streak) {
+      if (streakUnread) streak.setAttribute('pulse-owns-tip', '');
+      else streak.removeAttribute('pulse-owns-tip');
+      // Native title always duplicated .label / pulse tip — keep aria-label only.
+      streak.removeAttribute('title');
+    }
+
+    const quickUnread =
+      isClickTriggerHint('quick-start') && !this.store.isDone('quick-start');
+    for (const sel of [
+      '#quick-start-focus',
+      '#ft-wide-home-quickstart',
+      '#ft-narrow-home-quickstart'
+    ]) {
+      const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
+      if (!el) continue;
+      if (quickUnread) {
+        if (el.title && !el.dataset.ftNativeTitleBackup) {
+          el.dataset.ftNativeTitleBackup = el.title;
+        }
+        el.removeAttribute('title');
+      } else if (el.dataset.ftNativeTitleBackup) {
+        el.title = el.dataset.ftNativeTitleBackup;
+        delete el.dataset.ftNativeTitleBackup;
+      }
+    }
   }
 
   /**
