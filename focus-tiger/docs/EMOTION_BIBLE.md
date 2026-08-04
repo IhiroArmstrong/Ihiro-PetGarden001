@@ -47,8 +47,8 @@
 |---|---|---|---|---|---|
 | `IncenseComplete` | 一炷香完成（轻量反馈） | 否 | 「今日一炷香」小目标完成时触发；当日首次打开产品的轻量引导完成后反馈；当天不重复弹出引导，复用「当日状态」日期戳基础设施 | **80**（高于基底姿态；与 `Celebrating` 独立，强度低于完整庆祝） | **已实现**：`IncenseGreeting.js` DOM 叠层（z-index 4，莲花 + 金色粒子，位于 2D Yin 之上）；**待实现**：与 Milestone / 每日首次打开流程正式接线（当前有调试入口）。**产品方向（2026-07-19）**：立体荷花 + 金光斑点浮动须**保留**，并复用于后续「荷花持续增加、最终布满画面」的成长场景（勿删本效果模块） |
 | `SessionComplete` | 每次专注完成的轻量情绪确认 | 否（约 3.5s） | 每次完成用户设定的专注会话均触发；温和摆尾致意（光环/粒子已烧录在帧内）；若本次同时满足「当日首次达标」，由 `Celebrating` 替代，不叠加播放 | **70**（高于基底姿态、低于 `IncenseComplete` / `Celebrating`） | **已实现（2D 主线）**：`session-complete` 28 帧（**8 fps** ≈3.5s，ONE_SHOT light 带）；`playEmotion('sessionComplete')`；同日后续达标接线完成；播放期临时归零 FocusVisualizer / Rim Light，播完回归 idle-breathing 后恢复 |
-| `WakeUp` | 唤醒起身（伸懒腰变体） | 否（17 帧一次性） | 调试入口 / 历史多日沉睡叙事键 | **90** | **已实现（2D）**：播 `stretch-reminder` 同源伸懒腰（情绪键 `wakeUp`，**8 fps**）→ idle；**不**接 halo。与 Honesty `dormantWake` **刻意区分** |
-| `dormantWake` | Honesty Check-in 唤醒（睡态揭毯 → 合掌坐姿） | 否（34 帧 **`cloak-sleep` 倒放**） | 用户选时长后**立刻**播放（与呼吸倒计时同期）；播完**定格末帧**至倒计时结束；按所选时长等同一次已完成会话 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：选时长 → 经典 `cloak-sleep` **倒放**或星光 `starlight-cloak-wake`（约 50/50，优先匹配入睡变体）→ 定格末帧 + 约 10s 呼吸。**≠** 调试 `wakeUp` 伸懒腰（非睡姿起）。**2026-08-04** v5 并存 |
+| `WakeUp` | ~~唤醒起身（伸懒腰变体）~~ | — | **已删除（2026-08-04）** | — | 曾为调试键（`stretch-reminder` 同源、末帧闭眼）；无产品场景。舒展提醒仍用 `stretchReminder`；睡醒用 `dormantWake` |
+| `dormantWake` | Honesty Check-in / 长离回前台苏醒（睡态揭毯 → 合掌坐姿） | 否（34 帧 **`cloak-sleep` 倒放** 或星光 wake） | **Honesty**：用户选时长后立刻播放；**2B**：FOCUSING 且 tab 隐藏 ≥30min 回前台播一次后回 Idle 呼吸（仍 Focusing）。播完可定格末帧 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：经典倒放或星光 `starlight-cloak-wake`（约 50/50，优先匹配入睡变体）。**≠** 已删 `wakeUp`。与 **2h→DORMANT** 互补（后者仅非 Focusing） |
 | `MilestoneGlow` | 里程碑仪式反馈（金辉 / 琉璃星石 / streak-7 鹦鹉二选一） | 否（约 10s 一次性序列；鹦鹉 ≈11.6s + CapCut） | 长期里程碑节点达成时触发（连续练习 7/21/100 天等）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **产品路径已接线**：`playEmotion('milestoneGlow', { milestoneNodeId })`。**变体池**：`streak-7` → **50/50** `milestone-glow`（金辉+蝴蝶）或 `parrotEarVisit`（鹦鹉信使）；`streak-21` / `streak-100` → `meditation-star-reward`（琉璃星石）。调试无 nodeId 默认蝴蝶；入库素材钮可单播星石/鹦鹉。简化备选 **`breath-halo-hq`** 仍仅调试。播放期归零实时金光；蝴蝶/星石末帧停留后回落 idle；鹦鹉走 CapCut Idle。 |
 | `ParrotEarVisit` | 鹦鹉耳边造访（禅意信使） | 否（93 帧 @ **8 fps** ≈11.6s） | **场景 A**：应用内轻提醒横幅本页首次可见时伴随播放；**场景 B**：轻完成 / 微仪式池稀有彩蛋；**亦**为 `MilestoneGlow` streak-7 的 50/50 视觉之一 | **68**（独立键；作里程碑时仍由 `playEmotion('milestoneGlow')` 触发，优先级按 110 仪式路径） | **已实现（2D）**：`parrot-ear-visit-feather`；正放一次 → ~1s CapCut Idle。**不做**羽毛残影/可收集（2026-08-03 拍板） |
 | `IntentionSet` | Arrival Choose 确认点头 | 否（nod-bow **pingpong** 一整轮，约 7s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；**门闩与 Companion 在确认瞬间立即打开**，动画并行不挡流程） | **已实现（2D 主线）**：**16:9 `nod-bow` pingpong**（正放鞠躬→倒放回坐姿）；进出与前后动画用 **约 1s CapCut 叠化**（`CAPCUT_DISSOLVE_MS`）。旧 `palms-together` 仅调试保留。 |
@@ -149,7 +149,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `stretchReminder` | `stretchReminder` → `stretchReminder`（2D） | `public/sprites/.../stretch-reminder/frame_001–017.png` |
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
-| `WakeUp` | `WAKE_UP` | 2D：`stretch-reminder` 同源（调试伸懒腰唤醒） |
+| `WakeUp` | —（已删） | 已删除；勿再接线 |
+| `dormantWake` | `DORMANT_WAKE` | 2D：经典 `cloak-sleep` 倒放 / 星光 wake；Honesty + 长离 2B |
 | `WelcomeBack` | `welcomeBack`（**停接线**） | 素材仍在：`wave-hello` / `wave-hello-pingpong`；**不播** |
 | `magicBookReading` | `magicBookReading` → 同名序列 | `public/sprites/.../magic-book-reading/frame_001–046.png`（开场欢迎池试验） |
 | `bookReading` | `bookReading` → 同名序列 | `public/sprites/.../book-reading/frame_001–024.png`（日语切语；单程无倒放） |
@@ -665,4 +666,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.85 | 2026-08-03 | 入库 `parrotEarVisit`（鹦鹉耳边造访）；场景 A 应用内轻提醒信使；场景 B 轻完成池稀有彩蛋 |
 | 0.86 | 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶金辉 ↔ 鹦鹉信使；不做羽毛残影 |
 | 0.87 | 2026-08-04 | 星光 v5 与经典 cloak **约 50/50** 并存；苏醒优先匹配入睡变体；wellness 冷启动 2A（深夜披斗篷 / 清晨苏醒仪式） |
+| 0.88 | 2026-08-04 | 删除未接线 `wakeUp`；接线 Expand A（深夜 Idle / Idle15min 披斗篷）、Expand B（深夜 Rise/达标披斗篷）、2B（FOCUSING 长离≥30min 苏醒）；与 2h→DORMANT 互补不替换 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

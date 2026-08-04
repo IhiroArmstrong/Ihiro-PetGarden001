@@ -142,7 +142,7 @@ v5.0：数据驱动一只角色的状态(自然休憩/金色庆祝/打盹/欢呼
 完整庆祝 → CELEBRATE状态触发，舒展/轻跳/鼓掌+光环扩散，每日首次达标播放一次
 打瞌睡  → 仅调试 / 显式 DORMANT；**不再**作为零完成自动开场
 眨眼    → 闭目坐禅：`idle-breathing`（约 2.5fps）×5 完整循环后插一次 `blink-smile`，再 ×5…（偶尔看看）；无其它 Idle 变体（见 PRINCIPLES）
-唤醒起身 → Honesty 自睡态：`dormant-wake`；自 Idle 补登不播睡醒。调试/历史 `wakeUp`：伸懒腰变体
+唤醒起身 → Honesty 自睡态：`dormant-wake`；自 Idle 补登不播睡醒。FOCUSING 长离≥30min 回前台亦可 `dormantWake`（2B）。已删调试键 `wakeUp`。
 睡着了  → 调试睡态循环；**约 2 fps** 极缓（持续态节奏原则）
 ```
 
@@ -497,7 +497,7 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 2. 选择后，进入约 **10 秒**的呼吸引导；若当前已在 Idle，**不**播睡醒；仅调试睡态下立刻播 `dormant-wake`；
 3. 呼吸引导结束后记账（**勿**再播一遍睡醒）；本次打卡按所选时长**等同于完成一次专注会话**；
    并出轻量 toast `HONESTY_CHECKIN_RECORDED`（「别处的静心，也算数」），再出桥接邀请；
-4. 视觉边界：调试/历史键 `wakeUp` 用伸懒腰（`stretch-reminder` 同源），**不得**与 Honesty 睡醒共用 `dormant-wake`。
+4. 视觉边界：睡醒只用 Honesty / 长离 2B 的 `dormantWake`；**不得**再引入已删的调试键 `wakeUp`（曾 stretch 末帧闭眼）。2h 舒展走 `stretchReminder`。
 
 #### 4. 频率与限频边界
 

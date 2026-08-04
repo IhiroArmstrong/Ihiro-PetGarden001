@@ -243,6 +243,7 @@ export class EmotionController {
         }
       },
       // 进 DORMANT 过渡（2c）：披毯/星光斗篷正放；默认 onComplete 后由 MoodController 接 sleeping。
+      // holdPose：深夜 Rise / 达标结束定格末帧进 Reflection（不自动接 sleeping）。
       // 2026-08-04：classic cloak-sleep 与 starlight v5 约 50/50（可 options.cloakVariant 强制）。
       cloakSleep: (options = {}) => {
         this._leaveIdleBaseline();
@@ -253,21 +254,26 @@ export class EmotionController {
         );
         this._activeCloakVariant = variant;
         const sequenceName = cloakSleepSequenceKey(variant);
+        const holdPose = Boolean(options.holdPose);
         if (!this.spritePlayer) {
           options.onComplete?.('cloakSleep');
-          this.playEmotion('sleeping', { cloakVariant: variant });
+          if (!holdPose) {
+            this.playEmotion('sleeping', { cloakVariant: variant });
+          }
           return;
         }
         const started = this.spritePlayer.play(sequenceName, {
           crossFadeMs: options.crossFadeMs,
-          holdLastFrame: false,
+          holdLastFrame: holdPose,
           onComplete: () => {
             options.onComplete?.('cloakSleep');
           }
         });
         if (!started) {
           options.onComplete?.('cloakSleep');
-          this.playEmotion('sleeping', { cloakVariant: variant });
+          if (!holdPose) {
+            this.playEmotion('sleeping', { cloakVariant: variant });
+          }
         }
       },
       smiling: (options = {}) => {
@@ -644,27 +650,9 @@ export class EmotionController {
           }
         }
       },
-      // 唤醒起身（调试 / 历史键）：伸懒腰 stretch-reminder 同源，与 Honesty 睡醒区分。
-      wakeUp: (options = {}) => {
-        if (!this.spritePlayer) {
-          console.warn(
-            '[EmotionController] wakeUp: spritePlayer 未接入，跳过'
-          );
-          return;
-        }
-        this._leaveIdleBaseline({ clear: false });
-        this._use2DMainline();
-        const started = this.spritePlayer.play(
-          'wakeUp',
-          this._oneShotPlayOpts(options, 'wakeUp')
-        );
-        if (!started) {
-          this._finishOneShot(options, 'wakeUp');
-        }
-      },
-      // Honesty Check-in 唤醒：睡态 → 揭毯/卸斗篷 → 定格坐禅（暂不接金光/halo）。
+      // Honesty Check-in / 长离回前台苏醒：睡态 → 揭毯/卸斗篷 → 定格坐禅（暂不接金光/halo）。
       // 优先匹配本轮 `_activeCloakVariant`；否则约 50/50 classic vs starlight。
-      // 注意：调试「唤醒(伸懒腰)」是 wakeUp/stretch，不是从睡姿苏醒。
+      // 2026-08-04：已删除未接线调试键 wakeUp（伸懒腰末帧闭眼）；舒展提醒仍走 stretchReminder。
       dormantWake: (options = {}) => {
         this._leaveIdleBaseline({ clear: false });
         this.dynamicMotion.setBreathingEnabled(true);
@@ -1133,7 +1121,6 @@ export class EmotionController {
       { key: 'mindfulAcknowledge', label: '正念点头鞠躬' },
       { key: 'stretchReminder', label: '两小时舒展' },
       { key: 'blink', label: '眨眼' },
-      { key: 'wakeUp', label: '唤醒(伸懒腰)' },
       { key: 'dormantWake', label: 'Honesty唤醒(流程)' },
       { key: 'haloBreathing', label: '光环呼吸奖励' }
     ];
@@ -1170,7 +1157,6 @@ export class EmotionController {
       sessionComplete: 'session-complete',
       nodBow: 'nod-bow',
       stretchReminder: 'stretch-reminder',
-      wakeUp: 'wakeUp(=stretch)',
       sleeping: 'sleeping',
       cloakSleep: 'cloak-sleep 披毯入睡(经典)',
       dormantWake: 'cloak-sleep 倒放唤醒(经典)',
@@ -1227,7 +1213,6 @@ export class EmotionController {
           'mindfulAcknowledge',
           'stretchReminder',
           'blink',
-          'wakeUp',
           'dormantWake'
         ]);
         const opts = holdPoseKeys.has(key) ? { holdPose: true } : {};
@@ -1469,7 +1454,6 @@ export const EMOTION_KEYS = Object.freeze({
   BOOK_READING: 'bookReading',
   PARROT_EAR_VISIT: 'parrotEarVisit',
   GOLDEN_HALO_PALMS: 'goldenHaloPalms',
-  WAKE_UP: 'wakeUp',
   DORMANT_WAKE: 'dormantWake',
   CLOAK_SLEEP: 'cloakSleep',
   HALO_BREATHING: 'haloBreathing',

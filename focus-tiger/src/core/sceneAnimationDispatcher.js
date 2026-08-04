@@ -74,10 +74,12 @@ export const STRETCH_POOL = Object.freeze([
   Object.freeze({ key: 'yawnStretch', weight: 40 })
 ]);
 
+/** Late-night life-sense: enter DORMANT / cloak (Expand A). Sentinel for tryPlaySceneAnim. */
+export const LATE_NIGHT_FORCE_DORMANT_KEY = 'forceDormant';
+
 /** @type {ReadonlyArray<WeightedEntry>} */
 export const LATE_NIGHT_POOL = Object.freeze([
-  Object.freeze({ key: 'yawnStretch', weight: 50 }),
-  Object.freeze({ key: 'teaDrinking', weight: 50 })
+  Object.freeze({ key: LATE_NIGHT_FORCE_DORMANT_KEY, weight: 100 })
 ]);
 
 /** @type {ReadonlyArray<WeightedEntry>} */

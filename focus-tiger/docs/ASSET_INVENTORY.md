@@ -117,7 +117,7 @@
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
 | nod-bow | 13 | nodBow / intentionNod | **已接线** mindfulAcknowledge · Choose | en 切语；Honesty 短补登 |
-| stretch-reminder | 17 | stretchReminder · wakeUp | **已接线** 舒展提醒 | Slice B：与 yawn 同档池 |
+| stretch-reminder | 17 | stretchReminder | **已接线** 2h 舒展提醒 | 2026-08-04 删除同源调试键 wakeUp |
 | cloak-sleep | 34 | cloakSleep / sleeping / dormantWake | **已接线** 经典披毯·睡循环·倒放 | 与 starlight **约 50/50** |
 | starlight-cloak-sleep | 67 | starlightCloakSleep / starlightSleeping | **已接线** v5 正放·睡循环 | 2026-08-04 v5；与 classic 并存 |
 | starlight-cloak-wake | 67 | starlightDormantWake | **已接线** v5 卸斗篷苏醒 | sleep 物理倒序；苏醒优先匹配入睡变体 |
@@ -161,7 +161,8 @@
 | parrotEarVisit | parrot-ear-visit-feather | 提醒 · 轻完成稀有 · streak-7 仪式二选一 |
 | riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
-| wakeUp | stretch-reminder（同源） | 已接线；与 Honesty 视觉分离（2026-07-19） |
+| stretchReminder | stretch-reminder | 已接线（2h 舒展） |
+| wakeUp | — | **已删除（2026-08-04）**；曾 stretch-reminder 同源调试键 |
 | snoringZZZ | 无 | unimplemented |
 | smileSquint / petHead / dizzyBlink | 无序列 | 检测有、视觉占位 |
 | eyeTracking | `public/textures/eye-pupils/pupil-{left,right}.png` | **已废弃（2026-07-19）**：不再接线；原因见 `CORE_LOOP.md`。PNG 可留作历史素材 |
@@ -200,7 +201,7 @@
 ## 仍缺正式素材
 
 - smileSquint / petHead / dizzyBlink 动作序列  
-- wakeUp → 伸懒腰（stretch-reminder 同源）；snoringZZZ 仍缺；第二套侧卧睡醒素材仍缺
+- snoringZZZ 仍缺；第二套侧卧睡醒素材仍缺；`wakeUp` 调试键已删（2026-08-04）
 - ~~EyeTracking 正式瞳孔 PNG~~ → 曾入库但功能已废弃（见 `CORE_LOOP.md`），勿再接线
 
 ---

@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 `Yin_Starlight_Cloak_Sleep_forward_v5` + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**（入睡变体写入 `_activeCloakVariant`，苏醒优先匹配）。实验室入库素材可试播三条 starlight。Wellness 冷启动 2A：深夜 forceDormant 披斗篷；清晨苏醒仪式 + toast；白天仍禁 2h 戳开场即睡。拓展 A/B（Idle15min / 深夜 Rise 披斗篷）与长离苏醒 2B **未接线**。
+- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**已接线**：Expand A（深夜 Idle→DORMANT；Idle≥15min 无操作→DORMANT）、Expand B（深夜 Rise/达标→披斗篷 hold→Reflection）、2B（FOCUSING 且 tab 隐藏≥30min→`dormantWake`，仍 Focusing）。**2h→DORMANT 保留**（仅非 Focusing；与 2B 互补）。删除未接线调试键 `wakeUp`。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：跨动画短淡入一律 1s CapCut；硬切 `0` 保持。用户书面：无闪白 / 硬切仍硬切 — **测试 OK**（关单）。轻完成池无 `curiousTilt` — **须以后慢慢碰概率**（暂不关单）。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。人工仍待复测冷启动 Welcome 优先。**工作流根因**（Welcome 误出鹦鹉）：`DEV_WORKFLOW_QUALITY` **§6.10**。
 - **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 已验证** → 格式生效。**④ 视觉护栏试点已合（PR #93）**；同日用户拍板 **保持观察、暂不扩** linux 软快照 / peeked / 更多 id。⑤ 仍 Backlog。
@@ -293,7 +293,7 @@
 
 **已知的开放决策 / 待确认事项**：
 
-- **星光斗篷拓展（2026-08-04）**：2A wellness 冷启动已接；深夜 Idle 披斗篷 / 深夜 Rise 入睡 / 长离苏醒仍待排期。
+- **星光斗篷拓展（2026-08-04）**：2A wellness + Expand A/B + 长离 2B **已接线**；2h→DORMANT 保留互补。
 - **语义化版本与稳定发布点（2026-07-30 已拍板）**：SemVer；首稳 `v1.0.0`；稳定版 = `main` annotated tag；开发阶段不切 `release/*`。见 `WORKFLOW.md` / `RULES_INDEX` → `git-semver-release`（非开放项，留此一行防重复开议题）。
 - **v1.0 纯本地 / v1.1 云端（2026-07-30 已拍板）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网与云端关键算法，优先保障可离线完整体验；**v1.1** 快速跟进云端算法。代码保留云端可扩展性（保留 `cloud/` 骨架与前后端解耦；**禁止**在 v1.0 把核心门闩绑死在必须成功的云请求上）。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。

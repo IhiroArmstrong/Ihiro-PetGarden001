@@ -476,6 +476,7 @@ export const SPRITE_SEQUENCES = {
 
   // 活跃专注累计 2 小时的温和舒展提醒；与 sleeping → awake 的 dormant-wake 不同源。
   // 17 拍 @ 4fps ≈ 4.3s（ONE_SHOT ack 带）。
+  // 2026-08-04：删除未接线调试键 wakeUp（同源伸懒腰、末帧闭眼）；产品舒展仍走本键。
   stretchReminder: {
     animation: 'stretch-reminder',
     frameCount: 17,
@@ -483,18 +484,6 @@ export const SPRITE_SEQUENCES = {
     loop: false,
     loopMode: 'none',
     holdLastFrame: false
-  },
-
-  // 调试 / 历史 WakeUp：伸懒腰式清醒（同源 stretch-reminder 素材，独立情绪键）。
-  // 与 Honesty 的 dormant-wake（侧卧深睡→坐姿）刻意区分；勿再共用 dormant-wake。
-  wakeUp: {
-    animation: 'stretch-reminder',
-    frameCount: 17,
-    fps: 8,
-    loop: false,
-    loopMode: 'none',
-    holdLastFrame: true,
-    frameHolds: { 17: 280 }
   },
 
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。

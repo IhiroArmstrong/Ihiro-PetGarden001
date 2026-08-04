@@ -11,7 +11,7 @@ export const REFOCUS_PER_SESSION_LIMIT = 1;
 const STRONG_EMOTIONS = new Set([
   'celebrating',
   'milestoneGlow',
-  'wakeUp',
+  'dormantWake',
   'incenseComplete',
   'sessionComplete'
 ]);

@@ -175,11 +175,11 @@ test('blink smile is registered as a pingpong smiling baseline', () => {
 });
 
 
-test('wakeUp uses stretch-reminder asset, distinct from dormantWake', () => {
-  assert.equal(SPRITE_SEQUENCES.wakeUp.animation, 'stretch-reminder');
-  assert.equal(SPRITE_SEQUENCES.wakeUp.frameCount, 17);
+test('stretchReminder uses stretch-reminder; wakeUp debug key removed', () => {
+  assert.equal(SPRITE_SEQUENCES.stretchReminder.animation, 'stretch-reminder');
+  assert.equal(SPRITE_SEQUENCES.stretchReminder.frameCount, 17);
+  assert.equal(SPRITE_SEQUENCES.wakeUp, undefined);
   assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
-  assert.notEqual(SPRITE_SEQUENCES.wakeUp.animation, SPRITE_SEQUENCES.dormantWake.animation);
 });
 
 test('dormantWake plays cloak-sleep in reverse (34 → 001)', () => {
