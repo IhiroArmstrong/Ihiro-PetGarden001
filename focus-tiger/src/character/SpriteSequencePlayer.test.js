@@ -3,8 +3,6 @@ import assert from 'node:assert/strict';
 import {
   advanceSpriteFrame,
   shouldHideOverlayOnFinish,
-  shouldApplySleepBreath,
-  SLEEP_BREATH_CLASS,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
 import { buildFramePaths } from './CharacterConfig.js';
@@ -378,23 +376,19 @@ test('product sleep/wake stay on cloak-sleep keys; starlight sequences registere
   assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.sleeping.animation, 'cloak-sleep');
-  assert.equal(SPRITE_SEQUENCES.sleeping.sleepBreath, true);
   assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.animation, 'starlight-cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.frameCount, 67);
   assert.equal(SPRITE_SEQUENCES.starlightSleeping.animation, 'starlight-cloak-sleep');
-  assert.equal(SPRITE_SEQUENCES.starlightSleeping.sleepBreath, true);
-  assert.deepEqual(SPRITE_SEQUENCES.starlightSleeping.frameIndices, [
-    67, 67, 66, 66, 65, 65, 64, 64, 63, 63, 62, 62, 61, 61, 60, 60, 59, 59, 58, 58
-  ]);
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.fps, 2);
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.loopMode, SPRITE_LOOP_MODES.PINGPONG);
+  assert.deepEqual(
+    SPRITE_SEQUENCES.starlightSleeping.frameIndices,
+    [67, 67, 66, 66, 65, 65, 64, 64, 63, 63]
+  );
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.sleepBreath, undefined);
+  assert.equal(SPRITE_SEQUENCES.sleeping.sleepBreath, undefined);
   assert.equal(SPRITE_SEQUENCES.starlightDormantWake.animation, 'starlight-cloak-wake');
   assert.equal(SPRITE_SEQUENCES.starlightDormantWake.frameCount, 67);
-});
-
-test('shouldApplySleepBreath follows sleepBreath flag', () => {
-  assert.equal(shouldApplySleepBreath('starlightSleeping', { sleepBreath: true }), true);
-  assert.equal(shouldApplySleepBreath('sleeping', { sleepBreath: true }), true);
-  assert.equal(shouldApplySleepBreath('cloakSleep', {}), false);
-  assert.equal(SLEEP_BREATH_CLASS, 'ft-sleep-breathing');
 });
 
 test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
