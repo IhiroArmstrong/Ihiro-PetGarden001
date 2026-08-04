@@ -575,7 +575,8 @@
 | P3 | 契约单测：oneshot 名含「then CapCut idle」→ **必须** `onComplete()` 后断言 idle 入口 `crossFadeMs` + `freezeUntilCrossFadeEnds`（对齐 `nodGreeting`）；禁止只 assert 字段写在首段 options |
 | P4 | 产品 companion oneshot 若与张望同属「回 Idle 不得闪白」→ 开工已好清单须显式对齐抗闪不变量（`clear` / `holdLastFrame` / freeze）；禁止只抄 `returnCrossFadeMs` 数字 |
 
-**本回合落地**：查证写入本 §6.13 + `TEST_TRACKER` 用户反馈；**未改运行时**（鹦鹉→Idle 闪白专修另开 `fix/*` + 补全单测 P3）。
+**本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 用户反馈；当时**未改运行时**。  
+**2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（未另开抗闪 `fix/*`）。P3 单测补强仍建议后补。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
@@ -604,7 +605,7 @@
 | F5 | 邀测/复测须写明 **分支 + 端口 + worktree**；`:5173` 常被其它 worktree 占用——测到无修 tip ≠ 本修无效（同型 08-02 薄荷绿清空） |
 
 **本回合落地**：查证写入本 §6.13 + `TEST_TRACKER` 复测反馈；清单迁入 `KNOWN_RISKY_TEST_CHECKLIST.md`。  
-**专修（2026-08-04 · `fix/focusing-remedy-primary-chip-2026-08-04`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**须人工复测**后关单。
+**专修（2026-08-04 · PR #109 → `0494dd6`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**2026-08-04 晚** develop tip 窄屏 Focusing×? **测试 OK**（子项关单；Task3 整行仍开）。
 
 **2026-08-04 再书面「没修复」· 工作流根因（查证）**：不是代码回潮。本机 `127.0.0.1:5173` 当时由 **另一 worktree**  
 `Zen-tiger-Pet-garden001-wt-starlight-cloak-sleep`（分支 `docs/develop-small-pr-auto-merge-habit` @ `009402b`）占用——**无** `resolveRemedyImmediateAndFolded`。修在主仓 `fix/focusing-remedy-primary-chip-2026-08-04` @ `8241858` 且**未 push**。用户按默认 5173 复测 = 测到无修 tip → 误判「没修」。同型：08-02 薄荷绿清空钮事故（`TEST_TRACKER` ⋯ 行）。  
