@@ -805,13 +805,13 @@ export class AmbientSoundscapeUI {
         .ambient-soundscape__mute {
           top: 10px;
           right: 10px;
-          /* +50% vs prior 40px (narrow floating mute; ActionBar ♪ owns Idle) */
-          width: 60px;
-          height: 60px;
+          /* Narrow keeps original size — +50% note is wide-only */
+          width: 40px;
+          height: 40px;
         }
         .ambient-soundscape__icon-svg {
-          width: 30px;
-          height: 30px;
+          width: 20px;
+          height: 20px;
         }
         .ambient-soundscape__focus-chrome {
           right: 12px;

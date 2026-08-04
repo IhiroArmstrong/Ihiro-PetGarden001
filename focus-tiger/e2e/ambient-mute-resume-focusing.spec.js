@@ -257,3 +257,28 @@ test.describe('ambient ⑩ Focusing track audible', () => {
     expect(snap.want).toBe(true);
   });
 });
+
+test.describe('ambient narrow Focusing Soundscape visible', () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test('375 Focusing: ActionBar ♪ click opens on-screen Soundscape panel', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    await quickStartFocus(page);
+    await expect(page.locator('#focus-hud')).toBeVisible({ timeout: 10_000 });
+
+    const note = page.locator('#ft-narrow-mute-btn');
+    await expect(note).toBeVisible();
+    await note.click();
+    const panel = page.locator('.ambient-soundscape__panel');
+    await expect(panel).toBeVisible({ timeout: 5_000 });
+    // Must not remain parked at left:-9999 (Focusing hide CSS regression).
+    const box = await panel.boundingBox();
+    expect(box).toBeTruthy();
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(375 + 1);
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y).toBeLessThan(667);
+  });
+});
