@@ -3,15 +3,14 @@ import assert from 'node:assert/strict';
 import { STATES } from './StateManager.js';
 import {
   LONG_AWAY_WAKE_MS,
-  IDLE_INACTIVITY_CLOAK_MS,
   FOREGROUND_RETURN_ACTIONS,
   shouldPlayLongAwayWake,
-  shouldIdleInactivityCloak,
   shouldLateNightCloakOnSessionEnd,
   isLateNightCloakHoldEmotion,
   resolveForegroundReturnAction,
   resolveSessionEndHoldEmotion
 } from './companionRestPolicy.js';
+import * as companionRestPolicy from './companionRestPolicy.js';
 
 test('shouldPlayLongAwayWake only when FOCUSING and hidden long enough', () => {
   assert.equal(
@@ -68,26 +67,17 @@ test('resolveForegroundReturnAction: 2B vs keep 2h DORMANT path', () => {
   );
 });
 
-test('shouldIdleInactivityCloak only when IDLE past threshold', () => {
+/**
+ * 回归锚（2026-08-04 plan A）：白天 Idle 无操作披毯已删除。
+ * 不得再导出 shouldIdleInactivityCloak / IDLE_INACTIVITY_CLOAK_MS。
+ */
+test('plan A: daytime Idle inactivity cloak helpers are removed', () => {
   assert.equal(
-    shouldIdleInactivityCloak({
-      sessionState: STATES.IDLE,
-      idleMs: IDLE_INACTIVITY_CLOAK_MS
-    }),
-    true
-  );
-  assert.equal(
-    shouldIdleInactivityCloak({
-      sessionState: STATES.IDLE,
-      idleMs: IDLE_INACTIVITY_CLOAK_MS - 1
-    }),
+    Object.hasOwn(companionRestPolicy, 'shouldIdleInactivityCloak'),
     false
   );
   assert.equal(
-    shouldIdleInactivityCloak({
-      sessionState: STATES.FOCUSING,
-      idleMs: IDLE_INACTIVITY_CLOAK_MS * 2
-    }),
+    Object.hasOwn(companionRestPolicy, 'IDLE_INACTIVITY_CLOAK_MS'),
     false
   );
 });
