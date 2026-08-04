@@ -292,7 +292,7 @@ test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
   expect(playing.audible).toBe(false);
 });
 
-test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }) => {
+test('wide park: ? opens purpose only (no remedy tip spray)', async ({ page }) => {
   await openFreshProductShell(page);
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible();
@@ -303,88 +303,14 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
     timeout: 8_000
   });
   await page.locator('#onboarding-hint-help').click();
-  // 主 tip + 可见锚点各一条立刻出；⋯ 内 chrome 折进一次性芯片，展开后再验 parked remap
-  const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
-  await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
-  await expect(page.locator('#onboarding-app-purpose')).toBeVisible();
+  await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+    timeout: 8_000
+  });
+  await expect(page.locator('ft-onboarding-hint-bubble[data-remedy="1"]')).toHaveCount(
+    0
+  );
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
-  ).toBeVisible();
-  // 用途卡可能被「还有 N 条」芯片挡住；直接关掉再展开目录
-  await page.evaluate(() => {
-    const card = document.getElementById('onboarding-app-purpose');
-    if (card) card.hidden = true;
-  });
-  await expect(page.locator('#ft-hint-catalog-chip')).toBeVisible({
-    timeout: 5_000
-  });
-  // On-screen controls already got their tips; the chip is a one-shot stand-in
-  // for the ⋯ chrome only, so it carries no "N more" queue.
-  const beforeChip = await page.evaluate(
-    () => document.getElementById('ft-hint-catalog-chip')?.textContent || ''
-  );
-  expect(beforeChip).not.toMatch(/\d/);
-  await page.locator('#ft-hint-catalog-chip').click();
-  const afterClick = await page.evaluate(() => {
-    const bubbles = [
-      ...document.querySelectorAll(
-        'ft-onboarding-hint-bubble[data-remedy="1"]'
-      )
-    ].filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    return {
-      ids: bubbles.map((el) => el.getAttribute('data-hint-id')),
-      chipVisible: Boolean(chip && !chip.hidden)
-    };
-  });
-  expect(afterClick.ids).toContain('wide-more-menu');
-  expect(afterClick.chipVisible).toBe(false);
-  const layout = await page.evaluate(() => {
-    const moreEl = document.getElementById('ft-wide-more-btn');
-    const purpose = document.getElementById('onboarding-app-purpose');
-    const bubbles = [
-      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
-    ].filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    if (!moreEl || bubbles.length === 0) {
-      return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
-    }
-    const mr = moreEl.getBoundingClientRect();
-    const hit = bubbles.some((b) => {
-      const r = b.getBoundingClientRect();
-      const cx = (r.left + r.right) / 2;
-      const cy = (r.top + r.bottom) / 2;
-      const mcx = (mr.left + mr.right) / 2;
-      const mcy = (mr.top + mr.bottom) / 2;
-      return Math.hypot(cx - mcx, cy - mcy) < 260;
-    });
-    let purposeBlocksTip = false;
-    if (purpose && !purpose.hidden) {
-      const pr = purpose.getBoundingClientRect();
-      purposeBlocksTip = bubbles.some((b) => {
-        const r = b.getBoundingClientRect();
-        const pad = 8;
-        return !(
-          pr.right + pad < r.left ||
-          pr.left - pad > r.right ||
-          pr.bottom + pad < r.top ||
-          pr.top - pad > r.bottom
-        );
-      });
-    }
-    // One-tip catalog: do not require quick-start + focus-hud simultaneously.
-    // Remap lock = at least one visible remedy tip near the ⋯ button.
-    return {
-      ok: hit && !purposeBlocksTip,
-      hit,
-      purposeBlocksTip,
-      bubbleCount: bubbles.length
-    };
-  });
-  expect(layout.ok, JSON.stringify(layout)).toBe(true);
+  ).toHaveCount(0);
+  await expect(page.locator('#ft-hint-catalog-chip')).toBeHidden();
 });

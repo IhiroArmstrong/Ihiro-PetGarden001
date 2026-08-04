@@ -1,19 +1,15 @@
 /**
- * 分散式即时提示气泡 + 角落「?」补救入口。
- * click + tier：
- * - simple：悬停/点圆点预览 → 关框后 peeked（静止弱化圆点）；相关操作 markSeen → 移除
- * - detailed：预览≠已读；进详情（purpose card）→ done 移除圆点
+ * Hint 产品面（2026-08-04 收窄）：只保留两件事——
+ * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
+ * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
+ * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
  * @see ONBOARDING_HINTS.md
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   HINT_LOCALE_KEYS,
-  createHintsSeenStore,
-  resolvePrimaryRemedyHintId,
-  resolveRemedyCatalogHintIds,
-  resolveRemedyImmediateAndFolded,
-  selectExclusiveAutoHintIds
+  createHintsSeenStore
 } from '../core/OnboardingHintsStore.js';
 import {
   getHintTriggerMode,
@@ -345,8 +341,6 @@ function canHoverPreview() {
   );
 }
 
-const AUTO_HINT_MAX_CONCURRENT = 1;
-
 export class OnboardingHintsUI {
   /**
    * @param {HTMLElement} mountRoot
@@ -386,6 +380,8 @@ export class OnboardingHintsUI {
     this._paintMeta = new Map();
     /** @type {HTMLElement | null} */
     this.purposeCard = null;
+    /** Purpose card opened by ? hover (leave ? / card → hide). Click pins until dismiss. */
+    this._purposeFromHover = false;
 
     this.helpBtn = document.createElement('button');
     this.helpBtn.type = 'button';
@@ -397,9 +393,7 @@ export class OnboardingHintsUI {
     helpMark.textContent = '?';
     this.helpBtn.append(helpMark);
     this.helpBtn.addEventListener('click', () => {
-      // 点 ? 打开补救 + 用途简介卡 = detailed 进详情 → done
-      this.markSeen('help-affordance');
-      this.showRemedy();
+      this.openPurposeOnly({ markHelpDone: true });
     });
 
     // 收纳进左下热力簇（若已建），避免角落散落；窄屏 park 只认簇即可
@@ -411,6 +405,7 @@ export class OnboardingHintsUI {
     }
     this._ensurePurposeCard();
     this._injectHelpStyles();
+    this._bindHelpPurposeHover(this.helpBtn);
     this.syncDiscoveryDots();
     this._onReposition = () => this.repositionAll();
     this._onDocPointerDown = (event) => this._handleOutsidePointer(event);
@@ -431,30 +426,83 @@ export class OnboardingHintsUI {
       }
     });
 
-    // 点 ? 后的用途卡 / 补救气泡：点框外空白收起
+    // 产品简介卡：点框外空白收起（不再有补救 tip 喷洒）
     this._onDocPointer = (event) => {
       const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
-      const chipOpen = Boolean(this._catalogChip && !this._catalogChip.hidden);
-      const remedyOpen = this._remedyIds.size > 0 || chipOpen;
-      if (!purposeOpen && !remedyOpen) return;
+      if (!purposeOpen) return;
       const el = /** @type {Element | null} */ (
         event.target instanceof Element ? event.target : event.target?.parentElement
       );
       if (!el) return;
       if (this.helpBtn.contains(el)) return;
       if (el.closest('#ft-narrow-help-btn')) return;
-      if (el.closest('#ft-hint-catalog-chip')) return;
       if (this.purposeCard?.contains(el)) return;
-      if (el.closest('ft-onboarding-hint-bubble')) return;
       this._hidePurposeCard();
-      this._hideCatalogChip();
-      for (const id of [...this._remedyIds]) this.hideBubble(id);
-      this._remedyIds.clear();
-      this._catalogPending = [];
-      this._remedyPrimaryId = null;
-      this._catalogShownId = null;
+      this._purposeFromHover = false;
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
+  }
+
+  /**
+   * 「?」唯一动作：产品简介。绝不铺本页其它 Hints。
+   * @param {{ markHelpDone?: boolean }} [opts]
+   * @returns {void}
+   */
+  openPurposeOnly({ markHelpDone = false } = {}) {
+    this._dismissAllPageHints();
+    if (markHelpDone) {
+      this._purposeFromHover = false;
+      this.markSeen('help-affordance');
+    }
+    this._showPurposeCard();
+  }
+
+  /**
+   * Hide every tip bubble / remedy / catalog — leave mint dots alone.
+   * @returns {void}
+   */
+  _dismissAllPageHints() {
+    this._hideCatalogChip();
+    for (const id of [...this._remedyIds]) this.hideBubble(id);
+    this._remedyIds.clear();
+    this._catalogPending = [];
+    this._remedyPrimaryId = null;
+    this._catalogShownId = null;
+    for (const id of [...this._clickExpandedIds]) {
+      this._collapseClickHint(id, { acknowledgeSimple: false });
+    }
+    for (const id of [...this._visibleIds]) {
+      this.hideBubble(id);
+    }
+  }
+
+  /**
+   * Desktop: hover ? → purpose card; leave ? / card → hide (unless click-pinned).
+   * @param {Element | null} host
+   * @returns {void}
+   */
+  _bindHelpPurposeHover(host) {
+    const el = /** @type {HTMLElement | null} */ (host);
+    if (!el) return;
+    if (el.dataset.ftHelpPurposeBound === '1') return;
+    el.dataset.ftHelpPurposeBound = '1';
+
+    el.addEventListener('pointerenter', () => {
+      if (!canHoverPreview()) return;
+      this._purposeFromHover = true;
+      this.openPurposeOnly({ markHelpDone: false });
+    });
+    el.addEventListener('pointerleave', (event) => {
+      if (!canHoverPreview()) return;
+      if (!this._purposeFromHover) return;
+      const related = /** @type {Node | null} */ (event.relatedTarget);
+      if (related && this.purposeCard?.contains(related)) return;
+      if (related && this.helpBtn.contains(related)) return;
+      const narrow = document.getElementById('ft-narrow-help-btn');
+      if (related && narrow?.contains(related)) return;
+      this._hidePurposeCard();
+      this._purposeFromHover = false;
+    });
   }
 
   /**
@@ -468,32 +516,18 @@ export class OnboardingHintsUI {
     const mode = getHintTriggerMode(hintId);
     if (mode === 'manual' || mode === 'legacy') return false;
 
+    // 2026-08-04：取消自动 tip 喷洒；只保留脉冲点（click）+「?」简介
+    if (mode === 'auto') return false;
+
     if (mode === 'click') {
+      // 「?」自身不走 tip 气泡——悬停/点击只出产品简介
+      if (hintId === 'help-affordance') return false;
       if (this.store.isDone(hintId)) return false;
       this._showClickBadge(hintId);
       return true;
     }
 
-    if (this.store.isSeen(hintId)) return false;
-
-    const otherAutos = [...this._visibleIds].filter(
-      (id) =>
-        id !== hintId &&
-        !this._remedyIds.has(id) &&
-        getHintTriggerMode(id) === 'auto'
-    );
-    if (otherAutos.length > 0) {
-      const winner = selectExclusiveAutoHintIds([hintId, ...otherAutos], {
-        maxConcurrent: AUTO_HINT_MAX_CONCURRENT
-      })[0];
-      if (winner !== hintId) return false;
-      for (const id of otherAutos) {
-        if (id !== winner) this.hideBubble(id);
-      }
-    }
-
-    this._paint(hintId, { remedy: false });
-    return true;
+    return false;
   }
 
   /**
@@ -501,27 +535,20 @@ export class OnboardingHintsUI {
    * @returns {void}
    */
   syncVisibleAutos(hintIds) {
-    // click：!done（含 peeked 静止圆点）；auto：!done（= !isSeen）
+    // click：!done（含 peeked 静止圆点）；auto 不再自动出气泡
     const want = hintIds.filter(
       (id) => HINT_LOCALE_KEYS[id] && !this.store.isDone(id)
     );
     this._lastAutoWant = want;
 
-    const autoWant = want.filter((id) => getHintTriggerMode(id) === 'auto');
-    const clickWant = want.filter((id) => isClickTriggerHint(id));
+    const clickWant = want.filter(
+      (id) => isClickTriggerHint(id) && id !== 'help-affordance'
+    );
 
-    const show = selectExclusiveAutoHintIds(autoWant, {
-      maxConcurrent: AUTO_HINT_MAX_CONCURRENT
-    });
-    const showSet = new Set(show);
-
+    // 清掉仍挂着的 auto / 非悬停 tip（补救已废）
     for (const id of [...this._visibleIds]) {
-      if (this._remedyIds.has(id)) continue;
       if (this._clickExpandedIds.has(id)) continue;
-      if (!showSet.has(id)) this.hideBubble(id);
-    }
-    for (const id of show) {
-      this.maybeShowAuto(id);
+      this.hideBubble(id);
     }
 
     const clickWantSet = new Set(clickWant);
@@ -535,28 +562,7 @@ export class OnboardingHintsUI {
   }
 
   _promoteNextAuto() {
-    if (this._remedyIds.size > 0) return;
-    // ⋯ / drawer open: never re-promote Sit tip under the panel after row hover.
-    if (
-      document.body.classList.contains('ft-wide-more-open') ||
-      document.querySelector('.ft-narrow-idle-shell.is-sheet-open')
-    ) {
-      return;
-    }
-    const openAutos = [...this._visibleIds].filter(
-      (id) => !this._remedyIds.has(id) && getHintTriggerMode(id) === 'auto'
-    );
-    if (openAutos.length > 0) return;
-    const want = (this._lastAutoWant || []).filter(
-      (id) =>
-        HINT_LOCALE_KEYS[id] &&
-        !this.store.isDone(id) &&
-        getHintTriggerMode(id) === 'auto'
-    );
-    const next = selectExclusiveAutoHintIds(want, {
-      maxConcurrent: AUTO_HINT_MAX_CONCURRENT
-    });
-    for (const id of next) this.maybeShowAuto(id);
+    // 自动 tip 已关闭：悬停收起后不再串行弹出下一条
   }
 
   /**
@@ -580,11 +586,57 @@ export class OnboardingHintsUI {
     this.helpBadge.removeAttribute('pulse');
   }
 
-  /** Soft blue dots on unread Quick Start / Focusing HUD chrome. */
+  /**
+   * Soft blue dots on unread Quick Start / Focusing HUD chrome.
+   * Also rebinds narrow ActionBar「?」hover → purpose only.
+   */
   syncDiscoveryDots() {
     syncAllDiscoveryDots(this.store);
     this._syncHostMintDots();
     this._syncSecondaryMenuHostMints();
+    this._syncPulseOwnedNativeTips();
+    this._bindHelpPurposeHover(document.getElementById('ft-narrow-help-btn'));
+  }
+
+  /**
+   * When a mint pulse tip already covers a control, suppress duplicate native /
+   * built-in hover copy (title attribute, streak-meter .label). If the pulse is
+   * gone (done), restore the residual hover so the control is not mute.
+   * @returns {void}
+   */
+  _syncPulseOwnedNativeTips() {
+    const streakUnread =
+      isClickTriggerHint('focus-hud-streak') &&
+      !this.store.isDone('focus-hud-streak');
+    const streak = document.querySelector(
+      '#focus-hud streak-meter, streak-meter'
+    );
+    if (streak) {
+      if (streakUnread) streak.setAttribute('pulse-owns-tip', '');
+      else streak.removeAttribute('pulse-owns-tip');
+      // Native title always duplicated .label / pulse tip — keep aria-label only.
+      streak.removeAttribute('title');
+    }
+
+    const quickUnread =
+      isClickTriggerHint('quick-start') && !this.store.isDone('quick-start');
+    for (const sel of [
+      '#quick-start-focus',
+      '#ft-wide-home-quickstart',
+      '#ft-narrow-home-quickstart'
+    ]) {
+      const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
+      if (!el) continue;
+      if (quickUnread) {
+        if (el.title && !el.dataset.ftNativeTitleBackup) {
+          el.dataset.ftNativeTitleBackup = el.title;
+        }
+        el.removeAttribute('title');
+      } else if (el.dataset.ftNativeTitleBackup) {
+        el.title = el.dataset.ftNativeTitleBackup;
+        delete el.dataset.ftNativeTitleBackup;
+      }
+    }
   }
 
   /**
@@ -752,50 +804,11 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 补救契约：点「?」→ 主条 +（Idle 等）可见锚 tip；⋯/抽屉 chrome 进芯片。
-   * **Focusing**：只画主条，其余进「还有 N 条」芯片逐条展开（禁多 tip 叠团 · §6.13）。
-   * 用途简介卡仍同出。
+   * Legacy API name：点「?」曾铺开补救 tips。现仅打开产品简介，绝不喷本页其它 Hints。
+   * @returns {void}
    */
   showRemedy() {
-    const scene = this.getScene() || {};
-    const primary = resolvePrimaryRemedyHintId(scene);
-    const catalog = resolveRemedyCatalogHintIds(scene);
-    const { immediate, folded } = resolveRemedyImmediateAndFolded(scene, {
-      primary,
-      catalog,
-      hasOnScreenAnchor: (id) => this._hasOnScreenAnchor(id)
-    });
-    this._catalogPending = folded;
-    this._remedyPrimaryId = primary;
-    this._catalogShownId = null;
-
-    const nextRemedy = new Set([primary, ...immediate]);
-
-    for (const id of [...this._remedyIds]) {
-      if (!nextRemedy.has(id) && id !== 'help-remedy') this.hideBubble(id);
-    }
-    this.hideBubble('help-remedy');
-    this._remedyIds = nextRemedy;
-
-    for (const id of [...this._badgeIds]) this._hideClickBadge(id);
-    this._clickExpandedIds.clear();
-
-    this._paint(primary, { remedy: true });
-    for (const id of immediate) this._paint(id, { remedy: true });
-    this._syncCatalogChip(folded.length, {
-      oneShot: folded.length === 1 && FOLDED_MENU_HINT_IDS.has(folded[0])
-    });
-    this._resolveRemedyBubbleLayout();
-    this._showPurposeCard();
-    this.syncDiscoveryDots();
-    requestAnimationFrame(() => {
-      this.repositionAll();
-      this._positionCatalogChip();
-      requestAnimationFrame(() => {
-        this.repositionAll();
-        this._positionCatalogChip();
-      });
-    });
+    this.openPurposeOnly({ markHelpDone: true });
   }
 
   /**
@@ -1339,7 +1352,16 @@ export class OnboardingHintsUI {
    * @param {string} hintId
    */
   _expandClickHint(hintId) {
+    if (hintId === 'help-affordance') {
+      this.openPurposeOnly({ markHelpDone: false });
+      return;
+    }
     if (this.store.isDone(hintId)) return;
+    // Purpose card open → no page tips
+    if (this.purposeCard && !this.purposeCard.hidden) {
+      this._hidePurposeCard();
+      this._purposeFromHover = false;
+    }
     for (const id of [...this._clickExpandedIds]) {
       if (id !== hintId) {
         this._collapseClickHint(id, {
@@ -1392,8 +1414,7 @@ export class OnboardingHintsUI {
     } else {
       this._syncBadgeChrome(hintId);
     }
-    if (!fromTimeout) this._promoteNextAuto();
-    else this._promoteNextAuto();
+    void fromTimeout;
   }
 
   /**
@@ -1635,11 +1656,29 @@ export class OnboardingHintsUI {
     this._ensurePurposeCard();
     this._refreshPurposeCardCopy();
     this.purposeCard.hidden = false;
+    this._bindPurposeCardHoverLeave();
     this._positionPurposeCard();
   }
 
   _hidePurposeCard() {
     if (this.purposeCard) this.purposeCard.hidden = true;
+    this._purposeFromHover = false;
+  }
+
+  /** When purpose was opened by ? hover, leaving the card hides it. */
+  _bindPurposeCardHoverLeave() {
+    const card = this.purposeCard;
+    if (!card || card.dataset.ftPurposeLeaveBound === '1') return;
+    card.dataset.ftPurposeLeaveBound = '1';
+    card.addEventListener('pointerleave', (event) => {
+      if (!canHoverPreview()) return;
+      if (!this._purposeFromHover) return;
+      const related = /** @type {Node | null} */ (event.relatedTarget);
+      if (related && this.helpBtn.contains(related)) return;
+      const narrow = document.getElementById('ft-narrow-help-btn');
+      if (related && narrow?.contains(related)) return;
+      this._hidePurposeCard();
+    });
   }
 
   _positionPurposeCard() {

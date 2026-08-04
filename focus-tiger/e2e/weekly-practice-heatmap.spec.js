@@ -560,10 +560,9 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
 });
 
 /**
- * Fig12 / L259: ? remedy shows one primary tip +「More tips」chip;
- * on narrow park, chip expands **one** drawer-menu tip (not 3 more / 2 more cascade).
+ * 2026-08-04：点「?」只出产品简介，不再补救喷 tip / More tips 芯片。
  */
-test('375 park: ? remedy primary + catalog chip expands one tip at a time', async ({
+test('375 park: ? opens purpose only (no tip spray / catalog chip)', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -574,40 +573,9 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
 
   await page.locator('#ft-narrow-help-btn').click();
 
-  const before = await page.evaluate(() => {
-    const bubbles = [
-      ...document.querySelectorAll('ft-onboarding-hint-bubble')
-    ].filter((b) => {
-      if (b.open === false) return false;
-      const r = b.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    const chipRect = chip?.getBoundingClientRect();
-    return {
-      count: bubbles.length,
-      ids: bubbles.map((b) => b.dataset.hintId),
-      chipVisible: Boolean(
-        chip &&
-          !chip.hidden &&
-          chipRect &&
-          chipRect.width > 0 &&
-          chipRect.top >= 0 &&
-          chipRect.top < 667
-      ),
-      chipText: chip?.textContent?.trim() || ''
-    };
+  await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+    timeout: 8_000
   });
-  expect(before.count).toBeLessThanOrEqual(2);
-  expect(before.count).toBeGreaterThanOrEqual(1);
-  expect(before.ids).toContain('sit-button');
-  expect(before.chipVisible).toBe(true);
-  expect(before.chipText).toMatch(/more tips|更多提示/i);
-  // One-shot: no countdown "N more tips"
-  expect(before.chipText).not.toMatch(/\d+\s*more|还有\s*\d+/i);
-
-  await page.locator('#ft-hint-catalog-chip').click();
-
   const after = await page.evaluate(() => {
     const bubbles = [
       ...document.querySelectorAll('ft-onboarding-hint-bubble')
@@ -617,117 +585,12 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
       return r.width > 0 && r.height > 0;
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
-    const rects = bubbles.map((b) => {
-      const r = b.getBoundingClientRect();
-      return {
-        id: b.dataset.hintId,
-        left: r.left,
-        top: r.top,
-        right: r.right,
-        bottom: r.bottom
-      };
-    });
-    let overlapPairs = 0;
-    for (let i = 0; i < rects.length; i++) {
-      for (let j = i + 1; j < rects.length; j++) {
-        const a = rects[i];
-        const b = rects[j];
-        const ix = Math.max(
-          0,
-          Math.min(a.right, b.right) - Math.max(a.left, b.left)
-        );
-        const iy = Math.max(
-          0,
-          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
-        );
-        if (ix * iy > 40) overlapPairs += 1;
-      }
-    }
     return {
-      bubbleCount: bubbles.length,
+      count: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
-      chipVisible: Boolean(chip && !chip.hidden),
-      overlapPairs
+      chipVisible: Boolean(chip && !chip.hidden)
     };
   });
-  // Primary + one drawer intro; chip gone (no 3 more / 2 more).
-  expect(after.bubbleCount).toBeLessThanOrEqual(2);
-  expect(after.bubbleCount).toBeGreaterThanOrEqual(1);
-  expect(after.ids).toContain('narrow-drawer-menu');
+  expect(after.count).toBe(0);
   expect(after.chipVisible).toBe(false);
-  expect(after.overlapPairs).toBe(0);
-
-  // Separation runs after paint — poll so CI does not race the first layout.
-  await expect
-    .poll(
-      async () =>
-        page.evaluate(() => {
-          const bubbles = [
-            ...document.querySelectorAll('ft-onboarding-hint-bubble')
-          ].filter((b) => {
-            if (b.open === false) return false;
-            const r = b.getBoundingClientRect();
-            return r.width > 0 && r.height > 0;
-          });
-          const rects = bubbles.map((b) => b.getBoundingClientRect());
-          let overlapPairs = 0;
-          for (let i = 0; i < rects.length; i++) {
-            for (let j = i + 1; j < rects.length; j++) {
-              const a = rects[i];
-              const b = rects[j];
-              const ix = Math.max(
-                0,
-                Math.min(a.right, b.right) - Math.max(a.left, b.left)
-              );
-              const iy = Math.max(
-                0,
-                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
-              );
-              if (ix * iy > 40) overlapPairs += 1;
-            }
-          }
-          return overlapPairs;
-        }),
-      { timeout: 5_000 }
-    )
-    .toBe(0);
-
-  // Grabber-anchored drawer intro must sit above home CTAs (not behind the balls).
-  await expect
-    .poll(
-      async () =>
-        page.evaluate(() => {
-          const cta = document
-            .getElementById('ft-narrow-home-ctas')
-            ?.getBoundingClientRect();
-          const bubbles = [
-            ...document.querySelectorAll('ft-onboarding-hint-bubble')
-          ].filter((b) => {
-            if (b.open === false) return false;
-            const r = b.getBoundingClientRect();
-            return r.width > 0 && r.height > 0;
-          });
-          if (!cta || cta.height <= 0) return { ok: false, reason: 'no-cta' };
-          for (const b of bubbles) {
-            const r = b.getBoundingClientRect();
-            const overlaps =
-              r.left < cta.right &&
-              r.right > cta.left &&
-              r.top < cta.bottom &&
-              r.bottom > cta.top;
-            if (overlaps) {
-              return {
-                ok: false,
-                reason: 'overlap',
-                id: b.dataset.hintId,
-                tipBottom: r.bottom,
-                ctaTop: cta.top
-              };
-            }
-          }
-          return { ok: true };
-        }),
-      { timeout: 5_000 }
-    )
-    .toEqual({ ok: true });
 });

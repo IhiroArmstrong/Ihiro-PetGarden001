@@ -1,9 +1,12 @@
 # HINTS_WIRING.md — 场景 → Hint 接线表
 
 创建日期：2026-08-03  
-**最后修订**：2026-08-03（④ 试点观察：用户拍板暂不扩 linux/peeked/更多 id）
-产品语义层级：位于 `PRODUCT_MOMENTS.md` / `ONBOARDING_HINTS.md` 之下、实现 Brief 之上——回答「**哪个用户时刻该出哪条 hint、门闩与互斥是什么**」。  
-文案、圆点 tier、补救交互细节仍以 **`ONBOARDING_HINTS.md`** 为权威；机器可读 id / 锚点 / `triggerMode` 以 **`src/core/onboardingHintRegistry.js`** 为唯一真源（`hints:doc-sync`）。
+**最后修订**：2026-08-04（**产品面收窄**：运行时只保留「脉冲点悬停 tip」+「? → 产品简介」；点「?」补救喷 tip / auto 喷洒 / More tips **不再作为产品契约**——见 `ONBOARDING_HINTS.md` 文首）
+产品语义层级：位于 `PRODUCT_MOMENTS.md` / `ONBOARDING_HINTS.md` 之下、实现 Brief 之上。  
+文案、圆点 tier 仍以 **`ONBOARDING_HINTS.md`** 为权威；机器可读 id / 锚点 / `triggerMode` 以 **`src/core/onboardingHintRegistry.js`** 为唯一真源（`hints:doc-sync`）。
+
+> **2026-08-04 运行时政策覆盖本表部分历史行**：`resolveAutoHintIds` / `resolveRemedy*` 仍可存在于 Store（单测/考古），但 `OnboardingHintsUI` **不得**再因 sync / 点「?」铺开 tip。验收与 e2e 以「purpose only + pulse hover」为准。  
+> **2026-08-05**：薄荷绿脉冲点**不得**因收窄 tip 喷洒而被删；⋯/抽屉行内 `.ft-secondary-menu-hint-dot` 与音符 `has-hint-mint` 仍按未读绘制。有脉冲的控件须去重原生/自绘悬停文案（见 `ONBOARDING_HINTS.md`）。
 
 > **诚实边界（2026-08-03 分析师）**：本文件 + 库存机器块 = **必要条件**，不是充分条件。  
 > - **已堵**：registry 新 tip 不登记批次簇 / 不同步库存表 → `docs:check` 失败；PR 模板批次钉。  
