@@ -800,6 +800,13 @@ export class NarrowIdleShell {
         cursor: pointer;
         position: relative;
       }
+      /* Top-right ♪ only: +50% vs prior 40px / 18px (help ? stays 40) */
+      #ft-narrow-mute-btn.ft-narrow-action-bar__btn {
+        flex: 0 0 60px;
+        width: 60px;
+        height: 60px;
+        font-size: 27px;
+      }
       .ft-narrow-action-bar__btn > .ft-secondary-menu-hint-dot {
         position: absolute;
         top: 4px;
@@ -824,6 +831,10 @@ export class NarrowIdleShell {
         transform: rotate(-32deg);
         border-radius: 1px;
         pointer-events: none;
+      }
+      #ft-narrow-mute-btn.ft-narrow-action-bar__btn.is-music-off::after {
+        left: 12px;
+        right: 12px;
       }
       .ft-narrow-action-bar__center {
         flex: 1 1 auto;

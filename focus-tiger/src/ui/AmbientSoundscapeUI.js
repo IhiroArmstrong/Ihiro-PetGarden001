@@ -615,8 +615,9 @@ export class AmbientSoundscapeUI {
         right: 14px;
         z-index: 24;
         pointer-events: auto;
-        width: 44px;
-        height: 44px;
+        /* +50% vs prior 44px hit target — music note readability */
+        width: 66px;
+        height: 66px;
         padding: 0;
         border: 1px solid rgba(139, 115, 85, 0.18);
         border-radius: 50%;
@@ -702,8 +703,9 @@ export class AmbientSoundscapeUI {
         color: rgba(120, 92, 68, 0.55);
       }
       .ambient-soundscape__icon-svg {
-        width: 22px;
-        height: 22px;
+        /* +50% vs prior 22px glyph */
+        width: 33px;
+        height: 33px;
         display: block;
       }
       .ambient-soundscape__focus-chrome {
@@ -722,12 +724,13 @@ export class AmbientSoundscapeUI {
         .ambient-soundscape__mute {
           top: 10px;
           right: 10px;
-          width: 40px;
-          height: 40px;
+          /* +50% vs prior 40px (narrow floating mute; ActionBar ♪ owns Idle) */
+          width: 60px;
+          height: 60px;
         }
         .ambient-soundscape__icon-svg {
-          width: 20px;
-          height: 20px;
+          width: 30px;
+          height: 30px;
         }
         .ambient-soundscape__focus-chrome {
           right: 12px;

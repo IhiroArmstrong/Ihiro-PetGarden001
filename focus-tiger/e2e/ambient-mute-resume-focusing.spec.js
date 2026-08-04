@@ -50,6 +50,27 @@ async function chooseBuiltInTrack(page, noteBtn) {
     .toBe(true);
 }
 
+test.describe('ambient cold-open panel selection', () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+
+  test('first note open highlights Off while silent (not Mer-Ka-Ba)', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    const note = page.locator('.ambient-soundscape__mute');
+    await expect(note).toBeVisible({ timeout: 10_000 });
+    await note.click();
+    const panel = page.locator('.ambient-soundscape__panel');
+    await expect(panel).toBeVisible({ timeout: 5_000 });
+    const off = page.locator(
+      '.ambient-soundscape__track[data-track-id="off"]'
+    );
+    await expect(off).toHaveClass(/is-selected/);
+    const snap = await ambientSnap(page);
+    expect(snap.anyAudible || snap.audible).toBe(false);
+  });
+});
+
 test.describe('ambient ⑤⑥ note mute / resume', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
