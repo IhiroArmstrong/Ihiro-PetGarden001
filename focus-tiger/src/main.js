@@ -90,6 +90,10 @@ import {
 } from './core/sceneAnimationDispatcher.js';
 import { getLocalDateKey } from './utils/localDate.js';
 import {
+  WELLNESS_DAY_BANDS,
+  resolveWellnessDayBand
+} from './character/cloakVariant.js';
+import {
   HonestyCheckInController,
   resolveHonestyBreathMs
 } from './core/HonestyCheckInController.js';
@@ -1575,35 +1579,64 @@ async function init() {
   moodController.handleStateChange(stateManager.state);
 
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
-  honestyCheckIn.onAppReady();
+  // Wellness 冷启动时段（2A）：深夜可披斗篷；清晨苏醒仪式；白天仍禁 2h 戳开场即睡。
+  const wellnessBand = resolveWellnessDayBand(new Date());
+  let skipWelcomeForWellness = false;
+  if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
+    honestyCheckIn.syncDormantState({
+      allowEnterDormant: true,
+      forceDormant: true
+    });
+    mindfulToast.show(t('WELLNESS_LATE_NIGHT_REST'), { visibleMs: 5200 });
+    skipWelcomeForWellness = true;
+  } else if (wellnessBand === WELLNESS_DAY_BANDS.MORNING) {
+    honestyCheckIn.onAppReady();
+    emotionController.playEmotion('dormantWake', {
+      holdPose: true,
+      onComplete: () => {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS
+        });
+      }
+    });
+    mindfulToast.show(t('WELLNESS_MORNING_WAKE'), { visibleMs: 5200 });
+    skipWelcomeForWellness = true;
+  } else {
+    honestyCheckIn.onAppReady();
+  }
   retentionFunnelStore.noteAppOpen();
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
   // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
   // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
-  // 欢迎已播 → 本趟跳过深夜；欢迎跳过（配额/gate）→ 可尝试深夜。回前台仍检深夜。
+  // wellness 深夜披斗篷 / 清晨苏醒仪式时跳过欢迎与 yawn/tea，避免抢戏。
   // 提醒横幅可与欢迎并存文案，但鹦鹉信使不得抢 Welcome（欢迎结束后补播）。
-  const welcomeBoot = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
-    playOptions: {
-      onComplete: () => {
-        // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
-        // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
-        const playMessenger =
-          pendingParrotMessengerAfterWelcome &&
-          inAppReminderBannerUI.isVisible();
-        window.setTimeout(() => {
-          if (playMessenger) {
-            playParrotMessengerNow();
-            return;
+  const welcomeBoot = skipWelcomeForWellness
+    ? { play: false, emotionKey: null, reason: 'wellness-band' }
+    : tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+        playOptions: {
+          onComplete: () => {
+            // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
+            // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
+            const playMessenger =
+              pendingParrotMessengerAfterWelcome &&
+              inAppReminderBannerUI.isVisible();
+            window.setTimeout(() => {
+              if (playMessenger) {
+                playParrotMessengerNow();
+                return;
+              }
+              pendingParrotMessengerAfterWelcome = false;
+              syncInAppReminderBanner();
+            }, 0);
           }
-          pendingParrotMessengerAfterWelcome = false;
-          syncInAppReminderBanner();
-        }, 0);
-      }
-    }
-  });
-  if (shouldAttemptLateNightOnBoot(welcomeBoot)) {
+        }
+      });
+  if (
+    !skipWelcomeForWellness &&
+    shouldAttemptLateNightOnBoot(welcomeBoot)
+  ) {
     tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
   }
   document.addEventListener('visibilitychange', () => {

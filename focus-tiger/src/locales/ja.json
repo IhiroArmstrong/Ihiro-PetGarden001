@@ -135,6 +135,8 @@
   "HONESTY_IDLE_ENTRY": "Honesty Check-in",
   "HONESTY_PENDING_LOST": "うまくいきませんでした — もう一度時間を選んでください。",
   "HONESTY_CHECKIN_RECORDED": "よそでの静かな時間も、数えられます。",
+  "WELLNESS_MORNING_WAKE": "新しい一日。いっしょに、やわらかく目覚めましょう。",
+  "WELLNESS_LATE_NIGHT_REST": "もう夜がふけました。私もマントで休みます。あなたも、おやすみを。",
   "micro_ritual.button": "一分の呼吸",
   "micro_ritual.complete": "きょうも、数えられます",
   "micro_ritual.leave": "離れる",

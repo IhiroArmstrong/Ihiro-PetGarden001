@@ -3,8 +3,10 @@
  *
  * - 不调用 ReminderQuotaManager（用户主动发起，不占共享提醒池）
  * - 零完成 / 新用户 / **冷启动第一幕**默认 Idle（uplifting；不上 Sleeping / 不披毯）
+ * - **例外（2026-08-04 wellness 时段）**：本地 ≥23:00 或 <06:00 冷启动可 `forceDormant` 披斗篷；
+ *   06:00–10:00 可播苏醒仪式（见 main / cloakVariant.resolveWellnessDayBand）
  * - DORMANT 由「距上次专注结束 ≥ DORMANT_IDLE_HOURS」惰性判定，但**仅**在回前台 / Rise 后等
- *   `syncDormantState({ allowEnterDormant: true })` 路径进入；`onAppReady` 禁止进睡
+ *   `syncDormantState({ allowEnterDormant: true })` 路径进入；`onAppReady` 默认禁止进睡
  * - 未达标 Rise：记专注结束时刻 → Idle；2h 后再 sync 可进 DORMANT
  * - Honesty 从 DORMANT 唤醒仍走 dormantWake（E1–E7）
  */
@@ -174,11 +176,14 @@ export class HonestyCheckInController {
    * 惰性判定是否应处于 DORMANT；在 App 就绪、回前台、Rise 结束后调用。
    * @param {object} [options]
    * @param {boolean} [options.allowEnterDormant=true]
-   *   false：允许离 DORMANT→Idle，但**禁止**新进入 DORMANT（冷启动第一幕）。
+   *   false：允许离 DORMANT→Idle，但**禁止**新进入 DORMANT（冷启动第一幕默认）。
+   * @param {boolean} [options.forceDormant=false]
+   *   true：无视 2h 戳，强制进入 DORMANT（深夜 wellness 冷启动）。
    *   showPrompt* 已废弃，忽略。
    */
   syncDormantState(options = {}) {
     const allowEnterDormant = options.allowEnterDormant !== false;
+    const forceDormant = options.forceDormant === true;
 
     if (this._busy || this._checkInFlowOpen) {
       this.syncIdleEntry();
@@ -191,11 +196,13 @@ export class HonestyCheckInController {
       return;
     }
 
-    const shouldDormant = shouldEnterDormantIdle({
-      lastEndedAt: this.focusSessionEndStore.getLastEndedAt(),
-      nowMs: this.focusSessionEndStore.now().getTime(),
-      idleMs: this.dormantIdleMs
-    });
+    const shouldDormant =
+      forceDormant ||
+      shouldEnterDormantIdle({
+        lastEndedAt: this.focusSessionEndStore.getLastEndedAt(),
+        nowMs: this.focusSessionEndStore.now().getTime(),
+        idleMs: this.dormantIdleMs
+      });
 
     if (shouldDormant) {
       if (allowEnterDormant && state !== STATES.DORMANT) {

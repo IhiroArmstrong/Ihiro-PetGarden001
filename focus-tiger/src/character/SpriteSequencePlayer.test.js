@@ -372,12 +372,15 @@ test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
   assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
 });
 
-test('product sleep/wake stay on cloak-sleep; starlight preview keys absent', () => {
+test('product sleep/wake stay on cloak-sleep keys; starlight sequences registered', () => {
   assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.sleeping.animation, 'cloak-sleep');
-  assert.equal(SPRITE_SEQUENCES.starlightCloakSleepPreview, undefined);
-  assert.equal(SPRITE_SEQUENCES.starlightCloakWakePreview, undefined);
+  assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.frameCount, 67);
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightDormantWake.animation, 'starlight-cloak-wake');
+  assert.equal(SPRITE_SEQUENCES.starlightDormantWake.frameCount, 67);
 });
 
 test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {

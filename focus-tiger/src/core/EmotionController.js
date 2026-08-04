@@ -11,6 +11,14 @@
 import { POSE_KEYS } from '../character/PoseManager.js';
 import { SPRITE_SEQUENCES } from '../character/spriteManifest.js';
 import { COMPANION_GESTURE_CHAINS } from '../character/companionGestureCatalog.js';
+import {
+  CLOAK_VARIANTS,
+  cloakSleepSequenceKey,
+  dormantWakeSequenceKey,
+  normalizeCloakVariant,
+  pickCloakVariant,
+  sleepingSequenceKey
+} from '../character/cloakVariant.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
 /**
@@ -177,6 +185,13 @@ export class EmotionController {
     /** @type {(() => void) | null} 调试「Honesty唤醒」→ 打开时长三选一 */
     this._debugHonestyWake = null;
 
+    /**
+     * 本轮 DORMANT 入睡所用斗篷变体（classic | starlight）。
+     * 睡循环与 Honesty 苏醒优先匹配，避免正放星光、倒放旧斗篷硬切。
+     * @type {'classic'|'starlight'|null}
+     */
+    this._activeCloakVariant = null;
+
     /** @type {string | null} */
     this._currentEmotionKey = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
@@ -192,6 +207,7 @@ export class EmotionController {
     this._implementations = {
       // —— 姿态层（已实现）——
       idle: (options = {}) => {
+        this._activeCloakVariant = null;
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_CLOSED_EYES);
         // 3D 坐姿仅保留给奖励柜；主线走 2D pingpong 呼吸。
@@ -212,25 +228,37 @@ export class EmotionController {
           this.spritePlayer.play('idleBreathing', options);
         }
       },
-      sleeping: () => {
+      sleeping: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.SLEEPING);
         if (this.spritePlayer) {
-          this.spritePlayer.play('sleeping');
+          const variant = normalizeCloakVariant(
+            options.cloakVariant ?? this._activeCloakVariant
+          );
+          this._activeCloakVariant = variant;
+          this.spritePlayer.play(sleepingSequenceKey(variant), {
+            crossFadeMs: options.crossFadeMs
+          });
         }
       },
-      // 进 DORMANT 过渡（2c）：披毯入睡正放；默认 onComplete 后由 MoodController 接 sleeping。
+      // 进 DORMANT 过渡（2c）：披毯/星光斗篷正放；默认 onComplete 后由 MoodController 接 sleeping。
+      // 2026-08-04：classic cloak-sleep 与 starlight v5 约 50/50（可 options.cloakVariant 强制）。
       cloakSleep: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.SLEEPING);
+        const variant = normalizeCloakVariant(
+          options.cloakVariant ?? pickCloakVariant()
+        );
+        this._activeCloakVariant = variant;
+        const sequenceName = cloakSleepSequenceKey(variant);
         if (!this.spritePlayer) {
           options.onComplete?.('cloakSleep');
-          this.playEmotion('sleeping');
+          this.playEmotion('sleeping', { cloakVariant: variant });
           return;
         }
-        const started = this.spritePlayer.play('cloakSleep', {
+        const started = this.spritePlayer.play(sequenceName, {
           crossFadeMs: options.crossFadeMs,
           holdLastFrame: false,
           onComplete: () => {
@@ -239,7 +267,7 @@ export class EmotionController {
         });
         if (!started) {
           options.onComplete?.('cloakSleep');
-          this.playEmotion('sleeping');
+          this.playEmotion('sleeping', { cloakVariant: variant });
         }
       },
       smiling: (options = {}) => {
@@ -634,7 +662,9 @@ export class EmotionController {
           this._finishOneShot(options, 'wakeUp');
         }
       },
-      // Honesty Check-in 唤醒：sleeping → cloak-sleep 倒放 → 定格合掌坐姿（暂不接金光/halo）。
+      // Honesty Check-in 唤醒：睡态 → 揭毯/卸斗篷 → 定格坐禅（暂不接金光/halo）。
+      // 优先匹配本轮 `_activeCloakVariant`；否则约 50/50 classic vs starlight。
+      // 注意：调试「唤醒(伸懒腰)」是 wakeUp/stretch，不是从睡姿苏醒。
       dormantWake: (options = {}) => {
         this._leaveIdleBaseline({ clear: false });
         this.dynamicMotion.setBreathingEnabled(true);
@@ -650,8 +680,14 @@ export class EmotionController {
         }
 
         this._use2DMainline();
+        const variant = normalizeCloakVariant(
+          options.cloakVariant ??
+            this._activeCloakVariant ??
+            pickCloakVariant()
+        );
+        const sequenceName = dormantWakeSequenceKey(variant);
         const started = this.spritePlayer.play(
-          'dormantWake',
+          sequenceName,
           this._oneShotPlayOpts(
             {
               ...options,
@@ -1136,8 +1172,11 @@ export class EmotionController {
       stretchReminder: 'stretch-reminder',
       wakeUp: 'wakeUp(=stretch)',
       sleeping: 'sleeping',
-      cloakSleep: 'cloak-sleep 披毯入睡',
-      dormantWake: 'cloak-sleep 倒放唤醒',
+      cloakSleep: 'cloak-sleep 披毯入睡(经典)',
+      dormantWake: 'cloak-sleep 倒放唤醒(经典)',
+      starlightCloakSleep: 'starlight-cloak-sleep v5 正放(试播)',
+      starlightSleeping: 'starlight-cloak-sleep v5 睡循环(试播)',
+      starlightDormantWake: 'starlight-cloak-wake v5 苏醒(试播)',
       haloBreathingIntro: 'halo-breathing intro',
       haloBreathingLoop: 'halo-breathing loop',
       haloBreathingPingpong: 'halo-breathing pingpong',
