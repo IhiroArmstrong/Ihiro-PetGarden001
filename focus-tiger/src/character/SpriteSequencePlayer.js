@@ -24,8 +24,10 @@ import {
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
 
-/** Soft torso swell while sleep-loop sequences play (classic + starlight). */
+/** Torso-only sleep breath (cushion / camera stay fixed). */
 export const SLEEP_BREATH_CLASS = 'ft-sleep-breathing';
+export const SLEEP_BREATH_WRAP_CLASS = 'ft-sleep-breath-wrap';
+export const SLEEP_BREATH_IMG_CLASS = 'ft-sleep-breath-img';
 
 /**
  * @param {string | null | undefined} sequenceName
@@ -44,14 +46,37 @@ function ensureSleepBreathStyles() {
   if (document.getElementById(SLEEP_BREATH_STYLE_ID)) return;
   const style = document.createElement('style');
   style.id = SLEEP_BREATH_STYLE_ID;
+  // clip-path 只露出腹背区域做 scaleY；底层整图不动 → 蒲团/镜头不变。
   style.textContent = `
-@keyframes ft-sleep-breath {
-  0%, 100% { transform: translateZ(0) scale(1, 1); }
-  50% { transform: translateZ(0) scale(1.01, 1.028); }
+@keyframes ft-sleep-torso-breath {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.042); }
 }
-#sprite-overlay.${SLEEP_BREATH_CLASS} {
-  transform-origin: 50% 68%;
-  animation: ft-sleep-breath 3.6s ease-in-out infinite;
+#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS} {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
+}
+#sprite-overlay .${SLEEP_BREATH_IMG_CLASS} {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  will-change: transform;
+  user-select: none;
+  /* 腹背椭圆：相对铺满 overlay 的 contain 盒；避开头部与下方蒲团 */
+  clip-path: ellipse(34% 16% at 50% 46%);
+  transform-origin: 50% 52%;
+  transform: scaleY(1);
+}
+#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} {
+  opacity: 1;
+}
+#sprite-overlay .${SLEEP_BREATH_WRAP_CLASS}.${SLEEP_BREATH_CLASS} .${SLEEP_BREATH_IMG_CLASS} {
+  animation: ft-sleep-torso-breath 3.8s ease-in-out infinite;
 }
 `;
   document.head.appendChild(style);
@@ -216,14 +241,28 @@ export class SpriteSequencePlayer {
     img.draggable = false;
     img.style.cssText = imageStyle + 'opacity:1;';
 
+    const breathWrap = document.createElement('div');
+    breathWrap.className = SLEEP_BREATH_WRAP_CLASS;
+    breathWrap.setAttribute('aria-hidden', 'true');
+    const breathImg = document.createElement('img');
+    breathImg.className = SLEEP_BREATH_IMG_CLASS;
+    breathImg.alt = '';
+    breathImg.decoding = 'async';
+    breathImg.draggable = false;
+    breathWrap.appendChild(breathImg);
+
     overlay.appendChild(outgoingImg);
     overlay.appendChild(img);
+    overlay.appendChild(breathWrap);
     container.appendChild(overlay);
     ensureSleepBreathStyles();
 
     this.overlayEl = overlay;
     this.imgEl = img;
     this.outgoingImgEl = outgoingImg;
+    this.breathWrapEl = breathWrap;
+    this.breathImgEl = breathImg;
+    this._sleepBreathActive = false;
 
     /** @type {ResizeObserver | null} */
     this._resizeObserver = null;
@@ -433,7 +472,29 @@ export class SpriteSequencePlayer {
    * @param {boolean} active
    */
   _setSleepBreathActive(active) {
-    this.overlayEl?.classList.toggle(SLEEP_BREATH_CLASS, Boolean(active));
+    this._sleepBreathActive = Boolean(active);
+    this.breathWrapEl?.classList.toggle(SLEEP_BREATH_CLASS, this._sleepBreathActive);
+    if (!this._sleepBreathActive) {
+      this.breathImgEl?.removeAttribute('src');
+      return;
+    }
+    this._syncSleepBreathLayer();
+  }
+
+  /** Keep torso breath layer on the same frame + displayFit as the base sprite. */
+  _syncSleepBreathLayer() {
+    if (!this._sleepBreathActive || !this.breathImgEl || !this.breathWrapEl) return;
+    const src = this.imgEl.getAttribute('src');
+    if (src) {
+      this.breathImgEl.src = src;
+    } else {
+      this.breathImgEl.removeAttribute('src');
+    }
+    this._applyDisplayFit(
+      this.breathWrapEl,
+      this._currentDisplayFit,
+      this._currentZoom
+    );
   }
 
   /** @returns {boolean} */
@@ -643,6 +704,7 @@ export class SpriteSequencePlayer {
     );
     this._currentZoom = zoom;
     this._applyDisplayFit(this.imgEl, this._currentDisplayFit, zoom);
+    this._syncSleepBreathLayer();
   }
 
   /**
@@ -779,6 +841,7 @@ export class SpriteSequencePlayer {
         this._outgoingZoom
       );
     }
+    this._syncSleepBreathLayer();
   }
 
   _cancelRaf() {

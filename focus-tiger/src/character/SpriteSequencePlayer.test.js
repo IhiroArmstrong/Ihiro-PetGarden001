@@ -360,18 +360,19 @@ test('cloakSleep is registered for DORMANT entry', () => {
   assert.equal(SPRITE_SEQUENCES.cloakSleep.holdLastFrame, true);
 });
 
-test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
+test('sleeping holds cloak-sleep end frame; torso breath is CSS layer', () => {
   const definition = SPRITE_SEQUENCES.sleeping;
   assert.equal(definition.animation, 'cloak-sleep');
   assert.equal(definition.frameCount, 34);
-  assert.equal(definition.fps, 2);
-  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.PINGPONG);
-  assert.deepEqual(definition.frameIndices, [34, 34, 33, 33, 32, 32, 31, 31, 30, 30]);
+  assert.equal(definition.fps, 1);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.FORWARD);
+  assert.equal(definition.sleepBreath, true);
+  assert.deepEqual(definition.frameIndices, [34, 34]);
   const paths = buildFramePaths(definition.animation, definition.frameCount, {
     frameIndices: definition.frameIndices
   });
   assert.match(paths[0], /cloak-sleep\/frame_034\.png$/);
-  assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
+  assert.match(paths.at(-1), /cloak-sleep\/frame_034\.png$/);
 });
 
 test('product sleep/wake stay on cloak-sleep keys; starlight sequences registered', () => {
@@ -383,9 +384,9 @@ test('product sleep/wake stay on cloak-sleep keys; starlight sequences registere
   assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.frameCount, 67);
   assert.equal(SPRITE_SEQUENCES.starlightSleeping.animation, 'starlight-cloak-sleep');
   assert.equal(SPRITE_SEQUENCES.starlightSleeping.sleepBreath, true);
-  assert.deepEqual(SPRITE_SEQUENCES.starlightSleeping.frameIndices, [
-    67, 67, 66, 66, 65, 65, 64, 64, 63, 63, 62, 62, 61, 61, 60, 60, 59, 59, 58, 58
-  ]);
+  assert.deepEqual(SPRITE_SEQUENCES.starlightSleeping.frameIndices, [67, 67]);
+  assert.deepEqual(SPRITE_SEQUENCES.sleeping.frameIndices, [34, 34]);
+  assert.equal(SPRITE_SEQUENCES.sleeping.loopMode, 'forward');
   assert.equal(SPRITE_SEQUENCES.starlightDormantWake.animation, 'starlight-cloak-wake');
   assert.equal(SPRITE_SEQUENCES.starlightDormantWake.frameCount, 67);
 });
