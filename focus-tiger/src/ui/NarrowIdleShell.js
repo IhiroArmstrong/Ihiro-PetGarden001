@@ -7,12 +7,14 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v15';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v16';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
 /** Display size for home PNG totems (assets are full-res; CSS scales). */
 const HOME_CTA_PX = 72;
+/** Sit is the primary cold-start path — slight visual emphasis. */
+const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.1);
 /** ActionBar center clock — wall time, not FocusHUD session elapsed. */
 const WALL_CLOCK_TICK_MS = 1_000;
 
@@ -344,7 +346,7 @@ export class NarrowIdleShell {
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sit" data-proxy="sit" aria-label="">
-        <img class="ft-narrow-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
+        <img class="ft-narrow-home-ctas__img" src="${ICON_SIT}" alt="" width="${HOME_SIT_PX}" height="${HOME_SIT_PX}" draggable="false" decoding="async" />
       </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
@@ -847,7 +849,8 @@ export class NarrowIdleShell {
         position: absolute;
         left: 0;
         right: 0;
-        bottom: max(52px, calc(36px + env(safe-area-inset-bottom, 0px)));
+        /* 下移与蒲团解耦；仍在 grabber 之上 */
+        bottom: max(56px, calc(40px + env(safe-area-inset-bottom, 0px)));
         transform: none;
         width: auto;
         padding: 0 16px;
@@ -884,6 +887,11 @@ export class NarrowIdleShell {
         justify-content: center;
         cursor: pointer;
         box-shadow: none;
+      }
+      #ft-narrow-home-sit.ft-narrow-home-ctas__btn.is-asset {
+        width: ${HOME_SIT_PX}px;
+        height: ${HOME_SIT_PX}px;
+        min-height: ${HOME_SIT_PX}px;
       }
       .ft-narrow-home-ctas__btn.is-asset:disabled,
       .ft-narrow-home-ctas__btn.is-asset[aria-disabled="true"] {
@@ -1106,7 +1114,6 @@ export class NarrowIdleShell {
         /* Park whenever Idle (incl. Arrival / Honesty overlays) */
         body.ft-narrow-shell.ft-narrow-park #focus-hud,
         body.ft-narrow-shell.ft-narrow-park #session-start-dock,
-        body.ft-narrow-shell.ft-narrow-park #onboarding-hint-help,
         body.ft-narrow-shell.ft-narrow-park #weekly-practice-heatmap-cluster,
         body.ft-narrow-shell.ft-narrow-park .ambient-soundscape__mute,
         body.ft-narrow-shell.ft-narrow-park .ambient-soundscape__focus-chrome,
@@ -1199,9 +1206,10 @@ export class NarrowIdleShell {
           pointer-events: none !important;
         }
 
+        /* 相对桌面舞台仍略放大可读；已有 stage inset，勿再 1.28 挤满竖屏 */
         body.ft-narrow-shell #sprite-overlay {
-          zoom: 1.28;
-          transform-origin: center 55%;
+          zoom: 1.14;
+          transform-origin: center 52%;
         }
 
         /* Focusing: ActionBar stays (wall clock + ? + ♪); hide grabber / home */
@@ -1214,7 +1222,6 @@ export class NarrowIdleShell {
         body.ft-narrow-shell.ft-narrow-focusing .session-start-dock__hint,
         body.ft-narrow-shell.ft-narrow-focusing #quick-start-focus,
         body.ft-narrow-shell.ft-narrow-focusing #weekly-practice-heatmap-cluster,
-        body.ft-narrow-shell.ft-narrow-focusing #onboarding-hint-help,
         body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__focus-chrome,
         body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__fab,
         body.ft-narrow-shell.ft-narrow-focusing .ambient-soundscape__nudge,

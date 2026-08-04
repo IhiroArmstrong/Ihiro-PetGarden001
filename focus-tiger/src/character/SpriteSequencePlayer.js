@@ -160,13 +160,23 @@ export class SpriteSequencePlayer {
     this._cache = new Map();
 
     // —— overlay 容器（3D canvas 之上、UI 之下；默认隐藏）——
+    // LightProgression Dolly 缩放挂在 overlay；舞台 inset 在 stage 上，
+    // 给冷启动首屏留白呼吸感（约缩 12% + 略上抬），不改情绪序列本身。
     const overlay = document.createElement('div');
     overlay.id = 'sprite-overlay';
     overlay.style.cssText =
       // fixed + 独立合成层，确保在 WebGL canvas 上方稳定显示（仍低于 UI z-index:10）
-      'position:fixed;inset:0;z-index:3;display:flex;align-items:center;' +
-      'justify-content:center;pointer-events:none;opacity:0;' +
+      'position:fixed;inset:0;z-index:3;display:block;' +
+      'pointer-events:none;opacity:0;' +
       'isolation:isolate;transform:translateZ(0);transition:opacity 200ms ease;';
+
+    const stage = document.createElement('div');
+    stage.id = 'sprite-stage';
+    stage.className = 'ft-sprite-stage';
+    // top/side/bottom：底部略多 → 角色视觉上抬；整体 inset ≈ 缩 12%
+    stage.style.cssText =
+      'position:absolute;top:4%;right:7%;bottom:12%;left:7%;' +
+      'pointer-events:none;';
 
     const imageStyle =
       'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
@@ -183,11 +193,14 @@ export class SpriteSequencePlayer {
     img.draggable = false;
     img.style.cssText = imageStyle + 'opacity:1;';
 
-    overlay.appendChild(outgoingImg);
-    overlay.appendChild(img);
+    stage.appendChild(outgoingImg);
+    stage.appendChild(img);
+    overlay.appendChild(stage);
     container.appendChild(overlay);
 
     this.overlayEl = overlay;
+    /** @type {HTMLElement} 角色绘制盒（inset 后的布局尺寸，供 displayFit） */
+    this.stageEl = stage;
     this.imgEl = img;
     this.outgoingImgEl = outgoingImg;
 
@@ -197,7 +210,7 @@ export class SpriteSequencePlayer {
       this._resizeObserver = new ResizeObserver(() => {
         this._refreshDisplayFit();
       });
-      this._resizeObserver.observe(overlay);
+      this._resizeObserver.observe(stage);
     }
 
     // —— 播放状态 ——
@@ -422,12 +435,13 @@ export class SpriteSequencePlayer {
     const nh = img.naturalHeight;
     if (!nw || !nh) return null;
 
-    const container = this.overlayEl.getBoundingClientRect();
-    if (container.width < 1 || container.height < 1) return null;
+    const stageBox = this.stageEl.getBoundingClientRect();
+    if (stageBox.width < 1 || stageBox.height < 1) return null;
 
-    // displayFit 按布局盒计算；Dolly 的 CSS scale 再乘到最终屏幕框上。
-    const layoutW = this.overlayEl.clientWidth || container.width;
-    const layoutH = this.overlayEl.clientHeight || container.height;
+    // displayFit 按舞台布局盒计算；Dolly 的 CSS scale 再乘到最终屏幕框上。
+    const layoutW = this.stageEl.clientWidth || stageBox.width;
+    const layoutH = this.stageEl.clientHeight || stageBox.height;
+    const container = stageBox;
     const baseScale = Math.min(layoutW / nw, layoutH / nh);
     let width = nw * baseScale;
     let height = nh * baseScale;
@@ -693,10 +707,10 @@ export class SpriteSequencePlayer {
    * @param {number} [zoom=1]
    */
   _applyDisplayFit(imgEl, fitDef, zoom = 1) {
-    // 必须用布局尺寸（clientWidth），不能用 getBoundingClientRect：
+    // 必须用舞台布局尺寸（clientWidth），不能用 getBoundingClientRect：
     // LightProgression Dolly 的 CSS scale 会放大 rect，但 object-fit 仍按布局盒计算。
-    const width = this.overlayEl.clientWidth;
-    const height = this.overlayEl.clientHeight;
+    const width = this.stageEl.clientWidth;
+    const height = this.stageEl.clientHeight;
     const t = computeSpriteDisplayTransform(fitDef, { width, height });
     const fitCss = spriteDisplayTransformCss(t);
     const z = Number(zoom);

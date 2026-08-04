@@ -401,7 +401,13 @@ export class OnboardingHintsUI {
       this.showRemedy();
     });
 
-    mountRoot.append(this.helpBtn);
+    // 收纳进左下热力簇（若已建），避免角落散落；窄屏 park 只认簇即可
+    const cluster = document.getElementById('weekly-practice-heatmap-cluster');
+    if (cluster) {
+      cluster.appendChild(this.helpBtn);
+    } else {
+      mountRoot.append(this.helpBtn);
+    }
     this._ensurePurposeCard();
     this._injectHelpStyles();
     this.syncDiscoveryDots();
@@ -1716,39 +1722,49 @@ export class OnboardingHintsUI {
         bottom: 28px;
         z-index: 22;
         pointer-events: auto;
-        width: 52px;
-        height: 52px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
-        border: 1px solid rgba(139, 90, 55, 0.42);
-        background: linear-gradient(180deg, #fff8ec 0%, #f0dfc4 42%, #e4c9a0 100%);
-        color: #5c3d2e;
-        font-size: 22px;
-        font-weight: 700;
+        border: 1px solid rgba(139, 115, 85, 0.16);
+        background: rgba(255, 252, 245, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: rgba(74, 58, 40, 0.72);
+        font-size: 18px;
+        font-weight: 650;
         line-height: 1;
         cursor: pointer;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.95) inset,
-          0 -1px 0 rgba(120, 80, 40, 0.14) inset,
-          0 3px 0 rgba(160, 118, 72, 0.48),
-          0 10px 22px rgba(44, 31, 20, 0.18);
-        opacity: 1;
-        transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+        box-shadow: 0 2px 10px rgba(44, 31, 20, 0.06);
+        opacity: 0.88;
+        transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease, opacity 160ms ease;
+      }
+      /* 簇内：随微组件流动，不再单独贴角 */
+      .weekly-practice-heatmap-cluster .onboarding-hint-help {
+        position: static;
+        left: auto;
+        bottom: auto;
+        z-index: auto;
+        width: 40px;
+        height: 40px;
+        flex: 0 0 auto;
+        font-size: 17px;
+        opacity: 0.82;
       }
       .onboarding-hint-help__mark {
         display: block;
-        line-height: 52px;
+        line-height: 44px;
         text-align: center;
       }
+      .weekly-practice-heatmap-cluster .onboarding-hint-help__mark {
+        line-height: 40px;
+      }
       .onboarding-hint-help:hover {
-        filter: brightness(1.04);
+        filter: brightness(1.03);
+        opacity: 1;
       }
       .onboarding-hint-help:active {
-        transform: translateY(2px) scale(0.97);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 -1px 0 rgba(120, 80, 40, 0.14) inset,
-          0 1px 0 rgba(160, 118, 72, 0.35),
-          0 4px 10px rgba(44, 31, 20, 0.12);
+        transform: translateY(1px) scale(0.97);
+        box-shadow: 0 1px 4px rgba(44, 31, 20, 0.08);
       }
       .onboarding-hint-badge {
         position: fixed;
@@ -1866,6 +1882,11 @@ export class OnboardingHintsUI {
         pointer-events: none;
         z-index: 2;
       }
+      /* Calm HUD：发现点略收敛，减少四角碎点抢视线（仍可点 badge 路径） */
+      #focus-hud .ft-hint-discovery-dot,
+      #focus-hud .onboarding-hint-badge {
+        opacity: 0.72;
+      }
       #focus-hud .ft-hud__gauge,
       #focus-hud .ft-hud__bar,
       #focus-hud .ft-hud__streak {
@@ -1874,6 +1895,8 @@ export class OnboardingHintsUI {
       #focus-hud .ft-hud__gauge > .ft-hint-discovery-dot {
         top: 2px;
         right: 2px;
+        width: 7px;
+        height: 7px;
       }
       #quick-start-focus {
         position: relative;

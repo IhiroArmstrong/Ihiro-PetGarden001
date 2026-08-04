@@ -26,9 +26,9 @@ export class FtOnboardingHintBubble extends LitElement {
       /* Above NarrowIdleShell chrome (home CTAs ~30) so tips stay readable */
       z-index: 34;
       box-sizing: border-box;
-      padding: 9px 14px;
-      border-radius: 16px 16px 16px 4px;
-      border: 1.5px solid rgba(92, 122, 108, 0.45);
+      padding: 11px 18px;
+      border-radius: 18px 18px 18px 6px;
+      border: 1.5px solid rgba(92, 122, 108, 0.38);
       background: linear-gradient(165deg, #eef6f1 0%, #dceae2 100%);
       box-shadow:
         0 1px 0 rgba(255, 255, 255, 0.65) inset,
@@ -37,11 +37,11 @@ export class FtOnboardingHintBubble extends LitElement {
       font-family:
         'Iowan Old Style', 'Palatino Linotype', Palatino, 'Songti SC',
         'Noto Serif SC', Georgia, serif;
-      font-size: 12.5px;
+      font-size: 14px;
       font-style: italic;
       font-weight: 500;
-      letter-spacing: 0.01em;
-      line-height: 1.45;
+      letter-spacing: 0.015em;
+      line-height: 1.55;
       text-align: left;
       pointer-events: auto;
       cursor: pointer;
