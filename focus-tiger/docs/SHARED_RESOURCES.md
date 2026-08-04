@@ -187,7 +187,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `arrival-honesty-home-hidden` | arrival-open | narrow | Honesty | hidden | — | `#ft-narrow-home-honesty` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 Arrival: home Sit hidden; home Quick Start stays visible` |
 | `arrival-breath-sit-still-hidden` | arrival-breath | both | Sit | hidden | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/scenario-a.companion.spec.js › Arrival Breath: Sit stays hidden; Quick Start stays (wide)` | `e2e/scenario-a.companion.spec.js › 375 Arrival Breath: home Sit stays hidden; Quick Start stays` |
 | `micro-ritual-sit-unavailable` | micro-ritual-open | both | Sit | disabled | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/micro-ritual.spec.js › micro ritual: entry → breath → complete…` | `e2e/micro-ritual.spec.js › 375 micro ritual: home Sit unavailable while breath runs` |
-| `honesty-bridge-entries-hidden` | honesty-bridge-visible | both | Honesty+MicroRitualEntry | hidden | `#honesty-idle-entry, #micro-ritual-idle-entry` | `#ft-narrow-home-honesty` | **gap-narrow** | `e2e/micro-ritual.spec.js › bridge CTA hides dock entries over Yes/No; No restores entries` | — |
+| `honesty-bridge-entries-hidden` | honesty-bridge-visible | both | Honesty+MicroRitualEntry | hidden | `#honesty-idle-entry, #micro-ritual-idle-entry` | `#ft-narrow-home-honesty` | **locked** | `e2e/micro-ritual.spec.js › bridge CTA hides dock entries over Yes/No; No restores entries` | `e2e/micro-ritual.spec.js › 375 bridge: ActionBar time stays; tip click does not dismiss Yes/No` |
 | `honesty-panel-entry-hidden` | honesty-check-in-open | both | HonestyEntry | hidden | `#honesty-idle-entry` | `#ft-narrow-home-honesty` | **gap-narrow** | `e2e/micro-ritual.spec.js › Honesty Check-in click hides entry until duration panel open` | — |
 | `focusing-narrow-home-ctas-hidden` | focusing | narrow | HomeCtas+Grabber | hidden | — | `#ft-narrow-home-ctas, .ft-narrow-grabber` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD and hides Sound FAB` |
 | `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **gap-wide** | `e2e/helpers/product-shell.js › expectFocusSessionActive (Rise 文案)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
@@ -198,7 +198,6 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 
 ### 当前假绿缺口（须逐条补锚）
 
-- **`honesty-bridge-entries-hidden`** (gap-narrow) — 宽屏已锁。窄屏桥接期整壳 suppress 通常已藏主球——缺 e2e 锚；不挡 PR#2 用户主路径（桥接已人工 OK）
 - **`honesty-panel-entry-hidden`** (gap-narrow) — 行为多半已由 honestyBusy suppress 覆盖；缺窄屏主球 e2e。P1 合并后补
 - **`focusing-focus-hud-visible`** (gap-wide) — 窄屏已锁。宽屏缺显式 #focus-hud toBeVisible——覆盖债，不挡 375/场景 O 合并
 - **`choose-bow-companion-in-viewport`** (gap-wide) — 窄屏用户路径已锁 toBeInViewport。宽屏 A4 属性可见即可（不 park）；P2

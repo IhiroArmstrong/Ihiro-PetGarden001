@@ -160,10 +160,12 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     wideSelector: '#honesty-idle-entry, #micro-ritual-idle-entry',
     narrowSelector: '#ft-narrow-home-honesty',
     testAnchorWide: 'e2e/micro-ritual.spec.js › bridge CTA hides dock entries over Yes/No; No restores entries',
-    lockStatus: 'gap-narrow',
+    testAnchorNarrow:
+      'e2e/micro-ritual.spec.js › 375 bridge: ActionBar time stays; tip click does not dismiss Yes/No',
+    lockStatus: 'locked',
     source: 'L183 Honesty 桥接叠层 · PR#2 merge-class-2 (P1)',
     notes:
-      '宽屏已锁。窄屏桥接期整壳 suppress 通常已藏主球——缺 e2e 锚；不挡 PR#2 用户主路径（桥接已人工 OK）'
+      '宽+375 已锁。窄屏桥接 full-suppress 藏主球/grabber（ActionBar 保留）；半透明气泡见 glassPanelStyles'
   },
   {
     id: 'honesty-panel-entry-hidden',

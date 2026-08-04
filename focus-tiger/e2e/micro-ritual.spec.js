@@ -300,6 +300,10 @@ test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', asyn
   // 图4：桥接时 ActionBar 时间仍可见（勿 suppress）
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('.ft-narrow-action-bar__time')).toBeVisible();
+  // 窄屏三球 / grabber 不得盖住 Yes/No（z30 高于桥接 z18）
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeHidden();
+  await expect(page.locator('.ft-narrow-grabber')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
   // 不自动出 honesty-bridge tip
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')

@@ -122,7 +122,7 @@
 | 功能/交互点 | 状态标签 | 判定依据 | 涉及文件 | 建议后续动作 |
 |---|---|---|---|---|
 | Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉） | verified | `TEST_TRACKER` Task3 **已通过**（2026-08-04）。KnownRisky #1：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 产品拍板窄屏 Hints **维持现状/延期**。专修 Focusing×? 见 PR #109 / §6.13。Facade 单测+e2e + 人工 §8+§9 壳故事。 | `IdleChromeFacade.js` · `idleChromeOrchestration.js` · `WideIdleMoreMenu` · `NarrowIdleShell` · e2e `wide-idle-more-menu` · 步骤见 `KNOWN_RISKY_TEST_CHECKLIST` #1 | 改壳时复测；步8 延期项勿当开放 Bug |
-| Honesty 桥接 CTA | verified | `TEST_TRACKER` **已通过**（2026-08-04）。KnownRisky #3 全步 OK（tip **`a76178f`** · `:5176`；用户称「第2行」=桥接步骤，提交完整；#2 Check-in 另条）。e2e 真实链 + 人工叠层/半透明/375 同屏。 | `HonestyBridgeCta*` · `Z_INDEX.md` · e2e `honesty-bridge-real-path` · `KNOWN_RISKY_TEST_CHECKLIST` #3 | 改桥接/叠层时复测 |
+| Honesty 桥接 CTA | known-risky | **2026-08-04 375 回归**：桥接 Yes/No 被窄屏三球挡住；Yin 过小。本地修（`bridgeVisible`→narrow suppress；zoom 1.28）。曾关单 tip `a76178f`。须 375 复测叠层/半透明。 | `HonestyBridgeCta*` · `idleChromeOrchestration` · e2e `375 bridge…` · `KNOWN_RISKY` #3 | 375 复测后可回 verified |
 | 产品壳 / 实验室壳切换 | verified | e2e `product-shell.smoke` + 长期使用基线；`?product=1` 契约清晰。 | `product-shell.smoke.spec.js` | 暂不处理 |
 | Arrival 外侧取消 / tip 只关 tip | verified | e2e + 7-25 书面 OK（含 375 tip 邻接修）。 | `outsideDismissGuard` · Arrival e2e | 改外侧逻辑时复测 |
 | Companion 点选即开表（主路径 DOM） | verified | e2e A/I/J/K + smoke 门闩 + 7-25 书面「点选即开表 OK」（窄宽壳总验收已于 2026-08-04 KnownRisky #1 / Task3 关单）。 | `scenario-a.companion.spec.js` · `scenario-smoke` | 与 known-risky 门闩回归分开看 |
