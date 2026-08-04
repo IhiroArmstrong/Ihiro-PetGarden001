@@ -328,57 +328,95 @@ test('magicBookReading plays once then hard-cuts to idle (no CapCut)', () => {
 
 test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
   const plays = [];
+  const stops = [];
   const spritePlayer = {
     play(name, options = {}) {
       plays.push({ name, options });
       return true;
     },
-    stop() {}
+    stop(options) {
+      stops.push(options);
+    }
   };
   const controller = new EmotionController({
     poseManager: { setPose() {}, setCanvasHidden() {} },
     dynamicMotion: { setBreathingEnabled() {} },
     incenseGreeting: {},
-    spritePlayer
+    spritePlayer,
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop(options) {
+        stops.push(options);
+      },
+      start(options) {
+        plays.push({ name: 'idleBreathing', options });
+      }
+    }
   });
 
   controller.playEmotion('earWiggleHeadTouch');
 
+  assert.deepEqual(stops, [{ clear: false }]);
   assert.equal(plays[0].name, 'earWiggleHeadTouch');
   assert.equal(plays[0].options.loop, false);
   assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.holdLastFrame, true);
   assert.equal(plays[0].options.returnCrossFadeMs, 1000);
   assert.equal(plays[0].options.crossFadeMs, 1000);
   assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
   assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
 });
 
 test('parrotEarVisit plays once then CapCut idle (~1s)', () => {
   const plays = [];
+  const stops = [];
   const spritePlayer = {
     play(name, options = {}) {
       plays.push({ name, options });
       return true;
     },
-    stop() {}
+    stop(options) {
+      stops.push(options);
+    }
   };
   const controller = new EmotionController({
     poseManager: { setPose() {}, setCanvasHidden() {} },
     dynamicMotion: { setBreathingEnabled() {} },
     incenseGreeting: {},
-    spritePlayer
+    spritePlayer,
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop(options) {
+        stops.push(options);
+      },
+      start(options) {
+        plays.push({ name: 'idleBreathing', options });
+      }
+    }
   });
 
   controller.playEmotion('parrotEarVisit');
 
+  assert.deepEqual(stops, [{ clear: false }]);
   assert.equal(plays[0].name, 'parrotEarVisit');
   assert.equal(plays[0].options.loop, false);
   assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.holdLastFrame, true);
   assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
   assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   assert.equal(controller.getCurrentEmotionKey(), 'parrotEarVisit');
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
 test('nodGreeting plays once forward (no reverse) then CapCut to idle', () => {
