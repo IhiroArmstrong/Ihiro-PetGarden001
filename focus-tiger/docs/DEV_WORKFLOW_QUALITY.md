@@ -584,9 +584,14 @@
 | F2 | Hints 补救类：单测锁 id 列表时，若产品契约是「主条 + 芯片」，须另有 **DOM/e2e** 锁同时打开的 `.onboarding-hint-bubble:not([hidden])` 数量（或等价），禁止只绿 `resolveRemedyHintIds` |
 | F3 | 改 Idle park / chrome 时，开工已好清单须含 **Focusing×? 补救**（窄屏）；`ft-narrow-park` 专用错开**不得**默认当成 Focusing 已覆盖 |
 | F4 | KnownRisky / 债务走查失败 → **同回合**写回 TRACKER「用户反馈」+ 本文件指针；不得只口头说「可能没修过」 |
+| F5 | 邀测/复测须写明 **分支 + 端口 + worktree**；`:5173` 常被其它 worktree 占用——测到无修 tip ≠ 本修无效（同型 08-02 薄荷绿清空） |
 
 **本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 复测反馈；清单迁入 `KNOWN_RISKY_TEST_CHECKLIST.md`。  
 **专修（2026-08-04 · `fix/focusing-remedy-primary-chip-2026-08-04`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**须人工复测**后关单。
+
+**2026-08-04 再书面「没修复」· 工作流根因（查证）**：不是代码回潮。本机 `127.0.0.1:5173` 当时由 **另一 worktree**  
+`Zen-tiger-Pet-garden001-wt-starlight-cloak-sleep`（分支 `docs/develop-small-pr-auto-merge-habit` @ `009402b`）占用——**无** `resolveRemedyImmediateAndFolded`。修在主仓 `fix/focusing-remedy-primary-chip-2026-08-04` @ `8241858` 且**未 push**。用户按默认 5173 复测 = 测到无修 tip → 误判「没修」。同型：08-02 薄荷绿清空钮事故（`TEST_TRACKER` ⋯ 行）。  
+**补丁（F5）**：邀测 / 复测须写明 **分支名 + 端口 + worktree 路径**；默认 5173 被占用时改用其它端口（如 5175），禁止默认「打开 5173 即本修」。
 
 ---
 
