@@ -17,6 +17,11 @@ export const LONG_AWAY_WAKE_MS = 30 * 60 * 1000;
 /** Idle with no pointer/key activity before Expand A cloak sleep. */
 export const IDLE_INACTIVITY_CLOAK_MS = 15 * 60 * 1000;
 
+export const FOREGROUND_RETURN_ACTIONS = Object.freeze({
+  LONG_AWAY_WAKE: 'longAwayWake',
+  SYNC_DORMANT_AND_LATE_NIGHT: 'syncDormantAndLateNight'
+});
+
 /**
  * @param {object} opts
  * @param {string} opts.sessionState
@@ -32,6 +37,20 @@ export function shouldPlayLongAwayWake({
   if (sessionState !== STATES.FOCUSING) return false;
   if (!Number.isFinite(hiddenMs) || hiddenMs < 0) return false;
   return hiddenMs >= thresholdMs;
+}
+
+/**
+ * Visibility→visible: 2B long-away wake vs keep 2h DORMANT + late-night path.
+ * @param {object} opts
+ * @param {string} opts.sessionState
+ * @param {number} opts.hiddenMs
+ * @param {number} [opts.thresholdMs]
+ * @returns {'longAwayWake'|'syncDormantAndLateNight'}
+ */
+export function resolveForegroundReturnAction(opts) {
+  return shouldPlayLongAwayWake(opts)
+    ? FOREGROUND_RETURN_ACTIONS.LONG_AWAY_WAKE
+    : FOREGROUND_RETURN_ACTIONS.SYNC_DORMANT_AND_LATE_NIGHT;
 }
 
 /**
@@ -59,6 +78,21 @@ export function shouldIdleInactivityCloak({
  */
 export function shouldLateNightCloakOnSessionEnd(date = new Date()) {
   return isLateNightHour(date);
+}
+
+/**
+ * Rise / natural-complete hold emotion when Expand B applies.
+ * @param {object} opts
+ * @param {Date} [opts.date]
+ * @param {() => string} opts.pickDaytimeRiseEmotion
+ * @returns {string}
+ */
+export function resolveSessionEndHoldEmotion({
+  date = new Date(),
+  pickDaytimeRiseEmotion
+}) {
+  if (shouldLateNightCloakOnSessionEnd(date)) return 'cloakSleep';
+  return pickDaytimeRiseEmotion();
 }
 
 /**

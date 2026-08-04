@@ -90,10 +90,12 @@ import {
   LATE_NIGHT_FORCE_DORMANT_KEY
 } from './core/sceneAnimationDispatcher.js';
 import {
-  shouldPlayLongAwayWake,
   shouldIdleInactivityCloak,
   shouldLateNightCloakOnSessionEnd,
   isLateNightCloakHoldEmotion,
+  resolveForegroundReturnAction,
+  resolveSessionEndHoldEmotion,
+  FOREGROUND_RETURN_ACTIONS,
   IDLE_INACTIVITY_CLOAK_MS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
@@ -1562,9 +1564,10 @@ async function init() {
       // Rise：白天加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%）；
       // 深夜 Expand B：披斗篷定格 → Reflection；关面板后再回 idle。
       // MoodController 在 IDLE 时不覆盖池内 / 披斗篷 hold 键。
-      const riseEmotion = shouldLateNightCloakOnSessionEnd(now())
-        ? 'cloakSleep'
-        : pickRiseInterruptEmotion();
+      const riseEmotion = resolveSessionEndHoldEmotion({
+        date: now(),
+        pickDaytimeRiseEmotion: pickRiseInterruptEmotion
+      });
       emotionController.playEmotion(riseEmotion, { holdPose: true });
       sessionEndFlow.onSessionEnded({
         completed: false,
@@ -1709,10 +1712,10 @@ async function init() {
     beginSessionCompleteIfNeeded();
 
     if (
-      shouldPlayLongAwayWake({
+      resolveForegroundReturnAction({
         sessionState: stateManager.state,
         hiddenMs
-      })
+      }) === FOREGROUND_RETURN_ACTIONS.LONG_AWAY_WAKE
     ) {
       emotionController.playEmotion('dormantWake', {
         holdPose: true,
