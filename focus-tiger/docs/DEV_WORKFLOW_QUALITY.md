@@ -605,7 +605,7 @@
 | F5 | 邀测/复测须写明 **分支 + 端口 + worktree**；`:5173` 常被其它 worktree 占用——测到无修 tip ≠ 本修无效（同型 08-02 薄荷绿清空） |
 
 **本回合落地**：查证写入本 §6.13 + `TEST_TRACKER` 复测反馈；清单迁入 `KNOWN_RISKY_TEST_CHECKLIST.md`。  
-**专修（2026-08-04 · `fix/focusing-remedy-primary-chip-2026-08-04`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**须人工复测**后关单。
+**专修（2026-08-04 · PR #109 → `0494dd6`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**2026-08-04 晚** develop tip 窄屏 Focusing×? **测试 OK**（子项关单；Task3 整行仍开）。
 
 **2026-08-04 再书面「没修复」· 工作流根因（查证）**：不是代码回潮。本机 `127.0.0.1:5173` 当时由 **另一 worktree**  
 `Zen-tiger-Pet-garden001-wt-starlight-cloak-sleep`（分支 `docs/develop-small-pr-auto-merge-habit` @ `009402b`）占用——**无** `resolveRemedyImmediateAndFolded`。修在主仓 `fix/focusing-remedy-primary-chip-2026-08-04` @ `8241858` 且**未 push**。用户按默认 5173 复测 = 测到无修 tip → 误判「没修」。同型：08-02 薄荷绿清空钮事故（`TEST_TRACKER` ⋯ 行）。  
