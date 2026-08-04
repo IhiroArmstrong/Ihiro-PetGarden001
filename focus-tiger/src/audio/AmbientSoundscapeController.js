@@ -117,17 +117,30 @@ export function normalizeAmbientPref(raw, { knownUserTrackIds } = {}) {
 }
 
 /**
- * Panel radio selection: keep the last chosen track highlighted after mute/pause.
- * Off is selected only when the user explicitly chose Off (preferred === off).
+ * Panel radio selection must match audible intent:
+ * - currently playing → that track
+ * - wantsEnabled (e.g. gesture-unlock pending) → preferred track
+ * - silent / opt-in off (incl. after note-mute, before resume) → Off
  *
- * @param {{ getTrackId: () => string, getPreferredTrackId: () => string }} ctrl
+ * Cold first open defaults preferred to Mer-Ka-Ba in storage but must highlight
+ * Off so the panel does not imply a song is active while mute.
+ *
+ * @param {{
+ *   getTrackId: () => string,
+ *   getPreferredTrackId: () => string,
+ *   wantsEnabled?: () => boolean
+ * }} ctrl
  * @returns {string}
  */
 export function resolveAmbientPanelSelectedTrackId(ctrl) {
   const playing = ctrl.getTrackId?.() || AMBIENT_TRACK_OFF;
   if (playing !== AMBIENT_TRACK_OFF) return playing;
-  const preferred = ctrl.getPreferredTrackId?.();
-  return preferred || DEFAULT_AMBIENT_TRACK_ID;
+  if (ctrl.wantsEnabled?.()) {
+    const preferred = ctrl.getPreferredTrackId?.();
+    if (preferred && preferred !== AMBIENT_TRACK_OFF) return preferred;
+    return DEFAULT_AMBIENT_TRACK_ID;
+  }
+  return AMBIENT_TRACK_OFF;
 }
 
 function readAmbientPref(storage) {
