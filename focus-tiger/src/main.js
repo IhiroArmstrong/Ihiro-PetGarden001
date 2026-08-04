@@ -409,6 +409,8 @@ async function init() {
   const mindfulToast = new MindfulAcknowledgeToast(
     document.getElementById('ui-overlay')
   );
+  // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
+  window.__mindfulToast = mindfulToast;
   const lightProgression = new LightProgression({
     appEl: app,
     getSpriteOverlay: () => spritePlayer.overlayEl

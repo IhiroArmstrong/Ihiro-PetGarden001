@@ -6,8 +6,14 @@ import {
   SECONDARY_PROXY_HINT_IDS,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
+import {
+  NARROW_COPY_ABOVE_HOME_GAP_PX,
+  NARROW_HOME_CTA_BOTTOM_PX,
+  NARROW_HOME_SIT_PX,
+  narrowHomeCopyClearanceBottomPx
+} from './homeChromeClearance.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v18';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v19';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -17,6 +23,10 @@ const HOME_CTA_PX = 72;
 const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.155);
 /** ActionBar center clock — wall time, not FocusHUD session elapsed. */
 const WALL_CLOCK_TICK_MS = 1_000;
+
+/** Bottom-anchored copy that coexists with `#ft-narrow-home-ctas` on Idle/Dormant. */
+const NARROW_HOME_COPY_CLEARANCE_BOTTOM = narrowHomeCopyClearanceBottomPx();
+const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
@@ -1194,6 +1204,20 @@ export class NarrowIdleShell {
 
       /* —— Hide legacy Idle chrome on narrow idle; enlarge Yin —— */
       @media (max-width: 479px) {
+        /*
+         * Home-ball clearance belt: soft bottom copy sharing Idle/Dormant with
+         * #ft-narrow-home-ctas must clear Sit (~147px from bottom + gap).
+         * SSOT: homeChromeClearance.js — do not invent a second bottom.
+         */
+        body.ft-narrow-shell #mindful-acknowledge-toast[data-placement="bottom"],
+        body.ft-narrow-shell #honesty-bridge-cta,
+        body.ft-narrow-shell #tiger-reflection-moment,
+        body.ft-narrow-shell #arrival-practice,
+        body.ft-narrow-shell #honesty-check-in,
+        body.ft-narrow-shell #micro-ritual {
+          bottom: ${NARROW_HOME_COPY_CLEARANCE_CSS} !important;
+        }
+
         /* Park whenever Idle (incl. Arrival / Honesty overlays) */
         body.ft-narrow-shell.ft-narrow-park #focus-hud,
         body.ft-narrow-shell.ft-narrow-park #session-start-dock,
