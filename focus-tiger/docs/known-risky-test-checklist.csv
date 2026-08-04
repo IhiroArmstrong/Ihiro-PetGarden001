@@ -44,7 +44,7 @@ id,feature,status,steps,judgment,files,action
 6) 同日再补登应再出桥接。
 7) 375×667：toast 与桥接同屏不互挡到不可读。
 
-【通过标准】叠层/透明度/入口 suppress 都对；Yes/No 语义正确。 【***测试OK】 **2026-08-04 关单** tip 4698eb3 同批。",TEST_TRACKER 桥接已通过（2026-08-04 · tip 4698eb3 同批）。,HonestyBridgeCta* · Z_INDEX.md · e2e honesty-bridge-real-path,改桥接/叠层时复测
+【通过标准】叠层/透明度/入口 suppress 都对；Yes/No 语义正确。 【***测试OK】 **2026-08-04 关单** tip a76178f（:5176）。",TEST_TRACKER 桥接已通过（2026-08-04 · tip a76178f）。,HonestyBridgeCta* · Z_INDEX.md · e2e honesty-bridge-real-path,改桥接/叠层时复测
 4,Ambient Soundscape + 右上音符静音,known-risky,"【前置】产品壳；重置后默认应无音乐（opt-in）。
 
 【宽屏】
