@@ -309,14 +309,14 @@ test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', asyn
     page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')
   ).toHaveCount(0);
 
-  // 补救 tip：点 tip 不得关掉 Yes/No
+  // 点「?」只出产品简介，不得喷 tip，也不得关掉 Yes/No
   await page.locator('#ft-narrow-help-btn').click();
-  const tip = page.locator(
-    'ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]'
-  );
-  await expect(tip).toBeVisible({ timeout: 8_000 });
-  await tip.click();
-  await expect(tip).toBeHidden({ timeout: 3_000 });
+  await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+    timeout: 8_000
+  });
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')
+  ).toHaveCount(0);
   await expect(bridge).toBeVisible();
   await expect(bridge.getByRole('button', { name: /^(Yes|好啊)$/i })).toBeVisible();
 });

@@ -1,14 +1,20 @@
-# ONBOARDING_HINTS.md — 分散式即时提示（完整版）+ 常驻补救入口
+# ONBOARDING_HINTS.md — Hint 产品面（收窄版）
 
-创建日期：2026-07-19（v3：按 SCENARIO_TESTS 故事补全「下一步该干啥」；对齐产品文案 Here & Now / Offline Space / Flow State）  
-最后更新：2026-08-03（文首指针 → **`HINTS_WIRING.md`** 场景接线 SSOT）  
-结论：不做集中式引导浮层/coachmark 教程，改为两层机制配合：
-1. **即时提示**：每个功能第一次真正出现时，按 `triggerMode` 用阿寅文字气泡或控件旁脉冲圆点引导；click 的已读语义由独立字段 `tier` 决定。
-2. **补救入口**：界面角落一个极小的常驻「?」图标，点击后用同样的气泡样式，把当前场景该有的提示再说一遍——防止用户第一次没看进去就永久错过。
+创建日期：2026-07-19（v3）  
+**最后更新：2026-08-04（产品拍板：只保留「脉冲点悬停 tip」+「? → 产品简介」；取消自动 tip 喷洒与点「?」补救铺开）**
 
-原则：不强迫用户读说明书；尽量做成**傻瓜交互式**开头——每一步只回答「此刻点哪里 / 可以跳过吗 / 点了会发生什么」。
+## 产品面（强制 · 2026-08-04）
 
-> **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**（对标 `SCENE_ANIMATION_WIRING`）。本文管文案 / tier / 补救 UX；机器锚点仍以 registry + 下方机器块为准。
+从现在起，**运行时只保留两件事**，其它 Hint 路径不再作为产品承诺：
+
+1. **脉冲点悬停**：鼠标停在薄荷绿脉冲点上 → 看该条 tip；**指针离开 → tip 立刻消失**。  
+2. **「?」看产品简介**：点击或悬停左下 / ActionBar「?」→ **只**出 `#onboarding-app-purpose`（What this space is for）；**禁止**同屏喷本页其它 tips / More tips 芯片。
+
+已取消（代码可留死路径，产品勿再验）：自动 tip 喷洒、点「?」补救铺开、`help-remedy` / catalog 芯片、Focusing「还有 N 条」。
+
+原则：不强迫用户读说明书；发现路径靠脉冲点悬停，空间定位靠「?」简介卡。
+
+> **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**。registry / 文案键仍以下方机器块为准；**运行时策略以上方「产品面」为准**。
 
 ---
 
@@ -18,11 +24,11 @@
 
 ### `triggerMode`（怎么出现）
 
-| 模式 | 默认表现 |
+| 模式 | 默认表现（**2026-08-04 运行时**） |
 |---|---|
-| **`auto`** | 首次出现**主动弹出**薄荷绿气泡（**无圆点**） |
-| **`click`** | 控件旁薄荷绿圆点；预览/已读由 **`tier`** 决定 |
-| **`manual`** | 从不自动出现（仅「?」补救） |
+| **`auto`** | Registry 仍登记；**运行时不再主动弹出**气泡 |
+| **`click`** | 控件旁薄荷绿圆点；**悬停**出 tip，移开即收；`help-affordance` 例外：悬停/点击「?」只出产品简介 |
+| **`manual`** | 从不自动出现 |
 | **`legacy`** | 基本不调度 |
 
 ### `tier`（仅 `triggerMode: click`；其余省略 = null）
@@ -38,14 +44,13 @@
 
 **click（圆点触发）**：`how-shall-we-sit` · `ambient-soundscape`（首次登录右上音符）· `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `language-preference` · `micro-ritual` · `in-app-reminder` · `quick-start` · `focus-hud-*` · `help-affordance`
 
-**auto（保留主动弹出）**：`sit-button` · `honesty-optional` · `honesty-bridge` · `notice` · `breathing` · `choose` · `companion-mode` · `companion-stay` · `companion-away` · `companion-across-tools` · `reflection`  
-理由摘要：计时/分叉/Arrival beat「此刻怎么做」、Companion 选模——漏了会误判系统状态。音乐为 **click 圆点**（opt-in，不主动挡操作）。
+**auto（registry 保留；运行时不喷）**：`sit-button` · `honesty-optional` · `honesty-bridge` · `notice` · `breathing` · `choose` · `companion-mode` · `companion-stay` · `companion-away` · `companion-across-tools` · `reflection`
 
 ### click 七条 tier 定稿
 
 | hintId | tier |
 |---|---|
-| `help-affordance` | **detailed** |
+| `help-affordance` | **detailed**（运行时：? → 简介卡，不出 tip 气泡） |
 | `how-shall-we-sit` · `ambient-gated` · `rise-button` · `idle-after-session` · `weekly-heatmap` · `micro-ritual` | **simple** |
 
 ### 触屏 / 键盘（摘要）
@@ -139,81 +144,98 @@
 
 ---
 
-## 二、补救入口设计
+## 二、「?」入口（产品简介 · 非补救喷洒）
 
-- **位置**：左下角常驻「?」（与右下 Sound 对仗）；**约 52px、暖米金立体钮**（与 How shall we sit? 同系），可发现但不抢 Sit。
-- **首次空闲**：`help-affordance` 为 **click + detailed**——「?」旁脉冲圆点；悬停/点圆点 = 浅层 tip；点「了解此空间」或点「?」（开简介卡）= done，圆点消失。
-- **交互**：点「?」同时做三件事：
-  1. 展示**情境主条** tip（`resolvePrimaryRemedyHintId`）+ **「更多提示」芯片**（`#ft-hint-catalog-chip`）。**窄屏 Idle（抽屉关闭）**：芯片一次性展开 `narrow-drawer-menu`（文案列出抽屉内功能：呼吸 / How shall we sit? / Sound / Reminder / 近日同坐格），**禁止**再出「还有 3 条 / 2 条」倒计时，也**禁止**在抽屉未开时用尖角去指抽屉内控件（会误指主球）。**宽屏 / 抽屉已开**：仍可逐条展开其余 tip（同时最多主条 + 1）。窄屏抬离主球带时须**堆叠错开**（`_liftBubblesAboveNarrowHomeCtas`），且须 **lift→separate**（禁止 separate 后再统一抬到同一 Y，会把错开抵消）；
-  2. 弹出一张**非遮罩**的 App 用途简介卡（`#onboarding-app-purpose`）：标题 + 一句定位式「能帮你做什么」（对齐 `PRODUCT_POSITIONING`：gamified mindfulness companion / regular practice, at your own pace；文案键 `HINT_APP_PURPOSE_*`）；点「知道了 / Got it」关闭；
-  3. 补救期间 `syncVisibleAutos` 不会清掉这些气泡。
-- **与即时提示**：即时「用完即隐藏」；补救不受已读限制。简介卡**不是**分步教程 / 遮罩 coachmark（仍遵守第三节禁令）。
+- **常驻**：左下角极小「?」（窄屏 ActionBar `#ft-narrow-help-btn` 代理）。
+- **点击或悬停**：只打开 `#onboarding-app-purpose` 产品简介卡；点「知道了 / Got it」或框外空白关闭；悬停打开时指针离开 ? / 卡 → 收起。
+- **禁止**：同屏再出本页其它 tip、`help-remedy`、More tips 芯片、Focusing「还有 N 条」。
+- **实现**：`OnboardingHintsUI.openPurposeOnly()`（`showRemedy()` 现为同义薄包装）。
 
-### 气泡视觉（与按钮/输入框区分）
-
-- 漫画说话框：圆角 + **小尖角**指向对应控件（Rise → `#btn-focus`；**默认音乐 / Soundscape** → 右上 `.ambient-soundscape__mute`（窄屏 Idle remap `#ft-narrow-mute-btn`）；**Idle Sound gated** 历史锚 → 右下 `.ambient-soundscape__fab`（宽屏 FAB 已藏，gated 文案主要经菜单/抽屉 Sound 路径；宽屏以右上音符开面板）；Reflection → 面板**上方**，不挡 Skip）。
-- **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
-- **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
-- **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1；2026-07-23/30 收窄）**：仅 **`triggerMode: auto`** 路径同一时刻**最多 1 条**气泡（`selectExclusiveAutoHintIds`）；**click** 圆点可并存。用户关掉 auto 气泡后串行下一条 auto。点「?」**补救**：窄屏抽屉关闭时主条 + 一次性「更多提示」→ 抽屉说明；宽屏/抽屉开着时可逐条展开。抽屉锚 tip 在抽屉关闭时不自动出现。
-- **Focusing 补救（2026-08-04 · §6.13）**：`isFocusing` 时点「?」**只画主条**（`rise-button`），HUD / ambient 等其余进「还有 N 条」芯片逐条展开——禁止窄屏多 tip 叠团。Idle 宽屏「可见锚立刻各出一条」不变（`resolveRemedyImmediateAndFolded`）。
-- **微仪式进行中（2026-07-29）**：`microRitualOpen` 时**不出** `sit-button` / `idle-after-session` 等指 Sit 的自动 tip（Sit chrome 已藏）。无可见锚点时**禁止**把 tip 丢到画面空白处（`_positionBubble` 直接收起）。
-- App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」上方。
-
-### 点击关闭（硬性）
-
-- **所有**提示气泡（含「?」补救拉出的）**必须**允许鼠标点击气泡本身后**立刻消失**。
-- 自动出现的提示：点击 = 记已读（`hints-seen`）+ 隐藏，之后该条不再自动出现；「?」仍可再调。
-- 补救提示：点击仅隐藏，不改已读状态（补救本就不看已读）。
-- 不另做「知道了」按钮；点气泡即关闭。键盘 Enter / Space 同等。
+> **历史（已废）**：曾用点「?」把当前场景 tips 再铺一遍作补救；2026-08-04 用户书面取消——乱、叠、难关单。Store 内 `resolveRemedy*` 可暂留供单测/文档考古，**产品路径不得再调用铺开**。
 
 ---
 
-## 三、实现约束（不变）
+## 三、硬性禁令（保留）
+
+- **禁止**做集中式多步 coachmark / 遮罩教程 /「下一步」强制路径。
+- **禁止**怀疑性 / 焦虑文案（对齐 PRINCIPLES）。
+- tip 气泡仍须可点关；脉冲点悬停路径以**移开即消失**为准。
+
+---
+
+## 四、存储与实验室
+
+规则：simple 关预览 → peeked；操作完成 → done；实验室「清空」清全部。简介卡点击「?」→ `help-affordance` done。
+
+---
+
+## 五、实现清单（收窄后）
+
+基于本文件产品面：
+
+1. click 脉冲点悬停预览；移开立刻收。
+2. 「?」→ `openPurposeOnly`（简介卡）；永不 `showRemedy` 铺 tip。
+3. `maybeShowAuto` / `syncVisibleAutos`：**不**再画 auto 气泡；仍同步 click 圆点。
+4. 文案仍走 locale + registry。
+5. e2e：`onboarding-remedy-contract.spec.js` 锁「? → purpose only / 无 tip 喷洒」。
+
+---
+
+## 机器可读锚点块
+
+> 下列机器块由 `npm run hints:doc-sync` 从 registry 生成；改锚点先改 `onboardingHintRegistry.js`。见上文 §一表格（`<!-- onboarding-hints-registry:anchors -->`）。
+
+### 气泡视觉（保留）
+
+- 漫画说话框：圆角 + **小尖角**指向对应控件。
+- **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线。
+- App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」附近。
+
+### 点击 / 悬停关闭（硬性）
+
+- 脉冲点悬停 tip：**指针离开脉冲点 → tip 立刻消失**。
+- tip 气泡仍允许点击立刻关掉。
+- 「?」简介卡：Got it / 框外空白关闭；悬停打开则离开 ? / 卡即收。
+
+---
+
+## 六、实现约束（不变）
 
 1. 不新建教程浮层（遮罩、高亮、箭头、分步导航）。
 2. 不做集中式引导流程；每条独立触发。
 3. 每条独立记忆已读。
-4. 操作提示气泡无需单独「知道了」；**点击气泡立刻关闭**。例外：点「?」弹出的 **App 用途简介卡**可有「知道了 / Got it」关闭钮（非分步教程）。
-5. 「?」安静但可发现（立体、约 52px）；不做帮助中心（无目录式 FAQ）。
+4. 「?」安静但可发现；不做帮助中心（无目录式 FAQ）。
+5. **禁止**把点「?」再做成「本页 tip 喷洒」补救。
 
 ### anchor 校验分层（2026-07-22 拍板 · Registry）
 
 | 层级 | 手段 | 状态 |
 |---|---|---|
-| **(1) Registry SSOT** | `onboardingHintRegistry.js` 派生 `HINT_IDS` / `HINT_LOCALE_KEYS` / `ONBOARDING_HINT_ANCHORS`；`onboardingHintRegistry.test.js` 锁 1:1 + locale + `anchorGroup` 内 selector 互异 | **已落地** |
-| **(2) md 锚点块同步** | `npm run hints:doc-check`（`test:smoke` + CI 独立 required check）；`npm run hints:doc-sync` 刷新 §一后机器块 | **已落地** |
-| **(3) DOM 视觉位置 / 色** | tip↔锚点几何 + mint RGB；tip 元件软快照（禁全页 Yin） | **④ 试点** — `e2e/hints-visual-guardrail.spec.js`；扩全量 id 仍见 PROCESS Backlog |
-
-**新增 hint 工作流**：先对照 **`HINTS_WIRING.md`** 选场景行与批次簇 → 改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → 视需要改 `resolveAutoHintIds` / 优先级 → `npm run test:smoke`。若 anchor 与已有 hint 相邻/可能重叠，评估 `anchorGroup`（见 registry 文件头 PR checklist）。完整清单见 `HINTS_WIRING` §六。
+| **(1) Registry SSOT** | `onboardingHintRegistry.js` 派生；单测锁 1:1 | **已落地** |
+| **(2) md 锚点块同步** | `hints:doc-check` / `hints:doc-sync` | **已落地** |
+| **(3) DOM 视觉位置 / 色** | mint RGB + tip 几何护栏 | **④ 试点**（? 喷 tip 相关断言已改「purpose only」） |
 
 ---
 
-## 四、数据存储
+## 七、验收口径（人工）
+
+1. 悬停右上音符（或其它薄荷绿脉冲）→ tip；移开 → tip 立刻没。  
+2. 点或悬停「?」→ **只**见产品简介；**不得**见 Sit / weekly / HUD 等 tip 满屏。  
+3. 375 Focusing 点「?」→ 仍只见简介，无 tip 叠团。  
+4. Rise 后再点「?」→ 仍只见简介。
+
+自动化：`e2e/onboarding-remedy-contract.spec.js`（purpose only）+ mint 存续行。
+
+**新增 hint 工作流**：先对照 **`HINTS_WIRING.md`** 选场景行与批次簇 → 改 `onboardingHintRegistry.js` → `npm run hints:doc-sync` → 补 locales → 视需要改 Store → `npm run test:smoke`。**禁止**再把新 tip 绑回点「?」喷洒。
+
+---
+
+## 八、数据存储
 
 ```
 localStorage key: focus-tiger.hints-seen.v1
 结构：{ [hintId: string]: 'peeked' | 'done' }  （旧 true 读入迁为 'done'）
-- done：不再 auto；click 圆点移除（相关操作完成 / detailed 进详情）
-- peeked：仅 click+simple；圆点静止弱化，相关操作前仍显示
-规则：自动提示点气泡关闭 → done；simple 预览关框 → peeked；实验室「清空」清全部。补救入口不受已读限制铺开。
-```
-
----
-
-## 五、Cursor 实现 Prompt
-
-```
-基于 ONBOARDING_HINTS.md v3，实现分散式即时提示 + 常驻补救入口：
-
-1. 新增本地存储 focus-tiger.hints-seen.v1（第四节）；hintId 以第一节完整表为准（含 dormant-open、honesty-optional、how-shall-we-sit、ambient-gated、idle-after-session 等）。
-2. 各位置在现有 UI 旁用安静气泡追加一行小字；仅未读时自动出现；完成对应操作后 markSeen 并隐藏。
-3. 常驻角落「?」补救入口：按当前场景 resolve hintId 并强制展示；永不因已读而隐藏入口本身。
-4. **点击气泡立刻消失**（硬性）：自动提示点击 = markSeen + 隐藏；补救点击仅隐藏。pointer-events 可点；无需单独「知道了」按钮。
-5. 禁止教程类 UI（遮罩、高亮、箭头、分步导航）。
-6. 文案用第一节已过观察式自检的中英稿，写入 locales。
-7. ~~确认 Ambient 播放时 Rim 有可见缓亮（累计 presenceBoost + 正在播放 lift）；补单测。~~ **（2026-07-22 关包）**：用户书面砍掉「音乐会加亮」宣传；不再以可见缓亮为验收口径。
-8. 实验室 debug 面板增加「清空 hints-seen」；仅非 ?product=1。
-9. 单元测试：首次显示、已读不再自动显示、补救始终可调、hintId 互不干扰、resolveScene、点击关闭。
-10. 更新 TEST_TRACKER.md；更新 PRODUCT_MOMENTS.md 说明为何不做集中式引导。
-11. 产品壳 ?product=1 仍显示「?」与即时提示（属于产品表面，不是实验室调试条）。
+- done：click 圆点移除（相关操作完成 / 点「?」记 help-affordance）
+- peeked：仅 click+simple；圆点静止弱化
+规则：simple 预览关框 → peeked；实验室「清空」清全部。
 ```
