@@ -27,9 +27,12 @@
 | 2026-07-26 | 开场即睡「修好又失效」：另案搁置 + 契约锁窄 + 文档互斥 | **§6.7** |
 | 2026-08-02 | 实验室组合试播 OK ≠ 产品路径；冷启动欢迎×深夜叠播 | **§6.8 / §6.9** |
 | 2026-08-03 | Welcome 里误出鹦鹉信使：冷启动串扰 + onComplete 后 trailing idle 盖播 | **§6.10** |
+| 2026-08-04 | 长挂 Vite「第一眼披斗篷」误判开场即睡；拍板关掉白天无操作披毯 | **§6.11** |
+| 2026-08-04 | 鹦鹉→Idle 仍闪白：CapCut「统一关单」覆盖面窄于字面承诺 + 单测假绿 | **§6.12** |
+| 2026-08-04 | 窄屏 Focusing×? tip 叠团：记入≠开修 + 单测锁 id 未锁同时可见条数 | **§6.13** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -408,6 +411,7 @@
 | 2026-08-02 | 新增 §6.8：实验室组合试播 OK ≠ 产品路径已修（张望闪白） |
 | 2026-08-02 | 新增 §6.9：冷启动欢迎与深夜同 tick 叠播（茶/哈欠误盖开场） |
 | 2026-08-03 | 新增 §6.10：Welcome 误出鹦鹉信使（冷启动串扰 + onComplete trailing idle 盖播） |
+| 2026-08-04 | 新增 §6.13：窄屏 Focusing×? tip 叠团（记入≠开修；KnownRisky 复测失败）；§6.11=Expand A 长挂；§6.12=鹦鹉 CapCut 关单窄 |
 
 ### 6.7 开场即睡：修好过一段时间又失效（2026-07-26 事故）
 
@@ -529,6 +533,83 @@
 | C4 | e2e 断言信使时优先锁 **可见 emotion key**（或等价 DOM），勿只锁「曾调用过 play」类观测戳 |
 
 **本事故落地（代码已合 PR #96）**：欢迎期间 hold + `pending`；欢迎 `onComplete` 用 `setTimeout(0)` 补播；横幅每次 hidden→visible 可再播；约 60s 静候再评；e2e 先 `setNow` 再填表。本文件补工作流根因，供后案对照。
+
+### 6.11 长挂 Vite「第一眼披斗篷」≠ 白天冷启动回归（2026-08-04）
+
+**现象**：关单级验收时 Vite 挂约 1～1.5h、中间穿插测试；回看「第一眼」又是 Yin 披斗篷→睡着。易被误判为老「开场即睡」（§6.7）。
+
+**用户确认（同日）**：是**回看挂着的页**，不是硬刷新。白天非深夜 2A。
+
+**真因**：Expand A 白天路径 — Idle ≥15min 无 `pointerdown`/`keydown`/`touchstart` → `forceDormant`。移鼠 / 切 Cursor **不** bump；藏 tab 时计时器仍涨 → 验收长挂必中。
+
+**拍板（方案 A + 前台可见意图）**：
+
+1. **关掉白天 Idle 无操作披毯**（删除 `shouldIdleInactivityCloak` / 活动监听 / 60s 轮询）。
+2. **保留**：深夜 Idle→DORMANT、练完 ≥2h live sync、Expand B、2B。
+3. 「仅前台可见才计时」：无操作计时器已删 → **无后台累计**（意图满足；不必再挂 visibility 门闩）。
+
+**工作流补丁**：同视觉多入口须先分清冷启动 / 长挂 / 深夜 / 2h；上线长挂会改第一眼的定时器须写验收警告。单测锁「无操作 helper 已移除」。
+
+### 6.12 鹦鹉→Idle 仍闪白 · CapCut「统一关单」覆盖面窄于字面承诺（2026-08-04）
+
+**现象**：`?product=1` 硬刷新后播鹦鹉信使，**过渡回 Idle 时闪白**。用户原话要点：上次不是已筛查并把跨动画改成 1s 叠化了吗？为什么看起来没有修正？
+
+**不是**「CapCut 常量被改回 180ms」或「鹦鹉没接线 returnCrossFadeMs」。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 字面承诺 vs 关单矩阵 | PR #102 / TRACKER「跨动画短叠化统一 1s CapCut」写「凡有转场的跨动画衔接统一 1000ms」。**关单人工覆盖**却只列：微仪式 Idle↔smiling、完成/Leave→Idle、`curiousTilt`/`blink`/`riseStretch`/`dormantWake` + 若干硬切。**未列** `parrotEarVisit`（亦未列 `teaDrinking` / `bookReading` 等同型 companion oneshot）。 |
+| B · 鹦鹉不在 PR #102 diff | 鹦鹉入库（PR #96）当天已设 `returnCrossFadeMs: CAPCUT_DISSOLVE_MS` + `freezeUntilCrossFadeEnds`。统一短淡入那笔**没改**鹦鹉路径——关单绿也**验不到**「鹦鹉修好了」。 |
+| C · 鹦鹉行 QA 验错维度 | TRACKER 鹦鹉/场景 A 书面 OK = **Welcome 优先顺序**、横幅 hidden→visible、Focusing suppress。步骤虽写「末约 1s CapCut」，**从未**有用户书面「鹦鹉→Idle 无闪白」。顺序修好 ≠ 回落叠化修好（§6.8 / §6.10 同型）。 |
+| D · 单测假绿 | `EmotionController.test.js` 用例名 `parrotEarVisit plays once then CapCut idle (~1s)` **只**断言首段 `returnCrossFadeMs` / `freezeUntilCrossFadeEnds`；**不**调用 `onComplete`、**不**断言下一笔 `idle`/`idleBreathClosed` 的 `crossFadeMs===1000`（对比同文件 `nodGreeting` 测了完整回落）。「有字段」≠ 可见叠化（§6.1 CapCut 静默跳过已警告）。 |
+| E · 抗闪不变量未推广到 companion oneshot | 张望产品链（§6.8）已对齐：`clear: false`、末段 `holdLastFrame`、再 CapCut。`_playCompanionSequenceOnce`（鹦鹉/茶/书等）仍默认 `_leaveIdleBaseline()` → **`clear: true`**，且 oneshot 末帧默认**不定格**。与已修抗闪链不对称——即使 `returnCrossFadeMs` 有值，仍可能出现藏 overlay / 末帧不稳 / 背景透出等「闪白」观感。 |
+
+**因果一句话**：**「统一 CapCut」关单用窄矩阵冒充全库契约** + **鹦鹉验收锁顺序不锁回落观感** + **单测只锁 options 字段不锁 trailing idle CapCut** → 用户以为上次已修，刷新仍见鹦鹉→Idle 闪白。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| P1 | 凡「统一 X 转场 / 一律 CapCut」类关单：`TEST_TRACKER` **必须列具体 emotion / 序列键**（含新入库 companion）；禁止只写「跨动画」却用人眼抽测 2～3 条收口 |
+| P2 | 新 oneshot 入库：验收分列 **（1）播完内容** **（2）回 Idle 叠化无闪白**；后者不得用「调试钮播过」或「冷启动顺序 OK」冒充 |
+| P3 | 契约单测：oneshot 名含「then CapCut idle」→ **必须** `onComplete()` 后断言 idle 入口 `crossFadeMs` + `freezeUntilCrossFadeEnds`（对齐 `nodGreeting`）；禁止只 assert 字段写在首段 options |
+| P4 | 产品 companion oneshot 若与张望同属「回 Idle 不得闪白」→ 开工已好清单须显式对齐抗闪不变量（`clear` / `holdLastFrame` / freeze）；禁止只抄 `returnCrossFadeMs` 数字 |
+
+**本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 用户反馈；当时**未改运行时**。  
+**2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（未另开抗闪 `fix/*`）。P3 单测补强仍建议后补。
+
+### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
+
+**现象**：KnownRisky 清单 #1 步 7 / Task3 §8 S3——窄屏 Focusing 点「?」，多条薄荷绿 tip +「1 more tips」芯片叠在一起难读。用户 2026-08-04 附图复测**不通过**，怀疑「从来没修过」。
+
+**不是**神秘回潮。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 记入时间 | **2026-08-01** 已写入 `TEST_TRACKER`「响应式 Task 3」Bug② +「点 ? 补救」行：窄屏 Focusing 点 ? →「一堆」hints。状态长期「有问题」/ `legacy-unclassified`。 |
+| B · 同日明确未改 | 同日 `fix/chrome-only-quick-and-rise-flash` 收尾明文：**「脉冲点 / Hints / 续播 / W5 假绿未改」**——只修了 W3/Rise 闪 Sit，**Hints 不在该分支范围**。 |
+| C · 后续 Hints 工作错位 | 之后合入的是 **hints 视觉护栏试点**（PR #93）+ observe-hold 文档（PR #95）——锁 mint/几何软快照与「暂不扩」政策，**不是** Focusing 补救「一次铺开多条」的布局/互斥契约。 |
+| D · 假绿 | 单元 `resolveRemedyHintIds({ isFocusing: true })` **故意**返回 `rise-button` + `ambient-soundscape` + **三条** `focus-hud-*`。`showRemedy` 把「可见锚」的 catalog 项**全部立刻 `_paint`**。截图三条正文正是 `HINT_FOCUS_HUD_STREAK` / `RING` / `PROGRESS`（非 Idle 热力图误出）。窄屏错开逻辑主要挂在 `ft-narrow-park`；Focusing 为 `ft-narrow-focusing`，**无**等价「只出主条 + 其余进芯片」折叠 → 三条 HUD tip 同屏叠在 ActionBar 下。 |
+| E · 无回归锚 | **无** e2e 断言「Focusing + 375 + 点 ? → 同时可见 tip 气泡 ≤1（其余在芯片）」；故护栏/冒烟绿也拦不住本复测失败。 |
+
+**因果一句话**：**记入 ≠ 开修**（同 §6.8 L4 / ⋯ 脉冲点事故同型）+ **单测锁了「应出哪些 id」却未锁「窄屏一次只画几条」** → 问题休眠到 KnownRisky 走查再撞上。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| F1 | `TEST_TRACKER`「有问题」且用户写明场景（如 Focusing×?）→ 排期须有**专修** `fix/*` 或明确书面延期；禁止只靠债务清单/KnownRisky「以后测」代替开修 |
+| F2 | Hints 补救类：单测锁 id 列表时，若产品契约是「主条 + 芯片」，须另有 **DOM/e2e** 锁同时打开的 `.onboarding-hint-bubble:not([hidden])` 数量（或等价），禁止只绿 `resolveRemedyHintIds` |
+| F3 | 改 Idle park / chrome 时，开工已好清单须含 **Focusing×? 补救**（窄屏）；`ft-narrow-park` 专用错开**不得**默认当成 Focusing 已覆盖 |
+| F4 | KnownRisky / 债务走查失败 → **同回合**写回 TRACKER「用户反馈」+ 本文件指针；不得只口头说「可能没修过」 |
+| F5 | 邀测/复测须写明 **分支 + 端口 + worktree**；`:5173` 常被其它 worktree 占用——测到无修 tip ≠ 本修无效（同型 08-02 薄荷绿清空） |
+
+**本回合落地**：查证写入本 §6.13 + `TEST_TRACKER` 复测反馈；清单迁入 `KNOWN_RISKY_TEST_CHECKLIST.md`。  
+**专修（2026-08-04 · PR #109 → `0494dd6`）**：`resolveRemedyImmediateAndFolded`——`isFocusing` 时 `immediate=[]`、catalog 全进芯片；e2e 锁 375 Focusing 可见 remedy tip **恰好 1**（`rise-button`）且芯片含数字 N。Idle 宽屏「可见锚立刻出」路径不变。**2026-08-04 晚** develop tip 窄屏 Focusing×? **测试 OK**（子项关单）。**同日晚 KnownRisky #1**：tip `4698eb3` 步1–6、9 OK + 步7/:5176 → Task3 **已通过**；步8 窄屏 Hints 产品延期。
+
+**2026-08-04 再书面「没修复」· 工作流根因（查证）**：不是代码回潮。本机 `127.0.0.1:5173` 当时由 **另一 worktree**  
+`Zen-tiger-Pet-garden001-wt-starlight-cloak-sleep`（分支 `docs/develop-small-pr-auto-merge-habit` @ `009402b`）占用——**无** `resolveRemedyImmediateAndFolded`。修在主仓 `fix/focusing-remedy-primary-chip-2026-08-04` @ `8241858` 且**未 push**。用户按默认 5173 复测 = 测到无修 tip → 误判「没修」。同型：08-02 薄荷绿清空钮事故（`TEST_TRACKER` ⋯ 行）。  
+**补丁（F5）**：邀测 / 复测须写明 **分支名 + 端口 + worktree 路径**；默认 5173 被占用时改用其它端口（如 5175），禁止默认「打开 5173 即本修」。
 
 ---
 

@@ -10,6 +10,7 @@ import {
   resolveRemedyHintIds,
   resolvePrimaryRemedyHintId,
   resolveRemedyCatalogHintIds,
+  resolveRemedyImmediateAndFolded,
   selectExclusiveAutoHintIds,
   appendIdleChromeHintIds,
   filterHintsForNarrowDrawer,
@@ -268,6 +269,40 @@ test('resolveRemedyCatalogHintIds splits Idle / Arrival / Focusing', () => {
     resolveRemedyCatalogHintIds({ isFocusing: true }),
     resolveRemedyHintIds({ isFocusing: true }).filter((id) => id !== 'rise-button')
   );
+});
+
+test('Focusing remedy paints only primary; HUD/ambient extras fold into chip', () => {
+  const primary = resolvePrimaryRemedyHintId({ isFocusing: true });
+  assert.equal(primary, 'rise-button');
+  const catalog = resolveRemedyCatalogHintIds({ isFocusing: true });
+  assert.ok(catalog.includes('focus-hud-ring'));
+  assert.ok(catalog.includes('ambient-soundscape'));
+  // Pretend every catalog id is on-screen — Focusing must still fold all.
+  const { immediate, folded } = resolveRemedyImmediateAndFolded(
+    { isFocusing: true },
+    {
+      primary,
+      catalog,
+      hasOnScreenAnchor: () => true
+    }
+  );
+  assert.deepEqual(immediate, []);
+  assert.deepEqual(folded, catalog);
+});
+
+test('Idle remedy still paints on-screen tips immediately', () => {
+  const primary = 'sit-button';
+  const catalog = ['weekly-heatmap', 'how-shall-we-sit', 'narrow-drawer-menu'];
+  const { immediate, folded } = resolveRemedyImmediateAndFolded(
+    {},
+    {
+      primary,
+      catalog,
+      hasOnScreenAnchor: (id) => id === 'weekly-heatmap'
+    }
+  );
+  assert.deepEqual(immediate, ['weekly-heatmap']);
+  assert.deepEqual(folded, ['how-shall-we-sit', 'narrow-drawer-menu']);
 });
 
 test('narrow park catalog folds drawer tips into one-shot narrow-drawer-menu', () => {

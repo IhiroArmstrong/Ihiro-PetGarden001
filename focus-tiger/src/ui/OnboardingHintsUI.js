@@ -12,6 +12,7 @@ import {
   createHintsSeenStore,
   resolvePrimaryRemedyHintId,
   resolveRemedyCatalogHintIds,
+  resolveRemedyImmediateAndFolded,
   selectExclusiveAutoHintIds
 } from '../core/OnboardingHintsStore.js';
 import {
@@ -751,17 +752,19 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * 补救契约：点「?」即出**本页此刻可见**的全部功能 hints（主条 + 可见锚点各一条）；
-   * 只有藏在 ⋯ / 抽屉里的 chrome 才折进「还有 N 条」芯片，逐条展开。用途简介卡仍同出。
+   * 补救契约：点「?」→ 主条 +（Idle 等）可见锚 tip；⋯/抽屉 chrome 进芯片。
+   * **Focusing**：只画主条，其余进「还有 N 条」芯片逐条展开（禁多 tip 叠团 · §6.13）。
+   * 用途简介卡仍同出。
    */
   showRemedy() {
     const scene = this.getScene() || {};
     const primary = resolvePrimaryRemedyHintId(scene);
     const catalog = resolveRemedyCatalogHintIds(scene);
-    const immediate = catalog.filter(
-      (id) => id !== primary && this._hasOnScreenAnchor(id)
-    );
-    const folded = catalog.filter((id) => !immediate.includes(id));
+    const { immediate, folded } = resolveRemedyImmediateAndFolded(scene, {
+      primary,
+      catalog,
+      hasOnScreenAnchor: (id) => this._hasOnScreenAnchor(id)
+    });
     this._catalogPending = folded;
     this._remedyPrimaryId = primary;
     this._catalogShownId = null;

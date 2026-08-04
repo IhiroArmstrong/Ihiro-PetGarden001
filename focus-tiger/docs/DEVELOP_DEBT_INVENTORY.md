@@ -6,6 +6,8 @@
 初稿对照过 **`1f46a57`**；合入本文件前已按 tip 刷新基线与「部分覆盖」标注。  
 性质：**只读盘点**——不改运行时、不改 `TEST_TRACKER` / `*_WIRING`；本文件可随复测结果更新标签。
 
+**人工走查步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（由根目录 KnownRisky `.numbers` 迁入；Numbers 不再权威）。
+
 ---
 
 ## 0. 目的与读法
@@ -23,6 +25,7 @@
 
 | 文档 | 管什么 | 本清单如何用 |
 |---|---|---|
+| `KNOWN_RISKY_TEST_CHECKLIST.md` | known-risky **逐步操作**（Safari / 375 / 回流） | 开始产品验收时**优先按该表走**；本文件只给标签与判定依据 |
 | `TEST_TRACKER.md` | 逐功能验收行与用户反馈 | 状态标签的主证据源（尤其「有问题 / 已通过 / 待人工」） |
 | `COVERAGE_GAP_AUDIT.md` | 自动化覆盖分层（smoke / e2e / 人工锁） | 「有没有测」≠「人验过」；本清单叠一层**验证置信度** |
 | `SCENARIO_TESTS.md` | A–P 用户故事剧本 | 场景级入口与自动化边界 |
@@ -52,7 +55,6 @@
 
 | 功能/交互点 | 状态标签 | 判定依据 | 涉及文件 | 建议后续动作 |
 |---|---|---|---|---|
-| Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉） | known-risky | `TEST_TRACKER` **有问题**：§8/§9 关单未完；书面 Bugs 含宽屏 ⋯ 误绑 Sit tip 脉冲点、窄屏 Focusing tip、Sit options 缺点等（2026-08-01）。Facade 有单测+e2e，**不等于**故事矩阵关单。 | `IdleChromeFacade.js` · `idleChromeOrchestration.js` · `WideIdleMoreMenu` · `NarrowIdleShell` · e2e `wide-idle-more-menu` | 走查（§8+§9）→ 按 Bug 补测试 |
 | Honesty Check-in（Idle 补登主路径） | known-risky | 曾人工 OK + 真实链 e2e；**2026-08-01 重回「有问题」**：呼吸期底栏仍三球（应 keepQuickStart）、? 补救锚虚空等。真实链绿 ≠ 叠层/chrome 契约稳。 | `HonestyCheckIn*` · `sessionChromeSync.js` · e2e `honesty-bridge-real-path` | 走查回流 → 补 chrome/叠层 e2e |
 | Honesty 桥接 CTA | known-risky | **有问题**：叠层挡 Yes/No、大文案框近乎不透明挡角色（2026-08-01/02）；半透明改动待复测。e2e 主路径有；观感/z-index 仍脆。 | `HonestyBridgeCta*` · `Z_INDEX.md` · `micro-ritual` 注入叠层用例 | 走查 → 补 375 叠层断言 |
 | Ambient Soundscape + 右上音符静音 | known-risky | **有问题**多行（L311/L315/L414）：Rise 停音、续播手势、窄屏抽屉挡 ♪ 历史红。`COVERAGE_GAP`：听感/行为几乎无 DOM 锁。**部分覆盖**：已有 `ambient-mute-resume-focusing` e2e；停音/续播全矩阵与听感仍未关单——排期勿与「从零排查 Ambient」重复。 | `AmbientSoundscape*` · e2e `ambient-mute-resume-focusing` · `user-ambient-upload` | 补测试（行为契约）+ 走查；对照已有 mute e2e |
@@ -120,10 +122,11 @@
 
 | 功能/交互点 | 状态标签 | 判定依据 | 涉及文件 | 建议后续动作 |
 |---|---|---|---|---|
+| Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉） | verified | `TEST_TRACKER` Task3 **已通过**（2026-08-04）。KnownRisky #1：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 产品拍板窄屏 Hints **维持现状/延期**。专修 Focusing×? 见 PR #109 / §6.13。Facade 单测+e2e + 人工 §8+§9 壳故事。 | `IdleChromeFacade.js` · `idleChromeOrchestration.js` · `WideIdleMoreMenu` · `NarrowIdleShell` · e2e `wide-idle-more-menu` · 步骤见 `KNOWN_RISKY_TEST_CHECKLIST` #1 | 改壳时复测；步8 延期项勿当开放 Bug |
 | 产品壳 / 实验室壳切换 | verified | e2e `product-shell.smoke` + 长期使用基线；`?product=1` 契约清晰。 | `product-shell.smoke.spec.js` | 暂不处理 |
 | Arrival 外侧取消 / tip 只关 tip | verified | e2e + 7-25 书面 OK（含 375 tip 邻接修）。 | `outsideDismissGuard` · Arrival e2e | 改外侧逻辑时复测 |
-| Companion 点选即开表（主路径 DOM） | verified | e2e A/I/J/K + smoke 门闩 + 7-25 书面「点选即开表 OK」（**不含**后续窄宽总验收 Bugs）。 | `scenario-a.companion.spec.js` · `scenario-smoke` | 与 known-risky 门闩回归分开看 |
-| Honesty→桥接→Yes→Arrival **真实链** | verified | Task 3 e2e（禁注入）+ 7-25 桥接叠层书面 OK；**后续 chrome Bugs 见 known-risky，不撤销本条 DOM 主链**。 | `honesty-bridge-real-path.spec.js` | 叠层回归另计 |
+| Companion 点选即开表（主路径 DOM） | verified | e2e A/I/J/K + smoke 门闩 + 7-25 书面「点选即开表 OK」（窄宽壳总验收已于 2026-08-04 KnownRisky #1 / Task3 关单）。 | `scenario-a.companion.spec.js` · `scenario-smoke` | 与 known-risky 门闩回归分开看 |
+| Honesty→桥接→Yes→Arrival **真实链** | verified | Task 3 e2e（禁注入）+ 7-25 桥接叠层书面 OK；壳故事已关单；Honesty 叠层/呼吸期 chrome 若仍开则见本文件 Honesty known-risky 行，不撤销本条 DOM 主链。 | `honesty-bridge-real-path.spec.js` | 叠层回归另计 |
 | Reflection 主路径有/无意图回显 | verified | e2e + 抹闩单测 + 7-24 书面双路径 OK。 | `reflection-intention-echo.spec.js` | 改 Choose 闩时复测 |
 | 热力图 Store/壳显隐（非尖角观感） | verified | e2e seed 亮暗 + Focusing 隐藏等；与 UI「有问题」行区分。 | `weekly-practice-heatmap.spec.js` | 几何走查另计 |
 | 提醒横幅 busy=`suppress` | verified | e2e 按 suppress 断言；产品拍板记录在 SHARED/场景 P。 | `in-app-reminder.spec.js` | 改 busyPolicy 时复测 |
@@ -158,10 +161,10 @@
 
 | 状态标签 | 条数 | 占比（约） |
 |---|---|---|
-| **known-risky** | **17** | 29% |
+| **known-risky** | **16** | 27% |
 | **unknown** | **8** | 14% |
 | **assumed-ok** | **22** | 37% |
-| **verified** | **12** | 20% |
+| **verified** | **13** | 22% |
 | **合计（功能/交互点）** | **59** | 100% |
 | 另：**未登记/缺口**（上表） | **8** | —（不计入四态合计） |
 

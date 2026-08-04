@@ -155,6 +155,7 @@
 - **`honesty-optional`**：锚 **Sit 按钮右侧**（窄屏自动翻至左侧），避免盖住 Honesty 提示 / 桥接面板。
 - **浅绿灰填充**（`#eef6f1` → `#dceae2`）+ 斜体衬线，**刻意区别于** Continue / Companion / 输入框的米黄暖卡片（2026-07-21 曾误迁奶油色，已恢复薄荷绿）。
 - **自动提示互斥（2026-07-21 · RESPONSIVE_LAYOUT P1；2026-07-23/30 收窄）**：仅 **`triggerMode: auto`** 路径同一时刻**最多 1 条**气泡（`selectExclusiveAutoHintIds`）；**click** 圆点可并存。用户关掉 auto 气泡后串行下一条 auto。点「?」**补救**：窄屏抽屉关闭时主条 + 一次性「更多提示」→ 抽屉说明；宽屏/抽屉开着时可逐条展开。抽屉锚 tip 在抽屉关闭时不自动出现。
+- **Focusing 补救（2026-08-04 · §6.13）**：`isFocusing` 时点「?」**只画主条**（`rise-button`），HUD / ambient 等其余进「还有 N 条」芯片逐条展开——禁止窄屏多 tip 叠团。Idle 宽屏「可见锚立刻各出一条」不变（`resolveRemedyImmediateAndFolded`）。
 - **微仪式进行中（2026-07-29）**：`microRitualOpen` 时**不出** `sit-button` / `idle-after-session` 等指 Sit 的自动 tip（Sit chrome 已藏）。无可见锚点时**禁止**把 tip 丢到画面空白处（`_positionBubble` 直接收起）。
 - App 用途简介卡同系薄荷绿，略大、无尖角，锚在「?」上方。
 
