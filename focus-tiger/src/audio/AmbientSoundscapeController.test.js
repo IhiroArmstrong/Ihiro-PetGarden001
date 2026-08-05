@@ -122,9 +122,50 @@ test('resolveAmbientPanelSelectedTrackId highlights Off when silent (cold / afte
   cold.mute();
   assert.equal(cold.getTrackId(), AMBIENT_TRACK_OFF);
   assert.equal(cold.wantsEnabled(), false);
-  // Silent after note-mute → Off until unmute resumes playback.
-  assert.equal(resolveAmbientPanelSelectedTrackId(cold), AMBIENT_TRACK_OFF);
+  // After user-picked mute: still highlight preferred (memory), not Off.
+  assert.equal(
+    resolveAmbientPanelSelectedTrackId(cold),
+    AMBIENT_TRACK_SINGING_BOWL
+  );
   assert.equal(cold.getPreferredTrackId(), AMBIENT_TRACK_SINGING_BOWL);
+});
+
+test('resolveAmbientPanelSelectedTrackId after Rise keeps preferred highlight', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  ctrl.startSession();
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  ctrl.endSession();
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(ctrl.hasRememberedPanelTrack(), true);
+  assert.equal(
+    resolveAmbientPanelSelectedTrackId(ctrl),
+    AMBIENT_TRACK_SINGING_BOWL
+  );
+});
+
+test('note-mute preserves currentTime; unmute seeks resume (not restart)', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  audio.currentTime = 42.5;
+  ctrl.mute();
+  assert.equal(audio.currentTime, 42.5);
+  assert.ok(Boolean(audio.src));
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  await ctrl.unmute();
+  assert.equal(ctrl.isAudiblePlaying(), true);
+  assert.equal(audio.currentTime, 42.5);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_SINGING_BOWL);
 });
 
 test('resolveAmbientPanelSelectedTrackId keeps preferred while wantsEnabled (gesture unlock)', async () => {

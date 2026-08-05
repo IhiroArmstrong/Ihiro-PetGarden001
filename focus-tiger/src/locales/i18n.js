@@ -50,6 +50,11 @@ export const COPY_POOLS = Object.freeze({
     'REFOCUS_ACKNOWLEDGE_2',
     'REFOCUS_ACKNOWLEDGE_3'
   ],
+  FLOWER_BLOW_WELCOME: [
+    'FLOWER_BLOW_WELCOME_1',
+    'FLOWER_BLOW_WELCOME_2',
+    'FLOWER_BLOW_WELCOME_3'
+  ],
   ACROSS_TOOLS_IDLE: ['ACROSS_TOOLS_IDLE_1', 'ACROSS_TOOLS_IDLE_2']
 });
 
@@ -108,6 +113,20 @@ export function t(key) {
   if (dict[key]) return dict[key];
   if (currentLocale !== 'en' && en[key]) return en[key];
   console.warn(`[i18n] 缺少文案键 "${key}"（locale=${currentLocale}）`);
+  return key;
+}
+
+/**
+ * Look up a key in an explicit locale (bilingual stacks / Lab previews).
+ * @param {string} locale
+ * @param {string} key
+ * @returns {string}
+ */
+export function tInLocale(locale, key) {
+  const dict = DICTIONARIES[locale] || {};
+  if (dict[key]) return dict[key];
+  if (locale !== 'en' && en[key]) return en[key];
+  console.warn(`[i18n] 缺少文案键 "${key}"（locale=${locale}）`);
   return key;
 }
 

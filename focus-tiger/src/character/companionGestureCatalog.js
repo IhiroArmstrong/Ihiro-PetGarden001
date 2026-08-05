@@ -77,7 +77,7 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     sequence: 'magicBookReading',
     label: '魔法书阅读',
     suggestedUses:
-      '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）；**勿**进 Rise 池（过长）'
+      '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落 ~1s CapCut Idle（2026-08-05）；**勿**进 Rise 池（过长）'
   }),
   Object.freeze({
     id: 'conjureFlowersBlowAway',
