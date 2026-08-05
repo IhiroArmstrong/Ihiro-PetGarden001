@@ -292,37 +292,49 @@ test('welcomeBack is parked: does not play old or new wave sequences', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'welcomeBack');
 });
 
-test('magicBookReading plays once then hard-cuts to idle (no CapCut)', () => {
+test('magicBookReading plays once then CapCut idle (~1s)', () => {
   const plays = [];
+  const stops = [];
   const spritePlayer = {
     play(name, options = {}) {
       plays.push({ name, options });
       return true;
     },
-    stop() {}
+    stop(options) {
+      stops.push(options);
+    }
   };
   const controller = new EmotionController({
     poseManager: { setPose() {}, setCanvasHidden() {} },
     dynamicMotion: { setBreathingEnabled() {} },
     incenseGreeting: {},
-    spritePlayer
-  });
-  let completed = 0;
-
-  controller.playEmotion('magicBookReading', {
-    onComplete: () => {
-      completed += 1;
+    spritePlayer,
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop(options) {
+        stops.push(options);
+      },
+      start(options) {
+        plays.push({ name: 'idleBreathing', options });
+      }
     }
   });
 
+  controller.playEmotion('magicBookReading');
+
+  assert.deepEqual(stops, [{ clear: false }]);
   assert.equal(plays[0].name, 'magicBookReading');
-  assert.equal(plays[0].options.returnCrossFadeMs, 0);
+  assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
   assert.equal(plays[0].options.loop, false);
   assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.holdLastFrame, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
-  assert.equal(plays[1].options.crossFadeMs, undefined);
-  assert.equal(completed, 1);
+  assert.equal(plays[1].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 

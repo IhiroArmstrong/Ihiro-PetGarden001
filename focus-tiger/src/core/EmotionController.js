@@ -24,7 +24,8 @@ import {
 /**
  * CapCut 式叠代溶解：两序列无法像素衔接时，定格两端帧做交叉淡化。
  * 2026-08-03：凡「有转场」的跨动画衔接统一 **1000ms**（短 180/520ms 易闪白）；
- * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧、魔法书回 Idle）保持 0。
+ * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧）保持 0。
+ * 魔法书回 Idle：2026-08-05 起与其它 companion oneshot 同走 CapCut（不再硬切）。
  * 见 PRINCIPLES「序列衔接：CapCut 式叠代」与 ARCHITECTURE「播放机制」。
  */
 export const CAPCUT_DISSOLVE_MS = 1000;
@@ -184,6 +185,8 @@ export class EmotionController {
 
     /** @type {(() => void) | null} 调试「Honesty唤醒」→ 打开时长三选一 */
     this._debugHonestyWake = null;
+    /** @type {((opts?: { bilingual?: boolean }) => void) | null} */
+    this._flowerBlowLabBubble = null;
 
     /**
      * 本轮 DORMANT 入睡所用斗篷变体（classic | starlight）。
@@ -514,10 +517,11 @@ export class EmotionController {
       },
 
       // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
-      // 欢迎池 / 切语 English 均默认硬切 Idle（无 CapCut；QA 2026-08-02）。
+      // 2026-08-05：冷启动回 Idle 改 ~1s CapCut（用户书面：硬切缺叠化）。
       magicBookReading: (options = {}) => {
         this._playCompanionSequenceOnce('magicBookReading', options, {
-          returnCrossFadeMs: options.returnCrossFadeMs ?? 0
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
 
@@ -1100,6 +1104,15 @@ export class EmotionController {
       typeof handler === 'function' ? handler : null;
   }
 
+  /**
+   * Phase 2a Lab：调试播变花时浮现鼓励气泡（不进产品冷启动）。
+   * @param {((opts?: { bilingual?: boolean }) => void) | null} handler
+   */
+  setFlowerBlowLabBubbleHandler(handler) {
+    this._flowerBlowLabBubble =
+      typeof handler === 'function' ? handler : null;
+  }
+
   /** @returns {boolean} 已烧录叙事光效播放期是否应关闭常规实时金光。 */
   shouldSuppressRuntimeGlow() {
     return this._runtimeGlowSuppressed;
@@ -1128,7 +1141,8 @@ export class EmotionController {
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'bookReading', label: '单程看书(日语切语)' },
       { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
-      { key: 'conjureFlowersBlowAway', label: '变花吹散(Lab·未接线)' },
+      { key: 'conjureFlowersBlowAway', label: '变花吹散+气泡(Lab)' },
+      { key: 'conjureFlowersBlowAwayLocale', label: '变花气泡·跟locale(Lab)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1215,6 +1229,18 @@ export class EmotionController {
       btn.addEventListener('click', () => {
         if (key === 'dormantWake' && typeof this._debugHonestyWake === 'function') {
           this._debugHonestyWake();
+          return;
+        }
+        // Phase 2a Lab：变花 + 鼓励气泡（默认双语首次预览；locale 钮跟当前语言）
+        if (
+          key === 'conjureFlowersBlowAway' ||
+          key === 'conjureFlowersBlowAwayLocale'
+        ) {
+          const bilingual = key === 'conjureFlowersBlowAway';
+          this.playEmotion('conjureFlowersBlowAway');
+          if (typeof this._flowerBlowLabBubble === 'function') {
+            this._flowerBlowLabBubble({ bilingual });
+          }
           return;
         }
         // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
