@@ -7,6 +7,7 @@ import {
   markFlowerWelcomeBubbleShown,
   readFlowerWelcomeState,
   resolveFlowerWelcomeForce,
+  shouldPreferFlowerWelcomeOverWellness,
   touchFlowerWelcomeLastOpen
 } from './flowerWelcomeGate.js';
 
@@ -73,5 +74,17 @@ describe('flowerWelcomeGate', () => {
     assert.equal(r.force, true);
     assert.equal(r.reason, 'absence');
     assert.ok(FLOWER_WELCOME_ABSENCE_DAYS === 3);
+  });
+
+  it('Day1 / absence flower beats wellness cloak skip', () => {
+    assert.equal(
+      shouldPreferFlowerWelcomeOverWellness({ force: true, reason: 'day1' }),
+      true
+    );
+    assert.equal(
+      shouldPreferFlowerWelcomeOverWellness({ force: false, reason: 'ordinary' }),
+      false
+    );
+    assert.equal(shouldPreferFlowerWelcomeOverWellness(null), false);
   });
 });
