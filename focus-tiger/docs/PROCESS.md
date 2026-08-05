@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：`conjureFlowersBlowAway` 入库（65 帧 @10fps）+ 调试钮 + CapCut Idle；策略 C / 同日 XOR 欢迎池见 `FLOWER_BLOW_WELCOME_DESIGN.md`。**产品冷启动未改**。用户书面（feature tip）：Lab 变花→吹散→CapCut→Idle **测试 OK**；产品壳无自动吹花 **测试 OK**。下一刀：Phase 2a 气泡。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 `develop` tip **`dd09711`**。Mer-Ka-Ba 后接 Jesse Gallagher×4 + Reed Mathis Somnia×2（合计 12 内置）；ambient 约 188MB。关单级人工见 `TEST_TRACKER`「Ambient · Jesse Gallagher×4 + Somnia×2 入库」。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
@@ -315,6 +316,8 @@
 - **EyeTracking**：已正式放弃（2026-07-19），原因见 `CORE_LOOP.md`；勿再开返工任务
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
+
+**最近拍板（2026-08-05）**：吹花鼓励冷启动微仪式——策略 C + 同日 XOR 欢迎池；观察式文案；时机/交互/flag 见 `FLOWER_BLOW_WELCOME_DESIGN.md`；**先 Phase 1 Lab，再产品接线**（须走 Dispatcher，禁止平行硬调）。
 
 **最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
 

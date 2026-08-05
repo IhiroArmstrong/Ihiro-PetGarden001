@@ -405,6 +405,11 @@ test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchC
   assert.equal(SPRITE_SEQUENCES.parrotEarVisit.fps, 8);
   assert.equal(SPRITE_SEQUENCES.parrotEarVisit.loopMode, 'none');
   assert.equal(SPRITE_SEQUENCES.parrotEarVisit.preload, false);
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.animation, 'conjure-flowers-blow-away');
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.frameCount, 65);
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.fps, 10);
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.preload, false);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.animation, 'ear-wiggle-head-touch');
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.frameCount, 54);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.fps, 10);
