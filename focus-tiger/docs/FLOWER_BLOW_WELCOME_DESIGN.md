@@ -1,7 +1,7 @@
 # 吹花鼓励 · 冷启动微仪式设计（拍板记录）
 
 **日期**：2026-08-05  
-**状态**：产品规则已拍板；**Phase 1 Lab 已合 develop**（`a50c507` / PR #124）；**Phase 2a Lab 气泡已合**；**Phase 2b 产品接线进行中**（Dispatcher Day1/久别 + XOR + flag）  
+**状态**：产品规则已拍板；**Phase 1–2b 已合 develop**；**Phase 2c 抛光进行中**（文案轮换记账 / e2e 门闩 / TEST_TRACKER 分列；fps 锁定 10）  
 **素材源**：仓库根 `yin-smiling-meditate-conjure-flowers-blow-away_transparent/` → 已入库  
 **入库路径**：`public/sprites/tiger-cub/monk-robe-default/conjure-flowers-blow-away/frame_001–065.png`  
 **情绪键**：`conjureFlowersBlowAway`  
@@ -122,9 +122,9 @@
 
 ## 五、下一步（待讨论确认后执行）
 
-1. ~~Phase 1 Lab 入库~~ — **已合 develop**（PR #124 · tip `a50c507`）；用户书面 Lab 观感 OK。  
-2. **Phase 2a（本切片）**：观察式气泡 UI + EN/JA 池；实验室「变花吹散+气泡」双语 / 「变花气泡·跟locale」；dismiss / 3.5s 超时。  
-3. **Phase 2b**：Dispatcher + Day1/久别门闩 + 同日 XOR + feature flag。
+1. ~~Phase 1 Lab 入库~~ — **已合 develop**（PR #124）。  
+2. ~~Phase 2a 气泡~~ / ~~Phase 2b 产品接线~~ — **已合 develop**（含 #139 Day1 压过 wellness）。  
+3. **Phase 2c（本切片）**：文案轮换记账、10fps 锁定、e2e 门闩失败用例、TEST_TRACKER 分列；窄屏气泡避让 ActionBar。
 
 ---
 
@@ -141,3 +141,4 @@
 | 2026-08-05 | Lab 气泡：头顶 + 白玉毛玻璃 + locale 主次字 + 尖角（分析师） |
 | 2026-08-06 | Phase 2b：Dispatcher 接线 Day1/≥3日久别吹花 + 同日 XOR + flag + 产品气泡 |
 | 2026-08-06 | **纠正**：Day1/久别吹花压过 ≥23:00 斗篷与清晨苏醒；首次看产品必须先吹花 |
+| 2026-08-06 | Phase 2c：文案轮换 `lastCopyKey`；e2e `flower-welcome.spec.js` 门闩；窄屏顶栏避让；10fps 锁定 |

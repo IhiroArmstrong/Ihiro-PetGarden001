@@ -70,6 +70,7 @@ import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
   isFlowerWelcomeEnabled,
   markFlowerWelcomeBubbleShown,
+  readFlowerWelcomeState,
   resolveFlowerWelcomeForce,
   shouldPreferFlowerWelcomeOverWellness
 } from './core/flowerWelcomeGate.js';
@@ -319,15 +320,17 @@ async function init() {
       decision.flowerWelcome &&
       decision.emotionKey === 'conjureFlowersBlowAway'
     ) {
+      const flowerStorage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const prevFlower = readFlowerWelcomeState(flowerStorage);
       const msg = resolveFlowerBlowWelcomeMessage({
         bilingual: decision.flowerBilingual === true,
         locale: getLocale(),
+        avoidCopyKey: prevFlower.lastCopyKey,
         tInLocale
       });
       flowerBlowWelcomeBubble?.show(msg.lines);
-      markFlowerWelcomeBubbleShown(
-        typeof localStorage !== 'undefined' ? localStorage : null
-      );
+      markFlowerWelcomeBubbleShown(flowerStorage, { copyKey: msg.copyKey });
     }
     // Locale greeting: consume daily quota only after playEmotion starts
     // (resolve no longer writes — avoids burning the slot when play is skipped).

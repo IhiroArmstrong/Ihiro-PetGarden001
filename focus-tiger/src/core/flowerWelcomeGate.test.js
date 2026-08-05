@@ -87,4 +87,18 @@ describe('flowerWelcomeGate', () => {
     );
     assert.equal(shouldPreferFlowerWelcomeOverWellness(null), false);
   });
+
+  it('records lastCopyKey for rotation accounting', () => {
+    const storage = memoryStorage();
+    touchFlowerWelcomeLastOpen(storage, {
+      now: () => new Date(2026, 7, 6, 12)
+    });
+    markFlowerWelcomeBubbleShown(storage, {
+      copyKey: 'FLOWER_BLOW_WELCOME_2'
+    });
+    assert.equal(
+      readFlowerWelcomeState(storage).lastCopyKey,
+      'FLOWER_BLOW_WELCOME_2'
+    );
+  });
 });

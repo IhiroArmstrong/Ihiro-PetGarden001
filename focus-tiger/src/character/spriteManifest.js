@@ -310,8 +310,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 变花吹散（Day1 / 久别鼓励 · Phase 1 Lab only）。源：yin-smiling-…-blow-away_transparent → conjure-flowers-blow-away。
-  // 1056×864 RGBA · 65 帧 @ 10 fps ≈6.5s（ack 舒适带）；正放一次 → CapCut Idle。产品冷启动未接线。
+  // 变花吹散（Day1 / 久别鼓励）。源：yin-smiling-…-blow-away_transparent → conjure-flowers-blow-away。
+  // 1056×864 RGBA · 65 帧 @ **10 fps** ≈6.5s（ack 舒适带；Phase 2c 锁定勿无故改 fps）；正放一次 → CapCut Idle。
   conjureFlowersBlowAway: {
     animation: 'conjure-flowers-blow-away',
     frameCount: 65,

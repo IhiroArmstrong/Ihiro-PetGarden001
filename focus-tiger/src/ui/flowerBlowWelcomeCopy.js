@@ -14,15 +14,27 @@ export const FLOWER_BLOW_BUBBLE_HOLD_MS = 3500;
 export const FLOWER_BLOW_BUBBLE_FADE_MS = 600;
 
 /**
- * @param {() => number} [random]
+ * @param {() => number | { random?: () => number, avoidKey?: string | null }} [randomOrOpts]
  * @returns {string}
  */
-export function pickFlowerBlowWelcomeCopyKey(random = Math.random) {
-  const i = Math.min(
-    FLOWER_BLOW_WELCOME_COPY_KEYS.length - 1,
-    Math.floor(random() * FLOWER_BLOW_WELCOME_COPY_KEYS.length)
-  );
-  return FLOWER_BLOW_WELCOME_COPY_KEYS[i];
+export function pickFlowerBlowWelcomeCopyKey(randomOrOpts = Math.random) {
+  const opts =
+    typeof randomOrOpts === 'function'
+      ? { random: randomOrOpts }
+      : randomOrOpts && typeof randomOrOpts === 'object'
+        ? randomOrOpts
+        : {};
+  const random =
+    typeof opts.random === 'function' ? opts.random : Math.random;
+  const avoidKey =
+    typeof opts.avoidKey === 'string' && opts.avoidKey ? opts.avoidKey : null;
+
+  const pool =
+    avoidKey && FLOWER_BLOW_WELCOME_COPY_KEYS.length > 1
+      ? FLOWER_BLOW_WELCOME_COPY_KEYS.filter((k) => k !== avoidKey)
+      : FLOWER_BLOW_WELCOME_COPY_KEYS;
+  const i = Math.min(pool.length - 1, Math.floor(random() * pool.length));
+  return pool[i];
 }
 
 /**
@@ -55,6 +67,7 @@ export function splitFlowerBlowBubbleSentences(text) {
  * @param {boolean} [opts.bilingual] 首次造访：双语文叠显（当前 locale 为主字）
  * @param {string} [opts.locale] 用户 locale（默认 en）
  * @param {string} [opts.copyKey] 可注入固定键（Lab 复测）
+ * @param {string | null} [opts.avoidCopyKey] 轮换：尽量避开上次键
  * @param {() => number} [opts.random]
  * @param {(locale: string, key: string) => string} opts.tInLocale
  * @returns {{
@@ -68,6 +81,7 @@ export function resolveFlowerBlowWelcomeMessage({
   bilingual = false,
   locale = 'en',
   copyKey,
+  avoidCopyKey = null,
   random = Math.random,
   tInLocale
 } = {}) {
@@ -77,7 +91,7 @@ export function resolveFlowerBlowWelcomeMessage({
   const key =
     typeof copyKey === 'string' && copyKey
       ? copyKey
-      : pickFlowerBlowWelcomeCopyKey(random);
+      : pickFlowerBlowWelcomeCopyKey({ random, avoidKey: avoidCopyKey });
   const primaryLocale = normalizeFlowerBlowLocale(locale);
 
   if (bilingual) {
