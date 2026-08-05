@@ -51,16 +51,28 @@
 
 ---
 
+## 0.1 分析师答复 · 排期分组（2026-08-05）
+
+高分 ≥9 的 6 条**不得**混进同一「修复」动能；先按类型分组：
+
+| 类型 | 条目 | 排期 |
+|---|---|---|
+| **纯缺陷，小改** | #1 Sit 静默 return、#3 playEmotion 可观测、#4 Visibility gap-* | **已开一批**：`fix/logged-debt-batch-134`（Brief `task-logged-debt-batch-134.md`）——合成一批、一起测，不拆三个独立小 PR |
+| **文案/体验打磨** | #5 SessionComplete 观察式文案 | **不混批**；本周内人工看原文措辞再决定是否改 |
+| **产品级新决策** | #2 Hints 整体再设计、#6 主动 Recover | **不开 Brief 前不进修复排期**；分数≠现在就该做 |
+
+---
+
 ## 1. 主表（按总分降序）
 
 | # | 问题描述（摘录） | 出处 | 不修理由 | 涉及模块 | 频率 | 严重度 | 修复成本 | 搁置趋势 | 总分 | 建议 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | `completionPending` 时 Sit `return false`，按钮未禁用 →「点了没反应」 | `EDGE_CASES.md` P1 #5（2026-07-22「先不修」）；`DEVELOP_DEBT` / `KNOWN_RISKY` #10；回归锁红线 | 批次 4–5 候选；等 1–3 验收后再排 | `main.js` FocusInput · `SessionUiGate` | 2 | 3 | 3 | 3 | **11** | **进入下一批修复** |
-| 2 | Hints 尖角/补救/weekly tip 等「问题很多」→ 整体再设计；暂缓单点硬修 | `TEST_TRACKER`「? 补救」行（2026-08-04，严重度 `post-v1`）；`KNOWN_RISKY` #5 步5 / #7；`HINTS_WIRING` | 产品方向再设计；v1 不挡合 main | `OnboardingHints*` · `HINTS_WIRING.md` | 3 | 2 | 1 | 3 | **9** | **进入下一批修复**（须产品 Brief，非整行小补丁） |
-| 3 | `playEmotion` 返回值常忽略；hold/强情绪 key 散落；新情绪漏登记难查 | `EDGE_CASES` P1 #17–19；`DEVELOP_DEBT` / `KNOWN_RISKY` #15「暂不处理（观察）」 | 工程观察；非产品走查主项 | `EmotionController.js` · 多调用方 | 2 | 2 | 2 | 3 | **9** | **进入下一批修复**（warn/契约小步即可） |
-| 4 | Visibility 契约 `gap-*` 未全锁；改 suppress 易只绿一侧视口 | `DEVELOP_DEBT` known-risky；`SHARED_RESOURCES` §6 / `DOC_CODE_CONTRACT` V-gap；`KNOWN_RISKY` #11 | 建议「补测试」但长期未收口（无专修 commit） | `visibilityContractRegistry.js` · visibility e2e | 2 | 2 | 2 | 3 | **9** | **进入下一批修复** |
-| 5 | `SessionComplete` 非模态观察式文案尚未实现（情绪/分流已有） | `PROCESS.md` 进度速览；`DEVELOP_DEBT` assumed-ok「产品拍板或暂不处理」；`PRODUCT_MOMENTS` Reflect 邻接 | 功能半截但静默；未立项开修 | 完成反馈 UI · locales | 2 | 2 | 3 | 2 | **9** | **进入下一批修复** |
-| 6 | 主动 Recover 入口空白（被动 Re-focus 已有） | `PRODUCT_MOMENTS.md` §Recover；`DEVELOP_DEBT` §5；`EMOTION_BIBLE` Recover 边界 | 产品空白未接线；叙事点名「使用频率最高」却未排期 | 新入口 · 呼吸引导复用 | 3 | 3 | 1 | 2 | **9** | **进入下一批修复**（新品：先 Brief） |
+| 1 | `completionPending` 时 Sit `return false`，按钮未禁用 →「点了没反应」 | `EDGE_CASES.md` P1 #5（2026-07-22「先不修」）；`DEVELOP_DEBT` / `KNOWN_RISKY` #10；回归锁红线 | 批次 4–5 候选；等 1–3 验收后再排 | `main.js` FocusInput · `SessionUiGate` | 2 | 3 | 3 | 3 | **11** | **已开修（批 4 · `fix/logged-debt-batch-134`）** |
+| 2 | Hints 尖角/补救/weekly tip 等「问题很多」→ 整体再设计；暂缓单点硬修 | `TEST_TRACKER`「? 补救」行（2026-08-04，严重度 `post-v1`）；`KNOWN_RISKY` #5 步5 / #7；`HINTS_WIRING` | 产品方向再设计；v1 不挡合 main | `OnboardingHints*` · `HINTS_WIRING.md` | 3 | 2 | 1 | 3 | **9** | **暂不开 Brief**（先厘清与 HINTS_WIRING SSOT 关系） |
+| 3 | `playEmotion` 返回值常忽略；hold/强情绪 key 散落；新情绪漏登记难查 | `EDGE_CASES` P1 #17–19；`DEVELOP_DEBT` / `KNOWN_RISKY` #15「暂不处理（观察）」 | 工程观察；非产品走查主项 | `EmotionController.js` · 多调用方 | 2 | 2 | 2 | 3 | **9** | **已开修（批 4 · 部分收口）** |
+| 4 | Visibility 契约 `gap-*` 未全锁；改 suppress 易只绿一侧视口 | `DEVELOP_DEBT` known-risky；`SHARED_RESOURCES` §6 / `DOC_CODE_CONTRACT` V-gap；`KNOWN_RISKY` #11 | 建议「补测试」但长期未收口（无专修 commit） | `visibilityContractRegistry.js` · visibility e2e | 2 | 2 | 2 | 3 | **9** | **已开修（批 4 · gap 收 locked）** |
+| 5 | `SessionComplete` 非模态观察式文案尚未实现（情绪/分流已有） | `PROCESS.md` 进度速览；`DEVELOP_DEBT` assumed-ok「产品拍板或暂不处理」；`PRODUCT_MOMENTS` Reflect 邻接 | 功能半截但静默；未立项开修 | 完成反馈 UI · locales | 2 | 2 | 3 | 2 | **9** | **单独档 · 先看原文措辞**（不与批 4 混） |
+| 6 | 主动 Recover 入口空白（被动 Re-focus 已有） | `PRODUCT_MOMENTS.md` §Recover；`DEVELOP_DEBT` §5；`EMOTION_BIBLE` Recover 边界 | 产品空白未接线；叙事点名「使用频率最高」却未排期 | 新入口 · 呼吸引导复用 | 3 | 3 | 1 | 2 | **9** | **暂不开 Brief**（产品决策，非技术债清算） |
 | 7 | 提醒软提示缺口：`practiced_today_note` 未见；无「已保存」确认；hints 重叠 | `TEST_TRACKER` 提醒 UI 行（2026-07-25 夜书面）；P0 表 L242「**不挡** P0 / **不挡** merge」 | 明确不挡当轮 P0/PR#2 merge | `ReminderPreferenceUI` · InAppReminder* | 2 | 2 | 2 | 2 | **8** | **需要人工判断**：软文案债 vs 提醒主路径已大体 OK；是否并进提醒走查周 |
 | 8 | Ambient 静音后再点为「重播」非「续播」——历史项「可保留观察」 | `TEST_TRACKER` 右上音符行（2026-08-04）；`DEVELOP_DEBT` Ambient 簇 | 未再测可保留观察；非当轮必关 | `AmbientSoundscape*` | 2 | 2 | 2 | 2 | **8** | **需要人工判断**：听感契约是否仍要「续播」产品承诺 |
 | 9 | 非法 `companionMode` 静默 coerce 为 `stay` | `EDGE_CASES` P1 #8 | 批次 4–5；建议改 warn，未开修 | `FocusSession.start` | 1 | 2 | 3 | 2 | **8** | **需要人工判断**：真实脏数据概率低，但与门闩族相邻 |

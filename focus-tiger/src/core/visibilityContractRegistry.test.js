@@ -46,13 +46,11 @@ test('locked contracts have required test anchors', () => {
 
 test('gap list tracks only post-PR#2 P1/P2 coverage debt (class-2)', () => {
   const gaps = listVisibilityLockGaps();
-  const ids = gaps.map((c) => c.id).sort();
-  assert.deepEqual(ids, [
-    'choose-bow-companion-in-viewport',
-    'focusing-focus-hud-visible',
-    'heatmap-hidden-when-focusing',
-    'honesty-panel-entry-hidden'
-  ]);
+  assert.deepEqual(
+    gaps.map((c) => c.id).sort(),
+    [],
+    'logged-debt batch #4 closed former gap-* rows'
+  );
   assert.equal(
     VISIBILITY_CONTRACTS.find((c) => c.id === 'honesty-bridge-entries-hidden')
       ?.lockStatus,

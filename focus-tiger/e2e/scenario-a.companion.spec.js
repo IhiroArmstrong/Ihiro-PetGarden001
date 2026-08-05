@@ -454,3 +454,35 @@ test('Choose write-your-own: → confirm commits typed text', async ({ page }) =
     timeout: 15_000
   });
 });
+
+/**
+ * EDGE #5 / 审计 #1：completionPending 时 Sit 须 disabled，禁止可点静默 return。
+ */
+test('completionPending disables Sit (no silent no-op)', async ({ page }) => {
+  await openFreshProductShell(page);
+  await expect(page.locator('#btn-focus')).toBeEnabled({ timeout: 15_000 });
+
+  await page.evaluate(() => {
+    const gate = /** @type {{ setCompletionPending: (v: boolean) => void }} */ (
+      window.__sessionUiGate
+    );
+    const resync = /** @type {() => void} */ (window.__resyncSessionChrome);
+    if (!gate || typeof resync !== 'function') {
+      throw new Error('missing __sessionUiGate / __resyncSessionChrome');
+    }
+    gate.setCompletionPending(true);
+    resync();
+  });
+
+  await expect(page.locator('#btn-focus')).toBeDisabled();
+  await expect(page.locator('#btn-focus')).toHaveAttribute(
+    'aria-disabled',
+    'true'
+  );
+
+  await page.evaluate(() => {
+    window.__sessionUiGate.setCompletionPending(false);
+    window.__resyncSessionChrome();
+  });
+  await expect(page.locator('#btn-focus')).toBeEnabled();
+});

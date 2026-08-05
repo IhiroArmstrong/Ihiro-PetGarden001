@@ -8,7 +8,8 @@ import {
 import {
   SessionUiGate,
   computePostSessionOverlayActive,
-  resolveCompanionModeSelectCommit
+  resolveCompanionModeSelectCommit,
+  shouldEnableFocusChromeButton
 } from './SessionUiGate.js';
 
 describe('SessionUiGate', () => {
@@ -86,6 +87,25 @@ describe('SessionUiGate', () => {
     );
     gate.setCompletionPending(true);
     assert.equal(gate.resolveSitClickWhenIdle(), 'ignore');
+  });
+
+  it('shouldEnableFocusChromeButton：完成中 / 微仪式 → 禁用（防静默 return）', () => {
+    assert.equal(shouldEnableFocusChromeButton({}), true);
+    assert.equal(
+      shouldEnableFocusChromeButton({ completionPending: true }),
+      false
+    );
+    assert.equal(
+      shouldEnableFocusChromeButton({ microRitualOpen: true }),
+      false
+    );
+    assert.equal(
+      shouldEnableFocusChromeButton({
+        completionPending: true,
+        microRitualOpen: true
+      }),
+      false
+    );
   });
 
   it('Arrival 解锁后 clearArrivalGateForFocusStart / AfterRise 不得关掉门闩', () => {
