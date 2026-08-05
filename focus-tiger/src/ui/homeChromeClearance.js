@@ -5,11 +5,23 @@
  * Soft toasts / light panels that sit in the lower third must clear that band
  * (plus a small gap). Do not invent a second magic `bottom:NNpx` per surface.
  *
- * @see NarrowIdleShell.js `.ft-narrow-home-ctas`
+ * Top-anchored copy (e.g. flower welcome bubble) must clear the narrow ActionBar
+ * (time / Calm pill) — same formula as FocusHUD under focusing chrome.
+ *
+ * @see NarrowIdleShell.js `.ft-narrow-home-ctas` / `.ft-narrow-action-bar`
  * @see MindfulAcknowledgeToast.js bottom placement
  */
 
 export const HOME_CHROME_NARROW_MQ = '(max-width: 479px)';
+
+/** Matches NarrowIdleShell ActionBar `top: max(10px, safe-area)`. */
+export const NARROW_ACTION_BAR_TOP_PAD_PX = 10;
+
+/** Matches NarrowIdleShell `.ft-narrow-action-bar { height: 48px }`. */
+export const NARROW_ACTION_BAR_HEIGHT_PX = 48;
+
+/** Air between ActionBar bottom and top-anchored copy. */
+export const NARROW_COPY_BELOW_ACTION_BAR_GAP_PX = 8;
 
 /** Matches NarrowIdleShell home CTA `bottom: max(64px, …)`. */
 export const NARROW_HOME_CTA_BOTTOM_PX = 64;
@@ -56,6 +68,32 @@ export function homeClearanceBottomCss(win = globalThis) {
     return `max(${px}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
   }
   return `${WIDE_COPY_BOTTOM_PX}px`;
+}
+
+/**
+ * Fallback px when safe-area is 0 (matches FocusHUD narrow focusing top).
+ * @returns {number}
+ */
+export function narrowActionBarCopyClearanceTopPx() {
+  return (
+    NARROW_ACTION_BAR_TOP_PAD_PX +
+    NARROW_ACTION_BAR_HEIGHT_PX +
+    NARROW_COPY_BELOW_ACTION_BAR_GAP_PX
+  );
+}
+
+/**
+ * CSS `top` for top-anchored copy below narrow ActionBar (time / Calm).
+ * Wide: light safe-area pad only (no ActionBar pill).
+ * @param {Window | { matchMedia?: Function }} [win]
+ * @returns {string}
+ */
+export function homeClearanceTopCss(win = globalThis) {
+  if (isNarrowHomeChromeViewport(win)) {
+    const px = narrowActionBarCopyClearanceTopPx();
+    return `max(${px}px, calc(${NARROW_ACTION_BAR_TOP_PAD_PX}px + env(safe-area-inset-top, 0px) + ${NARROW_ACTION_BAR_HEIGHT_PX}px + ${NARROW_COPY_BELOW_ACTION_BAR_GAP_PX}px))`;
+  }
+  return 'max(12px, calc(env(safe-area-inset-top, 0px) + 10px))';
 }
 
 /**
