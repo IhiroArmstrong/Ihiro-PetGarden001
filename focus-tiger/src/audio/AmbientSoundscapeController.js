@@ -26,6 +26,12 @@ export const AUDIBLE_PLAYING_LIFT = 0.1;
 
 export const AMBIENT_TRACK_OFF = 'off';
 export const AMBIENT_TRACK_SINGING_BOWL = 'singing-bowl';
+export const AMBIENT_TRACK_DIVINE_LIFE_SOCIETY = 'divine-life-society';
+export const AMBIENT_TRACK_LORD_OF_THE_DAWN = 'lord-of-the-dawn';
+export const AMBIENT_TRACK_MAESTRO_TLAKAELEL = 'maestro-tlakaelel';
+export const AMBIENT_TRACK_THE_INNER_SOUND = 'the-inner-sound';
+export const AMBIENT_TRACK_SOMNIA_VARIATION_3 = 'somnia-variation-3';
+export const AMBIENT_TRACK_SOMNIA_VARIATION_10 = 'somnia-variation-10';
 export const AMBIENT_TRACK_RAIN = 'rain';
 export const AMBIENT_TRACK_DREAMLAND = 'dreamland';
 export const AMBIENT_TRACK_INVISIBLE_BEAUTY = 'invisible-beauty';
@@ -44,6 +50,36 @@ export const AMBIENT_TRACKS = [
     id: AMBIENT_TRACK_SINGING_BOWL,
     src: '/audio/ambient/mer-ka-ba.mp3',
     labelKey: 'AMBIENT_TRACK_SINGING_BOWL'
+  },
+  {
+    id: AMBIENT_TRACK_DIVINE_LIFE_SOCIETY,
+    src: '/audio/ambient/divine-life-society-jesse-gallagher.mp3',
+    labelKey: 'AMBIENT_TRACK_DIVINE_LIFE_SOCIETY'
+  },
+  {
+    id: AMBIENT_TRACK_LORD_OF_THE_DAWN,
+    src: '/audio/ambient/lord-of-the-dawn-jesse-gallagher.mp3',
+    labelKey: 'AMBIENT_TRACK_LORD_OF_THE_DAWN'
+  },
+  {
+    id: AMBIENT_TRACK_MAESTRO_TLAKAELEL,
+    src: '/audio/ambient/maestro-tlakaelel-jesse-gallagher.mp3',
+    labelKey: 'AMBIENT_TRACK_MAESTRO_TLAKAELEL'
+  },
+  {
+    id: AMBIENT_TRACK_THE_INNER_SOUND,
+    src: '/audio/ambient/the-inner-sound-jesse-gallagher.mp3',
+    labelKey: 'AMBIENT_TRACK_THE_INNER_SOUND'
+  },
+  {
+    id: AMBIENT_TRACK_SOMNIA_VARIATION_3,
+    src: '/audio/ambient/somnia-variation-3-reed-mathis.mp3',
+    labelKey: 'AMBIENT_TRACK_SOMNIA_VARIATION_3'
+  },
+  {
+    id: AMBIENT_TRACK_SOMNIA_VARIATION_10,
+    src: '/audio/ambient/somnia-variation-10-reed-mathis.mp3',
+    labelKey: 'AMBIENT_TRACK_SOMNIA_VARIATION_10'
   },
   {
     id: AMBIENT_TRACK_RAIN,
