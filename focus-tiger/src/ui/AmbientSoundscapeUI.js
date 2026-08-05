@@ -8,7 +8,8 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   AMBIENT_TRACK_OFF,
   AMBIENT_TRACKS,
-  resolveAmbientPanelSelectedTrackId
+  resolveAmbientPanelSelectedTrackId,
+  shouldStartPreferredFromNoteClick
 } from '../audio/AmbientSoundscapeController.js';
 import {
   getSharedUserAmbientLibrary,
@@ -320,8 +321,9 @@ export class AmbientSoundscapeUI {
    * Top-right note (and ActionBar ♪ proxy):
    * - audible + panel open → mute/stop (explicit)
    * - audible + panel closed → open panel only (change track; do not mute)
-   * - panel already open (silent) → close
-   * - otherwise → open Soundscape track panel (+ resume after note-mute)
+   * - panel already open (silent) + remembered/resume → start preferred (Rise / mute)
+   * - panel already open (silent) + no preferred → close
+   * - otherwise → open Soundscape track panel (+ start preferred after mute / Rise)
    */
   openSoundPanelFromNote() {
     void this._onNoteClick();
@@ -402,7 +404,16 @@ export class AmbientSoundscapeUI {
       this.handlers.onToggleMusic?.();
       return;
     }
+    // Silent: after Rise or note-mute, start preferred — do not only toggle panel.
+    const startPreferred = shouldStartPreferredFromNoteClick(ctrl);
     if (this.isPanelOpen()) {
+      if (startPreferred) {
+        ctrl.consumeResumePreferredOnOpen();
+        await ctrl.unmute();
+        this._renderPanel();
+        this.handlers.onToggleMusic?.();
+        return;
+      }
       this._expanded = false;
       this._narrowForcedPanel = false;
       document.body.classList.remove(
@@ -413,8 +424,8 @@ export class AmbientSoundscapeUI {
       return;
     }
     this._openPanelOnly();
-    // Same user gesture: after note-mute, reopen resumes the remembered track with sound.
-    if (ctrl.consumeResumePreferredOnOpen()) {
+    if (startPreferred) {
+      ctrl.consumeResumePreferredOnOpen();
       await ctrl.unmute();
       this._renderPanel();
       this.handlers.onToggleMusic?.();
@@ -476,6 +487,27 @@ export class AmbientSoundscapeUI {
     await ctrl.toggleFromUi();
     this._renderPanel();
     this.handlers.onToggleMusic?.();
+  }
+
+  /** Panel track / play-pause when Focusing or Idle-staged Soundscape. */
+  _canInteractWithPanelTracks() {
+    return Boolean(this._sessionActive || this._narrowForcedPanel);
+  }
+
+  /**
+   * Per-row play/pause: pause if this track is audible; else setTrack (plays).
+   * @param {string} trackId
+   * @param {boolean} playingThis
+   */
+  async _onTrackPlayPause(trackId, playingThis) {
+    if (playingThis) {
+      this.controller.mute();
+    } else {
+      await this.controller.setTrack(trackId);
+    }
+    this._renderPanel();
+    this.handlers.onToggleMusic?.();
+    this.handlers.onTrackChosen?.();
   }
 
   _maybeShowDefaultOnNudge() {
@@ -568,6 +600,9 @@ export class AmbientSoundscapeUI {
     ];
 
     const selectedId = resolveAmbientPanelSelectedTrackId(this.controller);
+    const audibleId = this.controller.isAudiblePlaying()
+      ? this.controller.getTrackId()
+      : AMBIENT_TRACK_OFF;
     for (const opt of options) {
       const row = document.createElement('div');
       row.className = 'ambient-soundscape__track-row';
@@ -586,7 +621,7 @@ export class AmbientSoundscapeUI {
       btn.textContent =
         opt.kind === 'user' ? opt.label : t(opt.labelKey);
       btn.addEventListener('click', () => {
-        if (!this._sessionActive && !this._narrowForcedPanel) return;
+        if (!this._canInteractWithPanelTracks()) return;
         this._dismissNudge();
         void this.controller.setTrack(opt.id).then(() => {
           this._renderPanel();
@@ -594,6 +629,29 @@ export class AmbientSoundscapeUI {
         });
       });
       row.appendChild(btn);
+
+      if (opt.kind !== 'off') {
+        const playingThis = audibleId === opt.id;
+        const playPause = document.createElement('button');
+        playPause.type = 'button';
+        playPause.className = 'ambient-soundscape__track-play';
+        if (playingThis) playPause.classList.add('is-playing');
+        playPause.dataset.playTrackId = opt.id;
+        playPause.setAttribute(
+          'aria-label',
+          playingThis
+            ? t('AMBIENT_TRACK_PAUSE_ARIA')
+            : t('AMBIENT_TRACK_PLAY_ARIA')
+        );
+        playPause.textContent = playingThis ? '❚❚' : '▶';
+        playPause.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if (!this._canInteractWithPanelTracks()) return;
+          this._dismissNudge();
+          void this._onTrackPlayPause(opt.id, playingThis);
+        });
+        row.appendChild(playPause);
+      }
 
       if (opt.kind === 'user') {
         const del = document.createElement('button');
@@ -603,7 +661,7 @@ export class AmbientSoundscapeUI {
         del.setAttribute('aria-label', t('AMBIENT_UPLOAD_DELETE_ARIA'));
         del.textContent = '×';
         del.addEventListener('click', (event) => {
-          if (!this._sessionActive && !this._narrowForcedPanel) return;
+          if (!this._canInteractWithPanelTracks()) return;
           void this._onDeleteUserTrack(opt.id, event);
         });
         row.appendChild(del);
@@ -982,6 +1040,24 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__track.is-selected {
         border-color: rgba(139, 46, 46, 0.4);
         background: rgba(139, 46, 46, 0.1);
+      }
+      .ambient-soundscape__track-play {
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid rgba(139, 115, 85, 0.35);
+        background: rgba(255, 252, 245, 0.9);
+        color: #5a4030;
+        cursor: pointer;
+        font-size: 11px;
+        line-height: 1;
+        padding: 0;
+      }
+      .ambient-soundscape__track-play.is-playing {
+        border-color: rgba(139, 46, 46, 0.45);
+        background: rgba(139, 46, 46, 0.12);
+        color: #8b2e2e;
       }
       .ambient-soundscape__track-delete {
         flex: 0 0 auto;

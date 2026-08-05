@@ -21,6 +21,8 @@
   "AMBIENT_DEFAULT_ON_NUDGE": "Tap the note anytime to play quiet music.",
   "AMBIENT_REQUIRES_FOCUS": "Start a companion focus mode first — then Sound can open.",
   "AMBIENT_TRACK_OFF": "Off",
+  "AMBIENT_TRACK_PLAY_ARIA": "Play this track",
+  "AMBIENT_TRACK_PAUSE_ARIA": "Pause this track",
   "AMBIENT_TRACK_SINGING_BOWL": "Mer-Ka-Ba",
   "AMBIENT_TRACK_DIVINE_LIFE_SOCIETY": "Divine Life Society",
   "AMBIENT_TRACK_LORD_OF_THE_DAWN": "Lord Of The Dawn",
