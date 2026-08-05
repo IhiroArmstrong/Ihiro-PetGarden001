@@ -177,9 +177,11 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     narrowSelector: '#ft-narrow-home-honesty',
     testAnchorWide:
       'e2e/micro-ritual.spec.js › Honesty Check-in click hides entry until duration panel open',
-    lockStatus: 'gap-narrow',
+    testAnchorNarrow:
+      'e2e/micro-ritual.spec.js › 375 Honesty panel: narrow home Honesty ball hidden',
+    lockStatus: 'locked',
     source: 'Honesty Check-in 流程 · PR#2 merge-class-2 (P1)',
-    notes: '行为多半已由 honestyBusy suppress 覆盖；缺窄屏主球 e2e。P1 合并后补'
+    notes: '宽+窄已锁：panel 开时 Honesty 入口 hidden（busy suppress）'
   },
   {
     id: 'focusing-narrow-home-ctas-hidden',
@@ -202,13 +204,13 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     must: 'visible',
     wideSelector: '#focus-hud',
     narrowSelector: '#focus-hud',
-    testAnchorWide: 'e2e/helpers/product-shell.js › expectFocusSessionActive (Rise 文案)',
+    testAnchorWide:
+      'e2e/helpers/product-shell.js › expectFocusSessionActive (#focus-hud visible)',
     testAnchorNarrow:
       'e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…',
-    lockStatus: 'gap-wide',
+    lockStatus: 'locked',
     source: 'SHARED §6 FocusHUD vs ActionBar / S2 · PR#2 merge-class-2 (P2)',
-    notes:
-      '窄屏已锁。宽屏缺显式 #focus-hud toBeVisible——覆盖债，不挡 375/场景 O 合并'
+    notes: '宽+窄：expectFocusSessionActive 锁 #focus-hud；窄屏 Focusing 专条亦锁'
   },
   {
     id: 'choose-bow-companion-in-viewport',
@@ -219,13 +221,13 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     wideSelector: '.session-start-dock__panel',
     narrowSelector: '.session-start-dock__panel',
     testAnchorWide:
-      'e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible only)',
+      'e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible; 宽屏不 park)',
     testAnchorNarrow:
       'e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…',
-    lockStatus: 'gap-wide',
+    lockStatus: 'locked',
     source: 'SHARED §6 Companion 鞠躬后 stage · PR#2 merge-class-2 (P2)',
     notes:
-      '窄屏用户路径已锁 toBeInViewport。宽屏 A4 属性可见即可（不 park）；P2'
+      '窄屏 toBeInViewport；宽屏 A4 toBeVisible 已够（不 park，无屏外假绿）'
   },
   {
     id: 'companion-stage-honesty-entry-hidden',
@@ -265,9 +267,11 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     narrowSelector: '#weekly-practice-heatmap',
     testAnchorWide:
       'e2e/weekly-practice-heatmap.spec.js › non-Idle (Focusing) hides weekly heatmap',
-    lockStatus: 'gap-narrow',
+    testAnchorNarrow:
+      'e2e/weekly-practice-heatmap.spec.js › 375 Focusing hides weekly heatmap',
+    lockStatus: 'locked',
     source: '本周陪伴热力图 · PR#2 merge-class-2 (P2)',
-    notes: '375 Focusing 未单断言热力图 hidden；主路径已 park 进抽屉。P2 覆盖债'
+    notes: '宽+375 Focusing 均断言热力图 hidden'
   }
 ]);
 

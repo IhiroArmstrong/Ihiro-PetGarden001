@@ -262,6 +262,7 @@ export async function selectCompanionMode(page, label) {
 
 export async function expectFocusSessionActive(page) {
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i);
+  await expect(page.locator('#focus-hud')).toBeVisible();
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
   await expect
     .poll(async () => page.locator('#hud-time').textContent(), {

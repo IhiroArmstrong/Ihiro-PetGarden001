@@ -639,9 +639,6 @@ async function init() {
 
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
   const sessionUiGate = new SessionUiGate();
-  if (import.meta.env.DEV) {
-    window.__sessionUiGate = sessionUiGate;
-  }
 
   /**
    * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
@@ -669,8 +666,12 @@ async function init() {
     stateManager,
     sessionUiGate,
     getPostChoosePending: () => postChooseChrome.pending,
-    syncInAppReminderBanner: () => syncInAppReminderBanner()
+    syncInAppReminderBanner: () => syncInAppReminderBanner(),
+    setFocusButtonEnabled
   });
+  // E2E：注入 completionPending 后须 resync 才能禁用 Sit（EDGE #5）
+  window.__sessionUiGate = sessionUiGate;
+  window.__resyncSessionChrome = resyncSessionChrome;
 
   /** 先点 Here & Now / Flow 再进 Arrival 时记住，结束后自动开表（禁止再逼点 Sit） */
   let pendingAutoStartMode = null;

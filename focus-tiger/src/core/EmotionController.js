@@ -47,6 +47,26 @@ export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 export const ARRIVAL_BREATH_SMILE_FPS = 4;
 export const MILESTONE_GLOW_HOLD_MS = 2500;
 
+/**
+ * 调试面板「情绪入口」默认带 `holdPose: true` 的键（EDGE #17–19）。
+ * 产品路径各自显式传 holdPose；此处只作调试 SSOT，避免散落 Set 漏登记。
+ * @type {ReadonlySet<string>}
+ */
+export const DEBUG_HOLD_POSE_EMOTION_KEYS = Object.freeze(
+  new Set([
+    'celebrating',
+    'intentionSet',
+    'milestoneGlow',
+    'sessionComplete',
+    'nodGreeting',
+    'curiousTilt',
+    'mindfulAcknowledge',
+    'stretchReminder',
+    'blink',
+    'dormantWake'
+  ])
+);
+
 const BAKED_EFFECT_EMOTIONS = new Set([
   'celebrating',
   'milestoneGlow',
@@ -907,6 +927,9 @@ export class EmotionController {
       )
     );
     if (!started) {
+      console.warn(
+        `[EmotionController] ${sequenceName}: sprite play() 未启动，回落收尾`
+      );
       this._finishOneShot(options, sequenceName);
     }
   }
@@ -1244,19 +1267,9 @@ export class EmotionController {
           return;
         }
         // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
-        const holdPoseKeys = new Set([
-          'celebrating',
-          'intentionSet',
-          'milestoneGlow',
-          'sessionComplete',
-          'nodGreeting',
-          'curiousTilt',
-          'mindfulAcknowledge',
-          'stretchReminder',
-          'blink',
-          'dormantWake'
-        ]);
-        const opts = holdPoseKeys.has(key) ? { holdPose: true } : {};
+        const opts = DEBUG_HOLD_POSE_EMOTION_KEYS.has(key)
+          ? { holdPose: true }
+          : {};
         if (key === 'idle') opts.restart = true;
 
         if (key === 'incenseComplete') {
