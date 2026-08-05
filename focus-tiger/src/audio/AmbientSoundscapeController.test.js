@@ -18,7 +18,8 @@ import {
   AMBIENT_PREF_STORAGE_KEY,
   DEFAULT_AMBIENT_TRACK_ID,
   normalizeAmbientPref,
-  resolveAmbientPanelSelectedTrackId
+  resolveAmbientPanelSelectedTrackId,
+  shouldStartPreferredFromNoteClick
 } from './AmbientSoundscapeController.js';
 
 function createMockAudio() {
@@ -147,6 +148,37 @@ test('resolveAmbientPanelSelectedTrackId after Rise keeps preferred highlight', 
     resolveAmbientPanelSelectedTrackId(ctrl),
     AMBIENT_TRACK_SINGING_BOWL
   );
+});
+
+test('shouldStartPreferredFromNoteClick after Rise (remembered, no resume flag)', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  assert.equal(shouldStartPreferredFromNoteClick(ctrl), false);
+  ctrl.startSession();
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  ctrl.endSession();
+  assert.equal(ctrl.willResumePreferredOnOpen(), false);
+  assert.equal(shouldStartPreferredFromNoteClick(ctrl), true);
+  await ctrl.unmute();
+  assert.equal(ctrl.isAudiblePlaying(), true);
+  assert.equal(shouldStartPreferredFromNoteClick(ctrl), false);
+});
+
+test('shouldStartPreferredFromNoteClick after note-mute (resume flag)', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  ctrl.mute();
+  assert.equal(ctrl.willResumePreferredOnOpen(), true);
+  assert.equal(shouldStartPreferredFromNoteClick(ctrl), true);
 });
 
 test('note-mute preserves currentTime; unmute seeks resume (not restart)', async () => {

@@ -186,6 +186,26 @@ export function resolveAmbientPanelSelectedTrackId(ctrl) {
   return AMBIENT_TRACK_OFF;
 }
 
+/**
+ * Note click while silent: start preferred after note-mute resume **or**
+ * after Rise (remembered highlight, no `_resumePreferredOnOpen`).
+ * Cold open (never picked this page) stays false → panel only / Off.
+ * @param {{
+ *   isAudiblePlaying?: () => boolean,
+ *   willResumePreferredOnOpen?: () => boolean,
+ *   hasRememberedPanelTrack?: () => boolean,
+ *   getPreferredTrackId?: () => string
+ * }} ctrl
+ * @returns {boolean}
+ */
+export function shouldStartPreferredFromNoteClick(ctrl) {
+  if (ctrl.isAudiblePlaying?.()) return false;
+  if (ctrl.willResumePreferredOnOpen?.()) return true;
+  if (!ctrl.hasRememberedPanelTrack?.()) return false;
+  const preferred = ctrl.getPreferredTrackId?.();
+  return Boolean(preferred && preferred !== AMBIENT_TRACK_OFF);
+}
+
 function readAmbientPref(storage) {
   try {
     const raw = storage?.getItem?.(AMBIENT_PREF_STORAGE_KEY);

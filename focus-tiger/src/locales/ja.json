@@ -21,6 +21,8 @@
   "AMBIENT_DEFAULT_ON_NUDGE": "音符をタップすると、いつでも静かな音楽を聴けます。",
   "AMBIENT_REQUIRES_FOCUS": "先に同伴フォーカスを始めてから、音を開けます。",
   "AMBIENT_TRACK_OFF": "オフ",
+  "AMBIENT_TRACK_PLAY_ARIA": "この曲を再生",
+  "AMBIENT_TRACK_PAUSE_ARIA": "この曲を一時停止",
   "AMBIENT_TRACK_SINGING_BOWL": "Mer-Ka-Ba",
   "AMBIENT_TRACK_DIVINE_LIFE_SOCIETY": "Divine Life Society",
   "AMBIENT_TRACK_LORD_OF_THE_DAWN": "Lord Of The Dawn",
