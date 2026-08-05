@@ -40,7 +40,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/Z_INDEX.md',
   'focus-tiger/docs/DOC_CODE_CONTRACT.md',
   'focus-tiger/docs/PRINCIPLES.md',
-  'focus-tiger/docs/ARCHITECTURE.md'
+  'focus-tiger/docs/ARCHITECTURE.md',
+  'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md'
 ];
 
 /**
@@ -814,6 +815,49 @@ export const RULE_AUTHORITY_TOPICS = [
         pattern: /默认(?:使用|用|开)\s*(?:并行\s*)?(?:子\s*Agent|Task\s*explore)/,
         note: '默认禁止子 Agent；不得写成默认可并行 explore'
       }
+    ]
+  },
+  {
+    id: 'risk-mitigation-playbook',
+    title: '中高风险任务落地降险 Playbook',
+    ssotPath: 'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
+    ssotSection: '触发条件',
+    ssotMustContain: [
+      /切片切的是交付节奏和验证范围，不是切掉项目已有的架构纪律/,
+      /资产与逻辑解耦/,
+      /功能切片/,
+      /优先级门闩/,
+      /Feature Flag/,
+      /单点硬调/,
+      /先接产品钩子/,
+      /简化兜底/
+    ],
+    topicSignals: [
+      /risk-mitigation-playbook/,
+      /中高风险(?:任务|功能)落地/,
+      /降险(?:四件套|Playbook|playbook)/,
+      /切片切的是交付节奏/
+    ],
+    mustCite: [/RISK_MITIGATION_PLAYBOOK\.md|risk-mitigation-playbook/],
+    restatementFingerprints: [
+      /切片切的是交付节奏和验证范围，不是切掉项目已有的架构纪律/,
+      /单点硬调、跳过中央调度/,
+      /先接产品钩子、后补动画/,
+      /未命中新分支就走/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'slice-skips-dispatcher',
+        pattern: /(?:为了降险|先降险|切片).{0,40}(?:可以|允许|先).{0,20}(?:不碰|跳过|绕开)\s*(?:Dispatcher|中央调度)/,
+        note: '降险切片不得写成可跳过 Dispatcher；见 RISK_MITIGATION_PLAYBOOK 架构红线'
+      }
+    ],
+    citeExemptFiles: [
+      'focus-tiger/docs/FLOWER_BLOW_WELCOME_DESIGN.md'
+    ],
+    restatementExemptFiles: [
+      'focus-tiger/docs/FLOWER_BLOW_WELCOME_DESIGN.md'
     ]
   }
 ];

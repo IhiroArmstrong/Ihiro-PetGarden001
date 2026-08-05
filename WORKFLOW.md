@@ -108,6 +108,19 @@ feature/*        ●        ●
 
 **反面教材**：`feature/wide-idle-more-menu` 建在窄屏初版 tip 上、未跟随后续窄屏修复 → 宽屏复现已修 bug（2026-07-21）。
 
+### 中高风险功能落地：先套降险 Playbook（引用）
+
+> **政策 SSOT**：[`focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（索引：`RULES_INDEX.md` → `risk-mitigation-playbook`）。  
+> 本小节**只指路**，不复述四件套与架构红线全文。
+
+当新功能会穿透 **≥2 个**核心面（EmotionController / Dispatcher / 状态机门闩 / 场景互斥 / 产品壳 UI / 多语言产品路径），或自评「整包一次落线风险中高」时：
+
+1. Task Brief / 开工回复显式引用该 Playbook；  
+2. 按「Lab 先行 → 切片可验收 → 优先级门闩 → Feature Flag 回退正式默认路径」落地；  
+3. **禁止**把降险话术读成「可跳过 Dispatcher / 可先挂产品钩子再补动画 / 可另造简化兜底」。
+
+与本文件其它节的关系：worktree / 合前预览管**写盘与合入节奏**；Playbook 管**架构纪律下的降险手法**——二者叠加。
+
 ### feature/fix 合入 develop 前：worktree 预览确认（强制）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-feature-merge-preview`）。  
@@ -419,6 +432,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
+| 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
 | 场景测试剧本 | `focus-tiger/docs/SCENARIO_TESTS.md` |
 | 功能点验收表 | `focus-tiger/docs/TEST_TRACKER.md` |
 | Task / 角色分工 | `focus-tiger/docs/PROCESS.md`、`focus-tiger/docs/COLLAB.md` |
@@ -434,6 +448,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 修 bug（且有姊妹功能分支） | 修完后对照姊妹线是否需同修；写入「待你决定 / 待你知道」（见「长期并存功能分支的同步纪律」） |
 | 修 bug | 从 `develop` 切 `fix/…` |
 | 纯文档更新 | 在 `develop` 或 `feature/…` 上改、跑 `docs:check`、**立刻 commit** |
+| 中高风险新功能落地 | 先读 `RISK_MITIGATION_PLAYBOOK.md`（见上「中高风险功能落地」）；Lab → 切片 → 门闩 → flag |
 | 发布稳定版 | 过门禁 → `main` ← merge `develop` → **annotated tag** `vX.Y.Z`（首稳 = `v1.0.0`；**不**切 `release/*`） |
 | 稳定版紧急修 | 从 `main` 切 `hotfix/…` → 合并回 `main` + `develop` |
 | 开发改坏了 | `develop` 上 revert / reset；**不要**先动 `main` |
