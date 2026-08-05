@@ -129,6 +129,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
+| `FLOWER_BLOW_WELCOME_DESIGN.md` | Day1/久别吹花鼓励：策略 C、同日 XOR 欢迎池、观察式文案、分阶段落线（未接线前以本文为准） |
 | `HINTS_WIRING.md` | 场景 → Hint 接线（时刻 × 互斥/门闩/批次；对标动画接线管法） |
 | `CHARACTER_BIBLE.md` | 角色设定 |
 | `DESIGN.md` | 产品语义与玩法 |

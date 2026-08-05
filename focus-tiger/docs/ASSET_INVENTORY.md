@@ -110,6 +110,7 @@
 | wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
 | wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
 | magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
+| conjure-flowers-blow-away | 65 | conjureFlowersBlowAway（暂定） | **未入库**（根目录待 Phase 1 Lab） | Day1/久别吹花；同日 XOR 欢迎池；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
 | book-reading | 24 | bookReading | **已接线**：日语切语 + Rise 池 ~15% | 单程无倒放；≠ magic-book |
 | parrot-ear-visit-feather | 93 | parrotEarVisit | 提醒信使 · 轻完成稀有 · streak-7 仪式 50/50 | **不做**羽毛残影 |
 | golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |

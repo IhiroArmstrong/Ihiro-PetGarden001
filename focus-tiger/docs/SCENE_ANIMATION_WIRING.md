@@ -94,6 +94,7 @@
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` **硬切** Idle；`nodGreeting` CapCut。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台仍检深夜 |
+| Day1 / 久别（≥3 日）吹花鼓励 | `conjureFlowersBlowAway`（暂定）+ 观察式气泡 | ack | **已拍板 · 未接线** | **策略 C**（2026-08-05）：仅 Day1 / 久别强制吹花；普通隔天仍走上行欢迎池。**同日 XOR**：吹花与 `WELCOME_APP` 池（含 `magicBookReading`）二选一。DORMANT 优先跳过吹花。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md`。Phase 1 = 实验室入库 only |
 
 > **A′ 演进（2026-08-02）**：切语 ja 曾 `palmsTogether` → 现 `bookReading`（入库单程看书 + CapCut）。切语 en：`magicBookReading` 硬切（QA OK）→ `teaDrinking` + CapCut（QA OK）。`palmsTogether` 仍调试可播。
 
@@ -237,5 +238,6 @@
 | 2026-08-03 | 入库 `parrot-ear-visit-feather`；场景 A 提醒横幅信使；场景 B `LIGHT_COMPLETE_POOL` 稀有 |
 | 2026-08-03 | streak-7 MilestoneGlow：**50/50** 蝴蝶 ↔ 鹦鹉；不做羽毛残影 |
 | 2026-08-03 | `LIGHT_COMPLETE_POOL` 撤出 `curiousTilt`；权重 → sessionComplete 70 / mindfulAcknowledge 30 / parrot 8 |
+| 2026-08-05 | **拍板（未接线）**：Day1/久别吹花鼓励策略 C + 同日 XOR 欢迎池；观察式文案；SSOT `FLOWER_BLOW_WELCOME_DESIGN.md`；Phase 1 Lab 入库待开工 |
 | 2026-08-03 | 跨动画短叠化（180/520ms）统一 `CAPCUT_DISSOLVE_MS` 1s；硬切 `0`（gaze 段间 / Idle 闭目↔睁眼 / 魔法书回 Idle）保持 |
 
