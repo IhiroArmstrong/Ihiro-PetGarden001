@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **吹花鼓励 · Phase 1 Lab（2026-08-05）**：`conjureFlowersBlowAway` 入库（65 帧 @10fps）+ 调试钮 + CapCut Idle；策略 C / 同日 XOR 欢迎池已记入 `FLOWER_BLOW_WELCOME_DESIGN.md`。**产品冷启动未改**。下一刀：Phase 2a 气泡。
+- **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：`conjureFlowersBlowAway` 入库（65 帧 @10fps）+ 调试钮 + CapCut Idle；策略 C / 同日 XOR 欢迎池见 `FLOWER_BLOW_WELCOME_DESIGN.md`。**产品冷启动未改**。用户书面（feature tip）：Lab 变花→吹散→CapCut→Idle **测试 OK**；产品壳无自动吹花 **测试 OK**。下一刀：Phase 2a 气泡。
+- **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 `develop` tip **`dd09711`**。Mer-Ka-Ba 后接 Jesse Gallagher×4 + Reed Mathis Somnia×2（合计 12 内置）；ambient 约 188MB。关单级人工见 `TEST_TRACKER`「Ambient · Jesse Gallagher×4 + Somnia×2 入库」。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
@@ -275,7 +276,7 @@
 - **角色正式名落定（2026-07-16）**：中文「阿寅」、英文「Yin」（`CHARACTER_BIBLE` + i18n `CHARACTER_NAME`）；`characterId` 仍为 `tiger-cub`；用户自定义改名标为远期 Backlog（`DESIGN`「老虎的名字」）；文档通称「小老虎」不替换
 - **禅意背景音（Ambient Soundscape）功能已确认排期开发（2026-07-16）**：追踪 Focus Tiger 自身播放音频的实际时长，并转化为金光 / Rim Light 强度增强信号；与 Companion Mode 独立、互不依赖；设计原则见 `DESIGN.md`「禅意背景音」
 - **禅意背景音 MVP 已落地（2026-07-16）**：角落展开 UI；**Mer-Ka-Ba**（Jesse Gallagher）/ **Meditation Impromptu 02**（Kevin MacLeod）等，YouTube Audio Library；`presenceBoost` 叠视觉；归因见 `public/audio/ambient/ATTRIBUTION.md`
-- **禅意背景音内置清单扩容（2026-08-05）**：Mer-Ka-Ba 后新增 Jesse Gallagher×4 + Reed Mathis Somnia×2；合计 12 内置曲；ambient 目录约 188MB（推远程前确认体积策略）
+- **禅意背景音内置清单扩容（2026-08-05）**：PR #125 合入 tip **`dd09711`**——Mer-Ka-Ba 后 Jesse Gallagher×4 + Reed Mathis Somnia×2；合计 12 内置曲；ambient 目录约 188MB
 - **无角色语音原则已落档（2026-07-16）**：沟通仅文字（非模态文案等）；禁止真人配音与 lip-sync；长期原则、非 Backlog（见 `PRINCIPLES.md`）
 
 **下一步计划**：
