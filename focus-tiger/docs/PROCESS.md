@@ -65,7 +65,7 @@
 **近期落地（待人工测试）**：
 
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
-- **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**（tip 书面：6 曲可见可播 + Off/Rise 停播 OK）。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右）→ PR #131 初版合 tip；**§6.14b 跟进**（音符开播 + 每曲 Play/Pause + Idle 靠右）fix 端口 **全部测试 OK**（2026-08-06），待合 tip。
+- **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右 / 音符开播 / 每曲 Play/Pause / Idle 靠右）→ PR #131+#132；**2026-08-06 tip 关单**（用户「关单 OK」；功能 tip `ae6eca2`）。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
