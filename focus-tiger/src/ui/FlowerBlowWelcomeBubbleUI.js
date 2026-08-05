@@ -12,6 +12,7 @@ import {
   FLOWER_BLOW_BUBBLE_HOLD_MS,
   splitFlowerBlowBubbleSentences
 } from './flowerBlowWelcomeCopy.js';
+import { homeClearanceTopCss } from './homeChromeClearance.js';
 
 const ROOT_ID = 'flower-blow-welcome-bubble';
 
@@ -81,8 +82,8 @@ export class FlowerBlowWelcomeBubbleUI {
     root.style.cssText = [
       'position:absolute',
       'left:50%',
-      // 头顶上方空旷带：露出捧花高光；避开底部四球
-      'top:max(12px, calc(env(safe-area-inset-top, 0px) + 10px))',
+      // 窄屏须让开 ActionBar（time/Calm）；宽屏仅 safe-area
+      `top:${homeClearanceTopCss()}`,
       'bottom:auto',
       'z-index:17',
       'max-width:min(340px,calc(100vw - 48px))',
