@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **吹花鼓励 · 规则拍板（2026-08-05 · 未接线）**：策略 C（仅 Day1 / ≥3 日久别强制吹花；普通隔天仍 `WELCOME_APP`）；同日与欢迎池（含 `magicBookReading`）**二选一**；观察式文案（否决 missed-you / 夸表现）；首次 EN+JA 叠显；气泡 3–3.5s + CapCut ~1s；吹花期可点 Sit、可点消气泡。风险：资产先行 / 分 Slice / Dispatcher 门闩 / flag。SSOT `FLOWER_BLOW_WELCOME_DESIGN.md`；Brief `task-flower-blow-welcome-phased.md`。**下一步**：Phase 1 Lab 入库（不改冷启动）。
+- **吹花鼓励 · Phase 1 Lab（2026-08-05）**：`conjureFlowersBlowAway` 入库（65 帧 @10fps）+ 调试钮 + CapCut Idle；策略 C / 同日 XOR 欢迎池已记入 `FLOWER_BLOW_WELCOME_DESIGN.md`。**产品冷启动未改**。下一刀：Phase 2a 气泡。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。

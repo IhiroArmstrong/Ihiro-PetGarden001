@@ -825,6 +825,13 @@ export class EmotionController {
           freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
+      // Day1 / 久别吹花鼓励（Phase 1 Lab）：变花轻吹 → CapCut Idle。产品冷启动未接线。
+      conjureFlowersBlowAway: (options = {}) => {
+        this._playCompanionSequenceOnce('conjureFlowersBlowAway', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
       // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
         this._playCompanionSequenceOnce('earWiggleHeadTouch', options, {
@@ -1121,6 +1128,7 @@ export class EmotionController {
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'bookReading', label: '单程看书(日语切语)' },
       { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
+      { key: 'conjureFlowersBlowAway', label: '变花吹散(Lab·未接线)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1143,6 +1151,7 @@ export class EmotionController {
       teaDrinking: 'tea-drinking 喝茶',
       bookReading: 'book-reading 单程看书',
       parrotEarVisit: 'parrot-ear-visit-feather 鹦鹉信使',
+      conjureFlowersBlowAway: 'conjure-flowers-blow-away 变花吹散(Lab)',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
@@ -1459,6 +1468,7 @@ export const EMOTION_KEYS = Object.freeze({
   MAGIC_BOOK_READING: 'magicBookReading',
   BOOK_READING: 'bookReading',
   PARROT_EAR_VISIT: 'parrotEarVisit',
+  CONJURE_FLOWERS_BLOW_AWAY: 'conjureFlowersBlowAway',
   GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   DORMANT_WAKE: 'dormantWake',
   CLOAK_SLEEP: 'cloakSleep',
