@@ -54,8 +54,9 @@ export class FlowerBlowWelcomeBubbleUI {
     root.style.cssText = [
       'position:absolute',
       'left:50%',
-      // Lab 试位：整画面（#ui-overlay）几何中心
-      'top:50%',
+      // Lab 试位：阿寅脚部一带（坐姿脚/蒲团下缘附近；胸口 toast 约 62%，脚部试 74%）
+      'top:74%',
+      'bottom:auto',
       'z-index:17',
       'max-width:min(360px,calc(100vw - 56px))',
       'padding:10px 16px',
