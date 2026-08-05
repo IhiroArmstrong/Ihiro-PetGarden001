@@ -136,6 +136,15 @@ export function resolveFlowerWelcomeForce({
 }
 
 /**
+ * Day1 / 久别吹花是否压过 wellness 斗篷/清晨苏醒（用户 2026-08-06 纠正）。
+ * @param {{ force?: boolean } | null | undefined} flowerForce
+ * @returns {boolean}
+ */
+export function shouldPreferFlowerWelcomeOverWellness(flowerForce) {
+  return flowerForce?.force === true;
+}
+
+/**
  * 每次冷启动评估欢迎后调用：推进 lastOpen（勿在此标记气泡已见）。
  * @param {Storage | null | undefined} storage
  * @param {object} [opts]

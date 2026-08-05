@@ -68,7 +68,10 @@ import {
 import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
-  markFlowerWelcomeBubbleShown
+  isFlowerWelcomeEnabled,
+  markFlowerWelcomeBubbleShown,
+  resolveFlowerWelcomeForce,
+  shouldPreferFlowerWelcomeOverWellness
 } from './core/flowerWelcomeGate.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
@@ -1671,9 +1674,22 @@ async function init() {
 
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
   // Wellness 冷启动时段（2A）：深夜可披斗篷；清晨苏醒仪式；白天仍禁 2h 戳开场即睡。
+  // 2026-08-06 纠正：Day1 / ≥3 日久别吹花 **高于** wellness——首次看产品必须先吹花。
   const wellnessBand = resolveWellnessDayBand(new Date());
+  const flowerForceBoot = resolveFlowerWelcomeForce({
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    now: () => new Date(),
+    enabled: isFlowerWelcomeEnabled({
+      storage: typeof localStorage !== 'undefined' ? localStorage : null
+    })
+  });
+  const preferFlowerOverWellness =
+    shouldPreferFlowerWelcomeOverWellness(flowerForceBoot);
   let skipWelcomeForWellness = false;
-  if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
+  if (preferFlowerOverWellness) {
+    honestyCheckIn.onAppReady();
+    skipWelcomeForWellness = false;
+  } else if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
     honestyCheckIn.syncDormantState({
       allowEnterDormant: true,
       forceDormant: true
