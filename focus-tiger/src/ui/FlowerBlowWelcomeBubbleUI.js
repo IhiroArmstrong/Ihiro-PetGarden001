@@ -9,7 +9,8 @@
 
 import {
   FLOWER_BLOW_BUBBLE_FADE_MS,
-  FLOWER_BLOW_BUBBLE_HOLD_MS
+  FLOWER_BLOW_BUBBLE_HOLD_MS,
+  splitFlowerBlowBubbleSentences
 } from './flowerBlowWelcomeCopy.js';
 
 const ROOT_ID = 'flower-blow-welcome-bubble';
@@ -101,7 +102,19 @@ export class FlowerBlowWelcomeBubbleUI {
       const p = document.createElement('p');
       p.dataset.role = role;
       p.style.cssText = role === 'secondary' ? SECONDARY_CSS : PRIMARY_CSS;
-      p.textContent = text;
+      const sentences = splitFlowerBlowBubbleSentences(text);
+      if (sentences.length <= 1) {
+        p.textContent = sentences[0] || text;
+      } else {
+        // 一句一行：比 CSS 硬折更符合 EN「句后再起」习惯，也避免孤儿短行
+        for (let s = 0; s < sentences.length; s += 1) {
+          const span = document.createElement('span');
+          span.style.cssText =
+            'display:block' + (s > 0 ? ';margin-top:2px' : '');
+          span.textContent = sentences[s];
+          p.appendChild(span);
+        }
+      }
       root.appendChild(p);
     }
 
