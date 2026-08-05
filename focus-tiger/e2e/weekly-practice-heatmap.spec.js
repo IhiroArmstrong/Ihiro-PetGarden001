@@ -521,6 +521,15 @@ test('non-Idle (Focusing) hides weekly heatmap', async ({ page }) => {
   await expect(page.locator(HEATMAP)).toBeHidden();
 });
 
+test('375 Focusing hides weekly heatmap', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  // Idle：热力簇可能 park 屏外，但仍挂在 DOM；Focusing 须 hidden/park 契约。
+  await page.locator('#ft-narrow-home-quickstart').click();
+  await expectFocusSessionActive(page);
+  await expect(page.locator(HEATMAP)).toBeHidden();
+});
+
 test('heatmap lights null and positive minutes; dims true zero days', async ({
   page
 }) => {

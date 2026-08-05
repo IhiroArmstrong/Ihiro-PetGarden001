@@ -334,6 +334,17 @@ test('Honesty Check-in click hides entry until duration panel open', async ({
   await expect(honestyEntry).toBeHidden();
 });
 
+test('375 Honesty panel: narrow home Honesty ball hidden', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible({
+    timeout: 15_000
+  });
+  await page.locator('#ft-narrow-home-honesty').click();
+  await expect(page.locator('#honesty-check-in')).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
+});
+
 /**
  * micro-ritual-sit-unavailable (narrow): scenario O ⑤ — during a minute of breath,
  * home Sit ball must not remain clickable/visible (shell Focusing hides home CTAs;
