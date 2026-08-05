@@ -649,6 +649,28 @@
 
 **本回合落地**：查证写入本 §6.14 + `TEST_TRACKER`（6 曲入库关单；三 Bug 专行 post-v1）。**未改运行时**——待你点名开工 `fix/ambient-panel-memory-seek-right`。
 
+### 6.14b 跟进：音符点不动 + 靠右未生效 · 双 CSS / 关面板语义（2026-08-05 晚）
+
+**用户书面（PR #131 分支自检 · 5177）**：Rise 后再开面板 **高亮 OK**；静音断点续播 **OK**；但 Rise 后再点 **音符无反应不播**；宽屏面板 **仍不靠右**。要求每曲行加 Play/Pause。
+
+**根因（非「没合 tip」）**：
+
+| 层 | 事实 |
+|---|---|
+| E · 音符 | 面板已开且无声时，`_onNoteClick` **只关面板**；`consumeResumePreferredOnOpen` 仅在 **note-mute** 置位，**Rise/`endSession` 硬停不置位**。悬停开面板 → 点音符 = 关面板循环，看起来像「点了没反应」。高亮记忆修好后更易踩中（用户盯着高亮曲点音符期望开播）。 |
+| F · 靠右 | `AmbientSoundscapeUI` 已改 `body.ft-wide-stage-sound` 靠右，但 **Idle 宽屏** 另有 `WideIdleMoreMenu` 规则 `body.ft-wide-park-secondary.ft-wide-stage-sound` **仍 `left:50%` + `translateX(-50%)` 且 `!important`**，特异性更高 → Idle 验收永远居中。典型 **改一处 CSS、漏姊妹选择器**。 |
+| G · 工作流 | 自测若只在 Focusing（无 `ft-wide-park-secondary`）看靠右会绿；用户在 Idle 开面板则仍居中。缺「Idle park + Focusing」双路径布局验收。 |
+
+**补丁**：
+
+| # | 要求 |
+|---|---|
+| G5 | 改 `ft-wide-stage-sound` 布局时 **同步** `WideIdleMoreMenu` / Narrow 等同主题选择器；TRACKER 必测写清 **Idle 宽屏**（非仅 Focusing） |
+| G6 | 音符：无声 + 有 remembered/resume → **开播 preferred**，禁止只 toggle 关面板；另提供 **每曲行 Play/Pause** 作显式控制 |
+| G7 | 邀测写清 **worktree 端口**（本修 ≠ 主仓 5173） |
+
+**本回合落地**：`shouldStartPreferredFromNoteClick` + 每曲 ▶/❚❚ + Idle 靠右对齐；TRACKER 更新反馈。
+
 ---
 
 ## 7. AI 修复验收规范
