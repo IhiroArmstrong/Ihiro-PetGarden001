@@ -51,7 +51,7 @@
 | `dormantWake` | Honesty Check-in / 长离回前台苏醒（睡态揭毯 → 合掌坐姿） | 否（34 帧 **`cloak-sleep` 倒放** 或星光 wake） | **Honesty**：用户选时长后立刻播放；**2B**：FOCUSING 且 tab 隐藏 ≥30min 回前台播一次后回 Idle 呼吸（仍 Focusing）。播完可定格末帧 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：经典倒放或星光 `starlight-cloak-wake`（约 50/50，优先匹配入睡变体）。**≠** 已删 `wakeUp`。与 **2h→DORMANT** 互补（后者仅非 Focusing） |
 | `MilestoneGlow` | 里程碑仪式反馈（金辉 / 琉璃星石 / streak-7 鹦鹉二选一） | 否（约 10s 一次性序列；鹦鹉 ≈11.6s + CapCut） | 长期里程碑节点达成时触发（连续练习 7/21/100 天等）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **产品路径已接线**：`playEmotion('milestoneGlow', { milestoneNodeId })`。**变体池**：`streak-7` → **50/50** `milestone-glow`（金辉+蝴蝶）或 `parrotEarVisit`（鹦鹉信使）；`streak-21` / `streak-100` → `meditation-star-reward`（琉璃星石）。调试无 nodeId 默认蝴蝶；入库素材钮可单播星石/鹦鹉。简化备选 **`breath-halo-hq`** 仍仅调试。播放期归零实时金光；蝴蝶/星石末帧停留后回落 idle；鹦鹉走 CapCut Idle。 |
 | `ParrotEarVisit` | 鹦鹉耳边造访（禅意信使） | 否（93 帧 @ **8 fps** ≈11.6s） | **场景 A**：应用内轻提醒横幅本页首次可见时伴随播放；**场景 B**：轻完成 / 微仪式池稀有彩蛋；**亦**为 `MilestoneGlow` streak-7 的 50/50 视觉之一 | **68**（独立键；作里程碑时仍由 `playEmotion('milestoneGlow')` 触发，优先级按 110 仪式路径） | **已实现（2D）**：`parrot-ear-visit-feather`；正放一次 → ~1s CapCut Idle。**不做**羽毛残影/可收集（2026-08-03 拍板） |
-| `ConjureFlowersBlowAway` | 变花吹散（Day1 / 久别鼓励） | 否（65 帧 @ **10 fps** ≈6.5s） | **已拍板产品场景**：Day1 首次 / ≥3 日久别冷启动（策略 C）；与同日 `WELCOME_APP` 池互斥。**当前**：仅实验室 `playEmotion` | **65**（ack 档；低于 `ParrotEarVisit`；产品接线前不进 Dispatcher） | **Phase 1 Lab（2026-08-05）**：`conjure-flowers-blow-away`；正放一次 → ~1s CapCut Idle。**产品冷启动未接线**。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
+| `ConjureFlowersBlowAway` | 变花吹散（Day1 / 久别鼓励） | 否（65 帧 @ **10 fps** ≈6.5s） | **产品冷启动已接线（Phase 2b）**：Day1 / ≥3 日久别 → `WELCOME_APP` 强制本键 + 观察式气泡；与同日欢迎池 XOR。Lab 调试钮仍可播 | **65**（ack 档；低于 `ParrotEarVisit`） | **`conjure-flowers-blow-away`**；正放 → ~1s CapCut Idle + 白玉气泡。Flag：`?flowerWelcome=0` / `flower-welcome-flag.v1`。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
 | `IntentionSet` | Arrival Choose 确认点头 | 否（nod-bow **pingpong** 一整轮，约 7s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；**门闩与 Companion 在确认瞬间立即打开**，动画并行不挡流程） | **已实现（2D 主线）**：**16:9 `nod-bow` pingpong**（正放鞠躬→倒放回坐姿）；进出与前后动画用 **约 1s CapCut 叠化**（`CAPCUT_DISSOLVE_MS`）。旧 `palms-together` 仅调试保留。 |
 
 ### 1.3 动态效果层（可叠加）
@@ -160,7 +160,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `CuriousTilt` | `curiousTilt` → `blinkSmile`（2D；原 `tiltThink` 已停用） | `public/sprites/.../blink-smile/`（默认）；`tilt-think` 仅存量素材 |
 | `MilestoneGlow` | `milestoneGlow` → `milestoneGlow` / `milestoneGlowStar` /（streak-7 可委派）`parrotEarVisit` | `streak-7`：**50/50** 蝴蝶 `milestone-glow` 或鹦鹉 `parrot-ear-visit-feather`；`streak-21`/`100`：`meditation-star-reward`；备选 `breath-halo-hq` 仅调试 |
 | `ParrotEarVisit` | `parrotEarVisit` → 同名序列 | `public/sprites/.../parrot-ear-visit-feather/frame_001–093.png`（提醒信使 · 轻完成稀有 · streak-7 仪式二选一） |
-| `ConjureFlowersBlowAway` | `conjureFlowersBlowAway` → 同名序列 | `public/sprites/.../conjure-flowers-blow-away/frame_001–065.png`（Day1/久别 Lab；产品未接线） |
+| `ConjureFlowersBlowAway` | `conjureFlowersBlowAway` → 同名序列 | `public/sprites/.../conjure-flowers-blow-away/frame_001–065.png`（Day1/久别；Phase 2b 产品已接线） |
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
