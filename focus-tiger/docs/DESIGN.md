@@ -298,6 +298,7 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 > **2026-07-16 定稿；MVP 运行时已落地**（`AmbientSoundscapeController` + 角落 UI；曲目：Mer-Ka-Ba / Meditation Impromptu 02）  
 > **2026-07-21**：默认开播 Mer-Ka-Ba；右下角显眼「打开/关闭音乐」随时可点（不再门闩于 FOCUSING）。  
+> **2026-08-05**：内置清单扩至 12 曲——Mer-Ka-Ba 后接 Jesse Gallagher×4 + Reed Mathis Somnia×2，再接既有 Meditation Impromptu / Aakash Gandhi×4；归因见 `ATTRIBUTION.md`。  
 > 与 Companion Mode **天然互补**，但**不是** Companion Mode 的子功能：Stay here / step-away / working-across-tools 均可选用。
 
 #### 背景与动机
@@ -314,7 +315,7 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 
 #### 1. 可选性与呈现
 
-- **MVP 曲目**：两档——**Mer-Ka-Ba**（Jesse Gallagher）、**Meditation Impromptu 02**（Kevin MacLeod）；工程 id 仍为 `singing-bowl` / `rain`；均来自 YouTube Audio Library（用户提供）；第三档磬声等有合适素材后再补；归因见 `public/audio/ambient/ATTRIBUTION.md`；
+- **内置曲目**（面板顺序）：**Mer-Ka-Ba** → **Divine Life Society** / **Lord Of The Dawn** / **Maestro Tlakaelel** / **The Inner Sound**（Jesse Gallagher）→ **Somnia Variation 3** / **Somnia Variation 10**（Reed Mathis）→ **Meditation Impromptu 02**（Kevin MacLeod）→ **Dreamland** / **Invisible Beauty** / **Kiss the Sky** / **Frozen in Love**（Aakash Gandhi）；工程 id 见 `AMBIENT_TRACKS`（`singing-bowl` / `rain` 等稳定标识）；均来自 YouTube Audio Library（用户提供）；归因见 `public/audio/ambient/ATTRIBUTION.md`；
 - **默认关闭（opt-in）**（2026-07-25 拍板）：登录 / 打开产品后**不**自动播背景音乐；须用户点右上音符钮打开 Soundscape 选曲（或菜单 / 抽屉 **Sound**）才开播。偏好存 `focus-tiger.ambient-pref.v1`（无存储时 `enabled: false`；默认曲目仍为 Mer-Ka-Ba）；
 - UI：**右上米色圆形音符钮**（窄屏 Idle 为 ActionBar ♪）与菜单 / 抽屉 **Sound** **同效**——打开曲目/音量面板；图标斜杠反映「偏好开着」而非点一下静音。宽屏**不**再露出右下 Sound FAB（避免与右上音符重复）；窄屏 FAB 仍 park / Focusing 藏起；
 - 浏览器若拦截自动播放：在面板内选曲后点按解锁；不得因未开音乐削弱完成反馈。

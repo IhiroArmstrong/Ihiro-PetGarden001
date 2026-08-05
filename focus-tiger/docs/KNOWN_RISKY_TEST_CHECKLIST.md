@@ -6,7 +6,7 @@
 基线：验收前须 `git pull` 到当时 `origin/develop` tip，并跑 `npm run check:branch-freshness`（behind 须为 0 才可关单级验收）。
 
 > **SSOT**：仅本 MD。  
-> **不权威（勿当验收依据）**：同目录 `known-risky-test-checklist.csv`（历史薄导出，允许过期）；仓库根 `KnownRisky测试清单.numbers`（可删）。  
+> **不权威（勿当验收依据）**：同目录 `known-risky-test-checklist.csv`（历史薄导出，允许过期）。仓库根 `KnownRisky测试清单.numbers` 已于 **2026-08-05** 删除。  
 > 批注与步骤只改本 MD；关单仍写 `TEST_TRACKER.md`。
 
 ---
@@ -19,7 +19,7 @@
 | 状态标签 / 判定依据？ | 仍看 `DEVELOP_DEBT_INVENTORY.md` §1；步骤以**本 MD**为准 |
 | 关单写哪？ | `TEST_TRACKER.md` 对应行（书面反馈进「用户反馈」列） |
 | 步骤里的 `【***测试OK】`？ | **走查批注**（写在本 MD）；不等于 TRACKER 关单 |
-| CSV / Numbers？ | **不权威**；不要对照它们验收或改步骤 |
+| CSV？ | **不权威**；不要对照 CSV 验收或改步骤（根目录 Numbers 已删） |
 
 **公共前置（每条默认）**：`cd focus-tiger && npm run dev` → Safari `http://127.0.0.1:5173/?product=1`（窄屏 375×667）。
 

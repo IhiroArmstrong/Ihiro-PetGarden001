@@ -2,10 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   AmbientSoundscapeController,
+  AMBIENT_TRACKS,
   computePresenceBoost,
   AUDIO_FOCUS_EQUIV_RATIO,
   MAX_PRESENCE_BOOST,
   AMBIENT_TRACK_SINGING_BOWL,
+  AMBIENT_TRACK_DIVINE_LIFE_SOCIETY,
+  AMBIENT_TRACK_LORD_OF_THE_DAWN,
+  AMBIENT_TRACK_MAESTRO_TLAKAELEL,
+  AMBIENT_TRACK_THE_INNER_SOUND,
+  AMBIENT_TRACK_SOMNIA_VARIATION_3,
+  AMBIENT_TRACK_SOMNIA_VARIATION_10,
+  AMBIENT_TRACK_RAIN,
   AMBIENT_TRACK_OFF,
   AMBIENT_PREF_STORAGE_KEY,
   DEFAULT_AMBIENT_TRACK_ID,
@@ -63,6 +71,23 @@ test('computePresenceBoost uses 12s-per-minute ratio and 0.20 cap', () => {
   assert.ok(Math.abs(computePresenceBoost(300, 25) - 0.04) < 1e-9);
   // full session continuous → capped at 0.20
   assert.equal(computePresenceBoost(25 * 60, 25), 0.2);
+});
+
+test('AMBIENT_TRACKS places Jesse/Reed meditation set immediately after Mer-Ka-Ba', () => {
+  assert.deepEqual(
+    AMBIENT_TRACKS.map((t) => t.id).slice(0, 8),
+    [
+      AMBIENT_TRACK_SINGING_BOWL,
+      AMBIENT_TRACK_DIVINE_LIFE_SOCIETY,
+      AMBIENT_TRACK_LORD_OF_THE_DAWN,
+      AMBIENT_TRACK_MAESTRO_TLAKAELEL,
+      AMBIENT_TRACK_THE_INNER_SOUND,
+      AMBIENT_TRACK_SOMNIA_VARIATION_3,
+      AMBIENT_TRACK_SOMNIA_VARIATION_10,
+      AMBIENT_TRACK_RAIN
+    ]
+  );
+  assert.equal(AMBIENT_TRACKS.length, 12);
 });
 
 test('normalizeAmbientPref defaults to Mer-Ka-Ba track off (opt-in)', () => {
