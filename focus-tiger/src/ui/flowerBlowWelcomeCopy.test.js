@@ -30,14 +30,33 @@ describe('flowerBlowWelcomeCopy', () => {
     assert.equal(pickFlowerBlowWelcomeCopyKey(() => 0.99), 'FLOWER_BLOW_WELCOME_3');
   });
 
-  it('stacks EN then JA when bilingual', () => {
+  it('bilingual: current locale is primary, other is secondary (en)', () => {
     const msg = resolveFlowerBlowWelcomeMessage({
       bilingual: true,
+      locale: 'en',
       copyKey: 'FLOWER_BLOW_WELCOME_2',
       tInLocale
     });
-    assert.deepEqual(msg.lines, ['EN2', 'JA2']);
     assert.equal(msg.bilingual, true);
+    assert.equal(msg.primaryLocale, 'en');
+    assert.deepEqual(msg.lines, [
+      { text: 'EN2', role: 'primary' },
+      { text: 'JA2', role: 'secondary' }
+    ]);
+  });
+
+  it('bilingual: current locale is primary, other is secondary (ja)', () => {
+    const msg = resolveFlowerBlowWelcomeMessage({
+      bilingual: true,
+      locale: 'ja',
+      copyKey: 'FLOWER_BLOW_WELCOME_2',
+      tInLocale
+    });
+    assert.equal(msg.primaryLocale, 'ja');
+    assert.deepEqual(msg.lines, [
+      { text: 'JA2', role: 'primary' },
+      { text: 'EN2', role: 'secondary' }
+    ]);
   });
 
   it('follows locale when not bilingual', () => {
@@ -47,13 +66,13 @@ describe('flowerBlowWelcomeCopy', () => {
       copyKey: 'FLOWER_BLOW_WELCOME_1',
       tInLocale
     });
-    assert.deepEqual(en.lines, ['EN1']);
+    assert.deepEqual(en.lines, [{ text: 'EN1', role: 'primary' }]);
     const ja = resolveFlowerBlowWelcomeMessage({
       bilingual: false,
       locale: 'ja',
       copyKey: 'FLOWER_BLOW_WELCOME_1',
       tInLocale
     });
-    assert.deepEqual(ja.lines, ['JA1']);
+    assert.deepEqual(ja.lines, [{ text: 'JA1', role: 'primary' }]);
   });
 });

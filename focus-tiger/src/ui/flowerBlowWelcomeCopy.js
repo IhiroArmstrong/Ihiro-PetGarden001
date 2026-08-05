@@ -26,13 +26,26 @@ export function pickFlowerBlowWelcomeCopyKey(random = Math.random) {
 }
 
 /**
+ * @param {string} [locale]
+ * @returns {'en' | 'ja'}
+ */
+export function normalizeFlowerBlowLocale(locale) {
+  return locale === 'ja' ? 'ja' : 'en';
+}
+
+/**
  * @param {object} opts
- * @param {boolean} [opts.bilingual] 首次造访：EN+JA 叠显
- * @param {string} [opts.locale] 非双语时跟用户 locale（默认 en）
+ * @param {boolean} [opts.bilingual] 首次造访：双语文叠显（当前 locale 为主字）
+ * @param {string} [opts.locale] 用户 locale（默认 en）
  * @param {string} [opts.copyKey] 可注入固定键（Lab 复测）
  * @param {() => number} [opts.random]
  * @param {(locale: string, key: string) => string} opts.tInLocale
- * @returns {{ copyKey: string, lines: string[], bilingual: boolean }}
+ * @returns {{
+ *   copyKey: string,
+ *   bilingual: boolean,
+ *   primaryLocale: 'en' | 'ja',
+ *   lines: Array<{ text: string, role: 'primary' | 'secondary' }>
+ * }}
  */
 export function resolveFlowerBlowWelcomeMessage({
   bilingual = false,
@@ -48,19 +61,29 @@ export function resolveFlowerBlowWelcomeMessage({
     typeof copyKey === 'string' && copyKey
       ? copyKey
       : pickFlowerBlowWelcomeCopyKey(random);
+  const primaryLocale = normalizeFlowerBlowLocale(locale);
+
   if (bilingual) {
-    const enLine = tInLocale('en', key);
-    const jaLine = tInLocale('ja', key);
+    const secondaryLocale = primaryLocale === 'ja' ? 'en' : 'ja';
+    const primaryText = tInLocale(primaryLocale, key);
+    const secondaryText = tInLocale(secondaryLocale, key);
+    /** @type {Array<{ text: string, role: 'primary' | 'secondary' }>} */
+    const lines = [];
+    if (primaryText) lines.push({ text: primaryText, role: 'primary' });
+    if (secondaryText) lines.push({ text: secondaryText, role: 'secondary' });
     return {
       copyKey: key,
       bilingual: true,
-      lines: [enLine, jaLine].filter(Boolean)
+      primaryLocale,
+      lines
     };
   }
-  const loc = locale === 'ja' ? 'ja' : 'en';
+
+  const text = tInLocale(primaryLocale, key);
   return {
     copyKey: key,
     bilingual: false,
-    lines: [tInLocale(loc, key)]
+    primaryLocale,
+    lines: text ? [{ text, role: 'primary' }] : []
   };
 }
