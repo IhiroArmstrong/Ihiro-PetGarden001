@@ -619,6 +619,36 @@
 `Zen-tiger-Pet-garden001-wt-starlight-cloak-sleep`（分支 `docs/develop-small-pr-auto-merge-habit` @ `009402b`）占用——**无** `resolveRemedyImmediateAndFolded`。修在主仓 `fix/focusing-remedy-primary-chip-2026-08-04` @ `8241858` 且**未 push**。用户按默认 5173 复测 = 测到无修 tip → 误判「没修」。同型：08-02 薄荷绿清空钮事故（`TEST_TRACKER` ⋯ 行）。  
 **补丁（F5）**：邀测 / 复测须写明 **分支名 + 端口 + worktree 路径**；默认 5173 被占用时改用其它端口（如 5175），禁止默认「打开 5173 即本修」。
 
+### 6.14 Ambient：Rise 后曲目高亮「丢记忆」+ 重播非断点续播 · 记入≠开修 / 契约偷换（2026-08-05）
+
+**现象（用户书面 · tip 测 6 新曲 OK 同场）**：
+
+1. Rise 停播 → 再悬停开 Soundscape → **上次曲目无高亮**（像没记住）。  
+2. 静音后再开 / 「续播」→ **从头播放**，不是断点续播（用户早在 **2026-08-01 P1-4** 提过）。  
+3. 宽屏面板水平居中挡阿寅 → 应默认靠右（构图）。
+
+**不是**神秘回潮。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 曲目高亮 | `resolveAmbientPanelSelectedTrackId`：**可闻→该曲**；`wantsEnabled`→preferred；**否则一律 Off**。注释写明服务「冷启动无声不得高亮 Mer-Ka-Ba」。`endSession`（Rise）只清 `_wantEnabled`、停播，**保留** `_preferredTrackId`——存储记得，**面板选择器故意不画**。冷启动 Off 修（2026-08-04）把「静音≡高亮 Off」推广到 **Rise 后静音**，无「曾播过则高亮 preferred、Off 仍可选」的分列契约。 |
+| B · 断点续播 | `_stopPlayback` **硬编码** `currentTime = 0` 并 **拆掉/重建** `<audio>`（src 清空）。`mute`→`unmute`→`setTrack` 只能从头。e2e `ambient-mute-resume-focusing` 的「resume」= **再开播 preferred 有声**，**不断言** `currentTime` 续播。 |
+| C · 记入≠开修 | P1-4（2026-08-01）已写「重播非续播」。`fix/chrome-only-…` 收尾明文 **「续播未改」**（§6.13 B）。右上音符行写「历史项若未再测可保留观察」→ **观察代替专修**。无 `fix/*` 改 `_stopPlayback` seek；无单测锁「mute 前后 currentTime」。 |
+| D · 面板居中 | `AmbientSoundscapeUI` 内联 CSS：`body.ft-wide-stage-sound .ambient-soundscape__focus-chrome { left: 50%; transform: translateX(-50%); }`——宽屏舞台**刻意居中**，非回归；从未有「靠右」验收行。 |
+
+**因果一句话**：**冷启动 Off 高亮契约过宽覆盖 Rise 回流** + **「续播」产品词被 e2e/文案偷换成「再开播」** + **记入后观察/延期无专修** → 用户再撞上像「一直没修」。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| G1 | 「静音/停播后面板高亮」须**分列**：冷启动从未播 → Off；Rise/音符静音后仍有 preferred → **高亮 preferred**（可另画 Off 行）；禁止一个 `silent→Off` 糊所有回流 |
+| G2 | TRACKER / e2e 写「续播」必须注明 **seek 续播** vs **再开播**；若产品要断点，须锁 `currentTime`（或等价），禁止只绿「又有声了」 |
+| G3 | P1 类「有问题」且用户写明路径 → 须专修或**书面延期（含理由）**；禁止「可保留观察」长期代替开修（同 F1） |
+| G4 | 宽屏 Soundscape 位置属构图契约：改 `ft-wide-stage-sound` 布局须进 TRACKER 必测（靠右/不挡阿寅） |
+
+**本回合落地**：查证写入本 §6.14 + `TEST_TRACKER`（6 曲入库关单；三 Bug 专行 post-v1）。**未改运行时**——待你点名开工 `fix/ambient-panel-memory-seek-right`。
+
 ---
 
 ## 7. AI 修复验收规范
