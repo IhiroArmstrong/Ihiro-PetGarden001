@@ -24,7 +24,8 @@ import {
 /**
  * CapCut 式叠代溶解：两序列无法像素衔接时，定格两端帧做交叉淡化。
  * 2026-08-03：凡「有转场」的跨动画衔接统一 **1000ms**（短 180/520ms 易闪白）；
- * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧、魔法书回 Idle）保持 0。
+ * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧）保持 0。
+ * 魔法书回 Idle：2026-08-05 起与其它 companion oneshot 同走 CapCut（不再硬切）。
  * 见 PRINCIPLES「序列衔接：CapCut 式叠代」与 ARCHITECTURE「播放机制」。
  */
 export const CAPCUT_DISSOLVE_MS = 1000;
@@ -516,10 +517,11 @@ export class EmotionController {
       },
 
       // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
-      // 欢迎池 / 切语 English 均默认硬切 Idle（无 CapCut；QA 2026-08-02）。
+      // 2026-08-05：冷启动回 Idle 改 ~1s CapCut（用户书面：硬切缺叠化）。
       magicBookReading: (options = {}) => {
         this._playCompanionSequenceOnce('magicBookReading', options, {
-          returnCrossFadeMs: options.returnCrossFadeMs ?? 0
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
 
