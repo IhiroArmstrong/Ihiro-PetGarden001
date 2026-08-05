@@ -66,6 +66,20 @@ export function resolveCompanionModeSelectCommit({
   return 'reject';
 }
 
+/**
+ * Sit / Rise 主钮是否应可点。
+ * 完成反馈进行中或微仪式开着 → 必须禁用（禁止「可点但静默 return」）。
+ *
+ * @param {{ completionPending?: boolean, microRitualOpen?: boolean }} gates
+ * @returns {boolean}
+ */
+export function shouldEnableFocusChromeButton({
+  completionPending = false,
+  microRitualOpen = false
+} = {}) {
+  return !completionPending && !microRitualOpen;
+}
+
 export class SessionUiGate {
   constructor() {
     /** @type {boolean} Arrival 完成（含 Skip）后才允许自动开计时 */

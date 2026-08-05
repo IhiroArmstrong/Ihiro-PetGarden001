@@ -62,12 +62,12 @@
 | Onboarding Hints · ? 补救 / Lit 试点 | known-risky | **有问题**：? 补救尖角/park、Lit 薄荷绿观感。**2026-08-04**：经清单#5 步5，weekly tip **测试不行**；用户书面「需要再设计」（产品方向）。**部分覆盖**：见 `HINTS_WIRING.md`——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板**保持观察、暂不扩** linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。 | `OnboardingHints*` · `HINTS_WIRING.md` · e2e `onboarding-remedy-contract` · `hints-visual-guardrail` | **产品再设计批次**；扩护栏前先读 HINTS_WIRING |
 | 冷启动「开场即睡」vs live DORMANT | known-risky | **有问题**行仍开；历史「修好又失效」（`DEV_WORKFLOW_QUALITY` §6.7）。契约：`onAppReady` 禁进睡 / 回前台≥2h 仍披毯——双路径易回归。 | `dormantIdle.js` · `dormantTrigger.js` · `main.js` onAppReady | 走查双路径 → 保持失败用例 |
 | earWiggle / 摇耳摸头回 Idle | known-risky | **有问题**：须正放→倒放→CapCut；易被「入库定格」假验收。与停接的 `welcomeBack` 同契约族。 | `EmotionController` · `spriteManifest` · Pointer/好奇池 | 走查序列 → 契约单测加固 |
-| `completionPending` 时 Sit 静默 `return` | known-risky | `EDGE_CASES` #5 仍 P1：门闩挡住但按钮未禁用 → 「点了没反应」体验债（回归锁红线）。 | `main.js` FocusInput · `SessionUiGate` | 补测试（禁用态）+ 小修（另任务） |
-| Visibility 契约 `gap-*` 行 | known-risky | `SHARED_RESOURCES` §6 / `DOC_CODE_CONTRACT` **V-gap**：桥接藏入口、FocusHUD 宽屏可见、鞠躬后 Companion 视口等**未全锁**；改 suppress 时易只绿一侧视口。 | `visibilityContractRegistry.js` · `test:e2e:visibility` | 补测试（收 gap） |
+| `completionPending` 时 Sit 静默 `return` | verified | **2026-08-05 批 4**：`shouldEnableFocusChromeButton` + `resyncSessionChrome` 禁 Sit；单测 + e2e `completionPending disables Sit`。 | `SessionUiGate` · `sessionChromeSync` · e2e scenario-a | 改完成反馈时复测禁用态 |
+| Visibility 契约 `gap-*` 行 | verified | **2026-08-05 批 4**：四行均 `locked`（补窄 Honesty / 375 heatmap / `expectFocusSessionActive` 锁 `#focus-hud`；宽屏 companion visible 已够）。`listVisibilityLockGaps()` 现为空。 | `visibilityContractRegistry.js` · `SHARED_RESOURCES` §6 | 改 suppress 时跑 visibility e2e |
 | 场景动画 Dispatcher（欢迎/深夜/好奇互斥） | known-risky | 已合 develop；`welcomeBack` **刻意空实现**（2026-08-02）；冷启动欢迎与深夜同 tick 互斥、硬切 vs CapCut 混用——文档多口径，人工多为「待测」。**部分覆盖**：中途 Rise 加权池（`riseStretchCasual`/`teaDrinking`/`bookReading`）已接线（PR #94 / `SCENE_ANIMATION_WIRING`）；勿把「Rise 手势池」再当未登记缺口。欢迎/深夜/好奇互斥仍待走查。 | `sceneAnimationDispatcher.js` · `SCENE_ANIMATION_WIRING.md` · `EmotionController` | 走查 Slice A/B 表 → 扩 dispatcher 失败用例；Rise 池见接线表 |
 | MilestoneGlow 与 Celebrating 同刻 | known-risky | 产品已接线；「同刻只播 Glow、庆祝戳仍记账 / Honesty 跨节点先 Glow 再桥接」跨模块时序；`TEST_TRACKER` 仍待人工；历史曾「已知不挡合并」。 | `MilestoneGlow*` · `session-completion-feedback` · e2e `milestone-glow-product` | 走查同刻路径 → 保持 e2e |
 | Companion 点选→开表门闩（含 375 鞠躬） | known-risky | 有强 smoke/e2e，但多次「鞠躬后无三选一」回归（L250/L254 族）；`arrivalGateReady` + stage + 窄宽壳隐式耦合（G-01 高风险契约）。 | `SessionUiGate` · `CompanionModePicker` · e2e `scenario-a.companion` | 走查回流（Rise 后再选）→ 门闩失败用例已有则保活 |
-| Emotion / `playEmotion` 返回值常忽略 | known-risky | `EDGE_CASES` #17–19：hold/强情绪 key 散落；新情绪漏登记难查；E-01 未进 docs:check。 | `EmotionController.js` · 多调用方 | 暂不处理（观察）或补 warn 契约 |
+| Emotion / `playEmotion` 返回值常忽略 | assumed-ok | **2026-08-05 批 4 部分收口**：`DEBUG_HOLD_POSE_EMOTION_KEYS` 导出 + 单测；companion oneshot `!started` warn。调用方仍可忽略 boolean——未强制改全调用面。 | `EmotionController.js` | 新情绪漏登记时再升级；E-01 仍暂无全表 docs:check |
 | `main.js` 完成路径 / `pendingAutoStart*` 闭包 | known-risky | `EDGE_CASES` #20–23：完成反馈、自动开表、叠层标志多 writer 历史；批 3 后仍标「可顺带收口」。 | `main.js` · `SessionEndFlow` | 走查异常回流；大重构暂不处理 |
 | Grow / `Milestone.js` 等占位 TODO | known-risky | 代码仍 `TODO(Task 3)` 会话时长/连续天等；与已接线 `MilestoneGlowStore` **两套叙事并存**，易误以为纪念奖励已完整。 | `Milestone.js` · `RewardToast.js` · `CORE_LOOP` Grow | 暂不处理（Backlog）或文档标明「脚手架」 |
 
@@ -161,7 +161,7 @@
 
 | 状态标签 | 条数 | 占比（约） |
 |---|---|---|
-| **known-risky** | **15** | 25% |
+| **known-risky** | **12** | —（批 4 后：Sit 禁用 / Visibility gap / playEmotion 部分迁出） |
 | **unknown** | **8** | 14% |
 | **assumed-ok** | **22** | 37% |
 | **verified** | **14** | 24% |

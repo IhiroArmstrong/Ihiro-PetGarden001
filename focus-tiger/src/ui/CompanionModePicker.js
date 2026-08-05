@@ -213,6 +213,11 @@ export class CompanionModePicker {
     if (this.dock) this.dock.hidden = this._microRitualActive;
   }
 
+  /** @returns {boolean} */
+  isMicroRitualActive() {
+    return this._microRitualActive;
+  }
+
   _syncSitVisibility() {
     if (!this.focusButton) return;
     const hideForArrival = this._arrivalActive && this._idleVisible;

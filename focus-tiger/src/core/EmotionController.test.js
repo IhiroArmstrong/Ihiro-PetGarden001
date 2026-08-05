@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   CAPCUT_DISSOLVE_MS,
+  DEBUG_HOLD_POSE_EMOTION_KEYS,
   DORMANT_WAKE_CROSS_FADE_MS,
   EmotionController,
   LEAVE_DORMANT_WAKE_CROSS_FADE_MS,
@@ -9,6 +10,13 @@ import {
   pickMilestoneGlowVariant,
   STREAK_7_MILESTONE_VISUALS
 } from './EmotionController.js';
+
+test('DEBUG_HOLD_POSE_EMOTION_KEYS covers celebrating / dormantWake / milestoneGlow', () => {
+  assert.ok(DEBUG_HOLD_POSE_EMOTION_KEYS.has('celebrating'));
+  assert.ok(DEBUG_HOLD_POSE_EMOTION_KEYS.has('dormantWake'));
+  assert.ok(DEBUG_HOLD_POSE_EMOTION_KEYS.has('milestoneGlow'));
+  assert.equal(DEBUG_HOLD_POSE_EMOTION_KEYS.has('idle'), false);
+});
 
 test('dormantWake cross-fades from sleeping into idle (no halo gold for now)', () => {
   const plays = [];
