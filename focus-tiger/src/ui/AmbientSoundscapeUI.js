@@ -840,14 +840,14 @@ export class AmbientSoundscapeUI {
           pointer-events: none !important;
           z-index: -1 !important;
         }
-        /* Focusing / Idle: stage panel from top-right note (no FAB) */
+        /* Focusing / Idle: stage panel from top-right note (no FAB) — 靠右，不挡阿寅 */
         body.ft-wide-stage-sound .ambient-soundscape__focus-chrome {
           position: fixed !important;
-          left: 50% !important;
-          right: auto !important;
+          left: auto !important;
+          right: 14px !important;
           top: auto !important;
           bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
-          transform: translateX(-50%) !important;
+          transform: none !important;
           width: min(300px, calc(100vw - 48px)) !important;
           opacity: 1 !important;
           visibility: visible !important;

@@ -156,25 +156,32 @@ export function normalizeAmbientPref(raw, { knownUserTrackIds } = {}) {
  * Panel radio selection must match audible intent:
  * - currently playing → that track
  * - wantsEnabled (e.g. gesture-unlock pending) → preferred track
- * - silent / opt-in off (incl. after note-mute, before resume) → Off
- *
- * Cold first open defaults preferred to Mer-Ka-Ba in storage but must highlight
- * Off so the panel does not imply a song is active while mute.
+ * - silent but user already picked/played a track this page (mute / Rise) → preferred
+ * - cold open (never picked this page) → Off even if storage default is Mer-Ka-Ba
  *
  * @param {{
  *   getTrackId: () => string,
  *   getPreferredTrackId: () => string,
- *   wantsEnabled?: () => boolean
+ *   wantsEnabled?: () => boolean,
+ *   hasRememberedPanelTrack?: () => boolean
  * }} ctrl
  * @returns {string}
  */
 export function resolveAmbientPanelSelectedTrackId(ctrl) {
   const playing = ctrl.getTrackId?.() || AMBIENT_TRACK_OFF;
   if (playing !== AMBIENT_TRACK_OFF) return playing;
+  const preferred = ctrl.getPreferredTrackId?.();
   if (ctrl.wantsEnabled?.()) {
-    const preferred = ctrl.getPreferredTrackId?.();
     if (preferred && preferred !== AMBIENT_TRACK_OFF) return preferred;
     return DEFAULT_AMBIENT_TRACK_ID;
+  }
+  // Mute / Rise: remember last chosen track in the list (still silent / Off playable).
+  if (
+    ctrl.hasRememberedPanelTrack?.() &&
+    preferred &&
+    preferred !== AMBIENT_TRACK_OFF
+  ) {
+    return preferred;
   }
   return AMBIENT_TRACK_OFF;
 }
@@ -237,6 +244,15 @@ export class AmbientSoundscapeController {
     this._needsGestureUnlock = false;
     /** After note-mute, next note-open resumes preferred (opt-in stays silent otherwise). */
     this._resumePreferredOnOpen = false;
+    /**
+     * User picked/played a non-Off track this page load — panel may highlight preferred
+     * while silent (mute / Rise). Cold open stays Off.
+     */
+    this._rememberPanelTrack = false;
+    /** Soft-paused by note-mute: keep src + currentTime for seek resume. */
+    this._pausedWithSeek = false;
+    /** @type {string | null} */
+    this._pausedTrackId = null;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
@@ -254,6 +270,11 @@ export class AmbientSoundscapeController {
     return this._preferredTrackId;
   }
 
+  /** @returns {boolean} */
+  hasRememberedPanelTrack() {
+    return Boolean(this._rememberPanelTrack);
+  }
+
   /** 专注会话开始：可听时长从 0 计；不自动开播（须用户点音乐钮） */
   startSession() {
     this._endCreditSegment();
@@ -266,6 +287,7 @@ export class AmbientSoundscapeController {
   /**
    * 会话结束（Rise / 达标）：清零会话累计并停播。
    * 不改写 localStorage 偏好——用户曾开过音乐时，下次可再点开。
+   * 硬停（进度清零）；若本页曾选曲，面板仍高亮 preferred。
    */
   endSession() {
     this._endCreditSegment();
@@ -273,6 +295,7 @@ export class AmbientSoundscapeController {
     this._playedAccumulated = 0;
     this._segmentStartedAt = null;
     this._wantEnabled = false;
+    this._clearSeekPause();
     this._stopPlayback({ persist: false });
   }
 
@@ -302,18 +325,48 @@ export class AmbientSoundscapeController {
     this.mute();
     // Boot mute is not a user pause — keep cold-open opt-in silent.
     this._resumePreferredOnOpen = false;
+    this._clearSeekPause();
   }
 
-  /** 同步静音：无论 wantsEnabled / 实际是否在播，一律停掉。 */
+  /**
+   * 同步静音：可闻时软暂停（保留 src + currentTime）；否则只关偏好。
+   * 下次 unmute / 同曲 setTrack 从断点续播（非从头）。
+   */
   mute() {
-    // Note-mute pauses; next note-open may resume this preferred track (not panel Off).
     const shouldResume =
       this._preferredTrackId !== AMBIENT_TRACK_OFF &&
       (this._wantEnabled || this._isAudiblePlaying());
     this._resumePreferredOnOpen = shouldResume;
     this._wantEnabled = false;
     this._needsGestureUnlock = false;
-    this._stopPlayback({ persist: true });
+
+    const audio = this._audio;
+    const hadAudible =
+      this._isAudiblePlaying() ||
+      (Boolean(audio?.src) && this._trackId !== AMBIENT_TRACK_OFF);
+
+    if (hadAudible && audio) {
+      this._playbackEpoch += 1;
+      this._endCreditSegment();
+      const pausedId =
+        this._trackId !== AMBIENT_TRACK_OFF
+          ? this._trackId
+          : this._preferredTrackId;
+      this._pausedWithSeek = pausedId !== AMBIENT_TRACK_OFF;
+      this._pausedTrackId = this._pausedWithSeek ? pausedId : null;
+      this._trackId = AMBIENT_TRACK_OFF;
+      try {
+        audio.pause();
+      } catch {
+        /* ignore */
+      }
+      // Keep src + currentTime for seek resume.
+      audio.muted = true;
+      this._persistPref();
+      return;
+    }
+
+    this._persistPref();
   }
 
   /**
@@ -332,11 +385,12 @@ export class AmbientSoundscapeController {
     return Boolean(this._resumePreferredOnOpen);
   }
 
-  /** 按偏好曲重新开播。 */
+  /** 按偏好曲开播；若刚 note-mute 软暂停则断点续播。 */
   async unmute() {
     if (this._preferredTrackId === AMBIENT_TRACK_OFF) {
       this._wantEnabled = false;
       this._resumePreferredOnOpen = false;
+      this._clearSeekPause();
       this._persistPref();
       return;
     }
@@ -376,6 +430,7 @@ export class AmbientSoundscapeController {
     this._endCreditSegment();
     this._trackId = AMBIENT_TRACK_OFF;
     this._needsGestureUnlock = false;
+    this._clearSeekPause();
 
     const prev = this._audio;
     if (prev) {
@@ -423,7 +478,24 @@ export class AmbientSoundscapeController {
       this._wantEnabled = false;
       this._needsGestureUnlock = false;
       this._resumePreferredOnOpen = false;
+      this._rememberPanelTrack = false;
+      this._clearSeekPause();
       this._stopPlayback({ persist });
+      return;
+    }
+
+    // Soft-paused same track → resume without resetting currentTime.
+    if (
+      this._pausedWithSeek &&
+      this._pausedTrackId === id &&
+      this._audio &&
+      Boolean(this._audio.src)
+    ) {
+      this._preferredTrackId = id;
+      this._wantEnabled = true;
+      this._rememberPanelTrack = true;
+      if (persist) this._persistPref();
+      await this._resumeFromSeekPause(id);
       return;
     }
 
@@ -436,10 +508,12 @@ export class AmbientSoundscapeController {
     }
     if (!src || !this._audio) return;
 
+    this._clearSeekPause();
     this._endCreditSegment();
     this._trackId = id;
     this._preferredTrackId = id;
     this._wantEnabled = true;
+    this._rememberPanelTrack = true;
     const epoch = this._playbackEpoch;
     const player = this._audio;
     player.muted = false;
@@ -545,6 +619,47 @@ export class AmbientSoundscapeController {
       enabled: this._wantEnabled,
       trackId: this._preferredTrackId
     });
+  }
+
+  _clearSeekPause() {
+    this._pausedWithSeek = false;
+    this._pausedTrackId = null;
+  }
+
+  /**
+   * Resume after note-mute soft pause without resetting currentTime.
+   * @param {string} id
+   */
+  async _resumeFromSeekPause(id) {
+    const player = this._audio;
+    if (!player) {
+      this._clearSeekPause();
+      return;
+    }
+    this._playbackEpoch += 1;
+    const epoch = this._playbackEpoch;
+    this._trackId = id;
+    this._clearSeekPause();
+    player.muted = false;
+    player.loop = true;
+    player.volume = this._volume;
+    try {
+      await player.play();
+    } catch {
+      if (epoch !== this._playbackEpoch) return;
+      this._needsGestureUnlock = true;
+      return;
+    }
+    if (epoch !== this._playbackEpoch || this._trackId !== id) {
+      try {
+        player.pause();
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    this._needsGestureUnlock = false;
+    this._syncCreditSegment();
   }
 
   _isAudiblePlaying() {
