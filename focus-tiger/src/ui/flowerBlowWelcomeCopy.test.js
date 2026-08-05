@@ -3,7 +3,8 @@ import { describe, it } from 'node:test';
 import {
   FLOWER_BLOW_WELCOME_COPY_KEYS,
   pickFlowerBlowWelcomeCopyKey,
-  resolveFlowerBlowWelcomeMessage
+  resolveFlowerBlowWelcomeMessage,
+  splitFlowerBlowBubbleSentences
 } from './flowerBlowWelcomeCopy.js';
 
 const DICT = {
@@ -74,5 +75,26 @@ describe('flowerBlowWelcomeCopy', () => {
       tInLocale
     });
     assert.deepEqual(ja.lines, [{ text: 'JA1', role: 'primary' }]);
+  });
+
+  it('splits bubble copy after each sentence (EN / JA)', () => {
+    assert.deepEqual(
+      splitFlowerBlowBubbleSentences(
+        'Welcome back. Your mind deserves this moment of quiet.'
+      ),
+      ['Welcome back.', 'Your mind deserves this moment of quiet.']
+    );
+    assert.deepEqual(
+      splitFlowerBlowBubbleSentences(
+        '急がなくていい。飾らなくていい。ただ、ここにいるだけで。'
+      ),
+      ['急がなくていい。', '飾らなくていい。', 'ただ、ここにいるだけで。']
+    );
+    assert.deepEqual(
+      splitFlowerBlowBubbleSentences(
+        'Whatever kind of day it is, Yin is right here with you.'
+      ),
+      ['Whatever kind of day it is, Yin is right here with you.']
+    );
   });
 });
