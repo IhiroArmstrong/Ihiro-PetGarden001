@@ -84,7 +84,7 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     sequence: 'conjureFlowersBlowAway',
     label: '变花吹散',
     suggestedUses:
-      'Day1 / 久别鼓励（策略 C）；Phase 1 Lab only；正放 → CapCut Idle；**勿**进 WELCOME_APP 直至 Phase 2b'
+      'Day1 / 久别鼓励（策略 C）；Phase 2b 已接 WELCOME_APP；正放 → CapCut Idle + 气泡；同日 XOR 欢迎池'
   }),
   Object.freeze({
     id: 'bookReading',

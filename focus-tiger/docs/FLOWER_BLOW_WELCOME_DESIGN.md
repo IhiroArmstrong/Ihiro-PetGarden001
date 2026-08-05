@@ -1,7 +1,7 @@
 # 吹花鼓励 · 冷启动微仪式设计（拍板记录）
 
 **日期**：2026-08-05  
-**状态**：产品规则已拍板；**Phase 1 Lab 已合 develop**（`a50c507` / PR #124）；**Phase 2a** = 实验室气泡 + 观察式文案（产品冷启动仍未接线）  
+**状态**：产品规则已拍板；**Phase 1 Lab 已合 develop**（`a50c507` / PR #124）；**Phase 2a Lab 气泡已合**；**Phase 2b 产品接线进行中**（Dispatcher Day1/久别 + XOR + flag）  
 **素材源**：仓库根 `yin-smiling-meditate-conjure-flowers-blow-away_transparent/` → 已入库  
 **入库路径**：`public/sprites/tiger-cub/monk-robe-default/conjure-flowers-blow-away/frame_001–065.png`  
 **情绪键**：`conjureFlowersBlowAway`  
@@ -139,3 +139,4 @@
 | 2026-08-05 | Lab 气泡试位改为**整画面居中**（待人工定夺） |
 | 2026-08-05 | Lab 气泡试位改为**脚部一带 top:74%**（待人工定夺） |
 | 2026-08-05 | Lab 气泡：头顶 + 白玉毛玻璃 + locale 主次字 + 尖角（分析师） |
+| 2026-08-06 | Phase 2b：Dispatcher 接线 Day1/≥3日久别吹花 + 同日 XOR + flag + 产品气泡 |

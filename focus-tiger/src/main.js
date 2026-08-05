@@ -67,6 +67,9 @@ import {
 } from './ui/MindfulAcknowledgeToast.js';
 import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
+import {
+  markFlowerWelcomeBubbleShown
+} from './core/flowerWelcomeGate.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
@@ -273,6 +276,12 @@ async function init() {
     );
   }
 
+  /** Phase 2a/2b 气泡；在下方构造后赋值（tryPlay 闭包晚绑定） */
+  let flowerBlowWelcomeBubble =
+    /** @type {import('./ui/FlowerBlowWelcomeBubbleUI.js').FlowerBlowWelcomeBubbleUI | null} */ (
+      null
+    );
+
   function tryPlaySceneAnim(event, extra = {}) {
     const { playOptions, ...resolveOpts } = extra;
     const decision = resolveSceneAnimation({
@@ -301,6 +310,22 @@ async function init() {
       decision.emotionKey,
       playOptions || {}
     );
+    // Phase 2b：吹花产品路径与 Lab 同气泡（非孤儿字）
+    if (
+      started &&
+      decision.flowerWelcome &&
+      decision.emotionKey === 'conjureFlowersBlowAway'
+    ) {
+      const msg = resolveFlowerBlowWelcomeMessage({
+        bilingual: decision.flowerBilingual === true,
+        locale: getLocale(),
+        tInLocale
+      });
+      flowerBlowWelcomeBubble?.show(msg.lines);
+      markFlowerWelcomeBubbleShown(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
+    }
     // Locale greeting: consume daily quota only after playEmotion starts
     // (resolve no longer writes — avoids burning the slot when play is skipped).
     if (
@@ -413,8 +438,8 @@ async function init() {
   );
   // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
   window.__mindfulToast = mindfulToast;
-  /** Phase 2a Lab：变花鼓励气泡（产品冷启动未接线） */
-  const flowerBlowWelcomeBubble = new FlowerBlowWelcomeBubbleUI(
+  /** Phase 2a Lab + Phase 2b 产品冷启动共用 */
+  flowerBlowWelcomeBubble = new FlowerBlowWelcomeBubbleUI(
     document.getElementById('ui-overlay')
   );
   emotionController.setFlowerBlowLabBubbleHandler((opts = {}) => {
@@ -424,7 +449,7 @@ async function init() {
       locale: getLocale(),
       tInLocale
     });
-    flowerBlowWelcomeBubble.show(msg.lines);
+    flowerBlowWelcomeBubble?.show(msg.lines);
   });
   if (import.meta.env.DEV) {
     window.__flowerBlowWelcomeBubble = flowerBlowWelcomeBubble;

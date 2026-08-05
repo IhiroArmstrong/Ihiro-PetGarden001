@@ -25,6 +25,12 @@ import {
   emotionKeyForLocaleGreeting,
   markLocaleGreetingPlayed
 } from './localeGreeting.js';
+import {
+  FLOWER_WELCOME_EMOTION_KEY,
+  FLOWER_WELCOME_FLAG_STORAGE_KEY,
+  FLOWER_WELCOME_STORAGE_KEY,
+  readFlowerWelcomeState
+} from './flowerWelcomeGate.js';
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -40,6 +46,11 @@ function memoryStorage(seed = {}) {
     },
     _map: map
   };
+}
+
+/** Phase 2b：既有欢迎池用例关闭吹花门闩，避免 Day1 空存储强制吹花 */
+function disableFlowerWelcome(storage) {
+  storage.setItem(FLOWER_WELCOME_FLAG_STORAGE_KEY, '0');
 }
 
 test('A′ locale: ja → bookReading; en → teaDrinking', () => {
@@ -142,6 +153,7 @@ test('cold-start: late night deferred when welcome plays; allowed when welcome s
   // Composition: night boot with fresh welcome must not also resolve late-night
   // if caller follows shouldAttemptLateNightOnBoot (main.js contract).
   const storage = memoryStorage();
+  disableFlowerWelcome(storage);
   const night = () => new Date(2026, 7, 2, 23, 40);
   const welcome = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.WELCOME_APP,
@@ -157,6 +169,7 @@ test('cold-start: late night deferred when welcome plays; allowed when welcome s
   assert.equal(shouldAttemptLateNightOnBoot(welcome), false);
 
   const storageQuota = memoryStorage();
+  disableFlowerWelcome(storageQuota);
   writeWelcomePlayed(storageQuota, night);
   const skipped = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.WELCOME_APP,
@@ -317,6 +330,7 @@ test('LIGHT_COMPLETE_POOL includes rare parrotEarVisit easter egg', () => {
 
 test('WELCOME_APP once per day', () => {
   const storage = memoryStorage();
+  disableFlowerWelcome(storage);
   const now = () => new Date(2026, 7, 1, 9);
   const first = resolveSceneAnimation({
     event: SCENE_ANIM_EVENTS.WELCOME_APP,
@@ -339,6 +353,72 @@ test('WELCOME_APP once per day', () => {
   assert.equal(second.play, false);
   assert.equal(second.reason, 'quota');
   assert.ok(storage.getItem(SCENE_ANIM_DAILY_STORAGE_KEY));
+});
+
+test('WELCOME_APP Day1 / absence force flower; XOR same-day welcome quota', () => {
+  const now = () => new Date(2026, 7, 6, 10);
+  const day1 = memoryStorage();
+  const first = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.WELCOME_APP,
+    sessionState: 'IDLE',
+    storage: day1,
+    now,
+    random: () => 0
+  });
+  assert.equal(first.play, true);
+  assert.equal(first.emotionKey, FLOWER_WELCOME_EMOTION_KEY);
+  assert.equal(first.flowerWelcome, true);
+  assert.equal(first.flowerBilingual, true);
+  assert.equal(first.reason, 'flower-day1');
+  assert.equal(readDailySceneAnimState(day1, now).welcome, true);
+  assert.equal(readFlowerWelcomeState(day1).lastOpenDateKey, '2026-08-06');
+
+  const second = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.WELCOME_APP,
+    sessionState: 'IDLE',
+    storage: day1,
+    now,
+    random: () => 0
+  });
+  assert.equal(second.play, false);
+  assert.equal(second.reason, 'quota');
+
+  const absence = memoryStorage();
+  absence.setItem(
+    FLOWER_WELCOME_STORAGE_KEY,
+    JSON.stringify({
+      lastOpenDateKey: '2026-08-02',
+      firstBubbleDone: true
+    })
+  );
+  const longAway = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.WELCOME_APP,
+    sessionState: 'IDLE',
+    storage: absence,
+    now,
+    random: () => 0
+  });
+  assert.equal(longAway.emotionKey, FLOWER_WELCOME_EMOTION_KEY);
+  assert.equal(longAway.reason, 'flower-absence');
+  assert.equal(longAway.flowerBilingual, false);
+
+  const ordinary = memoryStorage();
+  ordinary.setItem(
+    FLOWER_WELCOME_STORAGE_KEY,
+    JSON.stringify({
+      lastOpenDateKey: '2026-08-05',
+      firstBubbleDone: true
+    })
+  );
+  const nextDay = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.WELCOME_APP,
+    sessionState: 'IDLE',
+    storage: ordinary,
+    now,
+    random: () => 0
+  });
+  assert.equal(nextDay.emotionKey, 'magicBookReading');
+  assert.equal(nextDay.flowerWelcome, false);
 });
 
 test('LATE_NIGHT cooldown 1h; CURIOSITY chance + cooldown', () => {
