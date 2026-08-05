@@ -80,6 +80,13 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
       '开场欢迎池试验（同日 1 次加权）；已烘焙 pingpong；回落硬切 Idle（无 CapCut）；**勿**进 Rise 池（过长）'
   }),
   Object.freeze({
+    id: 'conjureFlowersBlowAway',
+    sequence: 'conjureFlowersBlowAway',
+    label: '变花吹散',
+    suggestedUses:
+      'Day1 / 久别鼓励（策略 C）；Phase 1 Lab only；正放 → CapCut Idle；**勿**进 WELCOME_APP 直至 Phase 2b'
+  }),
+  Object.freeze({
     id: 'bookReading',
     sequence: 'bookReading',
     label: '单程看书',
