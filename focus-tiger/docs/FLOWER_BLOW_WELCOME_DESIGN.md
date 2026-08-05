@@ -63,7 +63,7 @@
 
 - 吹花期间：**允许点 Sit**（不阻塞主路径进入专注）。  
 - 气泡：**允许**点气泡或点页面空白处 → 立即消失（不卡主流程）。  
-- 窄屏 HUD：气泡定位在阿寅头顶轴线上、约 12–16px 间距；勿压脸/耳；样式走现有 glass（`glassPanelStyles` / Arrival 暖米半透明），**勿**新引 Cinzel / Playfair 等外链展示字体（与现壳一致优先）。  
+- 窄屏 HUD：产品意向曾写头顶轴线约 12–16px；**Phase 2a Lab 现试整画面几何居中**（人工定夺后再固化）。样式走现有 glass（`glassPanelStyles` / Arrival 暖米半透明），**勿**新引 Cinzel / Playfair 等外链展示字体（与现壳一致优先）。  
 - **禁止**做成 Toast/Modal 硬弹窗感；气质 = 随风喃喃。
 
 ### 2.6 降级与兜底
@@ -136,3 +136,4 @@
 | 2026-08-05 | Phase 1 Lab：`conjureFlowersBlowAway` 入库 + 调试可播 + CapCut；产品路径仍未接线 |
 | 2026-08-05 | Phase 1 合入 `develop`（PR #124 · `a50c507`）；用户书面 feature tip Lab 测试 OK |
 | 2026-08-05 | Phase 2a：Lab 玻璃气泡 + 观察式文案池（双语/跟 locale）；仍不改冷启动 |
+| 2026-08-05 | Lab 气泡试位改为**整画面居中**（待人工定夺） |

@@ -54,8 +54,8 @@ export class FlowerBlowWelcomeBubbleUI {
     root.style.cssText = [
       'position:absolute',
       'left:50%',
-      // 头顶上方（勿压眼/鼻）：靠 viewport 顶缘，耳尖之上约 12–16px 叙事位
-      'top:max(10px, env(safe-area-inset-top, 0px) + 10px)',
+      // Lab 试位：整画面（#ui-overlay）几何中心
+      'top:50%',
       'z-index:17',
       'max-width:min(360px,calc(100vw - 56px))',
       'padding:10px 16px',
@@ -65,7 +65,7 @@ export class FlowerBlowWelcomeBubbleUI {
       'letter-spacing:0.02em',
       'text-align:center',
       'opacity:0',
-      'transform:translate(-50%,6px)',
+      'transform:translate(-50%,calc(-50% + 8px))',
       `transition:opacity 400ms ease-out,transform 400ms ease-out`,
       'pointer-events:auto',
       'cursor:pointer',
@@ -94,7 +94,7 @@ export class FlowerBlowWelcomeBubbleUI {
     // force reflow → fade/slide in
     root.getBoundingClientRect();
     root.style.opacity = '1';
-    root.style.transform = 'translate(-50%,0)';
+    root.style.transform = 'translate(-50%,-50%)';
 
     const holdMs =
       Number.isFinite(opts.holdMs) && opts.holdMs > 0
@@ -158,7 +158,7 @@ export class FlowerBlowWelcomeBubbleUI {
     }
 
     root.style.opacity = '0';
-    root.style.transform = 'translate(-50%,-8px)';
+    root.style.transform = 'translate(-50%,calc(-50% - 8px))';
     this._fadeTimer = window.setTimeout(finish, FLOWER_BLOW_BUBBLE_FADE_MS);
   }
 
