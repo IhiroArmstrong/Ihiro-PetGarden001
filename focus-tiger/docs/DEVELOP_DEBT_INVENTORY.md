@@ -6,7 +6,7 @@
 初稿对照过 **`1f46a57`**；合入本文件前已按 tip 刷新基线与「部分覆盖」标注。  
 性质：**只读盘点**——不改运行时、不改 `TEST_TRACKER` / `*_WIRING`；本文件可随复测结果更新标签。
 
-**人工走查步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)。同目录 `known-risky-test-checklist.csv` 与根目录 KnownRisky `.numbers` **均不权威**（勿对照验收）。
+**人工走查步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)。同目录 `known-risky-test-checklist.csv` **不权威**（勿对照验收）。仓库根 KnownRisky `.numbers` 已于 2026-08-05 删除。
 
 ---
 
