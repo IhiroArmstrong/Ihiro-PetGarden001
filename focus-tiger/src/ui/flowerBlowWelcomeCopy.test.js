@@ -31,6 +31,34 @@ describe('flowerBlowWelcomeCopy', () => {
     assert.equal(pickFlowerBlowWelcomeCopyKey(() => 0.99), 'FLOWER_BLOW_WELCOME_3');
   });
 
+  it('rotation avoids last copy key when pool has alternatives', () => {
+    assert.equal(
+      pickFlowerBlowWelcomeCopyKey({
+        random: () => 0,
+        avoidKey: 'FLOWER_BLOW_WELCOME_1'
+      }),
+      'FLOWER_BLOW_WELCOME_2'
+    );
+    assert.notEqual(
+      pickFlowerBlowWelcomeCopyKey({
+        random: () => 0.99,
+        avoidKey: 'FLOWER_BLOW_WELCOME_3'
+      }),
+      'FLOWER_BLOW_WELCOME_3'
+    );
+  });
+
+  it('resolveFlowerBlowWelcomeMessage honors avoidCopyKey', () => {
+    const msg = resolveFlowerBlowWelcomeMessage({
+      bilingual: false,
+      locale: 'en',
+      avoidCopyKey: 'FLOWER_BLOW_WELCOME_1',
+      random: () => 0,
+      tInLocale
+    });
+    assert.equal(msg.copyKey, 'FLOWER_BLOW_WELCOME_2');
+  });
+
   it('bilingual: current locale is primary, other is secondary (en)', () => {
     const msg = resolveFlowerBlowWelcomeMessage({
       bilingual: true,

@@ -19,7 +19,8 @@ export const FLOWER_WELCOME_EMOTION_KEY = 'conjureFlowersBlowAway';
 /**
  * @typedef {{
  *   lastOpenDateKey: string | null,
- *   firstBubbleDone: boolean
+ *   firstBubbleDone: boolean,
+ *   lastCopyKey: string | null
  * }} FlowerWelcomeState
  */
 
@@ -29,17 +30,21 @@ export const FLOWER_WELCOME_EMOTION_KEY = 'conjureFlowersBlowAway';
  */
 export function normalizeFlowerWelcomeState(raw) {
   if (!raw || typeof raw !== 'object') {
-    return { lastOpenDateKey: null, firstBubbleDone: false };
+    return { lastOpenDateKey: null, firstBubbleDone: false, lastCopyKey: null };
   }
-  const o = /** @type {{ lastOpenDateKey?: unknown, firstBubbleDone?: unknown }} */ (
-    raw
-  );
+  const o = /** @type {{
+    lastOpenDateKey?: unknown,
+    firstBubbleDone?: unknown,
+    lastCopyKey?: unknown
+  }} */ (raw);
   return {
     lastOpenDateKey:
       typeof o.lastOpenDateKey === 'string' && o.lastOpenDateKey
         ? o.lastOpenDateKey
         : null,
-    firstBubbleDone: Boolean(o.firstBubbleDone)
+    firstBubbleDone: Boolean(o.firstBubbleDone),
+    lastCopyKey:
+      typeof o.lastCopyKey === 'string' && o.lastCopyKey ? o.lastCopyKey : null
   };
 }
 
@@ -69,7 +74,8 @@ export function writeFlowerWelcomeState(storage, state) {
       FLOWER_WELCOME_STORAGE_KEY,
       JSON.stringify({
         lastOpenDateKey: state.lastOpenDateKey,
-        firstBubbleDone: Boolean(state.firstBubbleDone)
+        firstBubbleDone: Boolean(state.firstBubbleDone),
+        lastCopyKey: state.lastCopyKey || null
       })
     );
   } catch {
@@ -157,18 +163,26 @@ export function touchFlowerWelcomeLastOpen(
   const prev = readFlowerWelcomeState(storage);
   writeFlowerWelcomeState(storage, {
     lastOpenDateKey: getLocalDateKey(now()),
-    firstBubbleDone: prev.firstBubbleDone
+    firstBubbleDone: prev.firstBubbleDone,
+    lastCopyKey: prev.lastCopyKey
   });
 }
 
 /**
  * 产品路径实际弹出鼓励气泡后调用（首次 → 之后跟 locale）。
  * @param {Storage | null | undefined} storage
+ * @param {object} [opts]
+ * @param {string | null} [opts.copyKey] 本次播出文案键（轮换记账）
  */
-export function markFlowerWelcomeBubbleShown(storage) {
+export function markFlowerWelcomeBubbleShown(storage, opts = {}) {
   const prev = readFlowerWelcomeState(storage);
+  const copyKey =
+    typeof opts.copyKey === 'string' && opts.copyKey
+      ? opts.copyKey
+      : prev.lastCopyKey;
   writeFlowerWelcomeState(storage, {
     lastOpenDateKey: prev.lastOpenDateKey,
-    firstBubbleDone: true
+    firstBubbleDone: true,
+    lastCopyKey: copyKey
   });
 }
