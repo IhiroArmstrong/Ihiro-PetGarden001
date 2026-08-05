@@ -184,6 +184,8 @@ export class EmotionController {
 
     /** @type {(() => void) | null} 调试「Honesty唤醒」→ 打开时长三选一 */
     this._debugHonestyWake = null;
+    /** @type {((opts?: { bilingual?: boolean }) => void) | null} */
+    this._flowerBlowLabBubble = null;
 
     /**
      * 本轮 DORMANT 入睡所用斗篷变体（classic | starlight）。
@@ -1100,6 +1102,15 @@ export class EmotionController {
       typeof handler === 'function' ? handler : null;
   }
 
+  /**
+   * Phase 2a Lab：调试播变花时浮现鼓励气泡（不进产品冷启动）。
+   * @param {((opts?: { bilingual?: boolean }) => void) | null} handler
+   */
+  setFlowerBlowLabBubbleHandler(handler) {
+    this._flowerBlowLabBubble =
+      typeof handler === 'function' ? handler : null;
+  }
+
   /** @returns {boolean} 已烧录叙事光效播放期是否应关闭常规实时金光。 */
   shouldSuppressRuntimeGlow() {
     return this._runtimeGlowSuppressed;
@@ -1128,7 +1139,8 @@ export class EmotionController {
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'bookReading', label: '单程看书(日语切语)' },
       { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
-      { key: 'conjureFlowersBlowAway', label: '变花吹散(Lab·未接线)' },
+      { key: 'conjureFlowersBlowAway', label: '变花吹散+气泡(Lab)' },
+      { key: 'conjureFlowersBlowAwayLocale', label: '变花气泡·跟locale(Lab)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1215,6 +1227,18 @@ export class EmotionController {
       btn.addEventListener('click', () => {
         if (key === 'dormantWake' && typeof this._debugHonestyWake === 'function') {
           this._debugHonestyWake();
+          return;
+        }
+        // Phase 2a Lab：变花 + 鼓励气泡（默认双语首次预览；locale 钮跟当前语言）
+        if (
+          key === 'conjureFlowersBlowAway' ||
+          key === 'conjureFlowersBlowAwayLocale'
+        ) {
+          const bilingual = key === 'conjureFlowersBlowAway';
+          this.playEmotion('conjureFlowersBlowAway');
+          if (typeof this._flowerBlowLabBubble === 'function') {
+            this._flowerBlowLabBubble({ bilingual });
+          }
           return;
         }
         // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。

@@ -1,7 +1,7 @@
 # Task Brief · 吹花鼓励（分阶段）
 
 **日期**：2026-08-05  
-**状态**：**Phase 1 Lab 已实现**（`feature/flower-blow-welcome-lab-2026-08-05`）；下一切片 = Phase 2a 气泡  
+**状态**：**Phase 1 Lab 已合 develop**（PR #124）；**Phase 2a 气泡实现中**（`feature/flower-blow-welcome-bubble-2a`）  
 **角色**：Emotion / Session / UI（分阶段）  
 **权威 SSOT**：[`FLOWER_BLOW_WELCOME_DESIGN.md`](../FLOWER_BLOW_WELCOME_DESIGN.md)  
 **交叉**：`SCENE_ANIMATION_WIRING.md` · `EMOTION_BIBLE.md` · `ASSET_INVENTORY.md` · `PRINCIPLES.md`

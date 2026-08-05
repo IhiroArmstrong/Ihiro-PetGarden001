@@ -56,7 +56,7 @@ import { DynamicMotion } from './effects/DynamicMotion.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { IdleOrchestrator } from './character/IdleOrchestrator.js';
-import { t, tPool, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
+import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
@@ -65,6 +65,8 @@ import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
 } from './ui/MindfulAcknowledgeToast.js';
+import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
+import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
@@ -411,6 +413,22 @@ async function init() {
   );
   // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
   window.__mindfulToast = mindfulToast;
+  /** Phase 2a Lab：变花鼓励气泡（产品冷启动未接线） */
+  const flowerBlowWelcomeBubble = new FlowerBlowWelcomeBubbleUI(
+    document.getElementById('ui-overlay')
+  );
+  emotionController.setFlowerBlowLabBubbleHandler((opts = {}) => {
+    const bilingual = opts.bilingual !== false;
+    const msg = resolveFlowerBlowWelcomeMessage({
+      bilingual,
+      locale: getLocale(),
+      tInLocale
+    });
+    flowerBlowWelcomeBubble.show(msg.lines);
+  });
+  if (import.meta.env.DEV) {
+    window.__flowerBlowWelcomeBubble = flowerBlowWelcomeBubble;
+  }
   const lightProgression = new LightProgression({
     appEl: app,
     getSpriteOverlay: () => spritePlayer.overlayEl

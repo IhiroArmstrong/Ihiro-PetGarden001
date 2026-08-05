@@ -1,7 +1,7 @@
 # 吹花鼓励 · 冷启动微仪式设计（拍板记录）
 
 **日期**：2026-08-05  
-**状态**：产品规则已拍板；**Phase 1 Lab 已入库**（调试可播 + CapCut）；产品冷启动**未接线**  
+**状态**：产品规则已拍板；**Phase 1 Lab 已合 develop**（`a50c507` / PR #124）；**Phase 2a** = 实验室气泡 + 观察式文案（产品冷启动仍未接线）  
 **素材源**：仓库根 `yin-smiling-meditate-conjure-flowers-blow-away_transparent/` → 已入库  
 **入库路径**：`public/sprites/tiger-cub/monk-robe-default/conjure-flowers-blow-away/frame_001–065.png`  
 **情绪键**：`conjureFlowersBlowAway`  
@@ -122,8 +122,8 @@
 
 ## 五、下一步（待讨论确认后执行）
 
-1. ~~Phase 1 Lab 入库~~ — **已完成**（2026-08-05）：65 帧 @10fps ≈6.5s；调试钮「变花吹散(Lab·未接线)」；CapCut 回 Idle；冷启动未改。  
-2. **Phase 2a**：观察式气泡 UI（实验室与吹花同播）；文案定稿句 + z-index 登记。  
+1. ~~Phase 1 Lab 入库~~ — **已合 develop**（PR #124 · tip `a50c507`）；用户书面 Lab 观感 OK。  
+2. **Phase 2a（本切片）**：观察式气泡 UI + EN/JA 池；实验室「变花吹散+气泡」双语 / 「变花气泡·跟locale」；dismiss / 3.5s 超时。  
 3. **Phase 2b**：Dispatcher + Day1/久别门闩 + 同日 XOR + feature flag。
 
 ---
@@ -134,3 +134,5 @@
 |---|---|
 | 2026-08-05 | 初版：策略 C + 同日 XOR 欢迎池；观察式文案；时机统一；Sit 可点；气泡可点消；风险切片采纳与修正；Phase 1 尚未开工 |
 | 2026-08-05 | Phase 1 Lab：`conjureFlowersBlowAway` 入库 + 调试可播 + CapCut；产品路径仍未接线 |
+| 2026-08-05 | Phase 1 合入 `develop`（PR #124 · `a50c507`）；用户书面 feature tip Lab 测试 OK |
+| 2026-08-05 | Phase 2a：Lab 玻璃气泡 + 观察式文案池（双语/跟 locale）；仍不改冷启动 |

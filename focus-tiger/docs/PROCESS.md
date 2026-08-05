@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：`conjureFlowersBlowAway` 入库（65 帧 @10fps）+ 调试钮 + CapCut Idle；策略 C / 同日 XOR 欢迎池见 `FLOWER_BLOW_WELCOME_DESIGN.md`。**产品冷启动未改**。用户书面（feature tip）：Lab 变花→吹散→CapCut→Idle **测试 OK**；产品壳无自动吹花 **测试 OK**。下一刀：Phase 2a 气泡。
+- **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支）：Lab 玻璃气泡 + 观察式文案。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 `develop` tip **`dd09711`**。Mer-Ka-Ba 后接 Jesse Gallagher×4 + Reed Mathis Somnia×2（合计 12 内置）；ambient 约 188MB。关单级人工见 `TEST_TRACKER`「Ambient · Jesse Gallagher×4 + Somnia×2 入库」。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
