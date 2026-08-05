@@ -34,6 +34,23 @@ export function normalizeFlowerBlowLocale(locale) {
 }
 
 /**
+ * 气泡内按句换行：英文/日文在 `.` / `。`（及 !?！？）后断行，
+ * 避免窄宽下第二行只剩一两个词的孤儿换行。
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function splitFlowerBlowBubbleSentences(text) {
+  const s = String(text || '').trim();
+  if (!s) return [];
+  // 日文：。！？后即可断（常无空格）；英文：.!?\s 后断
+  const parts = s
+    .split(/(?<=[。！？])|(?<=[.!?])\s+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  return parts.length ? parts : [s];
+}
+
+/**
  * @param {object} opts
  * @param {boolean} [opts.bilingual] 首次造访：双语文叠显（当前 locale 为主字）
  * @param {string} [opts.locale] 用户 locale（默认 en）
