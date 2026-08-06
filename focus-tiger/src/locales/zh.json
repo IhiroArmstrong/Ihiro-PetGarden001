@@ -209,5 +209,12 @@
   "LANGUAGE_MENU_LABEL": "语言",
   "LANGUAGE_SETTING_TITLE": "语言",
   "LANGUAGE_FAB_ARIA": "选择语言",
-  "LANGUAGE_CLOSE": "关闭"
+  "LANGUAGE_CLOSE": "关闭",
+  "ZEN_CINEMA_MENU_LABEL": "禅意影院",
+  "ZEN_CINEMA_CARD_TITLE": "与阿寅的正念片刻",
+  "ZEN_CINEMA_CARD_BLURB": "一段短片冥想——有空时的一份小礼物。",
+  "ZEN_CINEMA_FILM_TITLE": "Satori: The Flash That Changes Everything",
+  "ZEN_CINEMA_OPENS_YOUTUBE": "将在浏览器中打开 YouTube。",
+  "ZEN_CINEMA_CANCEL": "先不要",
+  "ZEN_CINEMA_WATCH": "在 YouTube 观看"
 }

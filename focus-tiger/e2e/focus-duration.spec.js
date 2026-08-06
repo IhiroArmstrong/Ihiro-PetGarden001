@@ -19,6 +19,10 @@ test('Focus duration: companion select → 15 chip starts Focusing', async ({
     timeout: 15_000
   });
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
+  // Option A: total under elapsed
+  const target = page.locator('#hud-session-target');
+  await expect(target).toBeVisible();
+  await expect(target).toContainText(/15\s*min|15\s*分钟|15\s*分/i);
 });
 
 test('Focus duration: Leave cancels without Focusing', async ({ page }) => {
