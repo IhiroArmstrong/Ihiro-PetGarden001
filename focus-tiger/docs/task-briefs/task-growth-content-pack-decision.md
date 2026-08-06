@@ -1,6 +1,6 @@
-# Task Brief · 增长向内容包（决策锁 · ①③ 已合入）
+# Task Brief · 增长向内容包（决策锁 · ①③ 已合入 · 电子书延后）
 
-> **状态（2026-08-06）**：产品/工程共识已拍板并落档；**① Zen Cinema 已合 `develop`**（PR [#148](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/148)）；**③ Quiet Line 已合 `develop`**（PR [#153](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/153) · tip `fc6aa94`）；②A/②B 未开工。人工验收见 `TEST_TRACKER` Zen Cinema / Quiet Line 行。  
+> **状态（2026-08-06）**：产品/工程共识已拍板并落档；**① Zen Cinema 已合 `develop`**（PR [#148](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/148)）；**③ Quiet Line 已合 `develop`**（PR [#153](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/153)）；**②A/②B 电子书明确延后**（用户书面：目前非最急，延迟安排——**禁止**当下一优先开工项）。人工验收见 `TEST_TRACKER` Zen Cinema / Quiet Line 行。  
 > **触发**：用户「合理则办」——固化分析师与 Cursor 调查对齐后的收紧口径。  
 > **性质**：可延后的 **v1.0.0 增发**候选；**不得**挤占壳选型、主路径债、已知叠层问题。
 
@@ -16,12 +16,12 @@
 
 ## 建议实现顺序（增长向）
 
-1. **① YouTube 卡片入口** — Idle ⋯ / 抽屉 **平级**新项（与 breath / companion / reminder / language 同级）  
-2. **③ 每日签文卡片** — 本地文案选取 + canvas 合成 + **保存图片**  
-3. **②A 电子书免费下载** — 菜单静态入口；内容可并行撰写  
-4. **②B 电子书连续练习解锁** — 仅在 A 之后；见下方强制验收  
+1. **① YouTube 卡片入口** — Idle ⋯ / 抽屉 **平级**新项（与 breath / companion / reminder / language 同级） — **已合 develop**  
+2. **③ 每日签文卡片** — 本地文案选取 + canvas 合成 + **保存图片** — **已合 develop**  
+3. **②A 电子书免费下载** — 菜单静态入口；内容可并行撰写 — **延后**（2026-08-06 用户书面）  
+4. **②B 电子书连续练习解锁** — 仅在 A 之后；见下方强制验收 — **延后**（同上）  
 
-相对 **主动 Recover / breath-pacer**、壳选型、主路径债：本包整体 **让路**（人力/上下文切换，非代码硬耦合）。
+相对 **主动 Recover / breath-pacer**、壳选型、主路径债：本包整体 **让路**（人力/上下文切换，非代码硬耦合）。**电子书两项另再让路**：当前排期不得默认「下一件就做 ②A」。
 
 ## ① YouTube 卡片
 
