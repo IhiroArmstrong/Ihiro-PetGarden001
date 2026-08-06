@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-05（UTC+8）
+**最后更新时间**：2026-08-06（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Founder Supporter Pack（2026-08-06）**：一次性 **$9.99** Checkout + KV + 徽章/纪念 UI + 邮箱找回；分支 `feature/founder-supporter-pack`。权威 `FOUNDER_SUPPORTER_PACK.md`。**尚未** workers.dev 生产部署（待 Stripe/CF secrets）。不解锁音效/动画。
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右 / 音符开播 / 每曲 Play/Pause / Idle 靠右）→ PR #131+#132；**2026-08-06 tip 关单**（用户「关单 OK」；功能 tip `ae6eca2`）。

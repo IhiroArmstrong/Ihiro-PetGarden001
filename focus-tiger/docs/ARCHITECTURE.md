@@ -95,11 +95,12 @@ focus-tiger/
 │
 ├─ cloud/                         # Cloudflare Workers API（独立包；与 Vite 前端解耦）
 │  ├─ README.md                   # wrangler dev + curl 验收
-│  ├─ wrangler.jsonc
+│  ├─ wrangler.jsonc              # + SUPPORTER_KV（Founder Pack）
 │  ├─ package.json                # name: focus-tiger-cloud
-│  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
-│     # 2026-07-22：仅 mock + 校验 + 内存限流；未接前端 / 未部署正式逻辑
-│     # 2026-07-30：v1.0.0 纯本地发布 — 保留本目录作 v1.1 云端扩展点；禁止核心路径硬依赖云请求
+│  └─ src/                        # stub daily-message / emotion-weight
+│     # + Founder Pack：create-checkout-session / stripe-webhook / verify-supporter
+│     # 2026-08-06：一次性 $9.99 支持包（徽章/纪念）；见 docs/FOUNDER_SUPPORTER_PACK.md
+│     # 核心练习路径仍禁止硬依赖云请求；未配 VITE_CLOUD_API_BASE_URL 时免费体验不变
 │
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建
 │  └─ tiger-turnaround/

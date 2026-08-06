@@ -65,6 +65,7 @@ import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
+import { SupporterPackUI } from './ui/SupporterPackUI.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
@@ -547,6 +548,8 @@ async function init() {
   window.__languagePreference = languagePreferenceUI;
   const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
   window.__zenCinemaCard = zenCinemaCardUI;
+  const supporterPackUI = new SupporterPackUI(document.body, {});
+  window.__supporterPack = supporterPackUI;
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -948,6 +951,9 @@ async function init() {
     },
     onZenCinema: () => {
       zenCinemaCardUI.open();
+    },
+    onSupporter: () => {
+      supporterPackUI.open();
     },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });

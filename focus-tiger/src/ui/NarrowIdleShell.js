@@ -56,6 +56,7 @@ export class NarrowIdleShell {
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
    *     onZenCinema?: () => void,
+   *     onSupporter?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -783,6 +784,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onZenCinema?.();
+      return;
+    }
+    if (key === 'supporter') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onSupporter?.();
       return;
     }
     if (key === 'quickstart') {

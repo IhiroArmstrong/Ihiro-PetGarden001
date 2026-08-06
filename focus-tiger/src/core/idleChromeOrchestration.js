@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'supporter'} proxy
  * @property {string} labelKey
  */
 
@@ -337,6 +337,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'zen-cinema',
     labelKey: 'ZEN_CINEMA_MENU_LABEL'
+  });
+
+  // Founder Supporter Pack — one-time badge/memorial (optional; free path unchanged).
+  out.push({
+    proxy: 'supporter',
+    labelKey: 'SUPPORTER_MENU_LABEL'
   });
 
   return out;

@@ -1,7 +1,7 @@
 # Focus Tiger · 环境配置与密钥隔离
 
-> **状态（2026-07-31 核实）**：v1.0 纯本地；前端**未**接 `cloud/`；当前 CI Playwright **不**需要任何 API Key。  
-> 本文把隔离规则先钉死，避免 v1.1 接线时把 Secret Key 写进客户端。
+> **状态（2026-08-06 核实）**：核心练习仍本地优先；**Founder Supporter Pack** 首次可选接线 `cloud/`（Stripe + KV）。当前 CI Playwright **仍不**需要任何 API Key（未配 `VITE_CLOUD_API_BASE_URL` 时购买按钮显示未配置提示，免费路径不受影响）。  
+> 本文把隔离规则先钉死，避免把 Secret Key 写进客户端。
 
 ## 1. 硬性规则
 
@@ -23,10 +23,11 @@
 | 项 | 状态 |
 |---|---|
 | `focus-tiger/.env` / `.env.development` / `.env.production` 已提交？ | **否**（`.gitignore` 挡 `.env*`，仅放行 `.env.example`） |
-| 客户端调用云 API？ | **否**（`src/` 无 cloud fetch；见 `cloud/README.md`） |
+| 客户端调用云 API？ | **可选**：Founder Pack 需公开 `VITE_CLOUD_API_BASE_URL`；未配置时免费主路径不变 |
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
-| v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
+| Founder Pack Worker secrets | `STRIPE_SECRET_KEY`、`STRIPE_WEBHOOK_SECRET`（仅 Workers；见 `FOUNDER_SUPPORTER_PACK.md`） |
+| Worker 非机密 vars | `STRIPE_PRICE_ID`（Dashboard **$9.99** one-time）、`CHECKOUT_*_URL`、`ALLOWED_ORIGIN` |
 
 ## 3. 与 CI 的关系
 
@@ -39,4 +40,5 @@
 - [ ] 新密钥是否出现在 `src/**` 或任何 `VITE_*`？
 - [ ] `.env.production` 与 `.env.development` 是否分文件、未互相粘贴 Secret？
 - [ ] CI 是否**真的**需要该 Key？需要 → 写入 Actions Secret 且 workflow 显式 `secrets.NAME`；不需要 → 不要为「以防万一」乱加
-- [ ] `cloud/` stub 仍无绑定时，勿把「缺 Key」误判为 e2e 失败根因
+- [ ] Founder Pack：`sk_` / `whsec_` 仅在 `wrangler secret`；`git grep` 无命中
+- [ ] `cloud/` 未配 Stripe 时，勿把「缺 Key」误判为 e2e / 免费主路径失败根因

@@ -34,6 +34,7 @@
 | `focus-tiger.scene-anim-daily.v1` | `sceneAnimationDispatcher` | 欢迎池等同日额度：`{ dateKey, welcome }`（吹花与欢迎池同日 XOR 共用此旗） |
 | `focus-tiger.flower-welcome.v1` | `flowerWelcomeGate` | 吹花门闩：`{ lastOpenDateKey, firstBubbleDone, lastCopyKey }`（Day1 / ≥3 日久别；文案轮换记账） |
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
+| `focus-tiger.supporter-status.v1` | `supporterGate` / `SupporterPackUI` | 创始支持者本地态：`{ supporter, email, purchasedAt, verifiedAt, source }`。**仅徽章/纪念**；乐观 `?supporter=1` 见 `FOUNDER_SUPPORTER_PACK.md` / `supporterGate.js` 头注释。真源 = Worker KV + 邮箱找回 |
 | `focus-tiger.scene-anim-cooldown.v1` | `sceneAnimationDispatcher` | 生命感冷却：`{ late_night, curiosity, … }` 时间戳 |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
