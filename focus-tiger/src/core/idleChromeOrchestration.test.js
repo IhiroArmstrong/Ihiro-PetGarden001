@@ -285,19 +285,19 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema', () => {
+  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['companion', 'reminder', 'language', 'zen-cinema']
+      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote']
     );
   });
 
-  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema', () => {
+  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['companion', 'reminder', 'language', 'zen-cinema']
+      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote']
     );
   });
 
@@ -309,7 +309,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(!entries.some((e) => e.proxy === 'companion'));
   });
 
-  it('language + zen-cinema remain when secondary gates off (Sound is not a menu row)', () => {
+  it('language + zen-cinema + daily-quote remain when secondary gates off (Sound is not a menu row)', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', {
       microRitualVisible: false,
       companionVisible: false,
@@ -317,7 +317,8 @@ describe('listSecondaryChromeEntries', () => {
     });
     assert.deepEqual(entries.map((e) => e.proxy), [
       'language',
-      'zen-cinema'
+      'zen-cinema',
+      'daily-quote'
     ]);
   });
 });

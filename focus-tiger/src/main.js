@@ -65,6 +65,7 @@ import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
+import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
@@ -547,6 +548,8 @@ async function init() {
   window.__languagePreference = languagePreferenceUI;
   const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
   window.__zenCinemaCard = zenCinemaCardUI;
+  const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
+  window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -958,7 +961,12 @@ async function init() {
       languagePreferenceUI.openPanel();
     },
     onZenCinema: () => {
+      dailyZenQuoteCardUI.close();
       zenCinemaCardUI.open();
+    },
+    onDailyQuote: () => {
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.open();
     },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });
@@ -989,6 +997,7 @@ async function init() {
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
       zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.close();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },

@@ -216,5 +216,19 @@
   "ZEN_CINEMA_FILM_TITLE": "Satori: The Flash That Changes Everything",
   "ZEN_CINEMA_OPENS_YOUTUBE": "将在浏览器中打开 YouTube。",
   "ZEN_CINEMA_CANCEL": "先不要",
-  "ZEN_CINEMA_WATCH": "在 YouTube 观看"
+  "ZEN_CINEMA_WATCH": "在 YouTube 观看",
+  "DAILY_ZEN_QUOTE_MENU_LABEL": "一句静语",
+  "DAILY_ZEN_QUOTE_CARD_TITLE": "A quiet line for today",
+  "DAILY_ZEN_QUOTE_CARD_BLURB": "A small gift of words — yours to keep when the moment feels soft.",
+  "DAILY_ZEN_QUOTE_SAVE_NOTE": "Saves a picture to your device. No account needed.",
+  "DAILY_ZEN_QUOTE_CANCEL": "先不要",
+  "DAILY_ZEN_QUOTE_SAVE": "保存图片",
+  "DAILY_ZEN_QUOTE_IMAGE_FOOTER": "Focus Tiger · with Yin",
+  "DAILY_ZEN_QUOTE_1": "Soft light finds the room whether you notice or not.",
+  "DAILY_ZEN_QUOTE_2": "One breath is already a return.",
+  "DAILY_ZEN_QUOTE_3": "Sitting still is also a kind of care.",
+  "DAILY_ZEN_QUOTE_4": "The day can wait while you arrive.",
+  "DAILY_ZEN_QUOTE_5": "Quiet does not ask for proof.",
+  "DAILY_ZEN_QUOTE_6": "You do not have to finish the path to rest on it.",
+  "DAILY_ZEN_QUOTE_7": "A pause is not an absence."
 }
