@@ -646,7 +646,8 @@ export class OnboardingHintsUI {
       }
     }
 
-    // Ambient note: mint pulse owns first-visit tip; residual hover after done.
+    // Ambient note: mint pulse owns first-visit tip; residual hover after done
+    // uses native `title` (AMBIENT_NOTE_HOVER) once pulse is cleared.
     const ambientUnread =
       isClickTriggerHint('ambient-soundscape') &&
       !this.store.isDone('ambient-soundscape');
@@ -679,8 +680,6 @@ export class OnboardingHintsUI {
     syncSecondaryMenuHintDot(narrowMute, show);
     this._bindHostMintHover(mute, 'ambient-soundscape');
     this._bindHostMintHover(narrowMute, 'ambient-soundscape');
-    // Keep pinned / hover residual label in sync with mint done state.
-    window.__ambientSoundscapeUI?.syncNoteLabel?.();
   }
 
   /**
@@ -754,10 +753,6 @@ export class OnboardingHintsUI {
       ) {
         return;
       }
-      // Ambient uses a always-on small label until markSeen — do not also expand
-      // the floating tip bubble on hover (double copy). Residual hover after done
-      // is owned by AmbientSoundscapeUI `#ambient-note-label`.
-      if (hintId === 'ambient-soundscape') return;
       this._expandClickHint(hintId);
     });
     el.addEventListener('pointerleave', (event) => {
