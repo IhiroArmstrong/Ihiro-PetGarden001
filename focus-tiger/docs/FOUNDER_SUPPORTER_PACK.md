@@ -48,13 +48,28 @@ Cloudflare KV 全球写入可能延迟（常见约数十秒级）。邮箱找回
 
 ## 6. 部署 checklist（workers.dev 先）
 
-1. Stripe **Test mode**：创建 Product + **one-time** Price = **$9.99** → 复制 `price_…`  
+### 6.1 谁必须动手？
+
+**不是**整份清单都要你手搓。Agent **不能**代替的只有「账号授权 + 密钥材料」；命令与接线可代跑。
+
+| 你必须提供 / 点一次 | Agent 可代做（有授权后） |
+|---|---|
+| Cloudflare：本机执行一次 `npx wrangler login`（浏览器授权） | `kv namespace create`、改 `wrangler.jsonc`、设 vars、`wrangler deploy` |
+| Stripe Test：账号里建好 **$9.99** one-time Price，或直接把 `price_…` 发给 Agent | 写入 `STRIPE_PRICE_ID`；用 API 创建 webhook endpoint（若给了 `sk_test_`） |
+| 把 **`sk_test_…`**（及 webhook 返回的 **`whsec_…`**，若你在 Dashboard 自建）贴给 Agent 一次（聊天即可；**禁止**写进 git） | `wrangler secret put …`（stdin，不落盘进仓库）、本地 `.env.development` 的 `VITE_CLOUD_API_BASE_URL`（gitignored） |
+| 用测试卡走完一次人工验收 | 部署后健康检查 / curl verify |
+
+当前本机状态（2026-08-06）：**尚未** `wrangler login`；无 Stripe CLI；无环境里的 `STRIPE_*`。故部署卡在授权，不卡在代码。
+
+### 6.2 步骤（有登录 + 密钥后按序）
+
+1. Stripe **Test mode**：Product + **one-time** Price = **$9.99** → `price_…`  
 2. `cd focus-tiger/cloud && npm install`  
 3. `npx wrangler kv namespace create SUPPORTER_KV`  
 4. `npx wrangler kv namespace create SUPPORTER_KV --preview`  
 5. 把真实 id 写入 `wrangler.jsonc` 的 `kv_namespaces`（替换占位 `0000…01` / `0000…02`）  
-6. 设置 vars（或 Dashboard）：`STRIPE_PRICE_ID`、`CHECKOUT_SUCCESS_URL`、`CHECKOUT_CANCEL_URL`、`ALLOWED_ORIGIN`  
-7. Secrets：  
+6. 设置 vars：`STRIPE_PRICE_ID`、`CHECKOUT_SUCCESS_URL`、`CHECKOUT_CANCEL_URL`、`ALLOWED_ORIGIN`  
+7. Secrets（stdin / Dashboard，**永不 commit**）：  
    `npx wrangler secret put STRIPE_SECRET_KEY`  
    `npx wrangler secret put STRIPE_WEBHOOK_SECRET`  
 8. `npx wrangler deploy` → 记下 `*.workers.dev`  
@@ -64,6 +79,11 @@ Cloudflare KV 全球写入可能延迟（常见约数十秒级）。邮箱找回
 12. **确认** `sk_test_` / `sk_live_` / `whsec_` **未**出现在任何 git 提交  
 
 正式域名绑定另开任务。
+
+### 6.3 未部署前仍可推进
+
+- 产品壳 UI / 徽章乐观态 / 免费主路径：不依赖 Stripe，可在本 feature worktree 预览。  
+- 合入 `develop`：仍须合前预览确认；**真收款验收**可在 workers.dev 配好后另开一轮。
 
 ## 7. 本地联调
 
