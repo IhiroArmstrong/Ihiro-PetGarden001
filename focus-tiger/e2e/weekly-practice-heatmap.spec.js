@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
   expectFocusSessionActive,
-  openFreshProductShell
+  openFreshProductShell,
+  quickStartFocus
 } from './helpers/product-shell.js';
 
 const HEATMAP = '#weekly-practice-heatmap';
@@ -190,7 +191,7 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-quickstart')).toHaveAttribute(
     'aria-label',
-    /Quick Start|快速开始/i
+    /Breath practice|呼吸练习|呼吸の練習/i
   );
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-honesty')).toBeEnabled();
@@ -525,7 +526,7 @@ test('375 Focusing hides weekly heatmap', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
   // Idle：热力簇可能 park 屏外，但仍挂在 DOM；Focusing 须 hidden/park 契约。
-  await page.locator('#ft-narrow-home-quickstart').click();
+  await quickStartFocus(page);
   await expectFocusSessionActive(page);
   await expect(page.locator(HEATMAP)).toBeHidden();
 });

@@ -260,9 +260,10 @@ export const ONBOARDING_HINT_REGISTRY = Object.freeze([
     triggerMode: 'click',
     tier: 'simple',
     anchor: {
-      selector: '#micro-ritual-idle-entry',
-      placement: 'right',
-      tip: 'left'
+      // Same home left ball as quick-start (drawer/⋯ no longer list Breath).
+      selector: '#quick-start-focus, #ft-wide-home-quickstart, #ft-narrow-home-quickstart',
+      placement: 'above',
+      tip: 'bottom'
     }
   },
   {

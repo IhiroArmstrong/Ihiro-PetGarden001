@@ -14,7 +14,7 @@
 3. 留存：`trackRetentionEvent('micro_ritual_complete')` 仅 console 占位；**不** `noteSessionComplete`。  
 4. 同日可多次；完成反馈走 `LIGHT_COMPLETE_POOL`（`sessionComplete` / `mindfulAcknowledge` / 稀有鹦鹉；**无** `curiousTilt`；从不 Celebrating）。进出 smiling / 回 Idle 用 **1s CapCut**（防闪白）。  
 5. 中途 Leave：不记账、无提示、**不**进 Reflection；回 Idle 亦 CapCut。  
-6. 入口：`#micro-ritual-idle-entry` → **时长 chip 点选即开**（1/3/5/10/20）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath()`（光环仍 **4s**，**不**与文案强制同拍）。  
+6. 入口：**首页左球**（DOM `#ft-*-home-quickstart` / `#quick-start-focus`；文案 Breath practice）→ **时长 chip 点选即开**（1/3/5/10/20）；**不再**列于抽屉 / ⋯。面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath()`（光环仍 **4s**，**不**与文案强制同拍）。遗留 `#micro-ritual-idle-entry` 始终 hidden。  
 7. e2e 缩短：`?microRitualMs=1500`（覆盖墙钟；记账仍按所选 chip 分钟）。  
 8. ~~吸/呼同拍~~：**已撤销**（用户书面：同拍观感不行）。保留文案 2.5s 交替 + 独立 4s 光环 + smiling@4fps。  
 9. **HUD 直播**：进行中左上 FocusHUD（仅 breath 相位）；**仍不启** `FocusSession` / Rise / Celebrating。  

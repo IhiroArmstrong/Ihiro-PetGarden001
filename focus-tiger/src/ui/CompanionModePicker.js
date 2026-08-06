@@ -359,9 +359,8 @@ export class CompanionModePicker {
     if (!this.quickStartBtn) return;
     this.quickStartBtn.textContent = '⚡';
     this.quickStartBtn.setAttribute('aria-label', t('QUICK_START_ARIA'));
-    // Native title stacks with mint pulse tip on home ⚡ balls; home CTAs own
-    // residual title after pulse is done (WideIdleMoreMenu / NarrowIdleShell).
-    this.quickStartBtn.removeAttribute('title');
+    // Residual title after mint pulse; home CTAs also set title from QUICK_START_ARIA.
+    this.quickStartBtn.setAttribute('title', t('QUICK_START_ARIA'));
   }
 
   _hintLabelKey() {

@@ -77,7 +77,7 @@
 | `honesty-optional` | A1 / D Honesty 提示 | "This check-in is optional — Sit still works." / 「这段补登可以略过，直接同坐也行。」 | 首次见到 Honesty 入口（含窄屏 Honesty 圆球） | 点 Sit 忽略，或点进补登 | 是 |
 | `honesty-bridge` | Honesty 桥接 Yes/No | "Yes begins Arrival; No stays with idle. Either is fine." / 「选 Yes 进入到达练习；选 No 继续闲坐。都可以。」 | 首次桥接面板可见 | 点 Yes / No | 是 |
 | `sit-button` | A2 主 CTA | "Tap to sit with Yin." / 「点击与阿寅同坐。」 | 空闲且从未开过会话 | 点 Sit | 是 |
-| `quick-start` | Idle ⚡ Quick Start | "Skip Arrival — begin with your last way of sitting." / 「跳过到达练习——用上次的同坐方式立刻开始。」 | Idle 且 ⚡ / 窄屏闪电球可见 | 点 ⚡ / Quick Start 球 | 是 |
+| `quick-start` | Idle 首页左球 · Breath practice | "Breath practice — soft sit with Yin, no full Focus." / 「呼吸练习——轻轻陪阿寅坐一会儿，不必完整同坐。」 | Idle 且左球可见 | 点左球开时长 picker | 是 |
 | `how-shall-we-sit` | 故事 I | "Or begin from here." / 「也可以从这里开始。」 | 首次看到 How shall we sit? | 点该钮展开三选一或完成 Arrival | 是 |
 | `notice` | A3b | "A tap is enough — or skip ahead." / 「点一下就好，也可以跳过。」 | 首次 Notice | 点选图标或 Skip | 是 |
 | `breathing` | A3c | "Just breathe with Yin. Nothing else to do." / 「跟着阿寅呼吸就好，不用做别的。」 | 首次呼吸 beat | 呼吸结束或 Skip | 是 |
@@ -94,7 +94,7 @@
 | `weekly-heatmap` | Idle 左下 7 格 | "A quiet week… The outlined square is today." / 「近日同坐…描边的那格是今天。」 | Idle 热力图可见 | 开计时 / 点气泡 | 是 |
 | `language-preference` | Idle 右下地球 | "Choose a language — English or 日本語." / 「言語を選べます…」 | 宽屏 Idle 地球 FAB 可见 | 开语言面板 / 点气泡 | 是 |
 | `in-app-reminder` | Idle 热力图旁时钟 | "Set a daily time — Yin leaves a gentle note if you haven't practiced yet." / 「设一个每天的时分——若还没同坐，阿寅会留下一句轻提示。」 | Idle 热力图簇可见 | 开面板 / 开计时 / 点气泡 | 是 |
-| `micro-ritual` | Idle 一分钟呼吸 | "A minute of breath — soft practice, no full Focus." / 「一分钟呼吸——轻轻练一下，不必完整同坐。」 | Idle 入口可见 | 点入口 / 开计时 | 是 |
+| `micro-ritual` | （legacy id）同左球 Breath practice | 与 `HINT_QUICK_START` / `HINT_MICRO_RITUAL` 同义；入口已迁首页左球；抽屉/⋯ 不再列 | `microRitualEntryVisible`（现恒假）时才进列表；开练习时与 quick-start 同 markSeen | 点左球 | 是 |
 | `help-affordance` | 补救入口自身 | "Not sure what to tap next? Start here." / 「不知下一步点什么？先点这里。」 | 首次空闲见到左下角「?」 | 点「?」或点气泡 | 是 |
 | `help-remedy` | 点「?」补救 | "All the tips… Click a tip to dismiss it; tap ? anytime you want them again." / 「本页…点一下气泡即可关掉；下次需要时再点问号。」 | （仅点「?」，不自动） | 点气泡关闭 | 否 |
 | `help-fallback` | 补救兜底 | "Sit with Yin when you are ready." / 「准备好了，就与阿寅同坐。」 | （仅补救，不自动） | — | 是 |
@@ -128,7 +128,7 @@
 | `weekly-heatmap` | `HINT_WEEKLY_HEATMAP` | `click` | `simple` | `#weekly-practice-heatmap` | right | left | — |
 | `language-preference` | `HINT_LANGUAGE_PREFERENCE` | `click` | `simple` | `#language-preference-fab` | left | right | — |
 | `in-app-reminder` | `HINT_IN_APP_REMINDER` | `click` | `simple` | `#reminder-preference-toggle` | right | left | — |
-| `micro-ritual` | `HINT_MICRO_RITUAL` | `click` | `simple` | `#micro-ritual-idle-entry` | right | left | — |
+| `micro-ritual` | `HINT_MICRO_RITUAL` | `click` | `simple` | `#quick-start-focus, #ft-wide-home-quickstart, #ft-narrow-home-quickstart` | above | bottom | — |
 | `focus-hud-ring` | `HINT_FOCUS_HUD_RING` | `click` | `simple` | `#focus-hud .ft-hud__gauge` | below | top | `focus-hud` |
 | `focus-hud-progress` | `HINT_FOCUS_HUD_PROGRESS` | `click` | `simple` | `#focus-hud .ft-hud__bar` | below | top | `focus-hud` |
 | `focus-hud-streak` | `HINT_FOCUS_HUD_STREAK` | `click` | `simple` | `#focus-hud .ft-hud__streak` | left | right | `focus-hud` |
@@ -142,7 +142,7 @@
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
-音乐 **默认关闭（opt-in）**。首次 Idle：右上音符旁薄荷绿脉冲圆点；点圆点见说明，点音符打开 Soundscape 选曲。**不**在 hint 中承诺光效变化。
+音乐 **默认关闭（opt-in）**。首次 Idle：右上音符旁薄荷绿脉冲圆点；点圆点见说明，点音符打开 Soundscape 选曲。**不**在 hint 中承诺光效变化。脉冲未读时不叠原生 `title`；done 后悬停见 `AMBIENT_NOTE_HOVER`（选曲陪伴练习）。
 
 ---
 
