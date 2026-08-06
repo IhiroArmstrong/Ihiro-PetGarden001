@@ -461,3 +461,59 @@ test('volume is initialized before DOM audio element is created', () => {
     globalThis.document = prevDoc;
   }
 });
+
+test('stopPlaybackEphemeral keeps preferred track and ambient-pref storage', async () => {
+  const audio = createMockAudio();
+  const storage = createMapStorage();
+  storage.setItem(
+    'focus-tiger.ambient-pref.v1',
+    JSON.stringify({ enabled: false, trackId: AMBIENT_TRACK_RAIN })
+  );
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage,
+    mountToDocument: false
+  });
+  assert.equal(ctrl.getPreferredTrackId(), AMBIENT_TRACK_RAIN);
+  assert.equal(ctrl.wantsEnabled(), false);
+  const prefBefore = storage.getItem('focus-tiger.ambient-pref.v1');
+
+  await ctrl.playTrackEphemeral(DEFAULT_AMBIENT_TRACK_ID);
+  assert.equal(ctrl.isAudiblePlaying(), true);
+  // Ephemeral play must not rewrite preferred / storage
+  assert.equal(ctrl.getPreferredTrackId(), AMBIENT_TRACK_RAIN);
+  assert.equal(storage.getItem('focus-tiger.ambient-pref.v1'), prefBefore);
+
+  const playedBeforeStop = ctrl.getPlayedSeconds();
+  ctrl.stopPlaybackEphemeral();
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.getPreferredTrackId(), AMBIENT_TRACK_RAIN);
+  assert.equal(ctrl.wantsEnabled(), false);
+  assert.equal(storage.getItem('focus-tiger.ambient-pref.v1'), prefBefore);
+  // Must not touch Focus presence session accounting
+  assert.equal(ctrl.getPlayedSeconds(), playedBeforeStop);
+});
+
+test('stopPlaybackEphemeral does not require or clear startSession presence', async () => {
+  const audio = createMockAudio();
+  const storage = createMapStorage();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage,
+    mountToDocument: false
+  });
+  ctrl.startSession();
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  const boostWhileFocus = ctrl.getPresenceBoost(25);
+  assert.ok(boostWhileFocus > 0);
+
+  // Parallel ephemeral stop path (as MicroRitual would) must not endSession
+  ctrl.stopPlaybackEphemeral();
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  // Session still active — presence path still armed (boost 0 while silent)
+  assert.equal(ctrl.getPresenceBoost(25), 0);
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  assert.ok(ctrl.getPresenceBoost(25) > 0);
+  ctrl.endSession();
+});

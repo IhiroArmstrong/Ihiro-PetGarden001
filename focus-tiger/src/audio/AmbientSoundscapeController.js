@@ -442,6 +442,47 @@ export class AmbientSoundscapeController {
   }
 
   /**
+   * 临时开播（MicroRitual 等）：底层仍走 setTrack，但恢复 preferred / wantEnabled /
+   * remember / resume 内存态，且不写 localStorage。不触碰 startSession / endSession /
+   * presence 累计（_sessionActive / _playedAccumulated）。
+   * @param {string} trackId
+   * @returns {Promise<void>}
+   */
+  async playTrackEphemeral(trackId) {
+    const snap = this._snapshotPrefMemory();
+    await this.setTrack(trackId, { persist: false });
+    this._restorePrefMemory(snap);
+  }
+
+  /**
+   * 临时停播（MicroRitual 等）：硬停可闻播放，不改 getPreferredTrackId()，
+   * 不写 focus-tiger.ambient-pref.v1，不触碰 startSession / endSession / presence。
+   */
+  stopPlaybackEphemeral() {
+    const snap = this._snapshotPrefMemory();
+    this._stopPlayback({ persist: false });
+    this._restorePrefMemory(snap);
+  }
+
+  /** @returns {{ preferred: string, wantEnabled: boolean, remember: boolean, resume: boolean }} */
+  _snapshotPrefMemory() {
+    return {
+      preferred: this._preferredTrackId,
+      wantEnabled: this._wantEnabled,
+      remember: this._rememberPanelTrack,
+      resume: this._resumePreferredOnOpen
+    };
+  }
+
+  /** @param {{ preferred: string, wantEnabled: boolean, remember: boolean, resume: boolean }} snap */
+  _restorePrefMemory(snap) {
+    this._preferredTrackId = snap.preferred;
+    this._wantEnabled = snap.wantEnabled;
+    this._rememberPanelTrack = snap.remember;
+    this._resumePreferredOnOpen = snap.resume;
+  }
+
+  /**
    * 彻底停播（同步）；作废进行中的 play()。
    * @param {{ persist?: boolean }} [options]
    */
