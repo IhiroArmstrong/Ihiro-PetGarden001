@@ -266,7 +266,7 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
 describe('secondaryProxyForHintId', () => {
   it('inverses SECONDARY_PROXY_HINT_IDS; unknown → null', () => {
     assert.equal(secondaryProxyForHintId('how-shall-we-sit'), 'companion');
-    assert.equal(secondaryProxyForHintId('micro-ritual'), 'breath');
+    assert.equal(secondaryProxyForHintId('micro-ritual'), null);
     assert.equal(secondaryProxyForHintId('in-app-reminder'), 'reminder');
     assert.equal(secondaryProxyForHintId('honesty-optional'), 'honesty');
     assert.equal(secondaryProxyForHintId('sit-button'), null);
@@ -285,19 +285,19 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty; includes breath/companion/reminder/language', () => {
+  it('narrow drawer omits honesty and breath; includes companion/reminder/language', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'reminder', 'language']
+      ['companion', 'reminder', 'language']
     );
   });
 
-  it('wide more omits honesty (home ball); includes breath/companion/reminder/language', () => {
+  it('wide more omits honesty and breath; includes companion/reminder/language', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'reminder', 'language']
+      ['companion', 'reminder', 'language']
     );
   });
 

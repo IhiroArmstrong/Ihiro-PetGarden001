@@ -111,20 +111,9 @@ export function createSessionChromeSync(deps) {
   }
 
   function syncMicroRitualIdleEntry() {
-    const honestyBusy = isHonestyPhaseBusy(honestyCheckInUI.phase);
-    const blocked =
-      getArrivalPractice()?.isOpen?.() ||
-      getHonestyBridge()?.isVisible?.() ||
-      getReflectionMoment()?.isOpen?.() ||
-      getMicroRitualUI()?.isOpen?.() ||
-      honestyBusy ||
-      stateManager.state === STATES.FOCUSING ||
-      stateManager.state === STATES.CELEBRATE;
-    if (blocked) {
-      getMicroRitualUI()?.hideIdleEntry();
-      return;
-    }
-    getMicroRitualUI()?.showIdleEntry();
+    // Breath practice lives on the home left ball (ex-Quick Start).
+    // Dock / drawer / ⋯ no longer list a duplicate entry.
+    getMicroRitualUI()?.hideIdleEntry();
   }
 
   function syncHonestyIdleEntry() {

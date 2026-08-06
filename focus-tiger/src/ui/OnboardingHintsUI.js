@@ -252,7 +252,7 @@ function remapNarrowIdleHintAnchor(anchorCfg, useHelpAnchor) {
     }
     if (/micro-ritual/.test(sel)) {
       return {
-        selector: '.ft-narrow-sheet__item[data-proxy="breath"]',
+        selector: '#ft-narrow-home-quickstart',
         placement: 'above',
         tip: 'bottom'
       };
@@ -299,6 +299,14 @@ function remapWideIdleHintAnchor(anchorCfg) {
     };
   }
   if (/quick-start/.test(sel)) {
+    return {
+      selector: '#ft-wide-home-quickstart',
+      placement: 'above',
+      tip: 'bottom'
+    };
+  }
+  if (/micro-ritual/.test(sel)) {
+    // Breath practice is the home left ball (ex-Quick Start), not a ⋯ row.
     return {
       selector: '#ft-wide-home-quickstart',
       placement: 'above',
@@ -628,6 +636,24 @@ export class OnboardingHintsUI {
       const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
       if (!el) continue;
       if (quickUnread) {
+        if (el.title && !el.dataset.ftNativeTitleBackup) {
+          el.dataset.ftNativeTitleBackup = el.title;
+        }
+        el.removeAttribute('title');
+      } else if (el.dataset.ftNativeTitleBackup) {
+        el.title = el.dataset.ftNativeTitleBackup;
+        delete el.dataset.ftNativeTitleBackup;
+      }
+    }
+
+    // Ambient note: mint pulse owns first-visit tip; residual hover after done.
+    const ambientUnread =
+      isClickTriggerHint('ambient-soundscape') &&
+      !this.store.isDone('ambient-soundscape');
+    for (const sel of ['.ambient-soundscape__mute', '#ft-narrow-mute-btn']) {
+      const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
+      if (!el) continue;
+      if (ambientUnread) {
         if (el.title && !el.dataset.ftNativeTitleBackup) {
           el.dataset.ftNativeTitleBackup = el.title;
         }

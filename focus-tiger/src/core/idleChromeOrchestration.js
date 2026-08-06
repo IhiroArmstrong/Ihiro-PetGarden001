@@ -47,9 +47,9 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
 export const SECONDARY_PROXY_HINT_IDS = Object.freeze({
   honesty: 'honesty-optional',
-  breath: 'micro-ritual',
   companion: 'how-shall-we-sit',
   reminder: 'in-app-reminder'
+  // breath / micro-ritual: home left ball (quick-start), not a secondary row
   // language: no first-visit mint (always available)
 });
 
@@ -307,12 +307,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
   /** @type {SecondaryChromeEntry[]} */
   const out = [];
 
-  if (visibility.microRitualVisible) {
-    out.push({
-      proxy: 'breath',
-      labelKey: 'micro_ritual.button'
-    });
-  }
+  // Breath practice is the home left ball — never list in drawer / ⋯.
 
   if (companionOk) {
     out.push({

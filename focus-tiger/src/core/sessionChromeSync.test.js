@@ -182,11 +182,11 @@ describe('createSessionChromeSync', () => {
     };
   }
 
-  it('Idle 且无叠层 → 显示 Honesty / 微仪式入口', () => {
+  it('Idle 且无叠层 → 显示 Honesty；微仪式 dock 入口恒隐藏（首页左球）', () => {
     const h = harness();
     h.sync.syncHonestyIdleEntry();
     assert.equal(h.get.honestyEntryHidden(), false);
-    assert.equal(h.get.microEntryVisible(), true);
+    assert.equal(h.get.microEntryVisible(), false);
     assert.equal(h.get.bridgeActive(), false);
     assert.equal(h.get.wideSuppressed(), false);
   });
