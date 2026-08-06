@@ -127,7 +127,7 @@ import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
 import { MicroRitualUI } from './ui/MicroRitualUI.js';
 import {
-  MICRO_RITUAL_DURATION_MINUTES,
+  hasMicroRitualMsOverride,
   resolveMicroRitualMs
 } from './core/MicroRitual.js';
 import {
@@ -135,7 +135,11 @@ import {
   resolveSessionIntentionLatch
 } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
-import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
+import {
+  AmbientSoundscapeController,
+  AMBIENT_TRACK_OFF,
+  DEFAULT_AMBIENT_TRACK_ID
+} from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import {
   createHintsSeenStore,
@@ -145,8 +149,10 @@ import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 /** 默认 1 分钟；场景 B 真实切页 Re-focus 用 `?sessionMinutes=5`。 */
 const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
-/** 微仪式默认 60s；e2e 用 `?microRitualMs=1500` 缩短。 */
-const MICRO_RITUAL_MS = resolveMicroRitualMs(location.search);
+/** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
+const MICRO_RITUAL_MS_OVERRIDE = hasMicroRitualMsOverride(location.search)
+  ? resolveMicroRitualMs(location.search)
+  : null;
 /** Honesty 呼吸默认 10s；e2e 用 `?honestyBreathMs=1500` 缩短。 */
 const HONESTY_BREATH_MS_RESOLVED = resolveHonestyBreathMs(location.search);
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
@@ -616,8 +622,12 @@ async function init() {
       }
       onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
-      microRitualUI.startBreath(MICRO_RITUAL_MS);
+      microRitualUI.openDurationPicker();
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
     },
+    resolveDurationMs: () =>
+      MICRO_RITUAL_MS_OVERRIDE != null ? MICRO_RITUAL_MS_OVERRIDE : undefined,
     onBreathStart: () => {
       lightProgression.beginBreath();
       emotionController.playEmotion('smiling', {
@@ -625,6 +635,15 @@ async function init() {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
         freezeUntilCrossFadeEnds: true
       });
+      // Ephemeral ambient: do NOT startSession / presence (Focus-bound path).
+      void (async () => {
+        const preferred = ambientSoundscape.getPreferredTrackId();
+        const trackId =
+          preferred === AMBIENT_TRACK_OFF
+            ? DEFAULT_AMBIENT_TRACK_ID
+            : preferred;
+        await ambientSoundscape.playTrackEphemeral(trackId);
+      })();
       resyncSessionChrome();
       // startBreath already set phase=breath — sync tips only after isOpen()
       // so sit-button / idle-after-session cannot orphan over hidden Sit.
@@ -723,10 +742,13 @@ async function init() {
   }
 
   function completeMicroRitual() {
-    dailyCompletionStore.recordCompletion(MICRO_RITUAL_DURATION_MINUTES);
-    practiceDaysStore.markToday(MICRO_RITUAL_DURATION_MINUTES);
+    ambientSoundscape.stopPlaybackEphemeral();
+    const durationMinutes =
+      microRitualUI?.getDurationMinutes?.() ?? 1;
+    dailyCompletionStore.recordCompletion(durationMinutes);
+    practiceDaysStore.markToday(durationMinutes);
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
-      durationMinutes: MICRO_RITUAL_DURATION_MINUTES
+      durationMinutes
     });
     mindfulToast.show(t('micro_ritual.complete'), {
       placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
@@ -751,9 +773,12 @@ async function init() {
         }
       });
     }
+    // Shallow Reflection handoff — do not wait for sessionComplete animation.
+    sessionEndFlow.onSessionEnded({ completed: true });
   }
 
   function leaveMicroRitualQuietly() {
+    ambientSoundscape.stopPlaybackEphemeral();
     endMicroRitualChrome();
     emotionController.playEmotion('idle', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,
@@ -1938,8 +1963,11 @@ async function init() {
     mindfulReminderController.update(delta);
 
     const microOpen = microRitualUI?.isOpen() === true;
-    const microElapsed = microOpen ? microRitualUI.getElapsedSeconds() : null;
-    const microProgress = microOpen ? microRitualUI.getProgress() : null;
+    const microBreathing = microRitualUI?.phase === 'breath';
+    const microElapsed = microBreathing
+      ? microRitualUI.getElapsedSeconds()
+      : null;
+    const microProgress = microBreathing ? microRitualUI.getProgress() : null;
 
     const focusLevel =
       microProgress != null
@@ -1973,7 +2001,7 @@ async function init() {
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
-      treatAsFocusing: microOpen,
+      treatAsFocusing: microBreathing,
       liveElapsedSeconds: microElapsed,
       focusLevelOverride: microProgress
     });
