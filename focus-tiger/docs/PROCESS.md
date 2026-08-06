@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Ambient · 右上音符 mint Hint（2026-08-06 改回）**：废常驻 `#ambient-note-label`；未读薄荷绿脉冲 + 悬停 tip（`HINT_AMBIENT_SOUNDSCAPE`）；**仅选曲** markSeen；done 后残余原生 `title`（`AMBIENT_NOTE_HOVER`）。分支 `fix/ambient-note-mint-hint`。
+- **Ambient · 右上音符 mint Hint（2026-08-06 · PR #156）**：合入 `develop` tip **`8ee6922`**。废常驻 `#ambient-note-label`；未读薄荷绿脉冲 + 悬停 tip；**仅选曲** markSeen；done 后残余原生 `title`。人工四步 **全部测试 OK** → TEST_TRACKER **已通过**。
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右 / 音符开播 / 每曲 Play/Pause / Idle 靠右）→ PR #131+#132；**2026-08-06 tip 关单**（用户「关单 OK」；功能 tip `ae6eca2`）。
