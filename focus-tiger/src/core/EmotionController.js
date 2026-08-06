@@ -299,13 +299,17 @@ export class EmotionController {
           }
         }
       },
+      // Arrival Welcome/Breath 等：须保留可见末帧再叠化。
+      // clear:true 会藏 overlay → CapCut 因 opacity===0 静默跳过 → 闪白（§6.15）。
       smiling: (options = {}) => {
-        this._leaveIdleBaseline();
+        this._leaveIdleBaseline({ clear: false });
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
         if (this.spritePlayer) {
           const playOpts = {
-            crossFadeMs: options.crossFadeMs
+            crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+            freezeUntilCrossFadeEnds:
+              options.freezeUntilCrossFadeEnds !== false
           };
           if (Number.isFinite(options.fps) && options.fps > 0) {
             playOpts.fps = options.fps;
@@ -407,6 +411,7 @@ export class EmotionController {
 
       // Arrival Choose 确认：16:9 点头 pingpong（正放鞠躬→倒放回坐姿）；
       // 与前后动画转场用 1s CapCut 叠化。日语切语合十走 palmsTogether（A′），勿混用。
+      // clear:false：离开 Breath smiling 时不得藏 overlay，否则切入鞠躬 CapCut 静默跳过（§6.15）。
       intentionSet: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -417,7 +422,7 @@ export class EmotionController {
           }
           return;
         }
-        this._leaveIdleBaseline();
+        this._leaveIdleBaseline({ clear: false });
         this._use2DMainline();
         const started = this.spritePlayer.play(
           'intentionNod',
@@ -431,7 +436,9 @@ export class EmotionController {
               freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false,
               // 与前后（Breath 微笑 / idle）无法像素对齐 → 1s 叠化
               returnCrossFadeMs:
-                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              // 定格末帧再回 Idle，避免收尾藏层导致 return CapCut 假绿
+              holdLastFrame: options.holdLastFrame ?? true
             },
             'intentionSet'
           )
