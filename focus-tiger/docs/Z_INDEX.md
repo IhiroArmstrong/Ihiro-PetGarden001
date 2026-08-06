@@ -42,6 +42,7 @@
 | **17** | `src/ui/FlowerBlowWelcomeBubbleUI.js` | 变花鼓励气泡（`#flower-blow-welcome-bubble`）；白玉毛玻璃 + 尖角；窄屏 `top` 须让开 ActionBar（`homeClearanceTopCss`）；须可点消 |
 | **18** | `src/ui/HonestyBridgeCtaUI.js` | Honesty 桥接 Yes/No CTA |
 | **18** | `src/ui/LanguagePreferenceUI.js` | `#language-preference` 语言面板（FAB / ⋯ / 抽屉打开） |
+| **18** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-card` Zen Cinema 确认卡（⋯ / 抽屉；将打开 YouTube） |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |
 | **20** | `src/core/EmotionController.js` | DEV 情绪调试按钮列（右上） |
 | **20** | `src/ui/WideIdleMoreMenu.js` | 宽屏 More（⋯）下拉菜单面板 |

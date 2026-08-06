@@ -64,6 +64,7 @@ import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
+import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
@@ -544,6 +545,8 @@ async function init() {
   });
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
+  const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
+  window.__zenCinemaCard = zenCinemaCardUI;
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -943,6 +946,9 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onZenCinema: () => {
+      zenCinemaCardUI.open();
+    },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });
     },
@@ -971,6 +977,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
+      zenCinemaCardUI.close();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },

@@ -209,5 +209,12 @@
   "LANGUAGE_MENU_LABEL": "Language",
   "LANGUAGE_SETTING_TITLE": "Language",
   "LANGUAGE_FAB_ARIA": "Choose language",
-  "LANGUAGE_CLOSE": "Close"
+  "LANGUAGE_CLOSE": "Close",
+  "ZEN_CINEMA_MENU_LABEL": "Zen Cinema",
+  "ZEN_CINEMA_CARD_TITLE": "Mindful Moments with Yin",
+  "ZEN_CINEMA_CARD_BLURB": "A short visual meditation — a small gift when you have a quiet minute.",
+  "ZEN_CINEMA_FILM_TITLE": "Satori: The Flash That Changes Everything",
+  "ZEN_CINEMA_OPENS_YOUTUBE": "Opens YouTube in your browser.",
+  "ZEN_CINEMA_CANCEL": "Not now",
+  "ZEN_CINEMA_WATCH": "Watch on YouTube"
 }
