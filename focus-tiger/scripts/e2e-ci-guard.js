@@ -5,6 +5,9 @@
  *
  * - full → npm run test:e2e (focus-tiger-e2e-full.yml: workflow_dispatch + daily schedule)
  * - visibility → npm run test:e2e:visibility (focus-tiger-visibility-contract.yml)
+ *
+ * Local light paths: test:e2e:smoke / test:e2e:changed -- <one *.spec.*>
+ * (see RULES_INDEX → e2e-local-budget).
  */
 const suite = process.argv[2];
 
@@ -12,11 +15,12 @@ const MESSAGES = {
   full: {
     blocked: [
       '❌ test:e2e 仅允许在 CI 环境执行。',
-      '已有专属 CI workflow（focus-tiger-e2e-full.yml）：Actions 手动 workflow_dispatch，或等每日定时；本地请用 test:e2e:smoke / test:e2e:changed。',
+      '已有专属 CI workflow（focus-tiger-e2e-full.yml）：Actions 手动 workflow_dispatch，或等每日定时。',
+      '本地请用 test:e2e:smoke，或 test:e2e:changed -- <单个 *.spec.*>（硬顶 1；见 e2e-local-budget）。',
       '如确需本地执行请使用 RUN_E2E_LOCAL=true 显式覆盖。'
     ].join('\n'),
     localWarn:
-      '⚠️ RUN_E2E_LOCAL=true：正在本地执行全量 test:e2e，会消耗较多资源与时间。'
+      '⚠️ 已绕过本地 e2e 硬顶（RUN_E2E_LOCAL=true）：正在本地执行全量 test:e2e'
   },
   visibility: {
     blocked: [
@@ -25,7 +29,7 @@ const MESSAGES = {
       '如确需本地执行请使用 RUN_E2E_LOCAL=true 显式覆盖。'
     ].join('\n'),
     localWarn:
-      '⚠️ RUN_E2E_LOCAL=true：正在本地执行 test:e2e:visibility，会消耗较多资源与时间。'
+      '⚠️ 已绕过本地 e2e 硬顶（RUN_E2E_LOCAL=true）：正在本地执行 test:e2e:visibility'
   }
 };
 

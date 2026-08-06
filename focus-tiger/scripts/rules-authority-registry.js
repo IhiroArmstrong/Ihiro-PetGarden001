@@ -32,6 +32,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-docs.mdc',
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+  '.cursor/rules/testing-strategy.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -87,7 +88,7 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotSection: '何时可以把 `develop` 合并进 `main`？',
     ssotMustContain: [
       /npm run test:smoke/,
-      /npm run test:e2e/,
+      /npm run test:e2e:smoke|npm run test:e2e/,
       /最终点击合并的动作，始终由项目负责人本人/,
       /Agent 不得代为合并进 `main`/
     ],
@@ -814,6 +815,60 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'default-spawn-subagents',
         pattern: /默认(?:使用|用|开)\s*(?:并行\s*)?(?:子\s*Agent|Task\s*explore)/,
         note: '默认禁止子 Agent；不得写成默认可并行 explore'
+      }
+    ]
+  },
+  {
+    id: 'e2e-local-budget',
+    title:
+      '本地 e2e 硬顶（≤1 spec/次；全量/visibility/多文件禁本地；RUN_E2E_LOCAL 逃生口）',
+    ssotPath: '.cursor/rules/testing-strategy.mdc',
+    ssotSection: '本地 e2e 硬顶（e2e-local-budget · 可执行）',
+    ssotMustContain: [
+      /e2e-local-budget/,
+      /只允许 1 个/,
+      /RUN_E2E_LOCAL=true/,
+      /gate-local-heavy-e2e\.sh/,
+      /run-e2e-changed\.js/
+    ],
+    topicSignals: [
+      /e2e-local-budget/,
+      /test:e2e:changed/,
+      /本地 e2e 硬顶/,
+      /gate-local-heavy-e2e/
+    ],
+    mustCite: [/testing-strategy\.mdc|e2e-local-budget/],
+    restatementFingerprints: [
+      /只允许 1 个/,
+      /gate-local-heavy-e2e\.sh/,
+      /⚠️ 已绕过本地 e2e 硬顶/
+    ],
+    restatementThreshold: 2,
+    // Enforcement + gate checklists may cite the hard cap without full restatement.
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      'WORKFLOW.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      'WORKFLOW.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'local-changed-max-two',
+        pattern:
+          /test:e2e:changed[^。\n]{0,60}最多(?:允许\s*)?2\s*次|最多(?:允许\s*)?2\s*次[^。\n]{0,60}test:e2e:changed/,
+        note: '本地 changed 硬顶为 1 个 spec；禁止写回「最多 2 次」平行数字'
+      },
+      {
+        id: 'default-local-full-e2e',
+        pattern:
+          /(?:可接受|临时接受|应(?:当|该)?|须)\s*(?:\*\*)?本机(?:\*\*)?[^。\n]{0,80}npm run test:e2e/,
+        note: '禁止主张默认可本机全量 test:e2e；全量仅 CI 或 RUN_E2E_LOCAL（历史「临时接受」须标已废止）'
       }
     ]
   },

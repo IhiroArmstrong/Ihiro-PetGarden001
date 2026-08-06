@@ -245,11 +245,14 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
 
 ```bash
 cd focus-tiger
-npm run test:smoke    # 控制器 / 门闩逻辑冒烟
-npm run test:e2e      # Playwright 产品壳 DOM 冒烟
+npm run test:smoke       # 控制器 / 门闩逻辑冒烟（本地）
+npm run test:e2e:smoke   # Playwright 轻量壳冒烟（本地允许）
+# 全量 npm run test:e2e / visibility：仅 CI（focus-tiger-e2e-full.yml 等），
+# 或 RUN_E2E_LOCAL=true；见 RULES_INDEX → e2e-local-budget
 ```
 
-二者须 **全绿**。注意：**全绿 ≠ 序列观感通过**（Idle 不闪等仍须人工，见 `DEV_WORKFLOW_QUALITY.md` §6.1）。
+`test:smoke` + `test:e2e:smoke`（或 CI 上的 `test:pr-smoke` / 全量 workflow）须 **绿**。  
+注意：**绿 ≠ 序列观感通过**（Idle 不闪等仍须人工，见 `DEV_WORKFLOW_QUALITY.md` §6.1）。合并 `main` 前的全量 e2e 证据以 **CI run** 为准，禁止默认本机手跑全量。
 
 ### 场景与人工验收
 
@@ -326,7 +329,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 
 每次看到一个 PR 准备合并进 `main` 之前，项目负责人会依次确认：
 
-1. **`test:smoke` + `test:e2e` 是否全绿**  
+1. **`test:smoke` + 轻量/CI e2e 是否绿**（本地 `test:e2e:smoke` 或 CI `pr-smoke` / 全量 workflow；**不是**默认本机全量 `npm run test:e2e`）  
 2. **CI 是否有环境配置问题导致的误报**（而非真实业务失败）  
 3. **这次改动是否涉及状态机 / 门闩 / 跨模块逻辑 / 主观体验**（观感、动画、文案语气等）——如果是，要求走完 [`focus-tiger/docs/SCENARIO_TESTS.md`](focus-tiger/docs/SCENARIO_TESTS.md) 里相关场景的人工验收  
 4. **[`TEST_TRACKER.md`](focus-tiger/docs/TEST_TRACKER.md) 里是否有和这次改动直接相关、且仍标「有问题」的未关闭项**——如果有，需要先关闭或明确记录为「已知问题，不影响此次合并」  
@@ -346,10 +349,12 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 
 **最终点击合并的动作，始终由项目负责人本人在 GitHub 网页上执行**；Agent 不得代为合并进 `main`。
 
-### 临时门槛与后续 CI（PR #2 起）
+### CI 与本地 e2e 边界（现状）
 
-- **临时**：在「CI 全量 smoke + e2e」落地前，合并进 `main` 可接受 **本机** `npm run test:smoke` + `npm run test:e2e` 全绿，加上现有 CI **`focus-tiger doc-contract check`** 绿（见 `PROCESS.md` 合并门禁拍板）。  
-- **后续**：须另开 PR 把完整 `test:smoke` / `test:e2e` 纳入 GitHub Actions；目标与范围见 `PROCESS.md` Backlog「CI 全量 test:smoke + test:e2e」。**禁止**把「长期只靠本机手跑」当成常态。
+- **PR→develop**：`pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）为轻量门闩。  
+- **全量 e2e**：`focus-tiger-e2e-full.yml`（schedule + `workflow_dispatch`）；**禁止**默认本机 `npm run test:e2e`。  
+- **本地 Agent**：仅 `test:smoke` / `test:e2e:smoke` / `test:e2e:changed -- <单个 spec>`；多文件与全量见 `RULES_INDEX` → `e2e-local-budget`（`RUN_E2E_LOCAL=true` 逃生口会打警告）。  
+- 历史「临时接受本机全量」门槛（PR #2）**已废止**；细节见 `PROCESS.md` Backlog「CI 全量…」已落地节。
 
 ---
 

@@ -119,7 +119,7 @@
 - **宽屏故事矩阵（2026-07-25）**：确认先前**无**对称标准（仅有 `SCENARIO_TESTS` + §6.2 一行 + 散落行）。新增 `DEV_WORKFLOW_QUALITY.md` §9 + N21–N24（清场/Popover 故事最小集、邻接可点物、改宽勾窄、关单须注明宽屏故事）。与 §8 共用「壳烟测 ≠ 故事」。**2026-07-29**：原 `feature/wide-idle-more-menu` 已删（内容已在 develop 祖先链）；完整 W1–W8 关单验收改在 **`origin/develop` tip** 上单独排期，勿与其它修混验。
 - **wide-idle 宽屏清场验收（2026-07-25 晚 · 历史）**：P0 ①–⑥⑧ 宽屏曾在该分支 **测试 OK**；⑦ 场景 O 另线已收口进 develop。分支本身已于 2026-07-29 删除（无独有未合入 commit）。
 - **规则主题权威索引（2026-07-23）**：新增 `RULES_INDEX.md` + `rules-authority-registry.js` + `rules:doc-check`（并入 `docs:check` / CI）。每个工作流规则主题指定唯一 SSOT；非权威处改为短引用。收敛 `WORKFLOW` / regression-lock / `PROCESS` / docs.mdc / `DEV` / `COLLAB` 上 commit / 跨会话等平行复述。冲突不以 mtime 为准。
-- **合并门禁拍板（2026-07-23 · PR #2）**：本次 `develop`→`main` 接受「本地 `test:smoke`+`test:e2e` 全绿 + CI 仅 doc-contract」；**后续任务**须把完整 smoke/e2e 纳入 CI（见 Backlog「CI 全量 smoke + e2e」）。提醒忙碌策略拍板 **`suppress`**。MilestoneGlow（L136）书面为**已知问题、不挡此次合并**，预计 **2026-07-30 前**复测。
+- **合并门禁拍板（2026-07-23 · PR #2；「临时本机全量」已废止）**：当时曾接受本机 smoke+全量 e2e + CI 仅 doc-contract；**该临时门槛已废止 / 已由 CI 收口**（见 Backlog「CI 全量…」与 `RULES_INDEX` → `e2e-local-budget`）。提醒忙碌策略拍板 **`suppress`**。MilestoneGlow（L136）书面为**已知问题、不挡此次合并**，预计 **2026-07-30 前**复测。
 - **TEST_TRACKER 合并前清理（2026-07-22）**：EyeTracking → **已放弃/不适用**；微仪式吸呼同拍行 → 代码核对 `736fdc1` 撤销到位后 **关单（已通过）**；`lookAtCursor` / `wakeUp` / `snoringZZZ` → **不挡合并（仅调试）**（产品壳不可见）。仍开、须人工：场景 **C/O/P**（用户正走）；MilestoneGlow 见上行「已知不挡」。不采用书面豁免开 PR（本条 MilestoneGlow 为合并门禁显式记录，非豁免开 PR）。
 - **Hints anchor 校验分层（2026-07-22）**：方案 (1) `HINT_IDS` ↔ `ONBOARDING_HINT_ANCHORS` 双向对齐单测已落地；方案 (2) 语义分组暂缓；方案 (3) e2e bounding rect 写入 Backlog（`PROCESS.md`）
 - **Hints 补登记 + 关闭说明（2026-07-22）**：用户拍板——热力图 / 一分钟呼吸 / Honesty 桥接 / Idle Sound（`ambient-gated`）写入 `ONBOARDING_HINTS`；`help-remedy` 英中文增加「点气泡关掉；下次点 ?」。点「?」补救须铺齐；桥接场景不出 micro-ritual tip。
@@ -721,7 +721,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
 
-> **背景（2026-07-23 · PR #2 合并门禁拍板）**：本次 `develop`→`main` **临时接受**「本地 `npm run test:smoke` + `npm run test:e2e` 全绿 + CI 仅 `focus-tiger doc-contract check`」。合并门槛不应长期依赖人工在本机手跑。
+> **历史背景（2026-07-23 · PR #2 合并门禁拍板；已废止）**：当时 `develop`→`main` **曾临时接受**「本机 `npm run test:smoke` + `npm run test:e2e` 全绿 + CI 仅 `focus-tiger doc-contract check`」。该「临时本机全量」门槛 **已废止 / 已由 CI 收口**（见下方「已落地」）；现行边界见 `WORKFLOW.md`「CI 与本地 e2e 边界」与 `RULES_INDEX` → `e2e-local-budget`（本地硬顶 1 spec；全量仅 CI 或 `RUN_E2E_LOCAL=true`）。
 
 #### 已落地（2026-07-28 … 2026-07-31 核实）
 

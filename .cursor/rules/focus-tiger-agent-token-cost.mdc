@@ -7,7 +7,7 @@ alwaysApply: true
 
 目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候，瞬间吞掉数十次 Fast Request。
 
-索引：`RULES_INDEX.md` → `agent-token-cost`。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask；**IDE Browser MCP deny** 见 `browser-energy` / `deny-ide-browser-mcp.sh`）。
+索引：`RULES_INDEX.md` → `agent-token-cost`（本地 e2e 硬顶另见 `e2e-local-budget`）。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask + **`gate-local-heavy-e2e` deny**；**IDE Browser MCP deny** 见 `browser-energy`）。
 
 ## 强制（本会话）
 
@@ -26,7 +26,7 @@ alwaysApply: true
    - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。  
    - **先**给「冲突 / 失败分析摘要」（哪些文件、什么类型：语法 / 契约 / e2e 选择器 / 真逻辑），**不要**立刻开改。  
    - **问**用户是否要新开 worktree/分支处理（避免试错脏了其它任务）。  
-   - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或**一条**相关 changed-spec）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止为「再确认一遍」本地重跑大套件或反复 `playwright test` 长列表。
+   - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或 **`test:e2e:changed --` 单个 spec**）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止多文件 changed / 全量 / 直调长列表（脚本+hook 硬拦；`RUN_E2E_LOCAL=true` 逃生口会打警告）。
 
 ## Settings → Agents → Subagents（须你本人在 Cursor UI 设）
 
