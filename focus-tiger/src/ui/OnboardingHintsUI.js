@@ -679,6 +679,8 @@ export class OnboardingHintsUI {
     syncSecondaryMenuHintDot(narrowMute, show);
     this._bindHostMintHover(mute, 'ambient-soundscape');
     this._bindHostMintHover(narrowMute, 'ambient-soundscape');
+    // Keep pinned / hover residual label in sync with mint done state.
+    window.__ambientSoundscapeUI?.syncNoteLabel?.();
   }
 
   /**
@@ -752,6 +754,10 @@ export class OnboardingHintsUI {
       ) {
         return;
       }
+      // Ambient uses a always-on small label until markSeen — do not also expand
+      // the floating tip bubble on hover (double copy). Residual hover after done
+      // is owned by AmbientSoundscapeUI `#ambient-note-label`.
+      if (hintId === 'ambient-soundscape') return;
       this._expandClickHint(hintId);
     });
     el.addEventListener('pointerleave', (event) => {

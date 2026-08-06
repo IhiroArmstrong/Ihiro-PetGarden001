@@ -16,6 +16,7 @@ import {
   mergeAmbientPanelTracks
 } from '../audio/UserAmbientLibrary.js';
 import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
+import { resolveAmbientNoteLabelState } from './ambientNoteLabel.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
@@ -47,6 +48,8 @@ export class AmbientSoundscapeUI {
    * @param {import('../audio/AmbientSoundscapeController.js').AmbientSoundscapeController} controller
    * @param {object} [handlers]
    * @param {() => void} [handlers.onPanelOpened]
+   * @param {() => void} [handlers.onNoteInteracted] 点击音符开面板（非悬停）→ markSeen
+   * @param {() => boolean} [handlers.isAmbientHintDone] ambient-soundscape 是否已 done
    * @param {() => void} [handlers.onTrackChosen]
    * @param {() => void} [handlers.onToggleMusic]
    */
@@ -85,11 +88,19 @@ export class AmbientSoundscapeUI {
     // Desktop: brief hover opens the track list without mute (change track mid-play).
     // Delay so a real click's pointerenter does not steal mute / resume semantics.
     this._hoverOpenTimer = null;
+    /** @type {boolean} mouse over wide note or ActionBar ♪ */
+    this._noteHovering = false;
+    this.noteLabel = document.createElement('div');
+    this.noteLabel.id = 'ambient-note-label';
+    this.noteLabel.className = 'ambient-soundscape__note-label';
+    this.noteLabel.hidden = true;
+    this.noteLabel.setAttribute('aria-hidden', 'true');
     this.muteBtn.addEventListener('pointerenter', (event) => {
       this._onNotePointerEnter(event);
     });
-    this.muteBtn.addEventListener('pointerleave', () => {
+    this.muteBtn.addEventListener('pointerleave', (event) => {
       this._clearHoverOpenTimer();
+      this._onNotePointerLeave(event);
     });
     this.muteBtn.addEventListener('pointerdown', () => {
       this._clearHoverOpenTimer();
@@ -197,8 +208,10 @@ export class AmbientSoundscapeUI {
       this.volumeLabel
     );
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
-    this.root.append(this.muteBtn, this.focusChrome);
+    this.root.append(this.muteBtn, this.noteLabel, this.focusChrome);
     overlayRoot.appendChild(this.root);
+    this._bindNarrowMuteLabelHover();
+    this.syncNoteLabel();
 
     this._onDocPointer = (event) => {
       if (!this._expanded) return;
@@ -326,7 +339,9 @@ export class AmbientSoundscapeUI {
    * - otherwise → open Soundscape track panel (+ start preferred after mute / Rise)
    */
   openSoundPanelFromNote() {
+    this.handlers.onNoteInteracted?.();
     void this._onNoteClick();
+    this.syncNoteLabel();
   }
 
   /**
@@ -340,6 +355,7 @@ export class AmbientSoundscapeUI {
     if (!fromMouse && !this._canHoverOpenPanel()) return;
     if (this.isPanelOpen()) return;
     this._openPanelOnly();
+    this.syncNoteLabel();
   }
 
   /**
@@ -348,11 +364,73 @@ export class AmbientSoundscapeUI {
   _onNotePointerEnter(event) {
     // Only real mouse — not touch emulation of enter.
     if (event.pointerType && event.pointerType !== 'mouse') return;
+    this._noteHovering = true;
+    this.syncNoteLabel();
     this._clearHoverOpenTimer();
     this._hoverOpenTimer = window.setTimeout(() => {
       this._hoverOpenTimer = null;
       this.openSoundPanelFromHover({ fromMouse: true });
     }, 180);
+  }
+
+  /**
+   * @param {PointerEvent} [event]
+   */
+  _onNotePointerLeave(event) {
+    const related = /** @type {Node | null} */ (event?.relatedTarget);
+    if (related && this.noteLabel?.contains(related)) return;
+    if (related && this.muteBtn.contains(related)) return;
+    this._noteHovering = false;
+    this.syncNoteLabel();
+  }
+
+  /** ActionBar ♪ shares the same pinned / hover label contract. */
+  _bindNarrowMuteLabelHover() {
+    const bind = () => {
+      const narrow = document.getElementById('ft-narrow-mute-btn');
+      if (!narrow || narrow.dataset.ftAmbientLabelBound === '1') return;
+      narrow.dataset.ftAmbientLabelBound = '1';
+      narrow.addEventListener('pointerenter', (event) => {
+        if (event.pointerType && event.pointerType !== 'mouse') return;
+        this._noteHovering = true;
+        this.syncNoteLabel();
+      });
+      narrow.addEventListener('pointerleave', () => {
+        this._noteHovering = false;
+        this.syncNoteLabel();
+      });
+    };
+    bind();
+    // Narrow shell may mount after Ambient UI — retry once on next frame.
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(bind);
+    }
+  }
+
+  /**
+   * Unread → always-visible small label; after markSeen → hover residual only.
+   * @returns {void}
+   */
+  syncNoteLabel() {
+    if (!this.noteLabel) return;
+    const done =
+      typeof this.handlers.isAmbientHintDone === 'function'
+        ? Boolean(this.handlers.isAmbientHintDone())
+        : true;
+    const state = resolveAmbientNoteLabelState({
+      done,
+      hovering: this._noteHovering,
+      panelOpen: this.isPanelOpen()
+    });
+    if (!state.visible || !state.localeKey) {
+      this.noteLabel.hidden = true;
+      this.noteLabel.textContent = '';
+      this.noteLabel.dataset.mode = 'hidden';
+      return;
+    }
+    this.noteLabel.textContent = t(state.localeKey);
+    this.noteLabel.hidden = false;
+    this.noteLabel.dataset.mode = state.mode;
   }
 
   _clearHoverOpenTimer() {
@@ -708,13 +786,16 @@ export class AmbientSoundscapeUI {
     this.muteBtn.classList.toggle('is-ghost', !audible);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
-    this.muteBtn.setAttribute('title', t('AMBIENT_NOTE_HOVER'));
+    // Custom `#ambient-note-label` owns copy (pinned / hover). Avoid native title
+    // doubling the label after markSeen.
+    this.muteBtn.removeAttribute('title');
     this.muteBtn.setAttribute(
       'aria-expanded',
       this.isPanelOpen() ? 'true' : 'false'
     );
     this.muteBtn.removeAttribute('aria-pressed');
     this.handlers.onMuteChromePainted?.();
+    this.syncNoteLabel();
   }
 
   _refreshSoundFab() {
@@ -842,6 +923,32 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__mute.is-muted {
         color: rgba(120, 92, 68, 0.55);
       }
+      .ambient-soundscape__note-label {
+        position: fixed;
+        top: 26px;
+        right: 92px;
+        z-index: 24;
+        pointer-events: none;
+        max-width: min(240px, calc(100vw - 120px));
+        padding: 7px 11px;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.2);
+        background: rgba(255, 252, 245, 0.94);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: rgba(72, 54, 38, 0.9);
+        font-size: 12.5px;
+        line-height: 1.35;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 4px 14px rgba(44, 31, 20, 0.1);
+        text-align: right;
+      }
+      .ambient-soundscape__note-label[data-mode='hover'] {
+        opacity: 0.96;
+      }
       .ambient-soundscape__icon-svg {
         /* +50% vs prior 22px glyph */
         width: 33px;
@@ -867,6 +974,14 @@ export class AmbientSoundscapeUI {
           /* Narrow keeps original size — +50% note is wide-only */
           width: 40px;
           height: 40px;
+        }
+        .ambient-soundscape__note-label {
+          top: 14px;
+          right: 58px;
+          max-width: min(168px, calc(100vw - 78px));
+          padding: 5px 8px;
+          font-size: 11px;
+          border-radius: 8px;
         }
         .ambient-soundscape__icon-svg {
           width: 20px;
