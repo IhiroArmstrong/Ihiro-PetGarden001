@@ -31,8 +31,10 @@ describe('focusDuration', () => {
     assert.equal(hasExplicitSessionMinutesQuery('?sessionMinutes=1'), true);
     assert.equal(shouldSkipFocusDurationPicker('?sessionMinutes=5'), true);
     assert.equal(shouldSkipFocusDurationPicker('?product=1'), false);
+    // No storage arg — must not touch browser localStorage (Node CI).
     assert.equal(resolveFocusSessionTargetMinutes('?sessionMinutes=1'), 1);
     assert.equal(resolveFocusSessionTargetMinutes('?sessionMinutes=5'), 5);
+    assert.equal(resolveFocusSessionTargetMinutes('?product=1'), 25);
   });
 
   it('prefers stored minutes when no URL override', () => {
