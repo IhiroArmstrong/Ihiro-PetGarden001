@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote'} proxy
  * @property {string} labelKey
  */
 
@@ -337,6 +337,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'zen-cinema',
     labelKey: 'ZEN_CINEMA_MENU_LABEL'
+  });
+
+  // Growth pack ③ — daily quiet line + save image (no first-visit mint).
+  out.push({
+    proxy: 'daily-quote',
+    labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL'
   });
 
   return out;

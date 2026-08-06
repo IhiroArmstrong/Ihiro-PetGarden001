@@ -55,7 +55,17 @@ export const COPY_POOLS = Object.freeze({
     'FLOWER_BLOW_WELCOME_2',
     'FLOWER_BLOW_WELCOME_3'
   ],
-  ACROSS_TOOLS_IDLE: ['ACROSS_TOOLS_IDLE_1', 'ACROSS_TOOLS_IDLE_2']
+  ACROSS_TOOLS_IDLE: ['ACROSS_TOOLS_IDLE_1', 'ACROSS_TOOLS_IDLE_2'],
+  /** Growth ③ · quiet line of the day (deterministic by localDate; en+ja product). */
+  DAILY_ZEN_QUOTE: [
+    'DAILY_ZEN_QUOTE_1',
+    'DAILY_ZEN_QUOTE_2',
+    'DAILY_ZEN_QUOTE_3',
+    'DAILY_ZEN_QUOTE_4',
+    'DAILY_ZEN_QUOTE_5',
+    'DAILY_ZEN_QUOTE_6',
+    'DAILY_ZEN_QUOTE_7'
+  ]
 });
 
 /**

@@ -230,7 +230,8 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     'companion',
     'reminder',
     'language',
-    'zen-cinema'
+    'zen-cinema',
+    'daily-quote'
   ]);
 
   for (let i = 0; i < proxies.length; i++) {
@@ -246,7 +247,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
         )
       ).toBeVisible({ timeout: 5_000 });
     } else {
-      // Language / Zen Cinema: no dedicated tip — prior row click tips must be closed (`[open]`).
+      // Language / Zen Cinema / Quiet Line: no dedicated tip — prior row click tips must be closed (`[open]`).
       for (const id of Object.values(WIDE_MORE_ROW_HINT)) {
         await expect(
           page.locator(
@@ -283,6 +284,28 @@ test('wide Idle: Zen Cinema row opens confirm card', async ({ page }) => {
   await page.locator('#ft-wide-more-btn').click();
   await expect(menu).toBeVisible({ timeout: 5_000 });
   await menu.locator('[data-proxy="zen-cinema"]').click();
+  await expect(card).toBeVisible({ timeout: 5_000 });
+});
+
+test('wide Idle: Quiet Line row opens quote card and save stays available', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="daily-quote"]')).toBeVisible();
+  await menu.locator('[data-proxy="daily-quote"]').click();
+  const card = page.locator('#daily-zen-quote-card');
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('daily-zen-quote-text')).not.toBeEmpty();
+  await expect(page.getByTestId('daily-zen-quote-save')).toBeVisible();
+  await card.locator('.daily-zen-quote-card__btn--ghost').click();
+  await expect(card).toBeHidden({ timeout: 5_000 });
+  // Reflow: reopen menu → card again
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="daily-quote"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
 });
 

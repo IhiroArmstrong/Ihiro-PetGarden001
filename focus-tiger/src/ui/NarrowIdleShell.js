@@ -56,6 +56,7 @@ export class NarrowIdleShell {
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
    *     onZenCinema?: () => void,
+   *     onDailyQuote?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -783,6 +784,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onZenCinema?.();
+      return;
+    }
+    if (key === 'daily-quote') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onDailyQuote?.();
       return;
     }
     if (key === 'quickstart') {

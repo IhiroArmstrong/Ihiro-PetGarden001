@@ -77,6 +77,7 @@ export class WideIdleMoreMenu {
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
    *     onZenCinema?: () => void,
+   *     onDailyQuote?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -600,6 +601,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onZenCinema?.();
+      return;
+    }
+    if (key === 'daily-quote') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onDailyQuote?.();
       return;
     }
     if (key === 'sound') {
