@@ -36,6 +36,11 @@
         "command": ".cursor/hooks/gate-full-e2e-dispatch.sh",
         "matcher": "gh\\s+workflow\\s+run\\b|gh\\s+run\\s+(?:watch|rerun)\\b|\\bsleep\\s+(?:[6-9]\\d|\\d{3,})\\b",
         "failClosed": true
+      },
+      {
+        "command": ".cursor/hooks/gate-local-heavy-e2e.sh",
+        "matcher": "test:e2e|playwright\\s+test|npx\\s+playwright",
+        "failClosed": true
       }
     ]
   }

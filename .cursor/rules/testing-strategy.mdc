@@ -5,12 +5,16 @@ alwaysApply: false
 
 # 测试执行策略：本地 Agent vs GitHub CI
 
+索引：`RULES_INDEX.md` → `e2e-local-budget`（本文件为政策 SSOT；可执行拦截见下方脚本/hook）。
+
 ## 核心原则
 Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规模测试跑完"。
 凡是可以自动化执行、结果可结构化的大规模测试，一律优先交给 CI，而不是在当前会话里直接跑。
 
 ## 必须交给 CI 执行的场景（不要在本会话直接跑）
-- 全量 E2E 测试套件
+- 全量 E2E 测试套件（`npm run test:e2e`）
+- `test:e2e:visibility` 整表
+- 一次多个 e2e spec / 直调多文件 `playwright test`
 - 跨浏览器 / 跨环境的测试矩阵
 - 性能测试、压力测试
 - 大批量回归测试（预计输出日志 > 几百行 或 耗时 > 1 分钟的测试任务）
@@ -22,25 +26,30 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 4. 明确告知用户："这类任务建议交给 CI 跑，避免消耗大量 Token"
 
 ## 可以在本地/Agent 会话直接跑的场景
-- 单元测试
-- 仅针对本次改动相关文件的少量测试用例（用 --changed 或路径过滤）
+- 单元测试（`npm run test` / `test:smoke` 中的控制器逻辑）
+- **单个** e2e spec：`npm run test:e2e:changed -- e2e/foo.spec.js`（硬顶 1）
+- `npm run test:e2e:smoke` / `npm run test:pr-smoke`
 - 预期几秒到几十秒内出结果的快速验证
 
-## 复杂场景下的本地验证节流（防止重复本地 e2e 耗电耗 token）
+## 本地 e2e 硬顶（e2e-local-budget · 可执行）
+
+**硬顶（与脚本/hook 一致）**：
+
+- 本地每次 `test:e2e:changed` **只允许 1 个** `*.spec.*` 文件。
+- 禁止本地：`test:e2e`（全量）、`test:e2e:visibility`、一次传多个 spec、直调多文件 `playwright test`。
+- 逃生口：`RUN_E2E_LOCAL=true`（须打印 `⚠️ 已绕过本地 e2e 硬顶`；不落盘）。
+- 拦截实现：
+  - `focus-tiger/scripts/run-e2e-changed.js`（npm 硬顶）
+  - `focus-tiger/scripts/e2e-ci-guard.js`（全量 / visibility）
+  - `.cursor/hooks/gate-local-heavy-e2e.sh`（Agent shell **deny**）
+
+多文件 / 反复失败 → **不要**本地加码；commit 后 push，交给 `pr-smoke.yml` / 相关 workflow。  
+复杂冲突场景另见 `agent-token-cost` 第 6 条（本地最多 1 轮冒烟级自检）。
 
 触发判断（开工前先看）：
-- 如果任务是解决 merge 冲突、修复涉及 3 个以上文件的 bug，或预计需要多轮修改才能收敛 → 先给出一份简短的「改动范围摘要」（涉及哪些文件、冲突/问题类型），不要立刻开始改。然后提示用户：是否要新开一个独立 worktree 来处理，避免反复试错影响当前主工作树。
+- 如果任务是解决 merge 冲突、修复涉及 3 个以上文件的 bug，或预计需要多轮修改才能收敛 → 先给出一份简短的「改动范围摘要」，不要立刻开始改。然后提示用户：是否要新开一个独立 worktree 来处理。
 
-执行过程中的节流（不管是否新开了 worktree，都适用）：
-- 同一个任务里，本地跑 `test:e2e:changed` / 指定 spec 完整验证，最多允许 **2 次**。
-- 达到 2 次仍未通过：不要继续本地跑第 3 轮。改为：
-  1. 把当前改动 commit（不 push），完整记录当前状态和未解决的问题
-  2. 提示用户：是否 push 到远端分支，交给 `pr-smoke.yml`（CI）接手后续验证
-  3. 之后如果还要继续改代码，改完直接 push，看 CI 结果决定下一步，不要再本地重跑 e2e
-
-目的：验证的「体力活」（尤其是需要反复试错的场景）应该尽量交给 CI 算力承担；本地只做「改一次、跑最多两次」的即时反馈层，超出这个量级就该转移给 CI。
-
-每次要跑本地 e2e 前，先自检一遍这两条规则是否已经触发，如果触发了对应的动作（建议新 worktree / 提醒已到上限该 push），要主动说出来，不要默默继续跑。
+每次要跑本地 e2e 前，先自检是否已触发硬顶 / 冲突预算；若该 push+CI，要主动说出来，不要默默继续跑。
 
 ## 读取 CI 结果时的规则
 - 不要把完整测试日志/trace/截图全部拉入上下文
@@ -49,4 +58,5 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 
 ## 禁止事项
 - 禁止未经确认就在会话中直接执行全量 E2E / 大批量测试命令
+- 禁止本地一次跑多个 changed spec（硬顶 1；勿写回「最多 2 次」等平行数字）
 - 禁止一次性读取超大测试日志文件到上下文中
