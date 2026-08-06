@@ -213,6 +213,11 @@ export class CompanionModePicker {
     if (this.dock) this.dock.hidden = this._microRitualActive;
   }
 
+  /** @returns {boolean} */
+  isMicroRitualActive() {
+    return this._microRitualActive;
+  }
+
   _syncSitVisibility() {
     if (!this.focusButton) return;
     const hideForArrival = this._arrivalActive && this._idleVisible;
@@ -354,7 +359,8 @@ export class CompanionModePicker {
     if (!this.quickStartBtn) return;
     this.quickStartBtn.textContent = '⚡';
     this.quickStartBtn.setAttribute('aria-label', t('QUICK_START_ARIA'));
-    this.quickStartBtn.title = t('QUICK_START_ARIA');
+    // Residual title after mint pulse; home CTAs also set title from QUICK_START_ARIA.
+    this.quickStartBtn.setAttribute('title', t('QUICK_START_ARIA'));
   }
 
   _hintLabelKey() {

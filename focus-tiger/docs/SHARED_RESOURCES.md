@@ -31,7 +31,9 @@
 | IndexedDB `focus-tiger.user-ambient.v1` | `UserAmbientLibrary` | 用户上传氛围乐 blobs（非 localStorage；重置须 `clearAllUserAmbientTracks`） |
 | `focus-tiger.locale.v1` | `localePreference` / `i18n.setLocale` | 上次选用的 **ready** 语言；**v1.0.0** ready = `en` / `ja`；draft（含 zh）不写入 |
 | `focus-tiger.locale-greeting.v1` | `localeGreeting` / Dispatcher `LANGUAGE_CHANGED` | 切语问候同日限频：`{ dateKey, locales[] }`；ja→`bookReading`；en→`teaDrinking`（皆单程+CapCut）。**写入时机**：`playEmotion` 开播成功后 `markLocaleGreetingPlayed`（resolve 不预扣） |
-| `focus-tiger.scene-anim-daily.v1` | `sceneAnimationDispatcher` | 欢迎池等同日额度：`{ dateKey, welcome }` |
+| `focus-tiger.scene-anim-daily.v1` | `sceneAnimationDispatcher` | 欢迎池等同日额度：`{ dateKey, welcome }`（吹花与欢迎池同日 XOR 共用此旗） |
+| `focus-tiger.flower-welcome.v1` | `flowerWelcomeGate` | 吹花门闩：`{ lastOpenDateKey, firstBubbleDone, lastCopyKey }`（Day1 / ≥3 日久别；文案轮换记账） |
+| `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
 | `focus-tiger.scene-anim-cooldown.v1` | `sceneAnimationDispatcher` | 生命感冷却：`{ late_night, curiosity, … }` 时间戳 |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
@@ -187,22 +189,18 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `arrival-honesty-home-hidden` | arrival-open | narrow | Honesty | hidden | — | `#ft-narrow-home-honesty` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 Arrival: home Sit hidden; home Quick Start stays visible` |
 | `arrival-breath-sit-still-hidden` | arrival-breath | both | Sit | hidden | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/scenario-a.companion.spec.js › Arrival Breath: Sit stays hidden; Quick Start stays (wide)` | `e2e/scenario-a.companion.spec.js › 375 Arrival Breath: home Sit stays hidden; Quick Start stays` |
 | `micro-ritual-sit-unavailable` | micro-ritual-open | both | Sit | disabled | `#btn-focus` | `#ft-narrow-home-sit` | **locked** | `e2e/micro-ritual.spec.js › micro ritual: entry → breath → complete…` | `e2e/micro-ritual.spec.js › 375 micro ritual: home Sit unavailable while breath runs` |
-| `honesty-bridge-entries-hidden` | honesty-bridge-visible | both | Honesty+MicroRitualEntry | hidden | `#honesty-idle-entry, #micro-ritual-idle-entry` | `#ft-narrow-home-honesty` | **gap-narrow** | `e2e/micro-ritual.spec.js › bridge CTA hides dock entries over Yes/No; No restores entries` | — |
-| `honesty-panel-entry-hidden` | honesty-check-in-open | both | HonestyEntry | hidden | `#honesty-idle-entry` | `#ft-narrow-home-honesty` | **gap-narrow** | `e2e/micro-ritual.spec.js › Honesty Check-in click hides entry until duration panel open` | — |
+| `honesty-bridge-entries-hidden` | honesty-bridge-visible | both | Honesty+MicroRitualEntry | hidden | `#honesty-idle-entry, #micro-ritual-idle-entry` | `#ft-narrow-home-honesty` | **locked** | `e2e/micro-ritual.spec.js › bridge CTA hides dock entries over Yes/No; No restores entries` | `e2e/micro-ritual.spec.js › 375 bridge: ActionBar time stays; tip click does not dismiss Yes/No` |
+| `honesty-panel-entry-hidden` | honesty-check-in-open | both | HonestyEntry | hidden | `#honesty-idle-entry` | `#ft-narrow-home-honesty` | **locked** | `e2e/micro-ritual.spec.js › Honesty Check-in click hides entry until duration panel open` | `e2e/micro-ritual.spec.js › 375 Honesty panel: narrow home Honesty ball hidden` |
 | `focusing-narrow-home-ctas-hidden` | focusing | narrow | HomeCtas+Grabber | hidden | — | `#ft-narrow-home-ctas, .ft-narrow-grabber` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD and hides Sound FAB` |
-| `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **gap-wide** | `e2e/helpers/product-shell.js › expectFocusSessionActive (Rise 文案)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
-| `choose-bow-companion-in-viewport` | after-choose-bow | both | CompanionPanel | in-viewport | `.session-start-dock__panel` | `.session-start-dock__panel` | **gap-wide** | `e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible only)` | `e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…` |
+| `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **locked** | `e2e/helpers/product-shell.js › expectFocusSessionActive (#focus-hud visible)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
+| `choose-bow-companion-in-viewport` | after-choose-bow | both | CompanionPanel | in-viewport | `.session-start-dock__panel` | `.session-start-dock__panel` | **locked** | `e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible; 宽屏不 park)` | `e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…` |
 | `companion-stage-honesty-entry-hidden` | companion-staged-narrow | narrow | HonestyIdleEntry | hidden | — | `#honesty-idle-entry` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 companion stage: Honesty dock entry stays hidden` |
 | `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |
-| `heatmap-hidden-when-focusing` | focusing | both | WeeklyHeatmap | hidden | `#weekly-practice-heatmap` | `#weekly-practice-heatmap` | **gap-narrow** | `e2e/weekly-practice-heatmap.spec.js › non-Idle (Focusing) hides weekly heatmap` | — |
+| `heatmap-hidden-when-focusing` | focusing | both | WeeklyHeatmap | hidden | `#weekly-practice-heatmap` | `#weekly-practice-heatmap` | **locked** | `e2e/weekly-practice-heatmap.spec.js › non-Idle (Focusing) hides weekly heatmap` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing hides weekly heatmap` |
 
 ### 当前假绿缺口（须逐条补锚）
 
-- **`honesty-bridge-entries-hidden`** (gap-narrow) — 宽屏已锁。窄屏桥接期整壳 suppress 通常已藏主球——缺 e2e 锚；不挡 PR#2 用户主路径（桥接已人工 OK）
-- **`honesty-panel-entry-hidden`** (gap-narrow) — 行为多半已由 honestyBusy suppress 覆盖；缺窄屏主球 e2e。P1 合并后补
-- **`focusing-focus-hud-visible`** (gap-wide) — 窄屏已锁。宽屏缺显式 #focus-hud toBeVisible——覆盖债，不挡 375/场景 O 合并
-- **`choose-bow-companion-in-viewport`** (gap-wide) — 窄屏用户路径已锁 toBeInViewport。宽屏 A4 属性可见即可（不 park）；P2
-- **`heatmap-hidden-when-focusing`** (gap-narrow) — 375 Focusing 未单断言热力图 hidden；主路径已 park 进抽屉。P2 覆盖债
+_（无）_
 
 ### Suppress / hide 变更触发路径（CI）
 

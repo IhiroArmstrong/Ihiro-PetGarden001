@@ -6,8 +6,14 @@ import {
   SECONDARY_PROXY_HINT_IDS,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
+import {
+  NARROW_COPY_ABOVE_HOME_GAP_PX,
+  NARROW_HOME_CTA_BOTTOM_PX,
+  NARROW_HOME_SIT_PX,
+  narrowHomeCopyClearanceBottomPx
+} from './homeChromeClearance.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v18';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v19';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -17,6 +23,10 @@ const HOME_CTA_PX = 72;
 const HOME_SIT_PX = Math.round(HOME_CTA_PX * 1.155);
 /** ActionBar center clock — wall time, not FocusHUD session elapsed. */
 const WALL_CLOCK_TICK_MS = 1_000;
+
+/** Bottom-anchored copy that coexists with `#ft-narrow-home-ctas` on Idle/Dormant. */
+const NARROW_HOME_COPY_CLEARANCE_BOTTOM = narrowHomeCopyClearanceBottomPx();
+const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
@@ -41,9 +51,12 @@ export class NarrowIdleShell {
    *   getHudStateEl?: () => HTMLElement | null,
    *   handlers?: {
    *     onSound?: () => void,
+   *     onSoundHover?: () => void,
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
+   *     onZenCinema?: () => void,
+   *     onDailyQuote?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -428,6 +441,31 @@ export class NarrowIdleShell {
       this._proxy(btn.getAttribute('data-proxy'));
     });
 
+    // Desktop: hover ♪ opens Soundscape without mute (change track mid-play).
+    // Short delay so click pointerenter does not steal mute/resume.
+    const muteBtn = this.actionBar?.querySelector('#ft-narrow-mute-btn');
+    let hoverTimer = null;
+    const clearHover = () => {
+      if (hoverTimer != null) {
+        window.clearTimeout(hoverTimer);
+        hoverTimer = null;
+      }
+    };
+    muteBtn?.addEventListener('pointerenter', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      clearHover();
+      hoverTimer = window.setTimeout(() => {
+        hoverTimer = null;
+        // Close drawer first so the Soundscape panel is not under the sheet;
+        // ActionBar stays above the backdrop (z-index) so hover is not blocked.
+        this.closeSheet();
+        document.body.classList.add(NARROW_STAGE_CLASS.sound);
+        this.handlers.onSoundHover?.();
+      }, 180);
+    });
+    muteBtn?.addEventListener('pointerleave', clearHover);
+    muteBtn?.addEventListener('pointerdown', clearHover);
+
     this.homeCtas?.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-proxy]');
       if (!btn || btn.disabled || btn.hidden) return;
@@ -588,7 +626,12 @@ export class NarrowIdleShell {
     if (this.quickHomeBtn) {
       const qsLabel = t('QUICK_START_ARIA');
       this.quickHomeBtn.setAttribute('aria-label', qsLabel);
-      this.quickHomeBtn.title = qsLabel;
+      // Mint pulse tip owns hover copy while unread — skip native title stack.
+      if (this.handlers.isHintUnread?.('quick-start') === true) {
+        this.quickHomeBtn.removeAttribute('title');
+      } else {
+        this.quickHomeBtn.title = qsLabel;
+      }
       const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
       this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
       this.quickHomeBtn.disabled = !qsOk;
@@ -644,7 +687,7 @@ export class NarrowIdleShell {
       this.listEl.appendChild(li);
     }
 
-    // Quiet week strip: clone lit cells into the sheet (read-only)
+    // Quiet week strip: clone day columns (cell + dow + today) into the sheet
     const source = document.getElementById('weekly-practice-heatmap');
     if (this.heatmapSlot && source && !source.hidden) {
       this.heatmapSlot.hidden = false;
@@ -655,11 +698,39 @@ export class NarrowIdleShell {
       const row = document.createElement('div');
       row.className = 'ft-narrow-sheet__heatmap-row';
       row.setAttribute('aria-hidden', 'true');
-      for (const cell of source.querySelectorAll('.weekly-practice-heatmap__cell')) {
-        const clone = document.createElement('span');
-        clone.className = 'ft-narrow-sheet__heatmap-cell';
-        clone.dataset.lit = cell.dataset.lit || '0';
-        row.appendChild(clone);
+      const daySources = source.querySelectorAll('.weekly-practice-heatmap__day');
+      if (daySources.length > 0) {
+        for (const daySrc of daySources) {
+          const day = document.createElement('div');
+          day.className = 'ft-narrow-sheet__heatmap-day';
+          day.dataset.today = daySrc.dataset.today || '0';
+          const cellSrc = daySrc.querySelector('.weekly-practice-heatmap__cell');
+          const clone = document.createElement('span');
+          clone.className = 'ft-narrow-sheet__heatmap-cell';
+          clone.dataset.lit = cellSrc?.dataset.lit || '0';
+          clone.dataset.today = cellSrc?.dataset.today || day.dataset.today;
+          const dowSrc = daySrc.querySelector('.weekly-practice-heatmap__dow');
+          const dow = document.createElement('span');
+          dow.className = 'ft-narrow-sheet__heatmap-dow';
+          if (day.dataset.today === '1') {
+            dow.classList.add('ft-narrow-sheet__heatmap-dow--today');
+          }
+          dow.textContent = dowSrc?.textContent ?? '';
+          day.appendChild(clone);
+          day.appendChild(dow);
+          row.appendChild(day);
+        }
+      } else {
+        // Fallback: older markup without day columns
+        for (const cell of source.querySelectorAll(
+          '.weekly-practice-heatmap__cell'
+        )) {
+          const clone = document.createElement('span');
+          clone.className = 'ft-narrow-sheet__heatmap-cell';
+          clone.dataset.lit = cell.dataset.lit || '0';
+          clone.dataset.today = cell.dataset.today || '0';
+          row.appendChild(clone);
+        }
       }
       this.heatmapSlot.appendChild(label);
       this.heatmapSlot.appendChild(row);
@@ -678,8 +749,16 @@ export class NarrowIdleShell {
       // Close drawer first so Soundscape is not under the sheet; ActionBar ♪
       // stays above the backdrop (z-index) so this click is not blocked.
       this.closeSheet();
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.sound);
+      // If Soundscape is already staged, do not clearStage (that calls
+      // clearNarrowSoundStage and closes the panel) — otherwise audible+click
+      // would reopen instead of mute.
+      const soundStaged = document.body.classList.contains(
+        NARROW_STAGE_CLASS.sound
+      );
+      if (!soundStaged) {
+        this.clearStage();
+        document.body.classList.add(NARROW_STAGE_CLASS.sound);
+      }
       this.handlers.onSound?.();
       return;
     }
@@ -699,6 +778,18 @@ export class NarrowIdleShell {
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'zen-cinema') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onZenCinema?.();
+      return;
+    }
+    if (key === 'daily-quote') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onDailyQuote?.();
       return;
     }
     if (key === 'quickstart') {
@@ -775,7 +866,7 @@ export class NarrowIdleShell {
         left: 12px;
         right: 12px;
         height: 48px;
-        z-index: 3; /* above sheet backdrop — ♪ / ? stay clickable while drawer open */
+        z-index: 5; /* above sheet (z2) + backdrop (z1) — ♪ / ? hoverable & clickable while drawer open */
         display: flex;
         align-items: center;
         gap: 10px;
@@ -1084,17 +1175,38 @@ export class NarrowIdleShell {
       .ft-narrow-sheet__heatmap-row {
         display: flex;
         gap: 6px;
+        align-items: flex-start;
+      }
+      .ft-narrow-sheet__heatmap-day {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 3px;
+        min-width: 14px;
       }
       .ft-narrow-sheet__heatmap-cell {
         width: 12px;
         height: 12px;
         border-radius: 4px;
+        box-sizing: border-box;
         background: rgba(46, 43, 40, 0.1);
       }
       .ft-narrow-sheet__heatmap-cell[data-lit="1"] {
         background: var(--color-accent, #b5623a);
         opacity: 0.78;
+      }
+      .ft-narrow-sheet__heatmap-cell[data-today="1"] {
+        box-shadow: 0 0 0 1.5px rgba(181, 98, 58, 0.62);
+      }
+      .ft-narrow-sheet__heatmap-dow {
+        font-size: 8px;
+        line-height: 1;
+        color: rgba(74, 58, 40, 0.42);
+        font-weight: 500;
+      }
+      .ft-narrow-sheet__heatmap-dow--today {
+        color: rgba(74, 58, 40, 0.78);
+        font-weight: 600;
       }
 
       /* Applied by JS on narrow Focusing — hide Sound FAB / nudge / panel */
@@ -1111,6 +1223,20 @@ export class NarrowIdleShell {
 
       /* —— Hide legacy Idle chrome on narrow idle; enlarge Yin —— */
       @media (max-width: 479px) {
+        /*
+         * Home-ball clearance belt: soft bottom copy sharing Idle/Dormant with
+         * #ft-narrow-home-ctas must clear Sit (~147px from bottom + gap).
+         * SSOT: homeChromeClearance.js — do not invent a second bottom.
+         */
+        body.ft-narrow-shell #mindful-acknowledge-toast[data-placement="bottom"],
+        body.ft-narrow-shell #honesty-bridge-cta,
+        body.ft-narrow-shell #tiger-reflection-moment,
+        body.ft-narrow-shell #arrival-practice,
+        body.ft-narrow-shell #honesty-check-in,
+        body.ft-narrow-shell #micro-ritual {
+          bottom: ${NARROW_HOME_COPY_CLEARANCE_CSS} !important;
+        }
+
         /* Park whenever Idle (incl. Arrival / Honesty overlays) */
         body.ft-narrow-shell.ft-narrow-park #focus-hud,
         body.ft-narrow-shell.ft-narrow-park #session-start-dock,
@@ -1206,10 +1332,17 @@ export class NarrowIdleShell {
           pointer-events: none !important;
         }
 
-        /* 相对桌面舞台仍略放大可读；已有 stage inset，勿再 1.28 挤满竖屏 */
+        /* 窄屏恢复放大居中：宽屏冷启动 inset 留给 ≥480；手机勿叠缩。
+         * 恢复呼吸感改造前的 zoom 1.28 + 满舞台，避免 375 上 Yin 过小。 */
+        body.ft-narrow-shell #sprite-stage {
+          top: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          left: 0 !important;
+        }
         body.ft-narrow-shell #sprite-overlay {
-          zoom: 1.03;
-          transform-origin: center 50%;
+          zoom: 1.28;
+          transform-origin: center 55%;
         }
 
         /* Focusing: ActionBar stays (wall clock + ? + ♪); hide grabber / home */
@@ -1262,6 +1395,12 @@ export class NarrowIdleShell {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
+          /* Undo focusing park (left:-9999) — panel must follow staged chrome */
+          position: relative !important;
+          left: auto !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: auto !important;
         }
         body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__fab,
         body.ft-narrow-shell.ft-narrow-focusing.ft-narrow-stage-sound .ambient-soundscape__nudge {

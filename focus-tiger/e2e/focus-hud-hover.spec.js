@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { openFreshProductShell } from './helpers/product-shell.js';
 
-test('FocusHUD hover shows Focus % detail and streak tooltip above progress bar', async ({
+test('FocusHUD hover shows Focus % detail; streak native tip suppressed while pulse unread', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -17,6 +17,47 @@ test('FocusHUD hover shows Focus % detail and streak tooltip above progress bar'
 
   const streak = page.locator('#focus-hud streak-meter');
   await expect(streak).toBeVisible();
+  await expect(streak).toHaveAttribute('pulse-owns-tip', '');
+  await expect(streak).not.toHaveAttribute('title');
+
+  const box = await streak.boundingBox();
+  expect(box).toBeTruthy();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+
+  // Pulse tip owns hover — built-in .label must stay hidden (no triple stack).
+  await expect
+    .poll(async () =>
+      streak.evaluate((el) => {
+        const label = el.shadowRoot?.querySelector('.label');
+        return label ? Number(getComputedStyle(label).opacity) : -1;
+      })
+    )
+    .toBe(0);
+});
+
+test('FocusHUD streak .label returns after pulse tip is done', async ({ page }) => {
+  await openFreshProductShell(page);
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const ui = window.__onboardingHints;
+        if (!ui?.markSeen || !ui?.store) return 'no-api';
+        ui.markSeen('focus-hud-streak');
+        return ui.store.isDone('focus-hud-streak') ? 'done' : 'pending';
+      })
+    )
+    .toBe('done');
+
+  const streak = page.locator('#focus-hud streak-meter');
+  await expect(streak).toBeVisible();
+  await expect
+    .poll(async () =>
+      streak.evaluate((el) => el.hasAttribute('pulse-owns-tip'))
+    )
+    .toBe(false);
+  await expect(streak).not.toHaveAttribute('title');
+
   const box = await streak.boundingBox();
   expect(box).toBeTruthy();
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
@@ -34,20 +75,13 @@ test('FocusHUD hover shows Focus % detail and streak tooltip above progress bar'
   );
   expect(labelText).toMatch(/Recent days|近日同坐/);
 
-  // Label sits over the shared-sitting band with host z-index; must be on-screen
   const geometry = await streak.evaluate((el) => {
     const label = el.shadowRoot?.querySelector('.label');
     if (!label) return null;
     const r = label.getBoundingClientRect();
     return {
-      w: r.width,
       h: r.height,
-      top: r.top,
-      bottom: r.bottom,
-      scrollH: label.scrollHeight,
-      clientH: label.clientHeight,
       inView: r.top >= 0 && r.bottom <= window.innerHeight && r.width > 8,
-      // Descenders must fit: no internal clip (scrollHeight ≈ clientHeight)
       unclipped: label.scrollHeight <= label.clientHeight + 1
     };
   });

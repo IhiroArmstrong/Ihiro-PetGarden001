@@ -51,6 +51,7 @@
 | `dormantWake` | Honesty Check-in / 长离回前台苏醒（睡态揭毯 → 合掌坐姿） | 否（34 帧 **`cloak-sleep` 倒放** 或星光 wake） | **Honesty**：用户选时长后立刻播放；**2B**：FOCUSING 且 tab 隐藏 ≥30min 回前台播一次后回 Idle 呼吸（仍 Focusing）。播完可定格末帧 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：经典倒放或星光 `starlight-cloak-wake`（约 50/50，优先匹配入睡变体）。**≠** 已删 `wakeUp`。与 **2h→DORMANT** 互补（后者仅非 Focusing） |
 | `MilestoneGlow` | 里程碑仪式反馈（金辉 / 琉璃星石 / streak-7 鹦鹉二选一） | 否（约 10s 一次性序列；鹦鹉 ≈11.6s + CapCut） | 长期里程碑节点达成时触发（连续练习 7/21/100 天等）；每个节点仅播放一次 | **110**（最高；比 `Celebrating` 更隆重一档，冲突时 `Celebrating` 不叠加、不补发，当日庆祝日期戳照常记账） | **产品路径已接线**：`playEmotion('milestoneGlow', { milestoneNodeId })`。**变体池**：`streak-7` → **50/50** `milestone-glow`（金辉+蝴蝶）或 `parrotEarVisit`（鹦鹉信使）；`streak-21` / `streak-100` → `meditation-star-reward`（琉璃星石）。调试无 nodeId 默认蝴蝶；入库素材钮可单播星石/鹦鹉。简化备选 **`breath-halo-hq`** 仍仅调试。播放期归零实时金光；蝴蝶/星石末帧停留后回落 idle；鹦鹉走 CapCut Idle。 |
 | `ParrotEarVisit` | 鹦鹉耳边造访（禅意信使） | 否（93 帧 @ **8 fps** ≈11.6s） | **场景 A**：应用内轻提醒横幅本页首次可见时伴随播放；**场景 B**：轻完成 / 微仪式池稀有彩蛋；**亦**为 `MilestoneGlow` streak-7 的 50/50 视觉之一 | **68**（独立键；作里程碑时仍由 `playEmotion('milestoneGlow')` 触发，优先级按 110 仪式路径） | **已实现（2D）**：`parrot-ear-visit-feather`；正放一次 → ~1s CapCut Idle。**不做**羽毛残影/可收集（2026-08-03 拍板） |
+| `ConjureFlowersBlowAway` | 变花吹散（Day1 / 久别鼓励） | 否（65 帧 @ **10 fps** ≈6.5s） | **产品冷启动已接线（Phase 2b）**：Day1 / ≥3 日久别 → `WELCOME_APP` 强制本键 + 观察式气泡；与同日欢迎池 XOR。Lab 调试钮仍可播 | **65**（ack 档；低于 `ParrotEarVisit`） | **`conjure-flowers-blow-away`**；正放 → ~1s CapCut Idle + 白玉气泡。Flag：`?flowerWelcome=0` / `flower-welcome-flag.v1`。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
 | `IntentionSet` | Arrival Choose 确认点头 | 否（nod-bow **pingpong** 一整轮，约 7s） | 用户在 Arrival Practice 完成 Choose（图标点选或打字确认）的瞬间；跳过 Choose 不触发 | **55**（高于 `Idle`，低于完成反馈；**门闩与 Companion 在确认瞬间立即打开**，动画并行不挡流程） | **已实现（2D 主线）**：**16:9 `nod-bow` pingpong**（正放鞠躬→倒放回坐姿）；进出与前后动画用 **约 1s CapCut 叠化**（`CAPCUT_DISSOLVE_MS`）。旧 `palms-together` 仅调试保留。 |
 
 ### 1.3 动态效果层（可叠加）
@@ -105,7 +106,7 @@
 | `CAPCUT_DISSOLVE_MS` | 1000 | 有转场时的默认叠代（跨动画一律 1s） |
 | `MICRO_CROSS_FADE_MS` | **= CapCut**（2026-08-03） | 短淡入已退役；别名保留兼容。**硬切**仅显式 `crossFadeMs: 0` |
 
-`EmotionController._finishOneShot`：一次性 → idle **默认** CapCut；**仅**设计为无需转场的衔接显式传 `0`（gaze 段间、Idle 闭目↔睁眼弧、魔法书回 Idle 等）。权威表述见 `PRINCIPLES.md`；实现见 `ARCHITECTURE.md`「播放机制」与 `SpriteSequencePlayer`。
+`EmotionController._finishOneShot`：一次性 → idle **默认** CapCut；**仅**设计为无需转场的衔接显式传 `0`（gaze 段间、Idle 闭目↔睁眼弧等）。**魔法书回 Idle** 自 2026-08-05 起走 CapCut（不再硬切）。权威表述见 `PRINCIPLES.md`；实现见 `ARCHITECTURE.md`「播放机制」与 `SpriteSequencePlayer`。
 
 ---
 
@@ -159,6 +160,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `CuriousTilt` | `curiousTilt` → `blinkSmile`（2D；原 `tiltThink` 已停用） | `public/sprites/.../blink-smile/`（默认）；`tilt-think` 仅存量素材 |
 | `MilestoneGlow` | `milestoneGlow` → `milestoneGlow` / `milestoneGlowStar` /（streak-7 可委派）`parrotEarVisit` | `streak-7`：**50/50** 蝴蝶 `milestone-glow` 或鹦鹉 `parrot-ear-visit-feather`；`streak-21`/`100`：`meditation-star-reward`；备选 `breath-halo-hq` 仅调试 |
 | `ParrotEarVisit` | `parrotEarVisit` → 同名序列 | `public/sprites/.../parrot-ear-visit-feather/frame_001–093.png`（提醒信使 · 轻完成稀有 · streak-7 仪式二选一） |
+| `ConjureFlowersBlowAway` | `conjureFlowersBlowAway` → 同名序列 | `public/sprites/.../conjure-flowers-blow-away/frame_001–065.png`（Day1/久别；Phase 2b 产品已接线） |
 | `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
@@ -168,7 +170,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 > **`nodGreeting`（点头致意）说明**：属**响应行为**素材，**不再**由靠近区自动触发（2026-07-19）；**冷启动开场欢迎池成员**（与 `magicBookReading` 加权；挥手已撤）。调试面板「点头致意」可手工播；**正放一次**后 CapCut 回 `idle-breathing`（**不加**倒放）。**fps 6** + 末帧多停约 2 拍。默认 Idle = 呼吸×5→眨眼；禁止把点头编入自主节奏。
 
-> **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验）**：已烘焙 pingpong 帧，正放一次；**fps 4**（相对初入库 8 放慢 50%）。`magicBookReading` 末帧可接 Idle → **回落硬切（无 CapCut）**；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线；验收前勿标永久产品定稿。
+> **`magicBookReading` / `goldenHaloPalms`（2026-08-02 试验；2026-08-05 修）**：已烘焙 pingpong 帧，正放一次；**fps 4**。`magicBookReading` 回 Idle：**~1s CapCut**（原硬切；用户书面缺叠化后改）；`goldenHaloPalms` 仍 CapCut。开场池 / Honesty≥30 试接线。
 
 > **`CuriousTilt`（静止好奇）说明**：属**响应行为**。鼠标位于老虎靠近区、位移不超过 6px 且持续静止 4 秒后触发 `curiousTilt`。**视觉（2026-07-19）**：改播 `blink-smile` 单次（替代原 `tilt-think` 托腮，因与 idle 硬切跳跃过大）；**进出统一 1s CapCut**（2026-08-03 退役 180ms 短淡入），播完回归 `idle-breathing`。触发后冷却 6 秒。`tilt-think` 素材仍入库，仅调试可手工试播，不再作本键默认视觉。**不**进 `LIGHT_COMPLETE_POOL`（微仪式呼吸期已是 smiling）。
 
@@ -670,4 +672,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.90 | 2026-08-04 | **plan A**：关掉白天 Idle 无操作披毯（删 `shouldIdleInactivityCloak`）；Expand A 仅深夜；保留 2h live / Expand B / 2B（§6.11） |
 | 0.91 | 2026-08-04 | 清掉「sleeping→10s 呼吸→dormantWake」旧句；睡态 Honesty = 选时长立刻 wake（6fps）；窄屏 `:5176` tip `0494dd6` 唤醒复确 OK |
 | 0.89 | 2026-08-04 | `Sleeping`：定格入睡末帧 + 背部 clip 层 scaleY 呼吸（头/蒲团/镜头不动；取代整图缩放与末帧 pingpong） |
+| 0.92 | 2026-08-05 | 入库 `conjureFlowersBlowAway`（变花吹散 · Phase 1 Lab）；Day1/久别策略 C 已拍板；产品冷启动未接线；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

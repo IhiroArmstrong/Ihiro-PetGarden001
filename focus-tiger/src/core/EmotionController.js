@@ -24,7 +24,8 @@ import {
 /**
  * CapCut 式叠代溶解：两序列无法像素衔接时，定格两端帧做交叉淡化。
  * 2026-08-03：凡「有转场」的跨动画衔接统一 **1000ms**（短 180/520ms 易闪白）；
- * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧、魔法书回 Idle）保持 0。
+ * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧）保持 0。
+ * 魔法书回 Idle：2026-08-05 起与其它 companion oneshot 同走 CapCut（不再硬切）。
  * 见 PRINCIPLES「序列衔接：CapCut 式叠代」与 ARCHITECTURE「播放机制」。
  */
 export const CAPCUT_DISSOLVE_MS = 1000;
@@ -45,6 +46,26 @@ export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
  */
 export const ARRIVAL_BREATH_SMILE_FPS = 4;
 export const MILESTONE_GLOW_HOLD_MS = 2500;
+
+/**
+ * 调试面板「情绪入口」默认带 `holdPose: true` 的键（EDGE #17–19）。
+ * 产品路径各自显式传 holdPose；此处只作调试 SSOT，避免散落 Set 漏登记。
+ * @type {ReadonlySet<string>}
+ */
+export const DEBUG_HOLD_POSE_EMOTION_KEYS = Object.freeze(
+  new Set([
+    'celebrating',
+    'intentionSet',
+    'milestoneGlow',
+    'sessionComplete',
+    'nodGreeting',
+    'curiousTilt',
+    'mindfulAcknowledge',
+    'stretchReminder',
+    'blink',
+    'dormantWake'
+  ])
+);
 
 const BAKED_EFFECT_EMOTIONS = new Set([
   'celebrating',
@@ -184,6 +205,8 @@ export class EmotionController {
 
     /** @type {(() => void) | null} 调试「Honesty唤醒」→ 打开时长三选一 */
     this._debugHonestyWake = null;
+    /** @type {((opts?: { bilingual?: boolean }) => void) | null} */
+    this._flowerBlowLabBubble = null;
 
     /**
      * 本轮 DORMANT 入睡所用斗篷变体（classic | starlight）。
@@ -276,13 +299,17 @@ export class EmotionController {
           }
         }
       },
+      // Arrival Welcome/Breath 等：须保留可见末帧再叠化。
+      // clear:true 会藏 overlay → CapCut 因 opacity===0 静默跳过 → 闪白（§6.15）。
       smiling: (options = {}) => {
-        this._leaveIdleBaseline();
+        this._leaveIdleBaseline({ clear: false });
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
         if (this.spritePlayer) {
           const playOpts = {
-            crossFadeMs: options.crossFadeMs
+            crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+            freezeUntilCrossFadeEnds:
+              options.freezeUntilCrossFadeEnds !== false
           };
           if (Number.isFinite(options.fps) && options.fps > 0) {
             playOpts.fps = options.fps;
@@ -384,6 +411,7 @@ export class EmotionController {
 
       // Arrival Choose 确认：16:9 点头 pingpong（正放鞠躬→倒放回坐姿）；
       // 与前后动画转场用 1s CapCut 叠化。日语切语合十走 palmsTogether（A′），勿混用。
+      // clear:false：离开 Breath smiling 时不得藏 overlay，否则切入鞠躬 CapCut 静默跳过（§6.15）。
       intentionSet: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -394,7 +422,7 @@ export class EmotionController {
           }
           return;
         }
-        this._leaveIdleBaseline();
+        this._leaveIdleBaseline({ clear: false });
         this._use2DMainline();
         const started = this.spritePlayer.play(
           'intentionNod',
@@ -408,7 +436,9 @@ export class EmotionController {
               freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false,
               // 与前后（Breath 微笑 / idle）无法像素对齐 → 1s 叠化
               returnCrossFadeMs:
-                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              // 定格末帧再回 Idle，避免收尾藏层导致 return CapCut 假绿
+              holdLastFrame: options.holdLastFrame ?? true
             },
             'intentionSet'
           )
@@ -514,10 +544,11 @@ export class EmotionController {
       },
 
       // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
-      // 欢迎池 / 切语 English 均默认硬切 Idle（无 CapCut；QA 2026-08-02）。
+      // 2026-08-05：冷启动回 Idle 改 ~1s CapCut（用户书面：硬切缺叠化）。
       magicBookReading: (options = {}) => {
         this._playCompanionSequenceOnce('magicBookReading', options, {
-          returnCrossFadeMs: options.returnCrossFadeMs ?? 0
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
 
@@ -825,6 +856,13 @@ export class EmotionController {
           freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       },
+      // Day1 / 久别吹花鼓励（Phase 1 Lab）：变花轻吹 → CapCut Idle。产品冷启动未接线。
+      conjureFlowersBlowAway: (options = {}) => {
+        this._playCompanionSequenceOnce('conjureFlowersBlowAway', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
       // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
       earWiggleHeadTouch: (options = {}) => {
         this._playCompanionSequenceOnce('earWiggleHeadTouch', options, {
@@ -863,6 +901,9 @@ export class EmotionController {
 
   /**
    * Slice B 陪伴手势：播一条入库序列，结束后按 oneshot 回 Idle。
+   * 抗闪对齐 `_playCompanionSequenceChainOnce` / 张望（§6.8 / §6.12 P4）：
+   * - 离开 Idle：`clear: false`（保留末帧，禁止先藏 overlay）
+   * - 播完默认 `holdLastFrame` 定格，供 CapCut 回 Idle 有稳定源帧
    * @param {string} sequenceName SPRITE_SEQUENCES key
    * @param {EmotionOptions} options
    * @param {object} [playExtras]
@@ -875,7 +916,7 @@ export class EmotionController {
       this._finishOneShot(options, sequenceName);
       return;
     }
-    this._leaveIdleBaseline();
+    this._leaveIdleBaseline({ clear: false });
     this._use2DMainline();
     const started = this.spritePlayer.play(
       sequenceName,
@@ -884,12 +925,18 @@ export class EmotionController {
           ...options,
           loop: false,
           loopMode: 'none',
-          ...playExtras
+          ...playExtras,
+          // 默认定格末帧；显式 false 或 holdPose 路径仍由 _oneShotPlayOpts 收敛
+          holdLastFrame:
+            options.holdLastFrame ?? playExtras.holdLastFrame ?? true
         },
         sequenceName
       )
     );
     if (!started) {
+      console.warn(
+        `[EmotionController] ${sequenceName}: sprite play() 未启动，回落收尾`
+      );
       this._finishOneShot(options, sequenceName);
     }
   }
@@ -1087,6 +1134,15 @@ export class EmotionController {
       typeof handler === 'function' ? handler : null;
   }
 
+  /**
+   * Phase 2a Lab：调试播变花时浮现鼓励气泡（不进产品冷启动）。
+   * @param {((opts?: { bilingual?: boolean }) => void) | null} handler
+   */
+  setFlowerBlowLabBubbleHandler(handler) {
+    this._flowerBlowLabBubble =
+      typeof handler === 'function' ? handler : null;
+  }
+
   /** @returns {boolean} 已烧录叙事光效播放期是否应关闭常规实时金光。 */
   shouldSuppressRuntimeGlow() {
     return this._runtimeGlowSuppressed;
@@ -1115,6 +1171,8 @@ export class EmotionController {
       { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
       { key: 'bookReading', label: '单程看书(日语切语)' },
       { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
+      { key: 'conjureFlowersBlowAway', label: '变花吹散+气泡(Lab)' },
+      { key: 'conjureFlowersBlowAwayLocale', label: '变花气泡·跟locale(Lab)' },
       { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
@@ -1137,6 +1195,7 @@ export class EmotionController {
       teaDrinking: 'tea-drinking 喝茶',
       bookReading: 'book-reading 单程看书',
       parrotEarVisit: 'parrot-ear-visit-feather 鹦鹉信使',
+      conjureFlowersBlowAway: 'conjure-flowers-blow-away 变花吹散(Lab)',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
@@ -1202,20 +1261,22 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
+        // Phase 2a Lab：变花 + 鼓励气泡（默认双语首次预览；locale 钮跟当前语言）
+        if (
+          key === 'conjureFlowersBlowAway' ||
+          key === 'conjureFlowersBlowAwayLocale'
+        ) {
+          const bilingual = key === 'conjureFlowersBlowAway';
+          this.playEmotion('conjureFlowersBlowAway');
+          if (typeof this._flowerBlowLabBubble === 'function') {
+            this._flowerBlowLabBubble({ bilingual });
+          }
+          return;
+        }
         // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
-        const holdPoseKeys = new Set([
-          'celebrating',
-          'intentionSet',
-          'milestoneGlow',
-          'sessionComplete',
-          'nodGreeting',
-          'curiousTilt',
-          'mindfulAcknowledge',
-          'stretchReminder',
-          'blink',
-          'dormantWake'
-        ]);
-        const opts = holdPoseKeys.has(key) ? { holdPose: true } : {};
+        const opts = DEBUG_HOLD_POSE_EMOTION_KEYS.has(key)
+          ? { holdPose: true }
+          : {};
         if (key === 'idle') opts.restart = true;
 
         if (key === 'incenseComplete') {
@@ -1453,6 +1514,7 @@ export const EMOTION_KEYS = Object.freeze({
   MAGIC_BOOK_READING: 'magicBookReading',
   BOOK_READING: 'bookReading',
   PARROT_EAR_VISIT: 'parrotEarVisit',
+  CONJURE_FLOWERS_BLOW_AWAY: 'conjureFlowersBlowAway',
   GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   DORMANT_WAKE: 'dormantWake',
   CLOAK_SLEEP: 'cloakSleep',

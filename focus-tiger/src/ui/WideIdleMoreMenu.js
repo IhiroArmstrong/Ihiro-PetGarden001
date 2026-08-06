@@ -76,6 +76,8 @@ export class WideIdleMoreMenu {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
+   *     onZenCinema?: () => void,
+   *     onDailyQuote?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -400,7 +402,14 @@ export class WideIdleMoreMenu {
       if (this.quickHomeBtn) {
         const qsLabel = t('QUICK_START_ARIA');
         setAttrIfChanged(this.quickHomeBtn, 'aria-label', qsLabel);
-        if (this.quickHomeBtn.title !== qsLabel) {
+        // Mint pulse tip owns hover copy while unread — skip native title stack.
+        const pulseOwns =
+          this.handlers.isHintUnread?.('quick-start') === true;
+        if (pulseOwns) {
+          if (this.quickHomeBtn.hasAttribute('title')) {
+            this.quickHomeBtn.removeAttribute('title');
+          }
+        } else if (this.quickHomeBtn.title !== qsLabel) {
           this.quickHomeBtn.title = qsLabel;
         }
         // Arrival keepQuickStart: ⚡ stays live even while the dock pill is hidden.
@@ -586,6 +595,18 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'zen-cinema') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onZenCinema?.();
+      return;
+    }
+    if (key === 'daily-quote') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onDailyQuote?.();
       return;
     }
     if (key === 'sound') {
@@ -817,15 +838,16 @@ export class WideIdleMoreMenu {
         }
       }
 
-      /* Wide Idle: stage Soundscape panel on-canvas (never red FAB / gated tip-only) */
+      /* Wide Idle: stage Soundscape panel on-canvas (never red FAB / gated tip-only).
+       * Must match AmbientSoundscapeUI wide-stage-sound：靠右，勿居中挡阿寅。 */
       @media (min-width: 480px) {
         body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__focus-chrome {
           position: fixed !important;
-          left: 50% !important;
-          right: auto !important;
+          left: auto !important;
+          right: 14px !important;
           top: auto !important;
           bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
-          transform: translateX(-50%) !important;
+          transform: none !important;
           width: min(300px, calc(100vw - 48px)) !important;
           opacity: 1 !important;
           visibility: visible !important;

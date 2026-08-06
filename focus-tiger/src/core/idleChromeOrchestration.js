@@ -40,16 +40,16 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote'} proxy
  * @property {string} labelKey
  */
 
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
 export const SECONDARY_PROXY_HINT_IDS = Object.freeze({
   honesty: 'honesty-optional',
-  breath: 'micro-ritual',
   companion: 'how-shall-we-sit',
   reminder: 'in-app-reminder'
+  // breath / micro-ritual: home left ball (quick-start), not a secondary row
   // language: no first-visit mint (always available)
 });
 
@@ -205,7 +205,10 @@ export function resolveShellChromeProjection(input) {
   return {
     narrow: {
       idle: !focusing,
-      suppressed: chromeSuppressed,
+      // Narrow home balls (z30) sit above bridge CTA (z18 in #ui-overlay) —
+      // must full-suppress on bridge so Yes/No are not covered. ActionBar stays
+      // (setSuppressed + !keepQuickStart → is-suppressed; ActionBar exempt).
+      suppressed: Boolean(chromeSuppressed || bridgeVisible),
       keepQuickStart
     },
     wide: {
@@ -266,13 +269,13 @@ export function resolveRoleVisibility(input) {
   }
 
   if (stage === 'bridge') {
-    // Narrow: ActionBar stays; home chrome not force-suppressed by bridge alone.
-    // Wide: ⋯ suppressed so Yes/No stay clear; Sit/Quick/Honesty stay as home balls.
+    // Narrow: hide home balls + grabber (they cover Yes/No); ActionBar stays.
+    // Wide: ⋯ hidden; home balls may still show below the glass panel.
     return {
-      sit: 'visible',
-      quickStart: 'visible',
-      honesty: 'visible',
-      moreOrGrabber: narrow ? 'visible' : 'hidden',
+      sit: narrow ? 'hidden' : 'visible',
+      quickStart: narrow ? 'hidden' : 'visible',
+      honesty: narrow ? 'hidden' : 'visible',
+      moreOrGrabber: 'hidden',
       actionBar: narrow ? 'visible' : 'na'
     };
   }
@@ -304,12 +307,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
   /** @type {SecondaryChromeEntry[]} */
   const out = [];
 
-  if (visibility.microRitualVisible) {
-    out.push({
-      proxy: 'breath',
-      labelKey: 'micro_ritual.button'
-    });
-  }
+  // Breath practice is the home left ball — never list in drawer / ⋯.
 
   if (companionOk) {
     out.push({
@@ -334,6 +332,18 @@ export function listSecondaryChromeEntries(surface, visibility) {
       labelKey: 'LANGUAGE_MENU_LABEL'
     });
   }
+
+  // Growth pack ① — always available gift entry (no first-visit mint).
+  out.push({
+    proxy: 'zen-cinema',
+    labelKey: 'ZEN_CINEMA_MENU_LABEL'
+  });
+
+  // Growth pack ③ — daily quiet line + save image (no first-visit mint).
+  out.push({
+    proxy: 'daily-quote',
+    labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL'
+  });
 
   return out;
 }

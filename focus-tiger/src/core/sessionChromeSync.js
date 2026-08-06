@@ -5,7 +5,10 @@
  * @see docs/SHARED_RESOURCES.md §4
  */
 
-import { computePostSessionOverlayActive } from './SessionUiGate.js';
+import {
+  computePostSessionOverlayActive,
+  shouldEnableFocusChromeButton
+} from './SessionUiGate.js';
 import { STATES } from './StateManager.js';
 import { resolveShellChromeProjection } from './idleChromeOrchestration.js';
 
@@ -40,6 +43,7 @@ export function isHonestyUiBusy(phase) {
  *   hideIdleEntry?: () => void,
  *   showIdleEntry?: () => void
  * } | null | undefined} getMicroRitualUI
+ * @property {() => { isOpen?: () => boolean } | null | undefined} [getFocusDurationPicker]
  * @property {{ phase: string, hideIdleEntry: () => void }} honestyCheckInUI
  * @property {{ syncIdleEntry: () => void }} honestyCheckIn
  * @property {{
@@ -73,6 +77,8 @@ export function isHonestyUiBusy(phase) {
  * @property {() => void} syncInAppReminderBanner
  * @property {() => boolean} [getPostChoosePending]
  *   Choose→nod gap before Companion expands (Quick-only latch).
+ * @property {(enabled: boolean) => void} [setFocusButtonEnabled]
+ *   Sit/Rise `#btn-focus` 禁用态（completionPending / 微仪式）。
  */
 
 /**
@@ -84,6 +90,7 @@ export function createSessionChromeSync(deps) {
     getArrivalPractice,
     getReflectionMoment,
     getMicroRitualUI,
+    getFocusDurationPicker = () => null,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -93,32 +100,23 @@ export function createSessionChromeSync(deps) {
     stateManager,
     sessionUiGate,
     syncInAppReminderBanner,
-    getPostChoosePending = () => false
+    getPostChoosePending = () => false,
+    setFocusButtonEnabled
   } = deps;
 
   function getPostSessionOverlaySources() {
     return [
       () => getArrivalPractice().isOpen(),
       () => getReflectionMoment().isOpen(),
-      () => getMicroRitualUI()?.isOpen() === true
+      () => getMicroRitualUI()?.isOpen() === true,
+      () => getFocusDurationPicker()?.isOpen() === true
     ];
   }
 
   function syncMicroRitualIdleEntry() {
-    const honestyBusy = isHonestyPhaseBusy(honestyCheckInUI.phase);
-    const blocked =
-      getArrivalPractice()?.isOpen?.() ||
-      getHonestyBridge()?.isVisible?.() ||
-      getReflectionMoment()?.isOpen?.() ||
-      getMicroRitualUI()?.isOpen?.() ||
-      honestyBusy ||
-      stateManager.state === STATES.FOCUSING ||
-      stateManager.state === STATES.CELEBRATE;
-    if (blocked) {
-      getMicroRitualUI()?.hideIdleEntry();
-      return;
-    }
-    getMicroRitualUI()?.showIdleEntry();
+    // Breath practice lives on the home left ball (ex-Quick Start).
+    // Dock / drawer / ⋯ no longer list a duplicate entry.
+    getMicroRitualUI()?.hideIdleEntry();
   }
 
   function syncHonestyIdleEntry() {
@@ -129,6 +127,7 @@ export function createSessionChromeSync(deps) {
       bridgeVisible ||
       getReflectionMoment()?.isOpen?.() ||
       getMicroRitualUI()?.isOpen?.() ||
+      getFocusDurationPicker()?.isOpen?.() ||
       stateManager.state === STATES.FOCUSING ||
       stateManager.state === STATES.CELEBRATE;
     if (blocked) {
@@ -177,6 +176,16 @@ export function createSessionChromeSync(deps) {
     companionModePicker.setPostSessionOverlayActive(overlayActive);
     companionModePicker.setOptionSelectEnabled(
       !overlayActive && !sessionUiGate.completionPending
+    );
+    // EDGE #5 / 回归锁：完成中须禁用 Sit/Rise，禁止可点却静默 return。
+    // 微仪式：优先认 Companion 闩（startBreath 前 isOpen 仍可能为 false）。
+    setFocusButtonEnabled?.(
+      shouldEnableFocusChromeButton({
+        completionPending: sessionUiGate.completionPending,
+        microRitualOpen:
+          getMicroRitualUI()?.isOpen?.() === true ||
+          companionModePicker.isMicroRitualActive?.() === true
+      })
     );
     companionModePicker.setArrivalActive?.(
       Boolean(getArrivalPractice()?.isOpen?.())

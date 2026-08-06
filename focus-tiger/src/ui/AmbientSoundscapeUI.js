@@ -8,7 +8,8 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   AMBIENT_TRACK_OFF,
   AMBIENT_TRACKS,
-  resolveAmbientPanelSelectedTrackId
+  resolveAmbientPanelSelectedTrackId,
+  shouldStartPreferredFromNoteClick
 } from '../audio/AmbientSoundscapeController.js';
 import {
   getSharedUserAmbientLibrary,
@@ -80,6 +81,18 @@ export class AmbientSoundscapeUI {
     this.muteBtn.addEventListener('click', () => {
       this._dismissNudge();
       this.openSoundPanelFromNote();
+    });
+    // Desktop: brief hover opens the track list without mute (change track mid-play).
+    // Delay so a real click's pointerenter does not steal mute / resume semantics.
+    this._hoverOpenTimer = null;
+    this.muteBtn.addEventListener('pointerenter', (event) => {
+      this._onNotePointerEnter(event);
+    });
+    this.muteBtn.addEventListener('pointerleave', () => {
+      this._clearHoverOpenTimer();
+    });
+    this.muteBtn.addEventListener('pointerdown', () => {
+      this._clearHoverOpenTimer();
     });
 
     this.focusChrome = document.createElement('div');
@@ -190,8 +203,18 @@ export class AmbientSoundscapeUI {
     this._onDocPointer = (event) => {
       if (!this._expanded) return;
       if (!this._sessionActive && !this._narrowForcedPanel) return;
-      const target = /** @type {Node} */ (event.target);
+      const target = /** @type {Element | null} */ (
+        event.target instanceof Element
+          ? event.target
+          : event.target?.parentElement
+      );
+      if (!target) return;
+      // Note chrome is inside root; ActionBar ♪ is outside — do not dismiss on
+      // note pointerdown or click→mute / open races with a false close.
       if (this.root.contains(target)) return;
+      if (target.closest?.('#ft-narrow-mute-btn, .ambient-soundscape__mute')) {
+        return;
+      }
       this._expanded = false;
       this._narrowForcedPanel = false;
       document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
@@ -296,12 +319,66 @@ export class AmbientSoundscapeUI {
 
   /**
    * Top-right note (and ActionBar ♪ proxy):
-   * - audible music on → mute/stop
-   * - panel already open → close
-   * - otherwise → open Soundscape track panel
+   * - audible + panel open → mute/stop (explicit)
+   * - audible + panel closed → open panel only (change track; do not mute)
+   * - panel already open (silent) + remembered/resume → start preferred (Rise / mute)
+   * - panel already open (silent) + no preferred → close
+   * - otherwise → open Soundscape track panel (+ start preferred after mute / Rise)
    */
   openSoundPanelFromNote() {
     void this._onNoteClick();
+  }
+
+  /**
+   * Desktop hover on the note: open the track list without muting or resuming.
+   * Touch / pen use click semantics. Real mouse is allowed even when DevTools /
+   * Safari Responsive Design reports `(hover: none)` for a 375 viewport.
+   * @param {{ fromMouse?: boolean }} [opts]
+   */
+  openSoundPanelFromHover(opts = {}) {
+    const fromMouse = opts.fromMouse === true;
+    if (!fromMouse && !this._canHoverOpenPanel()) return;
+    if (this.isPanelOpen()) return;
+    this._openPanelOnly();
+  }
+
+  /**
+   * @param {PointerEvent} event
+   */
+  _onNotePointerEnter(event) {
+    // Only real mouse — not touch emulation of enter.
+    if (event.pointerType && event.pointerType !== 'mouse') return;
+    this._clearHoverOpenTimer();
+    this._hoverOpenTimer = window.setTimeout(() => {
+      this._hoverOpenTimer = null;
+      this.openSoundPanelFromHover({ fromMouse: true });
+    }, 180);
+  }
+
+  _clearHoverOpenTimer() {
+    if (this._hoverOpenTimer != null) {
+      window.clearTimeout(this._hoverOpenTimer);
+      this._hoverOpenTimer = null;
+    }
+  }
+
+  /** @returns {boolean} */
+  _canHoverOpenPanel() {
+    try {
+      return Boolean(
+        typeof window !== 'undefined' &&
+          window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  /** Open Soundscape without toggling mute / resume. */
+  _openPanelOnly() {
+    this._dismissNudge();
+    this._stageSoundPanelHost();
+    this.activateSoundFromNarrow();
   }
 
   /**
@@ -310,6 +387,12 @@ export class AmbientSoundscapeUI {
   async _onNoteClick() {
     const ctrl = this.controller;
     if (ctrl.isAudiblePlaying()) {
+      // Playing + list already open → click means mute. Playing + list closed →
+      // open list so the user can change tracks without stopping audio.
+      if (!this.isPanelOpen()) {
+        this._openPanelOnly();
+        return;
+      }
       ctrl.mute();
       this._expanded = false;
       this._narrowForcedPanel = false;
@@ -321,7 +404,16 @@ export class AmbientSoundscapeUI {
       this.handlers.onToggleMusic?.();
       return;
     }
+    // Silent: after Rise or note-mute, start preferred — do not only toggle panel.
+    const startPreferred = shouldStartPreferredFromNoteClick(ctrl);
     if (this.isPanelOpen()) {
+      if (startPreferred) {
+        ctrl.consumeResumePreferredOnOpen();
+        await ctrl.unmute();
+        this._renderPanel();
+        this.handlers.onToggleMusic?.();
+        return;
+      }
       this._expanded = false;
       this._narrowForcedPanel = false;
       document.body.classList.remove(
@@ -331,10 +423,9 @@ export class AmbientSoundscapeUI {
       this._renderPanel();
       return;
     }
-    this._stageSoundPanelHost();
-    this.activateSoundFromNarrow();
-    // Same user gesture: after note-mute, reopen resumes the remembered track with sound.
-    if (ctrl.consumeResumePreferredOnOpen()) {
+    this._openPanelOnly();
+    if (startPreferred) {
+      ctrl.consumeResumePreferredOnOpen();
       await ctrl.unmute();
       this._renderPanel();
       this.handlers.onToggleMusic?.();
@@ -396,6 +487,27 @@ export class AmbientSoundscapeUI {
     await ctrl.toggleFromUi();
     this._renderPanel();
     this.handlers.onToggleMusic?.();
+  }
+
+  /** Panel track / play-pause when Focusing or Idle-staged Soundscape. */
+  _canInteractWithPanelTracks() {
+    return Boolean(this._sessionActive || this._narrowForcedPanel);
+  }
+
+  /**
+   * Per-row play/pause: pause if this track is audible; else setTrack (plays).
+   * @param {string} trackId
+   * @param {boolean} playingThis
+   */
+  async _onTrackPlayPause(trackId, playingThis) {
+    if (playingThis) {
+      this.controller.mute();
+    } else {
+      await this.controller.setTrack(trackId);
+    }
+    this._renderPanel();
+    this.handlers.onToggleMusic?.();
+    this.handlers.onTrackChosen?.();
   }
 
   _maybeShowDefaultOnNudge() {
@@ -488,6 +600,9 @@ export class AmbientSoundscapeUI {
     ];
 
     const selectedId = resolveAmbientPanelSelectedTrackId(this.controller);
+    const audibleId = this.controller.isAudiblePlaying()
+      ? this.controller.getTrackId()
+      : AMBIENT_TRACK_OFF;
     for (const opt of options) {
       const row = document.createElement('div');
       row.className = 'ambient-soundscape__track-row';
@@ -506,7 +621,7 @@ export class AmbientSoundscapeUI {
       btn.textContent =
         opt.kind === 'user' ? opt.label : t(opt.labelKey);
       btn.addEventListener('click', () => {
-        if (!this._sessionActive && !this._narrowForcedPanel) return;
+        if (!this._canInteractWithPanelTracks()) return;
         this._dismissNudge();
         void this.controller.setTrack(opt.id).then(() => {
           this._renderPanel();
@@ -514,6 +629,29 @@ export class AmbientSoundscapeUI {
         });
       });
       row.appendChild(btn);
+
+      if (opt.kind !== 'off') {
+        const playingThis = audibleId === opt.id;
+        const playPause = document.createElement('button');
+        playPause.type = 'button';
+        playPause.className = 'ambient-soundscape__track-play';
+        if (playingThis) playPause.classList.add('is-playing');
+        playPause.dataset.playTrackId = opt.id;
+        playPause.setAttribute(
+          'aria-label',
+          playingThis
+            ? t('AMBIENT_TRACK_PAUSE_ARIA')
+            : t('AMBIENT_TRACK_PLAY_ARIA')
+        );
+        playPause.textContent = playingThis ? '❚❚' : '▶';
+        playPause.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if (!this._canInteractWithPanelTracks()) return;
+          this._dismissNudge();
+          void this._onTrackPlayPause(opt.id, playingThis);
+        });
+        row.appendChild(playPause);
+      }
 
       if (opt.kind === 'user') {
         const del = document.createElement('button');
@@ -523,7 +661,7 @@ export class AmbientSoundscapeUI {
         del.setAttribute('aria-label', t('AMBIENT_UPLOAD_DELETE_ARIA'));
         del.textContent = '×';
         del.addEventListener('click', (event) => {
-          if (!this._sessionActive && !this._narrowForcedPanel) return;
+          if (!this._canInteractWithPanelTracks()) return;
           void this._onDeleteUserTrack(opt.id, event);
         });
         row.appendChild(del);
@@ -570,6 +708,9 @@ export class AmbientSoundscapeUI {
     this.muteBtn.classList.toggle('is-ghost', !audible);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
+    // Residual after mint done: native title. Unread mint hover owns tip copy
+    // (OnboardingHintsUI strips title while pulse is active).
+    this.muteBtn.setAttribute('title', t('AMBIENT_NOTE_HOVER'));
     this.muteBtn.setAttribute(
       'aria-expanded',
       this.isPanelOpen() ? 'true' : 'false'
@@ -590,6 +731,7 @@ export class AmbientSoundscapeUI {
   }
 
   dispose() {
+    this._clearHoverOpenTimer();
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale();
   }
@@ -615,8 +757,9 @@ export class AmbientSoundscapeUI {
         right: 14px;
         z-index: 24;
         pointer-events: auto;
-        width: 44px;
-        height: 44px;
+        /* +50% vs prior 44px hit target — music note readability */
+        width: 66px;
+        height: 66px;
         padding: 0;
         border: 1px solid rgba(139, 115, 85, 0.18);
         border-radius: 50%;
@@ -702,8 +845,9 @@ export class AmbientSoundscapeUI {
         color: rgba(120, 92, 68, 0.55);
       }
       .ambient-soundscape__icon-svg {
-        width: 22px;
-        height: 22px;
+        /* +50% vs prior 22px glyph */
+        width: 33px;
+        height: 33px;
         display: block;
       }
       .ambient-soundscape__focus-chrome {
@@ -722,6 +866,7 @@ export class AmbientSoundscapeUI {
         .ambient-soundscape__mute {
           top: 10px;
           right: 10px;
+          /* Narrow keeps original size — +50% note is wide-only */
           width: 40px;
           height: 40px;
         }
@@ -756,14 +901,14 @@ export class AmbientSoundscapeUI {
           pointer-events: none !important;
           z-index: -1 !important;
         }
-        /* Focusing / Idle: stage panel from top-right note (no FAB) */
+        /* Focusing / Idle: stage panel from top-right note (no FAB) — 靠右，不挡阿寅 */
         body.ft-wide-stage-sound .ambient-soundscape__focus-chrome {
           position: fixed !important;
-          left: 50% !important;
-          right: auto !important;
+          left: auto !important;
+          right: 14px !important;
           top: auto !important;
           bottom: max(100px, env(safe-area-inset-bottom, 0px)) !important;
-          transform: translateX(-50%) !important;
+          transform: none !important;
           width: min(300px, calc(100vw - 48px)) !important;
           opacity: 1 !important;
           visibility: visible !important;
@@ -898,6 +1043,24 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__track.is-selected {
         border-color: rgba(139, 46, 46, 0.4);
         background: rgba(139, 46, 46, 0.1);
+      }
+      .ambient-soundscape__track-play {
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid rgba(139, 115, 85, 0.35);
+        background: rgba(255, 252, 245, 0.9);
+        color: #5a4030;
+        cursor: pointer;
+        font-size: 11px;
+        line-height: 1;
+        padding: 0;
+      }
+      .ambient-soundscape__track-play.is-playing {
+        border-color: rgba(139, 46, 46, 0.45);
+        background: rgba(139, 46, 46, 0.12);
+        color: #8b2e2e;
       }
       .ambient-soundscape__track-delete {
         flex: 0 0 auto;

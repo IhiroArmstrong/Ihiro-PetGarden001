@@ -13,6 +13,12 @@ import {
   playOptionsForLocaleGreeting,
   resolveLocaleGreetingPlay
 } from './localeGreeting.js';
+import {
+  FLOWER_WELCOME_EMOTION_KEY,
+  isFlowerWelcomeEnabled,
+  resolveFlowerWelcomeForce,
+  touchFlowerWelcomeLastOpen
+} from './flowerWelcomeGate.js';
 
 export const SCENE_ANIM_EVENTS = Object.freeze({
   LANGUAGE_CHANGED: 'language_changed',
@@ -376,15 +382,30 @@ export function resolveSceneAnimation({
 
   if (event === SCENE_ANIM_EVENTS.WELCOME_APP) {
     const daily = readDailySceneAnimState(storage, now);
+    // force 须在 touch lastOpen **之前**读上一趟日期
+    const flower = resolveFlowerWelcomeForce({
+      storage,
+      now,
+      enabled: isFlowerWelcomeEnabled({ storage })
+    });
+    touchFlowerWelcomeLastOpen(storage, { now });
     if (daily.welcome) {
       return { play: false, emotionKey: null, reason: 'quota' };
     }
-    const emotionKey = pickWeighted(WELCOME_POOL, random);
+    const emotionKey = flower.force
+      ? FLOWER_WELCOME_EMOTION_KEY
+      : pickWeighted(WELCOME_POOL, random);
     writeDailySceneAnimState(storage, {
       dateKey: daily.dateKey,
       welcome: true
     });
-    return { play: true, emotionKey, reason: 'ok' };
+    return {
+      play: true,
+      emotionKey,
+      reason: flower.force ? `flower-${flower.reason}` : 'ok',
+      flowerWelcome: flower.force,
+      flowerBilingual: flower.force ? flower.bilingual : false
+    };
   }
 
   if (event === SCENE_ANIM_EVENTS.STRETCH_REMINDER) {

@@ -1,15 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { openFreshProductShell } from './helpers/product-shell.js';
+import {
+  openFreshProductShell,
+  quickStartFocus
+} from './helpers/product-shell.js';
 
 /**
- * Wide Idle (≥480): three home balls (Quick · Sit · Honesty) + ⋯; secondary via popover.
+ * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯; secondary via popover.
  */
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
-/** Row proxy → click-hint id (Language has none by design). */
+/** Row proxy → click-hint id (Language has none by design). Breath is home ball. */
 const WIDE_MORE_ROW_HINT = Object.freeze({
-  breath: 'micro-ritual',
   companion: 'how-shall-we-sit',
   reminder: 'in-app-reminder'
 });
@@ -110,7 +112,7 @@ test('wide Focusing: more + balls hidden; top-right note stays, Sound FAB stays 
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-home-quickstart').click();
+  await quickStartFocus(page);
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 15_000
   });
@@ -173,18 +175,14 @@ test('wide ⋯: unread row mint only — no floating badge double', async ({
     menu.locator('[data-proxy="companion"] .ft-secondary-menu-hint-dot')
   ).toBeVisible({ timeout: 5_000 });
   await expect(
-    menu.locator('[data-proxy="breath"] .ft-secondary-menu-hint-dot')
-  ).toBeVisible();
-  await expect(
     menu.locator('[data-proxy="reminder"] .ft-secondary-menu-hint-dot')
   ).toBeVisible();
+  // Breath practice is home ball — not a ⋯ row.
+  await expect(menu.locator('[data-proxy="breath"]')).toHaveCount(0);
 
   // No second floating mint parked on those click hints while ⋯ is open.
   await expect(
     page.locator('.onboarding-hint-badge[data-hint-id="how-shall-we-sit"]:not([hidden])')
-  ).toHaveCount(0);
-  await expect(
-    page.locator('.onboarding-hint-badge[data-hint-id="micro-ritual"]:not([hidden])')
   ).toHaveCount(0);
   await expect(
     page.locator('.onboarding-hint-badge[data-hint-id="in-app-reminder"]:not([hidden])')
@@ -217,8 +215,8 @@ test('wide ⋯: Sit auto tip hidden while menu open (no hover required)', async 
 });
 
 /**
- * Four-row tip matrix + row-switch: breath/companion/reminder show their tips;
- * Language has no row tip; Sit auto tip must stay hidden across switches.
+ * Row tip matrix + row-switch: companion/reminder show tips; Language has none;
+ * Breath is not a ⋯ row; Sit auto tip must stay hidden across switches.
  */
 test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   page
@@ -229,10 +227,11 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   await expect(menu).toBeVisible({ timeout: 5_000 });
 
   const proxies = /** @type {const} */ ([
-    'breath',
     'companion',
     'reminder',
-    'language'
+    'language',
+    'zen-cinema',
+    'daily-quote'
   ]);
 
   for (let i = 0; i < proxies.length; i++) {
@@ -248,7 +247,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
         )
       ).toBeVisible({ timeout: 5_000 });
     } else {
-      // Language: no dedicated tip — prior row click tips must be closed (`[open]`).
+      // Language / Zen Cinema / Quiet Line: no dedicated tip — prior row click tips must be closed (`[open]`).
       for (const id of Object.values(WIDE_MORE_ROW_HINT)) {
         await expect(
           page.locator(
@@ -261,12 +260,53 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     await expectSitAutoTipHidden(page);
   }
 
-  // Explicit switch path: companion → breath → reminder → language (no Sit flash).
-  for (const proxy of ['companion', 'breath', 'reminder', 'language']) {
+  // Explicit switch path: companion → reminder → language (no Sit flash).
+  for (const proxy of ['companion', 'reminder', 'language']) {
     await menu.locator(`[data-proxy="${proxy}"]`).hover();
     await page.waitForTimeout(300);
     await expectSitAutoTipHidden(page);
   }
+});
+
+test('wide Idle: Zen Cinema row opens confirm card', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="zen-cinema"]')).toBeVisible();
+  await menu.locator('[data-proxy="zen-cinema"]').click();
+  const card = page.locator('#zen-cinema-card');
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(card.locator('.zen-cinema-card__thumb')).toBeVisible();
+  await expect(page.getByTestId('zen-cinema-open-youtube')).toBeVisible();
+  await card.locator('.zen-cinema-card__btn--ghost').click();
+  await expect(card).toBeHidden({ timeout: 5_000 });
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="zen-cinema"]').click();
+  await expect(card).toBeVisible({ timeout: 5_000 });
+});
+
+test('wide Idle: Quiet Line row opens quote card and save stays available', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="daily-quote"]')).toBeVisible();
+  await menu.locator('[data-proxy="daily-quote"]').click();
+  const card = page.locator('#daily-zen-quote-card');
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('daily-zen-quote-text')).not.toBeEmpty();
+  await expect(page.getByTestId('daily-zen-quote-save')).toBeVisible();
+  await card.locator('.daily-zen-quote-card__btn--ghost').click();
+  await expect(card).toBeHidden({ timeout: 5_000 });
+  // Reflow: reopen menu → card again
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="daily-quote"]').click();
+  await expect(card).toBeVisible({ timeout: 5_000 });
 });
 
 test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
@@ -292,7 +332,7 @@ test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
   expect(playing.audible).toBe(false);
 });
 
-test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }) => {
+test('wide park: ? opens purpose only (no remedy tip spray)', async ({ page }) => {
   await openFreshProductShell(page);
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible();
@@ -303,88 +343,14 @@ test('wide park: ? remedy anchors parked chrome hints near ⋯', async ({ page }
     timeout: 8_000
   });
   await page.locator('#onboarding-hint-help').click();
-  // 主 tip + 可见锚点各一条立刻出；⋯ 内 chrome 折进一次性芯片，展开后再验 parked remap
-  const remedy = page.locator('ft-onboarding-hint-bubble[data-remedy="1"]');
-  await expect(remedy.first()).toBeVisible({ timeout: 8_000 });
-  await expect(page.locator('#onboarding-app-purpose')).toBeVisible();
+  await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+    timeout: 8_000
+  });
+  await expect(page.locator('ft-onboarding-hint-bubble[data-remedy="1"]')).toHaveCount(
+    0
+  );
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
-  ).toBeVisible();
-  // 用途卡可能被「还有 N 条」芯片挡住；直接关掉再展开目录
-  await page.evaluate(() => {
-    const card = document.getElementById('onboarding-app-purpose');
-    if (card) card.hidden = true;
-  });
-  await expect(page.locator('#ft-hint-catalog-chip')).toBeVisible({
-    timeout: 5_000
-  });
-  // On-screen controls already got their tips; the chip is a one-shot stand-in
-  // for the ⋯ chrome only, so it carries no "N more" queue.
-  const beforeChip = await page.evaluate(
-    () => document.getElementById('ft-hint-catalog-chip')?.textContent || ''
-  );
-  expect(beforeChip).not.toMatch(/\d/);
-  await page.locator('#ft-hint-catalog-chip').click();
-  const afterClick = await page.evaluate(() => {
-    const bubbles = [
-      ...document.querySelectorAll(
-        'ft-onboarding-hint-bubble[data-remedy="1"]'
-      )
-    ].filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    return {
-      ids: bubbles.map((el) => el.getAttribute('data-hint-id')),
-      chipVisible: Boolean(chip && !chip.hidden)
-    };
-  });
-  expect(afterClick.ids).toContain('wide-more-menu');
-  expect(afterClick.chipVisible).toBe(false);
-  const layout = await page.evaluate(() => {
-    const moreEl = document.getElementById('ft-wide-more-btn');
-    const purpose = document.getElementById('onboarding-app-purpose');
-    const bubbles = [
-      ...document.querySelectorAll('ft-onboarding-hint-bubble[data-remedy="1"]')
-    ].filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    if (!moreEl || bubbles.length === 0) {
-      return { ok: false, reason: 'missing', bubbleCount: bubbles.length };
-    }
-    const mr = moreEl.getBoundingClientRect();
-    const hit = bubbles.some((b) => {
-      const r = b.getBoundingClientRect();
-      const cx = (r.left + r.right) / 2;
-      const cy = (r.top + r.bottom) / 2;
-      const mcx = (mr.left + mr.right) / 2;
-      const mcy = (mr.top + mr.bottom) / 2;
-      return Math.hypot(cx - mcx, cy - mcy) < 260;
-    });
-    let purposeBlocksTip = false;
-    if (purpose && !purpose.hidden) {
-      const pr = purpose.getBoundingClientRect();
-      purposeBlocksTip = bubbles.some((b) => {
-        const r = b.getBoundingClientRect();
-        const pad = 8;
-        return !(
-          pr.right + pad < r.left ||
-          pr.left - pad > r.right ||
-          pr.bottom + pad < r.top ||
-          pr.top - pad > r.bottom
-        );
-      });
-    }
-    // One-tip catalog: do not require quick-start + focus-hud simultaneously.
-    // Remap lock = at least one visible remedy tip near the ⋯ button.
-    return {
-      ok: hit && !purposeBlocksTip,
-      hit,
-      purposeBlocksTip,
-      bubbleCount: bubbles.length
-    };
-  });
-  expect(layout.ok, JSON.stringify(layout)).toBe(true);
+  ).toHaveCount(0);
+  await expect(page.locator('#ft-hint-catalog-chip')).toBeHidden();
 });

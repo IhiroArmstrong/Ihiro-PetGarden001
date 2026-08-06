@@ -8,7 +8,9 @@ import { expect } from '@playwright/test';
  * @param {{ path?: string, query?: Record<string, string | number | boolean> }} [opts]
  */
 export async function openFreshProductShell(page, opts = {}) {
-  const params = new URLSearchParams({ product: '1' });
+  // Default short Focus target + skip duration picker (product UI uses chips when
+  // `sessionMinutes` is absent). Override via opts.query / opts.path as needed.
+  const params = new URLSearchParams({ product: '1', sessionMinutes: '1' });
   for (const [key, value] of Object.entries(opts.query || {})) {
     if (value === undefined || value === null) continue;
     params.set(key, String(value));
@@ -75,7 +77,7 @@ export async function clickSitEntry(page) {
 }
 
 /**
- * 点 ⚡ Quick Start，同 `clickSitEntry` 的三球优先规则。
+ * 点首页左球 Breath practice（DOM id 仍为 quickstart / #quick-start-focus）。
  * @param {import('@playwright/test').Page} page
  * @returns {Promise<void>}
  */
@@ -88,6 +90,11 @@ export async function clickQuickStartEntry(page) {
     }
   }
   await page.locator('#quick-start-focus').click();
+}
+
+/** @deprecated alias — home left ball opens Breath practice */
+export async function clickBreathPracticeEntry(page) {
+  await clickQuickStartEntry(page);
 }
 
 /**
@@ -109,7 +116,7 @@ export async function openWideMoreMenuIfPresent(page) {
 }
 
 /**
- * 经宽屏 ⋯（若有）打开呼吸 / 提醒等代理入口；Honesty 走首页球；否则点 dock 直钮。
+ * 经宽屏 ⋯（若有）打开提醒等代理入口；Breath 走首页左球；Honesty 走首页球。
  * @param {import('@playwright/test').Page} page
  * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
  */
@@ -120,6 +127,10 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
       await ball.click();
       return;
     }
+  }
+  if (proxy === 'breath') {
+    await clickBreathPracticeEntry(page);
+    return;
   }
   const direct = {
     honesty: '#honesty-idle-entry',
@@ -229,25 +240,44 @@ export async function chooseReadingAndAwaitFocus(page) {
 }
 
 /**
- * ⚡ Quick Start：跳过 Arrival（或先 Sit 再跳过），立刻 Focusing。
+ * Skip Arrival → Focusing via `__arrivalPractice.skipToBegin`（产品首页左球已改为 Breath practice）。
  * @param {import('@playwright/test').Page} page
  */
 export async function quickStartFocus(page) {
-  await expect(page.locator('#quick-start-focus')).toBeVisible({
-    timeout: 15_000
-  });
-  await clickQuickStartEntry(page);
-  await expect(page.locator('#arrival-practice')).toBeHidden({ timeout: 15_000 });
-}
-
-/** @deprecated 使用 `quickStartFocus`；Arrival 开着时点 ⚡ 等价旧 Skip — begin */
-export async function skipArrivalBegin(page) {
   const arrival = page.locator('#arrival-practice');
   if (!(await arrival.isVisible().catch(() => false))) {
     await clickSitEntry(page);
     await expect(arrival).toBeVisible({ timeout: 15_000 });
   }
+  const skipped = await page.evaluate(() => {
+    const ui = window.__arrivalPractice;
+    if (!ui?.skipToBegin) return false;
+    ui.skipToBegin();
+    return true;
+  });
+  expect(skipped, 'window.__arrivalPractice.skipToBegin missing').toBe(true);
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await pickFocusDurationIfShown(page);
+}
+
+/** @deprecated 使用 `quickStartFocus`；e2e 跳过 Arrival 不再点首页左球 */
+export async function skipArrivalBegin(page) {
   await quickStartFocus(page);
+}
+
+/**
+ * 开表前时长 chip（产品路径）；`?sessionMinutes=` 时 picker 不出现则跳过。
+ * @param {import('@playwright/test').Page} page
+ * @param {number} [minutes]
+ */
+export async function pickFocusDurationIfShown(page, minutes = 15) {
+  const picker = page.locator('#focus-duration-picker');
+  const visible = await picker.isVisible().catch(() => false);
+  if (!visible) return;
+  await picker
+    .locator(`[data-focus-duration-minutes="${minutes}"]`)
+    .click();
+  await expect(picker).toBeHidden({ timeout: 5_000 });
 }
 
 /** @param {import('@playwright/test').Page} page @param {RegExp|string} label */
@@ -258,10 +288,12 @@ export async function selectCompanionMode(page, label) {
     .locator('.session-start-dock__option')
     .filter({ hasText: label })
     .click();
+  await pickFocusDurationIfShown(page);
 }
 
 export async function expectFocusSessionActive(page) {
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i);
+  await expect(page.locator('#focus-hud')).toBeVisible();
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
   await expect
     .poll(async () => page.locator('#hud-time').textContent(), {

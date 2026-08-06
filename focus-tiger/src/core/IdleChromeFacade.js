@@ -74,9 +74,12 @@ export class IdleChromeFacade {
     const h = this._handlers;
     this.narrow.setHandlers({
       onSound: h.onSound,
+      onSoundHover: h.onSoundHover,
       onCompanion: h.onCompanion,
       onReminder: h.onReminder,
       onLanguage: h.onLanguage,
+      onZenCinema: h.onZenCinema,
+      onDailyQuote: h.onDailyQuote,
       onHonesty: h.onHonesty,
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
@@ -89,6 +92,8 @@ export class IdleChromeFacade {
       onClearCompanion: h.onClearCompanion,
       onReminder: h.onReminder,
       onLanguage: h.onLanguage,
+      onZenCinema: h.onZenCinema,
+      onDailyQuote: h.onDailyQuote,
       onHonesty: h.onHonesty,
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,

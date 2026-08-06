@@ -22,6 +22,12 @@ AMBIENT_DEFAULT_ON_NUDGE	Tap the note anytime to play quiet music.	音符をタ�
 AMBIENT_REQUIRES_FOCUS	Start a companion focus mode first — then Sound can open.	先に同伴フォーカスを始めてから、音を開けます。
 AMBIENT_TRACK_OFF	Off	オフ
 AMBIENT_TRACK_SINGING_BOWL	Mer-Ka-Ba	Mer-Ka-Ba
+AMBIENT_TRACK_DIVINE_LIFE_SOCIETY	Divine Life Society	Divine Life Society
+AMBIENT_TRACK_LORD_OF_THE_DAWN	Lord Of The Dawn	Lord Of The Dawn
+AMBIENT_TRACK_MAESTRO_TLAKAELEL	Maestro Tlakaelel	Maestro Tlakaelel
+AMBIENT_TRACK_THE_INNER_SOUND	The Inner Sound	The Inner Sound
+AMBIENT_TRACK_SOMNIA_VARIATION_3	Somnia Variation 3	Somnia Variation 3
+AMBIENT_TRACK_SOMNIA_VARIATION_10	Somnia Variation 10	Somnia Variation 10
 AMBIENT_TRACK_RAIN	Meditation Impromptu	Meditation Impromptu
 AMBIENT_TRACK_DREAMLAND	Dreamland	Dreamland
 AMBIENT_TRACK_INVISIBLE_BEAUTY	Invisible Beauty	Invisible Beauty
@@ -47,6 +53,9 @@ STRETCH_REMINDER_3	A long stretch of stillness has passed. The body can move whe
 REFOCUS_ACKNOWLEDGE_1	Attention wandered for a while. Now it has returned here.	注意はしばらくさまよっていました。いま、ここに戻っています。
 REFOCUS_ACKNOWLEDGE_2	That moment has passed. Attention is back with this breath.	その瞬間は過ぎました。注意は、この息とともにあります。
 REFOCUS_ACKNOWLEDGE_3	There was a moment elsewhere. Now there is this moment of return.	よそにいた瞬間がありました。いまは、戻ってきたこの瞬間です。
+FLOWER_BLOW_WELCOME_1	No hurry, no expectation. Being here is enough.	急がなくていい。飾らなくていい。ただ、ここにいるだけで。
+FLOWER_BLOW_WELCOME_2	Welcome back. Your mind deserves this moment of quiet.	おかえりなさい。あなたの心に、静かな時間を。
+FLOWER_BLOW_WELCOME_3	Whatever kind of day it is, Yin is right here with you.	どんな一日でも、寅はいつでもここにいます。
 REFLECTION_Q1	What did you notice today?	きょう、何に気づきましたか？
 REFLECTION_Q2	What emotion visited you?	どんな気持ちが訪れましたか？
 REFLECTION_Q3	What would you like to return to next?	次に、どこへ戻りたいですか？
@@ -140,7 +149,15 @@ HINT_AMBIENT_SOUNDSCAPE	If your environment allows, tap here to play music — i
 HINT_RISE_BUTTON	Rising early is welcome too.	早めに立つことも、歓迎です。
 HINT_REFLECTION	Answer if you like — skipping is fine.	答えても、スキップしても大丈夫です。
 HINT_IDLE_AFTER_SESSION	Sit again whenever you like.	また坐りたくなったら、いつでも。
-HINT_WEEKLY_HEATMAP	A quiet week of shared sitting — lit days you practiced.	いっしょに坐った静かな一週間 — 実践した日が点灯します。
+HINT_WEEKLY_HEATMAP	A quiet week of shared sitting — lit days you practiced. The outlined square is today.	いっしょに坐った静かな一週間 — 実践した日が点灯します。枠線のあるマスが今日です。
+HEATMAP_ARIA_WEEK	Last seven days of shared sitting. Weekday labels under each square; the outlined square is today.	ここ七日の同席。各マス下は曜日。枠線のあるマスが今日です。
+HEATMAP_DOW_0	Su	日
+HEATMAP_DOW_1	Mo	月
+HEATMAP_DOW_2	Tu	火
+HEATMAP_DOW_3	We	水
+HEATMAP_DOW_4	Th	木
+HEATMAP_DOW_5	Fr	金
+HEATMAP_DOW_6	Sa	土
 HINT_IN_APP_REMINDER	Set a daily time — Yin leaves a gentle note if you haven't practiced yet.	毎日の時刻を設定 — まだ実践していなければ、Yinがやさしいメモを残します。
 HINT_MICRO_RITUAL	A minute of breath — soft practice, no full Focus.	一分の呼吸 — やわらかな実践。フルFocusは不要です。
 HINT_HELP_AFFORDANCE	Not sure what to tap next? Start here.	次に何をタップするか迷ったら、ここから。

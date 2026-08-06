@@ -1,3 +1,4 @@
+# NOT_AUTHORITATIVE — SSOT is KNOWN_RISKY_TEST_CHECKLIST.md; this CSV may be stale. Do not use for QA.
 id,feature,status,steps,judgment,files,action
 1,Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉）,verified,"【前置】`cd focus-tiger && npm run dev` → Safari 打开 http://127.0.0.1:5173/?product=1；验收前确认本机已 `git pull` 到 origin/develop tip。
 
@@ -30,7 +31,7 @@ id,feature,status,steps,judgment,files,action
 6) Honesty 时长面板打开时点左下「?」：气泡尖角须指到可见锚点，不得指虚空。
 
 【通过标准】补登能记账；呼吸期 chrome 正确；? 不指空。",曾人工 OK + 真实链 e2e；2026-08-01 重回「有问题」：呼吸期底栏仍三球（应 keepQuickStart）、? 补救锚虚空等。真实链绿 ≠ 叠层/chrome 契约稳。,HonestyCheckIn* · sessionChromeSync.js · e2e honesty-bridge-real-path,走查回流 → 补 chrome/叠层 e2e
-3,Honesty 桥接 CTA,known-risky,"【前置】产品壳；先完成一次 Honesty 补登进入桥接。
+3,Honesty 桥接 CTA,verified,"【前置】产品壳；先完成一次 Honesty 补登进入桥接。
 
 【主路径】
 1) 补登结束立刻出现桥接：顶行 thanks +「要不要现在也坐一会儿？」Yes/No。
@@ -43,7 +44,7 @@ id,feature,status,steps,judgment,files,action
 6) 同日再补登应再出桥接。
 7) 375×667：toast 与桥接同屏不互挡到不可读。
 
-【通过标准】叠层/透明度/入口 suppress 都对；Yes/No 语义正确。",有问题：叠层挡 Yes/No、大文案框近乎不透明挡角色（2026-08-01/02）；半透明改动待复测。e2e 主路径有；观感/z-index 仍脆。,HonestyBridgeCta* · Z_INDEX.md · micro-ritual 注入叠层用例,走查 → 补 375 叠层断言
+【通过标准】叠层/透明度/入口 suppress 都对；Yes/No 语义正确。 【***测试OK】 **2026-08-04 关单** tip a76178f（:5176）。",TEST_TRACKER 桥接已通过（2026-08-04 · tip a76178f）。,HonestyBridgeCta* · Z_INDEX.md · e2e honesty-bridge-real-path,改桥接/叠层时复测
 4,Ambient Soundscape + 右上音符静音,known-risky,"【前置】产品壳；重置后默认应无音乐（opt-in）。
 
 【宽屏】
@@ -65,17 +66,17 @@ id,feature,status,steps,judgment,files,action
 5,「本周陪伴」热力图 UI,known-risky,"【前置】产品壳 Idle。
 
 【主路径】
-1) Idle 见「本周陪伴」7 格热力图。
-2) 宽屏：通常在左下「?」上方；窄屏：在抽屉/ActionBar 相关挂点，勿只剩看不见。
-3) 非 Idle（Focusing）：热力图应隐藏或按契约 park（不得挡 HUD）。
+1) Idle 见「本周陪伴」7 格热力图；每格下方有星期缩写；今日格有软描边（最右 = 今日）。【*测试OK】（2026-08-04 · Numbers 第7行 / 清单#5；今日标记合入后口径）
+2) 宽屏：通常在左下「?」上方；窄屏：在抽屉/ActionBar 相关挂点，勿只剩看不见。【*测试OK】
+3) 非 Idle（Focusing）：热力图应隐藏或按契约 park（不得挡 HUD）。【*测试OK】
 
 【真数据】
-4) 完成一场短计时（演示 1 分钟）或 Honesty 补登后回 Idle：今日格应变亮（或保持亮）。
+4) 完成一场短计时（演示 1 分钟）或 Honesty 补登后回 Idle：今日格（描边那格）应变亮（或保持亮）。【变亮 OK】；今日标记修已合 `origin/develop` tip `dc415d7`（PR #120）。2026-08-05 用户书面：fix 分支已手工验收，免 tip 复验（不强制再测）。TRACKER 今日标记行仍「待人工测试」——仅因关单规矩认 tip hash，非再邀测。
 
 【Hint】
-5) 清空 hints 已读后，点「?」：weekly-heatmap tip 应立刻出现且尖角靠近热力图（不得等「More tips」才出、不得指空）。
+5) 清空 hints 已读后，点「?」：weekly-heatmap tip 应立刻出现且尖角靠近热力图（不得等「More tips」才出、不得指空）。【测试不行】；用户书面：Hints 问题很多，需要再设计（清单 #7；交其他 Agent）。
 
-【通过标准】亮暗合理；Focusing 不挡；tip 几何可接受。",有问题：场景 O 曾大段 OK，后续与窄宽壳/抽屉/Hint 锚纠缠；e2e 锁壳与 seed，真练习变亮 + tip 尖角仍脆。,WeeklyPracticeHeatmap* · PracticeDaysStore · e2e weekly-practice-heatmap,走查 → 按反馈补几何 e2e
+【通过标准】能一眼认出今天；亮暗合理；Focusing 不挡；tip 几何待 Hints 再设计。","2026-08-04 走查：步1–3 OK；步4 变亮 OK + 今日标记已合 PR #120（`dc415d7`）；步5 Hint 不行→再设计。用户免 tip 复验。",WeeklyPracticeHeatmap* · PracticeDaysStore · e2e weekly-practice-heatmap,"Hints 再设计批次（其他 Agent）；今日标记子项不再排复验"
 6,应用内提醒设置 + 横幅,known-risky,"【前置】产品壳 Idle。
 
 【设置】
@@ -105,7 +106,8 @@ id,feature,status,steps,judgment,files,action
 5) Rise 后再 Focusing 点「?」仍可用。
 6) Lit 薄荷绿气泡观感可接受（护栏试点 ≠ 替代本条人工观感）。
 
-【通过标准】尖角/park/互斥不乱；文案可读。",有问题：? 补救尖角/park、Lit 薄荷绿观感。部分覆盖：见 HINTS_WIRING.md——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板保持观察、暂不扩 linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。,OnboardingHints* · HINTS_WIRING.md · e2e onboarding-remedy-contract · hints-visual-guardrail,走查观感；扩护栏前先读 HINTS_WIRING 批次政策
+【通过标准】尖角/park/互斥不乱；文案可读。
+2026-08-04（经清单#5 步5）：weekly-heatmap tip 路径 【测试不行】；用户书面「Hints 问题很多；需要再设计」。","有问题：? 补救尖角/park、Lit 薄荷绿观感；2026-08-04 产品方向：整体再设计（非单点 tip）。部分覆盖：见 HINTS_WIRING.md——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板保持观察、暂不扩 linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。",OnboardingHints* · HINTS_WIRING.md · e2e onboarding-remedy-contract · hints-visual-guardrail,"产品再设计批次（暂缓单点 tip 几何）；扩护栏前先读 HINTS_WIRING"
 8,冷启动「开场即睡」vs live DORMANT,known-risky,"【前置】需要本地有「≥2h 前」的 focus-session-end 戳。做法示例：先完成一场会话，用 DevTools/实验室改存储时间戳，或按 TEST_TRACKER「开场即睡」行说明准备。
 
 【冷启动】

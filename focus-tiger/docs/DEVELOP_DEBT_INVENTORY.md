@@ -6,7 +6,7 @@
 初稿对照过 **`1f46a57`**；合入本文件前已按 tip 刷新基线与「部分覆盖」标注。  
 性质：**只读盘点**——不改运行时、不改 `TEST_TRACKER` / `*_WIRING`；本文件可随复测结果更新标签。
 
-**人工走查步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（由根目录 KnownRisky `.numbers` 迁入；Numbers 不再权威）。
+**人工走查步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)。同目录 `known-risky-test-checklist.csv` **不权威**（勿对照验收）。仓库根 KnownRisky `.numbers` 已于 2026-08-05 删除。
 
 ---
 
@@ -56,19 +56,18 @@
 | 功能/交互点 | 状态标签 | 判定依据 | 涉及文件 | 建议后续动作 |
 |---|---|---|---|---|
 | Honesty Check-in（Idle 补登主路径） | known-risky | 曾人工 OK + 真实链 e2e；**2026-08-01 重回「有问题」**：呼吸期底栏仍三球（应 keepQuickStart）、? 补救锚虚空等。真实链绿 ≠ 叠层/chrome 契约稳。 | `HonestyCheckIn*` · `sessionChromeSync.js` · e2e `honesty-bridge-real-path` | 走查回流 → 补 chrome/叠层 e2e |
-| Honesty 桥接 CTA | known-risky | **有问题**：叠层挡 Yes/No、大文案框近乎不透明挡角色（2026-08-01/02）；半透明改动待复测。e2e 主路径有；观感/z-index 仍脆。 | `HonestyBridgeCta*` · `Z_INDEX.md` · `micro-ritual` 注入叠层用例 | 走查 → 补 375 叠层断言 |
 | Ambient Soundscape + 右上音符静音 | known-risky | **有问题**多行（L311/L315/L414）：Rise 停音、续播手势、窄屏抽屉挡 ♪ 历史红。`COVERAGE_GAP`：听感/行为几乎无 DOM 锁。**部分覆盖**：已有 `ambient-mute-resume-focusing` e2e；停音/续播全矩阵与听感仍未关单——排期勿与「从零排查 Ambient」重复。 | `AmbientSoundscape*` · e2e `ambient-mute-resume-focusing` · `user-ambient-upload` | 补测试（行为契约）+ 走查；对照已有 mute e2e |
-| 「本周陪伴」热力图 UI | known-risky | **有问题**：场景 O 曾大段 OK，后续与窄宽壳/抽屉/Hint 锚纠缠；e2e 锁壳与 seed，**真练习变亮 + tip 尖角**仍脆。 | `WeeklyPracticeHeatmap*` · `PracticeDaysStore` · e2e `weekly-practice-heatmap` | 走查 → 按反馈补几何 e2e |
+| 「本周陪伴」热力图 UI | known-risky | **2026-08-04/05**：步1–3 OK；步4 变亮 OK；今日标记已合 PR #120（`dc415d7`），用户免 tip 复验；步5 weekly tip **不行**→ Hints 再设计（其他 Agent）。e2e 锁壳与 seed。 | `WeeklyPracticeHeatmap*` · `PracticeDaysStore` · e2e `weekly-practice-heatmap` | Hints 再设计；今日标记子项不再排复验 |
 | 应用内提醒设置 + 横幅 | known-risky | **有问题**：入口/软提示/busy suppress 与壳改动邻接；e2e 有主路径+suppress，负例与刷新再出仍人工。 | `ReminderPreference*` · `InAppReminderBanner*` · e2e `in-app-reminder` | 走查 → 按缺口补测试 |
-| Onboarding Hints · ? 补救 / Lit 试点 | known-risky | **有问题**：? 补救尖角/park、Lit 薄荷绿观感。**部分覆盖**：见 `HINTS_WIRING.md`——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板**保持观察、暂不扩** linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。 | `OnboardingHints*` · `HINTS_WIRING.md` · e2e `onboarding-remedy-contract` · `hints-visual-guardrail` | 走查观感；扩护栏前先读 HINTS_WIRING 批次政策 |
+| Onboarding Hints · ? 补救 / Lit 试点 | known-risky | **有问题**：? 补救尖角/park、Lit 薄荷绿观感。**2026-08-04**：经清单#5 步5，weekly tip **测试不行**；用户书面「需要再设计」（产品方向）。**部分覆盖**：见 `HINTS_WIRING.md`——簇 A 格式已验；④ 视觉护栏试点已合（PR #93），用户拍板**保持观察、暂不扩** linux/peeked/更多 id（PR #95）；护栏 ≠ 人工观感关单；簇间互斥+尖角仍高耦合。 | `OnboardingHints*` · `HINTS_WIRING.md` · e2e `onboarding-remedy-contract` · `hints-visual-guardrail` | **产品再设计批次**；扩护栏前先读 HINTS_WIRING |
 | 冷启动「开场即睡」vs live DORMANT | known-risky | **有问题**行仍开；历史「修好又失效」（`DEV_WORKFLOW_QUALITY` §6.7）。契约：`onAppReady` 禁进睡 / 回前台≥2h 仍披毯——双路径易回归。 | `dormantIdle.js` · `dormantTrigger.js` · `main.js` onAppReady | 走查双路径 → 保持失败用例 |
 | earWiggle / 摇耳摸头回 Idle | known-risky | **有问题**：须正放→倒放→CapCut；易被「入库定格」假验收。与停接的 `welcomeBack` 同契约族。 | `EmotionController` · `spriteManifest` · Pointer/好奇池 | 走查序列 → 契约单测加固 |
-| `completionPending` 时 Sit 静默 `return` | known-risky | `EDGE_CASES` #5 仍 P1：门闩挡住但按钮未禁用 → 「点了没反应」体验债（回归锁红线）。 | `main.js` FocusInput · `SessionUiGate` | 补测试（禁用态）+ 小修（另任务） |
-| Visibility 契约 `gap-*` 行 | known-risky | `SHARED_RESOURCES` §6 / `DOC_CODE_CONTRACT` **V-gap**：桥接藏入口、FocusHUD 宽屏可见、鞠躬后 Companion 视口等**未全锁**；改 suppress 时易只绿一侧视口。 | `visibilityContractRegistry.js` · `test:e2e:visibility` | 补测试（收 gap） |
+| `completionPending` 时 Sit 静默 `return` | verified | **2026-08-05 批 4**：`shouldEnableFocusChromeButton` + `resyncSessionChrome` 禁 Sit；单测 + e2e `completionPending disables Sit`。 | `SessionUiGate` · `sessionChromeSync` · e2e scenario-a | 改完成反馈时复测禁用态 |
+| Visibility 契约 `gap-*` 行 | verified | **2026-08-05 批 4**：四行均 `locked`（补窄 Honesty / 375 heatmap / `expectFocusSessionActive` 锁 `#focus-hud`；宽屏 companion visible 已够）。`listVisibilityLockGaps()` 现为空。 | `visibilityContractRegistry.js` · `SHARED_RESOURCES` §6 | 改 suppress 时跑 visibility e2e |
 | 场景动画 Dispatcher（欢迎/深夜/好奇互斥） | known-risky | 已合 develop；`welcomeBack` **刻意空实现**（2026-08-02）；冷启动欢迎与深夜同 tick 互斥、硬切 vs CapCut 混用——文档多口径，人工多为「待测」。**部分覆盖**：中途 Rise 加权池（`riseStretchCasual`/`teaDrinking`/`bookReading`）已接线（PR #94 / `SCENE_ANIMATION_WIRING`）；勿把「Rise 手势池」再当未登记缺口。欢迎/深夜/好奇互斥仍待走查。 | `sceneAnimationDispatcher.js` · `SCENE_ANIMATION_WIRING.md` · `EmotionController` | 走查 Slice A/B 表 → 扩 dispatcher 失败用例；Rise 池见接线表 |
 | MilestoneGlow 与 Celebrating 同刻 | known-risky | 产品已接线；「同刻只播 Glow、庆祝戳仍记账 / Honesty 跨节点先 Glow 再桥接」跨模块时序；`TEST_TRACKER` 仍待人工；历史曾「已知不挡合并」。 | `MilestoneGlow*` · `session-completion-feedback` · e2e `milestone-glow-product` | 走查同刻路径 → 保持 e2e |
 | Companion 点选→开表门闩（含 375 鞠躬） | known-risky | 有强 smoke/e2e，但多次「鞠躬后无三选一」回归（L250/L254 族）；`arrivalGateReady` + stage + 窄宽壳隐式耦合（G-01 高风险契约）。 | `SessionUiGate` · `CompanionModePicker` · e2e `scenario-a.companion` | 走查回流（Rise 后再选）→ 门闩失败用例已有则保活 |
-| Emotion / `playEmotion` 返回值常忽略 | known-risky | `EDGE_CASES` #17–19：hold/强情绪 key 散落；新情绪漏登记难查；E-01 未进 docs:check。 | `EmotionController.js` · 多调用方 | 暂不处理（观察）或补 warn 契约 |
+| Emotion / `playEmotion` 返回值常忽略 | assumed-ok | **2026-08-05 批 4 部分收口**：`DEBUG_HOLD_POSE_EMOTION_KEYS` 导出 + 单测；companion oneshot `!started` warn。调用方仍可忽略 boolean——未强制改全调用面。 | `EmotionController.js` | 新情绪漏登记时再升级；E-01 仍暂无全表 docs:check |
 | `main.js` 完成路径 / `pendingAutoStart*` 闭包 | known-risky | `EDGE_CASES` #20–23：完成反馈、自动开表、叠层标志多 writer 历史；批 3 后仍标「可顺带收口」。 | `main.js` · `SessionEndFlow` | 走查异常回流；大重构暂不处理 |
 | Grow / `Milestone.js` 等占位 TODO | known-risky | 代码仍 `TODO(Task 3)` 会话时长/连续天等；与已接线 `MilestoneGlowStore` **两套叙事并存**，易误以为纪念奖励已完整。 | `Milestone.js` · `RewardToast.js` · `CORE_LOOP` Grow | 暂不处理（Backlog）或文档标明「脚手架」 |
 
@@ -123,10 +122,11 @@
 | 功能/交互点 | 状态标签 | 判定依据 | 涉及文件 | 建议后续动作 |
 |---|---|---|---|---|
 | Idle 窄宽 chrome 总验收（三球 / ⋯ / 抽屉） | verified | `TEST_TRACKER` Task3 **已通过**（2026-08-04）。KnownRisky #1：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 产品拍板窄屏 Hints **维持现状/延期**。专修 Focusing×? 见 PR #109 / §6.13。Facade 单测+e2e + 人工 §8+§9 壳故事。 | `IdleChromeFacade.js` · `idleChromeOrchestration.js` · `WideIdleMoreMenu` · `NarrowIdleShell` · e2e `wide-idle-more-menu` · 步骤见 `KNOWN_RISKY_TEST_CHECKLIST` #1 | 改壳时复测；步8 延期项勿当开放 Bug |
+| Honesty 桥接 CTA | verified | `TEST_TRACKER` **已通过**（2026-08-04 · tip **`3ea79b9`** · PR #118）。KnownRisky #3 verified；375 suppress/半透明/Yin 放大已锁。 | `HonestyBridgeCta*` · `idleChromeOrchestration` · e2e `375 bridge…` · `KNOWN_RISKY` #3 | 改桥接/叠层时复测 |
 | 产品壳 / 实验室壳切换 | verified | e2e `product-shell.smoke` + 长期使用基线；`?product=1` 契约清晰。 | `product-shell.smoke.spec.js` | 暂不处理 |
 | Arrival 外侧取消 / tip 只关 tip | verified | e2e + 7-25 书面 OK（含 375 tip 邻接修）。 | `outsideDismissGuard` · Arrival e2e | 改外侧逻辑时复测 |
 | Companion 点选即开表（主路径 DOM） | verified | e2e A/I/J/K + smoke 门闩 + 7-25 书面「点选即开表 OK」（窄宽壳总验收已于 2026-08-04 KnownRisky #1 / Task3 关单）。 | `scenario-a.companion.spec.js` · `scenario-smoke` | 与 known-risky 门闩回归分开看 |
-| Honesty→桥接→Yes→Arrival **真实链** | verified | Task 3 e2e（禁注入）+ 7-25 桥接叠层书面 OK；壳故事已关单；Honesty 叠层/呼吸期 chrome 若仍开则见本文件 Honesty known-risky 行，不撤销本条 DOM 主链。 | `honesty-bridge-real-path.spec.js` | 叠层回归另计 |
+| Honesty→桥接→Yes→Arrival **真实链** | verified | Task 3 e2e（禁注入）+ 7-25 桥接叠层书面 OK；壳故事已关单；桥接 CTA 已 verified；Honesty **Check-in** 呼吸期 chrome 若仍开见 known-risky，不撤销本条 DOM 主链。 | `honesty-bridge-real-path.spec.js` | 叠层回归另计 |
 | Reflection 主路径有/无意图回显 | verified | e2e + 抹闩单测 + 7-24 书面双路径 OK。 | `reflection-intention-echo.spec.js` | 改 Choose 闩时复测 |
 | 热力图 Store/壳显隐（非尖角观感） | verified | e2e seed 亮暗 + Focusing 隐藏等；与 UI「有问题」行区分。 | `weekly-practice-heatmap.spec.js` | 几何走查另计 |
 | 提醒横幅 busy=`suppress` | verified | e2e 按 suppress 断言；产品拍板记录在 SHARED/场景 P。 | `in-app-reminder.spec.js` | 改 busyPolicy 时复测 |
@@ -161,10 +161,10 @@
 
 | 状态标签 | 条数 | 占比（约） |
 |---|---|---|
-| **known-risky** | **16** | 27% |
+| **known-risky** | **12** | —（批 4 后：Sit 禁用 / Visibility gap / playEmotion 部分迁出） |
 | **unknown** | **8** | 14% |
 | **assumed-ok** | **22** | 37% |
-| **verified** | **13** | 22% |
+| **verified** | **14** | 24% |
 | **合计（功能/交互点）** | **59** | 100% |
 | 另：**未登记/缺口**（上表） | **8** | —（不计入四态合计） |
 

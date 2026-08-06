@@ -1,14 +1,31 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
-import { clickWideMoreProxyOrDirect, openFreshProductShell } from './helpers/product-shell.js';
-
+import {
+  clickBreathPracticeEntry,
+  clickWideMoreProxyOrDirect,
+  openFreshProductShell
+} from './helpers/product-shell.js';
 
 /**
- * 「一分钟呼吸」微仪式 DOM 主路径。
- * 用 `?microRitualMs=` 缩短墙钟；序列观感（smiling / 摆尾节奏）仍人工。
+ * Breath practice（原「一分钟呼吸」）DOM 主路径。
+ * 入口 = 首页左球；用 `?microRitualMs=` 缩短墙钟；须先点时长 chip。
  */
-test('micro ritual: entry → breath → complete → record + toast', async ({
+async function openMicroRitualPicker(page) {
+  await clickBreathPracticeEntry(page);
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
+  return ritual;
+}
+
+async function pickMicroRitualMinutes(page, minutes = 1) {
+  const ritual = page.locator('#micro-ritual');
+  await ritual.locator(`[data-micro-ritual-minutes="${minutes}"]`).click();
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
+}
+
+test('micro ritual: entry → pick → breath → complete → record + toast + reflection', async ({
   page
 }) => {
   const retentionLogs = [];
@@ -23,14 +40,9 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     path: '/?product=1&microRitualMs=2800'
   });
 
-  const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeAttached({ timeout: 15_000 });
-  // Wide Idle parks the pill; open via ⋯ (or direct on narrow)
-  await clickWideMoreProxyOrDirect(page, 'breath');
+  const ritual = await openMicroRitualPicker(page);
+  await pickMicroRitualMinutes(page, 1);
 
-  const ritual = page.locator('#micro-ritual');
-  await expect(ritual).toBeVisible({ timeout: 5_000 });
-  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
   await expect(
     ritual.locator('[data-micro-ritual-breath-phase]')
   ).toContainText(/Inhale|Exhale|吸气|呼气/i);
@@ -112,13 +124,10 @@ test('micro ritual: entry → breath → complete → record + toast', async ({
     .poll(() => retentionLogs.length, { timeout: 5_000 })
     .toBeGreaterThan(0);
 
-  // 回流：⋯ 再出；入口仍在 DOM（宽屏停靠）；Sit 恢复；不进 Reflection
-  await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
-  await expect(entry).toBeAttached();
-  await expect(page.locator('#btn-focus')).toBeVisible();
-  await expect(page.locator('#btn-focus')).toBeEnabled();
-  await expect(page.locator('#btn-focus')).toContainText(/Sit with Yin|与阿寅同坐/i);
-  await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
+  // 浅接 Reflection（不等完成动画播完）
+  await expect(page.locator('#tiger-reflection-moment')).toBeVisible({
+    timeout: 8_000
+  });
 });
 
 test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
@@ -128,16 +137,26 @@ test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
   await openFreshProductShell(page, {
     path: '/?product=1&microRitualMs=60000'
   });
-  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible({
     timeout: 15_000
   });
+  // Drawer must not list Breath (home ball only).
   await page.locator('.ft-narrow-grabber').click();
-  const breathRow = page.locator('.ft-narrow-sheet__item[data-proxy="breath"]');
-  await expect(breathRow).toBeVisible({ timeout: 5_000 });
-  await breathRow.click();
+  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+    'aria-hidden',
+    'false'
+  );
+  await expect(
+    page.locator('.ft-narrow-sheet__item[data-proxy="breath"]')
+  ).toHaveCount(0);
+  await page.locator('body').click({ position: { x: 8, y: 8 } });
+
+  await clickBreathPracticeEntry(page);
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
+  await ritual.locator('[data-micro-ritual-minutes="1"]').click();
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
   // 图5 回归：窄屏 focusing 布局不得仍露出 Sit；HUD 仍直播
   await expect(page.locator('#btn-focus')).toBeHidden();
@@ -201,9 +220,7 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
     path: '/?product=1&microRitualMs=60000'
   });
 
-  const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeAttached({ timeout: 15_000 });
-  await clickWideMoreProxyOrDirect(page, 'breath');
+  await openMicroRitualPicker(page);
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
@@ -226,9 +243,56 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
     /Today counts|今天，也算数/
   );
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
-  await expect(entry).toBeAttached();
+  await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
+  await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
+});
+
+test('micro ritual ambient is ephemeral: Focus presence still works after leave', async ({
+  page
+}) => {
+  await openFreshProductShell(page, {
+    path: '/?product=1&microRitualMs=60000'
+  });
+
+  await openMicroRitualPicker(page);
+  await pickMicroRitualMinutes(page, 1);
+
+  const duringRitual = await page.evaluate(() => {
+    const a = window.__ambientSoundscape;
+    return {
+      preferred: a?.getPreferredTrackId?.(),
+      sessionBoost: a?.getPresenceBoost?.(25) ?? null,
+      pref: localStorage.getItem('focus-tiger.ambient-pref.v1')
+    };
+  });
+  // Ephemeral play must not arm Focus presence session
+  expect(duringRitual.sessionBoost).toBe(0);
+
+  await page.locator('#micro-ritual [data-micro-ritual-leave]').click();
+  await expect(page.locator('#micro-ritual')).toBeHidden({ timeout: 5_000 });
+
+  const afterLeave = await page.evaluate(async () => {
+    const a = window.__ambientSoundscape;
+    const pref = localStorage.getItem('focus-tiger.ambient-pref.v1');
+    const preferred = a.getPreferredTrackId();
+    a.startSession();
+    await a.setTrack('singing-bowl');
+    return {
+      pref,
+      preferred,
+      audible: a.isAudiblePlaying(),
+      boost: a.getPresenceBoost(25),
+      wants: a.wantsEnabled()
+    };
+  });
+
+  expect(afterLeave.preferred).toBe(duringRitual.preferred);
+  expect(afterLeave.pref).toBe(duringRitual.pref);
+  expect(afterLeave.audible).toBe(true);
+  expect(afterLeave.boost).toBeGreaterThan(0);
+  expect(afterLeave.wants).toBe(true);
 });
 
 test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
@@ -300,19 +364,23 @@ test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', asyn
   // 图4：桥接时 ActionBar 时间仍可见（勿 suppress）
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('.ft-narrow-action-bar__time')).toBeVisible();
+  // 窄屏三球 / grabber 不得盖住 Yes/No（z30 高于桥接 z18）
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeHidden();
+  await expect(page.locator('.ft-narrow-grabber')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
   // 不自动出 honesty-bridge tip
   await expect(
     page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')
   ).toHaveCount(0);
 
-  // 补救 tip：点 tip 不得关掉 Yes/No
+  // 点「?」只出产品简介，不得喷 tip，也不得关掉 Yes/No
   await page.locator('#ft-narrow-help-btn').click();
-  const tip = page.locator(
-    'ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]'
-  );
-  await expect(tip).toBeVisible({ timeout: 8_000 });
-  await tip.click();
-  await expect(tip).toBeHidden({ timeout: 3_000 });
+  await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+    timeout: 8_000
+  });
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="honesty-bridge"]')
+  ).toHaveCount(0);
   await expect(bridge).toBeVisible();
   await expect(bridge.getByRole('button', { name: /^(Yes|好啊)$/i })).toBeVisible();
 });
@@ -330,8 +398,19 @@ test('Honesty Check-in click hides entry until duration panel open', async ({
   await expect(honestyEntry).toBeHidden();
 });
 
+test('375 Honesty panel: narrow home Honesty ball hidden', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible({
+    timeout: 15_000
+  });
+  await page.locator('#ft-narrow-home-honesty').click();
+  await expect(page.locator('#honesty-check-in')).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
+});
+
 /**
- * micro-ritual-sit-unavailable (narrow): scenario O ⑤ — during a minute of breath,
+ * micro-ritual-sit-unavailable (narrow): during Breath practice,
  * home Sit ball must not remain clickable/visible (shell Focusing hides home CTAs;
  * legacy #btn-focus stays disabled).
  */
@@ -346,20 +425,14 @@ test('375 micro ritual: home Sit unavailable while breath runs', async ({
     timeout: 15_000
   });
   await expect(page.locator('#ft-narrow-home-sit')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
 
-  await page.locator('.ft-narrow-grabber').click();
-  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
-    'aria-hidden',
-    'false'
-  );
-  await page
-    .locator('.ft-narrow-sheet__item', {
-      hasText: /A minute of breath|一分钟呼吸/i
-    })
-    .click();
+  await clickBreathPracticeEntry(page);
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
+  await ritual.locator('[data-micro-ritual-minutes="1"]').click();
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
   await expect(
     ritual.locator('[data-micro-ritual-breath-phase]')

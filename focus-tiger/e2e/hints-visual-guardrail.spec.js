@@ -4,7 +4,6 @@ import {
   HINT_MINT_RGB,
   isMintDotNotCream,
   isTipPanelMintNotCream,
-  measureTipVsAnchor,
   parseCssRgb,
   readMuteMintPseudoRgb,
   readTipBubblePanelRgb,
@@ -49,29 +48,40 @@ test.describe('hints visual guardrail · wide Idle', () => {
     expect(isMintDotNotCream(sample.rgb)).toBe(true);
   });
 
-  test('sit tip: above Sit, mint panel, soft screenshot (no Yin)', async ({
+  test('? click shows purpose only — no sit tip spray', async ({
     page
   }) => {
     await openFreshProductShell(page);
     await page.locator('#onboarding-hint-help').click();
 
+    await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+      timeout: 8_000
+    });
+    await expect(
+      page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
+    ).toHaveCount(0);
+  });
+
+  test('mute mint host hover still expands ambient tip (pulse path)', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+
+    const mute = page.locator('.ambient-soundscape__mute');
+    await expect(mute).toBeVisible({ timeout: 8_000 });
+    // Force unread mint if cold shell already peeked.
+    await page.evaluate(() => {
+      window.__onboardingHints?.store?.clear?.();
+      window.__onboardingHints?.syncDiscoveryDots?.();
+    });
+    await expect(mute).toHaveClass(/has-hint-mint/, { timeout: 5_000 });
+    await mute.hover();
     const tip = page.locator(
-      'ft-onboarding-hint-bubble[data-hint-id="sit-button"]'
+      'ft-onboarding-hint-bubble[data-hint-id="ambient-soundscape"]'
     );
-    await expect(tip).toBeVisible({ timeout: 8_000 });
+    await expect(tip).toBeVisible({ timeout: 5_000 });
 
-    // Wide home Sit ball is the on-screen anchor; #btn-focus may be park-proxy.
-    const sitAnchor = (await page.locator('#ft-wide-home-sit').isVisible())
-      ? '#ft-wide-home-sit'
-      : '#btn-focus';
-    const geo = await measureTipVsAnchor(page, 'sit-button', sitAnchor);
-    expect(geo, `sit tip + ${sitAnchor} measurable`).not.toBeNull();
-    expect(geo.tip.bottom, 'tip sits above Sit control').toBeLessThanOrEqual(
-      geo.anchor.top + 48
-    );
-    expect(geo.midYDelta, 'vertically related to Sit').toBeLessThan(240);
-
-    const panel = await readTipBubblePanelRgb(page, 'sit-button');
+    const panel = await readTipBubblePanelRgb(page, 'ambient-soundscape');
     expect(panel, 'tip panel styles').not.toBeNull();
     const panelRgb = panel.rgb || parseCssRgb(panel.backgroundColor);
     expect(panelRgb, `tip fill parseable (${panel.backgroundImage})`).not.toBeNull();
@@ -79,72 +89,35 @@ test.describe('hints visual guardrail · wide Idle', () => {
       isTipPanelMintNotCream(panelRgb),
       `tip panel mint-ish, not cream help-button; got ${JSON.stringify(panelRgb)}`
     ).toBe(true);
-
-    // Soft PNG is platform-specific (font AA). CI stays on RGB+geometry until
-    // linux baselines are committed (opt-in: FT_HINTS_SOFT_SNAP=1).
-    if (!process.env.CI || process.env.FT_HINTS_SOFT_SNAP === '1') {
-      await expect(tip).toHaveScreenshot('sit-button-tip-wide.png', {
-        animations: 'disabled',
-        maxDiffPixelRatio: 0.04
-      });
-    }
   });
 
-  test('help-affordance tip sits to the right of ? when badge opens it', async ({
+  test('? hover/click never opens help-affordance tip bubble', async ({
     page
   }) => {
     await openFreshProductShell(page);
 
-    const helpTip = page.locator(
-      'ft-onboarding-hint-bubble[data-hint-id="help-affordance"]'
-    );
-    const badge = page.locator(
-      '.onboarding-hint-badge[data-hint-id="help-affordance"]'
-    );
-
-    if (!(await badge.isVisible().catch(() => false))) {
-      test.skip(true, 'help-affordance mint badge not on cold Idle (already seen / exclusive)');
-    }
-
-    // click tier: hover/focus opens preview (same as mute mint host).
-    await badge.hover();
-    await expect(helpTip).toBeVisible({ timeout: 5_000 });
-
-    const geo = await measureTipVsAnchor(
-      page,
-      'help-affordance',
-      '#onboarding-hint-help'
-    );
-    expect(geo).not.toBeNull();
-    expect(geo.tip.left).toBeGreaterThan(geo.anchor.right - 8);
-    expect(geo.gapX).toBeLessThan(80);
-    expect(geo.midYDelta).toBeLessThan(80);
+    await page.locator('#onboarding-hint-help').hover();
+    await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+      timeout: 5_000
+    });
+    await expect(
+      page.locator('ft-onboarding-hint-bubble[data-hint-id="help-affordance"]')
+    ).toHaveCount(0);
   });
 });
 
 test.describe('hints visual guardrail · narrow Idle', () => {
   test.use({ viewport: { width: 375, height: 667 } });
 
-  test('375 sit tip soft snapshot (ActionBar remap path)', async ({ page }) => {
+  test('375 ? click shows purpose only (no sit tip spray)', async ({ page }) => {
     await openFreshProductShell(page);
     await page.locator('#ft-narrow-help-btn').click();
 
-    const tip = page.locator(
-      'ft-onboarding-hint-bubble[data-hint-id="sit-button"]'
-    );
-    await expect(tip).toBeVisible({ timeout: 8_000 });
-
-    const panel = await readTipBubblePanelRgb(page, 'sit-button');
-    expect(panel).not.toBeNull();
-    const rgb = panel.rgb || parseCssRgb(panel.backgroundColor);
-    expect(rgb).not.toBeNull();
-    expect(isTipPanelMintNotCream(rgb)).toBe(true);
-
-    if (!process.env.CI || process.env.FT_HINTS_SOFT_SNAP === '1') {
-      await expect(tip).toHaveScreenshot('sit-button-tip-narrow-375.png', {
-        animations: 'disabled',
-        maxDiffPixelRatio: 0.05
-      });
-    }
+    await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+      timeout: 8_000
+    });
+    await expect(
+      page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
+    ).toHaveCount(0);
   });
 });

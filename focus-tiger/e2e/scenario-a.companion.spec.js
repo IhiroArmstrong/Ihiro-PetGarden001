@@ -247,9 +247,9 @@ test('375 Arrival Breath: home Sit stays hidden; Quick Start stays', async ({
 });
 
 /**
- * Arrival keepQuickStart: home ⚡ must begin Focus (not silent no-op when dock ⚡ is hidden).
+ * Arrival keepQuickStart: home left ball opens Breath practice (cancels Arrival).
  */
-test('375 Arrival: home Quick Start begins focus', async ({ page }) => {
+test('375 Arrival: home Breath practice opens duration picker', async ({ page }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
@@ -259,7 +259,9 @@ test('375 Arrival: home Quick Start begins focus', async ({ page }) => {
   await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
   await page.locator('#ft-narrow-home-quickstart').click();
   await expect(arrival).toBeHidden({ timeout: 15_000 });
-  await expectFocusSessionActive(page);
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
 });
 
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
@@ -453,4 +455,36 @@ test('Choose write-your-own: → confirm commits typed text', async ({ page }) =
   await expect(page.locator('.session-start-dock__panel')).toBeVisible({
     timeout: 15_000
   });
+});
+
+/**
+ * EDGE #5 / 审计 #1：completionPending 时 Sit 须 disabled，禁止可点静默 return。
+ */
+test('completionPending disables Sit (no silent no-op)', async ({ page }) => {
+  await openFreshProductShell(page);
+  await expect(page.locator('#btn-focus')).toBeEnabled({ timeout: 15_000 });
+
+  await page.evaluate(() => {
+    const gate = /** @type {{ setCompletionPending: (v: boolean) => void }} */ (
+      window.__sessionUiGate
+    );
+    const resync = /** @type {() => void} */ (window.__resyncSessionChrome);
+    if (!gate || typeof resync !== 'function') {
+      throw new Error('missing __sessionUiGate / __resyncSessionChrome');
+    }
+    gate.setCompletionPending(true);
+    resync();
+  });
+
+  await expect(page.locator('#btn-focus')).toBeDisabled();
+  await expect(page.locator('#btn-focus')).toHaveAttribute(
+    'aria-disabled',
+    'true'
+  );
+
+  await page.evaluate(() => {
+    window.__sessionUiGate.setCompletionPending(false);
+    window.__resyncSessionChrome();
+  });
+  await expect(page.locator('#btn-focus')).toBeEnabled();
 });

@@ -29,10 +29,12 @@
 | 2026-08-03 | Welcome 里误出鹦鹉信使：冷启动串扰 + onComplete 后 trailing idle 盖播 | **§6.10** |
 | 2026-08-04 | 长挂 Vite「第一眼披斗篷」误判开场即睡；拍板关掉白天无操作披毯 | **§6.11** |
 | 2026-08-04 | 鹦鹉→Idle 仍闪白：CapCut「统一关单」覆盖面窄于字面承诺 + 单测假绿 | **§6.12** |
+| 2026-08-06 | Arrival Breath/Choose 仍闪白：`smiling`/`intentionSet` 仍 `clear:true` 致 CapCut 静默跳过 | **§6.15** |
 | 2026-08-04 | 窄屏 Focusing×? tip 叠团：记入≠开修 + 单测锁 id 未锁同时可见条数 | **§6.13** |
+| 2026-08-05 | 「待你决定」须标出已被 tip/远端覆盖的伪选项为（不合理） | **N14a** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -138,6 +140,7 @@
 | # | 规范 |
 |---|---|
 | N14 | 每次任务汇报（含文档-only / 调研 / 修复）的回复**末尾**必须有一个**独立小节**「**待你决定 / 待你知道**」清单；**禁止**只在正文叙述里带过。无事项时写「无（本次无需你拍板或额外知情）」。 |
+| N14a | **「待你决定」伪选项须标（不合理）**（2026-08-05）：Agent 已核对发现某候选**不必再做**（例：本地未推 commit 的内容已被 `origin/develop` tip 覆盖 / 已合入 / 等价提交已在远端；再 cherry-pick 会回退文档；远端分支已删且 develop 已有同语义）→ 仍可列在「待你决定」里供扫读，但该条**必须**带字面标记 **`（不合理）`** + 一句短因。**禁止**把这类伪选项写成尚待拍板的开放项，导致用户用「合理则办」误授权无效动作。真正需要拍板的项**不要**标（不合理）。若全部是伪选项 → 「待你决定」可写「无待拍板项」并另列带（不合理）的已排除项，或全部列在「待你决定」下且每条标（不合理）。 |
 
 > **N15** 见 §2.1（与 N6 并列强制）：Bug 修复 = 代码/措施 + 文档 + 立刻 commit。
 
@@ -145,11 +148,14 @@
 
 ```markdown
 ### 待你决定 / 待你知道
-- **待你决定**：…（需拍板 / 选方案 / 是否继续下一步；无则写「无」）
+- **待你决定**：
+  - …（需拍板 / 选方案；无则写「无」）
+  - cherry-pick 某本地 docs → **（不合理）** tip 已有更新版 / 已合入
 - **待你知道**：…（已做完但须知情：commit、未 push、TEST_TRACKER 待测项、已知未覆盖、**Vite/Playwright 进程收尾**、**Cloud 独立会话**等；无则写「无」）
 ```
 
 两条可各列多条 bullet；标题字面须可被扫读到，勿改成「小结」「Next」等模糊替代。  
+`（不合理）` 标记字面须可被搜到（全角括号 + 不合理）；短因写在同一 bullet。  
 起过 Vite/Playwright 或启用/建议 Cloud 时的强制提醒句 → `RULES_INDEX` → `browser-energy`（勿在本文复述全文）。IDE Browser 已由 hooks 硬禁；窄屏验收用 Safari 响应式 / Playwright。
 
 ### 2.5 双视口故事矩阵（N17–N24）
@@ -201,8 +207,9 @@
 正文可以简洁；**决策与知情不得埋在段落里**。收尾前自问：
 
 1. 有没有需要用户拍板的（继续做 6.3？引入 Playwright？接受某观感折衷？）→ 进「待你决定」。  
-2. 有没有用户必须知情、但不必立刻回复的（已 commit / 未 push、N 项待人工测、冒烟未覆盖观感、已知缺口）→ 进「待你知道」。  
-3. 两者皆空 → 仍输出该标题，写「无」。
+2. 有没有已核对过、**不必再做**的候选（tip 已覆盖、已合入、再做会回退）→ 仍可进「待你决定」，但必须标 **`（不合理）`** + 短因（N14a）；**禁止**混成开放拍板项。  
+3. 有没有用户必须知情、但不必立刻回复的（已 commit / 未 push、N 项待人工测、冒烟未覆盖观感、已知缺口）→ 进「待你知道」。  
+4. 两者皆空 → 仍输出该标题，写「无」。
 
 ### 3.5 Git 节奏（与质量的关系）
 
@@ -395,6 +402,7 @@
 | 2026-07-20 | §6 初补四缺口与晋级路径 |
 | 2026-07-20 | 合并 SUPPLEMENT：§6.1–6.4；落地 `scenario-smoke`；升格 N12/N13；删除平行补充文档 |
 | 2026-07-20 | 升格 N14：任务汇报末尾独立「待你决定 / 待你知道」；同步 regression-lock |
+| 2026-08-05 | 升格 N14a：「待你决定」伪选项标（不合理）；防「合理则办」误授权 |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |
@@ -576,7 +584,35 @@
 | P4 | 产品 companion oneshot 若与张望同属「回 Idle 不得闪白」→ 开工已好清单须显式对齐抗闪不变量（`clear` / `holdLastFrame` / freeze）；禁止只抄 `returnCrossFadeMs` 数字 |
 
 **本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 用户反馈；当时**未改运行时**。  
-**2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（未另开抗闪 `fix/*`）。P3 单测补强仍建议后补。
+**2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（关单当时未合入抗闪运行时）。  
+**后补（`fix/parrot-idle-capcut-2026-08-04`）**：落地 §6.12 **P3/P4**——`_playCompanionSequenceOnce` 对齐张望抗闪（`clear: false` + 默认 `holdLastFrame`）；`parrotEarVisit` / `earWiggleHeadTouch` 单测补 `onComplete`→idle CapCut。**不是**重开「闪白未修」关单（人工观感已在 tip `0494dd6` 关）；本笔是契约硬化，防假绿回潮。
+
+### 6.15 Arrival Notice/Breath 与 Choose 鞠躬仍闪白 · 抗闪未推广到 `smiling` / `intentionSet`（2026-08-06）
+
+**现象**：Sit → What is present（Notice）点选后，眨眼微笑切 Breath **闪白**；Choose 后 Yin 鞠躬（`intentionSet`）后段再 **闪白**。用户原话要点：上次不是已把太快转场统一改成 1s 叠化了吗？为什么现在还有？杜绝很难吗？
+
+**不是** `CAPCUT_DISSOLVE_MS` 被改回短淡入，也**不是** Arrive 文档/关单行「已通过」被神秘回滚。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 调用方已传 CapCut | `main.js` `onBreath` / `onWelcome` 对 `smiling` 已传 `crossFadeMs: CAPCUT` + `freezeUntilCrossFadeEnds: true`。`intentionSet` 实现内也默认 `crossFadeMs` / `returnCrossFadeMs` / freeze。 |
+| B · 播放前先藏层 | `smiling` / `intentionSet` 仍走 `_leaveIdleBaseline()` **默认 `clear: true`** → `spritePlayer.stop({ clear: true })` → overlay `opacity===0`。下一笔 `play(..., crossFadeMs)` 因 `shouldCrossFade` 要求 `opacity !== '0'` → **CapCut 静默跳过**（文首「假修好 / CapCut 静默跳过」同型）。用户看见的「闪白」= 背景透出，不是叠化失败的视觉噪声。 |
+| C · `smiling` 丢 freeze | 即便调用方传了 `freezeUntilCrossFadeEnds`，旧 `smiling` **未转发**到 `blinkSmile` playOpts → 溶解期仍可能开播新帧（Safari 透明闪）。 |
+| D · 关单矩阵未锁 Arrival 抗闪不变量 | 「跨动画短叠化统一」关单（§6.12 A）与 Choose pingpong 行书面 OK 锁的是 **有 1s 字段 / 点头观感**，**未**锁「离开 Idle/smiling 时 `clear:false`」。§6.12 P4 只后补了 companion oneshot，**未**回头改 Arrival 主路径 `smiling` / `intentionSet`。 |
+| E · 单测假绿 | `intentionSet … then returns to idle` 的 mock `stop()` 不模拟藏层；断言 options 数字全绿，**拦不住**真实浏览器 CapCut 静默跳过。 |
+
+**因果一句话**：**字面「一律 CapCut」已写进 options，但 Arrival 主路径仍用 `clear:true` 先藏 overlay** → 叠化条件永远不成立；关单与单测只验「写了 1000」，不验「离开时是否保活末帧」。故「统一筛查过」与「产品路径仍闪」可长期并存。
+
+**工作流补丁（须遵守 · 叠在 §6.12 P1–P4 上）**：
+
+| # | 要求 |
+|---|---|
+| A1 | 凡「跨序列不得闪白」产品路径：离开上一序列时默认 **`_leaveIdleBaseline({ clear: false })`**（或等价保活末帧）；`clear:true` 仅当任务书明确允许硬切露底 |
+| A2 | 契约单测须断言 **`stop({ clear: false })`**（或 mock 记录 clear），禁止只 assert `crossFadeMs===1000` |
+| A3 | Arrival 关单 / 复测步骤须**分列**：(1) Notice→Breath 微笑切入不闪；(2) Choose→鞠躬切入不闪；(3) 鞠躬→Idle/Companion 回落不闪——禁止用「Choose pingpong OK」冒充三条 |
+| A4 | 新改 `_leaveIdleBaseline` 默认值前须扫高风险情绪键；至少 `smiling` / `intentionSet` / companion oneshot 与张望链对齐 |
+
+**本回合落地**：`smiling` / `intentionSet` → `clear: false`；`smiling` 转发 freeze + 默认 CapCut；`intentionSet` 默认定格末帧；单测锁 `stop({ clear: false })`；`TEST_TRACKER` 分列重开待测。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
@@ -610,6 +646,58 @@
 **2026-08-04 再书面「没修复」· 工作流根因（查证）**：不是代码回潮。本机 `127.0.0.1:5173` 当时由 **另一 worktree**  
 `Zen-tiger-Pet-garden001-wt-starlight-cloak-sleep`（分支 `docs/develop-small-pr-auto-merge-habit` @ `009402b`）占用——**无** `resolveRemedyImmediateAndFolded`。修在主仓 `fix/focusing-remedy-primary-chip-2026-08-04` @ `8241858` 且**未 push**。用户按默认 5173 复测 = 测到无修 tip → 误判「没修」。同型：08-02 薄荷绿清空钮事故（`TEST_TRACKER` ⋯ 行）。  
 **补丁（F5）**：邀测 / 复测须写明 **分支名 + 端口 + worktree 路径**；默认 5173 被占用时改用其它端口（如 5175），禁止默认「打开 5173 即本修」。
+
+### 6.14 Ambient：Rise 后曲目高亮「丢记忆」+ 重播非断点续播 · 记入≠开修 / 契约偷换（2026-08-05）
+
+**现象（用户书面 · tip 测 6 新曲 OK 同场）**：
+
+1. Rise 停播 → 再悬停开 Soundscape → **上次曲目无高亮**（像没记住）。  
+2. 静音后再开 / 「续播」→ **从头播放**，不是断点续播（用户早在 **2026-08-01 P1-4** 提过）。  
+3. 宽屏面板水平居中挡阿寅 → 应默认靠右（构图）。
+
+**不是**神秘回潮。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 曲目高亮 | `resolveAmbientPanelSelectedTrackId`：**可闻→该曲**；`wantsEnabled`→preferred；**否则一律 Off**。注释写明服务「冷启动无声不得高亮 Mer-Ka-Ba」。`endSession`（Rise）只清 `_wantEnabled`、停播，**保留** `_preferredTrackId`——存储记得，**面板选择器故意不画**。冷启动 Off 修（2026-08-04）把「静音≡高亮 Off」推广到 **Rise 后静音**，无「曾播过则高亮 preferred、Off 仍可选」的分列契约。 |
+| B · 断点续播 | `_stopPlayback` **硬编码** `currentTime = 0` 并 **拆掉/重建** `<audio>`（src 清空）。`mute`→`unmute`→`setTrack` 只能从头。e2e `ambient-mute-resume-focusing` 的「resume」= **再开播 preferred 有声**，**不断言** `currentTime` 续播。 |
+| C · 记入≠开修 | P1-4（2026-08-01）已写「重播非续播」。`fix/chrome-only-…` 收尾明文 **「续播未改」**（§6.13 B）。右上音符行写「历史项若未再测可保留观察」→ **观察代替专修**。无 `fix/*` 改 `_stopPlayback` seek；无单测锁「mute 前后 currentTime」。 |
+| D · 面板居中 | `AmbientSoundscapeUI` 内联 CSS：`body.ft-wide-stage-sound .ambient-soundscape__focus-chrome { left: 50%; transform: translateX(-50%); }`——宽屏舞台**刻意居中**，非回归；从未有「靠右」验收行。 |
+
+**因果一句话**：**冷启动 Off 高亮契约过宽覆盖 Rise 回流** + **「续播」产品词被 e2e/文案偷换成「再开播」** + **记入后观察/延期无专修** → 用户再撞上像「一直没修」。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| G1 | 「静音/停播后面板高亮」须**分列**：冷启动从未播 → Off；Rise/音符静音后仍有 preferred → **高亮 preferred**（可另画 Off 行）；禁止一个 `silent→Off` 糊所有回流 |
+| G2 | TRACKER / e2e 写「续播」必须注明 **seek 续播** vs **再开播**；若产品要断点，须锁 `currentTime`（或等价），禁止只绿「又有声了」 |
+| G3 | P1 类「有问题」且用户写明路径 → 须专修或**书面延期（含理由）**；禁止「可保留观察」长期代替开修（同 F1） |
+| G4 | 宽屏 Soundscape 位置属构图契约：改 `ft-wide-stage-sound` 布局须进 TRACKER 必测（靠右/不挡阿寅） |
+
+**本回合落地**：查证写入本 §6.14 + `TEST_TRACKER`（6 曲入库关单；三 Bug 专行 post-v1）。**未改运行时**——待你点名开工 `fix/ambient-panel-memory-seek-right`。
+
+### 6.14b 跟进：音符点不动 + 靠右未生效 · 双 CSS / 关面板语义（2026-08-05 晚）
+
+**用户书面（PR #131 分支自检 · 5177）**：Rise 后再开面板 **高亮 OK**；静音断点续播 **OK**；但 Rise 后再点 **音符无反应不播**；宽屏面板 **仍不靠右**。要求每曲行加 Play/Pause。
+
+**根因（非「没合 tip」）**：
+
+| 层 | 事实 |
+|---|---|
+| E · 音符 | 面板已开且无声时，`_onNoteClick` **只关面板**；`consumeResumePreferredOnOpen` 仅在 **note-mute** 置位，**Rise/`endSession` 硬停不置位**。悬停开面板 → 点音符 = 关面板循环，看起来像「点了没反应」。高亮记忆修好后更易踩中（用户盯着高亮曲点音符期望开播）。 |
+| F · 靠右 | `AmbientSoundscapeUI` 已改 `body.ft-wide-stage-sound` 靠右，但 **Idle 宽屏** 另有 `WideIdleMoreMenu` 规则 `body.ft-wide-park-secondary.ft-wide-stage-sound` **仍 `left:50%` + `translateX(-50%)` 且 `!important`**，特异性更高 → Idle 验收永远居中。典型 **改一处 CSS、漏姊妹选择器**。 |
+| G · 工作流 | 自测若只在 Focusing（无 `ft-wide-park-secondary`）看靠右会绿；用户在 Idle 开面板则仍居中。缺「Idle park + Focusing」双路径布局验收。 |
+
+**补丁**：
+
+| # | 要求 |
+|---|---|
+| G5 | 改 `ft-wide-stage-sound` 布局时 **同步** `WideIdleMoreMenu` / Narrow 等同主题选择器；TRACKER 必测写清 **Idle 宽屏**（非仅 Focusing） |
+| G6 | 音符：无声 + 有 remembered/resume → **开播 preferred**，禁止只 toggle 关面板；另提供 **每曲行 Play/Pause** 作显式控制 |
+| G7 | 邀测写清 **worktree 端口**（本修 ≠ 主仓 5173） |
+
+**本回合落地**：`shouldStartPreferredFromNoteClick` + 每曲 ▶/❚❚ + Idle 靠右对齐；TRACKER 更新反馈。
 
 ---
 

@@ -15,6 +15,12 @@ import {
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
+import {
+  loadPreferredFocusDurationMinutes,
+  resolveFocusSessionTargetMinutes,
+  savePreferredFocusDurationMinutes,
+  shouldSkipFocusDurationPicker
+} from './core/focusDuration.js';
 import { SessionUiGate } from './core/SessionUiGate.js';
 import { createSessionChromeSync } from './core/sessionChromeSync.js';
 import { StateManager, STATES } from './core/StateManager.js';
@@ -56,8 +62,10 @@ import { DynamicMotion } from './effects/DynamicMotion.js';
 import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { IdleOrchestrator } from './character/IdleOrchestrator.js';
-import { t, tPool, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
+import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
+import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
+import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
@@ -65,6 +73,15 @@ import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
 } from './ui/MindfulAcknowledgeToast.js';
+import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
+import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
+import {
+  isFlowerWelcomeEnabled,
+  markFlowerWelcomeBubbleShown,
+  readFlowerWelcomeState,
+  resolveFlowerWelcomeForce,
+  shouldPreferFlowerWelcomeOverWellness
+} from './core/flowerWelcomeGate.js';
 import { TigerReflectionMoment } from './ui/TigerReflectionMoment.js';
 import { SessionEndFlow } from './core/SessionEndFlow.js';
 import { DailyCompletionStore } from './core/DailyCompletionStore.js';
@@ -117,8 +134,9 @@ import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
 import { MicroRitualUI } from './ui/MicroRitualUI.js';
+import { FocusDurationPickerUI } from './ui/FocusDurationPickerUI.js';
 import {
-  MICRO_RITUAL_DURATION_MINUTES,
+  hasMicroRitualMsOverride,
   resolveMicroRitualMs
 } from './core/MicroRitual.js';
 import {
@@ -126,7 +144,11 @@ import {
   resolveSessionIntentionLatch
 } from './core/SessionIntentionStore.js';
 import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
-import { AmbientSoundscapeController } from './audio/AmbientSoundscapeController.js';
+import {
+  AmbientSoundscapeController,
+  AMBIENT_TRACK_OFF,
+  DEFAULT_AMBIENT_TRACK_ID
+} from './audio/AmbientSoundscapeController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import {
   createHintsSeenStore,
@@ -134,10 +156,12 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
-/** 默认 1 分钟；场景 B 真实切页 Re-focus 用 `?sessionMinutes=5`。 */
-const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
-/** 微仪式默认 60s；e2e 用 `?microRitualMs=1500` 缩短。 */
-const MICRO_RITUAL_MS = resolveMicroRitualMs(location.search);
+/** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 25。开表前无 URL 时再出时长 chip。 */
+const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
+/** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
+const MICRO_RITUAL_MS_OVERRIDE = hasMicroRitualMsOverride(location.search)
+  ? resolveMicroRitualMs(location.search)
+  : null;
 /** Honesty 呼吸默认 10s；e2e 用 `?honestyBreathMs=1500` 缩短。 */
 const HONESTY_BREATH_MS_RESOLVED = resolveHonestyBreathMs(location.search);
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
@@ -267,9 +291,16 @@ async function init() {
       honestyCheckInUI?.phase !== 'hidden' ||
       arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
-      microRitualUI?.isOpen?.() === true
+      microRitualUI?.isOpen?.() === true ||
+      focusDurationPicker?.isOpen?.() === true
     );
   }
+
+  /** Phase 2a/2b 气泡；在下方构造后赋值（tryPlay 闭包晚绑定） */
+  let flowerBlowWelcomeBubble =
+    /** @type {import('./ui/FlowerBlowWelcomeBubbleUI.js').FlowerBlowWelcomeBubbleUI | null} */ (
+      null
+    );
 
   function tryPlaySceneAnim(event, extra = {}) {
     const { playOptions, ...resolveOpts } = extra;
@@ -299,6 +330,24 @@ async function init() {
       decision.emotionKey,
       playOptions || {}
     );
+    // Phase 2b：吹花产品路径与 Lab 同气泡（非孤儿字）
+    if (
+      started &&
+      decision.flowerWelcome &&
+      decision.emotionKey === 'conjureFlowersBlowAway'
+    ) {
+      const flowerStorage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const prevFlower = readFlowerWelcomeState(flowerStorage);
+      const msg = resolveFlowerBlowWelcomeMessage({
+        bilingual: decision.flowerBilingual === true,
+        locale: getLocale(),
+        avoidCopyKey: prevFlower.lastCopyKey,
+        tInLocale
+      });
+      flowerBlowWelcomeBubble?.show(msg.lines);
+      markFlowerWelcomeBubbleShown(flowerStorage, { copyKey: msg.copyKey });
+    }
     // Locale greeting: consume daily quota only after playEmotion starts
     // (resolve no longer writes — avoids burning the slot when play is skipped).
     if (
@@ -409,6 +458,24 @@ async function init() {
   const mindfulToast = new MindfulAcknowledgeToast(
     document.getElementById('ui-overlay')
   );
+  // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
+  window.__mindfulToast = mindfulToast;
+  /** Phase 2a Lab + Phase 2b 产品冷启动共用 */
+  flowerBlowWelcomeBubble = new FlowerBlowWelcomeBubbleUI(
+    document.getElementById('ui-overlay')
+  );
+  emotionController.setFlowerBlowLabBubbleHandler((opts = {}) => {
+    const bilingual = opts.bilingual !== false;
+    const msg = resolveFlowerBlowWelcomeMessage({
+      bilingual,
+      locale: getLocale(),
+      tInLocale
+    });
+    flowerBlowWelcomeBubble?.show(msg.lines);
+  });
+  if (import.meta.env.DEV) {
+    window.__flowerBlowWelcomeBubble = flowerBlowWelcomeBubble;
+  }
   const lightProgression = new LightProgression({
     appEl: app,
     getSpriteOverlay: () => spritePlayer.overlayEl
@@ -442,6 +509,10 @@ async function init() {
   let honestyBridge = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
+  /** @type {FocusDurationPickerUI | null} */
+  let focusDurationPicker = null;
+  /** Companion 已选、等待时长 chip 的模式 */
+  let pendingFocusDurationMode = null;
   const now = () => new Date();
   const dailyCompletionStore = new DailyCompletionStore({ now });
   reminderPreferenceUI = new ReminderPreferenceUI(
@@ -475,6 +546,10 @@ async function init() {
   });
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
+  const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
+  window.__zenCinemaCard = zenCinemaCardUI;
+  const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
+  window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -565,8 +640,12 @@ async function init() {
       }
       onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
-      microRitualUI.startBreath(MICRO_RITUAL_MS);
+      microRitualUI.openDurationPicker();
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
     },
+    resolveDurationMs: () =>
+      MICRO_RITUAL_MS_OVERRIDE != null ? MICRO_RITUAL_MS_OVERRIDE : undefined,
     onBreathStart: () => {
       lightProgression.beginBreath();
       emotionController.playEmotion('smiling', {
@@ -574,6 +653,15 @@ async function init() {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
         freezeUntilCrossFadeEnds: true
       });
+      // Ephemeral ambient: do NOT startSession / presence (Focus-bound path).
+      void (async () => {
+        const preferred = ambientSoundscape.getPreferredTrackId();
+        const trackId =
+          preferred === AMBIENT_TRACK_OFF
+            ? DEFAULT_AMBIENT_TRACK_ID
+            : preferred;
+        await ambientSoundscape.playTrackEphemeral(trackId);
+      })();
       resyncSessionChrome();
       // startBreath already set phase=breath — sync tips only after isOpen()
       // so sit-button / idle-after-session cannot orphan over hidden Sit.
@@ -590,13 +678,34 @@ async function init() {
     window.__microRitualUI = microRitualUI;
   }
 
+  focusDurationPicker = new FocusDurationPickerUI({
+    preferredMinutes: () => loadPreferredFocusDurationMinutes(),
+    onDurationSelected: (minutes) => {
+      const mode =
+        pendingFocusDurationMode || companionModePicker.getSelectedMode();
+      pendingFocusDurationMode = null;
+      savePreferredFocusDurationMinutes(minutes);
+      focusSession.setTargetMinutes(minutes);
+      companionModePicker.setMicroRitualActive(false);
+      beginFocusWithMode(mode);
+    },
+    onLeave: () => {
+      pendingFocusDurationMode = null;
+      companionModePicker.setIdleChromeVisible(true);
+      companionModePicker.setMicroRitualActive(false);
+      setFocusButtonEnabled(true);
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
+    }
+  });
+  if (import.meta.env.DEV) {
+    window.__focusDurationPicker = focusDurationPicker;
+  }
+
   let hasEndedAnySession = false;
 
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
   const sessionUiGate = new SessionUiGate();
-  if (import.meta.env.DEV) {
-    window.__sessionUiGate = sessionUiGate;
-  }
 
   /**
    * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
@@ -617,6 +726,7 @@ async function init() {
     getArrivalPractice: () => arrivalPractice,
     getReflectionMoment: () => reflectionMoment,
     getMicroRitualUI: () => microRitualUI,
+    getFocusDurationPicker: () => focusDurationPicker,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -624,8 +734,12 @@ async function init() {
     stateManager,
     sessionUiGate,
     getPostChoosePending: () => postChooseChrome.pending,
-    syncInAppReminderBanner: () => syncInAppReminderBanner()
+    syncInAppReminderBanner: () => syncInAppReminderBanner(),
+    setFocusButtonEnabled
   });
+  // E2E：注入 completionPending 后须 resync 才能禁用 Sit（EDGE #5）
+  window.__sessionUiGate = sessionUiGate;
+  window.__resyncSessionChrome = resyncSessionChrome;
 
   /** 先点 Here & Now / Flow 再进 Arrival 时记住，结束后自动开表（禁止再逼点 Sit） */
   let pendingAutoStartMode = null;
@@ -671,10 +785,13 @@ async function init() {
   }
 
   function completeMicroRitual() {
-    dailyCompletionStore.recordCompletion(MICRO_RITUAL_DURATION_MINUTES);
-    practiceDaysStore.markToday(MICRO_RITUAL_DURATION_MINUTES);
+    ambientSoundscape.stopPlaybackEphemeral();
+    const durationMinutes =
+      microRitualUI?.getDurationMinutes?.() ?? 1;
+    dailyCompletionStore.recordCompletion(durationMinutes);
+    practiceDaysStore.markToday(durationMinutes);
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
-      durationMinutes: MICRO_RITUAL_DURATION_MINUTES
+      durationMinutes
     });
     mindfulToast.show(t('micro_ritual.complete'), {
       placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
@@ -699,9 +816,12 @@ async function init() {
         }
       });
     }
+    // Shallow Reflection handoff — do not wait for sessionComplete animation.
+    sessionEndFlow.onSessionEnded({ completed: true });
   }
 
   function leaveMicroRitualQuietly() {
+    ambientSoundscape.stopPlaybackEphemeral();
     endMicroRitualChrome();
     emotionController.playEmotion('idle', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,
@@ -829,13 +949,28 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onZenCinema: () => {
+      dailyZenQuoteCardUI.close();
+      zenCinemaCardUI.open();
+    },
+    onDailyQuote: () => {
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.open();
+    },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });
     },
     onSound: () => {
-      // Narrow ActionBar ♪ must share note semantics: mute when audible,
-      // close panel if open, else open (+ resume preferred after note-mute).
+      // Narrow ActionBar ♪: audible+panel open → mute; audible+panel closed →
+      // open list (change track); else open (+ resume after note-mute).
       ambientSoundscapeUI.openSoundPanelFromNote();
+      idleChrome.syncMuteVisual({
+        musicOn: ambientSoundscapeUI.wantsMusicOn()
+      });
+    },
+    onSoundHover: () => {
+      // Narrow ActionBar ♪ hover — always from real mouse (see openSoundPanelFromHover).
+      ambientSoundscapeUI.openSoundPanelFromHover({ fromMouse: true });
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
@@ -850,6 +985,8 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.close();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },
@@ -941,9 +1078,9 @@ async function init() {
     getScene: getOnboardingScene
   });
   onboardingHintHost.hints = onboardingHints;
-  if (import.meta.env.DEV) {
-    window.__onboardingHints = onboardingHints;
-  }
+  // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
+  // same contract as `__ambientSoundscape` / `__honestyBridge`.
+  window.__onboardingHints = onboardingHints;
 
   // Reminder / companion e2e hooks — must work in `vite preview` (DEV=false),
   // same contract as `__honestyBridge`.
@@ -1090,7 +1227,9 @@ async function init() {
           if (info.chose && resumeMode) {
             suppressCompanionOpenAfterNod = true;
           }
-          beginFocusWithMode(resumeMode || companionModePicker.getSelectedMode());
+          requestBeginFocusWithMode(
+            resumeMode || companionModePicker.getSelectedMode()
+          );
         } else if (!info.chose) {
           companionModePicker.open();
         }
@@ -1098,8 +1237,10 @@ async function init() {
       }
     }
   );
+  // E2e skip Arrival → Focus (home left ball is Breath practice, not skip).
+  // Must work in vite preview (DEV=false), same as `__honestyBridge`.
+  window.__arrivalPractice = arrivalPractice;
   if (import.meta.env.DEV) {
-    window.__arrivalPractice = arrivalPractice;
     window.__lightProgression = lightProgression;
   }
 
@@ -1345,6 +1486,36 @@ async function init() {
     });
   }
 
+  /**
+   * 开表入口：无 `?sessionMinutes=` 时先出 15/25/45/60 chip；有则跳过（e2e）。
+   * @param {string} companionMode
+   */
+  function requestBeginFocusWithMode(companionMode) {
+    focusDurationPicker?.hide();
+    microRitualUI?.hide();
+    if (shouldSkipFocusDurationPicker(location.search)) {
+      focusSession.setTargetMinutes(
+        resolveDemoSessionMinutes(location.search)
+      );
+      beginFocusWithMode(companionMode);
+      return;
+    }
+    pendingFocusDurationMode = companionMode;
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    honestyCheckInUI.hideIdleEntry();
+    companionModePicker.hide();
+    companionModePicker.setIdleChromeVisible(false);
+    // Reuse micro-ritual chrome latch so Sit stays disabled while picking.
+    companionModePicker.setMicroRitualActive(true);
+    setFocusButtonEnabled(false);
+    microRitualUI?.hideIdleEntry();
+    focusDurationPicker.open();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
   function beginFocusWithMode(companionMode) {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
@@ -1352,6 +1523,9 @@ async function init() {
     honestyCheckInUI.hideIdleEntry();
     microRitualUI?.hideIdleEntry();
     microRitualUI?.hide();
+    focusDurationPicker?.hide();
+    pendingFocusDurationMode = null;
+    companionModePicker.setMicroRitualActive(false);
     honestyGlowLevel = null;
     // 只在仍有 pending Choose 时写入；空 pending 不得把已闩意图抹成 ''（二次 beginFocus 回归锁）
     const latched = resolveSessionIntentionLatch(
@@ -1441,40 +1615,48 @@ async function init() {
       mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
       return;
     }
-    beginFocusWithMode(mode);
+    requestBeginFocusWithMode(mode);
   };
 
-  /** ⚡ Quick Start：跳过 Arrival（若开着）并以记忆 Companion 模式立刻 Focusing */
+  /** 首页左球：Breath practice（原 ⚡ Quick Start 跳过 Arrival 开表） */
   companionModeHandlers.onQuickStart = () => {
     if (sessionUiGate.completionPending) return;
-    if (stateManager.state === STATES.FOCUSING) return;
+    if (
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE
+    ) {
+      return;
+    }
     if (
       reflectionMoment?.isOpen?.() ||
       microRitualUI?.isOpen?.() ||
+      focusDurationPicker?.isOpen?.() ||
       honestyBridge?.isVisible?.()
     ) {
       return;
+    }
+    // Arrival 开着：收仪式回 Idle 门闩，再开呼吸练习（不再 skip→Focus）
+    if (arrivalPractice?.isOpen?.()) {
+      arrivalPractice.hide();
+      pendingAutoStartMode = null;
+      arrivalChoseThisRun = false;
+      suppressCompanionOpenAfterNod = false;
+      pendingChoose = null;
+      postChooseChrome.pending = false;
+      syncArrivalGateReady(false);
     }
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     companionModePicker.hide();
-    onboardingHints?.markSeen('sit-button');
-    onboardingHints?.markSeen('how-shall-we-sit');
+    focusDurationPicker?.hide();
+    pendingFocusDurationMode = null;
     onboardingHints?.markSeen('quick-start');
-    if (arrivalPractice.isOpen()) {
-      arrivalPractice.skipToBegin();
-      return;
-    }
-    // Idle 且无 Arrival：直接开表（不走仪式）
-    pendingChoose = null;
-    currentSessionIntention = '';
-    currentIntentionSource = 'typed';
-    arrivalChoseThisRun = false;
-    pendingAutoStartMode = null;
-    suppressCompanionOpenAfterNod = false;
-    syncArrivalGateReady(true);
-    beginFocusWithMode(companionModePicker.getSelectedMode());
+    onboardingHints?.markSeen('micro-ritual');
+    beginMicroRitualChrome();
+    microRitualUI.openDurationPicker();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
   };
 
   /** 门闩未就绪时选模式 → 启动 Arrival；返回是否已启动（Picker 凭此写 storage） */
@@ -1534,7 +1716,7 @@ async function init() {
         return false;
       }
 
-      beginFocusWithMode(companionModePicker.getSelectedMode());
+      requestBeginFocusWithMode(companionModePicker.getSelectedMode());
       return true;
     },
     () => {
@@ -1618,9 +1800,22 @@ async function init() {
 
   // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
   // Wellness 冷启动时段（2A）：深夜可披斗篷；清晨苏醒仪式；白天仍禁 2h 戳开场即睡。
+  // 2026-08-06 纠正：Day1 / ≥3 日久别吹花 **高于** wellness——首次看产品必须先吹花。
   const wellnessBand = resolveWellnessDayBand(new Date());
+  const flowerForceBoot = resolveFlowerWelcomeForce({
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    now: () => new Date(),
+    enabled: isFlowerWelcomeEnabled({
+      storage: typeof localStorage !== 'undefined' ? localStorage : null
+    })
+  });
+  const preferFlowerOverWellness =
+    shouldPreferFlowerWelcomeOverWellness(flowerForceBoot);
   let skipWelcomeForWellness = false;
-  if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
+  if (preferFlowerOverWellness) {
+    honestyCheckIn.onAppReady();
+    skipWelcomeForWellness = false;
+  } else if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
     honestyCheckIn.syncDormantState({
       allowEnterDormant: true,
       forceDormant: true
@@ -1866,8 +2061,11 @@ async function init() {
     mindfulReminderController.update(delta);
 
     const microOpen = microRitualUI?.isOpen() === true;
-    const microElapsed = microOpen ? microRitualUI.getElapsedSeconds() : null;
-    const microProgress = microOpen ? microRitualUI.getProgress() : null;
+    const microBreathing = microRitualUI?.phase === 'breath';
+    const microElapsed = microBreathing
+      ? microRitualUI.getElapsedSeconds()
+      : null;
+    const microProgress = microBreathing ? microRitualUI.getProgress() : null;
 
     const focusLevel =
       microProgress != null
@@ -1901,12 +2099,20 @@ async function init() {
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
-      treatAsFocusing: microOpen,
+      treatAsFocusing: microBreathing,
       liveElapsedSeconds: microElapsed,
-      focusLevelOverride: microProgress
+      focusLevelOverride: microProgress,
+      sessionTargetMinutes: microBreathing
+        ? microRitualUI?.getDurationMinutes?.()
+        : focusSession.targetMinutes
     });
     weeklyPracticeHeatmap.render({
-      visible: stateManager.state === STATES.IDLE && !microOpen,
+      // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
+      // Hide during Focusing / overlays / micro-ritual.
+      visible:
+        (stateManager.state === STATES.IDLE ||
+          stateManager.state === STATES.DORMANT) &&
+        !microOpen,
       days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
     });
     reminderPreferenceUI.setVisible(

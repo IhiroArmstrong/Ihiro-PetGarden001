@@ -177,7 +177,7 @@ describe('resolveShellChromeProjection', () => {
     assert.equal(p.wide.keepQuickStart, false);
   });
 
-  it('bridge alone → narrow not suppressed; wide suppressed (Yes/No clear)', () => {
+  it('bridge alone → both shells suppressed (narrow hides home balls over Yes/No)', () => {
     const p = resolveShellChromeProjection({
       focusing: false,
       overlayActive: false,
@@ -185,7 +185,8 @@ describe('resolveShellChromeProjection', () => {
       arrivalOpen: false,
       bridgeVisible: true
     });
-    assert.equal(p.narrow.suppressed, false);
+    assert.equal(p.narrow.suppressed, true);
+    assert.equal(p.narrow.keepQuickStart, false);
     assert.equal(p.wide.suppressed, true);
   });
 
@@ -233,16 +234,23 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
     }
   });
 
-  it('bridge: wide More hidden; narrow grabber still visible', () => {
-    assert.equal(
-      resolveRoleVisibility({ stage: 'bridge', viewport: 'wide' }).moreOrGrabber,
-      'hidden'
-    );
-    assert.equal(
-      resolveRoleVisibility({ stage: 'bridge', viewport: 'narrow' })
-        .moreOrGrabber,
-      'visible'
-    );
+  it('bridge: narrow hides Sit/Quick/Honesty/grabber; ActionBar stays; wide More hidden', () => {
+    const narrow = resolveRoleVisibility({
+      stage: 'bridge',
+      viewport: 'narrow'
+    });
+    assert.deepEqual(narrow, {
+      sit: 'hidden',
+      quickStart: 'hidden',
+      honesty: 'hidden',
+      moreOrGrabber: 'hidden',
+      actionBar: 'visible'
+    });
+    const wide = resolveRoleVisibility({ stage: 'bridge', viewport: 'wide' });
+    assert.equal(wide.moreOrGrabber, 'hidden');
+    assert.equal(wide.sit, 'visible');
+    assert.equal(wide.quickStart, 'visible');
+    assert.equal(wide.honesty, 'visible');
   });
 
   it('must not claim Arrival Sit visible (failure lock)', () => {
@@ -258,7 +266,7 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
 describe('secondaryProxyForHintId', () => {
   it('inverses SECONDARY_PROXY_HINT_IDS; unknown → null', () => {
     assert.equal(secondaryProxyForHintId('how-shall-we-sit'), 'companion');
-    assert.equal(secondaryProxyForHintId('micro-ritual'), 'breath');
+    assert.equal(secondaryProxyForHintId('micro-ritual'), null);
     assert.equal(secondaryProxyForHintId('in-app-reminder'), 'reminder');
     assert.equal(secondaryProxyForHintId('honesty-optional'), 'honesty');
     assert.equal(secondaryProxyForHintId('sit-button'), null);
@@ -277,19 +285,19 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty; includes breath/companion/reminder/language', () => {
+  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'reminder', 'language']
+      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote']
     );
   });
 
-  it('wide more omits honesty (home ball); includes breath/companion/reminder/language', () => {
+  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['breath', 'companion', 'reminder', 'language']
+      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote']
     );
   });
 
@@ -301,12 +309,16 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(!entries.some((e) => e.proxy === 'companion'));
   });
 
-  it('language remains when secondary gates off (Sound is not a menu row)', () => {
+  it('language + zen-cinema + daily-quote remain when secondary gates off (Sound is not a menu row)', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', {
       microRitualVisible: false,
       companionVisible: false,
       reminderAvailable: false
     });
-    assert.deepEqual(entries.map((e) => e.proxy), ['language']);
+    assert.deepEqual(entries.map((e) => e.proxy), [
+      'language',
+      'zen-cinema',
+      'daily-quote'
+    ]);
   });
 });

@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import {
   advanceArrivalToCompanionPicker,
   expectFocusSessionActive,
-  openFreshProductShell
+  openFreshProductShell,
+  quickStartFocus
 } from './helpers/product-shell.js';
 
 const HEATMAP = '#weekly-practice-heatmap';
@@ -48,6 +49,77 @@ test('Idle shows weekly heatmap with 7 cells', async ({ page }) => {
   const heatmap = page.locator(HEATMAP);
   await expect(heatmap).toBeVisible({ timeout: 15_000 });
   await expect(page.locator(CELLS)).toHaveCount(7);
+});
+
+/**
+ * UX: rolling 7 days need weekday labels + today outline — bare squares
+ * left users unable to tell which cell is today (KnownRisky #5 feedback).
+ */
+test('Idle heatmap marks today and shows weekday labels', async ({ page }) => {
+  await openFreshProductShell(page);
+  const heatmap = page.locator(HEATMAP);
+  await expect(heatmap).toBeVisible({ timeout: 15_000 });
+
+  const days = page.locator(`${HEATMAP} .weekly-practice-heatmap__day`);
+  await expect(days).toHaveCount(7);
+
+  const todayCells = page.locator(`${CELLS}[data-today="1"]`);
+  await expect(todayCells).toHaveCount(1);
+  // Contract: getLastNDays oldest→newest → today is the rightmost cell
+  await expect(page.locator(CELLS).nth(6)).toHaveAttribute('data-today', '1');
+
+  const dows = page.locator(`${HEATMAP} .weekly-practice-heatmap__dow`);
+  await expect(dows).toHaveCount(7);
+  for (let i = 0; i < 7; i += 1) {
+    await expect(dows.nth(i)).not.toHaveText('');
+  }
+  await expect(
+    page.locator(`${HEATMAP} .weekly-practice-heatmap__dow--today`)
+  ).toHaveCount(1);
+});
+
+/**
+ * Narrow home balls (z30) sit over #ui-overlay toasts (z18) — bottom copy must
+ * clear the Sit ball band, not rely on z-index (KnownRisky #5 follow-up 2026-08-04).
+ */
+test('375: bottom mindful toast clears narrow home CTAs', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible({
+    timeout: 15_000
+  });
+
+  await page.evaluate(() => {
+    window.__mindfulToast.show(
+      "It's late. I'm resting under the cloak — you can rest too.",
+      { visibleMs: 12_000 }
+    );
+  });
+
+  const toast = page.locator(
+    '#mindful-acknowledge-toast[data-placement="bottom"]'
+  );
+  await expect(toast).toBeVisible();
+  await expect(toast).toHaveCSS('opacity', '1');
+
+  const geometry = await page.evaluate(() => {
+    const tEl = document.getElementById('mindful-acknowledge-toast');
+    const cta = document.getElementById('ft-narrow-home-ctas');
+    if (!tEl || !cta) return { ok: false, reason: 'missing-dom' };
+    const tr = tEl.getBoundingClientRect();
+    const cr = cta.getBoundingClientRect();
+    const overlapY = Math.max(
+      0,
+      Math.min(tr.bottom, cr.bottom) - Math.max(tr.top, cr.top)
+    );
+    return {
+      ok: overlapY < 4 && tr.bottom <= cr.top + 2,
+      overlapY,
+      toastBottom: tr.bottom,
+      ctaTop: cr.top
+    };
+  });
+  expect(geometry.ok, JSON.stringify(geometry)).toBe(true);
 });
 
 /**
@@ -119,7 +191,7 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-quickstart')).toHaveAttribute(
     'aria-label',
-    /Quick Start|快速开始/i
+    /Breath practice|呼吸练习|呼吸の練習/i
   );
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-honesty')).toBeEnabled();
@@ -450,6 +522,15 @@ test('non-Idle (Focusing) hides weekly heatmap', async ({ page }) => {
   await expect(page.locator(HEATMAP)).toBeHidden();
 });
 
+test('375 Focusing hides weekly heatmap', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page);
+  // Idle：热力簇可能 park 屏外，但仍挂在 DOM；Focusing 须 hidden/park 契约。
+  await quickStartFocus(page);
+  await expectFocusSessionActive(page);
+  await expect(page.locator(HEATMAP)).toBeHidden();
+});
+
 test('heatmap lights null and positive minutes; dims true zero days', async ({
   page
 }) => {
@@ -489,10 +570,9 @@ test('heatmap lights null and positive minutes; dims true zero days', async ({
 });
 
 /**
- * Fig12 / L259: ? remedy shows one primary tip +「More tips」chip;
- * on narrow park, chip expands **one** drawer-menu tip (not 3 more / 2 more cascade).
+ * 2026-08-04：点「?」只出产品简介，不再补救喷 tip / More tips 芯片。
  */
-test('375 park: ? remedy primary + catalog chip expands one tip at a time', async ({
+test('375 park: ? opens purpose only (no tip spray / catalog chip)', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -503,40 +583,9 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
 
   await page.locator('#ft-narrow-help-btn').click();
 
-  const before = await page.evaluate(() => {
-    const bubbles = [
-      ...document.querySelectorAll('ft-onboarding-hint-bubble')
-    ].filter((b) => {
-      if (b.open === false) return false;
-      const r = b.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    });
-    const chip = document.getElementById('ft-hint-catalog-chip');
-    const chipRect = chip?.getBoundingClientRect();
-    return {
-      count: bubbles.length,
-      ids: bubbles.map((b) => b.dataset.hintId),
-      chipVisible: Boolean(
-        chip &&
-          !chip.hidden &&
-          chipRect &&
-          chipRect.width > 0 &&
-          chipRect.top >= 0 &&
-          chipRect.top < 667
-      ),
-      chipText: chip?.textContent?.trim() || ''
-    };
+  await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
+    timeout: 8_000
   });
-  expect(before.count).toBeLessThanOrEqual(2);
-  expect(before.count).toBeGreaterThanOrEqual(1);
-  expect(before.ids).toContain('sit-button');
-  expect(before.chipVisible).toBe(true);
-  expect(before.chipText).toMatch(/more tips|更多提示/i);
-  // One-shot: no countdown "N more tips"
-  expect(before.chipText).not.toMatch(/\d+\s*more|还有\s*\d+/i);
-
-  await page.locator('#ft-hint-catalog-chip').click();
-
   const after = await page.evaluate(() => {
     const bubbles = [
       ...document.querySelectorAll('ft-onboarding-hint-bubble')
@@ -546,117 +595,12 @@ test('375 park: ? remedy primary + catalog chip expands one tip at a time', asyn
       return r.width > 0 && r.height > 0;
     });
     const chip = document.getElementById('ft-hint-catalog-chip');
-    const rects = bubbles.map((b) => {
-      const r = b.getBoundingClientRect();
-      return {
-        id: b.dataset.hintId,
-        left: r.left,
-        top: r.top,
-        right: r.right,
-        bottom: r.bottom
-      };
-    });
-    let overlapPairs = 0;
-    for (let i = 0; i < rects.length; i++) {
-      for (let j = i + 1; j < rects.length; j++) {
-        const a = rects[i];
-        const b = rects[j];
-        const ix = Math.max(
-          0,
-          Math.min(a.right, b.right) - Math.max(a.left, b.left)
-        );
-        const iy = Math.max(
-          0,
-          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
-        );
-        if (ix * iy > 40) overlapPairs += 1;
-      }
-    }
     return {
-      bubbleCount: bubbles.length,
+      count: bubbles.length,
       ids: bubbles.map((b) => b.dataset.hintId),
-      chipVisible: Boolean(chip && !chip.hidden),
-      overlapPairs
+      chipVisible: Boolean(chip && !chip.hidden)
     };
   });
-  // Primary + one drawer intro; chip gone (no 3 more / 2 more).
-  expect(after.bubbleCount).toBeLessThanOrEqual(2);
-  expect(after.bubbleCount).toBeGreaterThanOrEqual(1);
-  expect(after.ids).toContain('narrow-drawer-menu');
+  expect(after.count).toBe(0);
   expect(after.chipVisible).toBe(false);
-  expect(after.overlapPairs).toBe(0);
-
-  // Separation runs after paint — poll so CI does not race the first layout.
-  await expect
-    .poll(
-      async () =>
-        page.evaluate(() => {
-          const bubbles = [
-            ...document.querySelectorAll('ft-onboarding-hint-bubble')
-          ].filter((b) => {
-            if (b.open === false) return false;
-            const r = b.getBoundingClientRect();
-            return r.width > 0 && r.height > 0;
-          });
-          const rects = bubbles.map((b) => b.getBoundingClientRect());
-          let overlapPairs = 0;
-          for (let i = 0; i < rects.length; i++) {
-            for (let j = i + 1; j < rects.length; j++) {
-              const a = rects[i];
-              const b = rects[j];
-              const ix = Math.max(
-                0,
-                Math.min(a.right, b.right) - Math.max(a.left, b.left)
-              );
-              const iy = Math.max(
-                0,
-                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
-              );
-              if (ix * iy > 40) overlapPairs += 1;
-            }
-          }
-          return overlapPairs;
-        }),
-      { timeout: 5_000 }
-    )
-    .toBe(0);
-
-  // Grabber-anchored drawer intro must sit above home CTAs (not behind the balls).
-  await expect
-    .poll(
-      async () =>
-        page.evaluate(() => {
-          const cta = document
-            .getElementById('ft-narrow-home-ctas')
-            ?.getBoundingClientRect();
-          const bubbles = [
-            ...document.querySelectorAll('ft-onboarding-hint-bubble')
-          ].filter((b) => {
-            if (b.open === false) return false;
-            const r = b.getBoundingClientRect();
-            return r.width > 0 && r.height > 0;
-          });
-          if (!cta || cta.height <= 0) return { ok: false, reason: 'no-cta' };
-          for (const b of bubbles) {
-            const r = b.getBoundingClientRect();
-            const overlaps =
-              r.left < cta.right &&
-              r.right > cta.left &&
-              r.top < cta.bottom &&
-              r.bottom > cta.top;
-            if (overlaps) {
-              return {
-                ok: false,
-                reason: 'overlap',
-                id: b.dataset.hintId,
-                tipBottom: r.bottom,
-                ctaTop: cta.top
-              };
-            }
-          }
-          return { ok: true };
-        }),
-      { timeout: 5_000 }
-    )
-    .toEqual({ ok: true });
 });
