@@ -496,6 +496,7 @@ test('stopPlaybackEphemeral keeps preferred track and ambient-pref storage', asy
 });
 
 test('stopPlaybackEphemeral does not require or clear startSession presence', async () => {
+  const { AUDIBLE_PLAYING_LIFT } = await import('./AmbientSoundscapeController.js');
   const audio = createMockAudio();
   const storage = createMapStorage();
   const ctrl = new AmbientSoundscapeController({
@@ -511,8 +512,9 @@ test('stopPlaybackEphemeral does not require or clear startSession presence', as
   // Parallel ephemeral stop path (as MicroRitual would) must not endSession
   ctrl.stopPlaybackEphemeral();
   assert.equal(ctrl.isAudiblePlaying(), false);
-  // Session still active — presence path still armed (boost 0 while silent)
-  assert.equal(ctrl.getPresenceBoost(25), 0);
+  // Session still active — no audible lift while silent (tiny cumulative from
+  // wall-clock between setTrack→stop is OK; CI saw ~1ms → 1.3e-7 ≠ strict 0)
+  assert.ok(ctrl.getPresenceBoost(25) < AUDIBLE_PLAYING_LIFT);
   await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
   assert.ok(ctrl.getPresenceBoost(25) > 0);
   ctrl.endSession();
