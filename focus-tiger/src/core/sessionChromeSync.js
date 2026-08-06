@@ -43,6 +43,7 @@ export function isHonestyUiBusy(phase) {
  *   hideIdleEntry?: () => void,
  *   showIdleEntry?: () => void
  * } | null | undefined} getMicroRitualUI
+ * @property {() => { isOpen?: () => boolean } | null | undefined} [getFocusDurationPicker]
  * @property {{ phase: string, hideIdleEntry: () => void }} honestyCheckInUI
  * @property {{ syncIdleEntry: () => void }} honestyCheckIn
  * @property {{
@@ -89,6 +90,7 @@ export function createSessionChromeSync(deps) {
     getArrivalPractice,
     getReflectionMoment,
     getMicroRitualUI,
+    getFocusDurationPicker = () => null,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -106,7 +108,8 @@ export function createSessionChromeSync(deps) {
     return [
       () => getArrivalPractice().isOpen(),
       () => getReflectionMoment().isOpen(),
-      () => getMicroRitualUI()?.isOpen() === true
+      () => getMicroRitualUI()?.isOpen() === true,
+      () => getFocusDurationPicker()?.isOpen() === true
     ];
   }
 
@@ -124,6 +127,7 @@ export function createSessionChromeSync(deps) {
       bridgeVisible ||
       getReflectionMoment()?.isOpen?.() ||
       getMicroRitualUI()?.isOpen?.() ||
+      getFocusDurationPicker()?.isOpen?.() ||
       stateManager.state === STATES.FOCUSING ||
       stateManager.state === STATES.CELEBRATE;
     if (blocked) {

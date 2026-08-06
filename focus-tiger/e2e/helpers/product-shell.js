@@ -8,7 +8,9 @@ import { expect } from '@playwright/test';
  * @param {{ path?: string, query?: Record<string, string | number | boolean> }} [opts]
  */
 export async function openFreshProductShell(page, opts = {}) {
-  const params = new URLSearchParams({ product: '1' });
+  // Default short Focus target + skip duration picker (product UI uses chips when
+  // `sessionMinutes` is absent). Override via opts.query / opts.path as needed.
+  const params = new URLSearchParams({ product: '1', sessionMinutes: '1' });
   for (const [key, value] of Object.entries(opts.query || {})) {
     if (value === undefined || value === null) continue;
     params.set(key, String(value));
@@ -255,11 +257,27 @@ export async function quickStartFocus(page) {
   });
   expect(skipped, 'window.__arrivalPractice.skipToBegin missing').toBe(true);
   await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await pickFocusDurationIfShown(page);
 }
 
 /** @deprecated 使用 `quickStartFocus`；e2e 跳过 Arrival 不再点首页左球 */
 export async function skipArrivalBegin(page) {
   await quickStartFocus(page);
+}
+
+/**
+ * 开表前时长 chip（产品路径）；`?sessionMinutes=` 时 picker 不出现则跳过。
+ * @param {import('@playwright/test').Page} page
+ * @param {number} [minutes]
+ */
+export async function pickFocusDurationIfShown(page, minutes = 15) {
+  const picker = page.locator('#focus-duration-picker');
+  const visible = await picker.isVisible().catch(() => false);
+  if (!visible) return;
+  await picker
+    .locator(`[data-focus-duration-minutes="${minutes}"]`)
+    .click();
+  await expect(picker).toBeHidden({ timeout: 5_000 });
 }
 
 /** @param {import('@playwright/test').Page} page @param {RegExp|string} label */
@@ -270,6 +288,7 @@ export async function selectCompanionMode(page, label) {
     .locator('.session-start-dock__option')
     .filter({ hasText: label })
     .click();
+  await pickFocusDurationIfShown(page);
 }
 
 export async function expectFocusSessionActive(page) {

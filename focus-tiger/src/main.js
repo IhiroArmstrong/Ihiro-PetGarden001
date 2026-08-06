@@ -15,6 +15,12 @@ import {
   COMPANION_MODE_STEP_AWAY,
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
+import {
+  loadPreferredFocusDurationMinutes,
+  resolveFocusSessionTargetMinutes,
+  savePreferredFocusDurationMinutes,
+  shouldSkipFocusDurationPicker
+} from './core/focusDuration.js';
 import { SessionUiGate } from './core/SessionUiGate.js';
 import { createSessionChromeSync } from './core/sessionChromeSync.js';
 import { StateManager, STATES } from './core/StateManager.js';
@@ -126,6 +132,7 @@ import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
 import { MicroRitualUI } from './ui/MicroRitualUI.js';
+import { FocusDurationPickerUI } from './ui/FocusDurationPickerUI.js';
 import {
   hasMicroRitualMsOverride,
   resolveMicroRitualMs
@@ -147,8 +154,8 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
-/** 默认 1 分钟；场景 B 真实切页 Re-focus 用 `?sessionMinutes=5`。 */
-const DEMO_SESSION_MINUTES = resolveDemoSessionMinutes(location.search);
+/** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 25。开表前无 URL 时再出时长 chip。 */
+const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 /** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
 const MICRO_RITUAL_MS_OVERRIDE = hasMicroRitualMsOverride(location.search)
   ? resolveMicroRitualMs(location.search)
@@ -282,7 +289,8 @@ async function init() {
       honestyCheckInUI?.phase !== 'hidden' ||
       arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
-      microRitualUI?.isOpen?.() === true
+      microRitualUI?.isOpen?.() === true ||
+      focusDurationPicker?.isOpen?.() === true
     );
   }
 
@@ -499,6 +507,10 @@ async function init() {
   let honestyBridge = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
+  /** @type {FocusDurationPickerUI | null} */
+  let focusDurationPicker = null;
+  /** Companion 已选、等待时长 chip 的模式 */
+  let pendingFocusDurationMode = null;
   const now = () => new Date();
   const dailyCompletionStore = new DailyCompletionStore({ now });
   reminderPreferenceUI = new ReminderPreferenceUI(
@@ -660,6 +672,30 @@ async function init() {
     window.__microRitualUI = microRitualUI;
   }
 
+  focusDurationPicker = new FocusDurationPickerUI({
+    preferredMinutes: () => loadPreferredFocusDurationMinutes(),
+    onDurationSelected: (minutes) => {
+      const mode =
+        pendingFocusDurationMode || companionModePicker.getSelectedMode();
+      pendingFocusDurationMode = null;
+      savePreferredFocusDurationMinutes(minutes);
+      focusSession.setTargetMinutes(minutes);
+      companionModePicker.setMicroRitualActive(false);
+      beginFocusWithMode(mode);
+    },
+    onLeave: () => {
+      pendingFocusDurationMode = null;
+      companionModePicker.setIdleChromeVisible(true);
+      companionModePicker.setMicroRitualActive(false);
+      setFocusButtonEnabled(true);
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
+    }
+  });
+  if (import.meta.env.DEV) {
+    window.__focusDurationPicker = focusDurationPicker;
+  }
+
   let hasEndedAnySession = false;
 
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
@@ -684,6 +720,7 @@ async function init() {
     getArrivalPractice: () => arrivalPractice,
     getReflectionMoment: () => reflectionMoment,
     getMicroRitualUI: () => microRitualUI,
+    getFocusDurationPicker: () => focusDurationPicker,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -1174,7 +1211,9 @@ async function init() {
           if (info.chose && resumeMode) {
             suppressCompanionOpenAfterNod = true;
           }
-          beginFocusWithMode(resumeMode || companionModePicker.getSelectedMode());
+          requestBeginFocusWithMode(
+            resumeMode || companionModePicker.getSelectedMode()
+          );
         } else if (!info.chose) {
           companionModePicker.open();
         }
@@ -1431,6 +1470,36 @@ async function init() {
     });
   }
 
+  /**
+   * 开表入口：无 `?sessionMinutes=` 时先出 15/25/45/60 chip；有则跳过（e2e）。
+   * @param {string} companionMode
+   */
+  function requestBeginFocusWithMode(companionMode) {
+    focusDurationPicker?.hide();
+    microRitualUI?.hide();
+    if (shouldSkipFocusDurationPicker(location.search)) {
+      focusSession.setTargetMinutes(
+        resolveDemoSessionMinutes(location.search)
+      );
+      beginFocusWithMode(companionMode);
+      return;
+    }
+    pendingFocusDurationMode = companionMode;
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    honestyCheckInUI.hideIdleEntry();
+    companionModePicker.hide();
+    companionModePicker.setIdleChromeVisible(false);
+    // Reuse micro-ritual chrome latch so Sit stays disabled while picking.
+    companionModePicker.setMicroRitualActive(true);
+    setFocusButtonEnabled(false);
+    microRitualUI?.hideIdleEntry();
+    focusDurationPicker.open();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
   function beginFocusWithMode(companionMode) {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
@@ -1438,6 +1507,9 @@ async function init() {
     honestyCheckInUI.hideIdleEntry();
     microRitualUI?.hideIdleEntry();
     microRitualUI?.hide();
+    focusDurationPicker?.hide();
+    pendingFocusDurationMode = null;
+    companionModePicker.setMicroRitualActive(false);
     honestyGlowLevel = null;
     // 只在仍有 pending Choose 时写入；空 pending 不得把已闩意图抹成 ''（二次 beginFocus 回归锁）
     const latched = resolveSessionIntentionLatch(
@@ -1527,7 +1599,7 @@ async function init() {
       mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
       return;
     }
-    beginFocusWithMode(mode);
+    requestBeginFocusWithMode(mode);
   };
 
   /** 首页左球：Breath practice（原 ⚡ Quick Start 跳过 Arrival 开表） */
@@ -1542,6 +1614,7 @@ async function init() {
     if (
       reflectionMoment?.isOpen?.() ||
       microRitualUI?.isOpen?.() ||
+      focusDurationPicker?.isOpen?.() ||
       honestyBridge?.isVisible?.()
     ) {
       return;
@@ -1560,6 +1633,8 @@ async function init() {
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     companionModePicker.hide();
+    focusDurationPicker?.hide();
+    pendingFocusDurationMode = null;
     onboardingHints?.markSeen('quick-start');
     onboardingHints?.markSeen('micro-ritual');
     beginMicroRitualChrome();
@@ -1625,7 +1700,7 @@ async function init() {
         return false;
       }
 
-      beginFocusWithMode(companionModePicker.getSelectedMode());
+      requestBeginFocusWithMode(companionModePicker.getSelectedMode());
       return true;
     },
     () => {
