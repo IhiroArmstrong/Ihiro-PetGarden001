@@ -238,12 +238,15 @@ test('sessionComplete and celebrating suppress runtime glow until idle resumes',
 
 test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
   const plays = [];
+  const stops = [];
   const spritePlayer = {
     play(name, options = {}) {
       plays.push({ name, options });
       return true;
     },
-    stop() {}
+    stop(options) {
+      stops.push(options);
+    }
   };
   const controller = new EmotionController({
     poseManager: { setPose() {}, setCanvasHidden() {} },
@@ -259,17 +262,52 @@ test('intentionSet plays intentionNod (16:9) then returns to idle', () => {
     }
   });
 
+  assert.deepEqual(stops[0], { clear: false });
   assert.equal(plays[0].name, 'intentionNod');
   assert.equal(plays[0].options.loopMode, 'pingpong');
   assert.equal(plays[0].options.maxCycles, 1);
   assert.equal(plays[0].options.returnCrossFadeMs, 1000);
   assert.equal(plays[0].options.crossFadeMs, 1000);
   assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(plays[0].options.holdLastFrame, true);
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
   assert.equal(plays[1].options.crossFadeMs, 1000);
+  assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
   assert.equal(completed, 1);
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
+test('smiling keeps overlay for CapCut (clear:false + freeze)', () => {
+  const plays = [];
+  const stops = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop(options) {
+      stops.push(options);
+    }
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('smiling', {
+    fps: 4,
+    crossFadeMs: CAPCUT_DISSOLVE_MS,
+    freezeUntilCrossFadeEnds: true
+  });
+
+  assert.deepEqual(stops[0], { clear: false });
+  assert.equal(plays[0].name, 'blinkSmile');
+  assert.equal(plays[0].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(plays[0].options.fps, 4);
 });
 
 test('welcomeBack is parked: does not play old or new wave sequences', () => {

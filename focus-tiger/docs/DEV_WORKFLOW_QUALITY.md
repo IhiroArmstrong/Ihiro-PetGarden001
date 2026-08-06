@@ -29,11 +29,12 @@
 | 2026-08-03 | Welcome 里误出鹦鹉信使：冷启动串扰 + onComplete 后 trailing idle 盖播 | **§6.10** |
 | 2026-08-04 | 长挂 Vite「第一眼披斗篷」误判开场即睡；拍板关掉白天无操作披毯 | **§6.11** |
 | 2026-08-04 | 鹦鹉→Idle 仍闪白：CapCut「统一关单」覆盖面窄于字面承诺 + 单测假绿 | **§6.12** |
+| 2026-08-06 | Arrival Breath/Choose 仍闪白：`smiling`/`intentionSet` 仍 `clear:true` 致 CapCut 静默跳过 | **§6.15** |
 | 2026-08-04 | 窄屏 Focusing×? tip 叠团：记入≠开修 + 单测锁 id 未锁同时可见条数 | **§6.13** |
 | 2026-08-05 | 「待你决定」须标出已被 tip/远端覆盖的伪选项为（不合理） | **N14a** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -585,6 +586,33 @@
 **本回合落地**：查证写入本 §6.12 + `TEST_TRACKER` 用户反馈；当时**未改运行时**。  
 **2026-08-04 晚**：用户于 `origin/develop` tip `0494dd6`（Vite `:5176`）窄屏书面确认鹦鹉回落叠化 **测试 OK** → 分列行已关单（关单当时未合入抗闪运行时）。  
 **后补（`fix/parrot-idle-capcut-2026-08-04`）**：落地 §6.12 **P3/P4**——`_playCompanionSequenceOnce` 对齐张望抗闪（`clear: false` + 默认 `holdLastFrame`）；`parrotEarVisit` / `earWiggleHeadTouch` 单测补 `onComplete`→idle CapCut。**不是**重开「闪白未修」关单（人工观感已在 tip `0494dd6` 关）；本笔是契约硬化，防假绿回潮。
+
+### 6.15 Arrival Notice/Breath 与 Choose 鞠躬仍闪白 · 抗闪未推广到 `smiling` / `intentionSet`（2026-08-06）
+
+**现象**：Sit → What is present（Notice）点选后，眨眼微笑切 Breath **闪白**；Choose 后 Yin 鞠躬（`intentionSet`）后段再 **闪白**。用户原话要点：上次不是已把太快转场统一改成 1s 叠化了吗？为什么现在还有？杜绝很难吗？
+
+**不是** `CAPCUT_DISSOLVE_MS` 被改回短淡入，也**不是** Arrive 文档/关单行「已通过」被神秘回滚。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 调用方已传 CapCut | `main.js` `onBreath` / `onWelcome` 对 `smiling` 已传 `crossFadeMs: CAPCUT` + `freezeUntilCrossFadeEnds: true`。`intentionSet` 实现内也默认 `crossFadeMs` / `returnCrossFadeMs` / freeze。 |
+| B · 播放前先藏层 | `smiling` / `intentionSet` 仍走 `_leaveIdleBaseline()` **默认 `clear: true`** → `spritePlayer.stop({ clear: true })` → overlay `opacity===0`。下一笔 `play(..., crossFadeMs)` 因 `shouldCrossFade` 要求 `opacity !== '0'` → **CapCut 静默跳过**（文首「假修好 / CapCut 静默跳过」同型）。用户看见的「闪白」= 背景透出，不是叠化失败的视觉噪声。 |
+| C · `smiling` 丢 freeze | 即便调用方传了 `freezeUntilCrossFadeEnds`，旧 `smiling` **未转发**到 `blinkSmile` playOpts → 溶解期仍可能开播新帧（Safari 透明闪）。 |
+| D · 关单矩阵未锁 Arrival 抗闪不变量 | 「跨动画短叠化统一」关单（§6.12 A）与 Choose pingpong 行书面 OK 锁的是 **有 1s 字段 / 点头观感**，**未**锁「离开 Idle/smiling 时 `clear:false`」。§6.12 P4 只后补了 companion oneshot，**未**回头改 Arrival 主路径 `smiling` / `intentionSet`。 |
+| E · 单测假绿 | `intentionSet … then returns to idle` 的 mock `stop()` 不模拟藏层；断言 options 数字全绿，**拦不住**真实浏览器 CapCut 静默跳过。 |
+
+**因果一句话**：**字面「一律 CapCut」已写进 options，但 Arrival 主路径仍用 `clear:true` 先藏 overlay** → 叠化条件永远不成立；关单与单测只验「写了 1000」，不验「离开时是否保活末帧」。故「统一筛查过」与「产品路径仍闪」可长期并存。
+
+**工作流补丁（须遵守 · 叠在 §6.12 P1–P4 上）**：
+
+| # | 要求 |
+|---|---|
+| A1 | 凡「跨序列不得闪白」产品路径：离开上一序列时默认 **`_leaveIdleBaseline({ clear: false })`**（或等价保活末帧）；`clear:true` 仅当任务书明确允许硬切露底 |
+| A2 | 契约单测须断言 **`stop({ clear: false })`**（或 mock 记录 clear），禁止只 assert `crossFadeMs===1000` |
+| A3 | Arrival 关单 / 复测步骤须**分列**：(1) Notice→Breath 微笑切入不闪；(2) Choose→鞠躬切入不闪；(3) 鞠躬→Idle/Companion 回落不闪——禁止用「Choose pingpong OK」冒充三条 |
+| A4 | 新改 `_leaveIdleBaseline` 默认值前须扫高风险情绪键；至少 `smiling` / `intentionSet` / companion oneshot 与张望链对齐 |
+
+**本回合落地**：`smiling` / `intentionSet` → `clear: false`；`smiling` 转发 freeze + 默认 CapCut；`intentionSet` 默认定格末帧；单测锁 `stop({ clear: false })`；`TEST_TRACKER` 分列重开待测。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
