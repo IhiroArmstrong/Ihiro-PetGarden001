@@ -49,6 +49,7 @@ export class FocusHUD {
           <div class="ft-hud__meta">
             <span id="hud-state" class="ft-hud__state">${t('STATE_IDLE')}</span>
             <span id="hud-time" class="ft-hud__time">00:00</span>
+            <span id="hud-session-target" class="ft-hud__session-target" hidden></span>
           </div>
           <${STREAK_METER_TAG}
             class="ft-hud__streak"
@@ -79,6 +80,7 @@ export class FocusHUD {
     this.stateEl = this.root.querySelector('#hud-state');
     this.levelEl = this.root.querySelector('#hud-level');
     this.timeEl = this.root.querySelector('#hud-time');
+    this.targetEl = this.root.querySelector('#hud-session-target');
   }
 
   _formatTime(seconds) {
@@ -107,7 +109,8 @@ export class FocusHUD {
    *   practiceRingTotal?: number,
    *   liveElapsedSeconds?: number | null,
    *   treatAsFocusing?: boolean,
-   *   focusLevelOverride?: number | null
+   *   focusLevelOverride?: number | null,
+   *   sessionTargetMinutes?: number | null
    * }} [opts]
    */
   render(focusSession, stateManager, opts = {}) {
@@ -138,6 +141,7 @@ export class FocusHUD {
     this.levelEl.textContent = `${Math.round(live.level * 100)}%`;
     this.timeEl.textContent = this._formatTime(live.elapsedSeconds);
     this.stateEl.textContent = this._stateLabel(live.displayState);
+    this._renderSessionTarget(live.focusing, opts.sessionTargetMinutes);
 
     if (this.wrapEl) {
       this.wrapEl.dataset.focusing = live.focusing ? '1' : '0';
@@ -161,5 +165,26 @@ export class FocusHUD {
       this.streakEl.setAttribute('filled', String(ringFilled));
       this.streakEl.setAttribute('label', t('HUD_STREAK_HOVER'));
     }
+  }
+
+  /**
+   * Option A: whisper target under elapsed (Focusing / micro-ritual only).
+   * @param {boolean} focusing
+   * @param {number | null | undefined} minutes
+   */
+  _renderSessionTarget(focusing, minutes) {
+    if (!this.targetEl) return;
+    const n = Number(minutes);
+    const show = focusing && Number.isFinite(n) && n > 0;
+    if (!show) {
+      this.targetEl.hidden = true;
+      this.targetEl.textContent = '';
+      return;
+    }
+    this.targetEl.hidden = false;
+    this.targetEl.textContent = String(t('focus_duration.minutes_chip')).replace(
+      /\{n\}/g,
+      String(Math.round(n))
+    );
   }
 }

@@ -2092,7 +2092,10 @@ async function init() {
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
       treatAsFocusing: microBreathing,
       liveElapsedSeconds: microElapsed,
-      focusLevelOverride: microProgress
+      focusLevelOverride: microProgress,
+      sessionTargetMinutes: microBreathing
+        ? microRitualUI?.getDurationMinutes?.()
+        : focusSession.targetMinutes
     });
     weeklyPracticeHeatmap.render({
       // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
