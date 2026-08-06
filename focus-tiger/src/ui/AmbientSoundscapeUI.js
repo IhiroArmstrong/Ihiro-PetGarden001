@@ -708,6 +708,7 @@ export class AmbientSoundscapeUI {
     this.muteBtn.classList.toggle('is-ghost', !audible);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
+    this.muteBtn.setAttribute('title', t('AMBIENT_NOTE_HOVER'));
     this.muteBtn.setAttribute(
       'aria-expanded',
       this.isPanelOpen() ? 'true' : 'false'

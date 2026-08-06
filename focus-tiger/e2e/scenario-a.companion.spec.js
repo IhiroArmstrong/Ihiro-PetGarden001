@@ -247,9 +247,9 @@ test('375 Arrival Breath: home Sit stays hidden; Quick Start stays', async ({
 });
 
 /**
- * Arrival keepQuickStart: home ⚡ must begin Focus (not silent no-op when dock ⚡ is hidden).
+ * Arrival keepQuickStart: home left ball opens Breath practice (cancels Arrival).
  */
-test('375 Arrival: home Quick Start begins focus', async ({ page }) => {
+test('375 Arrival: home Breath practice opens duration picker', async ({ page }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 375, height: 667 });
   await openFreshProductShell(page);
@@ -259,7 +259,9 @@ test('375 Arrival: home Quick Start begins focus', async ({ page }) => {
   await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
   await page.locator('#ft-narrow-home-quickstart').click();
   await expect(arrival).toBeHidden({ timeout: 15_000 });
-  await expectFocusSessionActive(page);
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
 });
 
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({

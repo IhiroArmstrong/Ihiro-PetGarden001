@@ -1,15 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { openFreshProductShell } from './helpers/product-shell.js';
+import {
+  openFreshProductShell,
+  quickStartFocus
+} from './helpers/product-shell.js';
 
 /**
- * Wide Idle (≥480): three home balls (Quick · Sit · Honesty) + ⋯; secondary via popover.
+ * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯; secondary via popover.
  */
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
-/** Row proxy → click-hint id (Language has none by design). */
+/** Row proxy → click-hint id (Language has none by design). Breath is home ball. */
 const WIDE_MORE_ROW_HINT = Object.freeze({
-  breath: 'micro-ritual',
   companion: 'how-shall-we-sit',
   reminder: 'in-app-reminder'
 });
@@ -110,7 +112,7 @@ test('wide Focusing: more + balls hidden; top-right note stays, Sound FAB stays 
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-home-quickstart').click();
+  await quickStartFocus(page);
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 15_000
   });
@@ -173,18 +175,14 @@ test('wide ⋯: unread row mint only — no floating badge double', async ({
     menu.locator('[data-proxy="companion"] .ft-secondary-menu-hint-dot')
   ).toBeVisible({ timeout: 5_000 });
   await expect(
-    menu.locator('[data-proxy="breath"] .ft-secondary-menu-hint-dot')
-  ).toBeVisible();
-  await expect(
     menu.locator('[data-proxy="reminder"] .ft-secondary-menu-hint-dot')
   ).toBeVisible();
+  // Breath practice is home ball — not a ⋯ row.
+  await expect(menu.locator('[data-proxy="breath"]')).toHaveCount(0);
 
   // No second floating mint parked on those click hints while ⋯ is open.
   await expect(
     page.locator('.onboarding-hint-badge[data-hint-id="how-shall-we-sit"]:not([hidden])')
-  ).toHaveCount(0);
-  await expect(
-    page.locator('.onboarding-hint-badge[data-hint-id="micro-ritual"]:not([hidden])')
   ).toHaveCount(0);
   await expect(
     page.locator('.onboarding-hint-badge[data-hint-id="in-app-reminder"]:not([hidden])')
@@ -217,8 +215,8 @@ test('wide ⋯: Sit auto tip hidden while menu open (no hover required)', async 
 });
 
 /**
- * Four-row tip matrix + row-switch: breath/companion/reminder show their tips;
- * Language has no row tip; Sit auto tip must stay hidden across switches.
+ * Row tip matrix + row-switch: companion/reminder show tips; Language has none;
+ * Breath is not a ⋯ row; Sit auto tip must stay hidden across switches.
  */
 test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   page
@@ -229,7 +227,6 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   await expect(menu).toBeVisible({ timeout: 5_000 });
 
   const proxies = /** @type {const} */ ([
-    'breath',
     'companion',
     'reminder',
     'language'
@@ -261,8 +258,8 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     await expectSitAutoTipHidden(page);
   }
 
-  // Explicit switch path: companion → breath → reminder → language (no Sit flash).
-  for (const proxy of ['companion', 'breath', 'reminder', 'language']) {
+  // Explicit switch path: companion → reminder → language (no Sit flash).
+  for (const proxy of ['companion', 'reminder', 'language']) {
     await menu.locator(`[data-proxy="${proxy}"]`).hover();
     await page.waitForTimeout(300);
     await expectSitAutoTipHidden(page);

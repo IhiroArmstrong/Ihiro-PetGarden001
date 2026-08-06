@@ -75,7 +75,7 @@ export async function clickSitEntry(page) {
 }
 
 /**
- * 点 ⚡ Quick Start，同 `clickSitEntry` 的三球优先规则。
+ * 点首页左球 Breath practice（DOM id 仍为 quickstart / #quick-start-focus）。
  * @param {import('@playwright/test').Page} page
  * @returns {Promise<void>}
  */
@@ -88,6 +88,11 @@ export async function clickQuickStartEntry(page) {
     }
   }
   await page.locator('#quick-start-focus').click();
+}
+
+/** @deprecated alias — home left ball opens Breath practice */
+export async function clickBreathPracticeEntry(page) {
+  await clickQuickStartEntry(page);
 }
 
 /**
@@ -109,7 +114,7 @@ export async function openWideMoreMenuIfPresent(page) {
 }
 
 /**
- * 经宽屏 ⋯（若有）打开呼吸 / 提醒等代理入口；Honesty 走首页球；否则点 dock 直钮。
+ * 经宽屏 ⋯（若有）打开提醒等代理入口；Breath 走首页左球；Honesty 走首页球。
  * @param {import('@playwright/test').Page} page
  * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
  */
@@ -120,6 +125,10 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
       await ball.click();
       return;
     }
+  }
+  if (proxy === 'breath') {
+    await clickBreathPracticeEntry(page);
+    return;
   }
   const direct = {
     honesty: '#honesty-idle-entry',
@@ -229,24 +238,27 @@ export async function chooseReadingAndAwaitFocus(page) {
 }
 
 /**
- * ⚡ Quick Start：跳过 Arrival（或先 Sit 再跳过），立刻 Focusing。
+ * Skip Arrival → Focusing via `__arrivalPractice.skipToBegin`（产品首页左球已改为 Breath practice）。
  * @param {import('@playwright/test').Page} page
  */
 export async function quickStartFocus(page) {
-  await expect(page.locator('#quick-start-focus')).toBeVisible({
-    timeout: 15_000
-  });
-  await clickQuickStartEntry(page);
-  await expect(page.locator('#arrival-practice')).toBeHidden({ timeout: 15_000 });
-}
-
-/** @deprecated 使用 `quickStartFocus`；Arrival 开着时点 ⚡ 等价旧 Skip — begin */
-export async function skipArrivalBegin(page) {
   const arrival = page.locator('#arrival-practice');
   if (!(await arrival.isVisible().catch(() => false))) {
     await clickSitEntry(page);
     await expect(arrival).toBeVisible({ timeout: 15_000 });
   }
+  const skipped = await page.evaluate(() => {
+    const ui = window.__arrivalPractice;
+    if (!ui?.skipToBegin) return false;
+    ui.skipToBegin();
+    return true;
+  });
+  expect(skipped, 'window.__arrivalPractice.skipToBegin missing').toBe(true);
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+}
+
+/** @deprecated 使用 `quickStartFocus`；e2e 跳过 Arrival 不再点首页左球 */
+export async function skipArrivalBegin(page) {
   await quickStartFocus(page);
 }
 

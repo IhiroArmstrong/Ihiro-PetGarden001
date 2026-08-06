@@ -1182,8 +1182,10 @@ async function init() {
       }
     }
   );
+  // E2e skip Arrival → Focus (home left ball is Breath practice, not skip).
+  // Must work in vite preview (DEV=false), same as `__honestyBridge`.
+  window.__arrivalPractice = arrivalPractice;
   if (import.meta.env.DEV) {
-    window.__arrivalPractice = arrivalPractice;
     window.__lightProgression = lightProgression;
   }
 
@@ -1528,10 +1530,15 @@ async function init() {
     beginFocusWithMode(mode);
   };
 
-  /** ⚡ Quick Start：跳过 Arrival（若开着）并以记忆 Companion 模式立刻 Focusing */
+  /** 首页左球：Breath practice（原 ⚡ Quick Start 跳过 Arrival 开表） */
   companionModeHandlers.onQuickStart = () => {
     if (sessionUiGate.completionPending) return;
-    if (stateManager.state === STATES.FOCUSING) return;
+    if (
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE
+    ) {
+      return;
+    }
     if (
       reflectionMoment?.isOpen?.() ||
       microRitualUI?.isOpen?.() ||
@@ -1539,26 +1546,26 @@ async function init() {
     ) {
       return;
     }
+    // Arrival 开着：收仪式回 Idle 门闩，再开呼吸练习（不再 skip→Focus）
+    if (arrivalPractice?.isOpen?.()) {
+      arrivalPractice.hide();
+      pendingAutoStartMode = null;
+      arrivalChoseThisRun = false;
+      suppressCompanionOpenAfterNod = false;
+      pendingChoose = null;
+      postChooseChrome.pending = false;
+      syncArrivalGateReady(false);
+    }
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
     companionModePicker.hide();
-    onboardingHints?.markSeen('sit-button');
-    onboardingHints?.markSeen('how-shall-we-sit');
     onboardingHints?.markSeen('quick-start');
-    if (arrivalPractice.isOpen()) {
-      arrivalPractice.skipToBegin();
-      return;
-    }
-    // Idle 且无 Arrival：直接开表（不走仪式）
-    pendingChoose = null;
-    currentSessionIntention = '';
-    currentIntentionSource = 'typed';
-    arrivalChoseThisRun = false;
-    pendingAutoStartMode = null;
-    suppressCompanionOpenAfterNod = false;
-    syncArrivalGateReady(true);
-    beginFocusWithMode(companionModePicker.getSelectedMode());
+    onboardingHints?.markSeen('micro-ritual');
+    beginMicroRitualChrome();
+    microRitualUI.openDurationPicker();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
   };
 
   /** 门闩未就绪时选模式 → 启动 Arrival；返回是否已启动（Picker 凭此写 storage） */

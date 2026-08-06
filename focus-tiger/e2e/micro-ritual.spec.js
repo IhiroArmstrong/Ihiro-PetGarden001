@@ -1,17 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
-import { clickWideMoreProxyOrDirect, openFreshProductShell } from './helpers/product-shell.js';
-
+import {
+  clickBreathPracticeEntry,
+  clickWideMoreProxyOrDirect,
+  openFreshProductShell
+} from './helpers/product-shell.js';
 
 /**
- * 呼吸练习（原「一分钟呼吸」）DOM 主路径。
- * 用 `?microRitualMs=` 缩短墙钟；须先点时长 chip；序列观感仍人工。
+ * Breath practice（原「一分钟呼吸」）DOM 主路径。
+ * 入口 = 首页左球；用 `?microRitualMs=` 缩短墙钟；须先点时长 chip。
  */
 async function openMicroRitualPicker(page) {
-  const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeAttached({ timeout: 15_000 });
-  await clickWideMoreProxyOrDirect(page, 'breath');
+  await clickBreathPracticeEntry(page);
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
@@ -136,13 +137,21 @@ test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
   await openFreshProductShell(page, {
     path: '/?product=1&microRitualMs=60000'
   });
-  await expect(page.locator('.ft-narrow-grabber')).toBeVisible({
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible({
     timeout: 15_000
   });
+  // Drawer must not list Breath (home ball only).
   await page.locator('.ft-narrow-grabber').click();
-  const breathRow = page.locator('.ft-narrow-sheet__item[data-proxy="breath"]');
-  await expect(breathRow).toBeVisible({ timeout: 5_000 });
-  await breathRow.click();
+  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
+    'aria-hidden',
+    'false'
+  );
+  await expect(
+    page.locator('.ft-narrow-sheet__item[data-proxy="breath"]')
+  ).toHaveCount(0);
+  await page.locator('body').click({ position: { x: 8, y: 8 } });
+
+  await clickBreathPracticeEntry(page);
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
@@ -211,9 +220,7 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
     path: '/?product=1&microRitualMs=60000'
   });
 
-  const entry = page.locator('#micro-ritual-idle-entry');
-  await expect(entry).toBeAttached({ timeout: 15_000 });
-  await clickWideMoreProxyOrDirect(page, 'breath');
+  await openMicroRitualPicker(page);
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
@@ -236,7 +243,7 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
     /Today counts|今天，也算数/
   );
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
-  await expect(entry).toBeAttached();
+  await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeVisible();
   await expect(page.locator('#btn-focus')).toBeEnabled();
   await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
@@ -403,7 +410,7 @@ test('375 Honesty panel: narrow home Honesty ball hidden', async ({ page }) => {
 });
 
 /**
- * micro-ritual-sit-unavailable (narrow): scenario O ⑤ — during a minute of breath,
+ * micro-ritual-sit-unavailable (narrow): during Breath practice,
  * home Sit ball must not remain clickable/visible (shell Focusing hides home CTAs;
  * legacy #btn-focus stays disabled).
  */
@@ -418,17 +425,9 @@ test('375 micro ritual: home Sit unavailable while breath runs', async ({
     timeout: 15_000
   });
   await expect(page.locator('#ft-narrow-home-sit')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-quickstart')).toBeVisible();
 
-  await page.locator('.ft-narrow-grabber').click();
-  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
-    'aria-hidden',
-    'false'
-  );
-  await page
-    .locator('.ft-narrow-sheet__item', {
-      hasText: /Breath practice|呼吸练习|呼吸の練習|A minute of breath|一分钟呼吸/i
-    })
-    .click();
+  await clickBreathPracticeEntry(page);
 
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
