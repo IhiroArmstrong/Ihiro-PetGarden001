@@ -55,6 +55,7 @@ export class NarrowIdleShell {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
+   *     onZenCinema?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -776,6 +777,12 @@ export class NarrowIdleShell {
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'zen-cinema') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onZenCinema?.();
       return;
     }
     if (key === 'quickstart') {

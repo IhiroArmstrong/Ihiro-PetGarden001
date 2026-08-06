@@ -209,5 +209,12 @@
   "LANGUAGE_MENU_LABEL": "言語",
   "LANGUAGE_SETTING_TITLE": "言語",
   "LANGUAGE_FAB_ARIA": "言語を選ぶ",
-  "LANGUAGE_CLOSE": "閉じる"
+  "LANGUAGE_CLOSE": "閉じる",
+  "ZEN_CINEMA_MENU_LABEL": "禅シネマ",
+  "ZEN_CINEMA_CARD_TITLE": "阿寅と過ごすマインドフルなひととき",
+  "ZEN_CINEMA_CARD_BLURB": "短い映像の瞑想 — 静かな一分のための小さな贈り物。",
+  "ZEN_CINEMA_FILM_TITLE": "Satori: The Flash That Changes Everything",
+  "ZEN_CINEMA_OPENS_YOUTUBE": "ブラウザで YouTube が開きます。",
+  "ZEN_CINEMA_CANCEL": "いまはしない",
+  "ZEN_CINEMA_WATCH": "YouTube で観る"
 }

@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema'} proxy
  * @property {string} labelKey
  */
 
@@ -332,6 +332,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
       labelKey: 'LANGUAGE_MENU_LABEL'
     });
   }
+
+  // Growth pack ① — always available gift entry (no first-visit mint).
+  out.push({
+    proxy: 'zen-cinema',
+    labelKey: 'ZEN_CINEMA_MENU_LABEL'
+  });
 
   return out;
 }

@@ -229,7 +229,8 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   const proxies = /** @type {const} */ ([
     'companion',
     'reminder',
-    'language'
+    'language',
+    'zen-cinema'
   ]);
 
   for (let i = 0; i < proxies.length; i++) {
@@ -245,7 +246,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
         )
       ).toBeVisible({ timeout: 5_000 });
     } else {
-      // Language: no dedicated tip — prior row click tips must be closed (`[open]`).
+      // Language / Zen Cinema: no dedicated tip — prior row click tips must be closed (`[open]`).
       for (const id of Object.values(WIDE_MORE_ROW_HINT)) {
         await expect(
           page.locator(
@@ -264,6 +265,25 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     await page.waitForTimeout(300);
     await expectSitAutoTipHidden(page);
   }
+});
+
+test('wide Idle: Zen Cinema row opens confirm card', async ({ page }) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="zen-cinema"]')).toBeVisible();
+  await menu.locator('[data-proxy="zen-cinema"]').click();
+  const card = page.locator('#zen-cinema-card');
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(card.locator('.zen-cinema-card__thumb')).toBeVisible();
+  await expect(page.getByTestId('zen-cinema-open-youtube')).toBeVisible();
+  await card.locator('.zen-cinema-card__btn--ghost').click();
+  await expect(card).toBeHidden({ timeout: 5_000 });
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="zen-cinema"]').click();
+  await expect(card).toBeVisible({ timeout: 5_000 });
 });
 
 test('wide Idle: no ambient autoplay on boot', async ({ page }) => {

@@ -76,6 +76,7 @@ export class WideIdleMoreMenu {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
+   *     onZenCinema?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -593,6 +594,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'zen-cinema') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onZenCinema?.();
       return;
     }
     if (key === 'sound') {
