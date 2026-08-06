@@ -236,6 +236,14 @@ test('companion hint click never silently no-ops when idle and visible', () => {
   );
 });
 
+test('setTargetMinutes updates goal before start', () => {
+  const session = new FocusSession(25);
+  session.setTargetMinutes(45);
+  assert.equal(session.targetMinutes, 45);
+  session.setTargetMinutes(0);
+  assert.equal(session.targetMinutes, 45);
+});
+
 test('resolveDemoSessionMinutes defaults to 1; ?sessionMinutes=5 for Re-focus tab tests', () => {
   assert.equal(resolveDemoSessionMinutes(''), DEMO_SESSION_MINUTES_DEFAULT);
   assert.equal(resolveDemoSessionMinutes('?product=1'), 1);

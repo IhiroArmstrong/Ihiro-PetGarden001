@@ -186,6 +186,16 @@ export class FocusSession {
    * @param {CompanionMode} [options.companionMode]
    * @param {() => number} [options.now]
    */
+  /**
+   * 开表前设定本场目标分钟（时长 chip / `?sessionMinutes=`）。
+   * @param {number} minutes
+   */
+  setTargetMinutes(minutes) {
+    const n = Number(minutes);
+    if (!Number.isFinite(n) || n <= 0) return;
+    this.targetMinutes = Math.min(90, Math.max(1, Math.round(n)));
+  }
+
   start({ companionMode = COMPANION_MODE_STAY, now } = {}) {
     this._now = typeof now === 'function' ? now : () => Date.now();
     this.companionMode = isValidCompanionMode(companionMode)
