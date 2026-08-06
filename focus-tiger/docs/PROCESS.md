@@ -76,6 +76,7 @@
 - **「本周陪伴」今日标记 + 窄屏 toast 避让（2026-08-05）**：PR #120 合入 `develop` tip `dc415d7`（星期缩写/今日描边/Dormant 可见；窄屏底部文案 clearance belt）。Hints tip 几何仍属 #7 再设计。
 - **KnownRisky 验收清单入库（2026-08-04）**：`KNOWN_RISKY_TEST_CHECKLIST.md` 步骤 SSOT；#1 已关单（见上行）。
 - **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
+- **FocusHUD 否决「随风浮动」（2026-08-04）**：冷启动毛玻璃隐退保留；**禁止**整卡位移动画，以免与静置 chrome 不统一。见 `DESIGN` FocusHUD / `TEST_TRACKER` 冷启动首屏行。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.12**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。Welcome 优先顺序曾 OK（§6.10）。**2026-08-04**：刷新后鹦鹉→Idle **闪白** → 根因 **§6.12**；同日晚 tip `0494dd6` 人工回落叠化关单。**后补** `fix/parrot-idle-capcut`：companion oneshot 抗闪契约 + 单测 P3/P4（非重开关单）。
 - **Hints 接线 SSOT（2026-08-03）**：`HINTS_WIRING.md` + 库存硬闸 + PR 批次钉。**③ 簇 A 已验证** → 格式生效。**④ 视觉护栏试点已合（PR #93）**；同日用户拍板 **保持观察、暂不扩** linux 软快照 / peeked / 更多 id。⑤ 仍 Backlog。
@@ -325,6 +326,8 @@
 **最近拍板（2026-08-06）**：增长向内容包（YouTube 菜单入口 → 每日签文存图 → 电子书 A 下载 → 电子书 B 独立解锁）口径已锁；**可延后增发**，不挤占壳选型/主路径债。禁止 Reflection 边缘入口；签文不复活 soft-schedule、不做「一键分享」核心承诺、仅 en+ja；电子书 B **禁止**碰 MilestoneGlow，文案禁「里程碑/成就/打卡」混 Glow。Brief：`task-briefs/task-growth-content-pack-decision.md`。**① Zen Cinema / ③ Quiet Line 已合 develop**（PR #148 / #153）。**同日晚用户书面**：电子书 **②A/②B 延迟安排**（非最急）——下一排期勿默认开工电子书。
 
 **最近拍板（2026-08-05）**：吹花鼓励冷启动微仪式——策略 C + 同日 XOR 欢迎池；观察式文案；时机/交互/flag 见 `FLOWER_BLOW_WELCOME_DESIGN.md`；**先 Phase 1 Lab，再产品接线**（须走 Dispatcher，禁止平行硬调）。
+
+**最近拍板（2026-08-04）**：FocusHUD **否决「随风浮动」**——只保留毛玻璃隐退（Arrival 式半透明）；禁止整卡 `translate`/微旋转漂浮，以免与静置 chrome 风格不统一。见 `DESIGN.md` FocusHUD；`TEST_TRACKER`「冷启动首屏呼吸感」。
 
 **最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
 
