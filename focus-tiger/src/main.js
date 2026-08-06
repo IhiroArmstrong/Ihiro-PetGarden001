@@ -909,30 +909,19 @@ async function init() {
     {
       onPanelOpened: () => {
         onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
-        ambientSoundscapeUI.syncNoteLabel();
       },
-      onNoteInteracted: () => {
-        // Click (not hover) permanently dismisses the pinned label / mint.
-        onboardingHintHost.hints?.markSeen('ambient-soundscape');
-        onboardingHintHost.hints?.hideBubble('ambient-soundscape');
-        ambientSoundscapeUI.syncNoteLabel();
-      },
-      isAmbientHintDone: () =>
-        Boolean(onboardingHintHost.hints?.store?.isDone('ambient-soundscape')),
       onTrackChosen: () => {
         onboardingHintHost.hints?.markSeen('ambient-soundscape');
         onboardingHintHost.hints?.hideBubble('ambient-soundscape');
-        ambientSoundscapeUI.syncNoteLabel();
         idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
       },
       onToggleMusic: () => {
-        // Mute/unmute alone does not clear the discovery mint — only note click / track.
+        // Mute/unmute alone does not clear the discovery mint — only choosing a track does.
         idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
-        ambientSoundscapeUI.syncNoteLabel();
       },
       onMuteChromePainted: () => {
         onboardingHintHost.hints?.syncDiscoveryDots();

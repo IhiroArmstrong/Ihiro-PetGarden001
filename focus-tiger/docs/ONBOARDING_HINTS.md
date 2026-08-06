@@ -142,7 +142,7 @@
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
-音乐 **默认关闭（opt-in）**。首次 Idle：右上音符旁**常驻小 label**（`HINT_AMBIENT_SOUNDSCAPE`）+ 薄荷绿脉冲；**点音符** → 永久 `markSeen`（label 收起、mint 消）。done 后悬停再出 `AMBIENT_NOTE_HOVER` 小 label，离开消失。**不**在 hint 中承诺光效变化。不再用原生 `title` 叠字。
+音乐 **默认关闭（opt-in）**。首次 Idle：右上音符见**薄荷绿脉冲**；悬停展开 tip（`HINT_AMBIENT_SOUNDSCAPE`），移开即收。**仅选曲**后永久 `markSeen`（mint 消）；点音符开面板**不清** mint。done 后悬停残余用原生 `title`（`AMBIENT_NOTE_HOVER`）；未读时由 mint tip 压掉原生 title，避免双文案。**不**再使用常驻 `#ambient-note-label` 自绘气泡（2026-08-06 用户书面：点后长文案气泡行为不对，改回脉冲点 Hint）。**不**在 hint 中承诺光效变化。
 
 ---
 
