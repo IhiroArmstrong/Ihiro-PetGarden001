@@ -35,10 +35,10 @@
 		}
 	],
 	"vars": {
-		"STRIPE_PRICE_ID": "",
+		"STRIPE_PRICE_ID": "price_1U1uTaFuIhgJPGLiVm2K2Dd1",
 		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&tip=1",
 		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&tip=cancel",
-		"STRIPE_SANCTUARY_PRICE_ID": "",
+		"STRIPE_SANCTUARY_PRICE_ID": "price_1U1ug2FuIhgJPGLiR0Gh40v8",
 		"SANCTUARY_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&sanctuary_session={CHECKOUT_SESSION_ID}",
 		"SANCTUARY_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&sanctuary=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
