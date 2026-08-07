@@ -40,6 +40,16 @@ feature/*        ●        ●
 
 > **权威（SSOT）**：[`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」（含自动 commit、单笔汇报、**Git 同步分级汇总**、禁自动合 main）。本文**不**复述条款；主题索引见 [`focus-tiger/docs/RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md) `git-agent-commit`。
 
+### 开 PR 前 · `--base` 自查（硬性 · 2026-08-07）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-base-develop`）。教训：PR #164 漏写 `--base develop`，GitHub 默认打到 `main` 并被合入。
+
+Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
+
+1. **默认 base = `develop`**：日常 `feature/*` / `fix/*` / `docs/*` PR **必须**显式 `--base develop`（或 UI 选 `develop`）。  
+2. **禁止默认打到 `main`**：除非用户**当回合书面**要求「开往 `main`」或「`develop` → `main` 发版 PR」。  
+3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base 或关 PR 重开**，禁止带着错误 base 等 CI / 催合。
+
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-cross-session`）。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。门禁文件只保留指针，勿在别处再抄全文。
@@ -240,6 +250,12 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
 ## 何时可以把 `develop` 合并进 `main`？
 
 `main` 代表「可以交给用户」的快照。合并前须 **全部满足**：
+
+### 发版核对备忘 · `main` 已提前含 #164（2026-08-07）
+
+> **事件**：PR [#164](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/164)（Reflection 共鸣）误以 **`main`** 为 base 合入（tip `30ef3c9`）。日常仍以 **`develop`** 为准；**`main` 先不动**，等下次正式发版再做正规 `develop` → `main`。纠正落地见合入 `develop` 的 #175（及后续 tip）。
+
+**下次 `develop` → `main` 发版时**：Reflection 共鸣相关路径（如 `reflectionEchoCopy.js` / `TigerReflectionMoment` 共鸣接线 / 对应 locale `REFLECTION_ECHO_*`）在 diff 里可能显示 **「无变化」或几乎无 diff**——这是 **预期**：`main` 已含该批内容，**不是**漏合并。禁止为此重复排查「是否忘了合」。其余 develop 独有提交仍须正常进 main。
 
 ### 自动化门禁（在 `focus-tiger/` 目录执行）
 
