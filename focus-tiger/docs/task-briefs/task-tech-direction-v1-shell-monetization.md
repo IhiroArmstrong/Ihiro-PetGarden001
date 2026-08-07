@@ -1,8 +1,8 @@
 # Task Brief · 技术方向纪要（v1 壳 / 商业化 / 健康同步）
 
-> **状态（2026-08-07 夜 · 双入口命名纠正）**：商业化 = **A 打赏（Tip/Tea）+ B Sanctuary Pass** 并存；founder → **`feature/yin-tip-jar`**（不改名为 Sanctuary）；B 新建 entitlement 线；共享 payment 层、分离 gate。**§八双表待确认后再改代码**。  
-> **触发**：用户纠正「单名合并」旧指令 → 双入口 + tip schema / entitlement schema 分轨 + ②B 取消。  
-> **权威**：本文件 + `PROCESS.md`「最近拍板」+ `MVP_PRODUCT_DEFINITION.md` §五。
+> **状态（2026-08-07 夜 · §八已确认可执行）**：A Tip/Tea + B Sanctuary 双入口；founder → `feature/yin-tip-jar`；B 新建；§2.6 **Gate 零耦合**为 Code Review 必检条款。  
+> **触发**：用户确认双表执行 + 零耦合条款原文 + 可推进 tip-jar / sanctuary / 低风险三项并行。  
+> **权威**：本文件 + `PROCESS.md` + `MVP_PRODUCT_DEFINITION.md` §五。
 
 ---
 
@@ -156,7 +156,25 @@
 | **A tipJarGate** | 仅打赏 | 状态判断、`localStorage` key、UI 入口、KV tip schema **独立**（文件名亦可简写 `tipGate.js`，与本表等价） |
 | **B sanctuaryEntitlementGate** | 仅解锁 | 状态判断、`localStorage` key、UI 入口、KV entitlement schema **独立** |
 
-**禁止**：合并成一个「统一付费入口」或一个 gate 同时管 tip + unlock；Ambient / 动画 **只读 B**，**禁止读 A tip 决定内容解锁**。
+**禁止**：合并成一个「统一付费入口」或一个 gate 同时管 tip + unlock。
+
+#### 硬技术约束 · Gate 零耦合（Code Review 必检 · 2026-08-07 用户确认）
+
+> **条款（可审查原文）**：  
+> `sanctuaryEntitlementGate` 及其相关模块（UI、cloud sanctuary 路由、ambient/动画消费侧）**不得** `import`、读取或以任何方式依赖 `tipJarGate` / `tipGate` 的状态（`tipped` / `tipCount` / `lastTippedAt` 等）。  
+> 两者的「是否已解锁内容 / 是否已打赏」判断逻辑必须 **完全独立运算**。  
+> **不允许**「打赏过给折扣 / 额外权益 / 试用时长」这类隐性耦合逻辑，**除非未来单独立项拍板**（例：阶段 2 的 A→B 24h 体验卡须另开 Brief，不得在未立项时塞进任一门闩）。
+
+**Code Review 检查项（合 tip-jar / sanctuary PR 时勾选）**：
+
+- [ ] `rg`：`sanctuaryEntitlementGate` / `SanctuaryUnlockUI` / sanctuary cloud 路由 **无** `tipJar`、`tipGate`、`tip-jar`、`tipped`、`tipCount`、`supporterGate` 引用  
+- [ ] `rg`：`tipJarGate` / `TipJarUI` / tip cloud 路由 **无** `sanctuary`、`unlockedVia`、`sanctuary-entitlement` 引用（支付公共层文件名除外，且公共层不得读 tip 写 sanctuary）  
+- [ ] Ambient / Emotion / 场景 dispatcher **只读 B** entitlement；**零** tip 分支  
+- [ ] 无「if tipped then discount / bonus unlock」类逻辑  
+- [ ] 单元测试静态隔离断言已绿（见下「硬约束 · 单元测试兜底」）
+
+Ambient / 动画 **只读 B**；**禁止**读 A tip 决定内容解锁（上列条款的产品侧说法）。
+
 
 #### 第4点确认表 · Gate 独立性（合并 docs PR 前请过目）
 
@@ -288,10 +306,11 @@ UI:   SanctuaryUnlockUI.js
 
 ---
 
-## 八、改名清单（双表 · **只列，待你确认后再改代码**）
+## 八、改名清单（双表 · **已确认可执行** · 2026-08-07）
 
-> 原则：对内可用中性标识符；**对外展示措辞只走 i18n**（Tea / Sanctuary），方便以后改文案不牵动代码。  
-> **禁止**把 tip-jar 标识符改成 Sanctuary；**禁止**把两套 gate 合成一套。
+> 原则：对内可用中性标识符；**对外展示措辞只走 i18n**（Tea / Sanctuary）。  
+> **禁止**把 tip-jar 标识符改成 Sanctuary；**禁止**把两套 gate 合成一套。  
+> **零耦合条款**见 §2.6「硬技术约束 · Gate 零耦合」——改代码 / Review 均须遵守。
 
 ### 表 A · 打赏（Tip / Tea）— 由 `feature/founder-supporter-pack` 改道
 
@@ -330,7 +349,8 @@ UI:   SanctuaryUnlockUI.js
 | KV | `sanctuary:{email}`（可含 `itemId`） | entitlement schema |
 | 校验强度 | **必须**服务端确认 Checkout Session；**禁止**乐观 query 解锁真内容 | — |
 
-**本轨禁止**：复用 `tipGate` / tip localStorage / `?tip=` 写 `unlocked`；在 tip UI 里卖全库解锁。
+**本轨禁止**：复用 `tipGate` / tip localStorage / `?tip=` 写 `unlocked`；在 tip UI 里卖全库解锁。  
+**另见** §2.6 零耦合条款全文（Code Review 必检）。
 
 ### 表 C · 仅公共 payment 层（新建或从 founder cloud 抽）
 
@@ -352,12 +372,10 @@ UI:   SanctuaryUnlockUI.js
 
 ## 待你决定（仍开放）
 
-1. **§八双表是否按此执行**（确认后再改代码 / 分支改名）  
-2. A/B **定价数字**（仍不锁）  
-3. 深度音效 / 高级动画 **分层名单**  
-4. 低风险三项（Privacy → Reflection echo → 壁纸）：**已同意开工**（与 Stripe 无关）  
-5. 可选 PWA 是否立项  
+1. A/B **定价数字**（仍不锁）  
+2. 深度音效 / 高级动画 **分层名单**  
+3. 可选 PWA 是否立项  
 
-**已拍板无需再选**：双入口并存；tip ≠ Sanctuary；②B **取消**；B 仅 Lifetime；共享 payment、分离 gate；24h 体验卡非 v1；founder→Tea 先文案/情境 UI/gate 改名，真收款等 secrets。
+**已拍板**：§八双表执行；§2.6 零耦合条款（Code Review 必检）；②B 取消；B 仅 Lifetime；Privacy → Reflection echo → 壁纸 **可与 tip-jar 改道并行**。
 
-**合并 docs PR 前请确认**：上文 **§2.6「第4点确认表」**（两套 key / schema / 零交叉 import）。确认前：**禁止**静默改支付运行时代码。
+本回合起允许改 tip-jar / sanctuary 运行时代码（须守零耦合）。
