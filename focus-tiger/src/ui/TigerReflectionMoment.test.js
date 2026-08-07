@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import { ReflectionFlowState } from './ReflectionFlowState.js';
 import { trimReflections, REFLECTION_MAX_SAVED } from '../core/SessionEndFlow.js';
 import { formatIntentionEcho } from '../core/SessionIntentionStore.js';
+import { companionEchoKeyAfterAdvance } from './TigerReflectionMoment.js';
+import { REFLECTION_ECHO_KEYS } from './reflectionEchoCopy.js';
 
 test('advances through three questions and collects only non-empty answers', () => {
   const flow = new ReflectionFlowState();
@@ -64,5 +66,34 @@ test('formatIntentionEcho substitutes the stored intention text', () => {
   assert.equal(
     formatIntentionEcho('Attention toward: {text}', 'write quietly'),
     'Attention toward: write quietly'
+  );
+});
+
+test('companionEchoKeyAfterAdvance: non-empty Continue yields pool key; Skip/blank do not', () => {
+  const key = companionEchoKeyAfterAdvance({
+    submit: true,
+    rawAnswer: 'a quiet morning',
+    stepIndex: 0,
+    localDate: '2026-08-07'
+  });
+  assert.ok(REFLECTION_ECHO_KEYS.includes(key));
+
+  assert.equal(
+    companionEchoKeyAfterAdvance({
+      submit: false,
+      rawAnswer: 'ignored',
+      stepIndex: 0,
+      localDate: '2026-08-07'
+    }),
+    null
+  );
+  assert.equal(
+    companionEchoKeyAfterAdvance({
+      submit: true,
+      rawAnswer: '   ',
+      stepIndex: 0,
+      localDate: '2026-08-07'
+    }),
+    null
   );
 });
