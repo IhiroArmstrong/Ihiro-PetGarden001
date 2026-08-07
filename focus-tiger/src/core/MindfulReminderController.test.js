@@ -36,7 +36,9 @@ function setup({ quota = 3 } = {}) {
         return true;
       }
     },
-    getCopy: (key) => key
+    getCopy: (key) => key,
+    // stretch pool: prefer stretchReminder for stable assertions
+    random: () => 0
   });
   return { controller, emotionController, emotions, shown };
 }
@@ -109,6 +111,11 @@ test('step-away companion mode suppresses Re-focus but still pauses stretch on a
   controller.startSession({ suppressAwayReminders: true });
   controller.setAttentionAway(true);
   controller.update(10);
+  assert.equal(
+    controller.activeStretchSeconds,
+    0,
+    'Offline/step-away：离开时舒展活跃秒不得累加'
+  );
   controller.handleAttentionReturn({ durationMs: 90_000, displayEligible: true });
 
   assert.deepEqual(shown, []);
@@ -120,6 +127,20 @@ test('step-away companion mode suppresses Re-focus but still pauses stretch on a
   controller.update(STRETCH_REMINDER_THRESHOLD_SECONDS);
   assert.ok(shown.includes('STRETCH_REMINDER'));
   assert.ok(!shown.some((key) => key.startsWith('REFOCUS')));
+});
+
+test('Offline: wall-clock mindful still advances while stretch is paused away', () => {
+  const { controller, shown } = setup();
+  let wall = 0;
+  controller.startSession({
+    suppressAwayReminders: true,
+    getSessionElapsedSeconds: () => wall
+  });
+  controller.setAttentionAway(true);
+  wall = MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS;
+  controller.update(0);
+  assert.deepEqual(shown, ['MINDFUL_FOCUS_MILESTONE']);
+  assert.equal(controller.activeStretchSeconds, 0);
 });
 
 test('session elapsed can follow a wall-clock reader', () => {

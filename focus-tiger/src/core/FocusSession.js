@@ -47,12 +47,22 @@ export function shouldSuppressAwayReminders(mode) {
 }
 
 /**
- * 选中 Companion 模式后是否立即开始 Focus / 计时（须 Arrival 门闩就绪）。
- * 三模式均在点选或 Arrival 鞠躬后开表；差异在会话内行为（离开提醒等），不在二次 Sit。
+ * 选中 Companion 模式后是否立即开始 Focus / 计时。
+ * Here & Now / Flow 须 Arrival 门闩就绪；**Offline Space 跳过 Arrival**（别处练习，无 Notice/Choose）。
+ * 三模式差异在会话内行为（离开提醒等）与是否走仪式，不在二次 Sit。
  * @param {string} mode
  */
 export function shouldAutoStartFocusOnModeSelect(mode) {
   return isValidCompanionMode(mode);
+}
+
+/**
+ * Offline Space：点选即开表，**不**启动 Arrival Practice（Notice/Choose）。
+ * Here & Now / Flow 仍须仪式或 ⚡ Quick Start。
+ * @param {string} mode
+ */
+export function shouldSkipArrivalOnModeSelect(mode) {
+  return mode === COMPANION_MODE_STEP_AWAY;
 }
 
 /**
@@ -98,8 +108,9 @@ export function shouldBeginFocusOnArrivalReady({ skipped = false } = {}) {
 }
 
 /**
- * 点选自动开计时模式后，是否真正允许 beginFocus。
- * 未过 Arrival 门闩时必须为 false；UI 侧选 Here & Now / Flow State 应启动 Arrival（禁止 HUD 静默无反应）。
+ * 点选 Companion 模式后，是否真正允许 beginFocus。
+ * - Here & Now / Flow：未过 Arrival 门闩必须为 false（UI 应启动 Arrival，禁止 HUD 静默）
+ * - Offline Space：跳过 Arrival，门闩未就绪亦可 begin（仍禁 completion / Arrival 开着 / Focusing）
  * @param {object} gates
  * @param {string} gates.mode
  * @param {boolean} gates.arrivalGateReady
@@ -116,6 +127,7 @@ export function canBeginFocusOnCompanionModeSelect({
 }) {
   if (!shouldAutoStartFocusOnModeSelect(mode)) return false;
   if (completionPending || arrivalOpen || isFocusing) return false;
+  if (shouldSkipArrivalOnModeSelect(mode)) return true;
   return Boolean(arrivalGateReady);
 }
 
@@ -174,6 +186,16 @@ export class FocusSession {
    * @param {CompanionMode} [options.companionMode]
    * @param {() => number} [options.now]
    */
+  /**
+   * 开表前设定本场目标分钟（时长 chip / `?sessionMinutes=`）。
+   * @param {number} minutes
+   */
+  setTargetMinutes(minutes) {
+    const n = Number(minutes);
+    if (!Number.isFinite(n) || n <= 0) return;
+    this.targetMinutes = Math.min(90, Math.max(1, Math.round(n)));
+  }
+
   start({ companionMode = COMPANION_MODE_STAY, now } = {}) {
     this._now = typeof now === 'function' ? now : () => Date.now();
     this.companionMode = isValidCompanionMode(companionMode)

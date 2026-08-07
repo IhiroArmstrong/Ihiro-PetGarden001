@@ -1,0 +1,22 @@
+# Task Brief · Reflection 通用情绪共鸣（Mindful Reflection Echo）
+
+> **状态（2026-08-07）**：实现中 · 分支 `feature/reflection-echo-copy-pool`。  
+> **目的**：Reflection 提交非空答案后，阿寅以「禅宗道友」给一句克制、温暖的通用共鸣（非 AI、非教练）。
+
+## 权威边界
+
+| 项 | 口径 |
+|---|---|
+| 触发 | 用户对某题 **Continue** 且该题答案非空（**已定**：按题触发，非整场收束句） |
+| Skip / Skip all | **不**出新共鸣（先前 Continue 的共鸣可保留至关面板） |
+| 文案 | 观察式、不贴标签、不追因、不说教（`EMOTION_BIBLE` / `PRINCIPLES`） |
+| 数据 | **不上传**；不改 Reflection 本地存储 schema |
+| i18n | en + ja + zh；`REFLECTION_ECHO_1`…`_7`；按 `localDate` + salt 取模 |
+| **禁止** | 生成式 AI；分析人格；付费门；塞 Buy Tea / Sanctuary CTA 进共鸣句 |
+
+## 实现要点
+
+1. `reflectionEchoCopy.js` + locales `REFLECTION_ECHO_*`。  
+2. `TigerReflectionMoment`：`[data-testid=reflection-companion-echo]` 轻量一行。  
+3. 单测：非空 → 出句；Skip → 不出；池长度 ≥5。  
+4. TEST_TRACKER：主路径 + Rise 后再坐一场回流。

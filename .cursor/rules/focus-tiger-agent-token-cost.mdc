@@ -1,0 +1,43 @@
+---
+description: Control Agent Fast Request / token cost — no subagents, no long CI polling, no unauthorized full e2e
+alwaysApply: true
+---
+
+# Focus Tiger · Agent Token Cost（控 Fast Request）
+
+目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候，瞬间吞掉数十次 Fast Request。
+
+索引：`RULES_INDEX.md` → `agent-token-cost`（本地 e2e 硬顶另见 `e2e-local-budget`）。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask + **`gate-local-heavy-e2e` deny**；**IDE Browser MCP deny** 见 `browser-energy`）。
+
+## 强制（本会话）
+
+1. **禁止 Task / 子 Agent**（含 `explore` / `generalPurpose` / `shell` / bugbot / security-review 等）。默认在**父 Agent**内直接完成。  
+   - 硬闸：`subagentStart` → `permission: deny`（脚本 `deny-subagent-start.sh`）。  
+   - 仅当你**当回合书面点名**要开某类子 Agent，且你临时关掉/放行该 hook 时，才可例外。
+2. **禁止并行 explore / 批量并行子任务**。一次一线索；不要为「加快」开多个 Task。
+3. **禁止轮询长 CI**（全量 e2e、visibility 长跑、`gh run watch`、反复 `gh run view` + 长 `sleep`）。  
+   - 允许：触发一次（须用户当回合批准）→ 贴 run URL → **结束**。  
+   - 结果另开短回合查摘要；不要在本回合守 30–120 分钟。
+4. **禁止擅自触发全量 e2e**（`gh workflow run` 指向 `focus-tiger-e2e-full` / `test:e2e` 全量）。须用户当回合明确批准（如「批准触发 full e2e」）。  
+   - 硬闸：`beforeShellExecution` → ask（`gate-full-e2e-dispatch.sh`）。
+5. **工具轮数自觉上限**：单任务若已连续大量工具调用仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转。
+6. **CI 红 / 合入受阻 / 多文件冲突 · 本地验证预算（强制）**  
+   适用：PR checks 失败、merge 冲突、或预计 **≥3 文件** / **多轮试错** 才能解的改动。  
+   - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。  
+   - **先**给「冲突 / 失败分析摘要」（哪些文件、什么类型：语法 / 契约 / e2e 选择器 / 真逻辑），**不要**立刻开改。  
+   - **问**用户是否要新开 worktree/分支处理（避免试错脏了其它任务）。  
+   - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或 **`test:e2e:changed --` 单个 spec**）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止多文件 changed / 全量 / 直调长列表（脚本+hook 硬拦；`RUN_E2E_LOCAL=true` 逃生口会打警告）。
+
+## Settings → Agents → Subagents（须你本人在 Cursor UI 设）
+
+项目文件**无法**写入该 UI 项。请你本地确认：
+
+- **Cursor Settings → Agents → Subagents**  
+  - Explore subagent model → **Inherit from parent**（或固定便宜模型）  
+  - 有「禁用 / 少用并行」类选项则打开  
+
+与本规则 + hook 叠加：UI 降成本，hook 硬禁 spawn。
+
+## 汇报
+
+触及本主题的收尾「待你知道」可一行写：本回合未起子 Agent / 未轮询长 CI（或说明经批准的一次性触发 + URL）。

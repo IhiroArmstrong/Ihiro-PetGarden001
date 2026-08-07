@@ -1,6 +1,6 @@
 # ARRIVE_MOMENT_DESIGN.md — Arrive 整合设计（v2：Arrival Practice，已实现）
 
-创建日期：2026-07-18　最后更新：2026-07-18（第八节三项开放决策已由 Cursor 定稿并实现）
+创建日期：2026-07-18　最后更新：2026-07-24（第五节跳过改为 ⚡ Quick Start；UI 明确为轻量气泡非模态）
 
 **给 Cursor 的重要提示**：如果已经按 v1 的 Cursor Prompt（纯自由文本输入版本）动手实现，
 请先停下核对本文档第六节的变更范围，本版本改的是 Choose 步骤的输入方式和新增 Notice
@@ -39,7 +39,7 @@ Notice：状态点选（1次点击）
   ↓
 Choose：今天做什么（图标点选为主，次要打字入口）
   📖 Reading　💻 Deep Work　🎨 Creative Work　🧘 Meditation　📝 Writing　☕ Just One Small Step
-  （或点"自己写"展开一行可选文本输入）
+  （或点"自己写"展开一行可选文本输入 + **→** 确认钮；说明「点右箭头或按回车」；空 Enter 仍可跳过 Choose）
   ↓（确认瞬间：立刻开门闩 + Companion；并行播 16:9 `intentionNod` 点头 + 坐垫光晕；跳过 Choose 不播）
   ↓（Arrival Practice 到此结束）
 Companion Mode 三选一（独立组件，不合并进 Arrival Practice）
@@ -91,20 +91,22 @@ PRINCIPLES 已有的"观照者而非情绪本身"原则：
 
 ---
 
-## 五、必须存在的跳过机制（本版本新增的强约束）
+## 五、必须存在的跳过机制（快速开始；2026-07-24 修订）
 
 v1 提议的原始流程里没有跳过点，这是必须修正的地方——项目至今没有任何强制、不可跳过
 的交互（Reflection 三问可跳、Honesty Check-in 可忽略），Arrival Practice 不能开这个
 先例，否则会正面违反"陪伴而非监督"的定位。
 
-- 欢迎气泡出现的同时，提供一个不抢视觉焦点但可发现的"跳过，直接开始"入口，点击后
-  跳过 Notice + 呼吸 + Choose，**用当前记忆的 Companion 模式立刻开始计时**（按钮变 Rise）。
-  若希望先改模式：点「How shall we sit?」展开三选一（与 Sit 不同，**不**启动 Arrival）；开计时仍须完成或 Skip Arrival。
-  （旧稿曾写「只进 Companion 三选一」——与中文「直接开始」及 Sit→Rise 预期不符，已于 2026-07-20 更正。）
-- Notice 和 Choose 各自也应有独立的跳过方式（不点任何图标，直接进入下一步），不强制
-  必须选一个。
-- 具体交互形式（按钮/手势/超时自动跳过）留给 Cursor 结合现有组件风格决定，但"存在
-  跳过路径"是硬性要求，不是可选项。
+- **快速开始（产品路径）**：Idle dock 旁 **⚡ Quick Start** 极简图标（`#quick-start-focus`）。
+  点击后跳过 Welcome / Notice / Breath / Choose（若 Arrival 已开则关闭），**用当前记忆的
+  Companion 模式立刻开始计时**（按钮变 Rise）。Idle 且未开 Arrival 时同样可直接开表。
+- Notice：以图标点选前进（含「不确定」）；**不再**提供每步 `Skip` 文案按钮。
+- Choose：以图标点选或「自己写」前进；无意图时可走 ⚡ Quick Start。
+- **已移除**：Arrival 面板内的 `Skip` / `Skip — begin` / `Skip all` 双钮，以及「Sit 二次点击
+  = Skip — begin」捷径（避免与 ⚡ 双通道）。
+
+> 历史方案 A（每步 Skip + 全程 Skip — begin，见第八节）已由本修订替代；Reflection 三问的
+> Skip / Skip all **不在本文件范围**，仍按其自身设计保留。
 
 ---
 
@@ -137,9 +139,13 @@ v1 提议的原始流程里没有跳过点，这是必须修正的地方——�
    主动结束两条路径都会进入 Reflection Moment，且都回显 Choose 内容；Notice
    状态永不回显、永不落库，这条不受影响。
 3. **文案**：已过 EMOTION_BIBLE 四项观察式自检，定稿见第四节。
-4. **跳过交互（已采纳方案 A）**：
-   - 方案 A（实现）：每步 `Skip` + 全程 `Skip — begin`，与 Reflection 同级安静按钮；欢迎/呼吸可自动前进。
-   - 方案 B（未采用）：超时自动跳过为主、无显式 Skip——发现性较差，且与「可跳过非强制」既有 UX 不一致。
+4. **跳过交互（2026-07-24 修订）**：
+   - **现行**：⚡ Quick Start（`#quick-start-focus`）跳过整段仪式并立刻 Focusing；Arrival UI 为
+     **轻量气泡 / 字幕 + 图标点选**，**不是**重型暖色模态卡片；**无**面板内 Skip / Skip — begin。
+   - **点外侧取消（2026-07-25）**：Notice / Choose **选择格**打开时，点框外空白 → **取消本轮
+     Arrival 回 Idle**（不开表、不等于 ⚡）。Welcome / Notice 观察短句 / Breath 进行中不因此关闭。
+   - ~~方案 A（旧实现）~~：每步 `Skip` + 全程 `Skip — begin` —— 易被感受为「弹窗1→2→3」，已移除。
+   - 方案 B（未采用）：超时自动跳过为主、无显式入口——发现性较差。
 
 > 光影氛围层见 `LIGHT_PROGRESSION_DESIGN.md`（Arrival / Recover 的 2D DOM/CSS 渐进，不改本流程逻辑）。
 

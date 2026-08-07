@@ -1,0 +1,58 @@
+---
+description: 预览浏览器与能耗——默认 Safari；硬禁 IDE Browser MCP；Vite/Playwright 收尾；Cloud 独立会话提醒
+alwaysApply: true
+---
+
+# Focus Tiger · 预览浏览器与能耗
+
+目的：降低 Cursor 内置 Browser / 长时间 Vite / 残留 Playwright / 本机↔Cloud 误假设造成的 macOS 累计能耗、Agent token 与协作混乱。
+
+索引、并行 worktree 窗口、ignore 操作见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。本文件为 **预览浏览器 + 本地进程收尾汇报 + Cloud 独立会话提醒** 的 alwaysApply 门禁。
+
+## 默认（强制）
+
+1. 一般预览、人工验收、给用户打开页面 → **只提供本地 URL**，请用户用 **Safari**（或系统浏览器）打开。  
+2. Agent **禁止**调用 Cursor 内置 Browser（含 `cursor-ide-browser` MCP：`browser_navigate` / `browser_snapshot` / 截图点选等）或 Simple Browser。  
+3. **窄屏 / 响应式验收** → 用户用 Safari **响应式设计模式**（或真机），对照 `RESPONSIVE_LAYOUT.md`（常用 375；抽屉断点 ≤479）。**禁止**为此改开 IDE Browser。  
+4. Agent 起的 Vite / `npm run dev`：测完或本回合结束前须**尽量自己停掉**；禁止过夜挂着。  
+5. Agent 起的 Playwright / `npm run test:e2e` 等测试进程：测完须停掉；若会话中断可能导致残留，须在汇报里按下方「进程收尾提醒」写明。自动化窄屏视口走 Playwright，**不**走 IDE Browser。
+
+## 硬闸（hooks）
+
+- `.cursor/hooks/deny-ide-browser-mcp.sh` 经 `beforeMCPExecution`（+ `preToolUse` MCP matcher）**一律 deny** `cursor-ide-browser`。  
+- **无「窄屏特例」**：外置 Safari 可设宽时一律用 Safari；即使任务写「窄屏」也不得开 IDE Browser。  
+- **临时解禁**：仅当你当回合明确要求，并**临时关掉/卸下**本 hook 时才可例外（与 `deny-subagent` 同模式）。口头说「用内置浏览器」但 hook 仍在 → 仍会被拦。
+
+## 进程收尾提醒（强制 · 养成习惯）
+
+凡本回合**启动过**下列任一者，任务收尾「待你知道」**必须**用醒目句提醒用户手动确认已关（即使 Agent 自认已停——防会话中断残留）：
+
+- Vite / `npm run dev`（含任意 port）  
+- Playwright / `npm run test:e2e` / `npm exec playwright`  
+- 其它长期挂起的本地 server / watch
+
+推荐句式（可按实况改端口/命令）：
+
+> **进程收尾**：这次若起过开发服务器 / Playwright，请到终端或 Process Explorer 确认已关，避免后台持续耗电。
+
+未起过上述进程 → 不必写本条。
+
+## Cloud Agent 独立会话提醒（强制）
+
+启用、建议、或正在以 **Cloud Agent** 工作时：
+
+1. **首次用户可见回复**（或本机 Agent 建议改用 Cloud 时）须明确提醒：  
+   > **这是一个新的、和本机完全独立的会话**——两边不会自动同步对话上下文。  
+2. 协调按既有规则：先查最新 git 状态（分支 tip / 开放 PR / 是否已有人在改同一文件）；**避免**本机与 Cloud 同时改同一分支或同一共享契约文件（`TEST_TRACKER.md`、`PROCESS.md`、locale 大文件等）。衔接面 = Git 分支 + PR + 权威 md。详见 `PROCESS.md`「同一帐号：本机 Cursor + Cloud Agent」与 `WORKFLOW.md` 跨会话 / 并行 worktree 节。
+
+## 诚实边界
+
+规则约束 **Agent 在会话内的行为**。会话中断后无法保证硬杀；残留进程按用户指示清理。勿声称「已有 OS 级自动关浏览器 / 自动关 Vite」。IDE Browser 硬闸依赖 hooks 已加载；hooks 被卸下时本规则仍要求 Agent 自禁。
+
+## 汇报（并入 N14「待你知道」）
+
+- **默认不得**开过内置 Browser；若因临时卸 hook 而开过：写明原因、约何时关、Vite 是否已停。  
+- 若本回合起过 Vite / Playwright：必须含上方「进程收尾提醒」。  
+- 若本回合为 Cloud 或建议启用 Cloud：必须含「独立会话」提醒句。
+
+如涉及运行测试/CI相关任务，参考 testing-strategy 规则。

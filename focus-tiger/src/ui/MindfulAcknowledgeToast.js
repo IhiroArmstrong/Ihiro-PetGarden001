@@ -1,3 +1,5 @@
+import { homeClearanceBottomCss } from './homeChromeClearance.js';
+
 const DEFAULT_VISIBLE_MS = 4_000;
 
 /** 补登成功 / 微仪式完成等「也算数」类确认：同一套中置（勿各写百分比）。 */
@@ -14,10 +16,12 @@ const BASE_CSS = [
   'left:50%',
   'max-width:min(520px,calc(100vw - 40px))',
   'padding:10px 16px',
-  'border:1px solid rgba(139,115,85,.22)',
+  'border:1px solid rgba(139,115,85,.14)',
   'border-radius:16px',
-  'background:rgba(255,252,245,.9)',
-  'box-shadow:0 8px 24px rgba(44,31,20,.1)',
+  'background:rgba(255,252,245,.62)',
+  'backdrop-filter:blur(8px)',
+  '-webkit-backdrop-filter:blur(8px)',
+  'box-shadow:0 4px 18px rgba(44,31,20,.06)',
   'color:#4a3a28',
   'font-size:14px',
   'line-height:1.5',
@@ -32,8 +36,13 @@ const BASE_CSS = [
  */
 function placementCss(placement) {
   if (placement === 'center') {
+    const narrow =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(max-width: 479px)').matches;
+    // Narrow + Honesty bridge share the lower third — lift toast to upper band.
+    const top = narrow ? '22%' : MINDFUL_TOAST_CENTER_TOP;
     return [
-      `top:${MINDFUL_TOAST_CENTER_TOP}`,
+      `top:${top}`,
       'bottom:auto',
       'z-index:40',
       'padding:14px 22px',
@@ -44,8 +53,9 @@ function placementCss(placement) {
       'transform:translate(-50%,8px)'
     ].join(';');
   }
+  // Narrow: clear `#ft-narrow-home-ctas` Sit ball (shared homeChromeClearance).
   return [
-    'bottom:104px',
+    `bottom:${homeClearanceBottomCss()}`,
     'top:auto',
     'z-index:18',
     'transform:translate(-50%,10px)'

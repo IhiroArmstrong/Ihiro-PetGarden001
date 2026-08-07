@@ -1,80 +1,39 @@
 /**
  * 分散式即时提示已读记忆：focus-tiger.hints-seen.v1
+ * 值：'peeked'（simple 看过文案、圆点静止弱化）| 'done'（操作完成/进详情，圆点移除）
+ * 旧布尔 true 读入时迁为 'done'。
  * @see ONBOARDING_HINTS.md
  */
 
+import { HINT_IDS, HINT_LOCALE_KEYS } from './onboardingHintRegistry.js';
+
 export const HINTS_SEEN_STORAGE_KEY = 'focus-tiger.hints-seen.v1';
 
-/** @typedef {string} HintId */
+/** @typedef {import('./onboardingHintRegistry.js').OnboardingHintRegistryEntry['id']} HintId */
 
-export const HINT_IDS = Object.freeze([
-  'dormant-open',
-  'honesty-optional',
-  'honesty-bridge',
-  'sit-button',
-  'how-shall-we-sit',
-  'notice',
-  'breathing',
-  'choose',
-  'companion-mode',
-  'companion-stay',
-  'companion-away',
-  'companion-across-tools',
-  'ambient-gated',
-  'ambient-soundscape',
-  'rise-button',
-  'reflection',
-  'idle-after-session',
-  'weekly-heatmap',
-  'micro-ritual',
-  'help-affordance',
-  'help-remedy',
-  'help-fallback'
-]);
+/** @typedef {'peeked'|'done'} HintAckState */
 
-/** @type {Record<string, string>} hintId → i18n key */
-export const HINT_LOCALE_KEYS = Object.freeze({
-  'dormant-open': 'HINT_DORMANT_OPEN',
-  'honesty-optional': 'HINT_HONESTY_OPTIONAL',
-  'honesty-bridge': 'HINT_HONESTY_BRIDGE',
-  'sit-button': 'HINT_SIT_BUTTON',
-  'how-shall-we-sit': 'HINT_HOW_SHALL_WE_SIT',
-  'notice': 'HINT_NOTICE',
-  'breathing': 'HINT_BREATHING',
-  'choose': 'HINT_CHOOSE',
-  'companion-mode': 'HINT_COMPANION_MODE',
-  'companion-stay': 'HINT_COMPANION_STAY',
-  'companion-away': 'HINT_COMPANION_AWAY',
-  'companion-across-tools': 'HINT_COMPANION_ACROSS',
-  'ambient-gated': 'HINT_AMBIENT_GATED',
-  'ambient-soundscape': 'HINT_AMBIENT_SOUNDSCAPE',
-  'rise-button': 'HINT_RISE_BUTTON',
-  'reflection': 'HINT_REFLECTION',
-  'idle-after-session': 'HINT_IDLE_AFTER_SESSION',
-  'weekly-heatmap': 'HINT_WEEKLY_HEATMAP',
-  'micro-ritual': 'HINT_MICRO_RITUAL',
-  'help-affordance': 'HINT_HELP_AFFORDANCE',
-  'help-remedy': 'HINT_HELP_REMEDY',
-  'help-fallback': 'HINT_HELP_FALLBACK'
-});
+export { HINT_IDS, HINT_LOCALE_KEYS };
 
 /**
  * @param {unknown} raw
- * @returns {Record<string, true>}
+ * @returns {Record<string, HintAckState>}
  */
 export function normalizeHintsSeen(raw) {
   if (!raw || typeof raw !== 'object') return {};
-  /** @type {Record<string, true>} */
+  /** @type {Record<string, HintAckState>} */
   const out = {};
   for (const id of HINT_IDS) {
-    if (raw[id] === true) out[id] = true;
+    const v = raw[id];
+    if (v === true || v === 'done') out[id] = 'done';
+    else if (v === 'peeked') out[id] = 'peeked';
   }
   return out;
 }
 
 /**
  * @param {() => unknown} [read]
- * @param {(value: Record<string, true>) => void} [write]
+ * @param {(value: Record<string, HintAckState>) => void} [write]
  */
 export function createHintsSeenStore(
   read = () => {
@@ -95,13 +54,49 @@ export function createHintsSeenStore(
   let cache = normalizeHintsSeen(read());
 
   return {
+    /**
+     * 完全完成（不再 auto、圆点移除）。兼容旧名 isSeen。
+     * @param {string} hintId
+     */
     isSeen(hintId) {
-      return cache[hintId] === true;
+      return cache[hintId] === 'done';
     },
+    /** @param {string} hintId */
+    isDone(hintId) {
+      return cache[hintId] === 'done';
+    },
+    /** @param {string} hintId */
+    isPeeked(hintId) {
+      return cache[hintId] === 'peeked';
+    },
+    /**
+     * @param {string} hintId
+     * @returns {HintAckState | null}
+     */
+    getAck(hintId) {
+      return cache[hintId] ?? null;
+    },
+    /**
+     * simple：看过文案后停闪弱化。已 done 不降级。
+     * @param {string} hintId
+     * @returns {boolean}
+     */
+    markPeeked(hintId) {
+      if (!HINT_IDS.includes(hintId)) return false;
+      if (cache[hintId] === 'done' || cache[hintId] === 'peeked') return false;
+      cache = { ...cache, [hintId]: 'peeked' };
+      write(cache);
+      return true;
+    },
+    /**
+     * 相关操作完成 / 进详情页。兼容旧 markSeen。
+     * @param {string} hintId
+     * @returns {boolean}
+     */
     markSeen(hintId) {
       if (!HINT_IDS.includes(hintId)) return false;
-      if (cache[hintId]) return false;
-      cache = { ...cache, [hintId]: true };
+      if (cache[hintId] === 'done') return false;
+      cache = { ...cache, [hintId]: 'done' };
       write(cache);
       return true;
     },
@@ -116,22 +111,125 @@ export function createHintsSeenStore(
 }
 
 /**
- * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated）。
+ * Idle 表面补充 tip（热力图 / 一分钟呼吸 / Sound gated / Quick Start）。
  * @param {string[]} ids
  * @param {object} scene
  * @returns {void}
  */
 export function appendIdleChromeHintIds(ids, scene = {}) {
   if (!Array.isArray(ids)) return;
+  if (scene.honestyIdleEntryVisible && !ids.includes('honesty-optional')) {
+    ids.push('honesty-optional');
+  }
   if (scene.weeklyHeatmapVisible && !ids.includes('weekly-heatmap')) {
     ids.push('weekly-heatmap');
+  }
+  if (scene.weeklyHeatmapVisible && !ids.includes('in-app-reminder')) {
+    ids.push('in-app-reminder');
+  }
+  if (scene.languageFabVisible && !ids.includes('language-preference')) {
+    ids.push('language-preference');
   }
   if (scene.microRitualEntryVisible && !ids.includes('micro-ritual')) {
     ids.push('micro-ritual');
   }
-  if (!ids.includes('ambient-gated') && !ids.includes('ambient-soundscape')) {
-    ids.push('ambient-gated');
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
   }
+  if (!ids.includes('ambient-gated') && !ids.includes('ambient-soundscape')) {
+    ids.push('ambient-soundscape');
+  }
+}
+
+/**
+ * Focusing 表面 HUD 三控件 tip。
+ * @param {string[]} ids
+ * @returns {void}
+ */
+export function appendFocusHudHintIds(ids) {
+  if (!Array.isArray(ids)) return;
+  for (const id of ['focus-hud-ring', 'focus-hud-progress', 'focus-hud-streak']) {
+    if (!ids.includes(id)) ids.push(id);
+  }
+}
+
+/**
+ * 宽屏 Idle 收入 ⋯ 的 tip（菜单关闭时不得多条 tip 全 remap 到 ⋯）。
+ */
+export const WIDE_MORE_PARKED_HINT_IDS = Object.freeze([
+  'how-shall-we-sit',
+  'micro-ritual',
+  'in-app-reminder',
+  'honesty-optional',
+  'ambient-gated'
+]);
+
+/** @param {string} id */
+export function isWideMoreParkedHintId(id) {
+  return WIDE_MORE_PARKED_HINT_IDS.includes(id);
+}
+
+/**
+ * @param {string[]} ids
+ * @param {object} scene
+ * @returns {string[]}
+ */
+/**
+ * Home Sit / post-session autos that must not flash under an open ⋯ / drawer
+ * while the user hovers secondary rows (2026-08-02 QA).
+ */
+const SECONDARY_SURFACE_SUPPRESSED_AUTO_IDS = Object.freeze([
+  'sit-button',
+  'idle-after-session'
+]);
+
+export function filterHintsForWideMore(ids, scene = {}) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const menuOpen = scene.wideMoreOpen || scene.wideMenuOpen;
+  if (menuOpen) {
+    return ids.filter(
+      (id) => !SECONDARY_SURFACE_SUPPRESSED_AUTO_IDS.includes(id)
+    );
+  }
+  if (!scene.wideParkSecondary) return [...ids];
+  return ids.filter(
+    (id) => !isWideMoreParkedHintId(id) && id !== 'wide-more-menu'
+  );
+}
+
+/**
+ * 窄屏 Idle 抽屉内才有准锚的 tip（抽屉关闭时不得指主球 / grabber 乱指）。
+ * @see ONBOARDING_HINTS.md
+ */
+export const DRAWER_PARKED_HINT_IDS = Object.freeze([
+  'how-shall-we-sit',
+  'weekly-heatmap',
+  'micro-ritual',
+  'in-app-reminder',
+  'ambient-gated'
+]);
+
+/** @param {string} id */
+export function isDrawerParkedHintId(id) {
+  return DRAWER_PARKED_HINT_IDS.includes(id);
+}
+
+/**
+ * 窄屏 park 且抽屉未开：去掉抽屉锚 tip（自动路径不乱指）。
+ * @param {string[]} ids
+ * @param {object} scene
+ * @returns {string[]}
+ */
+export function filterHintsForNarrowDrawer(ids, scene = {}) {
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const drawerOpen = scene.narrowSheetOpen || scene.narrowDrawerOpen;
+  if (drawerOpen) {
+    return ids.filter(
+      (id) => !SECONDARY_SURFACE_SUPPRESSED_AUTO_IDS.includes(id)
+    );
+  }
+  if (!scene.narrowPark) return [...ids];
+  return ids.filter((id) => !isDrawerParkedHintId(id) && id !== 'narrow-drawer-menu');
 }
 
 /**
@@ -149,7 +247,12 @@ export function appendIdleChromeHintIds(ids, scene = {}) {
  * @param {boolean} [scene.arrivalReady]
  * @param {boolean} [scene.hasEverCompletedSession]
  * @param {boolean} [scene.weeklyHeatmapVisible]
+ * @param {boolean} [scene.languageFabVisible]
  * @param {boolean} [scene.microRitualEntryVisible]
+ * @param {boolean} [scene.honestyIdleEntryVisible]
+ * @param {boolean} [scene.quickStartVisible]
+ * @param {boolean} [scene.narrowPark]
+ * @param {boolean} [scene.narrowSheetOpen]
  */
 export function resolveHintForScene(scene = {}) {
   if (scene.reflectionOpen) return 'reflection';
@@ -172,6 +275,92 @@ export function resolveHintForScene(scene = {}) {
 }
 
 /**
+ * 点「?」补救：当前场景最相关的 **1** 条（图7 / 图9 情境单条）。
+ * Idle → Sit；窄屏抽屉开着仍以 Sit 为主（抽屉内可见）；Companion → Pick one。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string}
+ */
+export function resolvePrimaryRemedyHintId(scene = {}) {
+  if (scene.reflectionOpen) return 'reflection';
+  if (scene.isFocusing) return 'rise-button';
+  if (scene.ambientPanelOpen) return 'ambient-soundscape';
+  if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    if (phase === 'breath') return 'breathing';
+    if (phase === 'choose') return 'choose';
+    return 'notice';
+  }
+  if (scene.companionExpanded) return 'companion-mode';
+  if (scene.honestyBridgeVisible) return 'honesty-bridge';
+  if (scene.honestyVisible) return 'honesty-optional';
+  // 窄屏抽屉开着：主路径仍是 Sit（在抽屉列表里）；尖角可 remap 到 grabber/行
+  if (scene.narrowSheetOpen) return 'sit-button';
+  if (scene.isDormant) return 'dormant-open';
+  if (scene.hasEverCompletedSession) return 'idle-after-session';
+  // Idle（含窄屏 park：Sit tip remap → grabber）
+  return 'sit-button';
+}
+
+/**
+ * 补救：立刻画出的 tip vs 折进「还有 N 条」芯片。
+ * - **Focusing**：只画主条（通常 `rise-button`），其余一律进芯片——防窄屏 HUD 三条 tip 叠团（§6.13 / KnownRisky #1 步 7）。
+ * - **其它场景**：可见锚立刻出；不可见 / park 进芯片（Idle 宽屏「可见控件各一条」契约不变）。
+ *
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @param {{ primary: string, catalog: string[], hasOnScreenAnchor: (id: string) => boolean }} opts
+ * @returns {{ immediate: string[], folded: string[] }}
+ */
+export function resolveRemedyImmediateAndFolded(
+  scene = {},
+  { primary, catalog, hasOnScreenAnchor } = {}
+) {
+  const cat = (Array.isArray(catalog) ? catalog : []).filter(
+    (id) => id && id !== primary
+  );
+  if (scene.isFocusing) {
+    return { immediate: [], folded: [...cat] };
+  }
+  const onScreen =
+    typeof hasOnScreenAnchor === 'function' ? hasOnScreenAnchor : () => false;
+  const immediate = cat.filter((id) => onScreen(id));
+  const folded = cat.filter((id) => !immediate.includes(id));
+  return { immediate, folded };
+}
+
+/**
+ * 补救目录：全量列表去掉主条（供「还有 N 条」芯片**逐条**展开）。
+ * 窄屏 park + 抽屉关闭：折叠为一次性 `narrow-drawer-menu`（禁止 3 more / 2 more 乱指）。
+ * @param {Parameters<typeof resolveHintForScene>[0]} scene
+ * @returns {string[]}
+ */
+export function resolveRemedyCatalogHintIds(scene = {}) {
+  const primary = resolvePrimaryRemedyHintId(scene);
+  const drawerOpen = scene.narrowSheetOpen || scene.narrowDrawerOpen;
+  if (scene.narrowPark && !drawerOpen) {
+    const peek = resolveRemedyHintIds({ ...scene, narrowPark: false }).filter(
+      (id) => id !== primary && id !== 'narrow-drawer-menu'
+    );
+    return peek.length > 0 ? ['narrow-drawer-menu'] : [];
+  }
+  const wideMenuOpen = scene.wideMoreOpen || scene.wideMenuOpen;
+  if (scene.wideParkSecondary && !wideMenuOpen) {
+    const peek = resolveRemedyHintIds({
+      ...scene,
+      wideParkSecondary: false
+    }).filter((id) => id !== primary && id !== 'wide-more-menu');
+    const parkedPeek = peek.filter((id) => isWideMoreParkedHintId(id));
+    if (parkedPeek.length > 0) {
+      const rest = peek.filter((id) => !isWideMoreParkedHintId(id));
+      return ['wide-more-menu', ...rest];
+    }
+  }
+  return resolveRemedyHintIds(scene).filter(
+    (id) =>
+      id !== primary && id !== 'narrow-drawer-menu' && id !== 'wide-more-menu'
+  );
+}
+
+/**
  * 自动提示互斥优先级（数值越高越优先同时展示）。
  * 窄屏 / 全局自动路径：同一时刻最多 1 条；点「?」补救不受此限。
  * @see RESPONSIVE_LAYOUT.md §4.5 / task-responsive-narrow-onboarding-sit.md
@@ -190,13 +379,20 @@ export const AUTO_HINT_PRIORITY = Object.freeze({
   'honesty-bridge': 82,
   'honesty-optional': 80,
   'how-shall-we-sit': 70,
+  'quick-start': 68,
+  'focus-hud-ring': 66,
+  'focus-hud-progress': 65,
+  'focus-hud-streak': 64,
   'micro-ritual': 58,
+  'in-app-reminder': 57,
   'ambient-soundscape': 60,
   'weekly-heatmap': 56,
+  'language-preference': 55,
   'ambient-gated': 55,
   'companion-stay': 50,
   'companion-away': 50,
   'companion-across-tools': 50,
+  'narrow-drawer-menu': 45,
   'help-remedy': 40,
   'help-fallback': 30
 });
@@ -234,48 +430,59 @@ export function resolveAutoHintIds(scene = {}) {
   let ids = [];
   if (scene.reflectionOpen) {
     ids = ['reflection'];
+  } else if (scene.microRitualOpen) {
+    // Sit / home CTAs are hidden while breath runs — never auto-show sit tips
+    // (idle-after-session / sit-button would orphan over empty canvas).
+    ids = [];
   } else if (scene.isFocusing) {
     ids = ['rise-button', 'ambient-soundscape'];
+    appendFocusHudHintIds(ids);
   } else if (scene.ambientPanelOpen) {
     ids = ['ambient-soundscape'];
   } else if (scene.arrivalOpen) {
+    // Notice/Breath/Choose 自动出 1 条阶段 tip；§8 N18 outsideDismissGuard 已修
+    // 「点 tip 被外侧取消误吃 Notice」，故安全恢复自动展示。补救「?」仍经
+    // resolveHintForScene / remedy 列表。
     const phase = scene.arrivalPhase;
     if (phase === 'breath') ids = ['breathing'];
     else if (phase === 'choose') ids = ['choose'];
     else ids = ['notice'];
+  } else if (scene.honestyBridgeVisible) {
+    // 桥接 Yes/No：不自动出 tip（图4：游离 tip 易挡/误关）；? 补救仍可出 honesty-bridge
+    ids = [];
   } else if (scene.companionExpanded) {
     ids = ['companion-mode'];
-  } else if (scene.honestyBridgeVisible) {
-    ids = ['honesty-bridge'];
-    if (scene.hasEverCompletedSession) {
-      ids.push('idle-after-session');
-    } else {
-      ids.push('sit-button', 'how-shall-we-sit');
-    }
-    appendIdleChromeHintIds(ids, scene);
   } else if (scene.honestyVisible) {
     ids = ['honesty-optional'];
   } else if (scene.isDormant) {
     ids = ['dormant-open'];
     appendIdleChromeHintIds(ids, scene);
+    appendFocusHudHintIds(ids);
   } else if (scene.hasEverCompletedSession) {
     ids = ['idle-after-session'];
     appendIdleChromeHintIds(ids, scene);
+    appendFocusHudHintIds(ids);
   } else {
     ids = ['sit-button', 'how-shall-we-sit'];
     appendIdleChromeHintIds(ids, scene);
+    appendFocusHudHintIds(ids);
   }
 
   const skipHelpAffordance =
-    scene.reflectionOpen || scene.isFocusing || scene.arrivalOpen;
+    scene.reflectionOpen ||
+    scene.microRitualOpen ||
+    scene.isFocusing ||
+    scene.arrivalOpen ||
+    scene.honestyBridgeVisible;
   if (!skipHelpAffordance && !ids.includes('help-affordance')) {
     ids.push('help-affordance');
   }
-  return ids;
+  return filterHintsForWideMore(filterHintsForNarrowDrawer(ids, scene), scene);
 }
 
 /**
  * 点「?」补救：当前场景应展示的全部操作提示（忽略已读；不含 help-affordance / help-remedy）。
+ * UI 默认只先画 `resolvePrimaryRemedyHintId`；其余经「还有 N 条」展开本列表。
  * @param {Parameters<typeof resolveAutoHintIds>[0]} scene
  * @returns {string[]}
  */
@@ -283,10 +490,33 @@ export function resolveRemedyHintIds(scene = {}) {
   const ids = resolveAutoHintIds(scene).filter(
     (id) => id !== 'help-affordance' && id !== 'help-remedy'
   );
+  if (scene.arrivalOpen) {
+    const phase = scene.arrivalPhase;
+    const arrivalId =
+      phase === 'breath' ? 'breathing' : phase === 'choose' ? 'choose' : 'notice';
+    if (!ids.includes(arrivalId)) ids.push(arrivalId);
+  }
+  if (scene.honestyBridgeVisible) {
+    // 自动不出 tip；? 补救仍须 honesty-bridge + Idle 入口说明
+    if (!ids.includes('honesty-bridge')) ids.unshift('honesty-bridge');
+    if (scene.hasEverCompletedSession) {
+      if (!ids.includes('idle-after-session')) ids.push('idle-after-session');
+    } else {
+      for (const id of ['sit-button', 'how-shall-we-sit']) {
+        if (!ids.includes(id)) ids.push(id);
+      }
+    }
+    appendIdleChromeHintIds(ids, scene);
+  }
   if (scene.companionExpanded) {
     for (const id of ['companion-stay', 'companion-away', 'companion-across-tools']) {
       if (!ids.includes(id)) ids.push(id);
     }
   }
+  if (scene.quickStartVisible && !ids.includes('quick-start')) {
+    ids.push('quick-start');
+  }
+  // HUD chrome is on-screen in Idle and Focusing — ? must explain it for first visit.
+  appendFocusHudHintIds(ids);
   return ids;
 }

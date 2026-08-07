@@ -7,6 +7,8 @@ import {
   CAPCUT_DISSOLVE_MS,
   EMOTION_KEYS
 } from './EmotionController.js';
+import { isRiseInterruptHoldEmotion } from './sceneAnimationDispatcher.js';
+import { isLateNightCloakHoldEmotion } from './companionRestPolicy.js';
 
 export class MoodController {
   /**
@@ -29,8 +31,8 @@ export class MoodController {
         if (
           current === 'haloBreathing' ||
           current === 'dormantWake' ||
-          current === 'riseStretchCasual' ||
-          current === 'blinkBreathe'
+          isRiseInterruptHoldEmotion(current) ||
+          isLateNightCloakHoldEmotion(current)
         ) {
           return;
         }

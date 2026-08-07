@@ -47,8 +47,33 @@ StateManager(唯一状态源) → MoodController(只管播哪个动画)
 TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 ```
 
-合法转移（产品路径）：`IDLE ↔ DORMANT`、`IDLE → FOCUSING → CELEBRATE|IDLE`、`CELEBRATE → IDLE`。  
+<!-- state-machine-contract:begin -->
+
+> **机器块 · 勿手改**。真源：`src/core/StateManager.js`（`STATES` + `LEGAL_STATE_TRANSITIONS`）。刷新：`npm run state:doc-sync`。
+
+合法转移（产品路径）：`IDLE ↔ DORMANT`、`IDLE → FOCUSING → CELEBRATE|IDLE`、`CELEBRATE → IDLE`。
+
 `setState` **不阻断**非法转移，但 `console.warn`（`LEGAL_STATE_TRANSITIONS`）。`BREAK` 已从枚举删除（无生产路径）。边角观察：`docs/EDGE_CASES.md`。
+
+### `STATES`
+
+| enum key | value |
+|---|---|
+| `IDLE` | `IDLE` |
+| `FOCUSING` | `FOCUSING` |
+| `CELEBRATE` | `CELEBRATE` |
+| `DORMANT` | `DORMANT` |
+
+### `LEGAL_STATE_TRANSITIONS`
+
+| from | allowed next |
+|---|---|
+| `IDLE` | `FOCUSING`, `DORMANT` |
+| `FOCUSING` | `IDLE`, `CELEBRATE` |
+| `CELEBRATE` | `IDLE` |
+| `DORMANT` | `IDLE` |
+
+<!-- state-machine-contract:end -->
 
 ---
 
@@ -74,6 +99,7 @@ focus-tiger/
 │  ├─ package.json                # name: focus-tiger-cloud
 │  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
 │     # 2026-07-22：仅 mock + 校验 + 内存限流；未接前端 / 未部署正式逻辑
+│     # 2026-07-30：v1.0.0 纯本地发布 — 保留本目录作 v1.1 云端扩展点；禁止核心路径硬依赖云请求
 │
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建
 │  └─ tiger-turnaround/
@@ -266,7 +292,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 | 情况 | 做法 |
 |---|---|
 | 两序列无法自然衔接（画幅/姿态跳变） | 双 `<img>` **叠代溶解**：定格末帧↔首帧，默认 **`CAPCUT_DISSOLVE_MS`（1000ms）** `ease-in-out`；`freezeUntilCrossFadeEnds: true` 时溶解期间不推进新序列帧 |
-| 同源可衔接（同画幅微表情、子序列） | 可用短 cross-fade（`MICRO_CROSS_FADE_MS` ≈180ms）或不冻帧 |
+| 设计为无需转场（同素材族可硬接） | 显式 **`crossFadeMs: 0`**（例：Idle 闭目↔睁眼弧、gaze p1→p4 段间、魔法书回 Idle）。**勿**用短 180ms 微叠化——易闪白（2026-08-03 退役短淡入） |
 | 调试验收 | `holdPose` 定格末帧，可不回落 idle |
 
 一次性情绪经 `EmotionController._finishOneShot` 回落 idle 时**默认**走 CapCut 溶解；禁止业务路径闪切。详见 `PRINCIPLES.md`「序列衔接：CapCut 式叠代」。
@@ -333,7 +359,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 | 步 | 内容 | 状态 |
 |---|---|---|
-| **1** | **JSDoc + 门闩/共享资源契约**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4 | **进行中**：Gate + **`CompanionModePicker` / `ArrivalPracticeUI` / `FocusInput` 对外 JSDoc 已补**；其余 UI 增量 |
+| **1** | **JSDoc + 门闩/共享资源契约 + 文档-代码对齐**：公共 API 须有类型注释；改门闩先查 `SHARED_RESOURCES.md` §4；结构契约见 **`DOC_CODE_CONTRACT.md`**（`npm run docs:check`） | **已落地（门闩 + hints）**：`sessionUiGateContractRegistry.js` + `onboardingHintRegistry.js`；其余 UI JSDoc 增量 |
 | **2** | **门闩显式化**：`SessionUiGate`（`src/core/SessionUiGate.js`）集中持有 `arrivalGateReady` / `completionPending` / `postSessionOverlayActive`；失败用例锁「未就绪不得 begin」 | **已落地** |
 | **3** | **继续回归锁**：主路径 + 回流 + `test:smoke` / `test:e2e` + TEST_TRACKER 观感分列（见 `DEV_WORKFLOW_QUALITY.md`） | 常驻，不替代 |
 | **4** | **Lit 仅试点一个 DOM 灾区 UI**：**`OnboardingHintsUI`**（分散提示 + `?` 补救；DOM/手动渲染类 bug 最多） | **代码已落地**：`lit` + `ft-onboarding-hint-bubble`；**人工复测通过后先停在试点，不扩其它模块**（2026-07-21 拍板）；待人工复测 |
@@ -389,7 +415,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 #### 分期规划
 
 - **Phase 0（当前 MVP）**：**不实现**。坚持通过诚实机制手动打卡，以及 Companion Mode（用户自选会话语境的陪伴声明）跑通核心体验；避免 HealthKit / Health Connect SDK 集成带来的包体积与开发测试成本。
-- **Phase 1（留存优化期，时间点待定）**：评估引入 HealthKit（iOS）与 Health Connect（Android）的读取权限申请与数据拉取，作为面向海外用户的差异化加分项。自动读取的正念分钟数可转化为角色金光 / Rim Light 强度的**增强输入**——复用 Ambient Soundscape 已确立的「外部 / 附加信号 → 光效强度」数据流模式（`presenceBoost` 类叠加、不改写 `focusLevel` 达标真值），**不新建**独立光效计算逻辑。
+- **Phase 1（留存优化期，时间点待定）**：评估引入 HealthKit（iOS）与 Health Connect（Android）的读取权限申请与数据拉取，作为面向海外用户的差异化加分项。自动读取的正念分钟数可转化为角色金光 / Rim Light 强度的**增强输入**——复用 Ambient Soundscape 已确立的「外部 / 附加信号 → 光效强度」数据流模式（`presenceBoost` 类叠加、不改写 `focusLevel` 达标真值），**不新建**独立光效计算逻辑。**技术路径预记（2026-08-07）**：须原生壳；未来默认 **Capacitor**（非 Flutter/RN 重写）；v1 纯 Web 阶段 **不实现**。见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 
 #### 架构约束（若 Phase 1 立项）
 

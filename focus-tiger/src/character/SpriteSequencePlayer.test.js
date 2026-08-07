@@ -2,10 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   advanceSpriteFrame,
+  shouldHideOverlayOnFinish,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
 import { buildFramePaths } from './CharacterConfig.js';
-import { SPRITE_SEQUENCES } from './spriteManifest.js';
+import {
+  SPRITE_SEQUENCES,
+  WAVE_HELLO_FORWARD_INDICES,
+  WAVE_HELLO_PINGPONG_ONCE_INDICES,
+  EAR_WIGGLE_FORWARD_INDICES,
+  EAR_WIGGLE_PINGPONG_ONCE_INDICES
+} from './spriteManifest.js';
 
 function collectFrames({ frameCount, loopMode, steps }) {
   const seen = [0];
@@ -20,6 +27,60 @@ function collectFrames({ frameCount, loopMode, steps }) {
   }
   return seen;
 }
+
+test('oneshot finish keeps overlay when onComplete will CapCut to idle', () => {
+  assert.equal(
+    shouldHideOverlayOnFinish({ holdLastFrame: false, hasOnComplete: true }),
+    false
+  );
+  assert.equal(
+    shouldHideOverlayOnFinish({ holdLastFrame: false, hasOnComplete: false }),
+    true
+  );
+  assert.equal(
+    shouldHideOverlayOnFinish({ holdLastFrame: true, hasOnComplete: false }),
+    false
+  );
+});
+
+test('waveHelloWelcome bakes forward+reverse once without player pingpong', () => {
+  assert.equal(SPRITE_SEQUENCES.waveHello.loopMode, 'none');
+  assert.deepEqual(
+    SPRITE_SEQUENCES.waveHello.frameIndices,
+    [...WAVE_HELLO_FORWARD_INDICES]
+  );
+  assert.equal(SPRITE_SEQUENCES.waveHelloWelcome.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.waveHelloWelcome.loop, false);
+  assert.deepEqual(
+    SPRITE_SEQUENCES.waveHelloWelcome.frameIndices,
+    [...WAVE_HELLO_PINGPONG_ONCE_INDICES]
+  );
+  // 正放末帧 19 → 倒放从 18 起，整段以 1 收束；长度 = 2*forward - 1
+  assert.equal(
+    WAVE_HELLO_PINGPONG_ONCE_INDICES.length,
+    WAVE_HELLO_FORWARD_INDICES.length * 2 - 1
+  );
+  assert.equal(WAVE_HELLO_PINGPONG_ONCE_INDICES.at(-1), 1);
+  assert.equal(
+    WAVE_HELLO_PINGPONG_ONCE_INDICES[WAVE_HELLO_FORWARD_INDICES.length - 1],
+    19
+  );
+});
+
+test('earWiggleHeadTouch bakes forward+reverse once without player pingpong', () => {
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.loop, false);
+  assert.deepEqual(
+    SPRITE_SEQUENCES.earWiggleHeadTouch.frameIndices,
+    [...EAR_WIGGLE_PINGPONG_ONCE_INDICES]
+  );
+  assert.equal(
+    EAR_WIGGLE_PINGPONG_ONCE_INDICES.length,
+    EAR_WIGGLE_FORWARD_INDICES.length * 2 - 1
+  );
+  assert.equal(EAR_WIGGLE_PINGPONG_ONCE_INDICES.at(-1), 1);
+  assert.equal(EAR_WIGGLE_PINGPONG_ONCE_INDICES[53], 54);
+});
 
 test('pingpong skips the duplicated last frame and restarts from frame 001', () => {
   const seen = collectFrames({
@@ -114,11 +175,11 @@ test('blink smile is registered as a pingpong smiling baseline', () => {
 });
 
 
-test('wakeUp uses stretch-reminder asset, distinct from dormantWake', () => {
-  assert.equal(SPRITE_SEQUENCES.wakeUp.animation, 'stretch-reminder');
-  assert.equal(SPRITE_SEQUENCES.wakeUp.frameCount, 17);
+test('stretchReminder uses stretch-reminder; wakeUp debug key removed', () => {
+  assert.equal(SPRITE_SEQUENCES.stretchReminder.animation, 'stretch-reminder');
+  assert.equal(SPRITE_SEQUENCES.stretchReminder.frameCount, 17);
+  assert.equal(SPRITE_SEQUENCES.wakeUp, undefined);
   assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
-  assert.notEqual(SPRITE_SEQUENCES.wakeUp.animation, SPRITE_SEQUENCES.dormantWake.animation);
 });
 
 test('dormantWake plays cloak-sleep in reverse (34 → 001)', () => {
@@ -166,6 +227,19 @@ test('milestone glow is an on-demand one-shot that holds its final pose', () => 
   assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
   assert.equal(definition.holdLastFrame, true);
   assert.equal(definition.fps, 4);
+});
+
+test('milestoneGlowStar is meditation-star-reward ritual variant', () => {
+  const definition = SPRITE_SEQUENCES.milestoneGlowStar;
+
+  assert.equal(definition.animation, 'meditation-star-reward');
+  assert.equal(definition.frameCount, 63);
+  assert.equal(definition.preload, false);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.holdLastFrame, true);
+  assert.equal(definition.fps, 6);
+  assert.equal(definition.playbackZoom?.from, 1);
+  assert.equal(definition.playbackZoom?.to, 16 / 11);
 });
 
 test('nod greeting is a slowed one-shot with last-frame hold (~2 extra beats)', () => {
@@ -251,6 +325,21 @@ test('palmsTogether / breathHaloHq / lotus backlog sequences are registered', ()
   assert.equal(SPRITE_SEQUENCES.lotusChestHalo.preload, false);
 });
 
+test('2026-08-02 pingpong trial sequences are registered', () => {
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.animation, 'wave-hello-pingpong');
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.frameCount, 38);
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.loop, false);
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.displayFit?.width, 960);
+  assert.equal(SPRITE_SEQUENCES.waveHelloPingpong.displayFit?.scaleMul, 1.5);
+  assert.equal(SPRITE_SEQUENCES.magicBookReading.animation, 'magic-book-reading');
+  assert.equal(SPRITE_SEQUENCES.magicBookReading.frameCount, 46);
+  assert.equal(SPRITE_SEQUENCES.magicBookReading.fps, 4);
+  assert.equal(SPRITE_SEQUENCES.goldenHaloPalms.animation, 'golden-halo-palms');
+  assert.equal(SPRITE_SEQUENCES.goldenHaloPalms.frameCount, 94);
+  assert.equal(SPRITE_SEQUENCES.goldenHaloPalms.fps, 4);
+});
+
 test('gaze lookaround and yawn-stretch idle variants are registered', () => {
   assert.equal(SPRITE_SEQUENCES.gazeP1CenterBlinkLeft.frameCount, 15);
   assert.equal(SPRITE_SEQUENCES.gazeP2LeftToUp.frameCount, 13);
@@ -269,11 +358,58 @@ test('cloakSleep is registered for DORMANT entry', () => {
   assert.equal(SPRITE_SEQUENCES.cloakSleep.holdLastFrame, true);
 });
 
-test('teaDrinking, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
+test('sleeping uses cloak-sleep tail 034→030 double-hold pingpong', () => {
+  const definition = SPRITE_SEQUENCES.sleeping;
+  assert.equal(definition.animation, 'cloak-sleep');
+  assert.equal(definition.frameCount, 34);
+  assert.equal(definition.fps, 2);
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.PINGPONG);
+  assert.deepEqual(definition.frameIndices, [34, 34, 33, 33, 32, 32, 31, 31, 30, 30]);
+  const paths = buildFramePaths(definition.animation, definition.frameCount, {
+    frameIndices: definition.frameIndices
+  });
+  assert.match(paths[0], /cloak-sleep\/frame_034\.png$/);
+  assert.match(paths.at(-1), /cloak-sleep\/frame_030\.png$/);
+});
+
+test('product sleep/wake stay on cloak-sleep keys; starlight sequences registered', () => {
+  assert.equal(SPRITE_SEQUENCES.cloakSleep.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.dormantWake.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.sleeping.animation, 'cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightCloakSleep.frameCount, 67);
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.animation, 'starlight-cloak-sleep');
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.fps, 2);
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.loopMode, SPRITE_LOOP_MODES.PINGPONG);
+  assert.deepEqual(
+    SPRITE_SEQUENCES.starlightSleeping.frameIndices,
+    [67, 67, 66, 66, 65, 65, 64, 64, 63, 63]
+  );
+  assert.equal(SPRITE_SEQUENCES.starlightSleeping.sleepBreath, undefined);
+  assert.equal(SPRITE_SEQUENCES.sleeping.sleepBreath, undefined);
+  assert.equal(SPRITE_SEQUENCES.starlightDormantWake.animation, 'starlight-cloak-wake');
+  assert.equal(SPRITE_SEQUENCES.starlightDormantWake.frameCount, 67);
+});
+
+test('teaDrinking, bookReading, parrotEarVisit, earWiggleHeadTouch, riseStretchCasual, blinkBreathe are registered', () => {
   assert.equal(SPRITE_SEQUENCES.teaDrinking.animation, 'tea-drinking');
   assert.equal(SPRITE_SEQUENCES.teaDrinking.frameCount, 24);
   assert.equal(SPRITE_SEQUENCES.teaDrinking.fps, 8);
   assert.equal(SPRITE_SEQUENCES.teaDrinking.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.bookReading.animation, 'book-reading');
+  assert.equal(SPRITE_SEQUENCES.bookReading.frameCount, 24);
+  assert.equal(SPRITE_SEQUENCES.bookReading.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.bookReading.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.animation, 'parrot-ear-visit-feather');
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.frameCount, 93);
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.fps, 8);
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.parrotEarVisit.preload, false);
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.animation, 'conjure-flowers-blow-away');
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.frameCount, 65);
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.fps, 10);
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.loopMode, 'none');
+  assert.equal(SPRITE_SEQUENCES.conjureFlowersBlowAway.preload, false);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.animation, 'ear-wiggle-head-touch');
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.frameCount, 54);
   assert.equal(SPRITE_SEQUENCES.earWiggleHeadTouch.fps, 10);

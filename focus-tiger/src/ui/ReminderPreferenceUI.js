@@ -1,18 +1,18 @@
 /**
- * 应用内提醒设置 · 右上角时钟图标入口（方案 A）。
- *
- * 挂 `document.body`：与 Ambient 静音钮同排（静音 `right:14px`，
- * 本钮 `right:66px`），始终可见（非 Idle-only chrome）。
+ * 应用内提醒设置 · 挂在 Idle 热力图簇旁的小型时钟图标。
  *
  * 偏好形状：`{ hour, minute }` 或 `null`（见 `reminderPreference.js`）；
  * **无 `enabled` 字段**——勾选开→写入 `{ hour, minute }`；
  * 取消勾选→`setReminderPreference(null)` 清除。
+ *
+ * 面板文案：常显「每日时分」说明；情境软提示（已过时分 / 今日已练）可保存、可改时。
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   getReminderPreference,
-  setReminderPreference
+  setReminderPreference,
+  resolveReminderPreferencePanelNotes
 } from '../core/reminderPreference.js';
 
 const CLOCK_ICON = `<svg class="reminder-pref__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm.75 3.5h-1.5v5.25l4.25 2.55.75-1.23-3.5-2.1V7.5z"/></svg>`;
@@ -58,14 +58,20 @@ export class ReminderPreferenceUI {
    * @param {HTMLElement} mountRoot 通常传 `document.body`
    * @param {object} [handlers]
    * @param {() => void} [handlers.onPreferenceChange]
+   * @param {() => void} [handlers.onClose] 面板收起（含点外侧）
+   * @param {() => void} [handlers.onOpen] 面板展开（含首次发现 Hint 记已读）
+   * @param {() => boolean} [handlers.hasCompletedToday]
+   * @param {() => Date} [handlers.now]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._expanded = false;
+    this._visible = true;
 
     this.root = document.createElement('div');
     this.root.id = 'reminder-preference';
     this.root.className = 'reminder-pref';
+    this.root.hidden = false;
 
     this.toggleBtn = document.createElement('button');
     this.toggleBtn.type = 'button';
@@ -77,6 +83,8 @@ export class ReminderPreferenceUI {
     this.toggleBtn.addEventListener('click', () => {
       this._expanded = !this._expanded;
       this._render();
+      if (this._expanded) this.handlers.onOpen?.();
+      else this.handlers.onClose?.();
     });
 
     this.panel = document.createElement('div');
@@ -99,18 +107,74 @@ export class ReminderPreferenceUI {
     this.enableRow.append(this.enableInput, this.enableLabelText);
     this.enableInput.addEventListener('change', () => this._onEnableChange());
 
-    this.timeRow = document.createElement('label');
+    this.timeRow = document.createElement('div');
     this.timeRow.className = 'reminder-pref__time';
     this.timeLabelText = document.createElement('span');
+    this.timeLabelText.className = 'reminder-pref__time-label';
+
+    this.timeControls = document.createElement('div');
+    this.timeControls.className = 'reminder-pref__time-controls';
+
     this.timeInput = document.createElement('input');
     this.timeInput.type = 'time';
     this.timeInput.id = 'reminder-preference-time';
     this.timeInput.step = '60';
-    this.timeRow.append(this.timeLabelText, this.timeInput);
-    this.timeInput.addEventListener('change', () => this._onTimeChange());
-    this.timeInput.addEventListener('input', () => this._onTimeChange());
+    // Native picker commit still saves; mid-edit `input` no longer auto-writes
+    // so → / Enter remain the clear "saved" affordance.
+    this.timeInput.addEventListener('change', () => this._commitTime({ flash: false }));
+    this.timeInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      this._commitTime({ flash: true });
+    });
 
-    this.panel.append(this.titleEl, this.enableRow, this.timeRow);
+    this.confirmBtn = document.createElement('button');
+    this.confirmBtn.type = 'button';
+    this.confirmBtn.id = 'reminder-preference-confirm';
+    this.confirmBtn.className = 'reminder-pref__confirm';
+    this.confirmBtn.textContent = '→';
+    this.confirmBtn.addEventListener('click', () => {
+      this._commitTime({ flash: true });
+    });
+
+    this.timeControls.append(this.timeInput, this.confirmBtn);
+
+    this.confirmHintEl = document.createElement('p');
+    this.confirmHintEl.id = 'reminder-preference-confirm-hint';
+    this.confirmHintEl.className = 'reminder-pref__confirm-hint';
+
+    this.savedBriefEl = document.createElement('p');
+    this.savedBriefEl.id = 'reminder-preference-saved';
+    this.savedBriefEl.className = 'reminder-pref__saved';
+    this.savedBriefEl.setAttribute('role', 'status');
+    this.savedBriefEl.hidden = true;
+
+    this.timeRow.append(
+      this.timeLabelText,
+      this.timeControls,
+      this.confirmHintEl,
+      this.savedBriefEl
+    );
+    this._savedFlashUntil = 0;
+
+    this.blurbEl = document.createElement('p');
+    this.blurbEl.id = 'reminder-preference-daily-blurb';
+    this.blurbEl.className = 'reminder-pref__blurb';
+
+    this.statusEl = document.createElement('p');
+    this.statusEl.id = 'reminder-preference-status';
+    this.statusEl.className =
+      'reminder-pref__status reminder-pref__status--callout';
+    this.statusEl.setAttribute('role', 'status');
+    this.statusEl.hidden = true;
+
+    this.panel.append(
+      this.titleEl,
+      this.enableRow,
+      this.timeRow,
+      this.blurbEl,
+      this.statusEl
+    );
     this.root.append(this.toggleBtn, this.panel);
     mountRoot.appendChild(this.root);
 
@@ -119,6 +183,7 @@ export class ReminderPreferenceUI {
       if (this.root.contains(/** @type {Node} */ (event.target))) return;
       this._expanded = false;
       this._render();
+      this.handlers.onClose?.();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
 
@@ -131,14 +196,38 @@ export class ReminderPreferenceUI {
     return this._expanded && !this.panel.hidden;
   }
 
+  /** Open the preference panel (narrow drawer entry). */
+  openPanel() {
+    if (!this._visible) this.setVisible(true);
+    const wasOpen = this._expanded;
+    this._expanded = true;
+    this._render();
+    if (!wasOpen) this.handlers.onOpen?.();
+  }
+
+  setVisible(visible) {
+    const next = visible === true;
+    if (this._visible === next) return;
+    this._visible = next;
+    if (!next) this._expanded = false;
+    this._render();
+  }
+
+  /** Re-evaluate soft notes after practice / clock override changes. */
+  refresh() {
+    this._render();
+  }
+
   closePanel() {
     if (!this._expanded) return;
     this._expanded = false;
     this._render();
+    this.handlers.onClose?.();
   }
 
   dispose() {
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    window.clearTimeout(this._savedFlashTimer);
     this._unsubLocale();
     this.root.remove();
   }
@@ -156,21 +245,39 @@ export class ReminderPreferenceUI {
     this.handlers.onPreferenceChange?.();
   }
 
-  _onTimeChange() {
+  _commitTime({ flash }) {
     if (!this.enableInput.checked) return;
     const parsed = parseTimeInputValue(this.timeInput.value);
     if (!parsed) return;
     setReminderPreference(parsed);
+    if (flash) {
+      this._savedFlashUntil = Date.now() + 1600;
+    }
+    this._render();
     this.handlers.onPreferenceChange?.();
+  }
+
+  _onTimeChange() {
+    this._commitTime({ flash: false });
   }
 
   _render() {
     const pref = getReminderPreference();
     const enabled = Boolean(pref);
+    const displayPref = pref || DEFAULT_TIME;
+    const notes = resolveReminderPreferencePanelNotes({
+      enabled,
+      preference: enabled ? displayPref : null,
+      now: this.handlers.now || (() => new Date()),
+      hasCompletedToday: this.handlers.hasCompletedToday || (() => false)
+    });
 
     this.titleEl.textContent = t('reminder.setting_title');
     this.enableLabelText.textContent = t('reminder.enable_label');
     this.timeLabelText.textContent = t('reminder.time_label');
+    this.confirmHintEl.textContent = t('reminder.confirm_hint');
+    this.confirmBtn.setAttribute('aria-label', t('reminder.confirm_aria'));
+    this.blurbEl.textContent = t(notes.dailyBlurbKey);
     this.toggleBtn.setAttribute('aria-label', t('reminder.settings_aria'));
     this.toggleBtn.setAttribute(
       'aria-expanded',
@@ -179,12 +286,46 @@ export class ReminderPreferenceUI {
     this.toggleBtn.classList.toggle('is-armed', enabled);
 
     this.enableInput.checked = enabled;
-    this.timeInput.value = toTimeInputValue(pref || DEFAULT_TIME);
+    this.timeInput.value = toTimeInputValue(displayPref);
+    // 今日已练：时间仍可改（留给以后的日子）；仅「未开启」时禁用
     this.timeInput.disabled = !enabled;
+    this.confirmBtn.disabled = !enabled;
     this.timeRow.classList.toggle('is-disabled', !enabled);
+    this.confirmHintEl.hidden = !enabled;
 
-    this.panel.hidden = !this._expanded;
-    if (this._expanded) {
+    const showSaved = Date.now() < this._savedFlashUntil;
+    this.savedBriefEl.hidden = !showSaved;
+    this.savedBriefEl.textContent = showSaved ? t('reminder.saved_brief') : '';
+    if (showSaved) {
+      const remain = this._savedFlashUntil - Date.now();
+      window.clearTimeout(this._savedFlashTimer);
+      this._savedFlashTimer = window.setTimeout(() => this._render(), remain + 20);
+    }
+
+    if (notes.statusNoteKey) {
+      this.statusEl.hidden = false;
+      this.statusEl.textContent = t(notes.statusNoteKey);
+      this.statusEl.dataset.note = notes.statusNoteKey;
+    } else {
+      this.statusEl.hidden = true;
+      this.statusEl.textContent = '';
+      delete this.statusEl.dataset.note;
+    }
+
+    if (notes.statusNoteKey) {
+      this.statusEl.hidden = false;
+      this.statusEl.textContent = t(notes.statusNoteKey);
+      this.statusEl.dataset.note = notes.statusNoteKey;
+    } else {
+      this.statusEl.hidden = true;
+      this.statusEl.textContent = '';
+      delete this.statusEl.dataset.note;
+    }
+
+    this.root.hidden = !this._visible;
+    const wasPanelHidden = this.panel.hidden;
+    this.panel.hidden = !this._visible || !this._expanded;
+    if (this._expanded && wasPanelHidden) {
       this.panel.style.opacity = '0';
       this.panel.style.transform = 'translateY(-8px)';
       this.panel.getBoundingClientRect();
@@ -202,50 +343,43 @@ export class ReminderPreferenceUI {
     }
     style.textContent = `
       .reminder-pref {
-        position: fixed;
-        top: 14px;
-        right: 66px;
-        z-index: 22;
-        pointer-events: none;
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        pointer-events: auto;
         font-family: 'Noto Sans SC', system-ui, sans-serif;
       }
       .reminder-pref__toggle {
         pointer-events: auto;
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
         padding: 0;
-        border: 1px solid rgba(139, 115, 85, 0.22);
+        border: 1px solid rgba(139, 115, 85, 0.14);
         border-radius: 50%;
-        background: linear-gradient(
-          165deg,
-          rgba(255, 252, 245, 0.98) 0%,
-          rgba(245, 235, 220, 0.96) 100%
-        );
-        color: rgba(92, 72, 52, 0.82);
+        background: rgba(255, 252, 245, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: rgba(74, 58, 40, 0.7);
         cursor: pointer;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 4px 12px rgba(44, 31, 20, 0.1);
+        box-shadow: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+        transition: transform 120ms ease, color 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+        opacity: 0.85;
       }
       .reminder-pref__toggle:hover {
         color: rgba(72, 54, 38, 0.92);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.8) inset,
-          0 6px 16px rgba(44, 31, 20, 0.14);
+        opacity: 1;
+        box-shadow: 0 2px 10px rgba(44, 31, 20, 0.08);
       }
       .reminder-pref__toggle:active {
         transform: scale(0.96);
       }
       .reminder-pref__toggle.is-armed {
         color: rgba(139, 90, 46, 0.95);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 4px 12px rgba(44, 31, 20, 0.1),
-          0 0 0 2px rgba(196, 122, 78, 0.28);
+        opacity: 1;
+        box-shadow: 0 0 0 2px rgba(196, 122, 78, 0.22);
       }
       .reminder-pref__icon-svg {
         width: 22px;
@@ -254,15 +388,17 @@ export class ReminderPreferenceUI {
       }
       .reminder-pref__panel {
         position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
+        left: 0;
+        bottom: calc(100% + 10px);
         z-index: 22;
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
         border-radius: 18px;
-        background: rgba(255, 252, 245, 0.92);
-        border: 1px solid rgba(139, 115, 85, 0.2);
-        box-shadow: 0 10px 30px rgba(44, 31, 20, 0.12);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         color: #2c1f14;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
         pointer-events: auto;
@@ -302,8 +438,14 @@ export class ReminderPreferenceUI {
       .reminder-pref__time.is-disabled {
         opacity: 0.45;
       }
+      .reminder-pref__time-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .reminder-pref__time input[type='time'] {
-        width: 100%;
+        flex: 1 1 auto;
+        min-width: 0;
         padding: 8px 10px;
         border-radius: 10px;
         border: 1px solid rgba(139, 115, 85, 0.3);
@@ -312,9 +454,90 @@ export class ReminderPreferenceUI {
         font-size: 14px;
         box-sizing: border-box;
       }
+      .reminder-pref__confirm {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.3);
+        background: rgba(255, 252, 245, 0.78);
+        color: #4a3a28;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+      }
+      .reminder-pref__confirm:disabled {
+        cursor: default;
+        opacity: 0.45;
+      }
+      .reminder-pref__confirm-hint {
+        margin: 0;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: rgba(44, 31, 20, 0.58);
+      }
+      .reminder-pref__confirm-hint[hidden] {
+        display: none !important;
+      }
+      .reminder-pref__saved {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 560;
+        line-height: 1.35;
+        color: rgba(95, 130, 85, 0.95);
+      }
+      .reminder-pref__saved[hidden] {
+        display: none !important;
+      }
+      .reminder-pref__blurb {
+        margin: 12px 0 0;
+        font-size: 12px;
+        line-height: 1.45;
+        font-style: italic;
+        color: rgba(44, 31, 20, 0.62);
+      }
+      /* Soft status callout: must read distinct from italic daily_blurb
+         (B/C notes were easy to miss as plain gray body text). */
+      .reminder-pref__status--callout {
+        margin: 10px 0 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        font-style: normal;
+        font-weight: 560;
+        letter-spacing: 0.01em;
+        color: #3a2a1c;
+        background: rgba(196, 154, 92, 0.16);
+        border: 1px solid rgba(139, 115, 85, 0.32);
+        border-left: 3px solid rgba(180, 118, 62, 0.72);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+      }
+      .reminder-pref__status--callout[data-note='reminder.past_time_note'] {
+        background: rgba(210, 150, 72, 0.15);
+        border-color: rgba(170, 120, 55, 0.34);
+        border-left-color: rgba(190, 120, 48, 0.78);
+      }
+      .reminder-pref__status--callout[data-note='reminder.practiced_today_note'] {
+        background: rgba(130, 150, 110, 0.18);
+        border-color: rgba(100, 125, 90, 0.34);
+        border-left-color: rgba(95, 130, 85, 0.78);
+      }
+      .reminder-pref__status[hidden] {
+        display: none !important;
+      }
       @media (max-width: 420px) {
         .reminder-pref {
-          right: 60px;
+          order: 2;
+        }
+        /* Center above toggle; right:0 caused left:-50px when cluster staged at 50% */
+        .reminder-pref__panel {
+          left: 50%;
+          right: auto;
+          width: min(260px, calc(100vw - 32px));
+          translate: -50% 0;
         }
       }
     `;

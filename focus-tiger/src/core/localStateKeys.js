@@ -7,6 +7,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.daily-completions.v1',
   'focus-tiger.focus-session-end.v1',
   'focus-tiger.practice-days.v1',
+  'focus-tiger.milestone-glow.v1',
   'focus-tiger.honesty-bridge.v1',
   'focus-tiger.retention-funnel.v1',
   'focus-tiger.intentions.v1',
@@ -16,7 +17,13 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.reminder-preference.v1',
   'focus-tiger.hints-seen.v1',
   'focus-tiger.ambient-nudge.seen.v1',
-  'focus-tiger.ambient-pref.v1'
+  'focus-tiger.ambient-pref.v1',
+  'focus-tiger.locale.v1',
+  'focus-tiger.locale-greeting.v1',
+  'focus-tiger.scene-anim-cooldown.v1',
+  'focus-tiger.scene-anim-daily.v1',
+  'focus-tiger.flower-welcome.v1',
+  'focus-tiger.flower-welcome-flag.v1'
 ]);
 
 /** sessionStorage：重置后首屏 toast（不写入 localStorage，避免被清空逻辑误伤）。 */

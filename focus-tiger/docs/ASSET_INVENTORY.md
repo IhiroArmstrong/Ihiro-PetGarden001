@@ -1,10 +1,12 @@
 # ASSET_INVENTORY.md — 美术 / 动画素材盘点
 
-**最后盘点**：2026-07-20（UTC+8）  
-**对照上次**：2026-07-19 12:56 盘点  
+**最后盘点**：2026-08-03（UTC+8）· 鹦鹉耳边造访入库  
+**对照上次**：2026-08-02 文档盘点（当时 32 目录）  
 **互动页**：同名 Canvas（聊天旁可打开）；本文档为可入库的镜像记录。
 
 扫描范围：`public/sprites/tiger-cub/monk-robe-default/`、`spriteManifest.js`、`EmotionController.js`、`public/models/`、仓库根目录 `*-transparent.zip`、`docs/NEW_ASSETS_2026-07-18*.md`。
+
+**场景接线权威**：`SCENE_ANIMATION_WIRING.md`（含 2026-08-01 库存→业务政策与设计师建议采纳对照）。
 
 ---
 
@@ -12,19 +14,49 @@
 
 | 指标 | 数值 |
 |---|---|
-| 已安装动画目录 | **26** |
-| 磁盘 PNG 帧合计 | **566**（约；含 tea 24 + ear 54 + halo-hq 16，减 expand 17） |
-| 相对 07-19 新增目录 | **3**（tea-drinking / ear-wiggle-head-touch / breath-halo-hq） |
+| 已安装动画目录 | **33** |
+| 磁盘 PNG 帧合计 | **953**（+93：`parrot-ear-visit-feather`） |
+| 相对 08-02 文档新增目录 | **1**（`parrot-ear-visit-feather`） |
 | 已归档移出 public | **1**（breath-halo-expand → `art-reference/sprites-archived/`） |
-| 仅 manifest、无业务触发 | **3**（breath-halo-hq / lotus-front-rising / lotus-chest-halo） |
+| 待业务触发（非「已取代」） | 见 §「库存→业务」；政策：**须全部接入场景**（分 Slice B/C），禁止长期仅调试 |
 | 3D GLB（奖励柜/垫底） | 7+ |
 
-**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` **1 fps**。  
-**2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。
+**主结论**：正式 Idle = 呼吸×5→眨眼（**无**自动张望/哈欠）。候选变体池仅调试强制试播。EyeTracking 已废弃。`sleeping` 键 = cloak-sleep **030–034** 双拍 pingpong @ **2 fps**（旧 `sleeping/` 目录保留；`starlight-cloak-*` **v5 帧已接线**（与 classic cloak-sleep **约 50/50**）；实验室可单条试播）。  
+**2026-07-20**：关闭 Idle 自动变体（对齐 PRINCIPLES）；调试面板「入库素材」覆盖全部 manifest 序列。  
+**2026-07-31**：场景→产品触发对照见 **`SCENE_ANIMATION_WIRING.md`**（v1 Slice A 语言/Honesty Idle）。  
+**2026-08-01**：用户 + 设计师——库存须进业务场景；接线表升格 Slice B（活跃陪伴）/ C（荷花）；**勿接**已取代目录。  
+**2026-08-02**：三套已烘焙 pingpong 试验入库；开场欢迎池加权；Honesty≥30 → `goldenHaloPalms`。  
+**2026-08-03**：入库 `parrot-ear-visit-feather`；场景 A 应用内轻提醒信使；场景 B 轻完成池稀有彩蛋；streak-7 MilestoneGlow **50/50** 蝴蝶↔鹦鹉（不做羽毛残影）。
 
 ---
 
 ## 相对上次盘点的增量
+
+### 2026-08-03 · 鹦鹉耳边造访（禅意信使）
+
+| 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
+|---|---|---:|---|
+| Yin_Parrot_Ear_Visit_Feather_transparent | `parrot-ear-visit-feather` | 93 | **场景 A**：提醒横幅信使；**场景 B**：`LIGHT_COMPLETE_POOL` 稀有；**streak-7**：与蝴蝶 **50/50** |
+
+1056×864 RGBA；manifest `parrotEarVisit` @ **8 fps** ≈11.6s；产品路径正放一次 → ~1s CapCut Idle。
+
+### 2026-08-02 · 已烘焙 pingpong 三套（试验接线）
+
+| 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
+|---|---|---:|---|
+| Yin坐禅-挥手-pingpong_frames | `wave-hello-pingpong` | 38 | **停接线**（2026-08-02）；素材保留；960×960 + displayFit |
+| Yin坐禅-魔法金光五角星-…-pingpong_frames 3 | `magic-book-reading` | 46 | 开场欢迎池 → `magicBookReading` |
+| YIn坐禅-衣服金光-…_94 | `golden-halo-palms` | 94 | Honesty≥30 → `goldenHaloPalms`（替 breathHaloHq 产品路径） |
+
+素材均已含倒放段：产品路径 **正放一次** + CapCut，**禁**再开 player `loopMode: pingpong`。
+
+### 2026-08-02 · 单程看书（无需倒放）
+
+| 源文件夹（根目录，入库前重命名） | 入库目录 | 帧 | 试验接线 |
+|---|---|---:|---|
+| Yin看书的单程动画-无需倒放的-cutout_frames | `book-reading` | 24 | 日语切语 → `bookReading`（单程 + CapCut）；≠ `magic-book-reading` |
+
+1056×864 RGBA；manifest `bookReading` @ 8 fps；产品路径正放一次（无倒放）。
 
 ### 2026-07-19 12:56 · 抠图算法系统性升级（整批替换）
 
@@ -69,36 +101,49 @@
 路径规范：`public/sprites/{characterId}/{outfitId}/{animation}/frame_NNN.png`  
 当前默认：`tiger-cub` / `monk-robe-default`。
 
-| 目录 | 帧数 | 尺寸 | 约 MB | Manifest key | 状态 |
-|---|---:|---|---:|---|---|
-| idle-breathing | 51 | 1056×864 | ~38 | idleBreathing / idleBreathClosed / idleBlinkArc | 已接线 · Idle 切分：闭 19 帧 ×2 + 弧 33 帧 ×1 pingpong |
-| idle-eye-glance | 8 | 1056×864 | 4.8 | idleEyeGlance | 入库 · **仅调试**（正式 Idle 已并入 idle-breathing） |
-| gaze-p1-center-blink-left | 15 | — | — | gazeP1CenterBlinkLeft | 入库 · **仅调试**（正式 Idle 不自动播） |
-| gaze-p2-left-to-up | 13 | — | — | gazeP2LeftToUp | 入库 · 调试张望 A |
-| gaze-p3-toward-right | 13 | — | — | gazeP3TowardRight | 入库 · 调试张望 B |
-| gaze-p4-right-to-down | 25 | — | — | gazeP4RightToDown | 入库 · 调试张望 B |
-| yawn-stretch | 16 | — | — | yawnStretch | 入库 · **仅调试** |
-| tea-drinking | 24 | 1056×864 | — | teaDrinking | 入库 · **仅调试** |
-| ear-wiggle-head-touch | 54 | 1056×864 | — | earWiggleHeadTouch | 入库 · **仅调试** |
-| blink-smile | 12 | 1056×864 | 7.3 | blinkSmile | 已接线 · smiling / blink / **curiousTilt** |
-| wave-hello | 19 | 1056×864 | 11.3 | waveHello | 已接线 · welcomeBack |
-| celebrate-dance | 57 | 1056×864 | 47.2 | celebrateDance | 已接线 · celebrating 50% |
-| celebrate-dance-v2 | 60 | 1056×864 | 35.8 | celebrateDanceV2 | 已接线 · celebrating 50% |
-| session-complete | 28 | 1056×864 | 19.3 | sessionComplete | 已接线 · 同日非首次完成 |
-| nod-bow | 13 | 1056×864 | 7.6 | nodBow | 已接线 · mindfulAcknowledge |
-| stretch-reminder | 17 | 1056×864 | 10.9 | stretchReminder · wakeUp | 舒展提醒 + 调试「唤醒(伸懒腰)」同源不同键 |
-| sleeping | 8 | 960×960 | 3.9 | sleeping | 已接线 · DORMANT；**1 fps**（≥3× 慢于早期 4） |
-| dormant-wake | 16 | 960×960 | 7.8 | dormantWake | 已接线 · **仅 Honesty**；**3 fps**；定格末帧；暂不接 idle 淡入 / halo |
-| halo-breathing | 30 | 1056×864 | 25.0 | haloBreathing* | 已接线 · 唤醒后奖励 |
-| nod-greeting | 23 | 1056×864 | 14.0 | nodGreeting | 素材+调试保留；**靠近自动触发已拆除**（2026-07-19）；**6 fps** + 末帧多停 2 拍 |
-| tilt-think | 20 | 1056×864 | 11.3 | tiltThink | 存量；curiousTilt 默认已改 blink-smile（2026-07-19） |
-| palms-together | 14 | 960×960 | 8.6 | palmsTogether | 已接线 · intentionSet · **正放→倒放回闭目**（4fps≈6.8s）· 2026-07-19 新抠图 |
-| milestone-glow | 27 | 1056×864 | 24.0 | milestoneGlow | 仅调试；**4 fps**（2026-07-19 放慢 2×） |
-| breath-halo-hq | 16 | 1056×864 | — | breathHaloHq | 仅清单 · MilestoneGlow 备选（替 expand） |
-| lotus-front-rising | 7 | 1056×864 | 4.2 | lotusFrontRising | 仅清单 · 莲花池 Backlog |
-| lotus-chest-halo | 10 | 1056×864 | 7.3 | lotusChestHalo | 仅清单 · Grow Together 候选 |
+| 目录 | 帧数 | Manifest key | 产品状态（2026-08-01） | 目标业务（若未接线） |
+|---|---:|---|---|---|
+| idle-breathing | 51 | idleBreathing / … | **已接线** Idle | — |
+| idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
+| blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
+| blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
+| wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
+| wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
+| magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
+| conjure-flowers-blow-away | 65 | conjureFlowersBlowAway | **产品冷启动已接线**（Phase 2b；2c 抛光） | Day1/久别吹花；**10 fps** 锁定（≈6.5s ack 带）；同日 XOR 欢迎池；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
+| book-reading | 24 | bookReading | **已接线**：日语切语 + Rise 池 ~15% | 单程无倒放；≠ magic-book |
+| parrot-ear-visit-feather | 93 | parrotEarVisit | 提醒信使 · 轻完成稀有 · streak-7 仪式 50/50 | **不做**羽毛残影 |
+| golden-halo-palms | 94 | goldenHaloPalms | **试验**：Honesty≥30 | 已烘焙 pingpong；替 breathHaloHq 产品路径 |
+| celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
+| celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
+| session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
+| nod-bow | 13 | nodBow / intentionNod | **已接线** mindfulAcknowledge · Choose | en 切语；Honesty 短补登 |
+| stretch-reminder | 17 | stretchReminder | **已接线** 2h 舒展提醒 | 2026-08-04 删除同源调试键 wakeUp |
+| cloak-sleep | 34 | cloakSleep / sleeping / dormantWake | **已接线** 经典披毯·睡循环·倒放 | 与 starlight **约 50/50** |
+| starlight-cloak-sleep | 67 | starlightCloakSleep / starlightSleeping | **已接线** v5 正放·睡循环 | 2026-08-04 v5；与 classic 并存 |
+| starlight-cloak-wake | 67 | starlightDormantWake | **已接线** v5 卸斗篷苏醒 | sleep 物理倒序；苏醒优先匹配入睡变体 |
+| sleeping（旧目录） | 8 | — | **勿接**（保留） | 已取代 |
+| dormant-wake | 16 | （旧正放） | **勿接**（保留） | 已由 cloak 倒放取代 |
+| rise-stretch-casual | 39 | riseStretchCasual | **已接线** Rise 池 ~60% | — |
+| halo-breathing | 30 | haloBreathing* | 调试可播；业务自动未全接 | **Slice B**：Honesty 长补登 / 微仪式变体 |
+| nod-greeting | 23 | nodGreeting | 靠近自动**已拆**；**冷启动欢迎池唯一** | Slice B 开场；2026-08-02 |
+| tilt-think | 20 | tiltThink | **勿接主路径** | 仅调试 |
+| palms-together | 14 | palmsTogether | 仅调试（Choose 已改 nod；日语切语已改 bookReading） | 调试保留 |
+| milestone-glow | 27 | milestoneGlow | **已接线** streak-7（与鹦鹉 50/50） | — |
+| meditation-star-reward | 63 | milestoneGlowStar | **已接线** streak-21 / streak-100（同 `milestoneGlow` emotion） | 2026-08-03 入库；**同日改用不抠图源**（星空/白底烧录整幅，替透明抠图） |
+| breath-halo-hq | 16 | breathHaloHq | 仅清单 | **Slice B**：Glow 备选 / 长补登光环 |
+| tea-drinking | 24 | teaDrinking | **已接线**：English 切语 + 深夜池 + Rise 池 ~25% | Slice B；Rise holdPose |
+| yawn-stretch | 16 | yawnStretch | 仅调试 | **Slice B**：清晨/深夜（冷却）；**勿**进 Rise |
+| ear-wiggle-head-touch | 54 | earWiggleHeadTouch | **已接线** 好奇池等（正+倒一次→~1s CapCut Idle） | Slice B；与 welcome 同契约；2026-08-02c |
+| gaze-p1…p4 | 15/13/13/25 | gazeP* | 仅调试 | **Slice B**：稀有好奇张望 |
+| lotus-front-rising | 7 | lotusFrontRising | 仅清单 | **Slice C**：Grow / 纪念 |
+| lotus-chest-halo | 10 | lotusChestHalo | 仅清单 | **Slice C**：Grow Together |
 
 \* `halo-breathing` 在清单中拆为 intro / loop / pingpong 子序列。
+
+### 库存→业务（政策摘要）
+
+详见 `SCENE_ANIMATION_WIRING.md` §九–§十。**用户 2026-08-01**：仅清单 / 仅调试且未标「勿接」者接入业务；Honesty **≤20 / ≥30**；其余设计师项与 Dispatcher **一批**实现（荷花除外走 Slice C）。
 
 ---
 
@@ -108,14 +153,17 @@
 |---|---|---|
 | idle / sleeping / smiling | 上表对应序列 | 已接线 |
 | celebrating | dance + dance-v2 | 已接线 · 50/50 |
-| intentionSet | palms-together | 已接线 · Choose 确认 |
+| intentionSet | **intentionNod（nod-bow）**；palms-together 不再作 Choose | 已接线 · Choose；**≠** 日语切语目标视觉 |
 | sessionComplete / mindfulAcknowledge / stretchReminder | 上表 | 已接线 |
-| dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake 保留素材未删） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-07-21 试替倒放） |
-| haloBreathing | halo-breathing | 调试可单独播；Honesty 暂不自动接 |
-| welcomeBack / nodGreeting / curiousTilt | wave-hello / nod-greeting / **blink-smile** | 已接线（curiousTilt 不再默认 tilt-think） |
-| milestoneGlow | milestone-glow（备选 breath-halo-hq 未用） | 仅调试 |
+| dormantWake → idle | cloak-sleep **倒放**（原 dormant-wake / starlight-cloak-wake 保留勿接） | 已接线 · **6 fps** · 定格末帧；**暂不**自动接 halo（2026-08-04 Undo 星光） |
+| haloBreathing | halo-breathing | 调试可单独播；**Slice B** 接 Honesty 长补登等 |
+| welcomeBack / nodGreeting / curiousTilt / earWiggle | waveHelloWelcome / nod-greeting / **blink-smile** / earWiggle 烘焙正+倒 | welcomeBack/earWiggle：烘焙正+倒一次 + CapCut（禁 player pingpong）；nodGreeting：正放一次；curiousTilt：blink-smile |
+| milestoneGlow | streak-7：**50/50** 蝴蝶 / 鹦鹉；21/100 星石；breath-halo-hq 仅调试 | **产品路径已接线** |
+| parrotEarVisit | parrot-ear-visit-feather | 提醒 · 轻完成稀有 · streak-7 仪式二选一 |
+| riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
 | incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
-| wakeUp | stretch-reminder（同源） | 已接线；与 Honesty 视觉分离（2026-07-19） |
+| stretchReminder | stretch-reminder | 已接线（2h 舒展） |
+| wakeUp | — | **已删除（2026-08-04）**；曾 stretch-reminder 同源调试键 |
 | snoringZZZ | 无 | unimplemented |
 | smileSquint / petHead / dizzyBlink | 无序列 | 检测有、视觉占位 |
 | eyeTracking | `public/textures/eye-pupils/pupil-{left,right}.png` | **已废弃（2026-07-19）**：不再接线；原因见 `CORE_LOOP.md`。PNG 可留作历史素材 |
@@ -154,8 +202,25 @@
 ## 仍缺正式素材
 
 - smileSquint / petHead / dizzyBlink 动作序列  
-- wakeUp → 伸懒腰（stretch-reminder 同源）；snoringZZZ 仍缺；第二套侧卧睡醒素材仍缺
+- snoringZZZ 仍缺；第二套侧卧睡醒素材仍缺；`wakeUp` 调试键已删（2026-08-04）
 - ~~EyeTracking 正式瞳孔 PNG~~ → 曾入库但功能已废弃（见 `CORE_LOOP.md`），勿再接线
+
+---
+
+## UI 图标（非序列帧）
+
+> **路径**：`public/icons/`（**不是** `public/sprites/{characterId}/...`）。  
+> **入库**：2026-07-26 · 窄屏 Idle 主画布三主钮；**2026-07-27** 换 **v3** cream 底图腾。
+
+| 文件 | 约尺寸 | 用途 | 接线 |
+|---|---|---|---|
+| `icon-sit-with-yin.png` | ~398×398 RGBA（**v3** cream 底 + 金 ensō） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
+| `icon-quick-start.png` | ~397×397 RGBA（**v3**） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
+| `icon-honesty-checkin.png` | ~396×396 RGBA（**v3**） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
+
+**v3（2026-07-27）**：替换 v2（橙褐底扁平）；不两版并存。圆形 cream 底 + 金图腾，素材内边距约 **17–21%** 直径（@72 CSS px 约 12–15px）；窄屏显示仍约 **72×72**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=4`。已去掉 v2 试看用的 CSS `contrast/saturate` filter（按素材原色显示）。
+
+**边距观感**：相对 v2「收紧」版，v3 图腾在 72px 下略偏疏（Quick Start 火焰左右留白更多）。若嫌小，可再出一版压到约 **10–12%** 边距，或把 `HOME_CTA_PX` 提到 80——**待用户拍板**，本次未改显示尺寸。
 
 ---
 

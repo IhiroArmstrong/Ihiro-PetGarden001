@@ -22,6 +22,7 @@ import {
   computeSpriteDisplayTransform,
   spriteDisplayTransformCss
 } from './spriteDisplayFit.js';
+import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
 
 /**
  * @typedef {object} PlayOptions
@@ -36,6 +37,7 @@ import {
  * @property {boolean} [freezeUntilCrossFadeEnds]
  *   true 时：溶解期间定格新序列第 1 帧，不推进动画（CapCut 式两帧叠代）
  * @property {number} [maxCycles] 循环序列最多完整循环次数；达到后触发 onComplete（pingpong/forward）
+ * @property {{ from: number, to: number }} [playbackZoom] 覆盖清单：镜头拉近 from→to
  * @property {(sequenceName: string) => void} [onComplete] 非循环序列播完，或循环达 maxCycles 时回调
  */
 
@@ -56,6 +58,19 @@ export const SPRITE_LOOP_MODES = Object.freeze({
  * @param {'none'|'forward'|'pingpong'} state.loopMode
  * @returns {{frameIndex:number,direction:1|-1,complete:boolean}}
  */
+/**
+ * oneshot 播完是否立刻藏 overlay。
+ * 有 onComplete（常见：回 Idle CapCut）时必须保留可见末帧，否则下一 play()
+ * 因 opacity===0 跳过叠化（2026-08-02 回归：挥手正+倒后无 ~1s CapCut）。
+ * @param {{ holdLastFrame?: boolean, hasOnComplete?: boolean }} state
+ */
+export function shouldHideOverlayOnFinish({
+  holdLastFrame = false,
+  hasOnComplete = false
+} = {}) {
+  return !holdLastFrame && !hasOnComplete;
+}
+
 export function advanceSpriteFrame({
   frameIndex,
   direction,
@@ -145,13 +160,23 @@ export class SpriteSequencePlayer {
     this._cache = new Map();
 
     // —— overlay 容器（3D canvas 之上、UI 之下；默认隐藏）——
+    // LightProgression Dolly 缩放挂在 overlay；舞台 inset 在 stage 上，
+    // 给冷启动首屏留白呼吸感（约缩 12% + 略上抬），不改情绪序列本身。
     const overlay = document.createElement('div');
     overlay.id = 'sprite-overlay';
     overlay.style.cssText =
       // fixed + 独立合成层，确保在 WebGL canvas 上方稳定显示（仍低于 UI z-index:10）
-      'position:fixed;inset:0;z-index:3;display:flex;align-items:center;' +
-      'justify-content:center;pointer-events:none;opacity:0;' +
+      'position:fixed;inset:0;z-index:3;display:block;' +
+      'pointer-events:none;opacity:0;' +
       'isolation:isolate;transform:translateZ(0);transition:opacity 200ms ease;';
+
+    const stage = document.createElement('div');
+    stage.id = 'sprite-stage';
+    stage.className = 'ft-sprite-stage';
+    // top/side/bottom：底部更多 → 角色上抬并离开球带；整体相对全屏约缩 20–22%
+    stage.style.cssText =
+      'position:absolute;top:6%;right:11%;bottom:20%;left:11%;' +
+      'pointer-events:none;';
 
     const imageStyle =
       'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
@@ -168,11 +193,14 @@ export class SpriteSequencePlayer {
     img.draggable = false;
     img.style.cssText = imageStyle + 'opacity:1;';
 
-    overlay.appendChild(outgoingImg);
-    overlay.appendChild(img);
+    stage.appendChild(outgoingImg);
+    stage.appendChild(img);
+    overlay.appendChild(stage);
     container.appendChild(overlay);
 
     this.overlayEl = overlay;
+    /** @type {HTMLElement} 角色绘制盒（inset 后的布局尺寸，供 displayFit） */
+    this.stageEl = stage;
     this.imgEl = img;
     this.outgoingImgEl = outgoingImg;
 
@@ -182,7 +210,7 @@ export class SpriteSequencePlayer {
       this._resizeObserver = new ResizeObserver(() => {
         this._refreshDisplayFit();
       });
-      this._resizeObserver.observe(overlay);
+      this._resizeObserver.observe(stage);
     }
 
     // —— 播放状态 ——
@@ -194,6 +222,10 @@ export class SpriteSequencePlayer {
     this._currentDisplayFit = null;
     /** @type {import('./spriteDisplayFit.js').SpriteDisplayFit | null} */
     this._outgoingDisplayFit = null;
+    this._playbackZoomFrom = 1;
+    this._playbackZoomTo = 1;
+    this._currentZoom = 1;
+    this._outgoingZoom = 1;
     /** @type {string[]} */
     this._frames = [];
     this._frameIndex = 0;
@@ -279,7 +311,12 @@ export class SpriteSequencePlayer {
       this.imgEl.style.transition = 'none';
       this.imgEl.style.opacity = '0';
       this._outgoingDisplayFit = this._currentDisplayFit;
-      this._applyDisplayFit(this.outgoingImgEl, this._outgoingDisplayFit);
+      this._outgoingZoom = this._currentZoom;
+      this._applyDisplayFit(
+        this.outgoingImgEl,
+        this._outgoingDisplayFit,
+        this._outgoingZoom
+      );
     } else {
       this._resetCrossFade();
     }
@@ -298,7 +335,12 @@ export class SpriteSequencePlayer {
     this._onComplete =
       typeof options.onComplete === 'function' ? options.onComplete : null;
     this._currentDisplayFit = def.displayFit ?? null;
-    this._applyDisplayFit(this.imgEl, this._currentDisplayFit);
+    const zoomOpt = options.playbackZoom ?? def.playbackZoom;
+    this._playbackZoomFrom = Number(zoomOpt?.from);
+    this._playbackZoomTo = Number(zoomOpt?.to);
+    if (!Number.isFinite(this._playbackZoomFrom)) this._playbackZoomFrom = 1;
+    if (!Number.isFinite(this._playbackZoomTo)) this._playbackZoomTo = 1;
+    this._applyDisplayFit(this.imgEl, this._currentDisplayFit, 1);
 
     // 预加载兜底：若首次调用前未预加载，异步补载（播放仍立即开始，靠浏览器缓存收敛）
     if (!this._allCached(this._frames)) {
@@ -393,12 +435,13 @@ export class SpriteSequencePlayer {
     const nh = img.naturalHeight;
     if (!nw || !nh) return null;
 
-    const container = this.overlayEl.getBoundingClientRect();
-    if (container.width < 1 || container.height < 1) return null;
+    const stageBox = this.stageEl.getBoundingClientRect();
+    if (stageBox.width < 1 || stageBox.height < 1) return null;
 
-    // displayFit 按布局盒计算；Dolly 的 CSS scale 再乘到最终屏幕框上。
-    const layoutW = this.overlayEl.clientWidth || container.width;
-    const layoutH = this.overlayEl.clientHeight || container.height;
+    // displayFit 按舞台布局盒计算；Dolly 的 CSS scale 再乘到最终屏幕框上。
+    const layoutW = this.stageEl.clientWidth || stageBox.width;
+    const layoutH = this.stageEl.clientHeight || stageBox.height;
+    const container = stageBox;
     const baseScale = Math.min(layoutW / nw, layoutH / nh);
     let width = nw * baseScale;
     let height = nh * baseScale;
@@ -537,13 +580,19 @@ export class SpriteSequencePlayer {
 
   /** 非循环序列自然播完的收尾。 */
   _finish() {
+    this._cancelRaf();
     this._playing = false;
-    this._raf = 0;
     const cb = this._onComplete;
     const name = this._currentName;
     this._onComplete = null;
-    // 不停留末帧 → 淡出 overlay，让位给底层基底态（如 3D Idle）
-    if (!this._holdLastFrame) this._hide();
+    if (
+      shouldHideOverlayOnFinish({
+        holdLastFrame: this._holdLastFrame,
+        hasOnComplete: Boolean(cb)
+      })
+    ) {
+      this._hide();
+    }
     if (cb && name) cb(name);
   }
 
@@ -555,6 +604,14 @@ export class SpriteSequencePlayer {
     // sync：叠代淡入前尽量避免 Safari 异步解码导致的透明闪帧
     this.imgEl.decoding = 'sync';
     this.imgEl.src = path;
+    const zoom = playbackZoomAtIndex(
+      index,
+      this._frames.length,
+      this._playbackZoomFrom,
+      this._playbackZoomTo
+    );
+    this._currentZoom = zoom;
+    this._applyDisplayFit(this.imgEl, this._currentDisplayFit, zoom);
   }
 
   /**
@@ -614,6 +671,7 @@ export class SpriteSequencePlayer {
           this.outgoingImgEl.removeAttribute('src');
           this.outgoingImgEl.style.transform = '';
           this._outgoingDisplayFit = null;
+          this._outgoingZoom = 1;
           if (typeof onDone === 'function') onDone();
         }, durationMs + 34);
       });
@@ -638,6 +696,7 @@ export class SpriteSequencePlayer {
     this.outgoingImgEl.style.transform = '';
     this.outgoingImgEl.removeAttribute('src');
     this._outgoingDisplayFit = null;
+    this._outgoingZoom = 1;
     this.imgEl.style.transition = 'none';
     this.imgEl.style.opacity = '1';
   }
@@ -645,22 +704,49 @@ export class SpriteSequencePlayer {
   /**
    * @param {HTMLImageElement} imgEl
    * @param {import('./spriteDisplayFit.js').SpriteDisplayFit | null | undefined} fitDef
+   * @param {number} [zoom=1]
    */
-  _applyDisplayFit(imgEl, fitDef) {
-    // 必须用布局尺寸（clientWidth），不能用 getBoundingClientRect：
+  _applyDisplayFit(imgEl, fitDef, zoom = 1) {
+    // 必须用舞台布局尺寸（clientWidth），不能用 getBoundingClientRect：
     // LightProgression Dolly 的 CSS scale 会放大 rect，但 object-fit 仍按布局盒计算。
-    const width = this.overlayEl.clientWidth;
-    const height = this.overlayEl.clientHeight;
+    const width = this.stageEl.clientWidth;
+    const height = this.stageEl.clientHeight;
     const t = computeSpriteDisplayTransform(fitDef, { width, height });
-    const css = spriteDisplayTransformCss(t);
+    const fitCss = spriteDisplayTransformCss(t);
+    const z = Number(zoom);
+    const useZoom = Number.isFinite(z) && Math.abs(z - 1) > 1e-6;
+
+    if (fitCss && useZoom) {
+      // displayFit 用 origin 0 0；再叠相对中心的拉近（先移到中心、缩放、移回）
+      const cx = width / 2;
+      const cy = height / 2;
+      imgEl.style.transformOrigin = '0 0';
+      imgEl.style.transform =
+        `${fitCss} translate(${cx}px, ${cy}px) scale(${z}) ` +
+        `translate(${-cx}px, ${-cy}px)`;
+      return;
+    }
+    if (useZoom) {
+      imgEl.style.transformOrigin = '50% 50%';
+      imgEl.style.transform = `scale(${z})`;
+      return;
+    }
     imgEl.style.transformOrigin = '0 0';
-    imgEl.style.transform = css;
+    imgEl.style.transform = fitCss;
   }
 
   _refreshDisplayFit() {
-    this._applyDisplayFit(this.imgEl, this._currentDisplayFit);
+    this._applyDisplayFit(
+      this.imgEl,
+      this._currentDisplayFit,
+      this._currentZoom
+    );
     if (this.outgoingImgEl.getAttribute('src')) {
-      this._applyDisplayFit(this.outgoingImgEl, this._outgoingDisplayFit);
+      this._applyDisplayFit(
+        this.outgoingImgEl,
+        this._outgoingDisplayFit,
+        this._outgoingZoom
+      );
     }
   }
 

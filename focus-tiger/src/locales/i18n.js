@@ -3,21 +3,33 @@
  *
  * 业务逻辑只引用标识符（如 MINDFUL_FOCUS_MILESTONE_1），
  * 禁止把面向用户的句子硬编码在触发逻辑里。
+ *
+ * Picker policy: only `ready` locales (see localeRegistry.js / COVERAGE_GAP_AUDIT §9.6).
  */
 
-import zh from './zh.json';
-import en from './en.json';
+import zh from './zh.json' with { type: 'json' };
+import en from './en.json' with { type: 'json' };
+import ja from './ja.json' with { type: 'json' };
+import {
+  DEFAULT_LOCALE,
+  isReadyLocale
+} from './localeRegistry.js';
+import {
+  readLocalePreference,
+  writeLocalePreference
+} from './localePreference.js';
 
 /** @type {Record<string, Record<string, string>>} */
 const DICTIONARIES = {
   zh,
-  en
+  en,
+  ja
 };
 
-/** 默认语言：英文（产品面向海外市场）；中文作为可切换备选保留。 @type {'zh' | 'en'} */
-let currentLocale = 'en';
+/** @type {import('./localeRegistry.js').LocaleId} */
+let currentLocale = DEFAULT_LOCALE;
 
-/** locale 变更监听器（UI 模块借此在语言切换时刷新已渲染文案） @type {Set<(locale: 'zh' | 'en') => void>} */
+/** @type {Set<(locale: import('./localeRegistry.js').LocaleId) => void>} */
 const localeListeners = new Set();
 
 /** 轮换文案池：场景键 → 具体条目标识符列表 */
@@ -38,25 +50,58 @@ export const COPY_POOLS = Object.freeze({
     'REFOCUS_ACKNOWLEDGE_2',
     'REFOCUS_ACKNOWLEDGE_3'
   ],
-  ACROSS_TOOLS_IDLE: ['ACROSS_TOOLS_IDLE_1', 'ACROSS_TOOLS_IDLE_2']
+  FLOWER_BLOW_WELCOME: [
+    'FLOWER_BLOW_WELCOME_1',
+    'FLOWER_BLOW_WELCOME_2',
+    'FLOWER_BLOW_WELCOME_3'
+  ],
+  ACROSS_TOOLS_IDLE: ['ACROSS_TOOLS_IDLE_1', 'ACROSS_TOOLS_IDLE_2'],
+  /** Growth ③ · quiet line of the day (deterministic by localDate; en+ja product). */
+  DAILY_ZEN_QUOTE: [
+    'DAILY_ZEN_QUOTE_1',
+    'DAILY_ZEN_QUOTE_2',
+    'DAILY_ZEN_QUOTE_3',
+    'DAILY_ZEN_QUOTE_4',
+    'DAILY_ZEN_QUOTE_5',
+    'DAILY_ZEN_QUOTE_6',
+    'DAILY_ZEN_QUOTE_7'
+  ]
 });
 
 /**
- * @param {'zh' | 'en'} locale
+ * Apply stored preference once at boot (before UI mounts).
+ * @param {Storage | null | undefined} [storage]
+ * @returns {import('./localeRegistry.js').LocaleId}
  */
-export function setLocale(locale) {
-  if (!DICTIONARIES[locale]) {
-    console.warn(`[i18n] 未知语言 "${locale}"，保持 ${currentLocale}`);
-    return;
-  }
-  if (currentLocale === locale) return;
-  currentLocale = locale;
-  localeListeners.forEach((fn) => fn(locale));
+export function bootLocaleFromPreference(storage = globalThis.localStorage) {
+  const preferred = readLocalePreference(storage);
+  currentLocale = preferred;
+  return currentLocale;
 }
 
 /**
- * 注册语言切换回调（返回取消函数）。
- * @param {(locale: 'zh' | 'en') => void} fn
+ * @param {string} locale
+ * @param {{ persist?: boolean, storage?: Storage | null }} [opts]
+ */
+export function setLocale(locale, opts = {}) {
+  const persist = opts.persist !== false;
+  const storage = opts.storage === undefined ? globalThis.localStorage : opts.storage;
+
+  if (!isReadyLocale(locale) || !DICTIONARIES[locale]) {
+    console.warn(`[i18n] 未知或未就绪语言 "${locale}"，保持 ${currentLocale}`);
+    return;
+  }
+  if (currentLocale === locale) {
+    if (persist) writeLocalePreference(locale, storage);
+    return;
+  }
+  currentLocale = /** @type {import('./localeRegistry.js').LocaleId} */ (locale);
+  if (persist) writeLocalePreference(currentLocale, storage);
+  localeListeners.forEach((fn) => fn(currentLocale));
+}
+
+/**
+ * @param {(locale: import('./localeRegistry.js').LocaleId) => void} fn
  * @returns {() => void}
  */
 export function onLocaleChange(fn) {
@@ -64,13 +109,12 @@ export function onLocaleChange(fn) {
   return () => localeListeners.delete(fn);
 }
 
-/** @returns {'zh' | 'en'} */
+/** @returns {import('./localeRegistry.js').LocaleId} */
 export function getLocale() {
   return currentLocale;
 }
 
 /**
- * 按标识符取文案；缺键时回退默认语言 en，再缺则返回标识符本身。
  * @param {string} key
  * @returns {string}
  */
@@ -83,7 +127,20 @@ export function t(key) {
 }
 
 /**
- * 从文案池随机取一句。
+ * Look up a key in an explicit locale (bilingual stacks / Lab previews).
+ * @param {string} locale
+ * @param {string} key
+ * @returns {string}
+ */
+export function tInLocale(locale, key) {
+  const dict = DICTIONARIES[locale] || {};
+  if (dict[key]) return dict[key];
+  if (locale !== 'en' && en[key]) return en[key];
+  console.warn(`[i18n] 缺少文案键 "${key}"（locale=${locale}）`);
+  return key;
+}
+
+/**
  * @param {keyof typeof COPY_POOLS} poolKey
  * @returns {string}
  */
@@ -95,4 +152,17 @@ export function tPool(poolKey) {
   }
   const pick = keys[Math.floor(Math.random() * keys.length)];
   return t(pick);
+}
+
+/**
+ * Dictionary key sets for parity tests (ready locales with loaded dicts only).
+ * @returns {Record<string, string[]>}
+ */
+export function listLoadedDictionaryKeys() {
+  /** @type {Record<string, string[]>} */
+  const out = {};
+  for (const [id, dict] of Object.entries(DICTIONARIES)) {
+    out[id] = Object.keys(dict).sort();
+  }
+  return out;
 }

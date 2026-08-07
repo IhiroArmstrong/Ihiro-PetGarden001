@@ -1,0 +1,27 @@
+# Dependabot: surface known dependency / Actions advisories as PRs.
+# Complements (does not replace) human review before v1.0.0 tag.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /focus-tiger
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+
+  - package-ecosystem: npm
+    directory: /focus-tiger/cloud
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies

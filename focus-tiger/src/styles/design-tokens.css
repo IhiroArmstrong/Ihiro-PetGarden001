@@ -10,15 +10,18 @@
 
   /* Control chrome only (tracks, chips) — not for long copy */
   --color-panel: #e4e1db;
-  --color-panel-soft: rgba(228, 225, 219, 0.92);
+  --color-panel-soft: rgba(255, 252, 245, 0.62);
 
-  /* Prose / option cards — Companion Mode cream */
-  --color-surface-warm: #f8f1e4;
-  --color-surface-warm-top: rgba(255, 255, 255, 0.96);
-  --color-surface-warm-selected-top: #fff6e6;
+  /* Prose / option cards — Arrival glass (2026-08-02; tiger must show through) */
+  --color-surface-warm: rgba(255, 252, 245, 0.62);
+  --color-surface-warm-top: rgba(255, 252, 245, 0.72);
+  --color-surface-warm-selected-top: rgba(255, 246, 230, 0.78);
   --color-surface-warm-selected-end: rgba(224, 185, 121, 0.34);
-  --color-surface-border: rgba(139, 115, 85, 0.22);
-  --color-surface-border-strong: rgba(139, 115, 85, 0.48);
+  --color-surface-border: rgba(139, 115, 85, 0.14);
+  --color-surface-border-strong: rgba(139, 115, 85, 0.28);
+  --color-glass-fill: rgba(255, 252, 245, 0.62);
+  --color-glass-fill-strong: rgba(255, 252, 245, 0.78);
+  --color-glass-fill-chrome: rgba(255, 252, 245, 0.72);
 
   /* Text on warm surfaces (Companion titles / hints) */
   --color-ink: #2c1f14;
@@ -45,8 +48,8 @@
   --radius-lg: 20px;
   --radius-pill: 999px;
 
-  --shadow-soft: 0 8px 24px rgba(44, 31, 20, 0.08);
-  --shadow-lift: 0 12px 32px rgba(44, 31, 20, 0.12);
+  --shadow-soft: 0 4px 18px rgba(44, 31, 20, 0.06);
+  --shadow-lift: 0 8px 24px rgba(44, 31, 20, 0.1);
 
   --font-family: "Nunito", "Quicksand", "Noto Sans SC", system-ui, sans-serif;
   --font-size-sm: 0.8125rem;

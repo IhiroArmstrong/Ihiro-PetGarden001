@@ -27,6 +27,8 @@
  *   **额外**停留的毫秒数。未设置的帧按 fps 均匀播放。
  * @property {import('./spriteDisplayFit.js').SpriteDisplayFit} [displayFit]
  *   非基准画幅（如 960×960 相对 1056×864）时，用内容包围盒把角色缩放到与 idle 同大同落点。
+ * @property {{ from: number, to: number }} [playbackZoom]
+ *   播放期镜头拉近：第 1 帧 `from`、末帧 `to`（线性插值，如 1 → 1.58）。
  */
 
 /**
@@ -34,6 +36,40 @@
  * 播放时该段播两遍，再放手；不再对单帧做额外 hold（避免最高点「完全重复一帧」）。
  */
 export const WAVE_HELLO_SWAY_FRAMES = Object.freeze([8, 9, 10, 11, 12]);
+
+/** 挥手正放 playlist：抬手 → 摇摆×2 → 放手（末帧坐姿）。 */
+export const WAVE_HELLO_FORWARD_INDICES = Object.freeze([
+  1, 2, 3, 4, 5, 6, 7,
+  ...WAVE_HELLO_SWAY_FRAMES,
+  ...WAVE_HELLO_SWAY_FRAMES,
+  13, 14, 15, 16, 17, 18, 19
+]);
+
+/**
+ * 欢迎池用：正放 + 倒放一次（跳过重复末帧），整段 loop:none 播完。
+ * 不用 player pingpong+maxCycles：倒放结束后引擎会 direction→1 准备下一轮正放，
+ * 而本素材 frame_001 已是抬手，观感等同「又正放一遍」。
+ */
+export const WAVE_HELLO_PINGPONG_ONCE_INDICES = Object.freeze([
+  ...WAVE_HELLO_FORWARD_INDICES,
+  ...[...WAVE_HELLO_FORWARD_INDICES].reverse().slice(1)
+]);
+
+
+/** ear-wiggle-head-touch：1…54 正放 playlist。 */
+export const EAR_WIGGLE_FORWARD_INDICES = Object.freeze(
+  Array.from({ length: 54 }, (_, i) => i + 1)
+);
+
+/**
+ * 正放 + 倒放一次（跳过重复末帧），整段 loop:none。
+ * 与 waveHelloWelcome 同契约：禁 player pingpong+maxCycles（倒放后会准备下一轮正放）。
+ */
+export const EAR_WIGGLE_PINGPONG_ONCE_INDICES = Object.freeze([
+  ...EAR_WIGGLE_FORWARD_INDICES,
+  ...[...EAR_WIGGLE_FORWARD_INDICES].reverse().slice(1)
+]);
+
 
 /**
  * 一次性情绪目标时长带（秒）。
@@ -159,9 +195,11 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 候选陪伴手势：耳摇 → 双手摸头顶（大幅度）。
+  // 产品路径：正放+倒放一次烘焙（禁 player pingpong），播完 CapCut → Idle。
   earWiggleHeadTouch: {
     animation: 'ear-wiggle-head-touch',
     frameCount: 54,
+    frameIndices: [...EAR_WIGGLE_PINGPONG_ONCE_INDICES],
     fps: 10,
     loop: false,
     loopMode: 'none',
@@ -193,20 +231,106 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手欢迎（EMOTION_BIBLE: WelcomeBack / welcomeBack）——新服装正式版序列。
-  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold（观感上的完全重复帧）。
-  // 约 29 拍 @ 8fps ≈ 3.6s（ONE_SHOT ack 带下限）。
+  // 挥手 · 入库仅素材（2026-08-02 停接线；产品 welcomeBack 空实现）。
+  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
   waveHello: {
     animation: 'wave-hello',
     frameCount: 19,
-    frameIndices: [
-      1, 2, 3, 4, 5, 6, 7,
-      ...WAVE_HELLO_SWAY_FRAMES,
-      ...WAVE_HELLO_SWAY_FRAMES,
-      13, 14, 15, 16, 17, 18, 19
-    ],
+    frameIndices: [...WAVE_HELLO_FORWARD_INDICES],
     fps: 8,
     loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 旧挥手正+倒 playlist：停接线；仅入库素材对照。
+  // 禁 player pingpong+maxCycles。
+  waveHelloWelcome: {
+    animation: 'wave-hello',
+    frameCount: 19,
+    frameIndices: [...WAVE_HELLO_PINGPONG_ONCE_INDICES],
+    fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 新挥手已烘焙 pingpong（38 帧）：停接线（2026-08-02）；素材+displayFit 保留，场景以后另议。
+  // 960×960 → displayFit 对齐 idle 蒲团锚点，再 scaleMul 1.5。
+  waveHelloPingpong: {
+    animation: 'wave-hello-pingpong',
+    frameCount: 38,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false,
+    displayFit: {
+      width: 960,
+      height: 960,
+      // alpha>80 收紧包围盒，减少全画幅透明边导致的偏位
+      content: { x: 50, y: 68, w: 910, h: 807 },
+      scaleMul: 1.5
+    }
+  },
+
+  // 开场试验：魔法金光五角星 → 变出书 → 翻页阅读（已烘焙 pingpong，46 帧）。
+  // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈11.5s）。
+  magicBookReading: {
+    animation: 'magic-book-reading',
+    frameCount: 46,
+    fps: 4,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 单程看书（无需倒放；≠ magic-book-reading 魔法书）。源：Yin看书的单程动画… → book-reading。
+  // 日语切语问候：正放一次 → CapCut Idle。
+  bookReading: {
+    animation: 'book-reading',
+    frameCount: 24,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 鹦鹉耳边造访 + 彩羽（禅意信使）。源：Yin_Parrot_Ear_Visit_Feather_transparent → parrot-ear-visit-feather。
+  // 1056×864 RGBA · 93 帧 @ 8 fps ≈11.6s（messenger 叙事，偏 ritual 时长带）；正放一次 → CapCut Idle。
+  parrotEarVisit: {
+    animation: 'parrot-ear-visit-feather',
+    frameCount: 93,
+    fps: 8,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // 变花吹散（Day1 / 久别鼓励）。源：yin-smiling-…-blow-away_transparent → conjure-flowers-blow-away。
+  // 1056×864 RGBA · 65 帧 @ **10 fps** ≈6.5s（ack 舒适带；Phase 2c 锁定勿无故改 fps）；正放一次 → CapCut Idle。
+  conjureFlowersBlowAway: {
+    animation: 'conjure-flowers-blow-away',
+    frameCount: 65,
+    fps: 10,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
+  // Honesty 长补登试验：衣发光 → 头顶金环 → 合掌 → 金沙四散（已烘焙 pingpong，94 帧）。
+  // 2026-08-02：用户反馈太快 → fps 8→4（放慢 50%；≈23.5s）。
+  goldenHaloPalms: {
+    animation: 'golden-halo-palms',
+    frameCount: 94,
+    fps: 4,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
     holdLastFrame: false
   },
 
@@ -245,6 +369,21 @@ export const SPRITE_SEQUENCES = {
     loop: false,
     loopMode: 'none',
     holdLastFrame: true
+  },
+
+  // MilestoneGlow 变体：闭目坐禅 + 空中发光琉璃星石（与 milestone-glow 同 emotion key）。
+  // 产品按 streak 节点轮换（见 pickMilestoneGlowVariant）；63 帧 @ 6fps ≈10.5s 仪式带。
+  // 不抠图整幅烧录；播放期镜头 100% → 刚好顶满 16:9 宽度（16/11 ≈145.45%）。
+  // 算法：1056×864 contain 先铺满高度；宽占比 (1056/864)/(16/9)=11/16 → 拉近倍率 16/11。
+  milestoneGlowStar: {
+    animation: 'meditation-star-reward',
+    frameCount: 63,
+    fps: 6,
+    preload: false,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true,
+    playbackZoom: { from: 1, to: 16 / 11 }
   },
 
   // MilestoneGlow 备选（breath-halo-hq）：闭目呼吸 + 脑后金环扩展，无蝴蝶/莲花。
@@ -335,8 +474,9 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 阶段性 / 回归专注确认（MindfulAcknowledge，含 subtype: refocus）。
-  // 小幅点头鞠躬，一次性播放；强度刻意低于 sessionComplete 与 Celebrating。
-  // 13 拍 @ 3.5fps ≈ 3.7s（ONE_SHOT ack 带下限）。
+  // 小幅点头鞠躬；产品路径 EmotionController 以 pingpong×1 播（正放→倒放回坐姿）+ CapCut。
+  // 入库逐条试播仍可按本定义 loop:none 定格末帧。
+  // 13 拍 @ 3.5fps；一整轮 pingpong ≈ 7.4s（ONE_SHOT ack 带）。
   nodBow: {
     animation: 'nod-bow',
     frameCount: 13,
@@ -348,6 +488,7 @@ export const SPRITE_SEQUENCES = {
 
   // 活跃专注累计 2 小时的温和舒展提醒；与 sleeping → awake 的 dormant-wake 不同源。
   // 17 拍 @ 4fps ≈ 4.3s（ONE_SHOT ack 带）。
+  // 2026-08-04：删除未接线调试键 wakeUp（同源伸懒腰、末帧闭眼）；产品舒展仍走本键。
   stretchReminder: {
     animation: 'stretch-reminder',
     frameCount: 17,
@@ -357,32 +498,21 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 调试 / 历史 WakeUp：伸懒腰式清醒（同源 stretch-reminder 素材，独立情绪键）。
-  // 与 Honesty 的 dormant-wake（侧卧深睡→坐姿）刻意区分；勿再共用 dormant-wake。
-  wakeUp: {
-    animation: 'stretch-reminder',
-    frameCount: 17,
-    fps: 8,
-    loop: false,
-    loopMode: 'none',
-    holdLastFrame: true,
-    frameHolds: { 17: 280 }
-  },
-
   // 打瞌睡 / DORMANT（EMOTION_BIBLE: Sleeping）——持续睡态循环。
-  // 首尾帧衔接经抽样确认可直接 forward 接回；若试播有跳帧感再改 pingpong。
-  // 2026-07-19：至少放慢 3×（原 4fps → 1），睡态宜极缓。
+  // 睡循环：披毯末段 034→030 双持 pingpong @ 2fps（放弃 sleepBreath 实验，恢复原始）。
   sleeping: {
-    animation: 'sleeping',
-    frameCount: 8,
-    fps: 1,
+    animation: 'cloak-sleep',
+    frameCount: 34,
+    frameIndices: [34, 34, 33, 33, 32, 32, 31, 31, 30, 30],
+    fps: 2,
     loop: true,
-    loopMode: 'forward',
+    loopMode: 'pingpong',
     holdLastFrame: false
   },
 
   // 进入 DORMANT 过渡：非 DORMANT→DORMANT 状态转换时播 cloakSleep 正放，再 sleeping。
   // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
+  // 2026-08-04：与 starlightCloakSleep **并存**，运行时约 50/50（见 cloakVariant.js）。
   cloakSleep: {
     animation: 'cloak-sleep',
     frameCount: 34,
@@ -394,7 +524,8 @@ export const SPRITE_SEQUENCES = {
 
   // Honesty Check-in / DORMANT 唤醒：`cloak-sleep` **倒放**（睡态揭毯 → 合掌坐姿）。
   // 与 cloakSleep 正放同源；播放列表末帧 = 素材 frame_001（清醒合掌）。
-  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）；2026-07-21 试替 dormant-wake 正放。
+  // 34 帧 @ 6fps ≈ 5.7s（ack 时长带）。
+  // 2026-08-04：与 starlightDormantWake **并存**，约 50/50（优先匹配本轮入睡变体）。
   dormantWake: {
     animation: 'cloak-sleep',
     frameCount: 34,
@@ -404,6 +535,38 @@ export const SPRITE_SEQUENCES = {
     loopMode: 'none',
     holdLastFrame: true,
     frameHolds: { 34: 320 }
+  },
+
+  // 星光斗篷正放（v5）：与 cloakSleep 同语义；运行时 A/B。
+  starlightCloakSleep: {
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true
+  },
+
+  // 星光斗篷睡循环：末段 067→063 双持 pingpong @ 2fps（与经典同语义；无 sleepBreath）。
+  starlightSleeping: {
+    animation: 'starlight-cloak-sleep',
+    frameCount: 67,
+    frameIndices: [67, 67, 66, 66, 65, 65, 64, 64, 63, 63],
+    fps: 2,
+    loop: true,
+    loopMode: 'pingpong',
+    holdLastFrame: false
+  },
+
+  // 星光斗篷苏醒：独立入库的正放卸斗篷（= sleep 物理倒序）。
+  starlightDormantWake: {
+    animation: 'starlight-cloak-wake',
+    frameCount: 67,
+    fps: 12,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: true,
+    frameHolds: { 67: 320 }
   },
 
   // halo-breathing 方案 A：先播 001–006 引入，再接 007–030 pingpong 循环。

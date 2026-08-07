@@ -1,10 +1,10 @@
 /**
- * SCENARIO_TESTS 场景 A–D · 控制器级冒烟（确定性步骤）
+ * SCENARIO_TESTS 场景 A–F · 控制器级冒烟（确定性步骤）
  *
- * 技术选型：项目尚无 Playwright/Cypress；本文件用现有 `node --test` 串联
- * Store / Controller 纯逻辑，覆盖主链路契约。浏览器 DOM / 序列观感仍靠人工。
+ * 技术选型：本文件用现有 `node --test` 串联 Store / Controller 纯逻辑，覆盖主链路契约。
+ * 浏览器 DOM / 序列观感 / 真实切页 60s 仍靠人工。
  *
- * 对应剧本：`docs/SCENARIO_TESTS.md` 场景 A–D（见各 test 标题注释）。
+ * 对应剧本：`docs/SCENARIO_TESTS.md` 场景 A–F（见各 test 标题注释）。
  * 跑法：`npm test` 或 `npm run test:smoke`
  */
 
@@ -21,6 +21,7 @@ import {
 import { DailyCompletionStore } from './DailyCompletionStore.js';
 import { FocusSessionEndStore } from './FocusSessionEndStore.js';
 import {
+  ACROSS_TOOLS_IDLE_THRESHOLD_MS,
   COMPANION_MODE_ACROSS_TOOLS,
   COMPANION_MODE_STAY,
   COMPANION_MODE_STEP_AWAY,
@@ -29,6 +30,7 @@ import {
   resolveCompanionHintClick,
   shouldSuppressAwayReminders
 } from './FocusSession.js';
+import { AcrossToolsIdleGuard } from './AcrossToolsIdleGuard.js';
 import { HonestyBridgeCtaController } from './HonestyBridgeCtaController.js';
 import { HonestyBridgeStore } from './HonestyBridgeStore.js';
 import { HonestyCheckInController } from './HonestyCheckInController.js';
@@ -40,7 +42,11 @@ import {
 import { formatIntentionEcho } from './SessionIntentionStore.js';
 import { triggerSessionCompletionFeedback } from './session-completion-feedback.js';
 import { StateManager, STATES } from './StateManager.js';
-import { MindfulReminderController } from './MindfulReminderController.js';
+import {
+  MindfulReminderController,
+  MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS,
+  STRETCH_REMINDER_THRESHOLD_SECONDS
+} from './MindfulReminderController.js';
 
 function createStorage() {
   const values = new Map();
@@ -117,6 +123,52 @@ test('smoke A1: zero completions → Idle + Honesty entry button; after record �
   controller.syncDormantState();
   assert.equal(store.hasCompletedToday(), true);
   assert.equal(stateManager.state, STATES.IDLE);
+});
+
+/**
+ * A1 延伸：陈旧结束戳 ≥2h 时冷启动仍 Idle（开场即睡回归锚）。
+ * live syncDormantState 仍可进 DORMANT（场景 D）。
+ */
+test('smoke A1b: cold open with stale ≥2h end → Idle (no DORMANT / cloak)', () => {
+  const ended = Date.parse('2026-07-20T08:00:00');
+  const now = () => new Date(Date.parse('2026-07-20T11:00:00'));
+  const storage = createStorage();
+  const store = new DailyCompletionStore({ storage, now });
+  const focusSessionEndStore = new FocusSessionEndStore({ storage, now });
+  focusSessionEndStore.recordSessionEnded(ended);
+  const stateManager = new StateManager();
+  const emotionCalls = [];
+  const emotionController = {
+    playEmotion(key, options = {}) {
+      emotionCalls.push({ key, options });
+      if (key === 'cloakSleep' && typeof options.onComplete === 'function') {
+        options.onComplete('cloakSleep');
+      }
+      return true;
+    },
+    getCurrentEmotionKey() {
+      return emotionCalls.at(-1)?.key ?? null;
+    },
+    idleOrchestrator: null
+  };
+  const mood = new MoodController(stateManager, emotionController);
+  mood.handleStateChange(stateManager.state);
+  const controller = new HonestyCheckInController({
+    store,
+    focusSessionEndStore,
+    stateManager,
+    emotionController,
+    ui: createHonestyUi(),
+    now
+  });
+
+  controller.onAppReady();
+  assert.equal(stateManager.state, STATES.IDLE);
+  assert.equal(
+    emotionCalls.some((c) => c.key === 'cloakSleep' || c.key === 'sleeping'),
+    false,
+    '冷启动不得披毯/睡着'
+  );
 });
 
 test('smoke A3–A4: Arrival Notice→Choose Deep Work → Here & Now can begin; gate blocks when not ready', () => {
@@ -200,7 +252,8 @@ test('smoke A7–A8: first timed → celebrating; after celebrate stamp → sess
     startCelebrating: () => {
       celebrations += 1;
     },
-    onComplete: () => {}
+    onComplete: () => {},
+    random: () => 0
   });
   assert.equal(second, 'sessionComplete');
   assert.equal(celebrations, 1);
@@ -503,4 +556,129 @@ test('smoke D sleep→wake: 2h idle → cloakSleep → Honesty wake → bridge Y
 
   bridgeUi.handlers.onYes();
   assert.equal(arrivalStarts, 1);
+});
+
+// ─── 场景 E：Offline Space（舒展暂停 / Re-focus 抑制）───────────────────
+
+test('smoke E: Offline — stretch pauses while away; wall clock still advances; no Re-focus', () => {
+  // SCENARIO_TESTS E：墙钟不停；舒展活跃累计在离开时暂停；Re-focus 抑制
+  assert.equal(shouldSuppressAwayReminders(COMPANION_MODE_STEP_AWAY), true);
+
+  const shown = [];
+  let wallSeconds = 0;
+  const offline = new MindfulReminderController({
+    emotionController: {
+      getCurrentEmotionKey: () => 'idle',
+      playEmotion() {}
+    },
+    toast: {
+      show(message) {
+        shown.push(message);
+        return true;
+      }
+    },
+    quotaManager: createQuotaStub(),
+    getCopy: (key) => key
+  });
+  offline.startSession({
+    suppressAwayReminders: true,
+    getSessionElapsedSeconds: () => wallSeconds
+  });
+
+  offline.setAttentionAway(true);
+  wallSeconds = 120;
+  offline.update(120);
+  assert.equal(
+    offline.activeStretchSeconds,
+    0,
+    '离开期间舒展活跃秒不得累加'
+  );
+
+  wallSeconds = MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS;
+  offline.update(0);
+  assert.ok(
+    shown.includes('MINDFUL_FOCUS_MILESTONE'),
+    '墙钟仍可触发 20min mindful（与舒展活跃累计解耦）'
+  );
+
+  offline.handleAttentionReturn({ durationMs: 90_000, displayEligible: true });
+  assert.ok(
+    !shown.includes('REFOCUS_ACKNOWLEDGE'),
+    'Offline suppressAwayReminders → 不得 Re-focus'
+  );
+
+  offline.setAttentionAway(false);
+  offline.update(STRETCH_REMINDER_THRESHOLD_SECONDS);
+  assert.ok(
+    shown.includes('STRETCH_REMINDER'),
+    '回前台后舒展累计恢复，可达 2h 阈值'
+  );
+});
+
+// ─── 场景 F：Flow State（AcrossTools 30min idle toast mock）─────────────
+
+test('smoke F: Flow — AcrossToolsIdleGuard fires once after threshold; activity resets', () => {
+  // SCENARIO_TESTS F：30min 无键鼠/触控 → 一次 ACROSS_TOOLS_IDLE；活动重置计时
+  assert.equal(ACROSS_TOOLS_IDLE_THRESHOLD_MS, 1_800_000);
+  assert.equal(shouldSuppressAwayReminders(COMPANION_MODE_ACROSS_TOOLS), true);
+
+  let now = 0;
+  let idleCount = 0;
+  const listeners = new Map();
+  const doc = {
+    addEventListener(type, fn) {
+      if (!listeners.has(type)) listeners.set(type, []);
+      listeners.get(type).push(fn);
+    },
+    removeEventListener(type, fn) {
+      const list = listeners.get(type) || [];
+      listeners.set(
+        type,
+        list.filter((x) => x !== fn)
+      );
+    }
+  };
+
+  const guard = new AcrossToolsIdleGuard({
+    thresholdMs: 1_000,
+    now: () => now,
+    documentRef: doc,
+    windowRef: { addEventListener() {}, removeEventListener() {} }
+  });
+
+  const originalSetInterval = globalThis.setInterval;
+  const originalClearInterval = globalThis.clearInterval;
+  let intervalFn = null;
+  globalThis.setInterval = (fn) => {
+    intervalFn = fn;
+    return 1;
+  };
+  globalThis.clearInterval = () => {
+    intervalFn = null;
+  };
+
+  try {
+    guard.start({ onIdle: () => idleCount++ });
+    now = 900;
+    intervalFn();
+    assert.equal(idleCount, 0);
+
+    // 活动重置：再等 900ms 仍不够（须从活动起满 threshold）
+    for (const fn of listeners.get('mousemove') || []) fn();
+    now = 1_800;
+    intervalFn();
+    assert.equal(idleCount, 0, '键鼠活动须重置 idle 计时');
+
+    now = 2_800;
+    intervalFn();
+    assert.equal(idleCount, 1);
+
+    now = 10_000;
+    intervalFn();
+    assert.equal(idleCount, 1, '整场仅一次');
+  } finally {
+    guard.stop();
+    globalThis.setInterval = originalSetInterval;
+    globalThis.clearInterval = originalClearInterval;
+  }
 });

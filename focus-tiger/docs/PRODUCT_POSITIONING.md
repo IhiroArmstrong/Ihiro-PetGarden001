@@ -1,10 +1,10 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.1
-> 最后更新：2026-07-16
+> 版本：1.2
+> 最后更新：2026-08-07
 
-本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`。
+本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：Buy Yin a Tea + Yin's Sanctuary，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`）。
 
 在产品语义文档中，本文档层级高于 `DESIGN.md`；`DESIGN.md` 负责把定位转化为当前阶段的具体玩法。`PRINCIPLES.md` 仍是不可违反的硬性红线，任何定位表达和功能提议均不得绕过其「不制造焦虑」「永不消失」「价值优先于复杂度」等约束。
 
@@ -17,6 +17,7 @@
 5. `CORE_LOOP.md` / `ARRIVE_MOMENT_DESIGN.md`：单次会话七步状态机与 Arrival Practice 交互详规；
 6. `DESIGN.md`：当前产品语义、体验循环与玩法；
 7. `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md`：情绪行为与角色设定；
+7a. `SCENE_ANIMATION_WIRING.md`：场景 → 动画接线表（哪一用户时刻播哪一档；v1.0.0 Slice A 范围）；
 8. `ARCHITECTURE.md`：技术实现和模块边界；
 9. `PROCESS.md` / `TASKS.md`：阶段范围、协作流程与排期。
 
@@ -39,7 +40,7 @@ Focus Tiger：一只陪伴你练习专注与觉察的小老虎。
 
 > Focus Tiger is a mindful digital companion that helps people cultivate focus, presence, and flow through regular practice, at their own pace.
 
-对外英文以此为默认表达；中文作为同步维护的本地化版本。
+对外英文为默认表达。**v1.0.0 发版对外定位为 English + Japanese**（可点切换）；中文等语种字典可保留在工程内（draft），待审校并决定声称后再露出。
 
 ---
 

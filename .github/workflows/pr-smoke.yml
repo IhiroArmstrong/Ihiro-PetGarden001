@@ -1,0 +1,83 @@
+name: PR smoke (logic + browser shell)
+
+# Fast gate for every PR → develop. Always reports a status (even when product
+# paths are untouched) so `test:pr-smoke` can be a GitHub Required check without
+# blocking docs-only / workflow-only PRs.
+# Full e2e / visibility / doc-contract run separately (pre-merge or scheduled).
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  pr-smoke:
+    name: test:pr-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: focus-tiger
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect product paths
+        id: paths
+        working-directory: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          if git diff --name-only "$BASE"..."$HEAD" | grep -E '^(focus-tiger/|\.github/workflows/pr-smoke\.yml)' >/dev/null; then
+            echo "product=true" >> "$GITHUB_OUTPUT"
+            echo "Product paths changed — running smoke + build."
+          else
+            echo "product=false" >> "$GITHUB_OUTPUT"
+            echo "No focus-tiger / pr-smoke.yml changes — skipping tests (Required-check no-op success)."
+          fi
+
+      - name: Skip notice (non-product PR)
+        if: steps.paths.outputs.product != 'true'
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "test:pr-smoke skipped (no product paths). Job exits green so Required check stays safe."
+
+      - uses: actions/setup-node@v4
+        if: steps.paths.outputs.product == 'true'
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: focus-tiger/package-lock.json
+
+      - name: Install dependencies
+        if: steps.paths.outputs.product == 'true'
+        run: npm ci
+
+      - name: Logic smoke (node --test subset)
+        if: steps.paths.outputs.product == 'true'
+        run: npm run test:smoke
+
+      - name: Install Playwright Chromium
+        if: steps.paths.outputs.product == 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Browser smoke (Playwright subset)
+        if: steps.paths.outputs.product == 'true'
+        run: npm run test:e2e:smoke
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CHANNEL: ''
+
+      - name: Production build
+        if: steps.paths.outputs.product == 'true'
+        run: npm run build
+
+      - name: Verify build artifacts
+        if: steps.paths.outputs.product == 'true'
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+          test -d dist/assets
+          echo "Build OK: dist/index.html + dist/assets present"
+          du -sh dist

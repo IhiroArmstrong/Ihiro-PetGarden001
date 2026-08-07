@@ -28,6 +28,8 @@ alwaysApply: true
 | `docs/PRINCIPLES.md` | **硬性红线**：不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
+| `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
+| `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |
 | `docs/CHARACTER_BIBLE.md` | 角色 Master Prompt 全文归档 + 项目关联澄清（Rive/莲花/蒲团/Suffix） |
 | `docs/DESIGN.md` | 产品语义与玩法（专注、一炷香、沉睡唤醒等） |
 | `docs/RESPONSIVE_LAYOUT.md` | **移动浏览器布局基线**：功能对等（竖/横屏）、竖屏 P1、可建议横屏；断点与验收矩阵 |
@@ -37,7 +39,12 @@ alwaysApply: true
 | `docs/RETENTION_FUNNEL.md` | **留存漏斗故事骨架**：首次打开 / 首次完成 / dayN 回访 / Honesty 桥接事件名与占位接线；无第三方 |
 | `docs/COLLAB.md` | Task Brief / 文档更新协作约定 |
 | `docs/TASKS.md` | 任务序列（按需查，勿全文常驻上下文） |
-| `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；用户书面意见进 **「用户反馈」列**（勿混入测试步骤）；完成任务时须更新并在回复中说明需测项 |
+| `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；用户书面意见进 **「用户反馈」列**（勿混入测试步骤）；缺陷须填 **严重度 + 处理承诺**（`RULES_INDEX` → `release-blocker-ledger`）；**关单级人工验收只认 `origin/develop` tip**（`qa-develop-tip`）；**标「已通过」须覆盖分工明示**（e2e 锁哪些 + 人工测哪些；`qa-pass-coverage-split`）；完成任务时须更新并在回复中说明需测项 |
+| `docs/DEVELOP_DEBT_INVENTORY.md` | **develop 存量验证债务**：verified / assumed-ok / known-risky / unknown；排期用 |
+| `docs/KNOWN_RISKY_TEST_CHECKLIST.md` | **known-risky 优先人工验收步骤**（Safari / 375 / 回流）；**仅本 MD 权威**。同目录 `known-risky-test-checklist.csv` 与根目录 `.numbers` **均不权威** |
+| `docs/COVERAGE_GAP_AUDIT.md` | **功能 vs smoke/e2e 覆盖缺口审计**：模块对照矩阵、永不自动化清单、自动化后续顺序（Task 3→2→扩 smoke）；与 `TEST_TRACKER` §C / `SCENARIO_TESTS` 互补 |
+| `docs/Z_INDEX.md` | **产品 z-index 层叠登记**（`RULES_INDEX` → `z-index-registry`）；新加 fixed / 改层级先查表 |
+| `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
 
 ## PRINCIPLES 硬性摘要
 
@@ -73,6 +80,8 @@ alwaysApply: true
 - 不要在情绪主线任务里实现纪念奖励/成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
+- 预览浏览器与能耗 / 进程收尾 / Cloud 独立会话提醒 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
+- Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 
 ## TEST_TRACKER 日常维护（Part 2）
 
@@ -80,38 +89,27 @@ alwaysApply: true
 
 1. **UI / 动画 / 文案 / 交互**可见改动 → 在 `docs/TEST_TRACKER.md` 新增一行，状态「待人工测试」，写清测试步骤与本地访问路径，日期填当天。
 2. **纯后端 / 逻辑** → 登记「仅单元测试覆盖」，仍要登记。
-3. 完成消息须写明「本次有 N 项需要你测试，已更新 TEST_TRACKER.md」；禁止仅以「已完成 / 已验收」收尾。
+3. 完成消息须写明「本次有 N 项需要你测试，已更新 TEST_TRACKER.md」；禁止仅以「已完成 / 已验收」收尾。正式邀测前须跑 `npm run check:branch-freshness` 并汇报落后数（`RULES_INDEX` → `branch-freshness`）；落后 > 0 不得代表 develop 邀测。
 4. 单元测试通过 ≠ 用户验收；视觉项在用户确认前保持「待人工测试」。
-5. 用户反馈问题 → 该行改「有问题」，**只写入「用户反馈」列**（日期 + 原话要点）；**禁止**混入「测试步骤」；修复后再改回「待人工测试」等复测，**禁止**自行标「已通过」。
-6. **用户书面测试意见（2026-07-19 起）**：即使本回合未立刻开修，也必须记入对应行的「用户反馈」列；见 `TEST_TRACKER.md` 文首「用户测试反馈记入规则」。
+5. 用户反馈问题 → 该行改「有问题」，**只写入「用户反馈」列**（日期 + 原话要点）；**禁止**混入「测试步骤」；同时填「严重度」「处理承诺」（见 `TEST_TRACKER`「缺陷分级与处理承诺」）；修复后再改回「待人工测试」等复测，**禁止**自行标「已通过」。
+6. **用户书面测试意见（2026-07-19 起）**：即使本回合未立刻开修，也必须记入对应行的「用户反馈」列；见 `TEST_TRACKER.md` 文首「用户测试反馈记入规则」。书面意见若测自非 `origin/develop` tip → 仍记入反馈，但**不得**据此关单（见文首「人工验收唯一基线」）。
+7. **标「已通过」**（关单）→ 必须满足 `TEST_TRACKER`「标「已通过」门禁」（`RULES_INDEX` → `qa-pass-coverage-split`）：tip 合法书面确认 + **同次回合写清 e2e/自动化已锁哪些场景与人工已覆盖哪些场景**；**禁止**仅凭 e2e 绿或笼统「测试 OK」关单。
 
 ## 回归锁（方法级 · 与上并列强制）
 
-详见 alwaysApply 规则 `focus-tiger-regression-lock.mdc`、叙事全文 `docs/DEV_WORKFLOW_QUALITY.md`、摘要 `docs/PROCESS.md`「回归锁工作法」。摘要：
+详见 alwaysApply 规则 `focus-tiger-regression-lock.mdc`、叙事全文 `docs/DEV_WORKFLOW_QUALITY.md`、摘要 `docs/PROCESS.md`「回归锁工作法」、主题权威索引 `docs/RULES_INDEX.md`。  
+**勿在本文件复述** commit / 合并 main / §7 等完整条款；只保留指向：
 
-- 交互修复 = 主路径 + **回流路径**；禁止只验一次 Happy Path 就声称修好。  
-- 门闩未就绪 → UI 禁用，禁止可点却静默 `return`。  
-- 门闩行为须有失败用例单测；**确认修复的 bug 须留回归锚**（不限门闩；或 TEST_TRACKER 标明人工锁路径）。  
-- 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（场景 A–D 逻辑 + 产品壳 DOM；全绿 ≠ 序列观感通过）。  
-- 同主题 TEST_TRACKER 行禁止互斥步骤；**观感子项须分列**，禁止笼统一行勾选假完成。  
-- **防把好的改坏**：改前列已好清单；重写须继承观感契约；序列衔接（Idle 眨眼、cross-fade、Choose/Rise 叠化）进高风险表。  
-- **所有实质性 Task 收尾后自动本地 commit**（不必再问；交互修复 / 文档 / 调研 / 素材 / 回归锁均适用）；**仍禁止**未确认 push。  
-- **Bug 修复一体包（N15）**：代码或修正措施 + **相关项目文档同批更新**（至少 `TEST_TRACKER`；按触及面扩权威 md）+ **立刻本地 commit**；缺一 = 未完成，不得写「已修好」。  
-- 每次任务汇报末尾须有独立 **「待你决定 / 待你知道」** 清单（N14；禁止只在正文带过）。
+- 交互修复完工门禁、Commit 汇报与分支门禁、Bug close §7 → `focus-tiger-regression-lock.mdc`
+- 分支模型 / 合并 main / 跨会话冲突 / 并行 worktree / **姊妹分支同步** → 仓库根 `WORKFLOW.md`
+- 质量叙事（why/how）→ `DEV_WORKFLOW_QUALITY.md`
+- 如涉及运行测试/CI相关任务，参考 testing-strategy 规则。
 
 ## Git 同步（半自动，禁止静默 push）
 
-实质性 Task / Bug 修复结束后（与 `PROCESS.md`「当前进度速览」维护规则对齐）：
-
-1. 更新速览  
-2. **同步相关权威文档**（N15；至少 `TEST_TRACKER`）  
-3. **所有实质性 Task**：收尾后 **自动** `git commit`（**代码 + 文档**；message 含关键词），**不必询问**  
-4. 其它大范围/素材/不确定范围改动：先说明将提交路径再 commit  
-5. 可选运行 `./scripts/git-sync-safe.sh` 做推送前体检  
-6. **仅当用户明确要求 push 时**再执行 `./scripts/git-sync-safe.sh --push` 或 `git push`  
-
+操作节奏摘要见 `PROCESS.md`「Git 同步节奏」（含口令「请安排下班前的 Git 同步」）。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main` / `git-develop-small-pr-run-merge`）与 regression-lock 第 6–7 条。  
 `stop` 的 Git 同步 macOS 通知钩子已关闭（`hooks.json` 的 `stop` 为空）。若日后重新启用，只允许本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
 
-禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程。  
-**注意**：「尽快 commit」与「每次问要不要」矛盾——本地 commit 固化基线；真正需人工闸门的是 **push**。  
-**注意**：只改代码、文档不进 commit = 假完成（下一会话权威口径仍是旧的）。
+禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程、静默 commit 不汇报。详见 regression-lock 与 `WORKFLOW.md`。  
+**注意**：只改代码、文档不进 commit = 假完成（下一会话权威口径仍是旧的）。  
+**develop 文档/小 PR**：CI 绿后默认弹 Run 合并（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`）；合 `main` 仍须你明确下令。

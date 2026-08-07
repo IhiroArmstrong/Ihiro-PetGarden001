@@ -1,22 +1,26 @@
-# MICRO_RITUAL_PLAN.md — 「一分钟呼吸」微仪式方案
+# MICRO_RITUAL_PLAN.md — Idle 呼吸练习（原「一分钟呼吸」）
 
-> **状态**：**UI 已接入（2026-07-22）**。实现：`MicroRitualUI` + `main.completeMicroRitual`；e2e `e2e/micro-ritual.spec.js`。观感节奏仍待人工验收。  
+> **状态**：**UI 已接入**；**2026-08-06** 扩展为可选时长 Extended Breath Practice（1/3/5/10/20 分钟 + ephemeral 氛围乐 + 完成后浅接 Reflection + visibility 墙钟补查）。  
+> **实现**：`MicroRitualUI` + `main.completeMicroRitual`；e2e `e2e/micro-ritual.spec.js`。  
 > **创建**：2026-07-22  
-> **范围**：独立于 Companion 三选一的 Idle 平级入口；约 1 分钟呼吸微仪式。
+> **范围**：独立于 Companion 三选一的 Idle 平级入口；可选时长呼吸练习（默认仍可从 1 分钟 chip 进入）。
 
 ---
 
-## 已拍板实现口径（2026-07-22）
+## 已拍板实现口径（2026-07-22 · 2026-08-06 修订）
 
-1. Store：`recordCompletion(1)`，**不**加 `source`。  
-2. PracticeDays：`markToday(1)`。  
+1. Store：`recordCompletion(所选分钟)`，**不**加 `source`。  
+2. PracticeDays：`markToday(所选分钟)`。  
 3. 留存：`trackRetentionEvent('micro_ritual_complete')` 仅 console 占位；**不** `noteSessionComplete`。  
-4. 同日可多次；每次直接 `sessionComplete`（从不 Celebrating）。  
-5. 中途 Leave：不记账、无提示。  
-6. 入口：`#micro-ritual-idle-entry`（dock `order: -1`，**青绿立体 secondary**，与 Honesty/Hint **同族质感**；dock `gap: 16px`）；面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath()`（光环仍 **4s**，**不**与文案强制同拍——2026-07-22 用户反馈撤销同拍）。
-7. e2e 缩短：`?microRitualMs=1500`。
-8. ~~吸/呼同拍~~：**已撤销**（用户书面：同拍观感不行）。保留文案 2.5s 交替 + 独立 4s 光环 + smiling@4fps。
-9. **HUD 直播（2026-07-22 午 · 用户反馈）**：进行中左上 FocusHUD `#hud-time` / Focusing 态 / 今日同坐条 / 金环随墙钟推进（`resolveFocusHudLiveView`）；**仍不启** `FocusSession` / Rise / Celebrating。完成 toast 用 `MindfulAcknowledgeToast` **`MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE`**（与 Honesty `HONESTY_CHECKIN_RECORDED` **同一中置锚点** ≈62%，胸口/蒲团一带；非底栏夹缝）。
+4. 同日可多次；完成反馈走 `LIGHT_COMPLETE_POOL`（`sessionComplete` / `mindfulAcknowledge` / 稀有鹦鹉；**无** `curiousTilt`；从不 Celebrating）。进出 smiling / 回 Idle 用 **1s CapCut**（防闪白）。  
+5. 中途 Leave：不记账、无提示、**不**进 Reflection；回 Idle 亦 CapCut。  
+6. 入口：**首页左球**（DOM `#ft-*-home-quickstart` / `#quick-start-focus`；文案 Breath practice）→ **时长 chip 点选即开**（1/3/5/10/20）；**不再**列于抽屉 / ⋯。面板复用 Arrival 吸/呼相位 + smiling@4fps + `LightProgression.beginBreath()`（光环仍 **4s**，**不**与文案强制同拍）。遗留 `#micro-ritual-idle-entry` 始终 hidden。  
+7. e2e 缩短：`?microRitualMs=1500`（覆盖墙钟；记账仍按所选 chip 分钟）。  
+8. ~~吸/呼同拍~~：**已撤销**（用户书面：同拍观感不行）。保留文案 2.5s 交替 + 独立 4s 光环 + smiling@4fps。  
+9. **HUD 直播**：进行中左上 FocusHUD（仅 breath 相位）；**仍不启** `FocusSession` / Rise / Celebrating。  
+10. **完成检测**：`setTimeout` + `visibilitychange` 回前台墙钟补查（不引入 FocusSession）。  
+11. **氛围乐**：练习开始 `playTrackEphemeral`（preferred，off→Mer-Ka-Ba）；完成/Leave `stopPlaybackEphemeral`；**不**走 `startSession`/`endSession`/presence。  
+12. **Reflection**：完成后浅接 `sessionEndFlow.onSessionEnded({ completed: true })`（不等完成动画）。
 
 ---
 
@@ -25,11 +29,11 @@
 | 维度 | 微仪式 | 正式 Focus（Sit → Arrival → Companion → 计时） |
 |---|---|---|
 | 入口 | Idle 独立按钮（不经 Companion） | Sit / How shall we sit? |
-| 时长 | 约 **60s** 引导呼吸 | DEMO 默认 1 分钟或 `?sessionMinutes=`；产品目标可达更长 |
+| 时长 | **1/3/5/10/20 分钟**可选（chip 点选即开；e2e 可 `?microRitualMs=`） | DEMO 默认 1 分钟或 `?sessionMinutes=`；产品目标可达更长 |
 | Arrival | **不走** Notice→Choose→Companion | 完整 Arrival Practice |
 | 计时器 | **不启** `FocusSession` / Rise；**HUD 直播**墙钟与同坐条（算专注观感） | `FocusSession` 墙钟达标 |
 | 完成反馈 | **轻量** `SessionComplete` 摆尾 + **中置** toast（见 §4） | 当日首次达标 `Celebrating`；同日后续 `SessionComplete` |
-| Reflection | **不进** Reflection Moment | 达标 / 中途 Rise 均可进 |
+| Reflection | **完成后浅接** Reflection（Leave 不进） | 达标 / 中途 Rise 均可进 |
 
 微仪式是「随时可做的一小口气」，不是缩短版 Focus，也不是 Honesty 补登。
 
@@ -187,7 +191,7 @@ Idle 点「一分钟呼吸」
 - 调用：`playEmotion('sessionComplete', { onComplete: … })`。  
 - **禁止** `startCelebrating` / `STATES.CELEBRATE` / `markCelebratedToday`。  
 - 播完回归 Idle 呼吸基底（现有 one-shot → idle 叠化契约）。  
-- **不**打开 Reflection Moment；**不**把微仪式叠层算进「未就绪却可点」的静默门闩——进行中须禁用 Sit / Companion / 再次点微仪式，或明确 Skip。
+- **不**打开 Reflection Moment；**不**把微仪式叠层算进「未就绪却可点」的静默门闩——进行中须**隐藏** Sit（与 Arrival 同契约；禁止仅禁用仍露出），并禁用 Companion / 再次点微仪式，或明确 Leave。
 
 ---
 

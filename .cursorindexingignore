@@ -1,0 +1,19 @@
+# Cursor: exclude from codebase index / semantic search only.
+# Files stay readable when Agent opens them or you @-mention a path.
+# Use for large tracked binaries (especially public/sprites ~445MB, 600+ PNGs).
+
+# Runtime media (served by Vite; not source-of-truth for logic)
+focus-tiger/public/sprites/
+focus-tiger/public/audio/
+focus-tiger/public/models/
+focus-tiger/public/textures/
+focus-tiger/public/draco/
+focus-tiger/public/basis/
+focus-tiger/public/icons/
+
+# Local art references (keep inventory/docs authoritative in focus-tiger/docs/)
+focus-tiger/art-reference/
+
+# Lockfiles are noisy in semantic search
+package-lock.json
+**/package-lock.json

@@ -22,6 +22,7 @@ import {
   PracticeDaysStore,
   PRACTICE_DAYS_STORAGE_KEY
 } from './PracticeDaysStore.js';
+import { MILESTONE_GLOW_STORAGE_KEY } from './MilestoneGlowStore.js';
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
 import { HonestyBridgeStore, HONESTY_BRIDGE_STORAGE_KEY } from './HonestyBridgeStore.js';
 import {
@@ -41,6 +42,16 @@ import {
   setReminderPreference,
   REMINDER_PREFERENCE_STORAGE_KEY
 } from './reminderPreference.js';
+import { LOCALE_PREFERENCE_STORAGE_KEY } from '../locales/localePreference.js';
+import { LOCALE_GREETING_STORAGE_KEY } from './localeGreeting.js';
+import {
+  SCENE_ANIM_COOLDOWN_STORAGE_KEY,
+  SCENE_ANIM_DAILY_STORAGE_KEY
+} from './sceneAnimationDispatcher.js';
+import {
+  FLOWER_WELCOME_FLAG_STORAGE_KEY,
+  FLOWER_WELCOME_STORAGE_KEY
+} from './flowerWelcomeGate.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import {
@@ -82,6 +93,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_COMPLETION_STORAGE_KEY,
   FOCUS_SESSION_END_STORAGE_KEY,
   PRACTICE_DAYS_STORAGE_KEY,
+  MILESTONE_GLOW_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
   RETENTION_FUNNEL_STORAGE_KEY,
   INTENTION_STORAGE_KEY,
@@ -91,7 +103,13 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   REMINDER_PREFERENCE_STORAGE_KEY,
   HINTS_SEEN_STORAGE_KEY,
   AMBIENT_NUDGE_STORAGE_KEY,
-  AMBIENT_PREF_STORAGE_KEY
+  AMBIENT_PREF_STORAGE_KEY,
+  LOCALE_PREFERENCE_STORAGE_KEY,
+  LOCALE_GREETING_STORAGE_KEY,
+  SCENE_ANIM_COOLDOWN_STORAGE_KEY,
+  SCENE_ANIM_DAILY_STORAGE_KEY,
+  FLOWER_WELCOME_STORAGE_KEY,
+  FLOWER_WELCOME_FLAG_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

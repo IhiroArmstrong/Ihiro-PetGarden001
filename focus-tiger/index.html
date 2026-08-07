@@ -60,6 +60,7 @@
         pointer-events: auto;
         font-family: var(--font-family, "Nunito", system-ui, sans-serif);
         color: var(--text-primary, #2c1f14);
+        overflow: visible;
       }
       #focus-hud .ft-hud {
         position: relative;
@@ -68,18 +69,23 @@
         align-items: stretch;
         gap: 12px;
         padding: 14px 20px 14px 14px;
-        border-radius: 20px;
-        background: var(--color-panel-soft, rgba(228, 225, 219, 0.92));
-        border: 1px solid var(--color-ink-faint, rgba(46, 43, 40, 0.1));
-        box-shadow: var(--shadow-soft, 0 8px 24px rgba(44, 31, 20, 0.08));
+        border-radius: 22px;
+        /* 超柔毛玻璃：无生硬描边，隐退为轻量 HUD */
+        background: rgba(255, 252, 245, 0.48);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(139, 115, 85, 0.08);
+        box-shadow: 0 6px 22px rgba(44, 31, 20, 0.05);
         outline: none;
         --ft-hud-fill: 0;
         min-width: 220px;
+        overflow: visible;
       }
       #focus-hud .ft-hud__row {
         display: flex;
         align-items: center;
         gap: 14px;
+        overflow: visible;
       }
       #focus-hud .ft-hud__bar {
         width: 100%;
@@ -90,9 +96,13 @@
         flex-shrink: 0;
         --meter-size: 64px;
         margin-left: auto;
+        position: relative;
+        z-index: 2;
+        overflow: visible;
       }
       #focus-hud .ft-hud__streak::part(label) {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
+        line-height: 1.5;
       }
       #focus-hud .ft-hud__gauge {
         position: relative;
@@ -179,8 +189,8 @@
       }
       #focus-hud .ft-hud__state {
         font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-secondary, rgba(74, 58, 40, 0.78));
+        font-weight: 650;
+        color: rgba(74, 58, 40, 0.62);
         letter-spacing: 0.01em;
       }
       #focus-hud .ft-hud[data-focusing="1"] .ft-hud__state {
@@ -189,8 +199,8 @@
       #focus-hud .ft-hud__time {
         font-size: 1.125rem;
         font-variant-numeric: tabular-nums;
-        color: var(--color-ink-muted, rgba(74, 58, 40, 0.78));
-        opacity: 0.55;
+        color: rgba(74, 58, 40, 0.55);
+        opacity: 0.5;
         transition: opacity 220ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
       }
       #focus-hud .ft-hud[data-focusing="1"] .ft-hud__time,
@@ -198,10 +208,26 @@
       #focus-hud .ft-hud:focus-within .ft-hud__time {
         opacity: 0.92;
       }
+      /* Option A: session total under elapsed — quieter than the clock */
+      #focus-hud .ft-hud__session-target {
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+        font-weight: 500;
+        color: rgba(74, 58, 40, 0.48);
+        letter-spacing: 0.02em;
+        opacity: 0.72;
+        line-height: 1.2;
+      }
+      #focus-hud .ft-hud[data-focusing="1"] .ft-hud__session-target,
+      #focus-hud .ft-hud:hover .ft-hud__session-target,
+      #focus-hud .ft-hud:focus-within .ft-hud__session-target {
+        opacity: 0.88;
+      }
       #focus-hud .ft-hud__detail {
         position: absolute;
         left: 0;
         top: calc(100% + 8px);
+        z-index: 3;
         min-width: 11rem;
         padding: 0.55rem 0.8rem;
         border-radius: var(--radius-sm, 10px);
@@ -220,6 +246,45 @@
       }
       #focus-hud .ft-hud__detail-line {
         display: block;
+      }
+      /* 窄屏 P1：HUD 略缩，为右上 mute 音符留清晰间距（RESPONSIVE_LAYOUT §7） */
+      @media (max-width: 479px) {
+        #focus-hud {
+          top: 12px;
+          left: 12px;
+          /* 12 left + 14 right + 44 mute + 12 gap */
+          max-width: calc(100vw - 12px - 14px - 44px - 12px);
+        }
+        #focus-hud .ft-hud {
+          min-width: 0;
+          width: 100%;
+          box-sizing: border-box;
+          padding: 10px 12px 10px 10px;
+          gap: 8px;
+        }
+        #focus-hud .ft-hud__row {
+          gap: 8px;
+        }
+        #focus-hud .ft-hud__gauge {
+          width: 64px;
+          height: 64px;
+        }
+        #focus-hud .ft-hud__streak {
+          --meter-size: 48px;
+        }
+        #focus-hud .ft-hud__meta {
+          min-width: 0;
+          flex: 1 1 auto;
+        }
+        #focus-hud .ft-hud__state {
+          font-size: 1.05rem;
+        }
+        #focus-hud .ft-hud__time {
+          font-size: 1rem;
+        }
+        #focus-hud .ft-hud__session-target {
+          font-size: 0.72rem;
+        }
       }
       #btn-focus {
         position: absolute;

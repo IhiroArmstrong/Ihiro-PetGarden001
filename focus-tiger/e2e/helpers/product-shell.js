@@ -1,56 +1,283 @@
 import { expect } from '@playwright/test';
 
-/** 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。 */
-export async function openFreshProductShell(page) {
-  await page.goto('/?product=1');
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+/**
+ * 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。
+ * CI `vite preview` 上「每个用例首次导航」常挂到 expect 超时；内部短重试，
+ * 避免外层 1.1m 红 + 33s retry 把 visibility job 拖死。
+ * @param {import('@playwright/test').Page} page
+ * @param {{ path?: string, query?: Record<string, string | number | boolean> }} [opts]
+ */
+export async function openFreshProductShell(page, opts = {}) {
+  // Default short Focus target + skip duration picker (product UI uses chips when
+  // `sessionMinutes` is absent). Override via opts.query / opts.path as needed.
+  const params = new URLSearchParams({ product: '1', sessionMinutes: '1' });
+  for (const [key, value] of Object.entries(opts.query || {})) {
+    if (value === undefined || value === null) continue;
+    params.set(key, String(value));
+  }
+  const path = opts.path ?? `/?${params.toString()}`;
+  // Wipe focus-tiger.* once per browser context (before first paint).
+  // Must NOT wipe again on later reload/goto in the same context — helpers such as
+  // seedMixedPracticeDaysAndReload set storage then reload; a per-navigation wipe
+  // would erase the seed and false-fail heatmap lit asserts (null→lit).
+  await page.addInitScript(() => {
+    try {
+      if (sessionStorage.getItem('__ftE2eStorageGate') === '1') return;
+      sessionStorage.setItem('__ftE2eStorageGate', '1');
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+      }
+    } catch {
+      /* ignore */
     }
   });
-  await page.reload();
-  await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 60_000 });
-}
 
-/**
- * Sit → 逐步 Skip Arrival → Companion 三选一面板展开。
- * 使用真实 Skip 按钮（非 DEV 强制），跳过 Choose 以避开 intentionSet 动画等待。
- */
-export async function advanceArrivalToCompanionPicker(page) {
-  await page.locator('#btn-focus').click();
-  const arrival = page.locator('#arrival-practice');
-  await expect(arrival).toBeVisible({ timeout: 15_000 });
+  // Static dist server + single local attempt. Do NOT about:blank between
+  // retries — that raced with in-flight goto ("interrupted by about:blank").
+  const isCi = Boolean(process.env.CI);
+  const attempts = isCi ? 2 : 1;
+  const gotoMs = isCi ? 40_000 : 45_000;
+  const readyMs = isCi ? 35_000 : 30_000;
+  const sitMs = isCi ? 15_000 : 10_000;
 
-  const skipStep = arrival.getByRole('button', { name: /^Skip$/i });
-  const panel = page.locator('.session-start-dock__panel');
-
-  const deadline = Date.now() + 45_000;
-  while (Date.now() < deadline) {
-    if (await panel.isVisible()) return;
-
-    if (await arrival.isVisible()) {
-      if (await skipStep.isVisible()) {
-        await skipStep.click();
-        await page.waitForTimeout(200);
-        continue;
-      }
+  let lastErr;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      await page.goto(path, {
+        waitUntil: 'domcontentloaded',
+        timeout: gotoMs
+      });
+      await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
+        timeout: readyMs
+      });
+      await expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs });
+      return;
+    } catch (err) {
+      lastErr = err;
     }
-
-    await page.waitForTimeout(300);
   }
-
-  throw new Error('Companion picker did not open within timeout');
+  throw lastErr;
 }
 
 /**
- * Arrival 已打开时点「Skip — begin」，立刻结束抵达练习。
+ * 点 Sit：两侧首页三球已取代 dock pill（pill 被 park 到屏外，只留作代理源，
+ * 直接 `.click()` 会「element is outside of the viewport」）。三球都不在才回退 pill。
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<void>}
+ */
+export async function clickSitEntry(page) {
+  for (const id of ['#ft-wide-home-sit', '#ft-narrow-home-sit']) {
+    const ball = page.locator(id);
+    if (await ball.isVisible().catch(() => false)) {
+      await ball.click();
+      return;
+    }
+  }
+  await page.locator('#btn-focus').click();
+}
+
+/**
+ * 点首页左球 Breath practice（DOM id 仍为 quickstart / #quick-start-focus）。
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<void>}
+ */
+export async function clickQuickStartEntry(page) {
+  for (const id of ['#ft-wide-home-quickstart', '#ft-narrow-home-quickstart']) {
+    const ball = page.locator(id);
+    if (await ball.isVisible().catch(() => false)) {
+      await ball.click();
+      return;
+    }
+  }
+  await page.locator('#quick-start-focus').click();
+}
+
+/** @deprecated alias — home left ball opens Breath practice */
+export async function clickBreathPracticeEntry(page) {
+  await clickQuickStartEntry(page);
+}
+
+/**
+ * 若宽屏 ⋯ 可见则打开 More 菜单。
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<boolean>}
+ */
+export async function openWideMoreMenuIfPresent(page) {
+  const canOpen = await page.evaluate(() => {
+    const btn = document.getElementById('ft-wide-more-btn');
+    return Boolean(btn && !btn.hidden);
+  });
+  if (!canOpen) return false;
+  await page.locator('#ft-wide-more-btn').click({ force: true });
+  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+    timeout: 5_000
+  });
+  return true;
+}
+
+/**
+ * 经宽屏 ⋯（若有）打开提醒等代理入口；Breath 走首页左球；Honesty 走首页球。
+ * @param {import('@playwright/test').Page} page
+ * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
+ */
+export async function clickWideMoreProxyOrDirect(page, proxy) {
+  if (proxy === 'honesty') {
+    const ball = page.locator('#ft-wide-home-honesty');
+    if (await ball.isVisible().catch(() => false)) {
+      await ball.click();
+      return;
+    }
+  }
+  if (proxy === 'breath') {
+    await clickBreathPracticeEntry(page);
+    return;
+  }
+  const direct = {
+    honesty: '#honesty-idle-entry',
+    breath: '#micro-ritual-idle-entry',
+    reminder: '#reminder-preference-toggle',
+    sound: '.ambient-soundscape__fab',
+    language: '#language-preference-panel'
+  }[proxy];
+  if (await openWideMoreMenuIfPresent(page)) {
+    await page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`).click();
+    return;
+  }
+  if (proxy === 'reminder') {
+    const opened = await page.evaluate(() => {
+      const ui = window.__inAppReminder?.settings;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (opened) return;
+  }
+  if (proxy === 'language') {
+    const opened = await page.evaluate(() => {
+      const ui = window.__languagePreference;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (opened) return;
+    // Narrow drawer path
+    const grabber = page.locator('#ft-narrow-options-grabber, [data-proxy="sheet"]');
+    if (await grabber.first().isVisible().catch(() => false)) {
+      await grabber.first().click();
+      await page.locator('#ft-narrow-options-drawer [data-proxy="language"]').click();
+      return;
+    }
+  }
+  if (proxy === 'language') {
+    throw new Error('language preference UI not reachable');
+  }
+  await page.locator(direct).evaluate((el) => {
+    el.style.pointerEvents = 'auto';
+    /** @type {HTMLElement} */ (el).click();
+  });
+}
+
+/**
+ * 展开 Companion「How shall we sit?」：宽屏走 ⋯ 菜单，窄屏点 hint。
  * @param {import('@playwright/test').Page} page
  */
-export async function skipArrivalBegin(page) {
+export async function openCompanionHint(page) {
+  if (await openWideMoreMenuIfPresent(page)) {
+    await page.locator('#ft-wide-more-menu [data-proxy="companion"]').click();
+  } else {
+    await page.locator('.session-start-dock__hint').evaluate((el) => {
+      /** @type {HTMLButtonElement} */ (el).click();
+    });
+  }
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 10_000
+  });
+}
+
+/**
+ * Sit → Notice 点选 → Breath → Choose → 鞠躬后 Companion → Here & Now 开表。
+ * （Arrival 已无 Skip；快速开表用 `quickStartFocus`。）
+ */
+export async function advanceArrivalToCompanionPicker(page) {
+  await chooseReadingAndAwaitFocus(page);
+}
+
+/**
+ * Sit → Notice → Breath → Choose Reading → 鞠躬后 Companion 面板可见（尚未 Focusing）。
+ */
+export async function chooseReadingAndOpenCompanion(page) {
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
-  await arrival.getByRole('button', { name: /Skip — begin|跳过，直接开始|跳过并开始/i }).click();
+
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
+  });
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+
+  const reading = arrival.getByRole('button', { name: /Reading|阅读/i });
+  await expect(reading).toBeVisible({ timeout: 20_000 });
+  await reading.click();
+
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 45_000
+  });
+  await expectFocusSessionInactive(page);
+}
+
+/**
+ * Sit → Notice → Breath → Choose Reading → Companion 点 Here & Now → Focusing。
+ */
+export async function chooseReadingAndAwaitFocus(page) {
+  await chooseReadingAndOpenCompanion(page);
+  await selectCompanionMode(page, /Here & Now|当下同坐/i);
+  await expectFocusSessionActive(page);
+}
+
+/**
+ * Skip Arrival → Focusing via `__arrivalPractice.skipToBegin`（产品首页左球已改为 Breath practice）。
+ * @param {import('@playwright/test').Page} page
+ */
+export async function quickStartFocus(page) {
+  const arrival = page.locator('#arrival-practice');
+  if (!(await arrival.isVisible().catch(() => false))) {
+    await clickSitEntry(page);
+    await expect(arrival).toBeVisible({ timeout: 15_000 });
+  }
+  const skipped = await page.evaluate(() => {
+    const ui = window.__arrivalPractice;
+    if (!ui?.skipToBegin) return false;
+    ui.skipToBegin();
+    return true;
+  });
+  expect(skipped, 'window.__arrivalPractice.skipToBegin missing').toBe(true);
   await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await pickFocusDurationIfShown(page);
+}
+
+/** @deprecated 使用 `quickStartFocus`；e2e 跳过 Arrival 不再点首页左球 */
+export async function skipArrivalBegin(page) {
+  await quickStartFocus(page);
+}
+
+/**
+ * 开表前时长 chip（产品路径）；`?sessionMinutes=` 时 picker 不出现则跳过。
+ * @param {import('@playwright/test').Page} page
+ * @param {number} [minutes]
+ */
+export async function pickFocusDurationIfShown(page, minutes = 15) {
+  const picker = page.locator('#focus-duration-picker');
+  const visible = await picker.isVisible().catch(() => false);
+  if (!visible) return;
+  await picker
+    .locator(`[data-focus-duration-minutes="${minutes}"]`)
+    .click();
+  await expect(picker).toBeHidden({ timeout: 5_000 });
 }
 
 /** @param {import('@playwright/test').Page} page @param {RegExp|string} label */
@@ -61,10 +288,12 @@ export async function selectCompanionMode(page, label) {
     .locator('.session-start-dock__option')
     .filter({ hasText: label })
     .click();
+  await pickFocusDurationIfShown(page);
 }
 
 export async function expectFocusSessionActive(page) {
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i);
+  await expect(page.locator('#focus-hud')).toBeVisible();
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
   await expect
     .poll(async () => page.locator('#hud-time').textContent(), {
@@ -82,32 +311,50 @@ export async function expectFocusSessionInactive(page) {
 }
 
 /**
- * Sit → 逐步 Skip 到 Choose → 点 Reading → 等开表。
- * 须等 intentionNod pingpong + CapCut 叠化结束（约数秒）。
+ * Focusing 中点 Rise → 等 Reflection → Skip all → 回到 Idle chrome。
  */
-export async function chooseReadingAndAwaitFocus(page) {
-  await page.locator('#btn-focus').click();
+export async function riseSkipReflectionToIdle(page) {
+  await clickSitEntry(page);
+  const reflection = page.locator('#tiger-reflection-moment');
+  await expect(reflection).toBeVisible({ timeout: 15_000 });
+  await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
+  await expect(reflection).toBeHidden({ timeout: 10_000 });
+  await expectFocusSessionInactive(page);
+}
+
+/**
+ * Sit → Notice → Breath → Choose「自己写」空 Enter（chose:false）
+ * → 门闩就绪并展开 Companion（不自动开表）。
+ */
+export async function advanceArrivalToCompanionPanel(page) {
+  await clickSitEntry(page);
   const arrival = page.locator('#arrival-practice');
   await expect(arrival).toBeVisible({ timeout: 15_000 });
 
-  const skipStep = arrival.getByRole('button', { name: /^Skip$/i });
-  const deadline = Date.now() + 60_000;
-  while (Date.now() < deadline) {
-    if (await arrival.getByRole('button', { name: /Reading|阅读/i }).isVisible()) {
-      break;
-    }
-    if (await arrival.isVisible() && (await skipStep.isVisible())) {
-      await skipStep.click();
-      await page.waitForTimeout(200);
-      continue;
-    }
-    await page.waitForTimeout(300);
-  }
-
-  await arrival.getByRole('button', { name: /Reading|阅读/i }).click();
-  // intentionNod pingpong + CapCut 1s；开表后主按钮变 Rise
-  await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
-    timeout: 45_000
+  const noticePick = arrival.getByRole('button', {
+    name: /Not Sure|不确定|Calm|平静/i
   });
-  await expectFocusSessionActive(page);
+  await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
+  await noticePick.first().click();
+
+  const writeOwn = arrival.getByRole('button', {
+    name: /Write your own|自己写/i
+  });
+  await expect(writeOwn).toBeVisible({ timeout: 20_000 });
+  await writeOwn.click();
+
+  const intention = arrival.locator('#arrival-choose-typed-input');
+  await expect(intention).toBeVisible({ timeout: 5_000 });
+  await expect(arrival.locator('#arrival-choose-typed-confirm')).toBeVisible();
+  await expect(arrival.locator('#arrival-choose-typed-hint')).toContainText(
+    /Tap → or press Enter|点右箭头，或按回车/
+  );
+  await intention.focus();
+  await intention.press('Enter');
+
+  await expect(arrival).toBeHidden({ timeout: 15_000 });
+  await expect(page.locator('.session-start-dock__panel')).toBeVisible({
+    timeout: 15_000
+  });
+  await expectFocusSessionInactive(page);
 }

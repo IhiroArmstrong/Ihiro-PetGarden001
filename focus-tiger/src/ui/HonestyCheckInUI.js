@@ -5,6 +5,16 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { HONESTY_BREATH_MS } from '../core/HonestyCheckInController.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_BORDER_STRONG,
+  GLASS_FILL,
+  GLASS_FILL_STRONG,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
 export { HONESTY_BREATH_MS };
 
@@ -22,11 +32,12 @@ const PANEL_CSS = [
   'bottom:168px',
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
-  'padding:20px 22px 18px',
-  'border:1px solid rgba(255,248,235,.65)',
-  'border-radius:20px',
-  'background:linear-gradient(165deg,rgba(255,253,247,.98) 0%,rgba(250,244,232,.95) 55%,rgba(244,234,216,.93) 100%)',
-  'box-shadow:0 2px 0 rgba(255,255,255,.88) inset,0 -2px 0 rgba(139,115,85,.16) inset,0 2px 0 rgba(180,150,110,.35),0 14px 36px rgba(44,31,20,.18),0 4px 10px rgba(44,31,20,.1)',
+  'padding:14px 18px 12px',
+  GLASS_BORDER,
+  `border-radius:${GLASS_RADIUS}`,
+  `background:${GLASS_FILL}`,
+  GLASS_BLUR_CSS,
+  `box-shadow:${GLASS_SHADOW}`,
   'color:#2c1f14',
   'transition:opacity 260ms ease,transform 260ms ease',
   'opacity:0',
@@ -41,12 +52,12 @@ const CHOICE_BTN_CSS = [
   'line-height:1.4',
   'font-weight:560',
   'color:#3a2a1c',
-  'background:linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(248,241,228,.9) 55%,rgba(236,224,204,.88) 100%)',
-  'border:1px solid rgba(139,115,85,.32)',
+  `background:${GLASS_FILL_STRONG}`,
+  GLASS_BORDER_STRONG,
   'border-radius:14px',
   'cursor:pointer',
   'text-align:center',
-  'box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 -1px 0 rgba(139,115,85,.12) inset,0 2px 0 rgba(180,150,110,.28),0 4px 10px rgba(44,31,20,.1)',
+  'box-shadow:0 1px 0 rgba(255,255,255,.7) inset',
   'transition:transform 120ms ease,box-shadow 120ms ease'
 ].join(';');
 
@@ -68,6 +79,17 @@ export class HonestyCheckInUI {
     this._breathTimer = null;
     this._breathInterval = null;
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
+
+    // prompt / 时长三选一：点框外收起（呼吸引导进行中不关）；tip / ? 不算空白（§8 N18）
+    this._onDocPointer = (event) => {
+      if (this.phase !== 'prompt' && this.phase !== 'duration') return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root?.contains(target)) return;
+      if (this.idleEntryBtn?.contains(target)) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
+      this.hide();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
   }
 
   showPrompt() {
@@ -161,6 +183,7 @@ export class HonestyCheckInUI {
   }
 
   dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubscribeLocale();
     window.clearTimeout(this._breathTimer);
     window.clearInterval(this._breathInterval);

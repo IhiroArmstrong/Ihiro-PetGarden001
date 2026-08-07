@@ -111,6 +111,7 @@ manifest.json：
 
 service worker：离线缓存3D资产，弱网/离线状态下仍可查看和开始专注
 ```
+> **2026-07-30 口径**：本项是 Phase 0 候选交付之一，**不是**「本地电脑版 APP」的最终打包选型。桌面壳（Electron / Tauri / PWA·薄壳）见 `PROCESS.md` Backlog「**本地桌面 APP 打包选型**」——开会时机已定（v1.0.0 冻结前约 1 周或你点名要桌面包时），壳未拍板前勿把本任务默认成最终交付形态。**v1.0.0 纯本地 / v1.1 云端**已拍板：核心路径不依赖联网；service worker 若做，只能增强缓存，不得变成「无网不可用」。
 
 ---
 
@@ -162,6 +163,15 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 工程提醒（跨会话门闩）
+
+| 提醒 | 触发 | 动作 | 权威 |
+|---|---|---|---|
+| **stash · `chore/split-hints-from-pr2: temp prd untracked`** | 回到 hints 拆分 / `chore/split-hints-from-pr2` | 先 `stash list` + `stash show` 核内容，再决定保留或丢弃；**禁止未核就 drop** | `PROCESS.md` Backlog「stash · chore/split-hints-from-pr2」 |
+| **场景→动画接线 · v1 Slice A** | v1.0.0 冻结前 / 点名开工 | 实现 `feature/scene-animation-wiring-v1-slice-a`；产品稿已落盘 | `SCENE_ANIMATION_WIRING.md` · Brief `task-scene-animation-wiring-v1-slice-a.md` |
+
+---
+
 ## 📍 响应式 / 移动浏览器（2026-07-21 立项）
 
 > 权威基线：`RESPONSIVE_LAYOUT.md`。用户 2026-07-21 书面同意两项 **分拆** UI Task，**一次只做一个**。
@@ -170,8 +180,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
 | **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
+| **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | `task-briefs/task-responsive-single-chrome-line.md` | **代码已落地 · 待双视口人工验收**（2026-07-30）。PR #31（Brief/阶段0）· #32（编排）· #33（facade）已合 `develop`。阶段 3：文档收口 + main 去掉分壳别名。关单须 **§8 + §9** 分测（见 TEST_TRACKER「Task 3 单代码线」行）；**禁止**与场景 O 混验。 |
 
-**共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。
+**共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。Task 3 另须 §8 + §9 故事最小集（见 Brief）。
+
+> **2026-07-25 架构拍板（用户同意倾向 + 排期约束）**：窄屏抽屉与宽屏 ⋯ 菜单长期分分支维护是分叉漏修的结构性成因；值得合并成响应式单线，但须等本次宽屏修复人工验收 + push 后再开重构，避免与未验收修复叠风险。见 `PROCESS.md` 速览 / `RESPONSIVE_LAYOUT.md`。  
+> **2026-07-30**：触发条件已齐；Brief 已交付并进 develop（PR #30）；同日开 feature 做阶段 0。
 
 ---
 

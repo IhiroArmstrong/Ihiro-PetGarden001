@@ -11,23 +11,33 @@
 import { POSE_KEYS } from '../character/PoseManager.js';
 import { SPRITE_SEQUENCES } from '../character/spriteManifest.js';
 import { COMPANION_GESTURE_CHAINS } from '../character/companionGestureCatalog.js';
+import {
+  CLOAK_VARIANTS,
+  cloakSleepSequenceKey,
+  dormantWakeSequenceKey,
+  normalizeCloakVariant,
+  pickCloakVariant,
+  sleepingSequenceKey
+} from '../character/cloakVariant.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
-/** sleeping → dormantWake 进入时的交叉淡入。 */
-export const DORMANT_WAKE_CROSS_FADE_MS = 180;
-/**
- * 离开 Honesty `dormantWake` 定格（睁眼坐姿）→ idle / smiling 等时的交叉淡入。
- * 须明显长于普通 180ms，避免定格硬切闭目呼吸。
- */
-export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = 520;
 /**
  * CapCut 式叠代溶解：两序列无法像素衔接时，定格两端帧做交叉淡化。
- * 默认用于一次性情绪 → idle；同源微表情可改用 MICRO_CROSS_FADE_MS。
+ * 2026-08-03：凡「有转场」的跨动画衔接统一 **1000ms**（短 180/520ms 易闪白）；
+ * **仅**设计为无需转场的硬切（`crossFadeMs: 0`，如 gaze 段间、Idle 闭目↔睁眼弧）保持 0。
+ * 魔法书回 Idle：2026-08-05 起与其它 companion oneshot 同走 CapCut（不再硬切）。
  * 见 PRINCIPLES「序列衔接：CapCut 式叠代」与 ARCHITECTURE「播放机制」。
  */
 export const CAPCUT_DISSOLVE_MS = 1000;
-/** 同源可衔接时的短交叉淡入（如 idle 内眨眼、同画幅子序列）。 */
-export const MICRO_CROSS_FADE_MS = 180;
+/** sleeping → dormantWake 进入；与 CapCut 同长。 */
+export const DORMANT_WAKE_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
+/** 离开 Honesty `dormantWake` 定格 → idle / smiling 等；与 CapCut 同长。 */
+export const LEAVE_DORMANT_WAKE_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
+/**
+ * @deprecated 2026-08-03 起与 `CAPCUT_DISSOLVE_MS` 同值（短淡入已退役）。
+ * 保留别名以免旧测试 / 调用方断裂。
+ */
+export const MICRO_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 /** @deprecated 请用 CAPCUT_DISSOLVE_MS */
 export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 /**
@@ -36,6 +46,26 @@ export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
  */
 export const ARRIVAL_BREATH_SMILE_FPS = 4;
 export const MILESTONE_GLOW_HOLD_MS = 2500;
+
+/**
+ * 调试面板「情绪入口」默认带 `holdPose: true` 的键（EDGE #17–19）。
+ * 产品路径各自显式传 holdPose；此处只作调试 SSOT，避免散落 Set 漏登记。
+ * @type {ReadonlySet<string>}
+ */
+export const DEBUG_HOLD_POSE_EMOTION_KEYS = Object.freeze(
+  new Set([
+    'celebrating',
+    'intentionSet',
+    'milestoneGlow',
+    'sessionComplete',
+    'nodGreeting',
+    'curiousTilt',
+    'mindfulAcknowledge',
+    'stretchReminder',
+    'blink',
+    'dormantWake'
+  ])
+);
 
 const BAKED_EFFECT_EMOTIONS = new Set([
   'celebrating',
@@ -103,6 +133,37 @@ export function pickCelebrateDanceVariant(random = Math.random) {
     : CELEBRATE_DANCE_VARIANTS[1];
 }
 
+/**
+ * MilestoneGlow 序列变体。
+ * - streak-7：金辉蝴蝶 ↔ 鹦鹉信使 **50/50**（2026-08-03 拍板）
+ * - streak-21 / streak-100：琉璃星石
+ * - 无 nodeId（调试）默认蝴蝶
+ */
+export const MILESTONE_GLOW_VARIANT_BY_NODE = Object.freeze({
+  'streak-21': 'milestoneGlowStar',
+  'streak-100': 'milestoneGlowStar'
+});
+
+/** streak-7 仪式视觉二选一（等权） */
+export const STREAK_7_MILESTONE_VISUALS = Object.freeze([
+  'milestoneGlow',
+  'parrotEarVisit'
+]);
+
+/**
+ * @param {string | null | undefined} nodeId
+ * @param {() => number} [random] 可注入；默认 Math.random
+ * @returns {'milestoneGlow' | 'milestoneGlowStar' | 'parrotEarVisit'}
+ */
+export function pickMilestoneGlowVariant(nodeId, random = Math.random) {
+  const id = typeof nodeId === 'string' ? nodeId : '';
+  if (id === 'streak-7') {
+    return random() < 0.5 ? 'milestoneGlow' : 'parrotEarVisit';
+  }
+  const mapped = MILESTONE_GLOW_VARIANT_BY_NODE[id];
+  return mapped === 'milestoneGlowStar' ? 'milestoneGlowStar' : 'milestoneGlow';
+}
+
 /** Bible 对齐的公开情绪常量；保留 camelCase 供业务层直接调用。 */
 export const EMOTIONS = Object.freeze({
   milestoneGlow: 'milestoneGlow',
@@ -144,6 +205,15 @@ export class EmotionController {
 
     /** @type {(() => void) | null} 调试「Honesty唤醒」→ 打开时长三选一 */
     this._debugHonestyWake = null;
+    /** @type {((opts?: { bilingual?: boolean }) => void) | null} */
+    this._flowerBlowLabBubble = null;
+
+    /**
+     * 本轮 DORMANT 入睡所用斗篷变体（classic | starlight）。
+     * 睡循环与 Honesty 苏醒优先匹配，避免正放星光、倒放旧斗篷硬切。
+     * @type {'classic'|'starlight'|null}
+     */
+    this._activeCloakVariant = null;
 
     /** @type {string | null} */
     this._currentEmotionKey = null;
@@ -160,6 +230,7 @@ export class EmotionController {
     this._implementations = {
       // —— 姿态层（已实现）——
       idle: (options = {}) => {
+        this._activeCloakVariant = null;
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_CLOSED_EYES);
         // 3D 坐姿仅保留给奖励柜；主线走 2D pingpong 呼吸。
@@ -180,43 +251,65 @@ export class EmotionController {
           this.spritePlayer.play('idleBreathing', options);
         }
       },
-      sleeping: () => {
+      sleeping: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.SLEEPING);
         if (this.spritePlayer) {
-          this.spritePlayer.play('sleeping');
+          const variant = normalizeCloakVariant(
+            options.cloakVariant ?? this._activeCloakVariant
+          );
+          this._activeCloakVariant = variant;
+          this.spritePlayer.play(sleepingSequenceKey(variant), {
+            crossFadeMs: options.crossFadeMs
+          });
         }
       },
-      // 进 DORMANT 过渡（2c）：披毯入睡正放；默认 onComplete 后由 MoodController 接 sleeping。
+      // 进 DORMANT 过渡（2c）：披毯/星光斗篷正放；默认 onComplete 后由 MoodController 接 sleeping。
+      // holdPose：深夜 Rise / 达标结束定格末帧进 Reflection（不自动接 sleeping）。
+      // 2026-08-04：classic cloak-sleep 与 starlight v5 约 50/50（可 options.cloakVariant 强制）。
       cloakSleep: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.SLEEPING);
+        const variant = normalizeCloakVariant(
+          options.cloakVariant ?? pickCloakVariant()
+        );
+        this._activeCloakVariant = variant;
+        const sequenceName = cloakSleepSequenceKey(variant);
+        const holdPose = Boolean(options.holdPose);
         if (!this.spritePlayer) {
           options.onComplete?.('cloakSleep');
-          this.playEmotion('sleeping');
+          if (!holdPose) {
+            this.playEmotion('sleeping', { cloakVariant: variant });
+          }
           return;
         }
-        const started = this.spritePlayer.play('cloakSleep', {
+        const started = this.spritePlayer.play(sequenceName, {
           crossFadeMs: options.crossFadeMs,
-          holdLastFrame: false,
+          holdLastFrame: holdPose,
           onComplete: () => {
             options.onComplete?.('cloakSleep');
           }
         });
         if (!started) {
           options.onComplete?.('cloakSleep');
-          this.playEmotion('sleeping');
+          if (!holdPose) {
+            this.playEmotion('sleeping', { cloakVariant: variant });
+          }
         }
       },
+      // Arrival Welcome/Breath 等：须保留可见末帧再叠化。
+      // clear:true 会藏 overlay → CapCut 因 opacity===0 静默跳过 → 闪白（§6.15）。
       smiling: (options = {}) => {
-        this._leaveIdleBaseline();
+        this._leaveIdleBaseline({ clear: false });
         this._use2DMainline();
         this.poseManager.setPose(POSE_KEYS.IDLE_SMILING);
         if (this.spritePlayer) {
           const playOpts = {
-            crossFadeMs: options.crossFadeMs
+            crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+            freezeUntilCrossFadeEnds:
+              options.freezeUntilCrossFadeEnds !== false
           };
           if (Number.isFinite(options.fps) && options.fps > 0) {
             playOpts.fps = options.fps;
@@ -237,7 +330,7 @@ export class EmotionController {
           return;
         }
         const playOpts = {
-          crossFadeMs: options.crossFadeMs ?? 180,
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
           loop: true,
           loopMode: 'pingpong'
         };
@@ -256,7 +349,7 @@ export class EmotionController {
           this._finishOneShot(options, 'blinkBreathe');
         }
       },
-      // Rise 主路径：伸懒腰→随意坐姿，正放一次；Reflection 期间 holdPose 定格末帧。
+      // Rise 加权池主项：伸懒腰→随意坐姿，正放一次；Reflection 期间 holdPose 定格末帧。
       riseStretchCasual: (options = {}) => {
         this._leaveIdleBaseline();
         this._use2DMainline();
@@ -273,7 +366,7 @@ export class EmotionController {
             ...options,
             loop: false,
             loopMode: 'none',
-            crossFadeMs: options.crossFadeMs ?? 180
+            crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS
           },
           'riseStretchCasual'
         );
@@ -317,7 +410,8 @@ export class EmotionController {
       },
 
       // Arrival Choose 确认：16:9 点头 pingpong（正放鞠躬→倒放回坐姿）；
-      // 与前后动画转场用 1s CapCut 叠化。合十 palms-together 仅调试保留。
+      // 与前后动画转场用 1s CapCut 叠化。日语切语合十走 palmsTogether（A′），勿混用。
+      // clear:false：离开 Breath smiling 时不得藏 overlay，否则切入鞠躬 CapCut 静默跳过（§6.15）。
       intentionSet: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -328,7 +422,7 @@ export class EmotionController {
           }
           return;
         }
-        this._leaveIdleBaseline();
+        this._leaveIdleBaseline({ clear: false });
         this._use2DMainline();
         const started = this.spritePlayer.play(
           'intentionNod',
@@ -342,7 +436,9 @@ export class EmotionController {
               freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false,
               // 与前后（Breath 微笑 / idle）无法像素对齐 → 1s 叠化
               returnCrossFadeMs:
-                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              // 定格末帧再回 Idle，避免收尾藏层导致 return CapCut 假绿
+              holdLastFrame: options.holdLastFrame ?? true
             },
             'intentionSet'
           )
@@ -359,8 +455,8 @@ export class EmotionController {
       },
 
       // —— 2D PNG 序列帧（已接入真实素材，底层走 SpriteSequencePlayer）——
-      // 里程碑金辉时刻：当前仅供调试预览，不接真实里程碑判定。
-      // 序列末帧固定停留 2.5s，让烧录在末段的金光与蝴蝶自然收束后回落。
+      // 里程碑仪式：产品路径按 streak 节点选变体（金辉蝴蝶 / 琉璃星石 / streak-7 鹦鹉二选一）；
+      // 末帧固定停留 2.5s（鹦鹉走 CapCut 回 Idle，无末帧 hold），让烧录特效自然收束后回落。
       milestoneGlow: (options = {}) => {
         this._cancelMilestoneHold();
         if (!this.spritePlayer) {
@@ -370,10 +466,22 @@ export class EmotionController {
           this._finishOneShot(options, 'milestoneGlow');
           return;
         }
+        const sequenceName =
+          typeof options.sequenceName === 'string' && options.sequenceName
+            ? options.sequenceName
+            : pickMilestoneGlowVariant(
+                options.milestoneNodeId,
+                typeof options.random === 'function' ? options.random : Math.random
+              );
+        // streak-7 稀有/等权：鹦鹉信使仍记 milestone 节点，走陪伴 CapCut 回落。
+        if (sequenceName === 'parrotEarVisit') {
+          this._implementations.parrotEarVisit(options);
+          return;
+        }
         this._leaveIdleBaseline();
         this._use2DMainline();
         const holdPose = Boolean(options.holdPose);
-        const started = this.spritePlayer.play('milestoneGlow', {
+        const started = this.spritePlayer.play(sequenceName, {
           ...options,
           loop: false,
           loopMode: 'none',
@@ -408,7 +516,14 @@ export class EmotionController {
         const started = this.spritePlayer.play(
           'sessionComplete',
           this._oneShotPlayOpts(
-            { ...options, loop: false, loopMode: 'none' },
+            {
+              ...options,
+              loop: false,
+              loopMode: 'none',
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false
+            },
             'sessionComplete'
           )
         );
@@ -417,24 +532,39 @@ export class EmotionController {
         }
       },
 
-      // WelcomeBack（挥手欢迎）：一次性响应行为；播完淡出让位回落到 Idle。
+      // WelcomeBack：2026-08-02 拍板 — 新旧挥手（wave-hello / wave-hello-pingpong）暂时停接线。
+      // 键与素材保留；不播序列、不进欢迎池；日后另议场景再接。
       welcomeBack: (options = {}) => {
-        if (!this.spritePlayer) {
-          console.warn(
-            '[EmotionController] welcomeBack: spritePlayer 未接入，跳过（占位）'
-          );
-          return;
-        }
-        this._leaveIdleBaseline();
-        this._use2DMainline();
-        this.spritePlayer.play(
-          'waveHello',
-          this._oneShotPlayOpts(options, 'waveHello')
+        console.info(
+          '[EmotionController] welcomeBack parked — wave hello unwired (2026-08-02)'
         );
+        if (typeof options.onComplete === 'function') {
+          options.onComplete('welcomeBack');
+        }
+      },
+
+      // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
+      // 2026-08-05：冷启动回 Idle 改 ~1s CapCut（用户书面：硬切缺叠化）。
+      magicBookReading: (options = {}) => {
+        this._playCompanionSequenceOnce('magicBookReading', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
+      // Honesty≥30 试验：金环合掌金沙（已烘焙 pingpong）→ CapCut Idle。
+      goldenHaloPalms: (options = {}) => {
+        this._playCompanionSequenceOnce('goldenHaloPalms', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
       },
 
       // 点头致意：素材保留；靠近区默认不再自动触发（2026-07-19）。
-      // 调试面板可手工播；播完回归 idle-breathing。
+      // 2026-08-01：末帧已是坐姿泥印，与 Idle 差主要在睁/闭眼（CapCut 叠化即可）；
+      // 勿加 pingpong——倒放会再点一次头，观感更差。
+      // 调试面板 / 欢迎池可播；播完回归 idle-breathing。
       nodGreeting: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -453,7 +583,7 @@ export class EmotionController {
         }
       },
 
-      // 静止好奇：改用 blink-smile（更近坐禅姿态）。
+      // 静止好奇：改用 blink-smile（更近坐禅姿态）。进出统一 CapCut 1s（防闪白）。
       curiousTilt: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -470,10 +600,11 @@ export class EmotionController {
               ...options,
               loop: false,
               loopMode: 'none',
-              crossFadeMs: options.crossFadeMs ?? MICRO_CROSS_FADE_MS,
-              // 同源微表情：回 idle 用短淡入，不用 CapCut 1s
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
               returnCrossFadeMs:
-                options.returnCrossFadeMs ?? MICRO_CROSS_FADE_MS
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false
             },
             'blinkSmile'
           )
@@ -534,8 +665,8 @@ export class EmotionController {
             callerOnComplete?.('blinkSmile');
             if (!holdPose) {
               this.playEmotion(returnKey, {
-                crossFadeMs: MICRO_CROSS_FADE_MS,
-                freezeUntilCrossFadeEnds: false
+                crossFadeMs: CAPCUT_DISSOLVE_MS,
+                freezeUntilCrossFadeEnds: true
               });
             }
           }
@@ -544,31 +675,15 @@ export class EmotionController {
           callerOnComplete?.('blinkSmile');
           if (!holdPose) {
             this.playEmotion(returnKey, {
-              crossFadeMs: MICRO_CROSS_FADE_MS,
-              freezeUntilCrossFadeEnds: false
+              crossFadeMs: CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds: true
             });
           }
         }
       },
-      // 唤醒起身（调试 / 历史键）：伸懒腰 stretch-reminder 同源，与 Honesty 睡醒区分。
-      wakeUp: (options = {}) => {
-        if (!this.spritePlayer) {
-          console.warn(
-            '[EmotionController] wakeUp: spritePlayer 未接入，跳过'
-          );
-          return;
-        }
-        this._leaveIdleBaseline({ clear: false });
-        this._use2DMainline();
-        const started = this.spritePlayer.play(
-          'wakeUp',
-          this._oneShotPlayOpts(options, 'wakeUp')
-        );
-        if (!started) {
-          this._finishOneShot(options, 'wakeUp');
-        }
-      },
-      // Honesty Check-in 唤醒：sleeping → cloak-sleep 倒放 → 定格合掌坐姿（暂不接金光/halo）。
+      // Honesty Check-in / 长离回前台苏醒：睡态 → 揭毯/卸斗篷 → 定格坐禅（暂不接金光/halo）。
+      // 优先匹配本轮 `_activeCloakVariant`；否则约 50/50 classic vs starlight。
+      // 2026-08-04：已删除未接线调试键 wakeUp（伸懒腰末帧闭眼）；舒展提醒仍走 stretchReminder。
       dormantWake: (options = {}) => {
         this._leaveIdleBaseline({ clear: false });
         this.dynamicMotion.setBreathingEnabled(true);
@@ -584,8 +699,14 @@ export class EmotionController {
         }
 
         this._use2DMainline();
+        const variant = normalizeCloakVariant(
+          options.cloakVariant ??
+            this._activeCloakVariant ??
+            pickCloakVariant()
+        );
+        const sequenceName = dormantWakeSequenceKey(variant);
         const started = this.spritePlayer.play(
-          'dormantWake',
+          sequenceName,
           this._oneShotPlayOpts(
             {
               ...options,
@@ -635,6 +756,9 @@ export class EmotionController {
       petHead: pendingInteraction('petHead'),
       dizzyBlink: pendingInteraction('dizzyBlink'),
 
+      // Honesty 短补登 / 切语 English / Re-focus：同源 nod-bow。
+      // 须与 IntentionSet 同契约：pingpong×1（正放鞠躬→倒放回坐姿）+ CapCut 回 Idle；
+      // 仅正放会卡在鞠躬末帧，无法接 idle。
       mindfulAcknowledge: (options = {}) => {
         if (!this.spritePlayer) {
           console.warn(
@@ -648,7 +772,17 @@ export class EmotionController {
         const started = this.spritePlayer.play(
           'nodBow',
           this._oneShotPlayOpts(
-            { ...options, loop: false, loopMode: 'none' },
+            {
+              ...options,
+              loop: true,
+              loopMode: 'pingpong',
+              maxCycles: 1,
+              crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+              freezeUntilCrossFadeEnds:
+                options.freezeUntilCrossFadeEnds !== false,
+              returnCrossFadeMs:
+                options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+            },
             'nodBow'
           )
         );
@@ -676,8 +810,179 @@ export class EmotionController {
         if (!started) {
           this._finishOneShot(options, 'stretchReminder');
         }
+      },
+
+      // Slice A′：日语切语真合十（与 intentionSet/nod 解耦）
+      palmsTogether: (options = {}) => {
+        this._playCompanionSequenceOnce('palmsTogether', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
+      // Honesty 长补登 / 微仪式变体：breath-halo-hq pingpong 一次后回 Idle
+      breathHaloHq: (options = {}) => {
+        this._playCompanionSequenceOnce('breathHaloHq', options, {
+          loop: true,
+          loopMode: 'pingpong',
+          maxCycles: 1,
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
+        });
+      },
+
+      yawnStretch: (options = {}) => {
+        this._playCompanionSequenceOnce('yawnStretch', options);
+      },
+      // 深夜池 / 切语 English：正放一次、无倒放；默认 ~1s CapCut Idle。
+      teaDrinking: (options = {}) => {
+        this._playCompanionSequenceOnce('teaDrinking', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+      // 切语 Japanese：单程看书（≠ magicBookReading）；正放一次 → ~1s CapCut Idle。
+      bookReading: (options = {}) => {
+        this._playCompanionSequenceOnce('bookReading', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+      // 禅意信使：鹦鹉飞来耳边低语 → 留羽飞走；应用内轻提醒 / 稀有完成彩蛋。
+      parrotEarVisit: (options = {}) => {
+        this._playCompanionSequenceOnce('parrotEarVisit', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+      // Day1 / 久别吹花鼓励（Phase 1 Lab）：变花轻吹 → CapCut Idle。产品冷启动未接线。
+      conjureFlowersBlowAway: (options = {}) => {
+        this._playCompanionSequenceOnce('conjureFlowersBlowAway', options, {
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+      // 正放 → 倒放一次（manifest 烘焙）→ 约 1s CapCut Idle（与 welcomeBack 同契约）
+      earWiggleHeadTouch: (options = {}) => {
+        this._playCompanionSequenceOnce('earWiggleHeadTouch', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
+      // Curiosity：张望整段 p1→p4，播完 CapCut 回 Idle（不经 IdleOrchestrator）。
+      // 与调试「组合试播」同不变量：离开 Idle 不清 overlay、段间硬切（避免闪白）。
+      gazeLookAround: (options = {}) => {
+        const chain = COMPANION_GESTURE_CHAINS.find(
+          (c) => c.id === 'gazeLookAround'
+        );
+        const sequences = chain?.sequences ?? [
+          'gazeP1CenterBlinkLeft',
+          'gazeP2LeftToUp',
+          'gazeP3TowardRight',
+          'gazeP4RightToDown'
+        ];
+        this._playCompanionSequenceChainOnce(
+          sequences,
+          {
+            ...options,
+            crossFadeMs: options.crossFadeMs ?? 0,
+            returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+            freezeUntilCrossFadeEnds:
+              options.freezeUntilCrossFadeEnds !== false
+          },
+          'gazeLookAround'
+        );
       }
     };
+  }
+
+  /**
+   * Slice B 陪伴手势：播一条入库序列，结束后按 oneshot 回 Idle。
+   * 抗闪对齐 `_playCompanionSequenceChainOnce` / 张望（§6.8 / §6.12 P4）：
+   * - 离开 Idle：`clear: false`（保留末帧，禁止先藏 overlay）
+   * - 播完默认 `holdLastFrame` 定格，供 CapCut 回 Idle 有稳定源帧
+   * @param {string} sequenceName SPRITE_SEQUENCES key
+   * @param {EmotionOptions} options
+   * @param {object} [playExtras]
+   */
+  _playCompanionSequenceOnce(sequenceName, options = {}, playExtras = {}) {
+    if (!this.spritePlayer) {
+      console.warn(
+        `[EmotionController] ${sequenceName}: spritePlayer 未接入，回落 idle`
+      );
+      this._finishOneShot(options, sequenceName);
+      return;
+    }
+    this._leaveIdleBaseline({ clear: false });
+    this._use2DMainline();
+    const started = this.spritePlayer.play(
+      sequenceName,
+      this._oneShotPlayOpts(
+        {
+          ...options,
+          loop: false,
+          loopMode: 'none',
+          ...playExtras,
+          // 默认定格末帧；显式 false 或 holdPose 路径仍由 _oneShotPlayOpts 收敛
+          holdLastFrame:
+            options.holdLastFrame ?? playExtras.holdLastFrame ?? true
+        },
+        sequenceName
+      )
+    );
+    if (!started) {
+      console.warn(
+        `[EmotionController] ${sequenceName}: sprite play() 未启动，回落收尾`
+      );
+      this._finishOneShot(options, sequenceName);
+    }
+  }
+
+  /**
+   * 多段陪伴链：对齐调试 `_playDebugSequenceChain` 的抗闪契约，再按 oneshot 回 Idle。
+   * - 离开 Idle：`clear: false`（保留末帧，禁止先藏 overlay）
+   * - 段间：默认硬切 `crossFadeMs: 0`（p1→p4 设计为可硬接；微叠化易闪白）
+   * - 末段：`holdLastFrame` 定格，供 CapCut 回 Idle 有稳定源帧
+   * @param {ReadonlyArray<string>} sequences
+   * @param {EmotionOptions} options
+   * @param {string} tag
+   */
+  _playCompanionSequenceChainOnce(sequences, options = {}, tag = 'chain') {
+    if (!this.spritePlayer || !sequences.length) {
+      this._finishOneShot(options, tag);
+      return;
+    }
+    this._leaveIdleBaseline({ clear: false });
+    this._use2DMainline();
+    const entryMs = Number.isFinite(Number(options.crossFadeMs))
+      ? Number(options.crossFadeMs)
+      : 0;
+    let i = 0;
+    const playNext = () => {
+      if (i >= sequences.length) {
+        this._finishOneShot(options, tag);
+        return;
+      }
+      const idx = i;
+      const name = sequences[i++];
+      const isLast = i >= sequences.length;
+      const started = this.spritePlayer.play(name, {
+        loop: false,
+        loopMode: 'none',
+        holdLastFrame: isLast,
+        // 段间一律硬切；仅首段可用 options.crossFadeMs（默认 0）
+        crossFadeMs: idx === 0 ? entryMs : 0,
+        freezeUntilCrossFadeEnds: true,
+        onComplete: playNext
+      });
+      if (!started) {
+        this._finishOneShot(options, tag);
+      }
+    };
+    playNext();
   }
 
   /** 2D 主线：隐藏 3D canvas，避免透明精灵后露出垫底老虎。 */
@@ -697,7 +1002,7 @@ export class EmotionController {
   }
 
   /**
-   * MilestoneGlow 的金光与蝴蝶已烧录在帧中；末帧按固定时长停留后直接完成。
+   * MilestoneGlow 烧录特效（金辉蝴蝶 / 琉璃星石）在帧中；末帧按固定时长停留后直接完成。
    * @param {() => void} onComplete
    */
   _holdMilestoneLastFrame(onComplete) {
@@ -720,8 +1025,8 @@ export class EmotionController {
 
   /**
    * 一次性序列收尾：正式路径回落 idle；调试 holdPose 时定格末帧、不硬切默认闭目。
-   * 默认 CapCut 式叠代溶解（见 CAPCUT_DISSOLVE_MS）；同源微表情请显式传
-   * `returnCrossFadeMs: MICRO_CROSS_FADE_MS`；硬切传 `0`。
+   * 默认 CapCut 式叠代溶解（见 CAPCUT_DISSOLVE_MS）；硬切传 `0`
+   *（仅设计为无需转场的衔接，如 gaze 段间 / Idle 闭目↔睁眼弧）。
    * @param {EmotionOptions} options
    * @param {string} [tag]
    */
@@ -829,6 +1134,15 @@ export class EmotionController {
       typeof handler === 'function' ? handler : null;
   }
 
+  /**
+   * Phase 2a Lab：调试播变花时浮现鼓励气泡（不进产品冷启动）。
+   * @param {((opts?: { bilingual?: boolean }) => void) | null} handler
+   */
+  setFlowerBlowLabBubbleHandler(handler) {
+    this._flowerBlowLabBubble =
+      typeof handler === 'function' ? handler : null;
+  }
+
   /** @returns {boolean} 已烧录叙事光效播放期是否应关闭常规实时金光。 */
   shouldSuppressRuntimeGlow() {
     return this._runtimeGlowSuppressed;
@@ -851,14 +1165,20 @@ export class EmotionController {
       { key: 'tPose', label: 'T-Pose' },
       { key: 'incenseComplete', label: '一炷香完成' },
       { key: 'milestoneGlow', label: '里程碑金辉' },
+      { key: 'milestoneGlowStar', label: '里程碑琉璃星石' },
       { key: 'sessionComplete', label: '完成摆尾' },
-      { key: 'welcomeBack', label: '挥手欢迎' },
+      // welcomeBack / 挥手：2026-08-02 暂时停接线，勿再挂情绪入口
+      { key: 'magicBookReading', label: '魔法书阅读(开场试)' },
+      { key: 'bookReading', label: '单程看书(日语切语)' },
+      { key: 'parrotEarVisit', label: '鹦鹉耳边造访(信使)' },
+      { key: 'conjureFlowersBlowAway', label: '变花吹散+气泡(Lab)' },
+      { key: 'conjureFlowersBlowAwayLocale', label: '变花气泡·跟locale(Lab)' },
+      { key: 'goldenHaloPalms', label: '金环合掌(长补登试)' },
       { key: 'nodGreeting', label: '点头致意' },
       { key: 'curiousTilt', label: '静止眨眼' },
       { key: 'mindfulAcknowledge', label: '正念点头鞠躬' },
       { key: 'stretchReminder', label: '两小时舒展' },
       { key: 'blink', label: '眨眼' },
-      { key: 'wakeUp', label: '唤醒(伸懒腰)' },
       { key: 'dormantWake', label: 'Honesty唤醒(流程)' },
       { key: 'haloBreathing', label: '光环呼吸奖励' }
     ];
@@ -873,25 +1193,35 @@ export class EmotionController {
       gazeP4RightToDown: 'gaze-p4 右→下',
       yawnStretch: 'yawn-stretch 哈欠',
       teaDrinking: 'tea-drinking 喝茶',
+      bookReading: 'book-reading 单程看书',
+      parrotEarVisit: 'parrot-ear-visit-feather 鹦鹉信使',
+      conjureFlowersBlowAway: 'conjure-flowers-blow-away 变花吹散(Lab)',
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
-      waveHello: 'wave-hello 挥手',
+      waveHello: 'wave-hello 挥手(停接线·仅素材)',
+      waveHelloWelcome: 'wave-hello 欢迎旧(停接线·仅素材)',
+      waveHelloPingpong: 'wave-hello-pingpong(停接线·仅素材)',
+      magicBookReading: 'magic-book-reading 魔法书',
+      goldenHaloPalms: 'golden-halo-palms 金环合掌',
       celebrateDance: 'celebrate-dance v1',
       celebrateDanceV2: 'celebrate-dance-v2',
       milestoneGlow: 'milestone-glow',
+      milestoneGlowStar: 'meditation-star-reward 琉璃星石',
       breathHaloHq: 'breath-halo-hq 备选',
-      palmsTogether: 'palms-together 合十(仅调试)',
+      palmsTogether: 'palms-together 合十(调试)',
       intentionNod: 'intention-nod Choose点头',
       lotusFrontRising: 'lotus-front-rising',
       lotusChestHalo: 'lotus-chest-halo',
       sessionComplete: 'session-complete',
       nodBow: 'nod-bow',
       stretchReminder: 'stretch-reminder',
-      wakeUp: 'wakeUp(=stretch)',
       sleeping: 'sleeping',
-      cloakSleep: 'cloak-sleep 披毯入睡(候选)',
-      dormantWake: 'cloak-sleep 倒放唤醒',
+      cloakSleep: 'cloak-sleep 披毯入睡(经典)',
+      dormantWake: 'cloak-sleep 倒放唤醒(经典)',
+      starlightCloakSleep: 'starlight-cloak-sleep v5 正放(试播)',
+      starlightSleeping: 'starlight-cloak-sleep v5 睡循环(试播)',
+      starlightDormantWake: 'starlight-cloak-wake v5 苏醒(试播)',
       haloBreathingIntro: 'halo-breathing intro',
       haloBreathingLoop: 'halo-breathing loop',
       haloBreathingPingpong: 'halo-breathing pingpong',
@@ -931,21 +1261,22 @@ export class EmotionController {
           this._debugHonestyWake();
           return;
         }
-        const holdPoseKeys = new Set([
-          'celebrating',
-          'intentionSet',
-          'milestoneGlow',
-          'sessionComplete',
-          'welcomeBack',
-          'nodGreeting',
-          'curiousTilt',
-          'mindfulAcknowledge',
-          'stretchReminder',
-          'blink',
-          'wakeUp',
-          'dormantWake'
-        ]);
-        const opts = holdPoseKeys.has(key) ? { holdPose: true } : {};
+        // Phase 2a Lab：变花 + 鼓励气泡（默认双语首次预览；locale 钮跟当前语言）
+        if (
+          key === 'conjureFlowersBlowAway' ||
+          key === 'conjureFlowersBlowAwayLocale'
+        ) {
+          const bilingual = key === 'conjureFlowersBlowAway';
+          this.playEmotion('conjureFlowersBlowAway');
+          if (typeof this._flowerBlowLabBubble === 'function') {
+            this._flowerBlowLabBubble({ bilingual });
+          }
+          return;
+        }
+        // earWiggle：须验正+倒一次后约 1s CapCut 回 Idle；勿点入库同名（holdLastFrame、无叠化）。
+        const opts = DEBUG_HOLD_POSE_EMOTION_KEYS.has(key)
+          ? { holdPose: true }
+          : {};
         if (key === 'idle') opts.restart = true;
 
         if (key === 'incenseComplete') {
@@ -960,6 +1291,29 @@ export class EmotionController {
             .catch((error) => {
               console.warn(
                 '[EmotionController] milestoneGlow 调试素材预加载失败',
+                error
+              );
+            })
+            .finally(() => {
+              btn.disabled = false;
+            });
+          return;
+        }
+        // 情绪入口快捷键：同 MilestoneGlow emotion，强制星石变体（不等 streak-21）
+        if (key === 'milestoneGlowStar' && this.spritePlayer) {
+          btn.disabled = true;
+          void this.spritePlayer
+            .preload(['milestoneGlowStar'])
+            .then(() =>
+              this.playEmotion('milestoneGlow', {
+                ...opts,
+                sequenceName: 'milestoneGlowStar',
+                milestoneNodeId: 'streak-21'
+              })
+            )
+            .catch((error) => {
+              console.warn(
+                '[EmotionController] milestoneGlowStar 调试素材预加载失败',
                 error
               );
             })
@@ -1157,7 +1511,11 @@ export const EMOTION_KEYS = Object.freeze({
   MILESTONE_GLOW: EMOTIONS.milestoneGlow,
   SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
-  WAKE_UP: 'wakeUp',
+  MAGIC_BOOK_READING: 'magicBookReading',
+  BOOK_READING: 'bookReading',
+  PARROT_EAR_VISIT: 'parrotEarVisit',
+  CONJURE_FLOWERS_BLOW_AWAY: 'conjureFlowersBlowAway',
+  GOLDEN_HALO_PALMS: 'goldenHaloPalms',
   DORMANT_WAKE: 'dormantWake',
   CLOAK_SLEEP: 'cloakSleep',
   HALO_BREATHING: 'haloBreathing',
@@ -1175,5 +1533,11 @@ export const EMOTION_KEYS = Object.freeze({
   DIZZY_BLINK: 'dizzyBlink',
   CURIOUS_TILT: 'curiousTilt',
   MINDFUL_ACKNOWLEDGE: EMOTIONS.mindfulAcknowledge,
-  STRETCH_REMINDER: EMOTIONS.stretchReminder
+  STRETCH_REMINDER: EMOTIONS.stretchReminder,
+  PALMS_TOGETHER: 'palmsTogether',
+  BREATH_HALO_HQ: 'breathHaloHq',
+  YAWN_STRETCH: 'yawnStretch',
+  TEA_DRINKING: 'teaDrinking',
+  EAR_WIGGLE_HEAD_TOUCH: 'earWiggleHeadTouch',
+  GAZE_LOOK_AROUND: 'gazeLookAround'
 });

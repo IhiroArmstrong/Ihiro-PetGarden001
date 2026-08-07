@@ -2,7 +2,7 @@
 # RESPONSIVE_LAYOUT.md
 
 > **版本**：1.0  
-> **最后更新**：2026-07-21  
+> **最后更新**：2026-07-26  
 > **状态**：布局与窄屏交互的**权威基线**；细则冲突时以本文为准（产品语义仍服从 `PRODUCT_POSITIONING.md` / `PRINCIPLES.md`）
 
 本文档定义：桌面优先前提下，**主流手机浏览器**（含竖屏与横屏）应达到何种可用标准；开发、设计与验收如何收口。
@@ -18,6 +18,23 @@
 | `TEST_TRACKER.md` | UI 可见项须附窄屏测试步骤 |
 
 **非目标（维持 Backlog，勿混进当前 Task）**：原生 App、系统级 Focus Mode、后台计时、PWA 安装强推。见 `PROCESS.md` Backlog。
+
+### 工程债 · 窄宽屏单代码线（2026-07-25 排期 · 2026-07-30 落地）
+
+**状态（2026-07-30）**：**阶段 0–2 代码已合入 `develop`（PR #31 / #32 / #33）；阶段 3 = 文档收口 + 残留接线清理（本轮）**。
+
+| 层 | 模块 | 职责 |
+|---|---|---|
+| 编排 | `src/core/idleChromeOrchestration.js` | stage / 壳投影 / 次要入口列表 / stage class 常量 |
+| 门面 | `src/core/IdleChromeFacade.js` + `createIdleChromeFacade.js` | handlers 一次注册、`applyShellProjection`、断点 `releaseInactivePresentation` |
+| 呈现适配器 | `NarrowIdleShell.js`（≤479 抽屉）· `WideIdleMoreMenu.js`（≥480 ⋯） | 只负责形态；业务列表不得再分叉漂移 |
+| 同步 | `sessionChromeSync.js` | 优先 `idleChrome.applyShellProjection` |
+
+产品形态仍因断点不同（抽屉 vs ⋯）——**禁止**再开长期姊妹分支分别修同一套 chrome/audio。关单级人工须 **§8 375 + §9 W1–W8** 分测，**禁止**与场景 O 修混验。
+
+**产品拍板 · 宽屏首页三球（2026-07-31）**：宽屏 Idle **首页**主 CTA 为与窄屏同序三球（Quick Start · Sit · Honesty），**代替** Sit+⚡ 文案 pill；⋯ 仍承载次要入口（无 Honesty 行）。实现：`WideIdleMoreMenu` + Brief `task-briefs/task-wide-home-three-ball.md`。
+
+**沿革**：2026-07-25 拍板「值得做，但等 wide-idle + O」→ 2026-07-29 条件齐 → 2026-07-30 Brief / 阶段 0–2 / 阶段 3 收口 → 2026-07-31 宽屏三球拍板并实现。
 
 ---
 
@@ -91,11 +108,13 @@
 
 | 名称 | 范围 | 用途 |
 |---|---|---|
-| **narrow** | `< 480px` | 小屏手机竖屏；最严 P1 验收 |
-| **medium** | `480px – 899px` | 大屏手机 / 竖屏平板 |
+| **narrow** | `< 480px`（实现：`max-width: 479px`） | 小屏手机竖屏；最严 P1 验收；启用 `NarrowIdleShell`（ActionBar + 上滑抽屉） |
+| **medium** | `480px – 899px` | 大屏手机 / 竖屏平板；Idle 底栏仍走宽屏清场（Sit · ⚡ · ⋯） |
 | **wide** | `≥ 900px` | 桌面与横屏手机（视高度而定） |
 
 实现时优先 **mobile-first 或 narrow 先验**：先保证 320px 不炸，再在 `min-width` 上 enrich。
+
+**验收口径（易混）**：抽屉只在 **CSS 视口宽 ≤479** 出现。桌面 Chrome / Safari 把窗口拖到「最窄」时，`innerWidth` **经常仍 ≥480**，底栏会继续显示 **Sit · ⚡ · ⋯**（⋯ = 宽屏 More，不是坏掉的抽屉）。权威窄屏对照用 **DevTools 设备模式 375×667**（或 Responsive 把宽度设到 ≤479）；控制台可确认 `matchMedia('(max-width: 479px)').matches === true`。
 
 ### 4.2 尺寸与安全区
 
@@ -104,10 +123,12 @@
 - 底部：`padding-bottom: env(safe-area-inset-bottom)`（?、session-start-dock、Honesty 底栏）。
 - 主内容区：老虎序列保持可见；窄屏允许略缩 HUD，**不允许**裁切到无法辨认状态。
 
-### 4.3 底部 chrome 预算（竖屏 narrow）
+### 4.3 底部 chrome 预算（竖屏 narrow / 宽屏 Idle）
 
 - 底部固定 UI（dock、?、Sound、叠层底栏）合计建议不超过视口高度 **~32%**；超出时优先：缩间距 → 折行 → 隐藏非关键装饰，**最后**才考虑建议横屏提示。
 - `session-start-dock` 宽度策略：保证主按钮完整；与 Sound FAB、? 三者**不得**互相挤到截断主 CTA。
+- **宽屏 Idle（≥480）清场**：底栏常驻 **三球（Quick Start · Sit · Honesty）+ ⋯**；一分钟呼吸 / How shall we sit / 提醒时钟收入 **⋯ 向上 Popover**（`WideIdleMoreMenu`）；Sit+⚡ 文案 pill 与 Honesty dock 入口 park。左下 **?** 与热力图**不**进此次清场。Arrival 进行中：仅 Quick 球；Sit / Honesty / ⋯ 均收。  
+- **窄屏 Arrival（≤479）**：ActionBar/抽屉收起时仍须 **⚡ 可见**（`ft-narrow-stage-arrival-quick-start`）；Sit/How/Honesty 保持 park。其余 Idle 仍由 `NarrowIdleShell` 上滑抽屉负责。
 
 ### 4.4 z-index 与点击
 
@@ -146,11 +167,25 @@
 
 ### 6.2 每个 UI Task 的最低门禁
 
-1. 桌面宽屏（≥900px）主路径 + 回流。  
+1. 桌面宽屏（≥900px）主路径 + 回流；触及 Idle chrome / Arrival / Honesty / Hints 时，步骤须含 **`DEV_WORKFLOW_QUALITY.md` §9「宽屏故事最小集」**（非仅「⋯ / 清场」烟测）。  
 2. **375×667 竖屏** + **一种横屏**（DevTools 设备模式即可）走通 §五 中与本次改动相关的行。  
-3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏步骤（勿笼统一行「手机看一下」）。  
-4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代窄屏人工）。  
+   - **场景 O（2026-07-24；主 CTA 上屏 2026-07-26）**：`≤479px` 启用 `NarrowIdleShell`——ActionBar（? / 时间·状态 / ♪）+ 主画布三主钮（顺序 **Quick Start · Sit with Yin · Honesty**；约 72px PNG）+ 上滑 `BottomOptionsDrawer`（次要：呼吸 / How / Sound / Reminder；7 格只读条）；Yin 放大居中。`≥480px` 目标壳为 Sit+⚡+⋯（见 §9；未合入前旧竖排 dock 仍须走故事）。  
+   - **触及 Idle chrome / Arrival / Honesty / Hints**：`TEST_TRACKER` 步骤须含 **§8「375 故事最小集」**——**禁止**只验壳切换（有没有 ActionBar / ⋯）就当窄屏通过。  
+3. 触及 dock / hint / 叠层 / HUD → 在 `TEST_TRACKER.md` 测试步骤中**写明**窄屏与宽屏故事步骤（勿笼统一行「手机/桌面看一下」）；关单须注明双视口故事是否测过（§8 N20 / §9 N24）。  
+4. 声称修好前仍须 `npm run test:smoke` + `npm run test:e2e`（逻辑层；**不**替代人工故事）。  
 5. 可选后续：Playwright `viewport` 用例锁「Sit 可点、无静默 return」（与 `DEV_WORKFLOW_QUALITY.md` §6 对齐）。
+
+### 6.2b 双壳共享不变量（摘要）
+
+权威表：`SHARED_RESOURCES.md` §6。改窄或宽一侧 chrome 时必须勾另一侧：
+
+| 契约 | 一句话 |
+|---|---|
+| Hints remap | park 后 tip / ? 补救锚到当前可见宿主，禁止旧坐标 |
+| Sit 显隐 | Arrival（含 Breath）开着 → Sit 隐藏或不可点；双壳同语义 |
+| FocusHUD vs ActionBar | **窄屏**：ActionBar = 常显本机墙钟 + ? + ♪；`#focus-hud` = 会话计时（Focusing 下移避免叠顶栏）。宽屏仍 FocusHUD |
+
+故事矩阵：`DEV_WORKFLOW_QUALITY.md` **§8（窄）** / **§9（宽）**。
 
 ### 6.3 实现禁忌
 
@@ -223,6 +258,15 @@
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
-| 1.0 | 2026-07-21 | 初版：原则 A 功能对等、原则 B 竖屏 P1 + 可建议横屏；断点、验收矩阵、开发/设计政策 |
-| 1.1 | 2026-07-21 | 立项 Task 1（窄屏互斥+Sit）/ Task 2（横屏建议）；见 §6.4–6.5 与 `TASKS.md` |
+| 1.11 | 2026-07-30 | 工程债：Task 3 阶段 3 收口（模块表 + 状态「已落地」） |
+| 1.10 | 2026-07-30 | 工程债：Task 3 阶段 2（`IdleChromeFacade`） |
+| 1.9 | 2026-07-30 | 工程债：Task 3 阶段 1（`idleChromeOrchestration` 共享编排） |
+| 1.8 | 2026-07-30 | 工程债：Task 3 阶段 0（feature 已开 + 入口对照表） |
+| 1.7 | 2026-07-30 | 工程债：Task 3 Brief 已写 · 可排期开工（`task-responsive-single-chrome-line.md`） |
+| 1.6 | 2026-07-26 | 窄屏主画布三主钮（Sit / Quick Start / Honesty）；抽屉精简为次要项 |
+| 1.5 | 2026-07-25 | §6.2：宽屏故事最小集（对齐 `DEV_WORKFLOW_QUALITY` §9）；关单双视口对称 |
+| 1.4 | 2026-07-25 | §6.2 / 6.2b：375 故事最小集 + 双壳不变量摘要（对齐 `DEV_WORKFLOW_QUALITY` §8） |
+| 1.3 | 2026-07-25 | §4.1：澄清「桌面拖最窄 ≠ 窄屏抽屉」；须 DevTools ≤479 / 375 |
 | 1.2 | 2026-07-21 | Task 1 代码落地：互斥 helper + dock 防截断；待人工复测 |
+| 1.1 | 2026-07-21 | 立项 Task 1（窄屏互斥+Sit）/ Task 2（横屏建议）；见 §6.4–6.5 与 `TASKS.md` |
+| 1.0 | 2026-07-21 | 初版：原则 A 功能对等、原则 B 竖屏 P1 + 可建议横屏；断点、验收矩阵、开发/设计政策 |

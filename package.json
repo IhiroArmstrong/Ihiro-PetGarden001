@@ -1,0 +1,31 @@
+{
+  "name": "zen-tiger-pet-garden",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "dev": "cd focus-tiger && npm run dev",
+    "build": "cd focus-tiger && npm run build",
+    "preview": "cd focus-tiger && npm run preview",
+    "test": "cd focus-tiger && npm run test",
+    "test:smoke": "cd focus-tiger && npm run test:smoke",
+    "test:e2e": "cd focus-tiger && npm run test:e2e",
+    "test:e2e:smoke": "cd focus-tiger && npm run test:e2e:smoke",
+    "test:e2e:changed": "cd focus-tiger && node scripts/run-e2e-changed.js",
+    "test:e2e:visibility": "cd focus-tiger && npm run test:e2e:visibility",
+    "test:pr-smoke": "cd focus-tiger && npm run test:pr-smoke",
+    "test:e2e:install": "cd focus-tiger && npm run test:e2e:install",
+    "docs:check": "cd focus-tiger && npm run docs:check",
+    "hints:doc-check": "cd focus-tiger && npm run hints:doc-check",
+    "hints:doc-sync": "cd focus-tiger && npm run hints:doc-sync",
+    "gate:doc-check": "cd focus-tiger && npm run gate:doc-check",
+    "gate:doc-sync": "cd focus-tiger && npm run gate:doc-sync",
+    "state:doc-check": "cd focus-tiger && npm run state:doc-check",
+    "state:doc-sync": "cd focus-tiger && npm run state:doc-sync",
+    "rules:doc-check": "cd focus-tiger && npm run rules:doc-check",
+    "rules:doc-sync": "cd focus-tiger && npm run rules:doc-sync",
+    "check:branch-freshness": "cd focus-tiger && npm run check:branch-freshness"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

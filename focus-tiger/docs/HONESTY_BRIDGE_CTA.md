@@ -1,7 +1,7 @@
 # HONESTY_BRIDGE_CTA.md — Honesty Check-in 桥接 CTA 定稿
 
 创建日期：2026-07-19  
-最后更新：2026-07-22（成功记账轻量 toast `HONESTY_CHECKIN_RECORDED`）
+最后更新：2026-08-04（窄屏桥接须 hide 三球；半透明契约不变）
 
 ---
 
@@ -28,8 +28,10 @@
 - **两个选项**（Yes / No 同级）：
   - Yes → 完整 Arrival Practice → Companion Mode（不跳过、不直接开表/Ambient）
   - No / 忽略 → idle，无二次挽留
+  - **点外侧空白不当作 No**（2026-07-25 拍板）：须明确点 Yes 或 No；不与轻量 popover「点外侧收起」混用。
 - **频率**：**每次**补登完成后都可出现（**不限**当日一次）。
-- **叠层（2026-07-22）**：桥接面板可见时须收起会挡 Yes/No 的 Idle 入口（`#honesty-idle-entry`、`#micro-ritual-idle-entry`）；Sit / How shall we sit? 可仍留在面板下方。实现：`HonestyBridgeCtaController.onShown` → `syncHonestyIdleEntry`；dock 类 `is-honesty-bridge-active` CSS 强制隐藏；桥接面板 `z-index:18`（高于 dock 16）。Honesty 一点即藏入口，直至桥接 Yes/No（`endCheckInFlow`）。
+- **叠层（2026-07-22；窄屏 2026-08-04）**：桥接面板可见时须收起会挡 Yes/No 的 Idle 入口（`#honesty-idle-entry`、`#micro-ritual-idle-entry`）。**窄屏 ≤479**：另须 **full-suppress** 主画布三球 + grabber（`NarrowIdleShell` z30 高于桥接 z18，否则会盖住 Yes/No）；**ActionBar（? · 墙钟 · ♪）保留**。宽屏 ⋯ 收起；Sit / How shall we sit? 桌面 dock 路径可仍留在面板下方。实现：`resolveShellChromeProjection`（`bridgeVisible` → narrow+wide `suppressed`）+ `HonestyBridgeCtaController.onShown` → `syncHonestyIdleEntry`；dock 类 `is-honesty-bridge-active` CSS；桥接面板 `z-index:18`（高于 dock 16）。Honesty 一点即藏入口，直至桥接 Yes/No（`endCheckInFlow`）。
+- **视觉（2026-08-02）**：面板须为 **Arrival 式轻量半透明气泡**（暖米底约 0.62 透明度 + `backdrop-filter` 模糊），**禁止**近乎不透明厚重卡片挡住阿寅下半身与蒲团；Yes/No 按钮可略实一点以保证可读可点。实现：`HonestyBridgeCtaUI` + 共享 `glassPanelStyles.js`（同日拍板：项目内同类叠层厚卡片一律改此风格）。**说明**：若仍觉「不透明」，先确认窄屏三球是否误叠在气泡上（见上条）——球盖住后半透明观感会被遮掉。
 
 ### Honesty 同日多次补登（2026-07-19 拍板 B）
 
