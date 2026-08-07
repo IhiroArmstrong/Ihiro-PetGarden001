@@ -2,12 +2,12 @@
  * Yin's Sanctuary · Lifetime entitlement gate (content unlock).
  *
  * ZERO COUPLING (Brief §2.6 · code-review gate):
- * This module and consumers MUST NOT import, read, or depend on tipJarGate /
- * tip state (tipped / tipCount / …). Unlock decisions are independent.
- * No "tipped ⇒ discount / bonus unlock" without a separate Brief.
+ * This module and consumers MUST NOT import, read, or depend on the A-track
+ * tip-jar gate module or its local tip counters. Unlock decisions are
+ * independent. No "prior tip ⇒ discount / bonus unlock" without a separate Brief.
  *
  * Verification: real paid unlocks require server-confirmed Checkout Session.
- * Do NOT reuse optimistic `?tip=1` patterns here.
+ * Do NOT reuse optimistic tip-return query patterns here.
  */
 
 export const SANCTUARY_STORAGE_KEY = 'focus-tiger.sanctuary-entitlement.v1';

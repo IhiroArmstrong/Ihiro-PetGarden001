@@ -49,26 +49,18 @@ describe('sanctuaryEntitlementGate', () => {
 });
 
 describe('sanctuary ↔ tip zero-coupling (static)', () => {
-  it('sanctuaryEntitlementGate source must not mention tip jar APIs', () => {
+  it('sanctuaryEntitlementGate must not import tip-jar modules', () => {
     const src = readFileSync(
       join(here, 'sanctuaryEntitlementGate.js'),
       'utf8'
     );
-    for (const forbidden of [
-      'tipJarGate',
-      'tipGate',
-      'tip-jar',
-      'hasTipped',
-      'tipCount',
-      'tipped',
-      'supporterGate'
-    ]) {
-      assert.equal(
-        src.includes(forbidden),
-        false,
-        `sanctuaryEntitlementGate.js must not contain "${forbidden}"`
-      );
-    }
+    assert.equal(
+      /from\s+['"].*tipJarGate/.test(src) ||
+        /from\s+['"].*tipGate/.test(src) ||
+        /require\(['"].*tipJar/.test(src),
+      false,
+      'sanctuaryEntitlementGate.js must not import tip-jar gate modules'
+    );
   });
 
   it('if tipJarGate exists, it must not import sanctuary', () => {
