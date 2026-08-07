@@ -48,6 +48,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-worktree-occupancy` | 工作树占用检测与 `.ft-session-lock`（一树一线） | `WORKFLOW.md` | 工作树占用检测与 `.ft-session-lock` |
 | `git-feature-merge-preview` | feature/fix 合入 develop 前须 worktree 预览确认 | `WORKFLOW.md` | feature/fix 合入 develop 前：worktree 预览确认 |
 | `git-develop-small-pr-run-merge` | develop 文档/小 PR：CI 绿后弹 Run 合并（默认习惯） | `WORKFLOW.md` | develop 文档 / 小 PR：CI 绿后弹 Run 合并 |
+| `git-pr-base-develop` | 开 PR 须确认 `--base`（默认 develop；禁默认打 main） | `WORKFLOW.md` | 开 PR 前 · `--base` 自查 |
 | `git-branch-health` | 分支健康度（即时纪律 + 双周普查；非 CI 硬拦） | `focus-tiger/docs/PROCESS.md` | 分支健康度 |
 | `regression-gate` | 交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…） | `.cursor/rules/focus-tiger-regression-lock.mdc` | 交互修复完工门禁 |
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
@@ -78,6 +79,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`） | 主张可按时间戳 / mtime / git log 推断占用态或自动清别人的锁；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布 |
 | `git-feature-merge-preview` | 「合前预览 / **develop-integrity**（≠ session-lock `releasable`）见 `WORKFLOW.md`」；`TEST_TRACKER` / `COLLAB` / PR 模板可一行引用两层验收与严格豁免 | 主张合入主干后再做首次预览；把 `qa-develop-tip` 读成可替代合前预览；把 develop-integrity 与 session-lock `releasable` 混为一谈；笼统「纯文档」跳过预览（未按运行时路径白/黑名单）；完整平行复述 rebase/`comm -12` SOP |
 | `git-develop-small-pr-run-merge` | 「develop 文档/小 PR：CI 绿后弹 Run 合并见 `WORKFLOW.md`」；regression-lock / PROCESS / COLLAB / docs.mdc 可一行引用 | 把文档/小 PR 默认改回「只请你上 GitHub 手合」；把本条扩成合 `main` 或运行时大 PR；主张 Agent 可静默合且无需 Run/授权；下班前口令顺手推进无关 PR |
+| `git-pr-base-develop` | 「开 PR 须 `--base develop`；见 `WORKFLOW.md`」；PROCESS 血统检查可一行引用 | 主张可省略 `--base` 靠 GitHub 默认；日常 PR 默认可打 `main`；误开后仍等 CI 不立刻纠正 |
 | `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
@@ -176,6 +178,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-07 | 新增 `git-pr-base-develop`：开 PR 须显式 `--base develop`；发版备忘 main 已提前含 #164（见 `WORKFLOW.md`） |
 | 2026-08-06 | 新增 `e2e-local-budget`：本地 e2e 硬顶 1 spec/次；`run-e2e-changed` + `e2e-ci-guard` + `gate-local-heavy-e2e`（deny）；修正 WORKFLOW/PROCESS「临时本机全量」为已废止/CI 收口 |
 | 2026-08-06 | 新增 `risk-mitigation-playbook`：中高风险功能落地降险 Playbook（四件套 + 架构红线 + 落地清单）；SSOT 在 `RISK_MITIGATION_PLAYBOOK.md`；`WORKFLOW` 仅入口引用 |
 | 2026-08-04 | 新增 `git-develop-small-pr-run-merge`：develop 文档/小 PR 在 CI 绿后默认弹 Cursor Run 合并；SSOT 在 `WORKFLOW.md`；与合 `main` / 运行时大 PR / 下班前口令区分 |
