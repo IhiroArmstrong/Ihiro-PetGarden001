@@ -66,6 +66,8 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
+import { TipJarUI } from './ui/TipJarUI.js';
+import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
@@ -550,6 +552,9 @@ async function init() {
   window.__zenCinemaCard = zenCinemaCardUI;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
+  const tipJarUI = new TipJarUI(document.body, {});
+  window.__tipJar = tipJarUI;
+  consumeTipReturnQuery({});
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -951,11 +956,18 @@ async function init() {
     },
     onZenCinema: () => {
       dailyZenQuoteCardUI.close();
+      tipJarUI.close();
       zenCinemaCardUI.open();
     },
     onDailyQuote: () => {
       zenCinemaCardUI.close();
+      tipJarUI.close();
       dailyZenQuoteCardUI.open();
+    },
+    onTipJar: () => {
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.close();
+      tipJarUI.open();
     },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });

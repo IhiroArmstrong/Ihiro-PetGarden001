@@ -285,19 +285,19 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote', () => {
+  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote/tip-jar', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote']
+      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote', 'tip-jar']
     );
   });
 
-  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote', () => {
+  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote/tip-jar', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
-      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote']
+      ['companion', 'reminder', 'language', 'zen-cinema', 'daily-quote', 'tip-jar']
     );
   });
 
@@ -318,7 +318,8 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(entries.map((e) => e.proxy), [
       'language',
       'zen-cinema',
-      'daily-quote'
+      'daily-quote',
+      'tip-jar'
     ]);
   });
 });
