@@ -25,13 +25,13 @@
 	"kv_namespaces": [
 		{
 			"binding": "TIP_KV",
-			"id": "00000000000000000000000000000001",
-			"preview_id": "00000000000000000000000000000002"
+			"id": "e26fc50b134e4eaeb59a3f4a551f3415",
+			"preview_id": "b9543c7cef3b4e68a4e96cf0a8811375"
 		},
 		{
 			"binding": "SANCTUARY_KV",
-			"id": "00000000000000000000000000000003",
-			"preview_id": "00000000000000000000000000000004"
+			"id": "d337b4b132e147d193e8e6ec03e12b9a",
+			"preview_id": "d71d6fed42a249a5a749b3ae5f268857"
 		}
 	],
 	"vars": {
