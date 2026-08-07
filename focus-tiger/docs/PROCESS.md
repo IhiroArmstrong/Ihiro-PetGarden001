@@ -64,8 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **Reflection 通用情绪共鸣（2026-08-07）**：分支 `feature/reflection-echo-copy-pool`——非空 Continue 后观察式短句（en/ja/zh 池 7）；Skip 不出新句；单测已锁。
-- **应用内 Privacy +「?」简介（2026-08-07 · PR #163）**：简介气质 + Privacy sheet；待 CI 全绿后合 develop。
+- **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
+- **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）**：已合 develop；门闩分离。
 - **双轨变现纪要（2026-08-07 · PR #160 已合）**：Buy Yin a Tea（tip）∪ Yin's Sanctuary Lifetime；门闩分离。
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
@@ -477,7 +477,8 @@
 1. **优先刷新原分支**：同主题默认 `checkout` 旧支 → merge/rebase `origin/develop` → 继续；只有冲突不可控才换名新开。  
 2. **换名须 Supersedes + 当日删旧支**：新分支 / PR 正文写明 `Supersedes: <旧分支名>`；开 PR 或合入**当天**删除/归档旧远端 tip（勿只删 PR head、留下前任分支）。  
 3. **合入后删清单 = PR head ∪ Supersedes**：与 `COLLAB`「合并后即删」一致；空壳（`ahead=0` 且已是 develop 祖先）亦删。  
-4. **开 PR 前血统检查**（Agent）：tip 是否已是 `origin/develop` 祖先？develop 是否已有同 subject？硬 merge 是否会回退大模块？任一项异常 → 先汇报，禁止盲目开 PR。
+4. **开 PR 前血统检查**（Agent）：tip 是否已是 `origin/develop` 祖先？develop 是否已有同 subject？硬 merge 是否会回退大模块？任一项异常 → 先汇报，禁止盲目开 PR。  
+5. **开 PR 前 `--base` 自查**（硬性）：日常 PR 须 `--base develop`；开完核对 `baseRefName`。SSOT：`WORKFLOW.md`「开 PR 前 · `--base` 自查」（`RULES_INDEX` → `git-pr-base-develop`）。
 
 ### 开分支前（防闷头重写）
 
