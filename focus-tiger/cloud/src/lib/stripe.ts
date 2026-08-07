@@ -15,6 +15,7 @@ export type StripeCheckoutSession = {
 	payment_status?: string;
 	customer_email?: string | null;
 	customer_details?: { email?: string | null } | null;
+	metadata?: Record<string, string> | null;
 };
 
 function formBody(params: Record<string, string>): string {
@@ -32,6 +33,33 @@ export async function createTipCheckoutSession(opts: {
 	cancelUrl: string;
 	customerEmail?: string;
 }): Promise<StripeCheckoutSession> {
+	return createOneTimeCheckoutSession({
+		...opts,
+		metadata: { product: "tip" },
+	});
+}
+
+export async function createSanctuaryCheckoutSession(opts: {
+	secretKey: string;
+	priceId: string;
+	successUrl: string;
+	cancelUrl: string;
+	customerEmail?: string;
+}): Promise<StripeCheckoutSession> {
+	return createOneTimeCheckoutSession({
+		...opts,
+		metadata: { product: "sanctuary", itemId: "yin-sanctuary-lifetime" },
+	});
+}
+
+async function createOneTimeCheckoutSession(opts: {
+	secretKey: string;
+	priceId: string;
+	successUrl: string;
+	cancelUrl: string;
+	customerEmail?: string;
+	metadata?: Record<string, string>;
+}): Promise<StripeCheckoutSession> {
 	const params: Record<string, string> = {
 		mode: "payment",
 		"line_items[0][price]": opts.priceId,
@@ -41,6 +69,11 @@ export async function createTipCheckoutSession(opts: {
 	};
 	if (opts.customerEmail) {
 		params.customer_email = opts.customerEmail;
+	}
+	if (opts.metadata) {
+		for (const [k, v] of Object.entries(opts.metadata)) {
+			params[`metadata[${k}]`] = v;
+		}
 	}
 
 	const res = await fetch(`${STRIPE_API}/checkout/sessions`, {
@@ -54,6 +87,7 @@ export async function createTipCheckoutSession(opts: {
 
 	const data = (await res.json()) as StripeCheckoutSession & {
 		error?: { message?: string };
+		metadata?: Record<string, string>;
 	};
 	if (!res.ok) {
 		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
@@ -61,6 +95,38 @@ export async function createTipCheckoutSession(opts: {
 	}
 	if (!data.id || !data.url) {
 		throw new Error("Stripe session missing id or url");
+	}
+	return data;
+}
+
+/**
+ * Retrieve a Checkout Session (server-side confirm for Sanctuary unlock).
+ */
+export async function retrieveCheckoutSession(opts: {
+	secretKey: string;
+	sessionId: string;
+}): Promise<
+	StripeCheckoutSession & {
+		metadata?: Record<string, string> | null;
+	}
+> {
+	const id = opts.sessionId.trim();
+	if (!id.startsWith("cs_")) {
+		throw new Error("invalid_session_id");
+	}
+	const res = await fetch(`${STRIPE_API}/checkout/sessions/${encodeURIComponent(id)}`, {
+		method: "GET",
+		headers: {
+			authorization: `Bearer ${opts.secretKey}`,
+		},
+	});
+	const data = (await res.json()) as StripeCheckoutSession & {
+		error?: { message?: string };
+		metadata?: Record<string, string> | null;
+	};
+	if (!res.ok) {
+		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
+		throw new Error(msg);
 	}
 	return data;
 }

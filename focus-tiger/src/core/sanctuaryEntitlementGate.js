@@ -145,3 +145,78 @@ export function markSanctuaryFromPayment(
 export function clearSanctuaryEntitlement(storage) {
   writeSanctuaryEntitlement(storage, normalizeSanctuaryEntitlement(null));
 }
+
+/**
+ * After Checkout return: read `sanctuary_session` query, confirm with server,
+ * then unlock locally. Never unlock from the query alone.
+ *
+ * @param {object} [opts]
+ * @param {Storage | null} [opts.storage]
+ * @param {() => string} [opts.getSearch]
+ * @param {(path: string) => void} [opts.replaceUrl]
+ * @param {(path: string, init?: RequestInit) => Promise<unknown>} [opts.postJson]
+ * @returns {Promise<{ consumed: boolean, unlocked: boolean, outcome: 'success' | 'cancel' | 'failed' | null }>}
+ */
+export async function confirmSanctuaryReturnQuery({
+  storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
+  getSearch = () =>
+    typeof location !== 'undefined' ? location.search || '' : '',
+  replaceUrl = (path) => {
+    if (typeof history !== 'undefined' && history.replaceState) {
+      history.replaceState(null, '', path);
+    }
+  },
+  postJson
+} = {}) {
+  const params = new URLSearchParams(getSearch().replace(/^\?/, ''));
+  const cancel = params.get('sanctuary') === 'cancel';
+  const sessionId = params.get('sanctuary_session') || '';
+
+  const strip = () => {
+    params.delete('sanctuary');
+    params.delete('sanctuary_session');
+    const qs = params.toString();
+    const path =
+      typeof location !== 'undefined'
+        ? `${location.pathname}${qs ? `?${qs}` : ''}${location.hash || ''}`
+        : qs
+          ? `?${qs}`
+          : '/';
+    try {
+      replaceUrl(path);
+    } catch {
+      // ignore
+    }
+  };
+
+  if (cancel) {
+    strip();
+    return { consumed: true, unlocked: false, outcome: 'cancel' };
+  }
+  if (!sessionId.startsWith('cs_')) {
+    return { consumed: false, unlocked: false, outcome: null };
+  }
+
+  strip();
+
+  if (typeof postJson !== 'function') {
+    return { consumed: true, unlocked: false, outcome: 'failed' };
+  }
+
+  try {
+    const body = await postJson('/api/confirm-sanctuary-session', {
+      body: JSON.stringify({ sessionId })
+    });
+    const unlocked =
+      body &&
+      typeof body === 'object' &&
+      /** @type {{ unlocked?: unknown }} */ (body).unlocked === true;
+    if (unlocked) {
+      markSanctuaryFromPayment(storage);
+      return { consumed: true, unlocked: true, outcome: 'success' };
+    }
+    return { consumed: true, unlocked: false, outcome: 'failed' };
+  } catch {
+    return { consumed: true, unlocked: false, outcome: 'failed' };
+  }
+}

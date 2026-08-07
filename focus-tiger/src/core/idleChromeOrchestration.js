@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'tip-jar'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'sanctuary' | 'tip-jar'} proxy
  * @property {string} labelKey
  */
 
@@ -349,6 +349,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'wallpapers',
     labelKey: 'WALLPAPER_MENU_LABEL'
+  });
+
+  // Yin's Sanctuary Lifetime — content unlock (independent of tip jar).
+  out.push({
+    proxy: 'sanctuary',
+    labelKey: 'SANCTUARY_MENU_LABEL'
   });
 
   // Tip Jar (Buy Yin a Tea) — gratitude tip; does not unlock content.

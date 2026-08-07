@@ -79,6 +79,7 @@ export class WideIdleMoreMenu {
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
+   *     onSanctuary?: () => void,
    *     onTipJar?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
@@ -615,6 +616,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onWallpapers?.();
+      return;
+    }
+    if (key === 'sanctuary') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onSanctuary?.();
       return;
     }
     if (key === 'tip-jar') {

@@ -1,16 +1,18 @@
 /**
- * Focus Tiger · Cloudflare Workers (API + Buy Yin a Tea · Tip Jar)
+ * Focus Tiger · Cloudflare Workers (API + Tip Jar + Sanctuary Lifetime)
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  *
- * KV: replace placeholder ids after:
+ * KV (separate bindings — never share tip/sanctuary records):
  *   npx wrangler kv namespace create TIP_KV
- *   npx wrangler kv namespace create TIP_KV --preview
+ *   npx wrangler kv namespace create SANCTUARY_KV
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
  *   npx wrangler secret put STRIPE_WEBHOOK_SECRET
  *
- * Product price (Dashboard one-time Price): USD $9.99 → paste price_… into STRIPE_PRICE_ID.
+ * Prices (Dashboard one-time):
+ *   Tip → STRIPE_PRICE_ID
+ *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -25,12 +27,20 @@
 			"binding": "TIP_KV",
 			"id": "00000000000000000000000000000001",
 			"preview_id": "00000000000000000000000000000002"
+		},
+		{
+			"binding": "SANCTUARY_KV",
+			"id": "00000000000000000000000000000003",
+			"preview_id": "00000000000000000000000000000004"
 		}
 	],
 	"vars": {
 		"STRIPE_PRICE_ID": "",
 		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&tip=1",
 		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&tip=cancel",
+		"STRIPE_SANCTUARY_PRICE_ID": "",
+		"SANCTUARY_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&sanctuary_session={CHECKOUT_SESSION_ID}",
+		"SANCTUARY_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&sanctuary=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
 	}
 }

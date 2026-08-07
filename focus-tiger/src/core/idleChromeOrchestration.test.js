@@ -285,7 +285,7 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
-  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote/wallpapers/tip-jar', () => {
+  it('narrow drawer omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote/wallpapers/sanctuary/tip-jar', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
@@ -296,12 +296,13 @@ describe('listSecondaryChromeEntries', () => {
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'sanctuary',
         'tip-jar'
       ]
     );
   });
 
-  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote/wallpapers/tip-jar', () => {
+  it('wide more omits honesty and breath; includes companion/reminder/language/zen-cinema/daily-quote/wallpapers/sanctuary/tip-jar', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
       entries.map((e) => e.proxy),
@@ -312,6 +313,7 @@ describe('listSecondaryChromeEntries', () => {
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'sanctuary',
         'tip-jar'
       ]
     );
@@ -336,6 +338,7 @@ describe('listSecondaryChromeEntries', () => {
       'zen-cinema',
       'daily-quote',
       'wallpapers',
+      'sanctuary',
       'tip-jar'
     ]);
   });
