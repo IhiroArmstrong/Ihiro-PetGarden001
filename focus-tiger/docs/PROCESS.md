@@ -65,7 +65,8 @@
 **近期落地（待人工测试）**：
 
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
-- **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）**：已合 develop；门闩分离。
+- **壁纸赠送（#178）**：已合 develop；Idle ⋯ Wallpapers 免费静帧。
+- **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）**：已合 develop；门闩分离。**Sanctuary Unlock UI**（Lifetime confirm 路径）本地 `feature/yin-sanctuary-unlock`（`350be13`）待手推 PR；**Ambient 消费 `isSanctuaryUnlocked` 暂缓**，等 Unlock UI 合入 + TEST_TRACKER 人工验收后再开。
 - **双轨变现纪要（2026-08-07 · PR #160 已合）**：Buy Yin a Tea（tip）∪ Yin's Sanctuary Lifetime；门闩分离。
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
@@ -527,6 +528,18 @@ cd focus-tiger && npm run check:all-branches-health
 Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」。
 
 **Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——不依赖 Auto-review 的 `autoRun.block_instructions`。
+
+#### 已知问题 · `gate-destructive-shell` × `zsh ENOENT`（2026-08-07 · 待排查）
+
+> **现象**：Cursor 报 `Hook ".cursor/hooks/gate-destructive-shell.sh" failed … spawn /bin/zsh ENOENT`，且因 **`failClosed: true`** 该次 Shell 调用被**硬拦**。  
+> **匹配范围**（`.cursor/hooks.json`）：仅当命令匹配  
+> `git (push|reset|clean|rebase|merge)` / `gh pr merge` / `gh repo delete` 等时才会跑本 hook——**不是**所有 Shell、也不是所有 `git`（例如 `git status` / `git commit` / `git log` 不经此闸）。  
+> **匹配过宽（已知误伤）**：正则里的 `merge\b` 也会命中 **`git merge-base`**（`merge` 与 `-base` 之间是词界），导致只读的祖先查询被当成破坏性 `merge` 去问闸。后续修 matcher 时应收窄（例如要求 `merge` 后为空格/行尾，或显式排除 `merge-base`）。  
+> **失效含义（重要）**：  
+> 1. Hook **脚本能跑通**时：返回 `permission: ask` → 弹确认卡；**防护有效**。  
+> 2. Hook **进程起不来**（本例：`spawn /bin/zsh ENOENT`）且 `failClosed`：Cursor **拒绝执行**该命令 → **不是**「跳过闸门静默放行」。push/merge 等会失败，而不是在无防护下偷偷成功。  
+> 3. 因此：**不是「所有 push 永久失效」**；是「命中 matcher 的命令，在 hook runner 偶发起不来 zsh 时被硬拦」。同会话里先前多次 `git push` 成功，说明闸门多数时候可用；ENOENT 为**间歇 / 环境**问题（Cursor 钩子宿主找不到 `/bin/zsh`），待日后排查（PATH、Cursor hooks runtime、是否应用了错误的 shell）。  
+> 4. **临时绕过**：本机终端手动 `git push` / `gh pr create`（不经 Agent hooks）即可，与 2026-08-07 Sanctuary Unlock 本地 commit 待手推场景一致。
 
 ### 推荐流程（半自动 + 人工拍板）
 

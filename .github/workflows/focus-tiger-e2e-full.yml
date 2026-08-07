@@ -98,7 +98,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - name: Download JUnit shards
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: junit-full-e2e-shard-*
           merge-multiple: true
