@@ -1,6 +1,6 @@
 # Focus Tiger · Privacy notice (plain language)
 
-> Short user-facing note for **v1.0.0** (local-first). Product promises: `MVP_PRODUCT_DEFINITION.md` §六. This page is what we show people who ask “what do you collect?”
+> Short user-facing note for **v1.0.0** (local-first). Product promises: `MVP_PRODUCT_DEFINITION.md` §六. In-app: **?** → purpose card → **Privacy**.
 
 ## In short
 
@@ -22,23 +22,21 @@ Exact keys and retention evolve with features; we only keep what the current fea
 - No account login required for the core loop
 - No cloud sync of your practice by default
 - No crash / analytics SDK wired by default (if we add optional crash reports later, we will say what fields are sent and ask before enabling)
-- We do **not** promise iCloud (or any named cloud vault) sync in v1
+- We do **not** promise any named cloud vault sync in v1
 
 ## Cloud later (v1.1+)
 
 If we add cloud features, we will explain **what** is sent, **why**, **how long**, and ask for consent before it leaves your device.
 
-## In-app placement（2026-08-07 拍板）
+## In-app placement（2026-08-07）
 
-完整隐私说明 **应可在产品内打开浏览**，不能只躺在 GitHub docs。
+完整隐私说明 **可在产品内打开浏览**（不只躺在 GitHub docs）。
 
-| 入口 | 口径 |
+| Entry | Behavior |
 |---|---|
-| **主入口** | 「?」→ 产品简介卡（`#onboarding-app-purpose`）上的次要链 **Privacy** → 应用内只读叠层 / 页，正文同源本文件（或 i18n 对齐摘录） |
-| **次入口** | 未来 About & Credits / Tip Jar 区底部同一 Privacy 链（与 Buy Yin a Tea 同页底，勿抢主 CTA） |
-| **不做** | 另建 Settings 导航树专为隐私；在简介卡里塞整篇长文挡住「Got it」 |
-
-简介卡正文（短）与本页（完整）分工：见 `task-briefs/task-in-app-privacy-and-purpose-copy.md`。
+| Primary | **?** → `#onboarding-app-purpose` → **Privacy** → `#onboarding-privacy-sheet`（i18n 摘录对齐本页） |
+| Secondary | Future About / Tip Jar footer may reuse the same sheet |
+| Do not | Settings tree only for privacy; paste the full notice inside the purpose card |
 
 ## Questions
 
