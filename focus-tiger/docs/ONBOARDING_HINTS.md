@@ -150,7 +150,8 @@
 
 - **常驻**：左下角极小「?」（窄屏 ActionBar `#ft-narrow-help-btn` 代理）。
 - **点击或悬停**：只打开 `#onboarding-app-purpose` 产品简介卡；点「知道了 / Got it」或框外空白关闭；悬停打开时指针离开 ? / 卡 → 收起。
-- **禁止**：同屏再出本页其它 tip、`help-remedy`、More tips 芯片、Focusing「还有 N 条」。
+- **文案方向（2026-08-07 拍板 · 待接线）**：短简介含 no pressure / no ads / local-first / 不挖矿 reflections；**禁止**写 iCloud。完整隐私 → 卡上次要链 **Privacy** 打开应用内只读页（`PRIVACY_NOTICE.md`）。详见 Brief `task-briefs/task-in-app-privacy-and-purpose-copy.md`。
+- **禁止**：同屏再出本页其它 tip、`help-remedy`、More tips 芯片、Focusing「还有 N 条」；简介卡内嵌整篇隐私长文。
 - **实现**：`OnboardingHintsUI.openPurposeOnly()`（`showRemedy()` 现为同义薄包装）。
 
 > **历史（已废）**：曾用点「?」把当前场景 tips 再铺一遍作补救；2026-08-04 用户书面取消——乱、叠、难关单。Store 内 `resolveRemedy*` 可暂留供单测/文档考古，**产品路径不得再调用铺开**。

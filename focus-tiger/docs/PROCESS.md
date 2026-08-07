@@ -92,7 +92,8 @@
 - **MilestoneGlow 正式路径可接线（2026-07-31 拍板）**：用户书面——长期里程碑金辉+蝴蝶**本就是产品需要**，正式路径**完全可以接线**；不再以「仅调试预览」为终态。Brief `task-briefs/task-milestone-glow-product-wire.md`；实现另开 `feature/milestone-glow-product-wire`（排在 Ambient ⑤⑥⑩ 自动化之后或并行）。旧「7/30 前仅复测调试节奏」口径废止，改为**接线任务**；4 fps 观感随接线验收。
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **Ambient 窄宽对账填表（2026-07-31）**：`audit-narrow-wide-ambient-parity.md` 10 项已按 `develop` 代码+既有 e2e/unit 填状态（1–4/7–9 ✅；5–6/10 ⚠️ 缺 DOM 听感断言；另记 micro-ritual tip / 抽屉挡 ♪ 既有红）。未重跑 Playwright（本机缺 Chromium）。
-- **增长向内容包决策锁（2026-08-06）**：分析师+调查对齐后用户「合理则办」。顺序 ① YouTube ⋯平级 → ③ 签文 `COPY_POOLS`+存图 → ②A 电子书下载 → ②B 独立 `ebook-unlocked`（文案与 Glow streak-7 叙事刻意分开）。无 Settings/Culture Space；不绑壳/分享卖点。Brief `task-growth-content-pack-decision.md`。**① / ③ 已合 develop**（PR #148 / #153）；**②A/②B 延后**（同日晚用户书面：电子书非最急，延迟安排——勿默认下一优先）。
+- **增长向内容包决策锁（2026-08-06）**：分析师+调查对齐后用户「合理则办」。顺序 ① YouTube ⋯平级 → ③ 签文 `COPY_POOLS`+存图 → ②A 电子书下载 → ②B 独立 `ebook-unlocked`（文案与 Glow streak-7 叙事刻意分开）。无 Settings/Culture Space；不绑壳/分享卖点。Brief `task-growth-content-pack-decision.md`。**① / ③ 已合 develop**（PR #148 / #153）；**②A/②B 延后**（同日晚用户书面：电子书非最急，延迟安排——勿默认下一优先）。**2026-08-07 晚**：壁纸赠送另 Brief；付费双轨见技术方向纪要。
+- **付费双轨 A Tea + B Sanctuary（2026-08-07 晚；夜 Prompt 收紧）**：打赏与解锁都要；B 仅 Lifetime、无订阅；24h 漏斗非 v1；founder→Tea。Brief `task-tech-direction-v1-shell-monetization.md`。
 - **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。§8+§9 壳故事已于 2026-08-04 KnownRisky #1 / Task3 关单。
 - **CI 定时全量 + Plan A 收口（2026-07-31 … 2026-08-02）**：**PR smoke** 已在每次 PR→`develop` 跑通（**无** API Key）。**全量 e2e** 夜间 `schedule`（UTC 02:00）+ 手动 dispatch：YAML 在 **`main`**（120m · [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47)；Plan A 分片+JUnit · [#63](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/63)），**测 `develop` tip**。#15 稳定红已修（[#74](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/74)）；验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit 68 tests / 0 fail）。**基建任务完成**；残留 = 偶发 goto flake 根因（另项）+ 是否挂 PR 门（另议）。隔离：`ENV_CONFIG.md` + `.env.example`。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
@@ -312,7 +313,8 @@
 - **v1.0 纯本地 / v1.1 云端（2026-07-30 已拍板）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网与云端关键算法，优先保障可离线完整体验；**v1.1** 快速跟进云端算法。代码保留云端可扩展性（保留 `cloud/` 骨架与前后端解耦；**禁止**在 v1.0 把核心门闩绑死在必须成功的云请求上）。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。
 - **用户上传氛围乐（2026-07-31 已拍板）**：**v1.0.0 必交付**；砍法与 Brief 见上「最近拍板」/ Backlog；**实现已合 `develop`（PR #51）**（非开放产品决策，留此防重复开议题）。
-- **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。
+- **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。**2026-08-07 澄清**：技术方向纪要锁定的是 **v1 不上手机商店原生包**（未来手机壳默认 Capacitor）；**不**取消本桌面壳开放项，亦**不**把 PWA 默认成最终电脑版交付。见 Brief `task-tech-direction-v1-shell-monetization.md`。
+- **v1 技术方向 · 壳/付费/健康（2026-08-07 · 双入口命名纠正 · 未开工实现）**：v1 纯 Web；健康非 v1。付费 **A Tip/Tea**（`feature/yin-tip-jar`，由 founder 改道；`{ tipped, tipCount, lastTippedAt }`；不解锁内容）+ **B Yin's Sanctuary**（新建 lifetime entitlement 线；深度音效+非核心高级表现+尊贵徽章；**仅 Lifetime**）。共享 Stripe payment 层，**分离** tipGate / sanctuaryEntitlementGate。对外文案走 i18n。**②B 电子书取消**。§八改名双表待确认后再改代码。SSOT：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
 - **「?」未读线索 / 朱红用途（2026-07-23 / 7-30 已拍板）**：onboarding 探索性 tip 用薄荷绿 click 圆点（`triggerMode=click` / PR #30）；朱红 `--color-highlight` 留给真正通知/alert，**不再**挂在「?」钮内表示 tip 未读。详见 `ONBOARDING_HINTS.md` §〇 / `TEST_TRACKER` click 圆点 tier 行。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
@@ -323,7 +325,17 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-06）**：增长向内容包（YouTube 菜单入口 → 每日签文存图 → 电子书 A 下载 → 电子书 B 独立解锁）口径已锁；**可延后增发**，不挤占壳选型/主路径债。禁止 Reflection 边缘入口；签文不复活 soft-schedule、不做「一键分享」核心承诺、仅 en+ja；电子书 B **禁止**碰 MilestoneGlow，文案禁「里程碑/成就/打卡」混 Glow。Brief：`task-briefs/task-growth-content-pack-decision.md`。**① Zen Cinema / ③ Quiet Line 已合 develop**（PR #148 / #153）。**同日晚用户书面**：电子书 **②A/②B 延迟安排**（非最急）——下一排期勿默认开工电子书。
+**最近拍板（2026-08-07 夜 · 双入口命名纠正）**：纠正「单名合并」——**A Tip/Tea** 与 **B Sanctuary** **并存**。founder **不**改名为 Sanctuary，改道 **`feature/yin-tip-jar`**（Tea/Tip i18n + `tipGate`）；B **新建** `sanctuaryEntitlementGate`；共享 payment、分离 gate/UI/storage。**②B 电子书直接取消**。Brief §八双表待确认后再改代码。
+
+**最近拍板（2026-08-07 夜 · Prompt 收紧双轨 · 命名嗣后纠正）**：A Tea + B Sanctuary 并行；B 仅 Lifetime；24h 漏斗非 v1。命名细节以上条为准。
+
+**最近拍板（2026-08-07 晚 · 双轨付费 · 被上条收紧）**：曾写 Lifetime 为主、订阅非首选、可选 24h 漏斗——**夜 Prompt** 改为无订阅 + 漏斗非 v1。
+
+**最近拍板（2026-08-07 · Sanctuary 单名收敛 · 已废止）**：曾锁「对外只留 Yin's Sanctuary、founder 并入」。**已被双入口并存取代**；本条仅作历史，禁止再当 SSOT。
+
+**最近拍板（2026-08-07）**：技术方向纪要初稿——v1 纯 Web；未来手机壳 Capacitor；桌面壳仍开放；健康非 v1。
+
+**最近拍板（2026-08-06）**：增长向内容包（YouTube → 签文 → 电子书 A）口径已锁；**可延后增发**。①/③ 已合；**②A 延后**；**②B 已于 2026-08-07 取消**（不改造）。Brief：`task-briefs/task-growth-content-pack-decision.md`。
 
 **最近拍板（2026-08-05）**：吹花鼓励冷启动微仪式——策略 C + 同日 XOR 欢迎池；观察式文案；时机/交互/flag 见 `FLOWER_BLOW_WELCOME_DESIGN.md`；**先 Phase 1 Lab，再产品接线**（须走 Dispatcher，禁止平行硬调）。
 
@@ -347,7 +359,7 @@
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 - **荷花成长场景**（复用 `IncenseComplete` 立体荷花 + 金斑浮动；荷花持续增加至布满画面）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
-- **系统级健康中枢读取**（HealthKit Mindful Minutes / Health Connect MindfulnessSession；Phase 1 规划；补充诚实机制、非替代；详见 `ARCHITECTURE.md` Backlog）
+- **系统级健康中枢读取**（HealthKit Mindful Minutes / Health Connect MindfulnessSession；Phase 1；**非 v1**；未来壳默认 Capacitor；补充诚实机制、非替代；详见 `ARCHITECTURE.md` Backlog + `task-tech-direction-v1-shell-monetization.md`）
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
@@ -359,6 +371,10 @@
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
 - **PR #2 · develop→main**（冲突已清 / MERGEABLE；合 main 待五条件 + 口令；Brief `task-pr2-develop-into-main.md`）
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
+- **双轨付费实现（A Tea + B Sanctuary）**（方向已锁；Stripe 另开 feature；见 `task-tech-direction-v1-shell-monetization.md`）
+- **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
+- **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；已同意排期）
+- **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
 
 ---
@@ -709,6 +725,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 - **状态**：壳 **开放**；开会时机与云端/离线产品面 **已定**。
 - **不在范围**：本条不立项写脚手架；不替代 Browser First；不把手机原生 App 混入。
+- **与 2026-08-07 技术方向纪要的关系**：手机商店壳 / Capacitor **不**并入本条拍板；本条仍只解「本地电脑版」。详见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 
 ### Backlog:v1.1 云端算法（v1.0 纯本地之后）
 

@@ -23,7 +23,7 @@ A calm focus companion: sit with Yin, practice a short arrival, then focus at yo
 
 - There is no punishment for leaving. The companion may doze if you are away a long time; coming back is enough.
 - Reminders and sound are optional; open them from the menu / note control when you want them.
-- Your practice data for this MVP stays on this device (see [Privacy notice](./PRIVACY_NOTICE.md)).
+- Your practice data for this MVP stays on this device (see [Privacy notice](./PRIVACY_NOTICE.md)). In the product, open **?** then **Privacy** once that link ships (see Brief `task-in-app-privacy-and-purpose-copy.md`).
 
 ## Need more?
 
