@@ -63,6 +63,7 @@ import { PointerInteraction } from './input/PointerInteraction.js';
 import { SpriteSequencePlayer } from './character/SpriteSequencePlayer.js';
 import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
+import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
@@ -208,6 +209,9 @@ function showDevLabToast(message, durationMs = 8000) {
 async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
+
+  // PWA: network-only SW in production only (no Cache Storage).
+  void registerServiceWorker();
 
   // i18n：静态 HTML 已是默认语言（en）；此处接管标题/遮罩并跟随语言切换刷新
   document.title = t('APP_TITLE');

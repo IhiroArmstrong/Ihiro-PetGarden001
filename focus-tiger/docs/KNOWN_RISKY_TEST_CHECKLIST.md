@@ -48,7 +48,7 @@
 | 抽屉 / ⋯ 有「一分钟呼吸」行 | **已去重**；呼吸入口只在左球 |
 | 欢迎池仅书/点头 | Day1 / ≥3 日久别可 **吹花 + 头顶气泡**（压过 wellness 斗篷）；同日 XOR |
 | 付费未定 | **双轨已锁**：A Buy Yin a Tea（不解锁内容）+ B Yin's Sanctuary Lifetime（真 entitlement）；②B 电子书**已取消** |
-| 壳 = Electron/Tauri/PWA 三选一即将定 | **v1 默认纯 Web**；桌面壳**仍开放**；**可选 PWA 尚未立项**（见技术方向 Brief） |
+| 壳 = Electron/Tauri/PWA 三选一即将定 | **v1 默认纯 Web**；桌面壳**仍开放**；**可选 PWA 基础层**（`feature/pwa-basics`：manifest + network-only SW + 品牌图标已入库；**安装体验待人工验收**）。桌面壳选型仍开放，见技术方向 Brief |
 
 ---
 
@@ -91,7 +91,7 @@
 |---|---|
 | `DEVELOP_DEBT_INVENTORY.md` | 标签与判定依据 SSOT（本表 #18–26 为产品扩列，债务清单可随后对齐） |
 | `TEST_TRACKER.md` | 反馈 / 关单 |
-| `task-briefs/task-tech-direction-v1-shell-monetization.md` | v1 纯 Web / 双轨付费 / **可选 PWA 未立项** |
+| `task-briefs/task-tech-direction-v1-shell-monetization.md` | v1 纯 Web / 双轨付费 / **可选 PWA 基础层**（图标已入库；安装待人工验收） |
 | `DEV_WORKFLOW_QUALITY.md` §6.13–§6.15 | Focusing tip 叠团 · Arrival CapCut |
 
 ## 3. 维护
@@ -108,4 +108,4 @@
 | 步骤语义更新 | #1/#2/#14/#16（Breath 左球、Focus chip、⋯ 增项） |
 | 判定刷新 | #4 Ambient（多轮 tip OK，待本表关单）· #5/#7 Hints 再设计 |
 | **新增** | #18 Arrival 闪白 P0 · #19 Breath · #20 Focus chip/HUD · #21 吹花 · #22 Zen Cinema · #23 Quiet Line · #24 星光斗篷 · #25 Tip Jar · #26 Sanctuary 脚手架 |
-| 明确非本表「壳已定 PWA」 | 见 §0.2：v1=纯 Web；桌面壳开放；可选 PWA **待立项** |
+| 明确非本表「壳已定 PWA 为最终桌面交付」 | 见 §0.2：v1=纯 Web；桌面壳仍开放；可选 PWA = **Add to Home Screen 基础层**（非桌面壳定案） |

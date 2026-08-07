@@ -217,6 +217,12 @@
 | `icon-sit-with-yin.png` | ~398×398 RGBA（**v3** cream 底 + 金 ensō） | Sit with Yin（窄屏球） | `#ft-narrow-home-sit` ← `BTN_FOCUS_START` 代理 |
 | `icon-quick-start.png` | ~397×397 RGBA（**v3**） | Quick Start（窄屏球） | `#ft-narrow-home-quickstart` ← `#quick-start-focus` 代理 |
 | `icon-honesty-checkin.png` | ~396×396 RGBA（**v3**） | Honesty Check-in（窄屏球） | `#ft-narrow-home-honesty` ← handler / `#honesty-idle-entry` 代理 |
+| `pwa-192.png` | 192×192 RGB | PWA / 主屏幕（manifest `any`） | `manifest.webmanifest` |
+| `pwa-512.png` | 512×512 RGB | PWA / 主屏幕（manifest `any`） | `manifest.webmanifest` |
+| `pwa-maskable-512.png` | 512×512 RGB | PWA maskable | `manifest.webmanifest` |
+| `apple-touch-icon.png` | 180×180 RGB | iOS 主屏幕 | `index.html` `<link rel="apple-touch-icon">` |
+
+**PWA 图标（2026-08-08）**：阿寅坐禅品牌图；清单见同目录 `pwa-icons.md`。与上列三主钮图腾用途不同，勿混用。
 
 **v3（2026-07-27）**：替换 v2（橙褐底扁平）；不两版并存。圆形 cream 底 + 金图腾，素材内边距约 **17–21%** 直径（@72 CSS px 约 12–15px）；窄屏显示仍约 **72×72**。画布顺序：**Quick Start · Sit with Yin · Honesty**。逻辑/门闩不变，仅视觉。缓存戳 `?v=4`。已去掉 v2 试看用的 CSS `contrast/saturate` filter（按素材原色显示）。
 

@@ -102,16 +102,27 @@
 ```
 （定稿详见 DESIGN.md「DORMANT 唤醒仪式」/ PRINCIPLES.md「诚实机制」/ EMOTION_BIBLE dormantWake）
 
-### 任务六：PWA配置
+### 任务六：PWA配置（Add to Home Screen 基础 · 2026-08-07 立项）
 ```
-manifest.json：
-  name: "坐禅小老虎"
-  theme_color: 参考老虎自然原色基调
-  display: standalone
+范围（已拍板）：Web App Manifest + 最小 network-only Service Worker；
+  让用户「添加到主屏幕」/ 安装，并为日后推送打地基。
+  不做：推送订阅/发送、复杂离线优先、Capacitor / 原生壳。
 
-service worker：离线缓存3D资产，弱网/离线状态下仍可查看和开始专注
+manifest.webmanifest：
+  name / short_name: "Focus Tiger"（不带中文）
+  theme_color / background_color: #e8e6e1
+  display: standalone
+  start_url: /?source=pwa
+  icons: pwa-192 / pwa-512 / pwa-maskable-512 + apple-touch-icon（已入库；见 public/icons/pwa-icons.md）
+
+service worker（方案 A）：几乎不缓存——fetch 一律走网络，不写 Cache Storage；
+  不预缓存 sprites / 音频 / 3D。发版后旧内容卡死风险近零。
+  生产构建才注册；dev 不注册（避免打坏 Vite HMR）。
+
+状态（2026-08-08）：骨架 + 品牌图标已落在 feature/pwa-basics；**安装体验待人工验收**（勿自行标已通过）。
 ```
-> **2026-07-30 口径**：本项是 Phase 0 候选交付之一，**不是**「本地电脑版 APP」的最终打包选型。桌面壳（Electron / Tauri / PWA·薄壳）见 `PROCESS.md` Backlog「**本地桌面 APP 打包选型**」——开会时机已定（v1.0.0 冻结前约 1 周或你点名要桌面包时），壳未拍板前勿把本任务默认成最终交付形态。**v1.0.0 纯本地 / v1.1 云端**已拍板：核心路径不依赖联网；service worker 若做，只能增强缓存，不得变成「无网不可用」。
+> **2026-07-30 口径（仍有效）**：本项**不是**「本地电脑版 APP」的最终打包选型。桌面壳（Electron / Tauri / PWA·薄壳）见 `PROCESS.md` Backlog「**本地桌面 APP 打包选型**」。**v1.0.0 纯本地 / v1.1 云端**已拍板：核心路径不依赖联网；service worker 只能增强，不得变成「无网不可用」。  
+> **2026-08-07**：可选 PWA 基础层已立项；旧「离线缓存 3D」口径作废，以本任务块与 PRD 为准。
 
 ---
 
