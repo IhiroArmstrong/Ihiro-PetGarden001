@@ -9,8 +9,8 @@
  * class as flowerWelcomeGate). Do NOT use this gate for Sanctuary / paid content.
  *
  * ZERO COUPLING (Brief §2.6 · code-review gate):
- * sanctuaryEntitlementGate and content unlock paths must NOT import or read
- * this module's state. No "tipped ⇒ discount / bonus unlock" without a
+ * B-track Lifetime entitlement / content unlock paths must NOT import or read
+ * this module's tip state. No "prior tip ⇒ discount / bonus unlock" without a
  * separate Brief.
  * ---------------------------------------------------------------------------
  */

@@ -54,6 +54,8 @@ import {
 } from './flowerWelcomeGate.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
+import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
+import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
   clearAllFocusTigerLocalState,
@@ -109,7 +111,9 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   SCENE_ANIM_COOLDOWN_STORAGE_KEY,
   SCENE_ANIM_DAILY_STORAGE_KEY,
   FLOWER_WELCOME_STORAGE_KEY,
-  FLOWER_WELCOME_FLAG_STORAGE_KEY
+  FLOWER_WELCOME_FLAG_STORAGE_KEY,
+  TIP_JAR_STORAGE_KEY,
+  SANCTUARY_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {
