@@ -2,7 +2,7 @@
 
 独立 API（TypeScript + Wrangler）。含历史 stub 路由 + **Buy Yin a Tea · Tip Jar**（一次性 Stripe Checkout + KV）。
 
-权威产品/部署说明：[`../docs/FOUNDER_SUPPORTER_PACK.md`](../docs/FOUNDER_SUPPORTER_PACK.md) · 密钥隔离：[`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。
+权威产品/部署说明：[`../docs/YIN_TIP_JAR.md`](../docs/YIN_TIP_JAR.md)（§ 部署 · 任务 5）· 密钥隔离：[`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。
 
 ## 前置
 
@@ -59,7 +59,7 @@ curl -s -X POST http://127.0.0.1:8787/api/verify-tip \
 # {"tipped":false}
 ```
 
-Checkout / webhook 需配置 `STRIPE_*` secrets 与真实 KV id（见 `FOUNDER_SUPPORTER_PACK.md` §6）。
+Checkout / webhook 需配置 `STRIPE_*` secrets 与真实 KV id（见 `YIN_TIP_JAR.md` § 部署 · 任务 5）。**代码 alone 无法完成真实收款。**
 
 ## Stub 接口（仍保留）
 
@@ -82,21 +82,26 @@ cloud/
     routes/createTipCheckoutSession.ts | stripeWebhook.ts | verifyTip.ts
 ```
 
-## 部署
+## 部署（任务 5 · 完整清单）
+
+逐步清单以 **`docs/YIN_TIP_JAR.md` § 部署** 为准。摘要：
 
 ```bash
-# 1) 替换 wrangler.jsonc 中 KV 占位 id
-# 2) secrets
+# 1) Stripe Test：建 $9.99 one-time Price → 填 wrangler.jsonc vars.STRIPE_PRICE_ID
+# 2) npx wrangler kv namespace create TIP_KV（+ --preview）→ 替换 wrangler.jsonc 占位 id
+# 3) secrets
 npx wrangler secret put STRIPE_SECRET_KEY
 npx wrangler secret put STRIPE_WEBHOOK_SECRET
-# 3)
-npm run deploy
+# 4) npm run deploy → workers.dev
+# 5) Stripe Webhook → https://<worker>/api/stripe-webhook
+# 6) 前端 VITE_CLOUD_API_BASE_URL=<worker base>
 ```
 
-先用 **workers.dev** 验证；正式域名另开任务。
+先用 **workers.dev** 验证；正式域名另开任务。  
+Sanctuary Lifetime **另** Price / KV / 路由——勿复用本 Tip 配置当解锁凭证。
 
 ## 与前端的关系
 
-可选接线：Vite `VITE_CLOUD_API_BASE_URL`（公开 base）。未配置时免费主路径不变；Founder 面板提示「未配置」。
+可选接线：Vite `VITE_CLOUD_API_BASE_URL`（公开 base）。未配置时免费主路径不变；Tip Jar 卡提示「未配置」。
 
 **密钥**：客户端禁止 Secret；Worker 用 `wrangler secret put`。
