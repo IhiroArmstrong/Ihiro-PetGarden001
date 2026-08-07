@@ -9,6 +9,7 @@
  */
 export interface Env {
 	TIP_KV: KVNamespace;
+	SANCTUARY_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
@@ -16,6 +17,12 @@ export interface Env {
 	STRIPE_PRICE_ID?: string;
 	CHECKOUT_SUCCESS_URL?: string;
 	CHECKOUT_CANCEL_URL?: string;
+
+	/** Lifetime Sanctuary Price ID (separate from tip). */
+	STRIPE_SANCTUARY_PRICE_ID?: string;
+	SANCTUARY_CHECKOUT_SUCCESS_URL?: string;
+	SANCTUARY_CHECKOUT_CANCEL_URL?: string;
+
 	/** Exact browser Origin allowed for CORS (e.g. http://127.0.0.1:5173). */
 	ALLOWED_ORIGIN?: string;
 }
