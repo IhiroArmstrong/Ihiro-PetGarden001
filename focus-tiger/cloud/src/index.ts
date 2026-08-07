@@ -9,13 +9,16 @@ import {
 import { handleDailyMessage } from "./routes/dailyMessage";
 import { handleEmotionWeight } from "./routes/emotionWeight";
 import { handleCreateTipCheckoutSession } from "./routes/createTipCheckoutSession";
+import { handleCreateSanctuaryCheckoutSession } from "./routes/createSanctuaryCheckoutSession";
+import { handleConfirmSanctuarySession } from "./routes/confirmSanctuarySession";
+import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
 import type { Env } from "./types";
 
 /**
  * Focus Tiger · Cloudflare Workers API.
- * Buy Yin a Tea · Tip Jar: Checkout + webhook + email restore (one-time only).
+ * A Tip Jar + B Sanctuary Lifetime (separate Price / KV / routes).
  */
 export default {
 	async fetch(
@@ -30,11 +33,13 @@ export default {
 			return json({ ok: true, service: "focus-tiger-cloud" });
 		}
 
-		// CORS preflight for browser POSTs (not webhook).
 		if (
 			request.method === "OPTIONS" &&
 			(url.pathname === "/api/create-tip-checkout-session" ||
 				url.pathname === "/api/verify-tip" ||
+				url.pathname === "/api/create-sanctuary-checkout-session" ||
+				url.pathname === "/api/confirm-sanctuary-session" ||
+				url.pathname === "/api/verify-sanctuary" ||
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight")
 		) {
@@ -45,7 +50,6 @@ export default {
 			if (request.method !== "POST") {
 				return errorJson(405, "method_not_allowed", "Use POST");
 			}
-			// Exempt from global 60/min; still IP-capped to blunt HMAC DoS.
 			const webhookLimited = enforceRateLimit(request, {
 				limit: STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE,
 				bucketPrefix: "stripe-webhook",
@@ -69,6 +73,36 @@ export default {
 			return withCors(await handleVerifyTip(request, env), origin);
 		}
 
+		if (url.pathname === "/api/verify-sanctuary") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const verifyLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "verify-sanctuary",
+			});
+			if (verifyLimited) return withCors(verifyLimited, origin);
+			return withCors(await handleVerifySanctuary(request, env), origin);
+		}
+
+		if (url.pathname === "/api/confirm-sanctuary-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const confirmLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "confirm-sanctuary",
+			});
+			if (confirmLimited) return withCors(confirmLimited, origin);
+			return withCors(await handleConfirmSanctuarySession(request, env), origin);
+		}
+
 		const rateLimited = enforceRateLimit(request, {
 			limit: RATE_LIMIT_PER_MINUTE,
 			bucketPrefix: "global",
@@ -85,6 +119,19 @@ export default {
 				);
 			}
 			return withCors(await handleCreateTipCheckoutSession(request, env), origin);
+		}
+
+		if (url.pathname === "/api/create-sanctuary-checkout-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleCreateSanctuaryCheckoutSession(request, env),
+				origin,
+			);
 		}
 
 		if (url.pathname === "/api/daily-message") {

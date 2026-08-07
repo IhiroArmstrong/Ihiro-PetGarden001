@@ -67,6 +67,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
+import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
@@ -555,9 +556,12 @@ async function init() {
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
+  const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {});
+  window.__sanctuaryUnlock = sanctuaryUnlockUI;
   const tipJarUI = new TipJarUI(document.body, {});
   window.__tipJar = tipJarUI;
   consumeTipReturnQuery({});
+  void bootSanctuaryReturnConfirm({});
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -960,25 +964,36 @@ async function init() {
     onZenCinema: () => {
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
+      sanctuaryUnlockUI.close();
       tipJarUI.close();
       zenCinemaCardUI.open();
     },
     onDailyQuote: () => {
       zenCinemaCardUI.close();
       digitalWallpapersCardUI.close();
+      sanctuaryUnlockUI.close();
       tipJarUI.close();
       dailyZenQuoteCardUI.open();
     },
     onWallpapers: () => {
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
+      sanctuaryUnlockUI.close();
       tipJarUI.close();
       digitalWallpapersCardUI.open();
+    },
+    onSanctuary: () => {
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.close();
+      digitalWallpapersCardUI.close();
+      tipJarUI.close();
+      sanctuaryUnlockUI.open();
     },
     onTipJar: () => {
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
+      sanctuaryUnlockUI.close();
       tipJarUI.open();
     },
     onHonesty: () => {
@@ -1012,6 +1027,7 @@ async function init() {
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
+      sanctuaryUnlockUI.close();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },

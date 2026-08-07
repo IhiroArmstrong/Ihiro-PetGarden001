@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {
   SANCTUARY_STORAGE_KEY,
   clearSanctuaryEntitlement,
+  confirmSanctuaryReturnQuery,
   isSanctuaryUnlocked,
   markSanctuaryFromPayment,
   markSanctuaryPreview,
@@ -45,6 +46,38 @@ describe('sanctuaryEntitlementGate', () => {
     clearSanctuaryEntitlement(storage);
     markSanctuaryPreview(storage);
     assert.equal(readSanctuaryEntitlement(storage).unlockedVia, 'preview');
+  });
+
+  it('confirmSanctuaryReturnQuery unlocks only after server confirms', async () => {
+    const storage = memoryStorage();
+    const failed = await confirmSanctuaryReturnQuery({
+      storage,
+      getSearch: () => '?sanctuary_session=cs_test',
+      replaceUrl: () => {},
+      postJson: async () => ({ unlocked: false })
+    });
+    assert.equal(failed.unlocked, false);
+    assert.equal(isSanctuaryUnlocked({ storage }), false);
+
+    const ok = await confirmSanctuaryReturnQuery({
+      storage,
+      getSearch: () => '?sanctuary_session=cs_test',
+      replaceUrl: () => {},
+      postJson: async () => ({ unlocked: true })
+    });
+    assert.equal(ok.unlocked, true);
+    assert.equal(isSanctuaryUnlocked({ storage }), true);
+  });
+
+  it('confirmSanctuaryReturnQuery does not unlock from query without postJson', async () => {
+    const storage = memoryStorage();
+    const res = await confirmSanctuaryReturnQuery({
+      storage,
+      getSearch: () => '?sanctuary_session=cs_test',
+      replaceUrl: () => {}
+    });
+    assert.equal(res.outcome, 'failed');
+    assert.equal(isSanctuaryUnlocked({ storage }), false);
   });
 });
 
