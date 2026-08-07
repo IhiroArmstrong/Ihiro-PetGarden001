@@ -28,12 +28,15 @@ Exact keys and retention evolve with features; we only keep what the current fea
 
 If we add cloud features, we will explain **what** is sent, **why**, **how long**, and ask for consent before it leaves your device.
 
-## In-app placement
+## In-app placement（2026-08-07）
+
+完整隐私说明 **可在产品内打开浏览**（不只躺在 GitHub docs）。
 
 | Entry | Behavior |
 |---|---|
-| Primary | **?** → purpose card → **Privacy** → `#onboarding-privacy-sheet` |
+| Primary | **?** → `#onboarding-app-purpose` → **Privacy** → `#onboarding-privacy-sheet`（i18n 摘录对齐本页） |
 | Secondary | Future About / Tip Jar footer may reuse the same sheet |
+| Do not | Settings tree only for privacy; paste the full notice inside the purpose card |
 
 ## Questions
 
