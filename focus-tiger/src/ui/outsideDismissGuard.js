@@ -22,6 +22,7 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (!el) return false;
   if (el.closest('ft-onboarding-hint-bubble')) return true;
   if (el.closest('#onboarding-app-purpose')) return true;
+  if (el.closest('#onboarding-privacy-sheet')) return true;
   if (el.closest('#onboarding-hint-help')) return true;
   if (el.closest('#ft-narrow-help-btn')) return true;
   if (el.closest('#ft-hint-catalog-chip')) return true;

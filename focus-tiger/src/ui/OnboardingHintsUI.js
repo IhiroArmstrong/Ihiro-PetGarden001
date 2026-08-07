@@ -28,6 +28,7 @@ import {
   resolvePurposeCardAwayFromTips,
   syncAllDiscoveryDots
 } from './hintDiscoveryDots.js';
+import { PRIVACY_SHEET_BODY_KEYS } from './privacyNoticeCopy.js';
 import {
   SECONDARY_PROXY_HINT_IDS,
   secondaryProxyForHintId,
@@ -424,6 +425,7 @@ export class OnboardingHintsUI {
     this._unsubLocale = onLocaleChange(() => {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
       this._refreshPurposeCardCopy();
+      this._refreshPrivacySheetCopy();
       for (const hintId of this._visibleIds) {
         const meta = this._paintMeta.get(hintId) || { remedy: false, anchorNearHelp: false };
         this._paint(hintId, meta);
@@ -1653,6 +1655,18 @@ export class OnboardingHintsUI {
     const body = document.createElement('p');
     body.className = 'onboarding-app-purpose__body';
 
+    const actions = document.createElement('div');
+    actions.className = 'onboarding-app-purpose__actions';
+
+    const privacy = document.createElement('button');
+    privacy.type = 'button';
+    privacy.className = 'onboarding-app-purpose__privacy';
+    privacy.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._openPrivacySheetFromPurpose();
+    });
+
     const dismiss = document.createElement('button');
     dismiss.type = 'button';
     dismiss.className = 'onboarding-app-purpose__dismiss';
@@ -1662,11 +1676,13 @@ export class OnboardingHintsUI {
       this._hidePurposeCard();
     });
 
-    card.append(title, body, dismiss);
+    actions.append(privacy, dismiss);
+    card.append(title, body, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
     this._purposeBodyEl = body;
+    this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
     this._refreshPurposeCardCopy();
     return card;
@@ -1676,10 +1692,97 @@ export class OnboardingHintsUI {
     if (!this.purposeCard) return;
     this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
     this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
+    if (this._purposePrivacyEl) {
+      this._purposePrivacyEl.textContent = t('HINT_APP_PURPOSE_PRIVACY');
+      this._purposePrivacyEl.setAttribute(
+        'aria-label',
+        t('HINT_APP_PURPOSE_PRIVACY_ARIA')
+      );
+    }
     this._purposeDismissEl.textContent = t('HINT_APP_PURPOSE_DISMISS');
   }
 
+  _ensurePrivacySheet() {
+    if (this.privacySheet) return this.privacySheet;
+    const sheet = document.createElement('aside');
+    sheet.id = 'onboarding-privacy-sheet';
+    sheet.className = 'onboarding-privacy-sheet';
+    sheet.hidden = true;
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-labelledby', 'onboarding-privacy-sheet-title');
+
+    const title = document.createElement('h2');
+    title.id = 'onboarding-privacy-sheet-title';
+    title.className = 'onboarding-privacy-sheet__title';
+
+    const body = document.createElement('div');
+    body.className = 'onboarding-privacy-sheet__body';
+
+    for (const key of PRIVACY_SHEET_BODY_KEYS) {
+      const p = document.createElement('p');
+      p.className = 'onboarding-privacy-sheet__p';
+      p.dataset.privacyKey = key;
+      body.appendChild(p);
+    }
+
+    const back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'onboarding-privacy-sheet__back';
+    back.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._closePrivacySheetToPurpose();
+    });
+
+    sheet.append(title, body, back);
+    this.mountRoot.appendChild(sheet);
+    this.privacySheet = sheet;
+    this._privacyTitleEl = title;
+    this._privacyBodyEl = body;
+    this._privacyBackEl = back;
+    this._refreshPrivacySheetCopy();
+    return sheet;
+  }
+
+  _refreshPrivacySheetCopy() {
+    if (!this.privacySheet) return;
+    this._privacyTitleEl.textContent = t('PRIVACY_SHEET_TITLE');
+    this._privacyBackEl.textContent = t('PRIVACY_SHEET_BACK');
+    for (const p of this._privacyBodyEl.querySelectorAll('[data-privacy-key]')) {
+      const key = p.getAttribute('data-privacy-key');
+      if (key) p.textContent = t(key);
+    }
+  }
+
+  _openPrivacySheetFromPurpose() {
+    this._ensurePrivacySheet();
+    this._refreshPrivacySheetCopy();
+    this._purposeFromHover = false;
+    if (this.purposeCard) this.purposeCard.hidden = true;
+    this.privacySheet.hidden = false;
+    this._privacyOpenedFromPurpose = true;
+    try {
+      this._privacyBackEl.focus({ preventScroll: true });
+    } catch {
+      // ignore
+    }
+  }
+
+  _closePrivacySheetToPurpose() {
+    if (this.privacySheet) this.privacySheet.hidden = true;
+    if (this._privacyOpenedFromPurpose) {
+      this._privacyOpenedFromPurpose = false;
+      this._showPurposeCard();
+    }
+  }
+
+  _hidePrivacySheet() {
+    if (this.privacySheet) this.privacySheet.hidden = true;
+    this._privacyOpenedFromPurpose = false;
+  }
+
   _showPurposeCard() {
+    this._hidePrivacySheet();
     this._ensurePurposeCard();
     this._refreshPurposeCardCopy();
     this.purposeCard.hidden = false;
@@ -1690,6 +1793,7 @@ export class OnboardingHintsUI {
   _hidePurposeCard() {
     if (this.purposeCard) this.purposeCard.hidden = true;
     this._purposeFromHover = false;
+    this._hidePrivacySheet();
   }
 
   /** When purpose was opened by ? hover, leaving the card hides it. */
@@ -1921,10 +2025,35 @@ export class OnboardingHintsUI {
         font-weight: 500;
         line-height: 1.5;
         color: #3a5348;
+        white-space: pre-line;
+      }
+      .onboarding-app-purpose__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px 12px;
+      }
+      .onboarding-app-purpose__privacy {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: #3a5348;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        font-style: normal;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+      }
+      .onboarding-app-purpose__privacy:hover {
+        color: #2f463c;
       }
       .onboarding-app-purpose__dismiss {
         display: inline-block;
-        margin: 0;
+        margin: 0 0 0 auto;
         padding: 6px 14px;
         border-radius: 999px;
         border: 1px solid rgba(92, 122, 108, 0.45);
@@ -1937,6 +2066,70 @@ export class OnboardingHintsUI {
         cursor: pointer;
       }
       .onboarding-app-purpose__dismiss:hover {
+        background: rgba(255, 255, 255, 0.8);
+      }
+      .onboarding-privacy-sheet {
+        position: fixed;
+        z-index: 29;
+        box-sizing: border-box;
+        width: min(360px, calc(100vw - 24px));
+        max-height: min(70vh, 520px);
+        padding: 14px 16px 12px;
+        border-radius: 16px;
+        border: 1.5px solid rgba(92, 122, 108, 0.5);
+        background: linear-gradient(165deg, #eef6f1 0%, #d4e6db 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 10px 28px rgba(40, 64, 52, 0.16);
+        color: #3a5348;
+        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .onboarding-privacy-sheet[hidden] {
+        display: none !important;
+      }
+      .onboarding-privacy-sheet__title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: #2f463c;
+      }
+      .onboarding-privacy-sheet__body {
+        margin: 0;
+        overflow: auto;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .onboarding-privacy-sheet__p {
+        margin: 0 0 10px;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.45;
+        color: #3a5348;
+      }
+      .onboarding-privacy-sheet__p:last-child {
+        margin-bottom: 0;
+      }
+      .onboarding-privacy-sheet__back {
+        align-self: flex-start;
+        margin: 0;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(92, 122, 108, 0.45);
+        background: rgba(255, 255, 255, 0.55);
+        color: #2f463c;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .onboarding-privacy-sheet__back:hover {
         background: rgba(255, 255, 255, 0.8);
       }
       .ft-hint-discovery-dot {

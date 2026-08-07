@@ -52,6 +52,30 @@ test.describe('wide ? purpose only', () => {
       page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
     ).toHaveCount(0);
   });
+
+  test('purpose Privacy opens sheet; Back returns to purpose', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    await page.locator('#onboarding-hint-help').click();
+    await expect(purposeCardVisible(page)).toBeVisible({ timeout: 8_000 });
+    await expect(page.locator('.onboarding-app-purpose__body')).toContainText(
+      /no ads|No pressure/i
+    );
+    await page.locator('.onboarding-app-purpose__privacy').click();
+    await expect(
+      page.locator('#onboarding-privacy-sheet:not([hidden])')
+    ).toBeVisible({ timeout: 5_000 });
+    await expect(purposeCardVisible(page)).toBeHidden();
+    await expect(page.locator('#onboarding-privacy-sheet')).toContainText(
+      /on your device|do not sell/i
+    );
+    await page.locator('.onboarding-privacy-sheet__back').click();
+    await expect(purposeCardVisible(page)).toBeVisible({ timeout: 5_000 });
+    await expect(
+      page.locator('#onboarding-privacy-sheet:not([hidden])')
+    ).toHaveCount(0);
+  });
 });
 
 test.describe('narrow ? purpose only', () => {

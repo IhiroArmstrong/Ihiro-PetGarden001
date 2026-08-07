@@ -20,6 +20,12 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
 
     assert.equal(shouldIgnoreOutsideDismissTarget(bubble), true);
     assert.equal(shouldIgnoreOutsideDismissTarget(purpose), true);
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#onboarding-privacy-sheet' ? {} : null)
+      }),
+      true
+    );
     assert.equal(shouldIgnoreOutsideDismissTarget(help), true);
     assert.equal(shouldIgnoreOutsideDismissTarget(narrowHelp), true);
     assert.equal(

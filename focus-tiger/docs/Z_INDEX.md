@@ -57,6 +57,7 @@
 | **24** | `src/ui/NarrowIdleShell.js` | 窄屏 Focusing：强制把 mute 提到可点层（覆盖 park） |
 | **27** | `src/ui/OnboardingHintsUI.js` | 用途说明卡（`.onboarding-app-purpose`） |
 | **28** | `src/ui/OnboardingHintsUI.js` | Hints 目录芯片（`.ft-hint-catalog-chip`，如「More tips」） |
+| **29** | `src/ui/OnboardingHintsUI.js` | 应用内隐私说明（`#onboarding-privacy-sheet`；高于简介卡） |
 | **30** | `src/ui/NarrowIdleShell.js` | NarrowIdleShell 固定壳（ActionBar / 抽屉 / 主屏三球）；须高于 Ambient(22) 才能点 ♪ / ? |
 | **32** | `src/ui/NarrowIdleShell.js` | 窄屏 stage：Companion dock / Reminder 热力图簇 / Soundscape chrome 抬到壳之上 |
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Sound：Soundscape chrome 抬到菜单之上 |
