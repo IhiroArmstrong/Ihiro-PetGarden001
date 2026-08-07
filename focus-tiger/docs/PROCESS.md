@@ -93,7 +93,7 @@
 - **用户上传氛围乐 · v1.0.0 必交付（2026-07-31）**：升格出「仅 Backlog」；砍法已锁（mp3/m4a、合计 ≤64MiB 且 ≤10 首、单文件 ≤20MiB、用户曲整段在上且**最近在上**、可删自传）。Brief `task-user-ambient-upload-v1.md`；已合 **`develop`**（PR #51 / `UserAmbientLibrary` + Soundscape 上传/删除 + unit/e2e）。
 - **Ambient 窄宽对账填表（2026-07-31）**：`audit-narrow-wide-ambient-parity.md` 10 项已按 `develop` 代码+既有 e2e/unit 填状态（1–4/7–9 ✅；5–6/10 ⚠️ 缺 DOM 听感断言；另记 micro-ritual tip / 抽屉挡 ♪ 既有红）。未重跑 Playwright（本机缺 Chromium）。
 - **增长向内容包决策锁（2026-08-06）**：分析师+调查对齐后用户「合理则办」。顺序 ① YouTube ⋯平级 → ③ 签文 `COPY_POOLS`+存图 → ②A 电子书下载 → ②B 独立 `ebook-unlocked`（文案与 Glow streak-7 叙事刻意分开）。无 Settings/Culture Space；不绑壳/分享卖点。Brief `task-growth-content-pack-decision.md`。**① / ③ 已合 develop**（PR #148 / #153）；**②A/②B 延后**（同日晚用户书面：电子书非最急，延迟安排——勿默认下一优先）。**2026-08-07 晚**：壁纸赠送另 Brief；付费双轨见技术方向纪要。
-- **付费双轨 A Tea + B Sanctuary（2026-08-07 晚）**：打赏与解锁都要；废止「唯一付费名」。Brief `task-tech-direction-v1-shell-monetization.md`；`MVP` §五 / `PROCESS` 已同步。
+- **付费双轨 A Tea + B Sanctuary（2026-08-07 晚；夜 Prompt 收紧）**：打赏与解锁都要；B 仅 Lifetime、无订阅；24h 漏斗非 v1；founder→Tea。Brief `task-tech-direction-v1-shell-monetization.md`。
 - **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。§8+§9 壳故事已于 2026-08-04 KnownRisky #1 / Task3 关单。
 - **CI 定时全量 + Plan A 收口（2026-07-31 … 2026-08-02）**：**PR smoke** 已在每次 PR→`develop` 跑通（**无** API Key）。**全量 e2e** 夜间 `schedule`（UTC 02:00）+ 手动 dispatch：YAML 在 **`main`**（120m · [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47)；Plan A 分片+JUnit · [#63](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/63)），**测 `develop` tip**。#15 稳定红已修（[#74](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/74)）；验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit 68 tests / 0 fail）。**基建任务完成**；残留 = 偶发 goto flake 根因（另项）+ 是否挂 PR 门（另议）。隔离：`ENV_CONFIG.md` + `.env.example`。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
@@ -314,7 +314,7 @@
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。
 - **用户上传氛围乐（2026-07-31 已拍板）**：**v1.0.0 必交付**；砍法与 Brief 见上「最近拍板」/ Backlog；**实现已合 `develop`（PR #51）**（非开放产品决策，留此防重复开议题）。
 - **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。**2026-08-07 澄清**：技术方向纪要锁定的是 **v1 不上手机商店原生包**（未来手机壳默认 Capacitor）；**不**取消本桌面壳开放项，亦**不**把 PWA 默认成最终电脑版交付。见 Brief `task-tech-direction-v1-shell-monetization.md`。
-- **v1 技术方向 · 壳/付费/健康（2026-08-07 已拍板方向 · 晚修订双轨 · 未开工实现）**：v1 默认 **纯 Web**；健康同步非 v1。付费 **双轨都要**：**A Buy Yin a Tea**（情境微打赏/徽章）+ **B Yin's Sanctuary**（Lifetime 为主解锁深度音效+非核心高级表现）；订阅非 v1 首选；**禁止**连续/断签解锁。`feature/founder-supporter-pack` → **改道为 A**；B 另接真校验 entitlement。长期 = Digital Companion & Emotional Value。SSOT：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
+- **v1 技术方向 · 壳/付费/健康（2026-08-07 已拍板 · 夜 Prompt 收紧 · 未开工实现）**：v1 默认 **纯 Web**；健康非 v1、**不进** B 权益。付费双轨：**A Buy Yin a Tea**（情境打赏+徽章、不解锁内容；`founder-supporter-pack` 改道复用）+ **B Yin's Sanctuary**（**仅 Lifetime**、无订阅；深度音效全库+高级动画/场景+尊贵徽章；新真校验线）。**v1 不做** A→B 24h 体验卡。SSOT：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
 - **「?」未读线索 / 朱红用途（2026-07-23 / 7-30 已拍板）**：onboarding 探索性 tip 用薄荷绿 click 圆点（`triggerMode=click` / PR #30）；朱红 `--color-highlight` 留给真正通知/alert，**不再**挂在「?」钮内表示 tip 未读。详见 `ONBOARDING_HINTS.md` §〇 / `TEST_TRACKER` click 圆点 tier 行。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
@@ -325,7 +325,9 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-07 晚 · 双轨付费）**：打赏与解锁付费 **两个付款意愿都要**——**A Buy Yin a Tea**（情境 Tip Jar）+ **B Yin's Sanctuary**（主商业门，Lifetime 为主）。废止同日早前「只留一个付费名 / 创始包并入 Sanctuary」。founder 分支 **改道为 A**；B 真校验另接。禁连续/断签解锁；Health/Widget **非** v1 卖点。Brief：`task-briefs/task-tech-direction-v1-shell-monetization.md`。同批：应用内 Privacy +「?」简介文案 Brief；Reflection 通用共鸣排期；壁纸免费赠送 Brief。无运行时。
+**最近拍板（2026-08-07 夜 · Prompt 收紧双轨）**：A Tea + B Sanctuary 并行。B **仅 Lifetime、无订阅**；权益三件套（深度音效全库 / 高级动画·场景 / 尊贵徽章）；**删除** Health 卖点。A = 情境温和可忽略提示（里程碑 / Honesty 归来 / About 底）；founder 分支 **改道 Tea**（轻量 tip schema，不进内容 gate）。**24h 体验卡 = 非 v1**（阶段 2 候选）。定价数字不锁。Brief 已更新；待你过目后再合 PR / 开工实现。
+
+**最近拍板（2026-08-07 晚 · 双轨付费 · 被上条收紧）**：曾写 Lifetime 为主、订阅非首选、可选 24h 漏斗——**夜 Prompt** 改为无订阅 + 漏斗非 v1。
 
 **最近拍板（2026-08-07 · Sanctuary 单名收敛 · 已被上条覆盖）**：曾锁「对外只留 Yin's Sanctuary、founder 并入」。**2026-08-07 晚**改为双轨 A+B；本条仅作历史。
 
