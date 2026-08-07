@@ -414,6 +414,42 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-pr-base-develop',
+    title: '开 PR 须确认 `--base`（默认 develop；禁默认打 main）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '开 PR 前 · `--base` 自查',
+    ssotMustContain: [
+      /git-pr-base-develop/,
+      /--base develop/,
+      /禁止默认打到 `main`/,
+      /baseRefName/
+    ],
+    topicSignals: [
+      /git-pr-base-develop/,
+      /--base develop/,
+      /开 PR 前.*`--base`/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /--base develop/,
+      /禁止默认打到 `main`/,
+      /baseRefName/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'omit-base-rely-on-github-default',
+        pattern: /(?:可以|允许|不妨).*(?:省略|不写)\s*`?--base`?.*(?:GitHub|默认)/,
+        note: '日常 PR 须显式 --base develop；勿主张省略靠 GitHub 默认',
+        exemptIfLineMatches: /禁止|不得|必须|须/
+      }
+    ]
+  },
+  {
     id: 'git-branch-health',
     title: '分支健康度（即时纪律 + 双周普查；非 CI 硬拦）',
     ssotPath: 'focus-tiger/docs/PROCESS.md',
