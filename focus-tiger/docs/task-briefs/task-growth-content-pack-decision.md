@@ -78,6 +78,10 @@
 - 金句中文版 / 把 zh 升 ready  
 - 把电子书 B 塞进 MilestoneGlow 节点表  
 
+## 相邻增长（另 Brief · 非本包四件）
+
+- **阿寅壁纸免费赠送**：见 `task-digital-wallpapers-gift.md`（候选静帧 Save image；可与 Quiet Line 同菜单气质）。  
+- **2026-08-07 晚**：付费双轨 A/B 见 `task-tech-direction-v1-shell-monetization.md`（与本增长包车道独立）。
 ## 实现开工口令（将来）
 
 分别开 feature（勿一次四件揉进同一 PR），例如：
