@@ -241,7 +241,7 @@ MVP 的首要任务仍是验证核心陪伴价值。**付费策略方向已锁�
 
 **UI**：A = 里程碑 / Honesty 归来 / About 底（温和可忽略）；B = 锁项处 / 权益卡主入口。  
 **v1 不做**：A→B「请茶送 24h 体验卡」导流（阶段 2 候选）。  
-**工程**：`feature/founder-supporter-pack` → **改道 A**；B 新开真校验线。Health **不进** B 权益。
+**工程**：A = `feature/yin-tip-jar`（由 `founder-supporter-pack` 改道；`tipGate`；不解锁内容）；B = **新建** `feature/yin-sanctuary-lifetime`（`sanctuaryEntitlementGate`；真校验）。共享 Stripe payment 层，**分离** gate/UI/storage。Health **不进** B 权益。对外文案走 i18n。
 
 ### 优先验证的付费价值
 

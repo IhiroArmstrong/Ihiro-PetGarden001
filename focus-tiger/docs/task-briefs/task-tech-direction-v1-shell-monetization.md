@@ -1,8 +1,8 @@
 # Task Brief · 技术方向纪要（v1 壳 / 商业化 / 健康同步）
 
-> **状态（2026-08-07 夜 · Prompt 收紧）**：产品/工程方向已落档；**商业化 = 双轨并行（A 打赏 + B Sanctuary）**；本文件为 SSOT Brief 草稿固化。**无本回合运行时 / 支付代码改动**——你过目确认后再落地实现与合 PR。  
-> **触发**：用户 Cursor prompt——双轨并行细则、founder→Tea 复用评估、B 仅 Lifetime、禁 24h 漏斗进 v1、情境化打赏红线。  
-> **权威**：本文件 + `PROCESS.md`「最近拍板」+ `MVP_PRODUCT_DEFINITION.md` §五；中文分析师草稿 **非 SSOT**。
+> **状态（2026-08-07 夜 · 双入口命名纠正）**：商业化 = **A 打赏（Tip/Tea）+ B Sanctuary Pass** 并存；founder → **`feature/yin-tip-jar`**（不改名为 Sanctuary）；B 新建 entitlement 线；共享 payment 层、分离 gate。**§八双表待确认后再改代码**。  
+> **触发**：用户纠正「单名合并」旧指令 → 双入口 + tip schema / entitlement schema 分轨 + ②B 取消。  
+> **权威**：本文件 + `PROCESS.md`「最近拍板」+ `MVP_PRODUCT_DEFINITION.md` §五。
 
 ---
 
@@ -22,7 +22,9 @@
 | **A→B 24h 体验卡** | **非 v1**；阶段 2 候选（见 §2.7） |
 | **解锁触发** | **禁止**连续/断签式解锁或惩罚；不留 `streak` 解锁接口空位 |
 | 账号 | **无账号**；邮箱仅恢复 tip / Sanctuary 购买记录 |
-| 并行分支 | `feature/founder-supporter-pack` **保留并重新定位为 A**；B 另开技术线 |
+| 并行分支 | **A**：`feature/founder-supporter-pack` → 改道 **`feature/yin-tip-jar`**（Tea/Tip 语义）；**B**：另开 **`feature/yin-sanctuary-lifetime`**（不复用 tip gate） |
+| **工程命名** | 对内可用中性 `tipGate` / `sanctuaryEntitlementGate`；**对外文案只走 i18n**，不强制与变量名逐字一致 |
+| 电子书 ②B | **已取消**（不改造成非 streak）；解锁只跟付费（B）绑定 |
 
 ---
 
@@ -30,11 +32,12 @@
 
 | 旧口径 | 纠正后 |
 |---|---|
-| 只留 Sanctuary 单 SKU / 创始包并入 | **A + B 双轨**；founder 分支 = **A Tea**，不推倒 |
-| Lifetime 为主、订阅非首选 | **v1 完全不做订阅**；仅 Lifetime |
+| 只留 Sanctuary 单名 / founder 并入 Sanctuary | **已废止**。现为 **A Tip + B Sanctuary 双入口并存**；founder **不**改名为 Sanctuary |
+| Lifetime 为主、订阅非首选 | **v1 完全不做订阅**；仅 Lifetime（B） |
 | 可选「请茶→24h 体验卡」漏斗 | **v1 不做**；记阶段 2 候选 |
 | Pass 权益含 Apple Health | **删除**；纯 Web 做不到 |
-| B 可复用 A 的 simple boolean | **禁止**；B 独立 entitlement + 服务端校验 |
+| B 可复用 A 的 tip boolean / 乐观 query | **禁止**；B 独立 entitlement + 服务端校验 |
+| 电子书 ②B 连续练习解锁 / 非 streak 改造 | **直接取消**；不保留改造选项 |
 
 ---
 
@@ -69,7 +72,7 @@
 | 卖点 | 心理满足 + **可选茶饮徽章**；**不解锁**音效/动画/场景 |
 | 定价数字 | **不锁**；待定 |
 | 本地/云记录（轻量） | `{ tipped: true, tipCount, lastTippedAt }`（可加 email 绑定用于找回）；**禁止**挂到内容解锁 gate |
-| 工程分支 | **`feature/founder-supporter-pack` 保留并改道**（见 §2.6） |
+| 工程分支 | **`feature/founder-supporter-pack` → 改名为 `feature/yin-tip-jar`**（对外 Tea/Tip；对内 `tipGate`）；**禁止**改成 Sanctuary 命名 |
 
 #### 打赏触发（情境化 · 硬）
 
@@ -90,11 +93,11 @@
 
 | 项 | 口径 |
 |---|---|
-| 正式名 | **Yin's Sanctuary**（短写 Sanctuary；可称 Pass / Lifetime） |
+| 正式名 | **Yin's Sanctuary**（短写 Sanctuary；对外可称 Sanctuary Pass / Lifetime） |
 | 商品性质 | **仅 Lifetime 一次买断**（Stripe `mode=payment`） |
 | **v1 不做** | Monthly / Yearly 订阅及一切续费/取消/宽限期生命周期 |
 | 定价数字 | **不锁**；待定 |
-| 工程 | **新的技术线**；不复用 A 的 simple boolean / 乐观 query 解锁真内容 |
+| 工程 | **全新模块**（建议 `feature/yin-sanctuary-lifetime` + `sanctuaryEntitlementGate`）；**不**复用 tip-jar 的 gate / localStorage / UI |
 
 #### B 权益清单（v1 · 只准这些）
 
@@ -145,25 +148,35 @@
 
 徽章展示只读 tip 状态；**Ambient / 动画 dispatcher 禁止读 tip 决定是否解锁内容**。
 
-### 2.6 `feature/founder-supporter-pack` → A Tea：复用评估
+### 2.6 共享支付层 vs 分离 gate（硬）
+
+| 层 | 归属 | 说明 |
+|---|---|---|
+| **公共 payment 工具** | 可抽 `cloud/` 共享 | Stripe Checkout 创建会话、Webhook 验签、CORS、限流、secrets 模式——**tip-jar 与 sanctuary 各自调用** |
+| **A tipGate** | 仅打赏 | 状态判断、`localStorage` key、UI 入口、KV tip schema **独立** |
+| **B sanctuaryEntitlementGate** | 仅解锁 | 状态判断、`localStorage` key、UI 入口、KV entitlement schema **独立** |
+
+**禁止**：合并成一个「统一付费入口」或一个 gate 同时管 tip + unlock；Ambient / 动画 **只读 B**，**禁止读 A tip 决定内容解锁**。
+
+### 2.7 `feature/founder-supporter-pack` → A Tip Jar：复用评估
 
 | 能力 | 复用度 | 说明 |
 |---|---|---|
-| Stripe Checkout 一次性 `mode=payment` | **高** | 改 Price / 文案 / success URL 即可对应「请茶」档位 |
-| Webhook → KV | **高** | value 改为 tip 轻量 schema（`tipCount` 等）；key 建议 `tea:{email}` 或保留前缀改语义 |
-| 邮箱 verify / 跨设备恢复 | **高** | 无账号模型可留 |
-| 限流 / CORS / secrets / wrangler | **高** | 可沿用 |
-| 前端 gate | **中** | `supporterGate.js` → 建议 `tipJarGate.js`（或通用 `purchaseReceiptGate`）；**仅** tip/徽章，**禁止**被 ambient 消费 |
-| UI / i18n / 菜单 proxy | **低～中** | Founder → Buy Yin a Tea；入口从常驻菜单改为 **情境触发 + About 底**（须改编排，非纯改名） |
-| 乐观 `?supporter=1` | **仅 A 可接受** | 徽章无内容价值时与现强度说明一致；**不得**拷到 B |
+| Stripe Checkout 一次性 `mode=payment` | **高** → 抽进公共层后由 tip 调用 | 改 Price / 文案 / success URL 对应「请茶」 |
+| Webhook 验签骨架 | **高** → 公共层 | tip 与 sanctuary **分 handler / 分 Price id / 分 KV value** |
+| 邮箱 verify 模式 | **高** | tip 用 tip schema；sanctuary 用 entitlement schema——**分路由或分 path** |
+| 限流 / CORS / secrets / wrangler | **高** | 公共配置 |
+| 前端 `supporterGate` | **中** → 改 `tipGate` | **仅** tip/徽章；禁止被 ambient 消费 |
+| UI / i18n / 菜单 | **低～中** | Founder/Supporter → Tea/Tip（i18n）；入口改为情境 + About 底 |
+| 乐观 `?supporter=1` | **仅 A 可接受** | 徽章无内容价值；**不得**拷到 B |
 
-**结论**：技术形态 **直接对应 Tea，不推倒**；主要工作 = 改名/改文案 + 触发点从常驻改为情境化 + tip schema 轻量化。B 另开 feature，共享 Stripe 账号与 Workers 模式，**分 Price、分 KV schema、分校验强度**。
+**结论**：分支 **改道为 tip-jar，不推倒、不改名为 Sanctuary**。B **新建**，只共享 payment 工具层。
 
-### 2.7 阶段 2 候选（非 v1）· 请茶 → 24h 体验卡
+### 2.8 阶段 2 候选（非 v1）· 请茶 → 24h 体验卡
 
 > **想法**：未购 B 的用户打赏后，赠送短时（如 24h）深度音效/场景体验，作为 A→B 转化漏斗。  
-> **v1 范围**：**不做**。v1 先让 A/B **两个入口独立跑**，不做互相导流，避免范围膨胀。  
-> **阶段 2** 再评估；若做，须禁焦虑倒计时话术，并单独过红线审查。
+> **v1 范围**：**不做**。v1 先让 A/B **两个入口独立跑**。  
+> **阶段 2** 再评估；若做，须禁焦虑倒计时话术。
 
 ---
 
@@ -179,20 +192,19 @@
 
 | 项 | Brief | 风险感 |
 |---|---|---|
-| 「?」简介文案 + 应用内 Privacy | `task-in-app-privacy-and-purpose-copy.md` | **低**（文案 + 只读叠层） |
-| Reflection 通用共鸣 | `task-reflection-echo-copy-pool.md` | **低**（文案池；触 Reflection UI，须回流测） |
-| 壁纸免费赠送 | `task-digital-wallpapers-gift.md` | **低**（静态资源 + 存图；对齐 Quiet Line） |
+| 「?」简介文案 + 应用内 Privacy | `task-in-app-privacy-and-purpose-copy.md` | **低** |
+| Reflection 通用共鸣 | `task-reflection-echo-copy-pool.md` | **低** |
+| 壁纸免费赠送 | `task-digital-wallpapers-gift.md` | **低** |
 
-> **说明**：先前「等 Stripe secrets」**只针对**真收款验收 / Tea·Sanctuary 上线，**不是**上述三项的前置。
-
-增长包 Zen Cinema / Quiet Line / 电子书车道见 `task-growth-content-pack-decision.md`。
+增长包 Zen Cinema / Quiet Line / **仅 ②A 电子书免费下载** 见 `task-growth-content-pack-decision.md`。  
+**②B 电子书连续练习解锁：已取消**（2026-08-07）——解锁只跟付费（B Sanctuary）绑定，不再叠加练习时长/频率门槛。
 
 ---
 
 ## 五、阶段 2 设计原则（摘要）
 
-允许：付费 / Lifetime / Tea tip / 未来可选 tea-trial。  
-禁止：连续 N 天解锁、断签收回/羞辱、打卡日历当付费门闩。
+允许：付费 Lifetime（B）/ Tea tip（A）/ 未来可选 tea-trial。  
+禁止：连续 N 天解锁、断签收回/羞辱、打卡日历当付费门闩、任何 streak 解锁 API。
 
 ---
 
@@ -201,29 +213,94 @@
 - 订阅制及续费生命周期  
 - A→B 24h 体验卡导流  
 - Apple Health / Widget 当付费卖点  
-- 用 A 乐观 boolean 解锁 B 内容  
+- 用 A tip 状态解锁 B 内容  
 - 打赏强制弹窗 / 「不打赏就怎样」  
 - 付费锁核心练习路径  
+- 把 tip-jar 分支改名为 Sanctuary / 合并成单入口  
+- 电子书 ②B（已取消）  
 - 未拍板定价数字上线  
 - Capacitor / 壳脚手架（未另下令）  
 
 ---
 
-## 七、实现开工口令（过目确认后）
+## 七、实现开工口令（§八确认 + 过目后）
 
-1. **改道** `feature/founder-supporter-pack` → Buy Yin a Tea（文案 + 情境触发 + tip schema）  
-2. **新开** `feature/yin-sanctuary-lifetime`（Lifetime Checkout + 真校验 + 音效/高级表现消费）  
-3. 低风险增发可另开：`feature/in-app-privacy-purpose-copy` / `feature/reflection-echo-copy-pool` / `feature/digital-wallpapers-gift`  
+1. **改道** `feature/founder-supporter-pack` → `feature/yin-tip-jar`（Tea/Tip i18n + `tipGate` + 情境触发 + tip schema）  
+2. **新开** `feature/yin-sanctuary-lifetime`（公共 payment 层 + `sanctuaryEntitlementGate` + Lifetime 真校验 + 音效/高级表现消费）  
+3. 低风险增发可另开：Privacy / Reflection echo / 壁纸  
+
+---
+
+## 八、改名清单（双表 · **只列，待你确认后再改代码**）
+
+> 原则：对内可用中性标识符；**对外展示措辞只走 i18n**（Tea / Sanctuary），方便以后改文案不牵动代码。  
+> **禁止**把 tip-jar 标识符改成 Sanctuary；**禁止**把两套 gate 合成一套。
+
+### 表 A · 打赏（Tip / Tea）— 由 `feature/founder-supporter-pack` 改道
+
+| 现用（Founder/Supporter） | 建议对内 | 对外 i18n（示例方向） |
+|---|---|---|
+| 分支 `feature/founder-supporter-pack` | **`feature/yin-tip-jar`** | — |
+| 文档 `FOUNDER_SUPPORTER_PACK.md` | `YIN_TIP_JAR.md`（或 `BUY_YIN_A_TEA.md`） | — |
+| `supporterGate.js` / `isSupporter` 等 | `tipGate.js` / `hasTipped` / `readTipStatus` | — |
+| `SupporterPackUI.js` / `#supporter-pack-card` | `TipJarUI.js` / `#yin-tip-jar-card` | Buy Yin a Tea / Thank Yin |
+| locales `SUPPORTER_*` | `TIP_*` 或 `TEA_*` 键名 | 文案：Tea / Tip Jar；**禁用** Founder / Supporter / Sanctuary |
+| orchestration proxy `'supporter'` | `'tip-jar'` 或 `'tea'` | 菜单若保留：短写 Tea（主推仍是情境触发，非常驻抢戏） |
+| `onSupporter` / `__supporterPack` | `onTipJar` / `__tipJar` | — |
+| `focus-tiger.supporter-status.v1` | `focus-tiger.tip-jar.v1` | 值：`{ tipped, tipCount, lastTippedAt }`（+ 可选 email） |
+| Query `?supporter=1` | `?tip=1` 或 `?tea=1`（仍仅徽章级乐观；文档写明强度） | — |
+| `cloud/.../supporterKv.ts` | `tipKv.ts`（或公共 kv 工具 + tip 专用 put） | — |
+| `/api/verify-supporter` | `/api/verify-tip`（或 `/api/verify-tea`） | — |
+| KV `supporter:{email}` | `tea:{email}` 或 `tip:{email}` | tip schema，**非** unlock |
+| `SUPPORTER_KV` 绑定名 | 可沿用绑定改语义，或 `TIP_KV`（运维另估） | — |
+| TEST_TRACKER「Founder Supporter Pack」两行 | 「Buy Yin a Tea / Tip Jar」 | — |
+| PROCESS/ARCH/ENV/SHARED/Z_INDEX 中 Founder 字样 | Tip / Tea | — |
+
+**本轨禁止出现的词（产品文案与对外名）**：Sanctuary、Founder、Supporter Pass、Yin Pro。
+
+### 表 B · Sanctuary（解锁）— **新建**，不改自 tip 分支文件名硬改
+
+| 项 | 建议对内 | 对外 i18n（示例方向） |
+|---|---|---|
+| 新分支 | `feature/yin-sanctuary-lifetime` | — |
+| 新文档 | `YIN_SANCTUARY.md` | Yin's Sanctuary / Sanctuary Pass |
+| 新 gate 模块 | `sanctuaryEntitlementGate.js`（或 `entitlementGate.js` 若仅服务 B） | — |
+| 新 UI | `SanctuaryUnlockUI.js` / `#yin-sanctuary-card` | Unlock Yin's Sanctuary + 权益三条 |
+| locales | `SANCTUARY_*` | Sanctuary / Lifetime；**禁用** Tea/Tip 混称「已解锁全库」 |
+| orchestration（若 Idle ⋯ 有入口） | proxy `'sanctuary'`（**可有但不挡 Sit**；主入口仍在锁项处） | Sanctuary |
+| storage | `focus-tiger.sanctuary-entitlement.v1` | `{ unlocked, unlockedVia, unlockedAt, itemId }` |
+| cloud 路由 | `/api/create-sanctuary-checkout`、`/api/verify-sanctuary`（名称待定） | — |
+| KV | `sanctuary:{email}`（可含 `itemId`） | entitlement schema |
+| 校验强度 | **必须**服务端确认 Checkout Session；**禁止**乐观 query 解锁真内容 | — |
+
+**本轨禁止**：复用 `tipGate` / tip localStorage / `?tip=` 写 `unlocked`；在 tip UI 里卖全库解锁。
+
+### 表 C · 仅公共 payment 层（新建或从 founder cloud 抽）
+
+| 项 | 建议 |
+|---|---|
+| `cloud/src/lib/stripe.ts` 等 | 保留/抽为共享：建 Checkout、验 webhook 签名 |
+| CORS / rateLimit / secrets | 共享 |
+| tip vs sanctuary | **分 Price ID、分 success URL、分 webhook 业务分支、分 KV value** |
+
+### 表 D · `origin/develop` 与本 docs 分支
+
+| 位置 | 动作 |
+|---|---|
+| 本 Brief / PROCESS / MVP / TEST_TRACKER | 已按双轨 + tip-jar 命名更新（本回合） |
+| `task-growth-content-pack-decision.md` | ②B **取消** |
+| develop 运行时 | 尚无 Founder 代码；改名执行在 tip-jar 分支 + 新建 sanctuary 分支 |
 
 ---
 
 ## 待你决定（仍开放）
 
-1. **本 Brief 是否确认落地**（确认后可开/更新 docs PR 合 `develop`；再开实现）  
-2. A/B **定价数字**（不锁亦可先改道文案）  
+1. **§八双表是否按此执行**（确认后再改代码 / 分支改名）  
+2. A/B **定价数字**（仍不锁）  
 3. 深度音效 / 高级动画 **分层名单**  
-4. 低风险三项（Privacy / Reflection echo / 壁纸）是否作为下一实现优先（**建议可以**，与 Stripe 无关）  
-5. 电子书 ②B：取消 vs 非 streak 改设计  
-6. 可选 PWA 是否立项  
+4. 低风险三项（Privacy / Reflection echo / 壁纸）是否下一实现优先  
+5. 可选 PWA 是否立项  
 
-确认前：**禁止**静默改支付运行时代码。
+**已拍板无需再选**：双入口并存；tip ≠ Sanctuary；②B **取消**；B 仅 Lifetime；共享 payment、分离 gate。
+
+确认 §八 前：**禁止**静默改支付运行时代码。
