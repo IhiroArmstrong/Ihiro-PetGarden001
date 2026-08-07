@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote' | 'tip-jar'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'tip-jar'} proxy
  * @property {string} labelKey
  */
 
@@ -343,6 +343,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'daily-quote',
     labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL'
+  });
+
+  // Digital wallpapers gift — curated stills; free save (no tip / Sanctuary gate).
+  out.push({
+    proxy: 'wallpapers',
+    labelKey: 'WALLPAPER_MENU_LABEL'
   });
 
   // Tip Jar (Buy Yin a Tea) — gratitude tip; does not unlock content.

@@ -375,8 +375,8 @@
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
 - **双轨付费实现（A Tea + B Sanctuary）**（方向已锁；Stripe 另开 feature；见 `task-tech-direction-v1-shell-monetization.md`）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
-- **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；已同意排期）
-- **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`）
+- **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
+- **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
 
 ---
