@@ -78,6 +78,7 @@ export class WideIdleMoreMenu {
    *     onLanguage?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
+   *     onTipJar?: () => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -607,6 +608,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onDailyQuote?.();
+      return;
+    }
+    if (key === 'tip-jar') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onTipJar?.();
       return;
     }
     if (key === 'sound') {

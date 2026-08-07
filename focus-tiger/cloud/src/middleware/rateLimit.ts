@@ -7,6 +7,15 @@ import { errorJson } from "../lib/http";
  */
 export const RATE_LIMIT_PER_MINUTE = 60;
 
+/** Tip Jar: email restore — tighter than global (product: 5–10/min/IP). */
+export const VERIFY_TIP_RATE_LIMIT_PER_MINUTE = 10;
+
+/**
+ * Stripe webhook: exempt from global 60/min, but still capped to blunt
+ * unsigned flood DoS on HMAC verification (product: ~300/min/IP).
+ */
+export const STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE = 300;
+
 const WINDOW_MS = 60_000;
 
 type Bucket = {
@@ -39,11 +48,16 @@ export function rateLimitKey(request: Request): string {
 }
 
 /**
- * In-memory sliding fixed window: at most RATE_LIMIT_PER_MINUTE hits per key / minute.
+ * Fixed window: at most `limit` hits per key / minute.
  * Returns null if allowed; otherwise a 429 Response.
  */
-export function enforceRateLimit(request: Request): Response | null {
-	const key = rateLimitKey(request);
+export function enforceRateLimit(
+	request: Request,
+	opts: { limit?: number; bucketPrefix?: string } = {},
+): Response | null {
+	const limit = opts.limit ?? RATE_LIMIT_PER_MINUTE;
+	const prefix = opts.bucketPrefix ?? "global";
+	const key = `${prefix}:${rateLimitKey(request)}`;
 	const now = Date.now();
 	let bucket = buckets.get(key);
 
@@ -54,15 +68,15 @@ export function enforceRateLimit(request: Request): Response | null {
 
 	bucket.count += 1;
 
-	if (bucket.count > RATE_LIMIT_PER_MINUTE) {
+	if (bucket.count > limit) {
 		const retryAfterSec = Math.max(
 			1,
-			Math.ceil((bucket.windowStart + WINDOW_MS - now) / 1000),
+			Math.ceil((bucket.windowStart + WINDOW_MS) / 1000 - now / 1000),
 		);
 		const res = errorJson(
 			429,
 			"rate_limited",
-			`Too many requests; limit is ${RATE_LIMIT_PER_MINUTE} per minute`,
+			`Too many requests; limit is ${limit} per minute`,
 		);
 		res.headers.set("retry-after", String(retryAfterSec));
 		return res;
