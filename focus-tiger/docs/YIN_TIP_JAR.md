@@ -1,8 +1,9 @@
 # Buy Yin a Tea · Tip Jar
 
-> **状态（2026-08-07）**：实现于 `feature/yin-tip-jar`（由 `feature/founder-supporter-pack` 改道）。  
+> **状态（2026-08-07）**：实现于 `feature/yin-tip-jar`（由 `feature/founder-supporter-pack` 改道，PR #161 已合 develop）。  
 > **性质**：打赏 / 感激；**不解锁**音效或动画。  
-> **零耦合**：不得被 `sanctuaryEntitlementGate` 读取；见 `task-tech-direction-v1-shell-monetization.md` §2.6。
+> **零耦合**：不得被 `sanctuaryEntitlementGate` 读取；见 `task-tech-direction-v1-shell-monetization.md` §2.6。  
+> **前身文档**：`FOUNDER_SUPPORTER_PACK.md` 已废止；部署清单迁入下文「§ 部署（任务 5）」。
 
 ## Schema
 
@@ -20,8 +21,51 @@
 | POST | `/api/stripe-webhook` | Verified write to `TIP_KV` |
 | POST | `/api/verify-tip` | Email restore |
 
-Success URL should include `?tip=1`（乐观徽章级回跳）。
+Success URL should include `?tip=1`（乐观徽章级回跳；**禁止**用 tip query 写 Sanctuary `unlocked`）。
 
 ## UI
 
 Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（里程碑 / Honesty / About）后续再加。
+
+---
+
+## § 部署（任务 5）· **尚未完成**
+
+> **硬边界**：仓库里的 Tip Jar **应用代码 + Worker 路由**可以合 develop；**真实收款**必须另做本运维/配置任务。  
+> **代码 alone 无法完成真实收款。**  
+> 权威操作清单（自原 Founder Pack §6 迁入，语义改为 Tea / Tip）：
+
+### 仍须人工完成的步骤
+
+1. **Stripe Test**：Dashboard 建 **one-time** Price（当前脚手架默认文案 **USD $9.99**；正式定价仍属 Brief「待你决定」，可先用 Test Price 跑通）→ 得到 `price_…`
+2. 把 `price_…` 写入 Worker **`STRIPE_PRICE_ID`**（`cloud/wrangler.jsonc` → `vars`，或 Dashboard vars）
+3. **`npx wrangler kv namespace create TIP_KV`**（及 `--preview`）→ 把真实 id **替换** `wrangler.jsonc` 里占位  
+   `00000000000000000000000000000001` / `…0002`
+4. **`npx wrangler secret put STRIPE_SECRET_KEY`**  
+   **`npx wrangler secret put STRIPE_WEBHOOK_SECRET`**
+5. **`cd focus-tiger/cloud && npm run deploy`** → 得到 `*.workers.dev`（或你的 Worker URL）
+6. Stripe Dashboard **配 Webhook** → 指到  
+   `https://<worker>/api/stripe-webhook`  
+   （至少 `checkout.session.completed`；签名密钥 = 上一步 `STRIPE_WEBHOOK_SECRET`）
+7. 前端构建环境设 **`VITE_CLOUD_API_BASE_URL`** = Worker 公开 base（无尾斜杠亦可；见 `tipJarGate`）  
+   未配置时：免费主路径不变；Tip 卡提示未配置 / 无法开 Checkout
+
+### 本地自检（部署后）
+
+- 产品壳点 **Buy Yin a tea** → 进 Stripe Checkout（Test 卡）→ success 回跳 `?tip=1` → 本地 tip 状态 / 徽章级反馈  
+- Webhook 写入 `TIP_KV` 后，换设备用邮箱走 **`/api/verify-tip`** 可恢复 tip 记录  
+- **不得**因此解锁 Sanctuary / 氛围全库（零耦合抽查）
+
+### 与 Sanctuary（B）的关系
+
+- Tip 与 Sanctuary **分 Price ID、分 KV、分 webhook 业务分支**（可共享 `cloud/src/lib/stripe.ts` 工具层）  
+- B 的 Lifetime Checkout / `SANCTUARY_*` secrets **另开部署清单**（`YIN_SANCTUARY.md`）；**不要**复用本条 `STRIPE_PRICE_ID` / `TIP_KV` 当解锁真凭证
+
+### 排期口径
+
+| 层 | 状态 |
+|---|---|
+| 前端 Tip UI + `tipJarGate` | 已合 develop（#161） |
+| Worker Checkout / webhook / verify 代码 | 已在 `cloud/` |
+| **任务 5 · 部署（本表）** | **未做** —— 真实收款阻塞项 |
+| 情境化 tip 入口（里程碑 / Honesty / About） | 产品后续；不挡任务 5 |
