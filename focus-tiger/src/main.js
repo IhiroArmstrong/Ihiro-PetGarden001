@@ -209,7 +209,7 @@ async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
 
-  // PWA: network-only SW in production only (no Cache Storage; icons still pending).
+  // PWA: network-only SW in production only (no Cache Storage).
   void registerServiceWorker();
 
   // i18n：静态 HTML 已是默认语言（en）；此处接管标题/遮罩并跟随语言切换刷新

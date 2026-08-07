@@ -113,13 +113,13 @@ manifest.webmanifest：
   theme_color / background_color: #e8e6e1
   display: standalone
   start_url: /?source=pwa
-  icons: pwa-192 / pwa-512 / pwa-maskable-512（美术待补；见 public/icons/pwa-ICONS-PENDING.md）
+  icons: pwa-192 / pwa-512 / pwa-maskable-512 + apple-touch-icon（已入库；见 public/icons/pwa-icons.md）
 
 service worker（方案 A）：几乎不缓存——fetch 一律走网络，不写 Cache Storage；
   不预缓存 sprites / 音频 / 3D。发版后旧内容卡死风险近零。
   生产构建才注册；dev 不注册（避免打坏 Vite HMR）。
 
-骨架状态：接线已落在 feature/pwa-basics；**图标到位前不可验收完成**。
+状态（2026-08-08）：骨架 + 品牌图标已落在 feature/pwa-basics；**安装体验待人工验收**（勿自行标已通过）。
 ```
 > **2026-07-30 口径（仍有效）**：本项**不是**「本地电脑版 APP」的最终打包选型。桌面壳（Electron / Tauri / PWA·薄壳）见 `PROCESS.md` Backlog「**本地桌面 APP 打包选型**」。**v1.0.0 纯本地 / v1.1 云端**已拍板：核心路径不依赖联网；service worker 只能增强，不得变成「无网不可用」。  
 > **2026-08-07**：可选 PWA 基础层已立项；旧「离线缓存 3D」口径作废，以本任务块与 PRD 为准。

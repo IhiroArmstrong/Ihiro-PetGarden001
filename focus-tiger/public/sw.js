@@ -9,8 +9,7 @@
  * + no SW cache). Ensure host serves this file with Cache-Control: no-cache
  * when possible so SW script updates are not stuck behind HTTP cache.
  *
- * Icons: brand PNGs still pending — see public/icons/pwa-ICONS-PENDING.md
- * Do not claim install acceptance until those files exist.
+ * Icons: public/icons/pwa-*.png + apple-touch-icon.png (see pwa-icons.md).
  *
  * Out of scope: push subscription, offline-first, Capacitor.
  */
