@@ -206,6 +206,15 @@ UI:   SanctuaryUnlockUI.js
 
 唯一允许共享：`cloud/` 支付工具层（建 Checkout / 验签 / 限流）——**分 Price、分 success URL、分 webhook 分支、分 KV value**；前端两套 gate **零互相 import**。
 
+#### 硬约束 · 单元测试兜底（B 模块开工时一并做 · 非本 docs 回合）
+
+等 `sanctuaryEntitlementGate.js` **真正写出来后**，须在 **A 与 B 各自的单元测试**里各加至少一条断言：
+
+- 模块源码（或依赖图）中 **没有** `import` / `require` 对方（例：读 `tipJarGate.js` 文本不得匹配 `sanctuaryEntitlement`；读 `sanctuaryEntitlementGate.js` 不得匹配 `tipJar` / `tipGate` / `supporterGate`）；  
+- 可用简单静态字符串检查或小型依赖图扫描，**不必**上重量级 bundler 分析。  
+
+目的：把「互相禁止 import」从 Brief 一句话变成 **有测试兜底的硬约束**。可放在 `feature/yin-sanctuary-lifetime` 开工时同批落地，**现在不必实现**。
+
 ### 2.7 `feature/founder-supporter-pack` → A Tip Jar：复用评估
 
 | 能力 | 复用度 | 说明 |
