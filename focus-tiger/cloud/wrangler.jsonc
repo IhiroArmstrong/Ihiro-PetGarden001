@@ -29,8 +29,8 @@
 	],
 	"vars": {
 		"STRIPE_PRICE_ID": "",
-		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&supporter=1",
-		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&supporter=cancel",
+		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&tip=1",
+		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&tip=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
 	}
 }
