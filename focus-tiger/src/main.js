@@ -66,6 +66,7 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
+import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
@@ -552,6 +553,8 @@ async function init() {
   window.__zenCinemaCard = zenCinemaCardUI;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
+  const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
+  window.__digitalWallpapersCard = digitalWallpapersCardUI;
   const tipJarUI = new TipJarUI(document.body, {});
   window.__tipJar = tipJarUI;
   consumeTipReturnQuery({});
@@ -956,17 +959,26 @@ async function init() {
     },
     onZenCinema: () => {
       dailyZenQuoteCardUI.close();
+      digitalWallpapersCardUI.close();
       tipJarUI.close();
       zenCinemaCardUI.open();
     },
     onDailyQuote: () => {
       zenCinemaCardUI.close();
+      digitalWallpapersCardUI.close();
       tipJarUI.close();
       dailyZenQuoteCardUI.open();
+    },
+    onWallpapers: () => {
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.close();
+      tipJarUI.close();
+      digitalWallpapersCardUI.open();
     },
     onTipJar: () => {
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
+      digitalWallpapersCardUI.close();
       tipJarUI.open();
     },
     onHonesty: () => {
@@ -999,6 +1011,7 @@ async function init() {
       languagePreferenceUI.closePanel();
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
+      digitalWallpapersCardUI.close();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },
