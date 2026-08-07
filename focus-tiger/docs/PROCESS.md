@@ -312,7 +312,8 @@
 - **v1.0 纯本地 / v1.1 云端（2026-07-30 已拍板）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网与云端关键算法，优先保障可离线完整体验；**v1.1** 快速跟进云端算法。代码保留云端可扩展性（保留 `cloud/` 骨架与前后端解耦；**禁止**在 v1.0 把核心门闩绑死在必须成功的云请求上）。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。
 - **用户上传氛围乐（2026-07-31 已拍板）**：**v1.0.0 必交付**；砍法与 Brief 见上「最近拍板」/ Backlog；**实现已合 `develop`（PR #51）**（非开放产品决策，留此防重复开议题）。
-- **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。
+- **本地桌面 APP 打包选型（2026-07-30 · 壳未拍板 · 开会时机已定）**：候选仍为 Electron / Tauri / PWA·薄壳。**何时开讨论（流程已定，勿再问）**：`v1.0.0` 纯本地功能冻结前约 1 周，或你说「准备打 v1.0 / 要桌面包」时立刻开短决策；不打断当前 UI/情绪主线；**禁止** tag 后再选型。**「高于 CI 细节」** = 与「CI 全量 smoke+e2e / 降 visibility flaky」**争排期时先开本决策**；**不是**等 CI 做完才谈（CI 也不是本决策的前置）。云端/离线产品面已拍板（见上条）。详情见 Backlog。**2026-08-07 澄清**：技术方向纪要锁定的是 **v1 不上手机商店原生包**（未来手机壳默认 Capacitor）；**不**取消本桌面壳开放项，亦**不**把 PWA 默认成最终电脑版交付。见 Brief `task-tech-direction-v1-shell-monetization.md`。
+- **v1 技术方向 · 壳/付费/健康（2026-08-07 已拍板方向 · 未开工实现）**：v1 默认 **纯 Web**；健康同步非 v1；付费主验证路径 = 氛围深度 + **非核心**高级表现分层（核心 Sit/Arrival/Idle/诚实/每日首次庆祝等不得付费墙）；创始人纪念包 **降为非 v1 主路径**（并行 `feature/founder-supporter-pack` 如何处置另拍板）。SSOT：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
 - **「?」未读线索 / 朱红用途（2026-07-23 / 7-30 已拍板）**：onboarding 探索性 tip 用薄荷绿 click 圆点（`triggerMode=click` / PR #30）；朱红 `--color-highlight` 留给真正通知/alert，**不再**挂在「?」钮内表示 tip 未读。详见 `ONBOARDING_HINTS.md` §〇 / `TEST_TRACKER` click 圆点 tier 行。
 - **应用内提醒横幅 · 忙碌策略（2026-07-23 已拍板）**：固定 **`suppress`**（Arrival / Focusing / Celebrate / Reflection / 微仪式期间隐藏横幅、不排队；**不做** `defer`）。入口在热力图旁；见 `TEST_TRACKER` L186、`SCENARIO_TESTS` 场景 P3、`SHARED_RESOURCES`。
 - **「本周陪伴」7 格热力图（视觉验收）**：Idle 左下已挂；请人工看亮/暗对比是否「不羞辱」（暗格仅为浅色，非惩罚）
@@ -323,7 +324,9 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-06）**：增长向内容包（YouTube 菜单入口 → 每日签文存图 → 电子书 A 下载 → 电子书 B 独立解锁）口径已锁；**可延后增发**，不挤占壳选型/主路径债。禁止 Reflection 边缘入口；签文不复活 soft-schedule、不做「一键分享」核心承诺、仅 en+ja；电子书 B **禁止**碰 MilestoneGlow，文案禁「里程碑/成就/打卡」混 Glow。Brief：`task-briefs/task-growth-content-pack-decision.md`。**① Zen Cinema / ③ Quiet Line 已合 develop**（PR #148 / #153）。**同日晚用户书面**：电子书 **②A/②B 延迟安排**（非最急）——下一排期勿默认开工电子书。
+**最近拍板（2026-08-07）**：技术方向纪要——v1 默认纯 Web（不上手机商店壳）；未来手机壳默认 Capacitor；桌面壳仍开放；健康同步非 v1；付费主验证 = 氛围/非核心表现分层（守免费底线）；创始人包降非主路径。Brief：`task-briefs/task-tech-direction-v1-shell-monetization.md`。无运行时。根目录分析师中文草稿非 SSOT。
+
+**最近拍板（2026-08-06）**：增长向内容包（YouTube 菜单入口 → 每日签文存图 → 电子书 A 下载 → 电子书 B 独立解锁）口径已锁；**可延后增发**，不挤占壳选型/主路径债。禁止 Reflection 边缘入口；签文不复活 soft-schedule、不做「一键分享」核心承诺、仅 en+ja；电子书 B **禁止**碰 MilestoneGlow，文案禁「里程碑/成就/打卡」混 Glow。Brief：`task-briefs/task-growth-content-pack-decision.md`。**① Zen Cinema / ③ Quiet Line 已合 develop**（PR #148 / #153）。**同日晚用户书面**：电子书 **②A/②B 延迟安排**（非最急）——下一排期勿默认开工电子书。**2026-08-07**：技术方向纪要不自动上调本包排期；要提前须另拍板。
 
 **最近拍板（2026-08-05）**：吹花鼓励冷启动微仪式——策略 C + 同日 XOR 欢迎池；观察式文案；时机/交互/flag 见 `FLOWER_BLOW_WELCOME_DESIGN.md`；**先 Phase 1 Lab，再产品接线**（须走 Dispatcher，禁止平行硬调）。
 
@@ -347,7 +350,7 @@
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 - **荷花成长场景**（复用 `IncenseComplete` 立体荷花 + 金斑浮动；荷花持续增加至布满画面）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
-- **系统级健康中枢读取**（HealthKit Mindful Minutes / Health Connect MindfulnessSession；Phase 1 规划；补充诚实机制、非替代；详见 `ARCHITECTURE.md` Backlog）
+- **系统级健康中枢读取**（HealthKit Mindful Minutes / Health Connect MindfulnessSession；Phase 1；**非 v1**；未来壳默认 Capacitor；补充诚实机制、非替代；详见 `ARCHITECTURE.md` Backlog + `task-tech-direction-v1-shell-monetization.md`）
 - Browser First（插件 / 系统级监控等）
 - 节奏敲击正念小游戏（「数字木鱼」）
 - 角色/装扮可替换性完整功能（用户可选换装 UI、多套装扮/角色素材产出）— 架构扩展点已预留，功能本体待市场反馈后排期
@@ -709,6 +712,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 - **状态**：壳 **开放**；开会时机与云端/离线产品面 **已定**。
 - **不在范围**：本条不立项写脚手架；不替代 Browser First；不把手机原生 App 混入。
+- **与 2026-08-07 技术方向纪要的关系**：手机商店壳 / Capacitor **不**并入本条拍板；本条仍只解「本地电脑版」。详见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 
 ### Backlog:v1.1 云端算法（v1.0 纯本地之后）
 
