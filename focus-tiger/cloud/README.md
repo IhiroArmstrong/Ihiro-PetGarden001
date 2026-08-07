@@ -1,6 +1,8 @@
 # Focus Tiger · Cloudflare Workers (`cloud/`)
 
-独立 API 骨架（TypeScript + Wrangler）。**尚未接入前端**；本目录可单独 `wrangler dev` 跑通两个 mock 接口，供人工 review 路径与字段设计。
+独立 API（TypeScript + Wrangler）。含历史 stub 路由 + **Buy Yin a Tea · Tip Jar**（一次性 Stripe Checkout + KV）。
+
+权威产品/部署说明：[`../docs/FOUNDER_SUPPORTER_PACK.md`](../docs/FOUNDER_SUPPORTER_PACK.md) · 密钥隔离：[`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。
 
 ## 前置
 
@@ -29,94 +31,72 @@ curl -s http://127.0.0.1:8787/health
 # {"ok":true,"service":"focus-tiger-cloud"}
 ```
 
-## Mock 接口
+## 路由一览
 
-| Method | Path | 必需 JSON 字段（暂定，待 review） | 固定响应 |
+| Method | Path | 说明 |
+|---|---|---|
+| `GET` | `/health` | 健康检查 |
+| `POST` | `/api/daily-message` | stub（mock） |
+| `POST` | `/api/emotion-weight` | stub（mock） |
+| `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（one-time）→ `{ url }` |
+| `POST` | `/api/stripe-webhook` | Stripe 验签 → 写 `TIP_KV` |
+| `POST` | `/api/verify-tip` | `{ email }` → `{ tipped, lastTippedAt? }` |
+
+### Tip Jar 限流
+
+| 路由 | 限流 |
+|---|---|
+| 默认 API | 60/min（内存；按 IP / Bearer） |
+| `/api/verify-tip` | **10/min/IP**（单独桶） |
+| `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
+
+### curl：邮箱核验（无记录时）
+
+```bash
+curl -s -X POST http://127.0.0.1:8787/api/verify-tip \
+  -H 'content-type: application/json' \
+  -d '{"email":"nobody@example.com"}'
+# {"tipped":false}
+```
+
+Checkout / webhook 需配置 `STRIPE_*` secrets 与真实 KV id（见 `FOUNDER_SUPPORTER_PACK.md` §6）。
+
+## Stub 接口（仍保留）
+
+| Method | Path | 必需 JSON 字段 | 固定响应 |
 |---|---|---|---|
 | `POST` | `/api/daily-message` | `locale`, `localDate` | `{ "message": "mock", "variantSeed": "0" }` |
 | `POST` | `/api/emotion-weight` | `emotionKey`, `sessionPhase` | `{ "variant": "default", "weight": 1.0 }` |
-
-字段缺失、非字符串或空字符串 → **`400`**，body 形如：
-
-```json
-{ "error": "missing_fields", "detail": "Missing or empty required fields: locale" }
-```
-
-### curl：每日文案 stub
-
-```bash
-curl -s -X POST http://127.0.0.1:8787/api/daily-message \
-  -H 'content-type: application/json' \
-  -d '{"locale":"en","localDate":"2026-07-22"}'
-```
-
-期望：
-
-```json
-{"message":"mock","variantSeed":"0"}
-```
-
-缺字段示例：
-
-```bash
-curl -s -X POST http://127.0.0.1:8787/api/daily-message \
-  -H 'content-type: application/json' \
-  -d '{"locale":"en"}'
-# 400 missing_fields（缺 localDate）
-```
-
-### curl：情绪权重 stub
-
-```bash
-curl -s -X POST http://127.0.0.1:8787/api/emotion-weight \
-  -H 'content-type: application/json' \
-  -d '{"emotionKey":"Idle","sessionPhase":"arrive"}'
-```
-
-期望：
-
-```json
-{"variant":"default","weight":1}
-```
-
-## 频率限制（内存 stub）
-
-- 阈值写死：`RATE_LIMIT_PER_MINUTE = 60`（见 `src/middleware/rateLimit.ts`）
-- 键：`Authorization: Bearer <token>` 优先，否则 `CF-Connecting-IP` / `X-Forwarded-For` / `X-Real-IP`
-- 超限 → **`429`** + `Retry-After`
-- **TODO**：迁到 Workers **KV**（或多 isolate 共享存储）；当前 `Map` 仅单 isolate、进程内有效，`wrangler` 热重载会清空
 
 ## 目录结构
 
 ```
 cloud/
-  wrangler.jsonc      # Worker 名 focus-tiger-cloud
+  wrangler.jsonc      # Worker 名 focus-tiger-cloud + TIP_KV
   src/
-    index.ts          # 路由入口
-    types.ts          # Env + 请求/响应类型（暂定）
-    lib/http.ts
-    lib/validate.ts   # JSON + 必需字段
+    index.ts
+    types.ts
+    lib/http.ts | validate.ts | cors.ts | stripe.ts | tipKv.ts
     middleware/rateLimit.ts
-    routes/dailyMessage.ts
-    routes/emotionWeight.ts
+    routes/dailyMessage.ts | emotionWeight.ts
+    routes/createTipCheckoutSession.ts | stripeWebhook.ts | verifyTip.ts
 ```
 
-## 部署（本步不做）
+## 部署
 
 ```bash
+# 1) 替换 wrangler.jsonc 中 KV 占位 id
+# 2) secrets
+npx wrangler secret put STRIPE_SECRET_KEY
+npx wrangler secret put STRIPE_WEBHOOK_SECRET
+# 3)
 npm run deploy
 ```
 
-需已登录 Cloudflare（`npx wrangler login`）。骨架阶段请先本地 review，勿急着接正式业务。
+先用 **workers.dev** 验证；正式域名另开任务。
 
 ## 与前端的关系
 
-前端代码**未改**。接入时再定 CORS、鉴权与正式字段；本 README 中的必需字段仅为 stub 校验占位，**等待人工拍板**。
+可选接线：Vite `VITE_CLOUD_API_BASE_URL`（公开 base）。未配置时免费主路径不变；Founder 面板提示「未配置」。
 
-**密钥 / 环境隔离**：见 [`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。客户端禁止硬编码 Secret；Worker secrets 用 `wrangler secret put`；当前 stub **无需** GitHub Actions Secrets。
-
-### 发布节奏（2026-07-30 拍板）
-
-- **v1.0.0**：纯本地产品；**不接**本 Worker 到前端；核心练习路径不依赖联网。
-- **v1.1**：跟进云端算法时再接线；保留本目录与类型/路由骨架，便于快速扩展。
-- 权威口径：`PROCESS.md` Backlog「v1.1 云端算法」+ `MVP_PRODUCT_DEFINITION.md`「本地优先边界」。
+**密钥**：客户端禁止 Secret；Worker 用 `wrangler secret put`。

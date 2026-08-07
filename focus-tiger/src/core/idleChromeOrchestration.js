@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote' | 'tip-jar'} proxy
  * @property {string} labelKey
  */
 
@@ -343,6 +343,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'daily-quote',
     labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL'
+  });
+
+  // Tip Jar (Buy Yin a Tea) — gratitude tip; does not unlock content.
+  // Primary UX is situational + About; menu entry is a secondary discoverability path.
+  out.push({
+    proxy: 'tip-jar',
+    labelKey: 'TIP_MENU_LABEL'
   });
 
   return out;

@@ -1,10 +1,23 @@
 /**
- * Worker bindings. Empty for stubs; extend when KV / secrets land.
+ * Worker bindings for Focus Tiger cloud API.
  *
- * TODO: RATE_LIMIT_KV: KVNamespace — shared rate-limit counters across isolates
+ * Secrets (wrangler secret put — never commit values):
+ *   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+ *
+ * Vars / wrangler.jsonc (non-secret):
+ *   STRIPE_PRICE_ID, CHECKOUT_SUCCESS_URL, CHECKOUT_CANCEL_URL, ALLOWED_ORIGIN
  */
 export interface Env {
-	// Reserved for future bindings.
+	TIP_KV: KVNamespace;
+
+	STRIPE_SECRET_KEY?: string;
+	STRIPE_WEBHOOK_SECRET?: string;
+
+	STRIPE_PRICE_ID?: string;
+	CHECKOUT_SUCCESS_URL?: string;
+	CHECKOUT_CANCEL_URL?: string;
+	/** Exact browser Origin allowed for CORS (e.g. http://127.0.0.1:5173). */
+	ALLOWED_ORIGIN?: string;
 }
 
 /** Provisional request bodies — awaiting product review of field names. */
@@ -30,4 +43,13 @@ export interface DailyMessageResponse {
 export interface EmotionWeightResponse {
 	variant: string;
 	weight: number;
+}
+
+export interface CreateCheckoutSessionResponse {
+	url: string;
+}
+
+export interface VerifySupporterResponse {
+	tipped: boolean;
+	lastTippedAt?: string;
 }

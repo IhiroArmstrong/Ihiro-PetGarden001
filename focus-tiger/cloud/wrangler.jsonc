@@ -1,9 +1,16 @@
 /**
- * Focus Tiger · Cloudflare Workers (API stubs)
+ * Focus Tiger · Cloudflare Workers (API + Buy Yin a Tea · Tip Jar)
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  *
- * TODO: bind KV for distributed rate limiting, e.g.
- * "kv_namespaces": [{ "binding": "RATE_LIMIT_KV", "id": "..." }]
+ * KV: replace placeholder ids after:
+ *   npx wrangler kv namespace create TIP_KV
+ *   npx wrangler kv namespace create TIP_KV --preview
+ *
+ * Secrets (never commit):
+ *   npx wrangler secret put STRIPE_SECRET_KEY
+ *   npx wrangler secret put STRIPE_WEBHOOK_SECRET
+ *
+ * Product price (Dashboard one-time Price): USD $9.99 → paste price_… into STRIPE_PRICE_ID.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -12,5 +19,18 @@
 	"compatibility_date": "2026-07-21",
 	"observability": {
 		"enabled": true
+	},
+	"kv_namespaces": [
+		{
+			"binding": "TIP_KV",
+			"id": "00000000000000000000000000000001",
+			"preview_id": "00000000000000000000000000000002"
+		}
+	],
+	"vars": {
+		"STRIPE_PRICE_ID": "",
+		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&supporter=1",
+		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&supporter=cancel",
+		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
 	}
 }

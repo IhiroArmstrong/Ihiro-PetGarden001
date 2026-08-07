@@ -57,6 +57,7 @@ export class NarrowIdleShell {
    *     onLanguage?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
+   *     onTipJar?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -790,6 +791,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onDailyQuote?.();
+      return;
+    }
+    if (key === 'tip-jar') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onTipJar?.();
       return;
     }
     if (key === 'quickstart') {
