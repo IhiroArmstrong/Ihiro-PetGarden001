@@ -153,10 +153,58 @@
 | 层 | 归属 | 说明 |
 |---|---|---|
 | **公共 payment 工具** | 可抽 `cloud/` 共享 | Stripe Checkout 创建会话、Webhook 验签、CORS、限流、secrets 模式——**tip-jar 与 sanctuary 各自调用** |
-| **A tipGate** | 仅打赏 | 状态判断、`localStorage` key、UI 入口、KV tip schema **独立** |
+| **A tipJarGate** | 仅打赏 | 状态判断、`localStorage` key、UI 入口、KV tip schema **独立**（文件名亦可简写 `tipGate.js`，与本表等价） |
 | **B sanctuaryEntitlementGate** | 仅解锁 | 状态判断、`localStorage` key、UI 入口、KV entitlement schema **独立** |
 
 **禁止**：合并成一个「统一付费入口」或一个 gate 同时管 tip + unlock；Ambient / 动画 **只读 B**，**禁止读 A tip 决定内容解锁**。
+
+#### 第4点确认表 · Gate 独立性（合并 docs PR 前请过目）
+
+> **现状（诚实）**：两套 gate **尚未**作为已实现的双模块并存。  
+> - `origin/develop`：**无** Tea / Sanctuary gate 运行时。  
+> - `feature/founder-supporter-pack`：仅有 **一套** `supporterGate.js` + `SupporterPackUI.js`（将改道为 A）。  
+> - Sanctuary：**计划新建**，代码里 **还不存在**。  
+> 因此「现在是否已经完全独立」的答案是：**目标架构已锁为完全独立；实现上目前只有 A 的前身，B 为零耦合（因未出生）。** 合并本 docs 后，改道/新建须按下表执行，验收时用 `rg` 确认无交叉 import。
+
+| | **A · Tea / Tip Jar（计划）** | **B · Sanctuary（计划）** |
+|---|---|---|
+| Gate 文件 | `src/core/tipJarGate.js`（由 `supporterGate.js` 改道；可别名 `tipGate.js`） | `src/core/sanctuaryEntitlementGate.js`（**新建**） |
+| UI 组件 | `src/ui/TipJarUI.js` / `#yin-tip-jar-card` | `src/ui/SanctuaryUnlockUI.js` / `#yin-sanctuary-card` |
+| **localStorage key** | **`focus-tiger.tip-jar.v1`** | **`focus-tiger.sanctuary-entitlement.v1`** |
+| **数据结构** | `{ tipped: boolean, tipCount: number, lastTippedAt: string \| null, email?: string \| null, source?: 'checkout-return' \| 'email-restore' \| 'manual' \| null }` | `{ unlocked: boolean, unlockedVia: 'payment' \| 'preview', unlockedAt: string \| null, itemId: string }`（例 `itemId: 'yin-sanctuary-lifetime'`） |
+| 读内容解锁？ | **禁止**（Ambient/动画不得读 A） | **是**（仅 B） |
+| 校验强度 | 徽章级；乐观 `?tip=1` 可接受 | **必须**服务端确认 Checkout Session |
+| Import 规则 | **不得** import B gate/UI | **不得** import A gate/UI |
+| 今日已有代码 | `supporterGate.js` key=`focus-tiger.supporter-status.v1`；schema=`{ supporter, email, purchasedAt, verifiedAt, source }` —— 改道时 **换新 key**，勿与 B 共用 | **无文件** |
+
+**前身对照（仅 A，改道前）**：
+
+```text
+文件: focus-tiger/src/core/supporterGate.js
+key:  focus-tiger.supporter-status.v1
+值:   { supporter, email, purchasedAt, verifiedAt, source }
+UI:   SupporterPackUI.js
+```
+
+**改道后 A（目标）**：
+
+```text
+文件: focus-tiger/src/core/tipJarGate.js
+key:  focus-tiger.tip-jar.v1
+值:   { tipped, tipCount, lastTippedAt, email?, source? }
+UI:   TipJarUI.js
+```
+
+**新建 B（目标）**：
+
+```text
+文件: focus-tiger/src/core/sanctuaryEntitlementGate.js
+key:  focus-tiger.sanctuary-entitlement.v1
+值:   { unlocked, unlockedVia, unlockedAt, itemId }
+UI:   SanctuaryUnlockUI.js
+```
+
+唯一允许共享：`cloud/` 支付工具层（建 Checkout / 验签 / 限流）——**分 Price、分 success URL、分 webhook 分支、分 KV value**；前端两套 gate **零互相 import**。
 
 ### 2.7 `feature/founder-supporter-pack` → A Tip Jar：复用评估
 
@@ -242,7 +290,7 @@
 |---|---|---|
 | 分支 `feature/founder-supporter-pack` | **`feature/yin-tip-jar`** | — |
 | 文档 `FOUNDER_SUPPORTER_PACK.md` | `YIN_TIP_JAR.md`（或 `BUY_YIN_A_TEA.md`） | — |
-| `supporterGate.js` / `isSupporter` 等 | `tipGate.js` / `hasTipped` / `readTipStatus` | — |
+| `supporterGate.js` / `isSupporter` 等 | `tipJarGate.js`（可简写 `tipGate.js`）/ `hasTipped` / `readTipStatus` | — |
 | `SupporterPackUI.js` / `#supporter-pack-card` | `TipJarUI.js` / `#yin-tip-jar-card` | Buy Yin a Tea / Thank Yin |
 | locales `SUPPORTER_*` | `TIP_*` 或 `TEA_*` 键名 | 文案：Tea / Tip Jar；**禁用** Founder / Supporter / Sanctuary |
 | orchestration proxy `'supporter'` | `'tip-jar'` 或 `'tea'` | 菜单若保留：短写 Tea（主推仍是情境触发，非常驻抢戏） |
@@ -298,9 +346,9 @@
 1. **§八双表是否按此执行**（确认后再改代码 / 分支改名）  
 2. A/B **定价数字**（仍不锁）  
 3. 深度音效 / 高级动画 **分层名单**  
-4. 低风险三项（Privacy / Reflection echo / 壁纸）是否下一实现优先  
+4. 低风险三项（Privacy → Reflection echo → 壁纸）：**已同意开工**（与 Stripe 无关）  
 5. 可选 PWA 是否立项  
 
-**已拍板无需再选**：双入口并存；tip ≠ Sanctuary；②B **取消**；B 仅 Lifetime；共享 payment、分离 gate。
+**已拍板无需再选**：双入口并存；tip ≠ Sanctuary；②B **取消**；B 仅 Lifetime；共享 payment、分离 gate；24h 体验卡非 v1；founder→Tea 先文案/情境 UI/gate 改名，真收款等 secrets。
 
-确认 §八 前：**禁止**静默改支付运行时代码。
+**合并 docs PR 前请确认**：上文 **§2.6「第4点确认表」**（两套 key / schema / 零交叉 import）。确认前：**禁止**静默改支付运行时代码。
