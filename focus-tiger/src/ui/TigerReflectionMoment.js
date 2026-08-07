@@ -16,6 +16,11 @@ import {
 } from './ReflectionFlowState.js';
 import { normalizeIntentionText, formatIntentionEcho, intentionEchoKey } from '../core/SessionIntentionStore.js';
 import {
+  formatLocalDateYmd,
+  pickReflectionEchoKey,
+  shouldShowReflectionEcho
+} from './reflectionEchoCopy.js';
+import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
   GLASS_BORDER_STRONG,
@@ -28,8 +33,37 @@ import {
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { REFLECTION_ANSWER_FIELDS } from './ReflectionFlowState.js';
 export { formatIntentionEcho } from '../core/SessionIntentionStore.js';
+export {
+  pickReflectionEchoKey,
+  shouldShowReflectionEcho,
+  REFLECTION_ECHO_KEYS
+} from './reflectionEchoCopy.js';
 
 const FADE_MS = 260;
+
+/**
+ * After Continue with a non-empty answer → locale key for companion echo.
+ * Skip / blank Continue → null (no new echo).
+ * @param {object} opts
+ * @param {boolean} opts.submit
+ * @param {string} [opts.rawAnswer]
+ * @param {number} [opts.stepIndex] index of the question just answered
+ * @param {string} [opts.localDate]
+ * @returns {string | null}
+ */
+export function companionEchoKeyAfterAdvance({
+  submit,
+  rawAnswer = '',
+  stepIndex = 0,
+  localDate = formatLocalDateYmd()
+} = {}) {
+  if (!submit || !shouldShowReflectionEcho(rawAnswer)) return null;
+  const trimmed = String(rawAnswer).trim();
+  return pickReflectionEchoKey({
+    localDate,
+    salt: stepIndex + trimmed.length
+  });
+}
 
 export class TigerReflectionMoment {
   /**
@@ -44,6 +78,8 @@ export class TigerReflectionMoment {
     this.flow = null;
     this.root = null;
     this.echoEl = null;
+    /** Companion echo after a non-empty Continue (distinct from intention echo). */
+    this.companionEchoEl = null;
     this.questionEl = null;
     this.inputEl = null;
     this.dotEls = [];
@@ -54,6 +90,8 @@ export class TigerReflectionMoment {
     this._sessionIntention = '';
     /** @type {'icon' | 'typed' | null} */
     this._intentionSource = null;
+    /** @type {string | null} */
+    this._companionEchoKey = null;
 
     this._onKeyDown = (event) => {
       if (event.key === 'Escape') this._dismiss();
@@ -127,6 +165,19 @@ export class TigerReflectionMoment {
       'border-radius:10px',
       'background:rgba(212,165,116,.14)',
       'border:1px solid rgba(139,115,85,.18)'
+    ].join(';');
+
+    this.companionEchoEl = document.createElement('div');
+    this.companionEchoEl.dataset.testid = 'reflection-companion-echo';
+    this.companionEchoEl.hidden = true;
+    this.companionEchoEl.style.cssText = [
+      'font-size:13px',
+      'line-height:1.55',
+      'font-weight:500',
+      'color:#6b5340',
+      'margin:0 0 10px',
+      'padding:0 2px',
+      'opacity:0.92'
     ].join(';');
 
     this.questionEl = document.createElement('div');
@@ -208,6 +259,7 @@ export class TigerReflectionMoment {
     }
     this.root.appendChild(this.questionEl);
     this.root.appendChild(this.inputEl);
+    this.root.appendChild(this.companionEchoEl);
     this.root.appendChild(footer);
     this.container.appendChild(this.root);
     this._refreshTexts();
@@ -224,6 +276,15 @@ export class TigerReflectionMoment {
     } else if (this.echoEl) {
       this.echoEl.hidden = true;
       this.echoEl.textContent = '';
+    }
+    if (this.companionEchoEl) {
+      if (this._companionEchoKey) {
+        this.companionEchoEl.textContent = t(this._companionEchoKey);
+        this.companionEchoEl.hidden = false;
+      } else {
+        this.companionEchoEl.textContent = '';
+        this.companionEchoEl.hidden = true;
+      }
     }
     this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[this.flow.stepIndex]);
     this.skipBtn.textContent = t('REFLECTION_SKIP');
@@ -257,13 +318,32 @@ export class TigerReflectionMoment {
 
   _advance({ submit }) {
     if (!this.flow || this.flow.isDone()) return;
+    const stepIndex = this.flow.stepIndex;
+    const raw = this.inputEl?.value ?? '';
+    let justEchoed = false;
     if (submit) {
-      this.flow.submit(this.inputEl.value);
+      this.flow.submit(raw);
+      const key = companionEchoKeyAfterAdvance({
+        submit: true,
+        rawAnswer: raw,
+        stepIndex
+      });
+      if (key) {
+        this._companionEchoKey = key;
+        justEchoed = true;
+      }
     } else {
       this.flow.skip();
+      // Skip does not emit a new companion echo (prior Continue echo may remain).
     }
 
     if (this.flow.isDone()) {
+      if (justEchoed && this.companionEchoEl && this._companionEchoKey) {
+        this.companionEchoEl.textContent = t(this._companionEchoKey);
+        this.companionEchoEl.hidden = false;
+        window.setTimeout(() => this._finish(), 900);
+        return;
+      }
       this._finish();
     } else {
       this._renderStep();
@@ -289,6 +369,7 @@ export class TigerReflectionMoment {
     this.flow = null;
     this._sessionIntention = '';
     this._intentionSource = null;
+    this._companionEchoKey = null;
     document.removeEventListener('keydown', this._onKeyDown);
 
     if (this.root) {
@@ -306,6 +387,7 @@ export class TigerReflectionMoment {
     this.root?.remove();
     this.root = null;
     this.echoEl = null;
+    this.companionEchoEl = null;
     this.questionEl = null;
     this.inputEl = null;
     this.dotEls = [];
