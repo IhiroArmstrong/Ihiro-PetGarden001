@@ -54,7 +54,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
 | `doc-code-contract` | 文档-代码结构性对齐（docs:check） | `focus-tiger/docs/DOC_CODE_CONTRACT.md` | DOC_CODE_CONTRACT.md |
 | `rules-authority` | 规则主题权威索引（本机制） | `focus-tiger/docs/RULES_INDEX.md` | 规则主题 → 权威来源 |
-| `browser-energy` | 预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
+| `browser-energy` | 预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒；用户侧 cd 路径口径） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
 | `qa-develop-tip` | 人工验收只认 origin/develop tip | `focus-tiger/docs/TEST_TRACKER.md` | 人工验收唯一基线 |
 | `qa-pass-coverage-split` | 标「已通过」须写清 e2e/人工各覆盖哪些场景 | `focus-tiger/docs/TEST_TRACKER.md` | 标「已通过」门禁 |
 | `branch-freshness` | Agent 邀测 / 声称 develop 行为前须 check:branch-freshness | `.cursor/rules/focus-tiger-regression-lock.mdc` | 分支新鲜度（强制 · 验收 / 声称 develop 行为之前） |
@@ -84,7 +84,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
-| `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 `deny-ide-browser-mcp` 硬闸；起过 Vite/Playwright 却不在「待你知道」提醒收尾 |
+| `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent 见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解 | 主张 feature/fix 试跑即正式关单验收；主张「关单只认 tip」=「应先合再测」 |
@@ -106,7 +106,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|
 | [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、SemVer / 稳定 tag、跨会话冲突、并行 worktree、**合入 develop 前预览确认** |
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7、**分支新鲜度**、**发布候选门禁**（open blockers）门禁条文 |
-| [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；Vite/Playwright 收尾提醒；Cloud 独立会话提醒） |
+| [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；Vite/Playwright 收尾；Cloud 独立会话；用户侧 `cd`/`npm run dev` 路径口径） |
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
@@ -199,3 +199,4 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-07-29 | 收窄「请安排下班前的 Git 同步」：默认可推仅非运行时（文档/规则/脚本注释）；业务代码·状态机·待确认 diff 单独列出不 flush；汇总须标有无业务逻辑改动（regression-lock 第 7 条） |
 | 2026-07-29 | 新增 `agent-token-cost`：禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e（SSOT：`focus-tiger-agent-token-cost.mdc` + hooks） |
 | 2026-07-31 | 收紧 `browser-energy`：取消窄屏/口头特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（`beforeMCPExecution` + `preToolUse`）；窄屏改 Safari 响应式 / Playwright |
+| 2026-08-08 | 扩展 `browser-energy`：用户可见的 `cd` + `npm run dev`（及等价预览命令）须写可直接复制的绝对路径，禁止省略号/占位路径（用户拍板强制） |
