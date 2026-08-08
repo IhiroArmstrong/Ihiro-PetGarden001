@@ -10,8 +10,23 @@
 本地 `focus-tiger.tip-jar.v1`：
 
 ```ts
-{ tipped: boolean, tipCount: number, lastTippedAt: string | null, email?: string | null, source?: ... }
+{
+  tipped: boolean,
+  tipCount: number,
+  lastTippedAt: string | null,
+  email?: string | null,
+  source?: 'checkout-return' | 'email-restore' | 'manual' | null,
+  badgeIds: string[] // kindness badges · 3–9 · only-grow · not content unlocks
+}
 ```
+
+### Kindness badges（2026-08-09）
+
+- 资产：`public/ui/support/yin-badges/*.png`（9 枚 · 1024² · 可下载留存）
+- 算法：`tipKindnessBadges.js` — 无练习 → 3；否则 `3 + floor((days + floor(minutes/60)) / 3)` 夹到 9
+- 再次打赏：**专注水平不变则不加枚**（只加不减）
+- 展示：`#yin-tip-jar-card` 徽章条 + Idle `#yin-tip-kindness-badges`（阿寅身旁；Focusing 隐藏）
+- 点按徽章 → 下载高清原图
 
 ## API
 

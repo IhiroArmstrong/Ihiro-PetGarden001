@@ -4,6 +4,7 @@ import {
   TIP_JAR_STORAGE_KEY,
   clearTipStatus,
   consumeTipReturnQuery,
+  ensureTipBadgesAwarded,
   hasTipped,
   markTipFromCheckoutReturn,
   markTipFromEmailRestore,
@@ -39,10 +40,13 @@ describe('tipJarGate', () => {
     assert.equal(hasTipped({ storage }), true);
     assert.equal(readTipStatus(storage).tipCount, 1);
     assert.equal(readTipStatus(storage).source, 'checkout-return');
+    assert.equal(readTipStatus(storage).badgeIds.length, 3);
     markTipFromCheckoutReturn(storage, {
       now: () => new Date('2026-08-07T00:00:00.000Z')
     });
     assert.equal(readTipStatus(storage).tipCount, 2);
+    // No new practice → re-tip does not add badges
+    assert.equal(readTipStatus(storage).badgeIds.length, 3);
     assert.ok(storage.getItem(TIP_JAR_STORAGE_KEY));
   });
 
@@ -95,5 +99,23 @@ describe('tipJarGate', () => {
     clearTipStatus(storage);
     assert.equal(hasTipped({ storage }), false);
     assert.equal(readTipStatus(storage).tipCount, 0);
+    assert.deepEqual(readTipStatus(storage).badgeIds, []);
+  });
+
+  it('ensureTipBadgesAwarded backfills empty badgeIds for tipped users', () => {
+    const storage = memoryStorage({
+      [TIP_JAR_STORAGE_KEY]: JSON.stringify({
+        tipped: true,
+        tipCount: 1,
+        lastTippedAt: '2026-08-01T00:00:00.000Z',
+        email: null,
+        source: 'checkout-return'
+      })
+    });
+    assert.deepEqual(readTipStatus(storage).badgeIds, []);
+    const result = ensureTipBadgesAwarded(storage);
+    assert.equal(result.newlyAddedIds.length, 3);
+    assert.equal(readTipStatus(storage).badgeIds.length, 3);
+    assert.deepEqual(ensureTipBadgesAwarded(storage).newlyAddedIds, []);
   });
 });

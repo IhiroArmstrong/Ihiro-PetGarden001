@@ -70,6 +70,7 @@ import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { TipJarUI } from './ui/TipJarUI.js';
+import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
@@ -563,7 +564,11 @@ async function init() {
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {});
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
-  const tipJarUI = new TipJarUI(document.body, {});
+  const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
+  window.__tipKindnessBadges = tipKindnessBadgesChrome;
+  const tipJarUI = new TipJarUI(document.body, {
+    onBadgesChanged: () => tipKindnessBadgesChrome.refresh()
+  });
   window.__tipJar = tipJarUI;
   const supportYinModalUI = new SupportYinModalUI(document.body, {
     onOpen: () => {
@@ -1506,6 +1511,7 @@ async function init() {
     ambientSoundscape.endSession();
     ambientSoundscapeUI.setSessionActive(false);
     supportYinModalUI.setFabVisible(true);
+    tipKindnessBadgesChrome.setVisible(true);
     companionModePicker.setIdleChromeVisible(true);
   }
 
@@ -1637,6 +1643,7 @@ async function init() {
     ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
     supportYinModalUI.setFabVisible(false);
+    tipKindnessBadgesChrome.setVisible(false);
     attentionSignals.setEnabled(true);
     acrossToolsIdleGuard.stop();
     if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {
