@@ -242,8 +242,8 @@ export class SanctuaryUnlockUI {
     this.benefitEls[0].textContent = t('SANCTUARY_BENEFIT_1');
     this.benefitEls[1].textContent = t('SANCTUARY_BENEFIT_2');
     this.benefitEls[2].textContent = t('SANCTUARY_BENEFIT_3');
-    this.priceEl.textContent = t('SANCTUARY_PRICE').replace(
-      '${price}',
+    this.priceEl.textContent = t('SANCTUARY_PRICE').replaceAll(
+      '{price}',
       SANCTUARY_LIFETIME_PRICE_USD
     );
     this.buyBtn.textContent = isSanctuaryUnlocked({ storage: this._storage })
