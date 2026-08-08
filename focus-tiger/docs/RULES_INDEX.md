@@ -73,7 +73,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-branch-model` | 「分支职责见 `WORKFLOW.md`」 | 再抄一份五列表 |
 | `git-merge-main` | 「合并 main 门禁见 `WORKFLOW.md`」 | 另造「须 N 人审批」等未立项条款；Agent 代点合并 |
 | `git-semver-release` | 「SemVer / 稳定 tag 见 `WORKFLOW.md` 语义化版本节」 | 主张开发期就开长期 `release/*` 线；平行复述完整 MAJOR/MINOR/PATCH 表与发版 SOP |
-| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条：只推非运行时） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；同步时只报「已 push」无 commit 列表 / 无高风险标注；把「下班前 Git 同步」做成合并 main / 推进 PR；把业务代码/状态机/待确认 diff **默认一并 flush**；下班汇总不标「有/无业务逻辑改动」 |
+| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条：只推非运行时旁支 + 开/更新 PR） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 推进无关 PR；把业务代码/状态机/待确认 diff **默认一并 flush**；下班汇总不标「有/无业务逻辑改动」 |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`） | 主张可按时间戳 / mtime / git log 推断占用态或自动清别人的锁；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布 |
@@ -178,6 +178,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-08 | 修正 `git-agent-commit` 下班前口令：禁止直推 `develop`/`main`；同步=旁支 push + 开/更新 base=develop PR；废止「可推 develop/feature/fix」并列写法（regression-lock 第 5–7 条） |
 | 2026-08-08 | `qa-develop-tip`：允许引用 `TEST_TRACKER`「主干一次性关单验收」+ KnownRisky §0；禁止 Support-only / 过时 worktree 冒充 tip |
 | 2026-08-07 | 新增 `git-pr-base-develop`：开 PR 须显式 `--base develop`；发版备忘 main 已提前含 #164（见 `WORKFLOW.md`） |
 | 2026-08-06 | 新增 `e2e-local-budget`：本地 e2e 硬顶 1 spec/次；`run-e2e-changed` + `e2e-ci-guard` + `gate-local-heavy-e2e`（deny）；修正 WORKFLOW/PROCESS「临时本机全量」为已废止/CI 收口 |

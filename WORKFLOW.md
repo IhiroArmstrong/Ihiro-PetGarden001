@@ -284,7 +284,7 @@ npm run test:e2e:smoke   # Playwright 轻量壳冒烟（本地允许）
 
 - 无 **已知回归**（含门闩静默失败、已验收观感被改坏）  
 - 触及行为/情绪/架构时，权威 md 已与代码同批更新（N15）  
-- 合并前在 `develop` / `feature/*` / `fix/*` 上完成 **本地 commit**；且这些 commit 已按**逻辑完整改动**组织、message 可读；`git push` 仍须团队约定后执行  
+- 合并前在旁支（`feature/*` / `fix/*` / `docs/*` 等）上完成 **本地 commit** 并 **push 旁支** + PR（`--base develop`）；且这些 commit 已按**逻辑完整改动**组织、message 可读；**禁止**直推 `develop`/`main`（见 regression-lock 第 5–7 条）  
 
 ### 推荐合并步骤
 
