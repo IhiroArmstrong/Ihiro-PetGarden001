@@ -7,12 +7,18 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   TIP_JAR_PRICE_USD,
   consumeTipReturnQuery,
+  ensureTipBadgesAwarded,
   getCloudApiBaseUrl,
   hasTipped,
   markTipFromEmailRestore,
   postCloudJson,
-  readTipStatus
+  readTipStatus,
+  tipLogDateKey
 } from '../core/tipJarGate.js';
+import {
+  getTipKindnessBadgeById,
+  tipKindnessBadgeSrc
+} from '../core/tipKindnessBadges.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -22,14 +28,8 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-tip-jar-card-styles-v1';
+const STYLE_ID = 'yin-tip-jar-card-styles-v2';
 const FADE_MS = 220;
-
-/** Simple static badge (no asset pipeline). */
-const BADGE_SVG = `<svg class="yin-tip-jar__badge-svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-  <circle cx="32" cy="32" r="28" fill="rgba(212,165,116,.35)" stroke="rgba(139,115,85,.55)" stroke-width="2"/>
-  <path d="M32 14l4.2 8.5 9.4 1.4-6.8 6.6 1.6 9.3L32 35.6l-8.4 4.4 1.6-9.3-6.8-6.6 9.4-1.4z" fill="rgba(90,62,40,.85)"/>
-</svg>`;
 
 export class TipJarUI {
   /**
@@ -37,6 +37,8 @@ export class TipJarUI {
    * @param {object} [handlers]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
+   * @param {() => void} [handlers.onBadgesChanged]
+   * @param {(detail: { isRepeatTip: boolean, tipCount: number }) => void} [handlers.onTipThanks]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
@@ -61,7 +63,12 @@ export class TipJarUI {
 
     this.badgeWrap = document.createElement('div');
     this.badgeWrap.className = 'yin-tip-jar__badge';
-    this.badgeWrap.innerHTML = BADGE_SVG;
+    this.badgeWrap.dataset.testid = 'yin-tip-jar-badges';
+
+    this.logEl = document.createElement('div');
+    this.logEl.className = 'yin-tip-jar__tea-log';
+    this.logEl.dataset.testid = 'yin-tip-jar-tea-log';
+    this.logEl.hidden = true;
 
     this.statusEl = document.createElement('p');
     this.statusEl.className = 'yin-tip-jar__status';
@@ -128,6 +135,7 @@ export class TipJarUI {
     this.root.append(
       this.titleEl,
       this.badgeWrap,
+      this.logEl,
       this.statusEl,
       this.memorialEl,
       this.blurbEl,
@@ -163,7 +171,17 @@ export class TipJarUI {
     // Success / cancel return from Stripe Checkout (optimistic local write).
     const ret = consumeTipReturnQuery({ storage: this._storage });
     if (ret.outcome === 'success') {
-      this._setFeedback(t('TIP_FEEDBACK_THANKS'), false);
+      this._setFeedback(
+        ret.isRepeatTip
+          ? t('TIP_FEEDBACK_THANKS_AGAIN')
+          : t('TIP_FEEDBACK_THANKS'),
+        false
+      );
+      this.handlers.onBadgesChanged?.();
+      this.handlers.onTipThanks?.({
+        isRepeatTip: ret.isRepeatTip,
+        tipCount: ret.tipCount
+      });
     } else if (ret.outcome === 'cancel') {
       this._setFeedback(t('TIP_FEEDBACK_CANCEL'), false);
     }
@@ -219,7 +237,96 @@ export class TipJarUI {
     this.feedbackEl.classList.toggle('is-error', Boolean(isError));
   }
 
+  /**
+   * @param {string[]} badgeIds
+   */
+  _renderBadges(badgeIds) {
+    this.badgeWrap.replaceChildren();
+    if (!badgeIds.length) {
+      const empty = document.createElement('p');
+      empty.className = 'yin-tip-jar__badge-empty';
+      empty.textContent = t('TIP_BADGES_EMPTY');
+      this.badgeWrap.appendChild(empty);
+      return;
+    }
+    const row = document.createElement('div');
+    row.className = 'yin-tip-jar__badge-row';
+    for (const id of badgeIds) {
+      const meta = getTipKindnessBadgeById(id);
+      if (!meta) continue;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'yin-tip-jar__badge-btn';
+      btn.title = t('TIP_BADGES_DOWNLOAD_ONE');
+      btn.setAttribute('aria-label', t('TIP_BADGES_DOWNLOAD_ONE'));
+      const img = document.createElement('img');
+      img.className = 'yin-tip-jar__badge-img';
+      img.src = tipKindnessBadgeSrc(meta.file);
+      img.alt = '';
+      img.decoding = 'async';
+      img.draggable = false;
+      btn.appendChild(img);
+      btn.addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = tipKindnessBadgeSrc(meta.file);
+        a.download = meta.file;
+        a.rel = 'noopener';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+      row.appendChild(btn);
+    }
+    const note = document.createElement('p');
+    note.className = 'yin-tip-jar__badge-note';
+    note.textContent = t('TIP_BADGES_CARD_NOTE');
+    this.badgeWrap.append(row, note);
+  }
+
+  /**
+   * @param {import('../core/tipJarGate.js').TipLogEntry[]} tipLog
+   */
+  _renderTeaLog(tipLog) {
+    this.logEl.replaceChildren();
+    if (!tipLog.length) {
+      this.logEl.hidden = true;
+      return;
+    }
+    this.logEl.hidden = false;
+    const title = document.createElement('p');
+    title.className = 'yin-tip-jar__tea-log-title';
+    title.textContent = t('TIP_TEA_LOG_TITLE');
+    const list = document.createElement('ul');
+    list.className = 'yin-tip-jar__tea-log-list';
+    const teas = [
+      t('TIP_TEA_NAME_1'),
+      t('TIP_TEA_NAME_2'),
+      t('TIP_TEA_NAME_3'),
+      t('TIP_TEA_NAME_4'),
+      t('TIP_TEA_NAME_5')
+    ].filter(Boolean);
+    const recent = tipLog.slice(-5).reverse();
+    for (const entry of recent) {
+      const li = document.createElement('li');
+      const tea =
+        teas.length > 0
+          ? teas[(Math.max(1, entry.n) - 1) % teas.length]
+          : '';
+      li.textContent = t('TIP_TEA_LOG_ENTRY')
+        .replaceAll('{date}', tipLogDateKey(entry.at))
+        .replaceAll('{n}', String(entry.n))
+        .replaceAll('{tea}', tea);
+      list.appendChild(li);
+    }
+    this.logEl.append(title, list);
+  }
+
   _refresh() {
+    const backfill = ensureTipBadgesAwarded(this._storage);
+    if (backfill.newlyAddedIds.length) {
+      this.handlers.onBadgesChanged?.();
+    }
     const tipped = hasTipped({ storage: this._storage });
     const status = readTipStatus(this._storage);
     const cloudOk = this._cloudReady();
@@ -245,6 +352,8 @@ export class TipJarUI {
       : t('TIP_STATUS_NO');
     this.statusEl.classList.toggle('is-yes', tipped);
     this.badgeWrap.classList.toggle('is-active', tipped);
+    this._renderBadges(tipped ? status.badgeIds : []);
+    this._renderTeaLog(tipped ? status.tipLog : []);
 
     // Tips may repeat; do not permanently disable after first tip.
     this.buyBtn.disabled = this._busy || !cloudOk;
@@ -354,6 +463,7 @@ export class TipJarUI {
         tipCount
       });
       this._setFeedback(t('TIP_RESTORE_OK'), false);
+      this.handlers.onBadgesChanged?.();
     } catch (err) {
       const status = /** @type {any} */ (err)?.status;
       const msg =
@@ -405,19 +515,73 @@ export class TipJarUI {
       }
       .yin-tip-jar__badge {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
         margin: 0 0 8px;
-        opacity: 0.45;
-        filter: grayscale(0.35);
-        transition: opacity 180ms ease, filter 180ms ease;
+        opacity: 0.55;
+        transition: opacity 180ms ease;
       }
       .yin-tip-jar__badge.is-active {
         opacity: 1;
-        filter: none;
       }
-      .yin-tip-jar__badge-svg {
-        width: 56px;
-        height: 56px;
+      .yin-tip-jar__badge-empty {
+        margin: 0;
+        font-size: 12px;
+        color: rgba(92, 67, 48, 0.72);
+        text-align: center;
+      }
+      .yin-tip-jar__badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+      .yin-tip-jar__badge-btn {
+        appearance: none;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 50%;
+        line-height: 0;
+      }
+      .yin-tip-jar__badge-img {
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        border-radius: 50%;
+        display: block;
+        background: rgba(255, 252, 245, 0.7);
+      }
+      .yin-tip-jar__badge-note {
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.4;
+        color: rgba(92, 67, 48, 0.72);
+        text-align: center;
+      }
+      .yin-tip-jar__tea-log {
+        margin: 0 0 10px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(139, 115, 85, 0.16);
+        background: rgba(255, 252, 245, 0.4);
+      }
+      .yin-tip-jar__tea-log-title {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 650;
+        color: #4a3a28;
+        text-align: center;
+      }
+      .yin-tip-jar__tea-log-list {
+        margin: 0;
+        padding-left: 1.1em;
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: rgba(92, 67, 48, 0.88);
       }
       .yin-tip-jar__status {
         margin: 0 0 8px;

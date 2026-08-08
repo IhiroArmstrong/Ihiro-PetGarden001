@@ -230,6 +230,26 @@
 
 ---
 
+## Tip kindness badges（非序列帧 · 可下载）
+
+> **路径**：`public/ui/support/yin-badges/`（1024×1024 RGBA · 入库 2026-08-09）。  
+> **用途**：Buy Yin a Tea 善意徽章；UI 缩小显示；点击下载原图留存。  
+> **接线**：`tipKindnessBadges.js` 目录顺序；`tipJarGate.badgeIds`；`#yin-tip-jar-card` + `#yin-tip-kindness-badges`。
+
+| 文件 | 目录档位（低→高） |
+|---|---|
+| `yin-medallion-silver-monochrome-engraved.png` | 1 |
+| `yin-medallion-silver-gold-outline.png` | 2 |
+| `yin-medallion-silver-gold-outline-rim.png` | 3 |
+| `yin-medallion-silver-gold-rim.png` | 4 |
+| `yin-medallion-silver-gold-pendant.png` | 5 |
+| `yin-medallion-gold-monochrome-engraved.png` | 6 |
+| `yin-medallion-gold-silver-relief.png` | 7 |
+| `yin-badge-square-gold-on-silver.png` | 8 |
+| `yin-badge-square-gold-on-silver-alt.png` | 9 |
+
+---
+
 ## 相关文档
 
 - 进度叙事：`PROCESS.md`「当前进度速览」  
