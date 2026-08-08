@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Support Yin 统一入口（2026-08-08 · #187 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 进行中**（`feature/support-modal-ux` · worktree `…-wt-support-modal-ux`）：右卡仪式感 bullets（含 kindness badge 文案）、Primary/Ghost CTA、克制 Suggested、Maybe later、FAB 对齐 ♪、One-time Lifetime；**多档 tip 延后**。**下一任务**（勿漏）：① 高光时刻场景化请茶气泡；② 付费意愿漏斗本地统计。
+- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194 · tip **`6ec70a7`**）：右卡仪式感 bullets（含 kindness badge 文案）、Primary/Ghost CTA、克制 Suggested、Maybe later、FAB 对齐 ♪、One-time Lifetime；**多档 tip 延后**。**下一任务**（勿漏）：① 高光时刻场景化请茶气泡；② 付费意愿漏斗本地统计。
 - **主干 tip 验收盘点（2026-08-08）**：`origin/develop` tip **`beb9147`**（含 #187 Support + #188 PWA 延后 QA）。TRACKER 约 96 行仍开；**本批**按 KnownRisky §0.1（P0 闪白/Honesty → P1 Breath/chip/吹花/增长/付费/Support → P2 旧债）；实验室/长墙钟/PWA 安装**不排**本批。操作 SSOT：`KNOWN_RISKY_TEST_CHECKLIST.md`。
 - **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
