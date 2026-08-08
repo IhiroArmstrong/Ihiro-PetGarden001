@@ -39,54 +39,60 @@
 
 用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。
 
-### 近期验收计划（P0 / P1 / P2 · 2026-07-25）
+### 主干一次性关单验收（2026-08-08 · 现行）
 
-> **用途**：从「待人工测试 / 有问题」全量里分出**该先测什么**，避免 40+ 条无限挂着却无排期。  
-> **行号** = 下方「功能清单」表在本文件中的当前行号。增删行后须同步改本节。  
-> **2026-07-25 用户拍板**：本轮只走 **P0**；P1 / P2 暂不处理。L186 / L196 已降级（见下），不再占验收队列。
+> **目的**：在 **同一** `origin/develop` tip 上把「已合入、仍未关单」的产品面尽量一次测完，避免按 feature 各开一套过时 worktree。  
+> **操作步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（本表只定**哪些行进本批**与 tip 启动命令）。  
+> **盘点快照（本文件当日）**：功能清单约 **96** 行仍为「待人工测试 / 有问题」（UI 可见约 92）。**不等于**本批须测 96 条——实验室 / 长墙钟 / 已废行 / feature 自检已免 tip 复验者，排在「本批不排」。
 
-#### P0 · 本周主战场（产品壳主路径 + 刚改须复测）
+#### 过时说法（勿再用）
 
-一次性走完即可；操作清单见会话回复（与场景 C/O/P 同格式）。
-
-| 行 | 功能 | 为何在 P0 |
-|---|---|---|
-| **[L174](#L174)** | Arrival · 轻量气泡 + ⚡ Quick Start | 07-25 晚用户书面：**测试 OK**（含 tip 只关 tip） |
-| **[L228](#L228)** | 「本周陪伴」7 格热力图（场景 **O**） | 07-26（wide-idle @5174）：**图1–12 相关项全部测试 OK**；⑦ 原挡门项已收口 |
-| **[L238](#L238)** | 应用内提醒设置 + 横幅（场景 **P**） | 07-25 横幅/每日 blurb / past_time **OK**；软提示缺口见 L242（**不挡** P0 / **不挡** merge） |
-| **[L257](#L257)** | 用户场景剧本 SCENARIO_TESTS | 本轮 **C / P 测试 OK**；**O 图1–12 OK**（见 L228） |
-| **[L183](#L183)** | Honesty 桥接 CTA 叠层 | 07-25 **测试 OK** |
-| **[L250](#L250)** | 门闩一体包 · Companion 点选→开表 | 07-26 375 鞠躬后三选一回归 · **待复测** |
-| **[L259](#L259)** | How shall we sit? 立刻展开三选一 | 07-25 **测试 OK** |
-| **[L280](#L280)** | Offline 禁止二次 Sit | 07-25 一次 Sit 即 Focusing **测试 OK** |
-
-#### P1 · 接下来 1–2 周产品壳收口（本轮不测）
-
-| 行 | 功能 | 备注 |
-|---|---|---|
-| L181 | Honesty 补登成功 toast | 文案已锁；同屏观感 |
-| L197 | FocusSession + Focus HUD | 随 ⚡ 改动 |
-| L229 / L231 / L232 | 一分钟呼吸簇 | L233 可顺带 |
-| L248 | Honesty pending 丢失 abort | 异常回流 |
-| L254 / L273 | 点 ? 补救 hints / 音乐 tip 锚 mute | |
-| L271 / L272 | 窄屏 onboarding 互斥 / Sit 不截断 | 375 |
-| L277 | Offline Space 说明文案 | 桌面口径 |
-| **[L187](#L187)** | MilestoneGlow | **待接线**（2026-07-31 拍板正式路径）；Brief 已立 |
-
-#### P2 · 调试日 / 长会话日（本轮不测；勿与 P0 抢注意力）
-
-| 类别 | 行 |
+| 过时口径 | 现行口径 |
 |---|---|
-| 实验室 / 素材观感 | L176–178、L195、L205、L209、L214–216、L219、L221、L280 |
-| 长墙钟 | L188（20min）、L190（2h）、L212（Flow 30min idle） |
-| 基建 / 实验 | L169 Workers、L170 UI Kit、L213 i18n、L269 `?product=1` 冒烟 |
+| tip = `#187` / `62e38a3`；专开 `…-wt-qa-support-modal` 只测 Support | tip **随 fetch 变**；Support（#187）已是 tip **祖先**。一次 tip worktree 可测 Support + 同 tip 上其它未关单项 |
+| 主仓 develop「ahead 1 / behind 1」分叉，pull 到不了 tip | **2026-08-08 fetch 后**：`origin/develop` = **`beb9147`**（#188 PWA 延后 QA）；本地 develop 仅 **ahead 1** 未推文档（绝对路径规则），**behind = 0**。关单仍须对齐 **远端 tip**，勿用「仅本地 ahead」冒充 tip |
+| 旧 feature / 旧 `…-wt-*` 目录直接 `npm run dev` 当主干验 | **禁止**。过时 worktree ≠ tip |
+| 「单纯 `git pull` 主仓 develop」默认等于 tip | 主仓若 ahead 未推、或脏树占着别的任务 → **优先** `git worktree add … origin/develop` 纯 tip 树 |
 
-#### 已降级 · 不再排人工验收队列
+#### 推荐启动（纯 tip · 可复制）
 
-| 行 | 新状态 | 说明 |
+验收前先确认 tip（hash 会变；下列 `beb9147` 为 2026-08-08 盘点时 tip）：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+git fetch origin develop
+git rev-parse origin/develop   # 关单书面须写此 hash
+# 若目录已存在可先：git worktree remove …-wt-qa-develop-tip
+git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
+npm install && npm run check:branch-freshness && npm run dev
+```
+
+Safari：`http://127.0.0.1:5173/?product=1`  
+关单书面须含：**当时** `origin/develop` tip hash + `behind=0`。按 [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md) §0.1 顺序走；反馈写回本表「用户反馈」列。
+
+#### 本批应测（产品壳 · 已合 tip · 未关单）
+
+| 优先 | KnownRisky / 主题 | TRACKER 锚（功能名） | 备注 |
+|---|---|---|---|
+| **P0** | #18 Arrival CapCut 闪白 | Arrival CapCut 抗闪；Choose/Arrival「有问题」复测行 | **release-blocker** |
+| **P0** | #2 Honesty 补登主路径 | Honesty Check-in「有问题」 | 与已关单桥接行分离 |
+| **P1** | #19–21 Breath / Focus chip / 吹花 | 首页左球 Breath；时长 chip；HUD 目标；变花 2b/2c | 多轮 feature tip OK ≠ tip 关单（除用户书面免 tip 复验） |
+| **P1** | #14 Companion + chip | Companion 三选一 / Offline 跳过 Arrival | 回流 Rise 后再选 |
+| **P1** | #22–23 Zen Cinema / Quiet Line | 增长①③ | ⋯/抽屉入口 |
+| **P1** | #25–27 付费面 | Buy Yin a Tea；Sanctuary Unlock；**Support Yin Modal**；Tip 部署金额 | Support = 右上 FAB 双卡；菜单旧卡仍可对照 |
+| **P1** | 增长/收口邻接 | Reflection 共鸣；阿寅壁纸；Privacy+? 简介 | 已合 tip |
+| **P2** | #4–8、12–13、24 等 | Ambient 听感交叉；开场即睡；earWiggle；Dispatcher；Glow；星光斗篷 | 旧债 / 邻接易回归 |
+| **本批不排** | 实验室 / 长墙钟 / Workers / UI Kit / 已废 label 行 | 调试面板全入库、20min/2h 提醒、PWA 安装（**延后**到 PR #2→`main`+稳定版） | 见 KnownRisky「可跳过」与 PWA 口径 |
+
+#### 历史降级（仍有效 · 不进本批）
+
+| 主题 | 状态 | 说明 |
 |---|---|---|
-| **[L186](#L186)** IncenseComplete | **已放弃/不适用** | 业务会话结束**未接线**；调试入口可留作 Backlog 素材预览，**不**作合并门禁 |
-| **[L196](#L196)** 抚摸 / 轻点 / 绕圈 | **不挡合并（仅检测逻辑）** | 无正式 2D 精灵；检测靠单测；产品壳**不**要求验动画 |
+| IncenseComplete | **已放弃/不适用** | 业务会话结束未接线；不作合并门禁 |
+| 抚摸 / 轻点 / 绕圈 | **不挡合并（仅检测逻辑）** | 无正式 2D 精灵；产品壳不要求验动画 |
+| Ambient 常驻小 label | **已废** | 勿再验收；见 mint tip 已通过行 |
+| PWA 安装提示 / SW | **延后人工** | #180 代码在 tip；安装 QA 排在 PR #2→`main` + 稳定版后（#188） |
 
 ### 用户测试反馈记入规则（2026-07-19 起）
 
@@ -361,7 +367,7 @@
 | Tip Jar · 任务 5 部署（Stripe / Worker / KV） | 纯后端+运维 | 待人工测试 | **代码 alone 无法真实收款。**按 `YIN_TIP_JAR.md` § 部署。**验收**：Test 卡 Checkout → `?tip=1`；`/api/verify-tip`；**不得**解锁 Sanctuary。 | **2026-08-08**：ihiro redeploy；Checkout **US$9.99** / **US$89.99** OK（`bea38a0`）。**同日再书面（`32c703d`）**：显示新名称（Buy Yin a Tea / Sanctuary 卡面 `$`）— **没问题**。整行关单仍须：完整付完→webhook→restore 等。 | — | — | `ihiro.workers.dev` · KnownRisky #25 | 2026-08-08 |
 | Yin's Sanctuary Lifetime gate（B · scaffold） | 纯后端 | 仅单元测试覆盖 | `sanctuaryEntitlementGate` + 静态零耦合单测；key 已入重置白名单。 | **2026-08-07** #162 合入。 | — | — | `sanctuaryEntitlementGate.test.js` | 2026-08-07 |
 | Yin's Sanctuary Lifetime Unlock UI（B） | UI可见 | 待人工测试 | **主路径**：Idle ⋯ / 抽屉 **Yin's Sanctuary** → `#yin-sanctuary-card` 卡面 **About $89.99**；Unlock → Lifetime Checkout；回跳须服务端 confirm。**回流**：关卡后再开；邮箱 restore。**禁止**读 tip。 | **2026-08-08**：#184 卡面 `$`；Checkout US$89.99 OK。**同日再书面（develop tip `32c703d`）**：显示新名称 — **没问题**。整行关单仍须：付完 confirm 解锁 / restore / 零耦合。Ambient 消费 `isSanctuaryUnlocked` **仍暂缓**，等本行人工验收通过后再开。 | — | — | `?product=1` · `#yin-sanctuary-card` · PR #179 | 2026-08-08 |
-| Support Yin 统一入口（Modal） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 右上角（音符左侧）**Support Yin** `#yin-support-fab` → `#yin-support-modal` 见双卡（左/上 Sanctuary 预览 + Unlock Sanctuary；右/下喝茶预览 + Support us）→ 点 CTA 走既有 Stripe（与菜单卡同一 `startCheckout`）。**回流**：关 Modal 后再开；Focusing 时 FAB 隐藏，Rise 后复现；菜单 **Yin's Sanctuary / Buy Yin a Tea 仍保留**可进旧卡。**375**：双卡上下堆叠、可关。自动化：`SupportYinModalUI.test.js`（价格模板 + locale keys）。 | **2026-08-08** 产品：菜单罗列支付偏硬 → 统一 Support 入口；场景化请茶 + 漏斗统计另开下一任务（已记 `PROCESS`）。 | — | — | `?product=1` · `#yin-support-fab` · `#yin-support-modal` · `/ui/support/` | 2026-08-08 |
+| Support Yin 统一入口（Modal） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 右上角（音符左侧）**Support Yin** `#yin-support-fab` → `#yin-support-modal` 见双卡（左/上 Sanctuary 预览 + Unlock Sanctuary；右/下喝茶预览 + Support us）→ 点 CTA 走既有 Stripe（与菜单卡同一 `startCheckout`）。**回流**：关 Modal 后再开；Focusing 时 FAB 隐藏，Rise 后复现；菜单 **Yin's Sanctuary / Buy Yin a Tea 仍保留**可进旧卡。**375**：双卡上下堆叠、可关。自动化：`SupportYinModalUI.test.js`（价格模板 + locale keys）。 | **2026-08-08** 产品：菜单罗列支付偏硬 → 统一 Support 入口；场景化请茶 + 漏斗统计另开下一任务（已记 `PROCESS`）。**合入** #187（`62e38a3`）已是 tip 祖先；关单级在当时 `origin/develop` tip 测（08-08 盘点 tip **`beb9147`**；见文首「主干一次性关单验收」/ KnownRisky #27）——**勿**再开 Support-only QA worktree。 | — | — | `?product=1` · `#yin-support-fab` · `#yin-support-modal` · `/ui/support/` | 2026-08-08 |
 | 付费 · 场景化请茶（排期） | 纯文档 | 仅单元测试覆盖 | **无运行时（本行）**。高光时刻（完美专注完成 / 里程碑庆祝）旁侧气泡引出 Buy Yin a Tea。排在 Support Modal 之后。 | **2026-08-08** 用户书面：本回合只做 Modal；本项下一任务勿漏。 | — | — | `PROCESS` 下一步 / Backlog | 2026-08-08 |
 | 付费 · 意愿漏斗本地统计（排期） | 纯文档 | 仅单元测试覆盖 | **无运行时（本行）**。漏斗：Support 打开 / 双卡 CTA（Sanctuary vs Tea）/ 进 Checkout / 完成支付（Test Mode）。优先 localStorage；无第三方。 | **2026-08-08** 用户书面：本回合只做 Modal；本项下一任务勿漏。 | — | — | `PROCESS` 下一步 / Backlog | 2026-08-08 |
 | 增长向内容包决策锁（YouTube / 签文 / 电子书） | 纯文档 | 仅单元测试覆盖 | **无运行时**。SSOT `task-growth-content-pack-decision.md`。①/③ 已合；**②A 延后**；**②B 已取消（2026-08-07）**——不改造、不排期。 | **2026-08-06** 拍板。 **2026-08-07** ②B 取消。 | — | — | Brief · `PROCESS` | 2026-08-07 |
