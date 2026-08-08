@@ -24,11 +24,15 @@ const REQUIRED_SUPPORT_KEYS = [
   'SUPPORT_MODAL_CLOSE',
   'SUPPORT_SANCTUARY_TITLE',
   'SUPPORT_SANCTUARY_BLURB',
+  'SUPPORT_SANCTUARY_BADGE',
   'SUPPORT_SANCTUARY_PRICE',
   'SUPPORT_SANCTUARY_CTA',
   'SUPPORT_SANCTUARY_IMG_ALT',
   'SUPPORT_TEA_TITLE',
   'SUPPORT_TEA_BLURB',
+  'SUPPORT_TEA_BENEFIT_1',
+  'SUPPORT_TEA_BENEFIT_2',
+  'SUPPORT_TEA_BENEFIT_3',
   'SUPPORT_TEA_PRICE',
   'SUPPORT_TEA_CTA',
   'SUPPORT_TEA_IMG_ALT'
@@ -37,8 +41,8 @@ const REQUIRED_SUPPORT_KEYS = [
 describe('SupportYinModalUI helpers', () => {
   it('formatSupportPrice replaces {price} inside ${price} templates', () => {
     assert.equal(
-      formatSupportPrice('About ${price} · Lifetime', '89.99'),
-      'About $89.99 · Lifetime'
+      formatSupportPrice('About ${price} · One-time Lifetime', '89.99'),
+      'About $89.99 · One-time Lifetime'
     );
   });
 
@@ -49,5 +53,21 @@ describe('SupportYinModalUI helpers', () => {
         assert.ok(pack[key].length > 0, key);
       }
     }
+  });
+
+  it('tea benefits stay ritual thank-you (no unlock wording)', () => {
+    for (const pack of [en, zh, ja]) {
+      const joined = [
+        pack.SUPPORT_TEA_BENEFIT_1,
+        pack.SUPPORT_TEA_BENEFIT_2,
+        pack.SUPPORT_TEA_BENEFIT_3
+      ].join(' ');
+      assert.match(joined, /badge|徽章|バッジ/i);
+      assert.doesNotMatch(joined, /unlock deeper|解锁更深|より深い音/i);
+    }
+    assert.match(en.SUPPORT_TEA_BENEFIT_3, /no unlocks/i);
+    assert.equal(en.SUPPORT_MODAL_CLOSE, 'Maybe later');
+    assert.equal(en.SUPPORT_SANCTUARY_BADGE, 'Suggested');
+    assert.match(en.SUPPORT_SANCTUARY_PRICE, /One-time Lifetime/i);
   });
 });
