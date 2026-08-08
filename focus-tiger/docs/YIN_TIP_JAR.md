@@ -29,25 +29,28 @@ Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（
 
 ---
 
-## § 部署（任务 5）· **尚未完成**
+## § 部署（任务 5）· **进行中（2026-08-08）**
 
 > **硬边界**：仓库里的 Tip Jar **应用代码 + Worker 路由**可以合 develop；**真实收款**必须另做本运维/配置任务。  
 > **代码 alone 无法完成真实收款。**  
 > 权威操作清单（自原 Founder Pack §6 迁入，语义改为 Tea / Tip）：
 
-### 仍须人工完成的步骤
+### 已用终端完成（本 CF 账号）
 
-1. **Stripe Test**：Dashboard 建 **one-time** Price（当前脚手架默认文案 **USD $9.99**；正式定价仍属 Brief「待你决定」，可先用 Test Price 跑通）→ 得到 `price_…`
-2. 把 `price_…` 写入 Worker **`STRIPE_PRICE_ID`**（`cloud/wrangler.jsonc` → `vars`，或 Dashboard vars）
-3. **`npx wrangler kv namespace create TIP_KV`**（及 `--preview`）→ 把真实 id **替换** `wrangler.jsonc` 里占位  
-   `00000000000000000000000000000001` / `…0002`
-4. **`npx wrangler secret put STRIPE_SECRET_KEY`**  
+- workers.dev 账号子域：**`focus-tiger`**（Dashboard onboarding 链 404 时，用 API `PUT /accounts/.../workers/subdomain`）
+- `TIP_KV` / `SANCTUARY_KV`（+ preview）已 `wrangler kv namespace create`，id 写入 `wrangler.jsonc`
+- Stripe Price ID（纠价后）已写入 vars
+
+### 仍须完成的步骤
+
+1. **`npx wrangler secret put STRIPE_SECRET_KEY`**  
    **`npx wrangler secret put STRIPE_WEBHOOK_SECRET`**
-5. **`cd focus-tiger/cloud && npm run deploy`** → 得到 `*.workers.dev`（或你的 Worker URL）
-6. Stripe Dashboard **配 Webhook** → 指到  
-   `https://<worker>/api/stripe-webhook`  
+2. **`cd focus-tiger/cloud && npx wrangler deploy`** →  
+   `https://focus-tiger-cloud.focus-tiger.workers.dev`
+3. Stripe Dashboard **配 Webhook** → 指到  
+   `https://focus-tiger-cloud.focus-tiger.workers.dev/api/stripe-webhook`  
    （至少 `checkout.session.completed`；签名密钥 = 上一步 `STRIPE_WEBHOOK_SECRET`）
-7. 前端构建环境设 **`VITE_CLOUD_API_BASE_URL`** = Worker 公开 base（无尾斜杠亦可；见 `tipJarGate`）  
+4. 前端构建环境设 **`VITE_CLOUD_API_BASE_URL`** = Worker 公开 base（无尾斜杠亦可；见 `tipJarGate`）  
    未配置时：免费主路径不变；Tip 卡提示未配置 / 无法开 Checkout
 
 ### 本地自检（部署后）
