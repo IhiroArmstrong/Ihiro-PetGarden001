@@ -23,8 +23,8 @@ import {
 const STYLE_ID = 'yin-sanctuary-card-styles-v1';
 const FADE_MS = 220;
 
-/** Display price placeholder (USD). Stripe Lifetime Price ID lives on the Worker. */
-export const SANCTUARY_LIFETIME_PRICE_USD = '29';
+/** Display price (USD). Stripe Lifetime Price ID lives on the Worker. */
+export const SANCTUARY_LIFETIME_PRICE_USD = '89.99';
 
 export class SanctuaryUnlockUI {
   /**
