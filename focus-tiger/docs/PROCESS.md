@@ -58,15 +58,16 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-07（UTC+8）
+**最后更新时间**：2026-08-08（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price ID + `$89.99` 展示；#182 本账号真实 KV。Worker **已 deploy**：`https://focus-tiger-cloud.focus-tiger.workers.dev`。本地可设 `.env.local` → `VITE_CLOUD_API_BASE_URL`。**仍缺** `wrangler secret put STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` + Stripe Webhook（真收款）。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
 - **壁纸赠送（#178）**：已合 develop；Idle ⋯ Wallpapers 免费静帧。
-- **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）**：已合 develop；门闩分离。**Sanctuary Unlock UI**（Lifetime confirm 路径）本地 `feature/yin-sanctuary-unlock`（`350be13`）待手推 PR；**Ambient 消费 `isSanctuaryUnlocked` 暂缓**，等 Unlock UI 合入 + TEST_TRACKER 人工验收后再开。
+- **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）+ Unlock UI（#179）**：已合 develop；门闩分离。**Ambient 消费 `isSanctuaryUnlocked` 暂缓**，等 TEST_TRACKER 人工验收 Unlock 后再开。
 - **双轨变现纪要（2026-08-07 · PR #160 已合）**：Buy Yin a Tea（tip）∪ Yin's Sanctuary Lifetime；门闩分离。
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。

@@ -27,6 +27,7 @@
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
 | v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
+| Tip / Sanctuary Worker（2026-08-08） | 已部署 `https://focus-tiger-cloud.focus-tiger.workers.dev`（#181/#182）。本地可设 `.env.local` 的 `VITE_CLOUD_API_BASE_URL`。**仍缺** Worker secrets：`STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` + Stripe Webhook |
 
 ## 3. 与 CI 的关系
 
