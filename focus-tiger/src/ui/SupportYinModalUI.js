@@ -16,7 +16,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-support-modal-styles-v1';
+const STYLE_ID = 'yin-support-modal-styles-v2';
 const FADE_MS = 220;
 
 const ICON_SRC = '/ui/support/support-yin-icon.png';
@@ -109,6 +109,8 @@ export class SupportYinModalUI {
       priceValue: SANCTUARY_LIFETIME_PRICE_USD,
       ctaKey: 'SUPPORT_SANCTUARY_CTA',
       ctaTestId: 'yin-support-sanctuary-cta',
+      ctaVariant: 'primary',
+      badgeKey: 'SUPPORT_SANCTUARY_BADGE',
       onCta: () => {
         void this._runCheckout('sanctuary');
       }
@@ -120,6 +122,7 @@ export class SupportYinModalUI {
     this.sanctuaryPrice = sanctuary.priceEl;
     this.sanctuaryCta = sanctuary.ctaBtn;
     this.sanctuaryImg = sanctuary.imgEl;
+    this.sanctuaryBadge = sanctuary.badgeEl;
 
     const tea = this._buildCard({
       testId: 'yin-support-tea-card',
@@ -127,11 +130,16 @@ export class SupportYinModalUI {
       imgAltKey: 'SUPPORT_TEA_IMG_ALT',
       titleKey: 'SUPPORT_TEA_TITLE',
       blurbKey: 'SUPPORT_TEA_BLURB',
-      benefitKeys: [],
+      benefitKeys: [
+        'SUPPORT_TEA_BENEFIT_1',
+        'SUPPORT_TEA_BENEFIT_2',
+        'SUPPORT_TEA_BENEFIT_3'
+      ],
       priceKey: 'SUPPORT_TEA_PRICE',
       priceValue: TIP_JAR_PRICE_USD,
       ctaKey: 'SUPPORT_TEA_CTA',
       ctaTestId: 'yin-support-tea-cta',
+      ctaVariant: 'ghost',
       onCta: () => {
         void this._runCheckout('tea');
       }
@@ -139,6 +147,7 @@ export class SupportYinModalUI {
     this.teaCard = tea.card;
     this.teaTitle = tea.titleEl;
     this.teaBlurb = tea.blurbEl;
+    this.teaBenefits = tea.benefitEls;
     this.teaPrice = tea.priceEl;
     this.teaCta = tea.ctaBtn;
     this.teaImg = tea.imgEl;
@@ -176,11 +185,23 @@ export class SupportYinModalUI {
 
   /**
    * @param {object} opts
+   * @param {'primary' | 'ghost'} [opts.ctaVariant]
+   * @param {string} [opts.badgeKey]
    */
   _buildCard(opts) {
     const card = document.createElement('article');
     card.className = 'yin-support-card';
     card.dataset.testid = opts.testId;
+
+    /** @type {HTMLElement | null} */
+    let badgeEl = null;
+    if (opts.badgeKey) {
+      badgeEl = document.createElement('span');
+      badgeEl.className = 'yin-support-card__badge';
+      badgeEl.dataset.testid = 'yin-support-sanctuary-badge';
+      badgeEl.dataset.key = opts.badgeKey;
+      card.appendChild(badgeEl);
+    }
 
     const imgEl = document.createElement('img');
     imgEl.className = 'yin-support-card__img';
@@ -215,13 +236,14 @@ export class SupportYinModalUI {
 
     const ctaBtn = document.createElement('button');
     ctaBtn.type = 'button';
-    ctaBtn.className = 'yin-support-card__cta';
+    const variant = opts.ctaVariant === 'ghost' ? 'ghost' : 'primary';
+    ctaBtn.className = `yin-support-card__cta yin-support-card__cta--${variant}`;
     ctaBtn.dataset.testid = opts.ctaTestId;
     ctaBtn.dataset.key = opts.ctaKey;
     ctaBtn.addEventListener('click', opts.onCta);
 
     card.append(imgEl, titleEl, blurbEl, benefits, priceEl, ctaBtn);
-    return { card, imgEl, titleEl, blurbEl, benefitEls, priceEl, ctaBtn };
+    return { card, imgEl, titleEl, blurbEl, benefitEls, priceEl, ctaBtn, badgeEl };
   }
 
   /** @returns {boolean} */
@@ -310,6 +332,9 @@ export class SupportYinModalUI {
     this.sanctuaryImg.alt = t('SUPPORT_SANCTUARY_IMG_ALT');
     this.sanctuaryTitle.textContent = t('SUPPORT_SANCTUARY_TITLE');
     this.sanctuaryBlurb.textContent = t('SUPPORT_SANCTUARY_BLURB');
+    if (this.sanctuaryBadge) {
+      this.sanctuaryBadge.textContent = t(this.sanctuaryBadge.dataset.key);
+    }
     this.sanctuaryBenefits.forEach((el) => {
       el.textContent = t(el.dataset.key);
     });
@@ -322,6 +347,9 @@ export class SupportYinModalUI {
     this.teaImg.alt = t('SUPPORT_TEA_IMG_ALT');
     this.teaTitle.textContent = t('SUPPORT_TEA_TITLE');
     this.teaBlurb.textContent = t('SUPPORT_TEA_BLURB');
+    this.teaBenefits.forEach((el) => {
+      el.textContent = t(el.dataset.key);
+    });
     this.teaPrice.textContent = formatSupportPrice(
       t('SUPPORT_TEA_PRICE'),
       TIP_JAR_PRICE_USD
@@ -337,42 +365,52 @@ export class SupportYinModalUI {
       .yin-support-fab {
         position: fixed;
         top: 14px;
+        /* Mute is 66px @ right:14 → leave ~12px gap */
         right: 92px;
         z-index: 24;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        max-width: min(200px, calc(100vw - 120px));
-        padding: 6px 12px 6px 6px;
+        gap: 10px;
+        max-width: min(240px, calc(100vw - 130px));
+        /* Align chrome with ambient mute: soft glass, stronger blur */
+        padding: 8px 14px 8px 8px;
         border-radius: 999px;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        background: rgba(255, 252, 245, 0.72);
-        ${GLASS_BLUR_CSS}
+        border: 1px solid rgba(139, 115, 85, 0.18);
+        background: rgba(255, 252, 245, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.75) inset,
-          0 8px 22px rgba(90, 62, 40, 0.12);
-        color: rgba(72, 54, 38, 0.92);
+          0 1px 0 rgba(255, 255, 255, 0.55) inset,
+          0 3px 12px rgba(44, 31, 20, 0.07);
+        color: rgba(92, 72, 52, 0.78);
         cursor: pointer;
         font: inherit;
         pointer-events: auto;
+        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease, background 180ms ease, opacity 180ms ease;
       }
       .yin-support-fab:hover {
-        background: rgba(255, 252, 245, 0.9);
+        color: rgba(72, 54, 38, 0.92);
+        background: rgba(255, 252, 245, 0.72);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.8) inset,
+          0 6px 16px rgba(44, 31, 20, 0.14);
       }
       .yin-support-fab:active {
-        transform: scale(0.97);
+        transform: scale(0.96);
       }
       .yin-support-fab__img {
-        width: 36px;
-        height: 36px;
+        /* ~+50% vs prior 36px; soft ghost circle like mute glyph weight */
+        width: 54px;
+        height: 54px;
         border-radius: 50%;
         object-fit: cover;
         flex: 0 0 auto;
-        background: rgba(255, 252, 245, 0.9);
+        opacity: 0.88;
+        background: rgba(255, 252, 245, 0.45);
       }
       .yin-support-fab__label {
         font-size: 13px;
-        font-weight: 650;
+        font-weight: 600;
         letter-spacing: 0.01em;
         white-space: nowrap;
         overflow: hidden;
@@ -399,7 +437,7 @@ export class SupportYinModalUI {
         width: min(720px, calc(100vw - 28px));
         max-height: min(86vh, 720px);
         overflow: auto;
-        padding: 18px 18px 14px;
+        padding: 18px 18px 10px;
         border-radius: ${GLASS_RADIUS};
         border: ${GLASS_BORDER};
         background: ${GLASS_FILL_STRONG};
@@ -432,6 +470,7 @@ export class SupportYinModalUI {
         gap: 12px;
       }
       .yin-support-card {
+        position: relative;
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -439,6 +478,22 @@ export class SupportYinModalUI {
         border-radius: 16px;
         border: 1px solid rgba(139, 115, 85, 0.2);
         background: ${GLASS_FILL};
+      }
+      .yin-support-card__badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.82);
+        color: rgba(92, 72, 52, 0.78);
+        font-size: 10px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: none;
+        pointer-events: none;
       }
       .yin-support-card__img {
         width: 100%;
@@ -472,46 +527,76 @@ export class SupportYinModalUI {
         font-weight: 650;
         color: #4a3426;
       }
-      .yin-support-card__cta,
-      .yin-support-modal__close {
-        appearance: none;
-        border-radius: 999px;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        font: inherit;
-        cursor: pointer;
-      }
       .yin-support-card__cta {
+        appearance: none;
         margin-top: 4px;
         padding: 10px 14px;
-        background: rgba(212, 165, 116, 0.42);
-        color: #3d2e22;
+        border-radius: 999px;
+        font: inherit;
         font-weight: 650;
+        cursor: pointer;
       }
-      .yin-support-card__cta:hover {
-        background: rgba(212, 165, 116, 0.58);
+      .yin-support-card__cta--primary {
+        border: 1px solid rgba(72, 48, 30, 0.35);
+        background: linear-gradient(
+          180deg,
+          #7a5236 0%,
+          #5c3a24 52%,
+          #4a2e1c 100%
+        );
+        color: #fff8f0;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.18) inset,
+          0 4px 12px rgba(44, 31, 20, 0.18);
+      }
+      .yin-support-card__cta--primary:hover {
+        filter: brightness(1.06);
+      }
+      .yin-support-card__cta--ghost {
+        border: 1px solid rgba(139, 115, 85, 0.32);
+        background: rgba(255, 252, 245, 0.35);
+        color: #4a3426;
+      }
+      .yin-support-card__cta--ghost:hover {
+        background: rgba(255, 252, 245, 0.62);
       }
       .yin-support-card__cta:disabled {
         opacity: 0.55;
         cursor: default;
+        filter: none;
       }
       .yin-support-modal__close {
+        appearance: none;
         display: block;
-        width: 100%;
-        margin-top: 12px;
-        padding: 9px 12px;
-        background: rgba(255, 252, 245, 0.45);
-        color: #5c4330;
+        width: auto;
+        margin: 10px auto 2px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(92, 72, 52, 0.72);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+      }
+      .yin-support-modal__close:hover {
+        color: rgba(72, 54, 38, 0.92);
+        background: rgba(255, 252, 245, 0.28);
       }
       @media (max-width: 640px) {
         .yin-support-fab {
           top: 10px;
+          /* Narrow mute is 40px @ right:10 */
           right: 58px;
           padding: 5px 10px 5px 5px;
           gap: 6px;
         }
         .yin-support-fab__img {
-          width: 30px;
-          height: 30px;
+          width: 36px;
+          height: 36px;
         }
         .yin-support-fab__label {
           font-size: 12px;
