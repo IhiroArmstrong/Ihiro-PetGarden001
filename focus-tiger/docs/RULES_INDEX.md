@@ -87,7 +87,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent 见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
-| `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解 | 主张 feature/fix 试跑即正式关单验收；主张「关单只认 tip」=「应先合再测」 |
+| `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解 | 主张 feature/fix 试跑即正式关单验收；主张「关单只认 tip」=「应先合再测」；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
 | `qa-pass-coverage-split` | 「标已通过须覆盖分工见 `TEST_TRACKER`」；regression-lock / docs.mdc 可摘要硬拦 | 主张 e2e 绿即可关单；笼统「测试 OK→已通过」且不写 e2e/人工各覆盖哪些场景 |
 | `branch-freshness` | 「邀测前 freshness 见 regression-lock「分支新鲜度」」 | 落后 >0 仍声称代表 develop / 正式邀测却不报落后数 |
 | `release-blocker-ledger` | 「缺陷分级 / `check:open-blockers` 见 `TEST_TRACKER`；发版硬闸见 regression-lock「发布候选门禁」」 | 平行发明第二套逾期/分级口径；发版前省略 legacy 提醒；把漏标 `Fixes:` 的技术性补正当成产品向「降级放行」 |
@@ -178,6 +178,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-08 | `qa-develop-tip`：允许引用 `TEST_TRACKER`「主干一次性关单验收」+ KnownRisky §0；禁止 Support-only / 过时 worktree 冒充 tip |
 | 2026-08-07 | 新增 `git-pr-base-develop`：开 PR 须显式 `--base develop`；发版备忘 main 已提前含 #164（见 `WORKFLOW.md`） |
 | 2026-08-06 | 新增 `e2e-local-budget`：本地 e2e 硬顶 1 spec/次；`run-e2e-changed` + `e2e-ci-guard` + `gate-local-heavy-e2e`（deny）；修正 WORKFLOW/PROCESS「临时本机全量」为已废止/CI 收口 |
 | 2026-08-06 | 新增 `risk-mitigation-playbook`：中高风险功能落地降险 Playbook（四件套 + 架构红线 + 落地清单）；SSOT 在 `RISK_MITIGATION_PLAYBOOK.md`；`WORKFLOW` 仅入口引用 |

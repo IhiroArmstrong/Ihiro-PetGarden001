@@ -1,10 +1,10 @@
 # Known-Risky 优先验收清单
 
 创建日期：2026-08-04  
-**最近刷新**：2026-08-07（对照 08-04～08-07 产品改动 / 技术方向双轨 / 已完成走查）  
+**最近刷新**：2026-08-08（主干一次性 tip 验收；Support Modal 入表；废「Support 专用 worktree」口径）  
 权威路径：`focus-tiger/docs/KNOWN_RISKY_TEST_CHECKLIST.md`  
 性质：**人工验收操作步骤**——对应 `DEVELOP_DEBT_INVENTORY.md` §1 `known-risky` 优先批（本表可先行扩列新产品面）。  
-基线：验收前须 `git pull` 到当时 `origin/develop` tip，并跑 `npm run check:branch-freshness`（behind 须为 0 才可关单级验收）。
+基线：验收前须对齐当时 **`origin/develop` tip**（`git fetch` + 纯 tip worktree 或等价 checkout），并跑 `npm run check:branch-freshness`（behind 须为 0 才可关单级验收）。**禁止**用过时 feature worktree / 未 fetch 的本地 develop 冒充 tip。盘点与「本批不排」见 `TEST_TRACKER.md`「主干一次性关单验收」。
 
 > **SSOT**：仅本 MD。  
 > **不权威（勿当验收依据）**：同目录 `known-risky-test-checklist.csv`（历史薄导出，允许过期）。仓库根 `KnownRisky测试清单.numbers` 已于 **2026-08-05** 删除。  
@@ -22,9 +22,19 @@
 | 步骤里的 `【***测试OK】`？ | **走查批注**（写在本 MD）；不等于 TRACKER 关单 |
 | CSV？ | **不权威**；不要对照 CSV 验收或改步骤（根目录 Numbers 已删） |
 
-**公共前置（每条默认）**：`cd focus-tiger && npm run dev` → Safari `http://127.0.0.1:5173/?product=1`（窄屏 375×667）。
+**公共前置（每条默认 · 纯 tip）**：
 
-### 0.1 2026-08-07 起 · 建议优先顺序
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+git fetch origin develop
+git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
+npm install && npm run check:branch-freshness && npm run dev
+```
+
+Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面写当时 tip hash（2026-08-08 盘点时为 **`beb9147`**）。**勿**再专开 `…-wt-qa-support-modal`——Support（#187）已在 tip 祖先链，与其它未关单项同一棵 tip 树测即可。
+
+### 0.1 2026-08-08 起 · 建议优先顺序（主干一批）
 
 | 优先 | # | 为什么现在先测 |
 |---|---|---|
@@ -33,11 +43,12 @@
 | **P1** | **19–21** Breath 左球 / Focus 时长 chip / 吹花欢迎 | 08-06 新产品面；代码已合，关单级人工未齐 |
 | **P1** | **14** Companion 开表（含时长 chip） | 门闩高回归 + 开表前多一步 chip |
 | **P1** | **22–23** Zen Cinema / Quiet Line | 增长①③已合；待 tip 关单 |
-| **P1** | **25** Tip Jar **任务 5 部署** | SSOT `ihiro` 已 redeploy 新 Price（2026-08-08）；**须** Test 卡验 $9.99 / $89.99 |
+| **P1** | **25–27** Tip 部署金额 · Sanctuary 卡 · **Support Modal** | #187/#188 后 tip 含 Support FAB；Test 卡 $9.99/$89.99；菜单旧卡仍可对照 |
+| **P1** | （TRACKER 邻接）Reflection 共鸣 / 壁纸 / Privacy+? | 已合 tip；步骤见 TRACKER 对应行（本表未逐条扩） |
 | **P2** | **4–8、12–13、24** Ambient / Hints / DORMANT / Dispatcher / Glow / 星光斗篷 | 旧债或邻接易回归 |
-| **P2** | **25 UI / #26** Tip 卡观感 · Sanctuary 脚手架 | A UI 可测；B 仅 gate——测边界，勿当完整付费完成 |
 | **可跳过本轮** | **1、3、10、11** | 已 **verified**（改壳/叠层时再复测） |
 | **可跳过本轮** | **17** Grow 脚手架 | Backlog；防误解抽查即可 |
+| **可跳过本轮** | PWA 安装 / SW | 代码在 tip（#180）；安装验收 **延后** PR #2→`main` + 稳定版（#188） |
 
 ### 0.2 相对 08-04 清单的产品语义变更（测前必读）
 
@@ -48,7 +59,9 @@
 | 抽屉 / ⋯ 有「一分钟呼吸」行 | **已去重**；呼吸入口只在左球 |
 | 欢迎池仅书/点头 | Day1 / ≥3 日久别可 **吹花 + 头顶气泡**（压过 wellness 斗篷）；同日 XOR |
 | 付费未定 | **双轨已锁**：A Buy Yin a Tea（不解锁内容）+ B Yin's Sanctuary Lifetime（真 entitlement）；②B 电子书**已取消** |
-| 壳 = Electron/Tauri/PWA 三选一即将定 | **v1 默认纯 Web**；桌面壳**仍开放**；**可选 PWA 基础层**已合 `develop`（#180：manifest + network-only SW + 品牌图标）；**安装验收排期 = PR #2→`main` + 稳定版后**（勿现在催测）。桌面壳选型仍开放，见技术方向 Brief |
+| 壳 = Electron/Tauri/PWA 三选一即将定 | **v1 默认纯 Web**；桌面壳**仍开放**；**可选 PWA 基础层**已合 `develop`（#180：manifest + network-only SW + 品牌图标）；**安装验收排期 = PR #2→`main` + 稳定版后**（勿现在催测；#188）。桌面壳选型仍开放，见技术方向 Brief |
+| 只开 `…-wt-qa-support-modal` 测 Support | **废**：Support 与其它未关单项共用 **同一** tip worktree（见 §0 公共前置） |
+| tip 永远是 `62e38a3` / 主仓 ahead1 behind1 | tip **随 fetch**；08-08 盘点 tip=`beb9147`；本地 develop 可能仅 ahead 文档，关单仍认远端 tip |
 
 ---
 
@@ -80,8 +93,9 @@
 | 22 | Zen Cinema（增长①） | known-risky | Idle → ⋯/抽屉 **Zen Cinema** → 确认卡（缩略图+片名）→ Watch 开系统浏览器 YouTube；Not now 关。<br>回流：关后再开；Rise 后再开。375 卡不挡主球。<br>**禁止** Reflection 边缘入口、App 内嵌播放器。 | PR #148 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 23 | Quiet Line / 今日静语存图（增长③） | known-risky | Idle → ⋯/抽屉 **A Quiet Line** → 见当日金句 → Save image 下 PNG（文件名含日期）；同日再开句不变。<br>回流同 #22。375 不挡主球。<br>**禁止**一键社交分享卖点、soft-schedule、中文产品金句。 | PR #153 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 24 | 星光斗篷 v5 + wellness 2A（50/50） | known-risky | DORMANT / Honesty 睡醒：classic vs starlight **约各半**且入睡/苏醒变体匹配。<br>Wellness：深夜 forceDormant / 清晨苏醒 / 白天禁 2h 开场即睡。<br>睡循环：经典 034→030 / 星光 067→063 @2fps；背部微鼓观感曾反复修。 | TRACKER 待人工；实验室多轮；产品 50/50 路径仍待测 | 走查产品路径 + 与 #8/#21 交叉 |
-| 25 | Buy Yin a Tea / Tip Jar（A） | known-risky | 【UI】⋯/抽屉见 **Buy Yin a tea** → `#yin-tip-jar-card`；关卡回流；**不**解锁 Sanctuary/氛围。<br>【**任务 5 · 部署**】**SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`。**2026-08-08 redeploy**：新 Price ID 已上线（Version `eb921e5f…`）；secrets/Webhook 沿用。<br>【验收】Test 卡 Tea **$9.99** / Sanctuary **$89.99** → 回跳；verify-tip；零耦合。 | #181/#182；ihiro redeploy 完成 | **人工 Test 卡验收金额** |
-| 26 | Yin's Sanctuary Lifetime（B） | known-risky · **脚手架** | 【现状】`sanctuaryEntitlementGate` + 零耦合单测已合（#162）；**尚无** Unlock UI / Stripe Lifetime / 氛围·动画消费。<br>【抽查】产品壳不得出现「已买断全库」假完成入口；Ambient 不得读 tip 状态解锁。<br>【通过标准】本轮可标「脚手架已知」；完整产品路径 **未实现** → 勿关单为已完成。 | Brief + `YIN_SANCTUARY.md`；Next=Checkout+UI+消费 | 排期 B 实现后再扩步骤 |
+| 25 | Buy Yin a Tea / Tip Jar（A） | known-risky | 【UI】⋯/抽屉见 **Buy Yin a tea** → `#yin-tip-jar-card`；关卡回流；**不**解锁 Sanctuary/氛围。亦可从 **#27 Support** 右卡进同一 Checkout。<br>【**任务 5 · 部署**】**SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`。**2026-08-08 redeploy**：新 Price ID 已上线（Version `eb921e5f…`）；secrets/Webhook 沿用。<br>【验收】Test 卡 Tea **$9.99** / Sanctuary **$89.99** → 回跳；verify-tip；零耦合。 | #181/#182；ihiro redeploy 完成 | **人工 Test 卡验收金额** |
+| 26 | Yin's Sanctuary Lifetime（B） | known-risky | 【现状】Unlock UI（#179）+ Checkout 已合 tip；Ambient 消费 `isSanctuaryUnlocked` **仍暂缓**。<br>【主路径】⋯/抽屉 **Yin's Sanctuary** → `#yin-sanctuary-card`（约 $89.99）→ Unlock → Test 卡回跳 / restore。<br>【对照】亦可从 **#27 Support Modal** 左卡进同一 Checkout。<br>【通过标准】卡面+Checkout 金额 OK ≠ 整行关单；须含回流/邮箱 restore/零耦合（见 TRACKER）。 | TRACKER Sanctuary Unlock / Tip 部署 | tip 走查 → 关单前勿开 Ambient 消费 |
+| 27 | Support Yin 统一入口（Modal） | known-risky · **P1** | 【主路径】Idle → 右上（音符左侧）**Support Yin** `#yin-support-fab` → `#yin-support-modal` 双卡（Sanctuary / Buy a Tea）→ CTA 走既有 `startCheckout`。<br>【回流】关后再开；Focusing 时 FAB 隐藏，Rise 后复现。<br>【对照】菜单 **Yin's Sanctuary / Buy Yin a Tea** 仍可进旧卡。<br>【375】双卡上下堆叠、可关。<br>【通过标准】入口统一 + CTA 可达；场景化请茶/漏斗统计 **未做**（勿当本行缺口）。 | #187 已合 tip（祖先于 `beb9147`）；TRACKER Support 行 | tip 走查 → TRACKER 关单 |
 
 ---
 
@@ -100,12 +114,12 @@
 - 新产品面合入后：若属高回归 / 曾「有问题」/ release-blocker → **先加本表行**，再考虑是否回写债务清单 §1。
 - 已 verified 行改壳后：优先 **烟测**，勿无故整表重开。
 
-## 4. 变更摘要（2026-08-07）
+## 4. 变更摘要（2026-08-08）
 
 | 动作 | 项 |
 |---|---|
-| 维持 verified | #1 Idle chrome · #3 桥接 · #10 Sit pending · #11 visibility gap |
-| 步骤语义更新 | #1/#2/#14/#16（Breath 左球、Focus chip、⋯ 增项） |
-| 判定刷新 | #4 Ambient（多轮 tip OK，待本表关单）· #5/#7 Hints 再设计 |
-| **新增** | #18 Arrival 闪白 P0 · #19 Breath · #20 Focus chip/HUD · #21 吹花 · #22 Zen Cinema · #23 Quiet Line · #24 星光斗篷 · #25 Tip Jar · #26 Sanctuary 脚手架 |
-| 明确非本表「壳已定 PWA 为最终桌面交付」 | 见 §0.2：v1=纯 Web；桌面壳仍开放；可选 PWA = **Add to Home Screen 基础层**（非桌面壳定案） |
+| 废过时口径 | Support 专用 `…-wt-qa-support-modal`；固定 tip=`62e38a3`；主仓 ahead1/behind1 分叉必 pull 才能测 Support |
+| 统一前置 | 纯 tip worktree `…-wt-qa-develop-tip` + 绝对路径（盘点 tip `beb9147`） |
+| **新增** | **#27 Support Yin Modal** |
+| 刷新 | #25/#26 与 Support 对照入口；§0.1 优先序含 25–27；PWA 仍延后 |
+| 交叉 | `TEST_TRACKER`「主干一次性关单验收」替换 07-25 过时 P0/P1/P2 行号表 |
