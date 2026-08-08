@@ -606,7 +606,8 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'browser-energy',
-    title: '预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒）',
+    title:
+      '预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒；用户侧 cd 路径口径）',
     ssotPath: '.cursor/rules/focus-tiger-browser-energy.mdc',
     ssotSection: 'Focus Tiger · 预览浏览器与能耗',
     ssotMustContain: [
@@ -614,7 +615,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /deny-ide-browser-mcp/,
       /响应式设计模式/,
       /进程收尾提醒/,
-      /和本机完全独立的会话/
+      /和本机完全独立的会话/,
+      /完整绝对路径/
     ],
     topicSignals: [
       /内置 Browser|Cursor 内置浏览器|browser-energy/,
@@ -622,7 +624,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /cursor-ide-browser/,
       /deny-ide-browser-mcp/,
       /进程收尾/,
-      /完全独立的会话/
+      /完全独立的会话/,
+      /完整绝对路径/
     ],
     mustCite: [/focus-tiger-browser-energy\.mdc|browser-energy/],
     restatementFingerprints: [

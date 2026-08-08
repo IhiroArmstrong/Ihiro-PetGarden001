@@ -1,5 +1,5 @@
 ---
-description: 预览浏览器与能耗——默认 Safari；硬禁 IDE Browser MCP；Vite/Playwright 收尾；Cloud 独立会话提醒
+description: 预览浏览器与能耗——默认 Safari；硬禁 IDE Browser MCP；Vite/Playwright 收尾；Cloud 独立会话；给用户的 cd/npm run dev 须完整绝对路径
 alwaysApply: true
 ---
 
@@ -15,7 +15,10 @@ alwaysApply: true
 2. Agent **禁止**调用 Cursor 内置 Browser（含 `cursor-ide-browser` MCP：`browser_navigate` / `browser_snapshot` / 截图点选等）或 Simple Browser。  
 3. **窄屏 / 响应式验收** → 用户用 Safari **响应式设计模式**（或真机），对照 `RESPONSIVE_LAYOUT.md`（常用 375；抽屉断点 ≤479）。**禁止**为此改开 IDE Browser。  
 4. Agent 起的 Vite / `npm run dev`：测完或本回合结束前须**尽量自己停掉**；禁止过夜挂着。  
-5. Agent 起的 Playwright / `npm run test:e2e` 等测试进程：测完须停掉；若会话中断可能导致残留，须在汇报里按下方「进程收尾提醒」写明。自动化窄屏视口走 Playwright，**不**走 IDE Browser。
+5. Agent 起的 Playwright / `npm run test:e2e` 等测试进程：测完须停掉；若会话中断可能导致残留，须在汇报里按下方「进程收尾提醒」写明。自动化窄屏视口走 Playwright，**不**走 IDE Browser。  
+6. **给用户可复制的终端命令时须写完整绝对路径**（强制 · 2026-08-08 拍板）：凡回复中出现 `cd … && npm run dev`（或等价 `npm run preview` / 指向某 worktree 的验收命令），`cd` 目标必须是**完整绝对路径**（如 `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger`），便于直接复制执行。  
+   - **禁止**：`cd …-wt-…/focus-tiger`、`cd <worktree>/focus-tiger`、`cd 本仓 focus-tiger` 等省略号 / 占位符 / 相对含糊路径。  
+   - 同条可附完整 URL（如 `http://127.0.0.1:5173/?product=1`）。Agent 自用工具调用仍可用相对路径。
 
 ## 硬闸（hooks）
 
