@@ -567,7 +567,13 @@ async function init() {
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
   const tipJarUI = new TipJarUI(document.body, {
-    onBadgesChanged: () => tipKindnessBadgesChrome.refresh()
+    onBadgesChanged: () => tipKindnessBadgesChrome.refresh(),
+    onTipThanks: ({ isRepeatTip }) => {
+      // Ritual thank-you with existing sequences (no new tip-only assets).
+      emotionController.playEmotion(
+        isRepeatTip ? 'teaDrinking' : 'nodGreeting'
+      );
+    }
   });
   window.__tipJar = tipJarUI;
   const supportYinModalUI = new SupportYinModalUI(document.body, {

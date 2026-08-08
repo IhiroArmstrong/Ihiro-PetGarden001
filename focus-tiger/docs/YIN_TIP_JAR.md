@@ -16,7 +16,7 @@
   lastTippedAt: string | null,
   email?: string | null,
   source?: 'checkout-return' | 'email-restore' | 'manual' | null,
-  badgeIds: string[] // kindness badges · 3–9 · only-grow · not content unlocks
+  tipLog: TipLogEntry[] // { at, n } · Tea Log trail · max 30
 }
 ```
 
@@ -27,6 +27,12 @@
 - 再次打赏：**专注水平不变则不加枚**（只加不减）
 - 展示：`#yin-tip-jar-card` 徽章条 + Idle `#yin-tip-kindness-badges`（阿寅身旁；Focusing 隐藏）
 - 点按徽章 → 下载高清原图
+
+### Tea Log + 再 tip 致谢（2026-08-09）
+
+- `tipLog[]`：每次 checkout 成功追加一行；Tip 卡展示最近 5 条
+- 再 tip：**不**靠加徽章；反馈文案 `TIP_FEEDBACK_THANKS_AGAIN` + 播既有 `teaDrinking`（首 tip：`nodGreeting`）
+- 新鞠躬素材 / 24h 光环 / 盲盒周边 → **延后**
 
 ## API
 

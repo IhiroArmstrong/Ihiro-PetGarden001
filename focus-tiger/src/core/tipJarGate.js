@@ -22,16 +22,54 @@ export const TIP_JAR_STORAGE_KEY = 'focus-tiger.tip-jar.v1';
 /** Display price placeholder (USD). Stripe Price ID lives on the Worker. */
 export const TIP_JAR_PRICE_USD = '9.99';
 
+/** Quiet local trail of tip moments (Tea Log). */
+export const TIP_LOG_MAX_ENTRIES = 30;
+
 /**
+ * @typedef {{ at: string, n: number }} TipLogEntry
  * @typedef {{
  *   tipped: boolean,
  *   tipCount: number,
  *   lastTippedAt: string | null,
  *   email: string | null,
  *   source: 'checkout-return' | 'email-restore' | 'manual' | null,
- *   badgeIds: string[]
+ *   badgeIds: string[],
+ *   tipLog: TipLogEntry[]
  * }} TipJarStatus
  */
+
+/**
+ * @param {unknown} raw
+ * @returns {TipLogEntry[]}
+ */
+export function normalizeTipLog(raw) {
+  if (!Array.isArray(raw)) return [];
+  /** @type {TipLogEntry[]} */
+  const out = [];
+  for (const row of raw) {
+    if (!row || typeof row !== 'object') continue;
+    const o = /** @type {Record<string, unknown>} */ (row);
+    const at = typeof o.at === 'string' && o.at ? o.at : null;
+    const n = Number(o.n);
+    if (!at || !Number.isFinite(n) || n < 1) continue;
+    out.push({ at, n: Math.floor(n) });
+  }
+  return out.slice(-TIP_LOG_MAX_ENTRIES);
+}
+
+/**
+ * Local calendar date YYYY-MM-DD from an ISO timestamp.
+ * @param {string} iso
+ * @returns {string}
+ */
+export function tipLogDateKey(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return String(iso || '').slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
 
 /**
  * @param {unknown} raw
@@ -45,7 +83,8 @@ export function normalizeTipStatus(raw) {
       lastTippedAt: null,
       email: null,
       source: null,
-      badgeIds: []
+      badgeIds: [],
+      tipLog: []
     };
   }
   const o = /** @type {Record<string, unknown>} */ (raw);
@@ -56,16 +95,28 @@ export function normalizeTipStatus(raw) {
       ? o.source
       : null;
   const tipCount = Number(o.tipCount);
+  const count =
+    Number.isFinite(tipCount) && tipCount > 0 ? Math.floor(tipCount) : 0;
+  let tipLog = normalizeTipLog(o.tipLog);
+  if (
+    Boolean(o.tipped) &&
+    tipLog.length === 0 &&
+    typeof o.lastTippedAt === 'string' &&
+    o.lastTippedAt
+  ) {
+    tipLog = [{ at: o.lastTippedAt, n: Math.max(1, count) }];
+  }
   return {
     tipped: Boolean(o.tipped),
-    tipCount: Number.isFinite(tipCount) && tipCount > 0 ? Math.floor(tipCount) : 0,
+    tipCount: count,
     lastTippedAt:
       typeof o.lastTippedAt === 'string' && o.lastTippedAt
         ? o.lastTippedAt
         : null,
     email: typeof o.email === 'string' && o.email ? o.email : null,
     source,
-    badgeIds: normalizeTipBadgeIds(o.badgeIds)
+    badgeIds: normalizeTipBadgeIds(o.badgeIds),
+    tipLog
   };
 }
 
@@ -100,7 +151,8 @@ export function writeTipStatus(storage, status) {
         lastTippedAt: normalized.lastTippedAt,
         email: normalized.email,
         source: normalized.source,
-        badgeIds: normalized.badgeIds
+        badgeIds: normalized.badgeIds,
+        tipLog: normalized.tipLog
       })
     );
   } catch {
@@ -121,14 +173,14 @@ export function hasTipped({
 
 /**
  * Optimistic mark after Stripe success_url (`?tip=1`).
- * Increments tipCount + awards kindness badges from practice level.
+ * Increments tipCount + awards kindness badges + appends Tea Log.
  * NOT for Sanctuary content unlock.
  *
  * @param {Storage | null | undefined} storage
  * @param {object} [opts]
  * @param {string | null} [opts.email]
  * @param {() => Date} [opts.now]
- * @returns {{ newlyAddedIds: string[] }}
+ * @returns {{ newlyAddedIds: string[], tipCount: number, isRepeatTip: boolean }}
  */
 export function markTipFromCheckoutReturn(
   storage,
@@ -136,16 +188,20 @@ export function markTipFromCheckoutReturn(
 ) {
   const prev = readTipStatus(storage);
   const at = now().toISOString();
+  const isRepeatTip = prev.tipCount > 0;
+  const tipCount = Math.max(0, prev.tipCount) + 1;
   const award = planTipBadgeAward(storage, prev.badgeIds);
+  const tipLog = normalizeTipLog([...prev.tipLog, { at, n: tipCount }]);
   writeTipStatus(storage, {
     tipped: true,
-    tipCount: Math.max(0, prev.tipCount) + 1,
+    tipCount,
     lastTippedAt: at,
     email: email || prev.email,
     source: 'checkout-return',
-    badgeIds: award.badgeIds
+    badgeIds: award.badgeIds,
+    tipLog
   });
-  return { newlyAddedIds: award.newlyAddedIds };
+  return { newlyAddedIds: award.newlyAddedIds, tipCount, isRepeatTip };
 }
 
 /**
@@ -157,7 +213,7 @@ export function markTipFromCheckoutReturn(
  * @param {number} [opts.tipCount]
  * @param {string | null} [opts.lastTippedAt]
  * @param {() => Date} [opts.now]
- * @returns {{ newlyAddedIds: string[] }}
+ * @returns {{ newlyAddedIds: string[], tipCount: number, isRepeatTip: boolean }}
  */
 export function markTipFromEmailRestore(
   storage,
@@ -166,16 +222,28 @@ export function markTipFromEmailRestore(
   const prev = readTipStatus(storage);
   const at = lastTippedAt || now().toISOString();
   const count = Number(tipCount);
+  const nextCount =
+    Number.isFinite(count) && count > 0 ? Math.floor(count) : 1;
+  const isRepeatTip = prev.tipCount > 0 || nextCount > 1;
   const award = planTipBadgeAward(storage, prev.badgeIds);
+  let tipLog = prev.tipLog;
+  if (tipLog.length === 0) {
+    tipLog = [{ at, n: nextCount }];
+  }
   writeTipStatus(storage, {
     tipped: true,
-    tipCount: Number.isFinite(count) && count > 0 ? Math.floor(count) : 1,
+    tipCount: nextCount,
     lastTippedAt: at,
     email: String(email || '').trim().toLowerCase() || null,
     source: 'email-restore',
-    badgeIds: award.badgeIds
+    badgeIds: award.badgeIds,
+    tipLog
   });
-  return { newlyAddedIds: award.newlyAddedIds };
+  return {
+    newlyAddedIds: award.newlyAddedIds,
+    tipCount: nextCount,
+    isRepeatTip
+  };
 }
 
 /**
@@ -187,7 +255,6 @@ export function clearTipStatus(storage) {
 
 /**
  * Backfill badges for devices that tipped before badgeIds existed.
- * Does nothing if not tipped, or if badges already present.
  *
  * @param {Storage | null | undefined} storage
  * @returns {{ newlyAddedIds: string[] }}
@@ -212,7 +279,7 @@ export function ensureTipBadgesAwarded(storage) {
  * @param {string} [opts.search]
  * @param {(url: string) => void} [opts.replaceUrl]
  * @param {() => Date} [opts.now]
- * @returns {{ consumed: boolean, outcome: 'success' | 'cancel' | null, newlyAddedIds: string[] }}
+ * @returns {{ consumed: boolean, outcome: 'success' | 'cancel' | null, newlyAddedIds: string[], tipCount: number, isRepeatTip: boolean }}
  */
 export function consumeTipReturnQuery({
   storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
@@ -231,7 +298,13 @@ export function consumeTipReturnQuery({
   );
   const flag = params.get('tip') ?? params.get('tea');
   if (flag !== '1' && flag !== 'success' && flag !== 'cancel') {
-    return { consumed: false, outcome: null, newlyAddedIds: [] };
+    return {
+      consumed: false,
+      outcome: null,
+      newlyAddedIds: [],
+      tipCount: 0,
+      isRepeatTip: false
+    };
   }
 
   const outcome =
@@ -239,8 +312,13 @@ export function consumeTipReturnQuery({
 
   /** @type {string[]} */
   let newlyAddedIds = [];
+  let tipCount = 0;
+  let isRepeatTip = false;
   if (outcome === 'success') {
-    newlyAddedIds = markTipFromCheckoutReturn(storage, { now }).newlyAddedIds;
+    const marked = markTipFromCheckoutReturn(storage, { now });
+    newlyAddedIds = marked.newlyAddedIds;
+    tipCount = marked.tipCount;
+    isRepeatTip = marked.isRepeatTip;
   }
 
   params.delete('tip');
@@ -258,7 +336,7 @@ export function consumeTipReturnQuery({
     // ignore
   }
 
-  return { consumed: true, outcome, newlyAddedIds };
+  return { consumed: true, outcome, newlyAddedIds, tipCount, isRepeatTip };
 }
 
 /** Re-export shared Cloud helpers (no tip state). */

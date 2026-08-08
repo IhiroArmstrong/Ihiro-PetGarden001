@@ -12,7 +12,8 @@ import {
   hasTipped,
   markTipFromEmailRestore,
   postCloudJson,
-  readTipStatus
+  readTipStatus,
+  tipLogDateKey
 } from '../core/tipJarGate.js';
 import {
   getTipKindnessBadgeById,
@@ -37,6 +38,7 @@ export class TipJarUI {
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    * @param {() => void} [handlers.onBadgesChanged]
+   * @param {(detail: { isRepeatTip: boolean, tipCount: number }) => void} [handlers.onTipThanks]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
@@ -62,6 +64,11 @@ export class TipJarUI {
     this.badgeWrap = document.createElement('div');
     this.badgeWrap.className = 'yin-tip-jar__badge';
     this.badgeWrap.dataset.testid = 'yin-tip-jar-badges';
+
+    this.logEl = document.createElement('div');
+    this.logEl.className = 'yin-tip-jar__tea-log';
+    this.logEl.dataset.testid = 'yin-tip-jar-tea-log';
+    this.logEl.hidden = true;
 
     this.statusEl = document.createElement('p');
     this.statusEl.className = 'yin-tip-jar__status';
@@ -128,6 +135,7 @@ export class TipJarUI {
     this.root.append(
       this.titleEl,
       this.badgeWrap,
+      this.logEl,
       this.statusEl,
       this.memorialEl,
       this.blurbEl,
@@ -163,8 +171,17 @@ export class TipJarUI {
     // Success / cancel return from Stripe Checkout (optimistic local write).
     const ret = consumeTipReturnQuery({ storage: this._storage });
     if (ret.outcome === 'success') {
-      this._setFeedback(t('TIP_FEEDBACK_THANKS'), false);
+      this._setFeedback(
+        ret.isRepeatTip
+          ? t('TIP_FEEDBACK_THANKS_AGAIN')
+          : t('TIP_FEEDBACK_THANKS'),
+        false
+      );
       this.handlers.onBadgesChanged?.();
+      this.handlers.onTipThanks?.({
+        isRepeatTip: ret.isRepeatTip,
+        tipCount: ret.tipCount
+      });
     } else if (ret.outcome === 'cancel') {
       this._setFeedback(t('TIP_FEEDBACK_CANCEL'), false);
     }
@@ -267,6 +284,44 @@ export class TipJarUI {
     this.badgeWrap.append(row, note);
   }
 
+  /**
+   * @param {import('../core/tipJarGate.js').TipLogEntry[]} tipLog
+   */
+  _renderTeaLog(tipLog) {
+    this.logEl.replaceChildren();
+    if (!tipLog.length) {
+      this.logEl.hidden = true;
+      return;
+    }
+    this.logEl.hidden = false;
+    const title = document.createElement('p');
+    title.className = 'yin-tip-jar__tea-log-title';
+    title.textContent = t('TIP_TEA_LOG_TITLE');
+    const list = document.createElement('ul');
+    list.className = 'yin-tip-jar__tea-log-list';
+    const teas = [
+      t('TIP_TEA_NAME_1'),
+      t('TIP_TEA_NAME_2'),
+      t('TIP_TEA_NAME_3'),
+      t('TIP_TEA_NAME_4'),
+      t('TIP_TEA_NAME_5')
+    ].filter(Boolean);
+    const recent = tipLog.slice(-5).reverse();
+    for (const entry of recent) {
+      const li = document.createElement('li');
+      const tea =
+        teas.length > 0
+          ? teas[(Math.max(1, entry.n) - 1) % teas.length]
+          : '';
+      li.textContent = t('TIP_TEA_LOG_ENTRY')
+        .replaceAll('{date}', tipLogDateKey(entry.at))
+        .replaceAll('{n}', String(entry.n))
+        .replaceAll('{tea}', tea);
+      list.appendChild(li);
+    }
+    this.logEl.append(title, list);
+  }
+
   _refresh() {
     const backfill = ensureTipBadgesAwarded(this._storage);
     if (backfill.newlyAddedIds.length) {
@@ -298,6 +353,7 @@ export class TipJarUI {
     this.statusEl.classList.toggle('is-yes', tipped);
     this.badgeWrap.classList.toggle('is-active', tipped);
     this._renderBadges(tipped ? status.badgeIds : []);
+    this._renderTeaLog(tipped ? status.tipLog : []);
 
     // Tips may repeat; do not permanently disable after first tip.
     this.buyBtn.disabled = this._busy || !cloudOk;
@@ -505,6 +561,27 @@ export class TipJarUI {
         line-height: 1.4;
         color: rgba(92, 67, 48, 0.72);
         text-align: center;
+      }
+      .yin-tip-jar__tea-log {
+        margin: 0 0 10px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(139, 115, 85, 0.16);
+        background: rgba(255, 252, 245, 0.4);
+      }
+      .yin-tip-jar__tea-log-title {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 650;
+        color: #4a3a28;
+        text-align: center;
+      }
+      .yin-tip-jar__tea-log-list {
+        margin: 0;
+        padding-left: 1.1em;
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: rgba(92, 67, 48, 0.88);
       }
       .yin-tip-jar__status {
         margin: 0 0 8px;

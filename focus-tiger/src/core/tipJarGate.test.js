@@ -34,19 +34,23 @@ describe('tipJarGate', () => {
   it('hasTipped and increments tipCount on checkout return', () => {
     const storage = memoryStorage();
     assert.equal(hasTipped({ storage }), false);
-    markTipFromCheckoutReturn(storage, {
+    const first = markTipFromCheckoutReturn(storage, {
       now: () => new Date('2026-08-06T00:00:00.000Z')
     });
     assert.equal(hasTipped({ storage }), true);
     assert.equal(readTipStatus(storage).tipCount, 1);
+    assert.equal(first.isRepeatTip, false);
     assert.equal(readTipStatus(storage).source, 'checkout-return');
     assert.equal(readTipStatus(storage).badgeIds.length, 3);
-    markTipFromCheckoutReturn(storage, {
+    assert.equal(readTipStatus(storage).tipLog.length, 1);
+    const second = markTipFromCheckoutReturn(storage, {
       now: () => new Date('2026-08-07T00:00:00.000Z')
     });
     assert.equal(readTipStatus(storage).tipCount, 2);
+    assert.equal(second.isRepeatTip, true);
     // No new practice → re-tip does not add badges
     assert.equal(readTipStatus(storage).badgeIds.length, 3);
+    assert.equal(readTipStatus(storage).tipLog.length, 2);
     assert.ok(storage.getItem(TIP_JAR_STORAGE_KEY));
   });
 
