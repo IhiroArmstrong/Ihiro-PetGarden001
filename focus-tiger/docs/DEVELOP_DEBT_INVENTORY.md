@@ -34,6 +34,26 @@
 | `EDGE_CASES.md` / `DOC_CODE_CONTRACT.md` | 静默失败 / 高风险契约 | known-risky 的技术依据 |
 | `SHARED_RESOURCES.md` | 共享门闩 / 可见性 gap | 跨模块隐式依赖 |
 
+### 0.1 历史注记 · 2026-08-01 直推 `develop` 批次（git blame 防困惑）
+
+> **性质**：流程/审计记录，**不是**功能验收关单。  
+> **背景依据（会话）**：下午 **Responsive Task 3 / P1 验收**（本地会话约 `c5bdc70f…`）在 `develop` 连续 commit（`40f8ed6`→`8935a04`，13:53–16:19）；晚间 **Git sync**（约 `d78f1d20…`，21:10 起）先因保护拒推，后经用户书面「临时放开直推；点名 push `92effa4`…」**临时卸 branch protection → `git push origin HEAD:develop` → 恢复保护**，一次性把 6 笔送上 tip。  
+> **与 #190 关系**：并列「可推 develop/feature/fix」的旧口令 + 临时卸保护，是 2026-08-08 改写「下班前 Git 同步＝旁支 + PR、禁止直推 develop/main」的直接背景。
+
+| hash | 时间（+0800） | 摘要 | 类型 |
+|---|---|---|---|
+| `40f8ed6` | 13:53 | Task 3 断点冒烟 A OK | docs only |
+| `adac63a` | 14:30 | Task 3 §8 + chrome bugs | docs only |
+| `aee93bf` | 15:19 | §9 W1–W8 + W5 根因 | docs only |
+| `38945ed` | 15:41 | ja Honesty tip / Yin 命名 | docs only |
+| `92effa4` | 16:10 | **Frozen in Love** 入库 + P1 QA 记入 | **运行时**（controller / locales / mp3） |
+| `8935a04` | 16:19 | Honesty wide three-ball / P1-1/P1-8 | docs only |
+
+**读 tip / blame 时**：这 6 笔 first-parent 上**没有** `(#N)` / `Merge pull request`，属保护被临时绕过的直推，**不是**漏标 PR 号的 squash。其后（约 08-02 起）first-parent 恢复为 PR 合入形态。  
+**`92effa4` 验证**：仍是 tip 祖先；2026-08-08 tip `6787eb5` 补跑 smoke / e2e:smoke 见 `TEST_TRACKER`「Ambient · Aakash Gandhi…」行；听感关单仍待人工。其余 5 笔纯文档**不**补自动化。
+
+---
+
 ### 状态标签（四选一）
 
 | 标签 | 含义 |

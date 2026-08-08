@@ -178,6 +178,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-08 | 审计笔记：2026-08-01 六笔（含 `92effa4` Frozen）曾临时卸保护直推 `develop`；记入 `DEVELOP_DEBT_INVENTORY` §0.1；支撑同日 `git-agent-commit` 禁直推口径（#190） |
 | 2026-08-08 | 修正 `git-agent-commit` 下班前口令：禁止直推 `develop`/`main`；同步=旁支 push + 开/更新 base=develop PR；废止「可推 develop/feature/fix」并列写法（regression-lock 第 5–7 条） |
 | 2026-08-08 | `qa-develop-tip`：允许引用 `TEST_TRACKER`「主干一次性关单验收」+ KnownRisky §0；禁止 Support-only / 过时 worktree 冒充 tip |
 | 2026-08-07 | 新增 `git-pr-base-develop`：开 PR 须显式 `--base develop`；发版备忘 main 已提前含 #164（见 `WORKFLOW.md`） |
