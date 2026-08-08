@@ -29,40 +29,41 @@ Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（
 
 ---
 
-## § 部署（任务 5）· **进行中（2026-08-08）**
+## § 部署（任务 5）· **进行中（2026-08-08 · 纠偏）**
 
 > **硬边界**：仓库里的 Tip Jar **应用代码 + Worker 路由**可以合 develop；**真实收款**必须另做本运维/配置任务。  
-> **代码 alone 无法完成真实收款。**  
-> 权威操作清单（自原 Founder Pack §6 迁入，语义改为 Tea / Tip）：
+> **代码 alone 无法完成真实收款。**
 
-### 已用终端完成（本 CF 账号）
+### Stripe / 线上 SSOT（昨天已配好 · **以此为准**）
 
-- workers.dev 账号子域：**`focus-tiger`**（Dashboard onboarding 链 404 时，用 API `PUT /accounts/.../workers/subdomain`）
-- `TIP_KV` / `SANCTUARY_KV`（+ preview）已 `wrangler kv namespace create`，id 写入 `wrangler.jsonc`
-- Stripe Price ID（纠价后）已写入 vars
+| 项 | 值 |
+|---|---|
+| Worker 公开 base | **`https://focus-tiger-cloud.ihiro.workers.dev`** |
+| Webhook | `https://focus-tiger-cloud.ihiro.workers.dev/api/stripe-webhook`（Sandbox 已 Active） |
+| secrets | **已在 `ihiro` Worker** |
+| 2026-08-08 redeploy | Version **`eb921e5f-a80a-4447-add7-2f9772982d67`**：新 Tip/Sanctuary Price ID 已上线 |
+
+### 今日误操作（勿当 SSOT）
+
+曾在 `armstronghhe@gmail.com` 账号另注册子域 **`focus-tiger`** 并 deploy——**作废对齐**；Stripe Webhook **不要**改指它。
 
 ### 仍须完成的步骤
 
-1. **`npx wrangler secret put STRIPE_SECRET_KEY`**  
-   **`npx wrangler secret put STRIPE_WEBHOOK_SECRET`**
-2. **`cd focus-tiger/cloud && npx wrangler deploy`** →  
-   `https://focus-tiger-cloud.focus-tiger.workers.dev`
-3. Stripe Dashboard **配 Webhook** → 指到  
-   `https://focus-tiger-cloud.focus-tiger.workers.dev/api/stripe-webhook`  
-   （至少 `checkout.session.completed`；签名密钥 = 上一步 `STRIPE_WEBHOOK_SECRET`）
-4. 前端构建环境设 **`VITE_CLOUD_API_BASE_URL`** = Worker 公开 base（无尾斜杠亦可；见 `tipJarGate`）  
-   未配置时：免费主路径不变；Tip 卡提示未配置 / 无法开 Checkout
+1. 本地：`focus-tiger/.env.local`  
+   `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`
+2. **人工**：Test 卡走 Tea **$9.99** / Sanctuary **$89.99** Checkout + 回跳
+3. **不必**改 Stripe Webhook URL（已正确）
 
-### 本地自检（部署后）
+### 本地自检（redeploy 后）
 
-- 产品壳点 **Buy Yin a tea** → 进 Stripe Checkout（Test 卡）→ success 回跳 `?tip=1` → 本地 tip 状态 / 徽章级反馈  
-- Webhook 写入 `TIP_KV` 后，换设备用邮箱走 **`/api/verify-tip`** 可恢复 tip 记录  
-- **不得**因此解锁 Sanctuary / 氛围全库（零耦合抽查）
+- 产品壳点 **Buy Yin a tea** → Checkout **$9.99**  
+- Sanctuary 卡面 **$89.99** + Lifetime Checkout  
+- Webhook → KV；**不得** tip 解锁 Sanctuary
 
 ### 与 Sanctuary（B）的关系
 
 - Tip 与 Sanctuary **分 Price ID、分 KV、分 webhook 业务分支**（可共享 `cloud/src/lib/stripe.ts` 工具层）  
-- B 的 Lifetime Checkout / `SANCTUARY_*` secrets **另开部署清单**（`YIN_SANCTUARY.md`）；**不要**复用本条 `STRIPE_PRICE_ID` / `TIP_KV` 当解锁真凭证
+- 共用同一 Worker base（**`ihiro`**）与同一组 Stripe secrets
 
 ### 排期口径
 
@@ -70,5 +71,7 @@ Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（
 |---|---|
 | 前端 Tip UI + `tipJarGate` | 已合 develop（#161） |
 | Worker Checkout / webhook / verify 代码 | 已在 `cloud/` |
-| **任务 5 · 部署（本表）** | **未做** —— 真实收款阻塞项 |
-| 情境化 tip 入口（里程碑 / Honesty / About） | 产品后续；不挡任务 5 |
+| `ihiro` Worker + Webhook + secrets | **已有** |
+| #181 新 Price ID → **`ihiro` redeploy** | **已做**（2026-08-08 · `eb921e5f…`） |
+| 误建 `focus-tiger` 旁路 | **作废对齐** |
+| 人工 Test 卡金额验收 | **待做** |
