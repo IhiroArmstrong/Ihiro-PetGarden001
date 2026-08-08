@@ -8,8 +8,18 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+FAIL=0
+
 echo "=== git status ==="
 git status -sb
+echo
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+echo "当前分支: $BRANCH"
+if [[ "$BRANCH" == "develop" || "$BRANCH" == "main" ]]; then
+  echo "❌ 当前在受保护主干（$BRANCH）。禁止直推 origin/$BRANCH；请先切到 feature/* / fix/* / docs/* 等旁支再同步。"
+  FAIL=1
+fi
 echo
 
 AHEAD="$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)"
@@ -18,7 +28,6 @@ echo "相对 origin/main: ahead=$AHEAD behind=$BEHIND"
 echo
 
 echo "=== 推送前风险扫描 ==="
-FAIL=0
 
 # 暂存区或工作区是否夹带不该进库的路径
 SUSPECT_PATTERNS='node_modules/|\.tools/|\.DS_Store|\.env$|\.env\.|/dist/|\.vite/'
@@ -59,10 +68,11 @@ if [[ "${1:-}" == "--push" ]]; then
     echo "体检未通过，已中止 push。"
     exit 1
   fi
-  echo "=== git push ==="
+  echo "=== git push（仅当前旁支） ==="
   git push -u origin HEAD
-  echo "✓ push 完成"
+  echo "✓ push 完成；进 develop/main 须另开 PR（--base develop），禁止直推主干"
 else
-  echo "仅体检。若要推送到 GitHub，请确认无误后执行："
+  echo "仅体检。若要推送到 GitHub（旁支），请确认无误后执行："
   echo "  ./scripts/git-sync-safe.sh --push"
+  echo "然后开/更新 base=develop 的 PR；禁止 git push origin develop|main"
 fi
