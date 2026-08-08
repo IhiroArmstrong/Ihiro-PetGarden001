@@ -33,7 +33,7 @@
 | **P1** | **19–21** Breath 左球 / Focus 时长 chip / 吹花欢迎 | 08-06 新产品面；代码已合，关单级人工未齐 |
 | **P1** | **14** Companion 开表（含时长 chip） | 门闩高回归 + 开表前多一步 chip |
 | **P1** | **22–23** Zen Cinema / Quiet Line | 增长①③已合；待 tip 关单 |
-| **P1** | **25** Tip Jar **任务 5 部署** | Worker 已上 `focus-tiger.workers.dev`（#181/#182）；**仍缺** Stripe secrets + Webhook 才能真收款 |
+| **P1** | **25** Tip Jar **任务 5 部署** | SSOT = `focus-tiger-cloud.ihiro.workers.dev`（Webhook/secrets 已有）；**须**把 #181 新 Price ID redeploy 到该 Worker |
 | **P2** | **4–8、12–13、24** Ambient / Hints / DORMANT / Dispatcher / Glow / 星光斗篷 | 旧债或邻接易回归 |
 | **P2** | **25 UI / #26** Tip 卡观感 · Sanctuary 脚手架 | A UI 可测；B 仅 gate——测边界，勿当完整付费完成 |
 | **可跳过本轮** | **1、3、10、11** | 已 **verified**（改壳/叠层时再复测） |
@@ -80,7 +80,7 @@
 | 22 | Zen Cinema（增长①） | known-risky | Idle → ⋯/抽屉 **Zen Cinema** → 确认卡（缩略图+片名）→ Watch 开系统浏览器 YouTube；Not now 关。<br>回流：关后再开；Rise 后再开。375 卡不挡主球。<br>**禁止** Reflection 边缘入口、App 内嵌播放器。 | PR #148 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 23 | Quiet Line / 今日静语存图（增长③） | known-risky | Idle → ⋯/抽屉 **A Quiet Line** → 见当日金句 → Save image 下 PNG（文件名含日期）；同日再开句不变。<br>回流同 #22。375 不挡主球。<br>**禁止**一键社交分享卖点、soft-schedule、中文产品金句。 | PR #153 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 24 | 星光斗篷 v5 + wellness 2A（50/50） | known-risky | DORMANT / Honesty 睡醒：classic vs starlight **约各半**且入睡/苏醒变体匹配。<br>Wellness：深夜 forceDormant / 清晨苏醒 / 白天禁 2h 开场即睡。<br>睡循环：经典 034→030 / 星光 067→063 @2fps；背部微鼓观感曾反复修。 | TRACKER 待人工；实验室多轮；产品 50/50 路径仍待测 | 走查产品路径 + 与 #8/#21 交叉 |
-| 25 | Buy Yin a Tea / Tip Jar（A） | known-risky | 【UI】⋯/抽屉见 **Buy Yin a tea** → `#yin-tip-jar-card`；关卡回流；**不**解锁 Sanctuary/氛围。<br>【**任务 5 · 部署**】Worker **已 deploy**：`https://focus-tiger-cloud.focus-tiger.workers.dev`（KV + Price ID 已绑）。**仍缺**：`STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` + Stripe Webhook；本地 `VITE_CLOUD_API_BASE_URL`。<br>【部署后验收】Test 卡 Checkout → `?tip=1`；邮箱 verify-tip；零耦合抽查。 | PR #161 UI；#181/#182 配置/KV；secrets 未 put | **补 secrets + webhook 后验收款**；UI 可先测 |
+| 25 | Buy Yin a Tea / Tip Jar（A） | known-risky | 【UI】⋯/抽屉见 **Buy Yin a tea** → `#yin-tip-jar-card`；关卡回流；**不**解锁 Sanctuary/氛围。<br>【**任务 5 · 部署**】**SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（Stripe Webhook 已指此；secrets 已在）。**勿**用今日误建的 `*.focus-tiger.workers.dev`。<br>【下一步】redeploy #181 新 Price ID 到 **ihiro**（现 Checkout：inactive price）。本地 `VITE_CLOUD_API_BASE_URL` → ihiro。<br>【验收】Test 卡 → `?tip=1`；verify-tip；零耦合。 | PR #161 UI；#181/#182 仓库配置；**ihiro 尚未吃到新 Price** | **redeploy → ihiro** 后验收款 |
 | 26 | Yin's Sanctuary Lifetime（B） | known-risky · **脚手架** | 【现状】`sanctuaryEntitlementGate` + 零耦合单测已合（#162）；**尚无** Unlock UI / Stripe Lifetime / 氛围·动画消费。<br>【抽查】产品壳不得出现「已买断全库」假完成入口；Ambient 不得读 tip 状态解锁。<br>【通过标准】本轮可标「脚手架已知」；完整产品路径 **未实现** → 勿关单为已完成。 | Brief + `YIN_SANCTUARY.md`；Next=Checkout+UI+消费 | 排期 B 实现后再扩步骤 |
 
 ---
