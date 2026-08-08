@@ -25,13 +25,13 @@
 	"kv_namespaces": [
 		{
 			"binding": "TIP_KV",
-			"id": "32a307c4623f4d78a4bfd66da34b8849",
-			"preview_id": "0bc78a51324f4d189a657ad16ed03dd9"
+			"id": "e26fc50b134e4eaeb59a3f4a551f3415",
+			"preview_id": "b9543c7cef3b4e68a4e96cf0a8811375"
 		},
 		{
 			"binding": "SANCTUARY_KV",
-			"id": "aed8165fd9a8452b9e0edff38298c498",
-			"preview_id": "4c16cddae489432f9b3a76126a077717"
+			"id": "d337b4b132e147d193e8e6ec03e12b9a",
+			"preview_id": "d71d6fed42a249a5a749b3ae5f268857"
 		}
 	],
 	"vars": {

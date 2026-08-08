@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price ID + `$89.99`；#182 KV ids。**Stripe / 真收款 SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`（Webhook 已配；secrets 已有）。今日曾误在 `armstronghhe@gmail.com` 账号另注册 `focus-tiger` 子域并 deploy——**以 `ihiro` 为准，勿改 Stripe Webhook**。下一步：把 #181 新 Price ID **redeploy 到 `ihiro` Worker**（现 Checkout 报 inactive price）。
+- **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
 - **壁纸赠送（#178）**：已合 develop；Idle ⋯ Wallpapers 免费静帧。
 - **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）+ Unlock UI（#179）**：已合 develop；门闩分离。**Ambient 消费 `isSanctuaryUnlocked` 暂缓**，等 TEST_TRACKER 人工验收 Unlock 后再开。

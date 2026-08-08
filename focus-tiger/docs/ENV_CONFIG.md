@@ -27,7 +27,7 @@
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
 | v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
-| Tip / Sanctuary Worker（2026-08-08） | **SSOT URL**：`https://focus-tiger-cloud.ihiro.workers.dev`（Stripe Webhook 已指此；secrets 已在该 Worker）。本地 `.env.local` 用同一 base。**勿**改用今日误建的 `*.focus-tiger.workers.dev`。#181 新 Price ID **尚未** deploy 到 `ihiro`（线上仍报 inactive price） |
+| Tip / Sanctuary Worker（2026-08-08） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（163 账号）。新 Price ID **已 redeploy**（Version `eb921e5f…`）。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev` |
 
 ## 3. 与 CI 的关系
 
