@@ -113,20 +113,22 @@ COLLAB.md（本文档，协作层）
 
 ---
 
-## 六、Agent / Cursor · Git 同步约定（2026-07-27）
+## 六、Agent / Cursor · Git 同步约定（2026-07-27 · 2026-08-08 修订）
 
-一批修复或任务在本地 **commit 验证通过后**，Agent **应尽快 push** 到对应远程分支（`develop` / `feature/*` / `fix/*`），**不要**在仅本地存在的分支上积攒多笔未推送 commit。
+一批修复或任务在本地 **commit 验证通过后**，Agent **应尽快 push** 到**当前短命旁支**（`feature/*` / `fix/*` / `docs/*` 等），并开/更新 **base=`develop`** 的 PR；**不要**在仅本地存在的旁支上积攒多笔未推送 commit。
+
+**禁止**直推 `origin/develop` / `origin/main`（受保护；只能经 PR 合入）。勿把「push 到 develop」写成默认同步目标。
 
 **原因**：另一 Agent 或协作者可能基于较早快照合并同名分支（例：`fix/scenario-o-375-chrome-layout` 合并到 `726fc28` 时，遗漏了其后两笔仅存在于 reflog 的 commit），导致修复丢失、需 cherry-pick 补救。
 
 | 动作 | 约定 |
 |---|---|
-| 本地 `git commit` | 验证通过后执行（见 `focus-tiger-regression-lock.mdc`） |
-| `git push` | 用户明确要求 **或** 任务书写明「完成后 push develop」时执行；**一批修复收尾默认应 push**，勿长期只留本地 |
-| 合入 `develop` 的文档/小 PR | CI 绿后默认 Agent 发起合并（可弹 Cursor **Run**）；见 `WORKFLOW.md` / `git-develop-small-pr-run-merge` |
-| 多 Agent 并行 | 开工前 `git pull`；完工后 push，减少「已合并但缺 commit」窗口 |
+| 本地 `git commit` | 验证通过后执行（见 `focus-tiger-regression-lock.mdc`）；可在旁支或本地 develop 上 commit，但**进远端主干必须经 PR** |
+| `git push` | 用户明确要求时执行；目标 = **当前旁支自身**；一批修复收尾默认应 push 旁支并确保有 PR，勿长期只留本地 |
+| 合入 `develop` | **仅经 PR**；文档/小 PR 在 CI 绿后默认 Agent 发起合并（可弹 Cursor **Run**）；见 `WORKFLOW.md` / `git-develop-small-pr-run-merge` |
+| 多 Agent 并行 | 开工前对齐远端旁支 tip；完工后 push 旁支，减少「已合并但缺 commit」窗口 |
 
 细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
 
 ---
-*版本：1.5 · 2026-08-04 增补 develop 文档/小 PR Run 合并习惯（SSOT：`WORKFLOW.md`）*
+*版本：1.6 · 2026-08-08 禁止直推 develop/main；同步=旁支 push + PR（SSOT：regression-lock 第 7 条）*
