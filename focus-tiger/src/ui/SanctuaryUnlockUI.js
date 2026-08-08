@@ -180,6 +180,11 @@ export class SanctuaryUnlockUI {
     this.root.remove();
   }
 
+  /** Public entry for Support modal / other chrome — same Stripe Lifetime path. */
+  startCheckout() {
+    return this._startCheckout();
+  }
+
   async _startCheckout() {
     if (this._busy) return;
     this._busy = true;

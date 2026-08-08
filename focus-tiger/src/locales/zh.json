@@ -298,5 +298,20 @@
   "TIP_RESTORE_OK": "已在本设备恢复请茶状态。",
   "TIP_RESTORE_MISS": "该邮箱暂未找到请茶记录。",
   "TIP_RESTORE_ERROR": "暂时无法恢复。",
-  "TIP_RESTORE_RATE": "尝试过多 — 请稍后再试。"
+  "TIP_RESTORE_RATE": "尝试过多 — 请稍后再试。",
+  "SUPPORT_FAB_LABEL": "支持阿寅",
+  "SUPPORT_FAB_ARIA": "支持阿寅 — 解锁圣所或请喝茶",
+  "SUPPORT_MODAL_TITLE": "支持与解锁",
+  "SUPPORT_MODAL_SUBTITLE": "两种安静的支持方式 — 按你的心意选择。都不是必须。",
+  "SUPPORT_MODAL_CLOSE": "现在不要",
+  "SUPPORT_SANCTUARY_TITLE": "阿寅的圣所",
+  "SUPPORT_SANCTUARY_BLURB": "Lifetime：更深的氛围音与少量高级动画 — 按自己的节奏。",
+  "SUPPORT_SANCTUARY_PRICE": "约 ${price} · Lifetime",
+  "SUPPORT_SANCTUARY_CTA": "解锁圣所",
+  "SUPPORT_SANCTUARY_IMG_ALT": "阿寅在圣所安静看书",
+  "SUPPORT_TEA_TITLE": "请阿寅喝茶",
+  "SUPPORT_TEA_BLURB": "喜欢和阿寅一起专注吗？请它喝杯茶吧。",
+  "SUPPORT_TEA_PRICE": "约 ${price} · 可选心意",
+  "SUPPORT_TEA_CTA": "支持我们",
+  "SUPPORT_TEA_IMG_ALT": "阿寅喝茶"
 }

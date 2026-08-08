@@ -298,5 +298,20 @@
   "TIP_RESTORE_OK": "この端末にお茶の記録を復元しました。",
   "TIP_RESTORE_MISS": "そのメールのお茶記録はまだ見つかりません。",
   "TIP_RESTORE_ERROR": "いま復元できませんでした。",
-  "TIP_RESTORE_RATE": "試行が多すぎます。少し待ってから再度。"
+  "TIP_RESTORE_RATE": "試行が多すぎます。少し待ってから再度。",
+  "SUPPORT_FAB_LABEL": "阿寅を応援",
+  "SUPPORT_FAB_ARIA": "阿寅を応援 — 聖域の解除かお茶のご支援",
+  "SUPPORT_MODAL_TITLE": "応援と解除",
+  "SUPPORT_MODAL_SUBTITLE": "静かな応援のしかたが二つ。気持ちに合う方を。どちらも必須ではありません。",
+  "SUPPORT_MODAL_CLOSE": "いまはしない",
+  "SUPPORT_SANCTUARY_TITLE": "阿寅の聖域",
+  "SUPPORT_SANCTUARY_BLURB": "Lifetime：より深い環境音と、いくつかの上級アニメ — 自分のペースで。",
+  "SUPPORT_SANCTUARY_PRICE": "約 ${price} · Lifetime",
+  "SUPPORT_SANCTUARY_CTA": "聖域を開く",
+  "SUPPORT_SANCTUARY_IMG_ALT": "聖域で静かに本を読む阿寅",
+  "SUPPORT_TEA_TITLE": "阿寅にお茶を",
+  "SUPPORT_TEA_BLURB": "阿寅と一緒に集中するのが好きですか？お茶をご馳走しませんか。",
+  "SUPPORT_TEA_PRICE": "約 ${price} · 任意のご支援",
+  "SUPPORT_TEA_CTA": "応援する",
+  "SUPPORT_TEA_IMG_ALT": "お茶を飲む阿寅"
 }
