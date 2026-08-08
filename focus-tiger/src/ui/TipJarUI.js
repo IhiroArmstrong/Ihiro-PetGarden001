@@ -270,6 +270,11 @@ export class TipJarUI {
     );
   }
 
+  /** Public entry for Support modal / other chrome — same Stripe path as Buy CTA. */
+  startCheckout() {
+    return this._onBuy();
+  }
+
   async _onBuy() {
     if (this._busy) return;
     if (!this._cloudReady()) {

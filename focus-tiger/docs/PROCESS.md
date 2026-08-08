@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Support Yin 统一入口（2026-08-08 · 本支）**：右上角 `#yin-support-fab`（maskable 图标）→ `#yin-support-modal` 双卡（Sanctuary / Buy a Tea）；菜单两项**暂留**；CTA 走既有 Stripe `startCheckout()`。素材：`public/ui/support/*`。**下一任务**（勿漏）：① 高光时刻场景化请茶气泡；② 付费意愿漏斗本地统计。
 - **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
 - **壁纸赠送（#178）**：已合 develop；Idle ⋯ Wallpapers 免费静帧。
@@ -292,6 +293,8 @@
 
 **下一步计划**：
 
+- **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。
+- **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
 - **场景→动画接线 · A′+B Dispatcher（2026-08-01）**：PR #59 / #65 等已合 `develop`；关单级人工见 `TEST_TRACKER` 场景动画行。
 - **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31）**：已合 **`develop`（PR #51）**；Brief `task-user-ambient-upload-v1.md`。关单级人工见 `TEST_TRACKER` 对应行。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
@@ -375,7 +378,9 @@
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
 - **PR #2 · develop→main**（冲突已清 / MERGEABLE；合 main 待五条件 + 口令；Brief `task-pr2-develop-into-main.md`）
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
-- **双轨付费实现（A Tea + B Sanctuary）**（方向已锁；Stripe 另开 feature；见 `task-tech-direction-v1-shell-monetization.md`）
+- **双轨付费实现（A Tea + B Sanctuary）**（方向已锁；Unlock/Tip UI 已合；**Support 统一入口**本支；**下一**：场景化请茶 + 意愿漏斗统计；见 `task-tech-direction-v1-shell-monetization.md`）
+- **付费 · 场景化请茶气泡**（高光时刻触发 Buy a Tea；Support Modal 之后）
+- **付费 · 意愿漏斗本地统计**（Support / 双卡 / Checkout / 完成；无第三方）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）

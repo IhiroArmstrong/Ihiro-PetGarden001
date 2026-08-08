@@ -70,6 +70,7 @@ import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { TipJarUI } from './ui/TipJarUI.js';
+import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import { MindfulReminderController } from './core/MindfulReminderController.js';
@@ -564,6 +565,24 @@ async function init() {
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
   const tipJarUI = new TipJarUI(document.body, {});
   window.__tipJar = tipJarUI;
+  const supportYinModalUI = new SupportYinModalUI(document.body, {
+    onOpen: () => {
+      zenCinemaCardUI.close();
+      dailyZenQuoteCardUI.close();
+      digitalWallpapersCardUI.close();
+      sanctuaryUnlockUI.close();
+      tipJarUI.close();
+    },
+    onUnlockSanctuary: () => {
+      sanctuaryUnlockUI.open();
+      return sanctuaryUnlockUI.startCheckout();
+    },
+    onBuyTea: () => {
+      tipJarUI.open();
+      return tipJarUI.startCheckout();
+    }
+  });
+  window.__supportYin = supportYinModalUI;
   consumeTipReturnQuery({});
   void bootSanctuaryReturnConfirm({});
   const focusSessionEndStore = new FocusSessionEndStore({ now });
@@ -966,6 +985,7 @@ async function init() {
       languagePreferenceUI.openPanel();
     },
     onZenCinema: () => {
+      supportYinModalUI.close();
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
       sanctuaryUnlockUI.close();
@@ -973,6 +993,7 @@ async function init() {
       zenCinemaCardUI.open();
     },
     onDailyQuote: () => {
+      supportYinModalUI.close();
       zenCinemaCardUI.close();
       digitalWallpapersCardUI.close();
       sanctuaryUnlockUI.close();
@@ -980,6 +1001,7 @@ async function init() {
       dailyZenQuoteCardUI.open();
     },
     onWallpapers: () => {
+      supportYinModalUI.close();
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
       sanctuaryUnlockUI.close();
@@ -987,6 +1009,7 @@ async function init() {
       digitalWallpapersCardUI.open();
     },
     onSanctuary: () => {
+      supportYinModalUI.close();
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
@@ -994,6 +1017,7 @@ async function init() {
       sanctuaryUnlockUI.open();
     },
     onTipJar: () => {
+      supportYinModalUI.close();
       zenCinemaCardUI.close();
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
@@ -1032,6 +1056,8 @@ async function init() {
       dailyZenQuoteCardUI.close();
       digitalWallpapersCardUI.close();
       sanctuaryUnlockUI.close();
+      tipJarUI.close();
+      supportYinModalUI.close();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },
@@ -1479,6 +1505,7 @@ async function init() {
     acrossToolsIdleGuard.stop();
     ambientSoundscape.endSession();
     ambientSoundscapeUI.setSessionActive(false);
+    supportYinModalUI.setFabVisible(true);
     companionModePicker.setIdleChromeVisible(true);
   }
 
@@ -1609,6 +1636,7 @@ async function init() {
     });
     ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
+    supportYinModalUI.setFabVisible(false);
     attentionSignals.setEnabled(true);
     acrossToolsIdleGuard.stop();
     if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {
