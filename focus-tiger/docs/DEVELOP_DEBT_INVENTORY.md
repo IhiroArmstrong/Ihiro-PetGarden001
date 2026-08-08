@@ -50,7 +50,7 @@
 | `8935a04` | 16:19 | Honesty wide three-ball / P1-1/P1-8 | docs only |
 
 **读 tip / blame 时**：这 6 笔 first-parent 上**没有** `(#N)` / `Merge pull request`，属保护被临时绕过的直推，**不是**漏标 PR 号的 squash。其后（约 08-02 起）first-parent 恢复为 PR 合入形态。  
-**`92effa4` 验证**：仍是 tip 祖先；2026-08-08 tip `6787eb5` 补跑 smoke / e2e:smoke 见 `TEST_TRACKER`「Ambient · Aakash Gandhi…」行；听感关单仍待人工。其余 5 笔纯文档**不**补自动化。
+**`92effa4` 验证**：仍是 tip 祖先；2026-08-08 tip `6787eb5`/`1021a0a` 补跑 smoke / e2e:smoke 见 `TEST_TRACKER`「Ambient · Aakash Gandhi…」行；**2026-08-08 用户书面听感多次 OK → 该行已关单「已通过」**（tip `1021a0a`）。其余 5 笔纯文档**不**补自动化。
 
 ---
 
