@@ -25,20 +25,20 @@
 	"kv_namespaces": [
 		{
 			"binding": "TIP_KV",
-			"id": "00000000000000000000000000000001",
-			"preview_id": "00000000000000000000000000000002"
+			"id": "e26fc50b134e4eaeb59a3f4a551f3415",
+			"preview_id": "b9543c7cef3b4e68a4e96cf0a8811375"
 		},
 		{
 			"binding": "SANCTUARY_KV",
-			"id": "00000000000000000000000000000003",
-			"preview_id": "00000000000000000000000000000004"
+			"id": "d337b4b132e147d193e8e6ec03e12b9a",
+			"preview_id": "d71d6fed42a249a5a749b3ae5f268857"
 		}
 	],
 	"vars": {
-		"STRIPE_PRICE_ID": "",
+		"STRIPE_PRICE_ID": "price_1U22ujFuIhgJPGLiGp2gTPMM",
 		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&tip=1",
 		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&tip=cancel",
-		"STRIPE_SANCTUARY_PRICE_ID": "",
+		"STRIPE_SANCTUARY_PRICE_ID": "price_1U22T4FuIhgJPGLiT0hcEWxY",
 		"SANCTUARY_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&sanctuary_session={CHECKOUT_SESSION_ID}",
 		"SANCTUARY_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&sanctuary=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"

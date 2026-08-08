@@ -31,8 +31,12 @@
 
 Webhook 按 `metadata.product` 分流；缺省按 tip（兼容旧 tip session）。
 
+## Pricing (display)
+
+- UI：`SANCTUARY_LIFETIME_PRICE_USD` = **89.99**（与 Dashboard Lifetime Price 对齐）
+- Worker：`STRIPE_SANCTUARY_PRICE_ID`（见 `cloud/wrangler.jsonc`）
+
 ## Next
 
-- 部署：创建 Lifetime Price + `SANCTUARY_KV` 真实 id + secrets  
+- 部署：Lifetime Price + `SANCTUARY_KV` 真实 id + secrets（KV / Price ID 已写入 wrangler；须 `wrangler deploy`）  
 - Ambient / 动画消费 `isSanctuaryUnlocked`（深度曲目等）  
-- 定价数字拍板后改 `SANCTUARY_LIFETIME_PRICE_USD` 展示  
