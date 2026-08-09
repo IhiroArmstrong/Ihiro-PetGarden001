@@ -57,6 +57,8 @@ describe('entitlementRegistry', () => {
     assert.equal(FEATURE_CATALOG['ritual.morning.access'].requiredTier, 'subscription');
     assert.equal(FEATURE_CATALOG['ritual.morning.history'].type, 'persistent');
     assert.equal(FEATURE_CATALOG['journey.log'].requiredTier, 'free');
+    assert.equal(FEATURE_CATALOG['content.daily-wisdom'].requiredTier, 'free');
+    assert.equal(FEATURE_CATALOG['content.daily-wisdom'].type, 'ongoing');
   });
 });
 
@@ -65,6 +67,7 @@ describe('entitlementGate lifetime ∪ subscription', () => {
     const storage = memoryStorage();
     assert.equal(isEntitled('journey.log', { storage }), true);
     assert.equal(isEntitled('milestone.glow.played', { storage }), true);
+    assert.equal(isEntitled('content.daily-wisdom', { storage }), true);
   });
 
   it('unknown featureKey is denied', () => {

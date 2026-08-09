@@ -16,7 +16,11 @@ import {
   pickDailyWisdomId,
   selectWisdomId
 } from './DailyWisdomStore.js';
-import { resolveTodayWisdom } from './dailyWisdom.js';
+import {
+  DAILY_WISDOM_FEATURE_KEY,
+  resolveTodayWisdom
+} from './dailyWisdom.js';
+import { FEATURE_CATALOG, isEntitled } from './entitlement/entitlementGate.js';
 
 function createMapStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -126,6 +130,14 @@ test('DailyWisdomStore locks same day; avoids recent on next day', () => {
     assert.equal(seen.has(id), false, `day ${d} should not repeat recent ${id}`);
     seen.add(id);
   }
+});
+
+test('content.daily-wisdom is free ongoing in entitlement registry', () => {
+  assert.equal(DAILY_WISDOM_FEATURE_KEY, 'content.daily-wisdom');
+  assert.equal(FEATURE_CATALOG[DAILY_WISDOM_FEATURE_KEY].requiredTier, 'free');
+  assert.equal(FEATURE_CATALOG[DAILY_WISDOM_FEATURE_KEY].type, 'ongoing');
+  const storage = createMapStorage();
+  assert.equal(isEntitled(DAILY_WISDOM_FEATURE_KEY, { storage }), true);
 });
 
 test('resolveTodayWisdom returns locale text and persists', () => {
