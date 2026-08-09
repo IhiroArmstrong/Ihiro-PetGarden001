@@ -1,6 +1,6 @@
 # Task Brief · A′ · Moment Whisper +「?」桥接加固
 
-> **状态（2026-08-09）**：实现中 · `feature/five-moments-whisper`。  
+> **状态（2026-08-09）**：**已合** develop（#203）。  
 > **父决策**：`task-five-moments-surface-plan.md`（§三 万全之策）。  
 > **前置**：`task-five-moments-compass-b.md` 已合（#201）。
 
