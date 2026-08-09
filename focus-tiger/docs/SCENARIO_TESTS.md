@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-09（增量升格 **Q / S / T / U / V / W**：Support·付费双轨、Breath 左球、Focus 时长 chip、增长礼物菜单、吹花欢迎、Privacy/?；**R** 跨日回访仍建议补充。逐功能验收仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-09 晚（二次增量升格 **X / Y / Z**：Tiger Anchor 主动 Recover、Five Moments Compass+Whisper、Journey Log；**Q** 补统一练习徽章口径。对齐 #199–#206。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -10,8 +10,8 @@
 
 **功能 vs 测试覆盖缺口审计（2026-07-30）**：模块级对照、三条「绿」口径、永不自动化清单、**unit\*→smoke 分类（§7）**、Honesty/i18n 发布口径（§8–§9）→ [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（与 `TEST_TRACKER` §C 互补；改覆盖结论先改审计文档）。
 
-**自动化冒烟（2026-07-20 起；2026-08-09 索引补 Q–W 相关 spec）**：
-- **单元 / 控制器集成**（无浏览器）：`src/core/scenario-smoke.test.js` 等（`npm run test:smoke`）— A–D 门闩与控制器接线 + **E/F** Offline 舒展暂停 / AcrossTools idle + **I/J** hint 纯函数；含 `MindfulReminderController` / `AcrossToolsIdleGuard` 专测；**不是**完整用户故事。Q/S/T/U/V/W 另有各模块单测（见各场景标题），**不全**并入 scenario-smoke。
+**自动化冒烟（2026-07-20 起；2026-08-09 索引补 Q–W；晚间补 X–Z 单测指针）**：
+- **单元 / 控制器集成**（无浏览器）：`src/core/scenario-smoke.test.js` 等（`npm run test:smoke`）— A–D 门闩与控制器接线 + **E/F** Offline 舒展暂停 / AcrossTools idle + **I/J** hint 纯函数；含 `MindfulReminderController` / `AcrossToolsIdleGuard` 专测；**不是**完整用户故事。Q/S/T/U/V/W/X/Y/Z 另有各模块单测（见各场景标题），**不全**并入 scenario-smoke。
 - **浏览器 DOM 用户链路**（`npm run test:e2e`；本地硬顶单 spec，见 `e2e-local-budget`）：
   - `e2e/product-shell.smoke.spec.js` — 产品壳 Sit / 无调试条；实验室重置钮可见
   - `e2e/scenario-a.companion.spec.js` — **I** hint→三选一面板；**I2** 预选→开 Arrival；**A** Arrival 后 Here & Now 开表；**A2/A3** 预选+⚡ 开表；**K** Offline 选中即开表
@@ -22,8 +22,8 @@
   - `e2e/honesty-bridge-real-path.spec.js` — **真实** Honesty 补登→桥接 Yes→Arrival / No→Idle（`?honestyBreathMs=`；**非**注入）
   - `e2e/flower-welcome.spec.js` — **V** Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗
   - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 行 + Focusing/? 主条契约（不全覆盖 W 观感）
-  - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）
-- **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut 等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
+  - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
+- **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
@@ -37,7 +37,7 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
 语言切换：宽屏 ⋯ / 窄屏抽屉 → **Language**（v1.0 对外 **English + Japanese**）；DEV 仍可用 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下同一 bundle）。
@@ -88,7 +88,8 @@
 
 > **单元 / 控制器集成**：`shouldSuppressAwayReminders` 模式门闩 + `MindfulReminderController.handleAttentionReturn` 在 Here & Now 触发 emotion / Offline·Flow 抑制 → smoke B。  
 > **未覆盖**：真实切标签页、toast DOM、nod-bow 序列。  
-> **人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。
+> **人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。  
+> **对照**：用户**主动** Recover（Focusing 轻触阿寅）见 **场景 X**（Tiger Anchor）；勿与本被动 Re-focus 混验额度。
 
 ### 频率门槛（先记住，否则会以为「坏了」）
 
@@ -291,10 +292,10 @@
 
 ## 场景 Q：Support Yin · 请茶与 Sanctuary（双轨付费入口）
 
-> **用户故事**：Kelly 想支持阿寅——右上角 **Support Yin** 打开双卡（上/左 Sanctuary Lifetime；下/右 Buy Yin a Tea），也可从 ⋯/抽屉进旧菜单卡。打赏**不**解锁内容；Sanctuary 与 tip **零耦合**。付完 Tea 后见善意徽章与茶室留痕。  
-> **单元**：`SupportYinModalUI.test.js` · `tipKindnessBadges.test.js` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
+> **用户故事**：Kelly 想支持阿寅——右上角 **Support Yin** 打开双卡（上/左 Sanctuary Lifetime；下/右 Buy Yin a Tea），也可从 ⋯/抽屉进旧菜单卡。打赏**不**解锁内容；Sanctuary 与 tip **零耦合**。徽章走 **统一练习授予**（#204）：免费练习起授、Tea/Sanctuary 付费起 3；练习上涨自动加枚。  
+> **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
-> **仍须人工**：Test 卡 Checkout 金额（Tea **US$9.99** / Sanctuary **US$89.99**）；付完回跳 confirm；徽章枚数随练习水平；再 tip 无新练习不加枚；Focusing 时 FAB 隐藏、Rise 后复现。  
+> **仍须人工**：Test 卡金额（Tea **US$9.99** / Sanctuary **US$89.99**）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。  
 > **未做 / 勿当缺口报**：高光时刻「场景化请茶」气泡、付费意愿漏斗统计、多档 tip、Ambient 消费 `isSanctuaryUnlocked`（暂缓）。
 
 ### Q1 · Support Modal（统一入口）
@@ -308,15 +309,21 @@
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
 
 6. Support 卡 CTA **或** ⋯/抽屉 **Buy Yin a Tea** → `#yin-tip-jar-card`。
-7. Test 卡走 Checkout（约 **US$9.99**）；回跳/`?tip=1` 后：卡内见 **3–9** 枚善意徽章（无练习默认 3）；Idle 阿寅旁 `#yin-tip-kindness-badges`；点徽章可下 1024 PNG。
-8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。再 tip 且练习水平未升 → **不加枚**。
+7. Test 卡走 Checkout（约 **US$9.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
+8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。
 9. **禁止**：tip 后出现 Sanctuary 已解锁语义或内容门打开。
 
 ### Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
 10. Support Primary **或** 菜单 **Yin's Sanctuary** → `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
-11. 回跳须服务端 confirm；邮箱 restore 可用。
+11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
 12. **禁止**：读 tip 状态解锁；Ambient 深度音效等消费 `isSanctuaryUnlocked` **本批不测**（产品暂缓）。
+
+### Q4 · 统一练习徽章（免费路径 · #204）
+
+13. 清 tip/Sanctuary entitlement → 无练习时阿寅旁 **0** 枚；做一次 Breath/Honesty/Focus 记账 → Idle 旁 ≥ **1** 枚（免费 `min=1`）。
+14. 付 Tea 后升到 ≥3；练习天数/`practice-days` 抬高后刷新，枚数可按 `score = 天数 + floor(累计分/60)`、`min + floor(score/3)` **只增不减**（无需再 tip）。
+15. **回流**：Rise 后再见徽章条；关 Tip/Sanctuary 卡再开仍在。
 
 ---
 
@@ -404,15 +411,76 @@
 > **仍须人工**：375 Sheet 可滚、可关；Rise 后再走一遍；**禁止**简介/隐私承诺具名云保管同步。  
 > **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。
 
-1. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device。
+1. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句。
 2. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思。
-3. **Back** → 回简介 → Got it 关闭。
-4. **回流**：Rise 后再点 ? → Privacy → Back。
-5. **375**：同路径；Sheet 不挡到无法关。
+3. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
+4. **Back** → 回简介 → Got it 关闭。
+5. **回流**：Rise 后再点 ? → Privacy → Back。
+6. **375**：同路径；Sheet 不挡到无法关。
 
 ---
 
-## 建议补充的故事（相对 A–G；O/P/Q/S–W 已升格为正式场景）
+## 场景 X：主动 Recover · Tiger Anchor（Focusing 轻触阿寅）
+
+> **用户故事**：Kelly 专注中卡住了——不切页、不放弃；轻触阿寅（或幽灵提示）→ 点头鞠躬 + 中置观察式 toast + 光影 Recover 扰动；计时继续。与场景 B 被动 Re-focus（切走>60s）**分工**：本故事是**用户主动**；**不**占被动提醒日/会话额度。  
+> **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却）。  
+> **DOM**：尚无完整 e2e 故事锁；观感须人工。  
+> **仍须人工**：微光+文案可读；点击反馈链；冷却隐退；375 不误触 Rise/HUD。  
+> **合入**：#199。
+
+1. `?product=1` → Sit（或 ⚡/时长 chip）→ **Focusing**。
+2. 见幽灵提示（如「Feeling stuck?…」）+ 阿寅身前微光 `#active-recover-anchor`。
+3. **轻触阿寅**（或提示带）→ `nod-bow` + 中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
+4. **必须**：计时器**不停**；**不**跳页；**不**进 Reflection / MicroRitual / 记账。
+5. 触发后触点隐退 **180s**；冷却结束再可点；期间被动 Re-focus 额度**不得**减少。
+6. **回流**：Rise → 触点消失；再 Focusing 可再出现。
+7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。
+
+---
+
+## 场景 Y：Five Moments · Compass + Moment Whisper（B / A′）
+
+> **用户故事**：Kelly 逐渐认出「一天五个温柔陪伴」——可自愿打开 Compass 地图；在真实经历 Arrive / Focus / Reflect（及主动 Recover）时，阿寅旁一生一次淡出句，而非教导 Banner。  
+> **单元**：`fiveMomentsCompassGate` · `momentWhispersGate`；orchestration 含 `five-moments`。  
+> **DOM**：菜单开卡零星覆盖；Whisper 一生一次门闩以单测为主。  
+> **仍须人工**：首卡时机与 Skip；Whisper 观感与 busy suppress；375 可关不挡 Sit。  
+> **合入**：#201 Compass · #203 Whisper。**不做**：常驻 5-Dot 顶栏、教导 Banner、HealthKit。
+
+### Y1 · Compass（B）
+
+1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect + Got it/Close。
+2. **「?」**：简介含 Moments 链 → **The five moments** → 同卡。
+3. **首卡**：清 `focus-tiger.five-moments-compass-seen.v1` → 冷启动 Idle 约数秒出一次；Skip/Got it 后不再出。
+4. **回流**：关后再开；Rise 后再开。**375**：可滚可关、不挡 Sit。
+
+### Y2 · Moment Whisper（A′）
+
+5. 清 `focus-tiger.moment-whispers-seen.v1` → Sit→Arrival → 见 Arrive `#moment-whisper` **一次**（可点关 / 数秒淡出）。
+6. 进入 Focusing → Focus whisper **一次**；再开第二场 Focusing → **不再**出 Focus whisper。
+7. Rise→Reflection → Reflect whisper **一次**；再走同路径 → **不再**出。
+8. **Recover**：见场景 X；首次主动 Recover → Recover whisper 一次。
+9. **busy**：Compass / Companion / Arrival 叠层打开时不出；关后再进未读 Moment 仍可。
+10. **「?」**：仍只出简介（+ Compass 链），**不**喷满页 tip。
+
+---
+
+## 场景 Z：Journey Log（D′ · 本地留痕）
+
+> **用户故事**：Kelly 走完一场有头有尾的专注后，想安静回顾——⋯ / 抽屉打开 **Journey log**，见日期+分钟+ arrived & reflected（或缺省降级），不是 Health 同步、不是 Tip 茶室账本。  
+> **单元**：`journeyLogGate.test.js`；orchestration 含 `journey-log`。  
+> **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在。  
+> **合入**：#205。**禁止**：写入 HealthKit；与 Tip Jar Tea Log **零耦合**。
+
+1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。
+2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → `#journey-log` 见新行：日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。
+3. **回流**：刷新后仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
+4. **375**：卡可关、不挡 Sit。
+5. **对照**：Tip Jar `#yin-tip-jar-tea-log` **不得**因本场 Focus 自动多出一杯茶。
+
+---
+
+## 建议补充的故事（相对 A–G；O/P/Q/S–W/X–Z 已升格为正式场景）
+
 
 | ID | 故事 | 为何补 |
 |---|---|---|
@@ -424,13 +492,16 @@
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
 | **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint；窄屏挂点 | **已升格** → 见上文「场景 O」；e2e 锁可见/隐藏/seed 亮暗/**375 几何**（**非** Hint） |
 | **P** | 应用内提醒：设时、回前台横幅、关闭不重复、忙碌 suppress | **已升格** → 见上文「场景 P」；e2e 锁主路径+suppress（**非** defer/负例） |
-| **Q** | Support Yin 双卡 + Tea tip/徽章 + Sanctuary Lifetime（零耦合） | **已升格** → 见上文「场景 Q」；Stripe 真付仍人工 |
-| **R** | 跨日回访（dayN / 拨时钟）：与 `RETENTION_FUNNEL` R2–R3 对齐 | **仍建议**；测回访须拨时钟或跨日真机；勿与 Q–W 混关 |
+| **Q** | Support Yin 双卡 + Tea tip/徽章 + Sanctuary Lifetime（零耦合）+ 统一练习徽章 | **已升格** → 见上文「场景 Q」（含 Q4 #204） |
+| **R** | 跨日回访（dayN / 拨时钟）：与 `RETENTION_FUNNEL` R2–R3 对齐 | **仍建议**；测回访须拨时钟或跨日真机；勿与 Q–Z 混关 |
 | **S** | 首页左球 Breath practice（时长 chip → 完成/Leave） | **已升格** → 见上文「场景 S」；`micro-ritual` e2e |
 | **T** | Companion 后 Focus 时长 chip 15/25/45/60 | **已升格** → 见上文「场景 T」；无 query 路径须人工 |
 | **U** | Zen Cinema / Quiet Line / Wallpapers 礼物菜单 | **已升格** → 见上文「场景 U」 |
 | **V** | Day1/久别变花欢迎 + 气泡 | **已升格** → 见上文「场景 V」；`flower-welcome` e2e |
-| **W** | 「?」简介 + Privacy sheet | **已升格** → 见上文「场景 W」 |
+| **W** | 「?」简介 + Privacy sheet（可链 Compass） | **已升格** → 见上文「场景 W」 |
+| **X** | Focusing Tiger Anchor 主动 Recover（180s 冷却；不占被动额度） | **已升格** → 见上文「场景 X」；#199 |
+| **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
+| **Z** | Journey Log 本地留痕（≠ HealthKit / ≠ Tea Log） | **已升格** → 见上文「场景 Z」；#205 |
 
 ---
 
@@ -476,10 +547,16 @@
 ## 2026-08-09 增量核对摘要（Q–W 升格）
 
 1. **背景**：文首「最近代码核对」曾停在 2026-07-22；O/P 后合入的 Support / Tip·Sanctuary / Breath 左球 / Focus chip / 增长礼物 / 吹花 / Privacy 主要记在 `TEST_TRACKER`，故事剧本滞后。  
-2. **本次**：升格正式场景 **Q / S / T / U / V / W**（步骤对齐 TRACKER 主路径+回流）；**R** 留给 `RETENTION_FUNNEL` 跨日回访（仍建议补充）。  
-3. **未整份重写** A–P；仅修正文首「无应用内 Language」过时句、自动化索引补相关 e2e。  
-4. **PWA 安装** 仍不进故事（排期延后到 `develop`→`main` + 稳定版）。  
-5. **TEST_TRACKER** 场景行改称 A–H + I–P + Q–W。
+2. **下午**：升格正式场景 **Q / S / T / U / V / W**（PR #198）；**R** 留给跨日回访。  
+3. **未整份重写** A–P；修正 Language 过时句。  
+4. **PWA 安装** 仍不进故事（排期延后）。  
+
+## 2026-08-09 晚 · 二次增量（X–Z · #199–#206）
+
+1. **背景**：#198 合入后数小时内又合入 Tiger Anchor（#199）、Compass（#201）、Whisper（#203）、统一徽章（#204）、Journey Log（#205）及文档收口（#200/#202/#206）。  
+2. **本次**：升格 **X / Y / Z**；**Q** 增 Q4 统一练习徽章；**W** 可链 Compass。  
+3. **仍建议**：**R** 跨日回访；Transition 产品入口未做（Whisper `transition` 键不 play）。  
+4. **TEST_TRACKER** 场景行改称含 **X–Z**。
 
 ---
 
@@ -496,5 +573,5 @@
 5. 保持仓库根 SCENARIO_TESTS.md 为指向 docs 的指针；勿复活 720 双源。
 6. 更新 TEST_TRACKER 场景行（勿重复条目）；改完后本地 commit，勿 push。
 7. Agent 自测故事优先 ?product=1；回流至少测 Rise→再 Arrival / hint 一条。
-8. 2026-08 起正式场景含 Q/S/T/U/V/W；R（跨日回访）仍建议补充，勿占用字母改指付费。
+8. 2026-08 起正式场景含 Q/S/T/U/V/W 与 X/Y/Z；R（跨日回访）仍建议补充，勿占用字母改指付费或 Moments。
 ```

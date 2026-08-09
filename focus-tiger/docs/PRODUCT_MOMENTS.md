@@ -116,9 +116,9 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 | 序 | 代号 | 内容 | Brief | 状态 |
 |---|---|---|---|---|
-| 1 | **B** | Compass：⋯/Settings + 可跳过首卡 +「?」可开同一指南 | `task-briefs/task-five-moments-compass-b.md` | **已合**（#201） |
-| 2 | **A′** | Moment Whisper（每 Moment 键一生一次，阿寅旁淡出句）+「?」桥接 | `task-briefs/task-five-moments-whisper-a.md` | **已合**（#203） |
-| 3 | **D′** | Journey Log（应用内本地留痕，Tea Log 模式；**非** HealthKit） | `task-briefs/task-journey-log-d.md` | **已合**（#205） |
+| 1 | **B** | Compass：⋯/Settings + 可跳过首卡 +「?」可开同一指南 | `task-briefs/task-five-moments-compass-b.md` | **已合**（#201）；操作故事 **SCENARIO Y1** |
+| 2 | **A′** | Moment Whisper（每 Moment 键一生一次，阿寅旁淡出句）+「?」桥接 | `task-briefs/task-five-moments-whisper-a.md` | **已合**（#203）；操作故事 **SCENARIO Y2** |
+| 3 | **D′** | Journey Log（应用内本地留痕，Tea Log 模式；**非** HealthKit） | `task-briefs/task-journey-log-d.md` | **已合**（#205）；操作故事 **SCENARIO Z** |
 
 父决策全文：`task-briefs/task-five-moments-surface-plan.md`。
 
