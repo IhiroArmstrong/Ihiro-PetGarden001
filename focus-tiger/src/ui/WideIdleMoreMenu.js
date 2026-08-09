@@ -76,6 +76,7 @@ export class WideIdleMoreMenu {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
+   *     onFiveMoments?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
@@ -598,6 +599,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'five-moments') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onFiveMoments?.();
       return;
     }
     if (key === 'zen-cinema') {

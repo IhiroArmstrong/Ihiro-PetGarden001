@@ -55,6 +55,7 @@ export class NarrowIdleShell {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
+   *     onFiveMoments?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
@@ -781,6 +782,12 @@ export class NarrowIdleShell {
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'five-moments') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onFiveMoments?.();
       return;
     }
     if (key === 'zen-cinema') {
