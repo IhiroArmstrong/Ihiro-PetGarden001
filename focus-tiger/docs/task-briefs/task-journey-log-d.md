@@ -1,6 +1,6 @@
 # Task Brief · D′ · Journey Log（应用内 · Tea Log 模式）
 
-> **状态（2026-08-09）**：**实现中**（`feature/journey-log`）。  
+> **状态（2026-08-09）**：**已合** develop（#205 · tip 含 `730089c`）。  
 > **父决策**：`task-five-moments-surface-plan.md` §四。  
 > **澄清**：这是 **本地 Journey Log**，**不是** HealthKit / Health Connect；壳期系统健康写入仍 Backlog。
 

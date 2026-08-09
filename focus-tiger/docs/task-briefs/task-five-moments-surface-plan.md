@@ -20,9 +20,9 @@
 
 | 代号 | 名称 | 可行性 | 风险 | 排期 |
 |---|---|---|---|---|
-| **B** | Five Moments Compass（⋯/Settings + 可跳过首卡） | 高 | 低 | **P0 · 下一可开工实现** |
-| **A′** | Moment Whisper +「?」简介桥接 | 高（复用既有叠层纪律） | 中低（文案/限频/叠层互斥） | **P1 · B 合入后** |
-| **D′** | Journey Log（应用内 · Tea Log 模式） | 高（与 HealthKit **无关**） | 低–中（记账时机/入口位置） | **P2 · A′ 合入后** |
+| **B** | Five Moments Compass（⋯/Settings + 可跳过首卡） | 高 | 低 | **已合**（#201） |
+| **A′** | Moment Whisper +「?」简介桥接 | 高（复用既有叠层纪律） | 中低（文案/限频/叠层互斥） | **已合**（#203） |
+| **D′** | Journey Log（应用内 · Tea Log 模式） | 高（与 HealthKit **无关**） | 低–中（记账时机/入口位置） | **已合**（#205） |
 
 **HealthKit / Health Connect**：仍 **非 v1**（壳期）；**不**在本排期。Journey Log **不是** Health Log 的假名冒充。
 
