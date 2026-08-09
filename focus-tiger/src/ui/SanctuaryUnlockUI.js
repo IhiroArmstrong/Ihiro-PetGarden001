@@ -9,8 +9,13 @@ import {
   confirmSanctuaryReturnQuery,
   isSanctuaryUnlocked,
   markSanctuaryFromPayment,
-  readSanctuaryEntitlement
+  readSanctuaryEntitlement,
+  syncSanctuaryBadgesFromPractice
 } from '../core/sanctuaryEntitlementGate.js';
+import {
+  getSanctuaryBadgeById,
+  sanctuaryBadgeSrc
+} from '../core/sanctuaryBadges.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -72,6 +77,14 @@ export class SanctuaryUnlockUI {
     this.priceEl = document.createElement('p');
     this.priceEl.className = 'yin-sanctuary__price';
 
+    this.badgesNote = document.createElement('p');
+    this.badgesNote.className = 'yin-sanctuary__badges-note';
+    this.badgesNote.dataset.testid = 'yin-sanctuary-badges-note';
+
+    this.badgesRow = document.createElement('div');
+    this.badgesRow.className = 'yin-sanctuary__badges';
+    this.badgesRow.dataset.testid = 'yin-sanctuary-badges';
+
     this.buyBtn = document.createElement('button');
     this.buyBtn.type = 'button';
     this.buyBtn.className =
@@ -118,6 +131,8 @@ export class SanctuaryUnlockUI {
       this.blurbEl,
       this.benefits,
       this.priceEl,
+      this.badgesNote,
+      this.badgesRow,
       this.actions,
       this.restoreTitle,
       this.restoreHint,
@@ -159,6 +174,7 @@ export class SanctuaryUnlockUI {
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refreshTexts();
+    this.handlers.onBadgesChanged?.();
     this.buyBtn.focus({ preventScroll: true });
     this.handlers.onOpen?.();
   }
@@ -229,6 +245,7 @@ export class SanctuaryUnlockUI {
       if (unlocked) {
         markSanctuaryFromPayment(this._storage);
         this.statusEl.textContent = t('SANCTUARY_STATUS_YES');
+        this.handlers.onBadgesChanged?.();
       } else {
         this.statusEl.textContent = t('SANCTUARY_RESTORE_MISS');
       }
@@ -238,6 +255,49 @@ export class SanctuaryUnlockUI {
       this._busy = false;
       this.restoreBtn.disabled = false;
       this._refreshTexts();
+    }
+  }
+
+  /**
+   * @param {string[]} badgeIds
+   */
+  _renderBadges(badgeIds) {
+    this.badgesRow.replaceChildren();
+    if (!badgeIds.length) {
+      this.badgesNote.hidden = true;
+      this.badgesRow.hidden = true;
+      return;
+    }
+    this.badgesNote.hidden = false;
+    this.badgesRow.hidden = false;
+    this.badgesNote.textContent = t('SANCTUARY_BADGES_CARD_NOTE');
+    for (const id of badgeIds) {
+      const meta = getSanctuaryBadgeById(id);
+      if (!meta) continue;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'yin-sanctuary__badge-btn';
+      btn.dataset.badgeId = id;
+      btn.dataset.testid = `yin-sanctuary-badge-${id}`;
+      btn.title = t('SANCTUARY_BADGES_DOWNLOAD_ONE');
+      btn.setAttribute('aria-label', t('SANCTUARY_BADGES_DOWNLOAD_ONE'));
+      const img = document.createElement('img');
+      img.src = sanctuaryBadgeSrc(meta.file);
+      img.alt = '';
+      img.decoding = 'async';
+      img.draggable = false;
+      btn.appendChild(img);
+      btn.addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = sanctuaryBadgeSrc(meta.file);
+        a.download = meta.file;
+        a.rel = 'noopener';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+      this.badgesRow.appendChild(btn);
     }
   }
 
@@ -260,12 +320,17 @@ export class SanctuaryUnlockUI {
     this.restoreBtn.textContent = t('SANCTUARY_RESTORE_CTA');
     this.emailInput.placeholder = t('SANCTUARY_EMAIL_PLACEHOLDER');
     const unlocked = isSanctuaryUnlocked({ storage: this._storage });
-    const via = readSanctuaryEntitlement(this._storage).unlockedVia;
+    if (unlocked) {
+      syncSanctuaryBadgesFromPractice(this._storage);
+    }
+    const ent = readSanctuaryEntitlement(this._storage);
+    const via = ent.unlockedVia;
     this.statusEl.textContent = unlocked
       ? via === 'preview'
         ? t('SANCTUARY_STATUS_PREVIEW')
         : t('SANCTUARY_STATUS_YES')
       : t('SANCTUARY_STATUS_NO');
+    this._renderBadges(unlocked ? ent.badgeIds : []);
   }
 
   _injectStyles() {
@@ -319,6 +384,36 @@ export class SanctuaryUnlockUI {
         font-size: 13px;
         line-height: 1.45;
         color: #3d2e22;
+      }
+      .yin-sanctuary__badges-note {
+        margin: 0 0 6px;
+        font-size: 12px;
+        line-height: 1.4;
+        color: #5c4330;
+      }
+      .yin-sanctuary__badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 12px;
+      }
+      .yin-sanctuary__badge-btn {
+        appearance: none;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 50%;
+        line-height: 0;
+      }
+      .yin-sanctuary__badge-btn img {
+        width: 44px;
+        height: 44px;
+        object-fit: contain;
+        border-radius: 50%;
+        display: block;
+        background: rgba(255, 252, 245, 0.55);
       }
       .yin-sanctuary__email {
         display: block;

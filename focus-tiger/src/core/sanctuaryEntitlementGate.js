@@ -8,7 +8,15 @@
  *
  * Verification: real paid unlocks require server-confirmed Checkout Session.
  * Do NOT reuse optimistic tip-return query patterns here.
+ *
+ * Prestigious badges live on this entitlement (`badgeIds`) — separate visual
+ * catalog from Tip kindness badges; see sanctuaryBadges.js.
  */
+
+import {
+  normalizeSanctuaryBadgeIds,
+  planSanctuaryBadgeAward
+} from './sanctuaryBadges.js';
 
 export const SANCTUARY_STORAGE_KEY = 'focus-tiger.sanctuary-entitlement.v1';
 
@@ -19,7 +27,8 @@ export const SANCTUARY_LIFETIME_ITEM_ID = 'yin-sanctuary-lifetime';
  *   unlocked: boolean,
  *   unlockedVia: 'payment' | 'preview' | null,
  *   unlockedAt: string | null,
- *   itemId: string
+ *   itemId: string,
+ *   badgeIds: string[]
  * }} SanctuaryEntitlement
  */
 
@@ -33,7 +42,8 @@ export function normalizeSanctuaryEntitlement(raw) {
       unlocked: false,
       unlockedVia: null,
       unlockedAt: null,
-      itemId: SANCTUARY_LIFETIME_ITEM_ID
+      itemId: SANCTUARY_LIFETIME_ITEM_ID,
+      badgeIds: []
     };
   }
   const o = /** @type {Record<string, unknown>} */ (raw);
@@ -49,7 +59,8 @@ export function normalizeSanctuaryEntitlement(raw) {
     itemId:
       typeof o.itemId === 'string' && o.itemId
         ? o.itemId
-        : SANCTUARY_LIFETIME_ITEM_ID
+        : SANCTUARY_LIFETIME_ITEM_ID,
+    badgeIds: normalizeSanctuaryBadgeIds(o.badgeIds)
   };
 }
 
@@ -82,7 +93,8 @@ export function writeSanctuaryEntitlement(storage, entitlement) {
         unlocked: Boolean(n.unlocked),
         unlockedVia: n.unlockedVia,
         unlockedAt: n.unlockedAt,
-        itemId: n.itemId
+        itemId: n.itemId,
+        badgeIds: n.badgeIds
       })
     );
   } catch {
@@ -107,17 +119,22 @@ export function isSanctuaryUnlocked({
  * @param {Storage | null | undefined} storage
  * @param {object} [opts]
  * @param {() => Date} [opts.now]
+ * @returns {{ newlyAddedIds: string[] }}
  */
 export function markSanctuaryPreview(
   storage,
   { now = () => new Date() } = {}
 ) {
+  const prev = readSanctuaryEntitlement(storage);
+  const award = planSanctuaryBadgeAward(storage, prev.badgeIds);
   writeSanctuaryEntitlement(storage, {
     unlocked: true,
     unlockedVia: 'preview',
     unlockedAt: now().toISOString(),
-    itemId: SANCTUARY_LIFETIME_ITEM_ID
+    itemId: SANCTUARY_LIFETIME_ITEM_ID,
+    badgeIds: award.badgeIds
   });
+  return { newlyAddedIds: award.newlyAddedIds };
 }
 
 /**
@@ -126,17 +143,43 @@ export function markSanctuaryPreview(
  * @param {Storage | null | undefined} storage
  * @param {object} [opts]
  * @param {() => Date} [opts.now]
+ * @returns {{ newlyAddedIds: string[] }}
  */
 export function markSanctuaryFromPayment(
   storage,
   { now = () => new Date() } = {}
 ) {
+  const prev = readSanctuaryEntitlement(storage);
+  const award = planSanctuaryBadgeAward(storage, prev.badgeIds);
   writeSanctuaryEntitlement(storage, {
     unlocked: true,
     unlockedVia: 'payment',
     unlockedAt: now().toISOString(),
-    itemId: SANCTUARY_LIFETIME_ITEM_ID
+    itemId: SANCTUARY_LIFETIME_ITEM_ID,
+    badgeIds: award.badgeIds
   });
+  return { newlyAddedIds: award.newlyAddedIds };
+}
+
+/**
+ * Grow prestigious badges when practice level rises (unlocked only).
+ *
+ * @param {Storage | null | undefined} storage
+ * @returns {{ newlyAddedIds: string[] }}
+ */
+export function syncSanctuaryBadgesFromPractice(storage) {
+  const prev = readSanctuaryEntitlement(storage);
+  if (!prev.unlocked) return { newlyAddedIds: [] };
+  const award = planSanctuaryBadgeAward(storage, prev.badgeIds);
+  const same =
+    award.badgeIds.length === prev.badgeIds.length &&
+    award.badgeIds.every((id, i) => id === prev.badgeIds[i]);
+  if (same) return { newlyAddedIds: [] };
+  writeSanctuaryEntitlement(storage, {
+    ...prev,
+    badgeIds: award.badgeIds
+  });
+  return { newlyAddedIds: award.newlyAddedIds };
 }
 
 /**

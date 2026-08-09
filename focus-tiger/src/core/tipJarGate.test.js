@@ -5,12 +5,14 @@ import {
   clearTipStatus,
   consumeTipReturnQuery,
   ensureTipBadgesAwarded,
+  syncTipBadgesFromPractice,
   hasTipped,
   markTipFromCheckoutReturn,
   markTipFromEmailRestore,
   normalizeTipStatus,
   readTipStatus
 } from './tipJarGate.js';
+import { PRACTICE_DAYS_STORAGE_KEY } from './PracticeDaysStore.js';
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -121,5 +123,42 @@ describe('tipJarGate', () => {
     assert.equal(result.newlyAddedIds.length, 3);
     assert.equal(readTipStatus(storage).badgeIds.length, 3);
     assert.deepEqual(ensureTipBadgesAwarded(storage).newlyAddedIds, []);
+  });
+
+  it('syncTipBadgesFromPractice awards free badge after practice without tip', () => {
+    const storage = memoryStorage({
+      [PRACTICE_DAYS_STORAGE_KEY]: JSON.stringify({
+        days: [{ date: '2026-08-09', totalMinutes: 25 }]
+      })
+    });
+    assert.equal(hasTipped({ storage }), false);
+    const result = syncTipBadgesFromPractice(storage);
+    assert.equal(result.newlyAddedIds.length, 1);
+    assert.equal(readTipStatus(storage).badgeIds.length, 1);
+    assert.equal(hasTipped({ storage }), false);
+    assert.deepEqual(syncTipBadgesFromPractice(storage).newlyAddedIds, []);
+  });
+
+  it('tipped user grows badges when practice rises without re-tip', () => {
+    const storage = memoryStorage({
+      [PRACTICE_DAYS_STORAGE_KEY]: JSON.stringify({
+        days: [{ date: '2026-08-01', totalMinutes: 10 }]
+      })
+    });
+    markTipFromCheckoutReturn(storage);
+    assert.equal(readTipStatus(storage).badgeIds.length, 3);
+    storage.setItem(
+      PRACTICE_DAYS_STORAGE_KEY,
+      JSON.stringify({
+        days: [
+          { date: '2026-08-01', totalMinutes: 60 },
+          { date: '2026-08-02', totalMinutes: 60 },
+          { date: '2026-08-03', totalMinutes: 60 }
+        ]
+      })
+    );
+    const grown = syncTipBadgesFromPractice(storage);
+    assert.ok(grown.newlyAddedIds.length >= 1);
+    assert.ok(readTipStatus(storage).badgeIds.length > 3);
   });
 });

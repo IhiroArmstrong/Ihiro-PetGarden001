@@ -1,6 +1,6 @@
 # Task Brief · 统一练习徽章体系
 
-> **状态**：已立项 · **未开工**（2026-08-09 拍板）  
+> **状态**：实现中 · `feature/unified-practice-badges`（2026-08-09）  
 > **前置**：Sanctuary 17 枚素材已入库（`public/ui/support/sanctuary-badges/`）；Tea 9 枚已接线（`yin-badges/` + `tipKindnessBadges`）。  
 > **性质**：产品 + 工程；触及 tip / Sanctuary 双 gate 与展示 chrome——高风险，须独立 `feature/*`，一次一任务切面可再拆。
 

@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   computeTipBadgeTargetCount,
+  computeFreePracticeBadgeTargetCount,
   mergeTipBadgeAwards,
   summarizePracticeDaysForBadges,
   TIP_KINDNESS_BADGE_CATALOG,
@@ -17,11 +18,22 @@ describe('tipKindnessBadges', () => {
     assert.equal(ids.size, 9);
   });
 
-  it('no practice → minimum 3 badges', () => {
+  it('no practice → minimum 3 badges (paid)', () => {
     assert.equal(computeTipBadgeTargetCount({}), TIP_KINDNESS_BADGE_MIN);
     assert.equal(
       computeTipBadgeTargetCount({ practiceDayCount: 0, lifetimeMinutes: 0 }),
       3
+    );
+  });
+
+  it('free: no practice → 0; first practice → 1', () => {
+    assert.equal(computeFreePracticeBadgeTargetCount({}), 0);
+    assert.equal(
+      computeFreePracticeBadgeTargetCount({
+        practiceDayCount: 1,
+        lifetimeMinutes: 5
+      }),
+      1
     );
   });
 

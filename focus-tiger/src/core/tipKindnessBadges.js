@@ -1,15 +1,19 @@
 /**
  * Buy Yin a Tea · kindness badges (ritual thank-you marks — not content unlocks).
  *
- * Awarded only when tip status is written (checkout return / email restore).
- * Count = f(practice days + lifetime minutes), clamped 3–9.
- * Re-tip with the same practice level does NOT add badges (only-grow).
+ * Paid tip: min 3. Free practice path: min 1 after first practice (requirePractice).
+ * Count = f(practice days + lifetime minutes); only-grow merge.
+ * Re-tip / same practice level does NOT add badges.
  */
 
 import {
   PRACTICE_DAYS_STORAGE_KEY,
   migratePracticeDaysEntries
 } from './PracticeDaysStore.js';
+import {
+  computePracticeBadgeTargetCount,
+  mergeCatalogBadgeAwards
+} from './practiceBadgeAward.js';
 
 /** Public URL prefix for high-res PNGs (download + display). */
 export const TIP_KINDNESS_BADGE_PUBLIC_DIR = '/ui/support/yin-badges';
@@ -62,6 +66,7 @@ const CATALOG_BY_ID = new Map(
 );
 
 export const TIP_KINDNESS_BADGE_MIN = 3;
+export const TIP_KINDNESS_BADGE_FREE_MIN = 1;
 export const TIP_KINDNESS_BADGE_MAX = TIP_KINDNESS_BADGE_CATALOG.length;
 
 /**
@@ -112,7 +117,8 @@ export function summarizePracticeDaysForBadges(days) {
     if (!row || typeof row !== 'object') continue;
     const mins = row.totalMinutes;
     const practiced =
-      mins === null || (typeof mins === 'number' && Number.isFinite(mins) && mins > 0);
+      mins === null ||
+      (typeof mins === 'number' && Number.isFinite(mins) && mins > 0);
     if (!practiced) continue;
     practiceDayCount += 1;
     if (typeof mins === 'number' && Number.isFinite(mins) && mins > 0) {
@@ -123,45 +129,48 @@ export function summarizePracticeDaysForBadges(days) {
 }
 
 /**
- * Target badge count for a tip event.
- * No practice → 3. Else 3 + floor(score/3), clamped to [3, 9].
- * score = practiceDayCount + floor(lifetimeMinutes / 60).
+ * Target badge count for a tip (paid) event — floor 3.
  *
  * @param {{ practiceDayCount?: number, lifetimeMinutes?: number }} summary
  * @returns {number}
  */
 export function computeTipBadgeTargetCount(summary = {}) {
-  const days = Math.max(0, Math.floor(Number(summary.practiceDayCount) || 0));
-  const minutes = Math.max(0, Number(summary.lifetimeMinutes) || 0);
-  if (days <= 0 && minutes <= 0) return TIP_KINDNESS_BADGE_MIN;
-  const score = days + Math.floor(minutes / 60);
-  const raw = TIP_KINDNESS_BADGE_MIN + Math.floor(score / 3);
-  return Math.min(
-    TIP_KINDNESS_BADGE_MAX,
-    Math.max(TIP_KINDNESS_BADGE_MIN, raw)
-  );
+  return computePracticeBadgeTargetCount(summary, {
+    min: TIP_KINDNESS_BADGE_MIN,
+    max: TIP_KINDNESS_BADGE_MAX,
+    requirePractice: false
+  });
+}
+
+/**
+ * Free practice path — floor 1 only after practice exists.
+ *
+ * @param {{ practiceDayCount?: number, lifetimeMinutes?: number }} summary
+ * @returns {number}
+ */
+export function computeFreePracticeBadgeTargetCount(summary = {}) {
+  return computePracticeBadgeTargetCount(summary, {
+    min: TIP_KINDNESS_BADGE_FREE_MIN,
+    max: TIP_KINDNESS_BADGE_MAX,
+    requirePractice: true
+  });
 }
 
 /**
  * Only-grow merge: take the first N catalog ids where
  * N = max(alreadyOwnedInCatalogOrder, targetCount).
- * Same practice level on re-tip → same N → no new badges.
  *
  * @param {string[]} prevIds
  * @param {number} targetCount
  * @returns {{ badgeIds: string[], newlyAddedIds: string[] }}
  */
 export function mergeTipBadgeAwards(prevIds, targetCount) {
-  const prev = normalizeTipBadgeIds(prevIds);
-  const target = Math.min(
-    TIP_KINDNESS_BADGE_MAX,
-    Math.max(TIP_KINDNESS_BADGE_MIN, Math.floor(Number(targetCount) || TIP_KINDNESS_BADGE_MIN))
+  return mergeCatalogBadgeAwards(
+    TIP_KINDNESS_BADGE_CATALOG,
+    prevIds,
+    targetCount,
+    normalizeTipBadgeIds
   );
-  const n = Math.max(prev.length, target);
-  const badgeIds = TIP_KINDNESS_BADGE_CATALOG.slice(0, n).map((b) => b.id);
-  const prevSet = new Set(prev);
-  const newlyAddedIds = badgeIds.filter((id) => !prevSet.has(id));
-  return { badgeIds, newlyAddedIds };
 }
 
 /**
@@ -186,12 +195,20 @@ export function readPracticeDaysForTipBadges(storage) {
  * Compute award merge from current practice + previous tip badges.
  * @param {Storage | null | undefined} storage
  * @param {string[]} [prevBadgeIds]
+ * @param {{ mode?: 'paid' | 'free' }} [opts]
  */
-export function planTipBadgeAward(storage, prevBadgeIds = []) {
+export function planTipBadgeAward(
+  storage,
+  prevBadgeIds = [],
+  { mode = 'paid' } = {}
+) {
   const summary = summarizePracticeDaysForBadges(
     readPracticeDaysForTipBadges(storage)
   );
-  const targetCount = computeTipBadgeTargetCount(summary);
+  const targetCount =
+    mode === 'free'
+      ? computeFreePracticeBadgeTargetCount(summary)
+      : computeTipBadgeTargetCount(summary);
   const merge = mergeTipBadgeAwards(prevBadgeIds, targetCount);
   return { summary, targetCount, ...merge };
 }
