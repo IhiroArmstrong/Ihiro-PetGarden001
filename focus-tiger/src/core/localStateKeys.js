@@ -26,6 +26,9 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.flower-welcome-flag.v1',
   'focus-tiger.tip-jar.v1',
   'focus-tiger.sanctuary-entitlement.v1',
+  'focus-tiger.entitlement-cache.v1',
+  'focus-tiger.entitlement-ownership.v1',
+  'focus-tiger.entitlement-mock.v1',
   'focus-tiger.five-moments-compass-seen.v1',
   'focus-tiger.moment-whispers-seen.v1',
   'focus-tiger.journey-log.v1'

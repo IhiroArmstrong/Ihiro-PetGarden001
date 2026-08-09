@@ -56,6 +56,9 @@ import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
 import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
+import { ENTITLEMENT_CACHE_STORAGE_KEY } from './entitlement/entitlementState.js';
+import { ENTITLEMENT_OWNERSHIP_STORAGE_KEY } from './entitlement/entitlementOwnership.js';
+import { ENTITLEMENT_MOCK_STORAGE_KEY } from './entitlement/mockEntitlementProvider.js';
 import { FIVE_MOMENTS_COMPASS_SEEN_KEY } from './fiveMomentsCompassGate.js';
 import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
@@ -117,6 +120,9 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FLOWER_WELCOME_FLAG_STORAGE_KEY,
   TIP_JAR_STORAGE_KEY,
   SANCTUARY_STORAGE_KEY,
+  ENTITLEMENT_CACHE_STORAGE_KEY,
+  ENTITLEMENT_OWNERSHIP_STORAGE_KEY,
+  ENTITLEMENT_MOCK_STORAGE_KEY,
   FIVE_MOMENTS_COMPASS_SEEN_KEY,
   MOMENT_WHISPERS_SEEN_KEY,
   JOURNEY_LOG_STORAGE_KEY
