@@ -42,7 +42,7 @@ test('en/ja pools share the same stable ids', () => {
   assert.equal(new Set(enIds).size, enIds.length, 'en ids unique');
   for (const required of [
     'catch-this-moment',
-    'abide-nowhere',
+    'cling-to-nothing',
     'not-the-emotion'
   ]) {
     assert.ok(enIds.includes(required), `missing seed id: ${required}`);
@@ -56,8 +56,8 @@ test('en/ja pools share the same stable ids', () => {
     'Catch this moment.'
   );
   assert.equal(
-    DAILY_WISDOM_EN.find((e) => e.id === 'abide-nowhere')?.text,
-    'Abide nowhere.'
+    DAILY_WISDOM_EN.find((e) => e.id === 'cling-to-nothing')?.text,
+    'Cling to nothing.'
   );
   for (const e of DAILY_WISDOM_EN) {
     assert.match(e.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);

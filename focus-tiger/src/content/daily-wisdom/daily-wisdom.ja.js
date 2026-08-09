@@ -9,8 +9,8 @@
 export const DAILY_WISDOM_JA = Object.freeze([
   // 抓住当下
   { id: 'catch-this-moment', text: 'この瞬間を、つかまえて。' },
-  // 无所住相
-  { id: 'abide-nowhere', text: 'どこにも住まない。' },
+  // 无所住相 — no cling / no attachment; free in the inner mind
+  { id: 'cling-to-nothing', text: '何にも執着しない。' },
   { id: 'not-the-emotion', text: 'あなたは、その感情そのものではない。' },
   { id: 'one-breath-return', text: 'ひと息は、すでに帰還。' },
   { id: 'watch-without-chase', text: '想いを見守り、追わない。' },
