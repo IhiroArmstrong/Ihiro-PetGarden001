@@ -37,9 +37,13 @@
 | `focus-tiger.tip-jar.v1` | `tipJarGate` | Buy Yin a Tea 本地 tip 状态：`{ tipped, tipCount, lastTippedAt, email?, source?, badgeIds[], tipLog[] }`；`badgeIds` = 按练习水平授予的善意徽章（3–9，只增不减）；`tipLog` = 茶室留痕（日期+杯次）；**不**解锁内容；与 Sanctuary **零耦合** |
 | `focus-tiger.sanctuary-entitlement.v1` | `sanctuaryEntitlementGate` | Yin's Sanctuary Lifetime：`{ unlocked, unlockedVia, unlockedAt, itemId }`；**不得**读 tip-jar 状态 |
 | `focus-tiger.scene-anim-cooldown.v1` | `sceneAnimationDispatcher` | 生命感冷却：`{ late_night, curiosity, … }` 时间戳 |
+| `focus-tiger.five-moments-compass-seen.v1` | **排期 · B**（未实现） | Compass 首卡 / 指南已读；见 `task-five-moments-compass-b.md` |
+| `focus-tiger.moment-whispers-seen.v1` | **排期 · A′**（未实现） | Moment Whisper 各键已见；见 `task-five-moments-whisper-a.md` |
+| `focus-tiger.journey-log.v1` | **排期 · D′**（未实现） | Journey Log 本地条目（Tea Log 模式；**非** HealthKit）；见 `task-journey-log-d.md` |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。  
-**验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
+**验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。  
+**排期 key**：上表末三行在对应 feature 合入前**不得**被运行时读写；实现 PR 须同步本表「排期」→ 正式模块名。
 
 ### 1.1 DailyCompletionStore 字段快照（2026-07-22 只读调研）
 

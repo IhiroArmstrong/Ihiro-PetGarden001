@@ -172,6 +172,19 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 详细规范见 DESIGN.md「Tiger Reflection Moment」。
 ```
 
+### 排队 · Five Moments 用户可感表面（2026-08-09 拍板）
+
+> 叙事：`PRODUCT_MOMENTS.md` §5.6。父决策：`task-briefs/task-five-moments-surface-plan.md`。  
+> **一次只做一个**；顺序强制如下。
+
+| 序 | 代号 | 内容 | Brief | 状态 |
+|---|---|---|---|---|
+| **1** | B | Compass（⋯ + 可跳过首卡 +「?」可开指南） | `task-five-moments-compass-b.md` | **下一优先实现** |
+| **2** | A′ | Moment Whisper（每键一生一次）+「?」桥接 | `task-five-moments-whisper-a.md` | B 合入后 |
+| **3** | D′ | Journey Log（本地 · Tea Log 模式；非 HealthKit） | `task-journey-log-d.md` | A′ 合入后 |
+
+不做：常驻 5-Dot 顶栏、教导 Banner、HealthKit 写入冒充。
+
 ---
 
 ## 📍 工程提醒（跨会话门闩）
