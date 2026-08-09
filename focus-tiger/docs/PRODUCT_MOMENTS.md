@@ -107,6 +107,26 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 覆盖 SCENARIO_TESTS 主路径与回流（DORMANT、Honesty 可略过、Sit / How shall we sit?、Arrival 各步、Companion、Sound、Rise、Reflection 等）。产品壳 `?product=1` 仍显示提示与「?」（属产品表面）；实验室另有「清空引导提示已读」。
 
+> **产品面收窄后（2026-08-04）**：运行时 Hint 只保留脉冲悬停 tip +「?」简介卡；**不再** auto 喷洒。Five Moments 显性化不得借机复活喷洒——见下 §5.6。
+
+---
+
+## 5.6 Five Moments 用户可感表面（2026-08-09 拍板 · 排期）
+
+目标：把 Five Moments 从后台叙事升级为用户可感灵魂，同时遵守 §5.5 / Hints 收窄与 Focus「不打扰」。
+
+| 序 | 代号 | 内容 | Brief | 状态 |
+|---|---|---|---|---|
+| 1 | **B** | Compass：⋯/Settings + 可跳过首卡 +「?」可开同一指南 | `task-briefs/task-five-moments-compass-b.md` | **下一优先实现** |
+| 2 | **A′** | Moment Whisper（每 Moment 键一生一次，阿寅旁淡出句）+「?」桥接 | `task-briefs/task-five-moments-whisper-a.md` | B 合入后 |
+| 3 | **D′** | Journey Log（应用内本地留痕，Tea Log 模式；**非** HealthKit） | `task-briefs/task-journey-log-d.md` | A′ 合入后 |
+
+父决策全文：`task-briefs/task-five-moments-surface-plan.md`。
+
+**明确不做（本排期）**：常驻 5-Dot Compass Bar；每次切换顶部教导 Banner；HealthKit / Health Connect 写入；把 Rise 叙事成 Transition。
+
+**A′ 为何不是「原 Banner」**：原 Contextual Banner 易变说明书且撞 Focus 隐退。万全之策 = **「?」永远可查** + **Whisper 一生一次认出** + **B 完整地图自愿查阅**。
+
 ---
 
 ## 六、Family Edition — 存档至 Backlog（本次不展开设计）
