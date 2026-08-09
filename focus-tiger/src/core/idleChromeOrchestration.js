@@ -9,6 +9,9 @@
  */
 
 import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
+import { listRitualConfigs } from './RitualFlow.js';
+import { isEntitled } from './entitlement/entitlementGate.js';
+
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
 
@@ -40,8 +43,11 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'five-moments' | 'journey-log' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'sanctuary' | 'tip-jar'} proxy
+ * @property {string} [proxy]
  * @property {string} labelKey
+ * @property {'item' | 'group-label'} [kind]
+ * @property {string} [featureKey]
+ * @property {boolean} [locked]
  */
 
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
@@ -51,6 +57,7 @@ export const SECONDARY_PROXY_HINT_IDS = Object.freeze({
   reminder: 'in-app-reminder'
   // breath / micro-ritual: home left ball (quick-start), not a secondary row
   // language: no first-visit mint (always available)
+  // advanced RitualFlow rows: entitlement-gated; no first-visit mint
 });
 
 /**
@@ -375,6 +382,22 @@ export function listSecondaryChromeEntries(surface, visibility) {
     proxy: 'tip-jar',
     labelKey: 'TIP_MENU_LABEL'
   });
+
+  // Advanced RitualFlow scenes (entitlement-gated; free Breath practice stays home left ball).
+  out.push({
+    kind: 'group-label',
+    labelKey: 'ritual.menu_group'
+  });
+  for (const ritual of listRitualConfigs()) {
+    const locked = !isEntitled(ritual.accessFeatureKey);
+    out.push({
+      kind: 'item',
+      proxy: ritual.menuProxy,
+      labelKey: ritual.menuLabelKey,
+      featureKey: ritual.accessFeatureKey,
+      locked
+    });
+  }
 
   return out;
 }

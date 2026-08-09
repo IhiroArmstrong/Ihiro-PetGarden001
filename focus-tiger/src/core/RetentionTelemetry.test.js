@@ -57,6 +57,22 @@ test('MICRO_RITUAL_COMPLETE constant is stable and trackRetentionEvent logs it w
   assert.equal(storage.getItem(RETENTION_FUNNEL_STORAGE_KEY), null);
 });
 
+test('RITUAL_FLOW_COMPLETE constant is stable', () => {
+  assert.equal(RETENTION_EVENTS.RITUAL_FLOW_COMPLETE, 'ritual_flow_complete');
+  /** @type {unknown[]} */
+  const lines = [];
+  trackRetentionEvent(
+    RETENTION_EVENTS.RITUAL_FLOW_COMPLETE,
+    { ritualId: 'morning' },
+    { log: (...args) => lines.push(args) }
+  );
+  assert.deepEqual(lines[0], [
+    '[RetentionTelemetry]',
+    'ritual_flow_complete',
+    { ritualId: 'morning' }
+  ]);
+});
+
 test('calendarDaysBetween uses local calendar keys', () => {
   assert.equal(calendarDaysBetween('2026-07-22', '2026-07-22'), 0);
   assert.equal(calendarDaysBetween('2026-07-22', '2026-07-23'), 1);
