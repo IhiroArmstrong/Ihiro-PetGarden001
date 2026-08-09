@@ -67,6 +67,7 @@ import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
+import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import {
   shouldOfferFiveMomentsCompassFirstCard
 } from './core/fiveMomentsCompassGate.js';
@@ -507,6 +508,9 @@ async function init() {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
       }
+      if (type === 'activeRecover') {
+        maybeOfferMomentWhisper('recover', { delayMs: 200 });
+      }
     }
   });
   const activeRecoverAnchor = new ActiveRecoverAnchorUI(
@@ -535,6 +539,49 @@ async function init() {
     document.getElementById('ui-overlay')
   );
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
+
+  const momentWhisperUI = new MomentWhisperUI(
+    document.getElementById('ui-overlay') || document.body,
+    {}
+  );
+  window.__momentWhisper = momentWhisperUI;
+
+  /** @param {string} forKey */
+  function isMomentWhisperBusy(forKey) {
+    if (fiveMomentsCompassUI.isOpen()) return true;
+    if (stateManager.state === STATES.CELEBRATE) return true;
+    if (microRitualUI?.isOpen?.() === true) return true;
+    // Arrive may open while Honesty idle entry is still painted — do not block Arrive.
+    if (
+      forKey !== 'arrive' &&
+      honestyCheckInUI?.phase &&
+      honestyCheckInUI.phase !== 'hidden'
+    ) {
+      return true;
+    }
+    if (companionModePicker?.isOpen?.() === true) return true;
+    if (forKey !== 'arrive' && arrivalPractice?.isOpen?.() === true) {
+      return true;
+    }
+    if (forKey !== 'reflect' && reflectionMoment?.isOpen?.() === true) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * @param {string} key
+   * @param {{ delayMs?: number }} [opts]
+   */
+  function maybeOfferMomentWhisper(key, opts = {}) {
+    const delayMs =
+      Number.isFinite(opts.delayMs) && opts.delayMs >= 0 ? opts.delayMs : 280;
+    window.setTimeout(() => {
+      momentWhisperUI.tryShow(key, {
+        busy: isMomentWhisperBusy(key)
+      });
+    }, delayMs);
+  }
 
   // Honesty Check-in：冷启动 / 零完成 → Idle 闭目坐禅 + 可忽略补登提示（不开 Sleeping / 不披毯）
   let honestyGlowLevel = null;
@@ -918,6 +965,7 @@ async function init() {
     // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
     onboardingHints?.syncVisibleAutos(['reflection']);
     requestAnimationFrame(() => onboardingHints?.repositionAll());
+    maybeOfferMomentWhisper('reflect', { delayMs: 400 });
   };
   const reflectionOnDone = reflectionMoment.onDone;
   reflectionMoment.onDone = (result, hasAnyAnswer) => {
@@ -1081,6 +1129,7 @@ async function init() {
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
       closeGrowthOverlayCards();
+      momentWhisperUI.hide({ immediate: true });
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },
@@ -1465,6 +1514,7 @@ async function init() {
     resyncSessionChrome();
     syncHonestyIdleEntry();
     syncOnboardingAutoHints();
+    maybeOfferMomentWhisper('arrive', { delayMs: 500 });
   }
 
   const honestyBridgeUI = new HonestyBridgeCtaUI(
@@ -1682,6 +1732,7 @@ async function init() {
     resyncSessionChrome();
     // 自动开计时路径须同步主按钮 → Rise（事件触发时 focusInput 已初始化）
     focusInput.beginFocusing(focusButton);
+    maybeOfferMomentWhisper('focus', { delayMs: 600 });
   }
 
   companionModeHandlers.canBeginFocus = (mode) =>
