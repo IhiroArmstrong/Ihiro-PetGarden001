@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'five-moments' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'sanctuary' | 'tip-jar'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'five-moments' | 'journey-log' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'sanctuary' | 'tip-jar'} proxy
  * @property {string} labelKey
  */
 
@@ -337,6 +337,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'five-moments',
     labelKey: 'FIVE_MOMENTS_MENU_LABEL'
+  });
+
+  // Journey Log — local practice trail (D′; Tea Log pattern; not HealthKit / tip-jar).
+  out.push({
+    proxy: 'journey-log',
+    labelKey: 'JOURNEY_LOG_MENU_LABEL'
   });
 
   // Growth pack ① — always available gift entry (no first-visit mint).

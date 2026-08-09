@@ -294,6 +294,7 @@ describe('listSecondaryChromeEntries', () => {
         'reminder',
         'language',
         'five-moments',
+        'journey-log',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -312,6 +313,7 @@ describe('listSecondaryChromeEntries', () => {
         'reminder',
         'language',
         'five-moments',
+        'journey-log',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -338,6 +340,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(entries.map((e) => e.proxy), [
       'language',
       'five-moments',
+      'journey-log',
       'zen-cinema',
       'daily-quote',
       'wallpapers',

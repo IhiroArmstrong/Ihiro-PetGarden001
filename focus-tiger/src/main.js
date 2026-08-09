@@ -67,10 +67,15 @@ import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
+import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import {
   shouldOfferFiveMomentsCompassFirstCard
 } from './core/fiveMomentsCompassGate.js';
+import {
+  appendJourneyLogEntry,
+  resolveJourneyMinutes
+} from './core/journeyLogGate.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
@@ -631,6 +636,8 @@ async function init() {
 
   const fiveMomentsCompassUI = new FiveMomentsCompassUI(document.body, {});
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
+  const journeyLogUI = new JourneyLogUI(document.body, {});
+  window.__journeyLog = journeyLogUI;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
@@ -660,6 +667,7 @@ async function init() {
     if (except !== 'tip') tipJarUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
+    if (except !== 'journey') journeyLogUI.close();
   }
 
   const supportYinModalUI = new SupportYinModalUI(document.body, {
@@ -876,6 +884,45 @@ async function init() {
   let suppressCompanionOpenAfterNod = false;
   /** 本轮 Arrival 是否完整走过 Choose（供鞠躬结束后自动开表判定） */
   let arrivalChoseThisRun = false;
+  /** Focus 结束后、Reflection 关闭前暂存的 Journey Log 草稿（非 tip-jar） */
+  /** @type {{ minutes: number, arrive: boolean } | null} */
+  let pendingJourneyDraft = null;
+
+  function stashPendingJourneyDraft({ completed }) {
+    const elapsedSeconds = focusSession.getElapsedSeconds();
+    pendingJourneyDraft = {
+      minutes: resolveJourneyMinutes({
+        completed: Boolean(completed),
+        targetMinutes: focusSession.targetMinutes,
+        elapsedSeconds
+      }),
+      arrive: Boolean(arrivalChoseThisRun)
+    };
+  }
+
+  function clearPendingJourneyDraft() {
+    pendingJourneyDraft = null;
+  }
+
+  function commitPendingJourneyDraft(hasAnyAnswer) {
+    if (!pendingJourneyDraft) return;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    appendJourneyLogEntry(storage, {
+      minutes: pendingJourneyDraft.minutes,
+      arrive: pendingJourneyDraft.arrive,
+      reflect: Boolean(hasAnyAnswer)
+    });
+    pendingJourneyDraft = null;
+  }
+
+  const sessionEndFlowCancelPending = sessionEndFlow.cancelPending.bind(
+    sessionEndFlow
+  );
+  sessionEndFlow.cancelPending = () => {
+    clearPendingJourneyDraft();
+    sessionEndFlowCancelPending();
+  };
 
   function setFocusButtonEnabled(enabled) {
     focusButton.disabled = !enabled;
@@ -974,6 +1021,7 @@ async function init() {
   const reflectionOnDone = reflectionMoment.onDone;
   reflectionMoment.onDone = (result, hasAnyAnswer) => {
     reflectionOnDone?.(result, hasAnyAnswer);
+    commitPendingJourneyDraft(hasAnyAnswer);
     resyncSessionChrome();
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
@@ -1083,6 +1131,10 @@ async function init() {
     onFiveMoments: () => {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
+    },
+    onJourneyLog: () => {
+      closeGrowthOverlayCards({ except: 'journey' });
+      journeyLogUI.open();
     },
     onZenCinema: () => {
       closeGrowthOverlayCards({ except: 'cinema' });
@@ -1897,6 +1949,7 @@ async function init() {
       suppressCompanionOpenAfterNod = false;
       postChooseChrome.pending = false;
       endFocusChrome();
+      stashPendingJourneyDraft({ completed: false });
       focusSession.stop();
       sessionUiGate.setCompletionPending(false);
       honestyGlowLevel = null;
@@ -1932,6 +1985,7 @@ async function init() {
 
   function finishCompletedSession() {
     if (!sessionUiGate.completionPending) return;
+    stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
     stateManager.setState(STATES.IDLE);

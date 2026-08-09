@@ -56,6 +56,7 @@ export class NarrowIdleShell {
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
    *     onFiveMoments?: () => void,
+   *     onJourneyLog?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
@@ -788,6 +789,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onFiveMoments?.();
+      return;
+    }
+    if (key === 'journey-log') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onJourneyLog?.();
       return;
     }
     if (key === 'zen-cinema') {
