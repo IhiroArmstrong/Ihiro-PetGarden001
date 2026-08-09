@@ -1,19 +1,28 @@
 /**
- * Idle chrome: kindness badges beside Yin after Buy Yin a Tea.
+ * Idle chrome: practice / kindness / Sanctuary badges beside Yin.
  * Display-only; Ambient / emotion must not read tip for unlocks.
+ * Priority: Sanctuary prestigious (if unlocked) → else tip/free yin badges.
  * Click a badge → download the full-res PNG.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
-  ensureTipBadgesAwarded,
-  hasTipped,
+  syncTipBadgesFromPractice,
   readTipStatus
 } from '../core/tipJarGate.js';
 import {
   getTipKindnessBadgeById,
   tipKindnessBadgeSrc
 } from '../core/tipKindnessBadges.js';
+import {
+  isSanctuaryUnlocked,
+  syncSanctuaryBadgesFromPractice,
+  readSanctuaryEntitlement
+} from '../core/sanctuaryEntitlementGate.js';
+import {
+  getSanctuaryBadgeById,
+  sanctuaryBadgeSrc
+} from '../core/sanctuaryBadges.js';
 
 const STYLE_ID = 'yin-tip-kindness-badges-chrome-v1';
 
@@ -64,51 +73,85 @@ export class TipKindnessBadgesChrome {
   }
 
   refresh() {
-    ensureTipBadgesAwarded(this._storage);
-    const tipped = hasTipped({ storage: this._storage });
-    const status = readTipStatus(this._storage);
-    const ids = tipped ? status.badgeIds : [];
+    const sanctuaryOn = isSanctuaryUnlocked({ storage: this._storage });
+    if (sanctuaryOn) {
+      syncSanctuaryBadgesFromPractice(this._storage);
+    } else {
+      syncTipBadgesFromPractice(this._storage);
+    }
 
-    this.labelEl.textContent = t('TIP_BADGES_BESIDE_LABEL');
-    this.hintEl.textContent = t('TIP_BADGES_DOWNLOAD_HINT');
+    /** @type {{ kind: 'sanctuary' | 'tip', ids: string[] }} */
+    let pack;
+    if (sanctuaryOn) {
+      pack = {
+        kind: 'sanctuary',
+        ids: readSanctuaryEntitlement(this._storage).badgeIds
+      };
+      this.labelEl.textContent = t('SANCTUARY_BADGES_BESIDE_LABEL');
+      this.hintEl.textContent = t('SANCTUARY_BADGES_DOWNLOAD_HINT');
+      this.root.dataset.badgeKind = 'sanctuary';
+    } else {
+      const status = readTipStatus(this._storage);
+      pack = { kind: 'tip', ids: status.badgeIds };
+      this.labelEl.textContent = status.tipped
+        ? t('TIP_BADGES_BESIDE_LABEL')
+        : t('PRACTICE_BADGES_BESIDE_LABEL');
+      this.hintEl.textContent = t('TIP_BADGES_DOWNLOAD_HINT');
+      this.root.dataset.badgeKind = status.tipped ? 'tip' : 'practice';
+    }
 
     this.row.replaceChildren();
-    for (const id of ids) {
-      const meta = getTipKindnessBadgeById(id);
+    for (const id of pack.ids) {
+      const meta =
+        pack.kind === 'sanctuary'
+          ? getSanctuaryBadgeById(id)
+          : getTipKindnessBadgeById(id);
       if (!meta) continue;
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'yin-tip-kindness-badges__btn';
       btn.dataset.badgeId = id;
       btn.dataset.testid = `yin-tip-badge-${id}`;
-      btn.title = t('TIP_BADGES_DOWNLOAD_ONE');
-      btn.setAttribute('aria-label', t('TIP_BADGES_DOWNLOAD_ONE'));
+      btn.title =
+        pack.kind === 'sanctuary'
+          ? t('SANCTUARY_BADGES_DOWNLOAD_ONE')
+          : t('TIP_BADGES_DOWNLOAD_ONE');
+      btn.setAttribute('aria-label', btn.title);
 
       const img = document.createElement('img');
       img.className = 'yin-tip-kindness-badges__img';
-      img.src = tipKindnessBadgeSrc(meta.file);
+      img.src =
+        pack.kind === 'sanctuary'
+          ? sanctuaryBadgeSrc(meta.file)
+          : tipKindnessBadgeSrc(meta.file);
       img.alt = '';
       img.decoding = 'async';
       img.draggable = false;
 
       btn.appendChild(img);
+      const file = meta.file;
+      const kind = pack.kind;
       btn.addEventListener('click', () => {
-        this._download(meta.file);
+        this._download(file, kind);
       });
       this.row.appendChild(btn);
     }
 
     const show =
-      this._visibleAllowed && tipped && ids.length > 0;
+      this._visibleAllowed && pack.ids.length > 0;
     this.root.hidden = !show;
   }
 
   /**
    * @param {string} file
+   * @param {'sanctuary' | 'tip'} kind
    */
-  _download(file) {
+  _download(file, kind) {
     const a = document.createElement('a');
-    a.href = tipKindnessBadgeSrc(file);
+    a.href =
+      kind === 'sanctuary'
+        ? sanctuaryBadgeSrc(file)
+        : tipKindnessBadgeSrc(file);
     a.download = file;
     a.rel = 'noopener';
     a.style.display = 'none';

@@ -20,14 +20,17 @@
 }
 ```
 
-### Kindness badges（2026-08-09）
+### Kindness badges（2026-08-09 · 统一练习徽章 2026-08-09）
 
 - 资产：`public/ui/support/yin-badges/*.png`（9 枚 · 1024² · 可下载留存）
-- 算法：`tipKindnessBadges.js` — 无练习 → 3；否则 `3 + floor((days + floor(minutes/60)) / 3)` 夹到 9
-- 再次打赏：**专注水平不变则不加枚**（只加不减）
-- 展示：`#yin-tip-jar-card` 徽章条 + Idle `#yin-tip-kindness-badges`（阿寅身旁；Focusing 隐藏）
+- 算法：`tipKindnessBadges.js` + `practiceBadgeAward.js`
+  - **付费 tip**：无练习 → 3；否则 `3 + floor((days + floor(minutes/60)) / 3)` 夹到 9
+  - **免费练习**：无练习 → 0；有练习起 1，同上公式夹到 9（写在 tip-jar `badgeIds`，`tipped` 仍为 false）
+  - **练习上涨**：`syncTipBadgesFromPractice`（无需再 tip）
+- 再次打赏：**专注水平不变则不加枚**（只增不减）
+- 展示：`#yin-tip-jar-card` 徽章条（仅 tipped）+ Idle `#yin-tip-kindness-badges`（阿寅旁；Focusing 隐藏；若已购 Sanctuary 则优先展示尊贵章）
 - 点按徽章 → 下载高清原图
-- **与 Sanctuary**：Tea / Sanctuary **两套视觉**（Sanctuary → `sanctuary-badges/`）；统一练习徽章体系（免费起 1 / 练习上涨自动加枚等）见 Brief `task-unified-practice-badges.md`（已立项、未开工）
+- **与 Sanctuary**：Tea / Sanctuary **两套视觉**（Sanctuary → `sanctuary-badges/`）；Brief `task-unified-practice-badges.md`
 
 ### Tea Log + 再 tip 致谢（2026-08-09）
 
