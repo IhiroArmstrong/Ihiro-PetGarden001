@@ -1,6 +1,6 @@
 # Task Brief · B · Five Moments Compass（罗盘指南）
 
-> **状态（2026-08-09）**：已排期 · **下一优先实现**。  
+> **状态（2026-08-09）**：实现中 · `feature/five-moments-compass`。  
 > **父决策**：`task-five-moments-surface-plan.md`  
 > **一次一任务**：本 Brief **仅 B**；不含 Whisper / Journey Log。
 

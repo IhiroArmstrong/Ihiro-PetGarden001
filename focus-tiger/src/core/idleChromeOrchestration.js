@@ -40,7 +40,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 
 /**
  * @typedef {object} SecondaryChromeEntry
- * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'sanctuary' | 'tip-jar'} proxy
+ * @property {'honesty' | 'breath' | 'companion' | 'reminder' | 'language' | 'five-moments' | 'zen-cinema' | 'daily-quote' | 'wallpapers' | 'sanctuary' | 'tip-jar'} proxy
  * @property {string} labelKey
  */
 
@@ -332,6 +332,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
       labelKey: 'LANGUAGE_MENU_LABEL'
     });
   }
+
+  // Five Moments Compass — voluntary guide (Task B; no first-visit mint).
+  out.push({
+    proxy: 'five-moments',
+    labelKey: 'FIVE_MOMENTS_MENU_LABEL'
+  });
 
   // Growth pack ① — always available gift entry (no first-visit mint).
   out.push({

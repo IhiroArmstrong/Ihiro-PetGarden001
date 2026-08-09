@@ -356,10 +356,19 @@ export class OnboardingHintsUI {
    * @param {object} [options]
    * @param {ReturnType<typeof createHintsSeenStore>} [options.store]
    * @param {() => object} [options.getScene]
+   * @param {() => void} [options.onOpenFiveMoments]
    */
-  constructor(mountRoot, { store = createHintsSeenStore(), getScene = () => ({}) } = {}) {
+  constructor(
+    mountRoot,
+    {
+      store = createHintsSeenStore(),
+      getScene = () => ({}),
+      onOpenFiveMoments = null
+    } = {}
+  ) {
     this.store = store;
     this.getScene = getScene;
+    this.onOpenFiveMoments = onOpenFiveMoments;
     this.mountRoot = mountRoot;
     /** @type {Map<string, import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble>} */
     this._bubbles = new Map();
@@ -1667,6 +1676,16 @@ export class OnboardingHintsUI {
       this._openPrivacySheetFromPurpose();
     });
 
+    const moments = document.createElement('button');
+    moments.type = 'button';
+    moments.className = 'onboarding-app-purpose__moments';
+    moments.dataset.testid = 'onboarding-purpose-moments';
+    moments.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._openFiveMomentsFromPurpose();
+    });
+
     const dismiss = document.createElement('button');
     dismiss.type = 'button';
     dismiss.className = 'onboarding-app-purpose__dismiss';
@@ -1676,12 +1695,13 @@ export class OnboardingHintsUI {
       this._hidePurposeCard();
     });
 
-    actions.append(privacy, dismiss);
+    actions.append(moments, privacy, dismiss);
     card.append(title, body, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
     this._purposeBodyEl = body;
+    this._purposeMomentsEl = moments;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
     this._refreshPurposeCardCopy();
@@ -1692,6 +1712,13 @@ export class OnboardingHintsUI {
     if (!this.purposeCard) return;
     this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
     this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
+    if (this._purposeMomentsEl) {
+      this._purposeMomentsEl.textContent = t('HINT_APP_PURPOSE_MOMENTS');
+      this._purposeMomentsEl.setAttribute(
+        'aria-label',
+        t('HINT_APP_PURPOSE_MOMENTS_ARIA')
+      );
+    }
     if (this._purposePrivacyEl) {
       this._purposePrivacyEl.textContent = t('HINT_APP_PURPOSE_PRIVACY');
       this._purposePrivacyEl.setAttribute(
@@ -1700,6 +1727,12 @@ export class OnboardingHintsUI {
       );
     }
     this._purposeDismissEl.textContent = t('HINT_APP_PURPOSE_DISMISS');
+  }
+
+  _openFiveMomentsFromPurpose() {
+    this._purposeFromHover = false;
+    this._hidePurposeCard();
+    this.onOpenFiveMoments?.();
   }
 
   _ensurePrivacySheet() {
@@ -2048,7 +2081,22 @@ export class OnboardingHintsUI {
         text-underline-offset: 3px;
         cursor: pointer;
       }
-      .onboarding-app-purpose__privacy:hover {
+      .onboarding-app-purpose__moments {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: #3a5348;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        font-style: normal;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+      }
+      .onboarding-app-purpose__privacy:hover,
+      .onboarding-app-purpose__moments:hover {
         color: #2f463c;
       }
       .onboarding-app-purpose__dismiss {

@@ -66,6 +66,10 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
+import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
+import {
+  shouldOfferFiveMomentsCompassFirstCard
+} from './core/fiveMomentsCompassGate.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
@@ -577,6 +581,9 @@ async function init() {
   window.__languagePreference = languagePreferenceUI;
   const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
   window.__zenCinemaCard = zenCinemaCardUI;
+
+  const fiveMomentsCompassUI = new FiveMomentsCompassUI(document.body, {});
+  window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
@@ -595,13 +602,20 @@ async function init() {
     }
   });
   window.__tipJar = tipJarUI;
+
+  function closeGrowthOverlayCards({ except = null } = {}) {
+    if (except !== 'support') supportYinModalUI.close();
+    if (except !== 'quote') dailyZenQuoteCardUI.close();
+    if (except !== 'wallpapers') digitalWallpapersCardUI.close();
+    if (except !== 'sanctuary') sanctuaryUnlockUI.close();
+    if (except !== 'tip') tipJarUI.close();
+    if (except !== 'cinema') zenCinemaCardUI.close();
+    if (except !== 'moments') fiveMomentsCompassUI.close();
+  }
+
   const supportYinModalUI = new SupportYinModalUI(document.body, {
     onOpen: () => {
-      zenCinemaCardUI.close();
-      dailyZenQuoteCardUI.close();
-      digitalWallpapersCardUI.close();
-      sanctuaryUnlockUI.close();
-      tipJarUI.close();
+      closeGrowthOverlayCards({ except: 'support' });
     },
     onUnlockSanctuary: () => {
       sanctuaryUnlockUI.open();
@@ -1014,44 +1028,28 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onFiveMoments: () => {
+      closeGrowthOverlayCards({ except: 'moments' });
+      fiveMomentsCompassUI.open({ markSeenOnOpen: true });
+    },
     onZenCinema: () => {
-      supportYinModalUI.close();
-      dailyZenQuoteCardUI.close();
-      digitalWallpapersCardUI.close();
-      sanctuaryUnlockUI.close();
-      tipJarUI.close();
+      closeGrowthOverlayCards({ except: 'cinema' });
       zenCinemaCardUI.open();
     },
     onDailyQuote: () => {
-      supportYinModalUI.close();
-      zenCinemaCardUI.close();
-      digitalWallpapersCardUI.close();
-      sanctuaryUnlockUI.close();
-      tipJarUI.close();
+      closeGrowthOverlayCards({ except: 'quote' });
       dailyZenQuoteCardUI.open();
     },
     onWallpapers: () => {
-      supportYinModalUI.close();
-      zenCinemaCardUI.close();
-      dailyZenQuoteCardUI.close();
-      sanctuaryUnlockUI.close();
-      tipJarUI.close();
+      closeGrowthOverlayCards({ except: 'wallpapers' });
       digitalWallpapersCardUI.open();
     },
     onSanctuary: () => {
-      supportYinModalUI.close();
-      zenCinemaCardUI.close();
-      dailyZenQuoteCardUI.close();
-      digitalWallpapersCardUI.close();
-      tipJarUI.close();
+      closeGrowthOverlayCards({ except: 'sanctuary' });
       sanctuaryUnlockUI.open();
     },
     onTipJar: () => {
-      supportYinModalUI.close();
-      zenCinemaCardUI.close();
-      dailyZenQuoteCardUI.close();
-      digitalWallpapersCardUI.close();
-      sanctuaryUnlockUI.close();
+      closeGrowthOverlayCards({ except: 'tip' });
       tipJarUI.open();
     },
     onHonesty: () => {
@@ -1082,12 +1080,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
-      zenCinemaCardUI.close();
-      dailyZenQuoteCardUI.close();
-      digitalWallpapersCardUI.close();
-      sanctuaryUnlockUI.close();
-      tipJarUI.close();
-      supportYinModalUI.close();
+      closeGrowthOverlayCards();
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
     },
@@ -1176,7 +1169,11 @@ async function init() {
 
   onboardingHints = new OnboardingHintsUI(document.body, {
     store: createHintsSeenStore(),
-    getScene: getOnboardingScene
+    getScene: getOnboardingScene,
+    onOpenFiveMoments: () => {
+      closeGrowthOverlayCards({ except: 'moments' });
+      fiveMomentsCompassUI.open({ markSeenOnOpen: true });
+    }
   });
   onboardingHintHost.hints = onboardingHints;
   // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
@@ -1948,6 +1945,29 @@ async function init() {
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
+  function maybeOfferFiveMomentsCompassFirstCard() {
+    if (!productChrome) return;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (!shouldOfferFiveMomentsCompassFirstCard(storage)) return;
+    if (stateManager.state !== STATES.IDLE) return;
+    if (isSceneAnimOverlayBusy()) return;
+    if (fiveMomentsCompassUI.isOpen()) return;
+    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
+      return;
+    }
+    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+      return;
+    }
+    closeGrowthOverlayCards({ except: 'moments' });
+    fiveMomentsCompassUI.open({ firstRun: true });
+  }
+
+  // Quiet Idle first-run: after welcome settle, once. Skip/Got it marks seen.
+  if (productChrome) {
+    window.setTimeout(() => maybeOfferFiveMomentsCompassFirstCard(), 4500);
+  }
+
   // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
   // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
   // wellness 深夜披斗篷 / 清晨苏醒仪式时跳过欢迎与 yawn/tea，避免抢戏。
@@ -2245,6 +2265,9 @@ async function init() {
 
   stateManager.onChange(() => {
     syncInAppReminderBanner();
+    if (stateManager.state === STATES.IDLE) {
+      window.setTimeout(() => maybeOfferFiveMomentsCompassFirstCard(), 900);
+    }
   });
 
   // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
