@@ -4,8 +4,8 @@
  * Policy:
  * - `ongoing` → every use checks live entitlement (`isEntitled`)
  * - `persistent` → claim once via ownership; later access ignores subscription expiry
- * - Global unlock rule: lifetime ∪ subscription may unlock any non-free `ongoing` /
- *   first-create path (lifetime covers subscription-tier features)
+ * - Global unlock rule: lifetime ∪ subscription **mutually** cover any paid
+ *   `requiredTier` (no per-key exceptions; free stays free)
  *
  * @see docs/MVP_PRODUCT_DEFINITION.md commercial red lines
  */

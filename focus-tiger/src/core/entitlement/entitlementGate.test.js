@@ -16,6 +16,7 @@ import {
   getEntitlementState,
   getFeatureAccess,
   isEntitled,
+  meetsRequiredTier,
   onEntitlementChange,
   refreshEntitlement,
   resolveLifetimeActive,
@@ -91,6 +92,32 @@ describe('entitlementGate lifetime ∪ subscription', () => {
       'lifetime covers subscription tier'
     );
     assert.equal(getEntitlementState({ storage }).source, 'lifetime');
+  });
+
+  it('subscription covers lifetime-tier via global mutual union', () => {
+    const storage = memoryStorage();
+    const now = () => new Date('2026-08-10T12:00:00.000Z');
+    applyEntitlementPatch(
+      {
+        subscription: {
+          active: true,
+          periodEndsAt: '2026-09-01T00:00:00.000Z',
+          planId: 'mock',
+          via: 'mock'
+        }
+      },
+      { storage, now, notify: false }
+    );
+    const state = getEntitlementState({ storage, now });
+    assert.equal(state.lifetimeActive, false);
+    assert.equal(state.subscription.entitled, true);
+    assert.equal(
+      meetsRequiredTier('lifetime', state),
+      true,
+      'subscription must cover lifetime-tier (互相覆盖)'
+    );
+    assert.equal(meetsRequiredTier('subscription', state), true);
+    assert.equal(meetsRequiredTier('free', state), true);
   });
 
   it('reads sanctuary unlock as lifetime signal without writing sanctuary', () => {

@@ -1,7 +1,7 @@
 /**
  * Unified entitlement gate — foundation for paid features.
  *
- * - Lifetime ∪ subscription unlock ongoing features (global default).
+ * - Lifetime ∪ subscription **mutually** cover any paid tier (global default).
  * - Sanctuary: thin read of `isSanctuaryUnlocked()` as a lifetime.active signal
  *   (does not migrate or write sanctuaryEntitlementGate).
  * - Tip jar: zero coupling (must not import tipJarGate).
@@ -178,10 +178,27 @@ export function getEntitlementState({
 }
 
 /**
+ * Global paid unlock rule: lifetime ∪ subscription cover each other.
+ * Free is always satisfied. Unknown tiers → false.
+ *
+ * @param {import('./entitlementRegistry.js').EntitlementTier} requiredTier
+ * @param {EntitlementStateView} state
+ * @returns {boolean}
+ */
+export function meetsRequiredTier(requiredTier, state) {
+  if (requiredTier === 'free') return true;
+  if (requiredTier === 'lifetime' || requiredTier === 'subscription') {
+    return Boolean(state.lifetimeActive || state.subscription.entitled);
+  }
+  return false;
+}
+
+/**
  * Live entitlement for ongoing use / first-create of gated content.
  * Unknown keys → false (safe default).
  *
- * Global rule: lifetime ∪ subscription unlock subscription-tier features.
+ * Global rule: lifetime ∪ subscription mutually cover any paid tier
+ * (no per-key exceptions).
  *
  * @param {string} featureKey
  * @param {object} [opts]
@@ -201,14 +218,10 @@ export function isEntitled(
     console.warn(`[entitlement] unknown featureKey "${featureKey}"`);
     return false;
   }
-  if (entry.requiredTier === 'free') return true;
-
-  const state = getEntitlementState({ storage, now });
-  if (entry.requiredTier === 'lifetime') {
-    return state.lifetimeActive;
-  }
-  // subscription tier (and any future paid tier): lifetime ∪ subscription
-  return state.lifetimeActive || state.subscription.entitled;
+  return meetsRequiredTier(
+    entry.requiredTier,
+    getEntitlementState({ storage, now })
+  );
 }
 
 /**
