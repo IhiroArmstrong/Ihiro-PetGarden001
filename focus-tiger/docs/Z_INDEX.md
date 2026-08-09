@@ -39,6 +39,7 @@
 | **15** | `src/ui/MicroRitualUI.js` | 微仪式主面板 |
 | **15** | `src/ui/TigerReflectionMoment.js` | Reflection 结束后的老虎短句叠层 |
 | **16** | `src/ui/CompanionModePicker.js` | `#session-start-dock`（Sit / Companion 三选一等）；须高于 Honesty/微仪式入口，防点穿 |
+| **16** | `src/ui/ImmersivePresenceUI.js` | Focusing 全屏陪伴入口条（`#immersive-presence`）；与 dock 同带，Focusing 时 dock 已藏 |
 | **16** | `src/ui/InAppReminderBannerUI.js` | Reminder 横幅默认（宽屏 / 非窄壳路径）；挂在 `#ui-overlay` 内 |
 | **16** | `src/ui/LanguagePreferenceUI.js` | 宽屏 Idle 右下语言地球钮（`.language-pref__fab`）；窄屏 CSS 隐藏 |
 | **17** | `src/ui/FlowerBlowWelcomeBubbleUI.js` | 变花鼓励气泡（`#flower-blow-welcome-bubble`）；白玉毛玻璃 + 尖角；窄屏 `top` 须让开 ActionBar（`homeClearanceTopCss`）；须可点消 |
