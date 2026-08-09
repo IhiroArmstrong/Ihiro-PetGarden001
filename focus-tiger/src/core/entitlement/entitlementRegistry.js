@@ -22,6 +22,7 @@
 /**
  * @typedef {(
  *   | 'journey.log'
+ *   | 'content.daily-wisdom'
  *   | 'ritual.morning.access'
  *   | 'ritual.emotional-reset.access'
  *   | 'ritual.work-transition.access'
@@ -47,6 +48,8 @@
 /** @type {Readonly<Record<FeatureKey, FeatureCatalogEntry>>} */
 export const FEATURE_CATALOG = Object.freeze({
   'journey.log': { requiredTier: 'free', type: 'persistent' },
+  /** Free daily line — check on every show (not ownership / entitlementOwnership). */
+  'content.daily-wisdom': { requiredTier: 'free', type: 'ongoing' },
 
   'ritual.morning.access': { requiredTier: 'subscription', type: 'ongoing' },
   'ritual.emotional-reset.access': {

@@ -43,6 +43,7 @@
 | `focus-tiger.five-moments-compass-seen.v1` | `fiveMomentsCompassGate` / `FiveMomentsCompassUI` | Compass 首卡 / 指南已读（`'1'`）；⋯ /「?」打开亦 mark；DEV 重置清 |
 | `focus-tiger.moment-whispers-seen.v1` | `momentWhispersGate` / `MomentWhisperUI` | Moment Whisper 各键已见 `{ arrive?, focus?, recover?, transition?, reflect? }`；一生一次；Transition 暂不 play |
 | `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar **零耦合**） |
+| `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**（落点未定，组件可插拔） |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
