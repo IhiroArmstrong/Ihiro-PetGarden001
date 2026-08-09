@@ -28,7 +28,7 @@
 | `KNOWN_RISKY_TEST_CHECKLIST.md` | known-risky **逐步操作**（Safari / 375 / 回流） | 开始产品验收时**优先按该表走**；本文件只给标签与判定依据 |
 | `TEST_TRACKER.md` | 逐功能验收行与用户反馈 | 状态标签的主证据源（尤其「有问题 / 已通过 / 待人工」） |
 | `COVERAGE_GAP_AUDIT.md` | 自动化覆盖分层（smoke / e2e / 人工锁） | 「有没有测」≠「人验过」；本清单叠一层**验证置信度** |
-| `SCENARIO_TESTS.md` | A–P + **Q/S/T/U/V/W** 用户故事剧本（**R** 跨日回访仍建议） | 场景级入口与自动化边界 |
+| `SCENARIO_TESTS.md` | A–P + **Q/S/T/U/V/W** + **X/Y/Z** 用户故事（**R** 跨日回访仍建议） | 场景级入口与自动化边界 |
 | `PRODUCT_MOMENTS.md` / `CORE_LOOP.md` | 一天叙事 / 七步状态机 | 产品面 completeness（含未做空白） |
 | `SCENE_ANIMATION_WIRING.md` / `HINTS_WIRING.md` | 动画 / Hint 接线契约 | 接线态 vs 验收态 |
 | `EDGE_CASES.md` / `DOC_CODE_CONTRACT.md` | 静默失败 / 高风险契约 | known-risky 的技术依据 |
