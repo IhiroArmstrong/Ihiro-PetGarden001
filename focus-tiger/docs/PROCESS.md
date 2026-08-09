@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-09（UTC+8）
+**最后更新时间**：2026-08-10（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
 - **SCENARIO_TESTS 二次增量（2026-08-09 晚）**：升格 **X** Tiger Anchor · **Y** Compass+Whisper · **Z** Journey Log；**Q** 补统一徽章 Q4。对齐 #199–#206。权威 `SCENARIO_TESTS.md`。
 - **统一练习徽章体系（2026-08-09 · `feature/unified-practice-badges`）**：免费练习起 1；Tea/Sanctuary 付费起 3；练习上涨自动加枚；Sanctuary 独立 `badgeIds` + 17 枚视觉；Idle 阿寅旁优先 Sanctuary 章。Brief `task-unified-practice-badges.md`。TRACKER 待人工。
@@ -301,6 +302,7 @@
 
 **下一步计划**：
 
+- **付费 · 进阶仪式 / Ambient 消费统一 gate（后续）**：三个进阶仪式与深度音效等改读 `isEntitled` / `getFeatureAccess`；Stripe/Worker 真校验另排。地基已合 #210。
 - **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。
 - **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
 - **场景→动画接线 · A′+B Dispatcher（2026-08-01）**：PR #59 / #65 等已合 `develop`；关单级人工见 `TEST_TRACKER` 场景动画行。
