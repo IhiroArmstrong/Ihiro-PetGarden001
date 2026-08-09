@@ -288,7 +288,7 @@ describe('listSecondaryChromeEntries', () => {
   it('narrow drawer omits honesty and breath; includes companion/reminder/language/five-moments/zen-cinema/…', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(
-      entries.map((e) => e.proxy),
+      entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
         'companion',
         'reminder',
@@ -299,15 +299,19 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'sanctuary',
-        'tip-jar'
+        'tip-jar',
+        'ritual-morning',
+        'ritual-emotional-reset',
+        'ritual-work-transition'
       ]
     );
+    assert.ok(entries.some((e) => e.kind === 'group-label'));
   });
 
   it('wide more omits honesty and breath; includes companion/reminder/language/five-moments/zen-cinema/…', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     assert.deepEqual(
-      entries.map((e) => e.proxy),
+      entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
         'companion',
         'reminder',
@@ -318,7 +322,10 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'sanctuary',
-        'tip-jar'
+        'tip-jar',
+        'ritual-morning',
+        'ritual-emotional-reset',
+        'ritual-work-transition'
       ]
     );
   });
@@ -337,15 +344,30 @@ describe('listSecondaryChromeEntries', () => {
       companionVisible: false,
       reminderAvailable: false
     });
-    assert.deepEqual(entries.map((e) => e.proxy), [
-      'language',
-      'five-moments',
-      'journey-log',
-      'zen-cinema',
-      'daily-quote',
-      'wallpapers',
-      'sanctuary',
-      'tip-jar'
-    ]);
+    assert.deepEqual(
+      entries.filter((e) => e.proxy).map((e) => e.proxy),
+      [
+        'language',
+        'five-moments',
+        'journey-log',
+        'zen-cinema',
+        'daily-quote',
+        'wallpapers',
+        'sanctuary',
+        'tip-jar',
+        'ritual-morning',
+        'ritual-emotional-reset',
+        'ritual-work-transition'
+      ]
+    );
+  });
+
+  it('ritual rows are locked when not entitled', () => {
+    const entries = listSecondaryChromeEntries('wide-more', allOn);
+    const rituals = entries.filter((e) =>
+      String(e.proxy || '').startsWith('ritual-')
+    );
+    assert.equal(rituals.length, 3);
+    assert.ok(rituals.every((e) => e.locked === true));
   });
 });

@@ -83,6 +83,7 @@ export class WideIdleMoreMenu {
    *     onWallpapers?: () => void,
    *     onSanctuary?: () => void,
    *     onTipJar?: () => void,
+   *     onRitualFlow?: (proxy: string) => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -336,7 +337,7 @@ export class WideIdleMoreMenu {
 
     this.listEl?.addEventListener('click', (e) => {
       const item = e.target.closest('[data-proxy]');
-      if (!item) return;
+      if (!item || item.disabled) return;
       const key = item.getAttribute('data-proxy');
       this.closeMenu();
       requestAnimationFrame(() => this._proxy(key));
@@ -562,6 +563,15 @@ export class WideIdleMoreMenu {
     this.listEl.innerHTML = '';
     for (const item of entries) {
       const li = document.createElement('li');
+      if (item.kind === 'group-label') {
+        li.setAttribute('role', 'presentation');
+        const label = document.createElement('div');
+        label.className = 'ft-wide-more__group';
+        label.textContent = t(item.labelKey);
+        li.appendChild(label);
+        this.listEl.appendChild(li);
+        continue;
+      }
       li.setAttribute('role', 'none');
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -569,6 +579,12 @@ export class WideIdleMoreMenu {
       btn.setAttribute('role', 'menuitem');
       btn.dataset.proxy = item.proxy;
       btn.textContent = t(item.labelKey);
+      if (item.locked) {
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.title = t('ritual.menu_locked');
+        btn.classList.add('is-locked');
+      }
       const hintId = SECONDARY_PROXY_HINT_IDS[item.proxy];
       const showDot =
         Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
@@ -642,6 +658,16 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onTipJar?.();
+      return;
+    }
+    if (
+      key === 'ritual-morning' ||
+      key === 'ritual-emotional-reset' ||
+      key === 'ritual-work-transition'
+    ) {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onRitualFlow?.(key);
       return;
     }
     if (key === 'sound') {
@@ -825,9 +851,27 @@ export class WideIdleMoreMenu {
         line-height: 1.35;
         cursor: pointer;
       }
+      .ft-wide-more__item.is-locked,
+      .ft-wide-more__item:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+      .ft-wide-more__group {
+        padding: 10px 12px 4px;
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(92, 67, 48, 0.72);
+      }
       .ft-wide-more__item:hover {
         background: rgba(255, 246, 230, 0.9);
         border-color: rgba(139, 115, 85, 0.18);
+      }
+      .ft-wide-more__item.is-locked:hover,
+      .ft-wide-more__item:disabled:hover {
+        background: transparent;
+        border-color: transparent;
       }
       .ft-secondary-menu-hint-dot {
         position: absolute;

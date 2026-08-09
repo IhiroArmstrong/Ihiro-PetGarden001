@@ -138,6 +138,13 @@ export const BOTTOM_COPY_CLEARANCE_SURFACES = Object.freeze([
     notes: 'Sit unavailable while open; belt clears remaining Quick ball'
   },
   {
+    id: 'ritual-flow-panel',
+    selector: '#ritual-flow',
+    owner: 'RitualFlowUI.js + NarrowIdleShell clearance belt',
+    usesSharedClearance: true,
+    notes: 'advanced RitualFlow overlay; mutual exclusion with MicroRitual'
+  },
+  {
     id: 'tiger-reflection-moment',
     selector: '#tiger-reflection-moment',
     owner: 'TigerReflectionMoment.js + NarrowIdleShell clearance belt',

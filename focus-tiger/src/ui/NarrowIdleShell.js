@@ -62,6 +62,7 @@ export class NarrowIdleShell {
    *     onWallpapers?: () => void,
    *     onSanctuary?: () => void,
    *     onTipJar?: () => void,
+   *     onRitualFlow?: (proxy: string) => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
@@ -485,7 +486,7 @@ export class NarrowIdleShell {
 
     this.listEl?.addEventListener('click', (e) => {
       const item = e.target.closest('[data-proxy]');
-      if (!item) return;
+      if (!item || item.disabled) return;
       const key = item.getAttribute('data-proxy');
       this.closeSheet();
       // Let close paint, then trigger underlying control
@@ -679,11 +680,25 @@ export class NarrowIdleShell {
     this.listEl.innerHTML = '';
     for (const item of entries) {
       const li = document.createElement('li');
+      if (item.kind === 'group-label') {
+        const label = document.createElement('div');
+        label.className = 'ft-narrow-sheet__group';
+        label.textContent = t(item.labelKey);
+        li.appendChild(label);
+        this.listEl.appendChild(li);
+        continue;
+      }
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ft-narrow-sheet__item';
       btn.dataset.proxy = item.proxy;
       btn.textContent = t(item.labelKey);
+      if (item.locked) {
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.title = t('ritual.menu_locked');
+        btn.classList.add('is-locked');
+      }
       const hintId = SECONDARY_PROXY_HINT_IDS[item.proxy];
       const showDot =
         Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
@@ -825,6 +840,16 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onTipJar?.();
+      return;
+    }
+    if (
+      key === 'ritual-morning' ||
+      key === 'ritual-emotional-reset' ||
+      key === 'ritual-work-transition'
+    ) {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onRitualFlow?.(key);
       return;
     }
     if (key === 'quickstart') {
@@ -1162,6 +1187,19 @@ export class NarrowIdleShell {
         box-shadow:
           0 1px 0 rgba(255, 255, 255, 0.85) inset,
           0 1px 0 rgba(180, 150, 110, 0.18);
+      }
+      .ft-narrow-sheet__item.is-locked,
+      .ft-narrow-sheet__item:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+      .ft-narrow-sheet__group {
+        padding: 8px 4px 2px;
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(92, 67, 48, 0.72);
       }
       .ft-secondary-menu-hint-dot {
         position: absolute;

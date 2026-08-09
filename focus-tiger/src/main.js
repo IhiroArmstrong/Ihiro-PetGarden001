@@ -156,6 +156,22 @@ import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
 import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
 import { MicroRitualUI } from './ui/MicroRitualUI.js';
+import {
+  RitualFlowUI,
+  resolveRitualBreathMsOverride
+} from './ui/RitualFlowUI.js';
+import { RitualCompletionStore } from './core/RitualCompletionStore.js';
+import {
+  getRitualConfig,
+  RITUAL_MENU_PROXIES
+} from './core/RitualFlow.js';
+import {
+  claimFeatureOwned,
+  isEntitled,
+  setEntitlementProvider,
+  createMockEntitlementProvider,
+  refreshEntitlement
+} from './core/entitlement/entitlementGate.js';
 import { FocusDurationPickerUI } from './ui/FocusDurationPickerUI.js';
 import {
   hasMicroRitualMsOverride,
@@ -184,6 +200,8 @@ const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 const MICRO_RITUAL_MS_OVERRIDE = hasMicroRitualMsOverride(location.search)
   ? resolveMicroRitualMs(location.search)
   : null;
+/** Advanced RitualFlow breath: e2e `?ritualBreathMs=` shortens every breath step. */
+const RITUAL_BREATH_MS_OVERRIDE = resolveRitualBreathMsOverride(location.search);
 /** Honesty 呼吸默认 10s；e2e 用 `?honestyBreathMs=1500` 缩短。 */
 const HONESTY_BREATH_MS_RESOLVED = resolveHonestyBreathMs(location.search);
 const isPosterCapture = new URLSearchParams(location.search).has('capturePoster');
@@ -418,6 +436,12 @@ async function init() {
   revealScene({ showCanvas: false });
   poseManager.setCanvasHidden(true);
 
+  // Entitlement mock provider (Prompt 1) — lab URL `?entitlementMock=subscription|lifetime|both`.
+  setEntitlementProvider(
+    createMockEntitlementProvider({ search: location.search })
+  );
+  void refreshEntitlement();
+
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
   const idleChrome = createIdleChromeFacade({
     root: document.body,
@@ -595,12 +619,15 @@ async function init() {
   let honestyBridge = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
+  /** @type {RitualFlowUI | null} */
+  let ritualFlowUI = null;
   /** @type {FocusDurationPickerUI | null} */
   let focusDurationPicker = null;
   /** Companion 已选、等待时长 chip 的模式 */
   let pendingFocusDurationMode = null;
   const now = () => new Date();
   const dailyCompletionStore = new DailyCompletionStore({ now });
+  const ritualCompletionStore = new RitualCompletionStore({ now });
   reminderPreferenceUI = new ReminderPreferenceUI(
     weeklyPracticeHeatmap.getClusterEl(),
     {
@@ -772,7 +799,8 @@ async function init() {
         stateManager.state === STATES.CELEBRATE ||
         arrivalPractice?.isOpen?.() ||
         reflectionMoment?.isOpen?.() ||
-        microRitualUI?.isOpen?.()
+        microRitualUI?.isOpen?.() ||
+        ritualFlowUI?.isOpen?.()
       ) {
         return;
       }
@@ -814,6 +842,44 @@ async function init() {
   });
   if (import.meta.env.DEV) {
     window.__microRitualUI = microRitualUI;
+  }
+
+  ritualFlowUI = new RitualFlowUI(document.getElementById('ui-overlay'), {
+    resolveBreathMs: (durationMs) =>
+      RITUAL_BREATH_MS_OVERRIDE != null
+        ? RITUAL_BREATH_MS_OVERRIDE
+        : durationMs,
+    onBreathStart: () => {
+      lightProgression.beginBreath();
+      emotionController.playEmotion('smiling', {
+        fps: ARRIVAL_BREATH_SMILE_FPS,
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true
+      });
+      void (async () => {
+        const preferred = ambientSoundscape.getPreferredTrackId();
+        const trackId =
+          preferred === AMBIENT_TRACK_OFF
+            ? DEFAULT_AMBIENT_TRACK_ID
+            : preferred;
+        await ambientSoundscape.playTrackEphemeral(trackId);
+      })();
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
+    },
+    onBreathEnd: () => {
+      lightProgression.endBreath({ releaseDolly: false });
+    },
+    onComplete: ({ ritualId, selections }) => {
+      completeRitualFlow(ritualId, selections);
+    },
+    onLeave: () => {
+      leaveRitualFlowQuietly();
+    }
+  });
+  if (import.meta.env.DEV) {
+    window.__ritualFlowUI = ritualFlowUI;
+    window.__ritualCompletionStore = ritualCompletionStore;
   }
 
   focusDurationPicker = new FocusDurationPickerUI({
@@ -881,6 +947,7 @@ async function init() {
     getArrivalPractice: () => arrivalPractice,
     getReflectionMoment: () => reflectionMoment,
     getMicroRitualUI: () => microRitualUI,
+    getRitualFlowUI: () => ritualFlowUI,
     getFocusDurationPicker: () => focusDurationPicker,
     honestyCheckInUI,
     honestyCheckIn,
@@ -976,6 +1043,116 @@ async function init() {
     resyncSessionChrome();
     syncHonestyIdleEntry();
     syncOnboardingAutoHints();
+  }
+
+  /**
+   * Advanced RitualFlow chrome — same dock suppress as MicroRitual;
+   * does not share MicroRitualUI / completeMicroRitual / Reflection.
+   */
+  function beginRitualFlowChrome() {
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    honestyCheckInUI.hide();
+    honestyCheckInUI.hideIdleEntry();
+    companionModePicker.hide();
+    companionModePicker.setIdleChromeVisible(false);
+    companionModePicker.setMicroRitualActive(true);
+    setFocusButtonEnabled(false);
+    microRitualUI?.hideIdleEntry();
+    resyncSessionChrome();
+  }
+
+  function endRitualFlowChrome() {
+    ambientSoundscape.stopPlaybackEphemeral();
+    lightProgression.endBreath({ releaseDolly: true });
+    lightProgression.clearArrivalEffects();
+    companionModePicker.setMicroRitualActive(false);
+    setFocusButtonEnabled(true);
+    companionModePicker.setIdleChromeVisible(true);
+    resyncSessionChrome();
+    syncHonestyIdleEntry();
+    syncOnboardingAutoHints();
+  }
+
+  /**
+   * @param {string} proxy menu proxy from Idle More / drawer
+   */
+  function openRitualFlowFromMenu(proxy) {
+    const ritualId = Object.entries(RITUAL_MENU_PROXIES).find(
+      ([, p]) => p === proxy
+    )?.[0];
+    if (!ritualId) return;
+    const config = getRitualConfig(ritualId);
+    if (!config) return;
+    if (!isEntitled(config.accessFeatureKey)) {
+      mindfulToast.show(t('ritual.menu_locked'), {
+        placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+        visibleMs: 3_500
+      });
+      return;
+    }
+    if (
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE ||
+      arrivalPractice?.isOpen?.() ||
+      reflectionMoment?.isOpen?.() ||
+      microRitualUI?.isOpen?.() ||
+      ritualFlowUI?.isOpen?.() ||
+      focusDurationPicker?.isOpen?.()
+    ) {
+      return;
+    }
+    beginRitualFlowChrome();
+    const opened = ritualFlowUI?.open(ritualId);
+    if (!opened) {
+      endRitualFlowChrome();
+      return;
+    }
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
+  /**
+   * @param {string} ritualId
+   * @param {Record<string, string>} selections
+   */
+  function completeRitualFlow(ritualId, selections) {
+    ambientSoundscape.stopPlaybackEphemeral();
+    const config = getRitualConfig(ritualId);
+    ritualCompletionStore.recordCompletion(ritualId, { selections });
+    if (config) {
+      for (const featureKey of config.persistentFeatureKeys) {
+        claimFeatureOwned(featureKey, {
+          meta: { ritualId, source: 'ritual_flow_complete' }
+        });
+      }
+    }
+    trackRetentionEvent(RETENTION_EVENTS.RITUAL_FLOW_COMPLETE, {
+      ritualId,
+      selections
+    });
+    mindfulToast.show(t(config?.completeToastKey || 'ritual.shared.complete'), {
+      placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+      visibleMs: 4_500
+    });
+    endRitualFlowChrome();
+    emotionController.playEmotion('sessionComplete', {
+      crossFadeMs: CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: true,
+      onComplete: () => {
+        syncHonestyIdleEntry();
+      }
+    });
+    // Explicit: do NOT call sessionEndFlow / TigerReflectionMoment.
+  }
+
+  function leaveRitualFlowQuietly() {
+    endRitualFlowChrome();
+    emotionController.playEmotion('idle', {
+      crossFadeMs: CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: true
+    });
+    syncHonestyIdleEntry();
   }
 
   function completeMicroRitual() {
@@ -1173,6 +1350,9 @@ async function init() {
     onTipJar: () => {
       closeGrowthOverlayCards({ except: 'tip' });
       tipJarUI.open();
+    },
+    onRitualFlow: (proxy) => {
+      openRitualFlowFromMenu(proxy);
     },
     onHonesty: () => {
       honestyCheckIn.openDurationChoices({ force: true });
