@@ -164,7 +164,7 @@
 
 | 缺口 | 说明 | 建议 |
 |---|---|---|
-| **主动 Recover 入口** | `PRODUCT_MOMENTS` / `CORE_LOOP` 明确空白；代码无对等产品入口 | 未实现 → 勿当存量 bug；立项前勿登 verified |
+| **主动 Recover 入口** | Tiger Anchor 已落地（`triggerActiveRecover` + `ActiveRecoverAnchorUI`；180s 冷却） | TRACKER 待人工；合入 develop tip 后走查 375 |
 | **Transition** | 完全未设计/未接线 | 同上 |
 | **Grow Together / 莲花纪念物** | 素材入库；业务触发属 Backlog；与 `MilestoneGlow` 产品接线易混淆 | 在 TRACKER/接线表保持「未接线」醒目 |
 | **SessionComplete 观察式文案** | PROCESS 写明未实现 | 补登记为「未做」或从「已完整 Reflect」叙事中拆出 |

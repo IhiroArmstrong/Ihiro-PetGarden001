@@ -27,12 +27,11 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 |---|---|---|---|
 | **Arrive** | 一天开始，或准备开始一项任务 | 帮助用户觉察当前状态 | ✅ Arrival Practice v2（Sit→欢迎/Notice/呼吸/Choose→Companion Mode）；Honesty Check-in 按天并存 |
 | **Focus** | 正在专注 | 安静陪伴，不打扰，提供稳定感 | 已完整——FocusSession / Companion Mode / Sit with Yin |
-| **Recover** | 分心、焦虑、卡住 | 帮助用户回到当下，而非责备 | 被动侧已有 Re-focus；**主动 Recover 仍空白**。`welcomeBack` **不是** Recover（见下） |
+| **Recover** | 分心、焦虑、卡住 | 帮助用户回到当下，而非责备 | 被动 Re-focus ✅；**主动 Recover（Tiger Anchor）已落地**（Focusing 轻触阿寅；不占被动额度；180s 冷却）。`welcomeBack` **不是** Recover（见下） |
 | **Transition** | 在任务/会议/学习/休息之间切换 | 帮助用户完成心理上的"重置" | **空白**——完全未设计 |
 | **Reflect** | 完成一次专注或一天后 | 回顾觉察与成长，而非只统计数字 | 已完整——Tiger Reflection Moment 三问 |
 
-**关键判断**：Recover 和 Transition 是真正的新增空白，且 Recover 很可能是全产品里使用频率最高的入口——多数人一天里"分心→想拉回来"的次数，远多于"完整走完一次 25 分钟专注"的次数。这意味着 Recover 的打磨优先级应该被重新评估，不能停留在现在"占位日志"的状态。
-
+**关键判断**：Transition 仍是真正的新增空白。Recover 被动侧（Re-focus）与主动侧（Tiger Anchor）均已落地——打磨重点转为观感与冷却手感，而非「占位日志」。
 **动画接线**：各 Moment 应对哪一档角色动画，见 **`SCENE_ANIMATION_WIRING.md`**（v1.0.0 先交付 Slice A：语言切换问候 + Honesty Idle 短认可；微仪式完成已接线）。
 
 ---
@@ -58,14 +57,14 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 
 - **定义**：用户已经分心、刷了手机、感到焦虑或不知所措，想要"用最短路径回到当下"，而不是重新发起一次完整专注。
 - **与现有功能的区别**：
-  - Re-focus Acknowledge：被动触发，离开页面超过 60 秒返回时出现；属 Recover 家族的被动强度。
-  - 未来主动 Recover：用户主动发起，不依赖检测；属同一家族的主动入口（尚未实现）。
+  - Re-focus Acknowledge：被动触发，离开页面超过 60 秒返回时出现；属 Recover 家族的被动强度；占共享提醒日额度 + 每会话最多 1 次。
+  - **主动 Recover（Tiger Anchor · 已落地）**：Focusing 中轻触阿寅（或幽灵提示）；播 `nod-bow` + 中置观察式 toast（~3s）+ LightProgression Recover 扰动；**不**暂停计时、**不**进 MicroRitual / Reflection / 记账；**不**占被动提醒池；触发后触点 **180s** 冷却隐退。
   - `welcomeBack`：页内无互动后的偶遇挥手；**不是** Recover，不得按分心回归叙事改写。
-- **建议设计方向**（主动入口只定方向，交互细节留待下一步单独设计）：
-  - 独立会话类型，不是 FocusSession 的缩短版——无目标时长、无完成判定、无统计计入达标。
-  - 复用 Honesty Check-in 已验证的"呼吸引导"模式（10 秒呼吸引导 → 观察式一句文案 → 结束），时长可以拉长到 1-2 分钟，但仍保持"进来就能用、用完就走"。
-  - 结束后不触发 Celebrating / sessionComplete 这类"完成感"反馈——Recover 的产品语义是"没关系，回来就好"，不是"完成了一项任务"，避免和达标反馈的分量混淆。
-
+- **主动入口实现要点**（交互 Brief 2026-08-09）：
+  - 零次级菜单：Focusing 无菜单槽位 → 以阿寅本人为触点。
+  - 分级限频：被动硬额度；主动无限次 + 冷却（非「额度用尽」挫败文案）。
+  - 代码：`MindfulReminderController.triggerActiveRecover()` + `ActiveRecoverAnchorUI`。
+- ~~建议设计方向（旧草案）~~：独立会话 / 1–2 分钟呼吸引导 — **已由上述零 MicroRitual 路径取代**，勿再按旧草案排期。
 ### 4.4 Transition（新增，触发方式需要重新设计）
 
 - **定义**：在两项性质不同的活动之间（会议→写代码、专注→休息、上班→下班）完成一次短暂的心理重置。

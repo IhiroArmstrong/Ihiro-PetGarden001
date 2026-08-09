@@ -534,7 +534,13 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 2. 「刚才那一段已经经过了。此刻，又回到这一口呼吸。」
 3. 「有一会儿去了别处，也有这一刻重新回来。」
 
-使用：`t('MINDFUL_FOCUS_MILESTONE_1')` 或 `tPool('MINDFUL_FOCUS_MILESTONE')` 随机取一句。
+**ACTIVE_RECOVER**（用户主动 Tiger Anchor；观察式、非命令；不占提醒池）：
+
+1. 「这一口呼吸在这里。注意力可以在它身旁停一会儿。」
+2. 「一段安静的停顿来了。座位还在身下。」
+3. 「就在此时此地——这一口呼吸，被轻轻看见了。」
+
+使用：`t('MINDFUL_FOCUS_MILESTONE_1')` 或 `tPool('MINDFUL_FOCUS_MILESTONE')` 随机取一句。主动 Recover 用 `tPool('ACTIVE_RECOVER')`；入口 chrome 用 `ACTIVE_RECOVER_HINT`（非 toast 池）。
 
 ---
 

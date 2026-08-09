@@ -81,9 +81,9 @@ Grow Together（老虎成长 = 用户成长的映射，非独立宠物养成机�
 | | Recover 家族 | `welcomeBack`（wave-hello） |
 |---|---|---|
 | **是什么** | 会话内、与分心 / 注意力相关的回归 | Idle 生命感偶遇（陪伴有呼吸） |
-| **成员** | 已有：Re-focus Acknowledge；未来：用户主动发起的 Recover | **明确不进** Recover 家族 |
-| **触发** | 离页/失焦回归、或用户主动拉回 | 约 10 分钟无互动后 30% 挥手等 |
-| **代码** | 情绪键 / 触发器 / 提醒限频池 **继续分开**；不因叙事统一而合并类或共用额度 | 同左：独立键与触发，**不占** Re-focus 提醒池 |
+| **成员** | 已有：Re-focus Acknowledge；**主动 Recover（Tiger Anchor）** | **明确不进** Recover 家族 |
+| **触发** | 离页/失焦回归、或 Focusing 轻触阿寅 | 约 10 分钟无互动后 30% 挥手等 |
+| **代码** | 情绪键 / 触发器 / 提醒限频池 **继续分开**；主动侧走 `triggerActiveRecover()`，**不占** Re-focus 提醒池；180s 冷却 | 同左：独立键与触发，**不占** Re-focus 提醒池 |
 
 - 用户可见动词可用 "return / You're back."，文档与产品结构名仍用 **Recover**。
 - Companion Mode 的 step-away / across-tools 关闭的是 **Recover 侧**（Re-focus），不是偶遇挥手；二者不得混为一谈。

@@ -72,9 +72,13 @@ import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnl
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
+import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
-import { MindfulReminderController } from './core/MindfulReminderController.js';
+import {
+  MindfulReminderController,
+  ACTIVE_RECOVER_COOLDOWN_MS
+} from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
 import {
   MindfulAcknowledgeToast,
@@ -496,9 +500,24 @@ async function init() {
     toast: mindfulToast,
     getCopy: tPool,
     onReminderShown: (type) => {
-      if (type === 'refocus') lightProgression.playRecoverDisturbance();
+      if (type === 'refocus' || type === 'activeRecover') {
+        lightProgression.playRecoverDisturbance();
+      }
     }
   });
+  const activeRecoverAnchor = new ActiveRecoverAnchorUI(
+    document.getElementById('ui-overlay'),
+    {
+      onActivate: () => {
+        const result = mindfulReminderController.triggerActiveRecover();
+        if (result.ok) {
+          activeRecoverAnchor.enterCooldown(ACTIVE_RECOVER_COOLDOWN_MS);
+        }
+        return result;
+      }
+    }
+  );
+  window.__activeRecoverAnchor = activeRecoverAnchor;
   const attentionSignals = new AttentionSignals({
     onAway: () => mindfulReminderController.setAttentionAway(true),
     onResume: () => mindfulReminderController.setAttentionAway(false),
@@ -1518,6 +1537,7 @@ async function init() {
     ambientSoundscapeUI.setSessionActive(false);
     supportYinModalUI.setFabVisible(true);
     tipKindnessBadgesChrome.setVisible(true);
+    activeRecoverAnchor.setFocusing(false);
     companionModePicker.setIdleChromeVisible(true);
   }
 
@@ -1650,6 +1670,7 @@ async function init() {
     ambientSoundscapeUI.setSessionActive(true);
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
+    activeRecoverAnchor.setFocusing(true);
     attentionSignals.setEnabled(true);
     acrossToolsIdleGuard.stop();
     if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {

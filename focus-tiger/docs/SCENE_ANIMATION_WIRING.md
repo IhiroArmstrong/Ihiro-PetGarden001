@@ -114,7 +114,7 @@
 
 | 用户场景 | 建议键 / 素材 | 档位 | 状态 | 备注 |
 |---|---|---|---|---|
-| 主动 Recover 结束 | `nod-bow` / blink-smile | ack | Slice B | **禁止** sessionComplete / Celebrating（见 `PRODUCT_MOMENTS`） |
+| 主动 Recover（Tiger Anchor） | `mindfulAcknowledge` subtype `activeRecover`（nod-bow） | ack | **已接线** | **禁止** sessionComplete / Celebrating / MicroRitual；不占提醒额度；180s 冷却 |
 | 用户主动 Transition 一次深呼吸 | `palms-together` 或短光环 | ack | Slice C | 入口未做 |
 | Reflection 三问答完 | `mindfulAcknowledge` | ack | Slice B | 可选；勿加长仪式 |
 

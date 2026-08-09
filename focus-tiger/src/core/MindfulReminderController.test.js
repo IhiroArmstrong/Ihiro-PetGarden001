@@ -5,7 +5,9 @@ import {
   MindfulReminderController,
   MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS,
   REFOCUS_PER_SESSION_LIMIT,
-  STRETCH_REMINDER_THRESHOLD_SECONDS
+  STRETCH_REMINDER_THRESHOLD_SECONDS,
+  ACTIVE_RECOVER_COOLDOWN_MS,
+  ACTIVE_RECOVER_TOAST_MS
 } from './MindfulReminderController.js';
 
 function setup({ quota = 3 } = {}) {
@@ -152,4 +154,104 @@ test('session elapsed can follow a wall-clock reader', () => {
   elapsed = MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS;
   controller.update(0);
   assert.deepEqual(shown, ['MINDFUL_FOCUS_MILESTONE']);
+});
+
+test('triggerActiveRecover plays nod path without consuming quota or Re-focus slot', () => {
+  let quota = 1;
+  const shown = [];
+  const emotions = [];
+  const reminderTypes = [];
+  const controller = new MindfulReminderController({
+    quotaManager: {
+      tryConsume() {
+        if (quota <= 0) return false;
+        quota -= 1;
+        return true;
+      }
+    },
+    emotionController: {
+      current: 'idle',
+      getCurrentEmotionKey() {
+        return this.current;
+      },
+      playEmotion(key, options) {
+        emotions.push({ key, options });
+      }
+    },
+    toast: {
+      show(message, options) {
+        shown.push({ message, options });
+        return true;
+      }
+    },
+    getCopy: (key) => key,
+    now: (() => {
+      let t = 1_000_000;
+      return () => t;
+    })(),
+    onReminderShown: (type) => reminderTypes.push(type)
+  });
+
+  assert.equal(controller.triggerActiveRecover().ok, false);
+  assert.equal(controller.triggerActiveRecover().reason, 'inactive');
+
+  controller.startSession();
+  const first = controller.triggerActiveRecover();
+  assert.equal(first.ok, true);
+  assert.equal(quota, 1, 'active Recover must not tryConsume reminder quota');
+  assert.equal(controller.getSessionStats().refocusHandledThisSession, 0);
+  assert.deepEqual(emotions, [
+    { key: 'mindfulAcknowledge', options: { subtype: 'activeRecover' } }
+  ]);
+  assert.equal(shown[0].message, 'ACTIVE_RECOVER');
+  assert.equal(shown[0].options.placement, 'center');
+  assert.equal(shown[0].options.visibleMs, ACTIVE_RECOVER_TOAST_MS);
+  assert.deepEqual(reminderTypes, ['activeRecover']);
+  assert.equal(ACTIVE_RECOVER_COOLDOWN_MS, 3 * 60 * 1000);
+});
+
+test('triggerActiveRecover respects cooldown then allows again; strong emotion yields', () => {
+  let nowMs = 5_000_000;
+  const emotions = [];
+  const controller = new MindfulReminderController({
+    quotaManager: {
+      tryConsume() {
+        return true;
+      }
+    },
+    emotionController: {
+      current: 'idle',
+      getCurrentEmotionKey() {
+        return this.current;
+      },
+      playEmotion(key, options) {
+        emotions.push({ key, options });
+      }
+    },
+    toast: {
+      show() {
+        return true;
+      }
+    },
+    getCopy: (key) => key,
+    now: () => nowMs
+  });
+
+  controller.startSession();
+  assert.equal(controller.triggerActiveRecover().ok, true);
+  const blocked = controller.triggerActiveRecover();
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.reason, 'cooldown');
+  assert.ok(blocked.remainingMs > 0);
+  assert.equal(emotions.length, 1);
+
+  nowMs += ACTIVE_RECOVER_COOLDOWN_MS;
+  assert.equal(controller.isActiveRecoverAvailable(), true);
+  assert.equal(controller.triggerActiveRecover().ok, true);
+  assert.equal(emotions.length, 2);
+
+  nowMs += ACTIVE_RECOVER_COOLDOWN_MS;
+  controller.emotionController.current = 'celebrating';
+  assert.equal(controller.triggerActiveRecover().reason, 'strong_emotion');
+  assert.equal(emotions.length, 2);
 });
