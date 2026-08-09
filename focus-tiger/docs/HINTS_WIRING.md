@@ -166,7 +166,7 @@
 | `RESPONSIVE_LAYOUT.md` | 窄屏互斥 / clamp；本表引用门闩 |
 | `SHARED_RESOURCES.md` §6 | 双壳 suppress 与 Honesty 入口 |
 | `SCENE_ANIMATION_WIRING.md` | **管理方法论姊妹篇**（一批中央契约）；领域不同 |
-| `PRODUCT_MOMENTS.md` | Five Moments；hint 服务引导而非替代 Moment |
+| `PRODUCT_MOMENTS.md` | Five Moments；hint 服务引导而非替代 Moment；Moment Whisper（`#moment-whisper`）与 Hint registry **分轨** |
 | `PROCESS.md` Backlog | ④ 扩面（观察中，勿默认开工）；⑤ viewport-context |
 
 ---

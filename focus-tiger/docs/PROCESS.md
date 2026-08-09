@@ -65,7 +65,7 @@
 **近期落地（待人工测试）**：
 
 - **统一练习徽章体系（2026-08-09 · `feature/unified-practice-badges`）**：免费练习起 1；Tea/Sanctuary 付费起 3；练习上涨自动加枚；Sanctuary 独立 `badgeIds` + 17 枚视觉；Idle 阿寅旁优先 Sanctuary 章。Brief `task-unified-practice-badges.md`。TRACKER 待人工。
-- **Sanctuary 尊贵徽章素材入库（2026-08-09 · PR #202）**：17 枚 → `public/ui/support/sanctuary-badges/`；本支已接线授予。
+- **Sanctuary 尊贵徽章素材入库（2026-08-09 · PR #202 已合）**：17 枚 → `public/ui/support/sanctuary-badges/`；本支接线授予。
 - **主动 Recover · Tiger Anchor（2026-08-09 · 本支）**：Focusing 轻触阿寅 → `triggerActiveRecover()`（nod-bow + 中置 toast + LightProgression）；不占被动提醒额度；**180s** 冷却隐退；零 MicroRitual。TRACKER 新行待人工（含 375）。
 - **SCENARIO_TESTS 增量升格（2026-08-09）**：正式故事补 **Q**（Support/Tea/Sanctuary）· **S**（Breath 左球）· **T**（Focus 时长 chip）· **U**（Cinema/Quiet Line/Wallpapers）· **V**（吹花欢迎）· **W**（Privacy/?）；**R** 跨日回访仍建议。权威 `SCENARIO_TESTS.md`；逐功能仍走 `TEST_TRACKER`。
 - **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**下一任务**（勿漏）：① 高光时刻场景化请茶气泡；② 付费意愿漏斗本地统计（统一徽章见上条）。

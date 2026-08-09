@@ -30,7 +30,7 @@
 - 再次打赏：**专注水平不变则不加枚**（只增不减）
 - 展示：`#yin-tip-jar-card` 徽章条（仅 tipped）+ Idle `#yin-tip-kindness-badges`（阿寅旁；Focusing 隐藏；若已购 Sanctuary 则优先展示尊贵章）
 - 点按徽章 → 下载高清原图
-- **与 Sanctuary**：Tea / Sanctuary **两套视觉**；Brief `task-unified-practice-badges.md`
+- **与 Sanctuary**：Tea / Sanctuary **两套视觉**（Sanctuary → `sanctuary-badges/`）；Brief `task-unified-practice-badges.md`
 
 ### Tea Log + 再 tip 致谢（2026-08-09）
 
