@@ -58,6 +58,7 @@ import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
 import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 import { FIVE_MOMENTS_COMPASS_SEEN_KEY } from './fiveMomentsCompassGate.js';
 import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
+import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
   clearAllFocusTigerLocalState,
@@ -117,7 +118,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   TIP_JAR_STORAGE_KEY,
   SANCTUARY_STORAGE_KEY,
   FIVE_MOMENTS_COMPASS_SEEN_KEY,
-  MOMENT_WHISPERS_SEEN_KEY
+  MOMENT_WHISPERS_SEEN_KEY,
+  JOURNEY_LOG_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

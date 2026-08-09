@@ -47,6 +47,7 @@
 | **18** | `src/ui/LanguagePreferenceUI.js` | `#language-preference` 语言面板（FAB / ⋯ / 抽屉打开） |
 | **18** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-card` Zen Cinema 确认卡（⋯ / 抽屉；将打开 YouTube） |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
+| **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
 | **18** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（⋯ / 抽屉） |

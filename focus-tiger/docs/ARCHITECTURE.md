@@ -414,7 +414,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 #### 分期规划
 
-- **Phase 0（当前 MVP）**：**不实现**。坚持通过诚实机制手动打卡，以及 Companion Mode（用户自选会话语境的陪伴声明）跑通核心体验；避免 HealthKit / Health Connect SDK 集成带来的包体积与开发测试成本。
+- **Phase 0（当前 MVP）**：**不实现**。坚持通过诚实机制手动打卡，以及 Companion Mode（用户自选会话语境的陪伴声明）跑通核心体验；避免 HealthKit / Health Connect SDK 集成带来的包体积与开发测试成本。**应用内 Journey Log（D′）** 是本地 Tea Log 式练习留痕（`focus-tiger.journey-log.v1`），**不是** HealthKit Phase 1，也不得对外称为 Health Log。
 - **Phase 1（留存优化期，时间点待定）**：评估引入 HealthKit（iOS）与 Health Connect（Android）的读取权限申请与数据拉取，作为面向海外用户的差异化加分项。自动读取的正念分钟数可转化为角色金光 / Rim Light 强度的**增强输入**——复用 Ambient Soundscape 已确立的「外部 / 附加信号 → 光效强度」数据流模式（`presenceBoost` 类叠加、不改写 `focusLevel` 达标真值），**不新建**独立光效计算逻辑。**技术路径预记（2026-08-07）**：须原生壳；未来默认 **Capacitor**（非 Flutter/RN 重写）；v1 纯 Web 阶段 **不实现**。见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 
 #### 架构约束（若 Phase 1 立项）
