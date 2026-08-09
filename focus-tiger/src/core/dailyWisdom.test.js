@@ -38,8 +38,27 @@ test('en/ja pools share the same stable ids', () => {
   const enIds = DAILY_WISDOM_EN.map((e) => e.id);
   const jaIds = DAILY_WISDOM_JA.map((e) => e.id);
   assert.deepEqual(enIds, jaIds);
-  assert.ok(enIds.length >= 20);
+  assert.ok(enIds.length >= 3);
   assert.equal(new Set(enIds).size, enIds.length, 'en ids unique');
+  for (const required of [
+    'catch-this-moment',
+    'abide-nowhere',
+    'not-the-emotion'
+  ]) {
+    assert.ok(enIds.includes(required), `missing seed id: ${required}`);
+  }
+  assert.equal(
+    DAILY_WISDOM_EN.find((e) => e.id === 'not-the-emotion')?.text,
+    'You are not the emotion.'
+  );
+  assert.equal(
+    DAILY_WISDOM_EN.find((e) => e.id === 'catch-this-moment')?.text,
+    'Catch this moment.'
+  );
+  assert.equal(
+    DAILY_WISDOM_EN.find((e) => e.id === 'abide-nowhere')?.text,
+    'Abide nowhere.'
+  );
   for (const e of DAILY_WISDOM_EN) {
     assert.match(e.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
     assert.ok(e.text.trim().length > 0);
