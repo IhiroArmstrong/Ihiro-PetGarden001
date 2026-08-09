@@ -254,21 +254,38 @@ export function clearTipStatus(storage) {
 }
 
 /**
- * Backfill badges for devices that tipped before badgeIds existed.
+ * Sync tip/practice badges from current practice level (only-grow).
+ * - tipped → paid floor 3
+ * - not tipped → free path (1 after first practice; 0 if never practiced)
+ * Also backfills devices that tipped before badgeIds existed.
  *
  * @param {Storage | null | undefined} storage
  * @returns {{ newlyAddedIds: string[] }}
  */
-export function ensureTipBadgesAwarded(storage) {
+export function syncTipBadgesFromPractice(storage) {
   const prev = readTipStatus(storage);
-  if (!prev.tipped) return { newlyAddedIds: [] };
-  if (prev.badgeIds.length > 0) return { newlyAddedIds: [] };
-  const award = planTipBadgeAward(storage, []);
+  const mode = prev.tipped ? 'paid' : 'free';
+  const award = planTipBadgeAward(storage, prev.badgeIds, { mode });
+  const same =
+    award.badgeIds.length === prev.badgeIds.length &&
+    award.badgeIds.every((id, i) => id === prev.badgeIds[i]);
+  if (same) return { newlyAddedIds: [] };
   writeTipStatus(storage, {
     ...prev,
     badgeIds: award.badgeIds
   });
   return { newlyAddedIds: award.newlyAddedIds };
+}
+
+/**
+ * @deprecated Prefer syncTipBadgesFromPractice (grows on practice rise).
+ * Kept as alias for older call sites / tests.
+ *
+ * @param {Storage | null | undefined} storage
+ * @returns {{ newlyAddedIds: string[] }}
+ */
+export function ensureTipBadgesAwarded(storage) {
+  return syncTipBadgesFromPractice(storage);
 }
 
 /**

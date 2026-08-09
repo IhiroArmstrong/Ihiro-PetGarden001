@@ -642,10 +642,12 @@ async function init() {
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
-  const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {});
-  window.__sanctuaryUnlock = sanctuaryUnlockUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
+  const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {
+    onBadgesChanged: () => tipKindnessBadgesChrome.refresh()
+  });
+  window.__sanctuaryUnlock = sanctuaryUnlockUI;
   const tipJarUI = new TipJarUI(document.body, {
     onBadgesChanged: () => tipKindnessBadgesChrome.refresh(),
     onTipThanks: ({ isRepeatTip }) => {
@@ -736,6 +738,7 @@ async function init() {
     },
     onPracticeDay: ({ durationMinutes } = {}) => {
       practiceDaysStore.markToday(durationMinutes);
+      tipKindnessBadgesChrome.refresh();
     },
     onSessionRecorded: ({ durationMinutes }) => {
       retentionFunnelStore.noteSessionComplete({ durationMinutes });
@@ -963,6 +966,7 @@ async function init() {
       microRitualUI?.getDurationMinutes?.() ?? 1;
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
+    tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
     });
