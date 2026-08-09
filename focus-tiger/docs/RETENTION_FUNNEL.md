@@ -141,7 +141,7 @@ Sink：`src/core/RetentionTelemetry.js` → `trackRetentionEvent` → **仅** `c
 |---|---|
 | R0–R1 | 场景 A（全新用户 → 当日首次达标） |
 | R4 | 场景 D / N（Honesty 补登 → 桥接 Yes/No） |
-| R2–R3 | 尚无独立场景剧本；测回访须拨时钟或跨日真机 |
+| R2–R3 | 尚无独立场景剧本；测回访须拨时钟或跨日真机（`SCENARIO_TESTS` **R** 仍建议补充；字母 **R 保留**给本项，勿改指付费） |
 
 ---
 

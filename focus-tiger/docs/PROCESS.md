@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-08（UTC+8）
+**最后更新时间**：2026-08-09（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **SCENARIO_TESTS 增量升格（2026-08-09）**：正式故事补 **Q**（Support/Tea/Sanctuary）· **S**（Breath 左球）· **T**（Focus 时长 chip）· **U**（Cinema/Quiet Line/Wallpapers）· **V**（吹花欢迎）· **W**（Privacy/?）；**R** 跨日回访仍建议。权威 `SCENARIO_TESTS.md`；逐功能仍走 `TEST_TRACKER`。
 - **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**下一任务**（勿漏）：① 高光时刻场景化请茶气泡；② 付费意愿漏斗本地统计。
 - **主干 tip 验收盘点（2026-08-08）**：`origin/develop` tip **`beb9147`**（含 #187 Support + #188 PWA 延后 QA）。TRACKER 约 96 行仍开；**本批**按 KnownRisky §0.1（P0 闪白/Honesty → P1 Breath/chip/吹花/增长/付费/Support → P2 旧债）；实验室/长墙钟/PWA 安装**不排**本批。操作 SSOT：`KNOWN_RISKY_TEST_CHECKLIST.md`。
 - **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
