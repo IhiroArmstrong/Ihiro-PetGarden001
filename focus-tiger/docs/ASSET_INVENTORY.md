@@ -234,7 +234,8 @@
 
 > **路径**：`public/ui/support/yin-badges/`（1024×1024 RGBA · 入库 2026-08-09）。  
 > **用途**：Buy Yin a Tea 善意徽章；UI 缩小显示；点击下载原图留存。  
-> **接线**：`tipKindnessBadges.js` 目录顺序；`tipJarGate.badgeIds`；`#yin-tip-jar-card` + `#yin-tip-kindness-badges`。
+> **接线**：`tipKindnessBadges.js` 目录顺序；`tipJarGate.badgeIds`；`#yin-tip-jar-card` + `#yin-tip-kindness-badges`。  
+> **与 Sanctuary**：Tea / Sanctuary 为 **两套视觉**；勿把本目录文件挪作 Lifetime 尊贵章。
 
 | 文件 | 目录档位（低→高） |
 |---|---|
@@ -247,6 +248,36 @@
 | `yin-medallion-gold-silver-relief.png` | 7 |
 | `yin-badge-square-gold-on-silver.png` | 8 |
 | `yin-badge-square-gold-on-silver-alt.png` | 9 |
+
+---
+
+## Sanctuary prestigious badges（非序列帧 · 可下载 · **仅入库**）
+
+> **路径**：`public/ui/support/sanctuary-badges/`（RGBA 透明底 · 约 939–973² · 入库 2026-08-09）。  
+> **用途**：Yin's Sanctuary Lifetime「尊贵徽章」素材库；与 tip `yin-badges/` **视觉分立**。  
+> **接线状态（强制）**：**尚未**授予算法 / UI / `badgeIds`；**禁止**被 tip gate 或 Ambient 消费。  
+> **下一任务**：统一练习徽章体系 Brief → `docs/task-briefs/task-unified-practice-badges.md`。  
+> **建议档位顺序**（银→金→高阶；实现任务可微调，勿无 Brief 改 tip 目录）：
+
+| 文件 | 建议档位（低→高） |
+|---|---|
+| `tiger-badge-silver-gold-rim-gray-scene.png` | 1 |
+| `tiger-badge-silver-gold-rim.png` | 2 |
+| `tiger-badge-silver-gold-rim-v2.png` | 3 |
+| `tiger-badge-silver-gold-rim-frost.png` | 4 |
+| `tiger-badge-silver-gold-rim-sparkle.png` | 5 |
+| `tiger-badge-silver-dark-scene.png` | 6 |
+| `tiger-badge-gunmetal-gold-rim.png` | 7 |
+| `tiger-badge-gold-plain.png` | 8 |
+| `tiger-badge-gold-thin-rim.png` | 9 |
+| `tiger-badge-gold-classic.png` | 10 |
+| `tiger-badge-gold-thick-rim.png` | 11 |
+| `tiger-badge-gold-solid-circle.png` | 12 |
+| `tiger-badge-gold-silver-rim.png` | 13 |
+| `tiger-badge-gold-silver-rim-v2.png` | 14 |
+| `tiger-badge-gold-silver-rim-pink-gem.png` | 15 |
+| `tiger-badge-gold-radial-burst.png` | 16 |
+| `tiger-badge-gold-diamond.png` | 17 |
 
 ---
 
