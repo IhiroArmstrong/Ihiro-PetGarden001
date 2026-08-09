@@ -6,7 +6,7 @@
 保留设计意图，将实现介质翻译为 2D + CSS/DOM，供 Arrival Practice 与 Recover 使用。
 
 **实现落点**：`src/effects/LightProgression.js`；Arrival 经 `ArrivalPracticeUI` 钩子接线；
-Recover 挂在 `MindfulReminderController` 的 `refocus` 展示回调上；日常 `focusLevel`
+Recover 挂在 `MindfulReminderController` 的 `refocus` **与** `activeRecover` 展示回调上；日常 `focusLevel`
 经主循环 `updateFocusGlow` 驱动 DOM Rim。原则边界已写入 `PRINCIPLES.md`「光影物理渐进原则」
 与 `ARCHITECTURE.md`「2D 主线的金色进度表达」。增强细则见
 `task-briefs/task-light-progression-parallax-rim.md`（视差 Dolly + 4s 呼吸 + DOM Rim）。
@@ -57,9 +57,7 @@ ARRIVE_MOMENT_DESIGN.md），纯视觉增强，不改变交互逻辑。
 3. 用户停留页面 5 秒后，扰动效果平复，Rim Light 恢复原亮度——用一个简单的
    timer + CSS transition 即可，不需要检测用户"是否真的安定下来"这类复杂状态。
 
-这套效果挂在**现有 Re-focus Acknowledge 触发链路上**，只是给它加一层视觉，不新增
-触发逻辑、不影响 CORE_LOOP.md 里已定的"welcomeBack 不算 Recover"边界。
-
+这套效果挂在**现有 Re-focus Acknowledge 触发链路**上，并复用于**主动 Recover（Tiger Anchor）**（`onReminderShown('activeRecover')`）；只是给呈现加一层视觉，不新增被动检测阈值、不影响 CORE_LOOP.md 里已定的"welcomeBack 不算 Recover"边界。主动侧不占提醒额度，见 `PRODUCT_MOMENTS.md` §Recover。
 ---
 
 ## 四、是否推广为通用设计方法：有条件采纳

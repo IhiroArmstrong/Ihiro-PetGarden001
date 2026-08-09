@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **主动 Recover · Tiger Anchor（2026-08-09 · 本支）**：Focusing 轻触阿寅 → `triggerActiveRecover()`（nod-bow + 中置 toast + LightProgression）；不占被动提醒额度；**180s** 冷却隐退；零 MicroRitual。TRACKER 新行待人工（含 375）。
 - **SCENARIO_TESTS 增量升格（2026-08-09）**：正式故事补 **Q**（Support/Tea/Sanctuary）· **S**（Breath 左球）· **T**（Focus 时长 chip）· **U**（Cinema/Quiet Line/Wallpapers）· **V**（吹花欢迎）· **W**（Privacy/?）；**R** 跨日回访仍建议。权威 `SCENARIO_TESTS.md`；逐功能仍走 `TEST_TRACKER`。
 - **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**下一任务**（勿漏）：① 高光时刻场景化请茶气泡；② 付费意愿漏斗本地统计。
 - **主干 tip 验收盘点（2026-08-08）**：`origin/develop` tip **`beb9147`**（含 #187 Support + #188 PWA 延后 QA）。TRACKER 约 96 行仍开；**本批**按 KnownRisky §0.1（P0 闪白/Honesty → P1 Breath/chip/吹花/增长/付费/Support → P2 旧债）；实验室/长墙钟/PWA 安装**不排**本批。操作 SSOT：`KNOWN_RISKY_TEST_CHECKLIST.md`。
@@ -234,7 +235,7 @@
 - `MilestoneGlow` 调试预览：`milestone-glow` 27 帧完整叙事（金光+蝴蝶已烧录，无独立 DOM 层）；末帧固定停留 2.5s 后回落；播放期同样归零实时金光；真实里程碑判定仍属 Backlog「纪念奖励系统」
 - Session Intention / Arrival Practice v2 MVP：Sit → 欢迎（blink-smile）/ Notice 点选（不落库）/ ~5s 呼吸 / Choose（图标+打字，`intentions.v1`+source）→ Companion Mode → 再 Sit 计时；Skip / Skip — begin；Reflection 按来源回显；见 `CORE_LOOP.md` / `ARRIVE_MOMENT_DESIGN.md`
 - 光影物理渐进（2D）：`LightProgression` — Arrival 冷→暖、三层视差 Dolly（背景 1.06 / Yin 1.12）、4s 呼吸光环、Choose 坐垫光晕；日常 `focusLevel`→DOM Rim；Recover/Re-focus 扰动+约20%亮度下降、5s平复；原则写入 `PRINCIPLES` / `ARCHITECTURE`；详规 `LIGHT_PROGRESSION_DESIGN.md` / `task-briefs/task-light-progression-parallax-rim.md`；初稿 Re-focus 安慰句未过观察式自检，继续用 `REFOCUS_ACKNOWLEDGE` 池
-- `MindfulAcknowledge` 正式动作层：`nod-bow` 13 帧克制点头鞠躬（`loopMode: none`）；20 分钟阶段确认与 Re-focus 通过同一 `mindfulAcknowledge` key 播放，Re-focus 仅传 `subtype: 'refocus'`；强反馈检查仍在申请额度和播放动作之前，冲突时静默让位且不补发；播完回归 idle-breathing
+- `MindfulAcknowledge` 正式动作层：`nod-bow` 13 帧克制点头鞠躬（`loopMode: none`）；20 分钟阶段确认与 Re-focus 通过同一 `mindfulAcknowledge` key 播放，Re-focus 仅传 `subtype: 'refocus'`；**主动 Recover** 传 `subtype: 'activeRecover'`（不占提醒额度；180s 冷却；Tiger Anchor UI）；强反馈检查仍在申请额度和播放动作之前，冲突时静默让位且不补发；播完回归 idle-breathing
 - `stretchReminder` 正式动作层：17 帧 `stretch-reminder` 坐姿张臂舒展序列（`loopMode: none`），复用既有活跃累计 2 小时触发、共享额度、非模态文案与强反馈让位链路，播完回归 idle-breathing。归属判定依据：该序列从清醒坐姿起势并向外张臂，现有 16 帧 `dormant-wake` 从侧卧熟睡过渡为清醒打坐；起始姿态、动作弧线、构图和帧数均不同，故按情况 A 独立入库，不替换 Honesty Check-in 动作
 - 播放器层候选素材（尚未绑定 emotion key / 业务触发）：`halo-breathing` 30 帧与 `blink-smile` 12 帧已按统一 `frame_NNN.png` 规范入库；播放器新增 `startFrame` 子序列支持，并注册 halo 方案 A（001–006 once → 007–030 pingpong）、方案 B（001–030 pingpong）及 blink-smile forward 技术试播定义。端点检查显示 halo 030→007 差异约为相邻帧中位数的 2.46 倍，blink-smile 012→001 约为 4.22 倍，二者均暂不接入正式调度
 - 2026-07-18 五套新素材（见 `docs/NEW_ASSETS_2026-07-18.md`）：`celebrate-dance-v2` 作 Celebrating 50/50 变体；`palms-together` 接 `intentionSet`（Choose 确认，与坐垫 CSS 光晕叠加）；`breath-halo-expand` 作 MilestoneGlow 简化备选（仅登记）；`lotus-front-rising` / `lotus-chest-halo` 仅入库（纪念奖励 Backlog）
@@ -359,7 +360,8 @@
 
 **最近拍板（2026-07-30）**：v1.0.0 = 纯本地小发布；v1.1 = 云端算法跟进；代码保留云端扩展点、v1.0 不绑死云请求；打包壳选型开会时机 = 冻结前约 1 周或你点名要桌面包时。
 
-**最近拍板（2026-07-18）**：Recover 家族 = Re-focus + 未来主动 Recover；`welcomeBack` 为 Idle 偶遇、不进家族；代码/限频继续分开（见 `CORE_LOOP.md`）。
+**最近拍板（2026-07-18）**：Recover 家族 = Re-focus + 主动 Recover；`welcomeBack` 为 Idle 偶遇、不进家族；代码/限频继续分开（见 `CORE_LOOP.md`）。  
+**最近拍板（2026-08-09）**：主动 Recover = Focusing Tiger Anchor（轻触阿寅）；零 MicroRitual；不占被动额度；冷却 **180s**；`triggerActiveRecover()` + `ActiveRecoverAnchorUI`。
 
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 

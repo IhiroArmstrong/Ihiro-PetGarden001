@@ -8,6 +8,11 @@ export const STRETCH_REMINDER_THRESHOLD_SECONDS = 2 * 60 * 60;
 export const STRETCH_RESET_AFTER_INACTIVE_MS = 30 * 60 * 1000;
 export const REFOCUS_PER_SESSION_LIMIT = 1;
 
+/** User-initiated Recover cooldown (anti-misfire; does not share passive quota). */
+export const ACTIVE_RECOVER_COOLDOWN_MS = 3 * 60 * 1000;
+/** Active Recover toast visibility (shorter than default mindful toast). */
+export const ACTIVE_RECOVER_TOAST_MS = 3000;
+
 const STRONG_EMOTIONS = new Set([
   'celebrating',
   'milestoneGlow',
@@ -25,7 +30,7 @@ export class MindfulReminderController {
    * @param {(poolKey: string) => string} deps.getCopy
    * @param {() => number} [deps.now]
    * @param {() => number} [deps.random]
-   * @param {(type: 'mindful' | 'stretch' | 'refocus') => void} [deps.onReminderShown]
+   * @param {(type: 'mindful' | 'stretch' | 'refocus' | 'activeRecover') => void} [deps.onReminderShown]
    */
   constructor({
     quotaManager,
@@ -55,6 +60,8 @@ export class MindfulReminderController {
     this.suppressAwayReminders = false;
     /** @type {null | (() => number)} */
     this._getSessionElapsedSeconds = null;
+    /** Earliest wall time an active Recover may fire again. */
+    this._activeRecoverAvailableAt = 0;
   }
 
   /**
@@ -84,6 +91,8 @@ export class MindfulReminderController {
       typeof getSessionElapsedSeconds === 'function'
         ? getSessionElapsedSeconds
         : null;
+    // Fresh session: active Recover available immediately (cooldown is per-session use).
+    this._activeRecoverAvailableAt = 0;
   }
 
   stopSession() {
@@ -93,6 +102,7 @@ export class MindfulReminderController {
     this.attentionAway = false;
     this.suppressAwayReminders = false;
     this._getSessionElapsedSeconds = null;
+    this._activeRecoverAvailableAt = 0;
   }
 
   /** @param {boolean} away */
@@ -158,6 +168,49 @@ export class MindfulReminderController {
       candidateDepartureCount: this.candidateDepartureCount,
       refocusHandledThisSession: this.refocusHandledThisSession
     };
+  }
+
+  /** @returns {number} ms until active Recover is available again (0 = ready). */
+  getActiveRecoverCooldownRemainingMs() {
+    return Math.max(0, this._activeRecoverAvailableAt - this.now());
+  }
+
+  /** @returns {boolean} */
+  isActiveRecoverAvailable() {
+    return (
+      this.sessionActive && this.getActiveRecoverCooldownRemainingMs() === 0
+    );
+  }
+
+  /**
+   * User-initiated Recover (Tiger Anchor). Zero MicroRitual / Reflection / ledger.
+   * Does **not** consume ReminderQuotaManager or the per-session Re-focus slot.
+   * Timer continues; presentation only.
+   * @returns {{ ok: boolean, reason?: string, remainingMs?: number, shown?: boolean }}
+   */
+  triggerActiveRecover() {
+    if (!this.sessionActive) {
+      return { ok: false, reason: 'inactive' };
+    }
+    const remainingMs = this.getActiveRecoverCooldownRemainingMs();
+    if (remainingMs > 0) {
+      return { ok: false, reason: 'cooldown', remainingMs };
+    }
+    const currentEmotion = this.emotionController.getCurrentEmotionKey?.();
+    if (STRONG_EMOTIONS.has(currentEmotion)) {
+      return { ok: false, reason: 'strong_emotion' };
+    }
+
+    this.emotionController.playEmotion('mindfulAcknowledge', {
+      subtype: 'activeRecover'
+    });
+    const shown = this.toast.show(this.getCopy('ACTIVE_RECOVER'), {
+      placement: 'center',
+      visibleMs: ACTIVE_RECOVER_TOAST_MS
+    });
+    this._activeRecoverAvailableAt = this.now() + ACTIVE_RECOVER_COOLDOWN_MS;
+    if (shown) this.onReminderShown?.('activeRecover');
+    return { ok: true, shown: Boolean(shown) };
   }
 
   _showReminder(type) {
