@@ -14,6 +14,8 @@
 
 原则：不强迫用户读说明书；发现路径靠脉冲点悬停，空间定位靠「?」简介卡。
 
+> **Five Moments 显性化（2026-08-09）**：Moment Whisper / Compass **不是** Hint `auto` 喷洒，不得借机恢复已取消的补救铺开。权威排期与边界见 `PRODUCT_MOMENTS.md` §5.6 与 `task-briefs/task-five-moments-surface-plan.md`。
+
 > **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`；⚡ 球的 `title` 与 `quick-start`）。**脉冲已 done / 无脉冲**时，须保留残余悬停（streak `.label`、⚡ `title`），不得静默清空。
 
 > **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**。registry / 文案键仍以下方机器块为准；**运行时策略以上方「产品面」为准**。
