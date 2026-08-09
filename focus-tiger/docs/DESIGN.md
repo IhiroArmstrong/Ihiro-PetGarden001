@@ -294,6 +294,33 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 二者**不得**共用同一入口或互相覆盖；用户自主声明模式与 Honesty Check-in 同属「诚实优先于技术猜测」，但场景与入口仍须分离。
 
+### 全屏陪伴 / Immersive Presence（MVP 意愿探针 · 2026-08-09）
+
+> **命名**：对外「Fullscreen companion / 全屏陪伴」；对内 `ImmersivePresenceUI`。  
+> **禁止**与上一节 **Companion Mode**（Here & Now / Offline Space / Flow State）混名或合并入口。
+
+#### 目的
+
+验证用户是否愿意进入「更沉浸的陪伴态」（阿寅打坐 + 计时 + Rise），以及（可选）是否喜欢桌面角落浮动阿寅。**不是**系统 Widget / Live Activities；不得写成付费卖点。
+
+#### 1. 应用内全屏陪伴（移动 + 桌面同一套）
+
+- **何时出现**：仅 `FOCUSING` 且未进入完成叠层；Rise / 达标结束自动退出。
+- **进入**：用户点「Fullscreen companion」；可选尝试浏览器 Fullscreen API（失败仍保留 CSS 沉浸壳）。
+- **沉浸壳**（`body.ft-immersive-presence`）：弱化次要 chrome（Support / 徽章 / 语言 / hints / 热力图 / Moments 卡等）；**保留** FocusHUD 计时、Rise、右上 mute、Active Recover、离开按钮。
+- **回流**：离开按钮 / Escape（非 PiP 时）/ 结束 Focusing。
+
+#### 2. Document PiP 浮动阿寅（实验 · Chromium 桌面）
+
+- 按钮文案标明 **experimental**；仅 `documentPictureInPicture` 可用时显示。
+- 小窗内：当前精灵帧镜像 + 计时 + 实验标签；**不是**无边框系统级桌宠。
+- Safari / 不支持时：不显示浮动按钮；用户仍可用全屏陪伴。
+- PiP 随打开它的标签页存活；关闭主会话须收起。
+
+#### 3. 与壳选型的关系
+
+本探针**不**决定 Electron / Tauri / PWA 终局；见 `PROCESS.md` Backlog「本地桌面 APP 打包选型」。
+
 ### 禅意背景音（Ambient Soundscape）
 
 > **2026-07-16 定稿；MVP 运行时已落地**（`AmbientSoundscapeController` + 角落 UI；曲目：Mer-Ka-Ba / Meditation Impromptu 02）  

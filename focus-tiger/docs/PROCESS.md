@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
 - **SCENARIO_TESTS 二次增量（2026-08-09 晚）**：升格 **X** Tiger Anchor · **Y** Compass+Whisper · **Z** Journey Log；**Q** 补统一徽章 Q4。对齐 #199–#206。权威 `SCENARIO_TESTS.md`。
 - **统一练习徽章体系（2026-08-09 · `feature/unified-practice-badges`）**：免费练习起 1；Tea/Sanctuary 付费起 3；练习上涨自动加枚；Sanctuary 独立 `badgeIds` + 17 枚视觉；Idle 阿寅旁优先 Sanctuary 章。Brief `task-unified-practice-badges.md`。TRACKER 待人工。
 - **Sanctuary 尊贵徽章素材入库（2026-08-09 · PR #202 已合）**：17 枚 → `public/ui/support/sanctuary-badges/`；本支接线授予。

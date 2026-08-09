@@ -39,6 +39,7 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
 import { createIdleChromeFacade } from './core/createIdleChromeFacade.js';
 import {
   WeeklyPracticeHeatmap,
@@ -844,6 +845,23 @@ async function init() {
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
   const sessionUiGate = new SessionUiGate();
 
+  const immersivePresenceUI = new ImmersivePresenceUI(
+    document.getElementById('ui-overlay'),
+    {
+      getGateState: () => ({
+        isFocusing: stateManager.state === STATES.FOCUSING,
+        completionPending: sessionUiGate.completionPending
+      }),
+      getElapsedSeconds: () => focusSession.getElapsedSeconds(),
+      getSpriteFrameSrc: () => {
+        const img = spritePlayer?.imgEl;
+        if (!img) return null;
+        return img.currentSrc || img.src || null;
+      }
+    }
+  );
+  window.__immersivePresence = immersivePresenceUI;
+
   /**
    * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
    * 仍须 Quick-only，避免三球闪回（W3）。
@@ -1641,6 +1659,7 @@ async function init() {
     supportYinModalUI.setFabVisible(true);
     tipKindnessBadgesChrome.setVisible(true);
     activeRecoverAnchor.setFocusing(false);
+    immersivePresenceUI.setFocusing(false);
     companionModePicker.setIdleChromeVisible(true);
   }
 
@@ -1774,6 +1793,7 @@ async function init() {
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
     activeRecoverAnchor.setFocusing(true);
+    immersivePresenceUI.setFocusing(true);
     attentionSignals.setEnabled(true);
     acrossToolsIdleGuard.stop();
     if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {
