@@ -20,7 +20,9 @@ export const RETENTION_EVENTS = Object.freeze({
   DORMANT_BRIDGE_ACCEPTED: 'dormant_bridge_accepted',
   DORMANT_BRIDGE_DECLINED: 'dormant_bridge_declined',
   /** 微仪式 1 分钟计时结束；仅 console 占位，不参与 first_session / 指标计算 */
-  MICRO_RITUAL_COMPLETE: 'micro_ritual_complete'
+  MICRO_RITUAL_COMPLETE: 'micro_ritual_complete',
+  /** Advanced RitualFlow scene completed (not MicroRitual / Focus). */
+  RITUAL_FLOW_COMPLETE: 'ritual_flow_complete'
 });
 
 /** @type {readonly number[]} */

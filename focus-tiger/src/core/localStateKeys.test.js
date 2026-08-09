@@ -23,6 +23,7 @@ import {
   PRACTICE_DAYS_STORAGE_KEY
 } from './PracticeDaysStore.js';
 import { MILESTONE_GLOW_STORAGE_KEY } from './MilestoneGlowStore.js';
+import { RITUAL_COMPLETION_STORAGE_KEY } from './RitualCompletionStore.js';
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
 import { HonestyBridgeStore, HONESTY_BRIDGE_STORAGE_KEY } from './HonestyBridgeStore.js';
 import {
@@ -102,6 +103,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_SESSION_END_STORAGE_KEY,
   PRACTICE_DAYS_STORAGE_KEY,
   MILESTONE_GLOW_STORAGE_KEY,
+  RITUAL_COMPLETION_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
   RETENTION_FUNNEL_STORAGE_KEY,
   INTENTION_STORAGE_KEY,

@@ -43,6 +43,7 @@ export function isHonestyUiBusy(phase) {
  *   hideIdleEntry?: () => void,
  *   showIdleEntry?: () => void
  * } | null | undefined} getMicroRitualUI
+ * @property {() => { isOpen?: () => boolean } | null | undefined} [getRitualFlowUI]
  * @property {() => { isOpen?: () => boolean } | null | undefined} [getFocusDurationPicker]
  * @property {{ phase: string, hideIdleEntry: () => void }} honestyCheckInUI
  * @property {{ syncIdleEntry: () => void }} honestyCheckIn
@@ -90,6 +91,7 @@ export function createSessionChromeSync(deps) {
     getArrivalPractice,
     getReflectionMoment,
     getMicroRitualUI,
+    getRitualFlowUI = () => null,
     getFocusDurationPicker = () => null,
     honestyCheckInUI,
     honestyCheckIn,
@@ -109,6 +111,7 @@ export function createSessionChromeSync(deps) {
       () => getArrivalPractice().isOpen(),
       () => getReflectionMoment().isOpen(),
       () => getMicroRitualUI()?.isOpen() === true,
+      () => getRitualFlowUI()?.isOpen() === true,
       () => getFocusDurationPicker()?.isOpen() === true
     ];
   }
@@ -127,6 +130,7 @@ export function createSessionChromeSync(deps) {
       bridgeVisible ||
       getReflectionMoment()?.isOpen?.() ||
       getMicroRitualUI()?.isOpen?.() ||
+      getRitualFlowUI()?.isOpen?.() ||
       getFocusDurationPicker()?.isOpen?.() ||
       stateManager.state === STATES.FOCUSING ||
       stateManager.state === STATES.CELEBRATE;
@@ -142,7 +146,8 @@ export function createSessionChromeSync(deps) {
     );
     const focusing =
       stateManager.state === STATES.FOCUSING ||
-      getMicroRitualUI()?.isOpen?.() === true;
+      getMicroRitualUI()?.isOpen?.() === true ||
+      getRitualFlowUI()?.isOpen?.() === true;
     const companionExpanded = companionModePicker?.isOpen?.() === true;
     const postChoosePending = Boolean(getPostChoosePending());
     // Bridge can appear without a full resync — keep wide ⋯ suppressed with dock pills
@@ -184,6 +189,7 @@ export function createSessionChromeSync(deps) {
         completionPending: sessionUiGate.completionPending,
         microRitualOpen:
           getMicroRitualUI()?.isOpen?.() === true ||
+          getRitualFlowUI()?.isOpen?.() === true ||
           companionModePicker.isMicroRitualActive?.() === true
       })
     );
@@ -193,7 +199,8 @@ export function createSessionChromeSync(deps) {
     const arrivalOpen = Boolean(getArrivalPractice()?.isOpen?.());
     const focusing =
       stateManager.state === STATES.FOCUSING ||
-      getMicroRitualUI()?.isOpen?.() === true;
+      getMicroRitualUI()?.isOpen?.() === true ||
+      getRitualFlowUI()?.isOpen?.() === true;
     const honestyBusy = isHonestyUiBusy(honestyCheckInUI?.phase);
     const bridgeVisible = getHonestyBridge()?.isVisible?.() === true;
     const companionExpanded = companionModePicker?.isOpen?.() === true;
