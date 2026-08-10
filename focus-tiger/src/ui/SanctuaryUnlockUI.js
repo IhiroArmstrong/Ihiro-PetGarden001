@@ -27,6 +27,7 @@ import {
 
 const STYLE_ID = 'yin-sanctuary-card-styles-v1';
 const FADE_MS = 220;
+const CHECKOUT_ARM_MS = 450;
 
 /** Display price (USD). Stripe Lifetime Price ID lives on the Worker. */
 export const SANCTUARY_LIFETIME_PRICE_USD = '89.99';
@@ -46,6 +47,9 @@ export class SanctuaryUnlockUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._focusTimer = null;
+    /** @type {number} */
+    this._checkoutArmedAt = 0;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-sanctuary-card';
@@ -152,6 +156,7 @@ export class SanctuaryUnlockUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      if (Date.now() < this._checkoutArmedAt) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
       this.close();
@@ -170,16 +175,17 @@ export class SanctuaryUnlockUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
     this.root.hidden = false;
+    this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refreshTexts();
     this.handlers.onBadgesChanged?.();
-    // Defer focus so the opening click cannot activate Unlock in the same gesture.
     if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
     this._focusTimer = window.setTimeout(() => {
       this._focusTimer = null;
-      if (this._open) this.closeBtn.focus({ preventScroll: true });
+      if (this._open) this.root.focus({ preventScroll: true });
     }, 0);
     this.handlers.onOpen?.();
   }
@@ -187,6 +193,7 @@ export class SanctuaryUnlockUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._checkoutArmedAt = 0;
     if (this._focusTimer != null) {
       window.clearTimeout(this._focusTimer);
       this._focusTimer = null;
@@ -212,6 +219,7 @@ export class SanctuaryUnlockUI {
 
   async _startCheckout() {
     if (this._busy) return;
+    if (Date.now() < this._checkoutArmedAt) return;
     this._busy = true;
     this.buyBtn.disabled = true;
     let checkoutError = false;

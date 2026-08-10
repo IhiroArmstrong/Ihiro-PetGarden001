@@ -21,6 +21,8 @@ import {
 
 const STYLE_ID = 'yin-membership-card-styles-v1';
 const FADE_MS = 220;
+/** Ignore Buy/Subscribe for this long after open (blocks same-gesture activation). */
+const CHECKOUT_ARM_MS = 450;
 
 export class MembershipUnlockUI {
   /**
@@ -38,6 +40,9 @@ export class MembershipUnlockUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._focusTimer = null;
+    /** @type {number} */
+    this._checkoutArmedAt = 0;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-membership-card';
@@ -134,6 +139,8 @@ export class MembershipUnlockUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      // Same gesture that opened the card must not dismiss it.
+      if (Date.now() < this._checkoutArmedAt) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
       this.close();
@@ -152,16 +159,17 @@ export class MembershipUnlockUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
     this.root.hidden = false;
+    this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refreshTexts();
-    // Defer focus so the click that opened this card (menu / Support) cannot
-    // activate Subscribe in the same pointer gesture.
+    // Focus the dialog shell — never the Buy button (avoids same-click activation).
     if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
     this._focusTimer = window.setTimeout(() => {
       this._focusTimer = null;
-      if (this._open) this.closeBtn.focus({ preventScroll: true });
+      if (this._open) this.root.focus({ preventScroll: true });
     }, 0);
     this.handlers.onOpen?.();
   }
@@ -169,6 +177,7 @@ export class MembershipUnlockUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._checkoutArmedAt = 0;
     if (this._focusTimer != null) {
       window.clearTimeout(this._focusTimer);
       this._focusTimer = null;
@@ -194,6 +203,7 @@ export class MembershipUnlockUI {
 
   async _startCheckout() {
     if (this._busy) return;
+    if (Date.now() < this._checkoutArmedAt) return;
     if (!getCloudApiBaseUrl()) {
       if (!this._open) this.open();
       this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');

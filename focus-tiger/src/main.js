@@ -765,11 +765,21 @@ async function init() {
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'support' });
     },
-    // Support CTAs go straight to Stripe — do not open() first (avoids card flash
-    // then instant redirect). Menu rows still only open() the detail cards.
-    onUnlockSanctuary: () => sanctuaryUnlockUI.startCheckout(),
-    onJoinMembership: () => membershipUnlockUI.startCheckout(),
-    onBuyTea: () => tipJarUI.startCheckout()
+    // Support CTAs open the same detail cards as the Idle menu — user confirms
+    // Subscribe/Unlock/Buy on the card. (Auto startCheckout skipped a visible card
+    // and felt like “menu opens Stripe with no card”.)
+    onUnlockSanctuary: () => {
+      closeGrowthOverlayCards({ except: 'sanctuary' });
+      sanctuaryUnlockUI.open();
+    },
+    onJoinMembership: () => {
+      closeGrowthOverlayCards({ except: 'membership' });
+      membershipUnlockUI.open();
+    },
+    onBuyTea: () => {
+      closeGrowthOverlayCards({ except: 'tip' });
+      tipJarUI.open();
+    }
   });
   window.__supportYin = supportYinModalUI;
   consumeTipReturnQuery({});
