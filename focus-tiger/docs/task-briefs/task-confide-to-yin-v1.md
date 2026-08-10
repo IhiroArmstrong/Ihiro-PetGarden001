@@ -33,7 +33,7 @@
 
 ## 语料库 · v1 最小情绪标签集
 
-人工打磨；en + ja + zh 同构键。每桶 ≥3 条后再开运行时（可并行攒稿，见 `docs/confide-corpus-seed.md`）。
+人工打磨；en + ja + zh 同构键。每桶 ≥3 条 **`review=ok`** 后再开运行时。语气以种子稿**样板桶**（`fallback` + `anxious`）为准；见 `docs/confide-corpus-seed.md`。**未定语气基调前不开 MVP。**
 
 | 桶 id | 粗粒度语义 | 示例触发词方向（实现时再落表） |
 |---|---|---|
