@@ -1,18 +1,25 @@
 /**
- * Focus Tiger · Cloudflare Workers (API + Tip Jar + Sanctuary Lifetime)
+ * Focus Tiger · Cloudflare Workers (API + Tip Jar + Sanctuary Lifetime + Membership)
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  *
- * KV (separate bindings — never share tip/sanctuary records):
+ * KV (separate bindings — never share tip/sanctuary/membership records):
  *   npx wrangler kv namespace create TIP_KV
  *   npx wrangler kv namespace create SANCTUARY_KV
+ *   npx wrangler kv namespace create MEMBERSHIP_KV
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
  *   npx wrangler secret put STRIPE_WEBHOOK_SECRET
  *
- * Prices (Dashboard one-time):
- *   Tip → STRIPE_PRICE_ID
- *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID
+ * Prices (Dashboard):
+ *   Tip → STRIPE_PRICE_ID (one-time)
+ *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID (one-time)
+ *   Yin Membership → STRIPE_MEMBERSHIP_PRICE_ID (recurring)
+ *
+ * MEMBERSHIP_KV ids below are placeholders until:
+ *   cd focus-tiger/cloud && npx wrangler kv namespace create MEMBERSHIP_KV
+ *   npx wrangler kv namespace create MEMBERSHIP_KV --preview
+ * Then replace id / preview_id. Deploy will fail until real ids are set.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -32,6 +39,11 @@
 			"binding": "SANCTUARY_KV",
 			"id": "d337b4b132e147d193e8e6ec03e12b9a",
 			"preview_id": "d71d6fed42a249a5a749b3ae5f268857"
+		},
+		{
+			"binding": "MEMBERSHIP_KV",
+			"id": "00000000000000000000000000000001",
+			"preview_id": "00000000000000000000000000000002"
 		}
 	],
 	"vars": {
@@ -41,6 +53,9 @@
 		"STRIPE_SANCTUARY_PRICE_ID": "price_1U22T4FuIhgJPGLiT0hcEWxY",
 		"SANCTUARY_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&sanctuary_session={CHECKOUT_SESSION_ID}",
 		"SANCTUARY_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&sanctuary=cancel",
+		"STRIPE_MEMBERSHIP_PRICE_ID": "price_REPLACE_ME_yin_membership",
+		"MEMBERSHIP_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&membership_session={CHECKOUT_SESSION_ID}",
+		"MEMBERSHIP_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&membership=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
 	}
 }

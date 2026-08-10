@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Yin Membership 订阅 Checkout（2026-08-10 · 本支 `feature/yin-membership-checkout`）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后 `applyEntitlementPatch` 写统一 entitlement cache；Support 第三卡 + Idle 菜单。权威 `YIN_MEMBERSHIP.md`。**须**填 Stripe recurring Price + 真实 KV id 后部署。TRACKER 待人工。
 - **向阿寅倾诉 · 产品拍板文档定稿（2026-08-10 · PR #217）**：**无运行时**。禅意倾听者；检索不生成；分类失败固定兜底；入口 Idle ⋯/抽屉；规则分类。样板 A/B 六句已 `ok`；其余四桶仍须扫。Brief `task-confide-to-yin-v1.md` + `confide-corpus-seed.md`。下一回合先扫语料，再开 feature。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。

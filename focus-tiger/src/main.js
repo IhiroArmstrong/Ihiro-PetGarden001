@@ -80,6 +80,8 @@ import {
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
+import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
+import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
@@ -687,6 +689,12 @@ async function init() {
     onBadgesChanged: () => tipKindnessBadgesChrome.refresh()
   });
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
+  const membershipUnlockUI = new MembershipUnlockUI(document.body, {
+    onEntitlementChanged: () => {
+      // Ritual lock rows re-read isEntitled on next menu/drawer open.
+    }
+  });
+  window.__membershipUnlock = membershipUnlockUI;
   const tipJarUI = new TipJarUI(document.body, {
     onBadgesChanged: () => tipKindnessBadgesChrome.refresh(),
     onTipThanks: ({ isRepeatTip }) => {
@@ -713,6 +721,7 @@ async function init() {
     if (except !== 'quote') dailyZenQuoteCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
+    if (except !== 'membership') membershipUnlockUI.close();
     if (except !== 'tip') tipJarUI.close();
     if (except !== 'newsletter') newsletterCaptureUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
@@ -728,6 +737,10 @@ async function init() {
       sanctuaryUnlockUI.open();
       return sanctuaryUnlockUI.startCheckout();
     },
+    onJoinMembership: () => {
+      membershipUnlockUI.open();
+      return membershipUnlockUI.startCheckout();
+    },
     onBuyTea: () => {
       tipJarUI.open();
       return tipJarUI.startCheckout();
@@ -736,6 +749,7 @@ async function init() {
   window.__supportYin = supportYinModalUI;
   consumeTipReturnQuery({});
   void bootSanctuaryReturnConfirm({});
+  void bootMembershipReturnConfirm({});
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -1368,6 +1382,10 @@ async function init() {
     onSanctuary: () => {
       closeGrowthOverlayCards({ except: 'sanctuary' });
       sanctuaryUnlockUI.open();
+    },
+    onMembership: () => {
+      closeGrowthOverlayCards({ except: 'membership' });
+      membershipUnlockUI.open();
     },
     onTipJar: () => {
       closeGrowthOverlayCards({ except: 'tip' });

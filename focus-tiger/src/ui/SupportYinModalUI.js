@@ -1,7 +1,7 @@
 /**
- * Support Yin · top-right entry + dual-card modal (Sanctuary + Buy a Tea).
- * Menu tip/sanctuary rows stay; this is a friendlier unified entry.
- * Checkout reuses TipJarUI / SanctuaryUnlockUI startCheckout().
+ * Support Yin · top-right entry + cards (Sanctuary + Membership + Buy a Tea).
+ * Menu tip/sanctuary/membership rows stay; this is a friendlier unified entry.
+ * Checkout reuses TipJarUI / SanctuaryUnlockUI / MembershipUnlockUI startCheckout().
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -38,6 +38,7 @@ export class SupportYinModalUI {
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    * @param {() => void | Promise<void>} [handlers.onUnlockSanctuary]
+   * @param {() => void | Promise<void>} [handlers.onJoinMembership]
    * @param {() => void | Promise<void>} [handlers.onBuyTea]
    */
   constructor(mountRoot, handlers = {}) {
@@ -124,6 +125,34 @@ export class SupportYinModalUI {
     this.sanctuaryImg = sanctuary.imgEl;
     this.sanctuaryBadge = sanctuary.badgeEl;
 
+    const membership = this._buildCard({
+      testId: 'yin-support-membership-card',
+      imgSrc: SANCTUARY_PREVIEW_SRC,
+      imgAltKey: 'SUPPORT_MEMBERSHIP_IMG_ALT',
+      titleKey: 'SUPPORT_MEMBERSHIP_TITLE',
+      blurbKey: 'SUPPORT_MEMBERSHIP_BLURB',
+      benefitKeys: [
+        'MEMBERSHIP_BENEFIT_1',
+        'MEMBERSHIP_BENEFIT_2',
+        'MEMBERSHIP_BENEFIT_3'
+      ],
+      priceKey: 'SUPPORT_MEMBERSHIP_PRICE',
+      priceValue: '',
+      ctaKey: 'SUPPORT_MEMBERSHIP_CTA',
+      ctaTestId: 'yin-support-membership-cta',
+      ctaVariant: 'primary',
+      onCta: () => {
+        void this._runCheckout('membership');
+      }
+    });
+    this.membershipCard = membership.card;
+    this.membershipTitle = membership.titleEl;
+    this.membershipBlurb = membership.blurbEl;
+    this.membershipBenefits = membership.benefitEls;
+    this.membershipPrice = membership.priceEl;
+    this.membershipCta = membership.ctaBtn;
+    this.membershipImg = membership.imgEl;
+
     const tea = this._buildCard({
       testId: 'yin-support-tea-card',
       imgSrc: TEA_PREVIEW_SRC,
@@ -152,7 +181,7 @@ export class SupportYinModalUI {
     this.teaCta = tea.ctaBtn;
     this.teaImg = tea.imgEl;
 
-    this.grid.append(this.sanctuaryCard, this.teaCard);
+    this.grid.append(this.sanctuaryCard, this.membershipCard, this.teaCard);
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -299,23 +328,27 @@ export class SupportYinModalUI {
   }
 
   /**
-   * @param {'sanctuary' | 'tea'} kind
+   * @param {'sanctuary' | 'membership' | 'tea'} kind
    */
   async _runCheckout(kind) {
     if (this._busy) return;
     this._busy = true;
     this.sanctuaryCta.disabled = true;
+    this.membershipCta.disabled = true;
     this.teaCta.disabled = true;
     try {
       this.close();
       if (kind === 'sanctuary') {
         await this.handlers.onUnlockSanctuary?.();
+      } else if (kind === 'membership') {
+        await this.handlers.onJoinMembership?.();
       } else {
         await this.handlers.onBuyTea?.();
       }
     } finally {
       this._busy = false;
       this.sanctuaryCta.disabled = false;
+      this.membershipCta.disabled = false;
       this.teaCta.disabled = false;
     }
   }
@@ -343,6 +376,15 @@ export class SupportYinModalUI {
       SANCTUARY_LIFETIME_PRICE_USD
     );
     this.sanctuaryCta.textContent = t('SUPPORT_SANCTUARY_CTA');
+
+    this.membershipImg.alt = t('SUPPORT_MEMBERSHIP_IMG_ALT');
+    this.membershipTitle.textContent = t('SUPPORT_MEMBERSHIP_TITLE');
+    this.membershipBlurb.textContent = t('SUPPORT_MEMBERSHIP_BLURB');
+    this.membershipBenefits.forEach((el) => {
+      el.textContent = t(el.dataset.key);
+    });
+    this.membershipPrice.textContent = t('SUPPORT_MEMBERSHIP_PRICE');
+    this.membershipCta.textContent = t('SUPPORT_MEMBERSHIP_CTA');
 
     this.teaImg.alt = t('SUPPORT_TEA_IMG_ALT');
     this.teaTitle.textContent = t('SUPPORT_TEA_TITLE');
@@ -466,7 +508,7 @@ export class SupportYinModalUI {
       }
       .yin-support-modal__grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 12px;
       }
       .yin-support-card {
