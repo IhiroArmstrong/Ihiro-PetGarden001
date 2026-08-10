@@ -300,6 +300,8 @@ describe('listSecondaryChromeEntries', () => {
         'wallpapers',
         'sanctuary',
         'tip-jar',
+        'newsletter',
+        'community',
         'ritual-morning',
         'ritual-emotional-reset',
         'ritual-work-transition'
@@ -323,6 +325,8 @@ describe('listSecondaryChromeEntries', () => {
         'wallpapers',
         'sanctuary',
         'tip-jar',
+        'newsletter',
+        'community',
         'ritual-morning',
         'ritual-emotional-reset',
         'ritual-work-transition'
@@ -355,11 +359,24 @@ describe('listSecondaryChromeEntries', () => {
         'wallpapers',
         'sanctuary',
         'tip-jar',
+        'newsletter',
+        'community',
         'ritual-morning',
         'ritual-emotional-reset',
         'ritual-work-transition'
       ]
     );
+  });
+
+  it('newsletter becomes non-interactive subscribed row when submitted', () => {
+    const entries = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      newsletterSubmitted: true
+    });
+    const row = entries.find((e) => e.proxy === 'newsletter');
+    assert.equal(row?.labelKey, 'NEWSLETTER_MENU_SUBSCRIBED');
+    assert.equal(row?.interactive, false);
+    assert.ok(entries.some((e) => e.proxy === 'community'));
   });
 
   it('ritual rows are locked when not entitled', () => {

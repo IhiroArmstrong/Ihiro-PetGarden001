@@ -1,7 +1,8 @@
-# Yin's Sanctuary · Lifetime
+# Yin's Sanctuary · Lifetime（B 轨 · 买断付费方式）
 
 > **状态（2026-08-07 夜）**：Unlock UI + 独立 Checkout / confirm / verify 路由于 `feature/yin-sanctuary-unlock`。  
-> **性质**：深度音效 + 已划界非核心高级表现解锁；**仅 Lifetime**。  
+> **性质**：深度音效 + 已划界非核心高级表现解锁（**B 轨 · 进阶内容**）。  
+> **付费方式**：本文档描述 **Sanctuary Lifetime**（一次买断）这一 SKU。v1 另有 **Yin Membership** 订阅；二者解锁**同一套**进阶内容，**lifetime ∪ subscription 互相覆盖**（不是「订阅少一档」）。见 `MVP_PRODUCT_DEFINITION.md` §五 / 技术方向 Brief。  
 > **零耦合**：不得 import / 读取 `tipJarGate`；见技术方向 Brief §2.6 Code Review 条款。
 
 ## Schema
