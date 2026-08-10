@@ -53,7 +53,7 @@
 		"STRIPE_SANCTUARY_PRICE_ID": "price_1U22T4FuIhgJPGLiT0hcEWxY",
 		"SANCTUARY_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&sanctuary_session={CHECKOUT_SESSION_ID}",
 		"SANCTUARY_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&sanctuary=cancel",
-		"STRIPE_MEMBERSHIP_PRICE_ID": "price_REPLACE_ME_yin_membership",
+		"STRIPE_MEMBERSHIP_PRICE_ID": "price_1U2r5lFuIhgJPGLiEPOhJbst",
 		"MEMBERSHIP_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&membership_session={CHECKOUT_SESSION_ID}",
 		"MEMBERSHIP_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&membership=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
