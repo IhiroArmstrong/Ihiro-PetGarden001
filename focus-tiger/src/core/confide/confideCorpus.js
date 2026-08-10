@@ -26,7 +26,7 @@ export const CONFIDE_CORPUS = Object.freeze([
     zh: '听见了。若此刻很难独自撑住，请联系信任的人或当地专业援助热线。寅陪着，却不能代替专业帮助。',
     en: 'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help.',
     ja: '聴いた。一人で抱えきれない時は、信頼できる人や地域の相談窓口へ。寅はここにいる——専門援助の代わりにはなれない。',
-    review: 'draft'
+    review: 'ok'
   }),
 
   // —— fallback ——

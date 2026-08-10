@@ -85,6 +85,9 @@ import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
+import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
+import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
+import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { openCommunityExternalLink } from './core/communityLink.js';
 import {
@@ -708,6 +711,34 @@ async function init() {
   });
   window.__newsletterCapture = newsletterCaptureUI;
 
+  const confideToYinUI = new ConfideToYinUI(document.body, {
+    canOpen: () => {
+      const busy =
+        stateManager.state === STATES.FOCUSING ||
+        Boolean(arrivalPractice?.isOpen?.()) ||
+        Boolean(reflectionMoment?.isOpen?.()) ||
+        Boolean(microRitualUI?.isOpen?.()) ||
+        Boolean(honestyBridge?.isVisible?.()) ||
+        (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
+      if (busy) return false;
+      return canOpenConfidePanel({
+        search: location.search,
+        stage: 'idle'
+      });
+    },
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'confide' });
+    },
+    onReplied: ({ route }) => {
+      if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
+        emotionController.playEmotion('nodBow');
+        return;
+      }
+      emotionController.playEmotion('mindfulAcknowledge');
+    }
+  });
+  window.__confideToYin = confideToYinUI;
+
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
     if (except !== 'quote') dailyZenQuoteCardUI.close();
@@ -715,6 +746,7 @@ async function init() {
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'tip') tipJarUI.close();
     if (except !== 'newsletter') newsletterCaptureUI.close();
+    if (except !== 'confide') confideToYinUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
@@ -1352,6 +1384,10 @@ async function init() {
     onJourneyLog: () => {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();
+    },
+    onConfide: () => {
+      closeGrowthOverlayCards({ except: 'confide' });
+      confideToYinUI.open();
     },
     onZenCinema: () => {
       closeGrowthOverlayCards({ except: 'cinema' });

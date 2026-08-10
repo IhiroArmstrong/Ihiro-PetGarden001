@@ -1,24 +1,35 @@
 /**
  * Confide · user-visible mount gate vs QA harness.
  *
- * Analyst lock (2026-08-10):
- * - Skeleton / classify may ship in code while safety copy is still draft.
- * - Real-user Idle menu must stay hidden until safety corpus review=ok.
- * - `?confide=1` is a QA harness only — not a product launch.
+ * Gates (independent):
+ * 1. Safety copy review=ok (`isConfideSafetyCorpusOk`)
+ * 2. Explicit product mount flag (`CONFIDE_USER_MOUNT_ENABLED`) — stays false
+ *    until panel UX is intentionally launched to real users
+ * 3. Chrome stage must be idle (no Arrival / Focusing / overlay disturb)
+ * 4. `?confide=1` QA harness — may open panel without product mount
  */
 
 import { isConfideSafetyCorpusOk } from './confideCorpus.js';
 
 /**
- * Real-user product surface (Idle ⋯ / drawer row).
+ * Flip to true only when Confide is intentionally user-launched
+ * (safety ok + panel wired + product decision to show Idle menu).
+ * PR / MVP scaffold keeps this false so real users never see the row yet.
+ */
+export const CONFIDE_USER_MOUNT_ENABLED = false;
+
+/**
+ * Real-user Idle ⋯ / drawer row.
  * @param {object} [opts]
  * @param {() => boolean} [opts.safetyOk]
+ * @param {boolean} [opts.mountEnabled]
  * @returns {boolean}
  */
 export function isConfideUserVisible({
-  safetyOk = isConfideSafetyCorpusOk
+  safetyOk = isConfideSafetyCorpusOk,
+  mountEnabled = CONFIDE_USER_MOUNT_ENABLED
 } = {}) {
-  return safetyOk() === true;
+  return mountEnabled === true && safetyOk() === true;
 }
 
 /**
@@ -37,15 +48,32 @@ export function isConfideDevHarness(search = '') {
 }
 
 /**
- * Whether Confide panel may open in this session (menu or harness).
+ * Only Idle chrome — hide during Arrival / Focusing / overlay / bridge.
+ * @param {string} [stage]
+ * @returns {boolean}
+ */
+export function isConfideChromeStageAllowed(stage) {
+  return stage === 'idle';
+}
+
+/**
+ * Whether Confide panel may open in this session (menu or harness) + stage.
  * @param {object} [opts]
  * @param {string} [opts.search]
+ * @param {string} [opts.stage]
  * @param {() => boolean} [opts.safetyOk]
+ * @param {boolean} [opts.mountEnabled]
  * @returns {boolean}
  */
 export function canOpenConfidePanel({
   search = '',
-  safetyOk = isConfideSafetyCorpusOk
+  stage = 'idle',
+  safetyOk = isConfideSafetyCorpusOk,
+  mountEnabled = CONFIDE_USER_MOUNT_ENABLED
 } = {}) {
-  return isConfideUserVisible({ safetyOk }) || isConfideDevHarness(search);
+  if (!isConfideChromeStageAllowed(stage)) return false;
+  return (
+    isConfideUserVisible({ safetyOk, mountEnabled }) ||
+    isConfideDevHarness(search)
+  );
 }

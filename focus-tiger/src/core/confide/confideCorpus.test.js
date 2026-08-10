@@ -24,11 +24,11 @@ test('zen buckets each have ≥3 ok lines', () => {
   }
 });
 
-test('safety corpus is draft until human ok (gate stays closed)', () => {
+test('safety corpus is human-ok (≥1 line)', () => {
   const safety = linesForRoute(CONFIDE_ROUTE.SAFETY_REDIRECT);
   assert.ok(safety.length >= 1);
-  assert.equal(isConfideSafetyCorpusOk(), false);
-  assert.ok(safety.some((l) => l.review === 'draft'));
+  assert.equal(isConfideSafetyCorpusOk(), true);
+  assert.ok(safety.every((l) => l.review === 'ok'));
 });
 
 test('pickConfideLine: safety never falls through to zen fallback pool', () => {

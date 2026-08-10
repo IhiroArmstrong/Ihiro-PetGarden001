@@ -1,6 +1,6 @@
 # Task Brief · 向阿寅倾诉（Confide to Yin）v1
 
-> **状态（2026-08-10）**：#217/#222/#223 已合 develop · **`feature/confide-to-yin` 已开工**（分类优先序 + 语料检索 + 用户可见闸门）。安全文案仍为 `draft` → **Idle 菜单不对真实用户挂出**；QA 可用 `?confide=1`（面板接线后续切片）。  
+> **状态（2026-08-10）**：#217/#222/#223 已合 · **`feature/confide-to-yin`**：分类 + 语料 + 面板已接线；**safety-01 人审 ok**；**`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户 Idle 菜单仍关）。QA：`?product=1&confide=1`。  
 > **目的**：用户主动倾诉时，阿寅以「禅意倾听者」回应——**分类 + 语料检索**，禁止运行时生成对用户说话。
 
 ## 拍板摘要（2026-08-10）
@@ -89,15 +89,16 @@
 
 ## MVP 实现切片（进行中 · `feature/confide-to-yin`）
 
-> **并行口径（2026-08-10 分析师）**：骨架与安全文案可并行；**分类优先序从第一天写对**；**卡住的闸门是「真实用户可见」**（Idle 菜单），不是「开始写代码」。安全文案 `ok` 前：开发/单测/`?confide=1` 可跑；**不得**对真实用户挂出发送入口。
+> **并行口径**：骨架与安全文案可并行；**分类优先序从第一天写对**；**卡住真实用户的是挂载开关**（`CONFIDE_USER_MOUNT_ENABLED`），不是「开始写代码」。安全文案已 `ok`；产品挂载仍关，直至明确翻开。
 
-1. Idle ⋯/抽屉入口 + 轻量面板（单行/短文本输入 + 发送 + 关闭）——**菜单行已预留，默认隐藏至安全 `ok`**；面板 UI 后续切片。  
-2. `confideClassify.js`：**先** `safety_redirect` 关键词层 → 再情绪桶 → 否则 `fallback`（单测已锁）。  
-3. `confideCorpus.js`：禅意 18 句已迁入；`safety-01` 草稿占位（`review=draft`）；安全命中不得抽禅意池。  
-4. 可选姿态：后续切片。  
-5. 存储：后续按需；不做危机档案。  
-6. 门闩：Arrival / Focusing 等期间隐藏入口（随面板接线）。  
-7. 单测：安全 → `safety_redirect`；无匹配 → `fallback`；菜单闸门关闭至安全 `ok`。
+1. Idle ⋯/抽屉入口 + 轻量面板 `#confide-to-yin-card` —— **已接线**；菜单行预留，**默认隐藏**（mount false）。叠层/Focusing/Arrival 期间 `canOpen` 拒绝。  
+2. `confideClassify.js`：safety → 情绪 → fallback（单测已锁）。  
+3. `confideCorpus.js`：禅意 18 + safety-01 **ok**；安全命中不得抽禅意池。  
+4. 轻姿态：安全 → `nodBow`；其它 → `mindfulAcknowledge`。  
+5. 存储：暂无。  
+6. 门闩：busy session 不打开。  
+7. 单测 + TRACKER。  
+8. **待评估（不阻塞）**：safety 回应是否附加具体地区热线/链接。
 
 ## 明确不做（本 Brief）
 

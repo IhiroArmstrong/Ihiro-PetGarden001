@@ -1,8 +1,8 @@
 # 向阿寅倾诉 · 语料种子稿（人工）
 
-> **状态（2026-08-10）**：样板 A/B 六句 + 对齐四桶 12 句全部 **`ok`**（#222）· **语料门闩解除** · **危机安全阀槽位已立**（`safety-01` 草稿待人审）· 运行时 `feature/confide-to-yin` 已开工（分类优先序已锁；**用户可见菜单仍关**）。  
+> **状态（2026-08-10）**：禅意 18 句 + **safety-01 全部 `ok`** · 运行时分类/面板已接线 · **`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户菜单仍关；QA `?confide=1`）。  
 > **权威实现约束**：`task-briefs/task-confide-to-yin-v1.md`。  
-> **用法**：人工撰写 / 离线 AI 扩写候选 → **人 review** 后迁入运行时语料；本文件与 `src/core/confide/confideCorpus.js` 应对齐。
+> **用法**：本文件与 `src/core/confide/confideCorpus.js` 应对齐。
 
 ## 声音标准（入库前自检）
 
@@ -30,9 +30,11 @@
 
 | id | zh（方向 · 未定稿） | en（方向 · 未定稿） | ja | review |
 |---|---|---|---|---|
-| safety-01 | 听见了。若此刻很难独自撑住，请联系信任的人或当地专业援助热线。寅陪着，却不能代替专业帮助。 | Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help. | 聴いた。一人で抱えきれない時は、信頼できる人や地域の相談窓口へ。寅はここにいる——専門援助の代わりにはなれない。 | draft |
+| safety-01 | 听见了。若此刻很难独自撑住，请联系信任的人或当地专业援助热线。寅陪着，却不能代替专业帮助。 | Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help. | 聴いた。一人で抱えきれない時は、信頼できる人や地域の相談窓口へ。寅はここにいる——専門援助の代わりにはなれない。 | **ok** |
 
-> 运行时同源：`src/core/confide/confideCorpus.js`。关键词表见 `confideSafetyKeywords.js`。**文案未 `ok` 前 Idle 菜单不挂出**（`isConfideUserVisible`）。请按四条标准人审（说教 / 留白 / 是否越界成心理咨询承诺 / 节奏克制）。
+> 运行时同源：`src/core/confide/confideCorpus.js`。关键词表见 `confideSafetyKeywords.js`。文案已人审 `ok`；**产品挂载**仍由 `CONFIDE_USER_MOUNT_ENABLED` 控制（当前 `false` → Idle 菜单不对真实用户挂出）。QA：`?product=1&confide=1`。  
+> **待评估（不阻塞）**：是否在 UI 层为 `safety_redirect` 附加具体地区热线/链接（文案里「当地…」现为抽象表述）。
+
 
 ## 样板桶（语气基准）
 
@@ -117,11 +119,14 @@
 - [x] 三语齐（对齐桶；MVP 种子级）  
 - [x] 无教练 / 诊断 / 付费 CTA（人审 · 禅意桶）  
 - [x] `fallback` 池独立，不被其它桶复用键  
-- [ ] `safety_redirect` 文案 ≥1 条 `ok` + 分类优先层接线（随 feature；**上线门闩**）  
+- [x] `safety_redirect` 文案 ≥1 条 `ok`（人审 2026-08-10）+ 分类优先层已接线  
+- [ ] **产品挂载** `CONFIDE_USER_MOUNT_ENABLED`（当前 false；真实用户 Idle 菜单）  
+- [ ] （独立评估）safety 回应是否附加具体地区热线/链接  
 
 **门闩分层**：
 - **语气基调**：样板六句已 `ok`。  
 - **语料门闩（禅意完整回应）**：四桶每桶 ≥3 条 `ok` —— **已解除（#222）**。  
-- **安全门闩（挂发送前）**：`safety_redirect` 优先层 + 人工文案 `ok` —— **未解除**（槽位已立）。  
-- **下一工程步**：开 `feature/confide-to-yin`（入口 / 分类含安全层 / 检索壳 + 迁入禅意种子）；禁止占位假数据；禁止安全未接线就挂发送。  
+- **安全文案门闩**：`safety-01` 已 `ok`（2026-08-10）。  
+- **用户可见挂载门闩**：`CONFIDE_USER_MOUNT_ENABLED` —— **仍关闭**（面板已接线；QA 用 `?confide=1`）。  
+- **下一工程步**：人审通过后可翻挂载；地区资源另项评估。  
 - **规模化注意**：扫「茶还热着」等高复用意象重复率（见上备忘）。
