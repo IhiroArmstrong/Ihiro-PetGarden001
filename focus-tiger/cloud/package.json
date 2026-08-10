@@ -6,8 +6,9 @@
     "dev": "wrangler dev",
     "start": "wrangler dev",
     "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types",
-    "typecheck": "tsc --noEmit"
+		"cf-typegen": "wrangler types",
+		"typecheck": "tsc --noEmit",
+		"test": "npx --yes tsx --test src/lib/stripeWebhookSignature.test.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260721.1",

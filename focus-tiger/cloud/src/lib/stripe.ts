@@ -279,9 +279,20 @@ function timingSafeEqualHex(a: string, b: string): boolean {
 	return diff === 0;
 }
 
+/** Why Stripe-Signature verification failed (for structured Worker logs). */
+export type StripeWebhookSignatureRejectReason =
+	| "missing_header"
+	| "malformed_header"
+	| "timestamp_expired"
+	| "hmac_mismatch";
+
+export type StripeWebhookSignatureResult =
+	| { ok: true }
+	| { ok: false; reason: StripeWebhookSignatureRejectReason };
+
 /**
  * Verify Stripe-Signature header against raw body.
- * @returns true if any v1 signature matches within tolerance.
+ * On failure, `reason` distinguishes missing/malformed header, skew, and HMAC mismatch.
  */
 export async function verifyStripeWebhookSignature(opts: {
 	payload: string;
@@ -289,21 +300,34 @@ export async function verifyStripeWebhookSignature(opts: {
 	webhookSecret: string;
 	nowSec?: number;
 	toleranceSec?: number;
-}): Promise<boolean> {
-	if (!opts.signatureHeader) return false;
+}): Promise<StripeWebhookSignatureResult> {
+	if (!opts.signatureHeader) {
+		return { ok: false, reason: "missing_header" };
+	}
 	const parsed = parseStripeSignatureHeader(opts.signatureHeader);
-	if (!parsed) return false;
+	if (!parsed) {
+		return { ok: false, reason: "malformed_header" };
+	}
 
 	const now = opts.nowSec ?? Math.floor(Date.now() / 1000);
 	const tolerance = opts.toleranceSec ?? STRIPE_WEBHOOK_TOLERANCE_SEC;
 	const ts = Number(parsed.t);
-	if (!Number.isFinite(ts) || Math.abs(now - ts) > tolerance) {
-		return false;
+	if (!Number.isFinite(ts)) {
+		return { ok: false, reason: "malformed_header" };
+	}
+	if (Math.abs(now - ts) > tolerance) {
+		return { ok: false, reason: "timestamp_expired" };
 	}
 
 	const signedPayload = `${parsed.t}.${opts.payload}`;
 	const expected = await hmacSha256Hex(opts.webhookSecret, signedPayload);
-	return parsed.v1.some((candidate) => timingSafeEqualHex(candidate, expected));
+	const matched = parsed.v1.some((candidate) =>
+		timingSafeEqualHex(candidate, expected),
+	);
+	if (!matched) {
+		return { ok: false, reason: "hmac_mismatch" };
+	}
+	return { ok: true };
 }
 
 export function emailFromCheckoutSession(

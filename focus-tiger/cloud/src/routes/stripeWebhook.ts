@@ -38,12 +38,15 @@ export async function handleStripeWebhook(
 
 	const payload = await request.text();
 	const signatureHeader = request.headers.get("stripe-signature");
-	const ok = await verifyStripeWebhookSignature({
+	const verified = await verifyStripeWebhookSignature({
 		payload,
 		signatureHeader,
 		webhookSecret,
 	});
-	if (!ok) {
+	if (!verified.ok) {
+		console.error("[stripe-webhook] signature rejected", {
+			reason: verified.reason,
+		});
 		return errorJson(400, "invalid_signature", "Stripe signature verification failed");
 	}
 

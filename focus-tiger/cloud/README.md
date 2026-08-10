@@ -43,7 +43,7 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/create-membership-checkout-session` | Stripe Checkout（`mode: subscription`）→ `{ url }` |
 | `POST` | `/api/confirm-sanctuary-session` | `{ sessionId }` → 服务端校验后解锁 |
 | `POST` | `/api/confirm-membership-session` | `{ sessionId }` → 校验 subscription active 后返回 periodEndsAt |
-| `POST` | `/api/stripe-webhook` | Stripe 验签 → tip/sanctuary KV（membership 生命周期另排） |
+| `POST` | `/api/stripe-webhook` | Stripe 验签 → tip/sanctuary KV（membership 生命周期另排）；验签失败 **400** + `console.error('[stripe-webhook] signature rejected', { reason })` |
 | `POST` | `/api/verify-tip` | `{ email }` → `{ tipped, … }` |
 | `POST` | `/api/verify-sanctuary` | `{ email }` → `{ unlocked, … }` |
 | `POST` | `/api/verify-membership` | `{ email }` → `{ active, periodEndsAt, planId, … }` |
