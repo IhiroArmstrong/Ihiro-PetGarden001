@@ -211,6 +211,11 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
     仅非空答案本地保存最近 5 条（localStorage，复用 Storage 封装）；
     全部跳过则不落任何记录；情绪来访答案不做标签化/统计/趋势分析，
     写下来即可
+
+向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 规划中）：
+  与 Reflection 分轨：Idle ⋯/抽屉主动入口；禅意倾听者；本地规则分类 +
+  人工语料检索；匹配失败固定兜底；禁运行时生成对话。
+  详规：`task-briefs/task-confide-to-yin-v1.md`（本段不等于已上线）
 ```
 
 ### 专注会话陪伴模式（Companion Mode）
