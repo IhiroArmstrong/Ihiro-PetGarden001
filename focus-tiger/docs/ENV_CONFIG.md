@@ -27,7 +27,7 @@
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
 | v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
-| Tip / Sanctuary / Membership Worker（2026-08-10） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（163 账号）。Tip/Sanctuary Price 已上线；Membership 须另配 recurring Price + `MEMBERSHIP_KV` 真实 id 后 redeploy。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev` |
+| Tip / Sanctuary / Membership Worker（2026-08-11） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**，非 Stripe itilbase）。Membership #226 已 redeploy · Version `2dc088de-3676-42b7-a885-3e490fb2f041`。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ## 3. 与 CI 的关系
 
