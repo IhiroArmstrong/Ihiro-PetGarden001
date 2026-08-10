@@ -62,8 +62,9 @@ export class NarrowIdleShell {
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
-   *     onSanctuary?: () => void,
-   *     onTipJar?: () => void,
+     *     onSanctuary?: () => void,
+     *     onMembership?: () => void,
+     *     onTipJar?: () => void,
    *     onNewsletter?: () => void,
    *     onCommunity?: () => void,
    *     onRitualFlow?: (proxy: string) => void,
@@ -849,6 +850,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onSanctuary?.();
+      return;
+    }
+    if (key === 'membership') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onMembership?.();
       return;
     }
     if (key === 'tip-jar') {

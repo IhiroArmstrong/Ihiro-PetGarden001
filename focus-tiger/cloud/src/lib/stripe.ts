@@ -8,14 +8,26 @@ const STRIPE_API = "https://api.stripe.com/v1";
 /** Reject webhook signatures older than this (Stripe default guidance ≈ 5 min). */
 export const STRIPE_WEBHOOK_TOLERANCE_SEC = 300;
 
+export type StripeCheckoutMode = "payment" | "subscription";
+
 export type StripeCheckoutSession = {
 	id: string;
 	url: string | null;
 	mode?: string;
 	payment_status?: string;
+	subscription?: string | { id?: string } | null;
 	customer_email?: string | null;
 	customer_details?: { email?: string | null } | null;
 	metadata?: Record<string, string> | null;
+};
+
+export type StripeSubscription = {
+	id: string;
+	status?: string;
+	current_period_end?: number;
+	items?: {
+		data?: Array<{ price?: { id?: string } | null } | null> | null;
+	} | null;
 };
 
 function formBody(params: Record<string, string>): string {
@@ -33,8 +45,9 @@ export async function createTipCheckoutSession(opts: {
 	cancelUrl: string;
 	customerEmail?: string;
 }): Promise<StripeCheckoutSession> {
-	return createOneTimeCheckoutSession({
+	return createCheckoutSession({
 		...opts,
+		mode: "payment",
 		metadata: { product: "tip" },
 	});
 }
@@ -46,22 +59,41 @@ export async function createSanctuaryCheckoutSession(opts: {
 	cancelUrl: string;
 	customerEmail?: string;
 }): Promise<StripeCheckoutSession> {
-	return createOneTimeCheckoutSession({
+	return createCheckoutSession({
 		...opts,
+		mode: "payment",
 		metadata: { product: "sanctuary", itemId: "yin-sanctuary-lifetime" },
 	});
 }
 
-async function createOneTimeCheckoutSession(opts: {
+export async function createMembershipCheckoutSession(opts: {
 	secretKey: string;
 	priceId: string;
 	successUrl: string;
 	cancelUrl: string;
 	customerEmail?: string;
+}): Promise<StripeCheckoutSession> {
+	return createCheckoutSession({
+		...opts,
+		mode: "subscription",
+		metadata: { product: "membership", planId: "yin-membership" },
+	});
+}
+
+/**
+ * Shared Checkout Session create — Tip/Sanctuary use payment; Membership uses subscription.
+ */
+export async function createCheckoutSession(opts: {
+	secretKey: string;
+	priceId: string;
+	successUrl: string;
+	cancelUrl: string;
+	mode: StripeCheckoutMode;
+	customerEmail?: string;
 	metadata?: Record<string, string>;
 }): Promise<StripeCheckoutSession> {
 	const params: Record<string, string> = {
-		mode: "payment",
+		mode: opts.mode,
 		"line_items[0][price]": opts.priceId,
 		"line_items[0][quantity]": "1",
 		success_url: opts.successUrl,
@@ -99,8 +131,23 @@ async function createOneTimeCheckoutSession(opts: {
 	return data;
 }
 
+/** @deprecated Use createCheckoutSession — kept name for call-site clarity in history. */
+export async function createOneTimeCheckoutSession(opts: {
+	secretKey: string;
+	priceId: string;
+	successUrl: string;
+	cancelUrl: string;
+	customerEmail?: string;
+	metadata?: Record<string, string>;
+}): Promise<StripeCheckoutSession> {
+	return createCheckoutSession({
+		...opts,
+		mode: "payment",
+	});
+}
+
 /**
- * Retrieve a Checkout Session (server-side confirm for Sanctuary unlock).
+ * Retrieve a Checkout Session (server-side confirm for Sanctuary / Membership).
  */
 export async function retrieveCheckoutSession(opts: {
 	secretKey: string;
@@ -129,6 +176,64 @@ export async function retrieveCheckoutSession(opts: {
 		throw new Error(msg);
 	}
 	return data;
+}
+
+/**
+ * Retrieve a Subscription (period end + status for Membership confirm).
+ */
+export async function retrieveSubscription(opts: {
+	secretKey: string;
+	subscriptionId: string;
+}): Promise<StripeSubscription> {
+	const id = opts.subscriptionId.trim();
+	if (!id.startsWith("sub_")) {
+		throw new Error("invalid_subscription_id");
+	}
+	const res = await fetch(
+		`${STRIPE_API}/subscriptions/${encodeURIComponent(id)}`,
+		{
+			method: "GET",
+			headers: {
+				authorization: `Bearer ${opts.secretKey}`,
+			},
+		},
+	);
+	const data = (await res.json()) as StripeSubscription & {
+		error?: { message?: string };
+	};
+	if (!res.ok) {
+		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
+		throw new Error(msg);
+	}
+	if (!data.id) {
+		throw new Error("Stripe subscription missing id");
+	}
+	return data;
+}
+
+export function subscriptionIdFromCheckoutSession(
+	session: StripeCheckoutSession,
+): string | null {
+	const raw = session.subscription;
+	if (typeof raw === "string" && raw.startsWith("sub_")) return raw;
+	if (raw && typeof raw === "object" && typeof raw.id === "string") {
+		return raw.id.startsWith("sub_") ? raw.id : null;
+	}
+	return null;
+}
+
+export function periodEndsAtFromSubscription(
+	sub: StripeSubscription,
+): string | null {
+	const end = Number(sub.current_period_end);
+	if (!Number.isFinite(end) || end <= 0) return null;
+	return new Date(end * 1000).toISOString();
+}
+
+export function isActiveMembershipSubscriptionStatus(
+	status: string | undefined | null,
+): boolean {
+	return status === "active" || status === "trialing";
 }
 
 function parseStripeSignatureHeader(header: string): {

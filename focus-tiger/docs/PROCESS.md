@@ -65,6 +65,7 @@
 **近期落地（待人工测试）**：
 
 - **向阿寅倾诉 · Confide MVP（2026-08-10 · `feature/confide-to-yin`）**：分类 safety→情绪→fallback；禅意 18 + safety-01 **ok**；面板 `#confide-to-yin-card` 已接线；**`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户菜单仍关）。QA：`?product=1&confide=1`。待评估：地区热线具体资源。TRACKER 待人工。
+- **Yin Membership 订阅 Checkout（2026-08-10 · PR #224）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后 `applyEntitlementPatch` 写统一 entitlement cache；Support 第三卡 + Idle 菜单。权威 `YIN_MEMBERSHIP.md`。**须**填 Stripe recurring Price + 真实 KV id 后部署。TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
