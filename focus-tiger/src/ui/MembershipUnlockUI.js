@@ -156,13 +156,23 @@ export class MembershipUnlockUI {
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refreshTexts();
-    this.buyBtn.focus({ preventScroll: true });
+    // Defer focus so the click that opened this card (menu / Support) cannot
+    // activate Subscribe in the same pointer gesture.
+    if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
+    this._focusTimer = window.setTimeout(() => {
+      this._focusTimer = null;
+      if (this._open) this.closeBtn.focus({ preventScroll: true });
+    }, 0);
     this.handlers.onOpen?.();
   }
 
   close() {
     if (!this._open) return;
     this._open = false;
+    if (this._focusTimer != null) {
+      window.clearTimeout(this._focusTimer);
+      this._focusTimer = null;
+    }
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -185,11 +195,13 @@ export class MembershipUnlockUI {
   async _startCheckout() {
     if (this._busy) return;
     if (!getCloudApiBaseUrl()) {
+      if (!this._open) this.open();
       this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');
       return;
     }
     this._busy = true;
     this.buyBtn.disabled = true;
+    let checkoutError = false;
     try {
       const email = this.emailInput.value.trim();
       const body = email ? { email } : {};
@@ -204,13 +216,21 @@ export class MembershipUnlockUI {
         window.location.assign(url);
         return;
       }
+      checkoutError = true;
       this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
     } catch {
+      checkoutError = true;
       this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
     } finally {
       this._busy = false;
       this.buyBtn.disabled = false;
-      this._refreshTexts();
+      if (checkoutError) {
+        if (!this._open) this.open();
+        // open() refreshTexts would wipe the error — restore it.
+        this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
+      } else {
+        this._refreshTexts();
+      }
     }
   }
 

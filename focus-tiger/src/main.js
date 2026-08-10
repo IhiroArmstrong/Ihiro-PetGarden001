@@ -765,18 +765,11 @@ async function init() {
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'support' });
     },
-    onUnlockSanctuary: () => {
-      sanctuaryUnlockUI.open();
-      return sanctuaryUnlockUI.startCheckout();
-    },
-    onJoinMembership: () => {
-      membershipUnlockUI.open();
-      return membershipUnlockUI.startCheckout();
-    },
-    onBuyTea: () => {
-      tipJarUI.open();
-      return tipJarUI.startCheckout();
-    }
+    // Support CTAs go straight to Stripe — do not open() first (avoids card flash
+    // then instant redirect). Menu rows still only open() the detail cards.
+    onUnlockSanctuary: () => sanctuaryUnlockUI.startCheckout(),
+    onJoinMembership: () => membershipUnlockUI.startCheckout(),
+    onBuyTea: () => tipJarUI.startCheckout()
   });
   window.__supportYin = supportYinModalUI;
   consumeTipReturnQuery({});

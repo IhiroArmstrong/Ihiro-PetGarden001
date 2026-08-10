@@ -201,13 +201,22 @@ export class TipJarUI {
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refresh();
-    this.buyBtn.focus({ preventScroll: true });
+    // Defer focus so the opening click cannot activate Buy in the same gesture.
+    if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
+    this._focusTimer = window.setTimeout(() => {
+      this._focusTimer = null;
+      if (this._open) this.closeBtn.focus({ preventScroll: true });
+    }, 0);
     this.handlers.onOpen?.();
   }
 
   close() {
     if (!this._open) return;
     this._open = false;
+    if (this._focusTimer != null) {
+      window.clearTimeout(this._focusTimer);
+      this._focusTimer = null;
+    }
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -387,6 +396,7 @@ export class TipJarUI {
   async _onBuy() {
     if (this._busy) return;
     if (!this._cloudReady()) {
+      if (!this._open) this.open();
       this._setFeedback(t('TIP_CLOUD_OFFLINE'), true);
       return;
     }
@@ -410,6 +420,7 @@ export class TipJarUI {
         err instanceof Error && err.message === 'cloud_api_unconfigured'
           ? t('TIP_CLOUD_OFFLINE')
           : t('TIP_BUY_ERROR');
+      if (!this._open) this.open();
       this._setFeedback(msg, true);
       this._busy = false;
       this._refresh();
