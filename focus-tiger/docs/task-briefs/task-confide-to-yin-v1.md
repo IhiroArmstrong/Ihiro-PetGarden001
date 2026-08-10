@@ -1,6 +1,6 @@
 # Task Brief · 向阿寅倾诉（Confide to Yin）v1
 
-> **状态（2026-08-10）**：文档定稿 · 分支 `docs/confide-to-yin-decision`。**本回合无运行时**；MVP 实现另开 `feature/confide-to-yin`。  
+> **状态（2026-08-10）**：文档定稿已合 develop（PR #217）· 对齐四桶语料第二轮自扫待人审（`docs/confide-corpus-four-buckets`）。**本回合无运行时**；MVP 实现另开 `feature/confide-to-yin`（**等四桶全部 `ok` 后再开**，分析师顺序）。  
 > **目的**：用户主动倾诉时，阿寅以「禅意倾听者」回应——**分类 + 语料检索**，禁止运行时生成对用户说话。
 
 ## 拍板摘要（2026-08-10）
@@ -33,7 +33,7 @@
 
 ## 语料库 · v1 最小情绪标签集
 
-人工打磨；en + ja + zh 同构键。**样板桶**（`fallback` + `anxious`）六句已于 2026-08-10 全部 `ok`（语气基调门闩解除）。其余桶仍须每桶 ≥3 条 `ok` 后才可完整上线；见 `docs/confide-corpus-seed.md`。
+人工打磨；en + ja + zh 同构键。**样板桶**（`fallback` + `anxious`）六句已于 2026-08-10 全部 `ok`（语气基调门闩解除）。对齐四桶（`tired`/`stuck`/`sad`/`scattered`）已第二轮自扫改写为 `pending-reconfirm`；**人审全部 `ok` 前不开 feature 骨架、不挂完整倾诉回应**；见 `docs/confide-corpus-seed.md`。
 
 | 桶 id | 粗粒度语义 | 示例触发词方向（实现时再落表） |
 |---|---|---|
@@ -53,9 +53,11 @@
 3. **不复读情绪标签**：禁止「我感觉到你很焦虑」类客服共情。  
 4. 样板锚点句：`fallback-01`「听见了。寅安静地点头。」；anxious 流动意象示范：`anxious-03`「寅在这儿。风来了，风走了。」（**不用**呼吸版）。
 
-种子稿状态见 `docs/confide-corpus-seed.md`（样板六句均为 `ok`）。
+种子稿状态见 `docs/confide-corpus-seed.md`（样板六句均为 `ok`；对齐四桶 12 句 `pending-reconfirm`）。
 
-## MVP 实现切片（文档定稿后另开 feature · 语气基调已解除）
+## MVP 实现切片（四桶语料全部 `ok` 后再开 feature）
+
+> **顺序（2026-08-10 分析师）**：语料优先于骨架。样板六句 `ok` 只解除「语气基调」文档门闩；**完整四桶 `ok` 前不开** `feature/confide-to-yin`，避免占位假数据联调返工。
 
 1. Idle ⋯/抽屉入口 + 轻量面板（单行/短文本输入 + 发送 + 关闭）。  
 2. `confideClassify.js`：规则匹配 → 桶 id 或 `fallback`（单测锁：无匹配必 `fallback`；禁止 score 选桶）。  

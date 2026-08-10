@@ -1,6 +1,6 @@
 # 向阿寅倾诉 · 语料种子稿（人工）
 
-> **状态（2026-08-10）**：样板 A/B 六句全部 **`ok`**（语气基调收尾）· 其余对齐桶仍须按样板再扫后才进运行时。  
+> **状态（2026-08-10）**：样板 A/B 六句全部 **`ok`**（语气基调收尾）· 对齐四桶已按样板自扫并改写，**待人标 `ok`**（`pending-reconfirm`）。  
 > **权威实现约束**：`task-briefs/task-confide-to-yin-v1.md`。  
 > **用法**：人工撰写 / 离线 AI 扩写候选 → **人 review** 后迁入运行时语料；本文件**不是**产品运行时数据源。
 
@@ -43,41 +43,61 @@
 
 > 样板六句（2026-08-10）人审收尾：禁呼吸指令 → anxious-03 用风版作示范，与 Brief 约束一致。
 
-## 对齐桶（仍按样板扫 · 未本轮人审）
+## 对齐桶（2026-08-10 第二轮自扫 · 待人审）
+
+四条标准（与样板审稿同）：① 说教 /「不必…」轻建议 ② 留白够短 ③ 禁呼吸/身体指令 ④ 禁诊断标签 / 客服共情。  
+本轮自扫：**改 8 · 留 4**；全部标 `pending-reconfirm`，请按句批 `ok` / 再改。
+
+### 本轮自扫摘要
+
+| id | 旧 zh（要点） | 处置 | 理由 |
+|---|---|---|---|
+| tired-01 | 累了。蒲团还在。 | **留** | 短；在场物象；无指令 |
+| tired-02 | 不必撑满今天… | **改** | 「不必」+「也算在场」替用户下结论 |
+| tired-03 | …不着急。 | **改** | 「不着急」轻建议 → 改阿寅侧续茶 |
+| stuck-01 | …把问题放下半寸。 | **改** | 指令用户「放下」→ 改为旁观「停在半寸外」 |
+| stuck-02 | …只坐这一步。 | **改** | 「只坐」轻指令 → 阿寅坐着 |
+| stuck-03 | 听见了。不催你。 | **留** | 承接在场 |
+| sad-01 | …可以先放在垫子边… | **改** | 「可以先放」建议 → 空处在场 |
+| sad-02 | …就好。不必解释。 | **改** | 「就好」+「不必」双重踩线 |
+| sad-03 | 灯还亮着一点点。 | **留** | 干净环境意象 |
+| scattered-01 | …看它们路过。 | **改** | 「看它们」指令用户 → 路过作旁观 |
+| scattered-02 | 心乱也不罚… | **改** | 「心乱」诊断感 +「不罚」下结论 |
+| scattered-03 | 木鱼一声——只这一下。 | **留** | 场景定格；无身体指令 |
 
 ### `tired`
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
-| tired-01 | 累了。蒲团还在。 | Tired. The cushion stays. | 疲れた。座布団はここにある。 | tone-v1 |
-| tired-02 | 不必撑满今天。坐着，也算在场。 | No need to fill the day. Sitting is already being here. | 今日を埋めなくていい。坐っているだけで、すでにここ。 | tone-v1 |
-| tired-03 | 茶凉了再续。不着急。 | Tea cools; we pour again. No hurry. | 茶が冷めれば、また注ぐ。急がなくていい。 | tone-v1 |
+| tired-01 | 累了。蒲团还在。 | Tired. The cushion stays. | 疲れた。座布団はここにある。 | pending-reconfirm |
+| tired-02 | 沉沉的时候——茶还热着。 | When it feels heavy — tea is still warm. | 沈む時——茶はまだ温かい。 | pending-reconfirm |
+| tired-03 | 茶凉了。寅续上。 | Tea cooled. Yin pours again. | 茶が冷めた。寅がまた注ぐ。 | pending-reconfirm |
 
 ### `stuck`
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
-| stuck-01 | 卡住时，把问题放下半寸。 | When stuck, set the question down half an inch. | 行き詰まったら、問いを半寸下ろす。 | tone-v1 |
-| stuck-02 | 路还在。此刻只坐这一步。 | The path remains. Just this one sitting now. | 道はある。今は、この坐りだけ。 | tone-v1 |
-| stuck-03 | 听见了。不催你。 | Heard. No hurry from here. | 聴いた。急かさない。 | tone-v1 |
+| stuck-01 | 卡着。问句停在半寸外。 | Stuck. The question sits half an inch away. | 詰まっている。問いは半寸の外にある。 | pending-reconfirm |
+| stuck-02 | 路还在。寅坐着。 | The path remains. Yin sits. | 道はある。寅は坐っている。 | pending-reconfirm |
+| stuck-03 | 听见了。不催你。 | Heard. No hurry from here. | 聴いた。急かさない。 | pending-reconfirm |
 
 ### `sad`
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
-| sad-01 | 沉的，可以先放在垫子边。寅陪着。 | The heavy may rest by the cushion. Yin sits with you. | 重いものは座布団のそばに。寅が陪る。 | tone-v1 |
-| sad-02 | 难过来过就好。不必解释。 | Sadness may visit. No need to explain. | 悲しさが来てもいい。説明しなくていい。 | tone-v1 |
-| sad-03 | 灯还亮着一点点。 | A little light stays on. | 灯りが少し残っている。 | tone-v1 |
+| sad-01 | 沉的。垫子边有空处。寅陪着。 | Heavy. Space by the cushion. Yin sits with you. | 重い。座布団のそばに空きがある。寅が陪る。 | pending-reconfirm |
+| sad-02 | 难过来过。寅听见了。 | Sadness visited. Yin heard. | 悲しさが来た。寅は聴いた。 | pending-reconfirm |
+| sad-03 | 灯还亮着一点点。 | A little light stays on. | 灯りが少し残っている。 | pending-reconfirm |
 
 ### `scattered`
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
-| scattered-01 | 念头多的时候，看它们路过。 | When thoughts crowd, let them pass by. | 思いが多い時は、通り過ぎるのを見る。 | tone-v1 |
-| scattered-02 | 心乱也不罚。念头路过。 | A scattered mind is not punished. Thoughts pass by. | 心が乱れても罰しない。思いが通り過ぎる。 | tone-v1 |
-| scattered-03 | 木鱼一声——只这一下。 | One soft knock — just once. | 木魚をひとつ——ただ一度。 | tone-v1 |
+| scattered-01 | 念头多的时候——它们路过。 | When thoughts crowd — they pass by. | 思いが多い時——通り過ぎていく。 | pending-reconfirm |
+| scattered-02 | 听见了。念头，路过。 | Heard. Thoughts, passing by. | 聴いた。思いが、通り過ぎる。 | pending-reconfirm |
+| scattered-03 | 木鱼一声——只这一下。 | One soft knock — just once. | 木魚をひとつ——ただ一度。 | pending-reconfirm |
 
-> scattered-02：已去掉「这一息就好」（呼吸引导擦边），待对齐扫时一并审。
+> 第二轮改写对齐样板：anxious-01 式「…时候——茶还热着」用于 tired-02；半寸机锋保留观察态；路过意象不写「看/跟随」。
 
 ## review 标记含义
 
@@ -94,11 +114,12 @@
 - [x] 样板 A（`fallback`）三条均为 `ok`  
 - [x] 样板 B（`anxious`）三条均为 `ok`  
 - [x] 样板 A/B 六句全部 `ok`（语气基调门闩已解除）  
-- [ ] 其余桶每桶 ≥3 条 `ok`，语气与样板一致（并扫掉「不必…」轻建议 / 呼吸指令）  
+- [ ] 其余桶每桶 ≥3 条 `ok`，语气与样板一致（并扫掉「不必…」轻建议 / 呼吸指令）← **四桶 12 句待人审**  
 - [ ] 三语齐（对齐桶）  
 - [ ] 无教练 / 诊断 / 付费 CTA  
 - [ ] `fallback` 池独立，不被其它桶复用键  
 
 **门闩分层**：
 - **语气基调**：样板六句已 `ok` → 可开 `feature/confide-to-yin` 工程骨架（入口/分类/检索壳）。  
-- **运行时上线**：其余桶未全部 `ok` 前，产品壳不得挂完整倾诉回应（或仅允许样板已 ok 的桶 + fallback）。
+- **运行时上线**：其余桶未全部 `ok` 前，产品壳不得挂完整倾诉回应（或仅允许样板已 ok 的桶 + fallback）。  
+- **顺序（分析师 2026-08-10）**：先合 #217（已合）→ **先扫完四桶语料** → 再开 feature 骨架（避免占位假数据联调）。
