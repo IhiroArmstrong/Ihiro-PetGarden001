@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **向阿寅倾诉 · 产品拍板文档定稿（2026-08-10 · `docs/confide-to-yin-decision`）**：**无运行时**。禅意倾听者；检索不生成；分类失败固定兜底（禁模糊打分）；入口 Idle ⋯/抽屉；规则分类。Brief `task-confide-to-yin-v1.md` + 种子稿 `confide-corpus-seed.md`。MVP 另开 feature，本回合不开工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
@@ -363,6 +364,8 @@
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
 
+**最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——阿寅 = 禅意倾听者（非 AI Coach）；90% 模板 / 10% 主动倾诉走**本地分类 + 人工语料检索**（禁运行时生成对话）；分类失败 → **固定兜底**（禁模糊打分硬凑）；v1 入口 = Idle ⋯/抽屉；v1 分类 = 规则/关键词；AI 仅离线扩写候选且人 review。文档定稿本回合；MVP **未开工**。Brief `task-briefs/task-confide-to-yin-v1.md`；种子 `confide-corpus-seed.md`。
+
 **最近拍板（2026-08-09）**：远期玩法/商业种子入库 Backlog（**不排期、不开工**）——① **本地个人混音（Soundscape Mixer）**；② **UGC 创作者生态（约束版）**；③ **异步无声共修（Global Lanterns）**。评估结论：混音可接 Sanctuary/本地氛围深化；UGC 平台层暂缓；共修气质契合但须极薄、可关。详见下文三条 Backlog。
 
 **最近拍板（2026-07-31）**：用户上传氛围乐 = **v1.0.0 必交付**；砍法 mp3/m4a + 合计 ≤64MiB 且 ≤10 首 + 单文件 ≤20MiB；用户曲整段在内置之上且**最近在上**；可删自传；不做云/EQ/在线库/拖拽。Brief `task-user-ambient-upload-v1.md`。**澄清（2026-08-09）**：已交付的是「上传 + **单曲选播**」，**不是**多层音效混音；混音见 Backlog「本地个人混音」。
@@ -397,6 +400,7 @@
 - **付费 · 意愿漏斗本地统计**（Support / 双卡 / Checkout / 完成；无第三方）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
+- **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；**文档定稿**；MVP 未开工；种子 `confide-corpus-seed.md`）
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
