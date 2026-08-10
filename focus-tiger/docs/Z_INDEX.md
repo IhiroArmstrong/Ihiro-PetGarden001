@@ -50,6 +50,7 @@
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
+| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后首次；其后 ⋯ / 抽屉） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
 | **18** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（⋯ / 抽屉） |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |

@@ -78,6 +78,12 @@ import {
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
+import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
+import {
+  resolveMustardSeedSeal,
+  shouldOfferMustardSeedSealAfterCeremony,
+  clearMustardSeedSealState
+} from './core/mustardSeedSeal.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -684,6 +690,41 @@ async function init() {
   window.__journeyLog = journeyLogUI;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
+  /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
+  let pendingReflectionAfterMustardSeed = null;
+  const mustardSeedSealCardUI = new MustardSeedSealCardUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      sessionUiGate.setPostSessionOverlayActive(true);
+      resyncSessionChrome();
+    },
+    onClose: () => {
+      const pending = pendingReflectionAfterMustardSeed;
+      pendingReflectionAfterMustardSeed = null;
+      if (pending) {
+        sessionEndFlow.onSessionEnded(pending);
+      } else if (
+        !reflectionMoment?.isOpen?.() &&
+        !honestyBridge?.isVisible?.()
+      ) {
+        sessionUiGate.setPostSessionOverlayActive(false);
+        resyncSessionChrome();
+      }
+    }
+  });
+  window.__mustardSeedSeal = {
+    open: (opts) => mustardSeedSealCardUI.open(opts || { mode: 'force' }),
+    close: () => mustardSeedSealCardUI.close(),
+    resolve: () =>
+      resolveMustardSeedSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    clear: () =>
+      clearMustardSeedSealState(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
+  };
   const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
@@ -750,6 +791,7 @@ async function init() {
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
     if (except !== 'quote') dailyZenQuoteCardUI.close();
+    if (except !== 'mustard-seed') mustardSeedSealCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'membership') membershipUnlockUI.close();
@@ -1413,6 +1455,10 @@ async function init() {
     onDailyQuote: () => {
       closeGrowthOverlayCards({ except: 'quote' });
       dailyZenQuoteCardUI.open();
+    },
+    onMustardSeedSeal: () => {
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'menu' });
     },
     onWallpapers: () => {
       closeGrowthOverlayCards({ except: 'wallpapers' });
@@ -2282,13 +2328,29 @@ async function init() {
     sessionUiGate.setCompletionPending(false);
     resyncSessionChrome();
     companionModePicker.setIdleChromeVisible(true);
-    sessionEndFlow.onSessionEnded({
+    const endOpts = {
       completed: true,
       intention: currentSessionIntention,
       intentionSource: currentIntentionSource
-    });
+    };
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const seal = resolveMustardSeedSeal(storage);
+    if (
+      shouldOfferMustardSeedSealAfterCeremony({
+        completed: true,
+        unlocked: seal.unlocked,
+        revealed: seal.revealed
+      })
+    ) {
+      pendingReflectionAfterMustardSeed = endOpts;
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'auto' });
+    } else {
+      sessionEndFlow.onSessionEnded(endOpts);
+    }
     onboardingHints?.markSeen('rise-button');
   }
 

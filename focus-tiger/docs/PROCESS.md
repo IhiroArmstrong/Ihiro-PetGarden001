@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-10（UTC+8）
+**最后更新时间**：2026-08-11（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -68,7 +68,9 @@
 - **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
+- **芥子须弥纪念印（2026-08-11 · `feature/mustard-seed-seal`）**：统一练习 score≥21；计时完成仪式后首次出卡（ZH+EN+乐五斋诗稿+章）；其后菜单可重读。Brief `task-mustard-seed-seal.md`。TRACKER 待人工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
+- **芥子须弥纪念印（2026-08-11 · `feature/mustard-seed-seal`）**：统一练习 score≥21；计时完成仪式后首次出卡（ZH 原诗 + EN + 乐五斋诗稿 + 章）；其后 ⋯/抽屉可重读。Brief `task-mustard-seed-seal.md`。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
 - **SCENARIO_TESTS 二次增量（2026-08-09 晚）**：升格 **X** Tiger Anchor · **Y** Compass+Whisper · **Z** Journey Log；**Q** 补统一徽章 Q4。对齐 #199–#206。权威 `SCENARIO_TESTS.md`。
