@@ -1,8 +1,8 @@
 # 向阿寅倾诉 · 语料种子稿（人工）
 
-> **状态（2026-08-10）**：样板 A/B 六句 + 对齐四桶 12 句全部 **`ok`**（#222）· **语料门闩解除** · **危机安全阀槽位已立**（`safety_redirect`，文案待 MVP 人审）· 可开 `feature/confide-to-yin`（须含安全优先层）。  
+> **状态（2026-08-10）**：样板 A/B 六句 + 对齐四桶 12 句全部 **`ok`**（#222）· **语料门闩解除** · **危机安全阀槽位已立**（`safety-01` 草稿待人审）· 运行时 `feature/confide-to-yin` 已开工（分类优先序已锁；**用户可见菜单仍关**）。  
 > **权威实现约束**：`task-briefs/task-confide-to-yin-v1.md`。  
-> **用法**：人工撰写 / 离线 AI 扩写候选 → **人 review** 后迁入运行时语料；本文件**不是**产品运行时数据源。
+> **用法**：人工撰写 / 离线 AI 扩写候选 → **人 review** 后迁入运行时语料；本文件与 `src/core/confide/confideCorpus.js` 应对齐。
 
 ## 声音标准（入库前自检）
 
@@ -30,9 +30,9 @@
 
 | id | zh（方向 · 未定稿） | en（方向 · 未定稿） | ja | review |
 |---|---|---|---|---|
-| safety-01 | （待写）温和确认在场 + 建议联系专业人士 / 当地热线；不假装能治疗 | (TBD) Acknowledge presence + suggest professional / local hotline help; no therapy claim | （未译） | draft |
+| safety-01 | 听见了。若此刻很难独自撑住，请联系信任的人或当地专业援助热线。寅陪着，却不能代替专业帮助。 | Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help. | 聴いた。一人で抱えきれない時は、信頼できる人や地域の相談窓口へ。寅はここにいる——専門援助の代わりにはなれない。 | draft |
 
-> 关键词表、正式文案与多语随 `feature/confide-to-yin` 开写并人审；**文案未 `ok` 或分类未接线前，不得挂完整倾诉发送。**
+> 运行时同源：`src/core/confide/confideCorpus.js`。关键词表见 `confideSafetyKeywords.js`。**文案未 `ok` 前 Idle 菜单不挂出**（`isConfideUserVisible`）。请按四条标准人审（说教 / 留白 / 是否越界成心理咨询承诺 / 节奏克制）。
 
 ## 样板桶（语气基准）
 
