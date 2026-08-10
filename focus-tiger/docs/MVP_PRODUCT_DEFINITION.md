@@ -230,25 +230,34 @@ MVP 的首要任务仍是验证核心陪伴价值。**付费策略方向已锁�
 - 核心 Sit / Arrival / 基础 Idle / Honesty / 每日首次庆祝等 **不得**付费墙；
 - 打赏提示须可忽略；**禁止**「不打赏就怎样」暗示。
 
-### 双轨付费策略（2026-08-07 夜收紧 · 方向锁）
+### 双轨付费策略（2026-08-10 修订 · 方向锁）
 
-> **两者都要，不二选一。** A = 利他感激；B = 自我提升/审美。权威细则：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
+> **两者都要，不二选一。** A = 利他感激（不解锁）；B = 进阶内容解锁（自我提升/审美）。权威细则：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
+>
+> **心智模型（硬）**：仍称 **双轨**——不是「三档并存」。Tea 与进阶解锁是两条轨道；**Sanctuary Lifetime** 与 **Yin Membership** 不是两套不同内容层级，而是 **同一层进阶内容** 的两种付费方式（一次性 vs 订阅），**lifetime ∪ subscription 互相覆盖**，解锁同一套东西。
 
 | 轨 | 对外名 | 心理触发 | 产品角色 | v1 形态（方向） |
 |---|---|---|---|---|
 | **A** | **Buy Yin a Tea** | 利他与感激 | 情境微打赏 + 可选徽章；**不解锁内容** | 一次性 tip；记录 `{ tipped, tipCount, lastTippedAt }` |
-| **B** | **Yin's Sanctuary** | 自我效能与美学 | 主商业门 | **仅 Lifetime**；**无订阅**；权益 = 深度音效全库 + 高级情绪动画/场景 + 尊贵徽章 |
+| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 高级情绪动画/场景 + 尊贵徽章 + 进阶仪式等（catalog `subscription` 档为正式产品决定） |
 
-**UI**：A = 里程碑 / Honesty 归来 / About 底（温和可忽略）；B = 锁项处 / 权益卡主入口。  
+**B 付费方式（v1 硬）**：
+
+- **Sanctuary Lifetime**：一次性买断保留；
+- **Yin Membership**：订阅正式纳入 v1 路线图（仅靠买断档担心收入天花板过低）；
+- 全局规则：lifetime ∪ subscription **互相覆盖**——买断用户与订阅用户对进阶功能有同等访问权；
+- **订阅到期降级**：已生成内容（历史记录、已解锁纪念物、已播放过的仪式）**永久可查看**；到期后只停止「新内容持续解锁」与「进阶功能继续使用」。
+
+**UI**：A = 里程碑 / Honesty 归来 / About 底（温和可忽略）；B = 锁项处 / 权益卡主入口（可同时呈现 Lifetime 与 Membership）。  
 **v1 不做**：A→B「请茶送 24h 体验卡」导流（阶段 2 候选）。  
-**工程**：A = `feature/yin-tip-jar`（由 `founder-supporter-pack` 改道；`tipGate`；不解锁内容）；B = **新建** `feature/yin-sanctuary-lifetime`（`sanctuaryEntitlementGate`；真校验）。共享 Stripe payment 层，**分离** gate/UI/storage。Health **不进** B 权益。对外文案走 i18n。
+**工程**：A = `feature/yin-tip-jar`（`tipGate`；不解锁内容）；B = Sanctuary lifetime gate + 统一 `entitlement`（lifetime ∪ subscription）；共享 Stripe payment 层，**分离** tip 与解锁路径。Health **不进** B 权益。对外文案走 i18n。
 
 ### 优先验证的付费价值
 
 1. **A · Buy Yin a Tea**：小额是否打破零付费；情境提示是否打扰；
-2. **B · Yin's Sanctuary Lifetime**：深度音效 + 高级表现 + 徽章是否有人买单；免费子集是否仍完整；
-3. **克制的外观与环境扩展**：阶段 2；不得用打卡/连续门闩；
-4. **订阅**：**非 v1**；更远再评估。
+2. **B · Sanctuary Lifetime**：深度音效 + 高级表现 + 徽章是否有人买单；免费子集是否仍完整；
+3. **B · Yin Membership（订阅）**：是否愿意为同一套进阶内容按期付费；续费/取消/宽限期与到期降级是否可理解、不伤信任；
+4. **克制的外观与环境扩展**：阶段 2；不得用打卡/连续门闩。
 
 以下内容不应因“可收费”而自动进入路线图：
 
@@ -257,13 +266,13 @@ MVP 的首要任务仍是验证核心陪伴价值。**付费策略方向已锁�
 - 复杂专注报表；
 - 多角色收集、随机奖励或付费加速；
 - 以连续 365 天维持为前提的成长路线；
-- 将 Apple Health / Widget 写成 v1 付费权益；
-- v1 订阅生命周期（续费/取消/宽限期）。
+- 将 Apple Health / Widget 写成 v1 付费权益。
 
 ### 需要验证的问题
 
 - 用户更愿意为「感谢陪伴」（A）还是「更深场域/音效」（B）付费，或两者都愿意？
-- Lifetime 定价敏感区间（数字待定）？
+- 同一套进阶内容下，用户更倾向 Lifetime 买断还是 Yin Membership 订阅（或两者都愿意）？
+- Lifetime / Membership 定价敏感区间（数字待定）？
 - 哪些付费边界会削弱信任或让产品像传统虚拟宠物？
 
 ---
