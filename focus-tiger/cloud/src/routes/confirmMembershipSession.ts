@@ -11,7 +11,7 @@ import {
 	MEMBERSHIP_PLAN_ID,
 	normalizeEmail,
 	readMembership,
-	writeMembership,
+	upsertActiveMembership,
 } from "../lib/membershipKv";
 import type { Env } from "../types";
 
@@ -109,25 +109,24 @@ export async function handleConfirmMembershipSession(
 	if (emailRaw) {
 		const email = normalizeEmail(emailRaw);
 		const existing = await readMembership(env.MEMBERSHIP_KV, email);
-		if (!existing || existing.receiptId !== session.id) {
-			await writeMembership(env.MEMBERSHIP_KV, email, {
-				active: true,
-				periodEndsAt,
-				planId,
-				receiptId: session.id,
-				subscriptionId,
-			});
-		} else if (
+		const needsWrite =
+			!existing ||
+			existing.receiptId !== session.id ||
 			existing.periodEndsAt !== periodEndsAt ||
-			existing.subscriptionId !== subscriptionId
-		) {
-			await writeMembership(env.MEMBERSHIP_KV, email, {
+			existing.subscriptionId !== subscriptionId ||
+			Boolean(existing.lastPaymentFailedAt);
+		if (needsWrite) {
+			await upsertActiveMembership(env.MEMBERSHIP_KV, email, {
 				active: true,
 				periodEndsAt,
 				planId,
 				receiptId: session.id,
 				subscriptionId,
+				// clear lastPaymentFailedAt on successful confirm
 			});
+		} else {
+			// Ensure reverse index exists even when record fields unchanged.
+			await upsertActiveMembership(env.MEMBERSHIP_KV, email, existing);
 		}
 	}
 

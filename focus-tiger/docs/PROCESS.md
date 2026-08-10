@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **Yin Membership 订阅 Checkout（2026-08-10 · 本支 `feature/yin-membership-checkout`）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后 `applyEntitlementPatch` 写统一 entitlement cache；Support 第三卡 + Idle 菜单。权威 `YIN_MEMBERSHIP.md`。**须**填 Stripe recurring Price + 真实 KV id 后部署。TRACKER 待人工。
+- **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
+- **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
 - **向阿寅倾诉 · 产品拍板文档定稿（2026-08-10 · #217 / #222 已合）**：**无运行时（文档）**。禅意 18 句全部 `ok`（语料门闩解除）。**危机安全阀**：`confideClassify` 优先层 `safety_redirect`（纯规则 + 人工转介文案；禁止危机信号落入禅意 `fallback`）。Brief + `confide-corpus-seed.md`。**下一步**：开 `feature/confide-to-yin`（须含安全层；安全文案人审前不挂发送）。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
