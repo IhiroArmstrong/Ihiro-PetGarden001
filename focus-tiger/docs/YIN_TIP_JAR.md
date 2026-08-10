@@ -101,4 +101,4 @@ Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（
 | `ihiro` Worker + Webhook + secrets | **已有** |
 | #181 新 Price ID → **`ihiro` redeploy** | **已做**（2026-08-08 · `eb921e5f…`） |
 | 误建 `focus-tiger` 旁路 | **作废对齐** |
-| 人工 Test 卡金额验收 | **待做** |
+| 人工 Test 卡金额 + webhook 写 KV | **部分完成（2026-08-11）**：Sandbox Tea / Sanctuary `checkout.session.completed` → Worker **200** `stored` + `product` 分流 OK。**仍待**：邮箱 restore（`/api/verify-tip`）、零耦合 UI 确认。致谢动画已由 **#231** 接线（TRACKER §D 待人工复测） |
