@@ -25,9 +25,25 @@ export type StripeSubscription = {
 	id: string;
 	status?: string;
 	current_period_end?: number;
+	cancel_at_period_end?: boolean;
+	customer?: string | { id?: string; email?: string | null } | null;
+	metadata?: Record<string, string> | null;
 	items?: {
 		data?: Array<{ price?: { id?: string } | null } | null> | null;
 	} | null;
+};
+
+export type StripeCustomer = {
+	id: string;
+	email?: string | null;
+};
+
+export type StripeInvoice = {
+	id?: string;
+	subscription?: string | { id?: string } | null;
+	customer_email?: string | null;
+	customer?: string | { id?: string; email?: string | null } | null;
+	attempt_count?: number;
 };
 
 function formBody(params: Record<string, string>): string {
@@ -73,10 +89,16 @@ export async function createMembershipCheckoutSession(opts: {
 	cancelUrl: string;
 	customerEmail?: string;
 }): Promise<StripeCheckoutSession> {
+	const membershipMeta = {
+		product: "membership",
+		planId: "yin-membership",
+	};
 	return createCheckoutSession({
 		...opts,
 		mode: "subscription",
-		metadata: { product: "membership", planId: "yin-membership" },
+		metadata: membershipMeta,
+		/** Copied onto the Subscription so invoice/subscription webhooks can identify product. */
+		subscriptionMetadata: membershipMeta,
 	});
 }
 
@@ -91,6 +113,8 @@ export async function createCheckoutSession(opts: {
 	mode: StripeCheckoutMode;
 	customerEmail?: string;
 	metadata?: Record<string, string>;
+	/** When mode=subscription, written to subscription_data[metadata][…]. */
+	subscriptionMetadata?: Record<string, string>;
 }): Promise<StripeCheckoutSession> {
 	const params: Record<string, string> = {
 		mode: opts.mode,
@@ -105,6 +129,11 @@ export async function createCheckoutSession(opts: {
 	if (opts.metadata) {
 		for (const [k, v] of Object.entries(opts.metadata)) {
 			params[`metadata[${k}]`] = v;
+		}
+	}
+	if (opts.mode === "subscription" && opts.subscriptionMetadata) {
+		for (const [k, v] of Object.entries(opts.subscriptionMetadata)) {
+			params[`subscription_data[metadata][${k}]`] = v;
 		}
 	}
 
@@ -236,6 +265,102 @@ export function isActiveMembershipSubscriptionStatus(
 	return status === "active" || status === "trialing";
 }
 
+export function isPastDueMembershipSubscriptionStatus(
+	status: string | undefined | null,
+): boolean {
+	return status === "past_due" || status === "unpaid";
+}
+
+export function subscriptionIdFromInvoice(
+	invoice: StripeInvoice,
+): string | null {
+	const raw = invoice.subscription;
+	if (typeof raw === "string" && raw.startsWith("sub_")) return raw;
+	if (raw && typeof raw === "object" && typeof raw.id === "string") {
+		return raw.id.startsWith("sub_") ? raw.id : null;
+	}
+	return null;
+}
+
+export function customerIdFromStripeObject(obj: {
+	customer?: string | { id?: string } | null;
+}): string | null {
+	const raw = obj.customer;
+	if (typeof raw === "string" && raw.startsWith("cus_")) return raw;
+	if (raw && typeof raw === "object" && typeof raw.id === "string") {
+		return raw.id.startsWith("cus_") ? raw.id : null;
+	}
+	return null;
+}
+
+export function isMembershipProductMetadata(
+	metadata: Record<string, string> | null | undefined,
+): boolean {
+	return metadata?.product === "membership";
+}
+
+/**
+ * Retrieve a Customer (email for subscription/invoice webhooks).
+ */
+export async function retrieveCustomer(opts: {
+	secretKey: string;
+	customerId: string;
+}): Promise<StripeCustomer> {
+	const id = opts.customerId.trim();
+	if (!id.startsWith("cus_")) {
+		throw new Error("invalid_customer_id");
+	}
+	const res = await fetch(
+		`${STRIPE_API}/customers/${encodeURIComponent(id)}`,
+		{
+			method: "GET",
+			headers: {
+				authorization: `Bearer ${opts.secretKey}`,
+			},
+		},
+	);
+	const data = (await res.json()) as StripeCustomer & {
+		error?: { message?: string };
+	};
+	if (!res.ok) {
+		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
+		throw new Error(msg);
+	}
+	if (!data.id) {
+		throw new Error("Stripe customer missing id");
+	}
+	return data;
+}
+
+/**
+ * Best-effort email from a Subscription object (+ optional Customer retrieve).
+ */
+export async function emailFromSubscription(opts: {
+	secretKey: string;
+	subscription: StripeSubscription;
+}): Promise<string | null> {
+	const nested = opts.subscription.customer;
+	if (nested && typeof nested === "object") {
+		if (typeof nested.email === "string" && nested.email.trim()) {
+			return nested.email.trim();
+		}
+	}
+	const customerId = customerIdFromStripeObject(opts.subscription);
+	if (!customerId) return null;
+	try {
+		const customer = await retrieveCustomer({
+			secretKey: opts.secretKey,
+			customerId,
+		});
+		if (typeof customer.email === "string" && customer.email.trim()) {
+			return customer.email.trim();
+		}
+	} catch {
+		return null;
+	}
+	return null;
+}
+
 function parseStripeSignatureHeader(header: string): {
 	t: string;
 	v1: string[];
@@ -279,6 +404,52 @@ function timingSafeEqualHex(a: string, b: string): boolean {
 	return diff === 0;
 }
 
+export type StripeWebhookVerifyFailureReason =
+	| "missing_header"
+	| "malformed_header"
+	| "timestamp_out_of_tolerance"
+	| "bad_signature";
+
+export type StripeWebhookVerifyResult =
+	| { ok: true }
+	| { ok: false; reason: StripeWebhookVerifyFailureReason };
+
+/**
+ * Verify Stripe-Signature header against raw body (detailed result for logging).
+ */
+export async function verifyStripeWebhookSignatureDetailed(opts: {
+	payload: string;
+	signatureHeader: string | null;
+	webhookSecret: string;
+	nowSec?: number;
+	toleranceSec?: number;
+}): Promise<StripeWebhookVerifyResult> {
+	if (!opts.signatureHeader) {
+		return { ok: false, reason: "missing_header" };
+	}
+	const parsed = parseStripeSignatureHeader(opts.signatureHeader);
+	if (!parsed) {
+		return { ok: false, reason: "malformed_header" };
+	}
+
+	const now = opts.nowSec ?? Math.floor(Date.now() / 1000);
+	const tolerance = opts.toleranceSec ?? STRIPE_WEBHOOK_TOLERANCE_SEC;
+	const ts = Number(parsed.t);
+	if (!Number.isFinite(ts) || Math.abs(now - ts) > tolerance) {
+		return { ok: false, reason: "timestamp_out_of_tolerance" };
+	}
+
+	const signedPayload = `${parsed.t}.${opts.payload}`;
+	const expected = await hmacSha256Hex(opts.webhookSecret, signedPayload);
+	const match = parsed.v1.some((candidate) =>
+		timingSafeEqualHex(candidate, expected),
+	);
+	if (!match) {
+		return { ok: false, reason: "bad_signature" };
+	}
+	return { ok: true };
+}
+
 /**
  * Verify Stripe-Signature header against raw body.
  * @returns true if any v1 signature matches within tolerance.
@@ -290,20 +461,8 @@ export async function verifyStripeWebhookSignature(opts: {
 	nowSec?: number;
 	toleranceSec?: number;
 }): Promise<boolean> {
-	if (!opts.signatureHeader) return false;
-	const parsed = parseStripeSignatureHeader(opts.signatureHeader);
-	if (!parsed) return false;
-
-	const now = opts.nowSec ?? Math.floor(Date.now() / 1000);
-	const tolerance = opts.toleranceSec ?? STRIPE_WEBHOOK_TOLERANCE_SEC;
-	const ts = Number(parsed.t);
-	if (!Number.isFinite(ts) || Math.abs(now - ts) > tolerance) {
-		return false;
-	}
-
-	const signedPayload = `${parsed.t}.${opts.payload}`;
-	const expected = await hmacSha256Hex(opts.webhookSecret, signedPayload);
-	return parsed.v1.some((candidate) => timingSafeEqualHex(candidate, expected));
+	const result = await verifyStripeWebhookSignatureDetailed(opts);
+	return result.ok;
 }
 
 export function emailFromCheckoutSession(

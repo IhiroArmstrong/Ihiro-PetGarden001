@@ -21,6 +21,8 @@ import {
 
 const STYLE_ID = 'yin-membership-card-styles-v1';
 const FADE_MS = 220;
+/** Ignore Buy/Subscribe for this long after open (blocks same-gesture activation). */
+const CHECKOUT_ARM_MS = 450;
 
 export class MembershipUnlockUI {
   /**
@@ -38,6 +40,9 @@ export class MembershipUnlockUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._focusTimer = null;
+    /** @type {number} */
+    this._checkoutArmedAt = 0;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-membership-card';
@@ -134,6 +139,8 @@ export class MembershipUnlockUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      // Same gesture that opened the card must not dismiss it.
+      if (Date.now() < this._checkoutArmedAt) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
       this.close();
@@ -152,17 +159,29 @@ export class MembershipUnlockUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
     this.root.hidden = false;
+    this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refreshTexts();
-    this.buyBtn.focus({ preventScroll: true });
+    // Focus the dialog shell — never the Buy button (avoids same-click activation).
+    if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
+    this._focusTimer = window.setTimeout(() => {
+      this._focusTimer = null;
+      if (this._open) this.root.focus({ preventScroll: true });
+    }, 0);
     this.handlers.onOpen?.();
   }
 
   close() {
     if (!this._open) return;
     this._open = false;
+    this._checkoutArmedAt = 0;
+    if (this._focusTimer != null) {
+      window.clearTimeout(this._focusTimer);
+      this._focusTimer = null;
+    }
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -184,12 +203,15 @@ export class MembershipUnlockUI {
 
   async _startCheckout() {
     if (this._busy) return;
+    if (Date.now() < this._checkoutArmedAt) return;
     if (!getCloudApiBaseUrl()) {
+      if (!this._open) this.open();
       this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');
       return;
     }
     this._busy = true;
     this.buyBtn.disabled = true;
+    let checkoutError = false;
     try {
       const email = this.emailInput.value.trim();
       const body = email ? { email } : {};
@@ -204,13 +226,21 @@ export class MembershipUnlockUI {
         window.location.assign(url);
         return;
       }
+      checkoutError = true;
       this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
     } catch {
+      checkoutError = true;
       this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
     } finally {
       this._busy = false;
       this.buyBtn.disabled = false;
-      this._refreshTexts();
+      if (checkoutError) {
+        if (!this._open) this.open();
+        // open() refreshTexts would wipe the error — restore it.
+        this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
+      } else {
+        this._refreshTexts();
+      }
     }
   }
 

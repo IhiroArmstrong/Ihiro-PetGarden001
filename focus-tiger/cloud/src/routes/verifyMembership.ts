@@ -1,5 +1,6 @@
 import { errorJson, json } from "../lib/http";
 import {
+	isMembershipWithinVerifyWindow,
 	isPlausibleEmail,
 	normalizeEmail,
 	readMembership,
@@ -11,6 +12,11 @@ import type { Env } from "../types";
  * Body: { email: string }
  * Restores subscription entitlement on another device (email → MEMBERSHIP_KV).
  * Lookup-only — not login / magic link (same pattern as verify-sanctuary).
+ *
+ * Entitlement window: periodEndsAt + MEMBERSHIP_GRACE_MS (7d, aligned with
+ * client ENTITLEMENT_GRACE_MS). Past that window → active:false even if KV
+ * row still exists (e.g. Stripe dunning before subscription.deleted).
+ * This closes the “re-verify refreshes lastVerifiedAt forever” hole.
  */
 export async function handleVerifyMembership(
 	request: Request,
@@ -35,6 +41,18 @@ export async function handleVerifyMembership(
 	if (!record) {
 		return json({ active: false, unlocked: false });
 	}
+
+	if (!isMembershipWithinVerifyWindow(record.periodEndsAt)) {
+		return json({
+			active: false,
+			unlocked: false,
+			reason: "grace_exhausted",
+			periodEndsAt: record.periodEndsAt,
+			planId: record.planId,
+			subscriptionId: record.subscriptionId,
+		});
+	}
+
 	return json({
 		active: true,
 		unlocked: true,

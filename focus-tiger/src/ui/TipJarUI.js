@@ -30,6 +30,7 @@ import {
 
 const STYLE_ID = 'yin-tip-jar-card-styles-v2';
 const FADE_MS = 220;
+const CHECKOUT_ARM_MS = 450;
 
 export class TipJarUI {
   /**
@@ -48,6 +49,9 @@ export class TipJarUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._focusTimer = null;
+    /** @type {number} */
+    this._checkoutArmedAt = 0;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-tip-jar-card';
@@ -159,6 +163,7 @@ export class TipJarUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      if (Date.now() < this._checkoutArmedAt) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
       this.close();
@@ -197,17 +202,28 @@ export class TipJarUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
     this.root.hidden = false;
+    this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refresh();
-    this.buyBtn.focus({ preventScroll: true });
+    if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
+    this._focusTimer = window.setTimeout(() => {
+      this._focusTimer = null;
+      if (this._open) this.root.focus({ preventScroll: true });
+    }, 0);
     this.handlers.onOpen?.();
   }
 
   close() {
     if (!this._open) return;
     this._open = false;
+    this._checkoutArmedAt = 0;
+    if (this._focusTimer != null) {
+      window.clearTimeout(this._focusTimer);
+      this._focusTimer = null;
+    }
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -386,7 +402,9 @@ export class TipJarUI {
 
   async _onBuy() {
     if (this._busy) return;
+    if (Date.now() < this._checkoutArmedAt) return;
     if (!this._cloudReady()) {
+      if (!this._open) this.open();
       this._setFeedback(t('TIP_CLOUD_OFFLINE'), true);
       return;
     }
@@ -410,6 +428,7 @@ export class TipJarUI {
         err instanceof Error && err.message === 'cloud_api_unconfigured'
           ? t('TIP_CLOUD_OFFLINE')
           : t('TIP_BUY_ERROR');
+      if (!this._open) this.open();
       this._setFeedback(msg, true);
       this._busy = false;
       this._refresh();
