@@ -11,6 +11,7 @@
 import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 import { listRitualConfigs } from './RitualFlow.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
+import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -40,6 +41,7 @@ import { isEntitled } from './entitlement/entitlementGate.js';
  * @property {boolean} [companionEnabled]
  * @property {boolean} reminderAvailable
  * @property {boolean} [newsletterSubmitted]
+ * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
  */
 
 /**
@@ -353,6 +355,18 @@ export function listSecondaryChromeEntries(surface, visibility) {
     proxy: 'journey-log',
     labelKey: 'JOURNEY_LOG_MENU_LABEL'
   });
+
+  // Confide to Yin — zen listener (retrieve-not-generate). Hidden until safety copy ok.
+  const confideVisible =
+    typeof visibility.confideUserVisible === 'boolean'
+      ? visibility.confideUserVisible
+      : isConfideUserVisible();
+  if (confideVisible) {
+    out.push({
+      proxy: 'confide',
+      labelKey: 'CONFIDE_MENU_LABEL'
+    });
+  }
 
   // Growth pack ① — always available gift entry (no first-visit mint).
   out.push({

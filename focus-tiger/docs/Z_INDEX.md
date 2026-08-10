@@ -55,6 +55,7 @@
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |
 | **18** | `src/ui/TipJarUI.js` | `#yin-tip-jar-card` Buy Yin a Tea 卡（⋯ / 抽屉） |
 | **18** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-card` Stay in touch 可选邮件留资卡（⋯ / 抽屉；不存邮箱；无 entitlement） |
+| **18** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-card` 向阿寅倾诉卡（⋯ / 抽屉；检索不生成；默认挂载关；QA `?confide=1`） |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |
 | **20** | `src/core/EmotionController.js` | DEV 情绪调试按钮列（右上） |
 | **20** | `src/ui/WideIdleMoreMenu.js` | 宽屏 More（⋯）下拉菜单面板 |

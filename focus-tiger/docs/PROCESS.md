@@ -64,8 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **Yin Membership 订阅 Checkout（2026-08-10 · 本支 `feature/yin-membership-checkout`）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后 `applyEntitlementPatch` 写统一 entitlement cache；Support 第三卡 + Idle 菜单。权威 `YIN_MEMBERSHIP.md`。**须**填 Stripe recurring Price + 真实 KV id 后部署。TRACKER 待人工。
-- **向阿寅倾诉 · 产品拍板文档定稿（2026-08-10 · #217 / #222 已合）**：**无运行时（文档）**。禅意 18 句全部 `ok`（语料门闩解除）。**危机安全阀**：`confideClassify` 优先层 `safety_redirect`（纯规则 + 人工转介文案；禁止危机信号落入禅意 `fallback`）。Brief + `confide-corpus-seed.md`。**下一步**：开 `feature/confide-to-yin`（须含安全层；安全文案人审前不挂发送）。
+- **向阿寅倾诉 · Confide MVP（2026-08-10 · `feature/confide-to-yin`）**：分类 safety→情绪→fallback；禅意 18 + safety-01 **ok**；面板 `#confide-to-yin-card` 已接线；**`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户菜单仍关）。QA：`?product=1&confide=1`。待评估：地区热线具体资源。TRACKER 待人工。
+- **Yin Membership 订阅 Checkout（2026-08-10 · PR #224）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后 `applyEntitlementPatch` 写统一 entitlement cache；Support 第三卡 + Idle 菜单。权威 `YIN_MEMBERSHIP.md`。**须**填 Stripe recurring Price + 真实 KV id 后部署。TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
@@ -370,7 +370,7 @@
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
 
-**最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——禅意倾听者；检索不生成；分类失败固定兜底；入口 Idle ⋯/抽屉。禅意 18 句 `ok`（#217/#222）。**补：危机安全阀**——自由文本须先过纯规则 `safety_redirect`（人工温和引导 + 资源提示）；命中则**禁止**走禅意语料 /「茶还热着」式 `fallback`；不做运行时危机对话生成或假装专业救助。Brief `task-briefs/task-confide-to-yin-v1.md`；种子 `confide-corpus-seed.md`。下一步开 `feature/confide-to-yin`（须含安全层）。
+**最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——禅意倾听者；检索不生成；**危机安全阀** `safety_redirect` 优先（#223）。禅意 18 + safety-01 人审 **ok**。运行时：`feature/confide-to-yin` 分类/语料/面板已接线；**产品挂载仍关**（`CONFIDE_USER_MOUNT_ENABLED=false`）。**待评估**：safety 是否附加具体地区热线/链接（不阻塞）。Brief `task-briefs/task-confide-to-yin-v1.md`。
 
 **最近拍板（2026-08-09）**：远期玩法/商业种子入库 Backlog（**不排期、不开工**）——① **本地个人混音（Soundscape Mixer）**；② **UGC 创作者生态（约束版）**；③ **异步无声共修（Global Lanterns）**。评估结论：混音可接 Sanctuary/本地氛围深化；UGC 平台层暂缓；共修气质契合但须极薄、可关。详见下文三条 Backlog。
 
@@ -406,7 +406,7 @@
 - **付费 · 意愿漏斗本地统计**（Support / 双卡 / Checkout / 完成；无第三方）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
-- **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；禅意 18 句 ok；**安全阀槽位已立**；下一步 `feature/confide-to-yin` 须含 `safety_redirect`；种子 `confide-corpus-seed.md`）
+- **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；safety-01 ok；面板已接线；**挂载仍关**；待评估地区资源；种子 `confide-corpus-seed.md`）
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
