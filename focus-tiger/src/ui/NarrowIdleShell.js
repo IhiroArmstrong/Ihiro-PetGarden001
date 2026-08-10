@@ -6,6 +6,7 @@ import {
   SECONDARY_PROXY_HINT_IDS,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
+import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
   NARROW_HOME_CTA_BOTTOM_PX,
@@ -62,6 +63,8 @@ export class NarrowIdleShell {
    *     onWallpapers?: () => void,
    *     onSanctuary?: () => void,
    *     onTipJar?: () => void,
+   *     onNewsletter?: () => void,
+   *     onCommunity?: () => void,
    *     onRitualFlow?: (proxy: string) => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -674,7 +677,8 @@ export class NarrowIdleShell {
       companionVisible: Boolean(companionEl && !companionEl.hidden),
       reminderAvailable: Boolean(
         document.getElementById('reminder-preference-toggle')
-      )
+      ),
+      newsletterSubmitted: hasSubmittedNewsletter()
     });
 
     this.listEl.innerHTML = '';
@@ -698,6 +702,10 @@ export class NarrowIdleShell {
         btn.setAttribute('aria-disabled', 'true');
         btn.title = t('ritual.menu_locked');
         btn.classList.add('is-locked');
+      } else if (item.interactive === false) {
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.classList.add('is-static');
       }
       const hintId = SECONDARY_PROXY_HINT_IDS[item.proxy];
       const showDot =
@@ -840,6 +848,18 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onTipJar?.();
+      return;
+    }
+    if (key === 'newsletter') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onNewsletter?.();
+      return;
+    }
+    if (key === 'community') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onCommunity?.();
       return;
     }
     if (

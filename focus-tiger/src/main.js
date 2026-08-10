@@ -84,7 +84,15 @@ import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
+import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
+import { openCommunityExternalLink } from './core/communityLink.js';
+import {
+  setNewsletterProvider
+} from './core/newsletter/newsletterProvider.js';
+import {
+  createMockNewsletterProvider
+} from './core/newsletter/mockNewsletterProvider.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import {
   MindfulReminderController,
@@ -442,6 +450,9 @@ async function init() {
   );
   void refreshEntitlement();
 
+  // Stay in touch — mock provider until ESP / Worker is chosen (optional; not a login).
+  setNewsletterProvider(createMockNewsletterProvider());
+
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
   const idleChrome = createIdleChromeFacade({
     root: document.body,
@@ -687,12 +698,23 @@ async function init() {
   });
   window.__tipJar = tipJarUI;
 
+  const newsletterCaptureUI = new NewsletterCaptureUI(document.body, {
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'newsletter' });
+    },
+    onSubmitted: () => {
+      // Menu rows rebuild on next open; nothing else to unlock.
+    }
+  });
+  window.__newsletterCapture = newsletterCaptureUI;
+
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
     if (except !== 'quote') dailyZenQuoteCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'tip') tipJarUI.close();
+    if (except !== 'newsletter') newsletterCaptureUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
@@ -1350,6 +1372,14 @@ async function init() {
     onTipJar: () => {
       closeGrowthOverlayCards({ except: 'tip' });
       tipJarUI.open();
+    },
+    onNewsletter: () => {
+      closeGrowthOverlayCards({ except: 'newsletter' });
+      newsletterCaptureUI.open();
+    },
+    onCommunity: () => {
+      closeGrowthOverlayCards();
+      openCommunityExternalLink();
     },
     onRitualFlow: (proxy) => {
       openRitualFlowFromMenu(proxy);

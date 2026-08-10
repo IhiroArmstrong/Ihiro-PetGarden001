@@ -36,6 +36,7 @@
 | `focus-tiger.flower-welcome.v1` | `flowerWelcomeGate` | 吹花门闩：`{ lastOpenDateKey, firstBubbleDone, lastCopyKey }`（Day1 / ≥3 日久别；文案轮换记账） |
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
 | `focus-tiger.tip-jar.v1` | `tipJarGate` | Buy Yin a Tea 本地 tip 状态：`{ tipped, tipCount, lastTippedAt, email?, source?, badgeIds[], tipLog[] }`；`badgeIds` = 善意/练习徽章（付费起 3，免费练习起 1，只增不减；练习上涨可 sync）；`tipLog` = 茶室留痕；**不**解锁内容；与 Sanctuary **零耦合** |
+| `focus-tiger.newsletter-capture.v1` | `newsletter/newsletterCaptureGate` | Stay in touch 可选邮件留资标记：`{ submitted }`；**不**存邮箱明文；**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2 |
 | `focus-tiger.sanctuary-entitlement.v1` | `sanctuaryEntitlementGate` | Yin's Sanctuary Lifetime：`{ unlocked, unlockedVia, unlockedAt, itemId, badgeIds[] }`；`badgeIds` = 尊贵徽章（付费起 3，最多 17，只增不减）；**不得**读 tip-jar 状态；**也**作统一 entitlement gate 的 lifetime 只读信号（`resolveLifetimeActive`） |
 | `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt`）；可用性优先，非防盗；宽限 7 天 |
 | `focus-tiger.entitlement-ownership.v1` | `entitlement/entitlementOwnership` | persistent「已拥有」标记（仪式历史/纪念物等）；只增不减；订阅到期不收回 |
