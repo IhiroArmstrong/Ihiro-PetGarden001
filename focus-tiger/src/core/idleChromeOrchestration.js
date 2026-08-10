@@ -378,6 +378,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
     labelKey: 'SANCTUARY_MENU_LABEL'
   });
 
+  // Yin Membership — subscription unlock (patches entitlement cache; independent of tip).
+  out.push({
+    proxy: 'membership',
+    labelKey: 'MEMBERSHIP_MENU_LABEL'
+  });
+
   // Tip Jar (Buy Yin a Tea) — gratitude tip; does not unlock content.
   // Primary UX is situational + About; menu entry is a secondary discoverability path.
   out.push({

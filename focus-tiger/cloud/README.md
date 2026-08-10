@@ -1,8 +1,8 @@
 # Focus Tiger · Cloudflare Workers (`cloud/`)
 
-独立 API（TypeScript + Wrangler）。含历史 stub 路由 + **Buy Yin a Tea · Tip Jar**（一次性 Stripe Checkout + KV）。
+独立 API（TypeScript + Wrangler）。含历史 stub 路由 + **Buy Yin a Tea · Tip Jar** + **Yin's Sanctuary Lifetime** + **Yin Membership**（Stripe Checkout + 分 KV）。
 
-权威产品/部署说明：[`../docs/YIN_TIP_JAR.md`](../docs/YIN_TIP_JAR.md)（§ 部署 · 任务 5）· 密钥隔离：[`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。
+权威产品/部署说明：[`../docs/YIN_TIP_JAR.md`](../docs/YIN_TIP_JAR.md) · [`../docs/YIN_SANCTUARY.md`](../docs/YIN_SANCTUARY.md) · [`../docs/YIN_MEMBERSHIP.md`](../docs/YIN_MEMBERSHIP.md) · 密钥隔离：[`../docs/ENV_CONFIG.md`](../docs/ENV_CONFIG.md)。
 
 ## 前置
 
@@ -38,28 +38,23 @@ curl -s http://127.0.0.1:8787/health
 | `GET` | `/health` | 健康检查 |
 | `POST` | `/api/daily-message` | stub（mock） |
 | `POST` | `/api/emotion-weight` | stub（mock） |
-| `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（one-time）→ `{ url }` |
-| `POST` | `/api/stripe-webhook` | Stripe 验签 → 写 `TIP_KV` |
-| `POST` | `/api/verify-tip` | `{ email }` → `{ tipped, lastTippedAt? }` |
+| `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（`mode: payment`）→ `{ url }` |
+| `POST` | `/api/create-sanctuary-checkout-session` | Stripe Checkout（`mode: payment` Lifetime）→ `{ url }` |
+| `POST` | `/api/create-membership-checkout-session` | Stripe Checkout（`mode: subscription`）→ `{ url }` |
+| `POST` | `/api/confirm-sanctuary-session` | `{ sessionId }` → 服务端校验后解锁 |
+| `POST` | `/api/confirm-membership-session` | `{ sessionId }` → 校验 subscription active 后返回 periodEndsAt |
+| `POST` | `/api/stripe-webhook` | Stripe 验签 → tip/sanctuary KV（membership 生命周期另排） |
+| `POST` | `/api/verify-tip` | `{ email }` → `{ tipped, … }` |
+| `POST` | `/api/verify-sanctuary` | `{ email }` → `{ unlocked, … }` |
+| `POST` | `/api/verify-membership` | `{ email }` → `{ active, periodEndsAt, planId, … }` |
 
-### Tip Jar 限流
+### 限流
 
 | 路由 | 限流 |
 |---|---|
 | 默认 API | 60/min（内存；按 IP / Bearer） |
-| `/api/verify-tip` | **10/min/IP**（单独桶） |
+| `/api/verify-*` / `/api/confirm-*` | **10/min/IP**（单独桶） |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
-
-### curl：邮箱核验（无记录时）
-
-```bash
-curl -s -X POST http://127.0.0.1:8787/api/verify-tip \
-  -H 'content-type: application/json' \
-  -d '{"email":"nobody@example.com"}'
-# {"tipped":false}
-```
-
-Checkout / webhook 需配置 `STRIPE_*` secrets 与真实 KV id（见 `YIN_TIP_JAR.md` § 部署 · 任务 5）。**代码 alone 无法完成真实收款。**
 
 ## Stub 接口（仍保留）
 
@@ -72,36 +67,27 @@ Checkout / webhook 需配置 `STRIPE_*` secrets 与真实 KV id（见 `YIN_TIP_J
 
 ```
 cloud/
-  wrangler.jsonc      # Worker 名 focus-tiger-cloud + TIP_KV
+  wrangler.jsonc      # TIP_KV + SANCTUARY_KV + MEMBERSHIP_KV
   src/
     index.ts
     types.ts
-    lib/http.ts | validate.ts | cors.ts | stripe.ts | tipKv.ts
+    lib/http.ts | validate.ts | cors.ts | stripe.ts | tipKv.ts | sanctuaryKv.ts | membershipKv.ts
     middleware/rateLimit.ts
-    routes/dailyMessage.ts | emotionWeight.ts
-    routes/createTipCheckoutSession.ts | stripeWebhook.ts | verifyTip.ts
+    routes/…
 ```
 
-## 部署（任务 5 · 完整清单）
-
-逐步清单以 **`docs/YIN_TIP_JAR.md` § 部署** 为准。摘要：
+## 部署摘要
 
 ```bash
-# 1) Stripe Test：建 $9.99 one-time Price → 填 wrangler.jsonc vars.STRIPE_PRICE_ID
-# 2) npx wrangler kv namespace create TIP_KV（+ --preview）→ 替换 wrangler.jsonc 占位 id
-# 3) secrets
-npx wrangler secret put STRIPE_SECRET_KEY
+# Membership recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
+npx wrangler kv namespace create MEMBERSHIP_KV
+npx wrangler kv namespace create MEMBERSHIP_KV --preview
+# 替换 wrangler.jsonc 占位 id
+npx wrangler secret put STRIPE_SECRET_KEY   # 若尚未配置
 npx wrangler secret put STRIPE_WEBHOOK_SECRET
-# 4) npm run deploy → workers.dev
-# 5) Stripe Webhook → https://<worker>/api/stripe-webhook
-# 6) 前端 VITE_CLOUD_API_BASE_URL=<worker base>
+npm run deploy
 ```
 
-先用 **workers.dev** 验证；正式域名另开任务。  
-Sanctuary Lifetime **另** Price / KV / 路由——勿复用本 Tip 配置当解锁凭证。
-
-## 与前端的关系
-
-可选接线：Vite `VITE_CLOUD_API_BASE_URL`（公开 base）。未配置时免费主路径不变；Tip Jar 卡提示「未配置」。
+前端：`VITE_CLOUD_API_BASE_URL=<worker base>`。
 
 **密钥**：客户端禁止 Secret；Worker 用 `wrangler secret put`。

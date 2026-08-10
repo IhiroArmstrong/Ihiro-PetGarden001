@@ -86,7 +86,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | Sanctuary Lifetime Unlock UI / Checkout | `lifetime∪subscription` | **买断 SKU** | `sanctuaryEntitlementGate` → entitlement lifetime 信号 | B 买断方式 | **已接线** | 支付/UI 已合；**≠** 下游 Ambient 已按锁消费 |
-| Yin Membership 订阅产品化 | `lifetime∪subscription` | **订阅 SKU** | entitlement `subscription` cache + mock | B 订阅方式；v1 纳入 | **未接线** | 文档已定；**尚无**独立 Membership Checkout / 管理 UI；mock=`?entitlementMock=subscription` 可测门闩 |
+| Yin Membership 订阅产品化 | `lifetime∪subscription` | **订阅 SKU** | entitlement `subscription` cache + `membershipCheckout` | B 订阅方式；v1 纳入 | **部分接线** | Checkout / confirm / verify / Unlock UI / Support 卡已接；成功页写 entitlement cache。续费/取消 webhook（Prompt 9）与真实 provider（Prompt 10）未接；须填 `STRIPE_MEMBERSHIP_PRICE_ID` + 真实 `MEMBERSHIP_KV` id 后部署 |
 | 统一 entitlement gate 地基 | `lifetime∪subscription` | 互覆盖引擎 | `src/core/entitlement/` | 正式产品决定 | **部分接线** | 单测 + mock 已合；**多数产品 UI 未统一改读** `isEntitled`（仪式菜单除外） |
 | Morning Ritual（进阶） | `lifetime∪subscription` | Lifetime 或 Membership | `ritual.morning.access`（字面 subscription / ongoing） | B | **已接线** | Idle ⋯/抽屉 Rituals 行 `isEntitled` 锁；未授权 disabled |
 | Emotional Reset Ritual | `lifetime∪subscription` | 同上 | `ritual.emotional-reset.access` | B | **已接线** | 同上 |
@@ -96,7 +96,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 高级情绪动画 / 场景（`emotion.premium.trigger`） | `lifetime∪subscription` | 非核心；名单另定 | `emotion.premium.trigger` | B | **未接线** | catalog 占位；dispatcher **未**按 key 拦高级表现 |
 | 进阶每日解锁内容（`content.advanced.daily-unlock`） | `lifetime∪subscription` | — | `content.advanced.daily-unlock` | B 占位 | **未接线** | catalog 有；**无**产品消费者 |
 | Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | 授予/Idle 优先展示已合；依赖 Sanctuary unlocked，**不**读 tip |
-| Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | Membership 卡尚未 |
+| Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | — |
+| Support Yin Modal · Membership 卡 | `lifetime∪subscription` | 订阅入口 | Support → Membership Checkout | B 入口 | **已接线** | 与 Sanctuary / Tea 并列；展示图暂复用 Sanctuary preview |
 
 ### A4 · 增长赠品（当前按免费）
 
@@ -138,7 +139,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 1. **Ambient 深度曲按 entitlement / Sanctuary 消费** — 文档 B 权益；**代码暂缓**（最大「假收费」风险面之一）。  
 2. **`emotion.premium.trigger`** — catalog 有；产品未拦高级情绪。  
 3. **`content.advanced.daily-unlock`** — catalog 有；无消费者。  
-4. **Yin Membership 订阅 Checkout / 管理 UI** — 文档 v1 纳入；产品未接线（mock 可测门闩）。  
+4. **Yin Membership 订阅 Checkout** — create/confirm/verify + Unlock UI 已接（本支）；续费/取消 webhook 与真实 provider 仍待；部署须 Price + `MEMBERSHIP_KV`。  
 5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式菜单已用；Ambient/高级情绪等未跟。  
 6. **Daily Wisdom 挂产品场景** — 免费且部分接线；场景落点另定（非付费差距，但属 catalog 已登记项）。
 
