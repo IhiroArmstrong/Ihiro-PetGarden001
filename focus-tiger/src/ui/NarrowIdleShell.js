@@ -58,6 +58,7 @@ export class NarrowIdleShell {
    *     onLanguage?: () => void,
    *     onFiveMoments?: () => void,
    *     onJourneyLog?: () => void,
+   *     onConfide?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
@@ -819,6 +820,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onJourneyLog?.();
+      return;
+    }
+    if (key === 'confide') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onConfide?.();
       return;
     }
     if (key === 'zen-cinema') {

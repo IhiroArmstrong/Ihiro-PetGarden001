@@ -79,6 +79,7 @@ export class WideIdleMoreMenu {
    *     onLanguage?: () => void,
    *     onFiveMoments?: () => void,
    *     onJourneyLog?: () => void,
+   *     onConfide?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
@@ -637,6 +638,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onJourneyLog?.();
+      return;
+    }
+    if (key === 'confide') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onConfide?.();
       return;
     }
     if (key === 'zen-cinema') {

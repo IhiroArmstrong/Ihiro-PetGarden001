@@ -382,6 +382,20 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(entries.some((e) => e.proxy === 'community'));
   });
 
+  it('confide row hidden while safety copy draft; visible only when gate open', () => {
+    const closed = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      confideUserVisible: false
+    });
+    assert.ok(!closed.some((e) => e.proxy === 'confide'));
+    const open = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      confideUserVisible: true
+    });
+    const row = open.find((e) => e.proxy === 'confide');
+    assert.equal(row?.labelKey, 'CONFIDE_MENU_LABEL');
+  });
+
   it('ritual rows are locked when not entitled', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     const rituals = entries.filter((e) =>
