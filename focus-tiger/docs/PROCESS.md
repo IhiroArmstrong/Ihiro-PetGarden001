@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。用户反馈付完回跳像「只回首页」——Tea 致谢易被冷启动欢迎盖掉；Sanctuary/Membership 未 playEmotion。TRACKER 已记（Tip 行有问题 · RB-20260811-L370；致谢专行待选题拍板）。
 - **向阿寅倾诉 · Confide MVP（2026-08-10 · #225 已合）**：分类 safety→情绪→fallback；禅意 18 + safety-01 **ok**；面板 `#confide-to-yin-card` 已接线；**`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户菜单仍关）。QA：`?product=1&confide=1`。待评估：地区热线具体资源。TRACKER 待人工。
 - **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
