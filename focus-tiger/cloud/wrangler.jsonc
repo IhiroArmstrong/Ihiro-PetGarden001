@@ -16,10 +16,10 @@
  *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID (one-time)
  *   Yin Membership → STRIPE_MEMBERSHIP_PRICE_ID (recurring)
  *
- * MEMBERSHIP_KV ids below are placeholders until:
- *   cd focus-tiger/cloud && npx wrangler kv namespace create MEMBERSHIP_KV
- *   npx wrangler kv namespace create MEMBERSHIP_KV --preview
- * Then replace id / preview_id. Deploy will fail until real ids are set.
+ * MEMBERSHIP_KV (created 2026-08-10):
+ *   id         = 331994910f30411393e241c1252d85e6
+ *   preview_id = 5496acb38b20430b936e700e598d3c6a
+ * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle).
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -42,8 +42,8 @@
 		},
 		{
 			"binding": "MEMBERSHIP_KV",
-			"id": "00000000000000000000000000000001",
-			"preview_id": "00000000000000000000000000000002"
+			"id": "331994910f30411393e241c1252d85e6",
+			"preview_id": "5496acb38b20430b936e700e598d3c6a"
 		}
 	],
 	"vars": {

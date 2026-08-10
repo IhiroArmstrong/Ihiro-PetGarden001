@@ -65,7 +65,7 @@ Webhook：本期仍忽略 `mode !== payment`（续费/取消留给 Prompt 9）�
 
 1. Stripe Dashboard（Sandbox）：建 **recurring** Price → 填 `wrangler.jsonc` `vars.STRIPE_MEMBERSHIP_PRICE_ID`  
    - 已写入 Sandbox Price：`price_1U2r5lFuIhgJPGLiEPOhJbst`（2026-08-10）
-2. `cd focus-tiger/cloud && npx wrangler kv namespace create MEMBERSHIP_KV`（+ `--preview`）→ 替换 wrangler 占位 id
+2. `MEMBERSHIP_KV` 已创建（2026-08-10）：`id=331994910f30411393e241c1252d85e6` · `preview_id=5496acb38b20430b936e700e598d3c6a`（本地 dev 不直连 remote）
 3. secrets 沿用既有 `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET`（Sandbox）
 4. **生产 `npm run deploy` 延后到 Prompt 9（webhook 续费/取消）之后**；此前勿发 Membership 到线上 Worker
 5. 前端 `VITE_CLOUD_API_BASE_URL` 指向 Worker；生产 success/cancel URL / `ALLOWED_ORIGIN` 按环境改 vars
