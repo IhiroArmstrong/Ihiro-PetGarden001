@@ -56,6 +56,7 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 
 - `MembershipUnlockUI` / `#yin-membership-card`（Idle ⋯ / 抽屉 `membership` + Support 卡）
 - 回跳：`?membership_session={CHECKOUT_SESSION_ID}` → `confirmMembershipReturnQuery` → **仅**服务端 confirm 成功后 `markMembershipFromPayment`
+- **致谢动画（2026-08-11）**：confirm 成功后播 `sessionComplete`；回跳期间跳过冷启动欢迎（`paymentCheckoutThanks.js`）
 - 取消：`?membership=cancel`（不写缓存）
 - 跨设备：邮箱 → `POST /api/verify-membership` → 同上 patch（受上节宽限约束）
 
