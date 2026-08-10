@@ -71,7 +71,8 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 | metadata | Session + **`subscription_data.metadata`**: `product=membership` · `planId=yin-membership` | `product=sanctuary` |
 | Checkout `mode` | `subscription` | `payment` |
 
-Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并用 `current_period_end` → `periodEndsAt`；写 KV 时同步写 `membership-sub:` 反查。
+Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并用 `periodEndsAtFromSubscription` → `periodEndsAt`；写 KV 时同步写 `membership-sub:` 反查。  
+**Stripe API Basil+ / webhook `2026-07-29.dahlia`**：顶层 `subscription.current_period_end` 已移除，须读 `items.data[].current_period_end`（代码已兼容旧顶层字段）。缺 period → webhook/confirm 会 502 `subscription missing current_period_end`。
 
 ### Webhook（`POST /api/stripe-webhook` · 扩展既有处理器）
 
@@ -103,8 +104,18 @@ Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并�
    - 已写入 Sandbox Price：`price_1U2r5lFuIhgJPGLiEPOhJbst`（2026-08-10）
 2. `MEMBERSHIP_KV` 已创建（2026-08-10）：`id=331994910f30411393e241c1252d85e6` · `preview_id=5496acb38b20430b936e700e598d3c6a`（本地 dev 不直连 remote）
 3. secrets 沿用既有 `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET`（Sandbox）；**生产 webhook 须订阅上表事件**
-4. **生产 `npm run deploy`**：Prompt 9 合入 develop 并完成 Test Mode 验收后再发；Dashboard endpoint 勾选 subscription/invoice 事件
-5. 前端 `VITE_CLOUD_API_BASE_URL` 指向 Worker；生产 success/cancel URL / `ALLOWED_ORIGIN` 按环境改 vars
+4. **生产 `npm run deploy`**：**已完成（2026-08-11）** · Version `2dc088de-3676-42b7-a885-3e490fb2f041` · tip 含 #226。  
+   - **Wrangler 登录坑**：默认浏览器（Safari）须**先** logout 再登录 **ihiro / 163 Cloudflare**，然后再 `npx wrangler login`；否则 OAuth 会绑错 Google，deploy 到旁路账号。`itilbase@gmail.com` 只用于 **Stripe**，不能用来登 CF。  
+   - 若报 `Unset the CLOUDFLARE_API_TOKEN`：当前终端先 `unset CLOUDFLARE_API_TOKEN` 再 login。  
+5. 前端用户测：`VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`（本地 `.env.local`）；成功/cancel URL 已指向 `127.0.0.1:5173`  
+6. Stripe Dashboard（同一 Sandbox webhook → `…/api/stripe-webhook`，帐号 **itilbase / AhoovaTech**）须包含：`checkout.session.completed`、`invoice.paid`、`invoice.payment_failed`、`customer.subscription.updated`、`customer.subscription.deleted`（与 tip 共用 URL，**不必**新建 endpoint）
+
+### 用户验收（与 Tea 相同 · 短步骤 · 无需 stripe listen / 本地 wrangler）
+
+1. `cd focus-tiger && npm run dev`（`.env.local` → ihiro Worker）  
+2. 打开 `http://127.0.0.1:5173/?product=1`  
+3. Support / ⋯ → Yin Membership → Subscribe → Test 卡付完（Stripe = itilbase Sandbox）  
+4. 回跳后进阶应解锁（靠 `confirm-membership-session`；Webhook 异步写 KV）
 
 ## Pricing (display)
 

@@ -21,15 +21,24 @@ export type StripeCheckoutSession = {
 	metadata?: Record<string, string> | null;
 };
 
+export type StripeSubscriptionItem = {
+	id?: string;
+	/** Basil+ (e.g. 2025-03-31 / 2026-*.dahlia): period lives on the item, not the Subscription. */
+	current_period_end?: number;
+	current_period_start?: number;
+	price?: { id?: string } | null;
+};
+
 export type StripeSubscription = {
 	id: string;
 	status?: string;
+	/** Pre-Basil API versions only; removed on Subscription in Basil+. */
 	current_period_end?: number;
 	cancel_at_period_end?: boolean;
 	customer?: string | { id?: string; email?: string | null } | null;
 	metadata?: Record<string, string> | null;
 	items?: {
-		data?: Array<{ price?: { id?: string } | null } | null> | null;
+		data?: Array<StripeSubscriptionItem | null> | null;
 	} | null;
 };
 
@@ -251,12 +260,29 @@ export function subscriptionIdFromCheckoutSession(
 	return null;
 }
 
+/**
+ * Resolve billing period end for Membership KV.
+ * Stripe Basil+ (webhook API `2026-07-29.dahlia` etc.) removed top-level
+ * `subscription.current_period_end`; it lives on `items.data[].current_period_end`.
+ * Prefer top-level when present (older API), else max item end (multi-price safe).
+ */
 export function periodEndsAtFromSubscription(
 	sub: StripeSubscription,
 ): string | null {
-	const end = Number(sub.current_period_end);
-	if (!Number.isFinite(end) || end <= 0) return null;
-	return new Date(end * 1000).toISOString();
+	const top = Number(sub.current_period_end);
+	if (Number.isFinite(top) && top > 0) {
+		return new Date(top * 1000).toISOString();
+	}
+	let max = 0;
+	const items = sub.items?.data;
+	if (Array.isArray(items)) {
+		for (const item of items) {
+			const end = Number(item?.current_period_end);
+			if (Number.isFinite(end) && end > max) max = end;
+		}
+	}
+	if (max <= 0) return null;
+	return new Date(max * 1000).toISOString();
 }
 
 export function isActiveMembershipSubscriptionStatus(
