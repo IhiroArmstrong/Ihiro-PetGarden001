@@ -39,6 +39,7 @@ import { isEntitled } from './entitlement/entitlementGate.js';
  * @property {boolean} companionVisible
  * @property {boolean} [companionEnabled]
  * @property {boolean} reminderAvailable
+ * @property {boolean} [newsletterSubmitted]
  */
 
 /**
@@ -48,6 +49,7 @@ import { isEntitled } from './entitlement/entitlementGate.js';
  * @property {'item' | 'group-label'} [kind]
  * @property {string} [featureKey]
  * @property {boolean} [locked]
+ * @property {boolean} [interactive] false = visible confirmation row, not clickable
  */
 
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
@@ -381,6 +383,27 @@ export function listSecondaryChromeEntries(surface, visibility) {
   out.push({
     proxy: 'tip-jar',
     labelKey: 'TIP_MENU_LABEL'
+  });
+
+  // Stay in touch — optional email capture (not an account; no entitlement gate).
+  // After submit: confirmation row only (You're subscribed) — not re-openable.
+  if (visibility.newsletterSubmitted) {
+    out.push({
+      proxy: 'newsletter',
+      labelKey: 'NEWSLETTER_MENU_SUBSCRIBED',
+      interactive: false
+    });
+  } else {
+    out.push({
+      proxy: 'newsletter',
+      labelKey: 'NEWSLETTER_MENU_LABEL'
+    });
+  }
+
+  // Join our community — static external link (placeholder URL).
+  out.push({
+    proxy: 'community',
+    labelKey: 'COMMUNITY_MENU_LABEL'
   });
 
   // Advanced RitualFlow scenes (entitlement-gated; free Breath practice stays home left ball).

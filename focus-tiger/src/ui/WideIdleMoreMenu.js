@@ -5,6 +5,7 @@ import {
   SECONDARY_PROXY_HINT_IDS,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
+import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v3';
 const WIDE_MQ = '(min-width: 480px)';
@@ -81,9 +82,11 @@ export class WideIdleMoreMenu {
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onWallpapers?: () => void,
-   *     onSanctuary?: () => void,
-   *     onTipJar?: () => void,
-   *     onRitualFlow?: (proxy: string) => void,
+     *     onSanctuary?: () => void,
+     *     onTipJar?: () => void,
+     *     onNewsletter?: () => void,
+     *     onCommunity?: () => void,
+     *     onRitualFlow?: (proxy: string) => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -557,7 +560,8 @@ export class WideIdleMoreMenu {
       ),
       reminderAvailable: Boolean(
         document.getElementById('reminder-preference-toggle')
-      )
+      ),
+      newsletterSubmitted: hasSubmittedNewsletter()
     });
 
     this.listEl.innerHTML = '';
@@ -584,6 +588,10 @@ export class WideIdleMoreMenu {
         btn.setAttribute('aria-disabled', 'true');
         btn.title = t('ritual.menu_locked');
         btn.classList.add('is-locked');
+      } else if (item.interactive === false) {
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.classList.add('is-static');
       }
       const hintId = SECONDARY_PROXY_HINT_IDS[item.proxy];
       const showDot =
@@ -658,6 +666,18 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onTipJar?.();
+      return;
+    }
+    if (key === 'newsletter') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onNewsletter?.();
+      return;
+    }
+    if (key === 'community') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onCommunity?.();
       return;
     }
     if (
