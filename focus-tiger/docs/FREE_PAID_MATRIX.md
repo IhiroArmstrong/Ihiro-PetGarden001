@@ -1,0 +1,162 @@
+# Focus Tiger · 功能 × 免费/付费对照表（草稿）
+
+> **状态：草稿（2026-08-10）** — **不是** SSOT / 方向锁。升格须你书面确认后改文首标记。  
+> **范围**：整理「功能归属 + 文档口径 + 代码接线现状」；**不含**价格列（$9.99 / $89.99 等为展示用、未锁定，另处跟踪）。  
+> **禁止**：本文件任务不改 `FEATURE_CATALOG` / 运行时；改档位先改产品文档再改代码。
+
+## 权威从属
+
+| 层 | 文件 | 管什么 |
+|---|---|---|
+| 产品策略 / 红线 | `MVP_PRODUCT_DEFINITION.md` §五 | 双轨心智、免费底线、不卖清单 |
+| 工程商业化细则 | `task-briefs/task-tech-direction-v1-shell-monetization.md` | A/B 入口、零耦合、到期降级 |
+| 工程 catalog | `src/core/entitlement/entitlementRegistry.js`（`FEATURE_CATALOG`） | featureKey → requiredTier / type |
+| **本表（草稿）** | `FREE_PAID_MATRIX.md` | 功能×档位×接线差距对账 |
+
+## 心智模型（硬 · 与 #216 对齐）
+
+仍称 **双轨**，**禁止**「三档并存」表述：
+
+| 轨 | 含义 |
+|---|---|
+| **A · Buy Yin a Tea** | 打赏；可选徽章 / 茶室留痕；**不解锁任何内容** |
+| **B · 进阶内容解锁** | 深度音效 / 高级表现 / 尊贵徽章 / 进阶仪式等 |
+
+B 下两种**付费方式**（同一套进阶权益，不是两套内容层级）：
+
+- **Sanctuary Lifetime** — 一次买断  
+- **Yin Membership** — 订阅  
+
+全局规则：**lifetime ∪ subscription 互相覆盖**。  
+**到期降级**：已生成内容（历史、已解锁纪念物、已播放仪式）永久可看；到期只停「新内容持续解锁」与「进阶功能继续使用」。
+
+### 本表档位取值
+
+| 取值 | 含义 |
+|---|---|
+| `free` | 免费；不得付费墙 |
+| `tip-only` | A 轨；打赏相关，**非**内容解锁档 |
+| `lifetime∪subscription` | B 轨进阶；买断或订阅同等访问 |
+
+若 catalog 字面 `requiredTier: 'subscription'`，产品档位仍写 `lifetime∪subscription`，并在「Catalog / gate」注明字面值 + 全局互覆盖。
+
+### 「代码落地」取值
+
+| 取值 | 含义 |
+|---|---|
+| **已接线** | 产品路径会按档位真拦或真放行（含菜单锁 / `isEntitled` 消费） |
+| **部分接线** | catalog / gate / UI 有一部分，但消费不全或场景未挂 |
+| **未接线** | 文档或 catalog 已定，产品路径尚未按档位拦/放 |
+| **不适用** | 无 entitlement key；默认开放或明确非内容 gate |
+
+**读表原则**：勿把「文档说要收费」与「代码已经真的拦了」混为一谈——看「差距说明」列。
+
+---
+
+## 表 A · 功能 × 档位 × 接线现状
+
+### A1 · 免费底线（不得付费墙）
+
+| 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
+|---|---|---|---|---|---|---|
+| Yin 陪伴 / 基础 Idle（闭目呼吸→眨眼） | `free` | — | 无 key（主线默认） | 不得付费墙 | **已接线** | 主线开放；无付费门 |
+| Arrival Practice | `free` | — | 无 key | 不得付费墙 | **已接线** | — |
+| Focus Timer / Sit→Focusing / Rise | `free` | — | 无 key | 不得付费墙 | **已接线** | — |
+| Honesty Check-in | `free` | — | 无 key | 不得付费墙 | **已接线** | — |
+| 每日首次庆祝 / 轻完成反馈 | `free` | — | 无 key（庆祝主路径） | 不得付费墙 | **已接线** | — |
+| Basic Reflection（结束反思 + 共鸣短句） | `free` | — | 无 key | 免费；禁 AI / 付费 CTA | **已接线** | — |
+| Breath Practice（首页左球） | `free` | — | 无 key | 与进阶仪式分立；免费 | **已接线** | — |
+| Journey Log（基础 · D′） | `free` | — | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合；**未**在入口调用 `isEntitled('journey.log')`（key 恒 free，行为上仍免费开放） |
+| Daily Wisdom（每日一句） | `free` | — | `content.daily-wisdom`（free / ongoing） | 免费 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**未挂产品场景**（Lit 可插拔，落点另定） |
+| MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
+
+### A2 · A 轨 · Buy Yin a Tea（打赏 · 不解锁）
+
+| 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
+|---|---|---|---|---|---|---|
+| Tip / Tea Checkout | `tip-only` | 一次性 tip；可多次 | `tipJarGate`（**非** FEATURE_CATALOG） | A；不解锁内容 | **已接线** | Unlock UI + Worker；与 Sanctuary 零耦合 |
+| 善意徽章（Tea） | `tip-only` | 打赏后按练习授枚 | tip `badgeIds` | 可选纪念；不解锁 | **已接线** | 与 Sanctuary 章视觉分立 |
+| Tea Log / 再 tip 致谢动画 | `tip-only` | — | tip schema | 情绪反馈 | **已接线** | — |
+| Support Yin Modal · Tea 卡 | `tip-only` | 入口 | Support Modal | 统一入口之一 | **已接线** | 场景化请茶气泡仍排期（非本表缺口归类为增长 UX） |
+
+### A3 · B 轨 · 进阶解锁（Lifetime ∪ Membership）
+
+> Catalog 字面多为 `requiredTier: 'subscription'`；产品档位一律 `lifetime∪subscription`（全局互覆盖）。
+
+| 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
+|---|---|---|---|---|---|---|
+| Sanctuary Lifetime Unlock UI / Checkout | `lifetime∪subscription` | **买断 SKU** | `sanctuaryEntitlementGate` → entitlement lifetime 信号 | B 买断方式 | **已接线** | 支付/UI 已合；**≠** 下游 Ambient 已按锁消费 |
+| Yin Membership 订阅产品化 | `lifetime∪subscription` | **订阅 SKU** | entitlement `subscription` cache + mock | B 订阅方式；v1 纳入 | **未接线** | 文档已定；**尚无**独立 Membership Checkout / 管理 UI；mock=`?entitlementMock=subscription` 可测门闩 |
+| 统一 entitlement gate 地基 | `lifetime∪subscription` | 互覆盖引擎 | `src/core/entitlement/` | 正式产品决定 | **部分接线** | 单测 + mock 已合；**多数产品 UI 未统一改读** `isEntitled`（仪式菜单除外） |
+| Morning Ritual（进阶） | `lifetime∪subscription` | Lifetime 或 Membership | `ritual.morning.access`（字面 subscription / ongoing） | B | **已接线** | Idle ⋯/抽屉 Rituals 行 `isEntitled` 锁；未授权 disabled |
+| Emotional Reset Ritual | `lifetime∪subscription` | 同上 | `ritual.emotional-reset.access` | B | **已接线** | 同上 |
+| Work Transition Ritual | `lifetime∪subscription` | 同上 | `ritual.work-transition.access` | B | **已接线** | 同上 |
+| 仪式完成 → history / memento / copy / sfx ownership | `lifetime∪subscription` | 到期后 persistent 仍可看 | `ritual.*.history|memento|copy-unlocked|sfx-unlocked`（字面 subscription / persistent） | 到期降级策略 | **部分接线** | 完成时 `claimFeatureOwned` 已写；**独立「回看历史/纪念物」产品 UI** 是否齐全另计；无 entitlement 时无法新开仪式 |
+| 深度音效全库（`ambient.deep.play`） | `lifetime∪subscription` | 免费保留温暖子集 | `ambient.deep.play`（字面 subscription / ongoing） | B 核心权益之一 | **未接线** | catalog 有；**Ambient 消费 `isSanctuaryUnlocked` / `isEntitled` 仍暂缓**（PROCESS / TRACKER / KnownRisky #26）——免费用户目前仍可能听到未分层的内置曲（以现实现为准） |
+| 高级情绪动画 / 场景（`emotion.premium.trigger`） | `lifetime∪subscription` | 非核心；名单另定 | `emotion.premium.trigger` | B | **未接线** | catalog 占位；dispatcher **未**按 key 拦高级表现 |
+| 进阶每日解锁内容（`content.advanced.daily-unlock`） | `lifetime∪subscription` | — | `content.advanced.daily-unlock` | B 占位 | **未接线** | catalog 有；**无**产品消费者 |
+| Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | 授予/Idle 优先展示已合；依赖 Sanctuary unlocked，**不**读 tip |
+| Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | Membership 卡尚未 |
+
+### A4 · 增长赠品（当前按免费）
+
+| 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
+|---|---|---|---|---|---|---|
+| Digital Wallpapers | `free` | — | 无付费 gate | 免费赠送 | **已接线** | 禁止付费门 |
+| Quiet Line（签文存图） | `free` | — | 无付费 gate | 增长包免费 | **已接线** | 与 Daily Wisdom 分池 |
+| Zen Cinema / YouTube 入口 | `free` | — | 无付费 gate | 增长包免费 | **已接线** | — |
+| 用户上传氛围乐 | `free` | — | 无付费 gate | v1 必交付；非 Sanctuary 门槛 | **已接线** | 不得因未购 B 禁用上传主路径 |
+| 电子书 ②A 免费下载 | `free` | — | — | 延后排期 | **未接线** | 产品延后，非付费墙项 |
+| 电子书 ②B 练习解锁 | — | — | — | **已取消** | **不适用** | 勿复活 streak/练习解锁 |
+
+---
+
+## 表 B · 明确不卖 / 不做（防回潮）
+
+下列**不得**因「可收费」自动进入付费清单或路线图。权威：`MVP_PRODUCT_DEFINITION.md` §五；商业化 Brief。
+
+| 项 | 姿态 | 否决 / 约束要点 | 权威出处 |
+|---|---|---|---|
+| AI Focus Coach / AI reflection | **不进路线图** | 非陪伴卖点；隐私与观察式文案冲突 | MVP §五「不应因可收费…」；#216 拍板红线不变 |
+| 情绪趋势 / 心理分析 / 成长评分 | **不进路线图** | 禁止评判人格与「真假专注」 | MVP §五 / 隐私承诺 |
+| 复杂专注报表 | **不进路线图** | 数据是配角 | MVP §五 |
+| 多角色收集 / 随机奖励 / 付费加速 | **不做** | 焦虑与街机化 | MVP §五；PRINCIPLES |
+| 以连续 365 天为前提的成长路线 | **不做** | 禁止断签/连续作解锁 | MVP §五；商业化红线 |
+| 大换装系统 | **不做（v1）** | Brief 明确禁止写入 B 权益 | monetization Brief §2.2 |
+| Apple Health / Widget 写成 v1 付费权益 | **不做（v1）** | 健康非 v1；纯 Web 不可用 | MVP §五；Brief |
+| A tip 解锁 B 内容 | **禁止** | Gate 零耦合 | Brief §2.6 |
+| A→B 请茶送 24h 体验卡 | **非 v1** | 阶段 2 候选 | Brief §2.8 |
+| UGC Pro Pass 社区订阅 | **默认不做** | ≠ Yin Membership；无账号 / 平台复杂度 | PROCESS UGC Backlog |
+| 抽奖 / 稀缺倒计时 / FOMO | **禁止** | 商业化红线 | MVP §五 |
+
+---
+
+## 差距摘要（文档已定收费 / 占位 ≠ 代码真拦）
+
+优先对照排期用（非完整 Backlog）：
+
+1. **Ambient 深度曲按 entitlement / Sanctuary 消费** — 文档 B 权益；**代码暂缓**（最大「假收费」风险面之一）。  
+2. **`emotion.premium.trigger`** — catalog 有；产品未拦高级情绪。  
+3. **`content.advanced.daily-unlock`** — catalog 有；无消费者。  
+4. **Yin Membership 订阅 Checkout / 管理 UI** — 文档 v1 纳入；产品未接线（mock 可测门闩）。  
+5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式菜单已用；Ambient/高级情绪等未跟。  
+6. **Daily Wisdom 挂产品场景** — 免费且部分接线；场景落点另定（非付费差距，但属 catalog 已登记项）。
+
+**已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合。
+
+---
+
+## 维护约定（草稿阶段）
+
+1. 改「谁免费 / 谁进 B」→ 先 `MVP` / Brief，再改本表，最后改 `FEATURE_CATALOG` 与消费者。  
+2. 接线状态随合入 PR 更新「代码落地」「差距说明」；禁止只改代码不改表。  
+3. **升格 SSOT**：仅当你书面把文首「草稿」改为方向锁 / SSOT 后生效；Agent **不得**自行转正。  
+4. 价格、具体曲目/动画分层名单：**不**写入本表。
+
+## 相关索引
+
+- `MVP_PRODUCT_DEFINITION.md` §五  
+- `task-briefs/task-tech-direction-v1-shell-monetization.md`  
+- `YIN_SANCTUARY.md` / `YIN_TIP_JAR.md`  
+- `SHARED_RESOURCES.md`（entitlement / sanctuary / tip keys）  
+- `TEST_TRACKER.md`（RitualFlow / entitlement / Sanctuary / Daily Wisdom 行）  
