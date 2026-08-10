@@ -1,7 +1,7 @@
 # Task Brief · 技术方向纪要（v1 壳 / 商业化 / 健康同步）
 
-> **状态（2026-08-07 夜 · §八已确认可执行）**：A Tip/Tea + B Sanctuary 双入口；founder → `feature/yin-tip-jar`；B 新建；§2.6 **Gate 零耦合**为 Code Review 必检条款。  
-> **触发**：用户确认双表执行 + 零耦合条款原文 + 可推进 tip-jar / sanctuary / 低风险三项并行。  
+> **状态（2026-08-10 修订）**：双轨仍为 **A Tip/Tea（不解锁）+ B 进阶内容解锁**；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅并存、互覆盖。founder → `feature/yin-tip-jar`；§2.6 **Gate 零耦合**（tip ↔ 解锁）为 Code Review 必检条款。  
+> **触发**：推翻「v1 仅 Lifetime / 无订阅」；订阅纳入 v1，仍维持双轨心智（非「三档并存」）。  
 > **权威**：本文件 + `PROCESS.md` + `MVP_PRODUCT_DEFINITION.md` §五。
 
 ---
@@ -14,11 +14,12 @@
 | 手机原生壳 | v1 **不实现**；未来默认 **Capacitor** |
 | 桌面壳 | **仍开放**（Electron / Tauri / PWA·薄壳） |
 | 健康同步 | **非 v1**；**禁止**写入 B 付费权益 |
-| **商业双轨（硬）** | **A** Buy Yin a Tea + **B** Yin's Sanctuary。**两者都要**，不二选一 |
+| **商业双轨（硬）** | **A** Buy Yin a Tea（不解锁）+ **B** 进阶内容解锁。**两者都要**，不二选一。**不是**「三档并存」 |
 | **A** | 打赏；情绪反馈 + 可选徽章；**不解锁**任何内容 |
-| **B** | 深度美学/音效解锁；**新的技术线**（真 entitlement） |
-| **B 收费形态（v1 硬）** | **仅 Lifetime 一次买断**；**不做** Monthly/Yearly 订阅（不做续费/取消/宽限期） |
-| **B 权益（v1）** | ① 深度音效全库 ② 高级情绪动画/场景（已划界、非核心） ③ 尊贵徽章/身份标识 |
+| **B** | 深度美学/音效/进阶仪式等解锁；真 entitlement |
+| **B 付费方式（v1 硬）** | **Sanctuary Lifetime** 一次买断 **∪** **Yin Membership** 订阅；二者解锁**同一套**进阶内容；**lifetime ∪ subscription 互相覆盖** |
+| **B 权益（v1）** | ① 深度音效全库 ② 高级情绪动画/场景（已划界、非核心） ③ 尊贵徽章/身份标识 ④ 进阶仪式等（catalog `requiredTier: 'subscription'` 为正式产品决定） |
+| **订阅到期降级（v1 硬）** | 已生成内容（历史、已解锁纪念物、已播放仪式）**永久可看**；到期只停「新内容持续解锁」与「进阶功能继续使用」 |
 | **A→B 24h 体验卡** | **非 v1**；阶段 2 候选（见 §2.7） |
 | **解锁触发** | **禁止**连续/断签式解锁或惩罚；不留 `streak` 解锁接口空位 |
 | 账号 | **无账号**；邮箱仅恢复 tip / Sanctuary 购买记录 |
@@ -32,8 +33,9 @@
 
 | 旧口径 | 纠正后 |
 |---|---|
-| 只留 Sanctuary 单名 / founder 并入 Sanctuary | **已废止**。现为 **A Tip + B Sanctuary 双入口并存**；founder **不**改名为 Sanctuary |
-| Lifetime 为主、订阅非首选 | **v1 完全不做订阅**；仅 Lifetime（B） |
+| 只留 Sanctuary 单名 / founder 并入 Sanctuary | **已废止**。现为 **A Tip + B 进阶解锁双入口并存**；founder **不**改名为 Sanctuary |
+| Lifetime 为主、订阅非首选 | **已废止（2026-08-10）**。现为 Lifetime 买断 **∪** Yin Membership 订阅并存（同一套 B 权益） |
+| v1 完全不做订阅；仅 Lifetime（B） | **已废止（2026-08-10）**。Yin Membership 正式纳入 v1；catalog `subscription` 档为产品决定 |
 | 可选「请茶→24h 体验卡」漏斗 | **v1 不做**；记阶段 2 候选 |
 | Pass 权益含 Apple Health | **删除**；纯 Web 做不到 |
 | B 可复用 A 的 tip boolean / 乐观 query | **禁止**；B 独立 entitlement + 服务端校验 |
@@ -55,11 +57,11 @@
 
 ### 2.0 为什么两者不冲突（心理 + 梯队）
 
-| | **A · Buy Yin a Tea** | **B · Yin's Sanctuary** |
+| | **A · Buy Yin a Tea** | **B · 进阶内容解锁** |
 |---|---|---|
 | 心理触发 | **利他与感激**（Altruism & Gratitude）——「太治愈了，想回馈」 | **自我效能与美学享受**（Self-improvement & Aesthetic Enjoyment）——要更深场域/音效/身份 |
 | 用户梯队 | 轻度 / 预算敏感：小额打破零付费壁垒 | 深度美学 / 深度专注：为工具与场域价值买单 |
-| 超级粉丝 | 已购 B 后仍可**额外请茶**（情绪时刻） | 收入支柱 |
+| 超级粉丝 | 已购 B（Lifetime 或 Membership）后仍可**额外请茶**（情绪时刻） | 收入支柱（Lifetime 买断 ∪ Yin Membership 订阅） |
 | 产品角色 | **情绪润滑剂**（Emotional Revenue） | **收入支柱**（Base Revenue） |
 
 设计得当则互补；冲突只来自 **UI 混成「买了还要买啥」**——靠入口位置与文案层级拆开（§2.3）。
@@ -89,21 +91,26 @@
 - **禁止**任何「不打赏就怎样」暗示  
 - 对齐商业化红线：不用衰败/离开逼付费、不用倒计时/抽奖、不用稀缺 FOMO  
 
-### 2.2 选择 B — Yin's Sanctuary（Unlock / Pass）
+### 2.2 选择 B — 进阶内容解锁（Sanctuary Lifetime ∪ Yin Membership）
 
 | 项 | 口径 |
 |---|---|
-| 正式名 | **Yin's Sanctuary**（短写 Sanctuary；对外可称 Sanctuary Pass / Lifetime） |
-| 商品性质 | **仅 Lifetime 一次买断**（Stripe `mode=payment`） |
-| **v1 不做** | Monthly / Yearly 订阅及一切续费/取消/宽限期生命周期 |
+| 正式名（买断 SKU） | **Yin's Sanctuary** / Sanctuary Lifetime |
+| 正式名（订阅 SKU） | **Yin Membership** |
+| 内容层级 | **同一层**进阶解锁（深度音效 / 高级表现 / 徽章 / 进阶仪式等）；**禁止**把订阅理解成「少一档」或买断「多一档」 |
+| 买断 | Sanctuary Lifetime：Stripe `mode=payment`；一次买断 |
+| 订阅 | Yin Membership：Stripe 订阅；**v1 正式纳入**（续费/取消/宽限期按 entitlement 双宽限等实现） |
+| 互覆盖 | lifetime ∪ subscription **互相覆盖**任一 `requiredTier` 为 paid 的进阶键（free 仍 free） |
+| 到期降级 | 已生成 / 已拥有（persistent ownership）**永久可看**；ongoing 访问在订阅失效（含宽限结束后）停止 |
 | 定价数字 | **不锁**；待定 |
-| 工程 | **全新模块**（建议 `feature/yin-sanctuary-lifetime` + `sanctuaryEntitlementGate`）；**不**复用 tip-jar 的 gate / localStorage / UI |
+| 工程 | Sanctuary lifetime gate + 统一 `src/core/entitlement/`；**不**复用 tip-jar 的 tip 状态解锁内容 |
 
-#### B 权益清单（v1 · 只准这些）
+#### B 权益清单（v1 · 内容面）
 
 1. **深度音效全库**（免费保留足够温暖的子集）  
 2. **高级情绪动画 / 场景**（已划界、**非核心**路径；名单另定）  
 3. **尊贵徽章 / 身份标识**  
+4. **进阶仪式等**（Morning / Emotional Reset / Work Transition 等；catalog 标 `subscription` 为正式产品决定）
 
 **明确删除 / 禁止写入**：Apple Health 深度同步；课程墙；AI Coach；报表；换装大系统；抽奖加速；365 天路线。
 
@@ -111,12 +118,12 @@
 
 ### 2.3 UI 防混淆（入口 / 视觉层级）
 
-| | A Tea | B Sanctuary |
+| | A Tea | B 进阶解锁（Lifetime ∪ Membership） |
 |---|---|---|
-| 层级 | **微交互 / 情境提示**（小、可忽略） | **主商业门**（锁项处、明确权益卡） |
+| 层级 | **微交互 / 情境提示**（小、可忽略） | **主商业门**（锁项处、明确权益卡；可同时呈现买断与订阅） |
 | 位置 | 里程碑底条 · Honesty 归来轻提示 · About **最底部** Tip Jar | Soundscape / 场景 **锁项**点击 → Unlock 卡；（未来）设置顶 Banner；Idle ⋯ **可有一项但不挡 Sit** |
-| 文案 | “Buy Yin a tea?” / Thank Yin | “Unlock Yin's Sanctuary” + 权益三条 |
-| 已购 B | 可默认高阶茶徽章；**仍可**请茶 | 锁项打开；真校验后解锁 |
+| 文案 | “Buy Yin a tea?” / Thank Yin | Sanctuary Lifetime / Yin Membership + **同一套**权益说明（勿暗示订阅少一档） |
+| 已购 B | 可默认高阶茶徽章；**仍可**请茶 | 锁项打开；lifetime 或 subscription 任一生效即解锁 |
 
 **禁止**：Idle 首页两个平铺主 CTA；让用户以为「请茶 = 买了全库」；强迫已购 Pass 再请茶才能用核心功能。
 
@@ -278,20 +285,20 @@ UI:   SanctuaryUnlockUI.js
 
 ## 五、阶段 2 设计原则（摘要）
 
-允许：付费 Lifetime（B）/ Tea tip（A）/ 未来可选 tea-trial。  
+允许：Tea tip（A）/ Sanctuary Lifetime 与 Yin Membership（B · 同一套进阶权益）/ 未来可选 tea-trial。  
 禁止：连续 N 天解锁、断签收回/羞辱、打卡日历当付费门闩、任何 streak 解锁 API。
 
 ---
 
 ## 六、本纪要明确不做（v1）
 
-- 订阅制及续费生命周期  
 - A→B 24h 体验卡导流  
 - Apple Health / Widget 当付费卖点  
 - 用 A tip 状态解锁 B 内容  
 - 打赏强制弹窗 / 「不打赏就怎样」  
 - 付费锁核心练习路径  
 - 把 tip-jar 分支改名为 Sanctuary / 合并成单入口  
+- 把 Lifetime 与 Membership 做成**不同内容层级**（「订阅少一档」心智）  
 - 电子书 ②B（已取消）  
 - 未拍板定价数字上线  
 - Capacitor / 壳脚手架（未另下令）  
@@ -301,8 +308,9 @@ UI:   SanctuaryUnlockUI.js
 ## 七、实现开工口令（§八确认 + 过目后）
 
 1. **改道** `feature/founder-supporter-pack` → `feature/yin-tip-jar`（Tea/Tip i18n + `tipGate` + 情境触发 + tip schema）  
-2. **新开** `feature/yin-sanctuary-lifetime`（公共 payment 层 + `sanctuaryEntitlementGate` + Lifetime 真校验 + 音效/高级表现消费）  
-3. 低风险增发可另开：Privacy / Reflection echo / 壁纸  
+2. **新开 / 推进** Sanctuary Lifetime（`sanctuaryEntitlementGate` + Lifetime 真校验 + 音效/高级表现消费）  
+3. **推进** Yin Membership 订阅（Stripe 订阅 + 统一 `entitlement` 消费；与 Lifetime 互覆盖）  
+4. 低风险增发可另开：Privacy / Reflection echo / 壁纸  
 
 ---
 
@@ -376,6 +384,8 @@ UI:   SanctuaryUnlockUI.js
 2. 深度音效 / 高级动画 **分层名单**  
 3. 可选 PWA 是否立项  
 
-**已拍板**：§八双表执行；§2.6 零耦合条款（Code Review 必检）；②B 取消；B 仅 Lifetime；Privacy → Reflection echo → 壁纸 **可与 tip-jar 改道并行**。
+**已拍板（2026-08-10）**：推翻「v1 仅 Lifetime / 无订阅」；**双轨**维持（A 不解锁 + B 进阶解锁）；B 下 **Lifetime ∪ Yin Membership** 互覆盖；catalog `subscription` 档为正式产品决定；到期降级 = 已生成永久可看、只停新解锁与进阶使用。A→B 24h 体验卡仍非 v1。
+
+**已拍板（2026-08-07）**：§八双表执行；§2.6 零耦合条款（Code Review 必检）；②B 取消；Privacy → Reflection echo → 壁纸 **可与 tip-jar 改道并行**。（「B 仅 Lifetime」已被 2026-08-10 拍板废止。）
 
 本回合起允许改 tip-jar / sanctuary 运行时代码（须守零耦合）。

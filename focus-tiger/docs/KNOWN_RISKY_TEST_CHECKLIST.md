@@ -58,7 +58,7 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | Companion 点选 → 立刻 Focusing | Companion 点选 → **先**出 Focus 时长 chip **15/25/45/60** → 再 Focusing（`?sessionMinutes=` 仍可跳过） |
 | 抽屉 / ⋯ 有「一分钟呼吸」行 | **已去重**；呼吸入口只在左球 |
 | 欢迎池仅书/点头 | Day1 / ≥3 日久别可 **吹花 + 头顶气泡**（压过 wellness 斗篷）；同日 XOR |
-| 付费未定 | **双轨已锁**：A Buy Yin a Tea（不解锁内容）+ B Yin's Sanctuary Lifetime（真 entitlement）；②B 电子书**已取消** |
+| 付费未定 | **双轨已锁**：A Buy Yin a Tea（不解锁内容）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖（同一套进阶权益）；②B 电子书**已取消** |
 | 壳 = Electron/Tauri/PWA 三选一即将定 | **v1 默认纯 Web**；桌面壳**仍开放**；**可选 PWA 基础层**已合 `develop`（#180：manifest + network-only SW + 品牌图标）；**安装验收排期 = PR #2→`main` + 稳定版后**（勿现在催测；#188）。桌面壳选型仍开放，见技术方向 Brief |
 | 只开 `…-wt-qa-support-modal` 测 Support | **废**：Support 与其它未关单项共用 **同一** tip worktree（见 §0 公共前置） |
 | tip 永远是 `62e38a3` / 主仓 ahead1 behind1 | tip **随 fetch**；08-08 盘点 tip=`beb9147`；本地 develop 可能仅 ahead 文档，关单仍认远端 tip |
