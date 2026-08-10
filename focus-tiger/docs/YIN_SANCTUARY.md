@@ -23,6 +23,7 @@
 
 - `SanctuaryUnlockUI` / `#yin-sanctuary-card`（Idle ⋯ / 抽屉 `sanctuary`）
 - 回跳：`?sanctuary_session={CHECKOUT_SESSION_ID}` → `confirmSanctuaryReturnQuery` → **仅**服务端 confirm 成功后 `markSanctuaryFromPayment`（授 ≥3 枚尊贵章）
+- **致谢动画（2026-08-11）**：confirm 成功后播 `mindfulAcknowledge`（`nod-bow`）；回跳期间跳过冷启动欢迎（`paymentCheckoutThanks.js`）
 - **禁止**乐观 query 解锁（与 tip `?tip=1` 不同）
 - 练习上涨：`syncSanctuaryBadgesFromPractice`（卡内 + Idle 阿寅旁优先展示 Sanctuary 章）
 

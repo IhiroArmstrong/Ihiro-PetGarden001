@@ -32,10 +32,12 @@
 - 点按徽章 → 下载高清原图
 - **与 Sanctuary**：Tea / Sanctuary **两套视觉**（Sanctuary → `sanctuary-badges/`）；Brief `task-unified-practice-badges.md`
 
-### Tea Log + 再 tip 致谢（2026-08-09）
+### Tea Log + 再 tip 致谢（2026-08-09 · 2026-08-11 修订）
 
 - `tipLog[]`：每次 checkout 成功追加一行；Tip 卡展示最近 5 条
-- 再 tip：**不**靠加徽章；反馈文案 `TIP_FEEDBACK_THANKS_AGAIN` + 播既有 `teaDrinking`（首 tip：`nodGreeting`）
+- 再 tip：**不**靠加徽章；反馈文案 `TIP_FEEDBACK_THANKS_AGAIN`
+- **致谢动画（2026-08-11 拍板）**：首 tip / 再 tip 一律播 `teaDrinking`（不再用首 tip `nodGreeting`）
+- **冷启动门闩**：Stripe 整页回跳时 **跳过** `WELCOME_APP`，在欢迎 boot slot 播致谢，避免欢迎盖掉喝茶（见 `paymentCheckoutThanks.js`）
 - 新鞠躬素材 / 24h 光环 / 盲盒周边 → **延后**
 
 ## API
@@ -99,4 +101,4 @@ Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（
 | `ihiro` Worker + Webhook + secrets | **已有** |
 | #181 新 Price ID → **`ihiro` redeploy** | **已做**（2026-08-08 · `eb921e5f…`） |
 | 误建 `focus-tiger` 旁路 | **作废对齐** |
-| 人工 Test 卡金额 + webhook 写 KV | **部分完成（2026-08-11）**：Sandbox Tea / Sanctuary `checkout.session.completed` → Worker **200** `stored` + `product` 分流 OK。**仍待**：邮箱 restore（`/api/verify-tip`）、零耦合 UI 确认、付费成功致谢动画可见（见 `TEST_TRACKER` Tip 行 / 致谢专行） |
+| 人工 Test 卡金额 + webhook 写 KV | **部分完成（2026-08-11）**：Sandbox Tea / Sanctuary `checkout.session.completed` → Worker **200** `stored` + `product` 分流 OK。**仍待**：邮箱 restore（`/api/verify-tip`）、零耦合 UI 确认。致谢动画已由 **#231** 接线（TRACKER §D 待人工复测） |

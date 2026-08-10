@@ -91,6 +91,11 @@ import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
+import {
+  emotionKeyForPaymentThanks,
+  peekCheckoutReturnThanksKind,
+  resolveCheckoutReturnWelcomeGate
+} from './core/paymentCheckoutThanks.js';
 import { openCommunityExternalLink } from './core/communityLink.js';
 import {
   setNewsletterProvider
@@ -698,13 +703,18 @@ async function init() {
     }
   });
   window.__membershipUnlock = membershipUnlockUI;
+  // Peek before TipJarUI consumes `?tip=1` (and before welcome boot).
+  const checkoutReturnKind = peekCheckoutReturnThanksKind(
+    typeof location !== 'undefined' ? location.search : ''
+  );
+  const checkoutWelcomeGate =
+    resolveCheckoutReturnWelcomeGate(checkoutReturnKind);
+
   const tipJarUI = new TipJarUI(document.body, {
     onBadgesChanged: () => tipKindnessBadgesChrome.refresh(),
-    onTipThanks: ({ isRepeatTip }) => {
-      // Ritual thank-you with existing sequences (no new tip-only assets).
-      emotionController.playEmotion(
-        isRepeatTip ? 'teaDrinking' : 'nodGreeting'
-      );
+    onTipThanks: () => {
+      // Tip emotion is deferred to the welcome boot slot so WELCOME_APP
+      // cannot overwrite teaDrinking on Stripe full-page return.
     }
   });
   window.__tipJar = tipJarUI;
@@ -783,8 +793,20 @@ async function init() {
   });
   window.__supportYin = supportYinModalUI;
   consumeTipReturnQuery({});
-  void bootSanctuaryReturnConfirm({});
-  void bootMembershipReturnConfirm({});
+  void bootSanctuaryReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      emotionController.playEmotion(
+        emotionKeyForPaymentThanks('sanctuary')
+      );
+    }
+  });
+  void bootMembershipReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      emotionController.playEmotion(
+        emotionKeyForPaymentThanks('membership')
+      );
+    }
+  });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -2368,29 +2390,41 @@ async function init() {
   // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
   // wellness 深夜披斗篷 / 清晨苏醒仪式时跳过欢迎与 yawn/tea，避免抢戏。
   // 提醒横幅可与欢迎并存文案，但鹦鹉信使不得抢 Welcome（欢迎结束后补播）。
-  const welcomeBoot = skipWelcomeForWellness
-    ? { play: false, emotionKey: null, reason: 'wellness-band' }
-    : tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
-        playOptions: {
-          onComplete: () => {
-            // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
-            // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
-            const playMessenger =
-              pendingParrotMessengerAfterWelcome &&
-              inAppReminderBannerUI.isVisible();
-            window.setTimeout(() => {
-              if (playMessenger) {
-                playParrotMessengerNow();
-                return;
-              }
-              pendingParrotMessengerAfterWelcome = false;
-              syncInAppReminderBanner();
-            }, 0);
-          }
+  // Checkout 回跳：跳过欢迎；Tip 在本 slot 播 teaDrinking（Sanctuary/Membership 等 confirm）。
+  const skipWelcomeForCheckout = checkoutWelcomeGate.skipWelcome;
+  const paymentThanksAtWelcome = checkoutWelcomeGate.playAtWelcomeSlot;
+  if (paymentThanksAtWelcome) {
+    emotionController.playEmotion(paymentThanksAtWelcome);
+  }
+  const welcomeBoot =
+    skipWelcomeForWellness || skipWelcomeForCheckout
+      ? {
+          play: false,
+          emotionKey: paymentThanksAtWelcome,
+          reason: skipWelcomeForCheckout ? 'checkout-return' : 'wellness-band'
         }
-      });
+      : tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+          playOptions: {
+            onComplete: () => {
+              // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
+              // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
+              const playMessenger =
+                pendingParrotMessengerAfterWelcome &&
+                inAppReminderBannerUI.isVisible();
+              window.setTimeout(() => {
+                if (playMessenger) {
+                  playParrotMessengerNow();
+                  return;
+                }
+                pendingParrotMessengerAfterWelcome = false;
+                syncInAppReminderBanner();
+              }, 0);
+            }
+          }
+        });
   if (
     !skipWelcomeForWellness &&
+    !skipWelcomeForCheckout &&
     shouldAttemptLateNightOnBoot(welcomeBoot)
   ) {
     tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
