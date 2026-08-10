@@ -71,7 +71,8 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 | metadata | Session + **`subscription_data.metadata`**: `product=membership` · `planId=yin-membership` | `product=sanctuary` |
 | Checkout `mode` | `subscription` | `payment` |
 
-Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并用 `current_period_end` → `periodEndsAt`；写 KV 时同步写 `membership-sub:` 反查。
+Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并用 `periodEndsAtFromSubscription` → `periodEndsAt`；写 KV 时同步写 `membership-sub:` 反查。  
+**Stripe API Basil+ / webhook `2026-07-29.dahlia`**：顶层 `subscription.current_period_end` 已移除，须读 `items.data[].current_period_end`（代码已兼容旧顶层字段）。缺 period → webhook/confirm 会 502 `subscription missing current_period_end`。
 
 ### Webhook（`POST /api/stripe-webhook` · 扩展既有处理器）
 
