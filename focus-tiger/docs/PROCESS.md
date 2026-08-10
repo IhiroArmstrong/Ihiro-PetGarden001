@@ -82,7 +82,7 @@
 - **Buy Yin a Tea（#161）+ Sanctuary scaffold（#162）+ Unlock UI（#179）**：已合 develop；门闩分离。**Ambient 消费 `isSanctuaryUnlocked` 暂缓**，等 TEST_TRACKER 人工验收 Unlock 后再开。
 - **双轨变现纪要（2026-08-07 · PR #160 已合；2026-08-10 修订）**：双轨 = A Buy Yin a Tea（tip · 不解锁）∪ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖；门闩与 tip 零耦合。
 - **商业化口径修正（2026-08-10 · #216 已合 tip `9e698ee`）**：推翻「v1 仅 Lifetime / 无订阅」；Yin Membership 纳入 v1；仍称双轨（非三档）。SSOT：`MVP_PRODUCT_DEFINITION` §五 + `task-tech-direction-v1-shell-monetization.md`。
-- **功能×免费/付费对照表草稿（2026-08-10 · 本支）**：`docs/FREE_PAID_MATRIX.md`（文首草稿，勿自升 SSOT）；对账文档口径 vs 代码接线；无价格列。
+- **功能×免费/付费对照表（2026-08-10 · #219 草稿合入；#220 升 SSOT tip `e196e56`）**：`docs/FREE_PAID_MATRIX.md`（**方向锁 / SSOT**）；对账文档口径 vs 代码接线；无价格列。
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右 / 音符开播 / 每曲 Play/Pause / Idle 靠右）→ PR #131+#132；**2026-08-06 tip 关单**（用户「关单 OK」；功能 tip `ae6eca2`）。
