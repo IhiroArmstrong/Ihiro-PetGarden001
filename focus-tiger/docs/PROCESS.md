@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **向阿寅倾诉 · 产品拍板文档定稿（2026-08-10 · PR #217 已合 tip `7eabee6`）**：**无运行时**。禅意倾听者；检索不生成；分类失败固定兜底；入口 Idle ⋯/抽屉；规则分类。样板 A/B 六句已 `ok`；对齐四桶（tired/stuck/sad/scattered）已第二轮自扫改写，**12 句 `pending-reconfirm` 待人审**。Brief `task-confide-to-yin-v1.md` + `confide-corpus-seed.md`。人审全部 `ok` 后再开 feature 骨架。
+- **向阿寅倾诉 · 产品拍板文档定稿（2026-08-10 · PR #217 已合 tip `7eabee6`）**：**无运行时（文档）**。禅意倾听者；检索不生成；分类失败固定兜底；入口 Idle ⋯/抽屉；规则分类。样板六句 + 对齐四桶 12 句全部 `ok`（语料门闩解除）。Brief `task-confide-to-yin-v1.md` + `confide-corpus-seed.md`。**下一步**：开 `feature/confide-to-yin` MVP 骨架。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
@@ -369,7 +369,7 @@
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
 
-**最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——阿寅 = 禅意倾听者（非 AI Coach）；90% 模板 / 10% 主动倾诉走**本地分类 + 人工语料检索**（禁运行时生成对话）；分类失败 → **固定兜底**（禁模糊打分硬凑）；v1 入口 = Idle ⋯/抽屉；v1 分类 = 规则/关键词；AI 仅离线扩写候选且人 review。样板 A/B 六句已 `ok`；完整上线仍须其余四桶每桶 ≥3 条 `ok`。Brief `task-briefs/task-confide-to-yin-v1.md`；种子 `confide-corpus-seed.md`。#217 已合；四桶第二轮自扫稿待人审 → 全部 `ok` 后再开 feature 骨架。
+**最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——阿寅 = 禅意倾听者（非 AI Coach）；90% 模板 / 10% 主动倾诉走**本地分类 + 人工语料检索**（禁运行时生成对话）；分类失败 → **固定兜底**（禁模糊打分硬凑）；v1 入口 = Idle ⋯/抽屉；v1 分类 = 规则/关键词；AI 仅离线扩写候选且人 review。样板六句 + 对齐四桶 12 句全部 `ok`（语料门闩解除）。Brief `task-briefs/task-confide-to-yin-v1.md`；种子 `confide-corpus-seed.md`。#217 已合；四桶人审收尾后可开 `feature/confide-to-yin` MVP 骨架。
 
 **最近拍板（2026-08-09）**：远期玩法/商业种子入库 Backlog（**不排期、不开工**）——① **本地个人混音（Soundscape Mixer）**；② **UGC 创作者生态（约束版）**；③ **异步无声共修（Global Lanterns）**。评估结论：混音可接 Sanctuary/本地氛围深化；UGC 平台层暂缓；共修气质契合但须极薄、可关。详见下文三条 Backlog。
 
@@ -405,7 +405,7 @@
 - **付费 · 意愿漏斗本地统计**（Support / 双卡 / Checkout / 完成；无第三方）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
-- **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；**样板六句已 ok**；四桶 12 句 `pending-reconfirm` 待人审；feature 骨架未开工；种子 `confide-corpus-seed.md`）
+- **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；**样板+四桶共 18 句全部 ok**；语料门闩解除；**下一步**开 `feature/confide-to-yin` MVP；种子 `confide-corpus-seed.md`）
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
