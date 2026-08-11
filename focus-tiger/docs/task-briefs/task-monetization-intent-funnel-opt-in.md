@@ -1,6 +1,6 @@
 # Task Brief · 付费意愿漏斗 · opt-in 回传
 
-> **状态（2026-08-12）**：**实现中** · `feature/monetization-intent-funnel-opt-in`  
+> **状态（2026-08-12）**：**已合 develop** · #262 tip `582e79f` · `feature/monetization-intent-funnel-opt-in`  
 > **前置**：本地漏斗 #255 已合 tip `fea9c11`（`MONETIZATION_INTENT_FUNNEL.md`）  
 > **目的**：在**明示同意**后，把本机意愿漏斗计数聚合到自有 Cloud Worker，装成本地 APP 时仍可抓回运营可读摘要。  
 > **红线**：`MVP_PRODUCT_DEFINITION.md` §六；默认**关**；禁止静默上报；禁止第三方 SDK；禁止自由文本 / 意图 / 反思内容。

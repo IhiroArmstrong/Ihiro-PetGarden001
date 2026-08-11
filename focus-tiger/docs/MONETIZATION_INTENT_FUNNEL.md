@@ -1,6 +1,6 @@
 # Monetization Intent Funnel · 付费意愿漏斗
 
-> **状态（2026-08-12）**：本地漏斗 **#255 已合** tip `fea9c11`；**opt-in 回传** 本支 `feature/monetization-intent-funnel-opt-in`（Brief `task-monetization-intent-funnel-opt-in.md`）。  
+> **状态（2026-08-12）**：本地漏斗 **#255 已合** tip `fea9c11`；**opt-in 回传 #262 已合** tip `582e79f`（Brief `task-monetization-intent-funnel-opt-in.md`）。  
 > **性质**：本地埋点 + 可选自有 Worker 聚合；**无第三方**；不改变支付行为。  
 > **对照**：留存漏斗见 `RETENTION_FUNNEL.md`（另一套事件）。  
 > **隐私**：默认**不上报**；须 Privacy 页明示同意（`MVP_PRODUCT_DEFINITION` §六）。
