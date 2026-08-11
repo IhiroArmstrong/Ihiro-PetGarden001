@@ -37,6 +37,7 @@
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
 | `focus-tiger.tip-jar.v1` | `tipJarGate` | Buy Yin a Tea 本地 tip 状态：`{ tipped, tipCount, lastTippedAt, email?, source?, badgeIds[], tipLog[] }`；`badgeIds` = 善意/练习徽章（付费起 3，免费练习起 1，只增不减；练习上涨可 sync）；`tipLog` = 茶室留痕；**不**解锁内容；与 Sanctuary **零耦合** |
 | `focus-tiger.contextual-tea-tip.v1` | `contextualTeaTipGate` | 场景化请茶气泡：`{ lastShownLocalDay, lastShownReason, lastShownAt, dismissedCount }`；本地日一次；达标 / 里程碑触发；**不**解锁内容 |
+| `focus-tiger.monetization-funnel.v1` | `MonetizationFunnelStore` | 付费意愿漏斗：`{ counts, events[] }`；Support→CTA→Checkout→完成；仅本地 + console；无第三方。见 `MONETIZATION_INTENT_FUNNEL.md` |
 | `focus-tiger.newsletter-capture.v1` | `newsletter/newsletterCaptureGate` | Stay in touch 可选邮件留资标记：`{ submitted }`；**不**存邮箱明文；**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板见 `NEWSLETTER_CAPTURE.md` |
 | `focus-tiger.sanctuary-entitlement.v1` | `sanctuaryEntitlementGate` | Yin's Sanctuary Lifetime：`{ unlocked, unlockedVia, unlockedAt, itemId, badgeIds[] }`；`badgeIds` = 尊贵徽章（付费起 3，最多 17，只增不减）；**不得**读 tip-jar 状态；**也**作统一 entitlement gate 的 lifetime 只读信号（`resolveLifetimeActive`） |
 | `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` + `membershipCheckout` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt`）；Membership 成功页 / verify 写入 `subscription`；可用性优先，非防盗；宽限 7 天 |
@@ -48,7 +49,7 @@
 | `focus-tiger.moment-whispers-seen.v1` | `momentWhispersGate` / `MomentWhisperUI` | Moment Whisper 各键已见 `{ arrive?, focus?, recover?, transition?, reflect? }`；一生一次；Transition 暂不 play |
 | `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar **零耦合**） |
 | `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**（落点未定，组件可插拔） |
-| `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》：`{ revealed, revealedAt, scoreAtReveal }`；门槛 = 统一练习 **score ≥ 21**（`computePracticeScore`）；首次在计时完成仪式后自动出卡（ZH 原诗 + EN + 乐五斋诗稿 + 章）；之后 Idle ⋯/抽屉可重读；**不**绑 tip/Sanctuary；章视觉**暂**复用 tip `gold-mono`（**日后**换独立素材）；EN 译**日后**人审 |
+| `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》：`{ revealed, revealedAt, scoreAtReveal }`；门槛 = 统一练习 **score ≥ 21**；首次完成仪式后出卡（ZH + EN + 乐五斋诗稿 + 章）；菜单可重读；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。

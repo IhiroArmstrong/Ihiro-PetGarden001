@@ -64,7 +64,9 @@
 
 **近期落地（待人工测试）**：
 
-- **Ambient Deep 15s 试听（2026-08-12 · `feature/ambient-deep-audition-15s`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
+- **Ambient Deep 15s 试听（2026-08-12 · `feature/ambient-deep-audition-15s` · PR #258）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
+- **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**下一**：opt-in 回传。
+- **芥子须弥方金章素材（2026-08-12 · #256 已合 tip `5440a53`）**：独立方章替换 tip 复用。
 - **Sanctuary Enso Mark 接线（2026-08-12 · #254 已合 tip `0adc0d3`）**：蒲团正面金石圆相；`lifetime∪subscription`；Focusing 淡化；点按不开店。TRACKER 待人工（宽+375）。
 - **场景化请茶气泡（2026-08-12 · #253 已合 tip `c10acb7`）**：达标 / 里程碑后 `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。TRACKER 待人工。
 - **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
@@ -79,7 +81,7 @@
 - **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
-- **芥子须弥纪念印（2026-08-11 · PR #246 已合 tip `4e92355`）**：统一练习 score≥21；计时完成仪式后首次出卡（ZH 原诗 + EN + 乐五斋诗稿 + 章）；其后 ⋯/抽屉可重读。**日后**：EN 译人审；独立金章素材。Brief `task-mustard-seed-seal.md`。TRACKER 待人工。
+- **芥子须弥纪念印（2026-08-11 · PR #246 已合；2026-08-12 金章入库）**：统一练习 score≥21；完成仪式后出卡；菜单可重读；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER 待人工（须验方章）。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`）**：内容池 `src/content/daily-wisdom/`（en/ja）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
@@ -88,7 +90,7 @@
 - **Sanctuary 尊贵徽章素材入库（2026-08-09 · PR #202 已合）**：17 枚 → `public/ui/support/sanctuary-badges/`；本支接线授予。
 - **主动 Recover · Tiger Anchor（2026-08-09 · 本支）**：Focusing 轻触阿寅 → `triggerActiveRecover()`（nod-bow + 中置 toast + LightProgression）；不占被动提醒额度；**180s** 冷却隐退；零 MicroRitual。TRACKER 新行待人工（含 375）。
 - **SCENARIO_TESTS 增量升格（2026-08-09）**：正式故事补 **Q**（Support/Tea/Sanctuary）· **S**（Breath 左球）· **T**（Focus 时长 chip）· **U**（Cinema/Quiet Line/Wallpapers）· **V**（吹花欢迎）· **W**（Privacy/?）；**R** 跨日回访仍建议。权威 `SCENARIO_TESTS.md`；逐功能仍走 `TEST_TRACKER`。
-- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**场景化请茶气泡（2026-08-12 · 本支）**：达标 / 里程碑后轻气泡 → TipJar；本地日一次。**下一任务**（勿漏）：付费意愿漏斗本地统计。
+- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**场景化请茶气泡（#253 已合 tip `c10acb7`）**。**意愿漏斗本地统计（本支 · PR #255）**；**下一件**：opt-in 回传（明示同意）。
 - **主干 tip 验收盘点（2026-08-08）**：`origin/develop` tip **`beb9147`**（含 #187 Support + #188 PWA 延后 QA）。TRACKER 约 96 行仍开；**本批**按 KnownRisky §0.1（P0 闪白/Honesty → P1 Breath/chip/吹花/增长/付费/Support → P2 旧债）；实验室/长墙钟/PWA 安装**不排**本批。操作 SSOT：`KNOWN_RISKY_TEST_CHECKLIST.md`。
 - **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
@@ -322,14 +324,15 @@
 
 **下一步计划**：
 
-- **付费 · Ambient Deep 15s 试听（本支 · Gate #251 已合）**：Brief `task-ambient-deep-audition-15s.md`——转化层；`feature/ambient-deep-audition-15s`。
+- **付费 · Ambient Deep 15s 试听（本支 · Gate #251 已合 · PR #258）**：Brief `task-ambient-deep-audition-15s.md`——转化层；`feature/ambient-deep-audition-15s`。
+- **付费 · 意愿漏斗 opt-in 回传（下一件 · 勿漏）**：本地漏斗事件名已定（#255 已合 tip `fea9c11`）；**明示同意**后才可聚合上报（默认关；遵守 `MVP_PRODUCT_DEFINITION` §六）；否则装成本地 APP 仍无法抓回。Brief 另开。
 - **内容 · Daily Wisdom → Reflection Phase A（勿漏）**：Brief `task-daily-wisdom-reflection-mount.md`——只挂免费句；**禁止**塞 Phase B 印花进同一 PR。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
 - **内容 · Daily Wisdom Phase B 静默印花（A 之后 · 勿漏）**：`feature/daily-wisdom-sanctuary-seal`。
 - **身份 · Sanctuary Enso Mark（蒲团中央）**：**#254 已合** tip `0adc0d3`；关单级人工见 TRACKER。
 - **付费 · 转化路径梳理（Backlog · 不挡上列 · 勿漏）**：单独立项盘点「新用户为何第一次付费」——免费用户可见价值时刻、15s 试听后 Unlock 文案、Support 漏斗等。静默印花/Enso **不够**单独支撑经济可持续（见 `PRINCIPLES` 案例锚定诚实边界）。
 - **付费 · 场景化请茶气泡（#253 已合 tip `c10acb7`）**：达标 / 里程碑 → `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。关单级人工见 TRACKER。
-- **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
+- **付费 · 意愿漏斗本地统计（#255 已合 tip `fea9c11`）**：`MONETIZATION_INTENT_FUNNEL.md`；Support→CTA→Checkout→完成；实验室「意愿漏斗」；**仅本地**——回传见上行 opt-in。
 - **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1–3 已合 develop（#233 / #234 / #238）；圣诞窗已放出。下一步 **Phase 4**（其它节日配置/素材；情人节调性审）须另开。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 - **付费 · Ambient 深度曲 entitlement（#251 已合 tip `5969872`）**：免费温暖 5 首；其余内置曲 B 锁；用户自传仍免费。关单级人工见 TRACKER。
 - **付费 · 进阶仪式统一 gate**：三个进阶仪式已读 `isEntitled`；Ambient 深库见上行。
@@ -423,8 +426,8 @@
 - **降低 visibility CI flaky 率**（PR #2 合并后立刻处理；接受「绿 + 高 flaky」不挡合并，但不得遗忘；**决策优先级次于**打包选型）
 - **PR #2 · develop→main**（冲突已清 / MERGEABLE；合 main 待五条件 + 口令；Brief `task-pr2-develop-into-main.md`）
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
-- **双轨付费实现（A Tea + B 进阶解锁）**（方向已锁；Unlock/Tip UI 已合；**Support 统一入口**已合；**场景化请茶气泡**本支；B 下 Lifetime ∪ Yin Membership；**下一**：意愿漏斗统计 + Membership 订阅产品化；见 `task-tech-direction-v1-shell-monetization.md`）
-- **付费 · 意愿漏斗本地统计**（Support / 双卡 / Checkout / 完成；无第三方）
+- **双轨付费实现（A Tea + B 进阶解锁）**（方向已锁；Unlock/Tip UI 已合；**Support 统一入口**已合；**场景化请茶 #253**已合；**意愿漏斗本地**本支；B 下 Lifetime ∪ Yin Membership；**下一**：opt-in 漏斗回传 + Ambient 15s 试听 / Membership 订阅产品化等；见 `task-tech-direction-v1-shell-monetization.md`）
+- **付费 · 意愿漏斗 opt-in 回传**（明示同意；默认关；事件名复用本地漏斗；Brief 另开）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
 - **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；safety-01 ok；面板已接线；**挂载仍关**；待评估地区资源；种子 `confide-corpus-seed.md`）
