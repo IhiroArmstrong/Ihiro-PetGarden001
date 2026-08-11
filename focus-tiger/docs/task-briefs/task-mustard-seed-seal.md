@@ -1,6 +1,6 @@
 # Task Brief · 芥子须弥纪念印（Mustard Seed · Sumeru）
 
-> 状态：实现于 `feature/mustard-seed-seal`（2026-08-11）  
+> 状态：**#246 已合** `origin/develop` tip `4e92355`（2026-08-11）  
 > 拍板：统一徽章 `score` 门槛；首次挂在计时完成仪式后；署名「乐五斋诗稿」一并露出。
 
 ## 目标
