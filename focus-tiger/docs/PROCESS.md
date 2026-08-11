@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **Sanctuary Enso Mark 接线（2026-08-12 · `feature/sanctuary-enso-mark` · PR #254）**：蒲团正面金石圆相；`lifetime∪subscription`；Focusing 淡化；点按不开店；单测 `sanctuaryEnsoMark.test.js`。TRACKER 待人工（宽+375）。
+- **Ambient Deep 15s 试听（2026-08-12 · `feature/ambient-deep-audition-15s`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
+- **Sanctuary Enso Mark 接线（2026-08-12 · #254 已合 tip `0adc0d3`）**：蒲团正面金石圆相；`lifetime∪subscription`；Focusing 淡化；点按不开店。TRACKER 待人工（宽+375）。
 - **场景化请茶气泡（2026-08-12 · #253 已合 tip `c10acb7`）**：达标 / 里程碑后 `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。TRACKER 待人工。
 - **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
 - **Ambient 深度曲 entitlement（2026-08-11 · #251 已合 tip `5969872`）**：免费温暖 5 首；其余内置曲 B 锁；用户自传仍免费；Support upsell。TRACKER 待人工。
@@ -321,11 +322,11 @@
 
 **下一步计划**：
 
-- **付费 · Ambient Deep 15s 试听（Gate #251 已合 · 建议下一件 · 勿漏）**：Brief `task-ambient-deep-audition-15s.md`——转化层；开 `feature/ambient-deep-audition-15s`。
+- **付费 · Ambient Deep 15s 试听（本支 · Gate #251 已合）**：Brief `task-ambient-deep-audition-15s.md`——转化层；`feature/ambient-deep-audition-15s`。
 - **内容 · Daily Wisdom → Reflection Phase A（勿漏）**：Brief `task-daily-wisdom-reflection-mount.md`——只挂免费句；**禁止**塞 Phase B 印花进同一 PR。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
 - **内容 · Daily Wisdom Phase B 静默印花（A 之后 · 勿漏）**：`feature/daily-wisdom-sanctuary-seal`。
-- **身份 · Sanctuary Enso Mark（蒲团中央）**：**本支已接线** `feature/sanctuary-enso-mark`（PR #254）；关单级人工见 TRACKER。
+- **身份 · Sanctuary Enso Mark（蒲团中央）**：**#254 已合** tip `0adc0d3`；关单级人工见 TRACKER。
 - **付费 · 转化路径梳理（Backlog · 不挡上列 · 勿漏）**：单独立项盘点「新用户为何第一次付费」——免费用户可见价值时刻、15s 试听后 Unlock 文案、Support 漏斗等。静默印花/Enso **不够**单独支撑经济可持续（见 `PRINCIPLES` 案例锚定诚实边界）。
 - **付费 · 场景化请茶气泡（#253 已合 tip `c10acb7`）**：达标 / 里程碑 → `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。关单级人工见 TRACKER。
 - **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
