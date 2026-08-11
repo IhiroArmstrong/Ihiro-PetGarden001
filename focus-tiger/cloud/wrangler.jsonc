@@ -24,11 +24,11 @@
  *   id         = 331994910f30411393e241c1252d85e6
  *   preview_id = 5496acb38b20430b936e700e598d3c6a
  *
- * OTP_KV (create before deploy — replace placeholders below):
- *   npx wrangler kv namespace create OTP_KV
- *   npx wrangler kv namespace create OTP_KV --preview
+ * OTP_KV (created 2026-08-11):
+ *   id         = 7d5acbe48de44cefac2bc041809c1f27
+ *   preview_id = d0211c3d14e44798b41833c06e6d0f27
  *
- * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle).
+ * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle) + Resend secrets.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -56,8 +56,8 @@
 		},
 		{
 			"binding": "OTP_KV",
-			"id": "00000000000000000000000000000001",
-			"preview_id": "00000000000000000000000000000002"
+			"id": "7d5acbe48de44cefac2bc041809c1f27",
+			"preview_id": "d0211c3d14e44798b41833c06e6d0f27"
 		}
 	],
 	"vars": {
