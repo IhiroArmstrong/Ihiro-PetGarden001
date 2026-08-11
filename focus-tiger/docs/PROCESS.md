@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **节日主题引擎 · Phase 1 已通过（2026-08-11）**：分析师书面通过 + 四点非阻塞建议已写入 Brief；**Phase 2 已授权**。Brief `task-seasonal-theme-engine-v1.md`。矩阵 / MVP / monetization Brief 已预登记。
+- **节日主题引擎 · Phase 2 骨架进行中（2026-08-11）**：Phase 1 Brief 已合 develop（#233）；`feature/seasonal-theme-engine` 含 catalog + 双闸 + 日历判定；总开关关 / `contentReady=false`。Brief `task-seasonal-theme-engine-v1.md`。
 - **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。
 - **三种支付人工步骤清单（2026-08-11）**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` — Tea/Sanctuary/Membership 的 Restore（删本地 key→邮箱拉回）与零耦合逐步操作；KnownRisky #25–26/#28 已挂链。Webhook OK ≠ Restore 已测。
 - **付费成功回跳致谢（2026-08-11 · #231 已合）**：Tea=`teaDrinking` · Sanctuary=`mindfulAcknowledge` · Membership=`sessionComplete`；Checkout 回跳跳过冷启动欢迎（防盖掉）。单测 `paymentCheckoutThanks.test.js`。TRACKER 致谢专行待人工复测（合前用户曾反馈「只回首页」）。
@@ -313,7 +313,7 @@
 
 **下一步计划**：
 
-- **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1 Brief **已通过**；**Phase 2 骨架已授权**（`feature/seasonal-theme-engine`；总开关关）。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
+- **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1 Brief 已合（#233）；Phase 2 骨架在 `feature/seasonal-theme-engine`（总开关关）。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 - **付费 · 进阶仪式 / Ambient 消费统一 gate（后续）**：三个进阶仪式与深度音效等改读 `isEntitled` / `getFeatureAccess`；Stripe/Worker 真校验另排。地基已合 #210。
 - **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。
 - **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。

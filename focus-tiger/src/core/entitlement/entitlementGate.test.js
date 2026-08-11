@@ -59,6 +59,8 @@ describe('entitlementRegistry', () => {
     assert.equal(FEATURE_CATALOG['journey.log'].requiredTier, 'free');
     assert.equal(FEATURE_CATALOG['content.daily-wisdom'].requiredTier, 'free');
     assert.equal(FEATURE_CATALOG['content.daily-wisdom'].type, 'ongoing');
+    assert.equal(FEATURE_CATALOG['theme.seasonal.access'].requiredTier, 'subscription');
+    assert.equal(FEATURE_CATALOG['theme.seasonal.access'].type, 'ongoing');
   });
 });
 
