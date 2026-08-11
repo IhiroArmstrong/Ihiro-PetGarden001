@@ -46,6 +46,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
 | `git-parallel-worktree` | 并行 Cursor 会话须用 git worktree 隔离写操作 | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
+| `git-worktree-hygiene` | 闲置 worktree 只读盘点 + 口令拆除（不可逆） | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-occupancy` | 工作树占用检测与 `.ft-session-lock`（一树一线） | `WORKFLOW.md` | 工作树占用检测与 `.ft-session-lock` |
 | `git-feature-merge-preview` | feature/fix 合入 develop 前须 worktree 预览确认 | `WORKFLOW.md` | feature/fix 合入 develop 前：worktree 预览确认 |
 | `git-develop-small-pr-run-merge` | develop 文档/小 PR：CI 绿后弹 Run 合并（默认习惯） | `WORKFLOW.md` | develop 文档 / 小 PR：CI 绿后弹 Run 合并 |
@@ -77,7 +78,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **Git 同步分级汇总** + 下班前口令第 7 条：只推非运行时旁支 + 开/更新 PR） | 主张「先问再 commit」的平行口径；完整抄门禁条文；主张可以自动 push；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 推进无关 PR；把业务代码/状态机/待确认 diff **默认一并 flush**；下班汇总不标「有/无业务逻辑改动」 |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针） |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」 | 主张同目录并行写可接受；在非 SSOT 复述完整 SOP |
-| `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`） | 主张可按时间戳 / mtime / git log 推断占用态或自动清别人的锁；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布 |
+| `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`）；会话结束 N14 须报锁态 | 主张可按 OS mtime / git log 推断占用态；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布；把「锁可自动接管」扩成可静默 `worktree remove` |
+| `git-worktree-hygiene` | 「闲置 worktree 盘点 / 口令拆除见 `WORKFLOW.md` 结束后清理」；数据源 `check:worktree-hygiene`；与 occupancy Prompt 3 同原则分风险 | 主张 Agent 可静默 `git worktree remove`；每回合默认问要不要清盘；无口令/无点名即拆除；把 hygiene 与锁陈旧自动接管混成同一宽松标准 |
 | `git-feature-merge-preview` | 「合前预览 / **develop-integrity**（≠ session-lock `releasable`）见 `WORKFLOW.md`」；`TEST_TRACKER` / `COLLAB` / PR 模板可一行引用两层验收与严格豁免 | 主张合入主干后再做首次预览；把 `qa-develop-tip` 读成可替代合前预览；把 develop-integrity 与 session-lock `releasable` 混为一谈；笼统「纯文档」跳过预览（未按运行时路径白/黑名单）；完整平行复述 rebase/`comm -12` SOP |
 | `git-develop-small-pr-run-merge` | 「develop 文档/小 PR：CI 绿后弹 Run 合并见 `WORKFLOW.md`」；regression-lock / PROCESS / COLLAB / docs.mdc 可一行引用 | 把文档/小 PR 默认改回「只请你上 GitHub 手合」；把本条扩成合 `main` 或运行时大 PR；主张 Agent 可静默合且无需 Run/授权；下班前口令顺手推进无关 PR |
 | `git-pr-base-develop` | 「开 PR 须 `--base develop`；见 `WORKFLOW.md`」；PROCESS 血统检查可一行引用 | 主张可省略 `--base` 靠 GitHub 默认；日常 PR 默认可打 `main`；误开后仍等 CI 不立刻纠正 |
@@ -182,6 +184,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-11 | 新增 `git-worktree-hygiene`：口令「请清理闲置 worktree」+ 只读 `check:worktree-hygiene`（含最后 commit 时间）；N14 会话结束须报锁态；与 occupancy Prompt 3 对齐「客观依据 + 不可逆须人工确认」 |
 | 2026-08-11 | 强化 `git-worktree-occupancy`：`last_heartbeat` + 默认 60m 陈旧阈值（`FT_SESSION_LOCK_STALE_MS`）；陈旧/releasable 可接管须 history 留痕；husky pre-commit `gate-session-lock-precommit`；**禁止主仓 develop 检出写/commit** |
 | 2026-08-11 | 新增 docs 数值复述一致性门禁：`check-docs-consistency.js` 并入 `docs:check` / `test:smoke`；首条 claim=`browser-energy-duration`（下游复述 SSOT 连续开放时长数字须红；回归见 `check-docs-consistency.test.js`）；PR 模板补 `.cursor/rules/*.mdc` 强制项 |
 | 2026-08-11 | 定稿 `browser-energy` 临时解禁路径：连续开放时长上限 + 续开不清零 + 精确时间戳汇报；下游文档（含 PROCESS）**禁止复述具体分钟数**，只指针引用 SSOT（`focus-tiger-browser-energy.mdc`） |
