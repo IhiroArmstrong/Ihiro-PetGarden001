@@ -522,6 +522,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 - SessionComplete 非模态观察式文案
 - 角色/装扮可选 UI
 - RewardToast / Screenshot（空桩）
+- **节日主题引擎（Seasonal Theme）**（2026-08-11 · Phase 1 **仅文档**）：B 轨 Sanctuary∪Membership；Brief `task-seasonal-theme-engine-v1.md`；**实现未开工**——开工后另增「待人工测试」行，勿把本条当已交付
 
 ---
 

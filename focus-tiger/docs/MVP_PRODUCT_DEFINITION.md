@@ -241,7 +241,7 @@ MVP 的首要任务仍是验证核心陪伴价值。**付费策略方向已锁�
 | 轨 | 对外名 | 心理触发 | 产品角色 | v1 形态（方向） |
 |---|---|---|---|---|
 | **A** | **Buy Yin a Tea** | 利他与感激 | 情境微打赏 + 可选徽章；**不解锁内容** | 一次性 tip；记录 `{ tipped, tipCount, lastTippedAt }` |
-| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 高级情绪动画/场景 + 尊贵徽章 + 进阶仪式等（catalog `subscription` 档为正式产品决定） |
+| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 高级情绪动画/场景 + 尊贵徽章 + 进阶仪式 + **节日主题（Seasonal Theme · 时段氛围）** 等（catalog `subscription` 档为正式产品决定；节日见 `task-seasonal-theme-engine-v1.md`） |
 
 **B 付费方式（v1 硬）**：
 

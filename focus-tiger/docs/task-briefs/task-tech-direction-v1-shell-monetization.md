@@ -110,7 +110,8 @@
 1. **深度音效全库**（免费保留足够温暖的子集）  
 2. **高级情绪动画 / 场景**（已划界、**非核心**路径；名单另定）  
 3. **尊贵徽章 / 身份标识**  
-4. **进阶仪式等**（Morning / Emotional Reset / Work Transition 等；catalog 标 `subscription` 为正式产品决定）
+4. **进阶仪式等**（Morning / Emotional Reset / Work Transition 等；catalog 标 `subscription` 为正式产品决定）  
+5. **节日主题引擎（Seasonal Theme）**（2026-08-11 排期）：节日窗口内 App **内部**装饰/姿态/文案；**Sanctuary Lifetime ∪ Yin Membership** 解锁；catalog 建议 `theme.seasonal.access`（ongoing）。权威 Brief：`task-seasonal-theme-engine-v1.md`。**不**含主屏幕 PWA 图标远程更换。
 
 **明确删除 / 禁止写入**：Apple Health 深度同步；课程墙；AI Coach；报表；换装大系统；抽奖加速；365 天路线。
 

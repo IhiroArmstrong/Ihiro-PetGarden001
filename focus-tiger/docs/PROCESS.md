@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **节日主题引擎 · Phase 1 文档（2026-08-11）**：通用 Seasonal Theme（fixed / nth-weekday / solar-term / lookup-table）；**B 轨付费解锁**；Brief `task-seasonal-theme-engine-v1.md`。待你审后再开 feature 实现。矩阵 / MVP / monetization Brief 已预登记。
 - **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。
 - **三种支付人工步骤清单（2026-08-11）**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` — Tea/Sanctuary/Membership 的 Restore（删本地 key→邮箱拉回）与零耦合逐步操作；KnownRisky #25–26/#28 已挂链。Webhook OK ≠ Restore 已测。
 - **付费成功回跳致谢（2026-08-11 · #231 已合）**：Tea=`teaDrinking` · Sanctuary=`mindfulAcknowledge` · Membership=`sessionComplete`；Checkout 回跳跳过冷启动欢迎（防盖掉）。单测 `paymentCheckoutThanks.test.js`。TRACKER 致谢专行待人工复测（合前用户曾反馈「只回首页」）。
@@ -312,6 +313,7 @@
 
 **下一步计划**：
 
+- **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11 排期）**：**B 轨**（Sanctuary Lifetime ∪ Yin Membership）；通用节日配置引擎，圣诞节为首实例。Phase 1 文档：`task-briefs/task-seasonal-theme-engine-v1.md`（待你审）。**审后**再开 `feature/seasonal-theme-engine`（Phase 2 骨架；总开关默认关）。不做主屏幕图标远程更新；不做节日付费 CTA。
 - **付费 · 进阶仪式 / Ambient 消费统一 gate（后续）**：三个进阶仪式与深度音效等改读 `isEntitled` / `getFeatureAccess`；Stripe/Worker 真校验另排。地基已合 #210。
 - **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。
 - **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
@@ -790,6 +792,22 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **复杂度评级**：中（轻量 presence 后端或先做可关视觉隐喻实验）
 - **价值定位**：无压力 Co-presence；卖同频温暖而非社交压力
 - **排期**：建议 v1.1+ 可选氛围实验；口令示例：「评估异步共修灯火」
+
+### Backlog:节日主题引擎（Seasonal Theme · B 轨 · 2026-08-11 排期）
+
+通用节日配置引擎：按 `dateRule`（fixed / nth-weekday / solar-term / lookup-table）在窗口内为 **已解锁 B 轨**（Sanctuary Lifetime ∪ Yin Membership）用户切换 App **内部**装饰（姿态/背景/文案池）。圣诞节为首实例；新增节日 = 配置 + 素材，零引擎专支。
+
+| 项 | 口径 |
+|---|---|
+| Brief | `task-briefs/task-seasonal-theme-engine-v1.md`（Phase 1 文档待审） |
+| Catalog | 建议 `theme.seasonal.access`（ongoing；lifetime∪subscription 互覆盖） |
+| 硬限制 | **不**远程更新 PWA 主屏幕图标 |
+| 不做 | 运行时 AI 文案；用户自定义节日；节日付费 CTA；tip 解锁 |
+| Phase | 1 文档 → 2 骨架（开关关）→ 3 圣诞人审放出 → 4 其它节日配置 |
+
+- **复杂度评级**：中（日期规则 + 双闸 + entitlement；素材另排）
+- **价值定位**：B 轨美学场域；强化「正念伙伴随节气/节日安静换装」，非街机活动页
+- **排期**：文档审过后开 `feature/seasonal-theme-engine`；**不**挤占 P0 Arrival 闪白 / Honesty 等主路径债
 
 ### Backlog:节奏敲击正念小游戏（「数字木鱼」）
 
