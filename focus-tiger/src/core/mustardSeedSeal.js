@@ -11,8 +11,7 @@
 import { computePracticeScore } from './practiceBadgeAward.js';
 import {
   readPracticeDaysForTipBadges,
-  summarizePracticeDaysForBadges,
-  tipKindnessBadgeSrc
+  summarizePracticeDaysForBadges
 } from './tipKindnessBadges.js';
 
 export const MUSTARD_SEED_SEAL_STORAGE_KEY = 'focus-tiger.mustard-seed-seal.v1';
@@ -20,12 +19,16 @@ export const MUSTARD_SEED_SEAL_STORAGE_KEY = 'focus-tiger.mustard-seed-seal.v1';
 /** Aligned with long-horizon memorial tier (~21 practice score units). */
 export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD = 21;
 
+/** Dedicated seal badge dir (not tip / Sanctuary catalogs). */
+export const MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR =
+  '/ui/support/mustard-seed-seal';
+
 /**
- * Companion medallion (interim: tip catalog gold mono).
- * Follow-up: replace with dedicated mustard-seed-seal asset (see task brief).
+ * Companion medallion for the memorial seal card.
+ * Ingested 2026-08-12 from root「芥子须弥纪念印所用的金章-…」→ kebab-case.
  */
 export const MUSTARD_SEED_SEAL_BADGE_FILE =
-  'yin-medallion-gold-monochrome-engraved.png';
+  'yin-badge-square-gold-on-silver-alt.png';
 
 export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
   '大鹏展翅九万里，',
@@ -34,9 +37,7 @@ export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
   '芥子亦足纳须弥。'
 ]);
 
-/**
- * Interim EN lines — human editorial pass deferred (see task brief).
- */
+/** Product EN lines (2026-08-12: accept current draft; no further editorial gate). */
 export const MUSTARD_SEED_SEAL_POEM_EN = Object.freeze([
   'A roc spreads its wings for ninety thousand miles;',
   'In every direction, the worlds share one Bodhi.',
@@ -155,10 +156,13 @@ export function resolveMustardSeedSeal(storage, opts = {}) {
 }
 
 /**
+ * @param {string} [file]
  * @returns {string}
  */
-export function mustardSeedSealBadgeSrc() {
-  return tipKindnessBadgeSrc(MUSTARD_SEED_SEAL_BADGE_FILE);
+export function mustardSeedSealBadgeSrc(
+  file = MUSTARD_SEED_SEAL_BADGE_FILE
+) {
+  return `${MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR}/${file}`;
 }
 
 /**
