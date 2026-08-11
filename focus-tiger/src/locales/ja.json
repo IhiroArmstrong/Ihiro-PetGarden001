@@ -453,6 +453,8 @@
   "MEMBERSHIP_PRICE": "購読 · 価格は Stripe 設定 · いつでも解約可",
   "MEMBERSHIP_BUY_CTA": "購読する",
   "MEMBERSHIP_ALREADY": "この端末でメンバーシップ有効",
+  "MEMBERSHIP_MANAGE_CTA": "管理",
+  "MEMBERSHIP_MANAGE_NEED_RESTORE": "まずメールのコードで復元すると、管理から請求を開けます。",
   "MEMBERSHIP_CLOSE": "今はしない",
   "MEMBERSHIP_STATUS_YES": "この端末でメンバーシップ有効です",
   "MEMBERSHIP_STATUS_NO": "この端末にはまだメンバーシップがありません",

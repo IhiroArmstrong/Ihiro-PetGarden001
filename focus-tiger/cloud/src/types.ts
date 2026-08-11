@@ -35,6 +35,8 @@ export interface Env {
 	STRIPE_MEMBERSHIP_PRICE_ID?: string;
 	MEMBERSHIP_CHECKOUT_SUCCESS_URL?: string;
 	MEMBERSHIP_CHECKOUT_CANCEL_URL?: string;
+	/** Stripe Billing Portal return URL (Membership Manage). */
+	MEMBERSHIP_PORTAL_RETURN_URL?: string;
 
 	/** Exact browser Origin allowed for CORS (e.g. http://127.0.0.1:5173). */
 	ALLOWED_ORIGIN?: string;

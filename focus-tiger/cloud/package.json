@@ -9,7 +9,7 @@
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test src/lib/membershipKv.test.ts src/lib/stripeWebhookSig.test.ts src/lib/stripePeriod.test.ts src/lib/restoreOtp.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/membershipKv.test.ts src/lib/stripeWebhookSig.test.ts src/lib/stripePeriod.test.ts src/lib/restoreOtp.test.ts src/lib/membershipDeviceToken.test.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260721.1",

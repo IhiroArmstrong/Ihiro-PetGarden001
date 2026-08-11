@@ -1,6 +1,7 @@
 import { errorJson, json } from "../lib/http";
 import {
 	emailFromCheckoutSession,
+	emailFromSubscription,
 	isActiveMembershipSubscriptionStatus,
 	periodEndsAtFromSubscription,
 	retrieveCheckoutSession,
@@ -13,6 +14,7 @@ import {
 	readMembership,
 	upsertActiveMembership,
 } from "../lib/membershipKv";
+import { mintMembershipDeviceToken } from "../lib/membershipDeviceToken";
 import type { Env } from "../types";
 
 /**
@@ -23,6 +25,9 @@ import type { Env } from "../types";
  * Only unlocks when metadata.product === membership, mode === subscription,
  * and subscription status is active|trialing.
  * Client must NOT unlock from query alone (same restraint as Sanctuary).
+ *
+ * On success also mints a deviceToken (when email + OTP_KV + pepper available)
+ * so Provider poll / Portal work without requiring a later restore OTP.
  */
 export async function handleConfirmMembershipSession(
 	request: Request,
@@ -105,9 +110,17 @@ export async function handleConfirmMembershipSession(
 		(typeof session.metadata?.planId === "string" && session.metadata.planId) ||
 		MEMBERSHIP_PLAN_ID;
 
-	const emailRaw = emailFromCheckoutSession(session);
+	let emailRaw = emailFromCheckoutSession(session);
+	if (!emailRaw) {
+		emailRaw = await emailFromSubscription({
+			secretKey: secret,
+			subscription,
+		});
+	}
+
+	let email: string | null = null;
 	if (emailRaw) {
-		const email = normalizeEmail(emailRaw);
+		email = normalizeEmail(emailRaw);
 		const existing = await readMembership(env.MEMBERSHIP_KV, email);
 		const needsWrite =
 			!existing ||
@@ -130,6 +143,17 @@ export async function handleConfirmMembershipSession(
 		}
 	}
 
+	let deviceToken: string | null = null;
+	if (email && env.OTP_KV) {
+		const minted = await mintMembershipDeviceToken({
+			kv: env.OTP_KV,
+			pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
+			email,
+			subscriptionId,
+		});
+		if (minted.ok) deviceToken = minted.deviceToken;
+	}
+
 	return json({
 		active: true,
 		unlocked: true,
@@ -137,5 +161,7 @@ export async function handleConfirmMembershipSession(
 		subscriptionId,
 		periodEndsAt,
 		planId,
+		email,
+		deviceToken,
 	});
 }

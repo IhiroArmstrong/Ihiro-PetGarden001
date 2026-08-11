@@ -107,16 +107,18 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 3. Stripe **subscription** Checkout → 付完回跳（URL 带 `membership_session=cs_…`）  
 4. **期望**：  
    - confirm 成功 → 本地 subscription 缓存  
+   - 本地写入 `focus-tiger.membership-device.v1`（有 `email`+`deviceToken`）  
    - 阿寅播 **轻摆尾** `sessionComplete`（#231）  
    - **⋯ → Rituals** 三项可点（不再全锁）  
+   - 再开 Membership 卡见 **Manage**（仅卡内；无菜单第二入口）  
 5. Stripe Workbench：该笔 `checkout.session.completed`（subscription）应为 **200**，响应勿长期 `502`
 
 ### C2 · 邮箱 Restore（**未测 · 请测** · 现为 OTP）
 
 1. 记下订阅邮箱  
-2. 按 **§0.1** 删 `focus-tiger.entitlement-cache.v1` → 硬刷新  
+2. 按 **§0.1** 删 `focus-tiger.entitlement-cache.v1` **与** `focus-tiger.membership-device.v1` → 硬刷新  
 3. 开 Membership 卡 → 输入邮箱 → **Send code** → 查收 6 位码 → **Verify & restore**  
-4. **期望**：恢复订阅态；Rituals 可点  
+4. **期望**：恢复订阅态；Rituals 可点；device 凭证写回；**Manage** 可用  
 5. 无码 / 错码 / 错邮箱 → Miss
 
 ### C3 · 零耦合（**未测 · 请测**）
@@ -127,7 +129,13 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 2. **仅 Tea**：Rituals 仍锁（同 A3）  
 3. Tip Restore / Sanctuary Restore **不得**用 Membership 邮箱误写成另一轨解锁
 
-### C4 · Prompt 9 生命周期（另排；本清单不强制一次测完）
+### C4 · Manage / Provider（Prompt 10 · **未测 · 请测**；须 Worker 已含本路由）
+
+1. **主路径**：C1 付完后开 Membership 卡 → **Manage** → 进 Stripe Customer Portal → 返回产品页  
+2. **回流**：删掉 `membership-device.v1` 后 Manage 应提示先 Restore（不得静默无反应）；OTP restore 后再 Manage  
+3. Provider：有凭证时刷新不丢订阅；无网 / 错 token 时本地宽限内仍 entitled（`refreshEntitlement` grace）
+
+### C5 · Prompt 9 生命周期（另排；本清单不强制一次测完）
 
 取消订阅、扣款失败、续费推进 `periodEndsAt` → 见 `YIN_MEMBERSHIP.md` Webhook 节；与本表 Restore 分开记 TRACKER「Prompt 9」行。
 
@@ -152,6 +160,7 @@ Cancel（`tip=cancel` / `sanctuary=cancel` / `membership=cancel`）→ **不**�
 | A2 + A3 | Tip Jar（A）+ Tip 部署 |
 | B2 + B3 | Sanctuary Unlock UI |
 | C2 + C3（+ C1 补全） | Membership Checkout（+ Prompt 9 若测了 webhook） |
+| C4 Manage / Provider | Membership cloud provider / Portal（Prompt 10） |
 | D | 付费成功回跳致谢动画 |
 
 每条反馈写：**日期 + 测了哪一步 + OK / 有问题（现象）**。

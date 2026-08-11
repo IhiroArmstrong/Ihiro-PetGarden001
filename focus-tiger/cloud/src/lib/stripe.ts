@@ -387,6 +387,48 @@ export async function emailFromSubscription(opts: {
 	return null;
 }
 
+/**
+ * Create a Stripe Billing Portal session URL for subscription self-serve.
+ */
+export async function createBillingPortalSession(opts: {
+	secretKey: string;
+	customerId: string;
+	returnUrl: string;
+}): Promise<{ id: string; url: string }> {
+	const customerId = opts.customerId.trim();
+	const returnUrl = opts.returnUrl.trim();
+	if (!customerId.startsWith("cus_")) {
+		throw new Error("invalid_customer_id");
+	}
+	if (!returnUrl) {
+		throw new Error("missing_return_url");
+	}
+	const body = [
+		`customer=${encodeURIComponent(customerId)}`,
+		`return_url=${encodeURIComponent(returnUrl)}`,
+	].join("&");
+	const res = await fetch(`${STRIPE_API}/billing_portal/sessions`, {
+		method: "POST",
+		headers: {
+			authorization: `Bearer ${opts.secretKey}`,
+			"content-type": "application/x-www-form-urlencoded",
+		},
+		body,
+	});
+	const data = (await res.json()) as {
+		id?: string;
+		url?: string;
+		error?: { message?: string };
+	};
+	if (!res.ok) {
+		throw new Error(data.error?.message || `Stripe HTTP ${res.status}`);
+	}
+	if (!data.id || !data.url) {
+		throw new Error("Stripe portal session missing id or url");
+	}
+	return { id: data.id, url: data.url };
+}
+
 function parseStripeSignatureHeader(header: string): {
 	t: string;
 	v1: string[];

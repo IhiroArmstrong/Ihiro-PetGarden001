@@ -13,6 +13,7 @@ import {
   getEntitlementState,
   isEntitled
 } from './entitlement/entitlementGate.js';
+import { persistMembershipDeviceCredentialFromBody } from './membershipDeviceCredential.js';
 
 export const MEMBERSHIP_PLAN_ID = 'yin-membership';
 
@@ -144,6 +145,7 @@ export async function confirmMembershipReturnQuery({
 
     if (active && periodEndsAt) {
       markMembershipFromPayment(storage, { periodEndsAt, planId, now });
+      persistMembershipDeviceCredentialFromBody(storage, body);
       return { consumed: true, unlocked: true, outcome: 'success' };
     }
     return { consumed: true, unlocked: false, outcome: 'failed' };

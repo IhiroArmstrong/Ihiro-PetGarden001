@@ -10,6 +10,8 @@ import {
   markMembershipFromPayment,
   MEMBERSHIP_PLAN_ID
 } from '../core/membershipCheckout.js';
+import { persistMembershipDeviceCredentialFromBody } from '../core/membershipDeviceCredential.js';
+import { createMembershipPortalSession } from '../core/entitlement/cloudEntitlementProvider.js';
 import { getEntitlementState } from '../core/entitlement/entitlementGate.js';
 import {
   GLASS_BLUR_CSS,
@@ -83,6 +85,16 @@ export class MembershipUnlockUI {
       void this._startCheckout();
     });
 
+    this.manageBtn = document.createElement('button');
+    this.manageBtn.type = 'button';
+    this.manageBtn.className =
+      'yin-membership__btn yin-membership__btn--ghost';
+    this.manageBtn.dataset.testid = 'yin-membership-manage';
+    this.manageBtn.hidden = true;
+    this.manageBtn.addEventListener('click', () => {
+      void this._openPortal();
+    });
+
     this.restoreTitle = document.createElement('p');
     this.restoreTitle.className = 'yin-membership__restore-title';
 
@@ -133,7 +145,7 @@ export class MembershipUnlockUI {
 
     this.actions = document.createElement('div');
     this.actions.className = 'yin-membership__actions';
-    this.actions.append(this.closeBtn, this.buyBtn);
+    this.actions.append(this.closeBtn, this.manageBtn, this.buyBtn);
 
     this.root.append(
       this.titleEl,
@@ -233,6 +245,7 @@ export class MembershipUnlockUI {
     }
     this._busy = true;
     this.buyBtn.disabled = true;
+    this.manageBtn.disabled = true;
     let checkoutError = false;
     try {
       const email = this.emailInput.value.trim();
@@ -256,6 +269,7 @@ export class MembershipUnlockUI {
     } finally {
       this._busy = false;
       this.buyBtn.disabled = false;
+      this.manageBtn.disabled = false;
       if (checkoutError) {
         if (!this._open) this.open();
         // open() refreshTexts would wipe the error — restore it.
@@ -263,6 +277,33 @@ export class MembershipUnlockUI {
       } else {
         this._refreshTexts();
       }
+    }
+  }
+
+  async _openPortal() {
+    if (this._busy) return;
+    if (!getCloudApiBaseUrl()) {
+      this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');
+      return;
+    }
+    this._busy = true;
+    this.manageBtn.disabled = true;
+    this.buyBtn.disabled = true;
+    try {
+      const { url } = await createMembershipPortalSession({
+        storage: this._storage
+      });
+      window.location.assign(url);
+    } catch (err) {
+      const code = /** @type {any} */ (err)?.code;
+      this.statusEl.textContent =
+        code === 'credential_missing'
+          ? t('MEMBERSHIP_MANAGE_NEED_RESTORE')
+          : t('MEMBERSHIP_ERROR_GENERIC');
+    } finally {
+      this._busy = false;
+      this.manageBtn.disabled = false;
+      this.buyBtn.disabled = false;
     }
   }
 
@@ -342,9 +383,11 @@ export class MembershipUnlockUI {
           : MEMBERSHIP_PLAN_ID;
       if (active && periodEndsAt) {
         markMembershipFromPayment(this._storage, { periodEndsAt, planId });
+        persistMembershipDeviceCredentialFromBody(this._storage, res);
         this.codeInput.value = '';
         this.statusEl.textContent = t('MEMBERSHIP_STATUS_YES');
         this.handlers.onEntitlementChanged?.();
+        this._refreshTexts();
       } else {
         this.statusEl.textContent = t('MEMBERSHIP_RESTORE_MISS');
       }
@@ -386,6 +429,8 @@ export class MembershipUnlockUI {
     this.buyBtn.textContent = active
       ? t('MEMBERSHIP_ALREADY')
       : t('MEMBERSHIP_BUY_CTA');
+    this.manageBtn.textContent = t('MEMBERSHIP_MANAGE_CTA');
+    this.manageBtn.hidden = !active;
     this.closeBtn.textContent = t('MEMBERSHIP_CLOSE');
     this.restoreTitle.textContent = t('MEMBERSHIP_RESTORE_TITLE');
     this.restoreHint.textContent = t('MEMBERSHIP_RESTORE_HINT');
@@ -460,6 +505,7 @@ export class MembershipUnlockUI {
         display: flex;
         gap: 8px;
         justify-content: flex-end;
+        flex-wrap: wrap;
         margin: 0 0 12px;
       }
       .yin-membership__email,

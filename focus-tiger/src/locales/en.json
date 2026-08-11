@@ -453,6 +453,8 @@
   "MEMBERSHIP_PRICE": "Subscription · price set in Stripe · cancel anytime",
   "MEMBERSHIP_BUY_CTA": "Subscribe",
   "MEMBERSHIP_ALREADY": "Membership active on this device",
+  "MEMBERSHIP_MANAGE_CTA": "Manage",
+  "MEMBERSHIP_MANAGE_NEED_RESTORE": "Restore with your email code once, then Manage will open billing.",
   "MEMBERSHIP_CLOSE": "Not now",
   "MEMBERSHIP_STATUS_YES": "Membership is active on this device",
   "MEMBERSHIP_STATUS_NO": "No membership on this device yet",
