@@ -18,6 +18,11 @@ import {
 } from './i18n.js';
 import { listReadyLocaleIds, isReadyLocale } from './localeRegistry.js';
 import {
+  JA_MAY_MATCH_EN,
+  listJaEqualToEn,
+  listJaMissingJapaneseScript
+} from './jaCopyGuards.js';
+import {
   LOCALE_PREFERENCE_STORAGE_KEY,
   normalizeLocalePreference,
   readLocalePreference,
@@ -74,24 +79,23 @@ test('ready locales have identical dictionary key sets', () => {
 /**
  * Proper nouns / titles that may stay identical across en and ja.
  * New product UI must not land here as an English placeholder — translate ja.json.
+ * Allowlist SSOT: jaCopyGuards.js
  */
-const JA_MAY_MATCH_EN = new Set([
-  'APP_TITLE',
-  'ZEN_CINEMA_FILM_TITLE'
-]);
-
 test('ja values are translated (not English placeholders), except proper-noun allowlist', () => {
-  const leftovers = Object.keys(enDict).filter((key) => {
-    if (JA_MAY_MATCH_EN.has(key)) return false;
-    if (key.startsWith('AMBIENT_TRACK_')) return false;
-    const e = enDict[key];
-    const j = jaDict[key];
-    return typeof e === 'string' && e.length > 0 && e === j;
-  });
+  assert.ok(JA_MAY_MATCH_EN.has('APP_TITLE'));
   assert.deepEqual(
-    leftovers,
+    listJaEqualToEn(enDict, jaDict),
     [],
-    `ja.json still copies en for: ${leftovers.join(', ')} — translate or add to JA_MAY_MATCH_EN`
+    'ja.json still copies en — translate or extend JA_MAY_MATCH_EN in jaCopyGuards.js'
+  );
+});
+
+test('ja values include Japanese script (kana or kanji), except proper-noun allowlist', () => {
+  // Intentionally NOT “must contain kana”: kanji-only labels (到着/回復/言語) are valid JP.
+  assert.deepEqual(
+    listJaMissingJapaneseScript(jaDict),
+    [],
+    'ja.json has Latin-only values — translate or allowlist in jaCopyGuards.js'
   );
 });
 
