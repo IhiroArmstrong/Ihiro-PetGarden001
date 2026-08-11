@@ -6,6 +6,7 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
+import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v3';
 const WIDE_MQ = '(min-width: 480px)';
@@ -82,6 +83,7 @@ export class WideIdleMoreMenu {
    *     onConfide?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
+   *     onMustardSeedSeal?: () => void,
    *     onWallpapers?: () => void,
      *     onSanctuary?: () => void,
      *     onMembership?: () => void,
@@ -563,7 +565,10 @@ export class WideIdleMoreMenu {
       reminderAvailable: Boolean(
         document.getElementById('reminder-preference-toggle')
       ),
-      newsletterSubmitted: hasSubmittedNewsletter()
+      newsletterSubmitted: hasSubmittedNewsletter(),
+      mustardSeedSealUnlocked: resolveMustardSeedSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ).unlocked
     });
 
     this.listEl.innerHTML = '';
@@ -656,6 +661,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onDailyQuote?.();
+      return;
+    }
+    if (key === 'mustard-seed-seal') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onMustardSeedSeal?.();
       return;
     }
     if (key === 'wallpapers') {

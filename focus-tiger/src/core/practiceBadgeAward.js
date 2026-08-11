@@ -9,6 +9,17 @@
  */
 
 /**
+ * Unified practice score (same formula as badge awards / memorial seals).
+ * @param {{ practiceDayCount?: number, lifetimeMinutes?: number }} summary
+ * @returns {number}
+ */
+export function computePracticeScore(summary = {}) {
+  const days = Math.max(0, Math.floor(Number(summary.practiceDayCount) || 0));
+  const minutes = Math.max(0, Number(summary.lifetimeMinutes) || 0);
+  return days + Math.floor(minutes / 60);
+}
+
+/**
  * @param {{ practiceDayCount?: number, lifetimeMinutes?: number }} summary
  * @param {{ min: number, max: number, requirePractice?: boolean }} opts
  * @returns {number}
@@ -23,7 +34,7 @@ export function computePracticeBadgeTargetCount(summary = {}, opts) {
   if (!hasPractice) {
     return requirePractice ? 0 : min;
   }
-  const score = days + Math.floor(minutes / 60);
+  const score = computePracticeScore({ practiceDayCount: days, lifetimeMinutes: minutes });
   const raw = min + Math.floor(score / 3);
   return Math.min(max, Math.max(min, raw));
 }
