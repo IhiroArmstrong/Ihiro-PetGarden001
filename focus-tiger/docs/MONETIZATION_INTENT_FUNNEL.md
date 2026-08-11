@@ -1,8 +1,9 @@
 # Monetization Intent Funnel · 付费意愿漏斗（本地）
 
-> **状态（2026-08-12）**：`feature/monetization-intent-funnel`  
+> **状态（2026-08-12）**：`feature/monetization-intent-funnel`（PR #255）  
 > **性质**：本地埋点 + DEV 可读面板；**无第三方**；不改变支付行为。  
-> **对照**：留存漏斗见 `RETENTION_FUNNEL.md`（另一套事件）。
+> **对照**：留存漏斗见 `RETENTION_FUNNEL.md`（另一套事件）。  
+> **边界**：仅本地 → 装成本地 APP **不会**自动回传到运营端。**下一件**：明示同意的 **opt-in 回传**（默认关；事件名复用本表；见 `PROCESS` / `FREE_PAID_MATRIX` 差距 #12）。
 
 ## 节点
 

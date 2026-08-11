@@ -92,6 +92,7 @@ import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
 import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
+import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
@@ -760,13 +761,21 @@ async function init() {
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
+  const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {
+    getDisplayRect: () => spritePlayer.getDisplayRect()
+  });
+  window.__sanctuaryEnsoMark = sanctuaryEnsoMarkChrome;
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {
-    onBadgesChanged: () => tipKindnessBadgesChrome.refresh()
+    onBadgesChanged: () => {
+      tipKindnessBadgesChrome.refresh();
+      sanctuaryEnsoMarkChrome.refresh();
+    }
   });
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
   const membershipUnlockUI = new MembershipUnlockUI(document.body, {
     onEntitlementChanged: () => {
       // Ritual lock rows re-read isEntitled on next menu/drawer open.
+      sanctuaryEnsoMarkChrome.refresh();
     }
   });
   window.__membershipUnlock = membershipUnlockUI;
@@ -2062,6 +2071,8 @@ async function init() {
     ambientSoundscapeUI.setSessionActive(false);
     supportYinModalUI.setFabVisible(true);
     tipKindnessBadgesChrome.setVisible(true);
+    sanctuaryEnsoMarkChrome.setFocusing(false);
+    sanctuaryEnsoMarkChrome.setVisible(true);
     activeRecoverAnchor.setFocusing(false);
     immersivePresenceUI.setFocusing(false);
     companionModePicker.setIdleChromeVisible(true);
@@ -2198,6 +2209,9 @@ async function init() {
     ambientSoundscapeUI.setSessionActive(true);
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
+    // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
+    sanctuaryEnsoMarkChrome.setVisible(true);
+    sanctuaryEnsoMarkChrome.setFocusing(true);
     activeRecoverAnchor.setFocusing(true);
     immersivePresenceUI.setFocusing(true);
     attentionSignals.setEnabled(true);

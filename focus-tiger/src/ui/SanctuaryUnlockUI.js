@@ -68,6 +68,11 @@ export class SanctuaryUnlockUI {
     this.statusEl.className = 'yin-sanctuary__status';
     this.statusEl.dataset.testid = 'yin-sanctuary-status';
 
+    this.ensoNoteEl = document.createElement('p');
+    this.ensoNoteEl.className = 'yin-sanctuary__enso-note';
+    this.ensoNoteEl.dataset.testid = 'yin-sanctuary-enso-note';
+    this.ensoNoteEl.hidden = true;
+
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'yin-sanctuary__blurb';
 
@@ -154,6 +159,7 @@ export class SanctuaryUnlockUI {
     this.root.append(
       this.titleEl,
       this.statusEl,
+      this.ensoNoteEl,
       this.blurbEl,
       this.benefits,
       this.priceEl,
@@ -438,6 +444,8 @@ export class SanctuaryUnlockUI {
         ? t('SANCTUARY_STATUS_PREVIEW')
         : t('SANCTUARY_STATUS_YES')
       : t('SANCTUARY_STATUS_NO');
+    this.ensoNoteEl.textContent = t('SANCTUARY_ENSO_MARK_NOTE');
+    this.ensoNoteEl.hidden = !unlocked;
     this._renderBadges(unlocked ? ent.badgeIds : []);
   }
 
@@ -485,6 +493,13 @@ export class SanctuaryUnlockUI {
         font-size: 13px;
         line-height: 1.5;
         color: #5c4330;
+      }
+      .yin-sanctuary__enso-note {
+        margin: -2px 0 10px;
+        font-size: 12px;
+        line-height: 1.4;
+        letter-spacing: 0.02em;
+        color: rgba(92, 67, 48, 0.78);
       }
       .yin-sanctuary__benefits {
         margin: 0 0 10px;
