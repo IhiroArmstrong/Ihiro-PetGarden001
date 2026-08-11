@@ -61,6 +61,7 @@ import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 import { ENTITLEMENT_CACHE_STORAGE_KEY } from './entitlement/entitlementState.js';
 import { ENTITLEMENT_OWNERSHIP_STORAGE_KEY } from './entitlement/entitlementOwnership.js';
 import { ENTITLEMENT_MOCK_STORAGE_KEY } from './entitlement/mockEntitlementProvider.js';
+import { MEMBERSHIP_DEVICE_CREDENTIAL_KEY } from './membershipDeviceCredential.js';
 import { FIVE_MOMENTS_COMPASS_SEEN_KEY } from './fiveMomentsCompassGate.js';
 import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
@@ -128,6 +129,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   ENTITLEMENT_CACHE_STORAGE_KEY,
   ENTITLEMENT_OWNERSHIP_STORAGE_KEY,
   ENTITLEMENT_MOCK_STORAGE_KEY,
+  MEMBERSHIP_DEVICE_CREDENTIAL_KEY,
   FIVE_MOMENTS_COMPASS_SEEN_KEY,
   MOMENT_WHISPERS_SEEN_KEY,
   JOURNEY_LOG_STORAGE_KEY,

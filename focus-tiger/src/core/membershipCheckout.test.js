@@ -14,6 +14,10 @@ import {
   markMembershipFromPayment,
   MEMBERSHIP_PLAN_ID
 } from './membershipCheckout.js';
+import {
+  MEMBERSHIP_DEVICE_CREDENTIAL_KEY,
+  readMembershipDeviceCredential
+} from './membershipDeviceCredential.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -84,7 +88,9 @@ describe('membershipCheckout', () => {
         active: true,
         unlocked: true,
         periodEndsAt: '2026-09-10T00:00:00.000Z',
-        planId: 'yin-membership'
+        planId: 'yin-membership',
+        email: 'm@example.com',
+        deviceToken: 'b'.repeat(40)
       }),
       now: () => new Date('2026-08-10T00:00:00.000Z')
     });
@@ -97,6 +103,11 @@ describe('membershipCheckout', () => {
       }).subscription.entitled,
       true
     );
+    assert.deepEqual(readMembershipDeviceCredential(storage), {
+      email: 'm@example.com',
+      deviceToken: 'b'.repeat(40)
+    });
+    assert.ok(storage.getItem(MEMBERSHIP_DEVICE_CREDENTIAL_KEY));
   });
 
   it('confirmMembershipReturnQuery does not unlock from query without postJson', async () => {

@@ -453,6 +453,8 @@
   "MEMBERSHIP_PRICE": "订阅 · 价格以 Stripe 为准 · 可随时取消",
   "MEMBERSHIP_BUY_CTA": "订阅",
   "MEMBERSHIP_ALREADY": "本机会员已生效",
+  "MEMBERSHIP_MANAGE_CTA": "管理订阅",
+  "MEMBERSHIP_MANAGE_NEED_RESTORE": "请先用邮箱验证码恢复一次，之后即可打开账单管理。",
   "MEMBERSHIP_CLOSE": "先不要",
   "MEMBERSHIP_STATUS_YES": "本机会员有效",
   "MEMBERSHIP_STATUS_NO": "本机尚未开通会员",
