@@ -30,6 +30,11 @@ import {
 } from './hintDiscoveryDots.js';
 import { PRIVACY_SHEET_BODY_KEYS } from './privacyNoticeCopy.js';
 import {
+  isMonetizationFunnelOptInEnabled,
+  setMonetizationFunnelOptIn
+} from '../core/monetizationFunnelOptIn.js';
+import { flushMonetizationFunnelUpload } from '../core/monetizationFunnelUpload.js';
+import {
   SECONDARY_PROXY_HINT_IDS,
   secondaryProxyForHintId,
   syncSecondaryMenuHintDot
@@ -1790,6 +1795,38 @@ export class OnboardingHintsUI {
       body.appendChild(p);
     }
 
+    const optIn = document.createElement('div');
+    optIn.className = 'onboarding-privacy-sheet__opt-in';
+    optIn.id = 'privacy-monetization-funnel-opt-in';
+
+    const optInLabel = document.createElement('label');
+    optInLabel.className = 'onboarding-privacy-sheet__opt-in-label';
+    optInLabel.htmlFor = 'privacy-monetization-funnel-opt-in-toggle';
+
+    const optInCheck = document.createElement('input');
+    optInCheck.type = 'checkbox';
+    optInCheck.id = 'privacy-monetization-funnel-opt-in-toggle';
+    optInCheck.className = 'onboarding-privacy-sheet__opt-in-check';
+    optInCheck.addEventListener('change', () => {
+      const enabled = optInCheck.checked === true;
+      setMonetizationFunnelOptIn(globalThis.localStorage, enabled);
+      if (enabled) {
+        void flushMonetizationFunnelUpload({ force: true });
+      }
+      this._refreshPrivacyOptInCopy();
+    });
+
+    const optInText = document.createElement('span');
+    optInText.className = 'onboarding-privacy-sheet__opt-in-text';
+    optInText.dataset.privacyKey = 'PRIVACY_SHEET_FUNNEL_OPT_IN_LABEL';
+
+    const optInHint = document.createElement('p');
+    optInHint.className = 'onboarding-privacy-sheet__opt-in-hint';
+    optInHint.dataset.privacyKey = 'PRIVACY_SHEET_FUNNEL_OPT_IN_HINT';
+
+    optInLabel.append(optInCheck, optInText);
+    optIn.append(optInLabel, optInHint);
+
     const back = document.createElement('button');
     back.type = 'button';
     back.className = 'onboarding-privacy-sheet__back';
@@ -1799,14 +1836,35 @@ export class OnboardingHintsUI {
       this._closePrivacySheetToPurpose();
     });
 
-    sheet.append(title, body, back);
+    sheet.append(title, body, optIn, back);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
     this._privacyBodyEl = body;
     this._privacyBackEl = back;
+    this._privacyOptInEl = optIn;
+    this._privacyOptInCheck = optInCheck;
+    this._privacyOptInText = optInText;
+    this._privacyOptInHint = optInHint;
     this._refreshPrivacySheetCopy();
     return sheet;
+  }
+
+  _refreshPrivacyOptInCopy() {
+    if (!this._privacyOptInCheck) return;
+    this._privacyOptInCheck.checked = isMonetizationFunnelOptInEnabled(
+      globalThis.localStorage
+    );
+    if (this._privacyOptInText) {
+      this._privacyOptInText.textContent = t(
+        'PRIVACY_SHEET_FUNNEL_OPT_IN_LABEL'
+      );
+    }
+    if (this._privacyOptInHint) {
+      this._privacyOptInHint.textContent = t(
+        'PRIVACY_SHEET_FUNNEL_OPT_IN_HINT'
+      );
+    }
   }
 
   _refreshPrivacySheetCopy() {
@@ -1817,6 +1875,7 @@ export class OnboardingHintsUI {
       const key = p.getAttribute('data-privacy-key');
       if (key) p.textContent = t(key);
     }
+    this._refreshPrivacyOptInCopy();
   }
 
   _openPrivacySheetFromPurpose() {
@@ -2204,6 +2263,32 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet__p:last-child {
         margin-bottom: 0;
+      }
+      .onboarding-privacy-sheet__opt-in {
+        margin: 0.85rem 0 0.35rem;
+        padding: 0.65rem 0.7rem;
+        border: 1px solid rgba(90, 107, 74, 0.28);
+        border-radius: 8px;
+        background: rgba(244, 248, 240, 0.55);
+      }
+      .onboarding-privacy-sheet__opt-in-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.55rem;
+        font-size: 0.92rem;
+        line-height: 1.35;
+        color: #2c1f14;
+        cursor: pointer;
+      }
+      .onboarding-privacy-sheet__opt-in-check {
+        margin-top: 0.2rem;
+        flex: 0 0 auto;
+      }
+      .onboarding-privacy-sheet__opt-in-hint {
+        margin: 0.45rem 0 0;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        color: #5a4a3a;
       }
       .onboarding-privacy-sheet__back {
         align-self: flex-start;
