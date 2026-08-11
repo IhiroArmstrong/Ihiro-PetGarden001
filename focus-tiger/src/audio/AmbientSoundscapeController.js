@@ -11,6 +11,10 @@ import {
   isUserAmbientTrackId,
   getSharedUserAmbientLibrary
 } from './UserAmbientLibrary.js';
+import {
+  canPlayAmbientTrack,
+  resolvePlayableAmbientTrackId
+} from './ambientEntitlement.js';
 
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
 export const AUDIO_FOCUS_EQUIV_RATIO = 12 / 60;
@@ -405,7 +409,7 @@ export class AmbientSoundscapeController {
     return Boolean(this._resumePreferredOnOpen);
   }
 
-  /** 按偏好曲开播；若刚 note-mute 软暂停则断点续播。 */
+  /** 按偏好曲开播；若刚 note-mute 软暂停则断点续播。深库未授权时落到免费默认曲。 */
   async unmute() {
     if (this._preferredTrackId === AMBIENT_TRACK_OFF) {
       this._wantEnabled = false;
@@ -417,7 +421,11 @@ export class AmbientSoundscapeController {
     this._resumePreferredOnOpen = false;
     this._wantEnabled = true;
     this._persistPref();
-    await this.setTrack(this._preferredTrackId, { persist: false });
+    const playId = resolvePlayableAmbientTrackId(this._preferredTrackId, {
+      storage: this._storage,
+      builtInTracks: AMBIENT_TRACKS
+    });
+    await this.setTrack(playId, { persist: false });
   }
 
   /**
@@ -450,7 +458,11 @@ export class AmbientSoundscapeController {
    */
   async playTrackEphemeral(trackId) {
     const snap = this._snapshotPrefMemory();
-    await this.setTrack(trackId, { persist: false });
+    const playId = resolvePlayableAmbientTrackId(trackId, {
+      storage: this._storage,
+      builtInTracks: AMBIENT_TRACKS
+    });
+    await this.setTrack(playId, { persist: false });
     this._restorePrefMemory(snap);
   }
 
@@ -542,6 +554,15 @@ export class AmbientSoundscapeController {
       this._rememberPanelTrack = false;
       this._clearSeekPause();
       this._stopPlayback({ persist });
+      return;
+    }
+
+    const entitlementOpts = {
+      storage: this._storage,
+      builtInTracks: AMBIENT_TRACKS
+    };
+    // Hard deny deep built-ins without B — UI must disable; resume paths use resolvePlayable*.
+    if (!canPlayAmbientTrack(id, entitlementOpts)) {
       return;
     }
 
