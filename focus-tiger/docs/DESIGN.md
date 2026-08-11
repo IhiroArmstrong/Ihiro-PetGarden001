@@ -5,6 +5,8 @@
 
 **布局与窄屏**：桌面为主舞台；主流手机浏览器须功能完整、竖屏 P1 可用基线。断点、验收矩阵与横屏建议策略见 **`RESPONSIVE_LAYOUT.md`**（权威）。
 
+**节日主题（规划 · 2026-08-11）**：通用 Seasonal Theme 引擎将在节日窗口为 **B 轨**（Sanctuary Lifetime ∪ Yin Membership）用户切换 App **内部**氛围（姿态/背景/文案）；**不**改变主屏幕 PWA 图标；**不**付费墙 Sit/Arrival/基础 Idle。权威 Brief：`docs/task-briefs/task-seasonal-theme-engine-v1.md`（实现前本文件不描述运行时行为）。
+
 ---
 
 ## 📌 版本5.0重大更新说明（必读，这是一次架构级转向，不是常规迭代）
