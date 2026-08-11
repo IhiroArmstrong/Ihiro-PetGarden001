@@ -639,12 +639,8 @@ export class NarrowIdleShell {
     if (this.quickHomeBtn) {
       const qsLabel = t('QUICK_START_ARIA');
       this.quickHomeBtn.setAttribute('aria-label', qsLabel);
-      // Mint pulse tip owns hover copy while unread — skip native title stack.
-      if (this.handlers.isHintUnread?.('quick-start') === true) {
-        this.quickHomeBtn.removeAttribute('title');
-      } else {
-        this.quickHomeBtn.title = qsLabel;
-      }
+      // Home left ball: no mint pulse (2026-08-11) — always keep hover label.
+      this.quickHomeBtn.title = qsLabel;
       const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
       this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
       this.quickHomeBtn.disabled = !qsOk;

@@ -17,12 +17,16 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-support-modal-styles-v2';
+const STYLE_ID = 'yin-support-modal-styles-v3';
 const FADE_MS = 220;
 
 const ICON_SRC = '/ui/support/support-yin-icon.png';
 const SANCTUARY_PREVIEW_SRC = '/ui/support/sanctuary-preview.png';
+/** Closed-eye meditation Yin (ingested from root membership icon). */
+const MEMBERSHIP_PREVIEW_SRC = '/ui/support/membership-meditation-preview.png';
 const TEA_PREVIEW_SRC = '/ui/support/tea-drinking-preview.png';
+/** Shared warm paper behind card art (matches tea card field). */
+const CARD_IMG_PAPER = '#e8dfd2';
 
 /**
  * @param {string} template
@@ -111,7 +115,7 @@ export class SupportYinModalUI {
       priceValue: SANCTUARY_LIFETIME_PRICE_USD,
       ctaKey: 'SUPPORT_SANCTUARY_CTA',
       ctaTestId: 'yin-support-sanctuary-cta',
-      ctaVariant: 'primary',
+      ctaVariant: 'beige',
       badgeKey: 'SUPPORT_SANCTUARY_BADGE',
       onCta: () => {
         void this._runCheckout('sanctuary');
@@ -128,7 +132,7 @@ export class SupportYinModalUI {
 
     const membership = this._buildCard({
       testId: 'yin-support-membership-card',
-      imgSrc: SANCTUARY_PREVIEW_SRC,
+      imgSrc: MEMBERSHIP_PREVIEW_SRC,
       imgAltKey: 'SUPPORT_MEMBERSHIP_IMG_ALT',
       titleKey: 'SUPPORT_MEMBERSHIP_TITLE',
       blurbKey: 'SUPPORT_MEMBERSHIP_BLURB',
@@ -141,7 +145,7 @@ export class SupportYinModalUI {
       priceValue: '',
       ctaKey: 'SUPPORT_MEMBERSHIP_CTA',
       ctaTestId: 'yin-support-membership-cta',
-      ctaVariant: 'primary',
+      ctaVariant: 'cushion',
       onCta: () => {
         void this._runCheckout('membership');
       }
@@ -169,7 +173,7 @@ export class SupportYinModalUI {
       priceValue: TIP_JAR_PRICE_USD,
       ctaKey: 'SUPPORT_TEA_CTA',
       ctaTestId: 'yin-support-tea-cta',
-      ctaVariant: 'ghost',
+      ctaVariant: 'beige',
       onCta: () => {
         void this._runCheckout('tea');
       }
@@ -266,7 +270,12 @@ export class SupportYinModalUI {
 
     const ctaBtn = document.createElement('button');
     ctaBtn.type = 'button';
-    const variant = opts.ctaVariant === 'ghost' ? 'ghost' : 'primary';
+    const variant =
+      opts.ctaVariant === 'beige' ||
+      opts.ctaVariant === 'cushion' ||
+      opts.ctaVariant === 'ghost'
+        ? opts.ctaVariant
+        : 'primary';
     ctaBtn.className = `yin-support-card__cta yin-support-card__cta--${variant}`;
     ctaBtn.dataset.testid = opts.ctaTestId;
     ctaBtn.dataset.key = opts.ctaKey;
@@ -542,8 +551,10 @@ export class SupportYinModalUI {
         width: 100%;
         aspect-ratio: 1 / 1;
         object-fit: cover;
+        object-position: center;
         border-radius: 12px;
-        background: #f4efe6;
+        /* Unify art field to tea-card warm paper (left/mid were cooler grey/white). */
+        background: ${CARD_IMG_PAPER};
       }
       .yin-support-card__title {
         margin: 2px 0 0;
@@ -579,29 +590,58 @@ export class SupportYinModalUI {
         font-weight: 650;
         cursor: pointer;
       }
+      /* Middle · Membership — cushion orange (Sit CTA family) */
+      .yin-support-card__cta--cushion,
       .yin-support-card__cta--primary {
-        border: 1px solid rgba(72, 48, 30, 0.35);
+        border: 1px solid rgba(255, 230, 210, 0.38);
         background: linear-gradient(
           180deg,
-          #7a5236 0%,
-          #5c3a24 52%,
-          #4a2e1c 100%
+          var(--color-cta-top, #c47a4e) 0%,
+          var(--color-accent, #b5623a) 48%,
+          var(--color-cta-bottom, #8f4a2c) 100%
         );
-        color: #fff8f0;
+        color: #fff;
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.18) inset,
-          0 4px 12px rgba(44, 31, 20, 0.18);
+          0 1px 0 rgba(255, 255, 255, 0.32) inset,
+          0 2px 0 var(--color-cta-edge, #7a3f24),
+          0 3px 8px rgba(44, 31, 20, 0.14);
       }
+      .yin-support-card__cta--cushion:hover,
       .yin-support-card__cta--primary:hover {
-        filter: brightness(1.06);
+        filter: brightness(1.04);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.36) inset,
+          0 2px 0 var(--color-cta-edge, #7a3f24),
+          0 4px 10px rgba(44, 31, 20, 0.16);
       }
+      /* Outer cards · beige 3D (How shall we sit? family) */
+      .yin-support-card__cta--beige,
       .yin-support-card__cta--ghost {
-        border: 1px solid rgba(139, 115, 85, 0.32);
-        background: rgba(255, 252, 245, 0.35);
-        color: #4a3426;
+        border: 1px solid rgba(139, 115, 85, 0.36);
+        color: var(--color-ink, #2c1f14);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 252, 245, 0.92) 0%,
+          #ede0c4 100%
+        );
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 2px 0 rgba(165, 130, 85, 0.22),
+          0 3px 8px rgba(44, 31, 20, 0.08);
       }
+      .yin-support-card__cta--beige:hover,
       .yin-support-card__cta--ghost:hover {
-        background: rgba(255, 252, 245, 0.62);
+        background: linear-gradient(180deg, #fffcf4 0%, #ede0c4 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 2px 0 rgba(165, 130, 85, 0.28),
+          0 4px 10px rgba(44, 31, 20, 0.12);
+      }
+      .yin-support-card__cta--beige:active,
+      .yin-support-card__cta--ghost:active,
+      .yin-support-card__cta--cushion:active,
+      .yin-support-card__cta--primary:active {
+        transform: translateY(1px) scale(0.98);
       }
       .yin-support-card__cta:disabled {
         opacity: 0.55;
