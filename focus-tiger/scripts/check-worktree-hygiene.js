@@ -9,6 +9,11 @@
  *   - Worktree remove: irreversible → this script only inventories; Agent never
  *     silent-remove; user must name paths after the passphrase.
  *
+ * Content-merged gate (squash-friendly): tip is ancestor of origin/develop
+ *   OR `git cherry origin/develop HEAD` has no `+` lines (no unique patches).
+ * Ancestor-only checks false-negative squash merges and leftover local tips whose
+ * patches already landed on develop.
+ *
  * Usage: cd focus-tiger && npm run check:worktree-hygiene
  *
  * Exit: always 0 on successful inventory (even if candidates exist).
@@ -88,6 +93,8 @@ export function parseWorktreePorcelain(porcelain) {
  *   lockOccupancy: string,
  *   lockStale: boolean | null,
  *   tipInDevelop: boolean,
+ *   cherryUniqueCount: number | null,
+ *   contentMerged: boolean,
  *   isCurrent: boolean,
  *   isPrimary: boolean,
  *   tier: HygieneTier,
@@ -97,11 +104,16 @@ export function parseWorktreePorcelain(porcelain) {
 
 /**
  * Pure classifier — unit-tested without git.
+ * Content is "merged enough to remove" when tipInDevelop OR cherry has no
+ * unique patches (`noUniquePatches`). Squash merges fail ancestor checks but
+ * pass cherry-empty.
+ *
  * @param {{
  *   isPrimary: boolean,
  *   isCurrent: boolean,
  *   dirty: boolean,
  *   tipInDevelop: boolean,
+ *   noUniquePatches: boolean,
  *   lockOccupancy: string,
  *   lockStale: boolean | null,
  *   bare?: boolean
@@ -148,11 +160,15 @@ export function classifyHygieneTier(input) {
   } else if (input.lockOccupancy === 'absent') {
     reasons.push('lock-absent')
   }
-  if (!input.tipInDevelop) {
-    reasons.push('tip-not-in-origin-develop')
+
+  const contentMerged = Boolean(input.tipInDevelop) || Boolean(input.noUniquePatches)
+  if (!contentMerged) {
+    if (!input.tipInDevelop) reasons.push('tip-not-in-origin-develop')
+    if (!input.noUniquePatches) reasons.push('cherry-has-unique-patches')
     return { tier: 'report_only', reasons }
   }
-  reasons.push('tip-in-origin-develop')
+  if (input.tipInDevelop) reasons.push('tip-in-origin-develop')
+  if (input.noUniquePatches) reasons.push('cherry-empty-vs-develop')
   reasons.push('clean')
   return { tier: 'propose_remove', reasons }
 }
@@ -198,6 +214,24 @@ function tipInDevelop(repoRoot, worktreePath, headSha) {
     } catch {
       return false
     }
+  }
+}
+
+/**
+ * Count commits whose patch is not in origin/develop (`git cherry` `+` lines).
+ * Squash-merged tips typically return 0 even when not an ancestor.
+ * @param {string} repoRoot
+ * @param {string} headSha
+ * @returns {number | null} null on git failure
+ */
+export function countCherryUniquePatches(repoRoot, headSha) {
+  if (!headSha) return null
+  try {
+    const out = run(repoRoot, `git cherry origin/develop ${headSha}`) || ''
+    if (!out) return 0
+    return out.split('\n').filter((line) => line.startsWith('+')).length
+  } catch {
+    return null
   }
 }
 
@@ -276,12 +310,16 @@ export function collectHygieneRows(opts = {}) {
     const dirty = wt.bare ? false : isDirty(path)
     const lock = inspectLock(path, now)
     const tipOk = wt.bare ? false : tipInDevelop(repoRoot, path, wt.head)
+    const cherryUnique = wt.bare ? null : countCherryUniquePatches(repoRoot, wt.head)
+    const noUniquePatches = cherryUnique === 0
+    const contentMerged = tipOk || noUniquePatches
     const commit = lastCommitInfo(path, now)
     const { tier, reasons } = classifyHygieneTier({
       isPrimary: primary,
       isCurrent: current,
       dirty,
       tipInDevelop: tipOk,
+      noUniquePatches,
       lockOccupancy: lock.occupancy,
       lockStale: lock.stale,
       bare: wt.bare
@@ -297,6 +335,8 @@ export function collectHygieneRows(opts = {}) {
       lockOccupancy: lock.occupancy,
       lockStale: lock.stale,
       tipInDevelop: tipOk,
+      cherryUniqueCount: cherryUnique,
+      contentMerged,
       isCurrent: current,
       isPrimary: primary,
       tier,
@@ -329,12 +369,12 @@ export function formatHygieneReport(rows, thresholdMs) {
     lines.push('(none)')
   } else {
     lines.push(
-      '| path | branch | last_commit_at | age_days | lock | tip_in_develop | reasons |'
+      '| path | branch | last_commit_at | age_days | lock | tip_in_dev | cherry_unique | reasons |'
     )
-    lines.push('|---|---|---|---|---|---|---|')
+    lines.push('|---|---|---|---|---|---|---|---|')
     for (const r of propose) {
       lines.push(
-        `| ${r.path} | ${r.branch || ''} | ${r.lastCommitAt || ''} | ${r.lastCommitAgeDays ?? ''} | ${r.lockOccupancy}${r.lockStale === true ? '+stale' : ''} | yes | ${r.reasons.join(';')} |`
+        `| ${r.path} | ${r.branch || ''} | ${r.lastCommitAt || ''} | ${r.lastCommitAgeDays ?? ''} | ${r.lockOccupancy}${r.lockStale === true ? '+stale' : ''} | ${r.tipInDevelop} | ${r.cherryUniqueCount ?? ''} | ${r.reasons.join(';')} |`
       )
     }
   }
@@ -344,12 +384,12 @@ export function formatHygieneReport(rows, thresholdMs) {
     lines.push('(none)')
   } else {
     lines.push(
-      '| path | branch | last_commit_at | age_days | dirty | lock | tip_in_develop | reasons |'
+      '| path | branch | last_commit_at | age_days | dirty | lock | tip_in_dev | cherry_unique | reasons |'
     )
-    lines.push('|---|---|---|---|---|---|---|---|')
+    lines.push('|---|---|---|---|---|---|---|---|---|')
     for (const r of report) {
       lines.push(
-        `| ${r.path} | ${r.branch || ''} | ${r.lastCommitAt || ''} | ${r.lastCommitAgeDays ?? ''} | ${r.dirty} | ${r.lockOccupancy}${r.lockStale === true ? '+stale' : r.lockStale === false ? '' : ''} | ${r.tipInDevelop} | ${r.reasons.join(';')} |`
+        `| ${r.path} | ${r.branch || ''} | ${r.lastCommitAt || ''} | ${r.lastCommitAgeDays ?? ''} | ${r.dirty} | ${r.lockOccupancy}${r.lockStale === true ? '+stale' : r.lockStale === false ? '' : ''} | ${r.tipInDevelop} | ${r.cherryUniqueCount ?? ''} | ${r.reasons.join(';')} |`
       )
     }
   }

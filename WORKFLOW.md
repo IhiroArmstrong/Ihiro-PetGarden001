@@ -71,8 +71,9 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 6. **结束后清理（目录拆除 · 高风险 · 须口令）**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
    - **禁止** Agent 静默 `worktree remove` / 按「看起来没人用」推断拆盘。  
    - **口令**「请清理闲置 worktree」（或同等）：Agent **只读**跑 `cd focus-tiger && npm run check:worktree-hygiene`，把输出做成候选清单贴进「待你决定」；**仅** `propose_remove` 档可建议拆除；`report_only` / `primary` **只汇报、不提议**。  
+   - **`propose_remove` 内容已合入判定（squash 友好）**：工作树干净 + 非当前 cwd + 锁可放行，且满足其一——① tip 已是 `origin/develop` 祖先；或 ② `git cherry origin/develop HEAD` **无** `+` 行（无独有补丁）。禁止仅用祖先检查（squash 合入会假阴性）。  
    - 清单须含 **最后一次 commit 时间**（与闲置天数），便于你决定是否还要留作对照。  
-   - 你点名 path（或写「按清单清」= 只清当时 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。  
+   - 你点名 path（或写「按清单清」/「按扩大清单清」= 只清当时 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。  
    - 政策索引：`RULES_INDEX.md` → `git-worktree-hygiene`。与锁心跳/陈旧（下节 Prompt 3）**同原则、不同风险等级**：客观依据（脚本输出 / `last_heartbeat`）供判断；**不可逆拆盘必须人工确认**；可逆的锁接管见下节。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。
 
