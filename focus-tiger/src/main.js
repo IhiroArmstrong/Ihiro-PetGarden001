@@ -47,10 +47,18 @@ import {
 } from './ui/WeeklyPracticeHeatmap.js';
 import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
+import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import {
   InAppReminderBannerController,
   isReminderBusySession
 } from './core/InAppReminderBannerController.js';
+import {
+  isUpdateAvailable,
+  parseVersionManifest,
+  readForceUpdatePromptFlag,
+  shouldRevealSoftUpdatePrompt,
+  LOCAL_APP_BUILD_ID
+} from './core/appVersionCheck.js';
 import { shouldPlayParrotMessengerOnBannerShow } from './core/parrotMessengerGate.js';
 import {
   evaluateInAppReminderBanner,
@@ -562,6 +570,76 @@ async function init() {
       }
     }
   );
+  /** Soft update chip: only when remote buildId differs (or ?forceUpdatePrompt=1). */
+  let softUpdateAvailable = false;
+  let softUpdateVersionLabel = '';
+  let syncSoftUpdatePrompt = () => {};
+  const softUpdatePromptUI = new SoftUpdatePromptUI(document.body, {
+    onUpdate: () => {
+      try {
+        globalThis.location.reload();
+      } catch {
+        // ignore
+      }
+    }
+  });
+  syncSoftUpdatePrompt = () => {
+    const busy = isReminderBusySession({
+      state: stateManager.state,
+      arrivalOpen: Boolean(arrivalPractice?.isOpen?.()),
+      reflectionOpen: Boolean(reflectionMoment?.isOpen?.()),
+      microRitualOpen: Boolean(microRitualUI?.isOpen?.())
+    });
+    const reveal = shouldRevealSoftUpdatePrompt({
+      updateAvailable: softUpdateAvailable,
+      busySession: busy
+    });
+    if (reveal && softUpdateVersionLabel) {
+      softUpdatePromptUI.setVersionLabel(softUpdateVersionLabel);
+    }
+    softUpdatePromptUI.setRevealed(reveal);
+  };
+  async function refreshSoftUpdateAvailability() {
+    const force = readForceUpdatePromptFlag(globalThis.location?.search || '');
+    if (force) {
+      softUpdateAvailable = true;
+      softUpdateVersionLabel = softUpdateVersionLabel || 'dev';
+      syncSoftUpdatePrompt();
+      return;
+    }
+    if (!LOCAL_APP_BUILD_ID) {
+      softUpdateAvailable = false;
+      syncSoftUpdatePrompt();
+      return;
+    }
+    try {
+      const res = await fetch(`/version.json?t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      if (!res.ok) {
+        softUpdateAvailable = false;
+        syncSoftUpdatePrompt();
+        return;
+      }
+      const remote = parseVersionManifest(await res.json());
+      softUpdateAvailable = isUpdateAvailable({
+        localBuildId: LOCAL_APP_BUILD_ID,
+        remoteBuildId: remote?.buildId || ''
+      });
+      softUpdateVersionLabel = remote?.version || remote?.buildId || '';
+    } catch {
+      softUpdateAvailable = false;
+    }
+    syncSoftUpdatePrompt();
+  }
+  window.__softUpdatePrompt = {
+    sync: () => syncSoftUpdatePrompt(),
+    refresh: () => refreshSoftUpdateAvailability(),
+    ui: softUpdatePromptUI,
+    get available() {
+      return softUpdateAvailable;
+    }
+  };
   /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday; cluster mount needs heatmap only). */
   let reminderPreferenceUI = null;
   /** @type {LanguagePreferenceUI | null} */
@@ -1984,6 +2062,7 @@ async function init() {
     } else if (inAppReminderBannerUI.isVisible()) {
       inAppReminderBannerUI.hide({ silent: true });
     }
+    syncSoftUpdatePrompt();
   };
 
   // E2E clocks the reminder via `__inAppReminder` (in-app-reminder.spec.js).
@@ -2671,7 +2750,10 @@ async function init() {
       tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
     }
     syncInAppReminderBanner();
+    void refreshSoftUpdateAvailability();
   });
+
+  void refreshSoftUpdateAvailability();
 
   // Lab chrome: vite `serve` (DEV) or local Playwright `vite build --mode development`
   // (MODE=development but DEV still false on any `build`). Product shell / CI prod build: off.
