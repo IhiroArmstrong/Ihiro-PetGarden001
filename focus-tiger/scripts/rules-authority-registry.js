@@ -287,7 +287,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /请清理闲置 worktree/,
       /check:worktree-hygiene/,
       /最后一次 commit/,
-      /禁止.*静默.*worktree remove|禁止.*Agent 静默/
+      /禁止.*静默.*worktree remove|禁止.*Agent 静默/,
+      /git cherry|cherry origin\/develop/
     ],
     topicSignals: [
       /worktree-hygiene/,
