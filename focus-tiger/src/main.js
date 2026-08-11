@@ -218,6 +218,7 @@ import {
   AMBIENT_TRACK_OFF,
   DEFAULT_AMBIENT_TRACK_ID
 } from './audio/AmbientSoundscapeController.js';
+import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import {
   createHintsSeenStore,
@@ -1466,7 +1467,11 @@ async function init() {
   });
 
   const acrossToolsIdleGuard = new AcrossToolsIdleGuard();
-  const ambientSoundscape = new AmbientSoundscapeController();
+  const ambientSoundscape = new AmbientSoundscapeController({
+    auditionMs: parseAmbientAuditionMs(
+      typeof location !== 'undefined' ? location.search : ''
+    )
+  });
   // Avoid TDZ: AmbientSoundscapeUI paints during construct, before `let onboardingHints`.
   /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
   const onboardingHintHost = { hints: null };
@@ -1494,12 +1499,42 @@ async function init() {
       onMuteChromePainted: () => {
         onboardingHintHost.hints?.syncDiscoveryDots();
       },
-      onLockedDeepTrack: () => {
-        mindfulToast.show(t('AMBIENT_TRACK_LOCKED_TOAST'), {
-          placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
-          visibleMs: 4_000
-        });
-        supportYinModalUI.open();
+      onLockedDeepTrack: (trackId) => {
+        void ambientSoundscape
+          .startDeepAudition(trackId, {
+            onEnded: ({ reason }) => {
+              ambientSoundscapeUI.renderAfterAudition?.();
+              idleChrome.syncMuteVisual({
+                musicOn: ambientSoundscapeUI.wantsMusicOn()
+              });
+              // Soft unlock hint after timed audition — dismissible; do not force Support.
+              if (reason === 'duration') {
+                mindfulToast.show(t('AMBIENT_AUDITION_UNLOCK_HINT'), {
+                  placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+                  visibleMs: 5_000
+                });
+              }
+            }
+          })
+          .then((result) => {
+            if (result.started) {
+              ambientSoundscapeUI.renderAfterAudition?.();
+              idleChrome.syncMuteVisual({
+                musicOn: ambientSoundscapeUI.wantsMusicOn()
+              });
+              return;
+            }
+            // Fallback: entitled path already playing, or play failed → keep prior toast+Support.
+            if (result.reason === 'entitled') {
+              ambientSoundscapeUI.renderAfterAudition?.();
+              return;
+            }
+            mindfulToast.show(t('AMBIENT_TRACK_LOCKED_TOAST'), {
+              placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+              visibleMs: 4_000
+            });
+            supportYinModalUI.open();
+          });
       }
     }
   );
