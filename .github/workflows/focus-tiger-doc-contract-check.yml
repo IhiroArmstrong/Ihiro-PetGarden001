@@ -22,6 +22,10 @@ on:
       - '.cursor/rules/focus-tiger-docs.mdc'
       - 'focus-tiger/scripts/*-doc-check.js'
       - 'focus-tiger/scripts/check-docs-consistency.js'
+      - 'focus-tiger/scripts/session-lock-lib.js'
+      - 'focus-tiger/scripts/gate-session-lock-precommit.js'
+      - 'focus-tiger/scripts/check-worktree-occupancy.js'
+      - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
       - 'focus-tiger/package.json'
@@ -49,6 +53,10 @@ on:
       - '.cursor/rules/focus-tiger-docs.mdc'
       - 'focus-tiger/scripts/*-doc-check.js'
       - 'focus-tiger/scripts/check-docs-consistency.js'
+      - 'focus-tiger/scripts/session-lock-lib.js'
+      - 'focus-tiger/scripts/gate-session-lock-precommit.js'
+      - 'focus-tiger/scripts/check-worktree-occupancy.js'
+      - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
       - 'focus-tiger/package.json'
@@ -80,5 +88,7 @@ jobs:
         run: node --test scripts/rules-authority-doc-check.test.js
       - name: Docs-consistency numeric-restatement unit smoke
         run: node --test scripts/check-docs-consistency.test.js
+      - name: Session-lock heartbeat/stale/gate unit smoke
+        run: node --test scripts/session-lock-lib.test.js scripts/check-worktree-occupancy.test.js
       - name: Behavioral contracts (gate + scenario smoke)
         run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js

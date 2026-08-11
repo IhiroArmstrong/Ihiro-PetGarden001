@@ -182,6 +182,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-11 | 强化 `git-worktree-occupancy`：`last_heartbeat` + 默认 60m 陈旧阈值（`FT_SESSION_LOCK_STALE_MS`）；陈旧/releasable 可接管须 history 留痕；husky pre-commit `gate-session-lock-precommit`；**禁止主仓 develop 检出写/commit** |
 | 2026-08-11 | 新增 docs 数值复述一致性门禁：`check-docs-consistency.js` 并入 `docs:check` / `test:smoke`；首条 claim=`browser-energy-duration`（下游复述 SSOT 连续开放时长数字须红；回归见 `check-docs-consistency.test.js`）；PR 模板补 `.cursor/rules/*.mdc` 强制项 |
 | 2026-08-11 | 定稿 `browser-energy` 临时解禁路径：连续开放时长上限 + 续开不清零 + 精确时间戳汇报；下游文档（含 PROCESS）**禁止复述具体分钟数**，只指针引用 SSOT（`focus-tiger-browser-energy.mdc`） |
 | 2026-08-08 | 审计笔记：2026-08-01 六笔（含 `92effa4` Frozen）曾临时卸保护直推 `develop`；记入 `DEVELOP_DEBT_INVENTORY` §0.1；支撑同日 `git-agent-commit` 禁直推口径（#190） |

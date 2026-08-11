@@ -1,1 +1,6 @@
+cd "$(dirname "$0")/.." || exit 1
+
+# Session lock + primary-develop checkout gate (Prompt 3)
+node focus-tiger/scripts/gate-session-lock-precommit.js || exit $?
+
 cd focus-tiger && npm run test:smoke
