@@ -68,7 +68,12 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 3a. **合入受阻 / 多文件冲突**：涉及 merge 冲突、CI 红且预计 ≥3 文件或多轮试错时，**先**摘要冲突类型并问是否新开 worktree/分支；**禁止**在原共用目录反复本地长验证。本地最多 1 轮冒烟级自检，最终交给 push + CI（细则：`RULES_INDEX` → `agent-token-cost` 第 6 条）。  
 4. **禁止两 worktree 同时检出同一分支**（Git 硬限制）；共享契约文件（如 `TEST_TRACKER.md`、`PROCESS.md`、locale 大文件）同一时间只允许一个会话改。  
 5. **合回主线**：功能分支经 PR（或团队约定的本地 merge）进入 `develop`——**须先满足**下文「feature/fix 合入 develop 前：worktree 预览确认」；`main` 仍只走 PR + 负责人网页合并（见合并门禁）。push 仍须用户明确授权。  
-6. **结束后清理**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
+6. **结束后清理（目录拆除 · 高风险 · 须口令）**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
+   - **禁止** Agent 静默 `worktree remove` / 按「看起来没人用」推断拆盘。  
+   - **口令**「请清理闲置 worktree」（或同等）：Agent **只读**跑 `cd focus-tiger && npm run check:worktree-hygiene`，把输出做成候选清单贴进「待你决定」；**仅** `propose_remove` 档可建议拆除；`report_only` / `primary` **只汇报、不提议**。  
+   - 清单须含 **最后一次 commit 时间**（与闲置天数），便于你决定是否还要留作对照。  
+   - 你点名 path（或写「按清单清」= 只清当时 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。  
+   - 政策索引：`RULES_INDEX.md` → `git-worktree-hygiene`。与锁心跳/陈旧（下节 Prompt 3）**同原则、不同风险等级**：客观依据（脚本输出 / `last_heartbeat`）供判断；**不可逆拆盘必须人工确认**；可逆的锁接管见下节。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。
 
 ### 工作树占用检测与 `.ft-session-lock`（强制）
@@ -104,6 +109,8 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    - **创建锁** → `occupancy: active`，写齐时间戳，并写 `.ft-session-identity`。
    - **会话中** → 保持 `active`，刷新 `last_heartbeat`。
    - **结束** → 删锁（优）或标 `releasable`。
+   - **会话明显结束时的 N14 播报（强制）**：任务收尾 / 用户明确停止 / 本会话工作线已完时，「待你知道」**必须**写明锁的实际状态——`已删除` 或 `已标 releasable`（二选一写实，禁止笼统「收尾完成」带过）。**默认不要**在同一条里提议拆 worktree 目录（拆盘走口令「请清理闲置 worktree」，见上节第 6 款 / `git-worktree-hygiene`）。
+   - **与拆盘 hygiene 对齐（Prompt 3 ↔ hygiene）**：锁陈旧判定与 worktree 候选清单都只提供**客观依据**（`last_heartbeat`+阈值 / `check:worktree-hygiene` 输出）。风险分档：**锁清除/接管 = 低风险可逆**（陈旧或 `releasable` 可自动接管 + history 留痕）；**`git worktree remove` = 高风险不可逆**（禁止静默；须口令 + 点名）。禁止把两套说成同一宽松标准。
    - **缺字段 / 非法 / 非 JSON**：未知占用；心跳已陈旧可按陈旧外锁，否则按非陈旧 `active`。
 4. **禁止主仓 `develop` 直接检出写/commit（硬）**：任何写操作（含小文档）**一律不得**在主仓通用目录（路径名无 `…-wt-…`）且当前分支为 `develop` 时进行；必须先 `git worktree add …-wt-<topic>`。**取消**「小改动可在主仓顺手改」的隐性例外。技术闸：husky pre-commit 对此组合 **reject**（紧急：`FT_ALLOW_MAIN_DEVELOP_COMMIT=1`，须汇报说明）。
 5. **写前检查（Agent 规则 + pre-commit）**：
@@ -118,6 +125,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 7. **强制清锁（非陈旧）**：禁因「看起来过期」清非陈旧外锁；须「我确认要强制清除锁」。`releasable` / **已陈旧**走自动接管 + history。
 8. **检测 / 技术闸**：
    - `npm run check:worktree-occupancy`（occupancy、heartbeat、stale、主仓 develop BLOCK）
+   - `npm run check:worktree-hygiene`（**只读**全 worktree 候选清单；拆盘口令数据源；见 `git-worktree-hygiene`）
    - `npm run session-lock:heartbeat` / `session-lock:gate`
    - **husky** `.husky/pre-commit` → `gate-session-lock-precommit.js` 先于 `test:smoke`
 9. **辅助闸（shell，可选）**：`beforeShellExecution` 可查锁。**不能**替代 Edit/Write 自觉 + pre-commit。**禁止**为实施本条改动 deny-subagent / gate-full-e2e / gate-destructive-shell。
