@@ -103,6 +103,13 @@ export function homeClearanceTopCss(win = globalThis) {
  */
 export const BOTTOM_COPY_CLEARANCE_SURFACES = Object.freeze([
   {
+    id: 'contextual-tea-tip-bubble',
+    selector: '#contextual-tea-tip-bubble',
+    owner: 'ContextualTeaTipBubbleUI.js',
+    usesSharedClearance: true,
+    notes: 'A-track soft tip after session-complete / milestone; clears home balls'
+  },
+  {
     id: 'mindful-acknowledge-toast-bottom',
     selector: '#mindful-acknowledge-toast[data-placement="bottom"]',
     owner: 'MindfulAcknowledgeToast.js + NarrowIdleShell clearance belt',

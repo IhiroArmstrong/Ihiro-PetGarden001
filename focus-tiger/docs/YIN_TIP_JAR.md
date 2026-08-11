@@ -40,6 +40,16 @@
 - **冷启动门闩**：Stripe 整页回跳时 **跳过** `WELCOME_APP`，在欢迎 boot slot 播致谢，避免欢迎盖掉喝茶（见 `paymentCheckoutThanks.js`）
 - 新鞠躬素材 / 24h 光环 / 盲盒周边 → **延后**
 
+## Contextual tip bubble（2026-08-12）
+
+高光时刻软提示（**非** modal 墙）：
+
+- 触发：达标完成（`session-complete`）或里程碑（`milestone`），约 1.8s 后
+- UI：`#contextual-tea-tip-bubble` → CTA 开既有 TipJar
+- 门闩：`focus-tiger.contextual-tea-tip.v1` · 本地日历日一次；可忽略
+- **不**解锁内容；与 Sanctuary **零耦合**
+- 忙碌时（Tip / Support / Reflection / Arrival 等叠层）不出
+
 ## API
 
 | Method | Path | Role |
@@ -52,8 +62,7 @@ Success URL should include `?tip=1`（乐观徽章级回跳；**禁止**用 tip 
 
 ## UI
 
-Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。情境化入口（里程碑 / Honesty / About）后续再加。
-
+Idle ⋯ / 抽屉 **Buy Yin a tea** → `#yin-tip-jar-card`。高光时刻另有 `#contextual-tea-tip-bubble`（见上）。
 ---
 
 ## § 部署（任务 5）· **进行中（2026-08-08 · 纠偏）**
