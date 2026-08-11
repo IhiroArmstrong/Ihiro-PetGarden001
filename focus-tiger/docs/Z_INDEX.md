@@ -69,6 +69,7 @@
 | **22** | `src/ui/ReminderPreferenceUI.js` | Reminder 偏好面板（`.reminder-pref__panel`）默认绝对定位上弹 |
 | **22** | `src/ui/AmbientSoundscapeUI.js` | Ambient 根壳（`.ambient-soundscape`，`pointer-events: none`） |
 | **22** | `src/ui/OnboardingHintsUI.js` | 左下 `?` 帮助钮（`.onboarding-hint-help`） |
+| **22** | `src/ui/SoftUpdatePromptUI.js` | 仅有新版本时出现的轻量更新芯片（`#ft-soft-update-prompt`；左下、几何在 `?` **上方**；点一下刷新；忙时隐藏；与 `?` 同带勿抢 23 右下 Sound chrome） |
 | **23** | `src/ui/AmbientSoundscapeUI.js` | Soundscape 右下 focus chrome（曲目面板 + Sound FAB 容器） |
 | **24** | `src/ui/AmbientSoundscapeUI.js` | 右上 mute / 音符钮（`.ambient-soundscape__mute`） |
 | **24** | `src/ui/SupportYinModalUI.js` | 右上 Support Yin FAB（`#yin-support-fab`；在 mute 左侧） |
