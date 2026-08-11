@@ -100,7 +100,14 @@ import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
-import { getMonetizationFunnelStore } from './core/monetizationIntentFunnel.js';
+import {
+  getMonetizationFunnelStore,
+  setAfterMonetizationFunnelRecord
+} from './core/monetizationIntentFunnel.js';
+import {
+  scheduleMonetizationFunnelUpload,
+  tryUploadMonetizationFunnel
+} from './core/monetizationFunnelUpload.js';
 import {
   emotionKeyForPaymentThanks,
   peekCheckoutReturnThanksKind,
@@ -890,6 +897,11 @@ async function init() {
     }
   );
   window.__contextualTeaTip = contextualTeaTipBubbleUI;
+
+  setAfterMonetizationFunnelRecord(() => {
+    scheduleMonetizationFunnelUpload();
+  });
+  void tryUploadMonetizationFunnel();
 
   consumeTipReturnQuery({});
   void bootSanctuaryReturnConfirm({}).then((ret) => {

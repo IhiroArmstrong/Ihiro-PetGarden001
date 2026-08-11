@@ -21,6 +21,7 @@ import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
+import { handleMonetizationFunnelIngest } from "./routes/monetizationFunnelIngest";
 import type { Env } from "./types";
 
 /**
@@ -53,6 +54,7 @@ export default {
 				url.pathname === "/api/membership-entitlement" ||
 				url.pathname === "/api/create-membership-portal-session" ||
 				url.pathname === "/api/restore/request-otp" ||
+				url.pathname === "/api/monetization-funnel-ingest" ||
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight")
 		) {
@@ -256,6 +258,19 @@ export default {
 				);
 			}
 			return withCors(await handleEmotionWeight(request), origin);
+		}
+
+		if (url.pathname === "/api/monetization-funnel-ingest") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleMonetizationFunnelIngest(request, env),
+				origin,
+			);
 		}
 
 		return withCors(

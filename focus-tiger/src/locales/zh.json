@@ -291,6 +291,8 @@
   "PRIVACY_SHEET_NOT_DO": "v1.0.0 不做：核心循环不强制登录；默认不同步练习到云端；默认不接崩溃/分析 SDK。v1 不承诺任何具名云保管同步。",
   "PRIVACY_SHEET_CLOUD": "若以后增加云功能，会说明发送什么、为什么、保留多久，并在离开本机前征求同意。",
   "PRIVACY_SHEET_CLOSING": "短介绍请点「?」。本页是更完整的通俗隐私说明。",
+  "PRIVACY_FUNNEL_OPTIN_LABEL": "帮助改进 Support 与结账流程（可选）",
+  "PRIVACY_FUNNEL_OPTIN_HINT": "默认关闭。开启后仅发送匿名计数：Support 打开、按钮点击、结账步骤——不含反思、意图或支付细节。可随时关闭。",
   "reminder.setting_title": "什么时候提醒你",
   "reminder.gentle_waiting": "你准备好了，阿寅就在这儿。",
   "reminder.enable_label": "开启提醒",

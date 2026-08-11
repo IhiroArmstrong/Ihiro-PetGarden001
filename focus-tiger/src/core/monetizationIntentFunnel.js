@@ -110,6 +110,17 @@ export function trackMonetizationEvent(
   log('[MonetizationFunnel]', name, props);
 }
 
+/** @type {null | (() => void)} */
+let afterMonetizationFunnelRecord = null;
+
+/**
+ * Optional hook (e.g. opt-in upload scheduler). Set from main once.
+ * @param {null | (() => void)} fn
+ */
+export function setAfterMonetizationFunnelRecord(fn) {
+  afterMonetizationFunnelRecord = typeof fn === 'function' ? fn : null;
+}
+
 function getDefaultStorage() {
   try {
     return globalThis.localStorage ?? null;
@@ -197,6 +208,7 @@ export class MonetizationFunnelStore {
     }
     writeMonetizationFunnelState(this.storage, state);
     this.track(name, { track, source, countKey: key });
+    afterMonetizationFunnelRecord?.();
   }
 
   supportOpen(source = 'fab') {

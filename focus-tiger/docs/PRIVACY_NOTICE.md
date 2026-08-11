@@ -22,6 +22,7 @@ Exact keys and retention evolve with features; we only keep what the current fea
 - No account login required for the core loop
 - No cloud sync of your practice by default
 - No crash / analytics SDK wired by default (if we add optional crash reports later, we will say what fields are sent and ask before enabling)
+- Optional **Support funnel counts** (Privacy sheet toggle; default off): anonymous Support / checkout step counts only — not reflections, intentions, or payment details
 - We do **not** promise any named cloud vault sync in v1
 
 ## Cloud later (v1.1+)

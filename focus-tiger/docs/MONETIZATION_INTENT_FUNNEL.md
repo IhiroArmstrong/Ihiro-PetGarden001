@@ -1,9 +1,9 @@
 # Monetization Intent Funnel · 付费意愿漏斗（本地）
 
-> **状态（2026-08-12）**：`feature/monetization-intent-funnel`（PR #255）  
-> **性质**：本地埋点 + DEV 可读面板；**无第三方**；不改变支付行为。  
+> **状态（2026-08-12）**：本地漏斗已合 #255；**opt-in 回传**本支 `feature/monetization-funnel-optin-upload`  
+> **性质**：本地埋点 + DEV 可读面板；**无第三方 SDK**；不改变支付行为。  
 > **对照**：留存漏斗见 `RETENTION_FUNNEL.md`（另一套事件）。  
-> **边界**：仅本地 → 装成本地 APP **不会**自动回传到运营端。**下一件**：明示同意的 **opt-in 回传**（默认关；事件名复用本表；见 `PROCESS` / `FREE_PAID_MATRIX` 差距 #12）。
+> **回传**：Privacy 页明示开关（默认关）。开启后仅上报匿名 `counts` 增量 → `POST /api/monetization-funnel-ingest`。Brief：`task-monetization-funnel-optin-upload.md`。
 
 ## 节点
 
@@ -39,3 +39,10 @@
 
 - `src/core/monetizationIntentFunnel.js`
 - 接线：`SupportYinModalUI` / `TipJarUI` / `SanctuaryUnlockUI` / `MembershipUnlockUI` / `main` boot return
+
+## Opt-in 回传（v1）
+
+- Consent：`focus-tiger.monetization-funnel-consent.v1`（`optedIn` 默认 false + `installId`）
+- UI：`#onboarding-privacy-sheet` 开关 `#privacy-funnel-optin`
+- API：`POST /api/monetization-funnel-ingest`（counts 白名单；写 `TIP_KV` 前缀 `analytics:monetization-funnel:`）
+- 生产需 Worker redeploy 后才真正入库

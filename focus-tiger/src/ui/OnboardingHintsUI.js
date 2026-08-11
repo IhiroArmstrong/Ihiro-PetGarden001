@@ -30,6 +30,11 @@ import {
 } from './hintDiscoveryDots.js';
 import { PRIVACY_SHEET_BODY_KEYS } from './privacyNoticeCopy.js';
 import {
+  readMonetizationFunnelConsent,
+  setMonetizationFunnelOptIn
+} from '../core/monetizationFunnelConsent.js';
+import { tryUploadMonetizationFunnel } from '../core/monetizationFunnelUpload.js';
+import {
   SECONDARY_PROXY_HINT_IDS,
   secondaryProxyForHintId,
   syncSecondaryMenuHintDot
@@ -1790,6 +1795,32 @@ export class OnboardingHintsUI {
       body.appendChild(p);
     }
 
+    const optin = document.createElement('label');
+    optin.className = 'onboarding-privacy-sheet__optin';
+    optin.dataset.testid = 'privacy-funnel-optin';
+
+    const optinInput = document.createElement('input');
+    optinInput.type = 'checkbox';
+    optinInput.id = 'privacy-funnel-optin';
+    optinInput.dataset.testid = 'privacy-funnel-optin-input';
+
+    const optinText = document.createElement('span');
+    optinText.className = 'onboarding-privacy-sheet__optin-text';
+
+    optin.append(optinInput, optinText);
+    optinInput.addEventListener('change', () => {
+      const on = optinInput.checked === true;
+      setMonetizationFunnelOptIn(
+        typeof localStorage !== 'undefined' ? localStorage : null,
+        on
+      );
+      if (on) void tryUploadMonetizationFunnel();
+    });
+
+    const optinHint = document.createElement('p');
+    optinHint.className =
+      'onboarding-privacy-sheet__p onboarding-privacy-sheet__optin-hint';
+
     const back = document.createElement('button');
     back.type = 'button';
     back.className = 'onboarding-privacy-sheet__back';
@@ -1799,11 +1830,14 @@ export class OnboardingHintsUI {
       this._closePrivacySheetToPurpose();
     });
 
-    sheet.append(title, body, back);
+    sheet.append(title, body, optin, optinHint, back);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
     this._privacyBodyEl = body;
+    this._privacyOptinInput = optinInput;
+    this._privacyOptinText = optinText;
+    this._privacyOptinHint = optinHint;
     this._privacyBackEl = back;
     this._refreshPrivacySheetCopy();
     return sheet;
@@ -1816,6 +1850,18 @@ export class OnboardingHintsUI {
     for (const p of this._privacyBodyEl.querySelectorAll('[data-privacy-key]')) {
       const key = p.getAttribute('data-privacy-key');
       if (key) p.textContent = t(key);
+    }
+    if (this._privacyOptinText) {
+      this._privacyOptinText.textContent = t('PRIVACY_FUNNEL_OPTIN_LABEL');
+    }
+    if (this._privacyOptinHint) {
+      this._privacyOptinHint.textContent = t('PRIVACY_FUNNEL_OPTIN_HINT');
+    }
+    if (this._privacyOptinInput) {
+      const consent = readMonetizationFunnelConsent(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
+      this._privacyOptinInput.checked = consent.optedIn === true;
     }
   }
 
@@ -2204,6 +2250,28 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet__p:last-child {
         margin-bottom: 0;
+      }
+      .onboarding-privacy-sheet__optin {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 14px 0 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.35);
+        color: #3a2a1c;
+        font-size: 13px;
+        line-height: 1.4;
+        cursor: pointer;
+      }
+      .onboarding-privacy-sheet__optin input {
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .onboarding-privacy-sheet__optin-hint {
+        margin-top: 8px !important;
+        color: #6a5a4a;
+        font-size: 12px !important;
       }
       .onboarding-privacy-sheet__back {
         align-self: flex-start;
