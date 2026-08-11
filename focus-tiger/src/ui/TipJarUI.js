@@ -27,6 +27,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 
 const STYLE_ID = 'yin-tip-jar-card-styles-v2';
 const FADE_MS = 220;
@@ -176,6 +177,7 @@ export class TipJarUI {
     // Success / cancel return from Stripe Checkout (optimistic local write).
     const ret = consumeTipReturnQuery({ storage: this._storage });
     if (ret.outcome === 'success') {
+      getMonetizationFunnelStore().checkoutComplete('tea', 'return');
       this._setFeedback(
         ret.isRepeatTip
           ? t('TIP_FEEDBACK_THANKS_AGAIN')
@@ -188,6 +190,7 @@ export class TipJarUI {
         tipCount: ret.tipCount
       });
     } else if (ret.outcome === 'cancel') {
+      getMonetizationFunnelStore().checkoutCancel('tea', 'return');
       this._setFeedback(t('TIP_FEEDBACK_CANCEL'), false);
     }
 
@@ -422,6 +425,7 @@ export class TipJarUI {
           ? data.url
           : '';
       if (!url) throw new Error('missing_checkout_url');
+      getMonetizationFunnelStore().checkoutStart('tea', 'tip-jar');
       window.location.assign(url);
     } catch (err) {
       const msg =

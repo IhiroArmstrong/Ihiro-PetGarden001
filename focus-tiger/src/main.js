@@ -100,6 +100,7 @@ import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
+import { getMonetizationFunnelStore } from './core/monetizationIntentFunnel.js';
 import {
   emotionKeyForPaymentThanks,
   peekCheckoutReturnThanksKind,
@@ -893,6 +894,7 @@ async function init() {
   consumeTipReturnQuery({});
   void bootSanctuaryReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
+      getMonetizationFunnelStore().checkoutComplete('sanctuary', 'return');
       emotionController.playEmotion(
         emotionKeyForPaymentThanks('sanctuary')
       );
@@ -900,6 +902,7 @@ async function init() {
   });
   void bootMembershipReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
+      getMonetizationFunnelStore().checkoutComplete('membership', 'return');
       emotionController.playEmotion(
         emotionKeyForPaymentThanks('membership')
       );
@@ -2682,6 +2685,23 @@ async function init() {
       );
     });
     document.body.appendChild(clearHintsBtn);
+
+    const funnelBtn = document.createElement('button');
+    funnelBtn.type = 'button';
+    funnelBtn.id = 'dev-monetization-funnel';
+    funnelBtn.textContent = '意愿漏斗';
+    funnelBtn.title =
+      '本地付费意愿漏斗计数（Support → CTA → Checkout → 完成）；无第三方';
+    funnelBtn.style.cssText =
+      'position:fixed;top:12px;right:470px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #5a6b4a;background:#f4f8f0;color:#2c1f14;border-radius:4px;';
+    funnelBtn.addEventListener('click', () => {
+      const text = getMonetizationFunnelStore().formatSummary();
+      // eslint-disable-next-line no-alert
+      globalThis.alert(text);
+      console.log(text);
+    });
+    document.body.appendChild(funnelBtn);
+    window.__monetizationFunnel = getMonetizationFunnelStore();
 
     const resetAllBtn = document.createElement('button');
     resetAllBtn.type = 'button';
