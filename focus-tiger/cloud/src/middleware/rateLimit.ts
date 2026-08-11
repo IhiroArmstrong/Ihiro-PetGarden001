@@ -7,8 +7,14 @@ import { errorJson } from "../lib/http";
  */
 export const RATE_LIMIT_PER_MINUTE = 60;
 
-/** Tip Jar: email restore — tighter than global (product: 5–10/min/IP). */
+/**
+ * Tip Jar: email restore — tighter than global (product: 5–10/min/IP).
+ * Also used for verify-sanctuary / verify-membership (OTP confirm).
+ */
 export const VERIFY_TIP_RATE_LIMIT_PER_MINUTE = 10;
+
+/** Restore OTP request — blunt email-bomb / Resend burn (per IP). */
+export const RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE = 5;
 
 /**
  * Stripe webhook: exempt from global 60/min, but still capped to blunt

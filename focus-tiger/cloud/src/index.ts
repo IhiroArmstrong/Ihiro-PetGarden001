@@ -3,6 +3,7 @@ import { preflightResponse, resolveAllowedOrigin, withCors } from "./lib/cors";
 import {
 	enforceRateLimit,
 	RATE_LIMIT_PER_MINUTE,
+	RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,
 	STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE,
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
@@ -13,6 +14,7 @@ import { handleCreateSanctuaryCheckoutSession } from "./routes/createSanctuaryCh
 import { handleCreateMembershipCheckoutSession } from "./routes/createMembershipCheckoutSession";
 import { handleConfirmSanctuarySession } from "./routes/confirmSanctuarySession";
 import { handleConfirmMembershipSession } from "./routes/confirmMembershipSession";
+import { handleRequestRestoreOtp } from "./routes/requestRestoreOtp";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
@@ -27,7 +29,7 @@ export default {
 	async fetch(
 		request: Request,
 		env: Env,
-		_ctx: ExecutionContext,
+		ctx: ExecutionContext,
 	): Promise<Response> {
 		const url = new URL(request.url);
 		const origin = resolveAllowedOrigin(env, request);
@@ -46,6 +48,7 @@ export default {
 				url.pathname === "/api/create-membership-checkout-session" ||
 				url.pathname === "/api/confirm-membership-session" ||
 				url.pathname === "/api/verify-membership" ||
+				url.pathname === "/api/restore/request-otp" ||
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight")
 		) {
@@ -62,6 +65,21 @@ export default {
 			});
 			if (webhookLimited) return webhookLimited;
 			return handleStripeWebhook(request, env);
+		}
+
+		if (url.pathname === "/api/restore/request-otp") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const otpLimited = enforceRateLimit(request, {
+				limit: RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "restore-otp-request",
+			});
+			if (otpLimited) return withCors(otpLimited, origin);
+			return withCors(await handleRequestRestoreOtp(request, env, ctx), origin);
 		}
 
 		if (url.pathname === "/api/verify-tip") {
