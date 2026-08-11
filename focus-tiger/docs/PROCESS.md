@@ -58,13 +58,15 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-10（UTC+8）
+**最后更新时间**：2026-08-11（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **节日主题引擎 · Phase 3 已合（2026-08-11 · #238 · tip `2c83fd0`）**：圣诞文案桶 + `winter-quiet-wash` + 总开关开 / `contentReady=true`；仅 entitled；无新 PNG 姿态。Phase 1–2 = #233/#234。TRACKER 圣诞观感行仍待人工。下一步 Phase 4 须另授权。
+- **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**生产 redeploy 仍 defer**（Resend / OTP secrets）。TRACKER §C4 待人工。
+- **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；与 Prompt 10 同纪律：**生产 redeploy / 真实收信仍 defer**。
+- **节日主题引擎 · Phase 3 已合（2026-08-11 · #238 · tip `2c83fd0`；记入 #239）**：圣诞文案桶 + `winter-quiet-wash` + 总开关开 / `contentReady=true`；仅 entitled；无新 PNG 姿态。Phase 1–2 = #233/#234。TRACKER 圣诞观感行仍待人工。下一步 Phase 4 须另授权。
 - **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。
 - **三种支付人工步骤清单（2026-08-11）**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` — Tea/Sanctuary/Membership 的 Restore（删本地 key→邮箱拉回）与零耦合逐步操作；KnownRisky #25–26/#28 已挂链。Webhook OK ≠ Restore 已测。
 - **付费成功回跳致谢（2026-08-11 · #231 已合）**：Tea=`teaDrinking` · Sanctuary=`mindfulAcknowledge` · Membership=`sessionComplete`；Checkout 回跳跳过冷启动欢迎（防盖掉）。单测 `paymentCheckoutThanks.test.js`。TRACKER 致谢专行待人工复测（合前用户曾反馈「只回首页」）。
