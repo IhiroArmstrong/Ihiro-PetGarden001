@@ -25,7 +25,7 @@ alwaysApply: true
 | `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
 | `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
-| `docs/PRINCIPLES.md` | **硬性红线**：不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
+| `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
@@ -48,6 +48,7 @@ alwaysApply: true
 
 ## PRINCIPLES 硬性摘要
 
+- **经济可持续（2026-08-11）**：发布已远不止「只验证 MVP」；短长期收益须平衡；禁止学雷锋式堆功能导致无付款动力；假收费须优先修。允许委婉付费感知；禁止 FOMO / 共鸣句硬推销。全文见 `PRINCIPLES.md`「产品阶段与经济可持续原则」。
 - **正念伙伴，不是传统电子宠物**：保留伙伴式互动；禁止喂养、健康退化、照料责任与宠物收集叙事。
 - **诚实机制**：允许无验证补登别处完成的练习；与正常计时一视同仁；禁止怀疑性文案；不占系统提醒限频池。
 - **观照者而非情绪本身**：一次性/响应性情绪必须「触发 → 表现 → 自动回归**类似坐禅**的坐姿呼吸基底」（不强制像素对齐默认闭目第 1 帧）；文案只作观察式描述，不贴标签、不追因、不说教。

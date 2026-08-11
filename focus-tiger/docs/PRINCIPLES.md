@@ -1,7 +1,21 @@
 # 坐禅小老虎 · 项目原则
 # Focus Tiger · PRINCIPLES.md
 
-本文档记录不可违反的硬性红线。品牌定位与长期方向见 `PRODUCT_POSITIONING.md`；一天中的产品叙事框架（Five Moments）见 `PRODUCT_MOMENTS.md`；单次会话七步状态机见 `CORE_LOOP.md`；Arrival Practice 详规见 `ARRIVE_MOMENT_DESIGN.md`；任务序列见 `TASKS.md`。
+本文档记录不可违反的硬性红线。品牌定位与长期方向见 `PRODUCT_POSITIONING.md`；一天中的产品叙事框架（Five Moments）见 `PRODUCT_MOMENTS.md`；单次会话七步状态机见 `CORE_LOOP.md`；Arrival Practice 详规见 `ARRIVE_MOMENT_DESIGN.md`；任务序列见 `TASKS.md`；功能×付费对账见 `FREE_PAID_MATRIX.md`。
+
+---
+
+## 产品阶段与经济可持续原则（2026-08-11）
+
+> **阶段澄清**：当前发布与排期**已远不止「最小可验证 MVP」**。产品须尽可能覆盖用户刚需与完备陪伴体验；「先只验证核心再谈变现」不得再当作默认推迟商业闭环的借口。`MVP_PRODUCT_DEFINITION.md` 仍保留用户 / JTBD / 假设基线，但**不得**被误读为「现在还不能认真做付费价值」。
+
+### 经济可持续（硬）
+
+- **只有讲求经济收益，后续才能长远服务客户。** 短期收入与长期信任须综合平衡；禁止只顾「学雷锋式」堆功能、却让用户没有付款动力，最终劳动无回报、产品无法持续运营。
+- 凡产品设计思路与决定**可能**导致：免费层已等同付费全包、付费项长期假收费/未接线、付费感知弱到无人愿意付——**都应避免**，并优先排期修补。
+- **允许、且应当**设计可感知的付费价值与温和转化路径（锁项试听、尊贵静默标识、进阶仪式/音效/表现分层等），气质须仍遵守「不制造焦虑」「可忽略打赏」「核心 Sit/Arrival/Honesty 等不得付费墙」。
+- **禁止**用 FOMO、稀缺倒计时、断签惩罚、撤回已购纪念物等方式逼付费；**禁止**把观察式共鸣文案改成硬推销句（「Buy now or else」）。委婉、静默、美学化的付费身份与权益展示**鼓励**。
+- 对账权威：`FREE_PAID_MATRIX.md`；商业红线细节：`MVP_PRODUCT_DEFINITION.md` §五。冲突时：**本原则管「要不要可持续变现」**；§五管「怎么变现才不伤信任」。
 
 ---
 

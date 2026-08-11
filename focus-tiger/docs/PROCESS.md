@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **产品阶段 + 经济可持续原则（2026-08-11 · 本支文档）**：`PRINCIPLES.md` 新增——发布已远不止「只验证 MVP」；短长期收益须平衡；禁止学雷锋式无付费动机设计。`MVP` §五同步。Brief 已立：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection+静默印花、Sanctuary **Enso Mark**（等素材）。
 - **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**生产 redeploy 仍 defer**（Resend / OTP secrets）。TRACKER §C4 待人工。
 - **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；与 Prompt 10 同纪律：**生产 redeploy / 真实收信仍 defer**。
 - **节日主题引擎 · Phase 3 已合（2026-08-11 · #238 · tip `2c83fd0`；记入 #239）**：圣诞文案桶 + `winter-quiet-wash` + 总开关开 / `contentReady=true`；仅 entitled；无新 PNG 姿态。Phase 1–2 = #233/#234。TRACKER 圣诞观感行仍待人工。下一步 Phase 4 须另授权。
@@ -317,6 +318,11 @@
 
 **下一步计划**：
 
+- **付费 · Ambient Sound Gate（进行中 · 旁支）**：`feature/ambient-entitlement-free-subset`（免费温暖子集 + Deep `isEntitled`）。**勿**本仓重复开工。
+- **付费 · Ambient Deep 15s 试听（建议紧随 Gate）**：Brief `task-ambient-deep-audition-15s.md`——合规锁之后的转化层；Gate 合入后再开 `feature/ambient-deep-audition-15s`。
+- **增长 · Journey Daily Card（Save image）**：Brief `task-journey-daily-card.md`；免费；暂无一键 IG 深链≠不做社交。
+- **内容 · Daily Wisdom → Reflection + Sanctuary 静默印花**：Brief `task-daily-wisdom-reflection-mount.md`。
+- **身份 · Sanctuary Enso Mark（蒲团边）**：Brief `task-sanctuary-enso-mark.md`；**等用户透明 PNG**。
 - **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1–3 已合 develop（#233 / #234 / #238）；圣诞窗已放出。下一步 **Phase 4**（其它节日配置/素材；情人节调性审）须另开。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 - **付费 · 进阶仪式 / Ambient 消费统一 gate（后续）**：三个进阶仪式与深度音效等改读 `isEntitled` / `getFeatureAccess`；Stripe/Worker 真校验另排。地基已合 #210。
 - **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。

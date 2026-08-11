@@ -137,7 +137,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
-| `PRINCIPLES.md` | 硬性红线 |
+| `PRINCIPLES.md` | 硬性红线（含经济可持续 / 非 MVP-only） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |

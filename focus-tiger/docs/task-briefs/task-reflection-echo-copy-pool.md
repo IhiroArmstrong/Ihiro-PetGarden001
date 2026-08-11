@@ -12,7 +12,7 @@
 | 文案 | 观察式、不贴标签、不追因、不说教（`EMOTION_BIBLE` / `PRINCIPLES`） |
 | 数据 | **不上传**；不改 Reflection 本地存储 schema |
 | i18n | en + ja + zh；`REFLECTION_ECHO_1`…`_7`；按 `localDate` + salt 取模 |
-| **禁止** | 生成式 AI；分析人格；付费门；塞 Buy Tea / Sanctuary CTA 进共鸣句 |
+| **禁止** | 生成式 AI；分析人格；付费门挡关面板；**共鸣句内**塞 Buy Tea / Sanctuary 硬推销（「Buy now」腔）。**允许** Reflection 底部 Daily Wisdom + 委婉 Sanctuary 印花（见 `task-daily-wisdom-reflection-mount.md`；`PRINCIPLES` 经济可持续） |
 
 ## 实现要点
 
