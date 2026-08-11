@@ -1,6 +1,6 @@
 # Task Brief · 芥子须弥纪念印（Mustard Seed · Sumeru）
 
-> 状态：**#246 已合**；金章专用素材 **2026-08-12 入库**（`feature/mustard-seed-seal-badge`）  
+> 状态：**#246 + #256 已合** `origin/develop` tip `5440a53`（方章金章）  
 > 拍板：统一徽章 `score` 门槛；首次挂在计时完成仪式后；署名「乐五斋诗稿」一并露出。  
 > **2026-08-12**：EN 译维持现稿（不另开人审）；金章用方章 `yin-badge-square-gold-on-silver-alt.png`（根目录中文名入库译为 kebab-case）。
 
