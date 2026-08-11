@@ -2,6 +2,8 @@
   "APP_TITLE": "Focus Tiger",
   "CHARACTER_NAME": "Yin",
   "LOADING": "Loading…",
+  "SOFT_UPDATE_PROMPT": "Update to Ver {version}",
+  "SOFT_UPDATE_PROMPT_ARIA": "Reload to update to version {version}",
   "BTN_FOCUS_START": "Sit with Yin",
   "BTN_FOCUS_STOP": "Rise",
   "AMBIENT_TITLE": "Soundscape",

@@ -1,7 +1,7 @@
 # Task Brief · Web 轻量版本更新提示（点一下刷新）
 
-> **状态（2026-08-12）**：产品口径已拍板；**实现未开工**（等口令「开工 Web 版本提示」）。  
-> **工作树**：`docs/web-soft-update-prompt`（本 Brief + PROCESS 固化）；实现另开 `feature/web-soft-update-prompt`。
+> **状态（2026-08-12）**：产品口径已拍板；**实现于** `feature/web-soft-update-prompt`（本支）。  
+> **文档支**：`docs/web-soft-update-prompt` / PR #261。
 
 ## 拍板（2026-08-12）
 

@@ -2,6 +2,8 @@
   "APP_TITLE": "坐禅小老虎",
   "CHARACTER_NAME": "阿寅",
   "LOADING": "加载中",
+  "SOFT_UPDATE_PROMPT": "更新到 Ver {version}",
+  "SOFT_UPDATE_PROMPT_ARIA": "刷新以更新到版本 {version}",
   "BTN_FOCUS_START": "与阿寅同坐",
   "BTN_FOCUS_STOP": "起身",
   "AMBIENT_TITLE": "禅意背景音",

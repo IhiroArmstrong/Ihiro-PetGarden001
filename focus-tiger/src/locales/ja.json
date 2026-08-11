@@ -2,6 +2,8 @@
   "APP_TITLE": "Focus Tiger",
   "CHARACTER_NAME": "阿寅",
   "LOADING": "読み込み中…",
+  "SOFT_UPDATE_PROMPT": "Ver {version} に更新",
+  "SOFT_UPDATE_PROMPT_ARIA": "バージョン {version} に更新するため再読み込み",
   "BTN_FOCUS_START": "阿寅と坐る",
   "BTN_FOCUS_STOP": "立つ",
   "AMBIENT_TITLE": "サウンドスケープ",

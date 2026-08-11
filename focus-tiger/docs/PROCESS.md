@@ -68,7 +68,7 @@
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
 - **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**opt-in 回传见上行本支**。
 - **芥子须弥方金章素材（2026-08-12 · #256 已合 tip `5440a53`）**：独立方章替换 tip 复用。
-- **Web 轻量版本更新提示（2026-08-12 拍板 · 未开工）**：仅发现新版本时左下轻提示 → 点一下刷新；非补丁包。Brief `task-web-soft-update-prompt.md`；口令「开工 Web 版本提示」。
+- **Web 轻量版本更新提示（2026-08-12 拍板 · 实现中 `feature/web-soft-update-prompt`）**：仅发现新版本时左下轻提示 → 点一下刷新；非补丁包。Brief `task-web-soft-update-prompt.md`；docs PR #261。
 - **Sanctuary Enso Mark 接线（2026-08-12 · #254 已合 tip `0adc0d3`）**：蒲团正面金石圆相；`lifetime∪subscription`；Focusing 淡化；点按不开店。TRACKER 待人工（宽+375）。
 - **场景化请茶气泡（2026-08-12 · #253 已合 tip `c10acb7`）**：达标 / 里程碑后 `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。TRACKER 待人工。
 - **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
@@ -434,7 +434,7 @@
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
 - **双轨付费实现（A Tea + B 进阶解锁）**（方向已锁；Unlock/Tip UI 已合；**Support 统一入口**已合；**场景化请茶 #253**已合；**意愿漏斗本地 #255**已合；**Ambient 15s 试听 #258**已合；**意愿漏斗 opt-in 本支**；B 下 Lifetime ∪ Yin Membership；**下一**：Membership 订阅产品化 / Daily Wisdom A 等；见 `task-tech-direction-v1-shell-monetization.md`）
 - **付费 · 意愿漏斗 opt-in 回传**（本支；明示同意；默认关；事件名复用本地漏斗；Brief `task-monetization-intent-funnel-opt-in.md`）
-- **Web 轻量版本更新提示**（拍板 2026-08-12；**未开工**；Brief `task-web-soft-update-prompt.md`；口令「开工 Web 版本提示」）
+- **Web 轻量版本更新提示**（拍板 2026-08-12；实现中 `feature/web-soft-update-prompt`；Brief `task-web-soft-update-prompt.md`；docs PR #261）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
 - **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；safety-01 ok；面板已接线；**挂载仍关**；待评估地区资源；种子 `confide-corpus-seed.md`）
