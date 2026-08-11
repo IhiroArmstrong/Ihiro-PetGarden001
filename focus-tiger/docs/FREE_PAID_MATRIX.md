@@ -143,7 +143,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 4. **Yin Membership 订阅 Checkout** — create/confirm/verify + Unlock UI 已接（本支）；续费/取消 webhook 与真实 provider 仍待；部署须 Price + `MEMBERSHIP_KV`。  
 5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式菜单已用；Ambient/高级情绪等未跟。  
 6. **Daily Wisdom 挂产品场景** — 免费且部分接线；场景落点另定（非付费差距，但属 catalog 已登记项）。  
-7. **节日主题引擎 `theme.seasonal.access`** — catalog + 引擎骨架已有；总开关关；**产品 UI 未消费**（见 `task-seasonal-theme-engine-v1.md` Phase 2）。
+7. **节日主题引擎 `theme.seasonal.access`** — catalog + 引擎骨架 **已合 #234**；总开关关；**产品 UI 未消费**（Phase 3）。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合。
 
