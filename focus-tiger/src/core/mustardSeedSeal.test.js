@@ -9,7 +9,10 @@ import {
   markMustardSeedSealRevealed,
   readMustardSeedSealState,
   resolveMustardSeedSeal,
-  shouldOfferMustardSeedSealAfterCeremony
+  shouldOfferMustardSeedSealAfterCeremony,
+  mustardSeedSealBadgeSrc,
+  MUSTARD_SEED_SEAL_BADGE_FILE,
+  MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR
 } from './mustardSeedSeal.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from './PracticeDaysStore.js';
 
@@ -30,6 +33,21 @@ function memoryStorage(seed = {}) {
 }
 
 describe('mustardSeedSeal', () => {
+  it('badge src uses dedicated mustard-seed-seal public dir', () => {
+    assert.equal(
+      MUSTARD_SEED_SEAL_BADGE_FILE,
+      'yin-badge-square-gold-on-silver-alt.png'
+    );
+    assert.equal(
+      mustardSeedSealBadgeSrc(),
+      `${MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR}/${MUSTARD_SEED_SEAL_BADGE_FILE}`
+    );
+    assert.match(
+      mustardSeedSealBadgeSrc(),
+      /^\/ui\/support\/mustard-seed-seal\//
+    );
+  });
+
   it('score threshold matches unified practice score (21)', () => {
     assert.equal(MUSTARD_SEED_SEAL_SCORE_THRESHOLD, 21);
     assert.equal(

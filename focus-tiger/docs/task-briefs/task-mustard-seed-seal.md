@@ -1,7 +1,8 @@
 # Task Brief · 芥子须弥纪念印（Mustard Seed · Sumeru）
 
-> 状态：**#246 已合** `origin/develop` tip `4e92355`（2026-08-11）  
-> 拍板：统一徽章 `score` 门槛；首次挂在计时完成仪式后；署名「乐五斋诗稿」一并露出。
+> 状态：**#246 已合**；金章专用素材 **2026-08-12 入库**（`feature/mustard-seed-seal-badge`）  
+> 拍板：统一徽章 `score` 门槛；首次挂在计时完成仪式后；署名「乐五斋诗稿」一并露出。  
+> **2026-08-12**：EN 译维持现稿（不另开人审）；金章用方章 `yin-badge-square-gold-on-silver-alt.png`（根目录中文名入库译为 kebab-case）。
 
 ## 目标
 
@@ -14,15 +15,10 @@
 | 门槛 | `score = practiceDayCount + floor(lifetimeMinutes/60) ≥ 21`（`computePracticeScore`） |
 | 首次时机 | 计时会话完成反馈播完 → `finishCompletedSession` → 印章卡 → Continue → Reflection |
 | 文案 | 固定 ZH 原诗四句 + EN 译 + `乐五斋诗稿 · Verses of Le Wu Zhai`（不随 locale 替换原诗） |
-| 徽章 | 同伴金章（暂复用 tip `yin-medallion-gold-monochrome-engraved`；**不**写入 tip/Sanctuary `badgeIds`） |
+| 徽章 | `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（**不**写入 tip/Sanctuary `badgeIds`；与 tip 目录文件名可同名但路径分立） |
 | 持久化 | `focus-tiger.mustard-seed-seal.v1`：`{ revealed, revealedAt, scoreAtReveal }` |
 | 菜单 | 解锁后 ⋯ / 抽屉 `mustard-seed-seal`；未解锁不出现 |
 | 禁止 | 绑付费、概率彩蛋、断签门槛、日常完成轻确认层插诗 |
-
-## 日后跟进（2026-08-11 拍板 · 不挡本 PR）
-
-1. **英文译人审**：现稿为工程占位译；须另开任务人审改一版（语气对齐 presence / vastness-in-the-small，忌励志鸡汤腔）。
-2. **独立金章素材**：换掉 tip `gold-mono` 复用；入库 `public/ui/support/mustard-seed-seal/`（kebab-case）后再改 `MUSTARD_SEED_SEAL_BADGE_FILE` / `mustardSeedSealBadgeSrc`。
 
 ## 调试
 
@@ -31,5 +27,5 @@
 
 ## 测试
 
-- 单元：`mustardSeedSeal.test.js` + orchestration 解锁行
-- 人工：见 `TEST_TRACKER`「芥子须弥纪念印」
+- 单元：`mustardSeedSeal.test.js`（含 badge src 路径）+ orchestration 解锁行
+- 人工：见 `TEST_TRACKER`「芥子须弥纪念印」——须见方章（非 tip 圆金章）
