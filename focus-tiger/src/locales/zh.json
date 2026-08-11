@@ -363,6 +363,8 @@
   "SANCTUARY_STATUS_YES": "本设备 Lifetime 已生效",
   "SANCTUARY_STATUS_NO": "本设备尚未解锁",
   "SANCTUARY_STATUS_PREVIEW": "本设备为预览解锁",
+  "SANCTUARY_ENSO_MARK_ARIA": "圣域圆相印记",
+  "SANCTUARY_ENSO_MARK_NOTE": "圆相印记 · Sanctuary",
   "SANCTUARY_RESTORE_TITLE": "在另一台设备恢复",
   "SANCTUARY_RESTORE_HINT": "我们会向圣所收据上的邮箱发送一次性验证码。打赏（Tip）恢复不使用此码。",
   "SANCTUARY_RESTORE_SEND_CODE": "发送验证码",

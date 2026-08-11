@@ -363,6 +363,8 @@
   "SANCTUARY_STATUS_YES": "この端末で Lifetime が有効です",
   "SANCTUARY_STATUS_NO": "まだこの端末では開いていません",
   "SANCTUARY_STATUS_PREVIEW": "プレビュー解除（この端末）",
+  "SANCTUARY_ENSO_MARK_ARIA": "サンクチュアリの円相マーク",
+  "SANCTUARY_ENSO_MARK_NOTE": "円相マーク · Sanctuary",
   "SANCTUARY_RESTORE_TITLE": "別の端末で復元",
   "SANCTUARY_RESTORE_HINT": "聖域のレシートのメール宛てに、一度きりの確認コードを送ります。お茶（Tip）の復元はこのコードを使いません。",
   "SANCTUARY_RESTORE_SEND_CODE": "コードを送る",

@@ -294,8 +294,8 @@
 > **路径**：`public/ui/support/sanctuary-enso/`（入库 2026-08-12）。  
 > **正式文件**：`sanctuary-enso-mark.png`（RGBA 真透明 · ~847×848 · 源自 `Enso-sample0025` 黑底抠图）。  
 > **候选对照**：`candidates/`（0021/0025 rembg 与 color-key 变体 + cream 预览）——**运行时默认只用正式文件**。  
-> **接线状态**：素材已入；产品 UI **未接线**（Brief `task-sanctuary-enso-mark.md`）。  
-> **位置规格**：蒲团**中央**；直径约蒲团可见径 38–48%；见 Brief。
+> **接线状态**：产品 UI **已接线**（`SanctuaryEnsoMarkChrome` · `feature/sanctuary-enso-mark`）。  
+> **位置规格**：相机可见蒲团正面中心（非髋下质量中心）；直径约蒲团可见径 **42%**（锁 38–48%）；见 Brief。
 
 | 文件 | 角色 |
 |---|---|

@@ -58,13 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-11（UTC+8）
+**最后更新时间**：2026-08-12（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025）。
+- **Sanctuary Enso Mark 接线（2026-08-12 · `feature/sanctuary-enso-mark`）**：蒲团正面金石圆相；`lifetime∪subscription`；Focusing 淡化；点按不开店；单测 `sanctuaryEnsoMark.test.js`。TRACKER 待人工（宽+375）。
+- **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
 - **Ambient 深度曲 entitlement（2026-08-11 · #251 已合 tip `5969872`）**：免费温暖 5 首；其余内置曲 B 锁；用户自传仍免费；Support upsell。TRACKER 待人工。
 - **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**生产 redeploy 仍 defer**（Resend / OTP secrets）。TRACKER §C4 待人工。
 - **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；与 Prompt 10 同纪律：**生产 redeploy / 真实收信仍 defer**。
@@ -319,16 +320,17 @@
 
 **下一步计划**：
 
-- **付费 · Ambient Deep 15s 试听（Gate #251 已合 · 建议下一件）**：Brief `task-ambient-deep-audition-15s.md`——转化层；开 `feature/ambient-deep-audition-15s`。
-- **增长 · Journey Daily Card（Save image）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
-- **内容 · Daily Wisdom → Reflection（Phase A）+ 静默印花（Phase B）**：Brief `task-daily-wisdom-reflection-mount.md`——**强制拆两 PR**。
-- **身份 · Sanctuary Enso Mark（蒲团中央）**：正式素材 `sanctuary-enso-mark.png`（**0025**）；Brief 含直径/opacity/375 规格；实现 `feature/sanctuary-enso-mark`。
-- **付费 · 转化路径梳理（Backlog · 不挡上列）**：单独立项盘点「新用户为何第一次付费」——免费用户可见价值时刻、15s 试听后 Unlock 文案、Support 漏斗等。静默印花/Enso **不够**单独支撑经济可持续（见 `PRINCIPLES` 案例锚定诚实边界）。
+- **付费 · Ambient Deep 15s 试听（Gate #251 已合 · 建议下一件 · 勿漏）**：Brief `task-ambient-deep-audition-15s.md`——转化层；开 `feature/ambient-deep-audition-15s`。
+- **内容 · Daily Wisdom → Reflection Phase A（勿漏）**：Brief `task-daily-wisdom-reflection-mount.md`——只挂免费句；**禁止**塞 Phase B 印花进同一 PR。
+- **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
+- **内容 · Daily Wisdom Phase B 静默印花（A 之后 · 勿漏）**：`feature/daily-wisdom-sanctuary-seal`。
+- **身份 · Sanctuary Enso Mark（蒲团中央）**：**本回合已接线** `feature/sanctuary-enso-mark`；关单级人工见 TRACKER。
+- **付费 · 转化路径梳理（Backlog · 不挡上列 · 勿漏）**：单独立项盘点「新用户为何第一次付费」——免费用户可见价值时刻、15s 试听后 Unlock 文案、Support 漏斗等。静默印花/Enso **不够**单独支撑经济可持续（见 `PRINCIPLES` 案例锚定诚实边界）。
+- **付费 · 场景化请茶（Ambient 之后下一件 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。
+- **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
 - **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1–3 已合 develop（#233 / #234 / #238）；圣诞窗已放出。下一步 **Phase 4**（其它节日配置/素材；情人节调性审）须另开。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 - **付费 · Ambient 深度曲 entitlement（#251 已合 tip `5969872`）**：免费温暖 5 首；其余内置曲 B 锁；用户自传仍免费。关单级人工见 TRACKER。
 - **付费 · 进阶仪式统一 gate**：三个进阶仪式已读 `isEntitled`；Ambient 深库见上行。
-- **付费 · 场景化请茶（Ambient 之后下一件 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。
-- **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
 - **场景→动画接线 · A′+B Dispatcher（2026-08-01）**：PR #59 / #65 等已合 `develop`；关单级人工见 `TEST_TRACKER` 场景动画行。
 - **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31）**：已合 **`develop`（PR #51）**；Brief `task-user-ambient-upload-v1.md`。关单级人工见 `TEST_TRACKER` 对应行。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
