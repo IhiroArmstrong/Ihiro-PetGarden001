@@ -148,7 +148,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 8. **Sanctuary Enso Mark（蒲团中央）** — 素材已入 `sanctuary-enso-mark.png`（0025）；实现 Brief `task-sanctuary-enso-mark.md`。  
 9. **付费转化路径梳理（获客向）** — Backlog：试听后 Unlock、锁项价值展示时刻等——勿让「经济可持续」只剩老用户彩蛋。  
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
-11. **付费 · 意愿漏斗本地统计** — Support / 双卡 CTA / Checkout / 完成；无第三方（场景化请茶气泡本支已接线）。
+11. **付费 · 意愿漏斗本地统计** — **本支已接线**（`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 

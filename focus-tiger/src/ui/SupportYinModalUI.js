@@ -16,6 +16,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 
 const STYLE_ID = 'yin-support-modal-styles-v3';
 const FADE_MS = 220;
@@ -302,6 +303,7 @@ export class SupportYinModalUI {
     this.fab.setAttribute('aria-expanded', 'true');
     this._refreshTexts();
     this.closeBtn.focus({ preventScroll: true });
+    getMonetizationFunnelStore().supportOpen('fab');
     this.handlers.onOpen?.();
   }
 
@@ -347,6 +349,7 @@ export class SupportYinModalUI {
     this.membershipCta.disabled = true;
     this.teaCta.disabled = true;
     try {
+      getMonetizationFunnelStore().supportCta(kind, 'support-modal');
       this.close();
       if (kind === 'sanctuary') {
         await this.handlers.onUnlockSanctuary?.();

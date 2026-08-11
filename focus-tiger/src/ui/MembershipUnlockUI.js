@@ -20,6 +20,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 
 const STYLE_ID = 'yin-membership-card-styles-v1';
 const FADE_MS = 220;
@@ -258,6 +259,10 @@ export class MembershipUnlockUI {
           ? /** @type {{ url?: unknown }} */ (res).url
           : null;
       if (typeof url === 'string' && url) {
+        getMonetizationFunnelStore().checkoutStart(
+          'membership',
+          'membership-card'
+        );
         window.location.assign(url);
         return;
       }

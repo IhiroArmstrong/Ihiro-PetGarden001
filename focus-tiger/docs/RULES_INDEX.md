@@ -149,6 +149,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `SHARED_RESOURCES.md` | 共享资源波及面 |
 | `EDGE_CASES.md` | 边角观察册 |
 | `RETENTION_FUNNEL.md` | 留存漏斗事件 |
+| `MONETIZATION_INTENT_FUNNEL.md` | 付费意愿漏斗事件（本地） |
 | `ONBOARDING_HINTS.md` / `HONESTY_BRIDGE_CTA.md` 等 | 对应功能详规（Hints 文案/tier；接线见 `HINTS_WIRING.md`） |
 | `TASKS.md` | 任务序列（排期，非门禁） |
 
