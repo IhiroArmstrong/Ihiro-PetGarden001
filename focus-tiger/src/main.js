@@ -70,6 +70,7 @@ import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
+import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
   shouldOfferFiveMomentsCompassFirstCard
 } from './core/fiveMomentsCompassGate.js';
@@ -867,6 +868,28 @@ async function init() {
     }
   });
   window.__supportYin = supportYinModalUI;
+
+  const contextualTeaTipBubbleUI = new ContextualTeaTipBubbleUI(
+    document.getElementById('ui-overlay') || document.body,
+    {
+      isBusy: () =>
+        tipJarUI.isOpen() === true ||
+        supportYinModalUI.isOpen() === true ||
+        sanctuaryUnlockUI.isOpen?.() === true ||
+        membershipUnlockUI.isOpen?.() === true ||
+        mustardSeedSealCardUI.isOpen?.() === true ||
+        reflectionMoment?.isOpen?.() === true ||
+        arrivalPractice?.isOpen?.() === true ||
+        fiveMomentsCompassUI.isOpen() === true,
+      onBuyTea: () => {
+        contextualTeaTipBubbleUI.hide({ immediate: true });
+        closeGrowthOverlayCards({ except: 'tip' });
+        tipJarUI.open();
+      }
+    }
+  );
+  window.__contextualTeaTip = contextualTeaTipBubbleUI;
+
   consumeTipReturnQuery({});
   void bootSanctuaryReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
@@ -2081,6 +2104,7 @@ async function init() {
       emotionController.playEmotion('cloakSleep', { holdPose: true });
       return;
     }
+    const teaTipReason = milestoneNode ? 'milestone' : 'session-complete';
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
       preferMilestoneGlow: Boolean(milestoneNode),
@@ -2099,6 +2123,7 @@ async function init() {
       },
       onComplete: finishCompletedSession
     });
+    contextualTeaTipBubbleUI.tryOffer(teaTipReason, { delayMs: 1800 });
   }
 
   /**

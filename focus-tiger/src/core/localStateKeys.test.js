@@ -56,6 +56,7 @@ import {
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
+import { CONTEXTUAL_TEA_TIP_STORAGE_KEY } from './contextualTeaTipGate.js';
 import { NEWSLETTER_CAPTURE_STORAGE_KEY } from './newsletter/newsletterCaptureGate.js';
 import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 import { ENTITLEMENT_CACHE_STORAGE_KEY } from './entitlement/entitlementState.js';
@@ -125,6 +126,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FLOWER_WELCOME_STORAGE_KEY,
   FLOWER_WELCOME_FLAG_STORAGE_KEY,
   TIP_JAR_STORAGE_KEY,
+  CONTEXTUAL_TEA_TIP_STORAGE_KEY,
   NEWSLETTER_CAPTURE_STORAGE_KEY,
   SANCTUARY_STORAGE_KEY,
   ENTITLEMENT_CACHE_STORAGE_KEY,
