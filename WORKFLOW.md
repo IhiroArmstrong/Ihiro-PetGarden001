@@ -73,39 +73,54 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 
 ### 工作树占用检测与 `.ft-session-lock`（强制）
 
-> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-worktree-occupancy`）。与「并行 worktree」互补：上节要求**物理隔离**；本条要求**同一 worktree 内同一时间只服务一条工作线**，并用锁文件 + 开工检测拦住误用。
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-worktree-occupancy`）。与「并行 worktree」互补：上节要求**物理隔离**；本条要求**同一 worktree 内同一时间只服务一条工作线**，并用锁文件 + **技术闸（pre-commit）** + 开工检测拦住误用。
 
-1. **锁文件**：每个 worktree **根目录**放 `.ft-session-lock`（已在 `.gitignore`，**禁止** commit）。JSON 字段：
-   - **必填**：`task_id`（任务/分支标识）· `session_label` · `started_at`（ISO）· `updated_at`（ISO）· **`occupancy`**（见下）· `task`（当前工作一句说明，**不得**用自然语言替代 `occupancy`）
+#### 方案选择（Prompt 3 · 2026-08-11）
+
+| 方案 | 覆盖面 | 成本 | 结论 |
+|---|---|---|---|
+| **A · husky pre-commit** | 拦住本机所有 `git commit`（含 Agent / 人手）；**不**拦住 Cursor Edit/Write 落盘 | 低（仓库已有 husky） | **采用** |
+| **B · 写操作 wrapper** | 理论上可盖更多写路径，但本仓**无**统一写入口；Cursor 工具直接写盘，wrapper 形同虚设 | 高、覆盖仍不全 | 不采用为主闸 |
+
+辅助：`npm run check:worktree-occupancy` / `session-lock:heartbeat`；Agent 规则仍要求写前读锁（Edit 不经 hook）。
+
+1. **锁文件**：每个 worktree **根目录**放 `.ft-session-lock`（已在 `.gitignore`，**禁止** commit）。另写 **`.ft-session-identity`**（gitignore）标记「本会话」身份，供 pre-commit 区分自有锁 vs 外锁。JSON 字段：
+   - **必填**：`task_id` · `session_label` · **`started_at`**（ISO）· **`last_heartbeat`**（ISO）· `updated_at`（ISO）· **`occupancy`** · `task`（**不得**用自然语言替代 `occupancy`）
    - **可选**：`pid` / `agent_note` / `pr` 等
-2. **`occupancy` 占用态（强制 · 不以 mtime 为准）**：写锁或更新锁时**必须**写明机器可读占用态；**禁止**靠锁文件 mtime、`git log` 时间戳或其它旁证去猜测「还在干活还是忘了清锁」。
+2. **心跳与陈旧锁**
+   - **心跳写入**：创建锁时写 `started_at` = `last_heartbeat` = `updated_at`；会话中用 `npm run session-lock:heartbeat` 或 **pre-commit 成功路径**刷新 `last_heartbeat` / `updated_at`。
+   - **陈旧阈值**：默认 **60 分钟**（`FT_SESSION_LOCK_STALE_MS` 可覆盖，毫秒）。依据：Agent 常因等人回复停 20–40 分钟，45 分钟易误判；60 分钟仍能在约 1 小时内清掉遗忘锁（例：2026-08-11 `pr238-conflicts`）。
+   - **权威时间**：`last_heartbeat` → 缺则 `updated_at` → 再缺则 `started_at`；**禁止**用 OS mtime 判陈旧。
+   - **陈旧 + 外锁**：新会话/pre-commit **可自动清除并接管**，但必须追加 **`.ft-session-lock.history.log`** 留痕（谁、何时、因 stale/releasable、清了哪个 `task_id`）。人工强制清**非陈旧**锁仍须口令「我确认要强制清除锁」，并写入 `focus-tiger/docs/ops/session-lock-clear-log.md`（可 commit）或 history.log。
+   - **未陈旧外锁**：**禁止**清除或绕过；pre-commit **直接 reject**（报 `task_id` + heartbeat）。
+3. **`occupancy` 占用态（强制 · 不以 mtime 为准）**
    | 值 | 含义 | 下一会话可否接管 |
    |---|---|---|
-   | `active` | **仍在占用中** | **否**（别人的锁 → 停手汇报；清锁须强制清锁口令） |
-   | `releasable` | **已完成待释放，可以被下一个任务接管** | **可以**（下一会话可删除/覆盖为己锁，**不需要**「我确认要强制清除锁」；仍须在汇报里写明接管了哪把锁） |
+   | `active` | **仍在占用中** | **否**（除非已**陈旧**；非陈旧须强制清锁口令） |
+   | `releasable` | **已完成待释放** | **可以**（须 history 留痕；不需要强制清锁口令） |
 
-   > **词义澄清（强制）**：上表 `releasable` **只**表示 `.ft-session-lock` 的占用态（可被下一任务接管）。**不是**「`develop` 随时可发布 / 主干完整性」。主干合入纪律请用 **develop-integrity**，见下文「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。口语勿把二者都叫 releasable。
+   > **词义澄清**：`releasable` **只**表示占用态，**不是** develop 可发布。主干合入见 **develop-integrity**（`git-feature-merge-preview`）。
 
-   规则：
-   - **创建锁** → `occupancy` 必须为 `active`，并写 `started_at` / `updated_at`。
-   - **会话中更新** `task` / 进度说明 → 保持 `active`，并刷新 `updated_at`。
-   - **本会话工作已结束**但暂时不删文件（交接、等用户拍板、会话中断前收尾）→ 须把 `occupancy` 改为 `releasable` 并刷新 `updated_at`；**更优默认仍是直接删锁**。
-   - **缺字段 / 非法值 / 非 JSON**：视为**未知占用**，按 **`active` 同等严格**处理（停手汇报）；**禁止**因「mtime 很旧」自行当成 `releasable`。
-   - `task` 只描述做什么；占用结论**只认** `occupancy` 字段。
-3. **写前检查（主闸 = Agent 规则）**：在本 worktree 内**写文件**或执行 `git commit` / `checkout` / `stash` / `pull` / `worktree` 变更前，须先读 `.ft-session-lock`：
-   - **不存在** → 创建本任务锁（`occupancy: active`），再工作；
-   - **存在且是本会话的**（`task_id` / `session_label` 一致）→ 继续（保持/刷新 `active`）；
-   - **存在、别人的、且 `occupancy` 为 `releasable`** → 可接管：删除或覆盖为本任务锁，汇报原锁摘要后继续；
-   - **存在、别人的、且 `occupancy` 为 `active` / 缺失 / 非法** → **立刻停止**，向用户报告锁全文（含 `occupancy`），**不做任何修改**（含禁止「顺手 stash 别人的脏树」）。可附 mtime 作参考，但**不得**据此自行清锁或接管。
-4. **开工额外检查（三条硬规则）**：
-   1. 若 `git status` 有未提交改动，且**不是本会话本轮产生的** → 先停再问用户；禁止静默 `git stash` / `git checkout --` / `git restore` 清掉别人的工作。
-   2. 预计会跑验证或产生 git 写操作的任务，若当前是**主仓通用目录**（非专属 `…-wt-<topic>`）→ 须**主动建议**独立 worktree，不得默认在主仓开干。
-   3. 若 `git stash list` 已有条目且**不是本会话刚创建的** → 只读汇报；**禁止**对非本会话创建的 stash 做 `pop` / `drop` / 再压一层。
-5. **任务结束**：commit 完成或用户明确停止时，**只删除本会话创建的锁**。若因故保留锁文件，须先把 `occupancy` 标为 `releasable`（见上）。
-6. **强制清锁（僵锁）**：**禁止** Agent 因「锁看起来过期 / 几小时前 / 看起来没人在用 / mtime 很旧」自动删除**别人的 `active`（或未知）**锁。清这类锁须用户当回合写出明确授权，且**必须包含**「我确认要强制清除锁」（或 `I confirm force-clearing the lock`）。模糊的「清一下」「把锁删了」**不构成**授权。`releasable` 不走本条（见第 2–3 款接管规则）。
-7. **检测脚本**：`cd focus-tiger && npm run check:worktree-occupancy`（只读报告：锁内容、**解析后的 `occupancy`**、脏树、stash 层数、是否主仓目录）。Agent 开工前应跑；脚本 **exit 0** = 无阻挡性占用信号（无锁，或仅 `releasable` 且工作树干净）；发现 **`active` / 未知占用** 或不明脏树时 exit **2**，由规则强制停手（`releasable` 单独提示可接管，不因锁本身 exit 2）。
-8. **辅助闸（shell，可选后续）**：`beforeShellExecution` 可对 `git checkout|stash|commit|pull|worktree` 查锁并 deny/ask（与现有 destructive / full-e2e 闸同链、只读失败即 deny）。辅助闸**不能**替代主闸（Edit/Write 不经 shell）。**禁止**为实施本条而改动 deny-subagent / gate-full-e2e / gate-destructive-shell 的现有逻辑。
-
+   - **创建锁** → `occupancy: active`，写齐时间戳，并写 `.ft-session-identity`。
+   - **会话中** → 保持 `active`，刷新 `last_heartbeat`。
+   - **结束** → 删锁（优）或标 `releasable`。
+   - **缺字段 / 非法 / 非 JSON**：未知占用；心跳已陈旧可按陈旧外锁，否则按非陈旧 `active`。
+4. **禁止主仓 `develop` 直接检出写/commit（硬）**：任何写操作（含小文档）**一律不得**在主仓通用目录（路径名无 `…-wt-…`）且当前分支为 `develop` 时进行；必须先 `git worktree add …-wt-<topic>`。**取消**「小改动可在主仓顺手改」的隐性例外。技术闸：husky pre-commit 对此组合 **reject**（紧急：`FT_ALLOW_MAIN_DEVELOP_COMMIT=1`，须汇报说明）。
+5. **写前检查（Agent 规则 + pre-commit）**：
+   - **无锁** → 创建本任务锁 + identity；
+   - **本会话**（identity / `FT_SESSION_TASK_ID` 匹配）→ 继续并刷新心跳；
+   - **外锁 + releasable 或陈旧** → 可接管（history 留痕）；
+   - **外锁 + 非陈旧** → **立刻停止**；pre-commit reject。
+6. **开工额外检查**：
+   1. 不明脏树 → 停手问用户；禁静默 stash/restore 别人的工作。
+   2. 主仓通用目录 → **必须**独立 worktree（不再只是「建议」）；`develop` 上技术闸硬拦 commit。
+   3. 非本会话 stash → 只读汇报；禁 pop/drop/再压。
+7. **强制清锁（非陈旧）**：禁因「看起来过期」清非陈旧外锁；须「我确认要强制清除锁」。`releasable` / **已陈旧**走自动接管 + history。
+8. **检测 / 技术闸**：
+   - `npm run check:worktree-occupancy`（occupancy、heartbeat、stale、主仓 develop BLOCK）
+   - `npm run session-lock:heartbeat` / `session-lock:gate`
+   - **husky** `.husky/pre-commit` → `gate-session-lock-precommit.js` 先于 `test:smoke`
+9. **辅助闸（shell，可选）**：`beforeShellExecution` 可查锁。**不能**替代 Edit/Write 自觉 + pre-commit。**禁止**为实施本条改动 deny-subagent / gate-full-e2e / gate-destructive-shell。
 
 ### 长期并存功能分支的同步纪律
 

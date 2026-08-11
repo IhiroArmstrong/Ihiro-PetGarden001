@@ -41,6 +41,7 @@
 | `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` + `membershipCheckout` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt`）；Membership 成功页 / verify 写入 `subscription`；可用性优先，非防盗；宽限 7 天 |
 | `focus-tiger.entitlement-ownership.v1` | `entitlement/entitlementOwnership` | persistent「已拥有」标记（仪式历史/纪念物等）；只增不减；订阅到期不收回 |
 | `focus-tiger.entitlement-mock.v1` | `entitlement/mockEntitlementProvider` | mock provider 场景：`{ scenario, periodEndsAt, failFetch }`；亦可用 `?entitlementMock=`；**不**接 Stripe |
+| `focus-tiger.membership-device.v1` | `membershipDeviceCredential` + Membership confirm/OTP verify | `{ email, deviceToken }`；cloud provider 轮询与 Billing Portal Manage；TTL 由 Worker KV 约束 |
 | `focus-tiger.scene-anim-cooldown.v1` | `sceneAnimationDispatcher` | 生命感冷却：`{ late_night, curiosity, … }` 时间戳 |
 | `focus-tiger.five-moments-compass-seen.v1` | `fiveMomentsCompassGate` / `FiveMomentsCompassUI` | Compass 首卡 / 指南已读（`'1'`）；⋯ /「?」打开亦 mark；DEV 重置清 |
 | `focus-tiger.moment-whispers-seen.v1` | `momentWhispersGate` / `MomentWhisperUI` | Moment Whisper 各键已见 `{ arrive?, focus?, recover?, transition?, reflect? }`；一生一次；Transition 暂不 play |

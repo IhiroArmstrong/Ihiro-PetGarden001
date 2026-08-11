@@ -5,6 +5,9 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   t,
   setLocale,
@@ -15,6 +18,11 @@ import {
 } from './i18n.js';
 import { listReadyLocaleIds, isReadyLocale } from './localeRegistry.js';
 import {
+  JA_MAY_MATCH_EN,
+  listJaEqualToEn,
+  listJaMissingJapaneseScript
+} from './jaCopyGuards.js';
+import {
   LOCALE_PREFERENCE_STORAGE_KEY,
   normalizeLocalePreference,
   readLocalePreference,
@@ -22,6 +30,10 @@ import {
   listPickerLocales,
   shouldOfferLanguagePicker
 } from './localePreference.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const enDict = JSON.parse(readFileSync(join(here, 'en.json'), 'utf8'));
+const jaDict = JSON.parse(readFileSync(join(here, 'ja.json'), 'utf8'));
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -62,6 +74,29 @@ test('ready locales have identical dictionary key sets', () => {
       `locale ${id} keys must match en (parity)`
     );
   }
+});
+
+/**
+ * Proper nouns / titles that may stay identical across en and ja.
+ * New product UI must not land here as an English placeholder — translate ja.json.
+ * Allowlist SSOT: jaCopyGuards.js
+ */
+test('ja values are translated (not English placeholders), except proper-noun allowlist', () => {
+  assert.ok(JA_MAY_MATCH_EN.has('APP_TITLE'));
+  assert.deepEqual(
+    listJaEqualToEn(enDict, jaDict),
+    [],
+    'ja.json still copies en — translate or extend JA_MAY_MATCH_EN in jaCopyGuards.js'
+  );
+});
+
+test('ja values include Japanese script (kana or kanji), except proper-noun allowlist', () => {
+  // Intentionally NOT “must contain kana”: kanji-only labels (到着/回復/言語) are valid JP.
+  assert.deepEqual(
+    listJaMissingJapaneseScript(jaDict),
+    [],
+    'ja.json has Latin-only values — translate or allowlist in jaCopyGuards.js'
+  );
 });
 
 test('staged zh dictionary stays loaded and key-parity with en (future flip)', () => {

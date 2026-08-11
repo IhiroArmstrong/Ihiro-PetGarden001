@@ -2,7 +2,8 @@
 
 创建日期：2026-07-23  
 目的：每个**规则主题**只指定**一份**权威文档；其它文档只能一句话引用并链接，禁止平行完整表述。  
-冲突解法：**以本索引指定的 SSOT 为准**，**不以**「最后修改时间更晚的文档」为准。
+冲突解法：**以本索引指定的 SSOT 为准**，**不以**「最后修改时间更晚的文档」为准。  
+文末「修订记录」为**历史留痕**，**不要以其中任意一条作为当前生效依据**——当前条款只认各主题 SSOT 源文件。
 
 检测命令（进 `docs:check` / CI）：
 
@@ -54,7 +55,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
 | `doc-code-contract` | 文档-代码结构性对齐（docs:check） | `focus-tiger/docs/DOC_CODE_CONTRACT.md` | DOC_CODE_CONTRACT.md |
 | `rules-authority` | 规则主题权威索引（本机制） | `focus-tiger/docs/RULES_INDEX.md` | 规则主题 → 权威来源 |
-| `browser-energy` | 预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；进程收尾 / Cloud 独立会话提醒；用户侧 cd 路径口径） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
+| `browser-energy` | 预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP；临时解禁有连续时长上限；进程收尾 / Cloud 独立会话提醒；用户侧 cd 路径口径） | `.cursor/rules/focus-tiger-browser-energy.mdc` | Focus Tiger · 预览浏览器与能耗 |
 | `qa-develop-tip` | 人工验收只认 origin/develop tip | `focus-tiger/docs/TEST_TRACKER.md` | 人工验收唯一基线 |
 | `qa-pass-coverage-split` | 标「已通过」须写清 e2e/人工各覆盖哪些场景 | `focus-tiger/docs/TEST_TRACKER.md` | 标「已通过」门禁 |
 | `branch-freshness` | Agent 邀测 / 声称 develop 行为前须 check:branch-freshness | `.cursor/rules/focus-tiger-regression-lock.mdc` | 分支新鲜度（强制 · 验收 / 声称 develop 行为之前） |
@@ -84,7 +85,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
-| `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
+| `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款或具体分钟/时长数值；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；违反 SSOT 连续开放上限 / 续开不清零 / 精确时间戳汇报；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent 见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解 | 主张 feature/fix 试跑即正式关单验收；主张「关单只认 tip」=「应先合再测」；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
@@ -106,7 +107,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|
 | [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、SemVer / 稳定 tag、跨会话冲突、并行 worktree、**合入 develop 前预览确认** |
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7、**分支新鲜度**、**发布候选门禁**（open blockers）门禁条文 |
-| [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；Vite/Playwright 收尾；Cloud 独立会话；用户侧 `cd`/`npm run dev` 路径口径） |
+| [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；临时解禁有连续时长上限；Vite/Playwright 收尾；Cloud 独立会话；用户侧 `cd`/`npm run dev` 路径口径） |
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
@@ -177,11 +178,17 @@ cd focus-tiger && npm run rules:doc-sync
 
 ## 修订记录
 
+> **本日志为历史记录**，当前生效规则请查阅各主题 **SSOT 源文件**（见上方索引表），**不要以本日志任意一条历史记录作为当前依据。**
+
 | 日期 | 说明 |
 |---|---|
+| 2026-08-11 | 强化 `git-worktree-occupancy`：`last_heartbeat` + 默认 60m 陈旧阈值（`FT_SESSION_LOCK_STALE_MS`）；陈旧/releasable 可接管须 history 留痕；husky pre-commit `gate-session-lock-precommit`；**禁止主仓 develop 检出写/commit** |
+| 2026-08-11 | 新增 docs 数值复述一致性门禁：`check-docs-consistency.js` 并入 `docs:check` / `test:smoke`；首条 claim=`browser-energy-duration`（下游复述 SSOT 连续开放时长数字须红；回归见 `check-docs-consistency.test.js`）；PR 模板补 `.cursor/rules/*.mdc` 强制项 |
+| 2026-08-11 | 定稿 `browser-energy` 临时解禁路径：连续开放时长上限 + 续开不清零 + 精确时间戳汇报；下游文档（含 PROCESS）**禁止复述具体分钟数**，只指针引用 SSOT（`focus-tiger-browser-energy.mdc`） |
 | 2026-08-08 | 审计笔记：2026-08-01 六笔（含 `92effa4` Frozen）曾临时卸保护直推 `develop`；记入 `DEVELOP_DEBT_INVENTORY` §0.1；支撑同日 `git-agent-commit` 禁直推口径（#190） |
 | 2026-08-08 | 修正 `git-agent-commit` 下班前口令：禁止直推 `develop`/`main`；同步=旁支 push + 开/更新 base=develop PR；废止「可推 develop/feature/fix」并列写法（regression-lock 第 5–7 条） |
 | 2026-08-08 | `qa-develop-tip`：允许引用 `TEST_TRACKER`「主干一次性关单验收」+ KnownRisky §0；禁止 Support-only / 过时 worktree 冒充 tip |
+| 2026-08-08 | 扩展 `browser-energy`：用户可见的 `cd` + `npm run dev`（及等价预览命令）须写可直接复制的绝对路径，禁止省略号/占位路径（用户拍板强制） |
 | 2026-08-07 | 新增 `git-pr-base-develop`：开 PR 须显式 `--base develop`；发版备忘 main 已提前含 #164（见 `WORKFLOW.md`） |
 | 2026-08-06 | 新增 `e2e-local-budget`：本地 e2e 硬顶 1 spec/次；`run-e2e-changed` + `e2e-ci-guard` + `gate-local-heavy-e2e`（deny）；修正 WORKFLOW/PROCESS「临时本机全量」为已废止/CI 收口 |
 | 2026-08-06 | 新增 `risk-mitigation-playbook`：中高风险功能落地降险 Playbook（四件套 + 架构红线 + 落地清单）；SSOT 在 `RISK_MITIGATION_PLAYBOOK.md`；`WORKFLOW` 仅入口引用 |
@@ -191,16 +198,15 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-08-02 | 扩展 `git-worktree-occupancy`：`.ft-session-lock` 必填 `occupancy`（`active` / `releasable`），不以 mtime 猜占用；检测脚本解析并区分 exit；SSOT 在 `WORKFLOW.md` |
 | 2026-08-02 | 新增 `release-blocker-ledger`：缺陷分级 + `check:open-blockers`；发版硬闸在 regression-lock「发布候选门禁」；SSOT 记录格式在 `TEST_TRACKER` |
 | 2026-08-01 | 新增 `git-branch-health`：分支健康度即时纪律 + `check:all-branches-health` 双周普查（非 CI Required）；SSOT 在 `PROCESS.md` |
+| 2026-07-31 | 收紧 `browser-energy`：**取消窄屏/口头开 IDE Browser 特例**；改为默认硬禁——`deny-ide-browser-mcp` 一律 deny `cursor-ide-browser`（`beforeMCPExecution` + `preToolUse`）；窄屏验收改 Safari 响应式 / Playwright（不再以「窄屏特例」开内置 Browser） |
 | 2026-07-31 | 扩展 `agent-token-cost`：CI 红 / 多文件冲突本地验证预算（先摘要、问新 worktree、本地最多 1 轮、最终 push+CI）；`WORKFLOW` 并行 worktree 补 3a 短引用 |
 | 2026-07-30 | 新增 `git-worktree-occupancy`：`.ft-session-lock` + 开工三条硬规则 + `check:worktree-occupancy`；SSOT 在 `WORKFLOW.md` |
-| 2026-07-23 | 初版：盘点规则文档、指定主题 SSOT、接入 `rules:doc-check`，收敛 commit/跨会话等平行复述 |
-| 2026-07-23 | 补强 `git-agent-commit`：Git 同步 / 批量 push 须「分级汇总」（commit 列表 + 高风险单独标注）；与 Cursor user rule 对齐方向 |
-| 2026-07-23 | 新增 `git-parallel-worktree`：并行 Cursor 写会话须 `git worktree` 隔离；SSOT 在 `WORKFLOW.md` |
-| 2026-07-23 | 固定口令「请安排下班前的 Git 同步」语义：只 push `develop`/`feature`/`fix` + 分级汇总；不合并 main、不推进 PR（见 regression-lock 第 7 条） |
-| 2026-07-25 | 新增 `browser-energy`：默认 Safari 预览；Cursor 内置 Browser 仅窄屏特例且最长 10 分钟（SSOT：`focus-tiger-browser-energy.mdc`） |
-| 2026-07-26 | 扩展 `browser-energy`：Vite/Playwright 进程收尾提醒 + Cloud「独立会话」提醒（用户拍板养成习惯） |
 | 2026-07-29 | 新增 `qa-develop-tip`（关单验收只认 `origin/develop` tip）、`branch-freshness`（邀测前 `check:branch-freshness`）、`z-index-registry`（`Z_INDEX.md`） |
 | 2026-07-29 | 收窄「请安排下班前的 Git 同步」：默认可推仅非运行时（文档/规则/脚本注释）；业务代码·状态机·待确认 diff 单独列出不 flush；汇总须标有无业务逻辑改动（regression-lock 第 7 条） |
 | 2026-07-29 | 新增 `agent-token-cost`：禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e（SSOT：`focus-tiger-agent-token-cost.mdc` + hooks） |
-| 2026-07-31 | 收紧 `browser-energy`：取消窄屏/口头特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（`beforeMCPExecution` + `preToolUse`）；窄屏改 Safari 响应式 / Playwright |
-| 2026-08-08 | 扩展 `browser-energy`：用户可见的 `cd` + `npm run dev`（及等价预览命令）须写可直接复制的绝对路径，禁止省略号/占位路径（用户拍板强制） |
+| 2026-07-26 | 扩展 `browser-energy`：Vite/Playwright 进程收尾提醒 + Cloud「独立会话」提醒（用户拍板养成习惯） |
+| 2026-07-25 | **[已废止，见 SSOT 当前条文]** 新增 `browser-energy`：默认 Safari 预览；Cursor 内置 Browser 仅窄屏特例且最长 10 分钟（该「窄屏特例 + 数值复述」口径已由 2026-07-31 硬禁取代；时长细则以 `focus-tiger-browser-energy.mdc` 当前正文为准，勿以本条为现依据） |
+| 2026-07-23 | 固定口令「请安排下班前的 Git 同步」语义：只 push `develop`/`feature`/`fix` + 分级汇总；不合并 main、不推进 PR（见 regression-lock 第 7 条） |
+| 2026-07-23 | 新增 `git-parallel-worktree`：并行 Cursor 写会话须 `git worktree` 隔离；SSOT 在 `WORKFLOW.md` |
+| 2026-07-23 | 补强 `git-agent-commit`：Git 同步 / 批量 push 须「分级汇总」（commit 列表 + 高风险单独标注）；与 Cursor user rule 对齐方向 |
+| 2026-07-23 | 初版：盘点规则文档、指定主题 SSOT、接入 `rules:doc-check`，收敛 commit/跨会话等平行复述 |

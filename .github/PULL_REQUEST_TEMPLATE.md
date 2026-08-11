@@ -31,6 +31,17 @@
 
 ---
 
+## 规则文件 / SSOT 数值（触及 `.cursor/rules/*.mdc` 则必填）
+
+> 权威：`focus-tiger/docs/RULES_INDEX.md` · 一致性门禁：`npm run docs:check`（含 `check-docs-consistency`）
+
+- [ ] **未**改任何 `.cursor/rules/*.mdc` → 勾此项并跳过下面
+- [ ] 已 **grep 全仓库**搜索本规则涉及的关键数值/措辞，确认没有下游文档复述旧值（应改成路径指针引用 SSOT）
+- [ ] 本地 **`cd focus-tiger && npm run docs:check`**（含数值复述一致性检查）已通过
+- [ ] 若规则**数值**发生变化：已更新 `RULES_INDEX.md` 变更日志（**新记录置顶**；被取代的旧记录标注 **「已废止」**；勿以变更日志任意历史条作当前依据）
+
+---
+
 ## 验收清单（请逐项打勾）
 
 - [ ] 首屏能正常加载

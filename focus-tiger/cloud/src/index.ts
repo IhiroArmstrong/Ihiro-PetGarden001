@@ -3,6 +3,7 @@ import { preflightResponse, resolveAllowedOrigin, withCors } from "./lib/cors";
 import {
 	enforceRateLimit,
 	RATE_LIMIT_PER_MINUTE,
+	RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,
 	STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE,
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
@@ -13,6 +14,9 @@ import { handleCreateSanctuaryCheckoutSession } from "./routes/createSanctuaryCh
 import { handleCreateMembershipCheckoutSession } from "./routes/createMembershipCheckoutSession";
 import { handleConfirmSanctuarySession } from "./routes/confirmSanctuarySession";
 import { handleConfirmMembershipSession } from "./routes/confirmMembershipSession";
+import { handleCreateMembershipPortalSession } from "./routes/createMembershipPortalSession";
+import { handleMembershipEntitlement } from "./routes/membershipEntitlement";
+import { handleRequestRestoreOtp } from "./routes/requestRestoreOtp";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
@@ -27,7 +31,7 @@ export default {
 	async fetch(
 		request: Request,
 		env: Env,
-		_ctx: ExecutionContext,
+		ctx: ExecutionContext,
 	): Promise<Response> {
 		const url = new URL(request.url);
 		const origin = resolveAllowedOrigin(env, request);
@@ -46,6 +50,9 @@ export default {
 				url.pathname === "/api/create-membership-checkout-session" ||
 				url.pathname === "/api/confirm-membership-session" ||
 				url.pathname === "/api/verify-membership" ||
+				url.pathname === "/api/membership-entitlement" ||
+				url.pathname === "/api/create-membership-portal-session" ||
+				url.pathname === "/api/restore/request-otp" ||
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight")
 		) {
@@ -62,6 +69,21 @@ export default {
 			});
 			if (webhookLimited) return webhookLimited;
 			return handleStripeWebhook(request, env);
+		}
+
+		if (url.pathname === "/api/restore/request-otp") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const otpLimited = enforceRateLimit(request, {
+				limit: RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "restore-otp-request",
+			});
+			if (otpLimited) return withCors(otpLimited, origin);
+			return withCors(await handleRequestRestoreOtp(request, env, ctx), origin);
 		}
 
 		if (url.pathname === "/api/verify-tip") {
@@ -137,6 +159,39 @@ export default {
 			});
 			if (confirmLimited) return withCors(confirmLimited, origin);
 			return withCors(await handleConfirmMembershipSession(request, env), origin);
+		}
+
+		if (url.pathname === "/api/membership-entitlement") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const entitlementLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "membership-entitlement",
+			});
+			if (entitlementLimited) return withCors(entitlementLimited, origin);
+			return withCors(await handleMembershipEntitlement(request, env), origin);
+		}
+
+		if (url.pathname === "/api/create-membership-portal-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const portalLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "membership-portal",
+			});
+			if (portalLimited) return withCors(portalLimited, origin);
+			return withCors(
+				await handleCreateMembershipPortalSession(request, env),
+				origin,
+			);
 		}
 
 		const rateLimited = enforceRateLimit(request, {

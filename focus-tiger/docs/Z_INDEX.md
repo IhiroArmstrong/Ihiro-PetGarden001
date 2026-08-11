@@ -16,6 +16,7 @@
 |---|---|---|
 | **-1** | `src/ui/WideIdleMoreMenu.js` | 宽屏 Idle 次要入口 + Sit/⚡ 文案 pill park 屏外（Honesty dock / 微仪式 / dock hint / Sound FAB / Reminder toggle / `#btn-focus` / `#quick-start-focus`）时压到底层，避免误抢点击 |
 | **0** | `src/effects/LightProgression.js` | Arrival 暖光 backdrop（`#light-progression-backdrop`），最底层氛围 |
+| **0** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-wash` 节日轻氛围（pointer-events:none；在角色/UI 下） |
 | **1** | `index.html` | `#poster` 启动海报图 |
 | **1** | `src/ui/ReminderPreferenceUI.js` | Reminder 时钟控件根（`.reminder-pref`），相对热力图簇内叠层 |
 | **2** | `index.html` | `#scene-canvas` 3D/WebGL 场景画布 |
@@ -44,6 +45,7 @@
 | **16** | `src/ui/LanguagePreferenceUI.js` | 宽屏 Idle 右下语言地球钮（`.language-pref__fab`）；窄屏 CSS 隐藏 |
 | **17** | `src/ui/FlowerBlowWelcomeBubbleUI.js` | 变花鼓励气泡（`#flower-blow-welcome-bubble`）；白玉毛玻璃 + 尖角；窄屏 `top` 须让开 ActionBar（`homeClearanceTopCss`）；须可点消 |
 | **17** | `src/ui/MomentWhisperUI.js` | `#moment-whisper` Five Moments 轻量认出句（阿寅旁；3–4s 淡出；非 Banner） |
+| **17** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-whisper` 节日观察式短句（一日一次；可点消；非 Banner） |
 | **18** | `src/ui/HonestyBridgeCtaUI.js` | Honesty 桥接 Yes/No CTA |
 | **18** | `src/ui/LanguagePreferenceUI.js` | `#language-preference` 语言面板（FAB / ⋯ / 抽屉打开） |
 | **18** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-card` Zen Cinema 确认卡（⋯ / 抽屉；将打开 YouTube） |

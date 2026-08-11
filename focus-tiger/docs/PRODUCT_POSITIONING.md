@@ -2,9 +2,9 @@
 # PRODUCT_POSITIONING.md
 
 > 版本：1.3
-> 最后更新：2026-08-10
+> 最后更新：2026-08-11
 
-本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`）。
+本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
 在产品语义文档中，本文档层级高于 `DESIGN.md`；`DESIGN.md` 负责把定位转化为当前阶段的具体玩法。`PRINCIPLES.md` 仍是不可违反的硬性红线，任何定位表达和功能提议均不得绕过其「不制造焦虑」「永不消失」「价值优先于复杂度」等约束。
 

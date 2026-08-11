@@ -93,9 +93,10 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | 22 | Zen Cinema（增长①） | known-risky | Idle → ⋯/抽屉 **Zen Cinema** → 确认卡（缩略图+片名）→ Watch 开系统浏览器 YouTube；Not now 关。<br>回流：关后再开；Rise 后再开。375 卡不挡主球。<br>**禁止** Reflection 边缘入口、App 内嵌播放器。 | PR #148 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 23 | Quiet Line / 今日静语存图（增长③） | known-risky | Idle → ⋯/抽屉 **A Quiet Line** → 见当日金句 → Save image 下 PNG（文件名含日期）；同日再开句不变。<br>回流同 #22。375 不挡主球。<br>**禁止**一键社交分享卖点、soft-schedule、中文产品金句。 | PR #153 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 24 | 星光斗篷 v5 + wellness 2A（50/50） | known-risky | DORMANT / Honesty 睡醒：classic vs starlight **约各半**且入睡/苏醒变体匹配。<br>Wellness：深夜 forceDormant / 清晨苏醒 / 白天禁 2h 开场即睡。<br>睡循环：经典 034→030 / 星光 067→063 @2fps；背部微鼓观感曾反复修。 | TRACKER 待人工；实验室多轮；产品 50/50 路径仍待测 | 走查产品路径 + 与 #8/#21 交叉 |
-| 25 | Buy Yin a Tea / Tip Jar（A） | known-risky | 【UI】⋯/抽屉见 **Buy Yin a tea** → `#yin-tip-jar-card`；关卡回流；**不**解锁 Sanctuary/氛围。亦可从 **#27 Support** 右卡进同一 Checkout。<br>【**任务 5 · 部署**】**SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`。**2026-08-08 redeploy**：新 Price ID 已上线（Version `eb921e5f…`）；secrets/Webhook 沿用。<br>【验收】Test 卡 Tea **$9.99** / Sanctuary **$89.99** → 回跳；verify-tip；零耦合。 | #181/#182；ihiro redeploy 完成 | **人工 Test 卡验收金额** |
-| 26 | Yin's Sanctuary Lifetime（B） | known-risky | 【现状】Unlock UI（#179）+ Checkout 已合 tip；Ambient 消费 `isSanctuaryUnlocked` **仍暂缓**。<br>【主路径】⋯/抽屉 **Yin's Sanctuary** → `#yin-sanctuary-card`（约 $89.99）→ Unlock → Test 卡回跳 / restore。<br>【对照】亦可从 **#27 Support Modal** 左卡进同一 Checkout。<br>【通过标准】卡面+Checkout 金额 OK ≠ 整行关单；须含回流/邮箱 restore/零耦合（见 TRACKER）。 | TRACKER Sanctuary Unlock / Tip 部署 | tip 走查 → 关单前勿开 Ambient 消费 |
+| 25 | Buy Yin a Tea / Tip Jar（A） | known-risky | **逐步清单**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` **§A**。<br>【A1】⋯/Support → Tea → $9.99 → 回跳喝茶致谢（#231 已接线）。<br>【A2】**未测**：删 `tip-jar.v1` → 卡内邮箱 Restore。<br>【A3】**未测**：Tip 后 Sanctuary 仍未解锁；Rituals 仍锁。<br>**2026-08-11**：Sandbox webhook Tea **200 / stored / product=tip** OK ≠ 整行关单。 | checklist §A · TRACKER Tip 行 | **优先测 A2+A3** + §D 致谢复测 |
+| 26 | Yin's Sanctuary Lifetime（B） | known-risky | **逐步清单**：checklist **§B**。<br>【B1】Unlock → $89.99 → confirm + 鞠躬（#231）。<br>【B2】**未测**：删 `sanctuary-entitlement.v1` → Restore unlock。<br>【B3】**未测**：不与 Tip 互读。<br>**2026-08-11**：Sandbox webhook Sanctuary **200 / stored** OK。Ambient 消费仍暂缓。 | checklist §B | **优先测 B2+B3** |
 | 27 | Support Yin 统一入口（Modal） | known-risky · **P1** | 【主路径】Idle → 右上（音符左侧）**Support Yin** `#yin-support-fab` → `#yin-support-modal` 双卡（左 Sanctuary：**Suggested** + Primary；右 Tea：3 bullets + Ghost）→ CTA 走既有 `startCheckout`。<br>【文案】Maybe later；Sanctuary `One-time Lifetime`；Tea 含 kindness badge 文案（**非**内容解锁）。<br>【回流】关后再开；Focusing 时 FAB 隐藏，Rise 后复现。<br>【对照】菜单 **Yin's Sanctuary / Buy Yin a Tea** 仍可进旧卡。<br>【375】双卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。<br>【通过标准】入口统一 + CTA 可达；场景化请茶/漏斗统计/**多档 tip** **未做**（勿当本行缺口）。 | #187+#194 已合 tip（**`6ec70a7`**）；TRACKER Support 行 | tip 走查 → TRACKER 关单 |
+| 28 | Yin Membership 订阅（B） | known-risky | **逐步清单**：checklist **§C**。<br>【C1】**部分测过**（另会话；webhook/502 period→#229）。须补 confirm 解锁 + `sessionComplete`。<br>【C2】**未测**：删 `entitlement-cache.v1` → Restore membership。<br>【C3】**未测**：仅 Membership 开 Rituals；仅 Tea 不开 Rituals。 | checklist §C · TRACKER Membership 行 | **优先测 C2+C3** |
 
 ---
 
@@ -121,5 +122,5 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | 废过时口径 | Support 专用 `…-wt-qa-support-modal`；固定 tip=`62e38a3`；主仓 ahead1/behind1 分叉必 pull 才能测 Support |
 | 统一前置 | 纯 tip worktree `…-wt-qa-develop-tip` + 绝对路径（盘点 tip `beb9147`） |
 | **新增** | **#27 Support Yin Modal** |
-| 刷新 | #25/#26 与 Support 对照入口；§0.1 优先序含 25–27；PWA 仍延后 |
+| 刷新 | #25/#26/#28 挂 `PAYMENT_MANUAL_TEST_CHECKLIST`（Restore/零耦合逐步）；#27 Support 不变 |
 | 交叉 | `TEST_TRACKER`「主干一次性关单验收」替换 07-25 过时 P0/P1/P2 行号表 |

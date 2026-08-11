@@ -1,10 +1,10 @@
 # Yin Membership · 订阅（B 轨 · 订阅付费方式）
 
-> **状态（2026-08-10）**：Checkout + confirm + verify + **webhook 生命周期（Prompt 9）** 于 `feature/yin-membership-webhook`。  
+> **状态（2026-08-11）**：Checkout + confirm + OTP verify + webhook（Prompt 9）+ **cloud provider / Customer Portal（Prompt 10 · #240 已合 tip `755d465`）**。  
 > **性质**：与 **Sanctuary Lifetime** 解锁**同一套**进阶内容（lifetime ∪ subscription 互覆盖）。  
 > **验证强度**：与 Sanctuary 相同——**禁止**乐观 query 解锁；须服务端 confirm。  
 > **零耦合**：不得 import / 读取 `tipJarGate`。  
-> **本期范围**：开通 → 续费 → 扣款失败（宽限）→ 取消/删除写 `MEMBERSHIP_KV`。真实 provider 轮询 / Customer Portal → Prompt 10。
+> **生产 redeploy**：须待 Resend / `RESTORE_OTP_PEPPER` 等 secrets 齐备后再部署（与 OTP 同纪律）；合入 develop ≠ 已 redeploy。
 
 ## Schema
 
@@ -52,12 +52,27 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 服务端：`now < periodEndsAt + MEMBERSHIP_GRACE_MS`（7 天，对齐客户端 `ENTITLEMENT_GRACE_MS`）才返回 `active: true`。  
 宽限耗尽后即使 KV 行仍在（Stripe 仍在 dunning），verify 返回 `active: false` + `reason: grace_exhausted`，避免换设备反复 verify 刷新 `lastVerifiedAt` 无限续宽限。
 
+### Device token（Provider + Portal）
+
+`confirm-membership-session` **与** OTP `verify-membership` 成功后均签发 `deviceToken`（HMAC 存 `OTP_KV`，约 30 天 TTL；pepper = `RESTORE_OTP_PEPPER`）。  
+客户端存 `focus-tiger.membership-device.v1` = `{ email, deviceToken }`。
+
+| API | Body | 用途 |
+|---|---|---|
+| `POST /api/membership-entitlement` | `{ email, deviceToken }` | `cloudEntitlementProvider.fetchEntitlement` |
+| `POST /api/create-membership-portal-session` | `{ email, deviceToken }` | Membership 卡内 **Manage** → Stripe Billing Portal |
+
+无凭证时 provider throw → `refreshEntitlement` 走既有 **grace**（保留本地 cache）。Portal 仅 Membership 卡内 Manage（无菜单/Support 第二入口）。
+
 ## Client
 
 - `MembershipUnlockUI` / `#yin-membership-card`（Idle ⋯ / 抽屉 `membership` + Support 卡）
-- 回跳：`?membership_session={CHECKOUT_SESSION_ID}` → `confirmMembershipReturnQuery` → **仅**服务端 confirm 成功后 `markMembershipFromPayment`
+- 回跳：`?membership_session={CHECKOUT_SESSION_ID}` → `confirmMembershipReturnQuery` → **仅**服务端 confirm 成功后 `markMembershipFromPayment` + 持久化 deviceToken
+- **致谢动画（2026-08-11）**：confirm 成功后播 `sessionComplete`；回跳期间跳过冷启动欢迎（`paymentCheckoutThanks.js`）
 - 取消：`?membership=cancel`（不写缓存）
-- 跨设备：邮箱 → `POST /api/verify-membership` → 同上 patch（受上节宽限约束）
+- 跨设备：`POST /api/restore/request-otp` `{ email, purpose: "membership" }` → 邮箱 OTP → `POST /api/verify-membership` `{ email, code }` → 同上 patch + deviceToken（**禁止**裸邮箱；仍受上节宽限约束）
+- **Manage**：本地会员有效时显示；调 Portal API 后跳转 Stripe（需 deviceToken；缺失则提示先 Restore）
+- Provider：`VITE_CLOUD_API_BASE_URL` 已设且无 `?entitlementMock=` → `createCloudEntitlementProvider`；否则 mock
 
 ## Cloud
 
@@ -66,8 +81,10 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 | Price var | `STRIPE_MEMBERSHIP_PRICE_ID`（**recurring**） | `STRIPE_SANCTUARY_PRICE_ID`（one-time） |
 | KV | `MEMBERSHIP_KV` · `membership:{email}` | `SANCTUARY_KV` · `sanctuary:{email}` |
 | Create | `/api/create-membership-checkout-session` | `/api/create-sanctuary-checkout-session` |
-| Confirm | `/api/confirm-membership-session` | `/api/confirm-sanctuary-session` |
-| Restore | `/api/verify-membership` | `/api/verify-sanctuary` |
+| Confirm | `/api/confirm-membership-session` → 可带 `email`+`deviceToken` | `/api/confirm-sanctuary-session` |
+| Restore | `/api/restore/request-otp` + `/api/verify-membership` `{email,code}` → 可带 `deviceToken` | 同左（Sanctuary purpose；无 deviceToken） |
+| Provider | `/api/membership-entitlement` `{email,deviceToken}` | （本期无） |
+| Portal | `/api/create-membership-portal-session` `{email,deviceToken}` | （不适用） |
 | metadata | Session + **`subscription_data.metadata`**: `product=membership` · `planId=yin-membership` | `product=sanctuary` |
 | Checkout `mode` | `subscription` | `payment` |
 
@@ -124,5 +141,5 @@ Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并�
 
 ## Next
 
-- Prompt 10：真实 `EntitlementProvider` 轮询 / Customer Portal 自助管理  
 - Ambient 等下游统一改读 `isEntitled`（见 `FREE_PAID_MATRIX.md`）
+- 生产：Resend / OTP pepper 齐备后 **一并** redeploy（含 Prompt 10 路由）

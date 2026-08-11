@@ -3,18 +3,24 @@
  *
  * Secrets (wrangler secret put — never commit values):
  *   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+ *   RESEND_API_KEY, RESTORE_OTP_PEPPER
  *
  * Vars / wrangler.jsonc (non-secret):
  *   STRIPE_PRICE_ID, STRIPE_SANCTUARY_PRICE_ID, STRIPE_MEMBERSHIP_PRICE_ID
- *   Checkout success/cancel URLs, ALLOWED_ORIGIN
+ *   Checkout success/cancel URLs, ALLOWED_ORIGIN, RESEND_FROM
  */
 export interface Env {
 	TIP_KV: KVNamespace;
 	SANCTUARY_KV: KVNamespace;
 	MEMBERSHIP_KV: KVNamespace;
+	/** Restore OTP challenges only (not entitlement records). */
+	OTP_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
+	RESEND_API_KEY?: string;
+	/** HMAC pepper for restore OTP hashes (never log). */
+	RESTORE_OTP_PEPPER?: string;
 
 	STRIPE_PRICE_ID?: string;
 	CHECKOUT_SUCCESS_URL?: string;
@@ -29,9 +35,14 @@ export interface Env {
 	STRIPE_MEMBERSHIP_PRICE_ID?: string;
 	MEMBERSHIP_CHECKOUT_SUCCESS_URL?: string;
 	MEMBERSHIP_CHECKOUT_CANCEL_URL?: string;
+	/** Stripe Billing Portal return URL (Membership Manage). */
+	MEMBERSHIP_PORTAL_RETURN_URL?: string;
 
 	/** Exact browser Origin allowed for CORS (e.g. http://127.0.0.1:5173). */
 	ALLOWED_ORIGIN?: string;
+
+	/** Resend From header, e.g. "Yin <restore@twinsology.com>". */
+	RESEND_FROM?: string;
 }
 
 /** Provisional request bodies — awaiting product review of field names. */
