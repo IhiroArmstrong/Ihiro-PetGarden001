@@ -13,8 +13,14 @@ import {
 } from './UserAmbientLibrary.js';
 import {
   canPlayAmbientTrack,
+  isAmbientDeepBuiltInTrack,
   resolvePlayableAmbientTrackId
 } from './ambientEntitlement.js';
+import {
+  AMBIENT_AUDITION_DEFAULT_MS,
+  AMBIENT_AUDITION_FADE_MS,
+  shouldOfferDeepAudition
+} from './ambientAudition.js';
 
 /** 每播放 1 分钟音频 ≈ 12 秒专注进度对光效的贡献 → 权重 12/60 */
 export const AUDIO_FOCUS_EQUIV_RATIO = 12 / 60;
@@ -236,18 +242,37 @@ export class AmbientSoundscapeController {
    * @param {Storage | { getItem?: Function, setItem?: Function }} [options.storage]
    * @param {boolean} [options.mountToDocument] 测试可设为 false
    * @param {import('./UserAmbientLibrary.js').UserAmbientLibrary} [options.userLibrary]
+   * @param {number} [options.auditionMs] Deep 试听时长（默认 15s；DEV 可 `?ambientAuditionMs=`）
+   * @param {number} [options.auditionFadeMs] 试听结束柔和淡出时长
+   * @param {typeof setTimeout} [options.schedule]
+   * @param {typeof clearTimeout} [options.cancelSchedule]
    */
   constructor({
     now = () => Date.now(),
     audio = null,
     storage = typeof localStorage !== 'undefined' ? localStorage : null,
     mountToDocument = true,
-    userLibrary = null
+    userLibrary = null,
+    auditionMs = AMBIENT_AUDITION_DEFAULT_MS,
+    auditionFadeMs = AMBIENT_AUDITION_FADE_MS,
+    schedule = typeof setTimeout !== 'undefined'
+      ? setTimeout.bind(globalThis)
+      : (fn) => {
+          fn();
+          return 0;
+        },
+    cancelSchedule = typeof clearTimeout !== 'undefined'
+      ? clearTimeout.bind(globalThis)
+      : () => {}
   } = {}) {
     this._now = now;
     this._storage = storage;
     this._mountToDocument = mountToDocument;
     this._userLibrary = userLibrary || getSharedUserAmbientLibrary();
+    this._auditionMs = Math.max(200, Number(auditionMs) || AMBIENT_AUDITION_DEFAULT_MS);
+    this._auditionFadeMs = Math.max(0, Number(auditionFadeMs) || 0);
+    this._schedule = schedule;
+    this._cancelSchedule = cancelSchedule;
     this._volume = 0.45;
     this._audio =
       audio ||
@@ -277,6 +302,18 @@ export class AmbientSoundscapeController {
     this._pausedWithSeek = false;
     /** @type {string | null} */
     this._pausedTrackId = null;
+    /** Deep audition in progress (temporary; never persists entitlement). */
+    this._auditionActive = false;
+    /** @type {string | null} */
+    this._auditionTrackId = null;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._auditionTimer = null;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._auditionFadeTimer = null;
+    /** @type {null | { preferred: string, remember: boolean }} */
+    this._prefBeforeAudition = null;
+    /** @type {null | ((info: { reason: string, trackId: string | null }) => void)} */
+    this._onAuditionEnded = null;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
@@ -320,6 +357,7 @@ export class AmbientSoundscapeController {
     this._segmentStartedAt = null;
     this._wantEnabled = false;
     this._clearSeekPause();
+    this.cancelDeepAudition({ reason: 'session-end', notify: false });
     this._stopPlayback({ persist: false });
   }
 
@@ -357,6 +395,10 @@ export class AmbientSoundscapeController {
    * 下次 unmute / 同曲 setTrack 从断点续播（非从头）。
    */
   mute() {
+    if (this._auditionActive) {
+      this.cancelDeepAudition({ reason: 'mute', notify: false });
+      return;
+    }
     const shouldResume =
       this._preferredTrackId !== AMBIENT_TRACK_OFF &&
       (this._wantEnabled || this._isAudiblePlaying());
@@ -540,13 +582,14 @@ export class AmbientSoundscapeController {
 
   /**
    * @param {string} trackId off | known AMBIENT_TRACKS id | user-*
-   * @param {{ persist?: boolean }} [options]
+   * @param {{ persist?: boolean, allowAudition?: boolean }} [options]
    * @returns {Promise<void>}
    */
-  async setTrack(trackId, { persist = true } = {}) {
+  async setTrack(trackId, { persist = true, allowAudition = false } = {}) {
     const id = trackId || AMBIENT_TRACK_OFF;
     if (id === AMBIENT_TRACK_OFF) {
       // Explicit Off in the panel — remember Off (mute-via-note keeps preferred track).
+      this.cancelDeepAudition({ reason: 'off' });
       this._preferredTrackId = AMBIENT_TRACK_OFF;
       this._wantEnabled = false;
       this._needsGestureUnlock = false;
@@ -561,9 +604,18 @@ export class AmbientSoundscapeController {
       storage: this._storage,
       builtInTracks: AMBIENT_TRACKS
     };
+    const auditionBypass =
+      allowAudition &&
+      shouldOfferDeepAudition(id, entitlementOpts);
     // Hard deny deep built-ins without B — UI must disable; resume paths use resolvePlayable*.
-    if (!canPlayAmbientTrack(id, entitlementOpts)) {
+    // Audition path is the sole temporary bypass (persist forced false).
+    if (!canPlayAmbientTrack(id, entitlementOpts) && !auditionBypass) {
       return;
+    }
+    if (auditionBypass) {
+      persist = false;
+    } else if (this._auditionActive) {
+      this.cancelDeepAudition({ reason: 'replace' });
     }
 
     // Soft-paused same track → resume without resetting currentTime.
@@ -593,9 +645,11 @@ export class AmbientSoundscapeController {
     this._clearSeekPause();
     this._endCreditSegment();
     this._trackId = id;
-    this._preferredTrackId = id;
+    if (!auditionBypass) {
+      this._preferredTrackId = id;
+      this._rememberPanelTrack = true;
+    }
     this._wantEnabled = true;
-    this._rememberPanelTrack = true;
     const epoch = this._playbackEpoch;
     const player = this._audio;
     player.muted = false;
@@ -623,6 +677,178 @@ export class AmbientSoundscapeController {
 
     this._needsGestureUnlock = false;
     this._syncCreditSegment();
+  }
+
+  /** @returns {boolean} */
+  isDeepAuditionActive() {
+    return Boolean(this._auditionActive);
+  }
+
+  /** @returns {string | null} */
+  getDeepAuditionTrackId() {
+    return this._auditionTrackId;
+  }
+
+  /**
+   * Unentitled deep track → timed preview then soft fade; never persists unlock.
+   * Entitled → normal setTrack (no audition cut).
+   *
+   * @param {string} trackId
+   * @param {object} [opts]
+   * @param {(info: { reason: string, trackId: string | null }) => void} [opts.onEnded]
+   * @returns {Promise<{ started: boolean, reason: string }>}
+   */
+  async startDeepAudition(trackId, { onEnded } = {}) {
+    const id = String(trackId || '');
+    const entitlementOpts = {
+      storage: this._storage,
+      builtInTracks: AMBIENT_TRACKS
+    };
+    if (canPlayAmbientTrack(id, entitlementOpts)) {
+      await this.setTrack(id);
+      return { started: false, reason: 'entitled' };
+    }
+    if (!isAmbientDeepBuiltInTrack(id, AMBIENT_TRACKS)) {
+      return { started: false, reason: 'not-deep' };
+    }
+
+    this.cancelDeepAudition({ reason: 'restart', notify: false });
+    this._prefBeforeAudition = {
+      preferred: this._preferredTrackId,
+      remember: this._rememberPanelTrack
+    };
+    this._auditionActive = true;
+    this._auditionTrackId = id;
+    this._onAuditionEnded = typeof onEnded === 'function' ? onEnded : null;
+
+    await this.setTrack(id, { persist: false, allowAudition: true });
+    if (this._trackId !== id || !this._isAudiblePlaying()) {
+      // play failed / gesture — clear audition state without claiming success
+      this._auditionActive = false;
+      this._auditionTrackId = null;
+      this._onAuditionEnded = null;
+      this._prefBeforeAudition = null;
+      return { started: false, reason: 'play-failed' };
+    }
+
+    // Keep preferred memory on pre-audition track (never sticky-deep).
+    if (this._prefBeforeAudition) {
+      this._preferredTrackId = this._prefBeforeAudition.preferred;
+      this._rememberPanelTrack = this._prefBeforeAudition.remember;
+    }
+
+    this._auditionTimer = this._schedule(() => {
+      void this._finishDeepAudition({ reason: 'duration' });
+    }, this._auditionMs);
+
+    return { started: true, reason: 'audition' };
+  }
+
+  /**
+   * Stop audition immediately (Rise / mute / Off). Timer end uses `_finishDeepAudition` (fade + notify).
+   * @param {{ reason?: string, notify?: boolean }} [opts]
+   */
+  cancelDeepAudition({ reason = 'cancel', notify = true } = {}) {
+    if (!this._auditionActive && !this._auditionTimer && !this._auditionFadeTimer) {
+      return;
+    }
+    this._clearAuditionTimers();
+    const trackId = this._auditionTrackId;
+    const wasActive = this._auditionActive;
+    this._auditionActive = false;
+    this._auditionTrackId = null;
+    if (this._prefBeforeAudition) {
+      this._preferredTrackId = this._prefBeforeAudition.preferred;
+      this._rememberPanelTrack = this._prefBeforeAudition.remember;
+      this._prefBeforeAudition = null;
+    }
+    if (wasActive) {
+      this._wantEnabled = false;
+      this._stopPlayback({ persist: false });
+      if (this._audio) this._audio.volume = this._volume;
+      const cb = this._onAuditionEnded;
+      this._onAuditionEnded = null;
+      if (notify) {
+        try {
+          cb?.({ reason, trackId });
+        } catch {
+          /* listener errors must not break audio */
+        }
+      }
+    } else {
+      this._onAuditionEnded = null;
+    }
+  }
+
+  /**
+   * @param {{ reason: string }} opts
+   */
+  async _finishDeepAudition({ reason }) {
+    if (!this._auditionActive) return;
+    this._clearAuditionTimers();
+    const trackId = this._auditionTrackId;
+    const player = this._audio;
+    const fadeMs = this._auditionFadeMs;
+    const startVol =
+      player && Number.isFinite(player.volume) ? player.volume : this._volume;
+
+    if (player && fadeMs > 0 && startVol > 0) {
+      await new Promise((resolve) => {
+        const steps = 8;
+        let i = 0;
+        const tick = () => {
+          i += 1;
+          const next = startVol * (1 - i / steps);
+          try {
+            player.volume = Math.max(0, next);
+          } catch {
+            /* ignore */
+          }
+          if (i >= steps) {
+            this._auditionFadeTimer = null;
+            resolve();
+            return;
+          }
+          this._auditionFadeTimer = this._schedule(tick, fadeMs / steps);
+        };
+        this._auditionFadeTimer = this._schedule(tick, fadeMs / steps);
+      });
+    }
+
+    this._auditionActive = false;
+    this._auditionTrackId = null;
+    if (this._prefBeforeAudition) {
+      this._preferredTrackId = this._prefBeforeAudition.preferred;
+      this._rememberPanelTrack = this._prefBeforeAudition.remember;
+      this._prefBeforeAudition = null;
+    }
+    this._wantEnabled = false;
+    this._stopPlayback({ persist: false });
+    if (this._audio) {
+      try {
+        this._audio.volume = this._volume;
+      } catch {
+        /* ignore */
+      }
+    }
+    const cb = this._onAuditionEnded;
+    this._onAuditionEnded = null;
+    try {
+      cb?.({ reason, trackId });
+    } catch {
+      /* ignore */
+    }
+  }
+
+  _clearAuditionTimers() {
+    if (this._auditionTimer != null) {
+      this._cancelSchedule(this._auditionTimer);
+      this._auditionTimer = null;
+    }
+    if (this._auditionFadeTimer != null) {
+      this._cancelSchedule(this._auditionFadeTimer);
+      this._auditionFadeTimer = null;
+    }
   }
 
   /**

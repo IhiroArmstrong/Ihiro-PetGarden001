@@ -280,6 +280,12 @@ export class AmbientSoundscapeUI {
     return this._sessionActive;
   }
 
+  /** Re-paint panel after deep audition start/end (external controller path). */
+  renderAfterAudition() {
+    this._refreshMuteBtn();
+    this._renderPanel();
+  }
+
   isPanelOpen() {
     return Boolean(
       this._expanded &&
@@ -646,10 +652,10 @@ export class AmbientSoundscapeUI {
         btn.dataset.userTrack = '1';
       }
       if (opt.locked) {
-        // Clickable upsell (not HTML disabled — disabled swallows clicks).
+        // Clickable audition / upsell (not HTML disabled — disabled swallows clicks).
         btn.setAttribute('aria-disabled', 'true');
         btn.classList.add('is-locked');
-        btn.title = t('AMBIENT_TRACK_LOCKED');
+        btn.title = t('AMBIENT_AUDITION_ROW_HINT');
         btn.dataset.locked = '1';
         btn.dataset.testid = 'ambient-track-locked';
       }
@@ -684,7 +690,7 @@ export class AmbientSoundscapeUI {
         if (opt.locked) {
           playPause.setAttribute('aria-disabled', 'true');
           playPause.classList.add('is-locked');
-          playPause.title = t('AMBIENT_TRACK_LOCKED');
+          playPause.title = t('AMBIENT_AUDITION_ROW_HINT');
           playPause.dataset.testid = 'ambient-track-locked-play';
         }
         playPause.setAttribute(

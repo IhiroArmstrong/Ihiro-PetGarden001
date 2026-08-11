@@ -38,6 +38,8 @@
   "AMBIENT_TRACK_FROZEN_IN_LOVE": "Frozen in Love",
   "AMBIENT_TRACK_LOCKED": "Unlock the full library with Yin Membership or Sanctuary Lifetime",
   "AMBIENT_TRACK_LOCKED_TOAST": "Full soundscape unlocks with Yin Membership or Sanctuary Lifetime.",
+  "AMBIENT_AUDITION_ROW_HINT": "Preview about 15 seconds — then unlock for the full soundscape",
+  "AMBIENT_AUDITION_UNLOCK_HINT": "Unlock Sanctuary to immerse in full soundscapes.",
   "AMBIENT_UPLOAD_BTN": "Add your music",
   "AMBIENT_UPLOAD_LOCAL_HINT": "Stays on this device only — not uploaded to a server. MP3 or M4A.",
   "AMBIENT_UPLOAD_DELETE_ARIA": "Remove uploaded track",

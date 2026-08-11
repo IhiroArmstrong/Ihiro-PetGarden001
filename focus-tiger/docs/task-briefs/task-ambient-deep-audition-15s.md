@@ -1,6 +1,6 @@
 # Task Brief · Ambient Deep · 15s 试听（Audition）
 
-> **状态（2026-08-12）**：待排期 · **Gate #251 已合**（可立刻开工姊妹支）。  
+> **状态（2026-08-12）**：**实现中** · `feature/ambient-deep-audition-15s`（Gate #251 已合）。  
 > **目的**：在深度曲真锁之后，用低打扰试听把「假收费修补」变成转化路径——未付费可尝 Deep，再柔和引导 Unlock。  
 > **原则**：`PRINCIPLES.md` 经济可持续；商业红线仍禁 FOMO / 稀缺倒计时。
 
