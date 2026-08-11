@@ -29,6 +29,7 @@
  *   | 'ambient.deep.play'
  *   | 'emotion.premium.trigger'
  *   | 'content.advanced.daily-unlock'
+ *   | 'theme.seasonal.access'
  *   | 'ritual.morning.history'
  *   | 'ritual.emotional-reset.history'
  *   | 'ritual.work-transition.history'
@@ -63,6 +64,11 @@ export const FEATURE_CATALOG = Object.freeze({
   'ambient.deep.play': { requiredTier: 'subscription', type: 'ongoing' },
   'emotion.premium.trigger': { requiredTier: 'subscription', type: 'ongoing' },
   'content.advanced.daily-unlock': {
+    requiredTier: 'subscription',
+    type: 'ongoing'
+  },
+  /** Seasonal Theme Engine · B-track ongoing (Brief task-seasonal-theme-engine-v1). */
+  'theme.seasonal.access': {
     requiredTier: 'subscription',
     type: 'ongoing'
   },
