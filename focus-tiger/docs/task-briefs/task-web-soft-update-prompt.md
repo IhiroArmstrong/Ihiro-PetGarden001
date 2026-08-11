@@ -1,7 +1,7 @@
 # Task Brief · Web 轻量版本更新提示（点一下刷新）
 
-> **状态（2026-08-12）**：产品口径已拍板；**实现于** `feature/web-soft-update-prompt`（本支）。  
-> **文档支**：`docs/web-soft-update-prompt` / PR #261。
+> **状态（2026-08-12）**：产品口径已拍板；**已合 `develop`** [#263](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/263)（tip `38edfe0`）。  
+> TRACKER 待人工：`?product=1&forceUpdatePrompt=1`。
 
 ## 拍板（2026-08-12）
 
@@ -39,8 +39,8 @@
 
 ## 排期口令
 
-- 文档已本支：`docs/web-soft-update-prompt`  
-- 实现：`开工 Web 版本提示` → `feature/web-soft-update-prompt` worktree  
+- **已完成**：#263 已合 `develop`（`38edfe0`）；docs-only #261 已关（superseded）。
+- 人工验收：`TEST_TRACKER`「Web 轻量版本更新提示」行；`?product=1&forceUpdatePrompt=1`。
 
 ## 权威交叉
 
