@@ -1,10 +1,10 @@
 # Yin Membership · 订阅（B 轨 · 订阅付费方式）
 
-> **状态（2026-08-11）**：Checkout + confirm + OTP verify + webhook（Prompt 9）+ **cloud provider / Customer Portal（Prompt 10）** 已接线。  
+> **状态（2026-08-11）**：Checkout + confirm + OTP verify + webhook（Prompt 9）+ **cloud provider / Customer Portal（Prompt 10 · #240 已合 tip `755d465`）**。  
 > **性质**：与 **Sanctuary Lifetime** 解锁**同一套**进阶内容（lifetime ∪ subscription 互覆盖）。  
 > **验证强度**：与 Sanctuary 相同——**禁止**乐观 query 解锁；须服务端 confirm。  
 > **零耦合**：不得 import / 读取 `tipJarGate`。  
-> **生产 redeploy**：须待 Resend / `RESTORE_OTP_PEPPER` 等 secrets 齐备后再部署（与 OTP 同纪律）。
+> **生产 redeploy**：须待 Resend / `RESTORE_OTP_PEPPER` 等 secrets 齐备后再部署（与 OTP 同纪律）；合入 develop ≠ 已 redeploy。
 
 ## Schema
 
