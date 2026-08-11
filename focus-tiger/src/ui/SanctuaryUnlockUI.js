@@ -110,6 +110,23 @@ export class SanctuaryUnlockUI {
     this.emailInput.className = 'yin-sanctuary__email';
     this.emailInput.dataset.testid = 'yin-sanctuary-email';
 
+    this.sendCodeBtn = document.createElement('button');
+    this.sendCodeBtn.type = 'button';
+    this.sendCodeBtn.className =
+      'yin-sanctuary__btn yin-sanctuary__btn--ghost';
+    this.sendCodeBtn.dataset.testid = 'yin-sanctuary-send-code';
+    this.sendCodeBtn.addEventListener('click', () => {
+      void this._sendRestoreCode();
+    });
+
+    this.codeInput = document.createElement('input');
+    this.codeInput.type = 'text';
+    this.codeInput.inputMode = 'numeric';
+    this.codeInput.autocomplete = 'one-time-code';
+    this.codeInput.maxLength = 6;
+    this.codeInput.className = 'yin-sanctuary__code';
+    this.codeInput.dataset.testid = 'yin-sanctuary-code';
+
     this.restoreBtn = document.createElement('button');
     this.restoreBtn.type = 'button';
     this.restoreBtn.className =
@@ -118,6 +135,10 @@ export class SanctuaryUnlockUI {
     this.restoreBtn.addEventListener('click', () => {
       void this._restore();
     });
+
+    this.restoreRow = document.createElement('div');
+    this.restoreRow.className = 'yin-sanctuary__restore-row';
+    this.restoreRow.append(this.sendCodeBtn, this.restoreBtn);
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -141,7 +162,8 @@ export class SanctuaryUnlockUI {
       this.restoreTitle,
       this.restoreHint,
       this.emailInput,
-      this.restoreBtn
+      this.codeInput,
+      this.restoreRow
     );
     mountRoot.appendChild(this.root);
 
@@ -254,14 +276,52 @@ export class SanctuaryUnlockUI {
     }
   }
 
-  async _restore() {
+  async _sendRestoreCode() {
     if (this._busy) return;
+    const email = this.emailInput.value.trim();
+    if (!email) {
+      this.statusEl.textContent = t('SANCTUARY_EMAIL_REQUIRED');
+      return;
+    }
     this._busy = true;
+    this.sendCodeBtn.disabled = true;
     this.restoreBtn.disabled = true;
     try {
-      const email = this.emailInput.value.trim();
+      await postCloudJson('/api/restore/request-otp', {
+        body: JSON.stringify({ email, purpose: 'sanctuary' })
+      });
+      this.statusEl.textContent = t('SANCTUARY_RESTORE_CODE_SENT');
+    } catch (err) {
+      const status = /** @type {any} */ (err)?.status;
+      this.statusEl.textContent =
+        status === 429
+          ? t('SANCTUARY_RESTORE_RATE')
+          : t('SANCTUARY_ERROR_GENERIC');
+    } finally {
+      this._busy = false;
+      this.sendCodeBtn.disabled = false;
+      this.restoreBtn.disabled = false;
+    }
+  }
+
+  async _restore() {
+    if (this._busy) return;
+    const email = this.emailInput.value.trim();
+    const code = this.codeInput.value.trim();
+    if (!email) {
+      this.statusEl.textContent = t('SANCTUARY_EMAIL_REQUIRED');
+      return;
+    }
+    if (!code) {
+      this.statusEl.textContent = t('SANCTUARY_RESTORE_CODE_REQUIRED');
+      return;
+    }
+    this._busy = true;
+    this.sendCodeBtn.disabled = true;
+    this.restoreBtn.disabled = true;
+    try {
       const res = await postCloudJson('/api/verify-sanctuary', {
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, code })
       });
       const unlocked =
         res &&
@@ -270,16 +330,35 @@ export class SanctuaryUnlockUI {
       if (unlocked) {
         markSanctuaryFromPayment(this._storage);
         this.statusEl.textContent = t('SANCTUARY_STATUS_YES');
+        this.codeInput.value = '';
         this.handlers.onBadgesChanged?.();
       } else {
         this.statusEl.textContent = t('SANCTUARY_RESTORE_MISS');
       }
-    } catch {
-      this.statusEl.textContent = t('SANCTUARY_ERROR_GENERIC');
+    } catch (err) {
+      const status = /** @type {any} */ (err)?.status;
+      const codeName =
+        err &&
+        typeof err === 'object' &&
+        /** @type {any} */ (err).body &&
+        typeof /** @type {any} */ (err).body.error === 'string'
+          ? /** @type {any} */ (err).body.error
+          : '';
+      if (status === 429) {
+        this.statusEl.textContent = t('SANCTUARY_RESTORE_RATE');
+      } else if (
+        status === 401 ||
+        codeName === 'invalid_or_expired_code' ||
+        codeName === 'otp_required'
+      ) {
+        this.statusEl.textContent = t('SANCTUARY_RESTORE_CODE_BAD');
+      } else {
+        this.statusEl.textContent = t('SANCTUARY_ERROR_GENERIC');
+      }
     } finally {
       this._busy = false;
+      this.sendCodeBtn.disabled = false;
       this.restoreBtn.disabled = false;
-      this._refreshTexts();
     }
   }
 
@@ -342,8 +421,10 @@ export class SanctuaryUnlockUI {
     this.closeBtn.textContent = t('SANCTUARY_CLOSE');
     this.restoreTitle.textContent = t('SANCTUARY_RESTORE_TITLE');
     this.restoreHint.textContent = t('SANCTUARY_RESTORE_HINT');
+    this.sendCodeBtn.textContent = t('SANCTUARY_RESTORE_SEND_CODE');
     this.restoreBtn.textContent = t('SANCTUARY_RESTORE_CTA');
     this.emailInput.placeholder = t('SANCTUARY_EMAIL_PLACEHOLDER');
+    this.codeInput.placeholder = t('SANCTUARY_RESTORE_CODE_PLACEHOLDER');
     const unlocked = isSanctuaryUnlocked({ storage: this._storage });
     if (unlocked) {
       syncSanctuaryBadgesFromPractice(this._storage);
@@ -440,7 +521,8 @@ export class SanctuaryUnlockUI {
         display: block;
         background: rgba(255, 252, 245, 0.55);
       }
-      .yin-sanctuary__email {
+      .yin-sanctuary__email,
+      .yin-sanctuary__code {
         display: block;
         width: 100%;
         box-sizing: border-box;
@@ -451,6 +533,13 @@ export class SanctuaryUnlockUI {
         background: rgba(255,252,245,.7);
         font: inherit;
         color: #3d2e22;
+      }
+      .yin-sanctuary__restore-row {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        margin: 0 0 4px;
       }
       .yin-sanctuary__actions {
         display: flex;

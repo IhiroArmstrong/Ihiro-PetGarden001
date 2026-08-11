@@ -45,8 +45,9 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/confirm-membership-session` | `{ sessionId }` → 校验 subscription active 后返回 periodEndsAt |
 | `POST` | `/api/stripe-webhook` | Stripe 验签 → tip/sanctuary（payment）+ Membership 订阅生命周期（`MEMBERSHIP_KV`） |
 | `POST` | `/api/verify-tip` | `{ email }` → `{ tipped, … }` |
-| `POST` | `/api/verify-sanctuary` | `{ email }` → `{ unlocked, … }` |
-| `POST` | `/api/verify-membership` | `{ email }` → `{ active, periodEndsAt, planId, … }` |
+| `POST` | `/api/restore/request-otp` | `{ email, purpose }` → 恒 `{ ok: true }`；有权益时写 OTP 哈希并用 `waitUntil` 调 Resend（防时序侧信道） |
+| `POST` | `/api/verify-sanctuary` | `{ email, code }` → OTP 通过后才 lookup → `{ unlocked, … }` |
+| `POST` | `/api/verify-membership` | `{ email, code }` → OTP 通过后才 lookup → `{ active, periodEndsAt, planId, … }` |
 
 ### 限流
 
@@ -54,6 +55,7 @@ curl -s http://127.0.0.1:8787/health
 |---|---|
 | 默认 API | 60/min（内存；按 IP / Bearer） |
 | `/api/verify-*` / `/api/confirm-*` | **10/min/IP**（单独桶） |
+| `/api/restore/request-otp` | **5/min/IP** + KV 层 60s/email cooldown + 5/hour/email |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
 ## Stub 接口（仍保留）

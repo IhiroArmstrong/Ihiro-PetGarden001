@@ -6,10 +6,14 @@
  *   npx wrangler kv namespace create TIP_KV
  *   npx wrangler kv namespace create SANCTUARY_KV
  *   npx wrangler kv namespace create MEMBERSHIP_KV
+ *   npx wrangler kv namespace create OTP_KV
+ *   npx wrangler kv namespace create OTP_KV --preview
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
  *   npx wrangler secret put STRIPE_WEBHOOK_SECRET
+ *   npx wrangler secret put RESEND_API_KEY
+ *   npx wrangler secret put RESTORE_OTP_PEPPER
  *
  * Prices (Dashboard):
  *   Tip → STRIPE_PRICE_ID (one-time)
@@ -19,7 +23,12 @@
  * MEMBERSHIP_KV (created 2026-08-10):
  *   id         = 331994910f30411393e241c1252d85e6
  *   preview_id = 5496acb38b20430b936e700e598d3c6a
- * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle).
+ *
+ * OTP_KV (created 2026-08-11):
+ *   id         = 7d5acbe48de44cefac2bc041809c1f27
+ *   preview_id = d0211c3d14e44798b41833c06e6d0f27
+ *
+ * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle) + Resend secrets.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -44,6 +53,11 @@
 			"binding": "MEMBERSHIP_KV",
 			"id": "331994910f30411393e241c1252d85e6",
 			"preview_id": "5496acb38b20430b936e700e598d3c6a"
+		},
+		{
+			"binding": "OTP_KV",
+			"id": "7d5acbe48de44cefac2bc041809c1f27",
+			"preview_id": "d0211c3d14e44798b41833c06e6d0f27"
 		}
 	],
 	"vars": {
@@ -56,6 +70,7 @@
 		"STRIPE_MEMBERSHIP_PRICE_ID": "price_1U2r5lFuIhgJPGLiEPOhJbst",
 		"MEMBERSHIP_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&membership_session={CHECKOUT_SESSION_ID}",
 		"MEMBERSHIP_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&membership=cancel",
-		"ALLOWED_ORIGIN": "http://127.0.0.1:5173"
+		"ALLOWED_ORIGIN": "http://127.0.0.1:5173",
+		"RESEND_FROM": "Yin <restore@twinsology.com>"
 	}
 }
