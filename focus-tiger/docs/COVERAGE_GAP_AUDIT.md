@@ -254,7 +254,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 
 | 项 | 难度 | 风险 | 状态 / 建议 | 挡 v1？ |
 |---|---|---|---|---|
-| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js`（en+ja ready + staged zh 奇偶） | — |
+| **A. unit\*** | **低** | 极低 | ✅ `i18n.test.js`（en+ja ready + staged zh 奇偶；**ja≠en 占位守卫**，专有名/曲名白名单除外） | — |
 | **B. e2e** | **低** | 低 | ✅ 点 Language → 日本語 → English | — |
 | **C. 切语 UI** | **中** | 低 | ✅ 面板 + 门闩 `≥2 ready` | — |
 | **D. 冷启动** | **低** | 低 | ✅ 默认 en；记忆 ready；draft 忽略 | — |

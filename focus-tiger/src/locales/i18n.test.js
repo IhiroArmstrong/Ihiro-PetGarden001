@@ -5,6 +5,9 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   t,
   setLocale,
@@ -22,6 +25,10 @@ import {
   listPickerLocales,
   shouldOfferLanguagePicker
 } from './localePreference.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const enDict = JSON.parse(readFileSync(join(here, 'en.json'), 'utf8'));
+const jaDict = JSON.parse(readFileSync(join(here, 'ja.json'), 'utf8'));
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -62,6 +69,30 @@ test('ready locales have identical dictionary key sets', () => {
       `locale ${id} keys must match en (parity)`
     );
   }
+});
+
+/**
+ * Proper nouns / titles that may stay identical across en and ja.
+ * New product UI must not land here as an English placeholder — translate ja.json.
+ */
+const JA_MAY_MATCH_EN = new Set([
+  'APP_TITLE',
+  'ZEN_CINEMA_FILM_TITLE'
+]);
+
+test('ja values are translated (not English placeholders), except proper-noun allowlist', () => {
+  const leftovers = Object.keys(enDict).filter((key) => {
+    if (JA_MAY_MATCH_EN.has(key)) return false;
+    if (key.startsWith('AMBIENT_TRACK_')) return false;
+    const e = enDict[key];
+    const j = jaDict[key];
+    return typeof e === 'string' && e.length > 0 && e === j;
+  });
+  assert.deepEqual(
+    leftovers,
+    [],
+    `ja.json still copies en for: ${leftovers.join(', ')} — translate or add to JA_MAY_MATCH_EN`
+  );
 });
 
 test('staged zh dictionary stays loaded and key-parity with en (future flip)', () => {
