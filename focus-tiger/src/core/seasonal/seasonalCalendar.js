@@ -44,7 +44,7 @@ const EASTER_WESTERN_BY_YEAR = Object.freeze({
 
 /**
  * Official seasons. Global holidays use America/New_York (§5.2.1).
- * Phase 2: only christmas is the first instance; all contentReady false.
+ * Phase 3: Christmas contentReady true + winter wash; other seasons still false.
  * @type {readonly SeasonConfig[]}
  */
 export const SEASONAL_CALENDAR = Object.freeze([
@@ -56,9 +56,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 1,
     timezone: 'America/New_York',
     priority: 100,
-    assets: { poses: [], copyPoolId: 'christmas' },
+    assets: {
+      poses: [],
+      background: 'winter-quiet-wash',
+      copyPoolId: 'christmas'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'new-years-day',

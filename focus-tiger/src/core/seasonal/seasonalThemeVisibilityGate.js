@@ -12,13 +12,13 @@
  */
 
 import { getSeason } from './seasonalCalendar.js';
+import { isChristmasCorpusOk } from './christmasCorpus.js';
 
 /**
  * Flip to true only when seasonal themes are intentionally user-launched
- * (content ready + product decision). Phase 2/3 keep false so real users
- * never see themes yet.
+ * (content ready + product decision). Phase 3: Christmas corpus ok → mount on.
  */
-export const SEASONAL_THEME_USER_ENABLED = false;
+export const SEASONAL_THEME_USER_ENABLED = true;
 
 /** @type {ReadonlySet<string>} */
 const KILL_SWITCHED = new Set();
@@ -62,6 +62,12 @@ export function isSeasonalThemeGateOpen(
   if (killSwitched(seasonId)) return false;
   const season = getSeason(seasonId);
   if (!season || season.contentReady !== true) return false;
+  if (
+    season.assets?.copyPoolId === 'christmas' &&
+    isChristmasCorpusOk() !== true
+  ) {
+    return false;
+  }
   return true;
 }
 

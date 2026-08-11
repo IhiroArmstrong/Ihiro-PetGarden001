@@ -1,6 +1,5 @@
 /**
- * Seasonal Theme Engine · Phase 2 skeleton barrel.
- * Product UI not wired; SEASONAL_THEME_USER_ENABLED = false.
+ * Seasonal Theme Engine · Phase 3 barrel (Christmas shippable; gates on).
  */
 
 export {
@@ -38,3 +37,21 @@ export {
   LOOKUP_HORIZON_YEARS,
   LOOKUP_WARN_REMAINING_YEARS
 } from './lookupHorizon.js';
+export {
+  CHRISTMAS_CORPUS,
+  isChristmasCorpusOk,
+  pickChristmasLineForDay,
+  seasonalLineText
+} from './christmasCorpus.js';
+export {
+  parseMockDateIso,
+  dateFromMockIso,
+  resolveSeasonalNow,
+  sniffRegionFromLanguage
+} from './seasonalClock.js';
+export { bootSeasonalThemeChrome } from './bootSeasonalThemeChrome.js';
+export {
+  SEASONAL_WHISPER_STORAGE_KEY,
+  shouldShowSeasonalWhisper,
+  markSeasonalWhisperShown
+} from './seasonalWhisperGate.js';

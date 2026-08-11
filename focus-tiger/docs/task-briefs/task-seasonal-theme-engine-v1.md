@@ -1,6 +1,6 @@
 # Task Brief · 通用节日主题引擎（Seasonal Theme Engine）v1
 
-> **状态（2026-08-11）**：**Phase 1 已通过并合 develop（#233）**；**Phase 2 骨架已合 develop（#234）**（`theme.seasonal.access` + `src/core/seasonal/`；总开关关 / `contentReady: false`；**无产品 UI 消费**）。下一步 = Phase 3（圣诞素材/文案人审 → 翻开关），须另开任务。  
+> **状态（2026-08-11）**：**Phase 1–2 已合 develop（#233 / #234）**。**Phase 3 进行中（#238）**：圣诞文案桶人审 `ok` + `winter-quiet-wash` 氛围 UI + 总开关/`contentReady` 已翻真；仅 **B 轨 entitled** 用户在节日窗可见。无新 PNG 姿态序列（poses 空）。  
 > **触发**：根目录 Prompt `cursor-prompt-seasonal-theme-engine.md`；产品侧拍板——节日主题属 **B 轨付费解锁**（Sanctuary Lifetime ∪ Yin Membership）。  
 > **权威**：本 Brief（引擎 schema / 门闩 / 分期）+ `FREE_PAID_MATRIX.md` + `MVP_PRODUCT_DEFINITION.md` §五 + `task-tech-direction-v1-shell-monetization.md`。
 
@@ -312,7 +312,7 @@ Schema **可以**装情人节；**不等于**已批准「浪漫恋爱」叙事�
 |---|---|---|
 | **1** | 本 Brief + 矩阵/PROCESS/MVP 同步 | **已合 develop（#233）** |
 | **2** | 引擎骨架 + catalog key + 圣诞节配置行；素材/文案占位 | 总开关 **关**；`contentReady: false`；**已合 develop（#234）** |
-| **3** | 圣诞节素材+文案人审 ok；验收清单；翻开关小范围/全量 | 总开关按发布节奏；**未开工** |
+| **3** | 圣诞节素材+文案人审 ok；验收清单；翻开关小范围/全量 | 总开关 **开**；圣诞节 `contentReady: true`；**本支**（`feature/seasonal-theme-phase3` · #238） |
 | **4** | 其它节日仅加配置+素材；补 priority 分档实操；情人节调性审 | 理论上零引擎改动；**未开工** |
 
 其余 20 节气：**不**纳入本期强制交付。
@@ -435,9 +435,10 @@ Schema **可以**装情人节；**不等于**已批准「浪漫恋爱」叙事�
 |---|---|---|
 | Phase 1 | `docs/seasonal-theme-engine-v1` | **已合 develop（#233）** |
 | Phase 2 | `feature/seasonal-theme-engine` | **已合 develop（#234）**；总开关关 / `contentReady: false` |
-| Phase 3+ | 另开 `feature/seasonal-theme-*` | **须书面授权**（圣诞人审 / 翻开关 / UI 接线） |
+| Phase 3 | `feature/seasonal-theme-phase3` | **本支（#238）**：文案桶 + winter wash UI + 翻开关；须人工验窗内观感 |
+| Phase 4+ | 另开 `feature/seasonal-theme-*` | 其它节日配置/素材；情人节调性审 |
 
-开工口令示例：「按 `task-seasonal-theme-engine-v1` 开 Phase 3」。
+QA：`?product=1&mockDate=2026-12-20`（需 B entitlement / preview）；未购应无 wash。
 
 ---
 
