@@ -296,7 +296,7 @@
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$9.99** / Sanctuary **US$89.99**）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。  
-> **未做 / 勿当缺口报**：高光时刻「场景化请茶」气泡、付费意愿漏斗统计、多档 tip、Ambient 消费 `isSanctuaryUnlocked`（暂缓）。
+> **未做 / 勿当缺口报**：高光时刻「场景化请茶」气泡、付费意愿漏斗统计、多档 tip。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
 
 ### Q1 · Support Modal（统一入口）
 
@@ -317,7 +317,7 @@
 
 10. Support Primary **或** 菜单 **Yin's Sanctuary** → `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
 11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
-12. **禁止**：读 tip 状态解锁；Ambient 深度音效等消费 `isSanctuaryUnlocked` **本批不测**（产品暂缓）。
+12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。
 
 ### Q4 · 统一练习徽章（免费路径 · #204）
 

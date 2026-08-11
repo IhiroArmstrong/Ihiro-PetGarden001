@@ -1458,6 +1458,13 @@ async function init() {
       },
       onMuteChromePainted: () => {
         onboardingHintHost.hints?.syncDiscoveryDots();
+      },
+      onLockedDeepTrack: () => {
+        mindfulToast.show(t('AMBIENT_TRACK_LOCKED_TOAST'), {
+          placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+          visibleMs: 4_000
+        });
+        supportYinModalUI.open();
       }
     }
   );

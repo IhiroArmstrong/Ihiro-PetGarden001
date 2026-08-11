@@ -18,4 +18,5 @@
 **说明**
 
 - 工程曲目 id（面板顺序）：`singing-bowl` → `divine-life-society` / `lord-of-the-dawn` / `maestro-tlakaelel` / `the-inner-sound` / `somnia-variation-3` / `somnia-variation-10` → `rain` / `dreamland` / `invisible-beauty` / `kiss-the-sky` / `frozen-in-love`（稳定标识）；UI 显示曲名。
+- **免费温暖子集（B 未购可播）**：`singing-bowl` · `divine-life-society` · `somnia-variation-3` · `dreamland` · `frozen-in-love`。其余内置曲须 Sanctuary Lifetime ∪ Yin Membership（`ambient.deep.play`）。用户自传曲不进此门。
 - 体积：`mer-ka-ba` / `maestro-tlakaelel` / `the-inner-sound` 约 **35–40MB**；其余约 **5.5–16MB**。ambient 目录合计约 **188MB**。后续可压码率以减轻首载；推远程前请确认体积策略。
