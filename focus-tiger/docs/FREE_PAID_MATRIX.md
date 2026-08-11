@@ -77,7 +77,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Tip / Tea Checkout | `tip-only` | 一次性 tip；可多次 | `tipJarGate`（**非** FEATURE_CATALOG） | A；不解锁内容 | **已接线** | Unlock UI + Worker；与 Sanctuary 零耦合 |
 | 善意徽章（Tea） | `tip-only` | 打赏后按练习授枚 | tip `badgeIds` | 可选纪念；不解锁 | **已接线** | 与 Sanctuary 章视觉分立 |
 | Tea Log / 再 tip 致谢动画 | `tip-only` | — | tip schema | 情绪反馈 | **已接线** | — |
-| Support Yin Modal · Tea 卡 | `tip-only` | 入口 | Support Modal | 统一入口之一 | **已接线** | 场景化请茶气泡仍排期（非本表缺口归类为增长 UX） |
+| Support Yin Modal · Tea 卡 | `tip-only` | 入口 | Support Modal | 统一入口之一 | **已接线** | 场景化请茶气泡见下（增长 UX，非 B 缺口） |
+| 场景化请茶气泡 | `tip-only` | 入口 | ContextualTeaTipBubble | 达标 / 里程碑轻气泡 → TipJar | **已接线** | 本地日一次；可忽略；不挡主路径；不解锁 |
 
 ### A3 · B 轨 · 进阶解锁（Lifetime ∪ Membership）
 
@@ -147,7 +148,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 8. **Sanctuary Enso Mark（蒲团中央）** — 素材已入 `sanctuary-enso-mark.png`（0025）；实现 Brief `task-sanctuary-enso-mark.md`。  
 9. **付费转化路径梳理（获客向）** — Backlog：试听后 Unlock、锁项价值展示时刻等——勿让「经济可持续」只剩老用户彩蛋。  
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
-11. **付费 · 场景化请茶气泡** — A 轨；Ambient 深库封口后下一件（与试听可并行排期）。
+11. **付费 · 意愿漏斗本地统计** — Support / 双卡 CTA / Checkout / 完成；无第三方（场景化请茶气泡本支已接线）。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 

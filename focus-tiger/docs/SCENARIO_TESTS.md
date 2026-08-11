@@ -296,7 +296,7 @@
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$9.99** / Sanctuary **US$89.99**）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。  
-> **未做 / 勿当缺口报**：高光时刻「场景化请茶」气泡、付费意愿漏斗统计、多档 tip。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
+> **未做 / 勿当缺口报**：付费意愿漏斗统计、多档 tip。**场景化请茶**气泡已接线（TRACKER「付费 · 场景化请茶气泡」）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
 
 ### Q1 · Support Modal（统一入口）
 
