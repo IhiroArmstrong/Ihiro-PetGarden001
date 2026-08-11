@@ -138,7 +138,8 @@
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
-- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。非产品 UI，无需 TEST_TRACKER 人工项。
+- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
+
 - **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
 - **窄屏故事矩阵（2026-07-25）**：`DEV_WORKFLOW_QUALITY.md` §8——根因（验收停在壳切换、外侧取消未锁 tip、双壳契约滞后）+ N17–N20（375 故事最小集 / 点 tip 只关 tip / 双壳不变量 / 关单须注明 375）。不变量落盘 `SHARED_RESOURCES` §6、`RESPONSIVE_LAYOUT` §6.2b；`TEST_TRACKER` 文首已挂口径。
@@ -439,7 +440,8 @@
 
 ## 本地 Cursor 能耗（索引 · 并行 Agent · Cloud）
 
-> 预览浏览器限时仍以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) 为准。本节管 **Process Explorer 里 Shared / Agent / Renderer 偏高** 时的治本操作。
+> 预览浏览器限时规则以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准，本文档**不复述具体数值**。本节管 **Process Explorer 里 Shared / Agent / Renderer 偏高** 时的治本操作。
+
 
 ### 先读 Process Explorer 再动手
 
