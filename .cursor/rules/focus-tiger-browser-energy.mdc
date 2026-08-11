@@ -1,5 +1,5 @@
 ---
-description: 预览浏览器与能耗——默认 Safari；硬禁 IDE Browser MCP；Vite/Playwright 收尾；Cloud 独立会话；给用户的 cd/npm run dev 须完整绝对路径
+description: 预览浏览器与能耗——默认 Safari；硬禁 IDE Browser MCP；临时解禁最长连续 10 分钟；Vite/Playwright 收尾；Cloud 独立会话；给用户的 cd/npm run dev 须完整绝对路径
 alwaysApply: true
 ---
 
@@ -24,7 +24,8 @@ alwaysApply: true
 
 - `.cursor/hooks/deny-ide-browser-mcp.sh` 经 `beforeMCPExecution`（+ `preToolUse` MCP matcher）**一律 deny** `cursor-ide-browser`。  
 - **无「窄屏特例」**：外置 Safari 可设宽时一律用 Safari；即使任务写「窄屏」也不得开 IDE Browser。  
-- **临时解禁**：仅当你当回合明确要求，并**临时关掉/卸下**本 hook 时才可例外（与 `deny-subagent` 同模式）。口头说「用内置浏览器」但 hook 仍在 → 仍会被拦。
+- **临时解禁**：仅当你当回合明确要求，并**临时关掉/卸下**本 hook 时才可例外（与 `deny-subagent` 同模式）。口头说「用内置浏览器」但 hook 仍在 → 仍会被拦。  
+- **最长连续开放 10 分钟**（强制 · 2026-07-25 原口径；2026-08-11 补回临时解禁路径）：凡因临时卸 hook 而打开 Cursor 内置 Browser / Simple Browser，自**首次打开**起连续使用 **不得超过 10 分钟**；到期必须关闭该 Browser 标签/面板，并尽量恢复 hook。禁止「开着挂着继续聊 / 过夜挂着」。目的：控 Agent token 与本机能耗——挂着内置 Browser 会持续吃上下文与资源。此条**不**放宽默认硬禁；只约束已获书面临时解禁的例外。
 
 ## 进程收尾提醒（强制 · 养成习惯）
 
@@ -50,11 +51,11 @@ alwaysApply: true
 
 ## 诚实边界
 
-规则约束 **Agent 在会话内的行为**。会话中断后无法保证硬杀；残留进程按用户指示清理。勿声称「已有 OS 级自动关浏览器 / 自动关 Vite」。IDE Browser 硬闸依赖 hooks 已加载；hooks 被卸下时本规则仍要求 Agent 自禁。
+规则约束 **Agent 在会话内的行为**。会话中断后无法保证硬杀；残留进程按用户指示清理。勿声称「已有 OS 级自动关浏览器 / 自动关 Vite」或「到期会自动关 IDE Browser」。10 分钟上限靠 Agent 自守 + 收尾汇报；无 OS 级计时器。IDE Browser 硬闸依赖 hooks 已加载；hooks 被卸下时本规则仍要求 Agent 自禁，并遵守上方 10 分钟上限。
 
 ## 汇报（并入 N14「待你知道」）
 
-- **默认不得**开过内置 Browser；若因临时卸 hook 而开过：写明原因、约何时关、Vite 是否已停。  
+- **默认不得**开过内置 Browser；若因临时卸 hook 而开过：写明原因、约何时开、约何时关（须落在 **≤10 分钟** 连续窗口内）、Vite 是否已停、hook 是否已恢复。  
 - 若本回合起过 Vite / Playwright：必须含上方「进程收尾提醒」。  
 - 若本回合为 Cloud 或建议启用 Cloud：必须含「独立会话」提醒句。
 
