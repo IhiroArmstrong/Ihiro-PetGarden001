@@ -12,12 +12,15 @@ import {
   SEASONAL_THEME_USER_ENABLED,
   assessLookupHorizon,
   getSeason,
+  isChristmasCorpusOk,
   isSeasonInWindow,
   isSeasonalThemeGateOpen,
   nthWeekdayOfMonth,
+  parseMockDateIso,
   pickHighestPrioritySeason,
   resolveActiveSeasonalTheme,
   resolveAnchorIsoForYear,
+  resolveSeasonalNow,
   seasonMatchesRegion
 } from './index.js';
 
@@ -87,18 +90,17 @@ describe('seasonal region + priority', () => {
   });
 });
 
-describe('seasonal dual gate', () => {
-  it('defaults mount off and christmas contentReady false', () => {
-    assert.equal(SEASONAL_THEME_USER_ENABLED, false);
-    assert.equal(getSeason('christmas').contentReady, false);
-    assert.equal(isSeasonalThemeGateOpen('christmas'), false);
+describe('seasonal dual gate · Phase 3', () => {
+  it('mount on, christmas contentReady true, corpus ok', () => {
+    assert.equal(SEASONAL_THEME_USER_ENABLED, true);
+    assert.equal(getSeason('christmas').contentReady, true);
+    assert.equal(isChristmasCorpusOk(), true);
+    assert.equal(isSeasonalThemeGateOpen('christmas'), true);
   });
 
-  it('mount true still blocked when contentReady false', () => {
-    assert.equal(
-      isSeasonalThemeGateOpen('christmas', { mountEnabled: true }),
-      false
-    );
+  it('other seasons remain contentReady false', () => {
+    assert.equal(getSeason('halloween').contentReady, false);
+    assert.equal(isSeasonalThemeGateOpen('halloween'), false);
   });
 });
 
@@ -114,6 +116,28 @@ describe('resolveActiveSeasonalTheme', () => {
       skipEntitlement: false
     });
     assert.equal(active, null);
+  });
+
+  it('returns null when entitled is false in christmas window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: nearChristmas,
+      mountEnabled: true,
+      entitled: () => false,
+      skipEntitlement: false
+    });
+    assert.equal(active, null);
+  });
+
+  it('entitled + mount applies christmas in window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: nearChristmas,
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'christmas');
+    assert.equal(active.assets.background, 'winter-quiet-wash');
+    assert.equal(active.assets.copyPoolId, 'christmas');
   });
 
   it('returns null when entitled is false even if mount+ready forced via harness', () => {
@@ -159,6 +183,19 @@ describe('resolveActiveSeasonalTheme', () => {
       isSeasonInWindow(christmas, new Date('2026-12-10T17:00:00.000Z')),
       false
     );
+  });
+});
+
+describe('mockDate', () => {
+  it('parses mockDate and resolves now into christmas window', () => {
+    assert.equal(parseMockDateIso('?mockDate=2026-12-20'), '2026-12-20');
+    const now = resolveSeasonalNow('?mockDate=2026-12-20');
+    const active = resolveActiveSeasonalTheme({
+      now,
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.equal(active?.seasonId, 'christmas');
   });
 });
 
