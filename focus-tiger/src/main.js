@@ -82,6 +82,7 @@ import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
 import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
+import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
@@ -1760,6 +1761,18 @@ async function init() {
   // E2e skip Arrival → Focus (home left ball is Breath practice, not skip).
   // Must work in vite preview (DEV=false), same as `__honestyBridge`.
   window.__arrivalPractice = arrivalPractice;
+  // Seasonal Theme (Phase 3): soft wash + once-per-day line for entitled B users.
+  const seasonalThemeBoot = bootSeasonalThemeChrome({
+    appEl: app,
+    overlayEl: document.getElementById('ui-overlay'),
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    search: window.location.search,
+    isBusy: () =>
+      arrivalPractice?.isOpen?.() === true ||
+      reflectionMoment?.isOpen?.() === true ||
+      microRitualUI?.isOpen?.() === true
+  });
+  window.__seasonalTheme = seasonalThemeBoot;
   if (import.meta.env.DEV) {
     window.__lightProgression = lightProgression;
   }
