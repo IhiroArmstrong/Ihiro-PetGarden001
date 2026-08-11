@@ -415,14 +415,8 @@ export class WideIdleMoreMenu {
       if (this.quickHomeBtn) {
         const qsLabel = t('QUICK_START_ARIA');
         setAttrIfChanged(this.quickHomeBtn, 'aria-label', qsLabel);
-        // Mint pulse tip owns hover copy while unread — skip native title stack.
-        const pulseOwns =
-          this.handlers.isHintUnread?.('quick-start') === true;
-        if (pulseOwns) {
-          if (this.quickHomeBtn.hasAttribute('title')) {
-            this.quickHomeBtn.removeAttribute('title');
-          }
-        } else if (this.quickHomeBtn.title !== qsLabel) {
+        // Home left ball: no mint pulse (2026-08-11) — always keep hover label.
+        if (this.quickHomeBtn.title !== qsLabel) {
           this.quickHomeBtn.title = qsLabel;
         }
         // Arrival keepQuickStart: ⚡ stays live even while the dock pill is hidden.

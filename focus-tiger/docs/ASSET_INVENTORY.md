@@ -237,6 +237,14 @@
 > **接线**：`tipKindnessBadges.js` 目录顺序；`tipJarGate.badgeIds`；`#yin-tip-jar-card` + `#yin-tip-kindness-badges`。  
 > **与 Sanctuary**：Tea / Sanctuary 为 **两套视觉**；勿把本目录文件挪作 Lifetime 尊贵章。
 
+### Support modal card art（非序列）
+
+| 文件 | 用途 |
+|---|---|
+| `sanctuary-preview.png` | Support · Yin's Sanctuary 卡头图 |
+| `membership-meditation-preview.png` | Support · Yin Membership 卡头图（闭目坐禅；入库 2026-08-11） |
+| `tea-drinking-preview.png` | Support · Buy Yin a Tea 卡头图 |
+| `support-yin-icon.png` | 右上 Support FAB 小图 |
 | 文件 | 目录档位（低→高） |
 |---|---|
 | `yin-medallion-silver-monochrome-engraved.png` | 1 |

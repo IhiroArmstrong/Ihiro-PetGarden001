@@ -39,6 +39,12 @@ if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
 }
 
+/** Desktop: bridge gap between ? and purpose card so links stay clickable. */
+export const PURPOSE_HOVER_HIDE_GRACE_MS = 280;
+
+/** Home left ball keeps native title; no mint pulse (2026-08-11). */
+const NO_MINT_PULSE_HINT_IDS = new Set(['quick-start']);
+
 const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 
 /** Wide Idle parks these into ⋯ — remap hints to the more button when parked. */
@@ -400,6 +406,8 @@ export class OnboardingHintsUI {
     this.purposeCard = null;
     /** Purpose card opened by ? hover (leave ? / card → hide). Click pins until dismiss. */
     this._purposeFromHover = false;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._purposeHoverHideTimer = null;
 
     this.helpBtn = document.createElement('button');
     this.helpBtn.type = 'button';
@@ -468,6 +476,7 @@ export class OnboardingHintsUI {
    * @returns {void}
    */
   openPurposeOnly({ markHelpDone = false } = {}) {
+    this._cancelPurposeHoverHide();
     this._dismissAllPageHints();
     if (markHelpDone) {
       this._purposeFromHover = false;
@@ -496,7 +505,9 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * Desktop: hover ? → purpose card; leave ? / card → hide (unless click-pinned).
+   * Desktop: hover ? → purpose card; leave ? / card → hide after grace
+   * (unless click-pinned). Grace lets the pointer cross the 14px gap and
+   * reach in-card links (The five moments / Privacy).
    * @param {Element | null} host
    * @returns {void}
    */
@@ -508,6 +519,7 @@ export class OnboardingHintsUI {
 
     el.addEventListener('pointerenter', () => {
       if (!canHoverPreview()) return;
+      this._cancelPurposeHoverHide();
       this._purposeFromHover = true;
       this.openPurposeOnly({ markHelpDone: false });
     });
@@ -519,9 +531,24 @@ export class OnboardingHintsUI {
       if (related && this.helpBtn.contains(related)) return;
       const narrow = document.getElementById('ft-narrow-help-btn');
       if (related && narrow?.contains(related)) return;
-      this._hidePurposeCard();
-      this._purposeFromHover = false;
+      this._schedulePurposeHoverHide();
     });
+  }
+
+  _cancelPurposeHoverHide() {
+    if (this._purposeHoverHideTimer != null) {
+      clearTimeout(this._purposeHoverHideTimer);
+      this._purposeHoverHideTimer = null;
+    }
+  }
+
+  _schedulePurposeHoverHide() {
+    this._cancelPurposeHoverHide();
+    this._purposeHoverHideTimer = setTimeout(() => {
+      this._purposeHoverHideTimer = null;
+      if (!this._purposeFromHover) return;
+      this._hidePurposeCard();
+    }, PURPOSE_HOVER_HIDE_GRACE_MS);
   }
 
   /**
@@ -541,6 +568,8 @@ export class OnboardingHintsUI {
     if (mode === 'click') {
       // 「?」自身不走 tip 气泡——悬停/点击只出产品简介
       if (hintId === 'help-affordance') return false;
+      // Left home ball: residual title only — no mint pulse.
+      if (NO_MINT_PULSE_HINT_IDS.has(hintId)) return false;
       if (this.store.isDone(hintId)) return false;
       this._showClickBadge(hintId);
       return true;
@@ -561,7 +590,10 @@ export class OnboardingHintsUI {
     this._lastAutoWant = want;
 
     const clickWant = want.filter(
-      (id) => isClickTriggerHint(id) && id !== 'help-affordance'
+      (id) =>
+        isClickTriggerHint(id) &&
+        id !== 'help-affordance' &&
+        !NO_MINT_PULSE_HINT_IDS.has(id)
     );
 
     // 清掉仍挂着的 auto / 非悬停 tip（补救已废）
@@ -1824,16 +1856,25 @@ export class OnboardingHintsUI {
   }
 
   _hidePurposeCard() {
+    this._cancelPurposeHoverHide();
     if (this.purposeCard) this.purposeCard.hidden = true;
     this._purposeFromHover = false;
     this._hidePrivacySheet();
   }
 
-  /** When purpose was opened by ? hover, leaving the card hides it. */
+  /** When purpose was opened by ? hover, leaving the card hides it (after grace). */
   _bindPurposeCardHoverLeave() {
     const card = this.purposeCard;
     if (!card || card.dataset.ftPurposeLeaveBound === '1') return;
     card.dataset.ftPurposeLeaveBound = '1';
+    card.addEventListener('pointerenter', () => {
+      if (!canHoverPreview()) return;
+      this._cancelPurposeHoverHide();
+      if (this._purposeFromHover) {
+        // Stay in hover mode while on the card so links are reachable.
+        this._purposeFromHover = true;
+      }
+    });
     card.addEventListener('pointerleave', (event) => {
       if (!canHoverPreview()) return;
       if (!this._purposeFromHover) return;
@@ -1841,7 +1882,7 @@ export class OnboardingHintsUI {
       if (related && this.helpBtn.contains(related)) return;
       const narrow = document.getElementById('ft-narrow-help-btn');
       if (related && narrow?.contains(related)) return;
-      this._hidePurposeCard();
+      this._schedulePurposeHoverHide();
     });
   }
 

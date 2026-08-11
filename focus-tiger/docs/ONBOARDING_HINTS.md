@@ -16,7 +16,7 @@
 
 > **Five Moments 显性化（2026-08-09）**：Moment Whisper / Compass **不是** Hint `auto` 喷洒，不得借机恢复已取消的补救铺开。权威排期与边界见 `PRODUCT_MOMENTS.md` §5.6 与 `task-briefs/task-five-moments-surface-plan.md`。Whisper = `#moment-whisper` 一生一次淡出句（`momentWhispersGate`）；与 Hint registry **分轨**。
 
-> **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`；⚡ 球的 `title` 与 `quick-start`）。**脉冲已 done / 无脉冲**时，须保留残余悬停（streak `.label`、⚡ `title`），不得静默清空。
+> **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`）。**例外（2026-08-11）**：首页左球 `quick-start` **不再**画薄荷绿脉冲，始终保留 `title`（Breath practice / QUICK_START_ARIA）。**脉冲已 done / 无脉冲**时，须保留残余悬停，不得静默清空。
 
 > **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**。registry / 文案键仍以下方机器块为准；**运行时策略以上方「产品面」为准**。
 
