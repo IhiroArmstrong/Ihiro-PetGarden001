@@ -39,55 +39,61 @@ describe('classifyHygieneTier', () => {
       isCurrent: false,
       dirty: false,
       tipInDevelop: true,
+      noUniquePatches: true,
       lockOccupancy: 'absent',
       lockStale: null
     })
     assert.equal(r.tier, 'primary')
   })
 
-  it('proposes remove only when clean + tip in develop + lock ok', () => {
+  it('proposes remove when tip is develop ancestor', () => {
     const r = classifyHygieneTier({
       isPrimary: false,
       isCurrent: false,
       dirty: false,
       tipInDevelop: true,
+      noUniquePatches: false,
       lockOccupancy: 'releasable',
       lockStale: false
     })
     assert.equal(r.tier, 'propose_remove')
   })
 
-  it('allows propose when lock absent and tip merged', () => {
+  it('proposes remove when cherry empty even if tip not ancestor (squash)', () => {
     const r = classifyHygieneTier({
       isPrimary: false,
       isCurrent: false,
       dirty: false,
-      tipInDevelop: true,
+      tipInDevelop: false,
+      noUniquePatches: true,
       lockOccupancy: 'absent',
       lockStale: null
     })
     assert.equal(r.tier, 'propose_remove')
+    assert.ok(r.reasons.includes('cherry-empty-vs-develop'))
   })
 
-  it('allows propose when active lock is stale', () => {
+  it('allows propose when active lock is stale + content merged', () => {
     const r = classifyHygieneTier({
       isPrimary: false,
       isCurrent: false,
       dirty: false,
       tipInDevelop: true,
+      noUniquePatches: false,
       lockOccupancy: 'active',
       lockStale: true
     })
     assert.equal(r.tier, 'propose_remove')
   })
 
-  it('report_only for dirty / current / active non-stale / unmerged', () => {
+  it('report_only for dirty / current / active non-stale / unique patches', () => {
     assert.equal(
       classifyHygieneTier({
         isPrimary: false,
         isCurrent: true,
         dirty: false,
         tipInDevelop: true,
+        noUniquePatches: true,
         lockOccupancy: 'absent',
         lockStale: null
       }).tier,
@@ -99,6 +105,7 @@ describe('classifyHygieneTier', () => {
         isCurrent: false,
         dirty: true,
         tipInDevelop: true,
+        noUniquePatches: true,
         lockOccupancy: 'absent',
         lockStale: null
       }).tier,
@@ -110,22 +117,23 @@ describe('classifyHygieneTier', () => {
         isCurrent: false,
         dirty: false,
         tipInDevelop: true,
+        noUniquePatches: true,
         lockOccupancy: 'active',
         lockStale: false
       }).tier,
       'report_only'
     )
-    assert.equal(
-      classifyHygieneTier({
-        isPrimary: false,
-        isCurrent: false,
-        dirty: false,
-        tipInDevelop: false,
-        lockOccupancy: 'releasable',
-        lockStale: false
-      }).tier,
-      'report_only'
-    )
+    const unique = classifyHygieneTier({
+      isPrimary: false,
+      isCurrent: false,
+      dirty: false,
+      tipInDevelop: false,
+      noUniquePatches: false,
+      lockOccupancy: 'releasable',
+      lockStale: false
+    })
+    assert.equal(unique.tier, 'report_only')
+    assert.ok(unique.reasons.includes('cherry-has-unique-patches'))
   })
 
   it('unknown lock without stale proof is report_only', () => {
@@ -135,6 +143,7 @@ describe('classifyHygieneTier', () => {
         isCurrent: false,
         dirty: false,
         tipInDevelop: true,
+        noUniquePatches: true,
         lockOccupancy: 'missing',
         lockStale: false
       }).tier,
