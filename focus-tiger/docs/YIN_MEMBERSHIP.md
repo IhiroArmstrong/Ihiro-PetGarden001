@@ -58,7 +58,7 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 - 回跳：`?membership_session={CHECKOUT_SESSION_ID}` → `confirmMembershipReturnQuery` → **仅**服务端 confirm 成功后 `markMembershipFromPayment`
 - **致谢动画（2026-08-11）**：confirm 成功后播 `sessionComplete`；回跳期间跳过冷启动欢迎（`paymentCheckoutThanks.js`）
 - 取消：`?membership=cancel`（不写缓存）
-- 跨设备：邮箱 → `POST /api/verify-membership` → 同上 patch（受上节宽限约束）
+- 跨设备：`POST /api/restore/request-otp` `{ email, purpose: "membership" }` → 邮箱 OTP → `POST /api/verify-membership` `{ email, code }` → 同上 patch（**禁止**裸邮箱；仍受上节宽限约束）
 
 ## Cloud
 
@@ -68,7 +68,7 @@ Key：`focus-tiger.entitlement-cache.v1`（见 `entitlementState.js`）。
 | KV | `MEMBERSHIP_KV` · `membership:{email}` | `SANCTUARY_KV` · `sanctuary:{email}` |
 | Create | `/api/create-membership-checkout-session` | `/api/create-sanctuary-checkout-session` |
 | Confirm | `/api/confirm-membership-session` | `/api/confirm-sanctuary-session` |
-| Restore | `/api/verify-membership` | `/api/verify-sanctuary` |
+| Restore | `/api/restore/request-otp` + `/api/verify-membership` `{email,code}` | 同左（Sanctuary purpose） |
 | metadata | Session + **`subscription_data.metadata`**: `product=membership` · `planId=yin-membership` | `product=sanctuary` |
 | Checkout `mode` | `subscription` | `payment` |
 

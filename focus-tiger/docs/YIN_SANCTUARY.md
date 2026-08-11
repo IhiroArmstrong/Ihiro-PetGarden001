@@ -25,6 +25,7 @@
 - 回跳：`?sanctuary_session={CHECKOUT_SESSION_ID}` → `confirmSanctuaryReturnQuery` → **仅**服务端 confirm 成功后 `markSanctuaryFromPayment`（授 ≥3 枚尊贵章）
 - **致谢动画（2026-08-11）**：confirm 成功后播 `mindfulAcknowledge`（`nod-bow`）；回跳期间跳过冷启动欢迎（`paymentCheckoutThanks.js`）
 - **禁止**乐观 query 解锁（与 tip `?tip=1` 不同）
+- **跨设备恢复**：`POST /api/restore/request-otp` `{ email, purpose: "sanctuary" }` → 邮箱收 6 位码 → `POST /api/verify-sanctuary` `{ email, code }`（**禁止**裸邮箱 lookup；Tip 仍可用 `/api/verify-tip`）
 - 练习上涨：`syncSanctuaryBadgesFromPractice`（卡内 + Idle 阿寅旁优先展示 Sanctuary 章）
 
 ## Prestigious badges
@@ -42,7 +43,7 @@
 | KV | `SANCTUARY_KV` · `sanctuary:{email}` | `TIP_KV` · `tip:{email}` |
 | Create | `/api/create-sanctuary-checkout-session` | `/api/create-tip-checkout-session` |
 | Confirm | `/api/confirm-sanctuary-session` | （tip 可用乐观 + verify） |
-| Restore | `/api/verify-sanctuary` | `/api/verify-tip` |
+| Restore | `/api/restore/request-otp` + `/api/verify-sanctuary` `{email,code}` | `/api/verify-tip`（无 OTP） |
 | metadata | `product=sanctuary` | `product=tip` |
 
 Webhook 按 `metadata.product` 分流；缺省按 tip（兼容旧 tip session）。

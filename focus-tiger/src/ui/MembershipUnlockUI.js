@@ -95,6 +95,23 @@ export class MembershipUnlockUI {
     this.emailInput.className = 'yin-membership__email';
     this.emailInput.dataset.testid = 'yin-membership-email';
 
+    this.sendCodeBtn = document.createElement('button');
+    this.sendCodeBtn.type = 'button';
+    this.sendCodeBtn.className =
+      'yin-membership__btn yin-membership__btn--ghost';
+    this.sendCodeBtn.dataset.testid = 'yin-membership-send-code';
+    this.sendCodeBtn.addEventListener('click', () => {
+      void this._sendRestoreCode();
+    });
+
+    this.codeInput = document.createElement('input');
+    this.codeInput.type = 'text';
+    this.codeInput.inputMode = 'numeric';
+    this.codeInput.autocomplete = 'one-time-code';
+    this.codeInput.maxLength = 6;
+    this.codeInput.className = 'yin-membership__code';
+    this.codeInput.dataset.testid = 'yin-membership-code';
+
     this.restoreBtn = document.createElement('button');
     this.restoreBtn.type = 'button';
     this.restoreBtn.className =
@@ -103,6 +120,10 @@ export class MembershipUnlockUI {
     this.restoreBtn.addEventListener('click', () => {
       void this._restore();
     });
+
+    this.restoreRow = document.createElement('div');
+    this.restoreRow.className = 'yin-membership__restore-row';
+    this.restoreRow.append(this.sendCodeBtn, this.restoreBtn);
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -124,7 +145,8 @@ export class MembershipUnlockUI {
       this.restoreTitle,
       this.restoreHint,
       this.emailInput,
-      this.restoreBtn
+      this.codeInput,
+      this.restoreRow
     );
     mountRoot.appendChild(this.root);
 
@@ -244,7 +266,7 @@ export class MembershipUnlockUI {
     }
   }
 
-  async _restore() {
+  async _sendRestoreCode() {
     if (this._busy) return;
     if (!getCloudApiBaseUrl()) {
       this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');
@@ -256,10 +278,48 @@ export class MembershipUnlockUI {
       return;
     }
     this._busy = true;
+    this.sendCodeBtn.disabled = true;
+    this.restoreBtn.disabled = true;
+    try {
+      await postCloudJson('/api/restore/request-otp', {
+        body: JSON.stringify({ email, purpose: 'membership' })
+      });
+      this.statusEl.textContent = t('MEMBERSHIP_RESTORE_CODE_SENT');
+    } catch (err) {
+      const status = /** @type {any} */ (err)?.status;
+      this.statusEl.textContent =
+        status === 429
+          ? t('MEMBERSHIP_RESTORE_RATE')
+          : t('MEMBERSHIP_ERROR_GENERIC');
+    } finally {
+      this._busy = false;
+      this.sendCodeBtn.disabled = false;
+      this.restoreBtn.disabled = false;
+    }
+  }
+
+  async _restore() {
+    if (this._busy) return;
+    if (!getCloudApiBaseUrl()) {
+      this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');
+      return;
+    }
+    const email = this.emailInput.value.trim();
+    const code = this.codeInput.value.trim();
+    if (!email) {
+      this.statusEl.textContent = t('MEMBERSHIP_EMAIL_REQUIRED');
+      return;
+    }
+    if (!code) {
+      this.statusEl.textContent = t('MEMBERSHIP_RESTORE_CODE_REQUIRED');
+      return;
+    }
+    this._busy = true;
+    this.sendCodeBtn.disabled = true;
     this.restoreBtn.disabled = true;
     try {
       const res = await postCloudJson('/api/verify-membership', {
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, code })
       });
       const active =
         res &&
@@ -282,17 +342,36 @@ export class MembershipUnlockUI {
           : MEMBERSHIP_PLAN_ID;
       if (active && periodEndsAt) {
         markMembershipFromPayment(this._storage, { periodEndsAt, planId });
+        this.codeInput.value = '';
         this.statusEl.textContent = t('MEMBERSHIP_STATUS_YES');
         this.handlers.onEntitlementChanged?.();
       } else {
         this.statusEl.textContent = t('MEMBERSHIP_RESTORE_MISS');
       }
-    } catch {
-      this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
+    } catch (err) {
+      const status = /** @type {any} */ (err)?.status;
+      const codeName =
+        err &&
+        typeof err === 'object' &&
+        /** @type {any} */ (err).body &&
+        typeof /** @type {any} */ (err).body.error === 'string'
+          ? /** @type {any} */ (err).body.error
+          : '';
+      if (status === 429) {
+        this.statusEl.textContent = t('MEMBERSHIP_RESTORE_RATE');
+      } else if (
+        status === 401 ||
+        codeName === 'invalid_or_expired_code' ||
+        codeName === 'otp_required'
+      ) {
+        this.statusEl.textContent = t('MEMBERSHIP_RESTORE_CODE_BAD');
+      } else {
+        this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
+      }
     } finally {
       this._busy = false;
+      this.sendCodeBtn.disabled = false;
       this.restoreBtn.disabled = false;
-      this._refreshTexts();
     }
   }
 
@@ -310,8 +389,10 @@ export class MembershipUnlockUI {
     this.closeBtn.textContent = t('MEMBERSHIP_CLOSE');
     this.restoreTitle.textContent = t('MEMBERSHIP_RESTORE_TITLE');
     this.restoreHint.textContent = t('MEMBERSHIP_RESTORE_HINT');
+    this.sendCodeBtn.textContent = t('MEMBERSHIP_RESTORE_SEND_CODE');
     this.restoreBtn.textContent = t('MEMBERSHIP_RESTORE_CTA');
     this.emailInput.placeholder = t('MEMBERSHIP_EMAIL_PLACEHOLDER');
+    this.codeInput.placeholder = t('MEMBERSHIP_RESTORE_CODE_PLACEHOLDER');
     const state = getEntitlementState({ storage: this._storage });
     this.statusEl.textContent = active
       ? t('MEMBERSHIP_STATUS_YES')
@@ -381,7 +462,8 @@ export class MembershipUnlockUI {
         justify-content: flex-end;
         margin: 0 0 12px;
       }
-      .yin-membership__email {
+      .yin-membership__email,
+      .yin-membership__code {
         width: 100%;
         box-sizing: border-box;
         margin: 0 0 8px;
@@ -391,6 +473,13 @@ export class MembershipUnlockUI {
         background: rgba(255, 252, 246, 0.72);
         font-size: 13px;
         color: #2c1f14;
+      }
+      .yin-membership__restore-row {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        margin: 0 0 4px;
       }
       .yin-membership__btn {
         appearance: none;

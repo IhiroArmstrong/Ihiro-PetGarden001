@@ -79,13 +79,13 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
    - 阿寅播 **点头鞠躬** `mindfulAcknowledge`（#231）  
    - 卡内 / 阿寅旁可出现尊贵徽章（≥3）
 
-### B2 · 邮箱 Restore（**未测 · 请测**）
+### B2 · 邮箱 Restore（**未测 · 请测** · 现为 OTP）
 
 1. 记下付款邮箱  
 2. 按 **§0.1** 删 `focus-tiger.sanctuary-entitlement.v1` → 硬刷新  
-3. 再开 **Yin's Sanctuary** 卡 → 输入邮箱 → **Restore unlock**  
+3. 再开 **Yin's Sanctuary** 卡 → 输入邮箱 → **Send code** → 查收 6 位码 → **Verify & restore**  
 4. **期望**：恢复解锁；Rituals 三项可点（Lifetime 覆盖 subscription 档）  
-5. 错邮箱 → Miss，不得解锁
+5. 无码 / 错码 / 错邮箱 → 不得解锁
 
 ### B3 · 零耦合：Sanctuary **不读** Tip；与 Tip 互不顶替（**未测 · 请测**）
 
@@ -111,13 +111,13 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
    - **⋯ → Rituals** 三项可点（不再全锁）  
 5. Stripe Workbench：该笔 `checkout.session.completed`（subscription）应为 **200**，响应勿长期 `502`
 
-### C2 · 邮箱 Restore（**未测 · 请测**）
+### C2 · 邮箱 Restore（**未测 · 请测** · 现为 OTP）
 
 1. 记下订阅邮箱  
 2. 按 **§0.1** 删 `focus-tiger.entitlement-cache.v1` → 硬刷新  
-3. 开 Membership 卡 → 输入邮箱 → **Restore membership**  
+3. 开 Membership 卡 → 输入邮箱 → **Send code** → 查收 6 位码 → **Verify & restore**  
 4. **期望**：恢复订阅态；Rituals 可点  
-5. 错邮箱 → Miss
+5. 无码 / 错码 / 错邮箱 → Miss
 
 ### C3 · 零耦合（**未测 · 请测**）
 
