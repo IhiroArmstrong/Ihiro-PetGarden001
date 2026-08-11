@@ -287,29 +287,34 @@ export const RULE_AUTHORITY_TOPICS = [
       /不以 mtime 为准/,
       /我确认要强制清除锁/,
       /check:worktree-occupancy/,
-      /禁止.*stash pop|禁止.*对非本会话创建的 stash/
+      /last_heartbeat/,
+      /FT_SESSION_LOCK_STALE_MS|60 分钟/,
+      /gate-session-lock-precommit|pre-commit/,
+      /禁止主仓.*develop|主仓 `develop`/
     ],
     topicSignals: [
       /工作树占用/,
       /\.ft-session-lock/,
       /check:worktree-occupancy/,
       /git-worktree-occupancy/,
-      /occupancy.*releasable|releasable.*occupancy/
+      /occupancy.*releasable|releasable.*occupancy/,
+      /last_heartbeat/
     ],
     mustCite: [/WORKFLOW\.md/],
     restatementFingerprints: [
-      /写前检查（主闸/,
-      /强制清锁（僵锁）/,
-      /三条硬规则/
+      /写前检查/,
+      /强制清锁/,
+      /开工额外检查|三条硬规则/
     ],
     restatementThreshold: 2,
     // RULES_INDEX 修订记录可点名 occupancy 枚举；完整 SOP 仍只在 WORKFLOW.md
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md'],
     forbiddenOutsideSsot: [
       {
-        id: 'auto-clear-stale-lock',
-        pattern: /(?:自动|自行)(?:清除|删除|清掉).*(?:过期|僵|残留).*锁|锁.*(?:过期|几小时前).*(?:自动|自行)(?:清|删)/,
-        note: '禁止按时间戳自动清别人的占用锁；须用户明确「我确认要强制清除锁」'
+        id: 'mtime-auto-clear-lock',
+        pattern:
+          /(?:mtime|文件修改时间|几小时前|看起来没人).*(?:自动|自行)(?:清除|删除|清掉).*锁|(?:自动|自行)(?:清除|删除).*锁.*(?:mtime|几小时前)/,
+        note: '禁止仅凭 mtime/「几小时前」清非陈旧外锁；陈旧以 last_heartbeat+阈值为准（WORKFLOW）'
       },
       {
         id: 'infer-occupancy-from-mtime',
