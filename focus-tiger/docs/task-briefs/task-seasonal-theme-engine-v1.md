@@ -1,6 +1,6 @@
 # Task Brief · 通用节日主题引擎（Seasonal Theme Engine）v1
 
-> **状态（2026-08-11）**：**Phase 1 文档定稿（待你审）**。本回合**不写运行时代码**；你审完后再决定是否开 `feature/seasonal-theme-engine` worktree。  
+> **状态（2026-08-11）**：**Phase 1 已通过（分析师书面）**；四点非阻塞建议已吸收进下文。**Phase 2 已授权开工**（引擎骨架 + 圣诞节配置；总开关关 / `contentReady: false`）。  
 > **触发**：根目录 Prompt `cursor-prompt-seasonal-theme-engine.md`；产品侧拍板——节日主题属 **B 轨付费解锁**（Sanctuary Lifetime ∪ Yin Membership）。  
 > **权威**：本 Brief（引擎 schema / 门闩 / 分期）+ `FREE_PAID_MATRIX.md` + `MVP_PRODUCT_DEFINITION.md` §五 + `task-tech-direction-v1-shell-monetization.md`。
 
@@ -94,6 +94,10 @@ export type SolarTermId =
 
 `solar-term` 解析：查预置表 `solarTermDatesByYear[termId][year]`（ISO 日）；缺年则该节气当年不触发（不得 silent 猜日期）。
 
+**查表年限（硬 · 与复活节同等）**：`solar-term` 预置表与 `lookup-table` **同样须预填未来 ≥10 年**（自发版当年起算）。表将用尽属同类风险——不得等到「某年突然不触发」才发现。
+
+**开发期提醒（Phase 2+）**：实现时须有可测的「查表 horizon」检查（单测断言各表最远年份 ≥ 今天+10y；可选 CI / `npm run check:…`）。表剩余不足 3 年时测试或检查须失败或醒目警告，避免节日「消失」无人知。
+
 ### 4.2 SeasonConfig
 
 ```ts
@@ -157,7 +161,20 @@ export type ActiveSeasonalTheme = {
 
 `windowStart = anchor − windowDaysBefore`（含）  
 `windowEnd = anchor + windowDaysAfter`（含）  
-用户「今天」= 设备当前时刻映射到该 `timezone` 的日历日（或产品统一用用户 locale timezone——**实现时二选一写进单测**；推荐：**配置 timezone 裁切节日本身**，用户是否看到再叠加 `regions`）。
+**裁切规则（硬）**：每条配置自带的 `timezone` 决定该节日的日历日窗口；**不是**「用用户设备本地时区重算锚点日」。用户是否看到再叠加 `regions`（§5.3）。实现须单测锁住「配置 timezone 裁切」。
+
+### 5.2.1 全球节日的默认 timezone（产品决定 · 硬）
+
+无天然单一地区归属的**全球商业/文化节日**（例：圣诞节、元旦、跨年夜、情人节、万圣节、复活节 Western）统一默认：
+
+| 项 | 口径 |
+|---|---|
+| **默认 IANA** | **`America/New_York`（美东）** |
+| **为什么** | 产品以北美英文市场为全球窗口锚点，避免每人随手选 UTC / 伦敦 / 上海导致配置表不一致；美东相对 UTC 有明确冬夏令，比「裸 UTC 日期」更接近北美用户体感「节日当天」 |
+| **谁必须用默认** | `regions` **缺省**（全球）的条目；新增全球节日**禁止**另起炉灶选别的默认时区，除非书面改本 Brief |
+| **谁不用默认** | 带 `regions` 的地区节日：用该地区主流民用时区（例：`thanksgiving-us` → `America/New_York`；`thanksgiving-ca` → `America/Toronto`；节气 `chunfen` 等 → `Asia/Shanghai`） |
+
+§11 示例里圣诞节的 `America/New_York` **就是在执行本条**，不是随手示例。
 
 ### 5.3 地区差异（显式建模）
 
@@ -180,6 +197,19 @@ export type ActiveSeasonalTheme = {
 2. 在候选中取 **`priority` 最大** 的唯一一条  
 3. `priority` 并列 → 取配置表**稳定排序**靠前的一条（实现用数组序），并在单测锁定；**禁止**未定义行为  
 
+### 5.4.1 Priority 分档约定（Phase 4 批量接入前须遵守；Phase 2 起就按此填）
+
+| 分档 | 数值带 | 用途 | 例 |
+|---|---|---|---|
+| 全球高曝光商业节日 | **100–109** | 全球窗、素材投入最高 | 圣诞节 `100` |
+| 地区性国定 / 法定节日 | **90–99** | 带 `regions` 的感恩节等 | `thanksgiving-us` / `ca` → `90` |
+| 亲情向固定窗（母/父等） | **80–89** | 母亲节、父亲节（按 region 拆行） | `mothers-day-us` → `80` |
+| 其它全球节庆（占位） | **70–79** | 元旦、跨年、万圣、情人、复活等 | 预留；同档内用表序打平 |
+| 节气 / 换季锚点 | **30–49** | `solar-term` 四至 | 春分等 → `40` 一带 |
+| 实验 / 临时活动 | **1–29** | 须另 Brief；默认不用 | — |
+
+**规则**：同档内允许相同 `priority`（靠数组稳定序）；**禁止**跨档乱跳（例如把节气写成 `95`）。Phase 4 批量加节日前若要改分档，先改本表再改配置。
+
 ### 5.5 复活节等 lookup-table · 库选型
 
 | 方案 | 结论 |
@@ -189,6 +219,8 @@ export type ActiveSeasonalTheme = {
 | **查表 `datesByYear`（推荐首版）** | 预填未来 ≥10 年 Western Easter ISO 日；零运行时天文依赖；与 v1.0 纯本地友好 |
 
 **本期建议**：复活节配置行可进表，但 `contentReady: false` + 无素材；日期用 lookup-table。是否引入计算库留到「要自动续表」时再评。
+
+`solar-term` 查表年限与 horizon 提醒见 §4.1——与本条 **同等要求**，不因「节气几乎固定」而省略预填。
 
 ---
 
@@ -268,20 +300,26 @@ QA harness（可选，仿 `?confide=1`）：`?seasonal=christmas` 仅开发/预�
 欧美通用：元旦、情人节、复活节、母亲节（美系）、父亲节（美系）、万圣节、感恩节（US/CA 拆行）、圣诞节、跨年夜。  
 节气：春分 / 夏至 / 秋分 / 冬至（`solar-term` + 查表）。
 
+### 9.1.1 情人节内容调性（产品开放项 · 非工程阻塞）
+
+Schema **可以**装情人节；**不等于**已批准「浪漫恋爱」叙事。阿寅人设是禅意倾听者 / 茶友——更贴近「重逢 / 珍惜当下」等中性温情，而非恋爱氛围。
+
+**处理**：Phase 2/3 **不做**情人节素材。Phase 4 若做情人节，须单独过一遍观察式四条（与 Confide 语料同流程）+ 「是否够阿寅」人设审，通过后再 `contentReady: true`。未审前配置可占位且 `contentReady: false`。
+
 ### 9.2 Phase 分界
 
 | Phase | 交付 | 门闩 |
 |---|---|---|
-| **1（本回合）** | 本 Brief + 矩阵/PROCESS/MVP 同步 | — |
-| **2** | 引擎骨架 + catalog key + 圣诞节配置行；素材/文案占位 | 总开关 **关**；`contentReady: false` |
+| **1** | 本 Brief + 矩阵/PROCESS/MVP 同步 | **已通过（2026-08-11）** |
+| **2** | 引擎骨架 + catalog key + 圣诞节配置行；素材/文案占位 | 总开关 **关**；`contentReady: false`；**已授权开工** |
 | **3** | 圣诞节素材+文案人审 ok；验收清单；翻开关小范围/全量 | 总开关按发布节奏 |
-| **4** | 其它节日仅加配置+素材 | 理论上零引擎改动 |
+| **4** | 其它节日仅加配置+素材；补 priority 分档实操；情人节调性审 | 理论上零引擎改动 |
 
 其余 20 节气：**不**纳入本期强制交付。
 
 ---
 
-## 10. 与现有模块的接线面（实现阶段 · 勿本回合改代码）
+## 10. 与现有模块的接线面（Phase 2+）
 
 | 面 | 注意 |
 |---|---|
@@ -395,12 +433,10 @@ QA harness（可选，仿 `?confide=1`）：`?seasonal=christmas` 仅开发/预�
 
 | 阶段 | 分支建议 | 何时开 |
 |---|---|---|
-| Phase 1 | `docs/seasonal-theme-engine-v1`（本支） | **正在进行** |
-| Phase 2+ | `feature/seasonal-theme-engine` **新 worktree** | **你书面确认本 Brief 后** |
+| Phase 1 | `docs/seasonal-theme-engine-v1` | **已完成并通过** |
+| Phase 2+ | `feature/seasonal-theme-engine` **新 worktree** | **已授权（2026-08-11）**；总开关关 / `contentReady: false` |
 
-本回合：**不**开 feature 运行时分支。
-
-开工口令示例：「按 `task-seasonal-theme-engine-v1` 开 Phase 2」。
+开工口令：「按 `task-seasonal-theme-engine-v1` 开 Phase 2」（本轮已授权）。
 
 ---
 

@@ -313,7 +313,7 @@
 
 **下一步计划**：
 
-- **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11 排期）**：**B 轨**（Sanctuary Lifetime ∪ Yin Membership）；通用节日配置引擎，圣诞节为首实例。Phase 1 文档：`task-briefs/task-seasonal-theme-engine-v1.md`（待你审）。**审后**再开 `feature/seasonal-theme-engine`（Phase 2 骨架；总开关默认关）。不做主屏幕图标远程更新；不做节日付费 CTA。
+- **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1 Brief **已通过**；**Phase 2 骨架已授权**（`feature/seasonal-theme-engine`；总开关关）。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 - **付费 · 进阶仪式 / Ambient 消费统一 gate（后续）**：三个进阶仪式与深度音效等改读 `isEntitled` / `getFeatureAccess`；Stripe/Worker 真校验另排。地基已合 #210。
 - **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。
 - **付费 · 意愿漏斗本地统计（下一任务 · 勿漏）**：Support 打开 / 双卡 CTA / 进 Checkout / 完成支付（Test Mode）漏斗；优先 localStorage + 可读调试面板，无第三方。
