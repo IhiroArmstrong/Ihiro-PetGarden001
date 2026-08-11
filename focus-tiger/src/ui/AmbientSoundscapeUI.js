@@ -12,10 +12,15 @@ import {
   shouldStartPreferredFromNoteClick
 } from '../audio/AmbientSoundscapeController.js';
 import {
+  listAmbientBuiltInTracksForPanel,
+  canPlayAmbientTrack
+} from '../audio/ambientEntitlement.js';
+import {
   getSharedUserAmbientLibrary,
   mergeAmbientPanelTracks
 } from '../audio/UserAmbientLibrary.js';
 import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
+import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
@@ -223,9 +228,27 @@ export class AmbientSoundscapeUI {
     document.addEventListener('pointerdown', this._onDocPointer, true);
 
     this._unsubLocale = onLocaleChange(() => this._renderPanel());
+    this._unsubEntitlement = onEntitlementChange(() => {
+      this._onEntitlementChanged();
+    });
     this._injectStyles();
     this._renderPanel();
     this.setSessionActive(false);
+  }
+
+  _onEntitlementChanged() {
+    const playing = this.controller.getTrackId?.() || AMBIENT_TRACK_OFF;
+    if (
+      playing !== AMBIENT_TRACK_OFF &&
+      !canPlayAmbientTrack(playing, {
+        builtInTracks: AMBIENT_TRACKS,
+        storage:
+          typeof localStorage !== 'undefined' ? localStorage : null
+      })
+    ) {
+      this.controller.mute();
+    }
+    this._renderPanel();
   }
 
   /**
@@ -584,7 +607,11 @@ export class AmbientSoundscapeUI {
     }
 
     this.trackRow.replaceChildren();
-    const merged = mergeAmbientPanelTracks(this._userTracks, AMBIENT_TRACKS);
+    const builtIns = listAmbientBuiltInTracksForPanel({
+      tracks: AMBIENT_TRACKS,
+      storage: typeof localStorage !== 'undefined' ? localStorage : null
+    });
+    const merged = mergeAmbientPanelTracks(this._userTracks, builtIns);
     const options = [
       { id: AMBIENT_TRACK_OFF, labelKey: 'AMBIENT_TRACK_OFF', kind: 'off' },
       ...merged.userTracks.map((tr) => ({
@@ -595,7 +622,8 @@ export class AmbientSoundscapeUI {
       ...merged.builtInTracks.map((tr) => ({
         id: tr.id,
         labelKey: tr.labelKey,
-        kind: 'builtin'
+        kind: 'builtin',
+        locked: Boolean(tr.locked)
       }))
     ];
 
@@ -606,6 +634,7 @@ export class AmbientSoundscapeUI {
     for (const opt of options) {
       const row = document.createElement('div');
       row.className = 'ambient-soundscape__track-row';
+      if (opt.locked) row.classList.add('is-locked');
 
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -615,12 +644,20 @@ export class AmbientSoundscapeUI {
       if (opt.kind === 'user') {
         btn.dataset.userTrack = '1';
       }
+      if (opt.locked) {
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.classList.add('is-locked');
+        btn.title = t('AMBIENT_TRACK_LOCKED');
+        btn.dataset.locked = '1';
+      }
       const selected = opt.id === selectedId;
       btn.setAttribute('aria-checked', selected ? 'true' : 'false');
       if (selected) btn.classList.add('is-selected');
       btn.textContent =
         opt.kind === 'user' ? opt.label : t(opt.labelKey);
       btn.addEventListener('click', () => {
+        if (opt.locked) return;
         if (!this._canInteractWithPanelTracks()) return;
         this._dismissNudge();
         void this.controller.setTrack(opt.id).then(() => {
@@ -637,6 +674,11 @@ export class AmbientSoundscapeUI {
         playPause.className = 'ambient-soundscape__track-play';
         if (playingThis) playPause.classList.add('is-playing');
         playPause.dataset.playTrackId = opt.id;
+        if (opt.locked) {
+          playPause.disabled = true;
+          playPause.setAttribute('aria-disabled', 'true');
+          playPause.title = t('AMBIENT_TRACK_LOCKED');
+        }
         playPause.setAttribute(
           'aria-label',
           playingThis
@@ -646,6 +688,7 @@ export class AmbientSoundscapeUI {
         playPause.textContent = playingThis ? '❚❚' : '▶';
         playPause.addEventListener('click', (event) => {
           event.stopPropagation();
+          if (opt.locked) return;
           if (!this._canInteractWithPanelTracks()) return;
           this._dismissNudge();
           void this._onTrackPlayPause(opt.id, playingThis);
@@ -733,7 +776,8 @@ export class AmbientSoundscapeUI {
   dispose() {
     this._clearHoverOpenTimer();
     document.removeEventListener('pointerdown', this._onDocPointer, true);
-    this._unsubLocale();
+    this._unsubLocale?.();
+    this._unsubEntitlement?.();
   }
 
   _injectStyles() {
@@ -1043,6 +1087,14 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__track.is-selected {
         border-color: rgba(139, 46, 46, 0.4);
         background: rgba(139, 46, 46, 0.1);
+      }
+      .ambient-soundscape__track.is-locked,
+      .ambient-soundscape__track-play:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .ambient-soundscape__track-row.is-locked {
+        opacity: 0.92;
       }
       .ambient-soundscape__track-play {
         flex: 0 0 auto;

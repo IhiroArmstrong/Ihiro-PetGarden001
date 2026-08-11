@@ -36,6 +36,7 @@
   "AMBIENT_TRACK_INVISIBLE_BEAUTY": "Invisible Beauty",
   "AMBIENT_TRACK_KISS_THE_SKY": "Kiss the Sky",
   "AMBIENT_TRACK_FROZEN_IN_LOVE": "Frozen in Love",
+  "AMBIENT_TRACK_LOCKED": "订阅后可用",
   "AMBIENT_UPLOAD_BTN": "添加自己的音乐",
   "AMBIENT_UPLOAD_LOCAL_HINT": "只保存在本机，不会上传到服务器。支持 MP3 / M4A。",
   "AMBIENT_UPLOAD_DELETE_ARIA": "删除已上传曲目",
