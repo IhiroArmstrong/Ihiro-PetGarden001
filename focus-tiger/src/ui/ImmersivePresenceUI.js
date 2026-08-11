@@ -405,6 +405,7 @@ export class ImmersivePresenceUI {
       body.ft-immersive-presence #journey-log,
       body.ft-immersive-presence #zen-cinema-card,
       body.ft-immersive-presence #daily-zen-quote-card,
+      body.ft-immersive-presence #mustard-seed-seal-card,
       body.ft-immersive-presence #digital-wallpapers-card,
       body.ft-immersive-presence .wide-idle-more,
       body.ft-immersive-presence #wide-idle-more-menu,

@@ -285,6 +285,26 @@ describe('listSecondaryChromeEntries', () => {
     reminderAvailable: true
   };
 
+  it('includes mustard-seed-seal only when unlocked', () => {
+    const closed = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      mustardSeedSealUnlocked: false
+    });
+    assert.equal(
+      closed.some((e) => e.proxy === 'mustard-seed-seal'),
+      false
+    );
+    const open = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      mustardSeedSealUnlocked: true
+    });
+    const proxies = open.filter((e) => e.proxy).map((e) => e.proxy);
+    const quoteIdx = proxies.indexOf('daily-quote');
+    const sealIdx = proxies.indexOf('mustard-seed-seal');
+    assert.ok(quoteIdx >= 0);
+    assert.equal(sealIdx, quoteIdx + 1);
+  });
+
   it('narrow drawer omits honesty and breath; includes companion/reminder/language/five-moments/zen-cinema/…', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', allOn);
     assert.deepEqual(

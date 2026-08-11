@@ -42,6 +42,7 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
  * @property {boolean} reminderAvailable
  * @property {boolean} [newsletterSubmitted]
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
+ * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
  */
 
 /**
@@ -379,6 +380,14 @@ export function listSecondaryChromeEntries(surface, visibility) {
     proxy: 'daily-quote',
     labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL'
   });
+
+  // Memorial seal 《芥子须弥》— menu only after unified practice score unlock.
+  if (visibility.mustardSeedSealUnlocked) {
+    out.push({
+      proxy: 'mustard-seed-seal',
+      labelKey: 'MUSTARD_SEED_SEAL_MENU_LABEL'
+    });
+  }
 
   // Digital wallpapers gift — curated stills; free save (no tip / Sanctuary gate).
   out.push({

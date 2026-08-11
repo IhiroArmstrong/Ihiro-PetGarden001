@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   computePracticeBadgeTargetCount,
+  computePracticeScore,
   mergeCatalogBadgeAwards
 } from './practiceBadgeAward.js';
 
@@ -18,6 +19,14 @@ function normalize(raw) {
 }
 
 describe('practiceBadgeAward', () => {
+  it('computePracticeScore = days + floor(minutes/60)', () => {
+    assert.equal(
+      computePracticeScore({ practiceDayCount: 15, lifetimeMinutes: 360 }),
+      21
+    );
+    assert.equal(computePracticeScore({}), 0);
+  });
+
   it('paid: no practice → min floor', () => {
     assert.equal(
       computePracticeBadgeTargetCount(
