@@ -69,5 +69,16 @@ describe('SupportYinModalUI helpers', () => {
     assert.equal(en.SUPPORT_MODAL_CLOSE, 'Maybe later');
     assert.equal(en.SUPPORT_SANCTUARY_BADGE, 'Suggested');
     assert.match(en.SUPPORT_SANCTUARY_PRICE, /One-time Lifetime/i);
+    assert.equal(en.SUPPORT_TEA_CTA, 'Support Us');
+  });
+
+  it('membership preview points at closed-eye meditation asset', () => {
+    const src = readFileSync(
+      join(here, '../ui/SupportYinModalUI.js'),
+      'utf8'
+    );
+    assert.match(src, /membership-meditation-preview\.png/);
+    assert.match(src, /ctaVariant:\s*'cushion'/);
+    assert.match(src, /ctaVariant:\s*'beige'/);
   });
 });

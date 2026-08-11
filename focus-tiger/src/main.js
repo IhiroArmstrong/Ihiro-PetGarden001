@@ -351,7 +351,18 @@ async function init() {
     window.__THREE = THREE;
   }
 
-  PoseManager.setLoadingMaskVisible(false);
+  // Keep Loading mask until 2D sprite paints. Early hide used to flash the
+  // dark 3D `#poster` (small black Yin) before colorful Idle.
+  poseManager.setCanvasHidden(true);
+  {
+    const poster = document.getElementById('poster');
+    if (poster) {
+      poster.style.transition = 'none';
+      poster.style.opacity = '0';
+      poster.remove();
+    }
+  }
+  // Loading mask stays until welcome/idle boot below.
 
   const focusVisualizer = new FocusVisualizer(composer);
   await focusVisualizer.init(mounts.tiger);
@@ -456,12 +467,14 @@ async function init() {
   composer.render();
 
   if (isPosterCapture) {
+    PoseManager.setLoadingMaskVisible(false);
     window.__posterCaptureReady = true;
     window.__posterDataUrl = canvas.toDataURL('image/png');
     return;
   }
 
   revealScene({ showCanvas: false });
+  // Canvas already force-hidden above; keep the latch for setPose transitions.
   poseManager.setCanvasHidden(true);
 
   // Entitlement provider: cloud when API base set; mock for lab / ?entitlementMock=.
@@ -2514,6 +2527,15 @@ async function init() {
   ) {
     tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
   }
+
+  // First paint: if welcome did not start a sprite, land Idle so mask lifts on Yin.
+  if (!welcomeBoot?.play && !paymentThanksAtWelcome) {
+    emotionController.playEmotion('idle');
+  }
+  // Lift mask on next frame after sprite overlay has a chance to show.
+  requestAnimationFrame(() => {
+    PoseManager.setLoadingMaskVisible(false);
+  });
 
   // Expand A 白天 Idle 无操作披毯已关（2026-08-04 plan A）。保留：深夜 Idle→DORMANT、
   // 2h 练完后 live sync、Expand B。无操作计时器删除 → 藏 tab 也不会「后台涨满」误睡。

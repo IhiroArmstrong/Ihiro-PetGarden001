@@ -23,8 +23,15 @@ import {
   getSanctuaryBadgeById,
   sanctuaryBadgeSrc
 } from '../core/sanctuaryBadges.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-tip-kindness-badges-chrome-v1';
+const STYLE_ID = 'yin-tip-kindness-badges-chrome-v2';
 
 export class TipKindnessBadgesChrome {
   /**
@@ -167,22 +174,24 @@ export class TipKindnessBadgesChrome {
 
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
+    document.getElementById('yin-tip-kindness-badges-chrome-v1')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
       .yin-tip-kindness-badges {
         position: fixed;
+        /* Beside Yin (mid-left), clear of bottom-left heatmap / ? cluster */
         z-index: 11;
-        left: max(10px, env(safe-area-inset-left, 0px));
-        bottom: max(96px, calc(18vh + env(safe-area-inset-bottom, 0px)));
-        max-width: min(220px, 42vw);
-        padding: 8px 10px;
-        border-radius: 14px;
-        border: 1px solid rgba(139, 115, 85, 0.18);
-        background: rgba(255, 252, 245, 0.42);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.08);
+        left: max(12px, env(safe-area-inset-left, 0px));
+        top: max(120px, 28vh);
+        bottom: auto;
+        max-width: min(200px, 38vw);
+        padding: 10px 12px;
+        border-radius: ${GLASS_RADIUS};
+        border: ${GLASS_BORDER};
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        box-shadow: ${GLASS_SHADOW};
         pointer-events: auto;
         color: #4a3426;
       }
@@ -228,9 +237,9 @@ export class TipKindnessBadgesChrome {
       }
       @media (max-width: 479px) {
         .yin-tip-kindness-badges {
-          max-width: min(160px, 46vw);
-          bottom: max(88px, calc(16vh + env(safe-area-inset-bottom, 0px)));
-          padding: 6px 8px;
+          max-width: min(148px, 42vw);
+          top: max(96px, 22vh);
+          padding: 8px 10px;
         }
         .yin-tip-kindness-badges__img {
           width: 32px;
