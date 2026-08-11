@@ -39,6 +39,14 @@ Import fails if keys are missing or unknown vs `en.json`. Then run:
 npm run test:smoke
 ```
 
+### Gap report (no auto-translate)
+
+```bash
+cd focus-tiger && npm run i18n:sync
+```
+
+Lists: missing/extra keys, `ja === en` placeholders, and Latin-only `ja` values (must include hiragana/katakana/**kanji**). Exit 1 on gaps. Does **not** call an LLM or write machine copy — v1 keeps **审完再露**.
+
 ### Optional: edit `ja.json` directly
 
 Same effect — save the file and reload the app. The TSV is only for easier bilingual review.

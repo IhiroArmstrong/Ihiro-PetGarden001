@@ -31,7 +31,8 @@
     "check:all-branches-health": "node scripts/check-all-branches-health.js",
     "check:open-blockers": "node scripts/check-open-blockers.js",
     "locale:export-ja": "node scripts/locale-pack.js export-ja",
-    "locale:import-ja": "node scripts/locale-pack.js import-ja"
+    "locale:import-ja": "node scripts/locale-pack.js import-ja",
+    "i18n:sync": "node scripts/i18n-sync.js"
   },
   "dependencies": {
     "lit": "^3.3.3",
