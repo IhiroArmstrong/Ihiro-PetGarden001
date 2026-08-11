@@ -253,12 +253,15 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotMustContain: [
       /并行写必须独立 worktree/,
       /git worktree add/,
-      /禁止两 worktree 同时检出同一分支/
+      /禁止两 worktree 同时检出同一分支/,
+      /请清理闲置 worktree/,
+      /check:worktree-hygiene/
     ],
     topicSignals: [
       /并行 Cursor 会话/,
       /git worktree/,
-      /并行写必须独立 worktree/
+      /并行写必须独立 worktree/,
+      /请清理闲置 worktree/
     ],
     mustCite: [/WORKFLOW\.md/],
     restatementFingerprints: [
@@ -272,6 +275,39 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'same-checkout-parallel-write-ok',
         pattern: /(?:可以|允许|应当)(?:多个|两个)(?:Agent|会话).*(?:同一|同一个)(?:目录|checkout|工作树).*(?:同时写|并行写)/,
         note: '禁止主张同目录并行写可接受；须 worktree 隔离'
+      }
+    ]
+  },
+  {
+    id: 'git-worktree-hygiene',
+    title: '闲置 worktree 只读盘点 + 口令拆除（不可逆）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '并行 Cursor 会话：必须用 git worktree 隔离写操作',
+    ssotMustContain: [
+      /请清理闲置 worktree/,
+      /check:worktree-hygiene/,
+      /最后一次 commit/,
+      /禁止.*静默.*worktree remove|禁止.*Agent 静默/
+    ],
+    topicSignals: [
+      /worktree-hygiene/,
+      /请清理闲置 worktree/,
+      /check:worktree-hygiene/,
+      /闲置 worktree/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [/propose_remove/, /按清单清/],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      '.cursor/rules/focus-tiger-regression-lock.mdc'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'silent-worktree-remove',
+        pattern:
+          /(?:可以|允许|应当|默认)(?:静默|自动|自行)\s*(?:`?git\s*)?worktree\s+remove|(?:静默|自动)拆除.*worktree/,
+        note: '禁止主张静默/自动 worktree remove；须口令 + 点名'
       }
     ]
   },
@@ -290,7 +326,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /last_heartbeat/,
       /FT_SESSION_LOCK_STALE_MS|60 分钟/,
       /gate-session-lock-precommit|pre-commit/,
-      /禁止主仓.*develop|主仓 `develop`/
+      /禁止主仓.*develop|主仓 `develop`/,
+      /N14 播报|会话明显结束/,
+      /git-worktree-hygiene|请清理闲置 worktree/
     ],
     topicSignals: [
       /工作树占用/,
@@ -298,7 +336,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /check:worktree-occupancy/,
       /git-worktree-occupancy/,
       /occupancy.*releasable|releasable.*occupancy/,
-      /last_heartbeat/
+      /last_heartbeat/,
+      /会话明显结束/
     ],
     mustCite: [/WORKFLOW\.md/],
     restatementFingerprints: [
