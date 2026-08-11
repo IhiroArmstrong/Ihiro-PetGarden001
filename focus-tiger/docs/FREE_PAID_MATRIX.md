@@ -66,7 +66,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 每日首次庆祝 / 轻完成反馈 | `free` | — | 无 key（庆祝主路径） | 不得付费墙 | **已接线** | — |
 | Basic Reflection（结束反思 + 共鸣短句） | `free` | — | 无 key | 免费；禁 AI / 付费 CTA | **已接线** | — |
 | Breath Practice（首页左球） | `free` | — | 无 key | 与进阶仪式分立；免费 | **已接线** | — |
-| Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合；**未**在入口调用 `isEntitled('journey.log')`（key 恒 free）。**Daily Card** 存图另 Brief `task-journey-daily-card.md`（未实现）。应用内上限保留；**勿**再把「无限历史」当 B 主卖点 |
+| Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合。**Daily Card** Brief `task-journey-daily-card.md`。**上限：免费/付费统一 30（有意取舍，不做付费更高上限）**；永久档案靠 Save image；B 勿卖「无限历史」 |
 | Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**未挂产品场景**。落点 Brief：`task-daily-wisdom-reflection-mount.md`（Reflection 底 + 可选印花） |
 | MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
 
@@ -95,7 +95,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 深度音效全库（`ambient.deep.play`） | `lifetime∪subscription` | 免费保留温暖子集 | `ambient.deep.play`（字面 subscription / ongoing） | B 核心权益之一 | **未接线**（Gate 旁支进行中） | catalog 有；主仓 Ambient 消费仍暂缓。旁支 `feature/ambient-entitlement-free-subset` 在做真锁。**15s 试听**另 Brief：`task-ambient-deep-audition-15s.md`（未排实现） |
 | 高级情绪动画 / 场景（`emotion.premium.trigger`） | `lifetime∪subscription` | 非核心；名单另定 | `emotion.premium.trigger` | B | **未接线** | catalog 占位；dispatcher **未**按 key 拦高级表现 |
 | 进阶每日解锁内容（`content.advanced.daily-unlock`） | `lifetime∪subscription` | — | `content.advanced.daily-unlock` | B 占位 | **未接线** | catalog 有；**无**产品消费者 |
-| Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | 授予/Idle 优先展示已合；依赖 Sanctuary unlocked，**不**读 tip。**蒲团 Enso Mark** 另 Brief `task-sanctuary-enso-mark.md`（等素材；未实现）——补「付费身份一眼可辨」 |
+| Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | 授予/Idle 优先展示已合。**蒲团中央 Enso**：素材已入 `public/ui/support/sanctuary-enso/sanctuary-enso-mark.png`；实现 Brief `task-sanctuary-enso-mark.md`（直径 38–48% 蒲团、opacity 规格已锁） |
 | Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | — |
 | Support Yin Modal · Membership 卡 | `lifetime∪subscription` | 订阅入口 | Support → Membership Checkout | B 入口 | **已接线** | 与 Sanctuary / Tea 并列；展示图暂复用 Sanctuary preview |
 | 节日主题引擎（Seasonal Theme） | `lifetime∪subscription` | Lifetime 或 Membership；官方节日 `subscriberOnly: true` | `theme.seasonal.access`（字面 subscription / **ongoing**） | B；时段氛围非纪念物 | **部分接线** | catalog + 引擎 + Phase 3 UI **已合 #238**（wash + 一日一句）；总开关开 / 圣诞节 `contentReady=true`；**未购无主题**；无新 PNG 姿态 |
@@ -144,9 +144,10 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 5. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 redeploy 待 Resend/OTP secrets。  
 6. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式菜单已用；Ambient/高级情绪等跟 Gate 走。  
 7. **Daily Wisdom → Reflection + 静默印花** — Brief `task-daily-wisdom-reflection-mount.md`。  
-8. **Journey Daily Card（Save image）** — Brief `task-journey-daily-card.md`；应用内 Log 上限保留，勿以「无限历史」作 B 主卖点。  
-9. **Sanctuary Enso Mark（蒲团边）** — Brief `task-sanctuary-enso-mark.md`（等透明 PNG）。  
-10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。
+8. **Journey Daily Card（Save image）** — Brief `task-journey-daily-card.md`；**Log 上限免费/付费统一 30（有意）**。  
+9. **Sanctuary Enso Mark（蒲团中央）** — 素材已入；实现 Brief `task-sanctuary-enso-mark.md`。  
+10. **付费转化路径梳理（获客向）** — Backlog：试听后 Unlock、锁项价值展示时刻等——勿让「经济可持续」只剩老用户彩蛋。  
+11. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合。
 

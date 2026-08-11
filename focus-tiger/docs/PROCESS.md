@@ -320,9 +320,10 @@
 
 - **付费 · Ambient Sound Gate（进行中 · 旁支）**：`feature/ambient-entitlement-free-subset`（免费温暖子集 + Deep `isEntitled`）。**勿**本仓重复开工。
 - **付费 · Ambient Deep 15s 试听（建议紧随 Gate）**：Brief `task-ambient-deep-audition-15s.md`——合规锁之后的转化层；Gate 合入后再开 `feature/ambient-deep-audition-15s`。
-- **增长 · Journey Daily Card（Save image）**：Brief `task-journey-daily-card.md`；免费；暂无一键 IG 深链≠不做社交。
-- **内容 · Daily Wisdom → Reflection + Sanctuary 静默印花**：Brief `task-daily-wisdom-reflection-mount.md`。
-- **身份 · Sanctuary Enso Mark（蒲团边）**：Brief `task-sanctuary-enso-mark.md`；**等用户透明 PNG**。
+- **增长 · Journey Daily Card（Save image）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
+- **内容 · Daily Wisdom → Reflection（Phase A）+ 静默印花（Phase B）**：Brief `task-daily-wisdom-reflection-mount.md`——**强制拆两 PR**。
+- **身份 · Sanctuary Enso Mark（蒲团中央）**：素材已入 `sanctuary-enso-mark.png`；Brief 含直径/opacity/375 规格；实现 `feature/sanctuary-enso-mark`。
+- **付费 · 转化路径梳理（Backlog · 不挡上列）**：单独立项盘点「新用户为何第一次付费」——免费用户可见价值时刻、15s 试听后 Unlock 文案、Support 漏斗等。静默印花/Enso **不够**单独支撑经济可持续（见 `PRINCIPLES` 案例锚定诚实边界）。
 - **付费 · 节日主题引擎（Seasonal Theme · 2026-08-11）**：**B 轨**；Phase 1–3 已合 develop（#233 / #234 / #238）；圣诞窗已放出。下一步 **Phase 4**（其它节日配置/素材；情人节调性审）须另开。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 - **付费 · 进阶仪式 / Ambient 消费统一 gate（后续）**：三个进阶仪式与深度音效等改读 `isEntitled` / `getFeatureAccess`；Stripe/Worker 真校验另排。地基已合 #210。
 - **付费 · 场景化请茶（下一任务 · 勿漏）**：完美专注完成 / 连续里程碑等高光时刻，旁侧气泡引出 Buy Yin a Tea（勿只靠冷菜单）。接在 Support Modal 之后。
@@ -426,6 +427,7 @@
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
+- **付费转化路径梳理（获客向 · 2026-08-12）**：在 Enso / Wisdom 印花 / Daily Card 等**存量体验**任务之后，单独立项盘点——免费用户在哪些时刻看见清晰付费价值、Deep 15s 试听后 Unlock 文案、Support 漏斗完整性。**不挡**当前四任务；防止「经济可持续」原则只落成老用户彩蛋（见 `PRINCIPLES` 案例锚定诚实边界）
 - **异步无声共修（Global Lanterns）**（匿名灯火 + 可选无声赠茶；可关；不进 Focusing；远期）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
 
