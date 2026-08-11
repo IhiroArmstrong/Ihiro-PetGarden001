@@ -20,7 +20,10 @@ export const MUSTARD_SEED_SEAL_STORAGE_KEY = 'focus-tiger.mustard-seed-seal.v1';
 /** Aligned with long-horizon memorial tier (~21 practice score units). */
 export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD = 21;
 
-/** Companion medallion (tip catalog gold mono — memorial companion, not tip award). */
+/**
+ * Companion medallion (interim: tip catalog gold mono).
+ * Follow-up: replace with dedicated mustard-seed-seal asset (see task brief).
+ */
 export const MUSTARD_SEED_SEAL_BADGE_FILE =
   'yin-medallion-gold-monochrome-engraved.png';
 
@@ -31,6 +34,9 @@ export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
   '芥子亦足纳须弥。'
 ]);
 
+/**
+ * Interim EN lines — human editorial pass deferred (see task brief).
+ */
 export const MUSTARD_SEED_SEAL_POEM_EN = Object.freeze([
   'A roc spreads its wings for ninety thousand miles;',
   'In every direction, the worlds share one Bodhi.',

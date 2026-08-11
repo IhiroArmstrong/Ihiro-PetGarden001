@@ -19,6 +19,11 @@
 | 菜单 | 解锁后 ⋯ / 抽屉 `mustard-seed-seal`；未解锁不出现 |
 | 禁止 | 绑付费、概率彩蛋、断签门槛、日常完成轻确认层插诗 |
 
+## 日后跟进（2026-08-11 拍板 · 不挡本 PR）
+
+1. **英文译人审**：现稿为工程占位译；须另开任务人审改一版（语气对齐 presence / vastness-in-the-small，忌励志鸡汤腔）。
+2. **独立金章素材**：换掉 tip `gold-mono` 复用；入库 `public/ui/support/mustard-seed-seal/`（kebab-case）后再改 `MUSTARD_SEED_SEAL_BADGE_FILE` / `mustardSeedSealBadgeSrc`。
+
 ## 调试
 
 - `__mustardSeedSeal.open({ mode: 'force' })`
