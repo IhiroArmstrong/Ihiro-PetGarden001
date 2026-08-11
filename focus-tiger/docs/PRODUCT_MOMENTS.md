@@ -80,6 +80,8 @@ Tiger Reflection Moment 三问已完整覆盖 Five Moments 的最后一格，不
 
 **相邻规划（2026-08-10 · 非本 Moment 改动）**：**向阿寅倾诉**为 Idle 主动倾听入口，与会话后 Reflection **分轨**；不替代三问，也不并入 Reflect 表面排期。口径见 `PRODUCT_POSITIONING.md`「禅意倾听者」与 Brief `task-confide-to-yin-v1.md`。
 
+**相邻规划（2026-08-11 · 非 Five Moments 改动）**：**节日主题引擎**为跨时刻的 B 轨氛围层（可叠在 Arrive/Focus/Idle 的视觉上），**不**新增第六 Moment，也**不**改各 Moment 状态机。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
+
 ### 4.6 Grow Together（会话循环节点；粒度见 CORE_LOOP）
 
 Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（老虎成长 = 用户成长映射）写在 `CORE_LOOP.md`。候选纪念物解锁视觉：`lotus-chest-halo`（胸口莲花 + 脑后金光，10 帧）已入库，可作为纪念物解锁那一刻的正式呈现候选；具体接入等 Backlog「纪念奖励系统」排期再定——不在此决定「什么算一次里程碑」。
