@@ -1,6 +1,6 @@
 # Task Brief · Ambient Deep · 15s 试听（Audition）
 
-> **状态（2026-08-11）**：待排期 · **跟随** `feature/ambient-entitlement-free-subset`（Sound Gate / 免费温暖子集已另 Agent 开工）。  
+> **状态（2026-08-12）**：待排期 · **Gate #251 已合**（可立刻开工姊妹支）。  
 > **目的**：在深度曲真锁之后，用低打扰试听把「假收费修补」变成转化路径——未付费可尝 Deep，再柔和引导 Unlock。  
 > **原则**：`PRINCIPLES.md` 经济可持续；商业红线仍禁 FOMO / 稀缺倒计时。
 
@@ -8,7 +8,7 @@
 
 | 层 | 谁做 | 范围 |
 |---|---|---|
-| Sound Gate | 已开工旁支 | Basic vs Deep 分层；Deep 播前 `isEntitled('ambient.deep.play')` |
+| Sound Gate | **#251 已合** tip `5969872` | Basic vs Deep 分层；Deep 播前 `isEntitled('ambient.deep.play')` |
 | **本 Brief · Audition** | 本任务 | 未授权点 Deep → **约 15s 试听** → fade out → 极简 Unlock 提示 |
 
 Gate 只解决合规；**没有试听**时，Deep 行易变成「点了灰掉 / 直接跳商店」——转化弱、也易像惩罚。试听是付费价值感知的关键一环，**建议安排**，但须等 Gate 合入或可基于其 tip 开姊妹支，避免双写播放器。

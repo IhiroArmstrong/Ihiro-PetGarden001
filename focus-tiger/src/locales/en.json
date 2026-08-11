@@ -363,6 +363,8 @@
   "SANCTUARY_STATUS_YES": "Lifetime unlock is active on this device",
   "SANCTUARY_STATUS_NO": "Not unlocked on this device yet",
   "SANCTUARY_STATUS_PREVIEW": "Preview unlock on this device",
+  "SANCTUARY_ENSO_MARK_ARIA": "Sanctuary Enso mark",
+  "SANCTUARY_ENSO_MARK_NOTE": "Enso mark · Sanctuary",
   "SANCTUARY_RESTORE_TITLE": "Restore on another device",
   "SANCTUARY_RESTORE_HINT": "We email a one-time code to the address on your Sanctuary receipt. Tip restore is unchanged and does not use this code.",
   "SANCTUARY_RESTORE_SEND_CODE": "Send code",

@@ -29,6 +29,7 @@
 | **3** | `ui-kit/components/streak-meter.js` | 连胜环下方 label 提示 |
 | **4** | `src/effects/LightProgression.js` | 光影 FX 根（`#light-progression-fx`）全屏特效层 |
 | **4** | `src/effects/IncenseGreeting.js` | 一炷香问候粒子/特效全屏层 |
+| **4** | `src/ui/SanctuaryEnsoMarkChrome.js` | Sanctuary Enso 蒲团印记（`#yin-sanctuary-enso-mark`）；在 sprite(3) 之上、`#ui-overlay`(10) 之下；与 LightProgression FX 同带；pointer 可 hover、点按不开店 |
 | **10** | `index.html` | `#ui-overlay` 主 UI 叠层根（多数面板/按钮挂这里） |
 | **11** | `src/ui/TipKindnessBadgesChrome.js` | Idle 阿寅旁练习/善意徽章条（`#yin-tip-kindness-badges`；mid-left beside Yin，勿压左下热力/`?`；Focusing 隐藏） |
 | **12** | `src/ui/WeeklyPracticeHeatmap.js` | 周练习热力图簇（含 Reminder 时钟入口） |
