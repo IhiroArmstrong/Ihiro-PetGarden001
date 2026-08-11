@@ -1,8 +1,9 @@
 /**
- * Monetization intent funnel — local only (no third-party).
+ * Monetization intent funnel — local store (+ optional afterRecord hook for opt-in upload).
  * Nodes: Support open → card CTA → Checkout start → paid complete (Test Mode OK).
  *
  * @see docs/PROCESS.md「付费 · 意愿漏斗本地统计」
+ * @see docs/task-briefs/task-monetization-intent-funnel-opt-in.md
  */
 
 export const MONETIZATION_FUNNEL_STORAGE_KEY =
@@ -159,11 +160,14 @@ export class MonetizationFunnelStore {
   constructor({
     storage = getDefaultStorage(),
     now = () => new Date(),
-    track = (name, props) => trackMonetizationEvent(name, props)
+    track = (name, props) => trackMonetizationEvent(name, props),
+    /** @type {(name: string) => void} */
+    afterRecord = () => {}
   } = {}) {
     this.storage = storage;
     this.now = now;
     this.track = track;
+    this.afterRecord = afterRecord;
   }
 
   /** @returns {MonetizationFunnelState} */
@@ -197,6 +201,11 @@ export class MonetizationFunnelStore {
     }
     writeMonetizationFunnelState(this.storage, state);
     this.track(name, { track, source, countKey: key });
+    try {
+      this.afterRecord?.(name);
+    } catch {
+      /* upload must never break local record */
+    }
   }
 
   supportOpen(source = 'fab') {

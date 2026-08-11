@@ -9,6 +9,7 @@ import {
 } from "./middleware/rateLimit";
 import { handleDailyMessage } from "./routes/dailyMessage";
 import { handleEmotionWeight } from "./routes/emotionWeight";
+import { handleMonetizationFunnelIngest } from "./routes/monetizationFunnelIngest";
 import { handleCreateTipCheckoutSession } from "./routes/createTipCheckoutSession";
 import { handleCreateSanctuaryCheckoutSession } from "./routes/createSanctuaryCheckoutSession";
 import { handleCreateMembershipCheckoutSession } from "./routes/createMembershipCheckoutSession";
@@ -54,7 +55,8 @@ export default {
 				url.pathname === "/api/create-membership-portal-session" ||
 				url.pathname === "/api/restore/request-otp" ||
 				url.pathname === "/api/daily-message" ||
-				url.pathname === "/api/emotion-weight")
+				url.pathname === "/api/emotion-weight" ||
+				url.pathname === "/api/monetization-funnel-ingest")
 		) {
 			return preflightResponse(origin);
 		}
@@ -256,6 +258,19 @@ export default {
 				);
 			}
 			return withCors(await handleEmotionWeight(request), origin);
+		}
+
+		if (url.pathname === "/api/monetization-funnel-ingest") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleMonetizationFunnelIngest(request, env),
+				origin,
+			);
 		}
 
 		return withCors(

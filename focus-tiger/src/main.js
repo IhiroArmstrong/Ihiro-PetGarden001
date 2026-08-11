@@ -102,6 +102,15 @@ import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { getMonetizationFunnelStore } from './core/monetizationIntentFunnel.js';
 import {
+  formatMonetizationFunnelOptInSummary,
+  flushMonetizationFunnelUpload,
+  scheduleMonetizationFunnelUploadAfterRecord
+} from './core/monetizationFunnelUpload.js';
+import {
+  isMonetizationFunnelOptInEnabled,
+  setMonetizationFunnelOptIn
+} from './core/monetizationFunnelOptIn.js';
+import {
   emotionKeyForPaymentThanks,
   peekCheckoutReturnThanksKind,
   resolveCheckoutReturnWelcomeGate
@@ -892,10 +901,15 @@ async function init() {
   );
   window.__contextualTeaTip = contextualTeaTipBubbleUI;
 
+  const monetizationFunnelStore = getMonetizationFunnelStore();
+  monetizationFunnelStore.afterRecord = (name) => {
+    scheduleMonetizationFunnelUploadAfterRecord(name);
+  };
+
   consumeTipReturnQuery({});
   void bootSanctuaryReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
-      getMonetizationFunnelStore().checkoutComplete('sanctuary', 'return');
+      monetizationFunnelStore.checkoutComplete('sanctuary', 'return');
       emotionController.playEmotion(
         emotionKeyForPaymentThanks('sanctuary')
       );
@@ -903,7 +917,7 @@ async function init() {
   });
   void bootMembershipReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
-      getMonetizationFunnelStore().checkoutComplete('membership', 'return');
+      monetizationFunnelStore.checkoutComplete('membership', 'return');
       emotionController.playEmotion(
         emotionKeyForPaymentThanks('membership')
       );
@@ -2726,17 +2740,32 @@ async function init() {
     funnelBtn.id = 'dev-monetization-funnel';
     funnelBtn.textContent = '意愿漏斗';
     funnelBtn.title =
-      '本地付费意愿漏斗计数（Support → CTA → Checkout → 完成）；无第三方';
+      '本地付费意愿漏斗 + opt-in 状态（Support → CTA → Checkout → 完成）';
     funnelBtn.style.cssText =
       'position:fixed;top:12px;right:470px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #5a6b4a;background:#f4f8f0;color:#2c1f14;border-radius:4px;';
     funnelBtn.addEventListener('click', () => {
-      const text = getMonetizationFunnelStore().formatSummary();
+      const text = [
+        getMonetizationFunnelStore().formatSummary(),
+        '',
+        formatMonetizationFunnelOptInSummary(globalThis.localStorage)
+      ].join('\n');
       // eslint-disable-next-line no-alert
       globalThis.alert(text);
       console.log(text);
     });
     document.body.appendChild(funnelBtn);
     window.__monetizationFunnel = getMonetizationFunnelStore();
+    window.__monetizationFunnelOptIn = {
+      isEnabled: () => isMonetizationFunnelOptInEnabled(globalThis.localStorage),
+      setEnabled: (on) => {
+        const next = setMonetizationFunnelOptIn(globalThis.localStorage, !!on);
+        if (next.enabled) void flushMonetizationFunnelUpload({ force: true });
+        return next;
+      },
+      flush: () => flushMonetizationFunnelUpload({ force: true }),
+      formatSummary: () =>
+        formatMonetizationFunnelOptInSummary(globalThis.localStorage)
+    };
 
     const resetAllBtn = document.createElement('button');
     resetAllBtn.type = 'button';
