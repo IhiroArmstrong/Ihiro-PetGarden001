@@ -69,7 +69,7 @@
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
 - **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**opt-in 回传见上行 #262**。
 - **芥子须弥方金章素材（2026-08-12 · #256 已合 tip `5440a53`）**：独立方章替换 tip 复用。
-- **Web 轻量版本更新提示（2026-08-12 拍板 · 实现中 `feature/web-soft-update-prompt`）**：仅发现新版本时左下轻提示 → 点一下刷新；非补丁包。Brief `task-web-soft-update-prompt.md`；docs PR #261。
+- **Web 轻量版本更新提示（2026-08-12 · #263 已合 tip `38edfe0`）**：仅发现新版本时左下轻提示 → 点一下刷新；非补丁包。Brief `task-web-soft-update-prompt.md`。TRACKER 待人工（`?forceUpdatePrompt=1`）。
 - **Sanctuary Enso Mark 接线（2026-08-12 · #254 已合 tip `0adc0d3`）**：蒲团正面金石圆相；`lifetime∪subscription`；Focusing 淡化；点按不开店。TRACKER 待人工（宽+375）。
 - **场景化请茶气泡（2026-08-12 · #253 已合 tip `c10acb7`）**：达标 / 里程碑后 `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。TRACKER 待人工。
 - **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
@@ -378,9 +378,7 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-12 · Web 轻提示更新）**：先做 **Web 点一下刷新**（非补丁包）；入口 **仅发现新版本时出现**（更安静）。Focusing/Arrival/Reflection 不自动强刷；无网静默；与 Stripe 解耦。推送 / 桌面差分更新不做。Brief：`task-briefs/task-web-soft-update-prompt.md`。**实现等口令「开工 Web 版本提示」**。
-
-**最近拍板（2026-08-12）**：**Web 轻量版本更新提示**——先做「发现新版本 → 点一下刷新」；入口**仅在有新版本时出现**（不常驻）。**不是**补丁包下载；桌面壳真更新器等打包选型。非阻断（Focus/Arrival 不弹窗强刷）；与 Stripe 解耦；不做推送。Brief：`task-briefs/task-web-soft-update-prompt.md`。实现口令：「开工 Web 版本提示」。
+**最近拍板（2026-08-12）**：**Web 轻量版本更新提示**——先做「发现新版本 → 点一下刷新」；入口**仅在有新版本时出现**（不常驻）。**不是**补丁包下载；桌面壳真更新器等打包选型。非阻断（Focus/Arrival 不弹窗强刷）；与 Stripe 解耦；不做推送。Brief：`task-briefs/task-web-soft-update-prompt.md`。**实现已合** [#263](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/263)（tip `38edfe0`）；docs-only #261 已关（superseded）。
 
 **最近拍板（2026-08-12 · 练习记忆云端：免费兜底 vs 付费无缝）**：
 
@@ -447,7 +445,7 @@
 - **发布前安全网**（`test:pr-smoke` Required **已勾**；崩溃/错误监控；打包产物验证 CI；用户文档人工过目）
 - **双轨付费实现（A Tea + B 进阶解锁）**（方向已锁；Unlock/Tip UI 已合；**Support 统一入口**已合；**场景化请茶 #253**已合；**意愿漏斗本地 #255**已合；**Ambient 15s 试听 #258**已合；**意愿漏斗 opt-in #262**已合；B 下 Lifetime ∪ Yin Membership；**下一**：Daily Wisdom A / Membership 订阅产品化等；见 `task-tech-direction-v1-shell-monetization.md`）
 - **付费 · 意愿漏斗 opt-in 回传**（#262 已合 tip `582e79f`；明示同意；默认关；Brief `task-monetization-intent-funnel-opt-in.md`）
-- **Web 轻量版本更新提示**（#263 已合 tip `38edfe0`；Brief `task-web-soft-update-prompt.md`）
+- **Web 轻量版本更新提示**（#263 已合 tip `38edfe0`；Brief `task-web-soft-update-prompt.md`；TRACKER 待人工）
 - **应用内 Privacy +「?」简介文案**（Brief `task-in-app-privacy-and-purpose-copy.md`）
 - **Reflection 通用情绪共鸣**（Brief `task-reflection-echo-copy-pool.md`；**已合 develop** #175）
 - **向阿寅倾诉（Confide to Yin）**（Brief `task-confide-to-yin-v1.md`；safety-01 ok；面板已接线；**挂载仍关**；待评估地区资源；种子 `confide-corpus-seed.md`）
