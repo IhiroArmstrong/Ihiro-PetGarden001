@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **节日主题引擎 · Phase 1 文档（2026-08-11）**：通用 Seasonal Theme（fixed / nth-weekday / solar-term / lookup-table）；**B 轨付费解锁**；Brief `task-seasonal-theme-engine-v1.md`。待你审后再开 feature 实现。矩阵 / MVP / monetization Brief 已预登记。
+- **节日主题引擎 · Phase 1 已通过（2026-08-11）**：分析师书面通过 + 四点非阻塞建议已写入 Brief；**Phase 2 已授权**。Brief `task-seasonal-theme-engine-v1.md`。矩阵 / MVP / monetization Brief 已预登记。
 - **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。
 - **三种支付人工步骤清单（2026-08-11）**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` — Tea/Sanctuary/Membership 的 Restore（删本地 key→邮箱拉回）与零耦合逐步操作；KnownRisky #25–26/#28 已挂链。Webhook OK ≠ Restore 已测。
 - **付费成功回跳致谢（2026-08-11 · #231 已合）**：Tea=`teaDrinking` · Sanctuary=`mindfulAcknowledge` · Membership=`sessionComplete`；Checkout 回跳跳过冷启动欢迎（防盖掉）。单测 `paymentCheckoutThanks.test.js`。TRACKER 致谢专行待人工复测（合前用户曾反馈「只回首页」）。
