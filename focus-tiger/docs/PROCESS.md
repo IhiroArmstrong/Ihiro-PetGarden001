@@ -58,12 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-12（UTC+8）
+**最后更新时间**：2026-08-13（UTC+8）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Focus 间隔磬 + 觉察卡 · Brief/资产（2026-08-13 · 本支 docs）**：入库 `session-interval-bell.mp3`；`THIRD_PARTY_AUDIO_LICENSES.md` + `cues/ATTRIBUTION` 核实账本（Agent Cloudflare **未**完成单页核验，须人工 Safari 补确认）；Brief `task-session-interval-bell-and-awareness-card.md`——**独立** interval cue + **独立** mid-session 觉察卡（**不**改 Moment Whisper 一生一次；**不**并 Quiet Line）；达标前 **30s** 跳过间隔磬。**运行时未接线**。
+- **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（现仅 Stripe secrets）。TRACKER 待人工（端到端须先补密）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
 - **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。TRACKER 待人工。
@@ -770,6 +772,13 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **复杂度评级**：中（Dispatcher + 多场景映射；不碰状态机主语义）
 - **价值定位**：消化库存、仪式感与陪伴感；架构一次收口
 - **排期口令**：「开工场景动画 Dispatcher / Slice B」；worktree `feature/scene-animation-dispatcher-slice-b`
+
+### Backlog:Focus 间隔磬 + 觉察观照卡（mid-session）
+
+> **Brief**：`task-briefs/task-session-interval-bell-and-awareness-card.md`（2026-08-13）。  
+> **资产**：`public/audio/cues/session-interval-bell.mp3` 已入库；授权索引 `docs/THIRD_PARTY_AUDIO_LICENSES.md`（人工单页确认仍待）。  
+> **口径**：每 180s 间隔磬；达标前 **30s** 跳过；独立觉察卡（可重复，**不**改 Moment Whisper）；**不**并 Quiet Line；v1 全 Focus、无会话类型。  
+> **排期**：Brief 已起草；**运行时未开工**——须另开 `feature/*`。
 
 ### Backlog:用户上传氛围乐（v1.0.0 必交付 · 多首 · 最近在上 · 可删自传）
 
