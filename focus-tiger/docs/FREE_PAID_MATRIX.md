@@ -69,6 +69,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合。**Daily Card** Brief `task-journey-daily-card.md`。**上限：免费/付费统一 30（有意取舍，不做付费更高上限）**；永久档案靠 Save image；B 勿卖「无限历史」。云端兜底见下行「练习记忆 · 云端快照备份」 |
 | 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；邮箱 OTP + practice-backup deviceToken | Brief + Worker `PRACTICE_BACKUP_KV` | A 档静默整包快照（6 key）+ 空库恢复；关闭=删云端 | **接线中**（`feature/practice-memory-cloud-backup-a`） | Prompt 12 实现中。白名单见 Brief。未绑/未同意=无兜底。 |
 | Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**Phase A 已挂 Reflection 底**；Phase B 印花未做。Brief：`task-daily-wisdom-reflection-mount.md` |
+
 | MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
 
 ### A2 · A 轨 · Buy Yin a Tea（打赏 · 不解锁）

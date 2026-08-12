@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。**仅文档口径；运行时未开工**。
+- **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。**Brief 已立项** `task-practice-memory-cloud-backup-a.md`；**运行时仍待口令**「开工练习记忆备份 A」。
 - **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。TRACKER 待人工。
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
 - **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**opt-in 回传见上行 #262**。
@@ -327,8 +327,8 @@
 
 **下一步计划**：
 
-- **可靠性 · 练习记忆云端快照备份（免费 A · 近期评估优先 · 勿漏）**：Safari/ITP 本机静默清库风险；练习史 / Journey Log 等。身份复用邮箱 OTP；未绑邮箱须温和提示。详见 Backlog「练习记忆云端备份」；**≠** v1.1 云端算法、**≠** B 多端无缝。仅文档已拍板；实现另开 Task。
-- **内容 · Daily Wisdom → Reflection Phase A（本支）**：Brief `task-daily-wisdom-reflection-mount.md`——只挂免费句；**禁止**塞 Phase B 印花进同一 PR。
+- **可靠性 · 练习记忆云端快照备份（免费 A · Brief 已立项 · 勿漏）**：Brief `task-practice-memory-cloud-backup-a.md`。Safari/ITP 本机静默清库；定期/会话后静默快照 + 空库恢复；身份复用邮箱 OTP。口令「开工练习记忆备份 A」再写运行时。**≠** v1.1 云端算法、**≠** B 多端无缝。
+- **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
@@ -387,7 +387,7 @@
 3. **身份**：唯一复用既有 **邮箱 OTP**（与付费 restore **一套身份、两种用途**）；**不做**匿名 device id 跨端。  
 4. **未绑邮箱**：无云端兜底；本机清理风险用户自行承担；实现 A 时须 **温和、非打断**提示（例 Journey Log 角落绑定引导；非弹窗；文案另定）。  
 5. **与 v1.0 纯本地**：核心练习仍可离线；A 为可选增强（有网+已绑邮箱才备份）。隐私明示同意仍适用。  
-权威表：`FREE_PAID_MATRIX`；详情 Backlog「练习记忆云端备份」。**仅文档；无运行时。**已合 develop：**#266** tip `4698348`。
+权威表：`FREE_PAID_MATRIX`；详情 Backlog「练习记忆云端备份」；实现 Brief：`task-practice-memory-cloud-backup-a.md`。政策已合 develop：**#266** tip `4698348`。**Brief 已立项；运行时未开工。**
 
 **最近拍板（2026-08-10 · Yin Membership 纳入 v1）**：推翻「B 仅 Lifetime / v1 无订阅」。**双轨**心智不变：A 打赏·不解锁 + B 进阶内容解锁。B 下两种付费方式并存——**Sanctuary Lifetime** 一次买断 ∪ **Yin Membership** 订阅；**lifetime ∪ subscription 互相覆盖**（同一套进阶权益，非三档）。订阅到期：已生成内容永久可看，只停新解锁与进阶使用。AI Coach 红线不变。A→B 24h 体验卡仍非 v1。SSOT：`MVP_PRODUCT_DEFINITION` §五 + monetization Brief。
 
@@ -427,7 +427,7 @@
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
 - **本地桌面 APP 打包选型（v1 阻塞 · 壳未拍板；开会时机已定）**
 - **v1.1 云端算法**（v1.0 不接线；保留 `cloud/` 可扩展）
-- **练习记忆云端备份（免费 A 快照 · 近期评估优先；B 无缝可后排）**
+- **练习记忆云端备份（免费 A · Brief 已立项；运行时待开工；B 无缝可后排）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 - **荷花成长场景**（复用 `IncenseComplete` 立体荷花 + 金斑浮动；荷花持续增加至布满画面）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
@@ -886,7 +886,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:练习记忆云端备份（免费 A 快照 · B 无缝可后排）
 
-> **拍板（2026-08-12）**：产品面已定；**仅文档**（**#266** tip `4698348` 已合 develop）。实现须另开 Task / Brief。对账表：`FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」与「练习记忆 · 多端无缝同步」。
+> **拍板（2026-08-12）**：产品面已定（**#266** tip `4698348`）。**A 实现 Brief 已立项**：`task-briefs/task-practice-memory-cloud-backup-a.md`（运行时待口令「开工练习记忆备份 A」）。对账表：`FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」与「练习记忆 · 多端无缝同步」。
 
 #### 动机
 
@@ -918,8 +918,8 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - 未明示同意就上传练习相关字段  
 - 把 A 与 B 混成「一个同步功能」却不分免费/付费  
 
-- **状态**：产品口径 **已拍板**；运行时 **未开工**。  
-- **口令示例**：「评估练习记忆云端快照」/「开工练习记忆备份 A」
+- **状态**：产品口径 **已拍板**；A **Brief 已立项**；运行时 **未开工**。  
+- **口令示例**：「评估练习记忆云端快照」/「开工练习记忆备份 A」（→ `feature/practice-memory-cloud-backup-a`）
 
 ### Backlog:v1.1 云端算法（v1.0 纯本地之后）
 
