@@ -519,3 +519,58 @@ test('stopPlaybackEphemeral does not require or clear startSession presence', as
   assert.ok(ctrl.getPresenceBoost(25) > 0);
   ctrl.endSession();
 });
+
+test('duckTo scales live volume without changing getVolume()', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  ctrl.setVolume(0.8);
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.getVolume(), 0.8);
+  ctrl.duckTo(0.35, { fadeMs: 0 });
+  assert.equal(ctrl.getVolume(), 0.8);
+  assert.ok(Math.abs(audio.volume - 0.8 * 0.35) < 1e-9);
+  assert.equal(ctrl.getDuckRatio(), 0.35);
+  ctrl.cancelDuck();
+  assert.equal(ctrl.getDuckRatio(), 1);
+  assert.ok(Math.abs(audio.volume - 0.8) < 1e-9);
+});
+
+test('fadeOutAndStop reaches silent endSession without restoring full volume', async () => {
+  const timers = [];
+  const schedule = (fn, ms) => {
+    const id = timers.length + 1;
+    timers.push({ id, fn, ms });
+    return id;
+  };
+  const cancelSchedule = (id) => {
+    const i = timers.findIndex((t) => t.id === id);
+    if (i >= 0) timers.splice(i, 1);
+  };
+  const flush = () => {
+    while (timers.length) {
+      const next = timers.shift();
+      next.fn();
+    }
+  };
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false,
+    schedule,
+    cancelSchedule
+  });
+  ctrl.setVolume(0.5);
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  ctrl.duckTo(0.35, { fadeMs: 0 });
+  const p = ctrl.fadeOutAndStop({ fadeMs: 80 });
+  flush();
+  await p;
+  assert.equal(ctrl.isAudiblePlaying(), false);
+  assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_OFF);
+  assert.equal(ctrl.getDuckRatio(), 1);
+});

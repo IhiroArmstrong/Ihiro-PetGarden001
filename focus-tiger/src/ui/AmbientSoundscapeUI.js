@@ -55,10 +55,12 @@ export class AmbientSoundscapeUI {
    * @param {() => void} [handlers.onTrackChosen]
    * @param {() => void} [handlers.onToggleMusic]
    * @param {(trackId: string) => void} [handlers.onLockedDeepTrack]
+   * @param {import('../audio/SessionCueController.js').SessionCueController | null} [handlers.sessionCues]
    */
   constructor(overlayRoot, controller, handlers = {}) {
     this.controller = controller;
     this.handlers = handlers;
+    this.sessionCues = handlers.sessionCues || null;
     this._expanded = false;
     this._sessionActive = false;
     this._nudgeVisible = false;
@@ -194,13 +196,30 @@ export class AmbientSoundscapeUI {
     });
     this.volumeLabel.appendChild(this.volumeInput);
 
+    this.cueToggleLabel = document.createElement('label');
+    this.cueToggleLabel.className = 'ambient-soundscape__session-cues';
+    this.cueToggleInput = document.createElement('input');
+    this.cueToggleInput.type = 'checkbox';
+    this.cueToggleInput.className = 'ambient-soundscape__session-cues-input';
+    this.cueToggleInput.id = 'ambient-session-cues-toggle';
+    this.cueToggleInput.checked = this.sessionCues
+      ? this.sessionCues.isEnabled()
+      : true;
+    this.cueToggleInput.addEventListener('change', () => {
+      this.sessionCues?.setEnabled(this.cueToggleInput.checked);
+    });
+    this.cueToggleText = document.createElement('span');
+    this.cueToggleText.className = 'ambient-soundscape__session-cues-text';
+    this.cueToggleLabel.append(this.cueToggleInput, this.cueToggleText);
+
     this.panel.append(
       this.titleEl,
       this.uploadHintEl,
       this.uploadRow,
       this.uploadErrEl,
       this.trackRow,
-      this.volumeLabel
+      this.volumeLabel,
+      this.cueToggleLabel
     );
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
     this.root.append(this.muteBtn, this.focusChrome);
@@ -609,6 +628,12 @@ export class AmbientSoundscapeUI {
     this.titleEl.textContent = t('AMBIENT_TITLE');
     this.uploadHintEl.textContent = t('AMBIENT_UPLOAD_LOCAL_HINT');
     this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
+    this.cueToggleText.textContent = t('SESSION_CUES_TOGGLE');
+    this.cueToggleLabel.title = t('SESSION_CUES_TOGGLE_HINT');
+    this.cueToggleInput.setAttribute('aria-label', t('SESSION_CUES_TOGGLE'));
+    if (this.sessionCues) {
+      this.cueToggleInput.checked = this.sessionCues.isEnabled();
+    }
     if (this._nudgeVisible) {
       this.nudgeEl.textContent = t('AMBIENT_DEFAULT_ON_NUDGE');
     }
@@ -1176,6 +1201,25 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape__volume input {
         width: 100%;
         accent-color: var(--color-accent, #b5623a);
+      }
+      .ambient-soundscape__session-cues {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-top: 12px;
+        font-size: 12px;
+        line-height: 1.35;
+        color: var(--color-ink-muted, #5c5348);
+        cursor: pointer;
+        user-select: none;
+      }
+      .ambient-soundscape__session-cues-input {
+        margin: 2px 0 0;
+        flex-shrink: 0;
+        accent-color: var(--color-accent, #b5623a);
+      }
+      .ambient-soundscape__session-cues-text {
+        flex: 1;
       }
     `;
   }

@@ -54,6 +54,12 @@ export const DEFAULT_AMBIENT_TRACK_ID = AMBIENT_TRACK_SINGING_BOWL;
 /** 与 `localStateKeys.js` 白名单同步。 */
 export const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 
+/** Session cue duck target (relative to user volume). */
+export const AMBIENT_SESSION_CUE_DUCK_RATIO = 0.35;
+
+/** Soft fade when unducking after a start cue / fading out on session end. */
+export const AMBIENT_DUCK_FADE_MS = 1500;
+
 /** Opt-in ambient library (YouTube Audio Library / user-provided). */
 export const AMBIENT_TRACKS = [
   {
@@ -314,6 +320,13 @@ export class AmbientSoundscapeController {
     this._prefBeforeAudition = null;
     /** @type {null | ((info: { reason: string, trackId: string | null }) => void)} */
     this._onAuditionEnded = null;
+    /** Live volume multiplier for session cues (1 = full user volume). */
+    this._duckRatio = 1;
+    this._duckEpoch = 0;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._duckFadeTimer = null;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._duckDelayTimer = null;
     this._boundTimeUpdate = () => this._onTimeUpdate();
     this._boundPlayState = () => this._syncCreditSegment();
 
@@ -357,8 +370,151 @@ export class AmbientSoundscapeController {
     this._segmentStartedAt = null;
     this._wantEnabled = false;
     this._clearSeekPause();
+    // Reset duck state without applying full volume (avoids a volume flash before stop).
+    this._cancelDuckTimers();
+    this._duckEpoch += 1;
+    this._duckRatio = 1;
     this.cancelDeepAudition({ reason: 'session-end', notify: false });
     this._stopPlayback({ persist: false });
+  }
+
+  /**
+   * Temporarily scale live volume relative to user `_volume` (does not persist).
+   * @param {number} ratio 0–1 (e.g. 0.35 for session cues)
+   * @param {{ fadeMs?: number }} [opts]
+   */
+  duckTo(ratio, { fadeMs = 0 } = {}) {
+    const target = Math.min(1, Math.max(0, Number(ratio)));
+    const safeTarget = Number.isFinite(target) ? target : AMBIENT_SESSION_CUE_DUCK_RATIO;
+    this._cancelDuckTimers();
+    this._duckEpoch += 1;
+    const epoch = this._duckEpoch;
+    const ms = Math.max(0, Number(fadeMs) || 0);
+    if (ms <= 0 || !this._audio) {
+      this._duckRatio = safeTarget;
+      this._applyLiveVolume();
+      return;
+    }
+    const start = this._duckRatio;
+    const steps = 8;
+    let i = 0;
+    const tick = () => {
+      if (epoch !== this._duckEpoch) return;
+      i += 1;
+      this._duckRatio = start + (safeTarget - start) * (i / steps);
+      this._applyLiveVolume();
+      if (i >= steps) {
+        this._duckFadeTimer = null;
+        this._duckRatio = safeTarget;
+        this._applyLiveVolume();
+        return;
+      }
+      this._duckFadeTimer = this._schedule(tick, ms / steps);
+    };
+    this._duckFadeTimer = this._schedule(tick, ms / steps);
+  }
+
+  /**
+   * Restore live volume to user `_volume` after an optional delay.
+   * @param {{ fadeMs?: number, delayMs?: number }} [opts]
+   */
+  unduck({ fadeMs = AMBIENT_DUCK_FADE_MS, delayMs = 0 } = {}) {
+    this._cancelDuckTimers();
+    this._duckEpoch += 1;
+    const epoch = this._duckEpoch;
+    const delay = Math.max(0, Number(delayMs) || 0);
+    const run = () => {
+      if (epoch !== this._duckEpoch) return;
+      this.duckTo(1, { fadeMs });
+    };
+    if (delay <= 0) {
+      run();
+      return;
+    }
+    this._duckDelayTimer = this._schedule(run, delay);
+  }
+
+  /** Snap duck multiplier back to 1 and cancel pending fades. */
+  cancelDuck() {
+    this._cancelDuckTimers();
+    this._duckEpoch += 1;
+    this._duckRatio = 1;
+    this._applyLiveVolume();
+  }
+
+  getDuckRatio() {
+    return this._duckRatio;
+  }
+
+  /**
+   * Fade live volume to 0 then hard-stop (session complete plan A).
+   * @param {{ fadeMs?: number }} [opts]
+   * @returns {Promise<void>}
+   */
+  async fadeOutAndStop({ fadeMs = AMBIENT_DUCK_FADE_MS } = {}) {
+    this._cancelDuckTimers();
+    this._duckEpoch += 1;
+    const epoch = this._duckEpoch;
+    const player = this._audio;
+    const ms = Math.max(0, Number(fadeMs) || 0);
+    const startVol =
+      player && Number.isFinite(player.volume)
+        ? player.volume
+        : this._volume * this._duckRatio;
+
+    if (player && ms > 0 && startVol > 0) {
+      await new Promise((resolve) => {
+        const steps = 8;
+        let i = 0;
+        const tick = () => {
+          if (epoch !== this._duckEpoch) {
+            resolve();
+            return;
+          }
+          i += 1;
+          try {
+            player.volume = Math.max(0, startVol * (1 - i / steps));
+          } catch {
+            /* ignore */
+          }
+          if (i >= steps) {
+            this._duckFadeTimer = null;
+            resolve();
+            return;
+          }
+          this._duckFadeTimer = this._schedule(tick, ms / steps);
+        };
+        this._duckFadeTimer = this._schedule(tick, ms / steps);
+      });
+    }
+
+    if (epoch !== this._duckEpoch) return;
+    this.endSession();
+  }
+
+  _cancelDuckTimers() {
+    if (this._duckFadeTimer != null) {
+      this._cancelSchedule(this._duckFadeTimer);
+      this._duckFadeTimer = null;
+    }
+    if (this._duckDelayTimer != null) {
+      this._cancelSchedule(this._duckDelayTimer);
+      this._duckDelayTimer = null;
+    }
+  }
+
+  _applyLiveVolume() {
+    if (!this._audio) return;
+    const live = Math.min(
+      1,
+      Math.max(0, this._volume * this._duckRatio)
+    );
+    try {
+      this._audio.volume = live;
+      this._audio.muted = live <= 0;
+    } catch {
+      /* ignore */
+    }
   }
 
   getTrackId() {
@@ -399,6 +555,7 @@ export class AmbientSoundscapeController {
       this.cancelDeepAudition({ reason: 'mute', notify: false });
       return;
     }
+    this.cancelDuck();
     const shouldResume =
       this._preferredTrackId !== AMBIENT_TRACK_OFF &&
       (this._wantEnabled || this._isAudiblePlaying());
@@ -546,6 +703,8 @@ export class AmbientSoundscapeController {
     this._trackId = AMBIENT_TRACK_OFF;
     this._needsGestureUnlock = false;
     this._clearSeekPause();
+    this._duckRatio = 1;
+    this._cancelDuckTimers();
 
     const prev = this._audio;
     if (prev) {
@@ -654,7 +813,7 @@ export class AmbientSoundscapeController {
     const player = this._audio;
     player.muted = false;
     player.loop = true;
-    player.volume = this._volume;
+    this._applyLiveVolume();
     player.src = src;
     if (persist) this._persistPref();
 
@@ -871,10 +1030,7 @@ export class AmbientSoundscapeController {
   /** @param {number} volume 0–1 */
   setVolume(volume) {
     this._volume = Math.min(1, Math.max(0, Number(volume) || 0));
-    if (this._audio) {
-      this._audio.volume = this._volume;
-      this._audio.muted = this._volume <= 0;
-    }
+    this._applyLiveVolume();
     this._syncCreditSegment();
   }
 
@@ -950,7 +1106,7 @@ export class AmbientSoundscapeController {
     this._clearSeekPause();
     player.muted = false;
     player.loop = true;
-    player.volume = this._volume;
+    this._applyLiveVolume();
     try {
       await player.play();
     } catch {

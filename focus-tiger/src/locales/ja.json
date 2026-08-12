@@ -48,6 +48,8 @@
   "AMBIENT_UPLOAD_ERR_FORMAT": "MP3 または M4A を選んでください。",
   "AMBIENT_UPLOAD_ERR_FILE_SIZE": "ファイルが大きすぎます（1曲あたり最大 20 MB）。",
   "AMBIENT_UPLOAD_ERR_LIMIT": "ライブラリがいっぱいです（最大 10 曲、または合計 64 MB）。",
+  "SESSION_CUES_TOGGLE": "タイマー音",
+  "SESSION_CUES_TOGGLE_HINT": "集中の開始とタイマー完了のときに、短いベルを鳴らします。",
   "HUD_LABEL_STATE": "状態",
   "HUD_LABEL_LEVEL": "集中",
   "HUD_LABEL_TIME": "時間",

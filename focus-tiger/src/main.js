@@ -239,9 +239,11 @@ import { AcrossToolsIdleGuard } from './core/AcrossToolsIdleGuard.js';
 import {
   AmbientSoundscapeController,
   AMBIENT_TRACK_OFF,
-  DEFAULT_AMBIENT_TRACK_ID
+  DEFAULT_AMBIENT_TRACK_ID,
+  AMBIENT_DUCK_FADE_MS
 } from './audio/AmbientSoundscapeController.js';
 import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
+import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import {
   createHintsSeenStore,
@@ -1571,6 +1573,8 @@ async function init() {
       typeof location !== 'undefined' ? location.search : ''
     )
   });
+  const sessionCues = new SessionCueController();
+  sessionCues.preload();
   // Avoid TDZ: AmbientSoundscapeUI paints during construct, before `let onboardingHints`.
   /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
   const onboardingHintHost = { hints: null };
@@ -1579,6 +1583,7 @@ async function init() {
     document.body,
     ambientSoundscape,
     {
+      sessionCues,
       onPanelOpened: () => {
         onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
       },
@@ -1846,6 +1851,7 @@ async function init() {
   // `vite preview` production builds — same contract as `__honestyBridge`.
   window.__ambientSoundscape = ambientSoundscape;
   window.__ambientSoundscapeUI = ambientSoundscapeUI;
+  window.__sessionCues = sessionCues;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
     window.__mindfulReminderController = mindfulReminderController;
@@ -2198,11 +2204,13 @@ async function init() {
     window.__retentionFunnel = retentionFunnelStore;
   }
 
-  function endFocusChrome() {
+  function endFocusChrome({ stopAmbient = true } = {}) {
     attentionSignals.setEnabled(false);
     mindfulReminderController.stopSession();
     acrossToolsIdleGuard.stop();
-    ambientSoundscape.endSession();
+    if (stopAmbient) {
+      ambientSoundscape.endSession();
+    }
     ambientSoundscapeUI.setSessionActive(false);
     supportYinModalUI.setFabVisible(true);
     tipKindnessBadgesChrome.setVisible(true);
@@ -2224,7 +2232,22 @@ async function init() {
 
     sessionUiGate.setCompletionPending(true);
     resyncSessionChrome();
-    endFocusChrome();
+    // Plan A: duck → end chime → fadeOutAndStop ambient (do not hard-stop first).
+    const stopAmbientAfterEndCue = () => {
+      if (ambientSoundscape.isAudiblePlaying()) {
+        void ambientSoundscape.fadeOutAndStop({ fadeMs: AMBIENT_DUCK_FADE_MS });
+        return;
+      }
+      ambientSoundscape.endSession();
+    };
+    const playedEndCue = sessionCues.playEnd({
+      ambient: ambientSoundscape,
+      onCueEnded: stopAmbientAfterEndCue
+    });
+    if (!playedEndCue) {
+      stopAmbientAfterEndCue();
+    }
+    endFocusChrome({ stopAmbient: false });
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
     // 里程碑（如连续 7 天）同刻只播 MilestoneGlow，庆祝戳仍记账。
@@ -2289,6 +2312,7 @@ async function init() {
     companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
     microRitualUI?.hideIdleEntry();
+    sessionCues.preload();
     focusDurationPicker.open();
     resyncSessionChrome();
     syncOnboardingAutoHints();
@@ -2342,6 +2366,8 @@ async function init() {
     });
     ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
+    // Free core cue — not Ambient entitlement; sync play on this gesture.
+    sessionCues.playStart({ ambient: ambientSoundscape });
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
     // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
@@ -2523,6 +2549,9 @@ async function init() {
       pendingAutoStartMode = null;
       suppressCompanionOpenAfterNod = false;
       postChooseChrome.pending = false;
+      // Early Rise: no end chime; cancel any in-flight start cue + duck.
+      sessionCues.cancelPending();
+      ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
       focusSession.stop();
