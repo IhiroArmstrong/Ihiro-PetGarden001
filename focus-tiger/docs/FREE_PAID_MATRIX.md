@@ -68,7 +68,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Breath Practice（首页左球） | `free` | — | 无 key | 与进阶仪式分立；免费 | **已接线** | — |
 | Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合。**Daily Card** Brief `task-journey-daily-card.md`。**上限：免费/付费统一 30（有意取舍，不做付费更高上限）**；永久档案靠 Save image；B 勿卖「无限历史」。云端兜底见下行「练习记忆 · 云端快照备份」 |
 | 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；依赖邮箱 OTP 身份（与付费 restore **同一套身份、两种用途**） | Brief 已立项（Worker 快照；非 FEATURE_CATALOG 内容 key） | A 档 = 「不出问题」；本机权威日常写入 → 定期/关键后静默上传快照 → 空库/清机后恢复最近一次；**不做**首版实时双向同步 | **未接线** | **Brief `task-practice-memory-cloud-backup-a.md`（2026-08-12 立项）**；政策 #266。覆盖 Journey Log / practice-days / milestone-glow（见 Brief 表）。**未绑邮箱** = **无云端兜底** + 温和非打断提示。隐私明示同意。口令「开工练习记忆备份 A」再写运行时。`PROCESS` Backlog「练习记忆云端备份」 |
-| Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**未挂产品场景**。落点 Brief：`task-daily-wisdom-reflection-mount.md`（Reflection 底 + 可选印花） |
+| Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**Phase A 已挂 Reflection 底**；Phase B 印花未做。Brief：`task-daily-wisdom-reflection-mount.md` |
+
 | MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
 
 ### A2 · A 轨 · Buy Yin a Tea（打赏 · 不解锁）

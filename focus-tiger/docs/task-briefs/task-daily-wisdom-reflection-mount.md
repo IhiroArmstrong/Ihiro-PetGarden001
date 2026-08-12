@@ -1,6 +1,6 @@
 # Task Brief · Daily Wisdom 挂 Reflection + Sanctuary 静默印花
 
-> **状态（2026-08-12）**：待排期 · **强制拆 Phase A / B**（用户 + 分析师拍板）。  
+> **状态（2026-08-12）**：Phase A 本支实现中 / 待合；**Phase B 仍待排期**（强制拆分，禁同 PR）。  
 > **目的**：把已完成的 `<daily-wisdom>` 挂到 Reflect；免费用户见基础句；Sanctuary 用户见静默印花。  
 > **原则**：`PRINCIPLES` 经济可持续 +「委婉 vs 硬推销」案例表。
 
