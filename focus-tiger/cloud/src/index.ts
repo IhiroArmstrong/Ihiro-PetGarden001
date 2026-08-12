@@ -18,6 +18,11 @@ import { handleConfirmMembershipSession } from "./routes/confirmMembershipSessio
 import { handleCreateMembershipPortalSession } from "./routes/createMembershipPortalSession";
 import { handleMembershipEntitlement } from "./routes/membershipEntitlement";
 import { handleRequestRestoreOtp } from "./routes/requestRestoreOtp";
+import { handleRequestPracticeBackupOtp } from "./routes/requestPracticeBackupOtp";
+import { handleVerifyPracticeBackup } from "./routes/verifyPracticeBackup";
+import { handlePutPracticeBackup } from "./routes/putPracticeBackup";
+import { handleGetPracticeBackup } from "./routes/getPracticeBackup";
+import { handleDeletePracticeBackup } from "./routes/deletePracticeBackup";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
@@ -54,6 +59,11 @@ export default {
 				url.pathname === "/api/membership-entitlement" ||
 				url.pathname === "/api/create-membership-portal-session" ||
 				url.pathname === "/api/restore/request-otp" ||
+				url.pathname === "/api/practice-backup/request-otp" ||
+				url.pathname === "/api/practice-backup/verify" ||
+				url.pathname === "/api/practice-backup/put" ||
+				url.pathname === "/api/practice-backup/get" ||
+				url.pathname === "/api/practice-backup/delete" ||
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight" ||
 				url.pathname === "/api/monetization-funnel-ingest")
@@ -86,6 +96,84 @@ export default {
 			});
 			if (otpLimited) return withCors(otpLimited, origin);
 			return withCors(await handleRequestRestoreOtp(request, env, ctx), origin);
+		}
+
+		if (url.pathname === "/api/practice-backup/request-otp") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const otpLimited = enforceRateLimit(request, {
+				limit: RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "practice-backup-otp-request",
+			});
+			if (otpLimited) return withCors(otpLimited, origin);
+			return withCors(
+				await handleRequestPracticeBackupOtp(request, env, ctx),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/practice-backup/verify") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const verifyLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "practice-backup-verify",
+			});
+			if (verifyLimited) return withCors(verifyLimited, origin);
+			return withCors(await handleVerifyPracticeBackup(request, env), origin);
+		}
+
+		if (url.pathname === "/api/practice-backup/put") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const limited = enforceRateLimit(request, {
+				limit: RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "practice-backup-put",
+			});
+			if (limited) return withCors(limited, origin);
+			return withCors(await handlePutPracticeBackup(request, env), origin);
+		}
+
+		if (url.pathname === "/api/practice-backup/get") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const limited = enforceRateLimit(request, {
+				limit: RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "practice-backup-get",
+			});
+			if (limited) return withCors(limited, origin);
+			return withCors(await handleGetPracticeBackup(request, env), origin);
+		}
+
+		if (url.pathname === "/api/practice-backup/delete") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const limited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "practice-backup-delete",
+			});
+			if (limited) return withCors(limited, origin);
+			return withCors(await handleDeletePracticeBackup(request, env), origin);
 		}
 
 		if (url.pathname === "/api/verify-tip") {

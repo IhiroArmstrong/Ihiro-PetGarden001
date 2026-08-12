@@ -53,10 +53,21 @@ export async function sendTransactionalEmail(opts: {
 }
 
 export function restoreOtpEmailCopy(opts: {
-	purpose: "sanctuary" | "membership";
+	purpose: "sanctuary" | "membership" | "practice-backup";
 	code: string;
 	ttlMinutes: number;
 }): { subject: string; text: string } {
+	if (opts.purpose === "practice-backup") {
+		return {
+			subject: "Practice memory backup code",
+			text: [
+				`Your Focus Tiger practice-memory backup code is: ${opts.code}`,
+				``,
+				`It expires in about ${opts.ttlMinutes} minutes.`,
+				`If you did not request this, you can ignore this email.`,
+			].join("\n"),
+		};
+	}
 	const product =
 		opts.purpose === "sanctuary" ? "Yin's Sanctuary" : "Yin Membership";
 	return {

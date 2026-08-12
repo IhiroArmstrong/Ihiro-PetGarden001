@@ -9,7 +9,7 @@ export const RESTORE_OTP_MAX_ATTEMPTS = 5;
 export const RESTORE_OTP_RESEND_COOLDOWN_SEC = 60;
 export const RESTORE_OTP_HOURLY_CAP = 5;
 
-export type RestorePurpose = "sanctuary" | "membership";
+export type RestorePurpose = "sanctuary" | "membership" | "practice-backup";
 
 export type RestoreOtpRecord = {
 	codeHash: string;
@@ -22,7 +22,9 @@ export type RestoreOtpRecord = {
 };
 
 export function isRestorePurpose(v: unknown): v is RestorePurpose {
-	return v === "sanctuary" || v === "membership";
+	return (
+		v === "sanctuary" || v === "membership" || v === "practice-backup"
+	);
 }
 
 export function restoreOtpKey(purpose: RestorePurpose, email: string): string {
@@ -82,7 +84,13 @@ export function parseRestoreOtpRecord(raw: string | null): RestoreOtpRecord | nu
 		if (typeof o.expiresAt !== "number" || !Number.isFinite(o.expiresAt)) {
 			return null;
 		}
-		if (o.purpose !== "sanctuary" && o.purpose !== "membership") return null;
+		if (
+			o.purpose !== "sanctuary" &&
+			o.purpose !== "membership" &&
+			o.purpose !== "practice-backup"
+		) {
+			return null;
+		}
 		const attempts = Number(o.attempts);
 		const createdAt = Number(o.createdAt);
 		const sentAt = Array.isArray(o.sentAt)

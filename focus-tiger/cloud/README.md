@@ -51,6 +51,11 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/restore/request-otp` | `{ email, purpose }` → 恒 `{ ok: true }`；有权益时写 OTP 哈希并用 `waitUntil` 调 Resend（防时序侧信道） |
 | `POST` | `/api/verify-sanctuary` | `{ email, code }` → OTP 通过后才 lookup → `{ unlocked, … }` |
 | `POST` | `/api/verify-membership` | `{ email, code }` → OTP 通过后才 lookup；成功可返回 `deviceToken` |
+| `POST` | `/api/practice-backup/request-otp` | `{ email }` → 恒 `{ ok: true }`；**无权益门闩**；`purpose: practice-backup` |
+| `POST` | `/api/practice-backup/verify` | `{ email, code }` → `{ deviceToken }`（~30d） |
+| `POST` | `/api/practice-backup/put` | `{ email, deviceToken, snapshot }` → 写 `PRACTICE_BACKUP_KV` 最新整包 |
+| `POST` | `/api/practice-backup/get` | `{ email, deviceToken }` → `{ snapshot }` |
+| `POST` | `/api/practice-backup/delete` | `{ email, code }` 或 `{ email, deviceToken }` → 删云端快照（关闭备份） |
 
 ### 限流
 

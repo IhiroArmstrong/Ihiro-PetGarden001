@@ -1,8 +1,9 @@
 # Task Brief · 练习记忆 · 云端快照备份 / 恢复（免费 A）
 
-> **状态（2026-08-12）**：产品口径已拍板（#266 · tip `4698348`）；**本 Brief 已立项**。  
+> **状态（2026-08-12）**：产品口径已拍板（#266 · tip `4698348`）；Brief 立项 + Prompt 11.5 白名单。  
 > **范围修订（Prompt 11.5 · 2026-08-12）**：白名单扩为 **6 key 统一快照**（新增 `entitlement-ownership` / `ritual-completions` / `mustard-seed-seal`）；机制 = 一次序列化、一次 put/get，不拆多条同步链。  
-> **运行时**：未接线；须用户口令「开工练习记忆备份 A」后再开 `feature/practice-memory-cloud-backup-a`。  
+> **关闭备份（Prompt 12 拍板）**：关闭 = **同时删除云端快照**（`POST /api/practice-backup/delete` + OTP 身份）；非「只关本机」。  
+> **运行时**：`feature/practice-memory-cloud-backup-a` 实现中。  
 > **权威**：`PROCESS.md` Backlog「练习记忆云端备份」· `FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」。
 
 ## 目标
@@ -60,9 +61,11 @@
 ### Worker（`focus-tiger/cloud/`）
 
 1. **复用**现有 OTP / Resend / `OTP_KV` 纪律（限流、pepper、`waitUntil`）；扩展 `RestorePurpose` 或等价：`practice-backup`（命名实现时定，ASCII）。  
-2. **新路由草图**（路径可微调）：  
-   - `POST /api/practice-backup/put` — 已认证（email + deviceToken 或刚验 OTP）→ 写 KV 快照（建议独立 `PRACTICE_BACKUP_KV` 或明确前缀；TTL/配额立项时定，防滥用）。  
-   - `POST /api/practice-backup/get` — 同上 → 返回最近快照。  
+2. **新路由草图**：  
+   - `POST /api/practice-backup/request-otp` — 合法邮箱即可发码（**无**付费权益门闩）  
+   - `POST /api/practice-backup/verify` — OTP → `deviceToken`（~30d）  
+   - `POST /api/practice-backup/put` / `get` — email + deviceToken；整包快照  
+   - `POST /api/practice-backup/delete` — email + OTP code（或 deviceToken）→ **删除** `PRACTICE_BACKUP_KV` 记录（关闭备份必走；GDPR）  
 3. **禁止**：未 OTP/token 的裸邮箱读写；与 tip/sanctuary entitlement KV **混键**。  
 4. **生产 redeploy**：与既有 OTP 同纪律——secrets 齐备后再部署；合 develop ≠ 已 redeploy。
 

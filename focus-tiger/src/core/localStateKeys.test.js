@@ -70,6 +70,7 @@ import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
 import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
 import { MUSTARD_SEED_SEAL_STORAGE_KEY } from './mustardSeedSeal.js';
+import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
   clearAllFocusTigerLocalState,
@@ -140,6 +141,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FIVE_MOMENTS_COMPASS_SEEN_KEY,
   MOMENT_WHISPERS_SEEN_KEY,
   JOURNEY_LOG_STORAGE_KEY,
+  PRACTICE_BACKUP_OPT_IN_KEY,
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY
 ]);
