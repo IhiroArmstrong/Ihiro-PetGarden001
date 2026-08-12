@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · PR #278）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工。
+- **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（现仅 Stripe secrets）。TRACKER 待人工（端到端须先补密）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
@@ -773,12 +773,12 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - **价值定位**：消化库存、仪式感与陪伴感；架构一次收口
 - **排期口令**：「开工场景动画 Dispatcher / Slice B」；worktree `feature/scene-animation-dispatcher-slice-b`
 
-### Backlog:Focus 间隔磬 + 觉察观照卡（mid-session）
+### 已交付:Focus 间隔磬 + 觉察观照卡（mid-session）
 
-> **Brief**：`task-briefs/task-session-interval-bell-and-awareness-card.md`（2026-08-13）。  
-> **资产 / 授权**：`session-interval-bell.mp3`；产品书面确认 Pixabay Content License（2026-08-13）；索引 `THIRD_PARTY_AUDIO_LICENSES.md`。  
-> **口径**：每 180s 间隔磬；达标前 **30s** 跳过；独立觉察卡（可重复，**不**改 Moment Whisper）；**不**并 Quiet Line；v1 全 Focus、无会话类型。  
-> **状态**：安全路径已接线 PR #278（off/3/5 + 底部觉察 + 独立关卡；cues 短磬）。合入后本 Backlog 可标已交付。
+> **Brief**：`task-briefs/task-session-interval-bell-and-awareness-card.md`  
+> **合入**：#278 tip **`41e9748`**（2026-08-13）。  
+> **口径**：节奏 off / 3min / 5min（默认 off）；达标前 **30s** 跳过；底部觉察卡可单独关；cues 短磬、**不**接 Ambient Gate；**不**改 Moment Whisper / Quiet Line。  
+> **人工**：TEST_TRACKER「间隔磬」「觉察卡」仍待测。
 
 ### Backlog:用户上传氛围乐（v1.0.0 必交付 · 多首 · 最近在上 · 可删自传）
 

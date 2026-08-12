@@ -1,9 +1,9 @@
 # Task Brief · Focus 间隔磬 + 觉察观照卡（mid-session）
 
-> **状态（2026-08-13）**：**安全路径已实现** · `feature/session-interval-awareness` / PR #278（短磬资产；不接 Gate）。  
+> **状态（2026-08-13）**：**已合入 develop** · #278 tip **`41e9748`**（安全路径：短磬；不接 Gate）。  
 > **前置**：#275 tip `0d05b10`；#277 tip `b51f9a2`。  
 > **资产**：`public/audio/cues/session-interval-bell.mp3`；授权见 `cues/ATTRIBUTION.md`。  
-> **产品拍板**：继续用 cues 短磬；**不**接 Ambient Gate 长循环。
+> **产品拍板**：继续用 cues 短磬；**不**接 Ambient Gate 长循环。人工验收见 TEST_TRACKER（勿自行标已通过）。
 
 ## 一句话目标
 
