@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Focus 间隔磬 + 觉察卡（2026-08-13 · `feature/session-interval-awareness`）**：运行时接线——每 **180s** 间隔磬 + 同拍觉察卡（`FOCUS_AWARENESS_*`）；剩余 **&lt;30s** 跳过磬；总开关同步三字段；**不**碰 Moment Whisper / Quiet Line。授权：产品书面确认 interval（#277 tip `b51f9a2` + 本支账本）。TRACKER 分列待人工。
+- **Focus 间隔磬 + 觉察卡 v1 切片（2026-08-13 · `feature/session-interval-awareness`）**：固定 **180s** 间隔磬 + 同拍觉察 toast（`FOCUS_AWARENESS_*`）；剩余 **&lt;30s** 跳过；总开关三字段同步；**不**碰 Moment Whisper / Quiet Line。**未做**愿景全文：无/3/5 分节奏选择、默认无磬、底部文案条、独立关卡、Ambient Gate 磬声复用——见 Brief 对照表。TRACKER 分列待人工。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（现仅 Stripe secrets）。TRACKER 待人工（端到端须先补密）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
