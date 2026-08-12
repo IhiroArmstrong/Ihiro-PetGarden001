@@ -104,6 +104,7 @@ function createMapStorage(seed = {}) {
  */
 const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
 const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
+const SESSION_CUE_PREF_STORAGE_KEY = 'focus-tiger.session-cues.v1';
 
 /** 各模块导出的 localStorage key —— 与白名单必须集合相等。 */
 const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
@@ -122,6 +123,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   HINTS_SEEN_STORAGE_KEY,
   AMBIENT_NUDGE_STORAGE_KEY,
   AMBIENT_PREF_STORAGE_KEY,
+  SESSION_CUE_PREF_STORAGE_KEY,
   LOCALE_PREFERENCE_STORAGE_KEY,
   LOCALE_GREETING_STORAGE_KEY,
   SCENE_ANIM_COOLDOWN_STORAGE_KEY,
@@ -227,6 +229,13 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
     AMBIENT_PREF_STORAGE_KEY,
     JSON.stringify({ enabled: false, trackId: 'rain' })
   );
+  storage.setItem(
+    SESSION_CUE_PREF_STORAGE_KEY,
+    JSON.stringify({
+      sessionStartBellEnabled: false,
+      sessionEndBellEnabled: false
+    })
+  );
 
   const hintsBag = {
     getItem: (k) => storage.getItem(k),
@@ -267,6 +276,7 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   assert.equal(storage.getItem(REFLECTION_STORAGE_KEY), null);
   assert.equal(storage.getItem(AMBIENT_NUDGE_STORAGE_KEY), null);
   assert.equal(storage.getItem(AMBIENT_PREF_STORAGE_KEY), null);
+  assert.equal(storage.getItem(SESSION_CUE_PREF_STORAGE_KEY), null);
 
   const freshHints = createHintsSeenStore(
     () => JSON.parse(storage.getItem(HINTS_SEEN_STORAGE_KEY) || '{}'),

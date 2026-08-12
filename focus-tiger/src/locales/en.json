@@ -48,6 +48,8 @@
   "AMBIENT_UPLOAD_ERR_FORMAT": "Please choose an MP3 or M4A file.",
   "AMBIENT_UPLOAD_ERR_FILE_SIZE": "That file is too large (max 20 MB each).",
   "AMBIENT_UPLOAD_ERR_LIMIT": "Library is full (max 10 tracks or 64 MB total).",
+  "SESSION_CUES_TOGGLE": "Timer cues",
+  "SESSION_CUES_TOGGLE_HINT": "Play a short bell when focus starts and when the timer completes.",
   "HUD_LABEL_STATE": "Status",
   "HUD_LABEL_LEVEL": "Focus",
   "HUD_LABEL_TIME": "Time",

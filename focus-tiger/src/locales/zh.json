@@ -48,6 +48,8 @@
   "AMBIENT_UPLOAD_ERR_FORMAT": "请选择 MP3 或 M4A 文件。",
   "AMBIENT_UPLOAD_ERR_FILE_SIZE": "文件太大（单曲最多 20 MB）。",
   "AMBIENT_UPLOAD_ERR_LIMIT": "曲库已满（最多 10 首，或合计 64 MB）。",
+  "SESSION_CUES_TOGGLE": "计时提示音",
+  "SESSION_CUES_TOGGLE_HINT": "专注开始与计时达标时各播一声轻柔提示。",
   "HUD_LABEL_STATE": "状态",
   "HUD_LABEL_LEVEL": "专注度",
   "HUD_LABEL_TIME": "时长",
