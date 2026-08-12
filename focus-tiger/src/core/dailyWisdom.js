@@ -4,6 +4,7 @@
  */
 
 import {
+  findDailyWisdomAttribution,
   findDailyWisdomText,
   getDailyWisdomPool
 } from '../content/daily-wisdom/index.js';
@@ -21,10 +22,16 @@ export const DAILY_WISDOM_FEATURE_KEY = 'content.daily-wisdom';
  *   locale?: string,
  *   storage?: Storage | null,
  *   store?: DailyWisdomStore,
- *   pool?: readonly { id: string, text?: string }[],
+ *   pool?: readonly { id: string, text?: string, attribution?: string }[],
  *   skipEntitlementCheck?: boolean
  * }} [opts]
- * @returns {{ dateKey: string, id: string, text: string, locale: string } | null}
+ * @returns {{
+ *   dateKey: string,
+ *   id: string,
+ *   text: string,
+ *   attribution: string,
+ *   locale: string
+ * } | null}
  */
 export function resolveTodayWisdom(opts = {}) {
   const storage =
@@ -57,8 +64,14 @@ export function resolveTodayWisdom(opts = {}) {
   const text =
     (fromPool && typeof fromPool.text === 'string' && fromPool.text) ||
     findDailyWisdomText(id, locale);
+  const attribution =
+    (fromPool &&
+      typeof fromPool.attribution === 'string' &&
+      fromPool.attribution) ||
+    findDailyWisdomAttribution(id, locale) ||
+    '';
 
-  return { dateKey, id, text, locale };
+  return { dateKey, id, text, attribution, locale };
 }
 
 export {
