@@ -29,8 +29,11 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import './daily-wisdom.js';
+import { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
+export { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
 export { REFLECTION_ANSWER_FIELDS } from './ReflectionFlowState.js';
 export { formatIntentionEcho } from '../core/SessionIntentionStore.js';
 export {
@@ -86,6 +89,8 @@ export class TigerReflectionMoment {
     this.continueBtn = null;
     this.skipBtn = null;
     this.skipAllBtn = null;
+    /** @type {HTMLElement | null} */
+    this.wisdomHost = null;
     /** @type {string} */
     this._sessionIntention = '';
     /** @type {'icon' | 'typed' | null} */
@@ -150,7 +155,11 @@ export class TigerReflectionMoment {
       'color:#2c1f14',
       `transition:opacity ${FADE_MS}ms ease,transform ${FADE_MS}ms ease`,
       'opacity:0',
-      'pointer-events:auto'
+      'pointer-events:auto',
+      // Long classical wisdom + 375: card can scroll; does not block Skip/Continue.
+      'max-height:min(72vh, calc(100dvh - 140px))',
+      'overflow-y:auto',
+      '-webkit-overflow-scrolling:touch'
     ].join(';');
 
     this.echoEl = document.createElement('div');
@@ -261,6 +270,9 @@ export class TigerReflectionMoment {
     this.root.appendChild(this.inputEl);
     this.root.appendChild(this.companionEchoEl);
     this.root.appendChild(footer);
+    // Phase A: free Daily Wisdom at card bottom (no Sanctuary seal).
+    const { host } = mountReflectionDailyWisdom(this.root);
+    this.wisdomHost = host;
     this.container.appendChild(this.root);
     this._refreshTexts();
   }
@@ -394,5 +406,6 @@ export class TigerReflectionMoment {
     this.continueBtn = null;
     this.skipBtn = null;
     this.skipAllBtn = null;
+    this.wisdomHost = null;
   }
 }

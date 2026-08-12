@@ -85,7 +85,7 @@
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（mock `NewsletterProvider`，本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实 provider 拍板（twinsology.com / KV 自建 / Resend transactional / 退订同批）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工。
 - **芥子须弥纪念印（#246 + 金章 #256 已合 tip `5440a53`）**：统一练习 score≥21；完成仪式后出卡；菜单可重读；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER 待人工（须验方章）。
-- **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`；古典扩库本支）**：内容池 `src/content/daily-wisdom/`（en/ja；Yin 短句 + 可选 `attribution` 古典/文学句同池）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`（有署名时 `<cite>`）；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**未挂产品场景**（与 Quiet Line 菜单存图分池并存；落点另定）。TRACKER 待人工。
+- **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`；古典扩库本支）**：内容池 `src/content/daily-wisdom/`（en/ja；Yin 短句 + 可选 `attribution` 古典/文学句同池）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`（有署名时 `<cite>`）；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**Phase A 挂 Reflection 底部**（本支 `feature/daily-wisdom-reflection-mount`；与 Quiet Line 分池；**Phase B 印花未做**）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
 - **SCENARIO_TESTS 二次增量（2026-08-09 晚）**：升格 **X** Tiger Anchor · **Y** Compass+Whisper · **Z** Journey Log；**Q** 补统一徽章 Q4。对齐 #199–#206。权威 `SCENARIO_TESTS.md`。
@@ -328,7 +328,7 @@
 **下一步计划**：
 
 - **可靠性 · 练习记忆云端快照备份（免费 A · 近期评估优先 · 勿漏）**：Safari/ITP 本机静默清库风险；练习史 / Journey Log 等。身份复用邮箱 OTP；未绑邮箱须温和提示。详见 Backlog「练习记忆云端备份」；**≠** v1.1 云端算法、**≠** B 多端无缝。仅文档已拍板；实现另开 Task。
-- **内容 · Daily Wisdom → Reflection Phase A（下一件 · 勿漏）**：Brief `task-daily-wisdom-reflection-mount.md`——只挂免费句；**禁止**塞 Phase B 印花进同一 PR。
+- **内容 · Daily Wisdom → Reflection Phase A（本支）**：Brief `task-daily-wisdom-reflection-mount.md`——只挂免费句；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
