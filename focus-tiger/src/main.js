@@ -245,6 +245,7 @@ import {
 import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
+import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -726,6 +727,11 @@ async function init() {
   );
   window.__momentWhisper = momentWhisperUI;
 
+  const focusAwarenessCardUI = new FocusAwarenessCardUI(
+    document.getElementById('ui-overlay') || document.body
+  );
+  window.__focusAwarenessCard = focusAwarenessCardUI;
+
   /** @param {string} forKey */
   function isMomentWhisperBusy(forKey) {
     if (fiveMomentsCompassUI.isOpen()) return true;
@@ -746,6 +752,21 @@ async function init() {
     if (forKey !== 'reflect' && reflectionMoment?.isOpen?.() === true) {
       return true;
     }
+    return false;
+  }
+
+  /** Busy overlays → skip awareness card (interval chime may still play). */
+  function isFocusAwarenessCardBusy() {
+    if (fiveMomentsCompassUI.isOpen()) return true;
+    if (stateManager.state === STATES.CELEBRATE) return true;
+    if (microRitualUI?.isOpen?.() === true) return true;
+    if (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden') {
+      return true;
+    }
+    if (companionModePicker?.isOpen?.() === true) return true;
+    if (arrivalPractice?.isOpen?.() === true) return true;
+    if (reflectionMoment?.isOpen?.() === true) return true;
+    if (focusDurationPicker?.isOpen?.() === true) return true;
     return false;
   }
 
@@ -2208,6 +2229,8 @@ async function init() {
     attentionSignals.setEnabled(false);
     mindfulReminderController.stopSession();
     acrossToolsIdleGuard.stop();
+    sessionCues.stopIntervalSession();
+    focusAwarenessCardUI.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -2368,6 +2391,8 @@ async function init() {
     ambientSoundscapeUI.setSessionActive(true);
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
+    focusAwarenessCardUI.resetSession();
+    sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
     // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
@@ -2549,8 +2574,10 @@ async function init() {
       pendingAutoStartMode = null;
       suppressCompanionOpenAfterNod = false;
       postChooseChrome.pending = false;
-      // Early Rise: no end chime; cancel any in-flight start cue + duck.
+      // Early Rise: no end chime; cancel any in-flight start/interval cue + duck.
       sessionCues.cancelPending();
+      sessionCues.stopIntervalSession();
+      focusAwarenessCardUI.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
@@ -3005,6 +3032,28 @@ async function init() {
     transitionFX.setTigerPosition(tigerPos);
 
     beginSessionCompleteIfNeeded();
+
+    if (
+      stateManager.state === STATES.FOCUSING &&
+      !sessionUiGate.completionPending
+    ) {
+      sessionCues.tickInterval({
+        elapsedSeconds: focusSession.getElapsedSeconds(),
+        targetSeconds: focusSession.targetMinutes * 60,
+        ambient: ambientSoundscape,
+        onIntervalPlayed: () => {
+          window.setTimeout(() => {
+            if (stateManager.state !== STATES.FOCUSING) return;
+            if (sessionUiGate.completionPending) return;
+            focusAwarenessCardUI.tryShow({
+              busy:
+                isFocusAwarenessCardBusy() ||
+                !sessionCues.isAwarenessCardEnabled()
+            });
+          }, 120);
+        }
+      });
+    }
 
     focusHUD.render(focusSession, stateManager, {
       todayCompletedMinutes: dailyCompletionStore.getTodayTotalMinutes(),

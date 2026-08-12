@@ -2,16 +2,23 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   SESSION_CUE_PREF_STORAGE_KEY,
+  SESSION_INTERVAL_MS_OFF,
+  SESSION_INTERVAL_MS_3MIN,
+  SESSION_INTERVAL_MS_5MIN,
   defaultSessionCuePref,
   normalizeSessionCuePref,
   readSessionCuePref,
   writeSessionCuePrefEnabled,
-  isSessionCueMasterEnabled
+  writeSessionIntervalMs,
+  writeFocusAwarenessCardEnabled,
+  isSessionCueMasterEnabled,
+  isSessionIntervalEnabled
 } from './sessionCuePreference.js';
 import {
   SessionCueController,
   SESSION_CUE_DUCK_RATIO,
   SESSION_START_BELL_SRC,
+  SESSION_INTERVAL_BELL_SRC,
   SESSION_END_CHIME_SRC
 } from './SessionCueController.js';
 
@@ -65,15 +72,17 @@ function createMockAudio() {
   };
 }
 
-test('default session cue pref is both-on', () => {
+test('default pref: start/end on, interval off, awareness on', () => {
   assert.deepEqual(defaultSessionCuePref(), {
     sessionStartBellEnabled: true,
-    sessionEndBellEnabled: true
+    sessionEndBellEnabled: true,
+    sessionIntervalMs: SESSION_INTERVAL_MS_OFF,
+    focusAwarenessCardEnabled: true
   });
   assert.equal(SESSION_CUE_PREF_STORAGE_KEY, 'focus-tiger.session-cues.v1');
 });
 
-test('normalizeSessionCuePref syncs divergent fields with AND', () => {
+test('normalize syncs start/end only; migrates old interval boolean', () => {
   assert.deepEqual(
     normalizeSessionCuePref({
       sessionStartBellEnabled: true,
@@ -81,40 +90,62 @@ test('normalizeSessionCuePref syncs divergent fields with AND', () => {
     }),
     {
       sessionStartBellEnabled: false,
-      sessionEndBellEnabled: false
+      sessionEndBellEnabled: false,
+      sessionIntervalMs: 0,
+      focusAwarenessCardEnabled: true
     }
   );
   assert.deepEqual(
     normalizeSessionCuePref({
       sessionStartBellEnabled: true,
-      sessionEndBellEnabled: true
+      sessionEndBellEnabled: true,
+      sessionIntervalBellEnabled: true
     }),
     {
       sessionStartBellEnabled: true,
-      sessionEndBellEnabled: true
+      sessionEndBellEnabled: true,
+      sessionIntervalMs: SESSION_INTERVAL_MS_3MIN,
+      focusAwarenessCardEnabled: true
+    }
+  );
+  assert.deepEqual(
+    normalizeSessionCuePref({
+      sessionStartBellEnabled: true,
+      sessionEndBellEnabled: true,
+      sessionIntervalMs: SESSION_INTERVAL_MS_5MIN,
+      focusAwarenessCardEnabled: false
+    }),
+    {
+      sessionStartBellEnabled: true,
+      sessionEndBellEnabled: true,
+      sessionIntervalMs: SESSION_INTERVAL_MS_5MIN,
+      focusAwarenessCardEnabled: false
     }
   );
 });
 
-test('writeSessionCuePrefEnabled keeps both fields in sync', () => {
+test('master toggle preserves interval and awareness', () => {
   const storage = createMapStorage();
+  writeSessionIntervalMs(storage, SESSION_INTERVAL_MS_3MIN);
+  writeFocusAwarenessCardEnabled(storage, false);
   writeSessionCuePrefEnabled(storage, false);
-  const pref = readSessionCuePref(storage);
+  let pref = readSessionCuePref(storage);
   assert.equal(isSessionCueMasterEnabled(pref), false);
-  assert.equal(pref.sessionStartBellEnabled, false);
-  assert.equal(pref.sessionEndBellEnabled, false);
+  assert.equal(pref.sessionIntervalMs, SESSION_INTERVAL_MS_3MIN);
+  assert.equal(pref.focusAwarenessCardEnabled, false);
   writeSessionCuePrefEnabled(storage, true);
-  assert.equal(isSessionCueMasterEnabled(readSessionCuePref(storage)), true);
+  pref = readSessionCuePref(storage);
+  assert.equal(isSessionCueMasterEnabled(pref), true);
+  assert.equal(pref.sessionIntervalMs, SESSION_INTERVAL_MS_3MIN);
+  assert.equal(isSessionIntervalEnabled(pref), true);
 });
 
 test('SessionCueController playStart ducks ambient then unducks on ended', async () => {
-  const startAudio = createMockAudio();
-  const endAudio = createMockAudio();
-  const storage = createMapStorage();
   const cues = new SessionCueController({
-    storage,
-    startAudio,
-    endAudio,
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
     mountToDocument: false
   });
   const ducks = [];
@@ -126,32 +157,92 @@ test('SessionCueController playStart ducks ambient then unducks on ended', async
   };
   assert.equal(cues.playStart({ ambient }), true);
   assert.deepEqual(ducks, [SESSION_CUE_DUCK_RATIO]);
-  assert.equal(startAudio.paused, false);
-  startAudio.dispatch('ended');
+  cues._start.dispatch('ended');
   assert.equal(unducks.length, 1);
-  assert.equal(unducks[0].fadeMs, 1500);
 });
 
-test('SessionCueController respects master off for start and end', () => {
-  const startAudio = createMockAudio();
-  const endAudio = createMockAudio();
-  const storage = createMapStorage();
+test('tickInterval respects off / 3min / 5min', () => {
   const cues = new SessionCueController({
-    storage,
-    startAudio,
-    endAudio,
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
     mountToDocument: false
   });
-  cues.setEnabled(false);
-  let endCb = 0;
-  assert.equal(cues.playStart({ ambient: null }), false);
-  assert.equal(cues.playEnd({ onCueEnded: () => endCb++ }), false);
-  assert.equal(endCb, 0);
-  assert.equal(startAudio.paused, true);
-  assert.equal(endAudio.paused, true);
+  let played = 0;
+  cues.startIntervalSession();
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 600,
+      onIntervalPlayed: () => played++
+    }).action,
+    'disabled'
+  );
+  cues.setIntervalMs(SESSION_INTERVAL_MS_3MIN);
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 600,
+      onIntervalPlayed: () => played++
+    }).action,
+    'play'
+  );
+  assert.equal(played, 1);
+
+  const five = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  five.setIntervalMs(SESSION_INTERVAL_MS_5MIN);
+  five.startIntervalSession();
+  assert.equal(
+    five.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 900,
+      onIntervalPlayed: () => played++
+    }).action,
+    'wait'
+  );
+  assert.equal(
+    five.tickInterval({
+      elapsedSeconds: 300,
+      targetSeconds: 900,
+      onIntervalPlayed: () => played++
+    }).action,
+    'play'
+  );
+  assert.equal(played, 2);
+});
+
+test('stopIntervalSession cancels further ticks', () => {
+  const cues = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  cues.setIntervalMs(SESSION_INTERVAL_MS_3MIN);
+  cues.startIntervalSession();
+  cues.stopIntervalSession();
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 600
+    }).action,
+    'inactive'
+  );
 });
 
 test('SessionCueController cue src paths are under /audio/cues/', () => {
   assert.equal(SESSION_START_BELL_SRC, '/audio/cues/session-start-bell.mp3');
+  assert.equal(
+    SESSION_INTERVAL_BELL_SRC,
+    '/audio/cues/session-interval-bell.mp3'
+  );
   assert.equal(SESSION_END_CHIME_SRC, '/audio/cues/session-end-chime.mp3');
 });

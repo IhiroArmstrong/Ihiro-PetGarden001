@@ -46,6 +46,7 @@
 | **16** | `src/ui/LanguagePreferenceUI.js` | 宽屏 Idle 右下语言地球钮（`.language-pref__fab`）；窄屏 CSS 隐藏 |
 | **17** | `src/ui/FlowerBlowWelcomeBubbleUI.js` | 变花鼓励气泡（`#flower-blow-welcome-bubble`）；白玉毛玻璃 + 尖角；窄屏 `top` 须让开 ActionBar（`homeClearanceTopCss`）；须可点消 |
 | **17** | `src/ui/MomentWhisperUI.js` | `#moment-whisper` Five Moments 轻量认出句（阿寅旁；3–4s 淡出；非 Banner） |
+| **17** | `src/ui/FocusAwarenessCardUI.js` | `#focus-awareness-card` Focusing **底部**间隔拍觉察短句（可重复；可单独关；**不**写 Whisper seen） |
 | **17** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-whisper` 节日观察式短句（一日一次；可点消；非 Banner） |
 | **17** | `src/ui/ContextualTeaTipBubbleUI.js` | `#contextual-tea-tip-bubble` 场景化请茶轻气泡（达标/里程碑；可忽略；非 modal 墙） |
 | **18** | `src/ui/HonestyBridgeCtaUI.js` | Honesty 桥接 Yes/No CTA |

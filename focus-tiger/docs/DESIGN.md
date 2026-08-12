@@ -362,7 +362,8 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 - 该信号仅在**当前会话内**使用；曲目开关偏好可长期存储；
 - **会话结束（Rise / 达标）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）——下次 **Sit 也不自动再开**，须再点音符 / Sound；
   - **达标 + 计时提示音（2026-08-12）**：氛围仍在播且结束铃开 → **duck≈35% → 播结束铃 → ~1.5s 淡出并停**（不「恢复再杀」）；早退 Rise **不**播结束铃，仍硬停；
-- **计时提示音（免费 · 2026-08-12）**：Focus **开表**一声开始磬、**达标**一声结束铃；资产 `public/audio/cues/`（非 ambient 曲库）；**不**走 Ambient entitlement。Soundscape 音量条下「计时提示音」总开关（默认开；`focus-tiger.session-cues.v1` 两字段同步）。开着氛围时开始铃：duck → 播 → ~1.5s unduck；chip/boot 预加载；
+- **计时提示音（免费 · 2026-08-12 / 间隔节奏 2026-08-13）**：Focus **开表**开始磬、**达标**结束铃（Soundscape「计时提示音」总开关，默认开）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。
+- **觉察观照卡（mid-session · 2026-08-13）**：间隔磬同拍时在 Focusing **底部**浮现观察式短句（`FOCUS_AWARENESS_*`）；可单独关；**不**写入 Moment Whisper；设计理念长句不进 UI；
 - 该信号与 Page Visibility / blur / idle 等既有 Focus Confidence 信号**并列、独立**；不替代墙钟会话计时，也不单独决定会话是否达标。
 
 #### 3. 数据流向：音频时长 → 光效强度（锦上添花）
