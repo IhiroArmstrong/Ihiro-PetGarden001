@@ -6,7 +6,11 @@
 import {
   readSessionCuePref,
   writeSessionCuePrefEnabled,
-  isSessionCueMasterEnabled
+  writeSessionIntervalMs,
+  writeFocusAwarenessCardEnabled,
+  isSessionCueMasterEnabled,
+  isSessionIntervalEnabled,
+  normalizeSessionIntervalMs
 } from './sessionCuePreference.js';
 import { evaluateIntervalCue } from './sessionIntervalScheduler.js';
 
@@ -111,11 +115,38 @@ export class SessionCueController {
   }
 
   /**
-   * UI master toggle — keeps all cue fields in sync.
+   * UI master toggle for start/end only — preserves interval + awareness.
    * @param {boolean} enabled
    */
   setEnabled(enabled) {
     this._pref = writeSessionCuePrefEnabled(this._storage, enabled);
+  }
+
+  /** @returns {number} */
+  getIntervalMs() {
+    return normalizeSessionIntervalMs(this._pref.sessionIntervalMs);
+  }
+
+  /**
+   * @param {number} ms 0 | 180000 | 300000
+   */
+  setIntervalMs(ms) {
+    this._pref = writeSessionIntervalMs(this._storage, ms);
+  }
+
+  isIntervalEnabled() {
+    return isSessionIntervalEnabled(this._pref);
+  }
+
+  isAwarenessCardEnabled() {
+    return this._pref.focusAwarenessCardEnabled !== false;
+  }
+
+  /**
+   * @param {boolean} enabled
+   */
+  setAwarenessCardEnabled(enabled) {
+    this._pref = writeFocusAwarenessCardEnabled(this._storage, enabled);
   }
 
   reloadPref() {
@@ -159,15 +190,17 @@ export class SessionCueController {
     if (!this._intervalActive) {
       return { action: 'inactive' };
     }
-    if (!this._pref.sessionIntervalBellEnabled) {
+    const intervalMs = this.getIntervalMs();
+    if (intervalMs <= 0) {
       return { action: 'disabled' };
     }
     const result = evaluateIntervalCue({
       elapsedMs: Math.max(0, Number(elapsedSeconds) || 0) * 1000,
       targetMs: Math.max(0, Number(targetSeconds) || 0) * 1000,
-      lastFiredCount: this._intervalFiredCount
+      lastFiredCount: this._intervalFiredCount,
+      intervalMs
     });
-    if (result.action === 'wait') {
+    if (result.action === 'wait' || result.action === 'disabled') {
       return result;
     }
     this._intervalFiredCount = result.firedCount;
@@ -215,7 +248,7 @@ export class SessionCueController {
    * }} [opts]
    */
   playInterval({ ambient = null } = {}) {
-    if (!this._pref.sessionIntervalBellEnabled) return false;
+    if (!isSessionIntervalEnabled(this._pref)) return false;
     this.preload();
     return this._playOne(this._interval, {
       ambient,

@@ -1,28 +1,27 @@
 # Task Brief · Focus 间隔磬 + 觉察观照卡（mid-session）
 
-> **状态（2026-08-13）**：**v1 切片已接线** · `feature/session-interval-awareness`（本地 `0befc92`；授权已确认）。  
+> **状态（2026-08-13）**：**安全路径已实现** · `feature/session-interval-awareness` / PR #278（短磬资产；不接 Gate）。  
 > **前置**：#275 tip `0d05b10`；#277 tip `b51f9a2`。  
-> **资产**：`public/audio/cues/session-interval-bell.mp3`；授权见 `cues/ATTRIBUTION.md`（2026-08-13 产品书面确认）。  
-> **决策来源**：Quiet Line 只读排查 + 分析师 2026-08-13 口径。  
-> **重要**：本 Brief / 本支实现的是 **v1 切片**（固定 180s + 同拍觉察 toast），**不等于**下方「产品愿景 A/B」全文已交付。
+> **资产**：`public/audio/cues/session-interval-bell.mp3`；授权见 `cues/ATTRIBUTION.md`。  
+> **产品拍板**：继续用 cues 短磬；**不**接 Ambient Gate 长循环。
 
 ## 一句话目标
 
-在 Focusing **计时进行中**，每约 **3 分钟**播一声轻磬，并可叠加一张**可重复出现**的轻量觉察文案卡——二者为**独立新机制**，不并入 Quiet Line，不改造 Moment Whisper 的「一生一次」门闩。
+在 Focusing **计时进行中**，可选正念磬声节奏（无 / 3 分 / 5 分），并可在底部叠加**可重复**的觉察短句——独立机制；不并 Quiet Line；不改 Moment Whisper 一生一次。
 
-## 与产品愿景 A/B 对照（2026-08-13 产品原文）
+## 与产品愿景 A/B 对照（2026-08-13）
 
-| 愿景项 | v1 本支 | 差距 / 下期 |
+| 愿景项 | 安全路径本支 | 备注 |
 |---|---|---|
-| A · 无磬声（默认纯净陪伴） | ❌ 间隔跟「计时提示音」总开关，默认 **开**（与 #275 开始/结束同开） | 需独立节奏选择器；默认「无间隔」须另拍板 |
-| A · 每 3 分钟一声 | ✅ 固定 **180s** | — |
-| A · 每 5 分钟一声 | ❌ | 需 `300s` 档 + UI |
-| A · 余音绕梁 ~10s / 「轻轻收回」语义 | ⚠️ 播现有短 mp3；无 10s 尾音设计、无语音讲解 | 若要长余音须换/剪资产 |
-| A · 音效来自 Ambient Sound Gate 磬声、免费可体验 | ❌ 独立 `/audio/cues/session-interval-bell.mp3`；**不**走 Sound Gate / entitlement | 与「短铃进 cues、长循环进 ambient」架构一致；若坚持 Gate 曲库须另 Brief |
-| B · Focusing **底部**一行无感文字 | ❌ 现为阿寅旁 **toast**（近 Whisper，偏上） | 底部条须改布局 + z-index |
-| B · 可选关闭觉察卡 | ⚠️ v1 跟总开关（关磬则关卡）；**无**独立「仅关卡」 | 独立开关另 Brief |
-| B · 文案：「念头如云…」「此间无事…」「身体坐在这里…」等 | ⚠️ 已有观察式池 `FOCUS_AWARENESS_*`，**文案不同** | 可替换/增补进池（en+ja+zh） |
-| B · 「最好的正念辅导，不是教你怎么做…」 | ✅ **未**进用户文案池（仅作设计说明） | 保持不进 UI |
+| A · 无磬声（默认纯净陪伴） | ✅ `sessionIntervalMs: 0` 默认 | 与开始/结束铃解耦 |
+| A · 每 3 分钟一声 | ✅ | Soundscape 下拉 |
+| A · 每 5 分钟一声 | ✅ | Soundscape 下拉 |
+| A · 余音绕梁 ~10s | ⚠️ 取决于 mp3 自身长度 | 未做合成尾音；换素材另议 |
+| A · Ambient Sound Gate 磬声 | ❌ 明确不做 | 用 cues 短磬，免费 |
+| B · Focusing **底部** | ✅ | `homeClearanceBottomCss` |
+| B · 可选关闭觉察卡 | ✅ 独立开关 | 关卡仍可播磬 |
+| B · 指定短句池 | ✅ zh 三句入池 | en/ja 观察式对译 |
+| B · 理念长句不进 UI | ✅ | 单测锁 |
 
 ## 明确不做 / 不复用
 
@@ -41,26 +40,26 @@
 
 | 项 | 口径（写死） |
 |---|---|
-| 时机 | Focusing 进行中；自开表墙钟起每 **180s** 一次 |
-| 资产 | `/audio/cues/session-interval-bell.mp3` |
+| 时机 | Focusing 进行中；节奏 `0` / `180s` / `300s`（默认 `0`） |
+| 资产 | `/audio/cues/session-interval-bell.mp3`（**不**接 Ambient Gate） |
 | 与开始铃 | **t≈0 不播**间隔磬（开始铃已负责） |
-| 与结束铃 | **精确对齐达标**仍由 #275 结束铃负责；**剩余时长 &lt; 30s** 时 **跳过**本应触发的间隔磬（验收硬数，非「合理避让」） |
+| 与结束铃 | 达标结束铃仍由 #275；**剩余时长 &lt; 30s** 跳过间隔磬 |
 | 早退 Rise | 停掉间隔调度；**不**补播间隔磬 |
-| Ambient | 若氛围可闻：复用 #275 ducking（约 35% → 播完 ~1.5s unduck）；**不**走 Ambient entitlement |
-| 免费 | 是；不接入 Sound Gate |
-| 预加载 | 与 start/end 一并 preload（时长 chip / boot） |
-| 开关 | Soundscape「计时提示音」总开关；pref 增加 `sessionIntervalBellEnabled`，v1 与 start/end **同步** |
+| Ambient | 可闻时 duck ≈35% → 播完 ~1.5s unduck；**不**走 entitlement |
+| 免费 | 是 |
+| 开关 | 开始/结束＝「计时提示音」；间隔＝独立下拉 `#ambient-session-interval-rhythm` |
 
 ### B · 觉察观照卡（mid-session awareness card）
 
 | 项 | 口径（写死） |
 |---|---|
-| 时机 | 与间隔磬**同拍**（磬起后立刻或 ≤300ms 内出卡）；无磬（开关关）时 **v1 也不出卡**（减少双开关；若产品要拆开另开 Brief） |
-| 生命周期 | **每场 Focusing 可多次**（跟间隔走）；**禁止**写入 `moment-whispers-seen` |
-| UI | 新建组件（可抄 Whisper 样式变量）；阿寅旁短句；可点关；约 3–4s 淡出；非顶部 Banner、非 Quiet Line 大卡 |
-| 文案 | **新池**（建议 `COPY_POOLS.FOCUS_AWARENESS` / `FOCUS_AWARENESS_*`）；观察式、一句、不说教；en+ja（zh 可 draft） |
-| 互斥 | Arrival / Honesty / Companion 展开 / Reflection / Celebrating / 其它全屏叠层 busy → **压住本拍出卡**（磬是否仍播：默认 **仍播磬、卡可跳过**——开修前若要「busy 连磬也跳」再拍板） |
-| 会话类型 | **v1 不区分**；对所有 Focus（含 Offline Space）生效 |
+| 时机 | 与间隔磬同拍（≤300ms）；间隔为 off 时不出卡 |
+| 生命周期 | 每场可多次；**禁止**写入 `moment-whispers-seen` |
+| UI | Focusing **底部**；可点关；约 4s 淡出 |
+| 文案 | `FOCUS_AWARENESS_*`（zh 产品三句；理念长句不进池） |
+| 开关 | `#ambient-focus-awareness-toggle` 可单独关（关卡仍可播磬） |
+| 互斥 | busy 叠层压住卡；默认仍播磬 |
+| 会话类型 | 全 Focus（含 Offline Space） |
 
 ## 实现要点（将来 feature 支）
 

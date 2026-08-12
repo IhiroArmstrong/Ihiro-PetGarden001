@@ -1,14 +1,14 @@
 /**
- * Mid-session awareness card — soft observational line near Yin.
+ * Mid-session awareness card — soft observational line at Focusing bottom.
  * Repeatable every interval beat; does NOT touch Moment Whisper seen store.
  */
 
 import { COPY_POOLS, t, onLocaleChange } from '../locales/i18n.js';
-import { homeClearanceTopCss } from './homeChromeClearance.js';
+import { homeClearanceBottomCss } from './homeChromeClearance.js';
 
 const ROOT_ID = 'focus-awareness-card';
-const STYLE_ID = 'focus-awareness-card-styles-v1';
-const HOLD_MS = 3500;
+const STYLE_ID = 'focus-awareness-card-styles-v2';
+const HOLD_MS = 4000;
 const FADE_MS = 380;
 const POOL_KEY = 'FOCUS_AWARENESS';
 
@@ -42,7 +42,7 @@ export class FocusAwarenessCardUI {
     return this._visible;
   }
 
-  /** Reset pool cursor between Focus sessions (optional clarity). */
+  /** Reset pool cursor between Focus sessions. */
   resetSession() {
     this._poolIndex = 0;
     this.hide({ immediate: true });
@@ -77,7 +77,8 @@ export class FocusAwarenessCardUI {
       this.hide();
     });
 
-    root.style.top = homeClearanceTopCss();
+    root.style.bottom = homeClearanceBottomCss();
+    root.style.top = 'auto';
 
     this.container.appendChild(root);
     this.root = root;
@@ -124,6 +125,8 @@ export class FocusAwarenessCardUI {
   }
 
   _injectStyles() {
+    const prior = document.getElementById('focus-awareness-card-styles-v1');
+    prior?.remove();
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -131,27 +134,27 @@ export class FocusAwarenessCardUI {
       .focus-awareness-card {
         position: absolute;
         left: 50%;
-        top: max(12px, env(safe-area-inset-top, 0px));
-        bottom: auto;
+        bottom: 88px;
+        top: auto;
         z-index: 17;
-        max-width: min(280px, calc(100vw - 56px));
+        max-width: min(320px, calc(100vw - 48px));
         margin: 0;
-        padding: 8px 14px;
-        border: 1px solid rgba(196, 165, 116, 0.35);
-        border-radius: 999px;
-        background: rgba(255, 252, 245, 0.82);
+        padding: 10px 16px;
+        border: 1px solid rgba(196, 165, 116, 0.28);
+        border-radius: 14px;
+        background: rgba(255, 252, 245, 0.72);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         color: #3a2e22;
         font: inherit;
-        font-size: 0.82rem;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        line-height: 1.35;
+        font-size: 0.84rem;
+        font-weight: 450;
+        letter-spacing: 0.02em;
+        line-height: 1.45;
         text-align: center;
         cursor: pointer;
         opacity: 0;
-        transform: translate(-50%, 8px);
+        transform: translate(-50%, 10px);
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
         pointer-events: auto;
         box-shadow: none;

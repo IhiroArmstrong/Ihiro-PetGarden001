@@ -3046,7 +3046,9 @@ async function init() {
             if (stateManager.state !== STATES.FOCUSING) return;
             if (sessionUiGate.completionPending) return;
             focusAwarenessCardUI.tryShow({
-              busy: isFocusAwarenessCardBusy()
+              busy:
+                isFocusAwarenessCardBusy() ||
+                !sessionCues.isAwarenessCardEnabled()
             });
           }, 120);
         }

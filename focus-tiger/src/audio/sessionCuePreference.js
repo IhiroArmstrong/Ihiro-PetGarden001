@@ -1,16 +1,31 @@
 /**
- * Focus 计时提示音偏好（开始磬 / 间隔磬 / 结束铃）。
- * UI 本版只有总开关；底层存三个字段并永远同步，便于以后拆分。
+ * Focus 计时提示音偏好。
+ * - 开始/结束铃：Soundscape「计时提示音」总开关（两字段同步，默认开）
+ * - 间隔磬节奏：独立 off / 3min / 5min（默认 off = 纯净陪伴）
+ * - 觉察观照卡：独立开关（默认开；无间隔时也不会出卡）
  */
 
 /** 与 `localStateKeys.js` 白名单同步。 */
 export const SESSION_CUE_PREF_STORAGE_KEY = 'focus-tiger.session-cues.v1';
 
+/** @typedef {0 | 180000 | 300000} SessionIntervalMs */
+
+export const SESSION_INTERVAL_MS_OFF = 0;
+export const SESSION_INTERVAL_MS_3MIN = 180_000;
+export const SESSION_INTERVAL_MS_5MIN = 300_000;
+
+export const SESSION_INTERVAL_MS_OPTIONS = Object.freeze([
+  SESSION_INTERVAL_MS_OFF,
+  SESSION_INTERVAL_MS_3MIN,
+  SESSION_INTERVAL_MS_5MIN
+]);
+
 /**
  * @typedef {{
  *   sessionStartBellEnabled: boolean,
- *   sessionIntervalBellEnabled: boolean,
- *   sessionEndBellEnabled: boolean
+ *   sessionEndBellEnabled: boolean,
+ *   sessionIntervalMs: SessionIntervalMs,
+ *   focusAwarenessCardEnabled: boolean
  * }} SessionCuePref
  */
 
@@ -18,9 +33,22 @@ export const SESSION_CUE_PREF_STORAGE_KEY = 'focus-tiger.session-cues.v1';
 export function defaultSessionCuePref() {
   return {
     sessionStartBellEnabled: true,
-    sessionIntervalBellEnabled: true,
-    sessionEndBellEnabled: true
+    sessionEndBellEnabled: true,
+    sessionIntervalMs: SESSION_INTERVAL_MS_OFF,
+    focusAwarenessCardEnabled: true
   };
+}
+
+/**
+ * @param {unknown} value
+ * @returns {SessionIntervalMs}
+ */
+export function normalizeSessionIntervalMs(value) {
+  const n = Number(value);
+  if (n === SESSION_INTERVAL_MS_3MIN || n === SESSION_INTERVAL_MS_5MIN) {
+    return /** @type {SessionIntervalMs} */ (n);
+  }
+  return SESSION_INTERVAL_MS_OFF;
 }
 
 /**
@@ -37,17 +65,30 @@ export function normalizeSessionCuePref(raw) {
     typeof raw.sessionEndBellEnabled === 'boolean'
       ? raw.sessionEndBellEnabled
       : true;
-  // Missing interval field (pre-#interval prefs) inherits start∧end.
-  const interval =
-    typeof raw.sessionIntervalBellEnabled === 'boolean'
-      ? raw.sessionIntervalBellEnabled
-      : start && end;
-  // v1: keep fields in sync (AND). Divergent storage collapses to all-off or all-on.
-  const master = start && end && interval;
+  // Start/end stay synced (AND) for the master toggle.
+  const startEnd = start && end;
+
+  /** @type {SessionIntervalMs} */
+  let intervalMs = SESSION_INTERVAL_MS_OFF;
+  if (Object.prototype.hasOwnProperty.call(raw, 'sessionIntervalMs')) {
+    intervalMs = normalizeSessionIntervalMs(raw.sessionIntervalMs);
+  } else if (raw.sessionIntervalBellEnabled === true) {
+    // Migrate brief v1 boolean-on → 3 min.
+    intervalMs = SESSION_INTERVAL_MS_3MIN;
+  } else {
+    intervalMs = SESSION_INTERVAL_MS_OFF;
+  }
+
+  const awareness =
+    typeof raw.focusAwarenessCardEnabled === 'boolean'
+      ? raw.focusAwarenessCardEnabled
+      : true;
+
   return {
-    sessionStartBellEnabled: master,
-    sessionIntervalBellEnabled: master,
-    sessionEndBellEnabled: master
+    sessionStartBellEnabled: startEnd,
+    sessionEndBellEnabled: startEnd,
+    sessionIntervalMs: intervalMs,
+    focusAwarenessCardEnabled: awareness
   };
 }
 
@@ -68,32 +109,78 @@ export function readSessionCuePref(storage) {
 
 /**
  * @param {Storage | { setItem?: Function } | null | undefined} storage
- * @param {boolean} enabled master toggle — writes all fields in sync
+ * @param {SessionCuePref} pref
  * @returns {SessionCuePref}
  */
-export function writeSessionCuePrefEnabled(storage, enabled) {
-  const on = Boolean(enabled);
-  const pref = {
-    sessionStartBellEnabled: on,
-    sessionIntervalBellEnabled: on,
-    sessionEndBellEnabled: on
-  };
+function persistSessionCuePref(storage, pref) {
+  const normalized = normalizeSessionCuePref(pref);
   try {
-    storage?.setItem?.(SESSION_CUE_PREF_STORAGE_KEY, JSON.stringify(pref));
+    storage?.setItem?.(
+      SESSION_CUE_PREF_STORAGE_KEY,
+      JSON.stringify(normalized)
+    );
   } catch {
     /* ignore quota / private mode */
   }
-  return pref;
+  return normalized;
+}
+
+/**
+ * Master toggle for start/end only — preserves interval + awareness.
+ * @param {Storage | { getItem?: Function, setItem?: Function } | null | undefined} storage
+ * @param {boolean} enabled
+ * @returns {SessionCuePref}
+ */
+export function writeSessionCuePrefEnabled(storage, enabled) {
+  const prev = readSessionCuePref(storage);
+  return persistSessionCuePref(storage, {
+    ...prev,
+    sessionStartBellEnabled: Boolean(enabled),
+    sessionEndBellEnabled: Boolean(enabled)
+  });
+}
+
+/**
+ * @param {Storage | { getItem?: Function, setItem?: Function } | null | undefined} storage
+ * @param {number} ms
+ * @returns {SessionCuePref}
+ */
+export function writeSessionIntervalMs(storage, ms) {
+  const prev = readSessionCuePref(storage);
+  return persistSessionCuePref(storage, {
+    ...prev,
+    sessionIntervalMs: normalizeSessionIntervalMs(ms)
+  });
+}
+
+/**
+ * @param {Storage | { getItem?: Function, setItem?: Function } | null | undefined} storage
+ * @param {boolean} enabled
+ * @returns {SessionCuePref}
+ */
+export function writeFocusAwarenessCardEnabled(storage, enabled) {
+  const prev = readSessionCuePref(storage);
+  return persistSessionCuePref(storage, {
+    ...prev,
+    focusAwarenessCardEnabled: Boolean(enabled)
+  });
+}
+
+/**
+ * Start/end master (interval is separate).
+ * @param {SessionCuePref} pref
+ * @returns {boolean}
+ */
+export function isSessionCueMasterEnabled(pref) {
+  return Boolean(
+    pref?.sessionStartBellEnabled && pref?.sessionEndBellEnabled
+  );
 }
 
 /**
  * @param {SessionCuePref} pref
  * @returns {boolean}
  */
-export function isSessionCueMasterEnabled(pref) {
-  return Boolean(
-    pref?.sessionStartBellEnabled &&
-      pref?.sessionIntervalBellEnabled &&
-      pref?.sessionEndBellEnabled
-  );
+export function isSessionIntervalEnabled(pref) {
+  return normalizeSessionIntervalMs(pref?.sessionIntervalMs) > 0;
 }

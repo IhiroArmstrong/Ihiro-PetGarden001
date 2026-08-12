@@ -212,6 +212,45 @@ export class AmbientSoundscapeUI {
     this.cueToggleText.className = 'ambient-soundscape__session-cues-text';
     this.cueToggleLabel.append(this.cueToggleInput, this.cueToggleText);
 
+    this.intervalRhythmLabel = document.createElement('label');
+    this.intervalRhythmLabel.className = 'ambient-soundscape__interval-rhythm';
+    this.intervalRhythmText = document.createElement('span');
+    this.intervalRhythmText.className = 'ambient-soundscape__interval-rhythm-text';
+    this.intervalRhythmSelect = document.createElement('select');
+    this.intervalRhythmSelect.className = 'ambient-soundscape__interval-rhythm-select';
+    this.intervalRhythmSelect.id = 'ambient-session-interval-rhythm';
+    this.intervalRhythmSelect.addEventListener('change', () => {
+      const ms = Number(this.intervalRhythmSelect.value);
+      this.sessionCues?.setIntervalMs(ms);
+    });
+    this.intervalRhythmLabel.append(
+      this.intervalRhythmText,
+      this.intervalRhythmSelect
+    );
+
+    this.awarenessToggleLabel = document.createElement('label');
+    this.awarenessToggleLabel.className = 'ambient-soundscape__awareness-card';
+    this.awarenessToggleInput = document.createElement('input');
+    this.awarenessToggleInput.type = 'checkbox';
+    this.awarenessToggleInput.className =
+      'ambient-soundscape__awareness-card-input';
+    this.awarenessToggleInput.id = 'ambient-focus-awareness-toggle';
+    this.awarenessToggleInput.checked = this.sessionCues
+      ? this.sessionCues.isAwarenessCardEnabled()
+      : true;
+    this.awarenessToggleInput.addEventListener('change', () => {
+      this.sessionCues?.setAwarenessCardEnabled(
+        this.awarenessToggleInput.checked
+      );
+    });
+    this.awarenessToggleText = document.createElement('span');
+    this.awarenessToggleText.className =
+      'ambient-soundscape__awareness-card-text';
+    this.awarenessToggleLabel.append(
+      this.awarenessToggleInput,
+      this.awarenessToggleText
+    );
+
     this.panel.append(
       this.titleEl,
       this.uploadHintEl,
@@ -219,7 +258,9 @@ export class AmbientSoundscapeUI {
       this.uploadErrEl,
       this.trackRow,
       this.volumeLabel,
-      this.cueToggleLabel
+      this.cueToggleLabel,
+      this.intervalRhythmLabel,
+      this.awarenessToggleLabel
     );
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
     this.root.append(this.muteBtn, this.focusChrome);
@@ -633,6 +674,39 @@ export class AmbientSoundscapeUI {
     this.cueToggleInput.setAttribute('aria-label', t('SESSION_CUES_TOGGLE'));
     if (this.sessionCues) {
       this.cueToggleInput.checked = this.sessionCues.isEnabled();
+    }
+
+    this.intervalRhythmText.textContent = t('SESSION_INTERVAL_RHYTHM');
+    this.intervalRhythmLabel.title = t('SESSION_INTERVAL_RHYTHM_HINT');
+    this.intervalRhythmSelect.setAttribute(
+      'aria-label',
+      t('SESSION_INTERVAL_RHYTHM')
+    );
+    const intervalOptions = [
+      { ms: 0, key: 'SESSION_INTERVAL_OFF' },
+      { ms: 180_000, key: 'SESSION_INTERVAL_3MIN' },
+      { ms: 300_000, key: 'SESSION_INTERVAL_5MIN' }
+    ];
+    this.intervalRhythmSelect.replaceChildren();
+    for (const opt of intervalOptions) {
+      const el = document.createElement('option');
+      el.value = String(opt.ms);
+      el.textContent = t(opt.key);
+      this.intervalRhythmSelect.appendChild(el);
+    }
+    if (this.sessionCues) {
+      this.intervalRhythmSelect.value = String(this.sessionCues.getIntervalMs());
+    }
+
+    this.awarenessToggleText.textContent = t('SESSION_AWARENESS_CARD_TOGGLE');
+    this.awarenessToggleLabel.title = t('SESSION_AWARENESS_CARD_TOGGLE_HINT');
+    this.awarenessToggleInput.setAttribute(
+      'aria-label',
+      t('SESSION_AWARENESS_CARD_TOGGLE')
+    );
+    if (this.sessionCues) {
+      this.awarenessToggleInput.checked =
+        this.sessionCues.isAwarenessCardEnabled();
     }
     if (this._nudgeVisible) {
       this.nudgeEl.textContent = t('AMBIENT_DEFAULT_ON_NUDGE');
@@ -1219,6 +1293,44 @@ export class AmbientSoundscapeUI {
         accent-color: var(--color-accent, #b5623a);
       }
       .ambient-soundscape__session-cues-text {
+        flex: 1;
+      }
+      .ambient-soundscape__interval-rhythm {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 12px;
+        font-size: 12px;
+        line-height: 1.35;
+        color: var(--color-ink-muted, #5c5348);
+      }
+      .ambient-soundscape__interval-rhythm-select {
+        width: 100%;
+        font: inherit;
+        font-size: 12px;
+        color: var(--color-ink, #3a2e22);
+        border: 1px solid rgba(196, 165, 116, 0.45);
+        border-radius: 8px;
+        padding: 6px 8px;
+        background: rgba(255, 252, 245, 0.9);
+      }
+      .ambient-soundscape__awareness-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 12px;
+        line-height: 1.35;
+        color: var(--color-ink-muted, #5c5348);
+        cursor: pointer;
+        user-select: none;
+      }
+      .ambient-soundscape__awareness-card-input {
+        margin: 2px 0 0;
+        flex-shrink: 0;
+        accent-color: var(--color-accent, #b5623a);
+      }
+      .ambient-soundscape__awareness-card-text {
         flex: 1;
       }
     `;

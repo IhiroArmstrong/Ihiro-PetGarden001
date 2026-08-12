@@ -75,10 +75,7 @@ export const COPY_POOLS = Object.freeze({
   FOCUS_AWARENESS: [
     'FOCUS_AWARENESS_1',
     'FOCUS_AWARENESS_2',
-    'FOCUS_AWARENESS_3',
-    'FOCUS_AWARENESS_4',
-    'FOCUS_AWARENESS_5',
-    'FOCUS_AWARENESS_6'
+    'FOCUS_AWARENESS_3'
   ]
 });
 
