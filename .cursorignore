@@ -31,6 +31,15 @@ focus-tiger/art-reference/models/sources/
 *transparent*.zip
 *.pkg
 
+# Repo-root staging dumps (badges / sample PNGs; not product source)
+yin-badges/
+tiger_badges_transparent*/
+Yin*/
+/Enso-sample*.png
+/icon for membership*.png
+/背景透明的-Enso-sample*.png
+/芥子须弥纪念印所用的金章-*.png
+
 # OS / editor noise
 .DS_Store
 Thumbs.db
