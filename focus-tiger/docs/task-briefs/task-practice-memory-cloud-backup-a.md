@@ -3,7 +3,7 @@
 > **状态（2026-08-12）**：产品口径已拍板（#266 · tip `4698348`）；Brief 立项 + Prompt 11.5 白名单。  
 > **范围修订（Prompt 11.5 · 2026-08-12）**：白名单扩为 **6 key 统一快照**（新增 `entitlement-ownership` / `ritual-completions` / `mustard-seed-seal`）；机制 = 一次序列化、一次 put/get，不拆多条同步链。  
 > **关闭备份（Prompt 12 拍板）**：关闭 = **同时删除云端快照**（`POST /api/practice-backup/delete` + OTP 身份）；非「只关本机」。  
-> **运行时**：`feature/practice-memory-cloud-backup-a` 实现中。  
+> **运行时**：**#272 已合** tip `a195584`；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`（路由+KV 已上）。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`。  
 > **权威**：`PROCESS.md` Backlog「练习记忆云端备份」· `FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」。
 
 ## 目标
