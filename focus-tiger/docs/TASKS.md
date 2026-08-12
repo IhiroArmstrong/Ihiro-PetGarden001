@@ -188,6 +188,17 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 可靠性 · 练习记忆云端备份（2026-08-12 Brief 立项）
+
+> 政策 #266；**≠** v1.1 云端算法、**≠** B 多端无缝。一次一只做运行时。
+
+| 阶段 | 内容 | Brief / 分支 | 状态 |
+|---|---|---|---|
+| **Brief** | 免费 A：静默快照 + 空库恢复；复用邮箱 OTP | `task-practice-memory-cloud-backup-a.md` | **已立项**（本回合） |
+| **实现** | Worker put/get + 客户端 debounce 上传 / 空库恢复 / Journey 角落引导 | `feature/practice-memory-cloud-backup-a` | 待口令「开工练习记忆备份 A」 |
+
+---
+
 ## 📍 工程提醒（跨会话门闩）
 
 | 提醒 | 触发 | 动作 | 权威 |
