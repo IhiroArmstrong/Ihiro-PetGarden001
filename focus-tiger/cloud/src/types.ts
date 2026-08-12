@@ -15,6 +15,8 @@ export interface Env {
 	MEMBERSHIP_KV: KVNamespace;
 	/** Restore OTP challenges only (not entitlement records). */
 	OTP_KV: KVNamespace;
+	/** Practice-memory snapshot blobs (not tip/sanctuary/membership/OTP). */
+	PRACTICE_BACKUP_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;

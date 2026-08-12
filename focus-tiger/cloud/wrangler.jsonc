@@ -8,6 +8,8 @@
  *   npx wrangler kv namespace create MEMBERSHIP_KV
  *   npx wrangler kv namespace create OTP_KV
  *   npx wrangler kv namespace create OTP_KV --preview
+ *   npx wrangler kv namespace create PRACTICE_BACKUP_KV
+ *   npx wrangler kv namespace create PRACTICE_BACKUP_KV --preview
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
@@ -58,6 +60,11 @@
 			"binding": "OTP_KV",
 			"id": "7d5acbe48de44cefac2bc041809c1f27",
 			"preview_id": "d0211c3d14e44798b41833c06e6d0f27"
+		},
+		{
+			"binding": "PRACTICE_BACKUP_KV",
+			"id": "f6f99774f3274f9f9e57c5f985a6b0b4",
+			"preview_id": "5b9051e902a240b19f050291f6de75ca"
 		}
 	],
 	"vars": {

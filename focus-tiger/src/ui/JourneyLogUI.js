@@ -1,5 +1,6 @@
 /**
  * Journey Log card — ⋯ / drawer quiet trail (Tea Log pattern; not HealthKit).
+ * Corner opt-in for practice-memory cloud backup (Prompt 12).
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -8,6 +9,14 @@ import {
   journeyLogLineKind,
   readJourneyLog
 } from '../core/journeyLogGate.js';
+import { readPracticeBackupOptIn } from '../core/practiceBackup/practiceBackupOptIn.js';
+import {
+  requestPracticeBackupOtp,
+  verifyPracticeBackupOtp,
+  enablePracticeBackupOptIn,
+  disablePracticeBackupAndDeleteCloud,
+  flushPracticeBackupUpload
+} from '../core/practiceBackup/practiceBackupSync.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -35,6 +44,7 @@ export class JourneyLogUI {
       handlers.storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
     this._open = false;
+    this._backupPanelOpen = false;
 
     this.root = document.createElement('div');
     this.root.id = 'journey-log';
@@ -60,6 +70,80 @@ export class JourneyLogUI {
     this.emptyEl.className = 'journey-log__empty';
     this.emptyEl.dataset.testid = 'journey-log-empty';
 
+    this.backupLink = document.createElement('button');
+    this.backupLink.type = 'button';
+    this.backupLink.className = 'journey-log__backup-link';
+    this.backupLink.dataset.testid = 'journey-log-backup-link';
+    this.backupLink.addEventListener('click', () => {
+      this._backupPanelOpen = !this._backupPanelOpen;
+      this._refreshBackupPanel();
+    });
+
+    this.backupPanel = document.createElement('div');
+    this.backupPanel.className = 'journey-log__backup-panel';
+    this.backupPanel.hidden = true;
+    this.backupPanel.dataset.testid = 'journey-log-backup-panel';
+
+    this.backupPrivacy = document.createElement('p');
+    this.backupPrivacy.className = 'journey-log__backup-privacy';
+
+    this.emailInput = document.createElement('input');
+    this.emailInput.type = 'email';
+    this.emailInput.autocomplete = 'email';
+    this.emailInput.className = 'journey-log__backup-input';
+    this.emailInput.dataset.testid = 'journey-log-backup-email';
+
+    this.codeInput = document.createElement('input');
+    this.codeInput.type = 'text';
+    this.codeInput.inputMode = 'numeric';
+    this.codeInput.autocomplete = 'one-time-code';
+    this.codeInput.className = 'journey-log__backup-input';
+    this.codeInput.dataset.testid = 'journey-log-backup-code';
+
+    this.consentLabel = document.createElement('label');
+    this.consentLabel.className = 'journey-log__backup-consent';
+    this.consentCheck = document.createElement('input');
+    this.consentCheck.type = 'checkbox';
+    this.consentCheck.dataset.testid = 'journey-log-backup-consent';
+    this.consentText = document.createElement('span');
+    this.consentLabel.append(this.consentCheck, this.consentText);
+
+    this.backupStatus = document.createElement('p');
+    this.backupStatus.className = 'journey-log__backup-status';
+    this.backupStatus.dataset.testid = 'journey-log-backup-status';
+    this.backupStatus.hidden = true;
+
+    this.backupActions = document.createElement('div');
+    this.backupActions.className = 'journey-log__backup-actions';
+
+    this.sendCodeBtn = document.createElement('button');
+    this.sendCodeBtn.type = 'button';
+    this.sendCodeBtn.className = 'journey-log__btn journey-log__btn--ghost';
+    this.sendCodeBtn.dataset.testid = 'journey-log-backup-send-code';
+    this.sendCodeBtn.addEventListener('click', () => void this._onSendCode());
+
+    this.enableBtn = document.createElement('button');
+    this.enableBtn.type = 'button';
+    this.enableBtn.className = 'journey-log__btn journey-log__btn--primary';
+    this.enableBtn.dataset.testid = 'journey-log-backup-enable';
+    this.enableBtn.addEventListener('click', () => void this._onEnable());
+
+    this.disableBtn = document.createElement('button');
+    this.disableBtn.type = 'button';
+    this.disableBtn.className = 'journey-log__btn journey-log__btn--ghost';
+    this.disableBtn.dataset.testid = 'journey-log-backup-disable';
+    this.disableBtn.addEventListener('click', () => void this._onDisable());
+
+    this.backupActions.append(this.sendCodeBtn, this.enableBtn, this.disableBtn);
+    this.backupPanel.append(
+      this.backupPrivacy,
+      this.emailInput,
+      this.codeInput,
+      this.consentLabel,
+      this.backupStatus,
+      this.backupActions
+    );
+
     this.actions = document.createElement('div');
     this.actions.className = 'journey-log__actions';
 
@@ -75,6 +159,8 @@ export class JourneyLogUI {
       this.blurbEl,
       this.emptyEl,
       this.listEl,
+      this.backupLink,
+      this.backupPanel,
       this.actions
     );
     mountRoot.appendChild(this.root);
@@ -120,6 +206,7 @@ export class JourneyLogUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._backupPanelOpen = false;
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -139,26 +226,121 @@ export class JourneyLogUI {
     this.blurbEl.textContent = t('JOURNEY_LOG_CARD_BLURB');
     this.emptyEl.textContent = t('JOURNEY_LOG_EMPTY');
     this.closeBtn.textContent = t('JOURNEY_LOG_CLOSE');
+    this.backupPrivacy.textContent = t('JOURNEY_LOG_BACKUP_PRIVACY');
+    this.emailInput.placeholder = t('JOURNEY_LOG_BACKUP_EMAIL');
+    this.codeInput.placeholder = t('JOURNEY_LOG_BACKUP_CODE');
+    this.consentText.textContent = t('JOURNEY_LOG_BACKUP_CONSENT');
+    this.sendCodeBtn.textContent = t('JOURNEY_LOG_BACKUP_SEND_CODE');
+    this.enableBtn.textContent = t('JOURNEY_LOG_BACKUP_ENABLE');
+    this.disableBtn.textContent = t('JOURNEY_LOG_BACKUP_DISABLE');
 
     const entries = readJourneyLog(this._storage).entries;
     this.listEl.replaceChildren();
     if (!entries.length) {
       this.emptyEl.hidden = false;
       this.listEl.hidden = true;
+    } else {
+      this.emptyEl.hidden = true;
+      this.listEl.hidden = false;
+      const recent = entries.slice(-LIST_MAX).reverse();
+      for (const entry of recent) {
+        const li = document.createElement('li');
+        li.className = 'journey-log__row';
+        const kind = journeyLogLineKind(entry);
+        const key = `JOURNEY_LOG_ENTRY_${kind}`;
+        li.textContent = t(key)
+          .replaceAll('{date}', journeyLogDateKey(entry.at))
+          .replaceAll('{n}', String(entry.minutes));
+        this.listEl.appendChild(li);
+      }
+    }
+    this._refreshBackupPanel();
+  }
+
+  _refreshBackupPanel() {
+    const opt = readPracticeBackupOptIn(this._storage);
+    const on = Boolean(opt.enabled && opt.deviceToken);
+    this.backupLink.textContent = on
+      ? t('JOURNEY_LOG_BACKUP_LINK_ON')
+      : t('JOURNEY_LOG_BACKUP_LINK_OFF');
+    this.backupPanel.hidden = !this._backupPanelOpen;
+    this.consentLabel.hidden = on;
+    this.enableBtn.hidden = on;
+    this.disableBtn.hidden = !on;
+    if (on && opt.email) this.emailInput.value = opt.email;
+  }
+
+  async _onSendCode() {
+    this.backupStatus.hidden = true;
+    try {
+      await requestPracticeBackupOtp(this.emailInput.value.trim());
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_OK');
+    } catch {
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
+    }
+  }
+
+  async _onEnable() {
+    this.backupStatus.hidden = true;
+    if (!this.consentCheck.checked) {
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
       return;
     }
-    this.emptyEl.hidden = true;
-    this.listEl.hidden = false;
-    const recent = entries.slice(-LIST_MAX).reverse();
-    for (const entry of recent) {
-      const li = document.createElement('li');
-      li.className = 'journey-log__row';
-      const kind = journeyLogLineKind(entry);
-      const key = `JOURNEY_LOG_ENTRY_${kind}`;
-      li.textContent = t(key)
-        .replaceAll('{date}', journeyLogDateKey(entry.at))
-        .replaceAll('{n}', String(entry.minutes));
-      this.listEl.appendChild(li);
+    try {
+      const res = await verifyPracticeBackupOtp(
+        this.emailInput.value.trim(),
+        this.codeInput.value.trim()
+      );
+      const email =
+        res && typeof res === 'object' && typeof res.email === 'string'
+          ? res.email
+          : this.emailInput.value.trim();
+      const deviceToken =
+        res && typeof res === 'object' && typeof res.deviceToken === 'string'
+          ? res.deviceToken
+          : '';
+      if (!deviceToken) throw new Error('no_token');
+      enablePracticeBackupOptIn(this._storage, { email, deviceToken });
+      void flushPracticeBackupUpload({ storage: this._storage, force: true });
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_OK');
+      this._refreshBackupPanel();
+    } catch {
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
+    }
+  }
+
+  async _onDisable() {
+    this.backupStatus.hidden = true;
+    try {
+      // Prefer OTP re-auth for delete; fall back to deviceToken-only delete path.
+      const code = this.codeInput.value.trim();
+      if (!code) {
+        await requestPracticeBackupOtp(
+          this.emailInput.value.trim() ||
+            readPracticeBackupOptIn(this._storage).email ||
+            ''
+        );
+        this.backupStatus.hidden = false;
+        this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_SEND_CODE');
+        return;
+      }
+      const result = await disablePracticeBackupAndDeleteCloud({
+        storage: this._storage,
+        code
+      });
+      if (!result.ok) throw new Error(result.reason || 'fail');
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_OK');
+      this._backupPanelOpen = false;
+      this._refreshBackupPanel();
+    } catch {
+      this.backupStatus.hidden = false;
+      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
     }
   }
 
@@ -227,6 +409,61 @@ export class JourneyLogUI {
       .journey-log__row:last-child {
         margin-bottom: 0;
       }
+      .journey-log__backup-link {
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.78rem;
+        opacity: 0.72;
+        cursor: pointer;
+        padding: 0;
+        margin: 0 0 10px;
+        text-align: left;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .journey-log__backup-panel {
+        margin: 0 0 12px;
+        padding: 10px;
+        border-radius: 10px;
+        background: ${GLASS_FILL_STRONG};
+      }
+      .journey-log__backup-privacy {
+        margin: 0 0 8px;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        opacity: 0.9;
+      }
+      .journey-log__backup-input {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 0 8px;
+        padding: 8px 10px;
+        font: inherit;
+        border-radius: 8px;
+        border: ${GLASS_BORDER};
+        background: rgba(255,255,255,0.35);
+      }
+      .journey-log__backup-consent {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        font-size: 0.78rem;
+        line-height: 1.35;
+        margin: 0 0 8px;
+      }
+      .journey-log__backup-status {
+        margin: 0 0 8px;
+        font-size: 0.78rem;
+      }
+      .journey-log__backup-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
       .journey-log__actions {
         display: flex;
         justify-content: flex-end;
@@ -244,6 +481,10 @@ export class JourneyLogUI {
         background: transparent;
         color: inherit;
         opacity: 0.85;
+      }
+      .journey-log__btn--primary {
+        background: rgba(44, 31, 20, 0.14);
+        color: inherit;
       }
     `;
     document.head.appendChild(style);

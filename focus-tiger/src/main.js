@@ -86,6 +86,12 @@ import {
   appendJourneyLogEntry,
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
+import {
+  schedulePracticeBackupUpload,
+  flushPracticeBackupUpload,
+  maybeRestorePracticeBackupOnBoot,
+  setPracticeBackupBusyProbe
+} from './core/practiceBackup/practiceBackupSync.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
@@ -1286,6 +1292,7 @@ async function init() {
       reflect: Boolean(hasAnyAnswer)
     });
     pendingJourneyDraft = null;
+    schedulePracticeBackupUpload({ storage });
   }
 
   const sessionEndFlowCancelPending = sessionEndFlow.cancelPending.bind(
@@ -3016,8 +3023,30 @@ async function init() {
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
       window.setTimeout(() => maybeOfferFiveMomentsCompassFirstCard(), 900);
+      // Practice-memory backup: Idle flush (debounced / min-gap still apply).
+      schedulePracticeBackupUpload({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        debounceMs: 400,
+        forceSoon: true
+      });
     }
   });
+
+  setPracticeBackupBusyProbe(() => {
+    const s = stateManager.state;
+    return (
+      s === STATES.FOCUSING ||
+      s === STATES.CELEBRATE ||
+      Boolean(sessionUiGate?.postSessionOverlayActive)
+    );
+  });
+
+  // After shell ready: empty-whitelist cloud restore (non-blocking).
+  window.setTimeout(() => {
+    void maybeRestorePracticeBackupOnBoot({
+      storage: typeof localStorage !== 'undefined' ? localStorage : null
+    });
+  }, 1200);
 
   // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
   // and the product shell can now be safely queried/clicked.
