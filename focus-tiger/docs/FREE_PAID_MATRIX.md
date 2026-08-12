@@ -67,7 +67,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Basic Reflection（结束反思 + 共鸣短句） | `free` | — | 无 key | 免费；禁 AI / 付费 CTA | **已接线** | — |
 | Breath Practice（首页左球） | `free` | — | 无 key | 与进阶仪式分立；免费 | **已接线** | — |
 | Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合。**Daily Card** Brief `task-journey-daily-card.md`。**上限：免费/付费统一 30（有意取舍，不做付费更高上限）**；永久档案靠 Save image；B 勿卖「无限历史」。云端兜底见下行「练习记忆 · 云端快照备份」 |
-| 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；依赖邮箱 OTP 身份（与付费 restore **同一套身份、两种用途**） | 待立项（Worker 快照；非 FEATURE_CATALOG 内容 key） | A 档 = 「不出问题」；本机权威日常写入 → 定期/关键后静默上传快照 → 空库/清机后恢复最近一次；**不做**首版实时双向同步 | **未接线** | **文档拍板已合 develop（#266 tip `4698348`）**。覆盖练习史 / Journey Log（+ 必要里程碑戳等，立项时列清单）。**未绑邮箱** = **无云端兜底**；Safari/ITP 等本机存储被系统清理的风险由用户自行承担——实现时须有**温和、非打断**提示（例：Journey Log 角落「绑定邮箱可获得云端备份」；非弹窗警告；文案另定）。隐私须明示同意后再传。详见 `PROCESS` Backlog「练习记忆云端备份」 |
+| 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；依赖邮箱 OTP 身份（与付费 restore **同一套身份、两种用途**） | Brief 已立项（Worker 快照；非 FEATURE_CATALOG 内容 key） | A 档 = 「不出问题」；本机权威日常写入 → 定期/关键后静默上传快照 → 空库/清机后恢复最近一次；**不做**首版实时双向同步 | **未接线** | **Brief `task-practice-memory-cloud-backup-a.md`（2026-08-12 立项）**；政策 #266。覆盖 Journey Log / practice-days / milestone-glow（见 Brief 表）。**未绑邮箱** = **无云端兜底** + 温和非打断提示。隐私明示同意。口令「开工练习记忆备份 A」再写运行时。`PROCESS` Backlog「练习记忆云端备份」 |
 | Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**未挂产品场景**。落点 Brief：`task-daily-wisdom-reflection-mount.md`（Reflection 底 + 可选印花） |
 | MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
 
@@ -152,7 +152,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
 11. **付费 · 意愿漏斗本地统计** — **已合**（#255；`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
-13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — 文档已合（#266 tip `4698348`）；运行时未接线；未绑邮箱 = 无云端兜底，须温和非打断提示。见 `PROCESS` Backlog「练习记忆云端备份」。
+13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — 政策 #266；**Brief 已立项** `task-practice-memory-cloud-backup-a.md`；运行时未接线。口令「开工练习记忆备份 A」。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
