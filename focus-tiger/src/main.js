@@ -3048,6 +3048,28 @@ async function init() {
     });
   }, 1200);
 
+  // DEV / QA: force upload / restore without waiting for 10min debounce.
+  // Product enable already force-flushes; Idle→~400ms also schedules forceSoon.
+  window.__practiceBackup = {
+    flush: () =>
+      flushPracticeBackupUpload({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        force: true
+      }),
+    restore: () =>
+      maybeRestorePracticeBackupOnBoot({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null
+      }),
+    status: () => {
+      try {
+        const raw = localStorage.getItem('focus-tiger.practice-backup.v1');
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+  };
+
   // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
   // and the product shell can now be safely queried/clicked.
   window.__FT_APP_READY__ = true;
