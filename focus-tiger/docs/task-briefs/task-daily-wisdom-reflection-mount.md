@@ -29,7 +29,7 @@
 |---|---|
 | 挂载点 | Reflection 卡片底部；Honesty→Reflection 同路径 |
 | 文案池 | `content.daily-wisdom`；与 Quiet Line **分池** |
-| i18n | 既有 Wisdom en/ja |
+| i18n | 既有 Wisdom en/ja（含古典署名句；`attribution` 可选） |
 
 ## 实现要点
 
