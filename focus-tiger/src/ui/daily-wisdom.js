@@ -1,6 +1,7 @@
 /**
  * Pluggable Lit host for Yin’s daily wisdom line.
  * Free content; no entitlement. Not wired to a product scene yet — mount anywhere.
+ * Classical entries may include optional attribution under the quote.
  *
  * @example
  * import './ui/daily-wisdom.js';
@@ -20,7 +21,9 @@ export class DailyWisdomElement extends LitElement {
     /** Locked quote id for the resolved day (reflected for tests / CSS). */
     quoteId: { type: String, attribute: 'quote-id', reflect: true },
     /** @private */
-    _text: { state: true }
+    _text: { state: true },
+    /** @private */
+    _attribution: { state: true }
   };
 
   static styles = css`
@@ -40,6 +43,16 @@ export class DailyWisdomElement extends LitElement {
     p {
       margin: 0;
     }
+    cite {
+      display: block;
+      margin-top: 0.55em;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+      color: rgba(61, 46, 34, 0.62);
+    }
   `;
 
   constructor() {
@@ -50,6 +63,8 @@ export class DailyWisdomElement extends LitElement {
     this.quoteId = '';
     /** @type {string} */
     this._text = '';
+    /** @type {string} */
+    this._attribution = '';
     /** @type {(() => void) | null} */
     this._unsubLocale = null;
   }
@@ -84,16 +99,19 @@ export class DailyWisdomElement extends LitElement {
     if (!resolved) {
       this.quoteId = '';
       this._text = '';
+      this._attribution = '';
       return;
     }
     this.quoteId = resolved.id;
     this._text = resolved.text;
+    this._attribution = resolved.attribution || '';
     this.dispatchEvent(
       new CustomEvent('daily-wisdom-ready', {
         detail: {
           dateKey: resolved.dateKey,
           id: resolved.id,
           text: resolved.text,
+          attribution: resolved.attribution || '',
           locale: resolved.locale
         },
         bubbles: true,
@@ -103,7 +121,16 @@ export class DailyWisdomElement extends LitElement {
   }
 
   render() {
-    return html`<p part="quote" data-testid="daily-wisdom-text">${this._text}</p>`;
+    return html`
+      <p part="quote" data-testid="daily-wisdom-text">${this._text}</p>
+      ${this._attribution
+        ? html`<cite
+            part="attribution"
+            data-testid="daily-wisdom-attribution"
+            >— ${this._attribution}</cite
+          >`
+        : null}
+    `;
   }
 }
 
