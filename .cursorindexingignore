@@ -10,9 +10,16 @@ focus-tiger/public/textures/
 focus-tiger/public/draco/
 focus-tiger/public/basis/
 focus-tiger/public/icons/
+focus-tiger/public/ui/
+focus-tiger/public/images/
 
 # Local art references (keep inventory/docs authoritative in focus-tiger/docs/)
 focus-tiger/art-reference/
+
+# Repo-root staging (also in .cursorignore; belt-and-suspenders for index)
+yin-badges/
+tiger_badges_transparent*/
+Yin*/
 
 # Lockfiles are noisy in semantic search
 package-lock.json
