@@ -1,5 +1,5 @@
 /**
- * Focus 计时提示音：开始磬 / 达标结束铃。
+ * Focus 计时提示音：开始磬 / 间隔磬 / 达标结束铃。
  * 免费核心反馈——不走 Ambient entitlement；可复用 ambient ducking。
  */
 
@@ -8,8 +8,10 @@ import {
   writeSessionCuePrefEnabled,
   isSessionCueMasterEnabled
 } from './sessionCuePreference.js';
+import { evaluateIntervalCue } from './sessionIntervalScheduler.js';
 
 export const SESSION_START_BELL_SRC = '/audio/cues/session-start-bell.mp3';
+export const SESSION_INTERVAL_BELL_SRC = '/audio/cues/session-interval-bell.mp3';
 export const SESSION_END_CHIME_SRC = '/audio/cues/session-end-chime.mp3';
 
 /** Ambient duck target while a cue plays (relative to user volume). */
@@ -37,9 +39,11 @@ function assignSrc(el, src) {
  * @param {{
  *   storage?: Storage | { getItem?: Function, setItem?: Function } | null,
  *   startAudio?: HTMLAudioElement | null,
+ *   intervalAudio?: HTMLAudioElement | null,
  *   endAudio?: HTMLAudioElement | null,
  *   mountToDocument?: boolean,
  *   startSrc?: string,
+ *   intervalSrc?: string,
  *   endSrc?: string,
  *   duckRatio?: number,
  *   fadeMs?: number
@@ -49,15 +53,18 @@ export class SessionCueController {
   constructor({
     storage = typeof localStorage !== 'undefined' ? localStorage : null,
     startAudio = null,
+    intervalAudio = null,
     endAudio = null,
     mountToDocument = true,
     startSrc = SESSION_START_BELL_SRC,
+    intervalSrc = SESSION_INTERVAL_BELL_SRC,
     endSrc = SESSION_END_CHIME_SRC,
     duckRatio = SESSION_CUE_DUCK_RATIO,
     fadeMs = SESSION_CUE_FADE_MS
   } = {}) {
     this._storage = storage;
     this._startSrc = startSrc;
+    this._intervalSrc = intervalSrc;
     this._endSrc = endSrc;
     this._duckRatio = duckRatio;
     this._fadeMs = fadeMs;
@@ -66,10 +73,17 @@ export class SessionCueController {
     this._start =
       startAudio ||
       (typeof document !== 'undefined' ? this._createEl() : null);
+    this._interval =
+      intervalAudio ||
+      (typeof document !== 'undefined' ? this._createEl() : null);
     this._end =
       endAudio ||
       (typeof document !== 'undefined' ? this._createEl() : null);
     this._playEpoch = 0;
+    /** @type {boolean} */
+    this._intervalActive = false;
+    /** @type {number} */
+    this._intervalFiredCount = 0;
   }
 
   _createEl() {
@@ -88,6 +102,7 @@ export class SessionCueController {
   /** Warm decode before the Sit / chip gesture. */
   preload() {
     assignSrc(this._start, this._startSrc);
+    assignSrc(this._interval, this._intervalSrc);
     assignSrc(this._end, this._endSrc);
   }
 
@@ -96,7 +111,7 @@ export class SessionCueController {
   }
 
   /**
-   * UI master toggle — keeps both fields in sync.
+   * UI master toggle — keeps all cue fields in sync.
    * @param {boolean} enabled
    */
   setEnabled(enabled) {
@@ -105,6 +120,68 @@ export class SessionCueController {
 
   reloadPref() {
     this._pref = readSessionCuePref(this._storage);
+  }
+
+  /** Begin mid-session interval scheduling (call on Focus start). */
+  startIntervalSession() {
+    this._intervalActive = true;
+    this._intervalFiredCount = 0;
+  }
+
+  /** Stop interval scheduling (Rise / session end). */
+  stopIntervalSession() {
+    this._intervalActive = false;
+    this._intervalFiredCount = 0;
+  }
+
+  /**
+   * Wall-clock poll while Focusing. Advances fired count on play or skip.
+   *
+   * @param {{
+   *   elapsedSeconds: number,
+   *   targetSeconds: number,
+   *   ambient?: {
+   *     isAudiblePlaying?: () => boolean,
+   *     duckTo?: (ratio: number, opts?: object) => void,
+   *     unduck?: (opts?: object) => void,
+   *     cancelDuck?: () => void
+   *   } | null,
+   *   onIntervalPlayed?: () => void
+   * }} opts
+   * @returns {{ action: string, firedCount?: number }}
+   */
+  tickInterval({
+    elapsedSeconds,
+    targetSeconds,
+    ambient = null,
+    onIntervalPlayed = null
+  }) {
+    if (!this._intervalActive) {
+      return { action: 'inactive' };
+    }
+    if (!this._pref.sessionIntervalBellEnabled) {
+      return { action: 'disabled' };
+    }
+    const result = evaluateIntervalCue({
+      elapsedMs: Math.max(0, Number(elapsedSeconds) || 0) * 1000,
+      targetMs: Math.max(0, Number(targetSeconds) || 0) * 1000,
+      lastFiredCount: this._intervalFiredCount
+    });
+    if (result.action === 'wait') {
+      return result;
+    }
+    this._intervalFiredCount = result.firedCount;
+    if (result.action === 'skip') {
+      return result;
+    }
+    const played = this.playInterval({ ambient });
+    if (played) {
+      onIntervalPlayed?.();
+    }
+    return {
+      action: played ? 'play' : 'play_failed',
+      firedCount: result.firedCount
+    };
   }
 
   /**
@@ -123,6 +200,26 @@ export class SessionCueController {
     return this._playOne(this._start, {
       ambient,
       mode: 'start'
+    });
+  }
+
+  /**
+   * Mid-session interval bowl (same duck/unduck as start).
+   * @param {{
+   *   ambient?: {
+   *     isAudiblePlaying?: () => boolean,
+   *     duckTo?: (ratio: number, opts?: object) => void,
+   *     unduck?: (opts?: object) => void,
+   *     cancelDuck?: () => void
+   *   } | null
+   * }} [opts]
+   */
+  playInterval({ ambient = null } = {}) {
+    if (!this._pref.sessionIntervalBellEnabled) return false;
+    this.preload();
+    return this._playOne(this._interval, {
+      ambient,
+      mode: 'interval'
     });
   }
 
@@ -157,7 +254,7 @@ export class SessionCueController {
    * @param {HTMLAudioElement | null} el
    * @param {{
    *   ambient?: object | null,
-   *   mode: 'start' | 'end',
+   *   mode: 'start' | 'interval' | 'end',
    *   onCueEnded?: (() => void) | null
    * }} opts
    */
@@ -183,7 +280,7 @@ export class SessionCueController {
       if (epoch !== this._playEpoch) return;
       el.removeEventListener('ended', finish);
       el.removeEventListener('error', finish);
-      if (mode === 'start' && audible) {
+      if ((mode === 'start' || mode === 'interval') && audible) {
         ambient?.unduck?.({ fadeMs: this._fadeMs, delayMs: 0 });
       }
       onCueEnded?.();
@@ -203,7 +300,7 @@ export class SessionCueController {
   /** Invalidate in-flight cue callbacks (e.g. early Rise). */
   cancelPending() {
     this._playEpoch += 1;
-    for (const el of [this._start, this._end]) {
+    for (const el of [this._start, this._interval, this._end]) {
       if (!el) continue;
       try {
         el.pause();

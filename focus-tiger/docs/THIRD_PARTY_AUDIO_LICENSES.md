@@ -13,23 +13,18 @@
 
 ## Focus session cues（Pixabay · 2026-08）
 
-| 工程文件 | Pixabay id | 创作者（文件名） | License（声明） | Agent 单页核验（2026-08-13） |
+| 工程文件 | Pixabay id | 创作者（文件名） | License | 产品书面确认 |
 |---|---|---|---|---|
-| `session-start-bell.mp3` | 410608 | SoundReality | Pixabay Content License | **未完成**（Cloudflare 403） |
-| `session-end-chime.mp3` | 254774 | linhmitto | Pixabay Content License | **未完成**（Cloudflare 403） |
-| `session-interval-bell.mp3` | 376885 | DRAGON-STUDIO | Pixabay Content License | **未完成**（Cloudflare 403） |
+| `session-start-bell.mp3` | 410608 | SoundReality | Pixabay Content License | 2026-08-12 入库 Prompt |
+| `session-end-chime.mp3` | 254774 | linhmitto | Pixabay Content License | 2026-08-12 入库 Prompt |
+| `session-interval-bell.mp3` | 376885 | DRAGON-STUDIO | Pixabay Content License | 2026-08-13 书面（检索页 [bell ding · p2](https://pixabay.com/sound-effects/search/bell%20ding/?pagi=2)） |
 
-平台摘要：[License summary](https://pixabay.com/service/license-summary/)（Agent 抓取同样被 Cloudflare 拦；须人工打开）。
-
-**人工补核清单（约 3 分钟）**
-
-1. Safari 打开上表三枚候选单页（见 `cues/ATTRIBUTION.md`）  
-2. 确认页面可见 *Free for use under the Pixabay Content License*（或等价）  
-3. 在 `cues/ATTRIBUTION.md`「核实账本」补一行：日期 + 你的确认  
+平台摘要：[License summary](https://pixabay.com/service/license-summary/) · 检索页同上。  
+Agent 单页抓取曾遇 Cloudflare 403；**产品书面确认**已记入 `cues/ATTRIBUTION.md` 核实账本（以产品确认为入库合规依据）。
 
 ## 入库门禁（后续素材）
 
 1. ASCII kebab-case 文件名  
 2. 写入对应 `ATTRIBUTION.md`（来源、作者、id、候选 URL、license 名）  
 3. 在本索引表加一行  
-4. 能打开单页则记「人工/Agent 确认」；打不开则记「未完成」——**禁止**默认写成「已审查」
+4. 产品书面或可打开的单页确认写入核实账本——**禁止**仅因「已合并」写成「已审查」

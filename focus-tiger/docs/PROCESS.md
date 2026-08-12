@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Focus 间隔磬 + 觉察卡 · Brief/资产（2026-08-13 · 本支 docs）**：入库 `session-interval-bell.mp3`；`THIRD_PARTY_AUDIO_LICENSES.md` + `cues/ATTRIBUTION` 核实账本（Agent Cloudflare **未**完成单页核验，须人工 Safari 补确认）；Brief `task-session-interval-bell-and-awareness-card.md`——**独立** interval cue + **独立** mid-session 觉察卡（**不**改 Moment Whisper 一生一次；**不**并 Quiet Line）；达标前 **30s** 跳过间隔磬。**运行时未接线**。
+- **Focus 间隔磬 + 觉察卡（2026-08-13 · `feature/session-interval-awareness`）**：运行时接线——每 **180s** 间隔磬 + 同拍觉察卡（`FOCUS_AWARENESS_*`）；剩余 **&lt;30s** 跳过磬；总开关同步三字段；**不**碰 Moment Whisper / Quiet Line。授权：产品书面确认 interval（#277 tip `b51f9a2` + 本支账本）。TRACKER 分列待人工。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（现仅 Stripe secrets）。TRACKER 待人工（端到端须先补密）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
@@ -776,9 +776,9 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 ### Backlog:Focus 间隔磬 + 觉察观照卡（mid-session）
 
 > **Brief**：`task-briefs/task-session-interval-bell-and-awareness-card.md`（2026-08-13）。  
-> **资产**：`public/audio/cues/session-interval-bell.mp3` 已入库；授权索引 `docs/THIRD_PARTY_AUDIO_LICENSES.md`（人工单页确认仍待）。  
+> **资产 / 授权**：`session-interval-bell.mp3`；产品书面确认 Pixabay Content License（2026-08-13）；索引 `THIRD_PARTY_AUDIO_LICENSES.md`。  
 > **口径**：每 180s 间隔磬；达标前 **30s** 跳过；独立觉察卡（可重复，**不**改 Moment Whisper）；**不**并 Quiet Line；v1 全 Focus、无会话类型。  
-> **排期**：Brief 已起草；**运行时未开工**——须另开 `feature/*`。
+> **状态**：运行时接线在 `feature/session-interval-awareness`（合入后删本 Backlog 或改「已交付」）。
 
 ### Backlog:用户上传氛围乐（v1.0.0 必交付 · 多首 · 最近在上 · 可删自传）
 

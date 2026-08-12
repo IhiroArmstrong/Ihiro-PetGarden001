@@ -29,7 +29,7 @@
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`） |
-| `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape 面板「计时提示音」 | Focus 开始磬 / 达标结束铃总开关；形状 `{ sessionStartBellEnabled, sessionEndBellEnabled }`（本版 UI 同步切换，默认皆 `true`）；**不**走 Ambient entitlement |
+| `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape 面板「计时提示音」 | Focus 开始磬 / **间隔磬** / 达标结束铃总开关；形状 `{ sessionStartBellEnabled, sessionIntervalBellEnabled, sessionEndBellEnabled }`（本版 UI 同步切换，默认皆 `true`）；**不**走 Ambient entitlement；觉察卡 v1 跟总开关（关则卡也不出） |
 | IndexedDB `focus-tiger.user-ambient.v1` | `UserAmbientLibrary` | 用户上传氛围乐 blobs（非 localStorage；重置须 `clearAllUserAmbientTracks`） |
 | `focus-tiger.locale.v1` | `localePreference` / `i18n.setLocale` | 上次选用的 **ready** 语言；**v1.0.0** ready = `en` / `ja`；draft（含 zh）不写入 |
 | `focus-tiger.locale-greeting.v1` | `localeGreeting` / Dispatcher `LANGUAGE_CHANGED` | 切语问候同日限频：`{ dateKey, locales[] }`；ja→`bookReading`；en→`teaDrinking`（皆单程+CapCut）。**写入时机**：`playEmotion` 开播成功后 `markLocaleGreetingPlayed`（resolve 不预扣） |

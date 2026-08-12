@@ -1,19 +1,24 @@
 /**
- * Focus 计时提示音偏好（开始磬 / 结束铃）。
- * UI 本版只有总开关；底层存两个字段并永远同步，便于以后拆分。
+ * Focus 计时提示音偏好（开始磬 / 间隔磬 / 结束铃）。
+ * UI 本版只有总开关；底层存三个字段并永远同步，便于以后拆分。
  */
 
 /** 与 `localStateKeys.js` 白名单同步。 */
 export const SESSION_CUE_PREF_STORAGE_KEY = 'focus-tiger.session-cues.v1';
 
 /**
- * @typedef {{ sessionStartBellEnabled: boolean, sessionEndBellEnabled: boolean }} SessionCuePref
+ * @typedef {{
+ *   sessionStartBellEnabled: boolean,
+ *   sessionIntervalBellEnabled: boolean,
+ *   sessionEndBellEnabled: boolean
+ * }} SessionCuePref
  */
 
 /** @returns {SessionCuePref} */
 export function defaultSessionCuePref() {
   return {
     sessionStartBellEnabled: true,
+    sessionIntervalBellEnabled: true,
     sessionEndBellEnabled: true
   };
 }
@@ -32,10 +37,16 @@ export function normalizeSessionCuePref(raw) {
     typeof raw.sessionEndBellEnabled === 'boolean'
       ? raw.sessionEndBellEnabled
       : true;
-  // v1: keep fields in sync (AND). Divergent storage collapses to both-off or both-on.
-  const master = start && end;
+  // Missing interval field (pre-#interval prefs) inherits start∧end.
+  const interval =
+    typeof raw.sessionIntervalBellEnabled === 'boolean'
+      ? raw.sessionIntervalBellEnabled
+      : start && end;
+  // v1: keep fields in sync (AND). Divergent storage collapses to all-off or all-on.
+  const master = start && end && interval;
   return {
     sessionStartBellEnabled: master,
+    sessionIntervalBellEnabled: master,
     sessionEndBellEnabled: master
   };
 }
@@ -57,13 +68,15 @@ export function readSessionCuePref(storage) {
 
 /**
  * @param {Storage | { setItem?: Function } | null | undefined} storage
- * @param {boolean} enabled master toggle — writes both fields in sync
+ * @param {boolean} enabled master toggle — writes all fields in sync
  * @returns {SessionCuePref}
  */
 export function writeSessionCuePrefEnabled(storage, enabled) {
+  const on = Boolean(enabled);
   const pref = {
-    sessionStartBellEnabled: Boolean(enabled),
-    sessionEndBellEnabled: Boolean(enabled)
+    sessionStartBellEnabled: on,
+    sessionIntervalBellEnabled: on,
+    sessionEndBellEnabled: on
   };
   try {
     storage?.setItem?.(SESSION_CUE_PREF_STORAGE_KEY, JSON.stringify(pref));
@@ -79,6 +92,8 @@ export function writeSessionCuePrefEnabled(storage, enabled) {
  */
 export function isSessionCueMasterEnabled(pref) {
   return Boolean(
-    pref?.sessionStartBellEnabled && pref?.sessionEndBellEnabled
+    pref?.sessionStartBellEnabled &&
+      pref?.sessionIntervalBellEnabled &&
+      pref?.sessionEndBellEnabled
   );
 }

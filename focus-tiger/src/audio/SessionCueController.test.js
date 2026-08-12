@@ -12,6 +12,7 @@ import {
   SessionCueController,
   SESSION_CUE_DUCK_RATIO,
   SESSION_START_BELL_SRC,
+  SESSION_INTERVAL_BELL_SRC,
   SESSION_END_CHIME_SRC
 } from './SessionCueController.js';
 
@@ -65,9 +66,10 @@ function createMockAudio() {
   };
 }
 
-test('default session cue pref is both-on', () => {
+test('default session cue pref is all-on (start/interval/end)', () => {
   assert.deepEqual(defaultSessionCuePref(), {
     sessionStartBellEnabled: true,
+    sessionIntervalBellEnabled: true,
     sessionEndBellEnabled: true
   });
   assert.equal(SESSION_CUE_PREF_STORAGE_KEY, 'focus-tiger.session-cues.v1');
@@ -81,6 +83,7 @@ test('normalizeSessionCuePref syncs divergent fields with AND', () => {
     }),
     {
       sessionStartBellEnabled: false,
+      sessionIntervalBellEnabled: false,
       sessionEndBellEnabled: false
     }
   );
@@ -91,17 +94,31 @@ test('normalizeSessionCuePref syncs divergent fields with AND', () => {
     }),
     {
       sessionStartBellEnabled: true,
+      sessionIntervalBellEnabled: true,
       sessionEndBellEnabled: true
+    }
+  );
+  assert.deepEqual(
+    normalizeSessionCuePref({
+      sessionStartBellEnabled: true,
+      sessionIntervalBellEnabled: false,
+      sessionEndBellEnabled: true
+    }),
+    {
+      sessionStartBellEnabled: false,
+      sessionIntervalBellEnabled: false,
+      sessionEndBellEnabled: false
     }
   );
 });
 
-test('writeSessionCuePrefEnabled keeps both fields in sync', () => {
+test('writeSessionCuePrefEnabled keeps three fields in sync', () => {
   const storage = createMapStorage();
   writeSessionCuePrefEnabled(storage, false);
   const pref = readSessionCuePref(storage);
   assert.equal(isSessionCueMasterEnabled(pref), false);
   assert.equal(pref.sessionStartBellEnabled, false);
+  assert.equal(pref.sessionIntervalBellEnabled, false);
   assert.equal(pref.sessionEndBellEnabled, false);
   writeSessionCuePrefEnabled(storage, true);
   assert.equal(isSessionCueMasterEnabled(readSessionCuePref(storage)), true);
@@ -109,11 +126,13 @@ test('writeSessionCuePrefEnabled keeps both fields in sync', () => {
 
 test('SessionCueController playStart ducks ambient then unducks on ended', async () => {
   const startAudio = createMockAudio();
+  const intervalAudio = createMockAudio();
   const endAudio = createMockAudio();
   const storage = createMapStorage();
   const cues = new SessionCueController({
     storage,
     startAudio,
+    intervalAudio,
     endAudio,
     mountToDocument: false
   });
@@ -132,26 +151,127 @@ test('SessionCueController playStart ducks ambient then unducks on ended', async
   assert.equal(unducks[0].fadeMs, 1500);
 });
 
-test('SessionCueController respects master off for start and end', () => {
+test('SessionCueController playInterval ducks then unducks', () => {
   const startAudio = createMockAudio();
+  const intervalAudio = createMockAudio();
+  const endAudio = createMockAudio();
+  const cues = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio,
+    intervalAudio,
+    endAudio,
+    mountToDocument: false
+  });
+  const ducks = [];
+  const unducks = [];
+  const ambient = {
+    isAudiblePlaying: () => true,
+    duckTo: (ratio) => ducks.push(ratio),
+    unduck: (opts) => unducks.push(opts)
+  };
+  assert.equal(cues.playInterval({ ambient }), true);
+  assert.deepEqual(ducks, [SESSION_CUE_DUCK_RATIO]);
+  intervalAudio.dispatch('ended');
+  assert.equal(unducks.length, 1);
+});
+
+test('SessionCueController respects master off for start, interval, and end', () => {
+  const startAudio = createMockAudio();
+  const intervalAudio = createMockAudio();
   const endAudio = createMockAudio();
   const storage = createMapStorage();
   const cues = new SessionCueController({
     storage,
     startAudio,
+    intervalAudio,
     endAudio,
     mountToDocument: false
   });
   cues.setEnabled(false);
   let endCb = 0;
   assert.equal(cues.playStart({ ambient: null }), false);
+  assert.equal(cues.playInterval({ ambient: null }), false);
   assert.equal(cues.playEnd({ onCueEnded: () => endCb++ }), false);
   assert.equal(endCb, 0);
   assert.equal(startAudio.paused, true);
+  assert.equal(intervalAudio.paused, true);
   assert.equal(endAudio.paused, true);
+});
+
+test('tickInterval plays at 180s and skips when remaining < 30s', () => {
+  const cues = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  let played = 0;
+  cues.startIntervalSession();
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 179,
+      targetSeconds: 600,
+      onIntervalPlayed: () => played++
+    }).action,
+    'wait'
+  );
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 600,
+      onIntervalPlayed: () => played++
+    }).action,
+    'play'
+  );
+  assert.equal(played, 1);
+
+  const short = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  short.startIntervalSession();
+  assert.equal(
+    short.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 200,
+      onIntervalPlayed: () => played++
+    }).action,
+    'skip'
+  );
+  assert.equal(played, 1);
+});
+
+test('stopIntervalSession cancels further ticks (Rise path)', () => {
+  const cues = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  let played = 0;
+  cues.startIntervalSession();
+  cues.stopIntervalSession();
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 600,
+      onIntervalPlayed: () => played++
+    }).action,
+    'inactive'
+  );
+  assert.equal(played, 0);
 });
 
 test('SessionCueController cue src paths are under /audio/cues/', () => {
   assert.equal(SESSION_START_BELL_SRC, '/audio/cues/session-start-bell.mp3');
+  assert.equal(
+    SESSION_INTERVAL_BELL_SRC,
+    '/audio/cues/session-interval-bell.mp3'
+  );
   assert.equal(SESSION_END_CHIME_SRC, '/audio/cues/session-end-chime.mp3');
 });

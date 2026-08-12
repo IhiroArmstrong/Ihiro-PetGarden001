@@ -70,6 +70,15 @@ export const COPY_POOLS = Object.freeze({
     'DAILY_ZEN_QUOTE_5',
     'DAILY_ZEN_QUOTE_6',
     'DAILY_ZEN_QUOTE_7'
+  ],
+  /** Mid-session awareness card (repeatable; not Moment Whisper). */
+  FOCUS_AWARENESS: [
+    'FOCUS_AWARENESS_1',
+    'FOCUS_AWARENESS_2',
+    'FOCUS_AWARENESS_3',
+    'FOCUS_AWARENESS_4',
+    'FOCUS_AWARENESS_5',
+    'FOCUS_AWARENESS_6'
   ]
 });
 

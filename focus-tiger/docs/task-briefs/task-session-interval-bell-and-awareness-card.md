@@ -1,8 +1,8 @@
 # Task Brief · Focus 间隔磬 + 觉察观照卡（mid-session）
 
-> **状态（2026-08-13）**：**Brief 已起草** · 待排期实现。  
-> **前置**：#275 开始/结束提示音已合 `develop` tip `0d05b10`（人工验收由产品安排，不挡本 Brief 起草）。  
-> **资产**：`public/audio/cues/session-interval-bell.mp3` 已入库；授权见 `cues/ATTRIBUTION.md` + `docs/THIRD_PARTY_AUDIO_LICENSES.md`（Agent 单页核验因 Cloudflare **未完成**，须人工补一行确认）。  
+> **状态（2026-08-13）**：**实现中** · `feature/session-interval-awareness`（授权已确认；运行时接线本支）。  
+> **前置**：#275 tip `0d05b10`；#277 tip `b51f9a2`。  
+> **资产**：`public/audio/cues/session-interval-bell.mp3`；授权见 `cues/ATTRIBUTION.md`（2026-08-13 产品书面确认）。  
 > **决策来源**：Quiet Line 只读排查 + 分析师 2026-08-13 口径。
 
 ## 一句话目标
