@@ -1,5 +1,5 @@
 /**
- * Thin Resend transactional email helper (OTP / future newsletter welcome).
+ * Thin Resend transactional email helper (OTP / newsletter welcome).
  * Uses fetch — no Resend npm SDK (Workers-friendly).
  */
 
@@ -13,6 +13,8 @@ export async function sendTransactionalEmail(opts: {
 	to: string;
 	subject: string;
 	text: string;
+	html?: string;
+	headers?: Record<string, string>;
 }): Promise<SendTransactionalEmailResult> {
 	const apiKey = (opts.apiKey || "").trim();
 	const from = (opts.from || "").trim();
@@ -22,18 +24,23 @@ export async function sendTransactionalEmail(opts: {
 	}
 
 	try {
+		const payload: Record<string, unknown> = {
+			from,
+			to: [to],
+			subject: opts.subject,
+			text: opts.text,
+		};
+		if (opts.html && opts.html.trim()) payload.html = opts.html;
+		if (opts.headers && Object.keys(opts.headers).length > 0) {
+			payload.headers = opts.headers;
+		}
 		const res = await fetch("https://api.resend.com/emails", {
 			method: "POST",
 			headers: {
 				authorization: `Bearer ${apiKey}`,
 				"content-type": "application/json",
 			},
-			body: JSON.stringify({
-				from,
-				to: [to],
-				subject: opts.subject,
-				text: opts.text,
-			}),
+			body: JSON.stringify(payload),
 		});
 		const data = (await res.json().catch(() => null)) as {
 			id?: string;

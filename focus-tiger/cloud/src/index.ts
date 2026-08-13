@@ -4,6 +4,7 @@ import {
 	enforceRateLimit,
 	RATE_LIMIT_PER_MINUTE,
 	RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,
+	NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE,
 	STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE,
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
@@ -27,6 +28,8 @@ import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
+import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
+import { handleUnsubscribeNewsletter } from "./routes/unsubscribeNewsletter";
 import type { Env } from "./types";
 
 /**
@@ -66,7 +69,8 @@ export default {
 				url.pathname === "/api/practice-backup/delete" ||
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight" ||
-				url.pathname === "/api/monetization-funnel-ingest")
+				url.pathname === "/api/monetization-funnel-ingest" ||
+				url.pathname === "/api/newsletter/subscribe")
 		) {
 			return preflightResponse(origin);
 		}
@@ -81,6 +85,36 @@ export default {
 			});
 			if (webhookLimited) return webhookLimited;
 			return handleStripeWebhook(request, env);
+		}
+
+		if (url.pathname === "/api/newsletter/subscribe") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const subLimited = enforceRateLimit(request, {
+				limit: NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "newsletter-subscribe",
+			});
+			if (subLimited) return withCors(subLimited, origin);
+			return withCors(
+				await handleSubscribeNewsletter(request, env, ctx),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/newsletter/unsubscribe") {
+			if (request.method !== "GET" && request.method !== "POST") {
+				return errorJson(405, "method_not_allowed", "Use GET or POST");
+			}
+			const unsubLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "newsletter-unsubscribe",
+			});
+			if (unsubLimited) return unsubLimited;
+			return handleUnsubscribeNewsletter(request, env);
 		}
 
 		if (url.pathname === "/api/restore/request-otp") {

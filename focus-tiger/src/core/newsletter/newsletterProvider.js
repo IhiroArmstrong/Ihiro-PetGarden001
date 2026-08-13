@@ -9,7 +9,7 @@
  *
  * @typedef {{
  *   id: string,
- *   subscribe: (email: string) => Promise<NewsletterSubscribeResult>
+ *   subscribe: (email: string, opts?: { locale?: string }) => Promise<NewsletterSubscribeResult>
  * }} NewsletterProvider
  */
 

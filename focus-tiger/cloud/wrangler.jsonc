@@ -10,6 +10,8 @@
  *   npx wrangler kv namespace create OTP_KV --preview
  *   npx wrangler kv namespace create PRACTICE_BACKUP_KV
  *   npx wrangler kv namespace create PRACTICE_BACKUP_KV --preview
+ *   npx wrangler kv namespace create NEWSLETTER_KV
+ *   npx wrangler kv namespace create NEWSLETTER_KV --preview
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
@@ -29,6 +31,10 @@
  * OTP_KV (created 2026-08-11):
  *   id         = 7d5acbe48de44cefac2bc041809c1f27
  *   preview_id = d0211c3d14e44798b41833c06e6d0f27
+ *
+ * NEWSLETTER_KV (created 2026-08-13):
+ *   id         = baeb661cb8f2450ab4a87d6f23af6896
+ *   preview_id = 8e13fe05705841c9939c3164bfb9a3bd
  *
  * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle) + Resend secrets.
  */
@@ -65,6 +71,11 @@
 			"binding": "PRACTICE_BACKUP_KV",
 			"id": "f6f99774f3274f9f9e57c5f985a6b0b4",
 			"preview_id": "5b9051e902a240b19f050291f6de75ca"
+		},
+		{
+			"binding": "NEWSLETTER_KV",
+			"id": "baeb661cb8f2450ab4a87d6f23af6896",
+			"preview_id": "8e13fe05705841c9939c3164bfb9a3bd"
 		}
 	],
 	"vars": {
@@ -79,6 +90,7 @@
 		"MEMBERSHIP_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&membership=cancel",
 		"MEMBERSHIP_PORTAL_RETURN_URL": "http://127.0.0.1:5173/?product=1",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173",
-		"RESEND_FROM": "Yin <restore@twinsology.com>"
+		"RESEND_FROM": "Yin <restore@twinsology.com>",
+		"NEWSLETTER_FROM": "Yin <hello@twinsology.com>"
 	}
 }
