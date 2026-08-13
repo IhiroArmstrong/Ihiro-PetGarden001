@@ -50,11 +50,7 @@ export async function handleSubscribeNewsletter(
 
 	if (created) {
 		const apiKey = (env.RESEND_API_KEY || "").trim();
-		const from = (
-			env.NEWSLETTER_FROM ||
-			env.RESEND_FROM ||
-			""
-		).trim();
+		const from = (env.NEWSLETTER_FROM || "").trim();
 		if (apiKey && from) {
 			const origin = new URL(request.url).origin;
 			const unsubscribeUrl = newsletterUnsubscribeUrl({

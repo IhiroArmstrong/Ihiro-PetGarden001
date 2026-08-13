@@ -2,7 +2,9 @@
 
 > **状态（2026-08-13）**：菜单常驻入口 + **Worker 真实订阅**（`NEWSLETTER_KV` 自建名单 + Resend 事务型欢迎信 + 退订端点）已接线。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
 > **性质**：可选邮箱留资，**不是**账号 / 登录系统；**不**挂钩 entitlement / tip / sanctuary。  
-> **本期不做**：情境软提示（Phase 2）、Resend Audiences / 群发 UI、自动群发第一封（草稿见文末，待你审后再发）。
+> **文案（2026-08-13 批准）**：欢迎信 + 第一封群发草稿定稿，不改字。群发仍未接线。  
+> **Redeploy 暂缓**：等 Resend 真实发信（含既有 curl 400 排查）确认后再排；禁止为合入本支而提前部署。  
+> **本期不做**：情境软提示（Phase 2）、Resend Audiences / 群发 UI、自动群发第一封。
 
 ## 产品入口（已实现）
 
@@ -30,8 +32,7 @@
 - 使用已有域名 **`twinsology.com`**
 - SPF / DKIM / DMARC 配在该域名 DNS 上（OTP 恢复信已走同一域）
 - **不要**用 `focustiger.app`
-- 欢迎信 From：`Yin <hello@twinsology.com>`（`NEWSLETTER_FROM`）；缺省回退 `RESEND_FROM`（`restore@twinsology.com`）
-- 若 Resend 只验证了 `restore@` 单地址、尚未验证整个域：在 Resend 加上 `hello@twinsology.com`，或临时把 `NEWSLETTER_FROM` 指到已验证地址
+- 欢迎信 From：**只**用 `Yin <hello@twinsology.com>`（`NEWSLETTER_FROM`）。**禁止**回退 `restore@twinsology.com`（OTP 验证码走 `RESEND_FROM`，与 Newsletter 发信信誉隔离）。域 `twinsology.com` 已整体验证，`hello@` 不必再单独验证。
 - DMARC 起步仍 **`p=none`**
 
 ### 2. 邮箱存储（自建）
@@ -59,14 +60,14 @@
 生产要真实收信，须同批：
 
 1. **`NEWSLETTER_KV` 已建**（2026-08-13）：`id=baeb661cb8f2450ab4a87d6f23af6896` · `preview_id=8e13fe05705841c9939c3164bfb9a3bd`（已写入 `wrangler.jsonc`）
-2. Resend 域 / `hello@twinsology.com`（或回退 `restore@`）
+2. From = `Yin <hello@twinsology.com>`（与 OTP `restore@` 隔离；域已验证）
 3. `wrangler secret put RESEND_API_KEY`（若尚未）
-4. `npm run deploy`（`focus-tiger-cloud`）——**尚未 redeploy**，现网还没有 subscribe 路由
+4. `npm run deploy`（`focus-tiger-cloud`）——**暂缓**（Resend curl 400 排查中；真实发信测通后再排）
 5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`
 
 ---
 
-## 欢迎信（已接线 · 随订阅发出）
+## 欢迎信（已批准 · 已接线 · 随订阅发出）
 
 文案在 `cloud/src/lib/newsletterCopy.ts`（en / ja / zh）。语气：观察式陪伴，**禁止** FOMO、连续打卡、购买 CTA。
 
@@ -106,9 +107,9 @@
 
 ---
 
-## 第一封群发草稿（未接线 · 待你审）
+## 第一封群发草稿（已批准 · 未接线）
 
-> **不是**欢迎信。欢迎信只在订阅当下发一次。下面是「以后真要群发时」的第一封内容草稿——**本切片没有群发端点**，审过再另开任务。
+> **不是**欢迎信。欢迎信只在订阅当下发一次。下面是「以后真要群发时」的第一封——**本切片没有群发端点**（2026-08-13 文案已批准，不改字）。
 
 **English draft — issue 1**
 

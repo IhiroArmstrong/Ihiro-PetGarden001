@@ -47,7 +47,7 @@ export interface Env {
 
 	/** Resend From header, e.g. "Yin <restore@twinsology.com>". */
 	RESEND_FROM?: string;
-	/** Newsletter welcome From; falls back to RESEND_FROM. */
+	/** Newsletter welcome From — hello@ only; never fall back to RESEND_FROM. */
 	NEWSLETTER_FROM?: string;
 }
 
