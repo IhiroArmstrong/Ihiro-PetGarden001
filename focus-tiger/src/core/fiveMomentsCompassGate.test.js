@@ -4,6 +4,7 @@ import {
   FIVE_MOMENTS_COMPASS_SEEN_KEY,
   hasSeenFiveMomentsCompass,
   markFiveMomentsCompassSeen,
+  resolveFiveMomentAction,
   shouldOfferFiveMomentsCompassFirstCard
 } from './fiveMomentsCompassGate.js';
 
@@ -39,5 +40,22 @@ describe('fiveMomentsCompassGate', () => {
     assert.equal(hasSeenFiveMomentsCompass(null), false);
     assert.equal(shouldOfferFiveMomentsCompassFirstCard(undefined), true);
     markFiveMomentsCompassSeen(null);
+  });
+
+  it('resolveFiveMomentAction maps chips to existing surfaces', () => {
+    assert.deepEqual(resolveFiveMomentAction('arrive'), { type: 'arrival' });
+    assert.deepEqual(resolveFiveMomentAction('focus'), { type: 'companion' });
+    assert.deepEqual(resolveFiveMomentAction('recover'), {
+      type: 'ritual',
+      proxy: 'ritual-emotional-reset'
+    });
+    assert.deepEqual(resolveFiveMomentAction('transition'), {
+      type: 'ritual',
+      proxy: 'ritual-work-transition'
+    });
+    assert.deepEqual(resolveFiveMomentAction('reflect'), {
+      type: 'journey-log'
+    });
+    assert.equal(resolveFiveMomentAction('nope'), null);
   });
 });

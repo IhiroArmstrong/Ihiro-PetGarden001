@@ -1,6 +1,6 @@
 /**
  * Support Yin · top-right entry + cards (Sanctuary + Membership + Buy a Tea).
- * Menu tip/sanctuary/membership rows stay; this is a friendlier unified entry.
+ * Pay rows were removed from Idle ⋯ / drawer; this FAB is the unified entry.
  * Checkout reuses TipJarUI / SanctuaryUnlockUI / MembershipUnlockUI cards
  * (Support CTA opens the card; user confirms Buy/Unlock/Subscribe there).
  */
