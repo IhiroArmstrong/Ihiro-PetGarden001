@@ -7,7 +7,7 @@
  *
  * Vars / wrangler.jsonc (non-secret):
  *   STRIPE_PRICE_ID, STRIPE_SANCTUARY_PRICE_ID, STRIPE_MEMBERSHIP_PRICE_ID
- *   Checkout success/cancel URLs, ALLOWED_ORIGIN, RESEND_FROM
+ *   Checkout success/cancel URLs, ALLOWED_ORIGIN, RESEND_FROM, NEWSLETTER_FROM
  */
 export interface Env {
 	TIP_KV: KVNamespace;
@@ -17,6 +17,8 @@ export interface Env {
 	OTP_KV: KVNamespace;
 	/** Practice-memory snapshot blobs (not tip/sanctuary/membership/OTP). */
 	PRACTICE_BACKUP_KV: KVNamespace;
+	/** Stay in touch list (email + unsub token). Not Resend Audiences. */
+	NEWSLETTER_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
@@ -45,6 +47,8 @@ export interface Env {
 
 	/** Resend From header, e.g. "Yin <restore@twinsology.com>". */
 	RESEND_FROM?: string;
+	/** Newsletter welcome From; falls back to RESEND_FROM. */
+	NEWSLETTER_FROM?: string;
 }
 
 /** Provisional request bodies — awaiting product review of field names. */

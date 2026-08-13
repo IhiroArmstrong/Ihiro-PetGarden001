@@ -95,7 +95,8 @@ describe('zero coupling', () => {
     for (const name of [
       'newsletterCaptureGate.js',
       'newsletterProvider.js',
-      'mockNewsletterProvider.js'
+      'mockNewsletterProvider.js',
+      'workerNewsletterProvider.js'
     ]) {
       const src = await readFile(join(dir, name), 'utf8');
       assert.equal(/from\s+['"].*tipJarGate/.test(src), false, name);

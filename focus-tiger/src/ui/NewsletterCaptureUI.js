@@ -3,7 +3,7 @@
  * Not an account — submit goes to NewsletterProvider; local stores flags only.
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, onLocaleChange, getLocale } from '../locales/i18n.js';
 import {
   hasSubmittedNewsletter,
   isPlausibleNewsletterEmail,
@@ -194,7 +194,7 @@ export class NewsletterCaptureUI {
     this._setFeedback(t('NEWSLETTER_SUBMIT_PENDING'), 'pending');
 
     try {
-      const result = await provider.subscribe(email);
+      const result = await provider.subscribe(email, { locale: getLocale() });
       if (!result?.ok) {
         this._setFeedback(t('NEWSLETTER_ERROR_GENERIC'), 'error');
         this._busy = false;

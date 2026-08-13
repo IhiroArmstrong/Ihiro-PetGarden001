@@ -27,7 +27,7 @@
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
 | v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
-| Tip / Sanctuary / Membership / practice-backup Worker（2026-08-12） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**，非 Stripe itilbase）。**#272 后 redeploy** · Version `f9755950-49c9-4677-99d6-76fd2d9d7012`（含 `PRACTICE_BACKUP_KV` + `OTP_KV` + practice-backup 路由）。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**OTP 发信**：仍须 `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（当前生产 secrets 仅 Stripe）。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
+| Tip / Sanctuary / Membership / practice-backup / newsletter Worker（2026-08-13） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**）。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**OTP / Newsletter 发信**：须 `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`。Newsletter 另须 `NEWSLETTER_KV` 命名空间 id 写入 `wrangler.jsonc` 后 redeploy；From = `NEWSLETTER_FROM`（`hello@twinsology.com`，可回退 `RESEND_FROM`）。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ## 3. 与 CI 的关系
 

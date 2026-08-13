@@ -1,6 +1,6 @@
 /**
- * Mock newsletter provider — pretends submit succeeds (UI / wiring labs).
- * Swap for a real ESP or Worker later without changing call sites.
+ * Mock newsletter provider — pretends submit succeeds (labs / no Cloud URL).
+ * Production uses createWorkerNewsletterProvider when VITE_CLOUD_API_BASE_URL is set.
  */
 
 /**

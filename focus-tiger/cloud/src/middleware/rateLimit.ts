@@ -16,6 +16,9 @@ export const VERIFY_TIP_RATE_LIMIT_PER_MINUTE = 10;
 /** Restore OTP request — blunt email-bomb / Resend burn (per IP). */
 export const RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE = 5;
 
+/** Stay in touch subscribe — same Resend-burn budget as OTP request. */
+export const NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE = 5;
+
 /**
  * Stripe webhook: exempt from global 60/min, but still capped to blunt
  * unsigned flood DoS on HMAC verification (product: ~300/min/IP).
