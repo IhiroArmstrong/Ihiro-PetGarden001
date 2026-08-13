@@ -32,7 +32,9 @@
  *   id         = 7d5acbe48de44cefac2bc041809c1f27
  *   preview_id = d0211c3d14e44798b41833c06e6d0f27
  *
- * NEWSLETTER_KV: create then replace NEWSLETTER_KV_*_REPLACE in kv_namespaces below.
+ * NEWSLETTER_KV (created 2026-08-13):
+ *   id         = baeb661cb8f2450ab4a87d6f23af6896
+ *   preview_id = 8e13fe05705841c9939c3164bfb9a3bd
  *
  * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle) + Resend secrets.
  */
@@ -72,8 +74,8 @@
 		},
 		{
 			"binding": "NEWSLETTER_KV",
-			"id": "NEWSLETTER_KV_ID_REPLACE",
-			"preview_id": "NEWSLETTER_KV_PREVIEW_ID_REPLACE"
+			"id": "baeb661cb8f2450ab4a87d6f23af6896",
+			"preview_id": "8e13fe05705841c9939c3164bfb9a3bd"
 		}
 	],
 	"vars": {

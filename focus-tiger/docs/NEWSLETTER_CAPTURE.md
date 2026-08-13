@@ -58,10 +58,10 @@
 
 生产要真实收信，须同批：
 
-1. `npx wrangler kv namespace create NEWSLETTER_KV`（及 `--preview`）→ 填 `wrangler.jsonc` 占位 id
+1. **`NEWSLETTER_KV` 已建**（2026-08-13）：`id=baeb661cb8f2450ab4a87d6f23af6896` · `preview_id=8e13fe05705841c9939c3164bfb9a3bd`（已写入 `wrangler.jsonc`）
 2. Resend 域 / `hello@twinsology.com`（或回退 `restore@`）
 3. `wrangler secret put RESEND_API_KEY`（若尚未）
-4. `npm run deploy`（`focus-tiger-cloud`）
+4. `npm run deploy`（`focus-tiger-cloud`）——**尚未 redeploy**，现网还没有 subscribe 路由
 5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`
 
 ---
