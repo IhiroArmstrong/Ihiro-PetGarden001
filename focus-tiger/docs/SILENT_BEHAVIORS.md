@@ -28,7 +28,7 @@
 | **SB-04** | 应用内提醒横幅 · 忙碌期 | Arrival / Focusing / Reflection / 微仪式中横幅 **不展示、不排队** | 已拍板 `suppress`（非 defer） | 场景 P | busy suppress |
 | **SB-05** | Moment Whisper 该键已见 | 再进同一 Moment **不再**出 `#moment-whisper` | 每键一生一次 | 场景 Y | 限频已消耗 |
 | **SB-06** | Moment Whisper · busy | Compass / Companion / Arrival 等叠层开着时不出 | 互斥，避免挡主路径 | 场景 Y | busy suppress |
-| **SB-07** | Tiger Anchor **180s 冷却 · 专用触点** | `#active-recover-anchor` **整层 `hidden`**（微光+hit+幽灵提示都消失）；专用 hit **不可点**；不应再出 Active Recover `nod-bow`+toast | 防误触连点。隐退只说明「专用入口暂时没有了」，**不等于**「冷却中再点阿寅会收到接收反馈」——后者见下方 **FB-01**，**不是**本条豁免 | 场景 X | 暂不生效（入口消失） |
+| **SB-07** | Tiger Anchor **180s 冷却 · 专用邀请** | 微光 + 幽灵提示 **hidden**；Focusing 期间 `#active-recover-anchor` **根层仍在**（invisible hit 拦截点按，避免落到摸头）；**不应**再出完整 Active Recover `nod-bow`+toast | 防误触连点。邀请隐退只说明「完整 Recover 入口暂时没有了」，**不等于**「再点阿寅无接收反馈」——后者见 **FB-01**（已落地微点头；**不是**本条豁免、也**不**新建白名单） | 场景 X | 暂不生效（邀请消失） |
 | **SB-08** | 微仪式 / Breath **Leave** | 不记账、无完成 toast、**不**进 Reflection | 未完成不记 | 场景 S · `MICRO_RITUAL_PLAN` | 未完成路径 |
 | **SB-09** | 同日第二次计时达标 | **无**完整 Celebrating（轻量 `SessionComplete`） | 正向反馈节制 | 场景 L · `PRINCIPLES` | 限频 |
 | **SB-10** | Re-focus 与更强情绪冲突 | 静默让位、**不补发** | Celebrating 等优先 | `EMOTION_BIBLE` | 让位 |
@@ -46,9 +46,9 @@
 
 | id | 缺口 | 当前实现 | 用户可能误解 | 建议验什么 | 权威 |
 |---|---|---|---|---|---|
-| **FB-01** | Tiger Anchor **冷却期内再点阿寅** | `enterCooldown` → `root.hidden = true`；hit 上若仍点到会 `if (_cooldown) return`（哑点击）。专用层消失后，点身可能落到 `PointerInteraction` 摸头/点击，或什么都不发生 | 「我点过了、在冷却」vs「这次 Recover 不可用/坏了」——两种心智不同；隐退只覆盖前者的一半（入口没了），**没有**覆盖「再点一下系统仍收到」 | Focusing 触发一次 Recover → 180s 内再点阿寅：**0–1 秒内**应有接收反馈（极轻按压缩放 / 触点残影 / 短提示「还早」等，产品拍板）；**不应**再出 Active Recover toast/`nod-bow`。对照：不要只验「触点消失了」 | 场景 X 步 5b · TRACKER「FB-01」行 |
+| **FB-01** | Tiger Anchor **冷却期内再点阿寅** | **已落地（Phase 1）**：冷却中微光/提示隐退，invisible hit 仍在；再点 → `mindfulAcknowledge` subtype `activeRecoverCooldown` → `nodBowMicro`（nod-bow 第 2–4 帧 pingpong，幅度小于完整鞠躬）。**无**文字/toast；**不**重置或延长 180s 冷却；不占额度、不触发 Recover 扰动。仍**不是**白名单（设计意图是「暂不生效」的接收反馈，不是「完全不生效」） | 「我点过了、在冷却」应能从微点头读出；不要误报成摸头或功能坏了 | Focusing → 轻触出完整 `nod-bow`+toast → 180s 内再点阿寅：**0–1 秒内**见比完整鞠躬更小的点头（溶解定格已是微点头姿态）；**不应**再出 Active Recover toast/完整 nod-bow。冷却结束微光+提示回来，再点才是完整 Recover。**375**：勿误触 Rise | 场景 X 步 5b · TRACKER「FB-01」行 |
 
-原则对应：`INTERACTION_FEEDBACK_PRINCIPLES` 规则 2「暂不生效应能感知现在还不行」。**未拍板前不改运行时。**
+原则对应：`INTERACTION_FEEDBACK_PRINCIPLES` 规则 2「暂不生效应能感知现在还不行」。FB-01 已按产品拍板落地微点头（无 toast）；**不要**再加白名单条目。
 
 ---
 
@@ -56,5 +56,6 @@
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-14 | FB-01 Phase 1：冷却再点 = `nodBowMicro`（无 toast、不延长冷却）；SB-07 改为邀请隐退 + invisible hit 仍在。不新建白名单 |
 | 2026-08-14 | follow-up：SB-07 收窄为「专用触点隐退」；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单） |
 | 2026-08-14 | 初版：把场景 B / P / X / Y 等已文档化的有意沉默收成可引用 id |
