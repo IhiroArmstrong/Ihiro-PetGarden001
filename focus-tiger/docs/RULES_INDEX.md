@@ -176,7 +176,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 文档-代码 | `gate` / `hints` / `state` 三类 `*-doc-check.js` |
 | CI | `.github/workflows/focus-tiger-doc-contract-check.yml` |
 | PR 轻量冒烟 | `.github/workflows/pr-smoke.yml`（Required on `develop`） |
-| 全量 e2e（夜间+手动） | `.github/workflows/focus-tiger-e2e-full.yml`（**`schedule` 读 `main` YAML**；见 `ENV_CONFIG.md` §3） |
+| 全量 e2e（夜间+手动） | `.github/workflows/focus-tiger-e2e-full.yml`（**`schedule` 读默认分支 YAML，现为 `develop`**；见 `ENV_CONFIG.md` §3） |
 | 环境与密钥 | `docs/ENV_CONFIG.md` |
 
 ---
@@ -197,6 +197,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-14 | GitHub 默认分支改为 `develop`：`schedule` 读默认分支 YAML（现为 `develop`），不必再为 cron 把 workflow 同步到 `main`；见 `ENV_CONFIG.md` §3 |
 | 2026-08-14 | 新增 `recommend-most-reasonable`：列 ≥2 个开放方案时须同时给出「我认为最合理的」；SSOT `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`；N14b |
 | 2026-08-14 | 统一 Git/验收五档：任务完成后默认 push 旁支+开 PR（本机=Cloud）；合入 develop = CI 绿（`git-develop-small-pr-run-merge` 扩到运行时 PR）；人工测试与合入解耦；新增 `qa-batch-human-test`、`prod-worker-deploy`；§7「已修复」仍须人工测 |
 | 2026-08-14 | 新增 `interaction-feedback`：点击接收反馈 ≠ 结果反馈；已知静默白名单 `SILENT_BEHAVIORS.md`；SSOT `INTERACTION_FEEDBACK_PRINCIPLES.md`；PR 模板 + Cursor 规则两问 |
