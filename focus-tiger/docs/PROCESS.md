@@ -67,7 +67,7 @@
 - **Stay in touch · 真实 Resend（2026-08-13 · 本支 `feature/newsletter-resend-provider`）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
-- **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（现仅 Stripe secrets）。TRACKER 待人工（端到端须先补密）。
+- **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
 - **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。TRACKER 待人工。
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
@@ -78,8 +78,8 @@
 - **场景化请茶气泡（2026-08-12 · #253 已合 tip `c10acb7`）**：达标 / 里程碑后 `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。TRACKER 待人工。
 - **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
 - **Ambient 深度曲 entitlement（2026-08-11 · #251 已合 tip `5969872`）**：免费温暖 5 首；其余内置曲 B 锁；用户自传仍免费；Support upsell。TRACKER 待人工。
-- **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**生产 redeploy 仍 defer**（Resend / OTP secrets）。TRACKER §C4 待人工。
-- **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；与 Prompt 10 同纪律：**生产 redeploy / 真实收信仍 defer**。
+- **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**OTP secrets 已补**（2026-08-13）；Sanctuary/Membership Restore 真实收信仍待人工。TRACKER §C4 待人工。
+- **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；practice-backup 真实收信 **2026-08-13 已通**。Sanctuary/Membership Restore 仍待人工。
 - **节日主题引擎 · Phase 3 已合（2026-08-11 · #238 · tip `2c83fd0`；记入 #239）**：圣诞文案桶 + `winter-quiet-wash` + 总开关开 / `contentReady=true`；仅 entitled；无新 PNG 姿态。Phase 1–2 = #233/#234。TRACKER 圣诞观感行仍待人工。下一步 Phase 4 须另授权。
 - **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。
 - **三种支付人工步骤清单（2026-08-11）**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` — Tea/Sanctuary/Membership 的 Restore（删本地 key→邮箱拉回）与零耦合逐步操作；KnownRisky #25–26/#28 已挂链。Webhook OK ≠ Restore 已测。
@@ -331,7 +331,7 @@
 
 **下一步计划**：
 
-- **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy。**下一步**：补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` → TRACKER 端到端人工测。**≠** v1.1 云端算法、**≠** B 多端无缝。
+- **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** v1.1 云端算法、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
@@ -391,7 +391,7 @@
 3. **身份**：唯一复用既有 **邮箱 OTP**（与付费 restore **一套身份、两种用途**）；**不做**匿名 device id 跨端。  
 4. **未绑邮箱**：无云端兜底；本机清理风险用户自行承担；实现 A 时须 **温和、非打断**提示（例 Journey Log 角落绑定引导；非弹窗；文案另定）。  
 5. **与 v1.0 纯本地**：核心练习仍可离线；A 为可选增强（有网+已绑邮箱才备份）。隐私明示同意仍适用。  
-权威表：`FREE_PAID_MATRIX`；详情 Backlog「练习记忆云端备份」；实现 Brief：`task-practice-memory-cloud-backup-a.md`。政策 **#266** tip `4698348`；运行时 **#272** tip `a195584`；矩阵 redeploy 注 **#273** tip `ef5ff3e`。**OTP secrets 仍缺** → 端到端绑邮箱待补密。
+权威表：`FREE_PAID_MATRIX`；详情 Backlog「练习记忆云端备份」；实现 Brief：`task-practice-memory-cloud-backup-a.md`。政策 **#266** tip `4698348`；运行时 **#272** tip `a195584`；矩阵 redeploy 注 **#273** tip `ef5ff3e`。**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 
 **最近拍板（2026-08-10 · Yin Membership 纳入 v1）**：推翻「B 仅 Lifetime / v1 无订阅」。**双轨**心智不变：A 打赏·不解锁 + B 进阶内容解锁。B 下两种付费方式并存——**Sanctuary Lifetime** 一次买断 ∪ **Yin Membership** 订阅；**lifetime ∪ subscription 互相覆盖**（同一套进阶权益，非三档）。订阅到期：已生成内容永久可看，只停新解锁与进阶使用。AI Coach 红线不变。A→B 24h 体验卡仍非 v1。SSOT：`MVP_PRODUCT_DEFINITION` §五 + monetization Brief。
 
@@ -897,7 +897,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:练习记忆云端备份（免费 A 快照 · B 无缝可后排）
 
-> **拍板（2026-08-12）**：产品面已定（**#266** tip `4698348`）。**A 运行时已合**：**#272** tip `a195584`（Brief `task-briefs/task-practice-memory-cloud-backup-a.md`）；矩阵/redeploy 注 **#273** tip `ef5ff3e`。生产 Worker Version `f9755950-…`；**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`。对账表：`FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」与「练习记忆 · 多端无缝同步」。
+> **拍板（2026-08-12）**：产品面已定（**#266** tip `4698348`）。**A 运行时已合**：**#272** tip `a195584`（Brief `task-briefs/task-practice-memory-cloud-backup-a.md`）；矩阵/redeploy 注 **#273** tip `ef5ff3e`。生产 Worker Version `f9755950-…`；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。对账表：`FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」与「练习记忆 · 多端无缝同步」。
 
 #### 动机
 
@@ -929,7 +929,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - 未明示同意就上传练习相关字段  
 - 把 A 与 B 混成「一个同步功能」却不分免费/付费  
 
-- **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets / TRACKER 人工**仍待。  
+- **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  
 - **口令示例**：「补 practice-backup OTP secrets」/「测练习记忆云端备份」
 
 ### Backlog:v1.1 云端算法（v1.0 纯本地之后）
