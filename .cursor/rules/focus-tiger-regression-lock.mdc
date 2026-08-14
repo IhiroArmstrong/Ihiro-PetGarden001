@@ -215,6 +215,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
 ### 待你决定 / 待你知道
 - **待你决定**：…（需拍板则列条；否则写「无」）
   - 已核对**不必再做**的伪选项（tip 已覆盖 / 已合入 / 再做会回退等）→ **必须**标 **`（不合理）`** + 短因；**禁止**写成尚待拍板的开放项（N14a；叙事 SSOT：`DEV_WORKFLOW_QUALITY.md` §2.4）
+  - 若列出 **≥2 个开放方案** → 必须同时写 **我认为最合理的**（`RULES_INDEX` → `recommend-most-reasonable`）
   - **待你知道**：…（commit、PR URL、待人工测项、未覆盖路径等；否则写「无」）
   - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）
   - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）

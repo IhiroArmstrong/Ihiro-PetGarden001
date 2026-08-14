@@ -23,7 +23,7 @@
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
 5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过；**禁止**仅用「已绿」总结句——须附命令与 pass/fail 或 CI 链接）  
 6. **本地 commit / 汇报 / push / 禁自动合 main**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」（`RULES_INDEX` → `git-agent-commit`）；**不在此复述**  
-7. **相关项目文档同批纳入（N15）** 与 **「待你决定 / 待你知道」（N14）**：见同上 regression-lock / `DEV_WORKFLOW_QUALITY.md`
+7. **相关项目文档同批纳入（N15）** 与 **「待你决定 / 待你知道」（N14）**：见同上 regression-lock / `DEV_WORKFLOW_QUALITY.md`。列多个方案时须给最合理项：`RULES_INDEX` → `recommend-most-reasonable`
 
 ### B. 防把好的改坏（重写 / 改转场开工必做）
 
