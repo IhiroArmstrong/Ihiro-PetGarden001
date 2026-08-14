@@ -36,9 +36,10 @@
 |---|---|---|---|
 | **P0** | **Q** Support Yin 双卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
 | **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
-| **P0** | **X** Tiger Anchor **冷却期内再点** | 触点隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本 follow-up 已写缺口句 |
-| **P1** | **S** Breath Leave / 时长 chip；**T** Focus 时长 chip / Leave；**D** Honesty 时长 + 桥接 Yes/No | 状态切换；须同时有「完成了」与下一步入口 | 未补句 |
-| **P1** | **W**「?」/ Privacy / Back；**Z** Journey log 开卡 | 叠层开合；关卡后下一步应可见 | 未补句 |
+| **P0** | **X** Tiger Anchor **冷却期内再点** | 触点邀请隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本批已落地：微点头（无 toast）；缺口句作废 |
+| **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
+| **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 未补句 · 下一刀 |
+| **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
 | **P2** | **G** 语言；**O** 热力图（多为展示）；**V** 吹花（自动 + 点消气泡） | 点击面小或非按钮主路径 | 未补句 |
 | **—** | **H** 瞳孔跟随 | 已废弃，不排 | — |
@@ -161,16 +162,17 @@
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
 1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，或 DEV 改 `focus-tiger.focus-session-end.v1` 后刷新 / 回前台（见下方强制手段）。新用户无结束记录**不会**自动睡。
-2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）。
-3. 选时长 10 / 20 / 30+（选 20）。
+2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）→ **0–1 秒内**：入口按压 + `#honesty-check-in` 时长三选一面板淡入（10 / 20 / 30+）。
+3. 选时长 10 / 20 / 30+（选 20）→ **0–1 秒内**：该钮下压（`translateY(1px)`）+ 时长面板让位给呼吸引导（倒计时出现）。**不要**报成哑点击。
 4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
    *[单元/控制器：2h→cloak→wake→离 DORMANT → smoke D sleep→wake / dormantIdle chain；**非** cloak-sleep 倒放观感]*
 5. 补登结束（记账、离 DORMANT）后：**立刻**出现 Honesty **桥接 CTA**（「要不要现在也坐一会儿？」Yes / No 同级；Welcome 回显可与邀请同屏一小会儿）。  
-   - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
-   - **No** → idle，无二次挽留。  
+   - **Yes** → **0–1 秒内**：钮被点到 + `#honesty-bridge-cta` 开始收起（~260ms）+ Arrival Practice 叠层开始出现。**结果**：完整 Arrival → Companion（**不**跳过、**不**直接开表 / Ambient）。  
+   - **No** → **0–1 秒内**：钮被点到 + 桥接面板收起；回到 Idle，无二次挽留。  
+   - 点外侧空白 **不当** No（须明确点 Yes 或 No）。  
    - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。  
    *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；**DOM 真实补登链**（入口→时长→呼吸→桥接 Yes→Arrival / No→Idle）→ `e2e/honesty-bridge-real-path.spec.js`（`?honestyBreathMs=`）；叠层隐藏 Honesty/微仪式入口仍可经 `__honestyBridge` 注入 → e2e `micro-ritual.spec.js` bridge 行。**非**睡姿/Arrival 动画观感。**CI**：注入 hook 须在 `vite preview` 生产构建可用（勿仅 DEV 挂载）]*
-6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
+6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。Sit → **0–1 秒内**：主钮按压 + Companion / Arrival 按既有场景 A 展开（本步不另造反馈类型）。  
    **已知**：Honesty 路径暂不接 halo / 金光。
    **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
 
@@ -439,19 +441,19 @@
 ## 场景 X：主动 Recover · Tiger Anchor（Focusing 轻触阿寅）
 
 > **用户故事**：Kelly 专注中卡住了——不切页、不放弃；轻触阿寅（或幽灵提示）→ 点头鞠躬 + 中置观察式 toast + 光影 Recover 扰动；计时继续。与场景 B 被动 Re-focus（切走>60s）**分工**：本故事是**用户主动**；**不**占被动提醒日/会话额度。  
-> **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却）。  
+> **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却 / FB-01 微点头不延长冷却、无 toast）。  
 > **DOM**：尚无完整 e2e 故事锁；观感须人工。  
-> **仍须人工**：微光+文案可读；点击反馈链；冷却隐退；**冷却期内再点阿寅（FB-01）**；375 不误触 Rise/HUD。  
+> **仍须人工**：微光+文案可读；点击反馈链；冷却邀请隐退（微光/提示没了、hit 仍在）；**冷却期内再点阿寅（FB-01 微点头）**；375 不误触 Rise/HUD。  
 > **合入**：#199。
 
 1. `?product=1` → Sit（或 ⚡/时长 chip）→ **Focusing**。
 2. 见幽灵提示（如「Feeling stuck?…」）+ 阿寅身前微光 `#active-recover-anchor`。
 3. **轻触阿寅**（或提示带）→ **0–1 秒内**：微光/按压被接收 + `nod-bow` 开始；随后中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
 4. **必须**：计时器**不停**；**不**跳页；**不**进 Reflection / MicroRitual / 记账。
-5. 触发后触点隐退 **180s**（**SB-07**）：冷却期内 **看不到** `#active-recover-anchor`（专用入口暂时没有了）；冷却结束触点回来再可点；期间被动 Re-focus 额度**不得**减少。
-5b. **冷却期内再点阿寅（FB-01 · 已知缺口，不是白名单）**：专用 hit 已 `hidden`，再点身体**目前**可能摸头（`PointerInteraction`）或完全无事——**两种都还不能**让用户读成「我点过了、Recover 在冷却」。0–1 秒内**应有**接收反馈（产品未拍板形态）；**不应**再出 Active Recover toast/`nod-bow`。只验「触点消失」≠ 本步通过。
+5. 触发后邀请隐退 **180s**（**SB-07**）：冷却期内 **看不到**微光与幽灵提示；invisible hit 仍在（不要报成「整层没了所以点不到」）；冷却结束微光+提示回来再可点完整 Recover；期间被动 Re-focus 额度**不得**减少。
+5b. **冷却期内再点阿寅（FB-01 · 不是白名单）** → **0–1 秒内**：比完整 `nod-bow` 幅度更小的点头（`nodBowMicro`，nod-bow 第 2–4 帧）；**不出**文字/toast；**不**重置或延长冷却。**不应**再出完整 Active Recover `nod-bow`+toast。只验「微光消失」≠ 本步通过。
 6. **回流**：Rise → 触点消失；再 Focusing 可再出现。
-7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。
+7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。冷却再点的微点头**不应**再触发 Recover whisper。
 
 ---
 

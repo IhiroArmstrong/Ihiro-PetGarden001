@@ -213,6 +213,31 @@ export class MindfulReminderController {
     return { ok: true, shown: Boolean(shown) };
   }
 
+  /**
+   * FB-01：冷却期内再点阿寅的接收反馈。
+   * 截短 nod-bow（`nodBowMicro`），**无** toast / 额度 / Recover 扰动；
+   * **不**重置或延长 `_activeRecoverAvailableAt`。
+   * @returns {{ ok: boolean, reason?: string, remainingMs?: number }}
+   */
+  acknowledgeActiveRecoverCooldownTap() {
+    if (!this.sessionActive) {
+      return { ok: false, reason: 'inactive' };
+    }
+    const remainingMs = this.getActiveRecoverCooldownRemainingMs();
+    if (remainingMs <= 0) {
+      return { ok: false, reason: 'available' };
+    }
+    const currentEmotion = this.emotionController.getCurrentEmotionKey?.();
+    if (STRONG_EMOTIONS.has(currentEmotion)) {
+      return { ok: false, reason: 'strong_emotion' };
+    }
+
+    this.emotionController.playEmotion('mindfulAcknowledge', {
+      subtype: 'activeRecoverCooldown'
+    });
+    return { ok: true, remainingMs };
+  }
+
   _showReminder(type) {
     const currentEmotion = this.emotionController.getCurrentEmotionKey?.();
     if (STRONG_EMOTIONS.has(currentEmotion)) return false;

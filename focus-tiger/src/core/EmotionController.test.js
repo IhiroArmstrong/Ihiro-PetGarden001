@@ -623,6 +623,37 @@ test('mindfulAcknowledge plays nodBow pingpong once then CapCut idle', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
+test('mindfulAcknowledge cooldown subtype plays truncated nodBowMicro then CapCut idle', () => {
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer
+  });
+
+  controller.playEmotion('mindfulAcknowledge', {
+    subtype: 'activeRecoverCooldown'
+  });
+
+  assert.equal(plays[0].name, 'nodBowMicro');
+  assert.equal(plays[0].options.subtype, 'activeRecoverCooldown');
+  assert.equal(plays[0].options.loopMode, 'pingpong');
+  assert.equal(plays[0].options.maxCycles, 1);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(plays[0].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(plays[1].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
+});
+
 test('stretchReminder plays once and returns to idle breathing', () => {
   const plays = [];
   const spritePlayer = {

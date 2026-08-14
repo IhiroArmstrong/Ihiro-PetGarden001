@@ -714,6 +714,9 @@ async function init() {
           activeRecoverAnchor.enterCooldown(ACTIVE_RECOVER_COOLDOWN_MS);
         }
         return result;
+      },
+      onCooldownTap: () => {
+        mindfulReminderController.acknowledgeActiveRecoverCooldownTap();
       }
     }
   );
