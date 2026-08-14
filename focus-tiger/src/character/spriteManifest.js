@@ -486,6 +486,19 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
+  // FB-01：Focusing 冷却期内再点阿寅 — 截短 nod-bow（第 2–4 帧 pingpong）。
+  // 幅度小于完整 13 帧鞠躬；首帧已是轻微点头，溶解定格期内即可被读成「收到了」。
+  // 同源 PNG，不新造反馈类型。产品路径 EmotionController pingpong×1 + CapCut。
+  nodBowMicro: {
+    animation: 'nod-bow',
+    frameCount: 13,
+    frameIndices: [2, 3, 4],
+    fps: 8,
+    loop: false,
+    loopMode: 'none',
+    holdLastFrame: false
+  },
+
   // 活跃专注累计 2 小时的温和舒展提醒；与 sleeping → awake 的 dormant-wake 不同源。
   // 17 拍 @ 4fps ≈ 4.3s（ONE_SHOT ack 带）。
   // 2026-08-04：删除未接线调试键 wakeUp（同源伸懒腰、末帧闭眼）；产品舒展仍走本键。

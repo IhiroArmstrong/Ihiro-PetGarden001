@@ -272,6 +272,20 @@ test('nod bow is a restrained one-shot 13-frame sequence', () => {
   assert.equal(definition.holdLastFrame, false);
 });
 
+test('nod bow micro reuses nod-bow frames 2–4 (smaller than full bow)', () => {
+  const definition = SPRITE_SEQUENCES.nodBowMicro;
+
+  assert.equal(definition.animation, 'nod-bow');
+  assert.equal(definition.frameCount, 13);
+  assert.deepEqual(definition.frameIndices, [2, 3, 4]);
+  assert.equal(definition.fps, 8);
+  assert.ok(
+    Math.max(...definition.frameIndices) < SPRITE_SEQUENCES.nodBow.frameCount
+  );
+  assert.equal(definition.loopMode, SPRITE_LOOP_MODES.NONE);
+  assert.equal(definition.holdLastFrame, false);
+});
+
 test('stretch reminder is a one-shot 17-frame sequence', () => {
   const definition = SPRITE_SEQUENCES.stretchReminder;
 

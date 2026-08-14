@@ -6,13 +6,14 @@
 import { onLocaleChange, t } from '../locales/i18n.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 
-const STYLE_ID = 'active-recover-anchor-styles-v1';
+const STYLE_ID = 'active-recover-anchor-styles-v2';
 const ROOT_ID = 'active-recover-anchor';
 
 /**
  * @param {HTMLElement} container typically `#ui-overlay`
  * @param {object} [handlers]
  * @param {() => { ok: boolean, reason?: string }} [handlers.onActivate]
+ * @param {() => void} [handlers.onCooldownTap] FB-01：冷却期内再点（微点头，无 toast）
  */
 export class ActiveRecoverAnchorUI {
   constructor(container, handlers = {}) {
@@ -54,7 +55,11 @@ export class ActiveRecoverAnchorUI {
     this.hit.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
-      if (!this._focusing || this._cooldown) return;
+      if (!this._focusing) return;
+      if (this._cooldown) {
+        this.handlers.onCooldownTap?.();
+        return;
+      }
       const result = this.handlers.onActivate?.();
       if (result && result.ok === false) return;
     });
@@ -73,7 +78,8 @@ export class ActiveRecoverAnchorUI {
   }
 
   /**
-   * Hide touchpoint for `ms`, then restore if still Focusing.
+   * Hide glow + ghost hint for `ms`, keep an invisible hit so taps do not
+   * fall through to petting (FB-01). Restore invitation if still Focusing.
    * @param {number} ms
    */
   enterCooldown(ms) {
@@ -88,9 +94,14 @@ export class ActiveRecoverAnchorUI {
     }, wait);
   }
 
-  /** @returns {boolean} */
+  /** Invitation (glow + hint) visible — false during cooldown. */
   isVisible() {
-    return !this.root.hidden;
+    return !this.root.hidden && !this._cooldown;
+  }
+
+  /** Invisible hit remains during cooldown so Yin taps stay on this layer. */
+  isHitArmed() {
+    return this._focusing && !this.root.hidden;
   }
 
   dispose() {
@@ -106,9 +117,13 @@ export class ActiveRecoverAnchorUI {
   }
 
   _syncVisibility() {
-    const show = this._focusing && !this._cooldown;
-    this.root.hidden = !show;
-    this.root.setAttribute('aria-hidden', show ? 'false' : 'true');
+    const focusing = this._focusing;
+    const cooling = focusing && this._cooldown;
+    this.root.hidden = !focusing;
+    this.root.classList.toggle('is-cooldown', cooling);
+    this.glow.hidden = cooling;
+    this.hint.hidden = cooling;
+    this.root.setAttribute('aria-hidden', focusing ? 'false' : 'true');
     this.hint.style.bottom = homeClearanceBottomCss();
   }
 
@@ -166,9 +181,15 @@ export class ActiveRecoverAnchorUI {
         pointer-events: auto;
         -webkit-tap-highlight-color: transparent;
       }
+      .active-recover-anchor.is-cooldown .active-recover-anchor__hit {
+        cursor: default;
+      }
       .active-recover-anchor__hit:focus-visible {
         outline: 2px solid rgba(196, 154, 74, 0.45);
         outline-offset: 4px;
+      }
+      .active-recover-anchor.is-cooldown .active-recover-anchor__hit:focus-visible {
+        outline: none;
       }
       .active-recover-anchor__hint {
         position: absolute;
