@@ -73,13 +73,19 @@ export const COPY_POOLS = Object.freeze({
   ],
   /**
    * Quiet Line insight-spark seed (Phase 1 · mixed with DAILY_ZEN_QUOTE).
-   * Production seed only — further candidates stay in the task brief until tone review.
+   * Keys 1–10 are production; candidate #6/#7/#11/#14/#15 stay in the brief.
    */
   DAILY_ZEN_QUOTE_INSIGHT: [
     'DAILY_ZEN_QUOTE_INSIGHT_1',
     'DAILY_ZEN_QUOTE_INSIGHT_2',
     'DAILY_ZEN_QUOTE_INSIGHT_3',
-    'DAILY_ZEN_QUOTE_INSIGHT_4'
+    'DAILY_ZEN_QUOTE_INSIGHT_4',
+    'DAILY_ZEN_QUOTE_INSIGHT_5',
+    'DAILY_ZEN_QUOTE_INSIGHT_6',
+    'DAILY_ZEN_QUOTE_INSIGHT_7',
+    'DAILY_ZEN_QUOTE_INSIGHT_8',
+    'DAILY_ZEN_QUOTE_INSIGHT_9',
+    'DAILY_ZEN_QUOTE_INSIGHT_10'
   ],
   /** Mid-session awareness card (repeatable; not Moment Whisper). */
   FOCUS_AWARENESS: [
