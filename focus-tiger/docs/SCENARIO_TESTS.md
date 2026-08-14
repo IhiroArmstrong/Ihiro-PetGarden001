@@ -380,7 +380,7 @@
 4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → `#daily-zen-quote-card` 见当日金句。
 5. **Save image** → 下载 PNG（文件名含当日 `YYYY-MM-DD`）；同日再开句不变。
 6. **Not now** 关卡；回流再开仍可。
-7. **U2 子项 · 洞察种子池（Phase 1）**：当日句从经典金句 ∪ 洞察种子 **10** 句（`INSIGHT_1`–`10`）混合抽取（`focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁定；机制仍是一天一句、Save image 不变）。抽中种子池条目时，该句即为「顿悟向」；**须人工**看长句换行与 375 是否溢出主球。未抽中则与旧金句无差别。**本次不做** Moment Whisper / ACTIVE_RECOVER / Reflection 三问插入。
+7. **U2 子项 · 洞察种子池（Phase 1）**：当日句从经典金句 ∪ 洞察种子 **12** 句（`INSIGHT_1`–`12`）混合抽取（`focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁定；机制仍是一天一句、Save image 不变）。抽中种子池条目时，该句即为「顿悟向」；**须人工**看长句换行与 375 是否溢出主球。未抽中则与旧金句无差别。**本次不做** Moment Whisper / ACTIVE_RECOVER / Reflection 三问插入。
 
 ### U3 · Wallpapers
 
