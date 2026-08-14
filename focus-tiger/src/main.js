@@ -87,6 +87,9 @@ import {
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
 import {
+  hasOpenedInsightSparkToday
+} from './core/dailyZenQuote.js';
+import {
   schedulePracticeBackupUpload,
   flushPracticeBackupUpload,
   maybeRestorePracticeBackupOnBoot,
@@ -1322,7 +1325,8 @@ async function init() {
     appendJourneyLogEntry(storage, {
       minutes: pendingJourneyDraft.minutes,
       arrive: pendingJourneyDraft.arrive,
-      reflect: Boolean(hasAnyAnswer)
+      reflect: Boolean(hasAnyAnswer),
+      insightSpark: hasOpenedInsightSparkToday({ storage })
     });
     pendingJourneyDraft = null;
     schedulePracticeBackupUpload({ storage });

@@ -2,7 +2,8 @@
  * Journey Log · local practice trail (Tea Log pattern).
  *
  * In-app only — NOT HealthKit / Health Connect.
- * ZERO COUPLING with tipJarGate (do not import tip state).
+ * ZERO COUPLING with tipJarGate / sanctuary / practiceBadgeAward
+ * (do not import those modules). insightSpark is a local Quiet Line mark only.
  */
 
 export const JOURNEY_LOG_STORAGE_KEY = 'focus-tiger.journey-log.v1';
@@ -15,7 +16,8 @@ export const JOURNEY_LOG_MAX_ENTRIES = 30;
  *   at: string,
  *   minutes: number,
  *   arrive: boolean,
- *   reflect: boolean
+ *   reflect: boolean,
+ *   insightSpark?: boolean
  * }} JourneyLogEntry
  *
  * @typedef {{ entries: JourneyLogEntry[] }} JourneyLogState
@@ -35,12 +37,15 @@ export function normalizeJourneyLogEntries(raw) {
     const at = typeof o.at === 'string' && o.at ? o.at : null;
     const minutes = Number(o.minutes);
     if (!at || !Number.isFinite(minutes) || minutes < 1) continue;
-    out.push({
+    /** @type {JourneyLogEntry} */
+    const entry = {
       at,
       minutes: Math.min(90, Math.max(1, Math.floor(minutes))),
       arrive: Boolean(o.arrive),
       reflect: Boolean(o.reflect)
-    });
+    };
+    if (o.insightSpark === true) entry.insightSpark = true;
+    out.push(entry);
   }
   return out.slice(-JOURNEY_LOG_MAX_ENTRIES);
 }
@@ -149,12 +154,20 @@ export function writeJourneyLog(storage, state) {
  * @param {number} entry.minutes
  * @param {boolean} [entry.arrive]
  * @param {boolean} [entry.reflect]
+ * @param {boolean} [entry.insightSpark]
  * @param {() => Date} [entry.now]
  * @returns {JourneyLogEntry | null}
  */
 export function appendJourneyLogEntry(
   storage,
-  { at, minutes, arrive = false, reflect = false, now = () => new Date() } = {}
+  {
+    at,
+    minutes,
+    arrive = false,
+    reflect = false,
+    insightSpark = false,
+    now = () => new Date()
+  } = {}
 ) {
   const mins = Math.round(Number(minutes) || 0);
   if (!Number.isFinite(mins) || mins < 1) return null;
@@ -169,8 +182,32 @@ export function appendJourneyLogEntry(
     arrive: Boolean(arrive),
     reflect: Boolean(reflect)
   };
+  if (insightSpark === true) row.insightSpark = true;
   const prev = readJourneyLog(storage);
   const entries = normalizeJourneyLogEntries([...prev.entries, row]);
   writeJourneyLog(storage, { entries });
   return row;
+}
+
+/**
+ * Mark today’s existing sittings after Quiet Line insight content was opened.
+ * Missing / false fields stay omitted (degrade to unmarked).
+ *
+ * @param {Storage | null | undefined} storage
+ * @param {string} dateKey YYYY-MM-DD
+ * @returns {boolean} whether any row changed
+ */
+export function stampJourneyLogInsightSparkForDate(storage, dateKey) {
+  const want = String(dateKey || '');
+  if (!want) return false;
+  const prev = readJourneyLog(storage);
+  let changed = false;
+  const entries = prev.entries.map((row) => {
+    if (journeyLogDateKey(row.at) !== want) return row;
+    if (row.insightSpark === true) return row;
+    changed = true;
+    return { ...row, insightSpark: true };
+  });
+  if (changed) writeJourneyLog(storage, { entries });
+  return changed;
 }

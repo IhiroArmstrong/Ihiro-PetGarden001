@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-09 晚（二次增量升格 **X / Y / Z**：Tiger Anchor 主动 Recover、Five Moments Compass+Whisper、Journey Log；**Q** 补统一练习徽章口径。对齐 #199–#206。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-14（Quiet Line 洞察种子池 v2 + Journey Log `insightSpark`；对齐场景 U2 / Z。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -365,9 +365,9 @@
 ## 场景 U：Idle 增长礼物（Zen Cinema · Quiet Line · Wallpapers）
 
 > **用户故事**：Kelly 在 Idle 从 ⋯ / 抽屉打开三件「礼物」——看一支精选片确认后外开 YouTube；存今日静语图；免费下阿寅壁纸。无 App 内嵌播放器、无付费门、无一键社交卖点。  
-> **单元**：`zenCinemaConfig` · `dailyZenQuote` · `digitalWallpapersCatalog` / `saveDigitalWallpaper`；orchestration 含 `zen-cinema` / `daily-quote` / `wallpapers`。  
+> **单元**：`zenCinemaConfig` · `dailyZenQuote`（含混合池 v2 / 同日锁）· `digitalWallpapersCatalog` / `saveDigitalWallpaper`；orchestration 含 `zen-cinema` / `daily-quote` / `wallpapers`。  
 > **DOM**：`wide-idle-more-menu` 等锁行开卡（非整串故事）。  
-> **仍须人工**：375 确认卡不挡主球；Rise 后再开菜单仍可点；同日 Quiet Line 金句不变。
+> **仍须人工**：375 确认卡不挡主球；Rise 后再开菜单仍可点；同日 Quiet Line 金句不变；**新洞察种子句在真实 UI 的换行 / 375 窄屏观感**（DOM 仍仅开卡零星覆盖，不锁像素）。
 
 ### U1 · Zen Cinema
 
@@ -380,11 +380,12 @@
 4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → `#daily-zen-quote-card` 见当日金句。
 5. **Save image** → 下载 PNG（文件名含当日 `YYYY-MM-DD`）；同日再开句不变。
 6. **Not now** 关卡；回流再开仍可。
+7. **U2 子项 · 洞察种子池（Phase 1）**：当日句从经典金句 ∪ 小种子洞察池混合抽取（`focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁定；机制仍是一天一句、Save image 不变）。抽中种子池条目时，该句即为「顿悟向」；**须人工**看长句换行与 375 是否溢出主球。未抽中则与旧金句无差别。**本次不做** Moment Whisper / ACTIVE_RECOVER / Reflection 三问插入。
 
 ### U3 · Wallpapers
 
-7. ⋯ / 抽屉 **Wallpapers** → `#digital-wallpapers-card` 见 5 张缩略图 → 点选 → **Save image** → `focus-tiger-wallpaper-*.png`。
-8. **禁止**付费门 / 一键社交分享。
+8. ⋯ / 抽屉 **Wallpapers** → `#digital-wallpapers-card` 见 5 张缩略图 → 点选 → **Save image** → `focus-tiger-wallpaper-*.png`。
+9. **禁止**付费门 / 一键社交分享。
 
 ---
 
@@ -468,14 +469,15 @@
 
 > **用户故事**：Kelly 走完一场有头有尾的专注后，想安静回顾——⋯ / 抽屉打开 **Journey log**，见日期+分钟+ arrived & reflected（或缺省降级），不是 Health 同步、不是 Tip 茶室账本。  
 > **单元**：`journeyLogGate.test.js`；orchestration 含 `journey-log`。  
-> **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在。  
-> **合入**：#205。**禁止**：写入 HealthKit；与 Tip Jar Tea Log **零耦合**。
+> **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。  
+> **合入**：#205；洞察标记为本支 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
 
 1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。
 2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → `#journey-log` 见新行：日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。
 3. **回流**：刷新后仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
 4. **375**：卡可关、不挡 Sit。
 5. **对照**：Tip Jar `#yin-tip-jar-tea-log` **不得**因本场 Focus 自动多出一杯茶。
+6. **字段 `insightSpark`**：仅当当日 Quiet Line 抽中洞察种子句 **且当场打开过** Quiet Line 时，该条（或同日已有条目被补标）带本地 `insightSpark: true`，行末见安静小符号 `◦`（`[data-testid=journey-log-insight-spark]`）。未打开 Quiet Line、或当日句是经典金句 → **无**符号。旧条目缺该字段 → 降级为无标记。刷新后标记仍在。与徽章 / Tea / Sanctuary **无**联动。
 
 ---
 
