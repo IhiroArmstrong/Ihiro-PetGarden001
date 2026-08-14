@@ -31,6 +31,16 @@
 
 ---
 
+## 点击反馈（触及可点击交互则必填）
+
+> 权威：`focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` · 白名单：`focus-tiger/docs/SILENT_BEHAVIORS.md`（`RULES_INDEX` → `interaction-feedback`）
+
+- [ ] **未**新增或修改可点击控件 / 图标命中层 → 勾此项并写 **「不涉及可点击交互」**
+- [ ] 若有：点击后 **0–1 秒内**用户会看到什么？________________
+- [ ] 若本次按设计不生效：对应 `SILENT_BEHAVIORS.md` 的 **`SB-xx`**（不在白名单里的沉默视为 bug）
+
+---
+
 ## 规则文件 / SSOT 数值（触及 `.cursor/rules/*.mdc` 则必填）
 
 > 权威：`focus-tiger/docs/RULES_INDEX.md` · 一致性门禁：`npm run docs:check`（含 `check-docs-consistency`）

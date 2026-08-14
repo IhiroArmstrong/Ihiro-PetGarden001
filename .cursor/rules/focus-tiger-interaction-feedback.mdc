@@ -1,0 +1,20 @@
+---
+description: 可点击交互必须区分接收反馈与结果反馈；已知静默须进白名单（始终生效）
+alwaysApply: true
+---
+
+# Focus Tiger · 点击反馈（Agent 摘要）
+
+> **SSOT**：`focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）。  
+> **白名单**：`focus-tiger/docs/SILENT_BEHAVIORS.md`。本文件只保留强制提问，**不**复述六条全文。
+
+## 强制（本会话）
+
+任何**新增或修改的可点击交互**，必须在 **PR 描述**里回答：
+
+1. **点击后 0–1 秒内用户会看到什么？**
+2. **如果本次操作按设计不生效，属于 `SILENT_BEHAVIORS.md` 里哪一条？不在白名单里的沉默视为 bug。**
+
+改 `SCENARIO_TESTS.md` 时：含可点击步骤的新场景 / 改写场景须写同一句「0–1 秒内看到什么」；设计静默须挂 `SB-xx`。
+
+纯文档、无控件改动：PR 里写 **「不涉及可点击交互」** 即可。

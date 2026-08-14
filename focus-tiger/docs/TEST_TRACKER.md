@@ -37,7 +37,8 @@
 | `http://127.0.0.1:5173/` | **实验室**：右上角 `#emotion-debug-ui`；DEV 下 `window.__*` |
 | `http://127.0.0.1:5173/?product=1` | **产品壳**：隐藏调试面板，走用户场景故事（见 `focus-tiger/docs/SCENARIO_TESTS.md`） |
 
-用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。
+用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。  
+点击反馈原则：[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)；已知静默白名单：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）。
 
 ### 主干一次性关单验收（2026-08-08 · 现行）
 
@@ -282,6 +283,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
+| 点击反馈原则 + 沉默白名单（`interaction-feedback`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `interaction-feedback` SSOT 在 `INTERACTION_FEEDBACK_PRINCIPLES.md`；白名单 `SILENT_BEHAVIORS.md`。PR 模板 / Cursor 规则须答 0–1s。无运行时。 | — | — | — | `INTERACTION_FEEDBACK_PRINCIPLES.md` · `SILENT_BEHAVIORS.md` · `RULES_INDEX` | 2026-08-14 |
 | Home Idle polish · 冷启动黑闪 / Practice marks / Support / 地球 / 左球 label / ? 简介链 | UI可见 | 待人工测试 | **基线**：本分支 `fix/home-idle-polish`（非关单级 develop tip）。**主路径（≥480 · `?product=1` · 硬刷新）**：(1) 冷启动**不得**先闪深灰小 Yin 海报，再出彩色大 Yin；(2) Practice marks 玻璃框在阿寅左侧中部，**不**压左下热力/`?`；(3) Support：中间 Membership CTA=蒲团橙；左右 CTA=米色立体；「Support Us」Title Case；中间图=闭目坐禅；三卡图底暖纸色；(4) 右下语言地球可见（对比加强）；(5) 左球无薄荷绿脉冲，悬停有 Breath practice label；(6) 悬停 `?` → 移入简介卡可点「The five moments / Privacy」（~280ms grace）。**回流**：关 Support / Rise 后再开；二次悬停 `?`。**自动化**：`purposeHoverGrace.test.js` + Support CTA 文案单测；冒烟 `test:smoke` + `test:e2e:smoke`。 | **2026-08-10/11 用户书面**（测 membership-webhook / 5173）：冷启动黑小 Yin；Practice marks 压左下；Support 按钮/图/文案；地球不见；左球无 label+有脉冲；? 简介链点不到。 | — | — | `http://127.0.0.1:5173/?product=1` · `#yin-tip-kindness-badges` · `#yin-support-modal` · `#language-preference-fab` · `#onboarding-app-purpose` | 2026-08-11 |
 | 标「已通过」覆盖分工门禁（`qa-pass-coverage-split`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `qa-pass-coverage-split` SSOT 在本文件「标「已通过」门禁」；禁 e2e 绿单独关单等矛盾短语。关单须写 e2e 已锁 vs 人工已覆盖；regression-lock 摘要硬拦。 | — | — | — | `TEST_TRACKER` 标已通过门禁 · `RULES_INDEX` · `rules-authority-registry.js` | 2026-08-02 |
 | `.ft-session-lock` occupancy 占用态字段 | 纯后端 | 仅单元测试覆盖 | `node --test scripts/check-worktree-occupancy.test.js`：`active`/`releasable` 解析；缺字段/非法值不得当成可接管。`npm run check:worktree-occupancy` 打印 `lock_occupancy`；`releasable`+干净树可不因锁 exit 2。政策见 `WORKFLOW.md`（`git-worktree-occupancy`）。 | — | — | — | `scripts/check-worktree-occupancy.js` · `WORKFLOW.md` | 2026-08-02 |

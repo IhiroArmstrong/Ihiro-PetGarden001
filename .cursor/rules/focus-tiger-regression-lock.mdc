@@ -23,7 +23,8 @@ alwaysApply: true
 
 2. **禁止用户可点、逻辑静默 return**  
    若门闩未就绪（如 `arrivalGateReady`、Honesty/Reflection 叠层），控件必须 **禁用 / 隐藏 / 明确不可用**，不得让用户点了却 `return` 无反馈。  
-   「点了没反应」在体验上等于功能丢失。
+   「点了没反应」在体验上等于功能丢失。  
+   设计上就该没反应（冷却、门槛未到）≠ 本条门闩静默：见 `INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md`（`RULES_INDEX` → `interaction-feedback`）。
 
 3. **禁止只测 helper、不锁门闩耦合；确认修复须留回归锚**  
    仅有 `shouldX(mode) === true` 的单测不够。凡「选 A 应立刻发生 B」类行为，须有失败用例锁住门闩：  
