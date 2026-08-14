@@ -90,6 +90,7 @@
 | N16 | **commit 粒度与 message**：每个 commit 必须对应**一个逻辑完整改动**（功能 / bug 修复 / 文档更新），message 须说明 **what + why**；禁止 `update docs` / `misc` / `wip` 之类无信息量提交 |
 | N17 | **姊妹功能分支不漏修**（§6.6）：长期并存的功能分支（如窄屏/宽屏变体）在任一分支有**修复性** commit 落地时，须同步检查另一条是否需合入同一修复；触及共享入口（Sound / Honesty / Companion 等 §2.3）的修复，收尾「待你决定 / 待你知道」须写明波及哪些姊妹分支；合回单线 vs 继续并行须**用户拍板**（Agent 不自行定分支策略）。操作条文 SSOT：`WORKFLOW.md`「长期并存功能分支的同步纪律」 |
 | N25 | **可见性验收 OK = 宽+窄自动化同任务**（见 §8.6）：不得只写 `TEST_TRACKER`；须进 `visibilityContractRegistry` + 双视口锚点；改 suppress/hide → 整表 `test:e2e:visibility` |
+| N26 | 可点击交互：接收反馈 ≠ 结果反馈；设计静默须进 `SILENT_BEHAVIORS.md`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`） |
 
 ### 2.2 防把好的改坏（重写 / 改转场开工）
 

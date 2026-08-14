@@ -71,6 +71,8 @@ COLLAB.md（本文档，协作层）
 **TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。用户书面测试意见只写进表格 **「用户反馈」列**，禁止混入「测试步骤」（见文首「用户测试反馈记入规则」，2026-07-19 起）。
 
 **回归锁约定**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`（门禁）与 `DEV_WORKFLOW_QUALITY.md`（叙事）；主题权威索引 `RULES_INDEX.md`。此处不复述。
+
+**点击反馈约定（2026-08-14）**：含可点击交互的 Task Brief / PR 须回答「点击后 0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）。
 ---
 
 ## 四、什么时候需要更新TASKS.md（判断标准）

@@ -33,6 +33,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/testing-strategy.mdc',
+  '.cursor/rules/focus-tiger-interaction-feedback.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -42,7 +43,9 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/DOC_CODE_CONTRACT.md',
   'focus-tiger/docs/PRINCIPLES.md',
   'focus-tiger/docs/ARCHITECTURE.md',
-  'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md'
+  'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
+  'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
+  'focus-tiger/docs/SILENT_BEHAVIORS.md'
 ];
 
 /**
@@ -1000,6 +1003,57 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     restatementExemptFiles: [
       'focus-tiger/docs/FLOWER_BLOW_WELCOME_DESIGN.md'
+    ]
+  },
+  {
+    id: 'interaction-feedback',
+    title: '点击接收反馈 vs 结果反馈 vs 已知静默白名单',
+    ssotPath: 'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
+    ssotSection: '核心原则',
+    ssotMustContain: [
+      /功能测试通过/,
+      /接收反馈/,
+      /结果反馈/,
+      /SILENT_BEHAVIORS\.md/,
+      /点击后 0–1 秒内用户会看到什么/,
+      /不在白名单里的沉默视为 bug/
+    ],
+    topicSignals: [
+      /interaction-feedback/,
+      /INTERACTION_FEEDBACK_PRINCIPLES/,
+      /沉默白名单/,
+      /哑点击|dead click/
+    ],
+    mustCite: [/INTERACTION_FEEDBACK_PRINCIPLES\.md|interaction-feedback/],
+    restatementFingerprints: [
+      /功能测试通过.*用户点击后有可感知反应.*两件不同的事/,
+      /禁止「哑点击」/,
+      /延迟 \/ 无反应说明/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'feature-pass-equals-click-feel',
+        pattern:
+          /功能测试通过.{0,24}(?:即可|等于|就是).{0,24}(?:交互|点击).{0,12}(?:验收|通过)/,
+        note: '功能测试通过 ≠ 点击可感知反应；见 INTERACTION_FEEDBACK_PRINCIPLES.md'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-interaction-feedback.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/docs/SILENT_BEHAVIORS.md',
+      'focus-tiger/docs/SCENARIO_TESTS.md',
+      'focus-tiger/docs/COLLAB.md',
+      'focus-tiger/docs/PRINCIPLES.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/TEST_TRACKER.md',
+      'focus-tiger/docs/EDGE_CASES.md',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md'
+    ],
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-interaction-feedback.mdc',
+      'focus-tiger/docs/SILENT_BEHAVIORS.md'
     ]
   }
 ];

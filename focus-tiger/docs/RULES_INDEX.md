@@ -65,6 +65,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `agent-token-cost` | Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e） | `.cursor/rules/focus-tiger-agent-token-cost.mdc` | Focus Tiger · Agent Token Cost（控 Fast Request） |
 | `e2e-local-budget` | 本地 e2e 硬顶（≤1 spec/次；全量/visibility/多文件禁本地；RUN_E2E_LOCAL 逃生口） | `.cursor/rules/testing-strategy.mdc` | 本地 e2e 硬顶（e2e-local-budget · 可执行） |
 | `risk-mitigation-playbook` | 中高风险任务落地降险 Playbook | `focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md` | 触发条件 |
+| `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
 
 <!-- rules-authority-index:end -->
 
@@ -96,6 +97,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `release-blocker-ledger` | 「缺陷分级 / `check:open-blockers` 见 `TEST_TRACKER`；发版硬闸见 regression-lock「发布候选门禁」」 | 平行发明第二套逾期/分级口径；发版前省略 legacy 提醒；把漏标 `Fixes:` 的技术性补正当成产品向「降级放行」 |
 | `z-index-registry` | 「层叠见 `Z_INDEX.md`」 | 平行另造第二份 z-index 分配表 |
 | `risk-mitigation-playbook` | 「中高风险落地降险见 `RISK_MITIGATION_PLAYBOOK.md`」；`WORKFLOW` 可一行入口 | 把降险切片写成可跳过 Dispatcher / 可先挂产品钩子再补动画 / 可另造简化兜底；在非 SSOT 完整复述四件套+红线 |
+| `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用两问 | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -112,6 +114,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；临时解禁有连续时长上限；Vite/Playwright 收尾；Cloud 独立会话；用户侧 `cd`/`npm run dev` 路径口径） |
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
+| [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
@@ -138,6 +141,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
 | `PRINCIPLES.md` | 硬性红线（含经济可持续 / 非 MVP-only） |
+| `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
+| `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
@@ -185,6 +190,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-14 | 新增 `interaction-feedback`：点击接收反馈 ≠ 结果反馈；已知静默白名单 `SILENT_BEHAVIORS.md`；SSOT `INTERACTION_FEEDBACK_PRINCIPLES.md`；PR 模板 + Cursor 规则两问 |
 | 2026-08-11 | 扩展 `git-worktree-hygiene`：`propose_remove` 接受 `git cherry origin/develop HEAD` 无独有补丁（squash 友好），不再仅靠 tip 祖先检查 |
 | 2026-08-11 | 新增 `git-worktree-hygiene`：口令「请清理闲置 worktree」+ 只读 `check:worktree-hygiene`（含最后 commit 时间）；N14 会话结束须报锁态；与 occupancy Prompt 3 对齐「客观依据 + 不可逆须人工确认」 |
 | 2026-08-11 | 强化 `git-worktree-occupancy`：`last_heartbeat` + 默认 60m 陈旧阈值（`FT_SESSION_LOCK_STALE_MS`）；陈旧/releasable 可接管须 history 留痕；husky pre-commit `gate-session-lock-precommit`；**禁止主仓 develop 检出写/commit** |

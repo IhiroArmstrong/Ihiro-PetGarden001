@@ -28,6 +28,8 @@
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
 
+**点击后 0–1 秒（强制 · 2026-08-14）**：含可点击步骤的**新场景 / 改写场景**必须写清「点击后 0–1 秒内用户应该看到什么？」。若该步按设计不生效，须点名 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md) 的 `SB-xx`，禁止只写「无反应」。原则全文 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)（`RULES_INDEX` → `interaction-feedback`）。存量场景逐步补；场景 B / P / X / Y 已挂钩。
+
 ---
 
 ## 用哪个链接测？
@@ -95,8 +97,8 @@
 
 | 离开时长 | 回来时应看到 |
 |---|---|
-| **&lt; 20s** | **无反应**（连内部记账都不做）——你测的约 10s 属于此档，**正确** |
-| 20–60s | 只内部记账，**仍无**文案 / nod-bow |
+| **&lt; 20s** | **无反应**（连内部记账都不做）——你测的约 10s 属于此档，**正确**（**SB-01**） |
+| 20–60s | 只内部记账，**仍无**文案 / nod-bow（**SB-02**） |
 | **&gt; 60s** | 才展示：观察式 toast + `nod-bow`（Re-focus） |
 
 ### 为何默认 `http://localhost:5173/` 测不了真实切页 Re-focus
@@ -111,7 +113,7 @@
 3. 确认 HUD 在计时、按钮为 **Rise**。
 4. 切到 **其它 Safari 标签**，停留约 **70–90 秒**（必须 **&gt;60s**；不要只留 10s）。
 5. 切回 Focus Tiger：应见 **非模态观察式文案** + **`nod-bow` 点头鞠躬**（不是摆尾）。
-6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
+6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期；**SB-03**）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
 7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
 
 *[单元/控制器：Stay 触发 / Offline·Flow 抑制 → smoke B；**非**真实 visibility 切页]*
@@ -269,7 +271,7 @@
 
 ### P3 · 忙碌期策略（**已拍板 suppress** · 非用户可见「第 4 步」）
 
-> **说明**：下列对照表记录产品决策（「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是**场景步骤序号。**2026-07-23 已拍板**：**`suppress`**——忙碌期隐藏横幅、**不**做 `defer` 延迟弹出。权威接线：`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`（见 `TEST_TRACKER` L186 / `SHARED_RESOURCES`）。
+> **说明**：下列对照表记录产品决策（「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是**场景步骤序号。**2026-07-23 已拍板**：**`suppress`**——忙碌期隐藏横幅、**不**做 `defer` 延迟弹出（**SB-04**）。权威接线：`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`（见 `TEST_TRACKER` L186 / `SHARED_RESOURCES`）。
 
 **忙碌态** = Arrival 开着 / Focusing / Celebrating / Reflection / 微仪式进行中。
 
@@ -430,9 +432,9 @@
 
 1. `?product=1` → Sit（或 ⚡/时长 chip）→ **Focusing**。
 2. 见幽灵提示（如「Feeling stuck?…」）+ 阿寅身前微光 `#active-recover-anchor`。
-3. **轻触阿寅**（或提示带）→ `nod-bow` + 中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
+3. **轻触阿寅**（或提示带）→ **0–1 秒内**：微光/按压被接收 + `nod-bow` 开始；随后中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
 4. **必须**：计时器**不停**；**不**跳页；**不**进 Reflection / MicroRitual / 记账。
-5. 触发后触点隐退 **180s**；冷却结束再可点；期间被动 Re-focus 额度**不得**减少。
+5. 触发后触点隐退 **180s**（**SB-07**）：冷却期内 **看不到** `#active-recover-anchor`，再点阿寅**不应**再出 Active Recover toast/`nod-bow`；冷却结束触点回来再可点；期间被动 Re-focus 额度**不得**减少。
 6. **回流**：Rise → 触点消失；再 Focusing 可再出现。
 7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。
 
@@ -456,10 +458,10 @@
 ### Y2 · Moment Whisper（A′）
 
 5. 清 `focus-tiger.moment-whispers-seen.v1` → Sit→Arrival → 见 Arrive `#moment-whisper` **一次**（可点关 / 数秒淡出）。
-6. 进入 Focusing → Focus whisper **一次**；再开第二场 Focusing → **不再**出 Focus whisper。
-7. Rise→Reflection → Reflect whisper **一次**；再走同路径 → **不再**出。
+6. 进入 Focusing → Focus whisper **一次**；再开第二场 Focusing → **不再**出 Focus whisper（**SB-05**）。
+7. Rise→Reflection → Reflect whisper **一次**；再走同路径 → **不再**出（**SB-05**）。
 8. **Recover**：见场景 X；首次主动 Recover → Recover whisper 一次。
-9. **busy**：Compass / Companion / Arrival 叠层打开时不出；关后再进未读 Moment 仍可。
+9. **busy**：Compass / Companion / Arrival 叠层打开时不出（**SB-06**）；关后再进未读 Moment 仍可。
 10. **「?」**：仍只出简介（+ Compass 链），**不**喷满页 tip。
 
 ---

@@ -2,6 +2,7 @@
 
 > **地位**：审计与排期用的观察册，**不是**立刻开工的 Task Brief。  
 > 与 `SHARED_RESOURCES.md`（谁用共享资源）、`DEV_WORKFLOW_QUALITY.md` §2.3（已踩坑高风险面）互补。  
+> **有意沉默**（测试时「没反应」= 正确）不写在本表，见 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（原则：[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)）。  
 > **维护**：新发现边角写入本表；开修时迁入 Task / TEST_TRACKER，并在此标「已排期 / 已修」。  
 > **创建**：2026-07-22（源自静默失败全面排查）
 
