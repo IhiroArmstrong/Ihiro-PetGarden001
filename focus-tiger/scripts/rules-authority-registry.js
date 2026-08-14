@@ -162,12 +162,11 @@ export const RULE_AUTHORITY_TOPICS = [
       /允许自动 commit 的范围/,
       /禁止静默提交/,
       /禁止自动合并进 `main`/,
-      /声称「已修复 \/ 已修好」须有 push \+ CI 证据|push 本身仍须用户明确授权/,
+      /任务完成后默认 `git push` \+ 开 PR/,
       /Git 同步汇总/,
       /高风险标注/,
       /请安排下班前的 Git 同步/,
-      /非运行时/,
-      /禁止默认 flush/,
+      /禁止直推受保护主干/,
       /业务逻辑\/代码改动/
     ],
     topicSignals: [
@@ -201,19 +200,17 @@ export const RULE_AUTHORITY_TOPICS = [
         note: '「不必询问」口径已废止；应写「可自动 commit + 必须汇报」并引用 regression-lock'
       },
       {
-        id: 'auto-push-allowed',
-        pattern: /(?:^|[^\u4e00-\u9fff])(?:允许|可以|应当)(?:post-commit\s*)?自动\s*(?:`?git\s*)?push/,
-        note: '禁止 post-commit / 未经确认自动 push'
+        id: 'ask-before-every-push',
+        pattern:
+          /(?:每次|每个任务).{0,12}(?:push|开 PR).{0,16}(?:都要|必须|须).{0,10}(?:询问|先问|口头授权)|未经用户明确(?:要求|授权).{0,12}不得.{0,8}(?:`?git\s*)?push(?![^。\n]{0,40}develop)/,
+        note: '任务完成后默认 push 旁支 + 开 PR；废止每次口头授权。禁止直推 develop/main 仍有效'
       },
       {
-        id: 'eod-sync-flush-all',
+        id: 'eod-sync-deploy-or-main',
         pattern:
-          /下班前(?:的)?\s*Git\s*同步.{0,120}(?:尚未推送的本地\s*commit\s*)?全部\s*(?:`?push`?|推送|flush)/,
-        // Option 1: 「全部 push/flush」前 ≤120 字内若出现否定词 → 豁免（规则说明可写禁令句）。
-        // Enforced in hasForbiddenOutsideHistory via window-before-全部, not whole-line.
-        exemptIfLineMatches:
-          /禁止|不再|不要|勿|别再|不得|不可|不应|不能|未再|勿再|别把|不要把|禁止把|废止/,
-        note: '下班前口令已收窄为只推非运行时；禁止复述肯定式「全部 push / flush」（「全部」前 120 字否定词豁免）'
+          /下班前(?:的)?\s*Git\s*同步.{0,80}(?:合并进\s*`?main`?|部署生产|wrangler deploy|npm run deploy)/,
+        exemptIfLineMatches: /禁止|不得|不要|勿|不做/,
+        note: '下班前口令不得做成合 main 或生产 Worker 部署'
       }
     ],
     // Historical changelog lines that quote deprecated phrases are OK if marked 废止
@@ -373,11 +370,12 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'git-feature-merge-preview',
-    title: 'feature/fix 合入 develop 前须 worktree 预览确认',
+    title: 'feature/fix 合入 develop：研发自检 + 主干同步（非人工关单）',
     ssotPath: 'WORKFLOW.md',
-    ssotSection: 'feature/fix 合入 develop 前：worktree 预览确认',
+    ssotSection: 'feature/fix 合入 develop：研发自检 + 主干同步',
     ssotMustContain: [
-      /先测后合/,
+      /研发冒烟自检/,
+      /合入门闩 = CI 绿/,
       /develop-integrity/,
       /occupancy:\s*"releasable"/,
       /两层验收/,
@@ -389,14 +387,14 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     topicSignals: [
       /合入 develop 前/,
-      /worktree 预览确认/,
+      /研发自检 \+ 主干同步/,
       /git-feature-merge-preview/,
       /develop-integrity/,
-      /先测后合/
+      /合入门闩/
     ],
     mustCite: [/WORKFLOW\.md/],
     restatementFingerprints: [
-      /先测后合/,
+      /研发冒烟自检/,
       /develop-integrity/,
       /两层验收/,
       /comm -12/
@@ -413,34 +411,36 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     forbiddenOutsideSsot: [
       {
-        id: 'merge-first-then-test-as-default',
-        pattern: /(?:应当|应该|默认|常规).*(?:先合并|先合入).*develop.*(?:再测|再预览|再验收)|(?:先合进|先 merge 进)\s*`?develop`?.*(?:才|再).*(?:测|预览)/,
-        note: '禁止把「先合进 develop 再测」写成默认/应当路径；合前预览见 WORKFLOW.md git-feature-merge-preview'
+        id: 'user-preview-required-before-develop-merge',
+        pattern:
+          /(?:须|必须|应当).{0,8}(?:用户|验收人).{0,12}(?:确认没问题|预览确认).{0,20}(?:再|才).{0,8}(?:开 PR|合并进\s*`?develop)/,
+        note: '合入 develop 不等用户 Safari 确认；人工测试是关单门闩。见 WORKFLOW.md git-feature-merge-preview'
       }
     ]
   },
   {
     id: 'git-develop-small-pr-run-merge',
-    title: 'develop 文档/小 PR：CI 绿后弹 Run 合并（默认习惯）',
+    title: '合入 develop：CI 绿即可合并（人工测试非合入门闩）',
     ssotPath: 'WORKFLOW.md',
-    ssotSection: 'develop 文档 / 小 PR：CI 绿后弹 Run 合并',
+    ssotSection: '合入 develop：CI 绿即可合并',
     ssotMustContain: [
-      /CI 绿后弹 Run 合并/,
+      /CI 绿即可合并/,
       /git-develop-small-pr-run-merge/,
       /禁止.*默认只写「请你上 GitHub 合并」/,
       /gh pr merge/,
       /--auto --merge/,
-      /合进\s*`main`/
+      /合进\s*`main`/,
+      /prod-worker-deploy/
     ],
     topicSignals: [
       /git-develop-small-pr-run-merge/,
+      /CI 绿即可合并/,
       /弹 Run 合并/,
-      /文档\/小 PR/,
       /CI 绿后.*合并/
     ],
     mustCite: [/WORKFLOW\.md/],
     restatementFingerprints: [
-      /CI 绿后弹 Run 合并/,
+      /CI 绿即可合并/,
       /禁止.*请你上 GitHub 合并/,
       /--auto --merge/
     ],
@@ -455,9 +455,48 @@ export const RULE_AUTHORITY_TOPICS = [
     forbiddenOutsideSsot: [
       {
         id: 'default-github-hand-merge-docs',
-        pattern: /(?:文档|小)\s*PR.*(?:应当|应该|默认).*(?:请你|通知你).*(?:GitHub|网页).*合并/,
-        note: '文档/小 PR 合 develop 默认走 CI 绿后 Run 合并；勿写回「默认请你上 GitHub 手合」',
-        exemptIfLineMatches: /不适用|运行时|main|禁止|除非/
+        pattern: /(?:合入\s*`?develop`?|develop\s*PR).{0,40}(?:应当|应该|默认).{0,20}(?:请你|通知你).{0,12}(?:GitHub|网页).*合并/,
+        note: '合入 develop 默认 CI 绿后合并；勿写回「默认请你上 GitHub 手合」',
+        exemptIfLineMatches: /不适用|main|禁止|除非/
+      }
+    ]
+  },
+  {
+    id: 'prod-worker-deploy',
+    title: '生产 Worker Redeploy 须明确「部署」口令',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '生产 Worker Redeploy',
+    ssotMustContain: [
+      /prod-worker-deploy/,
+      /明确说「部署」/,
+      /npm run deploy/,
+      /不得.*顺手执行生产 Redeploy/
+    ],
+    topicSignals: [
+      /prod-worker-deploy/,
+      /生产 Worker Redeploy/,
+      /wrangler deploy/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /明确说「部署」/,
+      /顺手执行生产 Redeploy/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md',
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/cloud/README.md'
+    ],
+    citeExemptFiles: ['focus-tiger/cloud/README.md'],
+    forbiddenOutsideSsot: [
+      {
+        id: 'deploy-with-develop-merge',
+        pattern: /合入\s*`?develop`?.{0,40}(?:即可|可以|应当).{0,12}(?:部署|redeploy|wrangler deploy)/,
+        note: '合入 develop 不授权生产 Worker 部署；见 WORKFLOW.md prod-worker-deploy',
+        exemptIfLineMatches: /主张|禁止|不得|勿|不是/
       }
     ]
   },
@@ -779,6 +818,38 @@ export const RULE_AUTHORITY_TOPICS = [
         note: '禁止主张可笼统标已通过而不写覆盖分工；SSOT 在 TEST_TRACKER'
       }
     ]
+  },
+  {
+    id: 'qa-batch-human-test',
+    title: '口令「批量人工测试」：按模块列出全部待人工测试项',
+    ssotPath: 'focus-tiger/docs/TEST_TRACKER.md',
+    ssotSection: '批量人工测试',
+    ssotMustContain: [
+      /批量人工测试/,
+      /qa-batch-human-test/,
+      /按功能模块归类/,
+      /给我待测清单/,
+      /Arrival · Companion\/Focus/
+    ],
+    topicSignals: [
+      /qa-batch-human-test/,
+      /批量人工测试/,
+      /给我待测清单/
+    ],
+    mustCite: [/TEST_TRACKER\.md/],
+    restatementFingerprints: [
+      /按功能模块归类/,
+      /给我待测清单/,
+      /Arrival · Companion\/Focus/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/COLLAB.md',
+      '.cursor/rules/focus-tiger-docs.mdc'
+    ],
+    forbiddenOutsideSsot: []
   },
   {
     id: 'branch-freshness',

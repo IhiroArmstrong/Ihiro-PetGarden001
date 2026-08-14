@@ -92,6 +92,8 @@ cloud/
 
 ## 部署摘要
 
+> **何时允许执行**：见仓库根 `WORKFLOW.md`「生产 Worker Redeploy」（`RULES_INDEX` → `prod-worker-deploy`）。须用户当回合明确说「部署」；合入 `develop` / CI 绿 **不**授权本步。
+
 ```bash
 # Membership recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
 npx wrangler kv namespace create MEMBERSHIP_KV

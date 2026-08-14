@@ -103,7 +103,7 @@ COLLAB.md（本文档，协作层）
 3. **修复走短命分支 + PR**：修复类工作一律 `fix/*` 短命分支 + PR 合并进 `develop`，不直接在 `develop` 上改；合并后即删分支（删清单 = **PR head ∪ 正文 `Supersedes:` 旧支**，见下节）。
 4. **验收结论须带三元组**：每条测试/验收结论必须注明 **commit hash + worktree 路径 + 本地端口**（例：`6545723 · …/wt-docs-6.6 · :5173`），禁止只说「在 develop 上测到……」。
 5. **人工验收只认 `origin/develop` tip（强制）**：**SSOT** 见 [`TEST_TRACKER.md`](./TEST_TRACKER.md) 文首「人工验收唯一基线」。关单级结论若未报 hash、或 hash ≠ 当时 `origin/develop` tip → **无效**，须重新验证。feature/fix 试跑 ≠ 正式验收。  
-6. **合前预览 ≠ 关单（强制并列）**：开 PR / 合并进 `develop` **之前**，须在 feature/fix worktree 完成预览确认（Vite → Safari URL → 确认）——**SSOT** [`WORKFLOW.md`](../../WORKFLOW.md)「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。关单 tip 规则**不**授权「先合再测」；两层门闩见该节「两层验收」。
+6. **合入门闩 ≠ 关单（强制并列）**：合入 `develop` 看 **CI 绿**（`WORKFLOW.md` / `git-develop-small-pr-run-merge`）；关单只认 `origin/develop` tip 上的人工测试（`qa-develop-tip`）。研发自检与主干同步见 `git-feature-merge-preview`。**禁止**因已合并而标「已通过 / 已修复」。批量测用口令「批量人工测试」。
 
 ### 分支寿命与健康度（摘要）
 
@@ -117,7 +117,7 @@ COLLAB.md（本文档，协作层）
 
 ## 六、Agent / Cursor · Git 同步约定（2026-07-27 · 2026-08-08 修订）
 
-一批修复或任务在本地 **commit 验证通过后**，Agent **应尽快 push** 到**当前短命旁支**（`feature/*` / `fix/*` / `docs/*` 等），并开/更新 **base=`develop`** 的 PR；**不要**在仅本地存在的旁支上积攒多笔未推送 commit。
+一批修复或任务在本地 **commit 验证通过后**，Agent **默认立即 push** 到**当前短命旁支**（`feature/*` / `fix/*` / `docs/*` 等），并开/更新 **base=`develop`** 的 PR；**不要**在仅本地存在的旁支上积攒多笔未推送 commit。
 
 **禁止**直推 `origin/develop` / `origin/main`（受保护；只能经 PR 合入）。勿把「push 到 develop」写成默认同步目标。
 
@@ -126,11 +126,12 @@ COLLAB.md（本文档，协作层）
 | 动作 | 约定 |
 |---|---|
 | 本地 `git commit` | 验证通过后执行（见 `focus-tiger-regression-lock.mdc`）；可在旁支或本地 develop 上 commit，但**进远端主干必须经 PR** |
-| `git push` | 用户明确要求时执行；目标 = **当前旁支自身**；一批修复收尾默认应 push 旁支并确保有 PR，勿长期只留本地 |
-| 合入 `develop` | **仅经 PR**；文档/小 PR 在 CI 绿后默认 Agent 发起合并（可弹 Cursor **Run**）；见 `WORKFLOW.md` / `git-develop-small-pr-run-merge` |
+| `git push` | 任务完成后**默认** push 当前旁支并确保有 `--base develop` 的 PR；**禁止**直推 `origin/develop` / `origin/main` |
+| 合入 `develop` | **仅经 PR**；**CI 绿即可合**（含运行时 PR）；见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`；**不等**人工测试 |
+| 生产 Worker | 须明确「部署」；见 `prod-worker-deploy` |
 | 多 Agent 并行 | 开工前对齐远端旁支 tip；完工后 push 旁支，减少「已合并但缺 commit」窗口 |
 
 细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
 
 ---
-*版本：1.6 · 2026-08-08 禁止直推 develop/main；同步=旁支 push + PR（SSOT：regression-lock 第 7 条）*
+*版本：1.7 · 2026-08-14 任务完成后默认 push+PR；CI 绿合 develop；人工测试事后批量*

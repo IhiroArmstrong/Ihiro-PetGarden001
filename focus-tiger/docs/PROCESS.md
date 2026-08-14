@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-14（UTC+8） · 点击反馈原则 + Overlay #283
+**最后更新时间**：2026-08-14（UTC+8） · Git 合入/人工测试解耦 + 点击反馈原则
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Git 合入与人工测试解耦（2026-08-14）**：任务完成后本机/Cloud 默认 push 旁支 + 开 PR；CI 绿即可合 `develop`；TEST_TRACKER 保持「待人工测试」；口令「批量人工测试」出模块清单；生产 Worker 仍须明确「部署」。权威：`WORKFLOW.md` + `git-agent-commit`。
 - **点击反馈原则 + 沉默白名单（2026-08-14）**：`INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md` 入库；PR 模板 / Cursor 规则须答「点击后 0–1 秒内看到什么」；不在白名单的沉默测试时当 bug。索引 `interaction-feedback`。无运行时改动。
 - **体验 Bugs 叠层（2026-08-14 · #283 已合 tip `b027f3d`）**：Journey 备份点选须有发送/开启提示；Enso 缩小约 40% 贴住蒲团；⋯/抽屉去掉与右上重复的三项付费；Five Moments 单行可点跳转；Quiet Line 用动画静帧作底；Stay in touch 强调邮箱可达；仪式 Continue/Leave 同款钮；Sanctuary marks 改右侧。TRACKER 待人工（关单须 tip `b027f3d`）。
 - **Stay in touch · 真实 Resend（2026-08-13 · #280 已合）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
@@ -302,7 +303,7 @@
 - **无互动约 10 分钟已拍板**：保留加权随机（70% 继续冥想 / 30% 挥手），挥手分支使用已入库的 `wave-hello`；具体触发计时源仍待与 Focus Confidence 决策口径统一
 - **架构决策已落地**：为应对角色/装扮市场接受度不确定性，提前预留「角色/装扮可替换」扩展点（`CharacterConfig`）；当前仍固定单一角色（小老虎僧袍造型），不做用户可选换装 UI，仅解耦素材路径与情绪触发逻辑
 - **非模态提醒额度与 Re-focus 阈值已拍板并实现（2026-07-16）**：正念阶段确认 / 伸懒腰判定维持会话墙钟 20 分钟、活跃累计 2 小时（离开时暂停、两场会话间隔 ≥30 分钟重置累计）；三类提醒共用本地自然日额度、合计每日最多 3 次；Re-focus 每场会话最多 1 次；离开满 20 秒只内部记账，超过 60 秒并返回才允许展示。具名常量与单元测试已落地
-- **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
+- **已确认（2026-08-14 修订）**：Git 采用「Task 后 commit + **默认** push 旁支/开 PR；CI 绿合 `develop`；人工测试事后批量关单」。禁止 post-commit 钩子自动 push；禁止直推 `develop`/`main`；生产 Worker 须明确「部署」
 - **Git 提醒已关闭（2026-07-21）**：此前 `stop` hook 曾用 `followup_message`（耗 credits），后改为 macOS `display notification` 且只返回 `{}`；现按用户要求从 `hooks.json` 卸下，不再发系统通知；脚本保留便于日后挂回
 - **Agent 终端权限收紧（2026-07-26）**：仓库级 `.cursor/permissions.json` 取代裸 `git`/`gh` always；`beforeShellExecution` 硬门禁破坏性 git/gh（见「Git 同步节奏」）
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
@@ -606,11 +607,21 @@ cd focus-tiger && npm run check:all-branches-health
 
 ## Git 同步节奏（本地 ↔ GitHub）
 
-> **政策 SSOT**：Agent commit / 汇报 / push / 禁自动合 main → [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。分支模型与合并 `main` → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md)。本节只写**操作顺序**，不复述门禁条文。
+> **政策 SSOT**：Agent commit / 汇报 / 默认 push+PR / 禁自动合 main / 禁未授权生产部署 → [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。合入 `develop`（CI 绿即可）与生产 Worker → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md)。本节只写**操作顺序**，不复述门禁条文。
 
-Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」。
+Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写本地。本项目**不启用**「post-commit 钩子自动 push」或「保存即 commit」。**任务收尾**时 Agent **默认** push 当前旁支并开 `--base develop` 的 PR（本机与 Cloud 相同；禁止直推 `develop`/`main`）。
 
-**Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——不依赖 Auto-review 的 `autoRun.block_instructions`。
+**五档（解耦）**：
+
+| 档 | 默认 |
+|---|---|
+| 本地 commit | 任务验证通过后可自动 |
+| push 旁支 + 开 PR | 任务完成后默认做，不必每次口头授权 |
+| 合入 `develop` | CI 绿即可；**不等**人工测试 |
+| 标「已通过」/ 声称「已修复」 | 仍须你人工测试（§7 + `qa-pass-coverage-split`） |
+| 合 `main` / 生产 Worker Redeploy | 须明确下令；Worker 须说「部署」 |
+
+**Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——弹出 **Run** 不等于「等人工测完」；也不依赖 Auto-review 的 `autoRun.block_instructions`。
 
 #### 已知问题 · `gate-destructive-shell` × `zsh ENOENT`（2026-08-07 · 待排查）
 
@@ -624,30 +635,31 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 > 3. 因此：**不是「所有 push 永久失效」**；是「命中 matcher 的命令，在 hook runner 偶发起不来 zsh 时被硬拦」。同会话里先前多次 `git push` 成功，说明闸门多数时候可用；ENOENT 为**间歇 / 环境**问题（Cursor 钩子宿主找不到 `/bin/zsh`），待日后排查（PATH、Cursor hooks runtime、是否应用了错误的 shell）。  
 > 4. **临时绕过**：本机终端手动 `git push` / `gh pr create`（不经 Agent hooks）即可，与 2026-08-07 Sanctuary Unlock 本地 commit 待手推场景一致。
 
-### 推荐流程（半自动 + 人工拍板）
+### 推荐流程（任务收尾默认 push + PR）
 
 完成一个**有实质性进展**的 Task（非纯 debug / 微调）后：
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
-2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
+2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」——已合入后也保持此状态直到你关单）  
 3. **同步相关权威文档**（N15：按触及面更新对应权威 md；禁止只改代码）  
 4. 按 regression-lock「Commit 汇报与分支门禁」完成本地 commit + 同回合汇报  
 5. 可选推送前体检：`./scripts/git-sync-safe.sh`  
-6. **仅在你明确同意后**再 push（见 SSOT）  
-7. **合入 `develop` 的文档/小 PR**：CI 绿后默认走 Run 合并收尾（见 `WORKFLOW.md` / `RULES_INDEX` → `git-develop-small-pr-run-merge`）；**不要**默认只写「请上 GitHub 手合」  
-8. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）
+6. **默认** push 当前旁支 + 开/更新 `--base develop` 的 PR（不必再等口头授权；禁止直推 develop/main）  
+7. **合入 `develop`**：CI 绿即可合并（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`）；**不要**等人工测试，也**不要**默认只写「请上 GitHub 手合」  
+8. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）  
+9. **生产 Worker Redeploy**：须你明确说「部署」（`prod-worker-deploy`）
 
-完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
+完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）；需要一批测完时用口令「批量人工测试」。
 
 ### 口令：「请安排下班前的 Git 同步」
 
-你说这句（或同等的下班前 / 批量 Git 同步授权）时，Agent 应按 regression-lock 第 7 条执行（**只推非运行时收尾到当前旁支**；**禁止**直推 `develop`/`main`；业务代码 / 状态机 /「先给 diff 等确认」类默认不随口令 flush）：
+你说这句（或同等的下班前 / 批量 Git 同步）时，Agent 应按 regression-lock 第 7 条执行（**补漏**尚未推送的旁支 commit；**禁止**直推 `develop`/`main`；「先给 diff 等确认」的仍不推）：
 
 1. 确认在短命旁支（`feature/*` / `fix/*` / `docs/*` 等）上；若误在 `develop` 攒了 commit → **先**迁到旁支，**再**同步  
-2. 筛出该旁支上尚未推送、且属文档/规则/脚本注释等非运行时的 commit → `push` **仅该旁支** → 无 PR 则开 **`--base develop`**；已有 PR 则让 CI 自然更新  
-3. 业务逻辑 / 状态机 / 待确认 diff 类未推 commit → **单独成组列出，不随本次推送**  
-4. 回复 **「Git 同步汇总」**（含第 6 条分级项 + 旁支名/PR + **性质标注**：本次推送有无「业务逻辑/代码改动」——合规应为「无」）  
-5. **不做**：直推 `develop`/`main`、合并进 `main`、顺手推进**无关** PR；若有其它 PR 正等你处理，只在汇总里提一句现状。本回合刚开的 **develop 文档/小 PR** 收尾合并习惯见 `git-develop-small-pr-run-merge`（与本口令「不推进无关 PR」不冲突）。  
+2. 该旁支上尚未推送的 commit → `push` **仅该旁支** → 无 PR 则开 **`--base develop`**；已有 PR 则让 CI 自然更新  
+3. 「先给 diff 等确认」类 → **单独成组列出，不随本次推送**  
+4. 回复 **「Git 同步汇总」**（含第 6 条分级项 + 旁支名/PR + **性质标注**：本次推送有无「业务逻辑/代码改动」）  
+5. **不做**：直推 `develop`/`main`、合并进 `main`、生产 Worker 部署、顺手推进**无关** PR。本回合正在收尾的 develop PR 仍走 `git-develop-small-pr-run-merge`。
 
 完整门禁条文见 regression-lock SSOT；此处不复述。  
 **禁止**再使用「可推 develop / feature / fix」这种把主干与旁支并列的写法。

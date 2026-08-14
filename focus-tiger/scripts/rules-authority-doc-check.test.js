@@ -35,24 +35,21 @@ describe('rules-authority-registry', () => {
     assert.ok(bad.pattern.test('须 2 名审批通过才能合并'));
   });
 
-  it('eod-sync-flush-all catches affirmative flush, exempts negation restatements', () => {
+  it('eod-sync-deploy-or-main catches deploy/main on eod phrase, exempts negation', () => {
     const t = RULE_AUTHORITY_TOPICS.find((x) => x.id === 'git-agent-commit');
-    const bad = t.forbiddenOutsideSsot.find((f) => f.id === 'eod-sync-flush-all');
+    const bad = t.forbiddenOutsideSsot.find((f) => f.id === 'eod-sync-deploy-or-main');
     assert.ok(bad);
     assert.ok(bad.exemptIfLineMatches);
 
-    const affirm =
-      '口令「请安排下班前的 Git 同步」时，把尚未推送的本地 commit 全部 push 到远端';
-    const affirmShort = '下班前的 Git 同步：全部 flush';
-    const banFlush = '禁止把下班前的 Git 同步做成全部 push';
-    const noLonger = '下班前的 Git 同步不再全部 flush';
-    const doNot = '不要因下班前的 Git 同步而全部推送';
+    const affirm = '请安排下班前的 Git 同步，并合并进 main';
+    const deploy = '下班前的 Git 同步后 npm run deploy';
+    const ban = '禁止把下班前的 Git 同步做成合并进 main';
+    const noDeploy = '不要因下班前的 Git 同步而 npm run deploy';
 
     assert.equal(hasForbiddenOutsideHistory(affirm, bad.pattern, bad.exemptIfLineMatches), true);
-    assert.equal(hasForbiddenOutsideHistory(affirmShort, bad.pattern, bad.exemptIfLineMatches), true);
-    assert.equal(hasForbiddenOutsideHistory(banFlush, bad.pattern, bad.exemptIfLineMatches), false);
-    assert.equal(hasForbiddenOutsideHistory(noLonger, bad.pattern, bad.exemptIfLineMatches), false);
-    assert.equal(hasForbiddenOutsideHistory(doNot, bad.pattern, bad.exemptIfLineMatches), false);
+    assert.equal(hasForbiddenOutsideHistory(deploy, bad.pattern, bad.exemptIfLineMatches), true);
+    assert.equal(hasForbiddenOutsideHistory(ban, bad.pattern, bad.exemptIfLineMatches), false);
+    assert.equal(hasForbiddenOutsideHistory(noDeploy, bad.pattern, bad.exemptIfLineMatches), false);
   });
 
   it('repo scan currently passes (no live contradiction)', () => {
