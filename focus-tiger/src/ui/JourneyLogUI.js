@@ -26,7 +26,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'journey-log-card-styles-v2';
+const STYLE_ID = 'journey-log-card-styles-v3';
 const FADE_MS = 220;
 const LIST_MAX = 12;
 
@@ -370,6 +370,7 @@ export class JourneyLogUI {
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
     document.getElementById('journey-log-card-styles-v1')?.remove();
+    document.getElementById('journey-log-card-styles-v2')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -429,6 +430,7 @@ export class JourneyLogUI {
         line-height: 1.4;
         background: ${GLASS_FILL_STRONG};
         border-radius: 10px;
+        cursor: default;
       }
       .journey-log__row:last-child {
         margin-bottom: 0;
@@ -447,6 +449,12 @@ export class JourneyLogUI {
         text-align: left;
         text-decoration: underline;
         text-underline-offset: 2px;
+        display: inline-block;
+        transition: transform 120ms ease, opacity 120ms ease;
+      }
+      .journey-log__backup-link:active {
+        opacity: 1;
+        transform: translateY(1px);
       }
       .journey-log__backup-panel {
         margin: 0 0 12px;
@@ -513,6 +521,10 @@ export class JourneyLogUI {
         border: 1px solid rgba(139, 115, 85, 0.32);
         background: rgba(255, 255, 255, 0.55);
         color: #2c1f14;
+        transition: transform 120ms ease;
+      }
+      .journey-log__btn:active:not(:disabled) {
+        transform: translateY(1px) scale(0.98);
       }
       .journey-log__btn:disabled {
         opacity: 0.55;

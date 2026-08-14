@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { shouldSyncHomeCtasForRecords } from './WideIdleMoreMenu.js';
 
 /**
@@ -47,5 +50,13 @@ describe('shouldSyncHomeCtasForRecords', () => {
     assert.equal(shouldSyncHomeCtasForRecords([], rowContaining([])), false);
     assert.equal(shouldSyncHomeCtasForRecords(null, rowContaining([])), false);
     assert.equal(shouldSyncHomeCtasForRecords([record({})], null), true);
+  });
+});
+
+describe('wide more menu click reception', () => {
+  it('menu rows have :active press (Journey log 0–1s)', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /\.ft-wide-more__item:active:not\(:disabled\)/);
   });
 });
