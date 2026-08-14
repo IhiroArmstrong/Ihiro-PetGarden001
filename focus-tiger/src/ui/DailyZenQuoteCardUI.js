@@ -7,7 +7,8 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   pickDailyZenQuoteBackdropSrc,
   resolveDailyZenQuote,
-  saveDailyZenQuoteImage
+  saveDailyZenQuoteImage,
+  noteDailyZenQuoteOpened
 } from '../core/dailyZenQuote.js';
 import {
   GLASS_BLUR_CSS,
@@ -28,9 +29,13 @@ export class DailyZenQuoteCardUI {
    * @param {() => void} [handlers.onClose]
    * @param {(info: { ok: boolean, filename: string, key: string }) => void} [handlers.onSaved]
    * @param {typeof saveDailyZenQuoteImage} [handlers.saveImage]
+   * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
+    this._storage =
+      handlers.storage ??
+      (typeof localStorage !== 'undefined' ? localStorage : null);
     this._open = false;
     this._saving = false;
     /** @type {{ dateKey: string, key: string, text: string, locale: string } | null} */
@@ -123,7 +128,7 @@ export class DailyZenQuoteCardUI {
   open() {
     if (this._open) return;
     this._open = true;
-    this._resolved = resolveDailyZenQuote();
+    this._resolved = noteDailyZenQuoteOpened({ storage: this._storage });
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');

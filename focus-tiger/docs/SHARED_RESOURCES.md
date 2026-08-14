@@ -49,10 +49,11 @@
 | `focus-tiger.scene-anim-cooldown.v1` | `sceneAnimationDispatcher` | 生命感冷却：`{ late_night, curiosity, … }` 时间戳 |
 | `focus-tiger.five-moments-compass-seen.v1` | `fiveMomentsCompassGate` / `FiveMomentsCompassUI` | Compass 首卡 / 指南已读（`'1'`）；⋯ /「?」打开亦 mark；DEV 重置清 |
 | `focus-tiger.moment-whispers-seen.v1` | `momentWhispersGate` / `MomentWhisperUI` | Moment Whisper 各键已见 `{ arrive?, focus?, recover?, transition?, reflect? }`；一生一次；Transition 暂不 play |
-| `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar **零耦合**） |
+| `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect, insightSpark? }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar / Sanctuary / `practiceBadgeAward` **零耦合**）。`insightSpark` 仅在当场打开 Quiet Line 且当日句来自洞察种子池时为 `true`；缺省降级为无标记 |
 | `focus-tiger.practice-backup.v1` | `practiceBackupOptIn` / Journey Log 角落引导 | 练习记忆云端备份 opt-in：`{ enabled, consentedAt, email, deviceToken, lastUpload* }`；整包 6 key 快照 → `PRACTICE_BACKUP_KV`；关闭须 OTP **删云端** |
 | `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；池条目 `{ id, text, attribution? }`（Yin 短句无署名；古典/文学句有 locale 署名）；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**；**Phase A 落点** = Reflection 卡底部（`[data-testid=reflection-daily-wisdom]`）；Phase B 印花另支 |
 | `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》：`{ revealed, revealedAt, scoreAtReveal }`；门槛 = 统一练习 **score ≥ 21**；首次完成仪式后出卡（ZH + EN + 乐五斋诗稿 + 章）；菜单可重读；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
+| `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。

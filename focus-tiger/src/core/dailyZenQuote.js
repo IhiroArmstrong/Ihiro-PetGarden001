@@ -1,14 +1,104 @@
 /**
  * Growth pack ③ — daily quiet-line quote (local pool + canvas save).
  * Deterministic by local YYYY-MM-DD; does not use soft-schedule / cloud.
+ * Pool v2 mixes classic Quiet Line lines with a small insight-spark seed.
  * @see docs/task-briefs/task-growth-content-pack-decision.md
+ * @see docs/task-briefs/task-quiet-line-insight-spark.md
  */
 
 import { COPY_POOLS, getLocale, t, tInLocale } from '../locales/i18n.js';
 import { getLocalDateKey } from '../utils/localDate.js';
+import { stampJourneyLogInsightSparkForDate } from './journeyLogGate.js';
 import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
 
 export const DAILY_ZEN_QUOTE_POOL_KEY = 'DAILY_ZEN_QUOTE';
+export const DAILY_ZEN_QUOTE_INSIGHT_POOL_KEY = 'DAILY_ZEN_QUOTE_INSIGHT';
+
+/** Same-day lock for the mixed pool. Do not reuse older keys. */
+export const DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY =
+  'focus-tiger.daily-zen-quote-pool-v2.v1';
+
+/**
+ * @param {Storage | null | undefined} explicit
+ * @returns {Storage | null}
+ */
+function defaultQuoteStorage(explicit) {
+  if (explicit !== undefined) return explicit ?? null;
+  try {
+    return typeof localStorage !== 'undefined' ? localStorage : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Classic Quiet Line keys + insight-spark seed (production seed only).
+ * @param {readonly string[]} [classicKeys]
+ * @param {readonly string[]} [insightKeys]
+ * @returns {string[]}
+ */
+export function listMixedDailyZenQuoteKeys(
+  classicKeys = COPY_POOLS[DAILY_ZEN_QUOTE_POOL_KEY],
+  insightKeys = COPY_POOLS[DAILY_ZEN_QUOTE_INSIGHT_POOL_KEY]
+) {
+  const classic = Array.isArray(classicKeys) ? [...classicKeys] : [];
+  const insight = Array.isArray(insightKeys) ? [...insightKeys] : [];
+  return [...classic, ...insight];
+}
+
+/**
+ * @param {string | null | undefined} key
+ * @param {readonly string[]} [insightKeys]
+ * @returns {boolean}
+ */
+export function isInsightZenQuoteKey(
+  key,
+  insightKeys = COPY_POOLS[DAILY_ZEN_QUOTE_INSIGHT_POOL_KEY]
+) {
+  return Boolean(
+    key && Array.isArray(insightKeys) && insightKeys.includes(key)
+  );
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @returns {{ dateKey: string, key: string, opened: boolean } | null}
+ */
+export function readDailyZenQuotePoolV2(storage) {
+  if (!storage) return null;
+  try {
+    const raw = storage.getItem(DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY);
+    if (!raw) return null;
+    const o = JSON.parse(raw);
+    if (!o || typeof o !== 'object') return null;
+    const dateKey = typeof o.dateKey === 'string' ? o.dateKey : '';
+    const key = typeof o.key === 'string' ? o.key : '';
+    if (!dateKey || !key) return null;
+    return { dateKey, key, opened: o.opened === true };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @param {{ dateKey: string, key: string, opened?: boolean }} state
+ */
+export function writeDailyZenQuotePoolV2(storage, state) {
+  if (!storage || !state?.dateKey || !state?.key) return;
+  try {
+    storage.setItem(
+      DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
+      JSON.stringify({
+        dateKey: state.dateKey,
+        key: state.key,
+        opened: state.opened === true
+      })
+    );
+  } catch {
+    // ignore quota / private mode
+  }
+}
 
 /**
  * @param {string} dateKey YYYY-MM-DD
@@ -17,9 +107,10 @@ export const DAILY_ZEN_QUOTE_POOL_KEY = 'DAILY_ZEN_QUOTE';
  */
 export function pickDailyZenQuoteKey(
   dateKey,
-  keys = COPY_POOLS[DAILY_ZEN_QUOTE_POOL_KEY]
+  keys = listMixedDailyZenQuoteKeys()
 ) {
-  const list = keys && keys.length ? keys : COPY_POOLS[DAILY_ZEN_QUOTE_POOL_KEY];
+  const list =
+    keys && keys.length ? keys : listMixedDailyZenQuoteKeys();
   if (!list?.length) return 'DAILY_ZEN_QUOTE_1';
   const parts = String(dateKey || '').split('-').map((n) => Number(n));
   const y = parts[0];
@@ -54,17 +145,87 @@ export function pickDailyZenQuoteBackdropSrc(dateKey) {
 }
 
 /**
- * @param {{ date?: Date, locale?: string }} [opts]
- * @returns {{ dateKey: string, key: string, text: string, locale: string }}
+ * @param {{
+ *   date?: Date,
+ *   locale?: string,
+ *   storage?: Storage | null,
+ *   classicKeys?: readonly string[],
+ *   insightKeys?: readonly string[]
+ * }} [opts]
+ * @returns {{
+ *   dateKey: string,
+ *   key: string,
+ *   text: string,
+ *   locale: string,
+ *   insightSpark: boolean
+ * }}
  */
 export function resolveDailyZenQuote(opts = {}) {
   const dateKey = getLocalDateKey(opts.date ?? new Date());
-  const key = pickDailyZenQuoteKey(dateKey);
+  const mixed = listMixedDailyZenQuoteKeys(opts.classicKeys, opts.insightKeys);
+  const storage = defaultQuoteStorage(opts.storage);
+  const stored = readDailyZenQuotePoolV2(storage);
+  let key;
+  if (stored?.dateKey === dateKey && mixed.includes(stored.key)) {
+    key = stored.key;
+  } else {
+    key = pickDailyZenQuoteKey(dateKey, mixed);
+    writeDailyZenQuotePoolV2(storage, {
+      dateKey,
+      key,
+      opened: stored?.dateKey === dateKey ? stored.opened : false
+    });
+  }
   const locale = opts.locale || getLocale();
   // Product quotes are en+ja only; other locales fall back via tInLocale → en.
   const text =
     locale === 'en' || locale === 'ja' ? tInLocale(locale, key) : t(key);
-  return { dateKey, key, text, locale };
+  return {
+    dateKey,
+    key,
+    text,
+    locale,
+    insightSpark: isInsightZenQuoteKey(key, opts.insightKeys)
+  };
+}
+
+/**
+ * True only after Quiet Line was opened today *and* today’s line is insight-seed.
+ * @param {{ date?: Date, storage?: Storage | null, insightKeys?: readonly string[] }} [opts]
+ * @returns {boolean}
+ */
+export function hasOpenedInsightSparkToday(opts = {}) {
+  const dateKey = getLocalDateKey(opts.date ?? new Date());
+  const stored = readDailyZenQuotePoolV2(defaultQuoteStorage(opts.storage));
+  if (!stored || stored.dateKey !== dateKey || stored.opened !== true) {
+    return false;
+  }
+  return isInsightZenQuoteKey(stored.key, opts.insightKeys);
+}
+
+/**
+ * Quiet Line open = 当场触达. Persist same-day pick; stamp Journey Log if insight.
+ * @param {{
+ *   date?: Date,
+ *   locale?: string,
+ *   storage?: Storage | null,
+ *   classicKeys?: readonly string[],
+ *   insightKeys?: readonly string[]
+ * }} [opts]
+ * @returns {ReturnType<typeof resolveDailyZenQuote> & { opened: boolean }}
+ */
+export function noteDailyZenQuoteOpened(opts = {}) {
+  const storage = defaultQuoteStorage(opts.storage);
+  const resolved = resolveDailyZenQuote({ ...opts, storage });
+  writeDailyZenQuotePoolV2(storage, {
+    dateKey: resolved.dateKey,
+    key: resolved.key,
+    opened: true
+  });
+  if (resolved.insightSpark) {
+    stampJourneyLogInsightSparkForDate(storage, resolved.dateKey);
+  }
+  return { ...resolved, opened: true };
 }
 
 /**
