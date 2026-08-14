@@ -21,7 +21,7 @@
   - `e2e/micro-ritual.spec.js` — **S** Breath / 微仪式主路径 / Leave 不记账 / 桥接叠层隐藏入口
   - `e2e/honesty-bridge-real-path.spec.js` — **真实** Honesty 补登→桥接 Yes→Arrival / No→Idle（`?honestyBreathMs=`；**非**注入）
   - `e2e/flower-welcome.spec.js` — **V** Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗
-  - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 行 + Focusing/? 主条契约（不全覆盖 W 观感）
+  - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 交叉引用 + `?wellnessFirst=1` 首开卡 + Focusing/? 主条契约（不全覆盖 W 观感）
   - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
@@ -404,19 +404,20 @@
 
 ---
 
-## 场景 W：点「?」· 产品简介与 Privacy
+## 场景 W：点「?」· 产品简介、Privacy 与 Wellness 免责
 
-> **用户故事**：Kelly 点「?」只想看 App 是干什么的、隐私怎么说——见简介（no pressure / no ads / local-first）、以及「不是诊疗 / 不能替代咨询师」免责，再点 **Privacy** 读本地优先说明，Back 回简介。  
-> **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy 行；单元 `privacyNoticeCopy.test.js`。  
-> **仍须人工**：375 Sheet 可滚、可关；Rise 后再走一遍；**禁止**简介/隐私承诺具名云保管同步。  
+> **用户故事**：Kelly 首次打开产品须**被动看到一次**「不是诊疗」声明（Got it 即过）；之后点「?」仍可查阅简介（no pressure / no ads / local-first）与同一免责，再点 **Privacy** 读本地优先说明（含交叉引用），Back 回简介。  
+> **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy / first-run 行；单元 `privacyNoticeCopy.test.js`、`wellnessDisclaimerGate.test.js`。  
+> **仍须人工**：375 首卡与 Sheet 可滚、可关；Rise 后再走一遍「?」；**禁止**简介/隐私承诺具名云保管同步。  
 > **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。
 
-1. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句；**须见**免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；日语切语后见「心理療法・医療ではありません」）。
-2. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思。
-3. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
-4. **Back** → 回简介 → Got it 关闭。
-5. **回流**：Rise 后再点 ? → Privacy → Back。
-6. **375**：同路径；Sheet 不挡到无法关。
+1. **首开（显著）**：清 `focus-tiger.wellness-disclaimer-seen.v1`（或 `?wellnessFirst=1&flowerWelcome=0`）→ Idle 见 `#onboarding-wellness-first`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent）→ **Got it** 关闭；再刷不得再出。
+2. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句；**须见**免责区块 `.onboarding-app-purpose__wellness`（日语切语后见「心理療法・医療ではありません」）。
+3. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；见 wellness 交叉引用 → 点链回简介免责区块。
+4. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
+5. **Back** → 回简介 → Got it 关闭。
+6. **回流**：Rise 后再点 ? → Privacy → Back。
+7. **375**：同路径；首卡 / Sheet 不挡到无法关。
 
 ---
 
@@ -498,7 +499,7 @@
 | **T** | Companion 后 Focus 时长 chip 15/25/45/60 | **已升格** → 见上文「场景 T」；无 query 路径须人工 |
 | **U** | Zen Cinema / Quiet Line / Wallpapers 礼物菜单 | **已升格** → 见上文「场景 U」 |
 | **V** | Day1/久别变花欢迎 + 气泡 | **已升格** → 见上文「场景 V」；`flower-welcome` e2e |
-| **W** | 「?」简介 + Privacy sheet（可链 Compass） | **已升格** → 见上文「场景 W」 |
+| **W** | 「?」简介 + Privacy + Wellness 首开声明 | **已升格** → 见上文「场景 W」 |
 | **X** | Focusing Tiger Anchor 主动 Recover（180s 冷却；不占被动额度） | **已升格** → 见上文「场景 X」；#199 |
 | **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
 | **Z** | Journey Log 本地留痕（≠ HealthKit / ≠ Tea Log） | **已升格** → 见上文「场景 Z」；#205 |

@@ -22,10 +22,18 @@ export async function openFreshProductShell(page, opts = {}) {
   // would erase the seed and false-fail heatmap lit asserts (null→lit).
   await page.addInitScript(() => {
     try {
-      if (sessionStorage.getItem('__ftE2eStorageGate') === '1') return;
-      sessionStorage.setItem('__ftE2eStorageGate', '1');
-      for (const key of Object.keys(localStorage)) {
-        if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+      if (sessionStorage.getItem('__ftE2eStorageGate') !== '1') {
+        sessionStorage.setItem('__ftE2eStorageGate', '1');
+        for (const key of Object.keys(localStorage)) {
+          if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
+        }
+      }
+      // Default: mark wellness first-run seen so other specs are not blocked by
+      // the compliance card. Dedicated tests pass ?wellnessFirst=1 to force it.
+      if (/(?:^|[?&])wellnessFirst=1(?:&|$)/.test(location.search)) {
+        localStorage.removeItem('focus-tiger.wellness-disclaimer-seen.v1');
+      } else {
+        localStorage.setItem('focus-tiger.wellness-disclaimer-seen.v1', '1');
       }
     } catch {
       /* ignore */

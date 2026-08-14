@@ -57,6 +57,11 @@ describe('privacyNoticeCopy', () => {
       /counselor|therapist|doctor/i
     );
     assert.match(
+      en.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /not intended to diagnose, treat, cure, or prevent any disease/i
+    );
+    assert.match(en.PRIVACY_SHEET_WELLNESS_LINK, /Not therapy or medical care/i);
+    assert.match(
       ja.HINT_APP_PURPOSE_WELLNESS_TITLE,
       /心理療法|医療/
     );
@@ -68,6 +73,10 @@ describe('privacyNoticeCopy', () => {
     assert.match(
       ja.HINT_APP_PURPOSE_WELLNESS_BODY,
       /カウンセラー|セラピスト|医師/
+    );
+    assert.match(
+      ja.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /診断・治療・治癒・予防/
     );
   });
 });

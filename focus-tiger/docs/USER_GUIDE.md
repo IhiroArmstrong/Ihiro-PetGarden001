@@ -6,13 +6,13 @@
 
 A calm focus companion: sit with Yin, practice a short arrival, then focus at your own pace. It is a mindfulness partner — not a pet you must feed or keep alive.
 
-It helps you build focus skill, practice mindfulness, and reduce everyday stress. It is **not** therapy, diagnosis, or medical treatment, and it cannot replace a licensed counselor, therapist, or doctor. Tap **?** in the app to read the full note.
+It helps you build focus skill, practice mindfulness, and reduce everyday stress. It is **not** therapy, diagnosis, or medical treatment, and it cannot replace a licensed counselor, therapist, or doctor. It is not intended to diagnose, treat, cure, or prevent any disease. The first time you open the app, a short notice appears (Got it). You can always re-read it under **?**.
 
 ## How to open (local / preview)
 
 1. Open the app URL you were given (or, for developers: run the local preview and open it in **Safari**).
 2. Prefer a quiet browser tab; allow audio if you want the soundscape.
-3. First screen: Yin at rest (Idle). Use **?** for a short “what this app is for” card.
+3. First screen: Yin at rest (Idle). A one-time wellness notice may appear (Got it). Use **?** anytime for “what this app is for,” including the same notice.
 
 ## One simple session
 

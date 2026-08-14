@@ -66,6 +66,7 @@ import { ENTITLEMENT_OWNERSHIP_STORAGE_KEY } from './entitlement/entitlementOwne
 import { ENTITLEMENT_MOCK_STORAGE_KEY } from './entitlement/mockEntitlementProvider.js';
 import { MEMBERSHIP_DEVICE_CREDENTIAL_KEY } from './membershipDeviceCredential.js';
 import { FIVE_MOMENTS_COMPASS_SEEN_KEY } from './fiveMomentsCompassGate.js';
+import { WELLNESS_DISCLAIMER_SEEN_KEY } from './wellnessDisclaimerGate.js';
 import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
 import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
@@ -141,6 +142,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   ENTITLEMENT_MOCK_STORAGE_KEY,
   MEMBERSHIP_DEVICE_CREDENTIAL_KEY,
   FIVE_MOMENTS_COMPASS_SEEN_KEY,
+  WELLNESS_DISCLAIMER_SEEN_KEY,
   MOMENT_WHISPERS_SEEN_KEY,
   JOURNEY_LOG_STORAGE_KEY,
   PRACTICE_BACKUP_OPT_IN_KEY,

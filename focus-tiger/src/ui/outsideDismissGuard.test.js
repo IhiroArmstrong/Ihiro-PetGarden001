@@ -26,6 +26,12 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
       }),
       true
     );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#onboarding-wellness-first' ? {} : null)
+      }),
+      true
+    );
     assert.equal(shouldIgnoreOutsideDismissTarget(help), true);
     assert.equal(shouldIgnoreOutsideDismissTarget(narrowHelp), true);
     assert.equal(

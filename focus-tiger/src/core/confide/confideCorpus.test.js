@@ -31,6 +31,16 @@ test('safety corpus is human-ok (≥1 line)', () => {
   assert.ok(safety.every((l) => l.review === 'ok'));
 });
 
+test('safety-01 points to real help and is not a substitute (aligns with wellness disclaimer)', () => {
+  const line = CONFIDE_CORPUS.find((l) => l.id === 'safety-01');
+  assert.ok(line);
+  assert.match(line.en, /crisis line/i);
+  assert.match(line.en, /not a substitute for professional help/i);
+  assert.match(line.ja, /相談窓口/);
+  assert.match(line.ja, /専門援助の代わりにはなれない/);
+  assert.match(line.zh, /援助热线|专业帮助/);
+});
+
 test('pickConfideLine: safety never falls through to zen fallback pool', () => {
   const line = pickConfideLine({
     route: CONFIDE_ROUTE.SAFETY_REDIRECT,

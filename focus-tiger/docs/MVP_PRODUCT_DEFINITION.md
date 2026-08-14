@@ -315,7 +315,7 @@ Focus Tiger 涉及专注意图、反思、情绪和使用节奏。信任是产�
 
 - 面向用户的简明隐私说明（**2026-07-30 起稿**：[`PRIVACY_NOTICE.md`](./PRIVACY_NOTICE.md)；须人工过目后才可当发版文案）；
 - **产品内可打开浏览**（**2026-08-07 拍板落点**）：不另建 Settings 树；以「?」产品简介卡次要链 **Privacy** 打开应用内只读页（正文 = `PRIVACY_NOTICE`）；About / Credits 底部可再挂同一入口。详见 `PRIVACY_NOTICE.md`「In-app placement」与 Brief `task-briefs/task-in-app-privacy-and-purpose-copy.md`；
-- **Wellness 免责（2026-08-14）**：同一「?」简介卡须显著声明非诊疗 / 非医疗器械 / 不能替代咨询师（en + ja；`HINT_APP_PURPOSE_WELLNESS_*`）；
+- **Wellness 免责（2026-08-14）**：冷启动一次性声明 +「?」简介卡须显著声明非诊疗 / 非医疗器械 / 不能替代咨询师，并含 diagnose / treat / cure / prevent 兜底句（en + ja；`HINT_APP_PURPOSE_WELLNESS_*`）；Privacy Sheet 交叉引用；
 - 本地数据清单、用途、保留方式与清除入口；
 - 若引入崩溃报告或产品分析，逐项审查事件字段，默认不包含自由文本（**v1.0.0 默认不接**崩溃 SDK；见 `PROCESS.md` Backlog「发布前安全网」）；
 - 若未来引入账号或云端，单独设计删除、导出、同步和安全方案；

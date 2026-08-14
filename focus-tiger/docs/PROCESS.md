@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Wellness 免责 · 非诊疗（2026-08-14 · 本支 `feature/wellness-disclaimer-copy`）**：「?」简介卡 `#onboarding-app-purpose` 正文下独立区块（en + ja）：培养专注 / 正念 / 缓和日常压力；不是医疗器械或心理诊疗；不能替代咨询师。红线 `PRINCIPLES.md` / 落点 `ONBOARDING_HINTS.md`。TRACKER 待人工。
+- **Wellness 免责 · 非诊疗（2026-08-14 · 本支 `feature/wellness-disclaimer-copy`）**：冷启动一次性 `#onboarding-wellness-first`（Got it）+「?」简介卡常驻区块 + Privacy Sheet 交叉引用（en + ja）。文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent。红线 `PRINCIPLES.md` / 落点 `ONBOARDING_HINTS.md`。TRACKER 待人工。
 
 - **Stay in touch · 真实 Resend（2026-08-13 · 本支 `feature/newsletter-resend-provider`）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
