@@ -28,7 +28,21 @@
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
 
-**点击后 0–1 秒（强制 · 2026-08-14）**：含可点击步骤的**新场景 / 改写场景**必须写清「点击后 0–1 秒内用户应该看到什么？」。若该步按设计不生效，须点名 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md) 的 `SB-xx`，禁止只写「无反应」。原则全文 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)（`RULES_INDEX` → `interaction-feedback`）。存量场景逐步补；场景 B / P / X / Y 已挂钩。
+**点击后 0–1 秒（强制 · 2026-08-14）**：含可点击步骤的**新场景 / 改写场景**必须写清「点击后 0–1 秒内用户应该看到什么？」。若该步按设计不生效，须点名 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md) 的 `SB-xx`，禁止只写「无反应」。原则全文 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)（`RULES_INDEX` → `interaction-feedback`）。
+
+**存量补句优先级（禁止「随改写再补」）**：已挂钩白名单的是 **B / P / X / Y**。其余正式场景按下表排期补 0–1 秒句（权威跟踪：`TEST_TRACKER`「存量场景 0–1s 补句」行）。**不得**等下次碰巧改到该场景才写。
+
+| 优先 | 场景 | 为何先写 | 0–1 秒句现状 |
+|---|---|---|---|
+| **P0** | **Q** Support Yin 双卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
+| **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
+| **P0** | **X** Tiger Anchor **冷却期内再点** | 触点隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本 follow-up 已写缺口句 |
+| **P1** | **S** Breath Leave / 时长 chip；**T** Focus 时长 chip / Leave；**D** Honesty 时长 + 桥接 Yes/No | 状态切换；须同时有「完成了」与下一步入口 | 未补句 |
+| **P1** | **W**「?」/ Privacy / Back；**Z** Journey log 开卡 | 叠层开合；关卡后下一步应可见 | 未补句 |
+| **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
+| **P2** | **G** 语言；**O** 热力图（多为展示）；**V** 吹花（自动 + 点消气泡） | 点击面小或非按钮主路径 | 未补句 |
+| **—** | **H** 瞳孔跟随 | 已废弃，不排 | — |
+| **—** | **R** 跨日回访 | 仍建议故事，非点击反馈主战场 | — |
 
 ---
 
@@ -302,22 +316,22 @@
 
 ### Q1 · Support Modal（统一入口）
 
-1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → `#yin-support-modal`。
+1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
 2. 见双卡：Sanctuary 带 **Suggested** + Primary CTA，文案含 **One-time Lifetime**（无假划线）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ Ghost CTA。
-3. **Maybe later** 为文字链关闭（非全宽描边钮）。关后再开仍可用。
+3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：双卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
-5. **回流**：Sit→Focusing → FAB **隐藏**；Rise 回 Idle → FAB 复现。
+5. **回流**：Sit→Focusing → FAB **隐藏**（不可点，不是哑点击）；Rise 回 Idle → FAB 复现。
 
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
 
-6. Support 卡 CTA → `#yin-tip-jar-card`（⋯ / 抽屉不再列 Buy Yin a Tea）。
+6. Support 卡 CTA → **0–1 秒内**：CTA 按压 + `disabled`（`_busy`）+ 模态关闭；**结果**（可能 >1s）：进 Stripe Checkout / `#yin-tip-jar-card`。禁止关闭后空白无下一步。
 7. Test 卡走 Checkout（约 **US$9.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
 8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。
 9. **禁止**：tip 后出现 Sanctuary 已解锁语义或内容门打开。
 
 ### Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
-10. Support Primary → `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
+10. Support Primary → **0–1 秒内**同 Q2（按压 + disabled + 关模态）；随后 `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
 11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
 12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。
 
@@ -373,19 +387,19 @@
 
 ### U1 · Zen Cinema
 
-1. Idle → ⋯ / 抽屉 **Zen Cinema** → `#zen-cinema-card`（缩略图 + 片名 +「将打开 YouTube」）。
-2. **Watch** → 系统浏览器打开 `https://youtu.be/RV46qrvG1pw`；**Not now** 关卡。
+1. Idle → ⋯ / 抽屉 **Zen Cinema** → **0–1 秒内**：菜单行按压 + `#zen-cinema-card` 展开（缩略图 + 片名 +「将打开 YouTube」）。
+2. **Watch** → **0–1 秒内**：主钮按压 + 确认卡开始收起；**结果**（可延迟）：系统浏览器打开 `https://youtu.be/RV46qrvG1pw`。卡已关但标签页还没出 = 仍算「已接收」，不要报成哑点击。**Not now** → 0–1 秒内卡收起、回到 Idle 菜单入口可见。
 3. **禁止**：Reflection 边缘入口、App 内嵌播放器。
 
 ### U2 · Quiet Line / 今日静语
 
-4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → `#daily-zen-quote-card` 见当日金句。
-5. **Save image** → 下载 PNG（文件名含当日 `YYYY-MM-DD`）；同日再开句不变。
+4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → **0–1 秒内**：行按压 + `#daily-zen-quote-card` 展开当日金句。
+5. **Save image** → **0–1 秒内**：钮按压（证明收到）；**结果**：下载 PNG（文件名含当日 `YYYY-MM-DD`，可能略延迟）。同日再开句不变。
 6. **Not now** 关卡；回流再开仍可。
 
 ### U3 · Wallpapers
 
-7. ⋯ / 抽屉 **Wallpapers** → `#digital-wallpapers-card` 见 5 张缩略图 → 点选 → **Save image** → `focus-tiger-wallpaper-*.png`。
+7. ⋯ / 抽屉 **Wallpapers** → **0–1 秒内**：行按压 + `#digital-wallpapers-card` 展开 5 张缩略图 → 点选（选中态）→ **Save image**（0–1 秒按压；结果=下载 `focus-tiger-wallpaper-*.png`）。
 8. **禁止**付费门 / 一键社交分享。
 
 ---
@@ -427,14 +441,15 @@
 > **用户故事**：Kelly 专注中卡住了——不切页、不放弃；轻触阿寅（或幽灵提示）→ 点头鞠躬 + 中置观察式 toast + 光影 Recover 扰动；计时继续。与场景 B 被动 Re-focus（切走>60s）**分工**：本故事是**用户主动**；**不**占被动提醒日/会话额度。  
 > **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却）。  
 > **DOM**：尚无完整 e2e 故事锁；观感须人工。  
-> **仍须人工**：微光+文案可读；点击反馈链；冷却隐退；375 不误触 Rise/HUD。  
+> **仍须人工**：微光+文案可读；点击反馈链；冷却隐退；**冷却期内再点阿寅（FB-01）**；375 不误触 Rise/HUD。  
 > **合入**：#199。
 
 1. `?product=1` → Sit（或 ⚡/时长 chip）→ **Focusing**。
 2. 见幽灵提示（如「Feeling stuck?…」）+ 阿寅身前微光 `#active-recover-anchor`。
 3. **轻触阿寅**（或提示带）→ **0–1 秒内**：微光/按压被接收 + `nod-bow` 开始；随后中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
 4. **必须**：计时器**不停**；**不**跳页；**不**进 Reflection / MicroRitual / 记账。
-5. 触发后触点隐退 **180s**（**SB-07**）：冷却期内 **看不到** `#active-recover-anchor`，再点阿寅**不应**再出 Active Recover toast/`nod-bow`；冷却结束触点回来再可点；期间被动 Re-focus 额度**不得**减少。
+5. 触发后触点隐退 **180s**（**SB-07**）：冷却期内 **看不到** `#active-recover-anchor`（专用入口暂时没有了）；冷却结束触点回来再可点；期间被动 Re-focus 额度**不得**减少。
+5b. **冷却期内再点阿寅（FB-01 · 已知缺口，不是白名单）**：专用 hit 已 `hidden`，再点身体**目前**可能摸头（`PointerInteraction`）或完全无事——**两种都还不能**让用户读成「我点过了、Recover 在冷却」。0–1 秒内**应有**接收反馈（产品未拍板形态）；**不应**再出 Active Recover toast/`nod-bow`。只验「触点消失」≠ 本步通过。
 6. **回流**：Rise → 触点消失；再 Focusing 可再出现。
 7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。
 

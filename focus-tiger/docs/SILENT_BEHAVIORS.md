@@ -28,7 +28,7 @@
 | **SB-04** | 应用内提醒横幅 · 忙碌期 | Arrival / Focusing / Reflection / 微仪式中横幅 **不展示、不排队** | 已拍板 `suppress`（非 defer） | 场景 P | busy suppress |
 | **SB-05** | Moment Whisper 该键已见 | 再进同一 Moment **不再**出 `#moment-whisper` | 每键一生一次 | 场景 Y | 限频已消耗 |
 | **SB-06** | Moment Whisper · busy | Compass / Companion / Arrival 等叠层开着时不出 | 互斥，避免挡主路径 | 场景 Y | busy suppress |
-| **SB-07** | Tiger Anchor **180s 冷却** | `#active-recover-anchor` **隐退、不可点**；不应再出 `nod-bow`+toast | 防误触连点；隐退=「现在还不行」 | 场景 X | 暂不生效（有隐退） |
+| **SB-07** | Tiger Anchor **180s 冷却 · 专用触点** | `#active-recover-anchor` **整层 `hidden`**（微光+hit+幽灵提示都消失）；专用 hit **不可点**；不应再出 Active Recover `nod-bow`+toast | 防误触连点。隐退只说明「专用入口暂时没有了」，**不等于**「冷却中再点阿寅会收到接收反馈」——后者见下方 **FB-01**，**不是**本条豁免 | 场景 X | 暂不生效（入口消失） |
 | **SB-08** | 微仪式 / Breath **Leave** | 不记账、无完成 toast、**不**进 Reflection | 未完成不记 | 场景 S · `MICRO_RITUAL_PLAN` | 未完成路径 |
 | **SB-09** | 同日第二次计时达标 | **无**完整 Celebrating（轻量 `SessionComplete`） | 正向反馈节制 | 场景 L · `PRINCIPLES` | 限频 |
 | **SB-10** | Re-focus 与更强情绪冲突 | 静默让位、**不补发** | Celebrating 等优先 | `EMOTION_BIBLE` | 让位 |
@@ -40,8 +40,21 @@
 
 ---
 
+## 待补反馈（不是白名单）
+
+这些**不是**「测到没反应就算对」。测试时若仍完全没接收反馈，记入对应 TEST_TRACKER 行，**不要**用 `SB-xx` 挡掉。
+
+| id | 缺口 | 当前实现 | 用户可能误解 | 建议验什么 | 权威 |
+|---|---|---|---|---|---|
+| **FB-01** | Tiger Anchor **冷却期内再点阿寅** | `enterCooldown` → `root.hidden = true`；hit 上若仍点到会 `if (_cooldown) return`（哑点击）。专用层消失后，点身可能落到 `PointerInteraction` 摸头/点击，或什么都不发生 | 「我点过了、在冷却」vs「这次 Recover 不可用/坏了」——两种心智不同；隐退只覆盖前者的一半（入口没了），**没有**覆盖「再点一下系统仍收到」 | Focusing 触发一次 Recover → 180s 内再点阿寅：**0–1 秒内**应有接收反馈（极轻按压缩放 / 触点残影 / 短提示「还早」等，产品拍板）；**不应**再出 Active Recover toast/`nod-bow`。对照：不要只验「触点消失了」 | 场景 X 步 5b · TRACKER「FB-01」行 |
+
+原则对应：`INTERACTION_FEEDBACK_PRINCIPLES` 规则 2「暂不生效应能感知现在还不行」。**未拍板前不改运行时。**
+
+---
+
 ## 修订
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-14 | follow-up：SB-07 收窄为「专用触点隐退」；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单） |
 | 2026-08-14 | 初版：把场景 B / P / X / Y 等已文档化的有意沉默收成可引用 id |
