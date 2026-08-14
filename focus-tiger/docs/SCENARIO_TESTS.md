@@ -38,7 +38,7 @@
 | **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
 | **P0** | **X** Tiger Anchor **冷却期内再点** | 触点邀请隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本批已落地：微点头（无 toast）；缺口句作废 |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
-| **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 未补句 · 下一刀 |
+| **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**本批补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：develop **无** insight-spark；Daily Card 仍是 Brief 未接线 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
 | **P2** | **G** 语言；**O** 热力图（多为展示）；**V** 吹花（自动 + 点消气泡） | 点击面小或非按钮主路径 | 未补句 |
@@ -490,15 +490,18 @@
 
 > **用户故事**：Kelly 走完一场有头有尾的专注后，想安静回顾——⋯ / 抽屉打开 **Journey log**，见日期+分钟+ arrived & reflected（或缺省降级），不是 Health 同步、不是 Tip 茶室账本。  
 > **单元**：`journeyLogGate.test.js`；orchestration 含 `journey-log`。  
-> **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。  
+> **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；开/关卡 0–1s；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。  
 > **合入**：#205；洞察标记为本支 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
 
 1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。
-2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → `#journey-log` 见新行：日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。
-3. **回流**：刷新后仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
-4. **375**：卡可关、不挡 Sit。
-5. **对照**：Tip Jar `#yin-tip-jar-tea-log` **不得**因本场 Focus 自动多出一杯茶。
-6. **字段 `insightSpark`**：仅当当日 Quiet Line 抽中洞察种子句 **且当场打开过** Quiet Line 时，该条（或同日已有条目被补标）带本地 `insightSpark: true`，行末见安静小符号 `◦`（`[data-testid=journey-log-insight-spark]`）。未打开 Quiet Line、或当日句是经典金句 → **无**符号。旧条目缺该字段 → 降级为无标记。刷新后标记仍在。与徽章 / Tea / Sanctuary **无**联动。
+2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → **0–1 秒内**：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
+3. **回流**：Close / 点外侧 / Esc → **0–1 秒内**：关钮 `:active` 按压 + 卡开始淡出；Idle Sit / ⋯ 或抽屉 grabber **仍可见**。刷新后条目仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
+4. **Compass Reflect**（与场景 Y 交叉）：点 Reflect 芯片 → **0–1 秒内**：芯片 `:active` 按压 + `#five-moments-compass` 收起 + 同一张 `#journey-log` 淡入。
+5. **备份角**（开卡之后；与开卡反馈分开验）：角落备份链 → **0–1 秒内**：链 `:active` 下压 + `#journey-log-backup-panel` 展开或收起。**Send code** → 立刻见 Sending…（`JOURNEY_LOG_BACKUP_STATUS_SENDING`）再变成发到邮箱的说明。**Enable** 成功须换一句可见状态（勿再用同一句 Backup enabled 让人以为没反应）。详测见 TRACKER 练习记忆备份行。
+6. **列表行只读**：点某一天**不会**展开 Daily Card / Save image（Brief `task-journey-daily-card.md` 未接线）。这不是「开卡点了没反应」。
+7. **字段 `insightSpark`**：仅当当日 Quiet Line 抽中洞察种子句 **且当场打开过** Quiet Line 时，该条（或同日已有条目被补标）带本地 `insightSpark: true`，行末见安静小符号 `◦`（`[data-testid=journey-log-insight-spark]`）。未打开 Quiet Line、或当日句是经典金句 → **无**符号。旧条目缺该字段 → 降级为无标记。刷新后标记仍在。与徽章 / Tea / Sanctuary **无**联动。
+8. **375**：卡可关、不挡 Sit。
+9. **对照**：Tip Jar `#yin-tip-jar-tea-log` **不得**因本场 Focus 自动多出一杯茶。
 
 ---
 

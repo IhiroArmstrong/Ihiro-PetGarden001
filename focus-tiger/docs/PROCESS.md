@@ -67,6 +67,7 @@
 - **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · 本支 `feature/quiet-line-insight-spark`）**：经典金句 ∪ **14** 句生产种子（`INSIGHT_1`–`14`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 天气备选仍不上。TRACKER 待人工（375 换行 + 符号）。
 - **GitHub 默认分支改为 `develop`（2026-08-14）**：Cloud / 新 clone / 新 PR 默认 base / Dependabot / `schedule` YAML 均跟 `develop`。`main` 仍是发布线（合入须明确下令）。夜间全量 e2e 不再需要为 cron 把 workflow 同步到 `main`。权威：`ENV_CONFIG.md` §3。
 - **Git 合入与人工测试解耦（2026-08-14）**：任务完成后本机/Cloud 默认 push 旁支 + 开 PR；CI 绿即可合 `develop`；TEST_TRACKER 保持「待人工测试」；口令「批量人工测试」出模块清单；生产 Worker 仍须明确「部署」。权威：`WORKFLOW.md` + `git-agent-commit`。
+- **场景 Z 0–1s（2026-08-14）**：先补开卡句，再补运行时 `:active` 按压（⋯/抽屉 Journey 行、Compass 芯片、关钮/备份链）。列表行只读（Daily Card 未接线）。本支另加静默 `insightSpark` 小符号。S/T/W 仍未补。
 - **FB-01 冷却微点头（2026-08-14）**：冷却期内再点阿寅 → `nodBowMicro`（比完整 nod-bow 幅度更小，无 toast、不延长冷却）。SB-07 = 邀请隐退 + invisible hit 仍在。场景 D 补 Honesty/桥接 0–1s 句。S/T/W/Z 未一次补完。
 - **点击反馈 follow-up（2026-08-14）**：存量 0–1s 补句改优先级表（禁「随改写再补」）；P0 已写 Q/U/X。SB-07 收窄为专用触点隐退；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单）。无运行时。
 - **点击反馈原则 + 沉默白名单（2026-08-14）**：`INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md` 入库；PR 模板 / Cursor 规则须答「点击后 0–1 秒内看到什么」；不在白名单的沉默测试时当 bug。索引 `interaction-feedback`。无运行时改动。

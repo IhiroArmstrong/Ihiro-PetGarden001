@@ -8,7 +8,7 @@ import {
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v3';
+const STYLE_ID = 'ft-wide-idle-more-styles-v4';
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
@@ -732,6 +732,11 @@ export class WideIdleMoreMenu {
   }
 
   _injectStyles() {
+    for (const el of document.querySelectorAll(
+      'style[id^="ft-wide-idle-more-styles"]'
+    )) {
+      if (el.id !== STYLE_ID) el.remove();
+    }
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -889,6 +894,10 @@ export class WideIdleMoreMenu {
         font-weight: 600;
         line-height: 1.35;
         cursor: pointer;
+        transition: transform 120ms ease;
+      }
+      .ft-wide-more__item:active:not(:disabled):not(.is-locked) {
+        transform: translateY(1px) scale(0.98);
       }
       .ft-wide-more__item.is-locked,
       .ft-wide-more__item:disabled {
