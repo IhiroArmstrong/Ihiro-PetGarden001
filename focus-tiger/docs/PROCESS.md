@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-13（UTC+8） · Newsletter Resend 接线
+**最后更新时间**：2026-08-14（UTC+8） · Overlay 体验 Bugs #283
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **体验 Bugs 叠层（2026-08-13 · `fix/ux-overlay-feedback`）**：Journey 备份点选须有发送/开启提示；Enso 缩小约 40% 贴住蒲团；⋯/抽屉去掉与右上重复的三项付费；Five Moments 单行可点跳转；Quiet Line 用动画静帧作底；Stay in touch 强调邮箱可达；仪式 Continue/Leave 同款钮；Sanctuary marks 改右侧。TRACKER 待人工。
+- **体验 Bugs 叠层（2026-08-14 · #283 已合 tip `b027f3d`）**：Journey 备份点选须有发送/开启提示；Enso 缩小约 40% 贴住蒲团；⋯/抽屉去掉与右上重复的三项付费；Five Moments 单行可点跳转；Quiet Line 用动画静帧作底；Stay in touch 强调邮箱可达；仪式 Continue/Leave 同款钮；Sanctuary marks 改右侧。TRACKER 待人工（关单须 tip `b027f3d`）。
 - **Stay in touch · 真实 Resend（2026-08-13 · #280 已合）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
