@@ -17,7 +17,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'five-moments-compass-styles-v2';
+const STYLE_ID = 'five-moments-compass-styles-v3';
 const FADE_MS = 220;
 
 export class FiveMomentsCompassUI {
@@ -203,6 +203,7 @@ export class FiveMomentsCompassUI {
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
     document.getElementById('five-moments-compass-styles-v1')?.remove();
+    document.getElementById('five-moments-compass-styles-v2')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -274,6 +275,10 @@ export class FiveMomentsCompassUI {
         border: ${GLASS_BORDER};
         color: inherit;
         cursor: pointer;
+        transition: transform 120ms ease;
+      }
+      .five-moments-compass__moment:active:not(:disabled) {
+        transform: scale(0.97);
       }
       .five-moments-compass__moment:disabled {
         cursor: default;
@@ -293,6 +298,10 @@ export class FiveMomentsCompassUI {
         font-size: 0.88rem;
         padding: 8px 14px;
         border-radius: 999px;
+        transition: transform 120ms ease;
+      }
+      .five-moments-compass__btn:active {
+        transform: translateY(1px) scale(0.98);
       }
       .five-moments-compass__btn--primary {
         background: #c4a574;
