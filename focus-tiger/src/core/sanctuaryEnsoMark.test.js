@@ -83,7 +83,7 @@ describe('sanctuaryEnsoMark', () => {
     assert.equal(storage.getItem(SANCTUARY_STORAGE_KEY), null);
   });
 
-  it('layout uses ~42% cushion diameter and floors at 44px', () => {
+  it('layout uses ~25% cushion diameter and floors at 44px', () => {
     const wide = layoutSanctuaryEnsoMark({
       left: 100,
       top: 50,
@@ -91,11 +91,10 @@ describe('sanctuaryEnsoMark', () => {
       height: 864
     });
     assert.ok(wide);
-    // cushionDiameter 553 / 1056 * width * 0.42
     const expected = (553 / 1056) * 1056 * ENSO_DIAMETER_FRAC;
     assert.ok(Math.abs(wide.size - expected) < 0.5);
-    assert.ok(wide.size / ((553 / 1056) * 1056) >= 0.38);
-    assert.ok(wide.size / ((553 / 1056) * 1056) <= 0.48);
+    assert.ok(wide.size / ((553 / 1056) * 1056) >= 0.22);
+    assert.ok(wide.size / ((553 / 1056) * 1056) <= 0.28);
 
     const narrow = layoutSanctuaryEnsoMark({
       left: 0,

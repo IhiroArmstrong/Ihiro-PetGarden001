@@ -10,7 +10,7 @@
 
 | 项 | 说明 |
 |---|---|
-| 菜单位置 | Idle ⋯ / 窄屏抽屉，紧邻 **Buy Yin a Tea** 下方 |
+| 菜单位置 | Idle ⋯ / 窄屏抽屉（付费三项已改走右上 Support FAB，不再紧邻 Tea 行） |
 | Stay in touch | 打开 `#newsletter-capture-card`；提交走 `NewsletterProvider` |
 | 提交后 | 菜单行变为 **You're subscribed**（`interactive: false`），不可再开表单 |
 | Join our community | 静态外链（占位 URL，见 `communityLink.js`） |

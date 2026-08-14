@@ -310,14 +310,14 @@
 
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
 
-6. Support 卡 CTA **或** ⋯/抽屉 **Buy Yin a Tea** → `#yin-tip-jar-card`。
+6. Support 卡 CTA → `#yin-tip-jar-card`（⋯ / 抽屉不再列 Buy Yin a Tea）。
 7. Test 卡走 Checkout（约 **US$9.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
 8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。
 9. **禁止**：tip 后出现 Sanctuary 已解锁语义或内容门打开。
 
 ### Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
-10. Support Primary **或** 菜单 **Yin's Sanctuary** → `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
+10. Support Primary → `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
 11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
 12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。
 
@@ -450,7 +450,7 @@
 
 ### Y1 · Compass（B）
 
-1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect + Got it/Close。
+1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect **单行** + Got it/Close。点芯片分别进入 Arrival / Companion / Recover 仪式 / Transition 仪式 / Journey log（未授权仪式则 toast）。
 2. **「?」**：简介含 Moments 链 → **The five moments** → 同卡。
 3. **首卡**：清 `focus-tiger.five-moments-compass-seen.v1` → 冷启动 Idle 约数秒出一次；Skip/Got it 后不再出。
 4. **回流**：关后再开；Rise 后再开。**375**：可滚可关、不挡 Sit。

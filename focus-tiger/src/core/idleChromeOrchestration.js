@@ -395,24 +395,8 @@ export function listSecondaryChromeEntries(surface, visibility) {
     labelKey: 'WALLPAPER_MENU_LABEL'
   });
 
-  // Yin's Sanctuary Lifetime — content unlock (independent of tip jar).
-  out.push({
-    proxy: 'sanctuary',
-    labelKey: 'SANCTUARY_MENU_LABEL'
-  });
-
-  // Yin Membership — subscription unlock (patches entitlement cache; independent of tip).
-  out.push({
-    proxy: 'membership',
-    labelKey: 'MEMBERSHIP_MENU_LABEL'
-  });
-
-  // Tip Jar (Buy Yin a Tea) — gratitude tip; does not unlock content.
-  // Primary UX is situational + About; menu entry is a secondary discoverability path.
-  out.push({
-    proxy: 'tip-jar',
-    labelKey: 'TIP_MENU_LABEL'
-  });
+  // Sanctuary / Membership / Tea live on the top-right Support FAB only
+  // (⋯ / drawer used to duplicate those three pay rows).
 
   // Stay in touch — optional email capture (not an account; no entitlement gate).
   // After submit: confirmation row only (You're subscribed) — not re-openable.
