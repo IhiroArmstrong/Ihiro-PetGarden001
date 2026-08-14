@@ -84,6 +84,11 @@ import {
   shouldOfferFiveMomentsCompassFirstCard
 } from './core/fiveMomentsCompassGate.js';
 import {
+  hasSeenWellnessDisclaimer,
+  markWellnessDisclaimerSeen,
+  shouldOfferWellnessDisclaimerFirstCard
+} from './core/wellnessDisclaimerGate.js';
+import {
   appendJourneyLogEntry,
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
@@ -1914,12 +1919,26 @@ async function init() {
     onOpenFiveMoments: () => {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
+    },
+    onWellnessFirstDismiss: () => {
+      maybeOfferFiveMomentsCompassFirstCard();
     }
   });
   onboardingHintHost.hints = onboardingHints;
   // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
   // same contract as `__ambientSoundscape` / `__honestyBridge`.
   window.__onboardingHints = onboardingHints;
+  window.__wellnessDisclaimer = {
+    hasSeen: () =>
+      hasSeenWellnessDisclaimer(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    markSeen: () =>
+      markWellnessDisclaimerSeen(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    openFirst: () => onboardingHints?.openWellnessFirstCard?.()
+  };
 
   // Reminder / companion e2e hooks — must work in `vite preview` (DEV=false),
   // same contract as `__honestyBridge`.
@@ -2217,6 +2236,7 @@ async function init() {
     onboardingHints?.markSeen('dormant-open');
     onboardingHints?.markSeen('honesty-optional');
     arrivalPractice.start();
+    onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
     resyncSessionChrome();
     syncHonestyIdleEntry();
     syncOnboardingAutoHints();
@@ -2758,11 +2778,47 @@ async function init() {
   syncHonestyIdleEntry();
   syncOnboardingAutoHints();
 
+  let wellnessFirstConsumedThisPage = false;
+
+  function maybeOfferWellnessDisclaimerFirstCard() {
+    if (!productChrome) return false;
+    if (onboardingHints?.isWellnessFirstCardOpen?.()) return true;
+    if (wellnessFirstConsumedThisPage) return false;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (
+      !shouldOfferWellnessDisclaimerFirstCard(storage, location.search)
+    ) {
+      return false;
+    }
+    if (stateManager.state !== STATES.IDLE) return false;
+    if (isSceneAnimOverlayBusy()) return false;
+    if (flowerBlowWelcomeBubble?.isOpen?.()) return false;
+    if (fiveMomentsCompassUI.isOpen()) return false;
+    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
+      return false;
+    }
+    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+      return false;
+    }
+    closeGrowthOverlayCards();
+    onboardingHints?.openWellnessFirstCard();
+    wellnessFirstConsumedThisPage = true;
+    return true;
+  }
+
   function maybeOfferFiveMomentsCompassFirstCard() {
     if (!productChrome) return;
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (!shouldOfferFiveMomentsCompassFirstCard(storage)) return;
+    if (onboardingHints?.isWellnessFirstCardOpen?.()) return;
+    if (
+      !wellnessFirstConsumedThisPage &&
+      shouldOfferWellnessDisclaimerFirstCard(storage, location.search)
+    ) {
+      return;
+    }
     if (stateManager.state !== STATES.IDLE) return;
     if (isSceneAnimOverlayBusy()) return;
     if (fiveMomentsCompassUI.isOpen()) return;
@@ -2776,9 +2832,15 @@ async function init() {
     fiveMomentsCompassUI.open({ firstRun: true });
   }
 
-  // Quiet Idle first-run: after welcome settle, once. Skip/Got it marks seen.
+  // Quiet Idle first-run: wellness disclaimer first (compliance), then Compass.
+  // Wait out flower-welcome bubble; retry a few times so Day1 吹花 does not stack.
   if (productChrome) {
-    window.setTimeout(() => maybeOfferFiveMomentsCompassFirstCard(), 4500);
+    for (const ms of [3600, 4800, 6400, 8200, 11000]) {
+      window.setTimeout(() => {
+        if (maybeOfferWellnessDisclaimerFirstCard()) return;
+        maybeOfferFiveMomentsCompassFirstCard();
+      }, ms);
+    }
   }
 
   // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
@@ -3157,7 +3219,10 @@ async function init() {
   stateManager.onChange(() => {
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
-      window.setTimeout(() => maybeOfferFiveMomentsCompassFirstCard(), 900);
+      window.setTimeout(() => {
+        if (maybeOfferWellnessDisclaimerFirstCard()) return;
+        maybeOfferFiveMomentsCompassFirstCard();
+      }, 900);
       // Practice-memory backup: Idle flush (debounced / min-gap still apply).
       schedulePracticeBackupUpload({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,

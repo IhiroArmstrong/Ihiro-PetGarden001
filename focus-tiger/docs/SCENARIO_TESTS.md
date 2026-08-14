@@ -21,7 +21,7 @@
   - `e2e/micro-ritual.spec.js` — **S** Breath / 微仪式主路径 / Leave 不记账 / 桥接叠层隐藏入口
   - `e2e/honesty-bridge-real-path.spec.js` — **真实** Honesty 补登→桥接 Yes→Arrival / No→Idle（`?honestyBreathMs=`；**非**注入）
   - `e2e/flower-welcome.spec.js` — **V** Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗
-  - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 行 + Focusing/? 主条契约（不全覆盖 W 观感）
+  - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 交叉引用 + `?wellnessFirst=1` 首开卡 + Focusing/? 主条契约（不全覆盖 W 观感）
   - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
@@ -38,7 +38,7 @@
 | **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
 | **P0** | **X** Tiger Anchor **冷却期内再点** | 触点邀请隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本批已落地：微点头（无 toast）；缺口句作废 |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
-| **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**本批补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：develop **无** insight-spark；Daily Card 仍是 Brief 未接线 |
+| **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**#291 补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：#292 已合 insight-spark；Daily Card 仍是 Brief 未接线 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
 | **P2** | **G** 语言；**O** 热力图（多为展示）；**V** 吹花（自动 + 点消气泡） | 点击面小或非按钮主路径 | 未补句 |
@@ -425,19 +425,20 @@
 
 ---
 
-## 场景 W：点「?」· 产品简介与 Privacy
+## 场景 W：点「?」· 产品简介、Privacy 与 Wellness 免责
 
-> **用户故事**：Kelly 点「?」只想看 App 是干什么的、隐私怎么说——见简介（no pressure / no ads / local-first），再点 **Privacy** 读本地优先说明，Back 回简介。  
-> **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy 行；单元 `privacyNoticeCopy.test.js`。  
-> **仍须人工**：375 Sheet 可滚、可关；Rise 后再走一遍；**禁止**简介/隐私承诺具名云保管同步。  
+> **用户故事**：Kelly 首次打开产品须**被动看到一次**「不是诊疗」声明（Got it 即过）；之后点「?」仍可查阅简介（no pressure / no ads / local-first）与同一免责，再点 **Privacy** 读本地优先说明（含交叉引用），Back 回简介。  
+> **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy / first-run 行；单元 `privacyNoticeCopy.test.js`、`wellnessDisclaimerGate.test.js`。  
+> **仍须人工**：375 首卡与 Sheet 可滚、可关；Rise 后再走一遍「?」；**禁止**简介/隐私承诺具名云保管同步。  
 > **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。
 
-1. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句。
-2. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思。
-3. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
-4. **Back** → 回简介 → Got it 关闭。
-5. **回流**：Rise 后再点 ? → Privacy → Back。
-6. **375**：同路径；Sheet 不挡到无法关。
+1. **首开（显著）**：清 `focus-tiger.wellness-disclaimer-seen.v1`（或 `?wellnessFirst=1&flowerWelcome=0`）→ Idle 见 `#onboarding-wellness-first`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent）→ **Got it** 关闭；再刷不得再出。
+2. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句；**须见**免责区块 `.onboarding-app-purpose__wellness`（日语切语后见「心理療法・医療ではありません」）。
+3. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；见 wellness 交叉引用 → 点链回简介免责区块。
+4. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
+5. **Back** → 回简介 → Got it 关闭。
+6. **回流**：Rise 后再点 ? → Privacy → Back。
+7. **375**：同路径；首卡 / Sheet 不挡到无法关。
 
 ---
 
@@ -491,7 +492,7 @@
 > **用户故事**：Kelly 走完一场有头有尾的专注后，想安静回顾——⋯ / 抽屉打开 **Journey log**，见日期+分钟+ arrived & reflected（或缺省降级），不是 Health 同步、不是 Tip 茶室账本。  
 > **单元**：`journeyLogGate.test.js`；orchestration 含 `journey-log`。  
 > **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；开/关卡 0–1s；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。  
-> **合入**：#205；洞察标记为本支 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
+> **合入**：#205；洞察标记 #292 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
 
 1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。
 2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → **0–1 秒内**：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
@@ -524,7 +525,7 @@
 | **T** | Companion 后 Focus 时长 chip 15/25/45/60 | **已升格** → 见上文「场景 T」；无 query 路径须人工 |
 | **U** | Zen Cinema / Quiet Line / Wallpapers 礼物菜单 | **已升格** → 见上文「场景 U」 |
 | **V** | Day1/久别变花欢迎 + 气泡 | **已升格** → 见上文「场景 V」；`flower-welcome` e2e |
-| **W** | 「?」简介 + Privacy sheet（可链 Compass） | **已升格** → 见上文「场景 W」 |
+| **W** | 「?」简介 + Privacy + Wellness 首开声明 | **已升格** → 见上文「场景 W」 |
 | **X** | Focusing Tiger Anchor 主动 Recover（180s 冷却；不占被动额度） | **已升格** → 见上文「场景 X」；#199 |
 | **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
 | **Z** | Journey Log 本地留痕（≠ HealthKit / ≠ Tea Log） | **已升格** → 见上文「场景 Z」；#205 |

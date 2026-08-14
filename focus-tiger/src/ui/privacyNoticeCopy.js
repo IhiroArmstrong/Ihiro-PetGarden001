@@ -29,7 +29,16 @@ export function privacyCopyMentionsForbiddenCloudBrand(text) {
  */
 export function findPrivacyKeysWithForbiddenCloudBrand(
   localeMap,
-  keys = [...PRIVACY_SHEET_BODY_KEYS, 'HINT_APP_PURPOSE_BODY', 'PRIVACY_SHEET_TITLE']
+  keys = [
+    ...PRIVACY_SHEET_BODY_KEYS,
+    'HINT_APP_PURPOSE_BODY',
+    'HINT_APP_PURPOSE_WELLNESS_TITLE',
+    'HINT_APP_PURPOSE_WELLNESS_BODY',
+    'PRIVACY_SHEET_WELLNESS_NOTE',
+    'PRIVACY_SHEET_WELLNESS_LINK',
+    'PRIVACY_SHEET_WELLNESS_LINK_ARIA',
+    'PRIVACY_SHEET_TITLE'
+  ]
 ) {
   const bad = [];
   for (const key of keys) {

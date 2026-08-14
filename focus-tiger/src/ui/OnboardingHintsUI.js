@@ -2,11 +2,16 @@
  * Hint 产品面（2026-08-04 收窄）：只保留两件事——
  * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
  * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
+ *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`）
+ * 冷启动另有一次性 `#onboarding-wellness-first`（Got it），不替代「?」查阅。
  * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
  * @see ONBOARDING_HINTS.md
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  markWellnessDisclaimerSeen
+} from '../core/wellnessDisclaimerGate.js';
 import {
   HINT_LOCALE_KEYS,
   createHintsSeenStore
@@ -368,18 +373,26 @@ export class OnboardingHintsUI {
    * @param {ReturnType<typeof createHintsSeenStore>} [options.store]
    * @param {() => object} [options.getScene]
    * @param {() => void} [options.onOpenFiveMoments]
+   * @param {() => void} [options.onWellnessFirstDismiss]
+   * @param {Storage | null} [options.storage]
    */
   constructor(
     mountRoot,
     {
       store = createHintsSeenStore(),
       getScene = () => ({}),
-      onOpenFiveMoments = null
+      onOpenFiveMoments = null,
+      onWellnessFirstDismiss = null,
+      storage = null
     } = {}
   ) {
     this.store = store;
     this.getScene = getScene;
     this.onOpenFiveMoments = onOpenFiveMoments;
+    this.onWellnessFirstDismiss = onWellnessFirstDismiss;
+    this._storage =
+      storage ??
+      (typeof localStorage !== 'undefined' ? localStorage : null);
     this.mountRoot = mountRoot;
     /** @type {Map<string, import('./ft-onboarding-hint-bubble.js').FtOnboardingHintBubble>} */
     this._bubbles = new Map();
@@ -409,6 +422,8 @@ export class OnboardingHintsUI {
     this._paintMeta = new Map();
     /** @type {HTMLElement | null} */
     this.purposeCard = null;
+    /** @type {HTMLElement | null} */
+    this.wellnessFirstCard = null;
     /** Purpose card opened by ? hover (leave ? / card → hide). Click pins until dismiss. */
     this._purposeFromHover = false;
     /** @type {ReturnType<typeof setTimeout> | null} */
@@ -448,6 +463,7 @@ export class OnboardingHintsUI {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
       this._refreshPurposeCardCopy();
       this._refreshPrivacySheetCopy();
+      this._refreshWellnessFirstCardCopy();
       for (const hintId of this._visibleIds) {
         const meta = this._paintMeta.get(hintId) || { remedy: false, anchorNearHelp: false };
         this._paint(hintId, meta);
@@ -460,12 +476,17 @@ export class OnboardingHintsUI {
 
     // 产品简介卡：点框外空白收起（不再有补救 tip 喷洒）
     this._onDocPointer = (event) => {
-      const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
-      if (!purposeOpen) return;
       const el = /** @type {Element | null} */ (
         event.target instanceof Element ? event.target : event.target?.parentElement
       );
       if (!el) return;
+      if (this.isWellnessFirstCardOpen()) {
+        if (this.wellnessFirstCard?.contains(el)) return;
+        this.hideWellnessFirstCard({ markSeen: true, notify: true });
+        return;
+      }
+      const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
+      if (!purposeOpen) return;
       if (this.helpBtn.contains(el)) return;
       if (el.closest('#ft-narrow-help-btn')) return;
       if (this.purposeCard?.contains(el)) return;
@@ -1701,6 +1722,18 @@ export class OnboardingHintsUI {
     const body = document.createElement('p');
     body.className = 'onboarding-app-purpose__body';
 
+    const wellness = document.createElement('div');
+    wellness.className = 'onboarding-app-purpose__wellness';
+    wellness.dataset.testid = 'onboarding-purpose-wellness';
+
+    const wellnessTitle = document.createElement('h3');
+    wellnessTitle.className = 'onboarding-app-purpose__wellness-title';
+
+    const wellnessBody = document.createElement('p');
+    wellnessBody.className = 'onboarding-app-purpose__wellness-body';
+
+    wellness.append(wellnessTitle, wellnessBody);
+
     const actions = document.createElement('div');
     actions.className = 'onboarding-app-purpose__actions';
 
@@ -1733,11 +1766,13 @@ export class OnboardingHintsUI {
     });
 
     actions.append(moments, privacy, dismiss);
-    card.append(title, body, actions);
+    card.append(title, body, wellness, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
     this._purposeBodyEl = body;
+    this._purposeWellnessTitleEl = wellnessTitle;
+    this._purposeWellnessBodyEl = wellnessBody;
     this._purposeMomentsEl = moments;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
@@ -1749,6 +1784,16 @@ export class OnboardingHintsUI {
     if (!this.purposeCard) return;
     this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
     this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
+    if (this._purposeWellnessTitleEl) {
+      this._purposeWellnessTitleEl.textContent = t(
+        'HINT_APP_PURPOSE_WELLNESS_TITLE'
+      );
+    }
+    if (this._purposeWellnessBodyEl) {
+      this._purposeWellnessBodyEl.textContent = t(
+        'HINT_APP_PURPOSE_WELLNESS_BODY'
+      );
+    }
     if (this._purposeMomentsEl) {
       this._purposeMomentsEl.textContent = t('HINT_APP_PURPOSE_MOMENTS');
       this._purposeMomentsEl.setAttribute(
@@ -1827,6 +1872,20 @@ export class OnboardingHintsUI {
     optInLabel.append(optInCheck, optInText);
     optIn.append(optInLabel, optInHint);
 
+    const wellnessNote = document.createElement('p');
+    wellnessNote.className = 'onboarding-privacy-sheet__wellness-note';
+    wellnessNote.dataset.privacyKey = 'PRIVACY_SHEET_WELLNESS_NOTE';
+
+    const wellnessLink = document.createElement('button');
+    wellnessLink.type = 'button';
+    wellnessLink.className = 'onboarding-privacy-sheet__wellness-link';
+    wellnessLink.dataset.testid = 'privacy-wellness-link';
+    wellnessLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._closePrivacySheetToPurpose();
+    });
+
     const back = document.createElement('button');
     back.type = 'button';
     back.className = 'onboarding-privacy-sheet__back';
@@ -1836,7 +1895,7 @@ export class OnboardingHintsUI {
       this._closePrivacySheetToPurpose();
     });
 
-    sheet.append(title, body, optIn, back);
+    sheet.append(title, body, wellnessNote, wellnessLink, optIn, back);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
@@ -1846,6 +1905,8 @@ export class OnboardingHintsUI {
     this._privacyOptInCheck = optInCheck;
     this._privacyOptInText = optInText;
     this._privacyOptInHint = optInHint;
+    this._privacyWellnessNoteEl = wellnessNote;
+    this._privacyWellnessLinkEl = wellnessLink;
     this._refreshPrivacySheetCopy();
     return sheet;
   }
@@ -1876,6 +1937,16 @@ export class OnboardingHintsUI {
       if (key) p.textContent = t(key);
     }
     this._refreshPrivacyOptInCopy();
+    if (this._privacyWellnessNoteEl) {
+      this._privacyWellnessNoteEl.textContent = t('PRIVACY_SHEET_WELLNESS_NOTE');
+    }
+    if (this._privacyWellnessLinkEl) {
+      this._privacyWellnessLinkEl.textContent = t('PRIVACY_SHEET_WELLNESS_LINK');
+      this._privacyWellnessLinkEl.setAttribute(
+        'aria-label',
+        t('PRIVACY_SHEET_WELLNESS_LINK_ARIA')
+      );
+    }
   }
 
   _openPrivacySheetFromPurpose() {
@@ -1907,11 +1978,13 @@ export class OnboardingHintsUI {
 
   _showPurposeCard() {
     this._hidePrivacySheet();
+    this.hideWellnessFirstCard({ markSeen: true, notify: false });
     this._ensurePurposeCard();
     this._refreshPurposeCardCopy();
     this.purposeCard.hidden = false;
     this._bindPurposeCardHoverLeave();
     this._positionPurposeCard();
+    markWellnessDisclaimerSeen(this._storage);
   }
 
   _hidePurposeCard() {
@@ -1919,6 +1992,83 @@ export class OnboardingHintsUI {
     if (this.purposeCard) this.purposeCard.hidden = true;
     this._purposeFromHover = false;
     this._hidePrivacySheet();
+  }
+
+  /** @returns {boolean} */
+  isWellnessFirstCardOpen() {
+    return Boolean(this.wellnessFirstCard && !this.wellnessFirstCard.hidden);
+  }
+
+  /**
+   * One-shot cold-start card (Got it). Does not replace the ? lookup card.
+   */
+  openWellnessFirstCard() {
+    this._hidePurposeCard();
+    this._ensureWellnessFirstCard();
+    this._refreshWellnessFirstCardCopy();
+    this.wellnessFirstCard.hidden = false;
+    try {
+      this._wellnessFirstDismissEl?.focus({ preventScroll: true });
+    } catch {
+      // ignore
+    }
+  }
+
+  /**
+   * @param {{ markSeen?: boolean, notify?: boolean }} [opts]
+   */
+  hideWellnessFirstCard(opts = {}) {
+    const markSeen = opts.markSeen !== false;
+    const notify = opts.notify !== false;
+    const wasOpen = this.isWellnessFirstCardOpen();
+    if (this.wellnessFirstCard) this.wellnessFirstCard.hidden = true;
+    if (markSeen) markWellnessDisclaimerSeen(this._storage);
+    if (notify && wasOpen) this.onWellnessFirstDismiss?.();
+  }
+
+  _ensureWellnessFirstCard() {
+    if (this.wellnessFirstCard) return this.wellnessFirstCard;
+    const card = document.createElement('aside');
+    card.id = 'onboarding-wellness-first';
+    card.className = 'onboarding-wellness-first';
+    card.hidden = true;
+    card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-modal', 'true');
+    card.setAttribute('aria-labelledby', 'onboarding-wellness-first-title');
+    card.dataset.testid = 'onboarding-wellness-first';
+
+    const title = document.createElement('h2');
+    title.id = 'onboarding-wellness-first-title';
+    title.className = 'onboarding-wellness-first__title';
+
+    const body = document.createElement('p');
+    body.className = 'onboarding-wellness-first__body';
+
+    const dismiss = document.createElement('button');
+    dismiss.type = 'button';
+    dismiss.className = 'onboarding-wellness-first__dismiss';
+    dismiss.dataset.testid = 'onboarding-wellness-first-got-it';
+    dismiss.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.hideWellnessFirstCard({ markSeen: true, notify: true });
+    });
+
+    card.append(title, body, dismiss);
+    this.mountRoot.appendChild(card);
+    this.wellnessFirstCard = card;
+    this._wellnessFirstTitleEl = title;
+    this._wellnessFirstBodyEl = body;
+    this._wellnessFirstDismissEl = dismiss;
+    this._refreshWellnessFirstCardCopy();
+    return card;
+  }
+
+  _refreshWellnessFirstCardCopy() {
+    if (!this.wellnessFirstCard) return;
+    this._wellnessFirstTitleEl.textContent = t('HINT_APP_PURPOSE_WELLNESS_TITLE');
+    this._wellnessFirstBodyEl.textContent = t('HINT_APP_PURPOSE_WELLNESS_BODY');
+    this._wellnessFirstDismissEl.textContent = t('HINT_APP_PURPOSE_DISMISS');
   }
 
   /** When purpose was opened by ? hover, leaving the card hides it (after grace). */
@@ -2110,6 +2260,8 @@ export class OnboardingHintsUI {
         color: #3a5348;
         font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
         pointer-events: auto;
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
       }
       .onboarding-app-purpose[hidden] {
         display: none !important;
@@ -2159,6 +2311,29 @@ export class OnboardingHintsUI {
         line-height: 1.5;
         color: #3a5348;
         white-space: pre-line;
+      }
+      .onboarding-app-purpose__wellness {
+        margin: 0 0 12px;
+        padding: 10px 10px 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(92, 122, 108, 0.32);
+        background: rgba(255, 255, 255, 0.42);
+      }
+      .onboarding-app-purpose__wellness-title {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: 0.02em;
+        color: #2f463c;
+      }
+      .onboarding-app-purpose__wellness-body {
+        margin: 0;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.45;
+        color: #3a5348;
       }
       .onboarding-app-purpose__actions {
         display: flex;
@@ -2214,6 +2389,59 @@ export class OnboardingHintsUI {
         cursor: pointer;
       }
       .onboarding-app-purpose__dismiss:hover {
+        background: rgba(255, 255, 255, 0.8);
+      }
+      .onboarding-wellness-first {
+        position: fixed;
+        z-index: 29;
+        box-sizing: border-box;
+        width: min(360px, calc(100vw - 24px));
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
+        padding: 16px 18px 14px;
+        border-radius: 16px;
+        border: 1.5px solid rgba(92, 122, 108, 0.5);
+        background: linear-gradient(165deg, #eef6f1 0%, #d4e6db 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 10px 28px rgba(40, 64, 52, 0.16);
+        color: #3a5348;
+        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
+        pointer-events: auto;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .onboarding-wellness-first[hidden] {
+        display: none !important;
+      }
+      .onboarding-wellness-first__title {
+        margin: 0 0 8px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #2f463c;
+      }
+      .onboarding-wellness-first__body {
+        margin: 0 0 14px;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #3a5348;
+      }
+      .onboarding-wellness-first__dismiss {
+        display: inline-block;
+        margin: 0 0 0 auto;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(92, 122, 108, 0.45);
+        background: rgba(255, 255, 255, 0.55);
+        color: #2f463c;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .onboarding-wellness-first__dismiss:hover {
         background: rgba(255, 255, 255, 0.8);
       }
       .onboarding-privacy-sheet {
@@ -2305,6 +2533,30 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet__back:hover {
         background: rgba(255, 255, 255, 0.8);
+      }
+      .onboarding-privacy-sheet__wellness-note {
+        margin: 0;
+        font-size: 12.5px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: #2f463c;
+      }
+      .onboarding-privacy-sheet__wellness-link {
+        margin: 0;
+        padding: 0;
+        align-self: flex-start;
+        border: none;
+        background: transparent;
+        color: #3a5348;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        cursor: pointer;
+      }
+      .onboarding-privacy-sheet__wellness-link:hover {
+        color: #2f463c;
       }
       .ft-hint-discovery-dot {
         position: absolute;

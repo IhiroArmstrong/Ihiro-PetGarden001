@@ -62,6 +62,18 @@ test.describe('wide ? purpose only', () => {
     await expect(page.locator('.onboarding-app-purpose__body')).toContainText(
       /no ads|No pressure/i
     );
+    await expect(
+      page.locator('[data-testid="onboarding-purpose-wellness"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('.onboarding-app-purpose__wellness-title')
+    ).toContainText(/Not therapy or medical care/i);
+    await expect(
+      page.locator('.onboarding-app-purpose__wellness-body')
+    ).toContainText(/not a medical device|counselor|therapist/i);
+    await expect(
+      page.locator('.onboarding-app-purpose__wellness-body')
+    ).toContainText(/diagnose, treat, cure, or prevent/i);
     await page.locator('.onboarding-app-purpose__privacy').click();
     await expect(
       page.locator('#onboarding-privacy-sheet:not([hidden])')
@@ -70,10 +82,44 @@ test.describe('wide ? purpose only', () => {
     await expect(page.locator('#onboarding-privacy-sheet')).toContainText(
       /on your device|do not sell/i
     );
+    await expect(
+      page.locator('[data-testid="privacy-wellness-link"]')
+    ).toBeVisible();
+    await page.locator('[data-testid="privacy-wellness-link"]').click();
+    await expect(purposeCardVisible(page)).toBeVisible({ timeout: 5_000 });
+    await expect(
+      page.locator('[data-testid="onboarding-purpose-wellness"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('#onboarding-privacy-sheet:not([hidden])')
+    ).toHaveCount(0);
+    await page.locator('.onboarding-app-purpose__privacy').click();
     await page.locator('.onboarding-privacy-sheet__back').click();
     await expect(purposeCardVisible(page)).toBeVisible({ timeout: 5_000 });
     await expect(
       page.locator('#onboarding-privacy-sheet:not([hidden])')
+    ).toHaveCount(0);
+  });
+});
+
+test.describe('wellness first-run card', () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+
+  test('?wellnessFirst=1 shows the Got it card once', async ({ page }) => {
+    await openFreshProductShell(page, {
+      query: { wellnessFirst: 1, flowerWelcome: 0 }
+    });
+    const first = page.locator('#onboarding-wellness-first:not([hidden])');
+    await expect(first).toBeVisible({ timeout: 15_000 });
+    await expect(first.locator('.onboarding-wellness-first__title')).toContainText(
+      /Not therapy or medical care/i
+    );
+    await expect(first.locator('.onboarding-wellness-first__body')).toContainText(
+      /diagnose, treat, cure, or prevent/i
+    );
+    await page.locator('[data-testid="onboarding-wellness-first-got-it"]').click();
+    await expect(
+      page.locator('#onboarding-wellness-first:not([hidden])')
     ).toHaveCount(0);
   });
 });
@@ -89,6 +135,9 @@ test.describe('narrow ? purpose only', () => {
 
     await expect(purposeCardVisible(page)).toBeVisible({ timeout: 8_000 });
     expect(await remedyTipCount(page)).toBe(0);
+    await expect(
+      page.locator('[data-testid="onboarding-purpose-wellness"]')
+    ).toBeVisible();
     await expect(
       page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
     ).toHaveCount(0);

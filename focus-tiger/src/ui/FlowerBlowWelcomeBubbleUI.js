@@ -62,6 +62,11 @@ export class FlowerBlowWelcomeBubbleUI {
     this._visible = false;
   }
 
+  /** @returns {boolean} */
+  isOpen() {
+    return this._visible === true;
+  }
+
   /**
    * @param {Array<string | { text: string, role?: string }>} lines
    * @param {{ holdMs?: number, onHidden?: () => void }} [opts]

@@ -397,6 +397,7 @@ export class ImmersivePresenceUI {
       body.ft-immersive-presence .ft-hint-discovery-dot,
       body.ft-immersive-presence .ft-hint-catalog-chip,
       body.ft-immersive-presence #onboarding-privacy-sheet,
+      body.ft-immersive-presence #onboarding-wellness-first,
       body.ft-immersive-presence .onboarding-app-purpose,
       body.ft-immersive-presence #weekly-practice-heatmap,
       body.ft-immersive-presence #flower-blow-welcome-bubble,
