@@ -67,7 +67,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 3. **一 worktree ↔ 一分支 ↔ 一主任务**：新建任务默认 `git worktree add -b feature/<topic>|<fix>/<topic>|<chore>/<topic> <并列目录> <基线>`；基线通常为 `develop` tip，拆分/续作已有主题时用该主题分支 tip。目录与主仓**并列**（如 `../Zen-tiger-Pet-garden001-wt-<short>`），不要塞进主仓内部。  
 3a. **合入受阻 / 多文件冲突**：涉及 merge 冲突、CI 红且预计 ≥3 文件或多轮试错时，**先**摘要冲突类型并问是否新开 worktree/分支；**禁止**在原共用目录反复本地长验证。本地最多 1 轮冒烟级自检，最终交给 push + CI（细则：`RULES_INDEX` → `agent-token-cost` 第 6 条）。  
 4. **禁止两 worktree 同时检出同一分支**（Git 硬限制）；共享契约文件（如 `TEST_TRACKER.md`、`PROCESS.md`、locale 大文件）同一时间只允许一个会话改。  
-5. **合回主线**：功能分支经 PR（或团队约定的本地 merge）进入 `develop`——**须先满足**下文「feature/fix 合入 develop 前：worktree 预览确认」；`main` 仍只走 PR + 负责人网页合并（见合并门禁）。push 仍须用户明确授权。  
+5. **合回主线**：功能分支经 PR 进入 `develop`——合入资格见下文「合入 develop：CI 绿即可合并」；研发自检 / 主干同步见「feature/fix 合入 develop：研发自检 + 主干同步」。`main` 仍只走 PR + 负责人网页合并（见合并门禁）。任务完成后默认 **push 旁支 + 开 PR**（见 `git-agent-commit`）；**禁止**直推 `develop`/`main`。  
 6. **结束后清理（目录拆除 · 高风险 · 须口令）**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
    - **禁止** Agent 静默 `worktree remove` / 按「看起来没人用」推断拆盘。  
    - **口令**「请清理闲置 worktree」（或同等）：Agent **只读**跑 `cd focus-tiger && npm run check:worktree-hygiene`，把输出做成候选清单贴进「待你决定」；**仅** `propose_remove` 档可建议拆除；`report_only` / `primary` **只汇报、不提议**。  
@@ -153,28 +153,25 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 2. 按「Lab 先行 → 切片可验收 → 优先级门闩 → Feature Flag 回退正式默认路径」落地；  
 3. **禁止**把降险话术读成「可跳过 Dispatcher / 可先挂产品钩子再补动画 / 可另造简化兜底」。
 
-与本文件其它节的关系：worktree / 合前预览管**写盘与合入节奏**；Playbook 管**架构纪律下的降险手法**——二者叠加。
+与本文件其它节的关系：worktree / 合入前同步管**写盘与血统**；Playbook 管**架构纪律下的降险手法**——二者叠加。合入资格（CI 绿）见下一节 `git-develop-small-pr-run-merge`。
 
-### feature/fix 合入 develop 前：worktree 预览确认（强制）
+### feature/fix 合入 develop：研发自检 + 主干同步（非人工关单）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-feature-merge-preview`）。  
-> 与「并行 worktree / 占用锁」互补：那些管**写盘隔离**；本条管 **合进 `develop` 之前**须在隔离分支上测过、确认没问题。  
-> 与 `qa-develop-tip`（关单只认 `origin/develop` tip）**并列、不互相替代**——见下文「两层验收」。
+> 与「并行 worktree / 占用锁」互补：那些管**写盘隔离**；本条管 **合进 `develop` 之前** Agent 须完成的**研发自检**与 **develop 血统同步**。  
+> **人工测试不是合入门闩**（2026-08-14 拍板）：用户 Safari 预览 / TEST_TRACKER 关单与「能不能合进 `develop`」解耦。合入资格见下一节。与 `qa-develop-tip` **并列、不互相替代**——见下文「两层验收」。
 
 #### 硬规则
 
-1. **先测后合**：`feature/*` / `fix/*`（及同类短命支）须在其 **worktree / 分支 tip** 上完成预览或等价自检，**用户（或任务书指定验收人）确认没问题之后**，再开 PR / 合并进 `develop`。  
-2. **禁止先合再测当默认路径**：不得把「先 merge 进 develop，再在 develop 上才第一次给人预览」当成常规流程。  
-3. **推荐动作顺序**：在 feature worktree 起 Vite（或等价预览）→ 提供本地 URL（Safari）→ 确认 → **再**决定 push / 开 PR / 合入。Agent **不得**在未经确认时擅自合并进 `develop`。
+1. **研发冒烟自检（非人工关单）**：`feature/*` / `fix/*`（及同类短命支）在 push / 开 PR 前，Agent 须按 regression-lock 跑完本地冒烟（`test:smoke` / `test:e2e:smoke` 或 `test:pr-smoke`，触及面按完工门禁）。这是**工程自检**，**不等**用户确认「测过了」才开 PR。  
+2. **合入门闩 = CI 绿**：Required checks 通过即可合入 `develop`。**禁止**把「待人工测试」或「等你 Safari 预览」写成合入阻塞。关单级人工测试默认在合入之后、对 `origin/develop` tip 批量进行（见 `TEST_TRACKER` / `qa-batch-human-test`）。  
+3. **推荐动作顺序**：旁支上完成改动 → 本地冒烟 → commit → **默认** push 旁支 + 开 `--base develop` 的 PR → CI 绿后合并（见下一节）。需要看产品壳时，Agent 仍可起 Vite 并给本地 URL（Safari），但**不**把「等你点确认」当成开 PR / 合入的前置。
 
 #### 为什么（develop-integrity）
 
-目标：**保护 `develop` 的主干完整性（develop-integrity）**——日常集成分支应尽量保持可继续开发、可开 PR 往 `main` 走的状态，不把「未在隔离支上确认过」的改动默认冲进主干。
+目标：**保护 `develop` 的主干完整性（develop-integrity）**——日常集成分支应保持 **CI 可绿、可继续开发、可开 PR 往 `main` 走**。完整性靠 **Required checks + 血统同步**，不靠「先等人工测完再合」。
 
-| 先合再测的代价 | 先测后合 |
-|---|---|
-| `develop` 上出现坏 commit → 往往要 revert；并行分支（例：同时存活的 hints 簇）若已基于坏 tip 继续开发，revert 会牵连它们 | 最坏是本 feature 分支作废或重开，**对 `develop` 零影响** |
-| 他人（或下次新 worktree）从 `develop` 切出即带着坑 | 隔离性价值：坑留在短命支上 |
+人工测试仍有价值（观感、Safari、故事矩阵），但它是 **关单 / 「已修复」话术** 的门闩，不是合入 `develop` 的门闩。合入后若发现回归，用 `fix/*` + PR 修，而不是把未测代码长期堆在仅本地的旁支上。
 
 > **词义澄清（强制）**：此处 **develop-integrity（主干完整性）≠** `.ft-session-lock` 的 `occupancy: "releasable"`（会话锁「可被下一任务接管」）。二者字面都可能被口语说成「releasable」，**禁止混用**：谈合入纪律用 **develop-integrity**；谈占用锁仍只用 `occupancy` 枚举值 `releasable`。
 
@@ -182,10 +179,10 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 
 | 层 | 何时 | 基线 | 作用 |
 |---|---|---|---|
-| **合前预览确认**（本条） | **合并进 `develop` 之前** | 当前 `feature/*` / `fix/*` worktree tip + 端口 | 决定「能不能合进主干」；失败 → 不合 / 继续修 |
-| **关单级人工验收**（`qa-develop-tip`） | **已合入 `develop` 之后** | **仅**当时 `origin/develop` tip | 决定 TEST_TRACKER 能否标「已通过」/ 关闭「有问题」 |
+| **合入门闩**（CI + 本条同步判定） | **合并进 `develop` 时** | PR head；Required checks 全绿 | 决定「能不能合进主干」；**不等**人工测试 |
+| **关单级人工验收**（`qa-develop-tip`） | **已合入 `develop` 之后**（可批量） | **仅**当时 `origin/develop` tip | 决定 TEST_TRACKER 能否标「已通过」/ 关闭「有问题」；决定能否声称「已修复」 |
 
-**禁止**把「关单只认 develop tip」读成「所以应该先合再测才算正式」。合前预览是 **合入门闩**；合后 tip 验收是 **关单门闩**。feature 上的试跑仍 **不得**单独当作关单证据（见 `TEST_TRACKER.md`）。
+关单只认 develop tip，因此 **关单级人工测试的默认路径就是先合再测**。feature 上的试跑仍 **不得**单独当作关单证据（见 `TEST_TRACKER.md`）。**禁止**把「已合入 develop」写成「已验证 / 已修复」。
 
 #### 合入前是否须同步（rebase/merge）`develop`——可执行判断
 
@@ -208,8 +205,8 @@ comm -12 /tmp/ft-ours.txt /tmp/ft-theirs.txt
 
 | 判定 | 条件 | 动作 |
 |---|---|---|
-| **可直接推进合入流程**（就同步而言） | `git log -1 HEAD..origin/develop` **为空**（develop 无本支缺少的提交） | 无需为「跟上 develop」而 rebase；仍须完成本条的预览确认 |
-| **必须先 rebase/merge 再重测** | develop 有本支缺少的提交（上表 log **非空**），**且** `comm -12` 输出 **非空**（文件有交集） | 在本 worktree `rebase` 或 `merge origin/develop` → 解决冲突 → **重新**预览/冒烟 → 再开 PR / 合入 |
+| **可直接推进合入流程**（就同步而言） | `git log -1 HEAD..origin/develop` **为空**（develop 无本支缺少的提交） | 无需为「跟上 develop」而 rebase；仍须完成本条的研发冒烟自检 |
+| **必须先 rebase/merge 再重测** | develop 有本支缺少的提交（上表 log **非空**），**且** `comm -12` 输出 **非空**（文件有交集） | 在本 worktree `rebase` 或 `merge origin/develop` → 解决冲突 → **重新**本地冒烟 → 再开 PR / 合入 |
 | **建议仍 rebase（非文件硬拦）** | develop 前进但文件无交集 | 不强制为文件重叠；若分支**存活较久**或触及共享契约大文件，仍建议合入前同步一次并快测 |
 
 辅助对照（可读性，不替代上面的交集判定）：
@@ -221,9 +218,9 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
 
 #### 预览豁免（严格 · 防滥用）
 
-可勾选「跳过 Vite/产品壳预览」**当且仅当**同时满足：
+可勾选「跳过 Vite/产品壳预览」（Agent **不必**为文档 PR 起开发服务器）**当且仅当**同时满足：
 
-1. 对 `origin/develop...HEAD` 做 `git diff --name-only`，**每一个**改动路径都**不**落在下列**运行时路径**（命中任一 → **整 PR 不得豁免**，即使同批还有 `.md`）：
+1. 对 `origin/develop...HEAD` 做 `git diff --name-only`，**每一个**改动路径都**不**落在下列**运行时路径**（命中任一 → **整 PR 不得豁免 Vite 自检**，即使同批还有 `.md`）：
    - `focus-tiger/src/**`
    - `focus-tiger/public/**`
    - `focus-tiger/e2e/**`
@@ -231,43 +228,44 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
    - 任意 `*.vue`；以及 `focus-tiger/src` 下的 `*.css` / `*.html`（已含于 `src/**`）
 2. **禁止**仅凭「文件后缀是 `.md`」「PR 标题写了 docs」「改的是脚本注释」自称豁免。  
 3. **允许**出现在豁免 PR 里的典型路径：`**/*.md` / `**/*.mdc`、仓库根 `WORKFLOW.md`、`.github/**`（模板/workflow 文案）、`focus-tiger/docs/**`、以及**不进产品 Vite 打包**的门禁/检测脚本（如 `focus-tiger/scripts/rules-authority-registry.js`、`docs-check` 相关）。若脚本改动会改变**产品运行时行为** → 仍不得豁免。  
-4. 豁免时仍须勾选并写清理由；仍须跑本条的 **develop 同步判定**（文件重叠则先 rebase）。
+4. 豁免时仍须勾选并写清理由；仍须跑本条的 **develop 同步判定**（文件重叠则先 rebase）。  
+5. **豁免 Vite ≠ 豁免合入**：文档/规则 PR 同样在 CI 绿后按下一节合并；人工测试仍不阻塞合入。
 
 #### 与 PR 模板
 
-开向 `develop` 的 PR 须勾选模板中合前预览项（见 `.github/PULL_REQUEST_TEMPLATE.md`）。未勾且不满足上节豁免 → 审查时应拦回补做。
+开向 `develop` 的 PR 须勾选模板中研发自检 / 主干同步项（见 `.github/PULL_REQUEST_TEMPLATE.md`）。人工测试勾选**不是**合入前提。
 
-### develop 文档 / 小 PR：CI 绿后弹 Run 合并（默认习惯 · 2026-08-04）
+### 合入 develop：CI 绿即可合并（默认习惯 · 2026-08-14）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-develop-small-pr-run-merge`）。  
-> 用户拍板：对 **合入 `develop` 的文档/小 PR**，默认不再停在「请你去 GitHub 手点 Merge」；改为 Agent 在 CI 绿后发起合并命令，由你点 Cursor 弹出的 **Run**（Auto-review）完成授权。
+> 旧称「文档/小 PR：CI 绿后弹 Run 合并」。2026-08-14 拍板：**所有**合入 `develop` 的 PR（含运行时 / 产品逻辑）在 CI 绿后即可合并（习惯用语：CI 绿后弹 Run 合并）；**不等**人工测试通过。Cursor 弹出 **Run** 只是终端/hook 确认，**不是**「再等你测完」。
 
 #### 适用范围（须同时满足）
 
 1. **base = `develop`**（**不是**合进 `main`）。  
-2. **文档 / 小 PR**：相对 `origin/develop...HEAD` 的改动路径全部满足上文「预览豁免」的非运行时条件（无 `focus-tiger/src/**`、`public/**`、`e2e/**` 等运行时路径）。典型：`*.md` / `*.mdc`、`WORKFLOW.md`、`.github/**` 文案、`focus-tiger/docs/**`、纯门禁/检测脚本（不改产品运行时）。  
-3. **本回合已开出的 PR**（Agent 刚 `gh pr create` 或用户明确要推进的同一文档/小 PR）。  
-4. **push / 开 PR 本身仍须你当回合授权**（本条不授权静默 push）。
+2. **本回合已开出的 PR**（Agent 刚创建或用户明确要推进的同一 PR），或任务收尾时该旁支已有 open PR。  
+3. Required checks 已绿，或尚未绿时启用一次 auto-merge（见下）。  
+4. **push / 开 PR 本身**：任务完成后**默认允许**（见 `git-agent-commit`）；本条不要求再等一次口头授权。
 
 #### 默认收尾动作（强制）
 
 在已 push 且 PR 已开之后，Agent **须**走合并收尾，**禁止**默认只写「请你上 GitHub 合并」就结束（除非下方「不适用」）：
 
 1. **查一次** Required checks（`pre-merge with develop`、`test:pr-smoke` 等；`gh pr checks` / `gh pr view --json statusCheckRollup`）。  
-2. **已全绿** → 立刻执行 `gh pr merge <n> --merge`（或团队当时约定的 merge 方式）。若 Cursor Auto-review 弹出 **Run** → 等你点 Run；点过即视为本 PR 合并授权。  
-3. **尚未绿** → **只做一次** `gh pr merge <n> --auto --merge`（启用 GitHub auto-merge），汇报 PR URL +「等 CI 绿后自动合 / 或你再点一次 Run」；**禁止**在本回合轮询长 CI（见 `agent-token-cost`）。  
-4. 合并成功后汇报：**PR 号**、**merge commit 短 hash**、**`origin/develop` tip**。
+2. **已全绿** → 立刻执行 `gh pr merge <n> --merge`（或团队当时约定的 merge 方式 / Cloud 侧等价合并工具）。若 Cursor Auto-review 弹出 **Run** → 点 Run 即执行，**不要**改口成「等人工测完再合」。  
+3. **尚未绿** → **只做一次** `gh pr merge <n> --auto --merge`（启用 GitHub auto-merge），汇报 PR URL +「等 CI 绿后自动合」；**禁止**在本回合轮询长 CI（见 `agent-token-cost`）。  
+4. 合并成功后汇报：**PR 号**、**merge commit 短 hash**、**`origin/develop` tip**。并写明：TEST_TRACKER 相关行仍是「待人工测试」——**已合入 ≠ 已验证**。
 
-#### 不适用（仍「通知你合并」或等你点名）
+#### 不适用（仍须你明确下令，或停手汇报）
 
 - 合进 **`main`**（永远须你明确下令；见 `git-merge-main`）。  
-- **运行时 / 产品逻辑** PR（命中预览豁免黑名单任一路径）——默认仍「通知你合并」；除非你当回合写明「合理则办 / 请合 / CI 绿了就合」。  
-- 「请安排下班前的 Git 同步」口令：**仍不**顺手推进无关 PR（见 regression-lock 第 7 条）；本条只管本回合文档/小 PR 的收尾。  
+- **生产 Worker Redeploy**（永远须你明确说「部署」；见 `prod-worker-deploy`）。  
+- 「请安排下班前的 Git 同步」口令：**仍不**顺手推进**无关** PR（见 regression-lock 第 7 条）；本条只管本回合刚开/正在收尾的 develop PR。  
 - 检查红 / 冲突 / 不可 MERGEABLE → 停手汇报，不硬合。
 
 #### 与「谁点了合并」
 
-`gh` 使用你的登录态；GitHub `mergedBy` 仍是你。Cursor **Run** = 批准 Agent 代跑合并命令，**不是**另发一套 Agent 特权。
+`gh` 使用你的登录态；GitHub `mergedBy` 仍是你。Cursor **Run** = 批准 Agent 代跑合并命令，**不是**另发一套 Agent 特权，也**不是**人工测试关单。
 
 ---
 
@@ -324,6 +322,22 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 ```
 
 合并后 `main` 与 `develop` 可继续并行；`develop` **不要** 删除。
+
+---
+
+## 生产 Worker Redeploy（须明确「部署」）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `prod-worker-deploy`）。  
+> 2026-08-14 拍板：push / 开 PR / 合入 `develop` 的门槛放宽之后，**本关不变**。这是唯一真正接触生产环境 / 真实用户流量的动作。
+
+### 硬规则
+
+1. **默认禁止**：Agent **不得**在任务收尾、CI 绿、合入 `develop`、或「Git 同步」时顺手执行生产 Redeploy（含 `cd focus-tiger/cloud && npm run deploy`、`wrangler deploy`、Cloudflare 控制台等价操作、GitHub Actions 里指向生产 Worker 的 deploy）。  
+2. **口令**：仅当你**当回合书面**明确说「部署」/「redeploy」/「部署生产 Worker」时，才可执行。含糊的「同步」「上线」「发布」「合进去了」**都不算**。  
+3. **与合 `main` 分开**：合并 `develop` → `main`（`git-merge-main`）**也不**自动授权 Worker deploy；两边都要各自的明确指令。  
+4. **汇报**：若执行了部署，须写清 Worker 名、环境（生产）、版本/部署 id（若有）、以及「未部署」时不得假装已对真实用户生效。
+
+命令与密钥细节见 [`focus-tiger/cloud/README.md`](focus-tiger/cloud/README.md)；本节只管**何时允许执行**。
 
 ---
 

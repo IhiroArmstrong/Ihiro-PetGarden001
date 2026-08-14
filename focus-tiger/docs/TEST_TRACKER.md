@@ -12,9 +12,9 @@
 2. 该 hash **必须等于**当时的 `origin/develop` tip。  
 3. **缺 hash、或 hash ≠ `origin/develop` tip**（含在 `feature/*` / `fix/*` / 过时 worktree / 未 fetch 的本地 develop 上测）→ 该次验收结论 **一律无效**，**必须**在同步到 tip 后 **重新验证**；禁止据此标「已通过」或关闭「有问题」。  
 4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。  
-5. **与合前预览的分工（勿读反）**：合并进 `develop` **之前**，须在 feature/fix **worktree** 完成预览确认（合入门闩）——见 `WORKFLOW.md`「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。本条 tip 规则管的是合入**之后**的关单门闩。**禁止**把「关单只认 develop tip」理解成「应先合再测才算正式」。
+5. **与合入门闩的分工（2026-08-14）**：合入 `develop` 的资格是 **CI 绿**（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`），**不以**本表「待人工测试」为阻塞。本条 tip 规则管的是合入**之后**的关单门闩。关单只认 develop tip，因此 **关单级人工测试的默认路径是先合再测**（可批量，见「批量人工测试」）。feature/fix 试跑仍 **不得**单独当作关单证据。**禁止**因代码已合并就把本表改成「已验证 / 已通过 / 已修复」。
 
-协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `git-feature-merge-preview`（合前预览）。
+协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `git-feature-merge-preview`（研发自检 + 主干同步）与 `qa-batch-human-test`（批量清单）。
 
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 产品开表前选 **15/25/45/60**；无 chip 的短测/e2e 用 **`?sessionMinutes=N`**（跳过 picker）。场景 B Re-focus 真实切页仍用 **`?sessionMinutes=5`**。  
@@ -162,7 +162,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 2. **UI 与门闩同开同关**：未就绪则禁用/隐藏，禁止「点了没反应」。  
 3. **同主题行禁止互斥步骤**：Arrival / Companion / HUD 等对「是否再点 Sit」的描述必须一致。  
 4. **测试步骤须含回流路径**：至少写清「主路径」+「Rise / 二次进入后再测」之一。  
-5. **修复收尾本地 commit**：见 regression-lock「Commit 汇报与分支门禁」（`RULES_INDEX.md` → `git-agent-commit`）；**push 仍须用户明确要求**。  
+5. **修复收尾**：见 regression-lock「Commit 汇报与分支门禁」（`RULES_INDEX.md` → `git-agent-commit`）；任务完成后**默认** push 旁支 + 开 PR；CI 绿可合 `develop`。本表状态仍保持「待人工测试」，直到你书面关单。  
 6. **Bug 修复须同批更新相关项目文档（N15）**：至少本表；触及行为/情绪/架构时同步权威 md。缺文档或未 commit = 未完成。
 
 ### 自动化回归锁 vs 近几日用户 bug（2026-07-20 · Task 1 后）
@@ -229,12 +229,25 @@ Safari：`http://127.0.0.1:5173/?product=1`
 ## 状态定义
 
 - **仅单元测试覆盖**：无用户可见变化，逻辑对错已由自动化测试验证，用户不需要点开看。
-- **待人工测试**：已实现，单元测试（如有）已通过，但视觉/体验效果需要用户亲自看一遍才能确认。
-- **已通过**：用户亲自测试确认没问题（或缺陷已按用户要求撤销/回退，且代码核对确认到位）。**改此状态前必须满足下方「标「已通过」门禁」**——禁止笼统写「已通过」。
+- **待人工测试**：已实现，单元测试（如有）已通过，但视觉/体验效果需要用户亲自看一遍才能确认。**已合入 `develop` / CI 绿之后仍用此状态**，直到书面关单。
+- **已通过**：用户亲自测试确认没问题（或缺陷已按用户要求撤销/回退，且代码核对确认到位）。**改此状态前必须满足下方「标「已通过」门禁」**——禁止因已合并而笼统写「已通过」。
 - **有问题**：用户测试后发现瑕疵，需写清楚问题内容，退回处理。
 - **已放弃/不适用**：产品已决定不做或卸下（含「业务未接线、暂不验收」）；**不**再排人工验收，也不挡 `develop`→`main` 合并。
 - **不挡合并（仅调试）**：只在实验室调试面板 / 兼容空键出现，**产品壳 `?product=1` 正式用户路径看不到**；可留技术债，不挡合并。
 - **不挡合并（仅检测逻辑）**：交互检测已接线且有单测，但**无正式精灵/动画**；产品壳不排视觉验收，不挡合并（例：抚摸/轻点/绕圈占位）。
+
+### 批量人工测试（口令 · 2026-08-14 · SSOT）
+
+> 索引：`RULES_INDEX.md` → `qa-batch-human-test`。  
+> 合入与人工测试解耦之后，关单不再跟在每个 PR 后面零散做。你不定期说 **「批量人工测试」**（或「给我待测清单」）时，Agent **只读**本表，输出一份**当前所有「待人工测试」行**的清单，**按功能模块归类**，方便一次性测完一批——**禁止**让你自己去翻 PR 历史拼凑。
+
+#### 口令触发时必须输出
+
+1. **范围**：功能清单里状态字面为「待人工测试」的行（不含「仅单元测试覆盖」「已通过」「有问题」「已放弃/不适用」）。「有问题」另附一小节（缺陷待复测），不要混进待测主清单。  
+2. **模块桶**（按功能名 / 访问路径归入；对不上的进「其它」）：Arrival · Companion/Focus · Honesty · HUD/计时 · Ambient · Idle chrome · Hints · Reflection · 提醒 · 热力图 · i18n/文案 · Workers/云端 · 流程/门禁 · 其它。  
+3. **每条至少含**：功能名、本文件行号（或锚点）、测试步骤**摘要**（主路径一句 + 回流一句，勿整格粘贴）、本地访问路径、`?product=1` 与否、已知合入 tip hash（若「用户反馈」/步骤里已写）。  
+4. **前置**：正式按本清单关单前，Agent 须跑 `npm run check:branch-freshness` 并报 **behind origin/develop**；behind>0 则注明「本清单仍可当目录用，关单须先对齐 tip」。  
+5. **测完怎么记**：你书面反馈仍只进「用户反馈」列；Agent **不得**因「清单已发出」或「已合入」自行改「已通过」。关单仍走「标「已通过」门禁」。
 
 ### 标「已通过」门禁（2026-08-02 起 · 强制 · SSOT）
 
@@ -263,7 +276,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
    - 仅凭本地或 CI **e2e / smoke 全绿**标「已通过」  
    - 写「相关 e2e 已覆盖」却**不列**锁了哪些场景  
    - 把部分场景 OK（或单侧视口 OK）写成整行「已通过」，却不写未测项  
-   - 用 §7 Bug close 的「绿（CI）」代替本表人工关单（§7 是「已修复」话术门禁；**本表「已通过」另须本条 + tip 人工**）
+   - 用 §7 Bug close 的「绿（CI）」或「已合入 develop」代替本表人工关单（§7 是「已修复」话术门禁；**本表「已通过」另须本条 + tip 人工**）
 
 5. **chrome / 双视口行**另遵守文首 N20/N24：须注明 375 故事与宽屏故事是否测过；单侧 OK 不得单独关单。
 
@@ -284,6 +297,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
 | 点击反馈原则 + 沉默白名单（`interaction-feedback`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `interaction-feedback` SSOT 在 `INTERACTION_FEEDBACK_PRINCIPLES.md`；白名单 `SILENT_BEHAVIORS.md`。PR 模板 / Cursor 规则须答 0–1s。无运行时。 | — | — | — | `INTERACTION_FEEDBACK_PRINCIPLES.md` · `SILENT_BEHAVIORS.md` · `RULES_INDEX` | 2026-08-14 |
+| Git 合入与人工测试解耦（push/PR 默认；CI 绿合 develop；批量人工测；Worker 须「部署」） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：`git-agent-commit` / `git-develop-small-pr-run-merge` / `git-feature-merge-preview` / `qa-batch-human-test` / `prod-worker-deploy`。合入 ≠ 已修复；口令「批量人工测试」出模块清单。 | — | — | — | `WORKFLOW.md` · `TEST_TRACKER` 批量人工测试 · `focus-tiger-regression-lock.mdc` | 2026-08-14 |
 | Home Idle polish · 冷启动黑闪 / Practice marks / Support / 地球 / 左球 label / ? 简介链 | UI可见 | 待人工测试 | **基线**：本分支 `fix/home-idle-polish`（非关单级 develop tip）。**主路径（≥480 · `?product=1` · 硬刷新）**：(1) 冷启动**不得**先闪深灰小 Yin 海报，再出彩色大 Yin；(2) Practice marks 玻璃框在阿寅**右侧**中部，**不**压右上 Support/mute，也不压左下热力/`?`；(3) Support：中间 Membership CTA=蒲团橙；左右 CTA=米色立体；「Support Us」Title Case；中间图=闭目坐禅；三卡图底暖纸色；(4) 右下语言地球可见（对比加强）；(5) 左球无薄荷绿脉冲，悬停有 Breath practice label；(6) 悬停 `?` → 移入简介卡可点「The five moments / Privacy」（~280ms grace）。**回流**：关 Support / Rise 后再开；二次悬停 `?`。**自动化**：`purposeHoverGrace.test.js` + Support CTA 文案单测；冒烟 `test:smoke` + `test:e2e:smoke`。 | **2026-08-10/11 用户书面**（测 membership-webhook / 5173）：冷启动黑小 Yin；Practice marks 压左下；Support 按钮/图/文案；地球不见；左球无 label+有脉冲；? 简介链点不到。 **2026-08-13 用户书面（图8）**：徽章需要放到右边，构图均衡一些。 | — | — | `http://127.0.0.1:5173/?product=1` · `#yin-tip-kindness-badges` · `#yin-support-modal` · `#language-preference-fab` · `#onboarding-app-purpose` | 2026-08-11 |
 | 标「已通过」覆盖分工门禁（`qa-pass-coverage-split`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `qa-pass-coverage-split` SSOT 在本文件「标「已通过」门禁」；禁 e2e 绿单独关单等矛盾短语。关单须写 e2e 已锁 vs 人工已覆盖；regression-lock 摘要硬拦。 | — | — | — | `TEST_TRACKER` 标已通过门禁 · `RULES_INDEX` · `rules-authority-registry.js` | 2026-08-02 |
 | `.ft-session-lock` occupancy 占用态字段 | 纯后端 | 仅单元测试覆盖 | `node --test scripts/check-worktree-occupancy.test.js`：`active`/`releasable` 解析；缺字段/非法值不得当成可接管。`npm run check:worktree-occupancy` 打印 `lock_occupancy`；`releasable`+干净树可不因锁 exit 2。政策见 `WORKFLOW.md`（`git-worktree-occupancy`）。 | — | — | — | `scripts/check-worktree-occupancy.js` · `WORKFLOW.md` | 2026-08-02 |
