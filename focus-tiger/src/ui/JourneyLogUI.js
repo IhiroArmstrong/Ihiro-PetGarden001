@@ -254,6 +254,14 @@ export class JourneyLogUI {
         li.textContent = t(key)
           .replaceAll('{date}', journeyLogDateKey(entry.at))
           .replaceAll('{n}', String(entry.minutes));
+        if (entry.insightSpark === true) {
+          const mark = document.createElement('span');
+          mark.className = 'journey-log__insight-spark';
+          mark.dataset.testid = 'journey-log-insight-spark';
+          mark.setAttribute('aria-label', t('JOURNEY_LOG_INSIGHT_MARK'));
+          mark.textContent = '◦';
+          li.append(' ', mark);
+        }
         this.listEl.appendChild(li);
       }
     }
@@ -434,6 +442,13 @@ export class JourneyLogUI {
       }
       .journey-log__row:last-child {
         margin-bottom: 0;
+      }
+      .journey-log__insight-spark {
+        display: inline-block;
+        margin-left: 2px;
+        opacity: 0.55;
+        font-size: 0.9em;
+        letter-spacing: 0;
       }
       .journey-log__backup-link {
         appearance: none;

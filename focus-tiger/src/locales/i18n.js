@@ -71,6 +71,26 @@ export const COPY_POOLS = Object.freeze({
     'DAILY_ZEN_QUOTE_6',
     'DAILY_ZEN_QUOTE_7'
   ],
+  /**
+   * Quiet Line insight-spark seed (Phase 1 · mixed with DAILY_ZEN_QUOTE).
+   * Keys 1–14 are production; candidate #6 stays backup.
+   */
+  DAILY_ZEN_QUOTE_INSIGHT: [
+    'DAILY_ZEN_QUOTE_INSIGHT_1',
+    'DAILY_ZEN_QUOTE_INSIGHT_2',
+    'DAILY_ZEN_QUOTE_INSIGHT_3',
+    'DAILY_ZEN_QUOTE_INSIGHT_4',
+    'DAILY_ZEN_QUOTE_INSIGHT_5',
+    'DAILY_ZEN_QUOTE_INSIGHT_6',
+    'DAILY_ZEN_QUOTE_INSIGHT_7',
+    'DAILY_ZEN_QUOTE_INSIGHT_8',
+    'DAILY_ZEN_QUOTE_INSIGHT_9',
+    'DAILY_ZEN_QUOTE_INSIGHT_10',
+    'DAILY_ZEN_QUOTE_INSIGHT_11',
+    'DAILY_ZEN_QUOTE_INSIGHT_12',
+    'DAILY_ZEN_QUOTE_INSIGHT_13',
+    'DAILY_ZEN_QUOTE_INSIGHT_14'
+  ],
   /** Mid-session awareness card (repeatable; not Moment Whisper). */
   FOCUS_AWARENESS: [
     'FOCUS_AWARENESS_1',

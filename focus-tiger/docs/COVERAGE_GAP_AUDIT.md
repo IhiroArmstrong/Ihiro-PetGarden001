@@ -64,6 +64,8 @@
 | **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **v1.0 en+ja** | Language 可点；zh/es/de/fr draft |
 | **瞳孔跟随（场景 H）** | — | — | — | stub | **N/A 已废弃** | — |
 | **Grow / 纪念奖励 / 3D 柜** | — | — | — | — | **Backlog，未接线** | 不期望有测 |
+| **Quiet Line / 今日静语（含洞察种子 v2）** | — | 零星开卡 | ❌ | `dailyZenQuote` | **unit\* + 人工观感** | 新池换行/375；同日锁已单测 |
+| **Journey Log（含 insightSpark）** | — | 菜单开卡零星 | ❌ | `journeyLogGate` | **unit\*** | 小符号观感人工；与 Tea/徽章零耦合已单测 |
 | **Cloudflare Workers stub** | ❌ | ❌ | ❌ | — | **零（前端未接线）** | curl 人工 / 独立包 |
 | **Retention 遥测占位** | ❌ | ❌ | ❌ | `RetentionTelemetry`\* | **仅 unit\*** | 无产品可见验收依赖 |
 | **Sit 误开 Honesty（z-index）** | 门闩间接 | ❌ 无专条 | ❌ | — | **历史已过人工；无 e2e** | 回归靠门闩+人工 |
@@ -124,6 +126,8 @@
 | Choose pingpong + 1s 叠化观感 | 动画帧级 | Arrival Choose 行 |
 | Notice 短句可读时长 | 时长观感 | Notice 行 |
 | Safari / WebKit 布局专项 | Playwright 默认 Chromium | Companion Safari 人工 |
+| Quiet Line 洞察种子句换行 / 375 | 观感与换行；DOM 仅开卡 | 场景 U2 仍须人工 · Quiet Line TRACKER 行 |
+| Journey Log `insightSpark` 小符号 | 静默标记像素 | 场景 Z 仍须人工 · Journey Log TRACKER 行 |
 | Ambient **听感** / 浏览器 autoplay 政策 | 环境相关 | Ambient 人工行 |
 | 素材抠图 / 调试面板试播 | 实验室非产品壳 | 调试面板行 |
 

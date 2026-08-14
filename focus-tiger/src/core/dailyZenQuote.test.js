@@ -6,10 +6,40 @@ import {
   resolveDailyZenQuote,
   wrapCanvasText,
   downloadCanvasPng,
-  saveDailyZenQuoteImage
+  saveDailyZenQuoteImage,
+  listMixedDailyZenQuoteKeys,
+  isInsightZenQuoteKey,
+  noteDailyZenQuoteOpened,
+  hasOpenedInsightSparkToday,
+  DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
+  readDailyZenQuotePoolV2
 } from './dailyZenQuote.js';
 import { COPY_POOLS, setLocale } from '../locales/i18n.js';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  appendJourneyLogEntry,
+  readJourneyLog
+} from './journeyLogGate.js';
 import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
+
+function createMapStorage(seed = {}) {
+  const map = new Map(Object.entries(seed));
+  return {
+    getItem(key) {
+      return map.has(key) ? map.get(key) : null;
+    },
+    setItem(key, value) {
+      map.set(key, String(value));
+    },
+    removeItem(key) {
+      map.delete(key);
+    }
+  };
+}
 
 describe('dailyZenQuote', () => {
   it('picks deterministically by local date key', () => {
@@ -144,5 +174,137 @@ describe('dailyZenQuote', () => {
     assert.ok(DIGITAL_WALLPAPER_STILLS.some((s) => s.src === a));
     const c = pickDailyZenQuoteBackdropSrc('2026-08-14');
     assert.ok(DIGITAL_WALLPAPER_STILLS.some((s) => s.src === c));
+  });
+
+  it('mixes classic and insight pools without throwing', () => {
+    const mixed = listMixedDailyZenQuoteKeys();
+    assert.equal(COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.length, 14);
+    assert.ok(mixed.length > COPY_POOLS.DAILY_ZEN_QUOTE.length);
+    assert.equal(
+      mixed.length,
+      COPY_POOLS.DAILY_ZEN_QUOTE.length + COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.length
+    );
+    assert.ok(COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.includes('DAILY_ZEN_QUOTE_INSIGHT_14'));
+    assert.equal(
+      COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.includes('DAILY_ZEN_QUOTE_INSIGHT_15'),
+      false
+    );
+    const empty = listMixedDailyZenQuoteKeys([], []);
+    assert.equal(empty.length, 0);
+    const fromEmptyArg = pickDailyZenQuoteKey('2026-08-14', []);
+    assert.ok(listMixedDailyZenQuoteKeys().includes(fromEmptyArg));
+    for (const d of [
+      '2026-08-01',
+      '2026-08-14',
+      '2026-08-31',
+      '2026-09-01'
+    ]) {
+      const key = pickDailyZenQuoteKey(d, mixed);
+      assert.ok(mixed.includes(key));
+    }
+  });
+
+  it('same day stays stable across mixed-pool resolves when v2 storage is set', () => {
+    const storage = createMapStorage();
+    const date = new Date(2026, 7, 14);
+    const a = resolveDailyZenQuote({ date, locale: 'en', storage });
+    const b = resolveDailyZenQuote({ date, locale: 'en', storage });
+    assert.equal(a.key, b.key);
+    assert.equal(a.dateKey, '2026-08-14');
+    assert.equal(typeof a.insightSpark, 'boolean');
+    assert.equal(a.insightSpark, isInsightZenQuoteKey(a.key));
+    const stored = readDailyZenQuotePoolV2(storage);
+    assert.equal(stored?.dateKey, '2026-08-14');
+    assert.equal(stored?.key, a.key);
+    assert.equal(stored?.opened, false);
+  });
+
+  it('corrupt v2 storage degrades to a mixed pick without throwing', () => {
+    const storage = createMapStorage({
+      [DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY]: '{nope'
+    });
+    const resolved = resolveDailyZenQuote({
+      date: new Date(2026, 7, 14),
+      locale: 'en',
+      storage
+    });
+    assert.match(resolved.key, /^DAILY_ZEN_QUOTE/);
+    assert.equal(typeof resolved.insightSpark, 'boolean');
+  });
+
+  it('over many days the mixed pool yields both classic and insight keys', () => {
+    const mixed = listMixedDailyZenQuoteKeys();
+    const kinds = new Set();
+    for (let i = 0; i < 60; i += 1) {
+      const dt = new Date(Date.UTC(2026, 6, 1 + i));
+      const key = pickDailyZenQuoteKey(dt.toISOString().slice(0, 10), mixed);
+      kinds.add(isInsightZenQuoteKey(key) ? 'insight' : 'classic');
+    }
+    assert.equal(kinds.has('classic'), true);
+    assert.equal(kinds.has('insight'), true);
+  });
+
+  it('opening insight content stamps Journey Log; classic open does not', () => {
+    const storage = createMapStorage();
+    const localDay = new Date(2026, 7, 14, 12, 0, 0);
+    appendJourneyLogEntry(storage, {
+      at: localDay.toISOString(),
+      minutes: 20,
+      arrive: true,
+      reflect: true
+    });
+    storage.setItem(
+      DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
+      JSON.stringify({
+        dateKey: '2026-08-14',
+        key: 'DAILY_ZEN_QUOTE_INSIGHT_1',
+        opened: false
+      })
+    );
+    const opened = noteDailyZenQuoteOpened({
+      date: localDay,
+      locale: 'en',
+      storage
+    });
+    assert.equal(opened.key, 'DAILY_ZEN_QUOTE_INSIGHT_1');
+    assert.equal(opened.insightSpark, true);
+    assert.equal(opened.opened, true);
+    assert.equal(hasOpenedInsightSparkToday({ date: new Date(2026, 7, 14), storage }), true);
+    assert.equal(readJourneyLog(storage).entries[0].insightSpark, true);
+
+    const classicStorage = createMapStorage();
+    appendJourneyLogEntry(classicStorage, {
+      at: localDay.toISOString(),
+      minutes: 20,
+      arrive: true,
+      reflect: true
+    });
+    classicStorage.setItem(
+      DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
+      JSON.stringify({
+        dateKey: '2026-08-14',
+        key: 'DAILY_ZEN_QUOTE_1',
+        opened: false
+      })
+    );
+    const classic = noteDailyZenQuoteOpened({
+      date: new Date(2026, 7, 14),
+      locale: 'en',
+      storage: classicStorage
+    });
+    assert.equal(classic.insightSpark, false);
+    assert.equal(
+      hasOpenedInsightSparkToday({
+        date: new Date(2026, 7, 14),
+        storage: classicStorage
+      }),
+      false
+    );
+    assert.equal(readJourneyLog(classicStorage).entries[0].insightSpark, undefined);
+  });
+
+  it('must not import tip / sanctuary / practice badges', () => {
+    const src = readFileSync(join(here, 'dailyZenQuote.js'), 'utf8');
+    assert.equal(/tipJarGate|sanctuaryEntitlement|practiceBadgeAward/.test(src), false);
   });
 });

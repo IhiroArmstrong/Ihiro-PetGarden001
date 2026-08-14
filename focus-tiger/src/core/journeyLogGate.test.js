@@ -12,7 +12,8 @@ import {
   journeyLogLineKind,
   normalizeJourneyLogEntries,
   readJourneyLog,
-  resolveJourneyMinutes
+  resolveJourneyMinutes,
+  stampJourneyLogInsightSparkForDate
 } from './journeyLogGate.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -121,5 +122,70 @@ describe('journeyLogGate', () => {
       false,
       'journeyLogGate.js must not import tipJarGate'
     );
+    assert.equal(
+      /from\s+['"].*(sanctuaryEntitlement|practiceBadgeAward)/.test(src),
+      false,
+      'journeyLogGate.js must not import sanctuary or practiceBadgeAward'
+    );
+  });
+
+  it('writes insightSpark when true and degrades when missing', () => {
+    const storage = createMapStorage();
+    const marked = appendJourneyLogEntry(storage, {
+      at: '2026-08-14T04:00:00.000Z',
+      minutes: 15,
+      arrive: true,
+      reflect: false,
+      insightSpark: true
+    });
+    assert.equal(marked?.insightSpark, true);
+    const plain = appendJourneyLogEntry(storage, {
+      at: '2026-08-14T05:00:00.000Z',
+      minutes: 10,
+      arrive: false,
+      reflect: false
+    });
+    assert.equal(plain?.insightSpark, undefined);
+    const reread = readJourneyLog(storage).entries;
+    assert.equal(reread[0].insightSpark, true);
+    assert.equal(reread[1].insightSpark, undefined);
+    assert.deepEqual(
+      normalizeJourneyLogEntries([
+        { at: '2026-08-14T06:00:00.000Z', minutes: 12 }
+      ]),
+      [
+        {
+          at: '2026-08-14T06:00:00.000Z',
+          minutes: 12,
+          arrive: false,
+          reflect: false
+        }
+      ]
+    );
+  });
+
+  it('stampJourneyLogInsightSparkForDate marks same-day rows only', () => {
+    const storage = createMapStorage();
+    const dayA = new Date(2026, 7, 13, 12, 0, 0);
+    const dayB = new Date(2026, 7, 14, 12, 0, 0);
+    appendJourneyLogEntry(storage, {
+      at: dayA.toISOString(),
+      minutes: 20,
+      arrive: true,
+      reflect: true
+    });
+    appendJourneyLogEntry(storage, {
+      at: dayB.toISOString(),
+      minutes: 25,
+      arrive: true,
+      reflect: true
+    });
+    const today = journeyLogDateKey(dayB.toISOString());
+    assert.equal(stampJourneyLogInsightSparkForDate(storage, today), true);
+    const entries = readJourneyLog(storage).entries;
+    assert.equal(entries[0].insightSpark, undefined);
+    assert.equal(entries[1].insightSpark, true);
+    assert.equal(stampJourneyLogInsightSparkForDate(storage, today), false);
+    assert.equal(readJourneyLog(storage).entries[1].insightSpark, true);
   });
 });
