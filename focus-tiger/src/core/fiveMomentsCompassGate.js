@@ -40,3 +40,52 @@ export function markFiveMomentsCompassSeen(storage) {
 export function shouldOfferFiveMomentsCompassFirstCard(storage) {
   return !hasSeenFiveMomentsCompass(storage);
 }
+
+/** @typedef {'arrive' | 'focus' | 'recover' | 'transition' | 'reflect'} FiveMomentId */
+
+export const FIVE_MOMENT_IDS = Object.freeze([
+  'arrive',
+  'focus',
+  'recover',
+  'transition',
+  'reflect'
+]);
+
+export const FIVE_MOMENT_LABEL_KEYS = Object.freeze({
+  arrive: 'FIVE_MOMENTS_ARRIVE',
+  focus: 'FIVE_MOMENTS_FOCUS',
+  recover: 'FIVE_MOMENTS_RECOVER',
+  transition: 'FIVE_MOMENTS_TRANSITION',
+  reflect: 'FIVE_MOMENTS_REFLECT'
+});
+
+/**
+ * Compass chip → existing product surface.
+ * Transition maps to the work-transition ritual (the day-axis blank is the
+ * auto-detect story, not this voluntary jump).
+ *
+ * @param {string} momentId
+ * @returns {
+ *   | { type: 'arrival' }
+ *   | { type: 'companion' }
+ *   | { type: 'ritual', proxy: string }
+ *   | { type: 'journey-log' }
+ *   | null
+ * }
+ */
+export function resolveFiveMomentAction(momentId) {
+  switch (momentId) {
+    case 'arrive':
+      return { type: 'arrival' };
+    case 'focus':
+      return { type: 'companion' };
+    case 'recover':
+      return { type: 'ritual', proxy: 'ritual-emotional-reset' };
+    case 'transition':
+      return { type: 'ritual', proxy: 'ritual-work-transition' };
+    case 'reflect':
+      return { type: 'journey-log' };
+    default:
+      return null;
+  }
+}

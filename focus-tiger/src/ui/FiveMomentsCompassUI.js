@@ -4,6 +4,8 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  FIVE_MOMENT_IDS,
+  FIVE_MOMENT_LABEL_KEYS,
   markFiveMomentsCompassSeen
 } from '../core/fiveMomentsCompassGate.js';
 import {
@@ -15,16 +17,8 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'five-moments-compass-styles-v1';
+const STYLE_ID = 'five-moments-compass-styles-v2';
 const FADE_MS = 220;
-
-const MOMENT_KEYS = [
-  'FIVE_MOMENTS_ARRIVE',
-  'FIVE_MOMENTS_FOCUS',
-  'FIVE_MOMENTS_RECOVER',
-  'FIVE_MOMENTS_TRANSITION',
-  'FIVE_MOMENTS_REFLECT'
-];
 
 export class FiveMomentsCompassUI {
   /**
@@ -32,6 +26,7 @@ export class FiveMomentsCompassUI {
    * @param {object} [handlers]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
+   * @param {(momentId: string) => void} [handlers.onMomentSelect]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
@@ -187,16 +182,27 @@ export class FiveMomentsCompassUI {
     this.closeBtn.textContent = t('FIVE_MOMENTS_CLOSE');
     this.chainEl.setAttribute('aria-label', t('FIVE_MOMENTS_MENU_LABEL'));
     this.chainEl.innerHTML = '';
-    for (const key of MOMENT_KEYS) {
+    const canJump = typeof this.handlers.onMomentSelect === 'function';
+    for (const id of FIVE_MOMENT_IDS) {
       const li = document.createElement('li');
-      li.className = 'five-moments-compass__moment';
-      li.textContent = t(key);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'five-moments-compass__moment';
+      btn.dataset.moment = id;
+      btn.dataset.testid = `five-moments-${id}`;
+      btn.textContent = t(FIVE_MOMENT_LABEL_KEYS[id]);
+      btn.disabled = !canJump;
+      btn.addEventListener('click', () => {
+        this.handlers.onMomentSelect?.(id);
+      });
+      li.appendChild(btn);
       this.chainEl.appendChild(li);
     }
   }
 
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
+    document.getElementById('five-moments-compass-styles-v1')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -205,7 +211,7 @@ export class FiveMomentsCompassUI {
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
         z-index: 18;
-        width: min(360px, calc(100vw - 40px));
+        width: min(400px, calc(100vw - 32px));
         max-height: min(70vh, 520px);
         overflow: auto;
         transform: translate(-50%, 10px);
@@ -244,18 +250,34 @@ export class FiveMomentsCompassUI {
         margin: 0 0 16px;
         padding: 0;
         display: flex;
-        flex-wrap: wrap;
-        gap: 6px 8px;
-        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 4px;
+        justify-content: space-between;
+        overflow-x: auto;
+      }
+      .five-moments-compass__chain li {
+        margin: 0;
+        flex: 1 1 0;
+        min-width: 0;
       }
       .five-moments-compass__moment {
+        display: block;
+        width: 100%;
         margin: 0;
-        padding: 5px 10px;
-        font-size: 0.78rem;
-        letter-spacing: 0.02em;
+        padding: 5px 4px;
+        font: inherit;
+        font-size: 0.72rem;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
         border-radius: 999px;
         background: ${GLASS_FILL_STRONG};
         border: ${GLASS_BORDER};
+        color: inherit;
+        cursor: pointer;
+      }
+      .five-moments-compass__moment:disabled {
+        cursor: default;
+        opacity: 0.85;
       }
       .five-moments-compass__actions {
         display: flex;

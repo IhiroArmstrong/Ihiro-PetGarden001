@@ -80,6 +80,7 @@ import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
+  resolveFiveMomentAction,
   shouldOfferFiveMomentsCompassFirstCard
 } from './core/fiveMomentsCompassGate.js';
 import {
@@ -843,7 +844,9 @@ async function init() {
   const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
   window.__zenCinemaCard = zenCinemaCardUI;
 
-  const fiveMomentsCompassUI = new FiveMomentsCompassUI(document.body, {});
+  const fiveMomentsCompassUI = new FiveMomentsCompassUI(document.body, {
+    onMomentSelect: (momentId) => handleFiveMomentSelect(momentId)
+  });
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
@@ -973,6 +976,43 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+  }
+
+  /**
+   * Compass chips jump to existing Arrive / Focus / Recover / Transition / Reflect
+   * surfaces (locked rituals still toast via openRitualFlowFromMenu).
+   * @param {string} momentId
+   */
+  function handleFiveMomentSelect(momentId) {
+    const action = resolveFiveMomentAction(momentId);
+    if (!action) return;
+    fiveMomentsCompassUI.close();
+    if (action.type === 'arrival') {
+      if (
+        !sessionUiGate.canStartArrivalFromChrome({
+          isFocusing: stateManager.state === STATES.FOCUSING,
+          arrivalOpen: arrivalPractice?.isOpen?.() === true
+        })
+      ) {
+        mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
+        return;
+      }
+      startArrivalPracticeFromChrome();
+      return;
+    }
+    if (action.type === 'companion') {
+      closeGrowthOverlayCards();
+      companionModePicker.open();
+      return;
+    }
+    if (action.type === 'ritual') {
+      openRitualFlowFromMenu(action.proxy);
+      return;
+    }
+    if (action.type === 'journey-log') {
+      closeGrowthOverlayCards({ except: 'journey' });
+      journeyLogUI.open();
+    }
   }
 
   const supportYinModalUI = new SupportYinModalUI(document.body, {

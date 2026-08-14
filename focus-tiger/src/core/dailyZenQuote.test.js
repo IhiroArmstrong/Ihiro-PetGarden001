@@ -2,12 +2,14 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   pickDailyZenQuoteKey,
+  pickDailyZenQuoteBackdropSrc,
   resolveDailyZenQuote,
   wrapCanvasText,
   downloadCanvasPng,
   saveDailyZenQuoteImage
 } from './dailyZenQuote.js';
 import { COPY_POOLS, setLocale } from '../locales/i18n.js';
+import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
 
 describe('dailyZenQuote', () => {
   it('picks deterministically by local date key', () => {
@@ -133,5 +135,14 @@ describe('dailyZenQuote', () => {
     assert.equal(result.filename, 'focus-tiger-quiet-line-2026-08-06.png');
     assert.ok(result.key.startsWith('DAILY_ZEN_QUOTE_'));
     assert.equal(clicked, 1);
+  });
+
+  it('pickDailyZenQuoteBackdropSrc is stable per date and from the wallpaper gallery', () => {
+    const a = pickDailyZenQuoteBackdropSrc('2026-08-13');
+    const b = pickDailyZenQuoteBackdropSrc('2026-08-13');
+    assert.equal(a, b);
+    assert.ok(DIGITAL_WALLPAPER_STILLS.some((s) => s.src === a));
+    const c = pickDailyZenQuoteBackdropSrc('2026-08-14');
+    assert.ok(DIGITAL_WALLPAPER_STILLS.some((s) => s.src === c));
   });
 });

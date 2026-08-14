@@ -256,7 +256,7 @@ export class RitualFlowUI {
       this._applyState(continueWelcome(this.state));
     });
 
-    const leave = this._makeLeaveButton();
+    const leave = this._makeLeaveButton({ stacked: false });
     row.append(cont, leave);
     this.root?.append(body, row);
   }
@@ -431,10 +431,12 @@ export class RitualFlowUI {
     this.root?.append(body, done);
   }
 
-  _makeLeaveButton() {
+  _makeLeaveButton({ stacked = true } = {}) {
     const leave = document.createElement('button');
     leave.type = 'button';
-    leave.style.cssText = `${QUIET_BTN_CSS};display:block;margin:10px auto 0;`;
+    leave.style.cssText = stacked
+      ? `${PRIMARY_BTN_CSS};display:block;margin:10px auto 0;`
+      : PRIMARY_BTN_CSS;
     leave.dataset.ritualLeave = '1';
     leave.textContent = t('ritual.shared.leave');
     leave.addEventListener('click', () => this.leave());
