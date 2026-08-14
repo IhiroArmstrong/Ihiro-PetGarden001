@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）/ **`DEVELOP_DEBT_INVENTORY.md`**（存量验证债务）/ **[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)**（known-risky **优先人工验收步骤**）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）/ **[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)**（设计上就该没反应的白名单）/ **[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)**（点击接收反馈 vs 结果反馈；`RULES_INDEX` → `interaction-feedback`）/ **`DEVELOP_DEBT_INVENTORY.md`**（存量验证债务）/ **[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)**（known-risky **优先人工验收步骤**）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
 
 ---
 
@@ -23,7 +23,7 @@
 4. 同主题 TEST_TRACKER 行步骤不得互斥  
 5. 声称修好前先跑 **`npm run test:smoke` 与 `npm run test:e2e`**（不过不得声称修好；全绿 ≠ 序列观感通过；**禁止**仅用「已绿」总结句——须附命令与 pass/fail 或 CI 链接）  
 6. **本地 commit / 汇报 / push / 禁自动合 main**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」（`RULES_INDEX` → `git-agent-commit`）；**不在此复述**  
-7. **相关项目文档同批纳入（N15）** 与 **「待你决定 / 待你知道」（N14）**：见同上 regression-lock / `DEV_WORKFLOW_QUALITY.md`
+7. **相关项目文档同批纳入（N15）** 与 **「待你决定 / 待你知道」（N14）**：见同上 regression-lock / `DEV_WORKFLOW_QUALITY.md`。列多个方案时须给最合理项：`RULES_INDEX` → `recommend-most-reasonable`
 
 ### B. 防把好的改坏（重写 / 改转场开工必做）
 
@@ -65,11 +65,16 @@
 **近期落地（待人工测试）**：
 
 - **Wellness 免责 · 非诊疗（2026-08-14 · 本支 `feature/wellness-disclaimer-copy`）**：冷启动一次性 `#onboarding-wellness-first`（Got it）+「?」简介卡常驻区块 + Privacy Sheet 交叉引用（en + ja）。文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent。红线 `PRINCIPLES.md` / 落点 `ONBOARDING_HINTS.md`。TRACKER 待人工。
-
-- **Stay in touch · 真实 Resend（2026-08-13 · 本支 `feature/newsletter-resend-provider`）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
+- **GitHub 默认分支改为 `develop`（2026-08-14）**：Cloud / 新 clone / 新 PR 默认 base / Dependabot / `schedule` YAML 均跟 `develop`。`main` 仍是发布线（合入须明确下令）。夜间全量 e2e 不再需要为 cron 把 workflow 同步到 `main`。权威：`ENV_CONFIG.md` §3。
+- **Git 合入与人工测试解耦（2026-08-14）**：任务完成后本机/Cloud 默认 push 旁支 + 开 PR；CI 绿即可合 `develop`；TEST_TRACKER 保持「待人工测试」；口令「批量人工测试」出模块清单；生产 Worker 仍须明确「部署」。权威：`WORKFLOW.md` + `git-agent-commit`。
+- **FB-01 冷却微点头（2026-08-14）**：冷却期内再点阿寅 → `nodBowMicro`（比完整 nod-bow 幅度更小，无 toast、不延长冷却）。SB-07 = 邀请隐退 + invisible hit 仍在。场景 D 补 Honesty/桥接 0–1s 句。S/T/W/Z 未一次补完。
+- **点击反馈 follow-up（2026-08-14）**：存量 0–1s 补句改优先级表（禁「随改写再补」）；P0 已写 Q/U/X。SB-07 收窄为专用触点隐退；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单）。无运行时。
+- **点击反馈原则 + 沉默白名单（2026-08-14）**：`INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md` 入库；PR 模板 / Cursor 规则须答「点击后 0–1 秒内看到什么」；不在白名单的沉默测试时当 bug。索引 `interaction-feedback`。无运行时改动。
+- **体验 Bugs 叠层（2026-08-14 · #283 已合 tip `b027f3d`）**：Journey 备份点选须有发送/开启提示；Enso 缩小约 40% 贴住蒲团；⋯/抽屉去掉与右上重复的三项付费；Five Moments 单行可点跳转；Quiet Line 用动画静帧作底；Stay in touch 强调邮箱可达；仪式 Continue/Leave 同款钮；Sanctuary marks 改右侧。TRACKER 待人工（关单须 tip `b027f3d`）。
+- **Stay in touch · 真实 Resend（2026-08-13 · #280 已合）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
-- **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（现仅 Stripe secrets）。TRACKER 待人工（端到端须先补密）。
+- **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
 - **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。TRACKER 待人工。
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
@@ -80,8 +85,8 @@
 - **场景化请茶气泡（2026-08-12 · #253 已合 tip `c10acb7`）**：达标 / 里程碑后 `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。TRACKER 待人工。
 - **产品阶段 + 经济可持续原则（2026-08-11 · #252 文档）**：`PRINCIPLES.md`——非 MVP-only；短长期收益平衡；委婉/硬推销案例锚定。Brief：Deep **15s 试听**、Journey **Daily Card**、Wisdom→Reflection（A/B）、Sanctuary **Enso**（素材 `sanctuary-enso-mark.png` = 0025；**UI 已接线见上行**）。
 - **Ambient 深度曲 entitlement（2026-08-11 · #251 已合 tip `5969872`）**：免费温暖 5 首；其余内置曲 B 锁；用户自传仍免费；Support upsell。TRACKER 待人工。
-- **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**生产 redeploy 仍 defer**（Resend / OTP secrets）。TRACKER §C4 待人工。
-- **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；与 Prompt 10 同纪律：**生产 redeploy / 真实收信仍 defer**。
+- **Membership cloud provider + Portal（2026-08-11 · #240 已合 tip `755d465`）**：confirm **与** OTP verify 均签发 `deviceToken`；`/api/membership-entitlement` + Billing Portal；卡内 **Manage** only。**OTP secrets 已补**（2026-08-13）；Sanctuary/Membership Restore 真实收信仍待人工。TRACKER §C4 待人工。
+- **Entitlement restore OTP（2026-08-11 · #232 已合）**：Sanctuary/Membership 禁裸邮箱；Resend `waitUntil`；practice-backup 真实收信 **2026-08-13 已通**。Sanctuary/Membership Restore 仍待人工。
 - **节日主题引擎 · Phase 3 已合（2026-08-11 · #238 · tip `2c83fd0`；记入 #239）**：圣诞文案桶 + `winter-quiet-wash` + 总开关开 / `contentReady=true`；仅 entitled；无新 PNG 姿态。Phase 1–2 = #233/#234。TRACKER 圣诞观感行仍待人工。下一步 Phase 4 须另授权。
 - **Tea / Sanctuary Sandbox 支付试跑（2026-08-11）**：Workbench webhook Tea + Sanctuary 均 **200 / stored**（`product` 分流 OK）。**非整行关单**：邮箱 restore / 零耦合 UI / Membership 仍待测。
 - **三种支付人工步骤清单（2026-08-11）**：`docs/PAYMENT_MANUAL_TEST_CHECKLIST.md` — Tea/Sanctuary/Membership 的 Restore（删本地 key→邮箱拉回）与零耦合逐步操作；KnownRisky #25–26/#28 已挂链。Webhook OK ≠ Restore 已测。
@@ -139,7 +144,7 @@
 - **增长向内容包决策锁（2026-08-06）**：分析师+调查对齐后用户「合理则办」。顺序 ① YouTube ⋯平级 → ③ 签文 `COPY_POOLS`+存图 → ②A 电子书下载 → ②B 独立 `ebook-unlocked`（文案与 Glow streak-7 叙事刻意分开）。无 Settings/Culture Space；不绑壳/分享卖点。Brief `task-growth-content-pack-decision.md`。**① / ③ 已合 develop**（PR #148 / #153）；**②A/②B 延后**（同日晚用户书面：电子书非最急，延迟安排——勿默认下一优先）。**2026-08-07 晚**：壁纸赠送另 Brief；付费双轨见技术方向纪要。
 - **付费双轨 A Tea + B 进阶解锁（2026-08-07 锁双轨；2026-08-10 修订付费方式）**：打赏与解锁都要；B = **Sanctuary Lifetime** ∪ **Yin Membership**（互覆盖；非「仅 Lifetime / 无订阅」）；24h 漏斗非 v1；founder→Tea。Brief `task-tech-direction-v1-shell-monetization.md`。
 - **宽屏首页三球（2026-07-31）**：产品拍板已落地实现——宽屏 Idle 首页三球 + ⋯（代替 Sit+⚡ pill；Honesty 出 ⋯）。分支 `feature/wide-home-three-ball`（PR #50）；e2e `wide-idle-more-menu.spec.js`。§8+§9 壳故事已于 2026-08-04 KnownRisky #1 / Task3 关单。
-- **CI 定时全量 + Plan A 收口（2026-07-31 … 2026-08-02）**：**PR smoke** 已在每次 PR→`develop` 跑通（**无** API Key）。**全量 e2e** 夜间 `schedule`（UTC 02:00）+ 手动 dispatch：YAML 在 **`main`**（120m · [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47)；Plan A 分片+JUnit · [#63](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/63)），**测 `develop` tip**。#15 稳定红已修（[#74](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/74)）；验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit 68 tests / 0 fail）。**基建任务完成**；残留 = 偶发 goto flake 根因（另项）+ 是否挂 PR 门（另议）。隔离：`ENV_CONFIG.md` + `.env.example`。
+- **CI 定时全量 + Plan A 收口（2026-07-31 … 2026-08-02）**：**PR smoke** 已在每次 PR→`develop` 跑通（**无** API Key）。**全量 e2e** 夜间 `schedule`（UTC 02:00）+ 手动 dispatch：当时 YAML 合入 **`main`**（120m · [#47](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/47)；Plan A 分片+JUnit · [#63](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/63)），**测 `develop` tip**。#15 稳定红已修（[#74](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/74)）；验绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit 68 tests / 0 fail）。**基建任务完成**。**2026-08-14**：默认分支改为 `develop`，夜间 YAML 现跟 `develop`（见上条「GitHub 默认分支」）。残留 = 偶发 goto flake 根因（另项）+ 是否挂 PR 门（另议）。隔离：`ENV_CONFIG.md` + `.env.example`。
 - **发布前安全网 · 工程收口（2026-07-30）**：`pr-smoke` Required-safe + build 校验 + Dependabot/audit + 用户/隐私文档已合 **PR #40**。**同日你已在 GitHub 把 `test:pr-smoke` 勾成 `develop` Required**（与 `pre-merge with develop` 并列）。崩溃监控 / 打包产物 CI / 用户文档人工过目仍开。见 Backlog「发布前安全网」。
 - **i18n v1.0.0 English + Japanese（2026-07-30 修订）**：对外 en+ja 可点切换；中文不着急（zh draft）；六语槽保留。见 `COVERAGE_GAP_AUDIT.md` §9 / `PRODUCT_POSITIONING`。
 - **i18n A+B+C 架构已落地（2026-07-30）**：`LanguagePreferenceUI` + `focus-tiger.locale.v1` + unit/e2e；发版面按上条 en+ja。见审计 §9。
@@ -302,7 +307,7 @@
 - **无互动约 10 分钟已拍板**：保留加权随机（70% 继续冥想 / 30% 挥手），挥手分支使用已入库的 `wave-hello`；具体触发计时源仍待与 Focus Confidence 决策口径统一
 - **架构决策已落地**：为应对角色/装扮市场接受度不确定性，提前预留「角色/装扮可替换」扩展点（`CharacterConfig`）；当前仍固定单一角色（小老虎僧袍造型），不做用户可选换装 UI，仅解耦素材路径与情绪触发逻辑
 - **非模态提醒额度与 Re-focus 阈值已拍板并实现（2026-07-16）**：正念阶段确认 / 伸懒腰判定维持会话墙钟 20 分钟、活跃累计 2 小时（离开时暂停、两场会话间隔 ≥30 分钟重置累计）；三类提醒共用本地自然日额度、合计每日最多 3 次；Re-focus 每场会话最多 1 次；离开满 20 秒只内部记账，超过 60 秒并返回才允许展示。具名常量与单元测试已落地
-- **已确认**：Git 采用「Task 后 commit + 人工确认再 push」，禁止 post-commit 自动 push
+- **已确认（2026-08-14 修订）**：Git 采用「Task 后 commit + **默认** push 旁支/开 PR；CI 绿合 `develop`；人工测试事后批量关单」。禁止 post-commit 钩子自动 push；禁止直推 `develop`/`main`；生产 Worker 须明确「部署」
 - **Git 提醒已关闭（2026-07-21）**：此前 `stop` hook 曾用 `followup_message`（耗 credits），后改为 macOS `display notification` 且只返回 `{}`；现按用户要求从 `hooks.json` 卸下，不再发系统通知；脚本保留便于日后挂回
 - **Agent 终端权限收紧（2026-07-26）**：仓库级 `.cursor/permissions.json` 取代裸 `git`/`gh` always；`beforeShellExecution` 硬门禁破坏性 git/gh（见「Git 同步节奏」）
 - **已确认并实现**：新增 `welcomeBack` 情绪键；`SpriteSequencePlayer` 首版使用单 `<img>` 预加载换帧；2D overlay 覆盖于现有 3D canvas 之上
@@ -333,7 +338,7 @@
 
 **下一步计划**：
 
-- **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy。**下一步**：补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` → TRACKER 端到端人工测。**≠** v1.1 云端算法、**≠** B 多端无缝。
+- **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** v1.1 云端算法、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
@@ -393,7 +398,7 @@
 3. **身份**：唯一复用既有 **邮箱 OTP**（与付费 restore **一套身份、两种用途**）；**不做**匿名 device id 跨端。  
 4. **未绑邮箱**：无云端兜底；本机清理风险用户自行承担；实现 A 时须 **温和、非打断**提示（例 Journey Log 角落绑定引导；非弹窗；文案另定）。  
 5. **与 v1.0 纯本地**：核心练习仍可离线；A 为可选增强（有网+已绑邮箱才备份）。隐私明示同意仍适用。  
-权威表：`FREE_PAID_MATRIX`；详情 Backlog「练习记忆云端备份」；实现 Brief：`task-practice-memory-cloud-backup-a.md`。政策 **#266** tip `4698348`；运行时 **#272** tip `a195584`；矩阵 redeploy 注 **#273** tip `ef5ff3e`。**OTP secrets 仍缺** → 端到端绑邮箱待补密。
+权威表：`FREE_PAID_MATRIX`；详情 Backlog「练习记忆云端备份」；实现 Brief：`task-practice-memory-cloud-backup-a.md`。政策 **#266** tip `4698348`；运行时 **#272** tip `a195584`；矩阵 redeploy 注 **#273** tip `ef5ff3e`。**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 
 **最近拍板（2026-08-10 · Yin Membership 纳入 v1）**：推翻「B 仅 Lifetime / v1 无订阅」。**双轨**心智不变：A 打赏·不解锁 + B 进阶内容解锁。B 下两种付费方式并存——**Sanctuary Lifetime** 一次买断 ∪ **Yin Membership** 订阅；**lifetime ∪ subscription 互相覆盖**（同一套进阶权益，非三档）。订阅到期：已生成内容永久可看，只停新解锁与进阶使用。AI Coach 红线不变。A→B 24h 体验卡仍非 v1。SSOT：`MVP_PRODUCT_DEFINITION` §五 + monetization Brief。
 
@@ -606,11 +611,21 @@ cd focus-tiger && npm run check:all-branches-health
 
 ## Git 同步节奏（本地 ↔ GitHub）
 
-> **政策 SSOT**：Agent commit / 汇报 / push / 禁自动合 main → [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。分支模型与合并 `main` → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md)。本节只写**操作顺序**，不复述门禁条文。
+> **政策 SSOT**：Agent commit / 汇报 / 默认 push+PR / 禁自动合 main / 禁未授权生产部署 → [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」。合入 `develop`（CI 绿即可）与生产 Worker → 仓库根 [`WORKFLOW.md`](../../WORKFLOW.md)。主题索引 → [`RULES_INDEX.md`](./RULES_INDEX.md)。本节只写**操作顺序**，不复述门禁条文。
 
-Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地，`push` 才会同步到远程。本项目**不启用**「commit 后自动 push」或「保存即 commit」。
+Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写本地。本项目**不启用**「post-commit 钩子自动 push」或「保存即 commit」。**任务收尾**时 Agent **默认** push 当前旁支并开 `--base develop` 的 PR（本机与 Cloud 相同；禁止直推 `develop`/`main`）。
 
-**Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——不依赖 Auto-review 的 `autoRun.block_instructions`。
+**五档（解耦）**：
+
+| 档 | 默认 |
+|---|---|
+| 本地 commit | 任务验证通过后可自动 |
+| push 旁支 + 开 PR | 任务完成后默认做，不必每次口头授权 |
+| 合入 `develop` | CI 绿即可；**不等**人工测试 |
+| 标「已通过」/ 声称「已修复」 | 仍须你人工测试（§7 + `qa-pass-coverage-split`） |
+| 合 `main` / 生产 Worker Redeploy | 须明确下令；Worker 须说「部署」 |
+
+**Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——弹出 **Run** 不等于「等人工测完」；也不依赖 Auto-review 的 `autoRun.block_instructions`。
 
 #### 已知问题 · `gate-destructive-shell` × `zsh ENOENT`（2026-08-07 · 待排查）
 
@@ -624,30 +639,31 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 > 3. 因此：**不是「所有 push 永久失效」**；是「命中 matcher 的命令，在 hook runner 偶发起不来 zsh 时被硬拦」。同会话里先前多次 `git push` 成功，说明闸门多数时候可用；ENOENT 为**间歇 / 环境**问题（Cursor 钩子宿主找不到 `/bin/zsh`），待日后排查（PATH、Cursor hooks runtime、是否应用了错误的 shell）。  
 > 4. **临时绕过**：本机终端手动 `git push` / `gh pr create`（不经 Agent hooks）即可，与 2026-08-07 Sanctuary Unlock 本地 commit 待手推场景一致。
 
-### 推荐流程（半自动 + 人工拍板）
+### 推荐流程（任务收尾默认 push + PR）
 
 完成一个**有实质性进展**的 Task（非纯 debug / 微调）后：
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
-2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」）  
+2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」——已合入后也保持此状态直到你关单）  
 3. **同步相关权威文档**（N15：按触及面更新对应权威 md；禁止只改代码）  
 4. 按 regression-lock「Commit 汇报与分支门禁」完成本地 commit + 同回合汇报  
 5. 可选推送前体检：`./scripts/git-sync-safe.sh`  
-6. **仅在你明确同意后**再 push（见 SSOT）  
-7. **合入 `develop` 的文档/小 PR**：CI 绿后默认走 Run 合并收尾（见 `WORKFLOW.md` / `RULES_INDEX` → `git-develop-small-pr-run-merge`）；**不要**默认只写「请上 GitHub 手合」  
-8. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）
+6. **默认** push 当前旁支 + 开/更新 `--base develop` 的 PR（不必再等口头授权；禁止直推 develop/main）  
+7. **合入 `develop`**：CI 绿即可合并（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`）；**不要**等人工测试，也**不要**默认只写「请上 GitHub 手合」  
+8. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）  
+9. **生产 Worker Redeploy**：须你明确说「部署」（`prod-worker-deploy`）
 
-完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）。
+完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）；需要一批测完时用口令「批量人工测试」。
 
 ### 口令：「请安排下班前的 Git 同步」
 
-你说这句（或同等的下班前 / 批量 Git 同步授权）时，Agent 应按 regression-lock 第 7 条执行（**只推非运行时收尾到当前旁支**；**禁止**直推 `develop`/`main`；业务代码 / 状态机 /「先给 diff 等确认」类默认不随口令 flush）：
+你说这句（或同等的下班前 / 批量 Git 同步）时，Agent 应按 regression-lock 第 7 条执行（**补漏**尚未推送的旁支 commit；**禁止**直推 `develop`/`main`；「先给 diff 等确认」的仍不推）：
 
 1. 确认在短命旁支（`feature/*` / `fix/*` / `docs/*` 等）上；若误在 `develop` 攒了 commit → **先**迁到旁支，**再**同步  
-2. 筛出该旁支上尚未推送、且属文档/规则/脚本注释等非运行时的 commit → `push` **仅该旁支** → 无 PR 则开 **`--base develop`**；已有 PR 则让 CI 自然更新  
-3. 业务逻辑 / 状态机 / 待确认 diff 类未推 commit → **单独成组列出，不随本次推送**  
-4. 回复 **「Git 同步汇总」**（含第 6 条分级项 + 旁支名/PR + **性质标注**：本次推送有无「业务逻辑/代码改动」——合规应为「无」）  
-5. **不做**：直推 `develop`/`main`、合并进 `main`、顺手推进**无关** PR；若有其它 PR 正等你处理，只在汇总里提一句现状。本回合刚开的 **develop 文档/小 PR** 收尾合并习惯见 `git-develop-small-pr-run-merge`（与本口令「不推进无关 PR」不冲突）。  
+2. 该旁支上尚未推送的 commit → `push` **仅该旁支** → 无 PR 则开 **`--base develop`**；已有 PR 则让 CI 自然更新  
+3. 「先给 diff 等确认」类 → **单独成组列出，不随本次推送**  
+4. 回复 **「Git 同步汇总」**（含第 6 条分级项 + 旁支名/PR + **性质标注**：本次推送有无「业务逻辑/代码改动」）  
+5. **不做**：直推 `develop`/`main`、合并进 `main`、生产 Worker 部署、顺手推进**无关** PR。本回合正在收尾的 develop PR 仍走 `git-develop-small-pr-run-merge`。
 
 完整门禁条文见 regression-lock SSOT；此处不复述。  
 **禁止**再使用「可推 develop / feature / fix」这种把主干与旁支并列的写法。
@@ -899,7 +915,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 ### Backlog:练习记忆云端备份（免费 A 快照 · B 无缝可后排）
 
-> **拍板（2026-08-12）**：产品面已定（**#266** tip `4698348`）。**A 运行时已合**：**#272** tip `a195584`（Brief `task-briefs/task-practice-memory-cloud-backup-a.md`）；矩阵/redeploy 注 **#273** tip `ef5ff3e`。生产 Worker Version `f9755950-…`；**OTP 发信仍待** `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`。对账表：`FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」与「练习记忆 · 多端无缝同步」。
+> **拍板（2026-08-12）**：产品面已定（**#266** tip `4698348`）。**A 运行时已合**：**#272** tip `a195584`（Brief `task-briefs/task-practice-memory-cloud-backup-a.md`）；矩阵/redeploy 注 **#273** tip `ef5ff3e`。生产 Worker Version `f9755950-…`；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。对账表：`FREE_PAID_MATRIX`「练习记忆 · 云端快照备份 / 恢复」与「练习记忆 · 多端无缝同步」。
 
 #### 动机
 
@@ -931,7 +947,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 - 未明示同意就上传练习相关字段  
 - 把 A 与 B 混成「一个同步功能」却不分免费/付费  
 
-- **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets / TRACKER 人工**仍待。  
+- **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  
 - **口令示例**：「补 practice-backup OTP secrets」/「测练习记忆云端备份」
 
 ### Backlog:v1.1 云端算法（v1.0 纯本地之后）
@@ -963,7 +979,7 @@ Git **默认不会**自动把本地 commit 推到 GitHub；`commit` 只写本地
 
 #### 基建收口（2026-08-02）
 
-夜间自动跑 + Plan A 清单能力 **已完成**（PR #2 前工程护栏里「勿长期只靠本机手跑全量」的主目标已满足）。schedule 仍只读 **`main` YAML**、checkout **`develop` tip**——以后改 timeout/shard 须再同步 `main`。
+夜间自动跑 + Plan A 清单能力 **已完成**（PR #2 前工程护栏里「勿长期只靠本机手跑全量」的主目标已满足）。**2026-08-14**：GitHub 默认分支改为 `develop`；`schedule` 现读 **`develop` YAML**、checkout **`develop` tip**——以后改 timeout/shard **不必**再同步 `main`。
 
 #### 仍待办（非基建阻塞）
 

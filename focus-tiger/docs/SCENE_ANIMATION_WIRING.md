@@ -114,7 +114,8 @@
 
 | 用户场景 | 建议键 / 素材 | 档位 | 状态 | 备注 |
 |---|---|---|---|---|
-| 主动 Recover（Tiger Anchor） | `mindfulAcknowledge` subtype `activeRecover`（nod-bow） | ack | **已接线** | **禁止** sessionComplete / Celebrating / MicroRitual；不占提醒额度；180s 冷却 |
+| 主动 Recover（Tiger Anchor） | `mindfulAcknowledge` subtype `activeRecover`（完整 nod-bow） | ack | **已接线** | **禁止** sessionComplete / Celebrating / MicroRitual；不占提醒额度；180s 冷却 |
+| 主动 Recover **冷却期内再点**（FB-01） | `mindfulAcknowledge` subtype `activeRecoverCooldown` → `nodBowMicro`（nod-bow 第 2–4 帧） | 接收反馈（小于 ack） | **已接线** | **无** toast；不重置/延长冷却；不新建白名单；**禁止**短提示文案 |
 | 用户主动 Transition 一次深呼吸 | `palms-together` 或短光环 | ack | Slice C | 入口未做 |
 | Reflection 三问答完 | `mindfulAcknowledge` | ack | Slice B | 可选；勿加长仪式 |
 

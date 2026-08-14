@@ -27,13 +27,13 @@
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
 | v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
-| Tip / Sanctuary / Membership / practice-backup / newsletter Worker（2026-08-13） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**）。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**OTP / Newsletter 发信**：须 `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`。Newsletter：`NEWSLETTER_KV` 已建并写入 `wrangler.jsonc`（2026-08-13）；**redeploy 暂缓**（Resend curl 400 排查中）。From = **只** `NEWSLETTER_FROM`（`hello@twinsology.com`），**禁止**回退 `RESEND_FROM` / `restore@`（OTP 与 Newsletter 发信信誉隔离；域已整体验证）。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
+| Tip / Sanctuary / Membership / practice-backup / newsletter Worker（2026-08-13） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**）。**#272** Version `f9755950-49c9-4677-99d6-76fd2d9d7012`（OTP / practice-backup 已上）。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**OTP 发信（2026-08-13）**：生产已 `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；`RESEND_FROM` = `Yin <restore@twinsology.com>`。本地 Vite 缺 `VITE_CLOUD_API_BASE_URL` 时 Send code 会本地失败。**Newsletter（#280）**：`NEWSLETTER_KV` 已写入 `wrangler.jsonc`；**redeploy 暂缓**。From = **只** `NEWSLETTER_FROM`（`hello@twinsology.com`），**禁止**回退 `RESEND_FROM` / `restore@`。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ## 3. 与 CI 的关系
 
 - **PR smoke**（`pr-smoke.yml`）：PR→`develop` 自动跑；解放本地 Agent；**无** Secret 依赖。
-- **全量 e2e**（`focus-tiger-e2e-full.yml`）：`schedule`（UTC 02:00）+ `workflow_dispatch`；测本地静态壳，**无** Secret。Plan A（**已在 `main`** · #63）：`matrix` 2 shards + JUnit always + slim traces（`playwright.ci-full.config.js`）。job checkout **`develop` tip**（或 dispatch `ref`）。**2026-08-02**：#15 稳定红修合 develop（#74）；dispatch 验绿 [run 30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。见 `PROCESS.md` Backlog「CI 全量」。
-- **注意**：GitHub `schedule` 使用**默认分支 `main` 上的 workflow 文件**。`timeout-minutes` / workers / **shards** 等改动若只合进 `develop`，定时任务仍读 `main` 旧 YAML。
+- **全量 e2e**（`focus-tiger-e2e-full.yml`）：`schedule`（UTC 02:00）+ `workflow_dispatch`；测本地静态壳，**无** Secret。Plan A（`matrix` 2 shards + JUnit always + slim traces；`playwright.ci-full.config.js`；历史上 #63 先合入当时的默认分支 `main`）。job checkout **`develop` tip**（或 dispatch `ref`）。**2026-08-02**：#15 稳定红修合 develop（#74）；dispatch 验绿 [run 30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。见 `PROCESS.md` Backlog「CI 全量」。
+- **注意（2026-08-14）**：GitHub `schedule` 使用**当前默认分支**上的 workflow 文件。默认分支已改为 **`develop`**，故改 timeout / workers / **shards** 合进 `develop` 即可作用于夜间 cron，**不必**再为定时任务把 YAML 同步到 `main`。`main` 仍是发布线，与 cron 无关。
 
 ## 4. 自检清单（接云 / 加 Key 前）
 

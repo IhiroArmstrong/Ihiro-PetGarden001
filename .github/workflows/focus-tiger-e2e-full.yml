@@ -4,9 +4,10 @@ name: focus-tiger full e2e
 # Not a PR/merge gate — manual + daily schedule only.
 #
 # IMPORTANT (GitHub Actions): `schedule` loads this YAML from the repo
-# **default branch (`main`)**, then the job checks out `develop` for app code.
-# Raising timeout / workers / shards only on `develop` does NOT affect nightly
-# cron until the same workflow file is on `main`. See docs/ENV_CONFIG.md §3.
+# **default branch** (since 2026-08-14: `develop`), then the job checks out
+# `develop` for app code (or the dispatch `ref`). Nightly cron follows
+# timeout / workers / shards on `develop`; do not sync this file to `main`
+# just to refresh schedule. See docs/ENV_CONFIG.md §3.
 # No repository Secrets required for this local-shell Playwright suite.
 #
 # Plan A (2026-07-31): 2 shards + junit always + slim artifacts — so a wall-clock
@@ -40,8 +41,8 @@ jobs:
       - name: Checkout develop tip (or dispatch ref)
         uses: actions/checkout@v4
         with:
-          # schedule always checks out the repo default branch first;
-          # pin develop (or the dispatch input) so we never silently test main.
+          # schedule checks out the default branch first; pin `develop` (or the
+          # dispatch input) so the suite still tests the daily integration tip.
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || 'develop' }}
 
       - uses: actions/setup-node@v4

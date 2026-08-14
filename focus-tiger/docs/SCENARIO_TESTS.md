@@ -28,6 +28,23 @@
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
 
+**点击后 0–1 秒（强制 · 2026-08-14）**：含可点击步骤的**新场景 / 改写场景**必须写清「点击后 0–1 秒内用户应该看到什么？」。若该步按设计不生效，须点名 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md) 的 `SB-xx`，禁止只写「无反应」。原则全文 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)（`RULES_INDEX` → `interaction-feedback`）。
+
+**存量补句优先级（禁止「随改写再补」）**：已挂钩白名单的是 **B / P / X / Y**。其余正式场景按下表排期补 0–1 秒句（权威跟踪：`TEST_TRACKER`「存量场景 0–1s 补句」行）。**不得**等下次碰巧改到该场景才写。
+
+| 优先 | 场景 | 为何先写 | 0–1 秒句现状 |
+|---|---|---|---|
+| **P0** | **Q** Support Yin 双卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
+| **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
+| **P0** | **X** Tiger Anchor **冷却期内再点** | 触点邀请隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本批已落地：微点头（无 toast）；缺口句作废 |
+| **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
+| **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 未补句 · 下一刀 |
+| **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
+| **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
+| **P2** | **G** 语言；**O** 热力图（多为展示）；**V** 吹花（自动 + 点消气泡） | 点击面小或非按钮主路径 | 未补句 |
+| **—** | **H** 瞳孔跟随 | 已废弃，不排 | — |
+| **—** | **R** 跨日回访 | 仍建议故事，非点击反馈主战场 | — |
+
 ---
 
 ## 用哪个链接测？
@@ -95,8 +112,8 @@
 
 | 离开时长 | 回来时应看到 |
 |---|---|
-| **&lt; 20s** | **无反应**（连内部记账都不做）——你测的约 10s 属于此档，**正确** |
-| 20–60s | 只内部记账，**仍无**文案 / nod-bow |
+| **&lt; 20s** | **无反应**（连内部记账都不做）——你测的约 10s 属于此档，**正确**（**SB-01**） |
+| 20–60s | 只内部记账，**仍无**文案 / nod-bow（**SB-02**） |
 | **&gt; 60s** | 才展示：观察式 toast + `nod-bow`（Re-focus） |
 
 ### 为何默认 `http://localhost:5173/` 测不了真实切页 Re-focus
@@ -111,7 +128,7 @@
 3. 确认 HUD 在计时、按钮为 **Rise**。
 4. 切到 **其它 Safari 标签**，停留约 **70–90 秒**（必须 **&gt;60s**；不要只留 10s）。
 5. 切回 Focus Tiger：应见 **非模态观察式文案** + **`nod-bow` 点头鞠躬**（不是摆尾）。
-6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
+6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期；**SB-03**）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
 7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
 
 *[单元/控制器：Stay 触发 / Offline·Flow 抑制 → smoke B；**非**真实 visibility 切页]*
@@ -145,16 +162,17 @@
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
 1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，或 DEV 改 `focus-tiger.focus-session-end.v1` 后刷新 / 回前台（见下方强制手段）。新用户无结束记录**不会**自动睡。
-2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）。
-3. 选时长 10 / 20 / 30+（选 20）。
+2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）→ **0–1 秒内**：入口按压 + `#honesty-check-in` 时长三选一面板淡入（10 / 20 / 30+）。
+3. 选时长 10 / 20 / 30+（选 20）→ **0–1 秒内**：该钮下压（`translateY(1px)`）+ 时长面板让位给呼吸引导（倒计时出现）。**不要**报成哑点击。
 4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
    *[单元/控制器：2h→cloak→wake→离 DORMANT → smoke D sleep→wake / dormantIdle chain；**非** cloak-sleep 倒放观感]*
 5. 补登结束（记账、离 DORMANT）后：**立刻**出现 Honesty **桥接 CTA**（「要不要现在也坐一会儿？」Yes / No 同级；Welcome 回显可与邀请同屏一小会儿）。  
-   - **Yes** → 完整 Arrival Practice → Companion（**不**跳过、**不**直接开表 / Ambient）。  
-   - **No** → idle，无二次挽留。  
+   - **Yes** → **0–1 秒内**：钮被点到 + `#honesty-bridge-cta` 开始收起（~260ms）+ Arrival Practice 叠层开始出现。**结果**：完整 Arrival → Companion（**不**跳过、**不**直接开表 / Ambient）。  
+   - **No** → **0–1 秒内**：钮被点到 + 桥接面板收起；回到 Idle，无二次挽留。  
+   - 点外侧空白 **不当** No（须明确点 Yes 或 No）。  
    - **每次**补登完成后都可出现（**不限**当日一次）。定稿见 `HONESTY_BRIDGE_CTA.md`。  
    *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；**DOM 真实补登链**（入口→时长→呼吸→桥接 Yes→Arrival / No→Idle）→ `e2e/honesty-bridge-real-path.spec.js`（`?honestyBreathMs=`）；叠层隐藏 Honesty/微仪式入口仍可经 `__honestyBridge` 注入 → e2e `micro-ritual.spec.js` bridge 行。**非**睡姿/Arrival 动画观感。**CI**：注入 hook 须在 `vite preview` 生产构建可用（勿仅 DEV 挂载）]*
-6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。  
+6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。Sit → **0–1 秒内**：主钮按压 + Companion / Arrival 按既有场景 A 展开（本步不另造反馈类型）。  
    **已知**：Honesty 路径暂不接 halo / 金光。
    **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
 
@@ -269,7 +287,7 @@
 
 ### P3 · 忙碌期策略（**已拍板 suppress** · 非用户可见「第 4 步」）
 
-> **说明**：下列对照表记录产品决策（「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是**场景步骤序号。**2026-07-23 已拍板**：**`suppress`**——忙碌期隐藏横幅、**不**做 `defer` 延迟弹出。权威接线：`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`（见 `TEST_TRACKER` L186 / `SHARED_RESOURCES`）。
+> **说明**：下列对照表记录产品决策（「用户正在 Arrival / Focusing 时横幅怎么办？」），**不是**场景步骤序号。**2026-07-23 已拍板**：**`suppress`**——忙碌期隐藏横幅、**不**做 `defer` 延迟弹出（**SB-04**）。权威接线：`main.js` → `InAppReminderBannerController({ busyPolicy: 'suppress' })`（见 `TEST_TRACKER` L186 / `SHARED_RESOURCES`）。
 
 **忙碌态** = Arrival 开着 / Focusing / Celebrating / Reflection / 微仪式进行中。
 
@@ -300,22 +318,22 @@
 
 ### Q1 · Support Modal（统一入口）
 
-1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → `#yin-support-modal`。
+1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
 2. 见双卡：Sanctuary 带 **Suggested** + Primary CTA，文案含 **One-time Lifetime**（无假划线）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ Ghost CTA。
-3. **Maybe later** 为文字链关闭（非全宽描边钮）。关后再开仍可用。
+3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：双卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
-5. **回流**：Sit→Focusing → FAB **隐藏**；Rise 回 Idle → FAB 复现。
+5. **回流**：Sit→Focusing → FAB **隐藏**（不可点，不是哑点击）；Rise 回 Idle → FAB 复现。
 
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
 
-6. Support 卡 CTA **或** ⋯/抽屉 **Buy Yin a Tea** → `#yin-tip-jar-card`。
+6. Support 卡 CTA → **0–1 秒内**：CTA 按压 + `disabled`（`_busy`）+ 模态关闭；**结果**（可能 >1s）：进 Stripe Checkout / `#yin-tip-jar-card`。禁止关闭后空白无下一步。
 7. Test 卡走 Checkout（约 **US$9.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
 8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。
 9. **禁止**：tip 后出现 Sanctuary 已解锁语义或内容门打开。
 
 ### Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
-10. Support Primary **或** 菜单 **Yin's Sanctuary** → `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
+10. Support Primary → **0–1 秒内**同 Q2（按压 + disabled + 关模态）；随后 `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
 11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
 12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。
 
@@ -371,19 +389,19 @@
 
 ### U1 · Zen Cinema
 
-1. Idle → ⋯ / 抽屉 **Zen Cinema** → `#zen-cinema-card`（缩略图 + 片名 +「将打开 YouTube」）。
-2. **Watch** → 系统浏览器打开 `https://youtu.be/RV46qrvG1pw`；**Not now** 关卡。
+1. Idle → ⋯ / 抽屉 **Zen Cinema** → **0–1 秒内**：菜单行按压 + `#zen-cinema-card` 展开（缩略图 + 片名 +「将打开 YouTube」）。
+2. **Watch** → **0–1 秒内**：主钮按压 + 确认卡开始收起；**结果**（可延迟）：系统浏览器打开 `https://youtu.be/RV46qrvG1pw`。卡已关但标签页还没出 = 仍算「已接收」，不要报成哑点击。**Not now** → 0–1 秒内卡收起、回到 Idle 菜单入口可见。
 3. **禁止**：Reflection 边缘入口、App 内嵌播放器。
 
 ### U2 · Quiet Line / 今日静语
 
-4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → `#daily-zen-quote-card` 见当日金句。
-5. **Save image** → 下载 PNG（文件名含当日 `YYYY-MM-DD`）；同日再开句不变。
+4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → **0–1 秒内**：行按压 + `#daily-zen-quote-card` 展开当日金句。
+5. **Save image** → **0–1 秒内**：钮按压（证明收到）；**结果**：下载 PNG（文件名含当日 `YYYY-MM-DD`，可能略延迟）。同日再开句不变。
 6. **Not now** 关卡；回流再开仍可。
 
 ### U3 · Wallpapers
 
-7. ⋯ / 抽屉 **Wallpapers** → `#digital-wallpapers-card` 见 5 张缩略图 → 点选 → **Save image** → `focus-tiger-wallpaper-*.png`。
+7. ⋯ / 抽屉 **Wallpapers** → **0–1 秒内**：行按压 + `#digital-wallpapers-card` 展开 5 张缩略图 → 点选（选中态）→ **Save image**（0–1 秒按压；结果=下载 `focus-tiger-wallpaper-*.png`）。
 8. **禁止**付费门 / 一键社交分享。
 
 ---
@@ -424,18 +442,19 @@
 ## 场景 X：主动 Recover · Tiger Anchor（Focusing 轻触阿寅）
 
 > **用户故事**：Kelly 专注中卡住了——不切页、不放弃；轻触阿寅（或幽灵提示）→ 点头鞠躬 + 中置观察式 toast + 光影 Recover 扰动；计时继续。与场景 B 被动 Re-focus（切走>60s）**分工**：本故事是**用户主动**；**不**占被动提醒日/会话额度。  
-> **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却）。  
+> **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却 / FB-01 微点头不延长冷却、无 toast）。  
 > **DOM**：尚无完整 e2e 故事锁；观感须人工。  
-> **仍须人工**：微光+文案可读；点击反馈链；冷却隐退；375 不误触 Rise/HUD。  
+> **仍须人工**：微光+文案可读；点击反馈链；冷却邀请隐退（微光/提示没了、hit 仍在）；**冷却期内再点阿寅（FB-01 微点头）**；375 不误触 Rise/HUD。  
 > **合入**：#199。
 
 1. `?product=1` → Sit（或 ⚡/时长 chip）→ **Focusing**。
 2. 见幽灵提示（如「Feeling stuck?…」）+ 阿寅身前微光 `#active-recover-anchor`。
-3. **轻触阿寅**（或提示带）→ `nod-bow` + 中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
+3. **轻触阿寅**（或提示带）→ **0–1 秒内**：微光/按压被接收 + `nod-bow` 开始；随后中置 toast（`ACTIVE_RECOVER` 池，~3s）+ LightProgression Recover 扰动。
 4. **必须**：计时器**不停**；**不**跳页；**不**进 Reflection / MicroRitual / 记账。
-5. 触发后触点隐退 **180s**；冷却结束再可点；期间被动 Re-focus 额度**不得**减少。
+5. 触发后邀请隐退 **180s**（**SB-07**）：冷却期内 **看不到**微光与幽灵提示；invisible hit 仍在（不要报成「整层没了所以点不到」）；冷却结束微光+提示回来再可点完整 Recover；期间被动 Re-focus 额度**不得**减少。
+5b. **冷却期内再点阿寅（FB-01 · 不是白名单）** → **0–1 秒内**：比完整 `nod-bow` 幅度更小的点头（`nodBowMicro`，nod-bow 第 2–4 帧）；**不出**文字/toast；**不**重置或延长冷却。**不应**再出完整 Active Recover `nod-bow`+toast。只验「微光消失」≠ 本步通过。
 6. **回流**：Rise → 触点消失；再 Focusing 可再出现。
-7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。
+7. **Whisper 交叉**（若清过 `moment-whispers-seen.v1`）：首次主动 Recover 可出 Recover `#moment-whisper` 一次（见场景 Y）。冷却再点的微点头**不应**再触发 Recover whisper。
 
 ---
 
@@ -449,7 +468,7 @@
 
 ### Y1 · Compass（B）
 
-1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect + Got it/Close。
+1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect **单行** + Got it/Close。点芯片分别进入 Arrival / Companion / Recover 仪式 / Transition 仪式 / Journey log（未授权仪式则 toast）。
 2. **「?」**：简介含 Moments 链 → **The five moments** → 同卡。
 3. **首卡**：清 `focus-tiger.five-moments-compass-seen.v1` → 冷启动 Idle 约数秒出一次；Skip/Got it 后不再出。
 4. **回流**：关后再开；Rise 后再开。**375**：可滚可关、不挡 Sit。
@@ -457,10 +476,10 @@
 ### Y2 · Moment Whisper（A′）
 
 5. 清 `focus-tiger.moment-whispers-seen.v1` → Sit→Arrival → 见 Arrive `#moment-whisper` **一次**（可点关 / 数秒淡出）。
-6. 进入 Focusing → Focus whisper **一次**；再开第二场 Focusing → **不再**出 Focus whisper。
-7. Rise→Reflection → Reflect whisper **一次**；再走同路径 → **不再**出。
+6. 进入 Focusing → Focus whisper **一次**；再开第二场 Focusing → **不再**出 Focus whisper（**SB-05**）。
+7. Rise→Reflection → Reflect whisper **一次**；再走同路径 → **不再**出（**SB-05**）。
 8. **Recover**：见场景 X；首次主动 Recover → Recover whisper 一次。
-9. **busy**：Compass / Companion / Arrival 叠层打开时不出；关后再进未读 Moment 仍可。
+9. **busy**：Compass / Companion / Arrival 叠层打开时不出（**SB-06**）；关后再进未读 Moment 仍可。
 10. **「?」**：仍只出简介（+ Compass 链），**不**喷满页 tip。
 
 ---

@@ -23,7 +23,8 @@ alwaysApply: true
 
 2. **禁止用户可点、逻辑静默 return**  
    若门闩未就绪（如 `arrivalGateReady`、Honesty/Reflection 叠层），控件必须 **禁用 / 隐藏 / 明确不可用**，不得让用户点了却 `return` 无反馈。  
-   「点了没反应」在体验上等于功能丢失。
+   「点了没反应」在体验上等于功能丢失。  
+   设计上就该没反应（冷却、门槛未到）≠ 本条门闩静默：见 `INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md`（`RULES_INDEX` → `interaction-feedback`）。
 
 3. **禁止只测 helper、不锁门闩耦合；确认修复须留回归锚**  
    仅有 `shouldX(mode) === true` 的单测不够。凡「选 A 应立刻发生 B」类行为，须有失败用例锁住门闩：  
@@ -70,7 +71,7 @@ alwaysApply: true
 - [ ] **已好清单**（若本次为重写/改转场）已逐条自检  
 - [ ] **TEST_TRACKER**：用户原话进「用户反馈」列；测试步骤与其它行不冲突；状态「待人工测试」（**禁止**在本门禁收尾自行标「已通过」；关单见「标「已通过」门禁」/ `qa-pass-coverage-split`）  
 - [ ] **相关项目文档已同步（N15）**：至少 TEST_TRACKER；触及行为/情绪/架构/素材/共享面时同步对应权威 md（`EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` / `PROCESS` 速览等）。**禁止**只改代码、文档滞后  
-- [ ] **立刻本地 commit**（已验证通过的任务收尾后，Agent **可自动** `git commit` 到**当前工作分支**——`develop` 或对应的 `feature/*` / `fix/*`；**代码 + 文档同批**；**已完成且验证通过的改动不得跨任务周期悬置未 commit**；缺文档或未 commit → **不得**声称修好；**仍禁止**未经确认 `git push`；**禁止**任何会话自动合并进 `main`（见下文「Commit 汇报与分支门禁」）  
+- [ ] **立刻本地 commit**（已验证通过的任务收尾后，Agent **可自动** `git commit` 到**当前工作分支**——旁支 `feature/*` / `fix/*` / `docs/*`；**代码 + 文档同批**；**已完成且验证通过的改动不得跨任务周期悬置未 commit**；缺文档或未 commit → **不得**声称修好）；**默认** push 该旁支 + 开 `--base develop` 的 PR（禁止直推 `develop`/`main`）；**禁止**任何会话自动合并进 `main`（见下文「Commit 汇报与分支门禁」）  
 - [ ] **commit 后同回合汇报**（禁止静默提交）：回复须明确写出 **commit hash**、**分支名**、**涉及文件**（或 `git show --stat` 摘要）；**并行会话**执行的 commit 同样须遵守；缺此项 = 视同未汇报  
 - [ ] **commit 粒度与 message 合格**：每个 commit 只承载**一个逻辑完整改动**（功能 / bug 修复 / 文档更新），message 必须说明 **改了什么 + 为什么改**；禁止 `update docs` / `misc fix` / `wip`  
 - [ ] 回复末尾独立 **「待你决定 / 待你知道」**（N14）
@@ -101,6 +102,9 @@ alwaysApply: true
 
 5. **禁止文档「已自动化/已覆盖/已锁住」口径模糊**  
    须准确说明覆盖层（单元 / 集成 / 完整用户链路）。修复时同步核对 `SCENARIO_TESTS.md` / `TEST_TRACKER.md` 类似表述并修正。
+
+6. **禁止把「已合入 develop / CI 绿」写成已修复**  
+   合入与 CI 只满足五证中的 push / 绿（CI）项。TEST_TRACKER 须保持「待人工测试」，直到用户完成人工测试并满足关单门禁。**已合并 ≠ 已验证 ≠ 已修复**。
 
 ### Bug close 充分必要条件（回复必列 · 缺项 = 未完成）
 
@@ -211,7 +215,8 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
 ### 待你决定 / 待你知道
 - **待你决定**：…（需拍板则列条；否则写「无」）
   - 已核对**不必再做**的伪选项（tip 已覆盖 / 已合入 / 再做会回退等）→ **必须**标 **`（不合理）`** + 短因；**禁止**写成尚待拍板的开放项（N14a；叙事 SSOT：`DEV_WORKFLOW_QUALITY.md` §2.4）
-- **待你知道**：…（commit、未 push、待人工测项、未覆盖路径等；否则写「无」）
+  - 若列出 **≥2 个开放方案** → 必须同时写 **我认为最合理的**（`RULES_INDEX` → `recommend-most-reasonable`）
+  - **待你知道**：…（commit、PR URL、待人工测项、未覆盖路径等；否则写「无」）
   - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）
   - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）
   - 若本回合起过给人验收的预览、或正式邀测 / 声称 develop 行为 → **必须**含 `check:branch-freshness` 的落后数（见上节「分支新鲜度」）
@@ -227,9 +232,12 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
 2. **禁止静默提交**：commit 后**必须在当次会话回复**明确汇报：**commit hash**、**分支名**、**涉及哪些文件**（或等价的 `git show --stat` 摘要）。缺此项 = 视同未汇报。  
 3. **并行会话同规**：任何并行 Agent 会话执行的 commit，同样须遵守第 2 条汇报义务；不得因「不是主会话」而省略。  
 4. **禁止自动合并进 `main`**：涉及合并进 `main`（含 `git merge develop` → `main`、`git checkout main && git merge …` 等）的操作，**永远需要用户明确指令**；任何会话不得自动执行。  
-4a. **develop 文档/小 PR 合并习惯**：合入 `develop` 且属文档/小 PR 时，CI 绿后默认由 Agent 发起 `gh pr merge`（Cursor 可弹 **Run** 供你点）；**禁止**默认只写「请上 GitHub 手合」。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `git-develop-small-pr-run-merge`）；**勿**在本文件复述适用范围全文。  
-5. **`git push` 仍须用户明确授权**：日常与 Bug close **一律**不得未经用户明确要求就 push。声称「已修复 / 已修好」须有 push + CI 证据（§7 checklist），**但 push 本身仍须用户明确授权**（例如用户说「Git 同步」「请安排下班前的 Git 同步」或「push」）；未授权前只可写诚实进度（本地已 commit、尚未 push）。日常节奏：白天可连续自动本地 commit；用户要求同步/push 时再推远程，并附第 6–7 条。  
+4a. **合入 `develop`：CI 绿即可合并**：本机与 Cloud 任务收尾的 PR（**含运行时**）在 Required checks 绿后默认由 Agent 发起合并（可弹 Cursor **Run**）；**禁止**默认只写「请上 GitHub 手合」，也**禁止**等人工测试通过再合。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `git-develop-small-pr-run-merge`）；**勿**在本文件复述适用范围全文。  
+4b. **生产 Worker Redeploy 仍须明确「部署」**：不因 push/PR/合入 `develop` 放宽。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `prod-worker-deploy`）。  
+5. **任务完成后默认 `git push` + 开 PR（本机 Agent 与 Cloud Agent 相同）**：一个已验证通过的任务收尾后，Agent **应当**把当前**短命旁支** push 到远端，并开/更新 **`--base develop`** 的 PR；**不需要**每次再等口头「请 push」。声称「已修复 / 已修好」仍须 §7（含**人工复测**）；push/PR/合入 develop **不等于**已修复。  
    - **禁止直推受保护主干（强制 · 2026-08-08）**：**禁止** `git push`（含 `-u`）到 **`origin/develop`** 或 **`origin/main`**。二者受 branch protection；任何进主干的改动 **必须**经 PR 合入。Agent **不得**把「同步」理解成直推 develop/main，也**不得**把 develop 与旁支写成同等可推目标。  
+   - **禁止** post-commit 钩子静默 push、保存即 commit、把大体量抽帧素材 / `node_modules` 推上远程。任务收尾的 push **必须同回合汇报**（hash、旁支名、PR URL）。  
+   - 若本回合 push 覆盖多笔 commit → 仍须第 6 条「Git 同步汇总」。  
 6. **Git 同步 / 批量 push 须分级汇总（强制）**：用户要求「Git 同步」、或 Agent 执行一次覆盖多个本地 commit 的 push 时，回复须含独立小节 **「Git 同步汇总」**，至少包括：  
    - 本次一共多少个 commit（相对该旁支上次已推 tip，或用户指定范围）  
    - **每个** commit 的一句话摘要（改了什么）+ 短 hash  
@@ -237,7 +245,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
    - 推送的**旁支名** + 对应 PR 号/URL（新开或已有）  
    - **高风险标注**：凡触及状态机 / 门闩 / 跨模块契约（对照 `focus-tiger/docs/DOC_CODE_CONTRACT.md`「高风险契约清单」）、或改动面明显偏大的 commit，须**单独成组或加醒目标注**，不得与普通文档/文案改动混在无差别列表里被淹没。  
    缺汇总或缺高风险标注 = 视同未完成同步汇报。  
-7. **「请安排下班前的 Git 同步」固定语义（强制）**：该口令（及同等的下班前 / 批量 Git 同步授权）= 把**当前所在短命旁支**上、尚未推送、且属于**非运行时收尾**的本地 commit，按标准同步动作推到**该旁支自身**的远端，并按第 6 条给出「Git 同步汇总」。**禁止**因本口令把业务代码 / 状态机 /「先给 diff 等确认」类改动默认一并 flush。  
+7. **「请安排下班前的 Git 同步」固定语义（强制）**：该口令（及同等的下班前 / 批量 Git 同步）= 清扫**尚未推送的遗漏**：把**当前所在短命旁支**上剩余未推 commit 按标准同步动作推到**该旁支自身**的远端（开/更新 `--base develop` 的 PR），并按第 6 条给出「Git 同步汇总」。日常任务收尾本就应已 push+PR（第 5 条）；本口令补漏，**不再**按「只推非运行时 / 业务代码默认不推」过滤。  
    - **标准同步动作（强制写法 · 勿并列主干）**：  
      1. 确认当前分支是短命旁支（`feature/*` / `fix/*` / `docs/*` 等），**不是** `develop` / `main`  
      2. `git push -u origin HEAD`（或等价：只推**当前旁支**）  
@@ -246,18 +254,11 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
      **禁止**再写「可推 develop / feature / fix」这类把主干与旁支并列的口径——三者**不是**同等安全的操作对象。  
    - **允许 push 的目标**：仅 **当前工作旁支自身**（`feature/*` / `fix/*` / `docs/*` 等短命分支，含首次 `-u`）。  
    - **禁止 push 的目标**：`develop`、`main`（任何改动只能经 PR 合入）。若本地误在 `develop` 上攒了未推 commit → **先**切到/新建旁支带走这些 commit，再 push 旁支 + 开 PR；**禁止**为「对齐 tip」而对 `origin/develop` 直推。  
-   - **默认可推（非运行时）**：文档（`*.md` 等）、Cursor / 项目规则（`.cursor/rules` 等）、脚本注释、门禁/检测脚本与纯流程口径——**不改变**产品运行时行为。  
-   - **默认不推（须单独列出，等你明确点名 push）**：  
-     1. 业务代码 / 产品运行时逻辑（如 `focus-tiger/src/**` 等会改变用户可见行为的改动）  
-     2. 状态机 / 门闩 / 跨模块契约相关改动（对照 `DOC_CODE_CONTRACT.md` 高风险清单）  
-     3. 对话中你曾明确要求「先给 diff 等确认」且尚未拍板允许 push 的改动  
-     4. **单笔混装**：同一 commit 既含运行时业务改动又含文档/规则 → 整笔视为「默认不推」  
-   - **禁止默认 flush**：上列「默认不推」commit **不得**随本口令推上；须在汇总里**单独成组**列出短 hash + 一句话原因，并写明「未随本次下班同步推送，待你点名 push」。若当天只有这类 commit → **本次 push 0 笔**，仍须完成汇总与单独列表。  
-   - **性质标注（强制）**：汇总须用醒目句写明：本次实际推送的 commit 里，**有 / 无**「业务逻辑/代码改动」性质（相对「流程/文档/门禁」）。本口令合规推送时该句应为 **无**；写成「有」或漏标 = 未遵守本条。  
-   - **范围外（禁止擅自做）**：直推 `develop`/`main`；任何「合并进 `main`」；代点 GitHub 合并无关 PR；或「推进某个无关 PR 到可合并状态」（rebase / 解冲突 / 催 CI / 改 PR 描述以凑合并条件等）。本回合刚开的 **develop 文档/小 PR** 收尾合并习惯见 `git-develop-small-pr-run-merge`（与「不推进无关 PR」不冲突）。  
+   - **仍须单独列出、不随本口令推上**：对话中你曾明确要求「先给 diff 等确认」且尚未拍板的 commit。  
+   - **性质标注（强制）**：汇总须用醒目句写明：本次实际推送的 commit 里，**有 / 无**「业务逻辑/代码改动」性质（相对「流程/文档/门禁」）。本口令**可以**含业务代码（任务本就该推）；漏标 = 未遵守本条。  
+   - **范围外（禁止擅自做）**：直推 `develop`/`main`；任何「合并进 `main`」；**生产 Worker 部署**（见 `prod-worker-deploy`）；代点 GitHub 合并**无关** PR。本回合正在收尾的 develop PR 仍走 `git-develop-small-pr-run-merge`（CI 绿即可合）。  
    - **PR 现状**：若有**其它** PR 正等用户处理，只在汇总里**单独提一句现状**，**不要自己去动它**。  
-   - **`chore/*` 等其它前缀**：默认可作旁支 push 目标（与 feature/fix/docs 同级短命支）；若口令场景下仅文档收尾，仍受「非运行时」过滤。  
-   - **与泛称「Git 同步」/「push」的区别**：无「下班前」限定时，仍按当次用户授权范围推送（可含业务代码），但 **同样禁止直推 `develop`/`main`**，须走旁支 + PR；仍须第 6 条分级汇总；**不得**把泛称授权自动解释成「下班前口令的非运行时过滤已关闭」或「可以直推 develop」。
+   - **`chore/*` 等其它前缀**：默认可作旁支 push 目标（与 feature/fix/docs 同级短命支）。
 
 ## 跨会话指令冲突处理（强制）
 
@@ -269,21 +270,23 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
 
 1. **同回合**更新相关项目文档（最低 `TEST_TRACKER`；按触及面扩权威 md）  
 2. **立刻** `git commit` 到当前工作分支（已验证通过即可；代码与文档同批固化；**一旦完成且验证通过，不得拖到下个任务周期**）；commit 后**同回合汇报** hash + 分支 + 文件（见上节）  
-3. 缺文档、未 commit、或未汇报 commit → 视为**未完成**，禁止写「已修好」（**Bug close 的「已修复」还须 §7：push + CI + checklist**）
+3. 缺文档、未 commit、或未汇报 commit → 视为**未完成**，禁止写「已修好」（**Bug close 的「已修复」还须 §7 五证，含人工复测**）
 
 同样，**不要**把两个已经完成的任务攒成一个提交，也**不要**把一次完整改动拆成几个只反映时间顺序的零碎提交。  
-本地 commit 只固化基线、可回滚；**声称 Bug 已修复**还须 push + CI（§7）。**push 本身仍须用户明确授权**；未授权前不得为「凑齐 §7」而自行 push。
+本地 commit 只固化基线、可回滚。任务收尾**默认** push 旁支 + 开 PR；CI 绿可合 `develop`。**声称 Bug 已修复**仍须 §7 五证（含人工复测）——**已合入 develop ≠ 已修复**。
 
 | 动作 | 所有实质性 tasks / Bug 修复收尾 | 声称 Bug「已修复 / 已修好」（§7） |
 |---|---|---|
 | 相关文档同步（N15） | **必须执行** | **必须执行** |
 | `git commit`（本地，当前工作分支） | **验证通过后可自动执行** | **必须**（通常已含于左列） |
 | commit 后同回合汇报（hash + 分支 + 文件） | **必须** | **必须** |
-| 本地冒烟（N13） | **必须** | 研发自检；**不能**替代 CI 绿 |
+| 本地冒烟（N13） | **必须** | 研发自检；**不能**替代 CI 绿与人工关单 |
+| `git push` 旁支 + 开 PR（`--base develop`） | **任务完成后默认执行**（禁止直推 develop/main）；多笔须附 **Git 同步汇总** | **证据上必须已 push** |
+| 合入 `develop` | **CI 绿即可**（见 `git-develop-small-pr-run-merge`）；**不等**人工测试 | CI 绿 / 已合入 **仍不等于**已修复 |
 | 合并进 `main` | **禁止自动**；须用户明确指令 | **禁止自动**；须用户明确指令 |
-| `git push` / 远程同步 | **仍须用户明确授权**（固化基线不依赖 push）；执行时须附 **Git 同步汇总**（见上第 6 条） | **证据上必须已 push**（§7 claim gate）；**执行 push 仍须用户明确授权**，附 hash + 分支名 + 同步汇总 |
-| CI 跑相关测试 | — | **必须**（附 CI run 链接）。「相关」= 至少 PR smoke（`test:pr-smoke`）；声称完整用户链路 / 合并前验收时另须全量 `test:e2e` CI 绿（独立 run 链接）。日常收尾不强制等全量 CI |
-| §7 checklist 五项 | — | **回复必列**；缺项 = 未完成 |
+| 生产 Worker Redeploy | **禁止自动**；须明确「部署」（`prod-worker-deploy`） | 同左 |
+| CI 跑相关测试 | 随 PR 跑；不在本回合轮询长 CI | **必须**（附 CI run 链接）。「相关」= 至少 PR smoke（`test:pr-smoke`）；声称完整用户链路 / 合 `main` 前验收时另须全量 `test:e2e` CI 绿 |
+| §7 checklist 五项 | — | **回复必列**；缺项 = 未完成；**人工复测未做不得写已修复** |
 
 ## 高回归风险面（触及须显式复检）
 
