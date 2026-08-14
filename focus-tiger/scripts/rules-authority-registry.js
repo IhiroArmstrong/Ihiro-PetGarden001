@@ -32,6 +32,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-docs.mdc',
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+  '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
@@ -1125,6 +1126,47 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementExemptFiles: [
       '.cursor/rules/focus-tiger-interaction-feedback.mdc',
       'focus-tiger/docs/SILENT_BEHAVIORS.md'
+    ]
+  },
+  {
+    id: 'recommend-most-reasonable',
+    title: '列多个方案时须同时给出「我认为最合理的」一项',
+    ssotPath: '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
+    ssotSection: 'Focus Tiger · 给选项时必须给「最合理项」',
+    ssotMustContain: [
+      /我认为最合理的是/,
+      /写成同等待选/,
+      /recommend-most-reasonable/,
+      /N14a/
+    ],
+    topicSignals: [
+      /recommend-most-reasonable/,
+      /我认为最合理的/,
+      /给选项时必须给/,
+      /并列菜单/
+    ],
+    mustCite: [/focus-tiger-recommend-most-reasonable\.mdc|recommend-most-reasonable/],
+    restatementFingerprints: [
+      /我认为最合理的是/,
+      /写成同等待选/,
+      /禁止把决策摊成/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'options-without-preference',
+        pattern:
+          /列出(?:多个|各种)(?:选项|方案|可能性).{0,24}(?:即可|不必|不用|无需).{0,16}(?:倾向|最合理|表态)/,
+        note: '列多个方案时必须给出最合理项；不得写成「列出即可、不必表态」'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/COLLAB.md',
+      'focus-tiger/docs/TEST_TRACKER.md'
     ]
   }
 ];

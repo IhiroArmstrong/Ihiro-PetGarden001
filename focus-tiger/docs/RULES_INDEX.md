@@ -68,6 +68,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `e2e-local-budget` | 本地 e2e 硬顶（≤1 spec/次；全量/visibility/多文件禁本地；RUN_E2E_LOCAL 逃生口） | `.cursor/rules/testing-strategy.mdc` | 本地 e2e 硬顶（e2e-local-budget · 可执行） |
 | `risk-mitigation-playbook` | 中高风险任务落地降险 Playbook | `focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md` | 触发条件 |
 | `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
+| `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 
 <!-- rules-authority-index:end -->
 
@@ -102,6 +103,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `z-index-registry` | 「层叠见 `Z_INDEX.md`」 | 平行另造第二份 z-index 分配表 |
 | `risk-mitigation-playbook` | 「中高风险落地降险见 `RISK_MITIGATION_PLAYBOOK.md`」；`WORKFLOW` 可一行入口 | 把降险切片写成可跳过 Dispatcher / 可先挂产品钩子再补动画 / 可另造简化兜底；在非 SSOT 完整复述四件套+红线 |
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用两问 | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
+| `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -117,6 +119,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7、**分支新鲜度**、**发布候选门禁**（open blockers）门禁条文 |
 | [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；临时解禁有连续时长上限；Vite/Playwright 收尾；Cloud 独立会话；用户侧 `cd`/`npm run dev` 路径口径） |
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
+| [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
@@ -194,6 +197,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-14 | 新增 `recommend-most-reasonable`：列 ≥2 个开放方案时须同时给出「我认为最合理的」；SSOT `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`；N14b |
 | 2026-08-14 | 统一 Git/验收五档：任务完成后默认 push 旁支+开 PR（本机=Cloud）；合入 develop = CI 绿（`git-develop-small-pr-run-merge` 扩到运行时 PR）；人工测试与合入解耦；新增 `qa-batch-human-test`、`prod-worker-deploy`；§7「已修复」仍须人工测 |
 | 2026-08-14 | 新增 `interaction-feedback`：点击接收反馈 ≠ 结果反馈；已知静默白名单 `SILENT_BEHAVIORS.md`；SSOT `INTERACTION_FEEDBACK_PRINCIPLES.md`；PR 模板 + Cursor 规则两问 |
 | 2026-08-11 | 扩展 `git-worktree-hygiene`：`propose_remove` 接受 `git cherry origin/develop HEAD` 无独有补丁（squash 友好），不再仅靠 tip 祖先检查 |

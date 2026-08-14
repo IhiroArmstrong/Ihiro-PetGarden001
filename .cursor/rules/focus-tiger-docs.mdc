@@ -85,6 +85,7 @@ alwaysApply: true
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
 - 预览浏览器与能耗 / 进程收尾 / Cloud 独立会话提醒 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
+- 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
 - 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
 
 ## TEST_TRACKER 日常维护（Part 2）
