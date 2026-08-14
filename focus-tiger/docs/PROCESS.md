@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · 本支 `feature/quiet-line-insight-spark`）**：经典金句 ∪ **12** 句生产种子（`INSIGHT_1`–`12`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 备选；#11/#15 结构性重写另轮。TRACKER 待人工（375 换行 + 符号）。
+- **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · 本支 `feature/quiet-line-insight-spark`）**：经典金句 ∪ **14** 句生产种子（`INSIGHT_1`–`14`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 天气备选仍不上。TRACKER 待人工（375 换行 + 符号）。
 
 - **Stay in touch · 真实 Resend（2026-08-13 · 本支 `feature/newsletter-resend-provider`）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` 自建名单 + 欢迎信 `waitUntil` + 退订 GET/POST）。无 Cloud / `?newsletterMock=1` 仍 mock。欢迎文案 + 第一封群发草稿（未接线）见 `NEWSLETTER_CAPTURE.md`。TRACKER 待人工（`NEWSLETTER_KV` 已建；**redeploy 暂缓**，待 Resend 真实发信测通）。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
