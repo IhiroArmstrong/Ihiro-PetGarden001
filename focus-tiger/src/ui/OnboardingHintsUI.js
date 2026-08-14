@@ -2,6 +2,7 @@
  * Hint 产品面（2026-08-04 收窄）：只保留两件事——
  * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
  * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
+ *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`）
  * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
  * @see ONBOARDING_HINTS.md
  */
@@ -1701,6 +1702,18 @@ export class OnboardingHintsUI {
     const body = document.createElement('p');
     body.className = 'onboarding-app-purpose__body';
 
+    const wellness = document.createElement('div');
+    wellness.className = 'onboarding-app-purpose__wellness';
+    wellness.dataset.testid = 'onboarding-purpose-wellness';
+
+    const wellnessTitle = document.createElement('h3');
+    wellnessTitle.className = 'onboarding-app-purpose__wellness-title';
+
+    const wellnessBody = document.createElement('p');
+    wellnessBody.className = 'onboarding-app-purpose__wellness-body';
+
+    wellness.append(wellnessTitle, wellnessBody);
+
     const actions = document.createElement('div');
     actions.className = 'onboarding-app-purpose__actions';
 
@@ -1733,11 +1746,13 @@ export class OnboardingHintsUI {
     });
 
     actions.append(moments, privacy, dismiss);
-    card.append(title, body, actions);
+    card.append(title, body, wellness, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
     this._purposeBodyEl = body;
+    this._purposeWellnessTitleEl = wellnessTitle;
+    this._purposeWellnessBodyEl = wellnessBody;
     this._purposeMomentsEl = moments;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
@@ -1749,6 +1764,16 @@ export class OnboardingHintsUI {
     if (!this.purposeCard) return;
     this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
     this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
+    if (this._purposeWellnessTitleEl) {
+      this._purposeWellnessTitleEl.textContent = t(
+        'HINT_APP_PURPOSE_WELLNESS_TITLE'
+      );
+    }
+    if (this._purposeWellnessBodyEl) {
+      this._purposeWellnessBodyEl.textContent = t(
+        'HINT_APP_PURPOSE_WELLNESS_BODY'
+      );
+    }
     if (this._purposeMomentsEl) {
       this._purposeMomentsEl.textContent = t('HINT_APP_PURPOSE_MOMENTS');
       this._purposeMomentsEl.setAttribute(
@@ -2110,6 +2135,8 @@ export class OnboardingHintsUI {
         color: #3a5348;
         font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
         pointer-events: auto;
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
       }
       .onboarding-app-purpose[hidden] {
         display: none !important;
@@ -2159,6 +2186,29 @@ export class OnboardingHintsUI {
         line-height: 1.5;
         color: #3a5348;
         white-space: pre-line;
+      }
+      .onboarding-app-purpose__wellness {
+        margin: 0 0 12px;
+        padding: 10px 10px 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(92, 122, 108, 0.32);
+        background: rgba(255, 255, 255, 0.42);
+      }
+      .onboarding-app-purpose__wellness-title {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: 0.02em;
+        color: #2f463c;
+      }
+      .onboarding-app-purpose__wellness-body {
+        margin: 0;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.45;
+        color: #3a5348;
       }
       .onboarding-app-purpose__actions {
         display: flex;

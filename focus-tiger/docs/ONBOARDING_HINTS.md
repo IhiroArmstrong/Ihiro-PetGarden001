@@ -153,6 +153,7 @@
 - **常驻**：左下角极小「?」（窄屏 ActionBar `#ft-narrow-help-btn` 代理）。
 - **点击或悬停**：只打开 `#onboarding-app-purpose` 产品简介卡；点「知道了 / Got it」或框外空白关闭；悬停打开时指针离开 ? / 卡 → 收起。
 - **Privacy 链（2026-08-07）**：简介卡上次要文字链 → `#onboarding-privacy-sheet` 只读说明（本地优先；不承诺具名云保管同步）；**Back** 回到简介卡。简介正文含 no pressure / no ads / local-first 气质（见 locales `HINT_APP_PURPOSE_BODY`）。
+- **Wellness 免责（2026-08-14）**：简介卡正文下独立区块 `#onboarding-app-purpose` → `.onboarding-app-purpose__wellness`（en + ja：练习专注 / 正念 / 缓和日常压力；不是医疗器械或心理诊疗；不能替代咨询师 / 治疗师 / 医生）。气质克制、不制造焦虑；**禁止**写成治疗临床病症。叙事：`PRODUCT_POSITIONING.md` / `PRINCIPLES.md`。
 - **禁止**：同屏再出本页其它 tip、`help-remedy`、More tips 芯片、Focusing「还有 N 条」；简介卡内嵌整篇隐私长文。
 - **实现**：`OnboardingHintsUI.openPurposeOnly()`（`showRemedy()` 现为同义薄包装）；文案守卫 `privacyNoticeCopy.js`。
 

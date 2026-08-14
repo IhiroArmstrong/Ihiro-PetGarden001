@@ -266,6 +266,8 @@
   "HINT_APP_PURPOSE_MOMENTS": "五大时刻",
   "HINT_APP_PURPOSE_MOMENTS_ARIA": "打开五大时刻指南",
   "HINT_APP_PURPOSE_DISMISS": "知道了",
+  "HINT_APP_PURPOSE_WELLNESS_TITLE": "不是心理诊疗或医疗",
+  "HINT_APP_PURPOSE_WELLNESS_BODY": "这个空间用于培养专注力、练习正念、缓和日常压力。它不是医疗器械，也不是心理治疗或诊断，不能替代持证心理咨询师、治疗师或医生。若需要临床帮助，请寻求合格专业人士。",
   "FIVE_MOMENTS_MENU_LABEL": "五大时刻",
   "FIVE_MOMENTS_CARD_TITLE": "与阿寅同在的五个时刻",
   "FIVE_MOMENTS_CARD_BLURB": "Focus Tiger 不只是计时器。它是一天中五个温柔的陪伴时刻：Arrive → Focus → Recover → Transition → Reflect。",

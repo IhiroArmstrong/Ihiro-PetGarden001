@@ -266,6 +266,8 @@
   "HINT_APP_PURPOSE_MOMENTS": "The five moments",
   "HINT_APP_PURPOSE_MOMENTS_ARIA": "Open the five moments guide",
   "HINT_APP_PURPOSE_DISMISS": "Got it",
+  "HINT_APP_PURPOSE_WELLNESS_TITLE": "Not therapy or medical care",
+  "HINT_APP_PURPOSE_WELLNESS_BODY": "This space helps you build focus skill, practice mindfulness, and reduce everyday stress. It is not a medical device, not psychotherapy or diagnosis, and cannot replace a licensed counselor, therapist, or doctor. If you need clinical care, please seek a qualified professional.",
   "FIVE_MOMENTS_MENU_LABEL": "The 5 Moments",
   "FIVE_MOMENTS_CARD_TITLE": "Five moments with Yin",
   "FIVE_MOMENTS_CARD_BLURB": "Focus Tiger isn’t only a timer. It’s five gentle companions across a day: Arrive → Focus → Recover → Transition → Reflect.",

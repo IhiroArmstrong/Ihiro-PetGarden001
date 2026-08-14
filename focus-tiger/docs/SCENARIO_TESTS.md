@@ -406,12 +406,12 @@
 
 ## 场景 W：点「?」· 产品简介与 Privacy
 
-> **用户故事**：Kelly 点「?」只想看 App 是干什么的、隐私怎么说——见简介（no pressure / no ads / local-first），再点 **Privacy** 读本地优先说明，Back 回简介。  
+> **用户故事**：Kelly 点「?」只想看 App 是干什么的、隐私怎么说——见简介（no pressure / no ads / local-first）、以及「不是诊疗 / 不能替代咨询师」免责，再点 **Privacy** 读本地优先说明，Back 回简介。  
 > **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy 行；单元 `privacyNoticeCopy.test.js`。  
 > **仍须人工**：375 Sheet 可滚、可关；Rise 后再走一遍；**禁止**简介/隐私承诺具名云保管同步。  
 > **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。
 
-1. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句。
+1. `?product=1` → 点「?」`#onboarding-hint-help` → `#onboarding-app-purpose` 见 no pressure / no ads / stays on this device；简介可含 Arrive→…→Reflect 一句；**须见**免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；日语切语后见「心理療法・医療ではありません」）。
 2. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思。
 3. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
 4. **Back** → 回简介 → Got it 关闭。

@@ -35,6 +35,7 @@ If we add cloud features, we will explain **what** is sent, **why**, **how long*
 | Entry | Behavior |
 |---|---|
 | Primary | **?** → `#onboarding-app-purpose` → **Privacy** → `#onboarding-privacy-sheet`（i18n 摘录对齐本页） |
+| Wellness (not clinical) | Same **?** purpose card, distinct `.onboarding-app-purpose__wellness` block (en + ja). Not this privacy sheet. |
 | Secondary | Future About / Tip Jar footer may reuse the same sheet |
 | Do not | Settings tree only for privacy; paste the full notice inside the purpose card |
 

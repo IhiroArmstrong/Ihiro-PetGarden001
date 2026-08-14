@@ -39,4 +39,35 @@ describe('privacyNoticeCopy', () => {
       );
     }
   });
+
+  it('en + ja wellness disclaimer states practice, not clinical care', () => {
+    const en = loadLocale('en.json');
+    const ja = loadLocale('ja.json');
+    assert.match(en.HINT_APP_PURPOSE_WELLNESS_TITLE, /not therapy|medical/i);
+    assert.match(
+      en.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /focus skill|mindfulness|everyday stress/i
+    );
+    assert.match(
+      en.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /not a medical device|not psychotherapy/i
+    );
+    assert.match(
+      en.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /counselor|therapist|doctor/i
+    );
+    assert.match(
+      ja.HINT_APP_PURPOSE_WELLNESS_TITLE,
+      /心理療法|医療/
+    );
+    assert.match(
+      ja.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /集中力|マインドフルネス|ストレス/
+    );
+    assert.match(ja.HINT_APP_PURPOSE_WELLNESS_BODY, /医療機器ではありません/);
+    assert.match(
+      ja.HINT_APP_PURPOSE_WELLNESS_BODY,
+      /カウンセラー|セラピスト|医師/
+    );
+  });
 });

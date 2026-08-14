@@ -62,6 +62,15 @@ test.describe('wide ? purpose only', () => {
     await expect(page.locator('.onboarding-app-purpose__body')).toContainText(
       /no ads|No pressure/i
     );
+    await expect(
+      page.locator('[data-testid="onboarding-purpose-wellness"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('.onboarding-app-purpose__wellness-title')
+    ).toContainText(/Not therapy or medical care/i);
+    await expect(
+      page.locator('.onboarding-app-purpose__wellness-body')
+    ).toContainText(/not a medical device|counselor|therapist/i);
     await page.locator('.onboarding-app-purpose__privacy').click();
     await expect(
       page.locator('#onboarding-privacy-sheet:not([hidden])')
@@ -89,6 +98,9 @@ test.describe('narrow ? purpose only', () => {
 
     await expect(purposeCardVisible(page)).toBeVisible({ timeout: 8_000 });
     expect(await remedyTipCount(page)).toBe(0);
+    await expect(
+      page.locator('[data-testid="onboarding-purpose-wellness"]')
+    ).toBeVisible();
     await expect(
       page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"]')
     ).toHaveCount(0);

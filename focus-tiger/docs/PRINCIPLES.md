@@ -64,6 +64,7 @@
 - 不得暗示「用户不专注 → 小老虎不健康」「用户回来 → 小老虎恢复健康」；
 - 长期成长只能表现为共同经历增加、环境细节解锁、获得永久纪念物或新的温和表达，奖励只增不减；
 - 产品鼓励 **regular practice, at your own pace**，不得用 `daily practice`、连续签到或断签文案制造每日义务感。
+- **一般身心练习，不是诊疗（硬 · 2026-08-14）**：产品对外与应用内须清楚声明——本工具用于培养专注力、练习正念、缓和日常压力（build focus skill / practice mindfulness / reduce everyday stress）；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师 / 治疗师 / 医生。禁止把功能或文案写成治疗焦虑、抑郁或其它临床病症。应用内落点：**?** → `#onboarding-app-purpose` 免责区块（en + ja）。叙事权威：`PRODUCT_POSITIONING.md`「Wellness disclaimer」。
 
 ---
 

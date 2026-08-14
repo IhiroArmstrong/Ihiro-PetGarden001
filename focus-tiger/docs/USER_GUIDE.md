@@ -6,6 +6,8 @@
 
 A calm focus companion: sit with Yin, practice a short arrival, then focus at your own pace. It is a mindfulness partner — not a pet you must feed or keep alive.
 
+It helps you build focus skill, practice mindfulness, and reduce everyday stress. It is **not** therapy, diagnosis, or medical treatment, and it cannot replace a licensed counselor, therapist, or doctor. Tap **?** in the app to read the full note.
+
 ## How to open (local / preview)
 
 1. Open the app URL you were given (or, for developers: run the local preview and open it in **Safari**).

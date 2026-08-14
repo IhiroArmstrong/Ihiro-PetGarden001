@@ -1,8 +1,8 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.3
-> 最后更新：2026-08-11
+> 版本：1.4
+> 最后更新：2026-08-14
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -88,6 +88,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 - 当前主体验是小老虎在专注过程中安静陪伴，并在完成后给予分级情绪反馈；
 - 当前不扩展为睡眠、运动、情绪治疗或综合健康数据仪表盘；
 - 当前不承诺 AI 教练、心理咨询、儿童产品或企业员工管理功能；
+- **Wellness disclaimer（2026-08-14）**：应用内须显著说明本产品是专注力 / 正念练习空间，用于 build focus skill、practice mindfulness、reduce everyday stress；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师、治疗师或医生。落点：**?** → `#onboarding-app-purpose` 免责区块（`HINT_APP_PURPOSE_WELLNESS_*`；en + ja）。禁止把功能写成治疗焦虑、抑郁或其它临床病症。红线见 `PRINCIPLES.md`「一般身心练习，不是诊疗」。
 - 当前不因长期愿景而提前实现多角色、换装 UI、多场景、成就墙或复杂成长树；
 - **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练；回应走**本地分类 + 人工语料检索**，禁止运行时生成对用户说话（见下「禅意倾听者」与 Brief `task-confide-to-yin-v1.md`）。
 
