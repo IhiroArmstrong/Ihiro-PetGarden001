@@ -31,6 +31,16 @@
 
 ---
 
+## 点击反馈（触及可点击交互则必填）
+
+> 权威：`focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` · 白名单：`focus-tiger/docs/SILENT_BEHAVIORS.md`（`RULES_INDEX` → `interaction-feedback`）
+
+- [ ] **未**新增或修改可点击控件 / 图标命中层 → 勾此项并写 **「不涉及可点击交互」**
+- [ ] 若有：点击后 **0–1 秒内**用户会看到什么？________________
+- [ ] 若本次按设计不生效：对应 `SILENT_BEHAVIORS.md` 的 **`SB-xx`**（不在白名单里的沉默视为 bug）
+
+---
+
 ## 规则文件 / SSOT 数值（触及 `.cursor/rules/*.mdc` 则必填）
 
 > 权威：`focus-tiger/docs/RULES_INDEX.md` · 一致性门禁：`npm run docs:check`（含 `check-docs-consistency`）
@@ -61,13 +71,15 @@
 
 ---
 
-## 合前预览确认（合入 develop 门闩）
+## 合入 develop 前自检（CI 绿即可合；人工测试非合入门闩）
 
-> 权威：仓库根 `WORKFLOW.md`「feature/fix 合入 develop 前：worktree 预览确认」（`RULES_INDEX` → `git-feature-merge-preview`）。与关单 tip 规则并列，**不是**「先合再测」。豁免条件见该节「预览豁免（严格）」。
+> 权威：仓库根 `WORKFLOW.md`「feature/fix 合入 develop：研发自检 + 主干同步」（`RULES_INDEX` → `git-feature-merge-preview`）与「合入 develop：CI 绿即可合并」（`git-develop-small-pr-run-merge`）。关单只认合入后的 `origin/develop` tip。
 
-- [ ] **已在本 PR 的 feature/fix worktree** 起过 Vite（或等价预览），用 Safari/系统浏览器确认主路径无阻塞问题  
-  **或者** 满足豁免：`git diff --name-only origin/develop...HEAD` **不含** `focus-tiger/src/**`、`focus-tiger/public/**`、`focus-tiger/e2e/**`、产品入口 HTML、任意 `*.vue`（禁止「有个 .md 就算纯文档」；混有运行时路径 → 整 PR 不得豁免）→ 勾此项并写豁免理由：_______________
-- [ ] 合入前已按 `WORKFLOW.md` 跑过 **develop 同步判定**（`git diff --name-only origin/develop...HEAD` / `HEAD...origin/develop` + `comm -12`）：无需 rebase **或** 已 rebase/merge 并重测
+- [ ] **研发冒烟**：已跑 `cd focus-tiger && npm run test:pr-smoke`（或文档/规则 PR 仅 `docs:check` / 豁免 Vite——见 `WORKFLOW.md`「预览豁免」）  
+  **Vite 产品壳预览**不是合入前提；需要时给本地 Safari URL，但**不等**用户确认才开 PR。  
+  文档豁免：`git diff --name-only origin/develop...HEAD` **不含** `focus-tiger/src/**`、`focus-tiger/public/**`、`focus-tiger/e2e/**`、产品入口 HTML、任意 `*.vue`（禁止「有个 .md 就算纯文档」；混有运行时路径 → 整 PR 不得豁免 Vite/冒烟）→ 勾此项并写豁免理由：_______________
+- [ ] 合入前已按 `WORKFLOW.md` 跑过 **develop 同步判定**（`git diff --name-only origin/develop...HEAD` / `HEAD...origin/develop` + `comm -12`）：无需 rebase **或** 已 rebase/merge 并重跑冒烟
+- [ ] **TEST_TRACKER**：UI 可见改动已登记「待人工测试」；**不会**因为本 PR 将合入就把状态改成已通过 / 已修复
 
 ---
 
@@ -77,7 +89,7 @@
 - [ ] （可选）合并前再跑完整套件：`npm run test:e2e` · `npm run test:e2e:visibility` · `npm run docs:check`
 
 > CI：每次 PR→`develop` 都会上报 **`test:pr-smoke`**（无 `focus-tiger/**` 改动时为成功 no-op）与 **`pre-merge with develop`**。改产品代码时 smoke 含逻辑冒烟 + e2e smoke + **`npm run build` 产物检查**。完整 e2e / visibility / doc-contract 另触发。  
-> **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）——这是**合入之后**的关单门闩；**合入之前**须完成上方「合前预览确认」。勿在长期落后的 feature 分支上关单。
+> **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）——合入之后批量测；**合入资格 = CI 绿**。勿在长期落后的 feature 分支上关单。
 
 ---
 

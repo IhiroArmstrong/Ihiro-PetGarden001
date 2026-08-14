@@ -44,6 +44,8 @@ alwaysApply: true
 | `docs/KNOWN_RISKY_TEST_CHECKLIST.md` | **known-risky 优先人工验收步骤**（Safari / 375 / 回流）；**仅本 MD 权威**。同目录 `known-risky-test-checklist.csv` 与根目录 `.numbers` **均不权威** |
 | `docs/COVERAGE_GAP_AUDIT.md` | **功能 vs smoke/e2e 覆盖缺口审计**：模块对照矩阵、永不自动化清单、自动化后续顺序（Task 3→2→扩 smoke）；与 `TEST_TRACKER` §C / `SCENARIO_TESTS` 互补 |
 | `docs/Z_INDEX.md` | **产品 z-index 层叠登记**（`RULES_INDEX` → `z-index-registry`）；新加 fixed / 改层级先查表 |
+| `docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | **点击反馈**：接收反馈 ≠ 结果反馈；禁止哑点击；PR 须答 0–1s（`RULES_INDEX` → `interaction-feedback`） |
+| `docs/SILENT_BEHAVIORS.md` | **已知静默白名单**：不在表里的「没反应」测试时一律当 bug |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
 
 ## PRINCIPLES 硬性摘要
@@ -83,6 +85,8 @@ alwaysApply: true
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
 - 预览浏览器与能耗 / 进程收尾 / Cloud 独立会话提醒 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
+- 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
+- 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
 
 ## TEST_TRACKER 日常维护（Part 2）
 
@@ -106,11 +110,11 @@ alwaysApply: true
 - 质量叙事（why/how）→ `DEV_WORKFLOW_QUALITY.md`
 - 如涉及运行测试/CI相关任务，参考 testing-strategy 规则。
 
-## Git 同步（半自动，禁止静默 push）
+## Git 同步（任务收尾默认 push + PR；禁止直推主干）
 
-操作节奏摘要见 `PROCESS.md`「Git 同步节奏」（含口令「请安排下班前的 Git 同步」）。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main` / `git-develop-small-pr-run-merge`）与 regression-lock 第 6–7 条（**禁止直推 develop/main**；同步=旁支 + PR）。
+操作节奏摘要见 `PROCESS.md`「Git 同步节奏」（含口令「请安排下班前的 Git 同步」与「批量人工测试」）。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main` / `git-develop-small-pr-run-merge` / `prod-worker-deploy`）与 regression-lock 第 5–7 条（**禁止直推 develop/main**；同步=旁支 + PR）。
 `stop` 的 Git 同步 macOS 通知钩子已关闭（`hooks.json` 的 `stop` 为空）。若日后重新启用，只允许本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
 
-禁止：post-commit 自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程、静默 commit 不汇报、**直推 `develop`/`main`**。详见 regression-lock 与 `WORKFLOW.md`。 
+禁止：post-commit 钩子自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程、静默 commit 不汇报、**直推 `develop`/`main`**、未说「部署」就 Redeploy 生产 Worker。详见 regression-lock 与 `WORKFLOW.md`。 
 **注意**：只改代码、文档不进 commit = 假完成（下一会话权威口径仍是旧的）。 
-**develop 文档/小 PR**：CI 绿后默认弹 Run 合并（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`）；合 `main` 仍须你明确下令。
+**合入 `develop`**：CI 绿即可（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`）；**不等**人工测试。合 `main` 仍须你明确下令。TEST_TRACKER 保持「待人工测试」直到你关单。

@@ -255,3 +255,76 @@ test('triggerActiveRecover respects cooldown then allows again; strong emotion y
   assert.equal(controller.triggerActiveRecover().reason, 'strong_emotion');
   assert.equal(emotions.length, 2);
 });
+
+test('acknowledgeActiveRecoverCooldownTap plays micro-nod without toast or extending cooldown', () => {
+  let nowMs = 5_000_000;
+  const shown = [];
+  const emotions = [];
+  const reminderTypes = [];
+  const controller = new MindfulReminderController({
+    quotaManager: {
+      tryConsume() {
+        return true;
+      }
+    },
+    emotionController: {
+      current: 'idle',
+      getCurrentEmotionKey() {
+        return this.current;
+      },
+      playEmotion(key, options) {
+        emotions.push({ key, options });
+      }
+    },
+    toast: {
+      show(message, options) {
+        shown.push({ message, options });
+        return true;
+      }
+    },
+    getCopy: (key) => key,
+    now: () => nowMs,
+    onReminderShown: (type) => reminderTypes.push(type)
+  });
+
+  assert.equal(
+    controller.acknowledgeActiveRecoverCooldownTap().reason,
+    'inactive'
+  );
+
+  controller.startSession();
+  assert.equal(
+    controller.acknowledgeActiveRecoverCooldownTap().reason,
+    'available'
+  );
+
+  assert.equal(controller.triggerActiveRecover().ok, true);
+  const remainingBefore = controller.getActiveRecoverCooldownRemainingMs();
+  assert.ok(remainingBefore > 0);
+
+  const ack = controller.acknowledgeActiveRecoverCooldownTap();
+  assert.equal(ack.ok, true);
+  assert.equal(ack.remainingMs, remainingBefore);
+  assert.equal(
+    controller.getActiveRecoverCooldownRemainingMs(),
+    remainingBefore,
+    'cooldown tap must not reset or extend the 180s window'
+  );
+  assert.deepEqual(emotions[1], {
+    key: 'mindfulAcknowledge',
+    options: { subtype: 'activeRecoverCooldown' }
+  });
+  assert.equal(shown.length, 1, 'cooldown tap must not show toast');
+  assert.deepEqual(reminderTypes, ['activeRecover']);
+
+  nowMs += remainingBefore;
+  assert.equal(controller.triggerActiveRecover().ok, true);
+  assert.equal(emotions[2].options.subtype, 'activeRecover');
+  assert.equal(shown.length, 2);
+
+  controller.emotionController.current = 'celebrating';
+  assert.equal(
+    controller.acknowledgeActiveRecoverCooldownTap().reason,
+    'strong_emotion'
+  );
+});

@@ -759,18 +759,21 @@ export class EmotionController {
       // Honesty 短补登 / 切语 English / Re-focus：同源 nod-bow。
       // 须与 IntentionSet 同契约：pingpong×1（正放鞠躬→倒放回坐姿）+ CapCut 回 Idle；
       // 仅正放会卡在鞠躬末帧，无法接 idle。
+      // subtype `activeRecoverCooldown`（FB-01）：截短 nodBowMicro，幅度小于完整鞠躬。
       mindfulAcknowledge: (options = {}) => {
+        const sequenceName =
+          options.subtype === 'activeRecoverCooldown' ? 'nodBowMicro' : 'nodBow';
         if (!this.spritePlayer) {
           console.warn(
             '[EmotionController] mindfulAcknowledge: spritePlayer 未接入，回落 idle'
           );
-          this._finishOneShot(options, 'nodBow');
+          this._finishOneShot(options, sequenceName);
           return;
         }
         this._leaveIdleBaseline();
         this._use2DMainline();
         const started = this.spritePlayer.play(
-          'nodBow',
+          sequenceName,
           this._oneShotPlayOpts(
             {
               ...options,
@@ -783,11 +786,11 @@ export class EmotionController {
               returnCrossFadeMs:
                 options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS
             },
-            'nodBow'
+            sequenceName
           )
         );
         if (!started) {
-          this._finishOneShot(options, 'nodBow');
+          this._finishOneShot(options, sequenceName);
         }
       },
       stretchReminder: (options = {}) => {
@@ -1215,6 +1218,7 @@ export class EmotionController {
       lotusChestHalo: 'lotus-chest-halo',
       sessionComplete: 'session-complete',
       nodBow: 'nod-bow',
+      nodBowMicro: 'nod-bow 冷却微点头',
       stretchReminder: 'stretch-reminder',
       sleeping: 'sleeping',
       cloakSleep: 'cloak-sleep 披毯入睡(经典)',

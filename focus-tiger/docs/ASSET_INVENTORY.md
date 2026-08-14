@@ -117,7 +117,7 @@
 | celebrate-dance | 57 | celebrateDance | **已接线** celebrating 50% | — |
 | celebrate-dance-v2 | 60 | celebrateDanceV2 | **已接线** celebrating 50% | — |
 | session-complete | 28 | sessionComplete | **已接线** 非首次完成 / 微仪式 | Slice B：完成池主权重 |
-| nod-bow | 13 | nodBow / intentionNod | **已接线** mindfulAcknowledge · Choose | en 切语；Honesty 短补登 |
+| nod-bow | 13 | nodBow / intentionNod / **nodBowMicro** | **已接线** mindfulAcknowledge · Choose；冷却再点截短第 2–4 帧 | en 切语；Honesty 短补登；**FB-01** 微点头 |
 | stretch-reminder | 17 | stretchReminder | **已接线** 2h 舒展提醒 | 2026-08-04 删除同源调试键 wakeUp |
 | cloak-sleep | 34 | cloakSleep / sleeping / dormantWake | **已接线** 经典披毯·睡循环·倒放 | 与 starlight **约 50/50** |
 | starlight-cloak-sleep | 67 | starlightCloakSleep / starlightSleeping | **已接线** v5 正放·睡循环 | 2026-08-04 v5；与 classic 并存 |
@@ -308,7 +308,7 @@
 > **正式文件**：`sanctuary-enso-mark.png`（RGBA 真透明 · ~847×848 · 源自 `Enso-sample0025` 黑底抠图）。  
 > **候选对照**：`candidates/`（0021/0025 rembg 与 color-key 变体 + cream 预览）——**运行时默认只用正式文件**。  
 > **接线状态**：产品 UI **已接线**（`SanctuaryEnsoMarkChrome` · `feature/sanctuary-enso-mark`）。  
-> **位置规格**：相机可见蒲团正面中心（非髋下质量中心）；直径约蒲团可见径 **42%**（锁 38–48%）；见 Brief。
+> **位置规格**：相机可见蒲团正面中心（非髋下质量中心）；直径约蒲团可见径 **25%**（相对首版 42% 缩小约 40%，贴住蒲团不越界）；见 Brief。
 
 | 文件 | 角色 |
 |---|---|

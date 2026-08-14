@@ -26,7 +26,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'journey-log-card-styles-v1';
+const STYLE_ID = 'journey-log-card-styles-v2';
 const FADE_MS = 220;
 const LIST_MAX = 12;
 
@@ -111,7 +111,10 @@ export class JourneyLogUI {
     this.backupStatus = document.createElement('p');
     this.backupStatus.className = 'journey-log__backup-status';
     this.backupStatus.dataset.testid = 'journey-log-backup-status';
+    this.backupStatus.setAttribute('role', 'status');
+    this.backupStatus.setAttribute('aria-live', 'polite');
     this.backupStatus.hidden = true;
+    this._backupBusy = false;
 
     this.backupActions = document.createElement('div');
     this.backupActions.className = 'journey-log__backup-actions';
@@ -278,25 +281,44 @@ export class JourneyLogUI {
     if (on && opt.email) this.emailInput.value = opt.email;
   }
 
+  /**
+   * @param {string} key
+   * @param {'ok' | 'pending' | 'error'} [kind]
+   */
+  _setBackupStatus(key, kind = 'ok') {
+    this.backupStatus.hidden = false;
+    this.backupStatus.textContent = t(key);
+    this.backupStatus.dataset.kind = kind;
+  }
+
+  _setBackupBusy(busy) {
+    this._backupBusy = Boolean(busy);
+    this.sendCodeBtn.disabled = this._backupBusy;
+    this.enableBtn.disabled = this._backupBusy;
+    this.disableBtn.disabled = this._backupBusy;
+  }
+
   async _onSendCode() {
-    this.backupStatus.hidden = true;
+    if (this._backupBusy) return;
+    this._setBackupBusy(true);
+    this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_SENDING', 'pending');
     try {
       await requestPracticeBackupOtp(this.emailInput.value.trim());
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_OK');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_SENT', 'ok');
     } catch {
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_ERR', 'error');
+    } finally {
+      this._setBackupBusy(false);
     }
   }
 
   async _onEnable() {
-    this.backupStatus.hidden = true;
+    if (this._backupBusy) return;
     if (!this.consentCheck.checked) {
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_CONSENT', 'error');
       return;
     }
+    this._setBackupBusy(true);
     try {
       const res = await verifyPracticeBackupOtp(
         this.emailInput.value.trim(),
@@ -313,28 +335,29 @@ export class JourneyLogUI {
       if (!deviceToken) throw new Error('no_token');
       enablePracticeBackupOptIn(this._storage, { email, deviceToken });
       void flushPracticeBackupUpload({ storage: this._storage, force: true });
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_OK');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_ENABLED', 'ok');
       this._refreshBackupPanel();
     } catch {
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_ERR', 'error');
+    } finally {
+      this._setBackupBusy(false);
     }
   }
 
   async _onDisable() {
-    this.backupStatus.hidden = true;
+    if (this._backupBusy) return;
+    this._setBackupBusy(true);
     try {
       // Prefer OTP re-auth for delete; fall back to deviceToken-only delete path.
       const code = this.codeInput.value.trim();
       if (!code) {
+        this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_SENDING', 'pending');
         await requestPracticeBackupOtp(
           this.emailInput.value.trim() ||
             readPracticeBackupOptIn(this._storage).email ||
             ''
         );
-        this.backupStatus.hidden = false;
-        this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_SEND_CODE');
+        this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_SENT', 'ok');
         return;
       }
       const result = await disablePracticeBackupAndDeleteCloud({
@@ -342,18 +365,19 @@ export class JourneyLogUI {
         code
       });
       if (!result.ok) throw new Error(result.reason || 'fail');
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_OK');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_DISABLED', 'ok');
       this._backupPanelOpen = false;
       this._refreshBackupPanel();
     } catch {
-      this.backupStatus.hidden = false;
-      this.backupStatus.textContent = t('JOURNEY_LOG_BACKUP_STATUS_ERR');
+      this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_ERR', 'error');
+    } finally {
+      this._setBackupBusy(false);
     }
   }
 
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
+    document.getElementById('journey-log-card-styles-v1')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -472,7 +496,18 @@ export class JourneyLogUI {
       }
       .journey-log__backup-status {
         margin: 0 0 8px;
-        font-size: 0.78rem;
+        font-size: 0.82rem;
+        line-height: 1.4;
+        font-weight: 560;
+      }
+      .journey-log__backup-status[data-kind='ok'] {
+        color: #2f5d3a;
+      }
+      .journey-log__backup-status[data-kind='error'] {
+        color: #8a3b2c;
+      }
+      .journey-log__backup-status[data-kind='pending'] {
+        opacity: 0.85;
       }
       .journey-log__backup-actions {
         display: flex;
@@ -486,20 +521,23 @@ export class JourneyLogUI {
       }
       .journey-log__btn {
         appearance: none;
-        border: none;
         cursor: pointer;
         font: inherit;
-        padding: 8px 12px;
-        border-radius: 999px;
+        padding: 8px 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(139, 115, 85, 0.32);
+        background: rgba(255, 255, 255, 0.55);
+        color: #2c1f14;
+      }
+      .journey-log__btn:disabled {
+        opacity: 0.55;
+        cursor: default;
       }
       .journey-log__btn--ghost {
-        background: transparent;
-        color: inherit;
-        opacity: 0.85;
+        font-weight: 500;
       }
       .journey-log__btn--primary {
-        background: rgba(44, 31, 20, 0.14);
-        color: inherit;
+        font-weight: 600;
       }
     `;
     document.head.appendChild(style);

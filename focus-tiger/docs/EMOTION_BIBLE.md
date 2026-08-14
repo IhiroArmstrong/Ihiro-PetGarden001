@@ -146,7 +146,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `Celebrating` | `celebrating` → `celebrateDance` / `celebrateDanceV2`（2D，50/50）/ `CELEBRATING`（3D 垫底） | `public/sprites/.../celebrate-dance/frame_001–057.png`；`.../celebrate-dance-v2/frame_001–060.png`；GLB `tiger-happy-jump.glb` |
 | `IncenseComplete` | （效果模块，非姿态键） | `IncenseGreeting` |
 | `SessionComplete` | `sessionComplete` → `sessionComplete`（2D） | `public/sprites/.../session-complete/frame_001–028.png` |
-| `MindfulAcknowledge` | `mindfulAcknowledge` → `nodBow`（2D；`subtype: 'refocus'` 复用） | `public/sprites/.../nod-bow/frame_001–013.png`；**pingpong×1**（正放→倒放回坐姿）+ ~1s CapCut Idle（与 `IntentionSet` 同契约） |
+| `MindfulAcknowledge` | `mindfulAcknowledge` → `nodBow`（2D；`subtype: 'refocus'` / `activeRecover` 复用完整鞠躬；**`activeRecoverCooldown` → `nodBowMicro`** 截短第 2–4 帧） | `public/sprites/.../nod-bow/frame_001–013.png`；完整路径 **pingpong×1** + ~1s CapCut Idle。冷却再点（FB-01）为更小点头、**无** toast，**不**走 3.5–7s ack 时长带 |
 | `stretchReminder` | `stretchReminder` → `stretchReminder`（2D） | `public/sprites/.../stretch-reminder/frame_001–017.png` |
 | `Blink` | `BLINK` | 待制作 |
 | `Breathing` | （`DynamicMotion` 配置项） | 程序化，无独立资产 |
@@ -679,4 +679,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.91 | 2026-08-04 | 清掉「sleeping→10s 呼吸→dormantWake」旧句；睡态 Honesty = 选时长立刻 wake（6fps）；窄屏 `:5176` tip `0494dd6` 唤醒复确 OK |
 | 0.89 | 2026-08-04 | `Sleeping`：定格入睡末帧 + 背部 clip 层 scaleY 呼吸（头/蒲团/镜头不动；取代整图缩放与末帧 pingpong） |
 | 0.92 | 2026-08-05 | 入库 `conjureFlowersBlowAway`（变花吹散 · Phase 1 Lab）；Day1/久别策略 C 已拍板；产品冷启动未接线；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
+| 0.93 | 2026-08-14 | `MindfulAcknowledge` subtype `activeRecoverCooldown` → `nodBowMicro`（FB-01 冷却再点；小于完整 nod-bow；无 toast） |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

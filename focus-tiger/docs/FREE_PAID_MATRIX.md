@@ -67,7 +67,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Basic Reflection（结束反思 + 共鸣短句） | `free` | — | 无 key | 免费；禁 AI / 付费 CTA | **已接线** | — |
 | Breath Practice（首页左球） | `free` | — | 无 key | 与进阶仪式分立；免费 | **已接线** | — |
 | Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合。**Daily Card** Brief `task-journey-daily-card.md`。**上限：免费/付费统一 30（有意取舍，不做付费更高上限）**；永久档案靠 Save image；B 勿卖「无限历史」。云端兜底见下行「练习记忆 · 云端快照备份」 |
-| 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；邮箱 OTP + practice-backup deviceToken | Brief + Worker `PRACTICE_BACKUP_KV` | A 档静默整包快照（6 key）+ 空库恢复；关闭=删云端 | **已接线** | **#272** tip `a195584`；生产 Worker redeploy Version `f9755950-49c9-4677-99d6-76fd2d9d7012`（含 `PRACTICE_BACKUP_KV` / `OTP_KV`）。**OTP 发信仍待** `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`（当前仅 Stripe secrets → request-otp 503）。未绑/未同意=无兜底。TRACKER 待人工。 |
+| 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；邮箱 OTP + practice-backup deviceToken | Brief + Worker `PRACTICE_BACKUP_KV` | A 档静默整包快照（6 key）+ 空库恢复；关闭=删云端 | **已接线** | **#272** tip `a195584`；生产 Worker redeploy Version `f9755950-49c9-4677-99d6-76fd2d9d7012`（含 `PRACTICE_BACKUP_KV` / `OTP_KV`）。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面绑邮箱收到码且 Enable 成功（非关单）。未绑/未同意=无兜底。TRACKER 仍待空库恢复 / 关备份。 |
 | Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**Phase A 已挂 Reflection 底**；Phase B 印花未做。Brief：`task-daily-wisdom-reflection-mount.md` |
 
 | MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
@@ -154,7 +154,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
 11. **付费 · 意愿漏斗本地统计** — **已合**（#255；`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
-13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets（pepper / Resend）仍缺** → 端到端绑邮箱待补密后再验。
+13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。

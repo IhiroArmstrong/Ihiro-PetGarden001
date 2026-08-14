@@ -5,6 +5,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  pickDailyZenQuoteBackdropSrc,
   resolveDailyZenQuote,
   saveDailyZenQuoteImage,
   noteDailyZenQuoteOpened
@@ -13,12 +14,11 @@ import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
   GLASS_FILL,
-  GLASS_FILL_STRONG,
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'daily-zen-quote-card-styles-v1';
+const STYLE_ID = 'daily-zen-quote-card-styles-v2';
 const FADE_MS = 220;
 
 export class DailyZenQuoteCardUI {
@@ -56,6 +56,12 @@ export class DailyZenQuoteCardUI {
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'daily-zen-quote-card__blurb';
 
+    this.bgEl = document.createElement('img');
+    this.bgEl.className = 'daily-zen-quote-card__bg';
+    this.bgEl.alt = '';
+    this.bgEl.decoding = 'async';
+    this.bgEl.draggable = false;
+
     this.quoteEl = document.createElement('p');
     this.quoteEl.className = 'daily-zen-quote-card__quote';
     this.quoteEl.dataset.testid = 'daily-zen-quote-text';
@@ -83,6 +89,7 @@ export class DailyZenQuoteCardUI {
 
     this.actions.append(this.cancelBtn, this.saveBtn);
     this.root.append(
+      this.bgEl,
       this.titleEl,
       this.blurbEl,
       this.quoteEl,
@@ -170,10 +177,19 @@ export class DailyZenQuoteCardUI {
     this.saveBtn.textContent = t('DAILY_ZEN_QUOTE_SAVE');
     const resolved = this._resolved || resolveDailyZenQuote();
     this.quoteEl.textContent = resolved.text;
+    const src = pickDailyZenQuoteBackdropSrc(resolved.dateKey);
+    if (src) {
+      this.bgEl.src = src;
+      this.bgEl.hidden = false;
+    } else {
+      this.bgEl.removeAttribute('src');
+      this.bgEl.hidden = true;
+    }
   }
 
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
+    document.getElementById('daily-zen-quote-card-styles-v1')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -194,7 +210,35 @@ export class DailyZenQuoteCardUI {
         box-shadow: ${GLASS_SHADOW};
         opacity: 0;
         pointer-events: auto;
+        overflow: hidden;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
+      }
+      .daily-zen-quote-card__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 28%;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .daily-zen-quote-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          rgba(247, 241, 230, 0.78) 0%,
+          rgba(247, 241, 230, 0.7) 55%,
+          rgba(247, 241, 230, 0.82) 100%
+        );
+      }
+      .daily-zen-quote-card > *:not(.daily-zen-quote-card__bg) {
+        position: relative;
+        z-index: 2;
       }
       .daily-zen-quote-card.is-visible {
         opacity: 1;
@@ -241,7 +285,7 @@ export class DailyZenQuoteCardUI {
         border-radius: 16px;
         cursor: pointer;
         border: 1px solid rgba(139,115,85,.28);
-        background: ${GLASS_FILL_STRONG};
+        background: rgba(255,252,245,.55);
         color: #4a3a28;
         box-shadow: 0 1px 0 rgba(255,255,255,.7) inset;
       }
@@ -250,12 +294,10 @@ export class DailyZenQuoteCardUI {
         cursor: default;
       }
       .daily-zen-quote-card__btn--primary {
-        background: rgba(212,165,116,.35);
-        border-color: rgba(139,115,85,.35);
         font-weight: 600;
       }
       .daily-zen-quote-card__btn--ghost {
-        background: rgba(255,252,245,.55);
+        font-weight: 500;
       }
     `;
     document.head.appendChild(style);

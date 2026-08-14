@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   pickDailyZenQuoteKey,
+  pickDailyZenQuoteBackdropSrc,
   resolveDailyZenQuote,
   wrapCanvasText,
   downloadCanvasPng,
@@ -21,6 +22,7 @@ import {
   appendJourneyLogEntry,
   readJourneyLog
 } from './journeyLogGate.js';
+import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -163,6 +165,15 @@ describe('dailyZenQuote', () => {
     assert.equal(result.filename, 'focus-tiger-quiet-line-2026-08-06.png');
     assert.ok(result.key.startsWith('DAILY_ZEN_QUOTE_'));
     assert.equal(clicked, 1);
+  });
+
+  it('pickDailyZenQuoteBackdropSrc is stable per date and from the wallpaper gallery', () => {
+    const a = pickDailyZenQuoteBackdropSrc('2026-08-13');
+    const b = pickDailyZenQuoteBackdropSrc('2026-08-13');
+    assert.equal(a, b);
+    assert.ok(DIGITAL_WALLPAPER_STILLS.some((s) => s.src === a));
+    const c = pickDailyZenQuoteBackdropSrc('2026-08-14');
+    assert.ok(DIGITAL_WALLPAPER_STILLS.some((s) => s.src === c));
   });
 
   it('mixes classic and insight pools without throwing', () => {

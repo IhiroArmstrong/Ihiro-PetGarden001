@@ -9,6 +9,7 @@
 import { COPY_POOLS, getLocale, t, tInLocale } from '../locales/i18n.js';
 import { getLocalDateKey } from '../utils/localDate.js';
 import { stampJourneyLogInsightSparkForDate } from './journeyLogGate.js';
+import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
 
 export const DAILY_ZEN_QUOTE_POOL_KEY = 'DAILY_ZEN_QUOTE';
 export const DAILY_ZEN_QUOTE_INSIGHT_POOL_KEY = 'DAILY_ZEN_QUOTE_INSIGHT';
@@ -121,6 +122,26 @@ export function pickDailyZenQuoteKey(
   const dayIndex = Math.floor(Date.UTC(y, m - 1, d) / 86_400_000);
   const idx = ((dayIndex % list.length) + list.length) % list.length;
   return list[idx];
+}
+
+/**
+ * Stable-per-day still from the wallpaper/animation gallery (Quiet Line card bg).
+ * @param {string} [dateKey]
+ * @returns {string}
+ */
+export function pickDailyZenQuoteBackdropSrc(dateKey) {
+  const list = DIGITAL_WALLPAPER_STILLS;
+  if (!list.length) return '';
+  const parts = String(dateKey || '').split('-').map((n) => Number(n));
+  const y = parts[0];
+  const m = parts[1];
+  const d = parts[2];
+  const dayIndex =
+    Number.isFinite(y) && Number.isFinite(m) && Number.isFinite(d)
+      ? Math.floor(Date.UTC(y, m - 1, d) / 86_400_000)
+      : 0;
+  const stillIdx = ((dayIndex + 3) % list.length + list.length) % list.length;
+  return list[stillIdx]?.src || '';
 }
 
 /**

@@ -31,7 +31,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-tip-kindness-badges-chrome-v2';
+const STYLE_ID = 'yin-tip-kindness-badges-chrome-v3';
 
 export class TipKindnessBadgesChrome {
   /**
@@ -175,14 +175,16 @@ export class TipKindnessBadgesChrome {
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
     document.getElementById('yin-tip-kindness-badges-chrome-v1')?.remove();
+    document.getElementById('yin-tip-kindness-badges-chrome-v2')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
       .yin-tip-kindness-badges {
         position: fixed;
-        /* Beside Yin (mid-left), clear of bottom-left heatmap / ? cluster */
+        /* Beside Yin (mid-right), clear of top-right Support / mute */
         z-index: 11;
-        left: max(12px, env(safe-area-inset-left, 0px));
+        right: max(12px, env(safe-area-inset-right, 0px));
+        left: auto;
         top: max(120px, 28vh);
         bottom: auto;
         max-width: min(200px, 38vw);
