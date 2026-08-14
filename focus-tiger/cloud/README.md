@@ -56,6 +56,8 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/practice-backup/put` | `{ email, deviceToken, snapshot }` → 写 `PRACTICE_BACKUP_KV` 最新整包 |
 | `POST` | `/api/practice-backup/get` | `{ email, deviceToken }` → `{ snapshot }` |
 | `POST` | `/api/practice-backup/delete` | `{ email, code }` 或 `{ email, deviceToken }` → 删云端快照（关闭备份） |
+| `POST` | `/api/newsletter/subscribe` | `{ email, locale? }` → `{ ok: true }`；新订阅写入 `NEWSLETTER_KV` 并用 `waitUntil` 发 Resend 欢迎信（含退订链接） |
+| `GET`/`POST` | `/api/newsletter/unsubscribe` | `?token=` → HTML 退订页（GET）或 `{ ok: true }`（POST one-click）；从 KV 删除 |
 
 ### 限流
 
@@ -64,6 +66,8 @@ curl -s http://127.0.0.1:8787/health
 | 默认 API | 60/min（内存；按 IP / Bearer） |
 | `/api/verify-*` / `/api/confirm-*` | **10/min/IP**（单独桶） |
 | `/api/restore/request-otp` | **5/min/IP** + KV 层 60s/email cooldown + 5/hour/email |
+| `/api/newsletter/subscribe` | **5/min/IP**（防 Resend 刷信） |
+| `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
 ## Stub 接口（仍保留）

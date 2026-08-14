@@ -136,6 +136,7 @@ import {
 import {
   createMockNewsletterProvider
 } from './core/newsletter/mockNewsletterProvider.js';
+import { createWorkerNewsletterProvider } from './core/newsletter/workerNewsletterProvider.js';
 import { ReminderQuotaManager } from './core/ReminderQuotaManager.js';
 import {
   MindfulReminderController,
@@ -520,8 +521,17 @@ async function init() {
   }
   void refreshEntitlement();
 
-  // Stay in touch — mock provider until ESP / Worker is chosen (optional; not a login).
-  setNewsletterProvider(createMockNewsletterProvider());
+  // Stay in touch — Worker + Resend when cloud API is configured; mock in labs.
+  {
+    const forceMock = /(?:^|[?&])newsletterMock=1(?:&|$)/.test(
+      location.search || ''
+    );
+    if (forceMock || !getCloudApiBaseUrl()) {
+      setNewsletterProvider(createMockNewsletterProvider());
+    } else {
+      setNewsletterProvider(createWorkerNewsletterProvider());
+    }
+  }
 
   const focusHUD = new FocusHUD(document.getElementById('focus-hud'));
   const idleChrome = createIdleChromeFacade({
