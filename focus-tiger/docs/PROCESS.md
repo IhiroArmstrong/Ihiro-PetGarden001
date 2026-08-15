@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Stay in touch 欢迎信假成功 + Enso 左下角 + Membership 授章
+**最后更新时间**：2026-08-15（UTC+8） · Stay in touch 欢迎信 Worker `d0140328` + Enso 左下角 + Membership 授章
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Stay in touch 欢迎信假成功（2026-08-15）**：生产路由已上（Version `8c649d12-…`，无效邮箱 400）；用户用真实邮箱**没收到信**。根因：`waitUntil` 失败仍 `{ok:true}` + 已在 KV 不再发。代码改为 await Resend / 502 不写本地 submitted / 无 `welcomeSentAt` 重发。**生产须再 redeploy**（口令「部署」）。TRACKER `RB-20260815-L394`。
+- **Stay in touch 欢迎信假成功（2026-08-15 · #302 已合 · Worker `d0140328`）**：上午真实邮箱没收到信（旧 `8c649d12` `waitUntil` 假成功）。同日用户从 qa worktree tip `c2dce6c` redeploy 生产 Version `d0140328-ee54-4dbb-8710-be6675f0596a`（await Resend / 502 / 无 `welcomeSentAt` 重发）。TRACKER `RB-20260815-L394` 仍待真实邮箱复测。
 - **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
 
 - **Quiet Line Save image 明信片（2026-08-15 · `fix/quiet-line-save-postcard`）**：下载 PNG 改为上图下字（当日图库静帧 + 暖纸金句）；不再导出暗紫纯文字卡。TRACKER 待人工。
@@ -82,7 +82,7 @@
 - **点击反馈 follow-up（2026-08-14）**：存量 0–1s 补句改优先级表（禁「随改写再补」）；P0 已写 Q/U/X。SB-07 收窄为专用触点隐退；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单）。无运行时。
 - **点击反馈原则 + 沉默白名单（2026-08-14）**：`INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md` 入库；PR 模板 / Cursor 规则须答「点击后 0–1 秒内看到什么」；不在白名单的沉默测试时当 bug。索引 `interaction-feedback`。无运行时改动。
 - **体验 Bugs 叠层（2026-08-14 · #283 已合 tip `b027f3d`）**：Journey 备份点选须有发送/开启提示；Enso 缩小约 40% 贴住蒲团；⋯/抽屉去掉与右上重复的三项付费；Five Moments 单行可点跳转；Quiet Line 用动画静帧作底；Stay in touch 强调邮箱可达；仪式 Continue/Leave 同款钮；Sanctuary marks 改右侧。TRACKER 待人工（关单须 tip `b027f3d`）。
-- **Stay in touch · 真实 Resend（2026-08-13 · #280 已合；2026-08-15 路由已上、欢迎信未通）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`（`NEWSLETTER_KV` + 欢迎信 + 退订）。无 Cloud / `?newsletterMock=1` 仍 mock。**2026-08-15 人工**：真实邮箱没收到信；await/重发修复待 Worker redeploy。TRACKER `RB-20260815-L394`。
+- **Stay in touch · 真实 Resend（2026-08-13 · #280 已合；2026-08-15 #302 + Worker `d0140328`）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`。无 Cloud / `?newsletterMock=1` 仍 mock。**2026-08-15 人工**：旧版没收到信；同日生产已 redeploy await/重发。TRACKER `RB-20260815-L394` 仍待复测。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。
