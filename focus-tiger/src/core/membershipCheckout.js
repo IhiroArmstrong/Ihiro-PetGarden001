@@ -18,10 +18,11 @@ import { persistMembershipDeviceCredentialFromBody } from './membershipDeviceCre
 export const MEMBERSHIP_PLAN_ID = 'yin-membership';
 
 /**
- * Display-only label (no locked dollar amount — Price lives on Worker / Dashboard).
- * Locale strings do not interpolate ${price} for membership yet.
+ * Display-only USD amount (Stripe recurring Price lives on the Worker / Dashboard).
+ * Keep in lockstep with Sandbox `STRIPE_MEMBERSHIP_PRICE_ID` — same pattern as
+ * `TIP_JAR_PRICE_USD` / `SANCTUARY_LIFETIME_PRICE_USD`.
  */
-export const MEMBERSHIP_PRICE_DISPLAY = '';
+export const MEMBERSHIP_PRICE_DISPLAY = '8.99';
 
 /**
  * Apply confirmed subscription fields into entitlement cache.

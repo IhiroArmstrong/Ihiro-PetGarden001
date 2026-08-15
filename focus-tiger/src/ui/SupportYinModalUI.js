@@ -7,6 +7,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { TIP_JAR_PRICE_USD } from '../core/tipJarGate.js';
+import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
 import { SANCTUARY_LIFETIME_PRICE_USD } from './SanctuaryUnlockUI.js';
 import {
   GLASS_BLUR_CSS,
@@ -18,7 +19,7 @@ import {
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 
-const STYLE_ID = 'yin-support-modal-styles-v3';
+const STYLE_ID = 'yin-support-modal-styles-v4';
 const FADE_MS = 220;
 
 const ICON_SRC = '/ui/support/support-yin-icon.png';
@@ -143,7 +144,7 @@ export class SupportYinModalUI {
         'MEMBERSHIP_BENEFIT_3'
       ],
       priceKey: 'SUPPORT_MEMBERSHIP_PRICE',
-      priceValue: '',
+      priceValue: MEMBERSHIP_PRICE_DISPLAY,
       ctaKey: 'SUPPORT_MEMBERSHIP_CTA',
       ctaTestId: 'yin-support-membership-cta',
       ctaVariant: 'cushion',
@@ -238,6 +239,9 @@ export class SupportYinModalUI {
       card.appendChild(badgeEl);
     }
 
+    const artEl = document.createElement('div');
+    artEl.className = 'yin-support-card__art';
+
     const imgEl = document.createElement('img');
     imgEl.className = 'yin-support-card__img';
     imgEl.src = opts.imgSrc;
@@ -245,6 +249,7 @@ export class SupportYinModalUI {
     imgEl.decoding = 'async';
     imgEl.draggable = false;
     imgEl.dataset.altKey = opts.imgAltKey;
+    artEl.appendChild(imgEl);
 
     const titleEl = document.createElement('h3');
     titleEl.className = 'yin-support-card__title';
@@ -282,7 +287,7 @@ export class SupportYinModalUI {
     ctaBtn.dataset.key = opts.ctaKey;
     ctaBtn.addEventListener('click', opts.onCta);
 
-    card.append(imgEl, titleEl, blurbEl, benefits, priceEl, ctaBtn);
+    card.append(artEl, titleEl, blurbEl, benefits, priceEl, ctaBtn);
     return { card, imgEl, titleEl, blurbEl, benefitEls, priceEl, ctaBtn, badgeEl };
   }
 
@@ -396,7 +401,10 @@ export class SupportYinModalUI {
     this.membershipBenefits.forEach((el) => {
       el.textContent = t(el.dataset.key);
     });
-    this.membershipPrice.textContent = t('SUPPORT_MEMBERSHIP_PRICE');
+    this.membershipPrice.textContent = formatSupportPrice(
+      t('SUPPORT_MEMBERSHIP_PRICE'),
+      MEMBERSHIP_PRICE_DISPLAY
+    );
     this.membershipCta.textContent = t('SUPPORT_MEMBERSHIP_CTA');
 
     this.teaImg.alt = t('SUPPORT_TEA_IMG_ALT');
@@ -550,14 +558,21 @@ export class SupportYinModalUI {
         text-transform: none;
         pointer-events: none;
       }
-      .yin-support-card__img {
+      .yin-support-card__art {
         width: 100%;
         aspect-ratio: 1 / 1;
+        border-radius: 12px;
+        overflow: hidden;
+        /* Tea art is transparent; Sanctuary/Membership PNGs now punch to the same field. */
+        background: ${CARD_IMG_PAPER};
+      }
+      .yin-support-card__img {
+        display: block;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
         object-position: center;
-        border-radius: 12px;
-        /* Unify art field to tea-card warm paper (left/mid were cooler grey/white). */
-        background: ${CARD_IMG_PAPER};
+        background: transparent;
       }
       .yin-support-card__title {
         margin: 2px 0 0;

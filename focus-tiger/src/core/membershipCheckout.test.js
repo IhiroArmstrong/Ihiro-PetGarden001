@@ -12,7 +12,8 @@ import {
 import {
   confirmMembershipReturnQuery,
   markMembershipFromPayment,
-  MEMBERSHIP_PLAN_ID
+  MEMBERSHIP_PLAN_ID,
+  MEMBERSHIP_PRICE_DISPLAY
 } from './membershipCheckout.js';
 import {
   MEMBERSHIP_DEVICE_CREDENTIAL_KEY,
@@ -138,6 +139,17 @@ describe('membershipCheckout', () => {
       getEntitlementState({ storage }).subscription.entitled,
       false
     );
+  });
+});
+
+describe('membership display price', () => {
+  it('exports a dollar amount for Support / membership cards', () => {
+    assert.match(MEMBERSHIP_PRICE_DISPLAY, /^\d+\.\d{2}$/);
+    const en = JSON.parse(
+      readFileSync(join(here, '../locales/en.json'), 'utf8')
+    );
+    assert.match(en.MEMBERSHIP_PRICE, /\$\{price\}/);
+    assert.match(en.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
   });
 });
 

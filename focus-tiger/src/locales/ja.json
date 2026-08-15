@@ -520,7 +520,7 @@
   "MEMBERSHIP_BENEFIT_1": "必要なときに進階の儀式へ",
   "MEMBERSHIP_BENEFIT_2": "滞在中のより深い雰囲気",
   "MEMBERSHIP_BENEFIT_3": "生涯版と同じ進階アクセス——定期課金",
-  "MEMBERSHIP_PRICE": "購読 · 価格は Stripe 設定 · いつでも解約可",
+  "MEMBERSHIP_PRICE": "約 ${price} · 月額 · いつでも解約可",
   "MEMBERSHIP_BUY_CTA": "購読する",
   "MEMBERSHIP_ALREADY": "この端末でメンバーシップ有効",
   "MEMBERSHIP_MANAGE_CTA": "管理",
@@ -544,7 +544,7 @@
   "MEMBERSHIP_CLOUD_OFFLINE": "このビルドではメンバーシップ決済が未設定です。",
   "SUPPORT_MEMBERSHIP_TITLE": "阿寅メンバーシップ",
   "SUPPORT_MEMBERSHIP_BLURB": "サンクチュアリ生涯版と同じ進階レイヤーを購読で。自分のペースで。",
-  "SUPPORT_MEMBERSHIP_PRICE": "購読 · Stripe で課金",
+  "SUPPORT_MEMBERSHIP_PRICE": "約 ${price} · 月額",
   "SUPPORT_MEMBERSHIP_CTA": "メンバーシップに入る",
   "SUPPORT_MEMBERSHIP_IMG_ALT": "静かなメンバーシップの場面で休む阿寅"
 }

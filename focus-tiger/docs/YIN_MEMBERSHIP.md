@@ -136,8 +136,8 @@ Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并�
 
 ## Pricing (display)
 
-- UI：文案写「Subscription · price set in Stripe」——**未**锁死展示金额（与 Dashboard Price 对齐后再改 locale）
-- Worker：`STRIPE_MEMBERSHIP_PRICE_ID`
+- UI：`MEMBERSHIP_PRICE_DISPLAY` = **$8.99 / month**（Support 中间卡与 `#yin-membership-card` 同一 `{price}` 模板：`About ${price} · billed monthly`）。与 Tea **$9.99** / Sanctuary **$89.99** 同为展示常量。
+- Worker：`STRIPE_MEMBERSHIP_PRICE_ID`（Sandbox `price_1U2r5lFuIhgJPGLiEPOhJbst`）仍是计费权威；卡面数字须与 Dashboard recurring Price 对齐。若 Checkout 金额与 **$8.99** 不一致，先改展示常量，勿只改文案。
 
 ## Next
 

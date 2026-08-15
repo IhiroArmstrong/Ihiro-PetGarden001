@@ -8,7 +8,8 @@ import { getCloudApiBaseUrl, postCloudJson } from '../core/cloudApiClient.js';
 import {
   isMembershipActiveLocally,
   markMembershipFromPayment,
-  MEMBERSHIP_PLAN_ID
+  MEMBERSHIP_PLAN_ID,
+  MEMBERSHIP_PRICE_DISPLAY
 } from '../core/membershipCheckout.js';
 import { persistMembershipDeviceCredentialFromBody } from '../core/membershipDeviceCredential.js';
 import { createMembershipPortalSession } from '../core/entitlement/cloudEntitlementProvider.js';
@@ -429,7 +430,10 @@ export class MembershipUnlockUI {
     this.benefitEls[0].textContent = t('MEMBERSHIP_BENEFIT_1');
     this.benefitEls[1].textContent = t('MEMBERSHIP_BENEFIT_2');
     this.benefitEls[2].textContent = t('MEMBERSHIP_BENEFIT_3');
-    this.priceEl.textContent = t('MEMBERSHIP_PRICE');
+    this.priceEl.textContent = t('MEMBERSHIP_PRICE').replaceAll(
+      '{price}',
+      MEMBERSHIP_PRICE_DISPLAY
+    );
     const active = isMembershipActiveLocally({ storage: this._storage });
     this.buyBtn.textContent = active
       ? t('MEMBERSHIP_ALREADY')
