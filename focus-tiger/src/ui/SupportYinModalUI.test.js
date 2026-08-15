@@ -80,11 +80,11 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(en.SUPPORT_MEMBERSHIP_PRICE, /billed monthly/i);
     assert.match(zh.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
     assert.match(ja.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
+    assert.equal(MEMBERSHIP_PRICE_DISPLAY, '6.99');
     assert.equal(
       formatSupportPrice(en.SUPPORT_MEMBERSHIP_PRICE, MEMBERSHIP_PRICE_DISPLAY),
-      `About $${MEMBERSHIP_PRICE_DISPLAY} · billed monthly`
+      'About $6.99 · billed monthly'
     );
-    assert.match(MEMBERSHIP_PRICE_DISPLAY, /^\d+\.\d{2}$/);
   });
 
   it('membership preview points at closed-eye meditation asset', () => {

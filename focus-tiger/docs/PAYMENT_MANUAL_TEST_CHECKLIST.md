@@ -102,9 +102,9 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 
 ### C1 · 付完主路径（部分完成 · 请补全）
 
-1. Idle → 右上 **Support Yin** → 中间 Membership 卡报价行与左右同位置，见 **About $** + `MEMBERSHIP_PRICE_DISPLAY` + billed monthly；或 ⋯ Subscribe CTA → `#yin-membership-card` 见同一金额  
+1. Idle → 右上 **Support Yin** → 中间 Membership 卡报价行与左右同位置，见 **About $6.99 · billed monthly**；或 ⋯ Subscribe CTA → `#yin-membership-card` 见同一金额  
 2. 点 **Subscribe**（须再点一次；开卡后勿误触立刻进 Stripe）  
-3. Stripe **subscription** Checkout 金额 **以 Dashboard Price 为准**（卡面数字尚未与 Price id 核过）→ 付完回跳（URL 带 `membership_session=cs_…`）  
+3. Stripe **subscription** Checkout 金额应为 **US$6.99/月**（2026-08-15 用户书面）→ 付完回跳（URL 带 `membership_session=cs_…`）  
 4. **期望**：  
    - confirm 成功 → 本地 subscription 缓存  
    - 本地写入 `focus-tiger.membership-device.v1`（有 `email`+`deviceToken`）  

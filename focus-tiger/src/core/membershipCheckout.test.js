@@ -144,7 +144,7 @@ describe('membershipCheckout', () => {
 
 describe('membership display price', () => {
   it('exports a dollar amount for Support / membership cards', () => {
-    assert.match(MEMBERSHIP_PRICE_DISPLAY, /^\d+\.\d{2}$/);
+    assert.equal(MEMBERSHIP_PRICE_DISPLAY, '6.99');
     const en = JSON.parse(
       readFileSync(join(here, '../locales/en.json'), 'utf8')
     );

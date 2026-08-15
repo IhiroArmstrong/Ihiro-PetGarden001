@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Support 三卡暖纸底 + Membership 报价占位
+**最后更新时间**：2026-08-15（UTC+8） · Support 三卡暖纸底 + Membership US$6.99
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置（`MEMBERSHIP_PRICE_DISPLAY` 为卡面占位，须对照 Stripe Checkout）。TRACKER Support 行待人工。
+- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。
 - **Wellness 免责改「?」查阅 + Enso 再缩（2026-08-15）**：冷启动**不再**自动弹出「Not therapy or medical care」；点「?」简介卡仍见同一免责。Enso 直径改为蒲团可见径约 **10%**（相对上一版 25% 的约 40%），须落在蒲团中央、不越界。TRACKER 待人工。
 - **菜单订阅 CTA（2026-08-15 · #296 已合）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则为普通钮 **You're subscribed**（同样打开 Membership 卡）。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
 - **Stay in touch 卡面（2026-08-15 · #295 已合）**：除 known-error 修复说明外，留邮箱也会收到更好的最新版（latest release）说明；仍非推销名单。欢迎信定稿不改字。TRACKER 待人工。

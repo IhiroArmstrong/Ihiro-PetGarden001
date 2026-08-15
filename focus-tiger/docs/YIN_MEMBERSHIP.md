@@ -136,7 +136,7 @@ Confirm 额外拉取 Stripe Subscription：`status` ∈ `active|trialing`，并�
 
 ## Pricing (display)
 
-- UI：Support 中间卡与 `#yin-membership-card` 用同一 `{price}` 模板（`About ${price} · billed monthly`）。展示数字 = `MEMBERSHIP_PRICE_DISPLAY`（目前填了占位 **8.99**，好让报价行与左右卡对齐）。**这不是 Stripe Dashboard 核对结果**；计费权威仍是 `STRIPE_MEMBERSHIP_PRICE_ID`。对照 Checkout 后若不一致，只改该常量。
+- UI：Support 中间卡与 `#yin-membership-card` 用同一 `{price}` 模板（`About ${price} · billed monthly`）。展示数字 = `MEMBERSHIP_PRICE_DISPLAY` = **US$6.99 / month**（2026-08-15 用户书面对照 Stripe）。计费权威仍是 `STRIPE_MEMBERSHIP_PRICE_ID`；若 Checkout 与卡面不一致，只改该常量。
 - Worker：`STRIPE_MEMBERSHIP_PRICE_ID`（Sandbox `price_1U2r5lFuIhgJPGLiEPOhJbst`）
 
 ## Next
