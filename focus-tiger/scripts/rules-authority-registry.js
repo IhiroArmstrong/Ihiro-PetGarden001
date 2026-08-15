@@ -257,7 +257,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /git worktree add/,
       /禁止两 worktree 同时检出同一分支/,
       /请清理闲置 worktree/,
-      /check:worktree-hygiene/
+      /check:worktree-hygiene/,
+      /Cloud 旁支落到本机/,
+      /migrated branch/
     ],
     topicSignals: [
       /并行 Cursor 会话/,
@@ -277,6 +279,11 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'same-checkout-parallel-write-ok',
         pattern: /(?:可以|允许|应当)(?:多个|两个)(?:Agent|会话).*(?:同一|同一个)(?:目录|checkout|工作树).*(?:同时写|并行写)/,
         note: '禁止主张同目录并行写可接受；须 worktree 隔离'
+      },
+      {
+        id: 'primary-migrated-checkout-ok',
+        pattern: /(?:可以|允许|应当|请)(?:在主仓|在本机主仓|在当前打开的目录).*(?:Apply|migrated branch|迁入 Cloud)/,
+        note: '禁止主张在主仓点 Cursor Apply / checkout migrated branch；须另开 worktree'
       }
     ]
   },
