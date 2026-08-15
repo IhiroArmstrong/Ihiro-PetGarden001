@@ -62,4 +62,18 @@ describe('rules-authority-registry', () => {
     assert.equal(t.ssotPath, 'WORKFLOW.md');
     assert.match(t.ssotSection, /固定 develop 验收 worktree/);
   });
+
+  it('flags applying a Cloud migrated branch in the primary checkout', () => {
+    const t = RULE_AUTHORITY_TOPICS.find((x) => x.id === 'git-parallel-worktree');
+    const bad = t.forbiddenOutsideSsot.find(
+      (f) => f.id === 'primary-migrated-checkout-ok'
+    );
+    assert.ok(bad);
+    assert.ok(bad.pattern.test('可以在主仓点 Apply 迁入 Cloud 旁支'));
+    assert.ok(
+      !bad.pattern.test(
+        '见 WORKFLOW.md 并行 worktree 第 8 款（禁止主仓 Apply / migrated checkout）'
+      )
+    );
+  });
 });

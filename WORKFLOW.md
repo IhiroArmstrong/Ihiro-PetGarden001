@@ -76,7 +76,12 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    - 你点名 path（或写「按清单清」/「按扩大清单清」= 只清当时 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。  
    - **固定 QA 树拆除豁免**见下文 `qa-develop-worktree`（`…-wt-develop-qa` **不得** `propose_remove`）。  
    - 政策索引：`RULES_INDEX.md` → `git-worktree-hygiene`。与锁心跳/陈旧（下节 Prompt 3）**同原则、不同风险等级**：客观依据（脚本输出 / `last_heartbeat`）供判断；**不可逆拆盘必须人工确认**；可逆的锁接管见下节。  
-7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。
+7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。  
+8. **Cloud 旁支落到本机（禁止主仓 migrated checkout）**：Cursor Desktop「Apply / checkout migrated branch」会在**当前打开的目录**里 `git checkout` 那条 Cloud 旁支，并有短超时（本仓常见 `Checkout timed out after 120000ms`）。PNG 序列多时主仓 checkout 很容易超时；即使成功也会抢走主仓 / QA 树 / 正在出 5173 的检出。  
+   - **禁止**：在主仓通用目录、固定 QA 树 `…-wt-develop-qa`、或任何正在跑 Vite / 被占用的 worktree 上点 Apply / 迁入 migrated branch。  
+   - **要做**：`git fetch origin <branch>` → `git worktree add <并列目录>-wt-<short> origin/<branch>`，需要写盘时再在 Cursor 打开该目录。只读看 diff 用 GitHub / PR，不必落盘。  
+   - **先查是否还该落**：PR 已关未合、behind `develop` 很大、或口径已被更新 PR 取代（例 2026-08-15 #297 Worker `8c649d12` 已被 `d0140328` 取代）→ **不要**再 checkout。看对话用 Cloud 网页。  
+   - Agent **禁止**叫用户对本机主仓点「Open in Cursor / Apply」来接 Cloud 旁支。
 
 ### 工作树占用检测与 `.ft-session-lock`（强制）
 
@@ -566,6 +571,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
+| 把 Cloud 旁支落到本机 | `git fetch` + `git worktree add …-wt-… origin/<branch>`；禁止主仓 Apply / migrated checkout（见「并行 Cursor 会话」第 8 款） |
 | 关单 / 批量人工测试 | 固定 QA 树 `…-wt-develop-qa` · `:5173`；合入后 `npm run sync:qa-develop`（见 `qa-develop-worktree`） |
 | 修 bug（且有姊妹功能分支） | 修完后对照姊妹线是否需同修；写入「待你决定 / 待你知道」（见「长期并存功能分支的同步纪律」） |
 | 修 bug | 从 `develop` 切 `fix/…` |

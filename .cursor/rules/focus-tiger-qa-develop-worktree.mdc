@@ -17,4 +17,5 @@ alwaysApply: true
    - **②** 一句这次合并带来什么变化（脚本 `summary:`）  
 4. **Cloud / 本机无此树**：不得假装已在 Mac 上 pull；汇报须含 `qa_worktree: ABSENT`，①② 仍要写。  
 5. **禁止**为收尾停掉 QA 树 5173 Vite；禁止在该树 `git commit`。  
-6. **5173 正在测时**：禁止抢端口、禁止 `git switch` 正在出码的目录。只允许另建 detached QA 树；等这轮测完再 `npm run dev:qa`。
+6. **5173 正在测时**：禁止抢端口、禁止 `git switch` 正在出码的目录。只允许另建 detached QA 树；等这轮测完再 `npm run dev:qa`。  
+7. **Cloud Apply / checkout migrated branch** 视同抢检出：禁止在主仓、本 QA 树、或正在出 5173 的目录上点。落到本机须另开 `…-wt-…`（`WORKFLOW.md` 并行 worktree 第 8 款）。
