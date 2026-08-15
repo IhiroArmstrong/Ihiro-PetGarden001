@@ -67,7 +67,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Basic Reflection（结束反思 + 共鸣短句） | `free` | — | 无 key | 免费；禁 AI / 付费 CTA | **已接线** | — |
 | Breath Practice（首页左球） | `free` | — | 无 key | 与进阶仪式分立；免费 | **已接线** | — |
 | Journey Log（基础 · D′） | `free` | Daily Card 存图亦免费 | `journey.log`（free / persistent） | 免费基础留痕 | **部分接线** | UI/store 已合。**Daily Card** Brief `task-journey-daily-card.md`。**上限：免费/付费统一 30（有意取舍，不做付费更高上限）**；永久档案靠 Save image；B 勿卖「无限历史」。云端兜底见下行「练习记忆 · 云端快照备份」 |
-| 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；邮箱 OTP + practice-backup deviceToken | Brief + Worker `PRACTICE_BACKUP_KV` | A 档静默整包快照（6 key）+ 空库恢复；关闭=删云端 | **已接线** | **#272** tip `a195584`；生产 Worker redeploy Version `f9755950-49c9-4677-99d6-76fd2d9d7012`（含 `PRACTICE_BACKUP_KV` / `OTP_KV`）。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面绑邮箱收到码且 Enable 成功（非关单）。未绑/未同意=无兜底。TRACKER 仍待空库恢复 / 关备份。 |
+| 练习记忆 · 云端快照备份 / 恢复（防丢失） | `free` | **非** B 内容解锁；邮箱 OTP + practice-backup deviceToken | Brief + Worker `PRACTICE_BACKUP_KV` | A 档静默整包快照（6 key）+ 空库恢复；关闭=删云端 | **已接线** | **#272** tip `a195584`；当前生产 Version `8c649d12-…`（#272 当时 `f9755950-…`）。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面绑邮箱收到码且 Enable 成功（非关单）。未绑/未同意=无兜底。TRACKER 仍待空库恢复 / 关备份。 |
 | Daily Wisdom（每日一句） | `free`（基础句）+ B 可叠静默印花 | 印花 = lifetime∪subscription | `content.daily-wisdom`（free / ongoing） | 免费句；Sanctuary 印花委婉 | **部分接线** | `resolveTodayWisdom` 内已 `isEntitled`；**Phase A 已挂 Reflection 底**；Phase B 印花未做。Brief：`task-daily-wisdom-reflection-mount.md` |
 
 | MilestoneGlow 播放记账 | `free` | — | `milestone.glow.played`（free / persistent） | 免费里程碑表现 | **部分接线** | catalog 有；产品 Glow 路径已存在；ownership 是否处处 claim 视实现，非 B 门 |
@@ -89,7 +89,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | Sanctuary Lifetime Unlock UI / Checkout | `lifetime∪subscription` | **买断 SKU** | `sanctuaryEntitlementGate` → entitlement lifetime 信号 | B 买断方式 | **已接线** | 支付/UI 已合；**≠** 下游 Ambient 已按锁消费 |
-| Yin Membership 订阅产品化 | `lifetime∪subscription` | **订阅 SKU** | entitlement `subscription` cache + `membershipCheckout` + cloud provider | B 订阅方式；v1 纳入 | **部分接线** | Checkout / confirm / OTP verify / Unlock UI Manage / Support 卡已接；成功页写 entitlement cache。续费/取消 webhook（Prompt 9）+ provider/Portal（Prompt 10 · **#240 已合 tip `755d465`**）；**生产 redeploy** 待 Resend/OTP secrets；须 `STRIPE_MEMBERSHIP_PRICE_ID` + 真实 `MEMBERSHIP_KV` / `OTP_KV` |
+| Yin Membership 订阅产品化 | `lifetime∪subscription` | **订阅 SKU** | entitlement `subscription` cache + `membershipCheckout` + cloud provider | B 订阅方式；v1 纳入 | **部分接线** | Checkout / confirm / OTP verify / Unlock UI Manage / Support 卡已接；成功页写 entitlement cache。续费/取消 webhook（Prompt 9）+ provider/Portal（Prompt 10 · **#240 已合 tip `755d465`**）。**生产 Worker Version `8c649d12-…` 已含这些路由**；OTP secrets 已补（2026-08-13）。TRACKER §C4 仍待人工 |
 | 统一 entitlement gate 地基 | `lifetime∪subscription` | 互覆盖引擎 | `src/core/entitlement/` | 正式产品决定 | **部分接线** | 单测 + mock 已合；**多数产品 UI 未统一改读** `isEntitled`（仪式菜单除外） |
 | Morning Ritual（进阶） | `lifetime∪subscription` | Lifetime 或 Membership | `ritual.morning.access`（字面 subscription / ongoing） | B | **已接线** | Idle ⋯/抽屉 Rituals 行 `isEntitled` 锁；未授权 disabled |
 | Emotional Reset Ritual | `lifetime∪subscription` | 同上 | `ritual.emotional-reset.access` | B | **已接线** | 同上 |
@@ -145,7 +145,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 1. **Ambient Deep 15s 试听** — **本支实现中** `feature/ambient-deep-audition-15s`（Gate #251 已合）。  
 2. **`emotion.premium.trigger`** — catalog 有；产品未拦高级情绪。  
 3. **`content.advanced.daily-unlock`** — catalog 有；无消费者（占位 · 待定义或废止）。  
-4. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 redeploy 待 Resend/OTP secrets。  
+4. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 Worker Version `8c649d12-…` 已含路由；OTP secrets 已补。TRACKER §C4 仍待人工。  
 5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式 + Ambient 深库 + Seasonal 已用；高级情绪等未跟。  
 6. **Daily Wisdom → Reflection + 静默印花** — Brief `task-daily-wisdom-reflection-mount.md`（Phase A/B 拆分）。  
 7. **Journey Daily Card（Save image）** — Brief `task-journey-daily-card.md`；**Log 上限免费/付费统一 30（有意）**。  
@@ -154,7 +154,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
 11. **付费 · 意愿漏斗本地统计** — **已合**（#255；`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
-13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
+13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产当前 Version `8c649d12-…`（#272 当时为 `f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。

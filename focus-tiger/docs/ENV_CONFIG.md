@@ -1,7 +1,7 @@
 # Focus Tiger · 环境配置与密钥隔离
 
-> **状态（2026-07-31 核实）**：v1.0 纯本地；前端**未**接 `cloud/`；当前 CI Playwright **不**需要任何 API Key。  
-> 本文把隔离规则先钉死，避免 v1.1 接线时把 Secret Key 写进客户端。
+> **状态（2026-08-15 核实）**：生产 Worker `focus-tiger-cloud`（Version `8c649d12-1c1c-4d45-b9f4-92cd75686e81`）已接 Tip / Sanctuary / Membership / OTP / practice-backup / newsletter。前端只经公开 `VITE_CLOUD_API_BASE_URL` 调用；**Secret 仍不得进客户端**。CI Playwright **不**需要任何 API Key。  
+> 本文把隔离规则钉死，避免把 Secret Key 写进客户端。
 
 ## 1. 硬性规则
 
@@ -23,10 +23,10 @@
 | 项 | 状态 |
 |---|---|
 | `focus-tiger/.env` / `.env.development` / `.env.production` 已提交？ | **否**（`.gitignore` 挡 `.env*`，仅放行 `.env.example`） |
-| 客户端调用云 API？ | **否**（`src/` 无 cloud fetch；见 `cloud/README.md`） |
+| 客户端调用云 API？ | **是（可选）**。配了 `VITE_CLOUD_API_BASE_URL` 时，Tip / Sanctuary / Membership / OTP restore / practice-backup / newsletter 走 `https://focus-tiger-cloud.ihiro.workers.dev`；未配或 `?newsletterMock=1` 则本地/mock。**禁止**把 Secret 放进任何 `VITE_*` |
 | CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
 | 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
-| v1.1 接云后 | 先补公开 `VITE_CLOUD_API_BASE_URL`；服务端密钥走 Workers / Actions；再为**真实**云 E2E 加对应 `secrets.*` |
+| 云端算法（v1.1） | **未接**。支付 / OTP / newsletter 已接公开 base；v1.1 算法仍后排。服务端密钥走 Workers / Actions |
 | Tip / Sanctuary / Membership / practice-backup / newsletter Worker（2026-08-15） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**）。当前 Version **`8c649d12-1c1c-4d45-b9f4-92cd75686e81`**（Newsletter subscribe/unsubscribe 已上；OTP / webhook / Membership / practice-backup 同 Worker 继续服务；#272 当时 Version `f9755950-…` 已被此次覆盖）。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**OTP 发信（2026-08-13）**：生产已 `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；`RESEND_FROM` = `Yin <restore@twinsology.com>`。本地 Vite 缺 `VITE_CLOUD_API_BASE_URL` 时 Send code 会本地失败。**Newsletter（#280 接线 + 2026-08-15 redeploy）**：`NEWSLETTER_KV` 已绑；From = **只** `NEWSLETTER_FROM`（`hello@twinsology.com`），**禁止**回退 `RESEND_FROM` / `restore@`。探路：无效邮箱 → 400 `invalid_email`。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ## 3. 与 CI 的关系
@@ -40,4 +40,4 @@
 - [ ] 新密钥是否出现在 `src/**` 或任何 `VITE_*`？
 - [ ] `.env.production` 与 `.env.development` 是否分文件、未互相粘贴 Secret？
 - [ ] CI 是否**真的**需要该 Key？需要 → 写入 Actions Secret 且 workflow 显式 `secrets.NAME`；不需要 → 不要为「以防万一」乱加
-- [ ] `cloud/` stub 仍无绑定时，勿把「缺 Key」误判为 e2e 失败根因
+- [ ] 现有 Playwright **不**依赖 Worker secrets；勿把缺 Key 误判为 e2e 失败根因
