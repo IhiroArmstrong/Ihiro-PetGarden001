@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-14（UTC+8） · Wellness 免责 + Quiet Line 洞察种子
+**最后更新时间**：2026-08-15（UTC+8） · Stay in touch 文案含最新版
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Stay in touch 卡面（2026-08-15）**：除 known-error 修复说明外，留邮箱也会收到更好的最新版（latest release）说明；仍非推销名单。欢迎信定稿不改字。TRACKER 待人工。
 - **Wellness 免责 · 非诊疗（2026-08-14 · 本支 `feature/wellness-disclaimer-copy`）**：冷启动一次性 `#onboarding-wellness-first`（Got it）+「?」简介卡常驻区块 + Privacy Sheet 交叉引用（en + ja）。文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent。红线 `PRINCIPLES.md` / 落点 `ONBOARDING_HINTS.md`。TRACKER 待人工。
 - **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · #292 已合）**：经典金句 ∪ **14** 句生产种子（`INSIGHT_1`–`14`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 天气备选仍不上。TRACKER 待人工（375 换行 + 符号）。
 - **GitHub 默认分支改为 `develop`（2026-08-14）**：Cloud / 新 clone / 新 PR 默认 base / Dependabot / `schedule` YAML 均跟 `develop`。`main` 仍是发布线（合入须明确下令）。夜间全量 e2e 不再需要为 cron 把 workflow 同步到 `main`。权威：`ENV_CONFIG.md` §3。
