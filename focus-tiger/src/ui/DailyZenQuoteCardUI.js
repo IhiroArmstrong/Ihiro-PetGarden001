@@ -160,7 +160,11 @@ export class DailyZenQuoteCardUI {
     this.saveBtn.disabled = true;
     try {
       const saveFn = this.handlers.saveImage || saveDailyZenQuoteImage;
-      const info = await saveFn();
+      const backdropReady =
+        this.bgEl && this.bgEl.complete && this.bgEl.naturalWidth > 0
+          ? this.bgEl
+          : undefined;
+      const info = await saveFn({ backdropImage: backdropReady });
       this.handlers.onSaved?.(info);
       if (info?.ok) this.close();
     } finally {

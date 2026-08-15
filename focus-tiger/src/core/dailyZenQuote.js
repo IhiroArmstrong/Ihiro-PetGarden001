@@ -2,6 +2,7 @@
  * Growth pack ③ — daily quiet-line quote (local pool + canvas save).
  * Deterministic by local YYYY-MM-DD; does not use soft-schedule / cloud.
  * Pool v2 mixes classic Quiet Line lines with a small insight-spark seed.
+ * Save image = 4:5 postcard (gallery still above, quote on warm paper).
  * @see docs/task-briefs/task-growth-content-pack-decision.md
  * @see docs/task-briefs/task-quiet-line-insight-spark.md
  */
@@ -144,6 +145,87 @@ export function pickDailyZenQuoteBackdropSrc(dateKey) {
   return list[stillIdx]?.src || '';
 }
 
+/** 4:5 keepsake — still above, quote on warm paper (not a dialog screenshot). */
+export const QUIET_LINE_CARD = Object.freeze({
+  width: 1080,
+  height: 1350,
+  imageBandRatio: 0.58,
+  paper: '#f4eee3',
+  ink: '#3d2e22',
+  inkMuted: 'rgba(61, 46, 34, 0.62)',
+  titleInk: '#5c4330',
+  focusX: 0.5,
+  focusY: 0.28,
+  padX: 88,
+  seamFade: 72
+});
+
+/**
+ * CSS object-fit:cover source crop. focusX/Y match object-position (0–1).
+ * @param {number} srcW
+ * @param {number} srcH
+ * @param {number} destW
+ * @param {number} destH
+ * @param {number} [focusX]
+ * @param {number} [focusY]
+ * @returns {{ sx: number, sy: number, sw: number, sh: number }}
+ */
+export function coverSourceRect(
+  srcW,
+  srcH,
+  destW,
+  destH,
+  focusX = QUIET_LINE_CARD.focusX,
+  focusY = QUIET_LINE_CARD.focusY
+) {
+  const sw0 = Number(srcW) || 0;
+  const sh0 = Number(srcH) || 0;
+  const dw = Number(destW) || 0;
+  const dh = Number(destH) || 0;
+  if (sw0 <= 0 || sh0 <= 0 || dw <= 0 || dh <= 0) {
+    return { sx: 0, sy: 0, sw: Math.max(1, sw0), sh: Math.max(1, sh0) };
+  }
+  const scale = Math.max(dw / sw0, dh / sh0);
+  const scaledW = sw0 * scale;
+  const scaledH = sh0 * scale;
+  const fx = Math.min(1, Math.max(0, Number(focusX) || 0));
+  const fy = Math.min(1, Math.max(0, Number(focusY) || 0));
+  const sx = Math.max(0, -(dw - scaledW) * fx / scale);
+  const sy = Math.max(0, -(dh - scaledH) * fy / scale);
+  const sw = Math.min(sw0 - sx, dw / scale);
+  const sh = Math.min(sh0 - sy, dh / scale);
+  return { sx, sy, sw: Math.max(1, sw), sh: Math.max(1, sh) };
+}
+
+/**
+ * @param {string} src
+ * @param {{
+ *   loadImage?: (src: string) => Promise<CanvasImageSource | null>,
+ *   Image?: typeof Image
+ * }} [deps]
+ * @returns {Promise<CanvasImageSource | null>}
+ */
+export async function loadQuietLineBackdropImage(src, deps = {}) {
+  if (!src) return null;
+  if (typeof deps.loadImage === 'function') {
+    try {
+      return (await deps.loadImage(src)) || null;
+    } catch {
+      return null;
+    }
+  }
+  const ImageCtor =
+    deps.Image || (typeof Image !== 'undefined' ? Image : null);
+  if (!ImageCtor) return null;
+  return new Promise((resolve) => {
+    const img = new ImageCtor();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
 /**
  * @param {{
  *   date?: Date,
@@ -278,6 +360,7 @@ export function wrapCanvasText(ctx, text, maxWidth) {
  * @param {string} [opts.title]
  * @param {string} [opts.footer]
  * @param {string} [opts.dateKey]
+ * @param {CanvasImageSource | null} [opts.backdropImage]
  * @param {typeof document.createElement} [opts.createElement]
  * @returns {HTMLCanvasElement}
  */
@@ -291,41 +374,90 @@ export function renderDailyZenQuoteCanvas(opts) {
     throw new Error('renderDailyZenQuoteCanvas requires document');
   }
   const canvas = createElement('canvas');
-  canvas.width = 1080;
-  canvas.height = 1350;
+  canvas.width = QUIET_LINE_CARD.width;
+  canvas.height = QUIET_LINE_CARD.height;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('2d context unavailable');
 
-  // Soft dusk gradient — calm gift card, not a scoreboard.
-  const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  grad.addColorStop(0, '#2a2438');
-  grad.addColorStop(0.55, '#3d3348');
-  grad.addColorStop(1, '#1e1a28');
-  ctx.fillStyle = grad;
+  const imageBandH = Math.round(
+    canvas.height * QUIET_LINE_CARD.imageBandRatio
+  );
+
+  ctx.fillStyle = QUIET_LINE_CARD.paper;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = 'rgba(255,252,245,.08)';
-  ctx.fillRect(72, 72, canvas.width - 144, canvas.height - 144);
-
-  ctx.fillStyle = 'rgba(255,236,210,.92)';
-  ctx.font = '500 42px "Iowan Old Style", "Palatino Linotype", Palatino, serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(opts.title || 'A quiet line', 120, 200);
-
-  ctx.fillStyle = 'rgba(255,248,235,.95)';
-  ctx.font = '400 56px "Iowan Old Style", "Palatino Linotype", Palatino, serif';
-  const lines = wrapCanvasText(ctx, opts.quoteText, canvas.width - 240);
-  let y = 360;
-  for (const line of lines) {
-    ctx.fillText(line, 120, y);
-    y += 78;
+  const img = opts.backdropImage;
+  const srcW =
+    Number(img && img.naturalWidth) || Number(img && img.width) || 0;
+  const srcH =
+    Number(img && img.naturalHeight) || Number(img && img.height) || 0;
+  if (img && srcW > 0 && srcH > 0 && typeof ctx.drawImage === 'function') {
+    const crop = coverSourceRect(
+      srcW,
+      srcH,
+      canvas.width,
+      imageBandH,
+      QUIET_LINE_CARD.focusX,
+      QUIET_LINE_CARD.focusY
+    );
+    ctx.drawImage(
+      img,
+      crop.sx,
+      crop.sy,
+      crop.sw,
+      crop.sh,
+      0,
+      0,
+      canvas.width,
+      imageBandH
+    );
+  } else {
+    const dusk = ctx.createLinearGradient(0, 0, 0, imageBandH);
+    dusk.addColorStop(0, '#2a2438');
+    dusk.addColorStop(1, '#3d3348');
+    ctx.fillStyle = dusk;
+    ctx.fillRect(0, 0, canvas.width, imageBandH);
   }
 
-  ctx.fillStyle = 'rgba(255,236,210,.55)';
-  ctx.font = '400 32px system-ui, -apple-system, sans-serif';
-  ctx.fillText(opts.footer || 'Focus Tiger · with Yin', 120, canvas.height - 160);
+  const seam = QUIET_LINE_CARD.seamFade;
+  const fade = ctx.createLinearGradient(
+    0,
+    imageBandH - seam,
+    0,
+    imageBandH
+  );
+  fade.addColorStop(0, 'rgba(244, 238, 227, 0)');
+  fade.addColorStop(1, QUIET_LINE_CARD.paper);
+  ctx.fillStyle = fade;
+  ctx.fillRect(0, imageBandH - seam, canvas.width, seam);
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+
+  const padX = QUIET_LINE_CARD.padX;
+  const textTop = imageBandH + 56;
+  ctx.fillStyle = QUIET_LINE_CARD.titleInk;
+  ctx.font = '500 36px "Iowan Old Style", "Palatino Linotype", Palatino, serif';
+  ctx.fillText(opts.title || 'A quiet line', padX, textTop);
+
+  ctx.fillStyle = QUIET_LINE_CARD.ink;
+  ctx.font = '400 48px "Iowan Old Style", "Palatino Linotype", Palatino, serif';
+  const lines = wrapCanvasText(ctx, opts.quoteText, canvas.width - padX * 2);
+  let y = textTop + 72;
+  const lineH = 64;
+  const footerY = canvas.height - 110;
+  const quoteMaxY = footerY - 90;
+  for (const line of lines) {
+    if (y > quoteMaxY) break;
+    ctx.fillText(line, padX, y);
+    y += lineH;
+  }
+
+  ctx.fillStyle = QUIET_LINE_CARD.inkMuted;
+  ctx.font = '400 28px system-ui, -apple-system, sans-serif';
+  ctx.fillText(opts.footer || 'Focus Tiger · with Yin', padX, footerY);
   if (opts.dateKey) {
-    ctx.fillText(opts.dateKey, 120, canvas.height - 110);
+    ctx.fillText(opts.dateKey, padX, footerY + 42);
   }
 
   return canvas;
@@ -404,21 +536,38 @@ export async function downloadCanvasPng(canvas, filename, deps = {}) {
 }
 
 /**
- * @param {{ date?: Date, locale?: string } & Parameters<typeof downloadCanvasPng>[2]} [opts]
- * @returns {Promise<{ ok: boolean, filename: string, key: string }>}
+ * @param {{
+ *   date?: Date,
+ *   locale?: string,
+ *   backdropImage?: CanvasImageSource | null,
+ *   loadImage?: (src: string) => Promise<CanvasImageSource | null>,
+ *   Image?: typeof Image
+ * } & Parameters<typeof downloadCanvasPng>[2]} [opts]
+ * @returns {Promise<{
+ *   ok: boolean,
+ *   filename: string,
+ *   key: string,
+ *   usedBackdrop: boolean
+ * }>}
  */
 export async function saveDailyZenQuoteImage(opts = {}) {
   const resolved = resolveDailyZenQuote(opts);
   const title = t('DAILY_ZEN_QUOTE_CARD_TITLE');
   const footer = t('DAILY_ZEN_QUOTE_IMAGE_FOOTER');
+  const backdropSrc = pickDailyZenQuoteBackdropSrc(resolved.dateKey);
+  let image = opts.backdropImage || null;
+  if (!image && backdropSrc) {
+    image = await loadQuietLineBackdropImage(backdropSrc, opts);
+  }
   const canvas = renderDailyZenQuoteCanvas({
     quoteText: resolved.text,
     title,
     footer,
     dateKey: resolved.dateKey,
+    backdropImage: image,
     createElement: opts.createElement
   });
   const filename = `focus-tiger-quiet-line-${resolved.dateKey}.png`;
   const ok = await downloadCanvasPng(canvas, filename, opts);
-  return { ok, filename, key: resolved.key };
+  return { ok, filename, key: resolved.key, usedBackdrop: Boolean(image) };
 }

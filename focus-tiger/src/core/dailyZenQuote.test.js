@@ -7,6 +7,9 @@ import {
   wrapCanvasText,
   downloadCanvasPng,
   saveDailyZenQuoteImage,
+  coverSourceRect,
+  QUIET_LINE_CARD,
+  renderDailyZenQuoteCanvas,
   listMixedDailyZenQuoteKeys,
   isInsightZenQuoteKey,
   noteDailyZenQuoteOpened,
@@ -141,10 +144,12 @@ describe('dailyZenQuote', () => {
               createLinearGradient: () => ({ addColorStop() {} }),
               fillRect() {},
               fillText() {},
+              drawImage() {},
               measureText: () => ({ width: 10 }),
               fillStyle: '',
               font: '',
-              textAlign: ''
+              textAlign: '',
+              textBaseline: ''
             }),
             toBlob: (cb) => cb(new Blob(['x'], { type: 'image/png' }))
           };
@@ -165,6 +170,174 @@ describe('dailyZenQuote', () => {
     assert.equal(result.filename, 'focus-tiger-quiet-line-2026-08-06.png');
     assert.ok(result.key.startsWith('DAILY_ZEN_QUOTE_'));
     assert.equal(clicked, 1);
+    assert.equal(result.usedBackdrop, false);
+  });
+
+  it('coverSourceRect crops 1056×864 stills into the postcard photo band', () => {
+    const destW = QUIET_LINE_CARD.width;
+    const destH = Math.round(
+      QUIET_LINE_CARD.height * QUIET_LINE_CARD.imageBandRatio
+    );
+    const crop = coverSourceRect(1056, 864, destW, destH);
+    assert.ok(crop.sw > 0 && crop.sh > 0);
+    assert.ok(crop.sx + crop.sw <= 1056 + 1e-6);
+    assert.ok(crop.sy + crop.sh <= 864 + 1e-6);
+    assert.ok(crop.sy > 0);
+    assert.ok(crop.sy < 864 * 0.2);
+  });
+
+  it('renderDailyZenQuoteCanvas draws the still in the upper band', () => {
+    /** @type {unknown[]} */
+    const draws = [];
+    const texts = [];
+    const canvas = renderDailyZenQuoteCanvas({
+      quoteText:
+        'The question of doing it right is also just a sound passing through.',
+      title: 'A quiet line for today',
+      footer: 'Focus Tiger · with Yin',
+      dateKey: '2026-08-15',
+      backdropImage: { width: 1056, height: 864 },
+      createElement: () => ({
+        width: 0,
+        height: 0,
+        getContext: () => ({
+          createLinearGradient: () => ({ addColorStop() {} }),
+          fillRect() {},
+          fillText(text) {
+            texts.push(String(text));
+          },
+          drawImage(...args) {
+            draws.push(args);
+          },
+          measureText: (s) => ({ width: String(s).length * 18 }),
+          fillStyle: '',
+          font: '',
+          textAlign: '',
+          textBaseline: ''
+        })
+      })
+    });
+    assert.equal(canvas.width, QUIET_LINE_CARD.width);
+    assert.equal(canvas.height, QUIET_LINE_CARD.height);
+    assert.equal(draws.length, 1);
+    const bandH = Math.round(
+      QUIET_LINE_CARD.height * QUIET_LINE_CARD.imageBandRatio
+    );
+    assert.equal(draws[0][5], 0);
+    assert.equal(draws[0][6], 0);
+    assert.equal(draws[0][7], QUIET_LINE_CARD.width);
+    assert.equal(draws[0][8], bandH);
+    assert.ok(texts.includes('A quiet line for today'));
+    assert.ok(texts.includes('Focus Tiger · with Yin'));
+    assert.ok(texts.includes('2026-08-15'));
+    assert.equal(
+      texts.some((t) => t.includes('Not now') || t.includes('Save image')),
+      false
+    );
+  });
+
+  it('renderDailyZenQuoteCanvas prefers naturalWidth over CSS box size', () => {
+    /** @type {unknown[]} */
+    const draws = [];
+    renderDailyZenQuoteCanvas({
+      quoteText: 'One breath is already a return.',
+      backdropImage: {
+        width: 360,
+        height: 220,
+        naturalWidth: 1056,
+        naturalHeight: 864
+      },
+      createElement: () => ({
+        width: 0,
+        height: 0,
+        getContext: () => ({
+          createLinearGradient: () => ({ addColorStop() {} }),
+          fillRect() {},
+          fillText() {},
+          drawImage(...args) {
+            draws.push(args);
+          },
+          measureText: () => ({ width: 10 }),
+          fillStyle: '',
+          font: '',
+          textAlign: '',
+          textBaseline: ''
+        })
+      })
+    });
+    assert.equal(draws.length, 1);
+    const crop = coverSourceRect(
+      1056,
+      864,
+      QUIET_LINE_CARD.width,
+      Math.round(QUIET_LINE_CARD.height * QUIET_LINE_CARD.imageBandRatio)
+    );
+    assert.equal(draws[0][1], crop.sx);
+    assert.equal(draws[0][2], crop.sy);
+    assert.equal(draws[0][3], crop.sw);
+    assert.equal(draws[0][4], crop.sh);
+  });
+
+  it('saveDailyZenQuoteImage uses loaded still and still downloads if load fails', async () => {
+    let drawCount = 0;
+    const makeCtx = () => ({
+      createLinearGradient: () => ({ addColorStop() {} }),
+      fillRect() {},
+      fillText() {},
+      drawImage() {
+        drawCount += 1;
+      },
+      measureText: () => ({ width: 10 }),
+      fillStyle: '',
+      font: '',
+      textAlign: '',
+      textBaseline: ''
+    });
+    const makeCreateElement = () => (tag) => {
+      if (tag === 'canvas') {
+        return {
+          width: 0,
+          height: 0,
+          getContext: () => makeCtx(),
+          toBlob: (cb) => cb(new Blob(['x'], { type: 'image/png' }))
+        };
+      }
+      return {
+        set href(_v) {},
+        set download(_v) {},
+        set rel(_v) {},
+        click() {}
+      };
+    };
+    const withStill = await saveDailyZenQuoteImage({
+      date: new Date(2026, 7, 15),
+      locale: 'en',
+      createElement: makeCreateElement(),
+      createObjectURL: () => 'blob:x',
+      revokeObjectURL: () => {},
+      loadImage: async (src) => {
+        assert.match(src, /\/sprites\/tiger-cub\//);
+        return { width: 1056, height: 864 };
+      }
+    });
+    assert.equal(withStill.ok, true);
+    assert.equal(withStill.usedBackdrop, true);
+    assert.equal(drawCount, 1);
+
+    drawCount = 0;
+    const failed = await saveDailyZenQuoteImage({
+      date: new Date(2026, 7, 15),
+      locale: 'en',
+      createElement: makeCreateElement(),
+      createObjectURL: () => 'blob:x',
+      revokeObjectURL: () => {},
+      loadImage: async () => {
+        throw new Error('offline');
+      }
+    });
+    assert.equal(failed.ok, true);
+    assert.equal(failed.usedBackdrop, false);
+    assert.equal(drawCount, 0);
   });
 
   it('pickDailyZenQuoteBackdropSrc is stable per date and from the wallpaper gallery', () => {
