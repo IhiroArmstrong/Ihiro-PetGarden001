@@ -2832,7 +2832,7 @@ async function init() {
     fiveMomentsCompassUI.open({ firstRun: true });
   }
 
-  // Quiet Idle first-run: wellness disclaimer first (compliance), then Compass.
+  // Quiet Idle first-run: Compass (wellness auto-card is off; lookup is ?).
   // Wait out flower-welcome bubble; retry a few times so Day1 吹花 does not stack.
   if (productChrome) {
     for (const ms of [3600, 4800, 6400, 8200, 11000]) {

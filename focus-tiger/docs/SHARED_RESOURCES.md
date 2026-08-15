@@ -48,7 +48,7 @@
 | `focus-tiger.membership-device.v1` | `membershipDeviceCredential` + Membership confirm/OTP verify | `{ email, deviceToken }`；cloud provider 轮询与 Billing Portal Manage；TTL 由 Worker KV 约束 |
 | `focus-tiger.scene-anim-cooldown.v1` | `sceneAnimationDispatcher` | 生命感冷却：`{ late_night, curiosity, … }` 时间戳 |
 | `focus-tiger.five-moments-compass-seen.v1` | `fiveMomentsCompassGate` / `FiveMomentsCompassUI` | Compass 首卡 / 指南已读（`'1'`）；⋯ /「?」打开亦 mark；DEV 重置清 |
-| `focus-tiger.wellness-disclaimer-seen.v1` | `wellnessDisclaimerGate` / `OnboardingHintsUI` | Wellness 非诊疗首卡已读（`'1'`）；Got it / 点「?」打开简介 / Sit 亦 mark；`?wellnessFirst=1` 强制再出；DEV 重置清 |
+| `focus-tiger.wellness-disclaimer-seen.v1` | `wellnessDisclaimerGate` / `OnboardingHintsUI` | Wellness 非诊疗已读（`'1'`）；点「?」打开简介 / Sit / QA Got it 亦 mark；默认**不**自动出首卡；`?wellnessFirst=1` 强制 QA 卡；DEV 重置清 |
 | `focus-tiger.moment-whispers-seen.v1` | `momentWhispersGate` / `MomentWhisperUI` | Moment Whisper 各键已见 `{ arrive?, focus?, recover?, transition?, reflect? }`；一生一次；Transition 暂不 play |
 | `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect, insightSpark? }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar / Sanctuary / `practiceBadgeAward` **零耦合**）。`insightSpark` 仅在当场打开 Quiet Line 且当日句来自洞察种子池时为 `true`；缺省降级为无标记 |
 | `focus-tiger.practice-backup.v1` | `practiceBackupOptIn` / Journey Log 角落引导 | 练习记忆云端备份 opt-in：`{ enabled, consentedAt, email, deviceToken, lastUpload* }`；整包 6 key 快照 → `PRACTICE_BACKUP_KV`；关闭须 OTP **删云端** |

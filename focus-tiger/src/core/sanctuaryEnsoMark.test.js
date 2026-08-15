@@ -14,6 +14,7 @@ import {
 } from './sanctuaryEntitlementGate.js';
 import {
   ENSO_DIAMETER_FRAC,
+  ENSO_FALLBACK_VIEWPORT_FRAC,
   ENSO_MIN_CSS_PX,
   ENSO_OPACITY_FOCUSING,
   ENSO_OPACITY_HOVER,
@@ -83,7 +84,9 @@ describe('sanctuaryEnsoMark', () => {
     assert.equal(storage.getItem(SANCTUARY_STORAGE_KEY), null);
   });
 
-  it('layout uses ~25% cushion diameter and floors at 44px', () => {
+  it('layout uses ~10% cushion diameter (40% of prior 25%) and floors at min px', () => {
+    assert.equal(ENSO_DIAMETER_FRAC, 0.1);
+    assert.ok(ENSO_FALLBACK_VIEWPORT_FRAC < 0.08);
     const wide = layoutSanctuaryEnsoMark({
       left: 100,
       top: 50,
@@ -93,8 +96,11 @@ describe('sanctuaryEnsoMark', () => {
     assert.ok(wide);
     const expected = (553 / 1056) * 1056 * ENSO_DIAMETER_FRAC;
     assert.ok(Math.abs(wide.size - expected) < 0.5);
-    assert.ok(wide.size / ((553 / 1056) * 1056) >= 0.22);
-    assert.ok(wide.size / ((553 / 1056) * 1056) <= 0.28);
+    const frac = wide.size / ((553 / 1056) * 1056);
+    assert.ok(frac >= 0.08);
+    assert.ok(frac <= 0.12);
+    // Center stays on the cushion face; box must not exceed cushion diameter.
+    assert.ok(wide.size < 553);
 
     const narrow = layoutSanctuaryEnsoMark({
       left: 0,
@@ -125,6 +131,8 @@ describe('sanctuaryEnsoMark', () => {
       'utf8'
     );
     assert.match(chromeSrc, /SANCTUARY_ENSO_MARK_SRC/);
+    assert.match(chromeSrc, /ENSO_MIN_CSS_PX/);
+    assert.match(chromeSrc, /ENSO_FALLBACK_VIEWPORT_FRAC/);
     assert.match(chromeSrc, /preventDefault/);
     assert.match(chromeSrc, /z-index:\s*4/);
     assert.doesNotMatch(

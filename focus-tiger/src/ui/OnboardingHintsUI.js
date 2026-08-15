@@ -3,7 +3,7 @@
  * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
  * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
  *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`）
- * 冷启动另有一次性 `#onboarding-wellness-first`（Got it），不替代「?」查阅。
+ * 默认不自动弹出 `#onboarding-wellness-first`（吓跑用户）；QA 仅 `?wellnessFirst=1`。
  * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
  * @see ONBOARDING_HINTS.md
  */
@@ -2000,7 +2000,7 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * One-shot cold-start card (Got it). Does not replace the ? lookup card.
+   * QA-only Got it card (`?wellnessFirst=1`). Product lookup is the ? card.
    */
   openWellnessFirstCard() {
     this._hidePurposeCard();

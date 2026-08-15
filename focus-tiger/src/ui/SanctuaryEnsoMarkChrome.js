@@ -6,6 +6,8 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  ENSO_FALLBACK_VIEWPORT_FRAC,
+  ENSO_MIN_CSS_PX,
   ENSO_OPACITY_FOCUSING,
   ENSO_OPACITY_HOVER,
   ENSO_OPACITY_IDLE,
@@ -125,7 +127,10 @@ export class SanctuaryEnsoMarkChrome {
         typeof window !== 'undefined' ? window.innerWidth || 375 : 375;
       const vh =
         typeof window !== 'undefined' ? window.innerHeight || 667 : 667;
-      const size = Math.max(44, Math.min(vw, vh) * 0.14);
+      const size = Math.max(
+        ENSO_MIN_CSS_PX,
+        Math.min(vw, vh) * ENSO_FALLBACK_VIEWPORT_FRAC
+      );
       this.root.style.left = `${vw / 2 - size / 2}px`;
       this.root.style.top = `${vh * 0.72 - size / 2}px`;
       this.root.style.width = `${size}px`;
