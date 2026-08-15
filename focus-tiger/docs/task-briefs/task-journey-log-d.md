@@ -14,7 +14,7 @@
    - key：`focus-tiger.journey-log.v1`  
    - `entries: { at, minutes, arrive: boolean, reflect: boolean }[]`  
    - 上限约 30；新在尾、UI 展示最近若干条 reverse  
-2. **写入时机**：Focus（或产品认定的等价完成）结束且 Reflection 流关闭后（含跳过）；根据本场是否走过 Arrival / Reflection 置位。  
+2. **写入时机**：Focus **或 Breath practice（产品认定的等价完成）** 结束且 Reflection 流关闭后（含跳过）；根据本场是否走过 Arrival / Reflection 置位。Breath = chip 分钟、`arrive: false`。Honesty / Recover / Transition / RitualFlow **不**入账。  
 3. **UI**：⋯ / 抽屉「Journey log」轻面板（推荐，与 Tip Jar 语义分离）；列表观察式一行，例如：  
    - EN: `{date} — {n} min · arrived & reflected`  
    - 缺 arrive/reflect 时降级：`{n} min · focus`（仍观察式，不评判）  
@@ -25,12 +25,13 @@
 
 - 写入 Apple Health / Health Connect  
 - 把 Journey 塞进 Tip Jar Tea Log  
-- Recover / Transition 默认入账  
+- Recover / Transition / RitualFlow / Honesty 默认入账  
 - 教导式 / 成就狂欢文案  
 
 ## 验收
 
 - 主路径：完整 Sit→Arrival→Focus→Rise→Reflection → ⋯ 见新条目含 arrived & reflected。  
+- **等价路径**：Breath practice 完成 → Reflection（含 Skip）→ ⋯ 见 chip 分钟行（无 arrive）。  
 - 回流：仅 Focus 无 Arrival（若产品路径允许）→ 条目无 arrive 或按 Brief 降级文案。  
 - 刷新后仍在；超过上限裁旧。  
 - 与 tip-jar **零耦合**。

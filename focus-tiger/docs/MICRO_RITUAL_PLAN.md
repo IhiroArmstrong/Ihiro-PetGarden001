@@ -20,7 +20,8 @@
 9. **HUD 直播**：进行中左上 FocusHUD（仅 breath 相位）；**仍不启** `FocusSession` / Rise / Celebrating。  
 10. **完成检测**：`setTimeout` + `visibilitychange` 回前台墙钟补查（不引入 FocusSession）。  
 11. **氛围乐**：练习开始 `playTrackEphemeral`（preferred，off→Mer-Ka-Ba）；完成/Leave `stopPlaybackEphemeral`；**不**走 `startSession`/`endSession`/presence。  
-12. **Reflection**：完成后浅接 `sessionEndFlow.onSessionEnded({ completed: true })`（不等完成动画）。
+12. **Reflection**：完成后浅接 `sessionEndFlow.onSessionEnded({ completed: true })`（不等完成动画）。  
+13. **Journey Log（2026-08-15）**：完成且 Reflection 关闭后（含 Skip）写入 `focus-tiger.journey-log.v1`（chip 分钟、`arrive: false`）。**Leave 不写**。Honesty / RitualFlow 仍不入账。
 
 ---
 
