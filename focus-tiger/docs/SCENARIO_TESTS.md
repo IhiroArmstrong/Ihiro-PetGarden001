@@ -348,16 +348,16 @@
 
 ## 场景 S：首页左球 · Breath practice（可选时长正念）
 
-> **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + smiling + 光环 → 到点轻完成 → Reflection 浅出；Leave 不记账。  
+> **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + smiling + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。  
 > **DOM**：`e2e/micro-ritual.spec.js`（主路径 / Leave / Arrival 开着点球等；常用 `?microRitualMs=`）。  
-> **单元**：`MicroRitual.test.js` · `stopPlaybackEphemeral`；orchestration **无**抽屉 Breath 行。  
+> **单元**：`MicroRitual.test.js` · `microRitualJourneyDraft` · `stopPlaybackEphemeral`；orchestration **无**抽屉 Breath 行。  
 > **仍须人工**：听感（开始播 preferred / off→Mer-Ka-Ba；完成或 Leave **ephemeral 停播**）；之后 Sit→Focus 选曲可闻、Rise 停播、`ambient-pref` **不得**被改成 Off。  
 > **对照**：正式 Focus 仍走 Sit→Arrival（或场景 T 时长 chip）；⚡ 旧 Quick Start「立刻 Focusing」已改为本球开 Breath。
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
 2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **15/25/45/60** 差异化）→ 点选即开。
-3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟。
-4. **Leave**：不记账、不进 Reflection、停播。
+3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
+4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
 6. **Arrival 开着**：左球仍可见；点之取消 Arrival 再开 picker。
 7. **回流**：Leave / 完成后左球再可点；再走一轮 Sit 正式 Focus。
@@ -490,11 +490,11 @@
 ## 场景 Z：Journey Log（D′ · 本地留痕）
 
 > **用户故事**：Kelly 走完一场有头有尾的专注后，想安静回顾——⋯ / 抽屉打开 **Journey log**，见日期+分钟+ arrived & reflected（或缺省降级），不是 Health 同步、不是 Tip 茶室账本。  
-> **单元**：`journeyLogGate.test.js`；orchestration 含 `journey-log`。  
+> **单元**：`journeyLogGate.test.js`（含 `microRitualJourneyDraft`）；orchestration 含 `journey-log`。  
 > **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；开/关卡 0–1s；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。  
 > **合入**：#205；洞察标记 #292 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
 
-1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。
+1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。**等价路径**：首页左球 Breath practice → 到点 → Reflection（含 Skip）→ 同样写入（`arrive: false`）。Honesty / 付费仪式 **不**入账。
 2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → **0–1 秒内**：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
 3. **回流**：Close / 点外侧 / Esc → **0–1 秒内**：关钮 `:active` 按压 + 卡开始淡出；Idle Sit / ⋯ 或抽屉 grabber **仍可见**。刷新后条目仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
 4. **Compass Reflect**（与场景 Y 交叉）：点 Reflect 芯片 → **0–1 秒内**：芯片 `:active` 按压 + `#five-moments-compass` 收起 + 同一张 `#journey-log` 淡入。

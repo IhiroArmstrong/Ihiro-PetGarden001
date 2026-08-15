@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
+
 - **Stay in touch 欢迎信假成功（2026-08-15）**：生产路由已上（Version `8c649d12-…`，无效邮箱 400）；用户用真实邮箱**没收到信**。根因：`waitUntil` 失败仍 `{ok:true}` + 已在 KV 不再发。代码改为 await Resend / 502 不写本地 submitted / 无 `welcomeSentAt` 重发。**生产须再 redeploy**（口令「部署」）。TRACKER `RB-20260815-L394`。
 - **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
 
