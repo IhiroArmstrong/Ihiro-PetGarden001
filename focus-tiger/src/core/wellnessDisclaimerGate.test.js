@@ -21,13 +21,17 @@ function memoryStorage(seed = {}) {
 }
 
 describe('wellnessDisclaimerGate', () => {
-  it('starts unseen and offers first card', () => {
+  it('starts unseen and does not auto-offer the first card', () => {
     const storage = memoryStorage();
     assert.equal(hasSeenWellnessDisclaimer(storage), false);
-    assert.equal(shouldOfferWellnessDisclaimerFirstCard(storage), true);
+    assert.equal(shouldOfferWellnessDisclaimerFirstCard(storage), false);
+    assert.equal(
+      shouldOfferWellnessDisclaimerFirstCard(storage, '?product=1'),
+      false
+    );
   });
 
-  it('markSeen stops offering', () => {
+  it('markSeen still records lookup; still does not auto-offer', () => {
     const storage = memoryStorage();
     markWellnessDisclaimerSeen(storage);
     assert.equal(storage.getItem(WELLNESS_DISCLAIMER_SEEN_KEY), '1');
@@ -50,7 +54,7 @@ describe('wellnessDisclaimerGate', () => {
 
   it('tolerates missing storage', () => {
     assert.equal(hasSeenWellnessDisclaimer(null), false);
-    assert.equal(shouldOfferWellnessDisclaimerFirstCard(undefined), true);
+    assert.equal(shouldOfferWellnessDisclaimerFirstCard(undefined), false);
     markWellnessDisclaimerSeen(null);
   });
 });

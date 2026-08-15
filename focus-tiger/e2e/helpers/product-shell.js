@@ -28,12 +28,10 @@ export async function openFreshProductShell(page, opts = {}) {
           if (key.startsWith('focus-tiger.')) localStorage.removeItem(key);
         }
       }
-      // Default: mark wellness first-run seen so other specs are not blocked by
-      // the compliance card. Dedicated tests pass ?wellnessFirst=1 to force it.
+      // Auto first-run wellness card is off. Dedicated tests pass
+      // ?wellnessFirst=1 to force the QA Got it card.
       if (/(?:^|[?&])wellnessFirst=1(?:&|$)/.test(location.search)) {
         localStorage.removeItem('focus-tiger.wellness-disclaimer-seen.v1');
-      } else {
-        localStorage.setItem('focus-tiger.wellness-disclaimer-seen.v1', '1');
       }
     } catch {
       /* ignore */

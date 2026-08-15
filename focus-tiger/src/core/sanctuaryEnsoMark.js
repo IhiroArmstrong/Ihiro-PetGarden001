@@ -16,7 +16,7 @@ export const SANCTUARY_ENSO_MARK_SRC =
  * Measured 2026-08-12: cushion mass center ≈ (552, 730); camera-facing
  * cushion face (visible orange in front of crossed legs) ≈ (552, 770).
  * We pin to the **visible face** so the inlay stays inside the cushion
- * (about 25% of cushion diameter) without covering the shawl or face.
+ * (about 10% of cushion diameter) without covering the shawl or face.
  */
 export const ENSO_CUSHION_ANCHOR_NATURAL = Object.freeze({
   frameWidth: 1056,
@@ -29,11 +29,18 @@ export const ENSO_CUSHION_ANCHOR_NATURAL = Object.freeze({
   cushionDiameter: 553
 });
 
-/** Target share of cushion visible diameter (~40% smaller than the 0.42 first pass). */
-export const ENSO_DIAMETER_FRAC = 0.25;
+/**
+ * Target share of cushion visible diameter.
+ * 2026-08-15: ~40% of the prior 0.25 pass so the mark sits in the cushion
+ * middle and does not exceed the 蒲团 edge.
+ */
+export const ENSO_DIAMETER_FRAC = 0.1;
 
-/** Floor so 375 CSS px still reads as “可辨” (Brief ≥ ~44 CSS px). */
-export const ENSO_MIN_CSS_PX = 44;
+/** Floor so 375 still reads as a mark, not a speck (~40% of prior 44). */
+export const ENSO_MIN_CSS_PX = 20;
+
+/** Viewport fallback when sprite rect is not ready (~40% of prior 0.14). */
+export const ENSO_FALLBACK_VIEWPORT_FRAC = 0.056;
 
 export const ENSO_OPACITY_IDLE = 0.84;
 export const ENSO_OPACITY_FOCUSING = 0.5;

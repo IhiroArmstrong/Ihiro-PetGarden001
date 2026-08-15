@@ -1,7 +1,11 @@
 /**
- * Wellness / not-clinical-care first-run seen gate.
+ * Wellness / not-clinical-care lookup gate.
  * Key: focus-tiger.wellness-disclaimer-seen.v1
  * Product SSOT: PRODUCT_POSITIONING.md「Wellness disclaimer」
+ *
+ * Default product path: **never** auto-offer the scare-away first card.
+ * Lookup is **?** → `#onboarding-app-purpose` wellness block.
+ * QA only: `?wellnessFirst=1` still forces `#onboarding-wellness-first`.
  */
 
 export const WELLNESS_DISCLAIMER_SEEN_KEY =
@@ -50,14 +54,14 @@ export function markWellnessDisclaimerSeen(storage) {
 }
 
 /**
- * First-run card offer: product shell Idle, not yet acknowledged
- * (unless `?wellnessFirst=1` forces, or `=0` disables).
+ * First-run card offer: **off by default** (2026-08-15: auto popup scares
+ * users away). Only `?wellnessFirst=1` forces the Got it card.
  * @param {Storage | null | undefined} storage
  * @param {string} [search]
  * @returns {boolean}
  */
-export function shouldOfferWellnessDisclaimerFirstCard(storage, search = '') {
+export function shouldOfferWellnessDisclaimerFirstCard(_storage, search = '') {
   if (isWellnessFirstCardDisabled(search)) return false;
   if (isWellnessFirstCardForced(search)) return true;
-  return !hasSeenWellnessDisclaimer(storage);
+  return false;
 }

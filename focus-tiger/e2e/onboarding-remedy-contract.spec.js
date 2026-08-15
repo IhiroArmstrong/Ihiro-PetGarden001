@@ -105,6 +105,26 @@ test.describe('wide ? purpose only', () => {
 test.describe('wellness first-run card', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
+  test('Idle does not auto-open wellness first card; ? still has the notice', async ({
+    page
+  }) => {
+    await openFreshProductShell(page, { query: { flowerWelcome: 0 } });
+    await expect(
+      page.locator('#onboarding-wellness-first:not([hidden])')
+    ).toHaveCount(0);
+    await page.locator('#onboarding-hint-help').click();
+    await expect(purposeCardVisible(page)).toBeVisible({ timeout: 8_000 });
+    await expect(
+      page.locator('[data-testid="onboarding-purpose-wellness"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('.onboarding-app-purpose__wellness-title')
+    ).toContainText(/Not therapy or medical care/i);
+    await expect(
+      page.locator('#onboarding-wellness-first:not([hidden])')
+    ).toHaveCount(0);
+  });
+
   test('?wellnessFirst=1 shows the Got it card once', async ({ page }) => {
     await openFreshProductShell(page, {
       query: { wellnessFirst: 1, flowerWelcome: 0 }
