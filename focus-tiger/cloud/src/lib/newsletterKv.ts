@@ -17,6 +17,8 @@ export type NewsletterRecord = {
 	subscribedAt: string;
 	locale: NewsletterLocale;
 	unsubToken: string;
+	/** ISO timestamp after Resend accepted the welcome mail. Missing = never sent. */
+	welcomeSentAt?: string;
 };
 
 export function normalizeNewsletterEmail(email: string): string {
@@ -52,12 +54,17 @@ export function parseNewsletterRecord(raw: string | null): NewsletterRecord | nu
 		if (typeof o.unsubToken !== "string" || o.unsubToken.length < 16) {
 			return null;
 		}
+		const welcomeSentAt =
+			typeof o.welcomeSentAt === "string" && o.welcomeSentAt.trim()
+				? o.welcomeSentAt.trim()
+				: undefined;
 		return {
 			schemaVersion: NEWSLETTER_SCHEMA_VERSION,
 			email: normalizeNewsletterEmail(o.email),
 			subscribedAt: o.subscribedAt,
 			locale: normalizeNewsletterLocale(o.locale),
 			unsubToken: o.unsubToken,
+			...(welcomeSentAt ? { welcomeSentAt } : {}),
 		};
 	} catch {
 		return null;
@@ -96,8 +103,8 @@ export async function readNewsletterEmailByToken(
 }
 
 /**
- * Insert subscriber. If already present, return existing (no token rotate,
- * no second welcome).
+ * Insert subscriber. If already present, return existing (no token rotate).
+ * Welcome retry is `welcomeSentAt`, not `created`.
  */
 export async function upsertNewsletterSubscriber(opts: {
 	kv: KVNamespace;
@@ -124,6 +131,29 @@ export async function upsertNewsletterSubscriber(opts: {
 		JSON.stringify({ email }),
 	);
 	return { record, created: true };
+}
+
+/** True when this address is on the list but the welcome mail never landed. */
+export function newsletterWelcomeStillDue(record: NewsletterRecord): boolean {
+	return !record.welcomeSentAt;
+}
+
+export async function markNewsletterWelcomeSent(opts: {
+	kv: KVNamespace;
+	email: string;
+	nowIso?: string;
+}): Promise<NewsletterRecord | null> {
+	const existing = await readNewsletterSubscriber(opts.kv, opts.email);
+	if (!existing) return null;
+	const record: NewsletterRecord = {
+		...existing,
+		welcomeSentAt: opts.nowIso || new Date().toISOString(),
+	};
+	await opts.kv.put(
+		newsletterSubscriberKvKey(existing.email),
+		JSON.stringify(record),
+	);
+	return record;
 }
 
 export async function removeNewsletterSubscriberByToken(

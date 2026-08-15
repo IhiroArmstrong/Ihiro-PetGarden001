@@ -51,6 +51,20 @@ describe('createWorkerNewsletterProvider', () => {
       ok: false,
       error: 'invalid_email'
     });
+
+    const unsent = createWorkerNewsletterProvider({
+      getApiBaseUrl: () => 'http://127.0.0.1:8787',
+      getLocaleFn: () => 'en',
+      postJson: async () => {
+        const err = new Error('validation_error');
+        /** @type {any} */ (err).status = 502;
+        throw err;
+      }
+    });
+    assert.deepEqual(await unsent.subscribe('friend@example.com'), {
+      ok: false,
+      error: 'welcome_unsent'
+    });
   });
 });
 

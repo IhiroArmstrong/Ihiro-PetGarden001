@@ -36,7 +36,8 @@
  *   id         = baeb661cb8f2450ab4a87d6f23af6896
  *   preview_id = 8e13fe05705841c9939c3164bfb9a3bd
  *
- * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle) + Resend secrets.
+ * Production Worker (2026-08-15): Version 8c649d12 has newsletter *routes*.
+ * Welcome-mail await/retry is a later deploy — do not assume inbox delivery.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
