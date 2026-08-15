@@ -10,6 +10,7 @@ import {
   appendJourneyLogEntry,
   journeyLogDateKey,
   journeyLogLineKind,
+  microRitualJourneyDraft,
   normalizeJourneyLogEntries,
   readJourneyLog,
   resolveJourneyMinutes,
@@ -89,6 +90,42 @@ describe('journeyLogGate', () => {
           reflect: false
         }
       ]
+    );
+  });
+
+  it('microRitualJourneyDraft uses chip minutes and never Arrival', () => {
+    assert.deepEqual(microRitualJourneyDraft(1), {
+      minutes: 1,
+      arrive: false
+    });
+    assert.deepEqual(microRitualJourneyDraft(20), {
+      minutes: 20,
+      arrive: false
+    });
+    assert.equal(microRitualJourneyDraft(0), null);
+    assert.equal(microRitualJourneyDraft(Number.NaN), null);
+  });
+
+  it('main.js stashes micro-ritual draft before Reflection handoff', () => {
+    const src = readFileSync(join(here, '../main.js'), 'utf8');
+    const start = src.indexOf('function completeMicroRitual()');
+    const end = src.indexOf('function leaveMicroRitualQuietly()');
+    assert.ok(start >= 0 && end > start, 'completeMicroRitual body not found');
+    const body = src.slice(start, end);
+    const stashAt = body.indexOf('microRitualJourneyDraft(');
+    const assignAt = body.indexOf('pendingJourneyDraft = draft');
+    const handoffAt = body.indexOf('sessionEndFlow.onSessionEnded');
+    assert.ok(stashAt >= 0, 'completeMicroRitual must call microRitualJourneyDraft');
+    assert.ok(assignAt > stashAt, 'completeMicroRitual must assign pendingJourneyDraft');
+    assert.ok(
+      handoffAt > assignAt,
+      'stash must precede Reflection handoff so Skip still logs'
+    );
+    const leaveBody = src.slice(end, src.indexOf('const reflectionOpen'));
+    assert.equal(
+      leaveBody.includes('microRitualJourneyDraft'),
+      false,
+      'Leave must not stash a Journey Log draft'
     );
   });
 

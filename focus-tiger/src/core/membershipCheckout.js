@@ -18,10 +18,12 @@ import { persistMembershipDeviceCredentialFromBody } from './membershipDeviceCre
 export const MEMBERSHIP_PLAN_ID = 'yin-membership';
 
 /**
- * Display-only label (no locked dollar amount — Price lives on Worker / Dashboard).
- * Locale strings do not interpolate ${price} for membership yet.
+ * Display-only USD amount for Support / membership cards (`About ${price}`).
+ * Stripe recurring Price on the Worker (`STRIPE_MEMBERSHIP_PRICE_ID`) is the
+ * billing authority. Amount confirmed 2026-08-15 as **US$6.99 / month**
+ * (same pattern as `TIP_JAR_PRICE_USD` / `SANCTUARY_LIFETIME_PRICE_USD`).
  */
-export const MEMBERSHIP_PRICE_DISPLAY = '';
+export const MEMBERSHIP_PRICE_DISPLAY = '6.99';
 
 /**
  * Apply confirmed subscription fields into entitlement cache.

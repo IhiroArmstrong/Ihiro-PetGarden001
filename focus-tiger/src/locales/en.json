@@ -520,7 +520,7 @@
   "MEMBERSHIP_BENEFIT_1": "Advanced rituals when you need them",
   "MEMBERSHIP_BENEFIT_2": "Deeper ambience while you stay",
   "MEMBERSHIP_BENEFIT_3": "Same B-track access as Lifetime — billed periodically",
-  "MEMBERSHIP_PRICE": "Subscription · price set in Stripe · cancel anytime",
+  "MEMBERSHIP_PRICE": "About ${price} · billed monthly · cancel anytime",
   "MEMBERSHIP_BUY_CTA": "Subscribe",
   "MEMBERSHIP_ALREADY": "Membership active on this device",
   "MEMBERSHIP_MANAGE_CTA": "Manage",
@@ -544,7 +544,7 @@
   "MEMBERSHIP_CLOUD_OFFLINE": "Membership checkout is not configured in this build.",
   "SUPPORT_MEMBERSHIP_TITLE": "Yin Membership",
   "SUPPORT_MEMBERSHIP_BLURB": "Subscribe for the same advanced layer as Sanctuary Lifetime — at your own pace.",
-  "SUPPORT_MEMBERSHIP_PRICE": "Subscription · billed via Stripe",
+  "SUPPORT_MEMBERSHIP_PRICE": "About ${price} · billed monthly",
   "SUPPORT_MEMBERSHIP_CTA": "Join Membership",
   "SUPPORT_MEMBERSHIP_IMG_ALT": "Yin resting in a quiet membership scene"
 }
