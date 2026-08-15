@@ -408,14 +408,14 @@ describe('listSecondaryChromeEntries', () => {
     assert.equal(row?.testId, 'idle-membership-cta');
   });
 
-  it('membership row is static You\'re subscribed when scenes are entitled', () => {
+  it('membership row is You\'re subscribed when scenes are entitled', () => {
     const entries = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       scenesEntitled: true
     });
     const row = entries.find((e) => e.proxy === 'membership');
     assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_SUBSCRIBED');
-    assert.equal(row?.interactive, false);
+    assert.equal(row?.interactive, undefined);
     assert.equal(row?.emphasis, undefined);
     assert.equal(row?.testId, 'idle-membership-subscribed');
   });

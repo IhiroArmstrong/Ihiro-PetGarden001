@@ -412,7 +412,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
 
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
   // One contextual row here (not the three pay SKUs): beige subscribe CTA when
-  // advanced Rituals are locked; quiet "You're subscribed" when entitled.
+  // advanced Rituals are locked; "You're subscribed" (same Membership card) when entitled.
 
   // Stay in touch — optional email capture (not an account; no entitlement gate).
   // After submit: confirmation row only (We'll keep in touch) — not re-openable.
@@ -435,7 +435,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
     out.push({
       proxy: 'membership',
       labelKey: 'MEMBERSHIP_MENU_SUBSCRIBED',
-      interactive: false,
       testId: 'idle-membership-subscribed'
     });
   } else {

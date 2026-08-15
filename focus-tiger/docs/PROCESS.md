@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **菜单订阅 CTA（2026-08-15 · 本支 `fix/menu-membership-subscribe-cta`）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则静默 **You're subscribed**。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
+- **菜单订阅 CTA（2026-08-15 · 本支 `fix/menu-membership-subscribe-cta`）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则为普通钮 **You're subscribed**（同样打开 Membership 卡）。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
 - **Wellness 免责 · 非诊疗（2026-08-14 · 本支 `feature/wellness-disclaimer-copy`）**：冷启动一次性 `#onboarding-wellness-first`（Got it）+「?」简介卡常驻区块 + Privacy Sheet 交叉引用（en + ja）。文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent。红线 `PRINCIPLES.md` / 落点 `ONBOARDING_HINTS.md`。TRACKER 待人工。
 - **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · #292 已合）**：经典金句 ∪ **14** 句生产种子（`INSIGHT_1`–`14`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 天气备选仍不上。TRACKER 待人工（375 换行 + 符号）。
 - **GitHub 默认分支改为 `develop`（2026-08-14）**：Cloud / 新 clone / 新 PR 默认 base / Dependabot / `schedule` YAML 均跟 `develop`。`main` 仍是发布线（合入须明确下令）。夜间全量 e2e 不再需要为 cron 把 workflow 同步到 `main`。权威：`ENV_CONFIG.md` §3。
