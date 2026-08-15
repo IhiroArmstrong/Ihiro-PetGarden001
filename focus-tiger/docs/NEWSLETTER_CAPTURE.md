@@ -1,6 +1,6 @@
 # Stay in touch · Newsletter capture
 
-> **状态（2026-08-15）**：菜单常驻入口 + 生产 Worker **订阅 + 欢迎信 await/重发已 redeploy**（Version `d0140328-ee54-4dbb-8710-be6675f0596a`；覆盖旧 `8c649d12-…`）。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
+> **状态（2026-08-16）**：菜单常驻入口 + 生产 Worker **订阅 + 欢迎信 await/重发仍在**（当前 Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`，覆盖 `d0140328-…` / `8c649d12-…`）。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
 > **性质**：可选邮箱留资，**不是**账号 / 登录系统；**不**挂钩 entitlement / tip / sanctuary。  
 > **文案（2026-08-13 批准）**：欢迎信 + 第一封群发草稿定稿，不改字。群发仍未接线。  
 > **卡面（2026-08-15）**：`NEWSLETTER_CARD_BLURB` / `OPTIONAL` 说明定期更新会把 **known-error 修复** 与 **更好的最新版（latest release）** 发到邮箱；仍写「不是推销名单」。不改欢迎信正文。  
