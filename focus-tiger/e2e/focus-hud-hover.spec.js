@@ -89,3 +89,57 @@ test('FocusHUD streak .label returns after pulse tip is done', async ({ page }) 
   expect(geometry?.h).toBeGreaterThan(8);
   expect(geometry?.unclipped).toBe(true);
 });
+
+test('FocusHUD hosts show hint copy on hover without mint pulse badges', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+
+  await page.evaluate(() => {
+    window.__onboardingHints?.store?.clear?.();
+    window.__onboardingHints?.syncDiscoveryDots?.();
+  });
+
+  for (const hintId of [
+    'focus-hud-ring',
+    'focus-hud-progress',
+    'focus-hud-streak'
+  ]) {
+    await expect(
+      page.locator(
+        `.onboarding-hint-badge[data-hint-id="${hintId}"]:not([hidden])`
+      )
+    ).toHaveCount(0);
+  }
+
+  const cases = [
+    {
+      host: '#focus-hud .ft-hud__gauge',
+      hintId: 'focus-hud-ring',
+      copy: /quiet presence|轻柔陪伴|スコアボード/
+    },
+    {
+      host: '#focus-hud .ft-hud__bar',
+      hintId: 'focus-hud-progress',
+      copy: /Today's shared sitting|今日同坐|きょういっしょ/
+    },
+    {
+      host: '#focus-hud .ft-hud__streak',
+      hintId: 'focus-hud-streak',
+      copy: /Recent days you practiced|近日同坐|日ごとに一つの点/
+    }
+  ];
+
+  for (const { host, hintId, copy } of cases) {
+    const el = page.locator(host);
+    await expect(el).toBeVisible();
+    await el.hover();
+    const tip = page.locator(
+      `ft-onboarding-hint-bubble[data-hint-id="${hintId}"]`
+    );
+    await expect(tip).toBeVisible({ timeout: 5_000 });
+    await expect(tip).toContainText(copy);
+    await page.mouse.move(0, 0);
+    await expect(tip).toBeHidden({ timeout: 5_000 });
+  }
+});

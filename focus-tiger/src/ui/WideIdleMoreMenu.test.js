@@ -59,4 +59,28 @@ describe('wide more menu click reception', () => {
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.match(src, /\.ft-wide-more__item:active:not\(:disabled\)/);
   });
+
+  it('does not dismiss ⋯ when the click is an onboarding tip or menu chrome', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /shouldIgnoreOutsideDismissTarget/);
+  });
+
+  it('stages the reminder panel on-canvas (not the empty heatmap stub)', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /ft-wide-stage-reminder \.reminder-pref__panel/
+    );
+    assert.match(src, /pointer-events: auto !important/);
+  });
+
+  it('reminder panel lives on body as viewport-fixed (escapes cluster filter)', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
+    assert.match(src, /position: fixed/);
+    assert.match(src, /shouldIgnoreOutsideDismissTarget/);
+    assert.match(src, /doc\.body \|\| mountRoot/);
+  });
 });

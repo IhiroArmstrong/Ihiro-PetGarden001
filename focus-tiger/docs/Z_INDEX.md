@@ -68,7 +68,6 @@
 | **20** | `src/ui/WideIdleMoreMenu.js` | 宽屏 More（⋯）下拉菜单面板 |
 | **21** | `src/main.js` | DEV 实验室按钮（重置本地状态 / 清 hints / 等） |
 | **22** | `src/main.js` | DEV 实验室一次性 toast（`#dev-lab-toast`） |
-| **22** | `src/ui/ReminderPreferenceUI.js` | Reminder 偏好面板（`.reminder-pref__panel`）默认绝对定位上弹 |
 | **22** | `src/ui/AmbientSoundscapeUI.js` | Ambient 根壳（`.ambient-soundscape`，`pointer-events: none`） |
 | **22** | `src/ui/OnboardingHintsUI.js` | 左下 `?` 帮助钮（`.onboarding-hint-help`） |
 | **22** | `src/ui/SoftUpdatePromptUI.js` | 仅有新版本时出现的轻量更新芯片（`#ft-soft-update-prompt`；左下、几何在 `?` **上方**；点一下刷新；忙时隐藏；与 `?` 同带勿抢 23 右下 Sound chrome） |
@@ -85,6 +84,8 @@
 | **30** | `src/ui/NarrowIdleShell.js` | NarrowIdleShell 固定壳（ActionBar / 抽屉 / 主屏三球）；须高于 Ambient(22) 才能点 ♪ / ? |
 | **32** | `src/ui/NarrowIdleShell.js` | 窄屏 stage：Companion dock / Reminder 热力图簇 / Soundscape chrome 抬到壳之上 |
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Sound：Soundscape chrome 抬到菜单之上 |
+| **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：`#reminder-preference-panel` 抬到菜单之上 |
+| **32** | `src/ui/ReminderPreferenceUI.js` | `#reminder-preference-panel` viewport-fixed 挂 `body`（避开热力图簇 `backdrop-filter` 包含块；⋯ / 抽屉点选后居中偏下） |
 | **33** | `src/ui/NarrowIdleShell.js` | 窄屏 stage Reminder：偏好面板再抬一层（相对 staged 簇） |
 | **34** | `src/ui/ft-onboarding-hint-bubble.js` | Onboarding 提示气泡（Lit）；须高于窄壳主 CTA(~30) |
 | **34** | `src/ui/InAppReminderBannerUI.js` | 窄屏 Idle/park：Reminder 横幅抬到 ActionBar 之下可见（防被壳顶栏盖住） |
