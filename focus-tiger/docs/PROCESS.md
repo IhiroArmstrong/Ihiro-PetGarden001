@@ -66,7 +66,7 @@
 
 - **Cloud 旁支落到本机（2026-08-15）**：禁止在主仓点 Cursor Apply / checkout migrated branch（易超时并抢走 5173）。须 `git fetch` + `git worktree add …-wt-…`。权威：`WORKFLOW.md` 并行 worktree 第 8 款。
 
-- **固定 develop QA worktree（2026-08-15）**：关单 / 批量人工测试用固定树 `…-wt-develop-qa`、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化。feature 开发树不变。权威：`WORKFLOW.md` / `qa-develop-worktree`。
+- **固定 develop QA worktree（2026-08-15）**：关单 / 批量人工测试用固定树 `…-wt-develop-qa`、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化。feature 开发树不变。冲突旧口径 PR **#306 / #308 已关未合**。权威：`WORKFLOW.md` / `qa-develop-worktree`。
 
 - **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
 - **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。
