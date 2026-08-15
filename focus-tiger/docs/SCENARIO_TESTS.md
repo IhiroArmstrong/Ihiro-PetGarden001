@@ -34,7 +34,7 @@
 
 | 优先 | 场景 | 为何先写 | 0–1 秒句现状 |
 |---|---|---|---|
-| **P0** | **Q** Support Yin 双卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
+| **P0** | **Q** Support Yin 三卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
 | **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
 | **P0** | **X** Tiger Anchor **冷却期内再点** | 触点邀请隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本批已落地：微点头（无 toast）；缺口句作废 |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
@@ -310,18 +310,18 @@
 
 ## 场景 Q：Support Yin · 请茶与 Sanctuary（双轨付费入口）
 
-> **用户故事**：Kelly 想支持阿寅——右上角 **Support Yin** 打开双卡（上/左 Sanctuary Lifetime；下/右 Buy Yin a Tea），也可从 ⋯/抽屉进旧菜单卡。打赏**不**解锁内容；Sanctuary 与 tip **零耦合**。徽章走 **统一练习授予**（#204）：免费练习起授、Tea/Sanctuary 付费起 3；练习上涨自动加枚。  
+> **用户故事**：Kelly 想支持阿寅——右上角 **Support Yin** 打开三卡（左 Sanctuary Lifetime；中 Yin Membership；右 Buy a Tea），打赏**不**解锁内容；Sanctuary 与 tip **零耦合**。徽章走 **统一练习授予**（#204）：免费练习起授、Tea/Sanctuary 付费起 3；练习上涨自动加枚。  
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
-> **仍须人工**：Test 卡金额（Tea **US$9.99** / Sanctuary **US$89.99**）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。  
+> **仍须人工**：Test 卡金额（Tea **US$9.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
 > **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
 
 ### Q1 · Support Modal（统一入口）
 
 1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
-2. 见双卡：Sanctuary 带 **Suggested** + Primary CTA，文案含 **One-time Lifetime**（无假划线）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ Ghost CTA。
+2. 见三卡：Sanctuary 带 **Suggested** + 米色 CTA，文案含 **One-time Lifetime**（无假划线）+ **About $89.99**；中间 Membership 报价行与左右同位置，文案 **About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ 米色 CTA。三卡头图底为同一暖纸色（勿再出现左灰/中白）。
 3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
-4. **375**：双卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
+4. **375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
 5. **回流**：Sit→Focusing → FAB **隐藏**（不可点，不是哑点击）；Rise 回 Idle → FAB 复现。
 
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
@@ -519,7 +519,7 @@
 | **N** | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头 | 2026-07-19/20 增量 |
 | **O** | Idle 7 格热力图：亮/暗、非 Idle 隐藏、Hint；窄屏挂点 | **已升格** → 见上文「场景 O」；e2e 锁可见/隐藏/seed 亮暗/**375 几何**（**非** Hint） |
 | **P** | 应用内提醒：设时、回前台横幅、关闭不重复、忙碌 suppress | **已升格** → 见上文「场景 P」；e2e 锁主路径+suppress（**非** defer/负例） |
-| **Q** | Support Yin 双卡 + Tea tip/徽章 + Sanctuary Lifetime（零耦合）+ 统一练习徽章 | **已升格** → 见上文「场景 Q」（含 Q4 #204） |
+| **Q** | Support Yin 三卡 + Tea tip/徽章 + Sanctuary Lifetime（零耦合）+ 统一练习徽章 | **已升格** → 见上文「场景 Q」（含 Q4 #204） |
 | **R** | 跨日回访（dayN / 拨时钟）：与 `RETENTION_FUNNEL` R2–R3 对齐 | **仍建议**；测回访须拨时钟或跨日真机；勿与 Q–Z 混关 |
 | **S** | 首页左球 Breath practice（时长 chip → 完成/Leave） | **已升格** → 见上文「场景 S」；`micro-ritual` e2e |
 | **T** | Companion 后 Focus 时长 chip 15/25/45/60 | **已升格** → 见上文「场景 T」；无 query 路径须人工 |
