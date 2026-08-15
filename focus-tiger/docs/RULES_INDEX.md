@@ -95,7 +95,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款或具体分钟/时长数值；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；违反 SSOT 连续开放上限 / 续开不清零 / 精确时间戳汇报；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent 见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
-| `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解 | 主张 feature/fix 试跑即正式关单验收；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
+| `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收 / 关单默认路径」（固定 `127.0.0.1:5173` + 长期 `…-wt-qa-develop-tip`，合入后硬刷新）；`KNOWN_RISKY_TEST_CHECKLIST` §0 与 `COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解 | 主张 feature/fix 试跑即正式关单验收；主张用过时 feature worktree / Support-only QA tree 代替当时 tip；主张关单每次新开 worktree 或 5174+ 端口 |
 | `qa-batch-human-test` | 「口令「批量人工测试」见 `TEST_TRACKER`」；PROCESS / COLLAB 可一行引用 | 让用户自己翻 PR 历史拼待测项；把清单当成已关单 |
 | `qa-pass-coverage-split` | 「标已通过须覆盖分工见 `TEST_TRACKER`」；regression-lock / docs.mdc 可摘要硬拦 | 主张 e2e 绿即可关单；笼统「测试 OK→已通过」且不写 e2e/人工各覆盖哪些场景 |
 | `branch-freshness` | 「邀测前 freshness 见 regression-lock「分支新鲜度」」 | 落后 >0 仍声称代表 develop / 正式邀测却不报落后数 |
@@ -197,6 +197,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-15 | `qa-develop-tip`：关单固定 `127.0.0.1:5173` + 长期 QA 树；合入后硬刷新，禁止每次新开端口 / worktree |
 | 2026-08-14 | GitHub 默认分支改为 `develop`：`schedule` 读默认分支 YAML（现为 `develop`），不必再为 cron 把 workflow 同步到 `main`；见 `ENV_CONFIG.md` §3 |
 | 2026-08-14 | 新增 `recommend-most-reasonable`：列 ≥2 个开放方案时须同时给出「我认为最合理的」；SSOT `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`；N14b |
 | 2026-08-14 | 统一 Git/验收五档：任务完成后默认 push 旁支+开 PR（本机=Cloud）；合入 develop = CI 绿（`git-develop-small-pr-run-merge` 扩到运行时 PR）；人工测试与合入解耦；新增 `qa-batch-human-test`、`prod-worker-deploy`；§7「已修复」仍须人工测 |

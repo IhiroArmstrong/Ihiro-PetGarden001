@@ -182,7 +182,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 | **合入门闩**（CI + 本条同步判定） | **合并进 `develop` 时** | PR head；Required checks 全绿 | 决定「能不能合进主干」；**不等**人工测试 |
 | **关单级人工验收**（`qa-develop-tip`） | **已合入 `develop` 之后**（可批量） | **仅**当时 `origin/develop` tip | 决定 TEST_TRACKER 能否标「已通过」/ 关闭「有问题」；决定能否声称「已修复」 |
 
-关单只认 develop tip，因此 **关单级人工测试的默认路径就是先合再测**。feature 上的试跑仍 **不得**单独当作关单证据（见 `TEST_TRACKER.md`）。**禁止**把「已合入 develop」写成「已验证 / 已修复」。
+关单只认 develop tip，因此 **关单级人工测试的默认路径就是先合再测**。合入后在长期 QA 树硬刷新 `http://127.0.0.1:5173/?product=1`（`TEST_TRACKER.md`「关单默认路径」），**不必**另开分支或端口。feature 上的试跑仍 **不得**单独当作关单证据。**禁止**把「已合入 develop」写成「已验证 / 已修复」。
 
 #### 合入前是否须同步（rebase/merge）`develop`——可执行判断
 

@@ -16,7 +16,7 @@
 
 协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `git-feature-merge-preview`（研发自检 + 主干同步）与 `qa-batch-human-test`（批量清单）。
 
-**本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
+**本地开发 / 关单页**：**关单**固定 `http://127.0.0.1:5173/?product=1`（见下「关单默认路径」）。feature 自检勿占用 5173。  
 产品开表前选 **15/25/45/60**；无 chip 的短测/e2e 用 **`?sessionMinutes=N`**（跳过 picker）。场景 B Re-focus 真实切页仍用 **`?sessionMinutes=5`**。  
 
 **窄屏验收（2026-07-21 起）**：凡 **UI 可见**改动，测试步骤须含 **375×667 竖屏**（DevTools 设备模式即可）；触及底部 dock / 引导气泡 / 叠层底栏时，另加 **横屏**一步。标准见 **`RESPONSIVE_LAYOUT.md`**（功能对等 + 竖屏 P1，不要求每 Task 手机完美）。  
@@ -40,37 +40,48 @@
 用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。  
 点击反馈原则：[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)；已知静默白名单：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）。
 
-### 主干一次性关单验收（2026-08-08 · 现行）
+### 主干一次性关单验收（2026-08-08 · 2026-08-15 固定 5173）
 
 > **目的**：在 **同一** `origin/develop` tip 上把「已合入、仍未关单」的产品面尽量一次测完，避免按 feature 各开一套过时 worktree。  
-> **操作步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（本表只定**哪些行进本批**与 tip 启动命令）。  
+> **启动命令 SSOT**：本节「关单默认路径」（固定 `127.0.0.1:5173`）。  
+> **走查步骤**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（本表只定**哪些行进本批**）。  
 > **盘点快照（本文件当日）**：功能清单约 **96** 行仍为「待人工测试 / 有问题」（UI 可见约 92）。**不等于**本批须测 96 条——实验室 / 长墙钟 / 已废行 / feature 自检已免 tip 复验者，排在「本批不排」。
 
 #### 过时说法（勿再用）
 
 | 过时口径 | 现行口径 |
 |---|---|
-| tip = `#187` / `62e38a3`；专开 `…-wt-qa-support-modal` 只测 Support | tip **随 fetch 变**；Support（#187）已是 tip **祖先**。一次 tip worktree 可测 Support + 同 tip 上其它未关单项 |
-| 主仓 develop「ahead 1 / behind 1」分叉，pull 到不了 tip | **2026-08-08 fetch 后**：`origin/develop` = **`beb9147`**（#188 PWA 延后 QA）；本地 develop 仅 **ahead 1** 未推文档（绝对路径规则），**behind = 0**。关单仍须对齐 **远端 tip**，勿用「仅本地 ahead」冒充 tip |
+| 每次关单新开 worktree / 新端口（5174、5175…） | **关单固定** `http://127.0.0.1:5173/?product=1`。长期树 = `…-wt-qa-develop-tip`。相关 PR **已合** `develop` 后：Agent 把该树 ff 到 tip，你 **硬刷新** 5173。**禁止**为关单再开分支或端口 |
+| tip = `#187` / `62e38a3`；专开 `…-wt-qa-support-modal` 只测 Support | tip **随 fetch 变**；Support（#187）已是 tip **祖先**。一次 tip 树可测 Support + 同 tip 上其它未关单项 |
+| 主仓 develop「ahead 1 / behind 1」分叉，pull 到不了 tip | 关单仍须对齐 **远端** `origin/develop` tip，勿用「仅本地 ahead」冒充 tip |
 | 旧 feature / 旧 `…-wt-*` 目录直接 `npm run dev` 当主干验 | **禁止**。过时 worktree ≠ tip |
-| 「单纯 `git pull` 主仓 develop」默认等于 tip | 主仓若 ahead 未推、或脏树占着别的任务 → **优先** `git worktree add … origin/develop` 纯 tip 树 |
+| 「单纯 `git pull` 主仓 develop」默认等于 tip | 主仓若 ahead 未推、或脏树占着别的任务 → 用长期 QA 树 `…-wt-qa-develop-tip` 对 tip，**不要**再 `worktree add` 第三棵 |
 
-#### 推荐启动（纯 tip · 可复制）
+#### 关单默认路径（2026-08-15 拍板 · 固定 5173）
 
-验收前先确认 tip（hash 会变；下列 `beb9147` 为 2026-08-08 盘点时 tip）：
+相关 PR **已经合并**进 `develop` 之后，关单级人工测试：
+
+1. **只测** `http://127.0.0.1:5173/?product=1`（Safari）。  
+2. **不必**新开 feature/fix 分支，也 **不必**换端口。  
+3. 你这边默认 **硬刷新**（Safari：Shift+刷新，或清空该页缓存后重开同一 URL）。  
+4. Agent 在邀测前须把长期 QA 树对齐当时 `origin/develop` tip（`behind=0`），并在回复里写出 **tip hash**。
+
+**硬刷新通常够**：源码 / 文案 / CSS 已出现在 QA 树（Vite 看着这棵树）。  
+
+**才需要重启 Vite（仍必须是 5173，禁止另开端口）**：5173 没在听；Vite 的 cwd **不是** QA 树；改了 `vite.config` / 依赖（须先 `npm install`）；或硬刷新后仍是旧 hash。先停掉占用 5173 的旧进程，再：
 
 ```bash
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip
 git fetch origin develop
-git rev-parse origin/develop   # 关单书面须写此 hash
-# 若目录已存在可先：git worktree remove …-wt-qa-develop-tip
-git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
+git checkout --detach origin/develop
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
-npm install && npm run check:branch-freshness && npm run dev
+npm run check:branch-freshness && npm run dev
 ```
 
 Safari：`http://127.0.0.1:5173/?product=1`  
 关单书面须含：**当时** `origin/develop` tip hash + `behind=0`。按 [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md) §0.1 顺序走；反馈写回本表「用户反馈」列。
+
+feature/fix **自检**仍可在旁支 worktree 用其它端口——**那不是关单**，不得据此改本表「已通过」。
 
 #### 本批应测（产品壳 · 已合 tip · 未关单）
 

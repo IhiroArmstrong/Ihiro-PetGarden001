@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **关单测试固定 5173（2026-08-15）**：相关 PR 已合 `develop` 后，关单只测 `http://127.0.0.1:5173/?product=1`（长期树 `…-wt-qa-develop-tip`）。默认硬刷新；不必新开分支或端口。权威：`TEST_TRACKER.md`「关单默认路径」。
 - **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
 - **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。
 - **Stay in touch 欢迎信假成功（2026-08-15 · #302 已合 · Worker `d0140328`）**：上午真实邮箱没收到信（旧 `8c649d12` `waitUntil` 假成功）。同日用户从 qa worktree tip `c2dce6c` redeploy 生产 Version `d0140328-ee54-4dbb-8710-be6675f0596a`（await Resend / 502 / 无 `welcomeSentAt` 重发）。TRACKER `RB-20260815-L394` 仍待真实邮箱复测。**#305 只改文档，复测不必等它合入。**
