@@ -1,31 +1,35 @@
 /**
- * Idle / Focusing chrome: Sanctuary Enso mark on Yin's cushion face.
+ * Idle / Focusing chrome: Sanctuary Enso mark at the page bottom-left.
  * Entitled (lifetime ∪ subscription) only — never tip-only.
- * Click does not open shop (Brief).
+ * Decorative (pointer-events: none) — does not open shop.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
-  ENSO_FALLBACK_VIEWPORT_FRAC,
-  ENSO_MIN_CSS_PX,
+  ENSO_CORNER_BOTTOM_WIDE_PX,
+  ENSO_CORNER_GAP_ABOVE_BALLS_PX,
+  ENSO_CORNER_LEFT_NARROW_PX,
+  ENSO_CORNER_LEFT_WIDE_PX,
+  ENSO_CORNER_SIZE_NARROW_PX,
+  ENSO_CORNER_SIZE_WIDE_PX,
+  ENSO_HOME_BALLS_BOTTOM_PX,
+  ENSO_HOME_SIT_PX,
+  ENSO_NARROW_MQ_MAX_PX,
   ENSO_OPACITY_FOCUSING,
-  ENSO_OPACITY_HOVER,
   ENSO_OPACITY_IDLE,
   SANCTUARY_ENSO_MARK_SRC,
-  layoutSanctuaryEnsoMark,
   sanctuaryEnsoOpacity,
   shouldShowSanctuaryEnsoMark
 } from '../core/sanctuaryEnsoMark.js';
 import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
 
-const STYLE_ID = 'yin-sanctuary-enso-mark-chrome-v1';
+const STYLE_ID = 'yin-sanctuary-enso-mark-chrome-v2';
 
 export class SanctuaryEnsoMarkChrome {
   /**
    * @param {HTMLElement} mountRoot
    * @param {object} [handlers]
    * @param {Storage | null} [handlers.storage]
-   * @param {() => ({ left: number, top: number, width: number, height: number, naturalWidth?: number, naturalHeight?: number } | null)} [handlers.getDisplayRect]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -34,8 +38,6 @@ export class SanctuaryEnsoMarkChrome {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._visibleAllowed = true;
     this._focusing = false;
-    this._hover = false;
-    this._stageObserver = null;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-sanctuary-enso-mark';
@@ -56,29 +58,9 @@ export class SanctuaryEnsoMarkChrome {
     mountRoot.appendChild(this.root);
 
     this._injectStyles();
-    this._onPointerEnter = () => {
-      this._hover = true;
-      this._applyOpacity();
-    };
-    this._onPointerLeave = () => {
-      this._hover = false;
-      this._applyOpacity();
-    };
-    this.root.addEventListener('pointerenter', this._onPointerEnter);
-    this.root.addEventListener('pointerleave', this._onPointerLeave);
-    // Click must not open shop (Brief) — swallow activation.
-    this.root.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
 
     this._unsubLocale = onLocaleChange(() => this.refresh());
     this._unsubEntitlement = onEntitlementChange(() => this.refresh());
-    this._onResize = () => this.syncLayout();
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', this._onResize);
-      window.addEventListener('orientationchange', this._onResize);
-    }
 
     this.refresh();
   }
@@ -108,75 +90,20 @@ export class SanctuaryEnsoMarkChrome {
     this.root.setAttribute('aria-hidden', show ? 'false' : 'true');
     if (show) {
       this.root.setAttribute('aria-label', t('SANCTUARY_ENSO_MARK_ARIA'));
-      this._observeStage();
-      this.syncLayout();
-    } else {
-      this._disconnectStage();
     }
     this._applyOpacity();
   }
 
-  syncLayout() {
-    if (this.root.hidden) return;
-    const getRect = this.handlers.getDisplayRect;
-    const rect = typeof getRect === 'function' ? getRect() : null;
-    const box = layoutSanctuaryEnsoMark(rect);
-    if (!box) {
-      // Fallback: viewport cushion band if sprite rect not ready yet.
-      const vw =
-        typeof window !== 'undefined' ? window.innerWidth || 375 : 375;
-      const vh =
-        typeof window !== 'undefined' ? window.innerHeight || 667 : 667;
-      const size = Math.max(
-        ENSO_MIN_CSS_PX,
-        Math.min(vw, vh) * ENSO_FALLBACK_VIEWPORT_FRAC
-      );
-      this.root.style.left = `${vw / 2 - size / 2}px`;
-      this.root.style.top = `${vh * 0.72 - size / 2}px`;
-      this.root.style.width = `${size}px`;
-      this.root.style.height = `${size}px`;
-      return;
-    }
-    this.root.style.left = `${box.left}px`;
-    this.root.style.top = `${box.top}px`;
-    this.root.style.width = `${box.size}px`;
-    this.root.style.height = `${box.size}px`;
-  }
-
   destroy() {
-    this._disconnectStage();
     this._unsubLocale?.();
     this._unsubEntitlement?.();
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this._onResize);
-      window.removeEventListener('orientationchange', this._onResize);
-    }
-    this.root.removeEventListener('pointerenter', this._onPointerEnter);
-    this.root.removeEventListener('pointerleave', this._onPointerLeave);
     this.root.remove();
   }
 
   _applyOpacity() {
-    const op = sanctuaryEnsoOpacity(this._focusing, this._hover);
+    const op = sanctuaryEnsoOpacity(this._focusing, false);
     this.root.style.opacity = String(op);
-    this.root.dataset.opacityMode = this._focusing
-      ? 'focusing'
-      : this._hover
-        ? 'hover'
-        : 'idle';
-  }
-
-  _observeStage() {
-    if (this._stageObserver || typeof ResizeObserver === 'undefined') return;
-    const stage = document.getElementById('sprite-stage');
-    if (!stage) return;
-    this._stageObserver = new ResizeObserver(() => this.syncLayout());
-    this._stageObserver.observe(stage);
-  }
-
-  _disconnectStage() {
-    this._stageObserver?.disconnect();
-    this._stageObserver = null;
+    this.root.dataset.opacityMode = this._focusing ? 'focusing' : 'idle';
   }
 
   _injectStyles() {
@@ -186,16 +113,26 @@ export class SanctuaryEnsoMarkChrome {
     style.textContent = `
       .yin-sanctuary-enso-mark {
         position: fixed;
-        /* Above sprite-overlay(3), below #ui-overlay(10); with LightProgression FX(4) */
-        z-index: 4;
-        pointer-events: auto;
+        left: max(${ENSO_CORNER_LEFT_WIDE_PX}px, env(safe-area-inset-left, 0px));
+        bottom: max(${ENSO_CORNER_BOTTOM_WIDE_PX}px, env(safe-area-inset-bottom, 0px));
+        width: ${ENSO_CORNER_SIZE_WIDE_PX}px;
+        height: ${ENSO_CORNER_SIZE_WIDE_PX}px;
+        /* Identity chrome with kindness badges(11); below heatmap(12) / dock(16) / ?(22) */
+        z-index: 11;
+        pointer-events: none;
         opacity: ${ENSO_OPACITY_IDLE};
         transition: opacity 180ms ease;
         line-height: 0;
-        /* Click does not open shop — still allow hover brighten on wide */
-        cursor: default;
         user-select: none;
         -webkit-user-select: none;
+      }
+      @media (max-width: ${ENSO_NARROW_MQ_MAX_PX}px) {
+        .yin-sanctuary-enso-mark {
+          left: max(${ENSO_CORNER_LEFT_NARROW_PX}px, env(safe-area-inset-left, 0px));
+          bottom: calc(max(${ENSO_HOME_BALLS_BOTTOM_PX}px, env(safe-area-inset-bottom, 0px)) + ${ENSO_HOME_SIT_PX}px + ${ENSO_CORNER_GAP_ABOVE_BALLS_PX}px);
+          width: ${ENSO_CORNER_SIZE_NARROW_PX}px;
+          height: ${ENSO_CORNER_SIZE_NARROW_PX}px;
+        }
       }
       .yin-sanctuary-enso-mark.is-focusing {
         opacity: ${ENSO_OPACITY_FOCUSING};
@@ -207,11 +144,6 @@ export class SanctuaryEnsoMarkChrome {
         display: block;
         pointer-events: none;
         filter: drop-shadow(0 1px 2px rgba(40, 28, 16, 0.22));
-      }
-      @media (hover: hover) and (pointer: fine) {
-        .yin-sanctuary-enso-mark:not(.is-focusing):hover {
-          opacity: ${ENSO_OPACITY_HOVER};
-        }
       }
     `;
     document.head.appendChild(style);

@@ -902,9 +902,7 @@ async function init() {
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
-  const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {
-    getDisplayRect: () => spritePlayer.getDisplayRect()
-  });
+  const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
   window.__sanctuaryEnsoMark = sanctuaryEnsoMarkChrome;
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {
     onBadgesChanged: () => {
@@ -2473,7 +2471,7 @@ async function init() {
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
-    // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
+    // Enso stays in the page corner during Focusing — fade only (Brief opacity 0.45–0.55).
     sanctuaryEnsoMarkChrome.setVisible(true);
     sanctuaryEnsoMarkChrome.setFocusing(true);
     activeRecoverAnchor.setFocusing(true);
