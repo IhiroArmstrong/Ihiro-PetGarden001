@@ -64,6 +64,7 @@
 
 **近期落地（待人工测试）**：
 
+- **菜单订阅 CTA（2026-08-15 · 本支 `fix/menu-membership-subscribe-cta`）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则静默 **You're subscribed**。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
 - **Wellness 免责 · 非诊疗（2026-08-14 · 本支 `feature/wellness-disclaimer-copy`）**：冷启动一次性 `#onboarding-wellness-first`（Got it）+「?」简介卡常驻区块 + Privacy Sheet 交叉引用（en + ja）。文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent。红线 `PRINCIPLES.md` / 落点 `ONBOARDING_HINTS.md`。TRACKER 待人工。
 - **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · #292 已合）**：经典金句 ∪ **14** 句生产种子（`INSIGHT_1`–`14`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 天气备选仍不上。TRACKER 待人工（375 换行 + 符号）。
 - **GitHub 默认分支改为 `develop`（2026-08-14）**：Cloud / 新 clone / 新 PR 默认 base / Dependabot / `schedule` YAML 均跟 `develop`。`main` 仍是发布线（合入须明确下令）。夜间全量 e2e 不再需要为 cron 把 workflow 同步到 `main`。权威：`ENV_CONFIG.md` §3。
@@ -96,7 +97,7 @@
 - **向阿寅倾诉 · Confide MVP（2026-08-10 · #225 已合）**：分类 safety→情绪→fallback；禅意 18 + safety-01 **ok**；面板 `#confide-to-yin-card` 已接线；**`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户菜单仍关）。QA：`?product=1&confide=1`。待评估：地区热线具体资源。TRACKER 待人工。
 - **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
-- **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **You're subscribed** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实发信见文首 2026-08-13 条。
+- **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（本地只记 `submitted`、不存邮箱）+ 社群静态占位外链；提交后菜单行 **We'll keep in touch** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实发信见文首 2026-08-13 条。
 - **芥子须弥纪念印（#246 + 金章 #256 已合 tip `5440a53`）**：统一练习 score≥21；完成仪式后出卡；菜单可重读；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER 待人工（须验方章）。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`；古典扩库本支）**：内容池 `src/content/daily-wisdom/`（en/ja；Yin 短句 + 可选 `attribution` 古典/文学句同池）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`（有署名时 `<cite>`）；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**Phase A 挂 Reflection 底部**（本支 `feature/daily-wisdom-reflection-mount`；与 Quiet Line 分池；**Phase B 印花未做**）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。

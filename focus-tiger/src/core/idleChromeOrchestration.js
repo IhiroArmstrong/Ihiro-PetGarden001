@@ -41,6 +41,7 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
  * @property {boolean} [companionEnabled]
  * @property {boolean} reminderAvailable
  * @property {boolean} [newsletterSubmitted]
+ * @property {boolean} [scenesEntitled] override; default = isEntitled(ritual.morning.access)
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
  */
@@ -53,6 +54,8 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
  * @property {string} [featureKey]
  * @property {boolean} [locked]
  * @property {boolean} [interactive] false = visible confirmation row, not clickable
+ * @property {'beige-cta'} [emphasis]
+ * @property {string} [testId]
  */
 
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
@@ -303,6 +306,18 @@ export function resolveRoleVisibility(input) {
 }
 
 /**
+ * Advanced RitualFlow scenes unlock with Membership ∪ Sanctuary Lifetime.
+ * @param {SecondaryEntryVisibility} visibility
+ * @returns {boolean}
+ */
+function hasUnlockedAdvancedScenes(visibility) {
+  if (typeof visibility.scenesEntitled === 'boolean') {
+    return visibility.scenesEntitled;
+  }
+  return isEntitled('ritual.morning.access');
+}
+
+/**
  * Secondary chrome entries for drawer (narrow) or ⋯ menu (wide).
  * Honesty is a home ball on both viewports — never listed here.
  *
@@ -395,21 +410,40 @@ export function listSecondaryChromeEntries(surface, visibility) {
     labelKey: 'WALLPAPER_MENU_LABEL'
   });
 
-  // Sanctuary / Membership / Tea live on the top-right Support FAB only
-  // (⋯ / drawer used to duplicate those three pay rows).
+  // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
+  // One contextual row here (not the three pay SKUs): beige subscribe CTA when
+  // advanced Rituals are locked; quiet "You're subscribed" when entitled.
 
   // Stay in touch — optional email capture (not an account; no entitlement gate).
-  // After submit: confirmation row only (You're subscribed) — not re-openable.
+  // After submit: confirmation row only (We'll keep in touch) — not re-openable.
+  // Do not say "You're subscribed" here — that copy is reserved for paid access.
   if (visibility.newsletterSubmitted) {
     out.push({
       proxy: 'newsletter',
-      labelKey: 'NEWSLETTER_MENU_SUBSCRIBED',
+      labelKey: 'NEWSLETTER_MENU_CONFIRMED',
       interactive: false
     });
   } else {
     out.push({
       proxy: 'newsletter',
       labelKey: 'NEWSLETTER_MENU_LABEL'
+    });
+  }
+
+  const scenesEntitled = hasUnlockedAdvancedScenes(visibility);
+  if (scenesEntitled) {
+    out.push({
+      proxy: 'membership',
+      labelKey: 'MEMBERSHIP_MENU_SUBSCRIBED',
+      interactive: false,
+      testId: 'idle-membership-subscribed'
+    });
+  } else {
+    out.push({
+      proxy: 'membership',
+      labelKey: 'MEMBERSHIP_MENU_CTA',
+      emphasis: 'beige-cta',
+      testId: 'idle-membership-cta'
     });
   }
 

@@ -12,7 +12,7 @@
 |---|---|
 | 菜单位置 | Idle ⋯ / 窄屏抽屉（付费三项已改走右上 Support FAB，不再紧邻 Tea 行） |
 | Stay in touch | 打开 `#newsletter-capture-card`；提交走 `NewsletterProvider` |
-| 提交后 | 菜单行变为 **You're subscribed**（`interactive: false`），不可再开表单 |
+| 提交后 | 菜单行变为 **We'll keep in touch**（`interactive: false`），不可再开表单。**You're subscribed** 只用于已解锁进阶仪式的付费确认行 |
 | Join our community | 静态外链（占位 URL，见 `communityLink.js`） |
 | 本地状态 | `focus-tiger.newsletter-capture.v1` → `{ submitted }` 仅标记；**不**存邮箱明文 |
 

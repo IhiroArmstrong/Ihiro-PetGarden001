@@ -584,6 +584,10 @@ export class WideIdleMoreMenu {
       btn.setAttribute('role', 'menuitem');
       btn.dataset.proxy = item.proxy;
       btn.textContent = t(item.labelKey);
+      if (item.testId) btn.dataset.testid = item.testId;
+      if (item.emphasis === 'beige-cta') {
+        btn.classList.add('is-beige-cta');
+      }
       if (item.locked) {
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
@@ -920,6 +924,34 @@ export class WideIdleMoreMenu {
       .ft-wide-more__item:disabled:hover {
         background: transparent;
         border-color: transparent;
+      }
+      .ft-wide-more__item.is-beige-cta {
+        text-align: center;
+        padding-right: 12px;
+        font-weight: 700;
+        white-space: normal;
+        border: 1px solid rgba(139, 115, 85, 0.36);
+        color: var(--color-ink, #2c1f14);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 252, 245, 0.96) 0%,
+          #ede0c4 100%
+        );
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 2px 0 rgba(165, 130, 85, 0.22),
+          0 3px 8px rgba(44, 31, 20, 0.08);
+      }
+      .ft-wide-more__item.is-beige-cta:hover {
+        background: linear-gradient(180deg, #fffcf4 0%, #ede0c4 100%);
+        border-color: rgba(139, 115, 85, 0.42);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 2px 0 rgba(165, 130, 85, 0.28),
+          0 4px 10px rgba(44, 31, 20, 0.12);
+      }
+      .ft-wide-more__item.is-beige-cta:active {
+        transform: translateY(1px) scale(0.98);
       }
       .ft-secondary-menu-hint-dot {
         position: absolute;

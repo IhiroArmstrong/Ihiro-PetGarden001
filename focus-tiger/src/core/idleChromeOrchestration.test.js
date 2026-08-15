@@ -319,6 +319,7 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'newsletter',
+        'membership',
         'community',
         'ritual-morning',
         'ritual-emotional-reset',
@@ -342,6 +343,7 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'newsletter',
+        'membership',
         'community',
         'ritual-morning',
         'ritual-emotional-reset',
@@ -374,6 +376,7 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'newsletter',
+        'membership',
         'community',
         'ritual-morning',
         'ritual-emotional-reset',
@@ -382,15 +385,39 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
-  it('newsletter becomes non-interactive subscribed row when submitted', () => {
+  it('newsletter becomes non-interactive confirmation row when submitted', () => {
     const entries = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       newsletterSubmitted: true
     });
     const row = entries.find((e) => e.proxy === 'newsletter');
-    assert.equal(row?.labelKey, 'NEWSLETTER_MENU_SUBSCRIBED');
+    assert.equal(row?.labelKey, 'NEWSLETTER_MENU_CONFIRMED');
     assert.equal(row?.interactive, false);
     assert.ok(entries.some((e) => e.proxy === 'community'));
+  });
+
+  it('membership row is beige subscribe CTA when scenes are locked', () => {
+    const entries = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      scenesEntitled: false
+    });
+    const row = entries.find((e) => e.proxy === 'membership');
+    assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_CTA');
+    assert.equal(row?.emphasis, 'beige-cta');
+    assert.equal(row?.interactive, undefined);
+    assert.equal(row?.testId, 'idle-membership-cta');
+  });
+
+  it('membership row is static You\'re subscribed when scenes are entitled', () => {
+    const entries = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      scenesEntitled: true
+    });
+    const row = entries.find((e) => e.proxy === 'membership');
+    assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_SUBSCRIBED');
+    assert.equal(row?.interactive, false);
+    assert.equal(row?.emphasis, undefined);
+    assert.equal(row?.testId, 'idle-membership-subscribed');
   });
 
   it('confide row hidden while safety copy draft; visible only when gate open', () => {
