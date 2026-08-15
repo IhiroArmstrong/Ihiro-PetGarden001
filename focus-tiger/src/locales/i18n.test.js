@@ -208,6 +208,21 @@ test('backup privacy copy names restore purpose, not a bald never-lost disclaime
   assert.match(zhDict.JOURNEY_LOG_BACKUP_PRIVACY, /关闭备份/);
 });
 
+test('backup enabled copy points at this Journey log, not a second archive', () => {
+  const zhDict = JSON.parse(readFileSync(join(here, 'zh.json'), 'utf8'));
+  assert.equal(
+    /Open Journey log anytime/i.test(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED),
+    false
+  );
+  assert.match(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /listed above/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /separate backup list/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_WHERE_ON, /\{time\}/);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /上の一覧/);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_WHERE_ON, /\{time\}/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /上方列表/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_WHERE_ON, /\{time\}/);
+});
+
 test('t falls back to en then key id', () => {
   const storage = memoryStorage();
   bootLocaleFromPreference(storage);
