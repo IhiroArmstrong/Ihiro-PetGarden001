@@ -46,6 +46,18 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
       }),
       true
     );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#ft-wide-more-menu' ? {} : null)
+      }),
+      true
+    );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#ft-narrow-options-drawer' ? {} : null)
+      }),
+      true
+    );
     assert.equal(shouldIgnoreOutsideDismissTarget(blank), false);
     assert.equal(shouldIgnoreOutsideDismissTarget(null), false);
   });

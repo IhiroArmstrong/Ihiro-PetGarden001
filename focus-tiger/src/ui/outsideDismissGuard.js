@@ -1,7 +1,9 @@
 /**
- * Outside-dismiss guards for light panels (Arrival / Companion / Honesty).
- * Tip bubbles and help chrome are not "blank space" — clicking them must not
- * cancel Notice/Choose or collapse the Companion picker (§8 N18).
+ * Outside-dismiss guards for light panels (Arrival / Companion / Honesty /
+ * Reminder / wide ⋯ menu).
+ * Tip bubbles, help chrome, and ⋯ / drawer rows are not "blank space" —
+ * clicking them must not cancel Notice/Choose, collapse Companion, or
+ * swallow a menu-row click (reminder 「点了没反应」).
  */
 
 /**
@@ -32,5 +34,8 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (el.closest('#ft-hint-catalog-chip')) return true;
   if (el.closest('#ft-narrow-home-quickstart')) return true;
   if (el.closest('#quick-start-focus')) return true;
+  // Hover tips sit on ⋯ / drawer rows; those clicks are not blank space.
+  if (el.closest('#ft-wide-more-menu')) return true;
+  if (el.closest('#ft-narrow-options-drawer')) return true;
   return false;
 }

@@ -145,6 +145,34 @@ export function pickDailyZenQuoteBackdropSrc(dateKey) {
   return list[stillIdx]?.src || '';
 }
 
+/**
+ * Postcard footer date. English uses US month-day-year, not ISO YYYY-MM-DD.
+ * Filename / storage still use `dateKey`.
+ * @param {string} dateKey YYYY-MM-DD
+ * @param {string} [localeId]
+ * @returns {string}
+ */
+export function formatQuietLineFooterDate(dateKey, localeId = getLocale()) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateKey || ''));
+  if (!m) return String(dateKey || '');
+  const year = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  const dt = new Date(year, month - 1, day);
+  if (Number.isNaN(dt.getTime())) return String(dateKey);
+  const loc =
+    localeId === 'ja' ? 'ja-JP' : localeId === 'zh' ? 'zh-CN' : 'en-US';
+  try {
+    return new Intl.DateTimeFormat(loc, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(dt);
+  } catch {
+    return `${month}/${day}/${year}`;
+  }
+}
+
 /** 4:5 keepsake — still above, quote on warm paper (not a dialog screenshot). */
 export const QUIET_LINE_CARD = Object.freeze({
   width: 1080,
@@ -360,6 +388,7 @@ export function wrapCanvasText(ctx, text, maxWidth) {
  * @param {string} [opts.title]
  * @param {string} [opts.footer]
  * @param {string} [opts.dateKey]
+ * @param {string} [opts.locale]
  * @param {CanvasImageSource | null} [opts.backdropImage]
  * @param {typeof document.createElement} [opts.createElement]
  * @returns {HTMLCanvasElement}
@@ -457,7 +486,11 @@ export function renderDailyZenQuoteCanvas(opts) {
   ctx.font = '400 28px system-ui, -apple-system, sans-serif';
   ctx.fillText(opts.footer || 'Focus Tiger · with Yin', padX, footerY);
   if (opts.dateKey) {
-    ctx.fillText(opts.dateKey, padX, footerY + 42);
+    ctx.fillText(
+      formatQuietLineFooterDate(opts.dateKey, opts.locale),
+      padX,
+      footerY + 42
+    );
   }
 
   return canvas;
@@ -564,6 +597,7 @@ export async function saveDailyZenQuoteImage(opts = {}) {
     title,
     footer,
     dateKey: resolved.dateKey,
+    locale: resolved.locale,
     backdropImage: image,
     createElement: opts.createElement
   });

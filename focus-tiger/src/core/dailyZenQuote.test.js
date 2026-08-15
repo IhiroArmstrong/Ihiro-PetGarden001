@@ -9,6 +9,7 @@ import {
   saveDailyZenQuoteImage,
   coverSourceRect,
   QUIET_LINE_CARD,
+  formatQuietLineFooterDate,
   renderDailyZenQuoteCanvas,
   listMixedDailyZenQuoteKeys,
   isInsightZenQuoteKey,
@@ -196,6 +197,7 @@ describe('dailyZenQuote', () => {
       title: 'A quiet line for today',
       footer: 'Focus Tiger · with Yin',
       dateKey: '2026-08-15',
+      locale: 'en',
       backdropImage: { width: 1056, height: 864 },
       createElement: () => ({
         width: 0,
@@ -229,7 +231,11 @@ describe('dailyZenQuote', () => {
     assert.equal(draws[0][8], bandH);
     assert.ok(texts.includes('A quiet line for today'));
     assert.ok(texts.includes('Focus Tiger · with Yin'));
-    assert.ok(texts.includes('2026-08-15'));
+    assert.ok(texts.includes('August 15, 2026'));
+    assert.equal(
+      texts.includes('2026-08-15'),
+      false
+    );
     assert.equal(
       texts.some((t) => t.includes('Not now') || t.includes('Save image')),
       false
@@ -474,6 +480,19 @@ describe('dailyZenQuote', () => {
       false
     );
     assert.equal(readJourneyLog(classicStorage).entries[0].insightSpark, undefined);
+  });
+
+  it('formatQuietLineFooterDate uses US month-day-year for English', () => {
+    assert.equal(
+      formatQuietLineFooterDate('2026-08-16', 'en'),
+      'August 16, 2026'
+    );
+    assert.equal(
+      formatQuietLineFooterDate('2026-08-16', 'en-US'),
+      'August 16, 2026'
+    );
+    assert.match(formatQuietLineFooterDate('2026-08-16', 'ja'), /8.*16.*2026|2026.*8.*16/);
+    assert.equal(formatQuietLineFooterDate('not-a-date', 'en'), 'not-a-date');
   });
 
   it('must not import tip / sanctuary / practice badges', () => {
