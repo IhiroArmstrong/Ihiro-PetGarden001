@@ -1,13 +1,14 @@
 # ONBOARDING_HINTS.md — Hint 产品面（收窄版）
 
 创建日期：2026-07-19（v3）  
-**最后更新：2026-08-05（脉冲拥有 tip 时去重原生/自绘悬停；无脉冲则保留残余悬停）**
+**最后更新：2026-08-15（Focus HUD 三控件：无脉冲点，悬停控件本身出 tip，同「?」）**
 
 ## 产品面（强制 · 2026-08-04）
 
 从现在起，**运行时只保留两件事**，其它 Hint 路径不再作为产品承诺：
 
 1. **脉冲点悬停**：鼠标停在薄荷绿脉冲点上 → 看该条 tip；**指针离开 → tip 立刻消失**。  
+   **例外（2026-08-15）**：`focus-hud-ring` / `focus-hud-progress` / `focus-hud-streak` **不画**薄荷绿脉冲；鼠标停在对应 HUD 控件（金环 / 今日同坐条 / 近日同坐环）上 → 仍出该条 tip，移开即收——与左下「?」无脉冲也能悬停出文案同一办法。  
 2. **「?」看产品简介**：点击或悬停左下 / ActionBar「?」→ **只**出 `#onboarding-app-purpose`（What this space is for）；**禁止**同屏喷本页其它 tips / More tips 芯片。
 
 已取消（代码可留死路径，产品勿再验）：自动 tip 喷洒、点「?」补救铺开、`help-remedy` / catalog 芯片、Focusing「还有 N 条」。
@@ -16,7 +17,7 @@
 
 > **Five Moments 显性化（2026-08-09）**：Moment Whisper / Compass **不是** Hint `auto` 喷洒，不得借机恢复已取消的补救铺开。权威排期与边界见 `PRODUCT_MOMENTS.md` §5.6 与 `task-briefs/task-five-moments-surface-plan.md`。Whisper = `#moment-whisper` 一生一次淡出句（`momentWhispersGate`）；与 Hint registry **分轨**。
 
-> **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`）。**例外（2026-08-11）**：首页左球 `quick-start` **不再**画薄荷绿脉冲，始终保留 `title`（Breath practice / QUICK_START_ARIA）。**脉冲已 done / 无脉冲**时，须保留残余悬停，不得静默清空。
+> **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`）。**例外（2026-08-11）**：首页左球 `quick-start` **不再**画薄荷绿脉冲，始终保留 `title`（Breath practice / QUICK_START_ARIA）。**例外（2026-08-15）**：Focus HUD 三条 **不再**画薄荷绿脉冲，但未读时仍由 hint tip 拥有悬停（`pulse-owns-tip` 去重 `.label`）；**脉冲已 done / 无脉冲且无宿主悬停 tip**时，须保留残余悬停，不得静默清空。
 
 > **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**。registry / 文案键仍以下方机器块为准；**运行时策略以上方「产品面」为准**。
 
@@ -31,7 +32,7 @@
 | 模式 | 默认表现（**2026-08-04 运行时**） |
 |---|---|
 | **`auto`** | Registry 仍登记；**运行时不再主动弹出**气泡 |
-| **`click`** | 控件旁薄荷绿圆点；**悬停**出 tip，移开即收；`help-affordance` 例外：悬停/点击「?」只出产品简介 |
+| **`click`** | 控件旁薄荷绿圆点；**悬停**出 tip，移开即收。例外：`help-affordance` 悬停/点击「?」只出产品简介；`focus-hud-*` 不画圆点，悬停 HUD 控件出 tip |
 | **`manual`** | 从不自动出现 |
 | **`legacy`** | 基本不调度 |
 
@@ -200,7 +201,7 @@
 
 ### 点击 / 悬停关闭（硬性）
 
-- 脉冲点悬停 tip：**指针离开脉冲点 → tip 立刻消失**。
+- 脉冲点悬停 tip：**指针离开脉冲点 → tip 立刻消失**。Focus HUD 三条：离开对应控件即收。
 - tip 气泡仍允许点击立刻关掉。
 - 「?」简介卡：Got it / 框外空白关闭；悬停打开则离开 ? / 卡即收。
 
@@ -227,6 +228,7 @@
 ## 七、验收口径（人工）
 
 1. 悬停右上音符（或其它薄荷绿脉冲）→ tip；移开 → tip 立刻没。  
+   Focus HUD：卡上**无**薄荷绿碎点；悬停金环 / 今日同坐条 / 近日同坐环 → 对应 tip，移开即收。  
 2. 点或悬停「?」→ **只**见产品简介；**不得**见 Sit / weekly / HUD 等 tip 满屏。  
 3. 375 Focusing 点「?」→ 仍只见简介，无 tip 叠团。  
 4. Rise 后再点「?」→ 仍只见简介。
