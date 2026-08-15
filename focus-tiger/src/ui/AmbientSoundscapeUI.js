@@ -30,6 +30,8 @@ const MUSIC_ICON_ON = `<svg class="ambient-soundscape__icon-svg" viewBox="0 0 24
 
 const MUSIC_ICON_MUTE = `<svg class="ambient-soundscape__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/><path d="M4 4 L20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 
+const VOLUME_SPEAKER_ICON = `<svg class="ambient-soundscape__volume-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>`;
+
 function hasSeenNudge() {
   try {
     return localStorage.getItem(AMBIENT_NUDGE_STORAGE_KEY) === '1';
@@ -61,6 +63,7 @@ export class AmbientSoundscapeUI {
     this.controller = controller;
     this.handlers = handlers;
     this.sessionCues = handlers.sessionCues || null;
+    this.sessionCues?.setVolume(controller.getVolume());
     this._expanded = false;
     this._sessionActive = false;
     this._nudgeVisible = false;
@@ -184,17 +187,39 @@ export class AmbientSoundscapeUI {
 
     this.volumeLabel = document.createElement('label');
     this.volumeLabel.className = 'ambient-soundscape__volume';
+    this.volumeHead = document.createElement('span');
+    this.volumeHead.className = 'ambient-soundscape__volume-head';
+    this.volumeIcon = document.createElement('span');
+    this.volumeIcon.className = 'ambient-soundscape__volume-icon';
+    this.volumeIcon.setAttribute('aria-hidden', 'true');
+    this.volumeIcon.innerHTML = VOLUME_SPEAKER_ICON;
+    this.volumeCaption = document.createElement('span');
+    this.volumeCaption.className = 'ambient-soundscape__volume-caption';
+    this.volumeValueEl = document.createElement('span');
+    this.volumeValueEl.className = 'ambient-soundscape__volume-value';
+    this.volumeHead.append(
+      this.volumeIcon,
+      this.volumeCaption,
+      this.volumeValueEl
+    );
     this.volumeInput = document.createElement('input');
     this.volumeInput.type = 'range';
     this.volumeInput.min = '0';
     this.volumeInput.max = '100';
-    this.volumeInput.value = String(Math.round(controller.getVolume() * 100));
+    this.volumeInput.step = '1';
+    this.volumeInput.id = 'ambient-volume-slider';
+    this.volumeInput.setAttribute('aria-valuemin', '0');
+    this.volumeInput.setAttribute('aria-valuemax', '100');
     this.volumeInput.addEventListener('input', () => {
       if (!this._sessionActive && !this._narrowForcedPanel) return;
-      controller.setVolume(Number(this.volumeInput.value) / 100);
+      const next = Number(this.volumeInput.value) / 100;
+      controller.setVolume(next);
+      this.sessionCues?.setVolume(next);
+      this._syncVolumeChrome();
       this._refreshMuteBtn();
     });
-    this.volumeLabel.appendChild(this.volumeInput);
+    this.volumeLabel.append(this.volumeHead, this.volumeInput);
+    this._syncVolumeChrome();
 
     this.cueToggleLabel = document.createElement('label');
     this.cueToggleLabel.className = 'ambient-soundscape__session-cues';
@@ -665,10 +690,27 @@ export class AmbientSoundscapeUI {
     this._dismissNudge();
   }
 
+  /**
+   * Volume bar is a loudness control (music + sitting bells), not playback progress.
+   */
+  _syncVolumeChrome() {
+    if (!this.volumeInput) return;
+    const pct = Math.round(this.controller.getVolume() * 100);
+    this.volumeInput.value = String(pct);
+    this.volumeInput.setAttribute('aria-valuenow', String(pct));
+    const caption = t('AMBIENT_VOLUME_LABEL');
+    const valueText = `${pct}%`;
+    if (this.volumeCaption) this.volumeCaption.textContent = caption;
+    if (this.volumeValueEl) this.volumeValueEl.textContent = valueText;
+    this.volumeInput.setAttribute('aria-label', `${caption}, ${valueText}`);
+    this.volumeLabel?.setAttribute('title', t('AMBIENT_VOLUME_HINT'));
+  }
+
   _renderPanel() {
     this.titleEl.textContent = t('AMBIENT_TITLE');
     this.uploadHintEl.textContent = t('AMBIENT_UPLOAD_LOCAL_HINT');
     this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
+    this._syncVolumeChrome();
     this.cueToggleText.textContent = t('SESSION_CUES_TOGGLE');
     this.cueToggleLabel.title = t('SESSION_CUES_TOGGLE_HINT');
     this.cueToggleInput.setAttribute('aria-label', t('SESSION_CUES_TOGGLE'));
@@ -1269,11 +1311,49 @@ export class AmbientSoundscapeUI {
         color: #8b4a3a;
       }
       .ambient-soundscape__volume {
-        display: block;
-        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 12px;
+        padding: 8px 10px 10px;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        border-radius: 10px;
+        background: rgba(255, 252, 245, 0.55);
       }
-      .ambient-soundscape__volume input {
+      .ambient-soundscape__volume-head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        line-height: 1.3;
+        color: var(--color-ink-muted, #5c5348);
+      }
+      .ambient-soundscape__volume-icon {
+        display: inline-flex;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        color: var(--color-ink, #3a2e22);
+      }
+      .ambient-soundscape__volume-svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+      .ambient-soundscape__volume-caption {
+        flex: 1 1 auto;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+      .ambient-soundscape__volume-value {
+        font-variant-numeric: tabular-nums;
+        font-weight: 550;
+        color: var(--color-ink, #3a2e22);
+      }
+      .ambient-soundscape__volume input[type='range'] {
         width: 100%;
+        height: 6px;
+        margin: 0;
         accent-color: var(--color-accent, #b5623a);
       }
       .ambient-soundscape__session-cues {

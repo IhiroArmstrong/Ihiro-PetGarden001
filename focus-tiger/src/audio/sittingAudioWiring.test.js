@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
+const uiSrc = readFileSync(join(here, '../ui/AmbientSoundscapeUI.js'), 'utf8');
+
+test('Breath practice wires start / interval / end sitting cues', () => {
+  assert.match(mainSrc, /onBreathStart:[\s\S]*?sessionCues\.playStart/);
+  assert.match(mainSrc, /onBreathStart:[\s\S]*?sessionCues\.startIntervalSession/);
+  assert.match(mainSrc, /function completeMicroRitual\([\s\S]*?sessionCues\.playEnd/);
+  assert.match(
+    mainSrc,
+    /function leaveMicroRitualQuietly\([\s\S]*?sessionCues\.cancelPending/
+  );
+  assert.match(mainSrc, /microBreathing[\s\S]*?sessionCues\.tickInterval/);
+});
+
+test('Focusing auto-starts sitting music on the same gesture as the start bell', () => {
+  assert.match(mainSrc, /ambientSoundscape\.startSittingMusic/);
+  assert.equal((mainSrc.match(/sessionCues\.playStart/g) || []).length, 2);
+});
+
+test('Soundscape volume bar is labelled volume, not a progress control', () => {
+  assert.match(uiSrc, /AMBIENT_VOLUME_LABEL/);
+  assert.match(uiSrc, /id = 'ambient-volume-slider'/);
+  assert.match(uiSrc, /sessionCues\?\.setVolume/);
+});

@@ -17,10 +17,12 @@ import {
 import {
   SessionCueController,
   SESSION_CUE_DUCK_RATIO,
+  SESSION_CUE_DEFAULT_VOLUME,
   SESSION_START_BELL_SRC,
   SESSION_INTERVAL_BELL_SRC,
   SESSION_END_CHIME_SRC
 } from './SessionCueController.js';
+import { AMBIENT_DEFAULT_VOLUME } from './AmbientSoundscapeController.js';
 
 function createMapStorage(initial = {}) {
   const map = new Map(Object.entries(initial));
@@ -245,4 +247,28 @@ test('SessionCueController cue src paths are under /audio/cues/', () => {
     '/audio/cues/session-interval-bell.mp3'
   );
   assert.equal(SESSION_END_CHIME_SRC, '/audio/cues/session-end-chime.mp3');
+});
+
+test('sitting bells share the Soundscape default volume (not HTMLAudio 1.0)', () => {
+  assert.equal(SESSION_CUE_DEFAULT_VOLUME, AMBIENT_DEFAULT_VOLUME);
+  const startAudio = createMockAudio();
+  startAudio.volume = 1;
+  const cues = new SessionCueController({
+    storage: createMapStorage(),
+    startAudio,
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  assert.equal(cues.getVolume(), SESSION_CUE_DEFAULT_VOLUME);
+  assert.equal(startAudio.volume, SESSION_CUE_DEFAULT_VOLUME);
+  const ambient = {
+    getVolume: () => 0.2,
+    isAudiblePlaying: () => false
+  };
+  assert.equal(cues.playStart({ ambient }), true);
+  assert.equal(startAudio.volume, 0.2);
+  cues.setVolume(0.35);
+  assert.equal(startAudio.volume, 0.35);
+  assert.equal(cues.getVolume(), 0.35);
 });

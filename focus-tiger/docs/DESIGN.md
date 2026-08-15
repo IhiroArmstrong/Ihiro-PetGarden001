@@ -350,8 +350,10 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 #### 1. 可选性与呈现
 
 - **内置曲目**（面板顺序）：**Mer-Ka-Ba** → **Divine Life Society** / **Lord Of The Dawn** / **Maestro Tlakaelel** / **The Inner Sound**（Jesse Gallagher）→ **Somnia Variation 3** / **Somnia Variation 10**（Reed Mathis）→ **Meditation Impromptu 02**（Kevin MacLeod）→ **Dreamland** / **Invisible Beauty** / **Kiss the Sky** / **Frozen in Love**（Aakash Gandhi）；工程 id 见 `AMBIENT_TRACKS`（`singing-bowl` / `rain` 等稳定标识）；均来自 YouTube Audio Library（用户提供）；归因见 `public/audio/ambient/ATTRIBUTION.md`；
-- **默认关闭（opt-in）**（2026-07-25 拍板）：登录 / 打开产品后**不**自动播背景音乐；须用户点右上音符钮打开 Soundscape 选曲（或菜单 / 抽屉 **Sound**）才开播。偏好存 `focus-tiger.ambient-pref.v1`（无存储时 `enabled: false`；默认曲目仍为 Mer-Ka-Ba）；
+- **默认关闭（opt-in）**（2026-07-25 拍板；**Idle / 冷启动仍有效**）：登录 / 打开产品后**不**自动播背景音乐。偏好存 `focus-tiger.ambient-pref.v1`（无存储时 `enabled: false`；默认曲目仍为 Mer-Ka-Ba）；
+- **开坐即播**（2026-08-15 书面：Breath practice 已自动有乐，Focusing 不得只响磬）：点时长 chip 进入 **Focusing 或 Breath practice** 时，自动播 preferred（若为 Off 则默认 Mer-Ka-Ba）。**不**把 `enabled: true` 写入偏好——刷新 / 冷启动仍静音。会话中仍可用音符静音或换曲；
 - UI：**右上米色圆形音符钮**（窄屏 Idle 为 ActionBar ♪）与菜单 / 抽屉 **Sound** **同效**——打开曲目/音量面板；图标斜杠反映「偏好开着」而非点一下静音。宽屏**不**再露出右下 Sound FAB（避免与右上音符重复）；窄屏 FAB 仍 park / Focusing 藏起；
+- **音量条**（2026-08-15）：Soundscape 内标 **Volume / 音量 + 百分数 + 喇叭图标**，避免被看成播放进度；音乐与三种坐禅磬声**共用同一条**（默认 45%）；
 - 浏览器若拦截自动播放：在面板内选曲后点按解锁；不得因未开音乐削弱完成反馈。
 
 #### 2. 播放时长作为独立「在场置信信号」
@@ -360,9 +362,9 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 - **不计入**：从未开启、暂停、静音（含音量为 0 且未真正出声的等价态）、会话未运行等期间；
 - **不是**「控件保持打开的墙钟时长」——只有真实播出才累加；
 - 该信号仅在**当前会话内**使用；曲目开关偏好可长期存储；
-- **会话结束（Rise / 达标）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）——下次 **Sit 也不自动再开**，须再点音符 / Sound；
-  - **达标 + 计时提示音（2026-08-12）**：氛围仍在播且结束铃开 → **duck≈35% → 播结束铃 → ~1.5s 淡出并停**（不「恢复再杀」）；早退 Rise **不**播结束铃，仍硬停；
-- **计时提示音（免费 · 2026-08-12 / 间隔节奏 2026-08-13）**：Focus **开表**开始磬、**达标**结束铃（Soundscape「计时提示音」总开关，默认开）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。
+- **会话结束（Rise / 达标 / Breath 完成或 Leave）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）。下一场开坐仍按「开坐即播」再起（与 Breath 一致）；Idle 不播；
+  - **达标 + 计时提示音（2026-08-12）**：氛围仍在播且结束铃开 → **duck≈35% → 播结束铃 → ~1.5s 淡出并停**（不「恢复再杀」）；早退 Rise / Breath **Leave** **不**播结束铃，仍硬停；
+- **计时提示音（免费 · 2026-08-12 / 间隔 2026-08-13 / Breath 同线 2026-08-15）**：Focusing **与 Breath practice** 共用开始磬 / 间隔磬 / 达标结束铃（Soundscape「计时提示音」总开关，默认开；音量跟氛围条）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。工作流根因：旧实现只接 `beginFocusWithMode`，呼吸练习时长 chip 是平行路径，从未 `playStart`。
 - **觉察观照卡（mid-session · 2026-08-13）**：间隔磬同拍时在 Focusing **底部**浮现观察式短句（`FOCUS_AWARENESS_*`）；可单独关；**不**写入 Moment Whisper；设计理念长句不进 UI；
 - 该信号与 Page Visibility / blur / idle 等既有 Focus Confidence 信号**并列、独立**；不替代墙钟会话计时，也不单独决定会话是否达标。
 

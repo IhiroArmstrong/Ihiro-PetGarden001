@@ -24,3 +24,9 @@ test('cooldown hides glow and hint but keeps an invisible hit', () => {
   assert.match(src, /this\.root\.hidden = !focusing/);
   assert.match(src, /isHitArmed/);
 });
+
+test('recover hint sits near Yin, not in the Fullscreen companion bottom band', () => {
+  assert.match(src, /top: 64%/);
+  assert.match(src, /bottom: auto/);
+  assert.equal(src.includes('homeClearanceBottomCss'), false);
+});

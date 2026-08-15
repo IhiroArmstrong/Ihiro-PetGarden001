@@ -1,6 +1,7 @@
 /**
- * Focus 计时提示音：开始磬 / 间隔磬 / 达标结束铃。
- * 免费核心反馈——不走 Ambient entitlement；可复用 ambient ducking。
+ * Sitting 计时提示音：开始磬 / 间隔磬 / 达标结束铃。
+ * Focusing **与** Breath practice 共用；免费核心反馈——不走 Ambient entitlement；
+ * 音量跟 Soundscape 同一条 volume bar；可复用 ambient ducking。
  */
 
 import {
@@ -22,6 +23,11 @@ export const SESSION_END_CHIME_SRC = '/audio/cues/session-end-chime.mp3';
 export const SESSION_CUE_DUCK_RATIO = 0.35;
 /** Unduck / end fade window after cue (ms). */
 export const SESSION_CUE_FADE_MS = 1500;
+/**
+ * Cue loudness follows the Soundscape volume bar (same 0–1 as ambient).
+ * HTMLAudio default is 1.0 — that made start/interval/end bowls overpower music.
+ */
+export const SESSION_CUE_DEFAULT_VOLUME = 0.45;
 
 /**
  * @param {HTMLAudioElement | null | undefined} el
@@ -88,12 +94,15 @@ export class SessionCueController {
     this._intervalActive = false;
     /** @type {number} */
     this._intervalFiredCount = 0;
+    this._volume = SESSION_CUE_DEFAULT_VOLUME;
+    this._applyVolumeToElements();
   }
 
   _createEl() {
     const el = document.createElement('audio');
     el.preload = 'auto';
     el.setAttribute('preload', 'auto');
+    el.volume = SESSION_CUE_DEFAULT_VOLUME;
     el.style.cssText =
       'position:absolute;width:0;height:0;opacity:0;pointer-events:none';
     el.setAttribute('aria-hidden', 'true');
@@ -101,6 +110,43 @@ export class SessionCueController {
       document.body.appendChild(el);
     }
     return el;
+  }
+
+  /**
+   * Unified sitting volume (0–1). Same slider as ambient music.
+   * @param {number} volume
+   */
+  setVolume(volume) {
+    const n = Number(volume);
+    this._volume = Number.isFinite(n)
+      ? Math.min(1, Math.max(0, n))
+      : SESSION_CUE_DEFAULT_VOLUME;
+    this._applyVolumeToElements();
+  }
+
+  /** @returns {number} */
+  getVolume() {
+    return this._volume;
+  }
+
+  _applyVolumeToElements() {
+    const live = this._volume;
+    for (const el of [this._start, this._interval, this._end]) {
+      if (!el) continue;
+      el.volume = live;
+    }
+  }
+
+  /**
+   * @param {{ getVolume?: () => number } | null | undefined} ambient
+   * @returns {number}
+   */
+  _resolveCueVolume(ambient) {
+    if (ambient && typeof ambient.getVolume === 'function') {
+      const n = Number(ambient.getVolume());
+      if (Number.isFinite(n)) return Math.min(1, Math.max(0, n));
+    }
+    return this._volume;
   }
 
   /** Warm decode before the Sit / chip gesture. */
@@ -297,6 +343,9 @@ export class SessionCueController {
     }
     this._playEpoch += 1;
     const epoch = this._playEpoch;
+    const live = this._resolveCueVolume(ambient);
+    this._volume = live;
+    el.volume = live;
     const audible = Boolean(ambient?.isAudiblePlaying?.());
     if (audible && typeof ambient.duckTo === 'function') {
       ambient.duckTo(this._duckRatio, { fadeMs: 0 });

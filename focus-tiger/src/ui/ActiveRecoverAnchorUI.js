@@ -4,9 +4,8 @@
  */
 
 import { onLocaleChange, t } from '../locales/i18n.js';
-import { homeClearanceBottomCss } from './homeChromeClearance.js';
 
-const STYLE_ID = 'active-recover-anchor-styles-v2';
+const STYLE_ID = 'active-recover-anchor-styles-v3';
 const ROOT_ID = 'active-recover-anchor';
 
 /**
@@ -124,7 +123,6 @@ export class ActiveRecoverAnchorUI {
     this.glow.hidden = cooling;
     this.hint.hidden = cooling;
     this.root.setAttribute('aria-hidden', focusing ? 'false' : 'true');
-    this.hint.style.bottom = homeClearanceBottomCss();
   }
 
   _clearCooldownTimer() {
@@ -194,6 +192,8 @@ export class ActiveRecoverAnchorUI {
       .active-recover-anchor__hint {
         position: absolute;
         left: 50%;
+        top: 64%;
+        bottom: auto;
         transform: translateX(-50%);
         margin: 0;
         max-width: min(320px, calc(100vw - 48px));
@@ -214,6 +214,7 @@ export class ActiveRecoverAnchorUI {
           height: min(240px, 36vh);
         }
         .active-recover-anchor__hint {
+          top: 58%;
           font-size: 10px;
           color: rgba(74, 58, 40, 0.34);
         }

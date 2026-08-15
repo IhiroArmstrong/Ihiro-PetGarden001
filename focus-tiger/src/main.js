@@ -1196,6 +1196,9 @@ async function init() {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
         freezeUntilCrossFadeEnds: true
       });
+      sessionCues.preload();
+      sessionCues.playStart({ ambient: ambientSoundscape });
+      sessionCues.startIntervalSession();
       // Ephemeral ambient: do NOT startSession / presence (Focus-bound path).
       void (async () => {
         const preferred = ambientSoundscape.getPreferredTrackId();
@@ -1535,7 +1538,17 @@ async function init() {
   }
 
   function completeMicroRitual() {
-    ambientSoundscape.stopPlaybackEphemeral();
+    sessionCues.stopIntervalSession();
+    const stopAmbientAfterEndCue = () => {
+      ambientSoundscape.stopPlaybackEphemeral();
+    };
+    const playedEndCue = sessionCues.playEnd({
+      ambient: ambientSoundscape,
+      onCueEnded: stopAmbientAfterEndCue
+    });
+    if (!playedEndCue) {
+      stopAmbientAfterEndCue();
+    }
     const durationMinutes =
       microRitualUI?.getDurationMinutes?.() ?? 1;
     dailyCompletionStore.recordCompletion(durationMinutes);
@@ -1575,6 +1588,8 @@ async function init() {
   }
 
   function leaveMicroRitualQuietly() {
+    sessionCues.cancelPending();
+    sessionCues.stopIntervalSession();
     ambientSoundscape.stopPlaybackEphemeral();
     endMicroRitualChrome();
     emotionController.playEmotion('idle', {
@@ -2469,6 +2484,12 @@ async function init() {
     });
     ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
+    void ambientSoundscape.startSittingMusic().then(() => {
+      ambientSoundscapeUI.renderAfterAudition?.();
+      idleChrome.syncMuteVisual({
+        musicOn: ambientSoundscapeUI.wantsMusicOn()
+      });
+    });
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
     focusAwarenessCardUI.resetSession();
@@ -3174,6 +3195,12 @@ async function init() {
             });
           }, 120);
         }
+      });
+    } else if (microBreathing) {
+      sessionCues.tickInterval({
+        elapsedSeconds: microElapsed ?? 0,
+        targetSeconds: (microRitualUI?.getDurationMinutes?.() ?? 1) * 60,
+        ambient: ambientSoundscape
       });
     }
 
