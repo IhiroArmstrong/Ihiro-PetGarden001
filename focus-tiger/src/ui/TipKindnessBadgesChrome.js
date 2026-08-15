@@ -1,24 +1,17 @@
 /**
  * Idle chrome: practice / kindness / Sanctuary badges beside Yin.
  * Display-only; Ambient / emotion must not read tip for unlocks.
- * Priority: Sanctuary prestigious (if unlocked) → else tip/free yin badges.
+ * Priority: B-track prestige (lifetime ∪ subscription) → else tip/free yin badges.
  * Click a badge → download the full-res PNG.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
-import {
-  syncTipBadgesFromPractice,
-  readTipStatus
-} from '../core/tipJarGate.js';
+import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
+import { syncAndReadIdleBadgePack } from '../core/idlePracticeBadges.js';
 import {
   getTipKindnessBadgeById,
   tipKindnessBadgeSrc
 } from '../core/tipKindnessBadges.js';
-import {
-  isSanctuaryUnlocked,
-  syncSanctuaryBadgesFromPractice,
-  readSanctuaryEntitlement
-} from '../core/sanctuaryEntitlementGate.js';
 import {
   getSanctuaryBadgeById,
   sanctuaryBadgeSrc
@@ -67,6 +60,7 @@ export class TipKindnessBadgesChrome {
 
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this.refresh());
+    this._unsubEntitlement = onEntitlementChange(() => this.refresh());
     this.refresh();
   }
 
@@ -80,31 +74,18 @@ export class TipKindnessBadgesChrome {
   }
 
   refresh() {
-    const sanctuaryOn = isSanctuaryUnlocked({ storage: this._storage });
-    if (sanctuaryOn) {
-      syncSanctuaryBadgesFromPractice(this._storage);
-    } else {
-      syncTipBadgesFromPractice(this._storage);
-    }
-
-    /** @type {{ kind: 'sanctuary' | 'tip', ids: string[] }} */
-    let pack;
-    if (sanctuaryOn) {
-      pack = {
-        kind: 'sanctuary',
-        ids: readSanctuaryEntitlement(this._storage).badgeIds
-      };
+    const pack = syncAndReadIdleBadgePack(this._storage);
+    if (pack.kind === 'sanctuary') {
       this.labelEl.textContent = t('SANCTUARY_BADGES_BESIDE_LABEL');
       this.hintEl.textContent = t('SANCTUARY_BADGES_DOWNLOAD_HINT');
       this.root.dataset.badgeKind = 'sanctuary';
     } else {
-      const status = readTipStatus(this._storage);
-      pack = { kind: 'tip', ids: status.badgeIds };
-      this.labelEl.textContent = status.tipped
-        ? t('TIP_BADGES_BESIDE_LABEL')
-        : t('PRACTICE_BADGES_BESIDE_LABEL');
+      this.labelEl.textContent =
+        pack.kind === 'tip'
+          ? t('TIP_BADGES_BESIDE_LABEL')
+          : t('PRACTICE_BADGES_BESIDE_LABEL');
       this.hintEl.textContent = t('TIP_BADGES_DOWNLOAD_HINT');
-      this.root.dataset.badgeKind = status.tipped ? 'tip' : 'practice';
+      this.root.dataset.badgeKind = pack.kind;
     }
 
     this.row.replaceChildren();
@@ -151,7 +132,7 @@ export class TipKindnessBadgesChrome {
 
   /**
    * @param {string} file
-   * @param {'sanctuary' | 'tip'} kind
+   * @param {'sanctuary' | 'tip' | 'practice'} kind
    */
   _download(file, kind) {
     const a = document.createElement('a');
@@ -169,6 +150,7 @@ export class TipKindnessBadgesChrome {
 
   destroy() {
     this._unsubLocale?.();
+    this._unsubEntitlement?.();
     this.root.remove();
   }
 

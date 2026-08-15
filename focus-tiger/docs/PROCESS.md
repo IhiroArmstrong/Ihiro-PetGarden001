@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Enso 改页面左下角
+**最后更新时间**：2026-08-15（UTC+8） · Enso 改页面左下角 + Membership 订阅授章
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
 
 - **Quiet Line Save image 明信片（2026-08-15 · `fix/quiet-line-save-postcard`）**：下载 PNG 改为上图下字（当日图库静帧 + 暖纸金句）；不再导出暗紫纯文字卡。TRACKER 待人工。
 

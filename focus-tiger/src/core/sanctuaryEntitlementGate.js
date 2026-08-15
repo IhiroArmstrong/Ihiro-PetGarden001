@@ -162,14 +162,17 @@ export function markSanctuaryFromPayment(
 }
 
 /**
- * Grow prestigious badges when practice level rises (unlocked only).
+ * Grow prestigious badges when practice level rises.
+ * Award when Sanctuary lifetime is unlocked **or** B-track subscription is
+ * entitled. Does **not** flip `unlocked` (Membership ≠ Lifetime SKU).
  *
  * @param {Storage | null | undefined} storage
+ * @param {{ entitled?: boolean }} [opts]
  * @returns {{ newlyAddedIds: string[] }}
  */
-export function syncSanctuaryBadgesFromPractice(storage) {
+export function syncSanctuaryBadgesFromPractice(storage, { entitled = false } = {}) {
   const prev = readSanctuaryEntitlement(storage);
-  if (!prev.unlocked) return { newlyAddedIds: [] };
+  if (!prev.unlocked && entitled !== true) return { newlyAddedIds: [] };
   const award = planSanctuaryBadgeAward(storage, prev.badgeIds);
   const same =
     award.badgeIds.length === prev.badgeIds.length &&
