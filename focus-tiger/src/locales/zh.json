@@ -292,7 +292,7 @@
   "JOURNEY_LOG_CLOSE": "关闭",
   "JOURNEY_LOG_BACKUP_LINK_OFF": "绑定邮箱可获得云端备份（可选）",
   "JOURNEY_LOG_BACKUP_LINK_ON": "云端备份已开启 — 关闭…",
-  "JOURNEY_LOG_BACKUP_PRIVACY": "可选。同意后，我们只会上传本机练习痕迹（旅程、练习日、里程碑、永久拥有标记、仪式、芥子须弥印），静默进行，打坐中不发送。不承诺永不丢失。关闭时会删除云端副本。",
+  "JOURNEY_LOG_BACKUP_PRIVACY": "可选。同意后，我们会为本机练习痕迹（旅程、练习日、里程碑、永久拥有标记、仪式、芥子须弥印）静默做云端快照，打坐中不发送。作用是：浏览器或本机被清空时，能恢复最近一次备份。尚未上传的练习，或你关闭备份（会删除云端副本）之后，云端没有可恢复的内容。",
   "JOURNEY_LOG_BACKUP_EMAIL": "邮箱",
   "JOURNEY_LOG_BACKUP_CODE": "邮件验证码",
   "JOURNEY_LOG_BACKUP_CONSENT": "我同意将上述练习痕迹备份到 Focus Tiger 云端。",

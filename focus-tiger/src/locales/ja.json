@@ -292,7 +292,7 @@
   "JOURNEY_LOG_CLOSE": "閉じる",
   "JOURNEY_LOG_BACKUP_LINK_OFF": "メールを結びクラウド控え（任意）",
   "JOURNEY_LOG_BACKUP_LINK_ON": "クラウド控えオン — オフにする…",
-  "JOURNEY_LOG_BACKUP_PRIVACY": "任意です。同意後、この端末の練習のあと（旅・練習日・節目・所有印・儀式・芥子）だけを静かに雲へ控え——坐っている間は送りません。決して失われない約束ではありません。オフにすると雲の控えも消えます。",
+  "JOURNEY_LOG_BACKUP_PRIVACY": "任意です。同意後、この端末の練習のあと（旅・練習日・節目・所有印・儀式・芥子）だけを静かに雲へ控え——坐っている間は送りません。役目は、ブラウザや端末が空になっても、いちばん新しい控えから戻せるようにすること。まだ送っていない練習や、オフにして雲の控えを消したあとは、雲からは戻せません。",
   "JOURNEY_LOG_BACKUP_EMAIL": "メール",
   "JOURNEY_LOG_BACKUP_CODE": "メールのコード",
   "JOURNEY_LOG_BACKUP_CONSENT": "これらの練習のあとを Focus Tiger のクラウドに控えることに同意します。",

@@ -292,7 +292,7 @@
   "JOURNEY_LOG_CLOSE": "Close",
   "JOURNEY_LOG_BACKUP_LINK_OFF": "Bind email for optional cloud backup",
   "JOURNEY_LOG_BACKUP_LINK_ON": "Cloud backup on — turn off…",
-  "JOURNEY_LOG_BACKUP_PRIVACY": "Optional. We upload only your practice trail on this device (journey, practice days, milestones, ownership marks, rituals, mustard-seed seal) after you agree — quietly, not while you sit. Not a promise that data can never be lost. You can turn off anytime; that deletes the cloud copy.",
+  "JOURNEY_LOG_BACKUP_PRIVACY": "Optional. After you agree, we quietly snapshot this device’s practice trail (journey, practice days, milestones, ownership marks, rituals, mustard-seed seal) — not while you sit. That snapshot can restore your trail if this browser or phone is later cleared. Sittings not yet uploaded, or after you turn backup off (that deletes the cloud copy), would not be there to restore.",
   "JOURNEY_LOG_BACKUP_EMAIL": "Email",
   "JOURNEY_LOG_BACKUP_CODE": "Code from email",
   "JOURNEY_LOG_BACKUP_CONSENT": "I agree to back up these practice traces to Focus Tiger’s cloud.",
