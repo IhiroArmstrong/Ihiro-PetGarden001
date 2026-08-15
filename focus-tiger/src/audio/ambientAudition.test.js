@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -186,5 +189,28 @@ describe('AmbientSoundscapeController deep audition', () => {
     assert.equal(ctrl.isDeepAuditionActive(), false);
     assert.equal(ctrl.getTrackId(), AMBIENT_TRACK_LORD_OF_THE_DAWN);
     assert.equal(queue.length, 0);
+  });
+});
+
+describe('ambient audition unlock copy', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const localesDir = join(here, '../locales');
+
+  it('AMBIENT_AUDITION_UNLOCK_HINT names Sanctuary and Membership in en/zh/ja', () => {
+    for (const file of ['en.json', 'zh.json', 'ja.json']) {
+      const loc = JSON.parse(readFileSync(join(localesDir, file), 'utf8'));
+      const hint = loc.AMBIENT_AUDITION_UNLOCK_HINT;
+      assert.equal(typeof hint, 'string', file);
+      assert.match(
+        hint,
+        /Sanctuary|圣域|サンクチュアリ/,
+        `${file} must name Sanctuary / 圣域`
+      );
+      assert.match(
+        hint,
+        /Membership/,
+        `${file} must name Membership (same paid path as ambient.deep.play)`
+      );
+    }
   });
 });
