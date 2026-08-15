@@ -2,9 +2,11 @@
  * 禅意背景音：DOM <audio> 播放 + 实际可闻播放时长 → presenceBoost。
  * 不探测其他 App；不参与达标；会话内累计，不做长期存储。
  *
- * 产品口径（2026-07-25）：**不自动开播**——须用户点音符钮 / Sound 选曲才出声；
- * 偏好写入 localStorage（默认 `enabled: false`，记住上次曲目）；
- * **Rise / 会话结束自动停播**（不清掉存储偏好）；presence 累计随会话清零。
+ * 产品口径：
+ * - **Idle / 冷启动仍 opt-in**（2026-07-25）：须点音符 / Sound 才出声；偏好默认 `enabled: false`。
+ * - **开坐即播**（2026-08-15）：Focusing 与 Breath practice 开始时自动播 preferred（Off → 默认曲）；
+ *   **Rise / 达标 / Leave 停播**；不把「开」写入 localStorage，冷启动仍静音。
+ * presence 累计随 Focusing 会话清零。
  */
 
 import {
@@ -33,6 +35,9 @@ export const MAX_PRESENCE_BOOST = 0.2;
  * 与累计 presenceBoost 相加，总贡献封顶见 getPresenceBoost。
  */
 export const AUDIBLE_PLAYING_LIFT = 0.1;
+
+/** Default sitting / Soundscape volume (0–1). Session cues share this. */
+export const AMBIENT_DEFAULT_VOLUME = 0.45;
 
 export const AMBIENT_TRACK_OFF = 'off';
 export const AMBIENT_TRACK_SINGING_BOWL = 'singing-bowl';
@@ -279,7 +284,7 @@ export class AmbientSoundscapeController {
     this._auditionFadeMs = Math.max(0, Number(auditionFadeMs) || 0);
     this._schedule = schedule;
     this._cancelSchedule = cancelSchedule;
-    this._volume = 0.45;
+    this._volume = AMBIENT_DEFAULT_VOLUME;
     this._audio =
       audio ||
       (typeof document !== 'undefined'
@@ -349,7 +354,7 @@ export class AmbientSoundscapeController {
     return Boolean(this._rememberPanelTrack);
   }
 
-  /** 专注会话开始：可听时长从 0 计；不自动开播（须用户点音乐钮） */
+  /** 专注会话开始：可听时长从 0 计。开播由 `startSittingMusic`（main）在同一手势里调用。 */
   startSession() {
     this._endCreditSegment();
     this._sessionActive = true;
@@ -359,8 +364,25 @@ export class AmbientSoundscapeController {
   }
 
   /**
+   * Focusing 开坐：播 preferred；若为 Off 则默认曲。
+   * `persist: false` —— 不把 enabled:true 写入 ambient-pref（Idle 冷启动仍静音）。
+   * @returns {Promise<void>}
+   */
+  async startSittingMusic() {
+    const preferred = this.getPreferredTrackId();
+    const playId =
+      preferred === AMBIENT_TRACK_OFF
+        ? DEFAULT_AMBIENT_TRACK_ID
+        : resolvePlayableAmbientTrackId(preferred, {
+            storage: this._storage,
+            builtInTracks: AMBIENT_TRACKS
+          });
+    await this.setTrack(playId, { persist: false });
+  }
+
+  /**
    * 会话结束（Rise / 达标）：清零会话累计并停播。
-   * 不改写 localStorage 偏好——用户曾开过音乐时，下次可再点开。
+   * 不改写 localStorage 偏好。下一场开坐会再 `startSittingMusic`；Idle / 冷启动仍静音。
    * 硬停（进度清零）；若本页曾选曲，面板仍高亮 preferred。
    */
   endSession() {
@@ -1058,7 +1080,9 @@ export class AmbientSoundscapeController {
     el.setAttribute('preload', 'auto');
     el.loop = true;
     const vol = Number(this._volume);
-    el.volume = Number.isFinite(vol) ? Math.min(1, Math.max(0, vol)) : 0.45;
+    el.volume = Number.isFinite(vol)
+      ? Math.min(1, Math.max(0, vol))
+      : AMBIENT_DEFAULT_VOLUME;
     el.style.cssText =
       'position:absolute;width:0;height:0;opacity:0;pointer-events:none';
     el.setAttribute('aria-hidden', 'true');

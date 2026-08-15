@@ -351,11 +351,11 @@
 > **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + smiling + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。  
 > **DOM**：`e2e/micro-ritual.spec.js`（主路径 / Leave / Arrival 开着点球等；常用 `?microRitualMs=`）。  
 > **单元**：`MicroRitual.test.js` · `microRitualJourneyDraft` · `stopPlaybackEphemeral`；orchestration **无**抽屉 Breath 行。  
-> **仍须人工**：听感（开始播 preferred / off→Mer-Ka-Ba；完成或 Leave **ephemeral 停播**）；之后 Sit→Focus 选曲可闻、Rise 停播、`ambient-pref` **不得**被改成 Off。  
+> **仍须人工**：听感（点时长 chip **立刻开始磬**；开始播 preferred / off→Mer-Ka-Ba；完成有结束铃、Leave 无结束铃；完成或 Leave **ephemeral 停播**）；间隔磬若在音符面板选了 3/5 分且时长够才响；之后 Sit→Focus 开坐即有乐+磬、Rise 停播、`ambient-pref` **不得**被改成 Off。  
 > **对照**：正式 Focus 仍走 Sit→Arrival（或场景 T 时长 chip）；⚡ 旧 Quick Start「立刻 Focusing」已改为本球开 Breath。
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
-2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **15/25/45/60** 差异化）→ 点选即开。
+2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **15/25/45/60** 差异化）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。
 3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
 4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
@@ -370,11 +370,11 @@
 > **用户故事**：Kelly 走完 Arrival、选好 Companion 模式后，再选本场专注时长，再开表。  
 > **单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。  
 > **DOM**：产品无 query 路径须人工；e2e helper 默认带 `?sessionMinutes=N` **跳过** picker（勿用跳过路径当本场景通过）。  
-> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改。
+> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 1. `?product=1`（**勿**带 `sessionMinutes`）→ Sit→Arrival→Choose→Companion 点选模式。
 2. 见 `#focus-duration-picker`：chip **15 / 25 / 45 / 60**（勿与 Breath 档位混淆）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 15 minutes / Breath practice）。
-3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing）；`#focus-hud` 显示所选目标分钟。
+3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing + **开始磬**（若计时提示音开）+ 氛围乐）；`#focus-hud` 显示所选目标分钟。
 4. **Leave**（若 picker 仍开）→ 取消、不开表。
 5. **回流**：Rise → 再 Sit→…→ 再出 picker；偏好应合理回显。
 6. **调试捷径**（非故事）：`?sessionMinutes=1` 跳过 picker——仅 DEMO/e2e。
