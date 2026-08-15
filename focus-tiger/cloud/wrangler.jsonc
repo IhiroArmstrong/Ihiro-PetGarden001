@@ -36,7 +36,8 @@
  *   id         = baeb661cb8f2450ab4a87d6f23af6896
  *   preview_id = 8e13fe05705841c9939c3164bfb9a3bd
  *
- * Production Worker deploy still deferred until Prompt 9 (webhook lifecycle) + Resend secrets.
+ * Production Worker (2026-08-15): Version 8c649d12-1c1c-4d45-b9f4-92cd75686e81
+ *   newsletter subscribe/unsubscribe live; OTP / webhook / membership unchanged.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",

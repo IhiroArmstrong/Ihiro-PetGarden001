@@ -111,7 +111,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Digital Wallpapers | `free` | — | 无付费 gate | 免费赠送 | **已接线** | 禁止付费门 |
 | Quiet Line（签文存图） | `free` | — | 无付费 gate | 增长包免费 | **已接线** | 与 Daily Wisdom 分池 |
 | Zen Cinema / YouTube 入口 | `free` | — | 无付费 gate | 增长包免费 | **已接线** | — |
-| Stay in touch / Newsletter | `free` | 可选留资；非账号 | 无付费 gate | 增长；不挂钩解锁 | **已接线**（Worker + Resend 欢迎信） | 本地只记 `submitted`；名单在 `NEWSLETTER_KV`；退订同批。无 Cloud 时 mock。群发未接线 |
+| Stay in touch / Newsletter | `free` | 可选留资；非账号 | 无付费 gate | 增长；不挂钩解锁 | **已接线**（生产 Worker Version `8c649d12-…` + Resend 欢迎信） | 本地只记 `submitted`；名单在 `NEWSLETTER_KV`；退订同批。无 Cloud 时 mock。群发未接线。欢迎信仍待真实邮箱人工验 |
 | 用户上传氛围乐 | `free` | — | 无付费 gate | v1 必交付；非 Sanctuary 门槛 | **已接线** | 不得因未购 B 禁用上传主路径 |
 | 电子书 ②A 免费下载 | `free` | — | — | 延后排期 | **未接线** | 产品延后，非付费墙项 |
 | 电子书 ②B 练习解锁 | — | — | — | **已取消** | **不适用** | 勿复活 streak/练习解锁 |

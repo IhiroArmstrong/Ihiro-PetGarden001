@@ -1,10 +1,10 @@
 # Stay in touch · Newsletter capture
 
-> **状态（2026-08-13）**：菜单常驻入口 + **Worker 真实订阅**（`NEWSLETTER_KV` 自建名单 + Resend 事务型欢迎信 + 退订端点）已接线。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
+> **状态（2026-08-15）**：菜单常驻入口 + **生产 Worker 真实订阅已 redeploy**（Version `8c649d12-1c1c-4d45-b9f4-92cd75686e81`：`NEWSLETTER_KV` + Resend 欢迎信 + 退订端点）。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
 > **性质**：可选邮箱留资，**不是**账号 / 登录系统；**不**挂钩 entitlement / tip / sanctuary。  
 > **文案（2026-08-13 批准）**：欢迎信 + 第一封群发草稿定稿，不改字。群发仍未接线。  
 > **卡面（2026-08-15）**：`NEWSLETTER_CARD_BLURB` / `OPTIONAL` 说明定期更新会把 **known-error 修复** 与 **更好的最新版（latest release）** 发到邮箱；仍写「不是推销名单」。不改欢迎信正文。  
-> **Redeploy 暂缓**：等 Resend 真实发信（含既有 curl 400 排查）确认后再排；禁止为合入本支而提前部署。  
+> **生产探路（2026-08-15）**：`POST /api/newsletter/subscribe` 对无效邮箱返回 **400** `invalid_email`（不再 404）。欢迎信 / KV 写入仍待用真实邮箱人工验。  
 > **本期不做**：情境软提示（Phase 2）、Resend Audiences / 群发 UI、自动群发第一封。
 
 ## 产品入口（已实现）
@@ -62,9 +62,9 @@
 
 1. **`NEWSLETTER_KV` 已建**（2026-08-13）：`id=baeb661cb8f2450ab4a87d6f23af6896` · `preview_id=8e13fe05705841c9939c3164bfb9a3bd`（已写入 `wrangler.jsonc`）
 2. From = `Yin <hello@twinsology.com>`（与 OTP `restore@` 隔离；域已验证）
-3. `wrangler secret put RESEND_API_KEY`（若尚未）
-4. `npm run deploy`（`focus-tiger-cloud`）——**暂缓**（Resend curl 400 排查中；真实发信测通后再排）
-5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`
+3. `wrangler secret put RESEND_API_KEY`（生产已有；与 OTP 共用，不回退 From）
+4. `npm run deploy`（`focus-tiger-cloud`）——**已执行（2026-08-15）**：Version `8c649d12-1c1c-4d45-b9f4-92cd75686e81`；用户本机 wrangler；无效邮箱探路 **400** `invalid_email`
+5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`（本地曾 mock 成功过则先清 `focus-tiger.newsletter-capture.v1`）
 
 ---
 
