@@ -868,6 +868,7 @@ export const RULE_AUTHORITY_TOPICS = [
       /硬刷新即可/,
       /qa_worktree: ABSENT/,
       /sync:qa-develop/,
+      /5173 正在测/,
       /feature\/fix 各自 worktree 的开发流程不变/
     ],
     topicSignals: [

@@ -58,7 +58,7 @@
 
 #### 推荐启动（固定 QA 树 · 可复制）
 
-关单 / 批量人工测试用 **固定 develop QA worktree**（路径、5173 常驻、合入后 pull 纪律：**SSOT** [`WORKFLOW.md`](../../WORKFLOW.md) `qa-develop-worktree`）。本机首次建树用该节「一次性建树」命令。树已存在时 Agent 合入 develop 后须 `npm run sync:qa-develop`。
+关单 / 批量人工测试用 **固定 develop QA worktree**（路径、5173 常驻、合入后 pull 纪律：**SSOT** [`WORKFLOW.md`](../../WORKFLOW.md) `qa-develop-worktree`）。本机首次建树用该节「一次性建树」：**A 只建目录**可与正在测的 5173 并行；**B 切 5173** 须等本轮测试结束。树已存在时 Agent 合入 develop 后须 `npm run sync:qa-develop`。
 
 Safari：`http://127.0.0.1:5173/?product=1`  
 关单书面须含：**当时** `origin/develop` tip hash + `behind=0`。按 [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md) §0.1 顺序走；反馈写回本表「用户反馈」列。

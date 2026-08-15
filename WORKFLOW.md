@@ -142,7 +142,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 
 1. **只用于**关单级人工验收、口令「批量人工测试」、以及声称代表 `origin/develop` tip 的 Safari 预览。  
 2. **不用于开发**：禁止在此树改产品代码、切 `feature/*` / `fix/*`、`git commit`。pre-commit 硬拦（`…-wt-develop-qa`）。开发仍走各自 `…-wt-<topic>`。  
-3. **Git**：此树跟踪 `origin/develop` tip。优先独占检出本地 `develop` 分支（主仓不要同时占着 `develop`）；若其它树已占用 `develop`，则 detached 于 `origin/develop`。禁止两棵树同时检出 `develop`。
+3. **Git**：此树跟踪 `origin/develop` tip。默认 **detached 于 `origin/develop`**（不抢正在测的目录所占的 `develop`）。独占检出本地 `develop` 是可选项，且 **不得**在 `5173` 正在测时对正在出码的目录做 `git switch`。禁止两棵树同时检出 `develop`。
 
 #### 固定路径与端口
 
@@ -150,25 +150,35 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
   `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa`  
 - 覆盖路径：环境变量 `FT_QA_DEVELOP_WORKTREE`（绝对路径）。  
 - **Vite 端口固定 `5173`**：在该树 `focus-tiger/` 跑 `npm run dev:qa`（`--port 5173 --strictPort`）。关单 URL：`http://127.0.0.1:5173/?product=1`。  
+- **5173 正在测 → 禁止切端口 / 改当前检出**：Safari 已开着 `http://127.0.0.1:5173` 做关单或批量测时，**不要**跑会停掉现有 Vite、`--strictPort` 抢 5173、或 `git switch` 正在出码的那个目录的命令。可另建 detached QA 目录并 `npm install`，**等这轮测完再切 5173**。  
 - feature worktree 的 `npm run dev` **不得抢 5173**；QA 树常驻时其它 Vite 应落到 5174+。Agent **不得**为收尾停掉 QA 树 Vite（其它树仍须停；见 `browser-energy`）。  
 - 闲置盘点：此树 **不得**列入 `propose_remove`。不要为此树写开发用 `.ft-session-lock`。
 
 #### 一次性建树（本机 · 可复制）
 
+**A. 只建目录（现在就能跑；不碰正在测的 5173）**
+
 ```bash
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
 git fetch origin develop
-# 若本检出正占着 develop：先让出（主仓本就禁止在 develop 上写）
-git switch --detach origin/main
-git worktree add -B develop /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa origin/develop
+git worktree add --detach /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa origin/develop
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
 npm install
+```
+
+`--detach` **不**抢走 `develop` 分支，也 **不**改正在跑 Vite 的那个 checkout。**不要**在这一步 `npm run dev:qa`。
+
+**B. 把 5173 切到 QA 树（仅当本轮 `http://127.0.0.1:5173` 测试已结束）**
+
+先停掉当前占用 5173 的 Vite，再：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
 npm run dev:qa
 ```
 
-Safari：`http://127.0.0.1:5173/?product=1`  
-若 `git worktree add -B develop` 因分支已占用而失败：改用 `git worktree add --detach /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa origin/develop`（同步脚本对 detached 用 ff-only merge，等价于 `git pull origin develop`）。  
-废止每次新建 `…-wt-qa-develop-tip` 再拆掉的口径。
+Safari 仍是 `http://127.0.0.1:5173/?product=1`。切完后硬刷新一次，确认 hash = 当时 `origin/develop` tip。  
+废止每次新建 `…-wt-qa-develop-tip` 再拆掉的口径。禁止默认 `git switch --detach origin/main` 去给 QA 腾 `develop`——那会把正在测的目录换成别的代码。
 
 #### 合入 develop 之后（强制）
 

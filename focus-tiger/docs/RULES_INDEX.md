@@ -97,7 +97,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent 见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解；本机树见 `qa-develop-worktree` | 主张 feature/fix 试跑即正式关单验收；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
-| `qa-develop-worktree` | 「固定 QA 树见 `WORKFLOW.md`」；合入后 `sync:qa-develop` + ①重启/硬刷新 ②一句变化；`TEST_TRACKER` / KnownRisky / regression-lock / browser-energy 可一行引用 | 主张在 QA 树开发/commit；主张每次新建 `…-wt-qa-develop-tip`；Cloud 假装已在 Mac pull；为收尾停掉 QA `:5173` Vite |
+| `qa-develop-worktree` | 「固定 QA 树见 `WORKFLOW.md`」；合入后 `sync:qa-develop` + ①重启/硬刷新 ②一句变化；`TEST_TRACKER` / KnownRisky / regression-lock / browser-energy 可一行引用 | 主张在 QA 树开发/commit；主张每次新建 `…-wt-qa-develop-tip`；Cloud 假装已在 Mac pull；为收尾停掉 QA `:5173` Vite；主张 `5173` 正在测时抢端口或 `git switch` 正在出码的目录 |
 | `qa-batch-human-test` | 「口令「批量人工测试」见 `TEST_TRACKER`」；PROCESS / COLLAB 可一行引用 | 让用户自己翻 PR 历史拼待测项；把清单当成已关单 |
 | `qa-pass-coverage-split` | 「标已通过须覆盖分工见 `TEST_TRACKER`」；regression-lock / docs.mdc 可摘要硬拦 | 主张 e2e 绿即可关单；笼统「测试 OK→已通过」且不写 e2e/人工各覆盖哪些场景 |
 | `branch-freshness` | 「邀测前 freshness 见 regression-lock「分支新鲜度」」 | 落后 >0 仍声称代表 develop / 正式邀测却不报落后数 |
