@@ -1,8 +1,8 @@
 /**
- * Sanctuary Enso Mark — prestige cushion inlay (lifetime ∪ subscription).
+ * Sanctuary Enso Mark — prestige identity chrome (lifetime ∪ subscription).
  *
  * Zero tip coupling. Display math is pure so unit tests can lock layout
- * without DOM / sprite player.
+ * without DOM. 2026-08-15: viewport bottom-left (not cushion inlay).
  */
 
 import { getEntitlementState } from './entitlement/entitlementGate.js';
@@ -10,37 +10,31 @@ import { getEntitlementState } from './entitlement/entitlementGate.js';
 export const SANCTUARY_ENSO_MARK_SRC =
   '/ui/support/sanctuary-enso/sanctuary-enso-mark.png';
 
-/**
- * Natural-pixel anchors on idle-breathing `frame_001` (1056×864).
- *
- * Measured 2026-08-12: cushion mass center ≈ (552, 730); camera-facing
- * cushion face (visible orange in front of crossed legs) ≈ (552, 770).
- * We pin to the **visible face** so the inlay stays inside the cushion
- * (about 10% of cushion diameter) without covering the shawl or face.
- */
-export const ENSO_CUSHION_ANCHOR_NATURAL = Object.freeze({
-  frameWidth: 1056,
-  frameHeight: 864,
-  /** Horizontal center of cushion bbox */
-  x: 552,
-  /** Camera-facing cushion face (not mass center under hips) */
-  y: 770,
-  /** Visible cushion width (bbox) used as diameter for sizing */
-  cushionDiameter: 553
-});
+/** Matches `HOME_CHROME_NARROW_MQ` (max-width 479px). */
+export const ENSO_NARROW_MQ_MAX_PX = 479;
+
+/** Wide corner medallion — chrome scale, not cushion-scale. */
+export const ENSO_CORNER_SIZE_WIDE_PX = 52;
+
+/** Narrow floor so 375 still reads as a mark (matches prior Brief ≥ ~44). */
+export const ENSO_CORNER_SIZE_NARROW_PX = 44;
+
+export const ENSO_CORNER_LEFT_WIDE_PX = 16;
+export const ENSO_CORNER_LEFT_NARROW_PX = 12;
+export const ENSO_CORNER_BOTTOM_WIDE_PX = 20;
 
 /**
- * Target share of cushion visible diameter.
- * 2026-08-15: ~40% of the prior 0.25 pass so the mark sits in the cushion
- * middle and does not exceed the 蒲团 edge.
+ * Matches `homeChromeClearance` home-ball band so 375 Enso sits above
+ * Quick / Sit / Honesty (`NARROW_HOME_CTA_BOTTOM_PX` + `NARROW_HOME_SIT_PX`).
  */
-export const ENSO_DIAMETER_FRAC = 0.1;
+export const ENSO_HOME_BALLS_BOTTOM_PX = 64;
+export const ENSO_HOME_SIT_PX = 83;
+export const ENSO_CORNER_GAP_ABOVE_BALLS_PX = 12;
 
-/** Floor so 375 still reads as a mark, not a speck (~40% of prior 44). */
-export const ENSO_MIN_CSS_PX = 20;
-
-/** Viewport fallback when sprite rect is not ready (~40% of prior 0.14). */
-export const ENSO_FALLBACK_VIEWPORT_FRAC = 0.056;
+export const ENSO_CORNER_BOTTOM_NARROW_PX =
+  ENSO_HOME_BALLS_BOTTOM_PX +
+  ENSO_HOME_SIT_PX +
+  ENSO_CORNER_GAP_ABOVE_BALLS_PX;
 
 export const ENSO_OPACITY_IDLE = 0.84;
 export const ENSO_OPACITY_FOCUSING = 0.5;
@@ -61,47 +55,42 @@ export function shouldShowSanctuaryEnsoMark({
 }
 
 /**
- * Map sprite `getDisplayRect()` → fixed CSS box for the Enso mark.
+ * Viewport-fixed bottom-left box. Independent of sprite / cushion.
  *
- * Fractions are taken from the idle reference frame so other sequences
- * with different natural sizes still land near the cushion.
+ * Wide: true page corner (dock is centered; heatmap sits higher).
+ * Narrow (≤479): lift above home balls so Quick Start is not covered.
  *
  * @param {{
- *   left: number,
- *   top: number,
- *   width: number,
- *   height: number,
- *   naturalWidth?: number,
- *   naturalHeight?: number
- * } | null | undefined} displayRect
- * @returns {{ left: number, top: number, size: number } | null}
+ *   viewportWidth?: number,
+ *   safeAreaLeft?: number,
+ *   safeAreaBottom?: number
+ * } | null | undefined} viewport
+ * @returns {{ left: number, bottom: number, size: number } | null}
  */
-export function layoutSanctuaryEnsoMark(displayRect) {
-  if (
-    !displayRect ||
-    !(displayRect.width > 0) ||
-    !(displayRect.height > 0) ||
-    !Number.isFinite(displayRect.left) ||
-    !Number.isFinite(displayRect.top)
-  ) {
-    return null;
-  }
+export function layoutSanctuaryEnsoMark(viewport) {
+  const vw = viewport?.viewportWidth;
+  if (!(vw > 0) || !Number.isFinite(vw)) return null;
 
-  const ref = ENSO_CUSHION_ANCHOR_NATURAL;
-  const fx = ref.x / ref.frameWidth;
-  const fy = ref.y / ref.frameHeight;
-  const cushionFrac = ref.cushionDiameter / ref.frameWidth;
-  const size = Math.max(
-    ENSO_MIN_CSS_PX,
-    cushionFrac * displayRect.width * ENSO_DIAMETER_FRAC
+  const safeLeft = Number.isFinite(viewport.safeAreaLeft)
+    ? viewport.safeAreaLeft
+    : 0;
+  const safeBottom = Number.isFinite(viewport.safeAreaBottom)
+    ? viewport.safeAreaBottom
+    : 0;
+  const narrow = vw <= ENSO_NARROW_MQ_MAX_PX;
+  const size = narrow
+    ? ENSO_CORNER_SIZE_NARROW_PX
+    : ENSO_CORNER_SIZE_WIDE_PX;
+  const left = Math.max(
+    narrow ? ENSO_CORNER_LEFT_NARROW_PX : ENSO_CORNER_LEFT_WIDE_PX,
+    safeLeft
   );
-  const cx = displayRect.left + fx * displayRect.width;
-  const cy = displayRect.top + fy * displayRect.height;
-  return {
-    left: cx - size / 2,
-    top: cy - size / 2,
-    size
-  };
+  const bottom = narrow
+    ? Math.max(ENSO_HOME_BALLS_BOTTOM_PX, safeBottom) +
+      ENSO_HOME_SIT_PX +
+      ENSO_CORNER_GAP_ABOVE_BALLS_PX
+    : Math.max(ENSO_CORNER_BOTTOM_WIDE_PX, safeBottom);
+  return { left, bottom, size };
 }
 
 /**

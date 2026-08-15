@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Quiet Line 存图明信片 + 免责改「?」查阅 + Enso 再缩
+**最后更新时间**：2026-08-15（UTC+8） · Enso 改页面左下角
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -66,7 +66,8 @@
 
 - **Quiet Line Save image 明信片（2026-08-15 · `fix/quiet-line-save-postcard`）**：下载 PNG 改为上图下字（当日图库静帧 + 暖纸金句）；不再导出暗紫纯文字卡。TRACKER 待人工。
 
-- **Wellness 免责改「?」查阅 + Enso 再缩（2026-08-15）**：冷启动**不再**自动弹出「Not therapy or medical care」；点「?」简介卡仍见同一免责。Enso 直径改为蒲团可见径约 **10%**（相对上一版 25% 的约 40%），须落在蒲团中央、不越界。TRACKER 待人工。
+- **Sanctuary Enso 改页面左下角（2026-08-15 · `fix/enso-mark-bottom-left`）**：不再钉蒲团中央。宽屏真左下角约 52px；375 约 44px、抬到三球之上。装饰层（`pointer-events: none`）。TRACKER 待人工。
+- **Wellness 免责改「?」查阅 + Enso 再缩（2026-08-15）**：冷启动**不再**自动弹出「Not therapy or medical care」；点「?」简介卡仍见同一免责。Enso 曾缩到蒲团可见径约 10%；**随后用户改口挪到页面左下角**（见上行）。TRACKER 待人工。
 - **菜单订阅 CTA（2026-08-15 · #296 已合）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则为普通钮 **You're subscribed**（同样打开 Membership 卡）。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
 - **Stay in touch 卡面（2026-08-15 · #295 已合）**：除 known-error 修复说明外，留邮箱也会收到更好的最新版（latest release）说明；仍非推销名单。欢迎信定稿不改字。TRACKER 待人工。
 - **Wellness 免责 · 非诊疗（2026-08-14 · #293 已合）**：文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent；Privacy Sheet 交叉引用。**2026-08-15**：默认落点改为「?」，不再冷启动弹窗。
@@ -351,7 +352,7 @@
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
 - **内容 · Daily Wisdom Phase B 静默印花（A 之后 · 勿漏）**：`feature/daily-wisdom-sanctuary-seal`。
-- **身份 · Sanctuary Enso Mark（蒲团中央）**：**#254 已合** tip `0adc0d3`；关单级人工见 TRACKER。
+- **身份 · Sanctuary Enso Mark（页面左下角）**：**#254 已合** tip `0adc0d3`；2026-08-15 改钉页面左下角（宽屏真角落 / 375 抬过三球）。关单级人工见 TRACKER。
 - **付费 · 转化路径梳理（Backlog · 不挡上列 · 勿漏）**：单独立项盘点「新用户为何第一次付费」——免费用户可见价值时刻、15s 试听后 Unlock 文案、Support 漏斗等。静默印花/Enso **不够**单独支撑经济可持续（见 `PRINCIPLES` 案例锚定诚实边界）。
 - **付费 · 场景化请茶气泡（#253 已合 tip `c10acb7`）**：达标 / 里程碑 → `#contextual-tea-tip-bubble` → TipJar；本地日一次；可忽略；不解锁。关单级人工见 TRACKER。
 - **付费 · 意愿漏斗本地统计（#255 已合 tip `fea9c11`）**：`MONETIZATION_INTENT_FUNNEL.md`；Support→CTA→Checkout→完成；实验室「意愿漏斗」；**仅本地**——回传见上行 opt-in。
