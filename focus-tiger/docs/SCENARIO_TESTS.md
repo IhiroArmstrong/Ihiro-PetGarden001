@@ -396,11 +396,9 @@
 ### U2 · Quiet Line / 今日静语
 
 4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → **0–1 秒内**：行按压 + `#daily-zen-quote-card` 展开当日金句。
-5. **Save image** → **0–1 秒内**：钮按压（证明收到）；**结果**：下载 PNG（文件名含当日 `YYYY-MM-DD`，可能略延迟）。同日再开句不变。
+5. **Save image** → **0–1 秒内**：钮按压（证明收到）；**结果**：下载 4:5 PNG（文件名含当日 `YYYY-MM-DD`，可能略延迟）——**上图下字明信片**（当日静帧在上、暖纸金句在下；**不是**对话框截图，无 Not now / Save image）。同日再开句不变。
 6. **Not now** 关卡；回流再开仍可。
 7. **U2 子项 · 洞察种子池（Phase 1）**：当日句从经典金句 ∪ 洞察种子 **14** 句（`INSIGHT_1`–`14`）混合抽取（`focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁定；机制仍是一天一句、Save image 不变）。抽中种子池条目时，该句即为「顿悟向」；**须人工**看长句换行与 375 是否溢出主球。未抽中则与旧金句无差别。**本次不做** Moment Whisper / ACTIVE_RECOVER / Reflection 三问插入。
-
-### U3 · Wallpapers
 
 ### U3 · Wallpapers
 
