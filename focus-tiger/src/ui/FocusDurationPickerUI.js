@@ -153,11 +153,22 @@ export class FocusDurationPickerUI {
     if (!this.root) return;
     this.root.replaceChildren();
     this.root.dataset.focusDurationPhase = 'pick';
+    this.root.setAttribute('aria-labelledby', 'focus-duration-picker-title');
+    this.root.setAttribute('aria-describedby', 'focus-duration-floor-hint');
 
     const title = document.createElement('div');
+    title.id = 'focus-duration-picker-title';
     title.style.cssText =
-      'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:12px;font-weight:560;';
+      'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:6px;font-weight:560;';
     title.textContent = t('focus_duration.pick');
+
+    const hint = document.createElement('p');
+    hint.id = 'focus-duration-floor-hint';
+    hint.className = 'focus-duration-picker__hint';
+    hint.dataset.focusDurationHint = '1';
+    hint.style.cssText =
+      'margin:0 0 12px;font-size:12px;line-height:1.45;color:#6b5a4a;text-align:center;font-weight:450;';
+    hint.textContent = t('focus_duration.hint');
 
     const row = document.createElement('div');
     row.style.cssText =
@@ -192,6 +203,6 @@ export class FocusDurationPickerUI {
     leave.textContent = t('focus_duration.leave');
     leave.addEventListener('click', () => this.leave());
 
-    this.root.append(title, row, leave);
+    this.root.append(title, hint, row, leave);
   }
 }
