@@ -41,7 +41,7 @@
   "AMBIENT_TRACK_LOCKED": "订阅 Yin Membership，或购买 Sanctuary Lifetime，即可解锁全部曲库",
   "AMBIENT_TRACK_LOCKED_TOAST": "完整曲库可通过 Yin Membership 订阅或 Sanctuary Lifetime 买断解锁。",
   "AMBIENT_AUDITION_ROW_HINT": "约 15 秒试听 — 之后可解锁完整音景",
-  "AMBIENT_AUDITION_UNLOCK_HINT": "解锁圣域，沉浸完整音景。",
+  "AMBIENT_AUDITION_UNLOCK_HINT": "解锁圣域或订阅 Yin Membership，即可沉浸完整音景。",
   "AMBIENT_UPLOAD_BTN": "添加自己的音乐",
   "AMBIENT_UPLOAD_LOCAL_HINT": "只保存在本机，不会上传到服务器。支持 MP3 / M4A。",
   "AMBIENT_UPLOAD_DELETE_ARIA": "删除已上传曲目",
