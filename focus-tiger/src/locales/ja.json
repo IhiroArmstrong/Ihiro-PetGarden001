@@ -80,6 +80,7 @@
   "REFOCUS_ACKNOWLEDGE_2": "その瞬間は過ぎました。注意は、この息とともにあります。",
   "REFOCUS_ACKNOWLEDGE_3": "よそにいた瞬間がありました。いまは、戻ってきたこの瞬間です。",
   "ACTIVE_RECOVER_HINT": "行き詰まったら？阿寅を軽くタップして戻る",
+  "IDLE_YIN_TAP_ARIA": "阿寅 — タップして挨拶",
   "IMMERSIVE_GROUP_ARIA": "全画面の同伴オプション",
   "IMMERSIVE_ENTER": "全画面で同伴する",
   "IMMERSIVE_ENTER_ARIA": "全画面の同伴へ — 阿寅・タイマー・立つ",

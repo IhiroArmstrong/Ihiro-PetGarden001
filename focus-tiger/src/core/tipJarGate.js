@@ -19,8 +19,12 @@ import { normalizeTipBadgeIds, planTipBadgeAward } from './tipKindnessBadges.js'
 
 export const TIP_JAR_STORAGE_KEY = 'focus-tiger.tip-jar.v1';
 
-/** Display price placeholder (USD). Stripe Price ID lives on the Worker. */
-export const TIP_JAR_PRICE_USD = '9.99';
+/**
+ * Display price (USD). Must stay below `MEMBERSHIP_PRICE_DISPLAY` ($6.99/mo).
+ * Stripe Checkout still follows Worker `STRIPE_PRICE_ID` until that Price is
+ * updated to the same amount and the Worker is redeployed.
+ */
+export const TIP_JAR_PRICE_USD = '4.99';
 
 /** Quiet local trail of tip moments (Tea Log). */
 export const TIP_LOG_MAX_ENTRIES = 30;

@@ -126,6 +126,7 @@
 | 清晨首次打开 | `yawn-stretch` / `stretchReminder` 加权 | ack | Slice B | 日限 1；本地时区早晨窗 |
 | 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案。**勿**与冷启动欢迎同 tick 叠播（`shouldAttemptLateNightOnBoot`） |
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
+| Idle **轻点阿寅** | `earWiggleHeadTouch` | 响应 | **已接线** | 产品壳 `#idle-yin-tap-anchor`（非 3D Pointer）；**0–1 秒内** CapCut 切入摸头；播完 ~1s CapCut Idle；Focusing 让位场景 X；叠层忙碌**隐藏 hit**（禁止哑点击） |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
 | 长期里程碑 | `milestoneGlow`：`streak-7` **50/50** 蝴蝶/`parrotEarVisit` · `streak-21`/`100` 琉璃星石；`breathHaloHq` 仍调试 | ritual | **产品路径已接线** | Brief `task-milestone-glow-product-wire` / `task-parrot-ear-visit` |
@@ -244,4 +245,5 @@
 | 2026-08-05 | Phase 1 合 `develop`（PR #124 · `a50c507`）；**Phase 2a** Lab 气泡 + 观察式文案池（双语/locale） |
 | 2026-08-05 | 冷启动 `magicBookReading` 回 Idle：**硬切 → ~1s CapCut**（用户书面缺叠化） |
 | 2026-08-03 | 跨动画短叠化（180/520ms）统一 `CAPCUT_DISSOLVE_MS` 1s；硬切 `0`（gaze 段间 / Idle 闭目↔睁眼）保持；**魔法书回 Idle 于 2026-08-05 改 CapCut** |
+| 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（`#idle-yin-tap-anchor`；Focusing 仍走场景 X） |
 

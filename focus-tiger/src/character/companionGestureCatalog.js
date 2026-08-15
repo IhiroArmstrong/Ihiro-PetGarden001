@@ -50,7 +50,8 @@ export const COMPANION_GESTURE_ONESHOTS = Object.freeze([
     id: 'earWiggleHeadTouch',
     sequence: 'earWiggleHeadTouch',
     label: '摇耳摸头',
-    suggestedUses: '亲密互动回应 / 偶发俏皮（幅度大，宜少用）'
+    suggestedUses:
+      'Idle 轻点阿寅（产品壳 2D hit）/ 好奇池偶发；正+倒一次 + CapCut Idle'
   }),
   Object.freeze({
     id: 'cloakSleep',

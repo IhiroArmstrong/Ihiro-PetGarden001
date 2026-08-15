@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   TIP_JAR_STORAGE_KEY,
+  TIP_JAR_PRICE_USD,
   clearTipStatus,
   consumeTipReturnQuery,
   ensureTipBadgesAwarded,
@@ -160,5 +161,18 @@ describe('tipJarGate', () => {
     const grown = syncTipBadgesFromPractice(storage);
     assert.ok(grown.newlyAddedIds.length >= 1);
     assert.ok(readTipStatus(storage).badgeIds.length > 3);
+  });
+});
+
+describe('tip display price vs membership', () => {
+  it('Buy Yin a Tea stays below monthly membership', async () => {
+    const { MEMBERSHIP_PRICE_DISPLAY } = await import(
+      './membershipCheckout.js'
+    );
+    assert.equal(TIP_JAR_PRICE_USD, '4.99');
+    assert.ok(
+      Number(TIP_JAR_PRICE_USD) < Number(MEMBERSHIP_PRICE_DISPLAY),
+      `tea ${TIP_JAR_PRICE_USD} must be < membership ${MEMBERSHIP_PRICE_DISPLAY}`
+    );
   });
 });
