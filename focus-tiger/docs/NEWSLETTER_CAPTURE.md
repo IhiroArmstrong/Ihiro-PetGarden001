@@ -3,6 +3,7 @@
 > **状态（2026-08-13）**：菜单常驻入口 + **Worker 真实订阅**（`NEWSLETTER_KV` 自建名单 + Resend 事务型欢迎信 + 退订端点）已接线。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
 > **性质**：可选邮箱留资，**不是**账号 / 登录系统；**不**挂钩 entitlement / tip / sanctuary。  
 > **文案（2026-08-13 批准）**：欢迎信 + 第一封群发草稿定稿，不改字。群发仍未接线。  
+> **卡面（2026-08-15）**：`NEWSLETTER_CARD_BLURB` / `OPTIONAL` 说明定期更新会把 **known-error 修复** 与 **更好的最新版（latest release）** 发到邮箱；仍写「不是推销名单」。不改欢迎信正文。  
 > **Redeploy 暂缓**：等 Resend 真实发信（含既有 curl 400 排查）确认后再排；禁止为合入本支而提前部署。  
 > **本期不做**：情境软提示（Phase 2）、Resend Audiences / 群发 UI、自动群发第一封。
 
