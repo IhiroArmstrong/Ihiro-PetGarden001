@@ -49,7 +49,7 @@ alwaysApply: true
 
 1. **首次用户可见回复**（或本机 Agent 建议改用 Cloud 时）须明确提醒：  
    > **这是一个新的、和本机完全独立的会话**——两边不会自动同步对话上下文。  
-2. 协调按既有规则：先查最新 git 状态（分支 tip / 开放 PR / 是否已有人在改同一文件）；**避免**本机与 Cloud 同时改同一分支或同一共享契约文件（`TEST_TRACKER.md`、`PROCESS.md`、locale 大文件等）。衔接面 = Git 分支 + PR + 权威 md。详见 `PROCESS.md`「同一帐号：本机 Cursor + Cloud Agent」与 `WORKFLOW.md` 跨会话 / 并行 worktree 节。
+2. 协调按既有规则：先查最新 git 状态（分支 tip / 开放 PR / 是否已有人在改同一文件）；**避免**本机与 Cloud 同时改同一分支或同一共享契约文件（`TEST_TRACKER.md`、`PROCESS.md`、locale 大文件等）。衔接面 = Git 分支 + PR + 权威 md。详见 `PROCESS.md`「同一帐号：本机 Cursor + Cloud Agent」与 `WORKFLOW.md` 跨会话 / 并行 worktree 节。Cloud 旁支落到本机：见 `WORKFLOW.md` 并行 worktree 第 8 款（禁止主仓 Apply / migrated checkout）。
 
 ## 诚实边界
 
