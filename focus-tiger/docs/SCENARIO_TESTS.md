@@ -313,7 +313,7 @@
 > **用户故事**：Kelly 想支持阿寅——右上角 **Support Yin** 打开三卡（左 Sanctuary Lifetime；中 Yin Membership；右 Buy a Tea），打赏**不**解锁内容；Sanctuary 与 tip **零耦合**。徽章走 **统一练习授予**（#204）：免费练习起授、Tea/Sanctuary 付费起 3；练习上涨自动加枚。  
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
-> **仍须人工**：Test 卡金额（Tea **US$9.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
+> **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
 > **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
 
 ### Q1 · Support Modal（统一入口）
@@ -327,7 +327,7 @@
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
 
 6. Support 卡 CTA → **0–1 秒内**：CTA 按压 + `disabled`（`_busy`）+ 模态关闭；**结果**（可能 >1s）：进 Stripe Checkout / `#yin-tip-jar-card`。禁止关闭后空白无下一步。
-7. Test 卡走 Checkout（约 **US$9.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
+7. Test 卡走 Checkout（约 **US$4.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
 8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。
 9. **禁止**：tip 后出现 Sanctuary 已解锁语义或内容门打开。
 
@@ -461,6 +461,21 @@
 
 ---
 
+## 场景 X2：Idle 轻点阿寅 · 摇耳摸头
+
+> **用户故事**：Kelly 打开产品、阿寅在坐禅——轻点它，它摸摸自己的头顶（已有 `earWiggleHeadTouch`），不是没反应。  
+> **单元**：`idleYinTapGate.test.js` · `IdleYinTapAnchorUI.test.js`。  
+> **DOM**：尚无完整 e2e 命中。  
+> **仍须人工**：正+倒一次 + CapCut 回 Idle；Focusing 不得走摸头。  
+> **0–1 秒内**：点阿寅身 → CapCut 切入摸头序列开始（无 toast）。
+
+1. `?product=1` Idle → 轻点阿寅 → **0–1 秒内**见摸头动画开始。
+2. 播完 ~1s CapCut 回闭目呼吸；再点可再播。
+3. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
+4. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。
+
+---
+
 ## 场景 Y：Five Moments · Compass + Moment Whisper（B / A′）
 
 > **用户故事**：Kelly 逐渐认出「一天五个温柔陪伴」——可自愿打开 Compass 地图；在真实经历 Arrive / Focus / Reflect（及主动 Recover）时，阿寅旁一生一次淡出句，而非教导 Banner。  
@@ -527,6 +542,7 @@
 | **V** | Day1/久别变花欢迎 + 气泡 | **已升格** → 见上文「场景 V」；`flower-welcome` e2e |
 | **W** | 「?」简介 + Privacy + Wellness 首开声明 | **已升格** → 见上文「场景 W」 |
 | **X** | Focusing Tiger Anchor 主动 Recover（180s 冷却；不占被动额度） | **已升格** → 见上文「场景 X」；#199 |
+| **X2** | Idle 轻点阿寅 → `earWiggleHeadTouch` | **已升格** → 见上文「场景 X2」 |
 | **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
 | **Z** | Journey Log 本地留痕（≠ HealthKit / ≠ Tea Log） | **已升格** → 见上文「场景 Z」；#205 |
 

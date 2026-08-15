@@ -58,11 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Cloud 旁支落本机须另开 worktree（禁主仓 migrated checkout） · 固定 develop QA worktree（`…-wt-develop-qa` · 5173） · Stay in touch 欢迎信 Gmail 已收到（含垃圾箱）· Support 三卡暖纸底 + Membership US$6.99 · Worker `d0140328` + Enso 左下角 + Membership 授章
+**最后更新时间**：2026-08-16（UTC+8） · Idle 轻点阿寅摸头 · 请茶卡面 US$4.99（低于 Membership $6.99；Stripe Price 待改） · Cloud 旁支落本机须另开 worktree
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **Idle 轻点阿寅（2026-08-16）**：首页点阿寅播 `earWiggleHeadTouch`（摸摸自己头顶）；Focusing 仍走 Recover。TRACKER 待人工。
+- **Buy Yin a Tea 卡面 US$4.99（2026-08-16）**：低于 Membership **US$6.99/月**。Checkout 仍跟 Worker `STRIPE_PRICE_ID`（现为 $9.99）直到 Dashboard 改价并 **redeploy**。
 
 - **Focus HUD 无脉冲点、悬停控件出 tip（2026-08-15）**：左上 Calm 卡金环 / 今日同坐条 / 近日同坐环不再画薄荷绿碎点；鼠标停在控件上仍出对应 Hint 文案（与左下「?」同一办法）。音符 / ⋯ 行内 mint 仍保留。TRACKER 待人工。
 

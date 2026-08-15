@@ -119,6 +119,11 @@ import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
+import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
+import {
+  IDLE_YIN_TAP_EMOTION_KEY,
+  canPlayIdleYinTap
+} from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
@@ -1318,11 +1323,7 @@ async function init() {
    * Idle 入口 + 叠层门闩 / 窄宽壳投影（等价抽离；见 sessionChromeSync.js）。
    * Honesty 提示/时长**故意不列入** overlay 源——仍允许点 hint 展开三选一。
    */
-  const {
-    syncHonestyIdleEntry,
-    resyncSessionChrome,
-    syncArrivalGateReady
-  } = createSessionChromeSync({
+  const sessionChromeSyncApi = createSessionChromeSync({
     getHonestyBridge: () => honestyBridge,
     getArrivalPractice: () => arrivalPractice,
     getReflectionMoment: () => reflectionMoment,
@@ -1339,6 +1340,73 @@ async function init() {
     syncInAppReminderBanner: () => syncInAppReminderBanner(),
     setFocusButtonEnabled
   });
+  const { syncHonestyIdleEntry, syncArrivalGateReady } = sessionChromeSyncApi;
+  /** @type {IdleYinTapAnchorUI | null} */
+  let idleYinTapAnchor = null;
+
+  function isIdleYinTapOverlayBusy() {
+    return (
+      sessionUiGate.postSessionOverlayActive === true ||
+      honestyCheckInUI?.phase === 'duration' ||
+      honestyCheckInUI?.phase === 'breath' ||
+      honestyCheckInUI?.phase === 'thanks' ||
+      supportYinModalUI?.isOpen?.() === true ||
+      tipJarUI?.isOpen?.() === true ||
+      sanctuaryUnlockUI?.isOpen?.() === true ||
+      membershipUnlockUI?.isOpen?.() === true
+    );
+  }
+
+  function syncIdleYinTap() {
+    if (!idleYinTapAnchor) return;
+    idleYinTapAnchor.setArmed(
+      canPlayIdleYinTap({
+        sessionState: stateManager.state,
+        focusing: stateManager.state === STATES.FOCUSING,
+        overlayBusy: isIdleYinTapOverlayBusy(),
+        emotionKey: emotionController.getCurrentEmotionKey()
+      })
+    );
+  }
+
+  function resyncSessionChrome() {
+    sessionChromeSyncApi.resyncSessionChrome();
+    syncIdleYinTap();
+  }
+
+  idleYinTapAnchor = new IdleYinTapAnchorUI(
+    document.getElementById('ui-overlay') || document.body,
+    {
+      onTap: () => {
+        if (
+          !canPlayIdleYinTap({
+            sessionState: stateManager.state,
+            focusing: stateManager.state === STATES.FOCUSING,
+            overlayBusy: isIdleYinTapOverlayBusy(),
+            emotionKey: emotionController.getCurrentEmotionKey()
+          })
+        ) {
+          syncIdleYinTap();
+          return;
+        }
+        emotionController.playEmotion(IDLE_YIN_TAP_EMOTION_KEY, {
+          onComplete: () => syncIdleYinTap()
+        });
+        syncIdleYinTap();
+      }
+    }
+  );
+  window.__idleYinTapAnchor = idleYinTapAnchor;
+  const openHonestyDuration = honestyCheckIn.openDurationChoices.bind(
+    honestyCheckIn
+  );
+  honestyCheckIn.openDurationChoices = (opts) => {
+    const result = openHonestyDuration(opts);
+    syncIdleYinTap();
+    return result;
+  };
+  syncIdleYinTap();
+
   // E2E：注入 completionPending 后须 resync 才能禁用 Sit（EDGE #5）
   window.__sessionUiGate = sessionUiGate;
   window.__resyncSessionChrome = resyncSessionChrome;
@@ -2391,6 +2459,7 @@ async function init() {
       startCelebrating: () => {
         dailyCompletionStore.markCelebratedToday();
         stateManager.setState(STATES.CELEBRATE);
+        syncIdleYinTap();
       },
       startMilestoneGlow: () => {
         const claimed = milestoneGlowStore.claimOffer(projectedStreak);
