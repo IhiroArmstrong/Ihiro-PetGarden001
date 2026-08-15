@@ -341,7 +341,8 @@
 
 13. 清 tip/Sanctuary entitlement → 无练习时阿寅旁 **0** 枚；做一次 Breath/Honesty/Focus 记账 → Idle 旁 ≥ **1** 枚（免费 `min=1`）。
 14. 付 Tea 后升到 ≥3；练习天数/`practice-days` 抬高后刷新，枚数可按 `score = 天数 + floor(累计分/60)`、`min + floor(score/3)` **只增不减**（无需再 tip）。
-15. **回流**：Rise 后再见徽章条；关 Tip/Sanctuary 卡再开仍在。
+15. **Membership 订阅** confirm（或 `?entitlementMock=subscription`）后 Idle 右侧 `#yin-tip-kindness-badges` ≥ **3** 枚尊贵章；Sanctuary 卡仍可显示未买 Lifetime（不把 SKU 标已买）。
+16. **回流**：Rise 后再见徽章条；关 Tip/Sanctuary/Membership 卡再开仍在。
 
 ---
 

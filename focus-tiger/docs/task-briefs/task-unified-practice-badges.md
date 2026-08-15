@@ -11,6 +11,7 @@
 | **未付费（纯使用）** | **1** 枚 | 按累计专注水平加枚（只增不减） |
 | **Buy Yin a Tea** | **3** 枚 | 同上；练习上涨可触发更多（**不**要求再 tip） |
 | **Lifetime Sanctuary** | **3** 枚 | 同上；练习上涨可触发更多 |
+| **Yin Membership** | **3** 枚（尊贵视觉，与 Sanctuary 同 catalog） | 同上；**不**把 Sanctuary Lifetime SKU 标已买 |
 
 - Tea 与 Sanctuary：**两套视觉**（`yin-badges/` vs `sanctuary-badges/`）。  
 - Sanctuary **独立** `badgeIds`（写在 sanctuary entitlement 侧或并列 key）；**禁止** tip gate 写 Sanctuary、禁止 Sanctuary 读 tip 决定解锁内容。  
