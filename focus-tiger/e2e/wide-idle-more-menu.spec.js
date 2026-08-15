@@ -88,10 +88,22 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
     timeout: 5_000
   });
-  await page.locator('#ft-wide-more-menu [data-proxy="reminder"]').click();
-  await expect(page.locator('#reminder-preference-panel')).toBeVisible({
+  const reminderRow = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
+  // Hover first: in-app-reminder tip used to steal the row click.
+  await reminderRow.hover();
+  await page.waitForTimeout(250);
+  await reminderRow.click();
+  const reminderPanel = page.locator('#reminder-preference-panel');
+  await expect(reminderPanel).toBeVisible({
     timeout: 5_000
   });
+  const box = await reminderPanel.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  const vp = page.viewportSize();
+  expect(box.x + box.width).toBeLessThanOrEqual((vp?.width || 1280) + 2);
+  expect(box.y + box.height).toBeLessThanOrEqual((vp?.height || 800) + 2);
 });
 
 test('wide Arrival: only Quick Start ball; Sit / Honesty / ⋯ hidden', async ({

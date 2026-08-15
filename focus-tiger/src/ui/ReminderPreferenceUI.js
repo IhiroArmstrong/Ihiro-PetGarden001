@@ -14,6 +14,7 @@ import {
   setReminderPreference,
   resolveReminderPreferencePanelNotes
 } from '../core/reminderPreference.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 
 const CLOCK_ICON = `<svg class="reminder-pref__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm.75 3.5h-1.5v5.25l4.25 2.55.75-1.23-3.5-2.1V7.5z"/></svg>`;
 
@@ -175,12 +176,19 @@ export class ReminderPreferenceUI {
       this.blurbEl,
       this.statusEl
     );
-    this.root.append(this.toggleBtn, this.panel);
+    // Toggle stays in the heatmap cluster; panel mounts on body so it is not
+    // trapped in the cluster's backdrop-filter containing block (wide park
+    // used to open the sheet off to the left, looking like a dead click).
+    this.root.append(this.toggleBtn);
     mountRoot.appendChild(this.root);
+    const doc = mountRoot.ownerDocument || document;
+    (doc.body || mountRoot).appendChild(this.panel);
 
     this._onDocPointer = (event) => {
       if (!this._expanded) return;
-      if (this.root.contains(/** @type {Node} */ (event.target))) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root.contains(target) || this.panel.contains(target)) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       this._expanded = false;
       this._render();
       this.handlers.onClose?.();
@@ -196,7 +204,7 @@ export class ReminderPreferenceUI {
     return this._expanded && !this.panel.hidden;
   }
 
-  /** Open the preference panel (narrow drawer entry). */
+  /** Open the preference panel (⋯ / drawer proxy). */
   openPanel() {
     if (!this._visible) this.setVisible(true);
     const wasOpen = this._expanded;
@@ -229,6 +237,7 @@ export class ReminderPreferenceUI {
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     window.clearTimeout(this._savedFlashTimer);
     this._unsubLocale();
+    this.panel.remove();
     this.root.remove();
   }
 
@@ -327,10 +336,10 @@ export class ReminderPreferenceUI {
     this.panel.hidden = !this._visible || !this._expanded;
     if (this._expanded && wasPanelHidden) {
       this.panel.style.opacity = '0';
-      this.panel.style.transform = 'translateY(-8px)';
+      this.panel.style.transform = 'translateX(-50%) translateY(-8px)';
       this.panel.getBoundingClientRect();
       this.panel.style.opacity = '1';
-      this.panel.style.transform = 'translateY(0)';
+      this.panel.style.transform = 'translateX(-50%) translateY(0)';
     }
   }
 
@@ -387,10 +396,12 @@ export class ReminderPreferenceUI {
         display: block;
       }
       .reminder-pref__panel {
-        position: absolute;
-        left: 0;
-        bottom: calc(100% + 10px);
-        z-index: 22;
+        position: fixed;
+        left: 50%;
+        right: auto;
+        bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
+        transform: translateX(-50%);
+        z-index: 32;
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
         border-radius: 18px;
@@ -532,12 +543,8 @@ export class ReminderPreferenceUI {
         .reminder-pref {
           order: 2;
         }
-        /* Center above toggle; right:0 caused left:-50px when cluster staged at 50% */
         .reminder-pref__panel {
-          left: 50%;
-          right: auto;
           width: min(260px, calc(100vw - 32px));
-          translate: -50% 0;
         }
       }
     `;

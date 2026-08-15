@@ -7,8 +7,9 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v4';
+const STYLE_ID = 'ft-wide-idle-more-styles-v5';
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
@@ -496,6 +497,7 @@ export class WideIdleMoreMenu {
 
     this._onDocPointer = (event) => {
       if (!this._menuOpen) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       const target = /** @type {Node} */ (event.target);
       if (this.wrap?.contains(target)) return;
       this.closeMenu();
@@ -1024,8 +1026,18 @@ export class WideIdleMoreMenu {
         body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__nudge {
           display: none !important;
         }
-        body.ft-wide-park-secondary.ft-wide-stage-reminder #weekly-practice-heatmap-cluster {
-          /* reminder panel lives near cluster; keep cluster findable */
+        body.ft-wide-park-secondary.ft-wide-stage-reminder .reminder-pref__panel {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px)) !important;
+          transform: translateX(-50%) !important;
+          translate: none !important;
+          width: min(260px, calc(100vw - 48px)) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          z-index: 32 !important;
         }
       }
     `;

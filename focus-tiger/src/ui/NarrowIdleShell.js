@@ -15,7 +15,7 @@ import {
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v20';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v21';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -1429,9 +1429,10 @@ export class NarrowIdleShell {
           position: fixed !important;
           left: 50% !important;
           right: auto !important;
-          bottom: calc(max(88px, env(safe-area-inset-bottom, 0px)) + 54px) !important;
+          bottom: calc(max(88px, env(safe-area-inset-bottom, 0px) + 96px)) !important;
           width: min(260px, calc(100vw - 32px)) !important;
-          translate: -50% 0 !important;
+          transform: translateX(-50%) !important;
+          translate: none !important;
           z-index: 33 !important;
         }
 

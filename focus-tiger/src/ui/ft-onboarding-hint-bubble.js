@@ -49,6 +49,11 @@ export class FtOnboardingHintBubble extends LitElement {
       --tip-x: 50%;
       --tip-y: 50%;
     }
+    /* Menu/drawer row previews must not steal the row click (reminder 无反应). */
+    :host([data-pass-through]) {
+      pointer-events: none;
+      cursor: default;
+    }
     :host(:hover) {
       filter: brightness(1.02) drop-shadow(0 2px 4px rgba(40, 64, 52, 0.1));
     }

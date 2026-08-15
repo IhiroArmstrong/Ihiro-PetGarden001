@@ -259,8 +259,8 @@
 
 ### P1 · 设置提醒（Idle 左下时钟）
 
-1. Idle 下见 `#weekly-practice-heatmap-cluster` 内 **时钟按钮** `#reminder-preference-toggle`（热力图右侧；**仅 Idle 可见**，Focusing 时整簇隐藏）。首次可见可出 onboarding Hint `in-app-reminder`（「设一个每天的时分…」）；点「?」补救 Idle 时亦应含本 tip。
-2. 点击展开面板 `#reminder-preference-panel`：
+1. Idle 下产品入口是宽屏 **⋯** / 窄屏抽屉行 `reminder.setting_title`（EN "When should I remind you"）。左下热力图簇内时钟 `#reminder-preference-toggle` 在产品壳被 park 屏外，仅作代理锚。首次可见可出 onboarding Hint `in-app-reminder`；点「?」补救 Idle 时亦应含本 tip。
+2. 点击菜单行 → **0–1 秒内**：行 `:active` 按压 + `#reminder-preference-panel` 在视口内居中偏下展开（**不得**被悬停 tip 吞掉点击、也不得只关菜单而无面板）：
    - 标题：`reminder.setting_title`（EN "When should I remind you" / ZH「什么时候提醒你」）
    - 勾选 **Remind me / 开启提醒** → 写入 `{ hour, minute }` 到 `focus-tiger.reminder-preference.v1`
    - **Time** 选择器设时（如 09:00）；旁有 **→** `#reminder-preference-confirm` + 说明 `#reminder-preference-confirm-hint`（点 → 或回车保存）；→ / Enter 后短暂见 `#reminder-preference-saved`；原生 time 选完（`change`）仍写入；**过去时分允许保存**
@@ -397,7 +397,7 @@
 ### U2 · Quiet Line / 今日静语
 
 4. ⋯ / 抽屉 **A Quiet Line / 今日のひとこと** → **0–1 秒内**：行按压 + `#daily-zen-quote-card` 展开当日金句。
-5. **Save image** → **0–1 秒内**：钮按压（证明收到）；**结果**：下载 4:5 PNG（文件名含当日 `YYYY-MM-DD`，可能略延迟）——**上图下字明信片**（当日静帧在上、暖纸金句在下；**不是**对话框截图，无 Not now / Save image）。同日再开句不变。
+5. **Save image** → **0–1 秒内**：钮按压（证明收到）；**结果**：下载 4:5 PNG（文件名含当日 `YYYY-MM-DD`，可能略延迟）——**上图下字明信片**（当日静帧在上、暖纸金句在下；落款日期 **EN 为美国月日年**如 `August 16, 2026`，**不是** ISO `2026-08-16`；JA/ZH 用当地长日期；**不是**对话框截图，无 Not now / Save image）。同日再开句不变。
 6. **Not now** 关卡；回流再开仍可。
 7. **U2 子项 · 洞察种子池（Phase 1）**：当日句从经典金句 ∪ 洞察种子 **14** 句（`INSIGHT_1`–`14`）混合抽取（`focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁定；机制仍是一天一句、Save image 不变）。抽中种子池条目时，该句即为「顿悟向」；**须人工**看长句换行与 375 是否溢出主球。未抽中则与旧金句无差别。**本次不做** Moment Whisper / ACTIVE_RECOVER / Reflection 三问插入。
 

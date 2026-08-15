@@ -1,10 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   rectsOverlap,
   resolvePurposeCardAwayFromTips
 } from '../ui/hintDiscoveryDots.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
 
 test('rectsOverlap detects pad-aware collision', () => {
   assert.equal(
@@ -45,4 +50,12 @@ test('resolvePurposeCardAwayFromTips shifts right of colliding tip', () => {
     ),
     false
   );
+});
+
+test('menu-row hint previews pass pointer through to the row', () => {
+  const hints = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
+  const bubble = readFileSync(join(here, 'ft-onboarding-hint-bubble.js'), 'utf8');
+  assert.match(hints, /data-pass-through/);
+  assert.match(bubble, /:host\(\[data-pass-through\]\)/);
+  assert.match(bubble, /pointer-events: none/);
 });

@@ -1701,6 +1701,12 @@ export class OnboardingHintsUI {
       return;
     }
 
+    const passThrough = Boolean(
+      !useHelpAnchor &&
+        anchor.closest?.('#ft-wide-more-menu, #ft-narrow-options-drawer')
+    );
+    bubble.toggleAttribute('data-pass-through', passThrough);
+
     bubble.style.maxWidth = `${maxW}px`;
     bubble.style.left = '0px';
     bubble.style.top = '0px';
