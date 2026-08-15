@@ -319,7 +319,7 @@
 ### Q1 · Support Modal（统一入口）
 
 1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
-2. 见三卡：Sanctuary 带 **Suggested** + 米色 CTA，文案含 **One-time Lifetime**（无假划线）+ **About $89.99**；中间 Membership 报价行与左右同位置，文案 **About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ 米色 CTA。三卡头图底为同一暖纸色（勿再出现左灰/中白）。
+2. 见三卡：Sanctuary 带 **Suggested** + 米色 CTA，文案含 **One-time Lifetime**（无假划线）+ **About $89.99**；中间 Membership 报价行与左右同位置，文案 **About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`），**Join Membership** CTA 与左右同款米色立体（浅底深字 pill，不得蒲团橙白字）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ 米色 CTA。三卡头图底为同一暖纸色（勿再出现左灰/中白）。**0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
 3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
 5. **回流**：Sit→Focusing → FAB **隐藏**（不可点，不是哑点击）；Rise 回 Idle → FAB 复现。

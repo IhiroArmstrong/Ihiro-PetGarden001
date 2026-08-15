@@ -19,7 +19,7 @@ import {
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 
-const STYLE_ID = 'yin-support-modal-styles-v4';
+const STYLE_ID = 'yin-support-modal-styles-v5';
 const FADE_MS = 220;
 
 const ICON_SRC = '/ui/support/support-yin-icon.png';
@@ -147,7 +147,7 @@ export class SupportYinModalUI {
       priceValue: MEMBERSHIP_PRICE_DISPLAY,
       ctaKey: 'SUPPORT_MEMBERSHIP_CTA',
       ctaTestId: 'yin-support-membership-cta',
-      ctaVariant: 'cushion',
+      ctaVariant: 'beige',
       onCta: () => {
         void this._runCheckout('membership');
       }
@@ -221,7 +221,7 @@ export class SupportYinModalUI {
 
   /**
    * @param {object} opts
-   * @param {'primary' | 'ghost'} [opts.ctaVariant]
+   * @param {'beige' | 'cushion' | 'ghost' | 'primary'} [opts.ctaVariant]
    * @param {string} [opts.badgeKey]
    */
   _buildCard(opts) {
@@ -608,7 +608,7 @@ export class SupportYinModalUI {
         font-weight: 650;
         cursor: pointer;
       }
-      /* Middle · Membership — cushion orange (Sit CTA family) */
+      /* Unused fallback (Sit CTA family). Support modal CTAs all use beige. */
       .yin-support-card__cta--cushion,
       .yin-support-card__cta--primary {
         border: 1px solid rgba(255, 230, 210, 0.38);
@@ -632,7 +632,7 @@ export class SupportYinModalUI {
           0 2px 0 var(--color-cta-edge, #7a3f24),
           0 4px 10px rgba(44, 31, 20, 0.16);
       }
-      /* Outer cards · beige 3D (How shall we sit? family) */
+      /* All three cards · beige 3D (Unlock Sanctuary / Join Membership / Support Us) */
       .yin-support-card__cta--beige,
       .yin-support-card__cta--ghost {
         border: 1px solid rgba(139, 115, 85, 0.36);

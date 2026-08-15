@@ -69,13 +69,13 @@
 - **固定 develop QA worktree（2026-08-15）**：关单 / 批量人工测试用固定树 `…-wt-develop-qa`、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化。feature 开发树不变。冲突旧口径 PR **#306 / #308 已关未合**。权威：`WORKFLOW.md` / `qa-develop-worktree`。
 
 - **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
-- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。
+- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。**同日续**：Join Membership CTA 与左右同款米色立体（不再用蒲团橙白字）。TRACKER Support 行待人工。
 - **Stay in touch 欢迎信（2026-08-15 · #302/#305 已合 · Worker `d0140328`）**：用户书面确认已收到 From `hello@twinsology.com`。约 18:54+08 一封在垃圾箱（旧 `8c649d12` `waitUntil` 其实已发出）；约 20:54+08 无 `welcomeSentAt` 重发第二封。await/502 仍保留。TRACKER `RB-20260815-L394` 仍待人工关单（退订 / 菜单 We'll keep in touch / 勿只看收件箱）。
 - **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
 - **Quiet Line Save image 明信片（2026-08-15 · `fix/quiet-line-save-postcard`）**：下载 PNG 改为上图下字（当日图库静帧 + 暖纸金句）；不再导出暗紫纯文字卡。TRACKER 待人工。
 - **Sanctuary Enso 改页面左下角（2026-08-15 · `fix/enso-mark-bottom-left`）**：不再钉蒲团中央。宽屏真左下角约 52px；375 约 44px、抬到三球之上。装饰层（`pointer-events: none`）。TRACKER 待人工。
 - **Wellness 免责改「?」查阅 + Enso 再缩（2026-08-15）**：冷启动**不再**自动弹出「Not therapy or medical care」；点「?」简介卡仍见同一免责。Enso 曾缩到蒲团可见径约 10%；**随后用户改口挪到页面左下角**（见上行）。TRACKER 待人工。
-- **菜单订阅 CTA（2026-08-15 · #296 已合）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则为普通钮 **You're subscribed**（同样打开 Membership 卡）。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
+- **菜单订阅 CTA（2026-08-15 · #296 已合）**：未解锁进阶仪式时，⋯ / 抽屉在 **Join our community 与 Rituals 标题之间**出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则为普通钮 **You're subscribed**（同样打开 Membership 卡）。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
 - **Stay in touch 卡面（2026-08-15 · #295 已合）**：除 known-error 修复说明外，留邮箱也会收到更好的最新版（latest release）说明；仍非推销名单。欢迎信定稿不改字。TRACKER 待人工。
 - **Wellness 免责 · 非诊疗（2026-08-14 · #293 已合）**：文案含 medical device / 非诊疗 + diagnose/treat/cure/prevent；Privacy Sheet 交叉引用。**2026-08-15**：默认落点改为「?」，不再冷启动弹窗。
 - **朴素顿悟 Phase 1 · Quiet Line 洞察种子（2026-08-14 · #292 已合）**：经典金句 ∪ **14** 句生产种子（`INSIGHT_1`–`14`）混合抽取；新 key `focus-tiger.daily-zen-quote-pool-v2.v1` 同日锁；当场打开顿悟向句时 Journey Log 静默 `insightSpark` 小符号。**不做** Whisper / Recover toast / Reflection 三问 / 徽章耦合。候选 #6 天气备选仍不上。TRACKER 待人工（375 换行 + 符号）。

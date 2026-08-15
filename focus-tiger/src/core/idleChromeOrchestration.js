@@ -411,8 +411,9 @@ export function listSecondaryChromeEntries(surface, visibility) {
   });
 
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
-  // One contextual row here (not the three pay SKUs): beige subscribe CTA when
-  // advanced Rituals are locked; "You're subscribed" (same Membership card) when entitled.
+  // One contextual row here (not the three pay SKUs) sits at the top of Rituals:
+  // beige subscribe CTA when advanced scenes are locked; "You're subscribed"
+  // (same Membership card) when entitled.
 
   // Stay in touch — optional email capture (not an account; no entitlement gate).
   // After submit: confirmation row only (We'll keep in touch) — not re-openable.
@@ -430,6 +431,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
     });
   }
 
+  // Join our community — static external link (placeholder URL).
+  out.push({
+    proxy: 'community',
+    labelKey: 'COMMUNITY_MENU_LABEL'
+  });
+
   const scenesEntitled = hasUnlockedAdvancedScenes(visibility);
   if (scenesEntitled) {
     out.push({
@@ -445,12 +452,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
       testId: 'idle-membership-cta'
     });
   }
-
-  // Join our community — static external link (placeholder URL).
-  out.push({
-    proxy: 'community',
-    labelKey: 'COMMUNITY_MENU_LABEL'
-  });
 
   // Advanced RitualFlow scenes (entitlement-gated; free Breath practice stays home left ball).
   out.push({

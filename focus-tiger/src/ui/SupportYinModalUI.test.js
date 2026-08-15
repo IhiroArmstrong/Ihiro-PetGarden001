@@ -93,8 +93,8 @@ describe('SupportYinModalUI helpers', () => {
       'utf8'
     );
     assert.match(src, /membership-meditation-preview\.png/);
-    assert.match(src, /ctaVariant:\s*'cushion'/);
-    assert.match(src, /ctaVariant:\s*'beige'/);
+    assert.equal((src.match(/ctaVariant:\s*'beige'/g) || []).length, 3);
+    assert.doesNotMatch(src, /ctaVariant:\s*'cushion'/);
     assert.match(src, /yin-support-card__art/);
     assert.match(src, /MEMBERSHIP_PRICE_DISPLAY/);
     assert.match(src, /#e8dfd2/);

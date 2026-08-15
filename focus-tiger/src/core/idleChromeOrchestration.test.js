@@ -319,8 +319,8 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'newsletter',
-        'membership',
         'community',
+        'membership',
         'ritual-morning',
         'ritual-emotional-reset',
         'ritual-work-transition'
@@ -343,8 +343,8 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'newsletter',
-        'membership',
         'community',
+        'membership',
         'ritual-morning',
         'ritual-emotional-reset',
         'ritual-work-transition'
@@ -376,8 +376,8 @@ describe('listSecondaryChromeEntries', () => {
         'daily-quote',
         'wallpapers',
         'newsletter',
-        'membership',
         'community',
+        'membership',
         'ritual-morning',
         'ritual-emotional-reset',
         'ritual-work-transition'
@@ -394,6 +394,17 @@ describe('listSecondaryChromeEntries', () => {
     assert.equal(row?.labelKey, 'NEWSLETTER_MENU_CONFIRMED');
     assert.equal(row?.interactive, false);
     assert.ok(entries.some((e) => e.proxy === 'community'));
+  });
+
+  it('membership row sits after community and immediately above Rituals group', () => {
+    const entries = listSecondaryChromeEntries('wide-more', allOn);
+    const communityIdx = entries.findIndex((e) => e.proxy === 'community');
+    const membershipIdx = entries.findIndex((e) => e.proxy === 'membership');
+    const ritualsIdx = entries.findIndex((e) => e.kind === 'group-label');
+    assert.ok(communityIdx >= 0);
+    assert.equal(membershipIdx, communityIdx + 1);
+    assert.equal(ritualsIdx, membershipIdx + 1);
+    assert.equal(entries[ritualsIdx]?.labelKey, 'ritual.menu_group');
   });
 
   it('membership row is beige subscribe CTA when scenes are locked', () => {
