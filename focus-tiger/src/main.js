@@ -916,6 +916,7 @@ async function init() {
   const membershipUnlockUI = new MembershipUnlockUI(document.body, {
     onEntitlementChanged: () => {
       // Ritual lock rows re-read isEntitled on next menu/drawer open.
+      tipKindnessBadgesChrome.refresh();
       sanctuaryEnsoMarkChrome.refresh();
     }
   });

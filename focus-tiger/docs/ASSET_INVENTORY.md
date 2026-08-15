@@ -275,8 +275,8 @@
 ## Sanctuary prestigious badges（非序列帧 · 可下载）
 
 > **路径**：`public/ui/support/sanctuary-badges/`（RGBA 透明底 · 约 939–973² · 入库 2026-08-09）。  
-> **用途**：Yin's Sanctuary Lifetime「尊贵徽章」素材库；与 tip `yin-badges/` **视觉分立**。  
-> **接线状态**：授予/UI 已接线（`sanctuaryBadges.js` · entitlement `badgeIds` · Sanctuary 卡 + Idle 优先展示）。  
+> **用途**：Yin's Sanctuary / Membership「尊贵徽章」素材库；与 tip `yin-badges/` **视觉分立**。  
+> **接线状态**：授予/UI 已接线（`sanctuaryBadges.js` · entitlement `badgeIds` · Sanctuary 卡 + Idle `#yin-tip-kindness-badges`；Membership 订阅同样授 ≥3，不把 Lifetime SKU 标已买）。  
 > **Brief**：`docs/task-briefs/task-unified-practice-badges.md`。  
 > **建议档位顺序**（银→金→高阶；实现任务可微调，勿无 Brief 改 tip 目录）：
 
