@@ -210,7 +210,17 @@ export class AmbientSoundscapeUI {
     });
     this.cueToggleText = document.createElement('span');
     this.cueToggleText.className = 'ambient-soundscape__session-cues-text';
-    this.cueToggleLabel.append(this.cueToggleInput, this.cueToggleText);
+    this.cueToggleHint = document.createElement('span');
+    this.cueToggleHint.className = 'ambient-soundscape__field-hint';
+    this.cueToggleHint.id = 'ambient-session-cues-hint';
+    const cueTextWrap = document.createElement('span');
+    cueTextWrap.className = 'ambient-soundscape__field-copy';
+    cueTextWrap.append(this.cueToggleText, this.cueToggleHint);
+    this.cueToggleInput.setAttribute(
+      'aria-describedby',
+      this.cueToggleHint.id
+    );
+    this.cueToggleLabel.append(this.cueToggleInput, cueTextWrap);
 
     this.intervalRhythmLabel = document.createElement('label');
     this.intervalRhythmLabel.className = 'ambient-soundscape__interval-rhythm';
@@ -223,9 +233,17 @@ export class AmbientSoundscapeUI {
       const ms = Number(this.intervalRhythmSelect.value);
       this.sessionCues?.setIntervalMs(ms);
     });
+    this.intervalRhythmHint = document.createElement('span');
+    this.intervalRhythmHint.className = 'ambient-soundscape__field-hint';
+    this.intervalRhythmHint.id = 'ambient-session-interval-hint';
+    this.intervalRhythmSelect.setAttribute(
+      'aria-describedby',
+      this.intervalRhythmHint.id
+    );
     this.intervalRhythmLabel.append(
       this.intervalRhythmText,
-      this.intervalRhythmSelect
+      this.intervalRhythmSelect,
+      this.intervalRhythmHint
     );
 
     this.awarenessToggleLabel = document.createElement('label');
@@ -246,9 +264,22 @@ export class AmbientSoundscapeUI {
     this.awarenessToggleText = document.createElement('span');
     this.awarenessToggleText.className =
       'ambient-soundscape__awareness-card-text';
+    this.awarenessToggleHint = document.createElement('span');
+    this.awarenessToggleHint.className = 'ambient-soundscape__field-hint';
+    this.awarenessToggleHint.id = 'ambient-focus-awareness-hint';
+    const awarenessTextWrap = document.createElement('span');
+    awarenessTextWrap.className = 'ambient-soundscape__field-copy';
+    awarenessTextWrap.append(
+      this.awarenessToggleText,
+      this.awarenessToggleHint
+    );
+    this.awarenessToggleInput.setAttribute(
+      'aria-describedby',
+      this.awarenessToggleHint.id
+    );
     this.awarenessToggleLabel.append(
       this.awarenessToggleInput,
-      this.awarenessToggleText
+      awarenessTextWrap
     );
 
     this.panel.append(
@@ -671,6 +702,7 @@ export class AmbientSoundscapeUI {
     this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
     this.cueToggleText.textContent = t('SESSION_CUES_TOGGLE');
     this.cueToggleLabel.title = t('SESSION_CUES_TOGGLE_HINT');
+    this.cueToggleHint.textContent = t('SESSION_CUES_TOGGLE_HINT');
     this.cueToggleInput.setAttribute('aria-label', t('SESSION_CUES_TOGGLE'));
     if (this.sessionCues) {
       this.cueToggleInput.checked = this.sessionCues.isEnabled();
@@ -678,6 +710,7 @@ export class AmbientSoundscapeUI {
 
     this.intervalRhythmText.textContent = t('SESSION_INTERVAL_RHYTHM');
     this.intervalRhythmLabel.title = t('SESSION_INTERVAL_RHYTHM_HINT');
+    this.intervalRhythmHint.textContent = t('SESSION_INTERVAL_RHYTHM_HINT');
     this.intervalRhythmSelect.setAttribute(
       'aria-label',
       t('SESSION_INTERVAL_RHYTHM')
@@ -700,6 +733,9 @@ export class AmbientSoundscapeUI {
 
     this.awarenessToggleText.textContent = t('SESSION_AWARENESS_CARD_TOGGLE');
     this.awarenessToggleLabel.title = t('SESSION_AWARENESS_CARD_TOGGLE_HINT');
+    this.awarenessToggleHint.textContent = t(
+      'SESSION_AWARENESS_CARD_TOGGLE_HINT'
+    );
     this.awarenessToggleInput.setAttribute(
       'aria-label',
       t('SESSION_AWARENESS_CARD_TOGGLE')
@@ -1294,6 +1330,20 @@ export class AmbientSoundscapeUI {
       }
       .ambient-soundscape__session-cues-text {
         flex: 1;
+      }
+      .ambient-soundscape__field-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+      }
+      .ambient-soundscape__field-hint {
+        display: block;
+        font-size: 11px;
+        line-height: 1.35;
+        font-weight: 400;
+        opacity: 0.82;
       }
       .ambient-soundscape__interval-rhythm {
         display: flex;

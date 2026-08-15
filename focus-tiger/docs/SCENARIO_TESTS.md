@@ -373,8 +373,8 @@
 > **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改。
 
 1. `?product=1`（**勿**带 `sessionMinutes`）→ Sit→Arrival→Choose→Companion 点选模式。
-2. 见 `#focus-duration-picker`：chip **15 / 25 / 45 / 60**（勿与 Breath 档位混淆）。
-3. 点选 → **立刻 Focusing**；`#focus-hud` 显示所选目标分钟。
+2. 见 `#focus-duration-picker`：chip **15 / 25 / 45 / 60**（勿与 Breath 档位混淆）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 15 minutes / Breath practice）。
+3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing）；`#focus-hud` 显示所选目标分钟。
 4. **Leave**（若 picker 仍开）→ 取消、不开表。
 5. **回流**：Rise → 再 Sit→…→ 再出 picker；偏好应合理回显。
 6. **调试捷径**（非故事）：`?sessionMinutes=1` 跳过 picker——仅 DEMO/e2e。

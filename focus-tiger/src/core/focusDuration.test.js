@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import {
   FOCUS_DURATION_DEFAULT_MINUTES,
@@ -65,5 +68,28 @@ describe('focusDuration', () => {
       resolveFocusSessionTargetMinutes('?sessionMinutes=1', storage),
       1
     );
+  });
+});
+
+describe('focus duration floor copy', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const localesDir = join(here, '../locales');
+
+  it('picker hint names the 15-minute Focus floor in en/zh/ja', () => {
+    for (const file of ['en.json', 'zh.json', 'ja.json']) {
+      const loc = JSON.parse(readFileSync(join(localesDir, file), 'utf8'));
+      const hint = loc['focus_duration.hint'];
+      assert.equal(typeof hint, 'string', file);
+      assert.match(hint, /15/, `${file} must name the 15-minute floor`);
+    }
+  });
+
+  it('interval hint names the 15-minute Focus floor in en/zh/ja', () => {
+    for (const file of ['en.json', 'zh.json', 'ja.json']) {
+      const loc = JSON.parse(readFileSync(join(localesDir, file), 'utf8'));
+      const hint = loc.SESSION_INTERVAL_RHYTHM_HINT;
+      assert.equal(typeof hint, 'string', file);
+      assert.match(hint, /15/, `${file} interval hint must mention 15`);
+    }
   });
 });
