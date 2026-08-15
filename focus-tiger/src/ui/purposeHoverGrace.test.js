@@ -27,4 +27,21 @@ describe('purpose card hover grace + left-ball no mint', () => {
     assert.match(hintsSrc, /NO_MINT_PULSE_HINT_IDS/);
     assert.match(hintsSrc, /'quick-start'/);
   });
+
+  it('Focus HUD click tips bind host hover and skip floating mint pulses', () => {
+    assert.match(hintsSrc, /HOST_HOVER_NO_PULSE_HINT_IDS/);
+    assert.match(hintsSrc, /_syncHudHostHover/);
+    assert.match(hintsSrc, /_bindLiteralHostHover/);
+    assert.match(hintsSrc, /literalOnScreenAnchor/);
+    for (const id of [
+      'focus-hud-ring',
+      'focus-hud-progress',
+      'focus-hud-streak'
+    ]) {
+      assert.match(
+        hintsSrc,
+        new RegExp(`HOST_HOVER_NO_PULSE_HINT_IDS[\\s\\S]*'${id}'`)
+      );
+    }
+  });
 });

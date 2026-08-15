@@ -1,12 +1,13 @@
 # HINTS_WIRING.md — 场景 → Hint 接线表
 
 创建日期：2026-08-03  
-**最后修订**：2026-08-04（**产品面收窄**：运行时只保留「脉冲点悬停 tip」+「? → 产品简介」；点「?」补救喷 tip / auto 喷洒 / More tips **不再作为产品契约**——见 `ONBOARDING_HINTS.md` 文首）
+**最后修订**：2026-08-15（Focus HUD 三条：无脉冲点，悬停控件出 tip）
 产品语义层级：位于 `PRODUCT_MOMENTS.md` / `ONBOARDING_HINTS.md` 之下、实现 Brief 之上。  
 文案、圆点 tier 仍以 **`ONBOARDING_HINTS.md`** 为权威；机器可读 id / 锚点 / `triggerMode` 以 **`src/core/onboardingHintRegistry.js`** 为唯一真源（`hints:doc-sync`）。
 
 > **2026-08-04 运行时政策覆盖本表部分历史行**：`resolveAutoHintIds` / `resolveRemedy*` 仍可存在于 Store（单测/考古），但 `OnboardingHintsUI` **不得**再因 sync / 点「?」铺开 tip。验收与 e2e 以「purpose only + pulse hover」为准。  
-> **2026-08-05**：薄荷绿脉冲点**不得**因收窄 tip 喷洒而被删；⋯/抽屉行内 `.ft-secondary-menu-hint-dot` 与音符 `has-hint-mint` 仍按未读绘制。有脉冲的控件须去重原生/自绘悬停文案（见 `ONBOARDING_HINTS.md`）。
+> **2026-08-05**：薄荷绿脉冲点**不得**因收窄 tip 喷洒而被删；⋯/抽屉行内 `.ft-secondary-menu-hint-dot` 与音符 `has-hint-mint` 仍按未读绘制。有脉冲的控件须去重原生/自绘悬停文案（见 `ONBOARDING_HINTS.md`）。  
+> **2026-08-15**：`focus-hud-*` **例外**——不画浮动 mint 脉冲；悬停金环 / 今日同坐条 / 近日同坐环出 tip（同「?」无脉冲也能悬停出文案）。音符与 ⋯ 行内 mint **仍保留**。
 
 > **诚实边界（2026-08-03 分析师）**：本文件 + 库存机器块 = **必要条件**，不是充分条件。  
 > - **已堵**：registry 新 tip 不登记批次簇 / 不同步库存表 → `docs:check` 失败；PR 模板批次钉。  
@@ -105,7 +106,7 @@
 
 | 用户场景 | 候选 hintId | 方式 | 门闩 / 备注 |
 |---|---|---|---|
-| Focusing | `rise-button` · `ambient-soundscape` · Focus HUD 三条 | rise click；ambient click；HUD click | auto 互斥下 rise 优先于 HUD |
+| Focusing | `rise-button` · `ambient-soundscape` · Focus HUD 三条 | rise click；ambient click；HUD **宿主悬停、无脉冲点** | auto 互斥下 rise 优先于 HUD；HUD 悬停绑金环/条/近日环，不画 `.onboarding-hint-badge` |
 | Reflection | `reflection` | auto | 叠层开时不抢 help-affordance |
 | 微仪式进行中 | — | — | **禁止** sit / idle-after-session 等指 Sit tip |
 

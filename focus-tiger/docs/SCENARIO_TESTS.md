@@ -429,7 +429,7 @@
 > **用户故事**：Kelly 点「?」可查阅简介（no pressure / no ads / local-first）与「不是诊疗」声明，再点 **Privacy** 读本地优先说明（含交叉引用），Back 回简介。冷启动**不得**自动弹出免责警告牌。  
 > **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy / Idle 不自动出卡 / `?wellnessFirst=1` QA 行；单元 `privacyNoticeCopy.test.js`、`wellnessDisclaimerGate.test.js`。  
 > **仍须人工**：375 简介与 Sheet 可滚、可关；Rise 后再走一遍「?」；**禁止**简介/隐私承诺具名云保管同步。  
-> **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。
+> **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。Focus HUD 三条无脉冲，悬停控件出 tip。
 
 1. **冷启动（默认）**：`?product=1`（可清 `focus-tiger.wellness-disclaimer-seen.v1`）→ Idle **不得**见 `#onboarding-wellness-first`。**0–1 秒内**：首屏是阿寅坐禅，不是「Not therapy」警告牌。
 2. 点「?」`#onboarding-hint-help` → **0–1 秒内**见 `#onboarding-app-purpose`（no pressure / no ads / stays on this device）+ 免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent；日语切语后见「心理療法・医療ではありません」）。

@@ -1,6 +1,7 @@
 /**
  * Hint 产品面（2026-08-04 收窄）：只保留两件事——
  * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
+ *    （Focus HUD 三条例外：不画脉冲点，悬停控件本身出 tip，同「?」）
  * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
  *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`）
  * 默认不自动弹出 `#onboarding-wellness-first`（吓跑用户）；QA 仅 `?wellnessFirst=1`。
@@ -54,6 +55,17 @@ export const PURPOSE_HOVER_HIDE_GRACE_MS = 280;
 
 /** Home left ball keeps native title; no mint pulse (2026-08-11). */
 const NO_MINT_PULSE_HINT_IDS = new Set(['quick-start']);
+
+/**
+ * Focus HUD chrome: no floating mint pulse. Hover the control itself
+ * (same pattern as 「?」 → purpose card). Tip copy still comes from the
+ * click-hint bubble, not a native title.
+ */
+export const HOST_HOVER_NO_PULSE_HINT_IDS = new Set([
+  'focus-hud-ring',
+  'focus-hud-progress',
+  'focus-hud-streak'
+]);
 
 const HINT_ANCHORS = ONBOARDING_HINT_ANCHORS;
 
@@ -140,6 +152,35 @@ function resolveAnchorEl(selectorList, { hintId = null } = {}) {
       }
       return el;
     }
+  }
+  return null;
+}
+
+/**
+ * Literal registry host (no ⋯ / drawer / ActionBar remap). HUD hover must
+ * bind the on-screen Calm card, not a parked clock.
+ * @param {string} hintId
+ * @returns {HTMLElement | null}
+ */
+function literalOnScreenAnchor(hintId) {
+  const raw = HINT_ANCHORS[hintId];
+  if (!raw) return null;
+  for (const sel of String(raw.selector || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)) {
+    let el = null;
+    try {
+      el = document.querySelector(sel);
+    } catch {
+      el = null;
+    }
+    if (!el || el.hidden || el.getClientRects().length === 0) continue;
+    const r = el.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth || 1;
+    const vh = document.documentElement.clientHeight || 1;
+    if (r.right < 0 || r.bottom < 0 || r.left > vw || r.top > vh) continue;
+    return /** @type {HTMLElement} */ (el);
   }
   return null;
 }
@@ -671,14 +712,40 @@ export class OnboardingHintsUI {
     syncAllDiscoveryDots(this.store);
     this._syncHostMintDots();
     this._syncSecondaryMenuHostMints();
+    this._syncHudHostHover();
     this._syncPulseOwnedNativeTips();
     this._bindHelpPurposeHover(document.getElementById('ft-narrow-help-btn'));
   }
 
   /**
-   * When a mint pulse tip already covers a control, suppress duplicate native /
-   * built-in hover copy (title attribute, streak-meter .label). If the pulse is
-   * gone (done), restore the residual hover so the control is not mute.
+   * Focus HUD: no mint pulse. Bind hover on the Calm ring / bar / streak
+   * hosts themselves (same idea as hovering 「?」).
+   * @returns {void}
+   */
+  _syncHudHostHover() {
+    for (const hintId of HOST_HOVER_NO_PULSE_HINT_IDS) {
+      this._hideClickBadge(hintId);
+      if (this.store.isDone(hintId)) continue;
+      if (this._remedyIds.size > 0) continue;
+      this._bindLiteralHostHover(hintId);
+    }
+  }
+
+  /**
+   * @param {string} hintId
+   * @returns {void}
+   */
+  _bindLiteralHostHover(hintId) {
+    const host = literalOnScreenAnchor(hintId);
+    if (!host) return;
+    this._bindHostMintHover(host, hintId);
+  }
+
+  /**
+   * When a mint pulse OR HUD host-hover tip already covers a control, suppress
+   * duplicate native / built-in hover copy (title attribute, streak-meter .label).
+   * If the pulse/host tip is gone (done), restore the residual hover so the
+   * control is not mute.
    * @returns {void}
    */
   _syncPulseOwnedNativeTips() {
@@ -795,7 +862,8 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * Desktop hover preview for host-carried mint (note / ⋯·drawer rows).
+   * Desktop hover preview for host-carried tips (note / ⋯·drawer rows /
+   * Focus HUD chrome without a floating mint pulse).
    * Floating badge handlers never reach these hosts.
    * @param {Element | null} host
    * @param {string} hintId
@@ -1313,6 +1381,12 @@ export class OnboardingHintsUI {
       return;
     }
 
+    if (HOST_HOVER_NO_PULSE_HINT_IDS.has(hintId)) {
+      this._hideClickBadge(hintId);
+      this._bindLiteralHostHover(hintId);
+      return;
+    }
+
     // ⋯ / drawer row already shows `.ft-secondary-menu-hint-dot` — skip floating
     // badge so each unread row has one mint, not two (ghost pulse).
     const menuHost = this._secondaryMenuHostForHint(hintId);
@@ -1523,10 +1597,15 @@ export class OnboardingHintsUI {
     for (const hintId of [...this._clickExpandedIds]) {
       const bubble = this._bubbles.get(hintId);
       const badge = this._badges.get(hintId);
+      const host = HOST_HOVER_NO_PULSE_HINT_IDS.has(hintId)
+        ? literalOnScreenAnchor(hintId)
+        : null;
       if (target && bubble?.contains(target)) continue;
       if (target && badge?.contains(target)) continue;
+      if (target && host?.contains(target)) continue;
       if (bubble && path.includes(bubble)) continue;
       if (badge && path.includes(badge)) continue;
+      if (host && path.includes(host)) continue;
       // simple：点外部 = peeked；detailed：只关预览仍脉冲
       this._collapseClickHint(hintId, {
         acknowledgeSimple: getHintTier(hintId) === 'simple'
@@ -2570,10 +2649,10 @@ export class OnboardingHintsUI {
         pointer-events: none;
         z-index: 2;
       }
-      /* Calm HUD：发现点略收敛，减少四角碎点抢视线（仍可点 badge 路径） */
+      /* Calm HUD：不再画浮动 mint badge；残留选择器只防旧节点抢视线 */
       #focus-hud .ft-hint-discovery-dot,
       #focus-hud .onboarding-hint-badge {
-        opacity: 0.72;
+        display: none;
       }
       #focus-hud .ft-hud__gauge,
       #focus-hud .ft-hud__bar,
