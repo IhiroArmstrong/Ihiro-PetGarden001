@@ -6,9 +6,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
 	generateUnsubscribeToken,
+	markNewsletterWelcomeSent,
 	newsletterSubscriberKvKey,
 	newsletterUnsubKvKey,
 	newsletterUnsubscribeUrl,
+	newsletterWelcomeStillDue,
 	parseNewsletterRecord,
 	readNewsletterSubscriber,
 	removeNewsletterSubscriberByToken,
@@ -42,6 +44,17 @@ describe("parseNewsletterRecord", () => {
 		assert.ok(ok);
 		assert.equal(ok!.email, "friend@example.com");
 		assert.equal(ok!.locale, "ja");
+		assert.equal(ok!.welcomeSentAt, undefined);
+		const withSend = parseNewsletterRecord(
+			JSON.stringify({
+				schemaVersion: 1,
+				email: "a@b.co",
+				subscribedAt: "2026-08-13T00:00:00.000Z",
+				unsubToken: "a".repeat(32),
+				welcomeSentAt: "2026-08-15T12:00:00.000Z",
+			}),
+		);
+		assert.equal(withSend?.welcomeSentAt, "2026-08-15T12:00:00.000Z");
 		assert.equal(parseNewsletterRecord(null), null);
 		assert.equal(
 			parseNewsletterRecord(
@@ -87,6 +100,24 @@ describe("upsert + unsubscribe", () => {
 		assert.equal(second.created, false);
 		assert.equal(second.record.unsubToken, "t".repeat(32));
 		assert.equal(second.record.locale, "en");
+		assert.equal(newsletterWelcomeStillDue(first.record), true);
+	});
+
+	it("markNewsletterWelcomeSent writes welcomeSentAt without rotating token", async () => {
+		const kv = new MemoryKv() as unknown as KVNamespace;
+		await upsertNewsletterSubscriber({
+			kv,
+			email: "yin@example.com",
+			token: "t".repeat(32),
+		});
+		const marked = await markNewsletterWelcomeSent({
+			kv,
+			email: "yin@example.com",
+			nowIso: "2026-08-15T12:00:00.000Z",
+		});
+		assert.equal(marked?.welcomeSentAt, "2026-08-15T12:00:00.000Z");
+		assert.equal(marked?.unsubToken, "t".repeat(32));
+		assert.equal(newsletterWelcomeStillDue(marked!), false);
 	});
 
 	it("remove by token deletes both keys", async () => {

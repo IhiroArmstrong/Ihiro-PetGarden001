@@ -154,7 +154,7 @@ describe('membership display price', () => {
 });
 
 describe('membership ↔ tip zero-coupling (static)', () => {
-  it('membershipCheckout must not import tip-jar modules', () => {
+  it('membershipCheckout must not import tip-jar or Sanctuary lifetime gate', () => {
     const src = readFileSync(join(here, 'membershipCheckout.js'), 'utf8');
     assert.equal(
       /from\s+['"].*tipJarGate/.test(src) ||
@@ -162,6 +162,11 @@ describe('membership ↔ tip zero-coupling (static)', () => {
         /require\(['"].*tipJar/.test(src),
       false,
       'membershipCheckout.js must not import tip-jar gate modules'
+    );
+    assert.equal(
+      /from\s+['"].*sanctuaryEntitlementGate/.test(src),
+      false,
+      'membershipCheckout.js must not import sanctuaryEntitlementGate'
     );
   });
 });

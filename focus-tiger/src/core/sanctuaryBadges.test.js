@@ -87,6 +87,15 @@ describe('sanctuaryBadges', () => {
     clearSanctuaryEntitlement(storage);
   });
 
+  it('entitled membership awards min 3 without unlocking Sanctuary lifetime', () => {
+    const storage = memoryStorage();
+    const grown = syncSanctuaryBadgesFromPractice(storage, { entitled: true });
+    const ent = readSanctuaryEntitlement(storage);
+    assert.equal(ent.unlocked, false);
+    assert.equal(ent.badgeIds.length, SANCTUARY_BADGE_MIN);
+    assert.ok(grown.newlyAddedIds.length >= SANCTUARY_BADGE_MIN);
+  });
+
   it('gate source does not import tipJarGate (static zero-coupling)', () => {
     const src = readFileSync(
       join(here, 'sanctuaryEntitlementGate.js'),

@@ -13,9 +13,13 @@ import {
   clearSanctuaryEntitlement
 } from './sanctuaryEntitlementGate.js';
 import {
-  ENSO_DIAMETER_FRAC,
-  ENSO_FALLBACK_VIEWPORT_FRAC,
-  ENSO_MIN_CSS_PX,
+  ENSO_CORNER_BOTTOM_NARROW_PX,
+  ENSO_CORNER_BOTTOM_WIDE_PX,
+  ENSO_CORNER_LEFT_NARROW_PX,
+  ENSO_CORNER_LEFT_WIDE_PX,
+  ENSO_CORNER_SIZE_NARROW_PX,
+  ENSO_CORNER_SIZE_WIDE_PX,
+  ENSO_NARROW_MQ_MAX_PX,
   ENSO_OPACITY_FOCUSING,
   ENSO_OPACITY_HOVER,
   ENSO_OPACITY_IDLE,
@@ -84,37 +88,42 @@ describe('sanctuaryEnsoMark', () => {
     assert.equal(storage.getItem(SANCTUARY_STORAGE_KEY), null);
   });
 
-  it('layout uses ~10% cushion diameter (40% of prior 25%) and floors at min px', () => {
-    assert.equal(ENSO_DIAMETER_FRAC, 0.1);
-    assert.ok(ENSO_FALLBACK_VIEWPORT_FRAC < 0.08);
-    const wide = layoutSanctuaryEnsoMark({
-      left: 100,
-      top: 50,
-      width: 1056,
-      height: 864
+  it('layout pins bottom-left corner and lifts above 375 home balls', () => {
+    const wide = layoutSanctuaryEnsoMark({ viewportWidth: 1280 });
+    assert.deepEqual(wide, {
+      left: ENSO_CORNER_LEFT_WIDE_PX,
+      bottom: ENSO_CORNER_BOTTOM_WIDE_PX,
+      size: ENSO_CORNER_SIZE_WIDE_PX
     });
-    assert.ok(wide);
-    const expected = (553 / 1056) * 1056 * ENSO_DIAMETER_FRAC;
-    assert.ok(Math.abs(wide.size - expected) < 0.5);
-    const frac = wide.size / ((553 / 1056) * 1056);
-    assert.ok(frac >= 0.08);
-    assert.ok(frac <= 0.12);
-    // Center stays on the cushion face; box must not exceed cushion diameter.
-    assert.ok(wide.size < 553);
 
-    const narrow = layoutSanctuaryEnsoMark({
-      left: 0,
-      top: 0,
-      width: 120,
-      height: 200
-    });
+    const narrow = layoutSanctuaryEnsoMark({ viewportWidth: 375 });
     assert.ok(narrow);
-    assert.equal(narrow.size, ENSO_MIN_CSS_PX);
+    assert.equal(narrow.left, ENSO_CORNER_LEFT_NARROW_PX);
+    assert.equal(narrow.bottom, ENSO_CORNER_BOTTOM_NARROW_PX);
+    assert.equal(narrow.size, ENSO_CORNER_SIZE_NARROW_PX);
+    assert.ok(narrow.bottom >= 150);
+
+    const edge = layoutSanctuaryEnsoMark({
+      viewportWidth: ENSO_NARROW_MQ_MAX_PX
+    });
+    assert.equal(edge.size, ENSO_CORNER_SIZE_NARROW_PX);
+
+    const justWide = layoutSanctuaryEnsoMark({
+      viewportWidth: ENSO_NARROW_MQ_MAX_PX + 1
+    });
+    assert.equal(justWide.size, ENSO_CORNER_SIZE_WIDE_PX);
+
+    const safeNarrow = layoutSanctuaryEnsoMark({
+      viewportWidth: 375,
+      safeAreaBottom: 80
+    });
+    assert.ok(safeNarrow.bottom > ENSO_CORNER_BOTTOM_NARROW_PX);
   });
 
-  it('layout returns null for invalid rects', () => {
+  it('layout returns null for invalid viewports', () => {
     assert.equal(layoutSanctuaryEnsoMark(null), null);
-    assert.equal(layoutSanctuaryEnsoMark({ left: 0, top: 0, width: 0, height: 10 }), null);
+    assert.equal(layoutSanctuaryEnsoMark({}), null);
+    assert.equal(layoutSanctuaryEnsoMark({ viewportWidth: 0 }), null);
   });
 
   it('opacity idle / focusing / hover contract', () => {
@@ -125,16 +134,18 @@ describe('sanctuaryEnsoMark', () => {
     assert.equal(sanctuaryEnsoOpacity(true, true), ENSO_OPACITY_FOCUSING);
   });
 
-  it('chrome module pins official src and swallows click (no shop)', () => {
+  it('chrome module pins official src, corner CSS, and does not open shop', () => {
     const chromeSrc = readFileSync(
       join(here, '../ui/SanctuaryEnsoMarkChrome.js'),
       'utf8'
     );
     assert.match(chromeSrc, /SANCTUARY_ENSO_MARK_SRC/);
-    assert.match(chromeSrc, /ENSO_MIN_CSS_PX/);
-    assert.match(chromeSrc, /ENSO_FALLBACK_VIEWPORT_FRAC/);
-    assert.match(chromeSrc, /preventDefault/);
-    assert.match(chromeSrc, /z-index:\s*4/);
+    assert.match(chromeSrc, /pointer-events:\s*none/);
+    assert.match(chromeSrc, /z-index:\s*11/);
+    assert.match(chromeSrc, /bottom:\s*max\(/);
+    assert.match(chromeSrc, /max-width:\s*\$\{ENSO_NARROW_MQ_MAX_PX\}px/);
+    assert.doesNotMatch(chromeSrc, /getDisplayRect/);
+    assert.doesNotMatch(chromeSrc, /cushion/);
     assert.doesNotMatch(
       chromeSrc,
       /openSanctuary|openSupport|startCheckout|SupportYinModal/i

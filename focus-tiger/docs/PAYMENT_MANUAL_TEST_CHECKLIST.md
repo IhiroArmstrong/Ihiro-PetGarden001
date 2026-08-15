@@ -109,8 +109,9 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
    - confirm 成功 → 本地 subscription 缓存  
    - 本地写入 `focus-tiger.membership-device.v1`（有 `email`+`deviceToken`）  
    - 阿寅播 **轻摆尾** `sessionComplete`（#231）  
-   - **⋯ → Rituals** 三项可点（不再全锁）  
-   - 再开 Membership 卡见 **Manage**（仅卡内；无菜单第二入口）  
+   - **⋯ → Rituals** 三项可点（不再全锁）
+   - Idle **屏幕右侧** `#yin-tip-kindness-badges` ≥ **3** 枚尊贵章（与 Lifetime 同视觉；**不**把 Sanctuary 卡标成已买）
+   - 再开 Membership 卡见 **Manage**（仅卡内；无菜单第二入口）
 5. Stripe Workbench：该笔 `checkout.session.completed`（subscription）应为 **200**，响应勿长期 `502`
 
 ### C2 · 邮箱 Restore（**未测 · 请测** · 现为 OTP）
@@ -125,7 +126,8 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 
 1. **仅 Membership**：  
    - Rituals **应**可开（subscription）  
-   - **Yin's Sanctuary** 卡仍可显示「未买 Lifetime」（Membership ≠ 自动买断徽章轨；以卡面文案为准）  
+   - **Yin's Sanctuary** 卡仍可显示「未买 Lifetime」（Membership ≠ 自动买断 Lifetime SKU；以卡面文案为准）
+   - Idle 右侧仍应见 ≥3 枚 B 轨尊贵章（与 Lifetime 互覆盖；**不是**把 Sanctuary 卡标已买）  
 2. **仅 Tea**：Rituals 仍锁（同 A3）  
 3. Tip Restore / Sanctuary Restore **不得**用 Membership 邮箱误写成另一轨解锁
 

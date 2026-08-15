@@ -275,8 +275,8 @@
 ## Sanctuary prestigious badges（非序列帧 · 可下载）
 
 > **路径**：`public/ui/support/sanctuary-badges/`（RGBA 透明底 · 约 939–973² · 入库 2026-08-09）。  
-> **用途**：Yin's Sanctuary Lifetime「尊贵徽章」素材库；与 tip `yin-badges/` **视觉分立**。  
-> **接线状态**：授予/UI 已接线（`sanctuaryBadges.js` · entitlement `badgeIds` · Sanctuary 卡 + Idle 优先展示）。  
+> **用途**：Yin's Sanctuary / Membership「尊贵徽章」素材库；与 tip `yin-badges/` **视觉分立**。  
+> **接线状态**：授予/UI 已接线（`sanctuaryBadges.js` · entitlement `badgeIds` · Sanctuary 卡 + Idle `#yin-tip-kindness-badges`；Membership 订阅同样授 ≥3，不把 Lifetime SKU 标已买）。  
 > **Brief**：`docs/task-briefs/task-unified-practice-badges.md`。  
 > **建议档位顺序**（银→金→高阶；实现任务可微调，勿无 Brief 改 tip 目录）：
 
@@ -302,13 +302,13 @@
 
 ---
 
-## Sanctuary Enso Mark（非序列帧 · 蒲团中央徽章）
+## Sanctuary Enso Mark（非序列帧 · 页面左下角徽章）
 
 > **路径**：`public/ui/support/sanctuary-enso/`（入库 2026-08-12）。  
 > **正式文件**：`sanctuary-enso-mark.png`（RGBA 真透明 · ~847×848 · 源自 `Enso-sample0025` 黑底抠图）。  
 > **候选对照**：`candidates/`（0021/0025 rembg 与 color-key 变体 + cream 预览）——**运行时默认只用正式文件**。  
-> **接线状态**：产品 UI **已接线**（`SanctuaryEnsoMarkChrome` · `feature/sanctuary-enso-mark`）。  
-> **位置规格**：相机可见蒲团正面中心（非髋下质量中心）；直径约蒲团可见径 **10%**（相对 2026-08-13 的 25% 再缩至约 40%，贴住蒲团不越界）；见 Brief。
+> **接线状态**：产品 UI **已接线**（`SanctuaryEnsoMarkChrome`）。  
+> **位置规格（2026-08-15）**：页面**左下角**固定徽章（宽屏约 52 CSS px；375 约 44 CSS px、抬到三球之上）。不再钉蒲团中央。见 Brief。
 
 | 文件 | 角色 |
 |---|---|

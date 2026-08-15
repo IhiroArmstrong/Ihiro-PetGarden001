@@ -98,7 +98,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 深度音效全库（`ambient.deep.play`） | `lifetime∪subscription` | 免费温暖子集 **5** 首：`singing-bowl`（Mer-Ka-Ba）· `divine-life-society` · `somnia-variation-3` · `dreamland` · `frozen-in-love`；其余内置曲 B；用户自传仍免费 | `ambient.deep.play`（字面 subscription / ongoing） | B 核心权益之一 | **已接线**（#251）+ **15s 试听**（`feature/ambient-deep-audition-15s`） | Gate：`ambientEntitlement.js` + `setTrack` 硬拒 + 面板锁行。**试听**：未授权点 Deep → 约 15s（`?ambientAuditionMs=` 可缩短）→ fade out → 可忽略 Unlock 提示；**不**持久 preferred=deep；零 tip 耦合 |
 | 高级情绪动画 / 场景（`emotion.premium.trigger`） | `lifetime∪subscription` | 非核心；名单另定 | `emotion.premium.trigger` | B | **未接线** | catalog 占位；dispatcher **未**按 key 拦高级表现 |
 | 进阶每日解锁内容（`content.advanced.daily-unlock`） | `lifetime∪subscription` | — | `content.advanced.daily-unlock` | B 占位 | **未接线** | catalog 有；**无**产品消费者 |
-| Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | 授予/Idle 优先展示已合。**蒲团中央 Enso**：`#yin-sanctuary-enso-mark` 已接线（lifetime∪subscription；零 tip；Focusing 淡化；点按不开店） |
+| Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | Idle `#yin-tip-kindness-badges`：Lifetime **或** Membership 起授 ≥3（`idlePracticeBadges`）；**不**把 Sanctuary SKU `unlocked` 标真。**页面左下角 Enso**：`#yin-sanctuary-enso-mark` 已接线（lifetime∪subscription；零 tip；Focusing 淡化；装饰层不开店） |
 | Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | — |
 | Support Yin Modal · Membership 卡 | `lifetime∪subscription` | 订阅入口 | Support → Membership Checkout | B 入口 | **已接线** | 与 Sanctuary / Tea 并列；展示图暂复用 Sanctuary preview |
 | 节日主题引擎（Seasonal Theme） | `lifetime∪subscription` | Lifetime 或 Membership；官方节日 `subscriberOnly: true` | `theme.seasonal.access`（字面 subscription / **ongoing**） | B；时段氛围非纪念物 | **部分接线** | catalog + 引擎 + Phase 3 UI **已合 #238**（wash + 一日一句）；总开关开 / 圣诞节 `contentReady=true`；**未购无主题**；无新 PNG 姿态 |
@@ -111,7 +111,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Digital Wallpapers | `free` | — | 无付费 gate | 免费赠送 | **已接线** | 禁止付费门 |
 | Quiet Line（签文存图） | `free` | — | 无付费 gate | 增长包免费 | **已接线** | 与 Daily Wisdom 分池 |
 | Zen Cinema / YouTube 入口 | `free` | — | 无付费 gate | 增长包免费 | **已接线** | — |
-| Stay in touch / Newsletter | `free` | 可选留资；非账号 | 无付费 gate | 增长；不挂钩解锁 | **已接线**（Worker + Resend 欢迎信） | 本地只记 `submitted`；名单在 `NEWSLETTER_KV`；退订同批。无 Cloud 时 mock。群发未接线 |
+| Stay in touch / Newsletter | `free` | 可选留资；非账号 | 无付费 gate | 增长；不挂钩解锁 | **路由已接线；欢迎信 2026-08-15 人工失败** | 本地只记 `submitted`；名单在 `NEWSLETTER_KV`；退订同批。无 Cloud 时 mock。群发未接线。欢迎信须 Worker 带上 await/重发后再测 |
 | 用户上传氛围乐 | `free` | — | 无付费 gate | v1 必交付；非 Sanctuary 门槛 | **已接线** | 不得因未购 B 禁用上传主路径 |
 | 电子书 ②A 免费下载 | `free` | — | — | 延后排期 | **未接线** | 产品延后，非付费墙项 |
 | 电子书 ②B 练习解锁 | — | — | — | **已取消** | **不适用** | 勿复活 streak/练习解锁 |
@@ -149,7 +149,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式 + Ambient 深库 + Seasonal 已用；高级情绪等未跟。  
 6. **Daily Wisdom → Reflection + 静默印花** — Brief `task-daily-wisdom-reflection-mount.md`（Phase A/B 拆分）。  
 7. **Journey Daily Card（Save image）** — Brief `task-journey-daily-card.md`；**Log 上限免费/付费统一 30（有意）**。  
-8. **Sanctuary Enso Mark（蒲团中央）** — **已接线** `#yin-sanctuary-enso-mark`（Brief `task-sanctuary-enso-mark.md`）。  
+8. **Sanctuary Enso Mark（页面左下角）** — **已接线** `#yin-sanctuary-enso-mark`（Brief `task-sanctuary-enso-mark.md`）。  
 9. **付费转化路径梳理（获客向）** — Backlog：试听后 Unlock、锁项价值展示时刻等——勿让「经济可持续」只剩老用户彩蛋。  
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
 11. **付费 · 意愿漏斗本地统计** — **已合**（#255；`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。
