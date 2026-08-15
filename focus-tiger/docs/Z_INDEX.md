@@ -76,7 +76,7 @@
 | **24** | `src/ui/SupportYinModalUI.js` | 右上 Support Yin FAB（`#yin-support-fab`；在 mute 左侧） |
 | **24** | `src/ui/NarrowIdleShell.js` | 窄屏 Focusing：强制把 mute 提到可点层（覆盖 park） |
 | **25** | `src/ui/SupportYinModalUI.js` | `#yin-support-backdrop` Support 模态遮罩 |
-| **26** | `src/ui/SupportYinModalUI.js` | `#yin-support-modal` Support 双卡模态（Sanctuary + Tea） |
+| **26** | `src/ui/SupportYinModalUI.js` | `#yin-support-modal` Support 三卡模态（Sanctuary + Membership + Tea） |
 | **27** | `src/ui/OnboardingHintsUI.js` | 用途说明卡（`.onboarding-app-purpose`） |
 | **28** | `src/ui/OnboardingHintsUI.js` | Hints 目录芯片（`.ft-hint-catalog-chip`，如「More tips」） |
 | **29** | `src/ui/OnboardingHintsUI.js` | 应用内隐私说明（`#onboarding-privacy-sheet`；高于简介卡） |
