@@ -101,7 +101,7 @@ COLLAB.md（本文档，协作层）
 1. **单 worktree / 单分支单写者**：同一 worktree、同一分支，同一时间只能有一个 Agent/会话在写。并行开发必须开不同 worktree + 不同分支，禁止两个会话挤在同一 worktree 或同一分支上各干各的。
 2. **开新会话前先查现场**：开始新的 Cursor 会话前，先跑 `git worktree list` 与 `git reflog`，确认没有其他会话正在同一 worktree/分支上进行中的工作。
 3. **修复走短命分支 + PR**：修复类工作一律 `fix/*` 短命分支 + PR 合并进 `develop`，不直接在 `develop` 上改；合并后即删分支（删清单 = **PR head ∪ 正文 `Supersedes:` 旧支**，见下节）。
-4. **验收结论须带三元组**：每条测试/验收结论必须注明 **commit hash + worktree 路径 + 本地端口**（例：`6545723 · …/wt-docs-6.6 · :5173`），禁止只说「在 develop 上测到……」。
+4. **验收结论须带三元组**：关单级须注明 **当时 `origin/develop` tip hash + 主仓路径 + 端口 5173**（例：`d96271e · /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001 · :5173`）。研发自检（未合入旁支）须写 **commit hash + 该 worktree 路径 + 非 5173 端口**。禁止只说「在 develop 上测到……」。关单入口见 `TEST_TRACKER`「主干一次性关单验收」。
 5. **人工验收只认 `origin/develop` tip（强制）**：**SSOT** 见 [`TEST_TRACKER.md`](./TEST_TRACKER.md) 文首「人工验收唯一基线」。关单级结论若未报 hash、或 hash ≠ 当时 `origin/develop` tip → **无效**，须重新验证。feature/fix 试跑 ≠ 正式验收。  
 6. **合入门闩 ≠ 关单（强制并列）**：合入 `develop` 看 **CI 绿**（`WORKFLOW.md` / `git-develop-small-pr-run-merge`）；关单只认 `origin/develop` tip 上的人工测试（`qa-develop-tip`）。研发自检与主干同步见 `git-feature-merge-preview`。**禁止**因已合并而标「已通过 / 已修复」。批量测用口令「批量人工测试」。
 

@@ -1,10 +1,10 @@
 # Known-Risky 优先验收清单
 
 创建日期：2026-08-04  
-**最近刷新**：2026-08-08（主干一次性 tip 验收；Support Modal 入表；废「Support 专用 worktree」口径）  
+**最近刷新**：2026-08-15（关单入口锁主仓 develop + 既有 5173；废「专开 tip worktree / 新端口」）  
 权威路径：`focus-tiger/docs/KNOWN_RISKY_TEST_CHECKLIST.md`  
 性质：**人工验收操作步骤**——对应 `DEVELOP_DEBT_INVENTORY.md` §1 `known-risky` 优先批（本表可先行扩列新产品面）。  
-基线：验收前须对齐当时 **`origin/develop` tip**（`git fetch` + 纯 tip worktree 或等价 checkout），并跑 `npm run check:branch-freshness`（behind 须为 0 才可关单级验收）。**禁止**用过时 feature worktree / 未 fetch 的本地 develop 冒充 tip。盘点与「本批不排」见 `TEST_TRACKER.md`「主干一次性关单验收」。
+基线：验收前须对齐当时 **`origin/develop` tip**（本机主仓 `develop` + 既有 `http://127.0.0.1:5173/?product=1`：先 `git pull --ff-only origin develop`，再硬刷新）。须跑 `npm run check:branch-freshness`（behind 须为 0 才可关单级验收）。**硬刷新 ≠ git pull**。**禁止**用过时 feature worktree / 未 fetch 的本地 develop 冒充 tip；**禁止**为已合 PR 另开 QA worktree / 新端口。盘点与「本批不排」见 `TEST_TRACKER.md`「主干一次性关单验收」。
 
 > **SSOT**：仅本 MD。  
 > **不权威（勿当验收依据）**：同目录 `known-risky-test-checklist.csv`（历史薄导出，允许过期）。仓库根 `KnownRisky测试清单.numbers` 已于 **2026-08-05** 删除。  
@@ -22,17 +22,19 @@
 | 步骤里的 `【***测试OK】`？ | **走查批注**（写在本 MD）；不等于 TRACKER 关单 |
 | CSV？ | **不权威**；不要对照 CSV 验收或改步骤（根目录 Numbers 已删） |
 
-**公共前置（每条默认 · 纯 tip）**：
+**公共前置（每条默认 · 主仓 5173）**：
 
 ```bash
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+git checkout develop
 git fetch origin develop
-git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
-npm install && npm run check:branch-freshness && npm run dev
+git pull --ff-only origin develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run check:branch-freshness
+npm run check:qa-5173-baseline
 ```
 
-Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面写当时 tip hash（2026-08-08 盘点时为 **`beb9147`**）。**勿**再专开 `…-wt-qa-support-modal`——Support（#187）已在 tip 祖先链，与其它未关单项同一棵 tip 树测即可。
+Safari **硬刷新**：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面写当时 tip hash。**禁止**为已合 PR 再开 `…-wt-qa-develop-tip` / 新端口 / Support-only QA tree。若 5173 没在跑，只在该主仓 `npm run dev`（不要新端口）。
 
 ### 0.1 2026-08-08 起 · 建议优先顺序（主干一批）
 
@@ -60,7 +62,8 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | 欢迎池仅书/点头 | Day1 / ≥3 日久别可 **吹花 + 头顶气泡**（压过 wellness 斗篷）；同日 XOR |
 | 付费未定 | **双轨已锁**：A Buy Yin a Tea（不解锁内容）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖（同一套进阶权益）；②B 电子书**已取消** |
 | 壳 = Electron/Tauri/PWA 三选一即将定 | **v1 默认纯 Web**；桌面壳**仍开放**；**可选 PWA 基础层**已合 `develop`（#180：manifest + network-only SW + 品牌图标）；**安装验收排期 = PR #2→`main` + 稳定版后**（勿现在催测；#188）。桌面壳选型仍开放，见技术方向 Brief |
-| 只开 `…-wt-qa-support-modal` 测 Support | **废**：Support 与其它未关单项共用 **同一** tip worktree（见 §0 公共前置） |
+| 只开 `…-wt-qa-support-modal` 测 Support | **废**：Support 与其它未关单项共用 **同一** 主仓 5173（见 §0 公共前置） |
+| 专开 `…-wt-qa-develop-tip` + 新端口当关单 | **废（2026-08-15）**：关单 = 主仓 `develop` + 既有 5173；合入后 ff-pull，再硬刷新 |
 | tip 永远是 `62e38a3` / 主仓 ahead1 behind1 | tip **随 fetch**；08-08 盘点 tip=`beb9147`；本地 develop 可能仅 ahead 文档，关单仍认远端 tip |
 
 ---
@@ -115,12 +118,13 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 - 新产品面合入后：若属高回归 / 曾「有问题」/ release-blocker → **先加本表行**，再考虑是否回写债务清单 §1。
 - 已 verified 行改壳后：优先 **烟测**，勿无故整表重开。
 
-## 4. 变更摘要（2026-08-08）
+## 4. 变更摘要（2026-08-08；2026-08-15 修订入口）
 
 | 动作 | 项 |
 |---|---|
 | 废过时口径 | Support 专用 `…-wt-qa-support-modal`；固定 tip=`62e38a3`；主仓 ahead1/behind1 分叉必 pull 才能测 Support |
-| 统一前置 | 纯 tip worktree `…-wt-qa-develop-tip` + 绝对路径（盘点 tip `beb9147`） |
+| 统一前置（08-08） | 曾推荐纯 tip worktree `…-wt-qa-develop-tip`（盘点 tip `beb9147`） |
+| **2026-08-15** | **关单入口改为主仓 `develop` + 既有 5173**：合入后 ff-pull，再硬刷新；**禁止**为已合 PR 另开 QA worktree / 新端口。硬刷新 ≠ git pull |
 | **新增** | **#27 Support Yin Modal** |
 | 刷新 | #25/#26/#28 挂 `PAYMENT_MANUAL_TEST_CHECKLIST`（Restore/零耦合逐步）；#27 Support 不变 |
-| 交叉 | `TEST_TRACKER`「主干一次性关单验收」替换 07-25 过时 P0/P1/P2 行号表 |
+| 交叉 | `TEST_TRACKER`「主干一次性关单验收」 |

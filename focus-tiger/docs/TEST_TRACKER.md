@@ -12,7 +12,8 @@
 2. 该 hash **必须等于**当时的 `origin/develop` tip。  
 3. **缺 hash、或 hash ≠ `origin/develop` tip**（含在 `feature/*` / `fix/*` / 过时 worktree / 未 fetch 的本地 develop 上测）→ 该次验收结论 **一律无效**，**必须**在同步到 tip 后 **重新验证**；禁止据此标「已通过」或关闭「有问题」。  
 4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。  
-5. **与合入门闩的分工（2026-08-14）**：合入 `develop` 的资格是 **CI 绿**（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`），**不以**本表「待人工测试」为阻塞。本条 tip 规则管的是合入**之后**的关单门闩。关单只认 develop tip，因此 **关单级人工测试的默认路径是先合再测**（可批量，见「批量人工测试」）。feature/fix 试跑仍 **不得**单独当作关单证据。**禁止**因代码已合并就把本表改成「已验证 / 已通过 / 已修复」。
+5. **与合入门闩的分工（2026-08-14）**：合入 `develop` 的资格是 **CI 绿**（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`），**不以**本表「待人工测试」为阻塞。本条 tip 规则管的是合入**之后**的关单门闩。关单只认 develop tip，因此 **关单级人工测试的默认路径是先合再测**（可批量，见「批量人工测试」）。feature/fix 试跑仍 **不得**单独当作关单证据。**禁止**因代码已合并就把本表改成「已验证 / 已通过 / 已修复」。  
+6. **关单入口（2026-08-15）**：全部相关 PR 已合入后，关单只在本机主仓 `develop` 上已在跑的 `http://127.0.0.1:5173/?product=1`。合入后须先对该 clone `git pull --ff-only origin develop`（behind=0，HEAD=当时 `origin/develop` tip），再硬刷新。**硬刷新 ≠ git pull**。禁止为已合 PR 再开 QA worktree / 新分支 / 新端口。细则见「主干一次性关单验收」。
 
 协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `git-feature-merge-preview`（研发自检 + 主干同步）与 `qa-batch-human-test`（批量清单）。
 
@@ -40,37 +41,68 @@
 用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。  
 点击反馈原则：[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)；已知静默白名单：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）。
 
-### 主干一次性关单验收（2026-08-08 · 现行）
+### 主干一次性关单验收（2026-08-15 · 现行）
 
-> **目的**：在 **同一** `origin/develop` tip 上把「已合入、仍未关单」的产品面尽量一次测完，避免按 feature 各开一套过时 worktree。  
-> **操作步骤 SSOT**：[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（本表只定**哪些行进本批**与 tip 启动命令）。  
+> **目的**：全部相关 PR 已合入 `develop` 之后，在 **同一** `origin/develop` tip 上把未关单产品面尽量一次测完。入口只有一条：本机主仓 `develop` 上已在跑的 `http://127.0.0.1:5173/?product=1`。  
+> **操作步骤 SSOT**：本节（入口 / pull / 硬刷新）+ [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)（本表只定**哪些行进本批**）。  
 > **盘点快照（本文件当日）**：功能清单约 **96** 行仍为「待人工测试 / 有问题」（UI 可见约 92）。**不等于**本批须测 96 条——实验室 / 长墙钟 / 已废行 / feature 自检已免 tip 复验者，排在「本批不排」。
+
+#### 关单唯一入口（强制 · 2026-08-15）
+
+1. **URL**：`http://127.0.0.1:5173/?product=1`（Safari）。**禁止**为已合 PR 再开 feature/fix 分支、QA worktree、或第二个 Vite 端口当关单入口。  
+2. **Vite cwd**：须是本机主仓 `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger`，且该仓当前分支是 **`develop`**。**禁止**让 feature Vite 占用 5173。  
+3. **硬刷新 ≠ git pull**。GitHub 上 PR 已合 **不会**自动更新本机 5173。合入后、硬刷新前，须在**跑 5173 的那份 clone**执行：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+git checkout develop
+git fetch origin develop
+git pull --ff-only origin develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run check:branch-freshness
+npm run check:qa-5173-baseline
+# behind origin/develop 须为 0；HEAD 须等于 git rev-parse origin/develop
+```
+
+然后硬刷新 `http://127.0.0.1:5173/?product=1`（Safari：Option-Command-R）。若 Vite 是合入前就挂着的，HMR 可能仍缓存旧模块——**必须硬刷新**。若 pull 后仍无新效果：确认 5173 的 Vite cwd 就是上面这条主仓路径（不要测到别的 worktree 占了 5173）。  
+4. **Cloud / 本机 Agent**：**禁止**把「请硬刷新 5173」写成合入后用户立刻能看见新效果。须写明本机须先 ff-pull。Cloud **不能**代本机 pull。  
+5. **研发自检**（未合入的 feature/fix）仍用该旁支 worktree + **非 5173** 端口；自检 ≠ 关单。  
+6. 若主仓不在 `develop`、behind>0、或脏到无法 ff-pull：先把主仓清回干净 `develop` tip，再刷新 5173。**仍禁止**另起 5174 当关单入口。
 
 #### 过时说法（勿再用）
 
 | 过时口径 | 现行口径 |
 |---|---|
-| tip = `#187` / `62e38a3`；专开 `…-wt-qa-support-modal` 只测 Support | tip **随 fetch 变**；Support（#187）已是 tip **祖先**。一次 tip worktree 可测 Support + 同 tip 上其它未关单项 |
-| 主仓 develop「ahead 1 / behind 1」分叉，pull 到不了 tip | **2026-08-08 fetch 后**：`origin/develop` = **`beb9147`**（#188 PWA 延后 QA）；本地 develop 仅 **ahead 1** 未推文档（绝对路径规则），**behind = 0**。关单仍须对齐 **远端 tip**，勿用「仅本地 ahead」冒充 tip |
-| 旧 feature / 旧 `…-wt-*` 目录直接 `npm run dev` 当主干验 | **禁止**。过时 worktree ≠ tip |
-| 「单纯 `git pull` 主仓 develop」默认等于 tip | 主仓若 ahead 未推、或脏树占着别的任务 → **优先** `git worktree add … origin/develop` 纯 tip 树 |
+| 专开 `…-wt-qa-develop-tip` + 新 `npm run dev` 当关单 | 关单 = 主仓 `develop` + 既有 **5173**；合入后 ff-pull，再硬刷新 |
+| 专开 `…-wt-qa-support-modal` 只测 Support | Support 与其它未关单项同一 5173 |
+| 「单纯硬刷新 5173」在未 pull 时等于 tip | 硬刷新 ≠ git pull；未对齐 tip 的 5173 验收无效 |
+| 主仓脏/ahead 时另开纯 tip worktree 当关单 | 主仓应保持干净 `develop` 给 5173；关单须 behind=0 且 HEAD=`origin/develop` |
+| 旧 feature / 旧 `…-wt-*` 的 Vite 当主干验 | **禁止**。过时 worktree ≠ tip |
+| tip = `#187` / `62e38a3` | tip **随 fetch 变** |
 
-#### 推荐启动（纯 tip · 可复制）
+#### 推荐启动（主仓 5173 · 可复制）
 
-验收前先确认 tip（hash 会变；下列 `beb9147` 为 2026-08-08 盘点时 tip）：
+若 5173 **已经**在主仓跑着（日常关单）：
 
 ```bash
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+git checkout develop
 git fetch origin develop
-git rev-parse origin/develop   # 关单书面须写此 hash
-# 若目录已存在可先：git worktree remove …-wt-qa-develop-tip
-git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
-npm install && npm run check:branch-freshness && npm run dev
+git pull --ff-only origin develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run check:branch-freshness
+npm run check:qa-5173-baseline
 ```
 
-Safari：`http://127.0.0.1:5173/?product=1`  
-关单书面须含：**当时** `origin/develop` tip hash + `behind=0`。按 [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md) §0.1 顺序走；反馈写回本表「用户反馈」列。
+Safari **硬刷新**：`http://127.0.0.1:5173/?product=1`  
+关单书面须含：**当时** `origin/develop` tip hash + `behind=0` + 端口 **5173** + 主仓路径。按 [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md) §0.1 顺序走；反馈写回本表「用户反馈」列。
+
+若 5173 没在跑，只在主仓起一次（不要新端口）：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run check:qa-5173-baseline && npm run dev
+```
 
 #### 本批应测（产品壳 · 已合 tip · 未关单）
 
@@ -406,7 +438,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | Membership cloud provider + Portal Manage（Prompt 10） | UI可见 | 待人工测试 | **操作步骤 SSOT**：[`PAYMENT_MANUAL_TEST_CHECKLIST.md`](./PAYMENT_MANUAL_TEST_CHECKLIST.md) **§C4**。摘要：confirm **与** OTP verify **均**签发 deviceToken；卡内 **Manage** → Portal；无凭证时 Manage 有文案、provider 走 grace。自动化：`membershipDeviceToken.test.ts` + `cloudEntitlementProvider.test.js`。**生产 redeploy 仍 defer**（与 OTP secrets 同纪律）。 | **2026-08-11**：按三决定接线。**同日用户书面**：PR **#240 Merged** → `origin/develop` tip **`755d465`**。合入 ≠ 关单；§C4 仍待 Worker 含路由后人工测。 | — | — | `#yin-membership-manage` · `/api/membership-entitlement` · `/api/create-membership-portal-session` | 2026-08-11 |
 | Sanctuary 尊贵徽章素材入库（17） | 纯文档+资产 | 仅单元测试覆盖 | **素材入库**。17 枚 PNG → `public/ui/support/sanctuary-badges/`（kebab-case）；清单 `ASSET_INVENTORY`。与 tip `yin-badges/` **两套视觉**。授予见下行统一徽章。 | **2026-08-09** 入库 PR #202 已合；接线见 `feature/unified-practice-badges`。 | — | — | `sanctuary-badges/` · Brief `task-unified-practice-badges.md` | 2026-08-09 |
 | 统一练习徽章体系 | UI可见 | 待人工测试 | **公式**：`score = 练习天数 + floor(累计分钟/60)`；目标枚数 = `min + floor(score/3)`（只增不减）。免费 `min=1`（无练习=0）；Tea/Sanctuary `min=3`（上限 tip 9 / Sanctuary 17）。**主路径**：① 清 tip/Sanctuary → 微仪式或 Honesty 记一次练习 → Idle 阿寅旁 ≥1 枚；② `?tip=1` → ≥3 枚；控制台把 `practice-days` 改成约 3 天×60 分（score≈6）→ 刷新后 tip 应变 **5** 枚（无需再 tip）；③ Sanctuary preview/支付后 ≥3 枚尊贵章（卡内 `#yin-sanctuary-badges` + 阿寅旁优先）。④ **Membership 订阅** confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不得**把 Sanctuary 卡标成已买 Lifetime。**回流**：Rise 后再见徽章条；关 Tip/Sanctuary/Membership 卡再开仍在。**禁止** tip↔Sanctuary 互读解锁。自动化：`practiceBadgeAward` / `idlePracticeBadges` / `tipJarGate` sync / `sanctuaryBadges`。 | **2026-08-09** 用户拍板口径 + 开工。 **2026-08-15 用户书面**：Membership checkout 已配置；订阅付款后付费功能解锁 **测试 OK**；解锁后屏幕右边应有三枚徽章，目前没有。 <!-- open-blocker: id=RB-20260815-L408 severity=release-blocker recorded=2026-08-15 --> | release-blocker | 本回合 `fix/membership-prestigious-badges`：授章走 lifetime∪subscription；不把 Sanctuary SKU 标已买 | `?product=1` · `#yin-tip-kindness-badges` · `#yin-sanctuary-badges` | 2026-08-15 |
-| Support Yin 统一入口（Modal） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 右上角（音符左侧）**Support Yin** `#yin-support-fab` → `#yin-support-modal` 见**三卡**（左 Sanctuary：**Suggested** + 米色 CTA；中 Yin Membership：蒲团橙 CTA；右喝茶：三条仪式感 bullets + 米色 CTA）。三卡头图底为喝茶卡同款暖纸 `#e8dfd2`（左/中不得再是影棚灰/白）。中间报价行与左右同位置，文案 **About $** + `MEMBERSHIP_PRICE_DISPLAY` + billed monthly（当前展示 **6.99**，2026-08-15 用户书面 Stripe = US$6.99/月）→ 点 CTA 走既有 Stripe（与菜单卡同一 `startCheckout`）。**定价文案**：Sanctuary `One-time Lifetime` + About $89.99；Membership 见上；Tea About $9.99。**关闭**：**Maybe later** 文字链（非全宽描边钮）。**回流**：关 Modal 后再开；Focusing 时 FAB 隐藏，Rise 后复现；菜单 **不再**列 Yin's Sanctuary / Yin Membership / Buy Yin a Tea（改走右上 Support FAB）。**375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。自动化：`SupportYinModalUI.test.js`（`{price}` 模板 + locale keys + tea 「no unlocks」/ Maybe later / Suggested）；头图暖纸三卡均烘焙进 PNG（`#e8dfd2`）+ CSS `__art` 兜底，观感须人工。**明确未做**：多档 tip（2B）；徽章仅为文案承诺、未做资产。 | **2026-08-08** 产品：菜单罗列支付偏硬 → 统一 Support 入口；场景化请茶 + 漏斗统计另开下一任务（已记 `PROCESS`）。**合入** #187（`62e38a3`）+ **UX polish #194**（tip **`6ec70a7`**）：1 右卡 bullets（含 kindness badge 文案）+ 3 Primary/Ghost + 4 FAB 对齐 mute + 5 Maybe later + 2A One-time；2B 延后。关单级在当时 `origin/develop` tip 测（见文首「主干一次性关单验收」/ KnownRisky #27）——**勿**再开 Support-only QA worktree。 **2026-08-13 用户书面（图3）**：底层菜单三项付费与右上重复，应删除。 **2026-08-15 用户书面（图）**：三卡 Yin 头图底色不齐（左灰、中白、右暖纸）；Membership 缺 About $ 报价。 | — | — | `?product=1` · `#yin-support-fab` · `#yin-support-modal` · `/ui/support/` | 2026-08-15 |
+| Support Yin 统一入口（Modal） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 右上角（音符左侧）**Support Yin** `#yin-support-fab` → `#yin-support-modal` 见**三卡**（左 Sanctuary：**Suggested** + 米色 CTA；中 Yin Membership：蒲团橙 CTA；右喝茶：三条仪式感 bullets + 米色 CTA）。三卡头图底为喝茶卡同款暖纸 `#e8dfd2`（左/中不得再是影棚灰/白）。中间报价行与左右同位置，文案 **About $** + `MEMBERSHIP_PRICE_DISPLAY` + billed monthly（当前展示 **6.99**，2026-08-15 用户书面 Stripe = US$6.99/月）→ 点 CTA 走既有 Stripe（与菜单卡同一 `startCheckout`）。**定价文案**：Sanctuary `One-time Lifetime` + About $89.99；Membership 见上；Tea About $9.99。**关闭**：**Maybe later** 文字链（非全宽描边钮）。**回流**：关 Modal 后再开；Focusing 时 FAB 隐藏，Rise 后复现；菜单 **不再**列 Yin's Sanctuary / Yin Membership / Buy Yin a Tea（改走右上 Support FAB）。**375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。自动化：`SupportYinModalUI.test.js`（`{price}` 模板 + locale keys + tea 「no unlocks」/ Maybe later / Suggested）；头图暖纸三卡均烘焙进 PNG（`#e8dfd2`）+ CSS `__art` 兜底，观感须人工。**明确未做**：多档 tip（2B）；徽章仅为文案承诺、未做资产。 | **2026-08-08** 产品：菜单罗列支付偏硬 → 统一 Support 入口；场景化请茶 + 漏斗统计另开下一任务（已记 `PROCESS`）。**合入** #187（`62e38a3`）+ **UX polish #194**（tip **`6ec70a7`**）：1 右卡 bullets（含 kindness badge 文案）+ 3 Primary/Ghost + 4 FAB 对齐 mute + 5 Maybe later + 2A One-time；2B 延后。关单级在主仓 `develop` + 既有 `http://127.0.0.1:5173/?product=1` 测（见文首「主干一次性关单验收」/ KnownRisky #27）：合入后先 ff-pull 再硬刷新——**勿**再开 Support-only QA worktree / 新端口。 **2026-08-13 用户书面（图3）**：底层菜单三项付费与右上重复，应删除。 **2026-08-15 用户书面（图）**：三卡 Yin 头图底色不齐（左灰、中白、右暖纸）；Membership 缺 About $ 报价。 **2026-08-15 用户书面（5173 硬刷新）**：5173 里面没有这些效果。根因：硬刷新 ≠ git pull；本机 5173 当时不是 `origin/develop` tip（#298 合入 `d96271e` 后本机未 ff-pull）。**不是**产品回退。 | — | — | `?product=1` · `#yin-support-fab` · `#yin-support-modal` · `/ui/support/` | 2026-08-15 |
 | 付费成功回跳致谢动画（Tea / Sanctuary / Membership） | UI可见 | 待人工测试 | **操作步骤**：[`PAYMENT_MANUAL_TEST_CHECKLIST.md`](./PAYMENT_MANUAL_TEST_CHECKLIST.md) **§D**。Tea→`teaDrinking`；Sanctuary→`mindfulAcknowledge`；Membership→`sessionComplete`；cancel 不播。自动化：`paymentCheckoutThanks.test.js`。 | **2026-08-11 用户书面（合前）**：Tea/Sanctuary 支付 OK；问回跳是否应有动画、三档各选何题材。**同日 #231 已合**：题材拍板并接线。须在 develop tip 后按 §D 人工看动画。 | — | — | checklist §D | 2026-08-11 |
 | 付费 · 场景化请茶气泡 | UI可见 | 待人工测试 | **主路径**：`?product=1` → 清 `localStorage` 键 `focus-tiger.contextual-tea-tip.v1` → 完成一场达标专注（或触发里程碑）→ 庆祝/完成反馈约 **1.8s** 后底部出现 `#contextual-tea-tip-bubble`（`data-testid=contextual-tea-tip-bubble`）→ CTA **Buy Yin a Tea** 打开既有 TipJar；**Maybe later** / 点消可关。**回流**：同日本日不再出；次日可再出；关后再完成一场仍受一日一次门闩。**禁止**：挡主路径、必 tip、与 Sanctuary 解锁耦合。自动化：`contextualTeaTipGate.test.js`。 | **2026-08-12** Ambient #251 合入后开工；本支接线。 | — | — | `?product=1` · `#contextual-tea-tip-bubble` · TipJar | 2026-08-12 |
 | Focus 计时提示音（开始磬 / 结束铃） | UI可见 | 待人工测试 | **主路径**：`?product=1` → 开表（时长 chip）→ **立刻**一声开始磬（勿等异步加载）；Focusing 开音符选曲可闻 → 等到达标 → 氛围先压低再结束铃 → 约 1.5s 淡出停氛围 → 庆祝动画仍可走。**开关**：音符面板音量下「计时提示音」`#ambient-session-cues-toggle` 关掉 → 开始/结束皆静音；再开恢复。**回流**：早退 Rise **不**播结束铃；关开关 → Rise → 再 Sit 开表仍静音。**预加载**：DevTools 网络节流后点开始，音效应即时。**禁止**：付费门 / Ambient Gate。自动化：`SessionCueController.test.js` + duck 单测。 | **2026-08-12** 审计确认后实现。**合入** #275 tip **`0d05b10`**。 | — | — | `?product=1` · `#ambient-session-cues-toggle` · `/audio/cues/` · tip `0d05b10` | 2026-08-12 |

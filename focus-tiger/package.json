@@ -28,6 +28,7 @@
     "test:pr-smoke": "npm run test:smoke && npm run test:e2e:smoke",
     "test:e2e:install": "playwright install chromium",
     "check:branch-freshness": "node scripts/check-branch-freshness.js",
+    "check:qa-5173-baseline": "node scripts/check-qa-5173-baseline.js",
     "check:worktree-occupancy": "node scripts/check-worktree-occupancy.js",
     "check:worktree-hygiene": "node scripts/check-worktree-hygiene.js",
     "session-lock:heartbeat": "node scripts/session-lock-heartbeat.js",

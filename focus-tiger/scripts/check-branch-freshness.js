@@ -66,3 +66,23 @@ if (behind === 0) {
     `tip: git log HEAD..origin/develop --oneline   # see what you are missing`
   )
 }
+
+console.log('--- qa-5173 ---')
+console.log(
+  '关单 = 主仓 develop + 既有 http://127.0.0.1:5173/?product=1 （禁止另开 QA worktree / 新端口）'
+)
+console.log('硬刷新 ≠ git pull。GitHub 合入不会自动更新本机 5173。')
+if (branch === 'develop' && behind === 0) {
+  console.log(
+    'this checkout is develop and not behind — if it is the Mac clone serving 5173, hard-refresh ?product=1'
+  )
+} else {
+  console.log(
+    'this checkout is NOT the close-out baseline. On the Mac clone that serves 5173:'
+  )
+  console.log(
+    '  cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001'
+  )
+  console.log('  git checkout develop && git pull --ff-only origin develop')
+  console.log('  then hard-refresh http://127.0.0.1:5173/?product=1')
+}

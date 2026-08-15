@@ -150,7 +150,8 @@ cd focus-tiger && npm run check:branch-freshness
 
 - 汇报里**必须写出**脚本给出的 **`behind origin/develop` 落后数**（及当前分支名）。  
 - **`behind > 0`**：**禁止**用本次结果代表 develop 现状；**禁止**邀用户做关单级验收；只可写诚实进度（例：「本分支落后 origin/develop N commits，请先合入/变基后再验」）。  
-- **`behind === 0`** 且邀正式验收时：验收 hash 仍须等于 **`origin/develop` tip**（见 `TEST_TRACKER`）；feature 自检不等于正式验收。
+- **`behind === 0`** 且邀正式验收时：验收 hash 仍须等于 **`origin/develop` tip**（见 `TEST_TRACKER`）；feature 自检不等于正式验收。  
+- **关单邀测若写 5173**（2026-08-15）：须写明本机主仓须先 `git pull --ff-only origin develop`（behind=0，HEAD=`origin/develop` tip），再硬刷新 `http://127.0.0.1:5173/?product=1`。**禁止**把「请硬刷新 5173」写成 GitHub 已合即可看见新效果。Cloud **不能**代本机 pull。**禁止**为已合 PR 请用户开新分支 / 新端口 / QA worktree。细则见 `TEST_TRACKER`「主干一次性关单验收」。
 
 未跑脚本、未报落后数 → 视同未完成新鲜度前置。
 
@@ -219,7 +220,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
   - **待你知道**：…（commit、PR URL、待人工测项、未覆盖路径等；否则写「无」）
   - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）
   - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）
-  - 若本回合起过给人验收的预览、或正式邀测 / 声称 develop 行为 → **必须**含 `check:branch-freshness` 的落后数（见上节「分支新鲜度」）
+  - 若本回合起过给人验收的预览、或正式邀测 / 声称 develop 行为 → **必须**含 `check:branch-freshness` 的落后数（见上节「分支新鲜度」）；关单写 5173 时还须写明本机须先 ff-pull（硬刷新 ≠ git pull）
   - **会话明显结束**（任务收尾 / 用户明确停止 / 本工作线已完）→ **必须**写明 `.ft-session-lock` 实际状态：`已删除` 或 `已标 releasable`（见 `RULES_INDEX` → `git-worktree-occupancy`）；**禁止**默认同条提议 `worktree remove`（拆盘口令见 `git-worktree-hygiene`）
   - 用户口令「请清理闲置 worktree」→ 跑 `npm run check:worktree-hygiene`，把候选清单贴进「待你决定」；未点名 path 前禁止 remove
 

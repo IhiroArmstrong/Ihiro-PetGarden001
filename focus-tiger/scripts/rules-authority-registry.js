@@ -746,7 +746,9 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotMustContain: [
       /人工验收唯一基线/,
       /只认 `origin\/develop` 当前 tip/,
-      /一律无效/
+      /一律无效/,
+      /硬刷新 ≠ git pull/,
+      /禁止为已合 PR 再开/
     ],
     topicSignals: [
       /人工验收唯一基线/,
@@ -767,6 +769,11 @@ export const RULE_AUTHORITY_TOPICS = [
         pattern:
           /(?:feature|fix)\s*分支上(?:的)?(?:人工)?验收(?:结论)?\s*(?:即|就算|视为|算)\s*(?:正式|关单|有效)/,
         note: 'feature/fix 试跑不得写成正式/关单验收；SSOT 在 TEST_TRACKER'
+      },
+      {
+        id: 'hard-refresh-equals-pull',
+        pattern: /硬刷新\s*5173\s*(?:即|就|等于|便可)(?:看到|测到)?(?:一切)?最新/,
+        note: '硬刷新 ≠ git pull；合入后须先本机 ff-pull。SSOT 在 TEST_TRACKER'
       }
     ]
   },
@@ -860,7 +867,8 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotMustContain: [
       /check:branch-freshness/,
       /behind origin\/develop/,
-      /behind > 0/
+      /behind > 0/,
+      /请硬刷新 5173/
     ],
     topicSignals: [
       /check:branch-freshness/,

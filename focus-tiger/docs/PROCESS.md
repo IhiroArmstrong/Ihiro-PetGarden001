@@ -58,13 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Support 三卡暖纸底 + Membership US$6.99 · Stay in touch 欢迎信假成功 + Enso 左下角 + Membership 授章
+**最后更新时间**：2026-08-15（UTC+8） · 关单入口锁主仓 5173 · Support 三卡暖纸底 + Membership US$6.99 · Stay in touch 欢迎信假成功 + Enso 左下角 + Membership 授章
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。
+- **关单入口锁主仓 5173（2026-08-15）**：全部 PR 已合入后，关单只测本机主仓 `develop` 上已在跑的 `http://127.0.0.1:5173/?product=1`。合入后先 `git pull --ff-only origin develop`（behind=0），再硬刷新。**硬刷新 ≠ git pull**。**禁止**为已合 PR 另开 QA worktree / 新分支 / 新端口。研发自检仍用旁支 + 非 5173 端口。权威：`TEST_TRACKER`「主干一次性关单验收」/ `qa-develop-tip`。
+- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。**2026-08-15 用户书面**：5173 硬刷新未见效果——根因本机未 pull 到 tip `d96271e`，不是产品回退。
 - **Stay in touch 欢迎信假成功（2026-08-15）**：生产路由已上（Version `8c649d12-…`，无效邮箱 400）；用户用真实邮箱**没收到信**。根因：`waitUntil` 失败仍 `{ok:true}` + 已在 KV 不再发。代码改为 await Resend / 502 不写本地 submitted / 无 `welcomeSentAt` 重发。**生产须再 redeploy**（口令「部署」）。TRACKER `RB-20260815-L394`。
 - **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
 - **Quiet Line Save image 明信片（2026-08-15 · `fix/quiet-line-save-postcard`）**：下载 PNG 改为上图下字（当日图库静帧 + 暖纸金句）；不再导出暗紫纯文字卡。TRACKER 待人工。
@@ -114,7 +115,7 @@
 - **Sanctuary 尊贵徽章素材入库（2026-08-09 · PR #202 已合）**：17 枚 → `public/ui/support/sanctuary-badges/`；本支接线授予。
 - **主动 Recover · Tiger Anchor（2026-08-09 · 本支）**：Focusing 轻触阿寅 → `triggerActiveRecover()`（nod-bow + 中置 toast + LightProgression）；不占被动提醒额度；**180s** 冷却隐退；零 MicroRitual。TRACKER 新行待人工（含 375）。
 - **SCENARIO_TESTS 增量升格（2026-08-09）**：正式故事补 **Q**（Support/Tea/Sanctuary）· **S**（Breath 左球）· **T**（Focus 时长 chip）· **U**（Cinema/Quiet Line/Wallpapers）· **V**（吹花欢迎）· **W**（Privacy/?）；**R** 跨日回访仍建议。权威 `SCENARIO_TESTS.md`；逐功能仍走 `TEST_TRACKER`。
-- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal`（当时双卡；**2026-08-15 起为三卡**，见上条暖纸底）。菜单付费三项后改走 Support FAB。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**场景化请茶气泡（#253 已合 tip `c10acb7`）**。**意愿漏斗本地统计（#255 已合）**；**Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**；**意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**。
+- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal`（当时双卡；**2026-08-15 起为三卡**，见上条暖纸底）。菜单付费三项后改走 Support FAB。**关单级**与其它未关单项共用同一主仓 **5173**（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree / 新端口。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**场景化请茶气泡（#253 已合 tip `c10acb7`）**。**意愿漏斗本地统计（#255 已合）**；**Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**；**意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**。
 - **主干 tip 验收盘点（2026-08-08）**：`origin/develop` tip **`beb9147`**（含 #187 Support + #188 PWA 延后 QA）。TRACKER 约 96 行仍开；**本批**按 KnownRisky §0.1（P0 闪白/Honesty → P1 Breath/chip/吹花/增长/付费/Support → P2 旧债）；实验室/长墙钟/PWA 安装**不排**本批。操作 SSOT：`KNOWN_RISKY_TEST_CHECKLIST.md`。
 - **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
@@ -170,7 +171,7 @@
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
-- **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
+- **验收基线 + 新鲜度门禁（2026-07-29；2026-08-15 关单入口）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；入口 = 主仓 `develop` + 既有 5173（合入后 ff-pull 再硬刷新；**硬刷新 ≠ git pull**）。Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）；**禁止**未 pull 就请硬刷新 5173。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
 - **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
 
