@@ -20,14 +20,14 @@ Gate 只解决合规；**没有试听**时，Deep 行易变成「点了灰掉 / 
 | 触发 | 未 `isEntitled('ambient.deep.play')` 时点选 Deep 曲 |
 | 试听长 | **15s**（可 `?ambientAuditionMs=` DEV/e2e 缩短） |
 | 结束 | **柔和 fade out**（非硬切静音）；停在未授权态，不得偷偷写 preferred=deep 持久解锁 |
-| 提示 | 极简一句 + 可忽略入口（Support / Sanctuary / Membership 既有路径）；文案观察式 / 场域感，**禁止**「限时」「仅剩」 |
+| 提示 | 极简一句 + 可忽略入口（Support / Sanctuary / Membership 既有路径）；文案须点名 **Sanctuary 或 Yin Membership** 均可（`ambient.deep.play` = lifetime∪subscription）；观察式 / 场域感，**禁止**「限时」「仅剩」、**禁止**只写 Sanctuary |
 | 再点 | 同曲当日可再试听（或轻限频，开修前拍板；默认允许再试，忌惩罚感） |
 | 上传曲 | **不受** Deep audition；用户曲始终免费 |
 | i18n | en + ja（+ zh 键对齐若项目惯例） |
 
 建议提示方向（定稿走 locales，非硬编码）：
 
-> Unlock Sanctuary to immerse in full soundscapes.
+> Unlock Sanctuary or Yin Membership to immerse in full soundscapes.
 
 ## 实现要点（将来）
 

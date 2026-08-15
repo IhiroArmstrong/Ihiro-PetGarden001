@@ -370,11 +370,11 @@
 > **用户故事**：Kelly 走完 Arrival、选好 Companion 模式后，再选本场专注时长，再开表。  
 > **单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。  
 > **DOM**：产品无 query 路径须人工；e2e helper 默认带 `?sessionMinutes=N` **跳过** picker（勿用跳过路径当本场景通过）。  
-> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改。
+> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 1. `?product=1`（**勿**带 `sessionMinutes`）→ Sit→Arrival→Choose→Companion 点选模式。
-2. 见 `#focus-duration-picker`：chip **15 / 25 / 45 / 60**（勿与 Breath 档位混淆）。
-3. 点选 → **立刻 Focusing**；`#focus-hud` 显示所选目标分钟。
+2. 见 `#focus-duration-picker`：chip **15 / 25 / 45 / 60**（勿与 Breath 档位混淆）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 15 minutes / Breath practice）。
+3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing + **开始磬**（若计时提示音开）+ 氛围乐）；`#focus-hud` 显示所选目标分钟。
 4. **Leave**（若 picker 仍开）→ 取消、不开表。
 5. **回流**：Rise → 再 Sit→…→ 再出 picker；偏好应合理回显。
 6. **调试捷径**（非故事）：`?sessionMinutes=1` 跳过 picker——仅 DEMO/e2e。

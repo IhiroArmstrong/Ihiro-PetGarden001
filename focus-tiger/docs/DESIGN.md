@@ -173,7 +173,7 @@ MVP阶段(Phase 0)的输入来源：手动开始/结束的专注计时器(番茄
 一次专注会话：
   用户点击「与阿寅同坐 / Sit with Yin」 → 进入FOCUSING状态 → 计时开始
   focusLevel = min(当前会话已专注分钟数 / 目标分钟数, 1.0)
-  目标分钟数：开表前 chip **15 / 25 / 45 / 60**（默认偏好 25；与 Breath practice 1/3/5/10/20 差异化）；`?sessionMinutes=` 可覆盖（e2e）
+  目标分钟数：开表前 chip **15 / 25 / 45 / 60**（默认偏好 25；最短 **15**；与 Breath practice 1/3/5/10/20 差异化）。picker 须可见一句最短档说明（`focus_duration.hint`）；更短歇息走 Breath。`?sessionMinutes=` 可覆盖（e2e / 调试，非正式产品档）
 
   会话中途暂停/退出App超过X秒(建议30秒，具体阈值Phase 0测试后定) → 
   视为中断，focusLevel停止增长，老虎颜色停在中断时刻的状态，不倒退
@@ -362,9 +362,9 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 - **不计入**：从未开启、暂停、静音（含音量为 0 且未真正出声的等价态）、会话未运行等期间；
 - **不是**「控件保持打开的墙钟时长」——只有真实播出才累加；
 - 该信号仅在**当前会话内**使用；曲目开关偏好可长期存储；
-- **会话结束（Rise / 达标 / Breath 完成或 Leave）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）。下一场开坐仍按「开坐即播」再起（与 Breath 一致）；Idle 不播；
+- **会话结束（Rise / 达标 / Breath 完成或 Leave）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）。下一场开坐仍按「开坐即播」再起（与 Breath 一致）；Idle / 冷启动不播；
   - **达标 + 计时提示音（2026-08-12）**：氛围仍在播且结束铃开 → **duck≈35% → 播结束铃 → ~1.5s 淡出并停**（不「恢复再杀」）；早退 Rise / Breath **Leave** **不**播结束铃，仍硬停；
-- **计时提示音（免费 · 2026-08-12 / 间隔 2026-08-13 / Breath 同线 2026-08-15）**：Focusing **与 Breath practice** 共用开始磬 / 间隔磬 / 达标结束铃（Soundscape「计时提示音」总开关，默认开；音量跟氛围条）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。工作流根因：旧实现只接 `beginFocusWithMode`，呼吸练习时长 chip 是平行路径，从未 `playStart`。
+- **计时提示音（免费 · 2026-08-12 / 间隔 2026-08-13 / Breath 同线 2026-08-15）**：Focusing **与 Breath practice** 共用开始磬 / 间隔磬 / 达标结束铃（Soundscape「计时提示音」总开关，默认开；音量跟氛围条）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；第一声在 3:00 或 5:00（开表那一瞬不播间隔磬）。产品 Focus 最短 **15 分钟**，故正式档总会听到间隔（调试 `?sessionMinutes=` 与 Breath 短档除外）；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。面板须**可见**写出各开关含义（勿只靠 `title` 悬停）。工作流根因：旧实现只接 `beginFocusWithMode`，呼吸练习时长 chip 是平行路径，从未 `playStart`。
 - **觉察观照卡（mid-session · 2026-08-13）**：间隔磬同拍时在 Focusing **底部**浮现观察式短句（`FOCUS_AWARENESS_*`）；可单独关；**不**写入 Moment Whisper；设计理念长句不进 UI；
 - 该信号与 Page Visibility / blur / idle 等既有 Focus Confidence 信号**并列、独立**；不替代墙钟会话计时，也不单独决定会话是否达标。
 
