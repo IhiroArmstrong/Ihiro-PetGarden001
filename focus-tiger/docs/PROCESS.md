@@ -58,13 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · 关单入口锁主仓 5173 · Support 三卡暖纸底 + Membership US$6.99 · Stay in touch 欢迎信假成功 + Enso 左下角 + Membership 授章
+**最后更新时间**：2026-08-15（UTC+8） · 关单入口锁主仓 5173 · Breath Journey Log · Support 三卡暖纸底 + Membership US$6.99 · Stay in touch 欢迎信假成功 + Enso 左下角 + Membership 授章
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
 - **关单入口锁主仓 5173（2026-08-15）**：全部 PR 已合入后，关单只测本机主仓 `develop` 上已在跑的 `http://127.0.0.1:5173/?product=1`。合入后先 `git pull --ff-only origin develop`（behind=0），再硬刷新。**硬刷新 ≠ git pull**。**禁止**为已合 PR 另开 QA worktree / 新分支 / 新端口。研发自检仍用旁支 + 非 5173 端口。权威：`TEST_TRACKER`「主干一次性关单验收」/ `qa-develop-tip`。
+- **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
 - **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。**2026-08-15 用户书面**：5173 硬刷新未见效果——根因本机未 pull 到 tip `d96271e`，不是产品回退。
 - **Stay in touch 欢迎信假成功（2026-08-15）**：生产路由已上（Version `8c649d12-…`，无效邮箱 400）；用户用真实邮箱**没收到信**。根因：`waitUntil` 失败仍 `{ok:true}` + 已在 KV 不再发。代码改为 await Resend / 502 不写本地 submitted / 无 `welcomeSentAt` 重发。**生产须再 redeploy**（口令「部署」）。TRACKER `RB-20260815-L394`。
 - **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
