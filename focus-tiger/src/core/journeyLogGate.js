@@ -100,6 +100,26 @@ export function resolveJourneyMinutes({
 }
 
 /**
+ * Breath practice is a product-equivalent sitting: chip minutes, never Arrival.
+ * Leave / Honesty / RitualFlow must not call this.
+ *
+ * @param {number} minutes selected chip minutes
+ * @returns {{ minutes: number, arrive: false } | null}
+ */
+export function microRitualJourneyDraft(minutes) {
+  const raw = Math.round(Number(minutes) || 0);
+  if (!Number.isFinite(raw) || raw < 1) return null;
+  return {
+    minutes: resolveJourneyMinutes({
+      completed: true,
+      targetMinutes: raw,
+      elapsedSeconds: 0
+    }),
+    arrive: false
+  };
+}
+
+/**
  * Locale key suffix for observational line copy.
  * @param {Pick<JourneyLogEntry, 'arrive' | 'reflect'>} entry
  * @returns {'FULL' | 'ARRIVE' | 'REFLECT' | 'FOCUS'}

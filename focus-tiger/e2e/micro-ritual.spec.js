@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { DAILY_COMPLETION_STORAGE_KEY } from '../src/core/DailyCompletionStore.js';
 import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
+import { JOURNEY_LOG_STORAGE_KEY } from '../src/core/journeyLogGate.js';
 import {
   clickBreathPracticeEntry,
   clickWideMoreProxyOrDirect,
@@ -128,6 +129,40 @@ test('micro ritual: entry → pick → breath → complete → record + toast + 
   await expect(page.locator('#tiger-reflection-moment')).toBeVisible({
     timeout: 8_000
   });
+
+  // Skip still commits Journey Log (arrive=false; chip minutes).
+  await page
+    .locator('#tiger-reflection-moment')
+    .getByRole('button', { name: /Skip all|全部跳过|すべてスキップ/i })
+    .click();
+  await expect(page.locator('#tiger-reflection-moment')).toBeHidden({
+    timeout: 8_000
+  });
+
+  await expect
+    .poll(async () => {
+      return page.evaluate((key) => {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        try {
+          const entries = JSON.parse(raw).entries;
+          const last = Array.isArray(entries) ? entries[entries.length - 1] : null;
+          return last
+            ? { minutes: last.minutes, arrive: last.arrive, reflect: last.reflect }
+            : null;
+        } catch {
+          return null;
+        }
+      }, JOURNEY_LOG_STORAGE_KEY);
+    }, { timeout: 5_000 })
+    .toEqual({ minutes: 1, arrive: false, reflect: false });
+
+  await clickWideMoreProxyOrDirect(page, 'journey-log');
+  await expect(page.locator('#journey-log')).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('[data-testid=journey-log-empty]')).toBeHidden();
+  await expect(page.locator('[data-testid=journey-log-list]')).toContainText(
+    /1 min|1 分钟|1分/i
+  );
 });
 
 test('375 micro ritual: Sit hidden while breath + FocusHUD live', async ({
@@ -239,6 +274,17 @@ test('micro ritual: quiet leave does not record', async ({ page }) => {
   }, DAILY_COMPLETION_STORAGE_KEY);
   expect(sessions).toBe(0);
 
+  const journeyEntries = await page.evaluate((key) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return 0;
+    try {
+      return JSON.parse(raw).entries?.length ?? 0;
+    } catch {
+      return 0;
+    }
+  }, JOURNEY_LOG_STORAGE_KEY);
+  expect(journeyEntries).toBe(0);
+
   await expect(page.locator('#mindful-acknowledge-toast')).not.toContainText(
     /Today counts|今天，也算数/
   );
@@ -303,7 +349,6 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   const microEntry = page.locator('#micro-ritual-idle-entry');
   const honestyEntry = page.locator('#honesty-idle-entry');
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 15_000 });
-  await expect(microEntry).toBeAttached();
   await expect(honestyEntry).toBeAttached();
 
   // Injects visible bridge (not real Honesty 补登). Requires `__honestyBridge` in
@@ -324,7 +369,8 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await expect(bridge).toContainText(
     /Want to sit for a bit now too|要不要现在也坐一会儿/
   );
-  // 回归：Honesty / 一分钟呼吸均不得叠在 Yes/No 上；⋯ 亦收起
+  // 回归：Honesty / 遗留码头 Breath 行均不得叠在 Yes/No 上；⋯ 亦收起。
+  // 左球 Breath 按 keepQuickStart 仍可见；码头 `#micro-ritual-idle-entry` 产品面不再挂载。
   await expect(microEntry).toBeHidden();
   await expect(honestyEntry).toBeHidden();
   await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
@@ -335,7 +381,6 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await bridge.getByRole('button', { name: /^(No|先不用)$/i }).click();
   await expect(bridge).toBeHidden({ timeout: 5_000 });
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
-  await expect(microEntry).toBeAttached();
   await expect(honestyEntry).toBeAttached();
 });
 

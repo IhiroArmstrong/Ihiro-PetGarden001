@@ -1,10 +1,10 @@
 # Stay in touch · Newsletter capture
 
-> **状态（2026-08-13）**：菜单常驻入口 + **Worker 真实订阅**（`NEWSLETTER_KV` 自建名单 + Resend 事务型欢迎信 + 退订端点）已接线。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
+> **状态（2026-08-15）**：菜单常驻入口 + 生产 Worker **订阅 + 欢迎信 await/重发已 redeploy**（Version `d0140328-ee54-4dbb-8710-be6675f0596a`；覆盖旧 `8c649d12-…`）。无 Cloud URL 或 `?newsletterMock=1` 时仍走 mock（实验室）。  
 > **性质**：可选邮箱留资，**不是**账号 / 登录系统；**不**挂钩 entitlement / tip / sanctuary。  
 > **文案（2026-08-13 批准）**：欢迎信 + 第一封群发草稿定稿，不改字。群发仍未接线。  
 > **卡面（2026-08-15）**：`NEWSLETTER_CARD_BLURB` / `OPTIONAL` 说明定期更新会把 **known-error 修复** 与 **更好的最新版（latest release）** 发到邮箱；仍写「不是推销名单」。不改欢迎信正文。  
-> **Redeploy 暂缓**：等 Resend 真实发信（含既有 curl 400 排查）确认后再排；禁止为合入本支而提前部署。  
+> **欢迎信（2026-08-15）**：上午真实邮箱**没收到信**（旧 `waitUntil` 假成功）。同日用户从 qa worktree tip `c2dce6c` 部署 Version `d0140328-…`。仍待用同一真实邮箱复测收信。  
 > **本期不做**：情境软提示（Phase 2）、Resend Audiences / 群发 UI、自动群发第一封。
 
 ## 产品入口（已实现）
@@ -45,8 +45,10 @@
 
 ### 3. 发信（Resend transactional only）
 
-- 仅 `emails.send()`：订阅成功后发 **一封欢迎信**（`waitUntil`，不挡 HTTP）
-- 已在名单内的再次提交：**不**再发（防刷信）
+- 仅 `emails.send()`：订阅后发 **一封欢迎信**（**await** Resend；失败则 HTTP 502，前端不写 `submitted`）
+- 已在名单且已有 `welcomeSentAt`：再次提交 **不**再发（防刷信）
+- 已在名单但 **没有** `welcomeSentAt`（含 2026-08-15 假成功留下的行）：再次提交 **会重发**
+- List-Unsubscribe 自定义头若被 Resend 400，去掉该头再试一封（正文仍有退订 URL）。**禁止**回退 `restore@`
 - 免费档额度；不把 Resend 当邮件列表产品
 
 ### 4. 退订（与发信同批）
@@ -63,8 +65,8 @@
 1. **`NEWSLETTER_KV` 已建**（2026-08-13）：`id=baeb661cb8f2450ab4a87d6f23af6896` · `preview_id=8e13fe05705841c9939c3164bfb9a3bd`（已写入 `wrangler.jsonc`）
 2. From = `Yin <hello@twinsology.com>`（与 OTP `restore@` 隔离；域已验证）
 3. `wrangler secret put RESEND_API_KEY`（若尚未）
-4. `npm run deploy`（`focus-tiger-cloud`）——**暂缓**（Resend curl 400 排查中；真实发信测通后再排）
-5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`
+4. `npm run deploy`（`focus-tiger-cloud`）——**2026-08-15 已执行（#302 代码）**：Version `d0140328-ee54-4dbb-8710-be6675f0596a`（qa worktree tip `c2dce6c`；覆盖 `8c649d12-…`）。无效邮箱仍 400；欢迎信仍待真实邮箱复测
+5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`（Safari 用 `http://127.0.0.1:5173`；曾 mock/假成功则先清 `focus-tiger.newsletter-capture.v1`）
 
 ---
 
@@ -166,6 +168,7 @@
 | `src/ui/NewsletterCaptureUI.js` | 玻璃卡 UI |
 | `cloud/src/lib/newsletterKv.ts` | KV 名单 + token |
 | `cloud/src/lib/newsletterCopy.ts` | 欢迎信 / 退订页文案 |
+| `cloud/src/lib/newsletterWelcome.ts` | 欢迎信计划（skip / 502 / 重发）+ List-Unsubscribe 400 回退 |
 | `cloud/src/routes/subscribeNewsletter.ts` | `POST /api/newsletter/subscribe` |
 | `cloud/src/routes/unsubscribeNewsletter.ts` | `GET|POST /api/newsletter/unsubscribe` |
 | `src/core/communityLink.js` | 社群占位外链 |

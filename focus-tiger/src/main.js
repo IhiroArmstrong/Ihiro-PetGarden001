@@ -90,6 +90,7 @@ import {
 } from './core/wellnessDisclaimerGate.js';
 import {
   appendJourneyLogEntry,
+  microRitualJourneyDraft,
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
 import {
@@ -1567,6 +1568,9 @@ async function init() {
       });
     }
     // Shallow Reflection handoff — do not wait for sessionComplete animation.
+    // Product-equivalent sitting: stash before Reflection so Skip still logs.
+    const draft = microRitualJourneyDraft(durationMinutes);
+    if (draft) pendingJourneyDraft = draft;
     sessionEndFlow.onSessionEnded({ completed: true });
   }
 

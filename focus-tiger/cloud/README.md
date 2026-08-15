@@ -56,7 +56,7 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/practice-backup/put` | `{ email, deviceToken, snapshot }` → 写 `PRACTICE_BACKUP_KV` 最新整包 |
 | `POST` | `/api/practice-backup/get` | `{ email, deviceToken }` → `{ snapshot }` |
 | `POST` | `/api/practice-backup/delete` | `{ email, code }` 或 `{ email, deviceToken }` → 删云端快照（关闭备份） |
-| `POST` | `/api/newsletter/subscribe` | `{ email, locale? }` → `{ ok: true }`；新订阅写入 `NEWSLETTER_KV` 并用 `waitUntil` 发 Resend 欢迎信（含退订链接） |
+| `POST` | `/api/newsletter/subscribe` | `{ email, locale? }` → `{ ok: true }` 仅当欢迎信已发过或 Resend 接受；失败 **502** `welcome_unsent`（名单仍写入，无 `welcomeSentAt` 可重发） |
 | `GET`/`POST` | `/api/newsletter/unsubscribe` | `?token=` → HTML 退订页（GET）或 `{ ok: true }`（POST one-click）；从 KV 删除 |
 
 ### 限流
