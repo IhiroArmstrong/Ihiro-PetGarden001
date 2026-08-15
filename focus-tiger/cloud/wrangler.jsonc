@@ -81,8 +81,8 @@
 		}
 	],
 	"vars": {
-		// Tip display is TIP_JAR_PRICE_USD $4.99; this Price id still charges $9.99 until Dashboard + redeploy.
-		"STRIPE_PRICE_ID": "price_1U22ujFuIhgJPGLiGp2gTPMM",
+		// Tip / Buy Yin a Tea one-time Price (US$4.99; below Membership $6.99/mo).
+		"STRIPE_PRICE_ID": "price_1U4nanFuIhgJPGLidoTdxobW",
 		"CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&tip=1",
 		"CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&tip=cancel",
 		"STRIPE_SANCTUARY_PRICE_ID": "price_1U22T4FuIhgJPGLiT0hcEWxY",

@@ -58,14 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-16（UTC+8） · Idle 轻点阿寅摸头 · 请茶卡面 US$4.99（低于 Membership $6.99；Stripe Price 待改） · Cloud 旁支落本机须另开 worktree
+**最后更新时间**：2026-08-16（UTC+8） · 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker redeploy 待本机终端（Agent 无 CF OAuth）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
 - **Idle 轻点阿寅（2026-08-16）**：首页点阿寅播 `earWiggleHeadTouch`（摸摸自己头顶）；Focusing 仍走 Recover。TRACKER 待人工。
-- **Buy Yin a Tea 卡面 US$4.99（2026-08-16）**：低于 Membership **US$6.99/月**。Checkout 仍跟 Worker `STRIPE_PRICE_ID`（现为 $9.99）直到 Dashboard 改价并 **redeploy**。
+- **Buy Yin a Tea Stripe Price US$4.99（2026-08-16）**：卡面已低于 Membership **US$6.99/月**。用户书面 Price ID `price_1U4nanFuIhgJPGLidoTdxobW` 已写入 `wrangler.jsonc` `STRIPE_PRICE_ID`。**生产 Worker 本回合未 redeploy**（Agent wrangler 无登录）；Checkout 在本机 `cloud && npm run deploy` 成功前仍可能走旧 Price。
 
 - **Focus HUD 无脉冲点、悬停控件出 tip（2026-08-15）**：左上 Calm 卡金环 / 今日同坐条 / 近日同坐环不再画薄荷绿碎点；鼠标停在控件上仍出对应 Hint 文案（与左下「?」同一办法）。音符 / ⋯ 行内 mint 仍保留。TRACKER 待人工。
 

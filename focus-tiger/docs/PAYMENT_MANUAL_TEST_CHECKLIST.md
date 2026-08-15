@@ -41,7 +41,7 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 
 1. Idle → 宽屏点 **⋯**（或窄屏开抽屉）→ **Buy Yin a Tea**  
    （或右上 **Support Yin** → 喝茶那张卡 → CTA）  
-2. 卡面点购买 → Stripe Checkout → 付 **约 US$4.99**（卡面 `TIP_JAR_PRICE_USD`；须与 Stripe Price / Worker `STRIPE_PRICE_ID` 一致——改价后须 redeploy）  
+2. 卡面点购买 → Stripe Checkout → 付 **约 US$4.99**（卡面 `TIP_JAR_PRICE_USD`；Worker `STRIPE_PRICE_ID`=`price_1U4nanFuIhgJPGLidoTdxobW`。本机 `focus-tiger/cloud && npm run deploy` 成功前，Checkout 仍可能走旧 $9.99 Price）  
 3. 完成后应回到 `http://127.0.0.1:5173/?product=1…`  
 4. **期望**：阿寅播 **喝茶** `teaDrinking`（不是冷启动魔法书/点头欢迎）  
 5. 再开 Tip 卡：见徽章 / Tea Log；**不要**指望 Rituals 解锁
