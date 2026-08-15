@@ -520,7 +520,7 @@
   "MEMBERSHIP_BENEFIT_1": "需要时可用的进阶仪式",
   "MEMBERSHIP_BENEFIT_2": "陪伴时的更深氛围",
   "MEMBERSHIP_BENEFIT_3": "与终身版同一套进阶权益——按期计费",
-  "MEMBERSHIP_PRICE": "订阅 · 价格以 Stripe 为准 · 可随时取消",
+  "MEMBERSHIP_PRICE": "约 ${price} · 按月订阅 · 可随时取消",
   "MEMBERSHIP_BUY_CTA": "订阅",
   "MEMBERSHIP_ALREADY": "本机会员已生效",
   "MEMBERSHIP_MANAGE_CTA": "管理订阅",
@@ -544,7 +544,7 @@
   "MEMBERSHIP_CLOUD_OFFLINE": "此构建未配置会员结账。",
   "SUPPORT_MEMBERSHIP_TITLE": "阿寅会员",
   "SUPPORT_MEMBERSHIP_BLURB": "订阅即可使用与圣所终身版同一套进阶层——按自己的节奏。",
-  "SUPPORT_MEMBERSHIP_PRICE": "订阅 · 经 Stripe 计费",
+  "SUPPORT_MEMBERSHIP_PRICE": "约 ${price} · 按月订阅",
   "SUPPORT_MEMBERSHIP_CTA": "加入会员",
   "SUPPORT_MEMBERSHIP_IMG_ALT": "阿寅在安静的会员场景中休憩"
 }

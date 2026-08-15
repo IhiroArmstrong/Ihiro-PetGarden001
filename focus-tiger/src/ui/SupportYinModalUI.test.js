@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import { formatSupportPrice } from '../ui/SupportYinModalUI.js';
+import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const en = JSON.parse(
@@ -28,6 +29,11 @@ const REQUIRED_SUPPORT_KEYS = [
   'SUPPORT_SANCTUARY_PRICE',
   'SUPPORT_SANCTUARY_CTA',
   'SUPPORT_SANCTUARY_IMG_ALT',
+  'SUPPORT_MEMBERSHIP_TITLE',
+  'SUPPORT_MEMBERSHIP_BLURB',
+  'SUPPORT_MEMBERSHIP_PRICE',
+  'SUPPORT_MEMBERSHIP_CTA',
+  'SUPPORT_MEMBERSHIP_IMG_ALT',
   'SUPPORT_TEA_TITLE',
   'SUPPORT_TEA_BLURB',
   'SUPPORT_TEA_BENEFIT_1',
@@ -70,6 +76,15 @@ describe('SupportYinModalUI helpers', () => {
     assert.equal(en.SUPPORT_SANCTUARY_BADGE, 'Suggested');
     assert.match(en.SUPPORT_SANCTUARY_PRICE, /One-time Lifetime/i);
     assert.equal(en.SUPPORT_TEA_CTA, 'Support Us');
+    assert.match(en.SUPPORT_MEMBERSHIP_PRICE, /About \$\{price\}/);
+    assert.match(en.SUPPORT_MEMBERSHIP_PRICE, /billed monthly/i);
+    assert.match(zh.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
+    assert.match(ja.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
+    assert.equal(MEMBERSHIP_PRICE_DISPLAY, '6.99');
+    assert.equal(
+      formatSupportPrice(en.SUPPORT_MEMBERSHIP_PRICE, MEMBERSHIP_PRICE_DISPLAY),
+      'About $6.99 · billed monthly'
+    );
   });
 
   it('membership preview points at closed-eye meditation asset', () => {
@@ -80,5 +95,9 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /membership-meditation-preview\.png/);
     assert.match(src, /ctaVariant:\s*'cushion'/);
     assert.match(src, /ctaVariant:\s*'beige'/);
+    assert.match(src, /yin-support-card__art/);
+    assert.match(src, /MEMBERSHIP_PRICE_DISPLAY/);
+    assert.match(src, /#e8dfd2/);
   });
 });
+
