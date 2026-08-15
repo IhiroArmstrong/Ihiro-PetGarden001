@@ -700,6 +700,10 @@ export class NarrowIdleShell {
       btn.className = 'ft-narrow-sheet__item';
       btn.dataset.proxy = item.proxy;
       btn.textContent = t(item.labelKey);
+      if (item.testId) btn.dataset.testid = item.testId;
+      if (item.emphasis === 'beige-cta') {
+        btn.classList.add('is-beige-cta');
+      }
       if (item.locked) {
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
@@ -1237,6 +1241,21 @@ export class NarrowIdleShell {
       .ft-narrow-sheet__item:disabled {
         opacity: 0.48;
         cursor: not-allowed;
+      }
+      .ft-narrow-sheet__item.is-beige-cta {
+        font-weight: 700;
+        text-align: center;
+        padding-right: 12px;
+        white-space: normal;
+        border-color: rgba(139, 115, 85, 0.42);
+        background: linear-gradient(180deg, #fffcf4 0%, #e8d4a8 100%);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.92) inset,
+          0 2px 0 rgba(165, 130, 85, 0.24),
+          0 3px 8px rgba(44, 31, 20, 0.1);
+      }
+      .ft-narrow-sheet__item.is-beige-cta:active {
+        transform: translateY(1px) scale(0.98);
       }
       .ft-narrow-sheet__group {
         padding: 8px 4px 2px;
