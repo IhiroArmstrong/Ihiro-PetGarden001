@@ -178,6 +178,51 @@ test('read/write locale preference round-trip (ready only)', () => {
   assert.equal(writeLocalePreference('es', storage), false);
 });
 
+test('backup privacy copy names restore purpose, not a bald never-lost disclaimer', () => {
+  const zhDict = JSON.parse(readFileSync(join(here, 'zh.json'), 'utf8'));
+  const anxiety = [/never be lost/i, /永不丢失/, /決して失われない/];
+  for (const [id, dict] of [
+    ['en', enDict],
+    ['ja', jaDict],
+    ['zh', zhDict]
+  ]) {
+    const text = dict.JOURNEY_LOG_BACKUP_PRIVACY;
+    assert.ok(typeof text === 'string' && text.length > 40, `${id} backup privacy`);
+    for (const re of anxiety) {
+      assert.equal(
+        re.test(text),
+        false,
+        `${id} JOURNEY_LOG_BACKUP_PRIVACY must not use anxiety disclaimer ${re}`
+      );
+    }
+  }
+  assert.match(enDict.JOURNEY_LOG_BACKUP_PRIVACY, /restore/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_PRIVACY, /cleared|browser or phone/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_PRIVACY, /not yet uploaded/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_PRIVACY, /turn backup off/i);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_PRIVACY, /戻/);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_PRIVACY, /まだ送っていない/);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_PRIVACY, /オフにして雲の控えを消した/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_PRIVACY, /恢复/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_PRIVACY, /尚未上传/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_PRIVACY, /关闭备份/);
+});
+
+test('backup enabled copy points at this Journey log, not a second archive', () => {
+  const zhDict = JSON.parse(readFileSync(join(here, 'zh.json'), 'utf8'));
+  assert.equal(
+    /Open Journey log anytime/i.test(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED),
+    false
+  );
+  assert.match(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /listed above/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /separate backup list/i);
+  assert.match(enDict.JOURNEY_LOG_BACKUP_WHERE_ON, /\{time\}/);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /上の一覧/);
+  assert.match(jaDict.JOURNEY_LOG_BACKUP_WHERE_ON, /\{time\}/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED, /上方列表/);
+  assert.match(zhDict.JOURNEY_LOG_BACKUP_WHERE_ON, /\{time\}/);
+});
+
 test('t falls back to en then key id', () => {
   const storage = memoryStorage();
   bootLocaleFromPreference(storage);

@@ -56,7 +56,8 @@
    - Focus / Arrival / Reflection **进行中不抢网、不弹失败**。  
 3. **恢复触发**：启动检测到「覆盖 keys 全空或明显被清」+ 已绑邮箱 → 拉最近**整包**快照写回 6 key（策略实现时单测锁：空库才自动恢复；非空本机优先，避免误覆盖）。  
 4. **绑定引导 UI**：Journey Log 卡角落轻链「绑定邮箱可获得云端备份」（i18n）；点开走既有 OTP 流扩展 purpose，**非**新账号体系。  
-5. **隐私**：上传前须明示同意（发什么、为何、多久）；未同意 = 不传。可与 Privacy sheet 短句对齐，禁止过度承诺「永不丢」。
+5. **隐私**：上传前须明示同意（发什么、为何、多久）；未同意 = 不传。可与 Privacy sheet 短句对齐，禁止过度承诺「永不丢」。用户向 `JOURNEY_LOG_BACKUP_PRIVACY` 须先说**用途**（Safari/ITP 或清机后恢复最近一次快照），再诚实写残余丢失（尚未上传；关闭备份会删云端副本）；**禁止**只写「Not a promise that data can never be lost / 不承诺永不丢失」这类引发不安的否定句。  
+6. **记录在哪**：A 档**没有**可浏览的备份档案柜。练习留痕仍在 **Journey log 上方列表**（及同批 6 key）；云端是同一份静默快照。开启后文案须指向「listed above / 上方列表」，禁止再写 “Open Journey log anytime to see them”（人已经在这张卡上）。可显示 `lastUploadAt`。
 
 ### Worker（`focus-tiger/cloud/`）
 

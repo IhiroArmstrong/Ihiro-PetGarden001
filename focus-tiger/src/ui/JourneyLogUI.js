@@ -3,13 +3,14 @@
  * Corner opt-in for practice-memory cloud backup (Prompt 12).
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   journeyLogDateKey,
   journeyLogLineKind,
   readJourneyLog
 } from '../core/journeyLogGate.js';
 import { readPracticeBackupOptIn } from '../core/practiceBackup/practiceBackupOptIn.js';
+import { practiceBackupWhereText } from '../core/practiceBackup/practiceBackupWhereCopy.js';
 import {
   requestPracticeBackupOtp,
   verifyPracticeBackupOtp,
@@ -26,7 +27,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'journey-log-card-styles-v3';
+const STYLE_ID = 'journey-log-card-styles-v4';
 const FADE_MS = 220;
 const LIST_MAX = 12;
 
@@ -116,6 +117,11 @@ export class JourneyLogUI {
     this.backupStatus.hidden = true;
     this._backupBusy = false;
 
+    this.backupWhere = document.createElement('p');
+    this.backupWhere.className = 'journey-log__backup-where';
+    this.backupWhere.dataset.testid = 'journey-log-backup-where';
+    this.backupWhere.hidden = true;
+
     this.backupActions = document.createElement('div');
     this.backupActions.className = 'journey-log__backup-actions';
 
@@ -143,6 +149,7 @@ export class JourneyLogUI {
       this.emailInput,
       this.codeInput,
       this.consentLabel,
+      this.backupWhere,
       this.backupStatus,
       this.backupActions
     );
@@ -279,6 +286,17 @@ export class JourneyLogUI {
     this.enableBtn.hidden = on;
     this.disableBtn.hidden = !on;
     if (on && opt.email) this.emailInput.value = opt.email;
+    if (on && this._backupPanelOpen) {
+      this.backupWhere.hidden = false;
+      this.backupWhere.textContent = practiceBackupWhereText(
+        opt,
+        t,
+        getLocale()
+      );
+    } else {
+      this.backupWhere.hidden = true;
+      this.backupWhere.textContent = '';
+    }
   }
 
   /**
@@ -334,8 +352,9 @@ export class JourneyLogUI {
           : '';
       if (!deviceToken) throw new Error('no_token');
       enablePracticeBackupOptIn(this._storage, { email, deviceToken });
-      void flushPracticeBackupUpload({ storage: this._storage, force: true });
       this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_ENABLED', 'ok');
+      this._refreshBackupPanel();
+      await flushPracticeBackupUpload({ storage: this._storage, force: true });
       this._refreshBackupPanel();
     } catch {
       this._setBackupStatus('JOURNEY_LOG_BACKUP_STATUS_ERR', 'error');
@@ -501,6 +520,12 @@ export class JourneyLogUI {
         font-size: 0.78rem;
         line-height: 1.35;
         margin: 0 0 8px;
+      }
+      .journey-log__backup-where {
+        margin: 0 0 8px;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        opacity: 0.92;
       }
       .journey-log__backup-status {
         margin: 0 0 8px;
