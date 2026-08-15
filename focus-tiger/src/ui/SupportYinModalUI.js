@@ -563,7 +563,7 @@ export class SupportYinModalUI {
         aspect-ratio: 1 / 1;
         border-radius: 12px;
         overflow: hidden;
-        /* Tea PNG is transparent; Sanctuary/Membership bake the same paper into pixels. */
+        /* All three preview PNGs bake this paper; CSS remains a fallback. */
         background: ${CARD_IMG_PAPER};
       }
       .yin-support-card__img {

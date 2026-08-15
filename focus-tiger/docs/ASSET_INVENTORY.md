@@ -241,9 +241,9 @@
 
 | 文件 | 用途 |
 |---|---|
-| `sanctuary-preview.png` | Support · Yin's Sanctuary 卡头图（2026-08-15 影棚白底改为暖纸 `#e8dfd2` 烘焙进像素，与喝茶卡 CSS 纸色对齐） |
+| `sanctuary-preview.png` | Support · Yin's Sanctuary 卡头图（2026-08-15 影棚白底改为暖纸 `#e8dfd2` 烘焙进像素） |
 | `membership-meditation-preview.png` | Support · Yin Membership 卡头图（闭目坐禅；入库 2026-08-11；同日烘焙暖纸底） |
-| `tea-drinking-preview.png` | Support · Buy Yin a Tea 卡头图（透明底，由 CSS `__art` 透出同款暖纸） |
+| `tea-drinking-preview.png` | Support · Buy Yin a Tea 卡头图（2026-08-15 与左/中卡同样烘焙暖纸 `#e8dfd2`，避免 GitHub/文件预览发黑） |
 | `support-yin-icon.png` | 右上 Support FAB 小图 |
 | 文件 | 目录档位（低→高） |
 |---|---|

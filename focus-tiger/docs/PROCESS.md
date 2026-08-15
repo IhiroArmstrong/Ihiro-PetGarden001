@@ -58,12 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · 免责改「?」查阅 + Enso 再缩 + Stay in touch 最新版
+**最后更新时间**：2026-08-15（UTC+8） · Support 三卡暖纸底 + Membership 报价占位
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置（`MEMBERSHIP_PRICE_DISPLAY` 为卡面占位，须对照 Stripe Checkout）。TRACKER Support 行待人工。
 - **Wellness 免责改「?」查阅 + Enso 再缩（2026-08-15）**：冷启动**不再**自动弹出「Not therapy or medical care」；点「?」简介卡仍见同一免责。Enso 直径改为蒲团可见径约 **10%**（相对上一版 25% 的约 40%），须落在蒲团中央、不越界。TRACKER 待人工。
 - **菜单订阅 CTA（2026-08-15 · #296 已合）**：未解锁进阶仪式时，⋯ / 抽屉在 Stay in touch 下出米色 **Subscribe for more scenes**（点开 Membership 卡）；已解锁则为普通钮 **You're subscribed**（同样打开 Membership 卡）。邮件留资提交后改称 **We'll keep in touch**，避免与付费订阅撞车。不恢复 Tea/Sanctuary 三项目录。TRACKER 待人工。
 - **Stay in touch 卡面（2026-08-15 · #295 已合）**：除 known-error 修复说明外，留邮箱也会收到更好的最新版（latest release）说明；仍非推销名单。欢迎信定稿不改字。TRACKER 待人工。
@@ -109,7 +110,7 @@
 - **Sanctuary 尊贵徽章素材入库（2026-08-09 · PR #202 已合）**：17 枚 → `public/ui/support/sanctuary-badges/`；本支接线授予。
 - **主动 Recover · Tiger Anchor（2026-08-09 · 本支）**：Focusing 轻触阿寅 → `triggerActiveRecover()`（nod-bow + 中置 toast + LightProgression）；不占被动提醒额度；**180s** 冷却隐退；零 MicroRitual。TRACKER 新行待人工（含 375）。
 - **SCENARIO_TESTS 增量升格（2026-08-09）**：正式故事补 **Q**（Support/Tea/Sanctuary）· **S**（Breath 左球）· **T**（Focus 时长 chip）· **U**（Cinema/Quiet Line/Wallpapers）· **V**（吹花欢迎）· **W**（Privacy/?）；**R** 跨日回访仍建议。权威 `SCENARIO_TESTS.md`；逐功能仍走 `TEST_TRACKER`。
-- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal` 双卡；菜单两项**暂留**。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**场景化请茶气泡（#253 已合 tip `c10acb7`）**。**意愿漏斗本地统计（#255 已合）**；**Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**；**意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**。
+- **Support Yin 统一入口（2026-08-08 · #187 + UX #194 已合 tip）**：右上角 `#yin-support-fab` → `#yin-support-modal`（当时双卡；**2026-08-15 起为三卡**，见上条暖纸底）。菜单付费三项后改走 Support FAB。**关单级**与其它未关单项共用同一 `origin/develop` tip worktree（见 `TEST_TRACKER`「主干一次性关单验收」/ KnownRisky #27）——**勿**再专开 Support-only QA tree。**UX polish 已合**（#194）。**善意徽章 + 茶室留痕已合**（#196 · tip **`5d08797`**）：9 枚高清 PNG；打赏按练习授 3–9；Tip 卡 + 阿寅身旁；再 tip 无新练习不加枚，但有 Tea Log + `nodGreeting`/`teaDrinking` 致谢。**场景化请茶气泡（#253 已合 tip `c10acb7`）**。**意愿漏斗本地统计（#255 已合）**；**Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**；**意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**。
 - **主干 tip 验收盘点（2026-08-08）**：`origin/develop` tip **`beb9147`**（含 #187 Support + #188 PWA 延后 QA）。TRACKER 约 96 行仍开；**本批**按 KnownRisky §0.1（P0 闪白/Honesty → P1 Breath/chip/吹花/增长/付费/Support → P2 旧债）；实验室/长墙钟/PWA 安装**不排**本批。操作 SSOT：`KNOWN_RISKY_TEST_CHECKLIST.md`。
 - **Tip / Sanctuary 云部署（2026-08-08）**：#181 Price + `$89.99`；#182 曾误写旁路账号 KV（已纠回 `ihiro` 的 KV id）。**SSOT** = `https://focus-tiger-cloud.ihiro.workers.dev`。同日 **redeploy 成功**（Version `eb921e5f…`）：新 Tip/Sanctuary Price ID 已上线；secrets/Webhook 沿用。**须人工** Test 卡验金额。
 - **合入核对（2026-08-07）**：**#163 Privacy** 已合 `develop`（`af6f65f`）。**#164 Reflection** 误合 **`main`**（`30ef3c9`）；**`main` 先不动**（下次正规 develop→main 发版）。纠正 PR **#175** 把共鸣补回 `develop`。发版备忘：见 `WORKFLOW.md`「发版核对备忘 · main 已提前含 #164」——届时共鸣路径 diff「无变化」为预期。开 PR 须 `--base develop`（`git-pr-base-develop`）。
