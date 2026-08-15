@@ -23,6 +23,7 @@ import {
   parseLockOccupancy,
   evaluateStale,
   isLikelyMainCheckout,
+  isQaDevelopWorktree,
   getStaleThresholdMs,
   isOwnSession,
   readSessionIdentity
@@ -59,6 +60,7 @@ function main() {
   }
 
   const mainCheckout = isLikelyMainCheckout(REPO_ROOT)
+  const qaDevelop = isQaDevelopWorktree(REPO_ROOT)
   const thresholdMs = getStaleThresholdMs()
 
   console.log('=== worktree occupancy ===')
@@ -66,7 +68,13 @@ function main() {
   console.log(`branch: ${branch}`)
   console.log(`head: ${head}`)
   console.log(
-    `checkout_kind: ${mainCheckout ? 'main-or-generic (writes FORBIDDEN on branch develop — use …-wt-*)' : 'dedicated-wt'}`
+    `checkout_kind: ${
+      qaDevelop
+        ? 'qa-develop (read-only; Vite :5173; writes FORBIDDEN)'
+        : mainCheckout
+          ? 'main-or-generic (writes FORBIDDEN on branch develop — use …-wt-*)'
+          : 'dedicated-wt'
+    }`
   )
   console.log(`stale_threshold_ms: ${thresholdMs} (default 3600000=60m; override FT_SESSION_LOCK_STALE_MS)`)
   console.log(`dirty_paths: ${dirtyLines.length}`)
@@ -76,7 +84,11 @@ function main() {
   }
   console.log(`stash_entries: ${stashCount}`)
 
-  if (mainCheckout && branch === 'develop') {
+  if (qaDevelop) {
+    console.log(
+      'NOTE: fixed QA develop worktree — pull origin/develop after merges; do not commit here.'
+    )
+  } else if (mainCheckout && branch === 'develop') {
     console.log(
       'BLOCK: primary checkout on `develop` — do not write/commit here; open `git worktree add …-wt-<topic>`.'
     )

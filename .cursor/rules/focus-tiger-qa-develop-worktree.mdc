@@ -1,0 +1,19 @@
+---
+description: 固定 develop QA worktree（关单/批量人工测试 · 5173 常驻）；合入后须 pull 并汇报是否重启 Vite
+alwaysApply: true
+---
+
+# Focus Tiger · 固定 develop 验收 worktree
+
+索引：`RULES_INDEX.md` → `qa-develop-worktree`。  
+**SSOT**：仓库根 `WORKFLOW.md`「固定 develop 验收 worktree」。本文件只留强制动作，**不**复述建树命令全文。
+
+## 强制（本会话）
+
+1. **关单验收 / 批量人工测试** 只用固定树 `…-wt-develop-qa`、端口 **5173**（`npm run dev:qa`）。**不用于开发**。feature/fix 仍走各自 `…-wt-<topic>`，开发流程不变。批量清单见 `TEST_TRACKER.md`。  
+2. **任何 PR 已合并进 `develop` 之后**（含本回合 merge / auto-merge 完成 / 发现 `origin/develop` 已前进）：必须跑 `cd focus-tiger && npm run sync:qa-develop`。本机有该树时脚本会 `git pull --ff-only origin develop`。  
+3. **向用户明确写出**：  
+   - **①** 是否需要重启 QA Vite（脚本 `restart:`：依赖或构建配置改动才重启，否则硬刷新即可）  
+   - **②** 一句这次合并带来什么变化（脚本 `summary:`）  
+4. **Cloud / 本机无此树**：不得假装已在 Mac 上 pull；汇报须含 `qa_worktree: ABSENT`，①② 仍要写。  
+5. **禁止**为收尾停掉 QA 树 5173 Vite；禁止在该树 `git commit`。

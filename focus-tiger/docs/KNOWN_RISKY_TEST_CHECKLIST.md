@@ -22,17 +22,17 @@
 | 步骤里的 `【***测试OK】`？ | **走查批注**（写在本 MD）；不等于 TRACKER 关单 |
 | CSV？ | **不权威**；不要对照 CSV 验收或改步骤（根目录 Numbers 已删） |
 
-**公共前置（每条默认 · 纯 tip）**：
+**公共前置（每条默认 · 固定 QA 树）**：
+
+关单 / 批量人工测试用固定 develop QA worktree（路径、5173、合入后 pull：**SSOT** [`WORKFLOW.md`](../../WORKFLOW.md) `qa-develop-worktree`）。树已存在时不要每次 `worktree add`。
 
 ```bash
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
-git fetch origin develop
-git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
-npm install && npm run check:branch-freshness && npm run dev
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
+npm run check:branch-freshness
+# Vite 常驻：npm run dev:qa  →  http://127.0.0.1:5173/?product=1
 ```
 
-Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面写当时 tip hash（2026-08-08 盘点时为 **`beb9147`**）。**勿**再专开 `…-wt-qa-support-modal`——Support（#187）已在 tip 祖先链，与其它未关单项同一棵 tip 树测即可。
+Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面写当时 tip hash。**勿**再专开 `…-wt-qa-support-modal` 或每次新建 `…-wt-qa-develop-tip`。
 
 ### 0.1 2026-08-08 起 · 建议优先顺序（主干一批）
 
@@ -120,7 +120,7 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | 动作 | 项 |
 |---|---|
 | 废过时口径 | Support 专用 `…-wt-qa-support-modal`；固定 tip=`62e38a3`；主仓 ahead1/behind1 分叉必 pull 才能测 Support |
-| 统一前置 | 纯 tip worktree `…-wt-qa-develop-tip` + 绝对路径（盘点 tip `beb9147`） |
+| 统一前置 | 固定 QA 树 `…-wt-develop-qa` + `:5173`（见 `WORKFLOW.md` / `qa-develop-worktree`）；废每次新建 `…-wt-qa-develop-tip` |
 | **新增** | **#27 Support Yin Modal** |
 | 刷新 | #25/#26/#28 挂 `PAYMENT_MANUAL_TEST_CHECKLIST`（Restore/零耦合逐步）；#27 Support 不变 |
 | 交叉 | `TEST_TRACKER`「主干一次性关单验收」替换 07-25 过时 P0/P1/P2 行号表 |

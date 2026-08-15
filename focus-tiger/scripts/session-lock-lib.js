@@ -18,7 +18,7 @@ import {
   unlinkSync,
   mkdirSync
 } from 'node:fs'
-import { dirname, join, basename } from 'node:path'
+import { dirname, join, basename, resolve } from 'node:path'
 import { execSync } from 'node:child_process'
 
 /** @typedef {'active' | 'releasable' | 'missing' | 'invalid' | 'unparseable'} OccupancyKind */
@@ -114,6 +114,34 @@ export function isLikelyMainCheckout(rootPath) {
   const base = basename(rootPath)
   if (/-wt-/.test(base)) return false
   return true
+}
+
+/** Basename suffix of the long-lived QA develop worktree (kebab-case). */
+export const QA_DEVELOP_WORKTREE_SUFFIX = '-wt-develop-qa'
+
+/**
+ * Default sibling path: `<primaryCheckout>-wt-develop-qa`.
+ * @param {string} primaryCheckoutPath
+ * @returns {string}
+ */
+export function defaultQaDevelopWorktreePath(primaryCheckoutPath) {
+  return `${String(primaryCheckoutPath || '').replace(/\/$/, '')}${QA_DEVELOP_WORKTREE_SUFFIX}`
+}
+
+/**
+ * Fixed develop QA tree (关单 / 批量人工测试). Not a feature worktree.
+ * Override: env `FT_QA_DEVELOP_WORKTREE` (absolute path).
+ * @param {string} rootPath
+ * @param {string} [envPath]
+ * @returns {boolean}
+ */
+export function isQaDevelopWorktree(rootPath, envPath = process.env.FT_QA_DEVELOP_WORKTREE) {
+  if (!rootPath) return false
+  const resolved = resolve(rootPath)
+  const base = basename(resolved)
+  if (base.endsWith(QA_DEVELOP_WORKTREE_SUFFIX)) return true
+  if (envPath && resolve(envPath) === resolved) return true
+  return false
 }
 
 /**
@@ -300,9 +328,19 @@ export function evaluateSessionLockGate({
   const branch =
     branchOverride != null ? branchOverride : currentBranch(repoRoot)
   const mainCheckout = isLikelyMainCheckout(repoRoot)
+  const qaDevelop = isQaDevelopWorktree(repoRoot)
   const allowMain =
     process.env.FT_ALLOW_MAIN_DEVELOP_COMMIT === '1' ||
     process.env.FT_ALLOW_MAIN_DEVELOP_COMMIT === 'true'
+
+  // Hard ban: fixed QA develop tree is read-only (验收 / 批量人工测试)
+  if (qaDevelop && !allowMain) {
+    messages.push(
+      '[session-lock-gate] REJECT: commits/writes on the fixed QA develop worktree (`…-wt-develop-qa`) are forbidden.',
+      '  Use a feature/fix worktree (`…-wt-<topic>`) for development. This tree is 关单验收 / 批量人工测试 only.'
+    )
+    return { ok: false, code: 2, messages }
+  }
 
   // Hard ban: primary repo checkout on branch develop
   if (mainCheckout && branch === 'develop' && !allowMain) {

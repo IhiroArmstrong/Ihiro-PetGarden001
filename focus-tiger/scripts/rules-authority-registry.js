@@ -33,6 +33,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
+  '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
@@ -851,6 +852,60 @@ export const RULE_AUTHORITY_TOPICS = [
       '.cursor/rules/focus-tiger-docs.mdc'
     ],
     forbiddenOutsideSsot: []
+  },
+  {
+    id: 'qa-develop-worktree',
+    title: '固定 develop 验收 worktree（关单 / 批量人工测试 · 5173 常驻）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '固定 develop 验收 worktree',
+    ssotMustContain: [
+      /qa-develop-worktree/,
+      /-wt-develop-qa/,
+      /不用于开发/,
+      /5173/,
+      /git pull --ff-only origin develop/,
+      /是否需要重启/,
+      /硬刷新即可/,
+      /qa_worktree: ABSENT/,
+      /sync:qa-develop/,
+      /feature\/fix 各自 worktree 的开发流程不变/
+    ],
+    topicSignals: [
+      /qa-develop-worktree/,
+      /-wt-develop-qa/,
+      /固定 develop 验收 worktree/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /不用于开发/,
+      /git pull --ff-only origin develop/,
+      /qa_worktree: ABSENT/,
+      /npm run dev:qa/
+    ],
+    restatementThreshold: 3,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/TEST_TRACKER.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/COLLAB.md',
+      '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      '.cursor/rules/focus-tiger-browser-energy.mdc'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'qa-tree-is-for-feature-dev',
+        pattern: /(?:QA|验收)\s*(?:worktree|树).{0,20}(?:可以|应当|用来)\s*(?:开发|改代码|commit)/,
+        note: '固定 QA develop 树不用于开发',
+        exemptIfLineMatches: /禁止|不得|不用于/
+      },
+      {
+        id: 'cloud-pretend-mac-pull',
+        pattern: /Cloud.{0,24}(?:已|已经)\s*(?:在本机|在 Mac).{0,16}git pull origin develop/,
+        note: 'Cloud 无 QA 树时不得假装已在本机 pull'
+      }
+    ]
   },
   {
     id: 'branch-freshness',

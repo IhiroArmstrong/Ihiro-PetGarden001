@@ -90,5 +90,7 @@ jobs:
         run: node --test scripts/check-docs-consistency.test.js
       - name: Session-lock heartbeat/stale/gate unit smoke
         run: node --test scripts/session-lock-lib.test.js scripts/check-worktree-occupancy.test.js
+      - name: QA develop worktree sync + hygiene unit smoke
+        run: node --test scripts/sync-qa-develop-worktree.test.js scripts/check-worktree-hygiene.test.js
       - name: Behavioral contracts (gate + scenario smoke)
         run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js

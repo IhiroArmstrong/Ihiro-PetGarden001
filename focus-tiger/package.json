@@ -30,6 +30,8 @@
     "check:branch-freshness": "node scripts/check-branch-freshness.js",
     "check:worktree-occupancy": "node scripts/check-worktree-occupancy.js",
     "check:worktree-hygiene": "node scripts/check-worktree-hygiene.js",
+    "sync:qa-develop": "node scripts/sync-qa-develop-worktree.js",
+    "dev:qa": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "session-lock:heartbeat": "node scripts/session-lock-heartbeat.js",
     "session-lock:gate": "node scripts/gate-session-lock-precommit.js",
     "check:all-branches-health": "node scripts/check-all-branches-health.js",
