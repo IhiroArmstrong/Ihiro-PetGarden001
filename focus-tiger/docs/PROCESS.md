@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Focus HUD 无脉冲点、悬停控件出 tip（2026-08-15）**：左上 Calm 卡金环 / 今日同坐条 / 近日同坐环不再画薄荷绿碎点；鼠标停在控件上仍出对应 Hint 文案（与左下「?」同一办法）。音符 / ⋯ 行内 mint 仍保留。TRACKER 待人工。
+
 - **Cloud 旁支落到本机（2026-08-15）**：禁止在主仓点 Cursor Apply / checkout migrated branch（易超时并抢走 5173）。须 `git fetch` + `git worktree add …-wt-…`。权威：`WORKFLOW.md` 并行 worktree 第 8 款。
 
 - **固定 develop QA worktree（2026-08-15）**：关单 / 批量人工测试用固定树 `…-wt-develop-qa`、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化。feature 开发树不变。冲突旧口径 PR **#306 / #308 已关未合**。权威：`WORKFLOW.md` / `qa-develop-worktree`。
