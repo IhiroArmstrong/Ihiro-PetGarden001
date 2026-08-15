@@ -43,6 +43,8 @@ export function createWorkerNewsletterProvider({
         const status = /** @type {{ status?: number }} */ (err)?.status;
         if (status === 400) return { ok: false, error: 'invalid_email' };
         if (status === 429) return { ok: false, error: 'rate_limited' };
+        if (status === 502) return { ok: false, error: 'welcome_unsent' };
+        if (status === 503) return { ok: false, error: 'subscribe_failed' };
         return { ok: false, error: 'subscribe_failed' };
       }
     }
