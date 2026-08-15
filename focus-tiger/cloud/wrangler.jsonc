@@ -36,9 +36,9 @@
  *   id         = baeb661cb8f2450ab4a87d6f23af6896
  *   preview_id = 8e13fe05705841c9939c3164bfb9a3bd
  *
- * Production Worker (2026-08-15): Version d0140328-ee54-4dbb-8710-be6675f0596a
- * includes newsletter routes + welcome await/retry (covers 8c649d12).
- * Inbox delivery still needs a real-address retest.
+ * Production Worker (2026-08-16): Version fb568e27-96dd-4fb1-b15c-acbac8dd919b
+ * Tip STRIPE_PRICE_ID = price_1U4nanFuIhgJPGLidoTdxobW (US$4.99).
+ * Still includes newsletter routes + welcome await/retry (covers 8c649d12 / d0140328).
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
