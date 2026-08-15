@@ -220,6 +220,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
   - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）
   - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）
   - 若本回合起过给人验收的预览、或正式邀测 / 声称 develop 行为 → **必须**含 `check:branch-freshness` 的落后数（见上节「分支新鲜度」）
+  - 若本回合有 PR **已合入 `develop`** → **必须**跑 `npm run sync:qa-develop` 并写清 ① 是否须重启 QA Vite ② 一句合并变化（见 `RULES_INDEX` → `qa-develop-worktree`）
   - **会话明显结束**（任务收尾 / 用户明确停止 / 本工作线已完）→ **必须**写明 `.ft-session-lock` 实际状态：`已删除` 或 `已标 releasable`（见 `RULES_INDEX` → `git-worktree-occupancy`）；**禁止**默认同条提议 `worktree remove`（拆盘口令见 `git-worktree-hygiene`）
   - 用户口令「请清理闲置 worktree」→ 跑 `npm run check:worktree-hygiene`，把候选清单贴进「待你决定」；未点名 path 前禁止 remove
 

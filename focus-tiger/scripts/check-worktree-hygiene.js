@@ -27,6 +27,7 @@ import {
   parseLockOccupancy,
   evaluateStale,
   isLikelyMainCheckout,
+  isQaDevelopWorktree,
   getStaleThresholdMs,
   LOCK_FILENAME
 } from './session-lock-lib.js'
@@ -116,7 +117,8 @@ export function parseWorktreePorcelain(porcelain) {
  *   noUniquePatches: boolean,
  *   lockOccupancy: string,
  *   lockStale: boolean | null,
- *   bare?: boolean
+ *   bare?: boolean,
+ *   isQaDevelopWorktree?: boolean
  * }} input
  * @returns {{ tier: HygieneTier, reasons: string[] }}
  */
@@ -125,6 +127,10 @@ export function classifyHygieneTier(input) {
   const reasons = []
   if (input.bare) {
     reasons.push('bare')
+    return { tier: 'report_only', reasons }
+  }
+  if (input.isQaDevelopWorktree) {
+    reasons.push('qa-develop-worktree-protected')
     return { tier: 'report_only', reasons }
   }
   if (input.isPrimary) {
@@ -306,6 +312,7 @@ export function collectHygieneRows(opts = {}) {
   for (const wt of listed) {
     const path = resolve(wt.path)
     const primary = isLikelyMainCheckout(path)
+    const qaDevelop = isQaDevelopWorktree(path)
     const current = path === currentPath
     const dirty = wt.bare ? false : isDirty(path)
     const lock = inspectLock(path, now)
@@ -322,7 +329,8 @@ export function collectHygieneRows(opts = {}) {
       noUniquePatches,
       lockOccupancy: lock.occupancy,
       lockStale: lock.stale,
-      bare: wt.bare
+      bare: wt.bare,
+      isQaDevelopWorktree: qaDevelop
     })
     rows.push({
       path,

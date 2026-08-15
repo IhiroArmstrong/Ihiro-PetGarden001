@@ -46,6 +46,21 @@ describe('classifyHygieneTier', () => {
     assert.equal(r.tier, 'primary')
   })
 
+  it('never propose_remove for the fixed QA develop worktree', () => {
+    const r = classifyHygieneTier({
+      isPrimary: false,
+      isCurrent: false,
+      dirty: false,
+      tipInDevelop: true,
+      noUniquePatches: true,
+      lockOccupancy: 'absent',
+      lockStale: null,
+      isQaDevelopWorktree: true
+    })
+    assert.equal(r.tier, 'report_only')
+    assert.ok(r.reasons.includes('qa-develop-worktree-protected'))
+  })
+
   it('proposes remove when tip is develop ancestor', () => {
     const r = classifyHygieneTier({
       isPrimary: false,

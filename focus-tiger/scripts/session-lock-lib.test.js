@@ -158,6 +158,20 @@ describe('evaluateSessionLockGate', () => {
     assert.equal(r.ok, false)
     assert.match(r.messages.join('\n'), /primary checkout while on branch `develop`/)
   })
+
+  it('rejects commits on the fixed QA develop worktree', () => {
+    const parent = mkdtempSync(join(tmpdir(), 'ft-qa-'))
+    roots.push(parent)
+    const named = join(parent, 'Zen-tiger-Pet-garden001-wt-develop-qa')
+    mkdirSync(named)
+    const r = evaluateSessionLockGate({
+      repoRoot: named,
+      applySideEffects: false,
+      branch: 'develop'
+    })
+    assert.equal(r.ok, false)
+    assert.match(r.messages.join('\n'), /fixed QA develop worktree/)
+  })
 })
 
 describe('clearForeignLockWithHistory', () => {

@@ -55,4 +55,11 @@ describe('rules-authority-registry', () => {
   it('repo scan currently passes (no live contradiction)', () => {
     assert.equal(runRulesAuthorityDocCheck(), true);
   });
+
+  it('defines qa-develop-worktree SSOT as WORKFLOW 固定验收树', () => {
+    const t = RULE_AUTHORITY_TOPICS.find((x) => x.id === 'qa-develop-worktree');
+    assert.ok(t);
+    assert.equal(t.ssotPath, 'WORKFLOW.md');
+    assert.match(t.ssotSection, /固定 develop 验收 worktree/);
+  });
 });

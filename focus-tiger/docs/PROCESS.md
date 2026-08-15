@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-15（UTC+8） · Stay in touch 欢迎信 Gmail 已收到（含垃圾箱）· Support 三卡暖纸底 + Membership US$6.99 · Worker `d0140328` + Enso 左下角 + Membership 授章
+**最后更新时间**：2026-08-15（UTC+8） · 固定 develop QA worktree（`…-wt-develop-qa` · 5173） · Stay in touch 欢迎信 Gmail 已收到（含垃圾箱）· Support 三卡暖纸底 + Membership US$6.99 · Worker `d0140328` + Enso 左下角 + Membership 授章
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **固定 develop QA worktree（2026-08-15）**：关单 / 批量人工测试用固定树 `…-wt-develop-qa`、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化。feature 开发树不变。权威：`WORKFLOW.md` / `qa-develop-worktree`。
 
 - **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
 - **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。TRACKER Support 行待人工。

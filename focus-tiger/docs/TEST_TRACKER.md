@@ -14,7 +14,7 @@
 4. feature/fix 上的试跑只算作者自检，**不得**当作正式验收；正式邀测前 Agent 须跑 `npm run check:branch-freshness`（见 regression-lock「分支新鲜度」）。  
 5. **与合入门闩的分工（2026-08-14）**：合入 `develop` 的资格是 **CI 绿**（见 `WORKFLOW.md` / `git-develop-small-pr-run-merge`），**不以**本表「待人工测试」为阻塞。本条 tip 规则管的是合入**之后**的关单门闩。关单只认 develop tip，因此 **关单级人工测试的默认路径是先合再测**（可批量，见「批量人工测试」）。feature/fix 试跑仍 **不得**单独当作关单证据。**禁止**因代码已合并就把本表改成「已验证 / 已通过 / 已修复」。
 
-协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `git-feature-merge-preview`（研发自检 + 主干同步）与 `qa-batch-human-test`（批量清单）。
+协作摘要见 `COLLAB.md`；主题索引 `RULES_INDEX.md` → `qa-develop-tip`（关单）与 `qa-develop-worktree`（固定验收树）与 `git-feature-merge-preview`（研发自检 + 主干同步）与 `qa-batch-human-test`（批量清单）。
 
 **本地开发**：`cd focus-tiger && npm run dev` → 通常 `http://127.0.0.1:5173/`。  
 产品开表前选 **15/25/45/60**；无 chip 的短测/e2e 用 **`?sessionMinutes=N`**（跳过 picker）。场景 B Re-focus 真实切页仍用 **`?sessionMinutes=5`**。  
@@ -50,24 +50,15 @@
 
 | 过时口径 | 现行口径 |
 |---|---|
-| tip = `#187` / `62e38a3`；专开 `…-wt-qa-support-modal` 只测 Support | tip **随 fetch 变**；Support（#187）已是 tip **祖先**。一次 tip worktree 可测 Support + 同 tip 上其它未关单项 |
+| tip = `#187` / `62e38a3`；专开 `…-wt-qa-support-modal` 只测 Support | tip **随 fetch 变**；Support（#187）已是 tip **祖先**。一次 tip 树可测 Support + 同 tip 上其它未关单项 |
 | 主仓 develop「ahead 1 / behind 1」分叉，pull 到不了 tip | **2026-08-08 fetch 后**：`origin/develop` = **`beb9147`**（#188 PWA 延后 QA）；本地 develop 仅 **ahead 1** 未推文档（绝对路径规则），**behind = 0**。关单仍须对齐 **远端 tip**，勿用「仅本地 ahead」冒充 tip |
 | 旧 feature / 旧 `…-wt-*` 目录直接 `npm run dev` 当主干验 | **禁止**。过时 worktree ≠ tip |
-| 「单纯 `git pull` 主仓 develop」默认等于 tip | 主仓若 ahead 未推、或脏树占着别的任务 → **优先** `git worktree add … origin/develop` 纯 tip 树 |
+| 「单纯 `git pull` 主仓 develop」默认等于 tip | 主仓若 ahead 未推、或脏树占着别的任务 → **用固定 QA 树** `…-wt-develop-qa`（见 `WORKFLOW.md` / `qa-develop-worktree`） |
+| 每次新建 `…-wt-qa-develop-tip` 再拆掉 | **废**。改用固定路径 + 合入后 `npm run sync:qa-develop` |
 
-#### 推荐启动（纯 tip · 可复制）
+#### 推荐启动（固定 QA 树 · 可复制）
 
-验收前先确认 tip（hash 会变；下列 `beb9147` 为 2026-08-08 盘点时 tip）：
-
-```bash
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
-git fetch origin develop
-git rev-parse origin/develop   # 关单书面须写此 hash
-# 若目录已存在可先：git worktree remove …-wt-qa-develop-tip
-git worktree add /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip origin/develop
-cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-qa-develop-tip/focus-tiger
-npm install && npm run check:branch-freshness && npm run dev
-```
+关单 / 批量人工测试用 **固定 develop QA worktree**（路径、5173 常驻、合入后 pull 纪律：**SSOT** [`WORKFLOW.md`](../../WORKFLOW.md) `qa-develop-worktree`）。本机首次建树用该节「一次性建树」：**A 只建目录**可与正在测的 5173 并行；**B 切 5173** 须等本轮测试结束。树已存在时 Agent 合入 develop 后须 `npm run sync:qa-develop`。
 
 Safari：`http://127.0.0.1:5173/?product=1`  
 关单书面须含：**当时** `origin/develop` tip hash + `behind=0`。按 [`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md) §0.1 顺序走；反馈写回本表「用户反馈」列。
@@ -300,6 +291,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 存量场景 0–1s 补句优先级（禁「随改写再补」） | 纯后端 | 仅单元测试覆盖 | 权威表：`SCENARIO_TESTS.md` 文首。**P0 已补句**：Q Support Checkout、U Watch/Save、X 冷却再点（FB-01 已落地微点头）。**P1 已补句**：D Honesty 入口/时长/桥接 Yes/No。**P1 Z**：句 + **运行时按压**（⋯/抽屉行、Compass 芯片、Journey 关钮/备份链 `:active`）。**P1 未补**（分批）：S Leave/chip、T chip/Leave、W ?/Privacy（选中即生效，改写时覆盖）。**P2**：A/C/E/F/I/J/K 主路径已有立刻发生什么；G/O/V 点击面小。改写对应场景时必须带 0–1s 句。 | — | — | — | `SCENARIO_TESTS.md` 文首优先级表 | 2026-08-14 |
 | Tiger Anchor 冷却期内再点（FB-01） | UI可见 | 待人工测试 | **主路径**：`?product=1` → Focusing → 轻触阿寅出完整 `nod-bow`+toast → 微光/幽灵提示隐退（**SB-07**；invisible hit 仍在）。**回流**：180s 内再点阿寅身 → **0–1 秒内**比完整鞠躬更小的点头（`nodBowMicro`）；**无** toast/文字；冷却**不**重置、不延长；计时不停。冷却结束微光+提示回来，再点才是完整 Recover。**Rise 后再 Focusing**：冷却按新会话重置（`startSession` 清冷却）。**375**：勿误触 Rise。**分列观感**：①微点头幅度明显小于完整 nod-bow；②无 toast、不与 ACTIVE_RECOVER 文案混淆；③连点不延长冷却。自动化：**单元** `MindfulReminderController.test`（微点头 / 无 toast / 不延长冷却）+ `EmotionController.test`（`nodBowMicro`）+ `ActiveRecoverAnchorUI.test`（冷却非哑点击）；**无**完整 DOM 用户链路 e2e（Pointer 命中难锁 → 须人工）。 | **2026-08-14 分析师**：隐退≠「我点过了、在冷却」vs「功能不可用」。**同日产品拍板**：排除短提示/toast；冷却再点 = 比 nod-bow 更小的点头即止，不出文字，不重置冷却。 | — | — | `?product=1` · `#active-recover-anchor` · 场景 X 步 5b | 2026-08-14 |
 | Git 合入与人工测试解耦（push/PR 默认；CI 绿合 develop；批量人工测；Worker 须「部署」） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：`git-agent-commit` / `git-develop-small-pr-run-merge` / `git-feature-merge-preview` / `qa-batch-human-test` / `prod-worker-deploy`。合入 ≠ 已修复；口令「批量人工测试」出模块清单。 | — | — | — | `WORKFLOW.md` · `TEST_TRACKER` 批量人工测试 · `focus-tiger-regression-lock.mdc` | 2026-08-14 |
+| 固定 develop QA worktree（`qa-develop-worktree` · 5173 常驻） | 纯后端 | 仅单元测试覆盖 | `node --test scripts/sync-qa-develop-worktree.test.js`：路径后缀 `-wt-develop-qa`；src-only → 硬刷新；lockfile/vite.config → 须重启。合入后 `npm run sync:qa-develop`；Cloud 无树须报 `ABSENT`。政策见 `WORKFLOW.md`。 | — | — | — | `sync-qa-develop-worktree.js` · `WORKFLOW.md` · `.cursor/rules/focus-tiger-qa-develop-worktree.mdc` | 2026-08-15 |
 | 列多个方案须给最合理项（`recommend-most-reasonable` / N14b） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `recommend-most-reasonable` SSOT 在 `focus-tiger-recommend-most-reasonable.mdc`。Agent 列出 ≥2 个开放方案时须写「我认为最合理的」。无运行时。 | — | — | — | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` · `RULES_INDEX` | 2026-08-14 |
 | Home Idle polish · 冷启动黑闪 / Practice marks / Support / 地球 / 左球 label / ? 简介链 | UI可见 | 待人工测试 | **基线**：本分支 `fix/home-idle-polish`（非关单级 develop tip）。**主路径（≥480 · `?product=1` · 硬刷新）**：(1) 冷启动**不得**先闪深灰小 Yin 海报，再出彩色大 Yin；(2) Practice marks 玻璃框在阿寅**右侧**中部，**不**压右上 Support/mute，也不压左下热力/`?`；(3) Support：中间 Membership CTA=蒲团橙；左右 CTA=米色立体；「Support Us」Title Case；中间图=闭目坐禅；三卡图底暖纸色；(4) 右下语言地球可见（对比加强）；(5) 左球无薄荷绿脉冲，悬停有 Breath practice label；(6) 悬停 `?` → 移入简介卡可点「The five moments / Privacy」（~280ms grace）。**回流**：关 Support / Rise 后再开；二次悬停 `?`。**自动化**：`purposeHoverGrace.test.js` + Support CTA 文案单测；冒烟 `test:smoke` + `test:e2e:smoke`。 | **2026-08-10/11 用户书面**（测 membership-webhook / 5173）：冷启动黑小 Yin；Practice marks 压左下；Support 按钮/图/文案；地球不见；左球无 label+有脉冲；? 简介链点不到。 **2026-08-13 用户书面（图8）**：徽章需要放到右边，构图均衡一些。 **2026-08-15 用户书面（图）**：Support 三张 Yin 头图底色仍不一致（左灰、中白、右暖纸）；中间 Membership 缺报价。上次已提未改善。 | — | — | `http://127.0.0.1:5173/?product=1` · `#yin-tip-kindness-badges` · `#yin-support-modal` · `#language-preference-fab` · `#onboarding-app-purpose` | 2026-08-11 |
 | 标「已通过」覆盖分工门禁（`qa-pass-coverage-split`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `qa-pass-coverage-split` SSOT 在本文件「标「已通过」门禁」；禁 e2e 绿单独关单等矛盾短语。关单须写 e2e 已锁 vs 人工已覆盖；regression-lock 摘要硬拦。 | — | — | — | `TEST_TRACKER` 标已通过门禁 · `RULES_INDEX` · `rules-authority-registry.js` | 2026-08-02 |

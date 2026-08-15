@@ -74,6 +74,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    - **`propose_remove` 内容已合入判定（squash 友好）**：工作树干净 + 非当前 cwd + 锁可放行，且满足其一——① tip 已是 `origin/develop` 祖先；或 ② `git cherry origin/develop HEAD` **无** `+` 行（无独有补丁）。禁止仅用祖先检查（squash 合入会假阴性）。  
    - 清单须含 **最后一次 commit 时间**（与闲置天数），便于你决定是否还要留作对照。  
    - 你点名 path（或写「按清单清」/「按扩大清单清」= 只清当时 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。  
+   - **固定 QA 树拆除豁免**见下文 `qa-develop-worktree`（`…-wt-develop-qa` **不得** `propose_remove`）。  
    - 政策索引：`RULES_INDEX.md` → `git-worktree-hygiene`。与锁心跳/陈旧（下节 Prompt 3）**同原则、不同风险等级**：客观依据（脚本输出 / `last_heartbeat`）供判断；**不可逆拆盘必须人工确认**；可逆的锁接管见下节。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。
 
@@ -130,6 +131,66 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    - `npm run session-lock:heartbeat` / `session-lock:gate`
    - **husky** `.husky/pre-commit` → `gate-session-lock-precommit.js` 先于 `test:smoke`
 9. **辅助闸（shell，可选）**：`beforeShellExecution` 可查锁。**不能**替代 Edit/Write 自觉 + pre-commit。**禁止**为实施本条改动 deny-subagent / gate-full-e2e / gate-destructive-shell。
+
+### 固定 develop 验收 worktree（关单 / 批量人工测试）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `qa-develop-worktree`）。  
+> 与「并行 worktree」互补：那些管 **feature/fix 开发隔离**；本条管 **已合入 `develop` 之后** 关单验收与批量人工测试用的 **固定本机树**。关单只认 tip 的规则仍见 `TEST_TRACKER.md`（`qa-develop-tip`）。  
+> **feature/fix 各自 worktree 的开发流程不变。**
+
+#### 用途与禁区
+
+1. **只用于**关单级人工验收、口令「批量人工测试」、以及声称代表 `origin/develop` tip 的 Safari 预览。  
+2. **不用于开发**：禁止在此树改产品代码、切 `feature/*` / `fix/*`、`git commit`。pre-commit 硬拦（`…-wt-develop-qa`）。开发仍走各自 `…-wt-<topic>`。  
+3. **Git**：此树跟踪 `origin/develop` tip。默认 **detached 于 `origin/develop`**（不抢正在测的目录所占的 `develop`）。独占检出本地 `develop` 是可选项，且 **不得**在 `5173` 正在测时对正在出码的目录做 `git switch`。禁止两棵树同时检出 `develop`。
+
+#### 固定路径与端口
+
+- **目录 basename 必须以 `-wt-develop-qa` 结尾**（脚本识别）。默认与主仓并列：`<主仓绝对路径>-wt-develop-qa`。本机现用主仓即为：  
+  `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa`  
+- 覆盖路径：环境变量 `FT_QA_DEVELOP_WORKTREE`（绝对路径）。  
+- **Vite 端口固定 `5173`**：在该树 `focus-tiger/` 跑 `npm run dev:qa`（`--port 5173 --strictPort`）。关单 URL：`http://127.0.0.1:5173/?product=1`。  
+- **5173 正在测 → 禁止切端口 / 改当前检出**：Safari 已开着 `http://127.0.0.1:5173` 做关单或批量测时，**不要**跑会停掉现有 Vite、`--strictPort` 抢 5173、或 `git switch` 正在出码的那个目录的命令。可另建 detached QA 目录并 `npm install`，**等这轮测完再切 5173**。  
+- feature worktree 的 `npm run dev` **不得抢 5173**；QA 树常驻时其它 Vite 应落到 5174+。Agent **不得**为收尾停掉 QA 树 Vite（其它树仍须停；见 `browser-energy`）。  
+- 闲置盘点：此树 **不得**列入 `propose_remove`。不要为此树写开发用 `.ft-session-lock`。
+
+#### 一次性建树（本机 · 可复制）
+
+**A. 只建目录（现在就能跑；不碰正在测的 5173）**
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001
+git fetch origin develop
+git worktree add --detach /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa origin/develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
+npm install
+```
+
+`--detach` **不**抢走 `develop` 分支，也 **不**改正在跑 Vite 的那个 checkout。**不要**在这一步 `npm run dev:qa`。
+
+**B. 把 5173 切到 QA 树（仅当本轮 `http://127.0.0.1:5173` 测试已结束）**
+
+先停掉当前占用 5173 的 Vite，再：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
+npm run dev:qa
+```
+
+Safari 仍是 `http://127.0.0.1:5173/?product=1`。切完后硬刷新一次，确认 hash = 当时 `origin/develop` tip。  
+废止每次新建 `…-wt-qa-develop-tip` 再拆掉的口径。禁止默认 `git switch --detach origin/main` 去给 QA 腾 `develop`——那会把正在测的目录换成别的代码。
+
+#### 合入 develop 之后（强制）
+
+任何 PR **已经合并进** `develop`（含本回合 `gh pr merge`、GitHub auto-merge 完成、或发现 `origin/develop` 已前进）后，Agent **必须**：
+
+1. 跑 `cd focus-tiger && npm run sync:qa-develop`。  
+   - **本机且 QA 树存在**：脚本在该目录执行 `git fetch` + **`git pull --ff-only origin develop`**（detached 则为 `git merge --ff-only origin/develop`）。脏树或无法快进则停手汇报，禁止 `reset --hard` 清别人的改动。  
+   - **Cloud / 本机无此树**：脚本 **不得**假装已 pull；打印 `qa_worktree: ABSENT`，仍根据 `origin/develop` 的 diff 给出下面 ①②。  
+2. 在用户可见回复（「待你知道」）**明确写出**：  
+   - **① 是否需要重启 dev server**：依赖或构建配置改动（`package.json` / lockfile / `vite.config.*` / `index.html` / `.env*` 等，见脚本 `restart:` 行）→ **需要重启**（必要时先 `npm install`）；否则写 **硬刷新即可**。  
+   - **② 一句这次合并带来什么变化**（脚本 `summary:` 行），方便知道该测什么。  
+3. **禁止**用过时 feature worktree / 非 5173 端口冒充关单 tip。
 
 ### 长期并存功能分支的同步纪律
 
@@ -254,7 +315,8 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
 1. **查一次** Required checks（`pre-merge with develop`、`test:pr-smoke` 等；`gh pr checks` / `gh pr view --json statusCheckRollup`）。  
 2. **已全绿** → 立刻执行 `gh pr merge <n> --merge`（或团队当时约定的 merge 方式 / Cloud 侧等价合并工具）。若 Cursor Auto-review 弹出 **Run** → 点 Run 即执行，**不要**改口成「等人工测完再合」。  
 3. **尚未绿** → **只做一次** `gh pr merge <n> --auto --merge`（启用 GitHub auto-merge），汇报 PR URL +「等 CI 绿后自动合」；**禁止**在本回合轮询长 CI（见 `agent-token-cost`）。  
-4. 合并成功后汇报：**PR 号**、**merge commit 短 hash**、**`origin/develop` tip**。并写明：TEST_TRACKER 相关行仍是「待人工测试」——**已合入 ≠ 已验证**。
+4. 合并成功后汇报：**PR 号**、**merge commit 短 hash**、**`origin/develop` tip**。并写明：TEST_TRACKER 相关行仍是「待人工测试」——**已合入 ≠ 已验证**。  
+5. 合并成功后跑 `npm run sync:qa-develop`（见 `qa-develop-worktree`），并在「待你知道」写清脚本的 **① `restart:`（是否须重启 QA Vite）** 与 **② `summary:`（一句变化）**。Cloud 无 QA 树时仍须汇报 ①②，并注明 `qa_worktree: ABSENT`。
 
 #### 不适用（仍须你明确下令，或停手汇报）
 
@@ -488,7 +550,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
@@ -504,6 +566,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
+| 关单 / 批量人工测试 | 固定 QA 树 `…-wt-develop-qa` · `:5173`；合入后 `npm run sync:qa-develop`（见 `qa-develop-worktree`） |
 | 修 bug（且有姊妹功能分支） | 修完后对照姊妹线是否需同修；写入「待你决定 / 待你知道」（见「长期并存功能分支的同步纪律」） |
 | 修 bug | 从 `develop` 切 `fix/…` |
 | 纯文档更新 | 在 `develop` 或 `feature/…` 上改、跑 `docs:check`、**立刻 commit** |
