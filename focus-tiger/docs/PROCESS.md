@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Idle Document PiP 陪伴浮窗（2026-08-16 · 实验原型）**：桌面 Chrome/Edge 在 Idle 热力图簇旁可主动打开置顶小窗，镜像阿寅呼吸；不支持的浏览器入口完全不出现。**不是**桌面客户端、不是 Focusing Immersive Presence 浮动计时窗。使用记录 `focus-tiger.idle-companion-pip.v1` 只供后续是否加大投入，不用于提醒。TRACKER + 场景 AA 待人工。
+
 - **「?」简介卡 colophon + 源码版权头（2026-08-16）**：点「?」卡最末见 Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026。第一方 JS/CSS/HTML 文件头 + `LICENSE`。TRACKER 待人工。
 
 - **Idle 轻点阿寅（2026-08-16）**：首页点阿寅播 `earWiggleHeadTouch`（摸摸自己头顶）；Focusing 仍走 Recover。TRACKER 待人工。

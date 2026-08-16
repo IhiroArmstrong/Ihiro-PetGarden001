@@ -55,6 +55,7 @@
 | `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；池条目 `{ id, text, attribution? }`（Yin 短句无署名；古典/文学句有 locale 署名）；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**；**Phase A 落点** = Reflection 卡底部（`[data-testid=reflection-daily-wisdom]`）；Phase B 印花另支 |
 | `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》：`{ revealed, revealedAt, scoreAtReveal }`；门槛 = 统一练习 **score ≥ 21**；首次完成仪式后出卡（ZH + EN + 乐五斋诗稿 + 章）；菜单可重读；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
+| `focus-tiger.idle-companion-pip.v1` | `idleCompanionPipGate` / `IdleCompanionPipUI` | Idle Document PiP 实验原型：`{ used, usedAt }`。只记是否曾打开过浮窗，供后续是否加大投入参考；**不得**用于提醒 / 激励 / 限频。Safari 等不支持时入口不挂载 |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。

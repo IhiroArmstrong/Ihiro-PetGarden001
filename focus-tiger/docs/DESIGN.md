@@ -328,6 +328,27 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 本探针**不**决定 Electron / Tauri / PWA 终局；见 `PROCESS.md` Backlog「本地桌面 APP 打包选型」。
 
+### Idle Document PiP 陪伴浮窗（实验原型 · 2026-08-16）
+
+> **命名**：对内 `IdleCompanionPipUI` / `idleCompanionPipGate`。  
+> **禁止**与上一节 Focusing **Immersive Presence** 浮动钮、以及 Companion Mode 三选一混入口。  
+> **地位**：轻量原型，验证「切到其他窗口/App 时仍能看见阿寅安静呼吸」。**不是**最终形态；待观察使用数据后再决定是否加大投入。不做 Electron / 系统托盘 / 关浏览器后仍常驻。
+
+#### 1. 何时出现
+
+- **入口**：仅 Idle 主界面（热力图簇旁小圆钮）。用户主动点开，**不**自动弹出。
+- **Feature detect**：仅 `documentPictureInPicture.requestWindow` 可用时挂载入口（桌面 Chrome / Edge）。Safari / Firefox / 不支持的环境 **完全不出现入口**——不报错、不写「暂不支持」。
+- 离开 Idle（进入 Focusing 等）→ 入口隐藏；若浮窗已开则一并关闭。原页面会话状态不受浮窗持有。
+
+#### 2. 浮窗内容
+
+- 只镜像当前 Idle 呼吸/陪伴序列帧（复用主界面精灵，不新做美术）。
+- **无**计时、打卡、按钮、Reflection / Journey Log / Tip Jar。关闭走系统 PiP 窗或再点入口。
+
+#### 3. 使用记录
+
+- localStorage `focus-tiger.idle-companion-pip.v1`：`{ used, usedAt }`。只记「是否曾打开过」，**不得**用于提醒、激励或限频文案。
+
 ### 禅意背景音（Ambient Soundscape）
 
 > **2026-07-16 定稿；MVP 运行时已落地**（`AmbientSoundscapeController` + 角落 UI；曲目：Mer-Ka-Ba / Meditation Impromptu 02）  

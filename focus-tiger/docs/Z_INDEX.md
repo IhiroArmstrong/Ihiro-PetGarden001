@@ -19,6 +19,7 @@
 | **0** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-wash` 节日轻氛围（pointer-events:none；在角色/UI 下） |
 | **1** | `index.html` | `#poster` 启动海报图 |
 | **1** | `src/ui/ReminderPreferenceUI.js` | Reminder 时钟控件根（`.reminder-pref`），相对热力图簇内叠层 |
+| **1** | `src/ui/IdleCompanionPipUI.js` | Idle Document PiP 入口（`.idle-companion-pip`），相对热力图簇内叠层；仅 Chromium 挂载 |
 | **2** | `index.html` | `#scene-canvas` 3D/WebGL 场景画布 |
 | **2** | `index.html` | FocusHUD 连胜环（`.ft-hud__streak`）相对 HUD 卡 |
 | **2** | `src/effects/LightProgression.js` | 日常 focus 金晕 rim（`#light-progression-rim`），在角色周围、sprite 之下 |

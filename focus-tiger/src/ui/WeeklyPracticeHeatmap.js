@@ -220,7 +220,7 @@ export class WeeklyPracticeHeatmap {
         position: absolute;
         left: 16px;
         /*
-         * Idle 左下微组件：热力 + 时钟 + ? 同簇。
+         * Idle 左下微组件：热力 + 时钟 + Idle PiP（Chromium）+ ? 同簇。
          * 须在 home 三球带之上（球高 ~80 + dock 底边 ~36 + 缝），
          * 否则球/蒲团会盖住簇与 weekly-heatmap mint hint。
          */

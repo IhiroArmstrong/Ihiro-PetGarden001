@@ -45,6 +45,7 @@ import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
 import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
+import { IdleCompanionPipUI } from './ui/IdleCompanionPipUI.js';
 import { createIdleChromeFacade } from './core/createIdleChromeFacade.js';
 import {
   WeeklyPracticeHeatmap,
@@ -1301,6 +1302,12 @@ async function init() {
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
   const sessionUiGate = new SessionUiGate();
 
+  const readSpriteFrameSrc = () => {
+    const img = spritePlayer?.imgEl;
+    if (!img) return null;
+    return img.currentSrc || img.src || null;
+  };
+
   const immersivePresenceUI = new ImmersivePresenceUI(
     document.getElementById('ui-overlay'),
     {
@@ -1309,14 +1316,21 @@ async function init() {
         completionPending: sessionUiGate.completionPending
       }),
       getElapsedSeconds: () => focusSession.getElapsedSeconds(),
-      getSpriteFrameSrc: () => {
-        const img = spritePlayer?.imgEl;
-        if (!img) return null;
-        return img.currentSrc || img.src || null;
-      }
+      getSpriteFrameSrc: readSpriteFrameSrc
     }
   );
   window.__immersivePresence = immersivePresenceUI;
+
+  const idleCompanionPipUI = new IdleCompanionPipUI(
+    weeklyPracticeHeatmap.getClusterEl(),
+    {
+      getIsIdle: () =>
+        stateManager.state === STATES.IDLE &&
+        !Boolean(microRitualUI?.isOpen?.()),
+      getSpriteFrameSrc: readSpriteFrameSrc
+    }
+  );
+  window.__idleCompanionPip = idleCompanionPipUI;
 
   /**
    * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
@@ -3302,6 +3316,7 @@ async function init() {
     reminderPreferenceUI.setVisible(
       stateManager.state === STATES.IDLE && !microOpen
     );
+    idleCompanionPipUI.syncVisibility();
     languagePreferenceUI.setFabVisible(
       stateManager.state === STATES.IDLE && !microOpen
     );
