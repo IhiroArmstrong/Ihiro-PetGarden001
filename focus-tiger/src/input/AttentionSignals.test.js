@@ -9,7 +9,9 @@ import assert from 'node:assert/strict';
 import {
   AttentionSignals,
   DISTRACTION_LOG_THRESHOLD_MS,
-  REFOCUS_DISPLAY_THRESHOLD_MS
+  REFOCUS_DISPLAY_THRESHOLD_MS,
+  TAB_RETURN_WHISPER_MAX_MS,
+  classifyTabReturnDuration
 } from './AttentionSignals.js';
 
 class MockDocument extends EventTarget {
@@ -53,7 +55,11 @@ test('records a candidate after 20 seconds without displaying it', () => {
   setNow(DISTRACTION_LOG_THRESHOLD_MS);
   windowRef.dispatchEvent(new Event('focus'));
   assert.deepEqual(events, [
-    { durationMs: DISTRACTION_LOG_THRESHOLD_MS, displayEligible: false }
+    {
+      durationMs: DISTRACTION_LOG_THRESHOLD_MS,
+      displayEligible: false,
+      whisperEligible: true
+    }
   ]);
 });
 
@@ -78,4 +84,26 @@ test('deduplicates blur and hidden signals for the same departure', () => {
   documentRef.hidden = false;
   documentRef.dispatchEvent(new Event('visibilitychange'));
   assert.equal(events.length, 1);
+});
+
+test('classifyTabReturnDuration: <A silent, [A,B] whisper, >B above-cap', () => {
+  assert.equal(classifyTabReturnDuration(DISTRACTION_LOG_THRESHOLD_MS - 1), 'silent');
+  assert.equal(classifyTabReturnDuration(DISTRACTION_LOG_THRESHOLD_MS), 'whisper');
+  assert.equal(classifyTabReturnDuration(TAB_RETURN_WHISPER_MAX_MS), 'whisper');
+  assert.equal(classifyTabReturnDuration(TAB_RETURN_WHISPER_MAX_MS + 1), 'above-cap');
+});
+
+test('marks whisperEligible only inside the [20s, 180s] band', () => {
+  const { events, windowRef, setNow } = setup();
+  windowRef.dispatchEvent(new Event('blur'));
+  setNow(TAB_RETURN_WHISPER_MAX_MS);
+  windowRef.dispatchEvent(new Event('focus'));
+  assert.equal(events[0].whisperEligible, true);
+
+  const again = setup();
+  again.windowRef.dispatchEvent(new Event('blur'));
+  again.setNow(TAB_RETURN_WHISPER_MAX_MS + 1);
+  again.windowRef.dispatchEvent(new Event('focus'));
+  assert.equal(again.events[0].whisperEligible, false);
+  assert.equal(again.events[0].displayEligible, true);
 });

@@ -45,7 +45,7 @@
 | **FocusSession 计时 + Focus HUD** | ✅ 达标判定片段 + HUD 映射 | ✅ hover 浮层；开表见 Focusing | 弱 | `FocusSession` / HUD | **部分** | 整场计时走动、Rise 手感、streak 环观感 |
 | **达标反馈 Celebrating / SessionComplete** | ✅ A7–A8 分流 | ❌ | ❌ | `session-completion-feedback` | **仅逻辑** | 动画 DOM **零 e2e** → 只能人工 |
 | **Reflection + 意图回显** | ✅ C（mock open） | ✅ `reflection-intention-echo` | ❌ | `SessionIntentionStore` / Reflection | **主路径有 DOM** | 三问内容、淡入、rise-stretch 观感 |
-| **Recover / Re-focus** | ✅ B（抑制门闩+mock） | ❌ | ❌ | `MindfulReminder` / Attention | **仅逻辑** | 真实切标签 >60s、toast、nod-bow = **纯人工** |
+| **Recover / Re-focus** | ✅ B（抑制门闩+mock）+ 切走轻语三档/冷却单测 | ❌ | ❌ | `MindfulReminder` / Attention / `tabReturnWhisperGate` | **仅逻辑** | 真实切标签、轻语钮 DOM、nod-bow = **纯人工** |
 | **Honesty 补登（选时长→呼吸→记账）** | ✅ D 控制器 | ✅ **真实链** `honesty-bridge-real-path`（+ 入口隐藏等） | ❌ | `HonestyCheckIn*` | **DOM 主路径已锁** | 排版/睡姿观感仍人工；`?honestyBreathMs=` 缩短墙钟 |
 | **Honesty 桥接 CTA** | ✅ D Yes/No | ✅ 真实 Yes/No + 注入叠层用例 | ❌ | Bridge controllers | **真实+注入双覆盖** | 注入仍用于叠层/375 tip 邻接 |
 | **DORMANT / 睡姿 / cloakWake** | ✅ D sleep→wake | ❌ | ❌ | `dormantIdle` / Trigger | **仅逻辑** | 披毯/睡姿序列纯人工 |
@@ -122,7 +122,7 @@
 |---|---|---|
 | Idle 呼吸→眨眼「闪一下」 | L-eyes / 帧级叠化；e2e 不看像素 | `TEST_TRACKER` Idle 分列 · `IdleOrchestrator.test` 契约 |
 | Celebrating / SessionComplete **动画像素** | 序列观感；逻辑分流已有 smoke A7–A8 | Celebrating / SessionComplete 人工行 |
-| 真实切标签 **>60s** Re-focus | 墙钟长、与 demo 时长冲突 | Re-focus 人工行 · 场景 B |
+| 真实切标签 **>60s** Re-focus / 切走轻语体感 | 墙钟长、与 demo 时长冲突 | Re-focus / tab-return whisper 人工行 · 场景 B |
 | Choose pingpong + 1s 叠化观感 | 动画帧级 | Arrival Choose 行 |
 | Notice 短句可读时长 | 时长观感 | Notice 行 |
 | Safari / WebKit 布局专项 | Playwright 默认 Chromium | Companion Safari 人工 |
