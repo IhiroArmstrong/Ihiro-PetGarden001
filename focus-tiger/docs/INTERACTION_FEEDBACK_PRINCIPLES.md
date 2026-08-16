@@ -64,9 +64,10 @@
 
 ## Agent / PR 落地（强制）
 
-任何新增或修改的可点击交互，必须在 **PR 描述**里回答：
+任何新增或修改的可点击交互，必须在 **PR 描述**里回答（现为 **三问**）：
 
 1. **点击后 0–1 秒内用户会看到什么？**
 2. **如果本次操作按设计不生效，属于 `SILENT_BEHAVIORS.md` 里哪一条？不在白名单里的沉默视为 bug。**
+3. **冲突扫描结论**（对照 `SCENARIO_TESTS.md`）——全文见 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md)（`RULES_INDEX` → `feature-conflict-review`）；本页不展开扫描细则。Q3 对所有非机械改动生效，不限于可点击交互。
 
 Cursor 摘要见 `.cursor/rules/focus-tiger-interaction-feedback.mdc`；PR 模板有对应栏。勿在其它文档复述本页六条全文。

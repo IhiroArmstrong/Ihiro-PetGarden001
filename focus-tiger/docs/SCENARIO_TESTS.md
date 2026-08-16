@@ -30,6 +30,8 @@
 
 **点击后 0–1 秒（强制 · 2026-08-14）**：含可点击步骤的**新场景 / 改写场景**必须写清「点击后 0–1 秒内用户应该看到什么？」。若该步按设计不生效，须点名 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md) 的 `SB-xx`，禁止只写「无反应」。原则全文 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)（`RULES_INDEX` → `interaction-feedback`）。
 
+**功能冲突扫描（强制 · 2026-08-16）**：新功能/改动**实现前**须对照本文已上线场景做冲突扫描。全文 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md)（`RULES_INDEX` → `feature-conflict-review`）。本文是对照剧本，不是扫描条款 SSOT。
+
 **存量补句优先级（禁止「随改写再补」）**：已挂钩白名单的是 **B / P / X / Y**。其余正式场景按下表排期补 0–1 秒句（权威跟踪：`TEST_TRACKER`「存量场景 0–1s 补句」行）。**不得**等下次碰巧改到该场景才写。
 
 | 优先 | 场景 | 为何先写 | 0–1 秒句现状 |

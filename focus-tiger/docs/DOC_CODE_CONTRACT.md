@@ -264,4 +264,5 @@ npm test -- src/core/StateManager.test.js
 | `SHARED_RESOURCES.md` | §4 含机器块；§1 key 叙述仍手写，key 集合由 L-01 锁 |
 | `SCENARIO_TESTS.md` | 故事剧本；A–D 逻辑由 `scenario-smoke` 锁，不自动生成 |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收 vs 结果反馈；已知静默白名单在 `SILENT_BEHAVIORS.md`（`interaction-feedback`） |
+| `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（强度 / 语气 / 职责）；有疑点须等拍板（`feature-conflict-review`） |
 | `ARCHITECTURE.md`「工程加固四步」 | Gate + 状态机机器块已落地；本文件为第 1 步的制度化延伸 |

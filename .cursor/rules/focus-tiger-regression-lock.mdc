@@ -227,6 +227,11 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
 禁止只在正文段落里夹带「你可以决定要不要…」「顺便说一下已 commit」。无事项仍须输出该标题并写「无」。细则见 `DEV_WORKFLOW_QUALITY.md` §2.4 / §3.4。
 触及**长期并存姊妹功能分支**或共享入口修复时，清单还须按 `WORKFLOW.md`「长期并存功能分支的同步纪律」（N17 / `git-sibling-branch-sync`）写明波及面。
 
+## 实现前冲突扫描（指针）
+
+> **SSOT**：`focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）。  
+> 有冲突疑点时须先等用户拍板，**不得**用下文「验证通过后默认 commit / push」压过该扫描。勿在本文件复述三轴。
+
 ## Commit 汇报与分支门禁（强制）
 
 1. **允许自动 commit 的范围**：Agent 在**一个已验证通过的任务**收尾后，可自动 `git commit` 到**当前工作分支**（`develop` 或对应的 `feature/*` / `fix/*`）。**不需要**逐笔询问用户是否 commit。  

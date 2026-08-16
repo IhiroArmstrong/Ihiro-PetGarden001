@@ -70,6 +70,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `risk-mitigation-playbook` | 中高风险任务落地降险 Playbook | `focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md` | 触发条件 |
 | `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
+| `feature-conflict-review` | 实现前功能冲突扫描（强度 / 语气 / 职责） | `focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md` | 扫描三轴 |
 
 <!-- rules-authority-index:end -->
 
@@ -104,8 +105,9 @@ cd focus-tiger && npm run rules:doc-sync
 | `release-blocker-ledger` | 「缺陷分级 / `check:open-blockers` 见 `TEST_TRACKER`；发版硬闸见 regression-lock「发布候选门禁」」 | 平行发明第二套逾期/分级口径；发版前省略 legacy 提醒；把漏标 `Fixes:` 的技术性补正当成产品向「降级放行」 |
 | `z-index-registry` | 「层叠见 `Z_INDEX.md`」 | 平行另造第二份 z-index 分配表 |
 | `risk-mitigation-playbook` | 「中高风险落地降险见 `RISK_MITIGATION_PLAYBOOK.md`」；`WORKFLOW` 可一行入口 | 把降险切片写成可跳过 Dispatcher / 可先挂产品钩子再补动画 / 可另造简化兜底；在非 SSOT 完整复述四件套+红线 |
-| `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用两问 | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
+| `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
+| `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -124,12 +126,14 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`） |
+| [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
 | [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；验收 tip 规则引用 `TEST_TRACKER` |
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | [`RISK_MITIGATION_PLAYBOOK.md`](./RISK_MITIGATION_PLAYBOOK.md) | **SSOT**：中高风险功能落地降险（四件套 + 架构红线；索引 `risk-mitigation-playbook`） |
+| [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) | **SSOT**：实现前功能冲突扫描（强度 / 语气 / 职责；索引 `feature-conflict-review`） |
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
 | [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip；**SSOT**：标「已通过」覆盖分工（`qa-pass-coverage-split`）；**SSOT**：批量人工测试口令（`qa-batch-human-test`）；**SSOT**：缺陷分级与处理承诺（`release-blocker-ledger`） |
 | [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、unit\*→smoke 分类（§7）、Honesty/i18n 发布口径 |
@@ -151,6 +155,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
 | `PRINCIPLES.md` | 硬性红线（含经济可持续 / 非 MVP-only） |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
+| `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
@@ -199,6 +204,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-16 | 新增 `feature-conflict-review`：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等用户拍板（优先于默认执行）；SSOT `FEATURE_CONFLICT_REVIEW.md`；PR 三问 Q3；Cursor 规则 + `SCENARIO_TESTS` 文首索引 |
 | 2026-08-15 | 扩展 `git-parallel-worktree`：Cloud 旁支落到本机须 `worktree add`，禁止主仓 Apply / checkout migrated branch（超时 + 抢 5173/主仓检出）。SSOT `WORKFLOW.md` 并行 worktree 第 8 款 |
 | 2026-08-15 | 新增 `qa-develop-worktree`：固定 `…-wt-develop-qa` 关单/批量测树、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化；feature 开发树不变。SSOT `WORKFLOW.md` |
 | 2026-08-14 | GitHub 默认分支改为 `develop`：`schedule` 读默认分支 YAML（现为 `develop`），不必再为 cron 把 workflow 同步到 `main`；见 `ENV_CONFIG.md` §3 |

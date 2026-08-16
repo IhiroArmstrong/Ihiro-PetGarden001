@@ -10,10 +10,11 @@ alwaysApply: true
 
 ## 任务开始前
 
-1. 确认本次改动是否触碰下方红线 / 架构边界。  
-2. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；用户、JTBD、指标、付费或隐私相关任务 → 先对照 `MVP_PRODUCT_DEFINITION.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
-3. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。  
-4. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
+1. 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；有冲突疑点须等用户拍板。勿在本文件复述三轴。  
+2. 确认本次改动是否触碰下方红线 / 架构边界。  
+3. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；用户、JTBD、指标、付费或隐私相关任务 → 先对照 `MVP_PRODUCT_DEFINITION.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
+4. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。 
+5. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
 
 ## 权威文档地图
 
@@ -45,6 +46,7 @@ alwaysApply: true
 | `docs/COVERAGE_GAP_AUDIT.md` | **功能 vs smoke/e2e 覆盖缺口审计**：模块对照矩阵、永不自动化清单、自动化后续顺序（Task 3→2→扩 smoke）；与 `TEST_TRACKER` §C / `SCENARIO_TESTS` 互补 |
 | `docs/Z_INDEX.md` | **产品 z-index 层叠登记**（`RULES_INDEX` → `z-index-registry`）；新加 fixed / 改层级先查表 |
 | `docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | **点击反馈**：接收反馈 ≠ 结果反馈；禁止哑点击；PR 须答 0–1s（`RULES_INDEX` → `interaction-feedback`） |
+| `docs/FEATURE_CONFLICT_REVIEW.md` | **实现前冲突扫描**：对照 `SCENARIO_TESTS` 的强度 / 语气 / 职责；有疑点须等拍板（`RULES_INDEX` → `feature-conflict-review`） |
 | `docs/SILENT_BEHAVIORS.md` | **已知静默白名单**：不在表里的「没反应」测试时一律当 bug |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
 
@@ -87,6 +89,7 @@ alwaysApply: true
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 - 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
 - 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
+- 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；勿在本文件复述三轴。
 
 ## TEST_TRACKER 日常维护（Part 2）
 
