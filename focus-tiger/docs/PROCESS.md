@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **收回切走轻语（2026-08-16）**：revert 已合入的 PR #323。Here & Now 切走 **20s–180s** 再回来**不再**出 Yin 轻语两钮（一起做 / 跳过）或嵌套呼吸；**>60s** 仍走经典 Re-focus（观察式 toast + `nod-bow`）。产品判断：被动回归不应比主动 Recover 更重。TRACKER 待人工确认轻语不再出现、经典路径仍在。
+
 - **Idle Document PiP 陪伴浮窗（2026-08-16 · 实验原型）**：桌面 Chrome/Edge 在 Idle 热力图簇旁可主动打开置顶小窗，镜像阿寅呼吸；不支持的浏览器入口完全不出现。**不是**桌面客户端、不是 Focusing Immersive Presence 浮动计时窗。使用记录 `focus-tiger.idle-companion-pip.v1` 只供后续是否加大投入，不用于提醒。TRACKER + 场景 AA 待人工。
 
 - **「?」简介卡 colophon + 源码版权头（2026-08-16）**：点「?」卡最末见 Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026。第一方 JS/CSS/HTML 文件头 + `LICENSE`。TRACKER 待人工。
