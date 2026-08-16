@@ -326,7 +326,7 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 #### 3. 与壳选型的关系
 
-本探针**不**决定 Electron / Tauri / PWA 终局；见 `PROCESS.md` Backlog「本地桌面 APP 打包选型」。
+本探针**不**等于已做系统托盘桌宠；电脑版终局壳已拍板 **Electron**（见 `PROCESS.md` Backlog「本地桌面 APP 打包」）。PiP 仍是浏览器实验，加大投入另议。
 
 ### Idle Document PiP 陪伴浮窗（实验原型 · 2026-08-16）
 

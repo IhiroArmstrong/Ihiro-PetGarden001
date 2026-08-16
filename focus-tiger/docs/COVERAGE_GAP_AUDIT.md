@@ -312,4 +312,4 @@ npm test                    # 全部 *.test.js（含 unit*）
 - Ambient 播放 e2e、Celebrating 动画 e2e、场景 E/F 真实墙钟 DOM  
 - **zh/es/de/fr 审校达 ready 并决定对外声称**  
 
-**仍阻塞 v1（产品面 · 非本审计）**：桌面壳打包选型等——见 `PROCESS.md`。
+**仍阻塞 v1（产品面 · 非本审计）**：Electron 脚手架（壳已拍板，窗口未写）等——见 `PROCESS.md`。
