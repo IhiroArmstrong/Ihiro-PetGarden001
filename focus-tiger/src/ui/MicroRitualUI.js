@@ -100,30 +100,11 @@ export class MicroRitualUI {
     /** @type {((ev: Event) => void) | null} */
     this._onVisibility = null;
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
-    /** Focusing 内嵌 30s：不走 picker / 不占 post-session overlay。 */
-    this._nestedInFocus = false;
-    this._hideDurationLabel = false;
   }
 
   /** @returns {boolean} */
   isOpen() {
     return this.phase !== 'hidden';
-  }
-
-  /** Focusing 内嵌呼吸：chrome 不得当 post-session overlay / 禁 Rise。 */
-  isNestedInFocus() {
-    return this._nestedInFocus === true;
-  }
-
-  /**
-   * Reuse scene S breath panel inside Focusing. Timer of the parent session
-   * is unchanged (Recover: wall clock continues).
-   * @param {number} durationMs
-   */
-  startNestedBreath(durationMs) {
-    this._nestedInFocus = true;
-    this._hideDurationLabel = true;
-    this.startBreath(durationMs, { durationMinutes: 1 });
   }
 
   /** @returns {boolean} */
@@ -189,7 +170,6 @@ export class MicroRitualUI {
     this._durationMs = Number.isFinite(durationMs)
       ? durationMs
       : microRitualMinutesToMs(this._durationMinutes);
-    if (!this._nestedInFocus) this._hideDurationLabel = false;
     this._ensureRoot();
     this.phase = 'breath';
     this._render();
@@ -216,8 +196,6 @@ export class MicroRitualUI {
   /** 安静离开：清计时、收面板；由 handler 决定不记账。 */
   leave() {
     if (this.phase === 'hidden') return;
-    this._nestedInFocus = false;
-    this._hideDurationLabel = false;
     this._unbindVisibility();
     this._clearTimers();
     this._startedAt = null;
@@ -228,8 +206,6 @@ export class MicroRitualUI {
   }
 
   hide() {
-    this._nestedInFocus = false;
-    this._hideDurationLabel = false;
     this._unbindVisibility();
     this._clearTimers();
     this._startedAt = null;
@@ -392,6 +368,15 @@ export class MicroRitualUI {
       'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:6px;font-weight:560;';
     title.textContent = t('ARRIVAL_BREATH_GUIDE');
 
+    const minsLabel = document.createElement('div');
+    minsLabel.style.cssText =
+      'font-size:12px;color:#8b7355;text-align:center;margin-bottom:10px;';
+    minsLabel.dataset.microRitualMinutesLabel = '1';
+    minsLabel.textContent = String(t('micro_ritual.duration_label')).replace(
+      /\{n\}/g,
+      String(this._durationMinutes)
+    );
+
     const phaseEl = document.createElement('div');
     phaseEl.dataset.microRitualBreathPhase = '1';
     phaseEl.style.cssText =
@@ -404,20 +389,6 @@ export class MicroRitualUI {
     leave.dataset.microRitualLeave = '1';
     leave.textContent = t('micro_ritual.leave');
     leave.addEventListener('click', () => this.leave());
-
-    if (this._hideDurationLabel) {
-      this.root.append(title, phaseEl, leave);
-      return;
-    }
-
-    const minsLabel = document.createElement('div');
-    minsLabel.style.cssText =
-      'font-size:12px;color:#8b7355;text-align:center;margin-bottom:10px;';
-    minsLabel.dataset.microRitualMinutesLabel = '1';
-    minsLabel.textContent = String(t('micro_ritual.duration_label')).replace(
-      /\{n\}/g,
-      String(this._durationMinutes)
-    );
 
     this.root.append(title, minsLabel, phaseEl, leave);
   }

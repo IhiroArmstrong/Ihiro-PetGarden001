@@ -78,7 +78,6 @@ import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
 import { MUSTARD_SEED_SEAL_STORAGE_KEY } from './mustardSeedSeal.js';
 import { DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY } from './dailyZenQuote.js';
 import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
-import { TAB_RETURN_WHISPER_STORAGE_KEY } from './tabReturnWhisperGate.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
@@ -157,8 +156,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY,
   DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
-  IDLE_COMPANION_PIP_STORAGE_KEY,
-  TAB_RETURN_WHISPER_STORAGE_KEY
+  IDLE_COMPANION_PIP_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

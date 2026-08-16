@@ -56,8 +56,6 @@
 
 ## 当前进度速览
 
-- **切走后柔性提醒（2026-08-16）**：复用 Page Visibility / `AttentionSignals`；离开时长 **[20s, 180s]** 回页出 Yin 轻语（一起做 → 场景 S 30s 呼吸，计时不停；跳过/超时同 Skip）。**&lt;20s** 仍 SB-01；**&gt;180s** 不重复轻语。独立冷却 `focus-tiger.tab-return-whisper.v1`（180s，不与 Tiger Anchor 共用时钟）。TRACKER 待人工。
-
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
 **最后更新时间**：2026-08-16（UTC+8） · 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
@@ -65,6 +63,8 @@
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **收回切走轻语（2026-08-16）**：revert 已合入的 PR #323。Here & Now 切走 **20s–180s** 再回来**不再**出 Yin 轻语两钮（一起做 / 跳过）或嵌套呼吸；**>60s** 仍走经典 Re-focus（观察式 toast + `nod-bow`）。产品判断：被动回归不应比主动 Recover 更重。TRACKER 待人工确认轻语不再出现、经典路径仍在。
 
 - **Idle Document PiP 陪伴浮窗（2026-08-16 · 实验原型）**：桌面 Chrome/Edge 在 Idle 热力图簇旁可主动打开置顶小窗，镜像阿寅呼吸；不支持的浏览器入口完全不出现。**不是**桌面客户端、不是 Focusing Immersive Presence 浮动计时窗。使用记录 `focus-tiger.idle-companion-pip.v1` 只供后续是否加大投入，不用于提醒。TRACKER + 场景 AA 待人工。
 
