@@ -1,0 +1,21 @@
+---
+description: 新功能/改动实现前必须先做冲突扫描；有冲突须等用户拍板（始终生效）
+alwaysApply: true
+---
+
+# Focus Tiger · 功能冲突扫描（Agent 摘要）
+
+> **SSOT**：`focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）。  
+> 对照剧本：`focus-tiger/docs/SCENARIO_TESTS.md`。本文件只留强制动作，**不**复述三轴全文。
+
+## 强制（本会话）
+
+任何新功能/改动，**写代码或改权威文档之前**先对照 `SCENARIO_TESTS.md` 做冲突扫描（强度错位 / 人设语气 / 职责重叠）。
+
+1. **无冲突**：回复里简述比对了哪些相邻场景、为何无冲突，然后正常执行。  
+2. **任一轴有冲突疑点**：先列出冲突点与判断（可给建议，**不能替用户下结论**）。**等待用户明确决定**后才能开始实现。即使是文档改动也不能默认执行。  
+3. 本条**优先于**「验证通过后默认 commit / push / 开 PR」。
+
+机械改动（错字、机器块刷新、与用户路径无关）→ 回复写 **「无用户路径」** 即可。
+
+PR 描述第三问 = 上述扫描结论。Q1–Q2 仍见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`interaction-feedback`）。

@@ -81,4 +81,26 @@ describe('rules-authority-registry', () => {
       )
     );
   });
+
+  it('defines feature-conflict-review SSOT as FEATURE_CONFLICT_REVIEW 扫描三轴', () => {
+    const t = RULE_AUTHORITY_TOPICS.find((x) => x.id === 'feature-conflict-review');
+    assert.ok(t);
+    assert.equal(t.ssotPath, 'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md');
+    assert.match(t.ssotSection, /扫描三轴/);
+  });
+
+  it('flags implementing despite a conflict scan hit', () => {
+    const t = RULE_AUTHORITY_TOPICS.find((x) => x.id === 'feature-conflict-review');
+    const bad = t.forbiddenOutsideSsot.find((f) => f.id === 'conflict-then-default-execute');
+    assert.ok(bad);
+    assert.ok(bad.pattern.test('发现冲突后仍可先实现再问用户'));
+    assert.equal(
+      hasForbiddenOutsideHistory(
+        '有冲突须先等待用户拍板，不得先实现',
+        bad.pattern,
+        bad.exemptIfLineMatches
+      ),
+      false
+    );
+  });
 });

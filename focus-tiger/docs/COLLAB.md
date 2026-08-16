@@ -73,6 +73,8 @@ COLLAB.md（本文档，协作层）
 **回归锁约定**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`（门禁）与 `DEV_WORKFLOW_QUALITY.md`（叙事）；主题权威索引 `RULES_INDEX.md`。此处不复述。
 
 **点击反馈约定（2026-08-14）**：含可点击交互的 Task Brief / PR 须回答「点击后 0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）。
+
+**功能冲突扫描约定（2026-08-16）**：实现前对照 `SCENARIO_TESTS.md` 做冲突扫描；有疑点须等用户拍板。全文见 `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）。
 ---
 
 ## 四、什么时候需要更新TASKS.md（判断标准）

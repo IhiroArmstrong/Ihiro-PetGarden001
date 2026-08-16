@@ -79,6 +79,7 @@
 ### 与其它 SSOT 的边界（防重复）
 
 - **本文件**：何时降险、四件套怎么用、哪些话术不许当借口。  
+- **`FEATURE_CONFLICT_REVIEW.md`**：实现前用户路径是否与已上线故事冲突（`feature-conflict-review`）；先扫冲突，再套本 playbook。  
 - **`ARCHITECTURE` / `*_WIRING` / `*_BIBLE`**：具体模块怎么接线、情绪语义是什么——落地时改那些文件，**不**把语义抄进本 playbook。  
 - **回归锁 / `DEV_WORKFLOW_QUALITY`**：修好/重写时的主路径+回流、已好清单——与本 playbook **叠加**，不互相替代。
 
@@ -127,3 +128,4 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-08-06 | 初版：触发条件、降险四件套、架构红线（三类话术陷阱）、落地前清单、吹花案例脱敏摘要；接入 `risk-mitigation-playbook` |
+| 2026-08-16 | 边界表补 `FEATURE_CONFLICT_REVIEW.md`：先扫用户路径冲突，再套本 playbook |

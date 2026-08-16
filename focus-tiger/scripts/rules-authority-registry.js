@@ -41,6 +41,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
+  '.cursor/rules/focus-tiger-feature-conflict-review.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -52,7 +53,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/ARCHITECTURE.md',
   'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
   'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
-  'focus-tiger/docs/SILENT_BEHAVIORS.md'
+  'focus-tiger/docs/SILENT_BEHAVIORS.md',
+  'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
 ];
 
 /**
@@ -1139,7 +1141,8 @@ export const RULE_AUTHORITY_TOPICS = [
       }
     ],
     citeExemptFiles: [
-      'focus-tiger/docs/FLOWER_BLOW_WELCOME_DESIGN.md'
+      'focus-tiger/docs/FLOWER_BLOW_WELCOME_DESIGN.md',
+      'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
     ],
     restatementExemptFiles: [
       'focus-tiger/docs/FLOWER_BLOW_WELCOME_DESIGN.md'
@@ -1189,7 +1192,8 @@ export const RULE_AUTHORITY_TOPICS = [
       'focus-tiger/docs/PROCESS.md',
       'focus-tiger/docs/TEST_TRACKER.md',
       'focus-tiger/docs/EDGE_CASES.md',
-      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md'
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
     ],
     restatementExemptFiles: [
       '.cursor/rules/focus-tiger-interaction-feedback.mdc',
@@ -1234,7 +1238,71 @@ export const RULE_AUTHORITY_TOPICS = [
       'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
       'focus-tiger/docs/PROCESS.md',
       'focus-tiger/docs/COLLAB.md',
-      'focus-tiger/docs/TEST_TRACKER.md'
+      'focus-tiger/docs/TEST_TRACKER.md',
+      'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
+    ]
+  },
+  {
+    id: 'feature-conflict-review',
+    title: '实现前功能冲突扫描（强度 / 语气 / 职责）',
+    ssotPath: 'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
+    ssotSection: '扫描三轴',
+    ssotMustContain: [
+      /实现前必须先做「冲突扫描」/,
+      /强度错位/,
+      /人设 \/ 语气不一致/,
+      /职责重叠/,
+      /等待用户明确决定/,
+      /即使是文档改动也不能默认执行/,
+      /feature-conflict-review/
+    ],
+    topicSignals: [
+      /feature-conflict-review/,
+      /FEATURE_CONFLICT_REVIEW/,
+      /冲突扫描/,
+      /强度错位/,
+      /职责重叠/
+    ],
+    mustCite: [/FEATURE_CONFLICT_REVIEW\.md|feature-conflict-review/],
+    restatementFingerprints: [
+      /实现前必须先做「冲突扫描」/,
+      /优先级高于「验证通过后默认/,
+      /即使是文档改动也不能默认执行/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'conflict-then-default-execute',
+        pattern:
+          /(?:发现|有)冲突.{0,24}(?:仍可|可以|应当|直接)(?:先|再)?(?:实现|改代码|改文档|commit|push)/,
+        note: '有冲突疑点须等用户拍板；禁止写成仍可先实现再问',
+        exemptIfLineMatches: /禁止|不得|不要|须先|等待用户/
+      },
+      {
+        id: 'docs-skip-conflict-scan',
+        pattern:
+          /文档改动.{0,20}(?:可|可以|应当|应)跳过冲突扫描/,
+        note: '文档改动有冲突疑点时同样不能默认执行'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-feature-conflict-review.mdc',
+      '.cursor/rules/focus-tiger-interaction-feedback.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
+      'focus-tiger/docs/SCENARIO_TESTS.md',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/COLLAB.md',
+      'focus-tiger/docs/TEST_TRACKER.md',
+      'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
+      'focus-tiger/docs/DOC_CODE_CONTRACT.md',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'WORKFLOW.md'
+    ],
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-feature-conflict-review.mdc'
     ]
   }
 ];

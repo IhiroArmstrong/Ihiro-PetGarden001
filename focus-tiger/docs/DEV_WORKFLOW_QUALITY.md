@@ -33,6 +33,7 @@
 | 2026-08-04 | 窄屏 Focusing×? tip 叠团：记入≠开修 + 单测锁 id 未锁同时可见条数 | **§6.13** |
 | 2026-08-05 | 「待你决定」须标出已被 tip/远端覆盖的伪选项为（不合理） | **N14a** |
 | 2026-08-14 | 列多个方案时须同时给出「我认为最合理的」一项 | **N14b** + `recommend-most-reasonable` |
+| 2026-08-16 | 实现前须对照已上线场景做冲突扫描；有疑点先停 | **N27** + `feature-conflict-review` |
 
 **一句话（整套机制）**：  
 回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）。  
@@ -92,6 +93,7 @@
 | N17 | **姊妹功能分支不漏修**（§6.6）：长期并存的功能分支（如窄屏/宽屏变体）在任一分支有**修复性** commit 落地时，须同步检查另一条是否需合入同一修复；触及共享入口（Sound / Honesty / Companion 等 §2.3）的修复，收尾「待你决定 / 待你知道」须写明波及哪些姊妹分支；合回单线 vs 继续并行须**用户拍板**（Agent 不自行定分支策略）。操作条文 SSOT：`WORKFLOW.md`「长期并存功能分支的同步纪律」 |
 | N25 | **可见性验收 OK = 宽+窄自动化同任务**（见 §8.6）：不得只写 `TEST_TRACKER`；须进 `visibilityContractRegistry` + 双视口锚点；改 suppress/hide → 整表 `test:e2e:visibility` |
 | N26 | 可点击交互：接收反馈 ≠ 结果反馈；设计静默须进 `SILENT_BEHAVIORS.md`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`） |
+| N27 | 实现前冲突扫描：对照 `SCENARIO_TESTS.md` 的强度 / 语气 / 职责；有疑点须等拍板。全文见 `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`） |
 
 ### 2.2 防把好的改坏（重写 / 改转场开工）
 
@@ -407,6 +409,7 @@
 | 2026-07-20 | 合并 SUPPLEMENT：§6.1–6.4；落地 `scenario-smoke`；升格 N12/N13；删除平行补充文档 |
 | 2026-07-20 | 升格 N14：任务汇报末尾独立「待你决定 / 待你知道」；同步 regression-lock |
 | 2026-08-05 | 升格 N14a：「待你决定」伪选项标（不合理）；防「合理则办」误授权 |
+| 2026-08-16 | 升格 N27：实现前冲突扫描；SSOT `FEATURE_CONFLICT_REVIEW.md` / `feature-conflict-review` |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |

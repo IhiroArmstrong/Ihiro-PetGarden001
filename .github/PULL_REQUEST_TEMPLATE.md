@@ -31,13 +31,15 @@
 
 ---
 
-## 点击反馈（触及可点击交互则必填）
+## 点击反馈与冲突扫描（三问 · 必填）
 
-> 权威：`focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` · 白名单：`focus-tiger/docs/SILENT_BEHAVIORS.md`（`RULES_INDEX` → `interaction-feedback`）
+> Q1–Q2 权威：`focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` · 白名单：`focus-tiger/docs/SILENT_BEHAVIORS.md`（`RULES_INDEX` → `interaction-feedback`）  
+> Q3 权威：`focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）· 对照：`SCENARIO_TESTS.md`
 
-- [ ] **未**新增或修改可点击控件 / 图标命中层 → 勾此项并写 **「不涉及可点击交互」**
-- [ ] 若有：点击后 **0–1 秒内**用户会看到什么？________________
-- [ ] 若本次按设计不生效：对应 `SILENT_BEHAVIORS.md` 的 **`SB-xx`**（不在白名单里的沉默视为 bug）
+- [ ] **未**新增或修改可点击控件 / 图标命中层 → 勾此项并写 **「不涉及可点击交互」**（仍须答 Q3）
+- [ ] **Q1** 若有可点击改动：点击后 **0–1 秒内**用户会看到什么？________________
+- [ ] **Q2** 若本次按设计不生效：对应 `SILENT_BEHAVIORS.md` 的 **`SB-xx`**（不在白名单里的沉默视为 bug）
+- [ ] **Q3 冲突扫描**：对照了哪些相邻场景？结论 = **无冲突**（写场景名 + 一句为何）/ **有冲突且用户已拍板**（写拍板要点）/ **无用户路径**（机械改动）
 
 ---
 
