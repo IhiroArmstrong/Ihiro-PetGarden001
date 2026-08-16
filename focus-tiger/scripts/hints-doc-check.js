@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sync / check onboarding hint docs against onboardingHintRegistry.js.
  *
  *   npm run hints:doc-check   — exit 1 if committed md blocks differ from registry

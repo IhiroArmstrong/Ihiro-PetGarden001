@@ -1,9 +1,15 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Hint 产品面（2026-08-04 收窄）：只保留两件事——
  * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
  *    （Focus HUD 三条例外：不画脉冲点，悬停控件本身出 tip，同「?」）
  * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
- *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`）
+ *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`
+ *     + 末尾 colophon `.onboarding-app-purpose__colophon`）
  * 默认不自动弹出 `#onboarding-wellness-first`（吓跑用户）；QA 仅 `?wellnessFirst=1`。
  * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
  * @see ONBOARDING_HINTS.md
@@ -1850,8 +1856,23 @@ export class OnboardingHintsUI {
       this._hidePurposeCard();
     });
 
+    const colophon = document.createElement('footer');
+    colophon.className = 'onboarding-app-purpose__colophon';
+    colophon.dataset.testid = 'onboarding-purpose-colophon';
+
+    const colophonMark = document.createElement('p');
+    colophonMark.className = 'onboarding-app-purpose__colophon-mark';
+
+    const colophonByline = document.createElement('p');
+    colophonByline.className = 'onboarding-app-purpose__colophon-byline';
+
+    const colophonCopy = document.createElement('p');
+    colophonCopy.className = 'onboarding-app-purpose__colophon-copy';
+
+    colophon.append(colophonMark, colophonByline, colophonCopy);
+
     actions.append(moments, privacy, dismiss);
-    card.append(title, body, wellness, actions);
+    card.append(title, body, wellness, actions, colophon);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
@@ -1861,6 +1882,9 @@ export class OnboardingHintsUI {
     this._purposeMomentsEl = moments;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
+    this._purposeColophonMarkEl = colophonMark;
+    this._purposeColophonBylineEl = colophonByline;
+    this._purposeColophonCopyEl = colophonCopy;
     this._refreshPurposeCardCopy();
     return card;
   }
@@ -1894,6 +1918,21 @@ export class OnboardingHintsUI {
       );
     }
     this._purposeDismissEl.textContent = t('HINT_APP_PURPOSE_DISMISS');
+    if (this._purposeColophonMarkEl) {
+      this._purposeColophonMarkEl.textContent = t(
+        'HINT_APP_PURPOSE_COLOPHON_MARK'
+      );
+    }
+    if (this._purposeColophonBylineEl) {
+      this._purposeColophonBylineEl.textContent = t(
+        'HINT_APP_PURPOSE_COLOPHON_BYLINE'
+      );
+    }
+    if (this._purposeColophonCopyEl) {
+      this._purposeColophonCopyEl.textContent = t(
+        'HINT_APP_PURPOSE_COLOPHON_COPYRIGHT'
+      );
+    }
   }
 
   _openFiveMomentsFromPurpose() {
@@ -2475,6 +2514,32 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__dismiss:hover {
         background: rgba(255, 255, 255, 0.8);
+      }
+      .onboarding-app-purpose__colophon {
+        margin: 12px 0 0;
+        padding-top: 10px;
+        border-top: 1px solid rgba(92, 122, 108, 0.22);
+        text-align: center;
+        font-style: normal;
+        font-weight: 500;
+        color: rgba(58, 83, 72, 0.78);
+      }
+      .onboarding-app-purpose__colophon-mark {
+        margin: 0 0 4px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #2f463c;
+      }
+      .onboarding-app-purpose__colophon-byline,
+      .onboarding-app-purpose__colophon-copy {
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.45;
+        letter-spacing: 0.01em;
+      }
+      .onboarding-app-purpose__colophon-copy {
+        margin-top: 2px;
       }
       .onboarding-wellness-first {
         position: fixed;

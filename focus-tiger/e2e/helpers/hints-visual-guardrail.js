@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Hints visual guardrail helpers (④ pilot).
  * Prefer RGB / geometry contracts; soft screenshots only on tip chrome (no Yin).
  * @see docs/task-briefs/task-hints-visual-guardrail-pilot.md

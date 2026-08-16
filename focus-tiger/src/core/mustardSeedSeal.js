@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Memorial Seal · 《芥子须弥》(Mustard Seed · Mount Sumeru)
  *
  * Product originality mark (乐五斋诗稿): unlock once when unified practice

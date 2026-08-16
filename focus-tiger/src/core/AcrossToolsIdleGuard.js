@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * across-tools 宽松 idle 兜底：仅在连续无指针/键盘活动达到阈值后回调一次。
  * 不把标签页切换当作分心；阈值默认 30 分钟（可调常量）。
  */

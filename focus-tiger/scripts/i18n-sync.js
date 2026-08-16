@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * i18n sync / gap report · compare en.json ↔ ja.json (no auto-translate).
  *
  *   npm run i18n:sync

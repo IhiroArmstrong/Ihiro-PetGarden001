@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * DEV「一键重置全部本地状态」· L-logic
  *
  * 用户无法逐项核对 localStorage 是否回到新用户；本文件锁：

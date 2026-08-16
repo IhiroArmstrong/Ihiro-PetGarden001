@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Locale catalog · SSOT for which languages exist and which may appear in the picker.
  * Policy: show only `ready` locales (审完再露). Draft slots may keep dictionaries in-repo.
  *

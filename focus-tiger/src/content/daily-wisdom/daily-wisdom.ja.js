@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Daily wisdom pool · Japanese (Yin voice + classical lines).
  * Ids must match `daily-wisdom.en.js`. Optional `attribution` when present in EN.
  */

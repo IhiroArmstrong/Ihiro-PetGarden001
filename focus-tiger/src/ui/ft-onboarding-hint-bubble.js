@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Lit 试点：单条 onboarding 提示气泡（响应式文案 / 尖角 / 显隐）。
  * 定位仍由 OnboardingHintsUI 写 left/top / --tip-*；本组件只负责渲染壳。
  * 可选 actionLabel → 详情 CTA（detailed tier），派发 ft-hint-action。

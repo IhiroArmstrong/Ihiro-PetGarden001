@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Advanced RitualFlow completion log (independent of MicroRitual / Focus / journey).
  * MilestoneGlowStore-style: local only-add records; no Reflection handoff.
  */

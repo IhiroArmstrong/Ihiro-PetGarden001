@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 光影物理渐进（2D DOM/CSS）—— Arrival 视差 Dolly + 呼吸光环 + 日常 DOM Rim + Recover。
  * 纯视觉层：不改跳过/存储/触发逻辑；不引入 GSAP / 3D 相机 / Shader。
  * 见 docs/LIGHT_PROGRESSION_DESIGN.md 与 task-briefs/task-light-progression-parallax-rim.md。

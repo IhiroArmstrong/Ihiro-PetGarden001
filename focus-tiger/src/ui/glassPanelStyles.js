@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Arrival / Honesty-bridge glass surfaces (2026-08-02).
  * Floating prose panels over Yin must stay translucent so animation shows through.
  * Do not reintroduce near-opaque cream cards (~0.93–0.98) without product sign-off.

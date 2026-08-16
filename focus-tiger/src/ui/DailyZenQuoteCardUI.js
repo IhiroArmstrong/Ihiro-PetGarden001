@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Daily quiet-line card — Idle ⋯ / drawer gift entry (growth ③).
  * Shows today's deterministic quote; Save → PNG download (not social share).
  */

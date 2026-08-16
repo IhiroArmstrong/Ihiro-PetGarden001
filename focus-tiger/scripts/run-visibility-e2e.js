@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Run Playwright specs that lock VISIBILITY_CONTRACTS anchors.
  * CI: triggered when suppress/hide-related paths change.
  */

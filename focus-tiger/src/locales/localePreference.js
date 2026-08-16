@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Persist last chosen locale (`focus-tiger.locale.v1`).
  * Cold start: stored ready locale → else DEFAULT_LOCALE (en). No silent draft enable.
  */

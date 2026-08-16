@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Contextual Buy Yin a Tea — soft side bubble (not a modal wall).
  * Highlight moments only; dismissible; CTA opens Tip Jar.
  */

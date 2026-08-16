@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Open release-blocker ledger check (TEST_TRACKER.md).
  *
  * Policy SSOT: focus-tiger/docs/TEST_TRACKER.md「缺陷分级与处理承诺」

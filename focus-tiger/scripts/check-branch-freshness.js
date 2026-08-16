@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Branch freshness vs origin/develop.
  * Agent gate (regression-lock「分支新鲜度」): required before inviting user QA
  * or claiming verified develop behavior. Not a git hook / CI job — Agent must run it.

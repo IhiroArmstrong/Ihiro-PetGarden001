@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Newsletter / Stay-in-touch email capture provider interface.
  * Optional local-first lead capture — NOT an account system; zero coupling
  * with entitlement / tip-jar / sanctuary gates.

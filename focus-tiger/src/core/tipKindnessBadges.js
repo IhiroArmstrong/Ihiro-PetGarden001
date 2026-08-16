@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Buy Yin a Tea · kindness badges (ritual thank-you marks — not content unlocks).
  *
  * Paid tip: min 3. Free practice path: min 1 after first practice (requirePractice).

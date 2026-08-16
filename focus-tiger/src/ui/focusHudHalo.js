@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Map session focusLevel → ring / core CSS vars (progress ring + breathing center light).
  * Opacities stay high for glanceability on warm beige chrome.
  * @param {number} level 0..1

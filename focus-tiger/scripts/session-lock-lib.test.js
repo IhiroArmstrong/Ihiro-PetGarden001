@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Unit tests for session-lock heartbeat / stale / commit gate.
  * Avoids `git init` (sandbox may block template hooks); injects `branch`.
  */

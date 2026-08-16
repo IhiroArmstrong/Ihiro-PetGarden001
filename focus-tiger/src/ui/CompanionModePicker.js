@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Companion Mode 三选一：Sit 旁「How shall we sit?」hint + 向上展开面板。
  *
  * - Here & Now / Flow State：门闩就绪后选中即 `onModeSelected` → Focus+计时

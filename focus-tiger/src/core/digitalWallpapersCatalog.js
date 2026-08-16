@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Digital wallpapers gift — curated stills from existing sprite sequences.
  * Free download; no tip / Sanctuary / streak gate.
  *

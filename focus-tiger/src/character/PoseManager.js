@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：多姿态 GLB 预加载、bounding box 归一化对齐、顺序式 canvas 明暗切换。
 // 过渡在 2D canvas 层做明暗，3D 模型始终保持不透明，规避 PBR+shader 半透明发暗伪影。
 

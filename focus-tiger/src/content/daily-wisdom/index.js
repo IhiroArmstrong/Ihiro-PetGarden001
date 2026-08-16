@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Daily wisdom content loader — locale pools for Yin’s short daily line.
  * Free companion content (not Sanctuary). Separate from Quiet Line / DAILY_ZEN_QUOTE.
  *

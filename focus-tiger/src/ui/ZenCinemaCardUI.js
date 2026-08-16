@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Zen Cinema confirm card — Idle ⋯ / drawer gift entry.
  * Thumb + “opens YouTube” → system browser. No in-app player.
  */

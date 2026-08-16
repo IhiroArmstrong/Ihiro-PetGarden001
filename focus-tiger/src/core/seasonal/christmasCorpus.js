@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Seasonal Theme · Christmas copy pool (retrieve-not-generate).
  * Tone: quiet winter presence / shared stillness — not Santa commerce or romance.
  * Human-authored; review=ok required before contentReady may ship.

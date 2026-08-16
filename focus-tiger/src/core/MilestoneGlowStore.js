@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Which long-horizon MilestoneGlow nodes have already played (once each).
  * Only-add; quiet days never revoke. No Day-N scoreboard copy.
  */

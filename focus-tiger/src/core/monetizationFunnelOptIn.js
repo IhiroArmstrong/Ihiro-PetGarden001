@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Monetization intent funnel · opt-in consent (default off).
  * @see docs/task-briefs/task-monetization-intent-funnel-opt-in.md
  * @see docs/MVP_PRODUCT_DEFINITION.md §六

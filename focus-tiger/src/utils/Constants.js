@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 直接复制 TASKS.md v5.0 "原则三：视觉风格规范" 的色板，
 // 以及关键阈值参数，方便所有模块统一引用，不允许颜色值/阈值散落在各文件里硬编码。
 

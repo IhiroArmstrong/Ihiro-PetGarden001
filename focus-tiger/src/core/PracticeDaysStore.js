@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Soft practice-day presence for streak-meter (7-dot ring) + weekly heatmap reads.
  * No fail state / no “broken streak” copy — fewer lit dots when quiet days pass.
  *

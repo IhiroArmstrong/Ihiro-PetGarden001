@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Cloud entitlement provider — polls Worker with membership device credential.
  * Lifetime stays client-cache / Sanctuary path for now (Prompt 10 = subscription).
  */

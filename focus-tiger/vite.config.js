@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';

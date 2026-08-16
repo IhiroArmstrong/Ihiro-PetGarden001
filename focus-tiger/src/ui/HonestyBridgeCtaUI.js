@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Honesty 桥接邀请 UI：轻量底栏 + Yes/No 同级按钮（对齐 Reflection Skip/Continue）。
  * 独立于 HonestyCheckInUI；不自动开计时。
  */

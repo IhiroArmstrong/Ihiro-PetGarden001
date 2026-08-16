@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Focusing · Tiger Anchor — soft hit target + ghost hint for user-initiated Recover.
  * Does not pause the timer; presentation is owned by MindfulReminderController.
  */

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Pure wall-clock rules for Focus mid-session interval cues.
  * Configurable intervalMs (0 = off); no tick at t≈0; skip if remaining < 30s.
  */

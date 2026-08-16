@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -78,5 +83,20 @@ describe('privacyNoticeCopy', () => {
       ja.HINT_APP_PURPOSE_WELLNESS_BODY,
       /診断・治療・治癒・予防/
     );
+  });
+
+  it('en + ja + zh purpose colophon is creator-first English credit', () => {
+    for (const file of ['en.json', 'ja.json', 'zh.json']) {
+      const map = loadLocale(file);
+      assert.equal(map.HINT_APP_PURPOSE_COLOPHON_MARK, 'Focus Tiger™');
+      assert.equal(
+        map.HINT_APP_PURPOSE_COLOPHON_BYLINE,
+        'Created by Ihiro Armstrong Hao Hoh / Twinsology'
+      );
+      assert.equal(
+        map.HINT_APP_PURPOSE_COLOPHON_COPYRIGHT,
+        '© 2026 Ihiro Armstrong Hao Hoh. All rights reserved.'
+      );
+    }
   });
 });

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 2D PNG 序列帧清单 —— 主线情绪表现载体的**声明式**注册表。
  *
  * 设计意图：把「一个动作有多少帧、多少帧率、是否循环、播完是否停在末帧」

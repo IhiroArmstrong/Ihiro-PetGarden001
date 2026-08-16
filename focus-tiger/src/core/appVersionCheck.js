@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Web soft update prompt — compare local build id to same-origin version.json.
  * Product: only reveal when a newer build is detected; click → reload (not patch download).
  */

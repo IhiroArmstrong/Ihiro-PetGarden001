@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：里程碑数据计算（连续天数、累计时长）。本任务只搭骨架，
 // 真实的读写与判定逻辑是 Task 3/Task 7 的工作。
 

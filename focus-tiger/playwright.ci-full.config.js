@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // @ts-check
 /**
  * CI-only config for focus-tiger-e2e-full.yml (sharded nightly / dispatch).

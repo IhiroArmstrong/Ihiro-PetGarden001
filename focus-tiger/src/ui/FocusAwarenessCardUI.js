@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Mid-session awareness card — soft observational line at Focusing bottom.
  * Repeatable every interval beat; does NOT touch Moment Whisper seen store.
  */

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * User-uploaded ambient tracks (v1.0.0): IndexedDB blobs + Object URLs.
  * Built-ins stay in AMBIENT_TRACKS; this module only owns user-* ids.
  */

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * i18n unit · Task A — key parity, setLocale notify, fallback, ready-only.
  * v1.0.0 ship: `en` + `ja` ready; zh stays loaded as draft (Chinese deferred).
  */

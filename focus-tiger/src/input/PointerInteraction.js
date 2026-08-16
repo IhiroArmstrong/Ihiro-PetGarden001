@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * PointerInteraction —— 鼠标/指针刺激源检测层。
  *
  * 只负责识别 EMOTION_BIBLE「互动反应清单 · 鼠标/指针类」中的刺激，

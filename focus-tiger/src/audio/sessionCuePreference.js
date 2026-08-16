@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Focus 计时提示音偏好。
  * - 开始/结束铃：Soundscape「计时提示音」总开关（两字段同步，默认开）
  * - 间隔磬节奏：独立 off / 3min / 5min（默认 off = 纯净陪伴）

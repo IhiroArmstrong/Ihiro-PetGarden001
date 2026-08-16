@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：场景图组装——老虎挂载点。
 // 默认闭眼坐禅 GLB（阿寅 · 单色暖浅灰棉麻禅修服/茶服风，无红边）已自带蒲团，故不再创建程序化 MeditationCushion。
 

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * SpriteSequencePlayer —— 2D PNG 序列帧播放器（主线情绪表现载体）。
  *
  * 定位：`EmotionController` 映射表内的**底层实现**之一，业务侧不直连本类，

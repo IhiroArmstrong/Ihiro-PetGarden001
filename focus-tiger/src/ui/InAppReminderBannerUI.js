@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 应用内提醒横幅：#ui-overlay 顶部居中，非模态、可关闭。
  * 淡入淡出节奏供人工验收；状态流转由 inAppReminderBannerSession 单测覆盖。
  */

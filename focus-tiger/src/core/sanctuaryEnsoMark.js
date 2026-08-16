@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sanctuary Enso Mark — prestige identity chrome (lifetime ∪ subscription).
  *
  * Zero tip coupling. Display math is pure so unit tests can lock layout

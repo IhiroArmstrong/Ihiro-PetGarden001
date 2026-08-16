@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Mock entitlement provider — no Stripe / Worker.
  * Lab: localStorage script + optional `?entitlementMock=`.
  */

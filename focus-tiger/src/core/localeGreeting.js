@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Locale-change greeting (SCENE_ANIMATION_WIRING Slice A / A′).
  * ja → bookReading（单程看书，无倒放；回 Idle 约 1s CapCut）；
  * en（及其它 ready）→ teaDrinking（单程喝茶，无倒放；回 Idle 约 1s CapCut）。

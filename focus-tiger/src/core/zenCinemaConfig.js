@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Zen Cinema · growth pack ① — single featured YouTube gift (not a channel wall).
  * @see docs/task-briefs/task-growth-content-pack-decision.md
  */

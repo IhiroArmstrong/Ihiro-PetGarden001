@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * FocusHUD 直播层：正式 Focusing 或微仪式等「算专注」墙钟覆盖。
  * 纯函数，供单测锁契约（不启 FocusSession 也可让仪表推进）。
  */

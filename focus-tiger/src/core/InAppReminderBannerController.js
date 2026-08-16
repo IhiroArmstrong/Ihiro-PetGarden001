@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 应用内提醒横幅 · 页面会话内状态机（不渲染 DOM）。
  *
  * 关闭后本页会话不再展示；完整刷新或新开 App 重置。

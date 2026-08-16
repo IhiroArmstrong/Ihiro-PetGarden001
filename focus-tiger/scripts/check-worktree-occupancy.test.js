@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Unit smoke for `.ft-session-lock` occupancy parsing.
  * Policy: WORKFLOW.md git-worktree-occupancy — occupancy field is authority, not mtime.
  */

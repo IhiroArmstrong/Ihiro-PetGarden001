@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Negative / positive smoke for rules-authority contradiction detection.
  * Proves the checker would catch the historical 「先问再 commit」vs「可自动 commit」class of drift.
  */

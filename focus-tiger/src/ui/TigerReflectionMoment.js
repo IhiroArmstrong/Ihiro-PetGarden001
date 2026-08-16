@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Tiger Reflection Moment —— 专注会话结束后的可选轻量反思环节。
  *
  * 设计约束（DESIGN.md「结束反思」/ PRINCIPLES「观照者而非情绪本身」）：

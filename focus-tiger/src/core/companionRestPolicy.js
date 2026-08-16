@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Companion rest / wake policy helpers (pure).
  *
  * Complements (does not replace) the existing 2h → DORMANT path:

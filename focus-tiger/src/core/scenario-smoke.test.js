@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * SCENARIO_TESTS 场景 A–F · 控制器级冒烟（确定性步骤）
  *
  * 技术选型：本文件用现有 `node --test` 串联 Store / Controller 纯逻辑，覆盖主链路契约。

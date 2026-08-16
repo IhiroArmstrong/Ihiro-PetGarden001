@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * EyeTracking —— **已废弃**（2026-07-19）。
  *
  * 原方案：独立瞳孔图层（含 `pupil-left.png` / `pupil-right.png`）阻尼跟随鼠标。

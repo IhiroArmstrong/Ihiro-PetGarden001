@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Growth pack ③ — daily quiet-line quote (local pool + canvas save).
  * Deterministic by local YYYY-MM-DD; does not use soft-schedule / cloud.
  * Pool v2 mixes classic Quiet Line lines with a small insight-spark seed.

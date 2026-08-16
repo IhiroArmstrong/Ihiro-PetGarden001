@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Linear per-frame zoom for oneshot ritual sequences (camera push-in).
  * Frame index is 0-based; first frame → `from`, last frame → `to`.
  *

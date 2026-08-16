@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Config-driven multi-step RitualFlow (advanced scenes).
  * Pure logic — no DOM. Breath wall-clock is owned by RitualFlowUI.
  *

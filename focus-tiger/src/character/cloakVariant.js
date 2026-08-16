@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Classic cloak-sleep vs starlight-cloak A/B for DORMANT entry / Honesty wake.
  * Both stay wired; pick ~50/50 so we can slowly compare matte/story feel.
  */

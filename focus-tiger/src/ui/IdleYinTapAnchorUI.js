@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle · tap Yin — invisible hit over the cub (no glow / no toast).
  * Plays earWiggleHeadTouch via handlers; hidden when not armed.
  */

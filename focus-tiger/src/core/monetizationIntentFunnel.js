@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Monetization intent funnel — local store (+ optional afterRecord hook for opt-in upload).
  * Nodes: Support open → card CTA → Checkout start → paid complete (Test Mode OK).
  *

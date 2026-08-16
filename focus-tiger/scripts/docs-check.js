@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Unified doc–code structural alignment check.
  *
  *   npm run docs:check  — runs all (a)/(c)/(d) registry ↔ markdown / consistency checks; exit 1 on drift
@@ -13,6 +18,7 @@ import { runStateMachineDocCheck } from './state-machine-doc-check.js';
 import { runRulesAuthorityDocCheck } from './rules-authority-doc-check.js';
 import { runVisibilityContractDocCheck } from './visibility-contract-doc-check.js';
 import { runDocsConsistencyCheck } from './check-docs-consistency.js';
+import { runCopyrightHeaderCheck } from './copyright-header.js';
 
 function main() {
   let ok = true;
@@ -23,6 +29,7 @@ function main() {
   if (!runStateMachineDocCheck()) ok = false;
   if (!runRulesAuthorityDocCheck()) ok = false;
   if (!runDocsConsistencyCheck()) ok = false;
+  if (!runCopyrightHeaderCheck()) ok = false;
 
   if (!ok) {
     console.error(

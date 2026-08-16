@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Honesty 桥接 CTA 当日是否已展示（与补登完成解耦，仅限频）。
  * 见 docs/HONESTY_BRIDGE_CTA.md
  */

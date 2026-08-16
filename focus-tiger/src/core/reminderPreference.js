@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 应用内提醒时间偏好（本地存储）+ 横幅候选判定。
  *
  * 不涉及浏览器 Notification 权限；不渲染 UI（纯逻辑）。

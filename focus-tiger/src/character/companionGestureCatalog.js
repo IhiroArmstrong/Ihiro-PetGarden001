@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 候选陪伴手势 / 一次性情绪序列目录（非 Idle 随机池）。
  *
  * 这些素材已入库，可经 EmotionController 调试面板或未来 playEmotion 接线到

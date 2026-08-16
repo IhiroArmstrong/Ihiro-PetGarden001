@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * RitualFlowUI — config-driven advanced ritual overlay (glass panel).
  * Breath beat reuses MicroRitual phase helpers; never calls completeMicroRitual.
  */

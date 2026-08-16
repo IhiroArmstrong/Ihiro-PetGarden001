@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Immersive Presence (MVP probe) — feature detection & gate helpers.
  * Product name ≠ Companion Mode (stay / stepAway / acrossTools).
  *

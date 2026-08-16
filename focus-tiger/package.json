@@ -10,6 +10,8 @@
     "test": "node scripts/run-src-unit-tests.js",
     "test:smoke": "node scripts/run-src-unit-tests.js && npm run docs:check",
     "docs:check": "node scripts/docs-check.js",
+    "copyright:header-check": "node scripts/copyright-header.js",
+    "copyright:header-write": "node scripts/copyright-header.js --write",
     "docs:consistency-check": "node scripts/check-docs-consistency.js",
     "hints:doc-check": "node scripts/hints-doc-check.js",
     "hints:doc-sync": "node scripts/hints-doc-check.js --write",

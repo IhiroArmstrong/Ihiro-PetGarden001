@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Moment Whisper seen-gate (Task A′).
  * Key: focus-tiger.moment-whispers-seen.v1
  */

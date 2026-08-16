@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Seasonal Theme chrome — soft winter wash + one-shot observational line.
  * Does not block Sit / Arrival. pointer-events: none on wash; whisper is dismissible.
  */
