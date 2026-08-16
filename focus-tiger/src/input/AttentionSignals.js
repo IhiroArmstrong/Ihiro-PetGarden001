@@ -6,6 +6,23 @@
 export const DISTRACTION_LOG_THRESHOLD_MS = 20_000;
 export const REFOCUS_DISPLAY_THRESHOLD_MS = 60_000;
 
+/** Tab-return whisper band A (inclusive). Same 20s floor as SB-01; <A never logs. */
+export const TAB_RETURN_WHISPER_MIN_MS = DISTRACTION_LOG_THRESHOLD_MS;
+/** Tab-return whisper band B (inclusive). Above B → no whisper (session-end / classic Re-focus). */
+export const TAB_RETURN_WHISPER_MAX_MS = 180_000;
+
+/**
+ * Classify an away duration. Never inspects tab title, URL, or cross-origin data.
+ * @param {number} durationMs
+ * @returns {'silent' | 'whisper' | 'above-cap'}
+ */
+export function classifyTabReturnDuration(durationMs) {
+  const ms = Number(durationMs);
+  if (!Number.isFinite(ms) || ms < TAB_RETURN_WHISPER_MIN_MS) return 'silent';
+  if (ms > TAB_RETURN_WHISPER_MAX_MS) return 'above-cap';
+  return 'whisper';
+}
+
 /**
  * 将 window blur/focus 与 Page Visibility 合并成一条离开—回归事件，
  * 避免同一次切换被两个浏览器事件重复记账。
@@ -18,7 +35,7 @@ export class AttentionSignals {
    * @param {() => number} [options.now]
    * @param {() => void} [options.onAway]
    * @param {() => void} [options.onResume]
-   * @param {(event: {durationMs: number, displayEligible: boolean}) => void} options.onReturn
+   * @param {(event: {durationMs: number, displayEligible: boolean, whisperEligible: boolean}) => void} options.onReturn
    */
   constructor({
     windowRef = globalThis.window,
@@ -106,7 +123,8 @@ export class AttentionSignals {
 
     this.onReturn?.({
       durationMs,
-      displayEligible: durationMs > REFOCUS_DISPLAY_THRESHOLD_MS
+      displayEligible: durationMs > REFOCUS_DISPLAY_THRESHOLD_MS,
+      whisperEligible: classifyTabReturnDuration(durationMs) === 'whisper'
     });
   }
 }

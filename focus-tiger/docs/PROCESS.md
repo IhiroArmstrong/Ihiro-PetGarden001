@@ -56,6 +56,8 @@
 
 ## 当前进度速览
 
+- **切走后柔性提醒（2026-08-16）**：复用 Page Visibility / `AttentionSignals`；离开时长 **[20s, 180s]** 回页出 Yin 轻语（一起做 → 场景 S 30s 呼吸，计时不停；跳过/超时同 Skip）。**&lt;20s** 仍 SB-01；**&gt;180s** 不重复轻语。独立冷却 `focus-tiger.tab-return-whisper.v1`（180s，不与 Tiger Anchor 共用时钟）。TRACKER 待人工。
+
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
 **最后更新时间**：2026-08-16（UTC+8） · 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`

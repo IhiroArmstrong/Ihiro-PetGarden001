@@ -22,9 +22,9 @@
 
 | id | 场景 | 用户应感知到 | 为何有意 | 权威 | 类别 |
 |---|---|---|---|---|---|
-| **SB-01** | Re-focus：离开 **&lt;20s** 再回来 | **无** toast / `nod-bow`；连内部记账都不做 | 门槛未到；避免误触切页 | `SCENARIO_TESTS` 场景 B | 门槛未到 · 完全静默 |
-| **SB-02** | Re-focus：离开 **20–60s** 再回来 | 只内部记账；**仍无**文案 / `nod-bow` | 未达展示门槛 | 同上 | 门槛未到 · 无表面反馈 |
-| **SB-03** | Offline Space / Flow State 切走再回 | 即使离开 &gt;60s 也**无** Re-focus | `suppressAwayReminders`；离开是预期 | 场景 B / E | 模式抑制 |
+| **SB-01** | Re-focus：离开 **&lt;20s** 再回来 | **无** toast / `nod-bow` / 切走轻语；连内部记账都不做 | 门槛未到；避免误触切页 | `SCENARIO_TESTS` 场景 B | 门槛未到 · 完全静默 |
+| **SB-02** | 经典 Re-focus：离开 **20–60s** 再回来 | 只内部记账；**仍无**观察式文案 / `nod-bow` | 未达经典 Re-focus 展示门槛。**同档可能出切走轻语**（见场景 B 20s–180s 行），那不是本条 | 同上 | 门槛未到 · 无表面反馈 |
+| **SB-03** | Offline Space / Flow State 切走再回 | 即使离开 &gt;60s 也**无** Re-focus / **无**切走轻语 | `suppressAwayReminders`；离开是预期 | 场景 B / E | 模式抑制 |
 | **SB-04** | 应用内提醒横幅 · 忙碌期 | Arrival / Focusing / Reflection / 微仪式中横幅 **不展示、不排队** | 已拍板 `suppress`（非 defer） | 场景 P | busy suppress |
 | **SB-05** | Moment Whisper 该键已见 | 再进同一 Moment **不再**出 `#moment-whisper` | 每键一生一次 | 场景 Y | 限频已消耗 |
 | **SB-06** | Moment Whisper · busy | Compass / Companion / Arrival 等叠层开着时不出 | 互斥，避免挡主路径 | 场景 Y | busy suppress |
@@ -37,6 +37,8 @@
 | **SB-13** | 本场已出过被动 Re-focus | 同会话再离开 &gt;60s **不再**出 | 每场最多 1 次 | 场景 B | 限频 |
 | **SB-14** | 节日主题 whisper 同日已出 | 刷新同日不再出 `#seasonal-theme-whisper` | 一日一次 | `TEST_TRACKER` 节日行 | 限频 |
 | **SB-15** | Onboarding **auto tip** | 冷启动**不再**自动喷气泡 | 2026-08-04 产品面只留脉冲悬停 +「?」简介 | `ONBOARDING_HINTS` 文首 | 产品面取消 |
+| **SB-16** | 切走轻语 **180s 独立冷却** | 冷却期内再切标签回来 **无**轻语（亦不再叠 Re-focus nod-bow，若仍在 20s–180s 档） | 防来回切页打扰；`TAB_RETURN_WHISPER_COOLDOWN_MS`，不与 Tiger Anchor 共用时钟 | 场景 B | 限频 |
+| **SB-17** | 切走轻语：离开 **&gt;180s** 再回来 | **无**轻语两钮 | 视为可能已进会话结束 / 交给经典 Re-focus；不重复处理 | 场景 B | 门槛已过 · 不重复 |
 
 ---
 
@@ -56,6 +58,7 @@
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-16 | 切走轻语：SB-01 不变；SB-02/03 注明与轻语分轨；新增 **SB-16** 冷却、**SB-17** &gt;180s 不重复 |
 | 2026-08-14 | FB-01 Phase 1：冷却再点 = `nodBowMicro`（无 toast、不延长冷却）；SB-07 改为邀请隐退 + invisible hit 仍在。不新建白名单 |
 | 2026-08-14 | follow-up：SB-07 收窄为「专用触点隐退」；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单） |
 | 2026-08-14 | 初版：把场景 B / P / X / Y 等已文档化的有意沉默收成可引用 id |

@@ -162,6 +162,10 @@ import {
   MindfulReminderController,
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
+import {
+  TAB_RETURN_BREATH_MS,
+  TAB_RETURN_WHISPER_TOAST_MS
+} from './core/tabReturnWhisperGate.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
 import {
   MindfulAcknowledgeToast,
@@ -710,11 +714,16 @@ async function init() {
     appEl: app,
     getSpriteOverlay: () => spritePlayer.overlayEl
   });
+  /** Assigned after MicroRitualUI exists. */
+  let offerTabReturnWhisperUi = () => false;
+  let tabReturnBreathActive = false;
   const mindfulReminderController = new MindfulReminderController({
     quotaManager: reminderQuotaManager,
     emotionController,
     toast: mindfulToast,
     getCopy: tPool,
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onTabReturnWhisper: () => offerTabReturnWhisperUi(),
     onReminderShown: (type) => {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
@@ -1200,6 +1209,16 @@ async function init() {
     resolveDurationMs: () =>
       MICRO_RITUAL_MS_OVERRIDE != null ? MICRO_RITUAL_MS_OVERRIDE : undefined,
     onBreathStart: () => {
+      if (tabReturnBreathActive) {
+        lightProgression.beginBreath();
+        emotionController.playEmotion('smiling', {
+          fps: ARRIVAL_BREATH_SMILE_FPS,
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true
+        });
+        resyncSessionChrome();
+        return;
+      }
       lightProgression.beginBreath();
       emotionController.playEmotion('smiling', {
         fps: ARRIVAL_BREATH_SMILE_FPS,
@@ -1224,15 +1243,73 @@ async function init() {
       syncOnboardingAutoHints();
     },
     onComplete: () => {
+      if (tabReturnBreathActive) {
+        finishTabReturnBreath();
+        return;
+      }
       completeMicroRitual();
     },
     onLeave: () => {
+      if (tabReturnBreathActive) {
+        finishTabReturnBreath();
+        return;
+      }
       leaveMicroRitualQuietly();
     }
   });
   if (import.meta.env.DEV) {
     window.__microRitualUI = microRitualUI;
   }
+
+  function finishTabReturnBreath() {
+    tabReturnBreathActive = false;
+    lightProgression.endBreath({ releaseDolly: false });
+    if (stateManager.state === STATES.FOCUSING) {
+      emotionController.playEmotion('idle', {
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true
+      });
+    }
+    resyncSessionChrome();
+  }
+
+  function startTabReturnBreath() {
+    if (stateManager.state !== STATES.FOCUSING) return;
+    if (microRitualUI?.isOpen?.()) return;
+    tabReturnBreathActive = true;
+    microRitualUI.startNestedBreath(TAB_RETURN_BREATH_MS);
+    resyncSessionChrome();
+  }
+
+  offerTabReturnWhisperUi = () => {
+    if (stateManager.state !== STATES.FOCUSING) return false;
+    if (microRitualUI?.isOpen?.()) return false;
+    if (tabReturnBreathActive) return false;
+    const message = t('TAB_RETURN_WHISPER');
+    if (!message) return false;
+    return mindfulToast.show(message, {
+      placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+      visibleMs: TAB_RETURN_WHISPER_TOAST_MS,
+      testid: 'tab-return-whisper',
+      onTimeout: () => {},
+      actions: [
+        {
+          id: 'accept',
+          label: t('TAB_RETURN_WHISPER_ACCEPT'),
+          onClick: () => startTabReturnBreath()
+        },
+        {
+          id: 'skip',
+          label: t('TAB_RETURN_WHISPER_SKIP'),
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+  window.__tabReturnWhisper = {
+    offer: () => offerTabReturnWhisperUi(),
+    startBreath: () => startTabReturnBreath()
+  };
 
   ritualFlowUI = new RitualFlowUI(document.getElementById('ui-overlay'), {
     resolveBreathMs: (durationMs) =>
@@ -2399,6 +2476,12 @@ async function init() {
     acrossToolsIdleGuard.stop();
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
+    if (tabReturnBreathActive || microRitualUI?.isNestedInFocus?.()) {
+      tabReturnBreathActive = false;
+      microRitualUI?.hide?.();
+      lightProgression.endBreath({ releaseDolly: false });
+    }
+    mindfulToast.hide();
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
