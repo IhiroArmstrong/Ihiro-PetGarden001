@@ -7,6 +7,13 @@ import {
   SCENE_ANIM_EVENTS,
   resolveSceneAnimation
 } from './sceneAnimationDispatcher.js';
+import {
+  TAB_RETURN_WHISPER_COOLDOWN_MS,
+  getTabReturnWhisperCooldownRemainingMs,
+  markTabReturnWhisperShown,
+  shouldOfferTabReturnWhisper
+} from './tabReturnWhisperGate.js';
+import { classifyTabReturnDuration } from '../input/AttentionSignals.js';
 
 export const MINDFUL_ACKNOWLEDGE_THRESHOLD_SECONDS = 20 * 60;
 export const STRETCH_REMINDER_THRESHOLD_SECONDS = 2 * 60 * 60;
@@ -35,7 +42,9 @@ export class MindfulReminderController {
    * @param {(poolKey: string) => string} deps.getCopy
    * @param {() => number} [deps.now]
    * @param {() => number} [deps.random]
-   * @param {(type: 'mindful' | 'stretch' | 'refocus' | 'activeRecover') => void} [deps.onReminderShown]
+   * @param {(type: 'mindful' | 'stretch' | 'refocus' | 'activeRecover' | 'tabReturnWhisper') => void} [deps.onReminderShown]
+   * @param {() => boolean} [deps.onTabReturnWhisper] UI hook; return true if shown
+   * @param {Storage | null} [deps.storage] tab-return whisper cooldown persist
    */
   constructor({
     quotaManager,
@@ -44,7 +53,9 @@ export class MindfulReminderController {
     getCopy,
     now = () => Date.now(),
     random = Math.random,
-    onReminderShown = null
+    onReminderShown = null,
+    onTabReturnWhisper = null,
+    storage = null
   }) {
     this.quotaManager = quotaManager;
     this.emotionController = emotionController;
@@ -53,6 +64,8 @@ export class MindfulReminderController {
     this.now = now;
     this.random = random;
     this.onReminderShown = onReminderShown;
+    this.onTabReturnWhisper = onTabReturnWhisper;
+    this.storage = storage;
 
     this.sessionActive = false;
     this.sessionElapsedSeconds = 0;
@@ -67,6 +80,8 @@ export class MindfulReminderController {
     this._getSessionElapsedSeconds = null;
     /** Earliest wall time an active Recover may fire again. */
     this._activeRecoverAvailableAt = 0;
+    /** In-memory tab-return whisper cooldown (also persisted via storage). */
+    this._tabReturnWhisperAvailableAt = 0;
   }
 
   /**
@@ -145,26 +160,85 @@ export class MindfulReminderController {
   }
 
   /**
-   * 20 秒以上的返回事件均在内部记账；只有超过 60 秒的事件可尝试展示。
-   * 第一次符合展示门槛的事件即占用本会话 Re-focus 机会，即使因强反馈或
+   * 20 秒以上的返回事件均在内部记账；只有超过 60 秒的事件可尝试展示经典 Re-focus。
+   * [20s, 180s] 优先尝试切走轻语（独立冷却，不占 Re-focus 额度）；展示成功则本趟不再出 nod-bow。
+   * 第一次符合展示门槛的 Re-focus 即占用本会话机会，即使因强反馈或
    * 每日额度用尽而静默，也不在稍后补发。
-   * @param {{durationMs: number, displayEligible: boolean}} event
+   * @param {{durationMs: number, displayEligible: boolean, whisperEligible?: boolean}} event
+   * @returns {{ kind: string, reason?: string, remainingMs?: number }}
    */
   handleAttentionReturn(event) {
-    if (!this.sessionActive) return;
+    if (!this.sessionActive) return { kind: 'inactive' };
     // Companion Mode step-away：离开是预期行为，不触发 Re-focus / 离开类提醒
-    if (this.suppressAwayReminders) return;
+    if (this.suppressAwayReminders) return { kind: 'suppressed' };
+
+    if (classifyTabReturnDuration(event?.durationMs) === 'silent') {
+      return { kind: 'silent' };
+    }
 
     this.candidateDepartureCount += 1;
+
+    const whisper = this._tryOfferTabReturnWhisper(event);
+    if (whisper.offered) {
+      return { kind: 'whisper' };
+    }
+
     if (
       !event.displayEligible ||
       this.refocusHandledThisSession >= REFOCUS_PER_SESSION_LIMIT
     ) {
-      return;
+      return {
+        kind: 'logged',
+        reason: whisper.reason
+      };
     }
 
     this.refocusHandledThisSession += 1;
     this._showReminder('refocus');
+    return { kind: 'refocus' };
+  }
+
+  /** @returns {number} ms until tab-return whisper is available again (0 = ready). */
+  getTabReturnWhisperCooldownRemainingMs() {
+    const persisted = getTabReturnWhisperCooldownRemainingMs(
+      this.storage,
+      this.now(),
+      TAB_RETURN_WHISPER_COOLDOWN_MS
+    );
+    const memory = Math.max(0, this._tabReturnWhisperAvailableAt - this.now());
+    return Math.max(persisted, memory);
+  }
+
+  /**
+   * @param {{durationMs: number, whisperEligible?: boolean}} event
+   * @returns {{ offered: boolean, reason?: string, remainingMs?: number }}
+   */
+  _tryOfferTabReturnWhisper(event) {
+    if (typeof this.onTabReturnWhisper !== 'function') {
+      return { offered: false, reason: 'no-ui' };
+    }
+    const remainingMs = this.getTabReturnWhisperCooldownRemainingMs();
+    const currentEmotion = this.emotionController.getCurrentEmotionKey?.();
+    const gate = shouldOfferTabReturnWhisper({
+      durationMs: event?.durationMs,
+      sessionActive: this.sessionActive,
+      suppressAwayReminders: this.suppressAwayReminders,
+      cooldownRemainingMs: remainingMs,
+      strongEmotion: STRONG_EMOTIONS.has(currentEmotion)
+    });
+    if (!gate.offer) {
+      return { offered: false, reason: gate.reason, remainingMs };
+    }
+
+    const shown = Boolean(this.onTabReturnWhisper());
+    if (!shown) {
+      return { offered: false, reason: 'ui-declined' };
+    }
+    const nowMs = this.now();
+    this._tabReturnWhisperAvailableAt = nowMs + TAB_RETURN_WHISPER_COOLDOWN_MS;
+    markTabReturnWhisperShown(this.storage, nowMs);
+    this.onReminderShown?.('tabReturnWhisper');
+    return { offered: true };
   }
 
   /** @returns {{candidateDepartureCount: number, refocusHandledThisSession: number}} */
