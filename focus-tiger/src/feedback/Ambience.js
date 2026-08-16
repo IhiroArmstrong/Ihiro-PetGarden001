@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：只负责与 focusLevel 无关的静态环境基调（水墨雾气、柔光）。
 
 import * as THREE from 'three';

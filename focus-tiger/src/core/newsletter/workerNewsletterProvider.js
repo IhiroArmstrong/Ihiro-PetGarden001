@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Cloud Worker newsletter provider — Stay in touch → POST /api/newsletter/subscribe.
  * Optional lead capture; NOT an account. Zero coupling with entitlement / tip / sanctuary.
  */

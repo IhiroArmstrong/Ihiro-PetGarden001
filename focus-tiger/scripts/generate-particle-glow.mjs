@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 生成 particle-glow.png 到 public/textures/
  * 运行：node scripts/generate-particle-glow.mjs
  */

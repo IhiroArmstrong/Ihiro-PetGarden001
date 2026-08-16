@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 入口文件：只做"拼装 + 主循环调度"，不允许直接创建 THREE.Scene() /
 // THREE.PerspectiveCamera() / THREE.WebGLRenderer() 等底层对象——
 // 这些必须封装在 core/Renderer.js 和 core/Scene.js 里，main.js 只负责调用。

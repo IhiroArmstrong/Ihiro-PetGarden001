@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 背景音 UI：
  * - 右上米色 **音符钮**（窄屏 Idle 由 ActionBar ♪ 代理）→ 与菜单 / 抽屉 **Sound** 同效：打开曲目/音量面板
  * - 右下蒲团橙 Sound FAB 仅作遗留 DOM（宽屏永久藏起，避免与右上音符重复）

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Language preference panel — opened from ⋯ / narrow drawer (proxy: language)
  * or the wide Idle bottom-right globe FAB.
  * Only `ready` locales appear (审完再露).

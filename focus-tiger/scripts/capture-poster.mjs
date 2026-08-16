@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 导出 poster-idle.png（需先启动 npm run dev）
  *
  * 推荐方式（支持 KTX2+Draco 压缩 GLB）：

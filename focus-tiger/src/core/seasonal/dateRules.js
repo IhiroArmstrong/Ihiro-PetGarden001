@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Seasonal Theme · DateRule → anchor ISO day.
  * @see docs/task-briefs/task-seasonal-theme-engine-v1.md §4–§5
  */

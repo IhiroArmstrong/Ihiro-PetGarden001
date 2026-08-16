@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * User-facing “where is my backup?” copy for Journey Log.
  * Cloud A is one silent snapshot, not a browsable archive.
  */

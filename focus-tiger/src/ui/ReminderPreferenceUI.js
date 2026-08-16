@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 应用内提醒设置 · 挂在 Idle 热力图簇旁的小型时钟图标。
  *
  * 偏好形状：`{ hour, minute }` 或 `null`（见 `reminderPreference.js`）；

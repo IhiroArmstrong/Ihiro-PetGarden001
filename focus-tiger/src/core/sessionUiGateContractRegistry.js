@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * SessionUiGate 行为契约 — 机器可读真源（SSOT）。
  *
  * 派生：`SHARED_RESOURCES.md` §4 机器块（`npm run gate:doc-sync`）。

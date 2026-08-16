@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Arrival Practice —— Sit 之后、计时之前的轻量仪式状态机（纯逻辑，无 DOM）。
  *
  * 步骤：welcome → notice → breath → choose → ready

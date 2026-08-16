@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 多语言文案骨架（EMOTION_BIBLE.md 第七部分）。
  *
  * 业务逻辑只引用标识符（如 MINDFUL_FOCUS_MILESTONE_1），

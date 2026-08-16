@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Confide · crisis / self-harm keyword layer (rule-only).
  * Keep lists conservative: clear crisis phrases, not everyday sadness.
  * Expand only with human review — false positives divert to resource copy.

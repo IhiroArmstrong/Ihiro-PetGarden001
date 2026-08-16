@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Immersive Presence UI — in-app fullscreen companion + optional Document PiP probe.
  *
  * During Focusing: opt-in chrome to enter a quieter stage (timer + Yin + Rise).

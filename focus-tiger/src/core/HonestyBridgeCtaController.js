@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Honesty 补登仪式结束后的桥接邀请（独立于 Honesty 本身）。
  *
  * - 不自动开计时 / 不自动开 Ambient

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 变花吹散鼓励气泡（Phase 2a Lab）。
  * 气质：随风喃喃 — 白玉毛玻璃 + 头顶悬浮；非 Toast/Modal。
  * 驻留 3.0–3.5s；点气泡或空白处可消；≤3.5s 强制销毁。

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Mock newsletter provider — pretends submit succeeds (labs / no Cloud URL).
  * Production uses createWorkerNewsletterProvider when VITE_CLOUD_API_BASE_URL is set.
  */

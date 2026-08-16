@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Resolve today’s Yin daily-wisdom line (free; not Quiet Line / not Sanctuary).
  * Entitlement: `content.daily-wisdom` (free / ongoing) — registry SSOT; check is posture, not a paywall.
  */

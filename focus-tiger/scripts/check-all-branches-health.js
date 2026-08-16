@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Branch health census (read-only reminder; not CI-required).
  * Policy SSOT: focus-tiger/docs/PROCESS.md「分支健康度」
  * Index: RULES_INDEX.md → git-branch-health

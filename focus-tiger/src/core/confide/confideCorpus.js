@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Confide · curated reply lines (retrieve-not-generate).
  * Zen lines mirror docs/confide-corpus-seed.md (human-ok).
  * safety_redirect line is draft until human marks ok — see visibility gate.

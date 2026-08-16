@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 留存漏斗本地埋点占位（无第三方、无 UI）。
  * 权威节点与口径：docs/RETENTION_FUNNEL.md
  *

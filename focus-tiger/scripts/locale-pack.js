@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Locale review pack · export / import bilingual TSV for human copy review.
  *
  * Canonical runtime dictionaries: src/locales/{en,ja,zh}.json

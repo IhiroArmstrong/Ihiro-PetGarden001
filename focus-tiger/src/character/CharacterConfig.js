@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * CharacterConfig —— 角色/装扮外观配置与素材路径拼接的**唯一出口**。
  *
  * 架构意图（本阶段只做解耦，不做换装功能）：

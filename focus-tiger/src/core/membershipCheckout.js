@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Yin Membership · subscription checkout helpers (B-track unlock via entitlement cache).
  *
  * Verification: same restraint as Sanctuary — never unlock from query alone.

@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sync the fixed develop QA worktree after a PR merges into develop.
  * Policy SSOT: WORKFLOW.md「固定 develop 验收 worktree」
  * Index: RULES_INDEX.md → qa-develop-worktree

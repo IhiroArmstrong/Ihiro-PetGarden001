@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Unit · jaCopyGuards (parity / script / placeholder helpers for i18n:sync).
  */
 import test from 'node:test';
@@ -47,5 +52,6 @@ test('listMissingJaKeys / equal-en / missing-script', () => {
   assert.deepEqual(listJaMissingJapaneseScript({ Y: '到着' }), []);
   assert.equal(isJaProperNounAllowlisted('APP_TITLE'), true);
   assert.equal(isJaProperNounAllowlisted('AMBIENT_TRACK_X'), true);
+  assert.equal(isJaProperNounAllowlisted('HINT_APP_PURPOSE_COLOPHON_BYLINE'), true);
   assert.equal(isJaProperNounAllowlisted('BTN_FOCUS_START'), false);
 });

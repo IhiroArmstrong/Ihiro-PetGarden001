@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Focus Tiger 全部 localStorage key（一键重置用）。
  * 新增 key 时：同步本列表 + docs/SHARED_RESOURCES.md。
  */

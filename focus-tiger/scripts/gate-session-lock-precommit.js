@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Husky pre-commit gate for session lock + primary develop checkout ban.
  *   node focus-tiger/scripts/gate-session-lock-precommit.js
  */

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Honesty Check-in 编排 + DORMANT 惰性同步。
  *
  * - 不调用 ReminderQuotaManager（用户主动发起，不占共享提醒池）

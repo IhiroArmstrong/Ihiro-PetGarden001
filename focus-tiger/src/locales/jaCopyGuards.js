@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Japanese copy guards · shared by i18n smoke + `npm run i18n:sync`.
  *
  * Policy:
@@ -26,6 +31,8 @@ export const JA_HAS_JAPANESE_SCRIPT =
 export function isJaProperNounAllowlisted(key) {
   if (JA_MAY_MATCH_EN.has(key)) return true;
   if (String(key).startsWith('AMBIENT_TRACK_')) return true;
+  // Legal / brand colophon stays English in every locale (indie About tone).
+  if (String(key).startsWith('HINT_APP_PURPOSE_COLOPHON_')) return true;
   return false;
 }
 

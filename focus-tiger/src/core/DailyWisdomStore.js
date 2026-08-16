@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Daily wisdom rotation memory — same day locks one id; recentIds avoids near-term repeats.
  * Lightweight localStorage (MilestoneGlow-style I/O only; schema is day-rotation, not once-forever).
  */

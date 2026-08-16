@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Pluggable Lit host for Yin’s daily wisdom line.
  * Free content; no entitlement. Not wired to a product scene yet — mount anywhere.
  * Classical entries may include optional attribution under the quote.

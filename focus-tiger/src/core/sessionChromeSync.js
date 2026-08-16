@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Session chrome 同步：Idle 入口（Honesty / 微仪式）与叠层门闩 / 窄宽壳投影。
  * 从 `main.js` 等价抽离，行为不变；可变态仍由 SessionUiGate + UI 实例持有。
  *

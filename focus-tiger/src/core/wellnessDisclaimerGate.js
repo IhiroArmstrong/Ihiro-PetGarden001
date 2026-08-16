@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Wellness / not-clinical-care lookup gate.
  * Key: focus-tiger.wellness-disclaimer-seen.v1
  * Product SSOT: PRODUCT_POSITIONING.md「Wellness disclaimer」

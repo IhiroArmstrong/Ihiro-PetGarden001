@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Mustard Seed · Sumeru memorial seal card.
  * Quiet Line–like glass card: ZH poem + EN + 乐五斋 attribution + companion badge.
  */

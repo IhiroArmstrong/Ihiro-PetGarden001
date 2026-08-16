@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 专注信号来源（MVP：手动 Sit / Rise 按钮）。
  *
  * 装配方（`main.js`）在 `onStart` / `onStop` 内用 `SessionUiGate` 裁决：

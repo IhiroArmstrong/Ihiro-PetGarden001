@@ -2,7 +2,7 @@
 # PRODUCT_POSITIONING.md
 
 > 版本：1.4
-> 最后更新：2026-08-14
+> 最后更新：2026-08-16
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -241,6 +241,22 @@ Focus Tiger 不采用「用户专注 → 小老虎更健康；用户离开 → �
 **English**
 
 > Focus Tiger is a calm, gamified mindfulness companion that helps people cultivate focus, presence, and the conditions for flow through regular practice, at their own pace.
+
+### Ownership & credit
+
+Focus Tiger™ is a product of Twinsology.
+
+Created by Ihiro Armstrong Hao Hoh / Twinsology.
+
+Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+
+应用内「?」简介卡末尾用 **creator-first colophon**（欧美独立产品 About 气质；专有名词保持英文，不随语种翻译）：
+
+> Focus Tiger™  
+> Created by Ihiro Armstrong Hao Hoh / Twinsology  
+> © 2026 Ihiro Armstrong Hao Hoh. All rights reserved.
+
+源码文件头与 `LICENSE` 用公司+作者并列的所有权句（见 `src/core/copyrightNotice.js`）。
 
 ---
 

@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Gate for large Playwright suites: allow CI, or explicit RUN_E2E_LOCAL=true.
  * Usage: node scripts/e2e-ci-guard.js <full|visibility>
  *

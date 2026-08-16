@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Membership device credential — opaque token from confirm or OTP verify.
  * Used by cloud entitlement provider + Billing Portal; not a password.
  */

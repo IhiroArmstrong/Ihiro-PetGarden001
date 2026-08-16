@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：老虎模型的加载与渲染控制（颜色/材质驱动）。
 
 import * as THREE from 'three';

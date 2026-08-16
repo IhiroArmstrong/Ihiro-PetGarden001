@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Day1 / 久别吹花门闩 + feature flag（Phase 2b）。
  * SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` 策略 C；调度仍走 WELCOME_APP。
  */

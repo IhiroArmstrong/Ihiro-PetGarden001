@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * SessionEndFlow —— 会话结束到反思环节的衔接协调。
  *
  * 时序约束（2026-07-16 已确认）：

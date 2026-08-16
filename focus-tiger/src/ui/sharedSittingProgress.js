@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 import { FOCUS_SESSION_DEFAULT_MINUTES } from '../utils/Constants.js';
 
 /**

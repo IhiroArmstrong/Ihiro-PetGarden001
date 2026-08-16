@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Yin's Sanctuary · prestigious badges (Lifetime identity marks).
  *
  * Visual catalog is separate from Tip kindness badges (yin-badges/).

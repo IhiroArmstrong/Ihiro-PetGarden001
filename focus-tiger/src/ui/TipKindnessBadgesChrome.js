@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle chrome: practice / kindness / Sanctuary badges beside Yin.
  * Display-only; Ambient / emotion must not read tip for unlocks.
  * Priority: B-track prestige (lifetime ∪ subscription) → else tip/free yin badges.

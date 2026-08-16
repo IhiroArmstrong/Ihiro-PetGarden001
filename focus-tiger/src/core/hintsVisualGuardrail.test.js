@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Unit locks for Hints visual-guardrail color predicates (no browser).
  * @see e2e/helpers/hints-visual-guardrail.js
  */

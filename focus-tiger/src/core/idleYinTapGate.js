@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle tap on Yin → earWiggleHeadTouch (product-shell 2D hit).
  * Focusing uses Active Recover instead; overlays hide the hit (no silent click).
  */

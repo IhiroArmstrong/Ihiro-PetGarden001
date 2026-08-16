@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 最小对比场景：同一 GLB + 与主场景一致的 renderer/光照/贴图配置，无对齐/预加载/fog/shader。
 
 import * as THREE from 'three';

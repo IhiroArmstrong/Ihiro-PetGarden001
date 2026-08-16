@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle / Focusing chrome: Sanctuary Enso mark at the page bottom-left.
  * Entitled (lifetime ∪ subscription) only — never tip-only.
  * Decorative (pointer-events: none) — does not open shop.

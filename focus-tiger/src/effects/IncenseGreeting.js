@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责："今日一炷香"完成反馈——渐显莲花 + 满屏金色粒子。
 // 不对老虎模型做任何变换。
 

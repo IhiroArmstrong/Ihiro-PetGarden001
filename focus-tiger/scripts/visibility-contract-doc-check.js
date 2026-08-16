@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sync / check SHARED_RESOURCES.md §6 visibility machine block
  * against visibilityContractRegistry.js.
  *

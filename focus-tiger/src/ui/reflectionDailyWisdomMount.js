@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Reflection Phase A — mount free Daily Wisdom under the card footer.
  * No Sanctuary seal (Phase B). Quiet Line / echo pools stay separate.
  */

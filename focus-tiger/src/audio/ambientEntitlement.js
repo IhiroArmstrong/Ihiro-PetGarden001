@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Ambient Soundscape · free warmth subset vs B-track deep library.
  *
  * Free (5): Mer-Ka-Ba + Divine Life Society (Jesse) · Somnia Variation 3 (relax) ·

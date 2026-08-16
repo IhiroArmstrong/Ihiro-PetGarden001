@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Session UI 门闩 facade：集中持有 Arrival / 叠层 / 完成中等共享门闩态，
  * 并把「未就绪不得 begin」等裁决收成可单测 API。
  *

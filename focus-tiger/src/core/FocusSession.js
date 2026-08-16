@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：专注会话的计时与 focusLevel 计算。
 // 经过时长以墙钟时间戳差值为真值，不依赖后台被节流的 interval / rAF 累加。
 

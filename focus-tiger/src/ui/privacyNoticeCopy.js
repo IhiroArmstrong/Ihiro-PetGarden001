@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * In-app Privacy sheet copy keys + guards (local-first; no iCloud promise).
  * Product SSOT narrative: docs/PRIVACY_NOTICE.md · Brief task-in-app-privacy-and-purpose-copy.
  */
@@ -34,6 +39,9 @@ export function findPrivacyKeysWithForbiddenCloudBrand(
     'HINT_APP_PURPOSE_BODY',
     'HINT_APP_PURPOSE_WELLNESS_TITLE',
     'HINT_APP_PURPOSE_WELLNESS_BODY',
+    'HINT_APP_PURPOSE_COLOPHON_MARK',
+    'HINT_APP_PURPOSE_COLOPHON_BYLINE',
+    'HINT_APP_PURPOSE_COLOPHON_COPYRIGHT',
     'PRIVACY_SHEET_WELLNESS_NOTE',
     'PRIVACY_SHEET_WELLNESS_LINK',
     'PRIVACY_SHEET_WELLNESS_LINK_ARIA',

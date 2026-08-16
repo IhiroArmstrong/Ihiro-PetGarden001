@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Unit tests for worktree hygiene classifier (read-only inventory).
  * Policy: WORKFLOW.md git-worktree-hygiene — never silent-remove.
  */

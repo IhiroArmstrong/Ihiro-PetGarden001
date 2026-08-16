@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：全局状态机唯一状态源。
 // 非法转移：不阻断（仍写入），但 console.warn，便于发现「本来就在做非法转移」的调用方。
 

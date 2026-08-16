@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Minimal static server for Playwright e2e (replaces `vite preview`).
  * Vite preview has hung mid-suite under long Chromium navigation storms;
  * a plain Node http.Server stays responsive for the full local/CI suite.

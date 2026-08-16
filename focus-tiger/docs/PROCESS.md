@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **「?」简介卡 colophon + 源码版权头（2026-08-16）**：点「?」卡最末见 Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026。第一方 JS/CSS/HTML 文件头 + `LICENSE`。TRACKER 待人工。
+
 - **Idle 轻点阿寅（2026-08-16）**：首页点阿寅播 `earWiggleHeadTouch`（摸摸自己头顶）；Focusing 仍走 Recover。TRACKER 待人工。
 - **Buy Yin a Tea Stripe Price US$4.99（2026-08-16）**：卡面低于 Membership **US$6.99/月**。Price ID `price_1U4nanFuIhgJPGLidoTdxobW`。用户本机 `wrangler deploy` 成功：生产 **`focus-tiger-cloud`** Version **`fb568e27-96dd-4fb1-b15c-acbac8dd919b`**（`https://focus-tiger-cloud.ihiro.workers.dev`）。Checkout 应对齐 **US$4.99**。TRACKER 待人工验金额。
 

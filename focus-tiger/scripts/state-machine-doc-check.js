@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sync / check ARCHITECTURE.md state-machine block against StateManager.js.
  *
  *   npm run state:doc-check   — exit 1 if committed md block differs from code

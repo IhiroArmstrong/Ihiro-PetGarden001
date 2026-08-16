@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Moment Whisper — soft observational line near Yin (Task A′).
  * Not a top Banner; not Hint auto spray.
  */

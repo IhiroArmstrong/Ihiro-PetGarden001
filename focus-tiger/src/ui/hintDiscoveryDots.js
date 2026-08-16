@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * First-visit soft blue discovery dots on chrome that has an unread onboarding tip.
  * Distinct from vermillion `notification-badge` on 「?」 (alerts / unread help).
  */

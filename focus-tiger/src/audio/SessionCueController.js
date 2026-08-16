@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sitting 计时提示音：开始磬 / 间隔磬 / 达标结束铃。
  * Focusing **与** Breath practice 共用；免费核心反馈——不走 Ambient entitlement；
  * 音量跟 Soundscape 同一条 volume bar；可复用 ambient ducking。

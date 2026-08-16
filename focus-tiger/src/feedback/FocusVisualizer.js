@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：只负责 focusLevel 数值 → 光效/粒子/背景暖度参数的映射。
 // 不允许在这个类里处理与 focusLevel 无关的环境效果（那是 Ambience.js 的职责）。
 

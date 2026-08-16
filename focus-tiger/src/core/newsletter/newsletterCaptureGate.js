@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Stay in touch · local flags only (no email stored).
  * Soft prompt dismiss is reserved for Phase 2 — not wired this slice.
  *

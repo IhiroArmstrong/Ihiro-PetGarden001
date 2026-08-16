@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * EmotionController —— 上层业务与底层渲染实现之间的唯一桥梁。
  *
  * 对外只暴露 playEmotion(emotionKey, options)。

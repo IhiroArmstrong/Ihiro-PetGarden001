@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Run every src unit test file (name ends with .test.js) via node --test <files…>.
  * Portable on Node 20+ (CI): a quoted glob like "src/**" + "/*.test.js" is treated
  * as a literal path and fails with "Could not find …".

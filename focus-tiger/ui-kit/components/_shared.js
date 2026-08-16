@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Shared celebrate-mode helper for Focus Tiger UI Kit.
  * Celebrate lasts ≤ 1.2s, then returns to calm.
  */

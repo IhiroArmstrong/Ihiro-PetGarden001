@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Buy Yin a Tea · Tip Jar · local tip status (badge / gratitude only).
  *
  * ---------------------------------------------------------------------------

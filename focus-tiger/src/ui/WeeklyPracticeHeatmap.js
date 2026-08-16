@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle/Dormant 7-day practice heatmap (presence, not a scoreboard).
  * Rolling last 7 local days (oldest → newest); rightmost = today.
  * Lit when totalMinutes === null (legacy unknown) or totalMinutes > 0.

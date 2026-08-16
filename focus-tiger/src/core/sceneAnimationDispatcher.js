@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Scene Animation Dispatcher (Slice A′ + B).
  * Business emits semantic events; this module maps → emotion key (single or weighted),
  * applies gate / daily quota / cooldown, then callers playEmotion.

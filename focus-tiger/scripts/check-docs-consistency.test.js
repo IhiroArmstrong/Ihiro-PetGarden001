@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Regression: browser-energy 「10 分钟」restated in PROCESS.md must fail;
  * path-pointer-only PROCESS lines and SSOT itself must pass.
  *

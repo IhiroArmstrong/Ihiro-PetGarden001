@@ -36,6 +36,7 @@ If we add cloud features, we will explain **what** is sent, **why**, **how long*
 |---|---|
 | Primary | **?** → `#onboarding-app-purpose` → **Privacy** → `#onboarding-privacy-sheet`（i18n 摘录对齐本页） |
 | Wellness (not clinical) | Always-available lookup: **?** purpose card, `.onboarding-app-purpose__wellness` (en + ja). Privacy sheet has a one-line cross-link back to that notice. **Not** auto-shown on cold start (scares users away). QA only: `?wellnessFirst=1` forces `#onboarding-wellness-first`. |
+| Credit | Purpose-card footer colophon (Focus Tiger™ / Created by… / ©). Not part of this privacy notice. |
 | Secondary | Future About / Tip Jar footer may reuse the same sheet |
 | Do not | Settings tree only for privacy; paste the full notice inside the purpose card |
 

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Honesty Check-in 轻量 UI：可忽略提示 → 时长选择 → 10s 呼吸引导 → 完成文案。
  * 非阻断弹窗；不占用共享提醒池。
  */

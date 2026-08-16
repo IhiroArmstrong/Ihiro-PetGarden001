@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Five Moments Compass — first-run seen gate (Task B).
  * Key: focus-tiger.five-moments-compass-seen.v1
  */

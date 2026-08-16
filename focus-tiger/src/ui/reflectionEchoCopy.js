@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Mindful Reflection Echo — observational companion lines (not coaching).
  * Pool selected by local calendar day + light salt (stable within a day, varies across answers).
  */

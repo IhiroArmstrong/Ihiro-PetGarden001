@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 /** 共享缓动函数（IncenseGreeting、PoseManager 等复用） */
 
 export function easeOutQuad(t) {

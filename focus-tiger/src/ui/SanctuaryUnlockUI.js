@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Yin's Sanctuary · Lifetime unlock card (Idle ⋯ / drawer).
  * Content unlock UI — zero coupling with tip jar (uses cloudApiClient only).
  */

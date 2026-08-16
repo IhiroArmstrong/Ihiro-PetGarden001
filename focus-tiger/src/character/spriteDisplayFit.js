@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 精灵画幅归一化：1:1（如 960×960）与宽画幅（如 1056×864）在
  * object-fit:contain 下同屏时，角色视觉尺寸会差一截。
  * 用内容包围盒把非基准序列缩放到与 idle-breathing 同大、同落点。

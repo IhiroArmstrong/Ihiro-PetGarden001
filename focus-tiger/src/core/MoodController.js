@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：把 StateManager 的状态变化翻译成情绪表现。
 // 仅通过 EmotionController.playEmotion() 触发视觉，不直接调用 PoseManager / DynamicMotion。
 // 本类绝不自行存储/维护专注状态，只持有对 stateManager / emotionController 的引用。

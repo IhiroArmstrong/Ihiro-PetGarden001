@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 最近一次专注会话结束时刻（达标完成或 Rise 未达标均记账）。
  * 供 DORMANT 滚动空闲窗口判定；Honesty 补登不写入本 store。
  */

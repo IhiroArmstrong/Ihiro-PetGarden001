@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Scene A · 应用内轻提醒横幅伴随「鹦鹉禅意信使」动画。
  *
  * 横幅每次从隐藏 → 可见时播一次（含 dismiss 后再到期、suppress 后再显）。

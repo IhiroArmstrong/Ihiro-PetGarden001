@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * IdleOrchestrator —— 闭目坐禅 Idle 两段 pingpong 编排。
  *
  * 2026-07-20：同源 `idle-breathing` 按播放序切分（用户验收帧界）：

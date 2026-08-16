@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Confide to Yin · light Idle panel (retrieve-not-generate).
  * Opens from ⋯ / drawer when mount enabled, or via ?confide=1 harness.
  */

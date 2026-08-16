@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：禅意蒲团/打坐台——静止参照物，衬托老虎悬浮与呼吸效果。
 
 import * as THREE from 'three';

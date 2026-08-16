@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Seasonal Theme · solar-term lookup (春分/夏至/秋分/冬至).
  * Pre-filled ≥10 years from 2026. Missing year → no trigger (no guess).
  *

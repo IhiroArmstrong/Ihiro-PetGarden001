@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Journey Log card — ⋯ / drawer quiet trail (Tea Log pattern; not HealthKit).
  * Corner opt-in for practice-memory cloud backup (Prompt 12).
  */

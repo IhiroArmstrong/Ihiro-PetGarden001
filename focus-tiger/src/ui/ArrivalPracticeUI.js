@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Arrival Practice UI —— Sit 之后的 Welcome / Notice / Breath / Choose。
  *
  * 设计对齐 `ARRIVE_MOMENT_DESIGN.md` v2：轻量观察式气泡 / 字幕，**不是**重型模态卡片。

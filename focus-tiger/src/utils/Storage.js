@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 // 职责：localStorage 的 JSON 安全封装。
 // localStorage 被禁用（隐私模式、iframe 限制等）时静默回退，不抛错、不阻断主流程。
 

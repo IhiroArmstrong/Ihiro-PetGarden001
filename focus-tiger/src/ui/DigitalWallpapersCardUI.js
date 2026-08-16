@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Digital wallpapers gift card — Idle ⋯ / drawer entry.
  * Preview curated stills → Save image (device download; not social share).
  */

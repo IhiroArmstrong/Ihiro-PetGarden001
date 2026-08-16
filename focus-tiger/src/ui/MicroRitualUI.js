@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle 呼吸练习 UI：入口 → 时长 chip 点选即开 → 呼吸叠层 + 安静离开。
  * 不启 FocusSession；完成反馈文案由 main 经 toast 展示。
  */

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Ambient Deep · 15s audition helpers (conversion layer after Sound Gate).
  *
  * Does not unlock entitlement or persist preferred=deep.

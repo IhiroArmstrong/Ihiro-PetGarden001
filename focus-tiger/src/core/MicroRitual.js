@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle 呼吸练习（原「一分钟呼吸」微仪式）常量与时长解析。
  * 权威方案：docs/MICRO_RITUAL_PLAN.md
  *

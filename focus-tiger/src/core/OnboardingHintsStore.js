@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 分散式即时提示已读记忆：focus-tiger.hints-seen.v1
  * 值：'peeked'（simple 看过文案、圆点静止弱化）| 'done'（操作完成/进详情，圆点移除）
  * 旧布尔 true 读入时迁为 'done'。

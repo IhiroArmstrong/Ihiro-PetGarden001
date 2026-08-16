@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 跨视口可见性契约 — 机器可读真源（SSOT）。
  *
  * 派生：`SHARED_RESOURCES.md` §6 机器块（`npm run visibility:doc-sync`）。

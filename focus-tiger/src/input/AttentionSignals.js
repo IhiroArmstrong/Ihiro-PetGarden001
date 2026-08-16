@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
 export const DISTRACTION_LOG_THRESHOLD_MS = 20_000;
 export const REFOCUS_DISPLAY_THRESHOLD_MS = 60_000;
 

@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Support Yin · top-right entry + cards (Sanctuary + Membership + Buy a Tea).
  * Pay rows were removed from Idle ⋯ / drawer; this FAB is the unified entry.
  * Checkout reuses TipJarUI / SanctuaryUnlockUI / MembershipUnlockUI cards

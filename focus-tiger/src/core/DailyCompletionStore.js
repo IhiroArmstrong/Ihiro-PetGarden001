@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * 当日已完成专注会话记录（正常计时与 Honesty Check-in 共用）。
  * 会话列表一视同仁（无 source 标签）；**Celebrating 日期戳**单独记，
  * 避免 Honesty 补登占掉「当日首次达标庆祝」却不播舞。

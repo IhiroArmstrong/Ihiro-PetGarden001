@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Seasonal Theme · calendar config (Phase 2: Christmas instance + schema placeholders).
  * Engines must not branch on season id — only read this table.
  *

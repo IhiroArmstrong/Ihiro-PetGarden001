@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Day1 / 久别吹花鼓励 · 观察式文案解析（Phase 2a）。
  * 产品策略 C 见 `FLOWER_BLOW_WELCOME_DESIGN.md`；本模块不触 Dispatcher。
  */

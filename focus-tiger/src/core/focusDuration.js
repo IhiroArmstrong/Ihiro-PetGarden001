@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Sit → Focus 开表前时长（与 Breath practice 档位差异化）。
  * 产品 chip：15 / 25 / 45 / 60；`?sessionMinutes=` 仍可跳过 picker（e2e / 调试）。
  */

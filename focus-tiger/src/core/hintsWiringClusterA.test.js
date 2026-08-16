@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * HINTS_WIRING cluster A (Dock / Sit) — contract locks after 2026-08-03 format exercise.
  * Authority: HINTS_WIRING.md §4.1 · OnboardingHintsStore.resolveAutoHintIds.
  */

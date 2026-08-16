@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Save a curated wallpaper still to the device (download link).
  * Reuses the Quiet Line download pattern — no social share.
  */

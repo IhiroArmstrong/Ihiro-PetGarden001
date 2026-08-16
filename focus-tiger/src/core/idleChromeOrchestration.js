@@ -1,4 +1,9 @@
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Idle chrome orchestration (responsive Task 3 · phase 1).
  * Shared stage / shell projection / secondary entry list for NarrowIdleShell
  * and WideIdleMoreMenu. Presentation (drawer vs ⋯) stays in the shells;

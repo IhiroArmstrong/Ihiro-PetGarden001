@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 /**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
  * Worktree hygiene inventory (read-only).
  * Policy SSOT: WORKFLOW.md「并行 Cursor 会话」结束后清理 + 口令「请清理闲置 worktree」
  * Index: RULES_INDEX.md → git-worktree-hygiene
