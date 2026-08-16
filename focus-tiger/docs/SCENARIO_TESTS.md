@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-16（切走后柔性提醒 / tab-return whisper；对齐场景 B 子项。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-16（Idle Document PiP 实验场景 AA；切走后柔性提醒 / tab-return whisper 对齐场景 B 子项；Quiet Line 洞察种子池 v2 + Journey Log `insightSpark` 仍对齐 U2 / Z。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -523,6 +523,24 @@
 7. **字段 `insightSpark`**：仅当当日 Quiet Line 抽中洞察种子句 **且当场打开过** Quiet Line 时，该条（或同日已有条目被补标）带本地 `insightSpark: true`，行末见安静小符号 `◦`（`[data-testid=journey-log-insight-spark]`）。未打开 Quiet Line、或当日句是经典金句 → **无**符号。旧条目缺该字段 → 降级为无标记。刷新后标记仍在。与徽章 / Tea / Sanctuary **无**联动。
 8. **375**：卡可关、不挡 Sit。
 9. **对照**：Tip Jar `#yin-tip-jar-tea-log` **不得**因本场 Focus 自动多出一杯茶。
+
+---
+
+## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
+
+> **地位**：**实验 / 非最终形态**。用来验证「切到其他窗口或 App 时，仍能看见阿寅安静呼吸」。**待观察使用数据后决定是否继续投入**（localStorage `focus-tiger.idle-companion-pip.v1` 只记是否曾打开，不用于提醒或激励）。  
+> **不是** Electron / 系统托盘 / 关浏览器后仍常驻；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时）。  
+> **单元**：`idleCompanionPipGate.test.js`（Document PiP 支持 → 入口可挂载；不支持 → 不挂载；Idle 才显示）。  
+> **DOM e2e**：无（`requestWindow` 需真实用户手势 + Chromium）。  
+> **仍须人工**：Chrome/Edge 开/关流畅与呼吸卡顿；切到其他窗口后是否置顶；Safari/Firefox 入口完全不出现且无报错。
+
+1. **Chrome / Edge 桌面** · `?product=1` Idle：热力图簇旁见画中画小圆钮（`#idle-companion-pip`）。  
+   **点击后 0–1 秒内**：钮 `:active` 轻微按压缩放，置顶小窗立刻打开，窗内只有阿寅呼吸/陪伴帧（无计时、无按钮、无打卡）。不是延迟后再弹出。
+2. 切到其他窗口或本机 App：小窗应保持在最上层，阿寅继续呼吸。主页面 Idle 状态不变（浮窗只是视图分身）。
+3. **关闭**：再点该钮，或关系统 PiP 窗 → **0–1 秒内**小窗消失，回到普通页面；Sit / 热力图仍在。不持有独立会话。
+4. **回流**：关后再开仍立刻出窗；Sit → Focusing 时入口须消失、已开浮窗须收起；Rise 回 Idle 后入口再出现，**不**自动弹窗。
+5. **Safari / Firefox**（及无 `documentPictureInPicture` 的环境）：Idle **完全不见**该入口；无报错、无「暂不支持」提示。本步不是点击——入口不存在即测对了。
+6. **375**：簇内图标不挡三球；本原型不要求浮窗在窄屏浏览器里好用（桌面 Chromium 才是假设验证面）。
 
 ---
 
