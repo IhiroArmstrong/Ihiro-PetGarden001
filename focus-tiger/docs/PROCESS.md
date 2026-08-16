@@ -75,7 +75,7 @@
 
 - **Breath practice 写入 Journey Log（2026-08-15 · `fix/breath-practice-journey-log`）**：左球呼吸练习完成且 Reflection 关闭后（含 Skip）落一条本地留痕；Leave / Honesty / 付费仪式仍不入账。TRACKER 待人工。
 - **Support 三卡暖纸底 + Membership 报价行（2026-08-15 · #298）**：`#yin-support-modal` 左/中/右头图均为暖纸 `#e8dfd2`（烘焙进 PNG，不再只靠 CSS）。中间 Membership 报价行与左右同位置：**About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`；2026-08-15 用户书面 Stripe = US$6.99/月）。**同日续**：Join Membership CTA 与左右同款米色立体（不再用蒲团橙白字）。TRACKER Support 行待人工。
-- **Stay in touch 欢迎信（2026-08-15 · #302/#305 已合 · Worker `d0140328`）**：用户书面确认已收到 From `hello@twinsology.com`。约 18:54+08 一封在垃圾箱（旧 `8c649d12` `waitUntil` 其实已发出）；约 20:54+08 无 `welcomeSentAt` 重发第二封。await/502 仍保留。TRACKER `RB-20260815-L394` 仍待人工关单（退订 / 菜单 We'll keep in touch / 勿只看收件箱）。
+- **Stay in touch 欢迎信（2026-08-16 · KV 书面确认）**：用户再提交真实邮箱后确认收到 From `hello@twinsology.com`，且 Dashboard `NEWSLETTER_KV` 出现 `newsletter:v1:{email}`。`RB-20260815-L394` 已关（原「没收到信」）。TRACKER 仍「待人工测试」（退订页 / We'll keep in touch / mock / 社群外链 / 375·宽屏未书面）。生产 Worker 现为 `fb568e27`（Newsletter await/重发仍在）。
 - **Membership 订阅授章（2026-08-15 · `fix/membership-prestigious-badges`）**：订阅 confirm 后 Idle 右侧 `#yin-tip-kindness-badges` ≥3 枚尊贵章（`lifetime∪subscription`）；**不**把 Sanctuary Lifetime SKU 标已买。TRACKER 待人工。
 - **Quiet Line Save image 明信片（2026-08-15 · `fix/quiet-line-save-postcard`）**：下载 PNG 改为上图下字（当日图库静帧 + 暖纸金句）；不再导出暗紫纯文字卡。TRACKER 待人工。
 - **Sanctuary Enso 改页面左下角（2026-08-15 · `fix/enso-mark-bottom-left`）**：不再钉蒲团中央。宽屏真左下角约 52px；375 约 44px、抬到三球之上。装饰层（`pointer-events: none`）。TRACKER 待人工。
@@ -91,7 +91,7 @@
 - **点击反馈 follow-up（2026-08-14）**：存量 0–1s 补句改优先级表（禁「随改写再补」）；P0 已写 Q/U/X。SB-07 收窄为专用触点隐退；冷却期内再点阿寅列为 **FB-01**（待补接收反馈，非白名单）。无运行时。
 - **点击反馈原则 + 沉默白名单（2026-08-14）**：`INTERACTION_FEEDBACK_PRINCIPLES.md` 与 `SILENT_BEHAVIORS.md` 入库；PR 模板 / Cursor 规则须答「点击后 0–1 秒内看到什么」；不在白名单的沉默测试时当 bug。索引 `interaction-feedback`。无运行时改动。
 - **体验 Bugs 叠层（2026-08-14 · #283 已合 tip `b027f3d`）**：Journey 备份点选须有发送/开启提示；Enso 缩小约 40% 贴住蒲团；⋯/抽屉去掉与右上重复的三项付费；Five Moments 单行可点跳转；Quiet Line 用动画静帧作底；Stay in touch 强调邮箱可达；仪式 Continue/Leave 同款钮；Sanctuary marks 改右侧。TRACKER 待人工（关单须 tip `b027f3d`）。
-- **Stay in touch · 真实 Resend（2026-08-13 · #280 已合；2026-08-15 #302 + Worker `d0140328`）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`。无 Cloud / `?newsletterMock=1` 仍 mock。**2026-08-15 人工**：Gmail 已收到欢迎信（含垃圾箱里更早一封）；第二次提交因旧行无 `welcomeSentAt` 又发了一封。TRACKER `RB-20260815-L394` 仍待关单。
+- **Stay in touch · 真实 Resend（2026-08-13 · #280 已合；2026-08-15 #302；2026-08-16 KV）**：Cloud 配好时 `createWorkerNewsletterProvider` → `POST /api/newsletter/subscribe`。无 Cloud / `?newsletterMock=1` 仍 mock。**2026-08-15 人工**：Gmail 已收到欢迎信（含垃圾箱里更早一封）；第二次提交因旧行无 `welcomeSentAt` 又发了一封。**2026-08-16 人工**：再提交 + Dashboard `NEWSLETTER_KV` `newsletter:v1:{email}` — **测试 OK**。`RB-20260815-L394` 已关；整行关单仍待退订页等。
 - **Focus 间隔磬 + 觉察卡 · 安全路径（2026-08-13 · #278 已合 tip `41e9748`）**：节奏 off/3/5（默认 off）；底部觉察句 + 独立开关；cues 短磬不接 Gate。TRACKER 分列待人工（关单须 tip `41e9748` 或更新后的 develop tip）。
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。

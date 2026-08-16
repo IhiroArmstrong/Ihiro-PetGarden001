@@ -4,7 +4,7 @@
 > **性质**：可选邮箱留资，**不是**账号 / 登录系统；**不**挂钩 entitlement / tip / sanctuary。  
 > **文案（2026-08-13 批准）**：欢迎信 + 第一封群发草稿定稿，不改字。群发仍未接线。  
 > **卡面（2026-08-15）**：`NEWSLETTER_CARD_BLURB` / `OPTIONAL` 说明定期更新会把 **known-error 修复** 与 **更好的最新版（latest release）** 发到邮箱；仍写「不是推销名单」。不改欢迎信正文。  
-> **欢迎信（2026-08-15）**：用户书面确认 Gmail 已收到 From `Yin <hello@twinsology.com>`（主题 *A quiet note from Yin*）。约 18:54+08 一封进**垃圾箱**（早于 #302，属旧 `8c649d12` `waitUntil`——当时 Resend 已发出，不是「没发出」）。约 20:54+08 第二次提交又收到一封（`d0140328` 对无 `welcomeSentAt` 的旧行重发，属设计）。await/502 仍保留（假成功洞还在）。查收须含垃圾箱。TRACKER 仍「待人工测试」（关单门禁）。  
+> **欢迎信（2026-08-16）**：用户再提交后书面确认仍收到 From `Yin <hello@twinsology.com>`，且 Dashboard `NEWSLETTER_KV` 有 `newsletter:v1:{email}`（JSON 含 email + subscribedAt）。2026-08-15：约 18:54+08 一封进**垃圾箱**（早于 #302，属旧 `8c649d12` `waitUntil`）；约 20:54+08 第二次提交又收到一封（无 `welcomeSentAt` 重发，属设计）。await/502 仍保留。`RB-20260815-L394` 已关。TRACKER 仍「待人工测试」（退订页 / We'll keep in touch / mock / 社群外链 / 375·宽屏未书面）。  
 > **本期不做**：情境软提示（Phase 2）、Resend Audiences / 群发 UI、自动群发第一封。
 
 ## 产品入口（已实现）
@@ -65,7 +65,7 @@
 1. **`NEWSLETTER_KV` 已建**（2026-08-13）：`id=baeb661cb8f2450ab4a87d6f23af6896` · `preview_id=8e13fe05705841c9939c3164bfb9a3bd`（已写入 `wrangler.jsonc`）
 2. From = `Yin <hello@twinsology.com>`（与 OTP `restore@` 隔离；域已验证）
 3. `wrangler secret put RESEND_API_KEY`（若尚未）
-4. `npm run deploy`（`focus-tiger-cloud`）——**2026-08-15 已执行（#302 代码）**：Version `d0140328-ee54-4dbb-8710-be6675f0596a`（qa worktree tip `c2dce6c`；覆盖 `8c649d12-…`）。无效邮箱仍 400。**2026-08-15 用户书面**：真实邮箱欢迎信已收到（含一封先落垃圾箱）；无 `welcomeSentAt` 的旧行再提交会再发一封
+4. `npm run deploy`（`focus-tiger-cloud`）——**2026-08-15 已执行（#302 代码）**：当时 Version `d0140328-ee54-4dbb-8710-be6675f0596a`。**2026-08-16 生产**为 `fb568e27-96dd-4fb1-b15c-acbac8dd919b`（请茶 $4.99；Newsletter 路由仍在）。无效邮箱仍 400。**2026-08-15 用户书面**：真实邮箱欢迎信已收到（含一封先落垃圾箱）；无 `welcomeSentAt` 的旧行再提交会再发一封。**2026-08-16 用户书面**：再提交 + Dashboard `NEWSLETTER_KV` `newsletter:v1:{email}` — **测试 OK**
 5. 前端 `VITE_CLOUD_API_BASE_URL=https://focus-tiger-cloud.ihiro.workers.dev`（Safari 用 `http://127.0.0.1:5173`；曾 mock/假成功则先清 `focus-tiger.newsletter-capture.v1`）
 
 ---
