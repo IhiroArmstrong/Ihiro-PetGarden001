@@ -4,10 +4,6 @@
  */
 
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
-import {
-  GLASS_BORDER_STRONG,
-  GLASS_FILL_STRONG
-} from './glassPanelStyles.js';
 
 const DEFAULT_VISIBLE_MS = 4_000;
 
@@ -82,9 +78,6 @@ export class MindfulAcknowledgeToast {
     this.hideTimer = null;
     /** @type {'bottom' | 'center'} */
     this._placement = 'bottom';
-    /** @type {null | (() => void)} */
-    this._onTimeout = null;
-    this._acted = false;
 
     this.element = document.createElement('div');
     this.element.id = 'mindful-acknowledge-toast';
@@ -97,40 +90,16 @@ export class MindfulAcknowledgeToast {
 
   /**
    * @param {string} message
-   * @param {{
-   *   placement?: 'bottom' | 'center',
-   *   visibleMs?: number,
-   *   actions?: Array<{ id: string, label: string, onClick: () => void }>,
-   *   onTimeout?: () => void,
-   *   testid?: string
-   * }} [options]
+   * @param {{ placement?: 'bottom' | 'center', visibleMs?: number }} [options]
    */
   show(message, options = {}) {
     if (!message) return false;
     window.clearTimeout(this.hideTimer);
-    this._acted = false;
-    this._onTimeout = typeof options.onTimeout === 'function' ? options.onTimeout : null;
     const placement = options.placement === 'center' ? 'center' : 'bottom';
     this._placement = placement;
     this.element.dataset.placement = placement;
-    const actions = Array.isArray(options.actions) ? options.actions : [];
-    const interactive = actions.length > 0;
-    this.element.style.cssText = `${BASE_CSS};${placementCss(placement)};${
-      interactive ? 'pointer-events:auto' : 'pointer-events:none'
-    }`;
-    this.element.setAttribute('role', interactive ? 'dialog' : 'status');
-    if (options.testid) {
-      this.element.dataset.testid = options.testid;
-    } else {
-      delete this.element.dataset.testid;
-    }
-    if (interactive) {
-      this.element.dataset.tabReturnWhisper = options.testid === 'tab-return-whisper' ? '1' : '';
-      this._renderActions(message, actions);
-    } else {
-      delete this.element.dataset.tabReturnWhisper;
-      this.element.textContent = message;
-    }
+    this.element.style.cssText = `${BASE_CSS};${placementCss(placement)}`;
+    this.element.textContent = message;
     // force reflow so opacity/transform transition runs after placement swap
     this.element.getBoundingClientRect();
     this.element.style.opacity = '1';
@@ -142,57 +111,11 @@ export class MindfulAcknowledgeToast {
       Number.isFinite(options.visibleMs) && options.visibleMs > 0
         ? options.visibleMs
         : this.visibleMs;
-    this.hideTimer = window.setTimeout(() => {
-      if (!this._acted) this._onTimeout?.();
-      this.hide();
-    }, ms);
+    this.hideTimer = window.setTimeout(() => this.hide(), ms);
     return true;
   }
 
-  /**
-   * @param {string} message
-   * @param {Array<{ id: string, label: string, onClick: () => void }>} actions
-   */
-  _renderActions(message, actions) {
-    this.element.replaceChildren();
-    const body = document.createElement('div');
-    body.textContent = message;
-    const row = document.createElement('div');
-    row.style.cssText =
-      'display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px';
-    for (const action of actions) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.dataset.toastAction = action.id;
-      btn.textContent = action.label;
-      btn.style.cssText = [
-        'flex:1',
-        'min-width:7rem',
-        'padding:7px 16px',
-        'font-size:13px',
-        'color:#4a3a28',
-        `background:${GLASS_FILL_STRONG}`,
-        GLASS_BORDER_STRONG,
-        'border-radius:16px',
-        'cursor:pointer',
-        'box-shadow:0 1px 0 rgba(255,255,255,.7) inset'
-      ].join(';');
-      btn.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (this._acted) return;
-        this._acted = true;
-        window.clearTimeout(this.hideTimer);
-        this.hide();
-        action.onClick?.();
-      });
-      row.appendChild(btn);
-    }
-    this.element.append(body, row);
-  }
-
   hide() {
-    window.clearTimeout(this.hideTimer);
     this.element.style.opacity = '0';
     this.element.style.transform =
       this._placement === 'center'

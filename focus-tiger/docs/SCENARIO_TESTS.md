@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-16（Idle Document PiP 实验场景 AA；切走后柔性提醒 / tab-return whisper 对齐场景 B 子项；Quiet Line 洞察种子池 v2 + Journey Log `insightSpark` 仍对齐 U2 / Z。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-16（Idle Document PiP 实验场景 AA；Quiet Line 洞察种子池 v2 + Journey Log `insightSpark` 仍对齐 U2 / Z。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -103,23 +103,22 @@
 
 ## 场景 B：分心后自己走神又回来（Recover / Re-focus Acknowledge）
 
-> **单元 / 控制器集成**：`shouldSuppressAwayReminders` 模式门闩 + `MindfulReminderController.handleAttentionReturn` 在 Here & Now 触发 emotion / Offline·Flow 抑制 → smoke B；**切走轻语**时长三档 + 冷却 → `AttentionSignals.test` / `tabReturnWhisperGate.test` / `MindfulReminderController.test`。  
-> **未覆盖**：真实切标签页、toast DOM、nod-bow 序列、轻语钮 DOM。  
-> **人工验收（用户路径，勿用控制台）**：真实切标签页 + 轻语 / toast + nod-bow。  
-> **对照**：用户**主动** Recover（Focusing 轻触阿寅）见 **场景 X**（Tiger Anchor）；勿与本被动 Re-focus / 切走轻语混验额度。
+> **单元 / 控制器集成**：`shouldSuppressAwayReminders` 模式门闩 + `MindfulReminderController.handleAttentionReturn` 在 Here & Now 触发 emotion / Offline·Flow 抑制 → smoke B。  
+> **未覆盖**：真实切标签页、toast DOM、nod-bow 序列。  
+> **人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。  
+> **对照**：用户**主动** Recover（Focusing 轻触阿寅）见 **场景 X**（Tiger Anchor）；勿与本被动 Re-focus 混验额度。
 
 ### 频率门槛（先记住，否则会以为「坏了」）
 
 | 离开时长 | 回来时应看到 |
 |---|---|
 | **&lt; 20s** | **无反应**（连内部记账都不做）——你测的约 10s 属于此档，**正确**（**SB-01**） |
-| **20s–180s**（含两端） | **切走轻语**（中置 toast +「好的，一起做」/「跳过」）。**不**再叠经典 Re-focus toast / `nod-bow`。冷却期内再切回 → **无轻语**（**SB-16**） |
-| **20–60s · 经典 Re-focus** | 仍只内部记账，**无**观察式文案 / nod-bow（**SB-02**；表面若见轻语属上一行，不是 Re-focus 回归） |
-| **&gt; 180s** | **无轻语**（**SB-17**）。若仍在 FOCUSING 且离开 &gt;60s：经典观察式 toast + `nod-bow`（Re-focus） |
+| 20–60s | 只内部记账，**仍无**文案 / nod-bow（**SB-02**） |
+| **&gt; 60s** | 才展示：观察式 toast + `nod-bow`（Re-focus） |
 
 ### 为何默认 `http://localhost:5173/` 测不了真实切页 Re-focus
 
-默认 `DEMO_SESSION_MINUTES = 1`：计时用**墙钟**（切走也在走）。离开 **&gt;60s** 再回来时，会话往往已达标 → 先播 **SessionComplete 摆尾 / Celebrating**，**不是** Re-focus / 轻语。这不是 bug，是演示时长与门槛冲突。
+默认 `DEMO_SESSION_MINUTES = 1`：计时用**墙钟**（切走也在走）。离开 **&gt;60s** 再回来时，会话往往已达标 → 先播 **SessionComplete 摆尾 / Celebrating**，**不是** Re-focus。这不是 bug，是演示时长与 Re-focus 门槛冲突。
 
 ### 用户测试步骤（推荐）
 
@@ -127,16 +126,12 @@
    → 本场目标 **5 分钟**，离开 70s 后仍应在 FOCUSING。
 2. Arrival → Companion 选 **Here & Now**（或 Skip — begin 开表）。
 3. 确认 HUD 在计时、按钮为 **Rise**。
-4. 切到 **其它 Safari 标签**，停留约 **25–90 秒**（必须 **≥20s 且 ≤180s**；不要只留 10s）。
-5. 切回 Focus Tiger：应见 **中置轻语**（「感到累了吗？…」；en/ja 占位句）+ **好的，一起做** / **跳过**（与 Skip 同级）。**0–1 秒内**：toast 淡入，两钮可点。  
-   - 点 **好的，一起做** → **0–1 秒内** toast 收起、场景 S 呼吸叠层出现（吸↔呼；无时长 chip）；专注墙钟**不停**（同 Recover）。做完或点 Leave → 回到 Focusing，HUD/Rise 仍在。  
-   - 点 **跳过** 或不操作至 toast 自行消失 → **0–1 秒内** toast 收起；计时继续；**无** Journey / Reflection 留痕（同 Skip）。  
-6. **冷却（SB-16）**：轻语出现后再切走 25s 切回 → **不应**再出轻语。  
-7. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 25–90s 再回来 → **不应**出现轻语 / 观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期；**SB-03**）。若「没反应」= **测对了**。
-8. **经典 Re-focus（&gt;180s）**：Here & Now 开表 → 切走约 **190–200s** 再回来（须仍 FOCUSING）→ 观察式文案 + `nod-bow`（**无**轻语两钮；**SB-17**）。
-9. 额度：经典 Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。切走轻语**不**占该池，独立 180s 冷却（`focus-tiger.tab-return-whisper.v1`）。
+4. 切到 **其它 Safari 标签**，停留约 **70–90 秒**（必须 **&gt;60s**；不要只留 10s）。
+5. 切回 Focus Tiger：应见 **非模态观察式文案** + **`nod-bow` 点头鞠躬**（不是摆尾）。
+6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期；**SB-03**）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
+7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
 
-*[单元/控制器：Stay 触发 / Offline·Flow 抑制 → smoke B；时长三档 + 冷却 → `tabReturnWhisperGate` / AttentionSignals / MindfulReminder；**非**真实 visibility 切页]*
+*[单元/控制器：Stay 触发 / Offline·Flow 抑制 → smoke B；**非**真实 visibility 切页]*
 
 ---
 

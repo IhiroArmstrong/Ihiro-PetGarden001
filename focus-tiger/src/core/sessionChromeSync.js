@@ -115,9 +115,7 @@ export function createSessionChromeSync(deps) {
     return [
       () => getArrivalPractice().isOpen(),
       () => getReflectionMoment().isOpen(),
-      () =>
-        getMicroRitualUI()?.isOpen() === true &&
-        getMicroRitualUI()?.isNestedInFocus?.() !== true,
+      () => getMicroRitualUI()?.isOpen() === true,
       () => getRitualFlowUI()?.isOpen() === true,
       () => getFocusDurationPicker()?.isOpen() === true
     ];
@@ -195,8 +193,7 @@ export function createSessionChromeSync(deps) {
       shouldEnableFocusChromeButton({
         completionPending: sessionUiGate.completionPending,
         microRitualOpen:
-          (getMicroRitualUI()?.isOpen?.() === true &&
-            getMicroRitualUI()?.isNestedInFocus?.() !== true) ||
+          getMicroRitualUI()?.isOpen?.() === true ||
           getRitualFlowUI()?.isOpen?.() === true ||
           companionModePicker.isMicroRitualActive?.() === true
       })
