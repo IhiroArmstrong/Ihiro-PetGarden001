@@ -111,6 +111,7 @@ import {
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
+  MUSTARD_SEED_SEAL_CASES,
   resolveMustardSeedSeal,
   shouldOfferMustardSeedSealAfterCeremony,
   clearMustardSeedSealState
@@ -912,6 +913,7 @@ async function init() {
       resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ),
+    cases: () => MUSTARD_SEED_SEAL_CASES.map((entry) => entry.id),
     clear: () =>
       clearMustardSeedSealState(
         typeof localStorage !== 'undefined' ? localStorage : null
@@ -2857,7 +2859,7 @@ async function init() {
       shouldOfferMustardSeedSealAfterCeremony({
         completed: true,
         unlocked: seal.unlocked,
-        revealed: seal.revealed
+        hasUnrevealedCase: Boolean(seal.nextCase)
       })
     ) {
       pendingReflectionAfterMustardSeed = endOpts;
