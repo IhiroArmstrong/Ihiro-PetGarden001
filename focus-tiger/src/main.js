@@ -190,6 +190,7 @@ import {
   MilestoneGlowStore,
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
+import { applyQaPracticeSeedFromSearch } from './core/qaPracticeSeed.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import {
   SCENE_ANIM_EVENTS,
@@ -1103,6 +1104,10 @@ async function init() {
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
+  applyQaPracticeSeedFromSearch({
+    search: window.location.search,
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
   const practiceDaysStore = new PracticeDaysStore();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
