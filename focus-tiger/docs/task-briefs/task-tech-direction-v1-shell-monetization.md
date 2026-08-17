@@ -47,7 +47,7 @@
 
 1. v1 默认 **纯 Web**。  
 2. 未来手机壳默认 **Capacitor**。  
-3. 桌面壳 **已拍板 Electron**（Mac DMG）；脚手架另开。PWA 不是电脑版终局。  
+3. 桌面壳 **已拍板 Electron**（Mac DMG · #326）；脚手架规格 `task-electron-desktop-scaffold.md`（运行时另开实现回合）。PWA 不是电脑版终局。  
 
 **v1 纯 Web 不可用（不得写入付费卖点）**：HealthKit / Health Connect；StoreKit / Play Billing；系统 Widget / Live Activities；「一键发到指定社交 App」核心承诺。
 
@@ -302,7 +302,7 @@ UI:   SanctuaryUnlockUI.js
 - 把 Lifetime 与 Membership 做成**不同内容层级**（「订阅少一档」心智）  
 - 电子书 ②B（已取消）  
 - 未拍板定价数字上线  
-- Capacitor 手机壳脚手架（未另下令）；桌面 Electron 脚手架见 `task-desktop-shell-electron.md`，亦不在本纪要自动开工  
+- Capacitor 手机壳脚手架（未另下令）；桌面 Electron 脚手架规格见 `task-electron-desktop-scaffold.md`（本纪要不自动写窗口代码）  
 
 ---
 
