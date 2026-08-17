@@ -37,6 +37,17 @@
 | `http://127.0.0.1:5173/` | **实验室**：右上角 `#emotion-debug-ui`；DEV 下 `window.__*` |
 | `http://127.0.0.1:5173/?product=1` | **产品壳**：隐藏调试面板，走用户场景故事（见 `focus-tiger/docs/SCENARIO_TESTS.md`） |
 
+**莲花池怎么测（2026-08-17 · Slice A）**：不必真坐几十小时。`?qaLotusBlooms=N` 写入独立只增计数 `focus-tiger.lotus-pond.v1`（**不是** 90 天 `practice-days`）。
+
+| 你想看什么 | 怎么打开 | 说明 |
+|---|---|---|
+| **空池 + 第一朵出生** | `?product=1&sessionMinutes=1&qaLotusBlooms=0` → Sit 等到 1 分钟达标 | 播种 24 累计分（差 1 分开第一朵）。仪式（Celebrating / Glow）**结束后**才播一炷香出生 FX，花留在螺旋池里。 |
+| **第 12 朵出生（封顶）** | `?product=1&sessionMinutes=1&qaLotusBlooms=11` | 11 朵已在；本场 1 分钟后出生第 12 朵。满 12 **不再挤、不缩小**；结晶金环是 Slice B，这次没有占位金线圈。 |
+| **满池（无新花）** | `?product=1&qaLotusBlooms=12` | 正好 12 朵。再坐只加累计分钟，不长第 13 朵。 |
+| **实验室一炷香（仍会消失）** | 实验室 `/`（**不要** `?product=1`）→「一炷香完成」 | 旧的渐显-停留-消失预览；**不是**池里那朵持久花。 |
+
+实现：`src/core/qaLotusPondSeed.js` · `LotusPondStore` · `IncenseGreeting.playBirthAt`。贴图只用 `/textures/lotus.png`（去水印），**勿**把 `lotus-front-rising` / `lotus-chest-halo` 当池花。
+
 用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。  
 点击反馈原则：[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)；已知静默白名单：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）。  
 实现前冲突扫描：[`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md)（`RULES_INDEX` → `feature-conflict-review`）。
@@ -331,7 +342,8 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | Tiger Reflection Moment / 结束反思 | UI可见 | 已通过 | 正常完成或主动 Rise 结束会话 → 留白约 400ms（完成）/ 300ms（主动）后淡入面板。**意图回显**：仅当**本场** Arrival Choose 有内容时，Reflection 面板**顶部**立刻显示（icon：`所选方向：{text}` / typed：`所写方向：{text}`；文案含 emoji 如 `📖 Reading`）。**不是**第二次 Choose 时头顶提示。无 Choose / 点了 **Skip — begin** → 无回显属正确。Q1–Q3：Continue / Skip / Skip all / Esc。 | **2026-07-22**：用户书面——多日点 Reading 从未见回显。已改：Choose/`onReady` 立刻闩上 + 空 pending 不抹闩 + 回显样式加强。**回归锁分工**：**DOM 用户链路** e2e `reflection-intention-echo.spec.js` 锁主路径有/无回显（**非**本次 Bug）；**单元** `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch` 锁抹闩 Bug；**控制器集成** smoke C 仅锁 `SessionEndFlow`→`open` 入参（下游接线，**非** Choose 源头）。请硬刷新后：Sit→…→点 **Reading**（勿点 Skip — begin）→ Rise → 看面板顶米色条。 **2026-07-24 用户书面（硬刷新复测）**：① Sit → Reading → Rise → Reflection 顶条见 Reading — **测试 OK**；② Skip all → 再 Sit → Skip — begin → Rise → **不得**再有 Reading 顶条 — **测试 OK**。 | — | — | 会话结束后自动 · e2e `reflection-intention-echo.spec.js`（主路径 DOM）· 单元 `SessionIntentionStore.test.js`（Bug 锁）· smoke C（下游入参）· DEV：`__reflectionMoment` | 2026-07-22 |
 | 完成反馈 · 每日首次 Celebrating | UI可见 | 已通过 | **须等计时自动达标**（勿提前点 Rise；达标后点 Rise 也会进完成反馈）。当日可先 Honesty 补登；**首次计时达标**仍须 Celebrating（Honesty 不占庆祝戳）。播 `celebrate-dance` → idle → Reflection。 | 2026-07-21：用户书面——多日多次 focus 超 1 分钟从未见 Celebrating 舞；已修。**2026-07-21 复测**：`/` 满 1 分钟见舞；`/?sessionMinutes=5` 满 5 分钟见舞。 | — | — | `triggerSessionCompletionFeedback` · 调试「庆祝跳舞」 | 2026-07-21 |
 | 完成反馈 · 同日后续 SessionComplete | UI可见 | 已通过 | 当日**已播过** Celebrating 后，再跑一轮 1 分钟达标 → 只播 `session-complete` 摆尾，**不**再 Celebrating。 | 2026-07-21：同 Celebrating 行用户反馈；庆祝戳已解耦。**2026-07-21 复测**：`http://localhost:5173` 同日第二次 1 分钟达标 → 只撅屁股摆尾、不再 Celebrating 舞；测试 OK。**同日晚**：`/?product=1` 再次确认同日第二次满 1 分钟 → 摆尾、非跳舞；测试 OK。 | — | — | 同上 · 调试「完成摆尾」 | 2026-07-21 |
-| IncenseComplete / 今日一炷香（莲花+金斑） | UI可见 | 已放弃/不适用 | **业务会话结束未接线**，正式路径看不到；**不再排人工验收**，不挡合并。调试面板「模拟一炷香」可自愿预览（DOM 莲花+金粒子；水印已清），效果保留给 Backlog 成长场景复用，勿删实现。 | 2026-07-19：建议保留效果给荷花成长场景。同日清 PixMiller 水印。**2026-07-25**：用户拍板降级——业务未接线 →「已放弃/不适用」，退出近期验收队列。 | — | — | `#emotion-debug-ui` · `playEmotion('incenseComplete')` · 实现：`IncenseGreeting.js` | 2026-07-25 |
+| IncenseComplete / 今日一炷香（莲花+金斑） | UI可见 | 已放弃/不适用 | **会话结束自动 `playEmotion('incenseComplete')` 仍未接线**，正式路径看不到这套「渐显后消失」预览；**不再排人工验收**。实验室钮可自愿看片。**2026-08-17**：同一套贴图+金斑已复用于莲花池 **出生 FX**（`playBirthAt`，花会留下）；测池走下行，勿把实验室消失莲花当成池。 | 2026-07-19：建议保留效果给荷花成长场景。同日清 PixMiller 水印。**2026-07-25**：用户拍板降级——业务未接线 →「已放弃/不适用」。 **2026-08-17**：池出生复用 FX，会话结束自动播放仍放弃。 | — | — | `#emotion-debug-ui` · `playEmotion('incenseComplete')` · `IncenseGreeting.js` | 2026-08-17 |
+| 莲花池 Slice A（持久螺旋 + 一炷香出生 + 满 12 封顶） | UI可见 | 待人工测试 | **主路径**：`?product=1&sessionMinutes=1&qaLotusBlooms=11` → Sit 等到 1 分钟达标 → 庆祝/金辉**播完后**见第 12 朵一炷香出生（莲花+金斑），花留在阿寅身旁螺旋池（`#lotus-pond`）。**回流**：刷新仍见 12 朵；再坐不长第 13 朵（分钟仍累加）。**对照**：`qaLotusBlooms=0` + 1 分钟 → 第一朵；`qaLotusBlooms=12` 开局即满池。**375**：花跟阿寅（挂在 `#sprite-overlay`，Arrival Dolly 一起动），不挡 Sit / HUD。**禁止**：日历 5/10 天旧池、缩小后花、占位金线圈、角色序列 `lotus-front-rising` / `lotus-chest-halo`。自动化：`lotusPondMath.test.js` + `LotusPondStore.test.js` + `qaLotusPondSeed.test.js` + `LotusPondRuntime.test.js` + `e2e/lotus-pond-product.spec.js`（锁 11→12 DOM，不锁像素螺旋）。 | **2026-08-17** 用户四点拍板：只留这一套池；Slice A 无结晶金环；首朵 25 分 / 一圈约 12（可调常量）；与 MilestoneGlow 同场则仪式后再出生。 | — | — | `?qaLotusBlooms=` · `#lotus-pond` · `__lotusPondStore` | 2026-08-17 |
 | MilestoneGlow / 里程碑金辉 | UI可见 | 待人工测试 | **主路径（产品壳）**：连续练习至第 **7** 天 → 播 **蝴蝶金辉或鹦鹉信使（约 50/50）**（非 Celebrating 舞）；同节点永不重复；与首次 Celebrating 同刻只播仪式、庆祝戳仍记。**回流**：第 8 天达标 → 正常 Celebrating/SessionComplete。调试面板预览仍可用。自动化：`MilestoneGlowStore.test.js` + `pickMilestoneGlowVariant` 单测（含 streak-7 random）+ `e2e/milestone-glow-product.spec.js`（锁 claim，不锁像素）。 | **2026-07-31**：正式路径接线。 **2026-08-03**：变体池——streak-7 初为蝴蝶；同日晚拍板 **50/50 蝴蝶↔鹦鹉**；21/100 见下行星石。 | — | — | `?product=1` · `__milestoneGlowStore` · Brief | 2026-08-03 |
 | MilestoneGlow · 琉璃星石变体（meditation-star-reward） | UI可见 | 待人工测试 | **实验室**：本分支 Vite →「里程碑琉璃星石」。**须见**：不抠图整幅 + 镜头 **100% → ≈145.45%（16/11）** 刚好顶满 16:9 宽度。合入后关单级验收须在 `origin/develop` tip。 | **2026-08-03**：抠图不行→不抠图；要拉近→playbackZoom；终点 16/11。 **同日用户书面（5175 · feature tip）**：不抠图 + 拉近顶满宽 — **测试 OK**。（非 `origin/develop` tip，**不**据此关单。） | — | — | PR #89 · `#emotion-debug-ui` | 2026-08-03 |
 | 375 既有 e2e 红（Sit tip + 抽屉挡 ♪） | UI可见 | 待人工测试 | **已修代码**：A) `onBreathStart` 在 `isOpen()` 后才 `syncOnboardingAutoHints`（原先 `beginMicroRitualChrome` 过早 sync，breath 期间仍留 `sit-button`）。B) ActionBar `z-index` 高于抽屉 backdrop；点 ♪ 先 `closeSheet`；e2e 去掉 `force: true`。**主路径（375）**：抽屉开 → 点 ♪ → Soundscape；抽屉进呼吸 → 无 `sit-button` tip、Sit 隐藏。**回流**：关面板 / Leave 呼吸后再开抽屉。自动化：`micro-ritual.spec.js` + `weekly-practice-heatmap.spec.js`。 | — | — | — | `fix/375-…` · Brief `fix-375-e2e-reds.md` | 2026-07-31 |
@@ -575,7 +587,9 @@ Safari：`http://127.0.0.1:5173/?product=1`
 - Focus Confidence V1（可信度分值 / idle 检测完整链路）
 - 鼻子 Boop / 拉尾巴 / 抚摸分阶段递进
 - 无互动约 10 分钟自主 `welcomeBack` 挥手
-- IncenseComplete / MilestoneGlow 的业务触发（非调试）
+- IncenseComplete **会话结束自动播放**（实验室钮可预览；池出生走「莲花池 Slice A」行）
+- 纪念奖励其余环境细节（小香炉 / 蒲团刺绣 / 灯笼茶盏）以及莲花池 **Slice B 结晶金环**
+- MilestoneGlow 产品路径已接线（见表）；勿再当未交付
 - SessionComplete 非模态观察式文案
 - 角色/装扮可选 UI
 - RewardToast / Screenshot（空桩）

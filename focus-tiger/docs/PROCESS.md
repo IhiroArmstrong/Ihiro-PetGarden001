@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-16（UTC+8） · 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
+**最后更新时间**：2026-08-17（UTC） · 莲花池 Slice A（持久螺旋 + 一炷香出生 + 满 12 封顶）· 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
 - **本地电脑版壳选型（2026-08-16）**：Mac DMG **拍板 Electron**（electron-builder）；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 仍非电脑版终局。本回合**无运行时**。Brief `task-briefs/task-desktop-shell-electron.md`。脚手架另开。
 
@@ -273,7 +275,7 @@
 - 双唤醒视觉分离：Honesty `dormantWake` 走 `cloak-sleep` 倒放；调试 `wakeUp` 用伸懒腰（stretch-reminder 同源）；Honesty 暂不接金光/halo
 - IdleOrchestrator 五变体池曾接入后又撤回：现为候选陪伴手势目录（`companionGestureCatalog`），正式 Idle 仍仅呼吸×眨眼
 - 动态效果层：`DynamicMotion`（呼吸起伏、绕 Y 轴旋转、庆祝悬浮）— **仅 3D 奖励柜**；2D 主界面调试面板已移除对应开关
-- 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子），经 `playEmotion('incenseComplete')` 触发
+- 「今日一炷香」完成反馈：`IncenseGreeting`（莲花渐显 + 金色粒子）；实验室经 `playEmotion('incenseComplete')`；产品池出生走 `playBirthAt`（花留下）
 - `EmotionController.playEmotion()` 统一情绪桥：业务侧不直连 PoseManager / DynamicMotion；映射表含已实现态 + 大量占位态
 - 鼠标/指针刺激检测：`PointerInteraction`（靠近 / 点头 / 抚摸分阈值 / 绕圈 / 静止歪头 → `playEmotion`；Celebrating 期间摸头忽略）
 - 眼睛跟随：`EyeTracking` 实时瞳孔跟随 **已废弃（2026-07-19）**，原因见 `CORE_LOOP.md`；看向某处改由 Idle 离散张望 gaze-p1～p4
@@ -345,7 +347,7 @@
 - **产品定位 V1.0 已定稿（2026-07-15）**：角色对外统一为 Mindful Companion，不采用喂养、健康退化、照料责任或宠物收集叙事；`daily practice` 改为 `regular practice, at your own pace`；庆祝统一为「短暂、温暖、有情感」；每次完成轻量确认、每日首次达标完整庆祝、长期里程碑纪念奖励；「小老虎更健康」改为共同经历增加、环境细节解锁与永久纪念物
 - **产品定位与核心成长模型已升级（2026-07-16）**：`PRINCIPLES` 新增中英一句话定位与差异化表达——Focus Tiger 不是又一个番茄钟 App，而是 AI 时代帮助人类重新训练注意力、觉察力与内在自由的正念陪伴伙伴；核心逻辑升级为「觉察 Awareness → 专注 Focus → 心流 Flow → 内在成长 Growth（小老虎陪伴）」，并明确专注不是最终目标，而是训练觉察能力的一种方式；该模型作为 `EmotionController`、`MindfulAcknowledge` 等后续功能的上位指导原则
 - **Session Intention 已拍板（2026-07-15）**：开始专注前可选单行意图输入（可跳过、不减反馈、仅会话内显示 + 结束语回显、本地保存最近几条），不参与达标判定、不做待办管理器；已立项为 `TASKS.md` Phase 1 任务十，排队开发（建议排在 `SessionComplete` 之后衔接结束语）；定量公开目标维持现状（目标时长 + 一炷香），Focus Confidence 分值继续不直接展示
-- **环境细节解锁方向已拍板（2026-07-15）**：莲花池（5 天首朵、10 天第二朵、逐步至满池）、小香炉（3 天，一炷香烟从香炉升起）、蒲团刺绣（30 天）、夜间小灯笼 + 白天小茶盏（60 天成对）；不采用背景远景类添加（保持极简空灵）；只增不减、永久保留；详见 Backlog「纪念奖励系统」，具体实现待该任务排期
+- **环境细节解锁方向已拍板（2026-07-15；莲花池 2026-08-17 修订）**：原日历莲花池（5 天首朵、10 天第二朵）**已由 Slice A 螺旋池取代，不并存**。仍 Backlog：小香炉（3 天）、蒲团刺绣（30 天）、夜间小灯笼 + 白天小茶盏（60 天成对）；不采用背景远景类添加；只增不减、永久保留。莲花池实现见「近期落地」Slice A；结晶金环为 Slice B。
 - **核心正念原则与语言规范已确立（2026-07-15）**：`PRINCIPLES` 新增「观照者而非情绪本身」——一次性/响应性情绪必须自动回归坐姿呼吸基底；`EMOTION_BIBLE` 新增观察式措辞规范（描述现象、不贴标签、不追因、不建议）及六场景中英示例，未来所有非模态文案必须通过四项自检
 - **Re-focus Acknowledge 最小运行时已落地（2026-07-16）**：作为 MindfulAcknowledge 特化子类型，用户从超过 60 秒的页面离开返回时复用统一非模态文案条，按观察式文案呈现；与强反馈冲突时静默让位、不补发。该最小链路不等同于完整 Focus Confidence V1，后者的 idle 检测与可信度分值仍未实现
 - **MilestoneGlow 里程碑金辉时刻已定稿（2026-07-15，仅文档）**：长期里程碑节点（连续 7/21/100 天、累计时长等）的仪式性反馈，比 `Celebrating` 更隆重一档（优先级 110）；10s 分镜定稿：呼吸律动金光 → 全身金色 Rim Light 勾勒 → **一只金光蝴蝶**环绕（原「几只萤火虫」已修订）；老虎全程闭目坐禅不做动作，与每日 `Celebrating` 的社交性庆祝分工明确；蝴蝶为一次性过场、随金光淡去不留驻；视频源已产出，抽帧与实现归属 Backlog「纪念奖励系统」。同时拍板：分镜前段的「金光随呼吸律动」（吸气收敛/呼气晕染，同步 4s 呼吸循环）定义为 FOCUSING 光环**通用行为**，已写入 `DESIGN` / `ARCHITECTURE` / `EMOTION_BIBLE`
@@ -471,8 +473,8 @@
 - **本地桌面 APP 打包（壳已拍板 Electron · 脚手架未开）**
 - **v1.1 云端算法**（v1.0 不接线；保留 `cloud/` 可扩展）
 - **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
-- 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
-- **荷花成长场景**（复用 `IncenseComplete` 立体荷花 + 金斑浮动；荷花持续增加至布满画面）
+- 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
+- **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
 - **系统级健康中枢读取**（HealthKit Mindful Minutes / Health Connect MindfulnessSession；Phase 1；**非 v1**；未来壳默认 Capacitor；补充诚实机制、非替代；详见 `ARCHITECTURE.md` Backlog + `task-tech-direction-v1-shell-monetization.md`）
 - Browser First（插件 / 系统级监控等）
@@ -730,7 +732,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 | 方向 | 初始建议节点 | 说明 |
 |---|---|---|
-| 莲花池 | 5 天首朵莲花；10 天旁边多开一朵小莲花/花苞 | 后续随成就逐步增加，直至莲花满池；`EMOTION_BIBLE` 原「7 天出现莲花」并入此口径统一。**素材进展（2026-07-18）**：莲花池首朵素材已到位（`lotus-front-rising`，7 帧，已登记 manifest）；触发逻辑（连续/累计天数追踪、断签是否重置）待排期，**勿因素材到位顺手实现**。 |
+| 莲花池 | Slice A：累计分钟；首朵 25；一圈约 12 | **已接线（2026-08-17）**，取代 5/10 天日历池（不并存）。贴图 `/textures/lotus.png`；满 12 诚实封顶。`lotus-front-rising` / `lotus-chest-halo` 仍只入库。Slice B = 结晶金环（无占位线圈）。 |
 | 小香炉 | 3 天 | 老虎身前出现小香炉；此后「一炷香」反馈的烟从香炉里升起 |
 | 蒲团刺绣 | 30 天 | 蒲团边缘出现一圈细小刺绣纹样；与 `outfitId` 架构天然兼容 |
 | 夜间小灯笼 | 60 天 | 夜晚使用时老虎身边多一盏暖光小灯 |

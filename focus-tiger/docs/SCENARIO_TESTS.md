@@ -574,7 +574,8 @@
 |---|---|
 | 眨眼 | 实验室面板「眨眼」或 `playEmotion('blink')` |
 | Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
-| 一炷香莲花 | 实验室「模拟一炷香」（业务未接线） |
+| 一炷香莲花 | 实验室「模拟一炷香」/「一炷香完成」（会话结束自动播放未接线；池出生见下行） |
+| 莲花池（持久螺旋） | `?product=1&sessionMinutes=1&qaLotusBlooms=11` → Sit 等到达标（`qaLotusPondSeed`） |
 | Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接注入：`__honestyBridge`（**生产构建也挂载**，供 CI `vite preview` e2e） |
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |
