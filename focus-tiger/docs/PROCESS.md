@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-17（UTC） · 莲花池 Slice A（PR #330）· Electron 脚手架 Brief 已立项（#329 / #326 `fe5b76a`；托盘分层 + P0 四条）· 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
+**最后更新时间**：2026-08-17（UTC） · 莲花池 Slice A（PR #330）· Electron 脚手架两步：步骤 A 无托盘 / 步骤 B 收费前托盘+走神修（#331 / #329）· 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -66,7 +66,7 @@
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
-- **Electron 桌面脚手架规格（2026-08-17）**：#326 已合。Brief `task-electron-desktop-scaffold.md`。托盘分层：能跑的窗口可无托盘；**对外收费 DMG 必须有**。P0：Stripe `openExternal`、托盘 hide ≠ 走神（场景 AB / **SB-18**）、CORS/origin 可见成败、`extraResources` 从第一天拆 1.1 GiB。本回合**仍无窗口运行时**（Cloud Linux 不能验 Mac DMG）。写窗口与 Apple 入会**并行**。
+- **Electron 桌面脚手架规格（2026-08-17）**：#326 / #329 / #331 已合。Brief `task-electron-desktop-scaffold.md`。**两步**：步骤 A = Mac 窗口不带托盘；步骤 B = 收费 DMG 前必须有托盘，并与走神修（场景 AB / **SB-18**）同一条验收。步骤 A 的 P0：Stripe `openExternal`、CORS/origin、`extraResources`。本回合**仍无窗口运行时**。写窗口与 Apple 入会**并行**。
 - **本地电脑版壳选型（2026-08-16）**：Mac DMG **拍板 Electron**（electron-builder）；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 仍非电脑版终局。选型合入 **#326**（`fe5b76a`）。Brief `task-briefs/task-desktop-shell-electron.md`。
 
 - **功能冲突扫描（2026-08-16）**：实现前对照 `SCENARIO_TESTS.md` 扫相邻已上线场景；有疑点须等用户拍板，优先于默认执行。索引 `feature-conflict-review`。PR 第三问。无运行时。
@@ -422,7 +422,9 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-17）**：**Electron 脚手架规格 + 托盘分层**。选型 #326 已合。第一颗能跑的窗口可以没有托盘；**第一颗对外收费的 DMG 必须有**（关主窗口 = hide + 托盘，菜单「退出」才 quit）。P0 四条进第一版验收：Stripe `openExternal`、`AttentionSignals` 托盘 hide ≠ 走神（场景 AB / SB-18）、Checkout/OTP/备份在壳内可见成功或可见错误、1.1 GiB 精灵/音频从第一天 `extraResources`（禁止先整包 asar）。写窗口与 Apple Developer 入会**并行**。旧 Brief「脚手架不引托盘」作废。权威：`task-electron-desktop-scaffold.md`。本回合仍不写 Electron 运行时。
+**最近拍板（2026-08-17 · 托盘两步）**：分析师第二份书面——**不要把托盘和第一颗窗口绑成一次验收**。步骤 A = 加载现有 Web 成 Mac 窗口，不带托盘（先分清壳/资源问题）。步骤 B = 收费 DMG 上架前必须补托盘 + 关窗后台，并与 `AttentionSignals`（场景 AB / SB-18）**同一条改动线**验收。产品判断不变：收费 DMG 没有托盘则付费定位不成立。权威：`task-electron-desktop-scaffold.md`。#329 已合分层口径；本条补执行顺序。仍不写窗口运行时。
+
+**最近拍板（2026-08-17）**：**Electron 脚手架规格 + 托盘分层**。选型 #326 / 规格 #329 已合。第一颗能跑的窗口**步骤 A 不带托盘**；**第一颗对外收费的 DMG 必须有**（步骤 B：关主窗口 = hide + 托盘，菜单「退出」才 quit）。P0：步骤 A = Stripe `openExternal`、CORS/origin 可见成败、`extraResources`；步骤 B = 托盘 + 走神修。写窗口与 Apple Developer 入会**并行**。旧 Brief「脚手架不引托盘」= 仅步骤 A。权威：`task-electron-desktop-scaffold.md`。
 
 **最近拍板（2026-08-16）**：**本地电脑版 Mac DMG 壳 = Electron**（打包器默认 electron-builder）。Tauri 留作日后 RAM/电池优化备选；Capacitor **不**用于桌面窗口包装（仍是未来手机壳）；PWA 任务六仍是 Web 安装增强、**不是**电脑版终局。v1.0.0 默认纯 Web 不变。选型合入 **#326**。脚手架规格见 2026-08-17 拍板。权威：`task-briefs/task-desktop-shell-electron.md` + 下文 Backlog「本地桌面 APP 打包」。
 
@@ -940,7 +942,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 | **Capacitor** | **排除桌面包装**。留给未来手机原生 API（HealthKit 等）。 |
 | **PWA / 薄壳** | **保留为 Web 增强**（任务六）；**不是**电脑版终局。 |
 
-**脚手架规格（已立项 · 运行时另开实现回合）**：薄主进程、`contextIsolation`、生产 `dist`、`dmg`（arm64 优先）、壳内不注册 PWA SW。收费 DMG **必须有托盘**（能跑的窗口可先无）。P0：Stripe `openExternal`、托盘 hide ≠ 走神（场景 AB / SB-18）、CORS/origin 可见成败、精灵/音频从第一天 `extraResources`。签名/公证需 Apple Developer ID（用户侧，与写窗口并行）。真自动更新器另议。
+**脚手架规格（#329 已合 · 运行时未写 · 2026-08-17 补两步）**：薄主进程、`contextIsolation`、生产 `dist`、`dmg`（arm64 优先）、壳内不注册 PWA SW。**步骤 A 不带托盘**；**步骤 B（收费 DMG 前）必须有托盘**，并与走神修（场景 AB / SB-18）同一条改动线。步骤 A 的 P0：Stripe `openExternal`、CORS/origin 可见成败、精灵/音频从第一天 `extraResources`。签名/公证需 Apple Developer ID（用户侧，与写窗口并行）。真自动更新器另议。
 
 **适配面**：资源与用户数据路径、原生菜单与窗口生命周期、固定自定义协议 origin（禁止生产 `file://`）；云请求（Checkout / OTP / 备份）在壳内须可见成功或可见错误。
 

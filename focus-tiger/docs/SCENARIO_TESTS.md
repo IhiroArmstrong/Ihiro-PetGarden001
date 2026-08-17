@@ -545,7 +545,7 @@
 
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
-> **地位**：电脑版壳契约。Web / Safari **测不了**；排期 = Electron 脚手架合入后（Brief `task-electron-desktop-scaffold.md`）。**现在不要催测。**  
+> **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（收费 DMG 前补托盘 + 走神修；Brief `task-electron-desktop-scaffold.md`）。**步骤 A 窗口不要催本场景**（那时无托盘）。**现在不要催测。**  
 > **对照**：场景 **B** = 用户把**另一个 App 或标签**带到前台；本场景 = 主窗口 hide 到菜单栏，进程仍在。  
 > **不是**场景 AA（浏览器 Document PiP）。  
 > **白名单**：**SB-18**（收进托盘无 Re-focus）。切到别的 App 仍走 B / SB-01–03。  
