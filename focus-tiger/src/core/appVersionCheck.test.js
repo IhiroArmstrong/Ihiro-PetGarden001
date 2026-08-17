@@ -72,6 +72,14 @@ describe('appVersionCheck', () => {
       }),
       false
     );
+    assert.equal(
+      shouldRevealSoftUpdatePrompt({
+        updateAvailable: true,
+        busySession: false,
+        desktopShell: true
+      }),
+      false
+    );
   });
 
   it('formatSoftUpdateLabel substitutes {version}', () => {

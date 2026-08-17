@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-17（UTC+8） · Electron 脚手架两步：步骤 A 无托盘 / 步骤 B 收费前托盘+走神修（#329 已合分层；本回合补顺序）· 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
+**最后更新时间**：2026-08-17（UTC+8） · Electron 步骤 A 窗口代码已提交（`desktop/`，无托盘；Mac 上验收）· 两步顺序 #331 · 请茶 Stripe Price `price_1U4nanFuIhgJPGLidoTdxobW`（US$4.99）已写入 wrangler · 生产 Worker Version `fb568e27-96dd-4fb1-b15c-acbac8dd919b`
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Electron 桌面脚手架规格（2026-08-17）**：#326 / #329 已合。Brief `task-electron-desktop-scaffold.md`。**两步**：步骤 A = Mac 窗口不带托盘；步骤 B = 收费 DMG 前必须有托盘，并与走神修（场景 AB / **SB-18**）同一条验收。步骤 A 的 P0：Stripe `openExternal`、CORS/origin、`extraResources`。本回合**仍无窗口运行时**。写窗口与 Apple 入会**并行**。
+- **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳，**无托盘**。P0-1 `openExternal`；P0-3 Cloud POST 走主进程 IPC + 现有卡面错误文案；P0-4 extraResources。Cloud Linux **不能**验 Mac 窗口/DMG。规格 `task-electron-desktop-scaffold.md`。#331 两步已合。步骤 B 未做。
 - **本地电脑版壳选型（2026-08-16）**：Mac DMG **拍板 Electron**（electron-builder）；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 仍非电脑版终局。选型合入 **#326**（`fe5b76a`）。Brief `task-briefs/task-desktop-shell-electron.md`。
 
 - **功能冲突扫描（2026-08-16）**：实现前对照 `SCENARIO_TESTS.md` 扫相邻已上线场景；有疑点须等用户拍板，优先于默认执行。索引 `feature-conflict-review`。PR 第三问。无运行时。
@@ -385,7 +385,7 @@
 - **场景→动画接线 · A′+B Dispatcher（2026-08-01）**：PR #59 / #65 等已合 `develop`；关单级人工见 `TEST_TRACKER` 场景动画行。
 - **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31）**：已合 **`develop`（PR #51）**；Brief `task-user-ambient-upload-v1.md`。关单级人工见 `TEST_TRACKER` 对应行。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
-- **本地桌面 APP 打包（壳已拍板 Electron · 脚手架 Brief 已开 · 运行时未写）**：Mac DMG = **Electron** + electron-builder。规格 `task-electron-desktop-scaffold.md`。收费 DMG **必须有托盘**。见 Backlog「本地桌面 APP 打包」。
+- **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）**：Mac DMG = **Electron** + electron-builder。规格 `task-electron-desktop-scaffold.md`。收费 DMG **必须有托盘**。见 Backlog「本地桌面 APP 打包」。
 - **PR #2 合并进 `main`（技术可合 · 产品门禁未齐）**：冲突已清、#70 已合、`MERGEABLE`。**合 main 仍须你明确下令** + 五条件清单（人工走查 / 「有问题」处置 / 范围认知等）。Brief：`task-pr2-develop-into-main.md`。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。夜间全量 e2e / Plan A **已收口**（见上「CI 定时全量」）；与 visibility flaky **并列**的剩余工程主要是 flaky 根因。壳选型 **已于 2026-08-16 拍板**；与 Electron 脚手架争排期时仍先桌面包（实现另 Task）。
 - **hints 拆分线 / 旧 stash PRD（2026-08-01 已清）**：原 `stash · chore/split-hints-from-pr2` 已随本地 stash 清空处理；PRD 草稿归档见 `docs/archive/stashed-prds-2026-07-24/`（非 SSOT）。回 hints 拆分时读归档即可，勿再找已删除的 stash。
@@ -422,7 +422,7 @@
 
 **最近拍板（2026-08-17 · 托盘两步）**：分析师第二份书面——**不要把托盘和第一颗窗口绑成一次验收**。步骤 A = 加载现有 Web 成 Mac 窗口，不带托盘（先分清壳/资源问题）。步骤 B = 收费 DMG 上架前必须补托盘 + 关窗后台，并与 `AttentionSignals`（场景 AB / SB-18）**同一条改动线**验收。产品判断不变：收费 DMG 没有托盘则付费定位不成立。权威：`task-electron-desktop-scaffold.md`。#329 已合分层口径；本条补执行顺序。仍不写窗口运行时。
 
-**最近拍板（2026-08-17）**：**Electron 脚手架规格 + 托盘分层**。选型 #326 / 规格 #329 已合。第一颗能跑的窗口**步骤 A 不带托盘**；**第一颗对外收费的 DMG 必须有**（步骤 B：关主窗口 = hide + 托盘，菜单「退出」才 quit）。P0：步骤 A = Stripe `openExternal`、CORS/origin 可见成败、`extraResources`；步骤 B = 托盘 + 走神修。写窗口与 Apple Developer 入会**并行**。旧 Brief「脚手架不引托盘」= 仅步骤 A。权威：`task-electron-desktop-scaffold.md`。
+**最近拍板（2026-08-17）**：**Electron 脚手架规格 + 托盘分层 + 步骤 A 窗口代码**。选型 #326 / 规格 #329 / 两步 #331 已合。第一颗能跑的窗口**步骤 A 不带托盘**（`focus-tiger/desktop/`）；**第一颗对外收费的 DMG 必须有**（步骤 B：关主窗口 = hide + 托盘，菜单「退出」才 quit）。P0：步骤 A = Stripe `openExternal`、CORS/origin 可见成败、`extraResources`；步骤 B = 托盘 + 走神修。写窗口与 Apple Developer 入会**并行**。旧 Brief「脚手架不引托盘」= 仅步骤 A。Cloud Linux 不能验 Mac 窗口。权威：`task-electron-desktop-scaffold.md`。
 
 **最近拍板（2026-08-16）**：**本地电脑版 Mac DMG 壳 = Electron**（打包器默认 electron-builder）。Tauri 留作日后 RAM/电池优化备选；Capacitor **不**用于桌面窗口包装（仍是未来手机壳）；PWA 任务六仍是 Web 安装增强、**不是**电脑版终局。v1.0.0 默认纯 Web 不变。选型合入 **#326**。脚手架规格见 2026-08-17 拍板。权威：`task-briefs/task-desktop-shell-electron.md` + 下文 Backlog「本地桌面 APP 打包」。
 
@@ -473,7 +473,7 @@
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
-- **本地桌面 APP 打包（壳已拍板 Electron · 脚手架 Brief 已开 · 运行时未写）**
+- **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）**
 - **v1.1 云端算法**（v1.0 不接线；保留 `cloud/` 可扩展）
 - **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
@@ -924,7 +924,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **价值定位**：锦上添花的可选玩法，非核心刚需
 - **排期**：待 2D 情绪系统主线稳定后，再评估是否开发
 
-### Backlog:本地桌面 APP 打包（壳已拍板 Electron · 脚手架 Brief 已开 · 运行时未写）
+### Backlog:本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）
 
 > **拍板（2026-08-16 壳；2026-08-17 脚手架规格）**：首发 Mac DMG 壳 = **Electron**；打包器默认 **electron-builder**。选型：`task-briefs/task-desktop-shell-electron.md`（#326 · `fe5b76a`）。规格：`task-briefs/task-electron-desktop-scaffold.md`。  
 > **背景（2026-07-30）**：产品目标含「本地可以跑的电脑版 APP」。开会时机当时已定（冻结前约 1 周，或你说要桌面包时立刻开）；**禁止**拖到 `v1.0.0` tag 之后才选型。本条在 2026-08-16 由触发 B 收口。  
@@ -940,11 +940,11 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 | **Capacitor** | **排除桌面包装**。留给未来手机原生 API（HealthKit 等）。 |
 | **PWA / 薄壳** | **保留为 Web 增强**（任务六）；**不是**电脑版终局。 |
 
-**脚手架规格（#329 已合 · 运行时未写 · 2026-08-17 补两步）**：薄主进程、`contextIsolation`、生产 `dist`、`dmg`（arm64 优先）、壳内不注册 PWA SW。**步骤 A 不带托盘**；**步骤 B（收费 DMG 前）必须有托盘**，并与走神修（场景 AB / SB-18）同一条改动线。步骤 A 的 P0：Stripe `openExternal`、CORS/origin 可见成败、精灵/音频从第一天 `extraResources`。签名/公证需 Apple Developer ID（用户侧，与写窗口并行）。真自动更新器另议。
+**脚手架规格（#329 / #331 已合 · 步骤 A 窗口代码已提交 · 2026-08-17）**：薄主进程、`contextIsolation`、生产 `dist`、`dmg`（arm64 优先）、壳内不注册 PWA SW。**步骤 A 不带托盘**；**步骤 B（收费 DMG 前）必须有托盘**，并与走神修（场景 AB / SB-18）同一条改动线。步骤 A 的 P0：Stripe `openExternal`、CORS/origin 可见成败、精灵/音频从第一天 `extraResources`。签名/公证需 Apple Developer ID（用户侧，与写窗口并行）。真自动更新器另议。Cloud Linux **不能**验 Mac 窗口 / DMG / 公证。
 
 **适配面**：资源与用户数据路径、原生菜单与窗口生命周期、固定自定义协议 origin（禁止生产 `file://`）；云请求（Checkout / OTP / 备份）在壳内须可见成功或可见错误。
 
-- **状态**：壳 **已拍板 Electron**（#326）；**脚手架 Brief 已开**；**窗口代码未写**。
+- **状态**：壳 **已拍板 Electron**（#326）；脚手架 Brief 已开（#329/#331）；**步骤 A 窗口代码已提交**（无托盘；Mac 上验收）。步骤 B 未做。
 - **不在范围**：不替代 Browser First；不把手机原生 App 混入；不把场景 AA PiP 升级成托盘常驻桌宠（托盘是收费 DMG 的另一条路径）。
 - **与 2026-08-07 技术方向纪要的关系**：手机商店壳 / Capacitor **仍不**并入本条；本条只解「本地电脑版」。纪要里「桌面壳仍开放」已由本拍板取代。详见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 

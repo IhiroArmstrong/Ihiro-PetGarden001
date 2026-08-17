@@ -115,6 +115,7 @@ focus-tiger/
 ├─ index.html
 ├─ vite.config.js
 ├─ package.json
+├─ desktop/                     # Electron 步骤 A 薄壳（无托盘；electron 不进产品 dependencies）
 ├─ src/
 │  ├─ main.js                    # 入口：只做拼装+主循环调度，不直接碰Three.js底层对象
 │  │
@@ -384,11 +385,13 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 - **托盘（两步）**：步骤 A 的开发窗口 **不带托盘**（关窗可 quit）。步骤 B 收费 DMG **必须有**（关主窗口 = hide，不是 quit），并与走神修同一条改动线。场景 AA PiP **不是**托盘。
 - **走神**：步骤 B 才改 `AttentionSignals`（托盘 hide ≠ 切走；场景 AB / **SB-18**）。切到别的 App 仍走场景 B。步骤 A 不要先改走神逻辑。
 - **资源**：`public/sprites` / `public/audio`（约 1.1 GiB）从第一天走 `extraResources`，禁止整包塞 asar 当「先跑通」。
-- **origin**：生产禁止 `file://`；固定 `app://` 或 `focus-tiger://`。Checkout / OTP / 云备份须可见成功或可见错误。Stripe 在壳内走 `openExternal`。
+- **origin**：生产禁止 `file://`；固定 **`focus-tiger://app`**。壳内 Cloud POST 走主进程 IPC。Checkout / OTP / 云备份失败复用现有 Web 卡面错误文案。Stripe 走 `openExternal`。
 - **不做**：用 Tauri 作为 v1 壳；用 Capacitor 包 Mac 窗口；把 PWA 任务六当成电脑版终局。
 - **与 Web 的关系**：v1.0.0 默认仍是纯 Web；Electron 是加法。渲染层继续 `localStorage`；壳内不注册现有 PWA SW。
 - **手机**：未来默认 Capacitor（HealthKit 等）；与本条分离。
-- **尚未实现（运行时）**：`desktop/` 目录、公证 CI、`electron-updater`。规格已锁；实现另开回合（可与 Apple 入会并行）。
+- **尚未实现（运行时）**：公证 CI、`electron-updater`、步骤 B 托盘。步骤 A 窗口代码在 `focus-tiger/desktop/`（无托盘；关窗 quit）。Electron 不进产品 `dependencies`。
+- **Cloud API**：壳内 `postCloudJson` 走主进程 IPC（避开自定义协议 CORS）。Worker `ALLOWED_ORIGIN` 可逗号列表含 `focus-tiger://app`（下次生产部署再加；本回合**不** Redeploy）。
+- **失败反馈**：Checkout / OTP / 备份失败复用现有 Web 卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC` / `JOURNEY_LOG_BACKUP_STATUS_ERR`），不为壳另做一套。
 
 ---
 

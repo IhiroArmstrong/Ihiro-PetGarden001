@@ -326,7 +326,10 @@ async function init() {
   bootLocaleFromPreference();
 
   // PWA: network-only SW in production only (no Cache Storage).
-  void registerServiceWorker();
+  // Electron Step A: never register — custom protocol + extraResources.
+  void registerServiceWorker({
+    isDesktop: Boolean(globalThis.desktopShell?.isDesktop)
+  });
 
   // i18n：静态 HTML 已是默认语言（en）；此处接管标题/遮罩并跟随语言切换刷新
   document.title = t('APP_TITLE');
@@ -632,7 +635,8 @@ async function init() {
     });
     const reveal = shouldRevealSoftUpdatePrompt({
       updateAvailable: softUpdateAvailable,
-      busySession: busy
+      busySession: busy,
+      desktopShell: Boolean(globalThis.desktopShell?.isDesktop)
     });
     if (reveal && softUpdateVersionLabel) {
       softUpdatePromptUI.setVersionLabel(softUpdateVersionLabel);

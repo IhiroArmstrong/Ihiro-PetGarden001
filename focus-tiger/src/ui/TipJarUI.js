@@ -20,6 +20,7 @@ import {
   readTipStatus,
   tipLogDateKey
 } from '../core/tipJarGate.js';
+import { openCheckoutUrl } from '../core/desktopShell.js';
 import {
   getTipKindnessBadgeById,
   tipKindnessBadgeSrc
@@ -431,7 +432,11 @@ export class TipJarUI {
           : '';
       if (!url) throw new Error('missing_checkout_url');
       getMonetizationFunnelStore().checkoutStart('tea', 'tip-jar');
-      window.location.assign(url);
+      const mode = await openCheckoutUrl(url);
+      if (mode === 'external') {
+        this._busy = false;
+        this._refresh();
+      }
     } catch (err) {
       const msg =
         err instanceof Error && err.message === 'cloud_api_unconfigured'
