@@ -289,6 +289,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
+| 本地电脑版壳选型（Mac DMG · Electron） | 纯后端 | 仅单元测试覆盖 | 口径锁：电脑版 = Electron + electron-builder DMG；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 非终局。无窗口/无 DMG。权威 Brief `task-desktop-shell-electron.md` + `PROCESS` Backlog「本地桌面 APP 打包」。脚手架另开。 | — | — | — | `docs/task-briefs/task-desktop-shell-electron.md` | 2026-08-16 |
 | 功能冲突扫描（`feature-conflict-review`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `feature-conflict-review` SSOT 在 `FEATURE_CONFLICT_REVIEW.md`。实现前对照 `SCENARIO_TESTS.md`；有冲突须等拍板。PR 第三问。无运行时。 | — | — | — | `FEATURE_CONFLICT_REVIEW.md` · `RULES_INDEX` · `.cursor/rules/focus-tiger-feature-conflict-review.mdc` | 2026-08-16 |
 | 点击反馈原则 + 沉默白名单（`interaction-feedback`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `interaction-feedback` SSOT 在 `INTERACTION_FEEDBACK_PRINCIPLES.md`；白名单 `SILENT_BEHAVIORS.md`。PR 模板 / Cursor 规则须答 0–1s。无运行时。 | — | — | — | `INTERACTION_FEEDBACK_PRINCIPLES.md` · `SILENT_BEHAVIORS.md` · `RULES_INDEX` | 2026-08-14 |
 | 存量场景 0–1s 补句优先级（禁「随改写再补」） | 纯后端 | 仅单元测试覆盖 | 权威表：`SCENARIO_TESTS.md` 文首。**P0 已补句**：Q Support Checkout、U Watch/Save、X 冷却再点（FB-01 已落地微点头）。**P1 已补句**：D Honesty 入口/时长/桥接 Yes/No。**P1 Z**：句 + **运行时按压**（⋯/抽屉行、Compass 芯片、Journey 关钮/备份链 `:active`）。**P1 未补**（分批）：S Leave/chip、T chip/Leave、W ?/Privacy（选中即生效，改写时覆盖）。**P2**：A/C/E/F/I/J/K 主路径已有立刻发生什么；G/O/V 点击面小。改写对应场景时必须带 0–1s 句。 | — | — | — | `SCENARIO_TESTS.md` 文首优先级表 | 2026-08-14 |

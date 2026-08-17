@@ -376,6 +376,18 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 ---
 
+## 桌面壳（Mac DMG · 2026-08-16 拍板）
+
+> 调研与脚手架边界：`docs/task-briefs/task-desktop-shell-electron.md`。排期：`PROCESS.md` Backlog「本地桌面 APP 打包」。
+
+- **电脑版窗口** = **Electron** 薄主进程 + 现有 Vite `dist`（Lit / `EmotionController` / PNG 序列 **不重写**）。打包器默认 **electron-builder** → `.dmg`。
+- **不做**：用 Tauri 作为 v1 壳；用 Capacitor 包 Mac 窗口；把 PWA 任务六当成电脑版终局。
+- **与 Web 的关系**：v1.0.0 默认仍是纯 Web；Electron 是加法。渲染层继续 `localStorage`；壳内不注册现有 PWA SW。
+- **手机**：未来默认 Capacitor（HealthKit 等）；与本条分离。
+- **尚未实现**：`desktop/` 目录、公证 CI、自动更新器——另开脚手架 Task。
+
+---
+
 ## Focus Confidence 数据层与视觉层的接口约定
 
 - 数据层(负责监听Page Visibility、window焦点、idle检测,计算Focus Confidence分值与Flow Continuity百分比)应作为独立的数据适配模块存在,不与MoodController或PoseManager直接耦合

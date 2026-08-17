@@ -526,7 +526,7 @@
 ## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
 
 > **地位**：**实验 / 非最终形态**。用来验证「切到其他窗口或 App 时，仍能看见阿寅安静呼吸」。**待观察使用数据后决定是否继续投入**（localStorage `focus-tiger.idle-companion-pip.v1` 只记是否曾打开，不用于提醒或激励）。  
-> **不是** Electron / 系统托盘 / 关浏览器后仍常驻；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时）。  
+> **不是**系统托盘 / 关浏览器后仍常驻（电脑版壳已拍板 Electron，但 AA **仍不是**那条路径）；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时）。  
 > **单元**：`idleCompanionPipGate.test.js`（Document PiP 支持 → 入口可挂载；不支持 → 不挂载；Idle 才显示）。  
 > **DOM e2e**：无（`requestWindow` 需真实用户手势 + Chromium）。  
 > **仍须人工**：Chrome/Edge 开/关流畅与呼吸卡顿；切到其他窗口后是否置顶；Safari/Firefox 入口完全不出现且无报错。
