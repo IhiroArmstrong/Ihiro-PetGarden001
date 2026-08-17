@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 同坐点 L0 纯账本（`focusCoinsLedger.js`）· 方向锁 + L0–L3 排期 · Electron 步骤 A · 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-18（UTC+8） · 同坐点 L0 纯账本（`focusCoinsLedger.js`）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A 已提交（无托盘）· 莲花池 Slice A（#330）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · 纯文档）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp 主进程、模型不进 DMG、Focusing 卸载）；**先 L0 机型实测，不上入口**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。无运行时。
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
@@ -374,6 +376,7 @@
 **下一步计划**：
 
 - **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：方向锁已合 #333。**L0 纯账本本支** `feature/focus-coins-l0-ledger`（不挂 `main.js`）。**L1 硬闸**：开工前必须书面扫 Honesty / 完成记账邻接并行 PR。勿插队桌面步骤 B。
+- **陪伴 · 桌面端侧窄例外（2026-08-18 政策锁）**：检索不生成 **未废止**。批复仅限桌面、用户主动、最后一层生成。**下一步**须口令「开工桌面陪伴 L0」才写运行时；勿与同坐点 L1 叠车。Brief `task-desktop-on-device-companion.md`。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** v1.1 云端算法、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
@@ -424,6 +427,8 @@
 - **EyeTracking**：已正式放弃（2026-07-19），原因见 `CORE_LOOP.md`；勿再开返工任务
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
+
+**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival。L0 机型实测前不上产品入口；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。无运行时。
 
 **最近拍板（2026-08-17 · 托盘两步）**：分析师第二份书面——**不要把托盘和第一颗窗口绑成一次验收**。步骤 A = 加载现有 Web 成 Mac 窗口，不带托盘（先分清壳/资源问题）。步骤 B = 收费 DMG 上架前必须补托盘 + 关窗后台，并与 `AttentionSignals`（场景 AB / SB-18）**同一条改动线**验收。产品判断不变：收费 DMG 没有托盘则付费定位不成立。权威：`task-electron-desktop-scaffold.md`。#329 已合分层口径；本条补执行顺序。步骤 A 窗口代码见本 PR / `focus-tiger/desktop/`（无托盘）。
 
@@ -960,7 +965,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 **适配面**：资源与用户数据路径、原生菜单与窗口生命周期、固定自定义协议 origin（禁止生产 `file://`）；云请求（Checkout / OTP / 备份）在壳内须可见成功或可见错误。
 
 - **状态**：壳 **已拍板 Electron**（#326）；脚手架 Brief 已开（#329/#331）；**步骤 A 窗口代码已提交**（无托盘；Mac 上验收）。步骤 B 未做。
-- **不在范围**：不替代 Browser First；不把手机原生 App 混入；不把场景 AA PiP 升级成托盘常驻桌宠（托盘是收费 DMG 的另一条路径）。
+- **不在范围**：不替代 Browser First；不把手机原生 App 混入；不把场景 AA PiP 升级成托盘常驻桌宠（托盘是收费 DMG 的另一条路径）；端侧陪伴生成另 Brief（2026-08-18 窄例外），**不挡**步骤 B。
 - **与 2026-08-07 技术方向纪要的关系**：手机商店壳 / Capacitor **仍不**并入本条；本条只解「本地电脑版」。纪要里「桌面壳仍开放」已由本拍板取代。详见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 
 ### Backlog:练习记忆云端备份（免费 A 快照 · B 无缝可后排）
