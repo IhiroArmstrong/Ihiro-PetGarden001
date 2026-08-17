@@ -1,8 +1,9 @@
 # 同坐点（Focus Coins）· 产品设计 SSOT
 
-> **状态：方向锁（2026-08-18）** — 六项拍板已书面同意；本文为语义权威。运行时未接线。  
+> **状态：方向锁（2026-08-18）** — 六项拍板已书面同意。**L0 纯账本已实现**（`src/core/focusCoinsLedger.js`，单测锁防刷表）；产品路径 / `main.js` **未挂**。  
 > **内部名**：Focus Coins。**对外名（硬）**：**同坐点**。禁止金币 / 积分 / 商城 / 抽奖口吻。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)（L0–L3 切片 + 工作量分级）。  
+> **L1 硬闸**：开 `feature/focus-coins-l1-award` 前必须书面扫 Honesty / 完成记账邻接是否有并行 PR；口头注意不算过闸（2026-08-18 分析师）。  
 > **禁止**：用同坐点满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；L0–L2 **不**改 `SCENARIO_TESTS.md`（L3 表面若需场景附录另开）。
 
 从属：`MVP_PRODUCT_DEFINITION.md` §五 · `FREE_PAID_MATRIX.md` · `FEATURE_CATALOG` · 场景 D / `HONESTY_BRIDGE_CTA.md` · `practiceBadgeAward.js`（`computePracticeScore`）· `PRINCIPLES.md` 宁静型游戏化。
@@ -192,7 +193,7 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 
 | 级别 | 交付物 | 含什么 | 不含 | 预估 |
 |---|---|---|---|---|
-| **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日** |
+| **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日 · 已实现** `focusCoinsLedger.js` |
 | **L1 发点接线** | 完成一场坐，钱包会涨（可先无「店」） | 挂计时达标 / Honesty 呼吸成功 / Choose / Reflect / 主动 Recover；localStorage 白名单；flag 默认可关 | 无兑换 UI；不改场景剧本；不把钱包塞进练习备份 6 key | **4–6 人日**（高风险：Honesty / 完成记账邻接） |
 | **L2 可兑原型** | 内部能花点留下痕迹 | 称号 + 稀有章 + 至少 1 个空间变体；稀缺款双条件；与 Tea/Sanctuary 章包隔离 | 新角色帧换装、完整纪念物美术、云备份升 schema | **4–6 人日**（无新序列）；新点缀美术另 **+3–8** |
 | **L3 可给用户看的安静表面** | 抽屉「同坐点」+ 装备称号 | i18n en/ja、375 抽屉不挡主球、0–1s 按压、只增不减回流；可选并入练习备份 schema v2 | 换装柜、场景 D 改写、B 轨任何 key | **3–5 人日** |
@@ -217,16 +218,17 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 
 | 课题 | L0 | L1 | L2 | L3 | 到内部可用 | 到可上架 / 给用户 | 现在能否开工 |
 |---|---|---|---|---|---|---|---|
-| **同坐点** | 2–4 人日 · 纯账本 | 4–6 · 发点钩子 | 4–6 · 兑换 | 3–5 · 安静表面 | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | **可以：先 L0**（方向已锁） |
+| **同坐点** | 2–4 人日 · 纯账本 **（L0 本支）** | 4–6 · 发点钩子 | 4–6 · 兑换 | 3–5 · 安静表面 | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | L0 账本本支；**L1 见硬闸** |
 | **桌面端侧智能体** | 2–4 · Metal 探针 | 4–7 · desktop-only 面板 | 8–12 · 人设混合路由 | 8–15 · 生产隔离 | **14–23 人日 · 约 3–5 周** | 依赖定位修订 + 桌面步骤 B 托盘 | **仅宜 L0 实测**；入口未拍板 |
 
-**我认为最合理的统筹**：先开 **同坐点 L0**（不挡收费 DMG、不碰 Electron、回归面在单测里可锁死）。桌面智能体等机型实测 +「禅意倾听者」书面修订后再 L1。同坐点 **L1** 避开正在改 Honesty / 完成记账的其它 PR。两个课题都不要插队挡住桌面步骤 B（托盘 = 收费 DMG 前提）。
+**我认为最合理的统筹**：先开 **同坐点 L0**（不挡收费 DMG、不碰 Electron、回归面在单测里可锁死）。桌面智能体等机型实测 +「禅意倾听者」书面修订后再 L1。同坐点 **L1 硬闸**：开分支前必须书面扫 Honesty / `DailyCompletionStore` / `PracticeDaysStore` 邻接是否有并行 PR（分析师 2026-08-18；口头注意不算过闸）。两个课题都不要插队挡住桌面步骤 B（托盘 = 收费 DMG 前提）。
 
 ---
 
-## 11. 工程落点（确认后按 Brief 做；本文不写代码）
+## 11. 工程落点
 
-- Store 建议：`focus-tiger.focus-coins.v1`（余额、流水、已兑 SKU、装备中的称号）。L1 才进 `localStateKeys`（L-01）。  
+- **L0（本支）**：`src/core/focusCoinsLedger.js` + `focusCoinsLedger.test.js`。不挂 `main.js`、不改 `localStateKeys`。  
+- Store 建议：`focus-tiger.focus-coins.v1`（余额、流水、已兑 SKU、装备中的称号）。**L1** 才进 `localStateKeys`（L-01）。  
 - 练习备份 6 key：**L1 不扩**；是否 schema v2 并入钱包放到 L3 再决。  
 - Feature flag：表面挂载（对齐 Confide 的 mount 闸）；关 flag = 完全回到无同坐点正式路径。  
 - 单测优先于 e2e；L3 若要 DOM 断言，单文件 spec，遵守本地 e2e 硬顶。
