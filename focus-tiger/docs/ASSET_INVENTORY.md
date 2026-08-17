@@ -161,7 +161,7 @@
 | milestoneGlow | streak-7：**50/50** 蝴蝶 / 鹦鹉；21/100 星石；breath-halo-hq 仅调试 | **产品路径已接线** |
 | parrotEarVisit | parrot-ear-visit-feather | 提醒 · 轻完成稀有 · streak-7 仪式二选一 |
 | riseStretchCasual / cloakSleep | rise-stretch-casual / cloak-sleep | 已接线 |
-| incenseComplete | DOM 叠层 | 调试有；业务触发未全接 |
+| incenseComplete | DOM 叠层 | 实验室钮可预览（仍会消失）；会话结束自动播放未接线。**2026-08-17**：`playBirthAt` 复用于莲花池出生（花留下） |
 | stretchReminder | stretch-reminder | 已接线（2h 舒展） |
 | wakeUp | — | **已删除（2026-08-04）**；曾 stretch-reminder 同源调试键 |
 | snoringZZZ | 无 | unimplemented |

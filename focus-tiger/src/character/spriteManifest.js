@@ -443,7 +443,8 @@ export const SPRITE_SEQUENCES = {
     holdLastFrame: false
   },
 
-  // 环境细节解锁·莲花池首朵（Backlog 纪念奖励）——仅入库，无触发逻辑。
+  // 角色序列·莲花从身前升起（纪念物解锁候选）——仅入库。
+  // 2026-08-17 莲花池 Slice A **不**用这些帧；池花走 /textures/lotus.png。
   lotusFrontRising: {
     animation: 'lotus-front-rising',
     frameCount: 7,
@@ -455,6 +456,7 @@ export const SPRITE_SEQUENCES = {
   },
 
   // Grow Together 纪念物解锁视觉候选（胸口莲花+脑后金光）——仅入库，无触发逻辑。
+  // 莲花池不用本序列。
   lotusChestHalo: {
     animation: 'lotus-chest-halo',
     frameCount: 10,

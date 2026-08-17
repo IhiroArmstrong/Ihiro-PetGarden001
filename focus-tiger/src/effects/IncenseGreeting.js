@@ -41,6 +41,13 @@ export const INCENSE_GREETING_CONFIG = {
     viewSpreadX: 0.92,
     viewSpreadY: 0.82
   },
+  /** Product lotus-pond birth: persist the bloom (no fade-out). */
+  pondBirth: {
+    fadeInMs: 1200,
+    holdMs: 700,
+    startScaleRatio: 0.6,
+    particleCount: 20
+  },
   /** 右下角水印裁切区域（相对图片宽高的比例，PixMiller 标记） */
   watermarkCrop: {
     widthRatio: 0.22,
@@ -271,6 +278,13 @@ export class IncenseGreeting {
     this._domSmokePlaying = false;
     this._domSmokeElapsedMs = 0;
     this._domSmokeSpawned = 0;
+
+    /** Pond birth (persists via onPlanted; not the lab ephemeral incense). */
+    this._birthLotus = null;
+    this._birthPlaying = false;
+    this._birthElapsedMs = 0;
+    this._birthOnPlanted = null;
+    this._birthParticleSlot = null;
   }
 
   async init() {
@@ -401,6 +415,64 @@ export class IncenseGreeting {
     return LOTUS_TEXTURE_PATH;
   }
 
+  /** De-watermarked incense lotus data URL (never character lotus sequences). */
+  getLotusDomSrc() {
+    return this._lotusDomSrc();
+  }
+
+  /**
+   * Product pond birth at a spiral slot. Lotus fades in, then `onPlanted`
+   * (no fade-out). Gold particles stay ephemeral.
+   * @param {{ leftPct: number, bottomPct: number, widthCss?: string }} slot
+   * @param {{ container?: HTMLElement | null, onPlanted?: () => void }} [opts]
+   */
+  playBirthAt(slot, opts = {}) {
+    const container = opts.container || this._ensureFxRoot();
+    if (!container || !slot) {
+      opts.onPlanted?.();
+      return;
+    }
+    this._disposeBirthLotus();
+    this._clearDomParticles();
+
+    const lotus = document.createElement('img');
+    lotus.alt = '';
+    lotus.draggable = false;
+    lotus.src = this._lotusDomSrc();
+    const widthCss = slot.widthCss || 'min(12vw, 96px)';
+    lotus.style.cssText = [
+      'position:absolute',
+      `left:${slot.leftPct}%`,
+      `bottom:${slot.bottomPct}%`,
+      `width:${widthCss}`,
+      'height:auto',
+      'opacity:0',
+      'transform:translate(-50%,0) scale(0.6)',
+      'transform-origin:50% 100%',
+      'filter:drop-shadow(0 8px 18px rgba(120,80,40,.28))',
+      'will-change:opacity,transform',
+      'pointer-events:none'
+    ].join(';');
+    container.appendChild(lotus);
+    this._birthLotus = lotus;
+    this._birthOnPlanted = opts.onPlanted || null;
+    this._birthElapsedMs = 0;
+    this._birthPlaying = true;
+    this._birthParticleSlot = slot;
+
+    this._domSmokeElapsedMs = 0;
+    this._domSmokeSpawned = 0;
+    this._domSmokePlaying = true;
+  }
+
+  _disposeBirthLotus() {
+    this._birthLotus?.remove();
+    this._birthLotus = null;
+    this._birthPlaying = false;
+    this._birthOnPlanted = null;
+    this._birthParticleSlot = null;
+  }
+
   _playDomIncense() {
     const root = this._ensureFxRoot();
     this._disposeDomLotus();
@@ -445,11 +517,17 @@ export class IncenseGreeting {
   }
 
   _spawnDomParticle() {
-    const root = this._ensureFxRoot();
+    const root =
+      this._birthLotus?.parentElement || this._ensureFxRoot();
     const el = document.createElement('div');
     const size = 10 + Math.random() * 18;
-    const x = 8 + Math.random() * 84;
-    const y = 12 + Math.random() * 70;
+    const slot = this._birthParticleSlot;
+    const x = slot
+      ? slot.leftPct + (Math.random() - 0.5) * 18
+      : 8 + Math.random() * 84;
+    const y = slot
+      ? 100 - slot.bottomPct + (Math.random() - 0.5) * 20
+      : 12 + Math.random() * 70;
     el.style.cssText = [
       'position:absolute',
       `left:${x}%`,
@@ -477,6 +555,7 @@ export class IncenseGreeting {
 
   update(dt) {
     this._updateDomLotus(dt);
+    this._updateBirthLotus(dt);
     this._updateDomSmoke(dt);
     // 保留 3D 路径更新（调试/奖励柜若再开 canvas 仍可用）
     this._updateLotus(dt);
@@ -512,6 +591,32 @@ export class IncenseGreeting {
     }
   }
 
+  _updateBirthLotus(dt) {
+    if (!this._birthPlaying || !this._birthLotus) return;
+
+    this._birthElapsedMs += dt * 1000;
+    const { fadeInMs, holdMs, startScaleRatio } =
+      INCENSE_GREETING_CONFIG.pondBirth;
+    const fadeInEnd = fadeInMs;
+    const holdEnd = fadeInEnd + holdMs;
+    const t = this._birthElapsedMs;
+    const el = this._birthLotus;
+
+    if (t <= fadeInEnd) {
+      const p = easeOutQuad(t / fadeInMs);
+      el.style.opacity = String(p);
+      const scale = startScaleRatio + (1 - startScaleRatio) * p;
+      el.style.transform = `translate(-50%,0) scale(${scale})`;
+    } else if (t <= holdEnd) {
+      el.style.opacity = '1';
+      el.style.transform = 'translate(-50%,0) scale(1)';
+    } else {
+      const planted = this._birthOnPlanted;
+      this._disposeBirthLotus();
+      planted?.();
+    }
+  }
+
   _updateDomSmoke(dt) {
     for (let i = this._domParticles.length - 1; i >= 0; i--) {
       const p = this._domParticles[i];
@@ -535,8 +640,11 @@ export class IncenseGreeting {
     if (!this._domSmokePlaying) return;
 
     this._domSmokeElapsedMs += dt * 1000;
-    const { count, spawnSpreadMs, effectDurationMs } =
-      INCENSE_GREETING_CONFIG.particles;
+    const particleCfg = INCENSE_GREETING_CONFIG.particles;
+    const count = this._birthParticleSlot
+      ? INCENSE_GREETING_CONFIG.pondBirth.particleCount
+      : particleCfg.count;
+    const { spawnSpreadMs, effectDurationMs } = particleCfg;
 
     while (
       this._domSmokeSpawned < count &&
