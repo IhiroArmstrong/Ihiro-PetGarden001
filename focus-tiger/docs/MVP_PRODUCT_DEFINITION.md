@@ -110,7 +110,7 @@ Focus Tiger 的回应：
 
 MVP 仍只做“专注陪伴”这一件事，不扩展为待办管理、综合健康、情绪治疗或 AI 教练。
 
-**向阿寅倾诉（2026-08-10 拍板 · 规划中，非本回合交付）**：可选的主动倾听入口（Idle ⋯/抽屉）；阿寅为禅意倾听者。技术边界 = **本地规则分类 + 人工语料检索**；分类失败走固定兜底，不做模糊打分；倾诉文本不出设备；**禁止**运行时生成式对话。与 Reflection 三问 / `REFLECTION_ECHO` 分轨。详规 `task-briefs/task-confide-to-yin-v1.md`。
+**向阿寅倾诉（2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中，非本回合交付）**：可选的主动倾听入口（Idle ⋯/抽屉）；阿寅为禅意倾听者。技术边界默认 = **本地规则分类 + 人工语料检索**；分类失败走固定兜底，不做模糊打分；倾诉文本不出设备。**Web / PWA 仍禁止**运行时生成式对话。**仅 Electron 桌面**：在安全阀、仪式文案、Confide 语料都未接住时，允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`）。与 Reflection 三问 / `REFLECTION_ECHO` 分轨。Web 详规 `task-briefs/task-confide-to-yin-v1.md`。
 
 ---
 
@@ -269,7 +269,7 @@ Focus Tiger 的小老虎是完整、安全的正念伙伴，不会因用户离�
 以下内容不应因“可收费”而自动进入路线图：
 
 - AI Focus Coach；
-- 运行时生成式「对用户说话」的倾诉回复（合法路径仅为本地分类 + 人工语料检索；见 `task-confide-to-yin-v1.md`）；
+- 全面运行时生成「对用户说话」（Web / PWA、Whisper / Recover / 提醒 / Arrival 等已审文案、主动开口）。合法默认路径仍是本地分类 + 人工语料检索。**不得**把 2026-08-18 桌面窄例外读成本条已放行（例外范围见 `PRODUCT_POSITIONING.md`「禅意倾听者」）；
 - 情绪趋势、心理分析或成长评分；
 - 复杂专注报表；
 - 多角色收集、随机奖励或付费加速；

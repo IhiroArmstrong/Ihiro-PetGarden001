@@ -214,10 +214,12 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
     全部跳过则不落任何记录；情绪来访答案不做标签化/统计/趋势分析，
     写下来即可
 
-向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 规划中）：
-  与 Reflection 分轨：Idle ⋯/抽屉主动入口；禅意倾听者；本地规则分类 +
-  人工语料检索；匹配失败固定兜底；禁运行时生成对话。
-  详规：`task-briefs/task-confide-to-yin-v1.md`（本段不等于已上线）
+向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中）：
+  与 Reflection 分轨：Idle ⋯/抽屉主动入口（桌面与 Web **同一入口**）；禅意倾听者；
+  本地规则分类 + 人工语料检索；匹配失败固定兜底。Web / PWA 仍禁运行时生成。
+  仅 Electron：安全阀与语料都未接住时允许受约束短生成——不是全面允许生成。
+  权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Web Brief `task-confide-to-yin-v1.md`；
+  桌面 Brief `task-desktop-on-device-companion.md`（本段不等于已上线）
 ```
 
 ### 专注会话陪伴模式（Companion Mode）
