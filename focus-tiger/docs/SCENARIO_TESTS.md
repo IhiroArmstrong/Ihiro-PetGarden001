@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-17（莲花池 Slice A QA `?qaLotusBlooms=`；场景 AB Electron 托盘 ≠ 走神 / SB-18 先锁契约、脚手架未实现。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-17（莲花池 Slice A QA `?qaLotusBlooms=`；场景 AB Electron 托盘 ≠ 走神 / SB-18 先锁契约；**步骤 A 窗口代码已提交**，Mac 上按 TRACKER 测；场景 AB 仍等步骤 B。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -318,6 +318,7 @@
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
+> **Electron 步骤 A**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走；失败复用现有卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC`），不为壳另做 UI。付完回 App 走 Restore / OTP。Web 仍可 `location.assign`。  
 > **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
 
 ### Q1 · Support Modal（统一入口）
@@ -649,7 +650,7 @@
 
 1. **背景**：分析师同意「收费 DMG 必须有托盘」；旧 Brief「脚手架不引托盘」作废。  
 2. **本次**：升格 **场景 AB**（托盘 hide ≠ 走神）；白名单 **SB-18**（不复用已废止的 SB-16/17）。对照场景 **B** 仍管切标签/切 App。  
-3. **现在不要催测**：须等 Electron 脚手架产出可跑的 Mac 包。  
+3. **现在不要催测场景 AB**：须等步骤 B（托盘）。步骤 A 窗口已提交，Mac 上按 TRACKER「Electron 步骤 A」测（无托盘）。  
 
 ---
 

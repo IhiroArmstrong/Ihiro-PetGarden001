@@ -1,18 +1,29 @@
 import type { Env } from "../types";
 
+/** Parse comma-separated ALLOWED_ORIGIN / ALLOWED_ORIGINS. */
+export function parseAllowedOrigins(configured: string): string[] {
+	return String(configured || "")
+		.split(",")
+		.map((part) => part.trim())
+		.filter(Boolean);
+}
+
 /** Resolve allowed Origin for browser calls (not webhook). */
 export function resolveAllowedOrigin(env: Env, request: Request): string | null {
-	const configured = (env.ALLOWED_ORIGIN || "").trim();
+	const configured = (env.ALLOWED_ORIGIN || env.ALLOWED_ORIGINS || "").trim();
 	const requestOrigin = request.headers.get("origin");
 	if (!configured) {
 		// Dev convenience: echo request Origin when unset (local wrangler).
 		return requestOrigin;
 	}
-	if (requestOrigin && requestOrigin === configured) {
-		return configured;
+	const allowed = parseAllowedOrigins(configured);
+	if (requestOrigin && allowed.includes(requestOrigin)) {
+		return requestOrigin;
 	}
-	// Non-browser (curl) or same-origin tooling — still advertise configured origin.
-	return configured;
+	if (!requestOrigin && allowed.length > 0) {
+		return allowed[0];
+	}
+	return null;
 }
 
 export function corsHeaders(
