@@ -300,6 +300,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
+| 同坐点（Focus Coins）方向锁 + L0–L3 Brief | 纯文档 | 仅单元测试覆盖 | 读 `FOCUS_COINS.md`：对外名同坐点；B 轨逐条排除；Honesty 半额+日限 1 次；不拦截莲花池自动开花。Brief `task-focus-coins.md` 下一刀 L0 纯账本。**无运行时**。 | **2026-08-18 用户书面**：六项拍板全同意；补工作量分级后排开发任务。 | — | — | `docs/FOCUS_COINS.md` · `docs/task-briefs/task-focus-coins.md` | 2026-08-18 |
 | 本地电脑版壳选型（Mac DMG · Electron） | 纯后端 | 仅单元测试覆盖 | 口径锁：电脑版 = Electron + electron-builder DMG；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 非终局。选型已合 **#326**（`fe5b76a`）。无窗口代码。权威 Brief `task-desktop-shell-electron.md` + 脚手架 `task-electron-desktop-scaffold.md`。 | — | — | — | `docs/task-briefs/task-desktop-shell-electron.md` | 2026-08-17 |
 | 功能冲突扫描（`feature-conflict-review`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `feature-conflict-review` SSOT 在 `FEATURE_CONFLICT_REVIEW.md`。实现前对照 `SCENARIO_TESTS.md`；有冲突须等拍板。PR 第三问。无运行时。 | — | — | — | `FEATURE_CONFLICT_REVIEW.md` · `RULES_INDEX` · `.cursor/rules/focus-tiger-feature-conflict-review.mdc` | 2026-08-16 |
 | 点击反馈原则 + 沉默白名单（`interaction-feedback`） | 纯后端 | 仅单元测试覆盖 | `npm run rules:doc-check`：topic `interaction-feedback` SSOT 在 `INTERACTION_FEEDBACK_PRINCIPLES.md`；白名单 `SILENT_BEHAVIORS.md`。PR 模板 / Cursor 规则须答 0–1s。无运行时。 | — | — | — | `INTERACTION_FEEDBACK_PRINCIPLES.md` · `SILENT_BEHAVIORS.md` · `RULES_INDEX` | 2026-08-14 |
