@@ -200,6 +200,22 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 同坐点（Focus Coins · 2026-08-18 方向锁）
+
+> 练习货币；对外 **同坐点**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
+
+| 级 | 内容 | Brief / 分支 | 状态 |
+|---|---|---|---|
+| **文档** | 隔离清单、发点/防刷、与徽章两层、工作量分级 | `FOCUS_COINS.md` · `task-focus-coins.md` | **本支立项** |
+| **L0** | 纯账本单测（Companion 三档 / Honesty 日限 / 封顶 / `isEntitled` 失败用例） | `feature/focus-coins-l0-ledger` | 待开工 |
+| **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | 待 L0 |
+| **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | 待 L1 |
+| **L3** | 抽屉安静表面；en/ja；375 | `feature/focus-coins-l3-surface` | 待 L2 |
+
+合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
+
+---
+
 ## 📍 工程提醒（跨会话门闩）
 
 | 提醒 | 触发 | 动作 | 权威 |
