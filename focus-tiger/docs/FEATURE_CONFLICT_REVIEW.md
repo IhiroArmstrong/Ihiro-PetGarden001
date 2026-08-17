@@ -74,6 +74,16 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 ---
 
+## 正面案例（照此格式）
+
+**托盘 vs 旧 Brief（2026-08-16 选型 → 2026-08-17 分析师拍板）**
+
+上一轮选型 Brief 曾写「脚手架不引入托盘」，与「桌面渠道 = 愿意为真 App 多付钱」可能打架。扫描**没有**默默把托盘塞进方案，而是先标出口径冲突、给判断、等拍板。分析师书面同意分层，并补了执行顺序：**步骤 A 窗口必须没有托盘；步骤 B 第一颗对外收费的 DMG 必须有**（托盘与走神修同一条验收）。随后才改权威文档（旧句改为「仅步骤 A」）。
+
+以后类似「新方案和旧 Brief 互斥」：先摆冲突 → 等明确决定 → 再改文档/代码；禁止两份口径长期并存。分析师第二份补了执行顺序：步骤 A 窗口不带托盘；步骤 B 收费前托盘与走神修同一条验收——产品「收费 DMG 必须有托盘」不变。
+
+---
+
 ## PR 第三问
 
 点击反馈原「两问」现为 **三问**。前两问仍见 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)（`interaction-feedback`）。第三问在本页：
@@ -104,7 +114,7 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 ## Agent 摘要
 
-Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（**非** SSOT；只留强制动作）。PR 模板有第三问栏。勿在其它文档复述三轴全文。
+Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（**非** SSOT；只留强制动作）。PR 模板有第三问栏。勿在其它文档复述三轴全文。正面案例（托盘 vs 旧 Brief）见上文，照该格式处理口径冲突。
 
 ---
 
@@ -112,4 +122,5 @@ Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（*
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-17 | 正面案例：托盘 vs 旧 Brief——先摆冲突再等拍板；分析师分层后改文档。同日第二份：两步执行（窗口先、托盘+走神后），禁止绑成一次验收 |
 | 2026-08-16 | 初版：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等拍板（优先于默认执行）；PR 第三问；索引 `feature-conflict-review` |

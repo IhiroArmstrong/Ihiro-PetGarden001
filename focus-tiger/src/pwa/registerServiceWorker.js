@@ -6,14 +6,23 @@
 /**
  * Register the network-only service worker (production only).
  * Never register under Vite dev — SW would fight HMR.
+ * Never register inside the Electron shell (custom protocol + extraResources).
  *
  * @param {{
  *   isProd?: boolean,
+ *   isDesktop?: boolean,
  *   register?: ((url: string) => Promise<unknown>) | null,
  * }} [options]
  * @returns {Promise<unknown | null>}
  */
 export function registerServiceWorker(options = {}) {
+  const isDesktop =
+    typeof options.isDesktop === 'boolean'
+      ? options.isDesktop
+      : Boolean(globalThis.desktopShell?.isDesktop);
+  if (isDesktop) {
+    return Promise.resolve(null);
+  }
   const isProd =
     typeof options.isProd === 'boolean'
       ? options.isProd

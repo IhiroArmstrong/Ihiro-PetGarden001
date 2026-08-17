@@ -191,6 +191,9 @@ import {
   MilestoneGlowStore,
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
+import { LotusPondStore } from './core/LotusPondStore.js';
+import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
+import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import {
   SCENE_ANIM_EVENTS,
@@ -327,7 +330,10 @@ async function init() {
   bootLocaleFromPreference();
 
   // PWA: network-only SW in production only (no Cache Storage).
-  void registerServiceWorker();
+  // Electron Step A: never register — custom protocol + extraResources.
+  void registerServiceWorker({
+    isDesktop: Boolean(globalThis.desktopShell?.isDesktop)
+  });
 
   // i18n：静态 HTML 已是默认语言（en）；此处接管标题/遮罩并跟随语言切换刷新
   document.title = t('APP_TITLE');
@@ -633,7 +639,8 @@ async function init() {
     });
     const reveal = shouldRevealSoftUpdatePrompt({
       updateAvailable: softUpdateAvailable,
-      busySession: busy
+      busySession: busy,
+      desktopShell: Boolean(globalThis.desktopShell?.isDesktop)
     });
     if (reveal && softUpdateVersionLabel) {
       softUpdatePromptUI.setVersionLabel(softUpdateVersionLabel);
@@ -1105,7 +1112,18 @@ async function init() {
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
+  applyQaLotusPondSeedFromSearch({
+    search: window.location.search,
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
   const practiceDaysStore = new PracticeDaysStore();
+  const lotusPondStore = new LotusPondStore();
+  const lotusPondRuntime = new LotusPondRuntime({
+    store: lotusPondStore,
+    overlayEl: spritePlayer.overlayEl,
+    incenseGreeting
+  });
+  lotusPondRuntime.boot();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
@@ -1148,14 +1166,19 @@ async function init() {
       if (nodeId) {
         emotionController.playEmotion('milestoneGlow', {
           milestoneNodeId: nodeId,
-          onComplete: revealBridge
+          onComplete: () => {
+            revealBridge();
+            lotusPondRuntime.releaseBirths();
+          }
         });
       } else {
         revealBridge();
+        lotusPondRuntime.releaseBirths();
       }
     },
     onPracticeDay: ({ durationMinutes } = {}) => {
       practiceDaysStore.markToday(durationMinutes);
+      lotusPondRuntime.notePracticeMinutes(durationMinutes);
       tipKindnessBadgesChrome.refresh();
     },
     onSessionRecorded: ({ durationMinutes }) => {
@@ -1642,6 +1665,7 @@ async function init() {
       microRitualUI?.getDurationMinutes?.() ?? 1;
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
+    lotusPondRuntime.notePracticeMinutes(durationMinutes);
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
@@ -1656,6 +1680,7 @@ async function init() {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
         freezeUntilCrossFadeEnds: true,
         onComplete: () => {
+          lotusPondRuntime.releaseBirths();
           syncHonestyIdleEntry();
         }
       }
@@ -1665,6 +1690,7 @@ async function init() {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
         freezeUntilCrossFadeEnds: true,
         onComplete: () => {
+          lotusPondRuntime.releaseBirths();
           syncHonestyIdleEntry();
         }
       });
@@ -2067,6 +2093,7 @@ async function init() {
   // MilestoneGlow / streak e2e — production preview (CI) needs these hooks.
   window.__milestoneGlowStore = milestoneGlowStore;
   window.__practiceDaysStore = practiceDaysStore;
+  window.__lotusPondStore = lotusPondStore;
 
   /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
   let pendingChoose = null;
@@ -2810,6 +2837,7 @@ async function init() {
     stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
+    lotusPondRuntime.releaseBirths();
     stateManager.setState(STATES.IDLE);
     honestyGlowLevel = null;
     tigerCharacter.setFocusLevel(0);

@@ -12,7 +12,7 @@
 |---|---|
 | v1.0.0 交付默认形态 | **纯 Web**；**不上** App Store / Play 原生包 |
 | 手机原生壳 | v1 **不实现**；未来默认 **Capacitor** |
-| 桌面壳 | **仍开放**（Electron / Tauri / PWA·薄壳） |
+| 桌面壳 | **已拍板 Electron**（2026-08-16；Mac DMG / electron-builder）。Tauri 日后备选；PWA 非电脑版终局。见 `PROCESS.md` + `task-desktop-shell-electron.md` |
 | 健康同步 | **非 v1**；**禁止**写入 B 付费权益 |
 | **商业双轨（硬）** | **A** Buy Yin a Tea（不解锁）+ **B** 进阶内容解锁。**两者都要**，不二选一。**不是**「三档并存」 |
 | **A** | 打赏；情绪反馈 + 可选徽章；**不解锁**任何内容 |
@@ -47,7 +47,7 @@
 
 1. v1 默认 **纯 Web**。  
 2. 未来手机壳默认 **Capacitor**。  
-3. 桌面壳维持 `PROCESS` Backlog。  
+3. 桌面壳 **已拍板 Electron**（Mac DMG · #326）；脚手架规格 `task-electron-desktop-scaffold.md`（运行时另开实现回合）。PWA 不是电脑版终局。  
 
 **v1 纯 Web 不可用（不得写入付费卖点）**：HealthKit / Health Connect；StoreKit / Play Billing；系统 Widget / Live Activities；「一键发到指定社交 App」核心承诺。
 
@@ -302,7 +302,7 @@ UI:   SanctuaryUnlockUI.js
 - 把 Lifetime 与 Membership 做成**不同内容层级**（「订阅少一档」心智）  
 - 电子书 ②B（已取消）  
 - 未拍板定价数字上线  
-- Capacitor / 壳脚手架（未另下令）  
+- Capacitor 手机壳脚手架（未另下令）；桌面 Electron 脚手架规格见 `task-electron-desktop-scaffold.md`（本纪要不自动写窗口代码）  
 
 ---
 

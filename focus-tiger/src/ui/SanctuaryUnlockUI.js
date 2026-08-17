@@ -9,7 +9,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
-import { postCloudJson } from '../core/cloudApiClient.js';
+import { postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
 import {
   confirmSanctuaryReturnQuery,
   isSanctuaryUnlocked,
@@ -269,7 +269,7 @@ export class SanctuaryUnlockUI {
           : null;
       if (typeof url === 'string' && url) {
         getMonetizationFunnelStore().checkoutStart('sanctuary', 'sanctuary-card');
-        window.location.assign(url);
+        await openCheckoutUrl(url);
         return;
       }
       checkoutError = true;

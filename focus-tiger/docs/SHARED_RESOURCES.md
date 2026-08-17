@@ -12,11 +12,14 @@
 
 ## 1. localStorage keys
 
+**Electron 步骤 A（2026-08-17）**：渲染层仍用本表同一套 keys；生产 origin 是 `focus-tiger://app`，与 Safari `http://127.0.0.1:5173` **不共享**存储（换壳等于空库，属预期）。壳内不另开 native keychain。步骤 A **无托盘**，不新增壳专用存储键。
+
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key** |
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉） |
+| `focus-tiger.lotus-pond.v1` | `LotusPondStore` | **独立只增**终身练习分钟 `{ lifetimeMinutes }`；可见朵数 `min(earned, 12)`。计时 / Honesty / 微仪式与 `markToday` **同一钩**写入，**不**走付费 RitualFlow、**不**走未达标 Rise。**QA**：`?qaLotusBlooms=N`。**不**在练习记忆备份 v1 六 key 白名单（Slice A 已知缺口）。贴图：一炷香 `/textures/lotus.png` |
 | `focus-tiger.milestone-glow.v1` | `MilestoneGlowStore` | 已播里程碑节点 id（如 `streak-7`）；只增不减；产品壳 `MilestoneGlow` 接线 |
 | `focus-tiger.ritual-completions.v1` | `RitualCompletionStore` | 进阶 RitualFlow（Morning / Emotional Reset / Work Transition）完成记录；**不**走 MicroRitual / Focus / Journey Log / Reflection |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |

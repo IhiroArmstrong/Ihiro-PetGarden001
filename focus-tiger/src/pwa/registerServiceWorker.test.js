@@ -29,6 +29,20 @@ describe('registerServiceWorker', () => {
     assert.equal(result, null);
   });
 
+  it('skips registration inside the Electron shell even in production', async () => {
+    let calledWith = null;
+    const result = await registerServiceWorker({
+      isProd: true,
+      isDesktop: true,
+      register: async (url) => {
+        calledWith = url;
+        return { scope: '/' };
+      }
+    });
+    assert.equal(result, null);
+    assert.equal(calledWith, null);
+  });
+
   it('registers /sw.js in production', async () => {
     let calledWith = null;
     const result = await registerServiceWorker({

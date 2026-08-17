@@ -44,8 +44,9 @@ Recover（原提案称 Return；分心不是失败，是循环里正常的一环
                     Reflect 开头回显 Choose 内容，Notice 状态不回显）
   ↓
 Grow Together（老虎成长 = 用户成长的映射，非独立宠物养成机制）
-  （候选视觉：`lotus-chest-halo` 10 帧胸口莲花+脑后金光已入库，作纪念物解锁呈现候选；
-    触发规则属 Backlog「纪念奖励系统」，未接线。环境首朵素材 `lotus-front-rising` 亦已到位。）
+  （Slice A 已接线：阿寅身旁持久螺旋莲花池，按终身累计分钟只增；
+    贴图为一炷香 `/textures/lotus.png`，**不是** `lotus-chest-halo` / `lotus-front-rising`。
+    那两段角色序列仍仅入库，留给其它纪念物解锁。结晶金环 = Slice B。）
 ```
 
 **关键变化**：Notice 和 Choose 不再是"一个被动画面+一个自由打字"，而是统一为
@@ -59,7 +60,7 @@ Grow Together（老虎成长 = 用户成长的映射，非独立宠物养成机�
 
 ### 采纳（无修改）
 - **Recover 的地位提升**：从"背景提醒机制"提升为循环里正式的一环，叙事上明确"Focus → Distracted → Recover → Continue"，不是"Distracted → Fail"。不涉及新代码，是既有 Re-focus Acknowledge / mindfulAcknowledge 的重新定性，供文档和文案对齐。
-- **Grow Together**：合并"老虎成长"与"用户成长"为同一叙事，老虎的成长只是用户成长的映射（觉察情绪、保持专注、健康节律等）。这与 2026-07-15 已拍板的"共同经历增加、环境细节解锁与永久纪念物"完全一致，本次只是把它正式写成循环图里的节点名。纪念物解锁视觉候选素材 `lotus-chest-halo`（10 帧）已入库；具体哪些里程碑触发、触发几次，等 Backlog「纪念奖励系统」排期再定，不在文档层擅自接线。
+- **Grow Together**：合并"老虎成长"与"用户成长"为同一叙事，老虎的成长只是用户成长的映射（觉察情绪、保持专注、健康节律等）。这与 2026-07-15 已拍板的"共同经历增加、环境细节解锁与永久纪念物"完全一致。**2026-08-17**：莲花池 Slice A 已接线（累计分钟螺旋池，取代日历 5/10 天池）。`lotus-chest-halo` / `lotus-front-rising` 仍只作其它纪念物候选，**不**当池花。
 - **Choose = Session Intention**：确认是同一功能，不新增设计工作，见 ARRIVE_MOMENT_DESIGN.md。
 
 ### 采纳但修改了实现方式（v2 更新）

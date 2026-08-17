@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-16（Idle Document PiP 实验场景 AA；Quiet Line 洞察种子池 v2 + Journey Log `insightSpark` 仍对齐 U2 / Z。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-17（莲花池 Slice A QA `?qaLotusBlooms=`；场景 AB Electron 托盘 ≠ 走神 / SB-18 先锁契约；**步骤 A 窗口代码已提交**，Mac 上按 TRACKER 测；场景 AB 仍等步骤 B。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | **P0** | **Q** Support Yin 三卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
 | **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
-| **P0** | **X** Tiger Anchor **冷却期内再点** | 触点邀请隐退 ≠ 「我点过了、在冷却」；见 `SILENT_BEHAVIORS` **FB-01** | 本批已落地：微点头（无 toast）；缺口句作废 |
+| **P0** | **AB** Electron 托盘收起 vs 切 App | 收进托盘误触发 Re-focus = 场景 B 同类坑 | 契约已写；**实现后**测；**SB-18** |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
 | **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**#291 补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：#292 已合 insight-spark；Daily Card 仍是 Brief 未接线 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
@@ -56,7 +56,8 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA** |
+| Electron 本机包 | **场景 AB**（托盘）；Web 测不了 |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
 语言切换：宽屏 ⋯ / 窄屏抽屉 → **Language**（v1.0 对外 **English + Japanese**）；DEV 仍可用 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下同一 bundle）。
@@ -132,6 +133,7 @@
 5. 切回 Focus Tiger：应见 **非模态观察式文案** + **`nod-bow` 点头鞠躬**（不是摆尾）。
 6. **对照（勿期望与 Here & Now 相同）**：再开一场选 **Flow State**（或 Offline Space）→ 同样离开 &gt;60s 再回来 → **不应**出现观察式文案 / nod-bow（`suppressAwayReminders`；离开是预期；**SB-03**）。若「没反应」= **测对了**；若仍出现 nod-bow = bug。
 7. 额度：Re-focus 占共享日提醒池（每日最多 3 次三类合计）；每场会话最多 1 次。
+8. **对照（Electron 桌面 · 场景 AB）**：把窗口**收到托盘**停留 >60s 再打开 → **不应**出现本场景的 toast / nod-bow（**SB-18**）。那是壳生命周期，不是切走标签。浏览器里测本场景时忽略本步。
 
 *[单元/控制器：Stay 触发 / Offline·Flow 抑制 → smoke B；**非**真实 visibility 切页]*
 
@@ -316,6 +318,7 @@
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
+> **Electron 步骤 A**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走；失败复用现有卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC`），不为壳另做 UI。付完回 App 走 Restore / OTP。Web 仍可 `location.assign`。  
 > **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
 
 ### Q1 · Support Modal（统一入口）
@@ -526,7 +529,7 @@
 ## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
 
 > **地位**：**实验 / 非最终形态**。用来验证「切到其他窗口或 App 时，仍能看见阿寅安静呼吸」。**待观察使用数据后决定是否继续投入**（localStorage `focus-tiger.idle-companion-pip.v1` 只记是否曾打开，不用于提醒或激励）。  
-> **不是** Electron / 系统托盘 / 关浏览器后仍常驻；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时）。  
+> **不是**系统托盘 / 关浏览器后仍常驻（电脑版壳已拍板 Electron，但 AA **仍不是**那条路径）；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时）。  
 > **单元**：`idleCompanionPipGate.test.js`（Document PiP 支持 → 入口可挂载；不支持 → 不挂载；Idle 才显示）。  
 > **DOM e2e**：无（`requestWindow` 需真实用户手势 + Chromium）。  
 > **仍须人工**：Chrome/Edge 开/关流畅与呼吸卡顿；切到其他窗口后是否置顶；Safari/Firefox 入口完全不出现且无报错。
@@ -538,6 +541,25 @@
 4. **回流**：关后再开仍立刻出窗；Sit → Focusing 时入口须消失、已开浮窗须收起；Rise 回 Idle 后入口再出现，**不**自动弹窗。
 5. **Safari / Firefox**（及无 `documentPictureInPicture` 的环境）：Idle **完全不见**该入口；无报错、无「暂不支持」提示。本步不是点击——入口不存在即测对了。
 6. **375**：簇内图标不挡三球；本原型不要求浮窗在窄屏浏览器里好用（桌面 Chromium 才是假设验证面）。
+
+---
+
+## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
+
+> **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（收费 DMG 前补托盘 + 走神修；Brief `task-electron-desktop-scaffold.md`）。**步骤 A 窗口不要催本场景**（那时无托盘）。**现在不要催测。**  
+> **对照**：场景 **B** = 用户把**另一个 App 或标签**带到前台；本场景 = 主窗口 hide 到菜单栏，进程仍在。  
+> **不是**场景 AA（浏览器 Document PiP）。  
+> **白名单**：**SB-18**（收进托盘无 Re-focus）。切到别的 App 仍走 B / SB-01–03。  
+> **冲突扫描**：职责与 B 拆开，不是加一条更重的回归仪式。  
+> **自动化**：脚手架须补「hide-to-tray ≠ away」门闩失败用例；完整托盘 DOM **须人工**（本机 Mac）。
+
+1. 用 **Here & Now** 开一场足够长的 Focusing（建议 `?sessionMinutes=5` 的桌面包，勿用 1 分钟 DEMO）。HUD 在计时。  
+2. 点窗口红灯 / 关主窗口 → **0–1 秒内**窗口消失，**菜单栏托盘图标仍在**；氛围乐与计时**不停**。不是 quit。  
+3. 保持收在托盘 **约 70–90 秒**（>60s）。  
+4. 再点托盘「显示」：窗口回来，**不应**出现 Re-focus 观察式 toast / `nod-bow`（**SB-18**）。若出现 = bug（`AttentionSignals` 把 `hidden` 当切走）。  
+5. **对照（须仍走场景 B）**：窗口**可见**时切到另一个 Mac App 停留 >60s 再回来 → Here & Now **应** Re-focus。  
+6. **退出**：托盘菜单「退出」才结束进程。红灯不得充当退出。  
+7. **回流**：Rise 后再开一场，重复 2–4。Offline / Flow 下收托盘仍无 Re-focus（与 SB-03 同向，但原因是托盘而非模式抑制）。
 
 ---
 
@@ -564,7 +586,7 @@
 | **X** | Focusing Tiger Anchor 主动 Recover（180s 冷却；不占被动额度） | **已升格** → 见上文「场景 X」；#199 |
 | **X2** | Idle 轻点阿寅 → `earWiggleHeadTouch` | **已升格** → 见上文「场景 X2」 |
 | **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
-| **Z** | Journey Log 本地留痕（≠ HealthKit / ≠ Tea Log） | **已升格** → 见上文「场景 Z」；#205 |
+| **AB** | Electron 托盘收起 ≠ 走神 | **已升格** → 见上文「场景 AB」；脚手架后测；**SB-18** |
 
 ---
 
@@ -574,7 +596,8 @@
 |---|---|
 | 眨眼 | 实验室面板「眨眼」或 `playEmotion('blink')` |
 | Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
-| 一炷香莲花 | 实验室「模拟一炷香」（业务未接线） |
+| 一炷香莲花 | 实验室「模拟一炷香」/「一炷香完成」（会话结束自动播放未接线；池出生见下行） |
+| 莲花池（持久螺旋） | `?product=1&sessionMinutes=1&qaLotusBlooms=11` → Sit 等到达标（`qaLotusPondSeed`） |
 | Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接注入：`__honestyBridge`（**生产构建也挂载**，供 CI `vite preview` e2e） |
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |
@@ -620,6 +643,14 @@
 2. **本次**：升格 **X / Y / Z**；**Q** 增 Q4 统一练习徽章；**W** 可链 Compass。  
 3. **仍建议**：**R** 跨日回访；Transition 产品入口未做（Whisper `transition` 键不 play）。  
 4. **TEST_TRACKER** 场景行改称含 **X–Z**。
+
+---
+
+## 2026-08-17 增量核对摘要（AB · Electron 托盘契约）
+
+1. **背景**：分析师同意「收费 DMG 必须有托盘」；旧 Brief「脚手架不引托盘」作废。  
+2. **本次**：升格 **场景 AB**（托盘 hide ≠ 走神）；白名单 **SB-18**（不复用已废止的 SB-16/17）。对照场景 **B** 仍管切标签/切 App。  
+3. **现在不要催测场景 AB**：须等步骤 B（托盘）。步骤 A 窗口已提交，Mac 上按 TRACKER「Electron 步骤 A」测（无托盘）。  
 
 ---
 

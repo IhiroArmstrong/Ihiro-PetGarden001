@@ -18,6 +18,8 @@
    - GitHub Actions repository secrets（**仅当** workflow 真正引用 `secrets.*`）
 5. 模板对照：[`cloud/.env.example`](../cloud/.env.example)
 
+**Electron 步骤 A（2026-08-17）**：打包壳内的 Cloud POST 走**主进程 IPC**（不把自定义协议 Origin 直接打到 Worker）。失败仍抛错，UI 复用 Web 卡面（请茶 / Sanctuary / Membership / Journey 备份），不为壳另做提示。壳内 `getCloudApiBaseUrl()` 在缺 `VITE_*` 时回退到公开 Worker URL（避免打包后假「离线」把按钮禁用）。Worker `ALLOWED_ORIGIN` 已支持逗号列表（可含 `focus-tiger://app`）；**生产名单要等你明确下令 Redeploy 才改**，本回合不部署。
+
 ## 2. 当前仓库事实
 
 | 项 | 状态 |
