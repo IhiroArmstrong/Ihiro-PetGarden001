@@ -376,15 +376,19 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 
 ---
 
-## 桌面壳（Mac DMG · 2026-08-16 拍板）
+## 桌面壳（Mac DMG · 2026-08-16 拍板 · 2026-08-17 脚手架规格）
 
-> 调研与脚手架边界：`docs/task-briefs/task-desktop-shell-electron.md`。排期：`PROCESS.md` Backlog「本地桌面 APP 打包」。
+> 选型：`docs/task-briefs/task-desktop-shell-electron.md`（#326）。规格：`docs/task-briefs/task-electron-desktop-scaffold.md`。排期：`PROCESS.md` Backlog「本地桌面 APP 打包」。
 
 - **电脑版窗口** = **Electron** 薄主进程 + 现有 Vite `dist`（Lit / `EmotionController` / PNG 序列 **不重写**）。打包器默认 **electron-builder** → `.dmg`。
+- **托盘**：第一颗能跑的窗口可以没有；**对外收费 DMG 必须有**（关主窗口 = hide，不是 quit）。场景 AA PiP **不是**托盘。
+- **走神**：`AttentionSignals` 不得把托盘 hide 当成切走（场景 AB / **SB-18**）；切到别的 App 仍走场景 B。
+- **资源**：`public/sprites` / `public/audio`（约 1.1 GiB）从第一天走 `extraResources`，禁止整包塞 asar 当「先跑通」。
+- **origin**：生产禁止 `file://`；固定 `app://` 或 `focus-tiger://`。Checkout / OTP / 云备份须可见成功或可见错误。Stripe 在壳内走 `openExternal`。
 - **不做**：用 Tauri 作为 v1 壳；用 Capacitor 包 Mac 窗口；把 PWA 任务六当成电脑版终局。
 - **与 Web 的关系**：v1.0.0 默认仍是纯 Web；Electron 是加法。渲染层继续 `localStorage`；壳内不注册现有 PWA SW。
 - **手机**：未来默认 Capacitor（HealthKit 等）；与本条分离。
-- **尚未实现**：`desktop/` 目录、公证 CI、自动更新器——另开脚手架 Task。
+- **尚未实现（运行时）**：`desktop/` 目录、公证 CI、`electron-updater`。规格已锁；实现另开回合（可与 Apple 入会并行）。
 
 ---
 

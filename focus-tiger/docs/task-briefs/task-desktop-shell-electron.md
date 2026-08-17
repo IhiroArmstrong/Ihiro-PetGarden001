@@ -1,9 +1,8 @@
 # Task Brief · 本地电脑版壳选型（Mac DMG）
 
-> **状态（2026-08-16 拍板）**：首发 **Mac DMG 壳 = Electron**（打包器默认 **electron-builder**）。  
-> **本回合只锁口径，不写脚手架、不产 DMG。**  
-> 权威落点：本 Brief + `PROCESS.md` Backlog「本地桌面 APP 打包」。  
-> 触发：产品要「现有 Web 代码库变成 Mac DMG」（`PROCESS` 触发 B）。
+> **状态（2026-08-16 拍板；2026-08-17 托盘分层修订）**：首发 **Mac DMG 壳 = Electron**（打包器默认 **electron-builder**）。  
+> **选型已合** [#326](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/326)（`develop` tip 随 fetch）。脚手架规格：`task-electron-desktop-scaffold.md`。  
+> 权威落点：本 Brief（选谁）+ 脚手架 Brief（怎么搭）+ `PROCESS.md` Backlog「本地桌面 APP 打包」。
 
 ---
 
@@ -18,7 +17,7 @@
 | **Capacitor** | **不**用于桌面窗口包装；留给**未来手机原生壳**（HealthKit / Health Connect） |
 | **PWA / 薄壳** | **保留**为 Web「添加到主屏幕」增强（任务六已合）；**不是**电脑版终局 |
 | **v1.0.0 Web** | **不变**：默认交付仍是纯 Web；Electron 是「要桌面包」时的包装路径，不推翻 Browser First |
-| **本回合不做** | `desktop/` 脚手架、签名证书、公证 CI、自动更新器、托盘常驻 |
+| **托盘（2026-08-17）** | **第一颗能跑的窗口可以没有**；**第一颗对外收费/官网上架的 DMG 必须有**（关主窗口 → 后台 + 托盘；明确「退出」才 `quit`）。禁止用场景 AA PiP 代替托盘。 |
 
 **一句话**：对「能不能第一时间上线 Mac DMG」这个目标，**稳妥比轻量更重要**；本仓库资源体积已经很大，Electron 自带 Chromium 的体积税相对可接受。
 
@@ -58,7 +57,7 @@
 - 团队是 **JS/CSS 前端**；没有 Rust 主线人力。
 - 目标是 **尽快有可分发的 Mac 窗口**，不是先做最省内存的壳。
 - 核心路径 **v1.0.0 纯本地**（不把练习绑死在云请求上）。
-- 自动更新器、菜单、用户数据目录等适配面 **选型后另开脚手架**；Web 轻提示（#263）继续只管浏览器刷新，不冒充补丁包。
+- 自动更新器、公证 CI 仍后置；Web 轻提示（#263）继续只管浏览器刷新。脚手架规格见 `task-electron-desktop-scaffold.md`（P0：Stripe `openExternal`、托盘≠走神、CORS/origin、`extraResources`）。
 
 ---
 
@@ -104,34 +103,24 @@ Capacitor 的胜场是 **调用移动端原生 API**（HealthKit Mindful Minutes
 
 ---
 
-## 脚手架 Task（尚未立项 · 勿在本 PR 开工）
+## 脚手架（已立项 · 2026-08-17）
 
-下一独立 Task 建议最小集：
+规格与 P0 验收：**`task-electron-desktop-scaffold.md`**（勿在本选型 Brief 再抄一份实现清单）。
 
-1. 独立目录（建议 `focus-tiger/desktop/` 或仓库根 `desktop/`），**禁止**把 Electron 依赖撒进产品 `src/`。
-2. 主进程：`contextIsolation: true`、`nodeIntegration: false`、preload 只暴露白名单 API。
-3. 加载 **Vite 生产 `dist`**（先 `npm run build`）；开发期可 `loadURL` 指向 Vite dev，但验收以生产包为准。
-4. **Electron 内不注册** 现有 PWA service worker（或明确 no-op）——避免 Cache Storage 与包装器双轨。
-5. `electron-builder`：`dmg`、`arm64` 优先；签名 / 公证需 Apple Developer ID（用户侧证书，不进仓库）。
-6. 用户数据：沿用渲染进程 `localStorage` 作为 v1；**不要**第一周就迁原生 FS（练习记忆云快照路径不变）。
-7. Stripe：继续 `shell.openExternal`（或等价）打开系统浏览器 Checkout，不在壳里嵌伪商店。
-8. 真自动更新器（`electron-updater`）**另议**；Web 刷新芯片继续只服务浏览器。
-9. 打包产物 CI（「安装包能启动」）在脚手架能在 CI 跑起来之后再写，见 `PROCESS` 发布前安全网。
-
-**已好清单（脚手架开工时必须守住，本回合不改代码）**：
+**已好清单（实现时仍须守住）**：
 
 - 产品仍可纯 Web 打开（`?product=1`）；Electron 是加法。
-- Sit / Arrival / Honesty / 付费双轨门闩不因壳而改语义。
-- 不引入系统托盘常驻、不把场景 AA 升级成关 App 仍活的桌宠。
+- Sit / Arrival / Honesty / 付费双轨门闩不因壳而改语义（Checkout 打开方式除外）。
+- 不把场景 AA 升级成关 App 仍活的桌宠；收费 DMG 的托盘是**另一条**路径。
 - 不把 HealthKit 写进 Electron。
 
 ---
 
 ## 不做（本决策）
 
-- 本回合实现窗口 / DMG / CI 公证
 - 把 v1 改成「只出 Mac 包、Web 下线」
 - 为省内存现在切 Tauri
 - 用 Capacitor 打 Mac
 - 把 PWA 宣布为电脑版交付完成
 - Mac App Store / Windows / Linux 安装包（可在 Mac DMG 跑通后再开）
+- 收费 DMG **不带托盘**（已废止；旧句「脚手架不引托盘」作废）

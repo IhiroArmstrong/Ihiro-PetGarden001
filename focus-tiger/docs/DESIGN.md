@@ -326,13 +326,13 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 #### 3. 与壳选型的关系
 
-本探针**不**等于已做系统托盘桌宠；电脑版终局壳已拍板 **Electron**（见 `PROCESS.md` Backlog「本地桌面 APP 打包」）。PiP 仍是浏览器实验，加大投入另议。
+本探针**不**等于已做系统托盘桌宠。电脑版壳已拍板 **Electron**；**收费 DMG 的托盘常驻**是另一条路径（见 `task-electron-desktop-scaffold.md`），**禁止**把本节 PiP 升级成关 App 仍活的桌宠。PiP 仍是浏览器实验，加大投入另议。
 
 ### Idle Document PiP 陪伴浮窗（实验原型 · 2026-08-16）
 
 > **命名**：对内 `IdleCompanionPipUI` / `idleCompanionPipGate`。  
 > **禁止**与上一节 Focusing **Immersive Presence** 浮动钮、以及 Companion Mode 三选一混入口。  
-> **地位**：轻量原型，验证「切到其他窗口/App 时仍能看见阿寅安静呼吸」。**不是**最终形态；待观察使用数据后再决定是否加大投入。不做 Electron / 系统托盘 / 关浏览器后仍常驻。
+> **地位**：轻量原型，验证「切到其他窗口/App 时仍能看见阿寅安静呼吸」。**不是**最终形态；待观察使用数据后再决定是否加大投入。**不是** Electron 收费 DMG 的托盘（那条见脚手架 Brief）；本入口不做关浏览器后仍常驻。
 
 #### 1. 何时出现
 
