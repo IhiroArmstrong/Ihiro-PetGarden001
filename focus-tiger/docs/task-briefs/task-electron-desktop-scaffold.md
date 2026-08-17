@@ -110,6 +110,7 @@
 - 改 Web 主路径门闩语义
 - 把场景 AA 做成系统桌宠
 - **步骤 A 引入托盘**（分析师：不要合并成一步）
+- 端侧 LLM / 陪伴生成（另 Brief `task-desktop-on-device-companion.md`；**不得**绑进步骤 A/B 验收）
 
 ---
 
