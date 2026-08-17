@@ -27,6 +27,10 @@ import {
   PracticeDaysStore,
   PRACTICE_DAYS_STORAGE_KEY
 } from './PracticeDaysStore.js';
+import {
+  LotusPondStore,
+  LOTUS_POND_STORAGE_KEY
+} from './LotusPondStore.js';
 import { MILESTONE_GLOW_STORAGE_KEY } from './MilestoneGlowStore.js';
 import { RITUAL_COMPLETION_STORAGE_KEY } from './RitualCompletionStore.js';
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
@@ -119,6 +123,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_COMPLETION_STORAGE_KEY,
   FOCUS_SESSION_END_STORAGE_KEY,
   PRACTICE_DAYS_STORAGE_KEY,
+  LOTUS_POND_STORAGE_KEY,
   MILESTONE_GLOW_STORAGE_KEY,
   RITUAL_COMPLETION_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
@@ -206,6 +211,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   dirtyPractice.markToday();
   assert.ok(dirtyPractice.getRecentStreakDays() >= 1);
 
+  const dirtyLotus = new LotusPondStore({ storage });
+  dirtyLotus.addMinutes(25);
+  assert.equal(dirtyLotus.getVisibleBloomCount(), 1);
+
   const dirtyBridge = new HonestyBridgeStore({ storage });
   dirtyBridge.markShown();
   assert.equal(dirtyBridge.hasShownToday(), true);
@@ -270,6 +279,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   const freshPractice = new PracticeDaysStore({ storage });
   assert.equal(freshPractice.getRecentStreakDays(), 0);
   assert.equal(freshPractice.getRingFilled(7), 0);
+
+  const freshLotus = new LotusPondStore({ storage });
+  assert.equal(freshLotus.getLifetimeMinutes(), 0);
+  assert.equal(freshLotus.getVisibleBloomCount(), 0);
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);
