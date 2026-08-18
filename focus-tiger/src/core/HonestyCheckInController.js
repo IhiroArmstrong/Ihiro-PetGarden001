@@ -65,8 +65,8 @@ export class HonestyCheckInController {
    * @param {HonestyCheckInUI} deps.ui
    * @param {(level: number) => void} [deps.applyFocusGlow]
    * @param {() => void} [deps.clearFocusGlow]
-   * @param {(detail?: { durationMinutes: number }) => void} [deps.onCheckInComplete]
-   *   补登仪式结束（记账）后；桥接 CTA 挂这里。L1 同坐点用 durationMinutes 发 Honesty 档。
+   * @param {(detail?: { durationMinutes: number, wokeFromDormant?: boolean }) => void} [deps.onCheckInComplete]
+   *   补登仪式结束（记账）后；桥接 CTA 挂这里。L1 同坐点用 durationMinutes 发 Honesty 档；L2 用 wokeFromDormant 记睡醒门槛。
    * @param {(detail: { durationMinutes: number }) => void} [deps.onPracticeDay]
    *   计时达标或 Honesty 记账后标记练习日（光点圈 + 当日累计分钟）
    * @param {(detail: { durationMinutes: number }) => void} [deps.onSessionRecorded]
@@ -342,6 +342,9 @@ export class HonestyCheckInController {
         this.emotionController.playEmotion(decision.emotionKey);
       }
     }
-    this.onCheckInComplete({ durationMinutes: minutes });
+    this.onCheckInComplete({
+      durationMinutes: minutes,
+      wokeFromDormant
+    });
   }
 }

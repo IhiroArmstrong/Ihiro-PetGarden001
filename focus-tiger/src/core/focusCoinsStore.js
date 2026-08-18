@@ -4,7 +4,7 @@
  */
 
 /**
- * 同坐点钱包持久化（L1）。不写 entitlement、不进练习备份 6 key。
+ * 同坐点钱包持久化（L1 发点 / L2 兑换）。不写 entitlement、不进练习备份 6 key。
  *
  * @see docs/FOCUS_COINS.md
  */
@@ -30,6 +30,34 @@ function nonNegInt(n) {
   return v > 0 ? v : 0;
 }
 
+/** @returns {{ honestyWake: boolean, activeRecover: boolean }} */
+export function emptyFocusCoinsLifetimeMarks() {
+  return { honestyWake: false, activeRecover: false };
+}
+
+/**
+ * @param {unknown} raw
+ * @returns {{ honestyWake: boolean, activeRecover: boolean }}
+ */
+export function parseFocusCoinsLifetimeMarks(raw) {
+  const fresh = emptyFocusCoinsLifetimeMarks();
+  if (!raw || typeof raw !== 'object') return fresh;
+  const o = /** @type {Record<string, unknown>} */ (raw);
+  return {
+    honestyWake: o.honestyWake === true,
+    activeRecover: o.activeRecover === true
+  };
+}
+
+/**
+ * Owned cosmetic ids only grow.
+ * @param {string[]} prev
+ * @param {string[]} next
+ */
+export function unionOwnedIds(prev, next) {
+  return [...new Set([...(prev || []), ...(next || [])].filter((id) => typeof id === 'string'))];
+}
+
 /**
  * @param {string} dateKey
  */
@@ -38,6 +66,7 @@ export function emptyFocusCoinsWallet(dateKey) {
     balance: 0,
     ownedIds: [],
     equippedTitle: null,
+    lifetimeMarks: emptyFocusCoinsLifetimeMarks(),
     dateKey,
     day: emptyFocusCoinsDayState(),
     session: emptyFocusCoinsSessionState()
@@ -69,6 +98,7 @@ export function parseFocusCoinsWallet(raw, todayKey) {
     ownedIds: owned,
     equippedTitle:
       typeof o.equippedTitle === 'string' ? o.equippedTitle : null,
+    lifetimeMarks: parseFocusCoinsLifetimeMarks(o.lifetimeMarks),
     dateKey: todayKey,
     day,
     session
@@ -128,6 +158,66 @@ export class FocusCoinsStore {
     });
   }
 
+  /**
+   * Spend coins; owned ids are unioned (只增不减).
+   * @param {{
+   *   balance?: number,
+   *   ownedIds?: string[],
+   *   equippedTitle?: string | null
+   * }} redeem
+   */
+  commitRedeem(redeem) {
+    const snap = this._read();
+    const nextTitle =
+      redeem?.equippedTitle === undefined
+        ? snap.equippedTitle
+        : redeem.equippedTitle;
+    this._write({
+      ...snap,
+      balance: nonNegInt(redeem?.balance),
+      ownedIds: unionOwnedIds(snap.ownedIds, redeem?.ownedIds || []),
+      equippedTitle:
+        typeof nextTitle === 'string' ? nextTitle : null
+    });
+  }
+
+  /**
+   * @param {string | null} titleId
+   * @returns {boolean}
+   */
+  equipTitle(titleId) {
+    const snap = this._read();
+    if (titleId == null) {
+      this._write({ ...snap, equippedTitle: null });
+      return true;
+    }
+    if (typeof titleId !== 'string' || !snap.ownedIds.includes(titleId)) {
+      return false;
+    }
+    this._write({ ...snap, equippedTitle: titleId });
+    return true;
+  }
+
+  /**
+   * @param {{ honestyWake?: boolean, activeRecover?: boolean }} marks
+   */
+  markLifetime(marks = {}) {
+    const snap = this._read();
+    this._write({
+      ...snap,
+      lifetimeMarks: {
+        honestyWake:
+          marks.honestyWake === true
+            ? true
+            : snap.lifetimeMarks.honestyWake,
+        activeRecover:
+          marks.activeRecover === true
+            ? true
+            : snap.lifetimeMarks.activeRecover
+      }
+    });
+  }
+
   _today() {
     return getLocalDateKey(this.now());
   }
@@ -139,7 +229,8 @@ export class FocusCoinsStore {
         ...this._memory,
         day: { ...this._memory.day },
         session: { ...this._memory.session },
-        ownedIds: [...this._memory.ownedIds]
+        ownedIds: [...this._memory.ownedIds],
+        lifetimeMarks: { ...this._memory.lifetimeMarks }
       };
     }
     let parsed = emptyFocusCoinsWallet(today);
@@ -160,7 +251,8 @@ export class FocusCoinsStore {
       ...parsed,
       day: { ...parsed.day },
       session: { ...parsed.session },
-      ownedIds: [...parsed.ownedIds]
+      ownedIds: [...parsed.ownedIds],
+      lifetimeMarks: { ...parsed.lifetimeMarks }
     };
   }
 
@@ -172,7 +264,8 @@ export class FocusCoinsStore {
       dateKey: today,
       day: { ...emptyFocusCoinsDayState(), ...state.day },
       session: { ...emptyFocusCoinsSessionState(), ...state.session },
-      ownedIds: [...(state.ownedIds || [])]
+      ownedIds: [...(state.ownedIds || [])],
+      lifetimeMarks: parseFocusCoinsLifetimeMarks(state.lifetimeMarks)
     };
     if (!this.storage) return;
     try {

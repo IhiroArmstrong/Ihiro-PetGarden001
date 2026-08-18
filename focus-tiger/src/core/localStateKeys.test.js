@@ -292,6 +292,8 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
 
   const freshCoins = new FocusCoinsStore({ storage });
   assert.equal(freshCoins.getBalance(), 0);
+  assert.deepEqual(freshCoins.getSnapshot().ownedIds, []);
+  assert.equal(freshCoins.getSnapshot().equippedTitle, null);
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);

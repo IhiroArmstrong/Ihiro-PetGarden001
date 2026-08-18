@@ -122,8 +122,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
-| 同坐点钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已接线**；无兑换 UI；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：空间变体 / 称号 / 稀有练习章 / 阿寅轻点缀 | 练习兑换 | **不可现金购买** | SKU `cosmetic.*` / `title.*` / `badge.rare.*` | 不拦截自动纪念物；≠ 换装柜 | **未接线** | 须弥坐 = 360 点 **且** `lifetimeMinutes ≥ 600` |
+| 同坐点钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
+| 兑换：空间变体 / 称号 / 稀有练习章 / 阿寅轻点缀 | 练习兑换 | **不可现金购买** | SKU `cosmetic.*` / `title.*` / `badge.rare.*` | 不拦截自动纪念物；≠ 换装柜 | **L2 内部兑换已接线**（`__focusCoins.redeem`；无抽屉）；莲叶晨露只叠已有朵 | 须弥坐 = 360 点 **且** `lifetimeMinutes ≥ 600`；L3 才做抽屉表面 |
 | 用同坐点换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
 ---
@@ -167,7 +167,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
-15. **同坐点（C · 练习货币）** — 方向锁 2026-08-18；L0 #335 已合；**L1 发点 #338 已合**（TRACKER 待人工）。无店。**禁止**用点满足 `isEntitled`。
+15. **同坐点（C · 练习货币）** — 方向锁 2026-08-18；L0 #335 已合；**L1 发点 #338 已合**（TRACKER 待人工）；**L2 内部兑换本支**。无抽屉。**禁止**用点满足 `isEntitled`。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 

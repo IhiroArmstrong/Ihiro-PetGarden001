@@ -199,6 +199,11 @@ import {
   applyFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './core/focusCoinsAward.js';
+import {
+  applyFocusCoinsRedeem,
+  applyFocusCoinsEquipTitle
+} from './core/focusCoinsRedeem.js';
+import { applyFocusCoinsCosmetics } from './core/focusCoinsCosmetics.js';
 import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
 import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
@@ -1146,10 +1151,6 @@ async function init() {
       search: location.search
     });
   }
-  window.__focusCoins = {
-    getBalance: () => focusCoinsStore.getBalance(),
-    getSnapshot: () => focusCoinsStore.getSnapshot()
-  };
   const lotusPondStore = new LotusPondStore();
   const lotusPondRuntime = new LotusPondRuntime({
     store: lotusPondStore,
@@ -1157,6 +1158,40 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  function syncFocusCoinsCosmetics() {
+    applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
+      pondEl: document.getElementById('lotus-pond'),
+      appEl: document.getElementById('app'),
+      documentElement: document.documentElement,
+      document,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
+  }
+  window.__focusCoins = {
+    getBalance: () => focusCoinsStore.getBalance(),
+    getSnapshot: () => focusCoinsStore.getSnapshot(),
+    redeem: (skuId) => {
+      const result = applyFocusCoinsRedeem({
+        skuId,
+        store: focusCoinsStore,
+        practiceDaysStore,
+        lotusPondStore,
+        search: location.search
+      });
+      syncFocusCoinsCosmetics();
+      return result;
+    },
+    equipTitle: (titleId) => {
+      const result = applyFocusCoinsEquipTitle({
+        titleId,
+        store: focusCoinsStore,
+        search: location.search
+      });
+      syncFocusCoinsCosmetics();
+      return result;
+    }
+  };
+  syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
@@ -1185,11 +1220,17 @@ async function init() {
       arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
       microRitualUI?.isOpen?.() === true,
-    onCheckInComplete: ({ durationMinutes } = {}) => {
+    onCheckInComplete: ({ durationMinutes, wokeFromDormant } = {}) => {
       awardFocusCoins({
         kind: GRANT_KIND.HONESTY,
         durationMinutes
       });
+      if (
+        wokeFromDormant &&
+        isFocusCoinsAwardEnabled({ search: location.search })
+      ) {
+        focusCoinsStore.markLifetime({ honestyWake: true });
+      }
       honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
       const streak = practiceDaysStore.getRecentStreakDays();

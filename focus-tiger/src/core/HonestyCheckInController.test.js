@@ -244,8 +244,9 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
       }
     },
     extra: {
-      onCheckInComplete: () => {
+      onCheckInComplete: (detail) => {
         completeCalls += 1;
+        assert.equal(detail?.wokeFromDormant, false);
       },
       notifyRecorded: () => {
         recordedNotifyCalls += 1;
@@ -287,6 +288,7 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
       onCheckInComplete: (detail) => {
         completeCalls += 1;
         assert.equal(detail?.durationMinutes, 10);
+        assert.equal(detail?.wokeFromDormant, true);
       },
       notifyRecorded: () => {
         recordedNotifyCalls += 1;
