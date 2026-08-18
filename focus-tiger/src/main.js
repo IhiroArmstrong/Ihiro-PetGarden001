@@ -191,6 +191,7 @@ import {
   MilestoneGlowStore,
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
+import { applyQaPracticeSeedFromSearch } from './core/qaPracticeSeed.js';
 import { LotusPondStore } from './core/LotusPondStore.js';
 import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
@@ -1112,6 +1113,10 @@ async function init() {
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
+  applyQaPracticeSeedFromSearch({
+    search: window.location.search,
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
   applyQaLotusPondSeedFromSearch({
     search: window.location.search,
     storage: typeof localStorage !== 'undefined' ? localStorage : null
