@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-18）**：政策已拍板；**无运行时**。下一步是 **L0 机型实测**，不是产品入口。  
+> **状态（2026-08-18）**：政策已拍板；**L0 探针已开工并在本机 Apple M5 16GB 跑出数字**（过 TTFT / tok/s / Idle rAF 代理闸）。**仍无产品入口**；型号未锁；Focusing 掉帧待人工。不自动开 L1。  
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -86,7 +86,22 @@ tok/s 文献数不是本机实测。L0 不过关 → 停，改模型或放弃入
 | **L2** | 四层路由 + 人设约束；**内部多轮对话**，把跑偏案例攒下来调 prompt | **禁止**一过 L0/L1 就给真实用户 |
 | **L3** | 崩溃隔离、门槛、许可声明；考虑随收费 DMG | 不早于步骤 B；不早于定位口径已合入 |
 
-口令「开工桌面陪伴 L0」后再写生产代码。本文件合入 **不等于** 已开工。
+口令「开工桌面陪伴 L0」已下达；本切片只交 **L0 探针**，仍 **不等于** 产品入口。
+
+### L0 怎么跑（本机 Mac）
+
+```text
+npm --prefix desktop install
+npm run desktop:companion-l0
+```
+
+- 首次会下载约 0.5 GB GGUF 到 `~/Library/Application Support/Focus Tiger/companion-l0/`（**不进 git、不进 DMG**）。
+- 报告 JSON 写到同一目录 `report-*.json`，并打印 `verdict`。
+- **不上** Idle ⋯ / 抽屉入口；`preload` 仍只有既有四条 IPC。
+- 跳过窗口（只测加载，不采 rAF）：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`
+- 勿与口令「开工同坐点 L0」混在同一句话里。
+
+L0 数字出来之前 **不锁型号、不排 L1 面板**。
 
 ---
 
@@ -107,3 +122,11 @@ tok/s 文献数不是本机实测。L0 不过关 → 停，改模型或放弃入
 - Confide v1 分类 / 安全阀 / 语料行为不因桌面例外而变
 - 场景 B / X / Y / P 文案不被模型改写
 - 收费 DMG 托盘（步骤 B）仍按脚手架 Brief
+
+## 进度
+
+- [x] L0 探针代码（download / load / generate / unload / Idle rAF 代理）；**产品入口仍不上**
+- [x] L0 本机数字（**Apple M5 16GB · Metal**）：load ≈ 0.8s，TTFT ≈ 0.65s，≈ 116 tok/s，RSS 加载峰值 ≈ 0.9 GB，卸载后回落；Idle rAF p95 增量 ≈ 0.1ms。**Focusing 掉帧仍待人工**；型号 **未锁**（只测了这一台）
+- [ ] L1 desktop-only 面板 + 下载 UX + IPC
+- [ ] L2 四层路由 + 人设；内部多轮攒跑偏案例
+- [ ] L3 崩溃隔离 / 门槛 / 许可；不早于步骤 B

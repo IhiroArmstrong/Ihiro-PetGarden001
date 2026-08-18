@@ -153,7 +153,7 @@ function createMainWindow() {
   return win;
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   protocol.handle('focus-tiger', (request) => serveCustomProtocol(request));
 
   ipcMain.handle('desktop:open-external', async (_event, url) => {
@@ -213,6 +213,23 @@ app.whenReady().then(() => {
     app.quit();
   });
 
+  if (process.env.FT_COMPANION_L0 === '1') {
+    const { runL0BenchInMain } = await import('./companion/l0Main.js');
+    try {
+      await runL0BenchInMain({
+        BrowserWindow,
+        createWindow: createMainWindow,
+        userDataDir: app.getPath('userData')
+      });
+    } catch (err) {
+      console.error('[l0]', err);
+      app.exit(1);
+      return;
+    }
+    app.quit();
+    return;
+  }
+
   createMainWindow();
 
   app.on('activate', () => {
@@ -221,5 +238,6 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
+  if (process.env.FT_COMPANION_L0 === '1') return;
   app.quit();
 });
