@@ -4,7 +4,7 @@
 > **内部名**：Focus Coins。**对外名（硬 · 2026-08-18 晚改）**：**寅币**。禁止金币 / 积分 / 商城 / 抽奖口吻。旧称「同坐点」废止。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)（L0–L3 切片 + 工作量分级）。  
 > **L1 硬闸**：开会碰 Honesty / 完成记账邻接的分支前必须书面扫并行 PR；口头注意不算过闸（2026-08-18 分析师）。L1 **#338 已合**；品味层代码 / L2 若改 Honesty 分档仍适用。  
-> **禁止**：用同坐点满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；L0–L2 **不**改 `SCENARIO_TESTS.md`（L3 表面若需场景附录另开）。  
+> **禁止**：用同坐点满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；L0–L2 **不**改写场景 D。时长 chip 静默 hint 可写入场景 S/T 一句。  
 > **≠ 云端品味层**：服务端记账是 L2 可花点之后的防刷；与权重/文案上云分轨（见 `PROCESS` Backlog「云端品味层」）。
 
 从属：`MVP_PRODUCT_DEFINITION.md` §五 · `FREE_PAID_MATRIX.md` · `FEATURE_CATALOG` · 场景 D / `HONESTY_BRIDGE_CTA.md` · `practiceBadgeAward.js`（`computePracticeScore`）· `PRINCIPLES.md` 宁静型游戏化。
@@ -184,6 +184,7 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 - 不做常驻换装柜。  
 - 不做连续签到锁门。  
 - 不做抽奖 / FOMO / 稀缺倒计时。  
+- **时长 chip 静默 hint**（2026-08-18 拍板）：Focus / Breath picker 下 `#focus-coins-duration-hint`；说明满 5 分钟可累积寅币、用于钱买不到的身份资源。`?focusCoins=0` 不出现。禁止常驻 HUD、完成 toast 标「+N 寅币」。L3 抽屉仍另开。  
 - 不拦截自动纪念物。  
 - 不把 B 权益假收费成「用点也能开」。
 

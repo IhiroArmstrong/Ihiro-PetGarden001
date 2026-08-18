@@ -1,9 +1,9 @@
 # Task Brief · 寅币（Focus Coins）
 
-> **状态**：L0 #335 · L1 #338 · L2 #339 已合。本支 `feature/yin-coin-breath-duration`：对外名寅币 + Breath 坐满按 Stay 档发时长点。TRACKER 待人工。方向锁见 `FOCUS_COINS.md`。  
+> **状态**：L0 #335 · L1 #338 · L2 #339 已合。本支 `feature/yin-coin-breath-duration`：对外名寅币 + Breath 时长点 + 时长 chip 静默 hint。TRACKER 待人工。方向锁见 `FOCUS_COINS.md`。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
 > **性质**：L2 内部兑换（中风险：徽章隔离 / 莲花池不拦截）。**一次只做一个 L 级**。无抽屉、不改场景剧本、不扩备份 6 key。**只兑、不动 Honesty 时长分档**。  
-> **禁止**：建 entitlement gate key；L0–L2 改 `SCENARIO_TESTS.md`；用余额满足 `isEntitled`。
+> **禁止**：建 entitlement gate key；用余额满足 `isEntitled`。场景 D 仍不因 L0–L2 改写；时长 chip 静默 hint 已拍板可写入场景 S/T 一句。
 
 ---
 
