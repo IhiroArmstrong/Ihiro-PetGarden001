@@ -99,7 +99,8 @@ focus-tiger/
 │  ├─ package.json                # name: focus-tiger-cloud
 │  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
 │     # 2026-07-22：仅 mock + 校验 + 内存限流；未接前端 / 未部署正式逻辑
-│     # 2026-07-30：v1.0.0 纯本地发布 — 保留本目录作 v1.1 云端扩展点；禁止核心路径硬依赖云请求
+│     # 2026-07-30：v1.0.0 纯本地发布 — 保留本目录作云端扩展点；禁止核心路径硬依赖云请求
+│     # 2026-08-18：品味层（权重 + 文案）≠ 支付云；stub 仍 mock，见 PROCESS Backlog「云端品味层」
 │
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建
 │  └─ tiger-turnaround/

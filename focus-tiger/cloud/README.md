@@ -70,6 +70,8 @@ curl -s http://127.0.0.1:8787/health
 | `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
+`daily-message` / `emotion-weight` 仍是 **mock**，前端未接。产品范围见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」（旧称 v1.1 云端算法）：只上云权重 + 文案池；播放器永远本地。正式接线时响应须带 `schemaVersion`（不认识则客户端降级本地表）；**本 stub 暂不改 mock JSON**。
+
 ## Stub 接口（仍保留）
 
 | Method | Path | 必需 JSON 字段 | 固定响应 |
