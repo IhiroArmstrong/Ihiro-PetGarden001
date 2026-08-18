@@ -167,7 +167,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
-15. **同坐点（C · 练习货币）** — 方向锁 2026-08-18；L0 #335 已合；**L1 发点本支**。无店。**禁止**用点满足 `isEntitled`。
+15. **同坐点（C · 练习货币）** — 方向锁 2026-08-18；L0 #335 已合；**L1 发点 #338 已合**（TRACKER 待人工）。无店。**禁止**用点满足 `isEntitled`。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 

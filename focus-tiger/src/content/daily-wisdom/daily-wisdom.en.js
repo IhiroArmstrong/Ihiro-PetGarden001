@@ -12,6 +12,8 @@
  * - Card length: prefer ≤ ~220 chars of `text` (Reflection footer).
  * - Product locales: en + ja only (Chinese sources → translate; no zh product pool).
  * - Tone: observational, non-anxious; no FOMO / hard sell.
+ * - Taste-layer freeze (2026-08-18): 14 ids; do not expand/delete this pack
+ *   as part of the overlay until freeze lifted. SSOT: PROCESS Backlog 云端品味层.
  */
 
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
