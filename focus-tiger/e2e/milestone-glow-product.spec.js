@@ -12,57 +12,25 @@ import {
 
 /**
  * Product-path MilestoneGlow: projected streak-7 → play once; no second claim.
+ * Human QA uses the same `?qaSeedStreak=6` boot seed (see `qaPracticeSeed.js`).
  */
-
-/** @param {import('@playwright/test').Page} page */
-async function seedSixPriorPracticeDays(page) {
-  await page.evaluate(() => {
-    try {
-      localStorage.removeItem('focus-tiger.milestone-glow.v1');
-    } catch {
-      /* ignore */
-    }
-    const today = new Date();
-    /** @type {{ date: string, totalMinutes: number }[]} */
-    const days = [];
-    for (let i = 6; i >= 1; i -= 1) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      days.push({ date: `${y}-${m}-${day}`, totalMinutes: 10 });
-    }
-    localStorage.setItem(
-      'focus-tiger.practice-days.v1',
-      JSON.stringify({ days })
-    );
-  });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect
-    .poll(async () => page.evaluate(() => Boolean(window.__FT_APP_READY__)), {
-      timeout: 30_000
-    })
-    .toBe(true);
-  await expect
-    .poll(
-      async () =>
-        page.evaluate(
-          () => window.__practiceDaysStore?.getPracticedDateKeys?.().length ?? 0
-        ),
-      { timeout: 10_000 }
-    )
-    .toBeGreaterThanOrEqual(6);
-}
 
 test.describe('MilestoneGlow product path', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
   test('streak-7 completion claims MilestoneGlow once', async ({ page }) => {
     await openFreshProductShell(page, {
-      query: { sessionMinutes: 1 }
+      query: { sessionMinutes: 1, qaSeedStreak: 6 }
     });
-    await seedSixPriorPracticeDays(page);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => window.__practiceDaysStore?.getPracticedDateKeys?.().length ?? 0
+          ),
+        { timeout: 10_000 }
+      )
+      .toBeGreaterThanOrEqual(6);
 
     const peek = await page.evaluate(() =>
       window.__milestoneGlowStore.peekOffer(7)

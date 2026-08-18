@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-17（莲花池 Slice A QA `?qaLotusBlooms=`；场景 AB Electron 托盘 ≠ 走神 / SB-18 先锁契约；**步骤 A 窗口代码已提交**，Mac 上按 TRACKER 测；场景 AB 仍等步骤 B。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-18（长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**；场景 AB Electron 托盘 ≠ 走神 / SB-18 先锁契约；**步骤 A 窗口代码已提交**，Mac 上按 TRACKER 测；场景 AB 仍等步骤 B。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -57,6 +57,7 @@
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
 | [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA** |
+| [http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6](http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6) | **长周期 QA**：播种昨天往前 6 个练习日；Sit 满 1 分钟可测 MilestoneGlow（不必真等 7 天） |
 | Electron 本机包 | **场景 AB**（托盘）；Web 测不了 |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
@@ -596,7 +597,8 @@
 |---|---|
 | 眨眼 | 实验室面板「眨眼」或 `playEmotion('blink')` |
 | Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
-| 一炷香莲花 | 实验室「模拟一炷香」/「一炷香完成」（会话结束自动播放未接线；池出生见下行） |
+| 一炷香莲花 | 实验室钮 **「一炷香完成」**（**不要** `?product=1`；会话结束自动播放未接线；池出生见下行） |
+| 连续 7 天金辉 | `?product=1&sessionMinutes=1&qaSeedStreak=6` → Sit 等到达标（`qaPracticeSeed`） |
 | 莲花池（持久螺旋） | `?product=1&sessionMinutes=1&qaLotusBlooms=11` → Sit 等到达标（`qaLotusPondSeed`） |
 | Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接注入：`__honestyBridge`（**生产构建也挂载**，供 CI `vite preview` e2e） |
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
