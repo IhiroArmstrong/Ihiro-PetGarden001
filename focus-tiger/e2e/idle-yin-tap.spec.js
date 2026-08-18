@@ -13,7 +13,8 @@ import {
 
 /**
  * Scene X2 — Idle tap forehead / Yin hit → earWiggleHeadTouch.
- * Locks product-shell wiring (testid + viewport forehead). Not sequence pixels.
+ * Locks product-shell wiring. Preview builds have no `__emotionController`
+ * (DEV-only); assert visible sprite src + hit disarm instead.
  */
 
 async function settleIdleTapReady(page) {
@@ -23,9 +24,7 @@ async function settleIdleTapReady(page) {
     } catch {
       /* ignore */
     }
-    const compass = window.__fiveMomentsCompass;
-    compass?.close?.();
-    window.__emotionController?.playEmotion?.('idle', { restart: true });
+    window.__fiveMomentsCompass?.close?.();
   });
   const skip = page.locator('[data-testid="five-moments-compass-skip"]');
   if (await skip.isVisible().catch(() => false)) {
@@ -38,24 +37,40 @@ async function settleIdleTapReady(page) {
   );
 }
 
-test('Idle forehead tap plays Yin head-touch', async ({ page }) => {
-  await openFreshProductShell(page, { query: { flowerWelcome: 0 } });
-  await settleIdleTapReady(page);
-
+async function clickHitForehead(page) {
   const hit = page.locator('[data-testid="idle-yin-tap-hit"]');
   await expect(hit).toBeVisible();
+  const box = await hit.boundingBox();
+  expect(box, 'idle yin tap hit box').toBeTruthy();
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.18);
+}
 
-  const viewport = page.viewportSize();
-  expect(viewport).toBeTruthy();
-  await page.mouse.click(viewport.width * 0.5, viewport.height * 0.26);
-
+async function expectEarWiggleSprite(page) {
   await expect
     .poll(
       async () =>
-        page.evaluate(() => window.__emotionController?.getCurrentEmotionKey?.()),
+        page.evaluate(() => {
+          const imgs = document.querySelectorAll('#sprite-stage img');
+          return [...imgs]
+            .map((img) => img.getAttribute('src') || '')
+            .join(' ');
+        }),
       { timeout: 8_000 }
     )
-    .toBe('earWiggleHeadTouch');
+    .toMatch(/ear-wiggle-head-touch/);
+  await expect
+    .poll(
+      async () => page.evaluate(() => window.__idleYinTapAnchor?.isArmed?.()),
+      { timeout: 3_000 }
+    )
+    .toBe(false);
+}
+
+test('Idle forehead tap plays Yin head-touch', async ({ page }) => {
+  await openFreshProductShell(page, { query: { flowerWelcome: 0 } });
+  await settleIdleTapReady(page);
+  await clickHitForehead(page);
+  await expectEarWiggleSprite(page);
 });
 
 test('Idle tap re-arms after Rise → Reflection skip (reflow)', async ({
@@ -71,13 +86,6 @@ test('Idle tap re-arms after Rise → Reflection skip (reflow)', async ({
     null,
     { timeout: 20_000 }
   );
-
-  await page.locator('[data-testid="idle-yin-tap-hit"]').click();
-  await expect
-    .poll(
-      async () =>
-        page.evaluate(() => window.__emotionController?.getCurrentEmotionKey?.()),
-      { timeout: 8_000 }
-    )
-    .toBe('earWiggleHeadTouch');
+  await clickHitForehead(page);
+  await expectEarWiggleSprite(page);
 });
