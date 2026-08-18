@@ -43,6 +43,12 @@ export const SCENE_ANIM_DAILY_STORAGE_KEY = 'focus-tiger.scene-anim-daily.v1';
 /** Honesty: ≤20 and 21–29 → nod; ≥30 → halo oneshot */
 export const HONESTY_LONG_MIN_MINUTES = 30;
 
+/**
+ * 云端品味层本地降级表冻结（2026-08-18 · 用户书面「手感对」）。
+ * 未知 `schemaVersion` 时用本文件现表；近一周不改下列数字。权威：PROCESS Backlog「云端品味层」。
+ * Rise 60/25/15 · 欢迎 60/40 · 轻量完成 70/30/8（鹦鹉≈7%）· Honesty ≤29 nod / ≥30 halo。
+ */
+
 /** Life-sense cooldown (yawn / tea / curiosity): 1 hour */
 export const LIFE_COOLDOWN_MS = 60 * 60 * 1000;
 
