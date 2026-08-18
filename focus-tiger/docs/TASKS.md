@@ -223,7 +223,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 阶段 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|
 | **政策** | 只上云权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工；`schemaVersion` 降级 | `task-cloud-taste-layer.md` | **#337 已合** · 窄冻结已拍板 |
-| **实现** | 可选拉取 + 本地降级；不接 Sit 门闩 | 口令「开工云端品味层」 | **本支接线**（schemaVersion 1；生产须另「部署」） |
+| **实现** | 可选拉取 + 本地降级；不接 Sit 门闩 | 口令「开工云端品味层」 | **#349** schemaVersion 1 接线（生产须另「部署」） |
 
 ---
 
