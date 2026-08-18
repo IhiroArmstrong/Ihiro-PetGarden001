@@ -105,11 +105,13 @@ L0 数字出来之前 **不锁型号、不排 L1 面板**。
 
 ### 分析师跟进（2026-08-18 · 硬）
 
-M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型是 **M1 8GB** 统一内存。在 M1 8GB 数字 + Focusing 掉帧都有之前：
+M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型是 **M1 8GB** 统一内存。
 
-- **禁止**合入 [#336](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/336)
-- **禁止**锁死 Qwen3-0.6B
-- **禁止**开 L1 / 人设 / 选型会
+- **Focusing 掉帧（M5 · 2026-08-18 用户肉眼）**：双终端下 **无可见影响 / 无卡顿**。
+- **M1 8GB**：仍未测。不必现在去找旧电脑；缺这组数就 **不能锁默认模型、不能假定 8GB 机器也给出入口**（Brief 已有：低配探测失败则不出菜单）。在 8GB 数字之前：
+  - **禁止**合入 [#336](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/336)
+  - **禁止**锁死 Qwen3-0.6B
+  - **禁止**开 L1 / 人设 / 选型会
 
 `Idle rAF p95 Δ` 只是探针自己对主循环的干扰，**不能**代替肉眼看 Sit→Focusing 呼吸是否顿挫。`desktop:companion-l0` **会跑完即退**，不能单独完成这项人工测。
 
@@ -144,8 +146,8 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 
 - [x] L0 探针代码（download / load / generate / unload / Idle rAF 代理）；**产品入口仍不上**
 - [x] L0 本机数字（**Apple M5 16GB · Metal**）：load ≈ 0.8s，TTFT ≈ 0.65s，≈ 116 tok/s，RSS 加载峰值 ≈ 0.9 GB，卸载后回落；Idle rAF p95 增量 ≈ 0.1ms。型号 **未锁**（只测了这一台）
-- [ ] L0 Focusing 掉帧（双终端：产品窗 Sit→Focusing + skip-window 探针卸载）— 须用户肉眼
-- [ ] L0 **M1 8GB** 同一探针（选型分水岭；未测）
-- [ ] L1 desktop-only 面板 + 下载 UX + IPC — **两项未齐不开**
+- [x] L0 Focusing 掉帧（双终端：产品窗 Sit→Focusing + skip-window 探针卸载）— **2026-08-18 用户肉眼（M5）**：对 Focusing 的 Yin **无任何可见影响 / 无卡顿**
+- [ ] L0 **M1 8GB** 同一探针（选型分水岭；未测。**不必现在找旧电脑**；缺数则低配默认不出入口、不锁 0.6B）
+- [ ] L1 desktop-only 面板 + 下载 UX + IPC — **8GB 未测不开**
 - [ ] L2 四层路由 + 人设；内部多轮攒跑偏案例
 - [ ] L3 崩溃隔离 / 门槛 / 许可；不早于步骤 B
