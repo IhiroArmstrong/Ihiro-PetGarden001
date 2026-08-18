@@ -68,7 +68,7 @@
 
 - 设计师建议写入本文与 `ASSET_INVENTORY` / `PROCESS`；库存须进业务。  
 - **Honesty 时长分界锁定**：补登 **≤20 min** → `nod-bow`（`mindfulAcknowledge`）；**≥30 min** → `halo-breathing`（或 `breathHaloHq` 变体）。21–29 min 归短档（nod），避免空洞。  
-  **品味层冻结（2026-08-18）**：该分档即本地降级真源（≤29 点头 / ≥30 金辉）；近一周不改数字。接线时未知 `schemaVersion` 用本表。  
+  **品味层冻结（2026-08-18）**：该分档即本地降级真源（≤29 点头 / ≥30 金辉）；近一周不改数字。未知 `schemaVersion` 用本表。`schemaVersion: 1` overlay **只经 Dispatcher**（未改 `HonestyCheckInController`）。  
 - **日语 = 合十**（`palms-together`）规格正确；代码漂移须 A′ 修。  
 - **勿接**已取代目录（旧 dormant-wake / sleeping / tilt-think / blink-breathe 主路径）。  
 - **采纳中央 Animation Dispatcher**（语义事件 + 加权映射 + 冷却，默认生命感 **≥60 min** 同类最多 1 次）。  
