@@ -20,8 +20,26 @@ export async function handleEmotionWeight(
 	void parsed;
 
 	const payload: EmotionWeightResponse = {
+		schemaVersion: 1,
 		variant: "default",
 		weight: 1.0,
+		// Same freeze numbers as `sceneAnimationDispatcher.js` local tables.
+		pools: {
+			welcome: [
+				{ key: "magicBookReading", weight: 60 },
+				{ key: "nodGreeting", weight: 40 },
+			],
+			lightComplete: [
+				{ key: "sessionComplete", weight: 70 },
+				{ key: "mindfulAcknowledge", weight: 30 },
+				{ key: "parrotEarVisit", weight: 8 },
+			],
+			riseInterrupt: [
+				{ key: "riseStretchCasual", weight: 60 },
+				{ key: "teaDrinking", weight: 25 },
+				{ key: "bookReading", weight: 15 },
+			],
+		},
 	};
 	return json(payload);
 }

@@ -209,8 +209,12 @@ import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
 import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
+import { refreshCloudTasteLayer } from './core/cloudTasteLayer.js';
 import {
   SCENE_ANIM_EVENTS,
+  WELCOME_POOL,
+  LIGHT_COMPLETE_POOL,
+  RISE_INTERRUPT_POOL,
   markLocaleGreetingPlayed,
   playOptionsForLocaleGreeting,
   resolveSceneAnimation,
@@ -264,7 +268,7 @@ import {
   refreshEntitlement
 } from './core/entitlement/entitlementGate.js';
 import { createCloudEntitlementProvider } from './core/entitlement/cloudEntitlementProvider.js';
-import { getCloudApiBaseUrl } from './core/cloudApiClient.js';
+import { getCloudApiBaseUrl, postCloudJson } from './core/cloudApiClient.js';
 import { parseEntitlementMockSearch } from './core/entitlement/mockEntitlementProvider.js';
 import { FocusDurationPickerUI } from './ui/FocusDurationPickerUI.js';
 import {
@@ -562,6 +566,14 @@ async function init() {
     }
   }
   void refreshEntitlement();
+  void refreshCloudTasteLayer({
+    postCloudJson,
+    localPools: {
+      welcome: WELCOME_POOL,
+      lightComplete: LIGHT_COMPLETE_POOL,
+      riseInterrupt: RISE_INTERRUPT_POOL
+    }
+  });
 
   // Stay in touch — Worker + Resend when cloud API is configured; mock in labs.
   {

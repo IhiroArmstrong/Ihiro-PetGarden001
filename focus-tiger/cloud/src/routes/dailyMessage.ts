@@ -20,6 +20,7 @@ export async function handleDailyMessage(
 	void parsed;
 
 	const payload: DailyMessageResponse = {
+		schemaVersion: 1,
 		message: "mock",
 		variantSeed: "0",
 	};

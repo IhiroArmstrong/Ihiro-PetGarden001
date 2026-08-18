@@ -36,6 +36,10 @@ import {
   FLOWER_WELCOME_STORAGE_KEY,
   readFlowerWelcomeState
 } from './flowerWelcomeGate.js';
+import {
+  resetTasteOverlayPools,
+  setTasteOverlayPoolsForTests
+} from './cloudTasteLayer.js';
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -496,4 +500,31 @@ test('STRETCH_REMINDER pool includes yawn', () => {
     random: () => 0.99
   });
   assert.equal(yawn.emotionKey, 'yawnStretch');
+});
+
+test('WELCOME_APP uses cloud taste overlay weights when present', () => {
+  resetTasteOverlayPools();
+  const storage = memoryStorage();
+  disableFlowerWelcome(storage);
+  setTasteOverlayPoolsForTests({
+    welcome: [
+      { key: 'nodGreeting', weight: 100 },
+      { key: 'magicBookReading', weight: 0 }
+    ],
+    lightComplete: LIGHT_COMPLETE_POOL,
+    riseInterrupt: RISE_INTERRUPT_POOL
+  });
+  try {
+    const first = resolveSceneAnimation({
+      event: SCENE_ANIM_EVENTS.WELCOME_APP,
+      sessionState: 'IDLE',
+      storage,
+      now: () => new Date(2026, 7, 1, 9),
+      random: () => 0
+    });
+    assert.equal(first.play, true);
+    assert.equal(first.emotionKey, 'nodGreeting');
+  } finally {
+    resetTasteOverlayPools();
+  }
 });

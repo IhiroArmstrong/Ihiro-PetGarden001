@@ -24,6 +24,7 @@ import {
   resolveFlowerWelcomeForce,
   touchFlowerWelcomeLastOpen
 } from './flowerWelcomeGate.js';
+import { getTasteLayerPool } from './cloudTasteLayer.js';
 
 export const SCENE_ANIM_EVENTS = Object.freeze({
   LANGUAGE_CHANGED: 'language_changed',
@@ -121,7 +122,8 @@ export const RISE_INTERRUPT_POOL = Object.freeze([
  * @returns {string}
  */
 export function pickRiseInterruptEmotion(random = Math.random) {
-  return pickWeighted(RISE_INTERRUPT_POOL, random) ?? 'riseStretchCasual';
+  const pool = getTasteLayerPool('riseInterrupt') ?? RISE_INTERRUPT_POOL;
+  return pickWeighted(pool, random) ?? 'riseStretchCasual';
 }
 
 /**
@@ -387,7 +389,10 @@ export function resolveSceneAnimation({
     event === SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE ||
     event === SCENE_ANIM_EVENTS.SESSION_COMPLETE_LIGHT
   ) {
-    const emotionKey = pickWeighted(LIGHT_COMPLETE_POOL, random);
+    const emotionKey = pickWeighted(
+      getTasteLayerPool('lightComplete') ?? LIGHT_COMPLETE_POOL,
+      random
+    );
     return { play: true, emotionKey, reason: 'ok' };
   }
 
@@ -405,7 +410,7 @@ export function resolveSceneAnimation({
     }
     const emotionKey = flower.force
       ? FLOWER_WELCOME_EMOTION_KEY
-      : pickWeighted(WELCOME_POOL, random);
+      : pickWeighted(getTasteLayerPool('welcome') ?? WELCOME_POOL, random);
     writeDailySceneAnimState(storage, {
       dateKey: daily.dateKey,
       welcome: true

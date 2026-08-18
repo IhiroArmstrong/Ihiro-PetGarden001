@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · Electron 步骤 B 托盘 + SB-18 已接线（待 Mac 人工）· Focus 最短档+默认 **10 分钟**（#344）· 同坐点 L2 兑换已合 #339 · 桌面陪伴挂起（#336 不合）· 莲花池 Slice A
+**最后更新时间**：2026-08-18（UTC+8） · 云端品味层 **已开工**（权重池可选覆盖）· Electron 步骤 B #345 已合 · Focus 默认 **10 分钟** · 同坐点 L1 用户测 OK（未关单）· 桌面陪伴 L0 **告一段落**（#336 另 rebase）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **云端品味层接线 · 权重池切片（2026-08-18）**：用户书面 L0 告一段落 + L1 测 OK 后开工。开机后台拉 `/api/emotion-weight`；`schemaVersion === 1` 且池键与冻结表一致才覆盖欢迎 / 轻完成 / Rise 权重。超时 / 4xx / 未知版本 / 无 Cloud → **本地表**。不挡 Sit。日签正文本切片仍本地 14 条。TRACKER 待人工。
 
 - **Focus 最短档 + 默认 10 分钟（2026-08-18）**：用户书面——25 分达标过长，名人常坐 10 分正念。芯片 **10 / 15 / 25 / 45**（去掉 60）；默认与最短 10。Breath 仍 1/3/5/10/20：Focus 10 走 Sit→Arrival，Breath 10 走左球微仪式。今日同坐 HUD 软顶仍 25。TRACKER 待人工。
 
@@ -70,15 +72,15 @@
 
 - **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
 
-- **云端品味层政策锁 + 窄冻结（2026-08-18 · 纯文档）**：旧称「v1.1 云端算法」改名。只上云权重覆盖 + 日签/文案池；播放器永远本地。**窄冻结已拍板**（本地降级表即现 Dispatcher / 日签包；近一周不改数字）。payload 须 `schemaVersion`。**无运行时**；未发口令「开工云端品味层」。权威 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
+- **云端品味层政策锁 + 窄冻结（2026-08-18 · 文档；运行时见上条切片）**：旧称「v1.1 云端算法」改名。只上云权重覆盖 + 日签/文案池；播放器永远本地。**窄冻结已拍板**。payload 须 `schemaVersion`。权威 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
-- **禅意倾听者 · 桌面窄例外（2026-08-18 · 纯文档）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp 主进程、模型不进 DMG、Focusing 卸载）；**先 L0 机型实测，不上入口**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。无运行时。
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · L0 告一段落）**：**不是**废止 2026-08-10「检索不生成」。仅限桌面端受约束生成。L0：M5 hitch **无卡顿**；缺 8GB 则 **低配默认不出入口**。不锁 0.6B、**不开 L1**。#336 探针仍在旁支，须 rebase 后再合。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
-- **Electron 步骤 B · 托盘 + 关窗后台（2026-08-18）**：收费 DMG 前提。关红灯 = hide；托盘「显示 / 退出」；**P0-2 / SB-18**：hide-to-tray **不是**走神。对照：窗口可见时切 App 仍走场景 B。权威：`task-electron-desktop-scaffold.md`。TRACKER 场景 AB 待人工。陪伴智能体 **不**绑本验收。
+- **Electron 步骤 B · 托盘 + 关窗后台（2026-08-18 · #345 已合）**：收费 DMG 前提。关红灯 = hide；托盘「显示 / 退出」；**P0-2 / SB-18**：hide-to-tray **不是**走神。对照：窗口可见时切 App 仍走场景 B。TRACKER 场景 AB 待人工。陪伴智能体 **不**绑本验收。
 - **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳。P0-1 `openExternal`；P0-3 Cloud POST；P0-4 extraResources。#331 已合。当前 `desktop:dev` **已是步骤 B**（有托盘）。
 - **本地电脑版壳选型（2026-08-16）**：Mac DMG **拍板 Electron**（electron-builder）；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 仍非电脑版终局。选型合入 **#326**（`fe5b76a`）。Brief `task-briefs/task-desktop-shell-electron.md`。
 
@@ -386,11 +388,11 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-18）**：同坐点 L2 #339 已合。本回合 **Electron 步骤 B 已接线**，待 Mac 场景 AB。其余：桌面陪伴 L0 **维持挂起**（#336 不合；缺 8GB）> 云端品味层（冻结已拍板，等口令）。L3 抽屉待另口令。
-- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：L0 #335 · L1 #338 已合。L2 兑换 #339。L1 TRACKER 待人工。
-- **陪伴 · 桌面端侧窄例外**：**维持挂起**。#336 不合；不锁 0.6B、不开 L1。
-- **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
-- **云端品味层（2026-08-18 政策锁 + 窄冻结已拍板）**：文档已落；**未接线**。等口令「开工云端品味层」。Brief `task-cloud-taste-layer.md`。
+- **开工前优先级（2026-08-18 夜）**：同坐点 L1 用户书面测 OK（未关单）。桌面陪伴 L0 **告一段落**（hitch 无卡顿；8GB 缺数 → 低配不出入口；#336 另 rebase）。Electron 步骤 B **#345 已合**（场景 AB 待人工）。**本回合开工云端品味层**（权重池切片）。L3 抽屉待另口令。不开陪伴 L1。
+- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：L0 #335 · L1 #338 已合。L2 兑换 #339。L1 用户书面：getBalance 正确、达标发分 / 未达标不发分。TRACKER 未关单。
+- **陪伴 · 桌面端侧窄例外**：**L0 告一段落**。不锁 0.6B、不开 L1。#336 须 rebase 后再合。
+- **桌面 · Electron 步骤 B（2026-08-18 · #345 已合）**：托盘 + SB-18 已合 `develop`。**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
+- **云端品味层（2026-08-18 权重池切片）**：可选 `/api/emotion-weight`；失败用本地冻结表。日签正文本切片仍本地。Brief `task-cloud-taste-layer.md`。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
@@ -420,7 +422,7 @@
 - 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做；**PWA 任务六**仍不是电脑版终局——电脑版壳已拍板 **Electron**，见 Backlog「本地桌面 APP 打包」）
-- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**、未发开工口令（见 Backlog「云端品味层」）；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
+- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**；**权重池切片已开工**（见 Backlog「云端品味层」）；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
 - **B · 练习记忆多端无缝同步（可后排）**：免费快照之后；评估是否作 Sanctuary/Membership 付费点（见 Backlog「练习记忆云端备份」§B）
 
 **已知的开放决策 / 待确认事项**：
@@ -1030,15 +1032,15 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 > **历史（2026-07-30）**：曾写「v1.0.0 纯本地小发布，再跟进 v1.1 云端算法」。该外号易与 SemVer / 支付云搅在一起——**废止用 v1.1 指本条**。首个对外稳定 tag 仍是纯本地核心 **`v1.0.0`**；本条是 1.0 之后的**可选增强**，不抢 `v1.1.0` 号。  
 > **相邻**：练习记忆云备份（防丢失）· Stripe/OTP（支付云）· 同坐点服务端账本（L2 可花点之后才评估防刷）——**三条时钟，禁止绑成一条队**。
 
-- **现在（未接线）**：`cloud/` stub `POST /api/daily-message` / `POST /api/emotion-weight` **保留 mock**；前端不接。核心 Sit / Rise / Idle **禁止**硬依赖云请求。
-- **范围（口令「开工云端品味层」才写运行时）**：可选客户端适配层拉取权重表与文案池；失败 / 超时 / **不认识的 `schemaVersion`** → 干净降级本地表（对齐练习记忆快照思路）。CORS、鉴权、隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
+- **现在（权重池已接线）**：开机后台 `POST /api/emotion-weight`；响应须 `schemaVersion: 1` + 与冻结表同键的 `pools`。失败 / 超时 / 未知版本 → 本地表。`daily-message` 仍 mock（日签正文本切片未覆盖）。核心 Sit / Rise / Idle **禁止**硬依赖云请求。
+- **范围**：可选客户端适配层拉取权重表；日签池覆盖另切片。失败 → 干净降级本地表。CORS、鉴权、隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
 - **窄冻结（开工门闩 · 2026-08-18 已拍板）**：本地降级表 = **现在这套**，近一周不改数字。不是全量 QA；体感锚：Idle 不闪、Rise 再选、Honesty 关了再开。
   - Rise 中断池：伸懒腰 `riseStretchCasual` **60** / 茶 `teaDrinking` **25** / 书 `bookReading` **15**
   - 欢迎池：魔法书 `magicBookReading` **60** / 点头 `nodGreeting` **40**
   - 轻量完成池：`sessionComplete` **70** / 点头 `mindfulAcknowledge` **30** / 鹦鹉 `parrotEarVisit` **8**（≈7%，8/108）
   - Honesty 分档：≤29 分 `mindfulAcknowledge`（点头）；≥30 分 `goldenHaloPalms`（金辉）；`HONESTY_LONG_MIN_MINUTES = 30`
   - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删（改字另议）
-- **开工口令仍须**：「开工云端品味层」。冻结 ≠ 开工。**不等**同坐点 L2 兑换 / 服务端账本、**不等** `TEST_TRACKER` 全表关单（合入节奏仍是 CI 绿即可合 `develop`）。开工前产品优先级见上文「下一步计划」，与「不等 L2」不矛盾：L2 不挡品味层开工；品味层也不插队 L1 收尾 / 桌面 L0。
+- **开工口令（2026-08-18 夜已执行）**：用户书面「L0 告一段落 + L1 测 OK，安排下一步」= 开工权重池切片。日签正文覆盖仍须另口令或本 Brief 下一刀。**不等**同坐点 L3 / 服务端账本、**不等** `TEST_TRACKER` 全表关单。
 - **禁止**：把播放器迁云；用品味层满足 `isEntitled`；与同坐点 **L2 若也改 Honesty 时长分档**同一时间段并行改（邻接重叠；L1 发点 #338 已合，旧「勿与 L1 同一周」废止为这条）。L2 只做兑换、不动分档则不挡品味层代码。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
 - **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。
