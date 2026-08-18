@@ -8,6 +8,7 @@
  * Ids must match `daily-wisdom.en.js`. Optional `attribution` when present in EN.
  * Taste-layer freeze (2026-08-18): keep the 14 aligned ids; do not expand/delete
  * until freeze lifted. SSOT: PROCESS Backlog 云端品味层.
+ * Copy pass (2026-08-18): same ids; gloss opaque koans for first-time readers.
  */
 
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
@@ -38,7 +39,7 @@ export const DAILY_WISDOM_JA = Object.freeze([
   },
   {
     id: 'zhaozhou-drink-tea',
-    text: '喫茶去。',
+    text: '次に何を、と問うなら——喫茶去。',
     attribution: '趙州従諗'
   },
   {
@@ -48,7 +49,7 @@ export const DAILY_WISDOM_JA = Object.freeze([
   },
   {
     id: 'huineng-not-a-thing',
-    text: '本来無一物。',
+    text: 'いま、つかむものは何もない。',
     attribution: '慧能『六祖壇経』'
   },
   {

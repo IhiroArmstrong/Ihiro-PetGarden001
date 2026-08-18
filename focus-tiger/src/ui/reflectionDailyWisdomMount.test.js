@@ -41,7 +41,7 @@ test('mountReflectionDailyWisdom appends host + daily-wisdom under root', () => 
   assert.equal(appended.length, 1);
   assert.equal(appended[0], host);
   assert.equal(host.dataset.testid, 'reflection-daily-wisdom');
-  assert.match(host.style.cssText, /margin-top:12px/);
+  assert.match(host.style.cssText, /padding:10px 4px 8px/);
   assert.equal(el.tagName, 'DAILY-WISDOM');
   assert.equal(host.children[0], el);
 });

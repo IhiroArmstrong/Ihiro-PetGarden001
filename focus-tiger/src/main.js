@@ -223,6 +223,7 @@ import {
   isLateNightCloakHoldEmotion,
   resolveForegroundReturnAction,
   resolveSessionEndHoldEmotion,
+  shouldAllowEnterDormantOnForegroundReturn,
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
@@ -3132,8 +3133,8 @@ async function init() {
   // Expand A 白天 Idle 无操作披毯已关（2026-08-04 plan A）。保留：深夜 Idle→DORMANT、
   // 2h 练完后 live sync、Expand B。无操作计时器删除 → 藏 tab 也不会「后台涨满」误睡。
 
-  // 回前台：2B 长离苏醒（FOCUSING + hidden≥30min）与 2h→DORMANT（非 Focusing）互补；
-  // 深夜 LATE_NIGHT 仍可 forceDormant（仅 Idle）。
+  // 回前台：2B 长离苏醒（FOCUSING + hidden≥30min）与 2h→DORMANT 互补。
+  // 短切 tab（hiddenMs < 2h）不得用陈旧 session-end 披毯 / 深夜 forceDormant。
   let pageHiddenAtMs = /** @type {number | null} */ (null);
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
@@ -3161,8 +3162,14 @@ async function init() {
         }
       });
     } else {
-      honestyCheckIn.syncDormantState();
-      tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+      // Short tab hide after Welcome must not cloak on a stale 2h session-end.
+      const allowEnterDormant = shouldAllowEnterDormantOnForegroundReturn({
+        hiddenMs
+      });
+      honestyCheckIn.syncDormantState({ allowEnterDormant });
+      if (allowEnterDormant) {
+        tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+      }
     }
     syncInAppReminderBanner();
     void refreshSoftUpdateAvailability();

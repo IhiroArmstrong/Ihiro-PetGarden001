@@ -36,6 +36,7 @@ import {
 } from './glassPanelStyles.js';
 import './daily-wisdom.js';
 import { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
+import { homeClearanceBottomCss } from './homeChromeClearance.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
@@ -147,11 +148,12 @@ export class TigerReflectionMoment {
     this.root.style.cssText = [
       'position:absolute',
       'left:50%',
-      'bottom:96px',
+      `bottom:${homeClearanceBottomCss()}`,
       'z-index:15',
-      'width:min(460px,calc(100vw - 48px))',
+      // Leave room for left heatmap/? and right language globe (not 48px).
+      'width:min(460px,calc(100vw - 176px))',
       'transform:translate(-50%, 12px)',
-      'padding:14px 18px 12px',
+      'padding:14px 18px 20px',
       GLASS_BORDER,
       `border-radius:${GLASS_RADIUS}`,
       `background:${GLASS_FILL}`,

@@ -104,7 +104,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 |---|---|---|
 | `EmotionController` 单例（`main.js` 注入） | `MoodController`、Honesty、MindfulReminder、PointerInteraction、调试面板、会话完成反馈 | 改优先级 / holdPose / 回落 idle 会影响全部响应情绪 |
 | `idle` / IdleOrchestrator 接管 | `MoodController` IDLE、`IdleOrchestrator` | 呼吸×5→眨眼；勿另开 Idle 变体池 |
-| `sleeping` | 调试「睡着了」/ live DORMANT（≥2h 后回前台等） | **不再**作零完成 / **冷启动**开场；`onAppReady` 默认 Idle；披毯仅 live 进 DORMANT |
+| `sleeping` | 调试「睡着了」/ live DORMANT（**tab hidden ≥2h** 回前台，或 Rise 后 2h 戳） | **不再**作零完成 / **冷启动**开场 / **短切 tab**；`onAppReady` 默认 Idle；披毯仅 live 进 DORMANT |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
 | `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback`；微仪式直接 `playEmotion('sessionComplete')` | `hasCelebratedToday`：首次**计时**达标 Celebrating；已庆祝过 → SessionComplete；Honesty / **微仪式**不占戳、永不 Celebrating |
 | `riseStretchCasual` / `teaDrinking` / `bookReading` | 中途 Rise 加权池 | 主动结束转场（holdPose）；勿与 blinkBreathe / magicBook 混淆 |

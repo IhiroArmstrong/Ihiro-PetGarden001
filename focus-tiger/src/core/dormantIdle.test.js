@@ -203,6 +203,10 @@ test('syncDormantState: enters DORMANT after idle window elapsed', () => {
   assert.equal(stateManager.state, STATES.DORMANT);
 });
 
+/**
+ * 显式 `syncDormantState()`（Rise / 真离开 ≥2h）仍可进睡。
+ * 短切 tab 的 visibility 路径另由 `shouldAllowEnterDormantOnForegroundReturn` 锁死。
+ */
 test('live sync after cold open: stale ≥2h may still enter DORMANT with cloak', () => {
   const ended = Date.parse('2026-07-21T10:00:00');
   const now = () => new Date(Date.parse('2026-07-21T13:00:00'));

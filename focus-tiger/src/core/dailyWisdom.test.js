@@ -48,7 +48,23 @@ test('en/ja pools share the same stable ids', () => {
   const enIds = DAILY_WISDOM_EN.map((e) => e.id);
   const jaIds = DAILY_WISDOM_JA.map((e) => e.id);
   assert.deepEqual(enIds, jaIds);
-  assert.ok(enIds.length >= 3);
+  assert.equal(enIds.length, 14, 'taste-layer freeze: 14 ids');
+  assert.equal(
+    DAILY_WISDOM_EN.find((e) => e.id === 'huineng-not-a-thing')?.text,
+    'Nothing here needs to be held onto.'
+  );
+  assert.notEqual(
+    DAILY_WISDOM_EN.find((e) => e.id === 'huineng-not-a-thing')?.text,
+    'Originally there is not a single thing.'
+  );
+  assert.match(
+    DAILY_WISDOM_EN.find((e) => e.id === 'zhaozhou-drink-tea')?.text || '',
+    /drink tea/i
+  );
+  assert.ok(
+    (DAILY_WISDOM_EN.find((e) => e.id === 'zhaozhou-drink-tea')?.text || '')
+      .length > 'Go drink tea.'.length
+  );
   assert.equal(new Set(enIds).size, enIds.length, 'en ids unique');
   for (const required of [
     'catch-this-moment',
