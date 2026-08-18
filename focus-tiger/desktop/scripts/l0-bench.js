@@ -46,6 +46,10 @@ function writeLocalReport(report) {
 }
 
 async function runNodeOnlyProbe() {
+  process.stderr.write(
+    '[l0] skip-window: this command does not open a product window.\n' +
+      '[l0] Open `npm run desktop:dev` first, Sit → Focusing, then re-run this command and watch that window.\n'
+  );
   process.env.FT_COMPANION_L0_HOLD_MS =
     process.env.FT_COMPANION_L0_HOLD_MS || '1000';
   const session = runL0Child({

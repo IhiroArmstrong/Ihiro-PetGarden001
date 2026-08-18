@@ -116,7 +116,7 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 **Focusing 掉帧（本机、几分钟）** — 两个终端：
 
 1. 产品窗（**不要**带 `FT_COMPANION_L0`）：`npm run desktop:dev` → Sit → Focusing，看阿寅呼吸。
-2. 另开终端、Focusing 已开始后：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`（子进程加载 ≈0.9 GB 再卸载）。肉眼看加载中 / **dispose 那几百毫秒** 呼吸有没有可见顿挫。
+2. 另开终端、Focusing 已开始后：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`（子进程加载 ≈0.9 GB 再卸载，**本命令不开窗**）。盯的是终端 1 那个产品窗：加载中 / **dispose 那几百毫秒** 呼吸有没有可见顿挫。
 
 **M1 8GB（有机器再跑）**：同一套 `npm run desktop:companion-l0`，把 `report-*.json` 的 RSS / TTFT / tok/s / `verdict` 记回 TRACKER。这是「默认模型该多小 / 低配是否直接不提供入口」的分水岭，不是走过场。
 
