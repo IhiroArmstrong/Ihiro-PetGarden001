@@ -292,7 +292,7 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
-/** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 25。开表前无 URL 时再出时长 chip。 */
+/** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 10。开表前无 URL 时再出时长 chip。 */
 const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 /** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
 const MICRO_RITUAL_MS_OVERRIDE = hasMicroRitualMsOverride(location.search)
@@ -2608,7 +2608,7 @@ async function init() {
   }
 
   /**
-   * 开表入口：无 `?sessionMinutes=` 时先出 15/25/45/60 chip；有则跳过（e2e）。
+   * 开表入口：无 `?sessionMinutes=` 时先出 10/15/25/45 chip；有则跳过（e2e）。
    * @param {string} companionMode
    */
   function requestBeginFocusWithMode(companionMode) {

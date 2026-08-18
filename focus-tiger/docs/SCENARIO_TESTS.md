@@ -361,7 +361,7 @@
 > **对照**：正式 Focus 仍走 Sit→Arrival（或场景 T 时长 chip）；⚡ 旧 Quick Start「立刻 Focusing」已改为本球开 Breath。
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
-2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **15/25/45/60** 差异化）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。
+2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。
 3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
 4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
@@ -371,7 +371,7 @@
 
 ---
 
-## 场景 T：Focus 开表前时长 chip（15 / 25 / 45 / 60）
+## 场景 T：Focus 开表前时长 chip（10 / 15 / 25 / 45）
 
 > **用户故事**：Kelly 走完 Arrival、选好 Companion 模式后，再选本场专注时长，再开表。  
 > **单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。  
@@ -379,7 +379,7 @@
 > **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 1. `?product=1`（**勿**带 `sessionMinutes`）→ Sit→Arrival→Choose→Companion 点选模式。
-2. 见 `#focus-duration-picker`：chip **15 / 25 / 45 / 60**（勿与 Breath 档位混淆）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 15 minutes / Breath practice）。
+2. 见 `#focus-duration-picker`：chip **10 / 15 / 25 / 45**（默认 10；数字 10 也可出现在 Breath，但路径不同）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 10 minutes / Breath practice）。
 3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing + **开始磬**（若计时提示音开）+ 氛围乐）；`#focus-hud` 显示所选目标分钟。
 4. **Leave**（若 picker 仍开）→ 取消、不开表。
 5. **回流**：Rise → 再 Sit→…→ 再出 picker；偏好应合理回显。
@@ -580,7 +580,7 @@
 | **Q** | Support Yin 三卡 + Tea tip/徽章 + Sanctuary Lifetime（零耦合）+ 统一练习徽章 | **已升格** → 见上文「场景 Q」（含 Q4 #204） |
 | **R** | 跨日回访（dayN / 拨时钟）：与 `RETENTION_FUNNEL` R2–R3 对齐 | **仍建议**；测回访须拨时钟或跨日真机；勿与 Q–Z 混关 |
 | **S** | 首页左球 Breath practice（时长 chip → 完成/Leave） | **已升格** → 见上文「场景 S」；`micro-ritual` e2e |
-| **T** | Companion 后 Focus 时长 chip 15/25/45/60 | **已升格** → 见上文「场景 T」；无 query 路径须人工 |
+| **T** | Companion 后 Focus 时长 chip 10/15/25/45 | **已升格** → 见上文「场景 T」；无 query 路径须人工 |
 | **U** | Zen Cinema / Quiet Line / Wallpapers 礼物菜单 | **已升格** → 见上文「场景 U」 |
 | **V** | Day1/久别变花欢迎 + 气泡 | **已升格** → 见上文「场景 V」；`flower-welcome` e2e |
 | **W** | 「?」简介 + Privacy + Wellness 首开声明 | **已升格** → 见上文「场景 W」 |
