@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 同坐点 L2 内部兑换（`applyFocusCoinsRedeem`）· 云端品味层窄冻结已拍板 · 同坐点 L1 **#338 已合**（TRACKER 待人工）· 云端品味层政策锁（#337）· 长周期 QA 播种 `?qaSeedStreak=`（#328）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A 已提交（无托盘）· 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-18（UTC+8） · Focus 最短档+默认 **10 分钟**（chip 10/15/25/45）· 同坐点 L2 内部兑换（`applyFocusCoinsRedeem`）· 云端品味层窄冻结已拍板 · 同坐点 L1 **#338 已合**（TRACKER 待人工）· 云端品味层政策锁（#337）· 长周期 QA 播种 `?qaSeedStreak=`（#328）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A 已提交（无托盘）· 莲花池 Slice A（#330）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **Focus 最短档 + 默认 10 分钟（2026-08-18）**：用户书面——25 分达标过长，名人常坐 10 分正念。芯片 **10 / 15 / 25 / 45**（去掉 60）；默认与最短 10。Breath 仍 1/3/5/10/20：Focus 10 走 Sit→Arrival，Breath 10 走左球微仪式。今日同坐 HUD 软顶仍 25。TRACKER 待人工。
 
 - **同坐点 L2 内部兑换（2026-08-18）**：控制台 `__focusCoins.redeem(skuId)` 花点写入 `ownedIds`（称号 / `badge.rare.quiet-pebble` / `space.lotus-dew` 等）；须弥坐仍要 360 点且终身分钟 ≥600。莲叶晨露只让已有朵稍亮，**不**长新花。无抽屉。`?focusCoins=0` 关闸。**只兑、不动 Honesty 时长分档**。TRACKER 待人工。
 
@@ -162,7 +164,7 @@
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右 / 音符开播 / 每曲 Play/Pause / Idle 靠右）→ PR #131+#132；**2026-08-06 tip 关单**（用户「关单 OK」；功能 tip `ae6eca2`）。
-- **Focus 开表前时长 15/25/45/60（2026-08-06）**：Companion 点选后出 chip（与 Breath 1/3/5/10/20 差异化）；`?sessionMinutes=` 仍可跳过供 e2e。分支 `feature/focus-duration-picker`。
+- **Focus 开表前时长 10/15/25/45（2026-08-18 改档；原 15/25/45/60 为 2026-08-06）**：Companion 点选后出 chip；默认与最短 **10**；与 Breath 1/3/5/10/20 分轨。`?sessionMinutes=` 仍可跳过供 e2e。
 - **首页左球 → Breath practice（2026-08-06）**：原 Quick Start 跳过 Arrival 开表改为开时长 picker；抽屉/⋯ 去掉重复 Breath 行；右上音符加 `AMBIENT_NOTE_HOVER`（脉冲未读时不叠 title）。分支 `feature/home-breath-practice-ball`。Extended Breath（PR #143）人工听感主路径已 OK。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
