@@ -58,13 +58,15 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 桌面陪伴 L0 探针（M5 16GB 数字过闸，无产品入口）· 禅意倾听者桌面窄例外拍板 · 同坐点方向锁 · Electron 步骤 A · 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-18（UTC+8） · 桌面陪伴 L0 探针（M5 16GB 数字过闸，无产品入口）· 同坐点 L0 纯账本（`focusCoinsLedger.js`）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A · 莲花池 Slice A（#330）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
 - **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-18）**：口令「开工桌面陪伴 L0」已执行。代码只在 `focus-tiger/desktop/companion/`；`npm run desktop:companion-l0`。**无** Idle 菜单、**无** `desktopShell.companion`。本机 **Apple M5 16GB**：Metal，load ≈ 0.8s，TTFT ≈ 0.65s，≈ 116 tok/s，RSS 加载峰值 ≈ 0.9 GB 卸载后回落，Idle rAF p95 增量 ≈ 0.1ms（过闸）。**Focusing 掉帧仍待人工**。型号未锁（未测 M1 8GB）。勿与「开工同坐点 L0」混口令。权威：`task-desktop-on-device-companion.md`。
+
+- **同坐点 L0 纯账本（2026-08-18）**：`focusCoinsLedger.js` 已在 `develop`；不挂 `main.js`。本支不改账本。
 
 - **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」。
 
@@ -377,8 +379,8 @@
 
 **下一步计划**：
 
-- **陪伴 · 同坐点（Focus Coins · 2026-08-18 方向锁）**：练习货币只兑身份/情感锦上添花，**不**兑 B 轨。对外名「同坐点」。权威 `FOCUS_COINS.md`；Brief `task-focus-coins.md`。工作量 **L0–L2 ≈ 10–16 人日**（非两三天糙快版）。**下一步**：`feature/focus-coins-l0-ledger` 纯账本单测。勿与桌面智能体 L1、Honesty 大改叠车。
-- **陪伴 · 桌面端侧窄例外（2026-08-18）**：检索不生成 **未废止**。**L0 探针已跑**（M5 16GB 数字过闸）；Focusing hitch 人工；**不锁型号、不自动开 L1**。勿与同坐点 L0 混口令。Brief `task-desktop-on-device-companion.md`。
+- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：方向锁已合 #333。**L0 纯账本** `focusCoinsLedger.js`（不挂 `main.js`）。**L1 硬闸**：开工前必须书面扫 Honesty / 完成记账邻接并行 PR。勿插队桌面步骤 B。
+- **陪伴 · 桌面端侧窄例外（2026-08-18）**：检索不生成 **未废止**。**L0 探针已跑**（M5 16GB 数字过闸）；Focusing hitch 人工；**不锁型号、不自动开 L1**。勿与同坐点口令混说。Brief `task-desktop-on-device-companion.md`。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** v1.1 云端算法、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
@@ -735,12 +737,13 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ### Backlog:同坐点（Focus Coins · C 轨练习货币）
 
-> **方向已锁（2026-08-18）**；运行时未开工。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
+> **方向已锁（2026-08-18）**。L0 纯账本本支。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
 
 - 对外名 **同坐点**；只兑身份/情感锦上添花；**禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 - 与 **莲花池 Slice A（#330）**：池按终身分钟自动开花；同坐点只可买已有朵上的变体（如晨露），**禁止**把开花改成花点才出现。
-- 工作量：L0–L2 约 10–16 人日（非两三天糙快版）。下一刀 = `feature/focus-coins-l0-ledger`。
-- 勿与桌面端侧智能体 L1、桌面步骤 B、Honesty 大改叠车。
+- 工作量：L0–L2 约 10–16 人日。L0 = `focusCoinsLedger.js`。
+- **L1 硬闸**：开 `feature/focus-coins-l1-award` 前必须书面扫 Honesty / 完成记账邻接并行 PR（口头注意不算过闸）。
+- 勿插队桌面步骤 B / 桌面端侧智能体 L1。
 
 ### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 

@@ -1,8 +1,8 @@
 # Task Brief · 同坐点（Focus Coins）
 
-> **状态**：已立项 · 方向锁 2026-08-18 · **本 PR 只交文档**；运行时从 L0 另开 `feature/focus-coins-l0-ledger`。  
+> **状态**：L0 实现中 · `feature/focus-coins-l0-ledger`（2026-08-18）。方向锁见 `FOCUS_COINS.md`。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
-> **性质**：中高风险（L1 起穿透完成记账 / Honesty / Idle chrome）——须独立 `feature/*`，**一次只做一个 L 级**。  
+> **性质**：L0 纯函数（低风险）。**L1 起**穿透完成记账 / Honesty / Idle chrome——须独立 `feature/*`，**一次只做一个 L 级**。  
 > **禁止**：建 entitlement gate key；L0–L2 改 `SCENARIO_TESTS.md`；用余额满足 `isEntitled`。
 
 ---
@@ -46,6 +46,16 @@
 **Feature flag**：L1 起 `FOCUS_COINS_USER_MOUNT_ENABLED`（或同等）。关 = 完全回到无同坐点正式路径（Playbook 红线 C：禁止半套简化默认）。
 
 **备份**：L1 不把钱包塞进 `PRACTICE_BACKUP_STORE_KEYS`（保持 6 key）。L3 再单独决定 schema v2。
+
+### L1 硬闸（2026-08-18 分析师 · 非口头）
+
+开 `feature/focus-coins-l1-award` **之前**必须在开工回复里写明扫描结果。口头「注意避开 Honesty」**不算过闸**。
+
+1. 扫开放中 PR 与 `origin/develop` 近提交：是否改 `HonestyCheckInController`、`DailyCompletionStore`、`PracticeDaysStore`、`onTimedSessionCompleted` / `recordCompletion`。  
+2. **有并行改动** → 停在「待你决定」，不得同时接线发点（防表面无冲突、语义已漂）。  
+3. **无** → 写清日期 + 扫了哪些 PR/文件，再开 L1。  
+
+**本 L0 开工时快照（2026-08-18）**：`gh pr list --base develop --state open` 无 Honesty / 完成记账主题 PR（仅 QA seed / dependabot）。此快照 **不能**替代 L1 开工当日的再扫。
 
 ---
 
