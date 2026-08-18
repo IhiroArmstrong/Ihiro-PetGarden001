@@ -63,8 +63,10 @@ export function isUpdateAvailable({
  */
 export function shouldRevealSoftUpdatePrompt({
   updateAvailable = false,
-  busySession = false
+  busySession = false,
+  desktopShell = false
 } = {}) {
+  if (desktopShell) return false;
   return Boolean(updateAvailable) && !busySession;
 }
 

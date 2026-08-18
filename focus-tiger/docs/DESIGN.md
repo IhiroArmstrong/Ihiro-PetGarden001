@@ -214,10 +214,12 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
     全部跳过则不落任何记录；情绪来访答案不做标签化/统计/趋势分析，
     写下来即可
 
-向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 规划中）：
-  与 Reflection 分轨：Idle ⋯/抽屉主动入口；禅意倾听者；本地规则分类 +
-  人工语料检索；匹配失败固定兜底；禁运行时生成对话。
-  详规：`task-briefs/task-confide-to-yin-v1.md`（本段不等于已上线）
+向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中）：
+  与 Reflection 分轨：Idle ⋯/抽屉主动入口（桌面与 Web **同一入口**）；禅意倾听者；
+  本地规则分类 + 人工语料检索；匹配失败固定兜底。Web / PWA 仍禁运行时生成。
+  仅 Electron：安全阀与语料都未接住时允许受约束短生成——不是全面允许生成。
+  权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Web Brief `task-confide-to-yin-v1.md`；
+  桌面 Brief `task-desktop-on-device-companion.md`（本段不等于已上线）
 ```
 
 ### 专注会话陪伴模式（Companion Mode）
@@ -326,13 +328,13 @@ Honesty Check-in 对外称 **Mindful Check-in / 正念登入**；入口提示与
 
 #### 3. 与壳选型的关系
 
-本探针**不**决定 Electron / Tauri / PWA 终局；见 `PROCESS.md` Backlog「本地桌面 APP 打包选型」。
+本探针**不**等于已做系统托盘桌宠。电脑版壳已拍板 **Electron**；**收费 DMG 的托盘常驻**是另一条路径（见 `task-electron-desktop-scaffold.md`），**禁止**把本节 PiP 升级成关 App 仍活的桌宠。PiP 仍是浏览器实验，加大投入另议。
 
 ### Idle Document PiP 陪伴浮窗（实验原型 · 2026-08-16）
 
 > **命名**：对内 `IdleCompanionPipUI` / `idleCompanionPipGate`。  
 > **禁止**与上一节 Focusing **Immersive Presence** 浮动钮、以及 Companion Mode 三选一混入口。  
-> **地位**：轻量原型，验证「切到其他窗口/App 时仍能看见阿寅安静呼吸」。**不是**最终形态；待观察使用数据后再决定是否加大投入。不做 Electron / 系统托盘 / 关浏览器后仍常驻。
+> **地位**：轻量原型，验证「切到其他窗口/App 时仍能看见阿寅安静呼吸」。**不是**最终形态；待观察使用数据后再决定是否加大投入。**不是** Electron 收费 DMG 的托盘（那条见脚手架 Brief）；本入口不做关浏览器后仍常驻。
 
 #### 1. 何时出现
 

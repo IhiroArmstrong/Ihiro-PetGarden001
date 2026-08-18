@@ -25,6 +25,9 @@ Thumbs.db
 npm-debug.log*
 .cache/
 
+# Electron desktop pack output (Step A)
+focus-tiger/desktop/release/
+
 # Test / coverage artifacts
 coverage/
 playwright-report/

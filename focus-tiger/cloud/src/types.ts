@@ -42,8 +42,10 @@ export interface Env {
 	/** Stripe Billing Portal return URL (Membership Manage). */
 	MEMBERSHIP_PORTAL_RETURN_URL?: string;
 
-	/** Exact browser Origin allowed for CORS (e.g. http://127.0.0.1:5173). */
+	/** Exact browser Origin allowed for CORS, or comma-separated list. */
 	ALLOWED_ORIGIN?: string;
+	/** Optional alias of ALLOWED_ORIGIN (comma-separated). */
+	ALLOWED_ORIGINS?: string;
 
 	/** Resend From header, e.g. "Yin <restore@twinsology.com>". */
 	RESEND_FROM?: string;

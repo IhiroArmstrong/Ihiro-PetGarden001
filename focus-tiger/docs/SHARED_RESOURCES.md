@@ -12,11 +12,14 @@
 
 ## 1. localStorage keys
 
+**Electron 步骤 A（2026-08-17）**：渲染层仍用本表同一套 keys；生产 origin 是 `focus-tiger://app`，与 Safari `http://127.0.0.1:5173` **不共享**存储（换壳等于空库，属预期）。壳内不另开 native keychain。步骤 A **无托盘**，不新增壳专用存储键。
+
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js` |
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js` |
+| `focus-tiger.lotus-pond.v1` | `LotusPondStore` | **独立只增**终身练习分钟 `{ lifetimeMinutes }`；可见朵数 `min(earned, 12)`。计时 / Honesty / 微仪式与 `markToday` **同一钩**写入，**不**走付费 RitualFlow、**不**走未达标 Rise。**QA**：`?qaLotusBlooms=N`。**不**在练习记忆备份 v1 六 key 白名单（Slice A 已知缺口）。贴图：一炷香 `/textures/lotus.png` |
 | `focus-tiger.milestone-glow.v1` | `MilestoneGlowStore` | 已播里程碑节点 id（如 `streak-7`）；只增不减；产品壳 `MilestoneGlow` 接线。**QA**：带 `qaSeedStreak` 时默认清本 key（`qaKeepMilestones=1` 可保留）；亦可单独 `qaResetMilestones=1` |
 | `focus-tiger.ritual-completions.v1` | `RitualCompletionStore` | 进阶 RitualFlow（Morning / Emotional Reset / Work Transition）完成记录；**不**走 MicroRitual / Focus / Journey Log / Reflection |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
@@ -53,7 +56,7 @@
 | `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect, insightSpark? }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar / Sanctuary / `practiceBadgeAward` **零耦合**）。写入：正式 Focus Rise 后 Reflection 关闭，**或** Breath practice 完成且 Reflection 关闭（chip 分钟、`arrive: false`）。Honesty / RitualFlow **不**写。`insightSpark` 仅在当场打开 Quiet Line 且当日句来自洞察种子池时为 `true`；缺省降级为无标记 |
 | `focus-tiger.practice-backup.v1` | `practiceBackupOptIn` / Journey Log 角落引导 | 练习记忆云端备份 opt-in：`{ enabled, consentedAt, email, deviceToken, lastUpload* }`；整包 6 key 快照 → `PRACTICE_BACKUP_KV`；关闭须 OTP **删云端** |
 | `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；池条目 `{ id, text, attribution? }`（Yin 短句无署名；古典/文学句有 locale 署名）；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**；**Phase A 落点** = Reflection 卡底部（`[data-testid=reflection-daily-wisdom]`）；Phase B 印花另支 |
-| `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》：`{ revealed, revealedAt, scoreAtReveal }`；门槛 = 统一练习 **score ≥ 21**；首次完成仪式后出卡（ZH + EN + 乐五斋诗稿 + 章）；菜单可重读；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
+| `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》两 case：`{ revealed, revealedAt, scoreAtReveal, revealedCaseIds, lastShownCaseId }`；门槛 = 统一练习 **score ≥ 21**；每首未揭示诗在完成仪式后出卡一次（Case 1 乐五斋诗稿 / Case 2 乐五斋七言歌行）；旧档仅 `revealed:true` 视为 Case 1 已见、仍可出 Case 2；菜单轮换已揭示诗；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
 | `focus-tiger.idle-companion-pip.v1` | `idleCompanionPipGate` / `IdleCompanionPipUI` | Idle Document PiP 实验原型：`{ used, usedAt }`。只记是否曾打开过浮窗，供后续是否加大投入参考；**不得**用于提醒 / 激励 / 限频。Safari 等不支持时入口不挂载 |
 

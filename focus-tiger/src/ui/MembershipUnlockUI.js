@@ -9,7 +9,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
-import { getCloudApiBaseUrl, postCloudJson } from '../core/cloudApiClient.js';
+import { getCloudApiBaseUrl, postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
 import {
   isMembershipActiveLocally,
   markMembershipFromPayment,
@@ -269,7 +269,7 @@ export class MembershipUnlockUI {
           'membership',
           'membership-card'
         );
-        window.location.assign(url);
+        await openCheckoutUrl(url);
         return;
       }
       checkoutError = true;
@@ -304,7 +304,7 @@ export class MembershipUnlockUI {
       const { url } = await createMembershipPortalSession({
         storage: this._storage
       });
-      window.location.assign(url);
+      await openCheckoutUrl(url);
     } catch (err) {
       const code = /** @type {any} */ (err)?.code;
       this.statusEl.textContent =

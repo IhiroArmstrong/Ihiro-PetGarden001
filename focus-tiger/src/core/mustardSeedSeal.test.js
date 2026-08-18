@@ -9,9 +9,18 @@ import { computePracticeScore } from './practiceBadgeAward.js';
 import {
   MUSTARD_SEED_SEAL_SCORE_THRESHOLD,
   MUSTARD_SEED_SEAL_STORAGE_KEY,
+  MUSTARD_SEED_SEAL_CASE_SUMERU,
+  MUSTARD_SEED_SEAL_CASE_HERO,
+  MUSTARD_SEED_SEAL_CASES,
+  MUSTARD_SEED_SEAL_HERO_POEM_ZH,
+  MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
   clearMustardSeedSealState,
+  getMustardSeedSealCase,
   isMustardSeedSealScoreMet,
+  listRevealedMustardSeedCaseIds,
   markMustardSeedSealRevealed,
+  nextUnrevealedMustardSeedCase,
+  pickMustardSeedSealMenuCase,
   readMustardSeedSealState,
   resolveMustardSeedSeal,
   shouldOfferMustardSeedSealAfterCeremony,
@@ -75,7 +84,27 @@ describe('mustardSeedSeal', () => {
     );
   });
 
-  it('shouldOffer only on completed + unlocked + not yet revealed', () => {
+  it('catalog has two Le Wu Zhai verse cases', () => {
+    assert.equal(MUSTARD_SEED_SEAL_CASES.length, 2);
+    assert.equal(MUSTARD_SEED_SEAL_CASES[0].id, MUSTARD_SEED_SEAL_CASE_SUMERU);
+    assert.equal(MUSTARD_SEED_SEAL_CASES[1].id, MUSTARD_SEED_SEAL_CASE_HERO);
+    assert.deepEqual(MUSTARD_SEED_SEAL_HERO_POEM_ZH, [
+      '山海奇云风幡舞，',
+      '红尘如电亦如露。',
+      '芥子无量纳须弥，',
+      '英雄岂是池中物。'
+    ]);
+    assert.equal(
+      MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
+      '乐五斋七言歌行'
+    );
+    assert.equal(
+      getMustardSeedSealCase(MUSTARD_SEED_SEAL_CASE_HERO)?.poemZh.length,
+      4
+    );
+  });
+
+  it('shouldOffer only on completed + unlocked + pending case', () => {
     assert.equal(
       shouldOfferMustardSeedSealAfterCeremony({
         completed: true,
@@ -103,6 +132,15 @@ describe('mustardSeedSeal', () => {
     assert.equal(
       shouldOfferMustardSeedSealAfterCeremony({
         completed: true,
+        unlocked: true,
+        revealed: true,
+        hasUnrevealedCase: true
+      }),
+      true
+    );
+    assert.equal(
+      shouldOfferMustardSeedSealAfterCeremony({
+        completed: true,
         unlocked: false,
         revealed: false
       }),
@@ -110,7 +148,60 @@ describe('mustardSeedSeal', () => {
     );
   });
 
-  it('resolve: below threshold → no auto; claim persists revealed', () => {
+  it('legacy revealed without case ids still auto-offers case 2', () => {
+    const revealed = { revealed: true, revealedAt: '2026-08-11T00:00:00.000Z' };
+    assert.deepEqual(listRevealedMustardSeedCaseIds(revealed), [
+      MUSTARD_SEED_SEAL_CASE_SUMERU
+    ]);
+    assert.equal(
+      nextUnrevealedMustardSeedCase(revealed)?.id,
+      MUSTARD_SEED_SEAL_CASE_HERO
+    );
+  });
+
+  it('legacy storage JSON without revealedCaseIds still offers case 2', () => {
+    const richDays = [];
+    for (let i = 1; i <= 21; i += 1) {
+      const d = String(i).padStart(2, '0');
+      richDays.push({ date: `2026-07-${d}`, totalMinutes: 60 });
+    }
+    const storage = memoryStorage({
+      [PRACTICE_DAYS_STORAGE_KEY]: JSON.stringify({ days: richDays }),
+      [MUSTARD_SEED_SEAL_STORAGE_KEY]: JSON.stringify({
+        revealed: true,
+        revealedAt: '2026-08-11T00:00:00.000Z',
+        scoreAtReveal: 21
+      })
+    });
+    const resolved = resolveMustardSeedSeal(storage);
+    assert.equal(resolved.revealed, true);
+    assert.equal(resolved.shouldAutoReveal, true);
+    assert.equal(resolved.nextCase?.id, MUSTARD_SEED_SEAL_CASE_HERO);
+  });
+
+  it('menu pick cycles revealed cases', () => {
+    const both = {
+      revealed: true,
+      revealedCaseIds: [
+        MUSTARD_SEED_SEAL_CASE_SUMERU,
+        MUSTARD_SEED_SEAL_CASE_HERO
+      ],
+      lastShownCaseId: MUSTARD_SEED_SEAL_CASE_SUMERU
+    };
+    assert.equal(
+      pickMustardSeedSealMenuCase(both).id,
+      MUSTARD_SEED_SEAL_CASE_HERO
+    );
+    assert.equal(
+      pickMustardSeedSealMenuCase({
+        ...both,
+        lastShownCaseId: MUSTARD_SEED_SEAL_CASE_HERO
+      }).id,
+      MUSTARD_SEED_SEAL_CASE_SUMERU
+    );
+  });
+
+  it('resolve: below threshold → no auto; each case auto-reveals once', () => {
     const storage = memoryStorage({
       [PRACTICE_DAYS_STORAGE_KEY]: JSON.stringify({
         days: [{ date: '2026-08-01', totalMinutes: 25 }]
@@ -135,10 +226,25 @@ describe('mustardSeedSeal', () => {
     assert.equal(high.shouldAutoReveal, true);
 
     markMustardSeedSealRevealed(storage, { scoreAtReveal: high.score });
-    const after = resolveMustardSeedSeal(storage);
-    assert.equal(after.revealed, true);
-    assert.equal(after.shouldAutoReveal, false);
+    const afterFirst = resolveMustardSeedSeal(storage);
+    assert.equal(afterFirst.revealed, true);
+    assert.equal(afterFirst.nextCase?.id, MUSTARD_SEED_SEAL_CASE_HERO);
+    assert.equal(afterFirst.shouldAutoReveal, true);
     assert.equal(readMustardSeedSealState(storage).revealed, true);
+    assert.deepEqual(afterFirst.revealedCaseIds, [
+      MUSTARD_SEED_SEAL_CASE_SUMERU
+    ]);
+
+    markMustardSeedSealRevealed(storage, {
+      caseId: MUSTARD_SEED_SEAL_CASE_HERO
+    });
+    const afterBoth = resolveMustardSeedSeal(storage);
+    assert.equal(afterBoth.shouldAutoReveal, false);
+    assert.equal(afterBoth.nextCase, null);
+    assert.deepEqual(afterBoth.revealedCaseIds, [
+      MUSTARD_SEED_SEAL_CASE_SUMERU,
+      MUSTARD_SEED_SEAL_CASE_HERO
+    ]);
 
     clearMustardSeedSealState(storage);
     assert.equal(storage.getItem(MUSTARD_SEED_SEAL_STORAGE_KEY), null);

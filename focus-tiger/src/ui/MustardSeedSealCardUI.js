@@ -6,16 +6,16 @@
 /**
  * Mustard Seed · Sumeru memorial seal card.
  * Quiet Line–like glass card: ZH poem + EN + 乐五斋 attribution + companion badge.
+ * Verse cases: 《芥子须弥》then 七言歌行; same scene, one unrevealed case per ceremony.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
-  MUSTARD_SEED_SEAL_ATTRIBUTION_EN,
-  MUSTARD_SEED_SEAL_ATTRIBUTION_ZH,
-  MUSTARD_SEED_SEAL_POEM_EN,
-  MUSTARD_SEED_SEAL_POEM_ZH,
+  MUSTARD_SEED_SEAL_CASES,
+  getMustardSeedSealCase,
   markMustardSeedSealRevealed,
   mustardSeedSealBadgeSrc,
+  rememberMustardSeedSealLastShown,
   resolveMustardSeedSeal
 } from '../core/mustardSeedSeal.js';
 import {
@@ -129,7 +129,11 @@ export class MustardSeedSealCardUI {
   }
 
   /**
-   * @param {{ mode?: 'auto' | 'menu' | 'force', claim?: boolean }} [opts]
+   * @param {{
+   *   mode?: 'auto' | 'menu' | 'force',
+   *   claim?: boolean,
+   *   caseId?: string
+   * }} [opts]
    */
   open(opts = {}) {
     if (this._open) return;
@@ -145,18 +149,31 @@ export class MustardSeedSealCardUI {
     if (mode === 'menu' && !resolved.unlocked && !resolved.revealed) {
       return;
     }
+    const requested = getMustardSeedSealCase(opts.caseId);
+    const verse =
+      requested ??
+      (mode === 'menu'
+        ? resolved.menuCase
+        : resolved.nextCase ?? MUSTARD_SEED_SEAL_CASES[0]);
+    const alreadyShown = resolved.revealedCaseIds.includes(verse.id);
     const claim =
-      opts.claim !== false && resolved.unlocked && !resolved.revealed;
+      opts.claim !== false && resolved.unlocked && !alreadyShown;
     if (claim) {
-      markMustardSeedSealRevealed(storage, { scoreAtReveal: resolved.score });
+      markMustardSeedSealRevealed(storage, {
+        scoreAtReveal: resolved.score,
+        caseId: verse.id
+      });
+    } else if (resolved.unlocked || resolved.revealed) {
+      rememberMustardSeedSealLastShown(storage, verse.id);
     }
 
     this._open = true;
+    this.root.dataset.caseId = verse.id;
     this.badgeImg.src = mustardSeedSealBadgeSrc();
     this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
-    this.poemZhEl.textContent = MUSTARD_SEED_SEAL_POEM_ZH.join('\n');
-    this.poemEnEl.textContent = MUSTARD_SEED_SEAL_POEM_EN.join('\n');
-    this.attrEl.textContent = `${MUSTARD_SEED_SEAL_ATTRIBUTION_ZH} · ${MUSTARD_SEED_SEAL_ATTRIBUTION_EN}`;
+    this.poemZhEl.textContent = verse.poemZh.join('\n');
+    this.poemEnEl.textContent = verse.poemEn.join('\n');
+    this.attrEl.textContent = `${verse.attributionZh} · ${verse.attributionEn}`;
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');

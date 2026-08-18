@@ -26,7 +26,7 @@
 | **2** | `src/ui/OnboardingHintsUI.js` | 提示发现小圆点（`.ft-hint-discovery-dot`）相对宿主按钮角标 |
 | **2** | `ui-kit/components/streak-meter.js` | `<streak-meter>` host 相对邻居 |
 | **3** | `index.html` | FocusHUD 悬停详情卡（`.ft-hud__detail`） |
-| **3** | `src/character/SpriteSequencePlayer.js` | 2D 情绪序列层（`#sprite-overlay`）：在 canvas 之上、`#ui-overlay` 之下 |
+| **3** | `src/character/SpriteSequencePlayer.js` | 2D 情绪序列层（`#sprite-overlay`）：在 canvas 之上、`#ui-overlay` 之下。**子层**：`#lotus-pond`（z 0，花在阿寅后）→ `#sprite-stage`（z 1）→ `#lotus-pond-birth-fx`（z 2，出生瞬间在阿寅前）。不另开全局 z |
 | **3** | `ui-kit/components/streak-meter.js` | 连胜环下方 label 提示 |
 | **4** | `src/effects/LightProgression.js` | 光影 FX 根（`#light-progression-fx`）全屏特效层 |
 | **4** | `src/effects/IncenseGreeting.js` | 一炷香问候粒子/特效全屏层 |
@@ -57,13 +57,13 @@
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
-| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后首次；其后 ⋯ / 抽屉） |
+| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
 | **18** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（⋯ / 抽屉） |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |
 | **18** | `src/ui/TipJarUI.js` | `#yin-tip-jar-card` Buy Yin a Tea 卡（⋯ / 抽屉） |
 | **18** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-card` Stay in touch 可选邮件留资卡（⋯ / 抽屉；不存邮箱；无 entitlement） |
-| **18** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-card` 向阿寅倾诉卡（⋯ / 抽屉；检索不生成；默认挂载关；QA `?confide=1`） |
+| **18** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-card` 向阿寅倾诉卡（⋯ / 抽屉；**Web 检索不生成**；默认挂载关；QA `?confide=1`）。桌面窄例外未接线，见定位稿 |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |
 | **20** | `src/core/EmotionController.js` | DEV 情绪调试按钮列（右上） |
 | **20** | `src/ui/WideIdleMoreMenu.js` | 宽屏 More（⋯）下拉菜单面板 |

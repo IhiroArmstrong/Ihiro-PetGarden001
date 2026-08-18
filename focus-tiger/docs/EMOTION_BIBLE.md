@@ -45,7 +45,7 @@
 
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
-| `IncenseComplete` | 一炷香完成（轻量反馈） | 否 | 「今日一炷香」小目标完成时触发；当日首次打开产品的轻量引导完成后反馈；当天不重复弹出引导，复用「当日状态」日期戳基础设施 | **80**（高于基底姿态；与 `Celebrating` 独立，强度低于完整庆祝） | **效果已实现**：`IncenseGreeting.js` DOM 叠层（z-index 4，莲花 + 金色粒子，位于 2D Yin 之上）。**产品路径未接线**（2026-07-25 拍板放弃近期接线；实验室钮「一炷香完成」可预览）。**产品方向（2026-07-19）**：立体荷花 + 金光斑点浮动须**保留**，并复用于后续「荷花持续增加、最终布满画面」的成长场景（勿删本效果模块） |
+| `IncenseComplete` | 一炷香完成（轻量反馈） | 否 | **实验室**：调试钮「一炷香完成」仍播渐显-停留-**消失**。**产品路径**：不再作为每日会话结束自动动画（2026-07-25 放弃）。**2026-08-17 复用**：同一套莲花+金斑作为莲花池 **出生 FX**（`playBirthAt`，花持久留下；与 MilestoneGlow 同场则仪式后再播） | **80**（高于基底姿态；与 `Celebrating` 独立，强度低于完整庆祝） | **已实现**：`IncenseGreeting.js`。实验室叠层 z-index 4；池出生挂在 `#sprite-overlay` 内以免 Dolly 错位。贴图 `/textures/lotus.png`（去水印）。勿删本效果模块 |
 | `SessionComplete` | 每次专注完成的轻量情绪确认 | 否（约 3.5s） | 每次完成用户设定的专注会话均触发；温和摆尾致意（光环/粒子已烧录在帧内）；若本次同时满足「当日首次达标」，由 `Celebrating` 替代，不叠加播放 | **70**（高于基底姿态、低于 `IncenseComplete` / `Celebrating`） | **已实现（2D 主线）**：`session-complete` 28 帧（**8 fps** ≈3.5s，ONE_SHOT light 带）；`playEmotion('sessionComplete')`；同日后续达标接线完成；播放期临时归零 FocusVisualizer / Rim Light，播完回归 idle-breathing 后恢复 |
 | `WakeUp` | ~~唤醒起身（伸懒腰变体）~~ | — | **已删除（2026-08-04）** | — | 曾为调试键（`stretch-reminder` 同源、末帧闭眼）；无产品场景。舒展提醒仍用 `stretchReminder`；睡醒用 `dormantWake` |
 | `dormantWake` | Honesty Check-in / 长离回前台苏醒（睡态揭毯 → 合掌坐姿） | 否（34 帧 **`cloak-sleep` 倒放** 或星光 wake） | **Honesty**：用户选时长后立刻播放；**2B**：FOCUSING 且 tab 隐藏 ≥30min 回前台播一次后回 Idle 呼吸（仍 Focusing）。播完可定格末帧 | **90**（高于 `Sleeping`，低于 `Celebrating`） | **已实现（2D 主线）**：经典倒放或星光 `starlight-cloak-wake`（约 50/50，优先匹配入睡变体）。**≠** 已删 `wakeUp`。与 **2h→DORMANT** 互补（后者仅非 Focusing） |

@@ -131,7 +131,7 @@
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
 | 长期里程碑 | `milestoneGlow`：`streak-7` **50/50** 蝴蝶/`parrotEarVisit` · `streak-21`/`100` 琉璃星石；`breathHaloHq` 仍调试 | ritual | **产品路径已接线** | Brief `task-milestone-glow-product-wire` / `task-parrot-ear-visit` |
 | 应用内轻提醒横幅 | `parrotEarVisit`（禅意信使）+ 顶部 `#in-app-reminder-banner` | messenger | **已接线**（2026-08-03） | 横幅首次可见本页播一次；文案仍 `reminder.gentle_waiting` |
-| 荷花成长 / 莲花解锁 | `lotus-front-rising` / `lotus-chest-halo` | ritual | Slice C | 须先有 Grow / 纪念奖励产品面 |
+| 荷花成长 / 莲花解锁 | **池花** = 一炷香 `/textures/lotus.png`（Slice A 已接线）。`lotus-front-rising` / `lotus-chest-halo` | ritual | 池：**已实现**；角色莲花序列仍 Slice C / 仅入库 | 池花禁止挪用阿寅序列帧。结晶金环 = Slice B |
 | 旧 `dormant-wake/` 正放 | — | — | **勿接** | 已由 cloak 倒放取代；目录保留 |
 | `starlight-cloak-sleep` / `-wake` | — | — | **勿接** | 2026-08-04 入库后 Undo；待更好抠图 |
 | 旧 `sleeping/` 8 帧 | — | — | **勿接** | 主线用 cloak 030–034 |
@@ -190,7 +190,7 @@
 | `halo-breathing` | Honesty 长补登 / 微仪式轻量变体 | B |
 | `breath-halo-hq` | MilestoneGlow 备选或长补登光环变体 | B |
 | `tea-drinking` / `yawn-stretch` / gaze-p* / `ear-wiggle-head-touch` | 深夜·清晨·茶歇·好奇·摸头（均冷却） | B |
-| `lotus-front-rising` / `lotus-chest-halo` | Grow / 纪念奖励解锁 | C |
+| `lotus-front-rising` / `lotus-chest-halo` | 角色纪念物候选（**不是**莲花池花）；池花走 `/textures/lotus.png` | 池已接线；序列仍 C |
 | `milestone-glow` | 连续练习节点（streak-7 · 与鹦鹉 50/50） | 已接线 |
 | `meditation-star-reward` | 连续练习节点（streak-21 / streak-100） | 已接线（2026-08-03） |
 | `parrot-ear-visit-feather` | 应用内轻提醒信使（A）· 轻完成稀有（B）· streak-7 仪式 50/50 | 已接线（2026-08-03）；**不做**羽毛残影 |

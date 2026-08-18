@@ -121,7 +121,7 @@ service worker（方案 A）：几乎不缓存——fetch 一律走网络，不�
 
 状态（2026-08-08）：骨架 + 品牌图标已合入 `develop`（#180）；**安装体验 / SW 发版抽查延后到 PR #2→`main` + 稳定版后再办**（勿现在邀测；勿自行标已通过）。`feature/pwa-basics` worktree 已拆。
 ```
-> **2026-07-30 口径（仍有效）**：本项**不是**「本地电脑版 APP」的最终打包选型。桌面壳（Electron / Tauri / PWA·薄壳）见 `PROCESS.md` Backlog「**本地桌面 APP 打包选型**」。**v1.0.0 纯本地 / v1.1 云端**已拍板：核心路径不依赖联网；service worker 只能增强，不得变成「无网不可用」。  
+> **2026-07-30 口径（2026-08-16 修订 · 2026-08-17 脚手架）**：本项**不是**「本地电脑版 APP」的终局。电脑版 Mac DMG 壳已拍板 **Electron**（#326）；脚手架规格 `task-electron-desktop-scaffold.md`（收费 DMG 必须有托盘）。**步骤 A 窗口代码已提交**（无托盘；Mac 验收另开）；步骤 B 未做。PWA 继续只服务浏览器安装。**v1.0.0 纯本地 / v1.1 云端**仍有效：核心路径不依赖联网；service worker 只能增强，不得变成「无网不可用」。  
 > **2026-08-07**：可选 PWA 基础层已立项；旧「离线缓存 3D」口径作废，以本任务块与 PRD 为准。  
 > **2026-08-12**：相关但**独立**的「Web 轻量版本更新提示」（仅有新版本时出现 → 点一下刷新）已拍板；**不**扩大本任务为推送/补丁包。见 `PROCESS.md` + Brief `task-web-soft-update-prompt.md`。
 
@@ -197,6 +197,22 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Brief** | 免费 A：静默快照 + 空库恢复；复用邮箱 OTP | `task-practice-memory-cloud-backup-a.md` | **已立项**（#270） |
 | **实现** | Worker put/get/delete + 客户端 debounce / Idle flush / 空库恢复 / Journey 角落 | `feature/practice-memory-cloud-backup-a` | **#272 已合** tip `a195584`；Worker redeploy `f9755950-…` |
 | **关单前置** | 生产 OTP secrets + TRACKER 端到端 | — | **secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip） |
+
+---
+
+## 📍 同坐点（Focus Coins · 2026-08-18 方向锁）
+
+> 练习货币；对外 **同坐点**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
+
+| 级 | 内容 | Brief / 分支 | 状态 |
+|---|---|---|---|
+| **文档** | 隔离清单、发点/防刷、与徽章两层、工作量分级 | `FOCUS_COINS.md` · `task-focus-coins.md` | **#333 已合** |
+| **L0** | 纯账本单测（Companion 三档 / Honesty 日限 / 封顶 / `isEntitled` 失败用例） | `feature/focus-coins-l0-ledger` | **本支** |
+| **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | 待 L0；**硬闸：开工前扫 Honesty 邻接 PR** |
+| **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | 待 L1 |
+| **L3** | 抽屉安静表面；en/ja；375 | `feature/focus-coins-l3-surface` | 待 L2 |
+
+合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
 
 ---
 

@@ -1,0 +1,56 @@
+{
+  "name": "focus-tiger-desktop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "pack": "node scripts/pack.js"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.twinsology.focus-tiger",
+    "productName": "Focus Tiger",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "ipcGuard.js",
+      {
+        "from": "../dist",
+        "to": "dist",
+        "filter": ["**/*", "!sprites/**", "!audio/**"]
+      }
+    ],
+    "extraResources": [
+      {
+        "from": "../public/sprites",
+        "to": "sprites"
+      },
+      {
+        "from": "../public/audio",
+        "to": "audio"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.lifestyle",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        }
+      ]
+    }
+  }
+}

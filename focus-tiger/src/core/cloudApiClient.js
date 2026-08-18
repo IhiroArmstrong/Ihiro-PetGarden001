@@ -8,23 +8,82 @@
  * No entitlement state — safe for either track to import.
  */
 
+import { getDesktopShellBridge, isDesktopShellRuntime } from './desktopShell.js';
+
+/** Keep in sync with `desktop/main.js` `DEFAULT_CLOUD_API_BASE`. */
+export const DEFAULT_CLOUD_API_BASE_URL =
+  'https://focus-tiger-cloud.ihiro.workers.dev';
+
 /**
+ * @param {object} [globalObj]
  * @returns {string} Cloud API base without trailing slash, or "" if unset.
  */
-export function getCloudApiBaseUrl() {
+export function getCloudApiBaseUrl(globalObj = globalThis) {
   try {
     const raw = String(import.meta.env?.VITE_CLOUD_API_BASE_URL || '').trim();
-    return raw.replace(/\/+$/, '');
+    if (raw) return raw.replace(/\/+$/, '');
   } catch {
-    return '';
+    // Vite env unavailable (unit tests / non-bundled).
   }
+  // Packaged Electron may be built without `.env.local`; the main process
+  // still has a default Worker URL and Cloud POST goes through IPC.
+  if (isDesktopShellRuntime(globalObj)) {
+    return DEFAULT_CLOUD_API_BASE_URL;
+  }
+  return '';
+}
+
+/**
+ * @param {unknown} err
+ * @param {number} [status]
+ * @param {unknown} [body]
+ */
+function attachCloudError(err, status, body) {
+  if (err && typeof err === 'object') {
+    if (status != null) /** @type {any} */ (err).status = status;
+    if (body !== undefined) /** @type {any} */ (err).body = body;
+  }
+  return err;
 }
 
 /**
  * @param {string} path e.g. "/api/create-tip-checkout-session"
  * @param {RequestInit} [init]
+ * @param {{ desktopShell?: ReturnType<typeof getDesktopShellBridge> }} [deps]
  */
-export async function postCloudJson(path, init = {}) {
+export async function postCloudJson(path, init = {}, deps = {}) {
+  const shell = deps.desktopShell ?? getDesktopShellBridge();
+  if (shell && typeof shell.cloudPostJson === 'function') {
+    let result;
+    try {
+      result = await shell.cloudPostJson(
+        path,
+        typeof init.body === 'string' ? init.body : init.body == null ? '{}' : String(init.body)
+      );
+    } catch (err) {
+      const status = /** @type {any} */ (err)?.status;
+      const body = /** @type {any} */ (err)?.body;
+      throw attachCloudError(
+        err instanceof Error ? err : new Error(String(err)),
+        status,
+        body
+      );
+    }
+    // Main-process envelope keeps HTTP status across IPC (thrown Error
+    // custom fields are not reliable after Electron clone).
+    if (result && typeof result === 'object' && result.ok === false) {
+      const detail =
+        typeof result.detail === 'string' && result.detail
+          ? result.detail
+          : `HTTP ${result.status || 0}`;
+      throw attachCloudError(new Error(detail), result.status, result.body);
+    }
+    if (result && typeof result === 'object' && result.ok === true && 'body' in result) {
+      return result.body;
+    }
+    return result;
+  }
+
   const base = getCloudApiBaseUrl();
   if (!base) {
     throw new Error('cloud_api_unconfigured');
@@ -49,9 +108,9 @@ export async function postCloudJson(path, init = {}) {
         ? String(/** @type {{ detail?: unknown }} */ (body).detail || '')
         : `HTTP ${res.status}`;
     const err = new Error(detail || `HTTP ${res.status}`);
-    /** @type {any} */ (err).status = res.status;
-    /** @type {any} */ (err).body = body;
-    throw err;
+    throw attachCloudError(err, res.status, body);
   }
   return body;
 }
+
+export { openCheckoutUrl } from './desktopShell.js';

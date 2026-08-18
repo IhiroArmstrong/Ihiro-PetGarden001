@@ -6,9 +6,10 @@
 /**
  * Memorial Seal · 《芥子须弥》(Mustard Seed · Mount Sumeru)
  *
- * Product originality mark (乐五斋诗稿): unlock once when unified practice
- * score crosses the threshold; first reveal after a timed completion ceremony;
- * thereafter re-openable from Idle ⋯ / drawer (Quiet Line–like card).
+ * Product originality mark (乐五斋 verse cases): unlock once when unified
+ * practice score crosses the threshold; each unrevealed case first appears
+ * after a timed completion ceremony; thereafter re-openable from Idle ⋯ /
+ * drawer (Quiet Line–like card), cycling revealed cases.
  *
  * score = practiceDayCount + floor(lifetimeMinutes / 60) — same as practice badges.
  */
@@ -35,6 +36,9 @@ export const MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR =
 export const MUSTARD_SEED_SEAL_BADGE_FILE =
   'yin-badge-square-gold-on-silver-alt.png';
 
+export const MUSTARD_SEED_SEAL_CASE_SUMERU = 'mustard-seed-sumeru';
+export const MUSTARD_SEED_SEAL_CASE_HERO = 'hero-not-pond';
+
 export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
   '大鹏展翅九万里，',
   '十方世界共菩提。',
@@ -53,59 +57,223 @@ export const MUSTARD_SEED_SEAL_POEM_EN = Object.freeze([
 export const MUSTARD_SEED_SEAL_ATTRIBUTION_ZH = '乐五斋诗稿';
 export const MUSTARD_SEED_SEAL_ATTRIBUTION_EN = 'Verses of Le Wu Zhai';
 
+export const MUSTARD_SEED_SEAL_HERO_POEM_ZH = Object.freeze([
+  '山海奇云风幡舞，',
+  '红尘如电亦如露。',
+  '芥子无量纳须弥，',
+  '英雄岂是池中物。'
+]);
+
+/** Product EN lines (2026-08-17: same draft posture as case 1). */
+export const MUSTARD_SEED_SEAL_HERO_POEM_EN = Object.freeze([
+  'Strange clouds over mountains and seas; wind-banners dance.',
+  'Red dust is like lightning, and like dew.',
+  'Immeasurable, a mustard seed holds Mount Sumeru.',
+  'How could a hero remain a creature of the pond?'
+]);
+
+export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH = '乐五斋七言歌行';
+export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN =
+  'Song Verse of Le Wu Zhai';
+
 /**
- * @param {Storage | null | undefined} storage
- * @returns {{ revealed: boolean, revealedAt: string | null, scoreAtReveal: number | null }}
+ * Ordered verse cases for this memorial scene (same card, same score gate).
+ * @type {ReadonlyArray<{
+ *   id: string,
+ *   poemZh: ReadonlyArray<string>,
+ *   poemEn: ReadonlyArray<string>,
+ *   attributionZh: string,
+ *   attributionEn: string
+ * }>}
  */
-export function readMustardSeedSealState(storage) {
-  if (!storage) {
-    return { revealed: false, revealedAt: null, scoreAtReveal: null };
+export const MUSTARD_SEED_SEAL_CASES = Object.freeze([
+  Object.freeze({
+    id: MUSTARD_SEED_SEAL_CASE_SUMERU,
+    poemZh: MUSTARD_SEED_SEAL_POEM_ZH,
+    poemEn: MUSTARD_SEED_SEAL_POEM_EN,
+    attributionZh: MUSTARD_SEED_SEAL_ATTRIBUTION_ZH,
+    attributionEn: MUSTARD_SEED_SEAL_ATTRIBUTION_EN
+  }),
+  Object.freeze({
+    id: MUSTARD_SEED_SEAL_CASE_HERO,
+    poemZh: MUSTARD_SEED_SEAL_HERO_POEM_ZH,
+    poemEn: MUSTARD_SEED_SEAL_HERO_POEM_EN,
+    attributionZh: MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
+    attributionEn: MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN
+  })
+]);
+
+/**
+ * @returns {{
+ *   revealed: boolean,
+ *   revealedAt: string | null,
+ *   scoreAtReveal: number | null,
+ *   revealedCaseIds: string[],
+ *   lastShownCaseId: string | null
+ * }}
+ */
+function emptySealState() {
+  return {
+    revealed: false,
+    revealedAt: null,
+    scoreAtReveal: null,
+    revealedCaseIds: [],
+    lastShownCaseId: null
+  };
+}
+
+/**
+ * @param {string | null | undefined} id
+ * @returns {(typeof MUSTARD_SEED_SEAL_CASES)[number] | null}
+ */
+export function getMustardSeedSealCase(id) {
+  if (typeof id !== 'string' || !id) return null;
+  return MUSTARD_SEED_SEAL_CASES.find((entry) => entry.id === id) ?? null;
+}
+
+/**
+ * Legacy `{ revealed: true }` without `revealedCaseIds` = case 1 already shown.
+ * @param {{ revealed?: boolean, revealedCaseIds?: unknown }} [state]
+ * @returns {string[]}
+ */
+export function listRevealedMustardSeedCaseIds(state) {
+  const raw = Array.isArray(state?.revealedCaseIds)
+    ? state.revealedCaseIds.filter((id) => getMustardSeedSealCase(id))
+    : [];
+  if (raw.length > 0) return raw;
+  if (state?.revealed === true) return [MUSTARD_SEED_SEAL_CASE_SUMERU];
+  return [];
+}
+
+/**
+ * @param {{ revealed?: boolean, revealedCaseIds?: unknown }} [state]
+ * @returns {(typeof MUSTARD_SEED_SEAL_CASES)[number] | null}
+ */
+export function nextUnrevealedMustardSeedCase(state) {
+  const revealed = new Set(listRevealedMustardSeedCaseIds(state));
+  return MUSTARD_SEED_SEAL_CASES.find((entry) => !revealed.has(entry.id)) ?? null;
+}
+
+/**
+ * Next revealed case after `lastShownCaseId` (wrap). One revealed case stays put.
+ * @param {{
+ *   revealed?: boolean,
+ *   revealedCaseIds?: unknown,
+ *   lastShownCaseId?: string | null
+ * }} [state]
+ * @returns {(typeof MUSTARD_SEED_SEAL_CASES)[number]}
+ */
+export function pickMustardSeedSealMenuCase(state) {
+  const revealedIds = listRevealedMustardSeedCaseIds(state);
+  if (revealedIds.length === 0) {
+    return MUSTARD_SEED_SEAL_CASES[0];
   }
-  try {
-    const raw = storage.getItem(MUSTARD_SEED_SEAL_STORAGE_KEY);
-    if (!raw) {
-      return { revealed: false, revealedAt: null, scoreAtReveal: null };
-    }
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== 'object') {
-      return { revealed: false, revealedAt: null, scoreAtReveal: null };
-    }
-    return {
-      revealed: parsed.revealed === true,
-      revealedAt:
-        typeof parsed.revealedAt === 'string' ? parsed.revealedAt : null,
-      scoreAtReveal:
-        typeof parsed.scoreAtReveal === 'number' &&
-        Number.isFinite(parsed.scoreAtReveal)
-          ? parsed.scoreAtReveal
-          : null
-    };
-  } catch {
-    return { revealed: false, revealedAt: null, scoreAtReveal: null };
-  }
+  const last = state?.lastShownCaseId;
+  const idx = revealedIds.indexOf(last);
+  const nextId =
+    idx >= 0
+      ? revealedIds[(idx + 1) % revealedIds.length]
+      : revealedIds[0];
+  return getMustardSeedSealCase(nextId) ?? MUSTARD_SEED_SEAL_CASES[0];
 }
 
 /**
  * @param {Storage | null | undefined} storage
- * @param {{ scoreAtReveal?: number, now?: () => Date }} [opts]
- * @returns {{ revealed: boolean, revealedAt: string | null, scoreAtReveal: number | null }}
+ * @param {ReturnType<typeof emptySealState>} state
  */
-export function markMustardSeedSealRevealed(storage, opts = {}) {
-  const now = opts.now?.() ?? new Date();
-  const state = {
-    revealed: true,
-    revealedAt: now.toISOString(),
-    scoreAtReveal:
-      typeof opts.scoreAtReveal === 'number' &&
-      Number.isFinite(opts.scoreAtReveal)
-        ? opts.scoreAtReveal
-        : null
-  };
+function persistSealState(storage, state) {
   try {
     storage?.setItem(MUSTARD_SEED_SEAL_STORAGE_KEY, JSON.stringify(state));
   } catch {
     // ignore quota
   }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @returns {ReturnType<typeof emptySealState>}
+ */
+export function readMustardSeedSealState(storage) {
+  if (!storage) return emptySealState();
+  try {
+    const raw = storage.getItem(MUSTARD_SEED_SEAL_STORAGE_KEY);
+    if (!raw) return emptySealState();
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return emptySealState();
+    const revealed = parsed.revealed === true;
+    const revealedAt =
+      typeof parsed.revealedAt === 'string' ? parsed.revealedAt : null;
+    const scoreAtReveal =
+      typeof parsed.scoreAtReveal === 'number' &&
+      Number.isFinite(parsed.scoreAtReveal)
+        ? parsed.scoreAtReveal
+        : null;
+    const lastShownCaseId = getMustardSeedSealCase(parsed.lastShownCaseId)
+      ? parsed.lastShownCaseId
+      : null;
+    const revealedCaseIds = listRevealedMustardSeedCaseIds({
+      revealed,
+      revealedCaseIds: parsed.revealedCaseIds
+    });
+    return {
+      revealed,
+      revealedAt,
+      scoreAtReveal,
+      revealedCaseIds,
+      lastShownCaseId
+    };
+  } catch {
+    return emptySealState();
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @param {{
+ *   scoreAtReveal?: number,
+ *   caseId?: string,
+ *   now?: () => Date
+ * }} [opts]
+ * @returns {ReturnType<typeof emptySealState>}
+ */
+export function markMustardSeedSealRevealed(storage, opts = {}) {
+  const now = opts.now?.() ?? new Date();
+  const prev = readMustardSeedSealState(storage);
+  const nextPending = nextUnrevealedMustardSeedCase(prev);
+  const caseId =
+    getMustardSeedSealCase(opts.caseId)?.id ??
+    nextPending?.id ??
+    MUSTARD_SEED_SEAL_CASE_SUMERU;
+  const revealedCaseIds = [
+    ...new Set([...listRevealedMustardSeedCaseIds(prev), caseId])
+  ];
+  const state = {
+    revealed: true,
+    revealedAt: prev.revealedAt ?? now.toISOString(),
+    scoreAtReveal:
+      prev.scoreAtReveal ??
+      (typeof opts.scoreAtReveal === 'number' &&
+      Number.isFinite(opts.scoreAtReveal)
+        ? opts.scoreAtReveal
+        : null),
+    revealedCaseIds,
+    lastShownCaseId: caseId
+  };
+  persistSealState(storage, state);
+  return state;
+}
+
+/**
+ * Menu re-read: remember which verse was shown without claiming a new case.
+ * @param {Storage | null | undefined} storage
+ * @param {string} caseId
+ * @returns {ReturnType<typeof emptySealState>}
+ */
+export function rememberMustardSeedSealLastShown(storage, caseId) {
+  const prev = readMustardSeedSealState(storage);
+  if (!getMustardSeedSealCase(caseId)) return prev;
+  const state = { ...prev, lastShownCaseId: caseId };
+  persistSealState(storage, state);
   return state;
 }
 
@@ -140,6 +308,10 @@ export function isMustardSeedSealScoreMet(
  *   summary: { practiceDayCount: number, lifetimeMinutes: number },
  *   unlocked: boolean,
  *   revealed: boolean,
+ *   revealedCaseIds: string[],
+ *   lastShownCaseId: string | null,
+ *   nextCase: (typeof MUSTARD_SEED_SEAL_CASES)[number] | null,
+ *   menuCase: (typeof MUSTARD_SEED_SEAL_CASES)[number],
  *   shouldAutoReveal: boolean
  * }}
  */
@@ -150,13 +322,18 @@ export function resolveMustardSeedSeal(storage, opts = {}) {
   );
   const score = computePracticeScore(summary);
   const unlocked = score >= threshold;
-  const { revealed } = readMustardSeedSealState(storage);
+  const state = readMustardSeedSealState(storage);
+  const nextCase = nextUnrevealedMustardSeedCase(state);
   return {
     score,
     summary,
     unlocked,
-    revealed,
-    shouldAutoReveal: unlocked && !revealed
+    revealed: state.revealed,
+    revealedCaseIds: state.revealedCaseIds,
+    lastShownCaseId: state.lastShownCaseId,
+    nextCase,
+    menuCase: pickMustardSeedSealMenuCase(state),
+    shouldAutoReveal: unlocked && nextCase != null
   };
 }
 
@@ -172,17 +349,24 @@ export function mustardSeedSealBadgeSrc(
 
 /**
  * Pure gate for post-completion auto offer (timed session ceremony only).
+ * Prefer `hasUnrevealedCase` (second verse still pending after case 1).
+ * If omitted, falls back to legacy `revealed !== true`.
  * @param {{
  *   completed?: boolean,
  *   unlocked?: boolean,
- *   revealed?: boolean
+ *   revealed?: boolean,
+ *   hasUnrevealedCase?: boolean
  * }} opts
  * @returns {boolean}
  */
 export function shouldOfferMustardSeedSealAfterCeremony(opts = {}) {
+  const pending =
+    typeof opts.hasUnrevealedCase === 'boolean'
+      ? opts.hasUnrevealedCase
+      : opts.revealed !== true;
   return (
     opts.completed === true &&
     opts.unlocked === true &&
-    opts.revealed !== true
+    pending === true
   );
 }
