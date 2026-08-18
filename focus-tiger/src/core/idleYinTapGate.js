@@ -33,3 +33,39 @@ export function canPlayIdleYinTap({
   if (emotionKey && !IDLE_TAP_READY_EMOTION_KEYS.has(emotionKey)) return false;
   return true;
 }
+
+/**
+ * Re-arm the Idle tap after every `playEmotion` — including `_finishOneShot`
+ * which fires `onComplete` *before* it returns to idle (so a tap's own
+ * onComplete still sees `earWiggleHeadTouch` and would leave the hit hidden).
+ * @param {{ playEmotion: Function }} emotionController
+ * @param {() => void} sync
+ */
+export function wrapPlayEmotionWithIdleYinTapSync(emotionController, sync) {
+  if (!emotionController || typeof emotionController.playEmotion !== 'function') {
+    return;
+  }
+  if (typeof sync !== 'function') return;
+  if (emotionController._idleYinTapPlayWrapped) return;
+  const raw = emotionController.playEmotion.bind(emotionController);
+  emotionController.playEmotion = (emotionKey, options = {}) => {
+    const userComplete = options.onComplete;
+    const nextOptions =
+      typeof userComplete === 'function'
+        ? {
+            ...options,
+            onComplete: (...args) => {
+              try {
+                userComplete(...args);
+              } finally {
+                sync();
+              }
+            }
+          }
+        : options;
+    const result = raw(emotionKey, nextOptions);
+    sync();
+    return result;
+  };
+  emotionController._idleYinTapPlayWrapped = true;
+}
