@@ -165,6 +165,7 @@ import {
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
+import { bindDesktopShellAttention } from './core/desktopShell.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -770,6 +771,7 @@ async function init() {
       mindfulReminderController.handleAttentionReturn(event)
   });
   attentionSignals.bind();
+  bindDesktopShellAttention(attentionSignals);
 
   // 结束反思：正常完成在庆祝播完回归坐姿后淡入；主动结束不播完成反馈，短暂留白后淡入。
   const reflectionMoment = new TigerReflectionMoment(

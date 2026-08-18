@@ -16,6 +16,10 @@
  *   cloudPostJson?: (path: string, body?: string | null) => Promise<unknown>,
  *   getVersion?: () => Promise<string>,
  *   quit?: () => Promise<unknown>,
+ *   hide?: () => Promise<unknown>,
+ *   show?: () => Promise<unknown>,
+ *   getShellVisibility?: () => Promise<{ hidden?: boolean, hideReason?: string }>,
+ *   onShellVisibility?: (cb: (payload: { hidden?: boolean, hideReason?: string }) => void) => () => void,
  * }}
  */
 export function getDesktopShellBridge(globalObj = globalThis) {
@@ -65,4 +69,35 @@ export async function openCheckoutUrl(url, deps = {}) {
   }
   assign(href);
   return 'navigate';
+}
+
+/**
+ * Step B: tell AttentionSignals whether the shell is hide-to-tray (SB-18).
+ *
+ * @param {{ setHideReason?: (reason: unknown) => void } | null | undefined} signals
+ * @param {{ hideReason?: unknown } | null | undefined} payload
+ */
+export function applyShellVisibilityToAttention(signals, payload) {
+  if (!signals || typeof signals.setHideReason !== 'function') return;
+  signals.setHideReason(payload?.hideReason === 'tray' ? 'tray' : 'none');
+}
+
+/**
+ * @param {{ setHideReason?: (reason: unknown) => void } | null | undefined} signals
+ * @param {ReturnType<typeof getDesktopShellBridge>} [shell]
+ * @returns {() => void}
+ */
+export function bindDesktopShellAttention(signals, shell = getDesktopShellBridge()) {
+  if (!signals || !shell || typeof shell.onShellVisibility !== 'function') {
+    return () => {};
+  }
+  const unsub = shell.onShellVisibility((payload) => {
+    applyShellVisibilityToAttention(signals, payload);
+  });
+  if (typeof shell.getShellVisibility === 'function') {
+    void Promise.resolve(shell.getShellVisibility())
+      .then((payload) => applyShellVisibilityToAttention(signals, payload))
+      .catch(() => {});
+  }
+  return typeof unsub === 'function' ? unsub : () => {};
 }
