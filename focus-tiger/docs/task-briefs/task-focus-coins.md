@@ -1,6 +1,6 @@
-# Task Brief · 同坐点（Focus Coins）
+# Task Brief · 寅币（Focus Coins）
 
-> **状态**：L2 本支待合 · `feature/focus-coins-l2-redeem`（2026-08-18）。L0 #335 · L1 #338 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
+> **状态**：L0 #335 · L1 #338 · L2 #339 已合。本支 `feature/yin-coin-breath-duration`：对外名寅币 + Breath 坐满按 Stay 档发时长点。TRACKER 待人工。方向锁见 `FOCUS_COINS.md`。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
 > **性质**：L2 内部兑换（中风险：徽章隔离 / 莲花池不拦截）。**一次只做一个 L 级**。无抽屉、不改场景剧本、不扩备份 6 key。**只兑、不动 Honesty 时长分档**。  
 > **禁止**：建 entitlement gate key；L0–L2 改 `SCENARIO_TESTS.md`；用余额满足 `isEntitled`。
@@ -9,13 +9,13 @@
 
 ## 0. 一句话
 
-练习入账后发「同坐点」，只能兑换身份/情感锦上添花；买不到 Lifetime ∪ Membership 的进阶能力。对外不叫积分。
+练习入账后发「寅币」，只能兑换身份/情感锦上添花；买不到 Lifetime ∪ Membership 的进阶能力。对外不叫积分。
 
 ---
 
 ## 1. 已拍板（勿再开放）
 
-见 `FOCUS_COINS.md` §2 六条：隔离清单 · Honesty 半额日限 1 次 · 连续日只 +3 回声 · 不拦截自动纪念 · 徽章与货币两层同一账本 · 对外名同坐点。
+见 `FOCUS_COINS.md` §2 六条：隔离清单 · Honesty 半额日限 1 次 · 连续日只 +3 回声 · 不拦截自动纪念 · 徽章与货币两层同一账本 · 对外名寅币。
 
 ---
 
@@ -39,9 +39,9 @@
 | 级 | 分支建议 | 做 | 不做 | 人日 | 验收一句话 |
 |---|---|---|---|---|---|
 | **L0** | `feature/focus-coins-l0-ledger` | 纯函数：分档发点、封顶、回声、兑换资格、隔离断言 | 不挂 `main.js`、无 UI、不改 localStorage 白名单 | 2–4 | 防刷表单测全绿；未达标/二次 Honesty/`isEntitled` 失败用例锁住 |
-| **L1** | `feature/focus-coins-l1-award` | 完成钩子写入钱包；key 进 L-01；flag 可关 | 无店、不改场景剧本、不扩备份 6 key | 4–6 | 达标一场 Stay 见余额涨；未达标为 0；关 flag 无写入 |
+| **L1** | `feature/focus-coins-l1-award` | 完成钩子写入钱包；key 进 L-01；flag 可关 | 无店、不改场景剧本、不扩备份 6 key | 4–6 | 达标一场 Stay 见余额涨；坐满 Breath 10 同分档；未达标 / Leave 为 0；关 flag 无写入 |
 | **L2** | `feature/focus-coins-l2-redeem` | 称号 + 稀有章 + ≥1 空间变体；稀缺双门槛 | 新角色序列换装柜 | 4–6（无新美术） | 花点留下只增不减资产；会员/请茶跳不过须弥坐 |
-| **L3** | `feature/focus-coins-l3-surface` | 抽屉「同坐点」；装备称号；en/ja；375 | 改场景 D；B 轨 key | 3–5 | 次级入口可忽略；0–1s 按压；不挡主球 |
+| **L3** | `feature/focus-coins-l3-surface` | 抽屉「寅币」；装备称号；en/ja；375 | 改场景 D；B 轨 key | 3–5 | 次级入口可忽略；0–1s 按压；不挡主球 |
 
 **Feature flag**：L1 起 `FOCUS_COINS_USER_MOUNT_ENABLED`（或同等）。关 = 完全回到无同坐点正式路径（Playbook 红线 C：禁止半套简化默认）。
 

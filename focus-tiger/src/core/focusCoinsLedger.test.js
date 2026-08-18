@@ -44,8 +44,8 @@ function memoryStorage(seed = {}) {
 }
 
 describe('focusCoinsLedger L0', () => {
-  it('display name is 同坐点, not arcade copy', () => {
-    assert.equal(FOCUS_COINS_DISPLAY_NAME, '同坐点');
+  it('display name is 寅币, not arcade copy', () => {
+    assert.equal(FOCUS_COINS_DISPLAY_NAME, '寅币');
   });
 
   it('incomplete / unreached timed session → 0', () => {

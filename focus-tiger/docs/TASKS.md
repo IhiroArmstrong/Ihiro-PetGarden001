@@ -200,9 +200,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
-## 📍 同坐点（Focus Coins · 2026-08-18 方向锁）
+## 📍 寅币（Focus Coins · 2026-08-18 方向锁）
 
-> 练习货币；对外 **同坐点**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
+> 练习货币；对外 **寅币**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
 
 | 级 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|

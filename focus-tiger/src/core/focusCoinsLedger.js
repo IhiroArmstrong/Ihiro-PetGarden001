@@ -4,7 +4,7 @@
  */
 
 /**
- * 同坐点（Focus Coins）L0 ledger — pure functions only.
+ * 寅币（Focus Coins）L0 ledger — pure functions only.
  *
  * No storage, no main.js, no entitlement writes. L1 may persist the
  * returned day/session snapshots; this module must stay hook-free.
@@ -20,7 +20,7 @@ import {
 } from './FocusSession.js';
 import { FEATURE_CATALOG } from './entitlement/entitlementRegistry.js';
 
-export const FOCUS_COINS_DISPLAY_NAME = '同坐点';
+export const FOCUS_COINS_DISPLAY_NAME = '寅币';
 
 export const GRANT_KIND = Object.freeze({
   INCOMPLETE: 'incomplete',
@@ -312,7 +312,7 @@ function cloneSession(session) {
 }
 
 /**
- * Award 同坐点 for one completed (or incomplete) event.
+ * Award 寅币 for one completed (or incomplete) event.
  *
  * @param {FocusCoinsGrantEvent} event
  * @param {FocusCoinsDayState} [day]

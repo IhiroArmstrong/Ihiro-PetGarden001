@@ -197,6 +197,7 @@ import { GRANT_KIND } from './core/focusCoinsLedger.js';
 import { FocusCoinsStore } from './core/focusCoinsStore.js';
 import {
   applyFocusCoinsGrant,
+  applyBreathPracticeFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './core/focusCoinsAward.js';
 import {
@@ -1744,7 +1745,13 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
-    awardFocusCoins({ kind: GRANT_KIND.MICRO_RITUAL });
+    applyBreathPracticeFocusCoinsGrant({
+      durationMinutes,
+      store: focusCoinsStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
