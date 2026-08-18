@@ -271,7 +271,7 @@ export class EmotionController {
         }
       },
       // 进 DORMANT 过渡（2c）：披毯/星光斗篷正放；默认 onComplete 后由 MoodController 接 sleeping。
-      // holdPose：深夜 Rise / 达标结束定格末帧进 Reflection（不自动接 sleeping）。
+      // holdPose：定格末帧（调试 / 其它调用方）。会话结束进 Reflection 不再走本键（2026-08-18）。
       // 2026-08-04：classic cloak-sleep 与 starlight v5 约 50/50（可 options.cloakVariant 强制）。
       cloakSleep: (options = {}) => {
         this._leaveIdleBaseline();

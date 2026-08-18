@@ -560,7 +560,7 @@
 **拍板（方案 A + 前台可见意图）**：
 
 1. **关掉白天 Idle 无操作披毯**（删除 `shouldIdleInactivityCloak` / 活动监听 / 60s 轮询）。
-2. **保留**：深夜 Idle→DORMANT、练完 ≥2h live sync、Expand B、2B。
+2. **保留**：深夜 Idle→DORMANT、练完 ≥2h live sync、2B。**Expand B 会话结束披毯已于 2026-08-18 收回**（Reflect 开着须醒着同坐）。
 3. 「仅前台可见才计时」：无操作计时器已删 → **无后台累计**（意图满足；不必再挂 visibility 门闩）。
 
 **工作流补丁**：同视觉多入口须先分清冷启动 / 长挂 / 深夜 / 2h；上线长挂会改第一眼的定时器须写验收警告。单测锁「无操作 helper 已移除」。

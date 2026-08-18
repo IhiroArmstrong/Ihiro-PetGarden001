@@ -171,7 +171,7 @@
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
 - **「本周陪伴」今日标记 + 窄屏 toast 避让（2026-08-05）**：PR #120 合入 `develop` tip `dc415d7`（星期缩写/今日描边/Dormant 可见；窄屏底部文案 clearance belt）。Hints tip 几何仍属 #7 再设计。
 - **KnownRisky 验收清单入库（2026-08-04）**：`KNOWN_RISKY_TEST_CHECKLIST.md` 步骤 SSOT；#1 已关单（见上行）。
-- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
+- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B 会话结束披毯已收回（2026-08-18）**：Reflect 开着不得睡着。**2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
 - **FocusHUD 否决「随风浮动」（2026-08-04）**：冷启动毛玻璃隐退保留；**禁止**整卡位移动画，以免与静置 chrome 不统一。见 `DESIGN` FocusHUD / `TEST_TRACKER` 冷启动首屏行。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.12**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。Welcome 优先顺序曾 OK（§6.10）。**2026-08-04**：刷新后鹦鹉→Idle **闪白** → 根因 **§6.12**；同日晚 tip `0494dd6` 人工回落叠化关单。**后补** `fix/parrot-idle-capcut`：companion oneshot 抗闪契约 + 单测 P3/P4（非重开关单）。
@@ -424,7 +424,7 @@
 
 **已知的开放决策 / 待确认事项**：
 
-- **星光斗篷拓展（2026-08-04）**：2A wellness + Expand A（**仅深夜**；白天无操作披毯已关）/ B + 长离 2B；2h→DORMANT 保留互补。
+- **星光斗篷拓展（2026-08-04；B 于 2026-08-18 收回会话结束披毯）**：2A wellness + Expand A（**仅深夜**；白天无操作披毯已关）+ 长离 2B；2h→DORMANT 保留互补。**Reflect 开着不得 cloakSleep。**
 - **语义化版本与稳定发布点（2026-07-30 已拍板）**：SemVer；首稳 `v1.0.0`；稳定版 = `main` annotated tag；开发阶段不切 `release/*`。见 `WORKFLOW.md` / `RULES_INDEX` → `git-semver-release`（非开放项，留此一行防重复开议题）。
 - **v1.0 纯本地 / 云端品味层（2026-07-30 已拍板 · 2026-08-18 收窄改名）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网。旧称「v1.1 云端算法」已收窄为 Backlog「云端品味层」（权重 + 文案池；播放器永远本地）。**支付云 ≠ 品味云**；功能堆多了 **不**自动打 SemVer `v1.1.0`。代码保留 `cloud/` 可扩展；**禁止**把核心门闩绑死在必须成功的云请求上。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。

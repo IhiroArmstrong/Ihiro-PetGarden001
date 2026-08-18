@@ -37,7 +37,7 @@
 | 状态名（英文标识符） | 中文名称 | 是否循环播放 | 触发条件 | 优先级 | 当前已有实现 |
 |---|---|---|---|---|---|
 | `Idle` | 日常静息（坐禅闭眼） | 是（姿态本身静态循环展示；可叠加动态层） | **默认开场与日常基底**（含当日零完成 / 登录后第一幕）；非庆祝播放中 / 非调试 Sleeping / 非当日已庆祝后的持续微笑态时 | **10**（最低基底优先级） | **已实现**：GLB `tiger-meditate-closed.glb`（2026-07-18：单色暖浅灰棉麻、无红边），`PoseManager` 中 `IDLE_CLOSED_EYES`；2D 主线默认隐藏 canvas，正式情绪由 `idle-breathing` 等序列承载；Idle 自发变体见下文「IdleOrchestrator 自发变体」 |
-| `Sleeping` | 瞌睡（睡着了） | 是（定格末帧 + 背部 canvas 呼吸） | **不再**作为零完成 / **冷启动**自动开场；仅调试面板「睡着了」、或 live sync 进 `STATES.DORMANT`（≥2h 空闲后回前台等）时；语气克制，不做委屈/生病拟人化 | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：定格同变体入睡末帧（经典 **034** / 星光 **067**）；**content-box canvas** 仅背部椭圆 `scaleY` 微鼓起→恢复（**头 / 蒲团 / 镜头不动**）。与同变体 `cloakSleep` 正放末帧衔接。**2026-08-04**：白天冷启动仍禁 2h 戳开场即睡；深夜 wellness 可 forceDormant。旧 `sleeping/` 8 帧保留勿接 |
+| `Sleeping` | 瞌睡（睡着了） | 是（定格末帧 + 背部 canvas 呼吸） | **不再**作为零完成 / **冷启动**自动开场；仅调试面板「睡着了」、或 live sync 进 `STATES.DORMANT`（≥2h 空闲后回前台等）时；语气克制，不做委屈/生病拟人化。**禁止**在 Reflection 开着时进睡（2026-08-18 收回 Expand B 会话结束披毯） | **60**（覆盖 `Idle`；被一次性庆祝/唤醒打断后按规则回落） | **已实现（2D 主线）**：定格同变体入睡末帧（经典 **034** / 星光 **067**）；**content-box canvas** 仅背部椭圆 `scaleY` 微鼓起→恢复（**头 / 蒲团 / 镜头不动**）。与同变体 `cloakSleep` 正放末帧衔接。**2026-08-04**：白天冷启动仍禁 2h 戳开场即睡；深夜 wellness 可 forceDormant。旧 `sleeping/` 8 帧保留勿接 |
 | `Smiling` | 坐禅微笑基底（观照者回归态） | 是（`blink-smile` pingpong） | 当日已触发过一次 `Celebrating` 且庆祝动画播放完毕后自动回归；角色恢复稳定坐姿与呼吸，只保留温和微笑，不继续庆祝表演；次日日期戳重置后回到 `Idle` | **50**（覆盖 `Idle`，低于 `Sleeping`） | **已实现（2D 主线）**：`blink-smile` 12 帧 pingpong；`playEmotion('smiling')`；3D `tiger-meditate-smile.glb` 仅作垫底且主线默认隐藏 canvas。日期戳持续基底仍待完整接通 |
 | `Celebrating` | 完整庆祝（短暂、温暖、有情感） | 否（一次性播放，不循环） | 专注数据**当日首次达标**（如番茄钟/会话达到目标分钟数）；每个自然日仅触发一次，以日期戳判断；同日后续完成仍触发轻量 `SessionComplete`，不重复完整庆祝 | **100**（最高；播放期间临时夺取基底姿态，播完回归 `Idle` / idle-breathing） | **已实现（2D 主线）**：两套变体素材——`celebrate-dance`（57 帧）与 `celebrate-dance-v2`（60 帧）；`playEmotion('celebrating')` 每次触发时 50/50 随机选用其一（MVP 不做轮换记账）；`loopMode: none`，播完由 EmotionController 回归 idle-breathing。3D `tiger-happy-jump.glb` 仍作垫底。日期戳防刷与 `Smiling` 持续基底仍待完整接通。本序列即主界面 Celebrating 的正式幅度上限；禁止另加更娱乐化的街机式狂欢动作 |
 
@@ -680,5 +680,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.89 | 2026-08-04 | `Sleeping`：定格入睡末帧 + 背部 clip 层 scaleY 呼吸（头/蒲团/镜头不动；取代整图缩放与末帧 pingpong） |
 | 0.92 | 2026-08-05 | 入库 `conjureFlowersBlowAway`（变花吹散 · Phase 1 Lab）；Day1/久别策略 C 已拍板；产品冷启动未接线；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
 | 0.93 | 2026-08-14 | `MindfulAcknowledge` subtype `activeRecoverCooldown` → `nodBowMicro`（FB-01 冷却再点；小于完整 nod-bow；无 toast） |
-| 0.94 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（产品壳 2D hit；圣经「微笑眯眼」仍无正式精灵） |
+| 0.95 | 2026-08-18 | **收回 Expand B**：Rise / 计时达标进 Reflection 不得 `cloakSleep`；Reflect 开着须醒着同坐。深夜休息仍 Expand A Idle→DORMANT / 2h live / wellness 冷启动 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。
