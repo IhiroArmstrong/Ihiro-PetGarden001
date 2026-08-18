@@ -281,7 +281,7 @@ export async function skipArrivalBegin(page) {
  * @param {import('@playwright/test').Page} page
  * @param {number} [minutes]
  */
-export async function pickFocusDurationIfShown(page, minutes = 15) {
+export async function pickFocusDurationIfShown(page, minutes = 10) {
   const picker = page.locator('#focus-duration-picker');
   const visible = await picker.isVisible().catch(() => false);
   if (!visible) return;

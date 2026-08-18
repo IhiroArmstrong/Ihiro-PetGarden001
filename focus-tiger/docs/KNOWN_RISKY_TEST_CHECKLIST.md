@@ -55,7 +55,7 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | 旧口径（易测错） | 现口径（2026-08-06+） |
 |---|---|
 | 左球 = Quick Start（立刻 Focusing） | 左球 = **Breath practice** → 时长 chip（1/3/5/10/20）；正式 Focus 仍走 **Sit → Arrival** |
-| Companion 点选 → 立刻 Focusing | Companion 点选 → **先**出 Focus 时长 chip **15/25/45/60** → 再 Focusing（`?sessionMinutes=` 仍可跳过） |
+| Companion 点选 → 立刻 Focusing | Companion 点选 → **先**出 Focus 时长 chip **10/15/25/45** → 再 Focusing（`?sessionMinutes=` 仍可跳过） |
 | 抽屉 / ⋯ 有「一分钟呼吸」行 | **已去重**；呼吸入口只在左球 |
 | 欢迎池仅书/点头 | Day1 / ≥3 日久别可 **吹花 + 头顶气泡**（压过 wellness 斗篷）；同日 XOR |
 | 付费未定 | **双轨已锁**：A Buy Yin a Tea（不解锁内容）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖（同一套进阶权益）；②B 电子书**已取消** |
@@ -82,13 +82,13 @@ Safari：`http://127.0.0.1:5173/?product=1`（窄屏 375×667）。关单书面�
 | 11 | Visibility 契约 gap-* 行 | verified | `listVisibilityLockGaps()` 空；改 suppress 跑 visibility e2e。 | 批 4 收口 | 改壳时跑 visibility |
 | 12 | 场景动画 Dispatcher（欢迎/深夜/好奇互斥） | known-risky | 冷启动欢迎 vs 深夜互斥；Rise 加权池（伸懒腰/茶/书）；`welcomeBack` 空实现属预期。<br>**新增**：吹花欢迎进 WELCOME 池（#21）——同日 XOR、压 wellness。 | 人工多为待测；Rise 池已接线 | 走查 Slice 表 + 吹花交叉 |
 | 13 | MilestoneGlow 与 Celebrating 同刻 | known-risky | streak-7：只播 Glow（蝴蝶/鹦鹉 50/50），庆祝戳仍记账；Honesty 跨节点先 Glow 再桥接；21/100 星石。 | 产品已接线；TRACKER 待人工 | 走查同刻（可用实验室清节点） |
-| 14 | Companion 点选→开表门闩（含 375 鞠躬 + **时长 chip**） | known-risky | 【主路径】Sit → Arrival → Choose → 鞠躬后 Companion 三选一在视口内 → 点 Here/Flow/Offline → **见 15/25/45/60 chip** → 点选即 Focusing。<br>【Offline】跳过 Arrival 后仍应出 chip（除非 `?sessionMinutes=`）。<br>【回流】Rise 后 hint→Here/Flow：门闩保持则立刻到 chip/开表；Sit 仍走完整 Arrival。<br>【375】鞠躬后三选一须在视口内。 | 多次「鞠躬后无三选一」回归；现多一步 chip 易漏测 | **优先走查回流**；保活门闩失败用例 |
+| 14 | Companion 点选→开表门闩（含 375 鞠躬 + **时长 chip**） | known-risky | 【主路径】Sit → Arrival → Choose → 鞠躬后 Companion 三选一在视口内 → 点 Here/Flow/Offline → **见 10/15/25/45 chip** → 点选即 Focusing。<br>【Offline】跳过 Arrival 后仍应出 chip（除非 `?sessionMinutes=`）。<br>【回流】Rise 后 hint→Here/Flow：门闩保持则立刻到 chip/开表；Sit 仍走完整 Arrival。<br>【375】鞠躬后三选一须在视口内。 | 多次「鞠躬后无三选一」回归；现多一步 chip 易漏测 | **优先走查回流**；保活门闩失败用例 |
 | 15 | Emotion / playEmotion 返回值常忽略 | assumed-ok | 非产品走查主项；hold key SSOT 已部分收口。 | EDGE 部分 | 新情绪漏登记再升级 |
 | 16 | main.js 完成路径 / pendingAutoStart* 闭包 | known-risky | 达标 / 未达标 Rise → Reflection → Idle；完成反馈期勿连点 Sit/左球造成半卡。 | EDGE #20–23 | 走查异常回流 |
 | 17 | Grow / Milestone.js 等占位 TODO | known-risky | 确认无「假完整纪念柜」；MilestoneGlow ≠ Milestone.js 脚手架。 | Backlog 两套叙事 | **本轮可跳过** |
 | 18 | Arrival CapCut 抗闪（Notice→Breath / Choose→鞠躬） | known-risky · **P0** | 【主路径】Sit → Notice 任选 → 切入 Breath 微笑 **约 1s 叠化、无闪白** → Choose 任选 → 鞠躬切入与回落 **无闪白**。<br>【回流】Rise 后再走一遍 Arrival。<br>【分列】Notice 后眨眼；Choose→鞠躬；鞠躬→Idle/Companion —— 三条分开记。 | **release-blocker** recorded=2026-08-06；本地修 `clear:false` + freeze；须 tip 复测。自动化不锁像素。 | **优先人工复测** → TRACKER 关单 |
 | 19 | 首页 Breath practice 左球 + Extended Breath | known-risky | 【左球】Idle 宽+375：文案/aria 为 Breath practice；点开 → chip 1/3/5/10/20；**不是**立刻 Focusing。<br>【抽屉/⋯】不得再出现 Breath / 一分钟呼吸行。<br>【Arrival 开着】点球 → 取消 Arrival 再开 picker。<br>【Extended】选时长 → 吸呼+乐+toast+轻完成+Reflection；Leave 不记账；后台回前台墙钟满须完成。<br>【音乐回归】呼吸结束后 Sit→Focus 选曲可闻；Rise 停播；不得把 ambient-pref 改成 Off。 | 08-06 多轮书面 OK（含 tip `656dc50` / `3a782ff`）；关单级仍认 develop tip；presence 光效可选。 | tip 批注关单 / 与 #4 交叉 |
-| 20 | Focus 开表前时长 chip + HUD 目标标注 | known-risky | 【chip】Companion 后见 **15/25/45/60**（与 Breath 档位差异化）→ 点选 Focusing；Leave 取消不开表。<br>【HUD】`#hud-time` 下淡字本场总时长（如 `15 min`）；Rise 后隐藏；en/ja。<br>【e2e】`?sessionMinutes=N` 跳过 picker——**产品无 query 路径须人工点 chip**。 | 08-06 feature tip 书面基本 OK；关单须 develop tip | tip 关单 |
+| 20 | Focus 开表前时长 chip + HUD 目标标注 | known-risky | 【chip】Companion 后见 **10/15/25/45**（默认 10；与 Breath 分轨）→ 点选 Focusing；Leave 取消不开表。<br>【HUD】`#hud-time` 下淡字本场总时长（如 `10 min`）；Rise 后隐藏；en/ja。<br>【e2e】`?sessionMinutes=N` 跳过 picker——**产品无 query 路径须人工点 chip**。 | 08-06 feature tip 书面基本 OK；关单须 develop tip | tip 关单 |
 | 21 | 吹花欢迎冷启动（Phase 2b/2c） | known-risky | 【Day1】清 `flower-welcome` + `scene-anim-daily` → 硬刷新 → 吹花+头顶白玉气泡（含深夜——**压过** wellness 斗篷）。<br>【同日再刷】不得再吹花/书/点头欢迎。<br>【久别 ≥3 日】再吹花；文案尽量不连同句（2c）。<br>【375】气泡完整在 ActionBar **下方**。<br>【`?flowerWelcome=0`】永不吹花。 | Phase 1–2c 已合；多轮 feature tip OK；关单级 develop tip 分列仍开 | tip 分列关单 |
 | 22 | Zen Cinema（增长①） | known-risky | Idle → ⋯/抽屉 **Zen Cinema** → 确认卡（缩略图+片名）→ Watch 开系统浏览器 YouTube；Not now 关。<br>回流：关后再开；Rise 后再开。375 卡不挡主球。<br>**禁止** Reflection 边缘入口、App 内嵌播放器。 | PR #148 已合；TRACKER 待人工 | 走查 → tip 关单 |
 | 23 | Quiet Line / 今日静语存图（增长③） | known-risky | Idle → ⋯/抽屉 **A Quiet Line** → 见当日金句 → Save image 下 **4:5 明信片 PNG**（上静帧、下暖纸金句；文件名含日期）；同日再开句不变。<br>回流同 #22。375 不挡主球。<br>**禁止**一键社交分享卖点、soft-schedule、中文产品金句。 | PR #153 已合；TRACKER 待人工 | 走查 → tip 关单 |

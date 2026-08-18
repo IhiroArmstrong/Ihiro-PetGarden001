@@ -4,7 +4,7 @@
  */
 
 /**
- * Focus 开表前时长 chip（15/25/45/60）。点选即开表；Leave 取消回 Idle chrome。
+ * Focus 开表前时长 chip（10/15/25/45）。点选即开表；Leave 取消回 Idle chrome。
  * 与 Breath practice（1/3/5/10/20）档位刻意差异化。
  */
 
