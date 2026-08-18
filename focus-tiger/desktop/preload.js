@@ -11,5 +11,14 @@ contextBridge.exposeInMainWorld('desktopShell', {
   cloudPostJson: (path, body) =>
     ipcRenderer.invoke('desktop:cloud-post', path, body),
   getVersion: () => ipcRenderer.invoke('desktop:version'),
-  quit: () => ipcRenderer.invoke('desktop:quit')
+  quit: () => ipcRenderer.invoke('desktop:quit'),
+  hide: () => ipcRenderer.invoke('desktop:hide'),
+  show: () => ipcRenderer.invoke('desktop:show'),
+  getShellVisibility: () => ipcRenderer.invoke('desktop:shell-visibility-get'),
+  onShellVisibility: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = (_event, payload) => cb(payload);
+    ipcRenderer.on('desktop:shell-visibility', wrapped);
+    return () => ipcRenderer.removeListener('desktop:shell-visibility', wrapped);
+  }
 });

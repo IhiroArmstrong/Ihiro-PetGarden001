@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-18（长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**；场景 AB Electron 托盘 ≠ 走神 / SB-18 先锁契约；**步骤 A 窗口代码已提交**，Mac 上按 TRACKER 测；场景 AB 仍等步骤 B。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-18（步骤 B 托盘 + SB-18 已接线，Mac 按 TRACKER 场景 AB 测；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -547,7 +547,7 @@
 
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
-> **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（收费 DMG 前补托盘 + 走神修；Brief `task-electron-desktop-scaffold.md`）。**步骤 A 窗口不要催本场景**（那时无托盘）。**现在不要催测。**  
+> **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。  
 > **对照**：场景 **B** = 用户把**另一个 App 或标签**带到前台；本场景 = 主窗口 hide 到菜单栏，进程仍在。  
 > **不是**场景 AA（浏览器 Document PiP）。  
 > **白名单**：**SB-18**（收进托盘无 Re-focus）。切到别的 App 仍走 B / SB-01–03。  
@@ -652,7 +652,7 @@
 
 1. **背景**：分析师同意「收费 DMG 必须有托盘」；旧 Brief「脚手架不引托盘」作废。  
 2. **本次**：升格 **场景 AB**（托盘 hide ≠ 走神）；白名单 **SB-18**（不复用已废止的 SB-16/17）。对照场景 **B** 仍管切标签/切 App。  
-3. **现在不要催测场景 AB**：须等步骤 B（托盘）。步骤 A 窗口已提交，Mac 上按 TRACKER「Electron 步骤 A」测（无托盘）。  
+3. **步骤 B 已接线**：请用本机 Mac `desktop:dev` 按 TRACKER 场景 AB 测（托盘 + SB-18）。不要用 Safari 代替。  
 
 ---
 
