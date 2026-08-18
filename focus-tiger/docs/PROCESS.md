@@ -58,15 +58,17 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC） · 云端品味层范围/时机拍板（旧称 v1.1 云端算法）· 长周期 QA 播种 `?qaSeedStreak=`（PR #328）· 同坐点 L0 纯账本 · 禅意倾听者桌面窄例外 · Electron 步骤 A（无托盘）· 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-18（UTC+8） · 同坐点 L1 发点接线（`FocusCoinsStore`）· 云端品味层政策锁（#337）· 长周期 QA 播种 `?qaSeedStreak=`（#328）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A 已提交（无托盘）· 莲花池 Slice A（#330）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **同坐点 L1 发点（2026-08-18）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。无兑换 UI、不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工。
+
 - **云端品味层政策锁（2026-08-18 · 纯文档）**：旧称「v1.1 云端算法」改名。只上云权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工；payload 须 `schemaVersion`。**无运行时**。权威 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
 
-- **长周期 QA 播种（2026-08-17）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
+- **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
 - **禅意倾听者 · 桌面窄例外（2026-08-18 · 纯文档）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp 主进程、模型不进 DMG、Focusing 卸载）；**先 L0 机型实测，不上入口**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。无运行时。
 
@@ -380,7 +382,7 @@
 
 **下一步计划**：
 
-- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：方向锁已合 #333。**L0 纯账本本支** `feature/focus-coins-l0-ledger`（不挂 `main.js`）。**L1 硬闸**：开工前必须书面扫 Honesty / 完成记账邻接并行 PR。勿插队桌面步骤 B。
+- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：L0 #335 已合。**L1 发点本支** `feature/focus-coins-l1-award`（无店；`?focusCoins=0` 关闸）。下一步 L2 兑换。勿插队桌面步骤 B。
 - **云端品味层（2026-08-18 政策锁）**：文档已落；**未接线**。待 Rise/欢迎/完成/Honesty 表窄冻结后口令「开工云端品味层」。勿与同坐点 L1 叠车。Brief `task-cloud-taste-layer.md`。
 - **陪伴 · 桌面端侧窄例外（2026-08-18 政策锁）**：检索不生成 **未废止**。批复仅限桌面、用户主动、最后一层生成。**下一步**须口令「开工桌面陪伴 L0」才写运行时；勿与同坐点 L1 叠车。Brief `task-desktop-on-device-companion.md`。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
@@ -741,12 +743,11 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ### Backlog:同坐点（Focus Coins · C 轨练习货币）
 
-> **方向已锁（2026-08-18）**。L0 纯账本本支。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
+> **方向已锁（2026-08-18）**。L0 #335 已合。L1 发点本支。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
 
 - 对外名 **同坐点**；只兑身份/情感锦上添花；**禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 - 与 **莲花池 Slice A（#330）**：池按终身分钟自动开花；同坐点只可买已有朵上的变体（如晨露），**禁止**把开花改成花点才出现。
-- 工作量：L0–L2 约 10–16 人日。L0 = `focusCoinsLedger.js`。
-- **L1 硬闸**：开 `feature/focus-coins-l1-award` 前必须书面扫 Honesty / 完成记账邻接并行 PR（口头注意不算过闸）。
+- 工作量：L0–L2 约 10–16 人日。L1 = `FocusCoinsStore` + 完成钩子。
 - 勿插队桌面步骤 B / 桌面端侧智能体 L1。
 
 ### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）

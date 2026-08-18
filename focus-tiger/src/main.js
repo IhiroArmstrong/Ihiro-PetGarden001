@@ -193,6 +193,13 @@ import {
 } from './core/MilestoneGlowStore.js';
 import { applyQaPracticeSeedFromSearch } from './core/qaPracticeSeed.js';
 import { LotusPondStore } from './core/LotusPondStore.js';
+import { GRANT_KIND } from './core/focusCoinsLedger.js';
+import { FocusCoinsStore } from './core/focusCoinsStore.js';
+import {
+  applyFocusCoinsGrant,
+  maybeResetFocusCoinsSession
+} from './core/focusCoinsAward.js';
+import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
 import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
@@ -740,6 +747,7 @@ async function init() {
       onActivate: () => {
         const result = mindfulReminderController.triggerActiveRecover();
         if (result.ok) {
+          awardFocusCoins({ kind: GRANT_KIND.ACTIVE_RECOVER });
           activeRecoverAnchor.enterCooldown(ACTIVE_RECOVER_COOLDOWN_MS);
         }
         return result;
@@ -1122,6 +1130,26 @@ async function init() {
     storage: typeof localStorage !== 'undefined' ? localStorage : null
   });
   const practiceDaysStore = new PracticeDaysStore();
+  const focusCoinsStore = new FocusCoinsStore({ now });
+  function awardFocusCoins(event) {
+    return applyFocusCoinsGrant({
+      event,
+      store: focusCoinsStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
+  }
+  function resetFocusCoinsSession() {
+    maybeResetFocusCoinsSession({
+      store: focusCoinsStore,
+      search: location.search
+    });
+  }
+  window.__focusCoins = {
+    getBalance: () => focusCoinsStore.getBalance(),
+    getSnapshot: () => focusCoinsStore.getSnapshot()
+  };
   const lotusPondStore = new LotusPondStore();
   const lotusPondRuntime = new LotusPondRuntime({
     store: lotusPondStore,
@@ -1157,7 +1185,11 @@ async function init() {
       arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
       microRitualUI?.isOpen?.() === true,
-    onCheckInComplete: () => {
+    onCheckInComplete: ({ durationMinutes } = {}) => {
+      awardFocusCoins({
+        kind: GRANT_KIND.HONESTY,
+        durationMinutes
+      });
       honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
       const streak = practiceDaysStore.getRecentStreakDays();
@@ -1671,6 +1703,7 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
+    awardFocusCoins({ kind: GRANT_KIND.MICRO_RITUAL });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
@@ -2202,6 +2235,9 @@ async function init() {
         currentSessionIntention = latched.text;
         currentIntentionSource = latched.source;
         arrivalChoseThisRun = Boolean(info.chose);
+        if (arrivalChoseThisRun) {
+          awardFocusCoins({ kind: GRANT_KIND.ARRIVE });
+        }
         syncArrivalGateReady(true);
         onboardingHints?.markSeen('notice');
         onboardingHints?.markSeen('breathing');
@@ -2362,6 +2398,7 @@ async function init() {
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
     arrivalChoseThisRun = false;
+    resetFocusCoinsSession();
     pendingAutoStartMode =
       autoStartMode && shouldAutoStartFocusOnModeSelect(autoStartMode)
         ? autoStartMode
@@ -2559,6 +2596,7 @@ async function init() {
   }
 
   function beginFocusWithMode(companionMode) {
+    resetFocusCoinsSession();
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
@@ -2842,6 +2880,13 @@ async function init() {
     stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
+    awardFocusCoins({
+      kind: GRANT_KIND.TIMED,
+      reachedTarget: true,
+      companionMode: focusSession.companionMode,
+      durationMinutes: focusSession.targetMinutes
+    });
+    awardFocusCoins({ kind: GRANT_KIND.REFLECT });
     lotusPondRuntime.releaseBirths();
     stateManager.setState(STATES.IDLE);
     honestyGlowLevel = null;
