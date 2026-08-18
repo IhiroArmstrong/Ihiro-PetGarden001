@@ -13,8 +13,8 @@ import {
 
 /**
  * Scene X2 — Idle tap forehead / Yin hit → earWiggleHeadTouch.
- * Locks product-shell wiring. Preview builds have no `__emotionController`
- * (DEV-only); assert visible sprite src + hit disarm instead.
+ * Preview builds have no `__emotionController` (DEV-only); assert sprite src
+ * + hit disarm. One navigation: main path then Rise reflow (avoid 2× goto flake).
  */
 
 async function settleIdleTapReady(page) {
@@ -66,18 +66,14 @@ async function expectEarWiggleSprite(page) {
     .toBe(false);
 }
 
-test('Idle forehead tap plays Yin head-touch', async ({ page }) => {
-  await openFreshProductShell(page, { query: { flowerWelcome: 0 } });
-  await settleIdleTapReady(page);
-  await clickHitForehead(page);
-  await expectEarWiggleSprite(page);
-});
-
-test('Idle tap re-arms after Rise → Reflection skip (reflow)', async ({
+test('Idle forehead tap plays Yin head-touch and re-arms after Rise', async ({
   page
 }) => {
   await openFreshProductShell(page, { query: { flowerWelcome: 0 } });
   await settleIdleTapReady(page);
+  await clickHitForehead(page);
+  await expectEarWiggleSprite(page);
+
   await quickStartFocus(page);
   await expectFocusSessionActive(page);
   await riseSkipReflectionToIdle(page);
