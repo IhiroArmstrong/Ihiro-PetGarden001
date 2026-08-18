@@ -14,7 +14,7 @@ import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v5';
+const STYLE_ID = 'ft-wide-idle-more-styles-v6';
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
@@ -72,10 +72,11 @@ function setBoolPropIfChanged(el, prop, next) {
 }
 
 /**
- * Wide Idle (≥480): home three balls (Quick · Sit · Honesty) + ⋯ popover.
+ * Wide Idle (≥480): home three balls (Quick · Sit · Honesty) + ⋯ right sheet.
  * Replaces Sit+⚡ text pills as primary CTAs. Narrow (≤479) is NarrowIdleShell.
  *
  * Proxies existing DOM (Honesty / breath / How / Sound FAB / reminder).
+ * The ⋯ panel is a viewport-fixed right sheet so it never bisects Yin.
  */
 export class WideIdleMoreMenu {
   /**
@@ -250,6 +251,8 @@ export class WideIdleMoreMenu {
     document.removeEventListener('keydown', this._onKeyDown, true);
     this._dockObserver?.disconnect?.();
     this.wrap?.remove();
+    this.menu?.remove();
+    this.backdrop?.remove();
     this.homeCtas?.remove();
     this.ctaRow?.remove();
     document.getElementById(STYLE_ID)?.remove();
@@ -317,6 +320,12 @@ export class WideIdleMoreMenu {
     this.moreBtn.setAttribute('aria-haspopup', 'menu');
     this.moreBtn.setAttribute('aria-controls', 'ft-wide-more-menu');
 
+    this.backdrop = document.createElement('div');
+    this.backdrop.id = 'ft-wide-more-backdrop';
+    this.backdrop.className = 'ft-wide-more__backdrop';
+    this.backdrop.hidden = true;
+    this.backdrop.setAttribute('aria-hidden', 'true');
+
     this.menu = document.createElement('div');
     this.menu.id = 'ft-wide-more-menu';
     this.menu.className = 'ft-wide-more__menu';
@@ -327,7 +336,10 @@ export class WideIdleMoreMenu {
     this.listEl.className = 'ft-wide-more__list';
     this.menu.appendChild(this.listEl);
 
-    this.wrap.append(this.moreBtn, this.menu);
+    this.wrap.append(this.moreBtn);
+    // Portal sheet + scrim to body so they can sit above Support/mute (z24)
+    // without remaining trapped in the dock stacking context (z16).
+    document.body.append(this.backdrop, this.menu);
 
     // Three balls + ⋯; leave hint / Honesty / breath / Sit+⚡ pills in dock for proxy
     this.ctaRow.append(this.homeCtas, this.wrap);
@@ -505,6 +517,7 @@ export class WideIdleMoreMenu {
       if (shouldIgnoreOutsideDismissTarget(event.target)) return;
       const target = /** @type {Node} */ (event.target);
       if (this.wrap?.contains(target)) return;
+      if (this.menu?.contains(target)) return;
       this.closeMenu();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
@@ -546,9 +559,9 @@ export class WideIdleMoreMenu {
       this.homeCtas.classList.toggle('is-arrival-quick', keepQs);
     }
     if (this.moreBtn) this.moreBtn.hidden = !showMore;
-    if (this.menu) {
-      this.menu.hidden = !(this._menuOpen && showMore);
-    }
+    const sheetOpen = this._menuOpen && showMore;
+    if (this.menu) this.menu.hidden = !sheetOpen;
+    if (this.backdrop) this.backdrop.hidden = !sheetOpen;
     if (!showMore) this._menuOpen = false;
     if (park) this._refreshHomeCtas();
   }
@@ -579,6 +592,7 @@ export class WideIdleMoreMenu {
         li.setAttribute('role', 'presentation');
         const label = document.createElement('div');
         label.className = 'ft-wide-more__group';
+        label.dataset.group = item.labelKey;
         label.textContent = t(item.labelKey);
         li.appendChild(label);
         this.listEl.appendChild(li);
@@ -863,13 +877,31 @@ export class WideIdleMoreMenu {
       .ft-wide-more__btn[hidden] {
         display: none !important;
       }
+      .ft-wide-more__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 25;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: rgba(44, 31, 20, 0.16);
+        cursor: pointer;
+      }
+      .ft-wide-more__backdrop[hidden] {
+        display: none !important;
+      }
       .ft-wide-more__menu {
-        position: absolute;
-        left: 50%;
-        bottom: calc(100% + 10px);
-        transform: translateX(-50%);
-        min-width: 220px;
-        max-width: min(280px, 70vw);
+        position: fixed;
+        top: max(16px, env(safe-area-inset-top, 0px));
+        right: max(12px, env(safe-area-inset-right, 0px));
+        bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
+        left: max(56vw, calc(100vw - 312px));
+        transform: none;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+        display: flex;
+        flex-direction: column;
         padding: 8px;
         border-radius: 14px;
         border: 1px solid rgba(139, 115, 85, 0.28);
@@ -877,7 +909,8 @@ export class WideIdleMoreMenu {
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
-        z-index: 20;
+        z-index: 26;
+        overflow: hidden;
       }
       .ft-wide-more__menu[hidden] {
         display: none !important;
@@ -889,6 +922,10 @@ export class WideIdleMoreMenu {
         display: flex;
         flex-direction: column;
         gap: 4px;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .ft-wide-more__item {
         display: block;

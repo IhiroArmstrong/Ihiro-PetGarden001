@@ -695,6 +695,7 @@ export class NarrowIdleShell {
       if (item.kind === 'group-label') {
         const label = document.createElement('div');
         label.className = 'ft-narrow-sheet__group';
+        label.dataset.group = item.labelKey;
         label.textContent = t(item.labelKey);
         li.appendChild(label);
         this.listEl.appendChild(li);

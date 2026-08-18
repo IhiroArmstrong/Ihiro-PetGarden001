@@ -943,7 +943,7 @@
 
 | 壳 | 形态 | 本矩阵怎么用 |
 |---|---|---|
-| **目标壳**（产品意图 · **现行运行时**） | ≥480：`WideIdleMoreMenu`——常驻 **三球（Quick · Sit · Honesty）+ ⋯**；呼吸 / How / 提醒 / language 进 **向上 Popover**；Sit+⚡ 文案 pill 与 Honesty dock 入口 park；左下 `?` + 热力图保留 | 下表 **W1–W8** 按新壳测 |
+| **目标壳**（产品意图 · **现行运行时**） | ≥480：`WideIdleMoreMenu`——常驻 **三球（Quick · Sit · Honesty）+ ⋯**；呼吸 / How / 提醒 / language 进 **右侧 sheet**（贴右、可滚、浅遮罩；**不得**向上居中挡住阿寅）；Sit+⚡ 文案 pill 与 Honesty dock 入口 park；左下 `?` + 热力图保留 | 下表 **W1–W8** 按新壳测 |
 | **目标壳（历史 · Sit+⚡+⋯）** | ≥480：常驻 Sit + ⚡ + ⋯；Honesty 曾在 ⋯ 内 | 仅对照旧 e2e / 截图；勿再当产品意图 |
 | **旧竖排 dock**（清场未合入的工作区） | 底栏仍散落长文案次级钮 | **W1 / W4** 改为：各次级入口仍在底栏且**对应故事可走通**；**禁止**用「按钮都看得见」代替 W2/W3/W5/W6 |
 
@@ -964,23 +964,23 @@
 | W1 | Idle 清场形态 | 常驻 **三球（Quick · Sit · Honesty）+ ⋯**；How / Sound FAB / 提醒**不在**底栏常驻簇（已 park）；左下 `?` + 热力图仍在 |
 | W2 | Sit → Notice → Breath → Choose → 鞠躬 → Focusing | 左上 `#focus-hud` 进入 Focusing、计时走动；`#btn-focus` 呈 Rise |
 | W3 | Arrival 全程（含 **Breath / Inhale**） | **Sit 与 ⋯ 隐藏**（或明确不可点）；**⚡ 仍可见**可 Quick Start；不得中途又露出可点 Sit。**窄屏**：用户可见宿主是 `#ft-narrow-home-quickstart`（勿只断言 dock 里已 park 的 `#quick-start-focus`） |
-| W4 | ⋯ Popover 代理入口 | 打开 ⋯ → 至少抽测：**Honesty**（进补登/时长）、**How shall we sit?**（三选一）、**Sound**（**直接** Soundscape 选曲面，禁止只抬红色 FAB）、**提醒**（设置面板）——点选后 Popover 收起、真实面板出现 |
+| W4 | ⋯ 右侧 sheet 代理入口 | 打开 ⋯ → 菜单贴右、不挡阿寅脸；至少抽测：**How shall we sit?**（三选一）、**提醒**（设置面板）。Honesty 是首页球（不在 ⋯ 内）。Sound 走右上音符（**直接** Soundscape 选曲面）。点选后 sheet 收起、真实面板出现 |
 | W5 | 点 **?** 补救 / tip 锚点 | park 后 tip 须 remap 到可见宿主（常为 ⋯ 或仍可见的 `?`）；禁止乱指已 park 旧坐标 |
-| W6 | 邻接可点物（外侧 / tip / Popover） | 见 **N22** |
+| W6 | 邻接可点物（外侧 / tip / 右侧 sheet） | 见 **N22** |
 | W7 | Focusing 期 chrome | **⋯ 隐藏**；Sound FAB 按契约回到可点位；`#focus-hud` 可读 |
 | W8 |（若本任务触及）Honesty 桥接 / Rise 后再进 | 门闩与窄屏一致；无静默失败 |
 
 「有没有 ⋯」「次级是否 park」类壳烟测**可以**保留，但**不替代**上表。
 
-#### N22 · 宽屏邻接可点物回归（Popover + tip + 外侧）
+#### N22 · 宽屏邻接可点物回归（右侧 sheet + tip + 外侧）
 
-宽屏特有叠层是 **⋯ 向上 Popover**；与 Arrival / Companion / Honesty 选择格共用「外侧取消」时，须显式锁邻接（优先 e2e；否则 `TEST_TRACKER` 人工锁路径）：
+宽屏特有叠层是 **⋯ 右侧 sheet**；与 Arrival / Companion / Honesty 选择格共用「外侧取消」时，须显式锁邻接（优先 e2e；否则 `TEST_TRACKER` 人工锁路径）：
 
 | 操作 | 必须结果 |
 |---|---|
 | Notice / Choose 打开时，点 **空白外侧** | 取消仪式回 Idle（不开表）；⚡ 仍可立刻开表 |
 | 同上，点 **tip / hint 气泡** | **只关 tip，不关** Notice/Choose 面板 |
-| ⋯ 菜单打开时，点菜单外空白 | **只关 Popover**，不误关无关的 Arrival / Honesty 面板（若当时未开则仅收菜单） |
+| ⋯ 菜单打开时，点菜单外空白 / 浅遮罩 | **只关 sheet**，不误关无关的 Arrival / Honesty 面板（若当时未开则仅收菜单） |
 | ⋯ 内点某一代理项 | 打开对应真实面板，且菜单关闭 |
 | Companion 三选一打开时，点 tip | 只关 tip，不收起三选一（与 §8 N18 同族） |
 

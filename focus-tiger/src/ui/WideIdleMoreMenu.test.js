@@ -69,6 +69,16 @@ describe('wide more menu click reception', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.match(src, /shouldIgnoreOutsideDismissTarget/);
+    assert.match(src, /this\.menu\?\.contains\(target\)/);
+  });
+
+  it('docks the ⋯ sheet to the right edge instead of growing over Yin', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /ft-wide-more__backdrop/);
+    assert.match(src, /left: max\(56vw, calc\(100vw - 312px\)\)/);
+    assert.match(src, /z-index: 26/);
+    assert.doesNotMatch(src, /bottom: calc\(100% \+ 10px\)/);
   });
 
   it('stages the reminder panel on-canvas (not the empty heatmap stub)', () => {

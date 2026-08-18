@@ -316,13 +316,13 @@ describe('listSecondaryChromeEntries', () => {
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
         'companion',
-        'reminder',
-        'language',
         'five-moments',
         'journey-log',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'reminder',
+        'language',
         'newsletter',
         'community',
         'membership',
@@ -332,6 +332,15 @@ describe('listSecondaryChromeEntries', () => {
       ]
     );
     assert.ok(entries.some((e) => e.kind === 'group-label'));
+    assert.deepEqual(
+      entries.filter((e) => e.kind === 'group-label').map((e) => e.labelKey),
+      [
+        'MENU_GROUP_PRACTICE',
+        'MENU_GROUP_INSPIRATION',
+        'MENU_GROUP_PREFERENCES',
+        'ritual.menu_group'
+      ]
+    );
   });
 
   it('wide more omits honesty and breath; includes companion/reminder/language/five-moments/zen-cinema/…', () => {
@@ -340,13 +349,13 @@ describe('listSecondaryChromeEntries', () => {
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
         'companion',
-        'reminder',
-        'language',
         'five-moments',
         'journey-log',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'reminder',
+        'language',
         'newsletter',
         'community',
         'membership',
@@ -374,12 +383,12 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
-        'language',
         'five-moments',
         'journey-log',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'language',
         'newsletter',
         'community',
         'membership',
@@ -405,11 +414,13 @@ describe('listSecondaryChromeEntries', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     const communityIdx = entries.findIndex((e) => e.proxy === 'community');
     const membershipIdx = entries.findIndex((e) => e.proxy === 'membership');
-    const ritualsIdx = entries.findIndex((e) => e.kind === 'group-label');
+    const ritualsIdx = entries.findIndex(
+      (e) => e.labelKey === 'ritual.menu_group'
+    );
     assert.ok(communityIdx >= 0);
     assert.equal(membershipIdx, communityIdx + 1);
     assert.equal(ritualsIdx, membershipIdx + 1);
-    assert.equal(entries[ritualsIdx]?.labelKey, 'ritual.menu_group');
+    assert.equal(entries[ritualsIdx]?.kind, 'group-label');
   });
 
   it('membership row is beige subscribe CTA when scenes are locked', () => {

@@ -66,7 +66,7 @@
 | **18** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-card` 向阿寅倾诉卡（⋯ / 抽屉；**Web 检索不生成**；默认挂载关；QA `?confide=1`）。桌面窄例外未接线，见定位稿 |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |
 | **20** | `src/core/EmotionController.js` | DEV 情绪调试按钮列（右上） |
-| **20** | `src/ui/WideIdleMoreMenu.js` | 宽屏 More（⋯）下拉菜单面板 |
+| **20** | `src/ui/WideIdleMoreMenu.js` | （历史）宽屏 More 曾为 dock 内 popover z20；现行右侧 sheet 见 **25 / 26**（挂 `body`） |
 | **21** | `src/main.js` | DEV 实验室按钮（重置本地状态 / 清 hints / 等） |
 | **22** | `src/main.js` | DEV 实验室一次性 toast（`#dev-lab-toast`） |
 | **22** | `src/ui/AmbientSoundscapeUI.js` | Ambient 根壳（`.ambient-soundscape`，`pointer-events: none`） |
@@ -76,8 +76,10 @@
 | **24** | `src/ui/AmbientSoundscapeUI.js` | 右上 mute / 音符钮（`.ambient-soundscape__mute`） |
 | **24** | `src/ui/SupportYinModalUI.js` | 右上 Support Yin FAB（`#yin-support-fab`；在 mute 左侧） |
 | **24** | `src/ui/NarrowIdleShell.js` | 窄屏 Focusing：强制把 mute 提到可点层（覆盖 park） |
-| **25** | `src/ui/SupportYinModalUI.js` | `#yin-support-backdrop` Support 模态遮罩 |
-| **26** | `src/ui/SupportYinModalUI.js` | `#yin-support-modal` Support 三卡模态（Sanctuary + Membership + Tea） |
+| **25** | `src/ui/SupportYinModalUI.js` | `#yin-support-backdrop` Support 模态遮罩（在 `#ui-overlay` z10 内） |
+| **25** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-backdrop` 宽屏 ⋯ 浅遮罩（挂 `body`，盖过整个 `#ui-overlay`） |
+| **26** | `src/ui/SupportYinModalUI.js` | `#yin-support-modal` Support 三卡模态（Sanctuary + Membership + Tea；`#ui-overlay` 内） |
+| **26** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-menu` 宽屏 ⋯ 右侧 sheet（挂 `body`；打开时在 Support FAB 之上） |
 | **27** | `src/ui/OnboardingHintsUI.js` | 用途说明卡（`.onboarding-app-purpose`） |
 | **28** | `src/ui/OnboardingHintsUI.js` | Hints 目录芯片（`.ft-hint-catalog-chip`，如「More tips」） |
 | **29** | `src/ui/OnboardingHintsUI.js` | 应用内隐私说明（`#onboarding-privacy-sheet`；高于简介卡） |
