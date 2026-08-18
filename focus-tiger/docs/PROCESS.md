@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 桌面陪伴 L0 hitch 无卡顿（M5）；#336 仍先不合（待 M1 8GB 或书面豁免）；不必现在找旧电脑 · 同坐点 L0 纯账本 · 禅意倾听者桌面窄例外拍板 · Electron 步骤 A · 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-18（UTC+8） · 桌面陪伴：端侧生成仅宽屏 ⋯（窄屏无本地智能体）· hitch 无卡顿（M5）；#336 仍先不合 · 同坐点 L0 纯账本 · Electron 步骤 A · 莲花池 Slice A（#330）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-18）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**#336 仍先不合**（缺 M1 8GB；不必现在找旧电脑）。不锁 0.6B、不开 L1。勿与同坐点口令混说。权威：`task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-18）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口（同日拍板）**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**#336 仍先不合**（缺 M1 8GB；不必现在找旧电脑）。不锁 0.6B、不开 L1。勿与同坐点口令混说。权威：`task-desktop-on-device-companion.md`。
 
 - **同坐点 L0 纯账本（2026-08-18）**：`focusCoinsLedger.js` 已在 `develop`；不挂 `main.js`。本支不改账本。
 
@@ -380,7 +380,7 @@
 **下一步计划**：
 
 - **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：方向锁已合 #333。**L0 纯账本** `focusCoinsLedger.js`（不挂 `main.js`）。**L1 硬闸**：开工前必须书面扫 Honesty / 完成记账邻接并行 PR。勿插队桌面步骤 B。
-- **陪伴 · 桌面端侧窄例外（2026-08-18）**：检索不生成 **未废止**。L0 探针 M5 过闸；hitch **无卡顿**。**#336 仍先不合**（缺 M1 8GB）。不锁 0.6B、不开 L1。Brief `task-desktop-on-device-companion.md`。
+- **陪伴 · 桌面端侧窄例外（2026-08-18）**：检索不生成 **未废止**。L0 探针 M5 过闸；hitch **无卡顿**。**仅宽屏 ⋯** 才有本地智能体。**#336 仍先不合**（缺 M1 8GB）。不锁 0.6B、不开 L1。Brief `task-desktop-on-device-companion.md`。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** v1.1 云端算法、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
@@ -432,9 +432,9 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近跟进（2026-08-18 · 用户 · Focusing hitch）**：双终端下对 Focusing 的 Yin **无可见影响 / 无卡顿**。第二次 `desktop:companion-l0` 仍是 **M5 16GB**（cpus=Apple M5, totalMemMb=16384），**不能**当 8GB 数据。下一步：有 8GB Mac 再跑同一探针；**不必现在找旧电脑**。8GB 齐之前 **#336 不合、不锁 0.6B、不开 L1**。权威：`task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-18 · 用户 · 宽屏才有本地智能体）**：端侧生成仅 **Electron + 宽屏 ⋯（≥480）**；窄屏抽屉 / 手机没有（故意不对等）。Focusing hitch 仍无卡顿。8GB 齐之前 **#336 不合、不锁 0.6B、不开 L1**。权威：`task-desktop-on-device-companion.md` · `RESPONSIVE_LAYOUT.md` 原则 A。
 
-**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival。L0 机型实测前不上产品入口；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。L0 探针已开工（无产品入口）。
+**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。**同日补**：本地智能体 **仅宽屏 ⋯**；窄屏 / 手机没有该能力（`RESPONSIVE_LAYOUT` 原则 A 故意不对等）。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival / 窄屏抽屉。L0 机型实测前不上产品入口；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。L0 探针已开工（无产品入口）。
 
 **最近拍板（2026-08-17 · 托盘两步）**：分析师第二份书面——**不要把托盘和第一颗窗口绑成一次验收**。步骤 A = 加载现有 Web 成 Mac 窗口，不带托盘（先分清壳/资源问题）。步骤 B = 收费 DMG 上架前必须补托盘 + 关窗后台，并与 `AttentionSignals`（场景 AB / SB-18）**同一条改动线**验收。产品判断不变：收费 DMG 没有托盘则付费定位不成立。权威：`task-electron-desktop-scaffold.md`。#329 已合分层口径；本条补执行顺序。步骤 A 窗口代码见本 PR / `focus-tiger/desktop/`（无托盘）。
 
