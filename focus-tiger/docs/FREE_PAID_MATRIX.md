@@ -122,8 +122,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
-| 同坐点钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已接线**；无兑换 UI；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：空间变体 / 称号 / 稀有练习章 / 阿寅轻点缀 | 练习兑换 | **不可现金购买** | SKU `cosmetic.*` / `title.*` / `badge.rare.*` | 不拦截自动纪念物；≠ 换装柜 | **未接线** | 须弥坐 = 360 点 **且** `lifetimeMinutes ≥ 600` |
+| 同坐点钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
+| 兑换：空间变体 / 称号 / 稀有练习章 / 阿寅轻点缀 | 练习兑换 | **不可现金购买** | SKU `cosmetic.*` / `title.*` / `badge.rare.*` | 不拦截自动纪念物；≠ 换装柜 | **L2 内部兑换已接线**（`__focusCoins.redeem`；无抽屉）；莲叶晨露只叠已有朵 | 须弥坐 = 360 点 **且** `lifetimeMinutes ≥ 600`；L3 才做抽屉表面 |
 | 用同坐点换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
 ---

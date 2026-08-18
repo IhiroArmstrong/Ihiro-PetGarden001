@@ -208,8 +208,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **文档** | 隔离清单、发点/防刷、与徽章两层、工作量分级 | `FOCUS_COINS.md` · `task-focus-coins.md` | **#333 已合** |
 | **L0** | 纯账本单测（Companion 三档 / Honesty 日限 / 封顶 / `isEntitled` 失败用例） | `feature/focus-coins-l0-ledger` | **#335 已合** |
-| **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **本支** |
-| **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | 待 L1 |
+| **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合** |
+| **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | **本支** |
 | **L3** | 抽屉安静表面；en/ja；375 | `feature/focus-coins-l3-surface` | 待 L2 |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。

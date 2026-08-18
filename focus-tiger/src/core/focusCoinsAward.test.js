@@ -169,6 +169,18 @@ describe('focusCoinsAward L1', () => {
     assert.equal(store.getBalance(), 8);
   });
 
+  it('active Recover grant sets lifetimeMarks.activeRecover', () => {
+    const storage = memoryStorage();
+    const store = new FocusCoinsStore({ storage });
+    applyFocusCoinsGrant({
+      event: { kind: GRANT_KIND.ACTIVE_RECOVER },
+      store,
+      practiceDaysStore: new PracticeDaysStore({ storage }),
+      enabled: true
+    });
+    assert.equal(store.getSnapshot().lifetimeMarks.activeRecover, true);
+  });
+
   it('wallet key is on L-01 path and must not enter practice-backup 6 keys', () => {
     assert.equal(FOCUS_COINS_STORAGE_KEY, 'focus-tiger.focus-coins.v1');
     assert.equal(

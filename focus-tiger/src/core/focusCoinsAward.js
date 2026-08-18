@@ -9,7 +9,7 @@
 
 import { getLocalDateKey } from '../utils/localDate.js';
 import { shiftLocalDateKey } from './PracticeDaysStore.js';
-import { computeFocusCoinsGrant } from './focusCoinsLedger.js';
+import { GRANT_KIND, computeFocusCoinsGrant } from './focusCoinsLedger.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 
 /**
@@ -67,6 +67,9 @@ export function applyFocusCoinsGrant({
   );
   if (grant.points > 0) {
     store.commitGrant(grant);
+    if (event?.kind === GRANT_KIND.ACTIVE_RECOVER) {
+      store.markLifetime({ activeRecover: true });
+    }
   }
   return {
     applied: grant.reason === 'ok',
