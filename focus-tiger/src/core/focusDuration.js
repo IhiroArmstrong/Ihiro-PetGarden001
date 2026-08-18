@@ -4,22 +4,23 @@
  */
 
 /**
- * Sit → Focus 开表前时长（与 Breath practice 档位差异化）。
- * 产品 chip：15 / 25 / 45 / 60；`?sessionMinutes=` 仍可跳过 picker（e2e / 调试）。
+ * Sit → Focus 开表前时长（与 Breath practice 分轨：Focus 走 Arrival，Breath 走左球）。
+ * 产品 chip：10 / 15 / 25 / 45（默认与最短 10；2026-08-18 拍板）。
+ * `?sessionMinutes=` 仍可跳过 picker（e2e / 调试）。
+ * 今日同坐 HUD 软顶仍用 `FOCUS_SESSION_DEFAULT_MINUTES`（25），不要和本场 chip 绑死。
  */
 
-import { FOCUS_SESSION_DEFAULT_MINUTES } from '../utils/Constants.js';
 import {
   DEMO_SESSION_MINUTES_DEFAULT,
   resolveDemoSessionMinutes
 } from './FocusSession.js';
 
 /** @type {readonly number[]} */
-export const FOCUS_DURATION_OPTIONS_MINUTES = Object.freeze([15, 25, 45, 60]);
+export const FOCUS_DURATION_OPTIONS_MINUTES = Object.freeze([10, 15, 25, 45]);
 
 export const FOCUS_DURATION_STORAGE_KEY = 'focus-tiger.focus-duration-pref.v1';
 
-export const FOCUS_DURATION_DEFAULT_MINUTES = FOCUS_SESSION_DEFAULT_MINUTES;
+export const FOCUS_DURATION_DEFAULT_MINUTES = 10;
 
 /**
  * Browser `localStorage` when available; Node/unit tests get null.
@@ -52,7 +53,7 @@ export function normalizeFocusDurationMinutes(minutes) {
   const m = Number(minutes);
   if (
     Number.isFinite(m) &&
-    FOCUS_DURATION_OPTIONS_MINUTES.includes(/** @type {15|25|45|60} */ (m))
+    FOCUS_DURATION_OPTIONS_MINUTES.includes(/** @type {10|15|25|45} */ (m))
   ) {
     return m;
   }
@@ -98,7 +99,7 @@ export function savePreferredFocusDurationMinutes(minutes, storage) {
 /**
  * 构造 FocusSession 初值 / URL 覆盖目标。
  * - 有 `?sessionMinutes=` → 解析值（可 1–90，供 e2e 短会话）
- * - 否则 → 偏好或产品默认 25（真正开表仍须 chip 或 URL）
+ * - 否则 → 偏好或产品默认 10（真正开表仍须 chip 或 URL）
  * @param {string} [search]
  * @param {Storage | null | undefined} [storage]
  * @returns {number}
