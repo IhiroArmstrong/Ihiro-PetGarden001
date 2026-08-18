@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
@@ -36,6 +36,14 @@ import {
   FLOWER_WELCOME_STORAGE_KEY,
   readFlowerWelcomeState
 } from './flowerWelcomeGate.js';
+import {
+  resetTasteLayerOverlayForTests,
+  setTasteWeightOverlay
+} from './tasteLayerOverlay.js';
+
+afterEach(() => {
+  resetTasteLayerOverlayForTests();
+});
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -496,4 +504,16 @@ test('STRETCH_REMINDER pool includes yawn', () => {
     random: () => 0.99
   });
   assert.equal(yawn.emotionKey, 'yawnStretch');
+});
+
+test('taste-layer overlay can move Honesty banding without touching CheckInController', () => {
+  assert.equal(emotionKeyForHonestyDuration(29), 'mindfulAcknowledge');
+  setTasteWeightOverlay({
+    riseInterruptPool: RISE_INTERRUPT_POOL,
+    welcomePool: WELCOME_POOL,
+    lightCompletePool: LIGHT_COMPLETE_POOL,
+    honestyLongMinMinutes: 20
+  });
+  assert.equal(emotionKeyForHonestyDuration(20), 'goldenHaloPalms');
+  assert.equal(emotionKeyForHonestyDuration(19), 'mindfulAcknowledge');
 });

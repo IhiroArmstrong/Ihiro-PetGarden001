@@ -116,6 +116,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `welcomeBack` | **停接线**（2026-08-02）：不播新旧挥手；键保留 | 素材仍入库；场景以后另议 |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
+| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取 |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 
 完整键见 `EmotionController.js` 的 `EMOTIONS` / `EMOTION_KEYS`；情绪语义权威仍为 `EMOTION_BIBLE.md`。
