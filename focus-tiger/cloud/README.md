@@ -36,8 +36,8 @@ curl -s http://127.0.0.1:8787/health
 | Method | Path | 说明 |
 |---|---|---|
 | `GET` | `/health` | 健康检查 |
-| `POST` | `/api/daily-message` | stub（mock） |
-| `POST` | `/api/emotion-weight` | stub（mock） |
+| `POST` | `/api/daily-message` | 品味层日签池 overlay（`schemaVersion: 1`） |
+| `POST` | `/api/emotion-weight` | 品味层权重 overlay（`schemaVersion: 1`） |
 | `POST` | `/api/monetization-funnel-ingest` | 意愿漏斗 opt-in 快照 → `TIP_KV` 键 `funnel:v1:{day}:{clientId}`（TTL 90d） |
 | `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（`mode: payment`）→ `{ url }` |
 | `POST` | `/api/create-sanctuary-checkout-session` | Stripe Checkout（`mode: payment` Lifetime）→ `{ url }` |
@@ -70,14 +70,14 @@ curl -s http://127.0.0.1:8787/health
 | `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
-`daily-message` / `emotion-weight` 已带 `schemaVersion: 1`。前端可选拉取权重池；不认识版本 / 超时 / 4xx → 本地冻结表。播放器永远本地。产品范围见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
+`daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。产品范围见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
 
-## Stub 接口（仍保留）
+## 品味层接口
 
-| Method | Path | 必需 JSON 字段 | 固定响应 |
+| Method | Path | 必需 JSON 字段 | 响应要点 |
 |---|---|---|---|
-| `POST` | `/api/daily-message` | `locale`, `localDate` | `{ "schemaVersion": 1, "message": "mock", "variantSeed": "0" }` |
-| `POST` | `/api/emotion-weight` | `emotionKey`, `sessionPhase` | `{ "schemaVersion": 1, "variant": "default", "weight": 1.0, "pools": { welcome / lightComplete / riseInterrupt } }` |
+| `POST` | `/api/daily-message` | `locale`, `localDate` | `{ schemaVersion: 1, locale, pool[14], message, variantSeed }` |
+| `POST` | `/api/emotion-weight` | `emotionKey`, `sessionPhase` | `{ schemaVersion: 1, riseInterruptPool, welcomePool, lightCompletePool, honestyLongMinMinutes: 30, variant, weight }` |
 
 ## 目录结构
 

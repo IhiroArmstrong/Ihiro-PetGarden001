@@ -1,8 +1,8 @@
 # Task Brief · 云端品味层（权重覆盖 + 日签/文案池）
 
-> **状态（2026-08-18 夜）**：窄冻结已拍板；**权重池切片已开工**（可选 `/api/emotion-weight`）。日签正文本切片未覆盖。  
+> **状态（2026-08-18）**：范围 / 窄冻结已拍板；**本回合接线 schemaVersion 1 可选 overlay**。生产 Worker 仍须明确「部署」。  
 > **权威**：`PROCESS.md` Backlog「云端品味层」。旧称「v1.1 云端算法」——**支付云 ≠ 品味云**；SemVer 首稳仍是 `v1.0.0`。  
-> **开工**：用户 2026-08-18 夜书面「安排下一步」（L0 告一段落 + L1 测 OK）= 本切片口令。
+> **开工**：用户书面 L1/L0 告一段落后安排下一步 = 本切片。
 
 ## 一句话
 
@@ -24,12 +24,14 @@
    - Honesty：≤29 分点头 `mindfulAcknowledge`；≥30 分金辉 `goldenHaloPalms`
    - 日签：`daily-wisdom.en.js` / `.ja.js` 各 14 条、id 对齐；切片期间不扩不删
 
-## 开工前优先级（2026-08-18 · 已执行）
+## 开工前优先级（已走过）
 
-1. **同坐点 L1 收尾** — 用户书面达标/未达标测 OK（TRACKER 未关单）  
-2. **桌面陪伴 L0** — 告一段落（低配不出入口；#336 另 rebase）  
-3. **品味层权重池** — **本切片**  
-4. **Electron 托盘步骤 B** — #345 已合（场景 AB 待人工）
+1. 同坐点 L1 收尾 — 用户书面达标/未达标 OK（TRACKER 未关单）  
+2. 桌面陪伴 L0 — 告一段落（hitch 无卡顿；8GB → 不出入口）  
+3. **品味层 — 本切片**  
+4. Electron 托盘步骤 B — 已接线，待 Mac 场景 AB
+
+L2 兑换 #339 已合且未改 Honesty 时长分档。本切片 **未改** `HonestyCheckInController`。
 
 ## 冲突扫描（实现前 · 已拍板）
 
@@ -44,19 +46,19 @@
 把播放器上云会与「核心路径不绑云请求」冲突——**已否决**。  
 Honesty 分档与同坐点 L1 发点是**邻接代码**不是同一功能；分析师提醒记入排期，**不**改冻结数字、**不**撤回 #337。
 
-## 点击反馈（权重池切片）
+## 点击反馈（接线）
 
-Q1：**不涉及新可点击控件**。开机后台拉权重；失败静默用本地表，Sit 不转圈。
-Q2：无 Cloud / 超时 / 未知 `schemaVersion` = 设计降级，不是哑点击。不进 `SILENT_BEHAVIORS` 新条（用户没点控件）。
-Q3：Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习 — 可选覆盖、失败本地；不比 Sit 更重；不改 Honesty 分档数字。无冲突。
+Q1–Q2：**不涉及可点击交互**（开机非阻塞拉取；失败用本地表，无按钮）。Q3：对照 Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习 — 失败降级本地，不比 Sit 更重。
 
 ## 实现时必守
 
 - 本地表 = 降级真源（上列冻结数字 + `dailyWisdom` 池）。  
-- 有网才拉 `/api/emotion-weight`（日签 `/api/daily-message` 正文本切片另刀）；超时/4xx/未知 `schemaVersion` → 本地。  
+- 有网且已配 Cloud base 才拉 `/api/emotion-weight`、`/api/daily-message`；超时/4xx/未知 `schemaVersion` → 本地。  
 - **禁止**在 `EmotionController` / Sit·Rise 门闩硬编码「无网即失败」。  
-- 现 stub 响应含 `schemaVersion: 1` + 冻结 `pools`（与本地同数字）。  
-- CORS / 隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
+- **禁止**改 `HonestyCheckInController` 来用品味层（分档只 overlay Dispatcher）。  
+- 正式响应带 `schemaVersion: 1`；旧 mock 无该字段 → 客户端当未知版本。  
+- CORS / 隐私明示同意见 `MVP_PRODUCT_DEFINITION`。  
+- 生产 Worker **须用户说「部署」**才 Redeploy（`prod-worker-deploy`）。
 
 ## 不做
 
@@ -64,5 +66,4 @@ Q3：Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习 �
 - 用品味层满足 `isEntitled`  
 - 把练习备份或 Stripe 路由塞进同一 Task  
 - 因「功能已经很多」抢 SemVer `v1.1.0` 号  
-- 把日签正文覆盖混进本权重池切片  
-- 开工陪伴 L1 或同坐点 L3 
+- 把本 Brief 合入理解成已部署生产 Worker  

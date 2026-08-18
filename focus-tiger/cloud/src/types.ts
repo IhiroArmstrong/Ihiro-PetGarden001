@@ -70,26 +70,20 @@ export interface EmotionWeightRequest {
 
 export interface DailyMessageResponse {
 	schemaVersion: number;
+	locale: string;
+	pool: Array<{ id: string; text: string; attribution?: string }>;
 	message: string;
 	variantSeed: string;
-}
-
-export interface TasteWeightedEntry {
-	key: string;
-	weight: number;
-}
-
-export interface TasteLayerPools {
-	welcome: TasteWeightedEntry[];
-	lightComplete: TasteWeightedEntry[];
-	riseInterrupt: TasteWeightedEntry[];
 }
 
 export interface EmotionWeightResponse {
 	schemaVersion: number;
 	variant: string;
 	weight: number;
-	pools: TasteLayerPools;
+	riseInterruptPool: Array<{ key: string; weight: number }>;
+	welcomePool: Array<{ key: string; weight: number }>;
+	lightCompletePool: Array<{ key: string; weight: number }>;
+	honestyLongMinMinutes: number;
 }
 
 export interface CreateCheckoutSessionResponse {

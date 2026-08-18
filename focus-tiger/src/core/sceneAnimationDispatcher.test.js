@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
@@ -37,9 +37,13 @@ import {
   readFlowerWelcomeState
 } from './flowerWelcomeGate.js';
 import {
-  resetTasteOverlayPools,
-  setTasteOverlayPoolsForTests
-} from './cloudTasteLayer.js';
+  resetTasteLayerOverlayForTests,
+  setTasteWeightOverlay
+} from './tasteLayerOverlay.js';
+
+afterEach(() => {
+  resetTasteLayerOverlayForTests();
+});
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -502,29 +506,14 @@ test('STRETCH_REMINDER pool includes yawn', () => {
   assert.equal(yawn.emotionKey, 'yawnStretch');
 });
 
-test('WELCOME_APP uses cloud taste overlay weights when present', () => {
-  resetTasteOverlayPools();
-  const storage = memoryStorage();
-  disableFlowerWelcome(storage);
-  setTasteOverlayPoolsForTests({
-    welcome: [
-      { key: 'nodGreeting', weight: 100 },
-      { key: 'magicBookReading', weight: 0 }
-    ],
-    lightComplete: LIGHT_COMPLETE_POOL,
-    riseInterrupt: RISE_INTERRUPT_POOL
+test('taste-layer overlay can move Honesty banding without touching CheckInController', () => {
+  assert.equal(emotionKeyForHonestyDuration(29), 'mindfulAcknowledge');
+  setTasteWeightOverlay({
+    riseInterruptPool: RISE_INTERRUPT_POOL,
+    welcomePool: WELCOME_POOL,
+    lightCompletePool: LIGHT_COMPLETE_POOL,
+    honestyLongMinMinutes: 20
   });
-  try {
-    const first = resolveSceneAnimation({
-      event: SCENE_ANIM_EVENTS.WELCOME_APP,
-      sessionState: 'IDLE',
-      storage,
-      now: () => new Date(2026, 7, 1, 9),
-      random: () => 0
-    });
-    assert.equal(first.play, true);
-    assert.equal(first.emotionKey, 'nodGreeting');
-  } finally {
-    resetTasteOverlayPools();
-  }
+  assert.equal(emotionKeyForHonestyDuration(20), 'goldenHaloPalms');
+  assert.equal(emotionKeyForHonestyDuration(19), 'mindfulAcknowledge');
 });
