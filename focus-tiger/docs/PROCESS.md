@@ -58,17 +58,17 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 同坐点 L2 内部兑换（`applyFocusCoinsRedeem`）· 同坐点 L1 发点（#338）· 云端品味层政策锁（#337）· 长周期 QA 播种 `?qaSeedStreak=`（#328）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A 已提交（无托盘）· 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-18（UTC+8） · 同坐点 L2 内部兑换（`applyFocusCoinsRedeem`）· 云端品味层窄冻结已拍板 · 同坐点 L1 **#338 已合**（TRACKER 待人工）· 云端品味层政策锁（#337）· 长周期 QA 播种 `?qaSeedStreak=`（#328）· 禅意倾听者桌面窄例外拍板 · Electron 步骤 A 已提交（无托盘）· 莲花池 Slice A（#330）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **同坐点 L2 内部兑换（2026-08-18）**：控制台 `__focusCoins.redeem(skuId)` 花点写入 `ownedIds`（称号 / `badge.rare.quiet-pebble` / `space.lotus-dew` 等）；须弥坐仍要 360 点且终身分钟 ≥600。莲叶晨露只让已有朵稍亮，**不**长新花。无抽屉。`?focusCoins=0` 关闸。TRACKER 待人工。
+- **同坐点 L2 内部兑换（2026-08-18）**：控制台 `__focusCoins.redeem(skuId)` 花点写入 `ownedIds`（称号 / `badge.rare.quiet-pebble` / `space.lotus-dew` 等）；须弥坐仍要 360 点且终身分钟 ≥600。莲叶晨露只让已有朵稍亮，**不**长新花。无抽屉。`?focusCoins=0` 关闸。**只兑、不动 Honesty 时长分档**。TRACKER 待人工。
 
-- **同坐点 L1 发点（2026-08-18 · #338）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入钱包；未达标 Rise 不写点。
+- **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
 
-- **云端品味层政策锁（2026-08-18 · 纯文档）**：旧称「v1.1 云端算法」改名。只上云权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工；payload 须 `schemaVersion`。**无运行时**。权威 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
+- **云端品味层政策锁 + 窄冻结（2026-08-18 · 纯文档）**：旧称「v1.1 云端算法」改名。只上云权重覆盖 + 日签/文案池；播放器永远本地。**窄冻结已拍板**（本地降级表即现 Dispatcher / 日签包；近一周不改数字）。payload 须 `schemaVersion`。**无运行时**；未发口令「开工云端品味层」。权威 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
@@ -201,7 +201,7 @@
 - **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
 - **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`；Task 3→2 + 扩 smoke **已落地**。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。
 - **语义化版本与稳定发布点拍板（2026-07-30）**：SemVer；首稳 **`v1.0.0`**；稳定版 = `main` 上 **annotated tag**，开发阶段**不**切 `release/*`（除非未来并行维护多条已发布大版本）。SSOT：`WORKFLOW.md`「语义化版本与稳定发布点」；`RULES_INDEX` → `git-semver-release`。无运行时改动，无 TEST_TRACKER 行。
-- **v1.0 纯本地 / 云端品味层 + 打包选型时机（2026-07-30 拍板；壳于 2026-08-16 锁定；品味层 2026-08-18 收窄改名）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；旧称「v1.1 云端算法」→ Backlog「云端品味层」（权重 + 文案；播放器永远本地）。代码保留 `cloud/` 可扩展、前端品味层暂不接线。打包开会时机当时已定；**壳已拍板 Electron**（见 Backlog「本地桌面 APP 打包」）。无运行时改动。
+- **v1.0 纯本地 / 云端品味层 + 打包选型时机（2026-07-30 拍板；壳于 2026-08-16 锁定；品味层 2026-08-18 收窄改名 + 窄冻结已拍板）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；旧称「v1.1 云端算法」→ Backlog「云端品味层」（权重 + 文案；播放器永远本地）。代码保留 `cloud/` 可扩展、前端品味层暂不接线。打包开会时机当时已定；**壳已拍板 Electron**（见 Backlog「本地桌面 APP 打包」）。无运行时改动。
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
@@ -384,9 +384,10 @@
 
 **下一步计划**：
 
-- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：L0 #335 · L1 #338 已合。**L2 兑换本支** `feature/focus-coins-l2-redeem`（无抽屉；`__focusCoins.redeem`）。下一步 L3 抽屉表面。勿插队桌面步骤 B。
-- **云端品味层（2026-08-18 政策锁）**：文档已落；**未接线**。待 Rise/欢迎/完成/Honesty 表窄冻结后口令「开工云端品味层」。勿与同坐点 L1 叠车。Brief `task-cloud-taste-layer.md`。
-- **陪伴 · 桌面端侧窄例外（2026-08-18 政策锁）**：检索不生成 **未废止**。批复仅限桌面、用户主动、最后一层生成。**下一步**须口令「开工桌面陪伴 L0」才写运行时；勿与同坐点 L1 叠车。Brief `task-desktop-on-device-companion.md`。
+- **开工前优先级（2026-08-18 分析师建议 · 用户书面同意；同日分析师放行 L2）**：L1 TRACKER 仍待人工（关单只认 develop tip）。同坐点 **L2 兑换本支** `feature/focus-coins-l2-redeem`（#339；分析师：#338 合入后可开；**只兑、不动 Honesty 时长分档**）。其余：① **桌面陪伴 L0 数据补齐**（须口令）> ② **云端品味层**（冻结已拍板，不急；写代码时勿与 Honesty 分档改动撞车）> ③ **Electron 托盘步骤 B**。**未发**口令「开工云端品味层」「开工桌面陪伴 L0」。L3 抽屉待 L2 合入。
+- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：L0 #335 · L1 #338 已合（无店；`?focusCoins=0` 关闸）。L1 **收尾** = TRACKER 待人工。**L2 兑换本支**（无抽屉；`__focusCoins.redeem`；不动 Honesty 分档）。勿插队桌面步骤 B。
+- **陪伴 · 桌面端侧窄例外（2026-08-18 政策锁）**：检索不生成 **未废止**。批复仅限桌面、用户主动、最后一层生成。**须口令「开工桌面陪伴 L0」**才写运行时（Mac 机型实测 / 数据补齐）。Brief `task-desktop-on-device-companion.md`。
+- **云端品味层（2026-08-18 政策锁 + 窄冻结已拍板）**：文档已落；**未接线**。本地降级表已冻结（见 Backlog 数字）。随时可开，只等口令「开工云端品味层」。**实现时**：若同坐点也要动 Honesty **分档**（时长→点头/金辉），须错开同一时间段。本支 L2 **只兑、未改分档**，不挡品味层代码。L1 发点钩子已合 #338。Brief `task-cloud-taste-layer.md`。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
@@ -416,7 +417,7 @@
 - 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做；**PWA 任务六**仍不是电脑版终局——电脑版壳已拍板 **Electron**，见 Backlog「本地桌面 APP 打包」）
-- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工（见 Backlog「云端品味层」）；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
+- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**、未发开工口令（见 Backlog「云端品味层」）；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
 - **B · 练习记忆多端无缝同步（可后排）**：免费快照之后；评估是否作 Sanctuary/Membership 付费点（见 Backlog「练习记忆云端备份」§B）
 
 **已知的开放决策 / 待确认事项**：
@@ -438,7 +439,9 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近拍板（2026-08-18）**：**云端品味层**（旧称「v1.1 云端算法」改名）。只上云 **权重覆盖 + 日签/文案池**；Idle / CapCut 播放器**永远本地**。时机 = Rise / 欢迎 / 轻量完成 / Honesty 分档 **窄冻结**后单独开工；**不等**同坐点 L2、**不等** TRACKER 全表关单（两条时钟：品味层防抄表 ≠ 同坐点防刷点）。实现时 payload 必含 `schemaVersion`，不认识则降级本地表。**支付云 ≠ 品味云**；SemVer 首稳仍是纯本地核心 `v1.0.0`，品味层是 1.0 之后可选增强、不抢 `v1.1.0` 号。本回合**不接线**。权威：下文 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
+**最近拍板（2026-08-18 · 品味层窄冻结）**：用户书面确认「该等的窄门」= 现有本地降级表，**手感对、可以冻结**（不是全量 QA）。冻结数字见 Backlog「云端品味层」。开工前优先级见「下一步计划」。分析师提醒：品味层时机清单含 Honesty 分档，同坐点 L1 已改 `HonestyCheckInController`（#338）；写代码时若 L2 也动 Honesty 分档须错开——**不影响** #337 / #338 已合。本回合**仍不接线**。
+
+**最近拍板（2026-08-18）**：**云端品味层**（旧称「v1.1 云端算法」改名）。只上云 **权重覆盖 + 日签/文案池**；Idle / CapCut 播放器**永远本地**。时机 = Rise / 欢迎 / 轻量完成 / Honesty 分档 **窄冻结后**单独开工（冻结已于同日拍板）；**不等**同坐点 L2、**不等** TRACKER 全表关单（两条时钟：品味层防抄表 ≠ 同坐点防刷点）。实现时 payload 必含 `schemaVersion`，不认识则降级本地表。**支付云 ≠ 品味云**；SemVer 首稳仍是纯本地核心 `v1.0.0`，品味层是 1.0 之后可选增强、不抢 `v1.1.0` 号。**未发**口令「开工云端品味层」。权威：下文 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
 
 **最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival。L0 机型实测前不上产品入口；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。无运行时。
 
@@ -496,7 +499,7 @@
 
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
 - **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）**
-- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；窄冻结后开工）
+- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；窄冻结已拍板、未开工）
 - **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
 - **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
@@ -745,7 +748,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ### Backlog:同坐点（Focus Coins · C 轨练习货币）
 
-> **方向已锁（2026-08-18）**。L0 #335 · L1 #338 已合。L2 兑换本支。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
+> **方向已锁（2026-08-18）**。L0 #335 · L1 #338 已合（TRACKER 待人工）。L2 兑换本支（只兑、不动 Honesty 分档）。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
 
 - 对外名 **同坐点**；只兑身份/情感锦上添花；**禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 - 与 **莲花池 Slice A（#330）**：池按终身分钟自动开花；同坐点只可买已有朵上的变体（如晨露），**禁止**把开花改成花点才出现。
@@ -1024,8 +1027,14 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 - **现在（未接线）**：`cloud/` stub `POST /api/daily-message` / `POST /api/emotion-weight` **保留 mock**；前端不接。核心 Sit / Rise / Idle **禁止**硬依赖云请求。
 - **范围（口令「开工云端品味层」才写运行时）**：可选客户端适配层拉取权重表与文案池；失败 / 超时 / **不认识的 `schemaVersion`** → 干净降级本地表（对齐练习记忆快照思路）。CORS、鉴权、隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
-- **窄冻结（开工门闩）**：你对 Rise 加权池、欢迎池、轻量完成池、Honesty 分档（≤29 点头 / ≥30 金辉）说「手感对、近一周不改数字」即可。**不等**同坐点 L2、**不等** `TEST_TRACKER` 全表关单（合入节奏仍是 CI 绿即可合 `develop`）。
-- **禁止**：与同坐点 L1（Honesty 发点钩子）同一周叠车；把播放器迁云；用品味层满足 `isEntitled`。
+- **窄冻结（开工门闩 · 2026-08-18 已拍板）**：本地降级表 = **现在这套**，近一周不改数字。不是全量 QA；体感锚：Idle 不闪、Rise 再选、Honesty 关了再开。
+  - Rise 中断池：伸懒腰 `riseStretchCasual` **60** / 茶 `teaDrinking` **25** / 书 `bookReading` **15**
+  - 欢迎池：魔法书 `magicBookReading` **60** / 点头 `nodGreeting` **40**
+  - 轻量完成池：`sessionComplete` **70** / 点头 `mindfulAcknowledge` **30** / 鹦鹉 `parrotEarVisit` **8**（≈7%，8/108）
+  - Honesty 分档：≤29 分 `mindfulAcknowledge`（点头）；≥30 分 `goldenHaloPalms`（金辉）；`HONESTY_LONG_MIN_MINUTES = 30`
+  - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删（改字另议）
+- **开工口令仍须**：「开工云端品味层」。冻结 ≠ 开工。**不等**同坐点 L2 兑换 / 服务端账本、**不等** `TEST_TRACKER` 全表关单（合入节奏仍是 CI 绿即可合 `develop`）。开工前产品优先级见上文「下一步计划」，与「不等 L2」不矛盾：L2 不挡品味层开工；品味层也不插队 L1 收尾 / 桌面 L0。
+- **禁止**：把播放器迁云；用品味层满足 `isEntitled`；与同坐点 **L2 若也改 Honesty 时长分档**同一时间段并行改（邻接重叠；L1 发点 #338 已合，旧「勿与 L1 同一周」废止为这条）。L2 只做兑换、不动分档则不挡品味层代码。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
 - **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。
 
