@@ -22,7 +22,7 @@
 | 身份 | **唯一复用邮箱 OTP**（与付费 restore **一套身份、两种用途**）；禁止匿名 device id |
 | 未绑邮箱 | **无云端兜底**；须**温和、非打断**提示（例 Journey Log 角落引导）；禁止弹窗打断主路径 |
 | 离线 | 核心练习路径仍可离线；无网/未绑 → 本机照常，只是没有云兜底 |
-| 与 v1.1 云端算法 | **分开**（daily-message / emotion-weight 等）；勿混同一 Task |
+| 与云端品味层 | **分开**（旧称 v1.1 云端算法；daily-message / emotion-weight）；勿混同一 Task |
 
 ## 覆盖清单（Prompt 11.5 白名单锁定）
 
@@ -106,4 +106,4 @@
 - `SHARED_RESOURCES.md`（上表 6 key；勿与 `entitlement-cache.v1` 混淆）  
 - `cloud/README.md`（OTP restore 既有路由）  
 - `YIN_MEMBERSHIP.md` / entitlement restore（身份复用，勿复制第二套邮箱体系）  
-- 相邻但**非本任务**：`PROCESS` Backlog「v1.1 云端算法」· B 多端无缝  
+- 相邻但**非本任务**：`PROCESS` Backlog「云端品味层」· B 多端无缝  
