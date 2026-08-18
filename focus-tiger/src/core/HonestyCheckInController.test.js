@@ -284,8 +284,9 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
       }
     },
     extra: {
-      onCheckInComplete: () => {
+      onCheckInComplete: (detail) => {
         completeCalls += 1;
+        assert.equal(detail?.durationMinutes, 10);
       },
       notifyRecorded: () => {
         recordedNotifyCalls += 1;

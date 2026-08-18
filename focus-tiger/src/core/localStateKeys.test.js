@@ -82,6 +82,7 @@ import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
 import { MUSTARD_SEED_SEAL_STORAGE_KEY } from './mustardSeedSeal.js';
 import { DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY } from './dailyZenQuote.js';
 import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
+import { FOCUS_COINS_STORAGE_KEY, FocusCoinsStore } from './focusCoinsStore.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
@@ -161,7 +162,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY,
   DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
-  IDLE_COMPANION_PIP_STORAGE_KEY
+  IDLE_COMPANION_PIP_STORAGE_KEY,
+  FOCUS_COINS_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {
@@ -214,6 +216,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   const dirtyLotus = new LotusPondStore({ storage });
   dirtyLotus.addMinutes(25);
   assert.equal(dirtyLotus.getVisibleBloomCount(), 1);
+
+  const dirtyCoins = new FocusCoinsStore({ storage });
+  dirtyCoins.commitGrant({ points: 5 });
+  assert.equal(dirtyCoins.getBalance(), 5);
 
   const dirtyBridge = new HonestyBridgeStore({ storage });
   dirtyBridge.markShown();
@@ -283,6 +289,9 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   const freshLotus = new LotusPondStore({ storage });
   assert.equal(freshLotus.getLifetimeMinutes(), 0);
   assert.equal(freshLotus.getVisibleBloomCount(), 0);
+
+  const freshCoins = new FocusCoinsStore({ storage });
+  assert.equal(freshCoins.getBalance(), 0);
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);
