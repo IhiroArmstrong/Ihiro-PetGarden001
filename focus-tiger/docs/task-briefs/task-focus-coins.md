@@ -1,9 +1,9 @@
 # Task Brief · 寅币（Focus Coins）/ Yin's Collections
 
-> **状态**：L3 抽屉 #352 已合。本支 `docs/yin-collections-c-track` 锁花园 vs 珍藏、叠层退役，并把 L3 改成 Collections 商店目录。L0 #335 · L1 #338 · L2 #339 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
+> **状态**：L3 抽屉 #352+#353 已合 `develop`。花园 vs 珍藏、叠层退役、Collections 商店目录已锁。L0 #335 · L1 #338 · L2 #339 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`（含 §1.2 已废止提案）。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
 > **性质**：C 轨口径修订 + L3 目录过滤（中风险：徽章隔离 / 莲花池不拦截 / Idle chrome）。不改发点数学、不改 Honesty 分档、不扩备份 6 key。  
-> **禁止**：建 entitlement gate key；用余额满足 `isEntitled`；Support 三卡样式；常驻 HUD；把叠层 SKU 再摆进抽屉。
+> **禁止**：建 entitlement gate key；用余额满足 `isEntitled`；Support 三卡样式；常驻 HUD；把叠层 SKU 再摆进抽屉；复活「8 条叠层全列」。
 
 ---
 
