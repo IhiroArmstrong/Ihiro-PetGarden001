@@ -321,7 +321,7 @@
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
 > **Electron 步骤 A**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走；失败复用现有卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC`），不为壳另做 UI。付完回 App 走 Restore / OTP。Web 仍可 `location.assign`。  
-> **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。**Focus-tiger-Pro US$12.99/月第四卡**：仅 L1 入口正常开放后、合格 Electron 机型才允许出现；**当前验收仍只测三卡**。Membership 不含本地智能体。
+> **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。**Focus Tiger Pro US$12.99/月**：Stripe 已建、Checkout 未接；L1 后才允许第四卡。**当前验收仍只测三卡**。Pro 将含 Base（B 轨）；本地智能体仍只 Electron。Safari 测的是 Web 壳/付款，不是 llama。
 
 ### Q1 · Support Modal（统一入口）
 
@@ -362,7 +362,7 @@
 > **对照**：正式 Focus 仍走 Sit→Arrival（或场景 T 时长 chip）；⚡ 旧 Quick Start「立刻 Focusing」已改为本球开 Breath。
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
-2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。
+2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。picker 打开时须见静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无；非 HUD / 非 +N toast）。
 3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
 4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
@@ -380,7 +380,7 @@
 > **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 1. `?product=1`（**勿**带 `sessionMinutes`）→ Sit→Arrival→Choose→Companion 点选模式。
-2. 见 `#focus-duration-picker`：chip **10 / 15 / 25 / 45**（默认 10；数字 10 也可出现在 Breath，但路径不同）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 10 minutes / Breath practice）。
+2. 见 `#focus-duration-picker`：chip **10 / 15 / 25 / 45**（默认 10；数字 10 也可出现在 Breath，但路径不同）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 10 minutes / Breath practice）。chip 下方须见静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无）。**0–1 秒内** picker 与两句 hint 一同出现（无新按钮）。
 3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing + **开始磬**（若计时提示音开）+ 氛围乐）；`#focus-hud` 显示所选目标分钟。
 4. **Leave**（若 picker 仍开）→ 取消、不开表。
 5. **回流**：Rise → 再 Sit→…→ 再出 picker；偏好应合理回显。
@@ -535,7 +535,7 @@
 > **仍须人工**：375 不挡三球；商店目录都能滚到；不足结缘 toast；已结缘 / Wear；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
 > **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把瓷器叠回主坐席。
 
-1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。随后见寅币余额 +「案头雅物皆由同坐岁月所化」+ 商店行（与阿寅同坐 / 又回来了 / 久坐的人 / 静石小章 / 青瓷瓶 / 青铜礼器 / 挥手）。**不得**再出现莲叶晨露 / 木念珠 / 须弥金线。
+1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。随后见抬头精致浮雕币标 + 寅币余额旁小 icon +「案头雅物皆由同坐岁月所化」+ 商店行（与阿寅同坐 / 又回来了 / 久坐的人 / 静石小章 / 青瓷瓶 / 青铜礼器 / 挥手）。SKU 行仍是占位色点。币标**不**出现在阿寅序列或蒲团上。**不得**再出现莲叶晨露 / 木念珠 / 须弥金线。
 2. **结缘成功**（余额够、门槛够）：点 **结缘 / Bond** → **0–1 秒内**钮 `:active` 按压；该行变成已结缘；余额减少。瓷器/青铜器只进珍藏卡面，莲花朵数与亮度不变。称号可 Wear（一次一个）。静石 / 静物成功可出安静仪式句（非彩纸）。挥手本切片只上架，点播接线另开。
 3. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 toast。**不是**哑点击，也不说笼统「无法兑换」。
 4. **回流**：Close / Esc / 点外侧 → **0–1 秒内**关钮 `:active` + 卡淡出；Sit / ⋯ 仍在。再打开仍是商店目录；已结缘不再扣点。

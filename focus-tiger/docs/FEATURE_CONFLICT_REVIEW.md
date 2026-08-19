@@ -94,7 +94,9 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 - **假收费**：L1 未开、低配默认隐藏入口时，再收一笔「只为本地智能体」的钱 = 付了看不见的能力。
 - **场景 W** 的「?」适合放系统技术说明；阿寅不说这句。
 
-**同日晚补拍板**：禁止的是「现在卖 / 低配冒险覆盖入口」。**允许**在 L1 **正常开放入口之后** 另开 Focus-tiger-Pro **US$12.99/月**（运行时成本，不是 B 轨内容）；仅合格 Electron 机型露出；Membership 与 Pro 互不含。现货仍三卡、本仓不接线。Stripe 可先建 Product。
+**同日晚补拍板**：禁止「现在卖能聊的 AI / 低配冒险覆盖入口」。**允许** L1 后另开 **Focus Tiger Pro US$12.99/月**。
+
+**2026-08-20 纠正**：Pro **包含** Focus Tiger Base（B 轨），不是「只买运行时、不含 Membership」。本地模型测试/入口仍是 Electron；**付款** L1 后可走 Safari（与现货 Membership 相同）。Stripe Pro Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记文档，Checkout 未接。现货仍三卡。
 
 拍板后的现货落地：说明文案进 Electron **?** + **Support Yin** 底部 + `desktop/README.md`；Windows 与 Mac 同样写 8GB；低配仍可买现有三卡（B 轨其它权益），**不能**自行打开被隐藏入口。
 
@@ -138,7 +140,7 @@ Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（*
 
 | 日期 | 说明 |
 |---|---|
-| 2026-08-19 | 正面案例补：低配 8GB 说明进 ? / Support（Electron-only）。禁止 *现在* / 低配冒险卖 $12.99。同日晚：L1 入口正常开放后允许 Focus-tiger-Pro $12.99/月（运行时 SKU；现货仍三卡） |
+| 2026-08-20 | 纠正：Pro 含 Base（B 轨）+ 本地智能体；Safari 可测付款、模型仍 Electron；Price ID 已记、Checkout 未接。08-19 晚「互不含 / 只有 Electron 能买」废止 |
 | 2026-08-18 | 正面案例：检索不生成 vs 桌面陪伴——窄例外拍板后再改定位稿；禁止把批准扩大到 Web / 仪式文案。同日补：本地智能体仅宽屏，与原则 A 故意不对等 |
 | 2026-08-17 | 正面案例：托盘 vs 旧 Brief——先摆冲突再等拍板；分析师分层后改文档。同日第二份：两步执行（窗口先、托盘+走神后），禁止绑成一次验收 |
 | 2026-08-16 | 初版：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等拍板（优先于默认执行）；PR 第三问；索引 `feature-conflict-review` |

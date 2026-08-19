@@ -193,6 +193,7 @@
   "focus_duration.hint": "专注最短 10 分钟。更短的歇息，请用呼吸练习。",
   "focus_duration.minutes_chip": "{n} 分钟",
   "focus_duration.leave": "离开",
+  "focus_coins.duration_hint": "坐满 5 分钟即可累积寅币，用于称号与空间变体这类钱买不到的身份。",
   "HONESTY_IDLE_ENTRY": "诚实补登",
   "HONESTY_PENDING_LOST": "刚才没记上 —— 请再选一次时长。",
   "HONESTY_CHECKIN_RECORDED": "别处的静心，也算数。",
