@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · #356 珍藏挥手点播 Play · #358 清供 8 · #348 Breath 时长点 · #336 L0 已合 · 品味层 **#349 已合**、生产 Worker **未**部署 · Focus Tiger Pro Price ID 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · #356 珍藏挥手点播 Play · 会话交接规则入库 · #358 清供 8 · #348 Breath 时长点 · #336 L0 已合 · 品味层 **#349 已合**、生产 Worker **未**部署 · Focus Tiger Pro Price ID 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **会话交接 Session Handoff（2026-08-20）**：口令「生成交接」出结构化摘要。权威：`.cursor/rules/focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
 - **寅币时长 chip 静默 hint（2026-08-18 拍板）**：Focus / Breath picker 下 `#focus-coins-duration-hint`（满 5 分钟、寅币、身份资源）。无 HUD、无 +N toast。`?focusCoins=0` 不出现。TRACKER 待人工。
 - **寅币 Breath 时长点（2026-08-18）**：Breath 坐满按 Stay 档发时长点（5 分=1）并保留每日微仪式 +1；Leave 仍 0。无常驻「攒币」HUD。TRACKER 待人工。
@@ -736,7 +738,11 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 8. **合并进 `main`**：见 `WORKFLOW.md`（永远须你明确指令）  
 9. **生产 Worker Redeploy**：须你明确说「部署」（`prod-worker-deploy`）
 
-完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）；需要一批测完时用口令「批量人工测试」。
+完成消息须说明「本次有 N 项需要你测试」（见 `TEST_TRACKER.md`）；需要一批测完时用口令「批量人工测试」。需要切到新会话时用口令「生成交接」（见 `.cursor/rules/focus-tiger-session-handoff.mdc`；`RULES_INDEX` → `session-handoff`）。
+
+### 口令：「生成交接」
+
+你说这句时，Agent 立即按 SSOT 输出交接摘要、不做其他事。条款见 [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc)（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
 ### 口令：「请安排下班前的 Git 同步」
 
