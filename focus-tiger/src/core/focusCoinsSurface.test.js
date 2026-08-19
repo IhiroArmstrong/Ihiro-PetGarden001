@@ -5,7 +5,10 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FOCUS_COIN_CATALOG } from './focusCoinsLedger.js';
+import {
+  FOCUS_COIN_CATALOG,
+  listShopFocusCoinSkus
+} from './focusCoinsLedger.js';
 import {
   FOCUS_COIN_SKU_NAME_KEYS,
   formatFocusCoinGapMessage,
@@ -14,7 +17,7 @@ import {
 } from './focusCoinsSurface.js';
 
 const LOOKUP = {
-  YIN_COIN_GAP_BALANCE: 'Need {n} more Yin Coins.',
+  YIN_COIN_GAP_BALANCE: 'Need {n} more Focus Coins.',
   YIN_COIN_GAP_MINUTES: 'Need {n} more lifetime minutes.',
   YIN_COIN_GAP_PRACTICE_DAYS: 'Need {n} more practice days.',
   YIN_COIN_GAP_INCENSE: 'Need incense, or {n} more practice days.',
@@ -23,39 +26,55 @@ const LOOKUP = {
   YIN_COIN_GAP_RECOVER: 'Need one active Recover.'
 };
 
-test('L3 surface lists every catalog SKU (8), never a subset', () => {
-  assert.equal(FOCUS_COIN_CATALOG.length, 8);
+const SHOP_IDS = [
+  'title.sits-with-yin',
+  'title.returned-gently',
+  'title.long-sitter',
+  'badge.rare.quiet-pebble',
+  'collection.porcelain.qing-vase',
+  'collection.bronze.ritual-vessel',
+  'gesture.wave-hello'
+];
+
+test('L3 surface lists shop SKUs only — never retired overlays', () => {
+  const shop = listShopFocusCoinSkus();
+  assert.equal(shop.length, 7);
   const rows = listFocusCoinSurfaceRows({ balance: 0 });
-  assert.equal(rows.length, 8);
+  assert.equal(rows.length, 7);
   assert.deepEqual(
     rows.map((row) => row.id),
-    FOCUS_COIN_CATALOG.map((sku) => sku.id)
+    SHOP_IDS
   );
-  for (const sku of FOCUS_COIN_CATALOG) {
+  assert.equal(
+    rows.some((row) => row.id === 'space.lotus-dew'),
+    false
+  );
+  for (const sku of shop) {
     assert.equal(typeof FOCUS_COIN_SKU_NAME_KEYS[sku.id], 'string');
   }
+  assert.ok(FOCUS_COIN_CATALOG.some((sku) => sku.retiredOverlay === true));
 });
 
-test('wood beads with enough coins is redeemable with no extra gate', () => {
-  const rows = listFocusCoinSurfaceRows({ balance: 36 });
-  const beads = rows.find((row) => row.id === 'yin-accent.wood-beads');
-  assert.equal(beads?.canRedeem, true);
-  assert.deepEqual(beads?.gaps, []);
+test('quiet pebble with enough coins is redeemable with no extra gate', () => {
+  const rows = listFocusCoinSurfaceRows({ balance: 72 });
+  const pebble = rows.find((row) => row.id === 'badge.rare.quiet-pebble');
+  assert.equal(pebble?.canRedeem, true);
+  assert.deepEqual(pebble?.gaps, []);
 });
 
 test('shortfall copy names the coin gap instead of a vague cannot-redeem', () => {
   const rows = listFocusCoinSurfaceRows({ balance: 10 });
-  const beads = rows.find((row) => row.id === 'yin-accent.wood-beads');
-  assert.equal(beads?.canRedeem, false);
-  assert.equal(beads?.reason, 'insufficient-balance');
+  const pebble = rows.find((row) => row.id === 'badge.rare.quiet-pebble');
+  assert.equal(pebble?.canRedeem, false);
+  assert.equal(pebble?.reason, 'insufficient-balance');
   assert.equal(
-    formatFocusCoinGapMessage(beads?.gaps ?? [], (key) => LOOKUP[key]),
-    'Need 26 more Yin Coins.'
+    formatFocusCoinGapMessage(pebble?.gaps ?? [], (key) => LOOKUP[key]),
+    'Need 62 more Focus Coins.'
   );
 });
 
-test('Sumeru shows both coin and lifetime-minute gaps when both are short', () => {
-  const sku = FOCUS_COIN_CATALOG.find((s) => s.id === 'bundle.sumeru-seat');
+test('久坐的人 shows both coin and lifetime-minute gaps when both are short', () => {
+  const sku = listShopFocusCoinSkus().find((s) => s.id === 'title.long-sitter');
   const gaps = listFocusCoinRedeemGaps(sku, {
     balance: 40,
     lifetimeMinutes: 120
@@ -69,13 +88,15 @@ test('Sumeru shows both coin and lifetime-minute gaps when both are short', () =
   assert.match(msg, /480/);
 });
 
-test('lotus dew names the bloom gate even when coins are enough', () => {
-  const sku = FOCUS_COIN_CATALOG.find((s) => s.id === 'space.lotus-dew');
+test('porcelain stills redeem without garden gates', () => {
+  const sku = listShopFocusCoinSkus().find(
+    (s) => s.id === 'collection.porcelain.qing-vase'
+  );
   const gaps = listFocusCoinRedeemGaps(sku, {
-    balance: 48,
+    balance: 40,
     hasLotusBloom: false
   });
-  assert.deepEqual(gaps, [{ kind: 'lotus-bloom' }]);
+  assert.deepEqual(gaps, []);
 });
 
 test('owned SKU has no gaps and Wear is offered on titles', () => {

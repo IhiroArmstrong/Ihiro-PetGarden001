@@ -4,8 +4,9 @@
  */
 
 /**
- * L2 安静痕迹：已有莲花上叠晨露、蒲团金线 class、称号 data 属性。
- * 不改 Tea / Sanctuary badgeIds，不长新朵。
+ * L2 traces that may appear beside Yin / in Collections metadata.
+ * 2026-08-19: dew / cushion filters retired — never composite onto sprites
+ * or the lotus garden. Titles + rare pebble remain data attributes only.
  */
 
 export const LOTUS_DEW_OWNED_ID = 'space.lotus-dew';
@@ -22,8 +23,10 @@ export const COSMETIC_STYLE_ID = 'focus-coins-cosmetics-l2';
 export function focusCoinsCosmeticState(snapshot = {}) {
   const owned = Array.isArray(snapshot.ownedIds) ? snapshot.ownedIds : [];
   return {
-    lotusDew: owned.includes(LOTUS_DEW_OWNED_ID),
-    sumeruCushion: owned.includes(SUMERU_CUSHION_OWNED_ID),
+    lotusDew: false,
+    sumeruCushion: false,
+    ownedLotusDew: owned.includes(LOTUS_DEW_OWNED_ID),
+    ownedSumeruCushion: owned.includes(SUMERU_CUSHION_OWNED_ID),
     rarePebble: owned.includes(RARE_PEBBLE_OWNED_ID),
     equippedTitle:
       typeof snapshot.equippedTitle === 'string' ? snapshot.equippedTitle : null
@@ -36,10 +39,10 @@ function ensureCosmeticStyles(doc) {
   style.id = COSMETIC_STYLE_ID;
   style.textContent = `
 #lotus-pond.${LOTUS_DEW_CLASS} .lotus-pond-bloom {
-  filter: brightness(1.08) saturate(1.15);
+  filter: none;
 }
 #app.${SUMERU_CUSHION_CLASS} #sprite-stage {
-  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.22));
+  filter: none;
 }
 `.trim();
   doc.head.appendChild(style);
@@ -69,12 +72,14 @@ export function applyFocusCoinsCosmetics(
     : {
         lotusDew: false,
         sumeruCushion: false,
+        ownedLotusDew: false,
+        ownedSumeruCushion: false,
         rarePebble: false,
         equippedTitle: null
       };
   if (enabled && doc) ensureCosmeticStyles(doc);
-  pondEl?.classList?.toggle(LOTUS_DEW_CLASS, state.lotusDew);
-  appEl?.classList?.toggle(SUMERU_CUSHION_CLASS, state.sumeruCushion);
+  pondEl?.classList?.toggle(LOTUS_DEW_CLASS, false);
+  appEl?.classList?.toggle(SUMERU_CUSHION_CLASS, false);
   if (documentElement?.dataset) {
     if (state.equippedTitle) {
       documentElement.dataset.focusCoinsTitle = state.equippedTitle;

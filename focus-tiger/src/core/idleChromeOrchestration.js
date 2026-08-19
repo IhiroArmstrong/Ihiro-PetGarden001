@@ -379,7 +379,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
     labelKey: 'JOURNEY_LOG_MENU_LABEL'
   });
 
-  // Yin Coin catalog — same glass family as Journey log; not Support pay.
+  // Yin's Collections — same glass family as Journey log; not Support pay.
   const yinCoinVisible =
     typeof visibility.yinCoinVisible === 'boolean'
       ? visibility.yinCoinVisible

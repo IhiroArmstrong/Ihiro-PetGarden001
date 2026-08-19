@@ -4,9 +4,8 @@
  */
 
 /**
- * Yin Coin quiet catalog — same glass family as Journey log (not Support pay).
- * Placeholder 24px thumbs; all FOCUS_COIN_CATALOG rows; specific shortfall copy.
- * File name avoids repo-root `Yin*` ignore; DOM id remains `#yin-coin-panel`.
+ * Yin's Collections quiet catalog — same glass family as Journey log (not Support pay).
+ * Placeholder 24px thumbs; shop SKUs only (no retired overlays). DOM id `#yin-coin-panel`.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -280,8 +279,8 @@ export class FocusCoinsPanelUI {
    */
   _showCeremonial(row) {
     const key =
-      row.kind === 'bundle'
-        ? 'YIN_COIN_CEREMONIAL_SUMERU'
+      row.kind === 'collection'
+        ? 'YIN_COIN_CEREMONIAL_STILL'
         : 'YIN_COIN_CEREMONIAL_PEBBLE';
     this.ceremonial.textContent = t(key);
     this.ceremonial.hidden = false;

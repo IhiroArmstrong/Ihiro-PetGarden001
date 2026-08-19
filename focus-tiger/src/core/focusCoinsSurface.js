@@ -4,25 +4,24 @@
  */
 
 /**
- * L3 Yin Coin surface helpers — display rows + specific shortfall copy.
- * Does not change award math or evaluateFocusCoinRedeem order.
+ * L3 Yin's Collections surface helpers — shop rows + specific shortfall copy.
+ * Overlay SKUs stay in the ledger for already-owned ids but never appear here.
  */
 
 import {
-  FOCUS_COIN_CATALOG,
-  evaluateFocusCoinRedeem
+  evaluateFocusCoinRedeem,
+  listShopFocusCoinSkus
 } from './focusCoinsLedger.js';
 
 /** @type {Readonly<Record<string, string>>} */
 export const FOCUS_COIN_SKU_NAME_KEYS = Object.freeze({
-  'space.incense-tint-warm': 'YIN_COIN_SKU_INCENSE_TINT',
-  'space.lotus-dew': 'YIN_COIN_SKU_LOTUS_DEW',
-  'yin-accent.wood-beads': 'YIN_COIN_SKU_WOOD_BEADS',
-  'yin-accent.folded-cloak': 'YIN_COIN_SKU_FOLDED_CLOAK',
   'title.sits-with-yin': 'YIN_COIN_SKU_SITS_WITH_YIN',
   'title.returned-gently': 'YIN_COIN_SKU_RETURNED_GENTLY',
+  'title.long-sitter': 'YIN_COIN_SKU_LONG_SITTER',
   'badge.rare.quiet-pebble': 'YIN_COIN_SKU_QUIET_PEBBLE',
-  'bundle.sumeru-seat': 'YIN_COIN_SKU_SUMERU_SEAT'
+  'collection.porcelain.qing-vase': 'YIN_COIN_SKU_QING_VASE',
+  'collection.bronze.ritual-vessel': 'YIN_COIN_SKU_BRONZE_VESSEL',
+  'gesture.wave-hello': 'YIN_COIN_SKU_WAVE_HELLO'
 });
 
 /**
@@ -143,7 +142,7 @@ export function formatFocusCoinGapMessage(gaps, lookup) {
 }
 
 /**
- * One row per catalog SKU — L3 must render all of these, never a subset.
+ * One row per shop SKU — retired overlays never appear.
  * @param {Parameters<typeof evaluateFocusCoinRedeem>[1] & {
  *   equippedTitle?: string | null
  * }} [ctx]
@@ -151,7 +150,7 @@ export function formatFocusCoinGapMessage(gaps, lookup) {
 export function listFocusCoinSurfaceRows(ctx = {}) {
   const equippedTitle =
     typeof ctx.equippedTitle === 'string' ? ctx.equippedTitle : null;
-  return FOCUS_COIN_CATALOG.map((sku) => {
+  return listShopFocusCoinSkus().map((sku) => {
     const owned = isFocusCoinSkuOwned(sku, ctx.ownedIds);
     const evaluated = evaluateFocusCoinRedeem(sku.id, ctx);
     const titleIds = sku.grants.filter((id) => id.startsWith('title.'));
@@ -167,7 +166,7 @@ export function listFocusCoinSurfaceRows(ctx = {}) {
       titleIds,
       showWear: owned && titleIds.length > 0,
       wearingTitleId: titleIds.find((id) => id === equippedTitle) ?? null,
-      ceremonial: sku.kind === 'bundle' || sku.kind === 'badge.rare'
+      ceremonial: sku.kind === 'badge.rare' || sku.kind === 'collection'
     };
   });
 }

@@ -4,7 +4,7 @@
  */
 
 /**
- * 同坐点 L1 发点闸。关 = 完全不写钱包（Playbook 红线 C）。
+ * 寅币 L1 发点闸。关 = 完全不写钱包（Playbook 红线 C）。
  *
  * `?focusCoins=1` 强制开；`?focusCoins=0` 强制关。
  *

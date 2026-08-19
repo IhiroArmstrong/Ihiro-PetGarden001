@@ -4,7 +4,7 @@
  */
 
 /**
- * 同坐点 L1 发点：账本纯函数 + 钱包写入。Flag 关则完全不写。
+ * 寅币 L1 发点：账本纯函数 + 钱包写入。Flag 关则完全不写。
  */
 
 import { getLocalDateKey } from '../utils/localDate.js';
