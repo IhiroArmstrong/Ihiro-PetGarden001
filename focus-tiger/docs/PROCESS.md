@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · #354 币标定稿已合 · #348 Breath 时长点解冲突 · #336 8GB 书面豁免；#353 已合 `develop`
+**最后更新时间**：2026-08-20（UTC+8） · #358 清供 8 · #348 Breath 时长点 · #336 L0 已合；Focus Tiger Pro Price ID 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -68,7 +68,7 @@
 - **寅币 Breath 时长点（2026-08-18）**：Breath 坐满按 Stay 档发时长点（5 分=1）并保留每日微仪式 +1；Leave 仍 0。无常驻「攒币」HUD。TRACKER 待人工。
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
 
-- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**（资料估算；低配默认不出入口）。不锁 0.6B、不开 L1。权威：`task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19 · #336 已合）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**。不锁 0.6B、不开 L1。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记入文档；**Checkout / 第四卡未接**。权威：`task-desktop-on-device-companion.md`。
 
 - **寅币 / Yin's Collections（2026-08-20 · 清供 8）**：花园与珍藏切开。入口 **Yin's Collections / 阿寅的珍藏**。铁律进 `PRINCIPLES.md`。旧 8 id 改清供名、现价现门槛上架；晨露/须弥滤镜已拆。`emotion.premium.trigger` 已从 B catalog 删除。围着阿寅盖序列仍作废。TRACKER 待人工。
 
@@ -394,9 +394,9 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#348 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。L1/L3 TRACKER 仍待人工，**未**关单。桌面陪伴 L0 探针 **8GB 已书面豁免**。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。桌面陪伴 **仍不开 L1、不接 Pro Checkout**。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
-- **陪伴 · 桌面端侧窄例外**：**L0 探针可合 #336**（2026-08-19 用户书面豁免 8GB 数据；资料估算）。低配默认不出入口（Mac 与 Windows 同样 ≤8GB）。不开 L1、不锁 0.6B。
+- **陪伴 · 桌面端侧窄例外**：**L0 探针 #336 已合**。低配默认不出入口。不开 L1、不锁 0.6B。Stripe **Focus Tiger Pro** Price 已记；**Checkout 未接**。Pro 含 Base（B 轨）+ 本地智能体。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
 - **云端品味层（2026-08-18 接线）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。生产 **Worker Redeploy 另须「部署」**。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
@@ -450,7 +450,9 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近跟进（2026-08-19 · 用户书面豁免 8GB）**：资料估算替代 M1 8GB 探针 JSON。**可合 #336**。低配默认不出入口（Mac 与 Windows 同样 ≤8GB）。**不开 L1、不锁 0.6B**。不另开 $12.99 本地智能体 SKU；现有 Tea / Membership / Sanctuary 仍可买（不是该能力）。权威：`task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-20 · Focus Tiger Pro Price）**：Dashboard 已有 **Focus Tiger Pro** `$12.99/月`（`price_1U6EB1FuIhgJPGLiuciuX1to`）与改名后的 **Focus Tiger Base** `$6.99/月`。**现在只记 Price ID，不接 Checkout / 第四卡**（L1 入口未开）。Pro **包含** Base 那套 B 轨 + 本地智能体。Safari 测付款可以；本地模型测试/入口仍是 Electron。权威：`task-desktop-on-device-companion.md`。
+
+**最近跟进（2026-08-19 · #336 已合）**：L0 探针进 `develop`。低配默认不出入口（Mac 与 Windows 同样 ≤8GB）。**不开 L1、不锁 0.6B**。现货三卡仍可买。权威：`task-desktop-on-device-companion.md`。
 
 **最近跟进（2026-08-18 · 用户 · 宽屏才有本地智能体）**：端侧生成仅 **Electron + 宽屏 ⋯（≥480）**；窄屏抽屉 / 手机没有（故意不对等）。Focusing hitch 仍无卡顿。权威：`task-desktop-on-device-companion.md` · `RESPONSIVE_LAYOUT.md` 原则 A。
 
