@@ -36,6 +36,12 @@ test('Yin Coin marks are UI chrome files (relief header + flat icon)', () => {
   assert.match(src, /dataset\.testid = 'yin-coin-balance-icon'/);
   assert.equal(existsSync(join(publicUi, 'yin-coin-mark.png')), true);
   assert.equal(existsSync(join(publicUi, 'yin-coin-mark-icon.png')), true);
-  assert.doesNotMatch(src, /yin-coin-play-wave/);
-  assert.doesNotMatch(src, /YIN_COIN_PLAY/);
+});
+
+test('Collections panel Play is a footer control, not a shop SKU row', () => {
+  assert.match(src, /dataset\.testid = 'yin-coin-wave-play'/);
+  assert.match(src, /YIN_COIN_WAVE_PLAY/);
+  assert.match(src, /YIN_COIN_WAVE_BUSY/);
+  assert.doesNotMatch(src, /gesture\.wave-hello/);
+  assert.equal(listShopFocusCoinSkus().includes('gesture.wave-hello'), false);
 });

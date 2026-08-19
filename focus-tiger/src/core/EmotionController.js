@@ -548,8 +548,8 @@ export class EmotionController {
         }
       },
 
-      // Collections 挥手引擎：已结缘 gesture.wave-hello 后可 playEmotion。
-      // 本批抽屉不列该 SKU、无 Play。不复活 welcomeBack / 欢迎池 / 10min 自主挥手。
+      // Collections 挥手：珍藏面板 Play / `__focusCoins.playWave`。
+      // 抽屉仍不列 gesture.wave-hello。不复活 welcomeBack / 欢迎池 / 10min 自主挥手。
       collectionsWaveHello: (options = {}) => {
         this._playCompanionSequenceOnce('waveHello', options, {
           crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
@@ -1217,7 +1217,7 @@ export class EmotionController {
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
-      waveHello: 'wave-hello 挥手(停接线·仅素材)',
+      waveHello: 'wave-hello 挥手(珍藏点播)',
       waveHelloWelcome: 'wave-hello 欢迎旧(停接线·仅素材)',
       waveHelloPingpong: 'wave-hello-pingpong(停接线·仅素材)',
       magicBookReading: 'magic-book-reading 魔法书',

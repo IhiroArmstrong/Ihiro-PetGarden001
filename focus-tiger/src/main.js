@@ -1231,6 +1231,7 @@ async function init() {
     }),
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
+    playWave: () => window.__focusCoins.playWave(),
     onMessage: (message) => mindfulToast.show(message)
   });
   window.__yinCoinPanel = yinCoinPanelUI;
@@ -1511,7 +1512,6 @@ async function init() {
 
   function playCollectionsWaveHello() {
     const result = evaluateCollectionsWaveHelloPlay({
-      ownedIds: focusCoinsStore.getSnapshot().ownedIds,
       sessionState: stateManager.state,
       focusing: stateManager.state === STATES.FOCUSING,
       emotionKey: emotionController.getCurrentEmotionKey()

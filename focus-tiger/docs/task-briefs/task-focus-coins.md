@@ -1,6 +1,6 @@
 # Task Brief · 寅币（Focus Coins）/ Yin's Collections
 
-> **状态**：L3 抽屉已合 `develop`。花园 vs 珍藏仍锁。**2026-08-20**：铁律进 PRINCIPLES；旧 8 id 清供改名、现价现门槛上架；晨露/须弥滤镜已拆。本旁支：`collectionsWaveHello` 引擎已接线；抽屉不列挥手、无 Play。L0 #335 · L1 #338 · L2 #339 · L3 #352+#353+#354+#348 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
+> **状态**：L3 抽屉已合 `develop`。花园 vs 珍藏仍锁。**2026-08-20**：铁律进 PRINCIPLES；旧 8 id 清供改名、现价现门槛上架；晨露/须弥滤镜已拆。本旁支：珍藏挥手点播 Play（抽屉不列挥手 SKU）。L0 #335 · L1 #338 · L2 #339 · L3 #352+#353+#354+#348 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
 
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
 > **性质**：清供目录 + 铁律硬条（中风险：ledger 商店列表 / redeem）。不改 Honesty 分档、不扩备份 6 key、不把滤镜盖回序列帧。  

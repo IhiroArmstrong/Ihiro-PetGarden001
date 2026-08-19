@@ -4,8 +4,9 @@
  */
 
 /**
- * Engine for on-demand wave (`playEmotion` / `__focusCoins.playWave`).
- * The 清供-8 drawer does not list this SKU or expose Play.
+ * On-demand wave from Yin's Collections (`playEmotion` / panel Play).
+ * The 清供-8 drawer does not list `gesture.wave-hello`.
+ * Play does not require bonding that unlistable SKU.
  * Does not re-enable welcomeBack / cold-start / 10-minute idle wave.
  */
 
@@ -26,21 +27,16 @@ export function ownsCollectionsWaveHello(ownedIds) {
 
 /**
  * @param {object} [opts]
- * @param {string[]} [opts.ownedIds]
  * @param {string} [opts.sessionState]
  * @param {boolean} [opts.focusing]
  * @param {string | null} [opts.emotionKey]
  * @returns {{ ok: boolean, reason?: string }}
  */
 export function evaluateCollectionsWaveHelloPlay({
-  ownedIds = [],
   sessionState = '',
   focusing = false,
   emotionKey = null
 } = {}) {
-  if (!ownsCollectionsWaveHello(ownedIds)) {
-    return { ok: false, reason: 'not-owned' };
-  }
   if (focusing) {
     return { ok: false, reason: 'busy' };
   }

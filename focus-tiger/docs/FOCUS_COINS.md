@@ -47,7 +47,7 @@
 
 练习徽章条（Idle 右侧 `#yin-tip-kindness-badges`）是主画面周边 chrome，**不是**产品名叫「百宝箱」。英文产品名只认 **Yin's Collections**；中文 **阿寅的珍藏**。百宝箱仅作气质比喻。
 
-**铁律**（产品硬条，见 `PRINCIPLES.md`）：不能修改或添加覆盖到已有动画（含晨露滤镜、须弥金线、念珠披毯、蒲团扣子）。只能周边 DOM，或珍藏卡面。挥手点播 **UI** 仍后置（已入库 `wave-hello` 不进本批抽屉；引擎 `collectionsWaveHello` 已接线）。抛三色球未入库，后置。
+**铁律**（产品硬条，见 `PRINCIPLES.md`）：不能修改或添加覆盖到已有动画（含晨露滤镜、须弥金线、念珠披毯、蒲团扣子）。只能周边 DOM，或珍藏卡面。挥手点播走珍藏底栏 Play（已入库 `wave-hello` **不**进清供 8 行）。抛三色球未入库，后置。
 
 ### 1.2 已废止 vs 2026-08-20 已锁
 
@@ -60,9 +60,9 @@
 | 产品名叫清供匣 / Yin Coin / Yin's Desk | **不要**。对外只认 **Yin's Collections / 阿寅的珍藏**。清供匣、百宝箱仅比喻 |
 | 寅币 8 件并进 `#yin-tip-kindness-badges` 或提前做成就墙 | **不要**。练习章条继续只管练习/请茶/Sanctuary；成就墙仍是 Backlog |
 | `yin-coin-flat-draft.png` 0.5–1 日手绘精修 | **未批准**。占位 24px 色点继续用；看见线稿再另拍板 |
-| #353 商店 7 行（久坐的人 / 青瓷瓶 / 青铜礼器 / 挥手 上架） | **抽屉改回清供 8**。上述 id **留在 catalog**（已兑有效；挥手点播后置），**不**再出现在 `#yin-coin-panel` |
+| #353 商店 7 行（久坐的人 / 青瓷瓶 / 青铜礼器 / 挥手 上架） | **抽屉改回清供 8**。上述 id **留在 catalog**（已兑有效）；挥手 SKU **不**进商店行，点播放珍藏底栏 |
 
-L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**。目录 = 清供 8。`collectionsWaveHello` 引擎已接线（`__focusCoins.playWave`）；抽屉**不**列挥手、**无** Play。四页签壳仍后置，不是再开第二座花园。
+L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**。目录 = 清供 8。底栏 Play 点播 `wave-hello`（不列挥手 SKU）。四页签壳仍后置，不是再开第二座花园。
 
 ---
 
@@ -191,7 +191,7 @@ Honesty **不是**挂机检测，是别处练习的信任补登。完整 Focus C
 | `title.long-sitter` | 称号 | 「久坐的人」 | 360 | 同上双门槛 | **catalog 保留、抽屉不列**（bundle 会写入） |
 | `collection.porcelain.qing-vase` | 静物 | 青瓷瓶 | 40 | — | **catalog 保留、抽屉不列** |
 | `collection.bronze.ritual-vessel` | 静物 | 青铜礼器 | 56 | — | **catalog 保留、抽屉不列** |
-| `gesture.wave-hello` | 闲笔 | 挥手 | 48 | — | **catalog 保留、抽屉不列**；点播 UI 后置；引擎 `collectionsWaveHello` 已接线 |
+| `gesture.wave-hello` | 闲笔 | 挥手 | 48 | — | **catalog 保留、抽屉不列**；点播走珍藏底栏 Play，不要求先结缘该 SKU |
 
 信件 / 静默小册：**后置**（须静态文案 + Quiet Line 历史归档）。抛三色球：**未入库，后置**。
 
@@ -233,7 +233,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 | **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日 · 已实现** `focusCoinsLedger.js` |
 | **L1 发点接线** | 完成一场坐，钱包会涨（可先无「店」） | 挂计时达标 / Honesty 呼吸成功 / Choose / Reflect / 主动 Recover；localStorage 白名单；flag 默认可关 | 无兑换 UI；不改场景剧本；不把钱包塞进练习备份 6 key | **4–6 人日 · #338 已合**（TRACKER 待人工；高风险邻接：Honesty / 完成记账） |
 | **L2 可兑原型** | 内部能花点留下痕迹 | 清供卡面可兑；叠层视觉拆掉；`title.long-sitter` 双门槛仍可由 bundle 写入 | 新角色帧换装、主画面叠层 | **已接线 · 2026-08-20 清供改名** |
-| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；目录 = 清供 8；结缘语汇 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key、挥手点播 UI | **已接线 · 清供 8 已锁** |
+| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；目录 = 清供 8；结缘语汇；底栏挥手点播 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **已接线 · 清供 8 已锁** |
 
 **合计到「内部可用」（L0–L2）**：约 **10–16 人日** ≈ **2.5–4 周日历**（一人，含回归；L1 勿与其它 Honesty 大改叠车）。  
 **到可给真实用户**：再加 L3；**不得**早于 L0 单测锁住防刷表。
@@ -271,7 +271,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - **本支（#348）**：Breath 坐满按 Stay 档发时长点（`applyBreathPracticeFocusCoinsGrant`）；Leave 仍 0。Focus / Breath picker 下 `#focus-coins-duration-hint`。  
 - **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。清供 id 可兑为卡面；晨露/金线滤镜已拆、不再上主画面。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
 - **L3（#352+#353+#354 已合；清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + toast。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
-- **本旁支（#356）**：`collectionsWaveHello` 引擎 + 门闩已接线（`playEmotion` / `__focusCoins.playWave`）。抽屉**不**列 `gesture.wave-hello`，**无** Play。`welcomeBack` 仍空。  
+- **本旁支（#356）**：珍藏底栏 Play 点播已入库 `waveHello`（`collectionsWaveHello`）。抽屉**不**列 `gesture.wave-hello`。不要求先结缘该 SKU。`welcomeBack` 仍空。  
 
 - Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
 - 单测优先于 e2e；L3 DOM 以 `focusCoinsSurface.test.js` / `FocusCoinsPanelUI.test.js` 为主；完整用户链路须人工。
