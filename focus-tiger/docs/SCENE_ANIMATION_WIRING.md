@@ -128,7 +128,7 @@
 | 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案。**勿**与冷启动欢迎同 tick 叠播（`shouldAttemptLateNightOnBoot`） |
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | Idle **轻点阿寅** | `earWiggleHeadTouch` | 响应 | **已接线** | 产品壳 `#idle-yin-tap-anchor`（非 3D Pointer）；**0–1 秒内** CapCut 切入摸头；播完 ~1s CapCut Idle；Focusing 让位场景 X；叠层忙碌**隐藏 hit**（禁止哑点击） |
-| Yin's Collections **点播挥手** | `collectionsWaveHello` → `waveHello` | 闲笔 | **已接线** | 仅已结缘 `gesture.wave-hello`；珍藏面板 **点播 / Play**；~1s CapCut Idle。**不**改 PNG、**不**上莲花池。`welcomeBack` / 欢迎池 / 10min 自主挥手仍停接线 |
+| Yin's Collections **挥手引擎** | `collectionsWaveHello` → `waveHello` | 闲笔 | **引擎已接线** | 仅已结缘 `gesture.wave-hello`；本批抽屉不列、无 Play；`__focusCoins.playWave`。~1s CapCut Idle。**不**改 PNG、**不**上莲花池。`welcomeBack` / 欢迎池 / 10min 自主挥手仍停接线 |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议；与上列珍藏点播**不是**同一入口 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
 | 长期里程碑 | `milestoneGlow`：`streak-7` **50/50** 蝴蝶/`parrotEarVisit` · `streak-21`/`100` 琉璃星石；`breathHaloHq` 仍调试 | ritual | **产品路径已接线** | Brief `task-milestone-glow-product-wire` / `task-parrot-ear-visit` |

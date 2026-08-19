@@ -237,7 +237,7 @@ export const SPRITE_SEQUENCES = {
   },
 
   // 挥手 · 欢迎池/welcomeBack 仍停接线（2026-08-02）。
-  // 2026-08-20：Yin's Collections 点播走 playEmotion('collectionsWaveHello') → 本序列。
+  // 2026-08-20：Collections 引擎 playEmotion('collectionsWaveHello') → 本序列；抽屉本批不列。
   // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。不改 frameIndices。
   waveHello: {
     animation: 'wave-hello',

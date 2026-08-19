@@ -16,6 +16,7 @@ import {
 } from './entitlement/entitlementGate.js';
 import {
   FOCUS_COIN_CATALOG,
+  FOCUS_COIN_CURIO_SHOP_IDS,
   FOCUS_COINS_DISPLAY_NAME,
   FOCUS_COINS_DISPLAY_NAME_EN,
   FOCUS_COINS_COLLECTIONS_NAME_EN,
@@ -202,17 +203,19 @@ describe('focusCoinsLedger L0', () => {
     assert.equal(capped.reason, 'active-recover-daily-cap');
   });
 
-  it('shop catalog excludes retired overlays and still forbids cash', () => {
+  it('shop catalog is the locked 清供 eight and still forbids cash', () => {
     assert.deepEqual(listFocusCoinCatalogViolations(), []);
     const shopIds = listShopFocusCoinSkus().map((s) => s.id);
-    assert.equal(shopIds.includes('space.lotus-dew'), false);
-    assert.equal(shopIds.includes(SUMERU_BUNDLE_ID), false);
-    assert.ok(shopIds.includes('title.sits-with-yin'));
-    assert.ok(shopIds.includes('collection.porcelain.qing-vase'));
-    assert.ok(shopIds.includes('gesture.wave-hello'));
+    assert.deepEqual(shopIds, [...FOCUS_COIN_CURIO_SHOP_IDS]);
+    assert.equal(shopIds.includes('space.lotus-dew'), true);
+    assert.equal(shopIds.includes(SUMERU_BUNDLE_ID), true);
+    assert.equal(shopIds.includes(TITLE_LONG_SITTER_ID), false);
+    assert.equal(shopIds.includes('collection.porcelain.qing-vase'), false);
+    assert.equal(shopIds.includes('gesture.wave-hello'), false);
     for (const sku of FOCUS_COIN_CATALOG) {
       assert.equal(sku.cashPurchasable, false);
       assert.equal(sku.skippableByEntitlement, false);
+      assert.equal(sku.retiredOverlay === true, false);
       assert.equal(sku.id in FEATURE_CATALOG, false);
     }
     assert.equal('focus.coins' in FEATURE_CATALOG, false);
@@ -239,20 +242,29 @@ describe('focusCoinsLedger L0', () => {
     }
   });
 
-  it('overlay SKUs are retired; 久坐的人 title still needs 360 coins AND 600 lifetime minutes', () => {
+  it('清供 stills redeem at current prices; 久坐的人 still needs 360 coins AND 600 lifetime minutes', () => {
     const dew = evaluateFocusCoinRedeem('space.lotus-dew', {
       balance: 48,
       hasLotusBloom: true
     });
-    assert.equal(dew.ok, false);
-    assert.equal(dew.reason, 'retired-overlay');
+    assert.equal(dew.ok, true);
+    assert.equal(dew.reason, 'ok');
+    assert.ok(dew.ownedIds.includes('space.lotus-dew'));
 
-    const retiredBundle = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
+    const noBloom = evaluateFocusCoinRedeem('space.lotus-dew', {
+      balance: 48,
+      hasLotusBloom: false
+    });
+    assert.equal(noBloom.ok, false);
+    assert.equal(noBloom.reason, 'lotus-bloom');
+
+    const okBundle = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
       balance: SUMERU_PRICE,
       lifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES
     });
-    assert.equal(retiredBundle.ok, false);
-    assert.equal(retiredBundle.reason, 'retired-overlay');
+    assert.equal(okBundle.ok, true);
+    assert.ok(okBundle.ownedIds.includes('space.sumeru-cushion'));
+    assert.ok(okBundle.ownedIds.includes(TITLE_LONG_SITTER_ID));
 
     const noMinutes = evaluateFocusCoinRedeem(TITLE_LONG_SITTER_ID, {
       balance: SUMERU_PRICE,

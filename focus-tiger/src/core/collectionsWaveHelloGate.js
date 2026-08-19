@@ -4,7 +4,8 @@
  */
 
 /**
- * Yin's Collections on-demand wave — bonded `gesture.wave-hello` only.
+ * Engine for on-demand wave (`playEmotion` / `__focusCoins.playWave`).
+ * The 清供-8 drawer does not list this SKU or expose Play.
  * Does not re-enable welcomeBack / cold-start / 10-minute idle wave.
  */
 

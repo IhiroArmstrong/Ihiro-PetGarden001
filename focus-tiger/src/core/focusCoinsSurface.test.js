@@ -7,7 +7,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   FOCUS_COIN_CATALOG,
-  listShopFocusCoinSkus
+  FOCUS_COIN_CURIO_SHOP_IDS,
+  getFocusCoinSku,
+  listShopFocusCoinSkus,
+  SUMERU_BUNDLE_ID,
+  SUMERU_MIN_LIFETIME_MINUTES,
+  SUMERU_PRICE
 } from './focusCoinsLedger.js';
 import {
   FOCUS_COIN_SKU_NAME_KEYS,
@@ -26,33 +31,36 @@ const LOOKUP = {
   YIN_COIN_GAP_RECOVER: 'Need one active Recover.'
 };
 
-const SHOP_IDS = [
-  'title.sits-with-yin',
-  'title.returned-gently',
-  'title.long-sitter',
-  'badge.rare.quiet-pebble',
-  'collection.porcelain.qing-vase',
-  'collection.bronze.ritual-vessel',
-  'gesture.wave-hello'
-];
+const SHOP_IDS = [...FOCUS_COIN_CURIO_SHOP_IDS];
 
-test('L3 surface lists shop SKUs only — never retired overlays', () => {
+test('L3 surface lists the locked 清供 eight — extras stay off the drawer', () => {
   const shop = listShopFocusCoinSkus();
-  assert.equal(shop.length, 7);
+  assert.equal(shop.length, 8);
   const rows = listFocusCoinSurfaceRows({ balance: 0 });
-  assert.equal(rows.length, 7);
+  assert.equal(rows.length, 8);
   assert.deepEqual(
     rows.map((row) => row.id),
     SHOP_IDS
   );
   assert.equal(
-    rows.some((row) => row.id === 'space.lotus-dew'),
+    rows.some((row) => row.id === 'collection.porcelain.qing-vase'),
+    false
+  );
+  assert.equal(
+    rows.some((row) => row.id === 'gesture.wave-hello'),
+    false
+  );
+  assert.equal(
+    rows.some((row) => row.id === 'title.long-sitter'),
     false
   );
   for (const sku of shop) {
     assert.equal(typeof FOCUS_COIN_SKU_NAME_KEYS[sku.id], 'string');
   }
-  assert.ok(FOCUS_COIN_CATALOG.some((sku) => sku.retiredOverlay === true));
+  assert.equal(
+    FOCUS_COIN_CATALOG.some((sku) => sku.retiredOverlay === true),
+    false
+  );
 });
 
 test('quiet pebble with enough coins is redeemable with no extra gate', () => {
@@ -73,47 +81,32 @@ test('shortfall copy names the coin gap instead of a vague cannot-redeem', () =>
   );
 });
 
-test('久坐的人 shows both coin and lifetime-minute gaps when both are short', () => {
-  const sku = listShopFocusCoinSkus().find((s) => s.id === 'title.long-sitter');
+test('须弥小鼎 shows both coin and lifetime-minute gaps when both are short', () => {
+  const sku = listShopFocusCoinSkus().find((s) => s.id === SUMERU_BUNDLE_ID);
   const gaps = listFocusCoinRedeemGaps(sku, {
     balance: 40,
     lifetimeMinutes: 120
   });
   assert.deepEqual(gaps, [
-    { kind: 'balance', need: 320 },
-    { kind: 'minutes', need: 480 }
+    { kind: 'balance', need: SUMERU_PRICE - 40 },
+    { kind: 'minutes', need: SUMERU_MIN_LIFETIME_MINUTES - 120 }
   ]);
   const msg = formatFocusCoinGapMessage(gaps, (key) => LOOKUP[key]);
   assert.match(msg, /320/);
   assert.match(msg, /480/);
 });
 
-test('porcelain stills redeem without garden gates', () => {
-  const sku = listShopFocusCoinSkus().find(
-    (s) => s.id === 'collection.porcelain.qing-vase'
+test('catalog extras still redeem without garden gates, but stay off the drawer', () => {
+  const sku = getFocusCoinSku('collection.porcelain.qing-vase');
+  assert.equal(
+    listShopFocusCoinSkus().some((s) => s.id === sku.id),
+    false
   );
   const gaps = listFocusCoinRedeemGaps(sku, {
     balance: 40,
     hasLotusBloom: false
   });
   assert.deepEqual(gaps, []);
-});
-
-test('bonded wave-hello offers Play; unowned does not', () => {
-  const unowned = listFocusCoinSurfaceRows({ balance: 0 }).find(
-    (row) => row.id === 'gesture.wave-hello'
-  );
-  assert.equal(unowned?.owned, false);
-  assert.equal(unowned?.showPlay, false);
-  assert.equal(unowned?.playBusy, false);
-
-  const bonded = listFocusCoinSurfaceRows({
-    ownedIds: ['gesture.wave-hello'],
-    playBusy: true
-  }).find((row) => row.id === 'gesture.wave-hello');
-  assert.equal(bonded?.owned, true);
-  assert.equal(bonded?.showPlay, true);
-  assert.equal(bonded?.playBusy, true);
 });
 
 test('owned SKU has no gaps and Wear is offered on titles', () => {

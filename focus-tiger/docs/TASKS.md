@@ -206,11 +206,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 级 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|
-| **文档** | 花园 vs 珍藏、叠层退役、结缘语汇 | `FOCUS_COINS.md` · `task-focus-coins.md` | **#353 已合** |
+| **文档** | 花园 vs 珍藏、铁律、清供 8 | `FOCUS_COINS.md` · `task-focus-coins.md` | **本支** |
 | **L0** | 纯账本单测 | `feature/focus-coins-l0-ledger` | **#335 已合** |
 | **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合**（TRACKER 待人工） |
-| **L2** | 称号 / 稀有章 / 珍藏静物；叠层退役 | `feature/focus-coins-l2-redeem` | **#339 已合**；叠层 2026-08-19 退役 |
-| **L3** | **Yin's Collections** 抽屉；挥手点播已接线 | `feature/focus-coins-wave-playback` | **#352+#353 已合**；点播本旁支 |
+| **L2** | 清供卡面可兑；叠层视觉拆掉 | `feature/focus-coins-l2-redeem` | **#339 已合**；2026-08-20 清供改名 |
+| **L3** | **Yin's Collections** 抽屉；挥手点播 UI 后置 | `feature/yin-coin-l3-surface` | **#352+#353+#354 已合** |
+| **本旁支** | `collectionsWaveHello` 引擎；抽屉仍清供 8 | `feature/focus-coins-wave-playback` | 进行中 |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
 

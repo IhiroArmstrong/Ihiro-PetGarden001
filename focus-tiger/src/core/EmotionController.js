@@ -548,8 +548,8 @@ export class EmotionController {
         }
       },
 
-      // Yin's Collections 点播：已结缘 gesture.wave-hello 后播已入库 waveHello。
-      // 不改 PNG / playlist；不复活 welcomeBack / 欢迎池 / 10min 自主挥手。
+      // Collections 挥手引擎：已结缘 gesture.wave-hello 后可 playEmotion。
+      // 本批抽屉不列该 SKU、无 Play。不复活 welcomeBack / 欢迎池 / 10min 自主挥手。
       collectionsWaveHello: (options = {}) => {
         this._playCompanionSequenceOnce('waveHello', options, {
           crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,

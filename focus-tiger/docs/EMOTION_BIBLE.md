@@ -153,7 +153,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `WakeUp` | —（已删） | 已删除；勿再接线 |
 | `dormantWake` | `DORMANT_WAKE` | 2D：经典 `cloak-sleep` 倒放 / 星光 wake；Honesty + 长离 2B |
 | `WelcomeBack` | `welcomeBack`（**停接线**） | 素材仍在：`wave-hello` / `wave-hello-pingpong`；**不播** |
-| `CollectionsWaveHello` | `collectionsWaveHello` → `waveHello`（已入库 `wave-hello`） | 珍藏已结缘 `gesture.wave-hello` 后点播；**不**改 PNG；**不**进欢迎池 |
+| `CollectionsWaveHello` | `collectionsWaveHello` → `waveHello`（已入库 `wave-hello`） | 引擎已接线；本批抽屉不列、无 Play；**不**改 PNG；**不**进欢迎池 |
 | `magicBookReading` | `magicBookReading` → 同名序列 | `public/sprites/.../magic-book-reading/frame_001–046.png`（开场欢迎池试验） |
 | `bookReading` | `bookReading` → 同名序列 | `public/sprites/.../book-reading/frame_001–024.png`（日语切语；单程无倒放） |
 | `goldenHaloPalms` | `goldenHaloPalms` → 同名序列 | `public/sprites/.../golden-halo-palms/frame_001–094.png`（Honesty≥30 试验） |
@@ -167,7 +167,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 > **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。**2026-08-02 晚拍板：新旧挥手暂时停接线**——`playEmotion('welcomeBack')` 不播序列；不进冷启动欢迎池；调试情绪入口已撤；入库素材钮仅保留「停接线·仅素材」标签供以后对照。建议场景（回前台 / Idle≈10min 30%）**以后另议**。优先级低于 `Celebrating`。
 >
-> **`CollectionsWaveHello`（珍藏点播挥手 · 2026-08-20）**：C 轨 **Yin's Collections** 已结缘闲笔。用户在 `#yin-coin-panel` 点 **点播 / Play** 后播已入库 `waveHello`（正放抬手→摇摆×2→放手）→ ~1s CapCut Idle。**禁止**用本键复活欢迎池 / `welcomeBack` / 10 分钟自主挥手。未结缘不出现点播钮。Celebrating / Focusing / 其它 oneshot 进行中 → 钮禁用或安静 toast，不打断。不上莲花池、不改序列帧。
+> **`CollectionsWaveHello`（珍藏挥手引擎 · 2026-08-20）**：C 轨闲笔。`playEmotion('collectionsWaveHello')` 播已入库 `waveHello`（正放抬手→摇摆×2→放手）→ ~1s CapCut Idle。本批 `#yin-coin-panel` **不**列挥手、**无** Play（清供 8 锁）；控制台 `__focusCoins.playWave` 仅引擎。**禁止**用本键复活欢迎池 / `welcomeBack` / 10 分钟自主挥手。Celebrating / Focusing / 其它 oneshot 进行中 → 门闩 `busy`，不打断。不上莲花池、不改序列帧。
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 

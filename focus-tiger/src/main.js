@@ -199,6 +199,7 @@ import { GRANT_KIND } from './core/focusCoinsLedger.js';
 import { FocusCoinsStore } from './core/focusCoinsStore.js';
 import {
   applyFocusCoinsGrant,
+  applyBreathPracticeFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './core/focusCoinsAward.js';
 import {
@@ -1179,10 +1180,7 @@ async function init() {
   lotusPondRuntime.boot();
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
-      pondEl: document.getElementById('lotus-pond'),
-      appEl: document.getElementById('app'),
       documentElement: document.documentElement,
-      document,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
   }
@@ -1229,14 +1227,10 @@ async function init() {
         practiceDaysStore,
         lotusPondStore
       }),
-      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle,
-      playBusy:
-        emotionController.getCurrentEmotionKey() ===
-        COLLECTIONS_WAVE_HELLO_EMOTION_KEY
+      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
     }),
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
-    playWave: () => playCollectionsWaveHello(),
     onMessage: (message) => mindfulToast.show(message)
   });
   window.__yinCoinPanel = yinCoinPanelUI;
@@ -1815,7 +1809,13 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
-    awardFocusCoins({ kind: GRANT_KIND.MICRO_RITUAL });
+    applyBreathPracticeFocusCoinsGrant({
+      durationMinutes,
+      store: focusCoinsStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
