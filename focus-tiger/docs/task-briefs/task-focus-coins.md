@@ -1,21 +1,21 @@
-# Task Brief · 寅币（Focus Coins）
+# Task Brief · 寅币（Focus Coins）/ Yin's Collections
 
-> **状态**：L0 #335 · L1 #338 · L2 #339 已合。本支 `feature/yin-coin-breath-duration`：对外名寅币 + Breath 时长点 + 时长 chip 静默 hint。TRACKER 待人工。方向锁见 `FOCUS_COINS.md`。  
+> **状态**：L3 抽屉 #352+#353 已合 `develop`。花园 vs 珍藏、叠层退役、Collections 商店目录已锁。本支 `feature/yin-coin-breath-duration`：Breath 坐满按 Stay 档发时长点 + 时长 chip 静默 hint。L0 #335 · L1 #338 · L2 #339 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`（含 §1.2 已废止提案）。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
-> **性质**：L2 内部兑换（中风险：徽章隔离 / 莲花池不拦截）。**一次只做一个 L 级**。无抽屉、不改场景剧本、不扩备份 6 key。**只兑、不动 Honesty 时长分档**。  
-> **禁止**：建 entitlement gate key；用余额满足 `isEntitled`。场景 D 仍不因 L0–L2 改写；时长 chip 静默 hint 已拍板可写入场景 S/T 一句。
+> **性质**：L1 补 Breath 时长点（中风险：发点钩子 / 时长 picker）。不改 Honesty 分档、不扩备份 6 key、不复活叠层 SKU。  
+> **禁止**：建 entitlement gate key；用余额满足 `isEntitled`；Support 三卡样式；常驻 HUD；把叠层 SKU 再摆进抽屉；复活「8 条叠层全列」。
 
 ---
 
 ## 0. 一句话
 
-练习入账后发「寅币」，只能兑换身份/情感锦上添花；买不到 Lifetime ∪ Membership 的进阶能力。对外不叫积分。
+练习入账后发「寅币」，只能在 **Yin's Collections** 结缘身份/记忆；买不到 Lifetime ∪ Membership 的进阶能力。对外不叫积分 / Shop。
 
 ---
 
 ## 1. 已拍板（勿再开放）
 
-见 `FOCUS_COINS.md` §2 六条：隔离清单 · Honesty 半额日限 1 次 · 连续日只 +3 回声 · 不拦截自动纪念 · 徽章与货币两层同一账本 · 对外名寅币。
+见 `FOCUS_COINS.md` §2：隔离清单 · Honesty 半额日限 · 余温回声 · 不拦截花园 · 徽章两层 · 寅币 / Yin's Collections · 叠层退役 · 删除 `emotion.premium.trigger`。
 
 ---
 
@@ -40,10 +40,10 @@
 |---|---|---|---|---|---|
 | **L0** | `feature/focus-coins-l0-ledger` | 纯函数：分档发点、封顶、回声、兑换资格、隔离断言 | 不挂 `main.js`、无 UI、不改 localStorage 白名单 | 2–4 | 防刷表单测全绿；未达标/二次 Honesty/`isEntitled` 失败用例锁住 |
 | **L1** | `feature/focus-coins-l1-award` | 完成钩子写入钱包；key 进 L-01；flag 可关 | 无店、不改场景剧本、不扩备份 6 key | 4–6 | 达标一场 Stay 见余额涨；坐满 Breath 10 同分档；未达标 / Leave 为 0；关 flag 无写入 |
-| **L2** | `feature/focus-coins-l2-redeem` | 称号 + 稀有章 + ≥1 空间变体；稀缺双门槛 | 新角色序列换装柜 | 4–6（无新美术） | 花点留下只增不减资产；会员/请茶跳不过须弥坐 |
-| **L3** | `feature/focus-coins-l3-surface` | 抽屉「寅币」；装备称号；en/ja；375 | 改场景 D；B 轨 key | 3–5 | 次级入口可忽略；0–1s 按压；不挡主球 |
+| **L2** | `feature/focus-coins-l2-redeem` + `docs/yin-collections-c-track` | 称号 + 稀有章 + 珍藏静物；叠层退役 | 新角色序列换装柜；PNG 叠层 | 已合 + 叠层退役 | 花点留下只增不减资产；晨露新兑失败 |
+| **L3** | `feature/focus-coins-l3-surface` | **Yin's Collections** 四页签；装备称号；挥手点播；en/ja；375 | 改场景 D；B 轨 key；改 PNG | 3–5 | 次级入口可忽略；0–1s 按压；不挡主球；店底须知 |
 
-**Feature flag**：L1 起 `FOCUS_COINS_USER_MOUNT_ENABLED`（或同等）。关 = 完全回到无同坐点正式路径（Playbook 红线 C：禁止半套简化默认）。
+**Feature flag**：L1 起 `FOCUS_COINS_USER_MOUNT_ENABLED`（或同等）。关 = 完全回到无寅币钱包的正式路径（Playbook 红线 C：禁止半套简化默认）。
 
 **备份**：L1 不把钱包塞进 `PRACTICE_BACKUP_STORE_KEYS`（保持 6 key）。L3 再单独决定 schema v2。
 
@@ -72,13 +72,15 @@ L1 **#338 已合**。本硬闸对后续「再碰 Honesty / 完成记账邻接」
 5. 昨日无练习 → 无 +3 回声；昨日有 → 今日首笔合格发点 +3。  
 6. 被动 Recover 事件 → 0 点。  
 7. `redeem` 不得把 `ambient.deep.play` / 任一 `ritual.*.access` 标 entitled。  
-8. 须弥坐：缺 360 点或 `lifetimeMinutes < 600` 均失败；entitlement lifetime 不能跳过。
+8. `title.long-sitter`：缺 360 点或 `lifetimeMinutes < 600` 均失败；entitlement lifetime 不能跳过。  
+9. `space.lotus-dew` / `bundle.sumeru-seat` 新兑 → `retired-overlay`。  
+10. `FEATURE_CATALOG` 不含 `emotion.premium.trigger`。
 
 ---
 
 ## 5. 点击反馈（L3；本 Brief 文档阶段不涉及）
 
-L3 PR 须答：点抽屉「同坐点」后 **0–1 秒内**入口按压 + 面板开始出现（玻璃泡，对齐 Honesty 桥接半透明，禁止厚卡片挡住阿寅）。设计静默（日封顶无 toast、冷却）须挂 `SILENT_BEHAVIORS.md` 新 `SB-xx` 或复用已有「无挫败文案」条。
+L3 PR 须答：点 **Yin's Collections / 阿寅的珍藏** 后 **0–1 秒内**入口按压 + 面板开始淡入（Journey 同族玻璃，禁止厚卡片挡住阿寅）。不足结缘：按压 + 行内缺口句 + toast，**不是**哑点击。设计静默（日封顶无 toast）须挂 `SILENT_BEHAVIORS.md`。
 
 冲突扫描：见 `FOCUS_COINS.md` §0。
 

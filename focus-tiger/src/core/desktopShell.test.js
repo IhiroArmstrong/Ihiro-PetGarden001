@@ -8,7 +8,8 @@ import { describe, it } from 'node:test';
 import {
   getDesktopShellBridge,
   isDesktopShellRuntime,
-  openCheckoutUrl
+  openCheckoutUrl,
+  applyShellVisibilityToAttention
 } from './desktopShell.js';
 
 describe('desktopShell', () => {
@@ -69,5 +70,18 @@ describe('desktopShell', () => {
         }),
       /external_url_blocked/
     );
+  });
+
+  it('applyShellVisibilityToAttention maps tray hideReason onto AttentionSignals', () => {
+    const reasons = [];
+    applyShellVisibilityToAttention(
+      { setHideReason: (reason) => reasons.push(reason) },
+      { hidden: true, hideReason: 'tray' }
+    );
+    applyShellVisibilityToAttention(
+      { setHideReason: (reason) => reasons.push(reason) },
+      { hidden: false, hideReason: 'none' }
+    );
+    assert.deepEqual(reasons, ['tray', 'none']);
   });
 });

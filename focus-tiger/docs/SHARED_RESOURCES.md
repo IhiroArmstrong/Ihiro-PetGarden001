@@ -59,7 +59,7 @@
 | `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》两 case：`{ revealed, revealedAt, scoreAtReveal, revealedCaseIds, lastShownCaseId }`；门槛 = 统一练习 **score ≥ 21**；每首未揭示诗在完成仪式后出卡一次（Case 1 乐五斋诗稿 / Case 2 乐五斋七言歌行）；旧档仅 `revealed:true` 视为 Case 1 已见、仍可出 Case 2；菜单轮换已揭示诗；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
 | `focus-tiger.idle-companion-pip.v1` | `idleCompanionPipGate` / `IdleCompanionPipUI` | Idle Document PiP 实验原型：`{ used, usedAt }`。只记是否曾打开过浮窗，供后续是否加大投入参考；**不得**用于提醒 / 激励 / 限频。Safari 等不支持时入口不挂载 |
-| `focus-tiger.focus-coins.v1` | `FocusCoinsStore` / `applyFocusCoinsGrant` / `applyFocusCoinsRedeem` | 寅币钱包：`{ balance, ownedIds, equippedTitle, lifetimeMarks, dateKey, day, session }`。L1 发点；L2 `__focusCoins.redeem(skuId)` 花点留下只增不减 `ownedIds`。莲叶晨露只叠已有朵。`?focusCoins=0` 关闸完全不写。**不**进练习备份 6 key；**不**满足 `isEntitled`；**不**写 Tea / Sanctuary `badgeIds`；**不**改莲花池自动开花 |
+| `focus-tiger.focus-coins.v1` | `FocusCoinsStore` / `applyFocusCoinsGrant` / `applyBreathPracticeFocusCoinsGrant` / `applyFocusCoinsRedeem` / `FocusCoinsPanelUI` | 寅币钱包：`{ balance, ownedIds, equippedTitle, lifetimeMarks, dateKey, day, session }`。L1 发点（Stay 达标 + **Breath 坐满按 Stay 档**）；L2 `__focusCoins.redeem(skuId)` 花点留下只增不减 `ownedIds`。叠层 SKU 新兑 `retired-overlay`（不点亮莲花/蒲团）。L3 `#yin-coin-panel` 只列商店目录（`listShopFocusCoinSkus()`）。时长 chip `#focus-coins-duration-hint`。`?focusCoins=0` 关闸完全不写、菜单行隐藏。**不**进练习备份 6 key；**不**满足 `isEntitled`；**不**写 Tea / Sanctuary `badgeIds`；**不**改莲花池自动开花 |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
@@ -116,6 +116,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `welcomeBack` | **停接线**（2026-08-02）：不播新旧挥手；键保留 | 素材仍入库；场景以后另议 |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
+| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取 |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 
 完整键见 `EmotionController.js` 的 `EMOTIONS` / `EMOTION_KEYS`；情绪语义权威仍为 `EMOTION_BIBLE.md`。

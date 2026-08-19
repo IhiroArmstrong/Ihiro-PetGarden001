@@ -121,7 +121,7 @@ service worker（方案 A）：几乎不缓存——fetch 一律走网络，不�
 
 状态（2026-08-08）：骨架 + 品牌图标已合入 `develop`（#180）；**安装体验 / SW 发版抽查延后到 PR #2→`main` + 稳定版后再办**（勿现在邀测；勿自行标已通过）。`feature/pwa-basics` worktree 已拆。
 ```
-> **2026-07-30 口径（2026-08-16 修订 · 2026-08-17 脚手架）**：本项**不是**「本地电脑版 APP」的终局。电脑版 Mac DMG 壳已拍板 **Electron**（#326）；脚手架规格 `task-electron-desktop-scaffold.md`（收费 DMG 必须有托盘）。**步骤 A 窗口代码已提交**（无托盘；Mac 验收另开）；步骤 B 未做。PWA 继续只服务浏览器安装。**v1.0.0 纯本地 / v1.1 云端**仍有效：核心路径不依赖联网；service worker 只能增强，不得变成「无网不可用」。  
+> **2026-07-30 口径（2026-08-16 修订 · 2026-08-17 脚手架 · 2026-08-18 步骤 B）**：本项**不是**「本地电脑版 APP」的终局。电脑版 Mac DMG 壳已拍板 **Electron**（#326）；脚手架规格 `task-electron-desktop-scaffold.md`（收费 DMG 必须有托盘）。**步骤 A 窗口代码已提交**；**步骤 B 托盘 + SB-18 已接线**（待 Mac 场景 AB）。PWA 继续只服务浏览器安装。**v1.0.0 纯本地 / v1.1 云端**仍有效：核心路径不依赖联网；service worker 只能增强，不得变成「无网不可用」。  
 > **2026-08-07**：可选 PWA 基础层已立项；旧「离线缓存 3D」口径作废，以本任务块与 PRD 为准。  
 > **2026-08-12**：相关但**独立**的「Web 轻量版本更新提示」（仅有新版本时出现 → 点一下刷新）已拍板；**不**扩大本任务为推送/补丁包。见 `PROCESS.md` + Brief `task-web-soft-update-prompt.md`。
 
@@ -200,17 +200,18 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
-## 📍 寅币（Focus Coins · 2026-08-18 方向锁）
+## 📍 寅币（Focus Coins · Yin's Collections）
 
-> 练习货币；对外 **寅币**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
+> 练习货币；对外 **寅币 / Focus Coins**；个人中心 **阿寅的珍藏 / Yin's Collections**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
 
 | 级 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|
-| **文档** | 隔离清单、发点/防刷、与徽章两层、工作量分级 | `FOCUS_COINS.md` · `task-focus-coins.md` | **#333 已合** |
-| **L0** | 纯账本单测（Companion 三档 / Honesty 日限 / 封顶 / `isEntitled` 失败用例） | `feature/focus-coins-l0-ledger` | **#335 已合** |
+| **文档** | 花园 vs 珍藏、叠层退役、结缘语汇 | `FOCUS_COINS.md` · `task-focus-coins.md` | **#353 已合** |
+| **L0** | 纯账本单测 | `feature/focus-coins-l0-ledger` | **#335 已合** |
 | **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合**（TRACKER 待人工） |
-| **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | **本支**（只兑、不动 Honesty 分档） |
-| **L3** | 抽屉安静表面；en/ja；375 | `feature/focus-coins-l3-surface` | 待 L2 |
+| **L2** | 称号 / 稀有章 / 珍藏静物；叠层退役 | `feature/focus-coins-l2-redeem` | **#339 已合**；叠层 2026-08-19 退役 |
+| **L3** | **Yin's Collections** 抽屉；挥手点播待接线 | `feature/yin-coin-l3-surface` | **#352+#353 已合** |
+| **本支** | Breath 坐满 Stay 档 + 时长 chip 静默 hint | `feature/yin-coin-breath-duration` | **#348**（解冲突后待合） |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
 
@@ -223,7 +224,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 阶段 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|
 | **政策** | 只上云权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工；`schemaVersion` 降级 | `task-cloud-taste-layer.md` | **#337 已合** · 窄冻结已拍板 |
-| **实现** | 可选拉取 + 本地降级；不接 Sit 门闩 | 口令「开工云端品味层」 | **未开工**（冻结已拍板；口令未发；勿与 Honesty 分档并行改） |
+| **实现** | 可选拉取 + 本地降级；不接 Sit 门闩 | 口令「开工云端品味层」 | **#349** schemaVersion 1 接线（生产须另「部署」） |
 
 ---
 

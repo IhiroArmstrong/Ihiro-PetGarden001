@@ -32,7 +32,6 @@
  *   | 'ritual.emotional-reset.access'
  *   | 'ritual.work-transition.access'
  *   | 'ambient.deep.play'
- *   | 'emotion.premium.trigger'
  *   | 'content.advanced.daily-unlock'
  *   | 'theme.seasonal.access'
  *   | 'ritual.morning.history'
@@ -67,7 +66,6 @@ export const FEATURE_CATALOG = Object.freeze({
     type: 'ongoing'
   },
   'ambient.deep.play': { requiredTier: 'subscription', type: 'ongoing' },
-  'emotion.premium.trigger': { requiredTier: 'subscription', type: 'ongoing' },
   'content.advanced.daily-unlock': {
     requiredTier: 'subscription',
     type: 'ongoing'

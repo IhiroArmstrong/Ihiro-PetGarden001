@@ -110,7 +110,7 @@ Focus Tiger 的回应：
 
 MVP 仍只做“专注陪伴”这一件事，不扩展为待办管理、综合健康、情绪治疗或 AI 教练。
 
-**向阿寅倾诉（2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中，非本回合交付）**：可选的主动倾听入口（Idle ⋯/抽屉）；阿寅为禅意倾听者。技术边界默认 = **本地规则分类 + 人工语料检索**；分类失败走固定兜底，不做模糊打分；倾诉文本不出设备。**Web / PWA 仍禁止**运行时生成式对话。**仅 Electron 桌面**：在安全阀、仪式文案、Confide 语料都未接住时，允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`）。与 Reflection 三问 / `REFLECTION_ECHO` 分轨。Web 详规 `task-briefs/task-confide-to-yin-v1.md`。
+**向阿寅倾诉（2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中，非本回合交付）**：可选的主动倾听入口（Idle ⋯/抽屉）；阿寅为禅意倾听者。技术边界默认 = **本地规则分类 + 人工语料检索**；分类失败走固定兜底，不做模糊打分；倾诉文本不出设备。**Web / PWA / 窄屏仍禁止**运行时生成式对话。**仅 Electron 宽屏（≥480，⋯ 壳）**：在安全阀、仪式文案、Confide 语料都未接住时，允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`）。窄屏抽屉没有本地智能体。与 Reflection 三问 / `REFLECTION_ECHO` 分轨。Web 详规 `task-briefs/task-confide-to-yin-v1.md`。
 
 ---
 
@@ -246,7 +246,7 @@ Focus Tiger 的小老虎是完整、安全的正念伙伴，不会因用户离�
 | 轨 | 对外名 | 心理触发 | 产品角色 | v1 形态（方向） |
 |---|---|---|---|---|
 | **A** | **Buy Yin a Tea** | 利他与感激 | 情境微打赏 + 可选徽章；**不解锁内容** | 一次性 tip；记录 `{ tipped, tipCount, lastTippedAt }` |
-| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 高级情绪动画/场景 + 尊贵徽章 + 进阶仪式 + **节日主题（Seasonal Theme · 时段氛围）** 等（catalog `subscription` 档为正式产品决定；节日见 `task-seasonal-theme-engine-v1.md`） |
+| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 尊贵徽章 + 进阶仪式 + **节日主题（Seasonal Theme · 时段氛围）** 等（**不含**用会员卖角色动作——动作结缘走 C 轨 Yin's Collections） |
 
 **B 付费方式（v1 硬）**：
 

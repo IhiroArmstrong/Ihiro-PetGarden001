@@ -21,6 +21,9 @@ import {
 import { FEATURE_CATALOG } from './entitlement/entitlementRegistry.js';
 
 export const FOCUS_COINS_DISPLAY_NAME = '寅币';
+export const FOCUS_COINS_DISPLAY_NAME_EN = 'Focus Coins';
+export const FOCUS_COINS_COLLECTIONS_NAME = '阿寅的珍藏';
+export const FOCUS_COINS_COLLECTIONS_NAME_EN = "Yin's Collections";
 
 export const GRANT_KIND = Object.freeze({
   INCOMPLETE: 'incomplete',
@@ -51,6 +54,7 @@ export const PRESENCE_ECHO_POINTS = 3;
 export const ACTIVE_RECOVER_DAILY_MAX = 3;
 
 export const SUMERU_BUNDLE_ID = 'bundle.sumeru-seat';
+export const TITLE_LONG_SITTER_ID = 'title.long-sitter';
 export const SUMERU_PRICE = 360;
 export const SUMERU_MIN_LIFETIME_MINUTES = 600;
 
@@ -79,9 +83,10 @@ export const SUMERU_MIN_LIFETIME_MINUTES = 600;
  * }} FocusCoinsGrantEvent
  * @typedef {{
  *   id: string,
- *   kind: 'space' | 'yin-accent' | 'title' | 'badge.rare' | 'bundle',
+ *   kind: 'space' | 'yin-accent' | 'title' | 'badge.rare' | 'bundle' | 'collection' | 'gesture',
  *   price: number,
  *   grants: string[],
+ *   retiredOverlay?: boolean,
  *   minPracticeDays?: number,
  *   minLifetimeMinutes?: number,
  *   requireLotusBloom?: boolean,
@@ -137,6 +142,16 @@ export function coinsSatisfyEntitlement(_featureKey, _wallet) {
   return false;
 }
 
+/**
+ * Overlay / sprite-composite SKUs retired 2026-08-19.
+ * Kept in catalog so already-owned ids stay valid; new redeem is denied.
+ */
+const RETIRED_OVERLAY = Object.freeze({
+  retiredOverlay: true,
+  cashPurchasable: false,
+  skippableByEntitlement: false
+});
+
 /** @type {ReadonlyArray<FocusCoinSku>} */
 export const FOCUS_COIN_CATALOG = Object.freeze([
   Object.freeze({
@@ -146,8 +161,7 @@ export const FOCUS_COIN_CATALOG = Object.freeze([
     grants: Object.freeze(['space.incense-tint-warm']),
     minPracticeDays: 3,
     requireIncense: true,
-    cashPurchasable: false,
-    skippableByEntitlement: false
+    ...RETIRED_OVERLAY
   }),
   Object.freeze({
     id: 'space.lotus-dew',
@@ -155,16 +169,14 @@ export const FOCUS_COIN_CATALOG = Object.freeze([
     price: 48,
     grants: Object.freeze(['space.lotus-dew']),
     requireLotusBloom: true,
-    cashPurchasable: false,
-    skippableByEntitlement: false
+    ...RETIRED_OVERLAY
   }),
   Object.freeze({
     id: 'yin-accent.wood-beads',
     kind: 'yin-accent',
     price: 36,
     grants: Object.freeze(['yin-accent.wood-beads']),
-    cashPurchasable: false,
-    skippableByEntitlement: false
+    ...RETIRED_OVERLAY
   }),
   Object.freeze({
     id: 'yin-accent.folded-cloak',
@@ -172,8 +184,15 @@ export const FOCUS_COIN_CATALOG = Object.freeze([
     price: 60,
     grants: Object.freeze(['yin-accent.folded-cloak']),
     requireHonestyWake: true,
-    cashPurchasable: false,
-    skippableByEntitlement: false
+    ...RETIRED_OVERLAY
+  }),
+  Object.freeze({
+    id: SUMERU_BUNDLE_ID,
+    kind: 'bundle',
+    price: SUMERU_PRICE,
+    grants: Object.freeze(['space.sumeru-cushion', 'title.long-sitter']),
+    minLifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES,
+    ...RETIRED_OVERLAY
   }),
   Object.freeze({
     id: 'title.sits-with-yin',
@@ -194,6 +213,15 @@ export const FOCUS_COIN_CATALOG = Object.freeze([
     skippableByEntitlement: false
   }),
   Object.freeze({
+    id: TITLE_LONG_SITTER_ID,
+    kind: 'title',
+    price: SUMERU_PRICE,
+    grants: Object.freeze([TITLE_LONG_SITTER_ID]),
+    minLifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES,
+    cashPurchasable: false,
+    skippableByEntitlement: false
+  }),
+  Object.freeze({
     id: 'badge.rare.quiet-pebble',
     kind: 'badge.rare',
     price: 72,
@@ -202,11 +230,26 @@ export const FOCUS_COIN_CATALOG = Object.freeze([
     skippableByEntitlement: false
   }),
   Object.freeze({
-    id: SUMERU_BUNDLE_ID,
-    kind: 'bundle',
-    price: SUMERU_PRICE,
-    grants: Object.freeze(['space.sumeru-cushion', 'title.long-sitter']),
-    minLifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES,
+    id: 'collection.porcelain.qing-vase',
+    kind: 'collection',
+    price: 40,
+    grants: Object.freeze(['collection.porcelain.qing-vase']),
+    cashPurchasable: false,
+    skippableByEntitlement: false
+  }),
+  Object.freeze({
+    id: 'collection.bronze.ritual-vessel',
+    kind: 'collection',
+    price: 56,
+    grants: Object.freeze(['collection.bronze.ritual-vessel']),
+    cashPurchasable: false,
+    skippableByEntitlement: false
+  }),
+  Object.freeze({
+    id: 'gesture.wave-hello',
+    kind: 'gesture',
+    price: 48,
+    grants: Object.freeze(['gesture.wave-hello']),
     cashPurchasable: false,
     skippableByEntitlement: false
   })
@@ -215,6 +258,11 @@ export const FOCUS_COIN_CATALOG = Object.freeze([
 /** @param {string} skuId */
 export function getFocusCoinSku(skuId) {
   return FOCUS_COIN_CATALOG.find((sku) => sku.id === skuId) ?? null;
+}
+
+/** Shop / Collections SKUs — never overlay-retired rows. */
+export function listShopFocusCoinSkus() {
+  return FOCUS_COIN_CATALOG.filter((sku) => sku.retiredOverlay !== true);
 }
 
 /**
@@ -460,6 +508,7 @@ export function evaluateFocusCoinRedeem(skuId, ctx = {}) {
   });
 
   if (!sku) return deny('unknown-sku');
+  if (sku.retiredOverlay === true) return deny('retired-overlay');
   if (sku.cashPurchasable !== false) return deny('cash-purchasable-forbidden');
   if (sku.skippableByEntitlement !== false) {
     return deny('entitlement-skip-forbidden');

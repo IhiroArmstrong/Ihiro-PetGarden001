@@ -320,6 +320,7 @@ describe('listSecondaryChromeEntries', () => {
         'language',
         'five-moments',
         'journey-log',
+        'yin-coin',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -344,6 +345,7 @@ describe('listSecondaryChromeEntries', () => {
         'language',
         'five-moments',
         'journey-log',
+        'yin-coin',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -377,6 +379,7 @@ describe('listSecondaryChromeEntries', () => {
         'language',
         'five-moments',
         'journey-log',
+        'yin-coin',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -387,6 +390,20 @@ describe('listSecondaryChromeEntries', () => {
         'ritual-emotional-reset',
         'ritual-work-transition'
       ]
+    );
+  });
+
+  it('yin-coin sits immediately after journey-log; flag-off hides the row', () => {
+    const entries = listSecondaryChromeEntries('wide-more', allOn);
+    const proxies = entries.filter((e) => e.proxy).map((e) => e.proxy);
+    assert.equal(proxies.indexOf('yin-coin'), proxies.indexOf('journey-log') + 1);
+    const hidden = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      yinCoinVisible: false
+    });
+    assert.equal(
+      hidden.some((e) => e.proxy === 'yin-coin'),
+      false
     );
   });
 

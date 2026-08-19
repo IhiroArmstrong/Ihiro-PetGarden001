@@ -96,7 +96,6 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Work Transition Ritual | `lifetime∪subscription` | 同上 | `ritual.work-transition.access` | B | **已接线** | 同上 |
 | 仪式完成 → history / memento / copy / sfx ownership | `lifetime∪subscription` | 到期后 persistent 仍可看 | `ritual.*.history|memento|copy-unlocked|sfx-unlocked`（字面 subscription / persistent） | 到期降级策略 | **部分接线** | 完成时 `claimFeatureOwned` 已写；**独立「回看历史/纪念物」产品 UI** 是否齐全另计；无 entitlement 时无法新开仪式 |
 | 深度音效全库（`ambient.deep.play`） | `lifetime∪subscription` | 免费温暖子集 **5** 首：`singing-bowl`（Mer-Ka-Ba）· `divine-life-society` · `somnia-variation-3` · `dreamland` · `frozen-in-love`；其余内置曲 B；用户自传仍免费 | `ambient.deep.play`（字面 subscription / ongoing） | B 核心权益之一 | **已接线**（#251）+ **15s 试听**（`feature/ambient-deep-audition-15s`） | Gate：`ambientEntitlement.js` + `setTrack` 硬拒 + 面板锁行。**试听**：未授权点 Deep → 约 15s（`?ambientAuditionMs=` 可缩短）→ fade out → 可忽略 Unlock 提示；**不**持久 preferred=deep；零 tip 耦合 |
-| 高级情绪动画 / 场景（`emotion.premium.trigger`） | `lifetime∪subscription` | 非核心；名单另定 | `emotion.premium.trigger` | B | **未接线** | catalog 占位；dispatcher **未**按 key 拦高级表现 |
 | 进阶每日解锁内容（`content.advanced.daily-unlock`） | `lifetime∪subscription` | — | `content.advanced.daily-unlock` | B 占位 | **未接线** | catalog 有；**无**产品消费者 |
 | Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | Idle `#yin-tip-kindness-badges`：Lifetime **或** Membership 起授 ≥3（`idlePracticeBadges`）；**不**把 Sanctuary SKU `unlocked` 标真。**页面左下角 Enso**：`#yin-sanctuary-enso-mark` 已接线（lifetime∪subscription；零 tip；Focusing 淡化；装饰层不开店） |
 | Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | — |
@@ -118,13 +117,13 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 ### A5 · C 轨 · 寅币（练习货币 · 不解锁 B）
 
-> **方向锁（2026-08-18）**。内部名 Focus Coins；对外 **寅币**（当晚覆盖「同坐点」）。权威：`FOCUS_COINS.md`。**不是**第三档付费，**不是** `requiredTier`。
+> **方向锁（2026-08-19）**。内部名 Focus Coins；货币对外 **寅币**；个人中心 **Yin's Collections / 阿寅的珍藏**。权威：`FOCUS_COINS.md`。**不是**第三档付费，**不是** `requiredTier`。
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | 寅币钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：空间变体 / 称号 / 稀有练习章 / 阿寅轻点缀 | 练习兑换 | **不可现金购买** | SKU `cosmetic.*` / `title.*` / `badge.rare.*` | 不拦截自动纪念物；≠ 换装柜 | **L2 内部兑换已接线**（`__focusCoins.redeem`；无抽屉）；莲叶晨露只叠已有朵 | 须弥坐 = 360 点 **且** `lifetimeMinutes ≥ 600`；L3 才做抽屉表面 |
-| 用同坐点换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
+| 兑换：称号 / 稀有章 / 珍藏静物 / 闲笔挥手 | 练习兑换 | **不可现金购买** | SKU `title.*` / `badge.rare.*` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；商店目录；占位缩略图）；叠层 SKU `retired-overlay` | `title.long-sitter` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
+| 用寅币换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
 ---
 
@@ -145,7 +144,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | A→B 请茶送 24h 体验卡 | **非 v1** | 阶段 2 候选 | Brief §2.8 |
 | UGC Pro Pass 社区订阅 | **默认不做** | ≠ Yin Membership；无账号 / 平台复杂度 | PROCESS UGC Backlog |
 | 抽奖 / 稀缺倒计时 / FOMO | **禁止** | 商业化红线 | MVP §五 |
-| 同坐点兑换 B 轨效率/场域权益 | **禁止** | 练习货币 ≠ 会员；不得续期 `ongoing` | `FOCUS_COINS.md` §3；本表 A5 |
+| 寅币兑换 B 轨效率/场域权益 | **禁止** | 练习货币 ≠ 会员；不得续期 `ongoing` | `FOCUS_COINS.md` §3；本表 A5 |
 
 ---
 
@@ -153,11 +152,10 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 优先对照排期用（非完整 Backlog）：
 
-1. **Ambient Deep 15s 试听** — **本支实现中** `feature/ambient-deep-audition-15s`（Gate #251 已合）。  
-2. **`emotion.premium.trigger`** — catalog 有；产品未拦高级情绪。  
-3. **`content.advanced.daily-unlock`** — catalog 有；无消费者（占位 · 待定义或废止）。  
-4. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 redeploy 待 Resend/OTP secrets。  
-5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式 + Ambient 深库 + Seasonal 已用；高级情绪等未跟。  
+1. **Ambient Deep 15s 试听** — Gate #251 已合。  
+2. **`content.advanced.daily-unlock`** — catalog 有；无消费者（占位 · 待定义或废止）。  
+3. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 redeploy 待 Resend/OTP secrets。  
+4. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式 + Ambient 深库 + Seasonal 已用。  
 6. **Daily Wisdom → Reflection + 静默印花** — Brief `task-daily-wisdom-reflection-mount.md`（Phase A/B 拆分）。  
 7. **Journey Daily Card（Save image）** — Brief `task-journey-daily-card.md`；**Log 上限免费/付费统一 30（有意）**。  
 8. **Sanctuary Enso Mark（页面左下角）** — **已接线** `#yin-sanctuary-enso-mark`（Brief `task-sanctuary-enso-mark.md`）。  
@@ -167,7 +165,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
-15. **同坐点（C · 练习货币）** — 方向锁 2026-08-18；L0 #335 已合；**L1 发点 #338 已合**（TRACKER 待人工）；**L2 内部兑换本支**。无抽屉。**禁止**用点满足 `isEntitled`。
+15. **寅币（C · 练习货币）** — 方向锁 2026-08-19（花园 vs 珍藏）；L0 #335 · L1 #338 · L2 #339 · L3 #352 已合。叠层 SKU 本支退役。L3 抽屉改 Yin's Collections 商店目录。**禁止**用点满足 `isEntitled`。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 
@@ -189,4 +187,4 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 - `YIN_SANCTUARY.md` / `YIN_TIP_JAR.md`  
 - `SHARED_RESOURCES.md`（entitlement / sanctuary / tip keys）  
 - `TEST_TRACKER.md`（RitualFlow / entitlement / Sanctuary / Daily Wisdom 行）  
-- `FOCUS_COINS.md`（同坐点语义）· `task-briefs/task-focus-coins.md`  
+- `FOCUS_COINS.md`（寅币 / Yin's Collections）· `task-briefs/task-focus-coins.md`  

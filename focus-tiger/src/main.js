@@ -83,6 +83,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
+import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
@@ -165,6 +166,7 @@ import {
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
+import { bindDesktopShellAttention } from './core/desktopShell.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -202,7 +204,8 @@ import {
 } from './core/focusCoinsAward.js';
 import {
   applyFocusCoinsRedeem,
-  applyFocusCoinsEquipTitle
+  applyFocusCoinsEquipTitle,
+  buildFocusCoinRedeemContext
 } from './core/focusCoinsRedeem.js';
 import { applyFocusCoinsCosmetics } from './core/focusCoinsCosmetics.js';
 import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
@@ -227,6 +230,12 @@ import {
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
+import { prefetchTasteLayer } from './core/tasteLayerSync.js';
+import {
+  getTasteDailyWisdomOverlay,
+  getTasteWeightOverlay,
+  resetTasteLayerOverlayForTests
+} from './core/tasteLayerOverlay.js';
 import {
   WELLNESS_DAY_BANDS,
   resolveWellnessDayBand
@@ -342,6 +351,7 @@ function showDevLabToast(message, durationMs = 8000) {
 async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
+  void prefetchTasteLayer({ search: location.search, locale: getLocale() });
 
   // PWA: network-only SW in production only (no Cache Storage).
   // Electron Step A: never register — custom protocol + extraResources.
@@ -357,6 +367,7 @@ async function init() {
     document.title = t('APP_TITLE');
     const mask = document.getElementById('loading-mask');
     if (mask) mask.textContent = t('LOADING');
+    void prefetchTasteLayer({ search: location.search, locale: getLocale() });
   });
 
   const app = document.querySelector('#app');
@@ -771,6 +782,7 @@ async function init() {
       mindfulReminderController.handleAttentionReturn(event)
   });
   attentionSignals.bind();
+  bindDesktopShellAttention(attentionSignals);
 
   // 结束反思：正常完成在庆祝播完回归坐姿后淡入；主动结束不播完成反馈，短暂留白后淡入。
   const reflectionMoment = new TigerReflectionMoment(
@@ -896,6 +908,8 @@ async function init() {
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
+  /** @type {FocusCoinsPanelUI | null} */
+  let yinCoinPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
@@ -1022,6 +1036,7 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'yin-coin') yinCoinPanelUI?.close();
   }
 
   /**
@@ -1168,6 +1183,15 @@ async function init() {
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
   }
+  window.__tasteLayer = {
+    status: () => ({
+      weights: Boolean(getTasteWeightOverlay()),
+      dailyWisdom: Boolean(getTasteDailyWisdomOverlay()),
+      honestyLongMinMinutes: getTasteWeightOverlay()?.honestyLongMinMinutes ?? null
+    }),
+    prefetch: () => prefetchTasteLayer({ search: location.search, locale: getLocale() }),
+    reset: () => resetTasteLayerOverlayForTests()
+  };
   window.__focusCoins = {
     getBalance: () => focusCoinsStore.getBalance(),
     getSnapshot: () => focusCoinsStore.getSnapshot(),
@@ -1180,6 +1204,7 @@ async function init() {
         search: location.search
       });
       syncFocusCoinsCosmetics();
+      yinCoinPanelUI?.refresh?.();
       return result;
     },
     equipTitle: (titleId) => {
@@ -1189,9 +1214,24 @@ async function init() {
         search: location.search
       });
       syncFocusCoinsCosmetics();
+      yinCoinPanelUI?.refresh?.();
       return result;
     }
   };
+  yinCoinPanelUI = new FocusCoinsPanelUI(document.body, {
+    getContext: () => ({
+      ...buildFocusCoinRedeemContext({
+        store: focusCoinsStore,
+        practiceDaysStore,
+        lotusPondStore
+      }),
+      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
+    }),
+    redeem: (skuId) => window.__focusCoins.redeem(skuId),
+    equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
+    onMessage: (message) => mindfulToast.show(message)
+  });
+  window.__yinCoinPanel = yinCoinPanelUI;
   syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
@@ -1972,6 +2012,10 @@ async function init() {
     onJourneyLog: () => {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();
+    },
+    onYinCoin: () => {
+      closeGrowthOverlayCards({ except: 'yin-coin' });
+      yinCoinPanelUI?.open();
     },
     onConfide: () => {
       closeGrowthOverlayCards({ except: 'confide' });
