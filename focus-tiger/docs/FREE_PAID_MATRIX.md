@@ -31,9 +31,9 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 全局规则：**lifetime ∪ subscription 互相覆盖**（**只覆盖 B 轨内容**，**不**覆盖桌面本地智能体）。  
 **到期降级**：已生成内容（历史、已解锁纪念物、已播放仪式）永久可看；到期只停「新内容持续解锁」与「进阶功能继续使用」。
 
-**2026-08-20 补**：上表禁的是第三套 *平行内容包*。**Focus Tiger Pro** 是 Base 的升级档（含 B 轨 + 桌面本地智能体），不是另一套互斥内容。现货 Support **仍只三卡**，Pro Checkout 未接。
+**2026-08-20 补**：上表禁的是第三套 *平行内容包*。**Focus Tiger Pro** 是 Base 的升级档（含 B 轨 + 桌面本地智能体），不是另一套互斥内容。现货 Support **仍只三卡**。将来接线必须 **第四卡 Pro + 第五卡 Lifetime 加购一起接**，禁止只加第四卡。Checkout 均未接。
 
-**2026-08-20 · 方案 A（Lifetime + 本地 AI）**：已买 **Sanctuary Lifetime** 的用户默认仍**没有**本地智能体。解锁路径 = 一次性加购 SKU **`companion.addon.lifetime`**（**US$29.99** 买断 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**，**不**按月）。**禁止**为此拆 Ultimate Lifetime / 补差价分层（方案 B 延后，待 L1/L2 能力验证）。非 Lifetime / Membership 订阅用户仍走 **Focus Tiger Pro US$12.99/月**（该数字已于 2026-08-20 用 Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to` 锁定，本次不改）。该加购 **不是** `FEATURE_CATALOG` key，**不得**经 `isEntitled` 互覆盖放行。Checkout 未接。
+**2026-08-20 · 方案 A（Lifetime + 本地 AI）**：已买 **Sanctuary Lifetime** 的用户默认仍**没有**本地智能体。解锁路径 = 一次性加购 SKU **`companion.addon.lifetime`**（**US$29.99** 买断 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**，**不**按月）——这是将来 **第五卡**，不是「没有第四卡」。**禁止**为此拆 Ultimate Lifetime / 补差价分层（方案 B 延后，待 L1/L2 能力验证）。非 Lifetime / Membership 订阅用户仍走 **Focus Tiger Pro US$12.99/月**（将来 **第四卡**；该数字已于 2026-08-20 用 Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to` 锁定）。该加购 **不是** `FEATURE_CATALOG` key，**不得**经 `isEntitled` 互覆盖放行。Checkout 未接。
 
 ### 本表档位取值
 
@@ -134,13 +134,22 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 ### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）+ Lifetime AI 加购
 
 > **方向锁（2026-08-20）**。Stripe 名 **Focus Tiger Pro** / **Focus Tiger Base**。Lifetime 加购 SKU **`companion.addon.lifetime`**。权威：`task-desktop-on-device-companion.md`。**Checkout 均未接线。**  
-> **谁走哪条**：已买 Sanctuary Lifetime → 一次性 **`companion.addon.lifetime`**（US$29.99）；未买 Lifetime（含仅 Membership / Base）→ **Pro US$12.99/月**（含 B 轨 + 本地智能体）。两条路径都仍受 Electron + 宽屏 + 非低配使用门槛约束。
+> **谁走哪条**：已买 Sanctuary Lifetime → 一次性 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡）；未买 Lifetime（含仅 Membership / Base）→ **Pro US$12.99/月**（含 B 轨 + 本地智能体 · 将来第四卡）。两条路径都仍受 Electron + 宽屏 + 非低配使用门槛约束。  
+> **五产品对照（2026-08-20 用户书面纠正）**：Dashboard 现有 5 个产品。**不要**按截图从上往下把 Sanctuary / Tea 当成新卡——那两张已经是现货三卡。接线时 **不止第四卡，也必须第五卡**（Price ID 已记）。Sanctuary「2 prices」、Tea「3 prices」= Dashboard 历史价，**不是**新卡。
+
+| Support 卡序 | Stripe 产品 | Price | 现货 |
+|---|---|---|---|
+| 1 | Yin's Sanctuary | 已接 `STRIPE_SANCTUARY_PRICE_ID` | **是** |
+| 2 | Focus Tiger Base（应用内 Yin Membership） | 已接 `STRIPE_MEMBERSHIP_PRICE_ID` | **是** |
+| 3 | Buy Yin a Tea | 已接 `STRIPE_PRICE_ID`=`price_1U4nanFuIhgJPGLidoTdxobW` | **是** |
+| **4（将来）** | Focus Tiger Pro | `price_1U6EB1FuIhgJPGLiuciuX1to` | **未接** |
+| **5（将来）** | Focus Tiger: AI Companion Add-on | `price_1U6GnXFuIhgJPGLiNlXs0IKe` | **未接** |
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | Focus Tiger Base（应用内 Yin Membership） | `lifetime∪subscription` | Stripe **US$6.99/月** | 现货 `STRIPE_MEMBERSHIP_PRICE_ID` | B 轨订阅；**不含**本地智能体 | **部分接线** | Dashboard 已改名 Base；应用内文案未改 |
-| Focus Tiger Pro 订阅 | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**，非待再议数字） | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成；**给非 Lifetime 用户** | **Price ID 已记文档**；**未接线** | L1 面板已开，Share 仍检索。Support 现货仍三卡。买可走 Web（能聊后再接）；用模型仍仅 Electron + 宽屏 + 非低配。Safari / 无 Electron 壳 **没有**本地 AI |
-| AI Companion Add-on（Lifetime DLC） | `lifetime-addon` | **US$29.99 一次** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；SKU **`companion.addon.lifetime`**；与 Sanctuary 主 SKU `yin-sanctuary-lifetime` **分开** | **禁止**写入 `FEATURE_CATALOG`；**禁止** `isEntitled` 放行；**无** Checkout 路由 | 已买 Lifetime 的用户一次性永久解锁桌面本地智能体；**不**按月；**不必**再买 Base | SKU 常量 `companionAddonSku.js`；Price ID **已记文档**；**Checkout 未接** | 方案 A（2026-08-20 书面改价，取代 #359「另订 Pro / 不要开加购」）。**不**拆 Ultimate Lifetime / 补差价（方案 B）。无第四卡。无 storage key。仅 Lifetime 持有者可被提供该加购 |
+| Focus Tiger Pro 订阅（将来 **第四卡**） | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**，非待再议数字） | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成；**给非 Lifetime 用户** | **Price ID 已记文档**；**未接线** | L1 面板已开，Share 仍检索。Support 现货仍三卡。**一旦接线须与第五卡同批**，禁止只加第四卡。买可走 Web（能聊后再接）；用模型仍仅 Electron + 宽屏 + 非低配。Safari / 无 Electron 壳 **没有**本地 AI |
+| AI Companion Add-on（Lifetime DLC · 将来 **第五卡**） | `lifetime-addon` | **US$29.99 一次** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；SKU **`companion.addon.lifetime`**；与 Sanctuary 主 SKU `yin-sanctuary-lifetime` **分开** | **禁止**写入 `FEATURE_CATALOG`；**禁止** `isEntitled` 放行；**无** Checkout 路由 | 已买 Lifetime 的用户一次性永久解锁桌面本地智能体；**不**按月；**不必**再买 Base | SKU 常量 `companionAddonSku.js`；Price ID **已记文档**；**Checkout 未接** | 方案 A（2026-08-20 书面改价，取代 #359「另订 Pro / 不要开加购」）。**不**拆 Ultimate Lifetime / 补差价（方案 B）。**是第五卡，不是「无第四卡」。** 无 storage key。仅 Lifetime 持有者可被提供该加购。接线须与第四卡 Pro 同批 |
 
 ---
 
@@ -183,8 +192,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 15. **寅币（C · 练习货币）** — 方向锁 2026-08-20（清供 8 + 铁律）；L0–L3 已合。抽屉 = 清供器物卡。**禁止**用点满足 `isEntitled`。**禁止**改/盖序列帧。
-16. **Focus Tiger Pro** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。L1 面板已开，Share 仍检索。禁止现在改 Support 三卡。  
-17. **`companion.addon.lifetime`** — 政策 SKU + Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记；**Checkout / storage 未接**。Lifetime 主 SKU 仍不含本地智能体。禁止把该 id 写入 `FEATURE_CATALOG`。
+16. **Focus Tiger Pro（将来第四卡）** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。L1 面板已开，Share 仍检索。禁止现在改 Support 三卡。接线时须与第五卡同批。  
+17. **`companion.addon.lifetime`（将来第五卡）** — 政策 SKU + Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记；**Checkout / storage 未接**。Lifetime 主 SKU 仍不含本地智能体。禁止把该 id 写入 `FEATURE_CATALOG`。接线时须与第四卡 Pro 同批。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 

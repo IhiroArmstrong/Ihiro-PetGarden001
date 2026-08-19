@@ -18,8 +18,8 @@
 | **A** | 打赏；情绪反馈 + 可选徽章；**不解锁**任何内容 |
 | **B** | 深度美学/音效/进阶仪式等解锁；真 entitlement |
 | **B 付费方式（v1 硬）** | **Sanctuary Lifetime** 一次买断 **∪** **Yin Membership** 订阅；二者解锁**同一套**进阶内容；**lifetime ∪ subscription 互相覆盖** |
-| **桌面 Focus Tiger Pro（已拍板 · Checkout 未接）** | L1 **入口正常开放后**：Stripe **US$12.99/月**（Price `price_1U6EB1FuIhgJPGLiuciuX1to`，**已锁定**）。**包含** Base（B 轨）+ 合格 Electron 本地智能体。给**非 Lifetime**。现货 Support 仍三卡。权威：`task-desktop-on-device-companion.md` |
-| **Lifetime AI 加购（2026-08-20 · 方案 A · Checkout 未接）** | 已买 Sanctuary Lifetime → 一次性 **US$29.99** SKU **`companion.addon.lifetime`**（Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；**不**订阅；**不必**再买 Base）。**禁止**写入 `FEATURE_CATALOG` / `isEntitled`。**不**拆 Ultimate Lifetime。权威：`FREE_PAID_MATRIX` A6 |
+| **桌面 Focus Tiger Pro（已拍板 · Checkout 未接 · 将来第四卡）** | L1 **入口正常开放后**：Stripe **US$12.99/月**（Price `price_1U6EB1FuIhgJPGLiuciuX1to`，**已锁定**）。**包含** Base（B 轨）+ 合格 Electron 本地智能体。给**非 Lifetime**。现货 Support 仍三卡。接线须与第五卡同批。权威：`task-desktop-on-device-companion.md` |
+| **Lifetime AI 加购（2026-08-20 · 方案 A · Checkout 未接 · 将来第五卡）** | 已买 Sanctuary Lifetime → 一次性 **US$29.99** SKU **`companion.addon.lifetime`**（Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；**不**订阅；**不必**再买 Base）。**禁止**写入 `FEATURE_CATALOG` / `isEntitled`。**不**拆 Ultimate Lifetime。接线须与第四卡同批。权威：`FREE_PAID_MATRIX` A6 |
 | **B 权益（v1）** | ① 深度音效全库 ② 尊贵徽章/身份标识 ③ 进阶仪式等（catalog `requiredTier: 'subscription'` 为正式产品决定）。**不再**含 `emotion.premium.trigger`（2026-08-19 删除；结缘动作属 C 轨 Collections） |
 | **订阅到期降级（v1 硬）** | 已生成内容（历史、已解锁纪念物、已播放仪式）**永久可看**；到期只停「新内容持续解锁」与「进阶功能继续使用」 |
 | **A→B 24h 体验卡** | **非 v1**；阶段 2 候选（见 §2.7） |
@@ -386,7 +386,7 @@ UI:   SanctuaryUnlockUI.js
 2. 深度音效 / 高级动画 **分层名单**  
 3. 可选 PWA 是否立项  
 
-**已拍板（2026-08-20）**：Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记文档。Pro **包含** Base（应用内 Yin Membership / B 轨）+ 本地智能体（非 Lifetime）。**禁止**现在接 Checkout / 改三卡。L1 后付款可走 Safari；用模型仍 Electron。无 Electron 壳则无本地 AI。低配不得用购买覆盖隐藏入口。**同日方案 A**：Lifetime 用户一次性加购 **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接）；不走 Ultimate 分层。权威：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6。
+**已拍板（2026-08-20）**：Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to`（将来第四卡）已记文档。Pro **包含** Base（应用内 Yin Membership / B 轨）+ 本地智能体（非 Lifetime）。**禁止**现在接 Checkout / 改三卡。L1 后付款可走 Safari；用模型仍 Electron。无 Electron 壳则无本地 AI。低配不得用购买覆盖隐藏入口。**同日方案 A**：Lifetime 用户一次性加购 **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记 · 将来第五卡、Checkout 未接）；不走 Ultimate 分层。**一旦接线须第四+第五同批。** 权威：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6。
 
 **已拍板（2026-08-10）**：推翻「v1 仅 Lifetime / 无订阅」；**双轨**维持（A 不解锁 + B 进阶解锁）；B 下 **Lifetime ∪ Yin Membership** 互覆盖；catalog `subscription` 档为正式产品决定；到期降级 = 已生成永久可看、只停新解锁与进阶使用。A→B 24h 体验卡仍非 v1。
 
