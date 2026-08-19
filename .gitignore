@@ -28,6 +28,11 @@ npm-debug.log*
 # Electron desktop pack output (Step A)
 focus-tiger/desktop/release/
 
+# Desktop companion L0 probe artifacts (GGUF is never committed)
+focus-tiger/desktop/.l0-cache/
+focus-tiger/desktop/companion/reports/
+*.gguf
+
 # Test / coverage artifacts
 coverage/
 playwright-report/

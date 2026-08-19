@@ -83,6 +83,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
+import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
@@ -198,11 +199,13 @@ import { GRANT_KIND } from './core/focusCoinsLedger.js';
 import { FocusCoinsStore } from './core/focusCoinsStore.js';
 import {
   applyFocusCoinsGrant,
+  applyBreathPracticeFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './core/focusCoinsAward.js';
 import {
   applyFocusCoinsRedeem,
-  applyFocusCoinsEquipTitle
+  applyFocusCoinsEquipTitle,
+  buildFocusCoinRedeemContext
 } from './core/focusCoinsRedeem.js';
 import { applyFocusCoinsCosmetics } from './core/focusCoinsCosmetics.js';
 import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
@@ -905,6 +908,8 @@ async function init() {
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
+  /** @type {FocusCoinsPanelUI | null} */
+  let yinCoinPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
@@ -1031,6 +1036,7 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'yin-coin') yinCoinPanelUI?.close();
   }
 
   /**
@@ -1170,10 +1176,7 @@ async function init() {
   lotusPondRuntime.boot();
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
-      pondEl: document.getElementById('lotus-pond'),
-      appEl: document.getElementById('app'),
       documentElement: document.documentElement,
-      document,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
   }
@@ -1198,6 +1201,7 @@ async function init() {
         search: location.search
       });
       syncFocusCoinsCosmetics();
+      yinCoinPanelUI?.refresh?.();
       return result;
     },
     equipTitle: (titleId) => {
@@ -1207,9 +1211,24 @@ async function init() {
         search: location.search
       });
       syncFocusCoinsCosmetics();
+      yinCoinPanelUI?.refresh?.();
       return result;
     }
   };
+  yinCoinPanelUI = new FocusCoinsPanelUI(document.body, {
+    getContext: () => ({
+      ...buildFocusCoinRedeemContext({
+        store: focusCoinsStore,
+        practiceDaysStore,
+        lotusPondStore
+      }),
+      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
+    }),
+    redeem: (skuId) => window.__focusCoins.redeem(skuId),
+    equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
+    onMessage: (message) => mindfulToast.show(message)
+  });
+  window.__yinCoinPanel = yinCoinPanelUI;
   syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
@@ -1763,7 +1782,13 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
-    awardFocusCoins({ kind: GRANT_KIND.MICRO_RITUAL });
+    applyBreathPracticeFocusCoinsGrant({
+      durationMinutes,
+      store: focusCoinsStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
@@ -1984,6 +2009,10 @@ async function init() {
     onJourneyLog: () => {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();
+    },
+    onYinCoin: () => {
+      closeGrowthOverlayCards({ except: 'yin-coin' });
+      yinCoinPanelUI?.open();
     },
     onConfide: () => {
       closeGrowthOverlayCards({ except: 'confide' });

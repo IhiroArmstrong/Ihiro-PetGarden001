@@ -20,6 +20,11 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  FOCUS_COINS_DURATION_HINT_ID,
+  createFocusCoinsDurationHint,
+  readFocusCoinsHintSearch
+} from './focusCoinsDurationHint.js';
 
 const PANEL_CSS = [
   'position:absolute',
@@ -159,7 +164,15 @@ export class FocusDurationPickerUI {
     this.root.replaceChildren();
     this.root.dataset.focusDurationPhase = 'pick';
     this.root.setAttribute('aria-labelledby', 'focus-duration-picker-title');
-    this.root.setAttribute('aria-describedby', 'focus-duration-floor-hint');
+    const coinsHint = createFocusCoinsDurationHint({
+      search: readFocusCoinsHintSearch()
+    });
+    this.root.setAttribute(
+      'aria-describedby',
+      coinsHint
+        ? `focus-duration-floor-hint ${FOCUS_COINS_DURATION_HINT_ID}`
+        : 'focus-duration-floor-hint'
+    );
 
     const title = document.createElement('div');
     title.id = 'focus-duration-picker-title';
@@ -208,6 +221,9 @@ export class FocusDurationPickerUI {
     leave.textContent = t('focus_duration.leave');
     leave.addEventListener('click', () => this.leave());
 
-    this.root.append(title, hint, row, leave);
+    const parts = [title, hint, row];
+    if (coinsHint) parts.push(coinsHint);
+    parts.push(leave);
+    this.root.append(...parts);
   }
 }

@@ -37,6 +37,8 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.equal(product.dependencies?.electron, undefined);
     assert.equal(product.devDependencies?.electron, undefined);
     assert.equal(product.dependencies?.['electron-builder'], undefined);
+    assert.equal(product.dependencies?.['node-llama-cpp'], undefined);
+    assert.equal(product.devDependencies?.['node-llama-cpp'], undefined);
   });
 
   it('puts sprites and audio in extraResources, not asar', () => {

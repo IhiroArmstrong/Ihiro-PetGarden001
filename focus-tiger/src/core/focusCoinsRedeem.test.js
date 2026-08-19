@@ -21,7 +21,6 @@ import {
 import {
   applyFocusCoinsCosmetics,
   focusCoinsCosmeticState,
-  LOTUS_DEW_CLASS,
   LOTUS_DEW_OWNED_ID,
   RARE_PEBBLE_OWNED_ID
 } from './focusCoinsCosmetics.js';
@@ -68,37 +67,25 @@ describe('focusCoinsRedeem L2', () => {
     assert.deepEqual(store.getSnapshot().ownedIds, []);
   });
 
-  it('lotus-dew requires an existing bloom and does not add minutes', () => {
+  it('celadon lotus cup redeems with a bloom and does not overlay the pond', () => {
     const storage = memoryStorage();
     const store = new FocusCoinsStore({ storage });
     store.commitGrant({ points: 48 });
     const lotus = new LotusPondStore({ storage });
-    const practice = new PracticeDaysStore({ storage });
-    const blocked = applyFocusCoinsRedeem({
-      skuId: LOTUS_DEW_OWNED_ID,
-      store,
-      practiceDaysStore: practice,
-      lotusPondStore: lotus,
-      enabled: true
-    });
-    assert.equal(blocked.ok, false);
-    assert.equal(blocked.reason, 'lotus-bloom');
-    assert.equal(lotus.getVisibleBloomCount(), 0);
-
     lotus.addMinutes(25);
     assert.equal(lotus.getVisibleBloomCount(), 1);
-    const ok = applyFocusCoinsRedeem({
+    const bonded = applyFocusCoinsRedeem({
       skuId: LOTUS_DEW_OWNED_ID,
       store,
-      practiceDaysStore: practice,
+      practiceDaysStore: new PracticeDaysStore({ storage }),
       lotusPondStore: lotus,
       enabled: true
     });
-    assert.equal(ok.ok, true);
+    assert.equal(bonded.ok, true);
+    assert.equal(bonded.reason, 'ok');
     assert.equal(store.getBalance(), 0);
-    assert.ok(store.getSnapshot().ownedIds.includes(LOTUS_DEW_OWNED_ID));
+    assert.equal(store.getSnapshot().ownedIds.includes(LOTUS_DEW_OWNED_ID), true);
     assert.equal(lotus.getVisibleBloomCount(), 1);
-    assert.equal(lotus.getLifetimeMinutes(), 25);
   });
 
   it('rare pebble does not write Tea or Sanctuary badgeIds', () => {
@@ -180,11 +167,12 @@ describe('focusCoinsRedeem L2', () => {
     assert.equal(store.getSnapshot().equippedTitle, 'title.sits-with-yin');
   });
 
-  it('sumeru bundle needs lifetime minutes; honesty cloak needs wake mark', () => {
+  it('须弥小鼎 and 青铜奁 redeem as stills; porcelain extras stay catalog-only', () => {
     const storage = memoryStorage();
     const store = new FocusCoinsStore({ storage });
     const lotus = new LotusPondStore({ storage });
     const practice = new PracticeDaysStore({ storage });
+    lotus.addMinutes(600);
     store.commitGrant({ points: 360 });
     const sumeru = applyFocusCoinsRedeem({
       skuId: SUMERU_BUNDLE_ID,
@@ -193,28 +181,35 @@ describe('focusCoinsRedeem L2', () => {
       lotusPondStore: lotus,
       enabled: true
     });
-    assert.equal(sumeru.ok, false);
-    assert.equal(sumeru.reason, 'lifetime-minutes');
-    assert.equal(store.getBalance(), 360);
+    assert.equal(sumeru.ok, true);
+    assert.ok(store.getSnapshot().ownedIds.includes(SUMERU_BUNDLE_ID));
+    assert.ok(store.getSnapshot().ownedIds.includes('space.sumeru-cushion'));
+    assert.ok(store.getSnapshot().ownedIds.includes('title.long-sitter'));
+    assert.equal(store.getBalance(), 0);
 
-    const cloakBlocked = applyFocusCoinsRedeem({
-      skuId: 'yin-accent.folded-cloak',
-      store,
-      practiceDaysStore: practice,
-      lotusPondStore: lotus,
-      enabled: true
-    });
-    assert.equal(cloakBlocked.reason, 'honesty-wake');
+    store.commitGrant({ points: 60 });
     store.markLifetime({ honestyWake: true });
-    const cloakOk = applyFocusCoinsRedeem({
+    const cloak = applyFocusCoinsRedeem({
       skuId: 'yin-accent.folded-cloak',
       store,
       practiceDaysStore: practice,
       lotusPondStore: lotus,
       enabled: true
     });
-    assert.equal(cloakOk.ok, true);
-    assert.equal(store.getBalance(), 300);
+    assert.equal(cloak.ok, true);
+    assert.ok(store.getSnapshot().ownedIds.includes('yin-accent.folded-cloak'));
+
+    store.commitGrant({ points: 40 });
+    const vase = applyFocusCoinsRedeem({
+      skuId: 'collection.porcelain.qing-vase',
+      store,
+      practiceDaysStore: practice,
+      lotusPondStore: lotus,
+      enabled: true
+    });
+    assert.equal(vase.ok, true);
+    assert.ok(store.getSnapshot().ownedIds.includes('collection.porcelain.qing-vase'));
+    assert.equal(store.getBalance(), 0);
   });
 
   it('titleToEquipAfterRedeem keeps current title', () => {
@@ -228,26 +223,26 @@ describe('focusCoinsRedeem L2', () => {
     );
   });
 
-  it('cosmetics toggle dew class without claiming tea badges; backup 6 keys unchanged', () => {
-    const pond = { classList: { on: false, toggle(name, force) { this.on = Boolean(force); this.name = name; } } };
+  it('cosmetics never overlay dew or cushion; titles stay data-only', () => {
     const dataset = {};
     const documentElement = { dataset };
     applyFocusCoinsCosmetics(
       { ownedIds: [LOTUS_DEW_OWNED_ID, RARE_PEBBLE_OWNED_ID], equippedTitle: 'title.sits-with-yin' },
-      { pondEl: pond, documentElement, enabled: true }
+      { documentElement, enabled: true }
     );
-    assert.equal(pond.classList.on, true);
-    assert.equal(pond.classList.name, LOTUS_DEW_CLASS);
     assert.equal(dataset.focusCoinsTitle, 'title.sits-with-yin');
     assert.equal(dataset.focusCoinsRare, 'quiet-pebble');
-    applyFocusCoinsCosmetics({}, { pondEl: pond, documentElement, enabled: false });
-    assert.equal(pond.classList.on, false);
+    applyFocusCoinsCosmetics({}, { documentElement, enabled: false });
     assert.equal(dataset.focusCoinsTitle, undefined);
     assert.equal(
       PRACTICE_BACKUP_STORE_KEYS.includes(FOCUS_COINS_STORAGE_KEY),
       false
     );
     assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 6);
-    assert.deepEqual(focusCoinsCosmeticState({ ownedIds: [] }).lotusDew, false);
+    assert.deepEqual(focusCoinsCosmeticState({ ownedIds: [LOTUS_DEW_OWNED_ID] }).lotusDew, false);
+    assert.deepEqual(
+      focusCoinsCosmeticState({ ownedIds: [LOTUS_DEW_OWNED_ID] }).ownedLotusDew,
+      true
+    );
   });
 });

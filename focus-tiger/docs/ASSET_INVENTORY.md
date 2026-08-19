@@ -320,6 +320,20 @@
 
 ---
 
+## Yin Coin marks（非序列帧 · 货币 UI chrome）
+
+> **路径**：`public/ui/focus-coins/`（入库 2026-08-19）。  
+> **用途**：寅币在 **Yin's Collections** 抽屉里的货币识别——抬头浮雕标 + 余额/价格小 icon。  
+> **禁止**：叠到 `#sprite-stage` / 序列帧 / 蒲团；不要当 SKU 静物图（瓷器/青铜器仍待另出）。  
+> **接线**：`FocusCoinsPanelUI.js` `MARK_SRC` / `ICON_SRC`。用户 2026-08-19 书面：精致版与小 icon 版都看过、没问题。
+
+| 文件 | 尺寸 | 角色 |
+|---|---|---|
+| `yin-coin-mark.png` | 192×192 | 精致浮雕 · 面板抬头 / 仪式层 |
+| `yin-coin-mark-icon.png` | 64×64 | 扁平小标 · 余额 24px、价格 16px |
+
+---
+
 ## 相关文档
 
 - 进度叙事：`PROCESS.md`「当前进度速览」  

@@ -66,6 +66,11 @@ describe('entitlementRegistry', () => {
     assert.equal(FEATURE_CATALOG['content.daily-wisdom'].type, 'ongoing');
     assert.equal(FEATURE_CATALOG['theme.seasonal.access'].requiredTier, 'subscription');
     assert.equal(FEATURE_CATALOG['theme.seasonal.access'].type, 'ongoing');
+    assert.equal(
+      'emotion.premium.trigger' in FEATURE_CATALOG,
+      false,
+      'premium emotion is not a B-track key (C-track gestures live in Collections)'
+    );
   });
 });
 

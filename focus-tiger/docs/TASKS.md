@@ -200,17 +200,18 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
-## 📍 同坐点（Focus Coins · 2026-08-18 方向锁）
+## 📍 寅币（Focus Coins · Yin's Collections）
 
-> 练习货币；对外 **同坐点**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
+> 练习货币；对外 **寅币 / Focus Coins**；个人中心 **阿寅的珍藏 / Yin's Collections**。**不**建 entitlement key。权威 `FOCUS_COINS.md`。
 
 | 级 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|
-| **文档** | 隔离清单、发点/防刷、与徽章两层、工作量分级 | `FOCUS_COINS.md` · `task-focus-coins.md` | **#333 已合** |
-| **L0** | 纯账本单测（Companion 三档 / Honesty 日限 / 封顶 / `isEntitled` 失败用例） | `feature/focus-coins-l0-ledger` | **#335 已合** |
+| **文档** | 花园 vs 珍藏、铁律、清供 8 | `FOCUS_COINS.md` · `task-focus-coins.md` | **本支** |
+| **L0** | 纯账本单测 | `feature/focus-coins-l0-ledger` | **#335 已合** |
 | **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合**（TRACKER 待人工） |
-| **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | **#339 已合**（只兑、不动 Honesty 分档） |
-| **L3** | 抽屉安静表面；en/ja；375 | `feature/focus-coins-l3-surface` | 待 L2 |
+| **L2** | 清供卡面可兑；叠层视觉拆掉 | `feature/focus-coins-l2-redeem` | **#339 已合**；2026-08-20 清供改名 |
+| **L3** | **Yin's Collections** 抽屉；挥手点播待接线 | `feature/yin-coin-l3-surface` | **#352+#353+#354 已合** |
+| **本支** | 清供 8 + 铁律硬条 | `feature/yin-coin-curio-stills` | 进行中 |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
 
