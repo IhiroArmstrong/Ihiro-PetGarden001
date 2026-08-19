@@ -12,7 +12,7 @@
  * the global lifetime ∪ subscription union grant companion without the add-on.
  *
  * Non-Lifetime / Membership users still unlock companion via Focus Tiger Pro
- * (US$12.99/mo). Checkout / Stripe Price for this add-on are not wired.
+ * (US$12.99/mo). Stripe Price is recorded; Checkout is not wired.
  *
  * @see docs/FREE_PAID_MATRIX.md A6
  * @see docs/task-briefs/task-desktop-on-device-companion.md
@@ -24,8 +24,15 @@ export const COMPANION_ADDON_LIFETIME_SKU = 'companion.addon.lifetime';
 /** Stored itemId when Checkout exists; must stay ≠ SANCTUARY_LIFETIME_ITEM_ID. */
 export const COMPANION_ADDON_LIFETIME_ITEM_ID = COMPANION_ADDON_LIFETIME_SKU;
 
-/** Policy display USD (one-time). Stripe Price ID not created yet. */
+/** Policy display USD (one-time). Matches Stripe Default price. */
 export const COMPANION_ADDON_LIFETIME_PRICE_USD = 29.99;
+
+/**
+ * Dashboard Price for product「Focus Tiger: AI Companion Add-on」.
+ * Reserved — Checkout / Worker vars not wired. Not a secret; still not `VITE_*`.
+ */
+export const COMPANION_ADDON_LIFETIME_STRIPE_PRICE_ID =
+  'price_1U6GnXFuIhgJPGLiNlXs0IKe';
 
 /**
  * @param {unknown} value

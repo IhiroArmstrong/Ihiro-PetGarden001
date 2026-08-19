@@ -71,7 +71,7 @@
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
 - **寅币 · 珍藏挥手点播（2026-08-20）**：`#yin-coin-panel` 底 **请阿寅挥挥手**（不在清供 8 行）。Idle 点播已入库 `wave-hello`；Focusing / 庆祝 toast 不播。`welcomeBack` / 欢迎池仍停。TRACKER 待人工。
 
-- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19 · #336 已合）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**。不锁 0.6B、不开 L1。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记入文档；**Checkout / 第四卡未接**。**Lifetime 加购（2026-08-20 方案 A）**：SKU **`companion.addon.lifetime`** 政策价 US$29.99 一次；**不**进 `isEntitled`；无 Stripe Price。权威：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6。
+- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19 · #336 已合）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**。不锁 0.6B、不开 L1。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记入文档；**Checkout / 第四卡未接**。**Lifetime 加购（2026-08-20 方案 A）**：SKU **`companion.addon.lifetime`** US$29.99 一次 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记；**不**进 `isEntitled`；**Checkout 未接**。权威：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6。
 
 - **寅币 / Yin's Collections（2026-08-20 · 清供 8）**：花园与珍藏切开。入口 **Yin's Collections / 阿寅的珍藏**。铁律进 `PRINCIPLES.md`。旧 8 id 改清供名、现价现门槛上架；晨露/须弥滤镜已拆。`emotion.premium.trigger` 已从 B catalog 删除。围着阿寅盖序列仍作废。TRACKER 待人工。
 
@@ -453,7 +453,7 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近跟进（2026-08-20 · Lifetime AI 加购 · 方案 A）**：已买 Sanctuary Lifetime 若要本地智能体，一次性 **US$29.99** SKU **`companion.addon.lifetime`**（不订阅）。与 Lifetime 主 SKU 分开；**禁止**进 `FEATURE_CATALOG` / `isEntitled`。非 Lifetime 仍走 Pro **US$12.99/月**（该 Price 已锁定）。**不**采用 Ultimate Lifetime 补差价。Checkout / 第四卡仍等 L1。权威：`FREE_PAID_MATRIX` A6 · `task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-20 · Lifetime AI 加购 · 方案 A）**：已买 Sanctuary Lifetime 若要本地智能体，一次性 **US$29.99** SKU **`companion.addon.lifetime`**（不订阅）。Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记（Dashboard **Focus Tiger: AI Companion Add-on**）。与 Lifetime 主 SKU 分开；**禁止**进 `FEATURE_CATALOG` / `isEntitled`。非 Lifetime 仍走 Pro **US$12.99/月**（该 Price 已锁定）。**不**采用 Ultimate Lifetime 补差价。Checkout / 第四卡仍等 L1。权威：`FREE_PAID_MATRIX` A6 · `task-desktop-on-device-companion.md`。
 
 **最近跟进（2026-08-20 · Focus Tiger Pro Price）**：Dashboard 已有 **Focus Tiger Pro** `$12.99/月`（`price_1U6EB1FuIhgJPGLiuciuX1to`）与改名后的 **Focus Tiger Base** `$6.99/月`。**现在只记 Price ID，不接 Checkout / 第四卡**（L1 入口未开）。Pro **包含** Base 那套 B 轨 + 本地智能体。Safari 测付款可以；本地模型测试/入口仍是 Electron。权威：`task-desktop-on-device-companion.md`。
 

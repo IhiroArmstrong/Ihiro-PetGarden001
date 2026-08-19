@@ -21,6 +21,7 @@ import {
   COMPANION_ADDON_LIFETIME_ITEM_ID,
   COMPANION_ADDON_LIFETIME_PRICE_USD,
   COMPANION_ADDON_LIFETIME_SKU,
+  COMPANION_ADDON_LIFETIME_STRIPE_PRICE_ID,
   companionAddonIsCatalogIsolated,
   isCompanionAddonLifetimeSku,
   mayOfferCompanionLifetimeAddon
@@ -44,6 +45,10 @@ describe('companion.addon.lifetime SKU isolation', () => {
     assert.equal(COMPANION_ADDON_LIFETIME_SKU, 'companion.addon.lifetime');
     assert.equal(COMPANION_ADDON_LIFETIME_ITEM_ID, COMPANION_ADDON_LIFETIME_SKU);
     assert.equal(COMPANION_ADDON_LIFETIME_PRICE_USD, 29.99);
+    assert.equal(
+      COMPANION_ADDON_LIFETIME_STRIPE_PRICE_ID,
+      'price_1U6GnXFuIhgJPGLiNlXs0IKe'
+    );
     assert.notEqual(COMPANION_ADDON_LIFETIME_SKU, SANCTUARY_LIFETIME_ITEM_ID);
     assert.equal(isCompanionAddonLifetimeSku(COMPANION_ADDON_LIFETIME_SKU), true);
     assert.equal(isCompanionAddonLifetimeSku(SANCTUARY_LIFETIME_ITEM_ID), false);
