@@ -340,9 +340,11 @@ export class FocusCoinsPanelUI {
    */
   _showCeremonial(row) {
     const key =
-      row.kind === 'collection'
-        ? 'YIN_COIN_CEREMONIAL_STILL'
-        : 'YIN_COIN_CEREMONIAL_PEBBLE';
+      row.kind === 'bundle'
+        ? 'YIN_COIN_CEREMONIAL_SUMERU'
+        : row.kind === 'badge.rare'
+          ? 'YIN_COIN_CEREMONIAL_PEBBLE'
+          : 'YIN_COIN_CEREMONIAL_STILL';
     this.ceremonialText.textContent = t(key);
     this.ceremonial.hidden = false;
     this.ceremonial.classList.add('is-visible');

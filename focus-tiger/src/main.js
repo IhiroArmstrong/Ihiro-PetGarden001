@@ -1176,10 +1176,7 @@ async function init() {
   lotusPondRuntime.boot();
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
-      pondEl: document.getElementById('lotus-pond'),
-      appEl: document.getElementById('app'),
       documentElement: document.documentElement,
-      document,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
   }
