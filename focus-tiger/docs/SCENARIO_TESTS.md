@@ -326,7 +326,7 @@
 ### Q1 · Support Modal（统一入口）
 
 1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
-2. 见三卡：Sanctuary 带 **Suggested** + 米色 CTA，文案含 **One-time Lifetime**（无假划线）+ **About $89.99**；中间 Membership 报价行与左右同位置，文案 **About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`），**Join Membership** CTA 与左右同款米色立体（浅底深字 pill，不得蒲团橙白字）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ 米色 CTA。三卡头图底为同一暖纸色（勿再出现左灰/中白）。**0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
+2. 见三卡：Sanctuary 带 **Suggested** + 米色 CTA，文案含 **One-time Lifetime**（无假划线）+ **About $89.99**；中间 Membership 报价行与左右同位置，文案 **About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`），**Join Membership** CTA 与左右同款米色立体（浅底深字 pill，不得蒲团橙白字）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ 米色 CTA。三卡头图底为同一暖纸色（勿再出现左灰/中白）。**Electron**：模态底部另见 `#yin-support-desktop-ram` 内存说明（8 GB · Mac and Windows）；**Web 不见该块。** **0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
 3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
 5. **回流**：Sit→Focusing → FAB **隐藏**（不可点，不是哑点击）；Rise 回 Idle → FAB 复现。
@@ -439,7 +439,7 @@
 > **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。Focus HUD 三条无脉冲，悬停控件出 tip。
 
 1. **冷启动（默认）**：`?product=1`（可清 `focus-tiger.wellness-disclaimer-seen.v1`）→ Idle **不得**见 `#onboarding-wellness-first`。**0–1 秒内**：首屏是阿寅坐禅，不是「Not therapy」警告牌。
-2. 点「?」`#onboarding-hint-help` → **0–1 秒内**见 `#onboarding-app-purpose`（no pressure / no ads / stays on this device）+ 免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent；日语切语后见「心理療法・医療ではありません」）+ 卡末 colophon（Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026）。
+2. 点「?」`#onboarding-hint-help` → **0–1 秒内**见 `#onboarding-app-purpose`（no pressure / no ads / stays on this device）+ 免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent；日语切语后见「心理療法・医療ではありません」）+ 卡末 colophon（Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026）。**Electron 另见** `#onboarding-purpose-desktop-ram`（8 GB · Mac and Windows）；**Web / 手机 Safari 不见该块。**
 3. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；见 wellness 交叉引用 → 点链回简介免责区块。
 4. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
 5. **Back** → 回简介 → Got it 关闭。

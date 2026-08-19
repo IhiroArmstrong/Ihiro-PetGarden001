@@ -277,6 +277,8 @@
   "HINT_APP_PURPOSE_DISMISS": "Got it",
   "HINT_APP_PURPOSE_WELLNESS_TITLE": "Not therapy or medical care",
   "HINT_APP_PURPOSE_WELLNESS_BODY": "This space helps you build focus skill, practice mindfulness, and reduce everyday stress. It is not a medical device, not psychotherapy or diagnosis, and cannot replace a licensed counselor, therapist, or doctor. It is not intended to diagnose, treat, cure, or prevent any disease. If you need clinical care, please seek a qualified professional.",
+  "HINT_APP_PURPOSE_DESKTOP_RAM_TITLE": "On-device companion (desktop)",
+  "HINT_APP_PURPOSE_DESKTOP_RAM_BODY": "On Mac and Windows PCs with 8 GB of RAM or less, loading a local companion model can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Focus Tiger hides the entry by default.",
   "HINT_APP_PURPOSE_COLOPHON_MARK": "Focus Tiger™",
   "HINT_APP_PURPOSE_COLOPHON_BYLINE": "Created by Ihiro Armstrong Hao Hoh / Twinsology",
   "HINT_APP_PURPOSE_COLOPHON_COPYRIGHT": "© 2026 Ihiro Armstrong Hao Hoh. All rights reserved.",
@@ -592,5 +594,6 @@
   "SUPPORT_MEMBERSHIP_BLURB": "Subscribe for the same advanced layer as Sanctuary Lifetime — at your own pace.",
   "SUPPORT_MEMBERSHIP_PRICE": "About ${price} · billed monthly",
   "SUPPORT_MEMBERSHIP_CTA": "Join Membership",
-  "SUPPORT_MEMBERSHIP_IMG_ALT": "Yin resting in a quiet membership scene"
+  "SUPPORT_MEMBERSHIP_IMG_ALT": "Yin resting in a quiet membership scene",
+  "SUPPORT_DESKTOP_RAM_NOTE": "Note: On Mac and Windows PCs with 8 GB of RAM or less, the optional on-device companion can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Focus Tiger hides the entry by default."
 }

@@ -277,6 +277,8 @@
   "HINT_APP_PURPOSE_DISMISS": "知道了",
   "HINT_APP_PURPOSE_WELLNESS_TITLE": "不是心理诊疗或医疗",
   "HINT_APP_PURPOSE_WELLNESS_BODY": "这个空间用于培养专注力、练习正念、缓和日常压力。它不是医疗器械，也不是心理治疗或诊断，不能替代持证心理咨询师、治疗师或医生。无意诊断、治疗、治愈或预防任何疾病。若需要临床帮助，请寻求合格专业人士。",
+  "HINT_APP_PURPOSE_DESKTOP_RAM_TITLE": "端侧陪伴（桌面）",
+  "HINT_APP_PURPOSE_DESKTOP_RAM_BODY": "内存在 8GB 及以下的 Mac 与 Windows 电脑上，加载本地陪伴模型可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Focus Tiger 默认隐藏入口。",
   "HINT_APP_PURPOSE_COLOPHON_MARK": "Focus Tiger™",
   "HINT_APP_PURPOSE_COLOPHON_BYLINE": "Created by Ihiro Armstrong Hao Hoh / Twinsology",
   "HINT_APP_PURPOSE_COLOPHON_COPYRIGHT": "© 2026 Ihiro Armstrong Hao Hoh. All rights reserved.",
@@ -592,5 +594,6 @@
   "SUPPORT_MEMBERSHIP_BLURB": "订阅即可使用与圣所终身版同一套进阶层——按自己的节奏。",
   "SUPPORT_MEMBERSHIP_PRICE": "约 ${price} · 按月订阅",
   "SUPPORT_MEMBERSHIP_CTA": "加入会员",
-  "SUPPORT_MEMBERSHIP_IMG_ALT": "阿寅在安静的会员场景中休憩"
+  "SUPPORT_MEMBERSHIP_IMG_ALT": "阿寅在安静的会员场景中休憩",
+  "SUPPORT_DESKTOP_RAM_NOTE": "提示：内存在 8GB 及以下的 Mac 与 Windows 电脑上，可选的端侧陪伴可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Focus Tiger 默认隐藏入口。"
 }

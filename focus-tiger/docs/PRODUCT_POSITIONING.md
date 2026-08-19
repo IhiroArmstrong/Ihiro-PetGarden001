@@ -90,7 +90,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 - 当前不承诺 AI 教练、心理咨询、儿童产品或企业员工管理功能；
 - **Wellness disclaimer（2026-08-14；2026-08-15 改落点）**：应用内须说明本产品是专注力 / 正念练习空间，用于 build focus skill、practice mindfulness、reduce everyday stress；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师、治疗师或医生；并含标准化兜底句 **not intended to diagnose, treat, cure, or prevent any disease**。落点：（1）**常驻查阅（默认）**：**?** → `#onboarding-app-purpose` 免责区块（不在冷启动自动弹出，以免吓跑用户）；（2）Privacy Sheet 一句交叉引用；（3）QA 仅 `?wellnessFirst=1` 可强制 `#onboarding-wellness-first` Got it 卡。文案键 `HINT_APP_PURPOSE_WELLNESS_*`（en + ja）。禁止把功能写成治疗焦虑、抑郁或其它临床病症。危机语料 `confide` `safety-01` 须与此边界一致（指向真实求助渠道 + 不能代替专业帮助），不另写一套。红线见 `PRINCIPLES.md`「一般身心练习，不是诊疗」。
 - 当前不因长期愿景而提前实现多角色、换装 UI、多场景、成就墙或复杂成长树；
-- **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练。**默认**本地分类 + 人工语料检索。**唯一已拍板例外**：仅限 Electron 桌面端、用户主动打开的同一入口、仪式文案与 Confide 语料都未接住时，才允许受约束短生成——**不是**全面允许生成（见下「禅意倾听者」；Web/PWA Brief `task-confide-to-yin-v1.md`；桌面例外 Brief `task-desktop-on-device-companion.md`）。
+- **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练。**默认**本地分类 + 人工语料检索。**唯一已拍板例外**：仅限 Electron **宽屏**、用户主动打开的同一入口、仪式文案与 Confide 语料都未接住时，才允许受约束短生成——**不是**全面允许生成；**窄屏 / 手机没有本地智能体**（见下「禅意倾听者」；Web/PWA Brief `task-confide-to-yin-v1.md`；桌面例外 Brief `task-desktop-on-device-companion.md`）。
 
 长期愿景不是当前功能承诺。任何扩展仍须遵守 `PRINCIPLES.md` 的「价值优先于复杂度」与 `PROCESS.md` 的立项流程。
 
@@ -158,19 +158,20 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 | 0.4 问 | 批复 |
 |---|---|
 | 是否修订「禁止运行时生成」 | **窄例外，不是废止。** Web / 移动端 PWA / 已审仪式文案 **仍检索不生成**。 |
-| 与 Confide 入口 | **合并成一个** Idle ⋯ / 抽屉项。禁止并排「倾诉」和「AI 阿寅」。 |
+| 与 Confide 入口 | **合并成一个** Idle 菜单项（禁止并排「倾诉」和「AI 阿寅」）。**端侧生成只挂宽屏 ⋯**（产品壳 `≥480px`）。窄屏抽屉 **没有**本地智能体；若 v1 Confide 检索已挂载，窄屏仍只走检索不生成。 |
 | 触发 | **仅用户主动、仅 Idle。** 不主动开口；Focusing / 切走回来 / 到点提醒 **不得**生成。 |
+| 视口 | **本地小模型智能体 = Electron + 宽屏。** 手机浏览器、未来 Capacitor、以及把窗口拖到窄屏壳（`≤479px` 抽屉）都 **不提供**该能力——统一内存 / 散热 / 原生库都跑不顺，不是「功能对等漏做」。 |
 
-生成只允许落在路由最后一层，且须同时满足：Electron 壳内、用户已打开该面板、安全阀未命中、产品仪式池未承担、Confide 情绪桶未命中。层序锁死：
+生成只允许落在路由最后一层，且须同时满足：Electron 壳内、**当前为宽屏壳**、用户已打开该面板、安全阀未命中、产品仪式池未承担、Confide 情绪桶未命中。层序锁死：
 
 ```text
 0 安全（safety_redirect，固定转介句；模型不调用）
   → 1 产品仪式（Arrival / Whisper / Recover / Re-focus / 提醒 / Reflection……已审 i18n）
   → 2 Confide 语料桶（anxious / tired / stuck / sad / scattered）
-  → 3 仅桌面：自由倾诉短生成（约束：短句、承接不建议、不诊断、不呼吸指令、超长截断）
+  → 3 仅 Electron **且宽屏**：自由倾诉短生成（约束：短句、承接不建议、不诊断、不呼吸指令、超长截断）
 ```
 
-技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程；模型首次下载不进 DMG；Focusing 时卸载。L0 机型实测通过前 **不上产品入口**。L2 内部多轮对话须攒跑偏案例调 prompt，**禁止** L0/L1 一过就给真实用户。
+技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** L1 开工前 **不上产品入口**。L2 内部多轮对话须攒跑偏案例调 prompt，**禁止** L0/L1 一过就给真实用户。
 
 详规：Web 检索 `task-briefs/task-confide-to-yin-v1.md`；桌面例外 `task-briefs/task-desktop-on-device-companion.md`；种子稿 `confide-corpus-seed.md`。**本拍板不等于已上线功能。**
 
@@ -289,7 +290,7 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 
 在 AI 帮助人们变得更快、更自动、更高效的时代，Focus Tiger 选择帮助人保留自己的觉察、专注与内在平静。
 
-这一叙事可作为品牌长期方向，但**不代表**产品已是生成式 AI 教练。若有「向阿寅倾诉」类陪伴，须遵守上文「禅意倾听者」：**默认检索人工语料**；**仅** 2026-08-18 已写明的桌面窄例外允许受约束短生成——不得据此主张全面运行时对话。
+这一叙事可作为品牌长期方向，但**不代表**产品已是生成式 AI 教练。若有「向阿寅倾诉」类陪伴，须遵守上文「禅意倾听者」：**默认检索人工语料**；**仅** 2026-08-18 已写明的桌面窄例外允许受约束短生成（且只在 Electron **宽屏**）——不得据此主张全面运行时对话，也不得在窄屏 / 手机做本地智能体。
 
 未来可以研究专注训练、冥想、数字健康、AI 时代的注意力教育等方向；儿童注意力与企业心理健康涉及完全不同的用户、合规、隐私和商业路径，只能作为远期市场假设，必须分别验证并独立立项。
 
