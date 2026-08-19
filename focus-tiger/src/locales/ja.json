@@ -277,6 +277,8 @@
   "HINT_APP_PURPOSE_DISMISS": "わかりました",
   "HINT_APP_PURPOSE_WELLNESS_TITLE": "心理療法・医療ではありません",
   "HINT_APP_PURPOSE_WELLNESS_BODY": "ここは、集中力を育て、マインドフルネスを実践し、日常のストレスを和らげるための練習の場です。医療機器ではありません。心理療法・診断・治療でもなく、公認のカウンセラー、セラピスト、医師の代わりにもなりません。いかなる疾病の診断・治療・治癒・予防を目的とするものではありません。専門的なケアが必要なときは、資格のある専門家にご相談ください。",
+  "HINT_APP_PURPOSE_DESKTOP_RAM_TITLE": "端末内コンパニオン（デスクトップ）",
+  "HINT_APP_PURPOSE_DESKTOP_RAM_BODY": "メモリ 8GB 以下の Mac および Windows PC では、ローカルのコンパニオンモデルを読み込むとメモリ圧が高くなり、アプリ全体が遅くなることがあります。それらの機器ではこのコンパニオンはおすすめしません。Focus Tiger は初期状態で入口を出しません。",
   "HINT_APP_PURPOSE_COLOPHON_MARK": "Focus Tiger™",
   "HINT_APP_PURPOSE_COLOPHON_BYLINE": "Created by Ihiro Armstrong Hao Hoh / Twinsology",
   "HINT_APP_PURPOSE_COLOPHON_COPYRIGHT": "© 2026 Ihiro Armstrong Hao Hoh. All rights reserved.",
@@ -592,5 +594,6 @@
   "SUPPORT_MEMBERSHIP_BLURB": "サンクチュアリ生涯版と同じ進階レイヤーを購読で。自分のペースで。",
   "SUPPORT_MEMBERSHIP_PRICE": "約 ${price} · 月額",
   "SUPPORT_MEMBERSHIP_CTA": "メンバーシップに入る",
-  "SUPPORT_MEMBERSHIP_IMG_ALT": "静かなメンバーシップの場面で休む阿寅"
+  "SUPPORT_MEMBERSHIP_IMG_ALT": "静かなメンバーシップの場面で休む阿寅",
+  "SUPPORT_DESKTOP_RAM_NOTE": "ご注意：メモリ 8GB 以下の Mac および Windows PC では、任意の端末内コンパニオンがメモリ圧を高め、アプリ全体を遅くすることがあります。それらの機器ではおすすめしません。Focus Tiger は初期状態で入口を出しません。"
 }
