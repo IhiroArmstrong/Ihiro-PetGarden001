@@ -41,6 +41,7 @@
 | **P0** | **AB** Electron 托盘收起 vs 切 App | 收进托盘误触发 Re-focus = 场景 B 同类坑 | 契约已写；**实现后**测；**SB-18** |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
 | **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**#291 补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：#292 已合 insight-spark；Daily Card 仍是 Brief 未接线 |
+| **P1** | **AC** 寅币抽屉 | 与 Q 付费入口隔离；次级可忽略 | L3 本支已写 0–1s 句 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
 | **P2** | **G** 语言；**O** 热力图（多为展示）；**V** 吹花（自动 + 点消气泡） | 点击面小或非按钮主路径 | 未补句 |
@@ -527,6 +528,23 @@
 
 ---
 
+## 场景 AC：Yin's Collections 抽屉（L3 · 寅币珍藏表面）
+
+> **用户故事**：Kelly 想用坐来的寅币结缘一件钱买不到的案头雅物——宽屏 ⋯ / 窄屏抽屉在 Journey log **旁边**打开 **Yin's Collections**（汉语阿寅的珍藏 / 日语阿寅の蒐集），见可滚动商店目录，不是 Support 三卡、不是请茶、不是 HUD 钱包、不是第二座莲花池。  
+> **单元**：`focusCoinsSurface.test.js`（商店 7 行，不含退役叠层；缺口句点名还差几枚/几分钟）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`）。  
+> **仍须人工**：375 不挡三球；商店目录都能滚到；不足结缘 toast；已结缘 / Wear；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
+> **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把瓷器叠回主坐席。
+
+1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。随后见寅币余额 +「案头雅物皆由同坐岁月所化」+ 商店行（与阿寅同坐 / 又回来了 / 久坐的人 / 静石小章 / 青瓷瓶 / 青铜礼器 / 挥手）。**不得**再出现莲叶晨露 / 木念珠 / 须弥金线。
+2. **结缘成功**（余额够、门槛够）：点 **结缘 / Bond** → **0–1 秒内**钮 `:active` 按压；该行变成已结缘；余额减少。瓷器/青铜器只进珍藏卡面，莲花朵数与亮度不变。称号可 Wear（一次一个）。静石 / 静物成功可出安静仪式句（非彩纸）。挥手本切片只上架，点播接线另开。
+3. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 toast。**不是**哑点击，也不说笼统「无法兑换」。
+4. **回流**：Close / Esc / 点外侧 → **0–1 秒内**关钮 `:active` + 卡淡出；Sit / ⋯ 仍在。再打开仍是商店目录；已结缘不再扣点。
+5. **对照 Support（场景 Q）**：右上角 Support Yin 三卡 / `$` **不**出现在本面板。付款仍只走 Support FAB。
+6. **关闸**：`?product=1&focusCoins=0` → 抽屉 / ⋯ **没有**珍藏这一行。
+7. **375**：卡可关、不挡 Sit 三球。
+
+---
+
 ## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
 
 > **地位**：**实验 / 非最终形态**。用来验证「切到其他窗口或 App 时，仍能看见阿寅安静呼吸」。**待观察使用数据后决定是否继续投入**（localStorage `focus-tiger.idle-companion-pip.v1` 只记是否曾打开，不用于提醒或激励）。  
@@ -588,6 +606,7 @@
 | **X2** | Idle 轻点阿寅 → `earWiggleHeadTouch` | **已升格** → 见上文「场景 X2」 |
 | **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
 | **AB** | Electron 托盘收起 ≠ 走神 | **已升格** → 见上文「场景 AB」；脚手架后测；**SB-18** |
+| **AC** | 寅币抽屉（L3） | **已升格** → 见上文「场景 AC」；与 Q 付费入口隔离 |
 
 ---
 

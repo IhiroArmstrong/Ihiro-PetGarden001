@@ -1,6 +1,6 @@
 # 寅币（Focus Coins）· 产品设计 SSOT
 
-> **状态：方向锁（2026-08-19 修订）** — 花园 vs 珍藏切开；叠层 SKU 退役。L0–L2 已接线；L3 = **Yin's Collections** 表面（未做）。`?focusCoins=0` 关闸完全不写。  
+> **状态：方向锁（2026-08-19 修订）** — 花园 vs 珍藏切开；叠层 SKU 退役。L0–L2 已接线；L3 抽屉 #352 已合，本支改为 **Yin's Collections** 商店目录。`?focusCoins=0` 关闸完全不写。  
 > **内部名**：Focus Coins。**货币对外名（硬）**：**寅币** / **Focus Coins**（2026-08-19 取代「同坐点」；旧文案可视为别名，新产品面只用寅币）。禁止金币 / 积分 / Shop / Purchase 口吻。  
 > **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱只作气质比喻，不作产品名。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)。  
@@ -213,7 +213,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 | **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日 · 已实现** `focusCoinsLedger.js` |
 | **L1 发点接线** | 完成一场坐，钱包会涨（可先无「店」） | 挂计时达标 / Honesty 呼吸成功 / Choose / Reflect / 主动 Recover；localStorage 白名单；flag 默认可关 | 无兑换 UI；不改场景剧本；不把钱包塞进练习备份 6 key | **4–6 人日 · #338 已合**（TRACKER 待人工；高风险邻接：Honesty / 完成记账） |
 | **L2 可兑原型** | 内部能花点留下痕迹 | 称号 + 稀有章 + 珍藏静物；叠层 SKU 退役；`title.long-sitter` 双门槛 | 新角色帧换装、主画面叠层 | **已接线 + 2026-08-19 退役叠层** |
-| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | 四页签壳；结缘点缀/称号/勋章；en/ja；375；0–1s；店底须知；挥手点播 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **3–5 人日 · 下一步** |
+| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；本支改为商店目录（不含退役叠层）+ 结缘语汇 + 挥手 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **已接线 · 本支改名/过滤** |
 
 **合计到「内部可用」（L0–L2）**：约 **10–16 人日** ≈ **2.5–4 周日历**（一人，含回归；L1 勿与其它 Honesty 大改叠车）。  
 **到可给真实用户**：再加 L3；**不得**早于 L0 单测锁住防刷表。
@@ -237,7 +237,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 
 | 课题 | L0 | L1 | L2 | L3 | 到内部可用 | 到可上架 / 给用户 | 现在能否开工 |
 |---|---|---|---|---|---|---|---|
-| **寅币 / Yin's Collections** | 2–4 人日 · 纯账本 **（L0 已合 #335）** | 4–6 · 发点钩子 **（L1 #338 已合）** | 4–6 · 兑换 **（L2 #339 已合）** | 3–5 · Collections 表面 | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | 叠层已退役；L1 TRACKER 待人工；**下一步 L3** |
+| **寅币 / Yin's Collections** | 2–4 人日 · 纯账本 **（L0 已合 #335）** | 4–6 · 发点钩子 **（L1 #338 已合）** | 4–6 · 兑换 **（L2 #339 已合）** | 3–5 · Collections 表面 **（#352 已合；本支改名/过滤）** | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | 叠层已退役；L1 TRACKER 待人工 |
 | **桌面端侧智能体** | 2–4 · Metal 探针 | 4–7 · desktop-only 面板 | 8–12 · 人设混合路由 | 8–15 · 生产隔离 | **14–23 人日 · 约 3–5 周** | 依赖定位修订 + 桌面步骤 B 托盘 | **仅宜 L0 实测**；入口未拍板 |
 
 **我认为最合理的统筹**：先开 **寅币 L0**（不挡收费 DMG、不碰 Electron、回归面在单测里可锁死）。桌面智能体等机型实测 +「禅意倾听者」书面修订后再 L1。寅币 **L1 硬闸**：开分支前必须书面扫 Honesty / `DailyCompletionStore` / `PracticeDaysStore` 邻接是否有并行 PR（分析师 2026-08-18；口头注意不算过闸）。两个课题都不要插队挡住桌面步骤 B（托盘 = 收费 DMG 前提）。
@@ -248,10 +248,10 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 
 - **L0（已合 #335）**：`src/core/focusCoinsLedger.js` + 单测。  
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
-- **L2**：`applyFocusCoinsRedeem` 写入 `ownedIds`。叠层 SKU 新兑 `retired-overlay`；晨露/金线滤镜不再上主画面。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
-- 练习备份 6 key：**L1–L2 不扩**；是否 schema v2 并入钱包放到 L3 再决。  
-- Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换）。  
-- 单测优先于 e2e；L3 若要 DOM 断言，单文件 spec，遵守本地 e2e 硬顶。
+- **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。叠层 SKU 新兑 `retired-overlay`；晨露/金线滤镜不再上主画面。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
+- **L3（#352 已合；本支修订）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()`（不含退役叠层）。不足/未达门槛：按压 + 具体缺口句 + toast。称号 Wear。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
+- Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
+- 单测优先于 e2e；L3 DOM 以 `focusCoinsSurface.test.js` / `FocusCoinsPanelUI.test.js` 为主；完整用户链路须人工。
 
 ---
 
