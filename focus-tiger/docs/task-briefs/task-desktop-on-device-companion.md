@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合**。**不开 L1**（须口令）。Stripe Pro Price 已记；**Checkout 未接**。Pro 含 Base + 本地智能体。Lifetime 用户要 AI → 另订 Pro（付推理；不必再买 Base）。  
+> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合**。**不开 L1**（须口令）。Stripe Pro Price 已记；**Checkout 未接**。Pro 含 Base + 本地智能体。Lifetime 用户要 AI → 另订 Pro（付推理；不必再买 Base）。**用户书面认同**四条：不白嫖智能体、非 Electron 无本地 AI、测须 `desktop:dev`、Checkout 须 L1 口令。  
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。

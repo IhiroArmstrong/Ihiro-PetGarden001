@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Lifetime 要本地 AI → 另订 Pro（不必再买 Base）；测本地 AI 须 Electron / `desktop:dev`，Safari 5173 只测 Web；L1 / Pro Checkout 仍须口令
+**最后更新时间**：2026-08-20（UTC+8） · 品味层 **#349 已合**、生产 Worker **未**部署 · Lifetime 要本地 AI → 另订 Pro；测本地 AI 须 Electron / `desktop:dev`；L1 / Checkout 仍须口令
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -78,7 +78,7 @@
 
 - **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
 
-- **云端品味层 schemaVersion 1 可选接线（2026-08-18）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。生产 Worker 须明确「部署」后才从旧 mock 换成 v1。`?tasteLayer=0` 关拉取。TRACKER 待人工。
+- **云端品味层 schemaVersion 1 可选接线（2026-08-18 · #349 已合 tip `a0fed0b`）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。生产 Worker 须明确「部署」后才从旧 mock 换成 v1。`?tasteLayer=0` 关拉取。TRACKER 待人工。
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
@@ -211,7 +211,7 @@
 - **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
 - **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`；Task 3→2 + 扩 smoke **已落地**。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。
 - **语义化版本与稳定发布点拍板（2026-07-30）**：SemVer；首稳 **`v1.0.0`**；稳定版 = `main` 上 **annotated tag**，开发阶段**不**切 `release/*`（除非未来并行维护多条已发布大版本）。SSOT：`WORKFLOW.md`「语义化版本与稳定发布点」；`RULES_INDEX` → `git-semver-release`。无运行时改动，无 TEST_TRACKER 行。
-- **v1.0 纯本地 / 云端品味层 + 打包选型时机（2026-07-30 拍板；壳于 2026-08-16 锁定；品味层 2026-08-18 收窄改名 + 窄冻结已拍板）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；旧称「v1.1 云端算法」→ Backlog「云端品味层」（权重 + 文案；播放器永远本地）。代码保留 `cloud/` 可扩展、前端品味层暂不接线。打包开会时机当时已定；**壳已拍板 Electron**（见 Backlog「本地桌面 APP 打包」）。无运行时改动。
+- **v1.0 纯本地 / 云端品味层 + 打包选型时机（2026-07-30 拍板；壳于 2026-08-16 锁定；品味层 2026-08-18 收窄改名 + 窄冻结已拍板）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；旧称「v1.1 云端算法」→ Backlog「云端品味层」（权重 + 文案；播放器永远本地）。代码保留 `cloud/` 可扩展。**2026-08-18 #349 已合** schemaVersion 1 可选 overlay（失败用本地表；生产 Worker 另须「部署」）。打包开会时机当时已定；**壳已拍板 Electron**（见 Backlog「本地桌面 APP 打包」）。
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
@@ -394,11 +394,11 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。桌面陪伴 **仍不开 L1、不接 Pro Checkout**（须口令「开工桌面陪伴 L1」；入口未开 = 假收费）。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。品味层 **#349 已合**；生产 overlay 另须「部署」。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。桌面陪伴 **仍不开 L1、不接 Pro Checkout**（须口令「开工桌面陪伴 L1」；入口未开 = 假收费）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 探针 #336 已合**。低配默认不出入口。不开 L1、不锁 0.6B。Stripe **Focus Tiger Pro** Price 已记；**Checkout 未接**。Pro 含 Base（B 轨）+ 本地智能体。Lifetime 用户要 AI → **另订 Pro**（付推理；不必再买 Base）。测本地 AI：**Electron 窗口**（`desktop:dev` / `desktop:companion-l0`），不能用 Safari 打开 QA 5173 代替。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
-- **云端品味层（2026-08-18 接线）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。生产 **Worker Redeploy 另须「部署」**。
+- **云端品味层（2026-08-18 · #349 已合）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。生产 **Worker Redeploy 另须「部署」**。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
@@ -450,7 +450,7 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近跟进（2026-08-20 · Lifetime 要本地 AI / Electron 测法 / L1 口令）**：Sanctuary Lifetime 仍只买断 B 轨。若还要本地智能体：L1 入口开后另订 **Pro $12.99/月**（付持续推理）；B 轨继续由 Lifetime 覆盖；**不要**再买 Base、**不要**白送智能体。不带 Electron 壳 = **无法**用本地 AI（`node-llama-cpp` 只在主进程；Safari / PWA / 手机禁止）。固定 QA 树 + Safari 5173 **继续**测 Web 关单；测本地 AI 须 `desktop:dev` 弹出的桌面窗（可占用同一 5173 当渲染页，但不要用 Safari 连）。**不开 L1、不接 Pro Checkout**，除非口令「开工桌面陪伴 L1」。权威：`task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-20 · Lifetime 要本地 AI / Electron 测法 / L1 口令）**：Sanctuary Lifetime 仍只买断 B 轨。若还要本地智能体：L1 入口开后另订 **Pro $12.99/月**（付持续推理）；B 轨继续由 Lifetime 覆盖；**不要**再买 Base、**不要**白送智能体。不带 Electron 壳 = **无法**用本地 AI（`node-llama-cpp` 只在主进程；Safari / PWA / 手机禁止）。固定 QA 树 + Safari 5173 **继续**测 Web 关单；测本地 AI 须 `desktop:dev` 弹出的桌面窗（可占用同一 5173 当渲染页，但不要用 Safari 连）。**不开 L1、不接 Pro Checkout**，除非口令「开工桌面陪伴 L1」。**同日用户书面认同**这四条（B 轨买断 ≠ 算力；08-18 窄例外无新口子；`desktop:dev` 且勿与 `dev:qa` 抢 5173；假收费禁 Checkout）。权威：`task-desktop-on-device-companion.md`。
 
 **最近跟进（2026-08-20 · Focus Tiger Pro Price）**：Dashboard 已有 **Focus Tiger Pro** `$12.99/月`（`price_1U6EB1FuIhgJPGLiuciuX1to`）与改名后的 **Focus Tiger Base** `$6.99/月`。**现在只记 Price ID，不接 Checkout / 第四卡**（L1 入口未开）。Pro **包含** Base 那套 B 轨 + 本地智能体。Safari 测付款可以；本地模型测试/入口仍是 Electron。权威：`task-desktop-on-device-companion.md`。
 
@@ -520,7 +520,7 @@
 
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
 - **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）**
-- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；窄冻结已拍板、未开工）
+- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；**#349 已合**；生产须「部署」）
 - **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
 - **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
