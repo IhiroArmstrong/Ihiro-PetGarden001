@@ -409,6 +409,7 @@ export class ImmersivePresenceUI {
       body.ft-immersive-presence #moment-whisper,
       body.ft-immersive-presence #five-moments-compass,
       body.ft-immersive-presence #journey-log,
+      body.ft-immersive-presence #yin-coin-panel,
       body.ft-immersive-presence #zen-cinema-card,
       body.ft-immersive-presence #daily-zen-quote-card,
       body.ft-immersive-presence #mustard-seed-seal-card,

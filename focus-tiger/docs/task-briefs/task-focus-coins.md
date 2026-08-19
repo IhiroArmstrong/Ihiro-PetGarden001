@@ -1,9 +1,9 @@
-# Task Brief · 同坐点（Focus Coins）
+# Task Brief · 寅币（Focus Coins）
 
-> **状态**：L2 本支待合 · `feature/focus-coins-l2-redeem`（2026-08-18）。L0 #335 · L1 #338 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
+> **状态**：L3 本支 `feature/yin-coin-l3-surface`（从 `origin/develop` 新开，不叠 Breath 时长支）。L0 #335 · L1 #338 · L2 #339 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
-> **性质**：L2 内部兑换（中风险：徽章隔离 / 莲花池不拦截）。**一次只做一个 L 级**。无抽屉、不改场景剧本、不扩备份 6 key。**只兑、不动 Honesty 时长分档**。  
-> **禁止**：建 entitlement gate key；L0–L2 改 `SCENARIO_TESTS.md`；用余额满足 `isEntitled`。
+> **性质**：L3 安静表面（中风险：Idle chrome 菜单编排 / z-index 18 叠层）。**一次只做一个 L 级**。不改发点数学、不改 Honesty 分档、不扩备份 6 key。  
+> **禁止**：建 entitlement gate key；用余额满足 `isEntitled`；Support 三卡样式；常驻 HUD。
 
 ---
 
@@ -78,7 +78,7 @@ L1 **#338 已合**。本硬闸对后续「再碰 Honesty / 完成记账邻接」
 
 ## 5. 点击反馈（L3；本 Brief 文档阶段不涉及）
 
-L3 PR 须答：点抽屉「同坐点」后 **0–1 秒内**入口按压 + 面板开始出现（玻璃泡，对齐 Honesty 桥接半透明，禁止厚卡片挡住阿寅）。设计静默（日封顶无 toast、冷却）须挂 `SILENT_BEHAVIORS.md` 新 `SB-xx` 或复用已有「无挫败文案」条。
+L3 PR 须答：点抽屉「寅币 / Yin Coin」后 **0–1 秒内**入口按压 + 面板开始淡入（Journey 同族玻璃，禁止厚卡片挡住阿寅）。不足兑换：按压 + 行内缺口句 + toast，**不是**哑点击。设计静默（日封顶无 toast）须挂 `SILENT_BEHAVIORS.md`。
 
 冲突扫描：见 `FOCUS_COINS.md` §0。
 

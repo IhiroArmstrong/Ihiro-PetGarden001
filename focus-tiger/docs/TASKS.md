@@ -210,7 +210,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L0** | 纯账本单测（Companion 三档 / Honesty 日限 / 封顶 / `isEntitled` 失败用例） | `feature/focus-coins-l0-ledger` | **#335 已合** |
 | **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合**（TRACKER 待人工） |
 | **L2** | 称号 / 稀有章 / 空间变体；须弥坐双门槛 | `feature/focus-coins-l2-redeem` | **#339 已合**（只兑、不动 Honesty 分档） |
-| **L3** | 抽屉安静表面；en/ja；375 | `feature/focus-coins-l3-surface` | 待 L2 |
+| **L3** | 抽屉安静表面；en/ja；375 | `feature/yin-coin-l3-surface` | **本支** |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
 
