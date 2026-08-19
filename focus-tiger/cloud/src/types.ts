@@ -8,6 +8,7 @@
  * Vars / wrangler.jsonc (non-secret):
  *   STRIPE_PRICE_ID, STRIPE_SANCTUARY_PRICE_ID, STRIPE_MEMBERSHIP_PRICE_ID
  *   STRIPE_PRO_PRICE_ID reserved in docs (price_1U6EB1FuIhgJPGLiuciuX1to) — no checkout yet
+ *   STRIPE_COMPANION_ADDON_PRICE_ID reserved name (companion.addon.lifetime) — Price not created, no checkout
  *   Checkout success/cancel URLs, ALLOWED_ORIGIN, RESEND_FROM, NEWSLETTER_FROM
  */
 export interface Env {

@@ -98,6 +98,8 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 **2026-08-20 纠正**：Pro **包含** Focus Tiger Base（B 轨），不是「只买运行时、不含 Membership」。本地模型测试/入口仍是 Electron；**付款** L1 后可走 Safari（与现货 Membership 相同）。Stripe Pro Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记文档，Checkout 未接。现货仍三卡。
 
+**同日 · Lifetime 加购（方案 A）**：已买 Sanctuary Lifetime 要本地智能体 → 一次性 **`companion.addon.lifetime`**（US$29.99），**不**订阅、**不**拆 Ultimate Lifetime。对照场景 Q：现货仍只测三卡，本加购不是第四张现货卡，也不改 `isEntitled` 对 B 轨的互覆盖。非 Lifetime 仍走 Pro $12.99/月（数字已锁定）。
+
 拍板后的现货落地：说明文案进 Electron **?** + **Support Yin** 底部 + `desktop/README.md`；Windows 与 Mac 同样写 8GB；低配仍可买现有三卡（B 轨其它权益），**不能**自行打开被隐藏入口。
 
 ---

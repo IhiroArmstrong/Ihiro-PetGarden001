@@ -7,6 +7,7 @@
  * Unified entitlement gate — foundation for paid features.
  *
  * - Lifetime ∪ subscription **mutually** cover any paid tier (global default).
+ *   B-track only — not `companion.addon.lifetime` (see companionAddonSku.js).
  * - Sanctuary: thin read of `isSanctuaryUnlocked()` as a lifetime.active signal
  *   (does not migrate or write sanctuaryEntitlementGate).
  * - Tip jar: zero coupling (must not import tipJarGate).

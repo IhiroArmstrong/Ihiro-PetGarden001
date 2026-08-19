@@ -1,8 +1,8 @@
 # Focus Tiger · 功能 × 免费/付费对照表
 
 > **状态：方向锁 / SSOT（2026-08-10）** — 功能×档位×接线差距对账的权威表；产品策略红线仍以 `MVP_PRODUCT_DEFINITION.md` §五为准，本表负责对账与落地差距可视化。  
-> **范围**：整理「功能归属 + 文档口径 + 代码接线现状」；**不含**价格列（$9.99 / $89.99 等为展示用、未锁定，另处跟踪）。  
-> **禁止**：改本表任务不改 `FEATURE_CATALOG` / 运行时；改档位先改产品文档再改代码。
+> **范围**：整理「功能归属 + 文档口径 + 代码接线现状」；**不含**价目表列（$9.99 / $89.99 等默认仍是展示用、未锁定，另处跟踪）。A6 **付费方式备注**可引用已拍板 Stripe Price / 政策价（Pro US$12.99/月；Lifetime AI 加购 US$29.99 一次），不因此把本表改成价目表。  
+> **禁止**：改本表任务不改 `FEATURE_CATALOG` / 运行时；改档位先改产品文档再改代码。`companion.addon.lifetime` **禁止**写入 `FEATURE_CATALOG`。
 
 ## 权威从属
 
@@ -11,6 +11,7 @@
 | 产品策略 / 红线 | `MVP_PRODUCT_DEFINITION.md` §五 | 双轨心智、免费底线、不卖清单 |
 | 工程商业化细则 | `task-briefs/task-tech-direction-v1-shell-monetization.md` | A/B 入口、零耦合、到期降级 |
 | 工程 catalog | `src/core/entitlement/entitlementRegistry.js`（`FEATURE_CATALOG`） | featureKey → requiredTier / type |
+| 非 catalog SKU | `src/core/entitlement/companionAddonSku.js` | `companion.addon.lifetime`；**禁止**并入上一行 |
 | **本表（方向锁 / SSOT）** | `FREE_PAID_MATRIX.md` | 功能×档位×接线差距对账 |
 
 ## 心智模型（硬 · 与 #216 对齐）
@@ -32,6 +33,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 **2026-08-20 补**：上表禁的是第三套 *平行内容包*。**Focus Tiger Pro** 是 Base 的升级档（含 B 轨 + 桌面本地智能体），不是另一套互斥内容。现货 Support **仍只三卡**，Pro Checkout 未接。
 
+**2026-08-20 · 方案 A（Lifetime + 本地 AI）**：已买 **Sanctuary Lifetime** 的用户默认仍**没有**本地智能体。解锁路径 = 一次性加购 SKU **`companion.addon.lifetime`**（政策价 **US$29.99** 买断，**不**按月）。**禁止**为此拆 Ultimate Lifetime / 补差价分层（方案 B 延后，待 L1/L2 能力验证）。非 Lifetime / Membership 订阅用户仍走 **Focus Tiger Pro US$12.99/月**（该数字已于 2026-08-20 用 Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to` 锁定，本次不改）。该加购 **不是** `FEATURE_CATALOG` key，**不得**经 `isEntitled` 互覆盖放行。
+
 ### 本表档位取值
 
 | 取值 | 含义 |
@@ -39,6 +42,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | `free` | 免费；不得付费墙 |
 | `tip-only` | A 轨；打赏相关，**非**内容解锁档 |
 | `lifetime∪subscription` | B 轨进阶；买断或订阅同等访问 |
+| `lifetime-addon` | Sanctuary Lifetime 持有者一次性 DLC；**不**走 `isEntitled` 互覆盖 |
 
 若 catalog 字面 `requiredTier: 'subscription'`，产品档位仍写 `lifetime∪subscription`，并在「Catalog / gate」注明字面值 + 全局互覆盖。
 
@@ -127,14 +131,16 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 占位色点）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
 | 用寅币换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
-### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）
+### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）+ Lifetime AI 加购
 
-> **方向锁（2026-08-20）**。Stripe 名 **Focus Tiger Pro** / **Focus Tiger Base**。权威：`task-desktop-on-device-companion.md`。**Checkout 未接线。**
+> **方向锁（2026-08-20）**。Stripe 名 **Focus Tiger Pro** / **Focus Tiger Base**。Lifetime 加购 SKU **`companion.addon.lifetime`**。权威：`task-desktop-on-device-companion.md`。**Checkout 均未接线。**  
+> **谁走哪条**：已买 Sanctuary Lifetime → 一次性 **`companion.addon.lifetime`**（US$29.99）；未买 Lifetime（含仅 Membership / Base）→ **Pro US$12.99/月**（含 B 轨 + 本地智能体）。两条路径都仍受 Electron + 宽屏 + 非低配使用门槛约束。
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | Focus Tiger Base（应用内 Yin Membership） | `lifetime∪subscription` | Stripe **US$6.99/月** | 现货 `STRIPE_MEMBERSHIP_PRICE_ID` | B 轨订阅；**不含**本地智能体 | **部分接线** | Dashboard 已改名 Base；应用内文案未改 |
-| Focus Tiger Pro 订阅 | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`** | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成 | **Price ID 已记文档**；**未接线** | L1 入口未开。Support 现货仍三卡。买可走 Web（L1 后）；用模型仍仅 Electron + 宽屏 + 非低配 |
+| Focus Tiger Pro 订阅 | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**，非待再议数字） | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成；**给非 Lifetime 用户** | **Price ID 已记文档**；**未接线** | L1 入口未开。Support 现货仍三卡。买可走 Web（L1 后）；用模型仍仅 Electron + 宽屏 + 非低配 |
+| AI Companion Add-on（Lifetime DLC） | `lifetime-addon` | 政策价 **US$29.99 一次**；SKU **`companion.addon.lifetime`**；与 Sanctuary 主 SKU `yin-sanctuary-lifetime` **分开** | **禁止**写入 `FEATURE_CATALOG`；**禁止** `isEntitled` 放行；Stripe Price ID **未建** | 已买 Lifetime 的用户一次性永久解锁桌面本地智能体；**不**按月 | SKU 常量 `companionAddonSku.js`；**Checkout 未接** | 方案 A（2026-08-20）。**不**拆 Ultimate Lifetime / 补差价（方案 B）。无第四卡。无 storage key。仅 Lifetime 持有者可被提供该加购 |
 
 ---
 
@@ -177,7 +183,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 15. **寅币（C · 练习货币）** — 方向锁 2026-08-20（清供 8 + 铁律）；L0–L3 已合。抽屉 = 清供器物卡。**禁止**用点满足 `isEntitled`。**禁止**改/盖序列帧。
-16. **Focus Tiger Pro** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。等 L1 入口。禁止现在改 Support 三卡。
+16. **Focus Tiger Pro** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。等 L1 入口。禁止现在改 Support 三卡。  
+17. **`companion.addon.lifetime`** — 政策 SKU + 单元隔离已锁；**Checkout / Stripe Price / storage 未接**。Lifetime 主 SKU 仍不含本地智能体。禁止把该 id 写入 `FEATURE_CATALOG`。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 
@@ -190,7 +197,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 1. 改「谁免费 / 谁进 B」→ 先 `MVP` / Brief，再改本表，最后改 `FEATURE_CATALOG` 与消费者。  
 2. 接线状态随合入 PR 更新「代码落地」「差距说明」；禁止只改代码不改表。  
 3. **本表已为方向锁 / SSOT**（2026-08-10 书面确认升格）；改档位或接线口径须同步本表，不得只改代码或旁注。  
-4. 价格、具体曲目/动画分层名单：**不**写入本表。
+4. 价格、具体曲目/动画分层名单：**不**写入本表价目列。A6 已拍板的 Stripe / 政策价写在「付费方式备注」，改价先改 Brief + 本表 A6，再改代码常量。
 
 ## 相关索引
 
@@ -200,3 +207,4 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 - `SHARED_RESOURCES.md`（entitlement / sanctuary / tip keys）  
 - `TEST_TRACKER.md`（RitualFlow / entitlement / Sanctuary / Daily Wisdom 行）  
 - `FOCUS_COINS.md`（寅币 / Yin's Collections）· `task-briefs/task-focus-coins.md`  
+- `task-briefs/task-desktop-on-device-companion.md` · `src/core/entitlement/companionAddonSku.js`（`companion.addon.lifetime`）  

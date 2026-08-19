@@ -99,6 +99,7 @@ cloud/
 ```bash
 # Membership / Focus Tiger Base recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
 # Focus Tiger Pro Price price_1U6EB1FuIhgJPGLiuciuX1to is reserved in docs — do not add checkout until L1
+# companion.addon.lifetime (US$29.99 one-time) has no Stripe Price yet — do not invent STRIPE_COMPANION_ADDON_PRICE_ID values
 npx wrangler kv namespace create MEMBERSHIP_KV
 npx wrangler kv namespace create MEMBERSHIP_KV --preview
 # 替换 wrangler.jsonc 占位 id
