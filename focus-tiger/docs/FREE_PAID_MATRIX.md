@@ -135,6 +135,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 |---|---|---|---|---|---|---|
 | Focus Tiger Base（应用内 Yin Membership） | `lifetime∪subscription` | Stripe **US$6.99/月** | 现货 `STRIPE_MEMBERSHIP_PRICE_ID` | B 轨订阅；**不含**本地智能体 | **部分接线** | Dashboard 已改名 Base；应用内文案未改 |
 | Focus Tiger Pro 订阅 | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`** | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成 | **Price ID 已记文档**；**未接线** | L1 入口未开。Support 现货仍三卡。买可走 Web（L1 后）；用模型仍仅 Electron + 宽屏 + 非低配 |
+| Sanctuary Lifetime 用户再要本地智能体 | `lifetime ∪ Pro` | Lifetime **已买断 B 轨**；另订 Pro 只付推理 | 现货无 Pro Checkout | **不必**再买 Base / Membership；**不要**白送智能体；**不要**另开 Lifetime 专属更便宜 AI 加购（除非书面改价） | **未接线** | 推理是持续成本。Safari / 无 Electron 壳 **没有**本地 AI |
 
 ---
 

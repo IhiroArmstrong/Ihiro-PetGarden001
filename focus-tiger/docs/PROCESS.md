@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · #358 清供 8 · #348 Breath 时长点 · #336 L0 已合；Focus Tiger Pro Price ID 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · Lifetime 要本地 AI → 另订 Pro（不必再买 Base）；测本地 AI 须 Electron / `desktop:dev`，Safari 5173 只测 Web；L1 / Pro Checkout 仍须口令
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -394,9 +394,9 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。桌面陪伴 **仍不开 L1、不接 Pro Checkout**。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。桌面陪伴 **仍不开 L1、不接 Pro Checkout**（须口令「开工桌面陪伴 L1」；入口未开 = 假收费）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
-- **陪伴 · 桌面端侧窄例外**：**L0 探针 #336 已合**。低配默认不出入口。不开 L1、不锁 0.6B。Stripe **Focus Tiger Pro** Price 已记；**Checkout 未接**。Pro 含 Base（B 轨）+ 本地智能体。
+- **陪伴 · 桌面端侧窄例外**：**L0 探针 #336 已合**。低配默认不出入口。不开 L1、不锁 0.6B。Stripe **Focus Tiger Pro** Price 已记；**Checkout 未接**。Pro 含 Base（B 轨）+ 本地智能体。Lifetime 用户要 AI → **另订 Pro**（付推理；不必再买 Base）。测本地 AI：**Electron 窗口**（`desktop:dev` / `desktop:companion-l0`），不能用 Safari 打开 QA 5173 代替。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
 - **云端品味层（2026-08-18 接线）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。生产 **Worker Redeploy 另须「部署」**。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
@@ -449,6 +449,8 @@
 - **EyeTracking**：已正式放弃（2026-07-19），原因见 `CORE_LOOP.md`；勿再开返工任务
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
+
+**最近跟进（2026-08-20 · Lifetime 要本地 AI / Electron 测法 / L1 口令）**：Sanctuary Lifetime 仍只买断 B 轨。若还要本地智能体：L1 入口开后另订 **Pro $12.99/月**（付持续推理）；B 轨继续由 Lifetime 覆盖；**不要**再买 Base、**不要**白送智能体。不带 Electron 壳 = **无法**用本地 AI（`node-llama-cpp` 只在主进程；Safari / PWA / 手机禁止）。固定 QA 树 + Safari 5173 **继续**测 Web 关单；测本地 AI 须 `desktop:dev` 弹出的桌面窗（可占用同一 5173 当渲染页，但不要用 Safari 连）。**不开 L1、不接 Pro Checkout**，除非口令「开工桌面陪伴 L1」。权威：`task-desktop-on-device-companion.md`。
 
 **最近跟进（2026-08-20 · Focus Tiger Pro Price）**：Dashboard 已有 **Focus Tiger Pro** `$12.99/月`（`price_1U6EB1FuIhgJPGLiuciuX1to`）与改名后的 **Focus Tiger Base** `$6.99/月`。**现在只记 Price ID，不接 Checkout / 第四卡**（L1 入口未开）。Pro **包含** Base 那套 B 轨 + 本地智能体。Safari 测付款可以；本地模型测试/入口仍是 Electron。权威：`task-desktop-on-device-companion.md`。
 
