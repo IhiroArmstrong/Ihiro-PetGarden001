@@ -11,6 +11,9 @@
  * - `persistent` → claim once via ownership; later access ignores subscription expiry
  * - Global unlock rule: lifetime ∪ subscription **mutually** cover any paid
  *   `requiredTier` (no per-key exceptions; free stays free)
+ * - Desktop local companion is **not** a catalog key. Lifetime add-on SKU
+ *   `companion.addon.lifetime` lives in `companionAddonSku.js`. Do **not** add
+ *   it here — the union would grant companion without the DLC / Pro.
  *
  * @see docs/MVP_PRODUCT_DEFINITION.md commercial red lines
  */

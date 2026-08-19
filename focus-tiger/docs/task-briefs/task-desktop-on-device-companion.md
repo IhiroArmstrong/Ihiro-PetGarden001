@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合**。**不开 L1**（须口令）。Stripe Pro Price 已记；**Checkout 未接**。Pro 含 Base + 本地智能体。Lifetime 用户要 AI → 另订 Pro（付推理；不必再买 Base）。**用户书面认同**四条：不白嫖智能体、非 Electron 无本地 AI、测须 `desktop:dev`、Checkout 须 L1 口令。  
+> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合 `develop`**。**不开 L1**（须口令「开工桌面陪伴 L1」）。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` **已记**；**Checkout / 第四卡未接**。Pro 含 Base + 本地智能体（**非 Lifetime**）。**Lifetime 用户**走一次性加购 SKU **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe`；**不**进 `isEntitled`）。测本地 AI 须 Electron / `desktop:dev`。
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -134,13 +134,14 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 - **Stripe（2026-08-20 用户书面）**：Dashboard 已有
   - **Focus Tiger Base** · US$6.99/月（现货 Membership Checkout 继续走 `STRIPE_MEMBERSHIP_PRICE_ID`；应用内文案仍可写 Yin Membership，改 UI 另开）；
   - **Focus Tiger Pro** · US$12.99/月 · Price ID **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已记入 `ENV_CONFIG` / `cloud/.env.example`；未进 Checkout 路由、未进 wrangler `vars`、未改三卡**）。
-- **已拍板 · 档位关系（纠正 08-19 晚「互不含」）**：Pro **包含** Base 那套 B 轨（仪式 / 深库 / 节日主题 / 尊贵章）**加上**桌面本地智能体。Base / Membership **不含**本地智能体。Sanctuary Lifetime 仍只覆盖 B 轨、**不含**本地智能体（推理是持续成本）。禁止再让用户付 $12.99 还不含 $6.99 已买得的进阶内容。
-- **Lifetime 用户若还要本地智能体（2026-08-20）**：B 轨已经买断，**不必再买 Base**。L1 入口开放后，再订 **Focus Tiger Pro US$12.99/月**——付的是持续推理成本；B 轨继续由 Lifetime 覆盖（`lifetime ∪ Pro`）。**不要**另开「Lifetime 专属更便宜 AI 加购」除非书面改价。**不要**让 Lifetime 免费送本地智能体。
+- **已拍板 · 档位关系（纠正 08-19 晚「互不含」）**：Pro **包含** Base 那套 B 轨（仪式 / 深库 / 节日主题 / 尊贵章）**加上**桌面本地智能体。Base / Membership **不含**本地智能体。Sanctuary Lifetime 仍只覆盖 B 轨、**不含**本地智能体。
+- **已拍板 · Lifetime 加购（2026-08-20 · 方案 A）**：已买 Sanctuary Lifetime 若还要本地智能体，走一次性 **AI Companion Add-on** SKU **`companion.addon.lifetime`**（**US$29.99** 买断，**不**订阅）。与 Lifetime 主 SKU `yin-sanctuary-lifetime` **分开**；**禁止**写入 `FEATURE_CATALOG` / 经 `isEntitled` 互覆盖放行（常量 `src/core/entitlement/companionAddonSku.js`）。**不必**再买 Base。**不**采用 Ultimate Lifetime $119.99 + 补差价（方案 B）。Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记（Dashboard 产品名 **Focus Tiger: AI Companion Add-on**）；Checkout **未接**；现货仍三卡。**禁止**把该 ID 写入 `wrangler.jsonc` `vars` 当真接线。此书面改价**取代**同日稍早 #359「另订 Pro / 不要开加购」。
+- **$12.99/月核实**：Focus Tiger Pro **US$12.99/月** 已于 2026-08-20 用 Dashboard Price **`price_1U6EB1FuIhgJPGLiuciuX1to`** 锁定；该路径给**非 Lifetime**（含仅 Membership / Base）用户。禁止再让用户付 $12.99 还不含 $6.99 已买得的进阶内容。
 - **谁能买 vs 谁能用（纠正「只有 Electron 才能见第四卡」）**：
   - **L0 / 本地模型测试本来就是 Electron 前提**：`npm run desktop:dev`、`desktop:companion-l0`。Safari `?product=1` **从未**加载 llama；那是 Web 产品壳（付费、Idle、内存说明不应出现）。
-  - **L1 之后买 Pro**：Checkout 可以走 **Web / Safari**（与现货 Membership 同一套支付云），方便你继续用 Safari 测付款。
-  - **L1 之后用本地智能体**：仍只 **Electron + 宽屏 + 非低配**。Web / 窄屏 / ≤8GB **没有生成入口**。低配若已购 Pro：B 轨照常可用，入口仍隐藏。
-  - **现在**：Support **仍只三卡**；不接 Pro Checkout。
+  - **L1 之后买 Pro / Lifetime 加购**：Checkout 可以走 **Web / Safari**（与现货 Membership 同一套支付云），方便你继续用 Safari 测付款。
+  - **L1 之后用本地智能体**：仍只 **Electron + 宽屏 + 非低配**。Web / 窄屏 / ≤8GB **没有生成入口**。低配若已购 Pro 或加购：B 轨照常可用，入口仍隐藏。
+  - **现在**：Support **仍只三卡**；不接 Pro / 加购 Checkout。
 - 说明文案（英文默认）仍落在 Electron **安装 README**、点 **?** 的简介卡、以及 **Support Yin** 模态底部；Web / 手机 Safari **不出现**该内存块。
 
 ### 为什么必须 Electron（Web / Safari 没有本地 AI）

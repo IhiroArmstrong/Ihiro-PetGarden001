@@ -24,6 +24,7 @@
  *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID (one-time)
  *   Yin Membership / Focus Tiger Base → STRIPE_MEMBERSHIP_PRICE_ID (recurring)
  *   Focus Tiger Pro → STRIPE_PRO_PRICE_ID (recurring; Price price_1U6EB1FuIhgJPGLiuciuX1to; reserved — no checkout route yet)
+ *   Lifetime AI add-on → STRIPE_COMPANION_ADDON_PRICE_ID (one-time; SKU companion.addon.lifetime; Price price_1U6GnXFuIhgJPGLiNlXs0IKe; reserved — no checkout)
  *
  * MEMBERSHIP_KV (created 2026-08-10):
  *   id         = 331994910f30411393e241c1252d85e6
