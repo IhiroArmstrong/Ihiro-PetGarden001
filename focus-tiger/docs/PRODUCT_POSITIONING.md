@@ -304,6 +304,7 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 - 不把 Focus Confidence 显示为真假专注评分；
 - 老虎本体固有色恒定，金色进度由光环、环境反射与粒子表达；
 - 当前主线为 2D PNG 序列，3D 资产保留给奖励柜；
+- **既有序列帧不可改、不可盖**（2026-08-20）：禁止改已入库 PNG；禁止为结缘物在 `#sprite-stage` 叠滤镜/器物；结缘物只走周边 DOM 或珍藏卡面（见 `PRINCIPLES.md`）；既有专注金光叠层不在此禁；
 - 当前阶段仍是单一角色与默认装扮，不提供换装 UI；
 - 一次只做一个任务，长期愿景不得自动进入当前开发范围。
 
