@@ -7,7 +7,8 @@
  * Yin's Collections quiet catalog — same glass family as Journey log (not Support pay).
  * Coin marks are UI chrome only (header + balance/price); SKU thumbs stay
  * colored dots until curio stills exist. Never composite onto sprite frames.
- * Shop SKUs only (no retired overlays). DOM id `#yin-coin-panel`.
+ * Shop SKUs only (no retired overlays). Wave play is a footer control, not a shop row.
+ * DOM id `#yin-coin-panel`.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -39,6 +40,7 @@ export class FocusCoinsPanelUI {
    * @param {() => object} [handlers.getContext]
    * @param {(skuId: string) => { ok?: boolean, reason?: string }} [handlers.redeem]
    * @param {(titleId: string) => { ok?: boolean }} [handlers.equipTitle]
+   * @param {() => { ok?: boolean, reason?: string }} [handlers.playWave]
    * @param {(message: string) => void} [handlers.onMessage]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
@@ -115,6 +117,12 @@ export class FocusCoinsPanelUI {
     this.closeBtn.dataset.testid = 'yin-coin-close';
     this.closeBtn.addEventListener('click', () => this.close());
 
+    this.waveBtn = document.createElement('button');
+    this.waveBtn.type = 'button';
+    this.waveBtn.className = 'yin-coin-panel__btn yin-coin-panel__btn--ghost';
+    this.waveBtn.dataset.testid = 'yin-coin-wave-play';
+    this.waveBtn.addEventListener('click', () => this._onPlayWave());
+
     this.ceremonial = document.createElement('div');
     this.ceremonial.className = 'yin-coin-panel__ceremonial';
     this.ceremonial.hidden = true;
@@ -135,7 +143,7 @@ export class FocusCoinsPanelUI {
     this.ceremonialText.className = 'yin-coin-panel__ceremonial-text';
     this.ceremonial.append(this.ceremonialMark, this.ceremonialText);
 
-    this.actions.append(this.closeBtn);
+    this.actions.append(this.waveBtn, this.closeBtn);
     this.root.append(
       this.headingEl,
       this.blurbEl,
@@ -222,6 +230,7 @@ export class FocusCoinsPanelUI {
       String(ctx.balance ?? 0)
     );
     this.closeBtn.textContent = t('YIN_COIN_CLOSE');
+    this.waveBtn.textContent = t('YIN_COIN_WAVE_PLAY');
     this._renderRows(listFocusCoinSurfaceRows(ctx));
   }
 
@@ -316,6 +325,12 @@ export class FocusCoinsPanelUI {
       li.append(thumb, body);
       this.listEl.append(li);
     }
+  }
+
+  _onPlayWave() {
+    const result = this.handlers.playWave?.() ?? { ok: false, reason: 'busy' };
+    if (result?.ok) return;
+    this.handlers.onMessage?.(t('YIN_COIN_WAVE_BUSY'));
   }
 
   /**
@@ -519,7 +534,8 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         gap: 8px;
       }
       .yin-coin-panel__btn {
