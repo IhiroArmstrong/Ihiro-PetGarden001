@@ -171,7 +171,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
   → 3 仅 Electron **且宽屏**：自由倾诉短生成（约束：短句、承接不建议、不诊断、不呼吸指令、超长截断）
 ```
 
-技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** L1 开工前 **不上产品入口**。L2 内部多轮对话须攒跑偏案例调 prompt，**禁止** L0/L1 一过就给真实用户。**付费（2026-08-20）**：**Focus Tiger Pro US$12.99/月** 含 Base（B 轨）+ 本地智能体（非 Lifetime 路径；Stripe Price 已记、Checkout 未接）。**已买 Sanctuary Lifetime** 走一次性加购 **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接；不进 `isEntitled`）。本地模型仍只 Electron；L1 后付款可走 Web。
+技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** L1 开工前 **不上产品入口**。L2 内部多轮对话须攒跑偏案例调 prompt，**禁止** L0/L1 一过就给真实用户。**付费（2026-08-20）**：**Focus Tiger Pro US$12.99/月** 含 Base（B 轨）+ 本地智能体（非 Lifetime 路径；Stripe Price 已记、Checkout 未接）。**已买 Sanctuary Lifetime** 走一次性加购 **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接；不进 `isEntitled`）。本地模型仍只 Electron（无壳 = 无本地 AI）；L1 后付款可走 Web。
 
 详规：Web 检索 `task-briefs/task-confide-to-yin-v1.md`；桌面例外 `task-briefs/task-desktop-on-device-companion.md`；种子稿 `confide-corpus-seed.md`。**本拍板不等于已上线功能。**
 

@@ -242,7 +242,7 @@ Focus Tiger 的小老虎是完整、安全的正念伙伴，不会因用户离�
 > **两者都要，不二选一。** A = 利他感激（不解锁）；B = 进阶内容解锁（自我提升/审美）。权威细则：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
 >
 > **心智模型（硬）**：仍称 **双轨**——Tea 与进阶解锁是两条轨道，**不是**「三套不同内容层级」。**Sanctuary Lifetime** 与 **Yin Membership** 解锁**同一层**进阶内容（一次性 vs 订阅），**lifetime ∪ subscription 互相覆盖**。  
-> **2026-08-20 补（Checkout 未接）**：**Focus Tiger Pro US$12.99/月**（Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to`，**已锁定**）是 **Focus Tiger Base（$6.99 / 应用内 Yin Membership）的升级档**——含同一套 B 轨，外加合格 Electron 上的本地智能体。Lifetime 仍只覆盖 B 轨、不含本地智能体。已买 Lifetime 若要本地智能体：一次性加购 **`companion.addon.lifetime`**（**US$29.99** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；**不**走订阅；**不**进 `isEntitled`）。仅当 L1 **正常开放入口** 后才接 Checkout。现货 Support 仍只三卡。详规：`task-desktop-on-device-companion.md`。
+> **2026-08-20 补（Checkout 未接）**：**Focus Tiger Pro US$12.99/月**（Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to`，**已锁定**）是 **Focus Tiger Base（$6.99 / 应用内 Yin Membership）的升级档**——含同一套 B 轨，外加合格 Electron 上的本地智能体。Lifetime 仍只覆盖 B 轨、不含本地智能体。已买 Lifetime 若要本地智能体：一次性加购 **`companion.addon.lifetime`**（**US$29.99** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；**不**走订阅；**不必**再买 Base；**不**进 `isEntitled`）。仅当 L1 **正常开放入口** 后才接 Checkout。现货 Support 仍只三卡。无 Electron 壳则无法用本地 AI。详规：`task-desktop-on-device-companion.md`。
 
 | 轨 | 对外名 | 心理触发 | 产品角色 | v1 形态（方向） |
 |---|---|---|---|---|

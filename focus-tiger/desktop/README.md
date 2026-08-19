@@ -19,3 +19,27 @@ A small local model may later sit behind the wide Idle ⋯ menu on Electron only
 **Memory note (Mac and Windows):** computers with **8 GB of RAM or less** can see heavy memory pressure if that companion loads. Focus Tiger **hides the entry by default** on those machines. We do not recommend turning it on there.
 
 This note is also in the desktop app: tap **?** and open **Support Yin**. Safari / phone browsers do not show it.
+
+## How to test the local model (not Safari)
+
+Safari on the QA tree (`http://127.0.0.1:5173/?product=1`) is the **Web** product. It never loads llama. Use an **Electron window**.
+
+Do not run another Vite on port 5173 at the same time (`desktop:dev` starts its own and waits for that port).
+
+From the develop QA worktree on the Mac:
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
+npm --prefix desktop install
+npm run desktop:dev
+```
+
+Probe only (no product menu; quits when done):
+
+```text
+npm run desktop:companion-l0
+```
+
+Skip the probe window: `FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`.
+
+Stop Electron when finished (that also stops the Vite it started). For Web QA in Safari, start `npm run dev:qa` again. Full policy: `docs/task-briefs/task-desktop-on-device-companion.md`.
