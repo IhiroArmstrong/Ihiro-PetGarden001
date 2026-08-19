@@ -1,7 +1,7 @@
 # Task Brief · 技术方向纪要（v1 壳 / 商业化 / 健康同步）
 
 > **状态（2026-08-10 修订）**：双轨仍为 **A Tip/Tea（不解锁）+ B 进阶内容解锁**；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅并存、互覆盖。founder → `feature/yin-tip-jar`；§2.6 **Gate 零耦合**（tip ↔ 解锁）为 Code Review 必检条款。  
-> **触发**：推翻「v1 仅 Lifetime / 无订阅」；订阅纳入 v1，仍维持双轨心智（非「三档并存」）。  
+> **触发**：推翻「v1 仅 Lifetime / 无订阅」；订阅纳入 v1，仍维持双轨心智（非「三套不同内容层级」）。  
 > **权威**：本文件 + `PROCESS.md` + `MVP_PRODUCT_DEFINITION.md` §五。
 
 ---
@@ -14,10 +14,11 @@
 | 手机原生壳 | v1 **不实现**；未来默认 **Capacitor** |
 | 桌面壳 | **已拍板 Electron**（2026-08-16；Mac DMG / electron-builder）。Tauri 日后备选；PWA 非电脑版终局。见 `PROCESS.md` + `task-desktop-shell-electron.md` |
 | 健康同步 | **非 v1**；**禁止**写入 B 付费权益 |
-| **商业双轨（硬）** | **A** Buy Yin a Tea（不解锁）+ **B** 进阶内容解锁。**两者都要**，不二选一。**不是**「三档并存」 |
+| **商业双轨（硬）** | **A** Buy Yin a Tea（不解锁）+ **B** 进阶内容解锁。**两者都要**，不二选一。**不是**「三套不同内容层级」 |
 | **A** | 打赏；情绪反馈 + 可选徽章；**不解锁**任何内容 |
 | **B** | 深度美学/音效/进阶仪式等解锁；真 entitlement |
 | **B 付费方式（v1 硬）** | **Sanctuary Lifetime** 一次买断 **∪** **Yin Membership** 订阅；二者解锁**同一套**进阶内容；**lifetime ∪ subscription 互相覆盖** |
+| **桌面 Focus-tiger-Pro（已拍板 · 未接线）** | L1 **入口正常开放后**：独立 **US$12.99/月** 运行时 SKU。**不是** B 第三套内容；**不**被 Membership/Lifetime 覆盖。现货 Support 仍三卡。权威：`task-desktop-on-device-companion.md` |
 | **B 权益（v1）** | ① 深度音效全库 ② 尊贵徽章/身份标识 ③ 进阶仪式等（catalog `requiredTier: 'subscription'` 为正式产品决定）。**不再**含 `emotion.premium.trigger`（2026-08-19 删除；结缘动作属 C 轨 Collections） |
 | **订阅到期降级（v1 硬）** | 已生成内容（历史、已解锁纪念物、已播放仪式）**永久可看**；到期只停「新内容持续解锁」与「进阶功能继续使用」 |
 | **A→B 24h 体验卡** | **非 v1**；阶段 2 候选（见 §2.7） |
@@ -383,6 +384,8 @@ UI:   SanctuaryUnlockUI.js
 1. A/B **定价数字**（仍不锁）  
 2. 深度音效 / 高级动画 **分层名单**  
 3. 可选 PWA 是否立项  
+
+**已拍板（2026-08-19）**：桌面本地智能体在 L1 **正常开放入口之后** 另开 **Focus-tiger-Pro US$12.99/月**（运行时成本）。禁止现在接线 / 改三卡；禁止低配冒险覆盖隐藏入口；Membership 不含该能力。权威：`task-desktop-on-device-companion.md`。
 
 **已拍板（2026-08-10）**：推翻「v1 仅 Lifetime / 无订阅」；**双轨**维持（A 不解锁 + B 进阶解锁）；B 下 **Lifetime ∪ Yin Membership** 互覆盖；catalog `subscription` 档为正式产品决定；到期降级 = 已生成永久可看、只停新解锁与进阶使用。A→B 24h 体验卡仍非 v1。
 

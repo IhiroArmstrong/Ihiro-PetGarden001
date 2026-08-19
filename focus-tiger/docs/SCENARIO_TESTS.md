@@ -321,7 +321,7 @@
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
 > **Electron 步骤 A**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走；失败复用现有卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC`），不为壳另做 UI。付完回 App 走 Restore / OTP。Web 仍可 `location.assign`。  
-> **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。
+> **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。**Focus-tiger-Pro US$12.99/月第四卡**：仅 L1 入口正常开放后、合格 Electron 机型才允许出现；**当前验收仍只测三卡**。Membership 不含本地智能体。
 
 ### Q1 · Support Modal（统一入口）
 

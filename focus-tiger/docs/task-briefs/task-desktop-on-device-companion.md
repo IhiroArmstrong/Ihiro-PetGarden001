@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-19）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针已在 **Apple M5 16GB** 过数值闸；Focusing hitch **无卡顿**。**8GB 数据：用户书面豁免**（资料估算；低配默认不出入口）。**可合 PR #336**。**不锁** 0.6B、**不开** L1。仍无产品入口。  
+> **状态（2026-08-19）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合 `develop`**（M5 过闸；Focusing hitch 无卡顿；8GB 书面豁免）。**不锁** 0.6B、**不开** L1、仍无产品入口。**未来 SKU（已拍板、未接线）**：入口正常开放后，合格机型可买 Focus-tiger-Pro **US$12.99/月**（本地智能体运行时）；现货 Support 仍只三卡。  
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -123,12 +123,18 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 1. 产品窗（**不要**带 `FT_COMPANION_L0`）：`npm run desktop:dev` → Sit → Focusing，看阿寅呼吸。
 2. 另开终端、Focusing 已开始后：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`（子进程加载 ≈0.9 GB 再卸载，**本命令不开窗**）。盯的是终端 1 那个产品窗：加载中 / **dispose 那几百毫秒** 呼吸有没有可见顿挫。
 
-### 低配购买（2026-08-19）
+### 低配购买 vs Focus-tiger-Pro（2026-08-19）
 
 - **Windows 与 Mac 同样适用** 8GB 门槛（Windows 8GB 往往更紧：无 Metal，llama.cpp 常走 CPU）。
-- 现有 Support 三卡（Tea / Yin Membership **US$6.99/月** / Sanctuary Lifetime）**不是**本地智能体 SKU。低配用户仍可买这些——买的是 B 轨仪式 / 深库音效，**不会**因此打开被隐藏的本地模型入口。
-- **禁止**另开 **US$12.99/月「带本地智能体的 Pro 陪伴版」** 让低配「知情后冒险购买、不能退款」。入口按设计隐藏时，再收一笔只为该能力的钱 = 假收费（`PRINCIPLES.md`）。用户也不能自行打开被隐藏的入口。
-- 说明文案（英文默认）落在 Electron **安装 README**、点 **?** 的简介卡、以及 **Support Yin** 模态底部；Web / 手机 Safari **不出现**。
+- 现货 Support 三卡（Tea **US$4.99** / Yin Membership **US$6.99/月** / Sanctuary Lifetime **US$89.99**）**不是**本地智能体 SKU。低配用户仍可买这些——买的是 B 轨仪式 / 深库音效，**不会**因此打开被隐藏的本地模型入口。
+- **仍禁止（假收费 / 低配覆盖）**：
+  - L1 入口未开时卖「本地智能体版」；
+  - 让低配「知情后冒险购买、不能退款」来覆盖隐藏入口；
+  - 买了 Pro 仍强行打开被隐藏入口。
+- **已拍板（仅当 L1 正常开放入口之后）**：另开一档 **Focus-tiger-Pro · US$12.99/月**，覆盖本地智能体的运行成本（模型下载/推理），**不是** B 轨第三套内容。Stripe Dashboard **可以先建** Product / Price；**本仓现在不接线、不改三卡 UI、不把 Price ID 写进代码**，等 L1 口令。
+  - **谁能看见/能买**：仅 Electron + 宽屏 + **非低配**（总内存 >8.5 GiB）。Web / Safari / 窄屏 / ≤8GB **不出现**该档。
+  - **与 Membership 互不含**：US$6.99 Membership **不含**本地智能体；Pro **不含** B 轨仪式 / 深库 / 节日主题。两笔可并存，**禁止** `lifetime ∪ subscription` 自动覆盖 Pro。
+  - 说明文案（英文默认）仍落在 Electron **安装 README**、点 **?** 的简介卡、以及 **Support Yin** 模态底部；Web / 手机 Safari **不出现**。
 
 ---
 
