@@ -19,6 +19,17 @@ describe('desktopShell', () => {
     assert.equal(isDesktopShellRuntime({}), false);
   });
 
+  it('companion key is optional and ignored when absent', () => {
+    assert.equal(
+      getDesktopShellBridge({ desktopShell: { isDesktop: true } })?.companion,
+      undefined
+    );
+    const withCompanion = getDesktopShellBridge({
+      desktopShell: { isDesktop: true, companion: { ensureReady() {} } }
+    });
+    assert.equal(typeof withCompanion.companion.ensureReady, 'function');
+  });
+
   it('isDesktopShellRuntime true only with isDesktop flag', () => {
     assert.equal(
       isDesktopShellRuntime({ desktopShell: { isDesktop: true } }),

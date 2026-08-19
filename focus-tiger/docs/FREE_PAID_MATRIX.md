@@ -139,7 +139,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | Focus Tiger Base（应用内 Yin Membership） | `lifetime∪subscription` | Stripe **US$6.99/月** | 现货 `STRIPE_MEMBERSHIP_PRICE_ID` | B 轨订阅；**不含**本地智能体 | **部分接线** | Dashboard 已改名 Base；应用内文案未改 |
-| Focus Tiger Pro 订阅 | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**，非待再议数字） | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成；**给非 Lifetime 用户** | **Price ID 已记文档**；**未接线** | L1 入口未开。Support 现货仍三卡。买可走 Web（L1 后）；用模型仍仅 Electron + 宽屏 + 非低配。Safari / 无 Electron 壳 **没有**本地 AI |
+| Focus Tiger Pro 订阅 | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**，非待再议数字） | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成；**给非 Lifetime 用户** | **Price ID 已记文档**；**未接线** | L1 面板已开，Share 仍检索。Support 现货仍三卡。买可走 Web（能聊后再接）；用模型仍仅 Electron + 宽屏 + 非低配。Safari / 无 Electron 壳 **没有**本地 AI |
 | AI Companion Add-on（Lifetime DLC） | `lifetime-addon` | **US$29.99 一次** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；SKU **`companion.addon.lifetime`**；与 Sanctuary 主 SKU `yin-sanctuary-lifetime` **分开** | **禁止**写入 `FEATURE_CATALOG`；**禁止** `isEntitled` 放行；**无** Checkout 路由 | 已买 Lifetime 的用户一次性永久解锁桌面本地智能体；**不**按月；**不必**再买 Base | SKU 常量 `companionAddonSku.js`；Price ID **已记文档**；**Checkout 未接** | 方案 A（2026-08-20 书面改价，取代 #359「另订 Pro / 不要开加购」）。**不**拆 Ultimate Lifetime / 补差价（方案 B）。无第四卡。无 storage key。仅 Lifetime 持有者可被提供该加购 |
 
 ---
@@ -183,7 +183,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 15. **寅币（C · 练习货币）** — 方向锁 2026-08-20（清供 8 + 铁律）；L0–L3 已合。抽屉 = 清供器物卡。**禁止**用点满足 `isEntitled`。**禁止**改/盖序列帧。
-16. **Focus Tiger Pro** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。等 L1 入口。禁止现在改 Support 三卡。  
+16. **Focus Tiger Pro** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。L1 面板已开，Share 仍检索。禁止现在改 Support 三卡。  
 17. **`companion.addon.lifetime`** — 政策 SKU + Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记；**Checkout / storage 未接**。Lifetime 主 SKU 仍不含本地智能体。禁止把该 id 写入 `FEATURE_CATALOG`。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。

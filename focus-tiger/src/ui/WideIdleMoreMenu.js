@@ -13,6 +13,10 @@ import {
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import {
+  canRegisterDesktopCompanionGeneration,
+  hasDesktopCompanionBridge
+} from '../core/desktopCompanionGate.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v5';
 const WIDE_MQ = '(min-width: 480px)';
@@ -570,7 +574,11 @@ export class WideIdleMoreMenu {
       newsletterSubmitted: hasSubmittedNewsletter(),
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
-      ).unlocked
+      ).unlocked,
+      companionGeneration: canRegisterDesktopCompanionGeneration({
+        hasBridge: hasDesktopCompanionBridge(),
+        widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+      })
     });
 
     this.listEl.innerHTML = '';

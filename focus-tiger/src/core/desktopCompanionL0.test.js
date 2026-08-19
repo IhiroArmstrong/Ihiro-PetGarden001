@@ -133,7 +133,7 @@ describe('desktop companion L0 isolation', () => {
     assert.equal(product.devDependencies?.['node-llama-cpp'], undefined);
   });
 
-  it('keeps llama as a desktop-only dependency and out of the Step A DMG file list', () => {
+  it('packs L1 companion runtime JS, not the GGUF, in the desktop file list', () => {
     const desktop = JSON.parse(
       readFileSync(join(focusTigerRoot, 'desktop/package.json'), 'utf8')
     );
@@ -142,14 +142,16 @@ describe('desktop companion L0 isolation', () => {
     const files = desktop.build.files;
     assert.equal(
       files.some((row) => typeof row === 'string' && row.includes('companion')),
-      false
+      true
     );
+    assert.equal(JSON.stringify(files).toLowerCase().includes('gguf'), false);
   });
 
-  it('does not expose a companion API on preload', () => {
+  it('gates the L1 companion preload key behind desktop:companion-allowed', () => {
     const preload = readFileSync(join(focusTigerRoot, 'desktop/preload.js'), 'utf8');
-    assert.equal(/companion/i.test(preload), false);
+    assert.match(preload, /desktop:companion-allowed/);
     assert.match(preload, /openExternal/);
+    assert.equal(preload.includes('desktop:companion-generate'), false);
   });
 
   it('gates the probe behind FT_COMPANION_L0 in main, then starts Step B tray', () => {
@@ -169,7 +171,7 @@ describe('desktop companion L0 isolation', () => {
     for (const file of files) {
       const src = readFileSync(file, 'utf8');
       assert.equal(
-        src.includes('desktop/companion'),
+        /(?:from|import)\s*\(?\s*['"][^'"]*desktop\/companion/.test(src),
         false,
         `${file} must not import desktop/companion`
       );

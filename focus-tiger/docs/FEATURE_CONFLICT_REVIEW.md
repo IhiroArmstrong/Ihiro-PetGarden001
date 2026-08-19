@@ -146,6 +146,7 @@ Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（*
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-20 | L1 口令「开工桌面陪伴 L1」：宽屏 Confide 同一入口 + 下载层；仍不上 L2 生成、不接第四卡。对照 Confide / 场景 Q / Whisper：无新菜单、无假收费卡、仪式文案不生成 |
 | 2026-08-20 | Lifetime 要本地 AI：同日稍后书面改价为一次性 `companion.addon.lifetime` US$29.99（取代稍早「另订 Pro」）。无 Electron 壳则无本地 AI；QA Safari 5173 ≠ 本地 AI 测试。Pro 含 Base（B 轨）+ 本地智能体（非 Lifetime）。Safari 可测付款、模型仍 Electron；Price ID 已记、Checkout 未接。08-19 晚「互不含 / 只有 Electron 能买」废止 |
 | 2026-08-18 | 正面案例：检索不生成 vs 桌面陪伴——窄例外拍板后再改定位稿；禁止把批准扩大到 Web / 仪式文案。同日补：本地智能体仅宽屏，与原则 A 故意不对等 |
 | 2026-08-17 | 正面案例：托盘 vs 旧 Brief——先摆冲突再等拍板；分析师分层后改文档。同日第二份：两步执行（窗口先、托盘+走神后），禁止绑成一次验收 |

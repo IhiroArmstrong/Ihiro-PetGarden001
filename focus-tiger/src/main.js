@@ -168,6 +168,11 @@ import {
 import { AttentionSignals } from './input/AttentionSignals.js';
 import { bindDesktopShellAttention } from './core/desktopShell.js';
 import {
+  canRegisterDesktopCompanionGeneration,
+  getDesktopCompanionBridge,
+  hasDesktopCompanionBridge
+} from './core/desktopCompanionGate.js';
+import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
 } from './ui/MindfulAcknowledgeToast.js';
@@ -1011,7 +1016,11 @@ async function init() {
       if (busy) return false;
       return canOpenConfidePanel({
         search: location.search,
-        stage: 'idle'
+        stage: 'idle',
+        companionGeneration: canRegisterDesktopCompanionGeneration({
+          hasBridge: hasDesktopCompanionBridge(),
+          widthPx: window.innerWidth
+        })
       });
     },
     onOpen: () => {
@@ -1026,6 +1035,7 @@ async function init() {
     }
   });
   window.__confideToYin = confideToYinUI;
+  confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
@@ -3532,6 +3542,13 @@ async function init() {
   }
 
   stateManager.onChange(() => {
+    const companion = getDesktopCompanionBridge();
+    if (companion && typeof companion.setFocusing === 'function') {
+      void companion.setFocusing(stateManager.state === STATES.FOCUSING);
+    }
+    if (stateManager.state === STATES.FOCUSING) {
+      confideToYinUI.close();
+    }
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
       window.setTimeout(() => {

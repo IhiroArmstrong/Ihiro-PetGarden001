@@ -14,6 +14,8 @@
 
 **Electron 步骤 A（2026-08-17）**：渲染层仍用本表同一套 keys；生产 origin 是 `focus-tiger://app`，与 Safari `http://127.0.0.1:5173` **不共享**存储（换壳等于空库，属预期）。壳内不另开 native keychain。步骤 A **无托盘**，不新增壳专用存储键。
 
+**Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
+
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
