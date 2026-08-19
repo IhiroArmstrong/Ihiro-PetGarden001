@@ -58,7 +58,7 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · 会话交接规则入库 · #358 清供 8 · #348 Breath 时长点 · #336 L0 已合 · 品味层 **#349 已合**、生产 Worker **未**部署 · Focus Tiger Pro Price ID 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · #356 珍藏挥手点播 Play · 会话交接规则入库 · #358 清供 8 · #348 Breath 时长点 · #336 L0 已合 · 品味层 **#349 已合**、生产 Worker **未**部署 · Focus Tiger Pro Price ID 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
@@ -69,6 +69,7 @@
 - **寅币时长 chip 静默 hint（2026-08-18 拍板）**：Focus / Breath picker 下 `#focus-coins-duration-hint`（满 5 分钟、寅币、身份资源）。无 HUD、无 +N toast。`?focusCoins=0` 不出现。TRACKER 待人工。
 - **寅币 Breath 时长点（2026-08-18）**：Breath 坐满按 Stay 档发时长点（5 分=1）并保留每日微仪式 +1；Leave 仍 0。无常驻「攒币」HUD。TRACKER 待人工。
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
+- **寅币 · 珍藏挥手点播（2026-08-20）**：`#yin-coin-panel` 底 **请阿寅挥挥手**（不在清供 8 行）。Idle 点播已入库 `wave-hello`；Focusing / 庆祝 toast 不播。`welcomeBack` / 欢迎池仍停。TRACKER 待人工。
 
 - **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19 · #336 已合）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**。不锁 0.6B、不开 L1。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记入文档；**Checkout / 第四卡未接**。权威：`task-desktop-on-device-companion.md`。
 
@@ -396,7 +397,7 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。品味层 **#349 已合**；生产 overlay 另须「部署」。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`，本批抽屉不列挥手）；四页签壳后置。桌面陪伴 **仍不开 L1、不接 Pro Checkout**。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 已合 `origin/develop`。品味层 **#349 已合**；生产 overlay 另须「部署」。挥手点播 Play 在 #356。**下一步** 四页签珍藏壳。桌面陪伴 **仍不开 L1、不接 Pro Checkout**。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 探针 #336 已合**。低配默认不出入口。不开 L1、不锁 0.6B。Stripe **Focus Tiger Pro** Price 已记；**Checkout 未接**。Pro 含 Base（B 轨）+ 本地智能体。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
@@ -779,7 +780,8 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **花园**（莲花终身分钟）自动、不进店；**珍藏**兑清供器物卡（旧 8 id）。  
 - **铁律**：不改已有 PNG / 不往蒲团或莲花叠东西。  
 - Breath 坐满按 Stay 档发时长点；时长 chip 静默 hint。  
-- **下一步**：挥手点播接线；四页签珍藏壳。信件/小册后置。  
+- **下一步**：四页签珍藏壳。信件/小册后置。挥手点播 Play 已在 #356。  
+
 - **禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 
 ### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）

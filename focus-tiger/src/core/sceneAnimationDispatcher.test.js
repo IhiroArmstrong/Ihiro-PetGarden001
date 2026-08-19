@@ -116,6 +116,7 @@ test('WELCOME_POOL trial is magicBookReading + nodGreeting (wave out of cold-sta
   assert.equal(pickWeighted(WELCOME_POOL, () => 0), 'magicBookReading');
   assert.equal(pickWeighted(WELCOME_POOL, () => 0.99), 'nodGreeting');
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'welcomeBack'));
+  assert.ok(!WELCOME_POOL.some((e) => e.key === 'collectionsWaveHello'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'teaDrinking'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'yawnStretch'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'stretchReminder'));

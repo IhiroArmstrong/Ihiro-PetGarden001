@@ -548,6 +548,16 @@ export class EmotionController {
         }
       },
 
+      // Collections 挥手：珍藏面板 Play / `__focusCoins.playWave`。
+      // 抽屉仍不列 gesture.wave-hello。不复活 welcomeBack / 欢迎池 / 10min 自主挥手。
+      collectionsWaveHello: (options = {}) => {
+        this._playCompanionSequenceOnce('waveHello', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
       // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
       // 2026-08-05：冷启动回 Idle 改 ~1s CapCut（用户书面：硬切缺叠化）。
       magicBookReading: (options = {}) => {
@@ -1207,7 +1217,7 @@ export class EmotionController {
       earWiggleHeadTouch: 'ear-wiggle 摇耳摸头',
       riseStretchCasual: 'rise-stretch-casual Rise伸懒腰',
       blinkBreathe: 'blink-breathe 眨眼深呼吸',
-      waveHello: 'wave-hello 挥手(停接线·仅素材)',
+      waveHello: 'wave-hello 挥手(珍藏点播)',
       waveHelloWelcome: 'wave-hello 欢迎旧(停接线·仅素材)',
       waveHelloPingpong: 'wave-hello-pingpong(停接线·仅素材)',
       magicBookReading: 'magic-book-reading 魔法书',
@@ -1520,6 +1530,7 @@ export const EMOTION_KEYS = Object.freeze({
   MILESTONE_GLOW: EMOTIONS.milestoneGlow,
   SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
+  COLLECTIONS_WAVE_HELLO: 'collectionsWaveHello',
   MAGIC_BOOK_READING: 'magicBookReading',
   BOOK_READING: 'bookReading',
   PARROT_EAR_VISIT: 'parrotEarVisit',
