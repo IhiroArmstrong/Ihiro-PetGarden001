@@ -4,7 +4,7 @@
  */
 
 /**
- * 同坐点钱包持久化（L1 发点 / L2 兑换）。不写 entitlement、不进练习备份 6 key。
+ * 寅币钱包持久化（L1 发点 / L2 兑换）。不写 entitlement、不进练习备份 6 key。
  *
  * @see docs/FOCUS_COINS.md
  */

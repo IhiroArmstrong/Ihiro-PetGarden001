@@ -18,7 +18,7 @@
 | **A** | 打赏；情绪反馈 + 可选徽章；**不解锁**任何内容 |
 | **B** | 深度美学/音效/进阶仪式等解锁；真 entitlement |
 | **B 付费方式（v1 硬）** | **Sanctuary Lifetime** 一次买断 **∪** **Yin Membership** 订阅；二者解锁**同一套**进阶内容；**lifetime ∪ subscription 互相覆盖** |
-| **B 权益（v1）** | ① 深度音效全库 ② 高级情绪动画/场景（已划界、非核心） ③ 尊贵徽章/身份标识 ④ 进阶仪式等（catalog `requiredTier: 'subscription'` 为正式产品决定） |
+| **B 权益（v1）** | ① 深度音效全库 ② 尊贵徽章/身份标识 ③ 进阶仪式等（catalog `requiredTier: 'subscription'` 为正式产品决定）。**不再**含 `emotion.premium.trigger`（2026-08-19 删除；结缘动作属 C 轨 Collections） |
 | **订阅到期降级（v1 硬）** | 已生成内容（历史、已解锁纪念物、已播放仪式）**永久可看**；到期只停「新内容持续解锁」与「进阶功能继续使用」 |
 | **A→B 24h 体验卡** | **非 v1**；阶段 2 候选（见 §2.7） |
 | **解锁触发** | **禁止**连续/断签式解锁或惩罚；不留 `streak` 解锁接口空位 |
@@ -108,10 +108,9 @@
 #### B 权益清单（v1 · 内容面）
 
 1. **深度音效全库**（免费保留足够温暖的子集）  
-2. **高级情绪动画 / 场景**（已划界、**非核心**路径；名单另定）  
-3. **尊贵徽章 / 身份标识**  
-4. **进阶仪式等**（Morning / Emotional Reset / Work Transition 等；catalog 标 `subscription` 为正式产品决定）  
-5. **节日主题引擎（Seasonal Theme）**（2026-08-11 排期）：节日窗口内 App **内部**装饰/姿态/文案；**Sanctuary Lifetime ∪ Yin Membership** 解锁；catalog 建议 `theme.seasonal.access`（ongoing）。权威 Brief：`task-seasonal-theme-engine-v1.md`。**不**含主屏幕 PWA 图标远程更换。
+2. **尊贵徽章 / 身份标识**  
+3. **进阶仪式等**（Morning / Emotional Reset / Work Transition 等；catalog 标 `subscription` 为正式产品决定）  
+4. **节日主题引擎（Seasonal Theme）**（2026-08-11 排期）：节日窗口内 App **内部**装饰/姿态/文案；**Sanctuary Lifetime ∪ Yin Membership** 解锁；catalog 建议 `theme.seasonal.access`（ongoing）。权威 Brief：`task-seasonal-theme-engine-v1.md`。**不**含主屏幕 PWA 图标远程更换。
 
 **明确删除 / 禁止写入**：Apple Health 深度同步；课程墙；AI Coach；报表；换装大系统；抽奖加速；365 天路线。
 

@@ -58,15 +58,17 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 云端品味层 **schemaVersion 1 可选接线** · Electron 步骤 B 待 Mac 人工 · Focus 默认 10 分 · 同坐点 L1 用户测达标/未达标 · 桌面陪伴 L0 告一段落
+**最后更新时间**：2026-08-19（UTC+8） · #353 已合 `develop`（花园 vs **Yin's Collections**；叠层退役；L3 目录改珍藏）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **寅币 / Yin's Collections（2026-08-19 · #353 已合）**：花园与珍藏切开。入口 **Yin's Collections / 阿寅的珍藏**。晨露等叠层退役。`emotion.premium.trigger` 已从 B catalog 删除。#352 的「8 条叠层全列 / 分区盖动画」**作废**（见 `FOCUS_COINS.md` §1.2）。TRACKER 待人工。
+
 - **Focus 最短档 + 默认 10 分钟（2026-08-18）**：用户书面——25 分达标过长，名人常坐 10 分正念。芯片 **10 / 15 / 25 / 45**（去掉 60）；默认与最短 10。Breath 仍 1/3/5/10/20：Focus 10 走 Sit→Arrival，Breath 10 走左球微仪式。今日同坐 HUD 软顶仍 25。TRACKER 待人工。
 
-- **同坐点 L2 内部兑换（2026-08-18）**：控制台 `__focusCoins.redeem(skuId)` 花点写入 `ownedIds`（称号 / `badge.rare.quiet-pebble` / `space.lotus-dew` 等）；须弥坐仍要 360 点且终身分钟 ≥600。莲叶晨露只让已有朵稍亮，**不**长新花。无抽屉。`?focusCoins=0` 关闸。**只兑、不动 Honesty 时长分档**。TRACKER 待人工。
+- **同坐点 L2 内部兑换（2026-08-18 · 2026-08-19 叠层已退役）**：控制台 `__focusCoins.redeem(skuId)` 花点写入 `ownedIds`。新兑晨露 / 须弥金线等 → `retired-overlay`。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍要 360 点且终身分钟 ≥600。无抽屉。`?focusCoins=0` 关闸。**只兑、不动 Honesty 时长分档**。TRACKER 待人工。
 
 - **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
 
@@ -386,8 +388,8 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-18 更新）**：同坐点 L1 用户书面达标发分/未达标不发分 OK（TRACKER 仍待人工，**未**关单）。桌面陪伴 L0 **告一段落**（hitch 无卡顿；8GB 缺失用低配默认不出入口）。Electron 步骤 B 已接线、待 Mac 场景 AB。**本回合**云端品味层接线。L3 抽屉另口令。#336 仍开着、不合也不挡品味层。
-- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：L0 #335 · L1 #338 已合。L2 兑换 #339。L1 TRACKER 待人工（用户已测主路径+未达标回流；Honesty 二次 / `?focusCoins=0` 未写）。
+- **开工前优先级（2026-08-19 更新）**：#353 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`）；四页签壳后置。L1/L3 TRACKER 仍待人工，**未**关单。桌面陪伴 L0 **告一段落**。Electron 步骤 B 已接线、待 Mac 场景 AB。#336 仍开着。
+- **陪伴 · 寅币 / Yin's Collections（2026-08-19）**：L0 #335 · L1 #338 · L2 #339 · L3 #352+#353 已合。叠层 SKU 退役。另一路「8 条叠层 / 清供匣原 id 改名」不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 告一段落**。低配/缺 8GB 数据 → 不出入口。#336 探针 PR 仍开；不开 L1、不锁 0.6B。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
 - **云端品味层（2026-08-18 接线）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。生产 **Worker Redeploy 另须「部署」**。
@@ -751,14 +753,15 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ## 后续 Backlog（暂缓事项,已记录、未开工）
 
-### Backlog:同坐点（Focus Coins · C 轨练习货币）
+### Backlog:寅币（Focus Coins · C 轨 · Yin's Collections）
 
-> **方向已锁（2026-08-18）**。L0 #335 · L1 #338 已合（TRACKER 待人工）。L2 兑换本支（只兑、不动 Honesty 分档）。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
+> **方向已锁（2026-08-19 · #353 已合）**。L0 #335 · L1 #338 · L2 #339 · L3 #352+#353 已合。叠层 SKU 退役。权威 `FOCUS_COINS.md`（含 §1.2 已废止提案）。
 
-- 对外名 **同坐点**；只兑身份/情感锦上添花；**禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
-- 与 **莲花池 Slice A（#330）**：池按终身分钟自动开花；同坐点只可买已有朵上的变体（如晨露），**禁止**把开花改成花点才出现。
-- 工作量：L0–L2 约 10–16 人日。L1 = `FocusCoinsStore` + 完成钩子。
-- 勿插队桌面步骤 B / 桌面端侧智能体 L1。
+- 货币 **寅币 / Focus Coins**；个人中心 **阿寅的珍藏 / Yin's Collections**。结缘 ≠ Purchase。  
+- **花园**（莲花终身分钟）自动、不进店；**珍藏**只兑称号/稀有章/静物卡/闲笔。  
+- **铁律**：不改已有 PNG / 不往蒲团或莲花叠东西。  
+- **下一步**：挥手点播接线；四页签珍藏壳。信件/小册后置。  
+- **禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 
 ### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 

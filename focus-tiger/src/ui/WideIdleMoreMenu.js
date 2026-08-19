@@ -85,8 +85,9 @@ export class WideIdleMoreMenu {
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
    *     onFiveMoments?: () => void,
-   *     onJourneyLog?: () => void,
-   *     onConfide?: () => void,
+     *     onJourneyLog?: () => void,
+     *     onYinCoin?: () => void,
+     *     onConfide?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onMustardSeedSeal?: () => void,
@@ -648,6 +649,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onJourneyLog?.();
+      return;
+    }
+    if (key === 'yin-coin') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onYinCoin?.();
       return;
     }
     if (key === 'confide') {

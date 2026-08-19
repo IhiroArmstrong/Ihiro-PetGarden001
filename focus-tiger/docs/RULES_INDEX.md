@@ -148,7 +148,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `PRODUCT_POSITIONING.md` | 品牌与产品战略 |
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
 | `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |
-| `FOCUS_COINS.md` | 同坐点（Focus Coins）练习货币：隔离 B 轨、发点/防刷、与徽章两层（**方向锁 2026-08-18**；运行时见 Brief） |
+| `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、叠层禁令（**方向锁 2026-08-19**；运行时见 Brief） |
 | `ENV_CONFIG.md` | 环境配置与密钥隔离（客户端禁 Secret；dev/prod；CI Secrets 时机） |
 | `PRODUCT_MOMENTS.md` | Five Moments |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |

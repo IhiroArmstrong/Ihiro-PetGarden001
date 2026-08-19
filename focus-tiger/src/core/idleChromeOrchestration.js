@@ -17,6 +17,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 import { listRitualConfigs } from './RitualFlow.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
 import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
+import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -49,6 +50,7 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
  * @property {boolean} [scenesEntitled] override; default = isEntitled(ritual.morning.access)
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
+ * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  */
 
 /**
@@ -376,6 +378,24 @@ export function listSecondaryChromeEntries(surface, visibility) {
     proxy: 'journey-log',
     labelKey: 'JOURNEY_LOG_MENU_LABEL'
   });
+
+  // Yin's Collections — same glass family as Journey log; not Support pay.
+  const yinCoinVisible =
+    typeof visibility.yinCoinVisible === 'boolean'
+      ? visibility.yinCoinVisible
+      : isFocusCoinsAwardEnabled({
+          search:
+            typeof location !== 'undefined' && location?.search
+              ? location.search
+              : ''
+        });
+  if (yinCoinVisible) {
+    out.push({
+      proxy: 'yin-coin',
+      labelKey: 'YIN_COIN_MENU_LABEL',
+      testId: 'idle-yin-coin'
+    });
+  }
 
   // Confide to Yin — zen listener (retrieve-not-generate). Hidden until safety copy ok.
   const confideVisible =
