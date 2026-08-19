@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-19（UTC+8） · 寅币 C 轨：花园 vs **Yin's Collections** · 叠层 SKU 退役 · L3 抽屉改 Collections 目录
+**最后更新时间**：2026-08-19（UTC+8） · 寅币币标接入 Collections 抽屉（抬头浮雕 + 余额小 icon）· 寅币 C 轨：花园 vs **Yin's Collections** · 叠层 SKU 退役
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **寅币币标 UI（2026-08-19）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。用户书面两版都没问题。TRACKER 待人工。
 
 - **寅币 / Yin's Collections 口径（2026-08-19）**：花园（莲花终身分钟自动）与珍藏（寅币结缘）切开。个人中心英文 **Yin's Collections**、中文 **阿寅的珍藏**。晨露/金线/念珠等叠层 SKU 退役（`retired-overlay`）。`emotion.premium.trigger` 从 B catalog 删除。L3 抽屉 #352 已合，本支改名并只列商店目录。TRACKER 待人工。
 

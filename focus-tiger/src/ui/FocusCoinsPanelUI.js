@@ -5,7 +5,9 @@
 
 /**
  * Yin's Collections quiet catalog — same glass family as Journey log (not Support pay).
- * Placeholder 24px thumbs; shop SKUs only (no retired overlays). DOM id `#yin-coin-panel`.
+ * Coin marks are UI chrome only (header + balance/price); SKU thumbs stay
+ * colored dots until curio stills exist. Never composite onto sprite frames.
+ * Shop SKUs only (no retired overlays). DOM id `#yin-coin-panel`.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -22,9 +24,13 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v1';
+const STYLE_ID = 'yin-coin-panel-styles-v2';
 const FADE_MS = 220;
 const CEREMONIAL_MS = 2400;
+/** Relief medallion — panel header / ceremonial. Not a sprite overlay. */
+const MARK_SRC = '/ui/focus-coins/yin-coin-mark.png';
+/** Flat 24px-class mark — balance and price. */
+const ICON_SRC = '/ui/focus-coins/yin-coin-mark-icon.png';
 
 export class FocusCoinsPanelUI {
   /**
@@ -51,9 +57,24 @@ export class FocusCoinsPanelUI {
     this.root.setAttribute('aria-labelledby', 'yin-coin-panel-title');
     this.root.dataset.testid = 'yin-coin-panel';
 
+    this.headingEl = document.createElement('div');
+    this.headingEl.className = 'yin-coin-panel__heading';
+
+    this.markEl = document.createElement('img');
+    this.markEl.className = 'yin-coin-panel__mark';
+    this.markEl.src = MARK_SRC;
+    this.markEl.alt = '';
+    this.markEl.width = 56;
+    this.markEl.height = 56;
+    this.markEl.decoding = 'async';
+    this.markEl.draggable = false;
+    this.markEl.setAttribute('aria-hidden', 'true');
+    this.markEl.dataset.testid = 'yin-coin-mark';
+
     this.titleEl = document.createElement('p');
     this.titleEl.id = 'yin-coin-panel-title';
     this.titleEl.className = 'yin-coin-panel__title';
+    this.headingEl.append(this.markEl, this.titleEl);
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'yin-coin-panel__blurb';
@@ -62,9 +83,24 @@ export class FocusCoinsPanelUI {
     this.notForSaleEl.className = 'yin-coin-panel__not-for-sale';
     this.notForSaleEl.dataset.testid = 'yin-coin-not-for-sale';
 
+    this.balanceRow = document.createElement('div');
+    this.balanceRow.className = 'yin-coin-panel__balance-row';
+
+    this.balanceIcon = document.createElement('img');
+    this.balanceIcon.className = 'yin-coin-panel__balance-icon';
+    this.balanceIcon.src = ICON_SRC;
+    this.balanceIcon.alt = '';
+    this.balanceIcon.width = 24;
+    this.balanceIcon.height = 24;
+    this.balanceIcon.decoding = 'async';
+    this.balanceIcon.draggable = false;
+    this.balanceIcon.setAttribute('aria-hidden', 'true');
+    this.balanceIcon.dataset.testid = 'yin-coin-balance-icon';
+
     this.balanceEl = document.createElement('p');
     this.balanceEl.className = 'yin-coin-panel__balance';
     this.balanceEl.dataset.testid = 'yin-coin-balance';
+    this.balanceRow.append(this.balanceIcon, this.balanceEl);
 
     this.listEl = document.createElement('ul');
     this.listEl.className = 'yin-coin-panel__list';
@@ -85,12 +121,26 @@ export class FocusCoinsPanelUI {
     this.ceremonial.dataset.testid = 'yin-coin-ceremonial';
     this.ceremonial.setAttribute('role', 'status');
 
+    this.ceremonialMark = document.createElement('img');
+    this.ceremonialMark.className = 'yin-coin-panel__ceremonial-mark';
+    this.ceremonialMark.src = MARK_SRC;
+    this.ceremonialMark.alt = '';
+    this.ceremonialMark.width = 48;
+    this.ceremonialMark.height = 48;
+    this.ceremonialMark.decoding = 'async';
+    this.ceremonialMark.draggable = false;
+    this.ceremonialMark.setAttribute('aria-hidden', 'true');
+
+    this.ceremonialText = document.createElement('p');
+    this.ceremonialText.className = 'yin-coin-panel__ceremonial-text';
+    this.ceremonial.append(this.ceremonialMark, this.ceremonialText);
+
     this.actions.append(this.closeBtn);
     this.root.append(
-      this.titleEl,
+      this.headingEl,
       this.blurbEl,
       this.notForSaleEl,
-      this.balanceEl,
+      this.balanceRow,
       this.listEl,
       this.actions,
       this.ceremonial
@@ -203,9 +253,20 @@ export class FocusCoinsPanelUI {
 
       const price = document.createElement('span');
       price.className = 'yin-coin-panel__price';
-      price.textContent = t('YIN_COIN_PRICE').replaceAll(
-        '{n}',
-        String(row.price)
+      const priceIcon = document.createElement('img');
+      priceIcon.className = 'yin-coin-panel__price-icon';
+      priceIcon.src = ICON_SRC;
+      priceIcon.alt = '';
+      priceIcon.width = 16;
+      priceIcon.height = 16;
+      priceIcon.decoding = 'async';
+      priceIcon.draggable = false;
+      priceIcon.setAttribute('aria-hidden', 'true');
+      price.append(
+        priceIcon,
+        document.createTextNode(
+          t('YIN_COIN_PRICE').replaceAll('{n}', String(row.price))
+        )
       );
 
       meta.append(price);
@@ -282,7 +343,7 @@ export class FocusCoinsPanelUI {
       row.kind === 'collection'
         ? 'YIN_COIN_CEREMONIAL_STILL'
         : 'YIN_COIN_CEREMONIAL_PEBBLE';
-    this.ceremonial.textContent = t(key);
+    this.ceremonialText.textContent = t(key);
     this.ceremonial.hidden = false;
     this.ceremonial.classList.add('is-visible');
     window.clearTimeout(this._ceremonialTimer);
@@ -295,7 +356,7 @@ export class FocusCoinsPanelUI {
     window.clearTimeout(this._ceremonialTimer);
     this.ceremonial.classList.remove('is-visible');
     this.ceremonial.hidden = true;
-    this.ceremonial.textContent = '';
+    this.ceremonialText.textContent = '';
   }
 
   _injectStyles() {
@@ -329,15 +390,27 @@ export class FocusCoinsPanelUI {
         transform: translate(-50%, 0);
         pointer-events: auto;
       }
-      .yin-coin-panel__title {
+      .yin-coin-panel__heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin: 0 0 6px;
+      }
+      .yin-coin-panel__mark {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+        flex-shrink: 0;
+        border-radius: 50%;
+      }
+      .yin-coin-panel__title {
+        margin: 0;
         font-size: 1.05rem;
         font-weight: 600;
         letter-spacing: 0.01em;
       }
       .yin-coin-panel__blurb,
-      .yin-coin-panel__not-for-sale,
-      .yin-coin-panel__balance {
+      .yin-coin-panel__not-for-sale {
         margin: 0 0 8px;
         font-size: 0.86rem;
         line-height: 1.45;
@@ -347,8 +420,24 @@ export class FocusCoinsPanelUI {
         font-size: 0.78rem;
         opacity: 0.78;
       }
+      .yin-coin-panel__balance-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 8px;
+      }
+      .yin-coin-panel__balance-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
       .yin-coin-panel__balance {
+        margin: 0;
+        font-size: 0.86rem;
+        line-height: 1.45;
         font-weight: 600;
+        opacity: 0.92;
       }
       .yin-coin-panel__list {
         margin: 0 0 12px;
@@ -408,8 +497,17 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__price,
       .yin-coin-panel__owned {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
         font-size: 0.78rem;
         opacity: 0.82;
+      }
+      .yin-coin-panel__price-icon {
+        width: 16px;
+        height: 16px;
+        object-fit: contain;
+        flex-shrink: 0;
       }
       .yin-coin-panel__gap {
         margin: 6px 0 0;
@@ -451,8 +549,10 @@ export class FocusCoinsPanelUI {
         bottom: 0;
         margin-top: 8px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 8px;
         padding: 14px 12px;
         text-align: center;
         font-size: 0.9rem;
@@ -463,6 +563,15 @@ export class FocusCoinsPanelUI {
         opacity: 0;
         pointer-events: none;
         transition: opacity 280ms ease;
+      }
+      .yin-coin-panel__ceremonial-mark {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        border-radius: 50%;
+      }
+      .yin-coin-panel__ceremonial-text {
+        margin: 0;
       }
       .yin-coin-panel__ceremonial.is-visible {
         opacity: 1;

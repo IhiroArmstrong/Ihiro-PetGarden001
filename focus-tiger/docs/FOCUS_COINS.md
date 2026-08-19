@@ -249,7 +249,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - **L0（已合 #335）**：`src/core/focusCoinsLedger.js` + 单测。  
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
 - **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。叠层 SKU 新兑 `retired-overlay`；晨露/金线滤镜不再上主画面。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
-- **L3（#352 已合；本支修订）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()`（不含退役叠层）。不足/未达门槛：按压 + 具体缺口句 + toast。称号 Wear。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
+- **L3（#352 已合；本支修订）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()`（不含退役叠层）。抬头用精致浮雕币标、余额/价格旁用小 icon（仅 UI chrome，**不**贴序列帧）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + toast。称号 Wear。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
 - Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
 - 单测优先于 e2e；L3 DOM 以 `focusCoinsSurface.test.js` / `FocusCoinsPanelUI.test.js` 为主；完整用户链路须人工。
 
