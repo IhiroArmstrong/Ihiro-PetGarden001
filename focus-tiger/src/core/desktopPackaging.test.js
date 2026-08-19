@@ -26,7 +26,7 @@ const mainSrc = readFileSync(
   'utf8'
 );
 
-describe('desktop packaging contract (Step A)', () => {
+describe('desktop packaging contract (Step B tray)', () => {
   it('keeps electron out of the product package.json', () => {
     const product = JSON.parse(
       readFileSync(
@@ -53,19 +53,35 @@ describe('desktop packaging contract (Step A)', () => {
     assert.ok(distFilter.filter.includes('!audio/**'));
   });
 
-  it('Step A main process does not create a Tray', () => {
-    assert.equal(/new Tray\b/.test(mainSrc), false);
-    assert.equal(/\bimport\s*\{[^}]*\bTray\b/.test(mainSrc), false);
+  it('Step B main process creates a Tray', () => {
+    assert.equal(/new Tray\b/.test(mainSrc), true);
+    assert.equal(/\bimport\s*\{[^}]*\bTray\b/.test(mainSrc), true);
   });
 
-  it('Step A quits when the last window closes', () => {
+  it('Step B keeps the process on window-all-closed (quit is menu-only)', () => {
     assert.match(mainSrc, /window-all-closed/);
-    assert.match(mainSrc, /app\.quit\(\)/);
+    assert.match(mainSrc, /tray keeps the process/);
+    assert.match(mainSrc, /shouldQuitOnWindowClose/);
+    assert.match(mainSrc, /HIDE_REASON_TRAY/);
   });
 
   it('cloud IPC returns a status envelope instead of throwing Error fields', () => {
     assert.match(mainSrc, /ok:\s*false/);
     assert.match(mainSrc, /ok:\s*true/);
+  });
+
+  it('packs trayPolicy.js with the shell', () => {
+    assert.ok(desktopPkg.build.files.includes('trayPolicy.js'));
+  });
+
+  it('preload exposes hide/show and shell visibility (Step B)', () => {
+    const preload = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../desktop/preload.js'),
+      'utf8'
+    );
+    assert.match(preload, /desktop:hide/);
+    assert.match(preload, /desktop:show/);
+    assert.match(preload, /desktop:shell-visibility/);
   });
 
   it('uses a stable custom origin', () => {

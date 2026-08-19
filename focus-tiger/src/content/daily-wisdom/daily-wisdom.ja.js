@@ -6,6 +6,8 @@
 /**
  * Daily wisdom pool · Japanese (Yin voice + classical lines).
  * Ids must match `daily-wisdom.en.js`. Optional `attribution` when present in EN.
+ * Taste-layer freeze (2026-08-18): keep the 14 aligned ids; do not expand/delete
+ * until freeze lifted. SSOT: PROCESS Backlog 云端品味层.
  */
 
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */

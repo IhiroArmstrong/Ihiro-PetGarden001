@@ -43,3 +43,20 @@ export const L0_TOK_S_FAIL = 8;
 export const L0_RAF_P95_DELTA_FAIL_MS = 24;
 
 export const L0_RAF_SAMPLE_MS = 2500;
+
+/**
+ * 8 GB SKUs (Mac unified or Windows) count as low-spec.
+ * 8.5 GiB catches 8 GB Windows reports that sit slightly under/over 8 GiB.
+ * Unknown / non-positive totals are treated as low-spec (hide the entry).
+ */
+export const L0_LOW_SPEC_TOTAL_MEM_MB = 8704;
+
+/**
+ * @param {number} totalBytes `os.totalmem()` style
+ * @returns {boolean}
+ */
+export function isLowSpecDesktopMemory(totalBytes) {
+  const n = Number(totalBytes);
+  if (!Number.isFinite(n) || n <= 0) return true;
+  return n / (1024 * 1024) <= L0_LOW_SPEC_TOTAL_MEM_MB;
+}

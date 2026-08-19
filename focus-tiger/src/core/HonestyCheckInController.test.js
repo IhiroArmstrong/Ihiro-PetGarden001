@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
@@ -16,6 +16,11 @@ import {
 import { DailyCompletionStore } from './DailyCompletionStore.js';
 import { FocusSessionEndStore } from './FocusSessionEndStore.js';
 import { StateManager, STATES } from './StateManager.js';
+import { resetTasteLayerOverlayForTests } from './tasteLayerOverlay.js';
+
+afterEach(() => {
+  resetTasteLayerOverlayForTests();
+});
 
 test('resolveHonestyBreathMs defaults to 10s; ?honestyBreathMs= for e2e shortening', () => {
   assert.equal(resolveHonestyBreathMs(''), HONESTY_BREATH_MS);
@@ -244,8 +249,9 @@ test('same-day re-entry skips sleep wake; still records and fires bridge hook', 
       }
     },
     extra: {
-      onCheckInComplete: () => {
+      onCheckInComplete: (detail) => {
         completeCalls += 1;
+        assert.equal(detail?.wokeFromDormant, false);
       },
       notifyRecorded: () => {
         recordedNotifyCalls += 1;
@@ -284,8 +290,10 @@ test('honesty breath complete invokes onCheckInComplete for bridge hook', () => 
       }
     },
     extra: {
-      onCheckInComplete: () => {
+      onCheckInComplete: (detail) => {
         completeCalls += 1;
+        assert.equal(detail?.durationMinutes, 10);
+        assert.equal(detail?.wokeFromDormant, true);
       },
       notifyRecorded: () => {
         recordedNotifyCalls += 1;

@@ -27,6 +27,7 @@
       "main.js",
       "preload.js",
       "ipcGuard.js",
+      "trayPolicy.js",
       {
         "from": "../dist",
         "to": "dist",

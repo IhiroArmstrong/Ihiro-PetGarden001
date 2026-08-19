@@ -11,6 +11,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import { TIP_JAR_PRICE_USD } from '../core/tipJarGate.js';
 import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
 import { SANCTUARY_LIFETIME_PRICE_USD } from './SanctuaryUnlockUI.js';
@@ -201,10 +202,17 @@ export class SupportYinModalUI {
     this.closeBtn.dataset.testid = 'yin-support-close';
     this.closeBtn.addEventListener('click', () => this.close());
 
+    this.desktopRamNote = document.createElement('p');
+    this.desktopRamNote.id = 'yin-support-desktop-ram';
+    this.desktopRamNote.className = 'yin-support-modal__desktop-ram';
+    this.desktopRamNote.dataset.testid = 'yin-support-desktop-ram';
+    this.desktopRamNote.hidden = true;
+
     this.root.append(
       this.titleEl,
       this.subtitleEl,
       this.grid,
+      this.desktopRamNote,
       this.closeBtn
     );
 
@@ -423,6 +431,10 @@ export class SupportYinModalUI {
       TIP_JAR_PRICE_USD
     );
     this.teaCta.textContent = t('SUPPORT_TEA_CTA');
+
+    const showDesktopRam = isDesktopShellRuntime();
+    this.desktopRamNote.hidden = !showDesktopRam;
+    this.desktopRamNote.textContent = t('SUPPORT_DESKTOP_RAM_NOTE');
   }
 
   _injectStyles() {
@@ -536,6 +548,15 @@ export class SupportYinModalUI {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 12px;
+      }
+      .yin-support-modal__desktop-ram {
+        margin: 12px 0 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #5c4330;
+      }
+      .yin-support-modal__desktop-ram[hidden] {
+        display: none;
       }
       .yin-support-card {
         position: relative;

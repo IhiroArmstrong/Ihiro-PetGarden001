@@ -74,6 +74,11 @@ describe('privacyNoticeCopy', () => {
       ja.HINT_APP_PURPOSE_WELLNESS_BODY,
       /集中力|マインドフルネス|ストレス/
     );
+    assert.match(en.HINT_APP_PURPOSE_DESKTOP_RAM_BODY, /8 GB of RAM/i);
+    assert.match(en.HINT_APP_PURPOSE_DESKTOP_RAM_BODY, /Mac and Windows/i);
+    assert.match(en.SUPPORT_DESKTOP_RAM_NOTE, /8 GB of RAM/i);
+    assert.match(ja.HINT_APP_PURPOSE_DESKTOP_RAM_BODY, /8GB/);
+    assert.match(ja.HINT_APP_PURPOSE_DESKTOP_RAM_BODY, /Windows/);
     assert.match(ja.HINT_APP_PURPOSE_WELLNESS_BODY, /医療機器ではありません/);
     assert.match(
       ja.HINT_APP_PURPOSE_WELLNESS_BODY,
@@ -98,5 +103,16 @@ describe('privacyNoticeCopy', () => {
         '© 2026 Ihiro Armstrong Hao Hoh. All rights reserved.'
       );
     }
+  });
+
+  it('desktop RAM note is gated to Electron in purpose + Support source', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const purpose = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
+    const support = readFileSync(join(here, 'SupportYinModalUI.js'), 'utf8');
+    assert.match(purpose, /onboarding-purpose-desktop-ram/);
+    assert.match(purpose, /isDesktopShellRuntime/);
+    assert.match(purpose, /HINT_APP_PURPOSE_DESKTOP_RAM_BODY/);
+    assert.match(support, /yin-support-desktop-ram/);
+    assert.match(support, /SUPPORT_DESKTOP_RAM_NOTE/);
   });
 });

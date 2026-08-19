@@ -68,6 +68,7 @@
 
 - 设计师建议写入本文与 `ASSET_INVENTORY` / `PROCESS`；库存须进业务。  
 - **Honesty 时长分界锁定**：补登 **≤20 min** → `nod-bow`（`mindfulAcknowledge`）；**≥30 min** → `halo-breathing`（或 `breathHaloHq` 变体）。21–29 min 归短档（nod），避免空洞。  
+  **品味层冻结（2026-08-18）**：该分档即本地降级真源（≤29 点头 / ≥30 金辉）；近一周不改数字。未知 `schemaVersion` 用本表。`schemaVersion: 1` overlay **只经 Dispatcher**（未改 `HonestyCheckInController`）。  
 - **日语 = 合十**（`palms-together`）规格正确；代码漂移须 A′ 修。  
 - **勿接**已取代目录（旧 dormant-wake / sleeping / tilt-think / blink-breathe 主路径）。  
 - **采纳中央 Animation Dispatcher**（语义事件 + 加权映射 + 冷却，默认生命感 **≥60 min** 同类最多 1 次）。  
@@ -246,4 +247,5 @@
 | 2026-08-05 | 冷启动 `magicBookReading` 回 Idle：**硬切 → ~1s CapCut**（用户书面缺叠化） |
 | 2026-08-03 | 跨动画短叠化（180/520ms）统一 `CAPCUT_DISSOLVE_MS` 1s；硬切 `0`（gaze 段间 / Idle 闭目↔睁眼）保持；**魔法书回 Idle 于 2026-08-05 改 CapCut** |
 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（`#idle-yin-tap-anchor`；Focusing 仍走场景 X） |
+| 2026-08-18 | **云端品味层窄冻结**：Rise 60/25/15 · 欢迎 60/40 · 轻量完成 70/30/8 · Honesty ≤29 nod / ≥30 halo；日签 en/ja 各 14 id。数字不改；无运行时接线 |
 

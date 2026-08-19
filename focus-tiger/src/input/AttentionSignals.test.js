@@ -31,6 +31,7 @@ function setup() {
   signals.setEnabled(true);
   return {
     events,
+    signals,
     windowRef,
     documentRef,
     setNow: (value) => {
@@ -78,4 +79,32 @@ test('deduplicates blur and hidden signals for the same departure', () => {
   documentRef.hidden = false;
   documentRef.dispatchEvent(new Event('visibilitychange'));
   assert.equal(events.length, 1);
+});
+
+test('hidden && hideReason===tray must not onReturn Re-focus (SB-18)', () => {
+  const { events, signals, windowRef, documentRef, setNow } = setup();
+  signals.setHideReason('tray');
+  windowRef.dispatchEvent(new Event('blur'));
+  documentRef.hidden = true;
+  documentRef.dispatchEvent(new Event('visibilitychange'));
+  setNow(REFOCUS_DISPLAY_THRESHOLD_MS + 1);
+  documentRef.hidden = false;
+  documentRef.dispatchEvent(new Event('visibilitychange'));
+  windowRef.dispatchEvent(new Event('focus'));
+  signals.setHideReason('none');
+  assert.deepEqual(events, []);
+});
+
+test('late tray reason cancels an in-flight hidden away without Re-focus', () => {
+  const { events, signals, windowRef, documentRef, setNow } = setup();
+  windowRef.dispatchEvent(new Event('blur'));
+  documentRef.hidden = true;
+  documentRef.dispatchEvent(new Event('visibilitychange'));
+  setNow(REFOCUS_DISPLAY_THRESHOLD_MS + 1);
+  signals.setHideReason('tray');
+  documentRef.hidden = false;
+  documentRef.dispatchEvent(new Event('visibilitychange'));
+  windowRef.dispatchEvent(new Event('focus'));
+  signals.setHideReason('none');
+  assert.deepEqual(events, []);
 });

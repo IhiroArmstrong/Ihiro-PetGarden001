@@ -9,12 +9,14 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import {
+  L0_LOW_SPEC_TOTAL_MEM_MB,
   L0_MODEL_ID,
   L0_MODEL_URL,
   L0_MODEL_URLS,
   L0_RAF_P95_DELTA_FAIL_MS,
   L0_TOK_S_FAIL,
-  L0_TTFT_FAIL_MS
+  L0_TTFT_FAIL_MS,
+  isLowSpecDesktopMemory
 } from '../../desktop/companion/l0Config.js';
 import { parseNdjsonLine } from '../../desktop/companion/l0Main.js';
 import {
@@ -65,6 +67,15 @@ describe('desktop companion L0 metrics', () => {
     assert.equal(row.count, 5);
     assert.equal(row.maxMs, 40);
     assert.ok(row.p95Ms >= 16);
+  });
+
+  it('treats 8GB-class machines as low-spec and 16GB as not', () => {
+    assert.equal(L0_LOW_SPEC_TOTAL_MEM_MB, 8704);
+    assert.equal(isLowSpecDesktopMemory(8 * 1024 * 1024 * 1024), true);
+    assert.equal(isLowSpecDesktopMemory(7.8 * 1024 * 1024 * 1024), true);
+    assert.equal(isLowSpecDesktopMemory(16 * 1024 * 1024 * 1024), false);
+    assert.equal(isLowSpecDesktopMemory(0), true);
+    assert.equal(isLowSpecDesktopMemory(Number.NaN), true);
   });
 
   it('fails the probe on load error, slow TTFT, slow decode, or rAF hitch', () => {
@@ -141,11 +152,15 @@ describe('desktop companion L0 isolation', () => {
     assert.match(preload, /openExternal/);
   });
 
-  it('gates the probe behind FT_COMPANION_L0 in main', () => {
+  it('gates the probe behind FT_COMPANION_L0 in main, then starts Step B tray', () => {
     const mainSrc = readFileSync(join(focusTigerRoot, 'desktop/main.js'), 'utf8');
     assert.match(mainSrc, /FT_COMPANION_L0/);
     assert.match(mainSrc, /companion\/l0Main\.js/);
-    assert.equal(/\bnew Tray\b/.test(mainSrc), false);
+    assert.match(mainSrc, /\bnew Tray\b/);
+    const whenReady = mainSrc.slice(mainSrc.indexOf('app.whenReady()'));
+    const probeIdx = whenReady.indexOf('FT_COMPANION_L0');
+    const trayCallIdx = whenReady.indexOf('createTray();');
+    assert.ok(probeIdx >= 0 && trayCallIdx > probeIdx);
   });
 
   it('keeps product src/ from importing desktop/companion', () => {

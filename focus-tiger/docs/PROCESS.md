@@ -58,21 +58,32 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-18（UTC+8） · 桌面陪伴：端侧生成仅宽屏 ⋯（窄屏无本地智能体）· hitch 无卡顿（M5）；#336 仍先不合 · 同坐点 L0 纯账本 · Electron 步骤 A · 莲花池 Slice A（#330）
+**最后更新时间**：2026-08-19（UTC+8） · #336 8GB 书面豁免、探针可合；#353 已合 `develop`（花园 vs **Yin's Collections**；叠层退役；L3 目录改珍藏）
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-18）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口（同日拍板）**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**#336 仍先不合**（缺 M1 8GB；不必现在找旧电脑）。不锁 0.6B、不开 L1。勿与同坐点口令混说。权威：`task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19）**：口令已执行；**无**产品入口。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**（资料估算；低配默认不出入口）。不锁 0.6B、不开 L1。权威：`task-desktop-on-device-companion.md`。
 
-- **同坐点 L0 纯账本（2026-08-18）**：`focusCoinsLedger.js` 已在 `develop`；不挂 `main.js`。本支不改账本。
+- **寅币 / Yin's Collections（2026-08-19 · #353 已合）**：花园与珍藏切开。入口 **Yin's Collections / 阿寅的珍藏**。晨露等叠层退役。`emotion.premium.trigger` 已从 B catalog 删除。#352 的「8 条叠层全列 / 分区盖动画」**作废**（见 `FOCUS_COINS.md` §1.2）。TRACKER 待人工。
 
-- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」。
+- **Focus 最短档 + 默认 10 分钟（2026-08-18）**：用户书面——25 分达标过长，名人常坐 10 分正念。芯片 **10 / 15 / 25 / 45**（去掉 60）；默认与最短 10。Breath 仍 1/3/5/10/20：Focus 10 走 Sit→Arrival，Breath 10 走左球微仪式。今日同坐 HUD 软顶仍 25。TRACKER 待人工。
+
+- **同坐点 L2 内部兑换（2026-08-18 · 2026-08-19 叠层已退役）**：控制台 `__focusCoins.redeem(skuId)` 花点写入 `ownedIds`。新兑晨露 / 须弥金线等 → `retired-overlay`。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍要 360 点且终身分钟 ≥600。无抽屉。`?focusCoins=0` 关闸。**只兑、不动 Honesty 时长分档**。TRACKER 待人工。
+
+- **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
+
+- **云端品味层 schemaVersion 1 可选接线（2026-08-18）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。生产 Worker 须明确「部署」后才从旧 mock 换成 v1。`?tasteLayer=0` 关拉取。TRACKER 待人工。
+
+- **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
+
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp 主进程、模型不进 DMG、Focusing 卸载）；**L0 探针可合；仍不上 L1 入口**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
-- **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳，**无托盘**。P0-1 `openExternal`；P0-3 Cloud POST 走主进程 IPC + 现有卡面错误文案；P0-4 extraResources。Cloud Linux **不能**验 Mac 窗口/DMG。规格 `task-electron-desktop-scaffold.md`。#331 两步已合。步骤 B 未做。
+- **Electron 步骤 B · 托盘 + 关窗后台（2026-08-18）**：收费 DMG 前提。关红灯 = hide；托盘「显示 / 退出」；**P0-2 / SB-18**：hide-to-tray **不是**走神。对照：窗口可见时切 App 仍走场景 B。权威：`task-electron-desktop-scaffold.md`。TRACKER 场景 AB 待人工。陪伴智能体 **不**绑本验收。
+- **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳。P0-1 `openExternal`；P0-3 Cloud POST；P0-4 extraResources。#331 已合。当前 `desktop:dev` **已是步骤 B**（有托盘）。
 - **本地电脑版壳选型（2026-08-16）**：Mac DMG **拍板 Electron**（electron-builder）；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 仍非电脑版终局。选型合入 **#326**（`fe5b76a`）。Brief `task-briefs/task-desktop-shell-electron.md`。
 
 - **功能冲突扫描（2026-08-16）**：实现前对照 `SCENARIO_TESTS.md` 扫相邻已上线场景；有疑点须等用户拍板，优先于默认执行。索引 `feature-conflict-review`。PR 第三问。无运行时。
@@ -157,7 +168,7 @@
 - **吹花鼓励 · Phase 1–2c（2026-08-06）**：Phase 1–2b 已合 develop（含 #139 Day1 压过 wellness、#141 窄屏气泡避让）。**Phase 2c**（本支）：文案轮换 `lastCopyKey`、e2e `flower-welcome.spec.js` 门闩、10fps 锁定、TEST_TRACKER 分列。
 - **吹花鼓励 · Phase 1 Lab（2026-08-05 · PR #124）**：合入 `develop` tip **`a50c507`**。`conjureFlowersBlowAway` 入库 + CapCut；产品冷启动未改。用户书面（feature tip）：Lab **测试 OK**。**Phase 2a**（本支 / PR #129）：Lab 头顶白玉气泡 + 观察式文案 + locale 主次字；feature tip 观感 **基本 OK**，待合 develop。
 - **Ambient 内置清单 +6 曲（2026-08-05 · PR #125）**：合入 tip；**关单**。邻接 UX（Rise 后曲目高亮 / 断点续播 / 面板靠右 / 音符开播 / 每曲 Play/Pause / Idle 靠右）→ PR #131+#132；**2026-08-06 tip 关单**（用户「关单 OK」；功能 tip `ae6eca2`）。
-- **Focus 开表前时长 15/25/45/60（2026-08-06）**：Companion 点选后出 chip（与 Breath 1/3/5/10/20 差异化）；`?sessionMinutes=` 仍可跳过供 e2e。分支 `feature/focus-duration-picker`。
+- **Focus 开表前时长 10/15/25/45（2026-08-18 改档；原 15/25/45/60 为 2026-08-06）**：Companion 点选后出 chip；默认与最短 **10**；与 Breath 1/3/5/10/20 分轨。`?sessionMinutes=` 仍可跳过供 e2e。
 - **首页左球 → Breath practice（2026-08-06）**：原 Quick Start 跳过 Arrival 开表改为开时长 picker；抽屉/⋯ 去掉重复 Breath 行；右上音符加 `AMBIENT_NOTE_HOVER`（脉冲未读时不叠 title）。分支 `feature/home-breath-practice-ball`。Extended Breath（PR #143）人工听感主路径已 OK。
 - **KnownRisky #3 / Honesty 桥接（2026-08-04）**：PR #118 合入 tip **`3ea79b9`**；375 回归复测 OK → KnownRisky **verified**；`TEST_TRACKER` 桥接 → **已通过**（覆盖分工已写）。
 - **KnownRisky #1 Idle 窄宽 chrome 关单（2026-08-04）**：tip `4698eb3` 步1–6、9 OK；步7 tip `0494dd6`/:5176 OK；步8 窄屏 Hints **产品延期维持现状**。`TEST_TRACKER` Task3 / Facade / ⋯薄荷绿 → **已通过**；债务清单 Idle chrome → **verified**。
@@ -196,7 +207,7 @@
 - **自动化缺口 · Task 3 已落地（2026-07-30）**：真实 Honesty→桥接→Yes→Arrival e2e（`honesty-bridge-real-path` + `?honestyBreathMs=`）。见 `COVERAGE_GAP_AUDIT.md` §8。
 - **功能 vs 测试覆盖缺口审计（2026-07-30）**：落盘 `COVERAGE_GAP_AUDIT.md`；Task 3→2 + 扩 smoke **已落地**。`TEST_TRACKER` §C / `SCENARIO_TESTS` / `RULES_INDEX` 已挂指针。
 - **语义化版本与稳定发布点拍板（2026-07-30）**：SemVer；首稳 **`v1.0.0`**；稳定版 = `main` 上 **annotated tag**，开发阶段**不**切 `release/*`（除非未来并行维护多条已发布大版本）。SSOT：`WORKFLOW.md`「语义化版本与稳定发布点」；`RULES_INDEX` → `git-semver-release`。无运行时改动，无 TEST_TRACKER 行。
-- **v1.0 纯本地 / v1.1 云端 + 打包选型时机（2026-07-30 拍板；壳于 2026-08-16 锁定）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；**v1.1** 跟进云端算法；代码保留云端可扩展性（`cloud/` 骨架保留、前端暂不接线）。打包开会时机当时已定；**壳已拍板 Electron**（见 Backlog「本地桌面 APP 打包」）。无运行时改动。
+- **v1.0 纯本地 / 云端品味层 + 打包选型时机（2026-07-30 拍板；壳于 2026-08-16 锁定；品味层 2026-08-18 收窄改名 + 窄冻结已拍板）**：**v1.0.0** = 纯本地可用小发布（核心不依赖联网）；旧称「v1.1 云端算法」→ Backlog「云端品味层」（权重 + 文案；播放器永远本地）。代码保留 `cloud/` 可扩展、前端品味层暂不接线。打包开会时机当时已定；**壳已拍板 Electron**（见 Backlog「本地桌面 APP 打包」）。无运行时改动。
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
@@ -228,7 +239,7 @@
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
 - **应用内提醒偏好 + 横幅 UI 已接入（2026-07-22）**：设置入口改为 **Idle 热力图簇旁的小型时钟图标**（`ReminderPreferenceUI`，挂 `WeeklyPracticeHeatmap` cluster，Idle-only）；点击展开轻量面板，含「开启提醒」+ 时间选择器，标题键 `reminder.setting_title`。**2026-07-25**：面板常显「每日时分」说明（`reminder.daily_blurb`）+ 已过/已练软提示；onboarding Hint `in-app-reminder`。横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；已接冷启动 / `visibilitychange` 回前台 / 状态切换重评；关闭后本页会话内不再重复；DEV：`window.__inAppReminder`。**2026-07-23**：忙碌策略拍板 **`suppress`**。
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined` / **`micro_ritual_complete`**
-- **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流；**未接前端**。本地 `cd cloud && npm run dev`；接口字段待人工 review（见 `cloud/README.md`）
+- **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流。**2026-08-18**：前端可选 overlay 已接线；生产须「部署」才从旧 mock 换成 `schemaVersion: 1` 冻结表。本地 `cd cloud && npm run dev`（见 `cloud/README.md`）
 - **「本周陪伴」7 格热力图 UI（2026-07-22；今日标记 2026-08-04）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)` 最右=今日；亮格=`null|/>0`；星期缩写 + 今日软描边；e2e `weekly-practice-heatmap.spec.js`
 - **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`；见 `SHARED_RESOURCES` §1.2
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：`DailyCompletionStore` 仅当日不够；数据源改 `PracticeDaysStore`
@@ -379,9 +390,12 @@
 
 **下一步计划**：
 
-- **陪伴 · 同坐点（Focus Coins · 2026-08-18）**：方向锁已合 #333。**L0 纯账本** `focusCoinsLedger.js`（不挂 `main.js`）。**L1 硬闸**：开工前必须书面扫 Honesty / 完成记账邻接并行 PR。勿插队桌面步骤 B。
-- **陪伴 · 桌面端侧窄例外（2026-08-18）**：检索不生成 **未废止**。L0 探针 M5 过闸；hitch **无卡顿**。**仅宽屏 ⋯** 才有本地智能体。**#336 仍先不合**（缺 M1 8GB）。不锁 0.6B、不开 L1。Brief `task-desktop-on-device-companion.md`。
-- **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** v1.1 云端算法、**≠** B 多端无缝。
+- **开工前优先级（2026-08-19 更新）**：#353 已合 `origin/develop`。**下一步** 挥手点播接线（珍藏里播已入库 `wave-hello`）；四页签壳后置。L1/L3 TRACKER 仍待人工，**未**关单。桌面陪伴 L0 探针 **8GB 已书面豁免**。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **陪伴 · 寅币 / Yin's Collections（2026-08-19）**：L0 #335 · L1 #338 · L2 #339 · L3 #352+#353 已合。叠层 SKU 退役。另一路「8 条叠层 / 清供匣原 id 改名」不跟。
+- **陪伴 · 桌面端侧窄例外**：**L0 探针可合 #336**（2026-08-19 用户书面豁免 8GB 数据；资料估算）。低配默认不出入口（Mac 与 Windows 同样 ≤8GB）。不开 L1、不锁 0.6B。
+- **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
+- **云端品味层（2026-08-18 接线）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。生产 **Worker Redeploy 另须「部署」**。
+- **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
 - **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
@@ -397,7 +411,7 @@
 - **场景→动画接线 · A′+B Dispatcher（2026-08-01）**：PR #59 / #65 等已合 `develop`；关单级人工见 `TEST_TRACKER` 场景动画行。
 - **用户上传氛围乐（v1.0.0 必交付 · 2026-07-31）**：已合 **`develop`（PR #51）**；Brief `task-user-ambient-upload-v1.md`。关单级人工见 `TEST_TRACKER` 对应行。
 - **自动化缺口补齐（2026-07-30 · Task 3+2 + 扩 smoke 已落地）**：`test:smoke` 已含全 unit\*；永不自动化 §5；Honesty/i18n 口径 §8–§9。排期 `TEST_TRACKER` §C。
-- **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）**：Mac DMG = **Electron** + electron-builder。规格 `task-electron-desktop-scaffold.md`。收费 DMG **必须有托盘**。见 Backlog「本地桌面 APP 打包」。
+- **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）**：Mac DMG = **Electron** + electron-builder。规格 `task-electron-desktop-scaffold.md`。收费 DMG **必须有托盘**。见 Backlog「本地桌面 APP 打包」。
 - **PR #2 合并进 `main`（技术可合 · 产品门禁未齐）**：冲突已清、#70 已合、`MERGEABLE`。**合 main 仍须你明确下令** + 五条件清单（人工走查 / 「有问题」处置 / 范围认知等）。Brief：`task-pr2-develop-into-main.md`。
 - **PR #2 合并进 `main` 后立刻开工（工程）**：降低 visibility CI flaky 率（见 Backlog「降低 visibility CI flaky 率」）；勿因合并绿灯而搁置。夜间全量 e2e / Plan A **已收口**（见上「CI 定时全量」）；与 visibility flaky **并列**的剩余工程主要是 flaky 根因。壳选型 **已于 2026-08-16 拍板**；与 Electron 脚手架争排期时仍先桌面包（实现另 Task）。
 - **hints 拆分线 / 旧 stash PRD（2026-08-01 已清）**：原 `stash · chore/split-hints-from-pr2` 已随本地 stash 清空处理；PRD 草稿归档见 `docs/archive/stashed-prds-2026-07-24/`（非 SSOT）。回 hints 拆分时读归档即可，勿再找已删除的 stash。
@@ -410,14 +424,14 @@
 - 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做；**PWA 任务六**仍不是电脑版终局——电脑版壳已拍板 **Electron**，见 Backlog「本地桌面 APP 打包」）
-- **v1.1**：云端算法接入（见 Backlog「v1.1 云端算法」）；不进 v1.0.0 范围
+- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**；**schemaVersion 1 可选接线已落地**（生产须「部署」；见 Backlog「云端品味层」）；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
 - **B · 练习记忆多端无缝同步（可后排）**：免费快照之后；评估是否作 Sanctuary/Membership 付费点（见 Backlog「练习记忆云端备份」§B）
 
 **已知的开放决策 / 待确认事项**：
 
 - **星光斗篷拓展（2026-08-04）**：2A wellness + Expand A（**仅深夜**；白天无操作披毯已关）/ B + 长离 2B；2h→DORMANT 保留互补。
 - **语义化版本与稳定发布点（2026-07-30 已拍板）**：SemVer；首稳 `v1.0.0`；稳定版 = `main` annotated tag；开发阶段不切 `release/*`。见 `WORKFLOW.md` / `RULES_INDEX` → `git-semver-release`（非开放项，留此一行防重复开议题）。
-- **v1.0 纯本地 / v1.1 云端（2026-07-30 已拍板）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网与云端关键算法，优先保障可离线完整体验；**v1.1** 快速跟进云端算法。代码保留云端可扩展性（保留 `cloud/` 骨架与前后端解耦；**禁止**在 v1.0 把核心门闩绑死在必须成功的云请求上）。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
+- **v1.0 纯本地 / 云端品味层（2026-07-30 已拍板 · 2026-08-18 收窄改名）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网。旧称「v1.1 云端算法」已收窄为 Backlog「云端品味层」（权重 + 文案池；播放器永远本地）。**支付云 ≠ 品味云**；功能堆多了 **不**自动打 SemVer `v1.1.0`。代码保留 `cloud/` 可扩展；**禁止**把核心门闩绑死在必须成功的云请求上。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。
 - **用户上传氛围乐（2026-07-31 已拍板）**：**v1.0.0 必交付**；砍法与 Brief 见上「最近拍板」/ Backlog；**实现已合 `develop`（PR #51）**（非开放产品决策，留此防重复开议题）。
 - **本地桌面 APP 打包（2026-07-30 开会时机已定 · 2026-08-16 壳已拍板 Electron · 2026-08-17 脚手架规格）**：Mac DMG = Electron + electron-builder；收费 DMG **必须有托盘**。规格 `task-electron-desktop-scaffold.md`。v1 仍默认纯 Web。**2026-08-07 澄清仍有效**：v1 **不上**手机商店原生包（未来手机壳默认 Capacitor）。见 `task-tech-direction-v1-shell-monetization.md`。
@@ -432,9 +446,17 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近跟进（2026-08-18 · 用户 · 宽屏才有本地智能体）**：端侧生成仅 **Electron + 宽屏 ⋯（≥480）**；窄屏抽屉 / 手机没有（故意不对等）。Focusing hitch 仍无卡顿。8GB 齐之前 **#336 不合、不锁 0.6B、不开 L1**。权威：`task-desktop-on-device-companion.md` · `RESPONSIVE_LAYOUT.md` 原则 A。
+**最近跟进（2026-08-19 · 用户书面豁免 8GB）**：资料估算替代 M1 8GB 探针 JSON。**可合 #336**。低配默认不出入口（Mac 与 Windows 同样 ≤8GB）。**不开 L1、不锁 0.6B**。不另开 $12.99 本地智能体 SKU；现有 Tea / Membership / Sanctuary 仍可买（不是该能力）。权威：`task-desktop-on-device-companion.md`。
 
-**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。**同日补**：本地智能体 **仅宽屏 ⋯**；窄屏 / 手机没有该能力（`RESPONSIVE_LAYOUT` 原则 A 故意不对等）。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival / 窄屏抽屉。L0 机型实测前不上产品入口；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。L0 探针已开工（无产品入口）。
+**最近跟进（2026-08-18 · 用户 · 宽屏才有本地智能体）**：端侧生成仅 **Electron + 宽屏 ⋯（≥480）**；窄屏抽屉 / 手机没有（故意不对等）。Focusing hitch 仍无卡顿。权威：`task-desktop-on-device-companion.md` · `RESPONSIVE_LAYOUT.md` 原则 A。
+
+**最近跟进（2026-08-18 · Electron 步骤 B）**：托盘 + 关窗 hide + SB-18 已接线。**待人工**：场景 AB（收托盘 >60s 无 Re-focus）+ 对照切 App 仍走 B。Safari 场景 B 不得回归。权威：`task-electron-desktop-scaffold.md`。
+
+**最近拍板（2026-08-18 · 品味层窄冻结）**：用户书面确认「该等的窄门」= 现有本地降级表，**手感对、可以冻结**（不是全量 QA）。冻结数字见 Backlog「云端品味层」。分析师提醒：品味层时机清单含 Honesty 分档，同坐点 L1 已改 `HonestyCheckInController`（#338）；写代码时若 L2 也动 Honesty 分档须错开——**不影响** #337 / #338 已合。**同日晚已接线** schemaVersion 1 overlay（未改 HonestyCheckInController；生产须「部署」）。
+
+**最近拍板（2026-08-18）**：**云端品味层**（旧称「v1.1 云端算法」改名）。只上云 **权重覆盖 + 日签/文案池**；Idle / CapCut 播放器**永远本地**。时机 = Rise / 欢迎 / 轻量完成 / Honesty 分档 **窄冻结后**单独开工（冻结已于同日拍板）；**不等**同坐点 L2、**不等** TRACKER 全表关单（两条时钟：品味层防抄表 ≠ 同坐点防刷点）。实现时 payload 必含 `schemaVersion`，不认识则降级本地表。**支付云 ≠ 品味云**；SemVer 首稳仍是纯本地核心 `v1.0.0`，品味层是 1.0 之后可选增强、不抢 `v1.1.0` 号。**同日晚**：用户书面 L1/L0 告一段落并安排下一步，视为口令「开工云端品味层」——接线见上文「近期落地」。生产 Worker 另须「部署」。权威：下文 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
+
+**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。**同日补**：本地智能体 **仅宽屏 ⋯**；窄屏 / 手机没有该能力（`RESPONSIVE_LAYOUT` 原则 A 故意不对等）。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival / 窄屏抽屉。L0 探针可合；**仍不上 L1 入口**；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 **最近拍板（2026-08-17 · 托盘两步）**：分析师第二份书面——**不要把托盘和第一颗窗口绑成一次验收**。步骤 A = 加载现有 Web 成 Mac 窗口，不带托盘（先分清壳/资源问题）。步骤 B = 收费 DMG 上架前必须补托盘 + 关窗后台，并与 `AttentionSignals`（场景 AB / SB-18）**同一条改动线**验收。产品判断不变：收费 DMG 没有托盘则付费定位不成立。权威：`task-electron-desktop-scaffold.md`。#329 已合分层口径；本条补执行顺序。步骤 A 窗口代码见本 PR / `focus-tiger/desktop/`（无托盘）。
 
@@ -481,7 +503,7 @@
 
 **最近拍板（2026-07-31）**：用户上传氛围乐 = **v1.0.0 必交付**；砍法 mp3/m4a + 合计 ≤64MiB 且 ≤10 首 + 单文件 ≤20MiB；用户曲整段在内置之上且**最近在上**；可删自传；不做云/EQ/在线库/拖拽。Brief `task-user-ambient-upload-v1.md`。**澄清（2026-08-09）**：已交付的是「上传 + **单曲选播**」，**不是**多层音效混音；混音见 Backlog「本地个人混音」。
 
-**最近拍板（2026-07-30）**：v1.0.0 = 纯本地小发布；v1.1 = 云端算法跟进；代码保留云端扩展点、v1.0 不绑死云请求。打包壳开会时机当时已定；**壳已于 2026-08-16 拍板 Electron**。
+**最近拍板（2026-07-30）**：v1.0.0 = 纯本地小发布；当时写「v1.1 = 云端算法跟进」。**2026-08-18** 该云端算法部分已收窄改名为 Backlog「云端品味层」（见上条 08-18 拍板）。代码保留云端扩展点、v1.0 不绑死云请求。打包壳开会时机当时已定；**壳已于 2026-08-16 拍板 Electron**。
 
 **最近拍板（2026-07-18）**：Recover 家族 = Re-focus + 主动 Recover；`welcomeBack` 为 Idle 偶遇、不进家族；代码/限频继续分开（见 `CORE_LOOP.md`）。  
 **最近拍板（2026-08-09）**：主动 Recover = Focusing Tiger Anchor（轻触阿寅）；零 MicroRitual；不占被动额度；冷却 **180s**；`triggerActiveRecover()` + `ActiveRecoverAnchorUI`。
@@ -489,8 +511,8 @@
 **Backlog（仅列名，详情见下文 Backlog 章节）**：
 
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
-- **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）**
-- **v1.1 云端算法**（v1.0 不接线；保留 `cloud/` 可扩展）
+- **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）**
+- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；窄冻结已拍板、未开工）
 - **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
 - **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
@@ -737,15 +759,15 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ## 后续 Backlog（暂缓事项,已记录、未开工）
 
-### Backlog:同坐点（Focus Coins · C 轨练习货币）
+### Backlog:寅币（Focus Coins · C 轨 · Yin's Collections）
 
-> **方向已锁（2026-08-18）**。L0 纯账本本支。权威 `FOCUS_COINS.md`；切片 Brief `task-briefs/task-focus-coins.md`。
+> **方向已锁（2026-08-19 · #353 已合）**。L0 #335 · L1 #338 · L2 #339 · L3 #352+#353 已合。叠层 SKU 退役。权威 `FOCUS_COINS.md`（含 §1.2 已废止提案）。
 
-- 对外名 **同坐点**；只兑身份/情感锦上添花；**禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
-- 与 **莲花池 Slice A（#330）**：池按终身分钟自动开花；同坐点只可买已有朵上的变体（如晨露），**禁止**把开花改成花点才出现。
-- 工作量：L0–L2 约 10–16 人日。L0 = `focusCoinsLedger.js`。
-- **L1 硬闸**：开 `feature/focus-coins-l1-award` 前必须书面扫 Honesty / 完成记账邻接并行 PR（口头注意不算过闸）。
-- 勿插队桌面步骤 B / 桌面端侧智能体 L1。
+- 货币 **寅币 / Focus Coins**；个人中心 **阿寅的珍藏 / Yin's Collections**。结缘 ≠ Purchase。  
+- **花园**（莲花终身分钟）自动、不进店；**珍藏**只兑称号/稀有章/静物卡/闲笔。  
+- **铁律**：不改已有 PNG / 不往蒲团或莲花叠东西。  
+- **下一步**：挥手点播接线；四页签珍藏壳。信件/小册后置。  
+- **禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 
 ### Backlog:纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示）
 
@@ -950,12 +972,12 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **价值定位**：锦上添花的可选玩法，非核心刚需
 - **排期**：待 2D 情绪系统主线稳定后，再评估是否开发
 
-### Backlog:本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 未做）
+### Backlog:本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）
 
 > **拍板（2026-08-16 壳；2026-08-17 脚手架规格）**：首发 Mac DMG 壳 = **Electron**；打包器默认 **electron-builder**。选型：`task-briefs/task-desktop-shell-electron.md`（#326 · `fe5b76a`）。规格：`task-briefs/task-electron-desktop-scaffold.md`。  
 > **背景（2026-07-30）**：产品目标含「本地可以跑的电脑版 APP」。开会时机当时已定（冻结前约 1 周，或你说要桌面包时立刻开）；**禁止**拖到 `v1.0.0` tag 之后才选型。本条在 2026-08-16 由触发 B 收口。  
 > **「优先级高于 CI 细节」**（仍有效）：争同一段日历/Agent 注意力时，**先桌面包（现为 Electron 脚手架实现）**，再/并排 CI 工程护栏。CI 不是本条前置。  
-> **产品面（2026-07-30 仍有效）**：**v1.0.0 纯本地**；**v1.1** 云端算法；Electron **加法**，不推翻 Browser First / 纯 Web 默认交付。
+> **产品面（2026-07-30 仍有效 · 2026-08-18 改名）**：**v1.0.0 纯本地**；品味层（旧称 v1.1 云端算法）为可选增强、不绑核心路径；Electron **加法**，不推翻 Browser First / 纯 Web 默认交付。
 
 **候选结论**：
 
@@ -970,7 +992,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 **适配面**：资源与用户数据路径、原生菜单与窗口生命周期、固定自定义协议 origin（禁止生产 `file://`）；云请求（Checkout / OTP / 备份）在壳内须可见成功或可见错误。
 
-- **状态**：壳 **已拍板 Electron**（#326）；脚手架 Brief 已开（#329/#331）；**步骤 A 窗口代码已提交**（无托盘；Mac 上验收）。步骤 B 未做。
+- **状态**：壳 **已拍板 Electron**（#326）；脚手架 Brief 已开（#329/#331）；**步骤 A 窗口代码已提交**。**步骤 B 托盘 + SB-18 已接线**（待 Mac 场景 AB 人工）。
 - **不在范围**：不替代 Browser First；不把手机原生 App 混入；不把场景 AA PiP 升级成托盘常驻桌宠（托盘是收费 DMG 的另一条路径）；端侧陪伴生成另 Brief（2026-08-18 窄例外），**不挡**步骤 B。
 - **与 2026-08-07 技术方向纪要的关系**：手机商店壳 / Capacitor **仍不**并入本条；本条只解「本地电脑版」。纪要里「桌面壳仍开放」已由本拍板取代。详见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 
@@ -993,7 +1015,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
   - 矩阵口径：**无云端兜底**；Safari/ITP 等本机清理风险由用户自行承担。
   - **实现备注（勿漏）**：须有**温和、非打断**提示（例：Journey Log 页面角落「绑定邮箱可获得云端备份」；**禁止**弹窗警告打断主路径）。文案另定。目的：让用户在丢数据前知道「现在只在本机」；绑邮箱同时为后续 B 档付费转化铺垫身份基础。
 - **与 v1.0 纯本地**：核心练习路径仍可离线完成；A 为**可选增强**（无网 / 未绑邮箱 → 本机照常，只是没有云兜底）。隐私明示同意（发什么、为何、多久）仍适用。
-- **与「v1.1 云端算法」**：**分开**——本条是可靠性/防丢失；云端算法是 daily-message / emotion-weight 等可选增强。可并行评估，勿互相阻塞或混写成同一 Task。
+- **与「云端品味层」**（旧称 v1.1 云端算法）：**分开**——本条是可靠性/防丢失；品味层是 daily-message / emotion-weight 等可选增强。可并行评估，勿互相阻塞或混写成同一 Task。
 
 #### B · 付费无缝（可后排）
 
@@ -1011,16 +1033,24 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  
 - **口令示例**：「补 practice-backup OTP secrets」/「测练习记忆云端备份」
 
-### Backlog:v1.1 云端算法（v1.0 纯本地之后）
+### Backlog:云端品味层（权重 + 文案池；旧称 v1.1 云端算法）
 
-> **拍板（2026-07-30）**：先发布可用的纯本地 **v1.0.0** 小产品，再快速跟进 **v1.1** 云端算法——符合「先发布再迭代」。优先保障用户体验（离线可完成核心练习）；代码须保留将来云端可扩展性。
->
-> **相邻（2026-08-12）**：练习史防丢失见上条「练习记忆云端备份」——**不是**本条的子集；排期可交错，文档勿混写。
+> **拍板（2026-08-18）**：收窄并改名。只上云 **Dispatcher 权重覆盖 + 日签/文案池**。`IdleOrchestrator` / CapCut / `SpriteSequencePlayer` **永远本地**（防抄防不住录屏仿制，上云还会断离线练习）。  
+> **历史（2026-07-30）**：曾写「v1.0.0 纯本地小发布，再跟进 v1.1 云端算法」。该外号易与 SemVer / 支付云搅在一起——**废止用 v1.1 指本条**。首个对外稳定 tag 仍是纯本地核心 **`v1.0.0`**；本条是 1.0 之后的**可选增强**，不抢 `v1.1.0` 号。  
+> **相邻**：练习记忆云备份（防丢失）· Stripe/OTP（支付云）· 同坐点服务端账本（L2 可花点之后才评估防刷）——**三条时钟，禁止绑成一条队**。
 
-- **v1.0.0 范围**：**不**把核心路径绑在必须成功的云请求上；`cloud/` stub **保留**、**不接前端**（现状）；不因「将来要上云」阻塞本地发布。
-- **v1.1 范围（立项时再拆 Task）**：接入 `cloud/`（或后继）关键算法（如 daily-message / emotion-weight 等正式逻辑）；CORS、鉴权、字段与隐私明示同意（见 `MVP_PRODUCT_DEFINITION`）；离线时可选增强失效须有明确降级（核心本地路径仍可用）。
-- **可扩展性约束（v1.0 开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」；新增云能力须经可选客户端适配层，默认本地实现。
-- **排期**：**v1.0.0 tag 之后**优先评估跟进；不挡当前 Phase 0 / Electron 脚手架。
+- **现在（可选接线）**：有 Cloud base 时前端非阻塞拉 `POST /api/emotion-weight` / `POST /api/daily-message`；响应须 `schemaVersion: 1` 且池键/日签 id 与冻结表一致，否则静默本地。旧生产 mock（无 schemaVersion）→ 本地。核心 Sit / Rise / Idle **禁止**硬依赖云请求。`?tasteLayer=0` 关拉取。
+- **范围**：可选客户端适配层；失败 / 超时 / **不认识的 `schemaVersion`** → 干净降级本地表。CORS、鉴权、隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
+- **窄冻结（开工门闩 · 2026-08-18 已拍板）**：本地降级表 = **现在这套**，近一周不改数字。不是全量 QA；体感锚：Idle 不闪、Rise 再选、Honesty 关了再开。
+  - Rise 中断池：伸懒腰 `riseStretchCasual` **60** / 茶 `teaDrinking` **25** / 书 `bookReading` **15**
+  - 欢迎池：魔法书 `magicBookReading` **60** / 点头 `nodGreeting` **40**
+  - 轻量完成池：`sessionComplete` **70** / 点头 `mindfulAcknowledge` **30** / 鹦鹉 `parrotEarVisit` **8**（≈7%，8/108）
+  - Honesty 分档：≤29 分 `mindfulAcknowledge`（点头）；≥30 分 `goldenHaloPalms`（金辉）；`HONESTY_LONG_MIN_MINUTES = 30`
+  - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删（改字另议）
+- **开工**：用户 2026-08-18 书面「L1/L0 可告一段落 → 安排下一步」视为口令「开工云端品味层」。**生产 Worker** 仍须单独「部署」才从旧 mock 换成 v1 表。
+- **禁止**：把播放器迁云；用品味层满足 `isEntitled`。本切片 **未改** `HonestyCheckInController`（分档 overlay 只在 Dispatcher）。L2 兑换 #339 已合且未改时长分档。
+- **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
+- **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
 
@@ -1035,7 +1065,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 | 定时任务是否按 120 跑 | ✅ **YAML 已在 `main`**（PR #47，2026-07-31）。下一 schedule / dispatch 应按 120；#11 及更早仍为合并前 60m cancel |
 | Plan A（分片+清单） | ✅ **#63→main**；基建验 [#15](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30707227694)（~55m + JUnit，非 2h cancel） |
 | #15 稳定红 | ✅ **#74→develop**；dispatch 绿 [#30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)（JUnit **68 / 0 fail** / 1 skipped） |
-| Actions Secrets（API Key） | **当前不需要**：workflow **无** `secrets.*`；套件打本地静态壳。v1.1 云 E2E 再配 |
+| Actions Secrets（API Key） | **当前不需要**：workflow **无** `secrets.*`；套件打本地静态壳。品味层接线后再配云 E2E |
 | 环境/密钥隔离文档 | ✅ `docs/ENV_CONFIG.md` + `.env.example`（client + cloud） |
 
 #### 基建收口（2026-08-02）

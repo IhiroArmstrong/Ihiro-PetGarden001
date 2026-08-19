@@ -83,6 +83,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
+import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
@@ -165,6 +166,7 @@ import {
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
+import { bindDesktopShellAttention } from './core/desktopShell.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -191,7 +193,21 @@ import {
   MilestoneGlowStore,
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
+import { applyQaPracticeSeedFromSearch } from './core/qaPracticeSeed.js';
 import { LotusPondStore } from './core/LotusPondStore.js';
+import { GRANT_KIND } from './core/focusCoinsLedger.js';
+import { FocusCoinsStore } from './core/focusCoinsStore.js';
+import {
+  applyFocusCoinsGrant,
+  maybeResetFocusCoinsSession
+} from './core/focusCoinsAward.js';
+import {
+  applyFocusCoinsRedeem,
+  applyFocusCoinsEquipTitle,
+  buildFocusCoinRedeemContext
+} from './core/focusCoinsRedeem.js';
+import { applyFocusCoinsCosmetics } from './core/focusCoinsCosmetics.js';
+import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
 import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
@@ -213,6 +229,12 @@ import {
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
+import { prefetchTasteLayer } from './core/tasteLayerSync.js';
+import {
+  getTasteDailyWisdomOverlay,
+  getTasteWeightOverlay,
+  resetTasteLayerOverlayForTests
+} from './core/tasteLayerOverlay.js';
 import {
   WELLNESS_DAY_BANDS,
   resolveWellnessDayBand
@@ -278,7 +300,7 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
-/** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 25。开表前无 URL 时再出时长 chip。 */
+/** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 10。开表前无 URL 时再出时长 chip。 */
 const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 /** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
 const MICRO_RITUAL_MS_OVERRIDE = hasMicroRitualMsOverride(location.search)
@@ -328,6 +350,7 @@ function showDevLabToast(message, durationMs = 8000) {
 async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
+  void prefetchTasteLayer({ search: location.search, locale: getLocale() });
 
   // PWA: network-only SW in production only (no Cache Storage).
   // Electron Step A: never register — custom protocol + extraResources.
@@ -343,6 +366,7 @@ async function init() {
     document.title = t('APP_TITLE');
     const mask = document.getElementById('loading-mask');
     if (mask) mask.textContent = t('LOADING');
+    void prefetchTasteLayer({ search: location.search, locale: getLocale() });
   });
 
   const app = document.querySelector('#app');
@@ -739,6 +763,7 @@ async function init() {
       onActivate: () => {
         const result = mindfulReminderController.triggerActiveRecover();
         if (result.ok) {
+          awardFocusCoins({ kind: GRANT_KIND.ACTIVE_RECOVER });
           activeRecoverAnchor.enterCooldown(ACTIVE_RECOVER_COOLDOWN_MS);
         }
         return result;
@@ -756,6 +781,7 @@ async function init() {
       mindfulReminderController.handleAttentionReturn(event)
   });
   attentionSignals.bind();
+  bindDesktopShellAttention(attentionSignals);
 
   // 结束反思：正常完成在庆祝播完回归坐姿后淡入；主动结束不播完成反馈，短暂留白后淡入。
   const reflectionMoment = new TigerReflectionMoment(
@@ -881,6 +907,8 @@ async function init() {
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
+  /** @type {FocusCoinsPanelUI | null} */
+  let yinCoinPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
@@ -1007,6 +1035,7 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'yin-coin') yinCoinPanelUI?.close();
   }
 
   /**
@@ -1112,11 +1141,31 @@ async function init() {
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
+  applyQaPracticeSeedFromSearch({
+    search: window.location.search,
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
   applyQaLotusPondSeedFromSearch({
     search: window.location.search,
     storage: typeof localStorage !== 'undefined' ? localStorage : null
   });
   const practiceDaysStore = new PracticeDaysStore();
+  const focusCoinsStore = new FocusCoinsStore({ now });
+  function awardFocusCoins(event) {
+    return applyFocusCoinsGrant({
+      event,
+      store: focusCoinsStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
+  }
+  function resetFocusCoinsSession() {
+    maybeResetFocusCoinsSession({
+      store: focusCoinsStore,
+      search: location.search
+    });
+  }
   const lotusPondStore = new LotusPondStore();
   const lotusPondRuntime = new LotusPondRuntime({
     store: lotusPondStore,
@@ -1124,6 +1173,65 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  function syncFocusCoinsCosmetics() {
+    applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
+      pondEl: document.getElementById('lotus-pond'),
+      appEl: document.getElementById('app'),
+      documentElement: document.documentElement,
+      document,
+      enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
+  }
+  window.__tasteLayer = {
+    status: () => ({
+      weights: Boolean(getTasteWeightOverlay()),
+      dailyWisdom: Boolean(getTasteDailyWisdomOverlay()),
+      honestyLongMinMinutes: getTasteWeightOverlay()?.honestyLongMinMinutes ?? null
+    }),
+    prefetch: () => prefetchTasteLayer({ search: location.search, locale: getLocale() }),
+    reset: () => resetTasteLayerOverlayForTests()
+  };
+  window.__focusCoins = {
+    getBalance: () => focusCoinsStore.getBalance(),
+    getSnapshot: () => focusCoinsStore.getSnapshot(),
+    redeem: (skuId) => {
+      const result = applyFocusCoinsRedeem({
+        skuId,
+        store: focusCoinsStore,
+        practiceDaysStore,
+        lotusPondStore,
+        search: location.search
+      });
+      syncFocusCoinsCosmetics();
+      yinCoinPanelUI?.refresh?.();
+      return result;
+    },
+    equipTitle: (titleId) => {
+      const result = applyFocusCoinsEquipTitle({
+        titleId,
+        store: focusCoinsStore,
+        search: location.search
+      });
+      syncFocusCoinsCosmetics();
+      yinCoinPanelUI?.refresh?.();
+      return result;
+    }
+  };
+  yinCoinPanelUI = new FocusCoinsPanelUI(document.body, {
+    getContext: () => ({
+      ...buildFocusCoinRedeemContext({
+        store: focusCoinsStore,
+        practiceDaysStore,
+        lotusPondStore
+      }),
+      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
+    }),
+    redeem: (skuId) => window.__focusCoins.redeem(skuId),
+    equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
+    onMessage: (message) => mindfulToast.show(message)
+  });
+  window.__yinCoinPanel = yinCoinPanelUI;
+  syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
@@ -1152,7 +1260,17 @@ async function init() {
       arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
       microRitualUI?.isOpen?.() === true,
-    onCheckInComplete: () => {
+    onCheckInComplete: ({ durationMinutes, wokeFromDormant } = {}) => {
+      awardFocusCoins({
+        kind: GRANT_KIND.HONESTY,
+        durationMinutes
+      });
+      if (
+        wokeFromDormant &&
+        isFocusCoinsAwardEnabled({ search: location.search })
+      ) {
+        focusCoinsStore.markLifetime({ honestyWake: true });
+      }
       honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
       const streak = practiceDaysStore.getRecentStreakDays();
@@ -1666,6 +1784,7 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
+    awardFocusCoins({ kind: GRANT_KIND.MICRO_RITUAL });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
@@ -1886,6 +2005,10 @@ async function init() {
     onJourneyLog: () => {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();
+    },
+    onYinCoin: () => {
+      closeGrowthOverlayCards({ except: 'yin-coin' });
+      yinCoinPanelUI?.open();
     },
     onConfide: () => {
       closeGrowthOverlayCards({ except: 'confide' });
@@ -2197,6 +2320,9 @@ async function init() {
         currentSessionIntention = latched.text;
         currentIntentionSource = latched.source;
         arrivalChoseThisRun = Boolean(info.chose);
+        if (arrivalChoseThisRun) {
+          awardFocusCoins({ kind: GRANT_KIND.ARRIVE });
+        }
         syncArrivalGateReady(true);
         onboardingHints?.markSeen('notice');
         onboardingHints?.markSeen('breathing');
@@ -2357,6 +2483,7 @@ async function init() {
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
     arrivalChoseThisRun = false;
+    resetFocusCoinsSession();
     pendingAutoStartMode =
       autoStartMode && shouldAutoStartFocusOnModeSelect(autoStartMode)
         ? autoStartMode
@@ -2523,7 +2650,7 @@ async function init() {
   }
 
   /**
-   * 开表入口：无 `?sessionMinutes=` 时先出 15/25/45/60 chip；有则跳过（e2e）。
+   * 开表入口：无 `?sessionMinutes=` 时先出 10/15/25/45 chip；有则跳过（e2e）。
    * @param {string} companionMode
    */
   function requestBeginFocusWithMode(companionMode) {
@@ -2554,6 +2681,7 @@ async function init() {
   }
 
   function beginFocusWithMode(companionMode) {
+    resetFocusCoinsSession();
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
@@ -2837,6 +2965,13 @@ async function init() {
     stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
+    awardFocusCoins({
+      kind: GRANT_KIND.TIMED,
+      reachedTarget: true,
+      companionMode: focusSession.companionMode,
+      durationMinutes: focusSession.targetMinutes
+    });
+    awardFocusCoins({ kind: GRANT_KIND.REFLECT });
     lotusPondRuntime.releaseBirths();
     stateManager.setState(STATES.IDLE);
     honestyGlowLevel = null;

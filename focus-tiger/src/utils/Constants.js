@@ -21,6 +21,7 @@ export const COLORS = {
   textInk: '#2c1f14'
 };
 
+/** 今日同坐 HUD 软顶 / QA 播种默认分钟（一炷香轻量日目标）。本场 Focus chip 默认见 `FOCUS_DURATION_DEFAULT_MINUTES`（10）。 */
 export const FOCUS_SESSION_DEFAULT_MINUTES = 25;
 /** @deprecated 2026-07-16 Honesty Check-in：DORMANT 改为「当日零完成」，不再用连续天数。 */
 export const DORMANT_TRIGGER_DAYS = 3;

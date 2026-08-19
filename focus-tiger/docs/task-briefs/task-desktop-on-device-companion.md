@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-18）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针已在 **Apple M5 16GB** 过数值闸；Focusing hitch **无卡顿**。**不合** PR #336 直到 **M1 8GB**（未测）。**不锁** 0.6B、**不开** L1。仍无产品入口。  
+> **状态（2026-08-19）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针已在 **Apple M5 16GB** 过数值闸；Focusing hitch **无卡顿**。**8GB 数据：用户书面豁免**（资料估算；低配默认不出入口）。**可合 PR #336**。**不锁** 0.6B、**不开** L1。仍无产品入口。  
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -99,21 +99,22 @@ npm run desktop:companion-l0
 
 - 首次会下载约 0.5 GB GGUF 到 `~/Library/Application Support/Focus Tiger/companion-l0/`（**不进 git、不进 DMG**）。
 - 报告 JSON 写到同一目录 `report-*.json`，并打印 `verdict`。
-- **不上** Idle ⋯ / 抽屉入口；`preload` 仍只有既有四条 IPC。
+- **不上** Idle ⋯ / 抽屉入口；`preload` 仍只有既有壳 IPC。
 - 跳过窗口（只测加载，不采 rAF）：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`
 - 勿与口令「开工同坐点 L0」混在同一句话里。
 
 L0 数字出来之前 **不锁型号、不排 L1 面板**。
 
-### 分析师跟进（2026-08-18 · 硬）
+### 分析师跟进（2026-08-18 · 硬）+ 豁免（2026-08-19）
 
-M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型是 **M1 8GB** 统一内存。
+M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型是 **8GB 统一内存 / 8GB Windows 本**。
 
 - **Focusing 掉帧（M5 · 2026-08-18 用户肉眼）**：双终端下 **无可见影响 / 无卡顿**。
-- **M1 8GB**：仍未测。不必现在去找旧电脑；缺这组数就 **不能锁默认模型、不能假定 8GB 机器也给出入口**（Brief 已有：低配探测失败则不出菜单）。在 8GB 数字之前：
-  - **禁止**合入 [#336](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/336)
+- **M1 8GB**：仍未测。**2026-08-19 用户书面豁免**这条探针数据（公开资料 + M5 RSS≈882 MB：0.6B Q4 数字门槛大概率过；Focusing 整机压力仍是假设）。豁免 **只**让探针进 `develop`，**不**等于允许开 L1。
+- 在 L1 之前：
   - **禁止**锁死 Qwen3-0.6B
   - **禁止**开 L1 / 人设 / 选型会
+  - **低配默认不出入口**（Mac 与 Windows 同样：检测到总内存 ≤8.5 GiB 则不注册生成行）
 
 `Idle rAF p95 Δ` 只是探针自己对主循环的干扰，**不能**代替肉眼看 Sit→Focusing 呼吸是否顿挫。`desktop:companion-l0` **会跑完即退**，不能单独完成这项人工测。
 
@@ -122,7 +123,12 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 1. 产品窗（**不要**带 `FT_COMPANION_L0`）：`npm run desktop:dev` → Sit → Focusing，看阿寅呼吸。
 2. 另开终端、Focusing 已开始后：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`（子进程加载 ≈0.9 GB 再卸载，**本命令不开窗**）。盯的是终端 1 那个产品窗：加载中 / **dispose 那几百毫秒** 呼吸有没有可见顿挫。
 
-**M1 8GB（有机器再跑）**：同一套 `npm run desktop:companion-l0`，把 `report-*.json` 的 RSS / TTFT / tok/s / `verdict` 记回 TRACKER。这是「默认模型该多小 / 低配是否直接不提供入口」的分水岭，不是走过场。
+### 低配购买（2026-08-19）
+
+- **Windows 与 Mac 同样适用** 8GB 门槛（Windows 8GB 往往更紧：无 Metal，llama.cpp 常走 CPU）。
+- 现有 Support 三卡（Tea / Yin Membership **US$6.99/月** / Sanctuary Lifetime）**不是**本地智能体 SKU。低配用户仍可买这些——买的是 B 轨仪式 / 深库音效，**不会**因此打开被隐藏的本地模型入口。
+- **禁止**另开 **US$12.99/月「带本地智能体的 Pro 陪伴版」** 让低配「知情后冒险购买、不能退款」。入口按设计隐藏时，再收一笔只为该能力的钱 = 假收费（`PRINCIPLES.md`）。用户也不能自行打开被隐藏的入口。
+- 说明文案（英文默认）落在 Electron **安装 README**、点 **?** 的简介卡、以及 **Support Yin** 模态底部；Web / 手机 Safari **不出现**。
 
 ---
 

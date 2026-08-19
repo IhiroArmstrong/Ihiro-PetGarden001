@@ -69,13 +69,21 @@ export interface EmotionWeightRequest {
 }
 
 export interface DailyMessageResponse {
+	schemaVersion: number;
+	locale: string;
+	pool: Array<{ id: string; text: string; attribution?: string }>;
 	message: string;
 	variantSeed: string;
 }
 
 export interface EmotionWeightResponse {
+	schemaVersion: number;
 	variant: string;
 	weight: number;
+	riseInterruptPool: Array<{ key: string; weight: number }>;
+	welcomePool: Array<{ key: string; weight: number }>;
+	lightCompletePool: Array<{ key: string; weight: number }>;
+	honestyLongMinMinutes: number;
 }
 
 export interface CreateCheckoutSessionResponse {
