@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合 `develop`**。**不锁** 0.6B、**不开** L1、仍无产品入口。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to` **已记入文档**；**Checkout / Support 第四卡 / Worker 路由未接**。Pro **包含** Base（B 轨）+ 本地智能体（仅合格 Electron）。  
+> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合**。**不开 L1**（须口令）。Stripe Pro Price 已记；**Checkout 未接**。Pro 含 Base + 本地智能体。Lifetime 用户要 AI → 另订 Pro（付推理；不必再买 Base）。**用户书面认同**四条：不白嫖智能体、非 Electron 无本地 AI、测须 `desktop:dev`、Checkout 须 L1 口令。  
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -135,12 +135,62 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
   - **Focus Tiger Base** · US$6.99/月（现货 Membership Checkout 继续走 `STRIPE_MEMBERSHIP_PRICE_ID`；应用内文案仍可写 Yin Membership，改 UI 另开）；
   - **Focus Tiger Pro** · US$12.99/月 · Price ID **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已记入 `ENV_CONFIG` / `cloud/.env.example`；未进 Checkout 路由、未进 wrangler `vars`、未改三卡**）。
 - **已拍板 · 档位关系（纠正 08-19 晚「互不含」）**：Pro **包含** Base 那套 B 轨（仪式 / 深库 / 节日主题 / 尊贵章）**加上**桌面本地智能体。Base / Membership **不含**本地智能体。Sanctuary Lifetime 仍只覆盖 B 轨、**不含**本地智能体（推理是持续成本）。禁止再让用户付 $12.99 还不含 $6.99 已买得的进阶内容。
+- **Lifetime 用户若还要本地智能体（2026-08-20）**：B 轨已经买断，**不必再买 Base**。L1 入口开放后，再订 **Focus Tiger Pro US$12.99/月**——付的是持续推理成本；B 轨继续由 Lifetime 覆盖（`lifetime ∪ Pro`）。**不要**另开「Lifetime 专属更便宜 AI 加购」除非书面改价。**不要**让 Lifetime 免费送本地智能体。
 - **谁能买 vs 谁能用（纠正「只有 Electron 才能见第四卡」）**：
   - **L0 / 本地模型测试本来就是 Electron 前提**：`npm run desktop:dev`、`desktop:companion-l0`。Safari `?product=1` **从未**加载 llama；那是 Web 产品壳（付费、Idle、内存说明不应出现）。
   - **L1 之后买 Pro**：Checkout 可以走 **Web / Safari**（与现货 Membership 同一套支付云），方便你继续用 Safari 测付款。
   - **L1 之后用本地智能体**：仍只 **Electron + 宽屏 + 非低配**。Web / 窄屏 / ≤8GB **没有生成入口**。低配若已购 Pro：B 轨照常可用，入口仍隐藏。
   - **现在**：Support **仍只三卡**；不接 Pro Checkout。
 - 说明文案（英文默认）仍落在 Electron **安装 README**、点 **?** 的简介卡、以及 **Support Yin** 模态底部；Web / 手机 Safari **不出现**该内存块。
+
+### 为什么必须 Electron（Web / Safari 没有本地 AI）
+
+这是 2026-08-18 已拍板的窄例外，不是漏做：
+
+- 模型跑在 **Electron 主进程** 的 `node-llama-cpp`（Metal / 本机 CPU），约 0.5 GB GGUF 下到 userData。Safari / 普通浏览器 **没有**这条原生库，也不能把主进程 llama 塞进 Web。
+- 已禁止：WebLLM 进渲染进程、Ollama 当默认、PWA / 手机 / 窄屏抽屉跑本地智能体。
+- 所以：**不带 Electron 壳 = 用户无法使用本地 AI。** Safari 测过的是 Web 产品（练习、Support、付款），不是 llama。
+
+### 怎么测本地 AI（相对固定 QA 树 5173）
+
+固定 QA 树 + Safari `http://127.0.0.1:5173/?product=1` **继续**测 Web / 关单故事。**不能**用 Safari 打开 5173 来测本地 AI。
+
+测本地 AI 时，5173 仍可能被 **Electron 当渲染页**用，但你看的必须是 **Electron 窗口**：
+
+1. **不要**同时让另一棵树占 5173（`desktop:dev` 会自己再起 Vite 等 5173）。若 QA Safari 正在测，先停那次 `dev:qa`，或等本轮 Web 测完。
+2. 关单级 develop tip（本机 QA 树）：
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
+npm --prefix desktop install
+npm run desktop:dev
+```
+
+3. 在弹出的 **Focus Tiger 桌面窗**里测 Idle / ? / Support 内存说明 / 将来的宽屏入口。**不要**用 Safari 连同一 5173 当「已经在测本地 AI」。
+4. **L0 探针**（仍无产品入口；跑完即退）：
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger
+npm --prefix desktop install
+npm run desktop:companion-l0
+```
+
+跳过探针窗：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`。Focusing hitch 仍用双终端（见上）。
+
+测完停掉 Electron（`desktop:dev` 会一并停它拉起的 Vite）。再测 Web 关单时重新 `npm run dev:qa`。
+
+### 开 L1 入口要什么（尚未安排）
+
+L1 = 桌面宽屏面板 + 下载进度 + 主进程 IPC + Focusing 卸载。**仍不是**给真实用户的多轮人设（那是 L2）。
+
+**条件（同时满足才开工 L1 代码）**：
+
+1. 你当回合口令 **「开工桌面陪伴 L1」**（没有口令 = 不排、不写面板）。
+2. L0 探针已在 `develop`（#336；M5 数字 + hitch 肉眼；8GB 书面豁免）。
+3. **仍不锁** 0.6B；**仍不上** 真实用户生成；Pro Checkout 要等入口真能打开，否则假收费。
+4. L2（四层路由 + 内部多轮攒跑偏）**禁止** L0/L1 一过就给真实用户。
+
+**下一步（已写在 `PROCESS` 开工前优先级）**：挥手点播 Play 已在 #356；**下一步**是四页签珍藏壳，**不是** L1。本回合不安排 L1。
 
 ---
 
