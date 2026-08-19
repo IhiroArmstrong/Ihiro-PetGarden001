@@ -301,6 +301,8 @@
   "YIN_COIN_OWNED": "Bonded",
   "YIN_COIN_WEAR": "Wear",
   "YIN_COIN_WEARING": "Wearing",
+  "YIN_COIN_PLAY": "Play",
+  "YIN_COIN_PLAY_BUSY": "Yin is in the middle of something — try Play in a moment.",
   "YIN_COIN_CLOSE": "Close",
   "YIN_COIN_PRICE": "{n}",
   "YIN_COIN_SKU_INCENSE_TINT": "Warm incense",

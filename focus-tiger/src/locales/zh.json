@@ -301,6 +301,8 @@
   "YIN_COIN_OWNED": "已结缘",
   "YIN_COIN_WEAR": "佩戴",
   "YIN_COIN_WEARING": "佩戴中",
+  "YIN_COIN_PLAY": "点播",
+  "YIN_COIN_PLAY_BUSY": "阿寅正忙，稍后再点播。",
   "YIN_COIN_CLOSE": "关闭",
   "YIN_COIN_PRICE": "{n} 枚",
   "YIN_COIN_SKU_INCENSE_TINT": "香炉暖烟",

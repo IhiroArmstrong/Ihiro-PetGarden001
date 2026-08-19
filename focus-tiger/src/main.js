@@ -208,6 +208,10 @@ import {
 } from './core/focusCoinsRedeem.js';
 import { applyFocusCoinsCosmetics } from './core/focusCoinsCosmetics.js';
 import { isFocusCoinsAwardEnabled } from './core/focusCoinsAwardGate.js';
+import {
+  COLLECTIONS_WAVE_HELLO_EMOTION_KEY,
+  evaluateCollectionsWaveHelloPlay
+} from './core/collectionsWaveHelloGate.js';
 import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
@@ -1215,7 +1219,8 @@ async function init() {
       syncFocusCoinsCosmetics();
       yinCoinPanelUI?.refresh?.();
       return result;
-    }
+    },
+    playWave: () => playCollectionsWaveHello()
   };
   yinCoinPanelUI = new FocusCoinsPanelUI(document.body, {
     getContext: () => ({
@@ -1224,10 +1229,14 @@ async function init() {
         practiceDaysStore,
         lotusPondStore
       }),
-      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
+      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle,
+      playBusy:
+        emotionController.getCurrentEmotionKey() ===
+        COLLECTIONS_WAVE_HELLO_EMOTION_KEY
     }),
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
+    playWave: () => playCollectionsWaveHello(),
     onMessage: (message) => mindfulToast.show(message)
   });
   window.__yinCoinPanel = yinCoinPanelUI;
@@ -1505,6 +1514,28 @@ async function init() {
   const { syncHonestyIdleEntry, syncArrivalGateReady } = sessionChromeSyncApi;
   /** @type {IdleYinTapAnchorUI | null} */
   let idleYinTapAnchor = null;
+
+  function playCollectionsWaveHello() {
+    const result = evaluateCollectionsWaveHelloPlay({
+      ownedIds: focusCoinsStore.getSnapshot().ownedIds,
+      sessionState: stateManager.state,
+      focusing: stateManager.state === STATES.FOCUSING,
+      emotionKey: emotionController.getCurrentEmotionKey()
+    });
+    if (!result.ok) {
+      yinCoinPanelUI?.refresh?.();
+      return result;
+    }
+    emotionController.playEmotion(COLLECTIONS_WAVE_HELLO_EMOTION_KEY, {
+      onComplete: () => {
+        yinCoinPanelUI?.refresh?.();
+        syncIdleYinTap();
+      }
+    });
+    yinCoinPanelUI?.refresh?.();
+    syncIdleYinTap();
+    return result;
+  }
 
   function isIdleYinTapOverlayBusy() {
     return (

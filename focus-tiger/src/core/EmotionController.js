@@ -548,6 +548,16 @@ export class EmotionController {
         }
       },
 
+      // Yin's Collections 点播：已结缘 gesture.wave-hello 后播已入库 waveHello。
+      // 不改 PNG / playlist；不复活 welcomeBack / 欢迎池 / 10min 自主挥手。
+      collectionsWaveHello: (options = {}) => {
+        this._playCompanionSequenceOnce('waveHello', options, {
+          crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: options.returnCrossFadeMs ?? CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+        });
+      },
+
       // 魔法书阅读（已烘焙帧，产品路径正放一次、无倒放）。
       // 2026-08-05：冷启动回 Idle 改 ~1s CapCut（用户书面：硬切缺叠化）。
       magicBookReading: (options = {}) => {
@@ -1520,6 +1530,7 @@ export const EMOTION_KEYS = Object.freeze({
   MILESTONE_GLOW: EMOTIONS.milestoneGlow,
   SESSION_COMPLETE: EMOTIONS.sessionComplete,
   WELCOME_BACK: 'welcomeBack',
+  COLLECTIONS_WAVE_HELLO: 'collectionsWaveHello',
   MAGIC_BOOK_READING: 'magicBookReading',
   BOOK_READING: 'bookReading',
   PARROT_EAR_VISIT: 'parrotEarVisit',

@@ -531,12 +531,13 @@
 ## 场景 AC：Yin's Collections 抽屉（L3 · 寅币珍藏表面）
 
 > **用户故事**：Kelly 想用坐来的寅币结缘一件钱买不到的案头雅物——宽屏 ⋯ / 窄屏抽屉在 Journey log **旁边**打开 **Yin's Collections**（汉语阿寅的珍藏 / 日语阿寅の蒐集），见可滚动商店目录，不是 Support 三卡、不是请茶、不是 HUD 钱包、不是第二座莲花池。  
-> **单元**：`focusCoinsSurface.test.js`（商店 7 行，不含退役叠层；缺口句点名还差几枚/几分钟）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`）。  
-> **仍须人工**：375 不挡三球；商店目录都能滚到；不足结缘 toast；已结缘 / Wear；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
+> **单元**：`focusCoinsSurface.test.js`（商店 7 行；已结缘挥手 `showPlay`）；`collectionsWaveHelloGate.test.js`（未结缘 / Focusing / celebrating 不得播）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`）；`FocusCoinsPanelUI.test.js`（z=18 / `:active` / 点播钮）。  
+> **仍须人工**：375 不挡三球；商店目录都能滚到；不足结缘 toast；已结缘 / Wear；**结缘挥手后点播可见挥手序列**；冷启动仍无自动挥手；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
 > **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把瓷器叠回主坐席。
 
 1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。随后见寅币余额 +「案头雅物皆由同坐岁月所化」+ 商店行（与阿寅同坐 / 又回来了 / 久坐的人 / 静石小章 / 青瓷瓶 / 青铜礼器 / 挥手）。**不得**再出现莲叶晨露 / 木念珠 / 须弥金线。
-2. **结缘成功**（余额够、门槛够）：点 **结缘 / Bond** → **0–1 秒内**钮 `:active` 按压；该行变成已结缘；余额减少。瓷器/青铜器只进珍藏卡面，莲花朵数与亮度不变。称号可 Wear（一次一个）。静石 / 静物成功可出安静仪式句（非彩纸）。挥手本切片只上架，点播接线另开。
+2. **结缘成功**（余额够、门槛够）：点 **结缘 / Bond** → **0–1 秒内**钮 `:active` 按压；该行变成已结缘；余额减少。瓷器/青铜器只进珍藏卡面，莲花朵数与亮度不变。称号可 Wear（一次一个）。静石 / 静物成功可出安静仪式句（非彩纸）。**挥手**结缘后该行出现 **点播 / Play**（未结缘只有结缘、没有点播）。
+2b. **点播挥手**（已结缘 `gesture.wave-hello`）：点 **点播 / Play** → **0–1 秒内**钮 `:active` 按压 + 阿寅播已入库 `wave-hello`（抬手→摇摆×2→放手）→ ~1s CapCut 回 Idle。莲花池不变。播完可再点。Celebrating / Focusing / 其它 oneshot 进行中：钮禁用，或按压 + 安静 toast（**不是**哑点击）。冷启动欢迎仍是书/点头，**不得**因此自动挥手。
 3. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 toast。**不是**哑点击，也不说笼统「无法兑换」。
 4. **回流**：Close / Esc / 点外侧 → **0–1 秒内**关钮 `:active` + 卡淡出；Sit / ⋯ 仍在。再打开仍是商店目录；已结缘不再扣点。
 5. **对照 Support（场景 Q）**：右上角 Support Yin 三卡 / `$` **不**出现在本面板。付款仍只走 Support FAB。

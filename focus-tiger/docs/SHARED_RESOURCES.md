@@ -114,6 +114,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `nodGreeting` | 靠近自动已拆；**欢迎池试验 40%**（与 magicBookReading） | 勿接回默认靠近 |
 | `magicBookReading` | 开场欢迎池试验（60%） | 已烘焙 pingpong；**硬切** Idle |
 | `welcomeBack` | **停接线**（2026-08-02）：不播新旧挥手；键保留 | 素材仍入库；场景以后另议 |
+| `collectionsWaveHello` | Yin's Collections 已结缘挥手点播 | 播已入库 `waveHello`；勿接欢迎池 / 10min 自主；勿改 PNG |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
 | 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取 |

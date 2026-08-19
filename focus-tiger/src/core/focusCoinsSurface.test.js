@@ -99,6 +99,23 @@ test('porcelain stills redeem without garden gates', () => {
   assert.deepEqual(gaps, []);
 });
 
+test('bonded wave-hello offers Play; unowned does not', () => {
+  const unowned = listFocusCoinSurfaceRows({ balance: 0 }).find(
+    (row) => row.id === 'gesture.wave-hello'
+  );
+  assert.equal(unowned?.owned, false);
+  assert.equal(unowned?.showPlay, false);
+  assert.equal(unowned?.playBusy, false);
+
+  const bonded = listFocusCoinSurfaceRows({
+    ownedIds: ['gesture.wave-hello'],
+    playBusy: true
+  }).find((row) => row.id === 'gesture.wave-hello');
+  assert.equal(bonded?.owned, true);
+  assert.equal(bonded?.showPlay, true);
+  assert.equal(bonded?.playBusy, true);
+});
+
 test('owned SKU has no gaps and Wear is offered on titles', () => {
   const rows = listFocusCoinSurfaceRows({
     balance: 0,

@@ -1,6 +1,6 @@
 # Task Brief · 寅币（Focus Coins）/ Yin's Collections
 
-> **状态**：L3 抽屉 #352+#353 已合 `develop`。花园 vs 珍藏、叠层退役、Collections 商店目录已锁。L0 #335 · L1 #338 · L2 #339 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`（含 §1.2 已废止提案）。  
+> **状态**：L3 抽屉 #352+#353 已合 `develop`。挥手点播本旁支接线。花园 vs 珍藏、叠层退役、Collections 商店目录已锁。L0 #335 · L1 #338 · L2 #339 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`（含 §1.2 已废止提案）。  
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
 > **性质**：C 轨口径修订 + L3 目录过滤（中风险：徽章隔离 / 莲花池不拦截 / Idle chrome）。不改发点数学、不改 Honesty 分档、不扩备份 6 key。  
 > **禁止**：建 entitlement gate key；用余额满足 `isEntitled`；Support 三卡样式；常驻 HUD；把叠层 SKU 再摆进抽屉；复活「8 条叠层全列」。
@@ -41,7 +41,7 @@
 | **L0** | `feature/focus-coins-l0-ledger` | 纯函数：分档发点、封顶、回声、兑换资格、隔离断言 | 不挂 `main.js`、无 UI、不改 localStorage 白名单 | 2–4 | 防刷表单测全绿；未达标/二次 Honesty/`isEntitled` 失败用例锁住 |
 | **L1** | `feature/focus-coins-l1-award` | 完成钩子写入钱包；key 进 L-01；flag 可关 | 无店、不改场景剧本、不扩备份 6 key | 4–6 | 达标一场 Stay 见余额涨；未达标为 0；关 flag 无写入 |
 | **L2** | `feature/focus-coins-l2-redeem` + `docs/yin-collections-c-track` | 称号 + 稀有章 + 珍藏静物；叠层退役 | 新角色序列换装柜；PNG 叠层 | 已合 + 本支退役叠层 | 花点留下只增不减资产；晨露新兑失败 |
-| **L3** | `feature/focus-coins-l3-surface` | **Yin's Collections** 四页签；装备称号；挥手点播；en/ja；375 | 改场景 D；B 轨 key；改 PNG | 3–5 | 次级入口可忽略；0–1s 按压；不挡主球；店底须知 |
+| **L3** | `feature/focus-coins-wave-playback` | **Yin's Collections** 抽屉已合；已结缘挥手点播；en/ja；375 | 改场景 D；B 轨 key；改 PNG；复活 welcomeBack | 本旁支 | 点播 0–1s 按压 + 已入库挥手；欢迎池仍无挥手 |
 
 **Feature flag**：L1 起 `FOCUS_COINS_USER_MOUNT_ENABLED`（或同等）。关 = 完全回到无寅币钱包的正式路径（Playbook 红线 C：禁止半套简化默认）。
 

@@ -301,6 +301,8 @@
   "YIN_COIN_OWNED": "縁を結び済み",
   "YIN_COIN_WEAR": "まとう",
   "YIN_COIN_WEARING": "まとい中",
+  "YIN_COIN_PLAY": "再生",
+  "YIN_COIN_PLAY_BUSY": "阿寅は今ほかのことをしています。少ししてから再生してください。",
   "YIN_COIN_CLOSE": "閉じる",
   "YIN_COIN_PRICE": "{n} 枚",
   "YIN_COIN_SKU_INCENSE_TINT": "香炉の暖かな煙",

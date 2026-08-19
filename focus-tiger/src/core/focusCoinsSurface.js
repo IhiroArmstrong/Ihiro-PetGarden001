@@ -166,6 +166,9 @@ export function listFocusCoinSurfaceRows(ctx = {}) {
       titleIds,
       showWear: owned && titleIds.length > 0,
       wearingTitleId: titleIds.find((id) => id === equippedTitle) ?? null,
+      showPlay: owned && sku.id === 'gesture.wave-hello',
+      playBusy:
+        owned && sku.id === 'gesture.wave-hello' && ctx.playBusy === true,
       ceremonial: sku.kind === 'badge.rare' || sku.kind === 'collection'
     };
   });

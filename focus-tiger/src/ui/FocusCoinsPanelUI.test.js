@@ -27,3 +27,12 @@ test('panel source maps shop SKUs via listFocusCoinSurfaceRows', () => {
   assert.match(src, /listFocusCoinSurfaceRows\(ctx\)/);
   assert.match(src, /dataset\.sku = row\.id/);
 });
+
+test('bonded wave row sources Play control (not Shop / Purchase)', () => {
+  assert.match(src, /showPlay/);
+  assert.match(src, /yin-coin-play-wave/);
+  assert.match(src, /YIN_COIN_PLAY/);
+  assert.match(src, /playWave/);
+  assert.doesNotMatch(src, /Purchase/);
+  assert.doesNotMatch(src, /\bShop\b/);
+});

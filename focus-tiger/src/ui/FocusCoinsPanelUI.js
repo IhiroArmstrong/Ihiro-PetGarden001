@@ -33,6 +33,7 @@ export class FocusCoinsPanelUI {
    * @param {() => object} [handlers.getContext]
    * @param {(skuId: string) => { ok?: boolean, reason?: string }} [handlers.redeem]
    * @param {(titleId: string) => { ok?: boolean }} [handlers.equipTitle]
+   * @param {() => { ok?: boolean, reason?: string }} [handlers.playWave]
    * @param {(message: string) => void} [handlers.onMessage]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
@@ -234,6 +235,16 @@ export class FocusCoinsPanelUI {
           }
           meta.append(wearBtn);
         }
+        if (row.showPlay) {
+          const playBtn = document.createElement('button');
+          playBtn.type = 'button';
+          playBtn.className = 'yin-coin-panel__btn yin-coin-panel__btn--ghost';
+          playBtn.dataset.testid = 'yin-coin-play-wave';
+          playBtn.textContent = t('YIN_COIN_PLAY');
+          playBtn.disabled = Boolean(row.playBusy);
+          playBtn.addEventListener('click', () => this._onPlayWave());
+          meta.append(playBtn);
+        }
       } else {
         const exchange = document.createElement('button');
         exchange.type = 'button';
@@ -272,6 +283,14 @@ export class FocusCoinsPanelUI {
     if (result?.ok && row.ceremonial) {
       this._showCeremonial(row);
     }
+  }
+
+  _onPlayWave() {
+    const result = this.handlers.playWave?.();
+    if (result?.ok === false && result.reason === 'busy') {
+      this.handlers.onMessage?.(t('YIN_COIN_PLAY_BUSY'));
+    }
+    this._refresh();
   }
 
   /**

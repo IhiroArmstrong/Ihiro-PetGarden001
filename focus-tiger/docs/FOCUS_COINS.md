@@ -62,7 +62,7 @@
 | 寅币 8 件并进 `#yin-tip-kindness-badges` 或提前做成就墙 | **不要**。练习章条继续只管练习/请茶/Sanctuary；成就墙仍是 Backlog |
 | `yin-coin-flat-draft.png` 0.5–1 日手绘精修 | **未批准**。占位 24px 色点继续用；看见线稿再另拍板 |
 
-L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**（#352 壳 + #353 目录）。四页签 / 挥手点播接线仍是下一步，不是再开第二座花园。
+L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**（#352 壳 + #353 目录）。挥手点播（已结缘 `gesture.wave-hello` → `collectionsWaveHello`）本切片接线。四页签壳仍后置，不是再开第二座花园。
 
 ---
 
@@ -227,7 +227,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 | **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日 · 已实现** `focusCoinsLedger.js` |
 | **L1 发点接线** | 完成一场坐，钱包会涨（可先无「店」） | 挂计时达标 / Honesty 呼吸成功 / Choose / Reflect / 主动 Recover；localStorage 白名单；flag 默认可关 | 无兑换 UI；不改场景剧本；不把钱包塞进练习备份 6 key | **4–6 人日 · #338 已合**（TRACKER 待人工；高风险邻接：Honesty / 完成记账） |
 | **L2 可兑原型** | 内部能花点留下痕迹 | 称号 + 稀有章 + 珍藏静物；叠层 SKU 退役；`title.long-sitter` 双门槛 | 新角色帧换装、主画面叠层 | **已接线 + 2026-08-19 退役叠层** |
-| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；本支改为商店目录（不含退役叠层）+ 结缘语汇 + 挥手 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **已接线 · 本支改名/过滤** |
+| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；#353 商店目录；挥手点播走已入库 `waveHello` | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **已接线 · 本支点播** |
 
 **合计到「内部可用」（L0–L2）**：约 **10–16 人日** ≈ **2.5–4 周日历**（一人，含回归；L1 勿与其它 Honesty 大改叠车）。  
 **到可给真实用户**：再加 L3；**不得**早于 L0 单测锁住防刷表。
@@ -263,7 +263,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - **L0（已合 #335）**：`src/core/focusCoinsLedger.js` + 单测。  
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
 - **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。叠层 SKU 新兑 `retired-overlay`；晨露/金线滤镜不再上主画面。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
-- **L3（#352 已合；本支修订）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()`（不含退役叠层）。不足/未达门槛：按压 + 具体缺口句 + toast。称号 Wear。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
+- **L3（#352+#353 已合；本支点播）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`。已结缘 `gesture.wave-hello` 后 **点播 / Play** → `playEmotion('collectionsWaveHello')` 播已入库 `waveHello`，~1s CapCut Idle。`welcomeBack` 仍空。不足/未达门槛：按压 + 具体缺口句 + toast。称号 Wear。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
 - Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
 - 单测优先于 e2e；L3 DOM 以 `focusCoinsSurface.test.js` / `FocusCoinsPanelUI.test.js` 为主；完整用户链路须人工。
 
