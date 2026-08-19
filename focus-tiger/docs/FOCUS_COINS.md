@@ -1,10 +1,10 @@
 # 寅币（Focus Coins）· 产品设计 SSOT
 
-> **状态：方向锁（2026-08-19 · #353 已合 `develop`）** — 花园 vs 珍藏切开；叠层 SKU 退役。L0–L3 已接线；L3 抽屉入口是 **Yin's Collections / 阿寅的珍藏**。`?focusCoins=0` 关闸完全不写。本支另接 Breath 坐满按 Stay 档发时长点 + 时长 chip 静默 hint。  
+> **状态：方向锁（2026-08-20 · 清供 8 表）** — 花园 vs 珍藏切开仍有效；叠层**视觉**废止；旧 8 个 SKU id **按清供器物改名、现价现门槛可兑**。L0–L3 已接线；L3 抽屉入口是 **Yin's Collections / 阿寅的珍藏**。`?focusCoins=0` 关闸完全不写。Breath 坐满按 Stay 档发时长点 + 时长 chip 静默 hint。  
 > **内部名**：Focus Coins。**货币对外名（硬）**：**寅币** / **Focus Coins**（2026-08-19 取代「同坐点」；旧文案可视为别名，新产品面只用寅币）。禁止金币 / 积分 / Shop / Purchase 口吻。  
-> **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱只作气质比喻，不作产品名。  
+> **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱 / 清供匣只作气质比喻，不作产品名。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)。  
-> **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（叠层一律退役）。
+> **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（铁律见 `PRINCIPLES.md`）。
 
 > **L1 硬闸**：开会碰 Honesty / 完成记账邻接的分支前必须书面扫并行 PR；口头注意不算过闸（2026-08-18 分析师）。L1 **#338 已合**。  
 > **≠ 云端品味层**：服务端记账是可花点之后的防刷；与权重/文案上云分轨（见 `PROCESS` Backlog「云端品味层」）。
@@ -15,7 +15,7 @@
 
 ## 0. 冲突扫描（实现前 · 已拍板）
 
-对照 `SCENARIO_TESTS.md` 相邻路径。用户 2026-08-18 已同意六个方向问题；2026-08-19 补花园 / 珍藏切开。
+对照 `SCENARIO_TESTS.md` 相邻路径。用户 2026-08-18 已同意六个方向问题；2026-08-19 补花园 / 珍藏切开；**2026-08-20 锁清供 8 表 + 铁律进 PRINCIPLES**。
 
 | 轴 | 相邻场景 | 风险 | 处置（已锁） |
 |---|---|---|---|
@@ -33,35 +33,36 @@
 | **B · Lifetime ∪ Membership** | 进阶能力 / 场域 | **永远买不到** |
 | **C · 寅币** | 练习换来的情感货币 | 只在 **Yin's Collections** 结缘身份/记忆；**不**兑花园 |
 
-不是 `FEATURE_CATALOG` 的 `requiredTier`。可兑 SKU：`title.*` / `badge.rare.*` / `collection.*` / `gesture.*`。
+不是 `FEATURE_CATALOG` 的 `requiredTier`。抽屉可兑：`FOCUS_COIN_CURIO_SHOP_IDS` 清供八条。catalog 另留 `title.long-sitter` / `collection.*` / `gesture.wave-hello`（不进抽屉）。
 
 ### 1.1 花园 vs 珍藏（2026-08-19 · 硬）
 
 | 层 | 落点 | 怎么来 | 禁止 |
 |---|---|---|---|
 | **花园（Grow / 莲花池）** | 主坐席 | 终身分钟自动、只增不减 | 进寅币店；改成花钱才开花 |
-| **珍藏（C 轨）** | 独立个人中心 **Yin's Collections** | 寅币结缘：称号、稀有章、瓷器/青铜器静物卡、可点播闲笔 | 把瓷器叠回主坐席当第二套花园 |
+| **珍藏（C 轨）** | 独立个人中心 **Yin's Collections** | 寅币结缘：清供器物卡（旧 8 id） | 把器物叠回主坐席 / 莲花 / `#sprite-stage` |
 | **周边 chrome** | Idle 阿寅**右侧** `#yin-tip-kindness-badges` | 练习/Tea/Sanctuary 枚数自动涨 | 把徽章扣进蒲团帧或改 PNG 序列 |
 
 芥子须弥印、练习徽章枚数：**继续自动出现，永远不进店**。香炉/刺绣/灯盏若做，也走花园，不兑币。
 
 练习徽章条（Idle 右侧 `#yin-tip-kindness-badges`）是主画面周边 chrome，**不是**产品名叫「百宝箱」。英文产品名只认 **Yin's Collections**；中文 **阿寅的珍藏**。百宝箱仅作气质比喻。
 
-**铁律**：不能修改或添加覆盖到已有动画（含晨露滤镜、须弥金线、念珠披毯、蒲团扣子）。只能周边 DOM，或珍藏卡面。结缘动作第一批只用已入库 `wave-hello`（案头点播）；抛三色球未入库，后置。
+**铁律**（产品硬条，见 `PRINCIPLES.md`）：不能修改或添加覆盖到已有动画（含晨露滤镜、须弥金线、念珠披毯、蒲团扣子）。只能周边 DOM，或珍藏卡面。挥手点播仍后置（已入库 `wave-hello` 不进本批抽屉）。抛三色球未入库，后置。
 
-### 1.2 已废止（另一路 L3 草稿 · 勿复活）
+### 1.2 已废止 vs 2026-08-20 已锁
 
-#352 曾按当时目录把 **8 条全列**进抽屉（香炉暖烟 / 莲叶晨露 / 木念珠 / 叠好的披毯 / 与阿寅同坐 / 又回来了 / 静石小章 / 须弥坐），并讨论「池/座/炉/身侧分区叠层」。那是合入前的过渡稿。**#353 之后作废**，不要再当待拍板项。
+#352 曾讨论「池/座/炉/身侧分区叠层」。**围着阿寅盖序列的那条路仍作废**，不要复活。
 
 | 提案 | 处置 |
 |---|---|
-| 8 条叠层围着阿寅 / 晨露盖花 / 须弥金晕盖 `#sprite-stage` / 念珠披毯贴身体 | **不要**。铁律禁止改/盖序列帧。叠层 SKU 新兑 `retired-overlay` |
-| 把旧 8 个 SKU id 原价原门槛改名成清供器物（暖烟→香薰炉、晨露→莲盏…） | **不采纳**。商店换成新目录（称号 + 静石 + 青瓷/青铜卡 + 挥手），不再绑花园门槛去兑匣中物 |
+| 8 条叠层围着阿寅 / 晨露盖花 / 须弥金晕盖 `#sprite-stage` / 念珠披毯贴身体 | **不要**。铁律禁止改/盖序列帧。晨露/须弥滤镜已从运行时拆掉 |
+| 把旧 8 个 SKU id 原价原门槛改名成清供器物 | **已锁（2026-08-20）**。工程继续用现有 id；只改展示名；抽屉 = `FOCUS_COIN_CURIO_SHOP_IDS` 八条 |
 | 产品名叫清供匣 / Yin Coin / Yin's Desk | **不要**。对外只认 **Yin's Collections / 阿寅的珍藏**。清供匣、百宝箱仅比喻 |
 | 寅币 8 件并进 `#yin-tip-kindness-badges` 或提前做成就墙 | **不要**。练习章条继续只管练习/请茶/Sanctuary；成就墙仍是 Backlog |
 | `yin-coin-flat-draft.png` 0.5–1 日手绘精修 | **未批准**。占位 24px 色点继续用；看见线稿再另拍板 |
+| #353 商店 7 行（久坐的人 / 青瓷瓶 / 青铜礼器 / 挥手 上架） | **抽屉改回清供 8**。上述 id **留在 catalog**（已兑有效；挥手点播后置），**不**再出现在 `#yin-coin-panel` |
 
-L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**（#352 壳 + #353 目录）。四页签 / 挥手点播接线仍是下一步，不是再开第二座花园。
+L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**。目录 = 清供 8。四页签 / 挥手点播接线仍是下一步，不是再开第二座花园。
 
 ---
 
@@ -74,7 +75,7 @@ L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**（#352 壳 + #353 目录�
 5. **与练习徽章同一体系两层**（徽章=不可花的标记；寅币=可消费货币）。  
 6. **货币对外名寅币 / Focus Coins**（2026-08-19 修订；不再用「同坐点」作新产品面）。  
 7. **个人中心 = 阿寅的珍藏 / Yin's Collections**。结缘 = Bond / 縁を結ぶ。  
-8. **叠层 SKU 退役**（晨露、香炉暖烟、木念珠、披毯、须弥坐金线）。已兑 `ownedIds` 保留但不再生效主画面。  
+8. **叠层视觉退役；SKU 改清供卡面**（2026-08-20）：晨露 / 暖烟 / 念珠 / 披毯 / 须弥金线**不得**再盖主画面。同一批 id 以清供器物名可兑，只进珍藏卡。  
 9. **`emotion.premium.trigger` 从 B 轨 catalog 删除**，避免会员与结缘动作抢动画。
 
 ---
@@ -175,18 +176,22 @@ Honesty **不是**挂机检测，是别处练习的信任补登。完整 Focus C
 
 ## 6. 消费目录（全部不可现金买）
 
-基础纪念物按终身分钟 **自动、只增不减**。莲花池 Slice A **不进店**。2026-08-19 起：**叠在花园/序列上的 SKU 退役**（`retired-overlay`）；商店只卖珍藏卡与称号。
+基础纪念物按终身分钟 **自动、只增不减**。莲花池 Slice A **不进店**。2026-08-20：**抽屉 = 清供 8**（现价现门槛）；叠层视觉拆掉。
 
 | ID | 类型 | 名称 | 价格 | 门槛 | 状态 |
 |---|---|---|---|---|---|
-| `title.sits-with-yin` | 称号 | 「与阿寅同坐」 | 18 | 练习日 ≥ 3 | **可兑** |
-| `title.returned-gently` | 称号 | 「又回来了」 | 30 | 至少 1 次主动 Recover | **可兑** |
-| `title.long-sitter` | 称号 | 「久坐的人」 | 360 | `lifetimeMinutes ≥ 600`（不可会员跳过） | **可兑**（不再附金线蒲团） |
-| `badge.rare.quiet-pebble` | 稀有章 | 静石小章 | 72 | — | **可兑** |
-| `collection.porcelain.qing-vase` | 珍藏静物 | 青瓷瓶（卡面，无声） | 40 | — | **可兑**；不上主坐席 |
-| `collection.bronze.ritual-vessel` | 珍藏静物 | 青铜礼器（卡面，无声） | 56 | — | **可兑**；不上主坐席 |
-| `gesture.wave-hello` | 闲笔 | 挥手（已入库 `wave-hello`） | 48 | — | **可兑**；L3 珍藏点播；不改 PNG |
-| `space.lotus-dew` 等叠层 | — | 晨露 / 暖烟 / 念珠 / 披毯 / 须弥金线 | — | — | **退役**；新兑 `retired-overlay` |
+| `space.incense-tint-warm` | 清供 | 青铜香薰炉 | 24 | 香炉纪念 **或** 练习日 ≥ 3 | **抽屉可兑**；不上序列 |
+| `space.lotus-dew` | 清供 | 青瓷莲盏 | 48 | 已有第一朵莲花（匣中物，**不**给池加光） | **抽屉可兑** |
+| `yin-accent.wood-beads` | 清供 | 紫檀念珠匣 | 36 | — | **抽屉可兑** |
+| `yin-accent.folded-cloak` | 清供 | 青铜奁 | 60 | Honesty 睡醒 | **抽屉可兑** |
+| `title.sits-with-yin` | 清供 | 座右小碑 | 18 | 练习日 ≥ 3 | **抽屉可兑**；Wear 为称号数据，不叠帧 |
+| `title.returned-gently` | 清供 | 归来青瓷小瓶 | 30 | 至少 1 次主动 Recover | **抽屉可兑** |
+| `badge.rare.quiet-pebble` | 清供 | 石镇纸 | 72 | — | **抽屉可兑** |
+| `bundle.sumeru-seat` | 清供 | 须弥小鼎 | 360 | `lifetimeMinutes ≥ 600` | **抽屉可兑**；写入 `space.sumeru-cushion` + `title.long-sitter`；无金线蒲团 |
+| `title.long-sitter` | 称号 | 「久坐的人」 | 360 | 同上双门槛 | **catalog 保留、抽屉不列**（bundle 会写入） |
+| `collection.porcelain.qing-vase` | 静物 | 青瓷瓶 | 40 | — | **catalog 保留、抽屉不列** |
+| `collection.bronze.ritual-vessel` | 静物 | 青铜礼器 | 56 | — | **catalog 保留、抽屉不列** |
+| `gesture.wave-hello` | 闲笔 | 挥手 | 48 | — | **catalog 保留、抽屉不列**；点播后置 |
 
 信件 / 静默小册：**后置**（须静态文案 + Quiet Line 历史归档）。抛三色球：**未入库，后置**。
 
@@ -227,8 +232,8 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 |---|---|---|---|---|
 | **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日 · 已实现** `focusCoinsLedger.js` |
 | **L1 发点接线** | 完成一场坐，钱包会涨（可先无「店」） | 挂计时达标 / Honesty 呼吸成功 / Choose / Reflect / 主动 Recover；localStorage 白名单；flag 默认可关 | 无兑换 UI；不改场景剧本；不把钱包塞进练习备份 6 key | **4–6 人日 · #338 已合**（TRACKER 待人工；高风险邻接：Honesty / 完成记账） |
-| **L2 可兑原型** | 内部能花点留下痕迹 | 称号 + 稀有章 + 珍藏静物；叠层 SKU 退役；`title.long-sitter` 双门槛 | 新角色帧换装、主画面叠层 | **已接线 + 2026-08-19 退役叠层** |
-| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；#353 改为商店目录（不含退役叠层）+ 结缘语汇 + 挥手 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **已接线 · 目录过滤已合** |
+| **L2 可兑原型** | 内部能花点留下痕迹 | 清供卡面可兑；叠层视觉拆掉；`title.long-sitter` 双门槛仍可由 bundle 写入 | 新角色帧换装、主画面叠层 | **已接线 · 2026-08-20 清供改名** |
+| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；目录 = 清供 8；结缘语汇 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key、挥手点播 | **已接线 · 清供 8 已锁** |
 
 **合计到「内部可用」（L0–L2）**：约 **10–16 人日** ≈ **2.5–4 周日历**（一人，含回归；L1 勿与其它 Honesty 大改叠车）。  
 **到可给真实用户**：再加 L3；**不得**早于 L0 单测锁住防刷表。
@@ -239,7 +244,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - Honesty 同日第二次仍发点  
 - `isEntitled('ambient.deep.play')` 可被余额或 SKU 满足  
 - 稀缺称号 `title.long-sitter` 可只花点、或只靠时长、或会员跳过  
-- 退役叠层（晨露等）仍能新兑成功  
+- 退役叠层滤镜仍盖上莲花或 `#sprite-stage`  
 - `emotion.premium.trigger` 仍在 `FEATURE_CATALOG`  
 
 切片须走 `RISK_MITIGATION_PLAYBOOK.md`：L0 = Lab 逻辑；**L1 才碰产品钩子**；禁止先挂 Idle 数字再补防刷表。
@@ -252,7 +257,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 
 | 课题 | L0 | L1 | L2 | L3 | 到内部可用 | 到可上架 / 给用户 | 现在能否开工 |
 |---|---|---|---|---|---|---|---|
-| **寅币 / Yin's Collections** | 2–4 人日 · 纯账本 **（L0 已合 #335）** | 4–6 · 发点钩子 **（L1 #338 已合）** | 4–6 · 兑换 **（L2 #339 已合）** | 3–5 · Collections 表面 **（#352 已合；本支改名/过滤）** | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | 叠层已退役；L1 TRACKER 待人工 |
+| **寅币 / Yin's Collections** | 2–4 人日 · 纯账本 **（L0 已合 #335）** | 4–6 · 发点钩子 **（L1 #338 已合）** | 4–6 · 兑换 **（L2 #339 已合）** | 3–5 · Collections 表面 **（#352+#353+#354+#348 已合；本支清供 8）** | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | 铁律进 PRINCIPLES；L1 TRACKER 待人工 |
 | **桌面端侧智能体** | 2–4 · Metal 探针 | 4–7 · desktop-only 面板 | 8–12 · 人设混合路由 | 8–15 · 生产隔离 | **14–23 人日 · 约 3–5 周** | 依赖定位修订 + 桌面步骤 B 托盘 | **仅宜 L0 实测**；入口未拍板 |
 
 **我认为最合理的统筹**：先开 **寅币 L0**（不挡收费 DMG、不碰 Electron、回归面在单测里可锁死）。桌面智能体等机型实测 +「禅意倾听者」书面修订后再 L1。寅币 **L1 硬闸**：开分支前必须书面扫 Honesty / `DailyCompletionStore` / `PracticeDaysStore` 邻接是否有并行 PR（分析师 2026-08-18；口头注意不算过闸）。两个课题都不要插队挡住桌面步骤 B（托盘 = 收费 DMG 前提）。
@@ -264,8 +269,8 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - **L0（已合 #335）**：`src/core/focusCoinsLedger.js` + 单测。  
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
 - **本支（#348）**：Breath 坐满按 Stay 档发时长点（`applyBreathPracticeFocusCoinsGrant`）；Leave 仍 0。Focus / Breath picker 下 `#focus-coins-duration-hint`。  
-- **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。叠层 SKU 新兑 `retired-overlay`；晨露/金线滤镜不再上主画面。可兑称号、稀有章、瓷器/青铜器静物、挥手闲笔。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
-- **L3（#352+#353+#354 已合）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()`（不含退役叠层）。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + toast。称号 Wear。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。
+- **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。清供 id 可兑为卡面；晨露/金线滤镜已拆、不再上主画面。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
+- **L3（#352+#353+#354 已合；本支清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + toast。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。
 - Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
 - 单测优先于 e2e；L3 DOM 以 `focusCoinsSurface.test.js` / `FocusCoinsPanelUI.test.js` 为主；完整用户链路须人工。
 

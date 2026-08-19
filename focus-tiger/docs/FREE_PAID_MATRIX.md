@@ -117,12 +117,12 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 ### A5 · C 轨 · 寅币（练习货币 · 不解锁 B）
 
-> **方向锁（2026-08-19）**。内部名 Focus Coins；货币对外 **寅币**；个人中心 **Yin's Collections / 阿寅的珍藏**。权威：`FOCUS_COINS.md`。**不是**第三档付费，**不是** `requiredTier`。
+> **方向锁（2026-08-20）**。内部名 Focus Coins；货币对外 **寅币**；个人中心 **Yin's Collections / 阿寅的珍藏**。权威：`FOCUS_COINS.md`。**不是**第三档付费，**不是** `requiredTier`。
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | 寅币钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：称号 / 稀有章 / 珍藏静物 / 闲笔挥手 | 练习兑换 | **不可现金购买** | SKU `title.*` / `badge.rare.*` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；商店目录；抬头浮雕币标 + 余额小 icon；SKU 占位色点）；叠层 SKU `retired-overlay` | `title.long-sitter` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
+| 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 占位色点）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
 | 用寅币换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
 ---
@@ -165,7 +165,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
-15. **寅币（C · 练习货币）** — 方向锁 2026-08-19（花园 vs 珍藏）；L0 #335 · L1 #338 · L2 #339 · L3 #352 已合。叠层 SKU 本支退役。L3 抽屉改 Yin's Collections 商店目录。**禁止**用点满足 `isEntitled`。
+15. **寅币（C · 练习货币）** — 方向锁 2026-08-20（清供 8 + 铁律）；L0–L3 已合。抽屉 = 清供器物卡。**禁止**用点满足 `isEntitled`。**禁止**改/盖序列帧。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 

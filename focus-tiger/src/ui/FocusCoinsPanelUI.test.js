@@ -24,7 +24,7 @@ test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fad
 });
 
 test('panel source maps shop SKUs via listFocusCoinSurfaceRows', () => {
-  assert.equal(listShopFocusCoinSkus().length, 7);
+  assert.equal(listShopFocusCoinSkus().length, 8);
   assert.match(src, /listFocusCoinSurfaceRows\(ctx\)/);
   assert.match(src, /dataset\.sku = row\.id/);
 });
