@@ -12,6 +12,7 @@
  */
 
 import { getLocalDateKey } from '../utils/localDate.js';
+import { LATE_NIGHT_HOUR, isLateNightHour } from './lateNightHour.js';
 import {
   LOCALE_GREETING_STORAGE_KEY,
   markLocaleGreetingPlayed,
@@ -25,6 +26,8 @@ import {
   touchFlowerWelcomeLastOpen
 } from './flowerWelcomeGate.js';
 import { getTasteWeightOverlay } from './tasteLayerOverlay.js';
+
+export { LATE_NIGHT_HOUR, isLateNightHour };
 
 export const SCENE_ANIM_EVENTS = Object.freeze({
   LANGUAGE_CHANGED: 'language_changed',
@@ -52,9 +55,6 @@ export const HONESTY_LONG_MIN_MINUTES = 30;
 
 /** Life-sense cooldown (yawn / tea / curiosity): 1 hour */
 export const LIFE_COOLDOWN_MS = 60 * 60 * 1000;
-
-/** Late night local hour ≥ this */
-export const LATE_NIGHT_HOUR = 23;
 
 /** Curiosity roll probability when opportunity fires */
 export const CURIOSITY_CHANCE = 0.05;
@@ -330,14 +330,6 @@ export function writeDailySceneAnimState(storage, state) {
   } catch {
     // ignore
   }
-}
-
-/**
- * @param {Date} date
- * @returns {boolean}
- */
-export function isLateNightHour(date) {
-  return date.getHours() >= LATE_NIGHT_HOUR;
 }
 
 /**

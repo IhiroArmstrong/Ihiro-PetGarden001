@@ -7,11 +7,12 @@
  * Companion rest / wake policy helpers (pure).
  *
  * Complements (does not replace) the existing 2h → DORMANT path:
- * - Idle / non-focus + ≥2h since session end → DORMANT sleep (HonestyCheckInController)
+ * - Occupancy / enter-sleep priority: `spriteChannelArbitration`
+ * - Idle / non-focus + ≥2h since session end → DORMANT sleep (Honesty executes delta)
  *   **except** a short visibility return: hiddenMs must also be ≥2h
- *   (`shouldAllowEnterDormantOnForegroundReturn`; Welcome-then-sleep bug)
+ *   (`shouldAllowEnterDormantOnForegroundReturn` helper; Welcome-then-sleep bug)
  * - FOCUSING + tab hidden ≥ LONG_AWAY_WAKE_MS → play dormantWake on return (stay focusing)
- * - Late-night Idle → force DORMANT cloak (Expand A night only; **no** daytime Idle inactivity cloak)
+ * - Late-night Idle → DORMANT cloak (Expand A; hours aligned in `lateNightHour.js`)
  * - Session end into Reflection stays a companion moment (awake sitting / rise pool /
  *   celebrate / light complete). **Do not** cloakSleep while Reflection is open.
  *

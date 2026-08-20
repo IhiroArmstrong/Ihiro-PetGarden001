@@ -4,27 +4,34 @@
  */
 
 /**
- * Honesty Check-in 编排 + DORMANT 惰性同步。
+ * Honesty Check-in 编排 + DORMANT 执行器。
  *
  * - 不调用 ReminderQuotaManager（用户主动发起，不占共享提醒池）
  * - 零完成 / 新用户 / **冷启动第一幕**默认 Idle（uplifting；不上 Sleeping / 不披毯）
- * - **例外（2026-08-04 wellness 时段）**：本地 ≥23:00 或 <06:00 冷启动可 `forceDormant` 披斗篷；
+ * - **「该不该睡」由 `spriteChannelArbitration` 拍板**；本控制器只执行
+ *   `applyDormantSessionDelta('enter-dormant' | 'leave-dormant' | 'stay')`。
+ * - **例外（wellness 时段）**：本地 ≥23:00 或 <06:00 冷启动可进 DORMANT 披斗篷；
  *   06:00–10:00 可播苏醒仪式（见 main / cloakVariant.resolveWellnessDayBand）
- * - DORMANT 由「距上次专注结束 ≥ DORMANT_IDLE_HOURS」惰性判定，但**仅**在 Rise 后、或
- *   回前台且 **tab 实际 hidden ≥ 2h** 时 `syncDormantState({ allowEnterDormant: true })`；
- *   `onAppReady` 与短切 tab 默认禁止进睡（Welcome 后不得立刻披毯）
+ * - 2h 戳 ≠ hiddenMs：`onAppReady` 禁止凭陈旧戳进睡；回前台须 **tab 实际 hidden ≥ 2h**
+ *   （Welcome 后短切 tab 不得披毯）。Rise 后 `syncDormantState()` 仍可按 2h 戳。
+ * - 叠层占用（Reflection / Arrival）须把 `overlayBusy: true` 传给仲裁层，不得硬进睡
  * - 未达标 Rise：记专注结束时刻 → Idle；2h 后再 sync 可进 DORMANT
  * - Honesty 从 DORMANT 唤醒仍走 dormantWake（E1–E7）
  */
 
 import { STATES } from './StateManager.js';
 import { EMOTION_KEYS } from './EmotionController.js';
-import { shouldEnterDormantIdle } from './dormantTrigger.js';
 import { DORMANT_IDLE_MS } from '../utils/Constants.js';
 import {
   SCENE_ANIM_EVENTS,
   resolveSceneAnimation
 } from './sceneAnimationDispatcher.js';
+import {
+  SPRITE_OCCUPANCY,
+  SPRITE_SOURCES,
+  arbitrateSpriteChannel,
+  dormantDeltaFromDecision
+} from './spriteChannelArbitration.js';
 
 /** 产品默认呼吸引导时长（ms）；与 HonestyCheckInUI 倒计时一致。 */
 export const HONESTY_BREATH_MS = 10_000;
@@ -182,18 +189,46 @@ export class HonestyCheckInController {
   }
 
   /**
+   * Execute an occupancy session delta. MoodController still plays cloak on
+   * IDLE→DORMANT. Callers must already have asked the arbiter.
+   * @param {'enter-dormant' | 'leave-dormant' | 'stay'} delta
+   */
+  applyDormantSessionDelta(delta) {
+    if (this._busy || this._checkInFlowOpen) {
+      this.syncIdleEntry();
+      return;
+    }
+    const state = this.stateManager.state;
+    if (state === STATES.FOCUSING || state === STATES.CELEBRATE) {
+      this.syncIdleEntry();
+      return;
+    }
+    if (delta === 'enter-dormant') {
+      if (state !== STATES.DORMANT) {
+        this.stateManager.setState(STATES.DORMANT);
+      }
+    } else if (delta === 'leave-dormant') {
+      if (state === STATES.DORMANT) {
+        this.stateManager.setState(STATES.IDLE);
+      }
+    }
+    this.syncIdleEntry();
+  }
+
+  /**
    * 惰性判定是否应处于 DORMANT；在 App 就绪、回前台、Rise 结束后调用。
+   * 优先级 / 2h 戳 / 深夜窗 / 叠层 veto 由 `spriteChannelArbitration` 决定。
    * @param {object} [options]
    * @param {boolean} [options.allowEnterDormant=true]
    *   false：允许离 DORMANT→Idle，但**禁止**新进入 DORMANT（冷启动第一幕默认）。
    * @param {boolean} [options.forceDormant=false]
-   *   true：无视 2h 戳，强制进入 DORMANT（深夜 wellness 冷启动）。
-   *   showPrompt* 已废弃，忽略。
+   *   true：无视 2h 戳，强制进入 DORMANT（深夜 wellness / 既有单测）。
+   * @param {boolean} [options.overlayBusy]
+   * @param {number | null} [options.hiddenMs]
+   * @param {string | null} [options.occupancy]
+   * @param {string} [options.source]
    */
   syncDormantState(options = {}) {
-    const allowEnterDormant = options.allowEnterDormant !== false;
-    const forceDormant = options.forceDormant === true;
-
     if (this._busy || this._checkInFlowOpen) {
       this.syncIdleEntry();
       return;
@@ -205,23 +240,32 @@ export class HonestyCheckInController {
       return;
     }
 
-    const shouldDormant =
-      forceDormant ||
-      shouldEnterDormantIdle({
+    const source =
+      options.source ||
+      (options.forceDormant === true
+        ? SPRITE_SOURCES.LATE_NIGHT_IDLE
+        : options.allowEnterDormant === false
+          ? SPRITE_SOURCES.BOOT
+          : SPRITE_SOURCES.RISE_SYNC);
+
+    const decision = arbitrateSpriteChannel({
+      intent: SPRITE_OCCUPANCY.DORMANT_ENTER,
+      source,
+      context: {
+        sessionState: state,
+        overlayBusy: options.overlayBusy === true,
+        hiddenMs: options.hiddenMs,
         lastEndedAt: this.focusSessionEndStore.getLastEndedAt(),
-        nowMs: this.focusSessionEndStore.now().getTime(),
+        now: this.focusSessionEndStore.now(),
+        occupancy: options.occupancy || null,
+        forceDormant: options.forceDormant === true,
+        allowEnterDormant: options.allowEnterDormant,
         idleMs: this.dormantIdleMs
-      });
-
-    if (shouldDormant) {
-      if (allowEnterDormant && state !== STATES.DORMANT) {
-        this.stateManager.setState(STATES.DORMANT);
       }
-    } else if (state === STATES.DORMANT) {
-      this.stateManager.setState(STATES.IDLE);
-    }
-
-    this.syncIdleEntry();
+    });
+    this.applyDormantSessionDelta(
+      dormantDeltaFromDecision(decision.sessionDelta)
+    );
   }
 
   /**

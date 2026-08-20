@@ -166,6 +166,7 @@ test('shouldAllowEnterDormantOnForegroundReturn: short hide after Welcome stays 
 test('main.js visibility return uses hiddenMs DORMANT gate', () => {
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, '../main.js'), 'utf8');
-  assert.match(src, /shouldAllowEnterDormantOnForegroundReturn/);
-  assert.match(src, /allowEnterDormant/);
+  assert.match(src, /resolveVisibilitySpriteOccupancy/);
+  assert.match(src, /hiddenMs/);
+  assert.doesNotMatch(src, /tryPlaySceneAnim\(SCENE_ANIM_EVENTS\.LATE_NIGHT\)/);
 });
