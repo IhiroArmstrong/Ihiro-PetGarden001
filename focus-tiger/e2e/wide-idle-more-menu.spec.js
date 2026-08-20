@@ -10,7 +10,7 @@ import {
 } from './helpers/product-shell.js';
 
 /**
- * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯; secondary via popover.
+ * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯ right sheet.
  */
 
 test.use({ viewport: { width: 1280, height: 720 } });
@@ -72,6 +72,30 @@ test('wide Idle: Sit ball opens Arrival', async ({ page }) => {
   });
 });
 
+test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  const more = page.locator('#ft-wide-more-btn');
+  await expect(more).toBeVisible({ timeout: 15_000 });
+  await more.click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator('#ft-wide-more-backdrop')).toBeVisible();
+  await expect(menu.locator('[data-group="MENU_GROUP_PRACTICE"]')).toBeVisible();
+  await expect(menu.locator('[data-group="MENU_GROUP_INSPIRATION"]')).toBeVisible();
+  await expect(
+    menu.locator('[data-group="MENU_GROUP_PREFERENCES"]')
+  ).toBeVisible();
+  await expect(menu.locator('[data-group="ritual.menu_group"]')).toBeVisible();
+  const box = await menu.boundingBox();
+  const vp = page.viewportSize();
+  expect(box).toBeTruthy();
+  expect(box.x).toBeGreaterThan((vp?.width || 1280) * 0.5);
+  await page.locator('#ft-wide-more-backdrop').click({ position: { x: 24, y: 80 } });
+  await expect(menu).toBeHidden();
+});
+
 test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await openFreshProductShell(page);
   const more = page.locator('#ft-wide-more-btn');
@@ -94,6 +118,7 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
     timeout: 5_000
   });
   const reminderRow = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
+  await reminderRow.scrollIntoViewIfNeeded();
   // Hover first: in-app-reminder tip used to steal the row click.
   await reminderRow.hover();
   await page.waitForTimeout(250);
@@ -253,7 +278,9 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
 
   for (let i = 0; i < proxies.length; i++) {
     const proxy = proxies[i];
-    await menu.locator(`[data-proxy="${proxy}"]`).hover();
+    const row = menu.locator(`[data-proxy="${proxy}"]`);
+    await row.scrollIntoViewIfNeeded();
+    await row.hover();
     await page.waitForTimeout(250);
 
     const hintId = WIDE_MORE_ROW_HINT[proxy];
@@ -279,7 +306,9 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
 
   // Explicit switch path: companion → reminder → language (no Sit flash).
   for (const proxy of ['companion', 'reminder', 'language']) {
-    await menu.locator(`[data-proxy="${proxy}"]`).hover();
+    const row = menu.locator(`[data-proxy="${proxy}"]`);
+    await row.scrollIntoViewIfNeeded();
+    await row.hover();
     await page.waitForTimeout(300);
     await expectSitAutoTipHidden(page);
   }
@@ -354,11 +383,7 @@ test('wide park: ? opens purpose only (no remedy tip spray)', async ({ page }) =
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible();
   await expect(page.locator('body')).toHaveClass(/ft-wide-park-secondary/);
-  await expect(
-    page.locator('.onboarding-hint-badge[data-hint-id="quick-start"]')
-  ).toBeVisible({
-    timeout: 8_000
-  });
+  // Home left ball has no mint pulse (2026-08-11); ? still opens purpose only.
   await page.locator('#onboarding-hint-help').click();
   await expect(page.locator('#onboarding-app-purpose:not([hidden])')).toBeVisible({
     timeout: 8_000

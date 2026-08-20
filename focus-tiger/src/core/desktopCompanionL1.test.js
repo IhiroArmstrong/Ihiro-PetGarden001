@@ -118,6 +118,10 @@ describe('desktop companion L1 renderer gates', () => {
       'CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING'
     );
     assert.equal(
+      desktopCompanionStatusCopyKey({ phase: 'ready' }, { sending: true }),
+      'CONFIDE_DESKTOP_STATUS_GENERATING'
+    );
+    assert.equal(
       desktopCompanionDownloadPercent({ received: 50, total: 200 }),
       25
     );
@@ -186,7 +190,7 @@ describe('desktop companion L1 Confide chrome', () => {
 });
 
 describe('desktop companion L1 status reducer', () => {
-  it('never enables generate and tracks download → ready → unload', () => {
+  it('never enables generate in the reducer; ready overlay is L2', () => {
     let status = createCompanionStatus();
     assert.equal(status.generateEnabled, false);
     status = applyCompanionEvent(status, {
@@ -196,6 +200,13 @@ describe('desktop companion L1 status reducer', () => {
     });
     assert.equal(status.phase, 'downloading');
     status = applyCompanionEvent(status, { event: 'ready' });
+    assert.equal(status.phase, 'ready');
+    assert.equal(status.generateEnabled, false);
+    status = applyCompanionEvent(status, {
+      event: 'generated',
+      id: 'x',
+      text: 'Heard.'
+    });
     assert.equal(status.phase, 'ready');
     assert.equal(status.generateEnabled, false);
     status = applyCompanionEvent(status, { event: 'unloaded' });
@@ -222,18 +233,17 @@ describe('desktop companion L1 isolation', () => {
     assert.match(preload, /desktop:companion-allowed/);
     assert.match(preload, /if \(companionAllowed\)/);
     assert.match(preload, /desktopShell\.companion/);
-    assert.equal(preload.includes('desktop:companion-generate'), false);
+    assert.equal(preload.includes('desktop:companion-generate'), true);
   });
 
-  it('does not add a generate IPC in main or L1 ipc', () => {
+  it('adds a generate IPC in companion ipc, still spawned from main L1 attach', () => {
     const mainSrc = readFileSync(join(focusTigerRoot, 'desktop/main.js'), 'utf8');
     const ipcSrc = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Ipc.js'),
       'utf8'
     );
     assert.match(mainSrc, /attachCompanionL1Ipc/);
-    assert.equal(mainSrc.includes('desktop:companion-generate'), false);
-    assert.equal(ipcSrc.includes('desktop:companion-generate'), false);
+    assert.match(ipcSrc, /desktop:companion-generate/);
     assert.match(ipcSrc, /desktop:companion-ensure/);
     assert.match(ipcSrc, /desktop:companion-set-focusing/);
   });
@@ -253,12 +263,13 @@ describe('desktop companion L1 isolation', () => {
     );
   });
 
-  it('keeps Confide send on retrieve-not-generate and shows a visible desktop status', () => {
+  it('routes Confide send through retrieve first; generate only via L2 helper', () => {
     const ui = readFileSync(join(focusTigerRoot, 'src/ui/ConfideToYinUI.js'), 'utf8');
     assert.match(ui, /resolveConfideReply/);
+    assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /confide-to-yin-desktop-status/);
     assert.match(ui, /ensureReady/);
-    assert.equal(/companion\.generate|generateEnabled\s*=\s*true/.test(ui), false);
+    assert.match(ui, /companion\.generate/);
   });
 
   it('unloads on Focusing from the product shell', () => {

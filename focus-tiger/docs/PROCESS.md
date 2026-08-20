@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· #362 L1 已合 `develop` · L2 待口令「开工桌面陪伴 L2」· 品味层四问筛选尺已拍板 · 生产 Worker **仍未** Redeploy（Cloud 无 wrangler 登录；现网仍 mock）· Quiet Line overlay 须现网 v1 + 三条观感后再口令 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **仍未** Redeploy（Cloud 无 wrangler 登录；现网仍 mock）· Quiet Line overlay 须现网 v1 + 三条观感后再口令 · Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **宣传 / 营销站 Slice 0（2026-08-20）**：静态首页入库仓库根 `marketing-site/`。Canonical `https://twinsology.com`；CTA = `mailto:hello@twinsology.com`；**无** workers.dev。现网 Pages/DNS **未**绑（须本机 Cloudflare；禁止改 MX/SPF/DKIM）。权威：`task-briefs/task-marketing-site.md`。TRACKER 待人工。
 
 - **Welcome 后短切 tab 不得披毯（2026-08-18 · #341）**：冷启动 Welcome / 鹦鹉仍 Idle；visibility 仅当 **hiddenMs ≥2h** 才 `allowEnterDormant`。Reflection 卡用共享底栏净空 + 176px 侧留白，避免日签压三球/地球；慧能/赵州日签改字（仍 14 id）。TRACKER 待人工。
 
@@ -73,7 +75,9 @@
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
 - **寅币 · 珍藏挥手点播（2026-08-20）**：`#yin-coin-panel` 底 **请阿寅挥挥手**（不在清供 8 行）。Idle 点播已入库 `wave-hello`；Focusing / 庆祝 toast 不播。`welcomeBack` / 欢迎池仍停。TRACKER 待人工。
 
-- **禅意倾听者 · 桌面陪伴 L1（2026-08-20 · #362 已合 `develop`）**：宽屏 Electron 非低配 ⋯ **同一 Confide 行**；点开玻璃卡 + 下载/加载进度；Focusing 卸载。**Share 仍检索**（不上 L2）。**Checkout / 第四卡 Pro / 第五卡 Add-on 仍未接**。低配 / 窄屏 / Web 无生成层。型号未锁。权威：`task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面陪伴 L2（2026-08-20 · 口令已执行）**：宽屏 Electron fallback 才短生成；安全阀/情绪桶仍语料；失败回 fallback 句。turns 落本机 jsonl。**Checkout 未接**。Web / 窄屏仍检索。权威：`task-desktop-on-device-companion.md`。
+
+- **禅意倾听者 · 桌面陪伴 L1（2026-08-20 · #362 已合 `develop`）**：宽屏 Electron 非低配 ⋯ **同一 Confide 行**；点开玻璃卡 + 下载/加载进度；Focusing 卸载。**L2 已叠短生成（fallback）**。**Checkout / 第四卡 Pro / 第五卡 Add-on 仍未接**。低配 / 窄屏 / Web 无生成层。型号未锁。权威：`task-desktop-on-device-companion.md`。
 
 - **禅意倾听者 · 桌面陪伴 L0 探针（2026-08-19 · #336 已合）**：口令已执行。M5 16GB 数值过闸。**Focusing hitch（用户肉眼）**：无可见影响 / 无卡顿。**视口**：本地智能体 **仅 Electron 宽屏 ⋯**；窄屏抽屉 / 手机没有。**8GB 数据：用户书面豁免**。不锁 0.6B。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to`（将来第四卡）已记入文档；**Checkout 未接**。**Lifetime 加购（2026-08-20 方案 A · 将来第五卡）**：SKU **`companion.addon.lifetime`** US$29.99 一次 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记；**不**进 `isEntitled`；**Checkout 未接**。**一旦接线须第四+第五同批。** 权威：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6。
 
@@ -89,7 +93,7 @@
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
-- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 未上**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
@@ -401,9 +405,9 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** 已合 `origin/develop`。品味层 **#349 已合**；**2026-08-20 已下令生产部署**，Cloud 无 wrangler 登录 → 现网仍 mock（须本机 `wrangler deploy`）。品味层**下一刀** Quiet Line 句包 overlay：须现网 v1 **且** TRACKER 三条观感人工过完后再口令开工（日签扩容 / 伸懒腰·好奇池后排）。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳（产品切片）**或** 口令「开工桌面陪伴 L2」（陪伴切片；关单能聊 + Checkout 等 L2 后一起测）。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 已下令生产部署**，Cloud 无 wrangler 登录 → 现网仍 mock（须本机 `wrangler deploy`）。品味层**下一刀** Quiet Line 句包 overlay：须现网 v1 **且** TRACKER 三条观感人工过完后再口令开工（日签扩容 / 伸懒腰·好奇池后排）。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
-- **陪伴 · 桌面端侧窄例外**：**L0 探针 #336 已合**。**L1 #362 已合**。低配默认不出入口。不锁 0.6B。**L2 待口令「开工桌面陪伴 L2」**。Stripe **Focus Tiger Pro**（将来第四卡）与 **AI Companion Add-on**（将来第五卡）Price 已记；**Checkout 未接**；用户书面：等 L2 真能聊再接线，须同批。测本地 AI：**Electron 窗口**（`desktop:dev` / `desktop:companion-l0`），不能用 Safari 打开 QA 5173 代替。
+- **陪伴 · 桌面端侧窄例外**：**L0 #336 / L1 #362 已合**。**L2 短生成已接线**（宽屏 fallback）。低配默认不出入口。不锁 0.6B。Checkout 未接。测本地 AI：**Electron 窗口**。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
 - **云端品味层（2026-08-18 · #349 已合）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。四问筛选尺 **2026-08-20 拍板**。生产 **仍须本机 wrangler deploy**（口令已给、Cloud 未登录）。下一刀 Quiet Line overlay **未开工**。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
@@ -457,13 +461,13 @@
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
 
-**最近跟进（2026-08-20 · #362 已合 · L2 测试节奏）**：L1 面板进 `develop`（`0386b1e`）。用户书面同意：等 L2 真能聊再下「接 Checkout」口令，第四+第五同批；关单级「能聊」与 Checkout **一起测**。L1 壳不挡 L2 开工。L2 代码仍须口令 **「开工桌面陪伴 L2」**。权威：`task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-20 · 开工桌面陪伴 L2）**：口令已执行。Electron 宽屏 Confide：安全/情绪桶仍语料；对不上才本机短生成；失败回 fallback。Focusing 仍卸载。**Checkout 仍未接。** 关单级能聊待 Electron 人工。权威：`task-desktop-on-device-companion.md`。
 
-**最近跟进（2026-08-20 · 桌面陪伴 L1）**：口令「开工桌面陪伴 L1」已执行并 **#362 合入**。Electron 非低配宽屏 ⋯ 同一 Confide 行；下载进度可见；Focusing 卸载；拖窄关生成层。**Share 仍检索**。**Checkout / 第四卡 Pro / 第五卡 Add-on 仍未接**。测须 `desktop:dev`，勿与 `dev:qa` 抢 5173。权威：`task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-20 · 桌面陪伴 L1）**：口令「开工桌面陪伴 L1」已执行并 **#362 合入**。Electron 非低配宽屏 ⋯ 同一 Confide 行；下载进度可见；Focusing 卸载；拖窄关生成层。**壳行为不变；Share 路由见 L2 行（安全/情绪桶仍语料）。** **Checkout / 第四卡 Pro / 第五卡 Add-on 仍未接**。测须 `desktop:dev`，勿与 `dev:qa` 抢 5173。权威：`task-desktop-on-device-companion.md`。
 
 **最近跟进（2026-08-20 · Lifetime AI 加购 · 方案 A · 将来第五卡）**：已买 Sanctuary Lifetime 若要本地智能体，一次性 **US$29.99** SKU **`companion.addon.lifetime`**（不订阅；**不必**再买 Base）。Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记（Dashboard **Focus Tiger: AI Companion Add-on**）。与 Lifetime 主 SKU 分开；**禁止**进 `FEATURE_CATALOG` / `isEntitled`。非 Lifetime 仍走 Pro **US$12.99/月**（将来第四卡）。**不**采用 Ultimate Lifetime 补差价。Checkout 仍等能聊（L2）后再接；**接线须第四+第五同批**（用户书面纠正：不止第四卡）。不带 Electron 壳 = **无法**用本地 AI。固定 QA 树 + Safari 5173 **继续**测 Web 关单；测本地 AI 须 `desktop:dev` 弹出的桌面窗（勿与 `dev:qa` 抢 5173）。权威：`FREE_PAID_MATRIX` A6 · `task-desktop-on-device-companion.md`。
 
-**最近跟进（2026-08-20 · Focus Tiger Pro Price · 将来第四卡）**：Dashboard 已有 **Focus Tiger Pro** `$12.99/月`（`price_1U6EB1FuIhgJPGLiuciuX1to`）与改名后的 **Focus Tiger Base** `$6.99/月`。**现在只记 Price ID，不接 Checkout**（L1 面板已开，Share 仍检索）。Pro **包含** Base 那套 B 轨 + 本地智能体。**第五卡 Add-on 也必须一起规划**，禁止只加第四卡。Safari 测付款可以；本地模型测试/入口仍是 Electron。权威：`task-desktop-on-device-companion.md`。
+**最近跟进（2026-08-20 · Focus Tiger Pro Price · 将来第四卡）**：Dashboard 已有 **Focus Tiger Pro** `$12.99/月`（`price_1U6EB1FuIhgJPGLiuciuX1to`）与改名后的 **Focus Tiger Base** `$6.99/月`。**现在只记 Price ID，不接 Checkout**（L2 fallback 已接线，关单能聊未过）。Pro **包含** Base 那套 B 轨 + 本地智能体。**第五卡 Add-on 也必须一起规划**，禁止只加第四卡。Safari 测付款可以；本地模型测试/入口仍是 Electron。权威：`task-desktop-on-device-companion.md`。
 
 **最近跟进（2026-08-19 · #336 已合）**：L0 探针进 `develop`。低配默认不出入口（Mac 与 Windows 同样 ≤8GB）。当时不开 L1、不锁 0.6B。**其后 08-20 L1 面板已接线。** 现货三卡仍可买。权威：`task-desktop-on-device-companion.md`。
 
@@ -471,13 +475,15 @@
 
 **最近跟进（2026-08-18 · Electron 步骤 B）**：托盘 + 关窗 hide + SB-18 已接线。**待人工**：场景 AB（收托盘 >60s 无 Re-focus）+ 对照切 App 仍走 B。Safari 场景 B 不得回归。权威：`task-electron-desktop-scaffold.md`。
 
+**最近拍板（2026-08-20 · 宣传站域名）**：用户书面——产品宣传 / 营销网站域名 = 系统里已有的 **`twinsology.com`**（不要新买 `focustiger.app` 一类）。发信已用该域。**同日口令「开工宣传站 Slice 0」**：静态页已入库 `marketing-site/`；练习壳仍走 Worker / 5173 / Electron。默认 apex canonical、`www` 301、Cloudflare Pages、**禁止**改 MX/SPF/DKIM。现网绑定另口令「绑定宣传站域名」。权威：`task-briefs/task-marketing-site.md`。
+
 **最近拍板（2026-08-20 · 品味层四问 + 下一刀 Quiet Line）**：用户书面同意把「四问筛选尺」写入本 Backlog + Brief；同意现在就生产「部署」（Cloud 本回合无 wrangler 登录，现网仍 mock，须本机补 Redeploy）；同意部署且三条观感人工过完后，下一刀品味层开 Quiet Line 句包 overlay；日签扩容与伸懒腰/好奇池后排。权威：下文 Backlog「云端品味层」。
 
 **最近拍板（2026-08-18 · 品味层窄冻结）**：用户书面确认「该等的窄门」= 现有本地降级表，**手感对、可以冻结**（不是全量 QA）。冻结数字见 Backlog「云端品味层」。分析师提醒：品味层时机清单含 Honesty 分档，同坐点 L1 已改 `HonestyCheckInController`（#338）；写代码时若 L2 也动 Honesty 分档须错开——**不影响** #337 / #338 已合。**同日晚已接线** schemaVersion 1 overlay（未改 HonestyCheckInController；生产须「部署」）。
 
 **最近拍板（2026-08-18）**：**云端品味层**（旧称「v1.1 云端算法」改名）。只上云 **权重覆盖 + 日签/文案池**；Idle / CapCut 播放器**永远本地**。时机 = Rise / 欢迎 / 轻量完成 / Honesty 分档 **窄冻结后**单独开工（冻结已于同日拍板）；**不等**同坐点 L2、**不等** TRACKER 全表关单（两条时钟：品味层防抄表 ≠ 同坐点防刷点）。实现时 payload 必含 `schemaVersion`，不认识则降级本地表。**支付云 ≠ 品味云**；SemVer 首稳仍是纯本地核心 `v1.0.0`，品味层是 1.0 之后可选增强、不抢 `v1.1.0` 号。**同日晚**：用户书面 L1/L0 告一段落并安排下一步，视为口令「开工云端品味层」——接线见上文「近期落地」。生产 Worker 另须「部署」。权威：下文 Backlog「云端品味层」+ Brief `task-cloud-taste-layer.md`。
 
-**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。**同日补**：本地智能体 **仅宽屏 ⋯**；窄屏 / 手机没有该能力（`RESPONSIVE_LAYOUT` 原则 A 故意不对等）。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival / 窄屏抽屉。L0 探针可合；当时 **仍不上 L1 入口**（**2026-08-20 口令后 L1 面板已接线，L2 未上**）；L2 须内部多轮对话攒跑偏案例。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
+**最近拍板（2026-08-18）**：**禅意倾听者窄范围例外**——**不是**全面推翻 2026-08-10「检索不生成」。批复原话要点：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 三问：① 修订范围仅 Electron + 最后一层自由倾诉；② 与 Confide **同一入口**；③ **仅用户主动、仅 Idle**，不主动开口。**同日补**：本地智能体 **仅宽屏 ⋯**；窄屏 / 手机没有该能力（`RESPONSIVE_LAYOUT` 原则 A 故意不对等）。禁止拿本次批准扩到 Web / PWA / Whisper / Recover / 提醒 / Arrival / 窄屏抽屉。L0 探针可合；当时 **仍不上 L1 入口**（**2026-08-20 口令后 L1 面板已接线；同日 L2 fallback 已接线**）；仍须内部多轮攒跑偏。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 **最近拍板（2026-08-17 · 托盘两步）**：分析师第二份书面——**不要把托盘和第一颗窗口绑成一次验收**。步骤 A = 加载现有 Web 成 Mac 窗口，不带托盘（先分清壳/资源问题）。步骤 B = 收费 DMG 上架前必须补托盘 + 关窗后台，并与 `AttentionSignals`（场景 AB / SB-18）**同一条改动线**验收。产品判断不变：收费 DMG 没有托盘则付费定位不成立。权威：`task-electron-desktop-scaffold.md`。#329 已合分层口径；本条补执行顺序。步骤 A 窗口代码见本 PR / `focus-tiger/desktop/`（无托盘）。
 
@@ -559,6 +565,7 @@
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
+- **宣传 / 营销站（域名已拍板 `twinsology.com` · Slice 0 已入库 · 现网未绑）**（Brief `task-marketing-site.md`；绑定须口令「绑定宣传站域名」）
 - **付费转化路径梳理（获客向 · 2026-08-12）**：在 Enso / Wisdom 印花 / Daily Card 等**存量体验**任务之后，单独立项盘点——免费用户在哪些时刻看见清晰付费价值、Deep 15s 试听后 Unlock 文案、Support 漏斗完整性。**不挡**当前四任务；防止「经济可持续」原则只落成老用户彩蛋（见 `PRINCIPLES` 案例锚定诚实边界）
 - **异步无声共修（Global Lanterns）**（匿名灯火 + 可选无声赠茶；可关；不进 Focusing；远期）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
@@ -1085,6 +1092,17 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **禁止**：把播放器迁云；用品味层满足 `isEntitled`。本切片 **未改** `HonestyCheckInController`（分档 overlay 只在 Dispatcher）。L2 兑换 #339 已合且未改时长分档。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
 - **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。
+
+### Backlog:宣传 / 营销站（`twinsology.com` · Slice 0 已入库 · 现网未绑）
+
+> **拍板（2026-08-20）**：产品宣传与营销网站的公开域名 = 系统里已有的 **`twinsology.com`**。与 Newsletter / OTP 发信同域；**不要**另开 `focustiger.app`。练习产品壳 / Worker **不**因本条搬家。  
+> **Slice 0（同日口令已执行）**：仓库根 `marketing-site/` 静态首页。现网自定义域仍须本机 Cloudflare Pages。
+
+- **Canonical**：`https://twinsology.com`；`www` → apex 301。  
+- **托管默认**：同一 ihiro Cloudflare 帐号 **Pages**（静态），与 `focus-tiger-cloud` Worker 分项目。DNS **只**加网站记录；**禁止**改 MX / SPF / DKIM / Resend。  
+- **身份**：Twinsology 工作室首页，主角 Focus Tiger；不是把重型练习壳挂在根路径。  
+- **下一刀**：口令 **「绑定宣传站域名」**（本机 wrangler / Dashboard）。应用内 `communityLink.js`、公网 Newsletter 表单、`app.twinsology.com` 均须另口令。  
+- **Brief**：`docs/task-briefs/task-marketing-site.md`。
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
 

@@ -33,6 +33,7 @@
 - 使用已有域名 **`twinsology.com`**
 - SPF / DKIM / DMARC 配在该域名 DNS 上（OTP 恢复信已走同一域）
 - **不要**用 `focustiger.app`
+- **宣传站（2026-08-20）**：公开营销域也是 **`twinsology.com`**（Slice 0 静态页在 `marketing-site/`；现网 DNS 未绑）。网站 DNS 与发信 DNS **共用该域、分记录**；上 Pages 时 **禁止**改 MX / SPF / DKIM / `NEWSLETTER_FROM`。权威：`task-briefs/task-marketing-site.md`。
 - 欢迎信 From：**只**用 `Yin <hello@twinsology.com>`（`NEWSLETTER_FROM`）。**禁止**回退 `restore@twinsology.com`（OTP 验证码走 `RESEND_FROM`，与 Newsletter 发信信誉隔离）。域 `twinsology.com` 已整体验证，`hello@` 不必再单独验证。
 - DMARC 起步仍 **`p=none`**
 

@@ -4,7 +4,7 @@
  */
 
 /**
- * Load a GGUF and hold it. L1 does not generate — L2 owns routing / persona.
+ * Load a GGUF and hold it. L2 may call `generate` on the returned session.
  * Dynamic import so unit tests never load the native addon.
  */
 
@@ -43,6 +43,7 @@ async function disposeQuietly(model, llama, timeoutMs) {
  * }} opts
  * @returns {Promise<{
  *   dispose: () => Promise<void>,
+ *   generate: (prompt: string, opts?: { maxTokens?: number }) => Promise<string>,
  *   gpu: string
  * }>}
  */
@@ -52,10 +53,14 @@ export async function loadModelHold(opts) {
   let llama = null;
   /** @type {null | { dispose?: () => Promise<void> }} */
   let model = null;
+  /** @type {null | { dispose?: () => Promise<void> }} */
+  let context = null;
+  /** @type {null | { prompt: (p: string, o?: object) => Promise<string> }} */
+  let chat = null;
   let gpu = 'unknown';
 
   onProgress('import node-llama-cpp');
-  const { getLlama } = await import('node-llama-cpp');
+  const { getLlama, LlamaChatSession } = await import('node-llama-cpp');
   onProgress('getLlama');
   llama = await getLlama();
   gpu =
@@ -67,13 +72,28 @@ export async function loadModelHold(opts) {
 
   onProgress('loadModel');
   model = await llama.loadModel({ modelPath: opts.modelPath });
+  context = await model.createContext();
+  chat = new LlamaChatSession({
+    contextSequence: context.getSequence()
+  });
 
   let disposed = false;
   return {
     gpu,
+    async generate(prompt, genOpts = {}) {
+      if (disposed || !chat) throw new Error('companion_session_disposed');
+      const maxTokens = Number(genOpts.maxTokens);
+      const text = await chat.prompt(String(prompt || ''), {
+        maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48
+      });
+      return String(text || '');
+    },
     async dispose() {
       if (disposed) return;
       disposed = true;
+      chat = null;
+      await disposeQuietly(context, null, 4000);
+      context = null;
       await disposeQuietly(model, llama, 8000);
       model = null;
       llama = null;
