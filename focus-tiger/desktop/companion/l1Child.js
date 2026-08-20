@@ -4,8 +4,8 @@
  */
 
 /**
- * Long-lived Node child for L1: download + load/hold + unload.
- * No generate. NDJSON on stdout. Commands on stdin: ensure / unload / quit.
+ * Long-lived Node child for L1/L2: download + load/hold + generate + unload.
+ * NDJSON on stdout. Commands: ensure / unload / quit / generate {json}.
  */
 
 import os from 'node:os';
@@ -71,7 +71,7 @@ async function downloadModel(modelPath) {
 async function main() {
   const modelDir = defaultModelDir();
   const modelPath = path.join(modelDir, L0_MODEL_FILENAME);
-  /** @type {null | { dispose: () => Promise<void> }} */
+  /** @type {null | { dispose: () => Promise<void>, generate: Function }} */
   let session = null;
   let chain = Promise.resolve();
 
@@ -138,6 +138,37 @@ async function main() {
         enqueue(async () => {
           await unload();
           process.exit(0);
+        });
+      } else if (line.startsWith('generate ')) {
+        enqueue(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('generate '.length));
+          } catch {
+            await emit({
+              event: 'generate_error',
+              id: '',
+              message: 'invalid_generate_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          try {
+            if (!session) await ensure();
+            if (!session || typeof session.generate !== 'function') {
+              throw new Error('companion_session_missing');
+            }
+            const text = await session.generate(payload.prompt, {
+              maxTokens: payload.maxTokens
+            });
+            await emit({ event: 'generated', id, text });
+          } catch (err) {
+            await emit({
+              event: 'generate_error',
+              id,
+              message: errorMessage(err)
+            });
+          }
         });
       }
     }

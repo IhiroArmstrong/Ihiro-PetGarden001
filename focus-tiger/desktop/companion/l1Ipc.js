@@ -4,7 +4,8 @@
  */
 
 /**
- * L1 companion IPC. No generate channel.
+ * L1/L2 companion IPC. Generate is desktop-only; renderer still routes
+ * safety / emotion buckets without calling this channel.
  */
 
 import os from 'node:os';
@@ -42,6 +43,9 @@ export function attachCompanionL1Ipc(deps) {
   deps.ipcMain.handle('desktop:companion-unload', () => runtime.unload());
   deps.ipcMain.handle('desktop:companion-set-focusing', (_event, focusing) =>
     runtime.setFocusing(Boolean(focusing))
+  );
+  deps.ipcMain.handle('desktop:companion-generate', (_event, payload) =>
+    runtime.generate(payload && typeof payload === 'object' ? payload : {})
   );
 
   return runtime;

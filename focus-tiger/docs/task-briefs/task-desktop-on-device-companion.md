@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合 `develop`**。**L1 已合 `develop`（#362 · tip `0386b1e`）**：宽屏 Confide 面板 + 下载进度 + IPC + Focusing 卸载。**仍不上 L2 生成**（须口令「开工桌面陪伴 L2」）；型号 **未锁**。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to`（将来 **第四卡**）与 **AI Companion Add-on** Price `price_1U6GnXFuIhgJPGLiNlXs0IKe`（将来 **第五卡** · SKU **`companion.addon.lifetime`**）**均已记**；**Checkout / 第四卡+第五卡仍未接**。**2026-08-20 用户书面**：等 L2 真能聊再下「接 Checkout」口令，两卡同批上。关单级「能聊」与 Checkout **一起测**；L1 面板壳不挡 L2 开工。Pro 含 Base + 本地智能体（**非 Lifetime**）。Lifetime 用户走第五卡加购（**不**进 `isEntitled`）。测本地 AI 须 Electron / `desktop:dev`。
+> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 **#336**、L1 **#362** 已合 `develop`。**L2 已开工**（口令「开工桌面陪伴 L2」）：四层路由 + Electron 宽屏 fallback 短生成 + 本机 turns.jsonl。Web / 窄屏仍检索。型号 **未锁**。**Checkout / 第四卡+第五卡仍未接**（等关单级「能聊」后再下接线口令，两卡同批）。测本地 AI 须 Electron / `desktop:dev`。
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -128,7 +128,7 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 - **Windows 与 Mac 同样适用** 8GB 门槛（Windows 8GB 往往更紧：无 Metal，llama.cpp 常走 CPU）。
 - 现货 Support 三卡（Tea **US$4.99** / Yin Membership = Stripe **Focus Tiger Base US$6.99/月** / Sanctuary Lifetime **US$89.99**）**现在仍不是**本地智能体入口。低配用户仍可买这三张——买的是 B 轨，**不会**因此打开被隐藏的本地模型入口。
 - **仍禁止（假收费 / 低配覆盖）**：
-  - L1 面板已开但 Share 仍检索时卖「现在就能聊的 AI」；入口未开时卖「带本地智能体」并让人以为现在就能聊；
+  - 关单能聊未过 / Checkout 未接时卖「现在就能聊的 AI」；入口未开时卖「带本地智能体」并让人以为现在就能聊；
   - 让低配「知情后冒险购买、不能退款」来覆盖隐藏入口；
   - 买了 Pro 仍强行打开被隐藏入口。
 - **Stripe（2026-08-20 用户书面）**：Dashboard 已有 **5 个产品**。现货 Support 仍是三卡；**将来接线 = 第四卡 + 第五卡同批**（2026-08-20 纠正：不止第四卡）。对照表见 `FREE_PAID_MATRIX` A6。
@@ -143,7 +143,7 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
   - **L0 / 本地模型测试本来就是 Electron 前提**：`npm run desktop:dev`、`desktop:companion-l0`。Safari `?product=1` **从未**加载 llama；那是 Web 产品壳（付费、Idle、内存说明不应出现）。
   - **L1 之后买 Pro（第四卡）/ Lifetime 加购（第五卡）**：Checkout 可以走 **Web / Safari**（与现货 Membership 同一套支付云），方便你继续用 Safari 测付款。
   - **L1 之后用本地智能体**：仍只 **Electron + 宽屏 + 非低配**。Web / 窄屏 / ≤8GB **没有生成入口**。低配若已购 Pro 或加购：B 轨照常可用，入口仍隐藏。
-  - **现在**：Support **仍只三卡**；不接 Pro / 加购 Checkout（L1 面板已开，Share 仍检索；接第四卡 **和** 第五卡另须口令，且须同批）。
+  - **现在**：Support **仍只三卡**；不接 Pro / 加购 Checkout（L2 fallback 已接线，关单能聊未过；接第四卡 **和** 第五卡另须口令，且须同批）。
 - 说明文案（英文默认）仍落在 Electron **安装 README**、点 **?** 的简介卡、以及 **Support Yin** 模态底部；Web / 手机 Safari **不出现**该内存块。
 
 ### 为什么必须 Electron（Web / Safari 没有本地 AI）
@@ -199,35 +199,26 @@ L1 = 桌面宽屏面板 + 下载进度 + 主进程 IPC + Focusing 卸载。**仍
 
 | 测什么 | 何时 | 为什么 |
 |---|---|---|
-| **关单级「能聊」**（第 4 层短生成真接住倾诉） | **等 L2 开发完成后一起测** | L1 Share 仍检索，现在测「聊天」测不到产品能力 |
-| **Checkout 第四卡 Pro + 第五卡 Add-on** | **等 L2 真能聊之后**，另下「接 Checkout」口令，**两卡同批**再测付款 | 用户已同意；Share 仍检索时接线 = 假收费 |
+| **关单级「能聊」**（第 4 层短生成真接住倾诉） | **L2 已接线，待 Electron 人工** | 安全/情绪桶仍语料；unmatched fallback 才生成 |
+| **Checkout 第四卡 Pro + 第五卡 Add-on** | **等关单级能聊之后**，另下「接 Checkout」口令，**两卡同批**再测付款 | 用户已同意；未经验收的生成就接线 = 假收费 |
 | **L1 面板壳**（点 ⋯ 见卡+进度、Focusing 卸载、拖窄关层、Web 无入口） | **不挡 L2 开工**。方便时可先点一眼；也可叠进 L2 人工测当回归 | 壳坏了会污染 L2 调试，但不必单独做关单「能聊」 |
 
 **不**把 L1 关单当成「本地 AI 已可用」。**不**等 L1 关单才允许排 L2。
 
-### 开 L2 要什么（待口令）
+### 开 L2 要什么（口令已执行）
 
-L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。`generateEnabled` 今日恒 `false`；Share 仍 `resolveConfideReply`。
+L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。
 
-**已满足（不必再等）**：
+**2026-08-20 口令「开工桌面陪伴 L2」已下达并接线**：
 
-1. L0 探针在 `develop`（#336）。
-2. L1 面板在 `develop`（#362 · `0386b1e`）。
-3. 路由契约已写死：`safety_redirect` → 已审仪式文案 → Confide 语料桶 → **仅** Electron 宽屏短生成。
-4. Confide v1 安全阀 + 五情绪桶 + `fallback` 已在 `src/core/confide/`（第 0–2 层可复用，**禁止**改 Web 检索主线）。
-5. 人设边界已拍板：观察式短句；不诊断、不教练清单、不呼吸指令；失败走 `fallback`，不空白、不重试死循环。权威：`EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / Confide Brief。
-6. Checkout / 锁死 0.6B / 正式改 `SCENARIO_TESTS` 场景附录 **都不是** L2 开工前提。
+- 第 0 层 `safety_redirect`、第 2 层情绪桶：仍 `resolveConfideReply` 语料，**不**调模型。
+- 第 1 层仪式 UI（Whisper / Recover 等）**无** generate IPC。
+- 第 3 层：仅 Electron 宽屏、hold `ready`、route=`fallback` 时 `companion.generate`；失败/超时/人设违禁 → 语料 `fallback`，不空白、不重试死循环。
+- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`。
+- `generateEnabled` = allowed ∧ phase `ready` ∧ 非 Focusing。
+- **不含** Checkout、L3、锁型号。
 
-**仍须（缺一不可才写 L2 代码）**：
-
-1. 你当回合口令 **「开工桌面陪伴 L2」**（本回合「都可以安排」= 锁门闩与测试节奏，**不是**该口令）。
-2. 生成只走 `desktop/` IPC；**禁止**把 llama 做进 `src/` / Web / 窄屏。
-3. 第 0–2 层命中时 **不得**调用模型（安全层尤其不得落到禅句或自由聊）。
-4. 内部多轮 = 你在 Electron 宽屏 Confide 里调 prompt、记跑偏；**禁止**当面向顾客的「能聊 AI」卖；**禁止**接第四/第五卡。
-5. 仍 **不锁** Qwen3-0.6B；低配仍不出入口。
-6. 跑偏案例落本地（userData 或实验室笔记），**禁止**把倾诉原文送上支付云 / 品味云。
-
-**本切片交付（口令下达后）**：宽屏 Electron 在第 0–2 层未接住时走短生成；安全/仪式/语料桶行为与 Web Confide 一致；生成失败可见 `fallback`；Focusing 仍卸载。**不含** Checkout、L3、锁型号。
+**本切片交付**：宽屏 Electron 在第 0–2 层未接住时走短生成；安全/仪式/语料桶行为与 Web Confide 一致；生成失败可见 `fallback`；Focusing 仍卸载。
 
 ---
 
@@ -257,6 +248,6 @@ L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。`
 - [x] L0 本机数字（**Apple M5 16GB · Metal**）：load ≈ 0.8s，TTFT ≈ 0.65s，≈ 116 tok/s，RSS 加载峰值 ≈ 0.9 GB，卸载后回落；Idle rAF p95 增量 ≈ 0.1ms。型号 **未锁**（只测了这一台）
 - [x] L0 Focusing 掉帧（双终端：产品窗 Sit→Focusing + skip-window 探针卸载）— **2026-08-18 用户肉眼（M5）**：对 Focusing 的 Yin **无任何可见影响 / 无卡顿**
 - [ ] L0 **M1 8GB** 同一探针（选型分水岭；未测。**不必现在找旧电脑**；缺数则低配默认不出入口、不锁 0.6B）
-- [x] L1 desktop-only **宽屏**面板 + 下载 UX + IPC + Focusing 卸载 — **#362 已合 `develop`（`0386b1e`）**；窄屏不接线；Share 仍检索；**不锁** 0.6B
-- [ ] L2 四层路由 + 人设；内部多轮攒跑偏案例 — **待口令「开工桌面陪伴 L2」**（2026-08-20 已锁测试节奏：关单能聊 + Checkout 等 L2 后一起测）
+- [x] L1 desktop-only **宽屏**面板 + 下载 UX + IPC + Focusing 卸载 — **#362 已合 `develop`（`0386b1e`）**；窄屏不接线；安全/情绪桶仍语料；**不锁** 0.6B
+- [x] L2 四层路由 + 人设；内部多轮攒跑偏案例 — **口令已执行**（Checkout 仍未接；关单能聊待人工）
 - [ ] L3 崩溃隔离 / 门槛 / 许可；不早于步骤 B

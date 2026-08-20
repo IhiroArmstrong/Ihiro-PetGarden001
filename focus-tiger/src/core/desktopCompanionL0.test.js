@@ -151,7 +151,7 @@ describe('desktop companion L0 isolation', () => {
     const preload = readFileSync(join(focusTigerRoot, 'desktop/preload.js'), 'utf8');
     assert.match(preload, /desktop:companion-allowed/);
     assert.match(preload, /openExternal/);
-    assert.equal(preload.includes('desktop:companion-generate'), false);
+    assert.equal(preload.includes('desktop:companion-generate'), true);
   });
 
   it('gates the probe behind FT_COMPANION_L0 in main, then starts Step B tray', () => {
