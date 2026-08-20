@@ -326,8 +326,27 @@ function hasUnlockedAdvancedScenes(visibility) {
 }
 
 /**
+ * Push a section heading only when the group has at least one row.
+ *
+ * @param {SecondaryChromeEntry[]} out
+ * @param {string} labelKey
+ * @param {Array<SecondaryChromeEntry | false | null | undefined>} items
+ * @returns {void}
+ */
+function pushLabeledGroup(out, labelKey, items) {
+  const rows = [];
+  for (const item of items) {
+    if (item && typeof item === 'object') rows.push(item);
+  }
+  if (rows.length === 0) return;
+  out.push({ kind: 'group-label', labelKey });
+  for (const row of rows) out.push(row);
+}
+
+/**
  * Secondary chrome entries for drawer (narrow) or ⋯ menu (wide).
  * Honesty is a home ball on both viewports — never listed here.
+ * Same four groups on both shells; presentation (drawer vs right sheet) stays in UI.
  *
  * @param {'narrow-drawer' | 'wide-more'} surface
  * @param {SecondaryEntryVisibility} visibility
@@ -343,44 +362,8 @@ export function listSecondaryChromeEntries(surface, visibility) {
   const out = [];
 
   // Breath practice is the home left ball — never list in drawer / ⋯.
-
-  if (companionOk) {
-    out.push({
-      proxy: 'companion',
-      labelKey: 'COMPANION_MODE_HINT'
-    });
-  }
-
   // Sound lives only on top-right note / narrow ♪ (2026-07-30) — not a menu row.
 
-  if (visibility.reminderAvailable) {
-    out.push({
-      proxy: 'reminder',
-      labelKey: 'reminder.setting_title'
-    });
-  }
-
-  // Language chrome only when ≥2 ready locales (v1.0.0 English-only → hidden).
-  if (shouldOfferLanguagePicker()) {
-    out.push({
-      proxy: 'language',
-      labelKey: 'LANGUAGE_MENU_LABEL'
-    });
-  }
-
-  // Five Moments Compass — voluntary guide (Task B; no first-visit mint).
-  out.push({
-    proxy: 'five-moments',
-    labelKey: 'FIVE_MOMENTS_MENU_LABEL'
-  });
-
-  // Journey Log — local practice trail (D′; Tea Log pattern; not HealthKit / tip-jar).
-  out.push({
-    proxy: 'journey-log',
-    labelKey: 'JOURNEY_LOG_MENU_LABEL'
-  });
-
-  // Yin's Collections — same glass family as Journey log; not Support pay.
   const yinCoinVisible =
     typeof visibility.yinCoinVisible === 'boolean'
       ? visibility.yinCoinVisible
@@ -390,83 +373,69 @@ export function listSecondaryChromeEntries(surface, visibility) {
               ? location.search
               : ''
         });
-  if (yinCoinVisible) {
-    out.push({
-      proxy: 'yin-coin',
-      labelKey: 'YIN_COIN_MENU_LABEL',
-      testId: 'idle-yin-coin'
-    });
-  }
-
-  // Confide to Yin — zen listener (retrieve-not-generate). Hidden until safety copy ok.
-  // Desktop L1 may show the same row on wide Electron when companion bridge exists.
   const confideVisible =
     typeof visibility.confideUserVisible === 'boolean'
       ? visibility.confideUserVisible
       : isConfideUserVisible();
+  // Desktop L1 may show Confide on wide Electron when the companion bridge exists.
   const companionGeneration =
     surface === 'wide-more' && visibility.companionGeneration === true;
-  if (confideVisible || companionGeneration) {
-    out.push({
-      proxy: 'confide',
-      labelKey: 'CONFIDE_MENU_LABEL',
-      testId: companionGeneration ? 'idle-confide-desktop' : undefined
-    });
-  }
 
-  // Growth pack ① — always available gift entry (no first-visit mint).
-  out.push({
-    proxy: 'zen-cinema',
-    labelKey: 'ZEN_CINEMA_MENU_LABEL'
-  });
+  pushLabeledGroup(out, 'MENU_GROUP_PRACTICE', [
+    companionOk
+      ? { proxy: 'companion', labelKey: 'COMPANION_MODE_HINT' }
+      : null,
+    { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
+    { proxy: 'journey-log', labelKey: 'JOURNEY_LOG_MENU_LABEL' },
+    yinCoinVisible
+      ? {
+          proxy: 'yin-coin',
+          labelKey: 'YIN_COIN_MENU_LABEL',
+          testId: 'idle-yin-coin'
+        }
+      : null,
+    confideVisible || companionGeneration
+      ? {
+          proxy: 'confide',
+          labelKey: 'CONFIDE_MENU_LABEL',
+          testId: companionGeneration ? 'idle-confide-desktop' : undefined
+        }
+      : null
+  ]);
 
-  // Growth pack ③ — daily quiet line + save image (no first-visit mint).
-  out.push({
-    proxy: 'daily-quote',
-    labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL'
-  });
+  pushLabeledGroup(out, 'MENU_GROUP_INSPIRATION', [
+    { proxy: 'zen-cinema', labelKey: 'ZEN_CINEMA_MENU_LABEL' },
+    { proxy: 'daily-quote', labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL' },
+    visibility.mustardSeedSealUnlocked
+      ? {
+          proxy: 'mustard-seed-seal',
+          labelKey: 'MUSTARD_SEED_SEAL_MENU_LABEL'
+        }
+      : null,
+    { proxy: 'wallpapers', labelKey: 'WALLPAPER_MENU_LABEL' }
+  ]);
 
-  // Memorial seal 《芥子须弥》— menu only after unified practice score unlock.
-  if (visibility.mustardSeedSealUnlocked) {
-    out.push({
-      proxy: 'mustard-seed-seal',
-      labelKey: 'MUSTARD_SEED_SEAL_MENU_LABEL'
-    });
-  }
-
-  // Digital wallpapers gift — curated stills; free save (no tip / Sanctuary gate).
-  out.push({
-    proxy: 'wallpapers',
-    labelKey: 'WALLPAPER_MENU_LABEL'
-  });
+  pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', [
+    visibility.reminderAvailable
+      ? { proxy: 'reminder', labelKey: 'reminder.setting_title' }
+      : null,
+    shouldOfferLanguagePicker()
+      ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }
+      : null,
+    visibility.newsletterSubmitted
+      ? {
+          proxy: 'newsletter',
+          labelKey: 'NEWSLETTER_MENU_CONFIRMED',
+          interactive: false
+        }
+      : { proxy: 'newsletter', labelKey: 'NEWSLETTER_MENU_LABEL' },
+    { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' }
+  ]);
 
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
-  // One contextual row here (not the three pay SKUs) sits at the top of Rituals:
-  // beige subscribe CTA when advanced scenes are locked; "You're subscribed"
-  // (same Membership card) when entitled.
-
-  // Stay in touch — optional email capture (not an account; no entitlement gate).
-  // After submit: confirmation row only (We'll keep in touch) — not re-openable.
-  // Do not say "You're subscribed" here — that copy is reserved for paid access.
-  if (visibility.newsletterSubmitted) {
-    out.push({
-      proxy: 'newsletter',
-      labelKey: 'NEWSLETTER_MENU_CONFIRMED',
-      interactive: false
-    });
-  } else {
-    out.push({
-      proxy: 'newsletter',
-      labelKey: 'NEWSLETTER_MENU_LABEL'
-    });
-  }
-
-  // Join our community — static external link (placeholder URL).
-  out.push({
-    proxy: 'community',
-    labelKey: 'COMMUNITY_MENU_LABEL'
-  });
-
+  // One contextual row here (not the three pay SKUs) sits immediately above
+  // the Rituals heading (user 2026-08-15): beige subscribe CTA when locked;
+  // "You're subscribed" when entitled.
   const scenesEntitled = hasUnlockedAdvancedScenes(visibility);
   if (scenesEntitled) {
     out.push({
@@ -483,7 +452,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
     });
   }
 
-  // Advanced RitualFlow scenes (entitlement-gated; free Breath practice stays home left ball).
+  // Advanced RitualFlow scenes (entitlement-gated; free Breath stays home left ball).
   out.push({
     kind: 'group-label',
     labelKey: 'ritual.menu_group'

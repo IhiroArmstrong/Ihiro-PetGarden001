@@ -178,7 +178,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 |---|---|---|
 | **`SessionUiGate`**（权威可变源） | `main.js` 装配；DEV `__sessionUiGate` | Arrival 门闩 / 完成中 / 叠层占用；单测见 `SessionUiGate.test.js` |
 | **`sessionChromeSync`**（壳层投影） | `main.js` → `createSessionChromeSync`；投影标志经 `idleChromeOrchestration.resolveShellChromeProjection`；`isHonestyPhaseBusy` / `isHonestyUiBusy` | Idle Honesty/微仪式入口显隐 + `resyncSessionChrome`（含窄宽壳 `setSuppressed`）；单测 `sessionChromeSync.test.js` + `idleChromeOrchestration.test.js` |
-| **`idleChromeOrchestration`**（双壳共享编排） | `listSecondaryChromeEntries` / `resolveRoleVisibility` / stage class 常量 | 窄抽屉与宽 ⋯ **同一业务列表**；禁止两壳各写漂移 if 树（Task 3 阶段 1） |
+| **`idleChromeOrchestration`**（双壳共享编排） | `listSecondaryChromeEntries` / `resolveRoleVisibility` / stage class 常量 | 窄抽屉与宽 ⋯ **同一业务列表**（四组标题）；Practice 组顺序 companion → five-moments → journey-log → **yin-coin**（闸关则隐）→ confide；宽屏呈现为右侧 sheet；禁止两壳各写漂移 if 树（Task 3 阶段 1） |
 | **`IdleChromeFacade`**（统一入口） | `createIdleChromeFacade` → `main.js`；`setHandlers` 一次扇出；`applyShellProjection`；断点 `releaseInactivePresentation` | 禁止 main 分别 `setHandlers` 两套语义；resize 不得误关 Companion（Task 3 阶段 2–3 已落地） |
 | `arrivalGateReady` | Gate `setArrivalGateReady` ↔ Companion `setArrivalReady`（经 `syncArrivalGateReady`） | Companion 点选是否可 begin；Arrival/⚡ 解锁后跨 Focusing→Rise **保持**；Sit 始终仪式 |
 | `completionPending` | Gate；达标庆祝路径 | 禁止打断 / 禁止二次 begin；Companion 选项禁用 |

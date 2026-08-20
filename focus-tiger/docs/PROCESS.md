@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **仍未** Redeploy（Cloud 无 wrangler 登录；现网仍 mock）· Quiet Line overlay 须现网 v1 + 三条观感后再口令 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **仍未** Redeploy（Cloud 无 wrangler 登录；现网仍 mock）· Quiet Line overlay 须现网 v1 + 三条观感后再口令 · Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **宣传 / 营销站 Slice 0（2026-08-20）**：静态首页入库仓库根 `marketing-site/`。Canonical `https://twinsology.com`；CTA = `mailto:hello@twinsology.com`；**无** workers.dev。现网 Pages/DNS **未**绑（须本机 Cloudflare；禁止改 MX/SPF/DKIM）。权威：`task-briefs/task-marketing-site.md`。TRACKER 待人工。
 
 - **Welcome 后短切 tab 不得披毯（2026-08-18 · #341）**：冷启动 Welcome / 鹦鹉仍 Idle；visibility 仅当 **hiddenMs ≥2h** 才 `allowEnterDormant`。Reflection 卡用共享底栏净空 + 176px 侧留白，避免日签压三球/地球；慧能/赵州日签改字（仍 14 id）。TRACKER 待人工。
 
@@ -473,6 +475,8 @@
 
 **最近跟进（2026-08-18 · Electron 步骤 B）**：托盘 + 关窗 hide + SB-18 已接线。**待人工**：场景 AB（收托盘 >60s 无 Re-focus）+ 对照切 App 仍走 B。Safari 场景 B 不得回归。权威：`task-electron-desktop-scaffold.md`。
 
+**最近拍板（2026-08-20 · 宣传站域名）**：用户书面——产品宣传 / 营销网站域名 = 系统里已有的 **`twinsology.com`**（不要新买 `focustiger.app` 一类）。发信已用该域。**同日口令「开工宣传站 Slice 0」**：静态页已入库 `marketing-site/`；练习壳仍走 Worker / 5173 / Electron。默认 apex canonical、`www` 301、Cloudflare Pages、**禁止**改 MX/SPF/DKIM。现网绑定另口令「绑定宣传站域名」。权威：`task-briefs/task-marketing-site.md`。
+
 **最近拍板（2026-08-20 · 品味层四问 + 下一刀 Quiet Line）**：用户书面同意把「四问筛选尺」写入本 Backlog + Brief；同意现在就生产「部署」（Cloud 本回合无 wrangler 登录，现网仍 mock，须本机补 Redeploy）；同意部署且三条观感人工过完后，下一刀品味层开 Quiet Line 句包 overlay；日签扩容与伸懒腰/好奇池后排。权威：下文 Backlog「云端品味层」。
 
 **最近拍板（2026-08-18 · 品味层窄冻结）**：用户书面确认「该等的窄门」= 现有本地降级表，**手感对、可以冻结**（不是全量 QA）。冻结数字见 Backlog「云端品味层」。分析师提醒：品味层时机清单含 Honesty 分档，同坐点 L1 已改 `HonestyCheckInController`（#338）；写代码时若 L2 也动 Honesty 分档须错开——**不影响** #337 / #338 已合。**同日晚已接线** schemaVersion 1 overlay（未改 HonestyCheckInController；生产须「部署」）。
@@ -561,6 +565,7 @@
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
+- **宣传 / 营销站（域名已拍板 `twinsology.com` · Slice 0 已入库 · 现网未绑）**（Brief `task-marketing-site.md`；绑定须口令「绑定宣传站域名」）
 - **付费转化路径梳理（获客向 · 2026-08-12）**：在 Enso / Wisdom 印花 / Daily Card 等**存量体验**任务之后，单独立项盘点——免费用户在哪些时刻看见清晰付费价值、Deep 15s 试听后 Unlock 文案、Support 漏斗完整性。**不挡**当前四任务；防止「经济可持续」原则只落成老用户彩蛋（见 `PRINCIPLES` 案例锚定诚实边界）
 - **异步无声共修（Global Lanterns）**（匿名灯火 + 可选无声赠茶；可关；不进 Focusing；远期）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
@@ -1087,6 +1092,17 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **禁止**：把播放器迁云；用品味层满足 `isEntitled`。本切片 **未改** `HonestyCheckInController`（分档 overlay 只在 Dispatcher）。L2 兑换 #339 已合且未改时长分档。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
 - **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。
+
+### Backlog:宣传 / 营销站（`twinsology.com` · Slice 0 已入库 · 现网未绑）
+
+> **拍板（2026-08-20）**：产品宣传与营销网站的公开域名 = 系统里已有的 **`twinsology.com`**。与 Newsletter / OTP 发信同域；**不要**另开 `focustiger.app`。练习产品壳 / Worker **不**因本条搬家。  
+> **Slice 0（同日口令已执行）**：仓库根 `marketing-site/` 静态首页。现网自定义域仍须本机 Cloudflare Pages。
+
+- **Canonical**：`https://twinsology.com`；`www` → apex 301。  
+- **托管默认**：同一 ihiro Cloudflare 帐号 **Pages**（静态），与 `focus-tiger-cloud` Worker 分项目。DNS **只**加网站记录；**禁止**改 MX / SPF / DKIM / Resend。  
+- **身份**：Twinsology 工作室首页，主角 Focus Tiger；不是把重型练习壳挂在根路径。  
+- **下一刀**：口令 **「绑定宣传站域名」**（本机 wrangler / Dashboard）。应用内 `communityLink.js`、公网 Newsletter 表单、`app.twinsology.com` 均须另口令。  
+- **Brief**：`docs/task-briefs/task-marketing-site.md`。
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
 
