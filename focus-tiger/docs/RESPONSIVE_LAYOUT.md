@@ -1,8 +1,8 @@
 # Focus Tiger · 响应式布局与移动浏览器基线
 # RESPONSIVE_LAYOUT.md
 
-> **版本**：1.0  
-> **最后更新**：2026-08-19  
+> **版本**：1.1
+> **最后更新**：2026-08-20
 > **状态**：布局与窄屏交互的**权威基线**；细则冲突时以本文为准（产品语义仍服从 `PRODUCT_POSITIONING.md` / `PRINCIPLES.md`）
 
 本文档定义：桌面优先前提下，**主流手机浏览器**（含竖屏与横屏）应达到何种可用标准；开发、设计与验收如何收口。
@@ -129,7 +129,7 @@
 
 - 底部固定 UI（dock、?、Sound、叠层底栏）合计建议不超过视口高度 **~32%**；超出时优先：缩间距 → 折行 → 隐藏非关键装饰，**最后**才考虑建议横屏提示。
 - `session-start-dock` 宽度策略：保证主按钮完整；与 Sound FAB、? 三者**不得**互相挤到截断主 CTA。
-- **宽屏 Idle（≥480）清场**：底栏常驻 **三球（Quick Start · Sit · Honesty）+ ⋯**；一分钟呼吸 / How shall we sit / 提醒时钟收入 **⋯ 向上 Popover**（`WideIdleMoreMenu`）；Sit+⚡ 文案 pill 与 Honesty dock 入口 park。左下 **?** 与热力图**不**进此次清场。Arrival 进行中：仅 Quick 球；Sit / Honesty / ⋯ 均收。  
+- **宽屏 Idle（≥480）清场**：底栏常驻 **三球（Quick Start · Sit · Honesty）+ ⋯**；一分钟呼吸 / How shall we sit / 提醒时钟收入 **⋯ 右侧 sheet**（`WideIdleMoreMenu`，贴右、可滚、浅遮罩；**不得**从底球向上居中长出挡住阿寅）；Sit+⚡ 文案 pill 与 Honesty dock 入口 park。左下 **?** 与热力图**不**进此次清场。Arrival 进行中：仅 Quick 球；Sit / Honesty / ⋯ 均收。  
 - **窄屏 Arrival（≤479）**：ActionBar/抽屉收起时仍须 **⚡ 可见**（`ft-narrow-stage-arrival-quick-start`）；Sit/How/Honesty 保持 park。其余 Idle 仍由 `NarrowIdleShell` 上滑抽屉负责。
 
 ### 4.4 z-index 与点击
