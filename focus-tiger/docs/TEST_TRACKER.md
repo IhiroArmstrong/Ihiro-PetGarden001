@@ -11,8 +11,17 @@
 
 1. **新增行**：在 `docs/tracker-entries/` 新建 `<分支名>.md`（`/` → `-`，kebab-case ASCII）。内容是要追加的那一行/几行，**不要**在下方主表插入。例：`docs/tracker-fragment-pilot` → `docs-tracker-fragment-pilot.md`。目录说明：[`tracker-entries/readme.md`](./tracker-entries/readme.md)。  
 2. **修正已有行**（用户反馈 / 状态 / 严重度）：该行已在下方主表 → **仍改本文件**；该行还只在碎片里、尚未折入机器块 → **改对应碎片**。不要用碎片复制一条主表已有的功能名（`docs:check` 会红）。  
-3. **功能 PR 禁止**跑 `npm run tracker:assemble` 再提交本文件——否则机器块又变成冲突热点。拼装留给积了若干碎片、或批量人工测试前的独立 docs PR。  
+3. **功能 PR 禁止**跑 `npm run tracker:assemble` 再提交本文件——否则机器块又变成冲突热点。拼装只走下方「拼装触发」的独立 `docs/*` PR。  
 4. 命令：`cd focus-tiger && npm run tracker:check`（已并入 `docs:check`）；`npm run tracker:assemble` 把碎片写入下方机器块。`check:open-blockers` 会同时扫本文件 **和** 尚未折入的碎片。  
+
+**拼装触发（试点 · 2026-08-20 · 强制）**
+
+> 目的：避免「下一步再拼装」没人记得触发，碎片越积越乱。Brief：[`task-briefs/task-tracker-fragment-assemble-trigger.md`](./task-briefs/task-tracker-fragment-assemble-trigger.md)。
+
+1. **P0 · 批量测前必拼**：口令 **「批量人工测试」** / **「给我待测清单」** 时，若 `docs/tracker-entries/` 除 `readme.md` / `_*.md` 外仍有碎片 → **先**开独立 `docs/*` PR 跑 `npm run tracker:assemble` 并提交机器块，**再**出清单。禁止在功能 PR 里拼装。  
+2. **P1 · 满 5 个必拼**：待拼碎片文件数 **≥ 5**（不含 readme / `_`）→ 不等批量测；口令 **「请安排下班前的 Git 同步」** 或下一次文档会话必须另开拼装 PR。  
+3. **不做**每周五定时（Agent 无 cron）。`docs:check` / `tracker:check` **不因未拼装而红**；`tracker:check` 在 ≥5 时 **WARN**（仍绿）。  
+4. 本轮拼装**只写入机器块、不删除碎片文件**；目录瘦身（consume-on-assemble）另议。  
 
 **PROCESS.md / RULES_INDEX.md 为何本轮不拆**：`PROCESS`「当前进度速览」是叙事 bullet、常改同一段时间戳，碎片能减冲突但排序/措辞要另定规则；`RULES_INDEX` 主题表已是 `rules:doc-sync` 机器块，日常冲突主要在文末修订记录（新增规则才写，远少于 TRACKER 插行）。试点先验证 TRACKER 新增行这条最高频路径。
 
@@ -261,6 +270,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 
 #### 口令触发时必须输出
 
+0. **拼装前置**（见文首「拼装触发」）：若 `tracker-entries/` 除 readme / `_` 外仍有碎片，**先**独立 `docs/*` PR 跑 `tracker:assemble` 提交机器块，**再**出本清单。功能 PR 禁止拼装。  
 1. **范围**：功能清单里状态字面为「待人工测试」的行（不含「仅单元测试覆盖」「已通过」「有问题」「已放弃/不适用」）。「有问题」另附一小节（缺陷待复测），不要混进待测主清单。  
 2. **模块桶**（按功能名 / 访问路径归入；对不上的进「其它」）：Arrival · Companion/Focus · Honesty · HUD/计时 · Ambient · Idle chrome · Hints · Reflection · 提醒 · 热力图 · i18n/文案 · Workers/云端 · 流程/门禁 · 其它。  
 3. **每条至少含**：功能名、本文件行号（或锚点）、测试步骤**摘要**（主路径一句 + 回流一句，勿整格粘贴）、本地访问路径、`?product=1` 与否、已知合入 tip hash（若「用户反馈」/步骤里已写）。  
