@@ -83,6 +83,7 @@
    d. Choose：六个活动图标；点 "Deep Work" → intention 确认  
    *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
 5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。  
+   点 **How shall we sit?** 后 **0–1 秒内**见三卡标题 + 卡下 hint（locale `COMPANION_MODE_*_HINT`：结缘/静舍一句话，不是功能说明书）。  
    - **Sit→Choose 走完**：鞠躬后**展开 Companion**；点任一模式 → **立刻** Focusing（不必再点 Sit）。  
    - **375 窄屏**：鞠躬后三选一须 **在视口内**（`ft-narrow-stage-companion`）；**禁止**只剩 home 三球、panel 屏外假绿。e2e：`375 Choose bow: Companion staged in viewport then Here & Now focuses`（`toBeInViewport`）。  
    - **门闩已就绪**后点选任一模式 → **立刻** Focusing。  
