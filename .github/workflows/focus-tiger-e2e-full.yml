@@ -74,7 +74,7 @@ jobs:
       # Always upload junit so cancelled/failed shards still leave a red/green list.
       - name: Upload JUnit (always)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: junit-full-e2e-shard-${{ matrix.shard }}
           path: focus-tiger/test-results/junit-shard-${{ matrix.shard }}.xml
@@ -84,7 +84,7 @@ jobs:
       # Traces/screenshots only — no HTML report (was ~14GB under flaky storms).
       - name: Upload failure traces (slim)
         if: ${{ failure() || cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-full-e2e-shard-${{ matrix.shard }}
           path: focus-tiger/test-results/
