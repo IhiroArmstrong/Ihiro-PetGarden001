@@ -58,7 +58,7 @@
 | **LightProgression 光影** | ❌ | ❌ | ❌ | `LightProgression.test` | **仅 unit\*** | 金晕观感人工 |
 | **Pointer / 摸头 / 靠近点头** | ❌ | ❌ | ❌ | `PointerInteraction` | **检测逻辑** | 产品壳无正式精灵；不挡合并 |
 | **EmotionController / 情绪优先级** | ❌ | ❌ | ❌ | `EmotionController` 等\* | **仅 unit\*** | 时长带、素材抠图调试面板 = 人工 |
-| **MilestoneGlow / IncenseComplete / 莲花池** | ✅ 池 math/store | Glow e2e + `lotus-pond-product` | ❌ | `MilestoneGlowStore` / `lotusPond*` | **池有 DOM；Glow 有 claim e2e；Incense 会话结束仍未接线** | 池螺旋观感与 Glow 像素仍人工 |
+| **MilestoneGlow / IncenseComplete / 莲花池** | ✅ 池 math/store | Glow e2e + `lotus-pond-product` | ❌ | `MilestoneGlowStore` / `lotusPond*` | **池有 DOM；Glow 有 claim e2e；Incense 会话结束仍未接线** | 池螺旋观感仍人工；**空池第一朵被蒲团挡住**（2026-08-20，§6.18）；e2e 只锁 11→12 计数 |
 | **舒展提醒 / Offline 暂停累计（场景 E）** | ✅ smoke E + MindfulReminder 入烟 | ❌ Offline 开表以外 | ❌ | Mindful\*（已入 smoke） | **逻辑已锁** | 真实离开墙钟仍人工 |
 | **Flow 30min across-tools toast（场景 F）** | ✅ smoke F + AcrossTools 入烟 | ❌ | ❌ | AcrossTools\*（已入 smoke） | **逻辑已锁** | toast DOM / 真实 30min 仍人工 |
 | **i18n 语言切换（场景 G）** | ✅ | ✅ `language-switch` | ❌ | registry+pref | **v1.0 en+ja** | Language 可点；zh/es/de/fr draft |
