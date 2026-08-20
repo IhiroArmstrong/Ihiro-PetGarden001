@@ -1,6 +1,6 @@
 # Task Brief · Electron 桌面端侧陪伴（窄范围生成例外）
 
-> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合 `develop`**。**L1 已开工**（口令「开工桌面陪伴 L1」）：宽屏 Confide 面板 + 下载进度 + IPC + Focusing 卸载。**仍不上 L2 生成**；型号 **未锁**。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to`（将来 **第四卡**）与 **AI Companion Add-on** Price `price_1U6GnXFuIhgJPGLiNlXs0IKe`（将来 **第五卡** · SKU **`companion.addon.lifetime`**）**均已记**；**Checkout / 第四卡+第五卡仍未接**（Share 仍检索，接支付仍算假收费）。**一旦接线须两卡同批**，禁止只加第四卡。Pro 含 Base + 本地智能体（**非 Lifetime**）。Lifetime 用户走第五卡加购（**不**进 `isEntitled`）。测本地 AI 须 Electron / `desktop:dev`。
+> **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 探针 **#336 已合 `develop`**。**L1 已合 `develop`（#362 · tip `0386b1e`）**：宽屏 Confide 面板 + 下载进度 + IPC + Focusing 卸载。**仍不上 L2 生成**（须口令「开工桌面陪伴 L2」）；型号 **未锁**。Stripe **Focus Tiger Pro** Price `price_1U6EB1FuIhgJPGLiuciuX1to`（将来 **第四卡**）与 **AI Companion Add-on** Price `price_1U6GnXFuIhgJPGLiNlXs0IKe`（将来 **第五卡** · SKU **`companion.addon.lifetime`**）**均已记**；**Checkout / 第四卡+第五卡仍未接**。**2026-08-20 用户书面**：等 L2 真能聊再下「接 Checkout」口令，两卡同批上。关单级「能聊」与 Checkout **一起测**；L1 面板壳不挡 L2 开工。Pro 含 Base + 本地智能体（**非 Lifetime**）。Lifetime 用户走第五卡加购（**不**进 `isEntitled`）。测本地 AI 须 Electron / `desktop:dev`。
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
@@ -193,7 +193,41 @@ L1 = 桌面宽屏面板 + 下载进度 + 主进程 IPC + Focusing 卸载。**仍
 3. **仍不锁** 0.6B；**仍不上** 真实用户生成；Pro / 加购 Checkout 要等入口真能打开 **且** Share 不再只是检索，否则假收费。**本切片不接 Checkout / 第四卡 / 第五卡。** 一旦接线须两卡同批。
 4. L2（四层路由 + 内部多轮攒跑偏）**禁止** L0/L1 一过就给真实用户。
 
-**本切片交付**：Electron 非低配宽屏 ⋯ 出现同一 Confide 行；点开 0–1s 内玻璃卡 + 下载/加载进度；Sit→Focusing 卸载；拖窄关掉生成层。Web / 窄屏 / ≤8GB **无**该层。Share **仍** `resolveConfideReply`。
+**本切片交付**：Electron 非低配宽屏 ⋯ 出现同一 Confide 行；点开 0–1s 内玻璃卡 + 下载/加载进度；Sit→Focusing 卸载；拖窄关掉生成层。Web / 窄屏 / ≤8GB **无**该层。Share **仍** `resolveConfideReply`。**#362 已合 `develop`。**
+
+### 测试节奏（2026-08-20 用户书面）
+
+| 测什么 | 何时 | 为什么 |
+|---|---|---|
+| **关单级「能聊」**（第 4 层短生成真接住倾诉） | **等 L2 开发完成后一起测** | L1 Share 仍检索，现在测「聊天」测不到产品能力 |
+| **Checkout 第四卡 Pro + 第五卡 Add-on** | **等 L2 真能聊之后**，另下「接 Checkout」口令，**两卡同批**再测付款 | 用户已同意；Share 仍检索时接线 = 假收费 |
+| **L1 面板壳**（点 ⋯ 见卡+进度、Focusing 卸载、拖窄关层、Web 无入口） | **不挡 L2 开工**。方便时可先点一眼；也可叠进 L2 人工测当回归 | 壳坏了会污染 L2 调试，但不必单独做关单「能聊」 |
+
+**不**把 L1 关单当成「本地 AI 已可用」。**不**等 L1 关单才允许排 L2。
+
+### 开 L2 要什么（待口令）
+
+L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。`generateEnabled` 今日恒 `false`；Share 仍 `resolveConfideReply`。
+
+**已满足（不必再等）**：
+
+1. L0 探针在 `develop`（#336）。
+2. L1 面板在 `develop`（#362 · `0386b1e`）。
+3. 路由契约已写死：`safety_redirect` → 已审仪式文案 → Confide 语料桶 → **仅** Electron 宽屏短生成。
+4. Confide v1 安全阀 + 五情绪桶 + `fallback` 已在 `src/core/confide/`（第 0–2 层可复用，**禁止**改 Web 检索主线）。
+5. 人设边界已拍板：观察式短句；不诊断、不教练清单、不呼吸指令；失败走 `fallback`，不空白、不重试死循环。权威：`EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / Confide Brief。
+6. Checkout / 锁死 0.6B / 正式改 `SCENARIO_TESTS` 场景附录 **都不是** L2 开工前提。
+
+**仍须（缺一不可才写 L2 代码）**：
+
+1. 你当回合口令 **「开工桌面陪伴 L2」**（本回合「都可以安排」= 锁门闩与测试节奏，**不是**该口令）。
+2. 生成只走 `desktop/` IPC；**禁止**把 llama 做进 `src/` / Web / 窄屏。
+3. 第 0–2 层命中时 **不得**调用模型（安全层尤其不得落到禅句或自由聊）。
+4. 内部多轮 = 你在 Electron 宽屏 Confide 里调 prompt、记跑偏；**禁止**当面向顾客的「能聊 AI」卖；**禁止**接第四/第五卡。
+5. 仍 **不锁** Qwen3-0.6B；低配仍不出入口。
+6. 跑偏案例落本地（userData 或实验室笔记），**禁止**把倾诉原文送上支付云 / 品味云。
+
+**本切片交付（口令下达后）**：宽屏 Electron 在第 0–2 层未接住时走短生成；安全/仪式/语料桶行为与 Web Confide 一致；生成失败可见 `fallback`；Focusing 仍卸载。**不含** Checkout、L3、锁型号。
 
 ---
 
@@ -223,6 +257,6 @@ L1 = 桌面宽屏面板 + 下载进度 + 主进程 IPC + Focusing 卸载。**仍
 - [x] L0 本机数字（**Apple M5 16GB · Metal**）：load ≈ 0.8s，TTFT ≈ 0.65s，≈ 116 tok/s，RSS 加载峰值 ≈ 0.9 GB，卸载后回落；Idle rAF p95 增量 ≈ 0.1ms。型号 **未锁**（只测了这一台）
 - [x] L0 Focusing 掉帧（双终端：产品窗 Sit→Focusing + skip-window 探针卸载）— **2026-08-18 用户肉眼（M5）**：对 Focusing 的 Yin **无任何可见影响 / 无卡顿**
 - [ ] L0 **M1 8GB** 同一探针（选型分水岭；未测。**不必现在找旧电脑**；缺数则低配默认不出入口、不锁 0.6B）
-- [x] L1 desktop-only **宽屏**面板 + 下载 UX + IPC + Focusing 卸载 — **口令已执行**；窄屏不接线；Share 仍检索；**不锁** 0.6B
-- [ ] L2 四层路由 + 人设；内部多轮攒跑偏案例
+- [x] L1 desktop-only **宽屏**面板 + 下载 UX + IPC + Focusing 卸载 — **#362 已合 `develop`（`0386b1e`）**；窄屏不接线；Share 仍检索；**不锁** 0.6B
+- [ ] L2 四层路由 + 人设；内部多轮攒跑偏案例 — **待口令「开工桌面陪伴 L2」**（2026-08-20 已锁测试节奏：关单能聊 + Checkout 等 L2 后一起测）
 - [ ] L3 崩溃隔离 / 门槛 / 许可；不早于步骤 B
