@@ -67,7 +67,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 2. **只读可共用主仓**：仅查文档 / log / 状态、不写盘、不切分支的会话，可继续使用主仓库目录。  
 3. **一 worktree ↔ 一分支 ↔ 一主任务**：新建任务默认 `git worktree add -b feature/<topic>|<fix>/<topic>|<chore>/<topic> <并列目录> <基线>`；基线通常为 `develop` tip，拆分/续作已有主题时用该主题分支 tip。目录与主仓**并列**（如 `../Zen-tiger-Pet-garden001-wt-<short>`），不要塞进主仓内部。  
 3a. **合入受阻 / 多文件冲突**：涉及 merge 冲突、CI 红且预计 ≥3 文件或多轮试错时，**先**摘要冲突类型并问是否新开 worktree/分支；**禁止**在原共用目录反复本地长验证。本地最多 1 轮冒烟级自检，最终交给 push + CI（细则：`RULES_INDEX` → `agent-token-cost` 第 6 条）。  
-4. **禁止两 worktree 同时检出同一分支**（Git 硬限制）；共享契约文件（如 `TEST_TRACKER.md`、`PROCESS.md`、locale 大文件）同一时间只允许一个会话改。  
+4. **禁止两 worktree 同时检出同一分支**（Git 硬限制）；共享契约文件（如 `TEST_TRACKER.md` 已有行、`PROCESS.md`、locale 大文件）同一时间只允许一个会话改。**新增 TEST_TRACKER 行**改 `docs/tracker-entries/` 碎片，可并行。  
 5. **合回主线**：功能分支经 PR 进入 `develop`——合入资格见下文「合入 develop：CI 绿即可合并」；研发自检 / 主干同步见「feature/fix 合入 develop：研发自检 + 主干同步」。`main` 仍只走 PR + 负责人网页合并（见合并门禁）。任务完成后默认 **push 旁支 + 开 PR**（见 `git-agent-commit`）；**禁止**直推 `develop`/`main`。  
 6. **结束后清理（目录拆除 · 高风险 · 须口令）**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。  
    - **禁止** Agent 静默 `worktree remove` / 按「看起来没人用」推断拆盘。  

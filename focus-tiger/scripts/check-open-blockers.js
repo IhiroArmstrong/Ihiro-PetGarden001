@@ -23,11 +23,12 @@ import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { loadTrackerCorpus, TRACKER_PATH } from './assemble-tracker.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const REPO_ROOT = join(ROOT, '..')
-const TRACKER = join(ROOT, 'docs', 'TEST_TRACKER.md')
+const TRACKER = TRACKER_PATH
 const OVERDUE_DAYS = 7
 const releaseGate = process.argv.includes('--release-gate')
 
@@ -54,53 +55,6 @@ function daysSince(isoDate) {
   const now = new Date()
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
   return Math.floor((today - recorded) / 86400000)
-}
-
-/**
- * Parse function-list rows. Severity/commitment sit just before path + date;
- * name is the first cell (cells may contain `|` in steps/feedback — do not
- * naive-split the whole row).
- * @param {string} text
- * @returns {{
- *   rows: { line: number, name: string, status: string, severity: string }[],
- *   unparsedLines: number[]
- * }}
- */
-function parseTrackerTable(text) {
-  const lines = text.split('\n')
-  /** @type {{ line: number, name: string, status: string, severity: string }[]} */
-  const rows = []
-  /** @type {number[]} */
-  const unparsedLines = []
-  let inTable = false
-  const tailRe =
-    /\|\s*(—|legacy-unclassified|release-blocker|post-v1|cosmetic)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*(\d{4}-\d{2}-\d{2})\s*\|?\s*$/
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    if (line.startsWith('| 功能 |') && line.includes('严重度')) {
-      inTable = true
-      continue
-    }
-    if (!inTable) continue
-    if (!line.startsWith('|')) break
-    if (line.startsWith('|---')) continue
-    const tail = tailRe.exec(line)
-    if (!tail) {
-      unparsedLines.push(i + 1)
-      continue
-    }
-    const nameMatch = /^\|\s*([^|]+)\s*\|/.exec(line)
-    const statusMatch = /\|\s*(仅单元测试覆盖|待人工测试|已通过|有问题|已放弃\/不适用|不挡合并[^|]*)\s*\|/.exec(
-      line
-    )
-    rows.push({
-      line: i + 1,
-      name: nameMatch ? nameMatch[1].trim() : '',
-      status: statusMatch ? statusMatch[1].trim() : '',
-      severity: tail[1]
-    })
-  }
-  return { rows, unparsedLines }
 }
 
 /**
@@ -137,13 +91,17 @@ function findFixesInFixBranches(id) {
 }
 
 const text = readFileSync(TRACKER, 'utf8')
-const { rows: tableRows, unparsedLines } = parseTrackerTable(text)
+const {
+  rows: tableRows,
+  unparsedLines,
+  corpus
+} = loadTrackerCorpus(text)
 
 /** @type {{ id: string, severity: string, recorded: string, closed?: string, reason?: string, index: number }[]} */
 const anchors = []
 let m
 const anchorRe = new RegExp(ANCHOR_RE.source, ANCHOR_RE.flags)
-while ((m = anchorRe.exec(text)) !== null) {
+while ((m = anchorRe.exec(corpus)) !== null) {
   const attrs = parseAnchorAttrs(m[1])
   if (!attrs.id) continue
   // Skip documentation placeholders (e.g. RB-YYYYMMDD-L###).
@@ -222,7 +180,7 @@ const waiting = blockerRows.filter(
 const gateBlockers = [...malformedList, ...overdueList]
 
 console.log('=== check:open-blockers ===')
-console.log(`tracker: focus-tiger/docs/TEST_TRACKER.md`)
+console.log(`tracker: focus-tiger/docs/TEST_TRACKER.md + docs/tracker-entries/`)
 console.log(`mode: ${releaseGate ? 'release-gate' : 'inventory (exit 0)'}`)
 console.log(`open release-blocker anchors: ${blockerRows.length}`)
 console.log(`  with Fixes: progress: ${inProgress.length}`)
@@ -260,13 +218,26 @@ if (legacyRows.length === 0) {
   console.log('--- legacy-unclassified (not in overdue scan) ---')
   for (const r of legacyRows) {
     const short = r.name.length > 64 ? `${r.name.slice(0, 64)}…` : r.name
-    console.log(`L${r.line}: ${short}`)
+    const loc =
+      !r.source || r.source === 'TEST_TRACKER.md'
+        ? `L${r.line}`
+        : `${r.source}:${r.line}`
+    console.log(`${loc}: ${short}`)
   }
   console.log('')
 }
 
 if (unparsedLines.length > 0) {
-  const preview = unparsedLines.slice(0, 12).join(', ')
+  const preview = unparsedLines
+    .slice(0, 12)
+    .map((u) =>
+      typeof u === 'number'
+        ? String(u)
+        : u.source === 'TEST_TRACKER.md'
+          ? String(u.line)
+          : `${u.source}:${u.line}`
+    )
+    .join(', ')
   const more =
     unparsedLines.length > 12 ? ` …(+${unparsedLines.length - 12})` : ''
   console.log(

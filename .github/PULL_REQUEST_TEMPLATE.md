@@ -81,7 +81,7 @@
   **Vite 产品壳预览**不是合入前提；需要时给本地 Safari URL，但**不等**用户确认才开 PR。  
   文档豁免：`git diff --name-only origin/develop...HEAD` **不含** `focus-tiger/src/**`、`focus-tiger/public/**`、`focus-tiger/e2e/**`、产品入口 HTML、任意 `*.vue`（禁止「有个 .md 就算纯文档」；混有运行时路径 → 整 PR 不得豁免 Vite/冒烟）→ 勾此项并写豁免理由：_______________
 - [ ] 合入前已按 `WORKFLOW.md` 跑过 **develop 同步判定**（`git diff --name-only origin/develop...HEAD` / `HEAD...origin/develop` + `comm -12`）：无需 rebase **或** 已 rebase/merge 并重跑冒烟
-- [ ] **TEST_TRACKER**：UI 可见改动已登记「待人工测试」；**不会**因为本 PR 将合入就把状态改成已通过 / 已修复
+- [ ] **TEST_TRACKER**：新增行走 `docs/tracker-entries/<branch>.md`（勿在 `TEST_TRACKER.md` 主表插行）；UI 可见改动状态「待人工测试」；**不会**因为本 PR 将合入就把状态改成已通过 / 已修复
 
 ---
 

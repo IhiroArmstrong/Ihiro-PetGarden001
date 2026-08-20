@@ -11,6 +11,7 @@
 | **(b) 契约测试** | 行为断言即活文档；改坏契约 → 测试红 | `npm run test:smoke`（含门闩 / Store / 场景串联） |
 | **(c) 规则权威对齐** | 每个规则主题一份 SSOT；非 SSOT 禁止完整复述 / 禁止矛盾短语 | `npm run rules:doc-check`（已并入 `docs:check`） |
 | **(d) 数值复述一致性** | 下游文档禁止在政策关键词旁复述 SSOT 具体分钟/小时；须路径指针 | `scripts/check-docs-consistency.js`（已并入 `docs:check` / `test:smoke`） |
+| **(e) TEST_TRACKER 碎片（试点）** | 新增验收行走 `docs/tracker-entries/`；不要求功能 PR 同步机器块 | `scripts/assemble-tracker.js`（`tracker:check` 已并入 `docs:check`） |
 
 `docs:check` **不替代** `test:smoke`：前者锁**结构**（字段、枚举、锚点表、规则权威），后者锁**行为**（门闩 false 时不得 begin、无静默 return）。
 
