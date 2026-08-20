@@ -70,7 +70,7 @@ curl -s http://127.0.0.1:8787/health
 | `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
-`daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。**2026-08-20 本机 deploy**：`https://focus-tiger-cloud.ihiro.workers.dev` Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**；`POST /api/emotion-weight` 已含 `schemaVersion: 1`。Cloud Agent / 无登录环境 **禁止** `wrangler deploy --temporary`。产品范围与四问见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
+`daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。**2026-08-20 本机 deploy**：`https://focus-tiger-cloud.ihiro.workers.dev` Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**；`POST /api/emotion-weight` 已含 `schemaVersion: 1`。**同日 #378**：`POST /api/monetization-funnel-ingest` 的 layout 白名单已合 `develop`，**尚未**进该 Version。用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，**禁止** `wrangler deploy --temporary`。产品范围与四问见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
 
 ## 品味层接口
 
