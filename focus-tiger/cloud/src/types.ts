@@ -7,6 +7,8 @@
  *
  * Vars / wrangler.jsonc (non-secret):
  *   STRIPE_PRICE_ID, STRIPE_SANCTUARY_PRICE_ID, STRIPE_MEMBERSHIP_PRICE_ID
+ *   STRIPE_PRO_PRICE_ID reserved in docs (price_1U6EB1FuIhgJPGLiuciuX1to) — no checkout yet
+ *   STRIPE_COMPANION_ADDON_PRICE_ID reserved in docs (price_1U6GnXFuIhgJPGLiNlXs0IKe) — no checkout yet
  *   Checkout success/cancel URLs, ALLOWED_ORIGIN, RESEND_FROM, NEWSLETTER_FROM
  */
 export interface Env {
@@ -69,13 +71,21 @@ export interface EmotionWeightRequest {
 }
 
 export interface DailyMessageResponse {
+	schemaVersion: number;
+	locale: string;
+	pool: Array<{ id: string; text: string; attribution?: string }>;
 	message: string;
 	variantSeed: string;
 }
 
 export interface EmotionWeightResponse {
+	schemaVersion: number;
 	variant: string;
 	weight: number;
+	riseInterruptPool: Array<{ key: string; weight: number }>;
+	welcomePool: Array<{ key: string; weight: number }>;
+	lightCompletePool: Array<{ key: string; weight: number }>;
+	honestyLongMinMinutes: number;
 }
 
 export interface CreateCheckoutSessionResponse {

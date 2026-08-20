@@ -52,7 +52,8 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
-> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-cross-session`）。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。门禁文件只保留指针，勿在别处再抄全文。
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-cross-session`）。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。门禁文件只保留指针，勿在别处再抄全文。  
+> 对话交接摘要（口令「生成交接」）见 [`.cursor/rules/focus-tiger-session-handoff.mdc`](.cursor/rules/focus-tiger-session-handoff.mdc)（`RULES_INDEX` → `session-handoff`）。**本条不管**交接模板，只管 push / 开 PR / 合 main 前查仓库客观状态。
 
 1. **冷却后再查状态**：执行「开 PR」「合并进 `main`」「`git push` 到远程」等有一定不可逆性的操作前，若距上一次同类操作已超过约 **10–15 分钟**，须先核对仓库当前状态与最近的 commit / PR / CI 历史，确认没有更晚的、可能冲突的状态变化；**禁止**机械执行可能已过时的早期指令。  
 2. **发现更晚活动 → 先问用户**：若同仓库已有更晚相关活动（例如已存在同方向 PR、远端 tip 已前进、CI 刚变红/变绿、其他分支上有更新的合并门禁相关提交），须 **先向用户确认**，不得按手头旧指令执行到底。  

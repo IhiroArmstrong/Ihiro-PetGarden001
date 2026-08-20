@@ -107,7 +107,7 @@
 | idle-eye-glance | 8 | idleEyeGlance | Idle 编排一瞥 | — |
 | blink-breathe | 13 | blinkBreathe | **勿接主路径**（Rise 已改） | 仅调试保留 |
 | blink-smile | 12 | blinkSmile | **已接线** smiling / curiousTilt | Slice B：微仪式/完成变体池 |
-| wave-hello | 19 | waveHello / waveHelloWelcome | **停接线**；入库仅素材对照 | 以后另议 |
+| wave-hello | 19 | waveHello / waveHelloWelcome | **欢迎池停接线**；**珍藏点播已接线**（`collectionsWaveHello`；抽屉不列 SKU） | `welcomeBack` / 10min 自主仍另议 |
 | wave-hello-pingpong | 38 | waveHelloPingpong（原 welcomeBack） | **停接线**（2026-08-02） | 素材保留；场景以后另议 |
 | magic-book-reading | 46 | magicBookReading | **试验**：开场欢迎池 | 已烘焙 pingpong |
 | conjure-flowers-blow-away | 65 | conjureFlowersBlowAway | **产品冷启动已接线**（Phase 2b；2c 抛光） | Day1/久别吹花；**10 fps** 锁定（≈6.5s ack 带）；同日 XOR 欢迎池；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
@@ -317,6 +317,20 @@
 | `candidates/enso-sample0021-rembg.png` | 对照（原棋盘格伪透明） |
 | `candidates/enso-sample0021-color-key.png` | 对照 |
 | `candidates/preview-winner-on-cream.png` | QA 预览 |
+
+---
+
+## Yin Coin marks（非序列帧 · 货币 UI chrome）
+
+> **路径**：`public/ui/focus-coins/`（入库 2026-08-19）。  
+> **用途**：寅币在 **Yin's Collections** 抽屉里的货币识别——抬头浮雕标 + 余额/价格小 icon。  
+> **禁止**：叠到 `#sprite-stage` / 序列帧 / 蒲团；不要当 SKU 静物图（瓷器/青铜器仍待另出）。  
+> **接线**：`FocusCoinsPanelUI.js` `MARK_SRC` / `ICON_SRC`。用户 2026-08-19 书面：精致版与小 icon 版都看过、没问题。
+
+| 文件 | 尺寸 | 角色 |
+|---|---|---|
+| `yin-coin-mark.png` | 192×192 | 精致浮雕 · 面板抬头 / 仪式层 |
+| `yin-coin-mark-icon.png` | 64×64 | 扁平小标 · 余额 24px、价格 16px |
 
 ---
 

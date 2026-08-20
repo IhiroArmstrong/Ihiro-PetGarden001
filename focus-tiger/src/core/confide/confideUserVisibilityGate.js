@@ -68,15 +68,18 @@ export function isConfideChromeStageAllowed(stage) {
  * @param {string} [opts.stage]
  * @param {() => boolean} [opts.safetyOk]
  * @param {boolean} [opts.mountEnabled]
+ * @param {boolean} [opts.companionGeneration] Electron wide L1 generate layer
  * @returns {boolean}
  */
 export function canOpenConfidePanel({
   search = '',
   stage = 'idle',
   safetyOk = isConfideSafetyCorpusOk,
-  mountEnabled = CONFIDE_USER_MOUNT_ENABLED
+  mountEnabled = CONFIDE_USER_MOUNT_ENABLED,
+  companionGeneration = false
 } = {}) {
   if (!isConfideChromeStageAllowed(stage)) return false;
+  if (companionGeneration === true && safetyOk() === true) return true;
   return (
     isConfideUserVisible({ safetyOk, mountEnabled }) ||
     isConfideDevHarness(search)

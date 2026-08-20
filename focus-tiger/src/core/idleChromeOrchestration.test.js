@@ -318,6 +318,7 @@ describe('listSecondaryChromeEntries', () => {
         'companion',
         'five-moments',
         'journey-log',
+        'yin-coin',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -351,6 +352,7 @@ describe('listSecondaryChromeEntries', () => {
         'companion',
         'five-moments',
         'journey-log',
+        'yin-coin',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -385,6 +387,7 @@ describe('listSecondaryChromeEntries', () => {
       [
         'five-moments',
         'journey-log',
+        'yin-coin',
         'zen-cinema',
         'daily-quote',
         'wallpapers',
@@ -396,6 +399,20 @@ describe('listSecondaryChromeEntries', () => {
         'ritual-emotional-reset',
         'ritual-work-transition'
       ]
+    );
+  });
+
+  it('yin-coin sits immediately after journey-log; flag-off hides the row', () => {
+    const entries = listSecondaryChromeEntries('wide-more', allOn);
+    const proxies = entries.filter((e) => e.proxy).map((e) => e.proxy);
+    assert.equal(proxies.indexOf('yin-coin'), proxies.indexOf('journey-log') + 1);
+    const hidden = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      yinCoinVisible: false
+    });
+    assert.equal(
+      hidden.some((e) => e.proxy === 'yin-coin'),
+      false
     );
   });
 
@@ -459,6 +476,21 @@ describe('listSecondaryChromeEntries', () => {
     });
     const row = open.find((e) => e.proxy === 'confide');
     assert.equal(row?.labelKey, 'CONFIDE_MENU_LABEL');
+  });
+
+  it('desktop companionGeneration shows Confide on wide-more only', () => {
+    const wide = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      confideUserVisible: false,
+      companionGeneration: true
+    });
+    assert.equal(wide.some((e) => e.proxy === 'confide'), true);
+    const narrow = listSecondaryChromeEntries('narrow-drawer', {
+      ...allOn,
+      confideUserVisible: false,
+      companionGeneration: true
+    });
+    assert.equal(narrow.some((e) => e.proxy === 'confide'), false);
   });
 
   it('ritual rows are locked when not entitled', () => {

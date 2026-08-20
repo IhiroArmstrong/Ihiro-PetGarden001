@@ -17,6 +17,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 import { listRitualConfigs } from './RitualFlow.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
 import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
+import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -48,7 +49,9 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
  * @property {boolean} [newsletterSubmitted]
  * @property {boolean} [scenesEntitled] override; default = isEntitled(ritual.morning.access)
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
+ * @property {boolean} [companionGeneration] Electron wide L1 only; ignored on narrow-drawer
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
+ * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  */
 
 /**
@@ -361,10 +364,22 @@ export function listSecondaryChromeEntries(surface, visibility) {
   // Breath practice is the home left ball — never list in drawer / ⋯.
   // Sound lives only on top-right note / narrow ♪ (2026-07-30) — not a menu row.
 
+  const yinCoinVisible =
+    typeof visibility.yinCoinVisible === 'boolean'
+      ? visibility.yinCoinVisible
+      : isFocusCoinsAwardEnabled({
+          search:
+            typeof location !== 'undefined' && location?.search
+              ? location.search
+              : ''
+        });
   const confideVisible =
     typeof visibility.confideUserVisible === 'boolean'
       ? visibility.confideUserVisible
       : isConfideUserVisible();
+  // Desktop L1 may show Confide on wide Electron when the companion bridge exists.
+  const companionGeneration =
+    surface === 'wide-more' && visibility.companionGeneration === true;
 
   pushLabeledGroup(out, 'MENU_GROUP_PRACTICE', [
     companionOk
@@ -372,8 +387,19 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null,
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
     { proxy: 'journey-log', labelKey: 'JOURNEY_LOG_MENU_LABEL' },
-    confideVisible
-      ? { proxy: 'confide', labelKey: 'CONFIDE_MENU_LABEL' }
+    yinCoinVisible
+      ? {
+          proxy: 'yin-coin',
+          labelKey: 'YIN_COIN_MENU_LABEL',
+          testId: 'idle-yin-coin'
+        }
+      : null,
+    confideVisible || companionGeneration
+      ? {
+          proxy: 'confide',
+          labelKey: 'CONFIDE_MENU_LABEL',
+          testId: companionGeneration ? 'idle-confide-desktop' : undefined
+        }
       : null
   ]);
 

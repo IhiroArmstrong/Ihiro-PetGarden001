@@ -13,6 +13,10 @@ import {
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import {
+  canRegisterDesktopCompanionGeneration,
+  hasDesktopCompanionBridge
+} from '../core/desktopCompanionGate.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v6';
 const WIDE_MQ = '(min-width: 480px)';
@@ -86,8 +90,9 @@ export class WideIdleMoreMenu {
    *     onReminder?: () => void,
    *     onLanguage?: () => void,
    *     onFiveMoments?: () => void,
-   *     onJourneyLog?: () => void,
-   *     onConfide?: () => void,
+     *     onJourneyLog?: () => void,
+     *     onYinCoin?: () => void,
+     *     onConfide?: () => void,
    *     onZenCinema?: () => void,
    *     onDailyQuote?: () => void,
    *     onMustardSeedSeal?: () => void,
@@ -582,7 +587,11 @@ export class WideIdleMoreMenu {
       newsletterSubmitted: hasSubmittedNewsletter(),
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
-      ).unlocked
+      ).unlocked,
+      companionGeneration: canRegisterDesktopCompanionGeneration({
+        hasBridge: hasDesktopCompanionBridge(),
+        widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+      })
     });
 
     this.listEl.innerHTML = '';
@@ -662,6 +671,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onJourneyLog?.();
+      return;
+    }
+    if (key === 'yin-coin') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onYinCoin?.();
       return;
     }
     if (key === 'confide') {

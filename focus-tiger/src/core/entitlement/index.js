@@ -9,3 +9,4 @@
  */
 
 export * from './entitlementGate.js';
+export * from './companionAddonSku.js';

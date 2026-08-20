@@ -88,6 +88,7 @@ alwaysApply: true
 - 预览浏览器与能耗 / 进程收尾 / Cloud 独立会话提醒 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 - 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
+- 会话交接 / 口令「生成交接」→ `focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）；勿在本文件复述模板。
 - 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
 - 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；勿在本文件复述三轴。
 

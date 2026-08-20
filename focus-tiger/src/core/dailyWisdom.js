@@ -16,6 +16,7 @@ import {
 import { getLocale } from '../locales/i18n.js';
 import { getLocalDateKey } from '../utils/localDate.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
+import { overlayDailyWisdomPoolForLocale } from './tasteLayerOverlay.js';
 import { DailyWisdomStore } from './DailyWisdomStore.js';
 
 /** @type {import('./entitlement/entitlementRegistry.js').FeatureKey} */
@@ -55,7 +56,8 @@ export function resolveTodayWisdom(opts = {}) {
 
   const dateKey = getLocalDateKey(opts.date ?? new Date());
   const locale = opts.locale || getLocale() || 'en';
-  const pool = opts.pool ?? getDailyWisdomPool(locale);
+  const pool =
+    opts.pool ?? overlayDailyWisdomPoolForLocale(locale) ?? getDailyWisdomPool(locale);
   const store =
     opts.store ??
     new DailyWisdomStore({

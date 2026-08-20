@@ -236,8 +236,9 @@ export const SPRITE_SEQUENCES = {
     frameHolds: { 39: Math.round((1000 / 8) * 2) }
   },
 
-  // 挥手 · 入库仅素材（2026-08-02 停接线；产品 welcomeBack 空实现）。
-  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。
+  // 挥手 · 欢迎池/welcomeBack 仍停接线（2026-08-02）。
+  // 2026-08-20：珍藏 Play / playEmotion('collectionsWaveHello') → 本序列；抽屉不列 SKU。
+  // 抬手 → 顶点左右摇摆×2 → 放手；去掉最高点单帧 hold。不改 frameIndices。
   waveHello: {
     animation: 'wave-hello',
     frameCount: 19,

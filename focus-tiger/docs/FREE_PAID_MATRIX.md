@@ -1,8 +1,8 @@
 # Focus Tiger · 功能 × 免费/付费对照表
 
 > **状态：方向锁 / SSOT（2026-08-10）** — 功能×档位×接线差距对账的权威表；产品策略红线仍以 `MVP_PRODUCT_DEFINITION.md` §五为准，本表负责对账与落地差距可视化。  
-> **范围**：整理「功能归属 + 文档口径 + 代码接线现状」；**不含**价格列（$9.99 / $89.99 等为展示用、未锁定，另处跟踪）。  
-> **禁止**：改本表任务不改 `FEATURE_CATALOG` / 运行时；改档位先改产品文档再改代码。
+> **范围**：整理「功能归属 + 文档口径 + 代码接线现状」；**不含**价目表列（$9.99 / $89.99 等默认仍是展示用、未锁定，另处跟踪）。A6 **付费方式备注**可引用已拍板 Stripe Price / 政策价（Pro US$12.99/月；Lifetime AI 加购 US$29.99 一次），不因此把本表改成价目表。  
+> **禁止**：改本表任务不改 `FEATURE_CATALOG` / 运行时；改档位先改产品文档再改代码。`companion.addon.lifetime` **禁止**写入 `FEATURE_CATALOG`。
 
 ## 权威从属
 
@@ -11,11 +11,12 @@
 | 产品策略 / 红线 | `MVP_PRODUCT_DEFINITION.md` §五 | 双轨心智、免费底线、不卖清单 |
 | 工程商业化细则 | `task-briefs/task-tech-direction-v1-shell-monetization.md` | A/B 入口、零耦合、到期降级 |
 | 工程 catalog | `src/core/entitlement/entitlementRegistry.js`（`FEATURE_CATALOG`） | featureKey → requiredTier / type |
+| 非 catalog SKU | `src/core/entitlement/companionAddonSku.js` | `companion.addon.lifetime`；**禁止**并入上一行 |
 | **本表（方向锁 / SSOT）** | `FREE_PAID_MATRIX.md` | 功能×档位×接线差距对账 |
 
 ## 心智模型（硬 · 与 #216 对齐）
 
-仍称 **双轨**，**禁止**「三档并存」表述：
+仍称 **双轨**，**禁止**把 Tea / Lifetime / Membership 说成「三套不同内容层级」：
 
 | 轨 | 含义 |
 |---|---|
@@ -27,8 +28,12 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 - **Sanctuary Lifetime** — 一次买断  
 - **Yin Membership** — 订阅  
 
-全局规则：**lifetime ∪ subscription 互相覆盖**。  
+全局规则：**lifetime ∪ subscription 互相覆盖**（**只覆盖 B 轨内容**，**不**覆盖桌面本地智能体）。  
 **到期降级**：已生成内容（历史、已解锁纪念物、已播放仪式）永久可看；到期只停「新内容持续解锁」与「进阶功能继续使用」。
+
+**2026-08-20 补**：上表禁的是第三套 *平行内容包*。**Focus Tiger Pro** 是 Base 的升级档（含 B 轨 + 桌面本地智能体），不是另一套互斥内容。现货 Support **仍只三卡**。将来接线必须 **第四卡 Pro + 第五卡 Lifetime 加购一起接**，禁止只加第四卡。Checkout 均未接。
+
+**2026-08-20 · 方案 A（Lifetime + 本地 AI）**：已买 **Sanctuary Lifetime** 的用户默认仍**没有**本地智能体。解锁路径 = 一次性加购 SKU **`companion.addon.lifetime`**（**US$29.99** 买断 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**，**不**按月）——这是将来 **第五卡**，不是「没有第四卡」。**禁止**为此拆 Ultimate Lifetime / 补差价分层（方案 B 延后，待 L1/L2 能力验证）。非 Lifetime / Membership 订阅用户仍走 **Focus Tiger Pro US$12.99/月**（将来 **第四卡**；该数字已于 2026-08-20 用 Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to` 锁定）。该加购 **不是** `FEATURE_CATALOG` key，**不得**经 `isEntitled` 互覆盖放行。Checkout 未接。
 
 ### 本表档位取值
 
@@ -37,6 +42,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | `free` | 免费；不得付费墙 |
 | `tip-only` | A 轨；打赏相关，**非**内容解锁档 |
 | `lifetime∪subscription` | B 轨进阶；买断或订阅同等访问 |
+| `lifetime-addon` | Sanctuary Lifetime 持有者一次性 DLC；**不**走 `isEntitled` 互覆盖 |
 
 若 catalog 字面 `requiredTier: 'subscription'`，产品档位仍写 `lifetime∪subscription`，并在「Catalog / gate」注明字面值 + 全局互覆盖。
 
@@ -96,7 +102,6 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | Work Transition Ritual | `lifetime∪subscription` | 同上 | `ritual.work-transition.access` | B | **已接线** | 同上 |
 | 仪式完成 → history / memento / copy / sfx ownership | `lifetime∪subscription` | 到期后 persistent 仍可看 | `ritual.*.history|memento|copy-unlocked|sfx-unlocked`（字面 subscription / persistent） | 到期降级策略 | **部分接线** | 完成时 `claimFeatureOwned` 已写；**独立「回看历史/纪念物」产品 UI** 是否齐全另计；无 entitlement 时无法新开仪式 |
 | 深度音效全库（`ambient.deep.play`） | `lifetime∪subscription` | 免费温暖子集 **5** 首：`singing-bowl`（Mer-Ka-Ba）· `divine-life-society` · `somnia-variation-3` · `dreamland` · `frozen-in-love`；其余内置曲 B；用户自传仍免费 | `ambient.deep.play`（字面 subscription / ongoing） | B 核心权益之一 | **已接线**（#251）+ **15s 试听**（`feature/ambient-deep-audition-15s`） | Gate：`ambientEntitlement.js` + `setTrack` 硬拒 + 面板锁行。**试听**：未授权点 Deep → 约 15s（`?ambientAuditionMs=` 可缩短）→ fade out → 可忽略 Unlock 提示；**不**持久 preferred=deep；零 tip 耦合 |
-| 高级情绪动画 / 场景（`emotion.premium.trigger`） | `lifetime∪subscription` | 非核心；名单另定 | `emotion.premium.trigger` | B | **未接线** | catalog 占位；dispatcher **未**按 key 拦高级表现 |
 | 进阶每日解锁内容（`content.advanced.daily-unlock`） | `lifetime∪subscription` | — | `content.advanced.daily-unlock` | B 占位 | **未接线** | catalog 有；**无**产品消费者 |
 | Sanctuary 尊贵徽章 | `lifetime∪subscription` | 付费/preview 起授 | Sanctuary `badgeIds`（非 FEATURE_CATALOG key） | B | **已接线** | Idle `#yin-tip-kindness-badges`：Lifetime **或** Membership 起授 ≥3（`idlePracticeBadges`）；**不**把 Sanctuary SKU `unlocked` 标真。**页面左下角 Enso**：`#yin-sanctuary-enso-mark` 已接线（lifetime∪subscription；零 tip；Focusing 淡化；装饰层不开店） |
 | Support Yin Modal · Sanctuary 卡 | `lifetime∪subscription` | 买断入口 | Support → Sanctuary Checkout | B 入口 | **已接线** | — |
@@ -116,15 +121,35 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 电子书 ②A 免费下载 | `free` | — | — | 延后排期 | **未接线** | 产品延后，非付费墙项 |
 | 电子书 ②B 练习解锁 | — | — | — | **已取消** | **不适用** | 勿复活 streak/练习解锁 |
 
-### A5 · C 轨 · 同坐点（练习货币 · 不解锁 B）
+### A5 · C 轨 · 寅币（练习货币 · 不解锁 B）
 
-> **方向锁（2026-08-18）**。内部名 Focus Coins；对外 **同坐点**。权威：`FOCUS_COINS.md`。**不是**第三档付费，**不是** `requiredTier`。
+> **方向锁（2026-08-20）**。内部名 Focus Coins；货币对外 **寅币**；个人中心 **Yin's Collections / 阿寅的珍藏**。权威：`FOCUS_COINS.md`。**不是**第三档付费，**不是** `requiredTier`。
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
-| 同坐点钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：空间变体 / 称号 / 稀有练习章 / 阿寅轻点缀 | 练习兑换 | **不可现金购买** | SKU `cosmetic.*` / `title.*` / `badge.rare.*` | 不拦截自动纪念物；≠ 换装柜 | **L2 内部兑换已接线**（`__focusCoins.redeem`；无抽屉）；莲叶晨露只叠已有朵 | 须弥坐 = 360 点 **且** `lifetimeMinutes ≥ 600`；L3 才做抽屉表面 |
-| 用同坐点换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
+| 寅币钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
+| 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 占位色点）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
+| 用寅币换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
+
+### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）+ Lifetime AI 加购
+
+> **方向锁（2026-08-20）**。Stripe 名 **Focus Tiger Pro** / **Focus Tiger Base**。Lifetime 加购 SKU **`companion.addon.lifetime`**。权威：`task-desktop-on-device-companion.md`。**Checkout 均未接线。**  
+> **谁走哪条**：已买 Sanctuary Lifetime → 一次性 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡）；未买 Lifetime（含仅 Membership / Base）→ **Pro US$12.99/月**（含 B 轨 + 本地智能体 · 将来第四卡）。两条路径都仍受 Electron + 宽屏 + 非低配使用门槛约束。  
+> **五产品对照（2026-08-20 用户书面纠正）**：Dashboard 现有 5 个产品。**不要**按截图从上往下把 Sanctuary / Tea 当成新卡——那两张已经是现货三卡。接线时 **不止第四卡，也必须第五卡**（Price ID 已记）。Sanctuary「2 prices」、Tea「3 prices」= Dashboard 历史价，**不是**新卡。
+
+| Support 卡序 | Stripe 产品 | Price | 现货 |
+|---|---|---|---|
+| 1 | Yin's Sanctuary | 已接 `STRIPE_SANCTUARY_PRICE_ID` | **是** |
+| 2 | Focus Tiger Base（应用内 Yin Membership） | 已接 `STRIPE_MEMBERSHIP_PRICE_ID` | **是** |
+| 3 | Buy Yin a Tea | 已接 `STRIPE_PRICE_ID`=`price_1U4nanFuIhgJPGLidoTdxobW` | **是** |
+| **4（将来）** | Focus Tiger Pro | `price_1U6EB1FuIhgJPGLiuciuX1to` | **未接** |
+| **5（将来）** | Focus Tiger: AI Companion Add-on | `price_1U6GnXFuIhgJPGLiNlXs0IKe` | **未接** |
+
+| 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
+|---|---|---|---|---|---|---|
+| Focus Tiger Base（应用内 Yin Membership） | `lifetime∪subscription` | Stripe **US$6.99/月** | 现货 `STRIPE_MEMBERSHIP_PRICE_ID` | B 轨订阅；**不含**本地智能体 | **部分接线** | Dashboard 已改名 Base；应用内文案未改 |
+| Focus Tiger Pro 订阅（将来 **第四卡**） | B 轨 **加上** 本地智能体 | Stripe **US$12.99/月** · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**，非待再议数字） | **无** Checkout 路由；禁止现在售卖「能聊的 AI」 | Pro **包含** Base 那套 B 轨 + 合格 Electron 上的端侧生成；**给非 Lifetime 用户** | **Price ID 已记文档**；**未接线** | L1 面板已开，Share 仍检索。Support 现货仍三卡。**一旦接线须与第五卡同批**，禁止只加第四卡。买可走 Web（能聊后再接）；用模型仍仅 Electron + 宽屏 + 非低配。Safari / 无 Electron 壳 **没有**本地 AI |
+| AI Companion Add-on（Lifetime DLC · 将来 **第五卡**） | `lifetime-addon` | **US$29.99 一次** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**；SKU **`companion.addon.lifetime`**；与 Sanctuary 主 SKU `yin-sanctuary-lifetime` **分开** | **禁止**写入 `FEATURE_CATALOG`；**禁止** `isEntitled` 放行；**无** Checkout 路由 | 已买 Lifetime 的用户一次性永久解锁桌面本地智能体；**不**按月；**不必**再买 Base | SKU 常量 `companionAddonSku.js`；Price ID **已记文档**；**Checkout 未接** | 方案 A（2026-08-20 书面改价，取代 #359「另订 Pro / 不要开加购」）。**不**拆 Ultimate Lifetime / 补差价（方案 B）。**是第五卡，不是「无第四卡」。** 无 storage key。仅 Lifetime 持有者可被提供该加购。接线须与第四卡 Pro 同批 |
 
 ---
 
@@ -145,7 +170,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | A→B 请茶送 24h 体验卡 | **非 v1** | 阶段 2 候选 | Brief §2.8 |
 | UGC Pro Pass 社区订阅 | **默认不做** | ≠ Yin Membership；无账号 / 平台复杂度 | PROCESS UGC Backlog |
 | 抽奖 / 稀缺倒计时 / FOMO | **禁止** | 商业化红线 | MVP §五 |
-| 同坐点兑换 B 轨效率/场域权益 | **禁止** | 练习货币 ≠ 会员；不得续期 `ongoing` | `FOCUS_COINS.md` §3；本表 A5 |
+| 寅币兑换 B 轨效率/场域权益 | **禁止** | 练习货币 ≠ 会员；不得续期 `ongoing` | `FOCUS_COINS.md` §3；本表 A5 |
 
 ---
 
@@ -153,11 +178,10 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 优先对照排期用（非完整 Backlog）：
 
-1. **Ambient Deep 15s 试听** — **本支实现中** `feature/ambient-deep-audition-15s`（Gate #251 已合）。  
-2. **`emotion.premium.trigger`** — catalog 有；产品未拦高级情绪。  
-3. **`content.advanced.daily-unlock`** — catalog 有；无消费者（占位 · 待定义或废止）。  
-4. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 redeploy 待 Resend/OTP secrets。  
-5. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式 + Ambient 深库 + Seasonal 已用；高级情绪等未跟。  
+1. **Ambient Deep 15s 试听** — Gate #251 已合。  
+2. **`content.advanced.daily-unlock`** — catalog 有；无消费者（占位 · 待定义或废止）。  
+3. **Yin Membership 订阅 Checkout** — create/confirm/OTP verify + Unlock UI Manage + cloud provider/Portal（**#240 已合 tip `755d465`**）；生产 redeploy 待 Resend/OTP secrets。  
+4. **统一 `isEntitled` 全面替换散落 gate** — 地基有；进阶仪式 + Ambient 深库 + Seasonal 已用。  
 6. **Daily Wisdom → Reflection + 静默印花** — Brief `task-daily-wisdom-reflection-mount.md`（Phase A/B 拆分）。  
 7. **Journey Daily Card（Save image）** — Brief `task-journey-daily-card.md`；**Log 上限免费/付费统一 30（有意）**。  
 8. **Sanctuary Enso Mark（页面左下角）** — **已接线** `#yin-sanctuary-enso-mark`（Brief `task-sanctuary-enso-mark.md`）。  
@@ -167,7 +191,9 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
-15. **同坐点（C · 练习货币）** — 方向锁 2026-08-18；L0 #335 已合；**L1 发点 #338 已合**（TRACKER 待人工）；**L2 内部兑换本支**。无抽屉。**禁止**用点满足 `isEntitled`。
+15. **寅币（C · 练习货币）** — 方向锁 2026-08-20（清供 8 + 铁律）；L0–L3 已合。抽屉 = 清供器物卡。**禁止**用点满足 `isEntitled`。**禁止**改/盖序列帧。
+16. **Focus Tiger Pro（将来第四卡）** — Stripe Price 已记；**Checkout 未接**。Pro **包含** Base（B 轨）+ 本地智能体。L1 面板已开，Share 仍检索。禁止现在改 Support 三卡。接线时须与第五卡同批。  
+17. **`companion.addon.lifetime`（将来第五卡）** — 政策 SKU + Stripe Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** 已记；**Checkout / storage 未接**。Lifetime 主 SKU 仍不含本地智能体。禁止把该 id 写入 `FEATURE_CATALOG`。接线时须与第四卡 Pro 同批。
 
 **已相对对齐的 B 面**：三进阶仪式菜单锁 + 完成 claimOwned；Sanctuary Unlock UI；尊贵徽章授予；tip↔Sanctuary 零耦合；**Ambient 深度曲 `isEntitled('ambient.deep.play')`（免费 5 首温暖子集）**。
 
@@ -180,7 +206,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 1. 改「谁免费 / 谁进 B」→ 先 `MVP` / Brief，再改本表，最后改 `FEATURE_CATALOG` 与消费者。  
 2. 接线状态随合入 PR 更新「代码落地」「差距说明」；禁止只改代码不改表。  
 3. **本表已为方向锁 / SSOT**（2026-08-10 书面确认升格）；改档位或接线口径须同步本表，不得只改代码或旁注。  
-4. 价格、具体曲目/动画分层名单：**不**写入本表。
+4. 价格、具体曲目/动画分层名单：**不**写入本表价目列。A6 已拍板的 Stripe / 政策价写在「付费方式备注」，改价先改 Brief + 本表 A6，再改代码常量。
 
 ## 相关索引
 
@@ -189,4 +215,5 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 - `YIN_SANCTUARY.md` / `YIN_TIP_JAR.md`  
 - `SHARED_RESOURCES.md`（entitlement / sanctuary / tip keys）  
 - `TEST_TRACKER.md`（RitualFlow / entitlement / Sanctuary / Daily Wisdom 行）  
-- `FOCUS_COINS.md`（同坐点语义）· `task-briefs/task-focus-coins.md`  
+- `FOCUS_COINS.md`（寅币 / Yin's Collections）· `task-briefs/task-focus-coins.md`  
+- `task-briefs/task-desktop-on-device-companion.md` · `src/core/entitlement/companionAddonSku.js`（`companion.addon.lifetime`）  

@@ -42,6 +42,8 @@ test('Focus duration: Leave cancels without Focusing', async ({ page }) => {
   await expect(picker).toBeVisible({ timeout: 5_000 });
   await expect(picker.locator('#focus-duration-floor-hint')).toBeVisible();
   await expect(picker.locator('#focus-duration-floor-hint')).toContainText(/10/);
+  await expect(picker.locator('#focus-coins-duration-hint')).toBeVisible();
+  await expect(picker.locator('#focus-coins-duration-hint')).toContainText(/寅币/);
   await picker.locator('[data-focus-duration-leave]').click();
   await expect(picker).toBeHidden({ timeout: 5_000 });
   await expect(page.locator('#btn-focus')).toContainText(/Sit with Yin|与阿寅同坐/i);
