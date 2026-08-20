@@ -118,6 +118,8 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /setShouldLeadWithTea/);
     assert.match(src, /_syncLeadLayout/);
     assert.match(src, /yin-support-suggested-badge/);
+    assert.match(src, /supportModalFunnelLayout/);
+    assert.match(src, /_funnelLayout/);
     assert.doesNotMatch(src, /spriteChannelArbitration/);
   });
 });

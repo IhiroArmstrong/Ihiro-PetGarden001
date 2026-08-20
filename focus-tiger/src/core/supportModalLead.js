@@ -72,3 +72,14 @@ export function supportModalCardOrder(leadWithTea) {
 export function supportModalSuggestedHost(leadWithTea) {
   return leadWithTea ? 'tea' : 'sanctuary';
 }
+
+/**
+ * Funnel dimension for Support Modal card order.
+ * Independent of Suggested host (`tea` vs `sanctuary`).
+ *
+ * @param {boolean} leadWithTea
+ * @returns {'tea-first' | 'sanctuary-first'}
+ */
+export function supportModalFunnelLayout(leadWithTea) {
+  return leadWithTea ? 'tea-first' : 'sanctuary-first';
+}
