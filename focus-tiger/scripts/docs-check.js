@@ -19,6 +19,7 @@ import { runRulesAuthorityDocCheck } from './rules-authority-doc-check.js';
 import { runVisibilityContractDocCheck } from './visibility-contract-doc-check.js';
 import { runDocsConsistencyCheck } from './check-docs-consistency.js';
 import { runCopyrightHeaderCheck } from './copyright-header.js';
+import { runTrackerFragmentCheck } from './assemble-tracker.js';
 
 function main() {
   let ok = true;
@@ -30,6 +31,7 @@ function main() {
   if (!runRulesAuthorityDocCheck()) ok = false;
   if (!runDocsConsistencyCheck()) ok = false;
   if (!runCopyrightHeaderCheck()) ok = false;
+  if (!runTrackerFragmentCheck()) ok = false;
 
   if (!ok) {
     console.error(

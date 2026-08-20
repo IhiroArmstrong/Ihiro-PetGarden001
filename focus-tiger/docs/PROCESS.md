@@ -741,7 +741,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 完成一个**有实质性进展**的 Task（非纯 debug / 微调）后：
 
 1. 更新 `PROCESS.md`「当前进度速览」对应字段  
-2. 更新 `TEST_TRACKER.md`（新增/修正验收行；UI 默认「待人工测试」——已合入后也保持此状态直到你关单）  
+2. 更新 `TEST_TRACKER` 验收行：**新增行**写入 `docs/tracker-entries/<分支名>.md`（勿在 `TEST_TRACKER.md` 主表插行）；**修正已有行**仍改主表或对应碎片。UI 默认「待人工测试」——已合入后也保持此状态直到你关单。见 `TEST_TRACKER.md`「新增行走碎片」  
 3. **同步相关权威文档**（N15：按触及面更新对应权威 md；禁止只改代码）  
 4. 按 regression-lock「Commit 汇报与分支门禁」完成本地 commit + 同回合汇报  
 5. 可选推送前体检：`./scripts/git-sync-safe.sh`  

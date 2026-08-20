@@ -40,6 +40,8 @@
     "session-lock:gate": "node scripts/gate-session-lock-precommit.js",
     "check:all-branches-health": "node scripts/check-all-branches-health.js",
     "check:open-blockers": "node scripts/check-open-blockers.js",
+    "tracker:check": "node scripts/assemble-tracker.js",
+    "tracker:assemble": "node scripts/assemble-tracker.js --write",
     "locale:export-ja": "node scripts/locale-pack.js export-ja",
     "locale:import-ja": "node scripts/locale-pack.js import-ja",
     "i18n:sync": "node scripts/i18n-sync.js"
