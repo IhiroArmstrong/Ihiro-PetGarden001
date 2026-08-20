@@ -14,6 +14,18 @@ const STYLE_ID = 'idle-yin-tap-anchor-styles-v1';
 const ROOT_ID = 'idle-yin-tap-anchor';
 
 /**
+ * Forehead + upper torso hit (viewport %). Yin sprite sits in `#sprite-stage`
+ * (top 6% / bottom 20%); the cub's forehead is above the old Recover-copied
+ * 46% body oval. Keep below Sit dock (z 16).
+ */
+export const IDLE_YIN_TAP_HIT_LAYOUT = Object.freeze({
+  top: '30%',
+  width: 'min(168px, 40vw)',
+  height: 'min(280px, 44vh)',
+  transform: 'translate(-50%, -28%)'
+});
+
+/**
  * @param {HTMLElement} container typically `#ui-overlay`
  * @param {object} [handlers]
  * @param {() => { ok?: boolean } | void} [handlers.onTap]
@@ -93,10 +105,10 @@ export class IdleYinTapAnchorUI {
       .idle-yin-tap-anchor__hit {
         position: absolute;
         left: 50%;
-        top: 46%;
-        width: min(220px, 52vw);
-        height: min(260px, 38vh);
-        transform: translate(-50%, -45%);
+        top: ${IDLE_YIN_TAP_HIT_LAYOUT.top};
+        width: ${IDLE_YIN_TAP_HIT_LAYOUT.width};
+        height: ${IDLE_YIN_TAP_HIT_LAYOUT.height};
+        transform: ${IDLE_YIN_TAP_HIT_LAYOUT.transform};
         margin: 0;
         padding: 0;
         border: 0;
@@ -112,8 +124,8 @@ export class IdleYinTapAnchorUI {
       }
       @media (max-width: 479px) {
         .idle-yin-tap-anchor__hit {
-          width: min(200px, 58vw);
-          height: min(240px, 36vh);
+          width: min(156px, 46vw);
+          height: min(260px, 42vh);
         }
       }
     `;

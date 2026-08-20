@@ -473,15 +473,16 @@
 ## 场景 X2：Idle 轻点阿寅 · 摇耳摸头
 
 > **用户故事**：Kelly 打开产品、阿寅在坐禅——轻点它，它摸摸自己的头顶（已有 `earWiggleHeadTouch`），不是没反应。  
-> **单元**：`idleYinTapGate.test.js` · `IdleYinTapAnchorUI.test.js`。  
-> **DOM**：尚无完整 e2e 命中。  
-> **仍须人工**：正+倒一次 + CapCut 回 Idle；Focusing 不得走摸头。  
-> **0–1 秒内**：点阿寅身 → CapCut 切入摸头序列开始（无 toast）。
+> **单元**：`idleYinTapGate.test.js`（含 `wrapPlayEmotionWithIdleYinTapSync`：oneshot `onComplete` 仍见摸头键时须在回 Idle 后再武装）· `IdleYinTapAnchorUI.test.js`（额头 hit `top≤32%`）。  
+> **DOM**：`e2e/idle-yin-tap.spec.js`（testid + 视口额头点击 → `earWiggleHeadTouch`；Rise→Reflection skip 回流再武装）。  
+> **仍须人工**：正+倒一次 + CapCut 回 Idle 观感；Focusing 不得走摸头。  
+> **0–1 秒内**：点阿寅**额头**（或上半身 hit）→ CapCut 切入摸头序列开始（无 toast）。
 
-1. `?product=1` Idle → 轻点阿寅 → **0–1 秒内**见摸头动画开始。
+1. `?product=1` Idle → 轻点阿寅**额头** → **0–1 秒内**见摸头动画开始。
 2. 播完 ~1s CapCut 回闭目呼吸；再点可再播。
 3. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
 4. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。
+5. **回流**：Rise → Skip Reflection 回 Idle 后再点额头仍须摸头（禁止第一次播完后 hit 永久 hidden）。
 
 ---
 

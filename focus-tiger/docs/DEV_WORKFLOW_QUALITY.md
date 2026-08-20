@@ -34,9 +34,10 @@
 | 2026-08-05 | 「待你决定」须标出已被 tip/远端覆盖的伪选项为（不合理） | **N14a** |
 | 2026-08-14 | 列多个方案时须同时给出「我认为最合理的」一项 | **N14b** + `recommend-most-reasonable` |
 | 2026-08-16 | 实现前须对照已上线场景做冲突扫描；有疑点先停 | **N27** + `feature-conflict-review` |
+| 2026-08-18 | Idle 点额头无摸头：已接线假绿 + 误跳 e2e + hit 未盖额头 | **§6.16** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -410,6 +411,7 @@
 | 2026-07-20 | 升格 N14：任务汇报末尾独立「待你决定 / 待你知道」；同步 regression-lock |
 | 2026-08-05 | 升格 N14a：「待你决定」伪选项标（不合理）；防「合理则办」误授权 |
 | 2026-08-16 | 升格 N27：实现前冲突扫描；SSOT `FEATURE_CONFLICT_REVIEW.md` / `feature-conflict-review` |
+| 2026-08-18 | 新增 §6.16：Idle 点额头无摸头（已接线假绿 + 误跳 e2e + hit 未盖额头） |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |
@@ -620,6 +622,35 @@
 | A4 | 新改 `_leaveIdleBaseline` 默认值前须扫高风险情绪键；至少 `smiling` / `intentionSet` / companion oneshot 与张望链对齐 |
 
 **本回合落地**：`smiling` / `intentionSet` → `clear: false`；`smiling` 转发 freeze + 默认 CapCut；`intentionSet` 默认定格末帧；单测锁 `stop({ clear: false })`；`TEST_TRACKER` 分列重开待测。
+
+### 6.16 Idle 点额头无摸头 · 「已接线」假绿 + 误跳 e2e + hit 未盖额头（2026-08-18）
+
+**现象**：用户记得 Idle 轻点阿寅摸头**早就开发完成**，再测「点击额头」**没有效果**。圣经是「点击头顶」；TRACKER/场景写成「轻点阿寅身」。功能已于 2026-08-16 合入 develop（PR #317），TRACKER 一直「待人工测试」、从未关单。
+
+**不是**代码被删掉，也**不是**没 commit。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 声明已接线 | `SCENE_ANIMATION_WIRING` / PROCESS 速览写 Idle 轻点 → `earWiggleHeadTouch`；`#idle-yin-tap-anchor` 存在；门闩 helper 单测绿。 |
+| B · 假绿单测 | `IdleYinTapAnchorUI.test.js` 只 **regex 扫源码**（`setArmed` / `hidden` / z-index），**不**锁 hit 几何、**不**点 DOM。`canPlayIdleYinTap` 只验纯函数。 |
+| C · 误写「e2e 不可能」 | TRACKER 写「**无**完整 e2e 命中（Pointer 难锁 → 须人工）」——但产品壳已有 `[data-testid=idle-yin-tap-hit]` 按钮，Playwright 可点。把 3D `PointerInteraction` 的难测当成 2D hit 的难测，**跳过了本可写的 e2e**。 |
+| D · hit 抄 Recover 身躯 | Idle hit CSS 与 Active Recover 同款 `top:46%` 身躯椭圆。2D 舞台 `top:6% / bottom:20%` + `object-fit:contain` 后，额头约在视口 **~25%**，落在椭圆**上方**。用户按圣经点额头 → 点空。 |
+| E · 点空被 3D 占位吞掉 | `#scene-canvas` 产品路径 `opacity:0` **仍接收指针**；未命中 2D hit 时落到 `PointerInteraction` → `smileSquint` **pendingInteraction 只打日志、无正式精灵** → 观感 = 「没反应」。 |
+| F · 播完卸武装 | `EmotionController._finishOneShot` **先** `onComplete`（此时键仍是 `earWiggleHeadTouch`）**再** `playEmotion('idle')`。tap 的 `onComplete: syncIdleYinTap` 在摸头键上判定「播放中」→ **hidden**。`syncIdleYinTap` 未挂到每次 `playEmotion`，回 Idle 后不再武装。即便第一次碰巧点中身躯，**第二次也没反应**。Rise→Reflection 回流同样：`resync` 时键仍是伸懒腰 hold。 |
+
+**因果一句话**：**「已接线」= helper 绿 + 文档声明**，没有锁「点额头 → 当前情绪是摸头」这条用户路径；几何抄错、生命周期同步点抄在 `_finishOneShot` 的错误一侧，再加「Pointer 难锁」免写 e2e → 合入 develop 后测起来像功能从来没做过。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| H1 | 产品壳已有 `data-testid` / 可见按钮的交互，**禁止**用「Pointer / 3D 难锁」当作不写 e2e 的理由 |
+| H2 | Idle/角色 hit 须锁**用户点的部位**（圣经「头顶/额头」≠ Recover 身躯椭圆）；几何常量 + 视口点击进单测/e2e |
+| H3 | 凡「播完回 Idle 再武装」不得只挂 oneshot `onComplete`——须认 `_finishOneShot` **先回调、后 idle**；包装 `playEmotion` 或在回 Idle 之后 sync |
+| H4 | `opacity:0` 的 canvas **须** `pointer-events:none`，避免占位情绪把 miss 吞成静默 |
+| H5 | TRACKER 写「已接线」而状态仍「待人工测试」= **未验收**；不得在 PROCESS 速览暗示用户可当完成 |
+
+**本回合落地**：额头 hit（`top:30%`）+ `wrapPlayEmotionWithIdleYinTapSync` + 隐藏 canvas 不抢点 + `e2e/idle-yin-tap.spec.js`；TRACKER 记入 08-18 反馈（`RB-20260818-L379`）。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
