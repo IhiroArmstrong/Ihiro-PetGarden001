@@ -303,6 +303,7 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotMustContain: [
       /请清理闲置 worktree/,
       /check:worktree-hygiene/,
+      /worktree:hygiene-remove/,
       /最后一次 commit/,
       /禁止.*静默.*worktree remove|禁止.*Agent 静默/,
       /git cherry|cherry origin\/develop/
@@ -311,6 +312,7 @@ export const RULE_AUTHORITY_TOPICS = [
       /worktree-hygiene/,
       /请清理闲置 worktree/,
       /check:worktree-hygiene/,
+      /worktree:hygiene-remove/,
       /闲置 worktree/
     ],
     mustCite: [/WORKFLOW\.md/],
