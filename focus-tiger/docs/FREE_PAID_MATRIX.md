@@ -187,8 +187,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 8. **Sanctuary Enso Mark（页面左下角）** — **已接线** `#yin-sanctuary-enso-mark`（Brief `task-sanctuary-enso-mark.md`）。  
 9. **付费转化路径梳理（获客向）** — Backlog：试听后 Unlock、锁项价值展示时刻等——勿让「经济可持续」只剩老用户彩蛋。  
 10. **节日主题引擎 `theme.seasonal.access`** — Phase 3 UI **已合 #238**（wash/whisper）；仍无独立锁项菜单；**未购不应用**。  
-11. **付费 · 意愿漏斗本地统计** — **已合**（#255；`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。
-12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`；Brief `task-monetization-intent-funnel-opt-in.md`）。
+11. **付费 · 意愿漏斗本地统计** — **已合**（#255；`MONETIZATION_INTENT_FUNNEL.md`；实验室面板）。**2026-08-20** 加 `layout=tea-first|sanctuary-first`。
+12. **付费 · 意愿漏斗 opt-in 回传** — **已合**（#262 tip `582e79f`；Privacy 明示同意；默认关；`POST /api/monetization-funnel-ingest`）。layout 上云须 ingest 白名单 + **生产 Worker Redeploy**；**不是**练习备份。Brief `task-support-funnel-layout.md`。
 13. **练习记忆 · 云端快照备份 / 恢复（免费 A）** — #266 政策；**#272 已合** tip `a195584`（6 key 整包；关闭=删云端）；生产 Worker 已 redeploy（`f9755950-…`）；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功；非关单）。TRACKER 仍待空库恢复 / 关备份。
 14. **练习记忆 · 多端无缝同步（B · 可后排）** — 文档已合（#266）；运行时未接线；勿与免费快照兜底混为一谈。
 15. **寅币（C · 练习货币）** — 方向锁 2026-08-20（清供 8 + 铁律）；L0–L3 已合。抽屉 = 清供器物卡。**禁止**用点满足 `isEntitled`。**禁止**改/盖序列帧。

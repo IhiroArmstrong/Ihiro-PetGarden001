@@ -4,12 +4,16 @@
  */
 
 import { errorJson, json } from "../lib/http";
-import { funnelKvKey } from "../lib/monetizationFunnelKv";
+import {
+	funnelKvKey,
+	isAllowedFunnelCountKey,
+	parseFunnelLayout,
+} from "../lib/monetizationFunnelKv";
 import type { Env } from "../types";
 
 const SCHEMA_VERSION = 1;
 const MAX_EVENTS = 20;
-const MAX_COUNTS = 40;
+const MAX_COUNTS = 80;
 const MAX_CLIENT_ID = 80;
 
 const ALLOWED_EVENTS = new Set([
@@ -19,8 +23,6 @@ const ALLOWED_EVENTS = new Set([
 	"checkout_complete",
 	"checkout_cancel",
 ]);
-
-const ALLOWED_TRACKS = new Set(["tea", "sanctuary", "membership"]);
 
 const ALLOWED_SOURCES = new Set([
 	"fab",
@@ -48,13 +50,7 @@ function sanitizeCounts(raw: unknown): Record<string, number> | null {
 	const out: Record<string, number> = {};
 	for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
 		if (Object.keys(out).length >= MAX_COUNTS) break;
-		if (typeof k !== "string" || !k) continue;
-		const base = k.includes(":") ? k.slice(0, k.indexOf(":")) : k;
-		if (!ALLOWED_EVENTS.has(base)) continue;
-		if (k.includes(":")) {
-			const track = k.slice(k.indexOf(":") + 1);
-			if (!ALLOWED_TRACKS.has(track)) continue;
-		}
+		if (!isAllowedFunnelCountKey(k)) continue;
 		const n = Number(v);
 		if (!Number.isFinite(n) || n <= 0) continue;
 		out[k] = Math.min(Math.floor(n), 1_000_000);
@@ -83,6 +79,7 @@ function sanitizeEvents(raw: unknown): object[] | null {
 			name,
 			track,
 			source,
+			layout: parseFunnelLayout(r.layout),
 		});
 	}
 	return out;

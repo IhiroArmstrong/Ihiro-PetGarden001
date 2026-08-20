@@ -50,3 +50,4 @@ QA：`?qaSeedStreak=` / `?qaLotusBlooms=` 会使请茶优先 **关闭**（视为
 - 不改 Support 其它交互、不改 Checkout。
 - 不把 Suggested 做成两枚同时出现。
 - 不把本切片做成 A/B 远程开关。
+- 漏斗 `layout` 维不在本切片（#377）；见后续 Brief `task-support-funnel-layout.md`。

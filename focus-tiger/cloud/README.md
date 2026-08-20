@@ -38,7 +38,7 @@ curl -s http://127.0.0.1:8787/health
 | `GET` | `/health` | 健康检查 |
 | `POST` | `/api/daily-message` | 品味层日签池 overlay（`schemaVersion: 1`） |
 | `POST` | `/api/emotion-weight` | 品味层权重 overlay（`schemaVersion: 1`） |
-| `POST` | `/api/monetization-funnel-ingest` | 意愿漏斗 opt-in 快照 → `TIP_KV` 键 `funnel:v1:{day}:{clientId}`（TTL 90d） |
+| `POST` | `/api/monetization-funnel-ingest` | 意愿漏斗 opt-in 快照（含可选 `layout`）→ `TIP_KV` 键 `funnel:v1:{day}:{clientId}`（TTL 90d） |
 | `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（`mode: payment`）→ `{ url }` |
 | `POST` | `/api/create-sanctuary-checkout-session` | Stripe Checkout（`mode: payment` Lifetime）→ `{ url }` |
 | `POST` | `/api/create-membership-checkout-session` | Stripe Checkout（`mode: subscription`）→ `{ url }` |
