@@ -126,6 +126,7 @@ import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
+import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -1230,6 +1231,12 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  supportYinModalUI.setShouldLeadWithTea(() =>
+    shouldLeadSupportModalWithTea({
+      lifetimeMinutes: lotusPondStore.getLifetimeMinutes(),
+      practicedDayCount: practiceDaysStore.getPracticedDateKeys().length
+    })
+  );
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
       documentElement: document.documentElement,

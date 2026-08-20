@@ -24,6 +24,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
+import { supportModalSuggestedHost } from '../core/supportModalLead.js';
 
 const STYLE_ID = 'yin-support-modal-styles-v5';
 const FADE_MS = 220;
@@ -53,6 +54,8 @@ export class SupportYinModalUI {
    * @param {() => void | Promise<void>} [handlers.onUnlockSanctuary]
    * @param {() => void | Promise<void>} [handlers.onJoinMembership]
    * @param {() => void | Promise<void>} [handlers.onBuyTea]
+   * @param {() => boolean} [handlers.shouldLeadWithTea]
+   *   True → Tea first + Suggested on tea; false/omit → current Sanctuary-first.
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -136,6 +139,8 @@ export class SupportYinModalUI {
     this.sanctuaryPrice = sanctuary.priceEl;
     this.sanctuaryCta = sanctuary.ctaBtn;
     this.sanctuaryImg = sanctuary.imgEl;
+    this.suggestedBadge = sanctuary.badgeEl;
+    /** @deprecated alias — Suggested may sit on Tea before first practice */
     this.sanctuaryBadge = sanctuary.badgeEl;
 
     const membership = this._buildCard({
@@ -194,7 +199,7 @@ export class SupportYinModalUI {
     this.teaCta = tea.ctaBtn;
     this.teaImg = tea.imgEl;
 
-    this.grid.append(this.sanctuaryCard, this.membershipCard, this.teaCard);
+    this._syncLeadLayout();
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -247,7 +252,7 @@ export class SupportYinModalUI {
     if (opts.badgeKey) {
       badgeEl = document.createElement('span');
       badgeEl.className = 'yin-support-card__badge';
-      badgeEl.dataset.testid = 'yin-support-sanctuary-badge';
+      badgeEl.dataset.testid = 'yin-support-suggested-badge';
       badgeEl.dataset.key = opts.badgeKey;
       card.appendChild(badgeEl);
     }
@@ -309,9 +314,19 @@ export class SupportYinModalUI {
     return this._open;
   }
 
+  /**
+   * Re-read practice completion after stores boot / a session completes.
+   * @param {() => boolean} [fn]
+   */
+  setShouldLeadWithTea(fn) {
+    this.handlers.shouldLeadWithTea = typeof fn === 'function' ? fn : () => false;
+    this._syncLeadLayout();
+  }
+
   open() {
     if (this._open) return;
     this._open = true;
+    this._syncLeadLayout();
     this.backdrop.hidden = false;
     this.root.hidden = false;
     this.backdrop.getBoundingClientRect();
@@ -396,8 +411,8 @@ export class SupportYinModalUI {
     this.sanctuaryImg.alt = t('SUPPORT_SANCTUARY_IMG_ALT');
     this.sanctuaryTitle.textContent = t('SUPPORT_SANCTUARY_TITLE');
     this.sanctuaryBlurb.textContent = t('SUPPORT_SANCTUARY_BLURB');
-    if (this.sanctuaryBadge) {
-      this.sanctuaryBadge.textContent = t(this.sanctuaryBadge.dataset.key);
+    if (this.suggestedBadge) {
+      this.suggestedBadge.textContent = t(this.suggestedBadge.dataset.key);
     }
     this.sanctuaryBenefits.forEach((el) => {
       el.textContent = t(el.dataset.key);
@@ -435,6 +450,32 @@ export class SupportYinModalUI {
     const showDesktopRam = isDesktopShellRuntime();
     this.desktopRamNote.hidden = !showDesktopRam;
     this.desktopRamNote.textContent = t('SUPPORT_DESKTOP_RAM_NOTE');
+  }
+
+  _syncLeadLayout() {
+    const leadWithTea = this.handlers.shouldLeadWithTea?.() === true;
+    if (leadWithTea) {
+      this.grid.append(this.teaCard, this.sanctuaryCard, this.membershipCard);
+    } else {
+      this.grid.append(this.sanctuaryCard, this.membershipCard, this.teaCard);
+    }
+    const host =
+      supportModalSuggestedHost(leadWithTea) === 'tea'
+        ? this.teaCard
+        : this.sanctuaryCard;
+    this._attachSuggestedBadge(host);
+    if (this.suggestedBadge) {
+      this.suggestedBadge.dataset.host = leadWithTea ? 'tea' : 'sanctuary';
+    }
+  }
+
+  /**
+   * @param {HTMLElement} card
+   */
+  _attachSuggestedBadge(card) {
+    if (!this.suggestedBadge || !card) return;
+    if (this.suggestedBadge.parentElement === card) return;
+    card.insertBefore(this.suggestedBadge, card.firstChild);
   }
 
   _injectStyles() {

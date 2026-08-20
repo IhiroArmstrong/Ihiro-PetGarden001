@@ -328,7 +328,11 @@
 ### Q1 · Support Modal（统一入口）
 
 1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
-2. 见三卡：Sanctuary 带 **Suggested** + 米色 CTA，文案含 **One-time Lifetime**（无假划线）+ **About $89.99**；中间 Membership 报价行与左右同位置，文案 **About $6.99 · billed monthly**（`MEMBERSHIP_PRICE_DISPLAY`），**Join Membership** CTA 与左右同款米色立体（浅底深字 pill，不得蒲团橙白字）；Tea 卡三条仪式感 bullets（含 kindness 文案）+ 米色 CTA。三卡头图底为同一暖纸色（勿再出现左灰/中白）。**Electron**：模态底部另见 `#yin-support-desktop-ram` 内存说明（8 GB · Mac and Windows）；**Web 不见该块。** **0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
+2. 见三卡（**始终都可见、可点**；头图暖纸底；三 CTA 同款米色立体，Join Membership **不得**蒲团橙白字）：
+   - **未完成过任何一次记账练习**（清 `practice-days.v1` 与 `lotus-pond.v1`；勿用 `?qaSeedStreak=` / `?qaLotusBlooms=`）：顺序 **Tea → Sanctuary → Membership**（375 最上为请茶）；**Suggested** 在 Tea 卡（`[data-testid=yin-support-suggested-badge][data-host=tea]`）。Sanctuary / Membership 仍完整可点，价文案不变。
+   - **已完成过至少一次**（Focus 达标 / Honesty 成功 / Breath 完成，不论时长）：顺序恢复 **Sanctuary → Membership → Tea**；Suggested 回 Sanctuary（`data-host=sanctuary`）。此态**永久**（久别再开仍如此）。未达标 Rise **不得**切到 Sanctuary 优先。
+   - Sanctuary 文案含 **One-time Lifetime** + **About $89.99**；Membership **About $6.99 · billed monthly**；Tea 三条仪式感 bullets。**Electron**：模态底 `#yin-support-desktop-ram`；**Web 不见。** **0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
+   - **对照**：场景化请茶气泡仍只在达标后出现，本步不改。
 3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
 5. **回流**：Sit→Focusing → FAB **隐藏**（不可点，不是哑点击）；Rise 回 Idle → FAB 复现。
