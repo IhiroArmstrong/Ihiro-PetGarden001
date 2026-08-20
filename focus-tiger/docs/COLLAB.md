@@ -56,8 +56,8 @@ COLLAB.md（本文档，协作层）
    → 用户把Brief交给Cursor执行
 
 3. Cursor产出代码/效果
-   → 在 `docs/TEST_TRACKER.md` 登记本次改动（UI →「待人工测试」；纯后端 →「仅单元测试覆盖」）
-   → 用户按 TEST_TRACKER 验收；若有问题，反馈给Claude，对应行改「有问题」
+   → 新增验收行走 `docs/tracker-entries/<分支名>.md`（UI →「待人工测试」；纯后端 →「仅单元测试覆盖」）。勿在 `TEST_TRACKER.md` 主表插行
+   → 用户按 TEST_TRACKER（含碎片）验收；若有问题，反馈给Claude，对应行改「有问题」
 
 4. Claude做设计评审
    → 给出具体修改意见（不是重写代码，而是指出"哪里需要怎么调整"）
@@ -68,7 +68,7 @@ COLLAB.md（本文档，协作层）
    → 该任务的Brief结项，进入下一个任务
 ```
 
-**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。用户书面测试意见只写进表格 **「用户反馈」列**，禁止混入「测试步骤」（见文首「用户测试反馈记入规则」，2026-07-19 起）。
+**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。**新增行**写 `docs/tracker-entries/<分支名>.md`（见文首「新增行走碎片」）。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。用户书面测试意见只写进表格 **「用户反馈」列**，禁止混入「测试步骤」（见文首「用户测试反馈记入规则」，2026-07-19 起）。
 
 **回归锁约定**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`（门禁）与 `DEV_WORKFLOW_QUALITY.md`（叙事）；主题权威索引 `RULES_INDEX.md`。此处不复述。
 

@@ -1,10 +1,20 @@
 # TEST_TRACKER.md — 测试跟进与功能验收追踪表
 
-维护规则：Cursor 每完成一项具有用户可感知效果的改动，必须在下方表格新增一行，
-状态默认设为「待人工测试」，并在消息里明确说「这项需要你测试」。纯后端/逻辑改动
-（无 UI 变化）登记为「仅单元测试覆盖」，不需要用户测试，但仍要登记，防止遗漏。
+维护规则：Cursor 每完成一项具有用户可感知效果的改动，必须**登记验收行**（状态默认「待人工测试」），
+并在消息里明确说「这项需要你测试」。纯后端/逻辑改动登记为「仅单元测试覆盖」，不需要用户测试，但仍要登记，防止遗漏。
 
-**权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。
+**权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。拼装真源（新增行）：[`tracker-entries/`](./tracker-entries/)。
+
+### 新增行走碎片（2026-08-20 起 · 试点 · 强制）
+
+> 目的：连续合并多个 PR 时，不再大家都改本文件同一张表。本轮**只试点本文件**；`PROCESS.md` / `RULES_INDEX.md` 暂不拆（见文末评估）。
+
+1. **新增行**：在 `docs/tracker-entries/` 新建 `<分支名>.md`（`/` → `-`，kebab-case ASCII）。内容是要追加的那一行/几行，**不要**在下方主表插入。例：`docs/tracker-fragment-pilot` → `docs-tracker-fragment-pilot.md`。目录说明：[`tracker-entries/readme.md`](./tracker-entries/readme.md)。  
+2. **修正已有行**（用户反馈 / 状态 / 严重度）：该行已在下方主表 → **仍改本文件**；该行还只在碎片里、尚未折入机器块 → **改对应碎片**。不要用碎片复制一条主表已有的功能名（`docs:check` 会红）。  
+3. **功能 PR 禁止**跑 `npm run tracker:assemble` 再提交本文件——否则机器块又变成冲突热点。拼装留给积了若干碎片、或批量人工测试前的独立 docs PR。  
+4. 命令：`cd focus-tiger && npm run tracker:check`（已并入 `docs:check`）；`npm run tracker:assemble` 把碎片写入下方机器块。`check:open-blockers` 会同时扫本文件 **和** 尚未折入的碎片。  
+
+**PROCESS.md / RULES_INDEX.md 为何本轮不拆**：`PROCESS`「当前进度速览」是叙事 bullet、常改同一段时间戳，碎片能减冲突但排序/措辞要另定规则；`RULES_INDEX` 主题表已是 `rules:doc-sync` 机器块，日常冲突主要在文末修订记录（新增规则才写，远少于 TRACKER 插行）。试点先验证 TRACKER 新增行这条最高频路径。
 
 **人工验收唯一基线（2026-07-29 起 · 强制 · SSOT）**：关单级 / 可写入本表「用户反馈」或据以改状态的**人工验收**，**只认 `origin/develop` 当前 tip**。
 
@@ -247,7 +257,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 ### 批量人工测试（口令 · 2026-08-14 · SSOT）
 
 > 索引：`RULES_INDEX.md` → `qa-batch-human-test`。  
-> 合入与人工测试解耦之后，关单不再跟在每个 PR 后面零散做。你不定期说 **「批量人工测试」**（或「给我待测清单」）时，Agent **只读**本表，输出一份**当前所有「待人工测试」行**的清单，**按功能模块归类**，方便一次性测完一批——**禁止**让你自己去翻 PR 历史拼凑。
+> 合入与人工测试解耦之后，关单不再跟在每个 PR 后面零散做。你不定期说 **「批量人工测试」**（或「给我待测清单」）时，Agent **只读**本表 **以及** `docs/tracker-entries/` 里尚未折入的碎片，输出一份**当前所有「待人工测试」行**的清单，**按功能模块归类**，方便一次性测完一批——**禁止**让你自己去翻 PR 历史拼凑。
 
 #### 口令触发时必须输出
 
@@ -300,10 +310,14 @@ Safari：`http://127.0.0.1:5173/?product=1`
 
 > 首次回溯盘点：2026-07-18。凡用户从未书面确认「已通过」的 UI 项一律标「待人工测试」。
 > **列约定**：`测试步骤` = 怎么测；`用户反馈` = 用户书面测试意见（日期 + 原话要点；`release-blocker` 另含 open-blocker 锚点）。`严重度` / `处理承诺` = 缺陷分级（见文首「缺陷分级与处理承诺」）；无缺陷填 `—`。测试步骤与用户反馈禁止混写。  
-> **行号**：本表各行号供文首 §A / §B 索引跳转；改表后须同步更新 §B「功能清单行号」列。
+> **行号**：本表各行号供文首 §A / §B 索引跳转；改表后须同步更新 §B「功能清单行号」列。  
+> **新增行**：功能 PR 写 [`tracker-entries/`](./tracker-entries/) 碎片，勿在本表插行。下方 `tracker-fragments` 机器块由 `npm run tracker:assemble` 写入。
 
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
+<!-- tracker-fragments:begin -->
+| TEST_TRACKER 碎片试点（tracker-entries + assemble-tracker） | 纯后端 | 仅单元测试覆盖 | `node --test scripts/assemble-tracker.test.js`：文件名 kebab-case；合法行写入机器块；非法尾列失败；与主表功能名重复须红。`npm run docs:check` 含 `tracker:check`（**不**要求功能 PR 同步机器块）。新增行走 `docs/tracker-entries/<branch>.md`。 | — | — | — | `docs/tracker-entries/` · `scripts/assemble-tracker.js` | 2026-08-20 |
+<!-- tracker-fragments:end -->
 | Reflect 开着不得 cloakSleep（收回 Expand B） | UI可见 | 待人工测试 | **主路径（本地 ≥23 或调系统时钟）**：`http://127.0.0.1:5173/?product=1&sessionMinutes=1` → Sit/⚡ → 等到达标（或中途 Rise）→ Reflection「What did you notice today?」仍开着、未填。**0–1 秒内到数秒**：阿寅须保持醒着同坐（当日首次=Celebrating 或轻完成；中途 Rise=伸懒腰/茶/书 hold），**不得**斗篷飞来、睡着。**回流**：Skip / Continue 关面板 → Idle 闭目坐禅（此时若仍 ≥23 且无叠层，Expand A 才允许稍后披毯进 DORMANT）。**对照**：白天同时钟同样不得披毯进 Reflection。**375**：面板可读，Yin 睡姿不得出现。自动化：`companionRestPolicy.test.js`「session end into Reflection never cloaks」。 | **2026-08-18 用户书面**：10 分钟 Focusing 之后，Reflection 还没有填写，突然又是斗篷飞来、Yin 睡着了——不合逻辑；须查工作流程根因。查证：Expand B（≥23 Rise/达标 `cloakSleep` holdPose 进 Reflection）与 CORE_LOOP Reflect 同坐冲突。已收回会话结束披毯。 | — | 本回合收回 Expand B 会话结束披毯；Expand A / 2h DORMANT 保留 | `?product=1&sessionMinutes=1` · 场景 A 步 8/11 · 场景 C | 2026-08-18 |
 | Welcome 后短切 tab 不得披毯 + Reflection 日签叠球 / 地球对比 / 日签改字 | UI可见 | 待人工测试 | **主路径（≥480 · `?product=1`）**：(1) 保留本地旧数据硬刷新 → 见 Welcome back + 鹦鹉/欢迎池，**不得**开场即披毯；(2) 离开页约 **1 分钟**再回来 → **仍 Idle**，不得播斗篷入睡；(3) Sit→Rise → Reflection：日签与三球**无叠加**；右下地球（与左下「?」同高）对比可读；慧能句须能读懂（非「Originally there is not a single thing.」）。**回流**：关 Reflection 后再 Sit→Rise；地球仍在。**375**：无右下地球；卡须抬到三球之上。自动化：`shouldAllowEnterDormantOnForegroundReturn` + Reflection `homeClearanceBottomCss` + 日签 14 id / huineng 改字。 | **2026-08-18 用户书面（`?product=1`）**：Welcome back + 鹦鹉挺好；离开约一分钟再回却播斗篷睡觉——不合逻辑。右下地球不见。Reflection 文案与左球叠加；慧能句启发意义不行、莫名其妙；问日签列表是否来得及审查。 | — | — | `http://127.0.0.1:5173/?product=1` · `#tiger-reflection-moment` · `#language-preference-fab` | 2026-08-18 |
 | 寅币 · 时长 chip 静默 hint | UI可见 | 待人工测试 | **主路径**：`http://127.0.0.1:5173/?product=1`（**勿** `sessionMinutes`）Sit→Arrival→Companion 后见 `#focus-duration-picker` chip 下 `#focus-coins-duration-hint` 含「寅币」与「5」。左球 Breath 开 picker 同样见该 hint。**回流**：Leave 关 picker 后再开仍在；`?focusCoins=0` 时 hint **不出现**。无 HUD、无完成 toast「+N」。**375**：hint 不挡三球、可随 picker 阅读。自动化：`focusCoinsDurationHint.test.js`；e2e `focus-duration.spec.js` Leave 行 + `micro-ritual.spec.js` pick 行。 | **2026-08-18 用户书面**：同意时长 chip 旁一句静默 hint。 | — | — | `?product=1` · `#focus-coins-duration-hint` · 场景 S/T | 2026-08-18 |
@@ -661,11 +675,12 @@ PointerInteraction 各交互、以及所有已入库但可能只有调试入口�
 
 ```
 从现在起，每次完成一项包含用户可见变化（UI、动画、文案、交互）的任务后：
-1. 在 TEST_TRACKER.md 新增一行，状态填"待人工测试"，写清楚具体测试
-   步骤和本地访问路径，「最后更新日期」填当天日期。
+1. 在 docs/tracker-entries/<分支名>.md 新增一行（分支名 / → -），状态填"待人工测试"，
+   写清楚具体测试步骤和本地访问路径，「最后更新日期」填当天日期。
+   不要直接编辑 TEST_TRACKER.md 功能清单插行。
 2. 纯后端/逻辑改动登记为"仅单元测试覆盖"，不需要用户测试，但仍要登记。
-3. 完成任务的消息里，明确说明"本次有 N 项需要你测试，已更新
-   TEST_TRACKER.md"，不要只说"已完成"就结束。
+3. 完成任务的消息里，明确说明"本次有 N 项需要你测试，已写入 tracker-entries/"，
+   不要只说"已完成"就结束。
 4. 不要把"单元测试通过"等同于"功能没问题"并汇报为完全完成——涉及
    视觉/体验效果的项目，在用户确认之前，状态就是"待人工测试"，不能
    写"已完成"或"已验收"。
