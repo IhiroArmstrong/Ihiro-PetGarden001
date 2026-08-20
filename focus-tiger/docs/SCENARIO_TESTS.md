@@ -95,7 +95,8 @@
    *[概率/观感：不纳入冒烟]*
 8. 达到目标时长 → **当日首次计时达标**：Celebrating → 回落坐姿。  
    **勿提前点 Rise**；Honesty 补登**不**占庆祝戳。  
-   *[单元：`triggerSessionCompletionFeedback` + celebrated 戳 → smoke A7–A8；**非** Celebrating 动画 DOM]*
+   **深夜亦同**：Reflect 开着时阿寅须保持醒着同坐（庆祝 / 轻完成 / 回落坐姿），**不得** `cloakSleep` / Sleeping。夜深休息只在 **Idle 无叠层**（Expand A）或 ≥2h 回前台 DORMANT。  
+   *[单元：`triggerSessionCompletionFeedback` + celebrated 戳 → smoke A7–A8；深夜不披毯 → `companionRestPolicy`「session end into Reflection never cloaks」；**非** Celebrating 动画 DOM]*
 9. **同日第二次计时达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
    *[单元：同 smoke A7–A8 第二次调用返回 `sessionComplete`；**非**摆尾序列观感]*
 10. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**。
@@ -153,7 +154,8 @@
 2. 不应播放 Celebrating，不应播放 IncenseGreeting。  
    *[单元/控制器：`onIncompleteSessionEnded` 不 `recordCompletion` → smoke C；**非** Celebrating 抑制的 DOM]*
 3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。  
-   *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；**非** rise-stretch 序列 / 面板淡入观感]*
+   **深夜亦同**：走 Rise 加权池 hold，**不得**披斗篷睡着再问 Reflection。  
+   *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；深夜不披毯 → `companionRestPolicy` session-end 锚；**非** rise-stretch 序列 / 面板淡入观感]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
    *[DOM 用户链路：Choose→Rise→Reflection 顶部回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；下游入参 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。

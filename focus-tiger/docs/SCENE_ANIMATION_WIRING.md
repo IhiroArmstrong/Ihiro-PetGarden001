@@ -107,9 +107,9 @@
 | 墙钟 ~20 min | `mindfulAcknowledge` | ack | **已接线** | 共享提醒池 |
 | 活跃 ~2h | stretch 池：`stretchReminder` / `yawnStretch` | ack | **已实现**（Dispatcher） | 勿叠 celebrate |
 | Re-focus 回来 | `mindfulAcknowledge` subtype refocus | ack | **已接线** | |
-| 中途 Rise | **加权池** `riseStretchCasual` 60% · `teaDrinking` 25% · `bookReading` 15% | ack | **已接线** | 正放一次 + `holdPose`；关 Reflection → Idle。**禁止** `magicBookReading` / yawn / celebrate；`blinkBreathe` 勿回主路径 |
+| 中途 Rise | **加权池** `riseStretchCasual` 60% · `teaDrinking` 25% · `bookReading` 15% | ack | **已接线** | 正放一次 + `holdPose`；关 Reflection → Idle。**禁止** `magicBookReading` / yawn / celebrate / **cloakSleep 进 Reflection**（2026-08-18 收回 Expand B）；`blinkBreathe` 勿回主路径 |
 | 每次计时完成（非当日首达标） | 同档池：`sessionComplete` ~65% · nod ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** blink/`curiousTilt`） | light / ack / messenger | **已实现**（Dispatcher） | **禁止** `celebrate-dance*`；鹦鹉不进 Celebrating |
-| 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档 |
+| 当日首次计时达标 | `celebrating`（已有 dance / dance-v2 **50/50**） | celebrate | **已接线** | 唯一允许舞蹈档。**深夜亦 Celebrating / 轻完成**；Reflect 开着禁止披毯睡着 |
 
 ### 5.3 Recover / Transition / Reflect
 
@@ -249,6 +249,7 @@
 | 2026-08-03 | 跨动画短叠化（180/520ms）统一 `CAPCUT_DISSOLVE_MS` 1s；硬切 `0`（gaze 段间 / Idle 闭目↔睁眼）保持；**魔法书回 Idle 于 2026-08-05 改 CapCut** |
 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（`#idle-yin-tap-anchor`；Focusing 仍走场景 X） |
 | 2026-08-18 | Idle 轻点 **额头**：hit 上移盖住额头；`playEmotion` 包装在回 Idle 后再武装；隐藏 canvas `pointer-events:none`（§6.16） |
+| 2026-08-18 | **收回 Expand B**：会话结束（Rise / 达标）进 Reflection 不得 `cloakSleep`；深夜休息仍 Expand A Idle DORMANT / 2h live |
 | 2026-08-18 | **云端品味层窄冻结**：Rise 60/25/15 · 欢迎 60/40 · 轻量完成 70/30/8 · Honesty ≤29 nod / ≥30 halo；日签 en/ja 各 14 id。数字不改；无运行时接线 |
 | 2026-08-18 | 回前台深夜 forceDormant / 2h 披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡） |
 | 2026-08-20 | Yin's Collections 底栏 **挥手点播**：`collectionsWaveHello` → 已入库 `waveHello`；不要求结缘 SKU；`welcomeBack` / 10min 自主挥手仍停接线 |
