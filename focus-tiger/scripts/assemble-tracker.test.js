@@ -23,6 +23,9 @@ import {
   ensureFragmentMarkers,
   validateFragments,
   loadTrackerCorpus,
+  shouldWarnPendingAssemble,
+  formatPendingAssembleWarn,
+  ASSEMBLE_PENDING_WARN_COUNT,
   FRAGMENT_BEGIN,
   FRAGMENT_END,
   TABLE_HEADER,
@@ -223,6 +226,21 @@ describe('validateFragments', () => {
     })
     assert.equal(r.ok, true, r.errors.join('; '))
     assert.equal(r.entries.length, 1)
+  })
+})
+
+describe('shouldWarnPendingAssemble', () => {
+  it('warns at the threshold, not below', () => {
+    assert.equal(ASSEMBLE_PENDING_WARN_COUNT, 5)
+    assert.equal(shouldWarnPendingAssemble(4), false)
+    assert.equal(shouldWarnPendingAssemble(5), true)
+    assert.equal(shouldWarnPendingAssemble(6), true)
+  })
+
+  it('mentions the count and assemble command', () => {
+    assert.match(formatPendingAssembleWarn(5), /5 pending/)
+    assert.match(formatPendingAssembleWarn(5), /tracker:assemble/)
+    assert.match(formatPendingAssembleWarn(5), /拼装触发/)
   })
 })
 

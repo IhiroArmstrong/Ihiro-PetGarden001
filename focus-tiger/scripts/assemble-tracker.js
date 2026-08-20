@@ -11,6 +11,9 @@
  *
  * Feature PRs add docs/tracker-entries/<branch-slug>.md and do NOT edit the
  * TEST_TRACKER.md table body (avoids serial merge conflicts).
+ * Assemble triggers (SSOT: TEST_TRACKER.md「拼装触发」): before「批量人工测试」
+ * if any fragments remain; or when pending fragment files ≥ 5. Feature PRs
+ * must not run tracker:assemble. docs:check stays green if unassembled.
  *
  *   npm run tracker:check      — validate fragments (wired into docs:check)
  *   npm run tracker:assemble   — rewrite the machine block in TEST_TRACKER.md
@@ -41,6 +44,9 @@ export const TRACKER_TAIL_RE =
   /\|\s*(—|legacy-unclassified|release-blocker|post-v1|cosmetic)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*(\d{4}-\d{2}-\d{2})\s*\|?\s*$/
 
 export const FRAGMENT_FILENAME_RE = /^[a-z0-9]+(?:[.-][a-z0-9]+)*\.md$/
+
+/** Pending fragment files at or above this count → tracker:check WARN (still green). */
+export const ASSEMBLE_PENDING_WARN_COUNT = 5
 
 const STATUS_RE =
   /\|\s*(仅单元测试覆盖|待人工测试|已通过|有问题|已放弃\/不适用|不挡合并[^|]*)\s*\|/
@@ -177,6 +183,34 @@ export function listFragmentFilenames(dir = ENTRIES_DIR) {
   return readdirSync(dir)
     .filter((name) => name.endsWith('.md') && !isMetaFragmentName(name))
     .sort()
+}
+
+/**
+ * @param {number} count
+ * @param {number} [threshold]
+ * @returns {boolean}
+ */
+export function shouldWarnPendingAssemble(
+  count,
+  threshold = ASSEMBLE_PENDING_WARN_COUNT
+) {
+  return Number(count) >= threshold
+}
+
+/**
+ * @param {number} count
+ * @param {number} [threshold]
+ * @returns {string}
+ */
+export function formatPendingAssembleWarn(
+  count,
+  threshold = ASSEMBLE_PENDING_WARN_COUNT
+) {
+  return (
+    `[tracker:check] WARN — ${count} pending fragment file(s) ` +
+    `(threshold ${threshold}). Open a docs/* PR and run: ` +
+    `cd focus-tiger && npm run tracker:assemble — see TEST_TRACKER.md「拼装触发».`
+  )
 }
 
 /**
@@ -445,6 +479,10 @@ export function runTrackerFragmentCheck() {
     return false
   }
   console.log('[tracker:check] OK — tracker-entries fragments are well-formed.')
+  const pending = listFragmentFilenames().length
+  if (shouldWarnPendingAssemble(pending)) {
+    console.warn(formatPendingAssembleWarn(pending))
+  }
   return true
 }
 
