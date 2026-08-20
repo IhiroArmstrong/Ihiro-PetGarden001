@@ -86,7 +86,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」；对话交接摘要见 `session-handoff`，勿与本条混写 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针）；把本条扩成交接模板 |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」；Cloud 旁支落本机见同节第 8 款（一行指针即可） | 主张同目录并行写可接受；主张可在主仓点 Cursor Apply / checkout migrated branch；在非 SSOT 复述完整 SOP |
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`）；会话结束 N14 须报锁态 | 主张可按 OS mtime / git log 推断占用态；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布；把「锁可自动接管」扩成可静默 `worktree remove` |
-| `git-worktree-hygiene` | 「闲置 worktree 盘点 / 口令拆除见 `WORKFLOW.md` 结束后清理」；数据源 `check:worktree-hygiene`；`propose_remove` = 干净+非 cwd+锁可放行+（祖先 **或** cherry 无独有补丁）；固定 QA 树豁免见 `qa-develop-worktree`；与 occupancy Prompt 3 同原则分风险 | 主张 Agent 可静默 `git worktree remove`；每回合默认问要不要清盘；无口令/无点名即拆除；把 hygiene 与锁陈旧自动接管混成同一宽松标准；仅用 tip 祖先判定已合入（忽略 squash）；把 `…-wt-develop-qa` 列入 `propose_remove` |
+| `git-worktree-hygiene` | 「闲置 worktree 盘点 / 口令拆除见 `WORKFLOW.md` 结束后清理」；数据源 `check:worktree-hygiene`；本机按清单清见同节 `worktree:hygiene-remove`（默认 dry-run，`--apply` 只拆 `propose_remove`）；`propose_remove` = 干净+非 cwd+锁可放行+（祖先 **或** cherry 无独有补丁）；固定 QA 树豁免见 `qa-develop-worktree`；与 occupancy Prompt 3 同原则分风险 | 主张 Agent 可静默 `git worktree remove`；每回合默认问要不要清盘；无口令/无点名即拆除；把 hygiene 与锁陈旧自动接管混成同一宽松标准；仅用 tip 祖先判定已合入（忽略 squash）；把 `…-wt-develop-qa` 列入 `propose_remove`；用 Finder 文件夹列表代替 `git worktree list` |
 | `git-feature-merge-preview` | 「合入前研发自检 / 主干同步 / **develop-integrity**（≠ session-lock `releasable`）见 `WORKFLOW.md`」；`TEST_TRACKER` / `COLLAB` / PR 模板可一行引用两层验收（CI 合入 vs tip 关单） | 主张须等用户 Safari 确认才可开 PR / 合 develop；把 develop-integrity 与 session-lock `releasable` 混为一谈；笼统「纯文档」跳过冒烟（未按运行时路径白/黑名单）；完整平行复述 rebase/`comm -12` SOP |
 | `git-develop-small-pr-run-merge` | 「合入 develop：CI 绿即可合并见 `WORKFLOW.md`」（旧称文档/小 PR Run 合并；现含运行时 PR）；regression-lock / PROCESS / COLLAB / docs.mdc 可一行引用 | 把合 develop 默认改回「只请你上 GitHub 手合」或「等人工测完再合」；把本条扩成合 `main` 或生产部署；下班前口令顺手推进无关 PR |
 | `prod-worker-deploy` | 「生产 Worker 须明确「部署」见 `WORKFLOW.md`」；cloud README 可一行引用 | 主张合入 develop / CI 绿即可 redeploy；把「同步」「发布」当成部署口令 |
@@ -208,6 +208,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-20 | `git-worktree-hygiene`：本机按清单清收成 `npm run worktree:hygiene-remove`（dry-run / `--apply` 只拆 `propose_remove`）；仍须口令；不删远端分支；不拆主仓 / `…-wt-develop-qa` |
 | 2026-08-20 | 新增 `session-handoff`：口令「生成交接」+ 阶段性任务后输出结构化交接摘要；SSOT `.cursor/rules/focus-tiger-session-handoff.mdc`；与「批量人工测试」同级；不改变 push/PR / 合 develop / 人工关单 |
 | 2026-08-16 | 新增 `feature-conflict-review`：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等用户拍板（优先于默认执行）；SSOT `FEATURE_CONFLICT_REVIEW.md`；PR 三问 Q3；Cursor 规则 + `SCENARIO_TESTS` 文首索引 |
 | 2026-08-15 | 扩展 `git-parallel-worktree`：Cloud 旁支落到本机须 `worktree add`，禁止主仓 Apply / checkout migrated branch（超时 + 抢 5173/主仓检出）。SSOT `WORKFLOW.md` 并行 worktree 第 8 款 |

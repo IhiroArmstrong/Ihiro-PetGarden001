@@ -20,6 +20,7 @@
  * patches already landed on develop.
  *
  * Usage: cd focus-tiger && npm run check:worktree-hygiene
+ * Apply (after passphrase / 按清单清): cd focus-tiger && npm run worktree:hygiene-remove [-- --apply]
  *
  * Exit: always 0 on successful inventory (even if candidates exist).
  *        1 on git / IO failure.

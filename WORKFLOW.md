@@ -75,6 +75,7 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    - **`propose_remove` 内容已合入判定（squash 友好）**：工作树干净 + 非当前 cwd + 锁可放行，且满足其一——① tip 已是 `origin/develop` 祖先；或 ② `git cherry origin/develop HEAD` **无** `+` 行（无独有补丁）。禁止仅用祖先检查（squash 合入会假阴性）。  
    - 清单须含 **最后一次 commit 时间**（与闲置天数），便于你决定是否还要留作对照。  
    - 你点名 path（或写「按清单清」/「按扩大清单清」= 只清当时 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。  
+   - **本机按清单清（同一分类器）**：口令之后在**主仓**跑 `cd <主仓>/focus-tiger && npm run worktree:hygiene-remove`（默认 dry-run）→ 确认清单后再 `npm run worktree:hygiene-remove -- --apply`。只拆当时 `propose_remove`；**不**删远端分支；**不**拆主仓 / `…-wt-develop-qa`。Finder 里看到的文件夹不算数——只认 `git worktree list`。  
    - **固定 QA 树拆除豁免**见下文 `qa-develop-worktree`（`…-wt-develop-qa` **不得** `propose_remove`）。  
    - 政策索引：`RULES_INDEX.md` → `git-worktree-hygiene`。与锁心跳/陈旧（下节 Prompt 3）**同原则、不同风险等级**：客观依据（脚本输出 / `last_heartbeat`）供判断；**不可逆拆盘必须人工确认**；可逆的锁接管见下节。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。  
