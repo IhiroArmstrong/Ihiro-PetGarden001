@@ -1,8 +1,8 @@
 # Task Brief · 意愿漏斗 layout=tea-first | sanctuary-first
 
-> **状态（2026-08-20）**：#377 已合入 Support 请茶优先 UI；layout 维 + ingest 白名单 **#378 已合** tip `8535da1`。用户书面：漏斗同意与联网备份继续分开；书面「部署」。Cloud Agent **无** token，生产 Worker **未** Redeploy（现网仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。  
+> **状态（2026-08-21）**：#377 已合入 Support 请茶优先 UI；layout 维 + ingest 白名单 **#378 已合** tip `8535da1`。用户书面：漏斗同意与联网备份继续分开。**2026-08-21 本机 wrangler deploy 成功**：生产 Version **`e7026512-664c-42c1-8cc7-954044eb8a85`**（`origin/develop` tip `1f8e184f` / #380；163 / ihiro；未用 `--temporary`）。  
 > **触发**：用户问 layout 维是否已实现，以及「联网备份」能否把该统计自动传到云端。  
-> **分支**：`cursor/support-funnel-layout-8475`（代码）· `cursor/funnel-ingest-deploy-8475`（部署口径 / 现网未上）
+> **分支**：`cursor/support-funnel-layout-8475`（代码）· `cursor/funnel-ingest-deploy-8475`（部署口径；**2026-08-21 现网已上** Version `e7026512-…`）
 
 ## 产品规则
 

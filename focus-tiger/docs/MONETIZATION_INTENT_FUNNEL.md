@@ -1,6 +1,6 @@
 # Monetization Intent Funnel · 付费意愿漏斗
 
-> **状态（2026-08-20）**：本地漏斗 **#255 已合**；opt-in 回传 **#262 已合**；**Support layout 维**（`tea-first` / `sanctuary-first`）**#378 已合** tip `8535da1`（Brief `task-support-funnel-layout.md`）。现网 Worker **尚未** Redeploy 该 ingest（仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）；用户已书面「部署」，Cloud Agent 无 Cloudflare token，须本机对 **163 / ihiro** 帐号 `npm run deploy`。  
+> **状态（2026-08-21）**：本地漏斗 **#255 已合**；opt-in 回传 **#262 已合**；**Support layout 维**（`tea-first` / `sanctuary-first`）**#378 已合** tip `8535da1`（Brief `task-support-funnel-layout.md`）。**2026-08-21 本机 wrangler deploy 成功**：生产 **`focus-tiger-cloud`** Version **`e7026512-664c-42c1-8cc7-954044eb8a85`**（`origin/develop` tip `1f8e184f` / #380；163 / ihiro；未用 `--temporary`）。Privacy 漏斗开关打开后，现网 KV **可以**留下 layout 维。备份成功仍**不会**自动打开漏斗开关。  
 > **性质**：本地埋点 + 可选自有 Worker 聚合；**无第三方**；不改变支付行为。  
 > **对照**：留存漏斗见 `RETENTION_FUNNEL.md`（另一套事件）。  
 > **隐私**：默认**不上报**；须 Privacy 页明示同意（`MVP_PRODUCT_DEFINITION` §六）。
@@ -56,7 +56,7 @@ Opt-in：`focus-tiger.monetization-funnel-opt-in.v1` → `{ enabled, consentedAt
 | API | `POST /api/monetization-funnel-ingest` → KV `funnel:v1:{day}:{clientId}`（`TIP_KV` 命名空间隔离；TTL 90 天） |
 | 节流 | 约 60s；`checkout_start` / `checkout_complete` 可立即尝试 |
 | Cloud 未配 | 同意可开；flush 记 `cloud_api_unconfigured`，不打扰练习 |
-| 生产 Worker | `develop` 源码白名单已含 layout 计数键（#378）。**现网仍是旧 Worker** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`，会丢掉 `support_open:tea-first` 等键。本机 Redeploy 成功前 KV **不能**汇总客单 layout |
+| 生产 Worker | **2026-08-21** Version **`e7026512-664c-42c1-8cc7-954044eb8a85`**（覆盖 #378 layout 白名单）。Privacy 漏斗 opt-in 打开后 KV 可汇总 `support_open:tea-first` 等键。上一版 `5b5b3451-…` 会丢掉 layout，已覆盖 |
 
 ## DEV 面板
 
