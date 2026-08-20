@@ -28,6 +28,9 @@ on:
       - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/scripts/assemble-tracker.js'
+      - 'focus-tiger/docs/TEST_TRACKER.md'
+      - 'focus-tiger/docs/tracker-entries/**'
       - 'focus-tiger/package.json'
       - '.github/PULL_REQUEST_TEMPLATE.md'
       - '.cursor/rules/focus-tiger-browser-energy.mdc'
@@ -59,6 +62,9 @@ on:
       - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/scripts/assemble-tracker.js'
+      - 'focus-tiger/docs/TEST_TRACKER.md'
+      - 'focus-tiger/docs/tracker-entries/**'
       - 'focus-tiger/package.json'
       - '.github/PULL_REQUEST_TEMPLATE.md'
       - '.cursor/rules/focus-tiger-browser-energy.mdc'
@@ -92,5 +98,7 @@ jobs:
         run: node --test scripts/session-lock-lib.test.js scripts/check-worktree-occupancy.test.js
       - name: QA develop worktree sync + hygiene unit smoke
         run: node --test scripts/sync-qa-develop-worktree.test.js scripts/check-worktree-hygiene.test.js
+      - name: TEST_TRACKER fragment assemble unit smoke
+        run: node --test scripts/assemble-tracker.test.js
       - name: Behavioral contracts (gate + scenario smoke)
         run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js
