@@ -32,6 +32,7 @@
     "check:branch-freshness": "node scripts/check-branch-freshness.js",
     "check:worktree-occupancy": "node scripts/check-worktree-occupancy.js",
     "check:worktree-hygiene": "node scripts/check-worktree-hygiene.js",
+    "worktree:hygiene-remove": "node scripts/apply-worktree-hygiene.js",
     "sync:qa-develop": "node scripts/sync-qa-develop-worktree.js",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run pack",
