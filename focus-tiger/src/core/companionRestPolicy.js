@@ -8,6 +8,8 @@
  *
  * Complements (does not replace) the existing 2h → DORMANT path:
  * - Idle / non-focus + ≥2h since session end → DORMANT sleep (HonestyCheckInController)
+ *   **except** a short visibility return: hiddenMs must also be ≥2h
+ *   (`shouldAllowEnterDormantOnForegroundReturn`; Welcome-then-sleep bug)
  * - FOCUSING + tab hidden ≥ LONG_AWAY_WAKE_MS → play dormantWake on return (stay focusing)
  * - Late-night Idle → force DORMANT cloak (Expand A night only; **no** daytime Idle inactivity cloak)
  * - Session end into Reflection stays a companion moment (awake sitting / rise pool /
@@ -19,6 +21,7 @@
  */
 
 import { STATES } from './StateManager.js';
+import { DORMANT_IDLE_MS } from '../utils/Constants.js';
 
 /** Tab hidden while focusing before long-away wake on return. */
 export const LONG_AWAY_WAKE_MS = 30 * 60 * 1000;
@@ -57,6 +60,28 @@ export function resolveForegroundReturnAction(opts) {
   return shouldPlayLongAwayWake(opts)
     ? FOREGROUND_RETURN_ACTIONS.LONG_AWAY_WAKE
     : FOREGROUND_RETURN_ACTIONS.SYNC_DORMANT_AND_LATE_NIGHT;
+}
+
+/**
+ * Visibility→visible may enter DORMANT / late-night cloak only when the tab
+ * was actually hidden ≥ 2h. A stale `focus-session-end` after this-session
+ * Welcome must not put Yin to sleep on a ~1 min tab switch
+ * (2026-08-18 user written: Welcome back → cannot sleep).
+ *
+ * Rise / explicit `syncDormantState()` still uses the 2h session-end stamp.
+ *
+ * @param {object} opts
+ * @param {number} opts.hiddenMs
+ * @param {number} [opts.thresholdMs]
+ * @returns {boolean}
+ */
+export function shouldAllowEnterDormantOnForegroundReturn({
+  hiddenMs,
+  thresholdMs = DORMANT_IDLE_MS
+} = {}) {
+  if (!Number.isFinite(hiddenMs) || hiddenMs < 0) return false;
+  if (!Number.isFinite(thresholdMs) || thresholdMs <= 0) return false;
+  return hiddenMs >= thresholdMs;
 }
 
 /**

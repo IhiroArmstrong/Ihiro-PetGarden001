@@ -196,7 +196,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 > | `bookReading` | **日本語切语**单程看书（≠ `magicBookReading`） / **中途 Rise 加权池 ~15%** |
 > | `yawnStretch` | 久无互动轻提示；≠ stretchReminder；**勿**进 Rise 池 |
 > | `earWiggleHeadTouch` | 亲密回应 / 偶发俏皮（**正放+倒放一次**烘焙 → ~1s CapCut Idle；禁 player pingpong） |
-> | `cloakSleep` | **进 DORMANT 过渡（已接线）**：live 非 DORMANT→DORMANT 时披毯→`sleeping`；**冷启动 `onAppReady` 不播**；≠ Rise |
+> | `cloakSleep` | **进 DORMANT 过渡（已接线）**：Rise 后或 **tab hidden ≥2h** 的 live 非 DORMANT→DORMANT 时披毯→`sleeping`；**冷启动 `onAppReady` 与短切 tab 不播**；≠ Rise |
 > | `blinkBreathe` | 调试候选；**勿回 Rise 主路径** |
 > | `riseStretchCasual` | **中途 Rise 加权池主项 ~60%**：`playEmotion` 正放一次（伸懒腰→随意坐）+ `holdPose`；Reflection 结束后回 Idle；**不**用于达标 Celebrating / SessionComplete。池定义见 `RISE_INTERRUPT_POOL`（另含 tea / book；**禁止** magicBook） |
 
@@ -686,5 +686,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.94 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（产品壳 2D hit；圣经「微笑眯眼」仍无正式精灵） |
 | 0.95 | 2026-08-18 | Idle 轻点须盖额头；回 Idle 后重新武装 hit（§6.16） |
 | 0.96 | 2026-08-20 | `CollectionsWaveHello`：珍藏底栏点播已入库 `waveHello`；不要求结缘 unlistable SKU；`welcomeBack` 仍停接线 |
-| 0.97 | 2026-08-18 | **收回 Expand B**：Rise / 计时达标进 Reflection 不得 `cloakSleep`；Reflect 开着须醒着同坐。深夜休息仍 Expand A Idle→DORMANT / 2h live / wellness 冷启动 |
+| 0.97 | 2026-08-18 | 回前台披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡）；Rise 后 2h 戳仍可进 DORMANT |
+| 0.98 | 2026-08-18 | **收回 Expand B**：Rise / 计时达标进 Reflection 不得 `cloakSleep`；Reflect 开着须醒着同坐。深夜休息仍 Expand A Idle→DORMANT / 2h live / wellness 冷启动 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

@@ -5,6 +5,9 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { ReflectionFlowState } from './ReflectionFlowState.js';
 import { trimReflections, REFLECTION_MAX_SAVED } from '../core/SessionEndFlow.js';
@@ -101,4 +104,12 @@ test('companionEchoKeyAfterAdvance: non-empty Continue yields pool key; Skip/bla
     }),
     null
   );
+});
+
+test('Reflection card uses shared home clearance and globe side inset', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, 'TigerReflectionMoment.js'), 'utf8');
+  assert.match(src, /homeClearanceBottomCss/);
+  assert.match(src, /100vw - 176px/);
+  assert.equal(src.includes('bottom:96px'), false);
 });

@@ -169,7 +169,7 @@
 > - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → `HonestyBridgeCtaController` Yes→`onAccept` / No→`onDecline` / 同日再 `onHonestyCheckInComplete` → smoke D（**非**桥接按钮 DOM / Yes 后完整 Arrival UI）。  
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
-1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，或 DEV 改 `focus-tiger.focus-session-end.v1` 后刷新 / 回前台（见下方强制手段）。新用户无结束记录**不会**自动睡。
+1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，**且离开标签 ≥2h 再回**（短切约 1 分钟再回 **不应**进睡——见 2026-08-18 Welcome 契约），或 DEV 改 `focus-tiger.focus-session-end.v1` 后 **Rise 结束一场** 再 sync。新用户无结束记录**不会**自动睡。冷启动刷新仍是 Idle + Welcome，不是披毯。
 2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）→ **0–1 秒内**：入口按压 + `#honesty-check-in` 时长三选一面板淡入（10 / 20 / 30+）。
 3. 选时长 10 / 20 / 30+（选 20）→ **0–1 秒内**：该钮下压（`translateY(1px)`）+ 时长面板让位给呼吸引导（倒计时出现）。**不要**报成哑点击。
 4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
@@ -182,7 +182,7 @@
    *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；**DOM 真实补登链**（入口→时长→呼吸→桥接 Yes→Arrival / No→Idle）→ `e2e/honesty-bridge-real-path.spec.js`（`?honestyBreathMs=`）；叠层隐藏 Honesty/微仪式入口仍可经 `__honestyBridge` 注入 → e2e `micro-ritual.spec.js` bridge 行。**非**睡姿/Arrival 动画观感。**CI**：注入 hook 须在 `vite preview` 生产构建可用（勿仅 DEV 挂载）]*
 6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。Sit → **0–1 秒内**：主钮按压 + Companion / Arrival 按既有场景 A 展开（本步不另造反馈类型）。  
    **已知**：Honesty 路径暂不接 halo / 金光。
-   **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
+   **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，**仅当 tab hidden ≥2h** 回前台 sync 可再次进睡（短切 tab 不得披毯）。
 
 ---
 

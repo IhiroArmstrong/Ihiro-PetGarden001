@@ -132,7 +132,8 @@ test('smoke A1: zero completions → Idle + Honesty entry button; after record �
 
 /**
  * A1 延伸：陈旧结束戳 ≥2h 时冷启动仍 Idle（开场即睡回归锚）。
- * live syncDormantState 仍可进 DORMANT（场景 D）。
+ * 显式 live syncDormantState 仍可进 DORMANT（场景 D / Rise）；
+ * 短切 tab 不得进睡（companionRestPolicy hiddenMs 门闩）。
  */
 test('smoke A1b: cold open with stale ≥2h end → Idle (no DORMANT / cloak)', () => {
   const ended = Date.parse('2026-07-20T08:00:00');

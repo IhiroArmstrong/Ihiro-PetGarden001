@@ -453,7 +453,8 @@
 | W4 | 发现权威 md 互斥口径 → **同任务**改齐，禁止留下「调试 only」与「自动 2h」并行 |
 
 **本事故落地**：`onAppReady` → `allowEnterDormant: false`；`dormantIdle` + smoke A1b；`TEST_TRACKER`「开场即睡」行；对齐 `DESIGN` / `EMOTION_BIBLE` / `SHARED_RESOURCES`。  
-**产品拍板（2026-07-26）**：回前台（切标签再回来）且 ≥2h → **继续披毯进睡**；冷启动第一幕仍 Idle。二者勿再混为一谈。
+**产品拍板（2026-07-26）**：回前台（切标签再回来）且 ≥2h → **继续披毯进睡**；冷启动第一幕仍 Idle。二者勿再混为一谈。  
+**拍板修订（2026-08-18）**：用户书面——本页已 Welcome back 后再离开约一分钟回来却披毯，不合逻辑。根因：visibility 把陈旧 `focus-session-end` 当成「已离开 2h」。现 **hiddenMs ≥2h** 才 `allowEnterDormant`；短切 tab 保持 Idle。Rise 后仍可用 2h 戳。工作流教训：冷启动例外若可被下一次 `visibilitychange` 立刻推翻，等于没锁「第一幕有精神」。
 
 ### 6.8 实验室组合试播 OK ≠ 产品路径已修（2026-08-02 · 张望闪白）
 

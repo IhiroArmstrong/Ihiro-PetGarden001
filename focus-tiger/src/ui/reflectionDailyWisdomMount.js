@@ -21,7 +21,7 @@ export function mountReflectionDailyWisdom(
   host.dataset.testid = 'reflection-daily-wisdom';
   host.style.cssText = [
     'margin-top:12px',
-    'padding-top:10px',
+    'padding:10px 4px 8px',
     'border-top:1px solid rgba(139,115,85,.16)',
     'max-height:min(28vh, 160px)',
     'overflow-y:auto',

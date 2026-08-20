@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · #362 L1 已合 `develop`（`0386b1e`）· 关单能聊 + Checkout 等 L2 后一起测 · L2 待口令「开工桌面陪伴 L2」· Support 将来五卡 Price 已记 · 品味层 **#349 已合**、生产 Worker **未**部署
+**最后更新时间**：2026-08-20（UTC+8） · Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· #362 L1 已合 `develop`（`0386b1e`）· 关单能聊 + Checkout 等 L2 后一起测 · L2 待口令「开工桌面陪伴 L2」· Support 将来五卡 Price 已记 · 品味层 **#349 已合**、生产 Worker **未**部署
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **Welcome 后短切 tab 不得披毯（2026-08-18 · #341）**：冷启动 Welcome / 鹦鹉仍 Idle；visibility 仅当 **hiddenMs ≥2h** 才 `allowEnterDormant`。Reflection 卡用共享底栏净空 + 176px 侧留白，避免日签压三球/地球；慧能/赵州日签改字（仍 14 id）。TRACKER 待人工。
 
 - **会话交接 Session Handoff（2026-08-20）**：口令「生成交接」出结构化摘要。权威：`.cursor/rules/focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
@@ -220,7 +222,7 @@
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
-- **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
+- **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**2026-08-18 修订**：回前台进睡须 **tab 实际 hidden ≥2h**（Welcome 后短切 tab 不得用陈旧戳披毯）；Rise 后仍可按 2h 戳。单测 A1b + `dormantIdle` + `shouldAllowEnterDormantOnForegroundReturn`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
 - **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
@@ -1069,7 +1071,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
   - 欢迎池：魔法书 `magicBookReading` **60** / 点头 `nodGreeting` **40**
   - 轻量完成池：`sessionComplete` **70** / 点头 `mindfulAcknowledge` **30** / 鹦鹉 `parrotEarVisit` **8**（≈7%，8/108）
   - Honesty 分档：≤29 分 `mindfulAcknowledge`（点头）；≥30 分 `goldenHaloPalms`（金辉）；`HONESTY_LONG_MIN_MINUTES = 30`
-  - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删（改字另议）
+  - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删。**2026-08-18 改字**：慧能 / 赵州改为可呼吸的观察句，id 未动。
 - **开工**：用户 2026-08-18 书面「L1/L0 可告一段落 → 安排下一步」视为口令「开工云端品味层」。**生产 Worker** 仍须单独「部署」才从旧 mock 换成 v1 表。
 - **禁止**：把播放器迁云；用品味层满足 `isEntitled`。本切片 **未改** `HonestyCheckInController`（分档 overlay 只在 Dispatcher）。L2 兑换 #339 已合且未改时长分档。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
