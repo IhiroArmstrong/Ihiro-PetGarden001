@@ -9,6 +9,7 @@
  *    （Focus HUD 三条例外：不画脉冲点，悬停控件本身出 tip，同「?」）
  * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
  *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`
+ *     + Electron 桌面内存说明 `.onboarding-app-purpose__desktop-ram`
  *     + 末尾 colophon `.onboarding-app-purpose__colophon`）
  * 默认不自动弹出 `#onboarding-wellness-first`（吓跑用户）；QA 仅 `?wellnessFirst=1`。
  * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
@@ -16,6 +17,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import {
   markWellnessDisclaimerSeen
 } from '../core/wellnessDisclaimerGate.js';
@@ -1825,6 +1827,20 @@ export class OnboardingHintsUI {
 
     wellness.append(wellnessTitle, wellnessBody);
 
+    const desktopRam = document.createElement('div');
+    desktopRam.id = 'onboarding-purpose-desktop-ram';
+    desktopRam.className = 'onboarding-app-purpose__desktop-ram';
+    desktopRam.dataset.testid = 'onboarding-purpose-desktop-ram';
+    desktopRam.hidden = true;
+
+    const desktopRamTitle = document.createElement('h3');
+    desktopRamTitle.className = 'onboarding-app-purpose__desktop-ram-title';
+
+    const desktopRamBody = document.createElement('p');
+    desktopRamBody.className = 'onboarding-app-purpose__desktop-ram-body';
+
+    desktopRam.append(desktopRamTitle, desktopRamBody);
+
     const actions = document.createElement('div');
     actions.className = 'onboarding-app-purpose__actions';
 
@@ -1872,13 +1888,16 @@ export class OnboardingHintsUI {
     colophon.append(colophonMark, colophonByline, colophonCopy);
 
     actions.append(moments, privacy, dismiss);
-    card.append(title, body, wellness, actions, colophon);
+    card.append(title, body, wellness, desktopRam, actions, colophon);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
     this._purposeBodyEl = body;
     this._purposeWellnessTitleEl = wellnessTitle;
     this._purposeWellnessBodyEl = wellnessBody;
+    this._purposeDesktopRamEl = desktopRam;
+    this._purposeDesktopRamTitleEl = desktopRamTitle;
+    this._purposeDesktopRamBodyEl = desktopRamBody;
     this._purposeMomentsEl = moments;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
@@ -1901,6 +1920,20 @@ export class OnboardingHintsUI {
     if (this._purposeWellnessBodyEl) {
       this._purposeWellnessBodyEl.textContent = t(
         'HINT_APP_PURPOSE_WELLNESS_BODY'
+      );
+    }
+    const showDesktopRam = isDesktopShellRuntime();
+    if (this._purposeDesktopRamEl) {
+      this._purposeDesktopRamEl.hidden = !showDesktopRam;
+    }
+    if (this._purposeDesktopRamTitleEl) {
+      this._purposeDesktopRamTitleEl.textContent = t(
+        'HINT_APP_PURPOSE_DESKTOP_RAM_TITLE'
+      );
+    }
+    if (this._purposeDesktopRamBodyEl) {
+      this._purposeDesktopRamBodyEl.textContent = t(
+        'HINT_APP_PURPOSE_DESKTOP_RAM_BODY'
       );
     }
     if (this._purposeMomentsEl) {
@@ -2458,6 +2491,32 @@ export class OnboardingHintsUI {
         font-weight: 500;
         line-height: 1.45;
         color: #3a5348;
+      }
+      .onboarding-app-purpose__desktop-ram {
+        margin: 0 0 12px;
+        padding: 10px 10px 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        background: rgba(255, 252, 245, 0.42);
+      }
+      .onboarding-app-purpose__desktop-ram[hidden] {
+        display: none;
+      }
+      .onboarding-app-purpose__desktop-ram-title {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: 0.02em;
+        color: #5c4330;
+      }
+      .onboarding-app-purpose__desktop-ram-body {
+        margin: 0;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.45;
+        color: #5c4330;
       }
       .onboarding-app-purpose__actions {
         display: flex;

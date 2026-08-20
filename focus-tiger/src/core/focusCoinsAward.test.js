@@ -5,6 +5,9 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { PRACTICE_BACKUP_STORE_KEYS } from './practiceBackup/practiceBackupSnapshot.js';
 import { COMPANION_MODE_STAY } from './FocusSession.js';
 import { PracticeDaysStore, shiftLocalDateKey } from './PracticeDaysStore.js';
@@ -20,6 +23,7 @@ import {
 } from './focusCoinsStore.js';
 import {
   applyFocusCoinsGrant,
+  applyBreathPracticeFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './focusCoinsAward.js';
 
@@ -181,6 +185,49 @@ describe('focusCoinsAward L1', () => {
     assert.equal(store.getSnapshot().lifetimeMarks.activeRecover, true);
   });
 
+  it('Breath 1 min: ritual +1 only (duration below Stay rate)', () => {
+    const storage = memoryStorage();
+    const store = new FocusCoinsStore({ storage });
+    const short = applyBreathPracticeFocusCoinsGrant({
+      durationMinutes: 1,
+      store,
+      practiceDaysStore: new PracticeDaysStore({ storage }),
+      enabled: true
+    });
+    assert.equal(short.timed.points, 0);
+    assert.equal(short.ritual.points, 1);
+    assert.equal(short.points, 1);
+    assert.equal(store.getSnapshot().balance, 1);
+  });
+
+  it('Breath 10 min first of day: Stay-rate +2 plus ritual +1', () => {
+    const storage = memoryStorage();
+    const store = new FocusCoinsStore({ storage });
+    const long = applyBreathPracticeFocusCoinsGrant({
+      durationMinutes: 10,
+      store,
+      practiceDaysStore: new PracticeDaysStore({ storage }),
+      enabled: true
+    });
+    assert.equal(long.timed.points, 2);
+    assert.equal(long.ritual.points, 1);
+    assert.equal(long.points, 3);
+    assert.equal(store.getSnapshot().balance, 3);
+  });
+
+  it('Breath Leave path is not this helper: flag off writes nothing', () => {
+    const storage = memoryStorage();
+    const store = new FocusCoinsStore({ storage });
+    const result = applyBreathPracticeFocusCoinsGrant({
+      durationMinutes: 20,
+      store,
+      practiceDaysStore: new PracticeDaysStore({ storage }),
+      enabled: false
+    });
+    assert.equal(result.points, 0);
+    assert.equal(store.getSnapshot().balance, 0);
+  });
+
   it('wallet key is on L-01 path and must not enter practice-backup 6 keys', () => {
     assert.equal(FOCUS_COINS_STORAGE_KEY, 'focus-tiger.focus-coins.v1');
     assert.equal(
@@ -188,5 +235,18 @@ describe('focusCoinsAward L1', () => {
       false
     );
     assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 6);
+  });
+
+  it('main.js completeMicroRitual awards breath coins; Leave does not', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, '../main.js'), 'utf8');
+    const start = src.indexOf('function completeMicroRitual()');
+    const end = src.indexOf('function leaveMicroRitualQuietly()');
+    assert.ok(start >= 0 && end > start);
+    const complete = src.slice(start, end);
+    const leave = src.slice(end, src.indexOf('const reflectionOpen'));
+    assert.ok(complete.includes('applyBreathPracticeFocusCoinsGrant'));
+    assert.equal(leave.includes('applyBreathPracticeFocusCoinsGrant'), false);
+    assert.equal(leave.includes('awardFocusCoins'), false);
   });
 });

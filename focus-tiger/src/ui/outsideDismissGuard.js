@@ -33,6 +33,7 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (el.closest('#onboarding-wellness-first')) return true;
   if (el.closest('#five-moments-compass')) return true;
   if (el.closest('#journey-log')) return true;
+  if (el.closest('#yin-coin-panel')) return true;
   if (el.closest('#moment-whisper')) return true;
   if (el.closest('#onboarding-hint-help')) return true;
   if (el.closest('#ft-narrow-help-btn')) return true;

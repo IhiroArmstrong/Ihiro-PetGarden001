@@ -4,11 +4,12 @@
  */
 
 /**
- * 同坐点 L1 发点：账本纯函数 + 钱包写入。Flag 关则完全不写。
+ * 寅币 L1 发点：账本纯函数 + 钱包写入。Flag 关则完全不写。
  */
 
 import { getLocalDateKey } from '../utils/localDate.js';
 import { shiftLocalDateKey } from './PracticeDaysStore.js';
+import { COMPANION_MODE_STAY } from './FocusSession.js';
 import { GRANT_KIND, computeFocusCoinsGrant } from './focusCoinsLedger.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 
@@ -76,6 +77,52 @@ export function applyFocusCoinsGrant({
     points: grant.points,
     reason: grant.reason,
     snapshot: store.getSnapshot()
+  };
+}
+
+/**
+ * Breath practice 坐满：时长点按 Stay 档（5 分=1）+ 每日微仪式 +1。
+ * Leave 中途不调用。1 分 Breath 时长池为 0，只可能留下那笔 +1。
+ *
+ * @param {object} opts
+ * @param {number} opts.durationMinutes
+ * @param {import('./focusCoinsStore.js').FocusCoinsStore} opts.store
+ * @param {import('./PracticeDaysStore.js').PracticeDaysStore} opts.practiceDaysStore
+ * @param {() => Date} [opts.now]
+ * @param {boolean} [opts.enabled]
+ * @param {string} [opts.search]
+ * @returns {{
+ *   timed: ReturnType<typeof applyFocusCoinsGrant>,
+ *   ritual: ReturnType<typeof applyFocusCoinsGrant>,
+ *   points: number
+ * }}
+ */
+export function applyBreathPracticeFocusCoinsGrant({
+  durationMinutes,
+  store,
+  practiceDaysStore,
+  now,
+  enabled,
+  search = ''
+} = {}) {
+  const shared = { store, practiceDaysStore, now, enabled, search };
+  const timed = applyFocusCoinsGrant({
+    ...shared,
+    event: {
+      kind: GRANT_KIND.TIMED,
+      reachedTarget: true,
+      companionMode: COMPANION_MODE_STAY,
+      durationMinutes
+    }
+  });
+  const ritual = applyFocusCoinsGrant({
+    ...shared,
+    event: { kind: GRANT_KIND.MICRO_RITUAL }
+  });
+  return {
+    timed,
+    ritual,
+    points: timed.points + ritual.points
   };
 }
 

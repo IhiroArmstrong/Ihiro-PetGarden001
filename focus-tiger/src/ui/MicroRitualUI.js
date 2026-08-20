@@ -25,6 +25,10 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  createFocusCoinsDurationHint,
+  readFocusCoinsHintSearch
+} from './focusCoinsDurationHint.js';
 
 const PANEL_CSS = [
   'position:absolute',
@@ -430,6 +434,12 @@ export class MicroRitualUI {
     leave.textContent = t('micro_ritual.leave');
     leave.addEventListener('click', () => this.leave());
 
-    this.root.append(title, row, leave);
+    const coinsHint = createFocusCoinsDurationHint({
+      search: readFocusCoinsHintSearch()
+    });
+    const parts = [title, row];
+    if (coinsHint) parts.push(coinsHint);
+    parts.push(leave);
+    this.root.append(...parts);
   }
 }

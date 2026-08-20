@@ -39,6 +39,7 @@ const REQUIRED_SUPPORT_KEYS = [
   'SUPPORT_MEMBERSHIP_PRICE',
   'SUPPORT_MEMBERSHIP_CTA',
   'SUPPORT_MEMBERSHIP_IMG_ALT',
+  'SUPPORT_DESKTOP_RAM_NOTE',
   'SUPPORT_TEA_TITLE',
   'SUPPORT_TEA_BLURB',
   'SUPPORT_TEA_BENEFIT_1',
@@ -103,6 +104,9 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /yin-support-card__art/);
     assert.match(src, /MEMBERSHIP_PRICE_DISPLAY/);
     assert.match(src, /#e8dfd2/);
+    assert.match(src, /SUPPORT_DESKTOP_RAM_NOTE/);
+    assert.match(src, /isDesktopShellRuntime/);
+    assert.match(src, /yin-support-desktop-ram/);
   });
 });
 

@@ -16,9 +16,13 @@ import {
 } from './entitlement/entitlementGate.js';
 import {
   FOCUS_COIN_CATALOG,
+  FOCUS_COIN_CURIO_SHOP_IDS,
   FOCUS_COINS_DISPLAY_NAME,
+  FOCUS_COINS_DISPLAY_NAME_EN,
+  FOCUS_COINS_COLLECTIONS_NAME_EN,
   GRANT_KIND,
   SUMERU_BUNDLE_ID,
+  TITLE_LONG_SITTER_ID,
   SUMERU_MIN_LIFETIME_MINUTES,
   SUMERU_PRICE,
   coinsSatisfyEntitlement,
@@ -27,7 +31,8 @@ import {
   emptyFocusCoinsSessionState,
   evaluateFocusCoinRedeem,
   listFocusCoinCatalogViolations,
-  listPaidFeatureKeysBlockedFromCoins
+  listPaidFeatureKeysBlockedFromCoins,
+  listShopFocusCoinSkus
 } from './focusCoinsLedger.js';
 
 function memoryStorage(seed = {}) {
@@ -44,8 +49,10 @@ function memoryStorage(seed = {}) {
 }
 
 describe('focusCoinsLedger L0', () => {
-  it('display name is 同坐点, not arcade copy', () => {
-    assert.equal(FOCUS_COINS_DISPLAY_NAME, '同坐点');
+  it('display name is Yin coins and shop is Yins Collections', () => {
+    assert.equal(FOCUS_COINS_DISPLAY_NAME, '寅币');
+    assert.equal(FOCUS_COINS_DISPLAY_NAME_EN, 'Focus Coins');
+    assert.equal(FOCUS_COINS_COLLECTIONS_NAME_EN, "Yin's Collections");
   });
 
   it('incomplete / unreached timed session → 0', () => {
@@ -196,20 +203,30 @@ describe('focusCoinsLedger L0', () => {
     assert.equal(capped.reason, 'active-recover-daily-cap');
   });
 
-  it('catalog has no FEATURE_CATALOG collisions and forbids cash', () => {
+  it('shop catalog is the locked 清供 eight and still forbids cash', () => {
     assert.deepEqual(listFocusCoinCatalogViolations(), []);
+    const shopIds = listShopFocusCoinSkus().map((s) => s.id);
+    assert.deepEqual(shopIds, [...FOCUS_COIN_CURIO_SHOP_IDS]);
+    assert.equal(shopIds.includes('space.lotus-dew'), true);
+    assert.equal(shopIds.includes(SUMERU_BUNDLE_ID), true);
+    assert.equal(shopIds.includes(TITLE_LONG_SITTER_ID), false);
+    assert.equal(shopIds.includes('collection.porcelain.qing-vase'), false);
+    assert.equal(shopIds.includes('gesture.wave-hello'), false);
     for (const sku of FOCUS_COIN_CATALOG) {
       assert.equal(sku.cashPurchasable, false);
       assert.equal(sku.skippableByEntitlement, false);
+      assert.equal(sku.retiredOverlay === true, false);
       assert.equal(sku.id in FEATURE_CATALOG, false);
     }
     assert.equal('focus.coins' in FEATURE_CATALOG, false);
+    assert.equal('emotion.premium.trigger' in FEATURE_CATALOG, false);
   });
 
   it('redeem must not entitle ambient.deep.play or ritual access keys', () => {
     const paid = listPaidFeatureKeysBlockedFromCoins();
     assert.ok(paid.includes('ambient.deep.play'));
     assert.ok(paid.includes('ritual.morning.access'));
+    assert.equal(paid.includes('emotion.premium.trigger'), false);
     const storage = memoryStorage();
     const wallet = { balance: 9999, ownedIds: FOCUS_COIN_CATALOG.map((s) => s.id) };
     assert.equal(coinsSatisfyEntitlement('ambient.deep.play', wallet), false);
@@ -225,8 +242,31 @@ describe('focusCoinsLedger L0', () => {
     }
   });
 
-  it('须弥坐 needs 360 points AND 600 lifetime minutes; membership cannot skip', () => {
-    const noMinutes = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
+  it('清供 stills redeem at current prices; 久坐的人 still needs 360 coins AND 600 lifetime minutes', () => {
+    const dew = evaluateFocusCoinRedeem('space.lotus-dew', {
+      balance: 48,
+      hasLotusBloom: true
+    });
+    assert.equal(dew.ok, true);
+    assert.equal(dew.reason, 'ok');
+    assert.ok(dew.ownedIds.includes('space.lotus-dew'));
+
+    const noBloom = evaluateFocusCoinRedeem('space.lotus-dew', {
+      balance: 48,
+      hasLotusBloom: false
+    });
+    assert.equal(noBloom.ok, false);
+    assert.equal(noBloom.reason, 'lotus-bloom');
+
+    const okBundle = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
+      balance: SUMERU_PRICE,
+      lifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES
+    });
+    assert.equal(okBundle.ok, true);
+    assert.ok(okBundle.ownedIds.includes('space.sumeru-cushion'));
+    assert.ok(okBundle.ownedIds.includes(TITLE_LONG_SITTER_ID));
+
+    const noMinutes = evaluateFocusCoinRedeem(TITLE_LONG_SITTER_ID, {
       balance: SUMERU_PRICE,
       lifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES - 1,
       lifetimeActive: true,
@@ -236,7 +276,7 @@ describe('focusCoinsLedger L0', () => {
     assert.equal(noMinutes.reason, 'lifetime-minutes');
     assert.equal(noMinutes.entitlementPatch, null);
 
-    const noCoins = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
+    const noCoins = evaluateFocusCoinRedeem(TITLE_LONG_SITTER_ID, {
       balance: SUMERU_PRICE - 1,
       lifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES,
       lifetimeActive: true
@@ -244,7 +284,7 @@ describe('focusCoinsLedger L0', () => {
     assert.equal(noCoins.ok, false);
     assert.equal(noCoins.reason, 'insufficient-balance');
 
-    const membershipCannotSkip = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
+    const membershipCannotSkip = evaluateFocusCoinRedeem(TITLE_LONG_SITTER_ID, {
       balance: 0,
       lifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES,
       lifetimeActive: true,
@@ -253,14 +293,14 @@ describe('focusCoinsLedger L0', () => {
     assert.equal(membershipCannotSkip.ok, false);
     assert.equal(membershipCannotSkip.entitlementPatch, null);
 
-    const ok = evaluateFocusCoinRedeem(SUMERU_BUNDLE_ID, {
+    const ok = evaluateFocusCoinRedeem(TITLE_LONG_SITTER_ID, {
       balance: SUMERU_PRICE,
       lifetimeMinutes: SUMERU_MIN_LIFETIME_MINUTES
     });
     assert.equal(ok.ok, true);
     assert.equal(ok.balance, 0);
-    assert.ok(ok.ownedIds.includes('space.sumeru-cushion'));
-    assert.ok(ok.ownedIds.includes('title.long-sitter'));
+    assert.ok(ok.ownedIds.includes(TITLE_LONG_SITTER_ID));
+    assert.equal(ok.ownedIds.includes('space.sumeru-cushion'), false);
     assert.equal(ok.entitlementPatch, null);
   });
 });

@@ -8,7 +8,8 @@ import { describe, it } from 'node:test';
 import {
   getDesktopShellBridge,
   isDesktopShellRuntime,
-  openCheckoutUrl
+  openCheckoutUrl,
+  applyShellVisibilityToAttention
 } from './desktopShell.js';
 
 describe('desktopShell', () => {
@@ -16,6 +17,17 @@ describe('desktopShell', () => {
     assert.equal(getDesktopShellBridge({}), null);
     assert.equal(getDesktopShellBridge({ desktopShell: null }), null);
     assert.equal(isDesktopShellRuntime({}), false);
+  });
+
+  it('companion key is optional and ignored when absent', () => {
+    assert.equal(
+      getDesktopShellBridge({ desktopShell: { isDesktop: true } })?.companion,
+      undefined
+    );
+    const withCompanion = getDesktopShellBridge({
+      desktopShell: { isDesktop: true, companion: { ensureReady() {} } }
+    });
+    assert.equal(typeof withCompanion.companion.ensureReady, 'function');
   });
 
   it('isDesktopShellRuntime true only with isDesktop flag', () => {
@@ -69,5 +81,18 @@ describe('desktopShell', () => {
         }),
       /external_url_blocked/
     );
+  });
+
+  it('applyShellVisibilityToAttention maps tray hideReason onto AttentionSignals', () => {
+    const reasons = [];
+    applyShellVisibilityToAttention(
+      { setHideReason: (reason) => reasons.push(reason) },
+      { hidden: true, hideReason: 'tray' }
+    );
+    applyShellVisibilityToAttention(
+      { setHideReason: (reason) => reasons.push(reason) },
+      { hidden: false, hideReason: 'none' }
+    );
+    assert.deepEqual(reasons, ['tray', 'none']);
   });
 });

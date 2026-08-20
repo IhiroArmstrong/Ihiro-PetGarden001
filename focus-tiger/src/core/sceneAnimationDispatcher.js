@@ -24,6 +24,7 @@ import {
   resolveFlowerWelcomeForce,
   touchFlowerWelcomeLastOpen
 } from './flowerWelcomeGate.js';
+import { getTasteWeightOverlay } from './tasteLayerOverlay.js';
 
 export const SCENE_ANIM_EVENTS = Object.freeze({
   LANGUAGE_CHANGED: 'language_changed',
@@ -120,8 +121,24 @@ export const RISE_INTERRUPT_POOL = Object.freeze([
  * @param {() => number} [random]
  * @returns {string}
  */
+function riseInterruptPool() {
+  return getTasteWeightOverlay()?.riseInterruptPool ?? RISE_INTERRUPT_POOL;
+}
+
+function welcomePool() {
+  return getTasteWeightOverlay()?.welcomePool ?? WELCOME_POOL;
+}
+
+function lightCompletePool() {
+  return getTasteWeightOverlay()?.lightCompletePool ?? LIGHT_COMPLETE_POOL;
+}
+
+function honestyLongMinMinutes() {
+  return getTasteWeightOverlay()?.honestyLongMinMinutes ?? HONESTY_LONG_MIN_MINUTES;
+}
+
 export function pickRiseInterruptEmotion(random = Math.random) {
-  return pickWeighted(RISE_INTERRUPT_POOL, random) ?? 'riseStretchCasual';
+  return pickWeighted(riseInterruptPool(), random) ?? 'riseStretchCasual';
 }
 
 /**
@@ -132,7 +149,7 @@ export function pickRiseInterruptEmotion(random = Math.random) {
 export function isRiseInterruptHoldEmotion(key) {
   if (!key) return false;
   if (key === 'blinkBreathe') return true;
-  return RISE_INTERRUPT_POOL.some((e) => e.key === key);
+  return riseInterruptPool().some((e) => e.key === key);
 }
 
 /**
@@ -180,7 +197,7 @@ export function shouldAttemptLateNightOnBoot(welcomeDecision) {
  */
 export function emotionKeyForHonestyDuration(minutes) {
   if (!Number.isFinite(minutes) || minutes <= 0) return null;
-  return minutes >= HONESTY_LONG_MIN_MINUTES
+  return minutes >= honestyLongMinMinutes()
     ? 'goldenHaloPalms'
     : 'mindfulAcknowledge';
 }
@@ -387,7 +404,7 @@ export function resolveSceneAnimation({
     event === SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE ||
     event === SCENE_ANIM_EVENTS.SESSION_COMPLETE_LIGHT
   ) {
-    const emotionKey = pickWeighted(LIGHT_COMPLETE_POOL, random);
+    const emotionKey = pickWeighted(lightCompletePool(), random);
     return { play: true, emotionKey, reason: 'ok' };
   }
 
@@ -405,7 +422,7 @@ export function resolveSceneAnimation({
     }
     const emotionKey = flower.force
       ? FLOWER_WELCOME_EMOTION_KEY
-      : pickWeighted(WELCOME_POOL, random);
+      : pickWeighted(welcomePool(), random);
     writeDailySceneAnimState(storage, {
       dateKey: daily.dateKey,
       welcome: true
