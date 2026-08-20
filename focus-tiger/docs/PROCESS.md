@@ -63,7 +63,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。Brief `task-companion-mode-copy-coldstart.md`。
+- **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。**同日用户书面**：三句先按现稿；人工测 How shall we sit? 时看语感；再改只动 locale，不必重开逻辑。Brief `task-companion-mode-copy-coldstart.md`。
 - **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
 
