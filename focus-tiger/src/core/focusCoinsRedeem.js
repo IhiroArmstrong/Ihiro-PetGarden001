@@ -4,7 +4,7 @@
  */
 
 /**
- * 同坐点 L2 兑换：花点留下只增不减资产。Flag 关则完全不写。
+ * 寅币 L2 兑换：花点留下只增不减资产。Flag 关则完全不写。
  * 不写 Tea / Sanctuary badgeIds，不满足 isEntitled。
  */
 

@@ -35,6 +35,7 @@
     "sync:qa-develop": "node scripts/sync-qa-develop-worktree.js",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run pack",
+    "desktop:companion-l0": "npm --prefix desktop run companion:l0",
     "session-lock:heartbeat": "node scripts/session-lock-heartbeat.js",
     "session-lock:gate": "node scripts/gate-session-lock-precommit.js",
     "check:all-branches-health": "node scripts/check-all-branches-health.js",

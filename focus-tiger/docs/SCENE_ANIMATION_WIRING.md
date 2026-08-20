@@ -68,7 +68,7 @@
 
 - 设计师建议写入本文与 `ASSET_INVENTORY` / `PROCESS`；库存须进业务。  
 - **Honesty 时长分界锁定**：补登 **≤20 min** → `nod-bow`（`mindfulAcknowledge`）；**≥30 min** → `halo-breathing`（或 `breathHaloHq` 变体）。21–29 min 归短档（nod），避免空洞。  
-  **品味层冻结（2026-08-18）**：该分档即本地降级真源（≤29 点头 / ≥30 金辉）；近一周不改数字。接线时未知 `schemaVersion` 用本表。  
+  **品味层冻结（2026-08-18）**：该分档即本地降级真源（≤29 点头 / ≥30 金辉）；近一周不改数字。未知 `schemaVersion` 用本表。`schemaVersion: 1` overlay **只经 Dispatcher**（未改 `HonestyCheckInController`）。  
 - **日语 = 合十**（`palms-together`）规格正确；代码漂移须 A′ 修。  
 - **勿接**已取代目录（旧 dormant-wake / sleeping / tilt-think / blink-breathe 主路径）。  
 - **采纳中央 Animation Dispatcher**（语义事件 + 加权映射 + 冷却，默认生命感 **≥60 min** 同类最多 1 次）。  
@@ -128,7 +128,8 @@
 | 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案。**勿**与冷启动欢迎同 tick 叠播（`shouldAttemptLateNightOnBoot`） |
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | Idle **轻点阿寅** | `earWiggleHeadTouch` | 响应 | **已接线** | 产品壳 `#idle-yin-tap-anchor`（非 3D Pointer）；**0–1 秒内** CapCut 切入摸头；播完 ~1s CapCut Idle；Focusing 让位场景 X；叠层忙碌**隐藏 hit**（禁止哑点击） |
-| 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议 |
+| Yin's Collections **挥手点播** | `collectionsWaveHello` → `waveHello` | 闲笔 | **已接线** | 珍藏底栏 Play；清供行不列 SKU；不要求先结缘。~1s CapCut Idle。**不**改 PNG、**不**上莲花池。`welcomeBack` / 欢迎池 / 10min 自主挥手仍停接线 |
+| 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议；与上列珍藏点播**不是**同一入口 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
 | 长期里程碑 | `milestoneGlow`：`streak-7` **50/50** 蝴蝶/`parrotEarVisit` · `streak-21`/`100` 琉璃星石；`breathHaloHq` 仍调试 | ritual | **产品路径已接线** | Brief `task-milestone-glow-product-wire` / `task-parrot-ear-visit` |
 | 应用内轻提醒横幅 | `parrotEarVisit`（禅意信使）+ 顶部 `#in-app-reminder-banner` | messenger | **已接线**（2026-08-03） | 横幅首次可见本页播一次；文案仍 `reminder.gentle_waiting` |

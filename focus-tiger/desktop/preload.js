@@ -5,11 +5,41 @@
 
 import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('desktopShell', {
+const companionAllowed = ipcRenderer.sendSync('desktop:companion-allowed') === true;
+
+/** @type {Record<string, unknown>} */
+const desktopShell = {
   isDesktop: true,
   openExternal: (url) => ipcRenderer.invoke('desktop:open-external', url),
   cloudPostJson: (path, body) =>
     ipcRenderer.invoke('desktop:cloud-post', path, body),
   getVersion: () => ipcRenderer.invoke('desktop:version'),
-  quit: () => ipcRenderer.invoke('desktop:quit')
-});
+  quit: () => ipcRenderer.invoke('desktop:quit'),
+  hide: () => ipcRenderer.invoke('desktop:hide'),
+  show: () => ipcRenderer.invoke('desktop:show'),
+  getShellVisibility: () => ipcRenderer.invoke('desktop:shell-visibility-get'),
+  onShellVisibility: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = (_event, payload) => cb(payload);
+    ipcRenderer.on('desktop:shell-visibility', wrapped);
+    return () => ipcRenderer.removeListener('desktop:shell-visibility', wrapped);
+  }
+};
+
+if (companionAllowed) {
+  desktopShell.companion = {
+    ensureReady: () => ipcRenderer.invoke('desktop:companion-ensure'),
+    unload: () => ipcRenderer.invoke('desktop:companion-unload'),
+    getStatus: () => ipcRenderer.invoke('desktop:companion-status'),
+    setFocusing: (focusing) =>
+      ipcRenderer.invoke('desktop:companion-set-focusing', Boolean(focusing)),
+    onStatus: (cb) => {
+      if (typeof cb !== 'function') return () => {};
+      const wrapped = (_event, payload) => cb(payload);
+      ipcRenderer.on('desktop:companion-status', wrapped);
+      return () => ipcRenderer.removeListener('desktop:companion-status', wrapped);
+    }
+  };
+}
+
+contextBridge.exposeInMainWorld('desktopShell', desktopShell);

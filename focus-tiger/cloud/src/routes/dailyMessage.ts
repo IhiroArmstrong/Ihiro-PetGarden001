@@ -1,12 +1,13 @@
-import { json } from "../lib/http";
-import { requireJsonFields } from "../lib/validate";
+import { json } from "../lib/http.ts";
+import { requireJsonFields } from "../lib/validate.ts";
+import { TASTE_LAYER_SCHEMA_VERSION } from "../lib/tasteLayerFreeze.ts";
+import { tasteDailyWisdomPool } from "../lib/tasteDailyWisdomFreeze.ts";
 import type { DailyMessageResponse } from "../types";
 
 const REQUIRED = ["locale", "localDate"] as const;
 
 /**
- * Stub: daily companion message.
- * Required body: { locale, localDate } — provisional; product review pending.
+ * Taste-layer daily-wisdom pool overlay. schemaVersion 1 = freeze 14 ids.
  */
 export async function handleDailyMessage(
 	request: Request,
@@ -16,12 +17,15 @@ export async function handleDailyMessage(
 		return parsed;
 	}
 
-	// parsed holds locale + localDate; real logic TBD after field review.
-	void parsed;
-
+	const locale = parsed.locale === "ja" ? "ja" : "en";
+	const pool = tasteDailyWisdomPool(locale);
+	const first = pool[0];
 	const payload: DailyMessageResponse = {
-		message: "mock",
-		variantSeed: "0",
+		schemaVersion: TASTE_LAYER_SCHEMA_VERSION,
+		locale,
+		pool,
+		message: first?.text ?? "",
+		variantSeed: first?.id ?? "0",
 	};
 	return json(payload);
 }

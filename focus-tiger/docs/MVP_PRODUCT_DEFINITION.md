@@ -110,7 +110,7 @@ Focus Tiger 的回应：
 
 MVP 仍只做“专注陪伴”这一件事，不扩展为待办管理、综合健康、情绪治疗或 AI 教练。
 
-**向阿寅倾诉（2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中，非本回合交付）**：可选的主动倾听入口（Idle ⋯/抽屉）；阿寅为禅意倾听者。技术边界默认 = **本地规则分类 + 人工语料检索**；分类失败走固定兜底，不做模糊打分；倾诉文本不出设备。**Web / PWA 仍禁止**运行时生成式对话。**仅 Electron 桌面**：在安全阀、仪式文案、Confide 语料都未接住时，允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`）。与 Reflection 三问 / `REFLECTION_ECHO` 分轨。Web 详规 `task-briefs/task-confide-to-yin-v1.md`。
+**向阿寅倾诉（2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 规划中，非本回合交付）**：可选的主动倾听入口（Idle ⋯/抽屉）；阿寅为禅意倾听者。技术边界默认 = **本地规则分类 + 人工语料检索**；分类失败走固定兜底，不做模糊打分；倾诉文本不出设备。**Web / PWA / 窄屏仍禁止**运行时生成式对话。**仅 Electron 宽屏（≥480，⋯ 壳）**：在安全阀、仪式文案、Confide 语料都未接住时，允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`）。窄屏抽屉没有本地智能体。与 Reflection 三问 / `REFLECTION_ECHO` 分轨。Web 详规 `task-briefs/task-confide-to-yin-v1.md`。
 
 ---
 
@@ -241,12 +241,13 @@ Focus Tiger 的小老虎是完整、安全的正念伙伴，不会因用户离�
 
 > **两者都要，不二选一。** A = 利他感激（不解锁）；B = 进阶内容解锁（自我提升/审美）。权威细则：`task-briefs/task-tech-direction-v1-shell-monetization.md`。
 >
-> **心智模型（硬）**：仍称 **双轨**——不是「三档并存」。Tea 与进阶解锁是两条轨道；**Sanctuary Lifetime** 与 **Yin Membership** 不是两套不同内容层级，而是 **同一层进阶内容** 的两种付费方式（一次性 vs 订阅），**lifetime ∪ subscription 互相覆盖**，解锁同一套东西。
+> **心智模型（硬）**：仍称 **双轨**——Tea 与进阶解锁是两条轨道，**不是**「三套不同内容层级」。**Sanctuary Lifetime** 与 **Yin Membership** 解锁**同一层**进阶内容（一次性 vs 订阅），**lifetime ∪ subscription 互相覆盖**。  
+> **2026-08-20 补（Checkout 未接）**：**Focus Tiger Pro US$12.99/月**（Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to`，**已锁定** · 将来 **第四卡**）是 **Focus Tiger Base（$6.99 / 应用内 Yin Membership）的升级档**——含同一套 B 轨，外加合格 Electron 上的本地智能体。Lifetime 仍只覆盖 B 轨、不含本地智能体。已买 Lifetime 若要本地智能体：一次性加购 **`companion.addon.lifetime`**（**US$29.99** · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`** · 将来 **第五卡**；**不**走订阅；**不必**再买 Base；**不**进 `isEntitled`）。仅当入口真能打开且 Share 不再只是检索后才接 Checkout。**一旦接线须第四+第五同批**，禁止只加第四卡。现货 Support 仍只三卡。无 Electron 壳则无法用本地 AI。详规：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6。
 
 | 轨 | 对外名 | 心理触发 | 产品角色 | v1 形态（方向） |
 |---|---|---|---|---|
 | **A** | **Buy Yin a Tea** | 利他与感激 | 情境微打赏 + 可选徽章；**不解锁内容** | 一次性 tip；记录 `{ tipped, tipCount, lastTippedAt }` |
-| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 高级情绪动画/场景 + 尊贵徽章 + 进阶仪式 + **节日主题（Seasonal Theme · 时段氛围）** 等（catalog `subscription` 档为正式产品决定；节日见 `task-seasonal-theme-engine-v1.md`） |
+| **B** | **进阶内容解锁** | 自我效能与美学 | 主商业门 | 两种付费方式并存：**Sanctuary Lifetime**（一次买断）∪ **Yin Membership**（订阅）；互覆盖；权益 = 深度音效全库 + 尊贵徽章 + 进阶仪式 + **节日主题（Seasonal Theme · 时段氛围）** 等（**不含**用会员卖角色动作——动作结缘走 C 轨 Yin's Collections） |
 
 **B 付费方式（v1 硬）**：
 
@@ -265,6 +266,8 @@ Focus Tiger 的小老虎是完整、安全的正念伙伴，不会因用户离�
 2. **B · Sanctuary Lifetime**：深度音效 + 高级表现 + 徽章是否有人买单；免费子集是否仍完整；
 3. **B · Yin Membership（订阅）**：是否愿意为同一套进阶内容按期付费；续费/取消/宽限期与到期降级是否可理解、不伤信任；
 4. **克制的外观与环境扩展**：阶段 2；不得用打卡/连续门闩。
+5. **桌面 Focus Tiger Pro（将来第四卡 · Checkout 未接）**：合格机型是否愿意为 **含 B 轨 + 本地智能体** 的 **US$12.99/月** 付费；付款可在 Safari 测；入口未开 / Share 仍检索时不得当「能聊的 AI」卖。接线须与第五卡同批。
+6. **Lifetime AI 加购（将来第五卡 · Checkout 未接）**：已买 Sanctuary Lifetime 的用户是否愿意一次性 **US$29.99** 解锁本地智能体（SKU `companion.addon.lifetime`）；现货不接线；接线须与第四卡同批。
 
 以下内容不应因“可收费”而自动进入路线图：
 

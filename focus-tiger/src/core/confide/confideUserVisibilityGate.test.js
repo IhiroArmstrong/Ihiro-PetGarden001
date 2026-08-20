@@ -79,3 +79,23 @@ test('canOpenConfidePanel: harness OR mount, and idle only', () => {
     false
   );
 });
+
+test('canOpenConfidePanel: desktop companion generation is Idle + safety only', () => {
+  assert.equal(
+    canOpenConfidePanel({
+      search: '',
+      stage: 'idle',
+      companionGeneration: true
+    }),
+    true
+  );
+  assert.equal(
+    canOpenConfidePanel({
+      search: '',
+      stage: 'idle',
+      companionGeneration: true,
+      safetyOk: () => false
+    }),
+    false
+  );
+});
