@@ -42,7 +42,7 @@ export function isDesktopCompanionViewportAllowed(widthPx) {
 }
 
 /**
- * Register generation-capable Confide extras (progress layer, not L2 chat).
+ * Register Confide extras (progress layer; L2 generate uses the same bridge).
  * @param {{ hasBridge?: boolean, widthPx?: number }} [opts]
  * @returns {boolean}
  */
@@ -67,9 +67,11 @@ export function shouldCloseDesktopCompanionGenerateLayer({
 
 /**
  * @param {{ phase?: string, focusing?: boolean } | null | undefined} status
+ * @param {{ sending?: boolean }} [opts]
  * @returns {string}
  */
-export function desktopCompanionStatusCopyKey(status) {
+export function desktopCompanionStatusCopyKey(status, { sending = false } = {}) {
+  if (sending) return 'CONFIDE_DESKTOP_STATUS_GENERATING';
   if (status?.focusing) return 'CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING';
   switch (status?.phase) {
     case 'downloading':

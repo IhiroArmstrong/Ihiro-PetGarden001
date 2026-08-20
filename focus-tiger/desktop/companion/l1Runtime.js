@@ -4,11 +4,13 @@
  */
 
 /**
- * Electron-main L1 companion runtime: Node child + status fan-out.
- * No generate IPC. Focusing callers must unload.
+ * Electron-main L1/L2 companion runtime: Node child + status fan-out + generate.
+ * Focusing callers must unload.
  */
 
 import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { appendFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isCompanionL1Allowed } from './l1Capability.js';
@@ -17,6 +19,12 @@ import {
   createCompanionStatus,
   parseCompanionNdjsonLine
 } from './l1Status.js';
+import {
+  L2_GENERATE_TIMEOUT_MS,
+  L2_MAX_TOKENS,
+  buildCompanionL2Prompt
+} from './l2Persona.js';
+import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -71,10 +79,14 @@ export class CompanionL1Runtime {
     this._queue = Promise.resolve();
     this._readyWaiters = [];
     this._unloadedWaiters = [];
+    /** @type {Map<string, (ev: object) => void>} */
+    this._generateWaiters = new Map();
   }
 
   snapshot() {
-    return { ...this.status, allowed: this.allowed, generateEnabled: false };
+    const generateEnabled =
+      this.allowed && this.status.phase === 'ready' && !this.status.focusing;
+    return { ...this.status, allowed: this.allowed, generateEnabled };
   }
 
   /**
@@ -92,11 +104,23 @@ export class CompanionL1Runtime {
       this._unloadedWaiters = [];
       waiters.forEach((resolve) => resolve(this.snapshot()));
     }
+    if (ev.event === 'generated' || ev.event === 'generate_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._generateWaiters.get(id);
+      if (resolve) {
+        this._generateWaiters.delete(id);
+        resolve(ev);
+      }
+    }
     if (ev.event === 'error') {
       const waiters = [...this._readyWaiters, ...this._unloadedWaiters];
       this._readyWaiters = [];
       this._unloadedWaiters = [];
       waiters.forEach((resolve) => resolve(this.snapshot()));
+      for (const resolve of this._generateWaiters.values()) {
+        resolve({ event: 'generate_error', message: ev.message || 'companion_error' });
+      }
+      this._generateWaiters.clear();
     }
     this._push();
   }
@@ -205,6 +229,81 @@ export class CompanionL1Runtime {
     }
     this._push();
     return { ok: true, ...this.snapshot() };
+  }
+
+  /**
+   * @param {{ text?: string, locale?: string, history?: unknown }} [payload]
+   * @returns {Promise<{ ok: boolean, text?: string, reason?: string }>}
+   */
+  async generate(payload = {}) {
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    if (this.status.focusing) {
+      return { ok: false, reason: 'focusing' };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    if (!text) return { ok: false, reason: 'empty' };
+    const ready = await this.ensureReady();
+    if (!ready.ok || this.status.phase !== 'ready') {
+      return { ok: false, reason: ready.reason || 'not_ready' };
+    }
+    const id = randomUUID();
+    const prompt = buildCompanionL2Prompt({
+      text,
+      locale: typeof payload.locale === 'string' ? payload.locale : 'en',
+      history: Array.isArray(payload.history) ? payload.history : []
+    });
+    this._queue = this._queue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._generateWaiters.set(id, resolve);
+      });
+      this._write(
+        `generate ${JSON.stringify({ id, prompt, maxTokens: L2_MAX_TOKENS })}`
+      );
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(() => resolve({ event: 'timeout' }), L2_GENERATE_TIMEOUT_MS);
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._generateWaiters.delete(id);
+      }
+      return timed;
+    });
+    const ev = await this._queue;
+    const raw = ev?.event === 'generated' ? ev.text : '';
+    const sanitized = sanitizeCompanionL2Reply(raw);
+    const record = {
+      at: new Date().toISOString(),
+      locale: payload.locale || 'en',
+      text,
+      raw: String(raw || '').slice(0, 400),
+      reply: sanitized,
+      ok: Boolean(sanitized),
+      reason: sanitized ? 'ok' : ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned'
+    };
+    await this._appendTurnLog(record);
+    if (!sanitized) return { ok: false, reason: record.reason };
+    return { ok: true, text: sanitized };
+  }
+
+  /**
+   * @param {object} record
+   */
+  async _appendTurnLog(record) {
+    try {
+      const dir = path.join(this.userDataDir, 'companion-l2');
+      await mkdir(dir, { recursive: true });
+      await appendFile(
+        path.join(dir, 'turns.jsonl'),
+        `${JSON.stringify(record)}\n`,
+        'utf8'
+      );
+    } catch {
+      /* local log must not break Share */
+    }
   }
 
   async dispose() {
