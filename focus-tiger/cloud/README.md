@@ -70,7 +70,7 @@ curl -s http://127.0.0.1:8787/health
 | `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
-`daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。产品范围见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
+`daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。**2026-08-20 Cloud 探测**：`https://focus-tiger-cloud.ihiro.workers.dev/api/emotion-weight` 仍返回 `{"variant":"default","weight":1}`（无 `schemaVersion`）。Cloud Agent / 无登录环境 **禁止** `wrangler deploy --temporary`。产品范围与四问见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
 
 ## 品味层接口
 
@@ -94,7 +94,8 @@ cloud/
 
 ## 部署摘要
 
-> **何时允许执行**：见仓库根 `WORKFLOW.md`「生产 Worker Redeploy」（`RULES_INDEX` → `prod-worker-deploy`）。须用户当回合明确说「部署」；合入 `develop` / CI 绿 **不**授权本步。
+> **何时允许执行**：见仓库根 `WORKFLOW.md`「生产 Worker Redeploy」（`RULES_INDEX` → `prod-worker-deploy`）。须用户当回合明确说「部署」；合入 `develop` / CI 绿 **不**授权本步。  
+> Cloud Agent / CI **没有** `CLOUDFLARE_API_TOKEN` 时 **不得** `wrangler deploy --temporary`（会落到旁路帐号，不是 `focus-tiger-cloud`）。须在已 `wrangler login` 的本机、针对 **163 / ihiro** 帐号执行。
 
 ```bash
 # Membership / Focus Tiger Base recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
