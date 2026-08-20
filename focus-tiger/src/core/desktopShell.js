@@ -20,6 +20,13 @@
  *   show?: () => Promise<unknown>,
  *   getShellVisibility?: () => Promise<{ hidden?: boolean, hideReason?: string }>,
  *   onShellVisibility?: (cb: (payload: { hidden?: boolean, hideReason?: string }) => void) => () => void,
+ *   companion?: {
+ *     ensureReady?: () => Promise<unknown>,
+ *     unload?: () => Promise<unknown>,
+ *     getStatus?: () => Promise<unknown>,
+ *     setFocusing?: (focusing: boolean) => Promise<unknown>,
+ *     onStatus?: (cb: (payload: object) => void) => () => void
+ *   }
  * }}
  */
 export function getDesktopShellBridge(globalObj = globalThis) {

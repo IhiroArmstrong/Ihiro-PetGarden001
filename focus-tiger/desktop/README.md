@@ -12,9 +12,9 @@ npm run desktop:dev
 
 Packaged Mac DMG / Windows installer notes live in `docs/task-briefs/task-electron-desktop-scaffold.md`.
 
-## On-device companion (not a product entry yet)
+## On-device companion (L1 panel)
 
-A small local model may later sit behind the wide Idle ⋯ menu on Electron only. It is **not** in the DMG; the first use would download about 0.5 GB to userData.
+A local model sits behind the **wide Idle ⋯ Confide** row on Electron only (not a second menu). It is **not** in the DMG; the first open downloads about 0.5 GB to userData. Replies in L1 still use the quiet Confide lines (L2 generate is not on). Focusing unloads the model.
 
 **Memory note (Mac and Windows):** computers with **8 GB of RAM or less** can see heavy memory pressure if that companion loads. Focus Tiger **hides the entry by default** on those machines. We do not recommend turning it on there.
 

@@ -98,13 +98,15 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 **2026-08-20 纠正**：Pro **包含** Focus Tiger Base（B 轨），不是「只买运行时、不含 Membership」。本地模型测试/入口仍是 Electron；**付款** L1 后可走 Safari（与现货 Membership 相同）。Stripe Pro Price `price_1U6EB1FuIhgJPGLiuciuX1to` 已记文档，Checkout 未接。现货仍三卡。
 
-**同日 · Lifetime 加购（方案 A）**：已买 Sanctuary Lifetime 要本地智能体 → 一次性 **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记），**不**订阅、**不**拆 Ultimate Lifetime。对照场景 Q：现货仍只测三卡，本加购不是第四张现货卡，也不改 `isEntitled` 对 B 轨的互覆盖。非 Lifetime 仍走 Pro $12.99/月（数字已锁定）。Checkout 未接。
+**同日 · Lifetime 加购（方案 A）**：已买 Sanctuary Lifetime 要本地智能体 → 一次性 **`companion.addon.lifetime`**（US$29.99 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记）——将来 **第五卡**，**不**订阅、**不**拆 Ultimate Lifetime。对照场景 Q：现货仍只测三卡；加购不是现货第四卡，也不改 `isEntitled` 对 B 轨的互覆盖。非 Lifetime 仍走 Pro $12.99/月（将来 **第四卡**；数字已锁定）。Checkout 未接。**一旦接线须第四+第五同批。**
 
 拍板后的现货落地：说明文案进 Electron **?** + **Support Yin** 底部 + `desktop/README.md`；Windows 与 Mac 同样写 8GB；低配仍可买现有三卡（B 轨其它权益），**不能**自行打开被隐藏入口。
 
 **Lifetime 已买断 vs 本地智能体（2026-08-20）**
 
 用户问：买了 Sanctuary Lifetime 还要本地智能体怎么办？扫描：场景 Q 的 Lifetime 卡职责是 **B 轨买断**，不是智能体。若把智能体绑进 Lifetime 主 SKU = 白送；若再推销 Base = 和已买断的 B 轨职责重叠。**#359 曾写** L1 后另订 Pro。**同日稍后书面改价（方案 A）**：一次性 **`companion.addon.lifetime`** US$29.99（Price `price_1U6GnXFuIhgJPGLiNlXs0IKe`），**不**订阅、**不必**再买 Base。Safari / QA 5173 测的是 Web，**不能**当成「Web 已有本地 AI」——那是 Electron 主进程窄例外，不是漏做。
+
+**同日晚 · 五产品截图纠正**：用户书面「不止需要第四卡，也需要第五卡」。对照场景 Q：现货仍三卡（Sanctuary / Base / Tea）。Dashboard 另两张（Pro、Add-on）是将来第四、第五卡，Price 已记。Sanctuary「2 prices」、Tea「3 prices」是历史价，**不是**新卡、**不是**漏接的现货。无运行时用户路径，直到另下接线口令。
 
 ---
 
@@ -146,6 +148,8 @@ Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（*
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-20 | L1 口令「开工桌面陪伴 L1」：宽屏 Confide 同一入口 + 下载层；仍不上 L2 生成、不接第四卡 / 第五卡。对照 Confide / 场景 Q / Whisper：无新菜单、无假收费卡、仪式文案不生成 |
+| 2026-08-20 | 用户书面纠正：Checkout 将来是五卡，不只第四卡 Pro，也必须第五卡 `companion.addon.lifetime`。Price 已记。场景 Q 关单仍只测三卡。Dashboard Sanctuary/Tea 多 price 不是新卡。无运行时用户路径 |
 | 2026-08-20 | Lifetime 要本地 AI：同日稍后书面改价为一次性 `companion.addon.lifetime` US$29.99（取代稍早「另订 Pro」）。无 Electron 壳则无本地 AI；QA Safari 5173 ≠ 本地 AI 测试。Pro 含 Base（B 轨）+ 本地智能体（非 Lifetime）。Safari 可测付款、模型仍 Electron；Price ID 已记、Checkout 未接。08-19 晚「互不含 / 只有 Electron 能买」废止 |
 | 2026-08-18 | 正面案例：检索不生成 vs 桌面陪伴——窄例外拍板后再改定位稿；禁止把批准扩大到 Web / 仪式文案。同日补：本地智能体仅宽屏，与原则 A 故意不对等 |
 | 2026-08-17 | 正面案例：托盘 vs 旧 Brief——先摆冲突再等拍板；分析师分层后改文档。同日第二份：两步执行（窗口先、托盘+走神后），禁止绑成一次验收 |

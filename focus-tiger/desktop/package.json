@@ -20,6 +20,7 @@
     "appId": "com.twinsology.focus-tiger",
     "productName": "Focus Tiger",
     "asar": true,
+    "asarUnpack": ["**/*.node", "node_modules/node-llama-cpp/**"],
     "directories": {
       "output": "release"
     },
@@ -28,6 +29,7 @@
       "preload.js",
       "ipcGuard.js",
       "trayPolicy.js",
+      "companion/**/*.js",
       {
         "from": "../dist",
         "to": "dist",

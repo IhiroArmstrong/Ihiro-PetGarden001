@@ -33,6 +33,7 @@ import {
   shouldQuitOnWindowClose,
   trayMenuLabels
 } from './trayPolicy.js';
+import { attachCompanionL1Ipc } from './companion/l1Ipc.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -55,6 +56,8 @@ const DEV_LOAD_URL = 'http://127.0.0.1:5173/?product=1';
 
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
+/** @type {import('./companion/l1Runtime.js').CompanionL1Runtime | null} */
+let companionRuntime = null;
 /** @type {Tray | null} */
 let tray = null;
 let isQuitting = false;
@@ -328,6 +331,12 @@ app.whenReady().then(async () => {
     return;
   }
 
+  companionRuntime = attachCompanionL1Ipc({
+    ipcMain,
+    app,
+    getMainWindow: () => mainWindow
+  });
+
   createTray();
   mainWindow = createMainWindow();
 
@@ -338,6 +347,7 @@ app.whenReady().then(async () => {
 
 app.on('before-quit', () => {
   isQuitting = true;
+  void companionRuntime?.dispose?.();
 });
 
 app.on('window-all-closed', () => {

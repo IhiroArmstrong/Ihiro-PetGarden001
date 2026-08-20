@@ -467,6 +467,21 @@ describe('listSecondaryChromeEntries', () => {
     assert.equal(row?.labelKey, 'CONFIDE_MENU_LABEL');
   });
 
+  it('desktop companionGeneration shows Confide on wide-more only', () => {
+    const wide = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      confideUserVisible: false,
+      companionGeneration: true
+    });
+    assert.equal(wide.some((e) => e.proxy === 'confide'), true);
+    const narrow = listSecondaryChromeEntries('narrow-drawer', {
+      ...allOn,
+      confideUserVisible: false,
+      companionGeneration: true
+    });
+    assert.equal(narrow.some((e) => e.proxy === 'confide'), false);
+  });
+
   it('ritual rows are locked when not entitled', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     const rituals = entries.filter((e) =>
