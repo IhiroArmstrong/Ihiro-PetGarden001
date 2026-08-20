@@ -1,0 +1,2 @@
+# www → apex. Do not add mail/SPF/DKIM records here.
+https://www.twinsology.com/* https://twinsology.com/:splat 301

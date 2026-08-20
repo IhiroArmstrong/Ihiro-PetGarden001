@@ -1,0 +1,8 @@
+{
+  "name": "twinsology-marketing-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test slice0-contract.test.js"
+  }
+}
