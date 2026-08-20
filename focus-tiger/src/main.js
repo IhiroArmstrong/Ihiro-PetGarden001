@@ -249,12 +249,12 @@ import {
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
-import { prefetchTasteLayer } from './core/tasteLayerSync.js';
 import {
-  getTasteDailyWisdomOverlay,
-  getTasteWeightOverlay,
-  resetTasteLayerOverlayForTests
-} from './core/tasteLayerOverlay.js';
+  getTasteLayerStatus,
+  prefetchTasteLayer,
+  resetTasteLayerSyncForTests
+} from './core/tasteLayerSync.js';
+import { resetTasteLayerOverlayForTests } from './core/tasteLayerOverlay.js';
 import { resolveWellnessDayBand } from './character/cloakVariant.js';
 import {
   HonestyCheckInController,
@@ -367,7 +367,8 @@ function showDevLabToast(message, durationMs = 8000) {
 async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
-  void prefetchTasteLayer({ search: location.search, locale: getLocale() });
+  // Taste overlay: do NOT fetch here — races `spritePlayer.preload()` and
+  // Arrival/Honesty 1s CapCut (RB-20260820-L330). Kick after sprites + welcome/idle.
 
   // PWA: network-only SW in production only (no Cache Storage).
   // Electron Step A: never register — custom protocol + extraResources.
@@ -379,11 +380,13 @@ async function init() {
   document.title = t('APP_TITLE');
   const loadingMask = document.getElementById('loading-mask');
   if (loadingMask) loadingMask.textContent = t('LOADING');
+  /** Late-bound so locale change can wait for Arrival/Honesty chrome. */
+  let prefetchTasteLayerForLocale = () => {};
   onLocaleChange(() => {
     document.title = t('APP_TITLE');
     const mask = document.getElementById('loading-mask');
     if (mask) mask.textContent = t('LOADING');
-    void prefetchTasteLayer({ search: location.search, locale: getLocale() });
+    prefetchTasteLayerForLocale();
   });
 
   const app = document.querySelector('#app');
@@ -477,6 +480,13 @@ async function init() {
       focusDurationPicker?.isOpen?.() === true
     );
   }
+  prefetchTasteLayerForLocale = () => {
+    void prefetchTasteLayer({
+      search: location.search,
+      locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+  };
 
   /** Phase 2a/2b 气泡；在下方构造后赋值（tryPlay 闭包晚绑定） */
   let flowerBlowWelcomeBubble =
@@ -1227,13 +1237,17 @@ async function init() {
     });
   }
   window.__tasteLayer = {
-    status: () => ({
-      weights: Boolean(getTasteWeightOverlay()),
-      dailyWisdom: Boolean(getTasteDailyWisdomOverlay()),
-      honestyLongMinMinutes: getTasteWeightOverlay()?.honestyLongMinMinutes ?? null
-    }),
-    prefetch: () => prefetchTasteLayer({ search: location.search, locale: getLocale() }),
-    reset: () => resetTasteLayerOverlayForTests()
+    status: () => getTasteLayerStatus(),
+    prefetch: () =>
+      prefetchTasteLayer({
+        search: location.search,
+        locale: getLocale(),
+        canApply: () => !isSceneAnimOverlayBusy()
+      }),
+    reset: () => {
+      resetTasteLayerSyncForTests();
+      resetTasteLayerOverlayForTests();
+    }
   };
   window.__focusCoins = {
     getBalance: () => focusCoinsStore.getBalance(),
@@ -3168,9 +3182,22 @@ async function init() {
     spriteOccupancy = bootDecision.occupy;
   }
 
+  let tastePrefetchStarted = false;
+  function startTastePrefetchOnce() {
+    if (tastePrefetchStarted) return;
+    tastePrefetchStarted = true;
+    void prefetchTasteLayer({
+      search: location.search,
+      locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+  }
+  window.setTimeout(startTastePrefetchOnce, 12000);
+
   const welcomePlayOptions = {
     onComplete: () => {
       spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      startTastePrefetchOnce();
       const playMessenger =
         pendingParrotMessengerAfterWelcome &&
         inAppReminderBannerUI.isVisible();
@@ -3188,6 +3215,7 @@ async function init() {
   if (bootDecision.sessionDelta === 'enter-dormant') {
     honestyCheckIn.applyDormantSessionDelta('enter-dormant');
     mindfulToast.show(t('WELLNESS_LATE_NIGHT_REST'), { visibleMs: 5200 });
+    startTastePrefetchOnce();
   } else if (bootDecision.occupy === SPRITE_OCCUPANCY.MORNING_WAKE) {
     emotionController.playEmotion('dormantWake', {
       holdPose: true,
@@ -3196,6 +3224,7 @@ async function init() {
         emotionController.playEmotion('idle', {
           crossFadeMs: CAPCUT_DISSOLVE_MS
         });
+        window.setTimeout(startTastePrefetchOnce, CAPCUT_DISSOLVE_MS + 250);
       }
     });
     mindfulToast.show(t('WELLNESS_MORNING_WAKE'), { visibleMs: 5200 });
@@ -3206,17 +3235,20 @@ async function init() {
     emotionController.playEmotion(paymentThanksAtWelcome, {
       onComplete: () => {
         spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        startTastePrefetchOnce();
       }
     });
   } else if (
     bootDecision.occupy === SPRITE_OCCUPANCY.FLOWER ||
     bootDecision.occupy === SPRITE_OCCUPANCY.WELCOME
   ) {
-    tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+    const welcomeStarted = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
       playOptions: welcomePlayOptions
     });
+    if (!welcomeStarted?.play) startTastePrefetchOnce();
   } else {
     emotionController.playEmotion('idle');
+    startTastePrefetchOnce();
   }
   retentionFunnelStore.noteAppOpen();
   syncHonestyIdleEntry();
