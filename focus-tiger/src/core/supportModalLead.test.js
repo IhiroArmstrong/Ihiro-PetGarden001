@@ -9,6 +9,7 @@ import {
   hasRecordedAnyPractice,
   shouldLeadSupportModalWithTea,
   supportModalCardOrder,
+  supportModalFunnelLayout,
   supportModalSuggestedHost,
   SUPPORT_MODAL_CARD_ORDER_DEFAULT,
   SUPPORT_MODAL_CARD_ORDER_TEA_FIRST
@@ -54,5 +55,10 @@ describe('supportModalLead', () => {
     assert.equal(supportModalSuggestedHost(false), 'sanctuary');
     assert.equal(SUPPORT_MODAL_CARD_ORDER_TEA_FIRST[0], 'yin-support-tea-card');
     assert.equal(SUPPORT_MODAL_CARD_ORDER_DEFAULT[0], 'yin-support-sanctuary-card');
+  });
+
+  it('maps tea-first lead to funnel layout dimension', () => {
+    assert.equal(supportModalFunnelLayout(true), 'tea-first');
+    assert.equal(supportModalFunnelLayout(false), 'sanctuary-first');
   });
 });

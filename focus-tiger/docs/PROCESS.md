@@ -58,11 +58,12 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **已 Redeploy** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · 意愿漏斗 layout=tea-first|sanctuary-first · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **已 Redeploy** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **意愿漏斗 layout 维（2026-08-20）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份。Worker ingest 白名单须含 layout；生产未 Redeploy 会丢掉该维。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
 
 - **精灵占用仲裁层（2026-08-20 · `fix/sprite-channel-arbitration`）**：冷启动 / 回前台 / 会话结束 / 付款致谢由 `spriteChannelArbitration` 一处拍板。凌晨 0–6 与 wellness 对齐；付款回跳压过深夜披毯；叠层开着不得进睡。吸收 #341/#347 产品规则，不重开那两单。工作流 **§6.17**。TRACKER 碎片待人工。
@@ -146,7 +147,7 @@
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
-- **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。TRACKER 待人工。
+- **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。**2026-08-20** 载荷含 Support `layout`。TRACKER 待人工。
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
 - **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**opt-in 回传见上行 #262**。
 - **芥子须弥方金章素材（2026-08-12 · #256 已合 tip `5440a53`）**：独立方章替换 tip 复用。
