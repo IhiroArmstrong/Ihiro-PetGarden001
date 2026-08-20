@@ -5,6 +5,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { STATES } from './StateManager.js';
 import {
   LONG_AWAY_WAKE_MS,
@@ -13,7 +16,8 @@ import {
   shouldLateNightCloakOnSessionEnd,
   isLateNightCloakHoldEmotion,
   resolveForegroundReturnAction,
-  resolveSessionEndHoldEmotion
+  resolveSessionEndHoldEmotion,
+  shouldAllowEnterDormantOnForegroundReturn
 } from './companionRestPolicy.js';
 import * as companionRestPolicy from './companionRestPolicy.js';
 
@@ -87,32 +91,36 @@ test('plan A: daytime Idle inactivity cloak helpers are removed', () => {
   );
 });
 
-test('shouldLateNightCloakOnSessionEnd follows local late-night hour', () => {
+/**
+ * 回归锚（2026-08-18）：Reflect 仍是同坐时刻，会话结束不得 cloakSleep。
+ * 深夜休息仍走 Expand A Idle→DORMANT / 2h live，不进未填完的 Reflection。
+ */
+test('session end into Reflection never cloaks (Expand B revoked)', () => {
   assert.equal(
-    shouldLateNightCloakOnSessionEnd(new Date('2026-08-04T23:00:00')),
-    true
-  );
-  assert.equal(
-    shouldLateNightCloakOnSessionEnd(new Date('2026-08-04T22:59:00')),
+    shouldLateNightCloakOnSessionEnd(new Date('2026-08-18T23:10:00')),
     false
   );
   assert.equal(
-    shouldLateNightCloakOnSessionEnd(new Date('2026-08-04T05:00:00')),
+    shouldLateNightCloakOnSessionEnd(new Date('2026-08-18T22:59:00')),
+    false
+  );
+  assert.equal(
+    shouldLateNightCloakOnSessionEnd(new Date('2026-08-18T05:00:00')),
     false
   );
 });
 
-test('resolveSessionEndHoldEmotion: late night cloak vs daytime rise pool', () => {
+test('resolveSessionEndHoldEmotion: rise pool at all hours (no cloak into Reflection)', () => {
   assert.equal(
     resolveSessionEndHoldEmotion({
-      date: new Date('2026-08-04T23:10:00'),
+      date: new Date('2026-08-18T23:10:00'),
       pickDaytimeRiseEmotion: () => 'riseStretchCasual'
     }),
-    'cloakSleep'
+    'riseStretchCasual'
   );
   assert.equal(
     resolveSessionEndHoldEmotion({
-      date: new Date('2026-08-04T14:00:00'),
+      date: new Date('2026-08-18T14:00:00'),
       pickDaytimeRiseEmotion: () => 'teaDrinking'
     }),
     'teaDrinking'
@@ -124,4 +132,40 @@ test('isLateNightCloakHoldEmotion covers classic + starlight cloak sleep keys', 
   assert.equal(isLateNightCloakHoldEmotion('starlightCloakSleep'), true);
   assert.equal(isLateNightCloakHoldEmotion('riseStretchCasual'), false);
   assert.equal(isLateNightCloakHoldEmotion(null), false);
+});
+
+test('shouldAllowEnterDormantOnForegroundReturn: short hide after Welcome stays awake', () => {
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({ hiddenMs: 60_000 }),
+    false,
+    '1 min tab hide must not cloak'
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({ hiddenMs: 0 }),
+    false
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({ hiddenMs: Number.NaN }),
+    false
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({
+      hiddenMs: 2 * 60 * 60 * 1000 - 1
+    }),
+    false
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({
+      hiddenMs: 2 * 60 * 60 * 1000
+    }),
+    true,
+    'tab actually hidden ≥2h may enter DORMANT'
+  );
+});
+
+test('main.js visibility return uses hiddenMs DORMANT gate', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(src, /shouldAllowEnterDormantOnForegroundReturn/);
+  assert.match(src, /allowEnterDormant/);
 });

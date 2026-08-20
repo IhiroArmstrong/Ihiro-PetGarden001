@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · #362 L1 已合 `develop`（`0386b1e`）· 关单能聊 + Checkout 等 L2 后一起测 · L2 待口令「开工桌面陪伴 L2」· Support 将来五卡 Price 已记 · 品味层 **#349 已合**、生产 Worker **未**部署
+**最后更新时间**：2026-08-20（UTC+8） · Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· #362 L1 已合 `develop`（`0386b1e`）· 关单能聊 + Checkout 等 L2 后一起测 · L2 待口令「开工桌面陪伴 L2」· Support 将来五卡 Price 已记 · 品味层 **#349 已合**、生产 Worker **未**部署
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **Welcome 后短切 tab 不得披毯（2026-08-18 · #341）**：冷启动 Welcome / 鹦鹉仍 Idle；visibility 仅当 **hiddenMs ≥2h** 才 `allowEnterDormant`。Reflection 卡用共享底栏净空 + 176px 侧留白，避免日签压三球/地球；慧能/赵州日签改字（仍 14 id）。TRACKER 待人工。
 
 - **会话交接 Session Handoff（2026-08-20）**：口令「生成交接」出结构化摘要。权威：`.cursor/rules/focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
@@ -105,7 +107,7 @@
 
 - **「?」简介卡 colophon + 源码版权头（2026-08-16）**：点「?」卡最末见 Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026。第一方 JS/CSS/HTML 文件头 + `LICENSE`。TRACKER 待人工。
 
-- **Idle 轻点阿寅（2026-08-16）**：首页点阿寅播 `earWiggleHeadTouch`（摸摸自己头顶）；Focusing 仍走 Recover。TRACKER 待人工。
+- **Idle 轻点阿寅（2026-08-16；2026-08-18 修额头无反应）**：首页点阿寅**额头**播 `earWiggleHeadTouch`（摸摸自己头顶）；Focusing 仍走 Recover。TRACKER 待人工（08-18 复测）。工作流根因见 `DEV_WORKFLOW_QUALITY` §6.16。
 - **Buy Yin a Tea Stripe Price US$4.99（2026-08-16）**：卡面低于 Membership **US$6.99/月**。Price ID `price_1U4nanFuIhgJPGLidoTdxobW`。用户本机 `wrangler deploy` 成功：生产 **`focus-tiger-cloud`** Version **`fb568e27-96dd-4fb1-b15c-acbac8dd919b`**（`https://focus-tiger-cloud.ihiro.workers.dev`）。Checkout 应对齐 **US$4.99**。TRACKER 待人工验金额。
 
 - **Focus HUD 无脉冲点、悬停控件出 tip（2026-08-15）**：左上 Calm 卡金环 / 今日同坐条 / 近日同坐环不再画薄荷绿碎点；鼠标停在控件上仍出对应 Hint 文案（与左下「?」同一办法）。音符 / ⋯ 行内 mint 仍保留。TRACKER 待人工。
@@ -184,7 +186,7 @@
 - **Focusing×? tip 叠团专修（2026-08-04 · PR #109）**：合入 `0494dd6`；develop tip 窄屏 Focusing×? **测试 OK**（已并入 KnownRisky #1）。工作流 **§6.13**。
 - **「本周陪伴」今日标记 + 窄屏 toast 避让（2026-08-05）**：PR #120 合入 `develop` tip `dc415d7`（星期缩写/今日描边/Dormant 可见；窄屏底部文案 clearance belt）。Hints tip 几何仍属 #7 再设计。
 - **KnownRisky 验收清单入库（2026-08-04）**：`KNOWN_RISKY_TEST_CHECKLIST.md` 步骤 SSOT；#1 已关单（见上行）。
-- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B** / **2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
+- **星光斗篷 v5 + 经典并存（2026-08-04）**：入库 v5 + 物理倒序苏醒；与旧 `cloak-sleep` **约 50/50**。Wellness 2A 冷启动：深夜 forceDormant / 清晨苏醒仪式 / 白天禁 2h 开场即睡。**Expand A**：仅深夜 Idle→DORMANT（**已关**白天 Idle 无操作披毯 · plan A · PR #108）。**Expand B 会话结束披毯已收回（2026-08-18）**：Reflect 开着不得睡着。**2B** / **2h→DORMANT** 保留。删除未接线调试键 `wakeUp`。睡循环：原始双持 pingpong（经典 034→030 / 星光 067→063 @2fps）。工作流：`DEV_WORKFLOW_QUALITY` §6.11。
 - **FocusHUD 否决「随风浮动」（2026-08-04）**：冷启动毛玻璃隐退保留；**禁止**整卡位移动画，以免与静置 chrome 不统一。见 `DESIGN` FocusHUD / `TEST_TRACKER` 冷启动首屏行。
 - **CapCut 短叠化统一 + 轻完成池撤 blink（2026-08-03 · PR #102 已合）**：关单矩阵内短淡入→1s CapCut + 硬切保持 — **测试 OK**。**范围不含**鹦鹉等 companion oneshot 回落（2026-08-04 仍见闪白 → `DEV_WORKFLOW_QUALITY` **§6.12**）。轻完成池无 `curiousTilt` — 须以后慢慢碰概率。
 - **鹦鹉耳边造访入库 + 场景 A/B（2026-08-03 · PR #96 已合）**：`parrotEarVisit`；场景 A 横幅×信使；场景 B 稀有池 + streak-7 50/50。Welcome 优先顺序曾 OK（§6.10）。**2026-08-04**：刷新后鹦鹉→Idle **闪白** → 根因 **§6.12**；同日晚 tip `0494dd6` 人工回落叠化关单。**后补** `fix/parrot-idle-capcut`：companion oneshot 抗闪契约 + 单测 P3/P4（非重开关单）。
@@ -220,7 +222,7 @@
 - **响应式 Task 3 收口（2026-07-30）**：阶段 0–2 已合 #31/#32/#33；阶段 3 文档 + main 只经 `idleChrome`（无分壳 `setHandlers`）。关单级人工须单独跑 §8 375 + §9 W1–W8（勿与场景 O 混验）。误建空支 `fix/ambient-menu-hint-ux` 已删。
 - **响应式 Task 3 阶段 2（2026-07-30）**：PR #33 已合；`IdleChromeFacade` / `createIdleChromeFacade`。
 - **Onboarding hints · click 圆点 + tier peeked/static/done（2026-07-30）**：Registry `triggerMode`/`tier`；首次 Idle 右上音符薄荷绿圆点（`ambient-soundscape`）；simple peek→静止弱化，操作→done；detailed 进用途简介卡才 done。
-- **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**同日拍板**：回前台且 ≥2h → **继续披毯进睡**（live sync 保留；≠冷启动）。单测 A1b + `dormantIdle`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
+- **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**2026-08-18 修订**：回前台进睡须 **tab 实际 hidden ≥2h**（Welcome 后短切 tab 不得用陈旧戳披毯）；Rise 后仍可按 2h 戳。单测 A1b + `dormantIdle` + `shouldAllowEnterDormantOnForegroundReturn`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
 - **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
@@ -438,7 +440,7 @@
 
 **已知的开放决策 / 待确认事项**：
 
-- **星光斗篷拓展（2026-08-04）**：2A wellness + Expand A（**仅深夜**；白天无操作披毯已关）/ B + 长离 2B；2h→DORMANT 保留互补。
+- **星光斗篷拓展（2026-08-04；B 于 2026-08-18 收回会话结束披毯）**：2A wellness + Expand A（**仅深夜**；白天无操作披毯已关）+ 长离 2B；2h→DORMANT 保留互补。**Reflect 开着不得 cloakSleep。**
 - **语义化版本与稳定发布点（2026-07-30 已拍板）**：SemVer；首稳 `v1.0.0`；稳定版 = `main` annotated tag；开发阶段不切 `release/*`。见 `WORKFLOW.md` / `RULES_INDEX` → `git-semver-release`（非开放项，留此一行防重复开议题）。
 - **v1.0 纯本地 / 云端品味层（2026-07-30 已拍板 · 2026-08-18 收窄改名）**：**v1.0.0** 先发纯本地小发布——核心练习路径**不依赖**联网。旧称「v1.1 云端算法」已收窄为 Backlog「云端品味层」（权重 + 文案池；播放器永远本地）。**支付云 ≠ 品味云**；功能堆多了 **不**自动打 SemVer `v1.1.0`。代码保留 `cloud/` 可扩展；**禁止**把核心门闩绑死在必须成功的云请求上。隐私仍遵守 `MVP_PRODUCT_DEFINITION`「未来云同步须明示同意」。非开放项，留此一行防重复开议题。
 - **场景→动画接线 · Slice A 已合（2026-07-31 / 08-01）**：产品稿 + A 实现已合；**A′ 合十修复 + Slice B 库存消化**见 Backlog。
@@ -1069,7 +1071,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
   - 欢迎池：魔法书 `magicBookReading` **60** / 点头 `nodGreeting` **40**
   - 轻量完成池：`sessionComplete` **70** / 点头 `mindfulAcknowledge` **30** / 鹦鹉 `parrotEarVisit` **8**（≈7%，8/108）
   - Honesty 分档：≤29 分 `mindfulAcknowledge`（点头）；≥30 分 `goldenHaloPalms`（金辉）；`HONESTY_LONG_MIN_MINUTES = 30`
-  - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删（改字另议）
+  - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删。**2026-08-18 改字**：慧能 / 赵州改为可呼吸的观察句，id 未动。
 - **开工**：用户 2026-08-18 书面「L1/L0 可告一段落 → 安排下一步」视为口令「开工云端品味层」。**生产 Worker** 仍须单独「部署」才从旧 mock 换成 v1 表。
 - **禁止**：把播放器迁云；用品味层满足 `isEntitled`。本切片 **未改** `HonestyCheckInController`（分档 overlay 只在 Dispatcher）。L2 兑换 #339 已合且未改时长分档。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。

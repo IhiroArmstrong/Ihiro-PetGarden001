@@ -10,8 +10,9 @@
  * - 零完成 / 新用户 / **冷启动第一幕**默认 Idle（uplifting；不上 Sleeping / 不披毯）
  * - **例外（2026-08-04 wellness 时段）**：本地 ≥23:00 或 <06:00 冷启动可 `forceDormant` 披斗篷；
  *   06:00–10:00 可播苏醒仪式（见 main / cloakVariant.resolveWellnessDayBand）
- * - DORMANT 由「距上次专注结束 ≥ DORMANT_IDLE_HOURS」惰性判定，但**仅**在回前台 / Rise 后等
- *   `syncDormantState({ allowEnterDormant: true })` 路径进入；`onAppReady` 默认禁止进睡
+ * - DORMANT 由「距上次专注结束 ≥ DORMANT_IDLE_HOURS」惰性判定，但**仅**在 Rise 后、或
+ *   回前台且 **tab 实际 hidden ≥ 2h** 时 `syncDormantState({ allowEnterDormant: true })`；
+ *   `onAppReady` 与短切 tab 默认禁止进睡（Welcome 后不得立刻披毯）
  * - 未达标 Rise：记专注结束时刻 → Idle；2h 后再 sync 可进 DORMANT
  * - Honesty 从 DORMANT 唤醒仍走 dormantWake（E1–E7）
  */
@@ -134,7 +135,9 @@ export class HonestyCheckInController {
   /**
    * App 冷启动就绪：第一幕固定 Idle（uplifting）。
    * 即使本地仍有 ≥2h 前的 focus-session-end，也**不**立刻进 DORMANT / 播 cloakSleep。
-   * 回前台 / Rise 后 `syncDormantState()` 仍可进睡（**2026-07-26 拍板**：≥2h 回前台继续披毯）。
+   * Rise 后 `syncDormantState()` 仍可按 2h 戳进睡。
+   * 回前台须 **hiddenMs ≥ 2h** 才 `allowEnterDormant`（2026-08-18：Welcome back 后短切 tab 不得披毯；
+   * 修正 2026-07-26「任意回前台 + 陈旧戳」口径）。
    */
   onAppReady() {
     this.syncDormantState({ allowEnterDormant: false });

@@ -130,7 +130,8 @@ import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
   IDLE_YIN_TAP_EMOTION_KEY,
-  canPlayIdleYinTap
+  canPlayIdleYinTap,
+  wrapPlayEmotionWithIdleYinTapSync
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
@@ -232,10 +233,10 @@ import {
   LATE_NIGHT_FORCE_DORMANT_KEY
 } from './core/sceneAnimationDispatcher.js';
 import {
-  shouldLateNightCloakOnSessionEnd,
   isLateNightCloakHoldEmotion,
   resolveForegroundReturnAction,
   resolveSessionEndHoldEmotion,
+  shouldAllowEnterDormantOnForegroundReturn,
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
@@ -1593,6 +1594,7 @@ async function init() {
       }
     }
   );
+  wrapPlayEmotionWithIdleYinTapSync(emotionController, syncIdleYinTap);
   window.__idleYinTapAnchor = idleYinTapAnchor;
   const openHonestyDuration = honestyCheckIn.openDurationChoices.bind(
     honestyCheckIn
@@ -2660,13 +2662,8 @@ async function init() {
       countRecentPracticeStreak
     );
     const milestoneNode = milestoneGlowStore.peekOffer(projectedStreak);
-    // Expand B：深夜达标 → 披斗篷定格进 Reflection（不做常规庆祝舞；里程碑仍优先）。
-    if (shouldLateNightCloakOnSessionEnd(now()) && !milestoneNode) {
-      dailyCompletionStore.markCelebratedToday();
-      finishCompletedSession();
-      emotionController.playEmotion('cloakSleep', { holdPose: true });
-      return;
-    }
+    // Reflect 仍是同坐：达标走庆祝 / 轻完成 / 里程碑，不得 cloakSleep 进未填的 Reflection。
+    // 深夜休息仍走 Expand A（Idle ≥23 → DORMANT），不在本分支抢戏。
     const teaTipReason = milestoneNode ? 'milestone' : 'session-complete';
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
@@ -2978,9 +2975,9 @@ async function init() {
       honestyCheckIn.onIncompleteSessionEnded();
       resyncSessionChrome();
       companionModePicker.setIdleChromeVisible(true);
-      // Rise：白天加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%）；
-      // 深夜 Expand B：披斗篷定格 → Reflection；关面板后再回 idle。
-      // MoodController 在 IDLE 时不覆盖池内 / 披斗篷 hold 键。
+      // Rise：加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%）hold 进 Reflection；
+      // 关面板后再回 idle。深夜亦同——不得披斗篷睡着问「今天注意到什么」。
+      // MoodController 在 IDLE 时不覆盖池内 hold 键。
       const riseEmotion = resolveSessionEndHoldEmotion({
         date: now(),
         pickDaytimeRiseEmotion: pickRiseInterruptEmotion
@@ -3215,10 +3212,11 @@ async function init() {
   });
 
   // Expand A 白天 Idle 无操作披毯已关（2026-08-04 plan A）。保留：深夜 Idle→DORMANT、
-  // 2h 练完后 live sync、Expand B。无操作计时器删除 → 藏 tab 也不会「后台涨满」误睡。
+  // 2h 练完后 live sync、2B。会话结束进 Reflection 不再披毯（2026-08-18 收回 Expand B）。
+  // 无操作计时器删除 → 藏 tab 也不会「后台涨满」误睡。
 
-  // 回前台：2B 长离苏醒（FOCUSING + hidden≥30min）与 2h→DORMANT（非 Focusing）互补；
-  // 深夜 LATE_NIGHT 仍可 forceDormant（仅 Idle）。
+  // 回前台：2B 长离苏醒（FOCUSING + hidden≥30min）与 2h→DORMANT 互补。
+  // 短切 tab（hiddenMs < 2h）不得用陈旧 session-end 披毯 / 深夜 forceDormant。
   let pageHiddenAtMs = /** @type {number | null} */ (null);
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
@@ -3246,8 +3244,14 @@ async function init() {
         }
       });
     } else {
-      honestyCheckIn.syncDormantState();
-      tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+      // Short tab hide after Welcome must not cloak on a stale 2h session-end.
+      const allowEnterDormant = shouldAllowEnterDormantOnForegroundReturn({
+        hiddenMs
+      });
+      honestyCheckIn.syncDormantState({ allowEnterDormant });
+      if (allowEnterDormant) {
+        tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+      }
     }
     syncInAppReminderBanner();
     void refreshSoftUpdateAvailability();
@@ -3542,6 +3546,7 @@ async function init() {
   }
 
   stateManager.onChange(() => {
+    syncIdleYinTap();
     const companion = getDesktopCompanionBridge();
     if (companion && typeof companion.setFocusing === 'function') {
       void companion.setFocusing(stateManager.state === STATES.FOCUSING);

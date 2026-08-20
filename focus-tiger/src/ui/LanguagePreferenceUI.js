@@ -12,7 +12,7 @@
 import { t, onLocaleChange, getLocale, setLocale } from '../locales/i18n.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 
-const STYLE_ID = 'language-preference-styles-v5';
+const STYLE_ID = 'language-preference-styles-v6';
 
 /** Base 44 → +50% (user: enlarge globe). */
 const FAB_PX = Math.round(44 * 1.5);
@@ -213,26 +213,27 @@ export class LanguagePreferenceUI {
         height: ${FAB_PX}px;
         padding: 0;
         border-radius: 50%;
-        border: 1px solid rgba(139, 115, 85, 0.22);
-        background: rgba(255, 252, 245, 0.72);
+        border: 1.5px solid rgba(139, 115, 85, 0.42);
+        background: rgba(255, 252, 245, 0.92);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        color: rgba(74, 58, 40, 0.82);
+        color: rgba(74, 58, 40, 0.95);
         cursor: pointer;
         box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.7) inset,
-          0 2px 8px rgba(44, 31, 20, 0.08);
+          0 1px 0 rgba(255, 255, 255, 0.85) inset,
+          0 2px 10px rgba(44, 31, 20, 0.12);
         display: flex;
         align-items: center;
         justify-content: center;
-        opacity: 0.92;
+        opacity: 1;
         transition: transform 120ms ease, opacity 160ms ease, background 160ms ease, color 160ms ease;
         pointer-events: auto;
       }
       .language-pref__fab:hover {
         opacity: 1;
-        color: rgba(74, 58, 40, 0.95);
-        background: rgba(255, 252, 245, 0.88);
+        color: rgba(58, 42, 28, 1);
+        background: rgba(255, 252, 245, 0.98);
+        border-color: rgba(139, 115, 85, 0.55);
       }
       .language-pref__fab:active {
         transform: scale(0.96);

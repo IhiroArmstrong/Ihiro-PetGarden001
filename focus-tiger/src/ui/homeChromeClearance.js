@@ -37,8 +37,21 @@ export const NARROW_HOME_SIT_PX = Math.round(72 * 1.155);
 /** Air between Sit ball top and copy bottom edge. */
 export const NARROW_COPY_ABOVE_HOME_GAP_PX = 16;
 
-/** Wide / default bottom toast offset (pre–three-ball era baseline). */
-export const WIDE_COPY_BOTTOM_PX = 104;
+/** Matches wide `#session-start-dock` `bottom: max(36px, …)`. */
+export const WIDE_HOME_CTA_BOTTOM_PX = 36;
+
+/** Matches WideIdleMoreMenu `HOME_SIT_PX` (72 × 1.155). */
+export const WIDE_HOME_SIT_PX = Math.round(72 * 1.155);
+
+/** Air between Sit ball top and copy bottom edge (wide). */
+export const WIDE_COPY_ABOVE_HOME_GAP_PX = 16;
+
+/**
+ * Wide / default bottom toast offset — must clear Sit ball
+ * (36 + ~83 + 16 ≈ 135). Pre–three-ball 104px overlapped the dock.
+ */
+export const WIDE_COPY_BOTTOM_PX =
+  WIDE_HOME_CTA_BOTTOM_PX + WIDE_HOME_SIT_PX + WIDE_COPY_ABOVE_HOME_GAP_PX;
 
 /**
  * @returns {number} CSS px for `bottom` on narrow when home balls are visible
@@ -161,6 +174,6 @@ export const BOTTOM_COPY_CLEARANCE_SURFACES = Object.freeze([
     selector: '#tiger-reflection-moment',
     owner: 'TigerReflectionMoment.js + NarrowIdleShell clearance belt',
     usesSharedClearance: true,
-    notes: 'post-session copy; belt clears home balls on Idle return'
+    notes: 'post-session copy; shared bottom + 176px side inset clears home balls and globe'
   }
 ]);

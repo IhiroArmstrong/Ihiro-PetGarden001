@@ -41,7 +41,9 @@ Recover（原提案称 Return；分心不是失败，是循环里正常的一环
   （视觉氛围层：Re-focus 触发时 DOM 扰动 + 约 20% 亮度下降、5s 平复；文案仍走 REFOCUS_ACKNOWLEDGE）
   ↓
 情绪反馈 + Reflect（= 已实现的 Celebrating/sessionComplete + Reflection Moment；
-                    Reflect 开头回显 Choose 内容，Notice 状态不回显）
+                    Reflect 开头回显 Choose 内容，Notice 状态不回显。
+                    **Reflect 开着 = 仍在同坐**：阿寅保持醒着坐姿 / 完成反馈 hold，
+                    **不得** `cloakSleep` / Sleeping——那是 Expand A Idle 深夜休息或 ≥2h DORMANT，不是问「今天注意到什么」的姿态）
   ↓
 Grow Together（老虎成长 = 用户成长的映射，非独立宠物养成机制）
   （Slice A 已接线：阿寅身旁持久螺旋莲花池，按终身累计分钟只增；

@@ -35,7 +35,7 @@
 | **11** | `src/ui/SanctuaryEnsoMarkChrome.js` | Sanctuary Enso 页面左下角印记（`#yin-sanctuary-enso-mark`）；与 kindness badges 同带；宽屏真左下角、375 抬到三球之上；`pointer-events: none`；Focusing 淡化 |
 | **12** | `src/ui/WeeklyPracticeHeatmap.js` | 周练习热力图簇（含 Reminder 时钟入口） |
 | **12** | `src/ui/ActiveRecoverAnchorUI.js` | Focusing Tiger Anchor（轻触阿寅 / 幽灵提示）；冷却期微光+提示 hidden、**invisible hit 仍在**（FB-01）；`#ui-overlay` 内；须低于 dock Rise(16) 与 toast(18/40) |
-| **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅 `#idle-yin-tap-anchor`（invisible hit；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
+| **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅额头 `#idle-yin-tap-anchor`（invisible hit，`top:30%` 盖额头；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
 | **14** | `src/ui/HonestyCheckInUI.js` | Idle「再补登」文字入口（在 Honesty 面板之下） |
 | **14** | `src/ui/MicroRitualUI.js` | 微仪式 Idle 文字入口（对称 Honesty） |
 | **15** | `src/ui/HonestyCheckInUI.js` | Honesty Check-in 主面板 |

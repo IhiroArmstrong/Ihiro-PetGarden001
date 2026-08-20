@@ -508,6 +508,9 @@ export class PoseManager {
     if (canvas) {
       canvas.style.transition = 'none';
       canvas.style.opacity = String(clamped);
+      // Opacity 0 still receives hits; product 2D mainline must not swallow
+      // forehead taps into placeholder smileSquint (no visible sprite).
+      canvas.style.pointerEvents = clamped === 0 ? 'none' : 'auto';
     }
   }
 

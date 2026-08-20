@@ -8,15 +8,20 @@
  *
  * Complements (does not replace) the existing 2h → DORMANT path:
  * - Idle / non-focus + ≥2h since session end → DORMANT sleep (HonestyCheckInController)
+ *   **except** a short visibility return: hiddenMs must also be ≥2h
+ *   (`shouldAllowEnterDormantOnForegroundReturn`; Welcome-then-sleep bug)
  * - FOCUSING + tab hidden ≥ LONG_AWAY_WAKE_MS → play dormantWake on return (stay focusing)
  * - Late-night Idle → force DORMANT cloak (Expand A night only; **no** daytime Idle inactivity cloak)
- * - Late-night Rise / natural end → cloak hold then Reflection (not rise stretch / celebrate)
+ * - Session end into Reflection stays a companion moment (awake sitting / rise pool /
+ *   celebrate / light complete). **Do not** cloakSleep while Reflection is open.
  *
  * 2026-08-04 plan A: daytime Idle ≥N min no-activity → cloak **removed** (QA long-hang false sleep).
+ * 2026-08-18: Expand B session-end cloak into Reflection **revoked** (CORE_LOOP Reflect
+ * still sitting with the user; cloak/sleep remains Expand A / 2h DORMANT / wellness boot).
  */
 
 import { STATES } from './StateManager.js';
-import { isLateNightHour } from './sceneAnimationDispatcher.js';
+import { DORMANT_IDLE_MS } from '../utils/Constants.js';
 
 /** Tab hidden while focusing before long-away wake on return. */
 export const LONG_AWAY_WAKE_MS = 30 * 60 * 1000;
@@ -58,16 +63,45 @@ export function resolveForegroundReturnAction(opts) {
 }
 
 /**
- * Expand B: late-night session end uses cloak hold instead of rise pool / celebrate.
- * @param {Date} [date]
+ * Visibility→visible may enter DORMANT / late-night cloak only when the tab
+ * was actually hidden ≥ 2h. A stale `focus-session-end` after this-session
+ * Welcome must not put Yin to sleep on a ~1 min tab switch
+ * (2026-08-18 user written: Welcome back → cannot sleep).
+ *
+ * Rise / explicit `syncDormantState()` still uses the 2h session-end stamp.
+ *
+ * @param {object} opts
+ * @param {number} opts.hiddenMs
+ * @param {number} [opts.thresholdMs]
  * @returns {boolean}
  */
-export function shouldLateNightCloakOnSessionEnd(date = new Date()) {
-  return isLateNightHour(date);
+export function shouldAllowEnterDormantOnForegroundReturn({
+  hiddenMs,
+  thresholdMs = DORMANT_IDLE_MS
+} = {}) {
+  if (!Number.isFinite(hiddenMs) || hiddenMs < 0) return false;
+  if (!Number.isFinite(thresholdMs) || thresholdMs <= 0) return false;
+  return hiddenMs >= thresholdMs;
 }
 
 /**
- * Rise / natural-complete hold emotion when Expand B applies.
+ * Whether session-end (Rise / timed complete) should play cloakSleep into Reflection.
+ *
+ * Always false: Reflect is still a companion moment (CORE_LOOP). Sleeping while
+ * "What did you notice today?" is open reads as the whole process ending.
+ * Late-night rest stays Expand A (Idle ≥23 → DORMANT) and 2h live sync.
+ *
+ * `date` kept for call-site compatibility; hour is intentionally unused.
+ * @param {Date} [_date]
+ * @returns {false}
+ */
+export function shouldLateNightCloakOnSessionEnd(_date = new Date()) {
+  return false;
+}
+
+/**
+ * Rise hold emotion into Reflection. Always the daytime rise pool —
+ * never cloakSleep (Expand B session-end cloak revoked 2026-08-18).
  * @param {object} opts
  * @param {Date} [opts.date]
  * @param {() => string} opts.pickDaytimeRiseEmotion
@@ -82,7 +116,8 @@ export function resolveSessionEndHoldEmotion({
 }
 
 /**
- * Hold keys during Reflection after late-night cloak Rise / complete.
+ * Cloak-sleep hold keys (debug / leftover). Session-end no longer sets these
+ * into Reflection; MoodController / onDone still treat them as hold-then-idle.
  * @param {string | null | undefined} key
  * @returns {boolean}
  */

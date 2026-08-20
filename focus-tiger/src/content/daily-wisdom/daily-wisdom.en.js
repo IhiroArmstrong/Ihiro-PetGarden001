@@ -14,6 +14,8 @@
  * - Tone: observational, non-anxious; no FOMO / hard sell.
  * - Taste-layer freeze (2026-08-18): 14 ids; do not expand/delete this pack
  *   as part of the overlay until freeze lifted. SSOT: PROCESS Backlog 云端品味层.
+ * - Copy pass (2026-08-18): keep ids; rewrite opaque koan literals so a
+ *   first-time reader can take a breath of meaning (改字另议).
  */
 
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
@@ -44,7 +46,7 @@ export const DAILY_WISDOM_EN = Object.freeze([
   },
   {
     id: 'zhaozhou-drink-tea',
-    text: 'Go drink tea.',
+    text: 'When the next thought asks what to do — drink tea.',
     attribution: 'Zhaozhou Congshen (Jōshū)'
   },
   {
@@ -54,7 +56,7 @@ export const DAILY_WISDOM_EN = Object.freeze([
   },
   {
     id: 'huineng-not-a-thing',
-    text: 'Originally there is not a single thing.',
+    text: 'Nothing here needs to be held onto.',
     attribution: 'Huineng · Platform Sutra'
   },
   {

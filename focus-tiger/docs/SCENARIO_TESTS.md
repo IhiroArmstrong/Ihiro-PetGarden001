@@ -95,7 +95,8 @@
    *[概率/观感：不纳入冒烟]*
 8. 达到目标时长 → **当日首次计时达标**：Celebrating → 回落坐姿。  
    **勿提前点 Rise**；Honesty 补登**不**占庆祝戳。  
-   *[单元：`triggerSessionCompletionFeedback` + celebrated 戳 → smoke A7–A8；**非** Celebrating 动画 DOM]*
+   **深夜亦同**：Reflect 开着时阿寅须保持醒着同坐（庆祝 / 轻完成 / 回落坐姿），**不得** `cloakSleep` / Sleeping。夜深休息只在 **Idle 无叠层**（Expand A）或 ≥2h 回前台 DORMANT。  
+   *[单元：`triggerSessionCompletionFeedback` + celebrated 戳 → smoke A7–A8；深夜不披毯 → `companionRestPolicy`「session end into Reflection never cloaks」；**非** Celebrating 动画 DOM]*
 9. **同日第二次计时达标**：应播 **SessionComplete**（摆尾），**不应**再播完整 Celebrating。  
    *[单元：同 smoke A7–A8 第二次调用返回 `sessionComplete`；**非**摆尾序列观感]*
 10. **已知缺口**：IncenseGreeting（莲花+金粒子）**业务会话结束尚未自动接线**。
@@ -153,7 +154,8 @@
 2. 不应播放 Celebrating，不应播放 IncenseGreeting。  
    *[单元/控制器：`onIncompleteSessionEnded` 不 `recordCompletion` → smoke C；**非** Celebrating 抑制的 DOM]*
 3. 角色播 **`rise-stretch-casual` pingpong**（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（动画可与面板并行）。  
-   *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；**非** rise-stretch 序列 / 面板淡入观感]*
+   **深夜亦同**：走 Rise 加权池 hold，**不得**披斗篷睡着再问 Reflection。  
+   *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；深夜不披毯 → `companionRestPolicy` session-end 锚；**非** rise-stretch 序列 / 面板淡入观感]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
    *[DOM 用户链路：Choose→Rise→Reflection 顶部回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；下游入参 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
@@ -167,7 +169,7 @@
 > - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → `HonestyBridgeCtaController` Yes→`onAccept` / No→`onDecline` / 同日再 `onHonestyCheckInComplete` → smoke D（**非**桥接按钮 DOM / Yes 后完整 Arrival UI）。  
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
-1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，或 DEV 改 `focus-tiger.focus-session-end.v1` 后刷新 / 回前台（见下方强制手段）。新用户无结束记录**不会**自动睡。
+1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，**且离开标签 ≥2h 再回**（短切约 1 分钟再回 **不应**进睡——见 2026-08-18 Welcome 契约），或 DEV 改 `focus-tiger.focus-session-end.v1` 后 **Rise 结束一场** 再 sync。新用户无结束记录**不会**自动睡。冷启动刷新仍是 Idle + Welcome，不是披毯。
 2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）→ **0–1 秒内**：入口按压 + `#honesty-check-in` 时长三选一面板淡入（10 / 20 / 30+）。
 3. 选时长 10 / 20 / 30+（选 20）→ **0–1 秒内**：该钮下压（`translateY(1px)`）+ 时长面板让位给呼吸引导（倒计时出现）。**不要**报成哑点击。
 4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
@@ -180,7 +182,7 @@
    *[单元/控制器：桥接 Yes/No/同日再出回调 → smoke D；**DOM 真实补登链**（入口→时长→呼吸→桥接 Yes→Arrival / No→Idle）→ `e2e/honesty-bridge-real-path.spec.js`（`?honestyBreathMs=`）；叠层隐藏 Honesty/微仪式入口仍可经 `__honestyBridge` 注入 → e2e `micro-ritual.spec.js` bridge 行。**非**睡姿/Arrival 动画观感。**CI**：注入 hook 须在 `vite preview` 生产构建可用（勿仅 DEV 挂载）]*
 6. DORMANT 清除后仍可再点 Sit 做正式会话，与补登不冲突。Sit → **0–1 秒内**：主钮按压 + Companion / Arrival 按既有场景 A 展开（本步不另造反馈类型）。  
    **已知**：Honesty 路径暂不接 halo / 金光。
-   **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，回前台 sync 可再次进睡。
+   **已知**：Honesty 补登**不**刷新 `focus-session-end`；若距上次真实专注仍 ≥2h，**仅当 tab hidden ≥2h** 回前台 sync 可再次进睡（短切 tab 不得披毯）。
 
 ---
 
@@ -471,15 +473,16 @@
 ## 场景 X2：Idle 轻点阿寅 · 摇耳摸头
 
 > **用户故事**：Kelly 打开产品、阿寅在坐禅——轻点它，它摸摸自己的头顶（已有 `earWiggleHeadTouch`），不是没反应。  
-> **单元**：`idleYinTapGate.test.js` · `IdleYinTapAnchorUI.test.js`。  
-> **DOM**：尚无完整 e2e 命中。  
-> **仍须人工**：正+倒一次 + CapCut 回 Idle；Focusing 不得走摸头。  
-> **0–1 秒内**：点阿寅身 → CapCut 切入摸头序列开始（无 toast）。
+> **单元**：`idleYinTapGate.test.js`（含 `wrapPlayEmotionWithIdleYinTapSync`：oneshot `onComplete` 仍见摸头键时须在回 Idle 后再武装）· `IdleYinTapAnchorUI.test.js`（额头 hit `top≤32%`）。  
+> **DOM**：`e2e/idle-yin-tap.spec.js`（testid + 视口额头点击 → `earWiggleHeadTouch`；Rise→Reflection skip 回流再武装）。  
+> **仍须人工**：正+倒一次 + CapCut 回 Idle 观感；Focusing 不得走摸头。  
+> **0–1 秒内**：点阿寅**额头**（或上半身 hit）→ CapCut 切入摸头序列开始（无 toast）。
 
-1. `?product=1` Idle → 轻点阿寅 → **0–1 秒内**见摸头动画开始。
+1. `?product=1` Idle → 轻点阿寅**额头** → **0–1 秒内**见摸头动画开始。
 2. 播完 ~1s CapCut 回闭目呼吸；再点可再播。
 3. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
 4. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。
+5. **回流**：Rise → Skip Reflection 回 Idle 后再点额头仍须摸头（禁止第一次播完后 hit 永久 hidden）。
 
 ---
 
