@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本 · 意愿漏斗 layout=tea-first|sanctuary-first · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **已 Redeploy** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。Brief `task-companion-mode-copy-coldstart.md`。
-- **意愿漏斗 layout 维（2026-08-20）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份。Worker ingest 白名单须含 layout；生产未 Redeploy 会丢掉该维。Brief `task-support-funnel-layout.md`。
+- **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。Brief `task-companion-mode-copy-coldstart.md`。
+- **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
 
 - **精灵占用仲裁层（2026-08-20 · `fix/sprite-channel-arbitration`）**：冷启动 / 回前台 / 会话结束 / 付款致谢由 `spriteChannelArbitration` 一处拍板。凌晨 0–6 与 wellness 对齐；付款回跳压过深夜披毯；叠层开着不得进睡。吸收 #341/#347 产品规则，不重开那两单。工作流 **§6.17**。TRACKER 碎片待人工。
@@ -148,7 +148,7 @@
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
-- **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。**2026-08-20** 载荷含 Support `layout`。TRACKER 待人工。
+- **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。**≠** Journey Log 联网备份。**2026-08-20** 载荷含 Support `layout`（#378）；现网 Worker **尚未** Redeploy 该白名单。TRACKER 待人工。
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
 - **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**opt-in 回传见上行 #262**。
 - **芥子须弥方金章素材（2026-08-12 · #256 已合 tip `5440a53`）**：独立方章替换 tip 复用。
@@ -410,14 +410,14 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 #336 / L1 #362 已合**。**L2 短生成已接线**（宽屏 fallback）。低配默认不出入口。不锁 0.6B。Checkout 未接。测本地 AI：**Electron 窗口**。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
 - **云端品味层（2026-08-18 · #349 已合）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。四问筛选尺 **2026-08-20 拍板**。生产 **已本机 wrangler deploy**（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`，现网 v1）。下一刀 Quiet Line overlay **未开工**。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
-- **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
+- **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`；layout 维 #378 已合 tip `8535da1`）**：Privacy 明示同意；默认关；**≠** Journey Log 联网备份。现网 Worker **尚未** Redeploy layout 白名单（仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
 - **内容 · Daily Wisdom Phase B 静默印花（A 之后 · 勿漏）**：`feature/daily-wisdom-sanctuary-seal`。
