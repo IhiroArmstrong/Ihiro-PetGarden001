@@ -130,7 +130,8 @@ import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
   IDLE_YIN_TAP_EMOTION_KEY,
-  canPlayIdleYinTap
+  canPlayIdleYinTap,
+  wrapPlayEmotionWithIdleYinTapSync
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
@@ -1593,6 +1594,7 @@ async function init() {
       }
     }
   );
+  wrapPlayEmotionWithIdleYinTapSync(emotionController, syncIdleYinTap);
   window.__idleYinTapAnchor = idleYinTapAnchor;
   const openHonestyDuration = honestyCheckIn.openDurationChoices.bind(
     honestyCheckIn
@@ -3542,6 +3544,7 @@ async function init() {
   }
 
   stateManager.onChange(() => {
+    syncIdleYinTap();
     const companion = getDesktopCompanionBridge();
     if (companion && typeof companion.setFocusing === 'function') {
       void companion.setFocusing(stateManager.state === STATES.FOCUSING);

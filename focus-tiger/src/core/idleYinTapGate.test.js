@@ -7,7 +7,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   IDLE_YIN_TAP_EMOTION_KEY,
-  canPlayIdleYinTap
+  canPlayIdleYinTap,
+  wrapPlayEmotionWithIdleYinTapSync
 } from './idleYinTapGate.js';
 
 describe('canPlayIdleYinTap', () => {
@@ -63,6 +64,53 @@ describe('canPlayIdleYinTap', () => {
         emotionKey: 'idle'
       }),
       false
+    );
+    assert.equal(
+      canPlayIdleYinTap({
+        sessionState: 'IDLE',
+        emotionKey: 'nodGreeting'
+      }),
+      false
+    );
+    assert.equal(
+      canPlayIdleYinTap({
+        sessionState: 'IDLE',
+        emotionKey: 'riseStretchCasual'
+      }),
+      false
+    );
+  });
+});
+
+describe('wrapPlayEmotionWithIdleYinTapSync', () => {
+  it('re-syncs after _finishOneShot onComplete-then-idle so the hit re-arms', () => {
+    /** @type {string} */
+    let key = 'idle';
+    /** @type {string[]} */
+    const seen = [];
+    const emotionController = {
+      playEmotion(emotionKey, options = {}) {
+        key = emotionKey;
+        if (emotionKey === IDLE_YIN_TAP_EMOTION_KEY) {
+          // Match EmotionController._finishOneShot: onComplete while still oneshot,
+          // then playEmotion('idle').
+          options.onComplete?.();
+          this.playEmotion('idle');
+        }
+      }
+    };
+    wrapPlayEmotionWithIdleYinTapSync(emotionController, () => {
+      seen.push(key);
+    });
+    emotionController.playEmotion(IDLE_YIN_TAP_EMOTION_KEY, {
+      onComplete: () => {
+        seen.push(`userComplete:${key}`);
+      }
+    });
+    assert.ok(seen.includes('idle'), `expected idle re-sync, got ${seen.join(',')}`);
+    assert.equal(seen[seen.length - 1], 'idle');
+    assert.ok(
+      canPlayIdleYinTap({ sessionState: 'IDLE', emotionKey: 'idle' })
     );
   });
 });

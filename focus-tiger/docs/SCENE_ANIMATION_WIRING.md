@@ -127,7 +127,7 @@
 | 清晨首次打开 | `yawn-stretch` / `stretchReminder` 加权 | ack | Slice B | 日限 1；本地时区早晨窗 |
 | 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案。**勿**与冷启动欢迎同 tick 叠播（`shouldAttemptLateNightOnBoot`） |
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
-| Idle **轻点阿寅** | `earWiggleHeadTouch` | 响应 | **已接线** | 产品壳 `#idle-yin-tap-anchor`（非 3D Pointer）；**0–1 秒内** CapCut 切入摸头；播完 ~1s CapCut Idle；Focusing 让位场景 X；叠层忙碌**隐藏 hit**（禁止哑点击） |
+| Idle **轻点阿寅额头** | `earWiggleHeadTouch` | 响应 | **已接线**（2026-08-18 修 hit 几何 + 回 Idle 再武装） | 产品壳 `#idle-yin-tap-anchor`（非 3D Pointer）；**0–1 秒内** CapCut 切入摸头；播完 ~1s CapCut Idle 后 hit **须再武装**；Focusing 让位场景 X；叠层忙碌**隐藏 hit**（禁止哑点击）。几何须盖额头（勿只抄 Recover 身躯椭圆） |
 | Yin's Collections **挥手点播** | `collectionsWaveHello` → `waveHello` | 闲笔 | **已接线** | 珍藏底栏 Play；清供行不列 SKU；不要求先结缘。~1s CapCut Idle。**不**改 PNG、**不**上莲花池。`welcomeBack` / 欢迎池 / 10min 自主挥手仍停接线 |
 | 无互动 ~10 min | 70% 静坐 / 30% 挥手（`welcomeBack`） | 自主 | **挥手暂时停接线**；计时触发仍未接 | 以后另议；与上列珍藏点播**不是**同一入口 |
 | 靠近自动点头 | `nodGreeting` | — | **勿接** | 2026-07-19 已拆除；欢迎池可复用素材 |
@@ -248,5 +248,7 @@
 | 2026-08-05 | 冷启动 `magicBookReading` 回 Idle：**硬切 → ~1s CapCut**（用户书面缺叠化） |
 | 2026-08-03 | 跨动画短叠化（180/520ms）统一 `CAPCUT_DISSOLVE_MS` 1s；硬切 `0`（gaze 段间 / Idle 闭目↔睁眼）保持；**魔法书回 Idle 于 2026-08-05 改 CapCut** |
 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（`#idle-yin-tap-anchor`；Focusing 仍走场景 X） |
+| 2026-08-18 | Idle 轻点 **额头**：hit 上移盖住额头；`playEmotion` 包装在回 Idle 后再武装；隐藏 canvas `pointer-events:none`（§6.16） |
 | 2026-08-18 | **云端品味层窄冻结**：Rise 60/25/15 · 欢迎 60/40 · 轻量完成 70/30/8 · Honesty ≤29 nod / ≥30 halo；日签 en/ja 各 14 id。数字不改；无运行时接线 |
+| 2026-08-20 | Yin's Collections 底栏 **挥手点播**：`collectionsWaveHello` → 已入库 `waveHello`；不要求结缘 SKU；`welcomeBack` / 10min 自主挥手仍停接线 |
 

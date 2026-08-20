@@ -231,7 +231,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 |---|---|---|
 | 鼠标靠近 | **默认不反应**（不再自动点头） | **2026-07-19**：用户反馈开局默认态不应出现点头 → 已从 `PointerInteraction` 靠近链路拆除 `nodGreeting`。素材与调试「点头致意」保留；勿再把靠近点头编入 Idle 自主节奏。 |
 | 眼睛跟随鼠标（持续追踪） | — | **已放弃，原因见 `CORE_LOOP.md`「已废弃：EyeTracking 实时瞳孔跟随鼠标」**。不再做实时瞳孔叠层跟随；看向某处改由 Idle 离散张望（gaze-p1～p4）等序列表达。 |
-| 鼠标停留并点击头顶 | **产品壳 Idle**：摇耳摸头 `earWiggleHeadTouch`（Yin 摸摸自己头顶；正+倒一次 → ~1s CapCut Idle）。**3D 检测占位**仍为 `smileSquint`（无正式精灵） | **2026-08-16**：用户拍板 Idle 轻点用已有摸头序列。2D hit `#idle-yin-tap-anchor`；Focusing 让位 Active Recover；叠层忙碌隐藏 hit。勿把靠近自动点头接回来。 |
+| 鼠标停留并点击头顶 | **产品壳 Idle**：摇耳摸头 `earWiggleHeadTouch`（Yin 摸摸自己头顶；正+倒一次 → ~1s CapCut Idle）。**3D 检测占位**仍为 `smileSquint`（无正式精灵） | **2026-08-16**：用户拍板 Idle 轻点用已有摸头序列。**2026-08-18**：2D hit 须盖**额头**（勿只抄 Recover 身躯）；回 Idle 后重新武装（§6.16）。Focusing 让位 Active Recover；叠层忙碌隐藏 hit。勿把靠近自动点头接回来。 |
 | 抚摸头顶（按住左键滑动） | **分阶段递进**（见下表） | 欢呼（`Celebrating`）播放期间摸头**忽略、不排队**。阈值可按手感微调 |
 | 轻点鼻子（Boop） | 眨眼 | 单次点击 |
 | 连续快速点击鼻子 | 单一层级的轻松「无奈」卖萌（如表情 / 「嗷？」文字气泡） | **禁止**随点击次数递增越来越负面/不耐烦；不模拟「惹恼」或情绪升级 |
@@ -684,5 +684,6 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.92 | 2026-08-05 | 入库 `conjureFlowersBlowAway`（变花吹散 · Phase 1 Lab）；Day1/久别策略 C 已拍板；产品冷启动未接线；见 `FLOWER_BLOW_WELCOME_DESIGN.md` |
 | 0.93 | 2026-08-14 | `MindfulAcknowledge` subtype `activeRecoverCooldown` → `nodBowMicro`（FB-01 冷却再点；小于完整 nod-bow；无 toast） |
 | 0.94 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（产品壳 2D hit；圣经「微笑眯眼」仍无正式精灵） |
-| 0.95 | 2026-08-20 | `CollectionsWaveHello`：珍藏底栏点播已入库 `waveHello`；不要求结缘 unlistable SKU；`welcomeBack` 仍停接线 |
+| 0.95 | 2026-08-18 | Idle 轻点须盖额头；回 Idle 后重新武装 hit（§6.16） |
+| 0.96 | 2026-08-20 | `CollectionsWaveHello`：珍藏底栏点播已入库 `waveHello`；不要求结缘 unlistable SKU；`welcomeBack` 仍停接线 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

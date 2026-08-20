@@ -11,6 +11,11 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'IdleYinTapAnchorUI.js'), 'utf8');
+const poseSrc = readFileSync(
+  join(here, '../character/PoseManager.js'),
+  'utf8'
+);
+const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
 
 test('Idle Yin tap is hidden when not armed (no silent click on a visible hit)', () => {
   assert.match(src, /setArmed/);
@@ -18,4 +23,14 @@ test('Idle Yin tap is hidden when not armed (no silent click on a visible hit)',
   assert.match(src, /if \(!this\._armed\) return/);
   assert.match(src, /z-index: 12/);
   assert.match(src, /IDLE_YIN_TAP_ARIA/);
+});
+
+test('Idle Yin tap hit covers the forehead band, not only the Recover body oval', () => {
+  const topMatch = src.match(/IDLE_YIN_TAP_HIT_LAYOUT = Object\.freeze\(\{[\s\S]*?top: '(\d+)%'/);
+  assert.ok(topMatch, 'expected IDLE_YIN_TAP_HIT_LAYOUT.top');
+  const topPct = Number(topMatch[1]);
+  assert.ok(topPct <= 32, `forehead hit top must be ≤32%, got ${topPct}`);
+  assert.doesNotMatch(src, /top: 46%/);
+  assert.match(mainSrc, /wrapPlayEmotionWithIdleYinTapSync\(emotionController/);
+  assert.match(poseSrc, /pointerEvents = clamped === 0 \? 'none'/);
 });
