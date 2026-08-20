@@ -58,11 +58,12 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-20（UTC+8） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。Brief `task-companion-mode-copy-coldstart.md`。
 - **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
 
@@ -409,7 +410,7 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 #336 / L1 #362 已合**。**L2 短生成已接线**（宽屏 fallback）。低配默认不出入口。不锁 0.6B。Checkout 未接。测本地 AI：**Electron 窗口**。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
