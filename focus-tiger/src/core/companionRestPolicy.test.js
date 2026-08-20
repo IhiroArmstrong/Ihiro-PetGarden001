@@ -5,6 +5,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { STATES } from './StateManager.js';
 import {
   LONG_AWAY_WAKE_MS,
@@ -13,7 +16,8 @@ import {
   shouldLateNightCloakOnSessionEnd,
   isLateNightCloakHoldEmotion,
   resolveForegroundReturnAction,
-  resolveSessionEndHoldEmotion
+  resolveSessionEndHoldEmotion,
+  shouldAllowEnterDormantOnForegroundReturn
 } from './companionRestPolicy.js';
 import * as companionRestPolicy from './companionRestPolicy.js';
 
@@ -124,4 +128,40 @@ test('isLateNightCloakHoldEmotion covers classic + starlight cloak sleep keys', 
   assert.equal(isLateNightCloakHoldEmotion('starlightCloakSleep'), true);
   assert.equal(isLateNightCloakHoldEmotion('riseStretchCasual'), false);
   assert.equal(isLateNightCloakHoldEmotion(null), false);
+});
+
+test('shouldAllowEnterDormantOnForegroundReturn: short hide after Welcome stays awake', () => {
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({ hiddenMs: 60_000 }),
+    false,
+    '1 min tab hide must not cloak'
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({ hiddenMs: 0 }),
+    false
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({ hiddenMs: Number.NaN }),
+    false
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({
+      hiddenMs: 2 * 60 * 60 * 1000 - 1
+    }),
+    false
+  );
+  assert.equal(
+    shouldAllowEnterDormantOnForegroundReturn({
+      hiddenMs: 2 * 60 * 60 * 1000
+    }),
+    true,
+    'tab actually hidden ≥2h may enter DORMANT'
+  );
+});
+
+test('main.js visibility return uses hiddenMs DORMANT gate', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(src, /shouldAllowEnterDormantOnForegroundReturn/);
+  assert.match(src, /allowEnterDormant/);
 });

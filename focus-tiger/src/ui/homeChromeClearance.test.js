@@ -26,6 +26,13 @@ describe('homeChromeClearance', () => {
     assert.equal(narrowActionBarCopyClearanceTopPx(), 66);
   });
 
+  it('wide clearance sits above Sit ball band (≥135)', () => {
+    assert.ok(
+      WIDE_COPY_BOTTOM_PX >= 135,
+      `expected ≥135, got ${WIDE_COPY_BOTTOM_PX}`
+    );
+  });
+
   it('homeClearanceBottomCss switches on matchMedia', () => {
     const narrowWin = {
       matchMedia: () => ({ matches: true })

@@ -94,7 +94,7 @@
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；呼吸期已是 smiling，再抽 blink 几乎像没播（2026-08-03 撤出） |
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
-| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` / `nodGreeting` 均 **~1s CapCut** 回 Idle（2026-08-05：魔法书由硬切改叠化）。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台仍检深夜 |
+| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` / `nodGreeting` 均 **~1s CapCut** 回 Idle（2026-08-05：魔法书由硬切改叠化）。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台 **仅 hidden≥2h** 才检深夜 forceDormant（2026-08-18；短切 tab 不得披毯） |
 | Day1 / 久别（≥3 日）吹花鼓励 | `conjureFlowersBlowAway` + 观察式气泡 | ack | **Phase 2b 已接线**（`WELCOME_APP` 门闩） | **策略 C**。同日 XOR `welcome` 日旗。**压过** wellness ≥23:00 斗篷 / 清晨苏醒（2026-08-06）。`?flowerWelcome=0` 可关。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
 
 > **A′ 演进（2026-08-02）**：切语 ja 曾 `palmsTogether` → 现 `bookReading`（入库单程看书 + CapCut）。切语 en：`magicBookReading` 硬切（QA OK）→ `teaDrinking` + CapCut（QA OK）。`palmsTogether` 仍调试可播。
@@ -250,5 +250,6 @@
 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（`#idle-yin-tap-anchor`；Focusing 仍走场景 X） |
 | 2026-08-18 | Idle 轻点 **额头**：hit 上移盖住额头；`playEmotion` 包装在回 Idle 后再武装；隐藏 canvas `pointer-events:none`（§6.16） |
 | 2026-08-18 | **云端品味层窄冻结**：Rise 60/25/15 · 欢迎 60/40 · 轻量完成 70/30/8 · Honesty ≤29 nod / ≥30 halo；日签 en/ja 各 14 id。数字不改；无运行时接线 |
+| 2026-08-18 | 回前台深夜 forceDormant / 2h 披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡） |
 | 2026-08-20 | Yin's Collections 底栏 **挥手点播**：`collectionsWaveHello` → 已入库 `waveHello`；不要求结缘 SKU；`welcomeBack` / 10min 自主挥手仍停接线 |
 
