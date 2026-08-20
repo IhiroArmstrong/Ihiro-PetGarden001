@@ -1,6 +1,6 @@
 # Task Brief · 宣传 / 营销站（Twinsology · Focus Tiger）
 
-> **状态（2026-08-20）**：用户书面拍板 **公开营销域 = 系统里已有的 `twinsology.com`**。本回合只锁域名与边界；**站点尚未开工**。  
+> **状态（2026-08-20）**：公开营销域已拍板 **`twinsology.com`**。**Slice 0 静态页已入库** `marketing-site/`。现网自定义域仍须本机 Cloudflare Pages 绑定（Cloud Agent 无 wrangler 登录）。  
 > **性质**：获客向静态站，**不是**练习壳、不是 PWA、不是 Cloudflare Worker API。  
 > **权威交叉**：`PRODUCT_POSITIONING.md`（品牌 / 宁静型游戏化）· `PRINCIPLES.md`（禁止 FOMO / 硬推销）· `NEWSLETTER_CAPTURE.md`（发信已用同一域）· `ENV_CONFIG.md`（公开 hostname）· `PROCESS.md` Backlog「宣传 / 营销站」。
 
@@ -31,15 +31,17 @@
 | 练习壳 / PWA / Electron | 真正坐禅 | **否**。禁止把 `public/sprites` 重型 App 部署到营销 apex。 |
 | Newsletter 发信 DNS | `hello@` / `restore@` | **共用域名、分记录**。网站记录不得覆盖邮件记录。 |
 
-## Slice 0（下一刀 · 须口令「开工宣传站 Slice 0」）
+## Slice 0（口令「开工宣传站 Slice 0」· 2026-08-20 已入库）
 
-最小可上线页：
+最小可上线页（仓库 `marketing-site/`）：
 
 1. 一屏：Focus Tiger™ + Yin / 阿寅 + Twinsology 署名。  
 2. 两三句定位（从 `PRODUCT_POSITIONING` 品牌定义来，禁止新编硬推销）。  
-3. 联系：`hello@twinsology.com`（mailto 即可；**不必**本刀接 Newsletter API）。  
-4. 可选「Open the practice」：**不要**把 `*.workers.dev` 当对外主 CTA（观感像半成品）。练习入口等有更干净的产品 URL（例如日后 `app.twinsology.com`）再挂。本刀没有产品自定义域 → CTA 以故事 + 邮箱为主。  
-5. 仓库落点建议：独立目录 `marketing-site/`（kebab-case ASCII），**不要**塞进 `focus-tiger/src`。
+3. 联系：`hello@twinsology.com`（mailto；**未**接 Newsletter API）。  
+4. **无**「Open the practice」指向 `*.workers.dev`。  
+5. 仓库落点：独立目录 `marketing-site/`（kebab-case ASCII），**不**塞进 `focus-tiger/src`。
+
+现网：Pages 项目 + 自定义域须你在 **ihiro Cloudflare** 控制台绑定。**禁止**改 MX / SPF / DKIM。契约单测：`node --test marketing-site/slice0-contract.test.js`。
 
 ## 明确不做（本拍板 / Slice 0）
 
@@ -51,10 +53,10 @@
 
 ## 排期口令
 
-- **已完成**：域名拍板已写入本 Brief + `PROCESS.md` + `ENV_CONFIG.md`。  
-- **下一步**：新开 Cloud / 本机会话，口令 **「开工宣传站 Slice 0」**（先只读本 Brief，再 Pages + DNS，勿动邮件记录）。  
+- **已完成**：域名拍板；**Slice 0 静态页**（`marketing-site/`）。  
+- **下一步（须本机 Cloudflare）**：Pages deploy + 绑定 `twinsology.com` / `www`（见 `marketing-site/README.md`）。口令可写 **「绑定宣传站域名」**。  
 - 应用内 Join our community 改链、公网留资表单、`app.twinsology.com` = 更后面的独立口令。
 
-## 冲突扫描（文档锁域名时）
+## 冲突扫描（Slice 0）
 
-对照 Stay in touch / Join our community / 练习壳：强度不高于既有路径；语气跟定位稿；职责不替代练习或发信。**无冲突**。接线那一刀须重扫。
+对照 Stay in touch / Join our community / 练习壳：本站是公网门面，mailto 不替代应用内留资；不改 `communityLink.js`；不把练习壳挂到 apex。语气用定位稿英文，禁止 FOMO。**无冲突**。接线 Join our community 那一刀须重扫。

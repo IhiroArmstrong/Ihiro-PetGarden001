@@ -272,7 +272,7 @@ Focus Tiger 不采用「用户专注 → 小老虎更健康；用户离开 → �
 
 Focus Tiger™ is a product of Twinsology.
 
-**公开营销域（2026-08-20 拍板）**：`https://twinsology.com`（站点尚未开工；练习壳不因本条搬家）。详见 `task-briefs/task-marketing-site.md`。
+**公开营销域（2026-08-20 拍板）**：`https://twinsology.com`（Slice 0 静态页在 `marketing-site/`；现网 DNS 未绑；练习壳不因本条搬家）。详见 `task-briefs/task-marketing-site.md`。
 
 Created by Ihiro Armstrong Hao Hoh / Twinsology.
 

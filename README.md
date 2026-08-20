@@ -2,7 +2,7 @@
 
 Calm focus companion — mindfulness partner, not a traditional virtual pet.
 
-**Product code lives in [`focus-tiger/`](./focus-tiger/).**
+**Product code lives in [`focus-tiger/`](./focus-tiger/).** Public marketing page (Slice 0) lives in [`marketing-site/`](./marketing-site/) for `twinsology.com` — it is not the practice app.
 
 ## For people trying the app
 
