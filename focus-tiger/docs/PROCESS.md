@@ -92,7 +92,7 @@
 
 - **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
 
-- **云端品味层 schemaVersion 1 可选接线（2026-08-18 · #349 已合 tip `a0fed0b`）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。`?tasteLayer=0` 关拉取。**2026-08-20**：用户书面同意生产「部署」；**同日本机 wrangler deploy 成功** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`；现网 `POST /api/emotion-weight` 含 `schemaVersion: 1`。Safari `__tasteLayer.status()` 已见 true。**同日 A/B**：`?tasteLayer=0` Arrival 叠化正常；overlay 开着闪 → TRACKER 品味层行 **有问题** `RB-20260820-L330`。Quiet Line overlay **未开工**。
+- **云端品味层 schemaVersion 1 可选接线（2026-08-18 · #349 已合 tip `a0fed0b`）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。`?tasteLayer=0` 关拉取。**2026-08-20**：用户书面同意生产「部署」；**同日本机 wrangler deploy 成功** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`；现网 `POST /api/emotion-weight` 含 `schemaVersion: 1`。Safari `__tasteLayer.status()` 已见 true。**同日 A/B**：`?tasteLayer=0` Arrival 叠化正常；overlay 开着闪 → TRACKER 品味层行 `RB-20260820-L330`。**同日开修**：拉取改到精灵预加载 + 欢迎/Idle 之后；冻结表相同不另存副本；Arrival/Honesty 开着不抢主线程 JSON。Quiet Line overlay **未开工**。
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
@@ -1076,7 +1076,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 > **历史（2026-07-30）**：曾写「v1.0.0 纯本地小发布，再跟进 v1.1 云端算法」。该外号易与 SemVer / 支付云搅在一起——**废止用 v1.1 指本条**。首个对外稳定 tag 仍是纯本地核心 **`v1.0.0`**；本条是 1.0 之后的**可选增强**，不抢 `v1.1.0` 号。  
 > **相邻**：练习记忆云备份（防丢失）· Stripe/OTP（支付云）· 同坐点服务端账本（L2 可花点之后才评估防刷）——**三条时钟，禁止绑成一条队**。
 
-- **现在（可选接线）**：有 Cloud base 时前端非阻塞拉 `POST /api/emotion-weight` / `POST /api/daily-message`；响应须 `schemaVersion: 1` 且池键/日签 id 与冻结表一致，否则静默本地。旧生产 mock（无 schemaVersion）→ 本地。核心 Sit / Rise / Idle **禁止**硬依赖云请求。`?tasteLayer=0` 关拉取。
+- **现在（可选接线）**：有 Cloud base 时前端非阻塞拉 `POST /api/emotion-weight` / `POST /api/daily-message`（**须等精灵预加载 + 欢迎/Idle 槽**，禁止与 `spritePlayer.preload` 抢带宽）；响应须 `schemaVersion: 1` 且池键/日签 id 与冻结表一致，否则静默本地。与本地冻结表数字/日签正文相同则 **只记 cloud-ok、不另存一份 overlay 副本**（防 overlay 开着把 Arrival/Honesty 1s 叠化闪掉，`RB-20260820-L330`）。旧生产 mock（无 schemaVersion）→ 本地。核心 Sit / Rise / Idle **禁止**硬依赖云请求。`?tasteLayer=0` 关拉取。
 - **范围**：可选客户端适配层；失败 / 超时 / **不认识的 `schemaVersion`** → 干净降级本地表。CORS、鉴权、隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
 - **窄冻结（开工门闩 · 2026-08-18 已拍板）**：本地降级表 = **现在这套**，近一周不改数字。不是全量 QA；体感锚：Idle 不闪、Rise 再选、Honesty 关了再开。
   - Rise 中断池：伸懒腰 `riseStretchCasual` **60** / 茶 `teaDrinking` **25** / 书 `bookReading` **15**
