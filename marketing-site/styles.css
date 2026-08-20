@@ -1,0 +1,164 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
+ * Slice 0 marketing page. Tokens follow the product shell wash / cushion
+ * orange — not a copy of the practice app chrome.
+ */
+
+:root {
+  --color-bg: #e8e6e1;
+  --color-ink: #2c1f14;
+  --color-ink-muted: rgba(74, 58, 40, 0.78);
+  --color-accent: #b5623a;
+  --color-cta-top: #c47a4e;
+  --color-cta-bottom: #8f4a2c;
+  --color-cta-edge: #7a3f24;
+  --color-gold: #f0c36a;
+  --font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman",
+    "Noto Serif SC", serif;
+  --ease-calm: cubic-bezier(0.33, 0.1, 0.25, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-family);
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.page {
+  width: min(36rem, 100%);
+  padding: clamp(2rem, 8vw, 4.5rem) clamp(1.25rem, 6vw, 2.5rem) 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.studio {
+  margin: 0;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--color-ink-muted);
+}
+
+.enso {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 1.75rem 0 1.5rem;
+  border-radius: 50%;
+  border: 2px solid rgba(181, 98, 58, 0.55);
+  border-right-color: transparent;
+  transform: rotate(-18deg);
+  animation: breathe 8s var(--ease-calm) infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: rotate(-18deg) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: rotate(-18deg) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enso {
+    animation: none;
+    opacity: 0.65;
+  }
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.85rem, 6vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.companion {
+  margin: 0.45rem 0 0;
+  font-size: 1.05rem;
+  color: var(--color-ink-muted);
+}
+
+.lead {
+  margin: 1.6rem 0 0;
+  max-width: 32rem;
+  line-height: 1.65;
+  font-size: 1.05rem;
+}
+
+.quiet {
+  margin: 1rem 0 0;
+  max-width: 28rem;
+  line-height: 1.55;
+  font-size: 0.95rem;
+  color: var(--color-ink-muted);
+}
+
+.hello {
+  margin-top: 2rem;
+  display: inline-block;
+  padding: 0.72rem 1.45rem 0.78rem;
+  border-radius: 999px;
+  color: #fffaf4;
+  text-decoration: none;
+  font-size: 1rem;
+  background: linear-gradient(180deg, var(--color-cta-top), var(--color-cta-bottom));
+  box-shadow: 0 1px 0 var(--color-cta-edge), 0 8px 18px rgba(44, 31, 20, 0.12);
+  transition: transform 180ms var(--ease-calm), filter 180ms var(--ease-calm);
+}
+
+.hello:hover,
+.hello:focus-visible {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.hello:active {
+  transform: translateY(1px);
+  filter: brightness(0.97);
+}
+
+.mail-hint {
+  margin: 0.85rem 0 0;
+  font-size: 0.9rem;
+}
+
+.mail-hint a {
+  color: var(--color-accent);
+}
+
+.colophon {
+  margin-top: auto;
+  padding-top: 3rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--color-ink-muted);
+}
+
+.colophon p {
+  margin: 0.15rem 0;
+}

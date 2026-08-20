@@ -1,0 +1,3 @@
+# cursor/marketing-site-domain-afd0 · 2026-08-20
+
+| 宣传 / 营销站 Slice 0（twinsology.com 静态首页） | UI可见 | 待人工测试 | **主路径**：打开仓库 `marketing-site/index.html`（或 `python3 -m http.server 4173 --directory marketing-site` → `http://127.0.0.1:4173/`）。须见 Focus Tiger™、Yin / 阿寅、Twinsology、定位段、colophon。点 **Write to Yin** → **0–1 秒内**系统邮件窗或 mailto 提示（`hello@twinsology.com`）。**禁止**出现 `workers.dev` / 练习壳。**回流**：从 404 页「Back to Focus Tiger」回首页。**375**：Safari 响应式 375，正文不横溢、CTA 可点。现网 `https://twinsology.com` **尚未**绑 Pages（本机 Cloudflare 另口令）。自动化：`node --test marketing-site/slice0-contract.test.js`。 | — | — | — | `marketing-site/index.html` · 本地 `http://127.0.0.1:4173/` | 2026-08-20 |
