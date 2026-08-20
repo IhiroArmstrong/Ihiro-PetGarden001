@@ -4,7 +4,7 @@
  */
 
 /**
- * Pure L1 companion status. generateEnabled stays false until L2.
+ * Pure L1 companion status. generateEnabled is a snapshot overlay in runtime.
  */
 
 export const COMPANION_L1_PHASES = Object.freeze([
@@ -81,6 +81,9 @@ export function applyCompanionEvent(status, ev) {
     next.phase = 'error';
     next.error = ev && ev.message ? String(ev.message) : 'companion_error';
     return next;
+  }
+  if (event === 'generated' || event === 'generate_error') {
+    return status;
   }
   return next;
 }

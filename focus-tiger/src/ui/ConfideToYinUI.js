@@ -4,8 +4,8 @@
  */
 
 /**
- * Confide to Yin · light Idle panel (retrieve-not-generate).
- * Opens from ⋯ / drawer when mount enabled, or via ?confide=1 harness.
+ * Confide to Yin · light Idle panel.
+ * Web / narrow: retrieve-not-generate. Electron wide L2: fallback may generate.
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
@@ -13,6 +13,7 @@ import { canSubmitConfideText } from '../core/confide/confideClassify.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
+import { shouldUseDesktopCompanionGenerate } from '../core/desktopCompanionL2Route.js';
 import { formatLocalDateYmd } from './reflectionEchoCopy.js';
 import {
   GLASS_BLUR_CSS,
@@ -50,6 +51,9 @@ export class ConfideToYinUI {
     this._unsubCompanion = null;
     this._generateLayerOpen = false;
     this._companionStatus = null;
+    this._sending = false;
+    this._sendEpoch = 0;
+    this._l2Turns = [];
 
     this.root = document.createElement('div');
     this.root.id = 'confide-to-yin-card';
@@ -158,6 +162,9 @@ export class ConfideToYinUI {
     this.replyEl.hidden = true;
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
+    this._l2Turns = [];
+    this._sendEpoch += 1;
+    this._sending = false;
     this._syncSendEnabled();
     this._syncGenerateLayerForViewport({ ensure: true });
     requestAnimationFrame(() => {
@@ -169,6 +176,9 @@ export class ConfideToYinUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._sendEpoch += 1;
+    this._sending = false;
+    this._l2Turns = [];
     this.hideGenerateLayer({ unload: false });
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -247,10 +257,16 @@ export class ConfideToYinUI {
 
   _renderDesktopStatus() {
     if (!this._generateLayerOpen) return;
-    const key = desktopCompanionStatusCopyKey(this._companionStatus);
+    const key = desktopCompanionStatusCopyKey(this._companionStatus, {
+      sending: this._sending
+    });
     this.statusEl.textContent = t(key);
     const percent = desktopCompanionDownloadPercent(this._companionStatus);
-    if (percent == null || this._companionStatus?.phase !== 'downloading') {
+    if (
+      this._sending ||
+      percent == null ||
+      this._companionStatus?.phase !== 'downloading'
+    ) {
       this.progressEl.hidden = true;
       return;
     }
@@ -279,11 +295,35 @@ export class ConfideToYinUI {
 
   _syncSendEnabled() {
     const ok = canSubmitConfideText(this.inputEl.value);
-    this.sendBtn.disabled = !ok;
+    this.sendBtn.disabled = this._sending || !ok;
+  }
+
+  /**
+   * @param {{ route: string, line?: { id?: string }, text: string, source: string }} shown
+   * @param {string} userText
+   */
+  _showReply(shown, userText) {
+    this.replyEl.textContent = shown.text;
+    this.replyEl.hidden = false;
+    this.replyEl.dataset.route = shown.route;
+    this.replyEl.dataset.lineId = shown.line?.id || '';
+    this.replyEl.dataset.source = shown.source;
+    this._l2Turns.push({ role: 'user', text: userText });
+    this._l2Turns.push({ role: 'yin', text: shown.text });
+    if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
+    this.inputEl.value = '';
+    this._syncSendEnabled();
+    this.handlers.onReplied?.({
+      route: shown.route,
+      lineId: shown.line?.id || '',
+      source: shown.source
+    });
   }
 
   _onSend() {
+    if (this._sending) return;
     const text = this.inputEl.value;
+    if (!canSubmitConfideText(text)) return;
     const hit = resolveConfideReply({
       text,
       localDate: formatLocalDateYmd(),
@@ -291,15 +331,63 @@ export class ConfideToYinUI {
       excludeIds: this._sessionExclude
     });
     if (!hit) return;
-    this._sessionExclude.add(hit.line.id);
     const locale = getLocale();
-    this.replyEl.textContent = confideLineText(hit.line, locale);
-    this.replyEl.hidden = false;
-    this.replyEl.dataset.route = hit.route;
-    this.replyEl.dataset.lineId = hit.line.id;
-    this.inputEl.value = '';
-    this._syncSendEnabled();
-    this.handlers.onReplied?.({ route: hit.route, lineId: hit.line.id });
+    const corpusText = confideLineText(hit.line, locale);
+    const wantGenerate = shouldUseDesktopCompanionGenerate({
+      route: hit.route,
+      generateEnabled: Boolean(this._companionStatus?.generateEnabled),
+      generateLayerOpen: this._generateLayerOpen,
+      hasGenerateFn: typeof this._companion?.generate === 'function'
+    });
+    if (!wantGenerate) {
+      this._sessionExclude.add(hit.line.id);
+      this._showReply(
+        { route: hit.route, line: hit.line, text: corpusText, source: 'corpus' },
+        text
+      );
+      return;
+    }
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._renderDesktopStatus();
+    const history = this._l2Turns.slice(-8);
+    void Promise.resolve(
+      this._companion.generate({ text, locale, history })
+    )
+      .then((result) => {
+        if (!this._open || epoch !== this._sendEpoch) return;
+        if (result?.ok && result.text) {
+          this._showReply(
+            {
+              route: 'generate',
+              text: result.text,
+              source: 'generate'
+            },
+            text
+          );
+          return;
+        }
+        this._sessionExclude.add(hit.line.id);
+        this._showReply(
+          { route: hit.route, line: hit.line, text: corpusText, source: 'corpus' },
+          text
+        );
+      })
+      .catch(() => {
+        if (!this._open || epoch !== this._sendEpoch) return;
+        this._sessionExclude.add(hit.line.id);
+        this._showReply(
+          { route: hit.line ? hit.route : 'fallback', line: hit.line, text: corpusText, source: 'corpus' },
+          text
+        );
+      })
+      .finally(() => {
+        if (epoch !== this._sendEpoch) return;
+        this._sending = false;
+        this._syncSendEnabled();
+        this._renderDesktopStatus();
+      });
   }
 
   _injectStyles() {
@@ -396,6 +484,9 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.SAFETY_REDIRECT}'] {
         border-left: 3px solid #8a6a4a;
+      }
+      .confide-to-yin__reply[data-source='generate'] {
+        border-left: 3px solid #c4b49a;
       }
       .confide-to-yin__actions {
         display: flex;
