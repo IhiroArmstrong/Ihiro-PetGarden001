@@ -113,6 +113,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 被动提醒占共享额度；Offline/Flow 抑制离开类 |
 | `triggerActiveRecover` / Tiger Anchor | `MindfulReminderController` + `ActiveRecoverAnchorUI` | 主动 Recover：**不**占额度；180s 冷却；Focusing only。冷却再点 → `acknowledgeActiveRecoverCooldownTap`（`nodBowMicro`，无 toast） |
+| Idle 轻点阿寅 / `#idle-yin-tap-anchor` | `IdleYinTapAnchorUI` + `canPlayIdleYinTap`；`main.js` `wrapPlayEmotionWithIdleYinTapSync` | Idle only；点**额头** → `earWiggleHeadTouch`。武装须在 `playEmotion('idle')` 之后（`_finishOneShot` 先 onComplete 后 idle）。Focusing 让位 Recover。隐藏 3D canvas 须 `pointer-events:none`（§6.16） |
 | `nodGreeting` | 靠近自动已拆；**欢迎池试验 40%**（与 magicBookReading） | 勿接回默认靠近 |
 | `magicBookReading` | 开场欢迎池试验（60%） | 已烘焙 pingpong；**硬切** Idle |
 | `welcomeBack` | **停接线**（2026-08-02）：不播新旧挥手；键保留 | 素材仍入库；场景以后另议 |
