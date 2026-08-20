@@ -323,7 +323,7 @@
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
 > **Electron 步骤 A**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走；失败复用现有卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC`），不为壳另做 UI。付完回 App 走 Restore / OTP。Web 仍可 `location.assign`。  
-> **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。**Focus Tiger Pro US$12.99/月**（将来 **第四卡**）与 **AI Companion Add-on US$29.99 一次**（将来 **第五卡** · `companion.addon.lifetime`）：Stripe 已建、Price 已记、Checkout 未接。**2026-08-20 用户书面**：等 L2 真能聊再接线，两卡同批；关单级「能聊」与 Checkout 一起测。Dashboard 上 Sanctuary「2 prices」、Tea「3 prices」是历史价，不是新卡。**当前验收仍只测三卡**。Pro 将含 Base（B 轨）；本地智能体仍只 Electron。第五卡只给已买 Lifetime 的用户。Safari 测的是 Web 壳/付款，不是 llama。
+> **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。**Focus Tiger Pro / AI Companion Add-on**：Stripe 已建、Checkout 未接。**L2 短生成**仅 Electron 宽屏 fallback（内部测）；**当前场景 Q 验收仍只测三卡**。Safari 测的是 Web 壳/付款，不是 llama。
 
 ### Q1 · Support Modal（统一入口）
 
