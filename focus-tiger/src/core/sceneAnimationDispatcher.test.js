@@ -24,7 +24,8 @@ import {
   resolveSceneAnimation,
   isCoolingDown,
   markCooldown,
-  readDailySceneAnimState
+  readDailySceneAnimState,
+  isLateNightHour
 } from './sceneAnimationDispatcher.js';
 import {
   emotionKeyForLocaleGreeting,
@@ -199,6 +200,22 @@ test('cold-start: late night deferred when welcome plays; allowed when welcome s
     sessionState: 'IDLE',
     storage: storageQuota,
     now: night,
+    random: () => 0
+  });
+  assert.equal(late.play, true);
+  assert.equal(late.emotionKey, 'forceDormant');
+});
+
+test('isLateNightHour includes 00:00–05:59 (aligned with wellness)', () => {
+  const twoAm = () => new Date(2026, 7, 20, 2, 0);
+  assert.equal(isLateNightHour(twoAm()), true);
+  const storage = memoryStorage();
+  disableFlowerWelcome(storage);
+  const late = resolveSceneAnimation({
+    event: SCENE_ANIM_EVENTS.LATE_NIGHT,
+    sessionState: 'IDLE',
+    storage,
+    now: twoAm,
     random: () => 0
   });
   assert.equal(late.play, true);

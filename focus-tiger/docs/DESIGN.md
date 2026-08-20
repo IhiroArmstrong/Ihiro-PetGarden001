@@ -618,7 +618,7 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 | 姿态 | 触发信号 | 说明 |
 |---|---|---|
 | IDLE_CLOSED_EYES | 默认态 / 当日尚未产生显著专注数据 | 日常展示,叠加旋转+呼吸+可能的金粒子(专注一般时) |
-| SLEEPING | 距最近一次专注结束 ≥ `DORMANT_IDLE_HOURS`（默认 2h，滚动窗口）且经 **live** `syncDormantState`（**Rise 后**，或回前台且 **tab hidden ≥2h**）进入 DORMANT；播 `cloak-sleep` 过渡。**冷启动 `onAppReady` 与短切 tab 不进睡**（第一幕 / Welcome 后仍 Idle） | 叠加打呼噜 ZZZ 图标漂浮效果,rotation.x 微倾 |
+| SLEEPING | 距最近一次专注结束 ≥ `DORMANT_IDLE_HOURS`（默认 2h，滚动窗口）且经 **live** 仲裁（**Rise 后**，或回前台且 **tab hidden ≥2h**，或本地深夜 ≥23 / &lt;06）进入 DORMANT；播 `cloak-sleep` 过渡。**白天冷启动 `onAppReady` 与短切 tab 不进睡**。付款致谢压过深夜披毯。禁止在 Reflection 开着时进睡 | 叠加打呼噜 ZZZ 图标漂浮效果,rotation.x 微倾 |
 | IDLE_SMILING | 当日已触发过一次 CELEBRATING | 持续展示至当天结束,次日重置回 IDLE_CLOSED_EYES |
 | CELEBRATING | 专注数据首次达标(当日) | 一次性播放,播放完自动切换为 IDLE_SMILING |
 | T_POSE | 仅调试用 | 不面向最终用户 |

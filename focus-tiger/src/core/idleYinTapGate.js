@@ -8,6 +8,8 @@
  * Focusing uses Active Recover instead; overlays hide the hit (no silent click).
  */
 
+import { TAP_BLOCKING_OCCUPANCY } from './spriteChannelArbitration.js';
+
 export const IDLE_YIN_TAP_EMOTION_KEY = 'earWiggleHeadTouch';
 
 /** Baselines that may accept a tap. One-shots (incl. this key) must finish first. */
@@ -19,17 +21,20 @@ const IDLE_TAP_READY_EMOTION_KEYS = new Set(['idle', 'smiling']);
  * @param {boolean} [opts.focusing]
  * @param {boolean} [opts.overlayBusy]
  * @param {string | null} [opts.emotionKey]
+ * @param {string | null} [opts.occupancy]
  * @returns {boolean}
  */
 export function canPlayIdleYinTap({
   sessionState = '',
   focusing = false,
   overlayBusy = false,
-  emotionKey = null
+  emotionKey = null,
+  occupancy = null
 } = {}) {
   if (focusing) return false;
   if (sessionState !== 'IDLE') return false;
   if (overlayBusy) return false;
+  if (occupancy && TAP_BLOCKING_OCCUPANCY.has(occupancy)) return false;
   if (emotionKey && !IDLE_TAP_READY_EMOTION_KEYS.has(emotionKey)) return false;
   return true;
 }

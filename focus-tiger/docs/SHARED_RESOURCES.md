@@ -106,7 +106,8 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 |---|---|---|
 | `EmotionController` 单例（`main.js` 注入） | `MoodController`、Honesty、MindfulReminder、PointerInteraction、调试面板、会话完成反馈 | 改优先级 / holdPose / 回落 idle 会影响全部响应情绪 |
 | `idle` / IdleOrchestrator 接管 | `MoodController` IDLE、`IdleOrchestrator` | 呼吸×5→眨眼；勿另开 Idle 变体池 |
-| `sleeping` | 调试「睡着了」/ live DORMANT（**tab hidden ≥2h** 回前台，或 Rise 后 2h 戳） | **不再**作零完成 / **冷启动**开场 / **短切 tab**；`onAppReady` 默认 Idle；披毯仅 live 进 DORMANT |
+| `sleeping` | 调试「睡着了」/ live DORMANT（**tab hidden ≥2h** 回前台，或 Rise 后 2h 戳，或深夜窗 ≥23/&lt;06） | **不再**作零完成 / **白天冷启动**开场 / **短切 tab**。进睡由 `spriteChannelArbitration` 拍板；`onAppReady` 默认不凭 2h 戳进睡。付款致谢压过深夜披毯 |
+| `spriteChannelArbitration` | `main` 冷启动 / visibility / 付款 async / 会话结束；Honesty 只执行 delta | **禁止**平行 `forceDormant` / 裸 `cloakSleep`。总表：叠层 / 付款谢谢 / 吹花 / 欢迎 / 短切 tab / 结束仪式 &gt; 深夜小时 &gt; 陈旧 2h 戳 |
 | `dormantWake` | `HonestyCheckInController` | 补登睡→坐；holdPose；离开后溶解 |
 | `celebrating` / `sessionComplete` | `triggerSessionCompletionFeedback`；微仪式直接 `playEmotion('sessionComplete')` | `hasCelebratedToday`：首次**计时**达标 Celebrating；已庆祝过 → SessionComplete；Honesty / **微仪式**不占戳、永不 Celebrating |
 | `riseStretchCasual` / `teaDrinking` / `bookReading` | 中途 Rise 加权池 | 主动结束转场（holdPose）；勿与 blinkBreathe / magicBook 混淆 |

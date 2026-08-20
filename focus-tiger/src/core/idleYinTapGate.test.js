@@ -79,6 +79,22 @@ describe('canPlayIdleYinTap', () => {
       }),
       false
     );
+    assert.equal(
+      canPlayIdleYinTap({
+        sessionState: 'IDLE',
+        emotionKey: 'idle',
+        occupancy: 'welcome'
+      }),
+      false
+    );
+    assert.equal(
+      canPlayIdleYinTap({
+        sessionState: 'IDLE',
+        emotionKey: 'idle',
+        occupancy: 'idle-baseline'
+      }),
+      true
+    );
   });
 });
 
