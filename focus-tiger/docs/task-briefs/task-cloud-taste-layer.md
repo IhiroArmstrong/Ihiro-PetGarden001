@@ -1,8 +1,8 @@
 # Task Brief · 云端品味层（权重覆盖 + 日签/文案池）
 
-> **状态（2026-08-18）**：范围 / 窄冻结已拍板；**#349 已合** schemaVersion 1 可选 overlay（tip `a0fed0b`）。生产 Worker 仍须明确「部署」。  
+> **状态（2026-08-20）**：范围 / 窄冻结 / **四问筛选尺**已拍板；**#349 已合** schemaVersion 1 可选 overlay（tip `a0fed0b`）。用户已书面同意生产「部署」；Cloud Agent 无 `CLOUDFLARE_API_TOKEN`，**尚未** Redeploy（现网仍旧 mock）。下一刀 Quiet Line overlay **未开工**（须现网 v1 + 三条观感人工后再口令）。  
 > **权威**：`PROCESS.md` Backlog「云端品味层」。旧称「v1.1 云端算法」——**支付云 ≠ 品味云**；SemVer 首稳仍是 `v1.0.0`。  
-> **开工**：用户书面 L1/L0 告一段落后安排下一步 = 本切片。
+> **开工**：用户书面 L1/L0 告一段落后安排下一步 = 本切片（接线已合）。
 
 ## 一句话
 
@@ -23,6 +23,8 @@
    - 轻量完成：`sessionComplete` 70 / 点头 30 / 鹦鹉 weight 8 ≈7%（`LIGHT_COMPLETE_POOL`）
    - Honesty：≤29 分点头 `mindfulAcknowledge`；≥30 分金辉 `goldenHaloPalms`
    - 日签：`daily-wisdom.en.js` / `.ja.js` 各 14 条、id 对齐；切片期间不扩不删
+7. **四问筛选尺（2026-08-20）**：品味层是可远程调的 config / master data overlay，**不是**「全部 master data 上云」。须同时过：① 改错会不会用不了 / 错扣或少给钱点；② 是否卡在点击当下（0–1 秒反馈，不能等网）；③ 是否定价/门槛/`isEntitled`/发点；④ 没网能否用本地同一张表、认不了能否静默丢。过四问才扩池；扩形须升 `schemaVersion` 并同步本地兜底。
+8. **下一刀（2026-08-20）**：现网已是 v1 冻结表 **且** 三条观感人工过完后，下一刀 = Quiet Line / 今日静语句包 overlay（须新口令）。日签 14→N、伸懒腰/好奇池 **后排**。挥手点播（#356）**不是**品味层。
 
 ## 开工前优先级（已走过）
 
@@ -35,20 +37,21 @@ L2 兑换 #339 已合且未改 Honesty 时长分档。本切片 **未改** `Hone
 
 ## 冲突扫描（实现前 · 已拍板）
 
-对照 `SCENARIO_TESTS` Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习。
+对照 `SCENARIO_TESTS` Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习 / Quiet Line。
 
 | 轴 | 结论 |
 |---|---|
 | **a. 强度** | 可选覆盖、失败用本地；不比 Sit 更重 |
 | **b. 语气** | 无新推销句；日签仍观察式 |
-| **c. 职责** | 不替代支付 Worker、练习备份、同坐点账本 |
+| **c. 职责** | 不替代支付 Worker、练习备份、同坐点账本；Quiet Line overlay 未实现、不抢 #356 点播 |
 
 把播放器上云会与「核心路径不绑云请求」冲突——**已否决**。  
+把全部 config/master data 上云会与四问①②③冲突——**已否决**。  
 Honesty 分档与同坐点 L1 发点是**邻接代码**不是同一功能；分析师提醒记入排期，**不**改冻结数字、**不**撤回 #337。
 
 ## 点击反馈（接线）
 
-Q1–Q2：**不涉及可点击交互**（开机非阻塞拉取；失败用本地表，无按钮）。Q3：对照 Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习 — 失败降级本地，不比 Sit 更重。
+Q1–Q2：**不涉及可点击交互**（开机非阻塞拉取；失败用本地表，无按钮）。Q3：对照 Arrival / Idle 呼吸眨眼 / Honesty 补登 / Rise 加权 / 离线练习 / Quiet Line — 失败降级本地，不比 Sit 更重。
 
 ## 实现时必守
 
@@ -58,7 +61,8 @@ Q1–Q2：**不涉及可点击交互**（开机非阻塞拉取；失败用本地
 - **禁止**改 `HonestyCheckInController` 来用品味层（分档只 overlay Dispatcher）。  
 - 正式响应带 `schemaVersion: 1`；旧 mock 无该字段 → 客户端当未知版本。  
 - CORS / 隐私明示同意见 `MVP_PRODUCT_DEFINITION`。  
-- 生产 Worker **须用户说「部署」**才 Redeploy（`prod-worker-deploy`）。
+- 生产 Worker **须用户说「部署」**才 Redeploy（`prod-worker-deploy`）。口令已给不等于已上现网——须 `wrangler deploy` 成功且现网 JSON 含 `schemaVersion: 1`。  
+- 扩下一张池前过四问；Quiet Line overlay 另口令，勿塞进本接线切片。
 
 ## 不做
 
@@ -67,3 +71,5 @@ Q1–Q2：**不涉及可点击交互**（开机非阻塞拉取；失败用本地
 - 把练习备份或 Stripe 路由塞进同一 Task  
 - 因「功能已经很多」抢 SemVer `v1.1.0` 号  
 - 把本 Brief 合入理解成已部署生产 Worker  
+- 把「不影响离线」理解成全部 master data 可上云  
+- 未过三条观感就开工 Quiet Line overlay
