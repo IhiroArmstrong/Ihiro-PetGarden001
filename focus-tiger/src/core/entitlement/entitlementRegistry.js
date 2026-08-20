@@ -11,6 +11,9 @@
  * - `persistent` → claim once via ownership; later access ignores subscription expiry
  * - Global unlock rule: lifetime ∪ subscription **mutually** cover any paid
  *   `requiredTier` (no per-key exceptions; free stays free)
+ * - Desktop local companion is **not** a catalog key. Lifetime add-on SKU
+ *   `companion.addon.lifetime` lives in `companionAddonSku.js`. Do **not** add
+ *   it here — the union would grant companion without the DLC / Pro.
  *
  * @see docs/MVP_PRODUCT_DEFINITION.md commercial red lines
  */
@@ -32,7 +35,6 @@
  *   | 'ritual.emotional-reset.access'
  *   | 'ritual.work-transition.access'
  *   | 'ambient.deep.play'
- *   | 'emotion.premium.trigger'
  *   | 'content.advanced.daily-unlock'
  *   | 'theme.seasonal.access'
  *   | 'ritual.morning.history'
@@ -67,7 +69,6 @@ export const FEATURE_CATALOG = Object.freeze({
     type: 'ongoing'
   },
   'ambient.deep.play': { requiredTier: 'subscription', type: 'ongoing' },
-  'emotion.premium.trigger': { requiredTier: 'subscription', type: 'ongoing' },
   'content.advanced.daily-unlock': {
     requiredTier: 'subscription',
     type: 'ongoing'

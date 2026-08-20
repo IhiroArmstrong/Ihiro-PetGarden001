@@ -343,6 +343,50 @@ test('welcomeBack is parked: does not play old or new wave sequences', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'welcomeBack');
 });
 
+test('collectionsWaveHello plays in-catalog waveHello once then CapCut idle', () => {
+  const plays = [];
+  const stops = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop(options) {
+      stops.push(options);
+    }
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer,
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop(options) {
+        stops.push(options);
+      },
+      start(options) {
+        plays.push({ name: 'idleBreathing', options });
+      }
+    }
+  });
+
+  controller.playEmotion('collectionsWaveHello');
+
+  assert.deepEqual(stops, [{ clear: false }]);
+  assert.equal(plays[0].name, 'waveHello');
+  assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
+  assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(plays[0].options.loop, false);
+  assert.equal(plays[0].options.loopMode, 'none');
+  assert.equal(plays[0].options.holdLastFrame, true);
+  plays[0].options.onComplete();
+  assert.equal(plays[1].name, 'idleBreathing');
+  assert.equal(controller.getCurrentEmotionKey(), 'idle');
+});
+
 test('magicBookReading plays once then CapCut idle (~1s)', () => {
   const plays = [];
   const stops = [];

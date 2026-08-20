@@ -22,6 +22,13 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  canRegisterDesktopCompanionGeneration,
+  desktopCompanionDownloadPercent,
+  desktopCompanionStatusCopyKey,
+  hasDesktopCompanionBridge,
+  shouldCloseDesktopCompanionGenerateLayer
+} from '../core/desktopCompanionGate.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v1';
 const FADE_MS = 220;
@@ -39,6 +46,10 @@ export class ConfideToYinUI {
     this.handlers = handlers;
     this._open = false;
     this._sessionExclude = new Set();
+    this._companion = null;
+    this._unsubCompanion = null;
+    this._generateLayerOpen = false;
+    this._companionStatus = null;
 
     this.root = document.createElement('div');
     this.root.id = 'confide-to-yin-card';
@@ -55,6 +66,24 @@ export class ConfideToYinUI {
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'confide-to-yin__blurb';
+
+    this.statusWrap = document.createElement('div');
+    this.statusWrap.className = 'confide-to-yin__desktop-status';
+    this.statusWrap.dataset.testid = 'confide-to-yin-desktop-status';
+    this.statusWrap.hidden = true;
+
+    this.statusEl = document.createElement('p');
+    this.statusEl.className = 'confide-to-yin__desktop-status-copy';
+    this.statusEl.dataset.testid = 'confide-to-yin-desktop-status-copy';
+
+    this.progressEl = document.createElement('progress');
+    this.progressEl.className = 'confide-to-yin__desktop-progress';
+    this.progressEl.dataset.testid = 'confide-to-yin-desktop-progress';
+    this.progressEl.max = 100;
+    this.progressEl.value = 0;
+    this.progressEl.hidden = true;
+
+    this.statusWrap.append(this.statusEl, this.progressEl);
 
     this.inputEl = document.createElement('textarea');
     this.inputEl.className = 'confide-to-yin__input';
@@ -88,6 +117,7 @@ export class ConfideToYinUI {
     this.root.append(
       this.titleEl,
       this.blurbEl,
+      this.statusWrap,
       this.inputEl,
       this.replyEl,
       this.actions
@@ -104,6 +134,10 @@ export class ConfideToYinUI {
     document.addEventListener('keydown', this._onKeyDown);
 
     this._unsubLocale = onLocaleChange(() => this._applyCopy());
+    this._onResize = () => this._syncGenerateLayerForViewport();
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('resize', this._onResize);
+    }
     this._injectStyles();
     this._applyCopy();
     this._syncSendEnabled();
@@ -125,6 +159,7 @@ export class ConfideToYinUI {
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
     this._syncSendEnabled();
+    this._syncGenerateLayerForViewport({ ensure: true });
     requestAnimationFrame(() => {
       this.root.classList.add('is-visible');
       this.inputEl.focus();
@@ -134,6 +169,7 @@ export class ConfideToYinUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this.hideGenerateLayer({ unload: false });
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -141,8 +177,93 @@ export class ConfideToYinUI {
     this.handlers.onClose?.();
   }
 
+  /**
+   * @param {object | null} companion
+   */
+  bindDesktopCompanion(companion) {
+    this._unsubCompanion?.();
+    this._companion = companion && typeof companion === 'object' ? companion : null;
+    if (!this._companion || typeof this._companion.onStatus !== 'function') {
+      this._unsubCompanion = null;
+      return;
+    }
+    this._unsubCompanion = this._companion.onStatus((payload) => {
+      this._companionStatus = payload || null;
+      this._renderDesktopStatus();
+    });
+    if (typeof this._companion.getStatus === 'function') {
+      void Promise.resolve(this._companion.getStatus())
+        .then((payload) => {
+          this._companionStatus = payload || null;
+          this._renderDesktopStatus();
+        })
+        .catch(() => {});
+    }
+  }
+
+  /**
+   * @param {{ unload?: boolean }} [opts]
+   */
+  hideGenerateLayer({ unload = false } = {}) {
+    this._generateLayerOpen = false;
+    this.statusWrap.hidden = true;
+    this.progressEl.hidden = true;
+    if (unload && this._companion && typeof this._companion.unload === 'function') {
+      void this._companion.unload();
+    }
+  }
+
+  _viewportAllowsGenerateLayer() {
+    return canRegisterDesktopCompanionGeneration({
+      hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
+      widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+    });
+  }
+
+  /**
+   * @param {{ ensure?: boolean }} [opts]
+   */
+  _syncGenerateLayerForViewport({ ensure = false } = {}) {
+    const allowed = this._viewportAllowsGenerateLayer();
+    if (this._open && this._generateLayerOpen && shouldCloseDesktopCompanionGenerateLayer({
+      generateLayerOpen: true,
+      widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+    })) {
+      this.hideGenerateLayer({ unload: true });
+      if (this.handlers.canOpen && !this.handlers.canOpen()) this.close();
+      return;
+    }
+    if (!this._open || !allowed) {
+      if (!allowed) this.hideGenerateLayer({ unload: false });
+      return;
+    }
+    this._generateLayerOpen = true;
+    this.statusWrap.hidden = false;
+    this._renderDesktopStatus();
+    if (ensure && this._companion && typeof this._companion.ensureReady === 'function') {
+      void this._companion.ensureReady();
+    }
+  }
+
+  _renderDesktopStatus() {
+    if (!this._generateLayerOpen) return;
+    const key = desktopCompanionStatusCopyKey(this._companionStatus);
+    this.statusEl.textContent = t(key);
+    const percent = desktopCompanionDownloadPercent(this._companionStatus);
+    if (percent == null || this._companionStatus?.phase !== 'downloading') {
+      this.progressEl.hidden = true;
+      return;
+    }
+    this.progressEl.hidden = false;
+    this.progressEl.value = percent;
+  }
+
   destroy() {
     document.removeEventListener('keydown', this._onKeyDown);
+    if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
+      window.removeEventListener('resize', this._onResize);
+    }
+    this._unsubCompanion?.();
     this._unsubLocale?.();
     this.root.remove();
   }
@@ -153,6 +274,7 @@ export class ConfideToYinUI {
     this.inputEl.placeholder = t('CONFIDE_PANEL_PLACEHOLDER');
     this.sendBtn.textContent = t('CONFIDE_PANEL_SEND');
     this.closeBtn.textContent = t('CONFIDE_PANEL_CLOSE');
+    this._renderDesktopStatus();
   }
 
   _syncSendEnabled() {
@@ -222,6 +344,34 @@ export class ConfideToYinUI {
         font-size: 0.88rem;
         line-height: 1.45;
         opacity: 0.92;
+      }
+      .confide-to-yin__desktop-status {
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: ${GLASS_FILL_STRONG};
+      }
+      .confide-to-yin__desktop-status[hidden] {
+        display: none;
+      }
+      .confide-to-yin__desktop-status-copy {
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.4;
+        opacity: 0.92;
+      }
+      .confide-to-yin__desktop-progress {
+        display: block;
+        width: 100%;
+        margin-top: 8px;
+        height: 8px;
+        border: none;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(44, 31, 20, 0.12);
+      }
+      .confide-to-yin__desktop-progress[hidden] {
+        display: none;
       }
       .confide-to-yin__input {
         width: 100%;

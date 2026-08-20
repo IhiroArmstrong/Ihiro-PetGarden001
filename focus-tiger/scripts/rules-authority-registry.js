@@ -38,6 +38,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
+  '.cursor/rules/focus-tiger-session-handoff.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
@@ -1241,6 +1242,41 @@ export const RULE_AUTHORITY_TOPICS = [
       'focus-tiger/docs/TEST_TRACKER.md',
       'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
     ]
+  },
+  {
+    id: 'session-handoff',
+    title: '会话交接（口令「生成交接」：结构化摘要给下一会话）',
+    ssotPath: '.cursor/rules/focus-tiger-session-handoff.mdc',
+    ssotSection: 'Focus Tiger · 会话交接（Session Handoff）',
+    ssotMustContain: [
+      /session-handoff/,
+      /生成交接/,
+      /当前分支\/worktree/,
+      /交接摘要本身只是摘要/
+    ],
+    topicSignals: [
+      /session-handoff/,
+      /生成交接/,
+      /会话交接/,
+      /Session Handoff/
+    ],
+    mustCite: [/focus-tiger-session-handoff\.mdc|session-handoff/],
+    restatementFingerprints: [
+      /交接摘要固定模板/,
+      /如果此刻被截断/,
+      /可以直接复制粘贴进新会话第一句话/,
+      /交接摘要本身只是摘要/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'handoff-as-verified',
+        pattern:
+          /交接摘要.{0,24}(?:即|就是|等于|当作).{0,16}(?:已验证|已修复|关单)/,
+        note: '交接摘要不改变已验证须人工测 / 关单门禁'
+      }
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
   },
   {
     id: 'feature-conflict-review',

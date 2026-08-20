@@ -21,16 +21,18 @@ import {
 } from './focusDuration.js';
 
 describe('focusDuration', () => {
-  it('options are 15/25/45/60 (not Breath 1/3/5/10/20)', () => {
-    assert.deepEqual([...FOCUS_DURATION_OPTIONS_MINUTES], [15, 25, 45, 60]);
-    assert.equal(FOCUS_DURATION_DEFAULT_MINUTES, 25);
+  it('options are 10/15/25/45 (not Breath 1/3/5/10/20)', () => {
+    assert.deepEqual([...FOCUS_DURATION_OPTIONS_MINUTES], [10, 15, 25, 45]);
+    assert.equal(FOCUS_DURATION_DEFAULT_MINUTES, 10);
   });
 
-  it('normalize falls back to 25', () => {
+  it('normalize falls back to 10', () => {
     assert.equal(normalizeFocusDurationMinutes(15), 15);
-    assert.equal(normalizeFocusDurationMinutes(1), 25);
-    assert.equal(normalizeFocusDurationMinutes(20), 25);
-    assert.equal(normalizeFocusDurationMinutes(NaN), 25);
+    assert.equal(normalizeFocusDurationMinutes(10), 10);
+    assert.equal(normalizeFocusDurationMinutes(1), 10);
+    assert.equal(normalizeFocusDurationMinutes(20), 10);
+    assert.equal(normalizeFocusDurationMinutes(60), 10);
+    assert.equal(normalizeFocusDurationMinutes(NaN), 10);
   });
 
   it('explicit ?sessionMinutes skips picker; resolves target', () => {
@@ -42,7 +44,7 @@ describe('focusDuration', () => {
     // No storage arg — must not touch browser localStorage (Node CI).
     assert.equal(resolveFocusSessionTargetMinutes('?sessionMinutes=1'), 1);
     assert.equal(resolveFocusSessionTargetMinutes('?sessionMinutes=5'), 5);
-    assert.equal(resolveFocusSessionTargetMinutes('?product=1'), 25);
+    assert.equal(resolveFocusSessionTargetMinutes('?product=1'), 10);
   });
 
   it('prefers stored minutes when no URL override', () => {
@@ -56,7 +58,7 @@ describe('focusDuration', () => {
     };
     assert.equal(
       resolveFocusSessionTargetMinutes('?product=1', storage),
-      25
+      10
     );
     savePreferredFocusDurationMinutes(45, storage);
     assert.equal(
@@ -80,21 +82,21 @@ describe('focus duration floor copy', () => {
   const here = dirname(fileURLToPath(import.meta.url));
   const localesDir = join(here, '../locales');
 
-  it('picker hint names the 15-minute Focus floor in en/zh/ja', () => {
+  it('picker hint names the 10-minute Focus floor in en/zh/ja', () => {
     for (const file of ['en.json', 'zh.json', 'ja.json']) {
       const loc = JSON.parse(readFileSync(join(localesDir, file), 'utf8'));
       const hint = loc['focus_duration.hint'];
       assert.equal(typeof hint, 'string', file);
-      assert.match(hint, /15/, `${file} must name the 15-minute floor`);
+      assert.match(hint, /10/, `${file} must name the 10-minute floor`);
     }
   });
 
-  it('interval hint names the 15-minute Focus floor in en/zh/ja', () => {
+  it('interval hint names the 10-minute Focus floor in en/zh/ja', () => {
     for (const file of ['en.json', 'zh.json', 'ja.json']) {
       const loc = JSON.parse(readFileSync(join(localesDir, file), 'utf8'));
       const hint = loc.SESSION_INTERVAL_RHYTHM_HINT;
       assert.equal(typeof hint, 'string', file);
-      assert.match(hint, /15/, `${file} interval hint must mention 15`);
+      assert.match(hint, /10/, `${file} interval hint must mention 10`);
     }
   });
 });

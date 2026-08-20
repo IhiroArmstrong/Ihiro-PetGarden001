@@ -2,7 +2,7 @@
 
 > **状态（2026-08-10）**：#217/#222/#223 已合 · **`feature/confide-to-yin`**：分类 + 语料 + 面板已接线；**safety-01 人审 ok**；**`CONFIDE_USER_MOUNT_ENABLED=false`**（真实用户 Idle 菜单仍关）。QA：`?product=1&confide=1`。  
 > **目的**：用户主动倾诉时，阿寅以「禅意倾听者」回应——**分类 + 语料检索**。本 Brief 覆盖 **Web / PWA**，仍禁止运行时生成对用户说话。  
-> **2026-08-18**：定位稿增加 **桌面端窄范围例外**（不是废止本 Brief）。Electron 受约束短生成见 `task-desktop-on-device-companion.md`；**禁止**把该例外做进本 v1 运行时或 `src/` 主线。
+> **2026-08-18**：定位稿增加 **桌面端窄范围例外**（不是废止本 Brief）。Electron 受约束短生成见 `task-desktop-on-device-companion.md`（**仅宽屏 ⋯**；窄屏抽屉不跑本地智能体）。**禁止**把该例外做进本 v1 运行时或 `src/` 主线。本 Brief 的宽+窄入口仍只覆盖 **检索不生成**。
 
 ## 拍板摘要（2026-08-10）
 

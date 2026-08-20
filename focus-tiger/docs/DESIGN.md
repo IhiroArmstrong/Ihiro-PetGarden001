@@ -173,7 +173,7 @@ MVP阶段(Phase 0)的输入来源：手动开始/结束的专注计时器(番茄
 一次专注会话：
   用户点击「与阿寅同坐 / Sit with Yin」 → 进入FOCUSING状态 → 计时开始
   focusLevel = min(当前会话已专注分钟数 / 目标分钟数, 1.0)
-  目标分钟数：开表前 chip **15 / 25 / 45 / 60**（默认偏好 25；最短 **15**；与 Breath practice 1/3/5/10/20 差异化）。picker 须可见一句最短档说明（`focus_duration.hint`）；更短歇息走 Breath。`?sessionMinutes=` 可覆盖（e2e / 调试，非正式产品档）
+  目标分钟数：开表前 chip **10 / 15 / 25 / 45**（默认与最短 **10**；2026-08-18 拍板）。与 Breath practice **1/3/5/10/20** 分轨：Focus 10 仍走 Sit→Arrival→Companion；Breath 10 是左球微仪式（无 Arrival）。picker 须可见一句最短档说明（`focus_duration.hint`）；更短歇息走 Breath 1/3/5。`?sessionMinutes=` 可覆盖（e2e / 调试，非正式产品档）
 
   会话中途暂停/退出App超过X秒(建议30秒，具体阈值Phase 0测试后定) → 
   视为中断，focusLevel停止增长，老虎颜色停在中断时刻的状态，不倒退
@@ -387,7 +387,7 @@ Companion Mode（尤其 **I'll step away**）下，用户常离开 Focus Tiger �
 - 该信号仅在**当前会话内**使用；曲目开关偏好可长期存储；
 - **会话结束（Rise / 达标 / Breath 完成或 Leave）自动停播**（2026-07-25 拍板）：本场同坐结束即收掉背景音；**不**把「关」写入偏好（保留上次曲目 id）。下一场开坐仍按「开坐即播」再起（与 Breath 一致）；Idle / 冷启动不播；
   - **达标 + 计时提示音（2026-08-12）**：氛围仍在播且结束铃开 → **duck≈35% → 播结束铃 → ~1.5s 淡出并停**（不「恢复再杀」）；早退 Rise / Breath **Leave** **不**播结束铃，仍硬停；
-- **计时提示音（免费 · 2026-08-12 / 间隔 2026-08-13 / Breath 同线 2026-08-15）**：Focusing **与 Breath practice** 共用开始磬 / 间隔磬 / 达标结束铃（Soundscape「计时提示音」总开关，默认开；音量跟氛围条）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；第一声在 3:00 或 5:00（开表那一瞬不播间隔磬）。产品 Focus 最短 **15 分钟**，故正式档总会听到间隔（调试 `?sessionMinutes=` 与 Breath 短档除外）；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。面板须**可见**写出各开关含义（勿只靠 `title` 悬停）。工作流根因：旧实现只接 `beginFocusWithMode`，呼吸练习时长 chip 是平行路径，从未 `playStart`。
+- **计时提示音（免费 · 2026-08-12 / 间隔 2026-08-13 / Breath 同线 2026-08-15）**：Focusing **与 Breath practice** 共用开始磬 / 间隔磬 / 达标结束铃（Soundscape「计时提示音」总开关，默认开；音量跟氛围条）。**正念磬声间隔**独立三档：无（默认纯净陪伴）/ 每 3 分 / 每 5 分；第一声在 3:00 或 5:00（开表那一瞬不播间隔磬）。产品 Focus 最短 **10 分钟**，故正式档总会听到间隔（调试 `?sessionMinutes=` 短于 3/5 与 Breath 短档除外）；资产 `session-interval-bell.mp3`（短 one-shot，**不**接 Ambient Gate 长循环）；剩余 &lt; **30s** 跳过；氛围可闻时 duck→unduck。面板须**可见**写出各开关含义（勿只靠 `title` 悬停）。工作流根因：旧实现只接 `beginFocusWithMode`，呼吸练习时长 chip 是平行路径，从未 `playStart`。
 - **觉察观照卡（mid-session · 2026-08-13）**：间隔磬同拍时在 Focusing **底部**浮现观察式短句（`FOCUS_AWARENESS_*`）；可单独关；**不**写入 Moment Whisper；设计理念长句不进 UI；
 - 该信号与 Page Visibility / blur / idle 等既有 Focus Confidence 信号**并列、独立**；不替代墙钟会话计时，也不单独决定会话是否达标。
 
@@ -494,7 +494,7 @@ Phase 0范围声明：本任务只需要Milestone.js正确计算和存储这些�
 
 Sit / Sound 主 CTA 为**蒲团橙**立体钮（2026-07-21 由朱红改），与 Companion 暖米文案面统一在 Yin 色系内。
 
-**产品壳 FocusHUD（2026-07-21；同日改版；2026-08-04 毛玻璃）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；**本场目标**以更淡小字标在 elapsed 下方（如 `15 min`，方案 A）；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停浮层「近日同坐的日子」，须盖过下方今日同坐条；空心点保持浅描边可见；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。**壳面（2026-08-04）**：Arrival 式暖米半透明 + `backdrop-filter` 隐退为轻量 HUD（冷启动首屏包）。**禁止「随风浮动」位移动画**（`translate` / 微旋转漂浮）——其它 chrome 静置，单卡漂会风格不统一（2026-08-04 用户书面否决）。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
+**产品壳 FocusHUD（2026-07-21；同日改版；2026-08-04 毛玻璃）**：左上角为**金环进度 + 中心呼吸光点**（无香炉碗/烟）；环与光点用偏深琥珀金、高不透明度；光点 **scale 一张一缩**（约 4s）；整块约 **2×** 原尺寸以便扫视/老花可读。环填充跟 `focusLevel`；时长默认半透明，专注中或悬停才加重；**本场目标**以更淡小字标在 elapsed 下方（如 `10 min`，方案 A）；百分比仅悬停/键盘 focus 露出。禁止常驻 `Status: / Focus: N%` 计分牌文案。其下挂 UI Kit **`progress-bar`**：「今日同坐 / Today's shared sitting」= 当日已完成分钟 + 当前会话分钟 / 默认 25 分钟软顶（一炷香轻量目标）；专注中轻脉冲。同行挂 **`streak-meter`** 7 点环（近日同坐；悬停浮层「近日同坐的日子」，须盖过下方今日同坐条；空心点保持浅描边可见；满圈短金息 ≤1.2s）。与 Companion 三选一分工：三选一 = 怎么坐；进度条 = 今日多久；光点圈 = 近日节奏。**壳面（2026-08-04）**：Arrival 式暖米半透明 + `backdrop-filter` 隐退为轻量 HUD（冷启动首屏包）。**禁止「随风浮动」位移动画**（`translate` / 微旋转漂浮）——其它 chrome 静置，单卡漂会风格不统一（2026-08-04 用户书面否决）。回归：`focusHudHalo` / `sharedSittingProgress` / `PracticeDaysStore` + e2e `#hud-state` / `#hud-time`。
 
 **「本周陪伴」7 格热力图（2026-07-22；窄屏壳 2026-07-24；主 CTA 上屏 2026-07-26；宽屏三球 2026-07-31；今日标记 2026-08-04）**：仅 **Idle / Dormant** 可见（深夜披毯回家仍可看近七日；Focusing / 微仪式隐藏）。**宽屏**：左下角（`#onboarding-hint-help` 上方）；主 CTA 为 **三球（Quick · Sit · Honesty）+ ⋯**（`#ft-wide-home-ctas` / `#ft-wide-more-btn`），Sit+⚡ 文案 pill park。**窄屏（≤479px）**：`NarrowIdleShell` ActionBar + 主画布三 PNG 图腾圆球（顺序 **Quick Start · Sit with Yin · Honesty**；全宽 `space-evenly`；约 72px；Arrival 期仅留 Quick Start）+ 上滑抽屉（次要项）；7 格在抽屉内只读展示。数据 `PracticeDaysStore.getLastNDays(7)`（滚动近 7 日，**最右 = 今日**）；亮格 = `totalMinutes === null \|\| totalMinutes > 0`；暗格浅洗。每格下方星期缩写（`HEATMAP_DOW_*`）；今日格 `data-today="1"` 软描边 + 星期字略加重——禁止无提示裸格。Focusing / 微仪式隐藏。窄屏底部 soft 文案（toast / 桥接 / Arrival 等）须清过首页三球带：`homeChromeClearance.js` + `NarrowIdleShell` clearance belt。`#weekly-practice-heatmap` / `#ft-narrow-idle-shell` / `#ft-narrow-home-ctas` / `#ft-wide-home-ctas`。
 

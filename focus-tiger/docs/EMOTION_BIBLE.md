@@ -153,6 +153,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `WakeUp` | —（已删） | 已删除；勿再接线 |
 | `dormantWake` | `DORMANT_WAKE` | 2D：经典 `cloak-sleep` 倒放 / 星光 wake；Honesty + 长离 2B |
 | `WelcomeBack` | `welcomeBack`（**停接线**） | 素材仍在：`wave-hello` / `wave-hello-pingpong`；**不播** |
+| `CollectionsWaveHello` | `collectionsWaveHello` → `waveHello`（已入库 `wave-hello`） | 珍藏底栏 Play；抽屉不列 SKU；**不**改 PNG；**不**进欢迎池 |
 | `magicBookReading` | `magicBookReading` → 同名序列 | `public/sprites/.../magic-book-reading/frame_001–046.png`（开场欢迎池试验） |
 | `bookReading` | `bookReading` → 同名序列 | `public/sprites/.../book-reading/frame_001–024.png`（日语切语；单程无倒放） |
 | `goldenHaloPalms` | `goldenHaloPalms` → 同名序列 | `public/sprites/.../golden-halo-palms/frame_001–094.png`（Honesty≥30 试验） |
@@ -165,6 +166,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
 > **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。**2026-08-02 晚拍板：新旧挥手暂时停接线**——`playEmotion('welcomeBack')` 不播序列；不进冷启动欢迎池；调试情绪入口已撤；入库素材钮仅保留「停接线·仅素材」标签供以后对照。建议场景（回前台 / Idle≈10min 30%）**以后另议**。优先级低于 `Celebrating`。
+>
+> **`CollectionsWaveHello`（珍藏挥手点播 · 2026-08-20）**：C 轨闲笔。珍藏面板底栏 **请阿寅挥挥手**（及 `__focusCoins.playWave`）→ `playEmotion('collectionsWaveHello')` 播已入库 `waveHello`（正放抬手→摇摆×2→放手）→ ~1s CapCut Idle。`#yin-coin-panel` **不**把 `gesture.wave-hello` 列进清供 8；**不**要求先结缘该 unlistable SKU。**禁止**用本键复活欢迎池 / `welcomeBack` / 10 分钟自主挥手。Celebrating / Focusing / 其它 oneshot 进行中 → 门闩 `busy`，toast 不打断。不上莲花池、不改序列帧。
 >
 > **与 Recover 的边界（2026-07-18 拍板）**：`WelcomeBack` 是 Idle **生命感偶遇**，**不是** Five Moments / CORE_LOOP 的 Recover。Recover 家族只含会话内注意力回归（Re-focus Acknowledge + 未来主动 Recover）。本键不占提醒池、不并入 Recover 叙事；禁止改写成「分心回归」文案。见 `CORE_LOOP.md`「Recover 与 welcomeBack 边界」。
 
@@ -682,4 +685,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.93 | 2026-08-14 | `MindfulAcknowledge` subtype `activeRecoverCooldown` → `nodBowMicro`（FB-01 冷却再点；小于完整 nod-bow；无 toast） |
 | 0.94 | 2026-08-16 | Idle 轻点阿寅 → `earWiggleHeadTouch`（产品壳 2D hit；圣经「微笑眯眼」仍无正式精灵） |
 | 0.95 | 2026-08-18 | 回前台披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡）；Rise 后 2h 戳仍可进 DORMANT |
+| 0.96 | 2026-08-20 | `CollectionsWaveHello`：珍藏底栏点播已入库 `waveHello`；不要求结缘 unlistable SKU；`welcomeBack` 仍停接线 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

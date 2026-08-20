@@ -17,6 +17,7 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 import { listRitualConfigs } from './RitualFlow.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
 import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
+import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -48,7 +49,9 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
  * @property {boolean} [newsletterSubmitted]
  * @property {boolean} [scenesEntitled] override; default = isEntitled(ritual.morning.access)
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
+ * @property {boolean} [companionGeneration] Electron wide L1 only; ignored on narrow-drawer
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
+ * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  */
 
 /**
@@ -377,15 +380,37 @@ export function listSecondaryChromeEntries(surface, visibility) {
     labelKey: 'JOURNEY_LOG_MENU_LABEL'
   });
 
+  // Yin's Collections — same glass family as Journey log; not Support pay.
+  const yinCoinVisible =
+    typeof visibility.yinCoinVisible === 'boolean'
+      ? visibility.yinCoinVisible
+      : isFocusCoinsAwardEnabled({
+          search:
+            typeof location !== 'undefined' && location?.search
+              ? location.search
+              : ''
+        });
+  if (yinCoinVisible) {
+    out.push({
+      proxy: 'yin-coin',
+      labelKey: 'YIN_COIN_MENU_LABEL',
+      testId: 'idle-yin-coin'
+    });
+  }
+
   // Confide to Yin — zen listener (retrieve-not-generate). Hidden until safety copy ok.
+  // Desktop L1 may show the same row on wide Electron when companion bridge exists.
   const confideVisible =
     typeof visibility.confideUserVisible === 'boolean'
       ? visibility.confideUserVisible
       : isConfideUserVisible();
-  if (confideVisible) {
+  const companionGeneration =
+    surface === 'wide-more' && visibility.companionGeneration === true;
+  if (confideVisible || companionGeneration) {
     out.push({
       proxy: 'confide',
-      labelKey: 'CONFIDE_MENU_LABEL'
+      labelKey: 'CONFIDE_MENU_LABEL',
+      testId: companionGeneration ? 'idle-confide-desktop' : undefined
     });
   }
 

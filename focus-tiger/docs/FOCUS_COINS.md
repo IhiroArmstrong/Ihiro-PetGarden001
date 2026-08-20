@@ -1,11 +1,13 @@
-# 同坐点（Focus Coins）· 产品设计 SSOT
+# 寅币（Focus Coins）· 产品设计 SSOT
 
-> **状态：方向锁（2026-08-18）** — 六项拍板已书面同意。**L0–L2 已接线**（账本 / 发点钩子 / 内部兑换）；L1 **#338 已合**（TRACKER 待人工）；无抽屉商店、不进练习备份 6 key。`?focusCoins=0` 关闸完全不写。L2 **只兑、不动 Honesty 时长分档**。
-> **内部名**：Focus Coins。**对外名（硬）**：**同坐点**。禁止金币 / 积分 / 商城 / 抽奖口吻。  
-> **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)（L0–L3 切片 + 工作量分级）。  
-> **L1 硬闸**：开会碰 Honesty / 完成记账邻接的分支前必须书面扫并行 PR；口头注意不算过闸（2026-08-18 分析师）。L1 **#338 已合**；品味层代码 / L2 若改 Honesty 分档仍适用。  
-> **禁止**：用同坐点满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；L0–L2 **不**改 `SCENARIO_TESTS.md`（L3 表面若需场景附录另开）。  
-> **≠ 云端品味层**：服务端记账是 L2 可花点之后的防刷；与权重/文案上云分轨（见 `PROCESS` Backlog「云端品味层」）。
+> **状态：方向锁（2026-08-20 · 清供 8 表）** — 花园 vs 珍藏切开仍有效；叠层**视觉**废止；旧 8 个 SKU id **按清供器物改名、现价现门槛可兑**。L0–L3 已接线；L3 抽屉入口是 **Yin's Collections / 阿寅的珍藏**。`?focusCoins=0` 关闸完全不写。Breath 坐满按 Stay 档发时长点 + 时长 chip 静默 hint。  
+> **内部名**：Focus Coins。**货币对外名（硬）**：**寅币** / **Focus Coins**（2026-08-19 取代「同坐点」；旧文案可视为别名，新产品面只用寅币）。禁止金币 / 积分 / Shop / Purchase 口吻。  
+> **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱 / 清供匣只作气质比喻，不作产品名。  
+> **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)。  
+> **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（铁律见 `PRINCIPLES.md`）。
+
+> **L1 硬闸**：开会碰 Honesty / 完成记账邻接的分支前必须书面扫并行 PR；口头注意不算过闸（2026-08-18 分析师）。L1 **#338 已合**。  
+> **≠ 云端品味层**：服务端记账是可花点之后的防刷；与权重/文案上云分轨（见 `PROCESS` Backlog「云端品味层」）。
 
 从属：`MVP_PRODUCT_DEFINITION.md` §五 · `FREE_PAID_MATRIX.md` · `FEATURE_CATALOG` · 场景 D / `HONESTY_BRIDGE_CTA.md` · `practiceBadgeAward.js`（`computePracticeScore`）· `PRINCIPLES.md` 宁静型游戏化。
 
@@ -13,38 +15,68 @@
 
 ## 0. 冲突扫描（实现前 · 已拍板）
 
-对照 `SCENARIO_TESTS.md` 相邻路径。用户 2026-08-18 已同意六个方向问题；本扫描记录为何可往下排期，不是再开放口。
+对照 `SCENARIO_TESTS.md` 相邻路径。用户 2026-08-18 已同意六个方向问题；2026-08-19 补花园 / 珍藏切开；**2026-08-20 锁清供 8 表 + 铁律进 PRINCIPLES**。
 
 | 轴 | 相邻场景 | 风险 | 处置（已锁） |
 |---|---|---|---|
-| **a. 强度** | 场景 A 完成庆祝；被动 Re-focus；主动 Recover | 商城/钱包若比完成仪式更响，会把专注做成刷分 | 入口放抽屉次级；无倒计时/抽奖；日封顶静默；被动 Recover **0 点** |
-| **b. 人设** | Honesty「别处也算数」；观察式文案 | 「赚/花」易变监工 | 对外「同坐点」；不怀疑补登；不展示真假专注分 |
-| **c. 职责** | 练习徽章；芥子印；纪念莲花/香炉；Seasonal Theme（B）；Honesty 补登 | 两套账本 / 把免费纪念改成花钱买 / 积分买会员权益 | **同一账本两层**；自动纪念不拦截；B 轨逐条排除；Honesty 半额+日限 1 次发点 |
-
-**PR 第三问可写**：对照 A / D / Idle 徽章 / 纪念 Backlog / Seasonal Theme；三轴有张力，用户已拍板隔离 + 克制表面。
+| **a. 强度** | 场景 A 完成庆祝；被动 Re-focus；主动 Recover | 钱包若比完成仪式更响，会把专注做成刷分 | 入口放珍藏次级；无倒计时/抽奖；日封顶静默；被动 Recover **0 点** |
+| **b. 人设** | Honesty「别处也算数」；观察式文案 | 「赚/花」易变监工 | 对外「寅币 / 结缘」；不怀疑补登；不展示真假专注分 |
+| **c. 职责** | 练习徽章；芥子印；莲花池；Seasonal Theme（B） | 两套进化叠在主坐席 / 用点买会员权益 | **花园自动 · 珍藏结缘**；B 轨逐条排除；Honesty 半额+日限 1 次发点 |
 
 ---
 
 ## 1. 心智（第三轨，不是第三档付费）
 
-| 轨 | 是什么 | 同坐点关系 |
+| 轨 | 是什么 | 寅币关系 |
 |---|---|---|
 | **A · Tea** | 打赏；不解锁 | 不得互兑 |
 | **B · Lifetime ∪ Membership** | 进阶能力 / 场域 | **永远买不到** |
-| **C · 同坐点** | 练习换来的情感货币 | 只买身份/空间变体/称号/稀有练习章 |
+| **C · 寅币** | 练习换来的情感货币 | 只在 **Yin's Collections** 结缘身份/记忆；**不**兑花园 |
 
-不是 `FEATURE_CATALOG` 的 `requiredTier`。SKU 命名空间：`cosmetic.*` / `title.*` / `badge.rare.*`。
+不是 `FEATURE_CATALOG` 的 `requiredTier`。抽屉可兑：`FOCUS_COIN_CURIO_SHOP_IDS` 清供八条。catalog 另留 `title.long-sitter` / `collection.*` / `gesture.wave-hello`（不进抽屉）。
+
+### 1.1 花园 vs 珍藏（2026-08-19 · 硬）
+
+| 层 | 落点 | 怎么来 | 禁止 |
+|---|---|---|---|
+| **花园（Grow / 莲花池）** | 主坐席 | 终身分钟自动、只增不减 | 进寅币店；改成花钱才开花 |
+| **珍藏（C 轨）** | 独立个人中心 **Yin's Collections** | 寅币结缘：清供器物卡（旧 8 id） | 把器物叠回主坐席 / 莲花 / `#sprite-stage` |
+| **周边 chrome** | Idle 阿寅**右侧** `#yin-tip-kindness-badges` | 练习/Tea/Sanctuary 枚数自动涨 | 把徽章扣进蒲团帧或改 PNG 序列 |
+
+芥子须弥印、练习徽章枚数：**继续自动出现，永远不进店**。香炉/刺绣/灯盏若做，也走花园，不兑币。
+
+练习徽章条（Idle 右侧 `#yin-tip-kindness-badges`）是主画面周边 chrome，**不是**产品名叫「百宝箱」。英文产品名只认 **Yin's Collections**；中文 **阿寅的珍藏**。百宝箱仅作气质比喻。
+
+**铁律**（产品硬条，见 `PRINCIPLES.md`）：不能修改或添加覆盖到已有动画（含晨露滤镜、须弥金线、念珠披毯、蒲团扣子）。只能周边 DOM，或珍藏卡面。挥手点播走珍藏底栏 Play（已入库 `wave-hello` **不**进清供 8 行）。抛三色球未入库，后置。
+
+### 1.2 已废止 vs 2026-08-20 已锁
+
+#352 曾讨论「池/座/炉/身侧分区叠层」。**围着阿寅盖序列的那条路仍作废**，不要复活。
+
+| 提案 | 处置 |
+|---|---|
+| 8 条叠层围着阿寅 / 晨露盖花 / 须弥金晕盖 `#sprite-stage` / 念珠披毯贴身体 | **不要**。铁律禁止改/盖序列帧。晨露/须弥滤镜已从运行时拆掉 |
+| 把旧 8 个 SKU id 原价原门槛改名成清供器物 | **已锁（2026-08-20）**。工程继续用现有 id；只改展示名；抽屉 = `FOCUS_COIN_CURIO_SHOP_IDS` 八条 |
+| 产品名叫清供匣 / Yin Coin / Yin's Desk | **不要**。对外只认 **Yin's Collections / 阿寅的珍藏**。清供匣、百宝箱仅比喻 |
+| 寅币 8 件并进 `#yin-tip-kindness-badges` 或提前做成就墙 | **不要**。练习章条继续只管练习/请茶/Sanctuary；成就墙仍是 Backlog |
+| `yin-coin-flat-draft.png` 0.5–1 日手绘精修 | **未批准**。占位 24px 色点继续用；看见线稿再另拍板 |
+| #353 商店 7 行（久坐的人 / 青瓷瓶 / 青铜礼器 / 挥手 上架） | **抽屉改回清供 8**。上述 id **留在 catalog**（已兑有效）；挥手 SKU **不**进商店行，点播放珍藏底栏 |
+
+L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**。目录 = 清供 8。底栏 Play 点播 `wave-hello`（不列挥手 SKU）。四页签壳仍后置，不是再开第二座花园。
 
 ---
 
-## 2. 六项拍板（2026-08-18 · 硬）
+## 2. 六项拍板（2026-08-18 · 仍有效） + 2026-08-19 补条
 
-1. **隔离清单按 §3 冻结**（对照真实 entitlement 逐条排除）。  
-2. **Honesty 半额 + 自然日最多 1 次发点**（补登善意保留，货币收紧）。  
-3. **连续日只 +3 同坐回声，不当解锁/惩罚门**。  
-4. **商城不拦截自动纪念物**（莲花/香炉等仍免费自动出现；只卖变体/称号/稀有章）。  
-5. **与练习徽章同一体系两层**（徽章=不可花的标记；同坐点=可消费货币；共用 `PracticeDaysStore` / `computePracticeScore`）。  
-6. **对外名「同坐点」**，不改回「积分」。
+1. **隔离清单按 §3 冻结**。  
+2. **Honesty 半额 + 自然日最多 1 次发点**。  
+3. **连续日只 +3 余温回声，不当解锁/惩罚门**。  
+4. **不拦截自动纪念物**（莲花等仍免费自动出现）。  
+5. **与练习徽章同一体系两层**（徽章=不可花的标记；寅币=可消费货币）。  
+6. **货币对外名寅币 / Focus Coins**（2026-08-19 修订；不再用「同坐点」作新产品面）。  
+7. **个人中心 = 阿寅的珍藏 / Yin's Collections**。结缘 = Bond / 縁を結ぶ。  
+8. **叠层视觉退役；SKU 改清供卡面**（2026-08-20）：晨露 / 暖烟 / 念珠 / 披毯 / 须弥金线**不得**再盖主画面。同一批 id 以清供器物名可兑，只进珍藏卡。  
+9. **`emotion.premium.trigger` 从 B 轨 catalog 删除**，避免会员与结缘动作抢动画。
 
 ---
 
@@ -58,7 +90,6 @@
 | `ritual.emotional-reset.access` | Emotional Reset | 排除 |
 | `ritual.work-transition.access` | Work Transition | 排除 |
 | `ambient.deep.play` | 深度音效全库（免费仅 5 首） | 排除 |
-| `emotion.premium.trigger` | 高级情绪（占位） | 排除；禁止当未接线权益后门 |
 | `content.advanced.daily-unlock` | 进阶每日解锁（占位） | 排除 |
 | `theme.seasonal.access` | 节日主题 | 排除 |
 | `ritual.*.history\|memento\|copy-unlocked\|sfx-unlocked` | 仪式持久物 | 排除 |
@@ -87,7 +118,7 @@ Tea 善意章不得用点买，请茶也不得充点。
 ### 3.5 工程隔离
 
 - **不**给 Coins 增加 `FEATURE_CATALOG` key。  
-- `isEntitled` **永不**读同坐点余额。  
+- `isEntitled` **永不**读寅币余额。  
 - 与 tip gate、Sanctuary gate **零耦合**。
 
 ---
@@ -103,6 +134,7 @@ Tea 善意章不得用点买，请茶也不得充点。
 | 来源 | 规则 |
 |---|---|
 | 计时达标 · Stay here | 每 **5** 分钟 = 1 点（向下取整） |
+| 计时达标 · Breath practice（坐满所选 chip） | **同 Stay 档**（每 5 分钟 = 1）；另加 §4.2 微仪式 +1 / 日限 1。Leave 中途 **0** |
 | 计时达标 · Across tools | 每 **10** 分钟 = 1 点 |
 | 计时达标 · Offline / Honesty 补登 | 每 **10** 分钟 = 1 点；Honesty **自然日最多 1 次发点**；`30+` 按 30 入账 |
 | 未达标 Rise | **0**（已有 `onIncompleteSessionEnded`） |
@@ -142,26 +174,28 @@ Honesty **不是**挂机检测，是别处练习的信任补登。完整 Focus C
 
 ---
 
-## 6. 消费目录（示例；全部不可现金买）
+## 6. 消费目录（全部不可现金买）
 
-基础纪念物仍按纪念奖励 **自动、只增不减**。**莲花池 Slice A（#330）已按终身分钟自动开花**——`space.lotus-dew` 只叠在已有朵上，**禁止**把开花改成花点才出现。香炉等同理。同坐点只买变体 / 阿寅轻点缀 / 称号 / `badge.rare.*`。
+基础纪念物按终身分钟 **自动、只增不减**。莲花池 Slice A **不进店**。2026-08-20：**抽屉 = 清供 8**（现价现门槛）；叠层视觉拆掉。
 
-不做 v1 换装柜、不多角色、不随机箱、不限时折扣。
-
-| ID | 类型 | 名称 | 价格 | 额外门槛 | 现金 |
+| ID | 类型 | 名称 | 价格 | 门槛 | 状态 |
 |---|---|---|---|---|---|
-| `space.incense-tint-warm` | 空间变体 | 香炉暖烟 | 24 | 已有纪念香炉或练习分 ≥ 3 | 不可 |
-| `space.lotus-dew` | 空间变体 | 莲叶晨露 | 48 | 已有首朵莲花 | 不可 |
-| `yin-accent.wood-beads` | 阿寅点缀 | 木念珠 | 36 | — | 不可 |
-| `yin-accent.folded-cloak` | 阿寅点缀 | 脚边叠好的浅灰披毯（≠ DORMANT 睡姿） | 60 | 至少 1 次 Honesty 睡醒 | 不可 |
-| `title.sits-with-yin` | 称号 | 「与阿寅同坐」 | 18 | 练习日 ≥ 3 | 不可 |
-| `title.returned-gently` | 称号 | 「又回来了」 | 30 | 至少 1 次主动 Recover | 不可 |
-| `badge.rare.quiet-pebble` | 稀有练习章 | 静石小章（视觉独立于 Tea / Sanctuary 包） | 72 | — | 不可 |
-| **`space.sumeru-cushion` + `title.long-sitter`** | **高门槛稀缺** | 金线蒲团「须弥坐」+「久坐的人」 | **360** | **`lifetimeMinutes ≥ 600` 且不可单用点或单用时长跳过** | **不可现金 / 会员赠送 / 请茶兑换** |
+| `space.incense-tint-warm` | 清供 | 青铜香薰炉 | 24 | 香炉纪念 **或** 练习日 ≥ 3 | **抽屉可兑**；不上序列 |
+| `space.lotus-dew` | 清供 | 青瓷莲盏 | 48 | 已有第一朵莲花（匣中物，**不**给池加光） | **抽屉可兑** |
+| `yin-accent.wood-beads` | 清供 | 紫檀念珠匣 | 36 | — | **抽屉可兑** |
+| `yin-accent.folded-cloak` | 清供 | 青铜奁 | 60 | Honesty 睡醒 | **抽屉可兑** |
+| `title.sits-with-yin` | 清供 | 座右小碑 | 18 | 练习日 ≥ 3 | **抽屉可兑**；Wear 为称号数据，不叠帧 |
+| `title.returned-gently` | 清供 | 归来青瓷小瓶 | 30 | 至少 1 次主动 Recover | **抽屉可兑** |
+| `badge.rare.quiet-pebble` | 清供 | 石镇纸 | 72 | — | **抽屉可兑** |
+| `bundle.sumeru-seat` | 清供 | 须弥小鼎 | 360 | `lifetimeMinutes ≥ 600` | **抽屉可兑**；写入 `space.sumeru-cushion` + `title.long-sitter`；无金线蒲团 |
+| `title.long-sitter` | 称号 | 「久坐的人」 | 360 | 同上双门槛 | **catalog 保留、抽屉不列**（bundle 会写入） |
+| `collection.porcelain.qing-vase` | 静物 | 青瓷瓶 | 40 | — | **catalog 保留、抽屉不列** |
+| `collection.bronze.ritual-vessel` | 静物 | 青铜礼器 | 56 | — | **catalog 保留、抽屉不列** |
+| `gesture.wave-hello` | 闲笔 | 挥手 | 48 | — | **catalog 保留、抽屉不列**；点播走珍藏底栏 Play，不要求先结缘该 SKU |
 
-稀缺款与芥子须弥印（`score ≥ 21`、自动、不进商城）并列，不合并。兑换后只增不减；称号一次只装备一个。
+信件 / 静默小册：**后置**（须静态文案 + Quiet Line 历史归档）。抛三色球：**未入库，后置**。
 
-明确不进目录：深度音效、三进阶仪式、节日主题、Enso、Sanctuary/Tea 章包、多端同步、Journey 无限历史、AI 次数、报表。
+店底须知（L3 文案）：「案头雅物皆由同坐岁月所化，不可借金钱相求。」Lifetime 用户也靠坐禅攒寅币。
 
 ---
 
@@ -170,21 +204,23 @@ Honesty **不是**挂机检测，是别处练习的信任补登。完整 Focus C
 | 层 | 语义 | 实现 |
 |---|---|---|
 | 标记 | 只增不减，不能花 | 免费练习章 min=1；Tea / Sanctuary 付费视觉包 min=3；芥子印独立 |
-| 货币 | 可花余额，留下资产 | 新钱包；发点事件与涨章同一批完成钩子 |
+| 货币 | 可花余额，留下资产 | 钱包；发点与涨章同一批完成钩子 |
+| 周边展示 | Idle 右侧徽章条 | `#yin-tip-kindness-badges`（**不是**改动画；Focusing 隐藏） |
+| 珍藏归档 | Yin's Collections | L3 四页签：结缘点缀 / 陪伴称号 / 记忆小册（后置）/ 勋章印记 |
 
 Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`。
-
-Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒香点，不开街机钱包。
 
 ---
 
 ## 8. 红线（守住「不异化」）
 
-- 不做常驻换装柜。  
+- 不做常驻换装柜、不改已有 PNG 序列。  
 - 不做连续签到锁门。  
-- 不做抽奖 / FOMO / 稀缺倒计时。  
+- 不做抽奖 / FOMO / 季节限时掉落（C 轨）。  
+- **时长 chip 静默 hint**（2026-08-18 拍板）：Focus / Breath picker 下 `#focus-coins-duration-hint`；说明满 5 分钟可累积寅币、用于钱买不到的身份资源。`?focusCoins=0` 不出现。禁止常驻 HUD、完成 toast 标「+N 寅币」。L3 抽屉仍是 Yin's Collections。
 - 不拦截自动纪念物。  
-- 不把 B 权益假收费成「用点也能开」。
+- 不把 B 权益假收费成「用点也能开」。  
+- 不把珍藏静物叠回莲花池。
 
 ---
 
@@ -196,8 +232,8 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 |---|---|---|---|---|
 | **L0 账本验证** | 纯函数 + 单测，实验室可调数字 | Companion 三档、Honesty 半额/日限、日封顶、回声、稀缺双门槛、`isEntitled` 不读余额的失败用例；SKU schema | 无产品钩子、无 Idle 数字、不改 storage 白名单、不改备份 6 key | **2–4 人日 · 已实现** `focusCoinsLedger.js` |
 | **L1 发点接线** | 完成一场坐，钱包会涨（可先无「店」） | 挂计时达标 / Honesty 呼吸成功 / Choose / Reflect / 主动 Recover；localStorage 白名单；flag 默认可关 | 无兑换 UI；不改场景剧本；不把钱包塞进练习备份 6 key | **4–6 人日 · #338 已合**（TRACKER 待人工；高风险邻接：Honesty / 完成记账） |
-| **L2 可兑原型** | 内部能花点留下痕迹 | 称号 + 稀有章 + 至少 1 个空间变体；稀缺款双条件；与 Tea/Sanctuary 章包隔离 | 新角色帧换装、完整纪念物美术、云备份升 schema | **4–6 人日 · 本支**（无新序列；只兑、不动 Honesty 分档）；新点缀美术另 **+3–8** |
-| **L3 可给用户看的安静表面** | 抽屉「同坐点」+ 装备称号 | i18n en/ja、375 抽屉不挡主球、0–1s 按压、只增不减回流；可选并入练习备份 schema v2 | 换装柜、场景 D 改写、B 轨任何 key | **3–5 人日** |
+| **L2 可兑原型** | 内部能花点留下痕迹 | 清供卡面可兑；叠层视觉拆掉；`title.long-sitter` 双门槛仍可由 bundle 写入 | 新角色帧换装、主画面叠层 | **已接线 · 2026-08-20 清供改名** |
+| **L3 可给用户看的安静表面** | **Yin's Collections** 个人中心 | #352 抽屉已合；目录 = 清供 8；结缘语汇；底栏挥手点播 | 换装柜、改 PNG、信件/小册、抛球、B 轨 key | **已接线 · 清供 8 已锁** |
 
 **合计到「内部可用」（L0–L2）**：约 **10–16 人日** ≈ **2.5–4 周日历**（一人，含回归；L1 勿与其它 Honesty 大改叠车）。  
 **到可给真实用户**：再加 L3；**不得**早于 L0 单测锁住防刷表。
@@ -207,7 +243,9 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 - 未达标 Rise 仍能发点  
 - Honesty 同日第二次仍发点  
 - `isEntitled('ambient.deep.play')` 可被余额或 SKU 满足  
-- 稀缺款可只花点、或只靠时长、或会员跳过  
+- 稀缺称号 `title.long-sitter` 可只花点、或只靠时长、或会员跳过  
+- 退役叠层滤镜仍盖上莲花或 `#sprite-stage`  
+- `emotion.premium.trigger` 仍在 `FEATURE_CATALOG`  
 
 切片须走 `RISK_MITIGATION_PLAYBOOK.md`：L0 = Lab 逻辑；**L1 才碰产品钩子**；禁止先挂 Idle 数字再补防刷表。
 
@@ -219,10 +257,10 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 
 | 课题 | L0 | L1 | L2 | L3 | 到内部可用 | 到可上架 / 给用户 | 现在能否开工 |
 |---|---|---|---|---|---|---|---|
-| **同坐点** | 2–4 人日 · 纯账本 **（L0 已合 #335）** | 4–6 · 发点钩子 **（L1 #338 已合）** | 4–6 · 兑换 **（L2 本支）** | 3–5 · 安静表面 | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | L2 本支（只兑、不动 Honesty 分档）；L1 TRACKER 待人工；L3 待合入 |
+| **寅币 / Yin's Collections** | 2–4 人日 · 纯账本 **（L0 已合 #335）** | 4–6 · 发点钩子 **（L1 #338 已合）** | 4–6 · 兑换 **（L2 #339 已合）** | 3–5 · Collections 表面 **（#352+#353+#354+#348 已合；本支清供 8）** | **10–16 人日 · 约 2.5–4 周** | L3 后；无第三方模型风险 | 铁律进 PRINCIPLES；L1 TRACKER 待人工 |
 | **桌面端侧智能体** | 2–4 · Metal 探针 | 4–7 · desktop-only 面板 | 8–12 · 人设混合路由 | 8–15 · 生产隔离 | **14–23 人日 · 约 3–5 周** | 依赖定位修订 + 桌面步骤 B 托盘 | **仅宜 L0 实测**；入口未拍板 |
 
-**我认为最合理的统筹**：先开 **同坐点 L0**（不挡收费 DMG、不碰 Electron、回归面在单测里可锁死）。桌面智能体等机型实测 +「禅意倾听者」书面修订后再 L1。同坐点 **L1 硬闸**：开分支前必须书面扫 Honesty / `DailyCompletionStore` / `PracticeDaysStore` 邻接是否有并行 PR（分析师 2026-08-18；口头注意不算过闸）。两个课题都不要插队挡住桌面步骤 B（托盘 = 收费 DMG 前提）。
+**我认为最合理的统筹**：先开 **寅币 L0**（不挡收费 DMG、不碰 Electron、回归面在单测里可锁死）。桌面智能体等机型实测 +「禅意倾听者」书面修订后再 L1。寅币 **L1 硬闸**：开分支前必须书面扫 Honesty / `DailyCompletionStore` / `PracticeDaysStore` 邻接是否有并行 PR（分析师 2026-08-18；口头注意不算过闸）。两个课题都不要插队挡住桌面步骤 B（托盘 = 收费 DMG 前提）。
 
 ---
 
@@ -230,13 +268,16 @@ Idle：现有章继续做「谁陪过你」；同坐点用极小数字或一粒�
 
 - **L0（已合 #335）**：`src/core/focusCoinsLedger.js` + 单测。  
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
-- **L2（本支）**：`applyFocusCoinsRedeem` 花点写入 `ownedIds`（称号 / 稀有章 / `space.lotus-dew` 等）；须弥坐仍双门槛。莲叶晨露只叠已有朵（`#lotus-pond.lotus-pond--dew`），**不**长新花。控制台 `__focusCoins.redeem(skuId)`。无抽屉。Tea / Sanctuary `badgeIds` 不写。  
-- 练习备份 6 key：**L1–L2 不扩**；是否 schema v2 并入钱包放到 L3 再决。  
-- Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换）。  
-- 单测优先于 e2e；L3 若要 DOM 断言，单文件 spec，遵守本地 e2e 硬顶。
+- **本支（#348）**：Breath 坐满按 Stay 档发时长点（`applyBreathPracticeFocusCoinsGrant`）；Leave 仍 0。Focus / Breath picker 下 `#focus-coins-duration-hint`。  
+- **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。清供 id 可兑为卡面；晨露/金线滤镜已拆、不再上主画面。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
+- **L3（#352+#353+#354 已合；清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + toast。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
+- **本旁支（#356）**：珍藏底栏 Play 点播已入库 `waveHello`（`collectionsWaveHello`）。抽屉**不**列 `gesture.wave-hello`。不要求先结缘该 SKU。`welcomeBack` 仍空。  
+
+- Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
+- 单测优先于 e2e；L3 DOM 以 `focusCoinsSurface.test.js` / `FocusCoinsPanelUI.test.js` 为主；完整用户链路须人工。
 
 ---
 
 ## 12. 明确不做（本系统）
 
-换装柜 · 连续日解锁 · 抽奖/FOMO · 用点买 B 权益 · 请茶充点 · AI 次数包 · 报表 SKU · 改场景 D 剧本（除非 L3 另开场景附录）· 两三天「先上金币再补防刷」。
+换装柜 · 连续日解锁 · 抽奖/FOMO · 用点买 B 权益 · 请茶充点 · AI 次数包 · 报表 SKU · 改已有 PNG / 蒲团扣子 / 花园叠层 · 两三天「先上金币再补防刷」。

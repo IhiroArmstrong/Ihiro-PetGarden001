@@ -36,8 +36,8 @@ curl -s http://127.0.0.1:8787/health
 | Method | Path | 说明 |
 |---|---|---|
 | `GET` | `/health` | 健康检查 |
-| `POST` | `/api/daily-message` | stub（mock） |
-| `POST` | `/api/emotion-weight` | stub（mock） |
+| `POST` | `/api/daily-message` | 品味层日签池 overlay（`schemaVersion: 1`） |
+| `POST` | `/api/emotion-weight` | 品味层权重 overlay（`schemaVersion: 1`） |
 | `POST` | `/api/monetization-funnel-ingest` | 意愿漏斗 opt-in 快照 → `TIP_KV` 键 `funnel:v1:{day}:{clientId}`（TTL 90d） |
 | `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（`mode: payment`）→ `{ url }` |
 | `POST` | `/api/create-sanctuary-checkout-session` | Stripe Checkout（`mode: payment` Lifetime）→ `{ url }` |
@@ -70,14 +70,14 @@ curl -s http://127.0.0.1:8787/health
 | `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
 
-`daily-message` / `emotion-weight` 仍是 **mock**，前端未接。产品范围见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」（旧称 v1.1 云端算法）：只上云权重 + 文案池；播放器永远本地。正式接线时响应须带 `schemaVersion`（不认识则客户端降级本地表）；**本 stub 暂不改 mock JSON**。
+`daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。产品范围见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
 
-## Stub 接口（仍保留）
+## 品味层接口
 
-| Method | Path | 必需 JSON 字段 | 固定响应 |
+| Method | Path | 必需 JSON 字段 | 响应要点 |
 |---|---|---|---|
-| `POST` | `/api/daily-message` | `locale`, `localDate` | `{ "message": "mock", "variantSeed": "0" }` |
-| `POST` | `/api/emotion-weight` | `emotionKey`, `sessionPhase` | `{ "variant": "default", "weight": 1.0 }` |
+| `POST` | `/api/daily-message` | `locale`, `localDate` | `{ schemaVersion: 1, locale, pool[14], message, variantSeed }` |
+| `POST` | `/api/emotion-weight` | `emotionKey`, `sessionPhase` | `{ schemaVersion: 1, riseInterruptPool, welcomePool, lightCompletePool, honestyLongMinMinutes: 30, variant, weight }` |
 
 ## 目录结构
 
@@ -97,7 +97,9 @@ cloud/
 > **何时允许执行**：见仓库根 `WORKFLOW.md`「生产 Worker Redeploy」（`RULES_INDEX` → `prod-worker-deploy`）。须用户当回合明确说「部署」；合入 `develop` / CI 绿 **不**授权本步。
 
 ```bash
-# Membership recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
+# Membership / Focus Tiger Base recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
+# Focus Tiger Pro Price price_1U6EB1FuIhgJPGLiuciuX1to is reserved in docs — do not add checkout until L1
+# companion.addon.lifetime Price price_1U6GnXFuIhgJPGLiNlXs0IKe is reserved in docs — do not add checkout until L1
 npx wrangler kv namespace create MEMBERSHIP_KV
 npx wrangler kv namespace create MEMBERSHIP_KV --preview
 # 替换 wrangler.jsonc 占位 id

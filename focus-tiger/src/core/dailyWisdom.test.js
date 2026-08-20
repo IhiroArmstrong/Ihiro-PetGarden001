@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
@@ -27,6 +27,14 @@ import {
   resolveTodayWisdom
 } from './dailyWisdom.js';
 import { FEATURE_CATALOG, isEntitled } from './entitlement/entitlementGate.js';
+import {
+  resetTasteLayerOverlayForTests,
+  setTasteDailyWisdomOverlay
+} from './tasteLayerOverlay.js';
+
+afterEach(() => {
+  resetTasteLayerOverlayForTests();
+});
 
 function createMapStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -254,4 +262,36 @@ test('resolveTodayWisdom surfaces classical attribution when locked', () => {
   assert.equal(resolved.id, 'asai-floating-world');
   assert.match(resolved.text, /floating world/i);
   assert.match(resolved.attribution, /Asai Ryōi/);
+});
+
+test('taste-layer overlay pool text wins for matching locale; mismatch stays local', () => {
+  const storage = createMapStorage();
+  setTasteDailyWisdomOverlay({
+    locale: 'en',
+    pool: DAILY_WISDOM_EN.map((e) => ({
+      id: e.id,
+      text: e.id === 'catch-this-moment' ? 'Overlay catch.' : e.text,
+      attribution: e.attribution
+    }))
+  });
+  const over = resolveTodayWisdom({
+    date: new Date(2026, 7, 12),
+    locale: 'en',
+    storage,
+    skipEntitlementCheck: true,
+    store: new DailyWisdomStore({ storage })
+  });
+  assert.ok(over);
+  if (over.id === 'catch-this-moment') {
+    assert.equal(over.text, 'Overlay catch.');
+  }
+
+  const ja = resolveTodayWisdom({
+    date: new Date(2026, 7, 12),
+    locale: 'ja',
+    storage: createMapStorage(),
+    skipEntitlementCheck: true
+  });
+  assert.ok(ja);
+  assert.notEqual(ja.text, 'Overlay catch.');
 });
