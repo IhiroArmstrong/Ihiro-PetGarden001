@@ -666,7 +666,11 @@ export class NarrowIdleShell {
     }
 
     // keepQuickStart: force Quick Start on (dock ⚡ may be parked/hidden).
-    if (this._keepQuickStart && this.quickHomeBtn) {
+    // Companion 三选一: do not keep the Breath home ball under the cards.
+    const companionOpen =
+      document.querySelector('.session-start-dock__panel:not([hidden])') !=
+      null;
+    if (this._keepQuickStart && this.quickHomeBtn && !companionOpen) {
       this.quickHomeBtn.hidden = false;
       this.quickHomeBtn.disabled = false;
       this.quickHomeBtn.setAttribute('aria-disabled', 'false');

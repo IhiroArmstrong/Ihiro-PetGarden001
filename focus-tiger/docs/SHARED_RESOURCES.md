@@ -34,7 +34,7 @@
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（**Idle / 冷启动**默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`）。**开坐**（Focusing `startSittingMusic` / Breath `playTrackEphemeral`）自动播但不把 `enabled:true` 写回此 key |
-| `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape | 开始/结束铃总开关（默认开）；**间隔节奏** `sessionIntervalMs`：`0`（默认）/ `180000` / `300000`；**觉察卡** `focusAwarenessCardEnabled`（默认开，可单独关）；**Focusing 与 Breath practice 共用**；音量跟 Soundscape volume bar（默认 0.45，非 HTMLAudio 1.0）；资产 `/audio/cues/`；**不**走 Ambient entitlement / Sound Gate |
+| `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape | 开始/结束铃总开关（默认开）；**间隔节奏** `sessionIntervalMs`：`0`（默认）/ `180000` / `300000`；**觉察卡** `focusAwarenessCardEnabled`（默认开，可单独关）；**Focusing 与 Breath practice 共用**；音量跟 Soundscape volume bar（默认 0.45）再乘 **0.5 相对增益**（瞬态磬不得按 HTMLAudio 1.0 或与音乐同一数字就当「一样响」）；资产 `/audio/cues/`；**不**走 Ambient entitlement / Sound Gate |
 | IndexedDB `focus-tiger.user-ambient.v1` | `UserAmbientLibrary` | 用户上传氛围乐 blobs（非 localStorage；重置须 `clearAllUserAmbientTracks`） |
 | `focus-tiger.locale.v1` | `localePreference` / `i18n.setLocale` | 上次选用的 **ready** 语言；**v1.0.0** ready = `en` / `ja`；draft（含 zh）不写入 |
 | `focus-tiger.locale-greeting.v1` | `localeGreeting` / Dispatcher `LANGUAGE_CHANGED` | 切语问候同日限频：`{ dateKey, locales[] }`；ja→`bookReading`；en→`teaDrinking`（皆单程+CapCut）。**写入时机**：`playEmotion` 开播成功后 `markLocaleGreetingPlayed`（resolve 不预扣） |

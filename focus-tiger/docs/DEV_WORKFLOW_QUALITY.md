@@ -414,6 +414,7 @@
 | 2026-08-16 | 升格 N27：实现前冲突扫描；SSOT `FEATURE_CONFLICT_REVIEW.md` / `feature-conflict-review` |
 | 2026-08-18 | 新增 §6.16：Idle 点额头无摸头（已接线假绿 + 误跳 e2e + hit 未盖额头） |
 | 2026-08-20 | 新增 §6.17：精灵占用须一处仲裁（多入口各判睡/欢迎/付款） |
+| 2026-08-21 | 新增 §6.18：Breath 抄 Arrival 微笑、磬声 slider 假绿、Quick Start 退役后 Companion 下残留球 |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |
@@ -681,6 +682,32 @@
 | Y5 | Mood 不得在 boot occupancy 拍板前 `handleStateChange(IDLE)` 抢第一幕 |
 
 **本回合落地**：`spriteChannelArbitration.js` + Honesty `applyDormantSessionDelta` 执行器；冷启动 / visibility / 付款 async / 鹦鹉走总表。§6.7 / §6.9 / §6.11 的产品规则吸收进矩阵，**不**重开 #341/#347。
+
+### 6.18 听感 / 接线抄近路 / Quick Start 退役后残留球（2026-08-21）
+
+**现象（同场书面）**：
+
+1. Breath practice 选 1 min、文案已是 Exhale，阿寅却一直眨眼微笑。  
+2. 开始/间隔/结束 Bell 仍远大于音乐；用户说上次提过音量一直没解决。  
+3. Arrival 走完后 Companion 三选一下面仍冒出 Breath practice 左球。
+
+**不是**没 commit。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 动画抄了短拍 | Arrival「Let's arrive together」短拍故意 `smiling`@4fps（避免硬切闭目）。timed Breath practice 的 `onBreathStart` **原样复制**了这段，把 1/3/5 分钟坐禅覆盖成眨眼循环。场景 S / TRACKER 还把 smiling 写成契约 → 单测按错误实现锁绿。 |
+| B · 音量假绿 | 08-15 把 HTMLAudio `volume` 从 1.0 改成跟氛围条同一数字（0.45）。测试只锁 `el.volume === slider`。磬是瞬态峰值，**同一数字仍比持续音乐响**；用户要的是「至少小一半」的听感，不是 slider 等式。 |
+| C · Quick Start 退役残留 | ⚡ 左球已改开 Breath practice，但 Companion 展开仍走 `keepQuickStart`（为藏 Honesty、避免 `clearStage` 收掉三选一）。宽屏于是在三卡下面留下 Breath 球——职责重叠。窄屏 `ft-narrow-stage-companion` 已藏 home CTAs；宽屏当时**没**对称 `ft-wide-stage-companion`。 |
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| P1 | 复制 Arrival 短拍到 **计时练习** 前，须对照时长语义：短问候 ≠ 闭目同坐。单测须锁「Breath `onBreathStart` 不得 `playEmotion('smiling')`」 |
+| P2 | 音频「跟音乐一样响」不得只锁 slider 数字；瞬态 cue 须另有 **相对增益** 契约（本回合 `SESSION_CUE_RELATIVE_GAIN=0.5`） |
+| P3 | 入口改名/改职责后，扫所有 `keepQuickStart` / 旧 id 宿主：藏 Honesty 的 latch **不等于** 还要露出已退役入口。宽+窄 stage class 须对称 |
+
+**本回合落地**：Breath 保持 Idle 闭目坐禅；磬声 ×0.5；Companion 展开加 `ft-wide-stage-companion` 并藏宽屏 Breath 球。莲花前景/宽屏间距同场另修（z-index + wide spiral），不单开事故章。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

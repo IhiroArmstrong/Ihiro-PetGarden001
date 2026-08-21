@@ -26,7 +26,7 @@
 | **2** | `src/ui/OnboardingHintsUI.js` | 提示发现小圆点（`.ft-hint-discovery-dot`）相对宿主按钮角标 |
 | **2** | `ui-kit/components/streak-meter.js` | `<streak-meter>` host 相对邻居 |
 | **3** | `index.html` | FocusHUD 悬停详情卡（`.ft-hud__detail`） |
-| **3** | `src/character/SpriteSequencePlayer.js` | 2D 情绪序列层（`#sprite-overlay`）：在 canvas 之上、`#ui-overlay` 之下。**子层**：`#lotus-pond`（z 0，花在阿寅后）→ `#sprite-stage`（z 1）→ `#lotus-pond-birth-fx`（z 2，出生瞬间在阿寅前）。不另开全局 z |
+| **3** | `src/character/SpriteSequencePlayer.js` | 2D 情绪序列层（`#sprite-overlay`）：在 canvas 之上、`#ui-overlay` 之下。**子层**：`#sprite-stage`（z 1，阿寅）→ `#lotus-pond`（z 2，**花在阿寅前**，睡觉不得盖住花）→ `#lotus-pond-birth-fx`（z 3，出生瞬间）。不另开全局 z |
 | **3** | `ui-kit/components/streak-meter.js` | 连胜环下方 label 提示 |
 | **4** | `src/effects/LightProgression.js` | 光影 FX 根（`#light-progression-fx`）全屏特效层 |
 | **4** | `src/effects/IncenseGreeting.js` | 一炷香问候粒子/特效全屏层 |

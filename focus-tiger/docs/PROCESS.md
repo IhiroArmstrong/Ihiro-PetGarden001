@@ -58,11 +58,12 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-21（UTC+8） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（旁支待合） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Breath 闭目坐禅 + 磬声减半 + 莲花前景 + Companion 下藏 Breath 球（2026-08-21）**：timed Breath 不再抄 Arrival 眨眼微笑；磬声相对氛围条 ×0.5；`#lotus-pond` 提到阿寅前，宽屏螺旋外扩；Companion 三选一展开时宽屏藏左球。工作流根因 `DEV_WORKFLOW_QUALITY` §6.18。TRACKER 碎片待拼装。
 - **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。**同日用户书面**：三句先按现稿；人工测 How shall we sit? 时看语感；再改只动 locale，不必重开逻辑。Brief `task-companion-mode-copy-coldstart.md`。
 - **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
@@ -100,7 +101,7 @@
 
 - **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
-- **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
+- **莲花池 Slice A（2026-08-17；前景/宽屏 2026-08-21）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋（Vogel packing，**不是** 12 点均分圆）；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶。花在阿寅**前景**（`#lotus-pond` z 2）；宽屏用更大内外半径。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
 - **Electron 步骤 B · 托盘 + 关窗后台（2026-08-18）**：收费 DMG 前提。关红灯 = hide；托盘「显示 / 退出」；**P0-2 / SB-18**：hide-to-tray **不是**走神。对照：窗口可见时切 App 仍走场景 B。权威：`task-electron-desktop-scaffold.md`。TRACKER 场景 AB 待人工。陪伴智能体 **不**绑本验收。
 - **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳。P0-1 `openExternal`；P0-3 Cloud POST；P0-4 extraResources。#331 已合。当前 `desktop:dev` **已是步骤 B**（有托盘）。
