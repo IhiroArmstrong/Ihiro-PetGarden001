@@ -318,6 +318,7 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
+import { createIdleSecondaryPanelCoordinator } from './ui/idleSecondaryPanels.js';
 /** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 10。开表前无 URL 时再出时长 chip。 */
 const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 /** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
@@ -1017,7 +1018,10 @@ async function init() {
     }
   });
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
+  /** @type {{ close: (opts?: object) => void }} */
+  const idleSecondaryPanelHost = { close: () => {} };
   const membershipUnlockUI = new MembershipUnlockUI(document.body, {
+    onOpen: () => idleSecondaryPanelHost.close({ except: 'membership' }),
     onEntitlementChanged: () => {
       // Ritual lock rows re-read isEntitled on next menu/drawer open.
       tipKindnessBadgesChrome.refresh();
@@ -2057,6 +2061,7 @@ async function init() {
     {
       sessionCues,
       onPanelOpened: () => {
+        idleSecondaryPanelHost.close({ except: 'soundscape' });
         onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
       },
       onTrackChosen: () => {
@@ -2218,7 +2223,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
-      closeGrowthOverlayCards();
+      idleSecondaryPanelHost.close();
       momentWhisperUI.hide({ immediate: true });
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
@@ -2313,11 +2318,19 @@ async function init() {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
     },
+    onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
     onWellnessFirstDismiss: () => {
       maybeOfferFiveMomentsCompassFirstCard();
     }
   });
   onboardingHintHost.hints = onboardingHints;
+  const { closeIdleSecondaryPanels } = createIdleSecondaryPanelCoordinator({
+    membershipUnlockUI,
+    getOnboardingHints: () => onboardingHintHost.hints,
+    ambientSoundscapeUI,
+    closeGrowthOverlayCards
+  });
+  idleSecondaryPanelHost.close = closeIdleSecondaryPanels;
   // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
   // same contract as `__ambientSoundscape` / `__honestyBridge`.
   window.__onboardingHints = onboardingHints;
