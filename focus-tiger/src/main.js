@@ -126,6 +126,7 @@ import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
+import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -226,30 +227,36 @@ import {
   SCENE_ANIM_EVENTS,
   markLocaleGreetingPlayed,
   playOptionsForLocaleGreeting,
+  readDailySceneAnimState,
   resolveSceneAnimation,
-  shouldAttemptLateNightOnBoot,
   pickRiseInterruptEmotion,
   isRiseInterruptHoldEmotion,
   LATE_NIGHT_FORCE_DORMANT_KEY
 } from './core/sceneAnimationDispatcher.js';
+import { isLateNightHour } from './core/lateNightHour.js';
+import {
+  SPRITE_OCCUPANCY,
+  SPRITE_SOURCES,
+  arbitrateSpriteChannel,
+  dormantDeltaFromDecision,
+  resolveBootSpriteOccupancy,
+  resolveSessionEndSpriteOccupancy,
+  resolveVisibilitySpriteOccupancy
+} from './core/spriteChannelArbitration.js';
 import {
   isLateNightCloakHoldEmotion,
   resolveForegroundReturnAction,
   resolveSessionEndHoldEmotion,
-  shouldAllowEnterDormantOnForegroundReturn,
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
-import { prefetchTasteLayer } from './core/tasteLayerSync.js';
 import {
-  getTasteDailyWisdomOverlay,
-  getTasteWeightOverlay,
-  resetTasteLayerOverlayForTests
-} from './core/tasteLayerOverlay.js';
-import {
-  WELLNESS_DAY_BANDS,
-  resolveWellnessDayBand
-} from './character/cloakVariant.js';
+  getTasteLayerStatus,
+  prefetchTasteLayer,
+  resetTasteLayerSyncForTests
+} from './core/tasteLayerSync.js';
+import { resetTasteLayerOverlayForTests } from './core/tasteLayerOverlay.js';
+import { resolveWellnessDayBand } from './character/cloakVariant.js';
 import {
   HonestyCheckInController,
   resolveHonestyBreathMs
@@ -362,7 +369,8 @@ function showDevLabToast(message, durationMs = 8000) {
 async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
-  void prefetchTasteLayer({ search: location.search, locale: getLocale() });
+  // Taste overlay: do NOT fetch here — races `spritePlayer.preload()` and
+  // Arrival/Honesty 1s CapCut (RB-20260820-L330). Kick after sprites + welcome/idle.
 
   // PWA: network-only SW in production only (no Cache Storage).
   // Electron Step A: never register — custom protocol + extraResources.
@@ -374,11 +382,13 @@ async function init() {
   document.title = t('APP_TITLE');
   const loadingMask = document.getElementById('loading-mask');
   if (loadingMask) loadingMask.textContent = t('LOADING');
+  /** Late-bound so locale change can wait for Arrival/Honesty chrome. */
+  let prefetchTasteLayerForLocale = () => {};
   onLocaleChange(() => {
     document.title = t('APP_TITLE');
     const mask = document.getElementById('loading-mask');
     if (mask) mask.textContent = t('LOADING');
-    void prefetchTasteLayer({ search: location.search, locale: getLocale() });
+    prefetchTasteLayerForLocale();
   });
 
   const app = document.querySelector('#app');
@@ -472,6 +482,13 @@ async function init() {
       focusDurationPicker?.isOpen?.() === true
     );
   }
+  prefetchTasteLayerForLocale = () => {
+    void prefetchTasteLayer({
+      search: location.search,
+      locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+  };
 
   /** Phase 2a/2b 气泡；在下方构造后赋值（tryPlay 闭包晚绑定） */
   let flowerBlowWelcomeBubble =
@@ -494,13 +511,20 @@ async function init() {
       reason: decision.reason
     };
     // Expand A：深夜 Idle → 进 DORMANT 披斗篷（替代旧 yawn/tea 池）。
+    // Occupancy / overlay / 2h 由仲裁层决定，不在此硬 forceDormant。
     if (decision.emotionKey === LATE_NIGHT_FORCE_DORMANT_KEY) {
-      if (stateManager.state === STATES.IDLE) {
-        honestyCheckIn.syncDormantState({
-          allowEnterDormant: true,
-          forceDormant: true
-        });
-      }
+      applySpriteChannelDecision(
+        arbitrateSpriteChannel({
+          intent: SPRITE_OCCUPANCY.DORMANT_ENTER,
+          source: SPRITE_SOURCES.LATE_NIGHT_IDLE,
+          context: {
+            sessionState: stateManager.state,
+            overlayBusy: isSceneAnimOverlayBusy(),
+            occupancy: spriteOccupancy,
+            now: new Date()
+          }
+        })
+      );
       return decision;
     }
     const started = emotionController.playEmotion(
@@ -627,15 +651,37 @@ async function init() {
   let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
+  /** Occupancy winner for Yin sprites (sleep / welcome / payment / ceremony). */
+  let spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+  /** Filled after Honesty exists — Stripe confirm may resolve after boot sleep. */
+  let applyPaymentThanksSprite = (kind) => {
+    emotionController.playEmotion(emotionKeyForPaymentThanks(kind));
+  };
 
   const WELCOME_EMOTION_KEYS = new Set(['magicBookReading', 'nodGreeting']);
   function isColdStartWelcomePlaying() {
     return WELCOME_EMOTION_KEYS.has(emotionController.getCurrentEmotionKey());
   }
   function playParrotMessengerNow() {
+    const decision = arbitrateSpriteChannel({
+      intent: SPRITE_OCCUPANCY.PARROT,
+      source: SPRITE_SOURCES.PARROT,
+      context: {
+        sessionState: stateManager.state,
+        overlayBusy: isSceneAnimOverlayBusy(),
+        occupancy: spriteOccupancy,
+        now: new Date()
+      }
+    });
+    if (decision.occupy !== SPRITE_OCCUPANCY.PARROT) return;
+    spriteOccupancy = decision.occupy;
     parrotMessengerPlayedThisPageSession = true;
     pendingParrotMessengerAfterWelcome = false;
-    emotionController.playEmotion('parrotEarVisit');
+    emotionController.playEmotion('parrotEarVisit', {
+      onComplete: () => {
+        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      }
+    });
   }
   /** 欢迎已结束/被打断后：补播挂起的信使（不依赖 sticky latch） */
   function flushPendingParrotMessengerAfterWelcome() {
@@ -1147,17 +1193,13 @@ async function init() {
   void bootSanctuaryReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
       monetizationFunnelStore.checkoutComplete('sanctuary', 'return');
-      emotionController.playEmotion(
-        emotionKeyForPaymentThanks('sanctuary')
-      );
+      applyPaymentThanksSprite('sanctuary');
     }
   });
   void bootMembershipReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
       monetizationFunnelStore.checkoutComplete('membership', 'return');
-      emotionController.playEmotion(
-        emotionKeyForPaymentThanks('membership')
-      );
+      applyPaymentThanksSprite('membership');
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
@@ -1193,6 +1235,12 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  supportYinModalUI.setShouldLeadWithTea(() =>
+    shouldLeadSupportModalWithTea({
+      lifetimeMinutes: lotusPondStore.getLifetimeMinutes(),
+      practicedDayCount: practiceDaysStore.getPracticedDateKeys().length
+    })
+  );
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
       documentElement: document.documentElement,
@@ -1200,13 +1248,17 @@ async function init() {
     });
   }
   window.__tasteLayer = {
-    status: () => ({
-      weights: Boolean(getTasteWeightOverlay()),
-      dailyWisdom: Boolean(getTasteDailyWisdomOverlay()),
-      honestyLongMinMinutes: getTasteWeightOverlay()?.honestyLongMinMinutes ?? null
-    }),
-    prefetch: () => prefetchTasteLayer({ search: location.search, locale: getLocale() }),
-    reset: () => resetTasteLayerOverlayForTests()
+    status: () => getTasteLayerStatus(),
+    prefetch: () =>
+      prefetchTasteLayer({
+        search: location.search,
+        locale: getLocale(),
+        canApply: () => !isSceneAnimOverlayBusy()
+      }),
+    reset: () => {
+      resetTasteLayerSyncForTests();
+      resetTasteLayerOverlayForTests();
+    }
   };
   window.__focusCoins = {
     getBalance: () => focusCoinsStore.getBalance(),
@@ -1333,6 +1385,43 @@ async function init() {
     },
     now
   });
+
+  function applySpriteChannelDecision(decision) {
+    if (!decision) return decision;
+    honestyCheckIn.applyDormantSessionDelta(
+      dormantDeltaFromDecision(decision.sessionDelta)
+    );
+    if (
+      decision.occupy &&
+      decision.occupy !== SPRITE_OCCUPANCY.KEEP
+    ) {
+      spriteOccupancy = decision.occupy;
+    }
+    if (decision.play?.emotionKey) {
+      emotionController.playEmotion(decision.play.emotionKey, {
+        holdPose: decision.play.holdPose === true
+      });
+    }
+    syncIdleYinTap();
+    return decision;
+  }
+
+  applyPaymentThanksSprite = (kind) => {
+    const emotionKey = emotionKeyForPaymentThanks(kind);
+    applySpriteChannelDecision(
+      arbitrateSpriteChannel({
+        intent: SPRITE_OCCUPANCY.PAYMENT_THANKS,
+        source: SPRITE_SOURCES.PAYMENT_ASYNC,
+        emotionKey,
+        context: {
+          sessionState: stateManager.state,
+          overlayBusy: isSceneAnimOverlayBusy(),
+          occupancy: spriteOccupancy,
+          now: new Date()
+        }
+      })
+    );
+  };
 
   /** 在 beginFocusWithMode 定义后填入 onModeSelected / onAutoStartNeedsArrival / onExpandedChange */
   const companionModeHandlers = {};
@@ -1566,7 +1655,8 @@ async function init() {
         sessionState: stateManager.state,
         focusing: stateManager.state === STATES.FOCUSING,
         overlayBusy: isIdleYinTapOverlayBusy(),
-        emotionKey: emotionController.getCurrentEmotionKey()
+        emotionKey: emotionController.getCurrentEmotionKey(),
+        occupancy: spriteOccupancy
       })
     );
   }
@@ -1585,7 +1675,8 @@ async function init() {
             sessionState: stateManager.state,
             focusing: stateManager.state === STATES.FOCUSING,
             overlayBusy: isIdleYinTapOverlayBusy(),
-            emotionKey: emotionController.getCurrentEmotionKey()
+            emotionKey: emotionController.getCurrentEmotionKey(),
+            occupancy: spriteOccupancy
           })
         ) {
           syncIdleYinTap();
@@ -1789,10 +1880,12 @@ async function init() {
       visibleMs: 4_500
     });
     endRitualFlowChrome();
+    spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
     emotionController.playEmotion('sessionComplete', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,
       freezeUntilCrossFadeEnds: true,
       onComplete: () => {
+        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
         syncHonestyIdleEntry();
       }
     });
@@ -1841,6 +1934,7 @@ async function init() {
       visibleMs: 4_500
     });
     endMicroRitualChrome();
+    spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE, {
       playOptions: {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
@@ -2678,6 +2772,14 @@ async function init() {
     // Reflect 仍是同坐：达标走庆祝 / 轻完成 / 里程碑，不得 cloakSleep 进未填的 Reflection。
     // 深夜休息仍走 Expand A（Idle ≥23 → DORMANT），不在本分支抢戏。
     const teaTipReason = milestoneNode ? 'milestone' : 'session-complete';
+    const endDec = resolveSessionEndSpriteOccupancy({
+      completed: true,
+      preferMilestoneGlow: Boolean(milestoneNode),
+      hasCelebratedToday: dailyCompletionStore.hasCelebratedToday()
+    });
+    if (endDec.occupy !== SPRITE_OCCUPANCY.KEEP) {
+      spriteOccupancy = endDec.occupy;
+    }
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
       preferMilestoneGlow: Boolean(milestoneNode),
@@ -2991,6 +3093,10 @@ async function init() {
       // Rise：加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%）hold 进 Reflection；
       // 关面板后再回 idle。深夜亦同——不得披斗篷睡着问「今天注意到什么」。
       // MoodController 在 IDLE 时不覆盖池内 hold 键。
+      const riseOccupy = resolveSessionEndSpriteOccupancy({ completed: false });
+      if (riseOccupy.occupy !== SPRITE_OCCUPANCY.KEEP) {
+        spriteOccupancy = riseOccupy.occupy;
+      }
       const riseEmotion = resolveSessionEndHoldEmotion({
         date: now(),
         pickDaytimeRiseEmotion: pickRiseInterruptEmotion
@@ -3060,47 +3166,109 @@ async function init() {
   const moodController = new MoodController(stateManager, emotionController, {
     onCelebrateComplete: finishCompletedSession
   });
-  // StateManager 初始 IDLE 不会主动发 onChange；显式启动 observer baseline。
-  moodController.handleStateChange(stateManager.state);
+  // Do not play Mood Idle before the boot occupancy winner (avoids an Idle
+  // flash under welcome / flower / cloak). Mood still observes later DORMANT.
 
-  // 须在 wrap showPrompt/hide 与 MoodController 接线之后，否则首屏 Honesty 无视觉
-  // Wellness 冷启动时段（2A）：深夜可披斗篷；清晨苏醒仪式；白天仍禁 2h 戳开场即睡。
-  // 2026-08-06 纠正：Day1 / ≥3 日久别吹花 **高于** wellness——首次看产品必须先吹花。
-  const wellnessBand = resolveWellnessDayBand(new Date());
+  const bootNow = new Date();
+  const bootStorage =
+    typeof localStorage !== 'undefined' ? localStorage : null;
+  const wellnessBand = resolveWellnessDayBand(bootNow);
   const flowerForceBoot = resolveFlowerWelcomeForce({
-    storage: typeof localStorage !== 'undefined' ? localStorage : null,
-    now: () => new Date(),
-    enabled: isFlowerWelcomeEnabled({
-      storage: typeof localStorage !== 'undefined' ? localStorage : null
-    })
+    storage: bootStorage,
+    now: () => bootNow,
+    enabled: isFlowerWelcomeEnabled({ storage: bootStorage })
   });
-  const preferFlowerOverWellness =
-    shouldPreferFlowerWelcomeOverWellness(flowerForceBoot);
-  let skipWelcomeForWellness = false;
-  if (preferFlowerOverWellness) {
-    honestyCheckIn.onAppReady();
-    skipWelcomeForWellness = false;
-  } else if (wellnessBand === WELLNESS_DAY_BANDS.LATE_NIGHT) {
-    honestyCheckIn.syncDormantState({
-      allowEnterDormant: true,
-      forceDormant: true
+  const skipWelcomeForCheckout = checkoutWelcomeGate.skipWelcome;
+  const paymentThanksAtWelcome = checkoutWelcomeGate.playAtWelcomeSlot;
+  const welcomeUsed =
+    readDailySceneAnimState(bootStorage, () => bootNow).welcome === true;
+  const bootDecision = resolveBootSpriteOccupancy({
+    now: bootNow,
+    sessionState: stateManager.state,
+    overlayBusy: isSceneAnimOverlayBusy(),
+    wellnessBand,
+    flowerForce: shouldPreferFlowerWelcomeOverWellness(flowerForceBoot),
+    checkoutThanksKind: checkoutReturnKind,
+    playAtWelcomeSlot: paymentThanksAtWelcome,
+    welcomeAvailable: !welcomeUsed && !skipWelcomeForCheckout,
+    lateNight: isLateNightHour(bootNow)
+  });
+
+  honestyCheckIn.onAppReady();
+  if (
+    bootDecision.occupy &&
+    bootDecision.occupy !== SPRITE_OCCUPANCY.KEEP
+  ) {
+    spriteOccupancy = bootDecision.occupy;
+  }
+
+  let tastePrefetchStarted = false;
+  function startTastePrefetchOnce() {
+    if (tastePrefetchStarted) return;
+    tastePrefetchStarted = true;
+    void prefetchTasteLayer({
+      search: location.search,
+      locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
     });
+  }
+  window.setTimeout(startTastePrefetchOnce, 12000);
+
+  const welcomePlayOptions = {
+    onComplete: () => {
+      spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      startTastePrefetchOnce();
+      const playMessenger =
+        pendingParrotMessengerAfterWelcome &&
+        inAppReminderBannerUI.isVisible();
+      window.setTimeout(() => {
+        if (playMessenger) {
+          playParrotMessengerNow();
+          return;
+        }
+        pendingParrotMessengerAfterWelcome = false;
+        syncInAppReminderBanner();
+      }, 0);
+    }
+  };
+
+  if (bootDecision.sessionDelta === 'enter-dormant') {
+    honestyCheckIn.applyDormantSessionDelta('enter-dormant');
     mindfulToast.show(t('WELLNESS_LATE_NIGHT_REST'), { visibleMs: 5200 });
-    skipWelcomeForWellness = true;
-  } else if (wellnessBand === WELLNESS_DAY_BANDS.MORNING) {
-    honestyCheckIn.onAppReady();
+    startTastePrefetchOnce();
+  } else if (bootDecision.occupy === SPRITE_OCCUPANCY.MORNING_WAKE) {
     emotionController.playEmotion('dormantWake', {
       holdPose: true,
       onComplete: () => {
+        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
         emotionController.playEmotion('idle', {
           crossFadeMs: CAPCUT_DISSOLVE_MS
         });
+        window.setTimeout(startTastePrefetchOnce, CAPCUT_DISSOLVE_MS + 250);
       }
     });
     mindfulToast.show(t('WELLNESS_MORNING_WAKE'), { visibleMs: 5200 });
-    skipWelcomeForWellness = true;
+  } else if (
+    bootDecision.occupy === SPRITE_OCCUPANCY.PAYMENT_THANKS &&
+    paymentThanksAtWelcome
+  ) {
+    emotionController.playEmotion(paymentThanksAtWelcome, {
+      onComplete: () => {
+        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        startTastePrefetchOnce();
+      }
+    });
+  } else if (
+    bootDecision.occupy === SPRITE_OCCUPANCY.FLOWER ||
+    bootDecision.occupy === SPRITE_OCCUPANCY.WELCOME
+  ) {
+    const welcomeStarted = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+      playOptions: welcomePlayOptions
+    });
+    if (!welcomeStarted?.play) startTastePrefetchOnce();
   } else {
-    honestyCheckIn.onAppReady();
+    emotionController.playEmotion('idle');
+    startTastePrefetchOnce();
   }
   retentionFunnelStore.noteAppOpen();
   syncHonestyIdleEntry();
@@ -3171,54 +3339,8 @@ async function init() {
     }
   }
 
-  // Slice B：冷启动欢迎池（同日 1 次）。深夜生命感（≥23:00，1h 冷却）
-  // 不得与欢迎同 tick 叠播——否则 ≥23:00 时 tea/yawn 会盖掉书/点头（见 DEV_WORKFLOW §6.9）。
-  // wellness 深夜披斗篷 / 清晨苏醒仪式时跳过欢迎与 yawn/tea，避免抢戏。
-  // 提醒横幅可与欢迎并存文案，但鹦鹉信使不得抢 Welcome（欢迎结束后补播）。
-  // Checkout 回跳：跳过欢迎；Tip 在本 slot 播 teaDrinking（Sanctuary/Membership 等 confirm）。
-  const skipWelcomeForCheckout = checkoutWelcomeGate.skipWelcome;
-  const paymentThanksAtWelcome = checkoutWelcomeGate.playAtWelcomeSlot;
-  if (paymentThanksAtWelcome) {
-    emotionController.playEmotion(paymentThanksAtWelcome);
-  }
-  const welcomeBoot =
-    skipWelcomeForWellness || skipWelcomeForCheckout
-      ? {
-          play: false,
-          emotionKey: paymentThanksAtWelcome,
-          reason: skipWelcomeForCheckout ? 'checkout-return' : 'wellness-band'
-        }
-      : tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
-          playOptions: {
-            onComplete: () => {
-              // 必须延后：_finishOneShot 在 onComplete 之后还会 playEmotion('idle')，
-              // 同步播信使会被立刻盖掉（e2e 见 played=true 但 key 永为 idle）。
-              const playMessenger =
-                pendingParrotMessengerAfterWelcome &&
-                inAppReminderBannerUI.isVisible();
-              window.setTimeout(() => {
-                if (playMessenger) {
-                  playParrotMessengerNow();
-                  return;
-                }
-                pendingParrotMessengerAfterWelcome = false;
-                syncInAppReminderBanner();
-              }, 0);
-            }
-          }
-        });
-  if (
-    !skipWelcomeForWellness &&
-    !skipWelcomeForCheckout &&
-    shouldAttemptLateNightOnBoot(welcomeBoot)
-  ) {
-    tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
-  }
-
-  // First paint: if welcome did not start a sprite, land Idle so mask lifts on Yin.
-  if (!welcomeBoot?.play && !paymentThanksAtWelcome) {
-    emotionController.playEmotion('idle');
-  }
+  // Occupancy already decided the first paint (welcome / flower / thanks /
+  // cloak / idle). Do not also fire LATE_NIGHT on the same tick.
   // Lift mask on next frame after sprite overlay has a chance to show.
   requestAnimationFrame(() => {
     PoseManager.setLoadingMaskVisible(false);
@@ -3248,23 +3370,40 @@ async function init() {
         hiddenMs
       }) === FOREGROUND_RETURN_ACTIONS.LONG_AWAY_WAKE
     ) {
-      emotionController.playEmotion('dormantWake', {
-        holdPose: true,
-        onComplete: () => {
-          emotionController.playEmotion('idle', {
-            crossFadeMs: CAPCUT_DISSOLVE_MS
-          });
+      const wake = arbitrateSpriteChannel({
+        intent: SPRITE_OCCUPANCY.LONG_AWAY_WAKE,
+        source: SPRITE_SOURCES.VISIBILITY,
+        emotionKey: 'dormantWake',
+        context: {
+          sessionState: stateManager.state,
+          overlayBusy: isSceneAnimOverlayBusy(),
+          occupancy: spriteOccupancy,
+          now: new Date()
         }
       });
-    } else {
-      // Short tab hide after Welcome must not cloak on a stale 2h session-end.
-      const allowEnterDormant = shouldAllowEnterDormantOnForegroundReturn({
-        hiddenMs
-      });
-      honestyCheckIn.syncDormantState({ allowEnterDormant });
-      if (allowEnterDormant) {
-        tryPlaySceneAnim(SCENE_ANIM_EVENTS.LATE_NIGHT);
+      if (wake.occupy === SPRITE_OCCUPANCY.LONG_AWAY_WAKE) {
+        spriteOccupancy = wake.occupy;
+        emotionController.playEmotion('dormantWake', {
+          holdPose: true,
+          onComplete: () => {
+            spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+            emotionController.playEmotion('idle', {
+              crossFadeMs: CAPCUT_DISSOLVE_MS
+            });
+          }
+        });
       }
+    } else {
+      applySpriteChannelDecision(
+        resolveVisibilitySpriteOccupancy({
+          sessionState: stateManager.state,
+          overlayBusy: isSceneAnimOverlayBusy(),
+          occupancy: spriteOccupancy,
+          hiddenMs,
+          lastEndedAt: focusSessionEndStore.getLastEndedAt(),
+          now: new Date()
+        })
+      );
     }
     syncInAppReminderBanner();
     void refreshSoftUpdateAvailability();

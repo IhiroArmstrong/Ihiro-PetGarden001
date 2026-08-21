@@ -16,15 +16,21 @@ import {
 import {
   getTasteDailyWisdomOverlay,
   getTasteWeightOverlay,
+  isTasteDailyWisdomCloudConfirmed,
+  isTasteWeightCloudConfirmed,
   resetTasteLayerOverlayForTests,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
 import {
+  flushPendingTasteLayerApply,
+  getTasteLayerStatus,
   isTasteLayerFetchEnabled,
-  prefetchTasteLayer
+  prefetchTasteLayer,
+  resetTasteLayerSyncForTests
 } from './tasteLayerSync.js';
 
 afterEach(() => {
+  resetTasteLayerSyncForTests();
   resetTasteLayerOverlayForTests();
 });
 
@@ -46,6 +52,13 @@ const freezeDaily = {
   }))
 };
 
+function shiftedWeight() {
+  return {
+    ...freezeWeight,
+    honestyLongMinMinutes: 45
+  };
+}
+
 test('isTasteLayerFetchEnabled is off without cloud URL or with ?tasteLayer=0', () => {
   assert.equal(isTasteLayerFetchEnabled({ cloudBaseUrl: '', search: '' }), false);
   assert.equal(
@@ -64,12 +77,13 @@ test('isTasteLayerFetchEnabled is off without cloud URL or with ?tasteLayer=0', 
   );
 });
 
-test('prefetchTasteLayer applies valid v1 overlays', async () => {
+test('prefetchTasteLayer confirms freeze-identical v1 without retaining overlay copies', async () => {
   const applied = await prefetchTasteLayer({
     search: '',
     cloudBaseUrl: 'https://example.test',
     locale: 'en',
     localDate: '2026-08-18',
+    waitApplyMs: 0,
     postJson: async (path) => {
       if (path === '/api/emotion-weight') return freezeWeight;
       if (path === '/api/daily-message') return freezeDaily;
@@ -77,8 +91,54 @@ test('prefetchTasteLayer applies valid v1 overlays', async () => {
     }
   });
   assert.deepEqual(applied, { weights: true, dailyWisdom: true });
-  assert.equal(getTasteWeightOverlay()?.honestyLongMinMinutes, 30);
-  assert.equal(getTasteDailyWisdomOverlay()?.pool.length, 14);
+  assert.equal(getTasteWeightOverlay(), null);
+  assert.equal(getTasteDailyWisdomOverlay(), null);
+  assert.equal(isTasteWeightCloudConfirmed(), true);
+  assert.equal(isTasteDailyWisdomCloudConfirmed(), true);
+  assert.deepEqual(getTasteLayerStatus(), {
+    weights: true,
+    dailyWisdom: true,
+    honestyLongMinMinutes: 30
+  });
+});
+
+test('prefetchTasteLayer retains overlay when weights differ from local freeze', async () => {
+  const applied = await prefetchTasteLayer({
+    search: '',
+    cloudBaseUrl: 'https://example.test',
+    locale: 'en',
+    waitApplyMs: 0,
+    postJson: async (path) => {
+      if (path === '/api/emotion-weight') return shiftedWeight();
+      if (path === '/api/daily-message') return freezeDaily;
+      throw new Error(`unexpected ${path}`);
+    }
+  });
+  assert.deepEqual(applied, { weights: true, dailyWisdom: true });
+  assert.equal(getTasteWeightOverlay()?.honestyLongMinMinutes, 45);
+  assert.equal(getTasteDailyWisdomOverlay(), null);
+  assert.equal(getTasteLayerStatus().honestyLongMinMinutes, 45);
+});
+
+test('prefetchTasteLayer defers retaining a different table while canApply is false', async () => {
+  const applied = await prefetchTasteLayer({
+    search: '',
+    cloudBaseUrl: 'https://example.test',
+    locale: 'en',
+    waitApplyMs: 0,
+    canApply: () => false,
+    postJson: async (path) => {
+      if (path === '/api/emotion-weight') return shiftedWeight();
+      if (path === '/api/daily-message') return freezeDaily;
+      throw new Error(`unexpected ${path}`);
+    }
+  });
+  assert.deepEqual(applied, { weights: true, dailyWisdom: true });
+  assert.equal(getTasteWeightOverlay(), null);
+  assert.equal(isTasteWeightCloudConfirmed(), false);
+  assert.equal(flushPendingTasteLayerApply(() => true), true);
+  assert.equal(getTasteWeightOverlay()?.honestyLongMinMinutes, 45);
+  assert.equal(isTasteWeightCloudConfirmed(), true);
 });
 
 test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async () => {
@@ -86,15 +146,18 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     search: '',
     cloudBaseUrl: 'https://example.test',
     locale: 'en',
+    waitApplyMs: 0,
     postJson: async () => ({ variant: 'default', weight: 1, message: 'mock' })
   });
   assert.deepEqual(mock, { weights: false, dailyWisdom: false });
   assert.equal(getTasteWeightOverlay(), null);
+  assert.equal(isTasteWeightCloudConfirmed(), false);
 
   const failed = await prefetchTasteLayer({
     search: '',
     cloudBaseUrl: 'https://example.test',
     locale: 'en',
+    waitApplyMs: 0,
     postJson: async () => {
       const err = new Error('HTTP 500');
       err.status = 500;
@@ -108,6 +171,7 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     cloudBaseUrl: 'https://example.test',
     locale: 'en',
     timeoutMs: 20,
+    waitApplyMs: 0,
     postJson: async () => new Promise(() => {})
   });
   assert.deepEqual(timed, { weights: false, dailyWisdom: false });
@@ -118,6 +182,7 @@ test('prefetchTasteLayer does not fetch when disabled', async () => {
   const applied = await prefetchTasteLayer({
     search: '?tasteLayer=0',
     cloudBaseUrl: 'https://example.test',
+    waitApplyMs: 0,
     postJson: async () => {
       calls += 1;
       return freezeWeight;

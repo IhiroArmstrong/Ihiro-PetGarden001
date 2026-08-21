@@ -46,6 +46,9 @@ const DAILY_WISDOM_IDS = Object.freeze(DAILY_WISDOM_EN.map((e) => e.id));
 let weightOverlay = null;
 /** @type {TasteDailyWisdomOverlay | null} */
 let dailyWisdomOverlay = null;
+/** Cloud v1 validated even when we skip retaining a freeze-identical copy. */
+let weightCloudOk = false;
+let dailyCloudOk = false;
 
 /**
  * @param {unknown} raw
@@ -171,9 +174,31 @@ export function setTasteDailyWisdomOverlay(next) {
   dailyWisdomOverlay = next;
 }
 
+/** Mark cloud weights as schemaVersion 1 OK without retaining a duplicate freeze copy. */
+export function markTasteWeightCloudOk() {
+  weightCloudOk = true;
+}
+
+/** Mark cloud daily-wisdom as schemaVersion 1 OK without retaining a duplicate freeze copy. */
+export function markTasteDailyWisdomCloudOk() {
+  dailyCloudOk = true;
+}
+
+/** @returns {boolean} */
+export function isTasteWeightCloudConfirmed() {
+  return weightCloudOk || Boolean(weightOverlay);
+}
+
+/** @returns {boolean} */
+export function isTasteDailyWisdomCloudConfirmed() {
+  return dailyCloudOk || Boolean(dailyWisdomOverlay);
+}
+
 export function resetTasteLayerOverlayForTests() {
   weightOverlay = null;
   dailyWisdomOverlay = null;
+  weightCloudOk = false;
+  dailyCloudOk = false;
 }
 
 /**

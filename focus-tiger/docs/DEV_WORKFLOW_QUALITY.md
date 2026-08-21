@@ -35,9 +35,10 @@
 | 2026-08-14 | 列多个方案时须同时给出「我认为最合理的」一项 | **N14b** + `recommend-most-reasonable` |
 | 2026-08-16 | 实现前须对照已上线场景做冲突扫描；有疑点先停 | **N27** + `feature-conflict-review` |
 | 2026-08-18 | Idle 点额头无摸头：已接线假绿 + 误跳 e2e + hit 未盖额头 | **§6.16** |
+| 2026-08-20 | 睡/欢迎/付款回跳多入口各判一次 → 同一只老虎两个答案 | **§6.17** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -412,6 +413,7 @@
 | 2026-08-05 | 升格 N14a：「待你决定」伪选项标（不合理）；防「合理则办」误授权 |
 | 2026-08-16 | 升格 N27：实现前冲突扫描；SSOT `FEATURE_CONFLICT_REVIEW.md` / `feature-conflict-review` |
 | 2026-08-18 | 新增 §6.16：Idle 点额头无摸头（已接线假绿 + 误跳 e2e + hit 未盖额头） |
+| 2026-08-20 | 新增 §6.17：精灵占用须一处仲裁（多入口各判睡/欢迎/付款） |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |
@@ -652,6 +654,33 @@
 | H5 | TRACKER 写「已接线」而状态仍「待人工测试」= **未验收**；不得在 PROCESS 速览暗示用户可当完成 |
 
 **本回合落地**：额头 hit（`top:30%`）+ `wrapPlayEmotionWithIdleYinTapSync` + 隐藏 canvas 不抢点 + `e2e/idle-yin-tap.spec.js`；TRACKER 记入 08-18 反馈（`RB-20260818-L379`）。
+
+### 6.17 多入口各判「该不该睡 / 第一幕播什么」· 分散仲裁（2026-08-20）
+
+**现象**：#341（Welcome 后短切 tab 披毯）与 #347（Reflection 开着 cloakSleep）修好合入后，同类事故仍能从**另一入口**长出来——冷启动 wellness 强制睡、回前台 `syncDormantState` + `LATE_NIGHT`、付款回跳 `playEmotion`、Mood 先播 Idle 再欢迎。用户看到的是「同一只老虎、同一时刻、两个答案」。
+
+**不是**又写错一个 `if`。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 已合补丁只锁单入口 | #341 锁 visibility `hiddenMs ≥2h`；#347 锁会话结束不得 cloak。**没有**一张总表规定付款 / 叠层 / 凌晨 0–6 / 冷启动谁先。 |
+| B · 小时窗分裂 | wellness 冷启动 `hour ≥ 23 \|\| hour < 6`；Dispatcher `isLateNightHour` 曾只认 `≥23`。凌晨 2 点：冷启动睡、切 tab 回来不睡。 |
+| C · 执行器兼裁判 | `HonestyCheckInController.syncDormantState` 自己算 `force \|\| 2h 戳`；`main` 再平行 `tryPlaySceneAnim(LATE_NIGHT)`。后写的入口看不到先写的占用。 |
+| D · 付款回跳在睡之后 | Tip 冷启动 slot 与 Sanctuary/Membership async confirm 直接 `playEmotion`，不经过占用层 → 深夜先披毯再致谢，或致谢被盖掉。 |
+
+**因果一句话**：**「Yin 现在播什么」被复制进多个 caller**，每个都局部正确，合在一起互相否决。再修单点 `if` 只会留下新的分裂点。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| Y1 | 新的睡 / 欢迎 / 会话结束 / 付款致谢路径必须向 `spriteChannelArbitration` **报告意图**，禁止在 `main.js` 产品路径裸 `forceDormant` / `playEmotion('cloakSleep')` |
+| Y2 | 深夜窗只有一处：`lateNightHour.js`（≥23 或 &lt;6，与 wellness 对齐）。Dispatcher / cloakVariant **re-export**，禁止再抄一份小时判断 |
+| Y3 | 叠层占用（Reflection / Arrival / Honesty 流程）须否决进睡；会话结束仪式 **永不** cloak |
+| Y4 | 付款回跳致谢 **压过** 深夜披毯（总表第 3 行）。「我们该谢谢你」高于「现在是深夜该睡了」 |
+| Y5 | Mood 不得在 boot occupancy 拍板前 `handleStateChange(IDLE)` 抢第一幕 |
+
+**本回合落地**：`spriteChannelArbitration.js` + Honesty `applyDormantSessionDelta` 执行器；冷启动 / visibility / 付款 async / 鹦鹉走总表。§6.7 / §6.9 / §6.11 的产品规则吸收进矩阵，**不**重开 #341/#347。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

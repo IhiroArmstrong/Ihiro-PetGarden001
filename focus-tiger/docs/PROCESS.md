@@ -58,11 +58,16 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **仍未** Redeploy（Cloud 无 wrangler 登录；现网仍 mock）· Quiet Line overlay 须现网 v1 + 三条观感后再口令 · Support 将来五卡 Price 已记、Checkout 未接
-
+**最后更新时间**：2026-08-20（UTC+8） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。**同日用户书面**：三句先按现稿；人工测 How shall we sit? 时看语感；再改只动 locale，不必重开逻辑。Brief `task-companion-mode-copy-coldstart.md`。
+- **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
+- **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
+
+- **精灵占用仲裁层（2026-08-20 · `fix/sprite-channel-arbitration`）**：冷启动 / 回前台 / 会话结束 / 付款致谢由 `spriteChannelArbitration` 一处拍板。凌晨 0–6 与 wellness 对齐；付款回跳压过深夜披毯；叠层开着不得进睡。吸收 #341/#347 产品规则，不重开那两单。工作流 **§6.17**。TRACKER 碎片待人工。
 
 - **宣传 / 营销站 Slice 0（2026-08-20）**：静态首页入库仓库根 `marketing-site/`。Canonical `https://twinsology.com`；CTA = `mailto:hello@twinsology.com`；**无** workers.dev。现网 Pages/DNS **未**绑（须本机 Cloudflare；禁止改 MX/SPF/DKIM）。权威：`task-briefs/task-marketing-site.md`。TRACKER 待人工。
 
@@ -89,7 +94,7 @@
 
 - **同坐点 L1 发点（2026-08-18 · #338 已合）**：达标 Stay / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式写入 `focus-tiger.focus-coins.v1`；未达标 Rise 不写点；`?focusCoins=0` 关闸。不进备份 6 key。实验室 / 产品壳控制台 `__focusCoins.getBalance()`。TRACKER 待人工（**禁止**因已合入标已通过）。
 
-- **云端品味层 schemaVersion 1 可选接线（2026-08-18 · #349 已合 tip `a0fed0b`）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。`?tasteLayer=0` 关拉取。**2026-08-20**：用户书面同意生产「部署」；Cloud Agent 无 `CLOUDFLARE_API_TOKEN`，**未** Redeploy。现网 `POST /api/emotion-weight` 仍 `{"variant":"default","weight":1}`（无 `schemaVersion`）。TRACKER 待人工（三条观感 + `__tasteLayer.status()`）。
+- **云端品味层 schemaVersion 1 可选接线（2026-08-18 · #349 已合 tip `a0fed0b`）**：有 `VITE_CLOUD_API_BASE_URL` 时开机非阻塞拉 `/api/emotion-weight` + `/api/daily-message`；`schemaVersion===1` 才覆盖冻结表，否则静默用本地。不接 Sit 门闩。**未改** `HonestyCheckInController`（分档只 overlay Dispatcher）。`?tasteLayer=0` 关拉取。**2026-08-20**：用户书面同意生产「部署」；**同日本机 wrangler deploy 成功** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`；现网 `POST /api/emotion-weight` 含 `schemaVersion: 1`。Safari `__tasteLayer.status()` 已见 true。**同日 A/B**：`?tasteLayer=0` Arrival 叠化正常；overlay 开着闪 → TRACKER 品味层行 `RB-20260820-L330`。**同日开修**：拉取改到精灵预加载 + 欢迎/Idle 之后；冻结表相同不另存副本；Arrival/Honesty 开着不抢主线程 JSON。Quiet Line overlay **未开工**。
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
@@ -143,7 +148,7 @@
 - **Focus 计时开始/结束提示音（2026-08-12 · #275 已合 tip `0d05b10`）**：`session-start-bell` / `session-end-chime`；Soundscape「计时提示音」；duck 35%。TRACKER 待人工（产品自排）。
 - **练习记忆云端快照备份 A（2026-08-12 · #272 已合 tip `a195584`；矩阵 #273 tip `ef5ff3e`）**：6 key 整包；OTP 身份；关闭=删云端；生产 Worker Version `f9755950-49c9-4677-99d6-76fd2d9d7012`。**2026-08-13**：生产已补 `RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；用户书面 practice-backup OTP 收到码且 Enable 成功。TRACKER 仍待人工（空库恢复 / 关备份删云端；非关单）。
 - **练习记忆云端策略拍板（2026-08-12 · #266 已合 tip `4698348`）**：A **免费**快照备份/恢复优先（防 Safari/ITP 等本机静默清库）；B **付费**多端无缝同步可后排；身份 **唯一复用邮箱 OTP**（一套身份、两种用途；不做 device id 跨端）。首版备份/恢复、非实时双向同步。未绑邮箱 = 无云端兜底 + 须温和提示。权威：`FREE_PAID_MATRIX` 两行 + 下文 Backlog「练习记忆云端备份」。运行时见上行 #272。
-- **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。TRACKER 待人工。
+- **意愿漏斗 opt-in 回传（2026-08-12 · #262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；匿名 counts → Worker；不挡支付。**≠** Journey Log 联网备份。**2026-08-20** 载荷含 Support `layout`（#378）；现网 Worker **尚未** Redeploy 该白名单。TRACKER 待人工。
 - **Ambient Deep 15s 试听（2026-08-12 · #258 已合 tip `2b3db1c`）**：未授权 Deep → 定时试听 + fade；结束后可忽略 Unlock 提示；不持久 preferred=deep。TRACKER 待人工。
 - **意愿漏斗本地统计（2026-08-12 · #255 已合 tip `fea9c11`）**：Support→CTA→Checkout→完成；仅本地；实验室可读。**opt-in 回传见上行 #262**。
 - **芥子须弥方金章素材（2026-08-12 · #256 已合 tip `5440a53`）**：独立方章替换 tip 复用。
@@ -229,7 +234,7 @@
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**2026-08-18 修订**：回前台进睡须 **tab 实际 hidden ≥2h**（Welcome 后短切 tab 不得用陈旧戳披毯）；Rise 后仍可按 2h 戳。单测 A1b + `dormantIdle` + `shouldAllowEnterDormantOnForegroundReturn`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
-- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
+- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时；2026-08-21 #383 扩 `.cursorignore`）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3；运行时媒体全挡见 PR #383）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
 
 - **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
@@ -254,7 +259,7 @@
 - **「一分钟呼吸」微仪式 · 方案调研（2026-07-22）**：方案文档 `MICRO_RITUAL_PLAN.md`（已实现，见上行）
 - **应用内提醒偏好 + 横幅 UI 已接入（2026-07-22）**：设置入口改为 **Idle 热力图簇旁的小型时钟图标**（`ReminderPreferenceUI`，挂 `WeeklyPracticeHeatmap` cluster，Idle-only）；点击展开轻量面板，含「开启提醒」+ 时间选择器，标题键 `reminder.setting_title`。**2026-07-25**：面板常显「每日时分」说明（`reminder.daily_blurb`）+ 已过/已练软提示；onboarding Hint `in-app-reminder`。横幅 `InAppReminderBannerUI` 挂 `#ui-overlay` 顶部居中；`reminderPreference` 本地存 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**，存在即开启）；`evaluateInAppReminderBanner` 在「已设置 + 已过提醒时分 + 今日未完成」时返回 `{ shouldShow, messageKey: 'reminder.gentle_waiting' }`；已接冷启动 / `visibilitychange` 回前台 / 状态切换重评；关闭后本页会话内不再重复；DEV：`window.__inAppReminder`。**2026-07-23**：忙碌策略拍板 **`suppress`**。
 - **留存漏斗骨架（2026-07-22）**：`docs/RETENTION_FUNNEL.md` + 本地 `RetentionTelemetry`（`console.log` 占位，无 UI、无第三方；正式工具暂不选型）；事件：`app_first_open` / `first_session_complete` / `day1|3|7|30_return`（窗口内首次返回）/ `dormant_bridge_shown|accepted|declined` / **`micro_ritual_complete`**
-- **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流。**2026-08-18**：前端可选 overlay 已接线；生产须「部署」才从旧 mock 换成 `schemaVersion: 1` 冻结表。**2026-08-20**：口令已给；Cloud 无 wrangler 登录，现网仍 mock。本地 `cd cloud && npm run dev`（见 `cloud/README.md`）
+- **Cloudflare Workers 骨架（2026-07-22）**：`focus-tiger/cloud/` 独立包（`wrangler` + TS）；stub `POST /api/daily-message` / `POST /api/emotion-weight` + 字段校验 + 内存限流。**2026-08-18**：前端可选 overlay 已接线；生产须「部署」才从旧 mock 换成 `schemaVersion: 1` 冻结表。**2026-08-20**：口令已给；**同日本机 deploy** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`，现网已是 v1 冻结表。本地 `cd cloud && npm run dev`（见 `cloud/README.md`）
 - **「本周陪伴」7 格热力图 UI（2026-07-22；今日标记 2026-08-04）**：Idle 常驻左下（`?` 上方）；`getLastNDays(7)` 最右=今日；亮格=`null|/>0`；星期缩写 + 今日软描边；e2e `weekly-practice-heatmap.spec.js`
 - **PracticeDaysStore 多日时长（2026-07-22）**：`days: { date, totalMinutes }[]`（旧 `string[]` → `totalMinutes: null`）；`getLastNDays(n)` 补缺口 0；写入仍走既有 `onPracticeDay`；见 `SHARED_RESOURCES` §1.2
 - **「本周陪伴」热力图 · 第 1 步调研（2026-07-22）**：`DailyCompletionStore` 仅当日不够；数据源改 `PracticeDaysStore`
@@ -405,14 +410,14 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 已下令生产部署**，Cloud 无 wrangler 登录 → 现网仍 mock（须本机 `wrangler deploy`）。品味层**下一刀** Quiet Line 句包 overlay：须现网 v1 **且** TRACKER 三条观感人工过完后再口令开工（日签扩容 / 伸懒腰·好奇池后排）。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
+- **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 #336 / L1 #362 已合**。**L2 短生成已接线**（宽屏 fallback）。低配默认不出入口。不锁 0.6B。Checkout 未接。测本地 AI：**Electron 窗口**。
 - **桌面 · Electron 步骤 B（2026-08-18）**：托盘 + SB-18 已接线，**待 Mac 人工场景 AB**。Safari 场景 B 不得回归。
-- **云端品味层（2026-08-18 · #349 已合）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。四问筛选尺 **2026-08-20 拍板**。生产 **仍须本机 wrangler deploy**（口令已给、Cloud 未登录）。下一刀 Quiet Line overlay **未开工**。
+- **云端品味层（2026-08-18 · #349 已合）**：可选拉取 + 本地降级。Brief `task-cloud-taste-layer.md`。四问筛选尺 **2026-08-20 拍板**。生产 **已本机 wrangler deploy**（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`，现网 v1）。下一刀 Quiet Line overlay **未开工**。
 - **可靠性 · 练习记忆云端快照备份（免费 A · #272 已合 · 勿漏关单）**：运行时已合 tip `a195584`；Worker 已 redeploy；**OTP secrets 已补**（2026-08-13 用户书面绑邮箱收码 + Enable 成功）。**下一步**：TRACKER 空库恢复 / 关备份删云端（关单只认 develop tip）。**≠** 云端品味层、**≠** B 多端无缝。
 - **内容 · Daily Wisdom → Reflection Phase A（Phase A 已挂 Reflection · 关单级见 TRACKER）**：Brief `task-daily-wisdom-reflection-mount.md`；**禁止**塞 Phase B 印花进同一 PR。
-- **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`）**：Privacy 明示同意；默认关；关单级人工见 TRACKER。
+- **付费 · 意愿漏斗 opt-in 回传（#262 已合 tip `582e79f`；layout 维 #378 已合 tip `8535da1`）**：Privacy 明示同意；默认关；**≠** Journey Log 联网备份。现网 Worker **尚未** Redeploy layout 白名单（仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。关单级人工见 TRACKER。
 - **付费 · Ambient Deep 15s 试听（#258 已合 tip `2b3db1c`）**：转化层试听 + Unlock 提示；关单级人工见 TRACKER。
 - **增长 · Journey Daily Card（Save image · 勿漏）**：Brief `task-journey-daily-card.md`；免费；**Log 上限免费/付费统一 30（有意取舍）**。
 - **内容 · Daily Wisdom Phase B 静默印花（A 之后 · 勿漏）**：`feature/daily-wisdom-sanctuary-seal`。
@@ -439,7 +444,7 @@
 - 后续独立实现完整 Focus Confidence V1（idle 检测与可信度分值），不得把页面切换直接解释为用户心理状态；须遵守 Companion Mode 三选一与 across-tools 边界
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做；**PWA 任务六**仍不是电脑版终局——电脑版壳已拍板 **Electron**，见 Backlog「本地桌面 APP 打包」）
-- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**；**四问筛选尺 2026-08-20 拍板**；**schemaVersion 1 可选接线已落地**（生产仍须本机 wrangler deploy；见 Backlog「云端品味层」）；下一刀 Quiet Line overlay 未开工；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
+- **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**；**四问筛选尺 2026-08-20 拍板**；**schemaVersion 1 可选接线已落地**（**2026-08-20 本机 deploy** 现网 v1 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`；见 Backlog「云端品味层」）；下一刀 Quiet Line overlay 未开工；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
 - **B · 练习记忆多端无缝同步（可后排）**：免费快照之后；评估是否作 Sanctuary/Membership 付费点（见 Backlog「练习记忆云端备份」§B）
 
 **已知的开放决策 / 待确认事项**：
@@ -477,7 +482,7 @@
 
 **最近拍板（2026-08-20 · 宣传站域名）**：用户书面——产品宣传 / 营销网站域名 = 系统里已有的 **`twinsology.com`**（不要新买 `focustiger.app` 一类）。发信已用该域。**同日口令「开工宣传站 Slice 0」**：静态页已入库 `marketing-site/`；练习壳仍走 Worker / 5173 / Electron。默认 apex canonical、`www` 301、Cloudflare Pages、**禁止**改 MX/SPF/DKIM。现网绑定另口令「绑定宣传站域名」。权威：`task-briefs/task-marketing-site.md`。
 
-**最近拍板（2026-08-20 · 品味层四问 + 下一刀 Quiet Line）**：用户书面同意把「四问筛选尺」写入本 Backlog + Brief；同意现在就生产「部署」（Cloud 本回合无 wrangler 登录，现网仍 mock，须本机补 Redeploy）；同意部署且三条观感人工过完后，下一刀品味层开 Quiet Line 句包 overlay；日签扩容与伸懒腰/好奇池后排。权威：下文 Backlog「云端品味层」。
+**最近拍板（2026-08-20 · 品味层四问 + 下一刀 Quiet Line）**：用户书面同意把「四问筛选尺」写入本 Backlog + Brief；同意现在就生产「部署」（**同日本机已 Redeploy**，现网 v1）；同意部署且三条观感人工过完后，下一刀品味层开 Quiet Line 句包 overlay；日签扩容与伸懒腰/好奇池后排。权威：下文 Backlog「云端品味层」。
 
 **最近拍板（2026-08-18 · 品味层窄冻结）**：用户书面确认「该等的窄门」= 现有本地降级表，**手感对、可以冻结**（不是全量 QA）。冻结数字见 Backlog「云端品味层」。分析师提醒：品味层时机清单含 Honesty 分档，同坐点 L1 已改 `HonestyCheckInController`（#338）；写代码时若 L2 也动 Honesty 分档须错开——**不影响** #337 / #338 已合。**同日晚已接线** schemaVersion 1 overlay（未改 HonestyCheckInController；生产须「部署」）。
 
@@ -539,7 +544,7 @@
 
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
 - **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）**
-- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；**#349 已合**；四问 2026-08-20 拍板；生产仍须本机 wrangler deploy）
+- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；**#349 已合**；四问 2026-08-20 拍板；**2026-08-20 本机 deploy 现网 v1**）
 - **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
 - **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
@@ -604,14 +609,14 @@
 | 多个 `…-wt-…` 窗口同时开着 | 每个窗口 ≈ 一套 extension-host + 索引 watcher | 关掉当前不用的 worktree 窗口（目录可留盘） |
 | 空闲仍长期偏高 | 多半是索引扫大素材 | 收紧根目录 ignore 后 **Resync Index** |
 
-本仓大头：`focus-tiger/public/sprites`（约数百 MB、六百余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**。
+本仓大头：`focus-tiger/public/sprites`（约数百 MB、一千余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**；2026-08-21 起亦在 [`.cursorignore`](../../.cursorignore) 全挡 Agent 读（PR #383）。
 
 ### 收紧 ignore（具体操作）
 
 仓库根已提供两份文件（gitignore 语法）：
 
-1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env` 等。
-2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出索引**；需要时仍可 `@` 或打开。放：`public/sprites|audio|models|…`、`art-reference/`、`package-lock.json`。
+1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env`、**`public/sprites|audio|models|…` 运行时媒体**、`art-reference/`、锁文件、`.git/` 等。
+2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出语义索引**；对已在 `.cursorignore` 的路径为双保险；仍可用于「只减索引、暂保留 Agent 可读」的例外（本仓运行时媒体**不在**此例外内）。
 
 合入 / 拉取后，对**每个仍打开的** Cursor 窗口：
 
@@ -619,7 +624,14 @@
 2. Process Explorer 再看空闲时 Shared CPU 是否明显下降  
 3. 若某 worktree 窗口长期不用：直接 **关闭该窗口**（比只停 Agent 更省）
 
-改 ignore 后**不必**重启整个 Cursor；Resync 即可。改完若某 Agent 需要读某帧路径，用 `@focus-tiger/public/sprites/…` 显式拉取（因在 indexingignore，不会被语义搜索挖出来）。
+改 ignore 后**不必**重启整个 Cursor；Resync 即可。
+
+**Agent 需要素材路径时（取代旧 `@sprites` 逃生口）**：
+
+- **默认**：**不要** `@focus-tiger/public/sprites/…` 或 `@` 任意 `public/` 下 PNG/MP3/GLB——已在 `.cursorignore`，`@` 与 Agent 工具读均无效。
+- **查路径 / 接线 / 帧数**：`@focus-tiger/docs/ASSET_INVENTORY.md`、`SCENE_ANIMATION_WIRING.md`、`spriteManifest.js`、`CharacterConfig.js`；新增批次见 `docs/NEW_ASSETS_*.md`。
+- **查观感**：Safari 开 Vite 预览（见 `focus-tiger-browser-energy.mdc`）；窄屏用响应式模式或 Playwright e2e，**不要**为看帧开 IDE Browser。
+- **极少数须 Agent 读单帧二进制**（如像素级排错）：须**你当回合书面批准** → 在**独立 worktree** 临时从 `.cursorignore` 去掉对应子目录 → 任务结束**恢复 ignore 并 Resync**；禁止把整棵 `public/sprites/` 长期放出。
 
 ### 本地 Agent vs worktree 窗口（不是同一物）
 
@@ -1073,7 +1085,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 > **历史（2026-07-30）**：曾写「v1.0.0 纯本地小发布，再跟进 v1.1 云端算法」。该外号易与 SemVer / 支付云搅在一起——**废止用 v1.1 指本条**。首个对外稳定 tag 仍是纯本地核心 **`v1.0.0`**；本条是 1.0 之后的**可选增强**，不抢 `v1.1.0` 号。  
 > **相邻**：练习记忆云备份（防丢失）· Stripe/OTP（支付云）· 同坐点服务端账本（L2 可花点之后才评估防刷）——**三条时钟，禁止绑成一条队**。
 
-- **现在（可选接线）**：有 Cloud base 时前端非阻塞拉 `POST /api/emotion-weight` / `POST /api/daily-message`；响应须 `schemaVersion: 1` 且池键/日签 id 与冻结表一致，否则静默本地。旧生产 mock（无 schemaVersion）→ 本地。核心 Sit / Rise / Idle **禁止**硬依赖云请求。`?tasteLayer=0` 关拉取。
+- **现在（可选接线）**：有 Cloud base 时前端非阻塞拉 `POST /api/emotion-weight` / `POST /api/daily-message`（**须等精灵预加载 + 欢迎/Idle 槽**，禁止与 `spritePlayer.preload` 抢带宽）；响应须 `schemaVersion: 1` 且池键/日签 id 与冻结表一致，否则静默本地。与本地冻结表数字/日签正文相同则 **只记 cloud-ok、不另存一份 overlay 副本**（防 overlay 开着把 Arrival/Honesty 1s 叠化闪掉，`RB-20260820-L330`）。旧生产 mock（无 schemaVersion）→ 本地。核心 Sit / Rise / Idle **禁止**硬依赖云请求。`?tasteLayer=0` 关拉取。
 - **范围**：可选客户端适配层；失败 / 超时 / **不认识的 `schemaVersion`** → 干净降级本地表。CORS、鉴权、隐私明示同意见 `MVP_PRODUCT_DEFINITION`。
 - **窄冻结（开工门闩 · 2026-08-18 已拍板）**：本地降级表 = **现在这套**，近一周不改数字。不是全量 QA；体感锚：Idle 不闪、Rise 再选、Honesty 关了再开。
   - Rise 中断池：伸懒腰 `riseStretchCasual` **60** / 茶 `teaDrinking` **25** / 书 `bookReading` **15**
@@ -1081,7 +1093,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
   - 轻量完成池：`sessionComplete` **70** / 点头 `mindfulAcknowledge` **30** / 鹦鹉 `parrotEarVisit` **8**（≈7%，8/108）
   - Honesty 分档：≤29 分 `mindfulAcknowledge`（点头）；≥30 分 `goldenHaloPalms`（金辉）；`HONESTY_LONG_MIN_MINUTES = 30`
   - 日签池一并冻结：`daily-wisdom.en.js` / `.ja.js` **各 14 条、id 对齐**；品味层切片期间不扩、不删。**2026-08-18 改字**：慧能 / 赵州改为可呼吸的观察句，id 未动。
-- **开工**：用户 2026-08-18 书面「L1/L0 可告一段落 → 安排下一步」视为口令「开工云端品味层」。**生产 Worker** 须单独「部署」才从旧 mock 换成 v1 表。**2026-08-20** 用户已书面同意部署；Cloud Agent 无 Cloudflare 登录，**尚未** Redeploy（现网仍 mock）。
+- **开工**：用户 2026-08-18 书面「L1/L0 可告一段落 → 安排下一步」视为口令「开工云端品味层」。**生产 Worker** 须单独「部署」才从旧 mock 换成 v1 表。**2026-08-20** 用户已书面同意部署；**同日本机 wrangler deploy 成功** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 JSON 含 `schemaVersion: 1`）。
 - **四问筛选尺（2026-08-20 拍板）**：云端品味层 = 可远程调的 config / master data overlay（改已接线表的权重或句子，不必等一次完整客户端发版）。**禁止**推广成「只要不影响离线就把全部 master data 上云」。一项要上云须**同时**过四问：
   1. **改错代价**：会不会让用户用不了、错扣/少给钱或点？会 → 不上云。
   2. **点击路径**：是否必须在用户点击当下用到（点击不能等网；产品门禁是 0–1 秒内看见接收反馈）？是 → 不上云。

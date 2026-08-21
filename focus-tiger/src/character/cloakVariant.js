@@ -3,6 +3,12 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
+import {
+  LATE_NIGHT_END_HOUR,
+  LATE_NIGHT_HOUR,
+  isLateNightHour
+} from '../core/lateNightHour.js';
+
 /**
  * Classic cloak-sleep vs starlight-cloak A/B for DORMANT entry / Honesty wake.
  * Both stay wired; pick ~50/50 so we can slowly compare matte/story feel.
@@ -69,21 +75,21 @@ export const WELLNESS_DAY_BANDS = Object.freeze({
 });
 
 /** Inclusive morning start hour (local). */
-export const WELLNESS_MORNING_HOUR_START = 6;
+export const WELLNESS_MORNING_HOUR_START = LATE_NIGHT_END_HOUR;
 /** Exclusive morning end / day start (local). */
 export const WELLNESS_MORNING_HOUR_END = 10;
 /** Late-night start hour (local); matches LATE_NIGHT_HOUR. */
-export const WELLNESS_LATE_NIGHT_HOUR = 23;
+export const WELLNESS_LATE_NIGHT_HOUR = LATE_NIGHT_HOUR;
 
 /**
  * @param {Date} date
  * @returns {'morning'|'day'|'lateNight'}
  */
 export function resolveWellnessDayBand(date) {
-  const h = date.getHours();
-  if (h >= WELLNESS_LATE_NIGHT_HOUR || h < WELLNESS_MORNING_HOUR_START) {
+  if (isLateNightHour(date)) {
     return WELLNESS_DAY_BANDS.LATE_NIGHT;
   }
+  const h = date.getHours();
   if (h >= WELLNESS_MORNING_HOUR_START && h < WELLNESS_MORNING_HOUR_END) {
     return WELLNESS_DAY_BANDS.MORNING;
   }

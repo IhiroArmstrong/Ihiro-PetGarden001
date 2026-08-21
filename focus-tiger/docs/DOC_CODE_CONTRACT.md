@@ -11,7 +11,7 @@
 | **(b) 契约测试** | 行为断言即活文档；改坏契约 → 测试红 | `npm run test:smoke`（含门闩 / Store / 场景串联） |
 | **(c) 规则权威对齐** | 每个规则主题一份 SSOT；非 SSOT 禁止完整复述 / 禁止矛盾短语 | `npm run rules:doc-check`（已并入 `docs:check`） |
 | **(d) 数值复述一致性** | 下游文档禁止在政策关键词旁复述 SSOT 具体分钟/小时；须路径指针 | `scripts/check-docs-consistency.js`（已并入 `docs:check` / `test:smoke`） |
-| **(e) TEST_TRACKER 碎片（试点）** | 新增验收行走 `docs/tracker-entries/`；不要求功能 PR 同步机器块 | `scripts/assemble-tracker.js`（`tracker:check` 已并入 `docs:check`） |
+| **(e) TEST_TRACKER 碎片（试点）** | 新增验收行走 `docs/tracker-entries/`；不要求功能 PR 同步机器块；拼装触发见 `TEST_TRACKER.md`「拼装触发」（批量测前 / ≥5 碎片） | `scripts/assemble-tracker.js`（`tracker:check` 已并入 `docs:check`；≥5 WARN 仍绿） |
 
 `docs:check` **不替代** `test:smoke`：前者锁**结构**（字段、枚举、锚点表、规则权威），后者锁**行为**（门闩 false 时不得 begin、无静默 return）。
 
@@ -54,6 +54,7 @@
 | **V-gap** | Visibility 表中 `gap-*` 行 | 已盘点、未全锁；禁止把 gap 当 locked | 见 `listVisibilityLockGaps()`；补锚后改 `lockStatus` 并 `visibility:doc-sync` |
 | **P-01** | `ARCHITECTURE.md` 目录树 / 角色文件表 | 组织性文档，变更频率低，自动生成 ROI 低 | 人工维护；触及时在 PR 自检 |
 | **R-01** | `SHARED_RESOURCES` §1 各 key「谁读写」叙述列 | 自然语言波及面，无法可靠从代码提取 | §1 表格**叙述列**仍手写；**key 列表**由 L-01 契约测试锁 |
+| **Y-01** | 精灵占用 / 进睡仲裁（冷启动·回前台·付款·会话结束） | 优先级矩阵是行为契约，不是 enum 导出 | **(b)**：`spriteChannelArbitration.test.js` + `dormantIdle.test.js` overlayBusy；叙事 `DEV_WORKFLOW_QUALITY` §6.17 |
 
 ---
 

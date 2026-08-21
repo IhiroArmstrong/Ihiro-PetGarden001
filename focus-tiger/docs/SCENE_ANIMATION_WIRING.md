@@ -94,7 +94,7 @@
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；呼吸期已是 smiling，再抽 blink 几乎像没播（2026-08-03 撤出） |
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
-| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` / `nodGreeting` 均 **~1s CapCut** 回 Idle（2026-08-05：魔法书由硬切改叠化）。**冷启动互斥**：欢迎 `play===true` 时**同 tick 不播**深夜（茶/哈欠）；欢迎已跳过才可 boot 深夜。回前台 **仅 hidden≥2h** 才检深夜 forceDormant（2026-08-18；短切 tab 不得披毯） |
+| 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` / `nodGreeting` 均 **~1s CapCut** 回 Idle（2026-08-05：魔法书由硬切改叠化）。**冷启动互斥**：占用由 `spriteChannelArbitration` 一处拍板（欢迎 / 吹花 / 付款 / wellness 深夜睡不得同 tick 叠）。回前台 **仅 hidden≥2h** 才检深夜进睡（短切 tab 不得披毯）；凌晨 0–6 与 wellness 对齐 |
 | Day1 / 久别（≥3 日）吹花鼓励 | `conjureFlowersBlowAway` + 观察式气泡 | ack | **Phase 2b 已接线**（`WELCOME_APP` 门闩） | **策略 C**。同日 XOR `welcome` 日旗。**压过** wellness ≥23:00 斗篷 / 清晨苏醒（2026-08-06）。`?flowerWelcome=0` 可关。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
 
 > **A′ 演进（2026-08-02）**：切语 ja 曾 `palmsTogether` → 现 `bookReading`（入库单程看书 + CapCut）。切语 en：`magicBookReading` 硬切（QA OK）→ `teaDrinking` + CapCut（QA OK）。`palmsTogether` 仍调试可播。
@@ -125,7 +125,7 @@
 | 用户场景 | 建议键 / 素材 | 档位 | 状态 | 备注 |
 |---|---|---|---|---|
 | 清晨首次打开 | `yawn-stretch` / `stretchReminder` 加权 | ack | Slice B | 日限 1；本地时区早晨窗 |
-| 深夜久坐 / Idle（≥23:00） | `yawnStretch` / `teaDrinking` | 生命感 | **已实现**（回前台再检；冷却 1h） | 非焦虑文案。**勿**与冷启动欢迎同 tick 叠播（`shouldAttemptLateNightOnBoot`） |
+| 深夜久坐 / Idle（≥23:00 或 &lt;06:00） | 进 DORMANT / 披斗篷（Expand A） | 生命感 | **已实现**（仲裁层；回前台 hidden≥2h 或冷启动 wellness） | 非焦虑文案。与 wellness 小时窗对齐。付款致谢压过披毯。**勿**与冷启动欢迎同 tick 叠播 |
 | Idle 好奇 / 悬停较久 | ≤5% `earWiggleHeadTouch` / `gazeLookAround` | 自主 | **已实现**（Pointer 靠近静止 → Dispatcher） | `earWiggle`：正+倒一次 + ~1s CapCut；**禁止** IdleOrchestrator 默认池 |
 | Idle **轻点阿寅额头** | `earWiggleHeadTouch` | 响应 | **已接线**（2026-08-18 修 hit 几何 + 回 Idle 再武装） | 产品壳 `#idle-yin-tap-anchor`（非 3D Pointer）；**0–1 秒内** CapCut 切入摸头；播完 ~1s CapCut Idle 后 hit **须再武装**；Focusing 让位场景 X；叠层忙碌**隐藏 hit**（禁止哑点击）。几何须盖额头（勿只抄 Recover 身躯椭圆） |
 | Yin's Collections **挥手点播** | `collectionsWaveHello` → `waveHello` | 闲笔 | **已接线** | 珍藏底栏 Play；清供行不列 SKU；不要求先结缘。~1s CapCut Idle。**不**改 PNG、**不**上莲花池。`welcomeBack` / 欢迎池 / 10min 自主挥手仍停接线 |
@@ -253,4 +253,5 @@
 | 2026-08-18 | **云端品味层窄冻结**：Rise 60/25/15 · 欢迎 60/40 · 轻量完成 70/30/8 · Honesty ≤29 nod / ≥30 halo；日签 en/ja 各 14 id。数字不改；无运行时接线 |
 | 2026-08-18 | 回前台深夜 forceDormant / 2h 披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡） |
 | 2026-08-20 | Yin's Collections 底栏 **挥手点播**：`collectionsWaveHello` → 已入库 `waveHello`；不要求结缘 SKU；`welcomeBack` / 10min 自主挥手仍停接线 |
+| 2026-08-20 | **精灵占用仲裁**：`spriteChannelArbitration` 统一冷启动 / 回前台 / 会话结束 / 付款致谢；深夜窗 ≥23 或 &lt;06 与 wellness 对齐；付款回跳压过披毯（§6.17） |
 
