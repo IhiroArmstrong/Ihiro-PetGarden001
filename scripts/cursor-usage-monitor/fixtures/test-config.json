@@ -1,0 +1,16 @@
+{
+  "csvSource": {
+    "localPath": "./fixtures/sample-usage.csv"
+  },
+  "thresholds": {
+    "singleRecordTokens": 1000000,
+    "hourlyCostUsd": 5,
+    "hourlyWindowMs": 3600000,
+    "hourlyAlertCooldownMs": 3600000
+  },
+  "webhook": {
+    "url": "https://example.com/webhook/placeholder"
+  },
+  "stateFile": "./fixtures/.test-state.json",
+  "costField": "costToYou"
+}
