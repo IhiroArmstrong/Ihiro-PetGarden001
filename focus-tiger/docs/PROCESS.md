@@ -234,7 +234,7 @@
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**2026-08-18 修订**：回前台进睡须 **tab 实际 hidden ≥2h**（Welcome 后短切 tab 不得用陈旧戳披毯）；Rise 后仍可按 2h 戳。单测 A1b + `dormantIdle` + `shouldAllowEnterDormantOnForegroundReturn`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
-- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
+- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时；2026-08-21 #383 扩 `.cursorignore`）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3；运行时媒体全挡见 PR #383）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
 
 - **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
@@ -609,14 +609,14 @@
 | 多个 `…-wt-…` 窗口同时开着 | 每个窗口 ≈ 一套 extension-host + 索引 watcher | 关掉当前不用的 worktree 窗口（目录可留盘） |
 | 空闲仍长期偏高 | 多半是索引扫大素材 | 收紧根目录 ignore 后 **Resync Index** |
 
-本仓大头：`focus-tiger/public/sprites`（约数百 MB、六百余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**。
+本仓大头：`focus-tiger/public/sprites`（约数百 MB、一千余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**；2026-08-21 起亦在 [`.cursorignore`](../../.cursorignore) 全挡 Agent 读（PR #383）。
 
 ### 收紧 ignore（具体操作）
 
 仓库根已提供两份文件（gitignore 语法）：
 
-1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env` 等。
-2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出索引**；需要时仍可 `@` 或打开。放：`public/sprites|audio|models|…`、`art-reference/`、`package-lock.json`。
+1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env`、**`public/sprites|audio|models|…` 运行时媒体**、`art-reference/`、锁文件、`.git/` 等。
+2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出语义索引**；对已在 `.cursorignore` 的路径为双保险；仍可用于「只减索引、暂保留 Agent 可读」的例外（本仓运行时媒体**不在**此例外内）。
 
 合入 / 拉取后，对**每个仍打开的** Cursor 窗口：
 
@@ -624,7 +624,14 @@
 2. Process Explorer 再看空闲时 Shared CPU 是否明显下降  
 3. 若某 worktree 窗口长期不用：直接 **关闭该窗口**（比只停 Agent 更省）
 
-改 ignore 后**不必**重启整个 Cursor；Resync 即可。改完若某 Agent 需要读某帧路径，用 `@focus-tiger/public/sprites/…` 显式拉取（因在 indexingignore，不会被语义搜索挖出来）。
+改 ignore 后**不必**重启整个 Cursor；Resync 即可。
+
+**Agent 需要素材路径时（取代旧 `@sprites` 逃生口）**：
+
+- **默认**：**不要** `@focus-tiger/public/sprites/…` 或 `@` 任意 `public/` 下 PNG/MP3/GLB——已在 `.cursorignore`，`@` 与 Agent 工具读均无效。
+- **查路径 / 接线 / 帧数**：`@focus-tiger/docs/ASSET_INVENTORY.md`、`SCENE_ANIMATION_WIRING.md`、`spriteManifest.js`、`CharacterConfig.js`；新增批次见 `docs/NEW_ASSETS_*.md`。
+- **查观感**：Safari 开 Vite 预览（见 `focus-tiger-browser-energy.mdc`）；窄屏用响应式模式或 Playwright e2e，**不要**为看帧开 IDE Browser。
+- **极少数须 Agent 读单帧二进制**（如像素级排错）：须**你当回合书面批准** → 在**独立 worktree** 临时从 `.cursorignore` 去掉对应子目录 → 任务结束**恢复 ignore 并 Resync**；禁止把整棵 `public/sprites/` 长期放出。
 
 ### 本地 Agent vs worktree 窗口（不是同一物）
 
