@@ -1,10 +1,24 @@
 # Cursor: fully hide from AI (indexing + @ + Agent read).
 # Prefer this for secrets, deps, build junk, and archives Agents never need.
 # Large *tracked* binaries that Agents may still @-mention → `.cursorindexingignore`.
+# (2026-08-21 audit: runtime media + art-reference promoted here from indexing-only.)
+
+# Git internals (pack objects can exceed 1GB locally)
+.git/
 
 # Dependencies & build
 node_modules/
+**/node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
 dist/
+build/
+.next/
+out/
+.turbo/
+.parcel-cache/
 .vite/
 .tools/
 .cache/
@@ -16,12 +30,38 @@ test-results/
 focus-tiger/.playwright-browsers/
 **/playwright/.cache/
 
+# Lockfiles (noisy; Agents rarely need full lock resolution text)
+package-lock.json
+**/package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 # Logs / env
 *.log
 npm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Runtime media (served by Vite; logic SSOT is src/ + docs/, not PNG/MP3/GLB bytes)
+focus-tiger/public/sprites/
+focus-tiger/public/audio/
+focus-tiger/public/models/
+focus-tiger/public/textures/
+focus-tiger/public/draco/
+focus-tiger/public/basis/
+focus-tiger/public/icons/
+focus-tiger/public/ui/
+focus-tiger/public/images/
+
+# Local art references (inventory/docs under focus-tiger/docs/ remain authoritative)
+focus-tiger/art-reference/
+
+# Electron desktop pack output & L0 probe artifacts
+focus-tiger/desktop/release/
+focus-tiger/desktop/.l0-cache/
+focus-tiger/desktop/companion/reports/
+*.gguf
 
 # Local art source dumps & zip archives (frames already under public/sprites/)
 focus-tiger/art-reference/models/sources/
@@ -39,6 +79,11 @@ Yin*/
 /icon for membership*.png
 /背景透明的-Enso-sample*.png
 /芥子须弥纪念印所用的金章-*.png
+
+# Worktree session occupancy (local Agent; never commit)
+.ft-session-lock
+.ft-session-identity
+.ft-session-lock.history.log
 
 # OS / editor noise
 .DS_Store
