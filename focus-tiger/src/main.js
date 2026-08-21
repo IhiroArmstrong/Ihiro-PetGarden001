@@ -2421,7 +2421,11 @@ async function init() {
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
-            lightProgression.clearArrivalAtmosphere();
+            // 鞠躬回落与 idle CapCut 同拍淡出暖幕；禁止 clearArrivalAtmosphere() 硬切（闪一下）。
+            lightProgression.clearArrivalAtmosphere({
+              animate: true,
+              durationMs: CAPCUT_DISSOLVE_MS
+            });
             window.setTimeout(() => {
               lightProgression.releaseDolly();
             }, CAPCUT_DISSOLVE_MS + 40);
