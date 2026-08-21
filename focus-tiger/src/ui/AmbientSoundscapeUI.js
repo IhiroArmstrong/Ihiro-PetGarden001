@@ -75,6 +75,8 @@ export class AmbientSoundscapeUI {
     this._blockedTipTimer = null;
     /** Narrow drawer forced the Soundscape panel open while Idle. */
     this._narrowForcedPanel = false;
+    /** @type {'ambience' | 'chimes'} */
+    this._panelTab = 'ambience';
 
     /** @type {{ id: string, label: string, addedAt: number }[]} */
     this._userTracks = [];
@@ -152,6 +154,39 @@ export class AmbientSoundscapeUI {
 
     this.titleEl = document.createElement('p');
     this.titleEl.className = 'ambient-soundscape__title';
+
+    this.tabBar = document.createElement('div');
+    this.tabBar.className = 'ambient-soundscape__tabs';
+    this.tabBar.setAttribute('role', 'tablist');
+
+    this.tabAmbienceBtn = document.createElement('button');
+    this.tabAmbienceBtn.type = 'button';
+    this.tabAmbienceBtn.className = 'ambient-soundscape__tab is-active';
+    this.tabAmbienceBtn.setAttribute('role', 'tab');
+    this.tabAmbienceBtn.dataset.panelTab = 'ambience';
+    this.tabAmbienceBtn.addEventListener('click', () => {
+      this._setPanelTab('ambience');
+    });
+
+    this.tabChimesBtn = document.createElement('button');
+    this.tabChimesBtn.type = 'button';
+    this.tabChimesBtn.className = 'ambient-soundscape__tab';
+    this.tabChimesBtn.setAttribute('role', 'tab');
+    this.tabChimesBtn.dataset.panelTab = 'chimes';
+    this.tabChimesBtn.addEventListener('click', () => {
+      this._setPanelTab('chimes');
+    });
+
+    this.tabBar.append(this.tabAmbienceBtn, this.tabChimesBtn);
+
+    this.ambiencePane = document.createElement('div');
+    this.ambiencePane.className = 'ambient-soundscape__tab-pane';
+    this.ambiencePane.dataset.panelTab = 'ambience';
+
+    this.chimesPane = document.createElement('div');
+    this.chimesPane.className = 'ambient-soundscape__tab-pane';
+    this.chimesPane.dataset.panelTab = 'chimes';
+    this.chimesPane.hidden = true;
 
     this.trackRow = document.createElement('div');
     this.trackRow.className = 'ambient-soundscape__tracks';
@@ -312,16 +347,24 @@ export class AmbientSoundscapeUI {
       awarenessTextWrap
     );
 
-    this.panel.append(
-      this.titleEl,
+    this.ambiencePane.append(
       this.uploadHintEl,
       this.uploadRow,
       this.uploadErrEl,
       this.trackRow,
-      this.volumeLabel,
+      this.volumeLabel
+    );
+    this.chimesPane.append(
       this.cueToggleLabel,
       this.intervalRhythmLabel,
       this.awarenessToggleLabel
+    );
+
+    this.panel.append(
+      this.titleEl,
+      this.tabBar,
+      this.ambiencePane,
+      this.chimesPane
     );
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
     this.root.append(this.muteBtn, this.focusChrome);
@@ -413,6 +456,24 @@ export class AmbientSoundscapeUI {
         !this.panel.hidden &&
         (this._sessionActive || this._narrowForcedPanel)
     );
+  }
+
+  /** Collapse Soundscape panel without stopping playback. */
+  closeSoundPanel() {
+    if (!this._expanded && !this._narrowForcedPanel) return;
+    this._expanded = false;
+    this._narrowForcedPanel = false;
+    this._clearBlockedTip();
+    document.body.classList.remove('ft-narrow-stage-sound', 'ft-wide-stage-sound');
+    this._renderPanel();
+  }
+
+  /**
+   * @param {'ambience' | 'chimes'} tab
+   */
+  _setPanelTab(tab) {
+    this._panelTab = tab;
+    this._renderPanel();
   }
 
   async bootDefaultMusic() {
@@ -744,6 +805,23 @@ export class AmbientSoundscapeUI {
 
   _renderPanel() {
     this.titleEl.textContent = t('AMBIENT_TITLE');
+    this.tabAmbienceBtn.textContent = t('AMBIENT_TAB_AMBIENCE');
+    this.tabChimesBtn.textContent = t('AMBIENT_TAB_CHIMES');
+    this.tabAmbienceBtn.classList.toggle(
+      'is-active',
+      this._panelTab === 'ambience'
+    );
+    this.tabChimesBtn.classList.toggle('is-active', this._panelTab === 'chimes');
+    this.tabAmbienceBtn.setAttribute(
+      'aria-selected',
+      this._panelTab === 'ambience' ? 'true' : 'false'
+    );
+    this.tabChimesBtn.setAttribute(
+      'aria-selected',
+      this._panelTab === 'chimes' ? 'true' : 'false'
+    );
+    this.ambiencePane.hidden = this._panelTab !== 'ambience';
+    this.chimesPane.hidden = this._panelTab !== 'chimes';
     this.uploadHintEl.textContent = t('AMBIENT_UPLOAD_LOCAL_HINT');
     this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
     this._syncVolumeChrome();
@@ -1262,12 +1340,50 @@ export class AmbientSoundscapeUI {
         letter-spacing: 0.04em;
         color: rgba(44, 31, 20, 0.7);
       }
+      .ambient-soundscape__tabs {
+        display: flex;
+        gap: 6px;
+        margin: 0 0 10px;
+      }
+      .ambient-soundscape__tab {
+        flex: 1;
+        appearance: none;
+        border: 1px solid rgba(139, 115, 85, 0.18);
+        border-radius: 999px;
+        padding: 5px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: rgba(44, 31, 20, 0.62);
+        background: rgba(255, 252, 245, 0.35);
+        cursor: pointer;
+      }
+      .ambient-soundscape__tab.is-active {
+        color: #2c1f14;
+        border-color: rgba(139, 46, 46, 0.35);
+        background: rgba(139, 46, 46, 0.08);
+      }
+      .ambient-soundscape__tab-pane[hidden] {
+        display: none !important;
+      }
       .ambient-soundscape__tracks {
         display: flex;
         flex-direction: column;
         gap: 6px;
-        max-height: min(42vh, 280px);
+        max-height: min(36vh, 220px);
         overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(44, 31, 20, 0.22) transparent;
+      }
+      .ambient-soundscape__tracks::-webkit-scrollbar {
+        width: 4px;
+      }
+      .ambient-soundscape__tracks::-webkit-scrollbar-thumb {
+        background: rgba(44, 31, 20, 0.22);
+        border-radius: 999px;
+      }
+      .ambient-soundscape__tracks:hover::-webkit-scrollbar-thumb {
+        background: rgba(44, 31, 20, 0.34);
       }
       .ambient-soundscape__track-row {
         display: flex;
@@ -1286,8 +1402,9 @@ export class AmbientSoundscapeUI {
         cursor: pointer;
       }
       .ambient-soundscape__track.is-selected {
-        border-color: rgba(139, 46, 46, 0.4);
-        background: rgba(139, 46, 46, 0.1);
+        border-color: rgba(139, 46, 46, 0.38);
+        background: rgba(139, 46, 46, 0.08);
+        box-shadow: inset 0 0 0 1px rgba(139, 46, 46, 0.06);
       }
       .ambient-soundscape__track.is-locked,
       .ambient-soundscape__track-play.is-locked {
@@ -1299,21 +1416,22 @@ export class AmbientSoundscapeUI {
       }
       .ambient-soundscape__track-play {
         flex: 0 0 auto;
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        border: 1px solid rgba(139, 115, 85, 0.35);
-        background: rgba(255, 252, 245, 0.9);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(139, 115, 85, 0.32);
+        background: rgba(255, 252, 245, 0.55);
         color: #5a4030;
         cursor: pointer;
-        font-size: 11px;
+        font-size: 10px;
         line-height: 1;
         padding: 0;
       }
       .ambient-soundscape__track-play.is-playing {
-        border-color: rgba(139, 46, 46, 0.45);
-        background: rgba(139, 46, 46, 0.12);
+        border-color: rgba(139, 46, 46, 0.42);
+        background: rgba(139, 46, 46, 0.1);
         color: #8b2e2e;
+        box-shadow: 0 0 0 3px rgba(139, 46, 46, 0.08);
       }
       .ambient-soundscape__track-delete {
         flex: 0 0 auto;
