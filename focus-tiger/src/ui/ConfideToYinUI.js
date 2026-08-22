@@ -31,7 +31,7 @@ import {
   shouldCloseDesktopCompanionGenerateLayer
 } from '../core/desktopCompanionGate.js';
 
-const STYLE_ID = 'confide-to-yin-card-styles-v1';
+const STYLE_ID = 'confide-to-yin-card-styles-v2';
 const FADE_MS = 220;
 
 export class ConfideToYinUI {
@@ -96,6 +96,11 @@ export class ConfideToYinUI {
     this.inputEl.maxLength = 280;
     this.inputEl.addEventListener('input', () => this._syncSendEnabled());
 
+    this.userEl = document.createElement('p');
+    this.userEl.className = 'confide-to-yin__user';
+    this.userEl.dataset.testid = 'confide-to-yin-user';
+    this.userEl.hidden = true;
+
     this.replyEl = document.createElement('p');
     this.replyEl.className = 'confide-to-yin__reply';
     this.replyEl.dataset.testid = 'confide-to-yin-reply';
@@ -123,6 +128,7 @@ export class ConfideToYinUI {
       this.blurbEl,
       this.statusWrap,
       this.inputEl,
+      this.userEl,
       this.replyEl,
       this.actions
     );
@@ -159,6 +165,8 @@ export class ConfideToYinUI {
     this._open = true;
     this.root.hidden = false;
     this.inputEl.value = '';
+    this.userEl.hidden = true;
+    this.userEl.textContent = '';
     this.replyEl.hidden = true;
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
@@ -303,12 +311,15 @@ export class ConfideToYinUI {
    * @param {string} userText
    */
   _showReply(shown, userText) {
+    const asked = typeof userText === 'string' ? userText.trim() : '';
+    this.userEl.textContent = asked;
+    this.userEl.hidden = !asked;
     this.replyEl.textContent = shown.text;
     this.replyEl.hidden = false;
     this.replyEl.dataset.route = shown.route;
     this.replyEl.dataset.lineId = shown.line?.id || '';
     this.replyEl.dataset.source = shown.source;
-    this._l2Turns.push({ role: 'user', text: userText });
+    this._l2Turns.push({ role: 'user', text: asked });
     this._l2Turns.push({ role: 'yin', text: shown.text });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
@@ -474,19 +485,45 @@ export class ConfideToYinUI {
         resize: vertical;
         min-height: 72px;
       }
-      .confide-to-yin__reply {
-        margin: 0 0 12px;
+      .confide-to-yin__user {
+        margin: 0 0 8px;
         padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid #d4a24a;
+        background: ${GLASS_FILL_STRONG};
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+      .confide-to-yin__user[hidden] {
+        display: none;
+      }
+      .confide-to-yin__reply {
+        position: relative;
+        margin: 0 0 12px;
+        padding: 10px 12px 10px 16px;
         border-radius: 12px;
         background: ${GLASS_FILL_STRONG};
         font-size: 0.92rem;
         line-height: 1.45;
       }
-      .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.SAFETY_REDIRECT}'] {
-        border-left: 3px solid #8a6a4a;
+      .confide-to-yin__reply::before {
+        content: '';
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 3px;
+        border-radius: 999px;
       }
-      .confide-to-yin__reply[data-source='generate'] {
-        border-left: 3px solid #c4b49a;
+      .confide-to-yin__reply[data-source='generate']::before,
+      .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
+        display: block;
+        background: #d4a24a;
+      }
+      .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.SAFETY_REDIRECT}']::before {
+        display: block;
+        background: #7a5340;
       }
       .confide-to-yin__actions {
         display: flex;
