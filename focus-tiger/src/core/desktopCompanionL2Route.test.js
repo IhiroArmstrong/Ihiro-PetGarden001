@@ -155,8 +155,20 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ipcSrc, /desktop:companion-generate/);
     assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
+    assert.match(ui, /confide-to-yin-user/);
+    assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);
+    assert.match(ui, /#d4a24a/);
+    assert.match(ui, /#7a5340/);
     assert.equal(whisper.includes('companion.generate'), false);
     assert.equal(recover.includes('companion.generate'), false);
+  });
+
+  it('resets the chat hold so later unmatched turns can still generate', () => {
+    const hold = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Hold.js'),
+      'utf8'
+    );
+    assert.match(hold, /resetChatHistory/);
   });
 
   it('keeps llama out of src/', () => {

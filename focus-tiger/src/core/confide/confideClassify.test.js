@@ -25,6 +25,8 @@ test('safety_redirect beats emotion and fallback', () => {
     CONFIDE_ROUTE.SAFETY_REDIRECT
   );
   assert.equal(confideClassify('我不想活了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify("I don't want to live"), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify('I don’t want to live'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   assert.equal(confideClassify('死にたい'), CONFIDE_ROUTE.SAFETY_REDIRECT);
 });
 
