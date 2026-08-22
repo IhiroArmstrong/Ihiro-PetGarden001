@@ -70,7 +70,7 @@ export class ConfideEarChromeUI {
 
     (mountRoot || document.body).appendChild(this.btn);
     this._unsubLocale = onLocaleChange(() => this._refreshLabel());
-    this.sync();
+    // Do not call canShow here: main.js may still be in TDZ for Arrival / Honesty UI.
   }
 
   /** @returns {void} */

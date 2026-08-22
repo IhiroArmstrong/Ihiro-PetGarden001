@@ -915,6 +915,10 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
+  /** @type {HonestyCheckInUI | null} */
+  let honestyCheckInUI = null;
+  /** @type {ArrivalPracticeUI | null} */
+  let arrivalPractice = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
   /** @type {RitualFlowUI | null} */
@@ -1322,7 +1326,7 @@ async function init() {
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
-  const honestyCheckInUI = new HonestyCheckInUI(
+  honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
   const honestyCheckIn = new HonestyCheckInController({
@@ -2392,7 +2396,7 @@ async function init() {
   /** @type {'icon' | 'typed'} */
   let currentIntentionSource = 'typed';
 
-  const arrivalPractice = new ArrivalPracticeUI(
+  arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
       onNoticeSelected: () => {

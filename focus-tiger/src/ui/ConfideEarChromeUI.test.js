@@ -24,6 +24,20 @@ test('wide ear chrome is a top-left Idle disc with press feedback', () => {
   assert.match(src, /@media \(max-width: 479px\)/);
 });
 
+test('constructor does not call canShow (boot must not touch later overlay refs)', () => {
+  assert.match(src, /this\.btn\.hidden = true;/);
+  assert.doesNotMatch(
+    src,
+    /onLocaleChange\(\(\) => this\._refreshLabel\(\)\);\s*this\.sync\(\);/
+  );
+});
+
+test('main.js predeclares Arrival / Honesty UI so ear canOpen cannot TDZ', () => {
+  const main = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(main, /let honestyCheckInUI = null;/);
+  assert.match(main, /let arrivalPractice = null;/);
+});
+
 test('wide ear chrome stays ghost-quiet until hover or keyboard focus', () => {
   assert.match(src, /opacity: 0\.3;/);
   assert.match(src, /opacity: 0\.8;/);
