@@ -3,7 +3,10 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import { contextBridge, ipcRenderer } from 'electron';
+// Sandboxed Electron preload is a classic script, not ESM — even when
+// desktop/package.json has "type": "module". `import` throws SyntaxError
+// and window.desktopShell never appears (Confide row stays hidden).
+const { contextBridge, ipcRenderer } = require('electron');
 
 const companionAllowed = ipcRenderer.sendSync('desktop:companion-allowed') === true;
 
