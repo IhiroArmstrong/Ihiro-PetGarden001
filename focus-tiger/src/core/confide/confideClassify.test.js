@@ -44,6 +44,23 @@ test('emotion buckets: anxious / tired / stuck / sad / scattered', () => {
   assert.equal(confideClassify('心乱静不下来'), CONFIDE_ROUTE.SCATTERED);
 });
 
+test('depressed mood self-report is sad corpus, not safety or fallback', () => {
+  assert.equal(
+    confideClassify('I feel depressed. Can you help me?'),
+    CONFIDE_ROUTE.SAD
+  );
+  assert.equal(confideClassify('I feel depressed'), CONFIDE_ROUTE.SAD);
+  assert.equal(confideClassify('有点抑郁'), CONFIDE_ROUTE.SAD);
+  assert.notEqual(
+    confideClassify('I feel depressed. Can you help me?'),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
+});
+
+test('bare help-me stays unmatched (do not widen into emotion or safety)', () => {
+  assert.equal(confideClassify('Can you help me?'), CONFIDE_ROUTE.FALLBACK);
+});
+
 test('multi-hit uses explicit priority (anxious over tired)', () => {
   assert.equal(
     confideClassify('anxious and exhausted'),

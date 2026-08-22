@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
+import { confideClassify } from './confide/confideClassify.js';
 import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
 import {
   companionGenerateEnabled,
@@ -27,6 +28,15 @@ const readyOpen = {
 };
 
 describe('desktop companion L2 route', () => {
+  it('depressed self-report classifies as sad and never generates', () => {
+    const route = confideClassify('I feel depressed. Can you help me?');
+    assert.equal(route, CONFIDE_ROUTE.SAD);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
+      false
+    );
+  });
+
   it('never generates on safety or emotion buckets', () => {
     assert.equal(
       shouldUseDesktopCompanionGenerate({

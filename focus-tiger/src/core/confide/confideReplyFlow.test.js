@@ -36,6 +36,16 @@ test('resolveConfideReply: English do-not-want-to-live is safety-01, not tea', (
   );
 });
 
+test('resolveConfideReply: depressed mood → sad corpus, not safety or fallback', () => {
+  const hit = resolveConfideReply({
+    text: 'I feel depressed. Can you help me?',
+    localDate: '2026-08-22'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.SAD);
+  assert.equal(hit.line.route, CONFIDE_ROUTE.SAD);
+});
+
 test('resolveConfideReply: unmatched → fallback line', () => {
   const hit = resolveConfideReply({
     text: 'the weather is mild today',
