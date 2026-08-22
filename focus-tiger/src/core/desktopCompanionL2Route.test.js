@@ -15,7 +15,10 @@ import {
   companionGenerateEnabled,
   shouldUseDesktopCompanionGenerate
 } from './desktopCompanionL2Route.js';
-import { buildCompanionL2Prompt } from '../../desktop/companion/l2Persona.js';
+import {
+  buildCompanionL2Prompt,
+  historyForGeneratePrompt
+} from '../../desktop/companion/l2Persona.js';
 import { sanitizeCompanionL2Reply } from '../../desktop/companion/l2Sanitize.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -143,6 +146,98 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(sanitizeCompanionL2Reply('You should try to breathe slowly.'), null);
     assert.equal(sanitizeCompanionL2Reply('你应该深呼吸。'), null);
     assert.equal(sanitizeCompanionL2Reply(''), null);
+    assert.match(prompt, /Recent turns:/);
+    assert.match(prompt, /Yin: Heard\./);
+  });
+
+  it('drops corpus-backed exchanges from Recent turns (safety-01 pair)', () => {
+    const safety =
+      'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help.';
+    const prompt = buildCompanionL2Prompt({
+      text: 'Whom do you like?',
+      locale: 'en',
+      history: [
+        { role: 'user', text: "I don't want to live" },
+        { role: 'yin', text: safety, source: 'corpus' }
+      ]
+    });
+    assert.equal(prompt.includes('Recent turns:'), false);
+    assert.equal(prompt.includes(safety), false);
+    assert.equal(prompt.includes("I don't want to live"), false);
+    assert.match(prompt, /Whom do you like\?/);
+  });
+
+  it('keeps generate-backed Yin turns in Recent turns', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'and the sky?',
+      locale: 'en',
+      history: [
+        { role: 'user', text: 'the weather is mild today' },
+        { role: 'yin', text: 'Clouds drift. Tea stays.', source: 'generate' }
+      ]
+    });
+    assert.match(prompt, /Recent turns:/);
+    assert.match(prompt, /Clouds drift\. Tea stays\./);
+    assert.match(prompt, /the weather is mild today/);
+  });
+
+  it('in mixed history keeps only generate-backed exchanges', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'Do you eat anything?',
+      locale: 'en',
+      history: [
+        { role: 'user', text: "I don't want to live" },
+        {
+          role: 'yin',
+          text: 'Heard. If this feels too heavy to hold alone.',
+          source: 'corpus'
+        },
+        { role: 'user', text: 'the weather is mild today' },
+        { role: 'yin', text: 'Wind comes; wind goes.', source: 'generate' }
+      ]
+    });
+    assert.match(prompt, /Wind comes; wind goes\./);
+    assert.match(prompt, /the weather is mild today/);
+    assert.equal(prompt.includes("I don't want to live"), false);
+    assert.equal(prompt.includes('too heavy to hold alone'), false);
+  });
+
+  it('filters corpus first then keeps the last 8 remaining rows', () => {
+    /** @type {Array<{ role: string, text: string, source?: string }>} */
+    const history = [];
+    for (let i = 0; i < 6; i += 1) {
+      history.push({ role: 'user', text: `gen-user-${i}` });
+      history.push({
+        role: 'yin',
+        text: `gen-yin-${i} sits quietly.`,
+        source: 'generate'
+      });
+    }
+    history.push({ role: 'user', text: 'corpus-user-a' });
+    history.push({
+      role: 'yin',
+      text: 'Heard. If this feels too heavy to hold alone.',
+      source: 'corpus'
+    });
+    history.push({ role: 'user', text: 'corpus-user-b' });
+    history.push({
+      role: 'yin',
+      text: 'Heard. Yin nods quietly.',
+      source: 'corpus'
+    });
+    const kept = historyForGeneratePrompt(history);
+    assert.equal(kept.length, 8);
+    assert.equal(kept[0].text, 'gen-user-2');
+    assert.equal(kept[kept.length - 1].text, 'gen-yin-5 sits quietly.');
+    assert.equal(
+      kept.some((row) => String(row.text).includes('too heavy')),
+      false
+    );
+    const slicedFirst = history.slice(-8);
+    assert.equal(
+      slicedFirst.some((row) => row.source === 'corpus'),
+      true
+    );
   });
 });
 
@@ -171,6 +266,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ipcSrc, /desktop:companion-generate/);
     assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
+    const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
+    assert.equal(turnPushes.length, 2);
+    assert.match(ui, /source: shown\.source === 'generate' \? 'generate' : 'corpus'/);
+    assert.match(ui, /this\._l2Turns\.slice\(\)/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);
     assert.match(ui, /#d4a24a/);
