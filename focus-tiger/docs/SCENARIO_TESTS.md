@@ -159,7 +159,7 @@
    *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；深夜不披毯 → `companionRestPolicy` session-end 锚；**非** rise-stretch 序列 / 面板淡入观感]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
    *[DOM 用户链路：Choose→Rise→Reflection 顶部回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；下游入参 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`]*
-5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
+5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。末题非空 Continue 后 **0–1 秒内**输入框下见共鸣且卡留下（输入只读）；再点 Continue / Skip / Esc 才关——禁止约 0.9s 自动关。
 
 ---
 
