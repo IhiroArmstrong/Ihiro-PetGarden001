@@ -72,6 +72,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
 | `feature-conflict-review` | 实现前功能冲突扫描（强度 / 语气 / 职责） | `focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md` | 扫描三轴 |
+| `background-network` | 非用户点击的网络请求（时机 / 写盘 / 慢网动效） | `focus-tiger/docs/BACKGROUND_NETWORK.md` | 实现前三问（强制） |
 
 <!-- rules-authority-index:end -->
 
@@ -110,6 +111,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
 | `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
+| `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -130,6 +132,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`） |
 | [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`） |
+| [`.cursor/rules/focus-tiger-background-network.mdc`](../../.cursor/rules/focus-tiger-background-network.mdc) | Agent 摘要：非用户点击网络请求须答三问（**非** SSOT；全文见 `BACKGROUND_NETWORK.md`） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
@@ -137,6 +140,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | [`RISK_MITIGATION_PLAYBOOK.md`](./RISK_MITIGATION_PLAYBOOK.md) | **SSOT**：中高风险功能落地降险（四件套 + 架构红线；索引 `risk-mitigation-playbook`） |
 | [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) | **SSOT**：实现前功能冲突扫描（强度 / 语气 / 职责；索引 `feature-conflict-review`） |
+| [`BACKGROUND_NETWORK.md`](./BACKGROUND_NETWORK.md) | **SSOT**：非用户点击的网络请求实现前三问（时机 / 写盘 / 慢网动效；索引 `background-network`） |
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
 | [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip；**SSOT**：标「已通过」覆盖分工（`qa-pass-coverage-split`）；**SSOT**：批量人工测试口令（`qa-batch-human-test`）；**SSOT**：缺陷分级与处理承诺（`release-blocker-ledger`） |
 | [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、unit\*→smoke 分类（§7）、Honesty/i18n 发布口径 |
@@ -208,6 +212,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-22 | 新增 `background-network`：非用户点击的网络请求实现前须答时机 / 写盘 / 慢网动效三问；SSOT `BACKGROUND_NETWORK.md`；现网触点审计 + 三条修复任务只立项不修运行时 |
 | 2026-08-20 | `git-worktree-hygiene`：本机按清单清收成 `npm run worktree:hygiene-remove`（dry-run / `--apply` 只拆 `propose_remove`）；仍须口令；不删远端分支；不拆主仓 / `…-wt-develop-qa` |
 | 2026-08-20 | 新增 `session-handoff`：口令「生成交接」+ 阶段性任务后输出结构化交接摘要；SSOT `.cursor/rules/focus-tiger-session-handoff.mdc`；与「批量人工测试」同级；不改变 push/PR / 合 develop / 人工关单 |
 | 2026-08-16 | 新增 `feature-conflict-review`：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等用户拍板（优先于默认执行）；SSOT `FEATURE_CONFLICT_REVIEW.md`；PR 三问 Q3；Cursor 规则 + `SCENARIO_TESTS` 文首索引 |

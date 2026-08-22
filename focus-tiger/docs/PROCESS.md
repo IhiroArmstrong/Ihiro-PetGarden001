@@ -58,11 +58,12 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-20（UTC+8） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-22（UTC+8） · 后台网络三问门禁已入库（`background-network`；现网审计 + 三条修复任务只立项） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **后台网络三问门禁（2026-08-22 · 本旁支）**：非用户点击的请求实现前须答时机 / 写盘 / 慢网动效。SSOT `BACKGROUND_NETWORK.md`。现网：练习备份与开机品味层预取有风险（各一修复任务）；Quiet Line 云端未接线；陪伴首次下载须慢网核验。**本回合不改运行时**。口令见各 Brief。
 - **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。**同日用户书面**：三句先按现稿；人工测 How shall we sit? 时看语感；再改只动 locale，不必重开逻辑。Brief `task-companion-mode-copy-coldstart.md`。
 - **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
@@ -410,6 +411,7 @@
 
 **下一步计划**：
 
+- **开工前优先级（2026-08-22 补）**：后台网络三问门禁已入库。三条修复**只立项**：练习备份错峰 → 品味层开机预取错峰 → 陪伴首次下载慢网核验。须各自口令，禁止和本门禁 PR 混修。Quiet Line 云端 overlay 仍未接线，下一刀须先答三问。
 - **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 #336 / L1 #362 已合**。**L2 短生成已接线**（宽屏 fallback）。低配默认不出入口。不锁 0.6B。Checkout 未接。测本地 AI：**Electron 窗口**。
@@ -465,6 +467,8 @@
 - **EyeTracking**：已正式放弃（2026-07-19），原因见 `CORE_LOOP.md`；勿再开返工任务
 - **14 套新抠图（2026-07-19 12:56 已入库）**：含 `palms-together` 等，待人工复测透明边/灰斑是否干净
 - 打坐呼吸 ↔ `tilt-think` 若仍跳跃：是否用眨眼类首尾相接循环替代托腮素材（`curiousTilt` 默认已改 `blink-smile`）
+
+**最近跟进（2026-08-22 · 陪伴首次下载慢网核验 · 未开工）**：L0「Focusing hitch 无可见影响」不能代替首次 GGUF 慢网下载时 Idle 是否掉帧。Brief `task-companion-first-download-hitch.md`。口令：「开工陪伴首次下载卡顿核验」。权威：`BACKGROUND_NETWORK.md`。
 
 **最近跟进（2026-08-20 · 开工桌面陪伴 L2）**：口令已执行。Electron 宽屏 Confide：安全/情绪桶仍语料；对不上才本机短生成；失败回 fallback。Focusing 仍卸载。**Checkout 仍未接。** 关单级能聊待 Electron 人工。权威：`task-desktop-on-device-companion.md`。
 
@@ -544,8 +548,9 @@
 
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
 - **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）**
-- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；**#349 已合**；四问 2026-08-20 拍板；**2026-08-20 本机 deploy 现网 v1**）
-- **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排）**
+- **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；**#349 已合**；四问 2026-08-20 拍板；**2026-08-20 本机 deploy 现网 v1**；开机预取错峰未开工）
+- **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排；后台网络错峰未开工）**
+- **后台网络三问跟进**（练习备份 / 品味层开机预取 / 陪伴首次下载；门禁已入库；运行时须口令）
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
 - **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
@@ -1077,6 +1082,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - 把 A 与 B 混成「一个同步功能」却不分免费/付费  
 
 - **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  
+- **后台网络跟进（2026-08-22 · 未开工）**：Idle+400ms 上传与呼吸循环重叠；空库恢复无 busy；同内容会重写盘。Brief `task-practice-backup-background-network.md`。口令：「开工练习备份后台网络修复」。权威：`BACKGROUND_NETWORK.md`。  
 - **口令示例**：「补 practice-backup OTP secrets」/「测练习记忆云端备份」
 
 ### Backlog:云端品味层（权重 + 文案池；旧称 v1.1 云端算法）
@@ -1100,7 +1106,8 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
   3. **钱与权益**：是否定价 / 门槛 / 优惠 / `isEntitled` / Stripe / 时长档 / 兑换价 / 发点规则？是 → 不上云（支付云另册，不走品味层）。
   4. **本地同一张表**：没网能否用本地副本；客户端认不了的 `schemaVersion` / 键集合能否静默丢掉？不能 → 不上云。
   过四问的典型：日签 / 文学句池、Dispatcher 权重。永远本地：Idle / CapCut / 播放器、Sit·Rise 门闩、chrome 文案（语气契约）、权益与金钱。扩池改形（增删 key / 扩 id）须升 `schemaVersion` 并同步改本地兜底。
-- **下一刀（2026-08-20）**：生产已是 v1 冻结表 **且** TRACKER 三条观感（Idle 不闪 / Rise 后再选 / Honesty 关了再开）人工过完之后，下一刀品味层 = **Quiet Line / 今日静语句包 overlay**（须新口令）。日签 14→N、伸懒腰 / 好奇池 overlay **后排**。**禁止**把挥手点播绑进品味层（#356 是本地即时序列；与品味层两条时钟）。
+- **下一刀（2026-08-20）**：生产已是 v1 冻结表 **且** TRACKER 三条观感（Idle 不闪 / Rise 后再选 / Honesty 关了再开）人工过完之后，下一刀品味层 = **Quiet Line / 今日静语句包 overlay**（须新口令）。日签 14→N、伸懒腰 / 好奇池 overlay **后排**。**禁止**把挥手点播绑进品味层（#356 是本地即时序列；与品味层两条时钟）。  
+- **后台网络（2026-08-22）**：现网 Quiet Line **未**接线。下一刀开工前须答 `BACKGROUND_NETWORK.md` 三问。已接线的开机 `prefetchTasteLayer` 错峰是**另一条**任务（`task-taste-layer-boot-prefetch-defer.md`；口令：「开工品味层开机预取错峰」），禁止和句包 overlay 混做。
 - **禁止**：把播放器迁云；用品味层满足 `isEntitled`。本切片 **未改** `HonestyCheckInController`（分档 overlay 只在 Dispatcher）。L2 兑换 #339 已合且未改时长分档。
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
 - **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。

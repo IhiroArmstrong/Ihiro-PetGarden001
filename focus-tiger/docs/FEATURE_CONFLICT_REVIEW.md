@@ -5,7 +5,7 @@
 索引：`RULES_INDEX.md` → `feature-conflict-review`  
 对照剧本：[`SCENARIO_TESTS.md`](./SCENARIO_TESTS.md)
 
-地位：与 `INTERACTION_FEEDBACK_PRINCIPLES.md` / `RISK_MITIGATION_PLAYBOOK.md` **平级**的实现前门禁。  
+地位：与 `INTERACTION_FEEDBACK_PRINCIPLES.md` / `RISK_MITIGATION_PLAYBOOK.md` / `BACKGROUND_NETWORK.md` **平级**的实现前门禁。  
 目的：任何新功能/改动，实现前必须先做「冲突扫描」，而不是先做完再让用户发现问题。
 
 ---

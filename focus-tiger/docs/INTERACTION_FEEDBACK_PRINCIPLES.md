@@ -4,7 +4,8 @@
 地位：与 `PRINCIPLES.md` / `TEST_TRACKER.md` **平级**的交互反馈硬规则。  
 索引：`RULES_INDEX.md` → `interaction-feedback`。
 
-已知静默清单（活表，不在本文复述逐条）：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)。
+已知静默清单（活表，不在本文复述逐条）：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)。  
+非用户点击的网络请求（自动同步 / 开机拉取）见 [`BACKGROUND_NETWORK.md`](./BACKGROUND_NETWORK.md)，与本条分开。
 
 ---
 
