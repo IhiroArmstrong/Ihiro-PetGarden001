@@ -320,7 +320,11 @@ export class ConfideToYinUI {
     this.replyEl.dataset.lineId = shown.line?.id || '';
     this.replyEl.dataset.source = shown.source;
     this._l2Turns.push({ role: 'user', text: asked });
-    this._l2Turns.push({ role: 'yin', text: shown.text });
+    this._l2Turns.push({
+      role: 'yin',
+      text: shown.text,
+      source: shown.source === 'generate' ? 'generate' : 'corpus'
+    });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
     this._syncSendEnabled();
@@ -362,7 +366,7 @@ export class ConfideToYinUI {
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
     this._renderDesktopStatus();
-    const history = this._l2Turns.slice(-8);
+    const history = this._l2Turns.slice();
     void Promise.resolve(
       this._companion.generate({ text, locale, history })
     )
