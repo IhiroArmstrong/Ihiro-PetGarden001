@@ -98,7 +98,7 @@
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
-- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。**2026-08-22**：情绪类输入不得落入生成兜底；`depressed` 并入 `sad`；关单「能聊」须接住原问意图。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
@@ -528,6 +528,8 @@
 **最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
+
+**最近拍板（2026-08-22）**：**情绪类输入不得落入桌面生成兜底**。`depressed` / 抑郁并入现有 `sad` 语料，不升格最高危机热线、不新开诊断桶。关单「能聊」须在栏杆内接住原问意图，禁止不同问题同一句套话。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」。
 
 **最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——禅意倾听者；检索不生成；**危机安全阀** `safety_redirect` 优先（#223）。禅意 18 + safety-01 人审 **ok**。运行时：`feature/confide-to-yin` 分类/语料/面板已接线；**产品挂载仍关**（`CONFIDE_USER_MOUNT_ENABLED=false`）。**待评估**：safety 是否附加具体地区热线/链接（不阻塞）。Brief `task-briefs/task-confide-to-yin-v1.md`。
 
