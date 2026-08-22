@@ -22,6 +22,20 @@ test('resolveConfideReply: safety never returns zen fallback line', () => {
   assert.equal(hit.line.route, CONFIDE_ROUTE.SAFETY_REDIRECT);
 });
 
+test('resolveConfideReply: English do-not-want-to-live is safety-01, not tea', () => {
+  const hit = resolveConfideReply({
+    text: "I don't want to live",
+    localDate: '2026-08-22'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(hit.line.id, 'safety-01');
+  assert.match(
+    hit.line.en,
+    /^Heard\. If this feels too heavy to hold alone, please reach someone you trust/
+  );
+});
+
 test('resolveConfideReply: unmatched → fallback line', () => {
   const hit = resolveConfideReply({
     text: 'the weather is mild today',

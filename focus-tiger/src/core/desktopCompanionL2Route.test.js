@@ -4,6 +4,7 @@
  */
 
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -142,7 +143,12 @@ describe('desktop companion L2 isolation', () => {
       join(focusTigerRoot, 'desktop/companion/l1Ipc.js'),
       'utf8'
     );
-    const ui = readFileSync(join(focusTigerRoot, 'src/ui/ConfideToYinUI.js'), 'utf8');
+    const uiPath = join(focusTigerRoot, 'src/ui/ConfideToYinUI.js');
+    const ui = readFileSync(uiPath, 'utf8');
+    const syntax = spawnSync(process.execPath, ['--check', uiPath], {
+      encoding: 'utf8'
+    });
+    assert.equal(syntax.status, 0, syntax.stderr || syntax.stdout);
     const whisper = readFileSync(
       join(focusTigerRoot, 'src/ui/MomentWhisperUI.js'),
       'utf8'
@@ -155,8 +161,20 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ipcSrc, /desktop:companion-generate/);
     assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
+    assert.match(ui, /confide-to-yin-user/);
+    assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);
+    assert.match(ui, /#d4a24a/);
+    assert.match(ui, /#7a5340/);
     assert.equal(whisper.includes('companion.generate'), false);
     assert.equal(recover.includes('companion.generate'), false);
+  });
+
+  it('resets the chat hold so later unmatched turns can still generate', () => {
+    const hold = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Hold.js'),
+      'utf8'
+    );
+    assert.match(hold, /resetChatHistory/);
   });
 
   it('keeps llama out of src/', () => {
