@@ -13,7 +13,7 @@
 | 10%「向阿寅倾诉」 | **仅用户主动触发**；本地分类 → 人工语料库检索；短回应（约 30–50 字量级） |
 | AI 合法位置 | **仅**离线批量扩写候选语料 → **人 review 后入库**；本 Brief **禁止**运行时生成对话。桌面窄例外不在本文件。 |
 | 入口（v1） | **A**：Idle 宽屏 ⋯ / 窄屏抽屉显式项（仪式感一次点击） |
-| 入口（v1.1 · 2026-08-22） | **B**：Idle 宽屏左上倾听耳 + 窄屏 ActionBar 耳钮；点开仍是 `#confide-to-yin-card`；与 A **同一开闸**（mount / Electron 非低配宽屏 companion / `?confide=1`）；Focusing / 叠层隐藏 |
+| 入口（v1.1 · 2026-08-22） | **B**：Idle 宽屏左上倾听耳 + 窄屏 ActionBar 耳钮；点开仍是 `#confide-to-yin-card`；与 A **同一开闸**（mount / Electron 非低配宽屏 companion / `?confide=1`）；Focusing / 叠层隐藏。宽屏耳默认 **30%** 透明，悬停/键盘 focus **80%** + 玻璃短句 `CONFIDE_EAR_TOOLTIP`（EN: Pour out your heart to Yin） |
 | 分类（v1） | 规则 / 关键词；不够用再另立项轻量分类器 |
 | 隐私 | 倾诉文本**不出设备**；不做人格 / 心理分析 / 趋势标签化 |
 | 危机安全阀（2026-08-10 补） | **纯规则优先层**（非情绪桶）：命中 → 固定人工「温和引导 + 资源提示」；**禁止**落入禅意 `fallback` / 茶句 |

@@ -19,6 +19,16 @@ test('wide ear chrome is a top-left Idle disc with press feedback', () => {
   assert.match(src, /left: max\(14px/);
   assert.match(src, /icon-confide-to-yin\.png/);
   assert.match(src, /CONFIDE_MENU_LABEL/);
+  assert.match(src, /CONFIDE_EAR_TOOLTIP/);
   assert.match(src, /\.confide-ear-chrome:active/);
   assert.match(src, /@media \(max-width: 479px\)/);
+});
+
+test('wide ear chrome stays ghost-quiet until hover or keyboard focus', () => {
+  assert.match(src, /opacity: 0\.3;/);
+  assert.match(src, /opacity: 0\.8;/);
+  assert.match(src, /confide-ear-chrome__tip/);
+  assert.match(src, /role', 'tooltip'/);
+  assert.doesNotMatch(src, /this\.btn\.title\s*=/);
+  assert.match(src, /@media \(hover: none\)/);
 });

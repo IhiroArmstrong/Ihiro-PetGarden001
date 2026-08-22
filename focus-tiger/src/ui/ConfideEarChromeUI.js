@@ -6,12 +6,16 @@
 /**
  * Idle Confide second entry — wide top-left ear disc.
  * Narrow ActionBar owns its own button (same panel, same gate).
+ *
+ * Idle chrome stays ghost-quiet (mute-family opacity), then lifts on hover /
+ * keyboard focus with a glass tip — not a native `title` tooltip.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 
-const STYLE_ID = 'confide-ear-chrome-styles-v1';
+const STYLE_ID = 'confide-ear-chrome-styles-v2';
 const ROOT_ID = 'confide-ear-chrome';
+const TIP_ID = 'confide-ear-chrome-tip';
 const ICON_SRC = '/icons/icon-confide-to-yin.png';
 
 /**
@@ -33,6 +37,7 @@ export class ConfideEarChromeUI {
     this.btn.dataset.testid = ROOT_ID;
     this.btn.setAttribute('aria-haspopup', 'dialog');
     this.btn.setAttribute('aria-controls', 'confide-to-yin-card');
+    this.btn.setAttribute('aria-describedby', TIP_ID);
 
     const img = document.createElement('img');
     img.className = 'confide-ear-chrome__img';
@@ -43,6 +48,13 @@ export class ConfideEarChromeUI {
     img.draggable = false;
     img.decoding = 'async';
     this.btn.appendChild(img);
+
+    this.tipEl = document.createElement('span');
+    this.tipEl.id = TIP_ID;
+    this.tipEl.className = 'confide-ear-chrome__tip';
+    this.tipEl.setAttribute('role', 'tooltip');
+    this.tipEl.dataset.testid = TIP_ID;
+    this.btn.appendChild(this.tipEl);
 
     this._injectStyles();
     this._refreshLabel();
@@ -64,7 +76,7 @@ export class ConfideEarChromeUI {
   /** @returns {void} */
   _refreshLabel() {
     this.btn.setAttribute('aria-label', t('CONFIDE_MENU_LABEL'));
-    this.btn.title = t('CONFIDE_MENU_LABEL');
+    this.tipEl.textContent = t('CONFIDE_EAR_TOOLTIP');
   }
 
   /** @returns {void} */
@@ -98,14 +110,21 @@ export class ConfideEarChromeUI {
         background: transparent;
         cursor: pointer;
         pointer-events: auto;
-        box-shadow: 0 3px 12px rgba(44, 31, 20, 0.08);
+        box-shadow: none;
+        opacity: 0.3;
         transition: transform 120ms ease, box-shadow 160ms ease, opacity 180ms ease;
       }
       .confide-ear-chrome[hidden] {
         display: none !important;
       }
-      .confide-ear-chrome:hover {
-        box-shadow: 0 6px 16px rgba(44, 31, 20, 0.14);
+      .confide-ear-chrome:hover,
+      .confide-ear-chrome:focus-visible {
+        opacity: 0.8;
+        box-shadow: 0 3px 12px rgba(44, 31, 20, 0.08);
+      }
+      .confide-ear-chrome:focus-visible {
+        outline: 2px solid rgba(92, 122, 108, 0.55);
+        outline-offset: 2px;
       }
       .confide-ear-chrome:active {
         transform: scale(0.96);
@@ -117,6 +136,48 @@ export class ConfideEarChromeUI {
         border-radius: 50%;
         object-fit: contain;
         pointer-events: none;
+      }
+      .confide-ear-chrome__tip {
+        position: absolute;
+        left: calc(100% + 8px);
+        top: 50%;
+        transform: translateY(-50%) translateX(-4px);
+        max-width: min(220px, calc(100vw - 86px));
+        padding: 5px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 2px 10px rgba(44, 31, 20, 0.06);
+        color: rgba(74, 58, 40, 0.78);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        line-height: 1.3;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      .confide-ear-chrome:hover .confide-ear-chrome__tip,
+      .confide-ear-chrome:focus-visible .confide-ear-chrome__tip {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+      @media (hover: none) {
+        .confide-ear-chrome {
+          opacity: 0.55;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .confide-ear-chrome,
+        .confide-ear-chrome__tip {
+          transition: none;
+        }
+        .confide-ear-chrome__tip {
+          transform: translateY(-50%) translateX(0);
+        }
       }
       @media (max-width: 479px) {
         .confide-ear-chrome {

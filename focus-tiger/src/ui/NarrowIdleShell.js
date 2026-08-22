@@ -20,7 +20,7 @@ import {
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v22';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -1035,6 +1035,10 @@ export class NarrowIdleShell {
       .ft-narrow-action-bar__btn.is-confide {
         padding: 0;
         overflow: hidden;
+        background: rgba(255, 252, 245, 0.55);
+      }
+      .ft-narrow-action-bar__btn.is-confide:hover,
+      .ft-narrow-action-bar__btn.is-confide:focus-visible {
         background: rgba(255, 252, 245, 0.92);
       }
       .ft-narrow-action-bar__btn.is-confide[hidden] {
@@ -1047,6 +1051,12 @@ export class NarrowIdleShell {
         margin: 0 auto;
         object-fit: contain;
         pointer-events: none;
+        opacity: 0.55;
+        transition: opacity 180ms ease;
+      }
+      .ft-narrow-action-bar__btn.is-confide:hover .ft-narrow-action-bar__confide-img,
+      .ft-narrow-action-bar__btn.is-confide:focus-visible .ft-narrow-action-bar__confide-img {
+        opacity: 1;
       }
       .ft-narrow-action-bar__btn > .ft-secondary-menu-hint-dot {
         position: absolute;
