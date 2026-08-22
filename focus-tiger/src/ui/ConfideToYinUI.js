@@ -130,7 +130,7 @@ export class ConfideToYinUI {
       this.inputEl,
       this.userEl,
       this.replyEl,
-      this.actions)
+      this.actions
     );
     mountRoot.appendChild(this.root);
 
