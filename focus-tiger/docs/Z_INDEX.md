@@ -80,6 +80,7 @@
 | **23** | `src/ui/AmbientSoundscapeUI.js` | Soundscape 右下 focus chrome（曲目面板 + Sound FAB 容器） |
 | **24** | `src/ui/AmbientSoundscapeUI.js` | 右上 mute / 音符钮（`.ambient-soundscape__mute`） |
 | **24** | `src/ui/SupportYinModalUI.js` | 右上 Support Yin FAB（`#yin-support-fab`；在 mute 左侧） |
+| **24** | `src/ui/ConfideEarChromeUI.js` | 宽屏 Idle 左上倾听耳 `#confide-ear-chrome`（与菜单同一开闸；窄屏 CSS 隐藏，改走 ActionBar `#ft-narrow-confide-btn`） |
 | **24** | `src/ui/NarrowIdleShell.js` | 窄屏 Focusing：强制把 mute 提到可点层（覆盖 park） |
 | **25** | `src/ui/SupportYinModalUI.js` | `#yin-support-backdrop` Support 模态遮罩（在 `#ui-overlay` z10 内） |
 | **25** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-backdrop` 宽屏 ⋯ 浅遮罩（挂 `body`，盖过整个 `#ui-overlay`） |

@@ -80,6 +80,8 @@
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
 - **寅币 · 珍藏挥手点播（2026-08-20）**：`#yin-coin-panel` 底 **请阿寅挥挥手**（不在清供 8 行）。Idle 点播已入库 `wave-hello`；Focusing / 庆祝 toast 不播。`welcomeBack` / 欢迎池仍停。TRACKER 待人工。
 
+- **向阿寅倾诉 · Idle 倾听耳第二入口（2026-08-22）**：宽屏左上 `#confide-ear-chrome` + 窄屏 ActionBar `#ft-narrow-confide-btn`；点开仍是 `#confide-to-yin-card`；菜单行保留。可见闸 = 可开面板（mount / Electron 非低配宽屏 companion / `?confide=1`）。**未**翻 `CONFIDE_USER_MOUNT_ENABLED`。TRACKER 碎片待人工。
+
 - **禅意倾听者 · 桌面陪伴 L2（2026-08-20 · 口令已执行）**：宽屏 Electron fallback 才短生成；安全阀/情绪桶仍语料；失败回 fallback 句。turns 落本机 jsonl。**Checkout 未接**。Web / 窄屏仍检索。权威：`task-desktop-on-device-companion.md`。
 
 - **禅意倾听者 · 桌面陪伴 L1（2026-08-20 · #362 已合 `develop`）**：宽屏 Electron 非低配 ⋯ **同一 Confide 行**；点开玻璃卡 + 下载/加载进度；Focusing 卸载。**L2 已叠短生成（fallback）**。**Checkout / 第四卡 Pro / 第五卡 Add-on 仍未接**。低配 / 窄屏 / Web 无生成层。型号未锁。权威：`task-desktop-on-device-companion.md`。

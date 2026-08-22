@@ -13,6 +13,7 @@
 | 10%「向阿寅倾诉」 | **仅用户主动触发**；本地分类 → 人工语料库检索；短回应（约 30–50 字量级） |
 | AI 合法位置 | **仅**离线批量扩写候选语料 → **人 review 后入库**；本 Brief **禁止**运行时生成对话。桌面窄例外不在本文件。 |
 | 入口（v1） | **A**：Idle 宽屏 ⋯ / 窄屏抽屉显式项（仪式感一次点击） |
+| 入口（v1.1 · 2026-08-22） | **B**：Idle 宽屏左上倾听耳 + 窄屏 ActionBar 耳钮；点开仍是 `#confide-to-yin-card`；与 A **同一开闸**（mount / Electron 非低配宽屏 companion / `?confide=1`）；Focusing / 叠层隐藏 |
 | 分类（v1） | 规则 / 关键词；不够用再另立项轻量分类器 |
 | 隐私 | 倾诉文本**不出设备**；不做人格 / 心理分析 / 趋势标签化 |
 | 危机安全阀（2026-08-10 补） | **纯规则优先层**（非情绪桶）：命中 → 固定人工「温和引导 + 资源提示」；**禁止**落入禅意 `fallback` / 茶句 |
@@ -92,7 +93,7 @@
 
 > **并行口径**：骨架与安全文案可并行；**分类优先序从第一天写对**；**卡住真实用户的是挂载开关**（`CONFIDE_USER_MOUNT_ENABLED`），不是「开始写代码」。安全文案已 `ok`；产品挂载仍关，直至明确翻开。
 
-1. Idle ⋯/抽屉入口 + 轻量面板 `#confide-to-yin-card` —— **已接线**；菜单行预留，**默认隐藏**（mount false）。叠层/Focusing/Arrival 期间 `canOpen` 拒绝。  
+1. Idle ⋯/抽屉入口 + 轻量面板 `#confide-to-yin-card` —— **已接线**；菜单行预留，**默认隐藏**（mount false）。**2026-08-22**：Idle 倾听耳（宽屏左上 / 窄屏 ActionBar）与菜单同一开闸。叠层/Focusing/Arrival 期间 `canOpen` 拒绝。  
 2. `confideClassify.js`：safety → 情绪 → fallback（单测已锁）。  
 3. `confideCorpus.js`：禅意 18 + safety-01 **ok**；安全命中不得抽禅意池。  
 4. 轻姿态：安全 → `nodBow`；其它 → `mindfulAcknowledge`。  
