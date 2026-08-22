@@ -136,6 +136,7 @@ import {
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
+import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
@@ -914,6 +915,10 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
+  /** @type {HonestyCheckInUI | null} */
+  let honestyCheckInUI = null;
+  /** @type {ArrivalPracticeUI | null} */
+  let arrivalPractice = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
   /** @type {RitualFlowUI | null} */
@@ -1055,25 +1060,26 @@ async function init() {
   });
   window.__newsletterCapture = newsletterCaptureUI;
 
+  const canOpenConfideNow = () => {
+    const busy =
+      stateManager.state === STATES.FOCUSING ||
+      Boolean(arrivalPractice?.isOpen?.()) ||
+      Boolean(reflectionMoment?.isOpen?.()) ||
+      Boolean(microRitualUI?.isOpen?.()) ||
+      Boolean(honestyBridge?.isVisible?.()) ||
+      (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
+    if (busy) return false;
+    return canOpenConfidePanel({
+      search: location.search,
+      stage: 'idle',
+      companionGeneration: canRegisterDesktopCompanionGeneration({
+        hasBridge: hasDesktopCompanionBridge(),
+        widthPx: window.innerWidth
+      })
+    });
+  };
   const confideToYinUI = new ConfideToYinUI(document.body, {
-    canOpen: () => {
-      const busy =
-        stateManager.state === STATES.FOCUSING ||
-        Boolean(arrivalPractice?.isOpen?.()) ||
-        Boolean(reflectionMoment?.isOpen?.()) ||
-        Boolean(microRitualUI?.isOpen?.()) ||
-        Boolean(honestyBridge?.isVisible?.()) ||
-        (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
-      if (busy) return false;
-      return canOpenConfidePanel({
-        search: location.search,
-        stage: 'idle',
-        companionGeneration: canRegisterDesktopCompanionGeneration({
-          hasBridge: hasDesktopCompanionBridge(),
-          widthPx: window.innerWidth
-        })
-      });
-    },
+    canOpen: canOpenConfideNow,
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
     },
@@ -1087,6 +1093,20 @@ async function init() {
   });
   window.__confideToYin = confideToYinUI;
   confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
+  const confideEarChrome = new ConfideEarChromeUI(document.body, {
+    canShow: canOpenConfideNow,
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'confide' });
+      confideToYinUI.open();
+    }
+  });
+  window.__confideEarChrome = confideEarChrome;
+  const syncConfideEarChrome = () => {
+    confideEarChrome.sync();
+    idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
+  };
+  window.addEventListener('resize', () => syncConfideEarChrome());
+  syncConfideEarChrome();
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
@@ -1306,7 +1326,7 @@ async function init() {
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
-  const honestyCheckInUI = new HonestyCheckInUI(
+  honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
   const honestyCheckIn = new HonestyCheckInController({
@@ -1664,6 +1684,7 @@ async function init() {
   function resyncSessionChrome() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
+    syncConfideEarChrome();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -2375,7 +2396,7 @@ async function init() {
   /** @type {'icon' | 'typed'} */
   let currentIntentionSource = 'typed';
 
-  const arrivalPractice = new ArrivalPracticeUI(
+  arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
       onNoticeSelected: () => {
@@ -3706,6 +3727,7 @@ async function init() {
     if (stateManager.state === STATES.FOCUSING) {
       confideToYinUI.close();
     }
+    syncConfideEarChrome();
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
       window.setTimeout(() => {
