@@ -75,6 +75,8 @@
 
 - **会话交接 Session Handoff（2026-08-20）**：口令「生成交接」出结构化摘要。权威：`.cursor/rules/focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
+- **调试本地 AI companion（2026-08-23）**：调试/优化桌面端侧智能体时先定点再动手。权威：`.cursor/rules/focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）。不覆盖 `CompanionModePicker` / Idle PiP。
+
 - **寅币时长 chip 静默 hint（2026-08-18 拍板）**：Focus / Breath picker 下 `#focus-coins-duration-hint`（满 5 分钟、寅币、身份资源）。无 HUD、无 +N toast。`?focusCoins=0` 不出现。TRACKER 待人工。
 - **寅币 Breath 时长点（2026-08-18）**：Breath 坐满按 Stay 档发时长点（5 分=1）并保留每日微仪式 +1；Leave 仍 0。无常驻「攒币」HUD。TRACKER 待人工。
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。

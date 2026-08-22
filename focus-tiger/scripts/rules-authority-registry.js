@@ -39,6 +39,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
+  '.cursor/rules/focus-tiger-companion-debug.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
@@ -1279,6 +1280,51 @@ export const RULE_AUTHORITY_TOPICS = [
       }
     ],
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'companion-debug',
+    title: '调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档）',
+    ssotPath: '.cursor/rules/focus-tiger-companion-debug.mdc',
+    ssotSection: 'Focus Tiger · 调试本地 AI companion',
+    ssotMustContain: [
+      /companion-debug/,
+      /先定点再动手/,
+      /turns\.jsonl/,
+      /连续最多 3 轮/,
+      /High effort \/ Max mode/
+    ],
+    topicSignals: [
+      /companion-debug/,
+      /调试本地 AI/,
+      /turns\.jsonl/,
+      /High effort \/ Max mode/
+    ],
+    mustCite: [/focus-tiger-companion-debug\.mdc|companion-debug/],
+    restatementFingerprints: [
+      /先定点再动手/,
+      /连续最多 3 轮/,
+      /禁止读取完整日志目录/,
+      /未获用户书面「继续」不得开第 4 轮/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'unscoped-companion-improve',
+        pattern:
+          /(?:可以|允许|应当)[^。\n]{0,24}(?:无范围|不指定文件).{0,16}(?:全面改善|分析为什么表现不好)/,
+        note: '本地 AI 调试必须先定点；禁止写成可无范围全面改善'
+      },
+      {
+        id: 'full-turns-jsonl',
+        pattern: /(?:可以|允许|应当)[^。\n]{0,20}(?:读取|打开)[^。\n]{0,24}整(?:份|个).{0,12}turns\.jsonl/,
+        note: '禁止主张可读完整 turns.jsonl / 日志目录'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ]
   },
   {
     id: 'feature-conflict-review',

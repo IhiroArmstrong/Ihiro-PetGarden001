@@ -1,0 +1,44 @@
+---
+description: 调试/优化桌面本地 AI companion 时须先定点、禁读整目录日志、测试循环最多 3 轮、简单调试不升 High/Max（始终生效）
+alwaysApply: true
+---
+
+# Focus Tiger · 调试本地 AI companion
+
+目的：调试/优化桌面端侧本地智能体时，禁止无范围「全面改善」、整目录扫日志和无限测试循环，避免一次吞掉大量 token / Fast Request。
+
+索引：`RULES_INDEX.md` → `companion-debug`。通用 token / 子 Agent / 模型档位总则见 `agent-token-cost`（本条只收紧本地 AI 调试循环，**不**复述那份全文）。
+
+## 何时生效
+
+用户口令或任务含下列任一者时立即生效（不必等用户再口头提醒）：
+
+- 「调试本地 AI」/「优化本地 AI」/「companion 不好」/「全面改善生成」
+- 改 `focus-tiger/desktop/companion/`、L0/L1/L2 生成、`turns.jsonl`、`node-llama-cpp`、桌面 Confide fallback 生成
+
+**不**因文件名含 companion 就套本条：`CompanionModePicker`、Idle PiP、`companionGestureCatalog` 等非本地生成路径走既有产品规则。
+
+## 强制（本会话）
+
+1. **先定点再动手**
+   - 禁止无范围「分析为什么表现不好 / 全面改善 / 整体调优」就开读、开改。
+   - 必须先让用户指定具体文件/模块（例：`l2Persona.js`、`l2Sanitize.js`、`desktopCompanionL2Route.js`）。
+   - 用户未点名范围 → 停下来用「待你决定」列出候选模块（同时给最合理项），**不要**先扫全目录。
+
+2. **日志只读最近一条、限行**
+   - 禁止读取完整日志目录或整份 `turns.jsonl` / 历史 dump。
+   - 只允许最近一次测试的单条输出；Read 必须带 `offset`/`limit`，Shell 必须带行数上限（如 `tail -n 80`）。
+   - 需要更多历史 → 先问用户，禁止自行扩大。
+
+3. **测试循环最多连续 3 轮**
+   - 「自动测试 → 修改 → 再测试」连续最多 3 轮。
+   - 第 3 轮结束后必须停下汇报：改了什么、仍失败什么、下一步建议。
+   - 未获用户书面「继续」不得开第 4 轮。
+
+4. **简单调试用小范围模型**
+   - 单文件/单模块修补、日志对照、提示词小改 → 视为「简单调试」：不切换 High effort / Max mode，不主动建议升档。
+   - 跨 L0–L2 架构或疑难根因需要升档时，先问用户；切换权在用户。总则见 `agent-token-cost` 第 8 条。
+
+## 汇报
+
+触及本主题的「待你知道」写一行：范围（用户点名的文件）/ 读了哪一条日志（限行）/ 本回合测试循环第几轮（≤3）/ 未升 High/Max（或已获书面批准）。
