@@ -162,7 +162,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | `MilestoneGlow` | `milestoneGlow` → `milestoneGlow` / `milestoneGlowStar` /（streak-7 可委派）`parrotEarVisit` | `streak-7`：**50/50** 蝴蝶 `milestone-glow` 或鹦鹉 `parrot-ear-visit-feather`；`streak-21`/`100`：`meditation-star-reward`；备选 `breath-halo-hq` 仅调试 |
 | `ParrotEarVisit` | `parrotEarVisit` → 同名序列 | `public/sprites/.../parrot-ear-visit-feather/frame_001–093.png`（提醒信使 · 轻完成稀有 · streak-7 仪式二选一） |
 | `ConjureFlowersBlowAway` | `conjureFlowersBlowAway` → 同名序列 | `public/sprites/.../conjure-flowers-blow-away/frame_001–065.png`（Day1/久别；Phase 2b 产品已接线） |
-| `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；旧 palms-together 仅调试 |
+| `IntentionSet` | `intentionSet` → `intentionNod`（2D nod-bow） | `public/sprites/.../nod-bow/frame_001–013.png`（16:9）；Arrival Choose 确认瞬间；进出 **约 1s CapCut**；Arrival 暖幕须与回落同拍淡出（勿瞬间掐色）。旧 palms-together 仅调试 |
 | `T_Pose` | `T_POSE` | `tiger-stand-eyes-closed.glb` |
 
 > **`WelcomeBack`（挥手欢迎）说明**：属**响应行为**（互动反应层），非基底姿态。**2026-08-02 晚拍板：新旧挥手暂时停接线**——`playEmotion('welcomeBack')` 不播序列；不进冷启动欢迎池；调试情绪入口已撤；入库素材钮仅保留「停接线·仅素材」标签供以后对照。建议场景（回前台 / Idle≈10min 30%）**以后另议**。优先级低于 `Celebrating`。
