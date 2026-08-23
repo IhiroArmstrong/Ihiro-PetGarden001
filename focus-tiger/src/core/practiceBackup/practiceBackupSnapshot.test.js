@@ -10,7 +10,8 @@ import {
   serializePracticeBackupSnapshot,
   parsePracticeBackupSnapshotClient,
   isPracticeBackupWhitelistCompletelyEmpty,
-  isPracticeBackupStoreEmpty
+  isPracticeBackupStoreEmpty,
+  writePracticeBackupStoresRaw
 } from './practiceBackupSnapshot.js';
 
 function memStorage(initial = {}) {
@@ -86,5 +87,40 @@ describe('practiceBackupSnapshot', () => {
       false
     );
     assert.equal(isPracticeBackupWhitelistCompletelyEmpty(storage), false);
+  });
+
+  it('skips setItem when store JSON is unchanged', () => {
+    const journey = JSON.stringify({
+      entries: [
+        {
+          at: '2026-01-01T00:00:00.000Z',
+          minutes: 5,
+          arrive: false,
+          reflect: false
+        }
+      ]
+    });
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': journey
+    });
+    let sets = 0;
+    const origSet = storage.setItem;
+    storage.setItem = (k, v) => {
+      sets += 1;
+      origSet(k, v);
+    };
+    const snap = serializePracticeBackupSnapshot(
+      storage,
+      () => new Date('2026-08-12T00:00:00.000Z')
+    );
+    const first = writePracticeBackupStoresRaw(storage, snap);
+    assert.equal(first.skipped, PRACTICE_BACKUP_STORE_KEYS.length);
+    assert.equal(sets, 0);
+    const second = writePracticeBackupStoresRaw(storage, {
+      ...snap,
+      savedAt: '2026-08-13T00:00:00.000Z'
+    });
+    assert.equal(second.skipped, PRACTICE_BACKUP_STORE_KEYS.length);
+    assert.equal(sets, 0);
   });
 });

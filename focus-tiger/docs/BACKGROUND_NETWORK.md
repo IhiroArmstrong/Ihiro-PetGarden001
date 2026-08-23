@@ -69,14 +69,14 @@
 
 对照口令点名的三条，外加已接线的相邻开机拉取。本表是审计，**不是**本回合修复。
 
-### 1. 练习备份同步（已接线 · 有风险 · 单独修复任务）
+### 1. 练习备份同步（已接线 · 本旁支已错峰 · 慢网人工仍待）
 
 | 问 | 结论 |
 |---|---|
-| 触发 | Idle 进入后 **400ms** `forceSoon` 上传（`main.js` → `schedulePracticeBackupUpload`）；壳就绪后 **1200ms** 空库 `maybeRestorePracticeBackupOnBoot`（**无** busy 门闩）。用户 Enable / OTP / 关备份仍是点击触发，不算本条。 |
-| Q1 | **重叠**。Idle+400ms 正是呼吸循环开始。busyProbe 只挡 `FOCUSING` / `CELEBRATE` / `postSessionOverlayActive`，**不含** Arrival 开着、**不含** 精灵预加载。注释写 Arrival，代码没挡。空库恢复固定 1200ms，不看叠层。 |
-| Q2 | **未做到**。上传成功每次 `writePracticeBackupOptIn` 重写整份 opt-in（含新 `lastUploadAt`）。空库恢复 `writePracticeBackupStoresRaw` 对六个白名单 key **无条件 `setItem`**，无内容相同则跳过。 |
-| Q3 | **未实测**。`postCloudJson` + `JSON.stringify` 整包快照在渲染进程。无低速网络下 Idle / Arrival 流畅度记录。 |
+| 触发 | **本旁支（`fix/practice-backup-background-network`）**：Idle 进入后约 **2500ms** `forceSoon` 上传；壳就绪且精灵预加载之后约 **2500ms** 空库恢复，且看 busy。用户 Enable / OTP / 关备份仍是点击触发，不算本条。 |
+| Q1 | **已错峰（本旁支）**。busy 含 Focusing / Celebrate、Arrival 开着、Honesty 时长/呼吸/致谢、以及 `postSessionOverlayActive`。叠层 busy 会短重试；Focusing 不轮询。禁止假设请求很快。 |
+| Q2 | **已做到（本旁支）**。白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 opt-in 的 cloud-ok（`lastUploadAt` / `lastUploadFingerprint`）。 |
+| Q3 | **单元已锁 busy 期间不发请求**；低速网 Idle 呼吸 / Arrival 叠化流畅度仍须人工（TRACKER 碎片）。 |
 
 修复任务：`docs/task-briefs/task-practice-backup-background-network.md`  
 口令：「开工练习备份后台网络修复」

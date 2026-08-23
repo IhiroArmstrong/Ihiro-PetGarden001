@@ -161,24 +161,57 @@ export function isPracticeBackupWhitelistCompletelyEmpty(storage) {
 }
 
 /**
- * Write snapshot stores back (raw setItem after client-side parse gate).
- * Callers that need ownership normalize should pass pre-normalized values
- * or use applyPracticeBackupSnapshot.
- * @param {Storage | null | undefined} storage
- * @param {PracticeBackupSnapshot} snapshot
+ * Stable fingerprint of whitelist stores (ignores savedAt).
+ * @param {PracticeBackupSnapshot | null | undefined} snapshot
  */
+export function practiceBackupStoresFingerprint(snapshot) {
+  try {
+    return JSON.stringify(snapshot?.stores ?? null);
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * @param {string | null} prev
+ * @param {string} next
+ */
+function storageTextUnchanged(prev, next) {
+  if (prev === next) return true;
+  if (prev == null) return false;
+  try {
+    return JSON.stringify(JSON.parse(prev)) === JSON.stringify(JSON.parse(next));
+  } catch {
+    return false;
+  }
+}
+
 export function writePracticeBackupStoresRaw(storage, snapshot) {
-  if (!storage) return;
+  if (!storage) return { wrote: 0, skipped: 0 };
+  let wrote = 0;
+  let skipped = 0;
   for (const key of PRACTICE_BACKUP_STORE_KEYS) {
     const val = snapshot.stores[key];
     try {
       if (val == null) {
-        storage.removeItem(key);
+        if (storage.getItem(key) == null) {
+          skipped += 1;
+        } else {
+          storage.removeItem(key);
+          wrote += 1;
+        }
       } else {
-        storage.setItem(key, JSON.stringify(val));
+        const next = JSON.stringify(val);
+        if (storageTextUnchanged(storage.getItem(key), next)) {
+          skipped += 1;
+        } else {
+          storage.setItem(key, next);
+          wrote += 1;
+        }
       }
     } catch {
       // ignore quota
     }
   }
+  return { wrote, skipped };
 }

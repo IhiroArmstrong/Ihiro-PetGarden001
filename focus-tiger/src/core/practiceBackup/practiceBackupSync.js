@@ -13,6 +13,7 @@ import {
   parsePracticeBackupSnapshotClient,
   isPracticeBackupWhitelistCompletelyEmpty,
   writePracticeBackupStoresRaw,
+  practiceBackupStoresFingerprint,
   PRACTICE_BACKUP_STORE_KEYS
 } from './practiceBackupSnapshot.js';
 import {
@@ -28,21 +29,36 @@ import { normalizeRitualCompletionState } from '../RitualCompletionStore.js';
 
 export const PRACTICE_BACKUP_DEBOUNCE_MS = 10 * 60 * 1000;
 export const PRACTICE_BACKUP_MIN_UPLOAD_GAP_MS = 60 * 1000;
+/** Idle → forceSoon flush: after first breath cycle has room to start. */
+export const PRACTICE_BACKUP_IDLE_FLUSH_MS = 2500;
+/** Overlay busy: retry soon; focusing does not poll. */
+export const PRACTICE_BACKUP_BUSY_RETRY_MS = 2000;
+/** Boot empty-whitelist restore: after sprite preload + shell paint. */
+export const PRACTICE_BACKUP_BOOT_RESTORE_MS = 2500;
 
 /** @type {ReturnType<typeof setTimeout> | null} */
 let debounceTimer = null;
+/** @type {ReturnType<typeof setTimeout> | null} */
+let restoreRetryTimer = null;
 let lastFlushAttemptMs = 0;
 let inFlight = false;
 
 /**
- * @param {object} [opts]
- * @param {() => boolean} [opts.isBusy]
- * Busy = Focusing / Arrival / Reflection / micro-ritual — skip network.
+ * Busy = Focusing / Celebrate / Arrival / Honesty overlay / Reflection.
+ * Boolean true = busy, no retry (legacy). Object may set retry for overlays.
  */
 let busyProbe = () => false;
 
+function readBusyProbe() {
+  const v = busyProbe();
+  if (v && typeof v === 'object') {
+    return { busy: Boolean(v.busy), retry: Boolean(v.retry) };
+  }
+  return { busy: Boolean(v), retry: false };
+}
+
 /**
- * @param {() => boolean} fn
+ * @param {() => boolean | { busy?: boolean, retry?: boolean }} fn
  */
 export function setPracticeBackupBusyProbe(fn) {
   busyProbe = typeof fn === 'function' ? fn : () => false;
@@ -51,6 +67,8 @@ export function setPracticeBackupBusyProbe(fn) {
 export function resetPracticeBackupSyncForTests() {
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = null;
+  if (restoreRetryTimer) clearTimeout(restoreRetryTimer);
+  restoreRetryTimer = null;
   lastFlushAttemptMs = 0;
   inFlight = false;
   busyProbe = () => false;
@@ -123,7 +141,11 @@ export function schedulePracticeBackupUpload(opts = {}) {
   if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     debounceTimer = null;
-    void flushPracticeBackupUpload({ storage, force: Boolean(opts.forceSoon) });
+    void flushPracticeBackupUpload({
+      storage,
+      force: Boolean(opts.forceSoon),
+      postJson: opts.postJson
+    });
   }, debounceMs);
 }
 
@@ -150,7 +172,16 @@ export async function flushPracticeBackupUpload(opts = {}) {
   if (usingDefaultClient && !getCloudApiBaseUrl()) {
     return { ok: false, reason: 'cloud_unconfigured', skipped: true };
   }
-  if (busyProbe()) {
+  const { busy, retry } = readBusyProbe();
+  if (busy) {
+    if (retry) {
+      schedulePracticeBackupUpload({
+        storage,
+        debounceMs: opts.retryMs ?? PRACTICE_BACKUP_BUSY_RETRY_MS,
+        forceSoon: true,
+        postJson
+      });
+    }
     return { ok: false, reason: 'busy', skipped: true };
   }
   const now = Date.now();
@@ -164,6 +195,17 @@ export async function flushPracticeBackupUpload(opts = {}) {
   inFlight = true;
   lastFlushAttemptMs = now;
   const snapshot = serializePracticeBackupSnapshot(storage);
+  const fingerprint = practiceBackupStoresFingerprint(snapshot);
+  if (fingerprint && state.lastUploadFingerprint === fingerprint) {
+    writePracticeBackupOptIn(storage, {
+      ...state,
+      lastUploadAt: new Date().toISOString(),
+      lastUploadError: null,
+      lastUploadFingerprint: fingerprint
+    });
+    inFlight = false;
+    return { ok: true, skipped: true, reason: 'unchanged' };
+  }
   try {
     await postJson('/api/practice-backup/put', {
       body: JSON.stringify({
@@ -175,7 +217,8 @@ export async function flushPracticeBackupUpload(opts = {}) {
     writePracticeBackupOptIn(storage, {
       ...state,
       lastUploadAt: new Date().toISOString(),
-      lastUploadError: null
+      lastUploadError: null,
+      lastUploadFingerprint: fingerprint
     });
     return { ok: true };
   } catch (err) {
@@ -207,6 +250,17 @@ export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
   }
   if (!isPracticeBackupWhitelistCompletelyEmpty(storage)) {
     return { ok: false, reason: 'local_not_empty', skipped: true };
+  }
+  const { busy, retry } = readBusyProbe();
+  if (busy) {
+    if (retry) {
+      if (restoreRetryTimer) clearTimeout(restoreRetryTimer);
+      restoreRetryTimer = setTimeout(() => {
+        restoreRetryTimer = null;
+        void maybeRestorePracticeBackupOnBoot(opts);
+      }, opts.retryMs ?? PRACTICE_BACKUP_BUSY_RETRY_MS);
+    }
+    return { ok: false, reason: 'busy', skipped: true };
   }
   try {
     const body = await postJson('/api/practice-backup/get', {
