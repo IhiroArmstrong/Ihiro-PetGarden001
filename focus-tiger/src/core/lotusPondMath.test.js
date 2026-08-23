@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {
   LOTUS_POND_FIRST_BLOOM_MINUTES,
   LOTUS_POND_RING_CAPACITY,
+  LOTUS_POND_SPIRAL,
   bloomCountForMinutes,
   minutesToSeedQaBloomCount,
   newBloomIndices,
@@ -72,6 +73,23 @@ describe('lotusPondMath QA seed minutes', () => {
 });
 
 describe('lotusPondMath spiral slots', () => {
+  it('first bloom sits left of Yin, not down the cushion axis', () => {
+    const first = spiralSlotForBloomIndex(0);
+    const { originLeftPct, originBottomPct } = LOTUS_POND_SPIRAL;
+    assert.ok(
+      first.leftPct < originLeftPct - 10,
+      `first bloom should be left of Yin (leftPct=${first.leftPct})`
+    );
+    const underCushion =
+      Math.abs(first.leftPct - originLeftPct) < 8 &&
+      first.bottomPct < originBottomPct - 6;
+    assert.equal(
+      underCushion,
+      false,
+      `first bloom must not sit under the cushion (left=${first.leftPct}, bottom=${first.bottomPct})`
+    );
+  });
+
   it('12 slots share one width and stay distinct (no shrinking / crowding)', () => {
     const slots = Array.from({ length: 12 }, (_, i) =>
       spiralSlotForBloomIndex(i)
