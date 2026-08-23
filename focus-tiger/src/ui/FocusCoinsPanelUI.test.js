@@ -45,3 +45,15 @@ test('Collections panel Play is a footer control, not a shop SKU row', () => {
   assert.doesNotMatch(src, /gesture\.wave-hello/);
   assert.equal(listShopFocusCoinSkus().includes('gesture.wave-hello'), false);
 });
+
+test('not-for-sale copy names sitting-together over time, not years of sitting', () => {
+  const en = JSON.parse(
+    readFileSync(join(here, '../locales/en.json'), 'utf8')
+  );
+  const zh = JSON.parse(
+    readFileSync(join(here, '../locales/zh.json'), 'utf8')
+  );
+  assert.equal(/years of sitting/i.test(en.YIN_COIN_NOT_FOR_SALE), false);
+  assert.match(en.YIN_COIN_NOT_FOR_SALE, /sitting together over time/i);
+  assert.match(zh.YIN_COIN_NOT_FOR_SALE, /同坐日久/);
+});

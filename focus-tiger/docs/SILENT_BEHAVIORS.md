@@ -38,6 +38,7 @@
 | **SB-14** | 节日主题 whisper 同日已出 | 刷新同日不再出 `#seasonal-theme-whisper` | 一日一次 | `TEST_TRACKER` 节日行 | 限频 |
 | **SB-15** | Onboarding **auto tip** | 冷启动**不再**自动喷气泡 | 2026-08-04 产品面只留脉冲悬停 +「?」简介 | `ONBOARDING_HINTS` 文首 | 产品面取消 |
 | **SB-18** | Electron：**收进托盘**（关主窗口 hide，进程仍在） | **无** Re-focus toast / `nod-bow`；计时与氛围乐继续。从托盘再打开也**不**因「藏窗时长」补发走神 | 托盘收起不是切到别的 App；与场景 B 的切标签/切前台是两类事件 | `SCENARIO_TESTS` 场景 AB · 脚手架 Brief | 壳生命周期 · 非走神 |
+| **SB-19** | 文本录入叠层：点卡外空白 / 遮罩 | **卡仍开着**；已打的字还在。**无** toast | 避免半录入被空白点击丢掉。关卡须 **Cancel / Close / Not now / Esc**。不含 Arrival Notice/Choose、Companion、Honesty 选择格（那些仍可点空白取消） | 用户 2026-08-23 书面（Stay in touch） | 有意不关 |
 
 ---
 
@@ -57,6 +58,7 @@
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-23 | **SB-19**：邮箱 / OTP / 倾诉等录入卡点空白不关（防白录入） |
 | 2026-08-17 | **SB-18**：Electron 收进托盘 ≠ 走神（对照场景 B；收费 DMG 必有托盘）。不复用已废止的旧 SB-16/17 id |
 | 2026-08-16 | 收回切走轻语（revert PR #323）：删除曾短暂存在的 SB-16/SB-17；SB-01/02/03 恢复为仅经典 Re-focus |
 | 2026-08-14 | FB-01 Phase 1：冷却再点 = `nodBowMicro`（无 toast、不延长冷却）；SB-07 改为邀请隐退 + invisible hit 仍在。不新建白名单 |

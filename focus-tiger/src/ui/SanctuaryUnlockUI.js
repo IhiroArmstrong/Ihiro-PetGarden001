@@ -188,15 +188,6 @@ export class SanctuaryUnlockUI {
     };
     document.addEventListener('keydown', this._onKeyDown);
 
-    this._onDocPointer = (event) => {
-      if (!this._open) return;
-      if (Date.now() < this._checkoutArmedAt) return;
-      const target = /** @type {Node} */ (event.target);
-      if (this.root.contains(target)) return;
-      this.close();
-    };
-    document.addEventListener('pointerdown', this._onDocPointer, true);
-
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refreshTexts());
     this._refreshTexts();
@@ -242,7 +233,6 @@ export class SanctuaryUnlockUI {
   destroy() {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
-    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this.root.remove();
   }
 
