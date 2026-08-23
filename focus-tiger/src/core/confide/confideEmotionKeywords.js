@@ -54,13 +54,22 @@ export const EMOTION_PHRASES = Object.freeze({
     'sad',
     'sadness',
     'heartbroken',
+    'depressed',
+    'depression',
     '难过',
     '難過',
     '失落',
     '心里沉',
     '心裡沉',
+    '抑郁',
+    '忧郁',
+    '憂鬱',
+    '沮丧',
+    '沮喪',
     '悲しい',
-    '寂しい'
+    '寂しい',
+    '落ち込み',
+    '落ち込ん'
   ]),
   [CONFIDE_ROUTE.SCATTERED]: Object.freeze([
     'scattered',

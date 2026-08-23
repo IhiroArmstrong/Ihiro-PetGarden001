@@ -42,6 +42,9 @@
  * Covers taste-layer schemaVersion 1 freeze tables (plus 2026-08-16 Tip $4.99 / newsletter).
  * Tip STRIPE_PRICE_ID = price_1U4nanFuIhgJPGLidoTdxobW (US$4.99).
  * Still includes newsletter routes + welcome await/retry (covers 8c649d12 / d0140328).
+ * Funnel layout ingest whitelist (#378, origin/develop tip 8535da1) is IN SOURCE
+ * but NOT in this live Version — Redeploy on Mac (163 / ihiro) still required.
+ * Cloud Agent 2026-08-20: user said 部署; no CLOUDFLARE_API_TOKEN; do not --temporary.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",

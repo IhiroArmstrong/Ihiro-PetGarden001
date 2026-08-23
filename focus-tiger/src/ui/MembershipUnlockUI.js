@@ -6,6 +6,8 @@
 /**
  * Yin Membership · subscription unlock card (Idle ⋯ / drawer / Support).
  * Patches unified entitlement cache after server confirm — no parallel gate.
+ *
+ * Views: active (subscribed) · subscribe (purchase) · restore (cross-device OTP).
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -18,7 +20,6 @@ import {
 } from '../core/membershipCheckout.js';
 import { persistMembershipDeviceCredentialFromBody } from '../core/membershipDeviceCredential.js';
 import { createMembershipPortalSession } from '../core/entitlement/cloudEntitlementProvider.js';
-import { getEntitlementState } from '../core/entitlement/entitlementGate.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -28,10 +29,12 @@ import {
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 
-const STYLE_ID = 'yin-membership-card-styles-v1';
+const STYLE_ID = 'yin-membership-card-styles-v2';
 const FADE_MS = 220;
 /** Ignore Buy/Subscribe for this long after open (blocks same-gesture activation). */
 const CHECKOUT_ARM_MS = 450;
+
+/** @typedef {'active' | 'subscribe' | 'restore'} MembershipCardView */
 
 export class MembershipUnlockUI {
   /**
@@ -52,6 +55,14 @@ export class MembershipUnlockUI {
     this._focusTimer = null;
     /** @type {number} */
     this._checkoutArmedAt = 0;
+    /** @type {MembershipCardView} */
+    this._view = 'subscribe';
+
+    this.backdrop = document.createElement('div');
+    this.backdrop.id = 'yin-membership-backdrop';
+    this.backdrop.className = 'yin-membership-backdrop';
+    this.backdrop.hidden = true;
+    this.backdrop.addEventListener('click', () => this.close());
 
     this.root = document.createElement('div');
     this.root.id = 'yin-membership-card';
@@ -68,6 +79,10 @@ export class MembershipUnlockUI {
     this.statusEl = document.createElement('p');
     this.statusEl.className = 'yin-membership__status';
     this.statusEl.dataset.testid = 'yin-membership-status';
+
+    this.planEl = document.createElement('p');
+    this.planEl.className = 'yin-membership__plan';
+    this.planEl.dataset.testid = 'yin-membership-plan';
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'yin-membership__blurb';
@@ -97,9 +112,17 @@ export class MembershipUnlockUI {
     this.manageBtn.className =
       'yin-membership__btn yin-membership__btn--ghost';
     this.manageBtn.dataset.testid = 'yin-membership-manage';
-    this.manageBtn.hidden = true;
     this.manageBtn.addEventListener('click', () => {
       void this._openPortal();
+    });
+
+    this.restoreLinkBtn = document.createElement('button');
+    this.restoreLinkBtn.type = 'button';
+    this.restoreLinkBtn.className = 'yin-membership__restore-link';
+    this.restoreLinkBtn.dataset.testid = 'yin-membership-restore-link';
+    this.restoreLinkBtn.addEventListener('click', () => {
+      this._view = 'restore';
+      this._refreshTexts();
     });
 
     this.restoreTitle = document.createElement('p');
@@ -140,6 +163,18 @@ export class MembershipUnlockUI {
       void this._restore();
     });
 
+    this.restoreBackBtn = document.createElement('button');
+    this.restoreBackBtn.type = 'button';
+    this.restoreBackBtn.className =
+      'yin-membership__btn yin-membership__btn--ghost';
+    this.restoreBackBtn.dataset.testid = 'yin-membership-restore-back';
+    this.restoreBackBtn.addEventListener('click', () => {
+      this._view = isMembershipActiveLocally({ storage: this._storage })
+        ? 'active'
+        : 'subscribe';
+      this._refreshTexts();
+    });
+
     this.restoreRow = document.createElement('div');
     this.restoreRow.className = 'yin-membership__restore-row';
     this.restoreRow.append(this.sendCodeBtn, this.restoreBtn);
@@ -152,22 +187,45 @@ export class MembershipUnlockUI {
 
     this.actions = document.createElement('div');
     this.actions.className = 'yin-membership__actions';
+
+    this.subscribeSection = document.createElement('div');
+    this.subscribeSection.className = 'yin-membership__section';
+    this.subscribeSection.dataset.testid = 'yin-membership-subscribe-section';
+    this.subscribeSection.append(
+      this.blurbEl,
+      this.benefits,
+      this.priceEl,
+      this.restoreLinkBtn
+    );
+
+    this.activeSection = document.createElement('div');
+    this.activeSection.className = 'yin-membership__section';
+    this.activeSection.dataset.testid = 'yin-membership-active-section';
+    this.activeSection.append(this.planEl);
+
+    this.restoreSection = document.createElement('div');
+    this.restoreSection.className = 'yin-membership__section';
+    this.restoreSection.dataset.testid = 'yin-membership-restore-section';
+    this.restoreSection.append(
+      this.restoreTitle,
+      this.restoreHint,
+      this.emailInput,
+      this.codeInput,
+      this.restoreRow,
+      this.restoreBackBtn
+    );
+
     this.actions.append(this.closeBtn, this.manageBtn, this.buyBtn);
 
     this.root.append(
       this.titleEl,
       this.statusEl,
-      this.blurbEl,
-      this.benefits,
-      this.priceEl,
-      this.actions,
-      this.restoreTitle,
-      this.restoreHint,
-      this.emailInput,
-      this.codeInput,
-      this.restoreRow
+      this.activeSection,
+      this.subscribeSection,
+      this.restoreSection,
+      this.actions
     );
-    mountRoot.appendChild(this.root);
+    mountRoot.append(this.backdrop, this.root);
 
     this._onKeyDown = (event) => {
       if (!this._open) return;
@@ -180,10 +238,9 @@ export class MembershipUnlockUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
-      // Same gesture that opened the card must not dismiss it.
       if (Date.now() < this._checkoutArmedAt) return;
       const target = /** @type {Node} */ (event.target);
-      if (this.root.contains(target)) return;
+      if (this.root.contains(target) || this.backdrop.contains(target)) return;
       this.close();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
@@ -201,12 +258,17 @@ export class MembershipUnlockUI {
     if (this._open) return;
     this._open = true;
     this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
+    this._view = isMembershipActiveLocally({ storage: this._storage })
+      ? 'active'
+      : 'subscribe';
+    this.backdrop.hidden = false;
     this.root.hidden = false;
     this.root.tabIndex = -1;
+    this.backdrop.getBoundingClientRect();
     this.root.getBoundingClientRect();
+    this.backdrop.classList.add('is-visible');
     this.root.classList.add('is-visible');
     this._refreshTexts();
-    // Focus the dialog shell — never the Buy button (avoids same-click activation).
     if (this._focusTimer != null) window.clearTimeout(this._focusTimer);
     this._focusTimer = window.setTimeout(() => {
       this._focusTimer = null;
@@ -223,9 +285,13 @@ export class MembershipUnlockUI {
       window.clearTimeout(this._focusTimer);
       this._focusTimer = null;
     }
+    this.backdrop.classList.remove('is-visible');
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
-      if (!this._open) this.root.hidden = true;
+      if (!this._open) {
+        this.root.hidden = true;
+        this.backdrop.hidden = true;
+      }
     }, FADE_MS + 40);
     this.handlers.onClose?.();
   }
@@ -234,6 +300,7 @@ export class MembershipUnlockUI {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this.backdrop.remove();
     this.root.remove();
   }
 
@@ -283,7 +350,6 @@ export class MembershipUnlockUI {
       this.manageBtn.disabled = false;
       if (checkoutError) {
         if (!this._open) this.open();
-        // open() refreshTexts would wipe the error — restore it.
         this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
       } else {
         this._refreshTexts();
@@ -307,10 +373,13 @@ export class MembershipUnlockUI {
       await openCheckoutUrl(url);
     } catch (err) {
       const code = /** @type {any} */ (err)?.code;
-      this.statusEl.textContent =
-        code === 'credential_missing'
-          ? t('MEMBERSHIP_MANAGE_NEED_RESTORE')
-          : t('MEMBERSHIP_ERROR_GENERIC');
+      if (code === 'credential_missing') {
+        this._view = 'restore';
+        this.statusEl.textContent = t('MEMBERSHIP_MANAGE_NEED_RESTORE');
+        this._refreshTexts();
+      } else {
+        this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
+      }
     } finally {
       this._busy = false;
       this.manageBtn.disabled = false;
@@ -396,6 +465,7 @@ export class MembershipUnlockUI {
         markMembershipFromPayment(this._storage, { periodEndsAt, planId });
         persistMembershipDeviceCredentialFromBody(this._storage, res);
         this.codeInput.value = '';
+        this._view = 'active';
         this.statusEl.textContent = t('MEMBERSHIP_STATUS_YES');
         this.handlers.onEntitlementChanged?.();
         this._refreshTexts();
@@ -429,52 +499,102 @@ export class MembershipUnlockUI {
     }
   }
 
-  _refreshTexts() {
-    this.titleEl.textContent = t('MEMBERSHIP_CARD_TITLE');
-    this.blurbEl.textContent = t('MEMBERSHIP_CARD_BLURB');
-    this.benefitEls[0].textContent = t('MEMBERSHIP_BENEFIT_1');
-    this.benefitEls[1].textContent = t('MEMBERSHIP_BENEFIT_2');
-    this.benefitEls[2].textContent = t('MEMBERSHIP_BENEFIT_3');
-    this.priceEl.textContent = t('MEMBERSHIP_PRICE').replaceAll(
-      '{price}',
-      MEMBERSHIP_PRICE_DISPLAY
-    );
-    const active = isMembershipActiveLocally({ storage: this._storage });
-    this.buyBtn.textContent = active
-      ? t('MEMBERSHIP_ALREADY')
-      : t('MEMBERSHIP_BUY_CTA');
-    this.manageBtn.textContent = t('MEMBERSHIP_MANAGE_CTA');
+  _applyView() {
+    const view = this._view;
+    const active = view === 'active';
+    const subscribe = view === 'subscribe';
+    const restore = view === 'restore';
+
+    this.activeSection.hidden = !active;
+    this.subscribeSection.hidden = !subscribe;
+    this.restoreSection.hidden = !restore;
+
+    this.buyBtn.hidden = !subscribe;
     this.manageBtn.hidden = !active;
-    this.closeBtn.textContent = t('MEMBERSHIP_CLOSE');
-    this.restoreTitle.textContent = t('MEMBERSHIP_RESTORE_TITLE');
-    this.restoreHint.textContent = t('MEMBERSHIP_RESTORE_HINT');
-    this.sendCodeBtn.textContent = t('MEMBERSHIP_RESTORE_SEND_CODE');
-    this.restoreBtn.textContent = t('MEMBERSHIP_RESTORE_CTA');
-    this.emailInput.placeholder = t('MEMBERSHIP_EMAIL_PLACEHOLDER');
-    this.codeInput.placeholder = t('MEMBERSHIP_RESTORE_CODE_PLACEHOLDER');
-    const state = getEntitlementState({ storage: this._storage });
-    this.statusEl.textContent = active
-      ? t('MEMBERSHIP_STATUS_YES')
-      : t('MEMBERSHIP_STATUS_NO');
-    this.root.setAttribute(
-      'aria-label',
-      active ? t('MEMBERSHIP_STATUS_YES') : t('MEMBERSHIP_CARD_TITLE')
-    );
-    void state;
+    this.restoreLinkBtn.hidden = !subscribe;
+
+    this.root.classList.toggle('yin-membership--active', active);
+    this.root.classList.toggle('yin-membership--subscribe', subscribe);
+    this.root.classList.toggle('yin-membership--restore', restore);
+  }
+
+  _refreshTexts() {
+    const active = isMembershipActiveLocally({ storage: this._storage });
+    if (this._open && this._view === 'subscribe' && active) {
+      this._view = 'active';
+    }
+
+    if (this._view === 'active') {
+      this.titleEl.textContent = t('MEMBERSHIP_ACTIVE_TITLE');
+      this.statusEl.textContent = t('MEMBERSHIP_STATUS_YES');
+      this.planEl.textContent = t('MEMBERSHIP_ACTIVE_PLAN').replaceAll(
+        '{price}',
+        MEMBERSHIP_PRICE_DISPLAY
+      );
+      this.closeBtn.textContent = t('MEMBERSHIP_ACTIVE_CLOSE');
+      this.manageBtn.textContent = t('MEMBERSHIP_MANAGE_CTA');
+      this.root.setAttribute('aria-label', t('MEMBERSHIP_ACTIVE_TITLE'));
+    } else if (this._view === 'restore') {
+      this.titleEl.textContent = t('MEMBERSHIP_RESTORE_TITLE');
+      this.restoreTitle.textContent = t('MEMBERSHIP_RESTORE_TITLE');
+      this.restoreHint.textContent = t('MEMBERSHIP_RESTORE_HINT');
+      this.sendCodeBtn.textContent = t('MEMBERSHIP_RESTORE_SEND_CODE');
+      this.restoreBtn.textContent = t('MEMBERSHIP_RESTORE_CTA');
+      this.restoreBackBtn.textContent = t('MEMBERSHIP_RESTORE_BACK');
+      this.emailInput.placeholder = t('MEMBERSHIP_EMAIL_PLACEHOLDER');
+      this.codeInput.placeholder = t('MEMBERSHIP_RESTORE_CODE_PLACEHOLDER');
+      this.root.setAttribute('aria-label', t('MEMBERSHIP_RESTORE_TITLE'));
+    } else {
+      this.titleEl.textContent = t('MEMBERSHIP_CARD_TITLE');
+      this.blurbEl.textContent = t('MEMBERSHIP_CARD_BLURB');
+      this.benefitEls[0].textContent = t('MEMBERSHIP_BENEFIT_1');
+      this.benefitEls[1].textContent = t('MEMBERSHIP_BENEFIT_2');
+      this.benefitEls[2].textContent = t('MEMBERSHIP_BENEFIT_3');
+      this.priceEl.textContent = t('MEMBERSHIP_PRICE').replaceAll(
+        '{price}',
+        MEMBERSHIP_PRICE_DISPLAY
+      );
+      this.buyBtn.textContent = t('MEMBERSHIP_BUY_CTA');
+      this.closeBtn.textContent = t('MEMBERSHIP_CLOSE');
+      this.restoreLinkBtn.textContent = t('MEMBERSHIP_RESTORE_LINK');
+      this.statusEl.textContent = t('MEMBERSHIP_STATUS_NO');
+      this.root.setAttribute('aria-label', t('MEMBERSHIP_CARD_TITLE'));
+    }
+
+    this._applyView();
   }
 
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
+    document.getElementById('yin-membership-card-styles-v1')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
+      .yin-membership-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 17;
+        background: rgba(44, 31, 20, 0.14);
+        ${GLASS_BLUR_CSS};
+        opacity: 0;
+        pointer-events: auto;
+        transition: opacity ${FADE_MS}ms ease;
+      }
+      .yin-membership-backdrop.is-visible {
+        opacity: 1;
+      }
+      .yin-membership-backdrop[hidden] {
+        display: none !important;
+      }
       .yin-membership {
         position: fixed;
         left: 50%;
-        bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
+        top: 50%;
         z-index: 18;
-        width: min(400px, calc(100vw - 40px));
-        transform: translate(-50%, 10px);
+        width: min(380px, calc(100vw - 40px));
+        max-height: min(78vh, 520px);
+        overflow-y: auto;
+        transform: translate(-50%, calc(-50% + 10px));
         padding: 16px 16px 14px;
         box-sizing: border-box;
         color: #2c1f14;
@@ -489,7 +609,10 @@ export class MembershipUnlockUI {
       }
       .yin-membership.is-visible {
         opacity: 1;
-        transform: translate(-50%, 0);
+        transform: translate(-50%, -50%);
+      }
+      .yin-membership--active .yin-membership__actions {
+        margin-bottom: 0;
       }
       .yin-membership__title {
         margin: 0 0 6px;
@@ -499,6 +622,7 @@ export class MembershipUnlockUI {
         color: #3d2e22;
       }
       .yin-membership__status,
+      .yin-membership__plan,
       .yin-membership__blurb,
       .yin-membership__price,
       .yin-membership__restore-title,
@@ -508,6 +632,9 @@ export class MembershipUnlockUI {
         line-height: 1.5;
         color: #5c4330;
       }
+      .yin-membership__plan {
+        color: #3d2e22;
+      }
       .yin-membership__benefits {
         margin: 0 0 10px;
         padding-left: 1.1em;
@@ -515,12 +642,31 @@ export class MembershipUnlockUI {
         line-height: 1.45;
         color: #3d2e22;
       }
+      .yin-membership__restore-link {
+        appearance: none;
+        display: block;
+        width: 100%;
+        margin: 4px 0 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #6b5340;
+        text-align: left;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+      }
+      .yin-membership__restore-link:hover {
+        color: #3d2e22;
+      }
       .yin-membership__actions {
         display: flex;
         gap: 8px;
         justify-content: flex-end;
         flex-wrap: wrap;
-        margin: 0 0 12px;
+        margin: 12px 0 0;
       }
       .yin-membership__email,
       .yin-membership__code {
@@ -539,7 +685,7 @@ export class MembershipUnlockUI {
         gap: 8px;
         justify-content: flex-end;
         flex-wrap: wrap;
-        margin: 0 0 4px;
+        margin: 0 0 8px;
       }
       .yin-membership__btn {
         appearance: none;

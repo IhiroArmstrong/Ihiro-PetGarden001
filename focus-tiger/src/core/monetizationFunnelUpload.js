@@ -11,7 +11,8 @@
 import { postCloudJson, getCloudApiBaseUrl } from './cloudApiClient.js';
 import {
   MONETIZATION_FUNNEL_EVENTS,
-  MONETIZATION_TRACKS,
+  isAllowedMonetizationFunnelCountKey,
+  parseMonetizationFunnelLayout,
   readMonetizationFunnelState
 } from './monetizationIntentFunnel.js';
 import {
@@ -57,13 +58,7 @@ export function sanitizeMonetizationFunnelCounts(counts) {
   const out = {};
   if (!counts || typeof counts !== 'object') return out;
   for (const [k, v] of Object.entries(counts)) {
-    if (!k || typeof k !== 'string') continue;
-    const base = k.includes(':') ? k.slice(0, k.indexOf(':')) : k;
-    if (!ALLOWED_EVENT_NAMES.has(base)) continue;
-    if (k.includes(':')) {
-      const track = k.slice(k.indexOf(':') + 1);
-      if (!MONETIZATION_TRACKS.includes(/** @type {any} */ (track))) continue;
-    }
+    if (!isAllowedMonetizationFunnelCountKey(k)) continue;
     const n = Number(v);
     if (!Number.isFinite(n) || n <= 0) continue;
     out[k] = Math.min(Math.floor(n), 1_000_000);
@@ -99,7 +94,8 @@ export function sanitizeMonetizationFunnelEvents(
       at: typeof row.at === 'string' ? row.at.slice(0, 40) : '',
       name: row.name,
       track,
-      source
+      source,
+      layout: parseMonetizationFunnelLayout(row.layout)
     });
   }
   return out;

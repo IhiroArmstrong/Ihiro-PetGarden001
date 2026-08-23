@@ -50,6 +50,10 @@ describe('privacyNoticeCopy', () => {
     const ja = loadLocale('ja.json');
     assert.match(en.HINT_APP_PURPOSE_WELLNESS_TITLE, /not therapy|medical/i);
     assert.match(
+      en.HINT_APP_PURPOSE_WELLNESS_SUMMARY,
+      /mindfulness tool|not medical/i
+    );
+    assert.match(
       en.HINT_APP_PURPOSE_WELLNESS_BODY,
       /focus skill|mindfulness|everyday stress/i
     );
