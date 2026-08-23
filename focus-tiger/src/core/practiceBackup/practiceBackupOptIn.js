@@ -17,7 +17,8 @@ import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackupSnapshot.js';
  *   deviceToken: string | null,
  *   lastUploadAt: string | null,
  *   lastUploadError: string | null,
- *   lastRestoreAt: string | null
+ *   lastRestoreAt: string | null,
+ *   lastUploadFingerprint: string | null
  * }} PracticeBackupOptInState
  */
 
@@ -32,7 +33,8 @@ export function emptyPracticeBackupOptInState() {
     deviceToken: null,
     lastUploadAt: null,
     lastUploadError: null,
-    lastRestoreAt: null
+    lastRestoreAt: null,
+    lastUploadFingerprint: null
   };
 }
 
@@ -64,6 +66,10 @@ export function normalizePracticeBackupOptInState(raw) {
     lastRestoreAt:
       typeof o.lastRestoreAt === 'string' && o.lastRestoreAt
         ? o.lastRestoreAt
+        : null,
+    lastUploadFingerprint:
+      typeof o.lastUploadFingerprint === 'string' && o.lastUploadFingerprint
+        ? o.lastUploadFingerprint
         : null
   };
 }
@@ -90,10 +96,9 @@ export function readPracticeBackupOptIn(storage) {
 export function writePracticeBackupOptIn(storage, state) {
   if (!storage) return;
   try {
-    storage.setItem(
-      PRACTICE_BACKUP_OPT_IN_KEY,
-      JSON.stringify(normalizePracticeBackupOptInState(state))
-    );
+    const next = JSON.stringify(normalizePracticeBackupOptInState(state));
+    if (storage.getItem(PRACTICE_BACKUP_OPT_IN_KEY) === next) return;
+    storage.setItem(PRACTICE_BACKUP_OPT_IN_KEY, next);
   } catch {
     // ignore
   }

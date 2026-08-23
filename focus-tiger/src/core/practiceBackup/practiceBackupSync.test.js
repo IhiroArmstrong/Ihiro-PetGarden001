@@ -14,6 +14,7 @@ import {
   enablePracticeBackupOptIn,
   PRACTICE_BACKUP_DEBOUNCE_MS
 } from './practiceBackupSync.js';
+import { readPracticeBackupOptIn } from './practiceBackupOptIn.js';
 import { PRACTICE_BACKUP_STORE_KEYS } from './practiceBackupSnapshot.js';
 
 function memStorage(initial = {}) {
@@ -235,5 +236,89 @@ describe('practiceBackupSync', () => {
       }
     });
     assert.equal(calls, 1);
+  });
+
+  it('skips restore fetch while busy (Arrival / overlay)', async () => {
+    const storage = memStorage();
+    enablePracticeBackupOptIn(storage, {
+      email: 'a@example.com',
+      deviceToken: 'tok_abcdefghijklmnopqrstuvwxyz012345'
+    });
+    setPracticeBackupBusyProbe(() => true);
+    let getCalls = 0;
+    const result = await maybeRestorePracticeBackupOnBoot({
+      storage,
+      postJson: async () => {
+        getCalls += 1;
+        return { ok: true, snapshot: {} };
+      }
+    });
+    assert.equal(result.reason, 'busy');
+    assert.equal(getCalls, 0);
+  });
+
+  it('retries overlay-busy upload after short delay, without stringify during busy', async () => {
+    const storage = memStorage();
+    enablePracticeBackupOptIn(storage, {
+      email: 'a@example.com',
+      deviceToken: 'tok_abcdefghijklmnopqrstuvwxyz012345'
+    });
+    let busy = true;
+    setPracticeBackupBusyProbe(() => ({ busy, retry: busy }));
+    let calls = 0;
+    const postJson = async () => {
+      calls += 1;
+      return { ok: true };
+    };
+    const first = await flushPracticeBackupUpload({
+      storage,
+      force: true,
+      postJson,
+      retryMs: 15
+    });
+    assert.equal(first.reason, 'busy');
+    assert.equal(calls, 0);
+    busy = false;
+    await new Promise((r) => setTimeout(r, 50));
+    assert.equal(calls, 1);
+  });
+
+  it('skips PUT when store fingerprint is unchanged (cloud-ok only)', async () => {
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({
+        entries: [
+          {
+            at: '2026-01-01T00:00:00.000Z',
+            minutes: 10,
+            arrive: true,
+            reflect: false
+          }
+        ]
+      })
+    });
+    enablePracticeBackupOptIn(storage, {
+      email: 'a@example.com',
+      deviceToken: 'tok_abcdefghijklmnopqrstuvwxyz012345'
+    });
+    let calls = 0;
+    const postJson = async () => {
+      calls += 1;
+      return { ok: true };
+    };
+    const first = await flushPracticeBackupUpload({
+      storage,
+      force: true,
+      postJson
+    });
+    assert.equal(first.ok, true);
+    assert.equal(calls, 1);
+    const second = await flushPracticeBackupUpload({
+      storage,
+      force: true,
+      postJson
+    });
+    assert.equal(second.reason, 'unchanged');
+    assert.equal(calls, 1);
+    assert.ok(readPracticeBackupOptIn(storage).lastUploadFingerprint);
   });
 });
