@@ -63,30 +63,13 @@ async function main() {
   const holdMs = Number(process.env.FT_COMPANION_L0_HOLD_MS || 20000);
 
   emit({ event: 'status', message: 'download' });
-  let dl = null;
-  let lastDownloadError = null;
-  for (const url of L0_MODEL_URLS) {
-    try {
-      emit({ event: 'status', message: `download ${url}` });
-      dl = await ensureGgufDownloaded(modelPath, url, {
-        onProgress: ({ received, total }) => {
-          process.stderr.write(
-            `l0 download ${received}${total ? `/${total}` : ''}\n`
-          );
-        }
-      });
-      break;
-    } catch (err) {
-      lastDownloadError = err;
-      emit({
-        event: 'status',
-        message: `download_fail ${err instanceof Error ? err.message : String(err)}`
-      });
+  const dl = await ensureGgufDownloaded(modelPath, L0_MODEL_URLS, {
+    onProgress: ({ received, total }) => {
+      process.stderr.write(
+        `l0 download ${received}${total ? `/${total}` : ''}\n`
+      );
     }
-  }
-  if (!dl) {
-    throw lastDownloadError || new Error('model_download_failed');
-  }
+  });
   await emit({
     event: 'downloaded',
     path: dl.path,

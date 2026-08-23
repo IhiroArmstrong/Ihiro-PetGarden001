@@ -43,29 +43,16 @@ function defaultModelDir() {
 }
 
 async function downloadModel(modelPath) {
-  let lastError = null;
-  for (const url of L0_MODEL_URLS) {
-    try {
-      await emit({ event: 'status', phase: 'downloading', message: url });
-      return await ensureGgufDownloaded(modelPath, url, {
-        onProgress: ({ received, total }) => {
-          void emit({
-            event: 'progress',
-            received,
-            total: Number.isFinite(total) ? total : null
-          });
-        }
-      });
-    } catch (err) {
-      lastError = err;
-      await emit({
-        event: 'status',
-        phase: 'downloading',
-        message: `download_fail ${errorMessage(err)}`
+  await emit({ event: 'status', phase: 'downloading' });
+  return ensureGgufDownloaded(modelPath, L0_MODEL_URLS, {
+    onProgress: ({ received, total }) => {
+      void emit({
+        event: 'progress',
+        received,
+        total: Number.isFinite(total) ? total : null
       });
     }
-  }
-  throw lastError || new Error('model_download_failed');
+  });
 }
 
 async function main() {
