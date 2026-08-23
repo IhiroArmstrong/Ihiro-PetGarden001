@@ -10,7 +10,8 @@ import {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideChromeStageAllowed,
   isConfideDevHarness,
-  isConfideUserVisible
+  isConfideUserVisible,
+  shouldShowConfideEarChrome
 } from './confideUserVisibilityGate.js';
 import { isConfideSafetyCorpusOk } from './confideCorpus.js';
 
@@ -97,5 +98,25 @@ test('canOpenConfidePanel: desktop companion generation is Idle + safety only', 
       safetyOk: () => false
     }),
     false
+  );
+});
+
+test('ear chrome visibility matches canOpen (no dead click)', () => {
+  assert.equal(shouldShowConfideEarChrome({ search: '', stage: 'idle' }), false);
+  assert.equal(
+    shouldShowConfideEarChrome({ search: '?confide=1', stage: 'idle' }),
+    true
+  );
+  assert.equal(
+    shouldShowConfideEarChrome({ search: '?confide=1', stage: 'focusing' }),
+    false
+  );
+  assert.equal(
+    shouldShowConfideEarChrome({
+      search: '',
+      stage: 'idle',
+      companionGeneration: true
+    }),
+    true
   );
 });

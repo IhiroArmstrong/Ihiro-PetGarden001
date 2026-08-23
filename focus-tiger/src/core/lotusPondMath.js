@@ -32,6 +32,13 @@ export const LOTUS_POND_GOLDEN_ANGLE_DEG = 137.5;
  * Spiral layout inside `#sprite-overlay` (percent of overlay).
  * Tunable — Yin is not screen-centered; keep inner radius off the face
  * and outer radius inside HUD / Sit chrome.
+ *
+ * Narrow (≤479): overlay is zoomed and Yin fills the stage, so a tighter
+ * golden-angle spiral (Vogel packing, **not** 12 equally spaced clock hours)
+ * keeps one ring of up to {@link LOTUS_POND_RING_CAPACITY} around the cushion.
+ *
+ * Wide (≥480): same packing, larger inner/outer radius so blooms sit farther
+ * from Yin (wide screens made the default 17–34% ring look glued to the robe).
  */
 export const LOTUS_POND_SPIRAL = Object.freeze({
   originLeftPct: 50,
@@ -39,14 +46,48 @@ export const LOTUS_POND_SPIRAL = Object.freeze({
   rInnerPct: 17,
   rOuterPct: 34,
   yScale: 0.68,
-  /** Index 0 points downward (pool at the cushion, not over the face). */
-  angleOffsetDeg: -90,
+  /**
+   * Index 0 points left (incense-side ground beside Yin).
+   * 2026-08-20: -90 put bloom 0 under the cushion (§6.18).
+   */
+  angleOffsetDeg: 180,
   bloomWidthCss: 'min(12vw, 96px)',
   leftMinPct: 8,
   leftMaxPct: 92,
   bottomMinPct: 10,
   bottomMaxPct: 48
 });
+
+/** Wide overlay: push the ring outward so Yin does not sit on the pond. */
+export const LOTUS_POND_SPIRAL_WIDE = Object.freeze({
+  originLeftPct: 50,
+  originBottomPct: 22,
+  rInnerPct: 26,
+  rOuterPct: 46,
+  yScale: 0.72,
+  /** Same left-side first bloom as {@link LOTUS_POND_SPIRAL} (do not keep -90). */
+  angleOffsetDeg: 180,
+  bloomWidthCss: 'min(7.5vw, 80px)',
+  leftMinPct: 6,
+  leftMaxPct: 94,
+  bottomMinPct: 6,
+  bottomMaxPct: 46
+});
+
+/** Product wide/narrow home breakpoint (see RESPONSIVE_LAYOUT.md). */
+export const LOTUS_POND_WIDE_MIN_PX = 480;
+
+/**
+ * @param {number} widthPx overlay or viewport width
+ * @returns {typeof LOTUS_POND_SPIRAL}
+ */
+export function spiralForViewportWidth(widthPx) {
+  const w = Number(widthPx);
+  if (Number.isFinite(w) && w >= LOTUS_POND_WIDE_MIN_PX) {
+    return LOTUS_POND_SPIRAL_WIDE;
+  }
+  return LOTUS_POND_SPIRAL;
+}
 
 /**
  * Minutes needed to earn bloom `n` (1-based). `n < 1` → 0.

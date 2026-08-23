@@ -33,6 +33,11 @@ export const SESSION_CUE_FADE_MS = 1500;
  * HTMLAudio default is 1.0 — that made start/interval/end bowls overpower music.
  */
 export const SESSION_CUE_DEFAULT_VOLUME = 0.45;
+/**
+ * Bells are transient peaks; matching the slider number to music still
+ * left bowls much louder. Play cues at half the shared sitting volume.
+ */
+export const SESSION_CUE_RELATIVE_GAIN = 0.5;
 
 /**
  * @param {HTMLAudioElement | null | undefined} el
@@ -107,7 +112,7 @@ export class SessionCueController {
     const el = document.createElement('audio');
     el.preload = 'auto';
     el.setAttribute('preload', 'auto');
-    el.volume = SESSION_CUE_DEFAULT_VOLUME;
+    el.volume = SESSION_CUE_DEFAULT_VOLUME * SESSION_CUE_RELATIVE_GAIN;
     el.style.cssText =
       'position:absolute;width:0;height:0;opacity:0;pointer-events:none';
     el.setAttribute('aria-hidden', 'true');
@@ -134,11 +139,19 @@ export class SessionCueController {
     return this._volume;
   }
 
+  _cueElementVolume(sliderVolume = this._volume) {
+    const n = Number(sliderVolume);
+    const live = Number.isFinite(n)
+      ? Math.min(1, Math.max(0, n))
+      : SESSION_CUE_DEFAULT_VOLUME;
+    return Math.min(1, Math.max(0, live * SESSION_CUE_RELATIVE_GAIN));
+  }
+
   _applyVolumeToElements() {
-    const live = this._volume;
+    const audible = this._cueElementVolume();
     for (const el of [this._start, this._interval, this._end]) {
       if (!el) continue;
-      el.volume = live;
+      el.volume = audible;
     }
   }
 
@@ -350,7 +363,7 @@ export class SessionCueController {
     const epoch = this._playEpoch;
     const live = this._resolveCueVolume(ambient);
     this._volume = live;
-    el.volume = live;
+    el.volume = this._cueElementVolume(live);
     const audible = Boolean(ambient?.isAudiblePlaying?.());
     if (audible && typeof ambient.duckTo === 'function') {
       ambient.duckTo(this._duckRatio, { fadeMs: 0 });

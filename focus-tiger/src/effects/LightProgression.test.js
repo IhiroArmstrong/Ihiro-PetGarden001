@@ -13,6 +13,7 @@ import {
   DOLLY_YIN_SCALE,
   dollyScaleForLayer,
   GOLD_BREATH_PERIOD_SEC,
+  LightProgression,
   RECOVER_BRIGHTNESS_DIP,
   RECOVER_SETTLE_MS,
   rimBaseOpacity,
@@ -65,4 +66,44 @@ test('rim breath modulation uses 4s period and stays in range', () => {
   assert.ok(c >= 0 && c <= 1);
   assert.notEqual(a, b);
   assert.equal(rimOpacityWithBreath(0, 1), 0);
+});
+
+test('clearArrivalAtmosphere snap keeps warmth cut instant; animate fades with CapCut ms', () => {
+  const previous = globalThis.document;
+  const fakeEl = () => ({
+    style: {},
+    isConnected: true,
+    appendChild() {},
+    remove() {},
+    offsetWidth: 1
+  });
+  globalThis.document = {
+    getElementById: () => null,
+    createElement: () => fakeEl(),
+    head: { appendChild() {} },
+    body: { appendChild() {} }
+  };
+  try {
+    const appEl = {
+      firstChild: null,
+      insertBefore() {},
+      appendChild() {}
+    };
+    const lp = new LightProgression({ appEl });
+    lp.beginArrival();
+    lp._backdrop.style.opacity = '1';
+    lp._backdrop.style.background = arrivalBackdropForWarmth(1);
+    lp.clearArrivalAtmosphere();
+    assert.equal(lp._backdrop.style.opacity, '0');
+    assert.match(lp._backdrop.style.background, /rgb\(232,230,225\)/);
+
+    lp._backdrop.style.opacity = '1';
+    lp._backdrop.style.background = arrivalBackdropForWarmth(1);
+    lp.clearArrivalAtmosphere({ animate: true, durationMs: 1000 });
+    assert.match(String(lp._backdrop.style.transition), /opacity 1000ms/);
+    assert.equal(lp._backdrop.style.opacity, '0');
+    assert.match(lp._backdrop.style.background, /rgb\(232,230,225\)/);
+  } finally {
+    globalThis.document = previous;
+  }
 });

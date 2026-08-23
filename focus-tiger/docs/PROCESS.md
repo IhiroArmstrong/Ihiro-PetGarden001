@@ -58,12 +58,15 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-22（UTC+8） · 后台网络三问门禁已入库（`background-network`；现网审计 + 三条修复任务只立项） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· overlay 开着 Arrival 叠化闪（`RB-20260820-L330`；`tasteLayer=0` 正常）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-23（UTC+8） · 后台网络三问门禁已入库（`background-network`；现网审计 + 三条修复任务只立项 · 本旁支） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
 - **后台网络三问门禁（2026-08-22 · 本旁支）**：非用户点击的请求实现前须答时机 / 写盘 / 慢网动效。SSOT `BACKGROUND_NETWORK.md`。现网：练习备份与开机品味层预取有风险（各一修复任务）；Quiet Line 云端未接线；陪伴首次下载须慢网核验。**本回合不改运行时**。口令见各 Brief。
+- **Breath 闭目坐禅 + 磬声减半 + 莲花前景 + Companion 下藏 Breath 球（2026-08-21 · #385 已合）**：timed Breath 不再抄 Arrival 眨眼微笑；磬声相对氛围条 ×0.5；`#lotus-pond` 提到阿寅前，宽屏螺旋外扩；Companion 三选一展开时宽屏藏左球。工作流根因 `DEV_WORKFLOW_QUALITY` §6.19。TRACKER 碎片待拼装。
+- **Arrival Choose 鞠躬回落（2026-08-21 · #386 已合）**：用户书面 overlay 刀有效后，Arrival 鞠躬之后仍闪一下（开关 overlay 都会）。根因是 `clearArrivalAtmosphere()` 瞬间掐暖幕，不是精灵 CapCut 被跳过。已改暖幕与约 1s CapCut 同拍淡出；取消/跳过仍硬切。TRACKER Choose / 抵达练习行待复测。Quiet Line overlay 仍未开工。
+
 - **Companion 模式卡一句话 + 冷启动 30s/3min 验收（2026-08-20 · #379 已合 tip `5352356`）**：三卡 hint 改结缘/静舍语感，不改标题、不复活 auto tip（SB-15）、不碰占用仲裁。30 秒/3 分钟专家稿落成 TRACKER **验收脚本**（3 分钟用 `?sessionMinutes=1`，不改默认 10 分档，不把 nod-bow 列为必测）。**同日用户书面**：三句先按现稿；人工测 How shall we sit? 时看语感；再改只动 locale，不必重开逻辑。Brief `task-companion-mode-copy-coldstart.md`。
 - **意愿漏斗 layout 维（2026-08-20 · #378 已合 tip `8535da1`）**：Support 打开/CTA 记 `layout=tea-first|sanctuary-first`（及 `support_cta:tea:tea-first` 交叉键）。**上云只走 Privacy 漏斗 opt-in**，不走练习记忆联网备份（用户书面：两套同意继续分开，禁止备份成功后自动开漏斗）。Worker ingest 白名单已在 `develop` 源码；**现网仍是品味层 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`**——旧 ingest 会丢掉 layout。同日用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，未 Redeploy（禁止 `--temporary`）。须本机 `wrangler login` 后对 **163 / ihiro** 帐号在 `focus-tiger/cloud` 执行 `npm run deploy`（绝对路径见该回合汇报）。Brief `task-support-funnel-layout.md`。
 - **Support Modal 未练习请茶优先（2026-08-20）**：无练习日且莲花分钟为 0 时，Support 三卡顺序 Tea → Sanctuary → Membership，Suggested 挂请茶；Focus / Honesty / Breath 任一完成记账后**永久**恢复 Sanctuary 打头。三卡不藏、定价不变、不碰精灵通道、不改场景化请茶气泡。Brief `task-support-modal-tea-first.md`。TRACKER Support 行待人工。
@@ -76,10 +79,14 @@
 
 - **会话交接 Session Handoff（2026-08-20）**：口令「生成交接」出结构化摘要。权威：`.cursor/rules/focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
+- **调试本地 AI companion（2026-08-23）**：调试/优化桌面端侧智能体时先定点再动手。权威：`.cursor/rules/focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）。不覆盖 `CompanionModePicker` / Idle PiP。
+
 - **寅币时长 chip 静默 hint（2026-08-18 拍板）**：Focus / Breath picker 下 `#focus-coins-duration-hint`（满 5 分钟、寅币、身份资源）。无 HUD、无 +N toast。`?focusCoins=0` 不出现。TRACKER 待人工。
 - **寅币 Breath 时长点（2026-08-18）**：Breath 坐满按 Stay 档发时长点（5 分=1）并保留每日微仪式 +1；Leave 仍 0。无常驻「攒币」HUD。TRACKER 待人工。
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
 - **寅币 · 珍藏挥手点播（2026-08-20）**：`#yin-coin-panel` 底 **请阿寅挥挥手**（不在清供 8 行）。Idle 点播已入库 `wave-hello`；Focusing / 庆祝 toast 不播。`welcomeBack` / 欢迎池仍停。TRACKER 待人工。
+
+- **向阿寅倾诉 · Idle 倾听耳第二入口（2026-08-22）**：宽屏左上 `#confide-ear-chrome` + 窄屏 ActionBar `#ft-narrow-confide-btn`；点开仍是 `#confide-to-yin-card`；菜单行保留。可见闸 = 可开面板（mount / Electron 非低配宽屏 companion / `?confide=1`）。**未**翻 `CONFIDE_USER_MOUNT_ENABLED`。TRACKER 碎片待人工。
 
 - **禅意倾听者 · 桌面陪伴 L2（2026-08-20 · 口令已执行）**：宽屏 Electron fallback 才短生成；安全阀/情绪桶仍语料；失败回 fallback 句。turns 落本机 jsonl。**Checkout 未接**。Web / 窄屏仍检索。权威：`task-desktop-on-device-companion.md`。
 
@@ -99,9 +106,9 @@
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
-- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。**2026-08-22**：情绪类输入不得落入生成兜底；`depressed` 并入 `sad`；关单「能聊」须接住原问意图。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
-- **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
+- **莲花池 Slice A（2026-08-17；前景/宽屏 2026-08-21）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋（Vogel packing，**不是** 12 点均分圆）；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶。花在阿寅**前景**（`#lotus-pond` z 2）；宽屏用更大内外半径。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
 - **Electron 步骤 B · 托盘 + 关窗后台（2026-08-18）**：收费 DMG 前提。关红灯 = hide；托盘「显示 / 退出」；**P0-2 / SB-18**：hide-to-tray **不是**走神。对照：窗口可见时切 App 仍走场景 B。权威：`task-electron-desktop-scaffold.md`。TRACKER 场景 AB 待人工。陪伴智能体 **不**绑本验收。
 - **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳。P0-1 `openExternal`；P0-3 Cloud POST；P0-4 extraResources。#331 已合。当前 `desktop:dev` **已是步骤 B**（有托盘）。
@@ -532,6 +539,8 @@
 **最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
+
+**最近拍板（2026-08-22）**：**情绪类输入不得落入桌面生成兜底**。`depressed` / 抑郁并入现有 `sad` 语料，不升格最高危机热线、不新开诊断桶。关单「能聊」须在栏杆内接住原问意图，禁止不同问题同一句套话。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」。
 
 **最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——禅意倾听者；检索不生成；**危机安全阀** `safety_redirect` 优先（#223）。禅意 18 + safety-01 人审 **ok**。运行时：`feature/confide-to-yin` 分类/语料/面板已接线；**产品挂载仍关**（`CONFIDE_USER_MOUNT_ENABLED=false`）。**待评估**：safety 是否附加具体地区热线/链接（不阻塞）。Brief `task-briefs/task-confide-to-yin-v1.md`。
 

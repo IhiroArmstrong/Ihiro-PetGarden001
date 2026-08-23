@@ -71,6 +71,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
+| `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
 | `feature-conflict-review` | 实现前功能冲突扫描（强度 / 语气 / 职责） | `focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md` | 扫描三轴 |
 | `background-network` | 非用户点击的网络请求（时机 / 写盘 / 慢网动效） | `focus-tiger/docs/BACKGROUND_NETWORK.md` | 实现前三问（强制） |
 
@@ -110,6 +111,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
+| `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
 | `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 
@@ -129,6 +131,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc) | **SSOT**：会话交接（口令「生成交接」；`session-handoff`） |
+| [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`） |
 | [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`） |
@@ -212,6 +215,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-23 | 新增 `companion-debug`：调试/优化桌面本地 AI companion 须先定点、限读最近一条日志、测试循环有上限、简单调试不升 High/Max。SSOT `.cursor/rules/focus-tiger-companion-debug.mdc`。不覆盖 `CompanionModePicker` / Idle PiP |
 | 2026-08-22 | 新增 `background-network`：非用户点击的网络请求实现前须答时机 / 写盘 / 慢网动效三问；SSOT `BACKGROUND_NETWORK.md`；现网触点审计 + 三条修复任务只立项不修运行时 |
 | 2026-08-20 | `git-worktree-hygiene`：本机按清单清收成 `npm run worktree:hygiene-remove`（dry-run / `--apply` 只拆 `propose_remove`）；仍须口令；不删远端分支；不拆主仓 / `…-wt-develop-qa` |
 | 2026-08-20 | 新增 `session-handoff`：口令「生成交接」+ 阶段性任务后输出结构化交接摘要；SSOT `.cursor/rules/focus-tiger-session-handoff.mdc`；与「批量人工测试」同级；不改变 push/PR / 合 develop / 人工关单 |

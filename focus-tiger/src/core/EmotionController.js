@@ -46,8 +46,9 @@ export const MICRO_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 /** @deprecated 请用 CAPCUT_DISSOLVE_MS */
 export const INTENTION_SET_RETURN_CROSS_FADE_MS = CAPCUT_DISSOLVE_MS;
 /**
- * Arrival Breath（"Let's arrive together."）用眨眼微笑的播放帧率。
- * 默认 blink-smile 为 8fps；此处放慢约 2×，并保持微笑、不落入 idle-breathing。
+ * Arrival Breath（"Let's arrive together." 短拍）用眨眼微笑的播放帧率。
+ * 默认 blink-smile 为 8fps；此处放慢约 2×，并保持微笑。
+ * **不**用于首页左球 timed Breath practice（那条走 Idle 闭目坐禅）。
  */
 export const ARRIVAL_BREATH_SMILE_FPS = 4;
 export const MILESTONE_GLOW_HOLD_MS = 2500;

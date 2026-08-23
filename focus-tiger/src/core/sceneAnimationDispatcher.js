@@ -75,8 +75,10 @@ export const WELCOME_POOL = Object.freeze([
 ]);
 
 /** Light completion / micro-ritual — never celebrate-dance.
- * 2026-08-03：撤出 `curiousTilt`（blink-smile）——微仪式呼吸期已是 smiling/blink-smile，
+ * 2026-08-03：撤出 `curiousTilt`（blink-smile）——当时微仪式呼吸期是 smiling/blink-smile，
  * 再抽到几乎像没播；权重并入摆尾 / 点头。鹦鹉仍稀有。
+ * 2026-08-21：timed Breath practice 改回 Idle 闭目坐禅；完成池仍不抽 blink-smile
+ *（完成反馈用摆尾 / 点头，不把呼吸期再切回眨眼）。
  */
 /** @type {ReadonlyArray<WeightedEntry>} */
 export const LIGHT_COMPLETE_POOL = Object.freeze([

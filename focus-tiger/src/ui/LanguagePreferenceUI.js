@@ -12,7 +12,7 @@
 import { t, onLocaleChange, getLocale, setLocale } from '../locales/i18n.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 
-const STYLE_ID = 'language-preference-styles-v6';
+const STYLE_ID = 'language-preference-styles-v7';
 
 /** Base 44 → +50% (user: enlarge globe). */
 const FAB_PX = Math.round(44 * 1.5);
@@ -289,7 +289,7 @@ export class LanguagePreferenceUI {
         box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         border: 1px solid rgba(139, 115, 85, 0.14);
         color: #3a2a1c;
-        font-family: Georgia, "Times New Roman", serif;
+        font-family: var(--font-family, "Nunito", "Noto Sans SC", system-ui, sans-serif);
       }
       .language-pref__title {
         margin: 0 0 10px;

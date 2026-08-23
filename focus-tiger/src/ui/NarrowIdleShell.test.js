@@ -16,6 +16,14 @@ test('narrow drawer rows have :active press (Journey log 0–1s)', () => {
   assert.match(src, /\.ft-narrow-sheet__item:active:not\(:disabled\)/);
 });
 
+test('narrow ActionBar has Idle Confide ear slot (hidden until gate)', () => {
+  assert.match(src, /id="ft-narrow-confide-btn"/);
+  assert.match(src, /icon-confide-to-yin\.png/);
+  assert.match(src, /setConfideEarVisible/);
+  assert.match(src, /CONFIDE_MENU_LABEL/);
+  assert.match(src, /\.ft-narrow-action-bar__btn:active/);
+});
+
 test('narrow staged reminder panel uses transform not extra translate', () => {
   assert.match(
     src,
