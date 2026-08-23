@@ -40,10 +40,10 @@ export const MUSTARD_SEED_SEAL_CASE_SUMERU = 'mustard-seed-sumeru';
 export const MUSTARD_SEED_SEAL_CASE_HERO = 'hero-not-pond';
 
 export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
-  '大鹏展翅九万里，',
+  '大鵬展翅九萬里，',
   '十方世界共菩提。',
-  '谁言我心不无量，',
-  '芥子亦足纳须弥。'
+  '誰言我心不無量，',
+  '芥子亦足納須彌。'
 ]);
 
 /** Product EN lines (2026-08-12: accept current draft; no further editorial gate). */
@@ -54,14 +54,14 @@ export const MUSTARD_SEED_SEAL_POEM_EN = Object.freeze([
   'A mustard seed can hold Mount Sumeru.'
 ]);
 
-export const MUSTARD_SEED_SEAL_ATTRIBUTION_ZH = '乐五斋诗稿';
+export const MUSTARD_SEED_SEAL_ATTRIBUTION_ZH = '樂五齋詩稿';
 export const MUSTARD_SEED_SEAL_ATTRIBUTION_EN = 'Verses of Le Wu Zhai';
 
 export const MUSTARD_SEED_SEAL_HERO_POEM_ZH = Object.freeze([
-  '山海奇云风幡舞，',
-  '红尘如电亦如露。',
-  '芥子无量纳须弥，',
-  '英雄岂是池中物。'
+  '山海奇雲風幡舞，',
+  '紅塵如電亦如露。',
+  '芥子無量納須彌，',
+  '英雄豈是池中物。'
 ]);
 
 /** Product EN lines (2026-08-17: same draft posture as case 1). */
@@ -72,7 +72,7 @@ export const MUSTARD_SEED_SEAL_HERO_POEM_EN = Object.freeze([
   'How could a hero remain a creature of the pond?'
 ]);
 
-export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH = '乐五斋七言歌行';
+export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH = '樂五齋七言歌行';
 export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN =
   'Song Verse of Le Wu Zhai';
 
