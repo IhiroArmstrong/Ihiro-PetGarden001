@@ -1319,7 +1319,8 @@ async function init() {
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     playWave: () => window.__focusCoins.playWave(),
-    onMessage: (message) => mindfulToast.show(message)
+    onMessage: (message) =>
+      mindfulToast.show(message, { placement: 'center' })
   });
   window.__yinCoinPanel = yinCoinPanelUI;
   syncFocusCoinsCosmetics();
