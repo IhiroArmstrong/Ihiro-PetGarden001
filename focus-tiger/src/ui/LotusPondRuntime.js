@@ -65,7 +65,9 @@ export class LotusPondRuntime {
       return;
     }
     this._playing = true;
-    const slot = spiralSlotForBloomIndex(index);
+    const slot = this.chrome.slotForIndex
+      ? this.chrome.slotForIndex(index)
+      : spiralSlotForBloomIndex(index);
     const src = this.incenseGreeting.getLotusDomSrc();
     const onPlanted = () => {
       this.chrome.plantBloom(index, src);

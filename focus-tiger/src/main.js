@@ -1319,7 +1319,8 @@ async function init() {
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     playWave: () => window.__focusCoins.playWave(),
-    onMessage: (message) => mindfulToast.show(message)
+    onMessage: (message) =>
+      mindfulToast.show(message, { placement: 'center' })
   });
   window.__yinCoinPanel = yinCoinPanelUI;
   syncFocusCoinsCosmetics();
@@ -1473,11 +1474,9 @@ async function init() {
       MICRO_RITUAL_MS_OVERRIDE != null ? MICRO_RITUAL_MS_OVERRIDE : undefined,
     onBreathStart: () => {
       lightProgression.beginBreath();
-      emotionController.playEmotion('smiling', {
-        fps: ARRIVAL_BREATH_SMILE_FPS,
-        crossFadeMs: CAPCUT_DISSOLVE_MS,
-        freezeUntilCrossFadeEnds: true
-      });
+      // Timed Breath practice sits with the existing Idle 闭目坐禅 loop
+      // (idleBreathClosed ×2 → glance). Do not override with blink-smile —
+      // that made a 1-min "Exhale..." look like Arrival's short greeting beat.
       sessionCues.preload();
       sessionCues.playStart({ ambient: ambientSoundscape });
       sessionCues.startIntervalSession();
@@ -2455,7 +2454,11 @@ async function init() {
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
-            lightProgression.clearArrivalAtmosphere();
+            // 鞠躬回落与 idle CapCut 同拍淡出暖幕；禁止 clearArrivalAtmosphere() 硬切（闪一下）。
+            lightProgression.clearArrivalAtmosphere({
+              animate: true,
+              durationMs: CAPCUT_DISSOLVE_MS
+            });
             window.setTimeout(() => {
               lightProgression.releaseDolly();
             }, CAPCUT_DISSOLVE_MS + 40);
@@ -3038,13 +3041,21 @@ async function init() {
       // 只剩 home 三球，误读成「没弹出三选一」（ca20d07；本分支曾丢此修复）。
       document.body.classList.remove(
         'ft-narrow-stage-sound',
-        'ft-narrow-stage-reminder'
+        'ft-narrow-stage-reminder',
+        'ft-wide-stage-sound',
+        'ft-wide-stage-reminder'
       );
-      document.body.classList.add('ft-narrow-stage-companion');
+      document.body.classList.add(
+        'ft-narrow-stage-companion',
+        'ft-wide-stage-companion'
+      );
       onboardingHints?.maybeShowAuto('companion-mode');
       requestAnimationFrame(() => onboardingHints?.repositionAll());
     } else {
-      document.body.classList.remove('ft-narrow-stage-companion');
+      document.body.classList.remove(
+        'ft-narrow-stage-companion',
+        'ft-wide-stage-companion'
+      );
     }
     // Companion owns Quick-only via companionExpanded; clear Choose→nod latch.
     if (expanded) postChooseChrome.pending = false;

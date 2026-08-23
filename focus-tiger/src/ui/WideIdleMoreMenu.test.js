@@ -81,6 +81,16 @@ describe('wide more menu click reception', () => {
     assert.doesNotMatch(src, /bottom: calc\(100% \+ 10px\)/);
   });
 
+  it('hides the Breath/Quick home ball while Companion 三选一 is staged', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /ft-wide-stage-companion #ft-wide-home-quickstart/
+    );
+    assert.match(src, /companionOpen/);
+  });
+
   it('stages the reminder panel on-canvas (not the empty heatmap stub)', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
