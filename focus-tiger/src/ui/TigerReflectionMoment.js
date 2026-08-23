@@ -74,6 +74,63 @@ export function companionEchoKeyAfterAdvance({
   });
 }
 
+/**
+ * Last question + non-empty Continue → keep the card so the echo can be read.
+ * Skip / blank / mid-flow Continue do not hold.
+ * @param {object} opts
+ * @param {boolean} opts.submit
+ * @param {string} [opts.rawAnswer]
+ * @param {boolean} opts.completesFlow
+ * @returns {boolean}
+ */
+export function shouldHoldReflectionLastEcho({
+  submit,
+  rawAnswer = '',
+  completesFlow
+} = {}) {
+  return Boolean(
+    completesFlow && submit && shouldShowReflectionEcho(rawAnswer)
+  );
+}
+
+/**
+ * While holding after last echo, every dismiss control must close (no silent return).
+ * @param {object} opts
+ * @param {boolean} opts.awaitingLastEchoHold
+ * @param {'continue' | 'skip' | 'skip-all' | 'escape' | 'enter'} opts.action
+ * @returns {boolean}
+ */
+export function shouldFinishHeldReflection({
+  awaitingLastEchoHold,
+  action
+} = {}) {
+  if (!awaitingLastEchoHold) return false;
+  return (
+    action === 'continue' ||
+    action === 'skip' ||
+    action === 'skip-all' ||
+    action === 'escape' ||
+    action === 'enter'
+  );
+}
+
+/**
+ * After last submit, stepIndex is past the last question; keep showing Q3.
+ * @param {object} opts
+ * @param {boolean} opts.isDone
+ * @param {number} opts.stepIndex
+ * @param {number} opts.questionCount
+ * @returns {number}
+ */
+export function reflectionDisplayQuestionIndex({
+  isDone,
+  stepIndex,
+  questionCount
+} = {}) {
+  if (isDone && questionCount > 0) return questionCount - 1;
+  return Number(stepIndex) || 0;
+}
+
 export class TigerReflectionMoment {
   /**
    * @param {HTMLElement} container
@@ -103,6 +160,8 @@ export class TigerReflectionMoment {
     this._intentionSource = null;
     /** @type {string | null} */
     this._companionEchoKey = null;
+    /** Last-question echo is on screen; wait for Continue / Skip / Esc. */
+    this._awaitingLastEchoHold = false;
 
     this._onKeyDown = (event) => {
       if (event.key === 'Escape') this._dismiss();
@@ -125,6 +184,7 @@ export class TigerReflectionMoment {
     this._intentionSource =
       this._sessionIntention && intentionSource === 'icon' ? 'icon' : 'typed';
     this.flow = new ReflectionFlowState();
+    this._awaitingLastEchoHold = false;
     this._buildDom();
     this._renderStep({ instant: true });
 
@@ -285,7 +345,8 @@ export class TigerReflectionMoment {
   }
 
   _refreshTexts() {
-    if (!this.root || !this.flow || this.flow.isDone()) return;
+    if (!this.root || !this.flow) return;
+    if (this.flow.isDone() && !this._awaitingLastEchoHold) return;
     if (this.echoEl && this._sessionIntention) {
       this.echoEl.textContent = formatIntentionEcho(
         t(intentionEchoKey(this._intentionSource)),
@@ -305,7 +366,12 @@ export class TigerReflectionMoment {
         this.companionEchoEl.hidden = true;
       }
     }
-    this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[this.flow.stepIndex]);
+    const qIndex = reflectionDisplayQuestionIndex({
+      isDone: this.flow.isDone(),
+      stepIndex: this.flow.stepIndex,
+      questionCount: this.flow.questionCount
+    });
+    this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[qIndex]);
     this.skipBtn.textContent = t('REFLECTION_SKIP');
     this.skipAllBtn.textContent = t('REFLECTION_SKIP_ALL');
     this.continueBtn.textContent = t('REFLECTION_CONTINUE');
@@ -336,10 +402,18 @@ export class TigerReflectionMoment {
   }
 
   _advance({ submit }) {
+    if (
+      shouldFinishHeldReflection({
+        awaitingLastEchoHold: this._awaitingLastEchoHold,
+        action: submit ? 'continue' : 'skip'
+      })
+    ) {
+      this._finish();
+      return;
+    }
     if (!this.flow || this.flow.isDone()) return;
     const stepIndex = this.flow.stepIndex;
     const raw = this.inputEl?.value ?? '';
-    let justEchoed = false;
     if (submit) {
       this.flow.submit(raw);
       const key = companionEchoKeyAfterAdvance({
@@ -349,7 +423,6 @@ export class TigerReflectionMoment {
       });
       if (key) {
         this._companionEchoKey = key;
-        justEchoed = true;
       }
     } else {
       this.flow.skip();
@@ -357,10 +430,18 @@ export class TigerReflectionMoment {
     }
 
     if (this.flow.isDone()) {
-      if (justEchoed && this.companionEchoEl && this._companionEchoKey) {
+      if (
+        shouldHoldReflectionLastEcho({
+          submit,
+          rawAnswer: raw,
+          completesFlow: true
+        }) &&
+        this.companionEchoEl &&
+        this._companionEchoKey
+      ) {
         this.companionEchoEl.textContent = t(this._companionEchoKey);
         this.companionEchoEl.hidden = false;
-        window.setTimeout(() => this._finish(), 900);
+        this._enterLastEchoHold();
         return;
       }
       this._finish();
@@ -369,8 +450,28 @@ export class TigerReflectionMoment {
     }
   }
 
+  /** Keep last-question echo on screen; input becomes read-only. */
+  _enterLastEchoHold() {
+    this._awaitingLastEchoHold = true;
+    if (this.root) this.root.dataset.lastEchoHold = 'true';
+    if (this.inputEl) {
+      this.inputEl.readOnly = true;
+      this.inputEl.setAttribute('aria-readonly', 'true');
+    }
+    this._refreshTexts();
+  }
+
   /** 一次跳过全部剩余问题；已填答案保留，未填不落库。 */
   _skipAll() {
+    if (
+      shouldFinishHeldReflection({
+        awaitingLastEchoHold: this._awaitingLastEchoHold,
+        action: 'skip-all'
+      })
+    ) {
+      this._finish();
+      return;
+    }
     if (!this.flow || this.flow.isDone()) return;
     this.flow.abandonRest();
     this._finish();
@@ -378,6 +479,15 @@ export class TigerReflectionMoment {
 
   /** Esc 或外部关闭：剩余问题视作跳过，已答内容保留，无任何提示。 */
   _dismiss() {
+    if (
+      shouldFinishHeldReflection({
+        awaitingLastEchoHold: this._awaitingLastEchoHold,
+        action: 'escape'
+      })
+    ) {
+      this._finish();
+      return;
+    }
     if (!this.flow) return;
     this.flow.abandonRest();
     this._finish();
@@ -389,6 +499,7 @@ export class TigerReflectionMoment {
     this._sessionIntention = '';
     this._intentionSource = null;
     this._companionEchoKey = null;
+    this._awaitingLastEchoHold = false;
     document.removeEventListener('keydown', this._onKeyDown);
 
     if (this.root) {

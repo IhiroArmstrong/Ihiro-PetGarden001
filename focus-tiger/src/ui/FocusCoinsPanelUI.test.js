@@ -23,6 +23,21 @@ test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fad
   assert.match(src, /listFocusCoinSurfaceRows/);
 });
 
+test("Yin's Collections docks right on ≥480 and stays a short sheet on narrow", () => {
+  assert.match(src, /@media \(min-width: 480px\)/);
+  assert.match(src, /left: max\(56vw, calc\(100vw - 360px\)\)/);
+  assert.match(src, /max-height: min\(42vh, 380px\)/);
+  assert.doesNotMatch(src, /max-height: min\(70vh, 520px\)/);
+});
+
+test('Collections Bond / busy copy uses the center toast so the panel cannot bury it', () => {
+  const main = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(
+    main,
+    /onMessage:\s*\(message\)\s*=>\s*\n?\s*mindfulToast\.show\(message,\s*\{\s*placement:\s*'center'\s*\}\)/
+  );
+});
+
 test('panel source maps shop SKUs via listFocusCoinSurfaceRows', () => {
   assert.equal(listShopFocusCoinSkus().length, 8);
   assert.match(src, /listFocusCoinSurfaceRows\(ctx\)/);

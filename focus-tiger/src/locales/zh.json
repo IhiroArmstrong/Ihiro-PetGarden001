@@ -273,7 +273,7 @@
   "HINT_NARROW_DRAWER_MENU": "上滑打开底部抽屉。里面有：一分钟呼吸、这次怎么陪你？、提醒、语言，以及本周陪伴小格。",
   "HINT_HELP_FALLBACK": "准备好了，就与阿寅同坐。",
   "HINT_APP_PURPOSE_TITLE": "这个空间能帮你什么",
-  "HINT_APP_PURPOSE_BODY": "Focus Tiger 是专注与临在的正念伙伴——按自己的节奏练习的安静之处。\n\n没有压力，没有广告。练习留在本机。我们不会挖掘你的反思内容。\n\n一天里，阿寅可以在五个温柔的时刻陪伴你：Arrive → Focus → Recover → Transition → Reflect。",
+  "HINT_APP_PURPOSE_BODY": "Focus Tiger 是专注与临在的正念伙伴——按自己的节奏练习。\n\n本地优先：无广告、不挖矿。你的反思留在本机。",
   "HINT_APP_PURPOSE_PRIVACY": "隐私",
   "HINT_APP_PURPOSE_PRIVACY_ARIA": "打开隐私说明",
   "HINT_APP_PURPOSE_MOMENTS": "五大时刻",
@@ -334,6 +334,7 @@
   "YIN_COIN_CEREMONIAL_STILL": "案头清供——不会盖上莲花或序列帧。",
   "YIN_COIN_CEREMONIAL_SUMERU": "须弥小鼎——久坐留下的位子。",
   "CONFIDE_MENU_LABEL": "向阿寅倾诉",
+  "CONFIDE_EAR_TOOLTIP": "向阿寅倾诉",
   "CONFIDE_PANEL_TITLE": "向阿寅倾诉",
   "CONFIDE_PANEL_BLURB": "把心里的话说出来。寅安静听——短句回应。内容不出这台设备。",
   "CONFIDE_PANEL_PLACEHOLDER": "写几句…",
@@ -610,5 +611,15 @@
   "SUPPORT_MEMBERSHIP_PRICE": "约 ${price} · 按月订阅",
   "SUPPORT_MEMBERSHIP_CTA": "加入会员",
   "SUPPORT_MEMBERSHIP_IMG_ALT": "阿寅在安静的会员场景中休憩",
-  "SUPPORT_DESKTOP_RAM_NOTE": "提示：内存在 8GB 及以下的 Mac 与 Windows 电脑上，可选的端侧陪伴可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Focus Tiger 默认隐藏入口。"
+  "SUPPORT_DESKTOP_RAM_NOTE": "提示：内存在 8GB 及以下的 Mac 与 Windows 电脑上，可选的端侧陪伴可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Focus Tiger 默认隐藏入口。",
+  "AMBIENT_TAB_AMBIENCE": "氛围音",
+  "AMBIENT_TAB_CHIMES": "钟磬",
+  "HINT_APP_PURPOSE_WELLNESS_SUMMARY": "Focus Tiger 是正念练习工具，不是医疗或临床心理治疗。",
+  "HINT_APP_PURPOSE_WELLNESS_LINK": "医疗免责声明",
+  "HINT_APP_PURPOSE_WELLNESS_LINK_ARIA": "打开完整医疗免责声明",
+  "MEMBERSHIP_ACTIVE_TITLE": "阿寅会员已生效",
+  "MEMBERSHIP_ACTIVE_PLAN": "方案：约 ${price} / 月",
+  "MEMBERSHIP_ACTIVE_CLOSE": "关闭",
+  "MEMBERSHIP_RESTORE_LINK": "在其他设备恢复",
+  "MEMBERSHIP_RESTORE_BACK": "返回"
 }
