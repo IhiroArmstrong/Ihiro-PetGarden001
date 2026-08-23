@@ -24,6 +24,24 @@ test('Breath practice wires start / interval / end sitting cues', () => {
   assert.match(mainSrc, /microBreathing[\s\S]*?sessionCues\.tickInterval/);
 });
 
+test('Breath practice does not override Idle with blink-smile', () => {
+  const micro = mainSrc.match(
+    /microRitualUI = new MicroRitualUI\([\s\S]*?onBreathStart: \(\) => \{([\s\S]*?)\},\s*onComplete:/
+  );
+  assert.ok(micro, 'MicroRitual onBreathStart block');
+  assert.equal(/playEmotion\(\s*'smiling'/.test(micro[1]), false);
+  assert.match(micro[1], /lightProgression\.beginBreath/);
+  assert.match(micro[1], /sessionCues\.playStart/);
+});
+
+test('Companion expand stages wide+narrow so Breath home ball can hide', () => {
+  assert.match(mainSrc, /ft-wide-stage-companion/);
+  assert.match(
+    mainSrc,
+    /classList\.add\(\s*'ft-narrow-stage-companion',\s*'ft-wide-stage-companion'/
+  );
+});
+
 test('Focusing auto-starts sitting music on the same gesture as the start bell', () => {
   assert.match(mainSrc, /ambientSoundscape\.startSittingMusic/);
   assert.equal((mainSrc.match(/sessionCues\.playStart/g) || []).length, 2);

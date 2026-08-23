@@ -8,6 +8,7 @@ import { openFreshProductShell } from './helpers/product-shell.js';
 
 /**
  * Empty-pond first bloom must sit left of Yin, not under the cushion.
+ * Pond is in front of `#sprite-stage` (2026-08-21).
  * Full-ring 11→12 count remains in lotus-pond-product.spec.js.
  */
 
@@ -37,14 +38,14 @@ test.describe('Lotus pond first bloom slot', () => {
       Math.abs(slot.leftPct - 50) < 8 && slot.bottomPct < 22
     ).toBe(false);
 
-    const pondBehindYin = await page.evaluate(() => {
+    const pondInFrontOfYin = await page.evaluate(() => {
       const pond = document.querySelector('#lotus-pond');
       const stage = document.querySelector('#sprite-stage');
       if (!pond || !stage) return false;
       const pondZ = Number.parseInt(pond.style.zIndex || '0', 10);
       const stageZ = Number.parseInt(stage.style.zIndex || '0', 10);
-      return pondZ < stageZ;
+      return pondZ > stageZ;
     });
-    expect(pondBehindYin).toBe(true);
+    expect(pondInFrontOfYin).toBe(true);
   });
 });

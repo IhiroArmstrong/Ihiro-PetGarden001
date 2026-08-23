@@ -92,4 +92,17 @@ describe('LotusPondRuntime birth queue', () => {
       assert.equal(/playEmotion\(\s*['"]lotus/i.test(src), false);
     }
   });
+
+  it('persistent pond sits in front of Yin (z 2 > stage 1)', () => {
+    const chromeSrc = fs.readFileSync(
+      fileURLToPath(new URL('./LotusPondChrome.js', import.meta.url)),
+      'utf8'
+    );
+    assert.match(chromeSrc, /pond.id = 'lotus-pond'[\s\S]*?z-index:2/);
+    assert.match(chromeSrc, /stage.style.zIndex = '1'/);
+    assert.match(
+      chromeSrc,
+      /birth.id = 'lotus-pond-birth-fx'[\s\S]*?z-index:3/
+    );
+  });
 });

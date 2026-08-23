@@ -171,6 +171,9 @@ export function resolveIdleChromeStage(input) {
  * When true: hide Sit / Honesty / ⋯ (or grabber), keep Quick Start ball.
  * Arrival, Honesty check-in UI, Companion picker, and the Choose→nod gap
  * before Companion expands (`postChoosePending`).
+ * Companion still uses this latch so Honesty does not snap back and so
+ * `clearStage` does not dismiss the trio. The Breath/Quick home ball is
+ * hidden separately while the trio is open (`ft-wide-stage-companion`).
  *
  * @param {{
  *   arrivalOpen?: boolean,
