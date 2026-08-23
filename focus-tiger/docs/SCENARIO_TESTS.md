@@ -539,14 +539,14 @@
 ## 场景 AC：Yin's Collections 抽屉（L3 · 寅币珍藏表面）
 
 > **用户故事**：Kelly 想用坐来的寅币结缘一件钱买不到的案头雅物——宽屏 ⋯ / 窄屏抽屉在 Journey log **旁边**打开 **Yin's Collections**（汉语阿寅的珍藏 / 日语阿寅の蒐集），见可滚动商店目录，不是 Support 三卡、不是请茶、不是 HUD 钱包、不是第二座莲花池。  
-> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`；底栏 Play、清供行无挥手）。  
+> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`；≥480 靠右停；<480 42vh 短栏；Bond toast 中置；底栏 Play、清供行无挥手）。  
 > **仍须人工**：375 不挡三球；清供目录都能滚到；不足结缘 toast；已结缘 / Wear；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
 > **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把器物叠回主坐席 / `#sprite-stage`；商店行出现挥手 SKU（底栏 Play 除外）；把挥手加回欢迎池。
 
-1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。随后见抬头精致浮雕币标 + 寅币余额旁小 icon +「案头雅物皆由同坐岁月所化」+ 商店行（青铜香薰炉 / 青瓷莲盏 / 紫檀念珠匣 / 青铜奁 / 座右小碑 / 归来青瓷小瓶 / 石镇纸 / 须弥小鼎）。SKU 行仍是占位色点。币标**不**出现在阿寅序列或蒲团上。商店行**不得**出现挥手 / 青瓷瓶 / 青铜礼器 / 单独的「久坐的人」，也**不得**用晨露滤镜盖莲花。底栏可见 **请阿寅挥挥手**。
-2. **挥手点播**：点底栏 **请阿寅挥挥手** → **0–1 秒内**钮 `:active` 按压 + 阿寅开始 `wave-hello` 正放一次，约 1s CapCut 回坐禅。关面板再开钮仍在。Focusing / 庆祝中点同一钮：仍有按压 + toast「阿寅正在坐着…」，**不**播序列。**不得**把挥手加回开场欢迎池。
+1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。**≥480**：面板靠右停（与 ⋯ sheet 同族），中线阿寅须完整可见。**375**：短底栏（约 42vh），头顶不得被玻璃盖住。随后见抬头精致浮雕币标 + 寅币余额旁小 icon +「案头雅物皆由同坐岁月所化」+ 商店行（青铜香薰炉 / 青瓷莲盏 / 紫檀念珠匣 / 青铜奁 / 座右小碑 / 归来青瓷小瓶 / 石镇纸 / 须弥小鼎）。SKU 行仍是占位色点。币标**不**出现在阿寅序列或蒲团上。商店行**不得**出现挥手 / 青瓷瓶 / 青铜礼器 / 单独的「久坐的人」，也**不得**用晨露滤镜盖莲花。底栏可见 **请阿寅挥挥手**。
+2. **挥手点播**：点底栏 **请阿寅挥挥手** → **0–1 秒内**钮 `:active` 按压 + 阿寅开始 `wave-hello` 正放一次，约 1s CapCut 回坐禅；**挥手序列须在面板外可见**（不得被玻璃挡住）。关面板再开钮仍在。Focusing / 庆祝中点同一钮：仍有按压 + toast「阿寅正在坐着…」，**不**播序列。**不得**把挥手加回开场欢迎池。
 3. **结缘成功**（余额够、门槛够）：点 **结缘 / Bond** → **0–1 秒内**钮 `:active` 按压；该行变成已结缘；余额减少。清供只进珍藏卡面，莲花朵数与亮度不变。座右小碑 / 须弥小鼎可 Wear（一次一个）。石镇纸 / 器物成功可出安静仪式句（非彩纸）。
-4. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 toast。**不是**哑点击，也不说笼统「无法兑换」。
+4. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 **中置** toast（须盖在面板之上可读）。**不是**哑点击，也不说笼统「无法兑换」。
 5. **回流**：Close / Esc / 点外侧 → **0–1 秒内**关钮 `:active` + 卡淡出；Sit / ⋯ 仍在。再打开仍是商店目录；已结缘不再扣点。
 6. **对照 Support（场景 Q）**：右上角 Support Yin 三卡 / `$` **不**出现在本面板。付款仍只走 Support FAB。
 7. **关闸**：`?product=1&focusCoins=0` → 抽屉 / ⋯ **没有**珍藏这一行。
