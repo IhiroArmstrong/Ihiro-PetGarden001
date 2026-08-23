@@ -1,6 +1,7 @@
 ---
-description: 可点击交互必须区分接收反馈与结果反馈；已知静默须进白名单（始终生效）
-alwaysApply: true
+description: 可点击交互必须区分接收反馈与结果反馈；已知静默须进白名单（改 UI 源或 SCENARIO_TESTS / 点击反馈 SSOT 时挂载）
+globs: "focus-tiger/src/**/*.{js,jsx,css},focus-tiger/desktop/**/*.{js,css,html},focus-tiger/docs/SCENARIO_TESTS.md,focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md,focus-tiger/docs/SILENT_BEHAVIORS.md"
+alwaysApply: false
 ---
 
 # Focus Tiger · 点击反馈（Agent 摘要）

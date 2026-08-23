@@ -142,7 +142,7 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 ## Agent 摘要
 
-Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（**非** SSOT；只留强制动作）。PR 模板有第三问栏。勿在其它文档复述三轴全文。正面案例（托盘 vs 旧 Brief；检索不生成 vs 桌面窄例外）见上文，照该格式处理口径冲突。
+Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（**非** SSOT；只留强制动作）。PR 模板有第三问栏。勿在其它文档复述三轴全文。正面案例（托盘 vs 旧 Brief；检索不生成 vs 桌面窄例外）见上文，照该格式处理口径冲突。
 
 ---
 
@@ -150,6 +150,7 @@ Cursor alwaysApply：`.cursor/rules/focus-tiger-feature-conflict-review.mdc`（*
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-24 | Agent 摘要：`focus-tiger-feature-conflict-review.mdc` 改为 glob 注入（`src` / `desktop` / `docs`），不再 alwaysApply |
 | 2026-08-20 | L1 口令「开工桌面陪伴 L1」：宽屏 Confide 同一入口 + 下载层；仍不上 L2 生成、不接第四卡 / 第五卡。对照 Confide / 场景 Q / Whisper：无新菜单、无假收费卡、仪式文案不生成 |
 | 2026-08-20 | 口令「开工桌面陪伴 L2」：fallback 短生成 + 四层路由。对照 Confide（桶/安全仍语料）、场景 Q（不接卡）、Whisper/Recover（无 generate）。无假收费 |
 | 2026-08-20 | 用户书面纠正：Checkout 将来是五卡，不只第四卡 Pro，也必须第五卡 `companion.addon.lifetime`。Price 已记。场景 Q 关单仍只测三卡。Dashboard Sanctuary/Tea 多 price 不是新卡。无运行时用户路径 |

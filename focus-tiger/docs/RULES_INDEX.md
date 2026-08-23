@@ -131,11 +131,11 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc) | **SSOT**：会话交接（口令「生成交接」；`session-handoff`） |
-| [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`） |
+| [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
-| [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`） |
-| [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`） |
-| [`.cursor/rules/focus-tiger-background-network.mdc`](../../.cursor/rules/focus-tiger-background-network.mdc) | Agent 摘要：非用户点击网络请求须答三问（**非** SSOT；全文见 `BACKGROUND_NETWORK.md`） |
+| [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；**glob 注入，非 alwaysApply**） |
+| [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`；**glob 注入，非 alwaysApply**） |
+| [`.cursor/rules/focus-tiger-background-network.mdc`](../../.cursor/rules/focus-tiger-background-network.mdc) | Agent 摘要：非用户点击网络请求须答三问（**非** SSOT；全文见 `BACKGROUND_NETWORK.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
@@ -215,6 +215,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-24 | 第一批 alwaysApply 收窄：`companion-debug` / `background-network` / `interaction-feedback` / `feature-conflict-review` 四份 Cursor 规则改为 `alwaysApply: false` + globs（打开匹配路径时注入）。regression-lock / docs 拆分另任务 |
 | 2026-08-23 | 新增 `companion-debug`：调试/优化桌面本地 AI companion 须先定点、限读最近一条日志、测试循环有上限、简单调试不升 High/Max。SSOT `.cursor/rules/focus-tiger-companion-debug.mdc`。不覆盖 `CompanionModePicker` / Idle PiP |
 | 2026-08-22 | 新增 `background-network`：非用户点击的网络请求实现前须答时机 / 写盘 / 慢网动效三问；SSOT `BACKGROUND_NETWORK.md`；现网触点审计 + 三条修复任务只立项不修运行时 |
 | 2026-08-20 | `git-worktree-hygiene`：本机按清单清收成 `npm run worktree:hygiene-remove`（dry-run / `--apply` 只拆 `propose_remove`）；仍须口令；不删远端分支；不拆主仓 / `…-wt-develop-qa` |
