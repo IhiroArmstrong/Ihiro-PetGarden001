@@ -89,14 +89,14 @@ describe('mustardSeedSeal', () => {
     assert.equal(MUSTARD_SEED_SEAL_CASES[0].id, MUSTARD_SEED_SEAL_CASE_SUMERU);
     assert.equal(MUSTARD_SEED_SEAL_CASES[1].id, MUSTARD_SEED_SEAL_CASE_HERO);
     assert.deepEqual(MUSTARD_SEED_SEAL_HERO_POEM_ZH, [
-      '山海奇云风幡舞，',
-      '红尘如电亦如露。',
-      '芥子无量纳须弥，',
-      '英雄岂是池中物。'
+      '山海奇雲風幡舞，',
+      '紅塵如電亦如露。',
+      '芥子無量納須彌，',
+      '英雄豈是池中物。'
     ]);
     assert.equal(
       MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
-      '乐五斋七言歌行'
+      '樂五齋七言歌行'
     );
     assert.equal(
       getMustardSeedSealCase(MUSTARD_SEED_SEAL_CASE_HERO)?.poemZh.length,
