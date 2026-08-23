@@ -10,6 +10,14 @@ npm --prefix desktop install
 npm run desktop:dev
 ```
 
+If Electron prints `failed to install correctly`, npm 11 blocked its postinstall (`allow-scripts` empty). This folder’s `.npmrc` allows `electron`, `electron-winstaller`, and `node-llama-cpp`. Then:
+
+```text
+rm -rf desktop/node_modules/electron desktop/node_modules/node-llama-cpp
+npm --prefix desktop install
+npm run desktop:dev
+```
+
 Packaged Mac DMG / Windows installer notes live in `docs/task-briefs/task-electron-desktop-scaffold.md`.
 
 ## On-device companion (L1 panel)

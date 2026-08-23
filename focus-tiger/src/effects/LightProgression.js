@@ -43,7 +43,7 @@ function ensureKeyframes() {
 @keyframes ft-cushion-glow {
   0% { opacity: 0; transform: translate(-50%, 0) scale(0.7); }
   35% { opacity: 0.85; transform: translate(-50%, 0) scale(1.05); }
-创建 创建 100% { opacity: 0; transform: translate(-50%, 0) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, 0) scale(1.15); }
 }
 `;
   document.head.appendChild(style);
@@ -174,11 +174,30 @@ export class LightProgression {
   /**
    * 只收 Arrival 氛围（暖色背景 / 呼吸光环），不拉回 Dolly。
    * 合十→idle 淡入期间保持推近，避免与角色切换叠成跳动。
+   * Choose 鞠躬回落须 `animate: true` 并与 CapCut 同长，禁止瞬间掐暖幕（闪一下）。
+   * 取消 / 跳过仍走默认硬切。
+   * @param {{ animate?: boolean, durationMs?: number }} [opts]
    */
-  clearArrivalAtmosphere() {
+  clearArrivalAtmosphere({ animate = false, durationMs } = {}) {
     this.endBreath({ releaseDolly: false });
+    const el = this._ensureBackdrop();
+    if (animate) {
+      const ms = Math.max(
+        0,
+        Number(durationMs) || ARRIVAL_WARM_TRANSITION_MS
+      );
+      el.style.transition = [
+        `opacity ${ms}ms ease`,
+        `background ${ms}ms ease`,
+        `transform ${DOLLY_OUT_MS}ms cubic-bezier(0.33, 0.1, 0.25, 1)`
+      ].join(', ');
+      this._warmth = 0;
+      el.style.background = arrivalBackdropForWarmth(0);
+      el.style.opacity = '0';
+      return;
+    }
     this._setWarmth(0, false);
-    if (this._backdrop) this._backdrop.style.opacity = '0';
+    el.style.opacity = '0';
   }
 
   /** Choose 确认：坐垫光晕；保持 Dolly 推近，不在此拉回。 */

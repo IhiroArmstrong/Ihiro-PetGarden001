@@ -39,10 +39,12 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
+  '.cursor/rules/focus-tiger-companion-debug.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
   '.cursor/rules/focus-tiger-feature-conflict-review.mdc',
+  '.cursor/rules/focus-tiger-background-network.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -55,7 +57,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
   'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
   'focus-tiger/docs/SILENT_BEHAVIORS.md',
-  'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
+  'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
+  'focus-tiger/docs/BACKGROUND_NETWORK.md'
 ];
 
 /**
@@ -1281,6 +1284,51 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
   },
   {
+    id: 'companion-debug',
+    title: '调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档）',
+    ssotPath: '.cursor/rules/focus-tiger-companion-debug.mdc',
+    ssotSection: 'Focus Tiger · 调试本地 AI companion',
+    ssotMustContain: [
+      /companion-debug/,
+      /先定点再动手/,
+      /turns\.jsonl/,
+      /连续最多 3 轮/,
+      /High effort \/ Max mode/
+    ],
+    topicSignals: [
+      /companion-debug/,
+      /调试本地 AI/,
+      /turns\.jsonl/,
+      /High effort \/ Max mode/
+    ],
+    mustCite: [/focus-tiger-companion-debug\.mdc|companion-debug/],
+    restatementFingerprints: [
+      /先定点再动手/,
+      /连续最多 3 轮/,
+      /禁止读取完整日志目录/,
+      /未获用户书面「继续」不得开第 4 轮/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'unscoped-companion-improve',
+        pattern:
+          /(?:可以|允许|应当)[^。\n]{0,24}(?:无范围|不指定文件).{0,16}(?:全面改善|分析为什么表现不好)/,
+        note: '本地 AI 调试必须先定点；禁止写成可无范围全面改善'
+      },
+      {
+        id: 'full-turns-jsonl',
+        pattern: /(?:可以|允许|应当)[^。\n]{0,20}(?:读取|打开)[^。\n]{0,24}整(?:份|个).{0,12}turns\.jsonl/,
+        note: '禁止主张可读完整 turns.jsonl / 日志目录'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ]
+  },
+  {
     id: 'feature-conflict-review',
     title: '实现前功能冲突扫描（强度 / 语气 / 职责）',
     ssotPath: 'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
@@ -1341,6 +1389,57 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     restatementExemptFiles: [
       '.cursor/rules/focus-tiger-feature-conflict-review.mdc'
+    ]
+  },
+  {
+    id: 'background-network',
+    title: '非用户点击的网络请求（时机 / 写盘 / 慢网动效）',
+    ssotPath: 'focus-tiger/docs/BACKGROUND_NETWORK.md',
+    ssotSection: '实现前三问（强制）',
+    ssotMustContain: [
+      /非用户主动点击触发/,
+      /内容相同则跳过写入/,
+      /cloud-ok/,
+      /低速网络模拟/,
+      /background-network/
+    ],
+    topicSignals: [
+      /background-network/,
+      /BACKGROUND_NETWORK/,
+      /后台网络三问/,
+      /非用户主动点击触发/
+    ],
+    mustCite: [/BACKGROUND_NETWORK\.md|background-network/],
+    restatementFingerprints: [
+      /内容相同则跳过写入/,
+      /低速网络模拟下实测一次动效流畅度/,
+      /禁止假设「网络请求快，应该来得及」/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'assume-fast-network-ok',
+        pattern:
+          /网络请求快.{0,16}(?:应该来得及|可以重叠|不必错峰)/,
+        note: '后台请求与动效重叠须错峰；禁止写成请求快就可以重叠',
+        exemptIfLineMatches: /禁止|不得|不要/
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-background-network.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/COLLAB.md',
+      'focus-tiger/docs/TEST_TRACKER.md',
+      'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
+      'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'WORKFLOW.md'
+    ],
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-background-network.mdc'
     ]
   }
 ];

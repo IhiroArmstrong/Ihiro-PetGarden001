@@ -18,5 +18,6 @@ export {
   isConfideUserVisible,
   isConfideDevHarness,
   isConfideChromeStageAllowed,
-  canOpenConfidePanel
+  canOpenConfidePanel,
+  shouldShowConfideEarChrome
 } from './confideUserVisibilityGate.js';

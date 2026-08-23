@@ -43,6 +43,17 @@
 
 ---
 
+## 后台网络三问（触及自动同步 / 开机拉取 / 首次模型下载则必填）
+
+> 权威：`focus-tiger/docs/BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`）
+
+- [ ] **未**新增或修改非用户点击触发的网络请求 → 勾此项并写 **「不涉及后台网络」**
+- [ ] **Q1 时机**：是否与 Arrival / Honesty / Reflection 叠化、Idle 呼吸开始、精灵预加载重叠？重叠则如何错峰？
+- [ ] **Q2 写盘**：内容未变时是否跳过本地写入、只更新 cloud-ok 标记？
+- [ ] **Q3 慢网动效**：低速网络下动效是否仍流畅（不能只测请求成败）？
+
+---
+
 ## 规则文件 / SSOT 数值（触及 `.cursor/rules/*.mdc` 则必填）
 
 > 权威：`focus-tiger/docs/RULES_INDEX.md` · 一致性门禁：`npm run docs:check`（含 `check-docs-consistency`）

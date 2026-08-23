@@ -84,7 +84,7 @@
    *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
 5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。  
    点 **How shall we sit?** 后 **0–1 秒内**见三卡标题 + 卡下 hint（locale `COMPANION_MODE_*_HINT`：结缘/静舍一句话，不是功能说明书）。  
-   - **Sit→Choose 走完**：鞠躬后**展开 Companion**；点任一模式 → **立刻** Focusing（不必再点 Sit）。  
+   - **Sit→Choose 走完**：鞠躬后**展开 Companion**；点任一模式 → **立刻** Focusing（不必再点 Sit）。宽屏三卡下方 **不得**再露 Breath/Quick 左球（`ft-wide-stage-companion`）。  
    - **375 窄屏**：鞠躬后三选一须 **在视口内**（`ft-narrow-stage-companion`）；**禁止**只剩 home 三球、panel 屏外假绿。e2e：`375 Choose bow: Companion staged in viewport then Here & Now focuses`（`toBeInViewport`）。  
    - **门闩已就绪**后点选任一模式 → **立刻** Focusing。  
    - **门闩未就绪**：点 **Here & Now / Flow** → **启动 Arrival**（Notice「What is present…」属设计，e2e I2）。点 **Offline Space** → **跳过 Arrival 即开表**（e2e K）。  
@@ -159,7 +159,7 @@
    *[单元/控制器：smoke C 断言 pause 时长 + `open({ intention, intentionSource })`；深夜不披毯 → `companionRestPolicy` session-end 锚；**非** rise-stretch 序列 / 面板淡入观感]*
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
    *[DOM 用户链路：Choose→Rise→Reflection 顶部回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；下游入参 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`]*
-5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。
+5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。末题非空 Continue 后 **0–1 秒内**输入框下见共鸣且卡留下（输入只读）；再点 Continue / Skip / Esc 才关——禁止约 0.9s 自动关。
 
 ---
 
@@ -362,7 +362,7 @@
 
 ## 场景 S：首页左球 · Breath practice（可选时长正念）
 
-> **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + smiling + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。  
+> **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + **闭目坐禅呼吸（IdleOrchestrator）** + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。  
 > **DOM**：`e2e/micro-ritual.spec.js`（主路径 / Leave / Arrival 开着点球等；常用 `?microRitualMs=`）。  
 > **单元**：`MicroRitual.test.js` · `microRitualJourneyDraft` · `stopPlaybackEphemeral`；orchestration **无**抽屉 Breath 行。  
 > **仍须人工**：听感（点时长 chip **立刻开始磬**；开始播 preferred / off→Mer-Ka-Ba；完成有结束铃、Leave 无结束铃；完成或 Leave **ephemeral 停播**）；间隔磬若在音符面板选了 3/5 分且时长够才响；之后 Sit→Focus 开坐即有乐+磬、Rise 停播、`ambient-pref` **不得**被改成 Off。  
@@ -370,12 +370,13 @@
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
 2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。picker 打开时须见静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无；非 HUD / 非 +N toast）。
-3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
+3. 进行中：吸↔呼 + **闭目坐禅呼吸**（不得整段眨眼微笑）+ 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
 4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
 6. **Arrival 开着**：左球仍可见；点之取消 Arrival 再开 picker。
-7. **回流**：Leave / 完成后左球再可点；再走一轮 Sit 正式 Focus。
-8. **可选**：后台切走再回前台，墙钟已满须立刻完成（visibility）。
+7. **Companion 三选一展开后**：左球 **不得**再出现在三卡下面（Quick Start 已退役；Breath 是 Idle 入口，不是选完 How shall we sit? 的第二条捷径）。**0–1 秒内**三卡出现、Breath 球消失。
+8. **回流**：Leave / 完成后左球再可点；再走一轮 Sit 正式 Focus。
+9. **可选**：后台切走再回前台，墙钟已满须立刻完成（visibility）。
 
 ---
 
@@ -539,14 +540,14 @@
 ## 场景 AC：Yin's Collections 抽屉（L3 · 寅币珍藏表面）
 
 > **用户故事**：Kelly 想用坐来的寅币结缘一件钱买不到的案头雅物——宽屏 ⋯ / 窄屏抽屉在 Journey log **旁边**打开 **Yin's Collections**（汉语阿寅的珍藏 / 日语阿寅の蒐集），见可滚动商店目录，不是 Support 三卡、不是请茶、不是 HUD 钱包、不是第二座莲花池。  
-> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`；底栏 Play、清供行无挥手）。  
+> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`；≥480 靠右停；<480 42vh 短栏；Bond toast 中置；底栏 Play、清供行无挥手）。  
 > **仍须人工**：375 不挡三球；清供目录都能滚到；不足结缘 toast；已结缘 / Wear；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
 > **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把器物叠回主坐席 / `#sprite-stage`；商店行出现挥手 SKU（底栏 Play 除外）；把挥手加回欢迎池。
 
-1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。随后见抬头精致浮雕币标 + 寅币余额旁小 icon +「案头雅物皆由同坐岁月所化」+ 商店行（青铜香薰炉 / 青瓷莲盏 / 紫檀念珠匣 / 青铜奁 / 座右小碑 / 归来青瓷小瓶 / 石镇纸 / 须弥小鼎）。SKU 行仍是占位色点。币标**不**出现在阿寅序列或蒲团上。商店行**不得**出现挥手 / 青瓷瓶 / 青铜礼器 / 单独的「久坐的人」，也**不得**用晨露滤镜盖莲花。底栏可见 **请阿寅挥挥手**。
-2. **挥手点播**：点底栏 **请阿寅挥挥手** → **0–1 秒内**钮 `:active` 按压 + 阿寅开始 `wave-hello` 正放一次，约 1s CapCut 回坐禅。关面板再开钮仍在。Focusing / 庆祝中点同一钮：仍有按压 + toast「阿寅正在坐着…」，**不**播序列。**不得**把挥手加回开场欢迎池。
+1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。**≥480**：面板靠右停（与 ⋯ sheet 同族），中线阿寅须完整可见。**375**：短底栏（约 42vh），头顶不得被玻璃盖住。随后见抬头精致浮雕币标 + 寅币余额旁小 icon +「案头雅物皆由同坐岁月所化」+ 商店行（青铜香薰炉 / 青瓷莲盏 / 紫檀念珠匣 / 青铜奁 / 座右小碑 / 归来青瓷小瓶 / 石镇纸 / 须弥小鼎）。SKU 行仍是占位色点。币标**不**出现在阿寅序列或蒲团上。商店行**不得**出现挥手 / 青瓷瓶 / 青铜礼器 / 单独的「久坐的人」，也**不得**用晨露滤镜盖莲花。底栏可见 **请阿寅挥挥手**。
+2. **挥手点播**：点底栏 **请阿寅挥挥手** → **0–1 秒内**钮 `:active` 按压 + 阿寅开始 `wave-hello` 正放一次，约 1s CapCut 回坐禅；**挥手序列须在面板外可见**（不得被玻璃挡住）。关面板再开钮仍在。Focusing / 庆祝中点同一钮：仍有按压 + toast「阿寅正在坐着…」，**不**播序列。**不得**把挥手加回开场欢迎池。
 3. **结缘成功**（余额够、门槛够）：点 **结缘 / Bond** → **0–1 秒内**钮 `:active` 按压；该行变成已结缘；余额减少。清供只进珍藏卡面，莲花朵数与亮度不变。座右小碑 / 须弥小鼎可 Wear（一次一个）。石镇纸 / 器物成功可出安静仪式句（非彩纸）。
-4. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 toast。**不是**哑点击，也不说笼统「无法兑换」。
+4. **不足 / 未达门槛**：点结缘 → **0–1 秒内**仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟 / 练习日等）+ 安静 **中置** toast（须盖在面板之上可读）。**不是**哑点击，也不说笼统「无法兑换」。
 5. **回流**：Close / Esc / 点外侧 → **0–1 秒内**关钮 `:active` + 卡淡出；Sit / ⋯ 仍在。再打开仍是商店目录；已结缘不再扣点。
 6. **对照 Support（场景 Q）**：右上角 Support Yin 三卡 / `$` **不**出现在本面板。付款仍只走 Support FAB。
 7. **关闸**：`?product=1&focusCoins=0` → 抽屉 / ⋯ **没有**珍藏这一行。
@@ -627,7 +628,7 @@
 | Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
 | 一炷香莲花 | 实验室钮 **「一炷香完成」**（**不要** `?product=1`；会话结束自动播放未接线；池出生见下行） |
 | 连续 7 天金辉 | `?product=1&sessionMinutes=1&qaSeedStreak=6` → Sit 等到达标（`qaPracticeSeed`） |
-| 莲花池（持久螺旋） | `?product=1&sessionMinutes=1&qaLotusBlooms=11` → Sit 等到达标（`qaLotusPondSeed`） |
+| 莲花池（持久螺旋） | **空池第一朵（左侧可见）**：`?product=1&sessionMinutes=1&qaLotusBlooms=0` 或快捷 `qaLotusBlooms=1`。花在阿寅左侧身旁、不得被蒲团挡住。满池对照：`qaLotusBlooms=11`（`qaLotusPondSeed`） |
 | Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接注入：`__honestyBridge`（**生产构建也挂载**，供 CI `vite preview` e2e） |
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |

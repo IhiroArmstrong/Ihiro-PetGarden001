@@ -9,6 +9,8 @@
  * colored dots until curio stills exist. Never composite onto sprite frames.
  * Shop SKUs only (no retired overlays). Wave play is a footer control, not a shop row.
  * DOM id `#yin-coin-panel`.
+ * ≥480 docks to the right (⋯ sheet family) so Yin / wave stay on the midline;
+ * <480 is a shorter bottom sheet so the head is not glassed over.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -25,7 +27,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v2';
+const STYLE_ID = 'yin-coin-panel-styles-v3';
 const FADE_MS = 220;
 const CEREMONIAL_MS = 2400;
 /** Relief medallion — panel header / ceremonial. Not a sprite overlay. */
@@ -387,7 +389,7 @@ export class FocusCoinsPanelUI {
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
         z-index: 18;
         width: min(360px, calc(100vw - 40px));
-        max-height: min(70vh, 520px);
+        max-height: min(42vh, 380px);
         overflow: auto;
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;
@@ -406,6 +408,20 @@ export class FocusCoinsPanelUI {
         opacity: 1;
         transform: translate(-50%, 0);
         pointer-events: auto;
+      }
+      @media (min-width: 480px) {
+        .yin-coin-panel {
+          top: max(16px, env(safe-area-inset-top, 0px));
+          right: max(12px, env(safe-area-inset-right, 0px));
+          bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
+          left: max(56vw, calc(100vw - 360px));
+          width: auto;
+          max-height: none;
+          transform: translate(12px, 0);
+        }
+        .yin-coin-panel.is-visible {
+          transform: none;
+        }
       }
       .yin-coin-panel__heading {
         display: flex;
