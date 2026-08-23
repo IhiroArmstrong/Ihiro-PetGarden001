@@ -442,14 +442,19 @@ export class WideIdleMoreMenu {
         if (this.quickHomeBtn.title !== qsLabel) {
           this.quickHomeBtn.title = qsLabel;
         }
+        const companionOpen =
+          document.querySelector('.session-start-dock__panel:not([hidden])') !=
+          null;
         // Arrival keepQuickStart: ⚡ stays live even while the dock pill is hidden.
+        // Companion 三选一: Breath/Quick ball under the cards is a leftover Quick Start.
         const qsOk =
-          this._keepQuickStart ||
+          (this._keepQuickStart && !companionOpen) ||
           (Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled);
         setBoolPropIfChanged(
           this.quickHomeBtn,
           'hidden',
-          this._keepQuickStart ? false : !quickEl || quickEl.hidden
+          companionOpen ||
+            (this._keepQuickStart ? false : !quickEl || quickEl.hidden)
         );
         setBoolPropIfChanged(this.quickHomeBtn, 'disabled', !qsOk);
         setAttrIfChanged(
@@ -813,6 +818,10 @@ export class WideIdleMoreMenu {
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
+        display: none !important;
+      }
+      /* Companion 三选一: hide leftover Breath/Quick home ball (Quick Start retired). */
+      body.ft-wide-park-secondary.ft-wide-stage-companion #ft-wide-home-quickstart {
         display: none !important;
       }
       .ft-wide-home-ctas__btn.is-asset[hidden] {

@@ -91,7 +91,7 @@
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（**pingpong×1** + CapCut）；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
-| 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating；呼吸期已是 smiling，再抽 blink 几乎像没播（2026-08-03 撤出） |
+| 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating。**呼吸进行中** = Idle 闭目坐禅（2026-08-21；勿再抄 Arrival 短拍 smiling）。完成池仍不抽 blink-smile |
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` / `nodGreeting` 均 **~1s CapCut** 回 Idle（2026-08-05：魔法书由硬切改叠化）。**冷启动互斥**：占用由 `spriteChannelArbitration` 一处拍板（欢迎 / 吹花 / 付款 / wellness 深夜睡不得同 tick 叠）。回前台 **仅 hidden≥2h** 才检深夜进睡（短切 tab 不得披毯）；凌晨 0–6 与 wellness 对齐 |
@@ -254,4 +254,5 @@
 | 2026-08-18 | 回前台深夜 forceDormant / 2h 披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡） |
 | 2026-08-20 | Yin's Collections 底栏 **挥手点播**：`collectionsWaveHello` → 已入库 `waveHello`；不要求结缘 SKU；`welcomeBack` / 10min 自主挥手仍停接线 |
 | 2026-08-20 | **精灵占用仲裁**：`spriteChannelArbitration` 统一冷启动 / 回前台 / 会话结束 / 付款致谢；深夜窗 ≥23 或 &lt;06 与 wellness 对齐；付款回跳压过披毯（§6.17） |
+| 2026-08-21 | timed Breath practice **进行中**改 Idle 闭目坐禅（不再抄 Arrival smiling@4fps） |
 

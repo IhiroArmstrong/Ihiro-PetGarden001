@@ -84,7 +84,7 @@
    *[单元：`ArrivalPractice` Notice→Choose→READY 状态机 + `canBeginFocus…` 门闩真/假 → smoke A3–A4；**非** Arrival 气泡/图标 DOM。开表 DOM → e2e A/A2/A3]*
 5. Companion Mode 三选一展开。产品文案为 **Here & Now / Offline Space / Flow State**。  
    点 **How shall we sit?** 后 **0–1 秒内**见三卡标题 + 卡下 hint（locale `COMPANION_MODE_*_HINT`：结缘/静舍一句话，不是功能说明书）。  
-   - **Sit→Choose 走完**：鞠躬后**展开 Companion**；点任一模式 → **立刻** Focusing（不必再点 Sit）。  
+   - **Sit→Choose 走完**：鞠躬后**展开 Companion**；点任一模式 → **立刻** Focusing（不必再点 Sit）。宽屏三卡下方 **不得**再露 Breath/Quick 左球（`ft-wide-stage-companion`）。  
    - **375 窄屏**：鞠躬后三选一须 **在视口内**（`ft-narrow-stage-companion`）；**禁止**只剩 home 三球、panel 屏外假绿。e2e：`375 Choose bow: Companion staged in viewport then Here & Now focuses`（`toBeInViewport`）。  
    - **门闩已就绪**后点选任一模式 → **立刻** Focusing。  
    - **门闩未就绪**：点 **Here & Now / Flow** → **启动 Arrival**（Notice「What is present…」属设计，e2e I2）。点 **Offline Space** → **跳过 Arrival 即开表**（e2e K）。  
@@ -362,7 +362,7 @@
 
 ## 场景 S：首页左球 · Breath practice（可选时长正念）
 
-> **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + smiling + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。  
+> **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + **闭目坐禅呼吸（IdleOrchestrator）** + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。  
 > **DOM**：`e2e/micro-ritual.spec.js`（主路径 / Leave / Arrival 开着点球等；常用 `?microRitualMs=`）。  
 > **单元**：`MicroRitual.test.js` · `microRitualJourneyDraft` · `stopPlaybackEphemeral`；orchestration **无**抽屉 Breath 行。  
 > **仍须人工**：听感（点时长 chip **立刻开始磬**；开始播 preferred / off→Mer-Ka-Ba；完成有结束铃、Leave 无结束铃；完成或 Leave **ephemeral 停播**）；间隔磬若在音符面板选了 3/5 分且时长够才响；之后 Sit→Focus 开坐即有乐+磬、Rise 停播、`ambient-pref` **不得**被改成 Off。  
@@ -370,12 +370,13 @@
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
 2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。picker 打开时须见静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无；非 HUD / 非 +N toast）。
-3. 进行中：吸↔呼 + smiling + 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
+3. 进行中：吸↔呼 + **闭目坐禅呼吸**（不得整段眨眼微笑）+ 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
 4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
 6. **Arrival 开着**：左球仍可见；点之取消 Arrival 再开 picker。
-7. **回流**：Leave / 完成后左球再可点；再走一轮 Sit 正式 Focus。
-8. **可选**：后台切走再回前台，墙钟已满须立刻完成（visibility）。
+7. **Companion 三选一展开后**：左球 **不得**再出现在三卡下面（Quick Start 已退役；Breath 是 Idle 入口，不是选完 How shall we sit? 的第二条捷径）。**0–1 秒内**三卡出现、Breath 球消失。
+8. **回流**：Leave / 完成后左球再可点；再走一轮 Sit 正式 Focus。
+9. **可选**：后台切走再回前台，墙钟已满须立刻完成（visibility）。
 
 ---
 
