@@ -1,6 +1,5 @@
 # LIGHT_PROGRESSION_DESIGN.md — 光影的物理苏醒（2D 翻译版）
 
-创建日期：2026-07-18　最后更新：2026-07-18（Cursor Prompt 已实现 · `LightProgression`）
 来源：外部提案《通过 3D 相机镜头的推拉与光影的物理苏醒做多维视觉外显》，因原方案基于
 3D 相机/Shader 实现，与 2026-07-15 已定的"2D 主线、3D 仅奖励柜"技术路线冲突，本文档
 保留设计意图，将实现介质翻译为 2D + CSS/DOM，供 Arrival Practice 与 Recover 使用。
@@ -28,7 +27,7 @@ Shader，这次只是把"渐变"这个时间维度加进去。
 |---|---|---|
 | Welcome/Notice | 背景冷灰色调；用户点选状态图标后，背景微微泛暖 | 背景容器 CSS 渐变色 transition，点选事件触发一次颜色过渡（约1-2秒） |
 | 呼吸 beat | 画面轻微"推近"感（三层视差）；呼吸律动时光环虚影随吸气/呼气明暗 | 背景层 `scale→1.06`、Yin `#sprite-overlay` `scale→1.12`（UI 不缩放）；外围 DOM 光环 **4s** 周期脉动（不染皮毛）。**推近保持到 Choose 合十→idle 淡入完成后再拉回**（2026-07-20），避免与角色切换叠成跳动。~~引导文案同拍 periodSec / Yin scaleY~~ **已撤销**（2026-07-22 用户反馈） |
-| Choose 确认 | 角色脚下坐垫处轻轻亮起一圈光；角色播合十 `intentionSet` | 坐垫 CSS 光晕与 `palms-together` 叠加；合十期保持 Dolly 推近；淡入 idle 后再 `releaseDolly` |
+| Choose 确认 | 角色脚下坐垫处轻轻亮起一圈光；角色播合十 `intentionSet` | 坐垫 CSS 光晕与 `intentionNod` 叠加；合十期保持 Dolly 推近；**鞠躬回落 idle 时暖幕与角色 CapCut 同拍淡出**（约 1s；禁止 `clearArrivalAtmosphere()` 瞬间掐暖色，否则闪一下）；淡入 idle 后再 `releaseDolly` |
 
 以上均为氛围层，不影响 Arrival Practice 已定的跳过机制、数据存储规则（见
 ARRIVE_MOMENT_DESIGN.md），纯视觉增强，不改变交互逻辑。

@@ -1,0 +1,21 @@
+---
+description: 非用户点击的网络请求实现前必须答时机/写盘/慢网动效三问（始终生效）
+alwaysApply: true
+---
+
+# Focus Tiger · 后台网络三问（Agent 摘要）
+
+> **SSOT**：`focus-tiger/docs/BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`）。  
+> 本文件只留强制提问，**不**复述现网触点审计全文。
+
+## 强制（本会话）
+
+任何**新增或修改的非用户主动点击触发**的网络请求（自动同步、后台拉配置、开机检查、首次模型下载等），必须在 **开工回复与 PR 描述**里回答：
+
+1. **触发时机是否和 Arrival / Honesty / Reflection 叠化、Idle 呼吸开始、精灵预加载重叠？重叠则必须排到该窗口之后，禁止假设请求够快。**
+2. **数据未变化时是否重复写入本地存储？必须内容相同则跳过写入，只更新 cloud-ok 标记。**
+3. **失败/慢会不会让正在播放的动效卡顿？须低速网络下实测动效流畅度，不能只测请求成败。**
+
+用户点了才发的 Checkout / OTP / Save image 等 → 写 **「不涉及后台网络」**；点击三问仍见 `interaction-feedback`。
+
+现网触点与已立项修复任务以 SSOT 审计表为准；本门禁 PR **禁止**顺手改那些运行时。

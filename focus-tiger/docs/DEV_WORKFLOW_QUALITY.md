@@ -33,12 +33,15 @@
 | 2026-08-04 | 窄屏 Focusing×? tip 叠团：记入≠开修 + 单测锁 id 未锁同时可见条数 | **§6.13** |
 | 2026-08-05 | 「待你决定」须标出已被 tip/远端覆盖的伪选项为（不合理） | **N14a** |
 | 2026-08-14 | 列多个方案时须同时给出「我认为最合理的」一项 | **N14b** + `recommend-most-reasonable` |
+| 2026-08-22 | 非用户点击的网络请求实现前须答三问 | **N28** + `background-network` |
 | 2026-08-16 | 实现前须对照已上线场景做冲突扫描；有疑点先停 | **N27** + `feature-conflict-review` |
 | 2026-08-18 | Idle 点额头无摸头：已接线假绿 + 误跳 e2e + hit 未盖额头 | **§6.16** |
 | 2026-08-20 | 睡/欢迎/付款回跳多入口各判一次 → 同一只老虎两个答案 | **§6.17** |
+| 2026-08-20 | 莲花池第一朵被蒲团挡住：Agent 自填朝下槽位 + QA 主路径 11→12 不锁像素 | **§6.18** |
+| 2026-08-21 | Breath 抄 Arrival 微笑、磬声 slider 假绿、Quick Start 退役后 Companion 下残留球 | **§6.19** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -96,6 +99,7 @@
 | N25 | **可见性验收 OK = 宽+窄自动化同任务**（见 §8.6）：不得只写 `TEST_TRACKER`；须进 `visibilityContractRegistry` + 双视口锚点；改 suppress/hide → 整表 `test:e2e:visibility` |
 | N26 | 可点击交互：接收反馈 ≠ 结果反馈；设计静默须进 `SILENT_BEHAVIORS.md`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`） |
 | N27 | 实现前冲突扫描：对照 `SCENARIO_TESTS.md` 的强度 / 语气 / 职责；有疑点须等拍板。全文见 `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`） |
+| N28 | 非用户点击的网络请求：实现前须答时机 / 写盘 / 慢网动效。全文见 `BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`） |
 
 ### 2.2 防把好的改坏（重写 / 改转场开工）
 
@@ -411,9 +415,12 @@
 | 2026-07-20 | 合并 SUPPLEMENT：§6.1–6.4；落地 `scenario-smoke`；升格 N12/N13；删除平行补充文档 |
 | 2026-07-20 | 升格 N14：任务汇报末尾独立「待你决定 / 待你知道」；同步 regression-lock |
 | 2026-08-05 | 升格 N14a：「待你决定」伪选项标（不合理）；防「合理则办」误授权 |
+| 2026-08-22 | 升格 N28：后台网络三问；SSOT `BACKGROUND_NETWORK.md` / `background-network` |
 | 2026-08-16 | 升格 N27：实现前冲突扫描；SSOT `FEATURE_CONFLICT_REVIEW.md` / `feature-conflict-review` |
 | 2026-08-18 | 新增 §6.16：Idle 点额头无摸头（已接线假绿 + 误跳 e2e + hit 未盖额头） |
 | 2026-08-20 | 新增 §6.17：精灵占用须一处仲裁（多入口各判睡/欢迎/付款） |
+| 2026-08-20 | 新增 §6.18：莲花池第一朵被蒲团挡住（Agent 自填朝下槽 + QA 主路径满池假绿） |
+| 2026-08-21 | 新增 §6.19：Breath 抄 Arrival 微笑、磬声 slider 假绿、Quick Start 退役后 Companion 下残留球 |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |
@@ -681,6 +688,60 @@
 | Y5 | Mood 不得在 boot occupancy 拍板前 `handleStateChange(IDLE)` 抢第一幕 |
 
 **本回合落地**：`spriteChannelArbitration.js` + Honesty `applyDormantSessionDelta` 执行器；冷启动 / visibility / 付款 async / 鹦鹉走总表。§6.7 / §6.9 / §6.11 的产品规则吸收进矩阵，**不**重开 #341/#347。
+
+### 6.18 莲花池第一朵被蒲团挡住 · Agent 自填朝下槽 + 满池 QA 假绿（2026-08-20）
+
+**现象**：用户测 Yin's evolution **第一朵**莲花，见花从蒲团底下、阿寅臀下探出（附图箭头）。产品口径是「阿寅**身旁**螺旋池」；用户原话「说好的是在 Yin 周边」。
+
+**不是**用户拍板「首朵钉在蒲团正中」。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 拍板没锁像素 | 2026-08-17 四点拍板只锁：只留这一套池；Slice A 无结晶金环；首朵 25 分 / 一圈约 12；与 MilestoneGlow 同场则仪式后再出生。**没有**「第一朵落在哪一圈、朝哪一侧」。 |
+| B · Agent 自填启发式 | `LOTUS_POND_SPIRAL.angleOffsetDeg = -90` 注释写明 Index 0 **朝下**「pool at the cushion, not over the face」。Vogel 内半径从原点长出 → 第 0 槽算出来是 `left 50%` / `bottom ≈16.4%`，正好蒲团底心。 |
+| C · 花在阿寅后 | `#lotus-pond` z 0、`#sprite-stage` z 1（`LotusPondChrome` / `Z_INDEX.md`）。蒲团烧进坐姿 PNG → 朝下那朵被身体+坐垫盖住。出生 FX 在 z 2（阿寅前），种下后沉到 z 0，观感像花钻进蒲团。 |
+| D · QA 主路径是满池 | TRACKER / e2e **主路径** `qaLotusBlooms=11` → 第 12 朵。11 朵围一圈时，被挡住的第 0 朵几乎看不见。第一朵只写在「对照」`qaLotusBlooms=0`。e2e 明文 **「锁 11→12 DOM，不锁像素螺旋」**。单测只验槽互异、不验第 0 槽避开蒲团 AABB。 |
+| E · 既有「身旁」对照没继承 | 一炷香 `INCENSE_GREETING_CONFIG.lotus.offset.x = -0.38`（身旁地面、略靠镜头前）。Slice A 复用贴图与出生 FX，**没**复用侧向偏移。Enso 也曾钉蒲团中央，后被用户改口挪走——同型「避脸 → 往下堆」启发式。 |
+
+**因果一句话**：**「不要挡脸」被实现成「第一朵朝下 + 整池在角色后」**，而验收主路径是满 12 朵的 DOM 计数，**空池第一朵——新用户能看见的唯一进化信号——从未被锁可见**。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| P1 | 成长 / 环境纪念物（莲花池、日后香炉等）的 TRACKER **主路径**必须含 **空池 / 第一件**可见验收；满环 / 第 N 件只能作对照，不得当唯一 Happy Path |
+| P2 | 「不锁像素」≠「不锁可见」。至少锁：第 0 槽不落在角色/蒲团中轴；`qaLotusBlooms=0` 时花在阿寅左右可见、不得被 `#sprite-stage` 完全盖住 |
+| P3 | Agent 为避脸/避 HUD 自填角度、原点、z 序时，须在 Task Brief / 开工回复写明启发式，**不得**把未拍板的「朝下钉蒲团」写进常量当设计 |
+| P4 | 复用一炷香贴图时，默认继承其 **身旁偏移**（左/右地面），禁止改成原点正下除非用户书面同意 |
+| P5 | 出生层（z 前）与持久层（z 后）若不一致，人工步骤须写「FX 结束后花仍须在身旁看见」，禁止只验出生瞬间 |
+
+**本回合落地**：查证写入本 §6.18 + `TEST_TRACKER` 莲花池行（`RB-20260820-L378`）。**2026-08-20 用户拍板**第一朵阿寅左侧 → `angleOffsetDeg: 180`；单测锁第 0 槽不在蒲团中轴。**2026-08-21** 用户书面改口花在阿寅前（睡觉不得盖住花）→ `#lotus-pond` z 2 / `#sprite-stage` z 1；e2e `lotus-pond-first-bloom.spec.js` 锁 `qaLotusBlooms=1` 左侧槽 + 池在角色前。
+
+### 6.19 听感 / 接线抄近路 / Quick Start 退役后残留球（2026-08-21）
+
+**现象（同场书面）**：
+
+1. Breath practice 选 1 min、文案已是 Exhale，阿寅却一直眨眼微笑。  
+2. 开始/间隔/结束 Bell 仍远大于音乐；用户说上次提过音量一直没解决。  
+3. Arrival 走完后 Companion 三选一下面仍冒出 Breath practice 左球。
+
+**不是**没 commit。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 动画抄了短拍 | Arrival「Let's arrive together」短拍故意 `smiling`@4fps（避免硬切闭目）。timed Breath practice 的 `onBreathStart` **原样复制**了这段，把 1/3/5 分钟坐禅覆盖成眨眼循环。场景 S / TRACKER 还把 smiling 写成契约 → 单测按错误实现锁绿。 |
+| B · 音量假绿 | 08-15 把 HTMLAudio `volume` 从 1.0 改成跟氛围条同一数字（0.45）。测试只锁 `el.volume === slider`。磬是瞬态峰值，**同一数字仍比持续音乐响**；用户要的是「至少小一半」的听感，不是 slider 等式。 |
+| C · Quick Start 退役残留 | ⚡ 左球已改开 Breath practice，但 Companion 展开仍走 `keepQuickStart`（为藏 Honesty、避免 `clearStage` 收掉三选一）。宽屏于是在三卡下面留下 Breath 球——职责重叠。窄屏 `ft-narrow-stage-companion` 已藏 home CTAs；宽屏当时**没**对称 `ft-wide-stage-companion`。 |
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| P1 | 复制 Arrival 短拍到 **计时练习** 前，须对照时长语义：短问候 ≠ 闭目同坐。单测须锁「Breath `onBreathStart` 不得 `playEmotion('smiling')`」 |
+| P2 | 音频「跟音乐一样响」不得只锁 slider 数字；瞬态 cue 须另有 **相对增益** 契约（本回合 `SESSION_CUE_RELATIVE_GAIN=0.5`） |
+| P3 | 入口改名/改职责后，扫所有 `keepQuickStart` / 旧 id 宿主：藏 Honesty 的 latch **不等于** 还要露出已退役入口。宽+窄 stage class 须对称 |
+
+**本回合落地**：Breath 保持 Idle 闭目坐禅；磬声 ×0.5；Companion 展开加 `ft-wide-stage-companion` 并藏宽屏 Breath 球。莲花前景/宽屏间距见 §6.18 落地补记，不单开事故章。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
