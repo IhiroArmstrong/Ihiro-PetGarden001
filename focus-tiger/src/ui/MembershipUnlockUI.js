@@ -62,7 +62,11 @@ export class MembershipUnlockUI {
     this.backdrop.id = 'yin-membership-backdrop';
     this.backdrop.className = 'yin-membership-backdrop';
     this.backdrop.hidden = true;
-    this.backdrop.addEventListener('click', () => this.close());
+    this.backdrop.addEventListener('click', () => {
+      // Text-entry restore view: never dismiss on the dimmed page (draft loss).
+      if (this._view === 'restore') return;
+      this.close();
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'yin-membership-card';
@@ -238,6 +242,7 @@ export class MembershipUnlockUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      if (this._view === 'restore') return;
       if (Date.now() < this._checkoutArmedAt) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target) || this.backdrop.contains(target)) return;

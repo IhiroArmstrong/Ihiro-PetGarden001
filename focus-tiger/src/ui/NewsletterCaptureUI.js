@@ -6,6 +6,7 @@
 /**
  * Stay in touch · optional email capture card (Idle ⋯ / drawer).
  * Not an account — submit goes to NewsletterProvider; local stores flags only.
+ * Dismiss only via Cancel / Close / Escape — never by tapping the dimmed page.
  */
 
 import { t, onLocaleChange, getLocale } from '../locales/i18n.js';
@@ -24,7 +25,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'newsletter-capture-card-styles-v1';
+const STYLE_ID = 'newsletter-capture-card-styles-v2';
 const FADE_MS = 220;
 
 export class NewsletterCaptureUI {
@@ -92,6 +93,13 @@ export class NewsletterCaptureUI {
     this.actions = document.createElement('div');
     this.actions.className = 'newsletter-capture__actions';
 
+    this.cancelBtn = document.createElement('button');
+    this.cancelBtn.type = 'button';
+    this.cancelBtn.className =
+      'newsletter-capture__btn newsletter-capture__btn--ghost';
+    this.cancelBtn.dataset.testid = 'newsletter-capture-cancel';
+    this.cancelBtn.addEventListener('click', () => this.close());
+
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
     this.closeBtn.className =
@@ -99,7 +107,7 @@ export class NewsletterCaptureUI {
     this.closeBtn.dataset.testid = 'newsletter-capture-close';
     this.closeBtn.addEventListener('click', () => this.close());
 
-    this.actions.append(this.closeBtn);
+    this.actions.append(this.cancelBtn, this.closeBtn);
     this.root.append(
       this.titleEl,
       this.blurbEl,
@@ -122,14 +130,6 @@ export class NewsletterCaptureUI {
       }
     };
     document.addEventListener('keydown', this._onKeyDown);
-
-    this._onDocPointer = (event) => {
-      if (!this._open) return;
-      const target = /** @type {Node} */ (event.target);
-      if (this.root.contains(target)) return;
-      this.close();
-    };
-    document.addEventListener('pointerdown', this._onDocPointer, true);
 
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refresh());
@@ -172,7 +172,6 @@ export class NewsletterCaptureUI {
   destroy() {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
-    document.removeEventListener('pointerdown', this._onDocPointer, true);
     this.root.remove();
   }
 
@@ -236,7 +235,9 @@ export class NewsletterCaptureUI {
     this.optionalEl.textContent = t('NEWSLETTER_CARD_OPTIONAL');
     this.emailInput.placeholder = t('NEWSLETTER_EMAIL_PLACEHOLDER');
     this.submitBtn.textContent = t('NEWSLETTER_SUBMIT_CTA');
+    this.cancelBtn.textContent = t('NEWSLETTER_CANCEL');
     this.closeBtn.textContent = t('NEWSLETTER_CLOSE');
+    this.cancelBtn.hidden = this._success;
     if (this._success) {
       this.formEl.hidden = true;
       this._setFeedback(t('NEWSLETTER_FEEDBACK_OK'), 'ok');
@@ -326,7 +327,8 @@ export class NewsletterCaptureUI {
       }
       .newsletter-capture__actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         gap: 8px;
       }
       .newsletter-capture__btn {
