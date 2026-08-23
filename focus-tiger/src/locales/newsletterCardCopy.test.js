@@ -25,6 +25,7 @@ describe('newsletter card copy', () => {
     assert.match(en.NEWSLETTER_CARD_OPTIONAL, /not a sales list/i);
     assert.equal(/don't miss|buy now|limited time/i.test(en.NEWSLETTER_CARD_BLURB), false);
     assert.equal(/don't miss|buy now|limited time/i.test(en.NEWSLETTER_CARD_OPTIONAL), false);
+    assert.equal(en.NEWSLETTER_CANCEL, 'Cancel');
   });
 
   it('ja mentions 不具合 and 最新版, not a sales roster', () => {

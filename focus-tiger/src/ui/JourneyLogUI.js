@@ -191,6 +191,7 @@ export class JourneyLogUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      if (this._backupPanelOpen) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
       this.close();

@@ -31,7 +31,7 @@ import {
   shouldCloseDesktopCompanionGenerateLayer
 } from '../core/desktopCompanionGate.js';
 
-const STYLE_ID = 'confide-to-yin-card-styles-v2';
+const STYLE_ID = 'confide-to-yin-card-styles-v3';
 const FADE_MS = 220;
 
 export class ConfideToYinUI {
@@ -116,13 +116,22 @@ export class ConfideToYinUI {
     this.sendBtn.dataset.testid = 'confide-to-yin-send';
     this.sendBtn.addEventListener('click', () => this._onSend());
 
+    this.cancelBtn = document.createElement('button');
+    this.cancelBtn.type = 'button';
+    this.cancelBtn.className = 'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.cancelBtn.dataset.testid = 'confide-to-yin-cancel';
+    this.cancelBtn.addEventListener('click', () => this.close());
+
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
     this.closeBtn.className = 'confide-to-yin__btn confide-to-yin__btn--ghost';
     this.closeBtn.dataset.testid = 'confide-to-yin-close';
     this.closeBtn.addEventListener('click', () => this.close());
 
-    this.actions.append(this.sendBtn, this.closeBtn);
+    this.actionEnd = document.createElement('div');
+    this.actionEnd.className = 'confide-to-yin__actions-end';
+    this.actionEnd.append(this.sendBtn, this.closeBtn);
+    this.actions.append(this.cancelBtn, this.actionEnd);
     this.root.append(
       this.titleEl,
       this.blurbEl,
@@ -297,6 +306,7 @@ export class ConfideToYinUI {
     this.blurbEl.textContent = t('CONFIDE_PANEL_BLURB');
     this.inputEl.placeholder = t('CONFIDE_PANEL_PLACEHOLDER');
     this.sendBtn.textContent = t('CONFIDE_PANEL_SEND');
+    this.cancelBtn.textContent = t('CONFIDE_PANEL_CANCEL');
     this.closeBtn.textContent = t('CONFIDE_PANEL_CLOSE');
     this._renderDesktopStatus();
   }
@@ -532,7 +542,13 @@ export class ConfideToYinUI {
       .confide-to-yin__actions {
         display: flex;
         gap: 8px;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .confide-to-yin__actions-end {
+        display: flex;
+        gap: 8px;
+        align-items: center;
       }
       .confide-to-yin__btn {
         appearance: none;
