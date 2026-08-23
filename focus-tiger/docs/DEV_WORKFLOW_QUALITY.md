@@ -36,9 +36,10 @@
 | 2026-08-16 | 实现前须对照已上线场景做冲突扫描；有疑点先停 | **N27** + `feature-conflict-review` |
 | 2026-08-18 | Idle 点额头无摸头：已接线假绿 + 误跳 e2e + hit 未盖额头 | **§6.16** |
 | 2026-08-20 | 睡/欢迎/付款回跳多入口各判一次 → 同一只老虎两个答案 | **§6.17** |
+| 2026-08-23 | Focusing Recover 幽灵文案叠灰袍几乎不可见；错开单测只锁 `top%` | **§6.18** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.18）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -681,6 +682,33 @@
 | Y5 | Mood 不得在 boot occupancy 拍板前 `handleStateChange(IDLE)` 抢第一幕 |
 
 **本回合落地**：`spriteChannelArbitration.js` + Honesty `applyDormantSessionDelta` 执行器；冷启动 / visibility / 付款 async / 鹦鹉走总表。§6.7 / §6.9 / §6.11 的产品规则吸收进矩阵，**不**重开 #341/#347。
+
+### 6.18 Focusing Recover 幽灵提示「隐蔽」· 错开只锁坐标（2026-08-23）
+
+**现象**：Arrival Practice 走完进入 Focusing 后，阿寅膝/灰袍上几乎看不见英文「Feeling stuck? Tap Yin to Recover」。用户用红箭头标出，疑为漏网文案。
+
+**不是** Arrival 文案漏到 Focusing，也**不是** Hints 接线表误喷 tip。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 产品意图 | 主动 Recover（Tiger Anchor）**就该**在 Focusing 出幽灵邀请 + 身前微光；点阿寅 → `nod-bow` + toast，计时不停。文案键 `ACTIVE_RECOVER_HINT`。TRACKER「主动 Recover · Tiger Anchor」分列观感①写明 **文案可读**。 |
+| B · 独立 chrome | 实现是 `ActiveRecoverAnchorUI` 注入的绝对定位 `<p>`，**不**走 `HINTS_WIRING` / onboarding tip。Hints 的 mint 对比度、互斥、无锚不出泡 **管不到** 这条。Arrival 叠层忙碌只收窄 auto tip，**不**隐藏 Tiger Anchor。 |
+| C · 08-15 错开修 | 用户书面：底部 Fullscreen companion 药丸盖住 Recover 文案。修法把 hint 从底栏 clearance 改到 `top: 64%`（375 `58%`），单测 `ActiveRecoverAnchorUI.test.js` **只断言** `top: 64%` / `bottom: auto`、禁止 `homeClearanceBottomCss`。 |
+| D · 幽灵被做成真隐蔽 | 颜色 `rgba(74, 58, 40, 0.38)`（375 更淡 **0.34**）、11px/10px。落点正好叠在灰袍/膝上 → 对比度崩掉。错开修了「别被底栏盖住」，**没**修「在阿寅身上仍可读」。 |
+| E · 假绿 | 单元锁了「靠近 Yin、不在 companion 底带」；**没有**锁 `color` alpha 下限、也没有「不得叠在低对比皮毛上」的观感锚。故 CI 绿、人工仍要用红箭头才能发现。 |
+
+**因果一句话**：**错开只把遮挡从底栏换成袍子** + **「幽灵」被实现成低 alpha** + **自动化锁坐标不锁可读** + **Recover chrome 绕开 Hints 护栏**。记入「文案可读」≠ 单测会替你看对比度。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| G1 | 改绝对定位浮文（尤其叠在角色身上）时，已好清单须含 **对比度/底色**，不得只写「躲开某 chrome」 |
+| G2 | 锁错开的单测若只断言 `top`/`bottom`，须另有 **alpha 下限** 或 TRACKER **分列**「灰袍上仍可读」（禁止用「近 Yin」代替可读） |
+| G3 | 不走 `HINTS_WIRING` 的幽灵 chrome，须在 HINTS 表 Focusing 节 **点名「非本表、另有对比契约」**，避免误以为 Hints 护栏已覆盖 |
+| G4 | 08-15 类「躲开挡法」复测必须在 **真实序列帧**（灰袍 Focusing）上看字，不能只看 DevTools 里 hint 的 box 已离开底栏 |
+
+**本回合落地**：查证写入本节 + TRACKER 两行改「有问题」；**不**改运行时对比度（待拍板 `fix/active-recover-hint-contrast`）。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 
