@@ -49,6 +49,7 @@ alwaysApply: true
 | `docs/FEATURE_CONFLICT_REVIEW.md` | **实现前冲突扫描**：对照 `SCENARIO_TESTS` 的强度 / 语气 / 职责；有疑点须等拍板（`RULES_INDEX` → `feature-conflict-review`） |
 | `docs/BACKGROUND_NETWORK.md` | **后台网络三问**：非用户点击的请求须先答时机 / 写盘 / 慢网动效（`RULES_INDEX` → `background-network`） |
 | `docs/SILENT_BEHAVIORS.md` | **已知静默白名单**：不在表里的「没反应」测试时一律当 bug |
+| `docs/LAB_SCRIPT_CONVENTIONS.md` | **L0 实验室脚本固定路径 / 命名 / 已测候选与结果文件**；新会话同类任务先读本文，禁止再全仓搜索 `/tmp/ft-l0-*` |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
 
 ## PRINCIPLES 硬性摘要
@@ -90,7 +91,7 @@ alwaysApply: true
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 - 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
 - 会话交接 / 口令「生成交接」→ `focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）；勿在本文件复述模板。
-- 调试/优化桌面本地 AI companion → `focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）；勿在本文件复述条款。
+- 调试/优化桌面本地 AI companion → `focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）；勿在本文件复述条款。实验室脚本路径/命名/已测候选 → `docs/LAB_SCRIPT_CONVENTIONS.md`，勿再全仓搜索。
 - 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
 - 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；勿在本文件复述三轴。
 - 非用户点击的网络请求 → `BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`）；勿在本文件复述三问。
