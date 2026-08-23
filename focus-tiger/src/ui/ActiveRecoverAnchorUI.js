@@ -10,7 +10,7 @@
 
 import { onLocaleChange, t } from '../locales/i18n.js';
 
-const STYLE_ID = 'active-recover-anchor-styles-v3';
+const STYLE_ID = 'active-recover-anchor-styles-v4';
 const ROOT_ID = 'active-recover-anchor';
 
 /**
@@ -197,7 +197,7 @@ export class ActiveRecoverAnchorUI {
       .active-recover-anchor__hint {
         position: absolute;
         left: 50%;
-        top: 64%;
+        top: 50%;
         bottom: auto;
         transform: translateX(-50%);
         margin: 0;
@@ -205,11 +205,14 @@ export class ActiveRecoverAnchorUI {
         padding: 0 8px;
         text-align: center;
         font-family: var(--font-family, "Nunito", system-ui, sans-serif);
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 500;
         letter-spacing: 0.02em;
         line-height: 1.35;
-        color: rgba(74, 58, 40, 0.38);
+        color: rgba(62, 46, 32, 0.78);
+        text-shadow:
+          0 0 10px rgba(255, 244, 214, 0.72),
+          0 1px 0 rgba(255, 248, 230, 0.4);
         pointer-events: none;
         user-select: none;
       }
@@ -219,9 +222,9 @@ export class ActiveRecoverAnchorUI {
           height: min(240px, 36vh);
         }
         .active-recover-anchor__hint {
-          top: 58%;
-          font-size: 10px;
-          color: rgba(74, 58, 40, 0.34);
+          top: 50%;
+          font-size: 11px;
+          color: rgba(62, 46, 32, 0.78);
         }
       }
     `;
