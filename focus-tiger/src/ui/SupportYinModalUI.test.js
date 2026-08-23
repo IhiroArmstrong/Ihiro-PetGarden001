@@ -108,5 +108,19 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /isDesktopShellRuntime/);
     assert.match(src, /yin-support-desktop-ram/);
   });
+
+  it('tea-first layout reuses Suggested badge and stays off sprite arbitration', () => {
+    const src = readFileSync(
+      join(here, '../ui/SupportYinModalUI.js'),
+      'utf8'
+    );
+    assert.match(src, /supportModalSuggestedHost/);
+    assert.match(src, /setShouldLeadWithTea/);
+    assert.match(src, /_syncLeadLayout/);
+    assert.match(src, /yin-support-suggested-badge/);
+    assert.match(src, /supportModalFunnelLayout/);
+    assert.match(src, /_funnelLayout/);
+    assert.doesNotMatch(src, /spriteChannelArbitration/);
+  });
 });
 

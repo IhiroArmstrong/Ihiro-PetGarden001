@@ -84,6 +84,21 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:shell-visibility/);
   });
 
+  it('preload is CommonJS so sandboxed Electron can parse it as a script', () => {
+    const preload = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../desktop/preload.js'),
+      'utf8'
+    );
+    assert.match(preload, /require\(\s*['"]electron['"]\s*\)/);
+    assert.equal(/^\s*import\s/m.test(preload), false);
+    // Electron sandbox loads preload as a classic script, not ESM.
+    // `import` here is the 2026-08-22 Confide-missing failure (isDesktop false).
+    assert.doesNotThrow(() => {
+      // eslint-disable-next-line no-new-func
+      new Function(preload);
+    });
+  });
+
   it('uses a stable custom origin', () => {
     assert.equal(DESKTOP_CUSTOM_ORIGIN, 'focus-tiger://app');
     assert.match(mainSrc, /DESKTOP_CUSTOM_ORIGIN/);

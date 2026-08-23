@@ -16,7 +16,8 @@ import {
   buildMonetizationFunnelUploadPayload,
   flushMonetizationFunnelUpload,
   resetMonetizationFunnelUploadThrottleForTests,
-  sanitizeMonetizationFunnelCounts
+  sanitizeMonetizationFunnelCounts,
+  sanitizeMonetizationFunnelEvents
 } from './monetizationFunnelUpload.js';
 import {
   MONETIZATION_FUNNEL_STORAGE_KEY,
@@ -110,6 +111,70 @@ describe('monetizationFunnelUpload', () => {
       }),
       { support_open: 2 }
     );
+  });
+
+  it('sanitizeCounts keeps layout and track×layout keys', () => {
+    assert.deepEqual(
+      sanitizeMonetizationFunnelCounts({
+        support_open: 3,
+        'support_open:tea-first': 2,
+        'support_cta:tea': 1,
+        'support_cta:tea:tea-first': 1,
+        'support_cta:tea:hack': 9
+      }),
+      {
+        support_open: 3,
+        'support_open:tea-first': 2,
+        'support_cta:tea': 1,
+        'support_cta:tea:tea-first': 1
+      }
+    );
+  });
+
+  it('sanitizeEvents keeps layout and strips unknown layout values', () => {
+    const out = sanitizeMonetizationFunnelEvents([
+      {
+        at: '2026-08-20T00:00:00Z',
+        name: 'support_open',
+        track: null,
+        source: 'fab',
+        layout: 'tea-first'
+      },
+      {
+        at: '2026-08-20T00:00:01Z',
+        name: 'support_cta',
+        track: 'tea',
+        source: 'support-modal',
+        layout: 'not-a-layout'
+      }
+    ]);
+    assert.equal(out[0].layout, 'tea-first');
+    assert.equal(out[1].layout, null);
+    assert.equal(out[1].track, 'tea');
+  });
+
+  it('buildPayload includes tea-first layout when opted in', () => {
+    const storage = memoryStorage();
+    setMonetizationFunnelOptIn(
+      storage,
+      true,
+      () => new Date('2026-08-12T03:00:00Z')
+    );
+    const store = new MonetizationFunnelStore({
+      storage,
+      afterRecord: () => {}
+    });
+    store.supportOpen('fab', 'tea-first');
+    store.supportCta('tea', 'support-modal', 'tea-first');
+    const payload = buildMonetizationFunnelUploadPayload({
+      storage,
+      now: () => new Date('2026-08-12T03:01:00Z')
+    });
+    assert.ok(payload);
+    assert.equal(payload.counts['support_open:tea-first'], 1);
+    assert.equal(payload.counts['support_cta:tea:tea-first'], 1);
+    assert.equal(payload.events[0].layout, 'tea-first');
+    assert.equal(payload.events[1].layout, 'tea-first');
   });
 
   it('flush does not post when opt-in off', async () => {

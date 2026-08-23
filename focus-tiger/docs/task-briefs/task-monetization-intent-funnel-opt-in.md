@@ -21,7 +21,7 @@
 | 默认 | **关**（未同意绝不 `fetch`） |
 | 同意入口 | Privacy 页（`#onboarding-privacy-sheet`）明示开关；文案说明发什么 / 为什么 / 多久 |
 | 事件名 | **复用**本地表：`support_open` / `support_cta` / `checkout_*`（见 `MONETIZATION_INTENT_FUNNEL.md`） |
-| 载荷 | `counts` + 最近 ≤20 条事件（`at/name/track/source`）；**无**邮箱 / 支付 id / 反思 / 意图句 |
+| 载荷 | `counts` + 最近 ≤20 条事件（`at/name/track/source/layout`）；**无**邮箱 / 支付 id / 反思 / 意图句 |
 | 身份 | 本机生成的随机 `clientId`（UUID）；可随 DEV 重置清掉；**不是**账号 |
 | 关闭同意 | 立即停止上传；已上传记录不要求服务端删除（v1）；本机可继续记本地漏斗 |
 | Cloud 未配 | 同意可开；flush 静默跳过（记 `lastError=cloud_api_unconfigured`）；不打扰练习 |

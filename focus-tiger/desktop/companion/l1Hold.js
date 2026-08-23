@@ -82,6 +82,12 @@ export async function loadModelHold(opts) {
     gpu,
     async generate(prompt, genOpts = {}) {
       if (disposed || !chat) throw new Error('companion_session_disposed');
+      // Each Share already sends a full one-shot prompt. Keeping LlamaChatSession
+      // history stacks those prompts and overflows after ~2 turns → empty/timeout
+      // → corpus tea fallback (答非所问).
+      if (typeof chat.resetChatHistory === 'function') {
+        await chat.resetChatHistory();
+      }
       const maxTokens = Number(genOpts.maxTokens);
       const text = await chat.prompt(String(prompt || ''), {
         maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48

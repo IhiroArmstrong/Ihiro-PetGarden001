@@ -126,6 +126,7 @@ import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
+import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -135,6 +136,7 @@ import {
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
+import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
@@ -249,12 +251,12 @@ import {
   FOREGROUND_RETURN_ACTIONS
 } from './core/companionRestPolicy.js';
 import { getLocalDateKey } from './utils/localDate.js';
-import { prefetchTasteLayer } from './core/tasteLayerSync.js';
 import {
-  getTasteDailyWisdomOverlay,
-  getTasteWeightOverlay,
-  resetTasteLayerOverlayForTests
-} from './core/tasteLayerOverlay.js';
+  getTasteLayerStatus,
+  prefetchTasteLayer,
+  resetTasteLayerSyncForTests
+} from './core/tasteLayerSync.js';
+import { resetTasteLayerOverlayForTests } from './core/tasteLayerOverlay.js';
 import { resolveWellnessDayBand } from './character/cloakVariant.js';
 import {
   HonestyCheckInController,
@@ -317,6 +319,7 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
+import { createIdleSecondaryPanelCoordinator } from './ui/idleSecondaryPanels.js';
 /** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 10。开表前无 URL 时再出时长 chip。 */
 const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 /** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
@@ -367,7 +370,8 @@ function showDevLabToast(message, durationMs = 8000) {
 async function init() {
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
-  void prefetchTasteLayer({ search: location.search, locale: getLocale() });
+  // Taste overlay: do NOT fetch here — races `spritePlayer.preload()` and
+  // Arrival/Honesty 1s CapCut (RB-20260820-L330). Kick after sprites + welcome/idle.
 
   // PWA: network-only SW in production only (no Cache Storage).
   // Electron Step A: never register — custom protocol + extraResources.
@@ -379,11 +383,13 @@ async function init() {
   document.title = t('APP_TITLE');
   const loadingMask = document.getElementById('loading-mask');
   if (loadingMask) loadingMask.textContent = t('LOADING');
+  /** Late-bound so locale change can wait for Arrival/Honesty chrome. */
+  let prefetchTasteLayerForLocale = () => {};
   onLocaleChange(() => {
     document.title = t('APP_TITLE');
     const mask = document.getElementById('loading-mask');
     if (mask) mask.textContent = t('LOADING');
-    void prefetchTasteLayer({ search: location.search, locale: getLocale() });
+    prefetchTasteLayerForLocale();
   });
 
   const app = document.querySelector('#app');
@@ -477,6 +483,13 @@ async function init() {
       focusDurationPicker?.isOpen?.() === true
     );
   }
+  prefetchTasteLayerForLocale = () => {
+    void prefetchTasteLayer({
+      search: location.search,
+      locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+  };
 
   /** Phase 2a/2b 气泡；在下方构造后赋值（tryPlay 闭包晚绑定） */
   let flowerBlowWelcomeBubble =
@@ -902,6 +915,10 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
+  /** @type {HonestyCheckInUI | null} */
+  let honestyCheckInUI = null;
+  /** @type {ArrivalPracticeUI | null} */
+  let arrivalPractice = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
   /** @type {RitualFlowUI | null} */
@@ -1006,7 +1023,10 @@ async function init() {
     }
   });
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
+  /** @type {{ close: (opts?: object) => void }} */
+  const idleSecondaryPanelHost = { close: () => {} };
   const membershipUnlockUI = new MembershipUnlockUI(document.body, {
+    onOpen: () => idleSecondaryPanelHost.close({ except: 'membership' }),
     onEntitlementChanged: () => {
       // Ritual lock rows re-read isEntitled on next menu/drawer open.
       tipKindnessBadgesChrome.refresh();
@@ -1040,25 +1060,26 @@ async function init() {
   });
   window.__newsletterCapture = newsletterCaptureUI;
 
+  const canOpenConfideNow = () => {
+    const busy =
+      stateManager.state === STATES.FOCUSING ||
+      Boolean(arrivalPractice?.isOpen?.()) ||
+      Boolean(reflectionMoment?.isOpen?.()) ||
+      Boolean(microRitualUI?.isOpen?.()) ||
+      Boolean(honestyBridge?.isVisible?.()) ||
+      (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
+    if (busy) return false;
+    return canOpenConfidePanel({
+      search: location.search,
+      stage: 'idle',
+      companionGeneration: canRegisterDesktopCompanionGeneration({
+        hasBridge: hasDesktopCompanionBridge(),
+        widthPx: window.innerWidth
+      })
+    });
+  };
   const confideToYinUI = new ConfideToYinUI(document.body, {
-    canOpen: () => {
-      const busy =
-        stateManager.state === STATES.FOCUSING ||
-        Boolean(arrivalPractice?.isOpen?.()) ||
-        Boolean(reflectionMoment?.isOpen?.()) ||
-        Boolean(microRitualUI?.isOpen?.()) ||
-        Boolean(honestyBridge?.isVisible?.()) ||
-        (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
-      if (busy) return false;
-      return canOpenConfidePanel({
-        search: location.search,
-        stage: 'idle',
-        companionGeneration: canRegisterDesktopCompanionGeneration({
-          hasBridge: hasDesktopCompanionBridge(),
-          widthPx: window.innerWidth
-        })
-      });
-    },
+    canOpen: canOpenConfideNow,
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
     },
@@ -1072,6 +1093,20 @@ async function init() {
   });
   window.__confideToYin = confideToYinUI;
   confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
+  const confideEarChrome = new ConfideEarChromeUI(document.body, {
+    canShow: canOpenConfideNow,
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'confide' });
+      confideToYinUI.open();
+    }
+  });
+  window.__confideEarChrome = confideEarChrome;
+  const syncConfideEarChrome = () => {
+    confideEarChrome.sync();
+    idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
+  };
+  window.addEventListener('resize', () => syncConfideEarChrome());
+  syncConfideEarChrome();
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
@@ -1220,6 +1255,12 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  supportYinModalUI.setShouldLeadWithTea(() =>
+    shouldLeadSupportModalWithTea({
+      lifetimeMinutes: lotusPondStore.getLifetimeMinutes(),
+      practicedDayCount: practiceDaysStore.getPracticedDateKeys().length
+    })
+  );
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
       documentElement: document.documentElement,
@@ -1227,13 +1268,17 @@ async function init() {
     });
   }
   window.__tasteLayer = {
-    status: () => ({
-      weights: Boolean(getTasteWeightOverlay()),
-      dailyWisdom: Boolean(getTasteDailyWisdomOverlay()),
-      honestyLongMinMinutes: getTasteWeightOverlay()?.honestyLongMinMinutes ?? null
-    }),
-    prefetch: () => prefetchTasteLayer({ search: location.search, locale: getLocale() }),
-    reset: () => resetTasteLayerOverlayForTests()
+    status: () => getTasteLayerStatus(),
+    prefetch: () =>
+      prefetchTasteLayer({
+        search: location.search,
+        locale: getLocale(),
+        canApply: () => !isSceneAnimOverlayBusy()
+      }),
+    reset: () => {
+      resetTasteLayerSyncForTests();
+      resetTasteLayerOverlayForTests();
+    }
   };
   window.__focusCoins = {
     getBalance: () => focusCoinsStore.getBalance(),
@@ -1281,7 +1326,7 @@ async function init() {
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
-  const honestyCheckInUI = new HonestyCheckInUI(
+  honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
   const honestyCheckIn = new HonestyCheckInController({
@@ -1639,6 +1684,7 @@ async function init() {
   function resyncSessionChrome() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
+    syncConfideEarChrome();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -2036,6 +2082,7 @@ async function init() {
     {
       sessionCues,
       onPanelOpened: () => {
+        idleSecondaryPanelHost.close({ except: 'soundscape' });
         onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
       },
       onTrackChosen: () => {
@@ -2197,7 +2244,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
-      closeGrowthOverlayCards();
+      idleSecondaryPanelHost.close();
       momentWhisperUI.hide({ immediate: true });
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
@@ -2292,11 +2339,19 @@ async function init() {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
     },
+    onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
     onWellnessFirstDismiss: () => {
       maybeOfferFiveMomentsCompassFirstCard();
     }
   });
   onboardingHintHost.hints = onboardingHints;
+  const { closeIdleSecondaryPanels } = createIdleSecondaryPanelCoordinator({
+    membershipUnlockUI,
+    getOnboardingHints: () => onboardingHintHost.hints,
+    ambientSoundscapeUI,
+    closeGrowthOverlayCards
+  });
+  idleSecondaryPanelHost.close = closeIdleSecondaryPanels;
   // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
   // same contract as `__ambientSoundscape` / `__honestyBridge`.
   window.__onboardingHints = onboardingHints;
@@ -2341,7 +2396,7 @@ async function init() {
   /** @type {'icon' | 'typed'} */
   let currentIntentionSource = 'typed';
 
-  const arrivalPractice = new ArrivalPracticeUI(
+  arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
       onNoticeSelected: () => {
@@ -3168,9 +3223,22 @@ async function init() {
     spriteOccupancy = bootDecision.occupy;
   }
 
+  let tastePrefetchStarted = false;
+  function startTastePrefetchOnce() {
+    if (tastePrefetchStarted) return;
+    tastePrefetchStarted = true;
+    void prefetchTasteLayer({
+      search: location.search,
+      locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+  }
+  window.setTimeout(startTastePrefetchOnce, 12000);
+
   const welcomePlayOptions = {
     onComplete: () => {
       spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      startTastePrefetchOnce();
       const playMessenger =
         pendingParrotMessengerAfterWelcome &&
         inAppReminderBannerUI.isVisible();
@@ -3188,6 +3256,7 @@ async function init() {
   if (bootDecision.sessionDelta === 'enter-dormant') {
     honestyCheckIn.applyDormantSessionDelta('enter-dormant');
     mindfulToast.show(t('WELLNESS_LATE_NIGHT_REST'), { visibleMs: 5200 });
+    startTastePrefetchOnce();
   } else if (bootDecision.occupy === SPRITE_OCCUPANCY.MORNING_WAKE) {
     emotionController.playEmotion('dormantWake', {
       holdPose: true,
@@ -3196,6 +3265,7 @@ async function init() {
         emotionController.playEmotion('idle', {
           crossFadeMs: CAPCUT_DISSOLVE_MS
         });
+        window.setTimeout(startTastePrefetchOnce, CAPCUT_DISSOLVE_MS + 250);
       }
     });
     mindfulToast.show(t('WELLNESS_MORNING_WAKE'), { visibleMs: 5200 });
@@ -3206,17 +3276,20 @@ async function init() {
     emotionController.playEmotion(paymentThanksAtWelcome, {
       onComplete: () => {
         spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        startTastePrefetchOnce();
       }
     });
   } else if (
     bootDecision.occupy === SPRITE_OCCUPANCY.FLOWER ||
     bootDecision.occupy === SPRITE_OCCUPANCY.WELCOME
   ) {
-    tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
+    const welcomeStarted = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
       playOptions: welcomePlayOptions
     });
+    if (!welcomeStarted?.play) startTastePrefetchOnce();
   } else {
     emotionController.playEmotion('idle');
+    startTastePrefetchOnce();
   }
   retentionFunnelStore.noteAppOpen();
   syncHonestyIdleEntry();
@@ -3654,6 +3727,7 @@ async function init() {
     if (stateManager.state === STATES.FOCUSING) {
       confideToYinUI.close();
     }
+    syncConfideEarChrome();
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
       window.setTimeout(() => {

@@ -85,3 +85,15 @@ export function canOpenConfidePanel({
     isConfideDevHarness(search)
   );
 }
+
+/**
+ * Idle ear chrome (wide top-left / narrow ActionBar) uses the *open* gate.
+ * Hidden when the panel cannot open — no dead click.
+ * Same as the menu row for mount / Electron-wide companion; also shows for
+ * `?confide=1` so QA can reach the second entry.
+ * @param {Parameters<typeof canOpenConfidePanel>[0]} [opts]
+ * @returns {boolean}
+ */
+export function shouldShowConfideEarChrome(opts = {}) {
+  return canOpenConfidePanel(opts);
+}

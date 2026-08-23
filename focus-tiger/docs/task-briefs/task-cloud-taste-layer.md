@@ -1,6 +1,6 @@
 # Task Brief · 云端品味层（权重覆盖 + 日签/文案池）
 
-> **状态（2026-08-20）**：范围 / 窄冻结 / **四问筛选尺**已拍板；**#349 已合** schemaVersion 1 可选 overlay（tip `a0fed0b`）。**本机 wrangler deploy 成功**：生产 Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**；现网 JSON 含 `schemaVersion: 1`。Safari `__tasteLayer.status()` 已见 true。下一刀 Quiet Line overlay **未开工**（Arrival/Honesty 1s 叠化用户书面仍像闪动；须新口令）。  
+> **状态（2026-08-20）**：范围 / 窄冻结 / **四问筛选尺**已拍板；**#349 已合** schemaVersion 1 可选 overlay（tip `a0fed0b`）。**本机 wrangler deploy 成功**：生产 Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**；现网 JSON 含 `schemaVersion: 1`。Safari `__tasteLayer.status()` 已见 true。**A/B**：`?tasteLayer=0` Arrival 叠化正常；overlay 开着闪（`RB-20260820-L330`）→ **runtime 开修**：预加载后再拉云；冻结表相同不另存副本。下一刀 Quiet Line overlay **未开工**。  
 > **权威**：`PROCESS.md` Backlog「云端品味层」。旧称「v1.1 云端算法」——**支付云 ≠ 品味云**；SemVer 首稳仍是 `v1.0.0`。  
 > **开工**：用户书面 L1/L0 告一段落后安排下一步 = 本切片（接线已合）。
 

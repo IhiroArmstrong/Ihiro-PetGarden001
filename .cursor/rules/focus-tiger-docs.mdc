@@ -89,6 +89,7 @@ alwaysApply: true
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 - 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
 - 会话交接 / 口令「生成交接」→ `focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）；勿在本文件复述模板。
+- 调试/优化桌面本地 AI companion → `focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）；勿在本文件复述条款。
 - 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
 - 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；勿在本文件复述三轴。
 
@@ -98,7 +99,8 @@ alwaysApply: true
 
 1. **UI / 动画 / 文案 / 交互**可见改动 → 在 `docs/tracker-entries/<分支名>.md` 新增一行（`/` → `-`），状态「待人工测试」，写清测试步骤与本地访问路径，日期填当天。**不要**在 `TEST_TRACKER.md` 主表插行（见文首「新增行走碎片」）。
 2. **纯后端 / 逻辑** → 同样写入碎片，登记「仅单元测试覆盖」，仍要登记。
-3. 完成消息须写明「本次有 N 项需要你测试，已写入 tracker-entries/」；禁止仅以「已完成 / 已验收」收尾。正式邀测前须跑 `npm run check:branch-freshness` 并汇报落后数（`RULES_INDEX` → `branch-freshness`）；落后 > 0 不得代表 develop 邀测。
+3. 完成消息须写明「本次有 N 项需要你测试，已写入 tracker-entries/」；禁止仅以「已完成 / 已验收」收尾。正式邀测前须跑 `npm run check:branch-freshness` 并汇报落后数（`RULES_INDEX` → `branch-freshness`）；落后 > 0 不得代表 develop 邀测。  
+   **拼装触发**（SSOT：`TEST_TRACKER.md`「拼装触发」）：功能 PR **禁止** `tracker:assemble`。口令「批量人工测试」前若有碎片 → 先独立 `docs/*` PR 拼装再出清单；待拼碎片 ≥ 5 → 下班前 Git 同步或下一次文档会话必须另开拼装 PR。
 4. 单元测试通过 ≠ 用户验收；视觉项在用户确认前保持「待人工测试」。
 5. 用户反馈问题 → 该行改「有问题」，**只写入「用户反馈」列**（日期 + 原话要点）；**禁止**混入「测试步骤」；同时填「严重度」「处理承诺」（见 `TEST_TRACKER`「缺陷分级与处理承诺」）；修复后再改回「待人工测试」等复测，**禁止**自行标「已通过」。
 6. **用户书面测试意见（2026-07-19 起）**：即使本回合未立刻开修，也必须记入对应行的「用户反馈」列；见 `TEST_TRACKER.md` 文首「用户测试反馈记入规则」。书面意见若测自非 `origin/develop` tip → 仍记入反馈，但**不得**据此关单（见文首「人工验收唯一基线」）。

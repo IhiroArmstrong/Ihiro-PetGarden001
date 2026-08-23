@@ -19,6 +19,13 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
+import {
   markWellnessDisclaimerSeen
 } from '../core/wellnessDisclaimerGate.js';
 import {
@@ -432,6 +439,7 @@ export class OnboardingHintsUI {
       getScene = () => ({}),
       onOpenFiveMoments = null,
       onWellnessFirstDismiss = null,
+      onPurposeOpen = null,
       storage = null
     } = {}
   ) {
@@ -439,6 +447,7 @@ export class OnboardingHintsUI {
     this.getScene = getScene;
     this.onOpenFiveMoments = onOpenFiveMoments;
     this.onWellnessFirstDismiss = onWellnessFirstDismiss;
+    this.onPurposeOpen = onPurposeOpen;
     this._storage =
       storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -471,6 +480,10 @@ export class OnboardingHintsUI {
     this._paintMeta = new Map();
     /** @type {HTMLElement | null} */
     this.purposeCard = null;
+    /** @type {HTMLElement | null} */
+    this.purposeBackdrop = null;
+    /** @type {HTMLElement | null} */
+    this.wellnessDetailCard = null;
     /** @type {HTMLElement | null} */
     this.wellnessFirstCard = null;
     /** Purpose card opened by ? hover (leave ? / card → hide). Click pins until dismiss. */
@@ -535,6 +548,14 @@ export class OnboardingHintsUI {
         return;
       }
       const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
+      const wellnessDetailOpen = Boolean(
+        this.wellnessDetailCard && !this.wellnessDetailCard.hidden
+      );
+      if (wellnessDetailOpen) {
+        if (this.wellnessDetailCard?.contains(el)) return;
+        this._hideWellnessDetailCard();
+        return;
+      }
       if (!purposeOpen) return;
       if (this.helpBtn.contains(el)) return;
       if (el.closest('#ft-narrow-help-btn')) return;
@@ -1799,13 +1820,29 @@ export class OnboardingHintsUI {
     bubble.style.top = `${Math.round(top)}px`;
   }
 
+  _ensurePurposeBackdrop() {
+    if (this.purposeBackdrop) return this.purposeBackdrop;
+    const backdrop = document.createElement('div');
+    backdrop.id = 'onboarding-app-purpose-backdrop';
+    backdrop.className = 'onboarding-app-purpose-backdrop';
+    backdrop.hidden = true;
+    backdrop.addEventListener('click', () => {
+      this.closePurposeCard();
+    });
+    this.mountRoot.appendChild(backdrop);
+    this.purposeBackdrop = backdrop;
+    return backdrop;
+  }
+
   _ensurePurposeCard() {
     if (this.purposeCard) return this.purposeCard;
+    this._ensurePurposeBackdrop();
     const card = document.createElement('aside');
     card.id = 'onboarding-app-purpose';
     card.className = 'onboarding-app-purpose';
     card.hidden = true;
     card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-modal', 'true');
     card.setAttribute('aria-labelledby', 'onboarding-app-purpose-title');
 
     const title = document.createElement('h2');
@@ -1819,13 +1856,21 @@ export class OnboardingHintsUI {
     wellness.className = 'onboarding-app-purpose__wellness';
     wellness.dataset.testid = 'onboarding-purpose-wellness';
 
-    const wellnessTitle = document.createElement('h3');
-    wellnessTitle.className = 'onboarding-app-purpose__wellness-title';
+    const wellnessSummary = document.createElement('p');
+    wellnessSummary.className = 'onboarding-app-purpose__wellness-summary';
+    wellnessSummary.dataset.testid = 'onboarding-purpose-wellness-summary';
 
-    const wellnessBody = document.createElement('p');
-    wellnessBody.className = 'onboarding-app-purpose__wellness-body';
+    const wellnessLink = document.createElement('button');
+    wellnessLink.type = 'button';
+    wellnessLink.className = 'onboarding-app-purpose__wellness-link';
+    wellnessLink.dataset.testid = 'onboarding-purpose-wellness-link';
+    wellnessLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._openWellnessDetailFromPurpose();
+    });
 
-    wellness.append(wellnessTitle, wellnessBody);
+    wellness.append(wellnessSummary, wellnessLink);
 
     const desktopRam = document.createElement('div');
     desktopRam.id = 'onboarding-purpose-desktop-ram';
@@ -1893,8 +1938,8 @@ export class OnboardingHintsUI {
     this.purposeCard = card;
     this._purposeTitleEl = title;
     this._purposeBodyEl = body;
-    this._purposeWellnessTitleEl = wellnessTitle;
-    this._purposeWellnessBodyEl = wellnessBody;
+    this._purposeWellnessSummaryEl = wellnessSummary;
+    this._purposeWellnessLinkEl = wellnessLink;
     this._purposeDesktopRamEl = desktopRam;
     this._purposeDesktopRamTitleEl = desktopRamTitle;
     this._purposeDesktopRamBodyEl = desktopRamBody;
@@ -1912,16 +1957,21 @@ export class OnboardingHintsUI {
     if (!this.purposeCard) return;
     this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
     this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
-    if (this._purposeWellnessTitleEl) {
-      this._purposeWellnessTitleEl.textContent = t(
-        'HINT_APP_PURPOSE_WELLNESS_TITLE'
+    if (this._purposeWellnessSummaryEl) {
+      this._purposeWellnessSummaryEl.textContent = t(
+        'HINT_APP_PURPOSE_WELLNESS_SUMMARY'
       );
     }
-    if (this._purposeWellnessBodyEl) {
-      this._purposeWellnessBodyEl.textContent = t(
-        'HINT_APP_PURPOSE_WELLNESS_BODY'
+    if (this._purposeWellnessLinkEl) {
+      this._purposeWellnessLinkEl.textContent = t(
+        'HINT_APP_PURPOSE_WELLNESS_LINK'
+      );
+      this._purposeWellnessLinkEl.setAttribute(
+        'aria-label',
+        t('HINT_APP_PURPOSE_WELLNESS_LINK_ARIA')
       );
     }
+    this._refreshWellnessDetailCopy();
     const showDesktopRam = isDesktopShellRuntime();
     if (this._purposeDesktopRamEl) {
       this._purposeDesktopRamEl.hidden = !showDesktopRam;
@@ -1970,8 +2020,79 @@ export class OnboardingHintsUI {
 
   _openFiveMomentsFromPurpose() {
     this._purposeFromHover = false;
-    this._hidePurposeCard();
+    this.closePurposeCard();
     this.onOpenFiveMoments?.();
+  }
+
+  _ensureWellnessDetailCard() {
+    if (this.wellnessDetailCard) return this.wellnessDetailCard;
+    const card = document.createElement('aside');
+    card.id = 'onboarding-wellness-detail';
+    card.className = 'onboarding-wellness-detail';
+    card.hidden = true;
+    card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-modal', 'true');
+    card.setAttribute('aria-labelledby', 'onboarding-wellness-detail-title');
+    card.dataset.testid = 'onboarding-wellness-detail';
+
+    const title = document.createElement('h2');
+    title.id = 'onboarding-wellness-detail-title';
+    title.className = 'onboarding-wellness-detail__title';
+
+    const body = document.createElement('p');
+    body.className = 'onboarding-wellness-detail__body';
+
+    const dismiss = document.createElement('button');
+    dismiss.type = 'button';
+    dismiss.className = 'onboarding-wellness-detail__dismiss';
+    dismiss.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._hideWellnessDetailCard();
+    });
+
+    card.append(title, body, dismiss);
+    this.mountRoot.appendChild(card);
+    this.wellnessDetailCard = card;
+    this._wellnessDetailTitleEl = title;
+    this._wellnessDetailBodyEl = body;
+    this._wellnessDetailDismissEl = dismiss;
+    this._refreshWellnessDetailCopy();
+    return card;
+  }
+
+  _refreshWellnessDetailCopy() {
+    if (!this.wellnessDetailCard) return;
+    this._wellnessDetailTitleEl.textContent = t(
+      'HINT_APP_PURPOSE_WELLNESS_TITLE'
+    );
+    this._wellnessDetailBodyEl.textContent = t('HINT_APP_PURPOSE_WELLNESS_BODY');
+    this._wellnessDetailDismissEl.textContent = t('HINT_APP_PURPOSE_DISMISS');
+  }
+
+  _openWellnessDetailFromPurpose() {
+    this._ensureWellnessDetailCard();
+    this._refreshWellnessDetailCopy();
+    this.wellnessDetailCard.hidden = false;
+    try {
+      this._wellnessDetailDismissEl?.focus({ preventScroll: true });
+    } catch {
+      // ignore
+    }
+  }
+
+  _hideWellnessDetailCard() {
+    if (this.wellnessDetailCard) this.wellnessDetailCard.hidden = true;
+  }
+
+  /** @returns {boolean} */
+  isPurposeCardOpen() {
+    return Boolean(this.purposeCard && !this.purposeCard.hidden);
+  }
+
+  /** Close ? purpose card (+ backdrop + wellness detail). */
+  closePurposeCard() {
+    this._hidePurposeCard();
   }
 
   _ensurePrivacySheet() {
@@ -2136,18 +2257,28 @@ export class OnboardingHintsUI {
   _showPurposeCard() {
     this._hidePrivacySheet();
     this.hideWellnessFirstCard({ markSeen: true, notify: false });
+    this._hideWellnessDetailCard();
     this._ensurePurposeCard();
     this._refreshPurposeCardCopy();
+    if (this.purposeBackdrop) {
+      this.purposeBackdrop.hidden = false;
+      this.purposeBackdrop.classList.add('is-visible');
+    }
     this.purposeCard.hidden = false;
     this._bindPurposeCardHoverLeave();
-    this._positionPurposeCard();
     markWellnessDisclaimerSeen(this._storage);
+    this.onPurposeOpen?.();
   }
 
   _hidePurposeCard() {
     this._cancelPurposeHoverHide();
+    if (this.purposeBackdrop) {
+      this.purposeBackdrop.classList.remove('is-visible');
+      this.purposeBackdrop.hidden = true;
+    }
     if (this.purposeCard) this.purposeCard.hidden = true;
     this._purposeFromHover = false;
+    this._hideWellnessDetailCard();
     this._hidePrivacySheet();
   }
 
@@ -2403,22 +2534,41 @@ export class OnboardingHintsUI {
         outline-offset: 2px;
         border-radius: 50%;
       }
+      .onboarding-app-purpose-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 26;
+        background: rgba(44, 31, 20, 0.12);
+        ${GLASS_BLUR_CSS};
+        opacity: 0;
+        pointer-events: auto;
+        transition: opacity 180ms ease;
+      }
+      .onboarding-app-purpose-backdrop.is-visible {
+        opacity: 1;
+      }
+      .onboarding-app-purpose-backdrop[hidden] {
+        display: none !important;
+      }
       .onboarding-app-purpose {
         position: fixed;
+        left: 50%;
+        top: 50%;
         z-index: 27;
         box-sizing: border-box;
-        padding: 14px 16px 12px;
-        border-radius: 16px;
-        border: 1.5px solid rgba(92, 122, 108, 0.5);
-        background: linear-gradient(165deg, #eef6f1 0%, #d4e6db 100%);
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.7) inset,
-          0 10px 28px rgba(40, 64, 52, 0.16);
+        width: min(360px, calc(100vw - 32px));
+        max-height: min(72vh, 480px);
+        overflow-y: auto;
+        padding: 16px 16px 12px;
+        transform: translate(-50%, -50%);
         color: #3a5348;
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        border: ${GLASS_BORDER};
+        border-radius: ${GLASS_RADIUS};
+        box-shadow: ${GLASS_SHADOW};
         font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
         pointer-events: auto;
-        max-height: min(70vh, 520px);
-        overflow-y: auto;
       }
       .onboarding-app-purpose[hidden] {
         display: none !important;
@@ -2471,26 +2621,83 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__wellness {
         margin: 0 0 12px;
-        padding: 10px 10px 8px;
-        border-radius: 10px;
-        border: 1px solid rgba(92, 122, 108, 0.32);
-        background: rgba(255, 255, 255, 0.42);
+        padding: 0;
+        border: 0;
+        background: transparent;
       }
-      .onboarding-app-purpose__wellness-title {
+      .onboarding-app-purpose__wellness-summary {
         margin: 0 0 6px;
-        font-size: 12px;
-        font-weight: 700;
-        font-style: normal;
-        letter-spacing: 0.02em;
-        color: #2f463c;
-      }
-      .onboarding-app-purpose__wellness-body {
-        margin: 0;
         font-size: 12px;
         font-style: normal;
         font-weight: 500;
+        line-height: 1.5;
+        color: #4a6358;
+      }
+      .onboarding-app-purpose__wellness-link {
+        appearance: none;
+        display: inline;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 600;
         line-height: 1.45;
+        color: #3f5c50;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+      }
+      .onboarding-app-purpose__wellness-link:hover {
+        color: #2f463c;
+      }
+      .onboarding-wellness-detail {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        z-index: 28;
+        box-sizing: border-box;
+        width: min(380px, calc(100vw - 32px));
+        max-height: min(72vh, 480px);
+        overflow-y: auto;
+        padding: 16px 16px 12px;
+        transform: translate(-50%, -50%);
         color: #3a5348;
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        border: ${GLASS_BORDER};
+        border-radius: ${GLASS_RADIUS};
+        box-shadow: ${GLASS_SHADOW};
+        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
+        pointer-events: auto;
+      }
+      .onboarding-wellness-detail[hidden] {
+        display: none !important;
+      }
+      .onboarding-wellness-detail__title {
+        margin: 0 0 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #2f463c;
+      }
+      .onboarding-wellness-detail__body {
+        margin: 0 0 12px;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.55;
+        color: #3a5348;
+        white-space: pre-line;
+      }
+      .onboarding-wellness-detail__dismiss {
+        appearance: none;
+        border: 1px solid rgba(92, 122, 108, 0.35);
+        border-radius: 999px;
+        padding: 7px 14px;
+        font-size: 12px;
+        font-weight: 650;
+        cursor: pointer;
+        color: #2f463c;
+        background: rgba(255, 255, 255, 0.45);
       }
       .onboarding-app-purpose__desktop-ram {
         margin: 0 0 12px;

@@ -31,6 +31,14 @@ export const MONETIZATION_TRACKS = Object.freeze([
   'membership'
 ]);
 
+/** @typedef {'tea-first' | 'sanctuary-first'} MonetizationFunnelLayout */
+
+/** @type {readonly MonetizationFunnelLayout[]} */
+export const MONETIZATION_FUNNEL_LAYOUTS = Object.freeze([
+  'tea-first',
+  'sanctuary-first'
+]);
+
 const MAX_EVENTS = 80;
 
 /**
@@ -38,7 +46,8 @@ const MAX_EVENTS = 80;
  *   at: string,
  *   name: string,
  *   track: MonetizationTrack | null,
- *   source: string | null
+ *   source: string | null,
+ *   layout: MonetizationFunnelLayout | null
  * }} MonetizationFunnelEvent
  */
 
@@ -86,11 +95,45 @@ export function normalizeMonetizationFunnelState(raw) {
         at: typeof r.at === 'string' && r.at ? r.at : '',
         name,
         track,
-        source: typeof r.source === 'string' && r.source ? r.source : null
+        source: typeof r.source === 'string' && r.source ? r.source : null,
+        layout: parseMonetizationFunnelLayout(r.layout)
       });
     }
   }
   return { counts, events: events.slice(-MAX_EVENTS) };
+}
+
+/**
+ * @param {unknown} value
+ * @returns {MonetizationFunnelLayout | null}
+ */
+export function parseMonetizationFunnelLayout(value) {
+  return value === 'tea-first' || value === 'sanctuary-first' ? value : null;
+}
+
+/**
+ * Count keys: name; `name:track`; `name:layout`; `name:track:layout`.
+ * Keep in sync with `cloud/src/lib/monetizationFunnelKv.ts`.
+ * @param {string} k
+ * @returns {boolean}
+ */
+export function isAllowedMonetizationFunnelCountKey(k) {
+  if (typeof k !== 'string' || !k) return false;
+  const parts = k.split(':');
+  if (parts.length < 1 || parts.length > 3) return false;
+  const allowedNames = new Set(Object.values(MONETIZATION_FUNNEL_EVENTS));
+  if (!allowedNames.has(parts[0])) return false;
+  if (parts.length === 1) return true;
+  const second = parts[1];
+  const secondOk =
+    MONETIZATION_TRACKS.includes(/** @type {MonetizationTrack} */ (second)) ||
+    Boolean(parseMonetizationFunnelLayout(second));
+  if (!secondOk) return false;
+  if (parts.length === 2) return true;
+  return (
+    MONETIZATION_TRACKS.includes(/** @type {MonetizationTrack} */ (parts[1])) &&
+    Boolean(parseMonetizationFunnelLayout(parts[2]))
+  );
 }
 
 /**
@@ -101,6 +144,23 @@ export function normalizeMonetizationFunnelState(raw) {
 export function monetizationFunnelCountKey(name, track) {
   if (track && MONETIZATION_TRACKS.includes(track)) return `${name}:${track}`;
   return name;
+}
+
+/**
+ * @param {string} name
+ * @param {{ track?: MonetizationTrack | null, layout?: MonetizationFunnelLayout | null }} [dims]
+ * @returns {string[]}
+ */
+export function monetizationFunnelCountKeys(name, dims = {}) {
+  const track =
+    dims.track && MONETIZATION_TRACKS.includes(dims.track) ? dims.track : null;
+  const layout = parseMonetizationFunnelLayout(dims.layout);
+  /** @type {string[]} */
+  const keys = [name];
+  if (track) keys.push(`${name}:${track}`);
+  if (layout) keys.push(`${name}:${layout}`);
+  if (track && layout) keys.push(`${name}:${track}:${layout}`);
+  return keys;
 }
 
 /**
@@ -185,6 +245,7 @@ export class MonetizationFunnelStore {
    * @param {object} [props]
    * @param {MonetizationTrack} [props.track]
    * @param {string} [props.source]
+   * @param {MonetizationFunnelLayout | null} [props.layout]
    */
   record(name, props = {}) {
     if (!name || typeof name !== 'string') return;
@@ -196,16 +257,23 @@ export class MonetizationFunnelStore {
         : null;
     const source =
       typeof props.source === 'string' && props.source ? props.source : null;
+    const layout = parseMonetizationFunnelLayout(props.layout);
     const at = this.now().toISOString();
     const state = this.read();
-    const key = monetizationFunnelCountKey(name, track);
-    state.counts[key] = (state.counts[key] || 0) + 1;
-    state.events.push({ at, name, track, source });
+    for (const key of monetizationFunnelCountKeys(name, { track, layout })) {
+      state.counts[key] = (state.counts[key] || 0) + 1;
+    }
+    state.events.push({ at, name, track, source, layout });
     if (state.events.length > MAX_EVENTS) {
       state.events = state.events.slice(-MAX_EVENTS);
     }
     writeMonetizationFunnelState(this.storage, state);
-    this.track(name, { track, source, countKey: key });
+    this.track(name, {
+      track,
+      source,
+      layout,
+      countKey: monetizationFunnelCountKey(name, track)
+    });
     try {
       this.afterRecord?.(name);
     } catch {
@@ -213,43 +281,64 @@ export class MonetizationFunnelStore {
     }
   }
 
-  supportOpen(source = 'fab') {
-    this.record(MONETIZATION_FUNNEL_EVENTS.SUPPORT_OPEN, { source });
+  /**
+   * @param {string} [source]
+   * @param {MonetizationFunnelLayout | null} [layout]
+   */
+  supportOpen(source = 'fab', layout = null) {
+    this.record(MONETIZATION_FUNNEL_EVENTS.SUPPORT_OPEN, { source, layout });
   }
 
   /**
    * @param {MonetizationTrack} track
    * @param {string} [source]
+   * @param {MonetizationFunnelLayout | null} [layout]
    */
-  supportCta(track, source = 'support-modal') {
-    this.record(MONETIZATION_FUNNEL_EVENTS.SUPPORT_CTA, { track, source });
-  }
-
-  /**
-   * @param {MonetizationTrack} track
-   * @param {string} [source]
-   */
-  checkoutStart(track, source = 'card') {
-    this.record(MONETIZATION_FUNNEL_EVENTS.CHECKOUT_START, { track, source });
-  }
-
-  /**
-   * @param {MonetizationTrack} track
-   * @param {string} [source]
-   */
-  checkoutComplete(track, source = 'return') {
-    this.record(MONETIZATION_FUNNEL_EVENTS.CHECKOUT_COMPLETE, {
+  supportCta(track, source = 'support-modal', layout = null) {
+    this.record(MONETIZATION_FUNNEL_EVENTS.SUPPORT_CTA, {
       track,
-      source
+      source,
+      layout
     });
   }
 
   /**
    * @param {MonetizationTrack} track
    * @param {string} [source]
+   * @param {MonetizationFunnelLayout | null} [layout]
    */
-  checkoutCancel(track, source = 'return') {
-    this.record(MONETIZATION_FUNNEL_EVENTS.CHECKOUT_CANCEL, { track, source });
+  checkoutStart(track, source = 'card', layout = null) {
+    this.record(MONETIZATION_FUNNEL_EVENTS.CHECKOUT_START, {
+      track,
+      source,
+      layout
+    });
+  }
+
+  /**
+   * @param {MonetizationTrack} track
+   * @param {string} [source]
+   * @param {MonetizationFunnelLayout | null} [layout]
+   */
+  checkoutComplete(track, source = 'return', layout = null) {
+    this.record(MONETIZATION_FUNNEL_EVENTS.CHECKOUT_COMPLETE, {
+      track,
+      source,
+      layout
+    });
+  }
+
+  /**
+   * @param {MonetizationTrack} track
+   * @param {string} [source]
+   * @param {MonetizationFunnelLayout | null} [layout]
+   */
+  checkoutCancel(track, source = 'return', layout = null) {
+    this.record(MONETIZATION_FUNNEL_EVENTS.CHECKOUT_CANCEL, {
+      track,
+      source,
+      layout
+    });
   }
 
   /** Human-readable summary for DEV panel. */
@@ -265,8 +354,9 @@ export class MonetizationFunnelStore {
     lines.push('', `recent (${Math.min(10, events.length)}):`);
     for (const ev of events.slice(-10).reverse()) {
       const t = ev.track ? `:${ev.track}` : '';
+      const l = ev.layout ? ` layout=${ev.layout}` : '';
       const s = ev.source ? ` @${ev.source}` : '';
-      lines.push(`- ${ev.at} ${ev.name}${t}${s}`);
+      lines.push(`- ${ev.at} ${ev.name}${t}${l}${s}`);
     }
     return lines.join('\n');
   }

@@ -78,7 +78,7 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 
 Tiger Reflection Moment 三问已完整覆盖 Five Moments 的最后一格，不涉及改动。
 
-**相邻规划（2026-08-10 · 非本 Moment 改动；2026-08-18 桌面窄例外）**：**向阿寅倾诉**为 Idle 主动倾听入口，与会话后 Reflection **分轨**；不替代三问，也不并入 Reflect 表面排期。默认检索不生成；仅桌面端在语料未接住时允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」）。Web Brief `task-confide-to-yin-v1.md`；桌面 Brief `task-desktop-on-device-companion.md`。
+**相邻规划（2026-08-10 · 非本 Moment 改动；2026-08-18 桌面窄例外；2026-08-22 耳钮）**：**向阿寅倾诉**为 Idle 主动倾听入口（宽屏左上耳 / 窄屏 ActionBar 耳 + 菜单行），与会话后 Reflection **分轨**；不替代三问，也不并入 Reflect 表面排期。默认检索不生成；仅桌面端在语料未接住时允许受约束短生成（见 `PRODUCT_POSITIONING.md`「禅意倾听者」）。Web Brief `task-confide-to-yin-v1.md`；桌面 Brief `task-desktop-on-device-companion.md`。
 
 **相邻规划（2026-08-11 · 非 Five Moments 改动）**：**节日主题引擎**为跨时刻的 B 轨氛围层（可叠在 Arrive/Focus/Idle 的视觉上），**不**新增第六 Moment，也**不**改各 Moment 状态机。权威：`task-briefs/task-seasonal-theme-engine-v1.md`。
 

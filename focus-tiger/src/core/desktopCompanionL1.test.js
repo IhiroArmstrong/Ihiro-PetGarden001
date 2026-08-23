@@ -234,6 +234,7 @@ describe('desktop companion L1 isolation', () => {
     assert.match(preload, /if \(companionAllowed\)/);
     assert.match(preload, /desktopShell\.companion/);
     assert.equal(preload.includes('desktop:companion-generate'), true);
+    assert.match(preload, /require\(\s*['"]electron['"]\s*\)/);
   });
 
   it('adds a generate IPC in companion ipc, still spawned from main L1 attach', () => {
