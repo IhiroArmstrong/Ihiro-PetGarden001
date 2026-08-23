@@ -58,12 +58,14 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-23（UTC+8） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`；现网审计 + 三条修复任务只立项 · 本旁支） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-23（UTC+8） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **后台网络三问门禁（2026-08-22 · 本旁支）**：非用户点击的请求实现前须答时机 / 写盘 / 慢网动效。SSOT `BACKGROUND_NETWORK.md`。现网：练习备份与开机品味层预取有风险（各一修复任务）；Quiet Line 云端未接线；陪伴首次下载须慢网核验。**本回合不改运行时**。口令见各 Brief。
+- **练习备份后台网络错峰（2026-08-23 · 本旁支改运行时）**：已同意备份的用户，Idle 静默上传改到约 2.5s（让开首段呼吸）；busy 含 Arrival / Honesty 叠层，叠层结束会短重试；空库恢复同样 busy；白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 cloud-ok。OTP 点击路径未改。慢网 Idle/Arrival 流畅度仍待人工（TRACKER 碎片）。下两条仍未开工：品味层开机预取、陪伴首次下载。
+- **后台网络三问门禁（2026-08-22 · 已入库 develop）**：非用户点击的请求实现前须答时机 / 写盘 / 慢网动效。SSOT `BACKGROUND_NETWORK.md`。口令见各 Brief。
 - **Breath 闭目坐禅 + 磬声减半 + 莲花前景 + Companion 下藏 Breath 球（2026-08-21 · #385 已合）**：timed Breath 不再抄 Arrival 眨眼微笑；磬声相对氛围条 ×0.5；`#lotus-pond` 提到阿寅前，宽屏螺旋外扩；Companion 三选一展开时宽屏藏左球。工作流根因 `DEV_WORKFLOW_QUALITY` §6.19。TRACKER 碎片待拼装。
 - **Arrival Choose 鞠躬回落（2026-08-21 · #386 已合）**：用户书面 overlay 刀有效后，Arrival 鞠躬之后仍闪一下（开关 overlay 都会）。根因是 `clearArrivalAtmosphere()` 瞬间掐暖幕，不是精灵 CapCut 被跳过。已改暖幕与约 1s CapCut 同拍淡出；取消/跳过仍硬切。TRACKER Choose / 抵达练习行待复测。Quiet Line overlay 仍未开工。
 
@@ -418,7 +420,7 @@
 
 **下一步计划**：
 
-- **开工前优先级（2026-08-22 补）**：后台网络三问门禁已入库。三条修复**只立项**：练习备份错峰 → 品味层开机预取错峰 → 陪伴首次下载慢网核验。须各自口令，禁止和本门禁 PR 混修。Quiet Line 云端 overlay 仍未接线，下一刀须先答三问。
+- **开工前优先级（2026-08-23 补）**：练习备份后台网络错峰 **本旁支已改运行时**（待合 develop）。下两条仍须口令：品味层开机预取错峰 → 陪伴首次下载慢网核验。禁止和本运行时 PR 混修。Quiet Line 云端 overlay 仍未接线，下一刀须先答三问。
 - **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
 - **陪伴 · 桌面端侧窄例外**：**L0 #336 / L1 #362 已合**。**L2 短生成已接线**（宽屏 fallback）。低配默认不出入口。不锁 0.6B。Checkout 未接。测本地 AI：**Electron 窗口**。
@@ -558,8 +560,8 @@
 - **场景→动画接线（v1.0.0 必交付 Slice A · 其余 Slice B/C）**
 - **本地桌面 APP 打包（壳已拍板 Electron · 步骤 A 已提交 · 步骤 B 已接线待人工）**
 - **云端品味层**（旧称 v1.1 云端算法；权重 + 文案；播放器永远本地；**#349 已合**；四问 2026-08-20 拍板；**2026-08-20 本机 deploy 现网 v1**；开机预取错峰未开工）
-- **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排；后台网络错峰未开工）**
-- **后台网络三问跟进**（练习备份 / 品味层开机预取 / 陪伴首次下载；门禁已入库；运行时须口令）
+- **练习记忆云端备份（免费 A · #272 已合；OTP secrets / TRACKER 待；B 无缝可后排；后台网络错峰本旁支已改代码待合）**
+- **后台网络三问跟进**（练习备份本旁支已改运行时待合；品味层开机预取 / 陪伴首次下载仍须口令）
 - 纪念奖励系统（金牌/环境细节 + 3D 塑胶公仔展示；莲花池 Slice A 已拆出接线）
 - **荷花成长 · Slice B**（满 12 后结晶金环；禁止占位金线圈凑数）
 - Focus Confidence 未来数据源扩展（含：多工具切换 vs visibility 冲突 → Companion Mode 三选一 / across-tools 决策点）
@@ -1091,7 +1093,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - 把 A 与 B 混成「一个同步功能」却不分免费/付费  
 
 - **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  
-- **后台网络跟进（2026-08-22 · 未开工）**：Idle+400ms 上传与呼吸循环重叠；空库恢复无 busy；同内容会重写盘。Brief `task-practice-backup-background-network.md`。口令：「开工练习备份后台网络修复」。权威：`BACKGROUND_NETWORK.md`。  
+- **后台网络跟进（2026-08-23 · 本旁支已改运行时）**：Idle flush 约 2.5s；busy 含 Arrival / Honesty；同内容跳过写盘 / 跳过 PUT。慢网流畅度仍待人工。Brief `task-practice-backup-background-network.md`。权威：`BACKGROUND_NETWORK.md`。  
 - **口令示例**：「补 practice-backup OTP secrets」/「测练习记忆云端备份」
 
 ### Backlog:云端品味层（权重 + 文案池；旧称 v1.1 云端算法）

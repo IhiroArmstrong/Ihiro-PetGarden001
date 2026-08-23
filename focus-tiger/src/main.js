@@ -27,7 +27,10 @@ import {
   shouldSkipFocusDurationPicker
 } from './core/focusDuration.js';
 import { SessionUiGate } from './core/SessionUiGate.js';
-import { createSessionChromeSync } from './core/sessionChromeSync.js';
+import {
+  createSessionChromeSync,
+  isHonestyPhaseBusy
+} from './core/sessionChromeSync.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -107,7 +110,9 @@ import {
   schedulePracticeBackupUpload,
   flushPracticeBackupUpload,
   maybeRestorePracticeBackupOnBoot,
-  setPracticeBackupBusyProbe
+  setPracticeBackupBusyProbe,
+  PRACTICE_BACKUP_IDLE_FLUSH_MS,
+  PRACTICE_BACKUP_BOOT_RESTORE_MS
 } from './core/practiceBackup/practiceBackupSync.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
@@ -3745,10 +3750,10 @@ async function init() {
         if (maybeOfferWellnessDisclaimerFirstCard()) return;
         maybeOfferFiveMomentsCompassFirstCard();
       }, 900);
-      // Practice-memory backup: Idle flush (debounced / min-gap still apply).
+      // Practice-memory backup: Idle flush after first breath has room (not 400ms).
       schedulePracticeBackupUpload({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,
-        debounceMs: 400,
+        debounceMs: PRACTICE_BACKUP_IDLE_FLUSH_MS,
         forceSoon: true
       });
     }
@@ -3756,22 +3761,26 @@ async function init() {
 
   setPracticeBackupBusyProbe(() => {
     const s = stateManager.state;
-    return (
-      s === STATES.FOCUSING ||
-      s === STATES.CELEBRATE ||
-      Boolean(sessionUiGate?.postSessionOverlayActive)
-    );
+    const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
+    const overlay =
+      Boolean(sessionUiGate?.postSessionOverlayActive) ||
+      arrivalPractice?.isOpen?.() === true ||
+      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+    return {
+      busy: focusing || overlay,
+      retry: overlay && !focusing
+    };
   });
 
-  // After shell ready: empty-whitelist cloud restore (non-blocking).
+  // After sprite preload + shell ready: empty-whitelist restore (busy-gated).
   window.setTimeout(() => {
     void maybeRestorePracticeBackupOnBoot({
       storage: typeof localStorage !== 'undefined' ? localStorage : null
     });
-  }, 1200);
+  }, PRACTICE_BACKUP_BOOT_RESTORE_MS);
 
   // DEV / QA: force upload / restore without waiting for 10min debounce.
-  // Product enable already force-flushes; Idle→~400ms also schedules forceSoon.
+  // Product enable already force-flushes; Idle→idleFlushMs also schedules forceSoon.
   window.__practiceBackup = {
     flush: () =>
       flushPracticeBackupUpload({
