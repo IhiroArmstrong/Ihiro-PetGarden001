@@ -1,6 +1,7 @@
 ---
-description: 调试/优化桌面本地 AI companion 时须先定点、禁读整目录日志、测试循环最多 3 轮、简单调试不升 High/Max（始终生效）
-alwaysApply: true
+description: 调试/优化桌面本地 AI companion 时须先定点、禁读整目录日志、测试循环最多 3 轮、简单调试不升 High/Max（口令「调试本地 AI」或改 desktop/companion 时挂载）
+globs: focus-tiger/desktop/companion/**,focus-tiger/desktop/**/*CompanionL2*,**/turns.jsonl
+alwaysApply: false
 ---
 
 # Focus Tiger · 调试本地 AI companion

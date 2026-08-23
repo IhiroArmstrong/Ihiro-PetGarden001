@@ -1,6 +1,7 @@
 ---
-description: 非用户点击的网络请求实现前必须答时机/写盘/慢网动效三问（始终生效）
-alwaysApply: true
+description: 非用户点击的网络请求实现前必须答时机/写盘/慢网动效三问（改 src/desktop 运行时或 BACKGROUND_NETWORK.md 时挂载）
+globs: "focus-tiger/src/**/*.{js,jsx},focus-tiger/desktop/**/*.{js,mjs},focus-tiger/docs/BACKGROUND_NETWORK.md"
+alwaysApply: false
 ---
 
 # Focus Tiger · 后台网络三问（Agent 摘要）
