@@ -827,7 +827,8 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **花园**（莲花终身分钟）自动、不进店；**珍藏**兑清供器物卡（旧 8 id）。  
 - **铁律**：不改已有 PNG / 不往蒲团或莲花叠东西。  
 - Breath 坐满按 Stay 档发时长点；时长 chip 静默 hint。  
-- **下一步**：四页签珍藏壳。信件/小册后置。挥手点播 Play 已在 #356。  
+- **下一步**：四页签珍藏壳 → Brief `task-yin-collections-four-tabs.md`；**勋章印记** → `task-practice-imprint-badges.md`；**记忆小册 / 画卷** → `task-mindfulness-scroll-export.md`（依赖 `task-journey-daily-card.md`）。挥手点播 Play 已在 #356。  
+- **Web2 岁月印记（2026-08-24）**：拒 Web3；排期索引见 `TASKS.md`「Web2 岁月印记」。实体周边 Phase 0 → `task-companion-merch-priority.md`。
 
 - **禁止**兑 B 轨（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包）。
 
@@ -836,8 +837,9 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 整合此前讨论的两个想法，合并为一个后续奖励系统功能：
 
 - 用户达成明确的长期练习里程碑（如连续练习天数、累计专注时长等，具体规则待设计）后，获得**只增不减**的纪念奖励；中断不撤回奖励，不制造断签压力
+- **Web2 徽章子集（2026-08-24）**：静态「修行纪念印」走 C 轨 **勋章印记** + **累计时长/score** 门槛，Brief `task-practice-imprint-badges.md`；**不做**成就墙全屏、**不做**链上。`MilestoneGlow` 仪式动画与 streak 节点保留；新徽章对外文案避免「连坐 N 天」。
 - 奖励呈现形式包括：
-  - **金牌/徽章**：需要独立的持久化存储架构记录历史成就，以及一个「成就墙」展示页面
+  - **金牌/徽章**：C 轨页签 + 只增列表（`task-practice-imprint-badges`）；全屏「成就墙」仍 **不做**
   - **环境细节/温和动作**：解锁永久保留的纪念物、环境细节或新表达；默认状态始终完整、温暖，不以缺失或退化反衬奖励
   - **3D 塑胶公仔展示**：复用已保留的 3D 多姿态模型资产与绕 Y 轴旋转展示效果（见 `ARCHITECTURE.md`「已有 3D 资产的保留与新定位」），用户可在奖品展示场景中 360 度观赏获得的虚拟公仔
 
