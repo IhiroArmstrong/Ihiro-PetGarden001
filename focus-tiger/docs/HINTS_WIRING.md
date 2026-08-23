@@ -106,7 +106,7 @@
 
 | 用户场景 | 候选 hintId | 方式 | 门闩 / 备注 |
 |---|---|---|---|
-| Focusing | `rise-button` · `ambient-soundscape` · Focus HUD 三条 | rise click；ambient click；HUD **宿主悬停、无脉冲点** | auto 互斥下 rise 优先于 HUD；HUD 悬停绑金环/条/近日环，不画 `.onboarding-hint-badge` |
+| Focusing | `rise-button` · `ambient-soundscape` · Focus HUD 三条 | rise click；ambient click；HUD **宿主悬停、无脉冲点** | auto 互斥下 rise 优先于 HUD；HUD 悬停绑金环/条/近日环，不画 `.onboarding-hint-badge`。**另**：主动 Recover 幽灵句 `ACTIVE_RECOVER_HINT`（`#active-recover-hint`）**不是**本表 hint，不走互斥/mint 对比护栏；错开与可读见 TRACKER + `DEV_WORKFLOW_QUALITY` §6.20 |
 | Reflection | `reflection` | auto | 叠层开时不抢 help-affordance |
 | 微仪式进行中 | — | — | **禁止** sit / idle-after-session 等指 Sit tip |
 

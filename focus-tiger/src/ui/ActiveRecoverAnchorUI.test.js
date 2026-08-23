@@ -31,7 +31,18 @@ test('cooldown hides glow and hint but keeps an invisible hit', () => {
 });
 
 test('recover hint sits near Yin, not in the Fullscreen companion bottom band', () => {
-  assert.match(src, /top: 64%/);
+  assert.match(src, /top: 50%/);
   assert.match(src, /bottom: auto/);
+  assert.equal(src.includes('top: 64%'), false);
   assert.equal(src.includes('homeClearanceBottomCss'), false);
+});
+
+test('recover hint contrast stays readable on the glow (not robe-grey ghost alpha)', () => {
+  const colors = [...src.matchAll(/color:\s*rgba\(\s*62,\s*46,\s*32,\s*(0\.\d+)\s*\)/g)];
+  assert.ok(colors.length >= 2, 'desktop + 375 must set the readable brown');
+  for (const [, alpha] of colors) {
+    assert.ok(Number(alpha) >= 0.72, `hint alpha ${alpha} must stay >= 0.72`);
+  }
+  assert.equal(src.includes('0.38'), false);
+  assert.equal(src.includes('0.34'), false);
 });
