@@ -77,10 +77,14 @@
 
 - **会话交接 Session Handoff（2026-08-20）**：口令「生成交接」出结构化摘要。权威：`.cursor/rules/focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）。不改变 push/PR、合 develop、人工关单。
 
+- **调试本地 AI companion（2026-08-23）**：调试/优化桌面端侧智能体时先定点再动手。权威：`.cursor/rules/focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）。不覆盖 `CompanionModePicker` / Idle PiP。
+
 - **寅币时长 chip 静默 hint（2026-08-18 拍板）**：Focus / Breath picker 下 `#focus-coins-duration-hint`（满 5 分钟、寅币、身份资源）。无 HUD、无 +N toast。`?focusCoins=0` 不出现。TRACKER 待人工。
 - **寅币 Breath 时长点（2026-08-18）**：Breath 坐满按 Stay 档发时长点（5 分=1）并保留每日微仪式 +1；Leave 仍 0。无常驻「攒币」HUD。TRACKER 待人工。
 - **寅币币标 UI（2026-08-19 · #354 已合）**：精致浮雕标进 `#yin-coin-panel` 抬头/仪式层；小 icon 进余额与价格。SKU 行仍占位色点。**不**叠 `#sprite-stage`。**2026-08-20 用户书面定稿**：就按这版出。TRACKER 待人工。
 - **寅币 · 珍藏挥手点播（2026-08-20）**：`#yin-coin-panel` 底 **请阿寅挥挥手**（不在清供 8 行）。Idle 点播已入库 `wave-hello`；Focusing / 庆祝 toast 不播。`welcomeBack` / 欢迎池仍停。TRACKER 待人工。
+
+- **向阿寅倾诉 · Idle 倾听耳第二入口（2026-08-22）**：宽屏左上 `#confide-ear-chrome` + 窄屏 ActionBar `#ft-narrow-confide-btn`；点开仍是 `#confide-to-yin-card`；菜单行保留。可见闸 = 可开面板（mount / Electron 非低配宽屏 companion / `?confide=1`）。**未**翻 `CONFIDE_USER_MOUNT_ENABLED`。TRACKER 碎片待人工。
 
 - **禅意倾听者 · 桌面陪伴 L2（2026-08-20 · 口令已执行）**：宽屏 Electron fallback 才短生成；安全阀/情绪桶仍语料；失败回 fallback 句。turns 落本机 jsonl。**Checkout 未接**。Web / 窄屏仍检索。权威：`task-desktop-on-device-companion.md`。
 
@@ -100,7 +104,7 @@
 
 - **长周期 QA 播种（2026-08-17 · #328）**：`?qaSeedStreak=6` 写入前 N 个练习日（不含今天），便于产品壳测 MilestoneGlow / 徽章 / 芥子须弥，不必真等 7–21 天。与莲花池 `?qaLotusBlooms=` **分 key**（禁止复用 90 天 practice-days 当池累计）。一炷香莲花：实验室钮仍会消失；池出生走 Slice A。TRACKER 文首表。
 
-- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
+- **禅意倾听者 · 桌面窄例外（2026-08-18 · 政策）**：**不是**废止 2026-08-10「检索不生成」。批复：**仅限桌面端受约束生成、其余场景仍然检索不生成。** 与 Confide 同一入口；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶之后。技术已认可（node-llama-cpp、模型不进 DMG、Focusing 卸载）；**L0 探针已合；L1 宽屏面板已接线；L2 fallback 短生成已接线**。**2026-08-22**：情绪类输入不得落入生成兜底；`depressed` 并入 `sad`；关单「能聊」须接住原问意图。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Brief `task-desktop-on-device-companion.md`。
 
 - **莲花池 Slice A（2026-08-17）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶（不挤不缩小；结晶金环 = Slice B，无占位金线圈）。一炷香贴图出生 FX；与 MilestoneGlow 同场则仪式后再播。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
@@ -236,7 +240,7 @@
 - **冷启动禁开场即睡（2026-07-26）**：用户书面——每次第一次试用又见披斗篷睡着；要第一幕有精神的 Idle。根因：2h 滚动 DORMANT 在 `onAppReady` 对陈旧 `focus-session-end` 重播 `cloakSleep`（7/21 Idle 开局只锁了「无结束戳」路径；7/25「开场即睡另案」未留回归锚）。现 `onAppReady` → `syncDormantState({ allowEnterDormant: false })`。**2026-08-18 修订**：回前台进睡须 **tab 实际 hidden ≥2h**（Welcome 后短切 tab 不得用陈旧戳披毯）；Rise 后仍可按 2h 戳。单测 A1b + `dormantIdle` + `shouldAllowEnterDormantOnForegroundReturn`；`TEST_TRACKER`「开场即睡」行。工作流根因写入 `DEV_WORKFLOW_QUALITY` §6.7。
 - **验收基线 + 新鲜度门禁（2026-07-29）**：关单级人工验收 **只认 `origin/develop` tip**（`TEST_TRACKER` 文首 / `RULES_INDEX` → `qa-develop-tip`）；Agent 正式邀测或声称 develop 行为前须跑 `npm run check:branch-freshness`（regression-lock「分支新鲜度」/ `branch-freshness`）。`Z_INDEX.md` 入 `RULES_INDEX`（`z-index-registry`）；PR 模板加 fixed 壳 / 375 邻接勾选。核实后删除空壳长命分支 `feature/wide-idle-more-menu`、`feature/onboarding-hints-followup`（ahead=0，已是 develop 祖先）。
 - **标「已通过」覆盖分工（2026-08-02）**：`TEST_TRACKER` 关单须写清 e2e/自动化已锁哪些场景 + 人工已覆盖哪些场景（`RULES_INDEX` → `qa-pass-coverage-split`）；**禁止** e2e 绿或笼统「测试 OK」直接标「已通过」。门禁摘要见 regression-lock。
-- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
+- **本地 Cursor 能耗护栏（2026-07-26；2026-07-31 收紧；2026-08-11 补限时；2026-08-21 #383 扩 `.cursorignore`）**：根目录 `.cursorignore` + `.cursorindexingignore` 已合入 `develop`（PR #3；运行时媒体全挡见 PR #383）。Cloud 启用须提醒「独立会话」；起过 Vite/Playwright 须在收尾提醒确认已关（`focus-tiger-browser-energy.mdc`）。**2026-07-31**：取消窄屏/口头开 IDE Browser 特例；`deny-ide-browser-mcp` 硬禁 `cursor-ide-browser`（Safari 响应式 / Playwright 代窄屏）。**2026-08-11**：临时解禁路径的连续开放时长上限、续开不清零与精确时间戳汇报 → 以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准（本文档**不复述具体数值**）。非产品 UI，无需 TEST_TRACKER 人工项。
 
 - **窄屏主屏三主钮（2026-07-26 / 图标 v3 · 07-27）**：375 主画布 **Quick Start · Sit with Yin · Honesty** PNG 图腾（`public/icons/`）；抽屉不含这三项（留呼吸 / How / Sound / Reminder + 7 格）。Hints remap 到 `#ft-narrow-home-*`。**2026-07-27**：换 **v3** cream 底图腾（替 v2，`?v=4`）；逻辑/门闩不变。e2e 已锁；待人工观感（边距略疏）。
 - **跨视口可见性契约（2026-07-26）**：`visibilityContractRegistry.js` + `SHARED_RESOURCES` §6 机器块 + N25（验收 OK 须同任务双视口自动化）；改 suppress/hide → CI `test:e2e:visibility` 整表。详见 `DEV_WORKFLOW_QUALITY` §8.6 / `DOC_CODE_CONTRACT.md` V-01。
@@ -531,6 +535,8 @@
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
 
+**最近拍板（2026-08-22）**：**情绪类输入不得落入桌面生成兜底**。`depressed` / 抑郁并入现有 `sad` 语料，不升格最高危机热线、不新开诊断桶。关单「能聊」须在栏杆内接住原问意图，禁止不同问题同一句套话。权威：`PRODUCT_POSITIONING.md`「禅意倾听者」。
+
 **最近拍板（2026-08-10）**：**向阿寅倾诉（Confide to Yin）**——禅意倾听者；检索不生成；**危机安全阀** `safety_redirect` 优先（#223）。禅意 18 + safety-01 人审 **ok**。运行时：`feature/confide-to-yin` 分类/语料/面板已接线；**产品挂载仍关**（`CONFIDE_USER_MOUNT_ENABLED=false`）。**待评估**：safety 是否附加具体地区热线/链接（不阻塞）。Brief `task-briefs/task-confide-to-yin-v1.md`。
 
 **最近拍板（2026-08-09）**：远期玩法/商业种子入库 Backlog（**不排期、不开工**）——① **本地个人混音（Soundscape Mixer）**；② **UGC 创作者生态（约束版）**；③ **异步无声共修（Global Lanterns）**。评估结论：混音可接 Sanctuary/本地氛围深化；UGC 平台层暂缓；共修气质契合但须极薄、可关。详见下文三条 Backlog。
@@ -611,14 +617,14 @@
 | 多个 `…-wt-…` 窗口同时开着 | 每个窗口 ≈ 一套 extension-host + 索引 watcher | 关掉当前不用的 worktree 窗口（目录可留盘） |
 | 空闲仍长期偏高 | 多半是索引扫大素材 | 收紧根目录 ignore 后 **Resync Index** |
 
-本仓大头：`focus-tiger/public/sprites`（约数百 MB、六百余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**。
+本仓大头：`focus-tiger/public/sprites`（约数百 MB、一千余 PNG）已进 Git，**单靠 `.gitignore` 挡不住 Cursor 索引**；2026-08-21 起亦在 [`.cursorignore`](../../.cursorignore) 全挡 Agent 读（PR #383）。
 
 ### 收紧 ignore（具体操作）
 
 仓库根已提供两份文件（gitignore 语法）：
 
-1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env` 等。
-2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出索引**；需要时仍可 `@` 或打开。放：`public/sprites|audio|models|…`、`art-reference/`、`package-lock.json`。
+1. **[`.cursorignore`](../../.cursorignore)** — AI **完全看不见**（索引 / `@` / Agent 读都挡）。放：`node_modules`、`dist`、Playwright 浏览器缓存、zip、`.env`、**`public/sprites|audio|models|…` 运行时媒体**、`art-reference/`、锁文件、`.git/` 等。
+2. **[`.cursorindexingignore`](../../.cursorindexingignore)** — **只退出语义索引**；对已在 `.cursorignore` 的路径为双保险；仍可用于「只减索引、暂保留 Agent 可读」的例外（本仓运行时媒体**不在**此例外内）。
 
 合入 / 拉取后，对**每个仍打开的** Cursor 窗口：
 
@@ -626,7 +632,14 @@
 2. Process Explorer 再看空闲时 Shared CPU 是否明显下降  
 3. 若某 worktree 窗口长期不用：直接 **关闭该窗口**（比只停 Agent 更省）
 
-改 ignore 后**不必**重启整个 Cursor；Resync 即可。改完若某 Agent 需要读某帧路径，用 `@focus-tiger/public/sprites/…` 显式拉取（因在 indexingignore，不会被语义搜索挖出来）。
+改 ignore 后**不必**重启整个 Cursor；Resync 即可。
+
+**Agent 需要素材路径时（取代旧 `@sprites` 逃生口）**：
+
+- **默认**：**不要** `@focus-tiger/public/sprites/…` 或 `@` 任意 `public/` 下 PNG/MP3/GLB——已在 `.cursorignore`，`@` 与 Agent 工具读均无效。
+- **查路径 / 接线 / 帧数**：`@focus-tiger/docs/ASSET_INVENTORY.md`、`SCENE_ANIMATION_WIRING.md`、`spriteManifest.js`、`CharacterConfig.js`；新增批次见 `docs/NEW_ASSETS_*.md`。
+- **查观感**：Safari 开 Vite 预览（见 `focus-tiger-browser-energy.mdc`）；窄屏用响应式模式或 Playwright e2e，**不要**为看帧开 IDE Browser。
+- **极少数须 Agent 读单帧二进制**（如像素级排错）：须**你当回合书面批准** → 在**独立 worktree** 临时从 `.cursorignore` 去掉对应子目录 → 任务结束**恢复 ignore 并 Resync**；禁止把整棵 `public/sprites/` 长期放出。
 
 ### 本地 Agent vs worktree 窗口（不是同一物）
 

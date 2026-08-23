@@ -71,13 +71,20 @@ test.describe('wide ? purpose only', () => {
       page.locator('[data-testid="onboarding-purpose-wellness"]')
     ).toBeVisible();
     await expect(
-      page.locator('.onboarding-app-purpose__wellness-title')
+      page.locator('[data-testid="onboarding-purpose-wellness-summary"]')
+    ).toContainText(/mindfulness tool|not medical/i);
+    await page.locator('[data-testid="onboarding-purpose-wellness-link"]').click();
+    await expect(
+      page.locator('#onboarding-wellness-detail:not([hidden])')
+    ).toBeVisible({ timeout: 5_000 });
+    await expect(
+      page.locator('.onboarding-wellness-detail__title')
     ).toContainText(/Not therapy or medical care/i);
     await expect(
-      page.locator('.onboarding-app-purpose__wellness-body')
+      page.locator('.onboarding-wellness-detail__body')
     ).toContainText(/not a medical device|counselor|therapist/i);
     await expect(
-      page.locator('.onboarding-app-purpose__wellness-body')
+      page.locator('.onboarding-wellness-detail__body')
     ).toContainText(/diagnose, treat, cure, or prevent/i);
     await expect(
       page.locator('[data-testid="onboarding-purpose-colophon"]')

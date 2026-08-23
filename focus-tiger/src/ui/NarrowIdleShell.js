@@ -20,7 +20,7 @@ import {
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v21';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -39,10 +39,11 @@ const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
 const ICON_QUICK = '/icons/icon-quick-start.png?v=4';
 const ICON_HONESTY = '/icons/icon-honesty-checkin.png?v=4';
+const ICON_CONFIDE = '/icons/icon-confide-to-yin.png';
 
 /**
  * Narrow Idle shell (≤479 / 375):
- * - Minimal ActionBar: ? · **wall clock** · mute — always visible on narrow
+ * - Minimal ActionBar: ? · **Confide ear (Idle + gate)** · **wall clock** · mute — always visible on narrow
  *   (Idle / Arrival / Focusing / suppress overlays). Session elapsed stays on
  *   `#focus-hud` only; ActionBar never mirrors `#hud-time`.
  * - Home primary balls: Quick Start / Sit with Yin / Honesty (PNG zen totems)
@@ -125,6 +126,17 @@ export class NarrowIdleShell {
    */
   setHandlers(handlers) {
     this.handlers = { ...this.handlers, ...handlers };
+  }
+
+  /**
+   * Idle + open-gate only. ActionBar stays in Focusing; this button must not.
+   * @param {boolean} visible
+   * @returns {void}
+   */
+  setConfideEarVisible(visible) {
+    const btn = this.actionBar?.querySelector('#ft-narrow-confide-btn');
+    if (!btn) return;
+    btn.hidden = !visible;
   }
 
   /**
@@ -359,6 +371,9 @@ export class NarrowIdleShell {
       <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-help-btn" data-proxy="help" aria-label="">
         ?
       </button>
+      <button type="button" class="ft-narrow-action-bar__btn is-confide" id="ft-narrow-confide-btn" data-proxy="confide" data-testid="ft-narrow-confide-btn" hidden aria-label="">
+        <img class="ft-narrow-action-bar__confide-img" src="${ICON_CONFIDE}" alt="" width="28" height="28" draggable="false" decoding="async" />
+      </button>
       <div class="ft-narrow-action-bar__center" aria-live="polite">
         <span class="ft-narrow-action-bar__time" data-role="time">00:00</span>
         <span class="ft-narrow-action-bar__state" data-role="state"></span>
@@ -429,10 +444,15 @@ export class NarrowIdleShell {
 
   _refreshLabels() {
     const helpBtn = this.actionBar?.querySelector('[data-proxy="help"]');
+    const confideBtn = this.actionBar?.querySelector('#ft-narrow-confide-btn');
     const muteBtn = this.actionBar?.querySelector('[data-proxy="mute"]');
     const title = this.sheet?.querySelector('[data-role="sheet-title"]');
     const close = this.sheet?.querySelector('[data-role="close"]');
     if (helpBtn) helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
+    if (confideBtn) {
+      confideBtn.setAttribute('aria-label', t('CONFIDE_MENU_LABEL'));
+      confideBtn.title = t('CONFIDE_MENU_LABEL');
+    }
     if (muteBtn) muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
     if (title) title.textContent = t('NARROW_SHEET_TITLE');
     if (close) {
@@ -1008,6 +1028,35 @@ export class NarrowIdleShell {
         font-weight: 600;
         cursor: pointer;
         position: relative;
+      }
+      .ft-narrow-action-bar__btn:active {
+        transform: scale(0.96);
+      }
+      .ft-narrow-action-bar__btn.is-confide {
+        padding: 0;
+        overflow: hidden;
+        background: rgba(255, 252, 245, 0.55);
+      }
+      .ft-narrow-action-bar__btn.is-confide:hover,
+      .ft-narrow-action-bar__btn.is-confide:focus-visible {
+        background: rgba(255, 252, 245, 0.92);
+      }
+      .ft-narrow-action-bar__btn.is-confide[hidden] {
+        display: none !important;
+      }
+      .ft-narrow-action-bar__confide-img {
+        display: block;
+        width: 32px;
+        height: 32px;
+        margin: 0 auto;
+        object-fit: contain;
+        pointer-events: none;
+        opacity: 0.55;
+        transition: opacity 180ms ease;
+      }
+      .ft-narrow-action-bar__btn.is-confide:hover .ft-narrow-action-bar__confide-img,
+      .ft-narrow-action-bar__btn.is-confide:focus-visible .ft-narrow-action-bar__confide-img {
+        opacity: 1;
       }
       .ft-narrow-action-bar__btn > .ft-secondary-menu-hint-dot {
         position: absolute;

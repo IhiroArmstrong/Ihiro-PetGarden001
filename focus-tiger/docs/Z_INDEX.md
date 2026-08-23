@@ -56,12 +56,16 @@
 | **18** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-card` Zen Cinema 确认卡（⋯ / 抽屉；将打开 YouTube） |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
-| **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome） |
+| **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
 | **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
 | **18** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（⋯ / 抽屉） |
+| **17** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-backdrop` Membership 模态遮罩 |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |
+| **26** | `src/ui/OnboardingHintsUI.js` | `#onboarding-app-purpose-backdrop` ? 简介卡遮罩 |
+| **27** | `src/ui/OnboardingHintsUI.js` | `#onboarding-app-purpose` ? 产品简介卡（居中） |
+| **28** | `src/ui/OnboardingHintsUI.js` | `#onboarding-wellness-detail` 免责全文二级卡 |
 | **18** | `src/ui/TipJarUI.js` | `#yin-tip-jar-card` Buy Yin a Tea 卡（⋯ / 抽屉） |
 | **18** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-card` Stay in touch 可选邮件留资卡（⋯ / 抽屉；不存邮箱；无 entitlement） |
 | **18** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-card` 向阿寅倾诉卡（⋯ / 抽屉；**Web 检索不生成**；默认挂载关；QA `?confide=1`）。**Electron L1**：非低配宽屏同一卡内 `#confide-to-yin-desktop-status` 下载层（仍 z 18，不另开层） |
@@ -76,6 +80,7 @@
 | **23** | `src/ui/AmbientSoundscapeUI.js` | Soundscape 右下 focus chrome（曲目面板 + Sound FAB 容器） |
 | **24** | `src/ui/AmbientSoundscapeUI.js` | 右上 mute / 音符钮（`.ambient-soundscape__mute`） |
 | **24** | `src/ui/SupportYinModalUI.js` | 右上 Support Yin FAB（`#yin-support-fab`；在 mute 左侧） |
+| **24** | `src/ui/ConfideEarChromeUI.js` | 宽屏 Idle 左上倾听耳 `#confide-ear-chrome`（与菜单同一开闸；窄屏 CSS 隐藏，改走 ActionBar `#ft-narrow-confide-btn`） |
 | **24** | `src/ui/NarrowIdleShell.js` | 窄屏 Focusing：强制把 mute 提到可点层（覆盖 park） |
 | **25** | `src/ui/SupportYinModalUI.js` | `#yin-support-backdrop` Support 模态遮罩（在 `#ui-overlay` z10 内） |
 | **25** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-backdrop` 宽屏 ⋯ 浅遮罩（挂 `body`，盖过整个 `#ui-overlay`） |

@@ -136,6 +136,7 @@ import {
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
+import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
@@ -318,6 +319,7 @@ import {
 } from './core/OnboardingHintsStore.js';
 import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
+import { createIdleSecondaryPanelCoordinator } from './ui/idleSecondaryPanels.js';
 /** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 10。开表前无 URL 时再出时长 chip。 */
 const DEMO_SESSION_MINUTES = resolveFocusSessionTargetMinutes(location.search);
 /** 微仪式墙钟：产品按 chip 分钟；e2e 用 `?microRitualMs=` 缩短。 */
@@ -913,6 +915,10 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
+  /** @type {HonestyCheckInUI | null} */
+  let honestyCheckInUI = null;
+  /** @type {ArrivalPracticeUI | null} */
+  let arrivalPractice = null;
   /** @type {MicroRitualUI | null} */
   let microRitualUI = null;
   /** @type {RitualFlowUI | null} */
@@ -1017,7 +1023,10 @@ async function init() {
     }
   });
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
+  /** @type {{ close: (opts?: object) => void }} */
+  const idleSecondaryPanelHost = { close: () => {} };
   const membershipUnlockUI = new MembershipUnlockUI(document.body, {
+    onOpen: () => idleSecondaryPanelHost.close({ except: 'membership' }),
     onEntitlementChanged: () => {
       // Ritual lock rows re-read isEntitled on next menu/drawer open.
       tipKindnessBadgesChrome.refresh();
@@ -1051,25 +1060,26 @@ async function init() {
   });
   window.__newsletterCapture = newsletterCaptureUI;
 
+  const canOpenConfideNow = () => {
+    const busy =
+      stateManager.state === STATES.FOCUSING ||
+      Boolean(arrivalPractice?.isOpen?.()) ||
+      Boolean(reflectionMoment?.isOpen?.()) ||
+      Boolean(microRitualUI?.isOpen?.()) ||
+      Boolean(honestyBridge?.isVisible?.()) ||
+      (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
+    if (busy) return false;
+    return canOpenConfidePanel({
+      search: location.search,
+      stage: 'idle',
+      companionGeneration: canRegisterDesktopCompanionGeneration({
+        hasBridge: hasDesktopCompanionBridge(),
+        widthPx: window.innerWidth
+      })
+    });
+  };
   const confideToYinUI = new ConfideToYinUI(document.body, {
-    canOpen: () => {
-      const busy =
-        stateManager.state === STATES.FOCUSING ||
-        Boolean(arrivalPractice?.isOpen?.()) ||
-        Boolean(reflectionMoment?.isOpen?.()) ||
-        Boolean(microRitualUI?.isOpen?.()) ||
-        Boolean(honestyBridge?.isVisible?.()) ||
-        (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
-      if (busy) return false;
-      return canOpenConfidePanel({
-        search: location.search,
-        stage: 'idle',
-        companionGeneration: canRegisterDesktopCompanionGeneration({
-          hasBridge: hasDesktopCompanionBridge(),
-          widthPx: window.innerWidth
-        })
-      });
-    },
+    canOpen: canOpenConfideNow,
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
     },
@@ -1083,6 +1093,20 @@ async function init() {
   });
   window.__confideToYin = confideToYinUI;
   confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
+  const confideEarChrome = new ConfideEarChromeUI(document.body, {
+    canShow: canOpenConfideNow,
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'confide' });
+      confideToYinUI.open();
+    }
+  });
+  window.__confideEarChrome = confideEarChrome;
+  const syncConfideEarChrome = () => {
+    confideEarChrome.sync();
+    idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
+  };
+  window.addEventListener('resize', () => syncConfideEarChrome());
+  syncConfideEarChrome();
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
@@ -1295,14 +1319,15 @@ async function init() {
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     playWave: () => window.__focusCoins.playWave(),
-    onMessage: (message) => mindfulToast.show(message)
+    onMessage: (message) =>
+      mindfulToast.show(message, { placement: 'center' })
   });
   window.__yinCoinPanel = yinCoinPanelUI;
   syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
-  const honestyCheckInUI = new HonestyCheckInUI(
+  honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
   const honestyCheckIn = new HonestyCheckInController({
@@ -1660,6 +1685,7 @@ async function init() {
   function resyncSessionChrome() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
+    syncConfideEarChrome();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -2057,6 +2083,7 @@ async function init() {
     {
       sessionCues,
       onPanelOpened: () => {
+        idleSecondaryPanelHost.close({ except: 'soundscape' });
         onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
       },
       onTrackChosen: () => {
@@ -2218,7 +2245,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
-      closeGrowthOverlayCards();
+      idleSecondaryPanelHost.close();
       momentWhisperUI.hide({ immediate: true });
       ambientSoundscapeUI.clearNarrowSoundStage();
       idleChrome.clearAllStageClasses();
@@ -2313,11 +2340,19 @@ async function init() {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
     },
+    onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
     onWellnessFirstDismiss: () => {
       maybeOfferFiveMomentsCompassFirstCard();
     }
   });
   onboardingHintHost.hints = onboardingHints;
+  const { closeIdleSecondaryPanels } = createIdleSecondaryPanelCoordinator({
+    membershipUnlockUI,
+    getOnboardingHints: () => onboardingHintHost.hints,
+    ambientSoundscapeUI,
+    closeGrowthOverlayCards
+  });
+  idleSecondaryPanelHost.close = closeIdleSecondaryPanels;
   // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
   // same contract as `__ambientSoundscape` / `__honestyBridge`.
   window.__onboardingHints = onboardingHints;
@@ -2362,7 +2397,7 @@ async function init() {
   /** @type {'icon' | 'typed'} */
   let currentIntentionSource = 'typed';
 
-  const arrivalPractice = new ArrivalPracticeUI(
+  arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
       onNoticeSelected: () => {
@@ -3697,6 +3732,7 @@ async function init() {
     if (stateManager.state === STATES.FOCUSING) {
       confideToYinUI.close();
     }
+    syncConfideEarChrome();
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
       window.setTimeout(() => {

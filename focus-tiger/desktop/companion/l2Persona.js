@@ -13,6 +13,9 @@ export const L2_MAX_REPLY_CHARS = 160;
 
 export const L2_GENERATE_TIMEOUT_MS = 20_000;
 
+/** After dropping corpus-backed exchanges, keep this many history rows. */
+export const L2_PROMPT_HISTORY_MAX_ROWS = 8;
+
 const LANG = {
   zh: 'Chinese',
   ja: 'Japanese',
@@ -20,10 +23,39 @@ const LANG = {
 };
 
 /**
+ * Drop corpus-backed exchanges (Yin `source === 'corpus'` and the user
+ * turn immediately before it), then keep the last N rows.
+ * Rows without `source` stay (legacy tests / untagged generate).
+ *
+ * @param {unknown} history
+ * @param {number} [maxRows]
+ * @returns {Array<{ role?: string, text?: string, source?: string }>}
+ */
+export function historyForGeneratePrompt(
+  history = [],
+  maxRows = L2_PROMPT_HISTORY_MAX_ROWS
+) {
+  const rows = Array.isArray(history) ? history : [];
+  /** @type {Array<{ role?: string, text?: string, source?: string }>} */
+  const kept = [];
+  for (const row of rows) {
+    if (row?.role === 'yin' && row?.source === 'corpus') {
+      if (kept.length && kept[kept.length - 1]?.role === 'user') {
+        kept.pop();
+      }
+      continue;
+    }
+    kept.push(row);
+  }
+  const cap = Number.isFinite(maxRows) && maxRows > 0 ? maxRows : L2_PROMPT_HISTORY_MAX_ROWS;
+  return kept.slice(-cap);
+}
+
+/**
  * @param {{
  *   text?: string,
  *   locale?: string,
- *   history?: Array<{ role?: string, text?: string }>
+ *   history?: Array<{ role?: string, text?: string, source?: string }>
  * }} [opts]
  * @returns {string}
  */
@@ -33,8 +65,7 @@ export function buildCompanionL2Prompt({
   history = []
 } = {}) {
   const lang = LANG[locale] || LANG.en;
-  const turns = (Array.isArray(history) ? history : [])
-    .slice(-8)
+  const turns = historyForGeneratePrompt(history)
     .map((row) => {
       const role = row?.role === 'user' ? 'User' : 'Yin';
       const body = String(row?.text || '').slice(0, 200);

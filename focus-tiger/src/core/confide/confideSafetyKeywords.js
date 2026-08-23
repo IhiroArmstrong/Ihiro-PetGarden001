@@ -17,6 +17,10 @@ export const SAFETY_PHRASES_EN = Object.freeze([
   'ending my life',
   'want to die',
   'wanna die',
+  "don't want to live",
+  'dont want to live',
+  'do not want to live',
+  "don't wanna live",
   'suicide',
   'self-harm',
   'self harm',
@@ -60,16 +64,25 @@ export function allSafetyPhrases() {
 }
 
 /**
+ * Fold curly / fullwidth apostrophes so "don’t want to live" still hits.
+ * @param {string} text
+ * @returns {string}
+ */
+export function foldConfideSafetyText(text) {
+  return String(text || '').replace(/[\u2018\u2019\u02BC\uFF07]/g, "'");
+}
+
+/**
  * @param {string} text
  * @param {readonly string[]} [phrases]
  * @returns {boolean}
  */
 export function matchesSafetyRedirect(text, phrases = allSafetyPhrases()) {
-  const raw = typeof text === 'string' ? text : '';
+  const raw = foldConfideSafetyText(typeof text === 'string' ? text : '');
   const normalized = raw.trim().toLowerCase();
   if (!normalized) return false;
   for (const phrase of phrases) {
-    const p = String(phrase || '').trim();
+    const p = foldConfideSafetyText(String(phrase || '')).trim();
     if (!p) continue;
     // CJK phrases: case-fold only the haystack; needle kept as authored.
     const needle = /[a-z]/i.test(p) ? p.toLowerCase() : p;

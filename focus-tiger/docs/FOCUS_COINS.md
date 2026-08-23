@@ -270,7 +270,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
 - **本支（#348）**：Breath 坐满按 Stay 档发时长点（`applyBreathPracticeFocusCoinsGrant`）；Leave 仍 0。Focus / Breath picker 下 `#focus-coins-duration-hint`。  
 - **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。清供 id 可兑为卡面；晨露/金线滤镜已拆、不再上主画面。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
-- **L3（#352+#353+#354 已合；清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + toast。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
+- **L3（#352+#353+#354 已合；清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18；**≥480 靠右停、中线留给阿寅/挥手**；<480 短底栏）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + **中置** toast（不得被面板盖住）。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
 - **本旁支（#356）**：珍藏底栏 Play 点播已入库 `waveHello`（`collectionsWaveHello`）。抽屉**不**列 `gesture.wave-hello`。不要求先结缘该 SKU。`welcomeBack` 仍空。  
 
 - Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  
