@@ -39,8 +39,11 @@ export const LOTUS_POND_SPIRAL = Object.freeze({
   rInnerPct: 17,
   rOuterPct: 34,
   yScale: 0.68,
-  /** Index 0 points downward (pool at the cushion, not over the face). */
-  angleOffsetDeg: -90,
+  /**
+   * Index 0 points left (incense-side ground beside Yin).
+   * 2026-08-20: -90 put bloom 0 under the cushion (§6.18).
+   */
+  angleOffsetDeg: 180,
   bloomWidthCss: 'min(12vw, 96px)',
   leftMinPct: 8,
   leftMaxPct: 92,
