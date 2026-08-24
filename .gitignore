@@ -30,6 +30,7 @@ focus-tiger/desktop/release/
 
 # Desktop companion L0 probe artifacts (GGUF is never committed)
 focus-tiger/desktop/.l0-cache/
+focus-tiger/desktop/.spike-17b-cache/
 focus-tiger/desktop/companion/reports/
 *.gguf
 
