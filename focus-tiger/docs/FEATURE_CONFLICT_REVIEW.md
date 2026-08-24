@@ -84,7 +84,7 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 **Personal Memory vs Journey Log vs turns.jsonl（2026-08-24）**
 
-专有陪伴记忆提案与场景 Z（练习留痕）、练习云备份 6 key、L2 调试 jsonl **职责重叠**。用户书面：另开一轮只写架构、不写代码。处置：SSOT `YIN_PERSONAL_MEMORY.md`——三套边界写死；危机/情绪桶永不入库；local-only；注入 **Safety > Corpus > Memory 检索 > Qwen**；仪式 generate **仍未拍板**。无运行时用户路径。
+专有陪伴记忆提案与场景 Z（练习留痕）、练习云备份 6 key、L2 调试 jsonl **职责重叠**。用户书面：另开一轮只写架构、不写代码。处置：SSOT `YIN_PERSONAL_MEMORY.md`——三套边界写死；危机/情绪桶永不入库；local-only；注入 **Safety > Corpus > Memory 检索 > Qwen**；仪式 generate **仍未拍板**。`turns.jsonl` 调试边界见 `RULES_INDEX` → `companion-debug` / `.cursor/rules/focus-tiger-companion-debug.mdc`。无运行时用户路径。
 
 **检索不生成 vs 桌面陪伴（2026-08-18）**
 
