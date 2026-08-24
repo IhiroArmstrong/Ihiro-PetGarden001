@@ -173,7 +173,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 
 **2026-08-22 拍板（情绪不得落入生成兜底）**：带情绪色彩的输入必须停在第 0 层或第 2 层已审语料，**禁止**落到第 3 层生成。日常自述 `depressed` / 抑郁等**并入现有 `sad` 桶**（观察句），**不**升格为最高危机热线，也**不**新开临床诊断桶。单独 `help me` 仍太宽，不进词表。关单级「能聊」：栏杆允许的范围内须接住该句意图；**禁止**不同问题吐同一句套话；有输出 ≠ pass。
 
-技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程（L1 用 Node 子进程 hold，避免 Electron ABI）；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** **L1（2026-08-20 · #362 已合）**：宽屏面板 + 下载进度已接线。**L2（2026-08-20 · 口令已执行）**：Electron 宽屏 fallback 可短生成；Web 仍检索。Checkout 未接。关单级「能聊」待人工。**付费（2026-08-20）**：**Focus Tiger Pro US$12.99/月**（将来第四卡）含 Base（B 轨）+ 本地智能体（非 Lifetime 路径；Stripe Price 已记、Checkout 未接）。**已买 Sanctuary Lifetime** 走一次性加购 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接；不进 `isEntitled`）。**一旦接线须两卡同批。** 本地模型仍只 Electron（无壳 = 无本地 AI）；付款可走 Web，接 Checkout 另开。
+技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程（L1 用 Node 子进程 hold，避免 Electron ABI）；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** **L1（2026-08-20 · #362 已合）**：宽屏面板 + 下载进度已接线。**L2（2026-08-20 · 口令已执行）**：Electron 宽屏 fallback 可短生成；Web 仍检索。Checkout 未接。关单级「能聊」**2026-08-25 用户书面已关**（1.7B 问答基本可以）。**付费（2026-08-20）**：**Focus Tiger Pro US$12.99/月**（将来第四卡）含 Base（B 轨）+ 本地智能体（非 Lifetime 路径；Stripe Price 已记、Checkout 未接）。**已买 Sanctuary Lifetime** 走一次性加购 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接；不进 `isEntitled`）。**一旦接线须两卡同批。** 本地模型仍只 Electron（无壳 = 无本地 AI）；付款可走 Web，接 Checkout 另开。
 
 详规：Web 检索 `task-briefs/task-confide-to-yin-v1.md`；桌面例外 `task-briefs/task-desktop-on-device-companion.md`；种子稿 `confide-corpus-seed.md`。**本拍板不等于已上线功能。**
 

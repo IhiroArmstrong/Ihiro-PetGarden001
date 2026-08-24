@@ -7,6 +7,12 @@ export { CONFIDE_ROUTE, CONFIDE_EMOTION_BUCKETS, CONFIDE_EMOTION_PRIORITY } from
 export { resolveConfideReply } from './confideReplyFlow.js';
 export { confideClassify, canSubmitConfideText } from './confideClassify.js';
 export {
+  isPracticeDurationQuestion,
+  shouldAnswerWithPracticeFacts,
+  summarizePracticeFacts,
+  formatPracticeDurationReply
+} from './confidePracticeFacts.js';
+export {
   CONFIDE_CORPUS,
   pickConfideLine,
   confideLineText,

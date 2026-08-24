@@ -14,6 +14,11 @@ import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js'
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
+import {
+  formatPracticeDurationReply,
+  shouldAnswerWithPracticeFacts,
+  summarizePracticeFacts
+} from '../core/confide/confidePracticeFacts.js';
 import { shouldUseDesktopCompanionGenerate } from '../core/desktopCompanionL2Route.js';
 import { formatLocalDateYmd } from './reflectionEchoCopy.js';
 import {
@@ -56,6 +61,7 @@ export class ConfideToYinUI {
     this._sending = false;
     this._sendEpoch = 0;
     this._l2Turns = [];
+    this._practiceDaysStore = handlers.practiceDaysStore || null;
 
     this.root = document.createElement('div');
     this.root.id = 'confide-to-yin-card';
@@ -241,6 +247,14 @@ export class ConfideToYinUI {
   }
 
   /**
+   * Same ledger as Journey Log (created later in main.js).
+   * @param {import('../core/PracticeDaysStore.js').PracticeDaysStore | null} store
+   */
+  bindPracticeDaysStore(store) {
+    this._practiceDaysStore = store || null;
+  }
+
+  /**
    * @param {{ unload?: boolean }} [opts]
    */
   hideGenerateLayer({ unload = false } = {}) {
@@ -348,7 +362,12 @@ export class ConfideToYinUI {
     this._l2Turns.push({
       role: 'yin',
       text: shown.text,
-      source: shown.source === 'generate' ? 'generate' : 'corpus'
+      source:
+        shown.source === 'generate'
+          ? 'generate'
+          : shown.source === 'practice_facts'
+            ? 'practice_facts'
+            : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
@@ -373,6 +392,21 @@ export class ConfideToYinUI {
     if (!hit) return;
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
+    if (shouldAnswerWithPracticeFacts(hit.route, text)) {
+      const factsText = formatPracticeDurationReply(
+        summarizePracticeFacts(this._practiceDaysStore),
+        t
+      );
+      this._showReply(
+        {
+          route: hit.route,
+          text: factsText,
+          source: 'practice_facts'
+        },
+        text
+      );
+      return;
+    }
     const wantGenerate = shouldUseDesktopCompanionGenerate({
       route: hit.route,
       generateEnabled: Boolean(this._companionStatus?.generateEnabled),
@@ -556,6 +590,7 @@ export class ConfideToYinUI {
         border-radius: 999px;
       }
       .confide-to-yin__reply[data-source='generate']::before,
+      .confide-to-yin__reply[data-source='practice_facts']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;

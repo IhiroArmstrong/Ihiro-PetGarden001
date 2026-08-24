@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import { confideClassify } from './confide/confideClassify.js';
 import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
+import { shouldAnswerWithPracticeFacts } from './confide/confidePracticeFacts.js';
 import {
   companionGenerateEnabled,
   shouldUseDesktopCompanionGenerate
@@ -73,6 +74,29 @@ describe('desktop companion L2 route', () => {
         route
       );
     }
+  });
+
+  it('duration questions stay fallback but Slice 0 intercepts before generate', () => {
+    const text = 'How long have I practiced?';
+    const route = confideClassify(text);
+    assert.equal(route, CONFIDE_ROUTE.FALLBACK);
+    assert.equal(shouldAnswerWithPracticeFacts(route, text), true);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
+      true
+    );
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }) &&
+        !shouldAnswerWithPracticeFacts(route, text),
+      false
+    );
+    assert.equal(
+      shouldAnswerWithPracticeFacts(
+        CONFIDE_ROUTE.FALLBACK,
+        'What is the weather like today?'
+      ),
+      false
+    );
   });
 
   it('generates only on fallback when the desktop hold is ready', () => {
@@ -165,6 +189,20 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(prompt.includes(safety), false);
     assert.equal(prompt.includes("I don't want to live"), false);
     assert.match(prompt, /Whom do you like\?/);
+  });
+
+  it('drops practice_facts exchanges from Recent turns', () => {
+    const facts = 'This device has 3 practiced days, about 75 minutes in all.';
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      history: [
+        { role: 'user', text: 'How long have I practiced?' },
+        { role: 'yin', text: facts, source: 'practice_facts' }
+      ]
+    });
+    assert.equal(prompt.includes(facts), false);
+    assert.equal(prompt.includes('How long have I practiced?'), false);
   });
 
   it('keeps generate-backed Yin turns in Recent turns', () => {
@@ -268,7 +306,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
     assert.equal(turnPushes.length, 2);
-    assert.match(ui, /source: shown\.source === 'generate' \? 'generate' : 'corpus'/);
+    assert.match(ui, /shouldAnswerWithPracticeFacts/);
+    assert.match(ui, /source: 'practice_facts'/);
+    assert.match(ui, /shown\.source === 'generate'/);
+    assert.match(ui, /shown\.source === 'practice_facts'/);
     assert.match(ui, /this\._l2Turns\.slice\(\)/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);

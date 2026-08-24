@@ -4,7 +4,7 @@
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。  
-> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。**2026-08-25 Slice 0 已排期**：Confide「练了多久」用本机练习字段，见 `task-yin-memory-slice-0-practice-facts.md`。
+> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。**2026-08-25 Slice 0 已开工**：Confide「练了多久」用本机练习字段，见 `task-yin-memory-slice-0-practice-facts.md`。
 
 ---
 
@@ -290,7 +290,7 @@ L1 = 桌面宽屏面板 + 下载进度 + 主进程 IPC + Focusing 卸载。**仍
 
 | 测什么 | 何时 | 为什么 |
 |---|---|---|
-| **关单级「能聊」**（第 3 层短生成须接住该句意图；情绪桶不得生成） | **L2 已接线，待 Electron 人工** | 安全/情绪桶仍语料（`depressed`→sad）；unmatched **非情绪**闲聊才生成；同一套话应付不同问题 = 不达标 |
+| **关单级「能聊」**（第 3 层短生成须接住该句意图；情绪桶不得生成） | **2026-08-25 用户书面已关** | 安全/情绪桶仍语料；unmatched 非情绪闲聊才生成；时长问走 Slice 0 |
 | **Checkout 第四卡 Pro + 第五卡 Add-on** | **等关单级能聊之后**，另下「接 Checkout」口令，**两卡同批**再测付款 | 用户已同意；未经验收的生成就接线 = 假收费 |
 | **L1 面板壳**（点 ⋯ 见卡+进度、Focusing 卸载、拖窄关层、Web 无入口） | **不挡 L2 开工**。方便时可先点一眼；也可叠进 L2 人工测当回归 | 壳坏了会污染 L2 调试，但不必单独做关单「能聊」 |
 

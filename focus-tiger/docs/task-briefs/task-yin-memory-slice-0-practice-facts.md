@@ -1,9 +1,9 @@
 # Task Brief · Yin Personal Memory · Slice 0（练习字段事实应答）
 
-> **状态（2026-08-25）**：**已排期 · 未开工运行时。** 本切片把 Confide「我练了多久」接到**本机已有练习字段**，禁止 Qwen 编造时长。  
+> **状态（2026-08-25）**：**Slice 0 开工**（口令「开工 Yin Personal Memory」）。Confide「我练了多久」接到本机练习字段。**禁止**本切片写 Consent UI / Remember 管道 / 四类 store。  
 > **权威架构**：`YIN_PERSONAL_MEMORY.md`（方向锁仍有效）。**禁止**本 Brief 合入后默认写 store / Consent UI / Remember 管道。  
 > **开工口令**：仍须「开工 Yin Personal Memory」（可先只做本 Slice 0；全套 Remember/Use/Forget 可同口令后分段）。  
-> **前置**：生产 1.7B 已接线（#419）；场景 AE 关单级「能聊」书面过关后再写运行时。  
+> **前置**：生产 1.7B 已接线（#419）；场景 AE 关单级「能聊」**2026-08-25 用户书面已关**。  
 > **对照**：`task-desktop-on-device-companion.md` · 场景 AE / Z · `PracticeDaysStore`
 
 ---
