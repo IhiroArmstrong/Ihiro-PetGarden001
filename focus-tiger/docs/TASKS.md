@@ -236,7 +236,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 级 | 内容 | Brief | 状态 |
 |---|---|---|---|
 | **架构** | 四类记忆 + Remember/Use/Forget；Safety > Corpus > Memory > Qwen | `YIN_PERSONAL_MEMORY.md` | **方向锁 · 无 store** |
-| **Slice 0** | Confide「练了多久」用本机练习字段精确应答，禁止 Qwen 编造时长 | `task-yin-memory-slice-0-practice-facts.md` | **已排期 · 未开工**（等 AE「能聊」关单 + 开工口令） |
+| **Slice 0** | Confide「练了多久」用本机练习字段精确应答，禁止 Qwen 编造时长 | `task-yin-memory-slice-0-practice-facts.md` | **本旁支开工**（口令「开工 Yin Personal Memory」· AE 能聊已关） |
 | **其后** | Consent + 4 类 schema + Forget UI + 层 3 注入 | 同口令可分段 | 未开工；仪式 generate **仍未拍板** |
 
 **我认为最合理的下一刀运行时**：Slice 0（系统已有天数/累计分钟）。较弱：一上来做 Preference / 「喜欢吃什么」——本机没有该字段，会逼模型编造。
