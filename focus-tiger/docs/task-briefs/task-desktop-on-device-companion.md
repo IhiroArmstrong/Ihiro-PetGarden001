@@ -45,7 +45,7 @@
 |---|---|
 | 运行时 | **node-llama-cpp**，仅 Electron **主进程**（或 utility / 子进程）。禁止渲染进程。 |
 | 模型文件 | **不进 DMG**；首次打开入口时下载到 userData |
-| 默认型号 | L0 实测后再锁。候选起点 Qwen3-0.6B Q4；不在 L0 前争论 0.6B vs 1.7B |
+| 默认型号 | **2026-08-24 拍板锁定：`Qwen3-1.7B-Q4_K_M` unsloth**（L0 过；七问大多说得通；社评/公开资料评估质量最佳）。0.6B Q4 bartowski **不选**（七问多次失望、复读人设、社评差）。生产 `l0Config.js` 接线另任务。 |
 | Focusing | **卸载模型**，释放统一内存 |
 | 隔离 | 代码只放 `focus-tiger/desktop/`（如 `companion/`）。Web / PWA **不** feature-detect。无 `window.desktopShell.companion` **或当前为窄屏壳（≤479）** 则 **不注册** 生成能力（窄屏 Confide 检索仍走 Web v1，不进 llama） |
 | 体积 | 原生库增量约 30–50 MB（arm64）；模型另下 ~0.5 GB 量级 |
@@ -105,7 +105,53 @@ npm run desktop:companion-l0
 - 跳过窗口（只测加载，不采 rAF）：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`
 - 勿与口令「开工同坐点 L0」混在同一句话里。
 
-L0 数字出来之前 **不锁型号、不排 L1 面板**。
+L0 候选实验室 **2026-08-24 已锁型号**（见下「选型拍板」）。L1 面板已存在；换 1.7B 默认须改 `l0Config.js` + 下载路径。
+
+### 选型拍板（2026-08-24 · 用户书面 · 硬）
+
+**锁定：Qwen3-1.7B-Q4_K_M · unsloth**（GGUF 1,107,409,472 B；L0 JSON `compare-1787541422867.json`）。
+
+| 项 | 口径 |
+|---|---|
+| 为何选 1.7B | L0 数值闸全过；七问大多答复非常好、都说得通；社评良好、公开资料评估质量在已测候选中最佳 |
+| 「彤彤儿是我的名字」 | **产品侧不视为缺陷**；用户不会当硬身份错位，可能觉得幽默。实验室「身份错位」标注作废 |
+| 为何不选 0.6B Q4 bartowski | 社评/名声差；七问多次令人失望（复读 `young tiger cub in quiet company`、编造用户事实等） |
+| 为何不选 4B unsloth | L0 未过（TTFT 4.68s、decode 6.5 tok/s） |
+| 为何不选 4B bartowski | 生成故障（全感叹号） |
+| 工程未做 | `l0Config.js` 仍 0.6B；生产 L1 下载 UX 仍指向 0.6B URL。**1.7B spike 已跑通**（见下「1.7B Integration Spike」）；接生产仍须单独 wiring 任务 |
+
+### 1.7B Integration Spike（2026-08-24 · 口令已执行 · 不改产品行为）
+
+**命令**（独立 Node 脚本；**不**改 `l0Config.js` / L1 child / L2 路由）：
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm --prefix desktop install
+npm run desktop:companion-spike-17b
+```
+
+模型缓存：`~/Library/Application Support/Focus Tiger/companion-spike-17b/`（与生产 `companion-l0/` **分开**）。报告 JSON：`desktop/.spike-17b-cache/reports/spike-17b-*.json`（本地，不进 git）。
+
+**本机（Apple M5 · 16GB · Metal · 2026-08-24）**
+
+| 问 | 结果 |
+|---|---|
+| 下载完整？ | **是** — 1,107,409,472 B，与拍板字节一致；Node 下载器首次 ~36 min 完成 |
+| 实际文件大小 | 1,107,409,472 B（`Qwen3-1.7B-Q4_K_M.gguf`） |
+| 加载时间 | ~1.1 s（缓存命中后第二次跑） |
+| 首次 token（TTFT） | ~622 ms（gen 1）；gen 2–5 ~36–38 ms |
+| tokens/sec | gen 1 ~95；gen 2–5 ~93–96 |
+| 峰值 RSS | 进程峰值 ~4.4 GB（加载瞬态）；**持模 gen 期 ~1.48 GB** |
+| 连续 5 次生成 | **稳定** — 5/5 无崩溃/超时 |
+| 生成失败 → 语料 fallback | **是**（单元锁：`l0Spike17Checks.test.js` + unmatched → `fallback-03`） |
+| 普通启动是否被拖慢 | **否** — spike 不挂 Electron boot；`l0Config.js` 仍 0.6B |
+| 退出后资源释放 | **是** — unload 后 RSS 1.48 GB → ~213 MB（释放 ~1.27 GB） |
+
+**L0 数值闸（同 0.6B 阈值）**：TTFT ≤3 s、decode ≥8 tok/s → **通过**。
+
+**仍须人工**：Sit→Focusing 双终端 hitch（1.7B 加载中 / dispose 几百 ms）；M1 8GB 同探针；关单「能聊」质量（AE L2）。
+
+**下一步（未做）**：单独口令把 `l0Config.js` + L1 下载 UX 切到 1.7B；**不在本 spike 内**。
 
 ### 分析师跟进（2026-08-18 · 硬）+ 豁免（2026-08-19）
 
