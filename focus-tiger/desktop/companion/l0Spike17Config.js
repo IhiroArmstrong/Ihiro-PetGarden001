@@ -5,7 +5,7 @@
 
 /**
  * 1.7B production-like spike constants only.
- * Does NOT replace `l0Config.js` (production L0/L1 still use 0.6B until a separate wiring task).
+ * Mirrors production `l0Config.js` for isolated probe runs.
  */
 
 export const SPIKE_17_MODEL_ID = 'Qwen3-1.7B-Q4_K_M';

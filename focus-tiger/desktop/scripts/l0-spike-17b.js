@@ -67,7 +67,7 @@ const report = {
   productionConfig: productionCheck,
   startupIsolation: {
     note: 'Spike is a standalone Node script; Electron main only loads companion on user Confide open (L1 ensure), not at app boot.',
-    l0ConfigDefaultStill06B: productionCheck.unchanged,
+    l0ConfigWiredTo17B: productionCheck.unchanged,
     spikeDoesNotModifyL1Child: true
   },
   fallback: fallbackCheck,
@@ -90,9 +90,9 @@ const report = {
       probe.rssMbAfterUnload < probe.rssMbBeforeUnload
   },
   notes: [
-    'Does not change l0Config.js or L1/L2 product routing.',
-    'Sit→Focusing hitch while 1.7B loaded is still a manual TRACKER check (dual-terminal).',
-    'Wire 1.7B to production only after this spike + separate wiring task.'
+    'Spike mirrors production l0Config.js (1.7B); does not change L1/L2 routing.',
+    'Sit→Focusing hitch while 1.7B loaded: manual TRACKER check (dual-terminal).',
+    'M1 8GB probe + AE L2「能聊」still separate gates.'
   ]
 };
 

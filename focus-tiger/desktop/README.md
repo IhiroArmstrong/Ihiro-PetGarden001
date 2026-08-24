@@ -22,7 +22,7 @@ Packaged Mac DMG / Windows installer notes live in `docs/task-briefs/task-electr
 
 ## On-device companion (L1 panel)
 
-A local model sits behind the **wide Idle ⋯ Confide** row on Electron only (not a second menu). It is **not** in the DMG; the first open downloads about 0.5 GB to userData. Replies in L1 still use the quiet Confide lines (L2 generate is not on). Focusing unloads the model.
+A local model sits behind the **wide Idle ⋯ Confide** row on Electron only (not a second menu). It is **not** in the DMG; the first open downloads about **1.1 GB** (`Qwen3-1.7B-Q4_K_M`) to userData. If you already ran `desktop:companion-spike-17b`, the app may copy that cache instead of re-downloading.
 
 **Memory note (Mac and Windows):** computers with **8 GB of RAM or less** can see heavy memory pressure if that companion loads. Focus Tiger **hides the entry by default** on those machines. We do not recommend turning it on there.
 

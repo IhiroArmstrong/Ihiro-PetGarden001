@@ -100,7 +100,7 @@ npm --prefix desktop install
 npm run desktop:companion-l0
 ```
 
-- 首次会下载约 0.5 GB GGUF 到 `~/Library/Application Support/Focus Tiger/companion-l0/`（**不进 git、不进 DMG**）。
+- 首次会下载约 **1.1 GB** GGUF（`Qwen3-1.7B-Q4_K_M`）到 `~/Library/Application Support/Focus Tiger/companion-l0/`（**不进 git、不进 DMG**）。已跑 spike 时可能从 `companion-spike-17b/` 种子复制。
 - 报告 JSON 写到同一目录 `report-*.json`，并打印 `verdict`。
 - **不上** Idle ⋯ / 抽屉入口；`preload` 仍只有既有壳 IPC。
 - 跳过窗口（只测加载，不采 rAF）：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`
@@ -119,7 +119,7 @@ L0 候选实验室 **2026-08-24 已锁型号**（见下「选型拍板」）。L
 | 为何不选 0.6B Q4 bartowski | 社评/名声差；七问多次令人失望（复读 `young tiger cub in quiet company`、编造用户事实等） |
 | 为何不选 4B unsloth | L0 未过（TTFT 4.68s、decode 6.5 tok/s） |
 | 为何不选 4B bartowski | 生成故障（全感叹号） |
-| 工程未做 | `l0Config.js` 仍 0.6B；生产 L1 下载 UX 仍指向 0.6B URL。**1.7B spike 已跑通**（见下「1.7B Integration Spike」）；接生产仍须单独 wiring 任务 |
+| 工程未做 | ~~`l0Config.js` 仍 0.6B~~ → **2026-08-25 口令「接线 1.7B 到 l0Config」已开工**（`feature/companion-l0-config-17b`）。L1 下载走 1.7B URL；已跑过 spike 的机器可从 `companion-spike-17b/` 种子复制，免重复下载。 |
 
 ### 1.7B Integration Spike（2026-08-24 · 口令已执行 · 不改产品行为）
 
@@ -150,9 +150,9 @@ npm run desktop:companion-spike-17b
 
 **L0 数值闸（同 0.6B 阈值）**：TTFT ≤3 s、decode ≥8 tok/s → **通过**。
 
-**仍须人工**：Sit→Focusing 双终端 hitch（1.7B 加载中 / dispose 几百 ms）；M1 8GB 同探针；关单「能聊」质量（AE L2）。
+**仍须人工**：~~Sit→Focusing 双终端 hitch（1.7B）~~ → **2026-08-25 M5 用户书面：多次双终端无可见顿挫**；M1 8GB 同探针；关单「能聊」质量（AE L2）。
 
-**下一步（未做）**：单独口令把 `l0Config.js` + L1 下载 UX 切到 1.7B；**不在本 spike 内**。
+**下一步（已做 / 未做）**：~~单独口令把 `l0Config.js` + L1 下载 UX 切到 1.7B~~ → **2026-08-25 口令已下，见 `feature/companion-l0-config-17b`**。Checkout 第四+第五卡仍等「能聊」关单。
 
 ### 分析师跟进（2026-08-18 · 硬）+ 豁免（2026-08-19）
 
