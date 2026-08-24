@@ -29,7 +29,8 @@ import {
 import { SessionUiGate } from './core/SessionUiGate.js';
 import {
   createSessionChromeSync,
-  isHonestyPhaseBusy
+  isHonestyPhaseBusy,
+  isHonestyUiBusy
 } from './core/sessionChromeSync.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
@@ -179,6 +180,7 @@ import {
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
 import { bindDesktopShellAttention } from './core/desktopShell.js';
+import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import {
   canRegisterDesktopCompanionGeneration,
   getDesktopCompanionBridge,
@@ -2280,6 +2282,22 @@ async function init() {
   });
   idleChrome.syncMuteVisual({
     musicOn: ambientSoundscapeUI.wantsMusicOn()
+  });
+
+  bindElectronIdleContextMenu({
+    getIsIdleContextMenuAllowed: () => {
+      if (stateManager.state !== STATES.IDLE) return false;
+      if (idleChrome.isSecondaryMenuOpen?.()) return false;
+      if (arrivalPractice?.isOpen?.()) return false;
+      if (reflectionMoment?.isOpen?.()) return false;
+      if (microRitualUI?.isOpen?.()) return false;
+      if (isHonestyUiBusy(honestyCheckInUI?.phase)) return false;
+      if (companionModePicker?.isOpen?.()) return false;
+      return true;
+    },
+    onOpenSecondaryMenu: () => {
+      idleChrome.openSecondaryMenu?.();
+    }
   });
 
   /** @type {OnboardingHintsUI | null} */
