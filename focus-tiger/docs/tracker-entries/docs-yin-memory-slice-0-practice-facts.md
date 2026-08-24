@@ -1,0 +1,1 @@
+| Yin Personal Memory Slice 0 排期（练习字段事实应答） | 纯文档 | 仅单元测试覆盖 | 无运行时。架构 `YIN_PERSONAL_MEMORY.md` §15 写入 Slice 0；Brief `task-yin-memory-slice-0-practice-facts.md`；`TASKS.md` 表。Confide「练了多久」将来读 `PracticeDaysStore`，禁止 Qwen 编造。**须口令「开工 Yin Personal Memory」才写代码。** | — | — | — | 读 Brief 即可；勿当已能精确报时长 | 2026-08-25 |

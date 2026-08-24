@@ -279,7 +279,9 @@ Privacy 卖点继续是：Some conversations can stay on your device. **不是**
 
 1. 1.7B runtime spike（并行工程；不改本文件职责）。
 2. 生产默认切 1.7B + AE「能聊」关单。
-3. 口令「开工 Yin Personal Memory」：Consent + 4 类 schema + Remember/Use/Forget + 仅层 3 注入。
+3. 口令「开工 Yin Personal Memory」：
+   - **Slice 0（2026-08-25 已排期）**：Confide「How long have I practiced? / 练了多久」用本机练习字段（`PracticeDaysStore` 天数 / 累计分钟）精确应答；禁止 Qwen 编造时长。Brief `task-yin-memory-slice-0-practice-facts.md`。不另建账本、不进练习云备份。
+   - 其后：Consent + 4 类 schema + Remember/Use/Forget + 仅层 3 注入。
 4. **另拍板**才考虑仪式润色。
 
 生命感验收不看「AI 功能数量」，看三问。
