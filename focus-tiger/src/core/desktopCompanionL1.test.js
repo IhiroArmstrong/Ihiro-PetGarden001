@@ -18,6 +18,7 @@ import {
   canRegisterDesktopCompanionGeneration,
   DESKTOP_COMPANION_WIDE_MIN_PX,
   desktopCompanionDownloadPercent,
+  desktopCompanionModelLabel,
   desktopCompanionStatusCopyKey,
   hasDesktopCompanionBridge,
   shouldCloseDesktopCompanionGenerateLayer
@@ -126,6 +127,12 @@ describe('desktop companion L1 renderer gates', () => {
       25
     );
     assert.equal(desktopCompanionDownloadPercent({ received: 1, total: null }), null);
+    assert.equal(
+      desktopCompanionModelLabel({ modelId: 'Qwen3-1.7B-Q4_K_M' }),
+      'Qwen3-1.7B-Q4_K_M'
+    );
+    assert.equal(desktopCompanionModelLabel({ modelId: '  ' }), '');
+    assert.equal(desktopCompanionModelLabel(null), '');
   });
 });
 
@@ -247,6 +254,11 @@ describe('desktop companion L1 isolation', () => {
     assert.match(ipcSrc, /desktop:companion-generate/);
     assert.match(ipcSrc, /desktop:companion-ensure/);
     assert.match(ipcSrc, /desktop:companion-set-focusing/);
+    const runtimeSrc = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
+      'utf8'
+    );
+    assert.match(runtimeSrc, /modelId: L0_MODEL_ID/);
   });
 
   it('packs companion runtime JS and still keeps GGUF out of the file list', () => {
@@ -271,6 +283,8 @@ describe('desktop companion L1 isolation', () => {
     assert.match(ui, /confide-to-yin-desktop-status/);
     assert.match(ui, /ensureReady/);
     assert.match(ui, /companion\.generate/);
+    assert.match(ui, /shouldSubmitConfideOnEnter/);
+    assert.match(ui, /confide-to-yin-desktop-model/);
   });
 
   it('unloads on Focusing from the product shell', () => {

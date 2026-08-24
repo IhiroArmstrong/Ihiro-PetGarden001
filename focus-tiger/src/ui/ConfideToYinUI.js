@@ -10,6 +10,7 @@
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import { canSubmitConfideText } from '../core/confide/confideClassify.js';
+import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
@@ -26,6 +27,7 @@ import {
 import {
   canRegisterDesktopCompanionGeneration,
   desktopCompanionDownloadPercent,
+  desktopCompanionModelLabel,
   desktopCompanionStatusCopyKey,
   hasDesktopCompanionBridge,
   shouldCloseDesktopCompanionGenerateLayer
@@ -80,6 +82,11 @@ export class ConfideToYinUI {
     this.statusEl.className = 'confide-to-yin__desktop-status-copy';
     this.statusEl.dataset.testid = 'confide-to-yin-desktop-status-copy';
 
+    this.modelEl = document.createElement('p');
+    this.modelEl.className = 'confide-to-yin__desktop-model';
+    this.modelEl.dataset.testid = 'confide-to-yin-desktop-model';
+    this.modelEl.hidden = true;
+
     this.progressEl = document.createElement('progress');
     this.progressEl.className = 'confide-to-yin__desktop-progress';
     this.progressEl.dataset.testid = 'confide-to-yin-desktop-progress';
@@ -87,7 +94,7 @@ export class ConfideToYinUI {
     this.progressEl.value = 0;
     this.progressEl.hidden = true;
 
-    this.statusWrap.append(this.statusEl, this.progressEl);
+    this.statusWrap.append(this.statusEl, this.modelEl, this.progressEl);
 
     this.inputEl = document.createElement('textarea');
     this.inputEl.className = 'confide-to-yin__input';
@@ -95,6 +102,11 @@ export class ConfideToYinUI {
     this.inputEl.rows = 3;
     this.inputEl.maxLength = 280;
     this.inputEl.addEventListener('input', () => this._syncSendEnabled());
+    this.inputEl.addEventListener('keydown', (event) => {
+      if (!shouldSubmitConfideOnEnter(event)) return;
+      event.preventDefault();
+      this._onSend();
+    });
 
     this.userEl = document.createElement('p');
     this.userEl.className = 'confide-to-yin__user';
@@ -278,6 +290,9 @@ export class ConfideToYinUI {
       sending: this._sending
     });
     this.statusEl.textContent = t(key);
+    const modelLabel = desktopCompanionModelLabel(this._companionStatus);
+    this.modelEl.textContent = modelLabel;
+    this.modelEl.hidden = !modelLabel;
     const percent = desktopCompanionDownloadPercent(this._companionStatus);
     if (
       this._sending ||
@@ -472,6 +487,16 @@ export class ConfideToYinUI {
         font-size: 0.82rem;
         line-height: 1.4;
         opacity: 0.92;
+      }
+      .confide-to-yin__desktop-model {
+        margin: 6px 0 0;
+        font-size: 0.72rem;
+        line-height: 1.3;
+        letter-spacing: 0.02em;
+        opacity: 0.72;
+      }
+      .confide-to-yin__desktop-model[hidden] {
+        display: none;
       }
       .confide-to-yin__desktop-progress {
         display: block;

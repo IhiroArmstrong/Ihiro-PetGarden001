@@ -9,6 +9,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import {
+  retireLegacyProductionGgufs,
   seedProductionFromSpikeFile,
   trySeedProductionFromSpikeCache
 } from '../../desktop/companion/l0SpikeSeed.js';
@@ -29,6 +30,25 @@ describe('L0 spike cache seed', () => {
       assert.equal(fs.existsSync(destPath), true);
       assert.equal(fs.statSync(destPath).size, bytes);
       assert.equal(seedProductionFromSpikeFile(destPath, spikePath), false);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('unlinks leftover 0.6B only after production 1.7B dest is complete', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ft-l0-retire-'));
+    const destPath = path.join(root, 'Qwen3-1.7B-Q4_K_M.gguf');
+    const leftover = path.join(root, 'Qwen_Qwen3-0.6B-Q4_K_M.gguf');
+    fs.writeFileSync(leftover, 'old');
+    try {
+      assert.deepEqual(retireLegacyProductionGgufs(destPath), []);
+      assert.equal(fs.existsSync(leftover), true);
+      fs.writeFileSync(destPath, Buffer.alloc(0));
+      fs.truncateSync(destPath, 1_107_409_472);
+      const removed = retireLegacyProductionGgufs(destPath);
+      assert.equal(removed.includes(leftover), true);
+      assert.equal(fs.existsSync(leftover), false);
+      assert.equal(fs.existsSync(destPath), true);
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }

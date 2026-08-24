@@ -27,6 +27,7 @@ test('Confide has Cancel on the left of Share / Close', () => {
   assert.match(src, /confide-to-yin-cancel/);
   assert.match(src, /CONFIDE_PANEL_CANCEL/);
   assert.match(src, /confide-to-yin__actions-end/);
+  assert.match(src, /shouldSubmitConfideOnEnter/);
 });
 
 test('Tip jar and Sanctuary (always-visible email) do not close on outside pointer', () => {
