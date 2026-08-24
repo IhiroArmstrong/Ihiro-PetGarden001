@@ -20,13 +20,12 @@ import {
 
 /**
  * @param {string} destPath production GGUF path (`companion-l0/…`)
- * @returns {boolean} true when dest was seeded from spike cache
+ * @param {string} spikePath completed spike-cache GGUF path
+ * @returns {boolean} true when dest was seeded from spikePath
  */
-export function trySeedProductionFromSpikeCache(destPath) {
+export function seedProductionFromSpikeFile(destPath, spikePath) {
   if (fs.existsSync(destPath)) return false;
   if (path.basename(destPath) !== L0_MODEL_FILENAME) return false;
-
-  const spikePath = defaultSpikeModelPath();
   if (!spikePath || !fs.existsSync(spikePath)) return false;
 
   const bytes = fs.statSync(spikePath).size;
@@ -44,6 +43,16 @@ export function trySeedProductionFromSpikeCache(destPath) {
     etag: null
   });
   return true;
+}
+
+/**
+ * @param {string} destPath production GGUF path (`companion-l0/…`)
+ * @returns {boolean} true when dest was seeded from spike cache
+ */
+export function trySeedProductionFromSpikeCache(destPath) {
+  const spikePath = defaultSpikeModelPath();
+  if (!spikePath) return false;
+  return seedProductionFromSpikeFile(destPath, spikePath);
 }
 
 /**
