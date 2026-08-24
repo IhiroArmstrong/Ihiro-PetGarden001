@@ -1,0 +1,3 @@
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 访问路径 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| 「?」悬停邻接卡 + 点击钉住 + Privacy 可点 | UI可见 | 待人工测试 | **主路径（宽屏 · `?product=1`）**：Idle → **悬停**「?」→ **0–1 秒内**邻接简介卡（`#onboarding-app-purpose`）出现在 ? 旁、**无**全屏浅遮罩 → 指针移入卡 → 点 **Privacy** → Privacy sheet 打开。**点击**「?」→ 居中模态 + 浅遮罩 → Privacy 仍可点 → 点遮罩或 Dismiss 关闭。**回流**：关卡后再悬停/再点。**375**：窄屏 `#ft-narrow-help-btn` 同契约。**Electron**：同 Web 宽屏路径。**禁止**悬停时全屏 backdrop 盖住 ? 导致 Privacy 点不到。自动化：`purposeHoverGrace.test.js`（hover 无 backdrop / click pin 源码契约）；e2e `wide-idle-more-menu` ? click 仍绿。 | **2026-08-25 用户书面**：同意开工 fix/help-privacy-click-pin；悬停须能点 Privacy；点击须钉住。 | — | — | `?product=1` · `#onboarding-hint-help` · `#onboarding-app-purpose` · Electron `desktop:dev` | 2026-08-25 |
