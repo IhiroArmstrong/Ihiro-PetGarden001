@@ -4,7 +4,7 @@
  */
 
 /**
- * Spike-only checks: production config unchanged + L2 corpus fallback on generate failure.
+ * Spike-only checks: production config wired + L2 corpus fallback on generate failure.
  */
 
 import fs from 'node:fs';
@@ -13,19 +13,22 @@ import { fileURLToPath } from 'node:url';
 import { resolveConfideReply } from '../../src/core/confide/confideReplyFlow.js';
 import { CONFIDE_ROUTE } from '../../src/core/confide/confideRoutes.js';
 import { L0_MODEL_ID } from './l0Config.js';
+import { SPIKE_17_MODEL_ID } from './l0Spike17Config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
+ * Spike must not drift from production `l0Config.js` (now 1.7B).
+ * Field `unchanged` kept for spike script exit code compatibility.
+ *
  * @returns {{ productionModelId: string, unchanged: boolean }}
  */
 export function verifyProductionL0ConfigUnchanged() {
   const configPath = path.join(__dirname, 'l0Config.js');
   const src = fs.readFileSync(configPath, 'utf8');
   const unchanged =
-    L0_MODEL_ID === 'Qwen3-0.6B-Q4_K_M' &&
-    src.includes("export const L0_MODEL_ID = 'Qwen3-0.6B-Q4_K_M'") &&
-    !src.includes('1.7B');
+    L0_MODEL_ID === SPIKE_17_MODEL_ID &&
+    src.includes(`export const L0_MODEL_ID = '${SPIKE_17_MODEL_ID}'`);
   return { productionModelId: L0_MODEL_ID, unchanged };
 }
 

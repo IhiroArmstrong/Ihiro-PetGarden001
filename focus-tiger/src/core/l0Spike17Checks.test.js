@@ -16,17 +16,17 @@ import {
 } from '../../desktop/companion/l0Spike17Checks.js';
 import { L0_MODEL_ID } from '../../desktop/companion/l0Config.js';
 
-describe('1.7B spike config (isolated from production l0Config)', () => {
-  it('locks unsloth 1.7B Q4 metadata without changing production default', () => {
+describe('1.7B spike config (mirrors production l0Config)', () => {
+  it('locks unsloth 1.7B Q4 metadata aligned with production default', () => {
     assert.equal(SPIKE_17_MODEL_ID, 'Qwen3-1.7B-Q4_K_M');
     assert.equal(SPIKE_17_MODEL_FILENAME, 'Qwen3-1.7B-Q4_K_M.gguf');
     assert.equal(SPIKE_17_EXPECTED_BYTES, 1_107_409_472);
-    assert.equal(L0_MODEL_ID, 'Qwen3-0.6B-Q4_K_M');
+    assert.equal(L0_MODEL_ID, SPIKE_17_MODEL_ID);
   });
 
-  it('production l0Config.js still points at 0.6B', () => {
+  it('production l0Config.js is wired to 1.7B', () => {
     const row = verifyProductionL0ConfigUnchanged();
-    assert.equal(row.productionModelId, 'Qwen3-0.6B-Q4_K_M');
+    assert.equal(row.productionModelId, 'Qwen3-1.7B-Q4_K_M');
     assert.equal(row.unchanged, true);
   });
 

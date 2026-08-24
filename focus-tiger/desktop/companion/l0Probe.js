@@ -4,7 +4,7 @@
  */
 
 /**
- * Loads Qwen3-0.6B via node-llama-cpp, generates a short reply, disposes.
+ * Loads the production L0 GGUF via node-llama-cpp, generates a short reply, disposes.
  * Dynamic import so unit tests never load the native addon.
  */
 
