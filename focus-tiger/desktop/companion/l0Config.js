@@ -13,6 +13,15 @@ export const L0_MODEL_ID = 'Qwen3-1.7B-Q4_K_M';
 
 export const L0_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
 
+/**
+ * Leftover production files from the 0.6B bartowski era.
+ * Never loaded after 1.7B dest is complete; unlinked so Confide cannot
+ * look "ready" on the old GGUF.
+ */
+export const L0_LEGACY_MODEL_FILENAMES = Object.freeze([
+  'Qwen_Qwen3-0.6B-Q4_K_M.gguf'
+]);
+
 /** Locked size from 2026-08-24 selection (`compare-1787541422867.json`). */
 export const L0_MODEL_EXPECTED_BYTES = 1_107_409_472;
 

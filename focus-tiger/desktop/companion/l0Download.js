@@ -11,7 +11,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { L0_MODEL_MIN_BYTES } from './l0Config.js';
-import { trySeedProductionFromSpikeCache } from './l0SpikeSeed.js';
+import {
+  retireLegacyProductionGgufs,
+  trySeedProductionFromSpikeCache
+} from './l0SpikeSeed.js';
 
 export const L0_DOWNLOAD_ATTEMPTS_PER_URL = 5;
 export const L0_DOWNLOAD_RETRY_DELAYS_MS = [2000, 4000, 8000, 16000, 32000];
@@ -144,6 +147,7 @@ export async function ensureGgufDownloaded(destPath, urlOrUrls, opts = {}) {
   fs.mkdirSync(dir, { recursive: true });
   recoverIncompleteDest(destPath, minBytes);
   trySeedProductionFromSpikeCache(destPath);
+  retireLegacyProductionGgufs(destPath);
 
   if (fs.existsSync(destPath)) {
     const bytes = fs.statSync(destPath).size;

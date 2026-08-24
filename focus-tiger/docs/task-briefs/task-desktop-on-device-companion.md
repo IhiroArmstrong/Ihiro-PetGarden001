@@ -119,7 +119,7 @@ L0 候选实验室 **2026-08-24 已锁型号**（见下「选型拍板」）。L
 | 为何不选 0.6B Q4 bartowski | 社评/名声差；七问多次令人失望（复读 `young tiger cub in quiet company`、编造用户事实等） |
 | 为何不选 4B unsloth | L0 未过（TTFT 4.68s、decode 6.5 tok/s） |
 | 为何不选 4B bartowski | 生成故障（全感叹号） |
-| 工程未做 | ~~`l0Config.js` 仍 0.6B~~ → **2026-08-25 口令「接线 1.7B 到 l0Config」已开工**（`feature/companion-l0-config-17b`）。L1 下载走 1.7B URL；已跑过 spike 的机器可从 `companion-spike-17b/` 种子复制，免重复下载。 |
+| 工程未做 | ~~`l0Config.js` 仍 0.6B~~ → **#417 已合 develop**。生产 dest = `Qwen3-1.7B-Q4_K_M.gguf`；spike 可种子复制。**本 follow-up**：1.7B dest 完整后自动删 `companion-l0/` 残留 0.6B；Confide 状态条显示 `modelId`。 |
 
 ### 1.7B Integration Spike（2026-08-24 · 口令已执行 · 不改产品行为）
 

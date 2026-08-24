@@ -90,6 +90,16 @@ export function desktopCompanionStatusCopyKey(status, { sending = false } = {}) 
 }
 
 /**
+ * Visible model id for Confide's desktop status strip (not a separate HUD).
+ * @param {{ modelId?: string } | null | undefined} status
+ * @returns {string}
+ */
+export function desktopCompanionModelLabel(status) {
+  const id = typeof status?.modelId === 'string' ? status.modelId.trim() : '';
+  return id;
+}
+
+/**
  * @param {{ received?: number | null, total?: number | null } | null | undefined} status
  * @returns {number | null}
  */
