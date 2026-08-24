@@ -11,6 +11,15 @@
 
 从属：`MVP_PRODUCT_DEFINITION.md` §五 · `FREE_PAID_MATRIX.md` · `FEATURE_CATALOG` · 场景 D / `HONESTY_BRIDGE_CTA.md` · `practiceBadgeAward.js`（`computePracticeScore`）· `PRINCIPLES.md` 宁静型游戏化。
 
+### 0.1 岁月印记 · 对外用语（2026-08-24 · Web2 only）
+
+| 用 | 不用 |
+|---|---|
+| 修行纪念印 / Practice Imprint、岁月印记、静默画卷、同坐累计 | mint、wallet、token、NFT、SBT、区块链、铸币 |
+| 累计专注分钟 / practice score 门槛 | 「连坐 N 天」作徽章主文案（MilestoneGlow 动画节点可保留 streak id） |
+
+排期：`TASKS.md`「Web2 岁月印记」· Briefs `task-practice-imprint-badges` · `task-mindfulness-scroll-export` · `task-yin-collections-four-tabs` · `task-companion-merch-priority`。
+
 ---
 
 ## 0. 冲突扫描（实现前 · 已拍板）
@@ -206,7 +215,7 @@ Honesty **不是**挂机检测，是别处练习的信任补登。完整 Focus C
 | 标记 | 只增不减，不能花 | 免费练习章 min=1；Tea / Sanctuary 付费视觉包 min=3；芥子印独立 |
 | 货币 | 可花余额，留下资产 | 钱包；发点与涨章同一批完成钩子 |
 | 周边展示 | Idle 右侧徽章条 | `#yin-tip-kindness-badges`（**不是**改动画；Focusing 隐藏） |
-| 珍藏归档 | Yin's Collections | L3 四页签：结缘点缀 / 陪伴称号 / 记忆小册（后置）/ 勋章印记 |
+| 珍藏归档 | Yin's Collections | L3 四页签：结缘点缀（**已合**）/ 陪伴称号（部分）/ 记忆小册 → `task-mindfulness-scroll-export` / 勋章印记 → `task-practice-imprint-badges`；壳 → `task-yin-collections-four-tabs` |
 
 Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`。
 
