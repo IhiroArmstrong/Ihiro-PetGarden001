@@ -393,6 +393,7 @@
   "PRIVACY_SHEET_BACK": "Back",
   "PRIVACY_SHEET_INTRO": "We do not sell your data. We do not use your focus intentions or reflections for ads or personality scoring. v1.0.0 is built to work on your device — core practice does not require an account or cloud AI. No ads in this practice space.",
   "PRIVACY_SHEET_ON_DEVICE": "What typically stays on your device: preferences (reminder, hints seen, language), ambient music you upload (this browser’s IndexedDB only), and limited recent session or reflection snippets needed for continuity — not mined for psychology.",
+  "PRIVACY_SHEET_LOCAL_AI": "Some conversations can stay on your device. Yin can listen locally — those words are not sent to cloud AI.",
   "PRIVACY_SHEET_NOT_DO": "What we do not do in v1.0.0: no account login for the core loop; no cloud sync of your practice by default; no crash SDK and no analytics by default (optional anonymous support-funnel counts only if you turn them on below). We do not promise any named cloud vault sync in v1.",
   "PRIVACY_SHEET_CLOUD": "If we add cloud features later, we will explain what is sent, why, how long it is kept, and ask for consent before it leaves your device.",
   "PRIVACY_SHEET_CLOSING": "Use ? for a short introduction to this space. This sheet is the fuller plain-language privacy note.",

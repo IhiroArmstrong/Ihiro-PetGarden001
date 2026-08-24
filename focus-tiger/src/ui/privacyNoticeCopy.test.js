@@ -23,8 +23,19 @@ function loadLocale(name) {
 
 describe('privacyNoticeCopy', () => {
   it('lists stable sheet body keys', () => {
-    assert.equal(PRIVACY_SHEET_BODY_KEYS.length >= 4, true);
+    assert.equal(PRIVACY_SHEET_BODY_KEYS.length >= 5, true);
     assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_INTRO'));
+    assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_LOCAL_AI'));
+  });
+
+  it('en + ja local AI privacy line stays on-device', () => {
+    const en = loadLocale('en.json');
+    const ja = loadLocale('ja.json');
+    assert.match(en.PRIVACY_SHEET_LOCAL_AI, /stay on your device/i);
+    assert.match(en.PRIVACY_SHEET_LOCAL_AI, /Yin can listen locally/i);
+    assert.match(en.PRIVACY_SHEET_LOCAL_AI, /cloud AI/i);
+    assert.match(ja.PRIVACY_SHEET_LOCAL_AI, /端末|ローカル/);
+    assert.match(ja.PRIVACY_SHEET_LOCAL_AI, /クラウドAI/);
   });
 
   it('detects forbidden iCloud brand in free text', () => {
