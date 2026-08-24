@@ -2,7 +2,7 @@
 # PRODUCT_POSITIONING.md
 
 > 版本：1.4
-> 最后更新：2026-08-16
+> 最后更新：2026-08-24
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -176,6 +176,8 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程（L1 用 Node 子进程 hold，避免 Electron ABI）；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** **L1（2026-08-20 · #362 已合）**：宽屏面板 + 下载进度已接线。**L2（2026-08-20 · 口令已执行）**：Electron 宽屏 fallback 可短生成；Web 仍检索。Checkout 未接。关单级「能聊」待人工。**付费（2026-08-20）**：**Focus Tiger Pro US$12.99/月**（将来第四卡）含 Base（B 轨）+ 本地智能体（非 Lifetime 路径；Stripe Price 已记、Checkout 未接）。**已买 Sanctuary Lifetime** 走一次性加购 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接；不进 `isEntitled`）。**一旦接线须两卡同批。** 本地模型仍只 Electron（无壳 = 无本地 AI）；付款可走 Web，接 Checkout 另开。
 
 详规：Web 检索 `task-briefs/task-confide-to-yin-v1.md`；桌面例外 `task-briefs/task-desktop-on-device-companion.md`；种子稿 `confide-corpus-seed.md`。**本拍板不等于已上线功能。**
+
+**Personal Memory（2026-08-24 · 方向锁 · 无运行时）**：专有陪伴来自本地外部记忆 + 语言层，**不是**微调。SSOT `YIN_PERSONAL_MEMORY.md`。注入优先级 **Safety > Corpus > Memory 检索 > Qwen**（记忆只在层 3）；危机/情绪桶永不入库；**不进**练习云备份。仪式场景 generate **仍未拍板**。
 
 ---
 

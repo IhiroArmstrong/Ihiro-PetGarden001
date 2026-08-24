@@ -16,6 +16,8 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
+**Yin Personal Memory（2026-08-24 · 方向锁 · 无运行时）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。实现前 **无** localStorage / userData key。将来也 **禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶。
+
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |

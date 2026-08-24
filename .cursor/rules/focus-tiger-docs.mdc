@@ -28,6 +28,7 @@ alwaysApply: true
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
 | `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
+| `docs/YIN_PERSONAL_MEMORY.md` | **阿寅个人记忆架构 V1**（方向锁；无 store；≠ 练习云备份 / Journey Log / `turns.jsonl`） |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
 | `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |

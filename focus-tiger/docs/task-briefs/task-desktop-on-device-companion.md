@@ -3,7 +3,8 @@
 > **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 **#336**、L1 **#362** 已合 `develop`。**L2 已开工**（口令「开工桌面陪伴 L2」）：四层路由 + Electron 宽屏 fallback 短生成 + 本机 turns.jsonl。Web / 窄屏仍检索。型号 **未锁**。**Checkout / 第四卡+第五卡仍未接**（等关单级「能聊」后再下接线口令，两卡同批）。测本地 AI 须 Electron / `desktop:dev`。
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
-> **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
+> **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。  
+> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。
 
 ---
 
@@ -216,7 +217,7 @@ L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。
 - 第 0 层 `safety_redirect`、第 2 层情绪桶：仍 `resolveConfideReply` 语料，**不**调模型。
 - 第 1 层仪式 UI（Whisper / Recover 等）**无** generate IPC。
 - 第 3 层：仅 Electron 宽屏、hold `ready`、route=`fallback` 时 `companion.generate`；失败/超时/人设违禁 → 语料 `fallback`，不空白、不重试死循环。
-- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`。
+- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`（**调试日志，不是 Personal Memory**；见 `YIN_PERSONAL_MEMORY.md`）。
 - `generateEnabled` = allowed ∧ phase `ready` ∧ 非 Focusing。
 - **不含** Checkout、L3、锁型号。
 
