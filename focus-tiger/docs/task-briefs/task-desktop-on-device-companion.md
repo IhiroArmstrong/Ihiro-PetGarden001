@@ -4,7 +4,7 @@
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
 > **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。  
-> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。
+> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。**2026-08-25 Slice 0 已排期**：Confide「练了多久」用本机练习字段，见 `task-yin-memory-slice-0-practice-facts.md`。
 
 ---
 
