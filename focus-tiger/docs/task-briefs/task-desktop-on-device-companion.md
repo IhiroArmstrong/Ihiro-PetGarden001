@@ -3,7 +3,8 @@
 > **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 **#336**、L1 **#362** 已合 `develop`。**L2 已开工**（口令「开工桌面陪伴 L2」）：四层路由 + Electron 宽屏 fallback 短生成 + 本机 turns.jsonl。Web / 窄屏仍检索。型号 **未锁**。**Checkout / 第四卡+第五卡仍未接**（等关单级「能聊」后再下接线口令，两卡同批）。测本地 AI 须 Electron / `desktop:dev`。
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
-> **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
+> **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。  
+> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。
 
 ---
 
@@ -171,6 +172,48 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 1. 产品窗（**不要**带 `FT_COMPANION_L0`）：`npm run desktop:dev` → Sit → Focusing，看阿寅呼吸。
 2. 另开终端、Focusing 已开始后：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`（子进程加载 ≈0.9 GB 再卸载，**本命令不开窗**）。盯的是终端 1 那个产品窗：加载中 / **dispose 那几百毫秒** 呼吸有没有可见顿挫。
 
+**Focusing 掉帧 · 1.7B spike（2026-08-24 · 接 spike 后）** — 同上双终端，但终端 2 改跑 1.7B 探针（≈1.5 GB 持模；**仍不改**产品 `l0Config.js`）：
+
+**前提**：1.7B 已缓存（至少跑过一次 `npm run desktop:companion-spike-17b`）；Mac **非低配**（>8 GB）；宽屏 Electron 窗；**不要**与 QA 树 `:5173` Safari 混测。
+
+**终端 1 — 产品窗（全程盯这个窗里的阿寅呼吸）**
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm --prefix desktop install
+npm run desktop:dev
+```
+
+1. 弹出 **Focus Tiger 桌面窗**（不是 Safari）。
+2. 宽屏（≥480px）；可选 `?product=1` 由 Vite 默认即可。
+3. 若有 Arrival：走完或 Skip → 到 Idle。
+4. 点 **Sit**（或选 Companion 模式）→ 进入 **Focusing**。
+5. **保持 Focusing 不动**，眼睛盯阿寅闭目呼吸：是否匀速、有无「闪一下 / 顿一下 / 卡半拍」。
+
+**终端 2 — 1.7B spike（Focusing 已开始后再开）**
+
+新开一个终端 Tab/窗口：
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run desktop:companion-spike-17b
+```
+
+6. 终端 2 会依次打印 `[spike-17b] load` → `generate 1/5` … `generate 5/5` → `unload`（模型已缓存时约 **3–5 s**；首次下载不在本步骤）。
+7. **全程回到终端 1 产品窗**，重点看：
+   - **`load` 期间**（~1 s）：呼吸有没有可见顿挫？
+   - **5 次 `generate` 期间**（~1–2 s）：有没有顿挫？
+   - **`unload` 期间**（~0.5 s）：有没有顿挫？
+8. spike 跑完终端 2 自行退出；终端 1 **仍应保持 Focusing**，再看 **2–3 秒** 呼吸是否恢复正常。
+9. **通过**：全程无明显闪帧 / 硬顿 / 呼吸节律中断。**不通过**：任一阶段可见顿挫 → 记入 TRACKER「1.7B Focusing hitch」反馈列，**不要**先合 `l0Config` 接线。
+
+**收尾**
+
+- 终端 1：`Ctrl+C` 停 `desktop:dev`（会一并停 Vite）。
+- 确认 5173 无残留进程（若 QA 树也要用）。
+
+**与 0.6B L0 双终端的区别**：终端 2 命令是 `desktop:companion-spike-17b`（不是 `desktop:companion-l0`）；加载的是 **1.7B**（~1.5 GB 持模），不是 0.6B（~0.9 GB）。
+
 ### 低配购买 vs Focus Tiger Pro（2026-08-19–20）
 
 - **Windows 与 Mac 同样适用** 8GB 门槛（Windows 8GB 往往更紧：无 Metal，llama.cpp 常走 CPU）。
@@ -262,7 +305,7 @@ L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。
 - 第 0 层 `safety_redirect`、第 2 层情绪桶：仍 `resolveConfideReply` 语料，**不**调模型。
 - 第 1 层仪式 UI（Whisper / Recover 等）**无** generate IPC。
 - 第 3 层：仅 Electron 宽屏、hold `ready`、route=`fallback` 时 `companion.generate`；失败/超时/人设违禁 → 语料 `fallback`，不空白、不重试死循环。
-- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`。
+- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`（**调试日志，不是 Personal Memory**；见 `YIN_PERSONAL_MEMORY.md`）。
 - `generateEnabled` = allowed ∧ phase `ready` ∧ 非 Focusing。
 - **不含** Checkout、L3、锁型号。
 

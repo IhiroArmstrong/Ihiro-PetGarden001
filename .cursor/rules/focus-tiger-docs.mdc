@@ -28,6 +28,7 @@ alwaysApply: true
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
 | `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
+| `docs/YIN_PERSONAL_MEMORY.md` | **阿寅个人记忆架构 V1**（方向锁；无 store；≠ 练习云备份 / Journey Log / `turns.jsonl`） |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
 | `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |
@@ -49,6 +50,7 @@ alwaysApply: true
 | `docs/FEATURE_CONFLICT_REVIEW.md` | **实现前冲突扫描**：对照 `SCENARIO_TESTS` 的强度 / 语气 / 职责；有疑点须等拍板（`RULES_INDEX` → `feature-conflict-review`） |
 | `docs/BACKGROUND_NETWORK.md` | **后台网络三问**：非用户点击的请求须先答时机 / 写盘 / 慢网动效（`RULES_INDEX` → `background-network`） |
 | `docs/SILENT_BEHAVIORS.md` | **已知静默白名单**：不在表里的「没反应」测试时一律当 bug |
+| `docs/LAB_SCRIPT_CONVENTIONS.md` | **L0 实验室脚本路径 / 调用 / 命名 / 陷阱 / 已测候选索引**（只指路，不存测试数据）；新会话同类任务先读本文 |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
 
 ## PRINCIPLES 硬性摘要
@@ -90,7 +92,7 @@ alwaysApply: true
 - Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）→ `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-token-cost`）；勿在本文件复述条款。
 - 列多个可执行方案时须同时给出「我认为最合理的」→ `focus-tiger-recommend-most-reasonable.mdc`（`RULES_INDEX` → `recommend-most-reasonable`）；勿在本文件复述条款。
 - 会话交接 / 口令「生成交接」→ `focus-tiger-session-handoff.mdc`（`RULES_INDEX` → `session-handoff`）；勿在本文件复述模板。
-- 调试/优化桌面本地 AI companion → `focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）；勿在本文件复述条款。
+- 调试/优化桌面本地 AI companion → `focus-tiger-companion-debug.mdc`（`RULES_INDEX` → `companion-debug`）；勿在本文件复述条款。实验室脚本路径/命名/已测候选 → `docs/LAB_SCRIPT_CONVENTIONS.md`，勿再全仓搜索。
 - 可点击交互：PR 须答「0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）；勿在本文件复述六条。
 - 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；勿在本文件复述三轴。
 - 非用户点击的网络请求 → `BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`）；勿在本文件复述三问。

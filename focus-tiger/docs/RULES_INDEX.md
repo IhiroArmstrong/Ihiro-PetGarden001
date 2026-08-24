@@ -111,7 +111,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
-| `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
+| `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；实验室脚本路径/命名/已测候选见 `LAB_SCRIPT_CONVENTIONS.md`（勿复述路径表）；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
 | `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 
@@ -169,6 +169,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
+| `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；无 store；≠ 练习云备份 / Journey Log / turns.jsonl） |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
 | `FLOWER_BLOW_WELCOME_DESIGN.md` | Day1/久别吹花鼓励：策略 C、同日 XOR 欢迎池、观察式文案、分阶段落线（未接线前以本文为准） |
@@ -215,6 +216,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-24 | L0 实验室脚本约定 `LAB_SCRIPT_CONVENTIONS.md`（只指路：路径 / 调用 / 命名 / 陷阱 / 候选索引）。PROCESS 文首 + `companion-debug` 可检索。不锁生产默认 |
 | 2026-08-24 | 第一批 alwaysApply 收窄：`companion-debug` / `background-network` / `interaction-feedback` / `feature-conflict-review` 四份 Cursor 规则改为 `alwaysApply: false` + globs（打开匹配路径时注入）。regression-lock / docs 拆分另任务 |
 | 2026-08-23 | 新增 `companion-debug`：调试/优化桌面本地 AI companion 须先定点、限读最近一条日志、测试循环有上限、简单调试不升 High/Max。SSOT `.cursor/rules/focus-tiger-companion-debug.mdc`。不覆盖 `CompanionModePicker` / Idle PiP |
 | 2026-08-22 | 新增 `background-network`：非用户点击的网络请求实现前须答时机 / 写盘 / 慢网动效三问；SSOT `BACKGROUND_NETWORK.md`；现网触点审计 + 三条修复任务只立项不修运行时 |
