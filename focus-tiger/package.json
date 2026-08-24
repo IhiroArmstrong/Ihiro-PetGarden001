@@ -53,7 +53,7 @@
     "three": "^0.178.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.1",
     "vite": "^6.3.5"
   }
 }
