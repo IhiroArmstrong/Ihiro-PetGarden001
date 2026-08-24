@@ -646,8 +646,8 @@
 
 **前提**：`cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger` → `npm --prefix desktop install` → `npm run desktop:dev`。**勿**与 `dev:qa` 抢 5173。非低配宽屏（≥480）；Web Safari 同 URL **不算**本场景。
 
-1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。  
-2. Share（对得上情绪桶 / 安全阀）→ `[data-testid=confide-to-yin-reply]` **`data-source=corpus`**。下载中 Share **仍**有检索回复（非哑点击）。  
+1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见 **`Qwen3-1.7B-Q4_K_M`**（不是独立 HUD；Safari Web **无**此行）。  
+2. Share **或** textarea 里 **Enter**（对得上情绪桶 / 安全阀）→ **0–1 秒内**发送钮按压/disabled + `[data-testid=confide-to-yin-reply]` **`data-source=corpus`**。**Shift+Enter** 只换行、不发送。下载中 Share/Enter **仍**有检索回复（非哑点击）。  
 3. **Focusing 卸载**：Sit→Focusing → companion 状态不再 ready；Share **不得**走生成。Rise 后再开 ⋯ 仍有该行。  
 4. **拖窄关层**：拖到 ≤479 → 生成层关掉；窄屏抽屉 **无** Confide 行。  
 5. **对照**：低配 ≤8GB / Web `?product=1` → **无** companion key、无该行。
@@ -656,7 +656,7 @@
 
 **在 L1 壳 ready 之后测**；关单「能聊」须 Electron 人工，**不能**用 Safari 5173 代替。
 
-1. 等 status **ready** → 输入**对不上情绪桶**的句子（如 `What's the weather like in Beijing this week?`）→ Share → **0–1 秒内**发送钮 disabled +「正在听」→ 随后 reply **`data-source=generate`**（失败才可见 corpus fallback，**禁止**空白）。  
+1. 等 status **ready**（型号行须为 1.7B）→ 输入**对不上情绪桶**的句子（如 `What's the weather like in Beijing this week?`）→ Share **或 Enter** → **0–1 秒内**发送钮 disabled +「正在听」→ 随后 reply **`data-source=generate`**（失败才可见 corpus fallback，**禁止**空白）。  
 2. **关单栏杆**：须接住该句意图；**禁止**不同问题吐同一句套话；连续 **≥3** 次 unmatched 闲聊仍须生成，不得从第 3 句起整段改茶句。  
 3. **安全不生成**：`I don't want to live` → safety-01 转介，**一个字都不能**换成茶句。  
 4. **情绪桶不生成**：「太累了」/ `depressed`→sad → corpus only，**禁止** generate。  

@@ -13,6 +13,7 @@ import path from 'node:path';
 import { SPIKE_17_CACHE_DIRNAME } from './l0Spike17Config.js';
 import { isGgufDownloadComplete, writeDownloadMeta } from './l0Download.js';
 import {
+  L0_LEGACY_MODEL_FILENAMES,
   L0_MODEL_EXPECTED_BYTES,
   L0_MODEL_FILENAME,
   L0_MODEL_MIN_BYTES
@@ -53,6 +54,39 @@ export function trySeedProductionFromSpikeCache(destPath) {
   const spikePath = defaultSpikeModelPath();
   if (!spikePath) return false;
   return seedProductionFromSpikeFile(destPath, spikePath);
+}
+
+/**
+ * After production 1.7B dest is complete, drop leftover 0.6B GGUF (+ meta/part).
+ * Does nothing if dest is missing or incomplete.
+ *
+ * @param {string} destPath production GGUF path (`companion-l0/…`)
+ * @returns {string[]} unlinked paths
+ */
+export function retireLegacyProductionGgufs(destPath) {
+  if (!destPath || !fs.existsSync(destPath)) return [];
+  const bytes = fs.statSync(destPath).size;
+  if (
+    !isGgufDownloadComplete(bytes, L0_MODEL_EXPECTED_BYTES, L0_MODEL_MIN_BYTES)
+  ) {
+    return [];
+  }
+  const dir = path.dirname(destPath);
+  const current = path.basename(destPath);
+  const unlinked = [];
+  for (const name of L0_LEGACY_MODEL_FILENAMES) {
+    if (name === current) continue;
+    for (const filePath of [
+      path.join(dir, name),
+      path.join(dir, `${name}.meta.json`),
+      path.join(dir, `${name}.part`)
+    ]) {
+      if (!fs.existsSync(filePath)) continue;
+      fs.unlinkSync(filePath);
+      unlinked.push(filePath);
+    }
+  }
+  return unlinked;
 }
 
 /**
