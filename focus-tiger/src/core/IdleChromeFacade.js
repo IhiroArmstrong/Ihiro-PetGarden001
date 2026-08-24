@@ -163,6 +163,21 @@ export class IdleChromeFacade {
     return this.narrow.isSheetOpen?.() === true;
   }
 
+  /** Open ⋯ sheet (wide) or narrow drawer — Electron blank right-click. */
+  openSecondaryMenu() {
+    if (this.isNarrow()) {
+      this.narrow.openSheet?.();
+      return;
+    }
+    this.wide.openMenu?.();
+  }
+
+  /** @returns {boolean} */
+  isSecondaryMenuOpen() {
+    if (this.isNarrow()) return this.narrow.isSheetOpen?.() === true;
+    return this.wide.isMenuOpen?.() === true;
+  }
+
   /**
    * Clear narrow + wide stage body classes without firing onClearStage.
    * @returns {void}
