@@ -155,6 +155,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 | 日期 | 说明 |
 |---|---|
 | 2026-08-24 | Yin Personal Memory 架构入库（无代码）：对照 AE / Y / Z / 练习备份；职责用三套边界拆开；仪式生成仍未拍板 |
+| 2026-08-25 | Confide「练了多久」排 Slice 0：读同一练习账本、不另建记忆柜；危机/情绪桶仍先于事实应答；未写 store |
 | 2026-08-24 | Agent 摘要：`focus-tiger-feature-conflict-review.mdc` 改为 glob 注入（`src` / `desktop` / `docs`），不再 alwaysApply |
 | 2026-08-20 | L1 口令「开工桌面陪伴 L1」：宽屏 Confide 同一入口 + 下载层；仍不上 L2 生成、不接第四卡 / 第五卡。对照 Confide / 场景 Q / Whisper：无新菜单、无假收费卡、仪式文案不生成 |
 | 2026-08-20 | 口令「开工桌面陪伴 L2」：fallback 短生成 + 四层路由。对照 Confide（桶/安全仍语料）、场景 Q（不接卡）、Whisper/Recover（无 generate）。无假收费 |
