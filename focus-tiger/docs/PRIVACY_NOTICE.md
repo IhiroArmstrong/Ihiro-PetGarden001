@@ -17,6 +17,10 @@
 
 Exact keys and retention evolve with features; we only keep what the current feature needs.
 
+## Local companion (where available)
+
+Some conversations can stay on your device. Yin can listen locally — those words are not sent to cloud AI.
+
 ## What we do **not** do in v1.0.0
 
 - No account login required for the core loop
