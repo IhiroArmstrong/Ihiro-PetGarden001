@@ -25,6 +25,7 @@ import {
   buildCompanionL2Prompt
 } from './l2Persona.js';
 import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
+import { L0_MODEL_ID } from './l0Config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -86,7 +87,12 @@ export class CompanionL1Runtime {
   snapshot() {
     const generateEnabled =
       this.allowed && this.status.phase === 'ready' && !this.status.focusing;
-    return { ...this.status, allowed: this.allowed, generateEnabled };
+    return {
+      ...this.status,
+      allowed: this.allowed,
+      generateEnabled,
+      modelId: L0_MODEL_ID
+    };
   }
 
   /**
