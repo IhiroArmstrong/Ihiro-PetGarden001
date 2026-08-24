@@ -48,6 +48,10 @@ import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
 import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
+import {
+  needsDocumentPictureInPictureProbe,
+  probeDocumentPictureInPicture
+} from './core/immersivePresenceSupport.js';
 import { IdleCompanionPipUI } from './ui/IdleCompanionPipUI.js';
 import { createIdleChromeFacade } from './core/createIdleChromeFacade.js';
 import {
@@ -1591,7 +1595,13 @@ async function init() {
         completionPending: sessionUiGate.completionPending
       }),
       getElapsedSeconds: () => focusSession.getElapsedSeconds(),
-      getSpriteFrameSrc: readSpriteFrameSrc
+      getSpriteFrameSrc: readSpriteFrameSrc,
+      onPipUnavailable: () => {
+        mindfulToast.show(t('IMMERSIVE_PIP_UNAVAILABLE'), {
+          placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+          visibleMs: 2800
+        });
+      }
     }
   );
   window.__immersivePresence = immersivePresenceUI;
@@ -1606,6 +1616,14 @@ async function init() {
     }
   );
   window.__idleCompanionPip = idleCompanionPipUI;
+
+  if (needsDocumentPictureInPictureProbe()) {
+    void probeDocumentPictureInPicture().then((ok) => {
+      if (!ok) return;
+      immersivePresenceUI.refreshPipEntry?.();
+      idleCompanionPipUI.refreshPipEntry?.();
+    });
+  }
 
   /**
    * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
