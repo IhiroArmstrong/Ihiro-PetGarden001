@@ -79,7 +79,7 @@ SSOT：`SHARED_RESOURCES.md` · Brief `task-presence-signals-slice-0-1.md`。
 
 ## 5.1 Yin Personalization Engine（编排 · 非本文件扩 CI）
 
-SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不是**轨道 C 仪式 generate。本地 AI 场景继续只谈路由与口头白名单；何时沉默 / 取哪几条记忆 / 政策档看 YPE。**L0** 门闩收口；**L1** 本地检索契约 / 计数 insight / 三档。L2 未拍板。
+SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不是**轨道 C 仪式 generate。本地 AI 场景继续只谈路由与口头白名单；何时沉默 / 取哪几条记忆 / 政策档看 YPE。**L0** 门闩收口；**L1** 本地检索契约 / 计数 insight / 三档。L2 **契约**已拍（五键 + Pack）；Worker **未开工**。
 
 ## 6. 我认为最合理的下一刀
 

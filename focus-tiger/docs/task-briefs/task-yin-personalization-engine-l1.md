@@ -23,7 +23,7 @@
 
 ## 做什么
 
-1. `ypeRetrieveMemories`：主题 + confidence + freshness + 本会话去重 + 可选 rankHint；quiet 最多 1 条。  
+1. `ypeRetrieveMemories`：主题 + confidence + freshness + 本会话去重；quiet 最多 1 条。可选本地 `rankHint` 仅本机接口。**云 Pack 不下发** ranking 分数或 `memoryHints`（L2 契约 2026-08-26）。  
 2. `ypeBuildJourneyInsights`：≥10 次坐才出 `morning_settle` 等观察对象；warm 才可进 L3 prompt。  
 3. What Yin remembers 邻接 quiet / usual / warm；usual = 关掉个人化。
 
