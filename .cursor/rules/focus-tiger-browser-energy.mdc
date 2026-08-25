@@ -1,13 +1,15 @@
 ---
-description: 预览浏览器与能耗——默认 Safari；硬禁 IDE Browser MCP；临时解禁有连续时长上限（数值见正文）；Vite/Playwright 收尾；Cloud 独立会话；给用户的 cd/npm run dev 须完整绝对路径
-alwaysApply: true
+description: 预览浏览器与能耗——起 Vite/预览/Safari 验收/Playwright 或 Cloud 会话前须 Read；硬禁 IDE Browser MCP
+alwaysApply: false
 ---
 
-# Focus Tiger · 预览浏览器与能耗
+# Focus Tiger · 预览浏览器与能耗（按需层）
+
+> **加载时机**：起 `npm run dev` / Vite、给用户预览 URL、Playwright、Cloud Agent、或 N14 须写进程收尾时。须 `Read` 本文件全文。
 
 目的：降低 Cursor 内置 Browser / 长时间 Vite / 残留 Playwright / 本机↔Cloud 误假设造成的 macOS 累计能耗、Agent token 与协作混乱。
 
-索引、并行 worktree 窗口、ignore 操作见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。本文件为 **预览浏览器 + 本地进程收尾汇报 + Cloud 独立会话提醒** 的 alwaysApply 门禁。
+索引、并行 worktree 窗口、ignore 操作见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。本文件为 **预览浏览器 + 本地进程收尾汇报 + Cloud 独立会话提醒** 的门禁 SSOT。
 
 ## 默认（强制）
 

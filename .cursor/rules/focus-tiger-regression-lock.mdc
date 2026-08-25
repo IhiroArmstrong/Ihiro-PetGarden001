@@ -1,9 +1,11 @@
 ---
-description: 防「假修好」与「把好的改坏」——回归锁、不变量与完工门禁（始终生效）
-alwaysApply: true
+description: 回归锁·完工门禁·§7·Git 同步——bug/交互修复收尾、commit/push、声称已修复前须 Read 全文
+alwaysApply: false
 ---
 
-# Focus Tiger · 回归锁（Regression Lock）
+# Focus Tiger · 回归锁（Regression Lock · 按需层）
+
+> **加载时机**：bug/交互修复、任务收尾、commit/push、声称「已修复」、worktree 占坑、邀测/branch-freshness、合 main 前。常驻 Git 硬闸见 `focus-tiger-core.mdc`。
 
 > **叙事全文（原则/规范/指引/注意事项）**：`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`  
 > 本文件为 **强制门禁**；解释「为什么、怎么做」以该文档为准，后续完善也写进该文档。
@@ -84,7 +86,7 @@ alwaysApply: true
 
 ## AI 修复验收规范（Bug close · §7 · 强制）
 
-> 叙事全文：`DEV_WORKFLOW_QUALITY.md` §7。本节为 **alwaysApply 门禁**；缺一项即**不得**在回复中使用「已修复 / 已修好」。
+> 叙事全文：`DEV_WORKFLOW_QUALITY.md` §7。本节为 **按需层门禁**（加载本文件时生效）；缺一项即**不得**在回复中使用「已修复 / 已修好」。
 
 ### 禁止的 Bug close 姿态
 

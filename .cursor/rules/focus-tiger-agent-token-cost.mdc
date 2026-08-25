@@ -1,9 +1,11 @@
 ---
-description: Control Agent Fast Request / token cost — no subagents, no long CI polling, no unauthorized full e2e, no unscoped context reads, no default high-tier model
-alwaysApply: true
+description: Agent Token Cost——跑测试/e2e/CI、大范围读仓、子 Agent 相关任务前须 Read 全文
+alwaysApply: false
 ---
 
-# Focus Tiger · Agent Token Cost（控 Fast Request）
+# Focus Tiger · Agent Token Cost（控 Fast Request · 按需层）
+
+> **加载时机**：跑测试/e2e、读 CI 结果、预计多文件搜索、或用户提到 token 成本时。测试输出卫生摘要亦在 `focus-tiger-core.mdc`。
 
 目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候、无限制上下文读取、默认走高价模型档位，瞬间吞掉数十次 Fast Request 或天量 token。
 
@@ -44,6 +46,11 @@ alwaysApply: true
 11. **机械性操作的一次性批量规划**
    - 对于 Git/PR/QA 同步这类多步骤机械操作，执行前先列出完整步骤清单（占坑锁、stash、切分支、commit、push、开 PR 等），一次性说明后再连续执行，不要每完成一步就停下来单独确认一次，避免把一个任务拆成过多工具调用轮次（每多一轮，规则前缀就多计一次 token）。
    - 仅当某一步存在风险判断（如可能冲突、可能覆盖他人改动）时，才单独停下来问用户。
+
+12. **测试输出卫生（强制 · 与 `focus-tiger-core.mdc` 一致）**
+   - 任何 `npm run test*` / Playwright / `playwright install` 跑完后：回复只写 pass/fail 数量 + 失败用例名 + 一行报错；**禁止**粘贴完整终端输出（同一对话线程里会随轮次线性累积计费）。
+   - 需留档 → 写 `focus-tiger/.tmp/test-output-<timestamp>.log`（或 `/tmp/…`）；排查时用 `Read`  targeted 段，**禁止**让大段日志在多轮上下文里常驻。
+   - Shell 工具若返回超大 stdout：只向用户汇报结构化结论，不要把原始块原样复读进回复。
 
 ## Settings → Agents → Subagents（须你本人在 Cursor UI 设）
 

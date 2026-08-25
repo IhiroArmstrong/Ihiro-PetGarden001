@@ -1,9 +1,11 @@
 ---
-description: 任何审计发现的根因扇出、或被记录但未闭环的独立bug/优化建议，强制建立可追踪清单并在收尾时点名未完成项
-alwaysApply: true
+description: Issue Ledger——记录未闭环 bug/根因扇出/优化建议，或口令「核对问题清单」前须 Read
+alwaysApply: false
 ---
 
-# Focus Tiger · Issue Ledger（问题闭环追踪）
+# Focus Tiger · Issue Ledger（问题闭环追踪 · 按需层）
+
+> **加载时机**：发现根因扇出、只分析未修复的 bug、记录优化建议/技术债、新任务命中 ISSUE_LEDGER 未跟进项、或用户说「核对问题清单」时。
 
 目的：防止两类主线丢失——①「发现一个根因影响 N 处，实际只追完第 1 处」；②「记录了一个 bug/优化建议，但从此没了下文」。两者本质是同一个洞（记录≠闭环），共用同一套账本和同一套强制流程，不分开维护两套清单。
 
