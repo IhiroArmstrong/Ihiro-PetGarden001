@@ -110,6 +110,10 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 对照 AG / Z 备份 OTP / 漏斗 / Membership `deviceToken`。设计师书面：V1 = 本机随机 opaque `ype_profile_id`（非硬件指纹、非邮箱）；第二设备 = 新档案；DELETE 只动 YPE signals+Pack；离线关闭不得假装云端已删。不加重 Sit；不与备份 OTP 合并身份；不写 locale。无新用户路径。
 
+**YPE L2 算法契约（2026-08-26 · 文档；无 Worker）**
+
+对照 Y Whisper / AE / AG ranking / 品味层。V1 变换 = 五键 → Pack：`companionStyle` 回声用户选档；`patternInsights=[]`；完成率 **不得**改档。不加重 Sit；不把云变成遥控器。无新用户路径。
+
 **检索不生成 vs 桌面陪伴（2026-08-18）**
 
 2026-08-10「禅意倾听者」已锁 **检索不生成**。桌面端侧模型提案与之冲突（人设 / 职责），扫描没有默默开工，而是列出 0.4 三问等拍板。用户书面：**不要全面推翻**；批复措辞为 **「仅限桌面端受约束生成、其余场景仍然检索不生成」**。入口与 Confide 合并；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶都未接住之后。**2026-08-18 补**：本地智能体仅 **Electron 宽屏 ⋯**；窄屏抽屉 / 手机 **没有**该能力（故意不对等，不是漏适配）。随后才改定位稿。**禁止**把这次批准扩大到 Web / Whisper / Recover / 主动开口 / 窄屏。
@@ -178,7 +182,9 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-26 | YPE L2 算法契约入库（无代码）：五键→Pack 闭包；不按完成率改档；非空 insight / ranking 仍禁。对照 Whisper / Memory / 品味层。无运行时用户路径 |
 | 2026-08-26 | YPE L2 身份键入库（无代码）：本机随机 profile ID；第二设备新档案；删除不连带备份/Memory/漏斗。对照 AG / Z OTP / 漏斗。无运行时用户路径 |
+| 2026-08-24 | Yin Personal Memory 架构入库（无代码）：对照 AE / Y / Z / 练习备份；职责用三套边界拆开；仪式生成仍未拍板 |
 | 2026-08-25 | Confide「练了多久」排 Slice 0：读同一练习账本、不另建记忆柜；危机/情绪桶仍先于事实应答；未写 store |
 | 2026-08-24 | Agent 摘要：`focus-tiger-feature-conflict-review.mdc` 改为 glob 注入（`src` / `desktop` / `docs`），不再 alwaysApply |
 | 2026-08-20 | L1 口令「开工桌面陪伴 L1」：宽屏 Confide 同一入口 + 下载层；仍不上 L2 生成、不接第四卡 / 第五卡。对照 Confide / 场景 Q / Whisper：无新菜单、无假收费卡、仪式文案不生成 |

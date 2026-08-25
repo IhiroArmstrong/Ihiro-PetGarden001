@@ -233,7 +233,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ## 📍 Yin Personalization Engine（2026-08-26 方向锁）
 
-> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份。L0/L1 已开工。L2 **契约**已合 #454。Consent **附录有条件通过**（不写 locale）。身份键 **已拍**。Worker/runtime **未开工**。
+> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份。L0/L1 已开工。L2 **契约**已合 #454。Consent **附录有条件通过**（不写 locale）。身份键 **已拍**（#456）。算法契约 **本切片**。Worker/runtime **未开工**。
 
 | 级 | 内容 | 文档 | 状态 |
 |---|---|---|---|
@@ -242,10 +242,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L1** | 本地检索契约 ≤3 条；计数型 insight；三档政策 | `task-yin-personalization-engine-l1.md` | **已合 #453** |
 | **L2 契约** | H.3 V1 五键；Pack 无 rankHint / 无 memoryHints；异步增强 | `YIN_PERSONALIZATION_ENGINE.md` | **已拍板（文档）** |
 | **L2 同意** | 第四条独立同意；关即删；HINT+DETAIL | `task-l2-personalization-consent.md` | **附录有条件通过；locale 须「开工 L2 UI」** |
-| **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（文档）** |
+| **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（#456）** |
+| **L2 算法** | 五键 → Pack 闭包变换；V1 不按完成率改档 | `task-l2-personalization-algorithm.md` | **本切片（文档）** |
 | **L2 运行时** | Worker / ingest / delete / Pack 作废 | 须口令「开工 L2」 | **未开工** |
 
-**我认为最合理的下一刀**：Cloud algorithm contract（仍文档）。较弱：未口令就写 locale 或 Worker。
+**我认为最合理的下一刀**：口令「开工 L2 UI」（第四条同意进 Privacy，默关，生成本机 ID；无 Worker 则 ON 不发送）。较弱：先 Worker 无同意开关；或未口令就把 UI+Worker 绑成一 PR。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 

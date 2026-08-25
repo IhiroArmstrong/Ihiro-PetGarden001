@@ -3,7 +3,7 @@
 > **状态（2026-08-26）**：产品会已拍 **YPE V1 Identity Contract**（设计师书面；本切片入库）。Consent 文案附录 **有条件通过**（见 `task-l2-personalization-consent.md`）。  
 > **本切片禁止**：写入 `src/locales/*.json`、Privacy 现网开关、Worker、ingest、DB schema 代码、改 `l0Config.js`、改 L1/桌面 generate runtime、改生产行为。  
 > **权威**：`YIN_PERSONALIZATION_ENGINE.md` §H.5 · §I · 文首不变量。本 Brief 是身份键 **执行层** SSOT。  
-> **下一刀（仍文档）**：Cloud algorithm contract。locale 须口令「开工 L2 UI」。运行时须口令「开工 L2」。
+> **下一刀**：locale 须口令「开工 L2 UI」；运行时须口令「开工 L2」。Cloud algorithm contract 见 `task-l2-personalization-algorithm.md`。
 
 ---
 
