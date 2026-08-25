@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-23（升格 **AD** 精灵占用仲裁 + **AE** Confide（Web harness / Electron L1·L2）；场景 A 补 30s/3min 验收脚本；Q Stripe 回跳须压过深夜披毯。AB 托盘 + SB-18 已接线；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-26（升格 **AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD/AE** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -25,7 +25,13 @@
   - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
   - `desktopCompanionL1.test.js` / `desktopCompanionL2Route.test.js` + `confideClassify` / `confideReplyFlow` — **AE** Electron Confide 壳 / 生成路由（**非** Web Safari `?product=1`）
   - `spriteChannelArbitration.test.js` + `dormantIdle` overlayBusy — **AD** 睡/欢迎/付款仲裁门闩（**非**完整用户链路 e2e）
-- **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
+  - `presenceSignalsGate` · `confidePresenceFacts` · `presenceSignalsDisclosureGate` · `ritualPresenceBridge` · `reflectionPresenceBridge` — **AF** Presence Signals 入账 / 披露 / Ritual Leave / Reflection 双写（**非**完整用户链路 e2e）
+  - `freeTextRetentionCutoffMs`（`presenceSignalsGate.test.js`）— **AF Slice 3 / #440** Reflection bundle 与 presence freeText **同一 90 天 cutoff**（**无 UI**）
+  - `overlaySlotArbitration.test.js` + `sessionChromeSync.test.js` — **AH** 首卡队列 / postSession suppress / C1–C3 busy（**非**完整 Compass 故事 e2e）
+  - `practiceBackupDailyCompletionReconcile.test.js` · `practiceBackupSync.test.js` — **AI** 恢复后从 `practice-days` 派生 `daily-completions`（**非**完整备份 UI e2e）
+  - `immersivePresenceSupport.test.js` — **AK** Electron PiP 探针红/绿（**非**真 PiP DOM e2e）
+  - `confidePracticeFacts` · `yinPersonalMemory*` · `desktopCompanionL2Route` — **AG** 练习事实 / Consent / Remember / 注入 / 口头 Forget（**非**完整 Confide 故事 e2e）
+- **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感、Presence 披露时长、Electron memory 面板等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
 
 **重要提示**：部分步骤对应的功能仍在「已知未完成」状态（本文档已逐条标注）。走到这些步骤时看到「没反应」或「和预期不符」，不代表新 bug，是已知缺口，不要重复报告。
@@ -45,6 +51,9 @@
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
 | **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**#291 补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：#292 已合 insight-spark；Daily Card 仍是 Brief 未接线 |
 | **P1** | **AE** Confide Web harness / Electron L1·L2 | 倾诉入口 + 危机安全阀；Electron 关单「能聊」**2026-08-25 已关**（L2 TRACKER） | 本 follow-up 已升格正式场景 |
+| **P1** | **AF** Presence Signals（Notice / Ritual / Reflection） | 首次披露 + 静默 Leave 记账；与 AE Confide 趋势耦合 | 本 follow-up 已升格；Notice 点选 0–1s 句待人工列检 |
+| **P1** | **AG** Yin Personal Memory（Electron L2 延伸） | Consent / Remember / Forget；与 AE 同入口 | 本 follow-up 已升格；面板 Forget 已写 0–1s |
+| **P1** | **AH** Overlay slot 首卡队列 | 吹花 vs Compass 叠层 = 高容忍 bug 类 | 本 follow-up 已升格；首卡出现 0–1s 待人工 |
 | **P1** | **AC** 寅币抽屉 | 与 Q 付费入口隔离；次级可忽略 | L3 本支已写 0–1s 句 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
@@ -61,10 +70,11 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA** |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA–AK** / **AF–AJ** |
+| [http://localhost:5173/?product=1&entitlementMock=subscription](http://localhost:5173/?product=1&entitlementMock=subscription) | **Presence Slice 2 QA**：Morning Ritual chip / Leave 回顾（见 **场景 AF · Slice 2**） |
 | [http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6](http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6) | **长周期 QA**：播种昨天往前 6 个练习日；Sit 满 1 分钟可测 MilestoneGlow（不必真等 7 天） |
 | [http://localhost:5173/?product=1&confide=1](http://localhost:5173/?product=1&confide=1) | **Confide QA harness**（产品挂载仍关）：Idle ⋯/抽屉见 Confide 行；**仍检索不生成**；见 **场景 AE · Web** |
-| Electron `desktop:dev` | **场景 AB**（托盘）、**AE · Electron**（Confide L1/L2）；Web Safari **测不了** llama / 托盘 |
+| Electron `desktop:dev` | **场景 AB**（托盘）、**AE · Electron**（Confide L1/L2）、**AG**（Yin Memory）、**AK**（Float Yin PiP 探针）；Web Safari **测不了** llama / 托盘 / memory 文件 |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
 语言切换：宽屏 ⋯ / 窄屏抽屉 → **Language**（v1.0 对外 **English + Japanese**）；DEV 仍可用 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下同一 bundle）。
@@ -574,7 +584,7 @@
 ## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
 
 > **地位**：**实验 / 非最终形态**。用来验证「切到其他窗口或 App 时，仍能看见阿寅安静呼吸」。**待观察使用数据后决定是否继续投入**（localStorage `focus-tiger.idle-companion-pip.v1` 只记是否曾打开，不用于提醒或激励）。  
-> **不是**系统托盘 / 关浏览器后仍常驻（电脑版壳已拍板 Electron，但 AA **仍不是**那条路径）；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时）。  
+> **不是**系统托盘 / 关浏览器后仍常驻（电脑版壳已拍板 Electron，但 AA **仍不是**那条路径）；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时——见 **场景 AK**）。  
 > **单元**：`idleCompanionPipGate.test.js`（Document PiP 支持 → 入口可挂载；不支持 → 不挂载；Idle 才显示）。  
 > **DOM e2e**：无（`requestWindow` 需真实用户手势 + Chromium）。  
 > **仍须人工**：Chrome/Edge 开/关流畅与呼吸卡顿；切到其他窗口后是否置顶；Safari/Firefox 入口完全不出现且无报错。
@@ -586,6 +596,20 @@
 4. **回流**：关后再开仍立刻出窗；Sit → Focusing 时入口须消失、已开浮窗须收起；Rise 回 Idle 后入口再出现，**不**自动弹窗。
 5. **Safari / Firefox**（及无 `documentPictureInPicture` 的环境）：Idle **完全不见**该入口；无报错、无「暂不支持」提示。本步不是点击——入口不存在即测对了。
 6. **375**：簇内图标不挡三球；本原型不要求浮窗在窄屏浏览器里好用（桌面 Chromium 才是假设验证面）。
+
+---
+
+## 场景 AK：Focusing · Float Yin PiP 探针（Immersive Presence · #438）
+
+> **地位**：Focusing HUD 内 **Float Yin · experimental**（应用内沉浸 + Document PiP 小窗）。**≠** 场景 AA（Idle 热力图旁 Document PiP，无计时）。  
+> **#438 行为**：Electron 壳内须 **live 探针**——探针失败 **藏钮**（禁止可点却无反应）；Chrome 桌面仍可见并可开 PiP。  
+> **单元**：`immersivePresenceSupport.test.js`（Electron 探针红/绿）。  
+> **仍须人工**：Safari 入口不出现；Rise 后再 Focusing 行为一致。
+
+1. **Chrome 桌面** · `?product=1` → Sit → Focusing → 见 **Float Yin · experimental** → 点一下 → **0–1 秒内**按压 + 小窗打开（计时仍在主窗）。  
+2. **Electron `desktop:dev` 宽屏** · 同上路径 → Focusing → **不得**见可点但无反应的 Float Yin（探针失败应**完全藏钮**）。  
+3. **若壳内误显且点失败**：中置短句 `IMMERSIVE_PIP_UNAVAILABLE`（非空 catch）。**Safari**：入口不出现。  
+4. **回流**：Rise 后再 Focusing → Chrome 仍可见；Electron 仍按探针藏/显。
 
 ---
 
@@ -665,6 +689,102 @@
 
 ---
 
+## 场景 AF：Presence Signals · 陪伴观察账本（Slice 0–1 / 2 / 3）
+
+> **用户故事**：Kelly 在同坐路上点选 Notice、仪式 chip、Reflection 自由句——产品**静默**记入 `focus-tiger.presence-signals.v1`（**≠** Yin Memory · **≠** Journey Log · **≠** 练习备份 6 key）。Confide 趋势问句（CI-02）只读封闭标签事件；freeText 默认 **90 天**保留后剥离（与 `reflections.v1` bundle 同一 cutoff helper · #440）。  
+> **单元**：`presenceSignalsGate` · `confidePresenceFacts` · `presenceSignalsDisclosureGate` · `ritualPresenceBridge` · `reflectionPresenceBridge` · `freeTextRetentionCutoffMs`（**无 UI**）。  
+> **仍须人工**：披露两行时长观感；Ritual 回顾气泡 ~4s；Reflection 双写后 DevTools 对账；同日 3 次 Notice 门槛。
+
+### AF · Slice 0–1 + disclosure（Arrival Notice + Confide 趋势）
+
+1. **首次披露**：清 `focus-tiger.presence-signals-disclosure-seen.v1` → `?product=1` → Sit → Arrival → Notice 任点 → **0–1 秒内**观察短句**下方**见 `[data-testid=presence-signals-disclosure]`（约 **4s** 随 Notice 收起再进 Breath）→ 再走一遍 Arrival **不应**再出现。  
+   *[单元：`presenceSignalsDisclosureGate`；**非**披露排版 DOM 时长观感]*
+2. **入账**：DevTools `focus-tiger.presence-signals.v1` 应有 `arrival_notice`（含 `emotionTag` + 时间戳）。**不进**练习备份 / Yin Memory。  
+3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「我情绪这两周改善了吗？」→ reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶。  
+4. **同日 3 次 Notice**：同一天 3 次 Sit→Notice 不同选项 → 第 3 次后应满趋势门槛（**事件数**，非去重天数）。
+
+### AF · Slice 2（Ritual Leave 回顾 · 方案 C）
+
+**前提**：`?product=1&entitlementMock=subscription`（Morning Ritual 需订阅 mock）。
+
+1. Morning Ritual → Continue → 选 arrival chip → **Leave** → **无** Leave 当下 toast/确认（**SB** 类静默记账）；DevTools `presence-signals.v1` 应有 `ritual_chip` + `ritualCompleted:false`。  
+2. **回顾**：同类型**第二次**进入 → welcome 前见 `[data-testid=ritual-leave-retrospective]` 气泡 ~4s → **第三次**进入**不再**出现。  
+3. **完成**：走完全程 → chip 行 `ritualCompleted:true`、无回顾。**跨类型**：Emotional Reset 未完成**不在** Morning 提及。  
+4. **趋势对照**：Confide breakdown 仍只计 `emotionTag`（Ritual chip **不**抬高 `totalTagged`）。
+
+### AF · Slice 3（Reflection 双写 + 90 天对齐）
+
+1. Focus 结束 → Reflection 填 Q1「注意到风」+ Q2「疲惫来访」→ 关面板 → DevTools：`presence-signals.v1` 应有 `reflection_q1` + `reflection_q2`（**仅 freeText**，无 `emotionTag`）；`reflections.v1` 仍有 1 条 bundle。  
+2. **趋势对照**：Reflection freeText **不**抬高 Confide `totalTagged`（仍只数 Arrival Notice 等封闭标签）。  
+3. **90 天剥离（#440 · 无 UI）**：`freeTextRetentionCutoffMs` 单源供 `pruneExpiredPresenceFreeText` 与 `pruneExpiredReflectionBundles` 复用——改 retention 须两边同测，**禁止**只改一侧 helper。  
+   *[单元：`presenceSignalsGate.test.js` · `SessionEndFlow.test.js`；**非**时间旅行 DOM]*
+
+---
+
+## 场景 AG：Yin Personal Memory · Electron Confide 延伸（Slice 0–1e）
+
+> **政策**：**仅 Electron 宽屏 L2**（≥480、非低配）；Web / 375 **无** Consent / 面板 / 注入 / 口头 Forget。与 **AE** 同 ⋯ 入口；**≠** Presence Signals（`presence-signals.v1`）· **≠** 练习备份。Slice 0 练习事实 **2026-08-25 已关**（TRACKER）。  
+> **单元**：`confidePracticeFacts` · `yinPersonalMemoryStore` · `yinPersonalMemoryRetrieve` · `yinPersonalMemoryVerbalForget` · `desktopCompanionL2Route` prompt 块。  
+> **仍须人工**：`userData/companion-l2/yin-personal-memory.json` 对账；L3 回指语感；面板与 verbal forget 同步。
+
+### AG · Slice 0（练习字段 · 已关单参考）
+
+Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** → `[data-testid=confide-to-yin-reply]` **`data-source=practice_facts`**，数字须对 Journey Log。**危机/情绪优先**：`I feel depressed, how long have I practiced?` → sad 语料。**Web**：无 practice_facts 宽屏壳时仍走 harness 规则（见 AE · Web）。
+
+### AG · Slice 1a–1e（Consent → Remember → 面板 → 注入 → 口头 Forget）
+
+**前提**：`npm run desktop:dev` 宽屏；L2 **ready**（见 AE · L2）。
+
+1. **1a Consent**：首次 **unmatched** 句（非情绪桶/非练多久/非危机）→ L3 前应出现 Consent 条（Allow / Not now）→ 点选后 **0–1 秒内**消失并继续回复。**回流**：同会话第二条 unmatched **不再**弹；关 Confide 再开仍不弹（已决策）。**Not now** → 面板见 denied 文案。  
+2. **1b Remember**：Consent **Allow** → 发可抽取句（例：`I prefer quiet, short reflections.`）→ L3 成功后查 `yin-personal-memory.json`：`memories` 有 1 条 `active`。**负例**：`I'm tired` / 练多久 / 危机 → **不写** memory。  
+3. **1c 面板**：点 **What Yin remembers** → 见类型/摘要/Why → 点 **Forget** → **0–1 秒内**行消失 → JSON 该条已删。**空态**：无 memory 时见空文案。  
+4. **1d 注入**：已有 Monday 记忆 medium+ → 再发「Monday feels crowded again」→ L3 短句应**可核对**回指周一。**对照**：「the weather is mild」→ **不得**硬插无关旧记忆。**Forget 后**再发 Monday 句 → 不应再回指。  
+5. **1e 口头 Forget**：发「别再记周一的事了」/ Please forget what I said about Monday → **0–1 秒内** `data-source=memory_forget` 确认句 → JSON 该条已删。**bulk**「forget everything」→ 引导面板逐条。**面板同步**：开着 What Yin remembers 时口头删 → 行消失。
+
+---
+
+## 场景 AH：Overlay slot 首卡队列（PR2 · 与 AD 互补）
+
+> **用户故事**：Kelly 冷启动后吹花、Wellness 首卡、Compass 首卡、Honesty 呼吸、芥子印、in-app 提醒横幅——**同一 overlay slot** 按序排队，不与 postSession / busy 叠层抢屏。  
+> **与 AD 分工**：**AD** = 精灵睡/欢迎/Stripe **占用**；**AH** = Idle chrome **首卡 / suppress** 队列（`overlaySlotArbitration` · PR1 快照等价单测 **无 UI**）。  
+> **单元**：`overlaySlotArbitration.test.js`（108 cases + C1–C6）· `sessionChromeSync.test.js`（mustard postSession）。  
+> **仍须人工**：吹花 vs Compass 时序；375 首卡不挡 Sit；Rise→Idle 首卡不重入已 seen。
+
+1. **冷启动队列**：`?product=1` Idle → 吹花气泡消失后 **Compass 首卡仍按序出现**（**不得**与 flower 叠在同一 beat）。  
+2. **C1 · 芥子印 postSession**：完成 score≥21 会话 → 芥子印卡开时 ⋯/Sit 应 **suppress**（与 Reflection 同级 postSession）。  
+3. **C2 · Honesty busy**：Honesty 呼吸/时长面板开时 **contextual tea bubble 不出**。  
+4. **C3 · 首卡 busy**：Compass / 芥子印开时 **in-app reminder banner 不出**。  
+5. **回流**：Wellness 首卡关后 Compass 首卡；Rise→Idle 首卡 **不重入**已 seen 卡。**375**：首卡不挡 Sit 三球。
+
+---
+
+## 场景 AI：练习备份恢复 · 热力图与提醒对齐（#437 · 方案 A）
+
+> **用户故事**：Kelly 开练习备份、在同设备练过、换机/清本地后自动恢复——**今日已练**须同时体现在热力图与提醒面板，而不是只恢复 `practice-days` 却继续催练横幅。  
+> **单元**：`practiceBackupDailyCompletionReconcile.test.js` · `practiceBackupSync.test.js`。  
+> **仍须人工**：等 `lastUploadAt` 更新；DEV 清 6 whitelist key 保留 `practice-backup.v1`；约 2.5s 自动恢复时序。
+
+1. 开启练习备份 → 完成一场同坐（或 Honesty）→ 等 `lastUploadAt` 更新。  
+2. DEV 清 **6 whitelist key**（**保留** `focus-tiger.practice-backup.v1`）→ 硬刷新 → 约 **2.5s** 后自动恢复。  
+3. **期望**：热力图**今日格亮** + 提醒设置面板出 `reminder.practiced_today_note`（今天不会再提醒）；**顶部横幅不出**。  
+4. **边界**：恢复日无 `practice-days` 今日条目 → **仍催练**；已有本地 `daily-completions` **不被覆盖**。
+
+---
+
+## 场景 AJ：Stay in touch · Newsletter 留资（#444 Resend **待合**）
+
+> **用户故事**：Kelly 在 Idle 菜单可选留邮箱收产品更新——**不**挂钩 entitlement / tip / sanctuary；本地只记 `{ submitted }`，**不**存邮箱明文。Cloud 配好时 Worker + Resend 欢迎信；502 **不写** submitted。  
+> **状态**：#444（Newsletter Resend await/重发）**待合入 develop**——下列步骤以 TRACKER + `NEWSLETTER_CAPTURE.md` 为准；合入后须核对 welcomeSentAt 防重发口径。  
+> **仍须人工**：Gmail 垃圾箱；退订页；375·宽屏；`127.0.0.1` CORS（**不要** `localhost`）。
+
+1. **前置**：`VITE_CLOUD_API_BASE_URL` 指向生产 Worker；Safari 用 `http://127.0.0.1:5173/?product=1`；先清 `localStorage['focus-tiger.newsletter-capture.v1']`。  
+2. Idle → 宽屏 ⋯ / 窄屏抽屉 **Stay in touch** → **0–1 秒内** `#newsletter-capture-card` 淡入（两段正文说明 known-error 修复与 latest release）。  
+3. 提交**同一真实邮箱** → **成功反馈才算发出**；Gmail From **`hello@twinsology.com`**（查垃圾箱）。错误反馈 → **不要**当已订阅。  
+4. 本地只写 `submitted` → 退订链接可用 → 再开菜单 **We'll keep in touch** 不可点（**勿**与付费 **You're subscribed** 混淆）。  
+5. **无 Cloud / `?newsletterMock=1`**：仍 mock 成功、无发信。**回流**：关卡后再开菜单；不提交不影响练习。
+
+---
+
 ## 建议补充的故事（相对 A–G；O/P/Q/S–W/X–Z 已升格为正式场景）
 
 
@@ -692,6 +812,12 @@
 | **AC** | 寅币抽屉（L3） | **已升格** → 见上文「场景 AC」；与 Q 付费入口隔离 |
 | **AD** | 精灵占用仲裁（睡/欢迎/付款） | **已升格** → 见上文「场景 AD」；Web Safari QA 树；吸收 #341/#347 |
 | **AE** | Confide to Yin（Web harness + Electron L1/L2） | **已升格** → 见上文「场景 AE」；Web 仍检索；Electron 宽屏才 generate |
+| **AF** | Presence Signals（Notice / Ritual / Reflection） | **已升格** → 见上文「场景 AF」；#435/#441/#439；90 天 cutoff #440 |
+| **AG** | Yin Personal Memory（Electron L2 延伸） | **已升格** → 见上文「场景 AG」；Slice 0 已关；1a–1e 待人工 |
+| **AH** | Overlay slot 首卡队列（PR2） | **已升格** → 见上文「场景 AH」；PR1 仅单测 |
+| **AI** | 练习备份恢复对齐热力图/提醒 | **已升格** → 见上文「场景 AI」；#437 |
+| **AJ** | Stay in touch / Newsletter | **已升格** → 见上文「场景 AJ」；#444 Resend **待合** |
+| **AK** | Focusing Float Yin PiP 探针 | **已升格** → 见上文「场景 AK」；#438；对照 AA Idle PiP |
 
 ---
 
@@ -769,10 +895,20 @@
 
 ---
 
+## 2026-08-21–26 增量核对摘要（AF–AK · Presence / Memory / Overlay / Backup / PiP / Newsletter）
+
+1. **背景**：8/21–8/26 合入 develop 一批用户面功能主要记在 `TEST_TRACKER` 碎片，故事剧本仍停在 8/23 AD/AE。  
+2. **本次**：升格 **AF** Presence Signals（Slice 0–1 disclosure + Confide 趋势、Slice 2 Ritual Leave 回顾、Slice 3 Reflection 双写 + #440 cutoff 单源）；**AG** Yin Personal Memory（Slice 0 引用 + 1a–1e Electron 链）；**AH** Overlay slot PR2 首卡队列（PR1 仅单测）；**AI** 练习备份恢复派生 `daily-completions`（#437）；**AJ** Stay in touch（#444 **待合**）；**AK** Focusing Float Yin PiP 探针（#438，对照 AA Idle PiP）。  
+3. **链接表**：补 `?entitlementMock=subscription`（AF Slice 2）；Electron 行补 AG/AK。  
+4. **仍须人工 / 勿当缺口**：AJ 欢迎信 Resend 细节待 #444 合入后二次核对；Presence 披露 ~4s 观感；Electron memory JSON 对账；Overlay 吹花→Compass 时序。  
+5. **下班前 Git 同步门禁（2026-08-26）**：凡口令「请安排下班前的 Git 同步」，须先增量核对并更新本文「最近代码核对」日期（见 `RULES_INDEX` → `scenario-tests-eod-sync`）。
+
+---
+
 ## 给 Cursor 的 Prompt（增量核对；勿整份重写）
 
 ```
-对照 focus-tiger/docs/SCENARIO_TESTS.md（权威）与当前代码，做增量核对，不要重写整份剧本：
+对照 focus-tiger/docs/SCENARIO_TESTS.md（权威）与当前代码 / origin/develop 当日合入，做增量核对，不要重写整份剧本：
 
 1. 只核对可能漂移的条目：Idle 是否仍无随机变体池、Honesty 桥接 CTA、
    靠近是否还自动 nodGreeting、Offline Space 须再 Sit、Here & Now/Flow 选中即开计时。
@@ -782,5 +918,6 @@
 5. 保持仓库根 SCENARIO_TESTS.md 为指向 docs 的指针；勿复活 720 双源。
 6. 更新 TEST_TRACKER 场景行（勿重复条目）；改完后本地 commit，勿 push。
 7. Agent 自测故事优先 ?product=1；回流至少测 Rise→再 Arrival / hint 一条。
-8. 2026-08 起正式场景含 Q/S/T/U/V/W 与 X/Y/Z 与 **AD/AE**；R（跨日回访）仍建议补充，勿占用字母改指付费或 Moments。
+8. 2026-08 起正式场景含 Q/S/T/U/V/W 与 X/Y/Z 与 **AD/AE/AF–AK**；R（跨日回访）仍建议补充，勿占用字母改指付费或 Moments。
+9. **下班前 Git 同步**：若 develop 当日（或自文首核对日以来）有新用户面合入，须先更新本文再 push（`scenario-tests-eod-sync`）；无合入则只核对日期是否需要推进。
 ```
