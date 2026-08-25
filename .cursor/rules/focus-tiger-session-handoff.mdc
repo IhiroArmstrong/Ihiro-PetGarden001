@@ -1,9 +1,11 @@
 ---
-description: After a staged task, or when the user says 生成交接, output a structured session-handoff summary
-alwaysApply: true
+description: 会话交接——口令「生成交接」或阶段性任务收尾、会话明显变长时须 Read 并按模板输出
+alwaysApply: false
 ---
 
-# Focus Tiger · 会话交接（Session Handoff）
+# Focus Tiger · 会话交接（Session Handoff · 按需层）
+
+> **加载时机**：用户说「生成交接」、完成阶段性任务后、或判断会话截断后下一 agent 接不上时。
 
 **目的**：在单次 Agent 会话 context 变长、或完成一个阶段性任务时，主动生成结构化交接摘要，让下一个 Agent（或同一个 Agent 的新会话）能无缝接上，不依赖人工复述背景。
 
