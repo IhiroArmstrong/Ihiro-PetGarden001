@@ -18,7 +18,7 @@ import {
 import { applyYinMemoryConsent } from '../../src/core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 import { rememberFromConfideTurn } from '../../src/core/yinPersonalMemory/yinPersonalMemoryRemember.js';
 import { forgetYinPersonalMemory } from '../../src/core/yinPersonalMemory/yinPersonalMemoryForget.js';
-import { retrieveYinMemoriesForL3Generate } from '../../src/core/yinPersonalMemory/yinPersonalMemoryRetrieve.js';
+import { ypeRetrieveMemories } from '../../src/core/yinPersonalizationEngine.js';
 
 export const YIN_PERSONAL_MEMORY_DIRNAME = 'companion-l2';
 export const YIN_PERSONAL_MEMORY_FILENAME = 'yin-personal-memory.json';
@@ -117,8 +117,32 @@ export async function forgetYinPersonalMemoryEntry(userDataDir, memoryId) {
  * @param {string} userDataDir
  * @param {string} userText
  */
-export async function retrieveYinMemorySummariesForL3Generate(userDataDir, userText) {
+export async function retrieveYinMemorySummariesForL3Generate(userDataDir, userText, opts = {}) {
   const state = await readYinPersonalMemoryState(userDataDir);
-  return retrieveYinMemoriesForL3Generate(state, userText);
+  return ypeRetrieveMemories({
+    state,
+    userText,
+    companionStyle: opts.companionStyle,
+    sessionExcludeIds: opts.sessionExcludeIds,
+    rankHints: opts.rankHints,
+    skipYpeOnSafety: opts.skipYpeOnSafety
+  }).summaries;
+}
+
+/**
+ * @param {string} userDataDir
+ * @param {string} userText
+ * @param {object} [opts]
+ */
+export async function retrieveYpeMemoriesForL3Generate(userDataDir, userText, opts = {}) {
+  const state = await readYinPersonalMemoryState(userDataDir);
+  return ypeRetrieveMemories({
+    state,
+    userText,
+    companionStyle: opts.companionStyle,
+    sessionExcludeIds: opts.sessionExcludeIds,
+    rankHints: opts.rankHints,
+    skipYpeOnSafety: opts.skipYpeOnSafety
+  });
 }
 

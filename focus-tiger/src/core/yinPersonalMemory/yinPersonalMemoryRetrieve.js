@@ -77,9 +77,9 @@ export function shouldInjectYinMemoryEntry(entry, userText) {
  * @param {import('./yinPersonalMemorySchema.js').YinPersonalMemoryState | null | undefined} state
  * @param {string} userText
  * @param {{ max?: number }} [opts]
- * @returns {string[]}
+ * @returns {import('./yinPersonalMemorySchema.js').YinMemoryEntry[]}
  */
-export function retrieveYinMemoriesForL3Generate(state, userText, opts = {}) {
+export function retrieveYinMemoryEntriesForL3Generate(state, userText, opts = {}) {
   const base = normalizeYinPersonalMemoryState(state);
   if (!canRememberYinPersonalMemory(base)) return [];
 
@@ -100,12 +100,27 @@ export function retrieveYinMemoriesForL3Generate(state, userText, opts = {}) {
       return String(b.lastSeenAt).localeCompare(String(a.lastSeenAt));
     });
 
-  const summaries = [];
+  /** @type {import('./yinPersonalMemorySchema.js').YinMemoryEntry[]} */
+  const picked = [];
+  const seen = new Set();
   for (const entry of candidates) {
     const summary = typeof entry.summary === 'string' ? entry.summary.trim() : '';
-    if (!summary || summaries.includes(summary)) continue;
-    summaries.push(summary);
-    if (summaries.length >= max) break;
+    if (!summary || seen.has(summary)) continue;
+    seen.add(summary);
+    picked.push(entry);
+    if (picked.length >= max) break;
   }
-  return summaries;
+  return picked;
+}
+
+/**
+ * @param {import('./yinPersonalMemorySchema.js').YinPersonalMemoryState | null | undefined} state
+ * @param {string} userText
+ * @param {{ max?: number }} [opts]
+ * @returns {string[]}
+ */
+export function retrieveYinMemoriesForL3Generate(state, userText, opts = {}) {
+  return retrieveYinMemoryEntriesForL3Generate(state, userText, opts).map((entry) =>
+    String(entry.summary).trim()
+  );
 }

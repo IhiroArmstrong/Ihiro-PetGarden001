@@ -10,6 +10,10 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  readYpeCompanionStyle,
+  writeYpeCompanionStyle
+} from '../core/yinPersonalizationEngine.js';
+import {
   fetchYinPersonalMemoryState,
   forgetYinPersonalMemoryEntry,
   hasYinPersonalMemoryBridge
@@ -63,6 +67,34 @@ export class YinPersonalMemoryUI {
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'yin-personal-memory__blurb';
 
+    this.styleField = document.createElement('fieldset');
+    this.styleField.className = 'yin-personal-memory__ype';
+    this.styleField.dataset.testid = 'ype-companion-style';
+    this.styleLegend = document.createElement('legend');
+    this.styleHint = document.createElement('p');
+    this.styleHint.className = 'yin-personal-memory__ype-hint';
+    this.styleRadios = {};
+    this.styleField.append(this.styleLegend);
+    for (const id of ['default', 'quiet', 'warm']) {
+      const label = document.createElement('label');
+      label.className = 'yin-personal-memory__ype-opt';
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'ype-companion-style';
+      input.value = id;
+      input.dataset.testid = `ype-companion-style-${id}`;
+      input.addEventListener('change', () => {
+        if (!input.checked) return;
+        writeYpeCompanionStyle(this._styleStorage(), id);
+      });
+      const span = document.createElement('span');
+      span.dataset.ypeStyle = id;
+      label.append(input, span);
+      this.styleRadios[id] = { input, span };
+      this.styleField.append(label);
+    }
+    this.styleField.append(this.styleHint);
+
     this.listEl = document.createElement('ul');
     this.listEl.className = 'yin-personal-memory__list';
     this.listEl.dataset.testid = 'yin-personal-memory-list';
@@ -89,6 +121,7 @@ export class YinPersonalMemoryUI {
     this.root.append(
       this.titleEl,
       this.blurbEl,
+      this.styleField,
       this.deniedEl,
       this.emptyEl,
       this.listEl,
@@ -162,6 +195,10 @@ export class YinPersonalMemoryUI {
     if (this._open) this._refresh();
   }
 
+  _styleStorage() {
+    return typeof localStorage !== 'undefined' ? localStorage : null;
+  }
+
   destroy() {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
@@ -180,6 +217,19 @@ export class YinPersonalMemoryUI {
     this.titleEl.textContent = t('YIN_MEMORY_PANEL_TITLE');
     this.blurbEl.textContent = t('YIN_MEMORY_PANEL_BLURB');
     this.closeBtn.textContent = t('YIN_MEMORY_PANEL_CLOSE');
+    this.styleLegend.textContent = t('YPE_STYLE_LEGEND');
+    this.styleHint.textContent = t('YPE_STYLE_HINT');
+    const style = readYpeCompanionStyle(this._styleStorage());
+    const styleCopy = {
+      default: t('YPE_STYLE_DEFAULT'),
+      quiet: t('YPE_STYLE_QUIET'),
+      warm: t('YPE_STYLE_WARM')
+    };
+    for (const id of ['default', 'quiet', 'warm']) {
+      const row = this.styleRadios[id];
+      row.span.textContent = styleCopy[id];
+      row.input.checked = style === id;
+    }
     this.emptyEl.textContent = t('YIN_MEMORY_PANEL_EMPTY');
     this.deniedEl.textContent = t('YIN_MEMORY_PANEL_DENIED');
 
@@ -293,6 +343,34 @@ export class YinPersonalMemoryUI {
         margin: 0 0 8px;
         font-size: 1.05rem;
         font-weight: 600;
+      }
+      .yin-personal-memory__ype {
+        margin: 0 0 12px;
+        padding: 8px 10px 10px;
+        border: ${GLASS_BORDER};
+        border-radius: 10px;
+      }
+      .yin-personal-memory__ype legend {
+        padding: 0 4px;
+        font-size: 0.78rem;
+        font-weight: 650;
+      }
+      .yin-personal-memory__ype-hint {
+        margin: 8px 0 0;
+        font-size: 0.74rem;
+        line-height: 1.35;
+        opacity: 0.75;
+      }
+      .yin-personal-memory__ype-opt {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 0 0;
+        font-size: 0.86rem;
+        cursor: pointer;
+      }
+      .yin-personal-memory__ype-opt input {
+        margin: 0;
       }
       .yin-personal-memory__blurb,
       .yin-personal-memory__empty,

@@ -1,9 +1,9 @@
 # Yin Personalization Engine Architecture V1
 
-> **状态（2026-08-26）**：**L0 运行时已开工**（口令「开工 Yin Personalization Engine」）。本文件仍是编排产品 SSOT。  
+> **状态（2026-08-26）**：**L0 + L1 运行时已开工**。本文件仍是编排产品 SSOT。  
 > **工作名称**：Yin Personalization Engine（YPE）。**不是**模型、**不是** Memory store、**不是**品味层、**不是**练习云备份。  
-> **已做**：L0 把现有门闩收成 `yinPersonalizationEngine.js`（行为与现网 generate / Whisper 门闩parity）。  
-> **仍禁**：L1 检索重写须另口令；L2 State Pack / Worker / Speak 概率 **未拍板**。禁止与 Qwen L0 下载 / Checkout 混 PR。
+> **已做**：L0 门闩收口；L1 本地检索契约 / Journey 计数 insight / 三档政策（可关回 `default`）。  
+> **仍禁**：L2 State Pack / Worker / Speak 概率 **未拍板**。禁止与 Qwen L0 下载 / Checkout 混 PR。
 
 从属（硬）：`YIN_PERSONAL_MEMORY.md` · `PRODUCT_POSITIONING.md`「禅意倾听者」· `LOCAL_AI_SCENARIOS_V1.md` · `task-cloud-taste-layer.md`（品味层四问）· `task-practice-memory-cloud-backup-a.md` · `PRIVACY_NOTICE.md` · `PRINCIPLES.md`（观照者、不诊断、agency）· 场景 Y / Z / AE / AF / AG。
 
@@ -24,7 +24,7 @@
 | **b. 人设** | 观照者；Safety；情绪桶；Wellness 免责 | Presence「Distracted」= 心理诊断；Adaptive Policy = 教练督促 | 状态 = **产品交互**；政策档可解释、可关；禁止临床标签 |
 | **c. 职责** | AG Memory；Z Journey；AF Presence；品味层；练习备份 6 key；`turns.jsonl` | 六套「聪明」并存，用户分不清；备份同意被拿去喂算法 | 下文 **§0.1 分桶**；L2 须**新同意**；默认 **不上** Confide 原文 / Memory 摘要 |
 
-**用户书面（2026-08-26）**：评估后开工本架构（方向锁）。同日口令「开工 Yin Personalization Engine」→ **仅 L0 接口**。L1 / L2 仍见 §3 / §5。
+**用户书面（2026-08-26）**：评估后开工本架构（方向锁）。同日口令「开工 Yin Personalization Engine」→ L0。同日书面：L1 与 AG/AF 人工验收无耦合，口令「开工 L1」。L2 仍见 §5。
 
 **未拍板（禁止当路线图默认项）**：
 
@@ -124,7 +124,7 @@ Memory 检索 **只**活在层 3 之前。第 0 / 1 / 2 层命中 = YPE **不得
 | 层 | 名称 | 做什么 | 何时 |
 |---|---|---|---|
 | **L0** | 本地政策运行时 | 把**已有**门闩收成 Companion Policy 接口：busy / overlay / 一生一次 Whisper / 层序 / 用户主动才生成 | **已开工**：`src/core/yinPersonalizationEngine.js`；不得改仪式 generate |
-| **L1** | 本地智能 | 检索契约（≤3 条）；Remember 门槛用现有 confidence / 重复 / freshness；Journey **计数型** insight 对象；有限政策档 | AG 1d/1e 人工过关之后另口令；**仍全本地** |
+| **L1** | 本地智能 | 检索契约（≤3 条）；Remember 门槛用现有 confidence / 重复 / freshness；Journey **计数型** insight 对象；有限政策档 | **已开工**（全本地）：`ypeRetrieveMemories` / `ypeBuildJourneyInsights` / What Yin remembers 邻接三档 |
 | **L2** | 云端秘密层 | State Pack overlay；只收 §H 特征 | **未拍板**；不进 `v1.0.0` 核心路径；须新同意 + `schemaVersion` 降级 |
 
 设计师列出的六个算法，映射如下——**不是六条并行开工线**：
@@ -383,7 +383,7 @@ PersonalizationStatePack v1 (sketch)
 1. **本文方向锁**（#451）。  
 2. 继续：AG 1d/1e 人工、AF 人工、Qwen runtime **另一条线**、品味层 Quiet Line **另一条云**。  
 3. 口令「开工 Yin Personalization Engine」→ **L0 接口已开工**（现有门闩收口，行为不变）。  
-4. 另口令才允许 **L1 检索契约**（可单测、可 Forget、可离线；建议 AG 1d/1e 人工后）。  
+4. 口令「开工 L1」→ **L1 检索契约已开工**（可单测、可 Forget、可离线）。  
 5. **L2** 须单独产品会：同意文案、白名单、Worker、后台三问。未开会 = 不做。
 
 生命感仍看 Memory 三问（接住了吗 / 还像阿寅吗 / 像记得我吗）。YPE 第四问（以后才测）：**像知道何时不说话吗？** ——用确定性沉默验收，不用概率。

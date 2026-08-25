@@ -26,7 +26,7 @@ import {
 } from './l2Persona.js';
 import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
 import { L0_MODEL_ID } from './l0Config.js';
-import { retrieveYinMemorySummariesForL3Generate } from './yinPersonalMemoryPersistence.js';
+import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -256,12 +256,24 @@ export class CompanionL1Runtime {
       return { ok: false, reason: ready.reason || 'not_ready' };
     }
     const id = randomUUID();
-    const memorySummaries = await retrieveYinMemorySummariesForL3Generate(this.userDataDir, text);
+    if (!Array.isArray(this._ypeSessionMemoryIds)) this._ypeSessionMemoryIds = [];
+    const retrieved = await retrieveYpeMemoriesForL3Generate(this.userDataDir, text, {
+      companionStyle: payload.companionStyle,
+      sessionExcludeIds: this._ypeSessionMemoryIds,
+      skipYpeOnSafety: Boolean(payload.skipYpeOnSafety)
+    });
+    this._ypeSessionMemoryIds = [
+      ...this._ypeSessionMemoryIds,
+      ...retrieved.ids.filter((mid) => !this._ypeSessionMemoryIds.includes(mid))
+    ];
     const prompt = buildCompanionL2Prompt({
       text,
       locale: typeof payload.locale === 'string' ? payload.locale : 'en',
       history: Array.isArray(payload.history) ? payload.history : [],
-      memorySummaries
+      memorySummaries: retrieved.summaries,
+      patternInsights: Array.isArray(payload.patternInsights)
+        ? payload.patternInsights
+        : []
     });
     this._queue = this._queue.then(async () => {
       const done = new Promise((resolve) => {

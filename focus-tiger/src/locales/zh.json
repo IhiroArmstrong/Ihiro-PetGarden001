@@ -676,5 +676,10 @@
   "YIN_MEMORY_VERBAL_FORGET_OK_GENERIC": "好，我不再记着这件事了。",
   "YIN_MEMORY_VERBAL_FORGET_NO_MATCH": "我没有对上已记住的这件事。",
   "YIN_MEMORY_VERBAL_FORGET_AMBIGUOUS": "有好几条可能对上。请打开「阿寅记得什么」点选，或说得更具体些。",
-  "YIN_MEMORY_VERBAL_FORGET_BULK": "请先在「阿寅记得什么」里一条条忘掉。"
+  "YIN_MEMORY_VERBAL_FORGET_BULK": "请先在「阿寅记得什么」里一条条忘掉。",
+  "YPE_STYLE_LEGEND": "阿寅怎样陪你",
+  "YPE_STYLE_HINT": "只留在这台设备。选「平时」等于关掉个人化。",
+  "YPE_STYLE_DEFAULT": "平时",
+  "YPE_STYLE_QUIET": "更安静",
+  "YPE_STYLE_WARM": "多一点承认"
 }

@@ -54,7 +54,8 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.mustard-seed-seal.v1',
   'focus-tiger.daily-zen-quote-pool-v2.v1',
   'focus-tiger.idle-companion-pip.v1',
-  'focus-tiger.focus-coins.v1'
+  'focus-tiger.focus-coins.v1',
+  'focus-tiger.ype-companion-style.v1'
 ]);
 
 /** sessionStorage：重置后首屏 toast（不写入 localStorage，避免被清空逻辑误伤）。 */

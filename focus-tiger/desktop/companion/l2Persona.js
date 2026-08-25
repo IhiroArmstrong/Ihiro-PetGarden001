@@ -56,7 +56,8 @@ export function historyForGeneratePrompt(
  *   text?: string,
  *   locale?: string,
  *   history?: Array<{ role?: string, text?: string, source?: string }>,
- *   memorySummaries?: string[]
+ *   memorySummaries?: string[],
+ *   patternInsights?: Array<{ id?: string, claim?: string, evidence?: object }>
  * }} [opts]
  * @returns {string}
  */
@@ -64,7 +65,8 @@ export function buildCompanionL2Prompt({
   text = '',
   locale = 'en',
   history = [],
-  memorySummaries = []
+  memorySummaries = [],
+  patternInsights = []
 } = {}) {
   const lang = LANG[locale] || LANG.en;
   const memories = Array.isArray(memorySummaries)
@@ -78,6 +80,14 @@ export function buildCompanionL2Prompt({
       ? `What Yin may gently recall (only if relevant to the user's message; do not invent facts; do not diagnose):\n${memories
           .map((line) => `- ${line}`)
           .join('\n')}`
+      : '';
+  const insightLines = (Array.isArray(patternInsights) ? patternInsights : [])
+    .filter((row) => row && row.id && row.claim)
+    .slice(0, 2)
+    .map((row) => `- ${row.id}: ${row.claim}`);
+  const insightBlock =
+    insightLines.length > 0
+      ? `Practice-log observations already counted on this device (do not invent other statistics; do not diagnose):\n${insightLines.join('\n')}`
       : '';
   const turns = historyForGeneratePrompt(history)
     .map((row) => {
@@ -94,6 +104,7 @@ export function buildCompanionL2Prompt({
     'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
     'Do not list steps. Do not mention being an AI or a model.',
     memoryBlock,
+    insightBlock,
     turns ? `Recent turns:\n${turns}` : '',
     `User: ${user}`,
     'Yin:'

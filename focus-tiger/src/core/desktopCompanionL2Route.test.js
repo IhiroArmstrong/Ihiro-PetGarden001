@@ -227,6 +227,21 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(prompt.includes('What Yin may gently recall'), false);
   });
 
+  it('injects counted practice observations only when provided', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      memorySummaries: [],
+      patternInsights: [
+        { id: 'morning_settle', claim: 'completion_rate_morning > completion_rate_late' }
+      ],
+      history: []
+    });
+    assert.match(prompt, /Practice-log observations already counted/);
+    assert.match(prompt, /morning_settle/);
+    assert.match(prompt, /do not diagnose/);
+  });
+
   it('keeps generate-backed Yin turns in Recent turns', () => {
     const prompt = buildCompanionL2Prompt({
       text: 'and the sky?',
@@ -342,9 +357,10 @@ describe('desktop companion L2 isolation', () => {
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
       'utf8'
     );
-    assert.match(runtime, /retrieveYinMemorySummariesForL3Generate/);
+    assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
     
     assert.match(ui, /ypeMayUseCompanionGenerate/);
+    assert.match(ui, /companionStyle:/);
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
     assert.equal(turnPushes.length, 2);

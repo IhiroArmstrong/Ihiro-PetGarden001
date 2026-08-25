@@ -676,5 +676,10 @@
   "YIN_MEMORY_VERBAL_FORGET_OK_GENERIC": "わかりました。そのことは覚えません。",
   "YIN_MEMORY_VERBAL_FORGET_NO_MATCH": "覚えていることと合いませんでした。",
   "YIN_MEMORY_VERBAL_FORGET_AMBIGUOUS": "いくつか候補があります。「寅が覚えていること」から選ぶか、もう少し具体的にどうぞ。",
-  "YIN_MEMORY_VERBAL_FORGET_BULK": "「寅が覚えていること」から一つずつ忘れてください。"
+  "YIN_MEMORY_VERBAL_FORGET_BULK": "「寅が覚えていること」から一つずつ忘れてください。",
+  "YPE_STYLE_LEGEND": "寅のそばにいる感じ",
+  "YPE_STYLE_HINT": "この端末だけです。いつもの仕方に戻すと、個人化を止めます。",
+  "YPE_STYLE_DEFAULT": "いつもの",
+  "YPE_STYLE_QUIET": "もっと静かに",
+  "YPE_STYLE_WARM": "少し多めに認める"
 }
