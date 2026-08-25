@@ -50,6 +50,7 @@ export function isHonestyUiBusy(phase) {
  * } | null | undefined} getMicroRitualUI
  * @property {() => { isOpen?: () => boolean } | null | undefined} [getRitualFlowUI]
  * @property {() => { isOpen?: () => boolean } | null | undefined} [getFocusDurationPicker]
+ * @property {() => { isOpen?: () => boolean } | null | undefined} [getMustardSeedSealUI]
  * @property {{ phase: string, hideIdleEntry: () => void }} honestyCheckInUI
  * @property {{ syncIdleEntry: () => void }} honestyCheckIn
  * @property {{
@@ -98,6 +99,7 @@ export function createSessionChromeSync(deps) {
     getMicroRitualUI,
     getRitualFlowUI = () => null,
     getFocusDurationPicker = () => null,
+    getMustardSeedSealUI = () => null,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -117,7 +119,8 @@ export function createSessionChromeSync(deps) {
       () => getReflectionMoment().isOpen(),
       () => getMicroRitualUI()?.isOpen() === true,
       () => getRitualFlowUI()?.isOpen() === true,
-      () => getFocusDurationPicker()?.isOpen() === true
+      () => getFocusDurationPicker()?.isOpen() === true,
+      () => getMustardSeedSealUI()?.isOpen?.() === true
     ];
   }
 
