@@ -32,7 +32,7 @@
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势 SSOT）；freeText **90 天**与 presence-signals 对齐 prune |
-| `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice 等封闭标签事件；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
+| `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice / Ritual chip（`ritual_chip` + `ritualCompleted` / `ritualSessionId`）等封闭标签事件；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
 | `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |

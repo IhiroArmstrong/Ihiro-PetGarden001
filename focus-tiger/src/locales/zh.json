@@ -349,6 +349,7 @@
   "CONFIDE_PRESENCE_FACTS_INSUFFICIENT": "打卡还太少，暂时看不出规律——只记下了寥寥几次。",
   "CONFIDE_PRESENCE_FACTS_SUMMARY": "过去 {days} 天里你打卡了 {total} 次：{breakdown}。记录还不多——未必是完整画面。",
   "PRESENCE_SIGNALS_DISCLOSURE": "阿寅会在这台设备上记下这些小状态，方便你看自己的变化。",
+  "PRESENCE_RITUAL_LEAVE_RETROSPECTIVE": "上次你选了 {chip}，后来提前结束了。",
   "CONFIDE_DESKTOP_STATUS_PREPARING": "正在这台电脑上准备本地模型…",
   "CONFIDE_DESKTOP_STATUS_DOWNLOADING": "正在下载本地模型…",
   "CONFIDE_DESKTOP_STATUS_LOADING": "正在加载本地模型…",

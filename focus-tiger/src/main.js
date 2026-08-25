@@ -112,6 +112,10 @@ import {
 } from './core/journeyLogGate.js';
 import { appendArrivalNoticeSignal } from './core/presenceSignalsGate.js';
 import {
+  appendRitualChipPresenceSignals,
+  consumeRitualLeaveRetrospective
+} from './core/ritualPresenceBridge.js';
+import {
   markPresenceSignalsDisclosureSeen,
   shouldShowPresenceSignalsDisclosure
 } from './core/presenceSignalsDisclosureGate.js';
@@ -1562,11 +1566,16 @@ async function init() {
     onBreathEnd: () => {
       lightProgression.endBreath({ releaseDolly: false });
     },
-    onComplete: ({ ritualId, selections }) => {
-      completeRitualFlow(ritualId, selections);
+    onComplete: ({ ritualId, selections, ritualSessionId }) => {
+      completeRitualFlow(ritualId, selections, ritualSessionId);
     },
-    onLeave: () => {
-      leaveRitualFlowQuietly();
+    onLeave: ({ ritualId, selections, ritualSessionId }) => {
+      leaveRitualFlowQuietly({ ritualId, selections, ritualSessionId });
+    },
+    consumeLeaveRetrospective: (ritualId) => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      return consumeRitualLeaveRetrospective(storage, ritualId);
     }
   });
   if (import.meta.env.DEV) {
@@ -1934,11 +1943,21 @@ async function init() {
   /**
    * @param {string} ritualId
    * @param {Record<string, string>} selections
+   * @param {string} [ritualSessionId]
    */
-  function completeRitualFlow(ritualId, selections) {
+  function completeRitualFlow(ritualId, selections, ritualSessionId) {
     ambientSoundscape.stopPlaybackEphemeral();
     const config = getRitualConfig(ritualId);
     ritualCompletionStore.recordCompletion(ritualId, { selections });
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (storage && ritualSessionId) {
+      appendRitualChipPresenceSignals(storage, ritualId, selections, {
+        ritualSessionId,
+        ritualCompleted: true,
+        now
+      });
+    }
     if (config) {
       for (const featureKey of config.persistentFeatureKeys) {
         claimFeatureOwned(featureKey, {
@@ -1967,7 +1986,28 @@ async function init() {
     // Explicit: do NOT call sessionEndFlow / TigerReflectionMoment.
   }
 
-  function leaveRitualFlowQuietly() {
+  /**
+   * @param {{
+   *   ritualId: string,
+   *   selections: Record<string, string>,
+   *   ritualSessionId: string
+   * }} payload
+   */
+  function leaveRitualFlowQuietly(payload) {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (storage && payload?.ritualSessionId) {
+      appendRitualChipPresenceSignals(
+        storage,
+        payload.ritualId,
+        payload.selections,
+        {
+          ritualSessionId: payload.ritualSessionId,
+          ritualCompleted: false,
+          now
+        }
+      );
+    }
     endRitualFlowChrome();
     emotionController.playEmotion('idle', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,

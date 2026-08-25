@@ -354,6 +354,7 @@
   "CONFIDE_PRESENCE_FACTS_INSUFFICIENT": "There are not enough check-ins yet to see a pattern—only a few moments are written down.",
   "CONFIDE_PRESENCE_FACTS_SUMMARY": "In the past {days} days you checked in {total} times: {breakdown}. That is only a few notes—not a full picture.",
   "PRESENCE_SIGNALS_DISCLOSURE": "Yin keeps these small check-ins on this device so you can notice your own shifts.",
+  "PRESENCE_RITUAL_LEAVE_RETROSPECTIVE": "Last time you chose {chip}, then left early.",
   "CONFIDE_DESKTOP_STATUS_PREPARING": "Preparing a local model on this computer…",
   "CONFIDE_DESKTOP_STATUS_DOWNLOADING": "Downloading the local model…",
   "CONFIDE_DESKTOP_STATUS_LOADING": "Loading the local model…",

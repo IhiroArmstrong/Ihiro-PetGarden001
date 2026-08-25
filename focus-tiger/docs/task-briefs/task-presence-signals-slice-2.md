@@ -1,8 +1,8 @@
 # Task Brief · Presence Signals · Slice 2（Ritual Leave 弱提示 · 方案 C）
 
-> **状态（2026-08-26）**：**交互稿已定（方案 C：事后回顾式）· 待开工**  
+> **状态（2026-08-26）**：**开工**（`feature/presence-signals-slice-2`）  
 > **口令**：「开工 Presence Signals Slice 2 — Ritual Leave 弱提示，方案 C」  
-> **前置**：Slice 3 已合 develop（#436）；`freeTextRetentionCutoffMs` 共享 helper 已合（见 `fix/free-text-retention-cutoff-shared`）
+> **前置**：Slice 3 #436 · prune helper #440 · Brief #439
 
 ---
 
@@ -25,7 +25,7 @@
 
 ## 实现注意
 
-若「未完成」判断与 `ritual-completions.v1` 完成态逻辑**冲突或重叠**，**先回报冲突点**，勿自行合并两套状态。
+- **`ritual-completions.v1` 不扩展**：完成轨迹仍仅 `recordCompletion` 写入；未完成 **只**进 `presence-signals`（`ritualCompleted:false`），两套存储职责分离、无字段合并。
 
 ## 验收
 
