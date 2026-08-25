@@ -12,9 +12,17 @@
  * @see docs/DESIGN.md「Idle Document PiP 陪伴浮窗」
  */
 
-import { supportsDocumentPictureInPicture } from './immersivePresenceSupport.js';
+import {
+  hasDocumentPictureInPictureShape,
+  shouldShowDocumentPictureInPictureEntry,
+  supportsDocumentPictureInPicture
+} from './immersivePresenceSupport.js';
 
-export { supportsDocumentPictureInPicture };
+export {
+  hasDocumentPictureInPictureShape,
+  shouldShowDocumentPictureInPictureEntry,
+  supportsDocumentPictureInPicture
+};
 
 export const IDLE_COMPANION_PIP_STORAGE_KEY =
   'focus-tiger.idle-companion-pip.v1';
@@ -33,7 +41,7 @@ export const IDLE_COMPANION_PIP_STORAGE_KEY =
  * @returns {boolean}
  */
 export function shouldMountIdleCompanionPipEntry(win = globalThis) {
-  return supportsDocumentPictureInPicture(win);
+  return hasDocumentPictureInPictureShape(win);
 }
 
 /**
@@ -47,7 +55,11 @@ export function shouldMountIdleCompanionPipEntry(win = globalThis) {
  * @returns {boolean}
  */
 export function shouldShowIdleCompanionPipEntry(state = {}) {
-  return Boolean(state.documentPipSupported) && Boolean(state.isIdle);
+  const pipOk =
+    typeof state.documentPipSupported === 'boolean'
+      ? state.documentPipSupported
+      : shouldShowDocumentPictureInPictureEntry();
+  return Boolean(pipOk) && Boolean(state.isIdle);
 }
 
 /**

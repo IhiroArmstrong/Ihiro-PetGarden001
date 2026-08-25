@@ -10,16 +10,108 @@
  * @see docs/DESIGN.md「全屏陪伴 / Immersive Presence」
  */
 
+import { isDesktopShellRuntime } from './desktopShell.js';
+
+/** @typedef {'unknown' | 'available' | 'unavailable'} DocumentPipProbeState */
+
+/** @type {DocumentPipProbeState} */
+let documentPipProbeState = 'unknown';
+
 /**
- * Document Picture-in-Picture (HTML in a floating window).
+ * @returns {DocumentPipProbeState}
+ */
+export function getDocumentPictureInPictureProbeState() {
+  return documentPipProbeState;
+}
+
+/** @returns {void} */
+export function resetDocumentPictureInPictureProbeState() {
+  documentPipProbeState = 'unknown';
+}
+
+/** @returns {void} */
+export function markDocumentPictureInPictureUnavailable() {
+  documentPipProbeState = 'unavailable';
+}
+
+/**
+ * API shape only — not proof that `requestWindow()` succeeds (Electron).
+ * @param {Window | undefined | null} [win]
+ * @returns {boolean}
+ */
+export function hasDocumentPictureInPictureShape(win = globalThis) {
+  try {
+    return typeof win?.documentPictureInPicture?.requestWindow === 'function';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Electron desktop shell must pass a live probe before showing PiP entry.
+ * @param {Window | undefined | null} [win]
+ * @returns {boolean}
+ */
+export function needsDocumentPictureInPictureProbe(win = globalThis) {
+  return (
+    hasDocumentPictureInPictureShape(win) && isDesktopShellRuntime(win)
+  );
+}
+
+/**
+ * Whether PiP entry may be shown (shape + probe; §6.21 H1).
+ * @param {Window | undefined | null} [win]
+ * @returns {boolean}
+ */
+export function shouldShowDocumentPictureInPictureEntry(win = globalThis) {
+  if (!hasDocumentPictureInPictureShape(win)) return false;
+  if (documentPipProbeState === 'unavailable') return false;
+  if (documentPipProbeState === 'available') return true;
+  if (needsDocumentPictureInPictureProbe(win)) return false;
+  return true;
+}
+
+/**
  * Desktop Chromium / recent Firefox; not Safari; not mobile Chrome.
+ * Alias of {@link shouldShowDocumentPictureInPictureEntry}.
  * @param {Window | undefined | null} [win]
  * @returns {boolean}
  */
 export function supportsDocumentPictureInPicture(win = globalThis) {
+  return shouldShowDocumentPictureInPictureEntry(win);
+}
+
+/**
+ * Live probe for Electron (and other shells where shape lies).
+ * @param {Window | undefined | null} [win]
+ * @returns {Promise<boolean>}
+ */
+export async function probeDocumentPictureInPicture(win = globalThis) {
+  if (!hasDocumentPictureInPictureShape(win)) {
+    documentPipProbeState = 'unavailable';
+    return false;
+  }
+  if (documentPipProbeState === 'unavailable') return false;
+  if (documentPipProbeState === 'available') return true;
+  if (!needsDocumentPictureInPictureProbe(win)) {
+    documentPipProbeState = 'available';
+    return true;
+  }
   try {
-    return typeof win?.documentPictureInPicture?.requestWindow === 'function';
+    const pipWindow = await win.documentPictureInPicture.requestWindow({
+      width: 64,
+      height: 64,
+      preferInitialWindowPlacement: true
+    });
+    try {
+      pipWindow.close();
+    } catch {
+      // ignore
+    }
+    documentPipProbeState = 'available';
+    return true;
   } catch {
+    documentPipProbeState = 'unavailable';
     return false;
   }
 }
