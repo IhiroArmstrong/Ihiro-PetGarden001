@@ -233,16 +233,16 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ## 📍 Yin Personalization Engine（2026-08-26 方向锁）
 
-> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份。L0 已开工。L1 另口令。L2 State Pack **未拍板**。
+> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份。L0/L1 已开工。L2 State Pack **未拍板**。
 
 | 级 | 内容 | 文档 | 状态 |
 |---|---|---|---|
 | **架构** | Cloud Brain / Local Runtime；State Pack 草图；隐私特征白名单；L0/L1/L2 | `YIN_PERSONALIZATION_ENGINE.md` | **方向锁**（#451） |
-| **L0** | 现有沉默/层序收成政策接口（行为不变） | `task-yin-personalization-engine-l0.md` | **本旁支开工** |
-| **L1** | 本地检索契约 ≤3 条；计数型 insight；三档政策 | 另口令；建议 AG 1d/1e 人工后 | 未开工 |
+| **L0** | 现有沉默/层序收成政策接口（行为不变） | `task-yin-personalization-engine-l0.md` | **已合 #452** |
+| **L1** | 本地检索契约 ≤3 条；计数型 insight；三档政策 | `task-yin-personalization-engine-l1.md` | **本旁支开工** |
 | **L2** | 云端 Pack；只收白名单特征 | 须单独产品会 | **未拍板** |
 
-**我认为最合理的下一刀**：关 AG 1d/1e 与 AF 人工；不要开 L1 检索重写或 L2 Worker。较弱：未开会写 Pack。
+**我认为最合理的下一刀**：L2 仍须产品会；AG/AF 人工可并行、不挡架构。较弱：未开会写 Pack。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 

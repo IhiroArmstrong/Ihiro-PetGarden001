@@ -676,5 +676,10 @@
   "YIN_MEMORY_VERBAL_FORGET_OK_GENERIC": "All right — I will not keep that in mind.",
   "YIN_MEMORY_VERBAL_FORGET_NO_MATCH": "I do not have anything remembered that matches that.",
   "YIN_MEMORY_VERBAL_FORGET_AMBIGUOUS": "A few memories could match. Open What Yin remembers to choose one, or be more specific.",
-  "YIN_MEMORY_VERBAL_FORGET_BULK": "Please forget them one at a time in What Yin remembers."
+  "YIN_MEMORY_VERBAL_FORGET_BULK": "Please forget them one at a time in What Yin remembers.",
+  "YPE_STYLE_LEGEND": "How Yin keeps you company",
+  "YPE_STYLE_HINT": "On this device only. Usual turns personalization off.",
+  "YPE_STYLE_DEFAULT": "Usual",
+  "YPE_STYLE_QUIET": "Quieter",
+  "YPE_STYLE_WARM": "A little more recognition"
 }

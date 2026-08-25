@@ -18,7 +18,7 @@
 
 **Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；1c 列表 + Forget；1e 口头 Forget CI-01；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
-**Yin Personalization Engine（2026-08-26 · L0）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。**无**新 localStorage key / **无** State Pack 文件。L2 若拍板也**禁止**写入练习备份 6 key、**禁止**与品味层 `/api/emotion-weight` 混桶。
+**Yin Personalization Engine（2026-08-26 · L0/L1）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。L1 key：`focus-tiger.ype-companion-style.v1`（quiet/default/warm；`default`＝关掉个人化）。**无** State Pack 文件。L2 若拍板也**禁止**写入练习备份 6 key、**禁止**与品味层 `/api/emotion-weight` 混桶。
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
@@ -37,6 +37,7 @@
 | `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice / Ritual chip（`ritual_chip` + `ritualCompleted` / `ritualSessionId`）等封闭标签事件；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
 | `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
+| `focus-tiger.ype-companion-style.v1` | `yinPersonalizationEngine` | L1 陪伴档 quiet/default/warm；What Yin remembers 邻接可改；`default` 即关掉个人化；**不进**练习备份 |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
 | `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` + **Scene A** `parrotEarVisit`（`parrotMessengerGate`） | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；横幅每次 **hidden→visible** 伴随 `parrotEarVisit`（欢迎池 live hold + pending flush，结束后补播；同页约 60s 再评到期；`__inAppReminder.parrotMessengerPlayed` / `pendingParrotMessengerAfterWelcome` / `resetParrotMessenger`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |

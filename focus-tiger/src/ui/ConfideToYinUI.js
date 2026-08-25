@@ -23,7 +23,13 @@ import {
   buildPresenceTrendReply,
   shouldAnswerWithPresenceFacts
 } from '../core/confide/confidePresenceFacts.js';
-import { ypeMayUseCompanionGenerate } from '../core/yinPersonalizationEngine.js';
+import {
+  readYpeCompanionStyle,
+  ypeBuildJourneyInsights,
+  ypeInsightsForGenerate,
+  ypeMayUseCompanionGenerate
+} from '../core/yinPersonalizationEngine.js';
+import { readJourneyLog } from '../core/journeyLogGate.js';
 import { formatLocalDateYmd } from './reflectionEchoCopy.js';
 import {
   GLASS_BLUR_CSS,
@@ -574,7 +580,22 @@ export class ConfideToYinUI {
     this._renderDesktopStatus();
     const history = this._l2Turns.slice();
     void Promise.resolve(
-      this._companion.generate({ text, locale, history })
+      this._companion.generate({
+        text,
+        locale,
+        history,
+        companionStyle: readYpeCompanionStyle(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        ),
+        patternInsights: ypeInsightsForGenerate(
+          readYpeCompanionStyle(
+            typeof localStorage !== 'undefined' ? localStorage : null
+          ),
+          ypeBuildJourneyInsights(
+            readJourneyLog(typeof localStorage !== 'undefined' ? localStorage : null)
+          )
+        )
+      })
     )
       .then((result) => {
         if (!this._open || epoch !== this._sendEpoch) return;

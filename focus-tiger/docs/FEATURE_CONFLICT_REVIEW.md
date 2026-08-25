@@ -94,6 +94,10 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 对照场景 Y Whisper / AE Confide / Sit。L0 只把现有 busy / 一生一次 Whisper / 层 3 用户主动 generate / 层序收成 `yinPersonalizationEngine.js`，parity 单测锁行为不变。不加重 Sit；不改人设层序；不接 Pack / Worker；无新可点击路径。
 
+**YPE L1 本地智能（2026-08-26 · 口令开工 L1）**
+
+对照 Y Whisper / AE Confide / AG Memory / Z Journey。L1 检索仍只在层 3 之前、≤3 条、low 不进；三档在 What Yin remembers 邻接、可关回 usual。Insight 只是计数对象，禁止诊断句。不替代 Memory store。用户书面：与 AG/AF 人工验收无耦合。
+
 **检索不生成 vs 桌面陪伴（2026-08-18）**
 
 2026-08-10「禅意倾听者」已锁 **检索不生成**。桌面端侧模型提案与之冲突（人设 / 职责），扫描没有默默开工，而是列出 0.4 三问等拍板。用户书面：**不要全面推翻**；批复措辞为 **「仅限桌面端受约束生成、其余场景仍然检索不生成」**。入口与 Confide 合并；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶都未接住之后。**2026-08-18 补**：本地智能体仅 **Electron 宽屏 ⋯**；窄屏抽屉 / 手机 **没有**该能力（故意不对等，不是漏适配）。随后才改定位稿。**禁止**把这次批准扩大到 Web / Whisper / Recover / 主动开口 / 窄屏。

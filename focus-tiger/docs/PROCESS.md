@@ -58,13 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-26（UTC+8） · **YPE L0 政策接口开工**（`yinPersonalizationEngine.js`；L2 未拍板） · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-26（UTC+8） · **YPE L1 本地智能开工**（检索契约 / 计数 insight / 三档；L2 未拍板） · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **Yin Personalization Engine Architecture V1（2026-08-26 · 方向锁 + L0）**：编排层方向锁入库。核心原则：云端可以让阿寅更懂这个人，但不能让没网时消失。**L0**：现有门闩收成政策接口（行为不变）。L1 另口令。L2 **未拍板**。SSOT `YIN_PERSONALIZATION_ENGINE.md`。
+- **Yin Personalization Engine Architecture V1（2026-08-26 · 方向锁 + L0/L1）**：编排层。核心原则：云端可以让阿寅更懂这个人，但不能让没网时消失。**L0** 门闩收口；**L1** 本地检索契约 / 计数 insight / 三档政策。L2 **未拍板**。SSOT `YIN_PERSONALIZATION_ENGINE.md`。
 - **Yin Personal Memory Architecture V1（2026-08-24 · 方向锁）**：设计师 12 点入库；三套边界写死。**2026-08-25**：AE 能聊用户书面关单；口令「开工 Yin Personal Memory」→ **Slice 0 运行时**（读 `PracticeDaysStore`，禁 Qwen 编时长）。Slice 1a Consent + store 骨架已合（#427）；Slice 1b Remember 已合（#428）；Slice 1c 列表+Forget **本旁支**（`task-yin-memory-slice-1c-list-forget.md`）；层 3 注入 **仍未做**。Brief `task-yin-memory-slice-0-practice-facts.md`。
 - **练习备份后台网络错峰（2026-08-23 · 本旁支改运行时）**：已同意备份的用户，Idle 静默上传改到约 2.5s（让开首段呼吸）；busy 含 Arrival / Honesty 叠层，叠层结束会短重试；空库恢复同样 busy；白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 cloud-ok。OTP 点击路径未改。慢网 Idle/Arrival 流畅度仍待人工（TRACKER 碎片）。下两条仍未开工：品味层开机预取、陪伴首次下载。
 - **后台网络三问门禁（2026-08-22 · 已入库 develop）**：非用户点击的请求实现前须答时机 / 写盘 / 慢网动效。SSOT `BACKGROUND_NETWORK.md`。口令见各 Brief。
@@ -459,7 +459,7 @@
 - 扩展 PointerInteraction：鼻子 Boop、拉尾巴、抚摸分阶段递进（文档已有，代码未全覆盖）
 - 按需推进 `TASKS.md` Phase 0 未完项（勿与 2D 主线混做；**PWA 任务六**仍不是电脑版终局——电脑版壳已拍板 **Electron**，见 Backlog「本地桌面 APP 打包」）
 - **云端品味层**（旧称 v1.1 云端算法）：权重覆盖 + 日签/文案池；播放器永远本地；**窄冻结已拍板**；**四问筛选尺 2026-08-20 拍板**；**schemaVersion 1 可选接线已落地**（**2026-08-20 本机 deploy** 现网 v1 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`；见 Backlog「云端品味层」）；下一刀 Quiet Line overlay 未开工；不进 v1.0.0 核心路径、不抢 SemVer `v1.1.0` 号
-- **YPE / 云端个人化（2026-08-26 方向锁 · L0 接口）**：编排见 `YIN_PERSONALIZATION_ENGINE.md`；**≠** 品味层。L0 本地政策接口已开工。L2 State Pack **未拍板**；禁止把核心路径绑云；禁止默认上传 Confide 原文
+- **YPE / 云端个人化（2026-08-26 方向锁 · L0/L1）**：编排见 `YIN_PERSONALIZATION_ENGINE.md`；**≠** 品味层。L0/L1 全本地。L2 State Pack **未拍板**；禁止把核心路径绑云；禁止默认上传 Confide 原文
 - **B · 练习记忆多端无缝同步（可后排）**：免费快照之后；评估是否作 Sanctuary/Membership 付费点（见 Backlog「练习记忆云端备份」§B）
 
 **已知的开放决策 / 待确认事项**：
