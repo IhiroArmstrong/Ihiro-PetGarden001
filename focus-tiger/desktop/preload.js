@@ -47,7 +47,9 @@ if (companionAllowed) {
   desktopShell.yinPersonalMemory = {
     getState: () => ipcRenderer.invoke('desktop:yin-personal-memory-get'),
     setConsent: (granted) =>
-      ipcRenderer.invoke('desktop:yin-personal-memory-set-consent', Boolean(granted))
+      ipcRenderer.invoke('desktop:yin-personal-memory-set-consent', Boolean(granted)),
+    rememberFromConfide: (payload) =>
+      ipcRenderer.invoke('desktop:yin-personal-memory-remember-from-confide', payload)
   };
 }
 
