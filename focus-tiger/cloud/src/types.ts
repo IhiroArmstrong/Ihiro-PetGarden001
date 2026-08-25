@@ -44,6 +44,16 @@ export interface Env {
 	/** Stripe Billing Portal return URL (Membership Manage). */
 	MEMBERSHIP_PORTAL_RETURN_URL?: string;
 
+	/** Focus Tiger Pro recurring Price ID (Support card 4). */
+	STRIPE_PRO_PRICE_ID?: string;
+	PRO_CHECKOUT_SUCCESS_URL?: string;
+	PRO_CHECKOUT_CANCEL_URL?: string;
+
+	/** Lifetime AI Companion add-on one-time Price ID (Support card 5). */
+	STRIPE_COMPANION_ADDON_PRICE_ID?: string;
+	COMPANION_ADDON_CHECKOUT_SUCCESS_URL?: string;
+	COMPANION_ADDON_CHECKOUT_CANCEL_URL?: string;
+
 	/** Exact browser Origin allowed for CORS, or comma-separated list. */
 	ALLOWED_ORIGIN?: string;
 	/** Optional alias of ALLOWED_ORIGIN (comma-separated). */

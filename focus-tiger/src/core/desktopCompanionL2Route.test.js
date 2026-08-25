@@ -302,6 +302,13 @@ describe('desktop companion L2 isolation', () => {
     );
     assert.match(preload, /desktop:companion-generate/);
     assert.match(ipcSrc, /desktop:companion-generate/);
+    assert.match(preload, /desktop:yin-personal-memory-get/);
+    assert.match(ipcSrc, /desktop:yin-personal-memory-set-consent/);
+    assert.match(preload, /desktop:yin-personal-memory-remember-from-confide/);
+    assert.match(ui, /shouldOfferYinMemoryConsent/);
+    assert.match(ui, /confide-to-yin-memory-consent/);
+    assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
+    assert.match(ui, /_maybeRememberFromL3/);
     assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];

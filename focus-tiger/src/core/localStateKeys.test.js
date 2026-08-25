@@ -71,6 +71,7 @@ import { MONETIZATION_FUNNEL_OPT_IN_STORAGE_KEY } from './monetizationFunnelOptI
 import { NEWSLETTER_CAPTURE_STORAGE_KEY } from './newsletter/newsletterCaptureGate.js';
 import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 import { ENTITLEMENT_CACHE_STORAGE_KEY } from './entitlement/entitlementState.js';
+import { COMPANION_ENTITLEMENT_STORAGE_KEY } from './companionEntitlement.js';
 import { ENTITLEMENT_OWNERSHIP_STORAGE_KEY } from './entitlement/entitlementOwnership.js';
 import { ENTITLEMENT_MOCK_STORAGE_KEY } from './entitlement/mockEntitlementProvider.js';
 import { MEMBERSHIP_DEVICE_CREDENTIAL_KEY } from './membershipDeviceCredential.js';
@@ -151,6 +152,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   NEWSLETTER_CAPTURE_STORAGE_KEY,
   SANCTUARY_STORAGE_KEY,
   ENTITLEMENT_CACHE_STORAGE_KEY,
+  COMPANION_ENTITLEMENT_STORAGE_KEY,
   ENTITLEMENT_OWNERSHIP_STORAGE_KEY,
   ENTITLEMENT_MOCK_STORAGE_KEY,
   MEMBERSHIP_DEVICE_CREDENTIAL_KEY,

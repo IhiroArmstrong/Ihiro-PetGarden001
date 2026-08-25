@@ -37,6 +37,16 @@ import {
   hasDesktopCompanionBridge,
   shouldCloseDesktopCompanionGenerateLayer
 } from '../core/desktopCompanionGate.js';
+import {
+  fetchYinPersonalMemoryState,
+  hasYinPersonalMemoryBridge,
+  rememberYinPersonalMemoryFromConfide,
+  saveYinPersonalMemoryConsent
+} from '../core/yinPersonalMemoryBridge.js';
+import {
+  canRememberYinPersonalMemory,
+  shouldOfferYinMemoryConsent
+} from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
 const FADE_MS = 220;
@@ -62,6 +72,9 @@ export class ConfideToYinUI {
     this._sendEpoch = 0;
     this._l2Turns = [];
     this._practiceDaysStore = handlers.practiceDaysStore || null;
+    this._memoryState = null;
+    this._pendingL3Send = null;
+    this._memoryConsentSaving = false;
 
     this.root = document.createElement('div');
     this.root.id = 'confide-to-yin-card';
@@ -101,6 +114,41 @@ export class ConfideToYinUI {
     this.progressEl.hidden = true;
 
     this.statusWrap.append(this.statusEl, this.modelEl, this.progressEl);
+
+    this.memoryConsentWrap = document.createElement('div');
+    this.memoryConsentWrap.className = 'confide-to-yin__memory-consent';
+    this.memoryConsentWrap.dataset.testid = 'confide-to-yin-memory-consent';
+    this.memoryConsentWrap.hidden = true;
+
+    this.memoryConsentCopy = document.createElement('p');
+    this.memoryConsentCopy.className = 'confide-to-yin__memory-consent-copy';
+
+    this.memoryConsentActions = document.createElement('div');
+    this.memoryConsentActions.className = 'confide-to-yin__memory-consent-actions';
+
+    this.memoryConsentAllowBtn = document.createElement('button');
+    this.memoryConsentAllowBtn.type = 'button';
+    this.memoryConsentAllowBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--primary confide-to-yin__memory-consent-allow';
+    this.memoryConsentAllowBtn.dataset.testid = 'confide-to-yin-memory-consent-allow';
+    this.memoryConsentAllowBtn.addEventListener('click', () =>
+      this._onMemoryConsentChoice(true)
+    );
+
+    this.memoryConsentDenyBtn = document.createElement('button');
+    this.memoryConsentDenyBtn.type = 'button';
+    this.memoryConsentDenyBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--ghost confide-to-yin__memory-consent-deny';
+    this.memoryConsentDenyBtn.dataset.testid = 'confide-to-yin-memory-consent-deny';
+    this.memoryConsentDenyBtn.addEventListener('click', () =>
+      this._onMemoryConsentChoice(false)
+    );
+
+    this.memoryConsentActions.append(
+      this.memoryConsentAllowBtn,
+      this.memoryConsentDenyBtn
+    );
+    this.memoryConsentWrap.append(this.memoryConsentCopy, this.memoryConsentActions);
 
     this.inputEl = document.createElement('textarea');
     this.inputEl.className = 'confide-to-yin__input';
@@ -154,6 +202,7 @@ export class ConfideToYinUI {
       this.titleEl,
       this.blurbEl,
       this.statusWrap,
+      this.memoryConsentWrap,
       this.inputEl,
       this.userEl,
       this.replyEl,
@@ -198,10 +247,14 @@ export class ConfideToYinUI {
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
     this._l2Turns = [];
+    this._pendingL3Send = null;
+    this._memoryConsentSaving = false;
+    this._hideMemoryConsent();
     this._sendEpoch += 1;
     this._sending = false;
     this._syncSendEnabled();
     this._syncGenerateLayerForViewport({ ensure: true });
+    void this._refreshMemoryState();
     requestAnimationFrame(() => {
       this.root.classList.add('is-visible');
       this.inputEl.focus();
@@ -214,6 +267,9 @@ export class ConfideToYinUI {
     this._sendEpoch += 1;
     this._sending = false;
     this._l2Turns = [];
+    this._pendingL3Send = null;
+    this._memoryConsentSaving = false;
+    this._hideMemoryConsent();
     this.hideGenerateLayer({ unload: false });
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -244,6 +300,7 @@ export class ConfideToYinUI {
         })
         .catch(() => {});
     }
+    void this._refreshMemoryState();
   }
 
   /**
@@ -337,6 +394,9 @@ export class ConfideToYinUI {
     this.sendBtn.textContent = t('CONFIDE_PANEL_SEND');
     this.cancelBtn.textContent = t('CONFIDE_PANEL_CANCEL');
     this.closeBtn.textContent = t('CONFIDE_PANEL_CLOSE');
+    this.memoryConsentCopy.textContent = t('YIN_MEMORY_CONSENT_BLURB');
+    this.memoryConsentAllowBtn.textContent = t('YIN_MEMORY_CONSENT_ALLOW');
+    this.memoryConsentDenyBtn.textContent = t('YIN_MEMORY_CONSENT_DENY');
     this._renderDesktopStatus();
   }
 
@@ -377,6 +437,127 @@ export class ConfideToYinUI {
       lineId: shown.line?.id || '',
       source: shown.source
     });
+  }
+
+
+  async _refreshMemoryState() {
+    if (!hasYinPersonalMemoryBridge()) {
+      this._memoryState = null;
+      return;
+    }
+    this._memoryState = await fetchYinPersonalMemoryState();
+  }
+
+  _hideMemoryConsent() {
+    if (!this.memoryConsentWrap) return;
+    this.memoryConsentWrap.hidden = true;
+  }
+
+  /**
+   * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
+   */
+  _offerMemoryConsentBeforeL3(payload) {
+    this._pendingL3Send = payload;
+    this.memoryConsentWrap.hidden = false;
+    this.memoryConsentAllowBtn.disabled = this._memoryConsentSaving;
+    this.memoryConsentDenyBtn.disabled = this._memoryConsentSaving;
+  }
+
+  /**
+   * @param {boolean} granted
+   */
+  _onMemoryConsentChoice(granted) {
+    if (this._memoryConsentSaving) return;
+    this._memoryConsentSaving = true;
+    this.memoryConsentAllowBtn.disabled = true;
+    this.memoryConsentDenyBtn.disabled = true;
+    void saveYinPersonalMemoryConsent(granted)
+      .then((state) => {
+        this._memoryState = state;
+        this._hideMemoryConsent();
+        const pending = this._pendingL3Send;
+        this._pendingL3Send = null;
+        if (pending) this._runL3Generate(pending);
+      })
+      .finally(() => {
+        this._memoryConsentSaving = false;
+        if (this.memoryConsentWrap && !this.memoryConsentWrap.hidden) {
+          this.memoryConsentAllowBtn.disabled = false;
+          this.memoryConsentDenyBtn.disabled = false;
+        }
+      });
+  }
+
+  /**
+   * Silent Remember after successful L3 generate (Slice 1b).
+   * @param {{ userText: string, route: string, replySource: string }} payload
+   */
+  _maybeRememberFromL3(payload) {
+    if (!hasYinPersonalMemoryBridge() || !canRememberYinPersonalMemory(this._memoryState)) {
+      return;
+    }
+    const turnOrdinal = Math.floor(this._l2Turns.length / 2);
+    void rememberYinPersonalMemoryFromConfide({
+      userText: payload.userText,
+      route: payload.route,
+      replySource: payload.replySource,
+      turnOrdinal
+    }).then((state) => {
+      this._memoryState = state;
+    });
+  }
+
+  /**
+   * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
+   */
+  _runL3Generate(payload) {
+    const { text, hit, locale, corpusText } = payload;
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._renderDesktopStatus();
+    const history = this._l2Turns.slice();
+    void Promise.resolve(
+      this._companion.generate({ text, locale, history })
+    )
+      .then((result) => {
+        if (!this._open || epoch !== this._sendEpoch) return;
+        if (result?.ok && result.text) {
+          this._showReply(
+            {
+              route: 'generate',
+              text: result.text,
+              source: 'generate'
+            },
+            text
+          );
+          this._maybeRememberFromL3({
+            userText: text,
+            route: hit.route,
+            replySource: 'generate'
+          });
+          return;
+        }
+        this._sessionExclude.add(hit.line.id);
+        this._showReply(
+          { route: hit.route, line: hit.line, text: corpusText, source: 'corpus' },
+          text
+        );
+      })
+      .catch(() => {
+        if (!this._open || epoch !== this._sendEpoch) return;
+        this._sessionExclude.add(hit.line.id);
+        this._showReply(
+          { route: hit.line ? hit.route : 'fallback', line: hit.line, text: corpusText, source: 'corpus' },
+          text
+        );
+      })
+      .finally(() => {
+        if (epoch !== this._sendEpoch) return;
+        this._sending = false;
+        this._syncSendEnabled();
+        this._renderDesktopStatus();
+      });
   }
 
   _onSend() {
@@ -421,47 +602,14 @@ export class ConfideToYinUI {
       );
       return;
     }
-    this._sending = true;
-    const epoch = this._sendEpoch;
-    this.sendBtn.disabled = true;
-    this._renderDesktopStatus();
-    const history = this._l2Turns.slice();
-    void Promise.resolve(
-      this._companion.generate({ text, locale, history })
-    )
-      .then((result) => {
-        if (!this._open || epoch !== this._sendEpoch) return;
-        if (result?.ok && result.text) {
-          this._showReply(
-            {
-              route: 'generate',
-              text: result.text,
-              source: 'generate'
-            },
-            text
-          );
-          return;
-        }
-        this._sessionExclude.add(hit.line.id);
-        this._showReply(
-          { route: hit.route, line: hit.line, text: corpusText, source: 'corpus' },
-          text
-        );
-      })
-      .catch(() => {
-        if (!this._open || epoch !== this._sendEpoch) return;
-        this._sessionExclude.add(hit.line.id);
-        this._showReply(
-          { route: hit.line ? hit.route : 'fallback', line: hit.line, text: corpusText, source: 'corpus' },
-          text
-        );
-      })
-      .finally(() => {
-        if (epoch !== this._sendEpoch) return;
-        this._sending = false;
-        this._syncSendEnabled();
-        this._renderDesktopStatus();
-      });
+    if (
+      hasYinPersonalMemoryBridge() &&
+      shouldOfferYinMemoryConsent(this._memoryState)
+    ) {
+      this._offerMemoryConsentBeforeL3({ text, hit, locale, corpusText });
+      return;
+    }
+    this._runL3Generate({ text, hit, locale, corpusText });
   }
 
   _injectStyles() {
@@ -506,6 +654,24 @@ export class ConfideToYinUI {
         font-size: 0.88rem;
         line-height: 1.45;
         opacity: 0.92;
+      }
+      .confide-to-yin__memory-consent {
+        margin: 10px 0 4px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: ${GLASS_FILL_STRONG};
+        border: 1px solid rgba(122, 83, 64, 0.18);
+      }
+      .confide-to-yin__memory-consent-copy {
+        margin: 0 0 10px;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #5a4030;
+      }
+      .confide-to-yin__memory-consent-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
       }
       .confide-to-yin__desktop-status {
         margin: 0 0 12px;

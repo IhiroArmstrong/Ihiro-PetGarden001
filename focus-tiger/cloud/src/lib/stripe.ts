@@ -111,6 +111,42 @@ export async function createMembershipCheckoutSession(opts: {
 	});
 }
 
+export async function createProCheckoutSession(opts: {
+	secretKey: string;
+	priceId: string;
+	successUrl: string;
+	cancelUrl: string;
+	customerEmail?: string;
+}): Promise<StripeCheckoutSession> {
+	const proMeta = {
+		product: "pro",
+		planId: "focus-tiger-pro",
+	};
+	return createCheckoutSession({
+		...opts,
+		mode: "subscription",
+		metadata: proMeta,
+		subscriptionMetadata: proMeta,
+	});
+}
+
+export async function createCompanionAddonCheckoutSession(opts: {
+	secretKey: string;
+	priceId: string;
+	successUrl: string;
+	cancelUrl: string;
+	customerEmail?: string;
+}): Promise<StripeCheckoutSession> {
+	return createCheckoutSession({
+		...opts,
+		mode: "payment",
+		metadata: {
+			product: "companion-addon",
+			itemId: "companion.addon.lifetime",
+		},
+	});
+}
+
 /**
  * Shared Checkout Session create — Tip/Sanctuary use payment; Membership uses subscription.
  */
@@ -323,6 +359,20 @@ export function isMembershipProductMetadata(
 	metadata: Record<string, string> | null | undefined,
 ): boolean {
 	return metadata?.product === "membership";
+}
+
+export function isProProductMetadata(
+	metadata: Record<string, string> | null | undefined,
+): boolean {
+	return metadata?.product === "pro";
+}
+
+export function isSubscriptionProductMetadata(
+	metadata: Record<string, string> | null | undefined,
+): boolean {
+	return (
+		isMembershipProductMetadata(metadata) || isProProductMetadata(metadata)
+	);
 }
 
 /**

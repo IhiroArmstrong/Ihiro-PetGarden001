@@ -16,10 +16,12 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
-**Yin Personal Memory（2026-08-24 · 方向锁 · 无运行时）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。实现前 **无** localStorage / userData key。将来也 **禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶。
+**Yin Personal Memory（2026-08-25 · Slice 1a–1b）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
+
+| `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent + schema；1b Remember 写 `memories[]`）；**不进**练习备份；Web 无此文件 |
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
 | `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js`。**只读消费者**：Support Modal 请茶优先（与莲花分钟并上；有练习日则不再 Tea 打头） |
@@ -49,7 +51,8 @@
 | `focus-tiger.monetization-funnel-opt-in.v1` | `monetizationFunnelOptIn` | 意愿漏斗 opt-in：`{ enabled, consentedAt, clientId, lastUpload* }`；默认关 |
 | `focus-tiger.newsletter-capture.v1` | `newsletter/newsletterCaptureGate` | Stay in touch 可选邮件留资标记：`{ submitted }`；**不**存邮箱明文；**不**挂钩 entitlement / tip / sanctuary；提交后菜单确认文案为 **We'll keep in touch**（**You're subscribed** 留给已解锁进阶仪式）。情境软提示 Phase 2。Cloud 配好时走 Worker `NEWSLETTER_KV` + Resend 欢迎信 / 退订；Worker **须成功发出欢迎信**才写 `submitted`（502 不写）。无 Cloud 或 `?newsletterMock=1` 仍 mock。见 `NEWSLETTER_CAPTURE.md` |
 | `focus-tiger.sanctuary-entitlement.v1` | `sanctuaryEntitlementGate` | Yin's Sanctuary Lifetime：`{ unlocked, unlockedVia, unlockedAt, itemId, badgeIds[] }`；`badgeIds` = 尊贵徽章（Lifetime **或** Membership 付费起 3，最多 17，只增不减；订阅授章**不**把 `unlocked` 标真）；**不得**读 tip-jar 状态；**也**作统一 entitlement gate 的 lifetime 只读信号（`resolveLifetimeActive`）。**不含**桌面本地智能体；Lifetime AI 加购 SKU `companion.addon.lifetime` **另计、无本 key、禁止**进 `FEATURE_CATALOG` |
-| `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` + `membershipCheckout` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt`）；Membership 成功页 / verify 写入 `subscription`；可用性优先，非防盗；宽限 7 天 |
+| `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` + `membershipCheckout` + `proCheckout` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt` / `planId`）；Membership / **Pro** 成功页 / verify 写入 `subscription`；可用性优先，非防盗；宽限 7 天 |
+| `focus-tiger.companion-entitlement.v1` | `companionEntitlement` + `companionAddonCheckout` | Lifetime **AI Companion Add-on** 本地缓存：`{ active, itemId, unlockedAt, via }`；**禁止**进 `FEATURE_CATALOG` / `isEntitled`；与 Pro 订阅（`planId=focus-tiger-pro`）**或**关系解锁桌面生成 |
 | `focus-tiger.entitlement-ownership.v1` | `entitlement/entitlementOwnership` | persistent「已拥有」标记（仪式历史/纪念物等）；只增不减；订阅到期不收回 |
 | `focus-tiger.entitlement-mock.v1` | `entitlement/mockEntitlementProvider` | mock provider 场景：`{ scenario, periodEndsAt, failFetch }`；亦可用 `?entitlementMock=`；**不**接 Stripe |
 | `focus-tiger.membership-device.v1` | `membershipDeviceCredential` + Membership confirm/OTP verify | `{ email, deviceToken }`；cloud provider 轮询与 Billing Portal Manage；TTL 由 Worker KV 约束 |

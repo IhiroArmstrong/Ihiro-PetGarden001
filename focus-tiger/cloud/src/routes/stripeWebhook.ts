@@ -11,6 +11,7 @@ import {
 	normalizeEmail as normalizeSanctuaryEmail,
 	writeSanctuary,
 } from "../lib/sanctuaryKv";
+import { writeCompanionAddon } from "../lib/companionAddonKv";
 import {
 	handleMembershipCheckoutCompleted,
 	handleMembershipInvoicePaid,
@@ -132,6 +133,20 @@ async function handleCheckoutSessionCompleted(
 			session.id,
 		);
 		return json({ received: true, ignored: true, reason: "missing_email" });
+	}
+
+	if (product === "companion-addon") {
+		if (!env.SANCTUARY_KV) {
+			return errorJson(503, "misconfigured", "SANCTUARY_KV not bound");
+		}
+		const email = normalizeSanctuaryEmail(emailRaw);
+		await writeCompanionAddon(env.SANCTUARY_KV, email, {
+			unlocked: true,
+			unlockedAt: new Date().toISOString(),
+			receiptId: typeof session.id === "string" ? session.id : "unknown",
+			itemId: session.metadata?.itemId || "companion.addon.lifetime",
+		});
+		return json({ received: true, stored: true, product: "companion-addon" });
 	}
 
 	if (product === "sanctuary") {
