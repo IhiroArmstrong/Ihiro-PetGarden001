@@ -205,6 +205,28 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(prompt.includes('How long have I practiced?'), false);
   });
 
+  it('injects related memory summaries when provided', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'Monday feels crowded again',
+      locale: 'en',
+      memorySummaries: ['Mondays have often felt crowded for you.'],
+      history: []
+    });
+    assert.match(prompt, /What Yin may gently recall/);
+    assert.match(prompt, /Mondays have often felt crowded for you/);
+    assert.match(prompt, /do not diagnose/);
+  });
+
+  it('omits memory block when summaries empty', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      memorySummaries: [],
+      history: []
+    });
+    assert.equal(prompt.includes('What Yin may gently recall'), false);
+  });
+
   it('keeps generate-backed Yin turns in Recent turns', () => {
     const prompt = buildCompanionL2Prompt({
       text: 'and the sky?',
@@ -313,6 +335,12 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
     assert.match(ui, /_maybeRememberFromL3/);
+    const runtime = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
+      'utf8'
+    );
+    assert.match(runtime, /retrieveYinMemorySummariesForL3Generate/);
+    
     assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
