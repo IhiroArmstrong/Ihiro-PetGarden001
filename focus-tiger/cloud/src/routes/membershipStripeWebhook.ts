@@ -18,6 +18,8 @@ import {
 	emailFromSubscription,
 	isActiveMembershipSubscriptionStatus,
 	isMembershipProductMetadata,
+	isProProductMetadata,
+	isSubscriptionProductMetadata,
 	isPastDueMembershipSubscriptionStatus,
 	periodEndsAtFromSubscription,
 	retrieveSubscription,
@@ -90,6 +92,7 @@ function acceptsMembershipSubscription(
 	hasSubIndex: boolean,
 ): boolean {
 	if (isMembershipProductMetadata(sub.metadata)) return true;
+	if (isProProductMetadata(sub.metadata)) return true;
 	// Legacy / race: index written by confirm or checkout.completed before metadata existed.
 	if (hasSubIndex) return true;
 	// No product tag and no index → do not touch tip/sanctuary/unknown subs.
@@ -145,12 +148,12 @@ export async function handleMembershipCheckoutCompleted(opts: {
 		return errorJson(503, "misconfigured", "Stripe secret not configured");
 	}
 
-	if (!isMembershipProductMetadata(session.metadata)) {
+	if (!isSubscriptionProductMetadata(session.metadata)) {
 		console.info(
-			"[stripe-webhook] subscription checkout ignored (not membership); session=",
+			"[stripe-webhook] subscription checkout ignored (not membership/pro); session=",
 			session.id,
 		);
-		return ignored("not_membership_product");
+		return ignored("not_subscription_product");
 	}
 
 	const emailRaw = emailFromCheckoutSession(session);

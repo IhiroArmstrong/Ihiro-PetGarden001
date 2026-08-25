@@ -29,8 +29,16 @@ import {
 import { SessionUiGate } from './core/SessionUiGate.js';
 import {
   createSessionChromeSync,
-  isHonestyPhaseBusy
+  isHonestyPhaseBusy,
+  isHonestyUiBusy
 } from './core/sessionChromeSync.js';
+import {
+  buildOverlaySnapshot,
+  deriveTeaBubbleBusyTarget,
+  deriveReminderBusySessionTarget,
+  canAttemptFirstCard
+} from './core/overlaySlotArbitration.js';
+import { OVERLAY_SOURCES } from './core/overlaySlotContractRegistry.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -48,6 +56,10 @@ import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
 import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
+import {
+  needsDocumentPictureInPictureProbe,
+  probeDocumentPictureInPicture
+} from './core/immersivePresenceSupport.js';
 import { IdleCompanionPipUI } from './ui/IdleCompanionPipUI.js';
 import { createIdleChromeFacade } from './core/createIdleChromeFacade.js';
 import {
@@ -58,8 +70,7 @@ import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import {
-  InAppReminderBannerController,
-  isReminderBusySession
+  InAppReminderBannerController
 } from './core/InAppReminderBannerController.js';
 import {
   isUpdateAvailable,
@@ -103,6 +114,11 @@ import {
   microRitualJourneyDraft,
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
+import { appendArrivalNoticeSignal } from './core/presenceSignalsGate.js';
+import {
+  markPresenceSignalsDisclosureSeen,
+  shouldShowPresenceSignalsDisclosure
+} from './core/presenceSignalsDisclosureGate.js';
 import {
   hasOpenedInsightSparkToday
 } from './core/dailyZenQuote.js';
@@ -126,6 +142,8 @@ import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
 import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
+import { bootProReturnConfirm } from './core/proCheckout.js';
+import { bootCompanionAddonReturnConfirm } from './core/companionAddonCheckout.js';
 import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
@@ -141,6 +159,7 @@ import {
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
+import { YinPersonalMemoryUI } from './ui/YinPersonalMemoryUI.js';
 import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
@@ -175,6 +194,7 @@ import {
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
 import { bindDesktopShellAttention } from './core/desktopShell.js';
+import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import {
   canRegisterDesktopCompanionGeneration,
   getDesktopCompanionBridge,
@@ -719,12 +739,7 @@ async function init() {
     }
   });
   syncSoftUpdatePrompt = () => {
-    const busy = isReminderBusySession({
-      state: stateManager.state,
-      arrivalOpen: Boolean(arrivalPractice?.isOpen?.()),
-      reflectionOpen: Boolean(reflectionMoment?.isOpen?.()),
-      microRitualOpen: Boolean(microRitualUI?.isOpen?.())
-    });
+    const busy = deriveReminderBusySessionTarget(buildLiveOverlaySnapshot());
     const reveal = shouldRevealSoftUpdatePrompt({
       updateAvailable: softUpdateAvailable,
       busySession: busy,
@@ -975,6 +990,8 @@ async function init() {
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
+  const yinPersonalMemoryUI = new YinPersonalMemoryUI(document.body, {});
+  window.__yinPersonalMemory = yinPersonalMemoryUI;
   /** @type {FocusCoinsPanelUI | null} */
   let yinCoinPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
@@ -1088,6 +1105,13 @@ async function init() {
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
     },
+    onOpenMemoryPanel: () => {
+      closeGrowthOverlayCards({ except: 'yin-memory' });
+      yinPersonalMemoryUI.open();
+    },
+    onMemoryForgotten: (memoryId) => {
+      yinPersonalMemoryUI.removeMemoryIfOpen(memoryId);
+    },
     onReplied: ({ route }) => {
       if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
         emotionController.playEmotion('nodBow');
@@ -1126,6 +1150,7 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
   }
 
@@ -1191,15 +1216,7 @@ async function init() {
   const contextualTeaTipBubbleUI = new ContextualTeaTipBubbleUI(
     document.getElementById('ui-overlay') || document.body,
     {
-      isBusy: () =>
-        tipJarUI.isOpen() === true ||
-        supportYinModalUI.isOpen() === true ||
-        sanctuaryUnlockUI.isOpen?.() === true ||
-        membershipUnlockUI.isOpen?.() === true ||
-        mustardSeedSealCardUI.isOpen?.() === true ||
-        reflectionMoment?.isOpen?.() === true ||
-        arrivalPractice?.isOpen?.() === true ||
-        fiveMomentsCompassUI.isOpen() === true,
+      isBusy: () => deriveTeaBubbleBusyTarget(buildLiveOverlaySnapshot()),
       onBuyTea: () => {
         contextualTeaTipBubbleUI.hide({ immediate: true });
         closeGrowthOverlayCards({ except: 'tip' });
@@ -1227,6 +1244,18 @@ async function init() {
       applyPaymentThanksSprite('membership');
     }
   });
+  void bootProReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      monetizationFunnelStore.checkoutComplete('pro', 'return');
+      applyPaymentThanksSprite('pro');
+    }
+  });
+  void bootCompanionAddonReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
+      applyPaymentThanksSprite('companion-addon');
+    }
+  });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   applyQaPracticeSeedFromSearch({
     search: window.location.search,
@@ -1237,6 +1266,7 @@ async function init() {
     storage: typeof localStorage !== 'undefined' ? localStorage : null
   });
   const practiceDaysStore = new PracticeDaysStore();
+  confideToYinUI.bindPracticeDaysStore(practiceDaysStore);
   const focusCoinsStore = new FocusCoinsStore({ now });
   function awardFocusCoins(event) {
     return applyFocusCoinsGrant({
@@ -1591,7 +1621,13 @@ async function init() {
         completionPending: sessionUiGate.completionPending
       }),
       getElapsedSeconds: () => focusSession.getElapsedSeconds(),
-      getSpriteFrameSrc: readSpriteFrameSrc
+      getSpriteFrameSrc: readSpriteFrameSrc,
+      onPipUnavailable: () => {
+        mindfulToast.show(t('IMMERSIVE_PIP_UNAVAILABLE'), {
+          placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+          visibleMs: 2800
+        });
+      }
     }
   );
   window.__immersivePresence = immersivePresenceUI;
@@ -1606,6 +1642,14 @@ async function init() {
     }
   );
   window.__idleCompanionPip = idleCompanionPipUI;
+
+  if (needsDocumentPictureInPictureProbe()) {
+    void probeDocumentPictureInPicture().then((ok) => {
+      if (!ok) return;
+      immersivePresenceUI.refreshPipEntry?.();
+      idleCompanionPipUI.refreshPipEntry?.();
+    });
+  }
 
   /**
    * Choose 确认后、Companion 展开前（点头动画窗口）：Arrival 已关，
@@ -1624,6 +1668,7 @@ async function init() {
     getMicroRitualUI: () => microRitualUI,
     getRitualFlowUI: () => ritualFlowUI,
     getFocusDurationPicker: () => focusDurationPicker,
+    getMustardSeedSealUI: () => mustardSeedSealCardUI,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -1637,6 +1682,29 @@ async function init() {
   const { syncHonestyIdleEntry, syncArrivalGateReady } = sessionChromeSyncApi;
   /** @type {IdleYinTapAnchorUI | null} */
   let idleYinTapAnchor = null;
+
+  function buildLiveOverlaySnapshot() {
+    return buildOverlaySnapshot({
+      sessionState: stateManager.state,
+      completionPending: sessionUiGate.completionPending,
+      honestyPhase: honestyCheckInUI?.phase,
+      honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
+      arrivalOpen: arrivalPractice?.isOpen?.() === true,
+      reflectionOpen: reflectionMoment?.isOpen?.() === true,
+      microRitualOpen: microRitualUI?.isOpen?.() === true,
+      ritualFlowOpen: ritualFlowUI?.isOpen?.() === true,
+      focusDurationPickerOpen: focusDurationPicker?.isOpen?.() === true,
+      companionPickerOpen: companionModePicker?.isOpen?.() === true,
+      postSessionOverlayActive: sessionUiGate.postSessionOverlayActive,
+      compassOpen: fiveMomentsCompassUI.isOpen(),
+      mustardSeedOpen: mustardSeedSealCardUI.isOpen?.() === true,
+      tipJarOpen: tipJarUI.isOpen() === true,
+      supportModalOpen: supportYinModalUI.isOpen() === true,
+      sanctuaryOpen: sanctuaryUnlockUI.isOpen?.() === true,
+      membershipOpen: membershipUnlockUI.isOpen?.() === true,
+      flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true
+    });
+  }
 
   function playCollectionsWaveHello() {
     const result = evaluateCollectionsWaveHelloPlay({
@@ -2264,6 +2332,22 @@ async function init() {
     musicOn: ambientSoundscapeUI.wantsMusicOn()
   });
 
+  bindElectronIdleContextMenu({
+    getIsIdleContextMenuAllowed: () => {
+      if (stateManager.state !== STATES.IDLE) return false;
+      if (idleChrome.isSecondaryMenuOpen?.()) return false;
+      if (arrivalPractice?.isOpen?.()) return false;
+      if (reflectionMoment?.isOpen?.()) return false;
+      if (microRitualUI?.isOpen?.()) return false;
+      if (isHonestyUiBusy(honestyCheckInUI?.phase)) return false;
+      if (companionModePicker?.isOpen?.()) return false;
+      return true;
+    },
+    onOpenSecondaryMenu: () => {
+      idleChrome.openSecondaryMenu?.();
+    }
+  });
+
   /** @type {OnboardingHintsUI | null} */
   let onboardingHints = null;
 
@@ -2345,7 +2429,7 @@ async function init() {
     },
     onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
     onWellnessFirstDismiss: () => {
-      maybeOfferFiveMomentsCompassFirstCard();
+      scheduleFirstCardOffers();
     }
   });
   onboardingHintHost.hints = onboardingHints;
@@ -2403,10 +2487,19 @@ async function init() {
   arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
-      onNoticeSelected: () => {
+      onNoticeSelected: (noticeId) => {
+        const storage =
+          typeof localStorage !== 'undefined' ? localStorage : null;
+        const row = appendArrivalNoticeSignal(storage, noticeId);
+        const showDisclosure =
+          Boolean(row) && shouldShowPresenceSignalsDisclosure(storage);
+        if (showDisclosure) {
+          markPresenceSignalsDisclosureSeen(storage);
+        }
         lightProgression.onNoticeSelected();
         onboardingHints?.markSeen('notice');
         syncOnboardingAutoHints();
+        return showDisclosure;
       },
       onBreath: () => {
         lightProgression.beginBreath();
@@ -2577,12 +2670,7 @@ async function init() {
       now: reminderNow,
       hasCompletedToday: () => dailyCompletionStore.hasCompletedToday()
     });
-    const busy = isReminderBusySession({
-      state: stateManager.state,
-      arrivalOpen: Boolean(arrivalPractice?.isOpen?.()),
-      reflectionOpen: Boolean(reflectionMoment?.isOpen?.()),
-      microRitualOpen: Boolean(microRitualUI?.isOpen?.())
-    });
+    const busy = deriveReminderBusySessionTarget(buildLiveOverlaySnapshot());
     const decision = inAppReminderBannerController.resolve(candidate, {
       isBusySession: busy
     });
@@ -3312,6 +3400,18 @@ async function init() {
   syncOnboardingAutoHints();
 
   let wellnessFirstConsumedThisPage = false;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let firstCardOfferTimer = null;
+
+  function onboardingHintsBlockFirstCard() {
+    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
+      return true;
+    }
+    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+      return true;
+    }
+    return false;
+  }
 
   function maybeOfferWellnessDisclaimerFirstCard() {
     if (!productChrome) return false;
@@ -3325,13 +3425,11 @@ async function init() {
       return false;
     }
     if (stateManager.state !== STATES.IDLE) return false;
-    if (isSceneAnimOverlayBusy()) return false;
-    if (flowerBlowWelcomeBubble?.isOpen?.()) return false;
-    if (fiveMomentsCompassUI.isOpen()) return false;
-    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
-      return false;
-    }
-    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+    if (onboardingHintsBlockFirstCard()) return false;
+    const snapshot = buildLiveOverlaySnapshot();
+    if (
+      !canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, snapshot)
+    ) {
       return false;
     }
     closeGrowthOverlayCards();
@@ -3353,27 +3451,50 @@ async function init() {
       return;
     }
     if (stateManager.state !== STATES.IDLE) return;
-    if (isSceneAnimOverlayBusy()) return;
-    if (fiveMomentsCompassUI.isOpen()) return;
-    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
-      return;
-    }
-    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+    if (onboardingHintsBlockFirstCard()) return;
+    const snapshot = buildLiveOverlaySnapshot();
+    if (!canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, snapshot)) {
       return;
     }
     closeGrowthOverlayCards({ except: 'moments' });
     fiveMomentsCompassUI.open({ firstRun: true });
   }
 
-  // Quiet Idle first-run: Compass (wellness auto-card is off; lookup is ?).
-  // Wait out flower-welcome bubble; retry a few times so Day1 吹花 does not stack.
-  if (productChrome) {
-    for (const ms of [3600, 4800, 6400, 8200, 11000]) {
-      window.setTimeout(() => {
-        if (maybeOfferWellnessDisclaimerFirstCard()) return;
-        maybeOfferFiveMomentsCompassFirstCard();
-      }, ms);
+  function scheduleFirstCardOffers(delayMs = 0) {
+    if (!productChrome) return;
+    if (firstCardOfferTimer != null) {
+      window.clearTimeout(firstCardOfferTimer);
+      firstCardOfferTimer = null;
     }
+    firstCardOfferTimer = window.setTimeout(() => {
+      firstCardOfferTimer = null;
+      if (maybeOfferWellnessDisclaimerFirstCard()) return;
+      maybeOfferFiveMomentsCompassFirstCard();
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const wantsWellness = shouldOfferWellnessDisclaimerFirstCard(
+        storage,
+        location.search
+      );
+      const wantsCompass = shouldOfferFiveMomentsCompassFirstCard(storage);
+      if (!wantsWellness && !wantsCompass) return;
+      const snapshot = buildLiveOverlaySnapshot();
+      const stillBlocked =
+        (wantsWellness &&
+          !wellnessFirstConsumedThisPage &&
+          !canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, snapshot)) ||
+        (wantsCompass &&
+          !canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, snapshot));
+      if (stillBlocked) {
+        scheduleFirstCardOffers(4000);
+      }
+    }, delayMs);
+  }
+
+  // Quiet Idle first-run: Compass (wellness auto-card is off; lookup is ?).
+  // Defer queue via canAttemptFirstCard (flower > compass > wellness).
+  if (productChrome) {
+    scheduleFirstCardOffers();
   }
 
   // Occupancy already decided the first paint (welcome / flower / thanks /
@@ -3746,10 +3867,7 @@ async function init() {
     syncConfideEarChrome();
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
-      window.setTimeout(() => {
-        if (maybeOfferWellnessDisclaimerFirstCard()) return;
-        maybeOfferFiveMomentsCompassFirstCard();
-      }, 900);
+      scheduleFirstCardOffers(900);
       // Practice-memory backup: Idle flush after first breath has room (not 400ms).
       schedulePracticeBackupUpload({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,

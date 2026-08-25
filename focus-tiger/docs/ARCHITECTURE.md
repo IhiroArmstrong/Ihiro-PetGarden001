@@ -86,6 +86,7 @@ focus-tiger/
 │  ├─ TASKS.md
 │  ├─ PRINCIPLES.md
 │  ├─ ARCHITECTURE.md
+│  ├─ YIN_PERSONAL_MEMORY.md      # 阿寅个人记忆架构 V1（方向锁；无运行时）
 │  ├─ DESIGN.md
 │  ├─ PROCESS.md
 │  ├─ COLLAB.md

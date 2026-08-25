@@ -1,43 +1,67 @@
 ---
-description: Control Agent Fast Request / token cost — no subagents, no long CI polling, no unauthorized full e2e
-alwaysApply: true
+description: Agent Token Cost——跑测试/e2e/CI、大范围读仓、子 Agent 相关任务前须 Read 全文
+alwaysApply: false
 ---
 
-# Focus Tiger · Agent Token Cost（控 Fast Request）
+# Focus Tiger · Agent Token Cost（控 Fast Request · 按需层）
 
-目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候，瞬间吞掉数十次 Fast Request。
+> **加载时机**：跑测试/e2e、读 CI 结果、预计多文件搜索、或用户提到 token 成本时。测试输出卫生摘要亦在 `focus-tiger-core.mdc`。
+
+目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候、无限制上下文读取、默认走高价模型档位，瞬间吞掉数十次 Fast Request 或天量 token。
 
 索引：`RULES_INDEX.md` → `agent-token-cost`（本地 e2e 硬顶另见 `e2e-local-budget`）。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask + **`gate-local-heavy-e2e` deny**；**IDE Browser MCP deny** 见 `browser-energy`）。
 
 ## 强制（本会话）
 
-1. **禁止 Task / 子 Agent**（含 `explore` / `generalPurpose` / `shell` / bugbot / security-review 等）。默认在**父 Agent**内直接完成。  
-   - 硬闸：`subagentStart` → `permission: deny`（脚本 `deny-subagent-start.sh`）。  
+1. **禁止 Task / 子 Agent**（含 `explore` / `generalPurpose` / `shell` / bugbot / security-review 等）。默认在**父 Agent**内直接完成。
+   - 硬闸：`subagentStart` → `permission: deny`（脚本 `deny-subagent-start.sh`）。
    - 仅当你**当回合书面点名**要开某类子 Agent，且你临时关掉/放行该 hook 时，才可例外。
 2. **禁止并行 explore / 批量并行子任务**。一次一线索；不要为「加快」开多个 Task。
-3. **禁止轮询长 CI**（全量 e2e、visibility 长跑、`gh run watch`、反复 `gh run view` + 长 `sleep`）。  
-   - 允许：触发一次（须用户当回合批准）→ 贴 run URL → **结束**。  
+3. **禁止轮询长 CI**（全量 e2e、visibility 长跑、`gh run watch`、反复 `gh run view` + 长 `sleep`）。
+   - 允许：触发一次（须用户当回合批准）→ 贴 run URL → **结束**。
    - 结果另开短回合查摘要；不要在本回合守 30–120 分钟。
-4. **禁止擅自触发全量 e2e**（`gh workflow run` 指向 `focus-tiger-e2e-full` / `test:e2e` 全量）。须用户当回合明确批准（如「批准触发 full e2e」）。  
+4. **禁止擅自触发全量 e2e**（`gh workflow run` 指向 `focus-tiger-e2e-full` / `test:e2e` 全量）。须用户当回合明确批准（如「批准触发 full e2e」）。
    - 硬闸：`beforeShellExecution` → ask（`gate-full-e2e-dispatch.sh`）。
 5. **工具轮数自觉上限**：单任务若已连续大量工具调用仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转。
-6. **CI 红 / 合入受阻 / 多文件冲突 · 本地验证预算（强制）**  
-   适用：PR checks 失败、merge 冲突、或预计 **≥3 文件** / **多轮试错** 才能解的改动。  
-   - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。  
-   - **先**给「冲突 / 失败分析摘要」（哪些文件、什么类型：语法 / 契约 / e2e 选择器 / 真逻辑），**不要**立刻开改。  
-   - **问**用户是否要新开 worktree/分支处理（避免试错脏了其它任务）。  
+6. **CI 红 / 合入受阻 / 多文件冲突 · 本地验证预算（强制）**
+   适用：PR checks 失败、merge 冲突、或预计 **≥3 文件** / **多轮试错** 才能解的改动。
+   - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。
+   - **先**给「冲突 / 失败分析摘要」（哪些文件、什么类型：语法 / 契约 / e2e 选择器 / 真逻辑），**不要**立刻开改。
+   - **问**用户是否要新开 worktree/分支处理（避免试错脏了其它任务）。
    - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或 **`test:e2e:changed --` 单个 spec**）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止多文件 changed / 全量 / 直调长列表（脚本+hook 硬拦；`RUN_E2E_LOCAL=true` 逃生口会打警告）。
+7. **上下文范围控制（防止大规模误读）**
+   - 禁止一次性读取/索引整个仓库或大范围目录树，除非用户当回合明确批准范围。
+   - 默认以 `.cursorignore` 为准排除 `node_modules`、构建产物（`dist`/`build`/`.next`/`out`）、大体积媒体资源（音频/视频/图片/字体）、大数据文件；若发现这类文件未被排除，先提醒用户补充 `.cursorignore`，不要直接把它们读入上下文。
+   - 涉及跨目录 / 多文件（≥5 个文件）搜索或读取前，先说明预计扫描范围，等待用户确认后再执行，不要一次性拉取大范围上下文。
+8. **模型档位纪律（防止默认走高价档位）**
+   - 简单编辑、局部调试、格式修正、小范围重构：使用当前默认/轻量模型，不主动建议或假设需要切换到 high 推理档位。
+   - 涉及跨文件架构设计、复杂逻辑推理、疑难 bug 排查等确实需要深度推理的任务：可以提示用户「这个任务可能需要更强模型（如 high 档位），是否切换？」，但不得擅自假设已获同意并按更高档位继续执行。
+   - 模型档位切换权始终在用户手中，Agent 不得通过工具调用绕过。
+9. **长会话收尾卫生（Session Hygiene）**
+   - 当用户消息是简短确认/收尾类内容（如「Merged」「同步一下 QA」「PR 合了」等），且当前会话已经跨越较长时间或已处理过多个不相关话题时，先提示用户：「这个会话历史较长，建议新开一个会话处理这个收尾动作，能减少不必要的 token 开销」，而不是直接在旧会话里继续执行。
+   - 只有当用户明确回复「就在这里做」或类似确认后，才继续在当前会话执行。
+10. **Git / PR / QA 同步类任务的模型路由建议**
+   - 若任务本质是机械性流程（分支切换、commit、push、开 PR、QA 树同步、状态确认等），不涉及复杂逻辑推理，在任务开始前提示用户：「这类任务用 Composer 2.5 会更省成本，是否要切换？」
+   - 不得擅自假设用户已同意切换模型；模型切换权始终在用户手中。
+11. **机械性操作的一次性批量规划**
+   - 对于 Git/PR/QA 同步这类多步骤机械操作，执行前先列出完整步骤清单（占坑锁、stash、切分支、commit、push、开 PR 等），一次性说明后再连续执行，不要每完成一步就停下来单独确认一次，避免把一个任务拆成过多工具调用轮次（每多一轮，规则前缀就多计一次 token）。
+   - 仅当某一步存在风险判断（如可能冲突、可能覆盖他人改动）时，才单独停下来问用户。
+
+12. **测试输出卫生（强制 · 与 `focus-tiger-core.mdc` 一致）**
+   - 任何 `npm run test*` / Playwright / `playwright install` 跑完后：回复只写 pass/fail 数量 + 失败用例名 + 一行报错；**禁止**粘贴完整终端输出（同一对话线程里会随轮次线性累积计费）。
+   - 需留档 → 写 `focus-tiger/.tmp/test-output-<timestamp>.log`（或 `/tmp/…`）；排查时用 `Read`  targeted 段，**禁止**让大段日志在多轮上下文里常驻。
+   - Shell 工具若返回超大 stdout：只向用户汇报结构化结论，不要把原始块原样复读进回复。
 
 ## Settings → Agents → Subagents（须你本人在 Cursor UI 设）
 
 项目文件**无法**写入该 UI 项。请你本地确认：
 
-- **Cursor Settings → Agents → Subagents**  
-  - Explore subagent model → **Inherit from parent**（或固定便宜模型）  
-  - 有「禁用 / 少用并行」类选项则打开  
+- **Cursor Settings → Agents → Subagents**
+  - Explore subagent model → **Inherit from parent**（或固定便宜模型）
+  - 有「禁用 / 少用并行」类选项则打开
 
 与本规则 + hook 叠加：UI 降成本，hook 硬禁 spawn。
 
 ## 汇报
 
-触及本主题的收尾「待你知道」可一行写：本回合未起子 Agent / 未轮询长 CI（或说明经批准的一次性触发 + URL）。
+触及本主题的收尾「待你知道」可一行写：本回合未起子 Agent / 未轮询长 CI（或说明经批准的一次性触发 + URL）/ 未做大范围上下文读取 / 未擅自切换高档位模型或跳过模型路由建议 / 机械操作已按批量规划一次性执行。

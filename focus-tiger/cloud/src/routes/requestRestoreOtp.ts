@@ -1,6 +1,7 @@
 import { errorJson, json } from "../lib/http";
 import { isPlausibleEmail, normalizeEmail } from "../lib/tipKv";
 import { readSanctuary } from "../lib/sanctuaryKv";
+import { readCompanionAddon } from "../lib/companionAddonKv";
 import { readMembership, isMembershipWithinVerifyWindow } from "../lib/membershipKv";
 import {
 	isRestorePurpose,
@@ -52,7 +53,7 @@ export async function handleRequestRestoreOtp(
 		return errorJson(
 			400,
 			"invalid_purpose",
-			'purpose must be "sanctuary" or "membership"',
+			'purpose must be "sanctuary", "membership", or "companion-addon"',
 		);
 	}
 	const purpose: RestorePurpose = purposeRaw;
@@ -64,7 +65,12 @@ export async function handleRequestRestoreOtp(
 			return errorJson(503, "misconfigured", "SANCTUARY_KV not bound");
 		}
 		hasEntitlement = Boolean(await readSanctuary(env.SANCTUARY_KV, email));
-	} else {
+	} else if (purpose === "companion-addon") {
+		if (!env.SANCTUARY_KV) {
+			return errorJson(503, "misconfigured", "SANCTUARY_KV not bound");
+		}
+		hasEntitlement = Boolean(await readCompanionAddon(env.SANCTUARY_KV, email));
+	} else if (purpose === "membership") {
 		if (!env.MEMBERSHIP_KV) {
 			return errorJson(503, "misconfigured", "MEMBERSHIP_KV not bound");
 		}
@@ -72,6 +78,8 @@ export async function handleRequestRestoreOtp(
 		hasEntitlement = Boolean(
 			rec && isMembershipWithinVerifyWindow(rec.periodEndsAt),
 		);
+	} else {
+		hasEntitlement = false;
 	}
 
 	if (hasEntitlement) {

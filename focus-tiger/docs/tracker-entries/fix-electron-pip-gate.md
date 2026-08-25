@@ -1,0 +1,3 @@
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 访问路径 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| Float Yin · Electron PiP 探针（藏钮/失败反馈） | UI可见 | 待人工测试 | **Electron `desktop:dev` 宽屏**：`?product=1` → Sit → Focusing → **不得**见可点但无反应的 **Float Yin · experimental**（探针失败应藏钮）。**Chrome 桌面**：Focusing 仍可见该钮 → 点小窗打开。**主路径（Chrome）**：点 Float Yin → **0–1 秒内**按压 + 小窗。**若壳内误显且点失败**：中置短句 `IMMERSIVE_PIP_UNAVAILABLE`（非空 catch）。**Safari**：入口不出现。**回流**：Rise 后再 Focusing 行为一致。自动化：`immersivePresenceSupport.test.js`（Electron 探针红/绿）。 | **2026-08-25 用户书面**：同意 fix/electron-pip-gate；Electron 哑点击须跟进。 | — | — | `#immersive-presence` · `npm run desktop:dev` · Chrome 对照 | 2026-08-25 |

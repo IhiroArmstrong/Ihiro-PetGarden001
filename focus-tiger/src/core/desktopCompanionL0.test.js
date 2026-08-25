@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import {
   L0_LOW_SPEC_TOTAL_MEM_MB,
+  L0_MODEL_EXPECTED_BYTES,
   L0_MODEL_ID,
   L0_MODEL_URL,
   L0_MODEL_URLS,
@@ -107,10 +108,12 @@ describe('desktop companion L0 metrics', () => {
 });
 
 describe('desktop companion L0 isolation', () => {
-  it('keeps the starting candidate on Hugging Face GGUF, not a chat API', () => {
-    assert.equal(L0_MODEL_ID, 'Qwen3-0.6B-Q4_K_M');
+  it('keeps the locked 1.7B candidate on Hugging Face GGUF, not a chat API', () => {
+    assert.equal(L0_MODEL_ID, 'Qwen3-1.7B-Q4_K_M');
+    assert.equal(L0_MODEL_EXPECTED_BYTES, 1_107_409_472);
     assert.match(L0_MODEL_URL, /huggingface\.co/);
-    assert.match(L0_MODEL_URL, /Qwen3-0\.6B/);
+    assert.match(L0_MODEL_URL, /Qwen3-1\.7B/);
+    assert.match(L0_MODEL_URL, /unsloth/);
     assert.match(L0_MODEL_URL, /\.gguf$/);
     assert.equal(L0_MODEL_URLS[0], L0_MODEL_URL);
     assert.ok(L0_MODEL_URLS.length >= 1);

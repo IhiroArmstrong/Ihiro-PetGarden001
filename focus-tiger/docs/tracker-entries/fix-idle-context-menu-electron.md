@@ -1,0 +1,3 @@
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 访问路径 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| Electron Idle 空白右键 → ⋯/抽屉同族菜单 | UI可见 | 待人工测试 | **仅 Electron 壳**（`npm run desktop:dev` 宽窗 ≥480）。**主路径**：Idle → 在阿寅旁**空白画布**处 **右键** → **0–1 秒内**出现与底部 **⋯** 同族的右侧 sheet（`#ft-wide-more-menu`）。**窄屏 ≤479**：空白右键 → 上滑抽屉（`#ft-narrow-options-drawer`）。**回流**：Esc / 点遮罩关闭后再右键仍开。**禁止**：Web Safari 出现全局 contextmenu 拦截（本实现只在 `desktopShell.isDesktop` 注册）。**邻接**：点按钮/三球/问号处右键不得抢原生或误开菜单。自动化：`electronIdleContextMenu.test.js`（目标过滤 + 非 Electron 不绑定）。 | **2026-08-25 用户书面**：同意 Electron 空白右键开工；Safari 不抢全局。 | — | — | `npm run desktop:dev` · `?product=1` · 宽/窄各测 | 2026-08-25 |

@@ -4,15 +4,24 @@
  */
 
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it, beforeEach } from 'node:test';
 import {
   canEnterImmersivePresence,
   formatMmSs,
-  supportsDocumentPictureInPicture,
+  hasDocumentPictureInPictureShape,
+  markDocumentPictureInPictureUnavailable,
+  needsDocumentPictureInPictureProbe,
+  probeDocumentPictureInPicture,
+  resetDocumentPictureInPictureProbeState,
+  shouldShowDocumentPictureInPictureEntry,
   supportsElementFullscreen
 } from './immersivePresenceSupport.js';
 
 describe('immersivePresenceSupport', () => {
+  beforeEach(() => {
+    resetDocumentPictureInPictureProbeState();
+  });
+
   it('allows enter only while focusing and not completion-pending', () => {
     assert.equal(canEnterImmersivePresence({ isFocusing: true }), true);
     assert.equal(
@@ -26,14 +35,43 @@ describe('immersivePresenceSupport', () => {
     );
   });
 
-  it('detects missing Document PiP without throwing', () => {
-    assert.equal(supportsDocumentPictureInPicture({}), false);
+  it('detects missing Document PiP shape without throwing', () => {
+    assert.equal(hasDocumentPictureInPictureShape({}), false);
     assert.equal(
-      supportsDocumentPictureInPicture({
+      hasDocumentPictureInPictureShape({
         documentPictureInPicture: { requestWindow: async () => ({}) }
       }),
       true
     );
+  });
+
+  it('hides PiP entry on Electron until probe succeeds', async () => {
+    const win = {
+      desktopShell: { isDesktop: true },
+      documentPictureInPicture: {
+        requestWindow: async () => {
+          throw new Error('not supported');
+        }
+      }
+    };
+    assert.equal(needsDocumentPictureInPictureProbe(win), true);
+    assert.equal(shouldShowDocumentPictureInPictureEntry(win), false);
+    const ok = await probeDocumentPictureInPicture(win);
+    assert.equal(ok, false);
+    assert.equal(shouldShowDocumentPictureInPictureEntry(win), false);
+  });
+
+  it('marks PiP unavailable after failed probe and hides entry', async () => {
+    const win = {
+      desktopShell: { isDesktop: true },
+      documentPictureInPicture: {
+        requestWindow: async () => ({ close() {} })
+      }
+    };
+    assert.equal(await probeDocumentPictureInPicture(win), true);
+    assert.equal(shouldShowDocumentPictureInPictureEntry(win), true);
+    markDocumentPictureInPictureUnavailable();
+    assert.equal(shouldShowDocumentPictureInPictureEntry(win), false);
   });
 
   it('detects fullscreen helpers without throwing', () => {

@@ -64,6 +64,8 @@ import {
 } from './flowerWelcomeGate.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
+import { PRESENCE_SIGNALS_STORAGE_KEY } from './presenceSignalsGate.js';
+import { PRESENCE_SIGNALS_DISCLOSURE_SEEN_KEY } from './presenceSignalsDisclosureGate.js';
 import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
 import { CONTEXTUAL_TEA_TIP_STORAGE_KEY } from './contextualTeaTipGate.js';
 import { MONETIZATION_FUNNEL_STORAGE_KEY } from './monetizationIntentFunnel.js';
@@ -71,6 +73,7 @@ import { MONETIZATION_FUNNEL_OPT_IN_STORAGE_KEY } from './monetizationFunnelOptI
 import { NEWSLETTER_CAPTURE_STORAGE_KEY } from './newsletter/newsletterCaptureGate.js';
 import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 import { ENTITLEMENT_CACHE_STORAGE_KEY } from './entitlement/entitlementState.js';
+import { COMPANION_ENTITLEMENT_STORAGE_KEY } from './companionEntitlement.js';
 import { ENTITLEMENT_OWNERSHIP_STORAGE_KEY } from './entitlement/entitlementOwnership.js';
 import { ENTITLEMENT_MOCK_STORAGE_KEY } from './entitlement/mockEntitlementProvider.js';
 import { MEMBERSHIP_DEVICE_CREDENTIAL_KEY } from './membershipDeviceCredential.js';
@@ -131,6 +134,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   RETENTION_FUNNEL_STORAGE_KEY,
   INTENTION_STORAGE_KEY,
   REFLECTION_STORAGE_KEY,
+  PRESENCE_SIGNALS_STORAGE_KEY,
+  PRESENCE_SIGNALS_DISCLOSURE_SEEN_KEY,
   COMPANION_MODE_STORAGE_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
   REMINDER_PREFERENCE_STORAGE_KEY,
@@ -151,6 +156,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   NEWSLETTER_CAPTURE_STORAGE_KEY,
   SANCTUARY_STORAGE_KEY,
   ENTITLEMENT_CACHE_STORAGE_KEY,
+  COMPANION_ENTITLEMENT_STORAGE_KEY,
   ENTITLEMENT_OWNERSHIP_STORAGE_KEY,
   ENTITLEMENT_MOCK_STORAGE_KEY,
   MEMBERSHIP_DEVICE_CREDENTIAL_KEY,

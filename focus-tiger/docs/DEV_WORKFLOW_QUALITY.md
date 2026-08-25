@@ -40,9 +40,10 @@
 | 2026-08-20 | 莲花池第一朵被蒲团挡住：Agent 自填朝下槽位 + QA 主路径 11→12 不锁像素 | **§6.18** |
 | 2026-08-21 | Breath 抄 Arrival 微笑、磬声 slider 假绿、Quick Start 退役后 Companion 下残留球 | **§6.19** |
 | 2026-08-23 | Focusing Recover 幽灵文案叠灰袍几乎不可见；错开单测只锁 `top%` | **§6.20** |
+| 2026-08-25 | Electron/各壳 :5173：Float Yin 哑点击、空白右键从未接线、? 卡点不到 Privacy、Skip all 后无结束舞、Update 0.0.0 | **§6.21** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）+ **悬停预览不得盖住点击钉住；feature detect 不得把「函数在」写成「能打开」；合入邻接 PR ≠ 已修用户点名的另一入口**（§6.21）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -422,6 +423,7 @@
 | 2026-08-20 | 新增 §6.17：精灵占用须一处仲裁（多入口各判睡/欢迎/付款） |
 | 2026-08-20 | 新增 §6.18：莲花池第一朵被蒲团挡住（Agent 自填朝下槽 + QA 主路径满池假绿） |
 | 2026-08-21 | 新增 §6.19：Breath 抄 Arrival 微笑、磬声 slider 假绿、Quick Start 退役后 Companion 下残留球 |
+| 2026-08-25 | 新增 §6.21：邻接改写拆掉已好点击链 · feature detect 形状当可用 · 合入≠点名入口 |
 | 2026-07-20 | 拍板 Playwright；写清 L-logic≠观感；落地 6.3 重置 + 6.4 SHARED_RESOURCES；TEST_TRACKER 观感六行分列 |
 | 2026-07-21 | 升格 N15：Bug 修复 = 代码/措施 + 相关文档同步 + 立刻本地 commit；同步 regression-lock / PROCESS / COLLAB / docs 规则 |
 | 2026-07-22 | 新增 §7「AI 修复验收规范」：红绿对照、可验证证据、push+CI 才算 Bug close；与 N13/N15 并列，Bug close 时 §7 checklist 优先 |
@@ -765,6 +767,45 @@
 | G4 | 08-15 类「躲开挡法」复测必须在 **真实序列帧**（灰袍 Focusing）上看字，不能只看 DevTools 里 hint 的 box 已离开底栏 | |
 
 **2026-08-23 落地（对照修）**：`ActiveRecoverAnchorUI` 把 hint 抬进身前微光带（`top: 50%`，375 同档不压 alpha），色 `rgba(62, 46, 32, 0.78)` + 暖光 text-shadow；单测锁 alpha≥0.72 且 `top` 落在 46–54%。TRACKER 改回「待人工测试」。
+
+### 6.21 邻接改写拆掉已好点击链 ·「函数在」当可用 · 合入≠点名入口（2026-08-25）
+
+**现象（用户书面 · Electron 壳 :5173 + 对照 Safari/Chrome）**：
+
+1. Focusing **Float Yin · experimental** 点击没反应（图1–2）；Safari 无该钮；Chrome 桌面 PiP **测试 OK**（图5）。
+2. Electron **第一次** Focusing：右上音符点/悬停都没反应；第二次 Focusing 正常。Safari 第一次 Focusing 正常。
+3. 各壳右键空白 **都没有** Focus Tiger 系统菜单；以为「PR 已合、没修好吗」。
+4. 悬停「?」出 What this space is for（图6）；点「?」无反应；鼠标离开问号框立刻消失，点不到 **Privacy**。像把本来好的改坏。
+5. Focusing → Reflection 完成或 Skip all **之后**没有自动结束动画。像把本来好的改坏。
+6. 左下角突然 **Update to Ver 0.0.0**（图7），点击整页 reload；问是否须先留邮箱联网。
+7. Breath 结束后随机 Buy Yin a Tea（图4）— **测试 OK**。
+
+**不是**神秘回滚。查证：
+
+| 项 | 层 | 事实 |
+|---|---|---|
+| Float Yin | A · 入口条件 | `supportsDocumentPictureInPicture` = `typeof requestWindow === 'function'`。Electron Chromium 常 **有函数、request 失败**。 |
+| Float Yin | B · 哑点击 | `ImmersivePresenceUI.enterDocumentPip` 的 `catch { return; }` **无按压反馈、无失败文案**。N2 禁止可点却静默。title 还写死 “Not available in Safari”，在 Electron 里误导。 |
+| Float Yin | C · 对照 | Safari 藏钮 = 设计正确。Chrome 真 PiP = 探针 OK。Electron ≠ Chrome 桌面 Document PiP。 |
+| 音符首场 | D | 宽屏音符主路径是 **悬停开面板**。Electron 首场 Focusing 常见：窗未成 key window / Arrival 刚卸的叠层仍吃指针；第二次 Focusing 窗已交互过。Safari 无此壳。**尚未**用 DevTools 钉死叠层 id。 |
+| 右键菜单 | E · 合入≠点名入口 | 2026-08-20 已记 TRACKER：**未改运行时**，**post-v1 等拍板**。合入的是底部 **⋯ → `#ft-wide-more-menu`**。仓内 **无** `contextmenu` 监听。Electron 只有 **Tray** 右键 Show/Quit。把「菜单 PR 已合」读成「空白右键已合」= 职责偷换。 |
+| 「?」/Privacy | F · 改坏已好链 | Home Idle polish 契约：悬停后 **移入邻接卡**（~280ms grace）点 Privacy。现卡 CSS **居中** `left:50%;top:50%` + 全屏 backdrop **z-index 26**，问号钮 **z 22**。悬停一开卡，指针下已是 backdrop → `pointerleave` 关卡；再点「?」点到 backdrop = 关卡。e2e Privacy 行用 **click ?** 且卡已钉住，**锁不到**「悬停预览还能点进 Privacy」。 |
+| 结束动画 | G · 时序/已放弃 | `SessionEndFlow`：Celebrating / SessionComplete **在 Reflection 打开前**播完。Skip all **之后**只把 Rise hold 收回 Idle，不再舞。`incenseComplete` 产品自动播 **2026-07-25 已放弃**。用户在 Skip all **之后**找结束舞 = 与现行契约错位；若 **面板出现前**也完全没舞，才开回归。 |
+| Update 0.0.0 | H | 芯片文案 `{version}` ← `package.json` **就是 `0.0.0`**。出现条件：本页 `VITE_APP_BUILD_ID` ≠ 同域 `/version.json` 的 `buildId`（Vite 重启、旧页未硬刷新最常见）。**不**要求 Stay in touch 邮箱。桌面壳应用 `shouldRevealSoftUpdatePrompt({ desktopShell:true })` 隐藏；`window.desktopShell?.isDesktop` 假时 Electron 会露出网页芯片。点击 reload = 现设计。 |
+
+**因果一句话**：**把邻接 popover 改成居中模态却留下悬停-离开即关** + **把 API 形状当能力** + **把已合的 ⋯ 菜单说成空白右键** + **结束舞的观看窗口在 Reflection 之前、一炷香自动播已放弃** + **dev `0.0.0`+buildId 抖动被读成「要先联网留邮箱」**。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| H1 | 可点入口若 `request*` 可能抛错：须 **0–1s 可见结果**（按压 + 失败提示或藏钮）。禁止空 `catch` 当「不支持」。feature detect 须含 **Electron / 非 Chrome 桌面** 否证，或失败一次后不再展示。 |
+| H2 | 改「?」/简介卡形态（居中、backdrop、加长文案）时，已好清单须含 **点击钉住** + **卡内 Privacy 可点**。禁止只加长 `PURPOSE_HOVER_HIDE_GRACE_MS` 却让 backdrop 盖住问号。e2e 不得只用「click ? 已打开」代替悬停→移入 Privacy。 |
+| H3 | 用户说「PR 已合怎么还没有」→ 先对照 TRACKER **处理承诺 / post-v1** 与 **实际入口**（⋯ vs `contextmenu` vs Tray）。禁止用邻接已合 PR 回答点名入口。 |
+| H4 | 结束动画邀测须写清 **观看窗口**：达标后、Reflection **出现前**；并写明 Skip all 后无第二套舞、incense 自动播已放弃。禁止只写「会话结束后应有动画」。 |
+| H5 | 软更新芯片：dev 须预期 `0.0.0`；出现 = buildId 不一致，不是付费/邮箱门闩。Electron 测前确认 `desktopShell.isDesktop===true`，否则芯片是网页探针误入壳。 |
+
+**本回合落地**：查证写入本 §6.21 + `TEST_TRACKER` 用户反馈列。**未改运行时**（一次一任务：先根因，专修另开 `fix/*`）。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

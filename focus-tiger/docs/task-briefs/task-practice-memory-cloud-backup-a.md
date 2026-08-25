@@ -42,6 +42,7 @@
 | hints / 冷却 / 当日门闩 / onboarding seen | 可重建；丢了不伤「记忆」叙事 |
 | tip-jar / **`entitlement-cache.v1`**（lifetime/subscription 活态） / membership-device | 另有支付 OTP restore；**勿与练习快照混桶**（ownership ≠ cache） |
 | Ambient 偏好、语言等设置 | 可另议；首版不做 |
+| **Yin Personal Memory** / Confide `turns.jsonl` | **禁止**进本快照。记忆架构见 `YIN_PERSONAL_MEMORY.md`（local-only） |
 
 实现 PR 若要增删字段，须在 PR 描述写清并同步本 Brief 表；**不得**在未修订本表的情况下只备份 Journey Log。
 

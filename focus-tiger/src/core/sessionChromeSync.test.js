@@ -44,6 +44,7 @@ describe('createSessionChromeSync', () => {
     let arrivalOpen = false;
     let reflectionOpen = false;
     let microOpen = false;
+    let mustardOpen = false;
     let honestyPhase = 'hidden';
     let honestyEntryHidden = true;
     let microEntryVisible = false;
@@ -132,6 +133,9 @@ describe('createSessionChromeSync', () => {
           microEntryVisible = true;
         }
       }),
+      getMustardSeedSealUI: () => ({
+        isOpen: () => mustardOpen
+      }),
       honestyCheckInUI,
       honestyCheckIn,
       companionModePicker,
@@ -160,6 +164,9 @@ describe('createSessionChromeSync', () => {
         },
         microOpen: (v) => {
           microOpen = v;
+        },
+        mustardOpen: (v) => {
+          mustardOpen = v;
         },
         honestyPhase: (v) => {
           honestyPhase = v;
@@ -223,6 +230,15 @@ describe('createSessionChromeSync', () => {
     h.sync.syncHonestyIdleEntry();
     assert.equal(h.get.wideSuppressed(), true);
     assert.equal(h.get.wideKeepQs(), true);
+  });
+
+  it('resyncSessionChrome：mustard-seed 开 → postSessionOverlayActive（C1 PR-2）', () => {
+    const h = harness();
+    h.set.mustardOpen(true);
+    h.sync.resyncSessionChrome();
+    assert.equal(h.sessionUiGate.postSessionOverlayActive, true);
+    assert.equal(h.get.overlayOnPicker(), true);
+    assert.equal(h.get.optionEnabled(), false);
   });
 
   it('resyncSessionChrome：Reflection 叠层 → Gate + Companion + 窄宽壳对齐', () => {

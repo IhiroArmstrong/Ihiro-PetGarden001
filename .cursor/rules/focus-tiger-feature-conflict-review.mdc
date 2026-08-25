@@ -1,6 +1,7 @@
 ---
-description: 新功能/改动实现前必须先做冲突扫描；有冲突须等用户拍板（始终生效）
-alwaysApply: true
+description: 新功能/改动实现前必须先做冲突扫描；有冲突须等用户拍板（改 src / desktop / docs 时挂载）
+globs: focus-tiger/src/**,focus-tiger/desktop/**,focus-tiger/docs/**
+alwaysApply: false
 ---
 
 # Focus Tiger · 功能冲突扫描（Agent 摘要）

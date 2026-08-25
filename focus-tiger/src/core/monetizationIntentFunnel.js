@@ -14,7 +14,7 @@
 export const MONETIZATION_FUNNEL_STORAGE_KEY =
   'focus-tiger.monetization-funnel.v1';
 
-/** @typedef {'tea' | 'sanctuary' | 'membership'} MonetizationTrack */
+/** @typedef {'tea' | 'sanctuary' | 'membership' | 'pro' | 'companion-addon'} MonetizationTrack */
 
 export const MONETIZATION_FUNNEL_EVENTS = Object.freeze({
   SUPPORT_OPEN: 'support_open',
@@ -28,7 +28,9 @@ export const MONETIZATION_FUNNEL_EVENTS = Object.freeze({
 export const MONETIZATION_TRACKS = Object.freeze([
   'tea',
   'sanctuary',
-  'membership'
+  'membership',
+  'pro',
+  'companion-addon'
 ]);
 
 /** @typedef {'tea-first' | 'sanctuary-first'} MonetizationFunnelLayout */

@@ -138,14 +138,16 @@ describe('practiceBackupSync', () => {
       email: 'a@example.com',
       deviceToken: 'tok_abcdefghijklmnopqrstuvwxyz012345'
     });
+    const todayKey = '2026-08-26';
     const snap = {
       schemaVersion: 1,
       savedAt: '2026-08-12T00:00:00.000Z',
       stores: Object.fromEntries(
-        PRACTICE_BACKUP_STORE_KEYS.map((k) => [
-          k,
-          k === 'focus-tiger.journey-log.v1'
-            ? {
+        PRACTICE_BACKUP_STORE_KEYS.map((k) => {
+          if (k === 'focus-tiger.journey-log.v1') {
+            return [
+              k,
+              {
                 entries: [
                   {
                     at: '2026-01-01T00:00:00.000Z',
@@ -155,16 +157,26 @@ describe('practiceBackupSync', () => {
                   }
                 ]
               }
-            : null
-        ])
+            ];
+          }
+          if (k === 'focus-tiger.practice-days.v1') {
+            return [k, { days: [{ date: todayKey, totalMinutes: 15 }] }];
+          }
+          return [k, null];
+        })
       )
     };
+    const fixedNow = new Date(`${todayKey}T12:00:00+08:00`);
     const restored = await maybeRestorePracticeBackupOnBoot({
       storage: empty,
-      postJson: async () => ({ ok: true, snapshot: snap })
+      postJson: async () => ({ ok: true, snapshot: snap }),
+      now: fixedNow
     });
     assert.equal(restored.ok, true);
     assert.ok(empty.getItem('focus-tiger.journey-log.v1')?.includes('12'));
+    const dailyRaw = empty.getItem('focus-tiger.daily-completions.v1');
+    assert.ok(dailyRaw?.includes('sessions'));
+    assert.ok(dailyRaw?.includes('15'));
 
     const nonempty = memStorage({
       'focus-tiger.milestone-glow.v1': JSON.stringify({ played: ['streak-7'] })

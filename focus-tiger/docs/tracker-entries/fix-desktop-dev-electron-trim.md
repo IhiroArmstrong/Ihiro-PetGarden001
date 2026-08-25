@@ -1,0 +1,1 @@
+| desktop:dev Electron path trim（path.txt 换行防御） | 纯后端/桌面 | 仅单元测试覆盖 | **复现**：QA 树 `node_modules/electron/path.txt` 末尾带换行时 `npm run desktop:dev` → `spawn …Electron\n ENOENT`。**修后**：`desktop/scripts/dev.js` 对 `import('electron')` 路径 `.trim()`（对齐 `l0-bench.js`）。**人工**：QA 树 `npm run desktop:dev` 应正常起 Vite + Electron 窗。 | — | — | — | `desktop/scripts/dev.js` | 2026-08-25 |

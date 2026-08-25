@@ -154,13 +154,13 @@ Layer 2：推送通知 —— 语气克制，不制造焦虑，"它在等你"式
 Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DESIGN.md v2 / CORE_LOOP.md）：
 
 已实现：
-  - 欢迎 beat（blink-smile + 文字气泡）→ Notice 6 图标（不落库）→ ~5s 呼吸（无倒计时）
+  - 欢迎 beat（blink-smile + 文字气泡）→ Notice 6 图标（点选 → `presence-signals.v1`）→ ~5s 呼吸（无倒计时）
     → Choose 6 图标 + 次要打字 → Companion Mode 三选一 → 再点 Sit 开始计时
   - 全程 Skip + Skip — begin；Sit 二次点击可整体跳过仪式
-  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice 严禁持久化
+  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice → presence-signals.v1（arrival_notice）
   - Reflection 按来源回显（达标与未达标均回显）；Notice 不回显
 
-明确不做：待办化、情绪分析统计、强制不可跳过流程、角色语音
+明确不做：待办化、**诊断式**情绪分析、强制不可跳过流程、角色语音
 ```
 （叙事层级见 PRODUCT_MOMENTS.md / CORE_LOOP.md）
 
@@ -197,6 +197,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Brief** | 免费 A：静默快照 + 空库恢复；复用邮箱 OTP | `task-practice-memory-cloud-backup-a.md` | **已立项**（#270） |
 | **实现** | Worker put/get/delete + 客户端 debounce / Idle flush / 空库恢复 / Journey 角落 | `feature/practice-memory-cloud-backup-a` | **#272 已合** tip `a195584`；Worker redeploy `f9755950-…` |
 | **关单前置** | 生产 OTP secrets + TRACKER 端到端 | — | **secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip） |
+| **A′ 恢复派生** | v1 快照恢复后从 `practice-days` 派生 `daily-completions`（提醒与热力图对齐） | `fix/practice-backup-daily-completion-reconcile` | **本旁支** |
+| **B schema v2** | 白名单第 7 key + Worker redeploy；完整保留 `celebrated` / `sessions` | Backlog | 非前置；仅当需跨恢复保留 Celebrating 戳 |
 
 ---
 
@@ -229,6 +231,39 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
+
+> 外在记忆 SSOT：`YIN_PERSONAL_MEMORY.md`。**≠** Journey Log / 练习云备份 / `turns.jsonl`。运行时须口令「开工 Yin Personal Memory」。
+
+| 级 | 内容 | Brief | 状态 |
+|---|---|---|---|
+| **架构** | 四类记忆 + Remember/Use/Forget；Safety > Corpus > Memory > Qwen | `YIN_PERSONAL_MEMORY.md` | **方向锁 · 无 store** |
+| **Slice 0** | Confide「练了多久」用本机练习字段精确应答，禁止 Qwen 编造时长 | `task-yin-memory-slice-0-practice-facts.md` | **#424 已合** · tracker 待人工 |
+| **Slice 1a** | Consent 门闩 + userData store 骨架（`yin-personal-memory.json`） | `task-yin-memory-slice-1a-consent-store.md` | **已合 #427** |
+| **Slice 1b** | Remember 管道（L3 成功后静默入库） | `task-yin-memory-slice-1b-remember.md` | **已合 #428** |
+| **Slice 1c** | What Yin remembers 列表 + Forget UI | `task-yin-memory-slice-1c-list-forget.md` | **已合 #430** |
+| **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
+| **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
+
+**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工验收；并行合 Presence Signals（CI-02）。较弱：仪式 generate 扩权（须产品拍板）。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。
+
+---
+
+## 📍 Presence Signals（2026-08-25 · 陪伴观察账本）
+
+> **≠** Yin Memory · **≠** Journey Log · **≠** `reflections.v1` 趋势 SSOT。Arrival Notice（calm / stressed / sad 等）及后续 Ritual / Reflection 封闭标签入账 `focus-tiger.presence-signals.v1`。Confide 趋势问句 → **CI-02** `presence_facts`（描述性 breakdown，禁止诊断）。
+
+| 级 | 内容 | Brief | 状态 |
+|---|---|---|---|
+| **Slice 0–1 + 4** | 文档 + Arrival Notice 写入 + Confide 只读趋势 | `task-presence-signals-slice-0-1.md` | **本旁支** `feature/presence-signals-slice-0-1` · tracker 待人工 |
+| **Slice 2** | Ritual chip 入账 + Leave 弱提示 | 见 Brief §后续 | 排期 |
+| **Slice 3** | Reflection Q1–Q3 双写 | 见 Brief §后续 | 排期 |
+| **Slice 5–6** | 查看/删除 UI · L3 freeText（读取 Consent） | 见 Brief §后续 | 排期 |
+
+**我认为最合理的下一刀**：合本旁支 + 关 CI-02 tracker；再 Slice 2 或 Slice 5。
+
+---
+
 ## 📍 工程提醒（跨会话门闩）
 
 | 提醒 | 触发 | 动作 | 权威 |
@@ -252,6 +287,24 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 > **2026-07-25 架构拍板（用户同意倾向 + 排期约束）**：窄屏抽屉与宽屏 ⋯ 菜单长期分分支维护是分叉漏修的结构性成因；值得合并成响应式单线，但须等本次宽屏修复人工验收 + push 后再开重构，避免与未验收修复叠风险。见 `PROCESS.md` 速览 / `RESPONSIVE_LAYOUT.md`。  
 > **2026-07-30**：触发条件已齐；Brief 已交付并进 develop（PR #30）；同日开 feature 做阶段 0。
+
+---
+
+## 📍 Web2 岁月印记（2026-08-24 · 拒 Web3）
+
+> 用户拍板：纪念走 Web2（修行纪念印 / 静默画卷 / 实体优先权），**禁止** mint / wallet / token / SBT。映射见下表；**不**新开链上立项。
+
+| 采纳项 | 接哪条 Brief / 现网 | 排期 | 状态 |
+|---|---|---|---|
+| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** · 四页签壳可与 imprint 同支 | 待开工 |
+| 现网仪式/印（不重复立项） | `MilestoneGlow`（7/21/100 动画）· `mustardSeedSeal`（score≥21 诗稿）· Idle 练习徽章 | — | **已接线** · TRACKER 待人工 |
+| 纪念奖励环境细节（茶盏/香炉/蒲团） | `PROCESS.md` Backlog「纪念奖励系统」表 | **P2** · 2D 主线稳定后 | 未接线 |
+| 年终 / 深练 **Save image 画卷** | `task-mindfulness-scroll-export.md` ← 依赖 `task-journey-daily-card.md` | **P1b** · Daily Card 后 | 待排期 |
+| 单日日記卡（存图管线） | `task-journey-daily-card.md` | **P1a** · 无链依赖，可先开 | 待排期（Brief 已有） |
+| 实体周边优先权（账号+门槛） | `task-companion-merch-priority.md` | **P0 运营** Phase 0 手工可即刻；Phase 1 产品壳在 imprint 后 | Phase 0 文档锁 |
+| 用户感知句「岁月印记 / 修行纪念」 | 各 Brief + `FOCUS_COINS.md` §0.1；i18n 禁 Web3 词 | 随各 PR 文案 | 已写入 Brief |
+
+**我认为最合理的开工顺序**：① `feature/journey-daily-card`（存图管线）→ ② `feature/yin-collections-four-tabs` + `feature/practice-imprint-badges` → ③ `feature/mindfulness-scroll-export`；周边 Phase 0 不等代码。
 
 ---
 

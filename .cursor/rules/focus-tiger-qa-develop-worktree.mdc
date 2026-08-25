@@ -1,9 +1,11 @@
 ---
-description: 固定 develop QA worktree（关单/批量人工测试 · 5173 常驻）；合入后须 pull 并汇报是否重启 Vite
-alwaysApply: true
+description: 固定 develop QA worktree——关单验收/批量人工测试/PR 合 develop 后 sync:qa-develop 前须 Read
+alwaysApply: false
 ---
 
-# Focus Tiger · 固定 develop 验收 worktree
+# Focus Tiger · 固定 develop 验收 worktree（按需层）
+
+> **加载时机**：关单级人工验收、口令「批量人工测试」、PR 已合入 develop、或涉及 5173 QA 树时。
 
 索引：`RULES_INDEX.md` → `qa-develop-worktree`。  
 **SSOT**：仓库根 `WORKFLOW.md`「固定 develop 验收 worktree」。本文件只留强制动作，**不**复述建树命令全文。

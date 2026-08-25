@@ -5,7 +5,7 @@
 
 /**
  * Session Intention / Choose 本地存储 —— 仅保存非空意图，最近 5 条。
- * Notice 状态点选严禁写入本存储。
+ * Notice 状态点选写入 presence-signals.v1，严禁写入本存储（意图）。
  */
 
 import { getStorage, setStorage } from '../utils/Storage.js';

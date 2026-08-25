@@ -1,0 +1,1 @@
+| 1.7B l0Config 接线（生产下载 UX） | 纯后端/桌面 | 仅单元测试覆盖 | **`l0Config.js` → Qwen3-1.7B-Q4_K_M unsloth**（URL / 文件名 / 1,107,409,472 B 闸）。已跑过 spike 时从 `companion-spike-17b/` 种子复制到 `companion-l0/`。**人工**：Electron 宽屏首次打开 Confide → 下载/种子 → 生成一句；Focusing 仍应卸载；低配仍不出入口。 | — | — | — | `task-desktop-on-device-companion.md` · `l0Config.js` | 2026-08-25 |

@@ -1,6 +1,7 @@
 ---
-description: 调试/优化桌面本地 AI companion 时须先定点、禁读整目录日志、测试循环最多 3 轮、简单调试不升 High/Max（始终生效）
-alwaysApply: true
+description: 调试/优化桌面本地 AI companion 时须先定点、禁读整目录日志、测试循环最多 3 轮、简单调试不升 High/Max（口令「调试本地 AI」或改 desktop/companion 时挂载）
+globs: focus-tiger/desktop/companion/**,focus-tiger/desktop/**/*CompanionL2*,**/turns.jsonl,focus-tiger/docs/LAB_SCRIPT_CONVENTIONS.md
+alwaysApply: false
 ---
 
 # Focus Tiger · 调试本地 AI companion
@@ -15,8 +16,11 @@ alwaysApply: true
 
 - 「调试本地 AI」/「优化本地 AI」/「companion 不好」/「全面改善生成」
 - 改 `focus-tiger/desktop/companion/`、L0/L1/L2 生成、`turns.jsonl`、`node-llama-cpp`、桌面 Confide fallback 生成
+- 实验室 L0 脚本 / `/tmp/ft-l0-*` / 候选 GGUF 对照
 
 **不**因文件名含 companion 就套本条：`CompanionModePicker`、Idle PiP、`companionGestureCatalog` 等非本地生成路径走既有产品规则。
+
+实验室脚本路径、命名、已测候选与结果文件 → 先读 [`focus-tiger/docs/LAB_SCRIPT_CONVENTIONS.md`](../../focus-tiger/docs/LAB_SCRIPT_CONVENTIONS.md)，禁止再全仓搜索或另写一份平行路径表。
 
 ## 强制（本会话）
 

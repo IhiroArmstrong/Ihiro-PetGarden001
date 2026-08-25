@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import { confideClassify } from './confide/confideClassify.js';
 import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
+import { shouldAnswerWithPracticeFacts } from './confide/confidePracticeFacts.js';
 import {
   companionGenerateEnabled,
   shouldUseDesktopCompanionGenerate
@@ -73,6 +74,29 @@ describe('desktop companion L2 route', () => {
         route
       );
     }
+  });
+
+  it('duration questions stay fallback but Slice 0 intercepts before generate', () => {
+    const text = 'How long have I practiced?';
+    const route = confideClassify(text);
+    assert.equal(route, CONFIDE_ROUTE.FALLBACK);
+    assert.equal(shouldAnswerWithPracticeFacts(route, text), true);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
+      true
+    );
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }) &&
+        !shouldAnswerWithPracticeFacts(route, text),
+      false
+    );
+    assert.equal(
+      shouldAnswerWithPracticeFacts(
+        CONFIDE_ROUTE.FALLBACK,
+        'What is the weather like today?'
+      ),
+      false
+    );
   });
 
   it('generates only on fallback when the desktop hold is ready', () => {
@@ -165,6 +189,42 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(prompt.includes(safety), false);
     assert.equal(prompt.includes("I don't want to live"), false);
     assert.match(prompt, /Whom do you like\?/);
+  });
+
+  it('drops practice_facts exchanges from Recent turns', () => {
+    const facts = 'This device has 3 practiced days, about 75 minutes in all.';
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      history: [
+        { role: 'user', text: 'How long have I practiced?' },
+        { role: 'yin', text: facts, source: 'practice_facts' }
+      ]
+    });
+    assert.equal(prompt.includes(facts), false);
+    assert.equal(prompt.includes('How long have I practiced?'), false);
+  });
+
+  it('injects related memory summaries when provided', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'Monday feels crowded again',
+      locale: 'en',
+      memorySummaries: ['Mondays have often felt crowded for you.'],
+      history: []
+    });
+    assert.match(prompt, /What Yin may gently recall/);
+    assert.match(prompt, /Mondays have often felt crowded for you/);
+    assert.match(prompt, /do not diagnose/);
+  });
+
+  it('omits memory block when summaries empty', () => {
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      memorySummaries: [],
+      history: []
+    });
+    assert.equal(prompt.includes('What Yin may gently recall'), false);
   });
 
   it('keeps generate-backed Yin turns in Recent turns', () => {
@@ -264,11 +324,34 @@ describe('desktop companion L2 isolation', () => {
     );
     assert.match(preload, /desktop:companion-generate/);
     assert.match(ipcSrc, /desktop:companion-generate/);
+    assert.match(preload, /desktop:yin-personal-memory-get/);
+    assert.match(ipcSrc, /desktop:yin-personal-memory-set-consent/);
+    assert.match(preload, /desktop:yin-personal-memory-remember-from-confide/);
+    assert.match(ipcSrc, /desktop:yin-personal-memory-forget/);
+    assert.match(preload, /desktop:yin-personal-memory-forget/);
+    assert.match(ui, /confide-to-yin-memory-list-link/);
+    assert.match(ui, /onOpenMemoryPanel/);
+    assert.match(ui, /shouldOfferYinMemoryConsent/);
+    assert.match(ui, /shouldHandleVerbalForget/);
+    assert.match(ui, /memory_forget/);
+    assert.match(ui, /yinPersonalMemoryVerbalForget/);
+    assert.match(ui, /confide-to-yin-memory-consent/);
+    assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
+    assert.match(ui, /_maybeRememberFromL3/);
+    const runtime = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
+      'utf8'
+    );
+    assert.match(runtime, /retrieveYinMemorySummariesForL3Generate/);
+    
     assert.match(ui, /shouldUseDesktopCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
     assert.equal(turnPushes.length, 2);
-    assert.match(ui, /source: shown\.source === 'generate' \? 'generate' : 'corpus'/);
+    assert.match(ui, /shouldAnswerWithPracticeFacts/);
+    assert.match(ui, /source: 'practice_facts'/);
+    assert.match(ui, /shown\.source === 'generate'/);
+    assert.match(ui, /shown\.source === 'practice_facts'/);
     assert.match(ui, /this\._l2Turns\.slice\(\)/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);

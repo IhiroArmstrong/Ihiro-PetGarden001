@@ -11,6 +11,12 @@
 import os from 'node:os';
 import { isCompanionL1Allowed } from './l1Capability.js';
 import { CompanionL1Runtime } from './l1Runtime.js';
+import {
+  forgetYinPersonalMemoryEntry,
+  readYinPersonalMemoryState,
+  rememberYinPersonalMemoryFromConfide,
+  setYinPersonalMemoryConsent
+} from './yinPersonalMemoryPersistence.js';
 
 /**
  * @param {{
@@ -46,6 +52,25 @@ export function attachCompanionL1Ipc(deps) {
   );
   deps.ipcMain.handle('desktop:companion-generate', (_event, payload) =>
     runtime.generate(payload && typeof payload === 'object' ? payload : {})
+  );
+
+  deps.ipcMain.handle('desktop:yin-personal-memory-get', () =>
+    readYinPersonalMemoryState(deps.app.getPath('userData'))
+  );
+  deps.ipcMain.handle('desktop:yin-personal-memory-set-consent', (_event, granted) =>
+    setYinPersonalMemoryConsent(deps.app.getPath('userData'), Boolean(granted))
+  );
+  deps.ipcMain.handle('desktop:yin-personal-memory-remember-from-confide', (_event, payload) =>
+    rememberYinPersonalMemoryFromConfide(
+      deps.app.getPath('userData'),
+      payload && typeof payload === 'object' ? payload : {}
+    )
+  );
+  deps.ipcMain.handle('desktop:yin-personal-memory-forget', (_event, memoryId) =>
+    forgetYinPersonalMemoryEntry(
+      deps.app.getPath('userData'),
+      typeof memoryId === 'string' ? memoryId : ''
+    )
   );
 
   return runtime;

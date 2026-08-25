@@ -39,7 +39,7 @@ export function historyForGeneratePrompt(
   /** @type {Array<{ role?: string, text?: string, source?: string }>} */
   const kept = [];
   for (const row of rows) {
-    if (row?.role === 'yin' && row?.source === 'corpus') {
+    if (row?.role === 'yin' && (row?.source === 'corpus' || row?.source === 'practice_facts')) {
       if (kept.length && kept[kept.length - 1]?.role === 'user') {
         kept.pop();
       }
@@ -55,16 +55,30 @@ export function historyForGeneratePrompt(
  * @param {{
  *   text?: string,
  *   locale?: string,
- *   history?: Array<{ role?: string, text?: string, source?: string }>
+ *   history?: Array<{ role?: string, text?: string, source?: string }>,
+ *   memorySummaries?: string[]
  * }} [opts]
  * @returns {string}
  */
 export function buildCompanionL2Prompt({
   text = '',
   locale = 'en',
-  history = []
+  history = [],
+  memorySummaries = []
 } = {}) {
   const lang = LANG[locale] || LANG.en;
+  const memories = Array.isArray(memorySummaries)
+    ? memorySummaries
+        .map((row) => (typeof row === 'string' ? row.trim() : ''))
+        .filter(Boolean)
+        .slice(0, 3)
+    : [];
+  const memoryBlock =
+    memories.length > 0
+      ? `What Yin may gently recall (only if relevant to the user's message; do not invent facts; do not diagnose):\n${memories
+          .map((line) => `- ${line}`)
+          .join('\n')}`
+      : '';
   const turns = historyForGeneratePrompt(history)
     .map((row) => {
       const role = row?.role === 'user' ? 'User' : 'Yin';
@@ -79,6 +93,7 @@ export function buildCompanionL2Prompt({
     `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
     'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
     'Do not list steps. Do not mention being an AI or a model.',
+    memoryBlock,
     turns ? `Recent turns:\n${turns}` : '',
     `User: ${user}`,
     'Yin:'

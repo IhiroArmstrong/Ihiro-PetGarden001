@@ -33,6 +33,17 @@ describe('purpose card hover grace + left-ball no mint', () => {
     assert.match(hintsSrc, /'quick-start'/);
   });
 
+  it('hover opens adjacent card without backdrop; click pins modal', () => {
+    assert.match(hintsSrc, /_purposePinned/);
+    assert.match(hintsSrc, /onboarding-app-purpose--pinned/);
+    assert.match(hintsSrc, /ft-purpose-pinned/);
+    assert.match(hintsSrc, /_positionPurposeCard\(\)/);
+    assert.match(
+      hintsSrc,
+      /purposeBackdrop\.hidden = true[\s\S]*pinned/
+    );
+  });
+
   it('Focus HUD click tips bind host hover and skip floating mint pulses', () => {
     assert.match(hintsSrc, /HOST_HOVER_NO_PULSE_HINT_IDS/);
     assert.match(hintsSrc, /_syncHudHostHover/);

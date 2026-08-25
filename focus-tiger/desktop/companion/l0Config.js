@@ -4,26 +4,39 @@
  */
 
 /**
- * L0 probe constants. Model id is a starting candidate — lock after measurements.
+ * L0 production constants (Electron companion download + probe).
+ * Locked 2026-08-24: Qwen3-1.7B-Q4_K_M unsloth after spike + M5 Focusing hitch.
  * Not a product entry; Web / PWA must not import this file.
  */
 
-export const L0_MODEL_ID = 'Qwen3-0.6B-Q4_K_M';
+export const L0_MODEL_ID = 'Qwen3-1.7B-Q4_K_M';
 
-export const L0_MODEL_FILENAME = 'Qwen_Qwen3-0.6B-Q4_K_M.gguf';
+export const L0_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
+
+/**
+ * Leftover production files from the 0.6B bartowski era.
+ * Never loaded after 1.7B dest is complete; unlinked so Confide cannot
+ * look "ready" on the old GGUF.
+ */
+export const L0_LEGACY_MODEL_FILENAMES = Object.freeze([
+  'Qwen_Qwen3-0.6B-Q4_K_M.gguf'
+]);
+
+/** Locked size from 2026-08-24 selection (`compare-1787541422867.json`). */
+export const L0_MODEL_EXPECTED_BYTES = 1_107_409_472;
 
 /** Hugging Face resolve URL (follows to CDN). */
 export const L0_MODEL_URL =
-  'https://huggingface.co/bartowski/Qwen_Qwen3-0.6B-GGUF/resolve/main/Qwen_Qwen3-0.6B-Q4_K_M.gguf';
+  'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf';
 
 /** Try these in order if the official resolve stream dies. */
 export const L0_MODEL_URLS = [
   L0_MODEL_URL,
-  'https://hf-mirror.com/bartowski/Qwen_Qwen3-0.6B-GGUF/resolve/main/Qwen_Qwen3-0.6B-Q4_K_M.gguf'
+  'https://hf-mirror.com/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf'
 ];
 
-/** Reject HTML error pages pretending to be GGUF. */
-export const L0_MODEL_MIN_BYTES = 400_000_000;
+/** Reject HTML error pages and truncated GGUF. */
+export const L0_MODEL_MIN_BYTES = 1_100_000_000;
 
 export const L0_PROMPT =
   '/no_think Reply with one short calm sentence, then stop. Do not give advice.';

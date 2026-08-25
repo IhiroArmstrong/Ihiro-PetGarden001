@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-18（步骤 B 托盘 + SB-18 已接线，Mac 按 TRACKER 场景 AB 测；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-23（升格 **AD** 精灵占用仲裁 + **AE** Confide（Web harness / Electron L1·L2）；场景 A 补 30s/3min 验收脚本；Q Stripe 回跳须压过深夜披毯。AB 托盘 + SB-18 已接线；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA PiP 仍实验。切走轻语已收回，场景 B 恢复经典 Re-focus。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -23,6 +23,8 @@
   - `e2e/flower-welcome.spec.js` — **V** Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗
   - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 交叉引用 + Idle 不自动出免责卡 + `?` 仍见免责 + `?wellnessFirst=1` QA 卡 + Focusing/? 主条契约（不全覆盖 W 观感）
   - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
+  - `desktopCompanionL1.test.js` / `desktopCompanionL2Route.test.js` + `confideClassify` / `confideReplyFlow` — **AE** Electron Confide 壳 / 生成路由（**非** Web Safari `?product=1`）
+  - `spriteChannelArbitration.test.js` + `dormantIdle` overlayBusy — **AD** 睡/欢迎/付款仲裁门闩（**非**完整用户链路 e2e）
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
 
@@ -36,11 +38,13 @@
 
 | 优先 | 场景 | 为何先写 | 0–1 秒句现状 |
 |---|---|---|---|
-| **P0** | **Q** Support Yin 三卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 |
+| **P0** | **AD** 精灵占用仲裁（睡/欢迎/Stripe 回跳） | 冷启动误睡 / 付完先睡着 = 场景 B/Q 同类高容忍 bug | 本 follow-up 已升格正式场景 |
+| **P0** | **Q** Support Yin 三卡 / Checkout | 付费点击；用户对「点了没反应」容忍最低 | 本 follow-up 已补主路径句 + Stripe 回跳对照 AD |
 | **P0** | **U** Zen Cinema / Quiet Line / Wallpapers | 外链与下载有延迟，最容易被当成没点到 | 本 follow-up 已补主路径句 |
 | **P0** | **AB** Electron 托盘收起 vs 切 App | 收进托盘误触发 Re-focus = 场景 B 同类坑 | 契约已写；**实现后**测；**SB-18** |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
 | **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**#291 补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：#292 已合 insight-spark；Daily Card 仍是 Brief 未接线 |
+| **P1** | **AE** Confide Web harness / Electron L1·L2 | 倾诉入口 + 危机安全阀；Electron 关单「能聊」**2026-08-25 已关**（L2 TRACKER） | 本 follow-up 已升格正式场景 |
 | **P1** | **AC** 寅币抽屉 | 与 Q 付费入口隔离；次级可忽略 | L3 本支已写 0–1s 句 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
@@ -59,7 +63,8 @@
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
 | [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA** |
 | [http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6](http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6) | **长周期 QA**：播种昨天往前 6 个练习日；Sit 满 1 分钟可测 MilestoneGlow（不必真等 7 天） |
-| Electron 本机包 | **场景 AB**（托盘）；Web 测不了 |
+| [http://localhost:5173/?product=1&confide=1](http://localhost:5173/?product=1&confide=1) | **Confide QA harness**（产品挂载仍关）：Idle ⋯/抽屉见 Confide 行；**仍检索不生成**；见 **场景 AE · Web** |
+| Electron `desktop:dev` | **场景 AB**（托盘）、**AE · Electron**（Confide L1/L2）；Web Safari **测不了** llama / 托盘 |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
 语言切换：宽屏 ⋯ / 窄屏抽屉 → **Language**（v1.0 对外 **English + Japanese**）；DEV 仍可用 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下同一 bundle）。
@@ -105,6 +110,16 @@
     *[DOM 用户链路（有/无回显）→ 场景 C / `reflection-intention-echo.spec.js`；本场景 e2e A **未**跑到 Reflection]*
 12. 回到 Idle；今日 Honesty 提示不应再因零完成自动出现。  
     *[单元/控制器：smoke A1 在 `recordCompletion` 后断言仍 IDLE；**未**断言旧版零完成长句 prompt 的 DOM 消失（该 UI 已改为常驻小钮）]*
+
+### 验收脚本 · 30 秒 / 3 分钟（2026-08-20 · 端到端清单）
+
+> **不是新功能**：把专家稿当 QA 清单，顺带验 **场景 AD** 占用仲裁是否撑住 Kelly 第一眼与 3 分钟闭环。语感三句先按现稿；若改字只动 locale `COMPANION_MODE_*_HINT`，不必重开门闩。
+
+**30 秒（第一眼）**：实验室「重置全部本地状态」→ `?product=1` 硬刷新 → 无隐私弹窗、无自动音乐、无 auto tip（**SB-15**）；阿寅 **Idle 闭目坐禅**（非披毯）；轻点额头 → **0–1s** `earWiggleHeadTouch`（场景 X2）；点 **How shall we sit?** → **0–1s** 三卡 + hint（不得出现 distraction / 分心 / Keep this screen / Minimize）。
+
+**3 分钟闭环**：同一壳加 `?sessionMinutes=1`（**不要**用默认 10 分档硬等）→ Sit 或 ⚡ → Here & Now 等到 1 分钟达标 → **自然进 Reflection**，阿寅保持醒着同坐（**不得**深夜披毯打断，见 **场景 AD**）；Skip/Continue 后左下热力图当日格点亮；⋯ **Journey log** 见新行。**回流**：关 Reflection 后再点额头仍摸头；再开一场 1 分钟仍进 Reflection 不披毯。
+
+**更快对照（非关单主路径）**：左球 Breath **1 分** 完成 → Reflection → Journey（`arrive: false`）。
 
 ---
 
@@ -170,7 +185,7 @@
 > - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → `HonestyBridgeCtaController` Yes→`onAccept` / No→`onDecline` / 同日再 `onHonestyCheckInComplete` → smoke D（**非**桥接按钮 DOM / Yes 后完整 Arrival UI）。  
 > **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
-1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，**且离开标签 ≥2h 再回**（短切约 1 分钟再回 **不应**进睡——见 2026-08-18 Welcome 契约），或 DEV 改 `focus-tiger.focus-session-end.v1` 后 **Rise 结束一场** 再 sync。新用户无结束记录**不会**自动睡。冷启动刷新仍是 Idle + Welcome，不是披毯。
+1. 模拟「距上次专注结束 ≥ 2 小时」：写过一次专注结束时间戳后把时钟拨到 ≥2h，**且离开标签 ≥2h 再回**（短切约 1 分钟再回 **不应**进睡——见 **场景 AD** / Welcome 契约），或 DEV 改 `focus-tiger.focus-session-end.v1` 后 **Rise 结束一场** 再 sync。新用户无结束记录**不会**自动睡。冷启动刷新仍是 Idle + Welcome，不是披毯（白天不得凭陈旧 2h 戳开场即睡，见 **场景 AD**）。
 2. 惰性进 DORMANT：应先见 **cloakSleep 披毯**再落入 sleeping；点进 Honesty（或 Mindful Check-in）→ **0–1 秒内**：入口按压 + `#honesty-check-in` 时长三选一面板淡入（10 / 20 / 30+）。
 3. 选时长 10 / 20 / 30+（选 20）→ **0–1 秒内**：该钮下压（`translateY(1px)`）+ 时长面板让位给呼吸引导（倒计时出现）。**不要**报成哑点击。
 4. **实际顺序**：选时长后 **立刻**播 `dormantWake`（cloak-sleep **倒放**，非 stretch），与约 **10 秒**呼吸倒计时**并行**（`HONESTY_BREATH_MS = 10_000`）。  
@@ -340,7 +355,8 @@
 
 ### Q2 · Buy Yin a Tea（tip · 不解锁）
 
-6. Support 卡 CTA → **0–1 秒内**：CTA 按压 + `disabled`（`_busy`）+ 模态关闭；**结果**（可能 >1s）：进 Stripe Checkout / `#yin-tip-jar-card`。禁止关闭后空白无下一步。
+6. Support 卡 CTA → **0–1 秒内**：CTA 按压 + `disabled`（`_busy`）+ 模态关闭；**结果**（可能 >1s）：进 Stripe Checkout / `#yin-tip-jar-card`。禁止关闭后空白无下一步。  
+   **Stripe 回跳（对照场景 AD）**：付完回 App 须**先**见致谢 / 卡面结果，**不得**先看到深夜披毯睡着再谢谢。
 7. Test 卡走 Checkout（约 **US$4.99**）；回跳/`?tip=1` 后：卡内与阿寅旁 `#yin-tip-kindness-badges` 至少 **3** 枚（付费 `min=3`，上限 9）；点徽章可下 1024 PNG。
 8. 卡内 `#yin-tip-jar-tea-log` 见日期+杯次；再 tip 文案「又一杯」+ 播 `teaDrinking`（首 tip：`nodGreeting`）。
 9. **禁止**：tip 后出现 Sanctuary 已解锁语义或内容门打开。
@@ -592,6 +608,63 @@
 
 ---
 
+## 场景 AD：精灵占用仲裁（睡 / 欢迎 / 付款回跳）
+
+> **用户故事**：Kelly 冷启动、Welcome 后短切 tab、Reflection 开着切走、或 Stripe 付完回跳——阿寅「该不该睡 / 该不该播欢迎 / 该不该披毯」由 **`spriteChannelArbitration` 一处拍板**，不是 sleep / welcome / payment 各抢精灵。吸收 #341（Welcome 后短切 tab 不得披毯）与 #347（Reflect 开着不得 cloak）产品规则。  
+> **单元 / 控制器集成**：`spriteChannelArbitration.test.js`（冷启动 / overlayBusy / paymentThankYou / wellness 0–6 窗）+ `dormantIdle` overlay 否决 + `companionRestPolicy` session-end 锚。  
+> **DOM e2e**：无完整用户链路（须拨时钟 / 真 Stripe / 凌晨窗）。  
+> **仍须人工**：凌晨 0–6 与 wellness 对齐的冷启动 / hidden≥2h 回前台可睡；Stripe Test 卡真付回跳；叠层开着 Arrival / Honesty / Reflection / Support 卡时切走再回。
+
+1. **冷启动 · 白天**：有陈旧 `focus-session-end`（≥2h 前）但**硬刷新** `?product=1`（非 hidden≥2h live sync）→ **0–1 秒内**首屏阿寅 **Idle 闭目**或 Welcome/吹花，**不得**凭旧戳开场即 `cloakSleep` / Sleeping。  
+   **对照 · 凌晨 0–6**：系统时钟在 wellness 深夜窗内冷启动 → **可以**披毯入睡（与 Expand A 对齐）。
+2. **Welcome 后短切 tab**：本页已 Welcome / Idle → 切到其他标签约 **1 分钟**再回 → **仍 Idle 醒着**，**不得**披毯（#341）。
+3. **叠层否决 · Reflection / Arrival**：Reflection 或 Arrival **仍开着**时切走 ≥2h 再回 → **不得** `cloakSleep`（叠层 busy 否决）。关 Reflection / 关 Arrival 后再按场景 D 规则测 hidden≥2h。
+4. **会话结束仍醒着**：Sit 达标 → Celebrating / SessionComplete → **自然进 Reflection**（或 Rise 加权 hold）→ 全程 **不得**深夜披毯打断同坐（#347 / `companionRestPolicy`）。
+5. **Stripe 回跳压过深夜披毯**（场景 Q 交叉）：深夜窗内从 Support Checkout 真付回跳 → **须先**见致谢 / Tip·Sanctuary·Membership 卡面结果，**不得**先看到睡着再谢谢。
+6. **hidden≥2h 回前台（无叠层）**：窗口 hidden ≥2h 再 visible，且 **无** Reflection/Arrival/Honesty/Support 叠层 → 可按拍板进 DORMANT（见场景 D 步 1–2）。**凌晨 2 点**切走 ≥2h 再回：无叠层时**可以**睡（与冷启动 wellness 窗对齐）。
+7. **回流**：关 Reflection 回 Idle → 轻点额头仍 `earWiggleHeadTouch`（摸头武装未被睡态卸掉）。
+
+---
+
+## 场景 AE：向阿寅倾诉 · Confide to Yin（Web harness · Electron L1/L2）
+
+> **政策**：2026-08-10 检索不生成仍有效；**2026-08-18 窄例外** = 仅 Electron 宽屏第 3 层短生成（L2），Web / 窄屏 / ≤8GB **仍检索**。与 Support 付费 **零耦合**；Checkout / 第四卡 Pro / 第五卡 Add-on **未接**。  
+> **单元**：`confideClassify` / `confideReplyFlow` / `confideOrchestration` 闸门；Electron：`desktopCompanionL1.test.js` · `desktopCompanionL2Route.test.js`。  
+> **仍须人工**：Slice 0「练了多久」精确数字（合入后）；危机 `safety-01` 英文转介句回归；`depressed`→sad 禁 generate 回归。关单「能聊」已关（2026-08-25）。
+
+### AE · Web（Safari QA 树 · harness）
+
+**前提**：真实产品挂载仍关（`CONFIDE_USER_MOUNT_ENABLED=false`）。默认 Idle ⋯/抽屉 **无** Confide 行。
+
+1. 打开 **`?product=1&confide=1`** Idle → ⋯ / 抽屉出现 **Confide to Yin** → **0–1 秒内** `#confide-to-yin-card` 淡入。  
+2. 输入非空 → Share → **0–1 秒内**发送钮按压 + `[data-testid=confide-to-yin-reply]` 见回应（**`data-source=corpus`**；Web **禁止** generate）。  
+3. **安全**：`I don't want to live` → `data-route=safety_redirect`，英文须是 **safety-01** 转介句（Heard. If this feels too heavy…），**禁止**茶句；危机回复左侧 **偏棕**竖线。  
+4. **情绪桶**：「太累了」→ tired；`I feel depressed. Can you help me?` → `data-route=sad` + corpus，**禁止** generate / safety-01。  
+5. **回流**：Close 后再开 harness；Focusing / Arrival 中 **不得**打开。**禁止**把 Web harness 当 Electron 本地 AI 验收。
+
+### AE · Electron L1（宽屏壳 · #362 已合）
+
+**前提**：`cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger` → `npm --prefix desktop install` → `npm run desktop:dev`。**勿**与 `dev:qa` 抢 5173。非低配宽屏（≥480）；Web Safari 同 URL **不算**本场景。
+
+1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见 **`Qwen3-1.7B-Q4_K_M`**（不是独立 HUD；Safari Web **无**此行）。  
+2. Share **或** textarea 里 **Enter**（对得上情绪桶 / 安全阀）→ **0–1 秒内**发送钮按压/disabled + `[data-testid=confide-to-yin-reply]` **`data-source=corpus`**。**Shift+Enter** 只换行、不发送。下载中 Share/Enter **仍**有检索回复（非哑点击）。  
+3. **Focusing 卸载**：Sit→Focusing → companion 状态不再 ready；Share **不得**走生成。Rise 后再开 ⋯ 仍有该行。  
+4. **拖窄关层**：拖到 ≤479 → 生成层关掉；窄屏抽屉 **无** Confide 行。  
+5. **对照**：低配 ≤8GB / Web `?product=1` → **无** companion key、无该行。
+
+### AE · Electron L2（宽屏 fallback 短生成 · 口令已执行）
+
+**在 L1 壳 ready 之后测**；关单「能聊」须 Electron 人工，**不能**用 Safari 5173 代替。
+
+1. 等 status **ready**（型号行须为 1.7B）→ 输入**对不上情绪桶**的句子（如 `What's the weather like in Beijing this week?`）→ Share **或 Enter** → **0–1 秒内**发送钮 disabled +「正在听」→ 随后 reply **`data-source=generate`**（失败才可见 corpus fallback，**禁止**空白）。  
+2. **关单栏杆**：须接住该句意图；**禁止**不同问题吐同一句套话；连续 **≥3** 次 unmatched 闲聊仍须生成，不得从第 3 句起整段改茶句。  
+3. **安全不生成**：`I don't want to live` → safety-01 转介，**一个字都不能**换成茶句。  
+4. **情绪桶不生成**：「太累了」/ `depressed`→sad → corpus only，**禁止** generate。  
+5. **视觉**：闲聊/生成回复左侧 **浅金**竖线；危机回复 **偏棕**竖线。出答案时 `[data-testid=confide-to-yin-user]` 仍见原问。  
+6. **回流**：关卡再开；Focusing 卸载后 Share 不得 generate。
+
+---
+
 ## 建议补充的故事（相对 A–G；O/P/Q/S–W/X–Z 已升格为正式场景）
 
 
@@ -617,6 +690,8 @@
 | **Y** | Five Moments Compass + Moment Whisper（B / A′） | **已升格** → 见上文「场景 Y」；#201/#203 |
 | **AB** | Electron 托盘收起 ≠ 走神 | **已升格** → 见上文「场景 AB」；脚手架后测；**SB-18** |
 | **AC** | 寅币抽屉（L3） | **已升格** → 见上文「场景 AC」；与 Q 付费入口隔离 |
+| **AD** | 精灵占用仲裁（睡/欢迎/付款） | **已升格** → 见上文「场景 AD」；Web Safari QA 树；吸收 #341/#347 |
+| **AE** | Confide to Yin（Web harness + Electron L1/L2） | **已升格** → 见上文「场景 AE」；Web 仍检索；Electron 宽屏才 generate |
 
 ---
 
@@ -685,6 +760,15 @@
 
 ---
 
+## 2026-08-20–23 增量核对摘要（AD / AE · Confide · 冷启动验收）
+
+1. **背景**：#341/#347 睡/欢迎规则 + `fix/sprite-channel-arbitration` 合入后，占用仲裁应一处拍板；桌面陪伴 L1 **#362** + L2 fallback 已接线；Companion 三卡 hint 与 30s/3min 验收脚本（#379）写入 TRACKER，故事剧本仍缺 **AD/AE**。  
+2. **本次**：升格 **场景 AD**（睡/Welcome/Reflection 叠层/Stripe 回跳）；升格 **场景 AE**（Web `?confide=1` harness + Electron L1 壳 + L2 生成路由）；**场景 A** 补 30s/3min 子清单；**场景 Q** 补 Stripe 回跳须压过披毯；链接表补 `?confide=1` 与 `desktop:dev` 分工。  
+3. **仍须人工 / 勿当缺口**：Pro / Add-on Checkout 未接；关单级 Confide「能聊」仍 release-blocker（见 TRACKER L2 行）；凌晨 0–6 wellness 窗（AD 步 1/6）。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
 ## 给 Cursor 的 Prompt（增量核对；勿整份重写）
 
 ```
@@ -698,5 +782,5 @@
 5. 保持仓库根 SCENARIO_TESTS.md 为指向 docs 的指针；勿复活 720 双源。
 6. 更新 TEST_TRACKER 场景行（勿重复条目）；改完后本地 commit，勿 push。
 7. Agent 自测故事优先 ?product=1；回流至少测 Rise→再 Arrival / hint 一条。
-8. 2026-08 起正式场景含 Q/S/T/U/V/W 与 X/Y/Z；R（跨日回访）仍建议补充，勿占用字母改指付费或 Moments。
+8. 2026-08 起正式场景含 Q/S/T/U/V/W 与 X/Y/Z 与 **AD/AE**；R（跨日回访）仍建议补充，勿占用字母改指付费或 Moments。
 ```

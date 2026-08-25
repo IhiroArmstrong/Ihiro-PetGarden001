@@ -7,7 +7,7 @@
  * Arrival Practice —— Sit 之后、计时之前的轻量仪式状态机（纯逻辑，无 DOM）。
  *
  * 步骤：welcome → notice → breath → choose → ready
- * Notice 永不持久化；Choose 由调用方按需写入 intentions.v1。
+ * Notice 点选写入 presence-signals（arrival_notice）；Choose 由调用方写入 intentions.v1。
  */
 
 export const ARRIVAL_STEPS = Object.freeze({
@@ -22,8 +22,21 @@ export const ARRIVAL_WELCOME_MS = 2000;
 export const ARRIVAL_BREATH_MS = 5000;
 /** Notice 点选后：仅展示观察式短句的停留（须够读完；勿继续展示整屏图标区）。 */
 export const ARRIVAL_NOTICE_REPLY_MS = 2400;
+/** 首次披露行叠在观察句下时额外停留（三语共读时长；非单行旧值）。 */
+export const ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS = 1600;
 
-/** Notice：身心状态图标（仅当次回应，不落库） */
+/**
+ * @param {{ hasDisclosure?: boolean }} [opts]
+ * @returns {number}
+ */
+export function arrivalNoticeReplyDwellMs({ hasDisclosure = false } = {}) {
+  return (
+    ARRIVAL_NOTICE_REPLY_MS +
+    (hasDisclosure ? ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS : 0)
+  );
+}
+
+/** Notice：身心状态图标（点选入账 presence-signals） */
 export const NOTICE_OPTIONS = Object.freeze([
   { id: 'calm', emoji: '🧘', labelKey: 'ARRIVAL_NOTICE_CALM', replyKey: 'ARRIVAL_NOTICE_REPLY_CALM' },
   { id: 'okay', emoji: '🌤️', labelKey: 'ARRIVAL_NOTICE_OKAY', replyKey: 'ARRIVAL_NOTICE_REPLY_OKAY' },

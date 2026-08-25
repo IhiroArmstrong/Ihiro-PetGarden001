@@ -488,6 +488,8 @@ export class OnboardingHintsUI {
     this.wellnessFirstCard = null;
     /** Purpose card opened by ? hover (leave ? / card → hide). Click pins until dismiss. */
     this._purposeFromHover = false;
+    /** Click-pinned purpose card (backdrop + centered modal until dismiss). */
+    this._purposePinned = false;
     /** @type {ReturnType<typeof setTimeout> | null} */
     this._purposeHoverHideTimer = null;
 
@@ -501,7 +503,7 @@ export class OnboardingHintsUI {
     helpMark.textContent = '?';
     this.helpBtn.append(helpMark);
     this.helpBtn.addEventListener('click', () => {
-      this.openPurposeOnly({ markHelpDone: true });
+      this.openPurposeOnly({ markHelpDone: true, pin: true });
     });
 
     // 收纳进左下热力簇（若已建），避免角落散落；窄屏 park 只认簇即可
@@ -568,14 +570,18 @@ export class OnboardingHintsUI {
 
   /**
    * 「?」唯一动作：产品简介。绝不铺本页其它 Hints。
-   * @param {{ markHelpDone?: boolean }} [opts]
+   * Hover → adjacent card, no backdrop. Click / pin → centered modal + backdrop.
+   * @param {{ markHelpDone?: boolean, pin?: boolean }} [opts]
    * @returns {void}
    */
-  openPurposeOnly({ markHelpDone = false } = {}) {
+  openPurposeOnly({ markHelpDone = false, pin = false } = {}) {
     this._cancelPurposeHoverHide();
     this._dismissAllPageHints();
-    if (markHelpDone) {
+    if (pin || markHelpDone) {
+      this._purposePinned = true;
       this._purposeFromHover = false;
+    }
+    if (markHelpDone) {
       this.markSeen('help-affordance');
     }
     this._showPurposeCard();
@@ -621,6 +627,7 @@ export class OnboardingHintsUI {
     });
     el.addEventListener('pointerleave', (event) => {
       if (!canHoverPreview()) return;
+      if (this._purposePinned) return;
       if (!this._purposeFromHover) return;
       const related = /** @type {Node | null} */ (event.relatedTarget);
       if (related && this.purposeCard?.contains(related)) return;
@@ -1001,7 +1008,7 @@ export class OnboardingHintsUI {
    * @returns {void}
    */
   showRemedy() {
-    this.openPurposeOnly({ markHelpDone: true });
+    this.openPurposeOnly({ markHelpDone: true, pin: true });
   }
 
   /**
@@ -1552,7 +1559,7 @@ export class OnboardingHintsUI {
    */
   _expandClickHint(hintId) {
     if (hintId === 'help-affordance') {
-      this.openPurposeOnly({ markHelpDone: false });
+      this.openPurposeOnly({ markHelpDone: false, pin: true });
       return;
     }
     if (this.store.isDone(hintId)) return;
@@ -2260,11 +2267,26 @@ export class OnboardingHintsUI {
     this._hideWellnessDetailCard();
     this._ensurePurposeCard();
     this._refreshPurposeCardCopy();
+    const pinned = this._purposePinned;
     if (this.purposeBackdrop) {
-      this.purposeBackdrop.hidden = false;
-      this.purposeBackdrop.classList.add('is-visible');
+      if (pinned) {
+        this.purposeBackdrop.hidden = false;
+        this.purposeBackdrop.classList.add('is-visible');
+      } else {
+        this.purposeBackdrop.classList.remove('is-visible');
+        this.purposeBackdrop.hidden = true;
+      }
     }
+    this.purposeCard.classList.toggle('onboarding-app-purpose--pinned', pinned);
+    document.body.classList.toggle('ft-purpose-pinned', pinned);
     this.purposeCard.hidden = false;
+    if (pinned) {
+      this.purposeCard.style.left = '';
+      this.purposeCard.style.top = '';
+      this.purposeCard.style.maxWidth = '';
+    } else {
+      this._positionPurposeCard();
+    }
     this._bindPurposeCardHoverLeave();
     markWellnessDisclaimerSeen(this._storage);
     this.onPurposeOpen?.();
@@ -2276,8 +2298,13 @@ export class OnboardingHintsUI {
       this.purposeBackdrop.classList.remove('is-visible');
       this.purposeBackdrop.hidden = true;
     }
-    if (this.purposeCard) this.purposeCard.hidden = true;
+    if (this.purposeCard) {
+      this.purposeCard.hidden = true;
+      this.purposeCard.classList.remove('onboarding-app-purpose--pinned');
+    }
+    document.body.classList.remove('ft-purpose-pinned');
     this._purposeFromHover = false;
+    this._purposePinned = false;
     this._hideWellnessDetailCard();
     this._hidePrivacySheet();
   }
@@ -2374,6 +2401,7 @@ export class OnboardingHintsUI {
     });
     card.addEventListener('pointerleave', (event) => {
       if (!canHoverPreview()) return;
+      if (this._purposePinned) return;
       if (!this._purposeFromHover) return;
       const related = /** @type {Node | null} */ (event.relatedTarget);
       if (related && this.helpBtn.contains(related)) return;
@@ -2550,17 +2578,20 @@ export class OnboardingHintsUI {
       .onboarding-app-purpose-backdrop[hidden] {
         display: none !important;
       }
+      body.ft-purpose-pinned .onboarding-hint-help,
+      body.ft-purpose-pinned #ft-narrow-help-btn {
+        z-index: 28;
+      }
       .onboarding-app-purpose {
         position: fixed;
-        left: 50%;
-        top: 50%;
+        left: 0;
+        top: 0;
         z-index: 27;
         box-sizing: border-box;
-        width: min(360px, calc(100vw - 32px));
+        width: min(320px, calc(100vw - 32px));
         max-height: min(72vh, 480px);
         overflow-y: auto;
         padding: 16px 16px 12px;
-        transform: translate(-50%, -50%);
         color: #3a5348;
         background: ${GLASS_FILL};
         ${GLASS_BLUR_CSS};
@@ -2572,6 +2603,12 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose[hidden] {
         display: none !important;
+      }
+      .onboarding-app-purpose--pinned {
+        left: 50%;
+        top: 50%;
+        width: min(360px, calc(100vw - 32px));
+        transform: translate(-50%, -50%);
       }
       .ft-hint-catalog-chip {
         position: fixed;

@@ -12,13 +12,15 @@
  * @see docs/YIN_TIP_JAR.md · YIN_SANCTUARY.md · YIN_MEMBERSHIP.md
  */
 
-/** @typedef {'tip' | 'sanctuary' | 'membership'} PaymentThanksKind */
+/** @typedef {'tip' | 'sanctuary' | 'membership' | 'pro' | 'companion-addon'} PaymentThanksKind */
 
 /** @type {Readonly<Record<PaymentThanksKind, string>>} */
 export const PAYMENT_THANKS_EMOTIONS = Object.freeze({
   tip: 'teaDrinking',
   sanctuary: 'mindfulAcknowledge',
-  membership: 'sessionComplete'
+  membership: 'sessionComplete',
+  pro: 'sessionComplete',
+  'companion-addon': 'mindfulAcknowledge'
 });
 
 /**
@@ -47,6 +49,12 @@ export function peekCheckoutReturnThanksKind(search = '') {
   }
   if ((params.get('membership_session') || '').startsWith('cs_')) {
     return 'membership';
+  }
+  if ((params.get('pro_session') || '').startsWith('cs_')) {
+    return 'pro';
+  }
+  if ((params.get('companion_addon_session') || '').startsWith('cs_')) {
+    return 'companion-addon';
   }
   return null;
 }

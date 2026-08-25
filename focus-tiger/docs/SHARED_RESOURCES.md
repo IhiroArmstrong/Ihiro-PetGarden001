@@ -16,9 +16,13 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
+**Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；1c 列表 + Forget；1e 口头 Forget CI-01；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
+
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
-| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图 |
+
+| `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent + schema；1b Remember 写 `memories[]`；1c Forget 真删）；**不进**练习备份；Web 无此文件 |
+| `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图。**「今日已同坐」语义 SSOT**：`hasCompletedToday()` — 全表见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
 | `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js`。**只读消费者**：Support Modal 请茶优先（与莲花分钟并上；有练习日则不再 Tea 打头） |
 | `focus-tiger.lotus-pond.v1` | `LotusPondStore` | **独立只增**终身练习分钟 `{ lifetimeMinutes }`；可见朵数 `min(earned, 12)`。计时 / Honesty / 微仪式与 `markToday` **同一钩**写入，**不**走付费 RitualFlow、**不**走未达标 Rise。**QA**：`?qaLotusBlooms=N`。**不**在练习记忆备份 v1 六 key 白名单（Slice A 已知缺口）。贴图：一炷香 `/textures/lotus.png`。**只读消费者**：Support Modal 请茶优先（`lifetimeMinutes > 0` 则 Sanctuary 打头） |
@@ -27,7 +31,9 @@
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
-| `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |
+| `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势 SSOT）；freeText **90 天**与 presence-signals 对齐 prune |
+| `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice 等封闭标签事件；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
+| `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
 | `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` + **Scene A** `parrotEarVisit`（`parrotMessengerGate`） | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；横幅每次 **hidden→visible** 伴随 `parrotEarVisit`（欢迎池 live hold + pending flush，结束后补播；同页约 60s 再评到期；`__inAppReminder.parrotMessengerPlayed` / `pendingParrotMessengerAfterWelcome` / `resetParrotMessenger`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |
@@ -47,7 +53,8 @@
 | `focus-tiger.monetization-funnel-opt-in.v1` | `monetizationFunnelOptIn` | 意愿漏斗 opt-in：`{ enabled, consentedAt, clientId, lastUpload* }`；默认关 |
 | `focus-tiger.newsletter-capture.v1` | `newsletter/newsletterCaptureGate` | Stay in touch 可选邮件留资标记：`{ submitted }`；**不**存邮箱明文；**不**挂钩 entitlement / tip / sanctuary；提交后菜单确认文案为 **We'll keep in touch**（**You're subscribed** 留给已解锁进阶仪式）。情境软提示 Phase 2。Cloud 配好时走 Worker `NEWSLETTER_KV` + Resend 欢迎信 / 退订；Worker **须成功发出欢迎信**才写 `submitted`（502 不写）。无 Cloud 或 `?newsletterMock=1` 仍 mock。见 `NEWSLETTER_CAPTURE.md` |
 | `focus-tiger.sanctuary-entitlement.v1` | `sanctuaryEntitlementGate` | Yin's Sanctuary Lifetime：`{ unlocked, unlockedVia, unlockedAt, itemId, badgeIds[] }`；`badgeIds` = 尊贵徽章（Lifetime **或** Membership 付费起 3，最多 17，只增不减；订阅授章**不**把 `unlocked` 标真）；**不得**读 tip-jar 状态；**也**作统一 entitlement gate 的 lifetime 只读信号（`resolveLifetimeActive`）。**不含**桌面本地智能体；Lifetime AI 加购 SKU `companion.addon.lifetime` **另计、无本 key、禁止**进 `FEATURE_CATALOG` |
-| `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` + `membershipCheckout` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt`）；Membership 成功页 / verify 写入 `subscription`；可用性优先，非防盗；宽限 7 天 |
+| `focus-tiger.entitlement-cache.v1` | `entitlement/entitlementState` + `membershipCheckout` + `proCheckout` | 统一付费门禁本地缓存：`{ lifetime, subscription }`（含 `periodEndsAt` / `lastVerifiedAt` / `planId`）；Membership / **Pro** 成功页 / verify 写入 `subscription`；可用性优先，非防盗；宽限 7 天 |
+| `focus-tiger.companion-entitlement.v1` | `companionEntitlement` + `companionAddonCheckout` | Lifetime **AI Companion Add-on** 本地缓存：`{ active, itemId, unlockedAt, via }`；**禁止**进 `FEATURE_CATALOG` / `isEntitled`；与 Pro 订阅（`planId=focus-tiger-pro`）**或**关系解锁桌面生成 |
 | `focus-tiger.entitlement-ownership.v1` | `entitlement/entitlementOwnership` | persistent「已拥有」标记（仪式历史/纪念物等）；只增不减；订阅到期不收回 |
 | `focus-tiger.entitlement-mock.v1` | `entitlement/mockEntitlementProvider` | mock provider 场景：`{ scenario, periodEndsAt, failFetch }`；亦可用 `?entitlementMock=`；**不**接 Stripe |
 | `focus-tiger.membership-device.v1` | `membershipDeviceCredential` + Membership confirm/OTP verify | `{ email, deviceToken }`；cloud provider 轮询与 Billing Portal Manage；TTL 由 Worker KV 约束 |
@@ -56,7 +63,7 @@
 | `focus-tiger.wellness-disclaimer-seen.v1` | `wellnessDisclaimerGate` / `OnboardingHintsUI` | Wellness 非诊疗已读（`'1'`）；点「?」打开简介 / Sit / QA Got it 亦 mark；默认**不**自动出首卡；`?wellnessFirst=1` 强制 QA 卡；DEV 重置清 |
 | `focus-tiger.moment-whispers-seen.v1` | `momentWhispersGate` / `MomentWhisperUI` | Moment Whisper 各键已见 `{ arrive?, focus?, recover?, transition?, reflect? }`；一生一次；Transition 暂不 play |
 | `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect, insightSpark? }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar / Sanctuary / `practiceBadgeAward` **零耦合**）。写入：正式 Focus Rise 后 Reflection 关闭，**或** Breath practice 完成且 Reflection 关闭（chip 分钟、`arrive: false`）。Honesty / RitualFlow **不**写。`insightSpark` 仅在当场打开 Quiet Line 且当日句来自洞察种子池时为 `true`；缺省降级为无标记 |
-| `focus-tiger.practice-backup.v1` | `practiceBackupOptIn` / Journey Log 角落引导 | 练习记忆云端备份 opt-in：`{ enabled, consentedAt, email, deviceToken, lastUploadAt, lastUploadFingerprint, lastRestoreAt }`；整包 **6 key** 快照 → `PRACTICE_BACKUP_KV`；关闭须 OTP **删云端**。指纹相同则不 PUT。**不含** `monetization-funnel.v1`；打开备份不会上传意愿漏斗 |
+| `focus-tiger.practice-backup.v1` | `practiceBackupOptIn` / Journey Log 角落引导 | 练习记忆云端备份 opt-in：`{ enabled, consentedAt, email, deviceToken, lastUploadAt, lastUploadFingerprint, lastRestoreAt }`；整包 **6 key** 快照 → `PRACTICE_BACKUP_KV`；关闭须 OTP **删云端**。指纹相同则不 PUT。**不含** `monetization-funnel.v1`；打开备份不会上传意愿漏斗。白名单**仍不含** `daily-completions`；**恢复后** `applyPracticeBackupSnapshot` → `reconcileDailyCompletionAfterRestore` 从 `practice-days` 派生当日 `sessions`（`celebrated` 不可还原；见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` §9） |
 | `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；池条目 `{ id, text, attribution? }`（Yin 短句无署名；古典/文学句有 locale 署名）；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**；**Phase A 落点** = Reflection 卡底部（`[data-testid=reflection-daily-wisdom]`）；Phase B 印花另支 |
 | `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》两 case：`{ revealed, revealedAt, scoreAtReveal, revealedCaseIds, lastShownCaseId }`；门槛 = 统一练习 **score ≥ 21**；每首未揭示诗在完成仪式后出卡一次（Case 1 乐五斋诗稿 / Case 2 乐五斋七言歌行）；旧档仅 `revealed:true` 视为 Case 1 已见、仍可出 Case 2；菜单轮换已揭示诗；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
@@ -81,6 +88,14 @@
 
 公开读 API：`hasCompletedToday()`、`hasCelebratedToday()`、`getTodaySessions()`、`getTodayTotalMinutes()`、`getState()`。  
 **无**：多日历史、按周查询、`达标` 布尔、会话来源标签。换日后旧日 `sessions` **被覆盖丢弃**。
+
+**语义权威**：产品问「今天算不算练过 / **已同坐**」→ 先读 `TODAY_PRACTICE_SEMANTICS_AUDIT.md`（`RULES_INDEX` 产品表）。**勿混用**下列子语义：
+
+| 用户可见说法 | 权威读方 | 典型触点 |
+|---|---|---|
+| **今日已同坐** | `hasCompletedToday()` | 提醒 `reminder.practiced_today_note`、热力图、HUD 今日分钟 |
+| **今日已庆祝**（Celebrating 舞） | `hasCelebratedToday()` | 计时首次达标动效分级 only |
+| **Journey 有留痕** | `journey-log.v1` 按日过滤 | Journey Log 列表；**不含** Honesty |
 
 相邻对照：多日陪伴节奏与时长见 **§1.2 `PracticeDaysStore`**（`getLastNDays`）；DailyCompletion **仍仅当日**，勿假设可画周热力图。
 

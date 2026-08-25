@@ -183,6 +183,14 @@ export class PracticeDaysStore {
     return this._read().days.map((d) => d.date);
   }
 
+  /** Stored practiced rows (copy). Quiet days are not included. */
+  getPracticeDayEntries() {
+    return this._read().days.map((d) => ({
+      date: d.date,
+      totalMinutes: d.totalMinutes
+    }));
+  }
+
   /** Lit dots for the soft 7-day ring (capped). */
   getRingFilled(total = PRACTICE_STREAK_RING_TOTAL) {
     const cap = Math.max(1, total);

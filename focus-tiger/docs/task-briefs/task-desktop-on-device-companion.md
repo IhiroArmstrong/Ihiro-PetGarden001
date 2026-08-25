@@ -3,7 +3,8 @@
 > **状态（2026-08-20）**：政策已拍板（含 **仅宽屏 ⋯**）。L0 **#336**、L1 **#362** 已合 `develop`。**L2 已开工**（口令「开工桌面陪伴 L2」）：四层路由 + Electron 宽屏 fallback 短生成 + 本机 turns.jsonl。Web / 窄屏仍检索。型号 **未锁**。**Checkout / 第四卡+第五卡仍未接**（等关单级「能聊」后再下接线口令，两卡同批）。测本地 AI 须 Electron / `desktop:dev`。
 > **定位权威**：`PRODUCT_POSITIONING.md`「禅意倾听者」（2026-08-10 检索不生成 **仍有效**；本文件只执行 2026-08-18 **窄例外**）。  
 > **Web Confide**：`task-confide-to-yin-v1.md`（检索路径不变；禁止把本例外做进 `src/`）。  
-> **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。
+> **壳**：`task-electron-desktop-scaffold.md`（步骤 A/B **不含**本功能；不得绑进托盘验收）。  
+> **Personal Memory（2026-08-24 · 方向锁 · 无代码）**：`YIN_PERSONAL_MEMORY.md`。turns.jsonl **不是**记忆。未口令「开工 Yin Personal Memory」前禁止 store / 注入。仪式 generate **仍未拍板**。**2026-08-25 Slice 0 已开工**：Confide「练了多久」用本机练习字段，见 `task-yin-memory-slice-0-practice-facts.md`。
 
 ---
 
@@ -45,7 +46,7 @@
 |---|---|
 | 运行时 | **node-llama-cpp**，仅 Electron **主进程**（或 utility / 子进程）。禁止渲染进程。 |
 | 模型文件 | **不进 DMG**；首次打开入口时下载到 userData |
-| 默认型号 | L0 实测后再锁。候选起点 Qwen3-0.6B Q4；不在 L0 前争论 0.6B vs 1.7B |
+| 默认型号 | **2026-08-24 拍板锁定：`Qwen3-1.7B-Q4_K_M` unsloth**（L0 过；七问大多说得通；社评/公开资料评估质量最佳）。0.6B Q4 bartowski **不选**（七问多次失望、复读人设、社评差）。生产 `l0Config.js` 接线另任务。 |
 | Focusing | **卸载模型**，释放统一内存 |
 | 隔离 | 代码只放 `focus-tiger/desktop/`（如 `companion/`）。Web / PWA **不** feature-detect。无 `window.desktopShell.companion` **或当前为窄屏壳（≤479）** 则 **不注册** 生成能力（窄屏 Confide 检索仍走 Web v1，不进 llama） |
 | 体积 | 原生库增量约 30–50 MB（arm64）；模型另下 ~0.5 GB 量级 |
@@ -99,13 +100,59 @@ npm --prefix desktop install
 npm run desktop:companion-l0
 ```
 
-- 首次会下载约 0.5 GB GGUF 到 `~/Library/Application Support/Focus Tiger/companion-l0/`（**不进 git、不进 DMG**）。
+- 首次会下载约 **1.1 GB** GGUF（`Qwen3-1.7B-Q4_K_M`）到 `~/Library/Application Support/Focus Tiger/companion-l0/`（**不进 git、不进 DMG**）。已跑 spike 时可能从 `companion-spike-17b/` 种子复制。
 - 报告 JSON 写到同一目录 `report-*.json`，并打印 `verdict`。
 - **不上** Idle ⋯ / 抽屉入口；`preload` 仍只有既有壳 IPC。
 - 跳过窗口（只测加载，不采 rAF）：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`
 - 勿与口令「开工同坐点 L0」混在同一句话里。
 
-L0 数字出来之前 **不锁型号、不排 L1 面板**。
+L0 候选实验室 **2026-08-24 已锁型号**（见下「选型拍板」）。L1 面板已存在；换 1.7B 默认须改 `l0Config.js` + 下载路径。
+
+### 选型拍板（2026-08-24 · 用户书面 · 硬）
+
+**锁定：Qwen3-1.7B-Q4_K_M · unsloth**（GGUF 1,107,409,472 B；L0 JSON `compare-1787541422867.json`）。
+
+| 项 | 口径 |
+|---|---|
+| 为何选 1.7B | L0 数值闸全过；七问大多答复非常好、都说得通；社评良好、公开资料评估质量在已测候选中最佳 |
+| 「彤彤儿是我的名字」 | **产品侧不视为缺陷**；用户不会当硬身份错位，可能觉得幽默。实验室「身份错位」标注作废 |
+| 为何不选 0.6B Q4 bartowski | 社评/名声差；七问多次令人失望（复读 `young tiger cub in quiet company`、编造用户事实等） |
+| 为何不选 4B unsloth | L0 未过（TTFT 4.68s、decode 6.5 tok/s） |
+| 为何不选 4B bartowski | 生成故障（全感叹号） |
+| 工程未做 | ~~`l0Config.js` 仍 0.6B~~ → **#417 已合 develop**。生产 dest = `Qwen3-1.7B-Q4_K_M.gguf`；spike 可种子复制。**本 follow-up**：1.7B dest 完整后自动删 `companion-l0/` 残留 0.6B；Confide 状态条显示 `modelId`。 |
+
+### 1.7B Integration Spike（2026-08-24 · 口令已执行 · 不改产品行为）
+
+**命令**（独立 Node 脚本；**不**改 `l0Config.js` / L1 child / L2 路由）：
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm --prefix desktop install
+npm run desktop:companion-spike-17b
+```
+
+模型缓存：`~/Library/Application Support/Focus Tiger/companion-spike-17b/`（与生产 `companion-l0/` **分开**）。报告 JSON：`desktop/.spike-17b-cache/reports/spike-17b-*.json`（本地，不进 git）。
+
+**本机（Apple M5 · 16GB · Metal · 2026-08-24）**
+
+| 问 | 结果 |
+|---|---|
+| 下载完整？ | **是** — 1,107,409,472 B，与拍板字节一致；Node 下载器首次 ~36 min 完成 |
+| 实际文件大小 | 1,107,409,472 B（`Qwen3-1.7B-Q4_K_M.gguf`） |
+| 加载时间 | ~1.1 s（缓存命中后第二次跑） |
+| 首次 token（TTFT） | ~622 ms（gen 1）；gen 2–5 ~36–38 ms |
+| tokens/sec | gen 1 ~95；gen 2–5 ~93–96 |
+| 峰值 RSS | 进程峰值 ~4.4 GB（加载瞬态）；**持模 gen 期 ~1.48 GB** |
+| 连续 5 次生成 | **稳定** — 5/5 无崩溃/超时 |
+| 生成失败 → 语料 fallback | **是**（单元锁：`l0Spike17Checks.test.js` + unmatched → `fallback-03`） |
+| 普通启动是否被拖慢 | **否** — spike 不挂 Electron boot；`l0Config.js` 仍 0.6B |
+| 退出后资源释放 | **是** — unload 后 RSS 1.48 GB → ~213 MB（释放 ~1.27 GB） |
+
+**L0 数值闸（同 0.6B 阈值）**：TTFT ≤3 s、decode ≥8 tok/s → **通过**。
+
+**仍须人工**：~~Sit→Focusing 双终端 hitch（1.7B）~~ → **2026-08-25 M5 用户书面：多次双终端无可见顿挫**；M1 8GB 同探针；关单「能聊」质量（AE L2）。
+
+**下一步（已做 / 未做）**：~~单独口令把 `l0Config.js` + L1 下载 UX 切到 1.7B~~ → **2026-08-25 口令已下，见 `feature/companion-l0-config-17b`**。Checkout 第四+第五卡仍等「能聊」关单。
 
 ### 分析师跟进（2026-08-18 · 硬）+ 豁免（2026-08-19）
 
@@ -124,6 +171,48 @@ M5 16GB 过闸 **≠** 「大多数用户机型可行」。真正的瓶颈机型
 
 1. 产品窗（**不要**带 `FT_COMPANION_L0`）：`npm run desktop:dev` → Sit → Focusing，看阿寅呼吸。
 2. 另开终端、Focusing 已开始后：`FT_COMPANION_L0_SKIP_WINDOW=1 npm run desktop:companion-l0`（子进程加载 ≈0.9 GB 再卸载，**本命令不开窗**）。盯的是终端 1 那个产品窗：加载中 / **dispose 那几百毫秒** 呼吸有没有可见顿挫。
+
+**Focusing 掉帧 · 1.7B spike（2026-08-24 · 接 spike 后）** — 同上双终端，但终端 2 改跑 1.7B 探针（≈1.5 GB 持模；**仍不改**产品 `l0Config.js`）：
+
+**前提**：1.7B 已缓存（至少跑过一次 `npm run desktop:companion-spike-17b`）；Mac **非低配**（>8 GB）；宽屏 Electron 窗；**不要**与 QA 树 `:5173` Safari 混测。
+
+**终端 1 — 产品窗（全程盯这个窗里的阿寅呼吸）**
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm --prefix desktop install
+npm run desktop:dev
+```
+
+1. 弹出 **Focus Tiger 桌面窗**（不是 Safari）。
+2. 宽屏（≥480px）；可选 `?product=1` 由 Vite 默认即可。
+3. 若有 Arrival：走完或 Skip → 到 Idle。
+4. 点 **Sit**（或选 Companion 模式）→ 进入 **Focusing**。
+5. **保持 Focusing 不动**，眼睛盯阿寅闭目呼吸：是否匀速、有无「闪一下 / 顿一下 / 卡半拍」。
+
+**终端 2 — 1.7B spike（Focusing 已开始后再开）**
+
+新开一个终端 Tab/窗口：
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run desktop:companion-spike-17b
+```
+
+6. 终端 2 会依次打印 `[spike-17b] load` → `generate 1/5` … `generate 5/5` → `unload`（模型已缓存时约 **3–5 s**；首次下载不在本步骤）。
+7. **全程回到终端 1 产品窗**，重点看：
+   - **`load` 期间**（~1 s）：呼吸有没有可见顿挫？
+   - **5 次 `generate` 期间**（~1–2 s）：有没有顿挫？
+   - **`unload` 期间**（~0.5 s）：有没有顿挫？
+8. spike 跑完终端 2 自行退出；终端 1 **仍应保持 Focusing**，再看 **2–3 秒** 呼吸是否恢复正常。
+9. **通过**：全程无明显闪帧 / 硬顿 / 呼吸节律中断。**不通过**：任一阶段可见顿挫 → 记入 TRACKER「1.7B Focusing hitch」反馈列，**不要**先合 `l0Config` 接线。
+
+**收尾**
+
+- 终端 1：`Ctrl+C` 停 `desktop:dev`（会一并停 Vite）。
+- 确认 5173 无残留进程（若 QA 树也要用）。
+
+**与 0.6B L0 双终端的区别**：终端 2 命令是 `desktop:companion-spike-17b`（不是 `desktop:companion-l0`）；加载的是 **1.7B**（~1.5 GB 持模），不是 0.6B（~0.9 GB）。
 
 ### 低配购买 vs Focus Tiger Pro（2026-08-19–20）
 
@@ -201,7 +290,7 @@ L1 = 桌面宽屏面板 + 下载进度 + 主进程 IPC + Focusing 卸载。**仍
 
 | 测什么 | 何时 | 为什么 |
 |---|---|---|
-| **关单级「能聊」**（第 3 层短生成须接住该句意图；情绪桶不得生成） | **L2 已接线，待 Electron 人工** | 安全/情绪桶仍语料（`depressed`→sad）；unmatched **非情绪**闲聊才生成；同一套话应付不同问题 = 不达标 |
+| **关单级「能聊」**（第 3 层短生成须接住该句意图；情绪桶不得生成） | **2026-08-25 用户书面已关** | 安全/情绪桶仍语料；unmatched 非情绪闲聊才生成；时长问走 Slice 0 |
 | **Checkout 第四卡 Pro + 第五卡 Add-on** | **等关单级能聊之后**，另下「接 Checkout」口令，**两卡同批**再测付款 | 用户已同意；未经验收的生成就接线 = 假收费 |
 | **L1 面板壳**（点 ⋯ 见卡+进度、Focusing 卸载、拖窄关层、Web 无入口） | **不挡 L2 开工**。方便时可先点一眼；也可叠进 L2 人工测当回归 | 壳坏了会污染 L2 调试，但不必单独做关单「能聊」 |
 
@@ -216,7 +305,7 @@ L2 = 四层路由 + 人设约束 + **内部多轮**攒跑偏案例调 prompt。
 - 第 0 层 `safety_redirect`、第 2 层情绪桶：仍 `resolveConfideReply` 语料，**不**调模型。
 - 第 1 层仪式 UI（Whisper / Recover 等）**无** generate IPC。
 - 第 3 层：仅 Electron 宽屏、hold `ready`、route=`fallback` 时 `companion.generate`；失败/超时/人设违禁 → 语料 `fallback`，不空白、不重试死循环。
-- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`。
+- 多轮历史只在本面板会话；turns 落 `userData/companion-l2/turns.jsonl`（**调试日志，不是 Personal Memory**；见 `YIN_PERSONAL_MEMORY.md`）。
 - `generateEnabled` = allowed ∧ phase `ready` ∧ 非 Focusing。
 - **不含** Checkout、L3、锁型号。
 

@@ -17,8 +17,11 @@ import {
   exitElementFullscreen,
   formatMmSs,
   isDocumentFullscreen,
+  markDocumentPictureInPictureUnavailable,
+  needsDocumentPictureInPictureProbe,
+  probeDocumentPictureInPicture,
   requestElementFullscreen,
-  supportsDocumentPictureInPicture,
+  shouldShowDocumentPictureInPictureEntry,
   supportsElementFullscreen
 } from '../core/immersivePresenceSupport.js';
 
@@ -34,6 +37,7 @@ const PIP_FRAME_MS = 320;
  * @param {() => number} [handlers.getElapsedSeconds]
  * @param {() => string | null} [handlers.getSpriteFrameSrc]
  * @param {(mode: 'immersive' | 'pip' | 'exit') => void} [handlers.onModeChange]
+ * @param {() => void} [handlers.onPipUnavailable] 0–1s feedback when PiP request fails
  */
 export class ImmersivePresenceUI {
   constructor(container, handlers = {}) {
@@ -146,7 +150,14 @@ export class ImmersivePresenceUI {
     if (!this._focusing) {
       void this.exitImmersive({ skipFullscreen: false });
       this.closeDocumentPip();
+    } else if (needsDocumentPictureInPictureProbe()) {
+      void probeDocumentPictureInPicture().then(() => this.refreshPipEntry());
     }
+    this._syncChrome();
+  }
+
+  /** Re-run PiP entry visibility after async probe. */
+  refreshPipEntry() {
     this._syncChrome();
   }
 
@@ -203,7 +214,7 @@ export class ImmersivePresenceUI {
       isFocusing: this._focusing
     };
     if (!canEnterImmersivePresence(gate)) return;
-    if (!supportsDocumentPictureInPicture()) return;
+    if (!shouldShowDocumentPictureInPictureEntry()) return;
     if (this._pipOpen) return;
 
     let pipWindow;
@@ -214,6 +225,9 @@ export class ImmersivePresenceUI {
         preferInitialWindowPlacement: true
       });
     } catch {
+      markDocumentPictureInPictureUnavailable();
+      this.handlers.onPipUnavailable?.();
+      this._syncChrome();
       return;
     }
 
@@ -334,7 +348,7 @@ export class ImmersivePresenceUI {
       isFocusing: this._focusing,
       completionPending: gate.completionPending
     });
-    const pipSupported = supportsDocumentPictureInPicture();
+    const pipSupported = shouldShowDocumentPictureInPictureEntry();
 
     this.root.hidden = !allowed;
     this.enterBtn.hidden = !allowed || this._immersive;
