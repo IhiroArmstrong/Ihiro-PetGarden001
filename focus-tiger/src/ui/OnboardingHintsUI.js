@@ -58,6 +58,10 @@ import {
   isYpeCloudPersonalizationConsentEnabled,
   setYpeCloudPersonalizationConsent
 } from '../core/ypeCloudPersonalizationConsent.js';
+import {
+  onYpeCloudPersonalizationConsentDisabled,
+  onYpeCloudPersonalizationConsentEnabled
+} from '../core/ypePersonalizationSync.js';
 import { flushMonetizationFunnelUpload } from '../core/monetizationFunnelUpload.js';
 import {
   SECONDARY_PROXY_HINT_IDS,
@@ -2145,6 +2149,11 @@ export class OnboardingHintsUI {
     ypeOptInCheck.addEventListener('change', () => {
       const enabled = ypeOptInCheck.checked === true;
       setYpeCloudPersonalizationConsent(globalThis.localStorage, enabled);
+      if (enabled) {
+        onYpeCloudPersonalizationConsentEnabled(globalThis.localStorage);
+      } else {
+        onYpeCloudPersonalizationConsentDisabled(globalThis.localStorage);
+      }
       this._refreshYpeOptInCopy();
     });
 

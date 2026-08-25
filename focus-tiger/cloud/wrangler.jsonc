@@ -12,6 +12,8 @@
  *   npx wrangler kv namespace create PRACTICE_BACKUP_KV --preview
  *   npx wrangler kv namespace create NEWSLETTER_KV
  *   npx wrangler kv namespace create NEWSLETTER_KV --preview
+ *   npx wrangler kv namespace create YPE_PERSONALIZATION_KV
+ *   npx wrangler kv namespace create YPE_PERSONALIZATION_KV --preview
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
@@ -84,6 +86,11 @@
 			"binding": "NEWSLETTER_KV",
 			"id": "baeb661cb8f2450ab4a87d6f23af6896",
 			"preview_id": "8e13fe05705841c9939c3164bfb9a3bd"
+		},
+		{
+			"binding": "YPE_PERSONALIZATION_KV",
+			"id": "c8e4f1a29b3d4e5f9a0b1c2d3e4f5a6b",
+			"preview_id": "d9f5a2b3c4d5e6f7a8b9c0d1e2f3a4b5"
 		}
 	],
 	"vars": {

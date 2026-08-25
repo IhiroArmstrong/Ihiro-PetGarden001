@@ -245,9 +245,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L2 同意文案** | 关即删；HINT+DETAIL 附录 | 同上 | **已进 locale（en/ja/zh）** |
 | **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（#456）** |
 | **L2 算法** | 五键 → Pack 闭包变换；V1 不按完成率改档 | `task-l2-personalization-algorithm.md` | **本切片（文档）** |
-| **L2 运行时** | Worker / ingest / delete / Pack 作废 | 须口令「开工 L2」 | **未开工** |
+| **L2 运行时** | Worker ingest / delete / Pack 签发 + 客户端 sync | `task-l2-personalization-algorithm.md` | **本支 `feature/ype-l2-worker` 开工** |
 
-**我认为最合理的下一刀**：口令「开工 L2」（Worker ingest / 关即删 / Pack 签发）。较弱：未口令就把 UI+Worker 绑成一 PR。
+**我认为最合理的下一刀**：部署 Worker（`YPE_PERSONALIZATION_KV` 绑定 + Redeploy）后人工验收 ingest/delete；较弱：未部署就标「已通过」。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 

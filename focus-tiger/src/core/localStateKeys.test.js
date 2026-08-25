@@ -88,6 +88,7 @@ import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
 import { FOCUS_COINS_STORAGE_KEY, FocusCoinsStore } from './focusCoinsStore.js';
 import { YPE_COMPANION_STYLE_STORAGE_KEY } from './yinPersonalizationEngine.js';
 import { YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY } from './ypeCloudPersonalizationConsent.js';
+import { YPE_PERSONALIZATION_PACK_STORAGE_KEY } from './ypePersonalizationPack.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
@@ -173,7 +174,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   IDLE_COMPANION_PIP_STORAGE_KEY,
   FOCUS_COINS_STORAGE_KEY,
   YPE_COMPANION_STYLE_STORAGE_KEY,
-  YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY
+  YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY,
+  YPE_PERSONALIZATION_PACK_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {
