@@ -18,6 +18,8 @@
 
 **Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；1c 列表 + Forget；1e 口头 Forget CI-01；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
+**Yin Personalization Engine（2026-08-26 · 方向锁）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。本回合**无**新 key / 无 State Pack 文件。L2 若拍板也**禁止**写入练习备份 6 key、**禁止**与品味层 `/api/emotion-weight` 混桶。
+
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 

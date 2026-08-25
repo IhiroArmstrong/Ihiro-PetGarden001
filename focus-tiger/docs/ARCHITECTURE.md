@@ -86,7 +86,8 @@ focus-tiger/
 │  ├─ TASKS.md
 │  ├─ PRINCIPLES.md
 │  ├─ ARCHITECTURE.md
-│  ├─ YIN_PERSONAL_MEMORY.md      # 阿寅个人记忆架构 V1（方向锁；无运行时）
+│  ├─ YIN_PERSONAL_MEMORY.md      # 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey / turns）
+│  ├─ YIN_PERSONALIZATION_ENGINE.md # Yin Personalization Engine V1（方向锁；≠ Memory / 品味层 / Qwen）
 │  ├─ DESIGN.md
 │  ├─ PROCESS.md
 │  ├─ COLLAB.md

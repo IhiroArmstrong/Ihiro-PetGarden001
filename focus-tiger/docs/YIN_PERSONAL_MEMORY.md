@@ -294,4 +294,5 @@ Privacy 卖点继续是：Some conversations can stay on your device. **不是**
 - 桌面窄例外：`task-briefs/task-desktop-on-device-companion.md`
 - 练习云备份（对照禁混）：`task-briefs/task-practice-memory-cloud-backup-a.md` · `SHARED_RESOURCES.md`
 - 场景 AE / Y / Z：`SCENARIO_TESTS.md`
+- 编排层（何时沉默 / 政策档 / State Pack）：`YIN_PERSONALIZATION_ENGINE.md`（2026-08-26 方向锁；不替代本文 store 规则）
 - 调试 jsonl：`.cursor/rules/focus-tiger-companion-debug.mdc`

@@ -231,6 +231,19 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 Yin Personalization Engine（2026-08-26 方向锁）
+
+> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份。运行时须口令「开工 Yin Personalization Engine」。L2 State Pack **未拍板**。
+
+| 级 | 内容 | 文档 | 状态 |
+|---|---|---|---|
+| **架构** | Cloud Brain / Local Runtime；State Pack 草图；隐私特征白名单；L0/L1/L2 | `YIN_PERSONALIZATION_ENGINE.md` | **方向锁 · 无新运行时** |
+| **L0** | 现有沉默/层序收成政策接口（行为不变） | 另口令 | 未开工 |
+| **L1** | 本地检索契约 ≤3 条；计数型 insight；三档政策 | 另口令；建议 AG 1d/1e 人工后 | 未开工 |
+| **L2** | 云端 Pack；只收白名单特征 | 须单独产品会 | **未拍板** |
+
+**我认为最合理的下一刀**：保持文档锁；产品主线仍关 Memory / Presence 人工。较弱：未开会就写 Worker。
+
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 
 > 外在记忆 SSOT：`YIN_PERSONAL_MEMORY.md`。**≠** Journey Log / 练习云备份 / `turns.jsonl`。运行时须口令「开工 Yin Personal Memory」。
