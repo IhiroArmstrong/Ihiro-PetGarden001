@@ -179,7 +179,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 
 **Personal Memory（2026-08-24 · 方向锁）**：专有陪伴来自本地外部记忆 + 语言层，**不是**微调。SSOT `YIN_PERSONAL_MEMORY.md`。注入优先级 **Safety > Corpus > Memory 检索 > Qwen**（记忆只在层 3）；危机/情绪桶永不入库；**不进**练习云备份。仪式场景 generate **仍未拍板**。Slice 0–1e 运行时另见 TRACKER / 场景 AG。
 
-**Yin Personalization Engine（2026-08-26 · 方向锁 · L0/L1 本地运行时）**：横跨 Presence / Memory / Journey / Moment 的编排层（何时沉默、取哪几条、政策档）。SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `yinPersonalizationEngine.js`（现网门闩收口，行为不变）。**≠** 品味层（全局手感）**≠** Qwen runtime。核心原则：云端可以让阿寅越来越聪明，但不能让阿寅因为没有网络而消失。L2 **契约**已合 #454。Consent：**关即删**草稿已锁（`task-l2-personalization-consent.md`；locale 未接）。Worker/runtime **未开工**。YPE L2 ≠ 桌面陪伴 generate L2。
+**Yin Personalization Engine（2026-08-26 · 方向锁 · L0/L1 本地运行时）**：横跨 Presence / Memory / Journey / Moment 的编排层（何时沉默、取哪几条、政策档）。SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `yinPersonalizationEngine.js`（现网门闩收口，行为不变）。**≠** 品味层（全局手感）**≠** Qwen runtime。核心原则：云端可以让阿寅越来越聪明，但不能让阿寅因为没有网络而消失。L2 **契约**已合 #454。Consent：关即删附录有条件通过（`task-l2-personalization-consent.md`；locale 未接）。身份：本机随机 `ype_profile_id`（`task-l2-personalization-identity.md`）。Worker/runtime **未开工**。YPE L2 ≠ 桌面陪伴 generate L2。
 
 ---
 

@@ -32,7 +32,7 @@ Some conversations can stay on your device. Yin can listen locally — those wor
 
 If we add cloud features, we will explain **what** is sent, **why**, **how long**, and ask for consent before it leaves your device.
 
-Planned (not shipped): optional **Yin cloud personalization** is a **fourth** independent consent (off by default; not Memory, not practice backup, not the support-funnel toggle). User-facing retention is **turn off → stop sending → delete the cloud personalization data tied to that choice**. Copy is locked in `task-briefs/task-l2-personalization-consent.md` until the L2 UI start passphrase. Do not describe it as anonymous.
+Planned (not shipped): optional **Yin cloud personalization** is a **fourth** independent consent (off by default; not Memory, not practice backup, not the support-funnel toggle). User-facing retention is **turn off → stop sending → delete the cloud personalization data tied to that choice** (V1 = this install’s YPE profile, not an account-wide wipe). Copy is in `task-briefs/task-l2-personalization-consent.md` until the L2 UI start passphrase. Identity: `task-briefs/task-l2-personalization-identity.md`. Do not describe it as anonymous.
 
 ## In-app placement（2026-08-07）
 

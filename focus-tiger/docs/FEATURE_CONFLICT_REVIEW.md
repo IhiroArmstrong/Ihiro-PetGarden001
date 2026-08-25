@@ -104,7 +104,11 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 **YPE L2 Consent 关即删（2026-08-26 · 文档；无 locale / 无 UI）**
 
-对照 AG Memory / Z 备份 / Privacy 漏斗 / AE Confide。用户确认分析师收口：默认关；关即删（停发 + 删与这次同意绑定的云记录 + 作废本机 Pack）；HINT + 可展开 DETAIL；不宣传 derived quiet/warm；禁止 anonymous。不加重 Sit；不与备份/漏斗/Memory 合并开关；不写 locale。无新用户路径。身份键（跨设备删除）另刀。
+对照 AG Memory / Z 备份 / Privacy 漏斗 / AE Confide。用户确认分析师收口：默认关；关即删（停发 + 删与这次同意绑定的云记录 + 作废本机 Pack）；HINT + 可展开 DETAIL；不宣传 derived quiet/warm；禁止 anonymous。不加重 Sit；不与备份/漏斗/Memory 合并开关；不写 locale。无新用户路径。身份键后补见下行。
+
+**YPE L2 身份键（2026-08-26 · 文档；无 Worker）**
+
+对照 AG / Z 备份 OTP / 漏斗 / Membership `deviceToken`。设计师书面：V1 = 本机随机 opaque `ype_profile_id`（非硬件指纹、非邮箱）；第二设备 = 新档案；DELETE 只动 YPE signals+Pack；离线关闭不得假装云端已删。不加重 Sit；不与备份 OTP 合并身份；不写 locale。无新用户路径。
 
 **检索不生成 vs 桌面陪伴（2026-08-18）**
 
@@ -174,7 +178,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
-| 2026-08-24 | Yin Personal Memory 架构入库（无代码）：对照 AE / Y / Z / 练习备份；职责用三套边界拆开；仪式生成仍未拍板 |
+| 2026-08-26 | YPE L2 身份键入库（无代码）：本机随机 profile ID；第二设备新档案；删除不连带备份/Memory/漏斗。对照 AG / Z OTP / 漏斗。无运行时用户路径 |
 | 2026-08-25 | Confide「练了多久」排 Slice 0：读同一练习账本、不另建记忆柜；危机/情绪桶仍先于事实应答；未写 store |
 | 2026-08-24 | Agent 摘要：`focus-tiger-feature-conflict-review.mdc` 改为 glob 注入（`src` / `desktop` / `docs`），不再 alwaysApply |
 | 2026-08-20 | L1 口令「开工桌面陪伴 L1」：宽屏 Confide 同一入口 + 下载层；仍不上 L2 生成、不接第四卡 / 第五卡。对照 Confide / 场景 Q / Whisper：无新菜单、无假收费卡、仪式文案不生成 |
