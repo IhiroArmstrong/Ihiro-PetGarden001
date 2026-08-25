@@ -33,6 +33,10 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  RITUAL_LEAVE_RETROSPECTIVE_DWELL_MS,
+  resolveRitualChipLabelKey
+} from '../core/ritualPresenceBridge.js';
 
 const PANEL_CSS = [
   'position:absolute',
@@ -85,6 +89,22 @@ const CHIP_CSS = [
   'cursor:pointer'
 ].join(';');
 
+/** Arrival/Notice-style observation bubble (non-blocking). */
+const RETROSPECTIVE_BUBBLE_CSS = [
+  'max-width:100%',
+  'padding:10px 16px',
+  'border-radius:18px',
+  'background:rgba(255,252,245,0.72)',
+  'backdrop-filter:blur(8px)',
+  '-webkit-backdrop-filter:blur(8px)',
+  'border:1px solid rgba(139,115,85,0.14)',
+  'box-shadow:0 4px 18px rgba(44,31,20,0.06)',
+  'font-size:15px',
+  'line-height:1.55',
+  'color:#4a3a28',
+  'text-align:center'
+].join(';');
+
 export class RitualFlowUI {
   /**
    * @param {HTMLElement} container
@@ -93,9 +113,18 @@ export class RitualFlowUI {
    * @param {(ritualId: string) => void} [handlers.onBreathEnd]
    * @param {(result: {
    *   ritualId: string,
-   *   selections: Record<string, string>
+   *   selections: Record<string, string>,
+   *   ritualSessionId: string
    * }) => void} [handlers.onComplete]
-   * @param {(ritualId: string) => void} [handlers.onLeave]
+   * @param {(payload: {
+   *   ritualId: string,
+   *   selections: Record<string, string>,
+   *   ritualSessionId: string
+   * }) => void} [handlers.onLeave]
+   * @param {(ritualId: string) => {
+   *   field: string,
+   *   emotionTag: string
+   * } | null} [handlers.consumeLeaveRetrospective]
    * @param {(durationMs: number) => number} [handlers.resolveBreathMs]
    *   optional e2e override (e.g. ?ritualBreathMs=)
    */
@@ -112,6 +141,10 @@ export class RitualFlowUI {
     this._breathStartedAt = null;
     this._breathDurationMs = 0;
     this._breathCompletionFired = false;
+    /** @type {string | null} */
+    this._ritualSessionId = null;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._retrospectiveTimer = null;
     /** @type {((ev: Event) => void) | null} */
     this._onVisibility = null;
     this._unsubscribeLocale = onLocaleChange(() => {
@@ -137,24 +170,35 @@ export class RitualFlowUI {
     if (!isRitualId(ritualId)) return false;
     if (this.isOpen()) return false;
     this._clearBreathTimers();
+    this._clearRetrospectiveTimer();
+    this._ritualSessionId = `ritual-${ritualId}-${Date.now()}`;
     this.state = createRitualFlowState(ritualId);
     this._ensureRoot();
-    this._render();
     this._fadeIn();
+    const retrospective = this.handlers.consumeLeaveRetrospective?.(ritualId);
+    if (retrospective) {
+      this._showRetrospectiveThenWelcome(ritualId, retrospective);
+      return true;
+    }
+    this._render();
     return true;
   }
 
   leave() {
     if (!this.state || this.state.leftEarly || this.state.completed) return;
     const ritualId = this.state.ritualId;
+    const selections = { ...this.state.selections };
+    const ritualSessionId = this._ritualSessionId || `ritual-${ritualId}-${Date.now()}`;
     this._clearBreathTimers();
+    this._clearRetrospectiveTimer();
     this.state = leaveRitualFlow(this.state);
     this._teardown();
-    this.handlers.onLeave?.(ritualId);
+    this.handlers.onLeave?.({ ritualId, selections, ritualSessionId });
   }
 
   hide() {
     this._clearBreathTimers();
+    this._clearRetrospectiveTimer();
     this.state = null;
     if (!this.root) return;
     this.root.style.opacity = '0';
@@ -167,6 +211,7 @@ export class RitualFlowUI {
   dispose() {
     this._unsubscribeLocale();
     this._clearBreathTimers();
+    this._clearRetrospectiveTimer();
     this._teardown();
     this.state = null;
   }
@@ -202,9 +247,12 @@ export class RitualFlowUI {
     if (this.state.completed) {
       const ritualId = this.state.ritualId;
       const selections = { ...this.state.selections };
+      const ritualSessionId =
+        this._ritualSessionId || `ritual-${ritualId}-${Date.now()}`;
       this._clearBreathTimers();
+      this._clearRetrospectiveTimer();
       this.hide();
-      this.handlers.onComplete?.({ ritualId, selections });
+      this.handlers.onComplete?.({ ritualId, selections, ritualSessionId });
       return;
     }
     this._render();
@@ -238,6 +286,43 @@ export class RitualFlowUI {
     if (step.kind === 'end') {
       this._renderEnd(step);
     }
+  }
+
+  _clearRetrospectiveTimer() {
+    if (this._retrospectiveTimer != null) {
+      window.clearTimeout(this._retrospectiveTimer);
+      this._retrospectiveTimer = null;
+    }
+  }
+
+  /**
+   * @param {string} ritualId
+   * @param {{ field: string, emotionTag: string }} retrospective
+   */
+  _showRetrospectiveThenWelcome(ritualId, retrospective) {
+    if (!this.root) return;
+    this.root.replaceChildren();
+    this.root.dataset.ritualStep = 'retrospective';
+    const labelKey = resolveRitualChipLabelKey(
+      ritualId,
+      retrospective.field,
+      retrospective.emotionTag
+    );
+    const chipLabel = labelKey ? t(labelKey) : retrospective.emotionTag;
+    const bubble = document.createElement('div');
+    bubble.dataset.testid = 'ritual-leave-retrospective';
+    bubble.style.cssText = RETROSPECTIVE_BUBBLE_CSS;
+    bubble.textContent = t('PRESENCE_RITUAL_LEAVE_RETROSPECTIVE').replaceAll(
+      '{chip}',
+      chipLabel
+    );
+    this.root.append(bubble);
+    this._clearRetrospectiveTimer();
+    this._retrospectiveTimer = window.setTimeout(() => {
+      this._retrospectiveTimer = null;
+      if (!this.state || this.state.leftEarly || this.state.completed) return;
+      this._render();
+    }, RITUAL_LEAVE_RETROSPECTIVE_DWELL_MS);
   }
 
   /** @param {Extract<import('../core/RitualFlow.js').RitualStepDef, { kind: 'welcome' }>} step */

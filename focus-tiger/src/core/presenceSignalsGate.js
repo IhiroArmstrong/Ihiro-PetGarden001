@@ -74,7 +74,10 @@ export const PRESENCE_EMOTION_TAG_IDS = Object.freeze([
  *   emotionTag?: string,
  *   freeText?: string,
  *   ritualId?: string,
- *   field?: string
+ *   field?: string,
+ *   ritualSessionId?: string,
+ *   ritualCompleted?: boolean,
+ *   retrospectiveMentioned?: boolean
  * }} PresenceSignalEntry
  *
  * @typedef {{ entries: PresenceSignalEntry[] }} PresenceSignalsState
@@ -164,6 +167,15 @@ export function normalizePresenceSignalEntries(raw) {
     }
     if (typeof o.ritualId === 'string' && o.ritualId) entry.ritualId = o.ritualId;
     if (typeof o.field === 'string' && o.field) entry.field = o.field;
+    if (typeof o.ritualSessionId === 'string' && o.ritualSessionId) {
+      entry.ritualSessionId = o.ritualSessionId;
+    }
+    if (o.ritualCompleted === true || o.ritualCompleted === false) {
+      entry.ritualCompleted = o.ritualCompleted;
+    }
+    if (o.retrospectiveMentioned === true || o.retrospectiveMentioned === false) {
+      entry.retrospectiveMentioned = o.retrospectiveMentioned;
+    }
     if (!entry.emotionTag && !entry.freeText) continue;
     out.push(entry);
   }
@@ -270,6 +282,16 @@ export function appendPresenceSignal(storage, partial, opts = {}) {
   if (freeText) row.freeText = freeText.slice(0, 500);
   if (partial.ritualId) row.ritualId = partial.ritualId;
   if (partial.field) row.field = partial.field;
+  if (partial.ritualSessionId) row.ritualSessionId = partial.ritualSessionId;
+  if (partial.ritualCompleted === true || partial.ritualCompleted === false) {
+    row.ritualCompleted = partial.ritualCompleted;
+  }
+  if (
+    partial.retrospectiveMentioned === true ||
+    partial.retrospectiveMentioned === false
+  ) {
+    row.retrospectiveMentioned = partial.retrospectiveMentioned;
+  }
 
   const prev = readPresenceSignals(storage);
   const entries = normalizePresenceSignalEntries([...prev.entries, row]);
