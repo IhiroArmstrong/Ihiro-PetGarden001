@@ -10,6 +10,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import {
+  forgetYinPersonalMemoryEntry,
   readYinPersonalMemoryState,
   rememberYinPersonalMemoryFromConfide,
   setYinPersonalMemoryConsent,
@@ -43,4 +44,21 @@ test('rememberFromConfide persists active memory when consented', async () => {
   assert.equal(next.memories[0].sourceRoute, 'confide_fallback');
   const roundTrip = await readYinPersonalMemoryState(dir);
   assert.equal(roundTrip.memories.length, 1);
+});
+
+test('forgetYinPersonalMemoryEntry removes memory from json', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'ft-yin-memory-'));
+  await setYinPersonalMemoryConsent(dir, true);
+  const withMemory = await rememberYinPersonalMemoryFromConfide(dir, {
+    userText: 'I prefer quiet, short reflections.',
+    route: 'fallback',
+    replySource: 'generate',
+    turnOrdinal: 0,
+    nowIso: '2026-08-25T12:00:00.000Z'
+  });
+  const id = withMemory.memories[0].id;
+  const after = await forgetYinPersonalMemoryEntry(dir, id);
+  assert.equal(after.memories.length, 0);
+  const roundTrip = await readYinPersonalMemoryState(dir);
+  assert.equal(roundTrip.memories.length, 0);
 });

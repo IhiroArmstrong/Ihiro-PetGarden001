@@ -144,6 +144,7 @@ import {
 } from './core/idleYinTapGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
+import { YinPersonalMemoryUI } from './ui/YinPersonalMemoryUI.js';
 import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
@@ -979,6 +980,8 @@ async function init() {
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
+  const yinPersonalMemoryUI = new YinPersonalMemoryUI(document.body, {});
+  window.__yinPersonalMemory = yinPersonalMemoryUI;
   /** @type {FocusCoinsPanelUI | null} */
   let yinCoinPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
@@ -1092,6 +1095,10 @@ async function init() {
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
     },
+    onOpenMemoryPanel: () => {
+      closeGrowthOverlayCards({ except: 'yin-memory' });
+      yinPersonalMemoryUI.open();
+    },
     onReplied: ({ route }) => {
       if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
         emotionController.playEmotion('nodBow');
@@ -1130,6 +1137,7 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
   }
 

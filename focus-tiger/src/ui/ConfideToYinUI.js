@@ -59,6 +59,7 @@ export class ConfideToYinUI {
    * @param {() => void} [handlers.onClose]
    * @param {(info: { route: string, lineId: string }) => void} [handlers.onReplied]
    * @param {() => boolean} [handlers.canOpen]
+   * @param {() => void} [handlers.onOpenMemoryPanel]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -172,6 +173,13 @@ export class ConfideToYinUI {
     this.replyEl.dataset.testid = 'confide-to-yin-reply';
     this.replyEl.hidden = true;
 
+    this.memoryListLink = document.createElement('button');
+    this.memoryListLink.type = 'button';
+    this.memoryListLink.className = 'confide-to-yin__memory-list-link';
+    this.memoryListLink.dataset.testid = 'confide-to-yin-memory-list-link';
+    this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
+    this.memoryListLink.addEventListener('click', () => this.handlers.onOpenMemoryPanel?.());
+
     this.actions = document.createElement('div');
     this.actions.className = 'confide-to-yin__actions';
 
@@ -206,6 +214,7 @@ export class ConfideToYinUI {
       this.inputEl,
       this.userEl,
       this.replyEl,
+      this.memoryListLink,
       this.actions
     );
     mountRoot.appendChild(this.root);
@@ -397,6 +406,10 @@ export class ConfideToYinUI {
     this.memoryConsentCopy.textContent = t('YIN_MEMORY_CONSENT_BLURB');
     this.memoryConsentAllowBtn.textContent = t('YIN_MEMORY_CONSENT_ALLOW');
     this.memoryConsentDenyBtn.textContent = t('YIN_MEMORY_CONSENT_DENY');
+    if (this.memoryListLink) {
+      this.memoryListLink.textContent = t('YIN_MEMORY_PANEL_LINK');
+      this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
+    }
     this._renderDesktopStatus();
   }
 
@@ -672,6 +685,29 @@ export class ConfideToYinUI {
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
+      }
+      .confide-to-yin__memory-list-link {
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.78rem;
+        opacity: 0.76;
+        cursor: pointer;
+        padding: 0;
+        margin: 4px 0 10px;
+        text-align: left;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        transition: transform 120ms ease, opacity 120ms ease;
+      }
+      .confide-to-yin__memory-list-link:active {
+        opacity: 1;
+        transform: translateY(1px);
+      }
+      .confide-to-yin__memory-list-link[hidden] {
+        display: none !important;
       }
       .confide-to-yin__desktop-status {
         margin: 0 0 12px;

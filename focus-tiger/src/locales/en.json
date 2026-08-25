@@ -649,5 +649,21 @@
   "SUPPORT_DESKTOP_RAM_NOTE": "Note: On Mac and Windows PCs with 8 GB of RAM or less, the optional on-device companion can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Focus Tiger hides the entry by default.",
   "YIN_MEMORY_CONSENT_BLURB": "Yin can remember a few things on this device only — to understand you better over time. Nothing is uploaded.",
   "YIN_MEMORY_CONSENT_ALLOW": "Allow",
-  "YIN_MEMORY_CONSENT_DENY": "Not now"
+  "YIN_MEMORY_CONSENT_DENY": "Not now",
+  "YIN_MEMORY_PANEL_LINK": "What Yin remembers",
+  "YIN_MEMORY_PANEL_TITLE": "What Yin remembers",
+  "YIN_MEMORY_PANEL_BLURB": "A few observations Yin keeps on this device only. You can forget any of them.",
+  "YIN_MEMORY_PANEL_EMPTY": "Nothing here yet — Yin only remembers after you allow it in Confide.",
+  "YIN_MEMORY_PANEL_DENIED": "Yin is not remembering new things right now.",
+  "YIN_MEMORY_PANEL_CLOSE": "Close",
+  "YIN_MEMORY_FORGET": "Forget",
+  "YIN_MEMORY_KIND_PREFERENCE": "Preference",
+  "YIN_MEMORY_KIND_PATTERN": "Pattern",
+  "YIN_MEMORY_KIND_MOMENT": "Meaningful moment",
+  "YIN_MEMORY_KIND_RELATIONSHIP": "Relationship",
+  "YIN_MEMORY_KIND_GENERIC": "Memory",
+  "YIN_MEMORY_WHY_CONFIDE": "From what you shared in Confide on {date}.",
+  "YIN_MEMORY_WHY_CONFIDE_NO_DATE": "From what you shared in Confide.",
+  "YIN_MEMORY_WHY_SESSION": "From a sit you finished.",
+  "YIN_MEMORY_WHY_GENERIC": "From this device."
 }

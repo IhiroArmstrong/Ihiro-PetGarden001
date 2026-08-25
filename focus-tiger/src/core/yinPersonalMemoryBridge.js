@@ -16,7 +16,8 @@ import { normalizeYinPersonalMemoryState } from './yinPersonalMemory/yinPersonal
  * @returns {null | {
  *   getState: () => Promise<unknown>,
  *   setConsent: (granted: boolean) => Promise<unknown>,
- *   rememberFromConfide: (payload: object) => Promise<unknown>
+ *   rememberFromConfide: (payload: object) => Promise<unknown>,
+ *   forget: (memoryId: string) => Promise<unknown>
  * }}
  */
 export function getYinPersonalMemoryBridge(globalObj = globalThis) {
@@ -25,6 +26,7 @@ export function getYinPersonalMemoryBridge(globalObj = globalThis) {
   if (!memory || typeof memory.getState !== 'function') return null;
   if (typeof memory.setConsent !== 'function') return null;
   if (typeof memory.rememberFromConfide !== 'function') return null;
+  if (typeof memory.forget !== 'function') return null;
   return memory;
 }
 
@@ -81,6 +83,21 @@ export async function rememberYinPersonalMemoryFromConfide(payload, globalObj = 
   if (!bridge) return normalizeYinPersonalMemoryState(null);
   try {
     const raw = await bridge.rememberFromConfide(payload && typeof payload === 'object' ? payload : {});
+    return normalizeYinPersonalMemoryState(raw);
+  } catch {
+    return normalizeYinPersonalMemoryState(null);
+  }
+}
+
+/**
+ * @param {string} memoryId
+ * @param {object} [globalObj]
+ */
+export async function forgetYinPersonalMemoryEntry(memoryId, globalObj = globalThis) {
+  const bridge = getYinPersonalMemoryBridge(globalObj);
+  if (!bridge) return normalizeYinPersonalMemoryState(null);
+  try {
+    const raw = await bridge.forget(typeof memoryId === 'string' ? memoryId : '');
     return normalizeYinPersonalMemoryState(raw);
   } catch {
     return normalizeYinPersonalMemoryState(null);

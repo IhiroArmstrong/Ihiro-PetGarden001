@@ -305,6 +305,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(preload, /desktop:yin-personal-memory-get/);
     assert.match(ipcSrc, /desktop:yin-personal-memory-set-consent/);
     assert.match(preload, /desktop:yin-personal-memory-remember-from-confide/);
+    assert.match(ipcSrc, /desktop:yin-personal-memory-forget/);
+    assert.match(preload, /desktop:yin-personal-memory-forget/);
+    assert.match(ui, /confide-to-yin-memory-list-link/);
+    assert.match(ui, /onOpenMemoryPanel/);
     assert.match(ui, /shouldOfferYinMemoryConsent/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);

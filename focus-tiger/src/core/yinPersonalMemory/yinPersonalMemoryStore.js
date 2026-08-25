@@ -14,6 +14,7 @@ import {
 } from './yinPersonalMemorySchema.js';
 import { applyYinMemoryConsent } from './yinPersonalMemoryConsent.js';
 import { rememberFromConfideTurn } from './yinPersonalMemoryRemember.js';
+import { forgetYinPersonalMemory } from './yinPersonalMemoryForget.js';
 
 export class YinPersonalMemoryStore {
   constructor() {
@@ -55,5 +56,15 @@ export class YinPersonalMemoryStore {
     const { state, remembered } = rememberFromConfideTurn(this.snapshot(), payload);
     this._state = state;
     return remembered;
+  }
+
+  /**
+   * @param {string} memoryId
+   * @returns {boolean}
+   */
+  forget(memoryId) {
+    const { state, forgotten } = forgetYinPersonalMemory(this.snapshot(), memoryId);
+    this._state = state;
+    return forgotten;
   }
 }

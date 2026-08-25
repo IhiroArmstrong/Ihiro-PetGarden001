@@ -17,6 +17,7 @@ import {
 } from '../../src/core/yinPersonalMemory/yinPersonalMemorySchema.js';
 import { applyYinMemoryConsent } from '../../src/core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 import { rememberFromConfideTurn } from '../../src/core/yinPersonalMemory/yinPersonalMemoryRemember.js';
+import { forgetYinPersonalMemory } from '../../src/core/yinPersonalMemory/yinPersonalMemoryForget.js';
 
 export const YIN_PERSONAL_MEMORY_DIRNAME = 'companion-l2';
 export const YIN_PERSONAL_MEMORY_FILENAME = 'yin-personal-memory.json';
@@ -99,5 +100,15 @@ export async function rememberYinPersonalMemoryFromConfide(userDataDir, payload)
         : 0,
     nowIso: typeof safe.nowIso === 'string' ? safe.nowIso : undefined
   });
+  return writeYinPersonalMemoryState(userDataDir, state);
+}
+
+/**
+ * @param {string} userDataDir
+ * @param {string} memoryId
+ */
+export async function forgetYinPersonalMemoryEntry(userDataDir, memoryId) {
+  const current = await readYinPersonalMemoryState(userDataDir);
+  const { state } = forgetYinPersonalMemory(current, memoryId);
   return writeYinPersonalMemoryState(userDataDir, state);
 }

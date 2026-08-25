@@ -9,7 +9,6 @@
  * Silent on failure — no UI toast.
  */
 
-import { randomUUID } from 'node:crypto';
 import { CONFIDE_EMOTION_BUCKETS, CONFIDE_ROUTE } from '../confide/confideRoutes.js';
 import { shouldAnswerWithPracticeFacts } from '../confide/confidePracticeFacts.js';
 import { canRememberYinPersonalMemory } from './yinPersonalMemoryConsent.js';
@@ -21,6 +20,16 @@ export const YIN_MEMORY_SOURCE_ROUTE = Object.freeze({
 });
 
 const ALLOWED_SOURCE_ROUTES = new Set(Object.values(YIN_MEMORY_SOURCE_ROUTE));
+
+/** @returns {string} */
+function createYinMemoryId() {
+  try {
+    if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  } catch {
+    /* fall through */
+  }
+  return `yin-mem-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+}
 
 const FORBIDDEN_EXTRACT_PATTERNS = [
   /\b(suicid|kill myself|end my life|don't want to live|want to die)\b/i,
@@ -199,7 +208,7 @@ export function applyYinMemoryRemember(state, candidate, nowIso = new Date().toI
   }
 
   memories.push({
-    id: randomUUID(),
+    id: createYinMemoryId(),
     kind: candidate.kind,
     summary: candidate.summary,
     evidence: `${ruleTag};${candidate.evidence}`,

@@ -649,5 +649,21 @@
   "MEMBERSHIP_RESTORE_BACK": "返回",
   "YIN_MEMORY_CONSENT_BLURB": "阿寅可以只在这台设备上记住少量事情，慢慢更懂你。不会上传。",
   "YIN_MEMORY_CONSENT_ALLOW": "允许",
-  "YIN_MEMORY_CONSENT_DENY": "暂不"
+  "YIN_MEMORY_CONSENT_DENY": "暂不",
+  "YIN_MEMORY_PANEL_LINK": "阿寅记得什么",
+  "YIN_MEMORY_PANEL_TITLE": "阿寅记得什么",
+  "YIN_MEMORY_PANEL_BLURB": "阿寅只在这台设备上保留少量观察。你可以随时忘掉。",
+  "YIN_MEMORY_PANEL_EMPTY": "还没有——需在倾诉里允许后才会记住。",
+  "YIN_MEMORY_PANEL_DENIED": "阿寅现在不会记住新的事情。",
+  "YIN_MEMORY_PANEL_CLOSE": "关闭",
+  "YIN_MEMORY_FORGET": "忘掉",
+  "YIN_MEMORY_KIND_PREFERENCE": "偏好",
+  "YIN_MEMORY_KIND_PATTERN": "节奏",
+  "YIN_MEMORY_KIND_MOMENT": "时刻",
+  "YIN_MEMORY_KIND_RELATIONSHIP": "相处",
+  "YIN_MEMORY_KIND_GENERIC": "记忆",
+  "YIN_MEMORY_WHY_CONFIDE": "来自 {date} 在倾诉里说过的话。",
+  "YIN_MEMORY_WHY_CONFIDE_NO_DATE": "来自你在倾诉里说过的话。",
+  "YIN_MEMORY_WHY_SESSION": "来自你完成的一次静坐。",
+  "YIN_MEMORY_WHY_GENERIC": "来自本机。"
 }
