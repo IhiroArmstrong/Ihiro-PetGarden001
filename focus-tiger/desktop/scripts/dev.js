@@ -47,7 +47,8 @@ try {
   process.exit(1);
 }
 
-const electron = spawn(electronPath, ['.', '--dev'], {
+const electronBin = String(electronPath || '').trim();
+const electron = spawn(electronBin, ['.', '--dev'], {
   cwd: desktopDir,
   stdio: 'inherit',
   env: { ...process.env, FT_DESKTOP_DEV: '1' }

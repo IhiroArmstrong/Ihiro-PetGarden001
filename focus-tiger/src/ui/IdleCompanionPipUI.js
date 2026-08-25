@@ -10,13 +10,14 @@
  * The float is a view clone of the current sprite frame; it holds no session.
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { markDocumentPictureInPictureUnavailable } from '../core/immersivePresenceSupport.js';
 import {
   markIdleCompanionPipUsed,
   shouldMountIdleCompanionPipEntry,
   shouldShowIdleCompanionPipEntry,
-  supportsDocumentPictureInPicture
+  shouldShowDocumentPictureInPictureEntry
 } from '../core/idleCompanionPipGate.js';
+import { t, onLocaleChange } from '../locales/i18n.js';
 
 const ROOT_ID = 'idle-companion-pip';
 const STYLE_ID = 'idle-companion-pip-styles-v1';
@@ -98,14 +99,20 @@ export class IdleCompanionPipUI {
   syncVisibility() {
     if (!this.root) return;
     const isIdle = Boolean(this.handlers.getIsIdle?.());
+    const pipOk = shouldShowDocumentPictureInPictureEntry();
     const show = shouldShowIdleCompanionPipEntry({
-      documentPipSupported: this._supported,
+      documentPipSupported: pipOk,
       isIdle
     });
     this.root.hidden = !show;
     if (!show && this._pipOpen) {
       this.closeDocumentPip();
     }
+  }
+
+  /** After async PiP probe (Electron shell). */
+  refreshPipEntry() {
+    this.syncVisibility();
   }
 
   /** @returns {boolean} */
@@ -115,11 +122,13 @@ export class IdleCompanionPipUI {
 
   async enterDocumentPip() {
     if (!this._supported || this._pipOpen) return;
-    if (!supportsDocumentPictureInPicture()) return;
-    if (!shouldShowIdleCompanionPipEntry({
-      documentPipSupported: true,
-      isIdle: Boolean(this.handlers.getIsIdle?.())
-    })) {
+    if (!shouldShowDocumentPictureInPictureEntry()) return;
+    if (
+      !shouldShowIdleCompanionPipEntry({
+        documentPipSupported: true,
+        isIdle: Boolean(this.handlers.getIsIdle?.())
+      })
+    ) {
       return;
     }
 
@@ -131,6 +140,8 @@ export class IdleCompanionPipUI {
         preferInitialWindowPlacement: true
       });
     } catch {
+      markDocumentPictureInPictureUnavailable();
+      this.syncVisibility();
       return;
     }
 
