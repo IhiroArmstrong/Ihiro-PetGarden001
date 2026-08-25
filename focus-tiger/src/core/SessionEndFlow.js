@@ -15,11 +15,44 @@
  */
 
 import { getStorage, setStorage } from '../utils/Storage.js';
+import { appendReflectionPresenceSignals } from './reflectionPresenceBridge.js';
+import { PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS } from './presenceSignalsGate.js';
 
 export const POST_FEEDBACK_PAUSE_MS = 400;
 export const MANUAL_END_PAUSE_MS = 300;
 export const REFLECTION_MAX_SAVED = 5;
 export const REFLECTION_STORAGE_KEY = 'focus-tiger.reflections.v1';
+/** Aligned with presence-signals freeText retention. */
+export const REFLECTION_FREE_TEXT_RETENTION_DAYS =
+  PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS;
+
+/**
+ * @param {Date} [reference]
+ * @returns {number}
+ */
+export function reflectionFreeTextCutoffMs(reference = new Date()) {
+  const ref = new Date(reference);
+  ref.setHours(0, 0, 0, 0);
+  ref.setDate(ref.getDate() - REFLECTION_FREE_TEXT_RETENTION_DAYS);
+  return ref.getTime();
+}
+
+/**
+ * Drop reflection bundles whose freeText aged past retention (aligned with presence-signals).
+ * @param {unknown} entries
+ * @param {Date} [reference]
+ */
+export function pruneExpiredReflectionBundles(entries, reference = new Date()) {
+  const cutoffMs = reflectionFreeTextCutoffMs(reference);
+  const list = Array.isArray(entries) ? entries : [];
+  return list.filter((row) => {
+    if (!row || typeof row !== 'object') return false;
+    const createdAt = Number(
+      /** @type {{ createdAt?: number }} */ (row).createdAt
+    );
+    return Number.isFinite(createdAt) && createdAt >= cutoffMs;
+  });
+}
 
 /**
  * 纯函数：追加一条反思记录并保留最近 N 条。
@@ -28,7 +61,7 @@ export const REFLECTION_STORAGE_KEY = 'focus-tiger.reflections.v1';
  * @param {number} [maxEntries]
  */
 export function trimReflections(existing, entry, maxEntries = REFLECTION_MAX_SAVED) {
-  const list = Array.isArray(existing) ? existing : [];
+  const list = pruneExpiredReflectionBundles(existing);
   return [...list, entry].slice(-maxEntries);
 }
 
@@ -44,9 +77,16 @@ export class SessionEndFlow {
     this._pendingTimer = null;
 
     this.reflectionMoment.onDone = (result, hasAnyAnswer) => {
-      // 全部跳过则不落任何记录；只保存非空答案，不做标签化或统计。
+      // 全部跳过则不落任何记录；只保存非空答案。
       if (!hasAnyAnswer) return;
-      const entry = { createdAt: this.now(), ...result };
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const createdAt = this.now();
+      appendReflectionPresenceSignals(storage, result, {
+        now: () => new Date(createdAt),
+        at: new Date(createdAt).toISOString()
+      });
+      const entry = { createdAt, ...result };
       const saved = trimReflections(
         getStorage(REFLECTION_STORAGE_KEY, []),
         entry

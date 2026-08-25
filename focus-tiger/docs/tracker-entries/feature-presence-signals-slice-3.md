@@ -1,0 +1,3 @@
+# feature/presence-signals-slice-3
+
+| Presence Signals Slice 3（Reflection 双写 + 90天） | UI可见 | 待人工测试 | **主路径**：Focus 结束 → Reflection 填 Q1「注意到风」+ Q2「疲惫来访」→ 关面板 → DevTools：`presence-signals.v1` 应有 `reflection_q1` + `reflection_q2`（仅 freeText，无 emotionTag）；`reflections.v1` 仍有 1 条 bundle。**趋势**：仅 Arrival Notice 的 emotionTag 计入 Confide 门槛；Reflection freeText **不**抬高 `totalTagged`。**同日 3 次 Notice**：同一天点 3 次不同 Sit→Notice 应满 3 条门槛（事件数，非去重天数）。**披露时长**：首次 Notice 两行约 4s 再进 Breath。自动化：`SessionEndFlow.test.js` · `reflectionPresenceBridge.test.js`。 | — | — | — | Brief `task-presence-signals-slice-3.md` | 2026-08-25 |

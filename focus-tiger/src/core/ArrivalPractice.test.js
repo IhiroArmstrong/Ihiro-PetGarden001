@@ -8,8 +8,10 @@ import assert from 'node:assert/strict';
 
 import {
   ARRIVAL_NOTICE_REPLY_MS,
+  ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS,
   ARRIVAL_STEPS,
   advanceArrivalStep,
+  arrivalNoticeReplyDwellMs,
   createArrivalPracticeState,
   selectArrivalChoose,
   selectArrivalNotice,
@@ -20,6 +22,15 @@ import {
 test('notice reply dwell is long enough to read the observation line', () => {
   assert.ok(ARRIVAL_NOTICE_REPLY_MS >= 2000);
   assert.ok(ARRIVAL_NOTICE_REPLY_MS <= 3500);
+});
+
+test('disclosure adds extra dwell for two-line notice reply', () => {
+  assert.equal(arrivalNoticeReplyDwellMs({ hasDisclosure: false }), ARRIVAL_NOTICE_REPLY_MS);
+  assert.equal(
+    arrivalNoticeReplyDwellMs({ hasDisclosure: true }),
+    ARRIVAL_NOTICE_REPLY_MS + ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS
+  );
+  assert.ok(ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS >= 1200);
 });
 
 test('arrival practice advances welcome → notice → breath → choose → ready', () => {
