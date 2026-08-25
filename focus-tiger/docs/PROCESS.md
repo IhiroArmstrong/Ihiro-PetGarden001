@@ -797,6 +797,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 你说这句（或同等的下班前 / 批量 Git 同步）时，Agent 应按 regression-lock 第 7 条执行（**补漏**尚未推送的旁支 commit；**禁止**直推 `develop`/`main`；「先给 diff 等确认」的仍不推）：
 
+0. **SCENARIO_TESTS 增量核对（强制）**：对照 `origin/develop` 自 `SCENARIO_TESTS.md` 文首「最近代码核对」日以来合入的用户面功能，增量更新 `focus-tiger/docs/SCENARIO_TESTS.md`（文首日期、升格场景、自动化指针、增量摘要；勿整份重写）。无新合入时也须确认文首日期是否为**当天**；文档 commit 可与同步 push **同旁支**。索引 `scenario-tests-eod-sync`。  
 1. 确认在短命旁支（`feature/*` / `fix/*` / `docs/*` 等）上；若误在 `develop` 攒了 commit → **先**迁到旁支，**再**同步  
 2. 该旁支上尚未推送的 commit → `push` **仅该旁支** → 无 PR 则开 **`--base develop`**；已有 PR 则让 CI 自然更新  
 3. 「先给 diff 等确认」类 → **单独成组列出，不随本次推送**  
