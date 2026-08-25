@@ -26,6 +26,7 @@ import {
 } from './l2Persona.js';
 import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
 import { L0_MODEL_ID } from './l0Config.js';
+import { retrieveYinMemorySummariesForL3Generate } from './yinPersonalMemoryPersistence.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -255,10 +256,12 @@ export class CompanionL1Runtime {
       return { ok: false, reason: ready.reason || 'not_ready' };
     }
     const id = randomUUID();
+    const memorySummaries = await retrieveYinMemorySummariesForL3Generate(this.userDataDir, text);
     const prompt = buildCompanionL2Prompt({
       text,
       locale: typeof payload.locale === 'string' ? payload.locale : 'en',
-      history: Array.isArray(payload.history) ? payload.history : []
+      history: Array.isArray(payload.history) ? payload.history : [],
+      memorySummaries
     });
     this._queue = this._queue.then(async () => {
       const done = new Promise((resolve) => {

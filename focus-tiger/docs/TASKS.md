@@ -239,8 +239,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 0** | Confide「练了多久」用本机练习字段精确应答，禁止 Qwen 编造时长 | `task-yin-memory-slice-0-practice-facts.md` | **#424 已合** · tracker 待人工 |
 | **Slice 1a** | Consent 门闩 + userData store 骨架（`yin-personal-memory.json`） | `task-yin-memory-slice-1a-consent-store.md` | **已合 #427** |
 | **Slice 1b** | Remember 管道（L3 成功后静默入库） | `task-yin-memory-slice-1b-remember.md` | **已合 #428** |
-| **Slice 1c** | What Yin remembers 列表 + Forget UI | `task-yin-memory-slice-1c-list-forget.md` | **本旁支开工** |
-| **Slice 1d** | 层 3 注入 | 同口令分段 | 未开工；仪式 generate **仍未拍板** |
+| **Slice 1c** | What Yin remembers 列表 + Forget UI | `task-yin-memory-slice-1c-list-forget.md` | **已合 #430** |
+| **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **本旁支开工**；仪式 generate **仍未拍板** |
 
 **我认为最合理的下一刀运行时**：Slice 0（系统已有天数/累计分钟）。较弱：一上来做 Preference / 「喜欢吃什么」——本机没有该字段，会逼模型编造。
 
