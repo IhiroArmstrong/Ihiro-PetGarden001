@@ -22,6 +22,8 @@ import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   ARRIVAL_BREATH_MS,
   ARRIVAL_NOTICE_REPLY_MS,
+  ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS,
+  arrivalNoticeReplyDwellMs,
   ARRIVAL_STEPS,
   ARRIVAL_WELCOME_MS,
   CHOOSE_OPTIONS,
@@ -490,7 +492,7 @@ export class ArrivalPracticeUI {
       this._noticeReply = '';
       this._showPresenceDisclosure = false;
       this._render();
-    }, ARRIVAL_NOTICE_REPLY_MS);
+    }, arrivalNoticeReplyDwellMs({ hasDisclosure: this._showPresenceDisclosure }));
   }
 
   /**

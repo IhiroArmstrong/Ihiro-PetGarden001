@@ -65,14 +65,15 @@ test('dismissing mid-flow keeps earlier answers and skips the rest', () => {
 });
 
 test('trimReflections keeps only the most recent entries', () => {
+  const base = Date.now();
   let list = [];
   for (let i = 1; i <= REFLECTION_MAX_SAVED + 2; i++) {
-    list = trimReflections(list, { createdAt: i });
+    list = trimReflections(list, { createdAt: base + i });
   }
 
   assert.equal(list.length, REFLECTION_MAX_SAVED);
-  assert.equal(list[0].createdAt, 3);
-  assert.equal(list[list.length - 1].createdAt, REFLECTION_MAX_SAVED + 2);
+  assert.equal(list[0].createdAt, base + 3);
+  assert.equal(list[list.length - 1].createdAt, base + REFLECTION_MAX_SAVED + 2);
 });
 
 test('formatIntentionEcho substitutes the stored intention text', () => {

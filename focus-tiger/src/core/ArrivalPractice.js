@@ -22,6 +22,19 @@ export const ARRIVAL_WELCOME_MS = 2000;
 export const ARRIVAL_BREATH_MS = 5000;
 /** Notice 点选后：仅展示观察式短句的停留（须够读完；勿继续展示整屏图标区）。 */
 export const ARRIVAL_NOTICE_REPLY_MS = 2400;
+/** 首次披露行叠在观察句下时额外停留（三语共读时长；非单行旧值）。 */
+export const ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS = 1600;
+
+/**
+ * @param {{ hasDisclosure?: boolean }} [opts]
+ * @returns {number}
+ */
+export function arrivalNoticeReplyDwellMs({ hasDisclosure = false } = {}) {
+  return (
+    ARRIVAL_NOTICE_REPLY_MS +
+    (hasDisclosure ? ARRIVAL_NOTICE_DISCLOSURE_EXTRA_MS : 0)
+  );
+}
 
 /** Notice：身心状态图标（点选入账 presence-signals） */
 export const NOTICE_OPTIONS = Object.freeze([
