@@ -35,7 +35,8 @@ import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
 import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
 import { handleUnsubscribeNewsletter } from "./routes/unsubscribeNewsletter";
-import type { Env } from "./types";
+import { handleYpePersonalizationIngest } from "./routes/ypePersonalizationIngest";
+import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelete";
 
 /**
  * Focus Tiger · Cloudflare Workers API.
@@ -80,6 +81,8 @@ export default {
 				url.pathname === "/api/daily-message" ||
 				url.pathname === "/api/emotion-weight" ||
 				url.pathname === "/api/monetization-funnel-ingest" ||
+				url.pathname === "/api/ype-personalization-ingest" ||
+				url.pathname === "/api/ype-personalization-delete" ||
 				url.pathname === "/api/newsletter/subscribe")
 		) {
 			return preflightResponse(origin);
@@ -472,6 +475,32 @@ export default {
 			}
 			return withCors(
 				await handleMonetizationFunnelIngest(request, env),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/ype-personalization-ingest") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleYpePersonalizationIngest(request, env),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/ype-personalization-delete") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleYpePersonalizationDelete(request, env),
 				origin,
 			);
 		}

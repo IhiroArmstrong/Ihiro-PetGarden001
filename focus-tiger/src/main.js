@@ -134,6 +134,13 @@ import {
   PRACTICE_BACKUP_IDLE_FLUSH_MS,
   PRACTICE_BACKUP_BOOT_RESTORE_MS
 } from './core/practiceBackup/practiceBackupSync.js';
+import {
+  scheduleYpePersonalizationIngest,
+  flushYpePersonalizationIngest,
+  flushYpePersonalizationDelete,
+  setYpePersonalizationBusyProbe,
+  YPE_PERSONALIZATION_IDLE_FLUSH_MS
+} from './core/ypePersonalizationSync.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
@@ -3914,10 +3921,27 @@ async function init() {
         debounceMs: PRACTICE_BACKUP_IDLE_FLUSH_MS,
         forceSoon: true
       });
+      scheduleYpePersonalizationIngest({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        debounceMs: YPE_PERSONALIZATION_IDLE_FLUSH_MS,
+        forceSoon: true
+      });
     }
   });
 
   setPracticeBackupBusyProbe(() => {
+    const s = stateManager.state;
+    const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
+    const overlay =
+      Boolean(sessionUiGate?.postSessionOverlayActive) ||
+      arrivalPractice?.isOpen?.() === true ||
+      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+    return {
+      busy: focusing || overlay,
+      retry: overlay && !focusing
+    };
+  });
+  setYpePersonalizationBusyProbe(() => {
     const s = stateManager.state;
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
@@ -3934,6 +3958,10 @@ async function init() {
   window.setTimeout(() => {
     void maybeRestorePracticeBackupOnBoot({
       storage: typeof localStorage !== 'undefined' ? localStorage : null
+    });
+    void flushYpePersonalizationDelete({
+      storage: typeof localStorage !== 'undefined' ? localStorage : null,
+      force: true
     });
   }, PRACTICE_BACKUP_BOOT_RESTORE_MS);
 

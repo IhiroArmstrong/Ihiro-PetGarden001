@@ -21,6 +21,7 @@ import {
   YPE_INSIGHT_MIN_SITS,
   YPE_LAYER_ORDER,
   YPE_RUNTIME_LEVEL,
+  applyPersonalizationStatePack,
   discardPersonalizationStatePack,
   evaluateYinPersonalizationPolicy,
   readYpeCompanionStyle,
@@ -79,7 +80,7 @@ describe('yinPersonalizationEngine L0', () => {
     };
     assert.deepEqual(discardPersonalizationStatePack(sketch), {
       applied: false,
-      reason: 'l0-local-only'
+      reason: 'no-pack'
     });
     const policy = evaluateYinPersonalizationPolicy({
       pack: sketch,

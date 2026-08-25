@@ -19,7 +19,12 @@ export const YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY =
  *   consentedAt: string | null,
  *   ypeProfileId: string | null,
  *   pendingDeleteProfileId: string | null,
- *   deleteQueuedAt: string | null
+ *   deleteQueuedAt: string | null,
+ *   lastIngestAt: string | null,
+ *   lastIngestError: string | null,
+ *   lastDeleteAt: string | null,
+ *   lastDeleteError: string | null,
+ *   lastPackVersion: number | null
  * }} YpeCloudPersonalizationConsentState
  */
 
@@ -34,7 +39,12 @@ export function normalizeYpeCloudPersonalizationConsentState(raw) {
       consentedAt: null,
       ypeProfileId: null,
       pendingDeleteProfileId: null,
-      deleteQueuedAt: null
+      deleteQueuedAt: null,
+      lastIngestAt: null,
+      lastIngestError: null,
+      lastDeleteAt: null,
+      lastDeleteError: null,
+      lastPackVersion: null
     };
   }
   const o = /** @type {Record<string, unknown>} */ (raw);
@@ -54,6 +64,22 @@ export function normalizeYpeCloudPersonalizationConsentState(raw) {
     deleteQueuedAt:
       typeof o.deleteQueuedAt === 'string' && o.deleteQueuedAt
         ? o.deleteQueuedAt
+        : null,
+    lastIngestAt:
+      typeof o.lastIngestAt === 'string' && o.lastIngestAt ? o.lastIngestAt : null,
+    lastIngestError:
+      typeof o.lastIngestError === 'string' && o.lastIngestError
+        ? o.lastIngestError
+        : null,
+    lastDeleteAt:
+      typeof o.lastDeleteAt === 'string' && o.lastDeleteAt ? o.lastDeleteAt : null,
+    lastDeleteError:
+      typeof o.lastDeleteError === 'string' && o.lastDeleteError
+        ? o.lastDeleteError
+        : null,
+    lastPackVersion:
+      typeof o.lastPackVersion === 'number' && Number.isFinite(o.lastPackVersion)
+        ? Math.floor(o.lastPackVersion)
         : null
   };
 }
@@ -165,4 +191,50 @@ export function isYpeCloudPersonalizationConsentEnabled(storage) {
 export function getActiveYpeProfileId(storage = getDefaultStorage()) {
   const state = readYpeCloudPersonalizationConsentState(storage);
   return state.enabled ? state.ypeProfileId : null;
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @param {{ ingestAt?: string | null, ingestError?: string | null, deleteAt?: string | null, deleteError?: string | null, lastPackVersion?: number | null }} patch
+ */
+export function patchYpeCloudPersonalizationSyncMeta(storage, patch = {}) {
+  const prev = readYpeCloudPersonalizationConsentState(storage);
+  const next = {
+    ...prev,
+    lastIngestAt:
+      patch.ingestAt === undefined ? prev.lastIngestAt : patch.ingestAt,
+    lastIngestError:
+      patch.ingestError === undefined
+        ? prev.lastIngestError
+        : patch.ingestError,
+    lastDeleteAt:
+      patch.deleteAt === undefined ? prev.lastDeleteAt : patch.deleteAt,
+    lastDeleteError:
+      patch.deleteError === undefined
+        ? prev.lastDeleteError
+        : patch.deleteError,
+    lastPackVersion:
+      patch.lastPackVersion === undefined
+        ? prev.lastPackVersion
+        : patch.lastPackVersion
+  };
+  writeYpeCloudPersonalizationConsentState(storage, next);
+  return next;
+}
+
+/**
+ * Clear pending delete after server confirms (only matching id).
+ * @param {Storage | null | undefined} storage
+ * @param {string} deletedProfileId
+ */
+export function clearYpePendingDelete(storage, deletedProfileId) {
+  const prev = readYpeCloudPersonalizationConsentState(storage);
+  if (prev.pendingDeleteProfileId !== deletedProfileId) return prev;
+  const next = {
+    ...prev,
+    pendingDeleteProfileId: null,
+    deleteQueuedAt: null
+  };
+  writeYpeCloudPersonalizationConsentState(storage, next);
+  return next;
 }

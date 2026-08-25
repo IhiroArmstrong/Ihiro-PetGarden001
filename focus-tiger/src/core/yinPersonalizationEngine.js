@@ -18,6 +18,11 @@ import { shouldShowMomentWhisper } from './momentWhispersGate.js';
 import { canInjectYinMemoryConfidence } from './yinPersonalMemory/yinPersonalMemoryRetrieve.js';
 import { retrieveYinMemoryEntriesForL3Generate } from './yinPersonalMemory/yinPersonalMemoryRetrieve.js';
 import { YIN_MEMORY_L3_INJECT_MAX } from './yinPersonalMemory/yinPersonalMemoryRetrieve.js';
+import { isYpeCloudPersonalizationConsentEnabled } from './ypeCloudPersonalizationConsent.js';
+import {
+  readCachedPersonalizationPack,
+  validatePersonalizationStatePack
+} from './ypePersonalizationPack.js';
 
 /** V1 three named styles; never a continuous intervention probability. */
 export const YPE_COMPANION_STYLES = Object.freeze(['quiet', 'default', 'warm']);
@@ -92,12 +97,28 @@ export function writeYpeCompanionStyle(storage, style) {
 }
 
 /**
- * L2 never installs an overlay in L0/L1.
+ * Validate L2 Pack overlay. Local companion style still wins at call sites.
+ * @param {unknown} pack
+ * @param {{ consentEnabled?: boolean }} [opts]
+ * @returns {{ applied: boolean, reason: string, pack?: object }}
+ */
+export function applyPersonalizationStatePack(pack, opts = {}) {
+  if (opts.consentEnabled === false) {
+    return { applied: false, reason: 'consent-off' };
+  }
+  const validated = validatePersonalizationStatePack(pack);
+  if (!validated.ok) {
+    return { applied: false, reason: validated.reason };
+  }
+  return { applied: true, reason: 'overlay-valid', pack: validated.pack };
+}
+
+/**
  * @param {unknown} [_pack]
- * @returns {{ applied: false, reason: 'l0-local-only' }}
+ * @returns {{ applied: false, reason: string }}
  */
 export function discardPersonalizationStatePack(_pack) {
-  return Object.freeze({ applied: false, reason: 'l0-local-only' });
+  return Object.freeze({ applied: false, reason: 'no-pack' });
 }
 
 /**
@@ -277,7 +298,15 @@ export function ypeInsightsForGenerate(style, insights) {
  * @returns {Readonly<object>}
  */
 export function evaluateYinPersonalizationPolicy(input = {}) {
-  const packResult = discardPersonalizationStatePack(input.pack);
+  const consentStorage = input.consentStorage ?? input.styleStorage;
+  const consentOn = isYpeCloudPersonalizationConsentEnabled(consentStorage);
+  const packCandidate =
+    input.pack ??
+    (consentOn ? readCachedPersonalizationPack(consentStorage) : null);
+  const packResult =
+    consentOn && packCandidate
+      ? applyPersonalizationStatePack(packCandidate, { consentEnabled: true })
+      : discardPersonalizationStatePack(null);
   const route = input.route ?? null;
   const skipYpeOnSafety = route === CONFIDE_ROUTE.SAFETY_REDIRECT;
   const companionStyle = resolveLocalCompanionStyle(

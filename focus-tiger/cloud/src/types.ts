@@ -21,6 +21,8 @@ export interface Env {
 	PRACTICE_BACKUP_KV: KVNamespace;
 	/** Stay in touch list (email + unsub token). Not Resend Audiences. */
 	NEWSLETTER_KV: KVNamespace;
+	/** YPE L2 personalization signals + Pack (not tip/backup/funnel). */
+	YPE_PERSONALIZATION_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
