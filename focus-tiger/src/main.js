@@ -1243,6 +1243,7 @@ async function init() {
     storage: typeof localStorage !== 'undefined' ? localStorage : null
   });
   const practiceDaysStore = new PracticeDaysStore();
+  confideToYinUI.bindPracticeDaysStore(practiceDaysStore);
   const focusCoinsStore = new FocusCoinsStore({ now });
   function awardFocusCoins(event) {
     return applyFocusCoinsGrant({

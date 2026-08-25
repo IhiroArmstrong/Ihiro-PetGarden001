@@ -44,7 +44,7 @@
 | **P0** | **AB** Electron 托盘收起 vs 切 App | 收进托盘误触发 Re-focus = 场景 B 同类坑 | 契约已写；**实现后**测；**SB-18** |
 | **P1** | **D** Honesty 入口 / 时长 / 桥接 Yes/No | 从睡眠态唤回，五条里最易困惑 | 本批已补 0–1s 句 |
 | **P1** | **Z** Journey log 开卡 | 次优先（insight-spark 可顺手核对） | 0–1s 句已写，**#291 补运行时按压**（菜单行 / Compass 芯片 / 关钮 / 备份链 `:active`）。**核对**：#292 已合 insight-spark；Daily Card 仍是 Brief 未接线 |
-| **P1** | **AE** Confide Web harness / Electron L1·L2 | 倾诉入口 + 危机安全阀；Electron 关单「能聊」仍 release-blocker | 本 follow-up 已升格正式场景 |
+| **P1** | **AE** Confide Web harness / Electron L1·L2 | 倾诉入口 + 危机安全阀；Electron 关单「能聊」**2026-08-25 已关**（L2 TRACKER） | 本 follow-up 已升格正式场景 |
 | **P1** | **AC** 寅币抽屉 | 与 Q 付费入口隔离；次级可忽略 | L3 本支已写 0–1s 句 |
 | **P1** | **S** Breath Leave / chip；**T** Focus chip / Leave；**W**「?」/ Privacy | 选中即生效，哑点击风险较低 | 未补句 · 改写时自然覆盖 |
 | **P2** | **A / C / E / F / I / J / K** Sit·Companion·Rise | 主路径已有展开/开表/鞠躬，哑点击风险较低 | 部分步骤已写立刻发生什么；未逐钮写 0–1s |
@@ -630,7 +630,7 @@
 
 > **政策**：2026-08-10 检索不生成仍有效；**2026-08-18 窄例外** = 仅 Electron 宽屏第 3 层短生成（L2），Web / 窄屏 / ≤8GB **仍检索**。与 Support 付费 **零耦合**；Checkout / 第四卡 Pro / 第五卡 Add-on **未接**。  
 > **单元**：`confideClassify` / `confideReplyFlow` / `confideOrchestration` 闸门；Electron：`desktopCompanionL1.test.js` · `desktopCompanionL2Route.test.js`。  
-> **仍须人工**：关单级「能聊」（栏杆内接住原问、禁套话）；危机 `safety-01` 英文转介句；`depressed`→sad 禁 generate。
+> **仍须人工**：Slice 0「练了多久」精确数字（合入后）；危机 `safety-01` 英文转介句回归；`depressed`→sad 禁 generate 回归。关单「能聊」已关（2026-08-25）。
 
 ### AE · Web（Safari QA 树 · harness）
 

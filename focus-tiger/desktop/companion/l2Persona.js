@@ -39,7 +39,7 @@ export function historyForGeneratePrompt(
   /** @type {Array<{ role?: string, text?: string, source?: string }>} */
   const kept = [];
   for (const row of rows) {
-    if (row?.role === 'yin' && row?.source === 'corpus') {
+    if (row?.role === 'yin' && (row?.source === 'corpus' || row?.source === 'practice_facts')) {
       if (kept.length && kept[kept.length - 1]?.role === 'user') {
         kept.pop();
       }
