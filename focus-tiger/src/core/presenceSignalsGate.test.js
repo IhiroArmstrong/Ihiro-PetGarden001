@@ -124,6 +124,30 @@ describe('presenceSignalsGate', () => {
       ]).totalTagged,
       1
     );
+    assert.equal(
+      summarizePresenceEmotionTags([
+        {
+          id: 'y',
+          at: 't',
+          source: 'reflection_q2',
+          freeText: 'a long vent with no tag'
+        }
+      ]).totalTagged,
+      0
+    );
     assert.ok(PRESENCE_SIGNALS_MIN_TREND_COUNT >= 3);
+  });
+
+  it('late-night local timestamp stays inside the correct day window', () => {
+    const ref = new Date(2026, 7, 25, 23, 58, 0);
+    const bounds = presenceSignalWindowBounds(ref, 14);
+    assert.equal(isPresenceSignalInWindow(ref.toISOString(), bounds), true);
+    const windowStart = new Date(2026, 7, 12, 0, 30, 0);
+    assert.equal(isPresenceSignalInWindow(windowStart.toISOString(), bounds), true);
+    const beforeWindow = new Date(2026, 7, 11, 23, 58, 0);
+    assert.equal(
+      isPresenceSignalInWindow(beforeWindow.toISOString(), bounds),
+      false
+    );
   });
 });

@@ -112,6 +112,10 @@ import {
 } from './core/journeyLogGate.js';
 import { appendArrivalNoticeSignal } from './core/presenceSignalsGate.js';
 import {
+  markPresenceSignalsDisclosureSeen,
+  shouldShowPresenceSignalsDisclosure
+} from './core/presenceSignalsDisclosureGate.js';
+import {
   hasOpenedInsightSparkToday
 } from './core/dailyZenQuote.js';
 import {
@@ -2468,10 +2472,16 @@ async function init() {
       onNoticeSelected: (noticeId) => {
         const storage =
           typeof localStorage !== 'undefined' ? localStorage : null;
-        appendArrivalNoticeSignal(storage, noticeId);
+        const row = appendArrivalNoticeSignal(storage, noticeId);
+        const showDisclosure =
+          Boolean(row) && shouldShowPresenceSignalsDisclosure(storage);
+        if (showDisclosure) {
+          markPresenceSignalsDisclosureSeen(storage);
+        }
         lightProgression.onNoticeSelected();
         onboardingHints?.markSeen('notice');
         syncOnboardingAutoHints();
+        return showDisclosure;
       },
       onBreath: () => {
         lightProgression.beginBreath();

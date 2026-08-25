@@ -53,7 +53,8 @@ import {
  * @property {() => void} [onCancel]
  *   Notice / Choose 选择框点外侧空白取消（回 Idle；不开表、不 Skip begin）
  * @property {() => void} [onBegin] Arrival 开始（光影冷灰氛围）
- * @property {(noticeId: string) => void} [onNoticeSelected] Notice 点选后（背景微暖 + 入账）
+ * @property {(noticeId: string) => boolean | void} [onNoticeSelected]
+ *   Notice 点选后（背景微暖 + 入账）；返回 true 时显示一次性披露行
  * @property {() => void} [onBreath] 呼吸 beat（推近 + 光环）
  * @property {() => void} [onAfterBreath] 离开呼吸进入 Choose
  * @property {() => void} [onChooseConfirmed] Choose 确认（坐垫光晕等）
@@ -140,6 +141,8 @@ export class ArrivalPracticeUI {
     this.state = createArrivalPracticeState();
     /** @type {string} Notice 观察式短句（展示用） */
     this._noticeReply = '';
+    /** @type {boolean} 首次入账时展示披露行 */
+    this._showPresenceDisclosure = false;
     /** @type {boolean} Choose 是否显示自由输入 */
     this._showTyped = false;
     /** @type {number | null} */
@@ -352,6 +355,15 @@ export class ArrivalPracticeUI {
     if (this.state.step === ARRIVAL_STEPS.NOTICE) {
       if (this._noticeReply) {
         this.root.append(this._subtitle(this._noticeReply));
+        if (this._showPresenceDisclosure) {
+          const hint = document.createElement('p');
+          hint.className = 'arrival-practice__presence-disclosure';
+          hint.dataset.testid = 'presence-signals-disclosure';
+          hint.style.cssText =
+            'margin:0;max-width:100%;padding:0 8px;font-size:12px;line-height:1.45;color:rgba(74,58,40,.72);text-align:center;';
+          hint.textContent = t('PRESENCE_SIGNALS_DISCLOSURE');
+          this.root.append(hint);
+        }
         return;
       }
 
@@ -360,7 +372,8 @@ export class ArrivalPracticeUI {
         this.state = selectArrivalNotice(this.state, opt.id);
         const option = getNoticeOption(opt.id);
         this._noticeReply = option ? t(option.replyKey) : '';
-        this.handlers.onNoticeSelected?.(opt.id);
+        this._showPresenceDisclosure =
+          this.handlers.onNoticeSelected?.(opt.id) === true;
         this._renderNoticeReplyThenAdvance();
       });
       this.root.append(grid);
@@ -475,6 +488,7 @@ export class ArrivalPracticeUI {
     this._timer = window.setTimeout(() => {
       this.state = advanceArrivalStep(this.state);
       this._noticeReply = '';
+      this._showPresenceDisclosure = false;
       this._render();
     }, ARRIVAL_NOTICE_REPLY_MS);
   }

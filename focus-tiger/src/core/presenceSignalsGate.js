@@ -295,6 +295,7 @@ export function filterPresenceSignalsInWindow(entries, opts = {}) {
 
 /**
  * Count emotionTag rows in window (freeText-only rows excluded from tag tallies).
+ * Trend sample size uses totalTagged only — never freeText-only rows.
  * @param {PresenceSignalEntry[]} entries
  * @returns {{ totalTagged: number, counts: Record<string, number> }}
  */

@@ -94,4 +94,33 @@ describe('confide presence facts (Slice 4 minimal)', () => {
     assert.equal(route, CONFIDE_ROUTE.FALLBACK);
     assert.equal(shouldAnswerWithPresenceFacts(route, text), true);
   });
+
+  it('exactly three tagged entries trigger summary (not off-by-one)', () => {
+    assert.equal(
+      formatPresenceTrendReply(
+        { windowDays: 14, totalTagged: 2, counts: { calm: 2 } },
+        tFn
+      ),
+      'There are not enough check-ins yet to see a pattern.'
+    );
+    const atThree = formatPresenceTrendReply(
+      { windowDays: 14, totalTagged: 3, counts: { calm: 2, stressed: 1 } },
+      tFn
+    );
+    assert.notEqual(atThree, 'There are not enough check-ins yet to see a pattern.');
+    assert.match(atThree, /3 times/);
+  });
+
+  it('buildPresenceTrendReply uses exactly three storage rows', () => {
+    const storage = mockStorage();
+    const now = new Date(2026, 7, 25, 12, 0, 0);
+    for (let i = 0; i < 3; i += 1) {
+      appendArrivalNoticeSignal(storage, i % 2 === 0 ? 'calm' : 'stressed', {
+        now: () => new Date(2026, 7, 25 - i, 10, 0, 0),
+        idFn: () => `row-${i}`
+      });
+    }
+    const reply = buildPresenceTrendReply(storage, tFn, { reference: now });
+    assert.match(reply, /3 times/);
+  });
 });
