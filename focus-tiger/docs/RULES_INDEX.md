@@ -171,7 +171,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey Log / turns.jsonl） |
-| `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约已拍、Consent 关即删草稿已锁、Worker 未开工；≠ 品味层 / Memory store / Qwen） |
+| `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约已拍、Consent 附录有条件通过、身份键已拍、Worker 未开工；≠ 品味层 / Memory store / Qwen） |
 | `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；≠ 开放域 Agent） |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |

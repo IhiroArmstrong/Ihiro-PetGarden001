@@ -3,11 +3,11 @@
 > **状态（2026-08-26）**：**L0 + L1 运行时已开工**。本文件仍是编排产品 SSOT。  
 > **工作名称**：Yin Personalization Engine（YPE）。**不是**模型、**不是** Memory store、**不是**品味层、**不是**练习云备份。  
 > **已做**：L0 门闩收口；L1 本地检索契约 / Journey 计数 insight / 三档政策（可关回 `default`）。  
-> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档 · #454）。Consent：**关即删** + HINT/DETAIL 草稿已锁在 `task-briefs/task-l2-personalization-consent.md`（**未**写入 locale）。**未开工**：Worker / ingest / Pack 存取 / Privacy 开关 / 生产行为。身份键另刀。  
+> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档 · #454）。Consent：**关即删** + 三语附录有条件通过（`task-briefs/task-l2-personalization-consent.md`；**未**写入 locale）。身份键 **已拍**（`task-briefs/task-l2-personalization-identity.md`；本机随机 `ype_profile_id`）。**未开工**：Worker / ingest / Pack 存取 / Privacy 开关 / 生产行为。  
 > **命名**：YPE **L2** = 云端 State Pack 层。**≠** 桌面陪伴 L2（Electron 本机 generate）。离线必须可用的是 **Local Runtime**（YPE L0/L1 + 桌面 generate），不是 YPE L2。  
 > **仍禁**：Speak 概率；与 Qwen L0 下载 / Checkout 混 PR。
 
-从属（硬）：`YIN_PERSONAL_MEMORY.md` · `PRODUCT_POSITIONING.md`「禅意倾听者」· `LOCAL_AI_SCENARIOS_V1.md` · `task-cloud-taste-layer.md`（品味层四问）· `task-practice-memory-cloud-backup-a.md` · `PRIVACY_NOTICE.md` · `PRINCIPLES.md`（观照者、不诊断、agency）· `task-briefs/task-l2-personalization-consent.md` · 场景 Y / Z / AE / AF / AG。
+从属（硬）：`YIN_PERSONAL_MEMORY.md` · `PRODUCT_POSITIONING.md`「禅意倾听者」· `LOCAL_AI_SCENARIOS_V1.md` · `task-cloud-taste-layer.md`（品味层四问）· `task-practice-memory-cloud-backup-a.md` · `PRIVACY_NOTICE.md` · `PRINCIPLES.md`（观照者、不诊断、agency）· `task-briefs/task-l2-personalization-consent.md` · `task-briefs/task-l2-personalization-identity.md` · 场景 Y / Z / AE / AF / AG。
 
 **核心原则（英 / 中，同等效力）：**
 
@@ -33,7 +33,7 @@
 | **b. 人设** | 观照者；Safety；情绪桶；Wellness 免责 | Presence「Distracted」= 心理诊断；Adaptive Policy = 教练督促 | 状态 = **产品交互**；政策档可解释、可关；禁止临床标签 |
 | **c. 职责** | AG Memory；Z Journey；AF Presence；品味层；练习备份 6 key；`turns.jsonl` | 六套「聪明」并存，用户分不清；备份同意被拿去喂算法 | 下文 **§0.1 分桶**；L2 须**第四条独立同意**；默认 **不上** Confide 原文 / Memory 摘要 |
 
-**用户书面（2026-08-26）**：评估后开工本架构（方向锁）。同日口令「开工 Yin Personalization Engine」→ L0。同日书面：L1 与 AG/AF 人工验收无耦合，口令「开工 L1」。同日产品会：**按收口版拍板** H.3 V1 五键 + Pack 契约 + 异步不变量（#454）。同日拍板 YPE 云个人化 **关即删**、HINT+可展开 DETAIL、三语草稿（`task-l2-personalization-consent.md` 附录；**不**写 locale）。下一步：L2 **身份键**文档。Worker / 「开工 L2 UI」/「开工 L2」仍须另口令。
+**用户书面（2026-08-26）**：评估后开工本架构（方向锁）。同日口令「开工 Yin Personalization Engine」→ L0。同日书面：L1 与 AG/AF 人工验收无耦合，口令「开工 L1」。同日产品会：**按收口版拍板** H.3 V1 五键 + Pack 契约 + 异步不变量（#454）。同日拍板 YPE 云个人化 **关即删**、HINT+可展开 DETAIL、三语附录有条件通过（`task-l2-personalization-consent.md`；**不**写 locale）。同日拍板 V1 身份 = 本机随机 opaque `ype_profile_id`（`task-l2-personalization-identity.md`）。Worker / 「开工 L2 UI」/「开工 L2」仍须另口令。
 
 **未拍板（禁止当路线图默认项）**：
 
@@ -340,9 +340,9 @@ PersonalizationStatePack v1
 
 ### H.3 L2 可上传的结构化特征（白名单）
 
-须 **独立明示同意**（≠ 备份 OTP ≠ 漏斗 ≠ Memory Consent ≠ Newsletter）。默认关。拒绝 = 永不建 Pack，本地 L0/L1 照常。用户可见保留：**关即删**（停止发送 + 删除与这次同意绑定的云端个人化数据 + 作废本机 Pack 缓存）。禁止以 90 天 / 12 个月作为开关下文案。工程删除窗口不得自行写入 UI。
+须 **独立明示同意**（≠ 备份 OTP ≠ 漏斗 ≠ Memory Consent ≠ Newsletter）。默认关。拒绝 = 永不建 Pack，本地 L0/L1 照常。用户可见保留：**关即删**（停止发送 + 删除本机 `ype_profile_id` 对应的云端个人化数据 + 作废本机 Pack 缓存）。禁止以 90 天 / 12 个月作为开关下文案。工程删除窗口不得自行写入 UI。离线关闭：先停发，联网后删云；UI 不得在服务端确认前声称「已删除」。
 
-Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿名。准确用语：**limited structured signals**（少量结构化使用信号）。身份若与账户或 personalization profile 绑定，就不是匿名。
+Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿名。准确用语：**limited structured signals**（少量结构化使用信号）。V1 绑定本机 personalization profile（随机 opaque ID），**不是**匿名。
 
 #### H.3 V1（2026-08-26 拍板 · 仅这五键可上云）
 
@@ -358,7 +358,7 @@ Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿
 
 **灰度：** 不足样本（例：<10 次完成）→ 不下发 insight，不上传或上传 `insufficient: true` 而不带易去匿名化的稀疏组合。
 
-可识别身份（邮箱）只走既有 OTP 备份通道，**不要**做 YPE 主键的默认方案。L2 身份须另拍板（很可能复用邮箱但 **用途分开披露**）。
+可识别身份（邮箱）只走既有 OTP 备份通道，**禁止**做 YPE V1 主键。V1 主键见 **§H.5**。
 
 #### H.3 候选项（历史保留 · V1 **不上云** · 可逐项再评估）
 
@@ -379,6 +379,21 @@ Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿
 
 ---
 
+
+### H.5 YPE V1 Identity（2026-08-26 拍板）
+
+执行层：`task-briefs/task-l2-personalization-identity.md`。
+
+**Primitive：** `ype_profile_id` = 本机生成、本机存储的随机 opaque installation/profile ID。
+
+禁止当作 V1 主键：邮箱 / 备份 OTP、MAC、广告 ID、硬件指纹、任何用于跨安装拼接的 device fingerprint。
+
+**跨设备：** 不同安装 / 存储分区 = 不同 cloud 行。同一人在设备 2 开启 = **新档案**。关设备 1 只删 A，不删 B。再开启 = 新 ID，不复活已删行。
+
+**删除范围（backend invariant）：** 只删该 `ype_profile_id` 的 YPE signals + personalization state/Pack + 本机 Pack 缓存。**禁止**连带练习备份、Memory、Confide、漏斗、其他本地数据。
+
+**卸装：** 本机 ID 丢失后，客户端无法再出示该 key。未先 OFF 可能留下孤儿云行；不向用户承诺「卸装即全网删除」；内部 SLA 另定。不得用硬件指纹把孤儿拼回新人。
+
 ## I. Versioning（算法 v1 → v2 时用户 profile）
 
 | 规则 | 口径 |
@@ -386,8 +401,8 @@ Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿
 | Pack `schemaVersion` | 客户端不认识 → 静默用本地政策；禁止崩、禁止逼升级才许 Sit |
 | `packVersion` | 仅去重；旧包不覆盖新本地用户选择（用户刚改成 `quiet` 则云不得用过期 Pack 改回） |
 | 算法服务端升级 | 可换秘密公式；**须**保持 Pack 字段向后兼容，或升 schema 并双写一段时间 |
-| Forget / 关同意 | 服务端对应特征与 Pack **删除**；本机缓存的 Pack **丢弃**、不再读取；本地 Memory 真删不依赖云确认。用户可见语义见 Consent brief（关即删）。删除主语（设备维 vs 账户）身份键未拍前不得暗示全设备 |
-| 卸装 | 本机记忆没了（与 Memory 文档一致）；云端若曾有 Pack，关同意或账号删除时清 |
+| Forget / 关同意 | 服务端删除该 `ype_profile_id` 的 YPE 特征与 Pack；本机缓存 Pack **丢弃**；本地 Memory **不**随 YPE OFF 删除。用户可见语义见 Consent brief。V1 **不得**暗示全账号 / 全设备 |
+| 卸装 | 本机 Memory / YPE profile ID 随安装消失；云端 YPE 行仅在 OFF 删除确认（或将来账户删除）时清；未 OFF 的孤儿行不向用户承诺 |
 
 ---
 
@@ -422,7 +437,7 @@ Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿
 2. 继续：AG 1d/1e 人工、AF 人工、Qwen runtime **另一条线**、品味层 Quiet Line **另一条云**。  
 3. 口令「开工 Yin Personalization Engine」→ **L0 接口已开工**（现有门闩收口，行为不变）。  
 4. 口令「开工 L1」→ **L1 检索契约已开工**（可单测、可 Forget、可离线）。  
-5. **L2 契约收口**（本文件 2026-08-26）：白名单 V1 → Pack V1（#454）→ **Consent brief**（关即删 + 三语草稿已锁；locale 须「开工 L2 UI」）→ **身份键文档** → Cloud algorithm contract → Worker → 口令「开工 L2」。未口令 = 不写 Worker。
+5. **L2 契约收口**（本文件 2026-08-26）：白名单 V1 → Pack V1（#454）→ **Consent brief**（关即删 + 三语附录有条件通过；locale 须「开工 L2 UI」）→ **身份键**（已拍 · §H.5）→ Cloud algorithm contract → Worker → 口令「开工 L2」。未口令 = 不写 Worker。
 
 生命感仍看 Memory 三问（接住了吗 / 还像阿寅吗 / 像记得我吗）。YPE 第四问（以后才测）：**像知道何时不说话吗？** ——用确定性沉默验收，不用概率。
 
@@ -432,6 +447,7 @@ Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿
 
 - Memory：`YIN_PERSONAL_MEMORY.md`  
 - L2 同意文案需求：`task-briefs/task-l2-personalization-consent.md`  
+- L2 身份键：`task-briefs/task-l2-personalization-identity.md`  
 - 本地 AI 场景 / CI：`LOCAL_AI_SCENARIOS_V1.md` · `CONFIDE_EXECUTABLE_INTENTS.md`  
 - 品味层（对照、禁止混桶）：`task-briefs/task-cloud-taste-layer.md` · `PROCESS.md` Backlog「云端品味层」  
 - 练习备份（对照）：`task-briefs/task-practice-memory-cloud-backup-a.md`  
