@@ -1100,6 +1100,9 @@ async function init() {
       closeGrowthOverlayCards({ except: 'yin-memory' });
       yinPersonalMemoryUI.open();
     },
+    onMemoryForgotten: (memoryId) => {
+      yinPersonalMemoryUI.removeMemoryIfOpen(memoryId);
+    },
     onReplied: ({ route }) => {
       if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
         emotionController.playEmotion('nodBow');

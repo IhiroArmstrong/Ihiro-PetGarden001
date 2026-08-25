@@ -150,6 +150,18 @@ export class YinPersonalMemoryUI {
     this.handlers.onClose?.();
   }
 
+  /**
+   * Sync list when Confide verbal Forget removes an entry (Slice 1e).
+   * @param {string} memoryId
+   */
+  removeMemoryIfOpen(memoryId) {
+    const id = typeof memoryId === 'string' ? memoryId.trim() : '';
+    if (!id) return;
+    this._displayEntries = this._displayEntries.filter((entry) => entry.id !== id);
+    this._forgetting.delete(id);
+    if (this._open) this._refresh();
+  }
+
   destroy() {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);

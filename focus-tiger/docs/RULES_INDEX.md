@@ -170,6 +170,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；无 store；≠ 练习云备份 / Journey Log / turns.jsonl） |
+| `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；≠ 开放域 Agent） |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
 | `FLOWER_BLOW_WELCOME_DESIGN.md` | Day1/久别吹花鼓励：策略 C、同日 XOR 欢迎池、观察式文案、分阶段落线（未接线前以本文为准） |

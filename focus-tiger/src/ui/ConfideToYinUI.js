@@ -39,6 +39,7 @@ import {
 } from '../core/desktopCompanionGate.js';
 import {
   fetchYinPersonalMemoryState,
+  forgetYinPersonalMemoryEntry,
   hasYinPersonalMemoryBridge,
   rememberYinPersonalMemoryFromConfide,
   saveYinPersonalMemoryConsent
@@ -47,6 +48,11 @@ import {
   canRememberYinPersonalMemory,
   shouldOfferYinMemoryConsent
 } from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
+import {
+  formatVerbalForgetReply,
+  resolveVerbalForgetTarget,
+  shouldHandleVerbalForget
+} from '../core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
 const FADE_MS = 220;
@@ -57,9 +63,10 @@ export class ConfideToYinUI {
    * @param {object} [handlers]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
-   * @param {(info: { route: string, lineId: string }) => void} [handlers.onReplied]
+   * @param {(info: { route: string, lineId: string, source?: string }) => void} [handlers.onReplied]
    * @param {() => boolean} [handlers.canOpen]
    * @param {() => void} [handlers.onOpenMemoryPanel]
+   * @param {(memoryId: string) => void} [handlers.onMemoryForgotten]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -440,7 +447,9 @@ export class ConfideToYinUI {
           ? 'generate'
           : shown.source === 'practice_facts'
             ? 'practice_facts'
-            : 'corpus'
+            : shown.source === 'memory_forget'
+              ? 'memory_forget'
+              : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
@@ -459,6 +468,34 @@ export class ConfideToYinUI {
       return;
     }
     this._memoryState = await fetchYinPersonalMemoryState();
+  }
+
+  /**
+   * @param {string} text
+   * @param {{ route: string, line: object }} hit
+   */
+  async _handleVerbalForget(text, hit) {
+    const resolved = resolveVerbalForgetTarget(this._memoryState, text);
+    if (!resolved) return;
+
+    if (resolved.outcome === 'forgotten' && resolved.memoryId) {
+      this._memoryState = await forgetYinPersonalMemoryEntry(resolved.memoryId);
+      this.handlers.onMemoryForgotten?.(resolved.memoryId);
+    }
+
+    const replyText = formatVerbalForgetReply(
+      resolved.outcome,
+      resolved.summary,
+      t
+    );
+    this._showReply(
+      {
+        route: hit.route,
+        text: replyText,
+        source: 'memory_forget'
+      },
+      text
+    );
   }
 
   _hideMemoryConsent() {
@@ -599,6 +636,17 @@ export class ConfideToYinUI {
         },
         text
       );
+      return;
+    }
+    if (
+      shouldHandleVerbalForget({
+        route: hit.route,
+        state: this._memoryState,
+        text,
+        hasBridge: hasYinPersonalMemoryBridge()
+      })
+    ) {
+      void this._handleVerbalForget(text, hit);
       return;
     }
     const wantGenerate = shouldUseDesktopCompanionGenerate({
