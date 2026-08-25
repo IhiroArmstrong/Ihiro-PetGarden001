@@ -1,9 +1,9 @@
 # Task Brief · YPE L2 Cloud Personalization Consent
 
-> **状态（2026-08-26）**：产品会已拍 **H.3 V1 五键 + Pack 契约 + 异步不变量**（#454）。**关即删** + HINT/DETAIL 结构已锁。三语附录 **有条件通过**（设计师书面：改日文 LABEL + 三语 DETAIL「干预偏好」）。身份键 **已拍**（`task-l2-personalization-identity.md`）。  
+> **状态（2026-08-26）**：产品会已拍 **H.3 V1 五键 + Pack 契约 + 异步不变量**（#454）。**关即删** + HINT/DETAIL 结构已锁。三语附录 **有条件通过**（设计师书面：改日文 LABEL + 三语 DETAIL「干预偏好」）。身份键 **已拍**（`task-l2-personalization-identity.md`）。算法契约 **已拍**（`task-l2-personalization-algorithm.md`）。  
 > **本切片禁止**：写入 `src/locales/*.json`、Privacy 现网开关、Worker、ingest、改 `l0Config.js`、改 L1/桌面 generate runtime、改生产行为。  
 > **权威**：`YIN_PERSONALIZATION_ENGINE.md` §H · §G · §I · §H.5。用户句以**本 Brief 附录**为准；locale 须口令「开工 L2 UI」。  
-> **下一刀（仍文档）**：Cloud algorithm contract。运行时须口令「开工 L2」。
+> **下一刀**：locale 须口令「开工 L2 UI」；运行时须口令「开工 L2」。算法契约见 `task-l2-personalization-algorithm.md`。
 
 ---
 
