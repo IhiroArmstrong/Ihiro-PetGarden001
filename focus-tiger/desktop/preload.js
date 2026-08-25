@@ -49,7 +49,9 @@ if (companionAllowed) {
     setConsent: (granted) =>
       ipcRenderer.invoke('desktop:yin-personal-memory-set-consent', Boolean(granted)),
     rememberFromConfide: (payload) =>
-      ipcRenderer.invoke('desktop:yin-personal-memory-remember-from-confide', payload)
+      ipcRenderer.invoke('desktop:yin-personal-memory-remember-from-confide', payload),
+    forget: (memoryId) =>
+      ipcRenderer.invoke('desktop:yin-personal-memory-forget', memoryId)
   };
 }
 

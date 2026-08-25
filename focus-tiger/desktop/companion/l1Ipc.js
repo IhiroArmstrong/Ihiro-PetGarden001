@@ -12,6 +12,7 @@ import os from 'node:os';
 import { isCompanionL1Allowed } from './l1Capability.js';
 import { CompanionL1Runtime } from './l1Runtime.js';
 import {
+  forgetYinPersonalMemoryEntry,
   readYinPersonalMemoryState,
   rememberYinPersonalMemoryFromConfide,
   setYinPersonalMemoryConsent
@@ -65,7 +66,12 @@ export function attachCompanionL1Ipc(deps) {
       payload && typeof payload === 'object' ? payload : {}
     )
   );
-
+  deps.ipcMain.handle('desktop:yin-personal-memory-forget', (_event, memoryId) =>
+    forgetYinPersonalMemoryEntry(
+      deps.app.getPath('userData'),
+      typeof memoryId === 'string' ? memoryId : ''
+    )
+  );
 
   return runtime;
 }
