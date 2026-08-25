@@ -21,6 +21,24 @@ export const PRESENCE_SIGNALS_MAX_ENTRIES = 240;
 /** freeText stripped after this many local-calendar days (emotionTag kept). */
 export const PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS = 90;
 
+/**
+ * Local-calendar midnight at reference day, minus retentionDays.
+ * SSOT cutoff for reflections.v1 bundle pruning and presence-signals freeText stripping.
+ * @param {Date} [reference]
+ * @param {number} [retentionDays]
+ * @returns {number}
+ */
+export function freeTextRetentionCutoffMs(
+  reference = new Date(),
+  retentionDays = PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS
+) {
+  const ref = new Date(reference);
+  ref.setHours(0, 0, 0, 0);
+  const days = Math.max(0, Math.floor(Number(retentionDays) || 0));
+  ref.setDate(ref.getDate() - days);
+  return ref.getTime();
+}
+
 /** Below this count in a window, Confide must not describe a trend. */
 export const PRESENCE_SIGNALS_MIN_TREND_COUNT = 3;
 
@@ -162,12 +180,7 @@ export function pruneExpiredPresenceFreeText(
   entries,
   reference = new Date()
 ) {
-  const refKey = presenceSignalDateKey(reference.toISOString());
-  const refParts = refKey.split('-').map(Number);
-  const refDate = new Date(refParts[0], refParts[1] - 1, refParts[2]);
-  const cutoff = new Date(refDate);
-  cutoff.setDate(cutoff.getDate() - PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS);
-  const cutoffMs = cutoff.getTime();
+  const cutoffMs = freeTextRetentionCutoffMs(reference);
   return entries.map((row) => {
     if (!row.freeText) return row;
     const t = new Date(row.at).getTime();

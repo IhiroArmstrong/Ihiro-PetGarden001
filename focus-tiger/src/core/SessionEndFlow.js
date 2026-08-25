@@ -16,7 +16,10 @@
 
 import { getStorage, setStorage } from '../utils/Storage.js';
 import { appendReflectionPresenceSignals } from './reflectionPresenceBridge.js';
-import { PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS } from './presenceSignalsGate.js';
+import {
+  PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS,
+  freeTextRetentionCutoffMs
+} from './presenceSignalsGate.js';
 
 export const POST_FEEDBACK_PAUSE_MS = 400;
 export const MANUAL_END_PAUSE_MS = 300;
@@ -31,10 +34,10 @@ export const REFLECTION_FREE_TEXT_RETENTION_DAYS =
  * @returns {number}
  */
 export function reflectionFreeTextCutoffMs(reference = new Date()) {
-  const ref = new Date(reference);
-  ref.setHours(0, 0, 0, 0);
-  ref.setDate(ref.getDate() - REFLECTION_FREE_TEXT_RETENTION_DAYS);
-  return ref.getTime();
+  return freeTextRetentionCutoffMs(
+    reference,
+    REFLECTION_FREE_TEXT_RETENTION_DAYS
+  );
 }
 
 /**
