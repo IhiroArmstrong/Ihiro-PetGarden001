@@ -26,6 +26,7 @@ import {
 import { normalizeOwnershipState } from '../entitlement/entitlementOwnership.js';
 import { normalizeJourneyLogState } from '../journeyLogGate.js';
 import { normalizeRitualCompletionState } from '../RitualCompletionStore.js';
+import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
 
 export const PRACTICE_BACKUP_DEBOUNCE_MS = 10 * 60 * 1000;
 export const PRACTICE_BACKUP_MIN_UPLOAD_GAP_MS = 60 * 1000;
@@ -121,9 +122,13 @@ export function normalizeSnapshotStoresForApply(snapshot) {
  * @param {Storage | null | undefined} storage
  * @param {import('./practiceBackupSnapshot.js').PracticeBackupSnapshot} snapshot
  */
-export function applyPracticeBackupSnapshot(storage, snapshot) {
+export function applyPracticeBackupSnapshot(storage, snapshot, opts = {}) {
   const normalized = normalizeSnapshotStoresForApply(snapshot);
   writePracticeBackupStoresRaw(storage, normalized);
+  reconcileDailyCompletionAfterRestore(
+    storage,
+    opts.now instanceof Date ? opts.now : new Date()
+  );
 }
 
 /**
@@ -281,7 +286,9 @@ export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
     if (!isPracticeBackupWhitelistCompletelyEmpty(storage)) {
       return { ok: false, reason: 'local_not_empty_race', skipped: true };
     }
-    applyPracticeBackupSnapshot(storage, parsed.snapshot);
+    applyPracticeBackupSnapshot(storage, parsed.snapshot, {
+      now: opts.now instanceof Date ? opts.now : undefined
+    });
     writePracticeBackupOptIn(storage, {
       ...state,
       lastRestoreAt: new Date().toISOString()
