@@ -14,8 +14,12 @@ import { handleMonetizationFunnelIngest } from "./routes/monetizationFunnelInges
 import { handleCreateTipCheckoutSession } from "./routes/createTipCheckoutSession";
 import { handleCreateSanctuaryCheckoutSession } from "./routes/createSanctuaryCheckoutSession";
 import { handleCreateMembershipCheckoutSession } from "./routes/createMembershipCheckoutSession";
+import { handleCreateProCheckoutSession } from "./routes/createProCheckoutSession";
+import { handleCreateCompanionAddonCheckoutSession } from "./routes/createCompanionAddonCheckoutSession";
 import { handleConfirmSanctuarySession } from "./routes/confirmSanctuarySession";
 import { handleConfirmMembershipSession } from "./routes/confirmMembershipSession";
+import { handleConfirmProSession } from "./routes/confirmProSession";
+import { handleConfirmCompanionAddonSession } from "./routes/confirmCompanionAddonSession";
 import { handleCreateMembershipPortalSession } from "./routes/createMembershipPortalSession";
 import { handleMembershipEntitlement } from "./routes/membershipEntitlement";
 import { handleRequestRestoreOtp } from "./routes/requestRestoreOtp";
@@ -26,6 +30,7 @@ import { handleGetPracticeBackup } from "./routes/getPracticeBackup";
 import { handleDeletePracticeBackup } from "./routes/deletePracticeBackup";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
+import { handleVerifyCompanionAddon } from "./routes/verifyCompanionAddon";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
 import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
@@ -57,8 +62,13 @@ export default {
 				url.pathname === "/api/confirm-sanctuary-session" ||
 				url.pathname === "/api/verify-sanctuary" ||
 				url.pathname === "/api/create-membership-checkout-session" ||
+				url.pathname === "/api/create-pro-checkout-session" ||
+				url.pathname === "/api/create-companion-addon-checkout-session" ||
 				url.pathname === "/api/confirm-membership-session" ||
+				url.pathname === "/api/confirm-pro-session" ||
+				url.pathname === "/api/confirm-companion-addon-session" ||
 				url.pathname === "/api/verify-membership" ||
+				url.pathname === "/api/verify-companion-addon" ||
 				url.pathname === "/api/membership-entitlement" ||
 				url.pathname === "/api/create-membership-portal-session" ||
 				url.pathname === "/api/restore/request-otp" ||
@@ -240,6 +250,21 @@ export default {
 			return withCors(await handleVerifySanctuary(request, env), origin);
 		}
 
+		if (url.pathname === "/api/verify-companion-addon") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const verifyLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "verify-companion-addon",
+			});
+			if (verifyLimited) return withCors(verifyLimited, origin);
+			return withCors(await handleVerifyCompanionAddon(request, env), origin);
+		}
+
 		if (url.pathname === "/api/verify-membership") {
 			if (request.method !== "POST") {
 				return withCors(
@@ -268,6 +293,39 @@ export default {
 			});
 			if (confirmLimited) return withCors(confirmLimited, origin);
 			return withCors(await handleConfirmSanctuarySession(request, env), origin);
+		}
+
+		if (url.pathname === "/api/confirm-companion-addon-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const confirmLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "confirm-companion-addon",
+			});
+			if (confirmLimited) return withCors(confirmLimited, origin);
+			return withCors(
+				await handleConfirmCompanionAddonSession(request, env),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/confirm-pro-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const confirmLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "confirm-pro",
+			});
+			if (confirmLimited) return withCors(confirmLimited, origin);
+			return withCors(await handleConfirmProSession(request, env), origin);
 		}
 
 		if (url.pathname === "/api/confirm-membership-session") {
@@ -347,6 +405,29 @@ export default {
 				await handleCreateSanctuaryCheckoutSession(request, env),
 				origin,
 			);
+		}
+
+		if (url.pathname === "/api/create-companion-addon-checkout-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleCreateCompanionAddonCheckoutSession(request, env),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/create-pro-checkout-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(await handleCreateProCheckoutSession(request, env), origin);
 		}
 
 		if (url.pathname === "/api/create-membership-checkout-session") {

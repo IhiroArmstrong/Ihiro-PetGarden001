@@ -17,6 +17,7 @@ import {
   canRegisterDesktopCompanionGeneration,
   hasDesktopCompanionBridge
 } from '../core/desktopCompanionGate.js';
+import { isCompanionEntitled } from '../core/companionEntitlement.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v6';
 const WIDE_MQ = '(min-width: 480px)';
@@ -593,10 +594,15 @@ export class WideIdleMoreMenu {
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ).unlocked,
-      companionGeneration: canRegisterDesktopCompanionGeneration({
-        hasBridge: hasDesktopCompanionBridge(),
-        widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
-      })
+      companionGeneration:
+        canRegisterDesktopCompanionGeneration({
+          hasBridge: hasDesktopCompanionBridge(),
+          widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+        }) &&
+        isCompanionEntitled({
+          storage: typeof localStorage !== 'undefined' ? localStorage : null,
+          search: typeof location !== 'undefined' ? location.search : ''
+        })
     });
 
     this.listEl.innerHTML = '';
