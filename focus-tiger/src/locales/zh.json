@@ -646,5 +646,8 @@
   "MEMBERSHIP_ACTIVE_PLAN": "方案：约 ${price} / 月",
   "MEMBERSHIP_ACTIVE_CLOSE": "关闭",
   "MEMBERSHIP_RESTORE_LINK": "在其他设备恢复",
-  "MEMBERSHIP_RESTORE_BACK": "返回"
+  "MEMBERSHIP_RESTORE_BACK": "返回",
+  "YIN_MEMORY_CONSENT_BLURB": "阿寅可以只在这台设备上记住少量事情，慢慢更懂你。不会上传。",
+  "YIN_MEMORY_CONSENT_ALLOW": "允许",
+  "YIN_MEMORY_CONSENT_DENY": "暂不"
 }

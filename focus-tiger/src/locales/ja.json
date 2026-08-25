@@ -646,5 +646,8 @@
   "MEMBERSHIP_ACTIVE_PLAN": "プラン：約 ${price} / 月",
   "MEMBERSHIP_ACTIVE_CLOSE": "閉じる",
   "MEMBERSHIP_RESTORE_LINK": "別の端末で復元",
-  "MEMBERSHIP_RESTORE_BACK": "戻る"
+  "MEMBERSHIP_RESTORE_BACK": "戻る",
+  "YIN_MEMORY_CONSENT_BLURB": "寅はこの端末だけで、少しずつあなたのことを覚えます。アップロードはしません。",
+  "YIN_MEMORY_CONSENT_ALLOW": "許可する",
+  "YIN_MEMORY_CONSENT_DENY": "今はしない"
 }
