@@ -32,6 +32,13 @@ import {
   isHonestyPhaseBusy,
   isHonestyUiBusy
 } from './core/sessionChromeSync.js';
+import {
+  buildOverlaySnapshot,
+  deriveTeaBubbleBusyTarget,
+  deriveReminderBusySessionTarget,
+  canAttemptFirstCard
+} from './core/overlaySlotArbitration.js';
+import { OVERLAY_SOURCES } from './core/overlaySlotContractRegistry.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -59,8 +66,7 @@ import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import {
-  InAppReminderBannerController,
-  isReminderBusySession
+  InAppReminderBannerController
 } from './core/InAppReminderBannerController.js';
 import {
   isUpdateAvailable,
@@ -724,12 +730,7 @@ async function init() {
     }
   });
   syncSoftUpdatePrompt = () => {
-    const busy = isReminderBusySession({
-      state: stateManager.state,
-      arrivalOpen: Boolean(arrivalPractice?.isOpen?.()),
-      reflectionOpen: Boolean(reflectionMoment?.isOpen?.()),
-      microRitualOpen: Boolean(microRitualUI?.isOpen?.())
-    });
+    const busy = deriveReminderBusySessionTarget(buildLiveOverlaySnapshot());
     const reveal = shouldRevealSoftUpdatePrompt({
       updateAvailable: softUpdateAvailable,
       busySession: busy,
@@ -1203,15 +1204,7 @@ async function init() {
   const contextualTeaTipBubbleUI = new ContextualTeaTipBubbleUI(
     document.getElementById('ui-overlay') || document.body,
     {
-      isBusy: () =>
-        tipJarUI.isOpen() === true ||
-        supportYinModalUI.isOpen() === true ||
-        sanctuaryUnlockUI.isOpen?.() === true ||
-        membershipUnlockUI.isOpen?.() === true ||
-        mustardSeedSealCardUI.isOpen?.() === true ||
-        reflectionMoment?.isOpen?.() === true ||
-        arrivalPractice?.isOpen?.() === true ||
-        fiveMomentsCompassUI.isOpen() === true,
+      isBusy: () => deriveTeaBubbleBusyTarget(buildLiveOverlaySnapshot()),
       onBuyTea: () => {
         contextualTeaTipBubbleUI.hide({ immediate: true });
         closeGrowthOverlayCards({ except: 'tip' });
@@ -1649,6 +1642,7 @@ async function init() {
     getMicroRitualUI: () => microRitualUI,
     getRitualFlowUI: () => ritualFlowUI,
     getFocusDurationPicker: () => focusDurationPicker,
+    getMustardSeedSealUI: () => mustardSeedSealCardUI,
     honestyCheckInUI,
     honestyCheckIn,
     companionModePicker,
@@ -1662,6 +1656,29 @@ async function init() {
   const { syncHonestyIdleEntry, syncArrivalGateReady } = sessionChromeSyncApi;
   /** @type {IdleYinTapAnchorUI | null} */
   let idleYinTapAnchor = null;
+
+  function buildLiveOverlaySnapshot() {
+    return buildOverlaySnapshot({
+      sessionState: stateManager.state,
+      completionPending: sessionUiGate.completionPending,
+      honestyPhase: honestyCheckInUI?.phase,
+      honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
+      arrivalOpen: arrivalPractice?.isOpen?.() === true,
+      reflectionOpen: reflectionMoment?.isOpen?.() === true,
+      microRitualOpen: microRitualUI?.isOpen?.() === true,
+      ritualFlowOpen: ritualFlowUI?.isOpen?.() === true,
+      focusDurationPickerOpen: focusDurationPicker?.isOpen?.() === true,
+      companionPickerOpen: companionModePicker?.isOpen?.() === true,
+      postSessionOverlayActive: sessionUiGate.postSessionOverlayActive,
+      compassOpen: fiveMomentsCompassUI.isOpen(),
+      mustardSeedOpen: mustardSeedSealCardUI.isOpen?.() === true,
+      tipJarOpen: tipJarUI.isOpen() === true,
+      supportModalOpen: supportYinModalUI.isOpen() === true,
+      sanctuaryOpen: sanctuaryUnlockUI.isOpen?.() === true,
+      membershipOpen: membershipUnlockUI.isOpen?.() === true,
+      flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true
+    });
+  }
 
   function playCollectionsWaveHello() {
     const result = evaluateCollectionsWaveHelloPlay({
@@ -2386,7 +2403,7 @@ async function init() {
     },
     onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
     onWellnessFirstDismiss: () => {
-      maybeOfferFiveMomentsCompassFirstCard();
+      scheduleFirstCardOffers();
     }
   });
   onboardingHintHost.hints = onboardingHints;
@@ -2618,12 +2635,7 @@ async function init() {
       now: reminderNow,
       hasCompletedToday: () => dailyCompletionStore.hasCompletedToday()
     });
-    const busy = isReminderBusySession({
-      state: stateManager.state,
-      arrivalOpen: Boolean(arrivalPractice?.isOpen?.()),
-      reflectionOpen: Boolean(reflectionMoment?.isOpen?.()),
-      microRitualOpen: Boolean(microRitualUI?.isOpen?.())
-    });
+    const busy = deriveReminderBusySessionTarget(buildLiveOverlaySnapshot());
     const decision = inAppReminderBannerController.resolve(candidate, {
       isBusySession: busy
     });
@@ -3353,6 +3365,18 @@ async function init() {
   syncOnboardingAutoHints();
 
   let wellnessFirstConsumedThisPage = false;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let firstCardOfferTimer = null;
+
+  function onboardingHintsBlockFirstCard() {
+    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
+      return true;
+    }
+    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+      return true;
+    }
+    return false;
+  }
 
   function maybeOfferWellnessDisclaimerFirstCard() {
     if (!productChrome) return false;
@@ -3366,13 +3390,11 @@ async function init() {
       return false;
     }
     if (stateManager.state !== STATES.IDLE) return false;
-    if (isSceneAnimOverlayBusy()) return false;
-    if (flowerBlowWelcomeBubble?.isOpen?.()) return false;
-    if (fiveMomentsCompassUI.isOpen()) return false;
-    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
-      return false;
-    }
-    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+    if (onboardingHintsBlockFirstCard()) return false;
+    const snapshot = buildLiveOverlaySnapshot();
+    if (
+      !canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, snapshot)
+    ) {
       return false;
     }
     closeGrowthOverlayCards();
@@ -3394,27 +3416,50 @@ async function init() {
       return;
     }
     if (stateManager.state !== STATES.IDLE) return;
-    if (isSceneAnimOverlayBusy()) return;
-    if (fiveMomentsCompassUI.isOpen()) return;
-    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
-      return;
-    }
-    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+    if (onboardingHintsBlockFirstCard()) return;
+    const snapshot = buildLiveOverlaySnapshot();
+    if (!canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, snapshot)) {
       return;
     }
     closeGrowthOverlayCards({ except: 'moments' });
     fiveMomentsCompassUI.open({ firstRun: true });
   }
 
-  // Quiet Idle first-run: Compass (wellness auto-card is off; lookup is ?).
-  // Wait out flower-welcome bubble; retry a few times so Day1 吹花 does not stack.
-  if (productChrome) {
-    for (const ms of [3600, 4800, 6400, 8200, 11000]) {
-      window.setTimeout(() => {
-        if (maybeOfferWellnessDisclaimerFirstCard()) return;
-        maybeOfferFiveMomentsCompassFirstCard();
-      }, ms);
+  function scheduleFirstCardOffers(delayMs = 0) {
+    if (!productChrome) return;
+    if (firstCardOfferTimer != null) {
+      window.clearTimeout(firstCardOfferTimer);
+      firstCardOfferTimer = null;
     }
+    firstCardOfferTimer = window.setTimeout(() => {
+      firstCardOfferTimer = null;
+      if (maybeOfferWellnessDisclaimerFirstCard()) return;
+      maybeOfferFiveMomentsCompassFirstCard();
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const wantsWellness = shouldOfferWellnessDisclaimerFirstCard(
+        storage,
+        location.search
+      );
+      const wantsCompass = shouldOfferFiveMomentsCompassFirstCard(storage);
+      if (!wantsWellness && !wantsCompass) return;
+      const snapshot = buildLiveOverlaySnapshot();
+      const stillBlocked =
+        (wantsWellness &&
+          !wellnessFirstConsumedThisPage &&
+          !canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, snapshot)) ||
+        (wantsCompass &&
+          !canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, snapshot));
+      if (stillBlocked) {
+        scheduleFirstCardOffers(4000);
+      }
+    }, delayMs);
+  }
+
+  // Quiet Idle first-run: Compass (wellness auto-card is off; lookup is ?).
+  // Defer queue via canAttemptFirstCard (flower > compass > wellness).
+  if (productChrome) {
+    scheduleFirstCardOffers();
   }
 
   // Occupancy already decided the first paint (welcome / flower / thanks /
@@ -3787,10 +3832,7 @@ async function init() {
     syncConfideEarChrome();
     syncInAppReminderBanner();
     if (stateManager.state === STATES.IDLE) {
-      window.setTimeout(() => {
-        if (maybeOfferWellnessDisclaimerFirstCard()) return;
-        maybeOfferFiveMomentsCompassFirstCard();
-      }, 900);
+      scheduleFirstCardOffers(900);
       // Practice-memory backup: Idle flush after first breath has room (not 400ms).
       schedulePracticeBackupUpload({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,
