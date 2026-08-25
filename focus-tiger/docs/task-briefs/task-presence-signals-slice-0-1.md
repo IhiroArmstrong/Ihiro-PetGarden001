@@ -1,6 +1,6 @@
 # Task Brief · Presence Signals · Slice 0–1 + 4 minimal + 5 disclosure
 
-> **状态（2026-08-26）**：Slice 0–1 + 4 + 5 已合；Slice 3 已合（#436）。  
+> **状态（2026-08-26）**：Slice 0–1 + 4 + 5 已合；Slice 3 已合（#436）；Slice 2 已合（#441）。  
 > **排期（拍板）**：**5 → 3 → 2 → 6**（披露 → Reflection 双写 → Ritual 回顾 → 查看/删除面板）
 
 ---
@@ -29,7 +29,7 @@
 | 顺序 | Slice | 内容 | 状态 |
 |---|---|---|---|
 | 1 | **3** | Reflection Q1–Q3 分拆双写；reflections freeText 90 天对齐 | **已合** #436 |
-| 2 | **2** | Ritual chip 入账 + Leave 事后回顾（方案 C） | 交互稿已定，见 `task-presence-signals-slice-2.md` |
+| 2 | **2** | Ritual chip 入账 + Leave 事后回顾（方案 C） | **已合** #441 · `task-presence-signals-slice-2.md` |
 | 3 | **6** | 查看/删除 UI + freeText L3 Consent | Ritual 之后 |
 
 ### Slice 6 前置条件（面板 Slice 开工前须满足）

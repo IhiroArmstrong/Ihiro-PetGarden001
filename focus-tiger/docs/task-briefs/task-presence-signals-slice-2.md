@@ -1,6 +1,6 @@
 # Task Brief · Presence Signals · Slice 2（Ritual Leave 弱提示 · 方案 C）
 
-> **状态（2026-08-26）**：**开工**（`feature/presence-signals-slice-2`）  
+> **状态（2026-08-26）**：**已合** #441（`feature/presence-signals-slice-2`）  
 > **口令**：「开工 Presence Signals Slice 2 — Ritual Leave 弱提示，方案 C」  
 > **前置**：Slice 3 #436 · prune helper #440 · Brief #439
 
