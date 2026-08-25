@@ -64,5 +64,5 @@
 
 ## 工程注册（实现参考）
 
-口头 / 事实类意图在 `ConfideToYinUI._onSend` 中于 `practice_facts` → `presence_facts` → `memory_forget` 之后、`shouldUseDesktopCompanionGenerate` 之前顺序判定。  
+口头 / 事实类意图在 `ConfideToYinUI._onSend` 中于 `practice_facts` → `presence_facts` → `memory_forget` 之后、`ypeMayUseCompanionGenerate`（YPE L0 收口现网层 3 门闩）之前顺序判定。  
 新增 CI-xx 时应扩 **纯函数模块 + 单测**，禁止在 UI 内堆 if 树。

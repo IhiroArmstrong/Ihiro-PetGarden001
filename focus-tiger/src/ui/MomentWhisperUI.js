@@ -9,10 +9,8 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
-import {
-  markMomentWhisperSeen,
-  shouldShowMomentWhisper
-} from '../core/momentWhispersGate.js';
+import { markMomentWhisperSeen } from '../core/momentWhispersGate.js';
+import { ypeMayShowMomentWhisper } from '../core/yinPersonalizationEngine.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
 
 const ROOT_ID = 'moment-whisper';
@@ -74,7 +72,7 @@ export class MomentWhisperUI {
       typeof opts.busy === 'boolean'
         ? opts.busy
         : Boolean(this.handlers.isBusy?.());
-    if (!shouldShowMomentWhisper(this._storage, key, { busy })) {
+    if (!ypeMayShowMomentWhisper(this._storage, key, { busy })) {
       return false;
     }
     this.hide({ immediate: true });

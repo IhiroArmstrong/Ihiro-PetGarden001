@@ -279,7 +279,7 @@ describe('desktop companion L1 isolation', () => {
   it('routes Confide send through retrieve first; generate only via L2 helper', () => {
     const ui = readFileSync(join(focusTigerRoot, 'src/ui/ConfideToYinUI.js'), 'utf8');
     assert.match(ui, /resolveConfideReply/);
-    assert.match(ui, /shouldUseDesktopCompanionGenerate/);
+    assert.match(ui, /ypeMayUseCompanionGenerate/);
     assert.match(ui, /confide-to-yin-desktop-status/);
     assert.match(ui, /ensureReady/);
     assert.match(ui, /companion\.generate/);

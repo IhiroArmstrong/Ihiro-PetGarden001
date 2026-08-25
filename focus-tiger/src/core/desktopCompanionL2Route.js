@@ -6,6 +6,7 @@
 /**
  * L2 Confide layer-3 gate (pure). Llama stays in desktop/; this file only
  * decides whether Share may call companion.generate.
+ * Product call sites go through `ypeMayUseCompanionGenerate` (YPE L0 wrap).
  *
  * Layers:
  *   0 safety_redirect → never generate

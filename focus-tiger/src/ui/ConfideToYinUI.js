@@ -23,7 +23,7 @@ import {
   buildPresenceTrendReply,
   shouldAnswerWithPresenceFacts
 } from '../core/confide/confidePresenceFacts.js';
-import { shouldUseDesktopCompanionGenerate } from '../core/desktopCompanionL2Route.js';
+import { ypeMayUseCompanionGenerate } from '../core/yinPersonalizationEngine.js';
 import { formatLocalDateYmd } from './reflectionEchoCopy.js';
 import {
   GLASS_BLUR_CSS,
@@ -669,7 +669,7 @@ export class ConfideToYinUI {
       void this._handleVerbalForget(text, hit);
       return;
     }
-    const wantGenerate = shouldUseDesktopCompanionGenerate({
+    const wantGenerate = ypeMayUseCompanionGenerate({
       route: hit.route,
       generateEnabled: Boolean(this._companionStatus?.generateEnabled),
       generateLayerOpen: this._generateLayerOpen,
