@@ -13,13 +13,18 @@ import { normalizeYinPersonalMemoryState } from './yinPersonalMemory/yinPersonal
 
 /**
  * @param {object} [globalObj]
- * @returns {null | { getState: () => Promise<unknown>, setConsent: (granted: boolean) => Promise<unknown> }}
+ * @returns {null | {
+ *   getState: () => Promise<unknown>,
+ *   setConsent: (granted: boolean) => Promise<unknown>,
+ *   rememberFromConfide: (payload: object) => Promise<unknown>
+ * }}
  */
 export function getYinPersonalMemoryBridge(globalObj = globalThis) {
   const shell = getDesktopShellBridge(globalObj);
   const memory = shell && shell.yinPersonalMemory;
   if (!memory || typeof memory.getState !== 'function') return null;
   if (typeof memory.setConsent !== 'function') return null;
+  if (typeof memory.rememberFromConfide !== 'function') return null;
   return memory;
 }
 
@@ -55,6 +60,27 @@ export async function saveYinPersonalMemoryConsent(granted, globalObj = globalTh
   if (!bridge) return normalizeYinPersonalMemoryState(null);
   try {
     const raw = await bridge.setConsent(Boolean(granted));
+    return normalizeYinPersonalMemoryState(raw);
+  } catch {
+    return normalizeYinPersonalMemoryState(null);
+  }
+}
+
+/**
+ * Silent Remember after successful L3 generate (Slice 1b).
+ * @param {{
+ *   userText: string,
+ *   route: string,
+ *   replySource: string,
+ *   turnOrdinal?: number
+ * }} payload
+ * @param {object} [globalObj]
+ */
+export async function rememberYinPersonalMemoryFromConfide(payload, globalObj = globalThis) {
+  const bridge = getYinPersonalMemoryBridge(globalObj);
+  if (!bridge) return normalizeYinPersonalMemoryState(null);
+  try {
+    const raw = await bridge.rememberFromConfide(payload && typeof payload === 'object' ? payload : {});
     return normalizeYinPersonalMemoryState(raw);
   } catch {
     return normalizeYinPersonalMemoryState(null);

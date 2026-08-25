@@ -16,6 +16,7 @@ import {
   normalizeYinPersonalMemoryState
 } from '../../src/core/yinPersonalMemory/yinPersonalMemorySchema.js';
 import { applyYinMemoryConsent } from '../../src/core/yinPersonalMemory/yinPersonalMemoryConsent.js';
+import { rememberFromConfideTurn } from '../../src/core/yinPersonalMemory/yinPersonalMemoryRemember.js';
 
 export const YIN_PERSONAL_MEMORY_DIRNAME = 'companion-l2';
 export const YIN_PERSONAL_MEMORY_FILENAME = 'yin-personal-memory.json';
@@ -72,4 +73,31 @@ export async function setYinPersonalMemoryConsent(userDataDir, granted) {
   const current = await readYinPersonalMemoryState(userDataDir);
   const next = applyYinMemoryConsent(current, granted);
   return writeYinPersonalMemoryState(userDataDir, next);
+}
+
+/**
+ * @param {string} userDataDir
+ * @param {{
+ *   userText?: string,
+ *   route?: string,
+ *   replySource?: string,
+ *   turnOrdinal?: number,
+ *   nowIso?: string
+ * }} payload
+ */
+export async function rememberYinPersonalMemoryFromConfide(userDataDir, payload) {
+  const current = await readYinPersonalMemoryState(userDataDir);
+  const safe =
+    payload && typeof payload === 'object' ? payload : /** @type {Record<string, unknown>} */ ({});
+  const { state } = rememberFromConfideTurn(current, {
+    userText: typeof safe.userText === 'string' ? safe.userText : '',
+    route: typeof safe.route === 'string' ? safe.route : '',
+    replySource: typeof safe.replySource === 'string' ? safe.replySource : '',
+    turnOrdinal:
+      typeof safe.turnOrdinal === 'number' && Number.isFinite(safe.turnOrdinal)
+        ? safe.turnOrdinal
+        : 0,
+    nowIso: typeof safe.nowIso === 'string' ? safe.nowIso : undefined
+  });
+  return writeYinPersonalMemoryState(userDataDir, state);
 }

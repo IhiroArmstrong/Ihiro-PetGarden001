@@ -13,6 +13,7 @@ import {
   normalizeYinPersonalMemoryState
 } from './yinPersonalMemorySchema.js';
 import { applyYinMemoryConsent } from './yinPersonalMemoryConsent.js';
+import { rememberFromConfideTurn } from './yinPersonalMemoryRemember.js';
 
 export class YinPersonalMemoryStore {
   constructor() {
@@ -38,5 +39,21 @@ export class YinPersonalMemoryStore {
    */
   setConsent(granted, nowIso) {
     this._state = applyYinMemoryConsent(this.snapshot(), granted, nowIso);
+  }
+
+  /**
+   * @param {{
+   *   userText: string,
+   *   route: string,
+   *   replySource: string,
+   *   turnOrdinal?: number,
+   *   nowIso?: string
+   * }} payload
+   * @returns {boolean}
+   */
+  rememberFromConfideTurn(payload) {
+    const { state, remembered } = rememberFromConfideTurn(this.snapshot(), payload);
+    this._state = state;
+    return remembered;
   }
 }

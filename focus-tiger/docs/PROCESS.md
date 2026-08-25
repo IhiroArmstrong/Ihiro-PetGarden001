@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Yin Personal Memory Architecture V1（2026-08-24 · 方向锁）**：设计师 12 点入库；三套边界写死。**2026-08-25**：AE 能聊用户书面关单；口令「开工 Yin Personal Memory」→ **Slice 0 运行时**（读 `PracticeDaysStore`，禁 Qwen 编时长）。Slice 1a Consent + userData store 骨架 **本旁支**（`task-yin-memory-slice-1a-consent-store.md`）；Remember / 列表 / 注入 **仍未做**。Brief `task-yin-memory-slice-0-practice-facts.md`。
+- **Yin Personal Memory Architecture V1（2026-08-24 · 方向锁）**：设计师 12 点入库；三套边界写死。**2026-08-25**：AE 能聊用户书面关单；口令「开工 Yin Personal Memory」→ **Slice 0 运行时**（读 `PracticeDaysStore`，禁 Qwen 编时长）。Slice 1a Consent + store 骨架已合（#427）；Slice 1b Remember 管道 **本旁支**（`task-yin-memory-slice-1b-remember.md`）；列表+Forget / 层 3 注入 **仍未做**。Brief `task-yin-memory-slice-0-practice-facts.md`。
 - **练习备份后台网络错峰（2026-08-23 · 本旁支改运行时）**：已同意备份的用户，Idle 静默上传改到约 2.5s（让开首段呼吸）；busy 含 Arrival / Honesty 叠层，叠层结束会短重试；空库恢复同样 busy；白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 cloud-ok。OTP 点击路径未改。慢网 Idle/Arrival 流畅度仍待人工（TRACKER 碎片）。下两条仍未开工：品味层开机预取、陪伴首次下载。
 - **后台网络三问门禁（2026-08-22 · 已入库 develop）**：非用户点击的请求实现前须答时机 / 写盘 / 慢网动效。SSOT `BACKGROUND_NETWORK.md`。口令见各 Brief。
 - **Breath 闭目坐禅 + 磬声减半 + 莲花前景 + Companion 下藏 Breath 球（2026-08-21 · #385 已合）**：timed Breath 不再抄 Arrival 眨眼微笑；磬声相对氛围条 ×0.5；`#lotus-pond` 提到阿寅前，宽屏螺旋外扩；Companion 三选一展开时宽屏藏左球。工作流根因 `DEV_WORKFLOW_QUALITY` §6.19。TRACKER 碎片待拼装。

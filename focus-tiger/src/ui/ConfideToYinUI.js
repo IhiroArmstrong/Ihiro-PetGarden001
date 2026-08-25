@@ -40,9 +40,13 @@ import {
 import {
   fetchYinPersonalMemoryState,
   hasYinPersonalMemoryBridge,
+  rememberYinPersonalMemoryFromConfide,
   saveYinPersonalMemoryConsent
 } from '../core/yinPersonalMemoryBridge.js';
-import { shouldOfferYinMemoryConsent } from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
+import {
+  canRememberYinPersonalMemory,
+  shouldOfferYinMemoryConsent
+} from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
 const FADE_MS = 220;
@@ -485,6 +489,25 @@ export class ConfideToYinUI {
   }
 
   /**
+   * Silent Remember after successful L3 generate (Slice 1b).
+   * @param {{ userText: string, route: string, replySource: string }} payload
+   */
+  _maybeRememberFromL3(payload) {
+    if (!hasYinPersonalMemoryBridge() || !canRememberYinPersonalMemory(this._memoryState)) {
+      return;
+    }
+    const turnOrdinal = Math.floor(this._l2Turns.length / 2);
+    void rememberYinPersonalMemoryFromConfide({
+      userText: payload.userText,
+      route: payload.route,
+      replySource: payload.replySource,
+      turnOrdinal
+    }).then((state) => {
+      this._memoryState = state;
+    });
+  }
+
+  /**
    * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
    */
   _runL3Generate(payload) {
@@ -508,6 +531,11 @@ export class ConfideToYinUI {
             },
             text
           );
+          this._maybeRememberFromL3({
+            userText: text,
+            route: hit.route,
+            replySource: 'generate'
+          });
           return;
         }
         this._sessionExclude.add(hit.line.id);

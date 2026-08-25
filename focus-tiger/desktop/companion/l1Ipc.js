@@ -13,6 +13,7 @@ import { isCompanionL1Allowed } from './l1Capability.js';
 import { CompanionL1Runtime } from './l1Runtime.js';
 import {
   readYinPersonalMemoryState,
+  rememberYinPersonalMemoryFromConfide,
   setYinPersonalMemoryConsent
 } from './yinPersonalMemoryPersistence.js';
 
@@ -57,6 +58,12 @@ export function attachCompanionL1Ipc(deps) {
   );
   deps.ipcMain.handle('desktop:yin-personal-memory-set-consent', (_event, granted) =>
     setYinPersonalMemoryConsent(deps.app.getPath('userData'), Boolean(granted))
+  );
+  deps.ipcMain.handle('desktop:yin-personal-memory-remember-from-confide', (_event, payload) =>
+    rememberYinPersonalMemoryFromConfide(
+      deps.app.getPath('userData'),
+      payload && typeof payload === 'object' ? payload : {}
+    )
   );
 
 
