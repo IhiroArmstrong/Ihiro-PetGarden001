@@ -1,9 +1,11 @@
 ---
-description: When listing multiple options, always state which one you consider most reasonable
-alwaysApply: true
+description: 列 ≥2 个可执行方案时须表态最合理项——写待你决定/给选项前 Read
+alwaysApply: false
 ---
 
-# Focus Tiger · 给选项时必须给「最合理项」
+# Focus Tiger · 给选项时必须给「最合理项」（按需层）
+
+> **加载时机**：回复将出现 ≥2 个可执行方案/分支，或 N14「待你决定」有多条开放项时。核心层有一句摘要，细则在本文件。
 
 目的：禁止把决策摊成「或者这个、或者那个」的并列菜单，让用户替 Agent 做完分析。
 

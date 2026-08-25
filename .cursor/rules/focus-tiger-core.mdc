@@ -1,0 +1,58 @@
+---
+description: Focus Tiger 核心常驻层——Git 硬闸、N14 收尾、测试输出卫生、按需加载索引（其余规则触发时再 Read）
+alwaysApply: true
+---
+
+# Focus Tiger · 核心层（常驻）
+
+产品目录：`focus-tiger/`。规则主题索引：`focus-tiger/docs/RULES_INDEX.md`。  
+**本文件以外**的 `.cursor/rules/focus-tiger-*.mdc` 与 `testing-strategy.mdc` 均为**按需加载**——命中下方索引时须 `Read` 全文，不得凭记忆省略条款。
+
+## Git 硬闸
+
+> 分支/PR/合入细则 SSOT：`WORKFLOW.md`（`RULES_INDEX` → `git-agent-commit` / `git-pr-base-develop`）。
+
+- **禁止** `git push` 到 `origin/develop` / `origin/main`；进主干只能 PR 合入。
+- 任务验证通过后：**默认** `git commit`（旁支 `feature/*` / `fix/*` / `docs/*`）→ **默认** `git push -u origin HEAD` → 开/更新 `--base develop` 的 PR；同回合汇报 hash、分支、文件、PR URL。
+- **禁止**自动合并进 `main`；合 `develop` 须 CI 绿（细则按需读 `focus-tiger-regression-lock.mdc`）。
+- 代码与文档同批 commit；只改代码、文档不进 commit = 假完成。
+- 禁止静默 commit；禁止 post-commit 自动 push。
+
+## 任务纪律
+
+- **一次一任务**；新文件/目录路径须英文 ASCII、`kebab-case`（全文见 `PRINCIPLES.md`）。
+- 接**实现类**任务前 → 先 `Read` **`focus-tiger-docs.mdc`**。
+- 声称修好 / 交互修复收尾 / commit·push 前 → 先 `Read` **`focus-tiger-regression-lock.mdc`**。
+
+## 收尾（N14 · 每次用户可见回复末尾）
+
+独立小节 **「待你决定 / 待你知道」**（无事项也须标题 +「无」）。  
+列 ≥2 个可执行开放方案时须写 **我认为最合理的**（细则按需读 `focus-tiger-recommend-most-reasonable.mdc`）。
+
+## 测试输出卫生（强制）
+
+跑 `npm run test*` / Playwright / `playwright install` / CI 日志后：
+
+- 回复里只写 **结论**：pass/fail 数量 + 失败用例名 + 一行报错；**禁止**把完整终端输出粘贴进对话（会随轮次线性累积计费）。
+- 需留档的详细日志 → 写磁盘（如 `focus-tiger/.tmp/test-output-<timestamp>.log`）；仅在排查时用 `Read`  targeted 段，**禁止**让大段日志在多轮里常驻上下文。
+- CI 优先结构化摘要（JUnit pass/fail、失败 case 一行）；全量 trace/截图仅在深挖**单个** case 时拉取。
+
+## 按需加载索引
+
+| 触发场景 | 先 Read |
+|---|---|
+| 接任务 / 改产品语义 / 情绪·架构·文案 | `focus-tiger-docs.mdc` |
+| bug 修复·交互修复·完工·commit·push·§7 | `focus-tiger-regression-lock.mdc` |
+| 起 Vite·预览·Safari 验收·IDE Browser | `focus-tiger-browser-energy.mdc` |
+| 跑测试·e2e·CI·控 token | `testing-strategy.mdc` + `focus-tiger-agent-token-cost.mdc` |
+| 关单 QA·5173·PR 合 develop 后 | `focus-tiger-qa-develop-worktree.mdc`（`WORKFLOW.md` · `qa-develop-worktree`） |
+| 口令「生成交接」·阶段性收尾 | `focus-tiger-session-handoff.mdc` |
+| 记录未闭环 bug/根因扇出·「核对问题清单」 | `focus-tiger-issue-ledger.mdc` |
+| 实现前冲突扫描 | `focus-tiger-feature-conflict-review.mdc` |
+| 可点击交互·PR 反馈三问 | `focus-tiger-interaction-feedback.mdc` |
+| 非用户点击的网络请求 | `focus-tiger-background-network.mdc` |
+| 调试本地 AI companion | `focus-tiger-companion-debug.mdc` |
+
+## 产品红线（极简 · 全文见 docs）
+
+正念伙伴非电子宠物；不制造焦虑；永不消失；诚实机制；序列转场禁止闪切（CapCut 溶解 ~1s）；Idle=呼吸×5→眨眼；主线情绪=2D PNG + `EmotionController`；UI 文案走 `t()` / `tPool()`。

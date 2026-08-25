@@ -1,9 +1,11 @@
 ---
-description: Focus Tiger 权威文档索引与硬性约束兜底（任务开始前必读摘要）
-alwaysApply: true
+description: Focus Tiger 权威文档索引与产品红线摘要——接实现类任务或改产品语义/情绪/架构/文案前须 Read 全文
+alwaysApply: false
 ---
 
-# 坐禅小老虎 / Focus Tiger · 项目规则
+# 坐禅小老虎 / Focus Tiger · 项目规则（按需层）
+
+> **加载时机**：接实现类任务、改产品代码、或触及情绪/架构/文案前，须 `Read` 本文件全文。常驻 Git/N14/索引见 `focus-tiger-core.mdc`。
 
 代码与产品主目录：`focus-tiger/`。权威全文在 `focus-tiger/docs/`，**本规则仅摘要**；细则冲突时以对应文档正文为准。  
 **不要**把持续增长的 `TASKS.md` 全文塞进规则；排期只在接任务时按需查阅。
@@ -112,7 +114,7 @@ alwaysApply: true
 
 ## 回归锁（方法级 · 与上并列强制）
 
-详见 alwaysApply 规则 `focus-tiger-regression-lock.mdc`、叙事全文 `docs/DEV_WORKFLOW_QUALITY.md`、摘要 `docs/PROCESS.md`「回归锁工作法」、主题权威索引 `docs/RULES_INDEX.md`。  
+详见按需规则 `focus-tiger-regression-lock.mdc`、叙事全文 `docs/DEV_WORKFLOW_QUALITY.md`、摘要 `docs/PROCESS.md`「回归锁工作法」、主题权威索引 `docs/RULES_INDEX.md`。  
 **勿在本文件复述** commit / 合并 main / §7 等完整条款；只保留指向：
 
 - 交互修复完工门禁、Commit 汇报与分支门禁、Bug close §7 → `focus-tiger-regression-lock.mdc`

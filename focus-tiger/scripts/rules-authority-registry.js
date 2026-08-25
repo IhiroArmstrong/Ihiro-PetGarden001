@@ -33,12 +33,14 @@
 /** Files scanned for drift / contradiction (repo-root relative). */
 export const RULE_AUTHORITY_SCAN_FILES = [
   'WORKFLOW.md',
+  '.cursor/rules/focus-tiger-core.mdc',
   '.cursor/rules/focus-tiger-regression-lock.mdc',
   '.cursor/rules/focus-tiger-docs.mdc',
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
+  '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
