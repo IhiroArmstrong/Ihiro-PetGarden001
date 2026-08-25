@@ -242,7 +242,7 @@
 
 **问题复述**：白名单 6 key 含 `practice-days`、**不含** `daily-completions`。用户同日练过后清库/换机恢复 → 热力图亮（`practice-days` 已还原）、提醒仍可能催练（`hasCompletedToday()` 为 false）。
 
-**触发路径**：`applyPracticeBackupSnapshot` → `writePracticeBackupStoresRaw` 只写 6 key；`reminderPreference` 读 `DailyCompletionStore`。
+**触发路径**：`applyPracticeBackupSnapshot` → `writePracticeBackupStoresRaw`（6 key）→ `reconcileDailyCompletionAfterRestore`；`reminderPreference` 读 `DailyCompletionStore`。
 
 #### 方案 A（已落地）· 恢复时派生，不改 schema
 
@@ -254,7 +254,7 @@
 | 测试 | 单测：空库 + 含今日 `practice-days` 快照 → restore 后 `hasCompletedToday()===true`；无今日条目 → 仍为 false；已有 `daily-completions` 不覆盖 |
 | 工作量 | **≈0.5–1d** |
 
-#### 方案 B（可选二期）· 白名单扩第 7 key + `schemaVersion: 2`
+#### 方案 B（Backlog · 非前置）· 白名单扩第 7 key + `schemaVersion: 2`
 
 | 项 | 内容 |
 |---|---|
@@ -281,7 +281,7 @@
 | 触点 | 建议 |
 |---|---|
 | `reminder.practiced_today_note` | 保持「已同坐」语义（已是） |
-| 产品内部 | 文档/评审区分 **已同坐** / **已庆祝（Celebrating）** / **Journey 有留痕** 三句，避免运营混写「练过了」 |
+| 产品内部 | **已写入** `SHARED_RESOURCES.md` §1.1 三句对照表；评审/运营勿混写「练过了」 |
 
 ---
 

@@ -197,6 +197,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Brief** | 免费 A：静默快照 + 空库恢复；复用邮箱 OTP | `task-practice-memory-cloud-backup-a.md` | **已立项**（#270） |
 | **实现** | Worker put/get/delete + 客户端 debounce / Idle flush / 空库恢复 / Journey 角落 | `feature/practice-memory-cloud-backup-a` | **#272 已合** tip `a195584`；Worker redeploy `f9755950-…` |
 | **关单前置** | 生产 OTP secrets + TRACKER 端到端 | — | **secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip） |
+| **A′ 恢复派生** | v1 快照恢复后从 `practice-days` 派生 `daily-completions`（提醒与热力图对齐） | `fix/practice-backup-daily-completion-reconcile` | **本旁支** |
+| **B schema v2** | 白名单第 7 key + Worker redeploy；完整保留 `celebrated` / `sessions` | Backlog | 非前置；仅当需跨恢复保留 Celebrating 戳 |
 
 ---
 
