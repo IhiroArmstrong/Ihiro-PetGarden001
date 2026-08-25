@@ -44,6 +44,11 @@ if (companionAllowed) {
       return () => ipcRenderer.removeListener('desktop:companion-status', wrapped);
     }
   };
+  desktopShell.yinPersonalMemory = {
+    getState: () => ipcRenderer.invoke('desktop:yin-personal-memory-get'),
+    setConsent: (granted) =>
+      ipcRenderer.invoke('desktop:yin-personal-memory-set-consent', Boolean(granted))
+  };
 }
 
 contextBridge.exposeInMainWorld('desktopShell', desktopShell);
