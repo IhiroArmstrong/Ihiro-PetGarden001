@@ -110,6 +110,7 @@ import {
   microRitualJourneyDraft,
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
+import { appendArrivalNoticeSignal } from './core/presenceSignalsGate.js';
 import {
   hasOpenedInsightSparkToday
 } from './core/dailyZenQuote.js';
@@ -2464,7 +2465,10 @@ async function init() {
   arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
-      onNoticeSelected: () => {
+      onNoticeSelected: (noticeId) => {
+        const storage =
+          typeof localStorage !== 'undefined' ? localStorage : null;
+        appendArrivalNoticeSignal(storage, noticeId);
         lightProgression.onNoticeSelected();
         onboardingHints?.markSeen('notice');
         syncOnboardingAutoHints();

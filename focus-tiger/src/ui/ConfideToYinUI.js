@@ -19,6 +19,10 @@ import {
   shouldAnswerWithPracticeFacts,
   summarizePracticeFacts
 } from '../core/confide/confidePracticeFacts.js';
+import {
+  buildPresenceTrendReply,
+  shouldAnswerWithPresenceFacts
+} from '../core/confide/confidePresenceFacts.js';
 import { shouldUseDesktopCompanionGenerate } from '../core/desktopCompanionL2Route.js';
 import { formatLocalDateYmd } from './reflectionEchoCopy.js';
 import {
@@ -447,9 +451,11 @@ export class ConfideToYinUI {
           ? 'generate'
           : shown.source === 'practice_facts'
             ? 'practice_facts'
-            : shown.source === 'memory_forget'
-              ? 'memory_forget'
-              : 'corpus'
+            : shown.source === 'presence_facts'
+              ? 'presence_facts'
+              : shown.source === 'memory_forget'
+                ? 'memory_forget'
+                : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
@@ -633,6 +639,20 @@ export class ConfideToYinUI {
           route: hit.route,
           text: factsText,
           source: 'practice_facts'
+        },
+        text
+      );
+      return;
+    }
+    if (shouldAnswerWithPresenceFacts(hit.route, text)) {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const factsText = buildPresenceTrendReply(storage, t);
+      this._showReply(
+        {
+          route: hit.route,
+          text: factsText,
+          source: 'presence_facts'
         },
         text
       );
@@ -841,6 +861,7 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__reply[data-source='generate']::before,
       .confide-to-yin__reply[data-source='practice_facts']::before,
+      .confide-to-yin__reply[data-source='presence_facts']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;

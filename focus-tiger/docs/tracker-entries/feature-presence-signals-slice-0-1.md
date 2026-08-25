@@ -1,0 +1,3 @@
+# feature/presence-signals-slice-0-1
+
+| Presence Signals Slice 0–1 + 4 minimal | UI可见 | 待人工测试 | **主路径**：`?product=1` → Sit → Arrival → Notice 点 **Calm**（或任意标签）→ DevTools `localStorage['focus-tiger.presence-signals.v1']` 应有 1 条 `source=arrival_notice` + `emotionTag`。**Confide（Electron 宽屏或 Web）**：先累计 ≥3 次不同日/同 Notice 点选 → 问「我情绪这两周改善了吗？」/ `Has my mood improved these two weeks?` → 回复 `data-source=presence_facts`，描述性 breakdown（非诊断）。**&lt;3 条**：应答「打卡还太少…」类 insufficient。**负例**：`I feel depressed, has my mood improved?` → sad 语料，非 presence_facts。**回流**：Rise 后再 Sit → 再点 Notice → 账本 +1。自动化：`presenceSignalsGate.test.js` · `confidePresenceFacts.test.js`。 | — | — | — | Brief `task-presence-signals-slice-0-1.md` | 2026-08-25 |

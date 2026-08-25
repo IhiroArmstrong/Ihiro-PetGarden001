@@ -64,6 +64,7 @@ import {
 } from './flowerWelcomeGate.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
+import { PRESENCE_SIGNALS_STORAGE_KEY } from './presenceSignalsGate.js';
 import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
 import { CONTEXTUAL_TEA_TIP_STORAGE_KEY } from './contextualTeaTipGate.js';
 import { MONETIZATION_FUNNEL_STORAGE_KEY } from './monetizationIntentFunnel.js';
@@ -132,6 +133,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   RETENTION_FUNNEL_STORAGE_KEY,
   INTENTION_STORAGE_KEY,
   REFLECTION_STORAGE_KEY,
+  PRESENCE_SIGNALS_STORAGE_KEY,
   COMPANION_MODE_STORAGE_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
   REMINDER_PREFERENCE_STORAGE_KEY,

@@ -157,7 +157,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
   - 欢迎 beat（blink-smile + 文字气泡）→ Notice 6 图标（不落库）→ ~5s 呼吸（无倒计时）
     → Choose 6 图标 + 次要打字 → Companion Mode 三选一 → 再点 Sit 开始计时
   - 全程 Skip + Skip — begin；Sit 二次点击可整体跳过仪式
-  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice 严禁持久化
+  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice → presence-signals.v1（arrival_notice）
   - Reflection 按来源回显（达标与未达标均回显）；Notice 不回显
 
 明确不做：待办化、情绪分析统计、强制不可跳过流程、角色语音

@@ -19,6 +19,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.retention-funnel.v1',
   'focus-tiger.intentions.v1',
   'focus-tiger.reflections.v1',
+  'focus-tiger.presence-signals.v1',
   'focus-tiger.companion-mode.v1',
   'focus-tiger.reminder-quota.v1',
   'focus-tiger.reminder-preference.v1',

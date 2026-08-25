@@ -53,7 +53,7 @@ import {
  * @property {() => void} [onCancel]
  *   Notice / Choose 选择框点外侧空白取消（回 Idle；不开表、不 Skip begin）
  * @property {() => void} [onBegin] Arrival 开始（光影冷灰氛围）
- * @property {() => void} [onNoticeSelected] Notice 点选后（背景微暖）
+ * @property {(noticeId: string) => void} [onNoticeSelected] Notice 点选后（背景微暖 + 入账）
  * @property {() => void} [onBreath] 呼吸 beat（推近 + 光环）
  * @property {() => void} [onAfterBreath] 离开呼吸进入 Choose
  * @property {() => void} [onChooseConfirmed] Choose 确认（坐垫光晕等）
@@ -360,7 +360,7 @@ export class ArrivalPracticeUI {
         this.state = selectArrivalNotice(this.state, opt.id);
         const option = getNoticeOption(opt.id);
         this._noticeReply = option ? t(option.replyKey) : '';
-        this.handlers.onNoticeSelected?.();
+        this.handlers.onNoticeSelected?.(opt.id);
         this._renderNoticeReplyThenAdvance();
       });
       this.root.append(grid);
