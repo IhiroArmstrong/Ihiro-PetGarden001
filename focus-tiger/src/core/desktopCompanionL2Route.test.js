@@ -344,7 +344,7 @@ describe('desktop companion L2 isolation', () => {
     );
     assert.match(runtime, /retrieveYinMemorySummariesForL3Generate/);
     
-    assert.match(ui, /shouldUseDesktopCompanionGenerate/);
+    assert.match(ui, /ypeMayUseCompanionGenerate/);
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
     assert.equal(turnPushes.length, 2);
