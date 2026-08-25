@@ -16,7 +16,7 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
-**Yin Personal Memory（2026-08-25 · Slice 1a–1c）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；1c 列表 + Forget；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
+**Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；1c 列表 + Forget；1e 口头 Forget CI-01；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|

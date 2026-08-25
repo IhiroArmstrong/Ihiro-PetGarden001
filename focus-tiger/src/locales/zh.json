@@ -665,5 +665,10 @@
   "YIN_MEMORY_WHY_CONFIDE": "来自 {date} 在倾诉里说过的话。",
   "YIN_MEMORY_WHY_CONFIDE_NO_DATE": "来自你在倾诉里说过的话。",
   "YIN_MEMORY_WHY_SESSION": "来自你完成的一次静坐。",
-  "YIN_MEMORY_WHY_GENERIC": "来自本机。"
+  "YIN_MEMORY_WHY_GENERIC": "来自本机。",
+  "YIN_MEMORY_VERBAL_FORGET_OK": "好，我不再记着这件事了：{summary}",
+  "YIN_MEMORY_VERBAL_FORGET_OK_GENERIC": "好，我不再记着这件事了。",
+  "YIN_MEMORY_VERBAL_FORGET_NO_MATCH": "我没有对上已记住的这件事。",
+  "YIN_MEMORY_VERBAL_FORGET_AMBIGUOUS": "有好几条可能对上。请打开「阿寅记得什么」点选，或说得更具体些。",
+  "YIN_MEMORY_VERBAL_FORGET_BULK": "请先在「阿寅记得什么」里一条条忘掉。"
 }
