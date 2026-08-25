@@ -241,12 +241,13 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L0** | 现有沉默/层序收成政策接口（行为不变） | `task-yin-personalization-engine-l0.md` | **已合 #452** |
 | **L1** | 本地检索契约 ≤3 条；计数型 insight；三档政策 | `task-yin-personalization-engine-l1.md` | **已合 #453** |
 | **L2 契约** | H.3 V1 五键；Pack 无 rankHint / 无 memoryHints；异步增强 | `YIN_PERSONALIZATION_ENGINE.md` | **已拍板（文档）** |
-| **L2 同意** | 第四条独立同意；关即删；HINT+DETAIL | `task-l2-personalization-consent.md` | **附录有条件通过；locale 须「开工 L2 UI」** |
+| **L2 同意 UI** | 第四条独立同意；Privacy 开关；本机 `ype_profile_id`；无 Worker | `task-l2-personalization-consent.md` | **本支 `feature/ype-l2-ui-consent` 开工** |
+| **L2 同意文案** | 关即删；HINT+DETAIL 附录 | 同上 | **已进 locale（en/ja/zh）** |
 | **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（#456）** |
 | **L2 算法** | 五键 → Pack 闭包变换；V1 不按完成率改档 | `task-l2-personalization-algorithm.md` | **本切片（文档）** |
 | **L2 运行时** | Worker / ingest / delete / Pack 作废 | 须口令「开工 L2」 | **未开工** |
 
-**我认为最合理的下一刀**：口令「开工 L2 UI」（第四条同意进 Privacy，默关，生成本机 ID；无 Worker 则 ON 不发送）。较弱：先 Worker 无同意开关；或未口令就把 UI+Worker 绑成一 PR。
+**我认为最合理的下一刀**：口令「开工 L2」（Worker ingest / 关即删 / Pack 签发）。较弱：未口令就把 UI+Worker 绑成一 PR。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 

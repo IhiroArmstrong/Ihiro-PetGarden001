@@ -10,7 +10,9 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import {
   PRIVACY_SHEET_BODY_KEYS,
+  PRIVACY_SHEET_YPE_OPT_IN_KEYS,
   findPrivacyKeysWithForbiddenCloudBrand,
+  findYpeConsentForbiddenSubstrings,
   privacyCopyMentionsForbiddenCloudBrand
 } from './privacyNoticeCopy.js';
 
@@ -127,7 +129,25 @@ describe('privacyNoticeCopy', () => {
     assert.match(purpose, /onboarding-purpose-desktop-ram/);
     assert.match(purpose, /isDesktopShellRuntime/);
     assert.match(purpose, /HINT_APP_PURPOSE_DESKTOP_RAM_BODY/);
+    assert.match(purpose, /privacy-ype-cloud-personalization-opt-in/);
+    assert.match(purpose, /setYpeCloudPersonalizationConsent/);
     assert.match(support, /yin-support-desktop-ram/);
     assert.match(support, /SUPPORT_DESKTOP_RAM_NOTE/);
+  });
+
+  it('en + ja + zh YPE consent copy avoids forbidden terms', () => {
+    for (const file of ['en.json', 'ja.json', 'zh.json']) {
+      const map = loadLocale(file);
+      for (const key of PRIVACY_SHEET_YPE_OPT_IN_KEYS) {
+        const text = map[key];
+        assert.equal(typeof text, 'string', `${file} missing ${key}`);
+        const bad = findYpeConsentForbiddenSubstrings(text);
+        assert.deepEqual(
+          bad,
+          [],
+          `${file} ${key} must not include forbidden terms: ${bad.join(', ')}`
+        );
+      }
+    }
   });
 });

@@ -1,0 +1,1 @@
+| YPE L2 UI（第四条同意 + 本机 profile id） | UI可见 | 待人工测试 | **主路径**：`?product=1` → 点「?」→ **Privacy** → `#onboarding-privacy-sheet` 见第四条开关（在漏斗开关上方）→ 默认**未勾选** → 勾选后 0–1s 内保持选中 → 展开「了解更多/Learn more」见 DETAIL 五条 → 取消勾选后 0–1s 内恢复未选（**不**出现「云端已删除」toast）。**375**：同路径；Sheet 可滚。**禁止**：开启后不应有网络请求（DevTools Network 空）。**回流**：关 Sheet 再开，状态保持。 | — | — | — | — | 2026-08-26 |
