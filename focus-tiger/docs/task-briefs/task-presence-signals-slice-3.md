@@ -1,7 +1,7 @@
 # Task Brief · Presence Signals · Slice 3（Reflection 双写 + 90 天对齐）
 
-> **状态（2026-08-25）**：**开工 Presence Signals Slice 3**  
-> **分支**：`feature/presence-signals-slice-3`  
+> **状态（2026-08-25）**：**已合 develop**（PR #436 · `3c2458aa`）  
+> **分支**：`feature/presence-signals-slice-3`（已合）  
 > **前置**：#435 已合 develop（账本 + Confide + 披露）
 
 ---
@@ -19,9 +19,14 @@
 
 ## 不做
 
-- Ritual chip（Slice 2，待交互稿）
-- 查看/删除 UI
+- Ritual chip（Slice 2，见 `task-presence-signals-slice-2.md`）
+- 查看/删除 UI（联动删除前置见 `task-presence-signals-slice-0-1.md` §Slice 6）
 - freeText L3 Consent
+
+## 后续跟进
+
+1. **Prune cutoff 单源**：`freeTextRetentionCutoffMs` 共享 helper（`presenceSignalsGate.js`）供 `pruneExpiredPresenceFreeText` 与 `pruneExpiredReflectionBundles` 复用——见 `fix/free-text-retention-cutoff-shared`。
+2. **localStorage 容量**：90 天 × 每日 3 问全答 ≈ 270 条；硬顶 `PRESENCE_SIGNALS_MAX_ENTRIES = 240`。全量实测触发点：**Slice 6 开工前**（见 Slice 0 Brief §Slice 6）。
 
 ## 验收
 

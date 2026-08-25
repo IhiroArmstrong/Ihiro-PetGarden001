@@ -179,6 +179,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `DESIGN.md` | 产品语义与玩法 |
 | `RESPONSIVE_LAYOUT.md` | 窄屏 / 移动布局 |
 | `SHARED_RESOURCES.md` | 共享资源波及面 |
+| `TODAY_PRACTICE_SEMANTICS_AUDIT.md` | **「今日算不算练过 / 已同坐」语义 SSOT**（完成账本 vs celebrated / Journey / DORMANT / 留存；新功能判断前先查） |
 | `EDGE_CASES.md` | 边角观察册 |
 | `RETENTION_FUNNEL.md` | 留存漏斗事件 |
 | `MONETIZATION_INTENT_FUNNEL.md` | 付费意愿漏斗事件（本地） |

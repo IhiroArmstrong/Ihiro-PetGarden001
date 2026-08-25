@@ -8,8 +8,10 @@ import { describe, it } from 'node:test';
 import {
   appendArrivalNoticeSignal,
   filterPresenceSignalsInWindow,
+  freeTextRetentionCutoffMs,
   isPresenceSignalInWindow,
   normalizePresenceEmotionTag,
+  PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS,
   PRESENCE_SIGNALS_MIN_TREND_COUNT,
   presenceSignalWindowBounds,
   pruneExpiredPresenceFreeText,
@@ -17,6 +19,7 @@ import {
   summarizePresenceEmotionTags,
   summarizePresenceSignalsForWindow
 } from './presenceSignalsGate.js';
+import { reflectionFreeTextCutoffMs } from './SessionEndFlow.js';
 
 function mockStorage() {
   /** @type {Record<string, string>} */
@@ -32,6 +35,14 @@ function mockStorage() {
 }
 
 describe('presenceSignalsGate', () => {
+  it('freeTextRetentionCutoffMs matches reflection bundle cutoff helper', () => {
+    const ref = new Date(2026, 7, 25, 15, 30, 0);
+    assert.equal(
+      freeTextRetentionCutoffMs(ref, PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS),
+      reflectionFreeTextCutoffMs(ref)
+    );
+  });
+
   it('appendArrivalNoticeSignal writes closed tags only', () => {
     const storage = mockStorage();
     const row = appendArrivalNoticeSignal(storage, 'calm', {
