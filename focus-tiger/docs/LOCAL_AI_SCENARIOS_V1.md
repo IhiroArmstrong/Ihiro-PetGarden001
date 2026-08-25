@@ -1,7 +1,7 @@
 # 本地 AI 场景规划 · V1
 
 **状态（2026-08-25）**：产品方向锁 · 规划稿（无新运行时须单独口令）。  
-**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `task-presence-signals-slice-0-1.md`
+**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
 
 ---
 
@@ -76,6 +76,10 @@ SSOT：`SHARED_RESOURCES.md` · Brief `task-presence-signals-slice-0-1.md`。
 | 情绪趋势但 &lt;3 条 tagged | 产品门槛 | `presence_facts` insufficient 模板 |
 
 ---
+
+## 5.1 Yin Personalization Engine（编排 · 非本文件扩 CI）
+
+SSOT：`YIN_PERSONALIZATION_ENGINE.md`（2026-08-26 方向锁）。**不是**新的 Confide CI-xx，**不是**轨道 C 仪式 generate。本地 AI 场景继续只谈路由与口头白名单；何时沉默 / 取哪几条记忆 / 政策档看 YPE。实现须口令「开工 Yin Personalization Engine」。
 
 ## 6. 我认为最合理的下一刀
 
