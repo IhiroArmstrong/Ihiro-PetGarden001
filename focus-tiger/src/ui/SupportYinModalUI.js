@@ -14,6 +14,19 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import { TIP_JAR_PRICE_USD } from '../core/tipJarGate.js';
 import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
+import { FOCUS_TIGER_PRO_PRICE_DISPLAY } from '../core/proCheckout.js';
+import { COMPANION_ADDON_LIFETIME_PRICE_USD } from '../core/companionAddonCheckout.js';
+import {
+  getCloudApiBaseUrl,
+  openCheckoutUrl,
+  postCloudJson
+} from '../core/cloudApiClient.js';
+import {
+  isCompanionAddonActive,
+  isCompanionEntitled,
+  isLifetimeActiveForAddonOffer,
+  isProSubscriptionActive
+} from '../core/companionEntitlement.js';
 import { SANCTUARY_LIFETIME_PRICE_USD } from './SanctuaryUnlockUI.js';
 import {
   GLASS_BLUR_CSS,
@@ -57,6 +70,8 @@ export class SupportYinModalUI {
    * @param {() => void | Promise<void>} [handlers.onUnlockSanctuary]
    * @param {() => void | Promise<void>} [handlers.onJoinMembership]
    * @param {() => void | Promise<void>} [handlers.onBuyTea]
+   * @param {() => void | Promise<void>} [handlers.onSubscribePro]
+   * @param {() => void | Promise<void>} [handlers.onBuyCompanionAddon]
    * @param {() => boolean} [handlers.shouldLeadWithTea]
    *   True → Tea first + Suggested on tea; false/omit → current Sanctuary-first.
    */
@@ -202,6 +217,63 @@ export class SupportYinModalUI {
     this.teaCta = tea.ctaBtn;
     this.teaImg = tea.imgEl;
 
+    const pro = this._buildCard({
+      testId: 'yin-support-pro-card',
+      imgSrc: MEMBERSHIP_PREVIEW_SRC,
+      imgAltKey: 'SUPPORT_PRO_IMG_ALT',
+      titleKey: 'SUPPORT_PRO_TITLE',
+      blurbKey: 'SUPPORT_PRO_BLURB',
+      benefitKeys: [
+        'SUPPORT_PRO_BENEFIT_1',
+        'SUPPORT_PRO_BENEFIT_2',
+        'SUPPORT_PRO_BENEFIT_3'
+      ],
+      priceKey: 'SUPPORT_PRO_PRICE',
+      priceValue: FOCUS_TIGER_PRO_PRICE_DISPLAY,
+      ctaKey: 'SUPPORT_PRO_CTA',
+      ctaTestId: 'yin-support-pro-cta',
+      ctaVariant: 'beige',
+      onCta: () => {
+        void this._runCheckout('pro');
+      }
+    });
+    this.proCard = pro.card;
+    this.proTitle = pro.titleEl;
+    this.proBlurb = pro.blurbEl;
+    this.proBenefits = pro.benefitEls;
+    this.proPrice = pro.priceEl;
+    this.proCta = pro.ctaBtn;
+    this.proImg = pro.imgEl;
+
+    const companionAddon = this._buildCard({
+      testId: 'yin-support-companion-addon-card',
+      imgSrc: MEMBERSHIP_PREVIEW_SRC,
+      imgAltKey: 'SUPPORT_COMPANION_ADDON_IMG_ALT',
+      titleKey: 'SUPPORT_COMPANION_ADDON_TITLE',
+      blurbKey: 'SUPPORT_COMPANION_ADDON_BLURB',
+      benefitKeys: [
+        'SUPPORT_COMPANION_ADDON_BENEFIT_1',
+        'SUPPORT_COMPANION_ADDON_BENEFIT_2',
+        'SUPPORT_COMPANION_ADDON_BENEFIT_3'
+      ],
+      priceKey: 'SUPPORT_COMPANION_ADDON_PRICE',
+      priceValue: String(COMPANION_ADDON_LIFETIME_PRICE_USD),
+      ctaKey: 'SUPPORT_COMPANION_ADDON_CTA',
+      ctaTestId: 'yin-support-companion-addon-cta',
+      ctaVariant: 'beige',
+      onCta: () => {
+        void this._runCheckout('companion-addon');
+      }
+    });
+    this.companionAddonCard = companionAddon.card;
+    this.companionAddonTitle = companionAddon.titleEl;
+    this.companionAddonBlurb = companionAddon.blurbEl;
+    this.companionAddonBenefits = companionAddon.benefitEls;
+    this.companionAddonPrice = companionAddon.priceEl;
+    this.companionAddonCta = companionAddon.ctaBtn;
+    this.companionAddonImg = companionAddon.imgEl;
+
+    this._syncPaidCardVisibility();
     this._syncLeadLayout();
 
     this.closeBtn = document.createElement('button');
@@ -329,6 +401,7 @@ export class SupportYinModalUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._syncPaidCardVisibility();
     this._syncLeadLayout();
     this.backdrop.hidden = false;
     this.root.hidden = false;
@@ -376,7 +449,7 @@ export class SupportYinModalUI {
   }
 
   /**
-   * @param {'sanctuary' | 'membership' | 'tea'} kind
+   * @param {'sanctuary' | 'membership' | 'tea' | 'pro' | 'companion-addon'} kind
    */
   async _runCheckout(kind) {
     if (this._busy) return;
@@ -384,6 +457,8 @@ export class SupportYinModalUI {
     this.sanctuaryCta.disabled = true;
     this.membershipCta.disabled = true;
     this.teaCta.disabled = true;
+    this.proCta.disabled = true;
+    this.companionAddonCta.disabled = true;
     try {
       getMonetizationFunnelStore().supportCta(
         kind,
@@ -395,15 +470,64 @@ export class SupportYinModalUI {
         await this.handlers.onUnlockSanctuary?.();
       } else if (kind === 'membership') {
         await this.handlers.onJoinMembership?.();
-      } else {
+      } else if (kind === 'tea') {
         await this.handlers.onBuyTea?.();
+      } else if (kind === 'pro') {
+        if (this.handlers.onSubscribePro) {
+          await this.handlers.onSubscribePro?.();
+        } else {
+          await this._startInlineCheckout('pro');
+        }
+      } else if (kind === 'companion-addon') {
+        if (this.handlers.onBuyCompanionAddon) {
+          await this.handlers.onBuyCompanionAddon?.();
+        } else {
+          await this._startInlineCheckout('companion-addon');
+        }
       }
     } finally {
       this._busy = false;
       this.sanctuaryCta.disabled = false;
       this.membershipCta.disabled = false;
       this.teaCta.disabled = false;
+      this.proCta.disabled = false;
+      this.companionAddonCta.disabled = false;
     }
+  }
+
+  /**
+   * @param {'pro' | 'companion-addon'} kind
+   */
+  async _startInlineCheckout(kind) {
+    if (!getCloudApiBaseUrl()) {
+      window.alert(
+        t(
+          kind === 'pro'
+            ? 'SUPPORT_PRO_ERROR'
+            : 'SUPPORT_COMPANION_ADDON_ERROR'
+        )
+      );
+      return;
+    }
+    const path =
+      kind === 'pro'
+        ? '/api/create-pro-checkout-session'
+        : '/api/create-companion-addon-checkout-session';
+    const res = await postCloudJson(path, { body: JSON.stringify({}) });
+    const url =
+      res && typeof res === 'object'
+        ? /** @type {{ url?: unknown }} */ (res).url
+        : null;
+    if (typeof url === 'string' && url) {
+      getMonetizationFunnelStore().checkoutStart(kind, 'support-modal');
+      await openCheckoutUrl(url);
+      return;
+    }
+    window.alert(
+      t(
+        kind === 'pro' ? 'SUPPORT_PRO_ERROR' : 'SUPPORT_COMPANION_ADDON_ERROR'
+      )
+    );
   }
 
   _refreshTexts() {
@@ -454,9 +578,50 @@ export class SupportYinModalUI {
     );
     this.teaCta.textContent = t('SUPPORT_TEA_CTA');
 
+    this.proImg.alt = t('SUPPORT_PRO_IMG_ALT');
+    this.proTitle.textContent = t('SUPPORT_PRO_TITLE');
+    this.proBlurb.textContent = t('SUPPORT_PRO_BLURB');
+    this.proBenefits.forEach((el) => {
+      el.textContent = t(el.dataset.key);
+    });
+    this.proPrice.textContent = formatSupportPrice(
+      t('SUPPORT_PRO_PRICE'),
+      FOCUS_TIGER_PRO_PRICE_DISPLAY
+    );
+    this.proCta.textContent = t('SUPPORT_PRO_CTA');
+
+    this.companionAddonImg.alt = t('SUPPORT_COMPANION_ADDON_IMG_ALT');
+    this.companionAddonTitle.textContent = t('SUPPORT_COMPANION_ADDON_TITLE');
+    this.companionAddonBlurb.textContent = t('SUPPORT_COMPANION_ADDON_BLURB');
+    this.companionAddonBenefits.forEach((el) => {
+      el.textContent = t(el.dataset.key);
+    });
+    this.companionAddonPrice.textContent = formatSupportPrice(
+      t('SUPPORT_COMPANION_ADDON_PRICE'),
+      String(COMPANION_ADDON_LIFETIME_PRICE_USD)
+    );
+    this.companionAddonCta.textContent = t('SUPPORT_COMPANION_ADDON_CTA');
+
+    this._syncPaidCardVisibility();
+
     const showDesktopRam = isDesktopShellRuntime();
     this.desktopRamNote.hidden = !showDesktopRam;
     this.desktopRamNote.textContent = t('SUPPORT_DESKTOP_RAM_NOTE');
+  }
+
+  _syncPaidCardVisibility() {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const showPro =
+      !isLifetimeActiveForAddonOffer({ storage }) &&
+      !isProSubscriptionActive({ storage }) &&
+      !isCompanionEntitled({ storage });
+    const showAddon =
+      isLifetimeActiveForAddonOffer({ storage }) &&
+      !isCompanionAddonActive({ storage }) &&
+      !isProSubscriptionActive({ storage });
+    this.proCard.hidden = !showPro;
+    this.companionAddonCard.hidden = !showAddon;
   }
 
   /** @returns {'tea-first' | 'sanctuary-first'} */
@@ -468,11 +633,12 @@ export class SupportYinModalUI {
 
   _syncLeadLayout() {
     const leadWithTea = this.handlers.shouldLeadWithTea?.() === true;
-    if (leadWithTea) {
-      this.grid.append(this.teaCard, this.sanctuaryCard, this.membershipCard);
-    } else {
-      this.grid.append(this.sanctuaryCard, this.membershipCard, this.teaCard);
-    }
+    const cards = leadWithTea
+      ? [this.teaCard, this.sanctuaryCard, this.membershipCard]
+      : [this.sanctuaryCard, this.membershipCard, this.teaCard];
+    if (!this.proCard.hidden) cards.push(this.proCard);
+    if (!this.companionAddonCard.hidden) cards.push(this.companionAddonCard);
+    this.grid.replaceChildren(...cards);
     const host =
       supportModalSuggestedHost(leadWithTea) === 'tea'
         ? this.teaCard

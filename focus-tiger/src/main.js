@@ -127,6 +127,8 @@ import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
 import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
+import { bootProReturnConfirm } from './core/proCheckout.js';
+import { bootCompanionAddonReturnConfirm } from './core/companionAddonCheckout.js';
 import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
@@ -1227,6 +1229,18 @@ async function init() {
     if (ret?.outcome === 'success') {
       monetizationFunnelStore.checkoutComplete('membership', 'return');
       applyPaymentThanksSprite('membership');
+    }
+  });
+  void bootProReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      monetizationFunnelStore.checkoutComplete('pro', 'return');
+      applyPaymentThanksSprite('pro');
+    }
+  });
+  void bootCompanionAddonReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
+      applyPaymentThanksSprite('companion-addon');
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });

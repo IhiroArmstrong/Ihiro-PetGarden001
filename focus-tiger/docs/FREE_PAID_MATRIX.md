@@ -31,7 +31,9 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 全局规则：**lifetime ∪ subscription 互相覆盖**（**只覆盖 B 轨内容**，**不**覆盖桌面本地智能体）。  
 **到期降级**：已生成内容（历史、已解锁纪念物、已播放仪式）永久可看；到期只停「新内容持续解锁」与「进阶功能继续使用」。
 
-**2026-08-20 补**：上表禁的是第三套 *平行内容包*。**Focus Tiger Pro** 是 Base 的升级档（含 B 轨 + 桌面本地智能体），不是另一套互斥内容。现货 Support **仍只三卡**。将来接线必须 **第四卡 Pro + 第五卡 Lifetime 加购一起接**，禁止只加第四卡。Checkout 均未接。
+**2026-08-25 · Checkout 已接线（`feature/checkout-pro-companion-addon`）**：Support **第四卡 Pro + 第五卡 Lifetime AI Add-on 同批**；`companionEntitlement` 购买门闩；Worker create/confirm + webhook。**待人工测 Stripe Test + Worker redeploy**。下文历史「未接」句保留至合入 develop。
+
+**2026-08-20 补**：上表禁的是第三套 *平行内容包*。**Focus Tiger Pro** 是 Base 的升级档（含 B 轨 + 桌面本地智能体），不是另一套互斥内容。~~现货 Support **仍只三卡**~~ → **2026-08-25** 已扩为五卡（Tea / Sanctuary / Membership + Pro + Add-on，互斥展示）。接线 **第四卡 Pro + 第五卡 Lifetime 加购一起接**，禁止只加第四卡。
 
 **2026-08-20 · 方案 A（Lifetime + 本地 AI）**：已买 **Sanctuary Lifetime** 的用户默认仍**没有**本地智能体。解锁路径 = 一次性加购 SKU **`companion.addon.lifetime`**（**US$29.99** 买断 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**，**不**按月）——这是将来 **第五卡**，不是「没有第四卡」。**禁止**为此拆 Ultimate Lifetime / 补差价分层（方案 B 延后，待 L1/L2 能力验证）。非 Lifetime / Membership 订阅用户仍走 **Focus Tiger Pro US$12.99/月**（将来 **第四卡**；该数字已于 2026-08-20 用 Stripe Price `price_1U6EB1FuIhgJPGLiuciuX1to` 锁定）。该加购 **不是** `FEATURE_CATALOG` key，**不得**经 `isEntitled` 互覆盖放行。Checkout 未接。
 
@@ -133,7 +135,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 
 ### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）+ Lifetime AI 加购
 
-> **方向锁（2026-08-20）**。Stripe 名 **Focus Tiger Pro** / **Focus Tiger Base**。Lifetime 加购 SKU **`companion.addon.lifetime`**。权威：`task-desktop-on-device-companion.md`。**Checkout 均未接线。**  
+> **方向锁（2026-08-20）**。Stripe 名 **Focus Tiger Pro** / **Focus Tiger Base**。Lifetime 加购 SKU **`companion.addon.lifetime`**。权威：`task-desktop-on-device-companion.md`。**Checkout 已接线（2026-08-25 · 待合 develop + 人工测 + Worker redeploy）。**  
 > **谁走哪条**：已买 Sanctuary Lifetime → 一次性 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡）；未买 Lifetime（含仅 Membership / Base）→ **Pro US$12.99/月**（含 B 轨 + 本地智能体 · 将来第四卡）。两条路径都仍受 Electron + 宽屏 + 非低配使用门槛约束。  
 > **五产品对照（2026-08-20 用户书面纠正）**：Dashboard 现有 5 个产品。**不要**按截图从上往下把 Sanctuary / Tea 当成新卡——那两张已经是现货三卡。接线时 **不止第四卡，也必须第五卡**（Price ID 已记）。Sanctuary「2 prices」、Tea「3 prices」= Dashboard 历史价，**不是**新卡。
 
@@ -142,8 +144,8 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 1 | Yin's Sanctuary | 已接 `STRIPE_SANCTUARY_PRICE_ID` | **是** |
 | 2 | Focus Tiger Base（应用内 Yin Membership） | 已接 `STRIPE_MEMBERSHIP_PRICE_ID` | **是** |
 | 3 | Buy Yin a Tea | 已接 `STRIPE_PRICE_ID`=`price_1U4nanFuIhgJPGLidoTdxobW` | **是** |
-| **4（将来）** | Focus Tiger Pro | `price_1U6EB1FuIhgJPGLiuciuX1to` | **未接** |
-| **5（将来）** | Focus Tiger: AI Companion Add-on | `price_1U6GnXFuIhgJPGLiNlXs0IKe` | **未接** |
+| **4** | Focus Tiger Pro | `price_1U6EB1FuIhgJPGLiuciuX1to` | **已接**（2026-08-25） |
+| **5** | Focus Tiger: AI Companion Add-on | `price_1U6GnXFuIhgJPGLiNlXs0IKe` | **已接**（2026-08-25） |
 
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
