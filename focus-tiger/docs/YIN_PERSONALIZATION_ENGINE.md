@@ -3,14 +3,23 @@
 > **状态（2026-08-26）**：**L0 + L1 运行时已开工**。本文件仍是编排产品 SSOT。  
 > **工作名称**：Yin Personalization Engine（YPE）。**不是**模型、**不是** Memory store、**不是**品味层、**不是**练习云备份。  
 > **已做**：L0 门闩收口；L1 本地检索契约 / Journey 计数 insight / 三档政策（可关回 `default`）。  
-> **仍禁**：L2 State Pack / Worker / Speak 概率 **未拍板**。禁止与 Qwen L0 下载 / Checkout 混 PR。
+> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档）。**未开工**：Worker / ingest / Pack 存取代码 / 生产行为。  
+> **命名**：YPE **L2** = 云端 State Pack 层。**≠** 桌面陪伴 L2（Electron 本机 generate）。离线必须可用的是 **Local Runtime**（YPE L0/L1 + 桌面 generate），不是 YPE L2。  
+> **仍禁**：Speak 概率；与 Qwen L0 下载 / Checkout 混 PR。
 
-从属（硬）：`YIN_PERSONAL_MEMORY.md` · `PRODUCT_POSITIONING.md`「禅意倾听者」· `LOCAL_AI_SCENARIOS_V1.md` · `task-cloud-taste-layer.md`（品味层四问）· `task-practice-memory-cloud-backup-a.md` · `PRIVACY_NOTICE.md` · `PRINCIPLES.md`（观照者、不诊断、agency）· 场景 Y / Z / AE / AF / AG。
+从属（硬）：`YIN_PERSONAL_MEMORY.md` · `PRODUCT_POSITIONING.md`「禅意倾听者」· `LOCAL_AI_SCENARIOS_V1.md` · `task-cloud-taste-layer.md`（品味层四问）· `task-practice-memory-cloud-backup-a.md` · `PRIVACY_NOTICE.md` · `PRINCIPLES.md`（观照者、不诊断、agency）· `task-briefs/task-l2-personalization-consent.md` · 场景 Y / Z / AE / AF / AG。
 
 **核心原则（英 / 中，同等效力）：**
 
 > **The cloud may make Yin wiser. It must never make Yin unavailable.**  
 > **云端可以让阿寅越来越聪明，但不能让阿寅因为没有网络而消失。**
+
+**架构不变量（L2 硬约束 · 2026-08-26 拍板）：**
+
+> **Cloud personalization is asynchronous enhancement, never a runtime dependency.**  
+> 云端个人化是异步增强，**永远不是**运行时依赖。
+
+禁止：每次完成 Focus / 每次开口 → 上传 → 等服务器 → 阿寅才更新。允许：本地交互照常 → 有网且已同意时后台更新 Pack → 本地缓存最近一次**有效** Pack → 没网仍用 L0/L1（及桌面 generate）。拉取须答 `BACKGROUND_NETWORK.md` 三问。
 
 ---
 
@@ -22,17 +31,21 @@
 |---|---|---|---|
 | **a. 强度** | Sit / Arrival；Y Whisper；AE Confide | 云端「每次开口先问服务器」会比坐更重；学习型开口会变成教导 Banner | 云是**异步 overlay**；失败用本地政策；Whisper **不**改成 Speak probability |
 | **b. 人设** | 观照者；Safety；情绪桶；Wellness 免责 | Presence「Distracted」= 心理诊断；Adaptive Policy = 教练督促 | 状态 = **产品交互**；政策档可解释、可关；禁止临床标签 |
-| **c. 职责** | AG Memory；Z Journey；AF Presence；品味层；练习备份 6 key；`turns.jsonl` | 六套「聪明」并存，用户分不清；备份同意被拿去喂算法 | 下文 **§0.1 分桶**；L2 须**新同意**；默认 **不上** Confide 原文 / Memory 摘要 |
+| **c. 职责** | AG Memory；Z Journey；AF Presence；品味层；练习备份 6 key；`turns.jsonl` | 六套「聪明」并存，用户分不清；备份同意被拿去喂算法 | 下文 **§0.1 分桶**；L2 须**第四条独立同意**；默认 **不上** Confide 原文 / Memory 摘要 |
 
-**用户书面（2026-08-26）**：评估后开工本架构（方向锁）。同日口令「开工 Yin Personalization Engine」→ L0。同日书面：L1 与 AG/AF 人工验收无耦合，口令「开工 L1」。L2 仍见 §5。
+**用户书面（2026-08-26）**：评估后开工本架构（方向锁）。同日口令「开工 Yin Personalization Engine」→ L0。同日书面：L1 与 AG/AF 人工验收无耦合，口令「开工 L1」。同日产品会：**按收口版拍板** H.3 V1 五键 + Pack 契约 + 异步不变量；下一步 Consent 文案会（brief `task-l2-personalization-consent.md`）。Worker / 「开工 L2」仍须另口令。
 
 **未拍板（禁止当路线图默认项）**：
 
 - 仪式场景 generate（Whisper / Recover / Reflection / 完成后主动开口）——仍见 `YIN_PERSONAL_MEMORY.md` §13。
 - 把 Personal Memory 或 Confide 原文送上云做 ranking。
+- Pack 下发 `rankHint` 分数，或 V1 下发 `memoryHints` / `eligibleMemoryIds`（记忆排序 **V1 全本地 L1**）。
+- 把 `interventionStyle` 做成与 `companionStyle` 并列的第二套 Pack 真源。
+- 云端 V1 下发 `morning_settle`（H.3 V1 不含时段特征，算不出）。
 - per-user Qwen fine-tune / LoRA。
 - opaque `policy_token`（V1 **不做**；调试与 QA 优先于逆向难度）。
 - 用标签页可见性推断「分心」（Companion Mode 已禁系统性误判）。
+- Worker / ingest / Pack 运行时（契约已锁；代码未授权）。
 
 ---
 
@@ -40,10 +53,10 @@
 
 | 层 | SSOT | 记什么 | 云？ |
 |---|---|---|---|
-| **YPE**（本文件） | 编排：何时沉默、取哪几条、政策档 | **不**存原文 | L2 仅 State Pack（未拍板） |
+| **YPE**（本文件） | 编排：何时沉默、取哪几条、政策档 | **不**存原文 | L2 仅 State Pack（契约已拍；运行时未开工） |
 | **Personal Memory** | `YIN_PERSONAL_MEMORY.md` | 四类摘要；Consent / Remember / Forget | **永远 local-only** |
 | **Journey Log** | 场景 Z | 练习留痕（分钟 / arrived / reflected） | 可进**练习备份** 6 key |
-| **Presence Signals** | 场景 AF | Notice / Ritual / Reflection 观察账本 | **不进**备份；**不进** Memory |
+| **Presence Signals** | 场景 AF | Notice / Ritual / Reflection 观察账本 | **不进**备份；**不进** Memory；**V1 不进** YPE Pack |
 | **Qwen 1.7B** | 桌面 Brief / AE | 层 3 **表达器** | 模型在本机；**不是**护城河 |
 | **品味层** | `task-cloud-taste-layer.md` | **全局**冻结权重 + 日签池 | 可选 overlay；**不是**个人政策 |
 | **练习备份** | 免费 A 快照 | 6 key 白名单 | OTP；**禁止**混入 Memory / turns / YPE 原文 |
@@ -51,7 +64,7 @@
 
 一句话：Log 记**事**；Presence 记**路上点过什么**；Memory 记**怎么对待这个人更自在**；YPE 决定 **现在该不该动、动哪一层**；品味层只调 **全站手感表**。
 
-支付云 ≠ 品味云 ≠ 备份云 ≠ **YPE 云（若将来有）**。四条约定、四套同意。禁止借用漏斗 opt-in 或备份 Enable 当作 YPE 同意。
+支付云 ≠ 品味云 ≠ 备份云 ≠ **YPE 云（若将来有）**。**四条约定、四套同意**（Memory · YPE 云个人化 · 练习备份 · 意愿漏斗）。禁止借用漏斗 opt-in 或备份 Enable 当作 YPE 同意。
 
 ---
 
@@ -71,7 +84,7 @@ Presence → Memory → Journey → Moment → Yin Response
 
 内部用语：**Personalization** / **Companion Intelligence**。禁止对用户说 training / 你的数据在教模型 / 云端大脑正在分析你。
 
-**IP 预期须现实：** 客户端可见输出不是绝对保密。保护方式是 **秘密算法留在服务端（L2 未拍板）+ 客户端只持有运行所需结果 + 原文默认不出设备**。不追求「别人绝对无法复制」。
+**IP 预期须现实：** 客户端可见输出不是绝对保密。保护方式是 **秘密算法留在服务端（Worker 未开工）+ 客户端只持有运行所需结果 + 原文默认不出设备 + V1 不下发 ranking 数值**。不追求「别人绝对无法复制」。云端拿**算法需要的最小统计特征**，不拿「足以重建一个人的行为画像」的数据。
 
 ---
 
@@ -80,36 +93,44 @@ Presence → Memory → Journey → Moment → Yin Response
 **禁止**把每次 interaction 做成：User → Cloud → Algorithm → Yin。断网则阿寅变笨 = 违反核心原则。
 
 ```text
-             CLOUD（L2 · 未拍板 · 可选 · 异步）
+             CLOUD（YPE L2 · 契约已拍 · 运行时未开工 · 可选 · 异步）
 ┌─────────────────────────────────────┐
 │ Secret Personalization Engine       │
-│ pattern detection / memory ranking  │
+│ （V1：政策档；不做 Memory ranking overlay）│
 │ companion policy update             │
 │ （算法正文不进客户端）                │
 └──────────────────┬──────────────────┘
                    │ Personalization State Pack
                    ▼
 ┌─────────────────────────────────────┐
-│ LOCAL Runtime（L0 永远；L1 可后做）  │
+│ LOCAL Runtime（L0/L1 已开工）         │
 │ 计时 / 状态机 / Journey / Presence    │
-│ Memory store + 确定性检索            │
+│ Memory store + L1 确定性检索         │
 │ Whisper / overlay 门闩               │
 │ Qwen 1.7B + 语料 + Safety            │
-│ 本地 Policy Pack 真源 + 云 overlay   │
+│ 本地政策真源 + 云 overlay（失败则丢包）│
 └─────────────────────────────────────┘
 ```
 
 循环（意图，非现网）：
 
 ```text
-Offline 本地交互 → 本地 Memory / Qwen
-        →（有网且已同意）上传 §H 白名单特征
-        → 云端更新 Pack
-        → 下载 overlay
-        → 再 Offline：略更懂这个人，但没网仍能坐、能陪
+Local interaction
+       ↓
+Local state / memory / L1 retrieve
+       ↓
+[when network is available AND YPE cloud consent is on]
+       ↓
+upload H.3 V1 features only
+       ↓
+Cloud personalization update
+       ↓
+new State Pack → Local cache
+       ↓
+still Offline-capable: sit, confide, generate (desktop)
 ```
 
-云端 **不**决定「现在说这一句」。它最多定期更新 **政策与排序提示**。下一句仍由本地层序锁死：
+云端 **不**决定「现在说这一句」。它最多定期更新 **政策档**。下一句仍由本地层序锁死：
 
 ```text
 Safety > Corpus / 仪式已审文案 > Memory 检索 > Qwen
@@ -125,18 +146,18 @@ Memory 检索 **只**活在层 3 之前。第 0 / 1 / 2 层命中 = YPE **不得
 |---|---|---|---|
 | **L0** | 本地政策运行时 | 把**已有**门闩收成 Companion Policy 接口：busy / overlay / 一生一次 Whisper / 层序 / 用户主动才生成 | **已开工**：`src/core/yinPersonalizationEngine.js`；不得改仪式 generate |
 | **L1** | 本地智能 | 检索契约（≤3 条）；Remember 门槛用现有 confidence / 重复 / freshness；Journey **计数型** insight 对象；有限政策档 | **已开工**（全本地）：`ypeRetrieveMemories` / `ypeBuildJourneyInsights` / What Yin remembers 邻接三档 |
-| **L2** | 云端秘密层 | State Pack overlay；只收 §H 特征 | **未拍板**；不进 `v1.0.0` 核心路径；须新同意 + `schemaVersion` 降级 |
+| **L2** | 云端秘密层 | State Pack overlay；只收 §H.3 **V1 五键** | **契约已拍**；Worker/runtime **未开工**；不进 `v1.0.0` 核心路径；须第四条同意 + `schemaVersion` 降级 |
 
 设计师列出的六个算法，映射如下——**不是六条并行开工线**：
 
 | 算法 | 归层 | V1 口径 |
 |---|---|---|
 | Memory Formation / Forgetting | Memory SSOT + L1 | 已有 Consent / Remember / Forget；单次闲聊默认低置信 |
-| Memory Relevance / Ranking | L1 接口；L2 仅可覆盖 **rank 提示** | 本机算；云不得拿走摘要原文 |
+| Memory Relevance / Ranking | **仅 L1** | 本机算；云 **V1 不做** ranking overlay（无摘要则无法诚实排序；不下发分数） |
 | Yin Timing / Intervention | L0 确定性沉默 | **禁止** Speak probability；仪式开口仍未拍板 |
-| Presence State Inference | 交互状态枚举（可选 L1） | Arrived / Engaged / Quiet Leave 等；**不是**医学结论；**禁止** Distracted←visibility |
-| Longitudinal / Journey Pattern | L1 计数；L2 未拍板 | 先结构化 insight，再交给模板或（仅层 3）Qwen 润色已有事实 |
-| Adaptive Companion Policy | L0 默认档；L1 可切换；L2 未拍板 | 有限档（更安静 / 默认 / 稍多承认）；须可展示、可关；禁止督促 |
+| Presence State Inference | 交互状态枚举（可选 L1） | Arrived / Engaged / Quiet Leave 等；**不是**医学结论；**禁止** Distracted←visibility；标签计数 **V1 不上云** |
+| Longitudinal / Journey Pattern | **L1 计数为本** | `morning_settle` 等由本机 Journey 计数产生；云 V1 **不得**用五键假装算出时段 insight |
+| Adaptive Companion Policy | L0 默认档；L1 可切换；L2 可 overlay **同一套三档** | 有限档（更安静 / 默认 / 稍多承认）；须可展示、可关；禁止督促；**用户本机刚改的档优先于过期 Pack** |
 
 ---
 
@@ -146,12 +167,12 @@ YPE **只读**下列已存在或已锁的信号；**不**新建第五本日记�
 
 | 源 | 例子 | 给 YPE 时的形态 |
 |---|---|---|
-| Focus / 会话 | 时长、完成/Rise、Companion 模式（用户声明） | 计数与时段桶 |
+| Focus / 会话 | 时长、完成/Rise、Companion 模式（用户声明） | 计数与时段桶（时段桶 **本机**；V1 **不上云**） |
 | Reflection | 是否 reflected；**不要**把 Q 原文当默认特征 | 布尔 / 次数；freeText 仍 90 天本地 |
-| Presence | Notice 封闭标签、Ritual Leave、chip | 标签计数；**描述性**，不诊断 |
+| Presence | Notice 封闭标签、Ritual Leave、chip | 标签计数；**描述性**，不诊断；**V1 不上云** |
 | Confide | 路由命中层、是否 unmatched | **不是**原文；危机/情绪桶 **永不**进特征 |
 | Memory | `kind` / confidence / freshness / id | 检索侧；摘要留本机 |
-| Moments | Whisper 已见键、busy suppress | 门闩布尔 |
+| Moments | Whisper 已见键、busy suppress | 门闩布尔；**V1 不上云** |
 | Journey | 日期 + 分钟 + arrived + reflected + insightSpark | 留痕计数（上限约 30 是产品裁旧，不是「数据不够再上传原文」的理由） |
 
 **诚实边界：** 今日数据量只够规则与计数，不够稳定的八因子学习。L2 若开，也是稀疏 overlay，不是「已经有训练集群」。
@@ -172,7 +193,7 @@ V1 本地启发式（逻辑，非公式保密秀）：
 - 数周内同类观察重复 + 用户明确说过 + 非情绪桶 / 非危机 → 才考虑 `medium` / Pattern。
 - 用户 Forget = 真删，**禁止**云端复活。
 
-设计师的八项连乘（relevance × recurrence × …）是 **L2 候选**，不是 L0/L1 必做。L1 用已有 `confidence` + `lastSeenAt` + 主题重叠即可。
+设计师的八项连乘（relevance × recurrence × …）是 **L2 候选（未拍板）**，不是 L0/L1 必做。L1 用已有 `confidence` + `lastSeenAt` + 主题重叠即可。
 
 ### B.2 取哪 1–3 条（Retrieval · 现在就冻接口）
 
@@ -187,14 +208,16 @@ retrieve(currentContext) → 最多 3 条 active summary
 
 无相关记忆 = **不硬插**。禁止为了「显得记得」而塞无关旧条。
 
-L2 若拍板：云可下发 `{ memoryId, rankHint }`，**不下发**摘要正文、**不**把算法权重表打进客户端。客户端仍必须能在无 `rankHint` 时用 L1 规则取三条。
+**V1：** 排序与取三条 **只**走 L1。云端未见 Memory `summary`，不得假装对 `memoryId` 打分。  
+**否决（V1）**：Pack 下发 `{ memoryId, rankHint: 0.87 }`（分数泄漏算法）；Pack 下发仅 `{ memoryId }` 的 `memoryHints`（无摘要则空壳，列表顺序仍泄漏）。  
+L1 检索实现里若仍有可选本地 `rankHint` 参数，那是本机接口，**不是**云 overlay。客户端在任何 Pack 下都必须能用 L1 规则取三条。候选项（须另会）：在仍不上摘要的前提下是否做「无序 eligible id 集合」——**默认不做**。
 
 ---
 
 ## C. Pattern Intelligence
 
 短周期：本场 / 今日（本地计数）。  
-长周期：数十次 Journey / Presence 标签（仍本地；L2 未拍板）。
+长周期：数十次 Journey / Presence 标签（仍本地）。
 
 允许的产出是 **结构化 insight 对象**，例如：
 
@@ -207,7 +230,11 @@ L2 若拍板：云可下发 `{ memoryId, rankHint }`，**不下发**摘要正文
 
 然后：模板句 **或**（仅层 3）Qwen 把已有 `claim` 写成阿寅的话。**禁止**让模型自己「分析」日志并发明系统没有的事实。
 
-禁止的 insight：焦虑缓解、ADHD、你总是失败、该惩罚式提醒。
+**可以：** `morning_settle` + `strength` 这类**产品行为** id（本机 L1：满 10 次坐才可能出）。  
+**不可以：** `user has poor sleep discipline`。  
+**更不可以：** `user suffers from anxiety` / 人格类型 / 医疗判断。
+
+`morning_settle` 依赖上午 vs 晚间完成对比。H.3 V1 **不含** `morning_consistency` / `late_session_completion`，故 **云端 V1 不得下发该 insight**。本机 L1 仍可计算并（仅 `warm`）注入层 3。Pack 的 `patternInsights` 在云端 V1 **必须为空数组**（字段保留为前向兼容）。将来逐项把时段特征加入 H.3 后，再另会批准云端 insight id 白名单。
 
 ---
 
@@ -225,19 +252,24 @@ V1 **仅三档**（可改名，不可暗中变成连续「干预概率」）：
 
 用户须能在「What Yin remembers」邻接或 Privacy **看见并关掉**个人化（退回 `default`）。**禁止**把政策做成不可解释的黑盒人格。
 
-**Timing：** 「真正的陪伴知道何时不说话」落在 **L0 确定性规则**（已有：一生一次 Whisper、busy suppress、Focusing 不 generate、安全/情绪桶不检索 Memory）。**不要**用 `Speak probability = 0.18` 替代这些门闩。
+**真源：** 本机 `focus-tiger.ype-companion-style.v1`（L1）。Pack 的 `companionStyle` 是 overlay。用户刚改成 `quiet` / `default`（关掉个人化）→ **过期 Pack 不得改回**。
+
+**不要**在 Pack 再单开 `interventionStyle: low|medium` 第二套真源。若云端内部映射干预力度，须由 `companionStyle` 派生（例：`quiet`→low；`default`/`warm`→medium），**不得**与用户选档打架。H.3 上传键 `intervention_preference` 是给云的**输入特征**（由本机档派生），不是 UI 第三套开关。
+
+**Timing：** 「真正的陪伴知道何时不说话」落在 **L0 确定性规则**（已有：一生一次 Whisper、busy suppress、Focusing 不 generate、安全/情绪桶不检索 Memory）。**不要**用 `Speak probability = 0.18` 替代这些门闩。Whisper seen 掩码 **留本地**（除非将来另会拍「跨设备同步 Whisper」——默认不做）。
 
 ---
 
 ## E. Cloud Secret Layer（哪些只存在 Server）
 
-**仅 L2（未拍板）** 可把下列留在服务端：
+**仅 YPE L2（运行时未开工）** 可把下列留在服务端：
 
-- Memory rank 的完整加权式  
-- 长期模式检测正文  
+- 长期模式检测正文（V1 输入仅五键，能力极窄）  
 - 政策档如何从特征推出  
 
-客户端可见的永远是 **结果**：档位名、`rankHint`、insight id、`packVersion`。
+**V1 不把 Memory ranking 公式放到云端「再下发结果」**——没有摘要就排不了；下发分数或有序 id 都会泄漏。Ranking **留 L1**。
+
+客户端可见的永远是 **结果**：`companionStyle`、（将来才非空的）insight id、`packVersion`。**不下发** `rankHint`、权重表、`intervention_probability`、现在开口指令。
 
 **V1 不做** opaque token。若将来要增加逆向成本，另拍板；不得阻塞 QA。
 
@@ -254,9 +286,9 @@ V1 **仅三档**（可改名，不可暗中变成连续「干预概率」）：
 | Journey Log 写入 | 继续记 |
 | Presence 入账 | 继续记 |
 | Memory 读写 / Forget | Electron userData；Web 无层 3 则无此能力（故意不对等） |
-| Qwen 1.7B | Electron 宽屏；Web / 窄屏 / ≤8GB 仍检索不生成 |
+| Qwen 1.7B（桌面陪伴 generate） | Electron 宽屏；Web / 窄屏 / ≤8GB 仍检索不生成 |
 | 语料 fallback + Safety | **不能**依赖网络 |
-| L0 政策默认档 | 包内真源；云 overlay 失败则用它 |
+| L0/L1 政策与检索 | 包内真源；云 overlay 失败 / 过期则用它 |
 
 Web 用户的「聪明」= 规则机 + 已审文案 +（可选）练习备份。**禁止**为了 YPE 把 Web 做成半残 AI。
 
@@ -264,32 +296,25 @@ Web 用户的「聪明」= 规则机 + 已审文案 +（可选）练习备份。
 
 ---
 
-## G. State Pack 草图（Cloud → Local）
+## G. State Pack V1（Cloud → Local · 2026-08-26 拍板）
 
 逻辑形状，**非**实现 JSON 文件名。未知 `schemaVersion` → **整包丢弃**，沿用本地真源（对齐品味层）。
 
 ```text
-PersonalizationStatePack v1 (sketch)
+PersonalizationStatePack v1
 {
   schemaVersion: 1,
   packVersion: 27,          // 单调；仅用于去重
   issuedAt: ISO-8601,
   expiresAt: ISO-8601,      // 过期 → 忽略 overlay，不锁 Sit
   companionStyle: "quiet" | "default" | "warm",
-  timing: {
-    whisperFrequency: "once_lifetime",  // V1 只允许与现网门闩兼容的值
-    postFocusReflection: "unchanged"    // 不得偷偷打开仪式 generate
-  },
-  memoryRankHints: [
-    { memoryId: "…", rankHint: 0.87 }   // 无摘要；无 id 则忽略该行
-  ],
-  patternInsights: [
-    { id: "morning_settle", strength: "strong" }
-  ]
+  patternInsights: []       // 云端 V1 必须为空；见 §C
 }
 ```
 
-**禁止写入 Pack 的：** Confide 原文、Memory `summary`、危机内容、邮箱、支付、诊断字符串、完整加权公式、`intervention_probability`、现在开口指令。
+**V1 不要出现在 Pack 里的：** `rankHint` / `memoryRankHints` / `memoryHints` / `eligibleMemoryIds` / `interventionStyle` / `intervention_probability` / `timing` 改门闩 / Whisper 频率。
+
+**禁止写入 Pack 的：** Confide 原文、Memory `summary` / evidence 正文、`turns.jsonl`、危机内容、邮箱、支付、诊断字符串、完整加权公式、算法权重、精确行为分数、现在开口指令（「现在该说什么」会把云变成阿寅遥控器）。
 
 云端 **可以**保存算法版本（例：`rankingAlgorithm: 17`）——那是服务器私有元数据，**不要**下发到 Pack。
 
@@ -310,34 +335,46 @@ PersonalizationStatePack v1 (sketch)
 ### H.2 仅本机、可进检索、不进备份、不进 Pack
 
 - `yin-personal-memory.json` 全文  
-- Presence `freeText`（90 天剥离后即无）
+- Presence `freeText`（90 天剥离后即无）  
+- Presence 封闭标签计数、时段完成占比、仪式 Leave 率、Whisper seen 掩码（见 H.3 候选项）
 
-### H.3 L2 若拍板 · 可上传的结构化特征（白名单）
+### H.3 L2 可上传的结构化特征（白名单）
 
 须 **独立明示同意**（≠ 备份 OTP ≠ 漏斗 ≠ Memory Consent ≠ Newsletter）。默认关。拒绝 = 永不建 Pack，本地 L0/L1 照常。
+
+Privacy 文案 **不要**在架构未满足严格匿名化时写 anonymous / 匿名。准确用语：**limited structured signals**（少量结构化使用信号）。身份若与账户或 personalization profile 绑定，就不是匿名。
+
+#### H.3 V1（2026-08-26 拍板 · 仅这五键可上云）
 
 允许（计数 / 比例 / 档位，**无原文**）：
 
 | 特征键（逻辑名） | 含义 | 禁止升格为 |
 |---|---|---|
 | `focus_return_rate` | 有记录窗口内完成相对开始的比例 | 「意志力差」 |
-| `morning_consistency` | 上午时段完成占比 | 作息诊断 |
-| `late_session_completion` | 晚间完成占比 | 「你不该熬夜练」 |
 | `reflection_frequency` | reflected 次数 / 完成次数 | 反省不够 |
-| `arrival_notice_tag_counts` | 封闭标签计数（calm / stressed / …） | 情绪病名 |
-| `ritual_leave_rate` | 某仪式 Leave vs 完成 | 懒惰 |
-| `whisper_seen_mask` | 哪些 Moment 已见（布尔） | — |
 | `companion_style_preference` | 用户选过的档，或默认 `default` | 人格类型 |
-| `intervention_preference` | `low` \| `medium` 与 quiet/default/warm 对齐 | 连续概率 |
+| `intervention_preference` | 由 `companionStyle` **派生**的 `low` \| `medium` | 连续概率；禁止做成第二套 UI 档 |
 | `practice_day_count_window` | 窗口内练习日数（无具体日记正文） | — |
 
 **灰度：** 不足样本（例：<10 次完成）→ 不下发 insight，不上传或上传 `insufficient: true` 而不带易去匿名化的稀疏组合。
 
 可识别身份（邮箱）只走既有 OTP 备份通道，**不要**做 YPE 主键的默认方案。L2 身份须另拍板（很可能复用邮箱但 **用途分开披露**）。
 
+#### H.3 候选项（历史保留 · V1 **不上云** · 可逐项再评估）
+
+不是永久禁止。V1 遵循 data minimization：能在本地计算的，不为了算法方便上传。尤其避免长期组合形成过细行为/情绪画像。
+
+| 特征键 | V1 | 理由（摘要） |
+|---|---|---|
+| `morning_consistency` | 不上云 | 易成作息画像；亦是云端 `morning_settle` 的前置，暂缓则云端不得发该 insight |
+| `late_session_completion` | 不上云 | 同上 |
+| `arrival_notice_tag_counts` | 不上云 | 封闭标签长期累积仍接近情绪画像；AF 本就不进备份 / Memory |
+| `ritual_leave_rate` | 不上云 | 产品价值有限，隐私收益/风险比差 |
+| `whisper_seen_mask` | 不上云 | 一生一次 Whisper 是本地状态机；跨设备同步须另会 |
+
 ### H.4 本机派生、可给 L1、默认仍不上云
 
-- Memory `rankHint` 本地计算结果  
+- Memory 本地排序结果（含实现里可选的本地 `rankHint`）  
 - insight 对象在展示给用户之前的草稿  
 
 ---
@@ -358,33 +395,34 @@ PersonalizationStatePack v1 (sketch)
 
 | 故障 | 行为 |
 |---|---|
-| 云不可用 / 超时 / 4xx | Sit 与 Confide **不停**；沿用本地 Pack 真源或出厂 `default` |
+| 云不可用 / 超时 / 4xx | Sit 与 Confide **不停**；沿用本地政策真源或出厂 `default` |
 | 未知 schema | 丢包 |
 | Local AI 不可用（低配 / 窄屏 / 卸载） | 检索语料 + 已审仪式；YPE **不得**假装层 3 回指 |
 | Memory 文件损坏 | 不注入、不编造；可空列表；**禁止**为恢复而自动上传残骸到云 |
-| Pack 与本地 Memory id 对不上 | 忽略该 `rankHint` |
+| Pack 含 `rankHint` / `memoryHints` / 非空云端 insight | **整包丢弃**或忽略非法字段（实现时锁：宁可丢包，不执行云端记忆排序） |
 | 安全阀命中 | YPE 整段跳过（不检索、不改政策、不「温暖地」盖过转介句） |
 
 ---
 
-## 4. 明确不做（V1 架构期）
+## 4. 明确不做（本切片 / 未开工 L2 运行时）
 
-- 写 Policy Pack 存取代码、Worker 新路由、retrieve 重写、Speak 概率（L0 **未做**这些）  
+- 写 Policy Pack 存取代码、Worker 新路由、Speak 概率  
 - 把 YPE 并进品味层 payload 或练习备份 6 key  
 - 主动开口「我记得你该坐了」  
 - 每用户微调 Qwen  
 - 把 Journey 列表变成 Yin 的诊断报告  
 - 用 YPE 改状态机合法转移  
+- 改 L0/L1 production runtime 来「对齐」尚未存在的 Pack 文件  
 
 ---
 
-## 5. 实现顺序（设计意图 · 非本 PR）
+## 5. 实现顺序
 
 1. **本文方向锁**（#451）。  
 2. 继续：AG 1d/1e 人工、AF 人工、Qwen runtime **另一条线**、品味层 Quiet Line **另一条云**。  
 3. 口令「开工 Yin Personalization Engine」→ **L0 接口已开工**（现有门闩收口，行为不变）。  
 4. 口令「开工 L1」→ **L1 检索契约已开工**（可单测、可 Forget、可离线）。  
-5. **L2** 须单独产品会：同意文案、白名单、Worker、后台三问。未开会 = 不做。
+5. **L2 契约收口**（本文件 2026-08-26）：白名单 V1 → Pack V1 → **Consent brief**（下一会：最终 UI 文案）→ Cloud algorithm contract → Worker → 口令「开工 L2」。未口令 = 不写 Worker。
 
 生命感仍看 Memory 三问（接住了吗 / 还像阿寅吗 / 像记得我吗）。YPE 第四问（以后才测）：**像知道何时不说话吗？** ——用确定性沉默验收，不用概率。
 
@@ -393,6 +431,7 @@ PersonalizationStatePack v1 (sketch)
 ## 权威交叉
 
 - Memory：`YIN_PERSONAL_MEMORY.md`  
+- L2 同意文案需求：`task-briefs/task-l2-personalization-consent.md`  
 - 本地 AI 场景 / CI：`LOCAL_AI_SCENARIOS_V1.md` · `CONFIDE_EXECUTABLE_INTENTS.md`  
 - 品味层（对照、禁止混桶）：`task-briefs/task-cloud-taste-layer.md` · `PROCESS.md` Backlog「云端品味层」  
 - 练习备份（对照）：`task-briefs/task-practice-memory-cloud-backup-a.md`  
