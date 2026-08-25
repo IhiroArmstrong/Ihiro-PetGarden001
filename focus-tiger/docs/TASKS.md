@@ -154,13 +154,13 @@ Layer 2：推送通知 —— 语气克制，不制造焦虑，"它在等你"式
 Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DESIGN.md v2 / CORE_LOOP.md）：
 
 已实现：
-  - 欢迎 beat（blink-smile + 文字气泡）→ Notice 6 图标（不落库）→ ~5s 呼吸（无倒计时）
+  - 欢迎 beat（blink-smile + 文字气泡）→ Notice 6 图标（点选 → `presence-signals.v1`）→ ~5s 呼吸（无倒计时）
     → Choose 6 图标 + 次要打字 → Companion Mode 三选一 → 再点 Sit 开始计时
   - 全程 Skip + Skip — begin；Sit 二次点击可整体跳过仪式
-  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice 严禁持久化
+  - Choose → focus-tiger.intentions.v1（source: icon|typed）；Notice → presence-signals.v1（arrival_notice）
   - Reflection 按来源回显（达标与未达标均回显）；Notice 不回显
 
-明确不做：待办化、情绪分析统计、强制不可跳过流程、角色语音
+明确不做：待办化、**诊断式**情绪分析、强制不可跳过流程、角色语音
 ```
 （叙事层级见 PRODUCT_MOMENTS.md / CORE_LOOP.md）
 
@@ -241,9 +241,24 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1b** | Remember 管道（L3 成功后静默入库） | `task-yin-memory-slice-1b-remember.md` | **已合 #428** |
 | **Slice 1c** | What Yin remembers 列表 + Forget UI | `task-yin-memory-slice-1c-list-forget.md` | **已合 #430** |
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
-| **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **本旁支开工** |
+| **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工验收。较弱：仪式 generate 扩权（须产品拍板）。
+**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工验收；并行合 Presence Signals（CI-02）。较弱：仪式 generate 扩权（须产品拍板）。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。
+
+---
+
+## 📍 Presence Signals（2026-08-25 · 陪伴观察账本）
+
+> **≠** Yin Memory · **≠** Journey Log · **≠** `reflections.v1` 趋势 SSOT。Arrival Notice（calm / stressed / sad 等）及后续 Ritual / Reflection 封闭标签入账 `focus-tiger.presence-signals.v1`。Confide 趋势问句 → **CI-02** `presence_facts`（描述性 breakdown，禁止诊断）。
+
+| 级 | 内容 | Brief | 状态 |
+|---|---|---|---|
+| **Slice 0–1 + 4** | 文档 + Arrival Notice 写入 + Confide 只读趋势 | `task-presence-signals-slice-0-1.md` | **本旁支** `feature/presence-signals-slice-0-1` · tracker 待人工 |
+| **Slice 2** | Ritual chip 入账 + Leave 弱提示 | 见 Brief §后续 | 排期 |
+| **Slice 3** | Reflection Q1–Q3 双写 | 见 Brief §后续 | 排期 |
+| **Slice 5–6** | 查看/删除 UI · L3 freeText（读取 Consent） | 见 Brief §后续 | 排期 |
+
+**我认为最合理的下一刀**：合本旁支 + 关 CI-02 tracker；再 Slice 2 或 Slice 5。
 
 ---
 

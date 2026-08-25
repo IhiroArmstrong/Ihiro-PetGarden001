@@ -1,6 +1,6 @@
 # Task Brief · Yin Personal Memory · Slice 1e（口头 Forget 路由）
 
-> **状态（2026-08-25）**：**Slice 1e 开工**（口令「开工 Yin Personal Memory」子段 1e）。  
+> **状态（2026-08-25）**：**已合 #434**（develop）。  
 > **权威架构**：`YIN_PERSONAL_MEMORY.md` · `CONFIDE_EXECUTABLE_INTENTS.md`（CI-01）。  
 > **前置**：Slice 1c 已合（#430）；Slice 1d 已合（#431）。**不依赖** 1d tracker 人工关单。
 

@@ -184,10 +184,10 @@ MVP阶段(Phase 0)的输入来源：手动开始/结束的专注计时器(番茄
   - 当日首次达标：由完整 CELEBRATE 替代 SessionComplete，不叠加播放
   - 同日后续完成：继续轻量 SessionComplete，不重复完整庆祝
 
-Session Intention / Arrival Practice（✅ v2，见 TASKS.md 任务十 / ARRIVE_MOMENT_DESIGN.md）：
-  点击 Sit with Yin 后进入 Arrival Practice（欢迎 → Notice 状态点选不落库 → ~5s 呼吸 →
+  Session Intention / Arrival Practice（✅ v2，见 TASKS.md 任务十 / ARRIVE_MOMENT_DESIGN.md）：
+  点击 Sit with Yin 后进入 Arrival Practice（欢迎 → Notice 状态点选入账 presence-signals → ~5s 呼吸 →
   Choose 图标/打字会落库回显）→ Companion Mode → 再 Sit 开始计时；全程可跳过；
-  不参与达标判定；Notice 严禁跨会话情绪统计
+  不参与达标判定；Notice 写入 `focus-tiger.presence-signals.v1`（封闭标签；非临床量表）
 
 Tiger Reflection Moment（结束反思，已实现·MVP）：
   会话结束后可选的轻量反思环节，三个问题逐个淡入展示：
@@ -211,8 +211,8 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
   数据处理（MVP）：
     仅非空答案本地保存最近 5 条（localStorage，复用 Storage 封装）；
-    全部跳过则不落任何记录；情绪来访答案不做标签化/统计/趋势分析，
-    写下来即可
+    全部跳过则不落任何记录；**趋势/Confide 只读 `presence-signals.v1`（SSOT）**；
+    本 key 为会话 bundle 回顾；V2 可收敛为从 presence-signals 聚合
 
 向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 2026-08-22 第二入口）：
   与 Reflection 分轨。Idle 入口：**宽屏左上倾听耳** + **窄屏 ActionBar 耳钮** + ⋯/抽屉行（桌面与 Web **同一张卡** `#confide-to-yin-card`）。文案：向阿寅倾诉 / Confide to Yin / 寅に打ち明ける。禅意倾听者；

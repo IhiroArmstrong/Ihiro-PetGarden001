@@ -31,7 +31,9 @@
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
-| `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条 |
+| `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势查询 SSOT；见 `presence-signals.v1`） |
+| `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice 等封闭标签事件；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
+| `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
 | `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` + **Scene A** `parrotEarVisit`（`parrotMessengerGate`） | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；横幅每次 **hidden→visible** 伴随 `parrotEarVisit`（欢迎池 live hold + pending flush，结束后补播；同页约 60s 再评到期；`__inAppReminder.parrotMessengerPlayed` / `pendingParrotMessengerAfterWelcome` / `resetParrotMessenger`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23） |

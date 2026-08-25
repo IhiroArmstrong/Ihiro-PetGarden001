@@ -1,6 +1,7 @@
 # Confide 可执行意图白名单（V1）
 
-**状态（2026-08-25）**：产品方向锁 · 与 `YIN_PERSONAL_MEMORY.md` · `desktopCompanionL2Route.js` 四层门闩一致。  
+**状态（2026-08-25）**：产品方向锁 · 与 `YIN_PERSONAL_MEMORY.md` · `presenceSignalsGate.js` · `desktopCompanionL2Route.js` 四层门闩一致。  
+**规划 SSOT**：`LOCAL_AI_SCENARIOS_V1.md`。  
 **不是**开放域 Agent；**不是**「用户说什么都能自动执行」。
 
 ---
@@ -20,6 +21,7 @@
 |---|---|---|---|---|
 | **CI-00** | 「练了多久？」/ How long have I practiced? | 读 `PracticeDaysStore`（与 Journey Log 同源） | Confide · `fallback` 前 | Slice 0 · `confidePracticeFacts.js` · `data-source=practice_facts` |
 | **CI-01** | 「别再记周一的事了」/ Please forget what I said about Monday | 真删 `yin-personal-memory.json` 单条（同 1c IPC） | Confide · `fallback` + Consent granted | Slice 1e · `yinPersonalMemoryVerbalForget.js` · `data-source=memory_forget` |
+| **CI-02** | 「我情绪这两周改善了吗？」/ Has my mood improved these two weeks? | 读 `focus-tiger.presence-signals.v1`（Arrival Notice 等封闭标签；14 日窗口；≥3 条才描述性 breakdown） | Confide · `fallback` 前 | Presence Slice 4 · `confidePresenceFacts.js` · `data-source=presence_facts` |
 
 **面板 Forget（1c）** 不在此表重复登记：同一 `forget` IPC，入口为 UI 行按钮，非口头意图。
 
@@ -30,7 +32,6 @@
 | 用户可能说 | 为何不做 | 合理行为 |
 |---|---|---|
 | 帮我备份练习记录 | 备份在 Journey / 练习云备份链；Confide 非全 App 命令行 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
-| 我情绪这两周改善了吗？ | 无结构化情绪趋势账本 | 情绪桶语料或 L3 观察式闲聊；**禁止**诊断/趋势编造 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
 
@@ -57,11 +58,11 @@
 3. 冲突扫描（强度 / 人设 / 职责）无未拍板疑点；  
 4. 更新 **本表** + Task Brief + tracker。
 
-**我认为最合理的下一候选（若做）**：无——先关 1d/1e 人工验收；仪式 generate 须产品拍板，不进口头表。
+**我认为最合理的下一候选（若做）**：**CI-02** 合入 + tracker 人工（Presence Signals 旁支）；并行关 Yin Memory 1d/1e tracker。仪式 generate 须产品拍板，不进口头表。见 `LOCAL_AI_SCENARIOS_V1.md` §6。
 
 ---
 
 ## 工程注册（实现参考）
 
-口头 / 事实类意图在 `ConfideToYinUI._onSend` 中于 `practice_facts` 之后、`shouldUseDesktopCompanionGenerate` 之前顺序判定。  
+口头 / 事实类意图在 `ConfideToYinUI._onSend` 中于 `practice_facts` → `presence_facts` → `memory_forget` 之后、`shouldUseDesktopCompanionGenerate` 之前顺序判定。  
 新增 CI-xx 时应扩 **纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
