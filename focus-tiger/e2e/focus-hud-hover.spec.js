@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { expectOpenHintBubblesAtMost } from './helpers/hints-concurrency.js';
 import { openFreshProductShell } from './helpers/product-shell.js';
 
 test('FocusHUD hover shows Focus % detail; streak native tip suppressed while pulse unread', async ({
@@ -144,6 +145,7 @@ test('FocusHUD hosts show hint copy on hover without mint pulse badges', async (
     );
     await expect(tip).toBeVisible({ timeout: 5_000 });
     await expect(tip).toContainText(copy);
+    await expectOpenHintBubblesAtMost(page);
     await page.mouse.move(0, 0);
     await expect(tip).toBeHidden({ timeout: 5_000 });
   }

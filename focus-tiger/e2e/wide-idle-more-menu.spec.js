@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { expectOpenHintBubblesAtMost } from './helpers/hints-concurrency.js';
 import {
   openFreshProductShell,
   quickStartFocus
@@ -301,6 +302,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
       }
     }
 
+    await expectOpenHintBubblesAtMost(page);
     await expectSitAutoTipHidden(page);
   }
 
@@ -310,6 +312,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     await row.scrollIntoViewIfNeeded();
     await row.hover();
     await page.waitForTimeout(300);
+    await expectOpenHintBubblesAtMost(page);
     await expectSitAutoTipHidden(page);
   }
 });
