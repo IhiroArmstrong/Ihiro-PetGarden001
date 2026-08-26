@@ -324,6 +324,49 @@ describe('target matrix (C1–C6 · PR-2 contract)', () => {
     assert.equal(d.canShow, false);
   });
 
+  it('reminder target blocks ritual flow, duration picker, flower welcome', () => {
+    assert.equal(
+      deriveReminderBusySessionTarget(
+        buildOverlaySnapshot({ ritualFlowOpen: true })
+      ),
+      true
+    );
+    assert.equal(
+      deriveReminderBusySessionTarget(
+        buildOverlaySnapshot({ focusDurationPickerOpen: true })
+      ),
+      true
+    );
+    assert.equal(
+      deriveReminderBusySessionTarget(
+        buildOverlaySnapshot({ flowerWelcomeVisible: true })
+      ),
+      true
+    );
+  });
+
+  it('reminder target aligns with tea bubble on honesty prompt', () => {
+    const snapshot = buildOverlaySnapshot({ honestyPhase: 'prompt' });
+    assert.equal(deriveReminderBusySessionTarget(snapshot), true);
+    assert.equal(deriveTeaBubbleBusyTarget(snapshot), true);
+    assert.equal(isHonestyPhaseBusy('prompt'), false);
+  });
+
+  it('focus awareness busy includes mustard seed and ritual flow', () => {
+    assert.equal(
+      deriveFocusAwarenessCardBusy(
+        buildOverlaySnapshot({ mustardSeedOpen: true })
+      ),
+      true
+    );
+    assert.equal(
+      deriveFocusAwarenessCardBusy(
+        buildOverlaySnapshot({ ritualFlowOpen: true })
+      ),
+      true
+    );
+  });
+
   it('C6: first-card queue flower > compass > wellness', () => {
     assert.deepEqual(FIRST_CARD_DEFER_PRIORITY, [
       OVERLAY_SOURCES.FLOWER_WELCOME,

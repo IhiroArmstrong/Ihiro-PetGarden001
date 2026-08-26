@@ -199,8 +199,10 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
  */
 export function deriveFocusAwarenessCardBusy(snapshot) {
   if (snapshot.compassOpen) return true;
+  if (snapshot.mustardSeedOpen) return true;
   if (snapshot.sessionState === STATES.CELEBRATE) return true;
   if (snapshot.microRitualOpen) return true;
+  if (snapshot.ritualFlowOpen) return true;
   if (snapshot.honestyPhase && snapshot.honestyPhase !== 'hidden') return true;
   if (snapshot.companionPickerOpen) return true;
   if (snapshot.arrivalOpen) return true;
@@ -344,8 +346,11 @@ export function deriveReminderBusySessionTarget(snapshot) {
   if (deriveReminderBusySession(snapshot)) return true;
   if (snapshot.compassOpen) return true;
   if (snapshot.mustardSeedOpen) return true;
-  if (isHonestyPhaseBusy(snapshot.honestyPhase)) return true;
+  if (isHonestyUiBusy(snapshot.honestyPhase)) return true;
   if (snapshot.companionPickerOpen) return true;
+  if (snapshot.ritualFlowOpen) return true;
+  if (snapshot.focusDurationPickerOpen) return true;
+  if (snapshot.flowerWelcomeVisible) return true;
   return false;
 }
 
