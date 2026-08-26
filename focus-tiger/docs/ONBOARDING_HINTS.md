@@ -9,7 +9,7 @@
 
 1. **脉冲点悬停**：鼠标停在薄荷绿脉冲点上 → 看该条 tip；**指针离开 → tip 立刻消失**。  
    **例外（2026-08-15）**：`focus-hud-ring` / `focus-hud-progress` / `focus-hud-streak` **不画**薄荷绿脉冲；鼠标停在对应 HUD 控件（金环 / 今日同坐条 / 近日同坐环）上 → 仍出该条 tip，移开即收——与左下「?」无脉冲也能悬停出文案同一办法。  
-2. **「?」看产品简介**：点击或悬停左下 / ActionBar「?」→ **只**出 `#onboarding-app-purpose`（What this space is for）；**禁止**同屏喷本页其它 tips / More tips 芯片。
+2. **「?」看产品简介**：点击或悬停左下 / ActionBar「?」→ **只**出 `#onboarding-app-purpose`（What Focus Tiger is）；**禁止**同屏喷本页其它 tips / More tips 芯片。
 
 已取消（代码可留死路径，产品勿再验）：自动 tip 喷洒、点「?」补救铺开、`help-remedy` / catalog 芯片、Focusing「还有 N 条」。
 
