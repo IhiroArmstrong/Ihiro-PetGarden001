@@ -1,0 +1,1 @@
+| Local AI Layer Scenario Expansion Design Review | 纯后端/文档 | 仅单元测试覆盖 | 无运行时。会审表 `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`：产品层先于轨道 A/B/C；C0–C4 能力阶梯 ≠ 陪伴 L2/L3；现锁窄例外 / ≠ Operating Layer / 仪式无 generate **未改**。会后填 Core / Candidate / MUST NOT + Top 3 才可改规划 SSOT。 | — | — | — | 文档阅读即可；勿当 AE/仪式已批准 generate | 2026-08-26 |

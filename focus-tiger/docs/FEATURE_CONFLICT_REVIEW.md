@@ -142,6 +142,16 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 **#362 合入后 · 测试节奏（2026-08-20）**：用户书面同意等 L2 真能聊再下「接 Checkout」口令（两卡同批）。**同日口令「开工桌面陪伴 L2」**：宽屏 fallback 短生成已接线；场景 Q 现货仍三卡；Whisper / Recover 仍无 generate。关单能聊待 Electron 人工。无 Checkout 用户路径。
 
+**Local AI 扩场景会审 vs 窄例外 / ≠ Operating Layer（2026-08-26 · 未拍板）**
+
+设计师书面把会从「再加 CI / 接 A/B/C」改成「已有时刻里哪些问题只有理解层才值得存在」。对照 Y Whisper / X Recover / X2 / S Breath / Z Journey / AE / AF / AG：
+
+- **职责**：全产品「理解层」或口头删 Journey 与现锁「桌面窄例外 + Confide ≠ 全 App CLI」重叠。  
+- **人设**：Reflection「照见」生成句与「仪式无 generate IPC」重叠。  
+- **强度**：草案将 Arrival / Breath / Whisper / Celebrating / 基础 Focusing 标 MUST NOT ENTER，与现锁同向。
+
+处置：只入库会审表 `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`；**不**改 `LOCAL_AI_SCENARIOS_V1.md` 政策句。无新运行时路径。须会审书面拍板后才能开工对应轨道。
+
 ---
 
 ## PR 第三问
@@ -182,6 +192,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-26 | Local AI 扩场景会审表入库（未拍板）：产品层先于 A/B/C；对照 Y/X/Z/AE/AF/AG；不改窄例外锁句。无运行时用户路径 |
 | 2026-08-26 | YPE L2 算法契约入库（无代码）：五键→Pack 闭包；不按完成率改档；非空 insight / ranking 仍禁。对照 Whisper / Memory / 品味层。无运行时用户路径 |
 | 2026-08-26 | YPE L2 身份键入库（无代码）：本机随机 profile ID；第二设备新档案；删除不连带备份/Memory/漏斗。对照 AG / Z OTP / 漏斗。无运行时用户路径 |
 | 2026-08-24 | Yin Personal Memory 架构入库（无代码）：对照 AE / Y / Z / 练习备份；职责用三套边界拆开；仪式生成仍未拍板 |

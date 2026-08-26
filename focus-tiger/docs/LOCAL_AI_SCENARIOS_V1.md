@@ -3,6 +3,8 @@
 **状态（2026-08-25）**：产品方向锁 · 规划稿（无新运行时须单独口令）。  
 **SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
 
+**会审（未拍板）**：扩场景的**产品层**填表见 [`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`](./LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md)（先「哪些时刻需要被理解」，本文件三条轨道是**第三层**实现分类）。未获会审书面拍板前，**不**把「理解层 / 仪式 generate / Journey 口头删除」写进本文件政策句。
+
 ---
 
 ## 1. 政策边界（不变）
@@ -17,7 +19,9 @@
 
 ---
 
-## 2. 三条轨道（规划用）
+## 2. 三条轨道（规划用 · 会审第三层）
+
+产品会先填 `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。下表只回答「批准之后走哪条实现轨道」，**不**代替「该不该进这个时刻」。
 
 | 轨道 | 含义 | 准入 |
 |---|---|---|
