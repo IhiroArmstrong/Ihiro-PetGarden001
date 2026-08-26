@@ -8,7 +8,8 @@
     "dev": "node scripts/dev.js",
     "pack": "node scripts/pack.js",
     "companion:l0": "node scripts/l0-bench.js",
-    "companion:spike-17b": "node scripts/l0-spike-17b.js"
+    "companion:spike-17b": "node scripts/l0-spike-17b.js",
+    "companion:tool-call": "node scripts/l0-tool-call-probe.js"
   },
   "dependencies": {
     "node-llama-cpp": "^3.14.4"

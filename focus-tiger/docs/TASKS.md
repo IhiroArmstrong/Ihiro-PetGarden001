@@ -263,7 +263,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工验收；并行合 Presence Signals（CI-02）。较弱：仪式 generate 扩权（须产品拍板）。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。
+**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工；跑 **tool-call 实验室探针**（`task-confide-tool-registry-v1.md`）。较弱：仪式 generate 扩权（须产品拍板）。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。
 
 ---
 

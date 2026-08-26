@@ -13,6 +13,13 @@ export {
   formatPracticeDurationReply
 } from './confidePracticeFacts.js';
 export {
+  CONFIDE_TOOL_ID,
+  CONFIDE_TOOL_RISK,
+  CONFIDE_EXECUTABLE_TOOLS,
+  matchConfideExecutableTool,
+  getConfideExecutableToolById
+} from './confideExecutableTools.js';
+export {
   CONFIDE_CORPUS,
   pickConfideLine,
   confideLineText,

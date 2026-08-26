@@ -16,13 +16,13 @@ import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
 import {
   formatPracticeDurationReply,
-  shouldAnswerWithPracticeFacts,
   summarizePracticeFacts
 } from '../core/confide/confidePracticeFacts.js';
+import { buildPresenceTrendReply } from '../core/confide/confidePresenceFacts.js';
 import {
-  buildPresenceTrendReply,
-  shouldAnswerWithPresenceFacts
-} from '../core/confide/confidePresenceFacts.js';
+  CONFIDE_TOOL_ID,
+  matchConfideExecutableTool
+} from '../core/confide/confideExecutableTools.js';
 import {
   readYpeCompanionStyle,
   ypeBuildJourneyInsights,
@@ -60,8 +60,7 @@ import {
 } from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 import {
   formatVerbalForgetReply,
-  resolveVerbalForgetTarget,
-  shouldHandleVerbalForget
+  resolveVerbalForgetTarget
 } from '../core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
@@ -650,7 +649,13 @@ export class ConfideToYinUI {
     if (!hit) return;
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
-    if (shouldAnswerWithPracticeFacts(hit.route, text)) {
+    const tool = matchConfideExecutableTool({
+      route: hit.route,
+      text,
+      memoryState: this._memoryState,
+      hasBridge: hasYinPersonalMemoryBridge()
+    });
+    if (tool?.id === CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION) {
       const factsText = formatPracticeDurationReply(
         summarizePracticeFacts(this._practiceDaysStore),
         t
@@ -665,7 +670,7 @@ export class ConfideToYinUI {
       );
       return;
     }
-    if (shouldAnswerWithPresenceFacts(hit.route, text)) {
+    if (tool?.id === CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND) {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
       const factsText = buildPresenceTrendReply(storage, t);
@@ -679,14 +684,7 @@ export class ConfideToYinUI {
       );
       return;
     }
-    if (
-      shouldHandleVerbalForget({
-        route: hit.route,
-        state: this._memoryState,
-        text,
-        hasBridge: hasYinPersonalMemoryBridge()
-      })
-    ) {
+    if (tool?.id === CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY) {
       void this._handleVerbalForget(text, hit);
       return;
     }
