@@ -78,7 +78,15 @@ export class FocusCoinsPanelUI {
     this.titleEl = document.createElement('p');
     this.titleEl.id = 'yin-coin-panel-title';
     this.titleEl.className = 'yin-coin-panel__title';
-    this.headingEl.append(this.markEl, this.titleEl);
+
+    this.taglineEl = document.createElement('p');
+    this.taglineEl.className = 'yin-coin-panel__tagline';
+    this.taglineEl.dataset.testid = 'yin-coin-brand-tagline';
+
+    this.headingTextEl = document.createElement('div');
+    this.headingTextEl.className = 'yin-coin-panel__heading-text';
+    this.headingTextEl.append(this.titleEl, this.taglineEl);
+    this.headingEl.append(this.markEl, this.headingTextEl);
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'yin-coin-panel__blurb';
@@ -225,6 +233,7 @@ export class FocusCoinsPanelUI {
   _refresh() {
     const ctx = this._context();
     this.titleEl.textContent = t('YIN_COIN_PANEL_TITLE');
+    this.taglineEl.textContent = t('BRAND_YIN_WAY_TAGLINE');
     this.blurbEl.textContent = t('YIN_COIN_PANEL_BLURB');
     this.notForSaleEl.textContent = t('YIN_COIN_NOT_FOR_SALE');
     this.balanceEl.textContent = t('YIN_COIN_BALANCE').replaceAll(
@@ -425,9 +434,15 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__heading {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
         margin: 0 0 6px;
+      }
+      .yin-coin-panel__heading-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
       }
       .yin-coin-panel__mark {
         width: 56px;
@@ -441,6 +456,14 @@ export class FocusCoinsPanelUI {
         font-size: 1.05rem;
         font-weight: 600;
         letter-spacing: 0.01em;
+      }
+      .yin-coin-panel__tagline {
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.35;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        opacity: 0.88;
       }
       .yin-coin-panel__blurb,
       .yin-coin-panel__not-for-sale {
