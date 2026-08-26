@@ -292,6 +292,26 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 
 源码文件头与 `LICENSE` 用公司+作者并列的所有权句（见 `src/core/copyrightNotice.js`）。
 
+### 品牌精神句（Walking the Yin Way · 2026-08-27）
+
+**身份认同**问句与陈述水印——不是功能说明、不是硬推销。
+
+| 形态 | i18n 键 | EN | JA | zh（繁体 · draft） |
+|---|---|---|---|---|
+| 问句（邀请认同） | `BRAND_YIN_WAY_TAGLINE` | Walking the Yin Way? | 寅の道を歩む？ | 體驗寅之道嗎？ |
+| 首次造访双语 | `BRAND_YIN_WAY_TAGLINE_FIRST_VISIT_*` | EN 主行 + `(寅の道を歩む)` 副行 | 同左 | 同左 |
+| 陈述水印（导出） | `BRAND_YIN_WAY_SEAL` | Walking the Yin Way. · Focus Tiger | 寅の道を歩む。 · Focus Tiger | 體驗寅之道。 · Focus Tiger |
+
+**已接线场景（白名单）**
+
+| 场景 | 轨道 | 文案策略 |
+|---|---|---|
+| Yin's Collections 抽屉 Header 副标 | **C 轨**（寅币珍藏） | 跟 locale；**禁止**写 Sanctuary |
+| 首次 `first_session_complete` 后 Reflect 底栏 | Reflect | **仅一次**双语叠显 |
+| Quiet Line Save image PNG footer | 增长③ | 跟 locale · `resolveBrandYinWaySeal()` |
+
+**命名硬闸**：C 轨 = **Yin's Collections / 阿寅的珍藏**；B 轨付费内容 = **Sanctuary**——二者不得混称。实现 SSOT：`docs/task-briefs/task-brand-yin-way-tagline.md`。
+
 ---
 
 ## 十二、长期愿景（Vision）

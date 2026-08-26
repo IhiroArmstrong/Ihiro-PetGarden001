@@ -200,7 +200,7 @@ describe('dailyZenQuote', () => {
       quoteText:
         'The question of doing it right is also just a sound passing through.',
       title: 'A quiet line for today',
-      footer: 'Focus Tiger · with Yin',
+      footer: 'Walking the Yin Way. · Focus Tiger',
       dateKey: '2026-08-15',
       locale: 'en',
       backdropImage: { width: 1056, height: 864 },
@@ -235,7 +235,7 @@ describe('dailyZenQuote', () => {
     assert.equal(draws[0][7], QUIET_LINE_CARD.width);
     assert.equal(draws[0][8], bandH);
     assert.ok(texts.includes('A quiet line for today'));
-    assert.ok(texts.includes('Focus Tiger · with Yin'));
+    assert.ok(texts.includes('Walking the Yin Way. · Focus Tiger'));
     assert.ok(texts.includes('August 15, 2026'));
     assert.equal(
       texts.includes('2026-08-15'),
@@ -503,5 +503,11 @@ describe('dailyZenQuote', () => {
   it('must not import tip / sanctuary / practice badges', () => {
     const src = readFileSync(join(here, 'dailyZenQuote.js'), 'utf8');
     assert.equal(/tipJarGate|sanctuaryEntitlement|practiceBadgeAward/.test(src), false);
+  });
+
+  it('saveDailyZenQuoteImage uses brand seal resolver for footer', () => {
+    const src = readFileSync(join(here, 'dailyZenQuote.js'), 'utf8');
+    assert.match(src, /resolveBrandYinWaySeal/);
+    assert.doesNotMatch(src, /DAILY_ZEN_QUOTE_IMAGE_FOOTER/);
   });
 });
