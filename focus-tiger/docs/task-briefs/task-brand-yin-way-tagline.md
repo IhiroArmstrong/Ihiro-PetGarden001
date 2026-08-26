@@ -1,7 +1,7 @@
 # Task Brief · 品牌精神句「Walking the Yin Way?」
 
-> **状态**：Slice 1（C 轨珍藏 Header）**已合 #465**；Slice 2（首次完成 Reflect）**本支实现**；Slice 3（导出水印）**已拍板、未开工**  
-> **分支**：`feature/brand-yin-way-first-reflect`  
+> **状态**：Slice 1（C 轨珍藏 Header）**已合 #465**；Slice 2（首次完成 Reflect）**已合 #466**；Slice 3（导出水印）**本支实现**  
+> **分支**：`feature/brand-seal-export-surfaces`  
 > **权威交叉**：`PRODUCT_POSITIONING.md` · `FOCUS_COINS.md` §1（C 轨 = Yin's Collections，≠ Sanctuary）· `PRINCIPLES.md` 委婉身份印记 · `FLOWER_BLOW_WELCOME_DESIGN.md`（双语仅首次造访类）
 
 ---
@@ -62,7 +62,7 @@
 | `BRAND_YIN_WAY_TAGLINE` | Walking the Yin Way? | 寅の道を歩む？ | 體驗寅之道嗎？ |
 | `BRAND_YIN_WAY_TAGLINE_FIRST_VISIT_EN` | Walking the Yin Way? | （同 en · 双语主行） | （同 en · 双语主行） |
 | `BRAND_YIN_WAY_TAGLINE_FIRST_VISIT_JA` | 寅の道を歩む | 寅の道を歩む | 寅の道を歩む |
-| `BRAND_YIN_WAY_SEAL` | Walking the Yin Way. · Focus Tiger | （Slice 3 再定） | （Slice 3 再定） |
+| `BRAND_YIN_WAY_SEAL` | Walking the Yin Way. · Focus Tiger | 寅の道を歩む。 · Focus Tiger | 體驗寅之道。 · Focus Tiger |
 
 Slice 1 只接线 `BRAND_YIN_WAY_TAGLINE`；后三键先入字典供 Slice 2/3 使用。
 
