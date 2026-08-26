@@ -36,6 +36,7 @@ import {
   buildOverlaySnapshot,
   deriveTeaBubbleBusyTarget,
   deriveReminderBusySessionTarget,
+  deriveFocusAwarenessCardBusy,
   canAttemptFirstCard
 } from './core/overlaySlotArbitration.js';
 import { OVERLAY_SOURCES } from './core/overlaySlotContractRegistry.js';
@@ -700,6 +701,7 @@ async function init() {
     return WELCOME_EMOTION_KEYS.has(emotionController.getCurrentEmotionKey());
   }
   function playParrotMessengerNow() {
+    if (deriveReminderBusySessionTarget(buildLiveOverlaySnapshot())) return;
     const decision = arbitrateSpriteChannel({
       intent: SPRITE_OCCUPANCY.PARROT,
       source: SPRITE_SOURCES.PARROT,
@@ -915,17 +917,7 @@ async function init() {
 
   /** Busy overlays → skip awareness card (interval chime may still play). */
   function isFocusAwarenessCardBusy() {
-    if (fiveMomentsCompassUI.isOpen()) return true;
-    if (stateManager.state === STATES.CELEBRATE) return true;
-    if (microRitualUI?.isOpen?.() === true) return true;
-    if (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden') {
-      return true;
-    }
-    if (companionModePicker?.isOpen?.() === true) return true;
-    if (arrivalPractice?.isOpen?.() === true) return true;
-    if (reflectionMoment?.isOpen?.() === true) return true;
-    if (focusDurationPicker?.isOpen?.() === true) return true;
-    return false;
+    return deriveFocusAwarenessCardBusy(buildLiveOverlaySnapshot());
   }
 
   /**
@@ -996,7 +988,8 @@ async function init() {
   window.__zenCinemaCard = zenCinemaCardUI;
 
   const fiveMomentsCompassUI = new FiveMomentsCompassUI(document.body, {
-    onMomentSelect: (momentId) => handleFiveMomentSelect(momentId)
+    onMomentSelect: (momentId) => handleFiveMomentSelect(momentId),
+    onOpen: () => syncInAppReminderBanner()
   });
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
