@@ -198,3 +198,12 @@ test('Reflection card uses shared home clearance and globe side inset', () => {
   assert.match(src, /100vw - 176px/);
   assert.equal(src.includes('bottom:96px'), false);
 });
+
+test('Reflection mounts one-time bilingual brand tagline after first session', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, 'TigerReflectionMoment.js'), 'utf8');
+  assert.match(src, /shouldShowBrandYinWayFirstReflect/);
+  assert.match(src, /resolveBrandYinWayTagline\(\{[^}]*bilingualFirstVisit: true/);
+  assert.match(src, /mountReflectionBrandTagline/);
+  assert.match(src, /markBrandYinWayFirstReflectShown/);
+});
