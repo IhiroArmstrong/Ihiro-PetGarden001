@@ -1,7 +1,7 @@
 # Task Brief · 品牌精神句「Walking the Yin Way?」
 
-> **状态**：Slice 1（C 轨珍藏 Header）**本支实现**；Slice 2（首次完成 Reflect）· Slice 3（导出水印）**已拍板、未开工**  
-> **分支**：`feature/brand-yin-way-collections`  
+> **状态**：Slice 1（C 轨珍藏 Header）**已合 #465**；Slice 2（首次完成 Reflect）**本支实现**；Slice 3（导出水印）**已拍板、未开工**  
+> **分支**：`feature/brand-yin-way-first-reflect`  
 > **权威交叉**：`PRODUCT_POSITIONING.md` · `FOCUS_COINS.md` §1（C 轨 = Yin's Collections，≠ Sanctuary）· `PRINCIPLES.md` 委婉身份印记 · `FLOWER_BLOW_WELCOME_DESIGN.md`（双语仅首次造访类）
 
 ---

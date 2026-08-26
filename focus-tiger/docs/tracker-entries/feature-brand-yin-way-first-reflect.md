@@ -1,0 +1,3 @@
+# feature/brand-yin-way-first-reflect
+
+| 品牌精神句 · 首次 Reflect 底栏双语 | UI可见 | 待人工测试 | **前置**：本地无 `focus-tiger.brand-yin-way-first-reflect.v1`（或 DEV 重置）；`focus-tiger.retention-funnel.v1` 已有 `firstSessionCompleteAt` + `emitted.firstSession`（或当场首次达标完成）。**主路径**：`?sessionMinutes=1` → Sit → 达标 → Reflection 卡片 **Daily Wisdom 下方**见 `[data-testid=reflection-brand-yin-way-tagline]`：**Walking the Yin Way?** + 次行 **(寅の道を歩む)**；不挡 Skip/Continue。**回流**：关 Reflection 后再开第二场 → **不再**出现；珍藏 Header 副标仍随 locale、不双语。**375**：底栏换行可读。自动化：`brandYinWayTagline.test.js` · `brandYinWayFirstReflectGate.test.js` · `reflectionBrandTaglineMount.test.js` | — | — | — | `?sessionMinutes=1` · `#tiger-reflection-moment` | 2026-08-27 |
