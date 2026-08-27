@@ -83,6 +83,7 @@ TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 focus-tiger/
 ├─ docs/                          # 流程/设计文档，不参与构建
 │  ├─ PRODUCT_POSITIONING.md      # 品牌定位、核心使命与长期方向（产品语义顶层）
+│  ├─ FROM_APP_TO_CULTURE.md      # 文化探索方向锁（验证后再产品化；无运行时）
 │  ├─ TASKS.md
 │  ├─ PRINCIPLES.md
 │  ├─ ARCHITECTURE.md

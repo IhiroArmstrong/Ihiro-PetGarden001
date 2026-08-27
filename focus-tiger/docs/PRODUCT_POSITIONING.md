@@ -1,8 +1,8 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.4
-> 最后更新：2026-08-24
+> 版本：1.5
+> 最后更新：2026-08-27
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -11,6 +11,7 @@
 文档职责顺序：
 
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
+1a. `FROM_APP_TO_CULTURE.md`：**文化探索方向锁**（From App to Culture；验证框架；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
 4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；
@@ -311,6 +312,22 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 | Quiet Line Save image PNG footer | 增长③ | 跟 locale · `resolveBrandYinWaySeal()` |
 
 **命名硬闸**：C 轨 = **Yin's Collections / 阿寅的珍藏**；B 轨付费内容 = **Sanctuary**——二者不得混称。实现 SSOT：`docs/task-briefs/task-brand-yin-way-tagline.md`。
+
+本水印**不是**把 **The Yin Way** / **Awakeners** 锁成文化运动或社区官方名称。文化探索、Discord 实验室、Objects / Identity 产品化门闩见 `FROM_APP_TO_CULTURE.md`。
+
+---
+
+## 十一a、文化探索（From App to Culture · 2026-08-27）
+
+长期可探索「安静的数字实践文化」，**不是**再做一个正念内容库、社交网络、或更聪明的 AI。
+
+- **SSOT**：[`FROM_APP_TO_CULTURE.md`](./FROM_APP_TO_CULTURE.md)（方向锁；无运行时）。
+- **现网可声称**：Practice alone / Grow quietly（与本文使命一致）。
+- **现网不可声称**：已上线 App 内社区、Quiet Circles、公开 UGC、共同仪式平台。
+- **Discord**：炉火实验室，不是产品本体；接线另口令。
+- **Local AI**：平行主线；文化锁只约束「AI 服务什么气质」，不捆绑大改 Confide / Memory / YPE。
+
+任何「文化功能」提案须先过该文四档表（采纳验证 / 证据后产品化 / Backlog / 禁止）与六条 Culture Principles；仍不得绕过本文第十三节与 `PRINCIPLES.md`。
 
 ---
 
