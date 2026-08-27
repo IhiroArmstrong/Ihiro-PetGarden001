@@ -112,10 +112,10 @@ SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不�
 
 ## 6. 我认为最合理的下一刀
 
-1. **跑实验室 tool-call 探针**（`npm run companion:tool-call`）并记录 `/tmp/ft-l0-lab/tool-call-*.json`；过门 = `writeFalsePositives === 0`。  
-2. **关 Yin Memory 1d/1e + CI-02 tracker** 人工（行为应与 Tool Registry 改前一致）。  
-3. **仅探针过门后** 再排 read-tool 模型补漏（hybrid）；较弱：未过门就接 Qwen 进 send 路径。  
-4. **较弱**：仪式 generate（轨道 C，须单独拍板）；在未关 tracker 前开新 CI-xx。
+1. ~~跑实验室 tool-call 探针~~（2026-08-27 已过门：`writeFalsePositives === 0`）。  
+2. **Read Hybrid V1 已开工**（`task-confide-read-hybrid-v1.md`）：regex miss → 仅 read tool；lab 探针仍单独跑回归。  
+3. **关 Yin Memory 1d/1e + CI-02 tracker** 人工（canonical 句与改前一致）。  
+4. **较弱**：仪式 generate（轨道 C）；未关 tracker 前开新 CI-xx。
 
 **较弱选项**：把 Confide 扩成 App CLI（备份/更新/批量删）。
 

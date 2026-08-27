@@ -11,10 +11,12 @@ import {
   CONFIDE_EXECUTABLE_TOOLS,
   CONFIDE_TOOL_ID,
   CONFIDE_TOOL_RISK,
-  matchConfideExecutableTool
+  matchConfideExecutableTool,
+  isConfideHybridExecutableReadTool
 } from './confideExecutableTools.js';
 import {
   buildConfideToolCallLabPrompt,
+  buildConfideReadHybridPrompt,
   parseConfideToolCallJson,
   scoreConfideToolCall
 } from './confideToolCallParse.js';
@@ -69,11 +71,15 @@ describe('confide executable tool registry', () => {
       CONFIDE_EXECUTABLE_TOOLS[0].risk,
       CONFIDE_TOOL_RISK.READ
     );
+    assert.equal(CONFIDE_EXECUTABLE_TOOLS[0].readOnly, true);
+    assert.equal(isConfideHybridExecutableReadTool(CONFIDE_EXECUTABLE_TOOLS[0]), true);
     assert.equal(
       CONFIDE_EXECUTABLE_TOOLS[2].risk,
       CONFIDE_TOOL_RISK.LOCAL_REVERSIBLE
     );
     assert.equal(CONFIDE_EXECUTABLE_TOOLS[2].autoExecute, false);
+    assert.equal(CONFIDE_EXECUTABLE_TOOLS[2].readOnly, false);
+    assert.equal(isConfideHybridExecutableReadTool(CONFIDE_EXECUTABLE_TOOLS[2]), false);
   });
 });
 
@@ -105,6 +111,12 @@ describe('confide tool-call parse (lab)', () => {
     assert.match(prompt, /query_practice_duration/);
     assert.match(prompt, /none/);
     assert.match(prompt, /How long have I practiced\?/);
+  });
+
+  it('builds read hybrid prompt without forget', () => {
+    const prompt = buildConfideReadHybridPrompt('am I calmer?');
+    assert.match(prompt, /query_presence_trend/);
+    assert.equal(prompt.includes('forget_memory_entry'), false);
   });
 
   it('keeps fixture expected ids inside the allowed set', () => {

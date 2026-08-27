@@ -37,6 +37,8 @@ if (companionAllowed) {
     setFocusing: (focusing) =>
       ipcRenderer.invoke('desktop:companion-set-focusing', Boolean(focusing)),
     generate: (payload) => ipcRenderer.invoke('desktop:companion-generate', payload),
+    classifyReadTool: (payload) =>
+      ipcRenderer.invoke('desktop:companion-classify-read-tool', payload),
     onStatus: (cb) => {
       if (typeof cb !== 'function') return () => {};
       const wrapped = (_event, payload) => cb(payload);

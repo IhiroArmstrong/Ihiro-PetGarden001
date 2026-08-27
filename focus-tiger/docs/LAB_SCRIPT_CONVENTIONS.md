@@ -86,7 +86,7 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 cd focus-tiger/desktop && npm run companion:tool-call
 ```
 
-结果：`/tmp/ft-l0-lab/tool-call-<epoch>.json`。过门必要条件：`writeFalsePositives === 0`。fixture：`src/core/confide/confideToolCallFixtures.js`。**禁止**未过门就把 Qwen tool-call 接进 Confide send。
+结果：`/tmp/ft-l0-lab/tool-call-<epoch>.json`。过门必要条件：`writeFalsePositives === 0`。fixture：`src/core/confide/confideToolCallFixtures.js`。实验室 prompt 仍含 forget 测假阳性；**生产 Read Hybrid** 用 `buildConfideReadHybridPrompt`（无 forget），见 `task-confide-read-hybrid-v1.md`。
 
 质量七问（空历史，不要另起一组）：`你知道彤彤儿喜欢吃啥？` / `彤彤儿是谁？` / `Why are you happy?` / `What are you doing?` / `What do you want?` / `Where do you live?` / `Whom do you like?`。调用 `buildCompanionL2Prompt({ text, locale, history: [] })` + `LlamaChatSession`，`maxTokens: L2_MAX_TOKENS`。不要改生产提示词来迁就实验室。
 
@@ -120,7 +120,7 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 8. **`'</s>'` 控制符警告不是质量失败证据。** 0.6B 与 4B 都出现过；有警告仍可能出正常句子。
 9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
-11. **tool-call 探针 ≠ 生产路由。** 探针只评 JSON tool id；过门后仍须另开 hybrid 任务才能把 Qwen 接进 regex miss 补漏。
+11. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
 
 ---
 

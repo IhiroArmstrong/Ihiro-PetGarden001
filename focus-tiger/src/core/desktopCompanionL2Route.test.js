@@ -338,7 +338,9 @@ describe('desktop companion L2 isolation', () => {
       'utf8'
     );
     assert.match(preload, /desktop:companion-generate/);
+    assert.match(preload, /desktop:companion-classify-read-tool/);
     assert.match(ipcSrc, /desktop:companion-generate/);
+    assert.match(ipcSrc, /classifyReadTool/);
     assert.match(preload, /desktop:yin-personal-memory-get/);
     assert.match(ipcSrc, /desktop:yin-personal-memory-set-consent/);
     assert.match(preload, /desktop:yin-personal-memory-remember-from-confide/);
@@ -348,6 +350,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /onOpenMemoryPanel/);
     assert.match(ui, /shouldOfferYinMemoryConsent/);
     assert.match(ui, /matchConfideExecutableTool/);
+    assert.match(ui, /mayUseConfideReadHybrid/);
+    assert.match(ui, /buildConfideReadHybridPrompt/);
+    assert.match(ui, /resolveConfideReadHybridToolFromRaw/);
+    assert.match(ui, /_tryReadHybridThenContinue/);
     assert.match(ui, /CONFIDE_TOOL_ID\.FORGET_MEMORY_ENTRY/);
     assert.match(ui, /memory_forget/);
     assert.match(ui, /yinPersonalMemoryVerbalForget/);
@@ -359,6 +365,8 @@ describe('desktop companion L2 isolation', () => {
       'utf8'
     );
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
+    assert.match(runtime, /classifyReadTool/);
+    assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);
     
     assert.match(ui, /ypeMayUseCompanionGenerate/);
     assert.match(ui, /companionStyle:/);
