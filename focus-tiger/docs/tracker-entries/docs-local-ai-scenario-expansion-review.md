@@ -1,0 +1,1 @@
+| Local AI Layer Scenario Expansion Design Review | 纯后端/文档 | 仅单元测试覆盖 | 无运行时、无 generate IPC。读 `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`：会程 Phase 1–5；V1–V5 未拍板；MUST NOT ENTER 为产品原则；Top 3 为候选。勿当仪式 generate / Journey 口头删除已批准。 | — | — | — | 会前把该 md 发给设计师即可 | 2026-08-28 |
