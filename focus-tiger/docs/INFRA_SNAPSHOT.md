@@ -145,7 +145,7 @@
 ## §4 Local AI / Confide 口头白名单
 
 `last_sync`: 首版 · commit `fc61fd7f` · 2026-08-27  
-`SSOT`: [`CONFIDE_EXECUTABLE_INTENTS.md`](./CONFIDE_EXECUTABLE_INTENTS.md) · 规划 [`LOCAL_AI_SCENARIOS_V1.md`](./LOCAL_AI_SCENARIOS_V1.md)
+`SSOT`: [`CONFIDE_EXECUTABLE_INTENTS.md`](./CONFIDE_EXECUTABLE_INTENTS.md) · 规划 [`LOCAL_AI_SCENARIOS_V1.md`](./LOCAL_AI_SCENARIOS_V1.md) · Operating 方向锁 [`LOCAL_AI_OPERATING_LAYER.md`](./LOCAL_AI_OPERATING_LAYER.md)（无运行时）
 
 | ID | 数据 / 动作 | 状态 |
 |---|---|---|
@@ -227,7 +227,7 @@
 | 云 / Worker / OTP / Newsletter | §1 | `wrangler.jsonc` · `index.ts` · `ENV_CONFIG` §1 规则 |
 | 付费 / `isEntitled` / Support 卡 | §2 | `entitlementRegistry.js` · `FREE_PAID_MATRIX.md` |
 | 语言 / locale tier | §3 | `localeRegistry.js` |
-| Confide CI / 口头可执行 | §4 | `CONFIDE_EXECUTABLE_INTENTS.md` |
+| Confide CI / 口头可执行 | §4 | `CONFIDE_EXECUTABLE_INTENTS.md` · Operating 边界 `LOCAL_AI_OPERATING_LAYER.md` |
 | Electron L0 下载 / 模型 | §5 | `l0Config.js` |
 | Ambient 免费曲 / 深库锁 | §6 | `ambientEntitlement.js` |
 | 新 localStorage key / 备份范围 | §7 | `localStateKeys.js` · `practiceBackupSnapshot.js` |
