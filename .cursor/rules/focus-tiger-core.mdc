@@ -16,7 +16,8 @@ alwaysApply: true
 - 任务验证通过后：**默认** `git commit`（旁支 `feature/*` / `fix/*` / `docs/*`）→ **默认** `git push -u origin HEAD` → 开/更新 `--base develop` 的 PR；同回合汇报 hash、分支、文件、PR URL。
 - **禁止**自动合并进 `main`；合 `develop` 须 CI 绿（细则按需读 `focus-tiger-regression-lock.mdc`）。
 - 代码与文档同批 commit；只改代码、文档不进 commit = 假完成。
-- 禁止静默 commit；禁止 post-commit 自动 push。
+- 禁止静默 commit（commit 后须同回合汇报 hash、分支、文件）。
+- **禁止** post-commit **钩子**静默 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程（与「任务收尾默认 push 旁支 + 开 PR」不矛盾；细则见 `focus-tiger-regression-lock.mdc`「Commit 汇报与分支门禁」）。
 
 ## 任务纪律
 
@@ -31,11 +32,7 @@ alwaysApply: true
 
 ## 测试输出卫生（强制）
 
-跑 `npm run test*` / Playwright / `playwright install` / CI 日志后：
-
-- 回复里只写 **结论**：pass/fail 数量 + 失败用例名 + 一行报错；**禁止**把完整终端输出粘贴进对话（会随轮次线性累积计费）。
-- 需留档的详细日志 → 写磁盘（如 `focus-tiger/.tmp/test-output-<timestamp>.log`）；仅在排查时用 `Read`  targeted 段，**禁止**让大段日志在多轮里常驻上下文。
-- CI 优先结构化摘要（JUnit pass/fail、失败 case 一行）；全量 trace/截图仅在深挖**单个** case 时拉取。
+测试输出卫生规则见 `testing-strategy.mdc` §「读取 CI / 本地测试结果时的规则」，此处不重复。
 
 ## 按需加载索引
 
@@ -53,6 +50,6 @@ alwaysApply: true
 | 非用户点击的网络请求 | `focus-tiger-background-network.mdc` |
 | 调试本地 AI companion | `focus-tiger-companion-debug.mdc` |
 
-## 产品红线（极简 · 全文见 docs）
+## 产品红线
 
-正念伙伴非电子宠物；不制造焦虑；永不消失；诚实机制；序列转场禁止闪切（CapCut 溶解 ~1s）；Idle=呼吸×5→眨眼；主线情绪=2D PNG + `EmotionController`；UI 文案走 `t()` / `tPool()`。
+产品红线与架构硬性摘要见 `focus-tiger-docs.mdc` §「PRINCIPLES 硬性摘要」「ARCHITECTURE 硬性摘要」，此处不重复。
