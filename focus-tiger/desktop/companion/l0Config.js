@@ -43,6 +43,9 @@ export const L0_PROMPT =
 
 export const L0_MAX_TOKENS = 48;
 
+/** Read-hybrid JSON classify (regex miss only); shorter than L2 generate. */
+export const L0_TOOL_CLASSIFY_TIMEOUT_MS = 12_000;
+
 /** Fail the probe if first token is slower than this (ms). */
 export const L0_TTFT_FAIL_MS = 3000;
 

@@ -5,7 +5,7 @@
 
 /**
  * Confide Tool Registry V1: CI whitelist as named tools.
- * Production match stays regex. Qwen tool-call is lab-only until a probe passes.
+ * Production match stays regex-first; read hybrid may call L0 on regex miss only.
  * Not an open-domain agent. Not App CLI (backup / update stay out).
  */
 
@@ -36,6 +36,7 @@ export const CONFIDE_LAB_NONE_TOOL_ID = 'none';
  *   ciId: string,
  *   source: string,
  *   risk: string,
+ *   readOnly: boolean,
  *   autoExecute: boolean,
  *   match: (ctx: {
  *     route?: string | null,
@@ -51,6 +52,7 @@ export const CONFIDE_EXECUTABLE_TOOLS = Object.freeze([
     ciId: 'CI-00',
     source: 'practice_facts',
     risk: CONFIDE_TOOL_RISK.READ,
+    readOnly: true,
     autoExecute: true,
     match(ctx) {
       return shouldAnswerWithPracticeFacts(ctx?.route, ctx?.text);
@@ -61,6 +63,7 @@ export const CONFIDE_EXECUTABLE_TOOLS = Object.freeze([
     ciId: 'CI-02',
     source: 'presence_facts',
     risk: CONFIDE_TOOL_RISK.READ,
+    readOnly: true,
     autoExecute: true,
     match(ctx) {
       return shouldAnswerWithPresenceFacts(ctx?.route, ctx?.text);
@@ -71,6 +74,7 @@ export const CONFIDE_EXECUTABLE_TOOLS = Object.freeze([
     ciId: 'CI-01',
     source: 'memory_forget',
     risk: CONFIDE_TOOL_RISK.LOCAL_REVERSIBLE,
+    readOnly: false,
     autoExecute: false,
     match(ctx) {
       return shouldHandleVerbalForget({
@@ -109,4 +113,13 @@ export function getConfideExecutableToolById(id) {
   const key = typeof id === 'string' ? id.trim() : '';
   if (!key) return null;
   return CONFIDE_EXECUTABLE_TOOLS.find((tool) => tool.id === key) || null;
+}
+
+/**
+ * Hybrid L0 may only execute registry entries that are read-only and autoExecute.
+ * @param {(typeof CONFIDE_EXECUTABLE_TOOLS)[number] | null | undefined} tool
+ * @returns {boolean}
+ */
+export function isConfideHybridExecutableReadTool(tool) {
+  return Boolean(tool && tool.readOnly === true && tool.autoExecute === true);
 }

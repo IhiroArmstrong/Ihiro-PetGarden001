@@ -59,25 +59,28 @@
 3. 冲突扫描（强度 / 人设 / 职责）无未拍板疑点；  
 4. 更新 **本表** + Task Brief + tracker。
 
-**我认为最合理的下一候选（若做）**：实验室 tool-call 探针过门后，**只读** paraphrase 补漏（正则 miss → Qwen 选 read tool）；写工具仍正则或确认。较弱：在未关 1d/1e/CI-02 tracker 前开新 CI-xx。仪式 generate 须产品拍板。见 `LOCAL_AI_SCENARIOS_V1.md` §6 · `task-confide-tool-registry-v1.md`。
+**我认为最合理的下一候选（若做）**：Read Hybrid V1 已开工（`task-confide-read-hybrid-v1.md`）：regex miss → L0 只读 tool；写工具仍正则。较弱：在未关 tracker 前开新 CI-xx。
 
 ---
 
 ## Tool Registry（2026-08-26 · V1）
 
-**原则**：**Qwen decides（未来、白名单内）· Tools execute · Data stays local。** 现网仍是 **正则优先**；Qwen tool-call **仅实验室**，未过探针不得进生产 send。
+**原则**：**Qwen 候选 tool call · Registry 执行 · Data stays local。** 现网 **正则优先**；regex miss 时 L0 仅可补 **readOnly + autoExecute** 的 registry 项（2026-08-27 · Read Hybrid V1）。
 
 ```text
 ConfideToYinUI._onSend
-  → matchConfideExecutableTool (registry)
+  → Safety / emotion（不变）
+  → matchConfideExecutableTool (regex)
        → CI-00 / CI-02: 确定性读 + 模板
        → CI-01: 口头 Forget handler（非 autoExecute）
-  → 未命中 → YPE 门闩 → L3 短生成
+  → regex miss + fallback → classifyReadTool (L0, read prompt only)
+       → registry readOnly + autoExecute → 同上模板
+  → 仍未命中 → YPE 门闩 → L3 短生成
 ```
 
 | 风险级 | 例子 | 生产策略 |
 |---|---|---|
-| `read` | 练了多久、情绪趋势 | 正则命中即执行；未来可模型补漏 |
+| `read` | 练了多久、情绪趋势 | 正则优先；regex miss 可 L0 补漏（registry 闸门） |
 | `local_reversible` | 删一条 memory | 正则 + Consent；**禁止**模型直接写 |
 | `destructive` | bulk wipe、备份、更新 | **禁止**进 V1 registry |
 

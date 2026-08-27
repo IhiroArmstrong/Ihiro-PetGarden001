@@ -53,6 +53,9 @@ export function attachCompanionL1Ipc(deps) {
   deps.ipcMain.handle('desktop:companion-generate', (_event, payload) =>
     runtime.generate(payload && typeof payload === 'object' ? payload : {})
   );
+  deps.ipcMain.handle('desktop:companion-classify-read-tool', (_event, payload) =>
+    runtime.classifyReadTool(payload && typeof payload === 'object' ? payload : {})
+  );
 
   deps.ipcMain.handle('desktop:yin-personal-memory-get', () =>
     readYinPersonalMemoryState(deps.app.getPath('userData'))

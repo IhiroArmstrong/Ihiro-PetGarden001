@@ -20,6 +20,13 @@ export const CONFIDE_TOOL_CALL_ALLOWED_IDS = Object.freeze([
   ...CONFIDE_EXECUTABLE_TOOLS.map((tool) => tool.id)
 ]);
 
+/** Production read hybrid: none + auto-execute read tools only (no forget). */
+export const CONFIDE_READ_HYBRID_ALLOWED_IDS = Object.freeze([
+  CONFIDE_LAB_NONE_TOOL_ID,
+  CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION,
+  CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND
+]);
+
 const FENCE_RE = /```(?:json)?\s*([\s\S]*?)```/i;
 
 /**
@@ -47,6 +54,22 @@ export function extractJsonObjectText(raw) {
  * }}
  */
 export function parseConfideToolCallJson(raw) {
+  return parseConfideToolCallJsonWithAllowed(raw, CONFIDE_TOOL_CALL_ALLOWED_IDS);
+}
+
+/**
+ * @param {string} raw
+ * @returns {ReturnType<typeof parseConfideToolCallJson>}
+ */
+export function parseConfideReadHybridJson(raw) {
+  return parseConfideToolCallJsonWithAllowed(raw, CONFIDE_READ_HYBRID_ALLOWED_IDS);
+}
+
+/**
+ * @param {string} raw
+ * @param {readonly string[]} allowedIds
+ */
+function parseConfideToolCallJsonWithAllowed(raw, allowedIds) {
   const slice = extractJsonObjectText(raw);
   if (!slice) {
     return { ok: false, tool: null, arguments: {}, error: 'no_json_object' };
@@ -66,7 +89,7 @@ export function parseConfideToolCallJson(raw) {
       : typeof parsed.name === 'string'
         ? parsed.name.trim()
         : '';
-  if (!tool || !CONFIDE_TOOL_CALL_ALLOWED_IDS.includes(tool)) {
+  if (!tool || !allowedIds.includes(tool)) {
     return { ok: false, tool: tool || null, arguments: {}, error: 'unknown_tool' };
   }
   const args =
@@ -120,6 +143,26 @@ export function buildConfideToolCallLabPrompt(userText) {
     `- ${CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND}: mood / presence trend over recent days`,
     `- ${CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY}: forget one remembered topic (not bulk wipe)`,
     'Never invent backup, update, or delete-all tools.',
+    'If unsure, use none.',
+    `User: ${utterance}`
+  ].join('\n');
+}
+
+/**
+ * Production read hybrid prompt: read tools only; forget is never offered.
+ * @param {string} userText
+ */
+export function buildConfideReadHybridPrompt(userText) {
+  const utterance = typeof userText === 'string' ? userText.trim() : '';
+  return [
+    '/no_think',
+    'You map one user sentence to a single read-only tool. Reply with JSON only.',
+    'Schema: {"tool":"<id>","arguments":{}}',
+    'Allowed tool ids:',
+    `- ${CONFIDE_LAB_NONE_TOOL_ID}: chit-chat, crisis, mood labels, or anything else`,
+    `- ${CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION}: how long / how many days they have practiced`,
+    `- ${CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND}: mood / presence trend over recent days`,
+    'Never invent backup, update, forget, or delete-all tools.',
     'If unsure, use none.',
     `User: ${utterance}`
   ].join('\n');
