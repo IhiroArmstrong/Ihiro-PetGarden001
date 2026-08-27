@@ -49,6 +49,7 @@ alwaysApply: true
 | 可点击交互·PR 反馈三问 | `focus-tiger-interaction-feedback.mdc` |
 | 非用户点击的网络请求 | `focus-tiger-background-network.mdc` |
 | 调试本地 AI companion | `focus-tiger-companion-debug.mdc` |
+| 读/改 `focus-tiger/src` 大文件 | `focus-tiger-source-read-granularity.mdc` |
 
 ## 产品红线
 
