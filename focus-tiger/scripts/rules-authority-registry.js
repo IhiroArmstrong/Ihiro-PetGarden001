@@ -61,7 +61,9 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
   'focus-tiger/docs/SILENT_BEHAVIORS.md',
   'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
-  'focus-tiger/docs/BACKGROUND_NETWORK.md'
+  'focus-tiger/docs/BACKGROUND_NETWORK.md',
+  'focus-tiger/docs/INFRA_SNAPSHOT.md',
+  'focus-tiger/docs/ENV_CONFIG.md'
 ];
 
 /**
@@ -1329,6 +1331,45 @@ export const RULE_AUTHORITY_TOPICS = [
       '.cursor/rules/focus-tiger-docs.mdc',
       'focus-tiger/docs/PROCESS.md',
       'focus-tiger/docs/RULES_INDEX.md'
+    ]
+  },
+  {
+    id: 'infra-snapshot',
+    title: '基础设施现状摘要（Worker/KV/entitlement/locale 等低频配置快照）',
+    ssotPath: 'focus-tiger/docs/INFRA_SNAPSHOT.md',
+    ssotSection: 'INFRA_SNAPSHOT — 基础设施现状摘要（非 SSOT）',
+    ssotMustContain: [
+      /infra-snapshot/,
+      /snapshot_base/,
+      /stale_after_paths/,
+      /prod_worker_version/,
+      /§1 Cloud/
+    ],
+    topicSignals: [
+      /infra-snapshot/,
+      /INFRA_SNAPSHOT/,
+      /基础设施现状摘要/,
+      /prod_worker_version/
+    ],
+    mustCite: [/INFRA_SNAPSHOT\.md/],
+    restatementFingerprints: [
+      /stale_after_paths/,
+      /prod_worker_version/,
+      /KV bindings/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'infra-facts-in-env-config',
+        pattern:
+          /ENV_CONFIG\.md[^`\n]{0,40}(?:当前仓库事实|生产 Version|KV bindings 全表)/,
+        note: '环境现状事实应引用 INFRA_SNAPSHOT，不在 ENV_CONFIG 复述大表'
+      }
+    ],
+    citeExemptFiles: [
+      'focus-tiger/docs/ENV_CONFIG.md',
+      'focus-tiger/docs/RULES_INDEX.md',
+      '.cursor/rules/focus-tiger-docs.mdc'
     ]
   },
   {

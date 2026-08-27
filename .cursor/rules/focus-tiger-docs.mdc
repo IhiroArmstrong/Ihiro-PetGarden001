@@ -17,6 +17,7 @@ alwaysApply: false
 3. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；用户、JTBD、指标、付费或隐私相关任务 → 先对照 `MVP_PRODUCT_DEFINITION.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
 4. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。 
 5. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
+6. 接云 / entitlement / locale / Worker 任务 → 先读 `docs/INFRA_SNAPSHOT.md`（`RULES_INDEX` → `infra-snapshot`）；`stale_after_paths` 过期或改相关 SSOT 时再读源文件。
 
 ## 权威文档地图
 
@@ -55,6 +56,8 @@ alwaysApply: false
 | `docs/SILENT_BEHAVIORS.md` | **已知静默白名单**：不在表里的「没反应」测试时一律当 bug |
 | `docs/LAB_SCRIPT_CONVENTIONS.md` | **L0 实验室脚本路径 / 调用 / 命名 / 陷阱 / 已测候选索引**（只指路，不存测试数据）；新会话同类任务先读本文 |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
+| `docs/INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale 等；`infra-snapshot`）；接云/付费门闩前可读，过期再读 SSOT |
+| `docs/ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 
 ## PRINCIPLES 硬性摘要
 
