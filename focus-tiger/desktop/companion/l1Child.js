@@ -157,6 +157,37 @@ async function main() {
             });
           }
         });
+      } else if (line.startsWith('classify-read-tool ')) {
+        enqueue(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('classify-read-tool '.length));
+          } catch {
+            await emit({
+              event: 'classify_error',
+              id: '',
+              message: 'invalid_classify_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          try {
+            if (!session) await ensure();
+            if (!session || typeof session.generate !== 'function') {
+              throw new Error('companion_session_missing');
+            }
+            const text = await session.generate(payload.prompt, {
+              maxTokens: payload.maxTokens
+            });
+            await emit({ event: 'classified', id, text });
+          } catch (err) {
+            await emit({
+              event: 'classify_error',
+              id,
+              message: errorMessage(err)
+            });
+          }
+        });
       }
     }
   });

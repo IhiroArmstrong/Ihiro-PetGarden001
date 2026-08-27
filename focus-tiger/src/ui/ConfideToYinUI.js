@@ -16,13 +16,15 @@ import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
 import {
   formatPracticeDurationReply,
-  shouldAnswerWithPracticeFacts,
   summarizePracticeFacts
 } from '../core/confide/confidePracticeFacts.js';
+import { buildPresenceTrendReply } from '../core/confide/confidePresenceFacts.js';
 import {
-  buildPresenceTrendReply,
-  shouldAnswerWithPresenceFacts
-} from '../core/confide/confidePresenceFacts.js';
+  CONFIDE_TOOL_ID,
+  matchConfideExecutableTool
+} from '../core/confide/confideExecutableTools.js';
+import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
+import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
   ypeBuildJourneyInsights,
@@ -60,8 +62,7 @@ import {
 } from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 import {
   formatVerbalForgetReply,
-  resolveVerbalForgetTarget,
-  shouldHandleVerbalForget
+  resolveVerbalForgetTarget
 } from '../core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
@@ -650,7 +651,42 @@ export class ConfideToYinUI {
     if (!hit) return;
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
-    if (shouldAnswerWithPracticeFacts(hit.route, text)) {
+    const tool = matchConfideExecutableTool({
+      route: hit.route,
+      text,
+      memoryState: this._memoryState,
+      hasBridge: hasYinPersonalMemoryBridge()
+    });
+    if (tool) {
+      this._executeConfideTool(tool, hit, text);
+      return;
+    }
+    const routePayload = { text, hit, locale, corpusText };
+    if (
+      mayUseConfideReadHybrid({
+        route: hit.route,
+        regexTool: null,
+        hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
+        hasClassifyFn:
+          Boolean(this._companion) &&
+          typeof this._companion.classifyReadTool === 'function',
+        wideViewport: this._viewportAllowsGenerateLayer(),
+        focusing: Boolean(this._companionStatus?.focusing)
+      })
+    ) {
+      void this._tryReadHybridThenContinue(routePayload);
+      return;
+    }
+    this._continueAfterToolRouting(routePayload);
+  }
+
+  /**
+   * @param {{ id: string }} tool
+   * @param {object} hit
+   * @param {string} text
+   */
+  _executeConfideTool(tool, hit, text) {
+    if (tool.id === CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION) {
       const factsText = formatPracticeDurationReply(
         summarizePracticeFacts(this._practiceDaysStore),
         t
@@ -665,7 +701,7 @@ export class ConfideToYinUI {
       );
       return;
     }
-    if (shouldAnswerWithPresenceFacts(hit.route, text)) {
+    if (tool.id === CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND) {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
       const factsText = buildPresenceTrendReply(storage, t);
@@ -679,17 +715,61 @@ export class ConfideToYinUI {
       );
       return;
     }
-    if (
-      shouldHandleVerbalForget({
-        route: hit.route,
-        state: this._memoryState,
-        text,
-        hasBridge: hasYinPersonalMemoryBridge()
-      })
-    ) {
+    if (tool.id === CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY) {
       void this._handleVerbalForget(text, hit);
-      return;
     }
+  }
+
+  /**
+   * Regex miss → L0 read-only classify → registry execute or fall through.
+   * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
+   */
+  _tryReadHybridThenContinue(payload) {
+    const { text, hit, locale, corpusText } = payload;
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._renderDesktopStatus();
+    void Promise.resolve(
+      this._companion.classifyReadTool({
+        prompt: buildConfideReadHybridPrompt(text)
+      })
+    )
+      .then((result) => {
+        if (!this._open || epoch !== this._sendEpoch) return 'aborted';
+        const tool =
+          result?.ok && result.raw
+            ? resolveConfideReadHybridToolFromRaw(result.raw)
+            : null;
+        if (
+          tool &&
+          (tool.id === CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION ||
+            tool.id === CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND)
+        ) {
+          this._executeConfideTool(tool, hit, text);
+          return 'sync';
+        }
+        return this._continueAfterToolRouting(payload);
+      })
+      .catch(() => {
+        if (!this._open || epoch !== this._sendEpoch) return 'aborted';
+        return this._continueAfterToolRouting(payload);
+      })
+      .then((outcome) => {
+        if (epoch !== this._sendEpoch) return;
+        if (outcome === 'l3') return;
+        this._sending = false;
+        this._syncSendEnabled();
+        this._renderDesktopStatus();
+      });
+  }
+
+  /**
+   * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
+   * @returns {'l3' | 'consent' | 'sync'}
+   */
+  _continueAfterToolRouting(payload) {
+    const { text, hit, locale, corpusText } = payload;
     const wantGenerate = ypeMayUseCompanionGenerate({
       route: hit.route,
       generateEnabled: Boolean(this._companionStatus?.generateEnabled),
@@ -702,16 +782,17 @@ export class ConfideToYinUI {
         { route: hit.route, line: hit.line, text: corpusText, source: 'corpus' },
         text
       );
-      return;
+      return 'sync';
     }
     if (
       hasYinPersonalMemoryBridge() &&
       shouldOfferYinMemoryConsent(this._memoryState)
     ) {
       this._offerMemoryConsentBeforeL3({ text, hit, locale, corpusText });
-      return;
+      return 'consent';
     }
     this._runL3Generate({ text, hit, locale, corpusText });
+    return 'l3';
   }
 
   _injectStyles() {

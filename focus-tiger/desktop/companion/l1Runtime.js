@@ -25,7 +25,7 @@ import {
   buildCompanionL2Prompt
 } from './l2Persona.js';
 import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
-import { L0_MODEL_ID } from './l0Config.js';
+import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -83,6 +83,8 @@ export class CompanionL1Runtime {
     this._unloadedWaiters = [];
     /** @type {Map<string, (ev: object) => void>} */
     this._generateWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._classifyWaiters = new Map();
   }
 
   snapshot() {
@@ -119,6 +121,14 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (ev.event === 'classified' || ev.event === 'classify_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._classifyWaiters.get(id);
+      if (resolve) {
+        this._classifyWaiters.delete(id);
+        resolve(ev);
+      }
+    }
     if (ev.event === 'error') {
       const waiters = [...this._readyWaiters, ...this._unloadedWaiters];
       this._readyWaiters = [];
@@ -128,6 +138,10 @@ export class CompanionL1Runtime {
         resolve({ event: 'generate_error', message: ev.message || 'companion_error' });
       }
       this._generateWaiters.clear();
+      for (const resolve of this._classifyWaiters.values()) {
+        resolve({ event: 'classify_error', message: ev.message || 'companion_error' });
+      }
+      this._classifyWaiters.clear();
     }
     this._push();
   }
@@ -308,6 +322,61 @@ export class CompanionL1Runtime {
     await this._appendTurnLog(record);
     if (!sanitized) return { ok: false, reason: record.reason };
     return { ok: true, text: sanitized };
+  }
+
+  /**
+   * Regex-miss read hybrid: run constrained L0 JSON prompt; resolution stays in renderer.
+   * @param {{ prompt?: string }} [payload]
+   * @returns {Promise<{ ok: boolean, raw?: string, reason?: string }>}
+   */
+  async classifyReadTool(payload = {}) {
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    if (this.status.focusing) {
+      return { ok: false, reason: 'focusing' };
+    }
+    const prompt = typeof payload.prompt === 'string' ? payload.prompt.trim() : '';
+    if (!prompt) return { ok: false, reason: 'empty_prompt' };
+    const ready = await this.ensureReady();
+    if (!ready.ok || this.status.phase !== 'ready') {
+      return { ok: false, reason: ready.reason || 'not_ready' };
+    }
+    const id = randomUUID();
+    this._queue = this._queue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._classifyWaiters.set(id, resolve);
+      });
+      this._write(
+        `classify-read-tool ${JSON.stringify({
+          id,
+          prompt,
+          maxTokens: L0_MAX_TOKENS
+        })}`
+      );
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(
+            () => resolve({ event: 'timeout' }),
+            L0_TOOL_CLASSIFY_TIMEOUT_MS
+          );
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._classifyWaiters.delete(id);
+      }
+      return timed;
+    });
+    const ev = await this._queue;
+    const raw = ev?.event === 'classified' ? String(ev.text || '') : '';
+    if (!raw) {
+      return {
+        ok: false,
+        reason: ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_unparsed'
+      };
+    }
+    return { ok: true, raw };
   }
 
   /**

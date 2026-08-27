@@ -4,7 +4,8 @@
 > **内部名**：Focus Coins。**货币对外名（硬）**：**寅币** / **Focus Coins**（2026-08-19 取代「同坐点」；旧文案可视为别名，新产品面只用寅币）。禁止金币 / 积分 / Shop / Purchase 口吻。  
 > **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱 / 清供匣只作气质比喻，不作产品名。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)。  
-> **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（铁律见 `PRINCIPLES.md`）。
+> **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（铁律见 `PRINCIPLES.md`）。  
+> **文化层（2026-08-27）**：寅币是**个人象征货币**（自觉与自己相处过的时间），不是社交财富、不是 Shop。故事型 Objects / Practice Identity **只做设计验证**，须用户证据后再产品化；**不**推翻本文件清供 8。SSOT：`FROM_APP_TO_CULTURE.md`。
 
 > **L1 硬闸**：开会碰 Honesty / 完成记账邻接的分支前必须书面扫并行 PR；口头注意不算过闸（2026-08-18 分析师）。L1 **#338 已合**。  
 > **≠ 云端品味层**：服务端记账是可花点之后的防刷；与权重/文案上云分轨（见 `PROCESS` Backlog「云端品味层」）。
@@ -224,6 +225,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 ## 8. 红线（守住「不异化」）
 
 - 不做常驻换装柜、不改已有 PNG 序列。  
+- 不做寅币公开财富 / 社交货币（余额可留在 Collections 抽屉；禁止 Profile 炫耀比拼）。故事型 Objects / Practice Identity 运行时须先过 `FROM_APP_TO_CULTURE.md` 证据门。  
 - 不做连续签到锁门。  
 - 不做抽奖 / FOMO / 季节限时掉落（C 轨）。  
 - **时长 chip 静默 hint**（2026-08-18 拍板）：Focus / Breath picker 下 `#focus-coins-duration-hint`；说明满 5 分钟可累积寅币、用于钱买不到的身份资源。`?focusCoins=0` 不出现。禁止常驻 HUD、完成 toast 标「+N 寅币」。L3 抽屉仍是 Yin's Collections。

@@ -1,8 +1,8 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.4
-> 最后更新：2026-08-24
+> 版本：1.5
+> 最后更新：2026-08-27
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -11,6 +11,7 @@
 文档职责顺序：
 
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
+1a. `FROM_APP_TO_CULTURE.md`：**文化探索方向锁**（From App to Culture；验证框架；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
 4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；
@@ -90,7 +91,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 - 当前不承诺 AI 教练、心理咨询、儿童产品或企业员工管理功能；
 - **Wellness disclaimer（2026-08-14；2026-08-15 改落点）**：应用内须说明本产品是专注力 / 正念练习空间，用于 build focus skill、practice mindfulness、reduce everyday stress；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师、治疗师或医生；并含标准化兜底句 **not intended to diagnose, treat, cure, or prevent any disease**。落点：（1）**常驻查阅（默认）**：**?** → `#onboarding-app-purpose` 免责区块（不在冷启动自动弹出，以免吓跑用户）；（2）Privacy Sheet 一句交叉引用；（3）QA 仅 `?wellnessFirst=1` 可强制 `#onboarding-wellness-first` Got it 卡。文案键 `HINT_APP_PURPOSE_WELLNESS_*`（en + ja）。禁止把功能写成治疗焦虑、抑郁或其它临床病症。危机语料 `confide` `safety-01` 须与此边界一致（指向真实求助渠道 + 不能代替专业帮助），不另写一套。红线见 `PRINCIPLES.md`「一般身心练习，不是诊疗」。
 - 当前不因长期愿景而提前实现多角色、换装 UI、多场景、成就墙或复杂成长树；
-- **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练。**默认**本地分类 + 人工语料检索。**唯一已拍板例外**：仅限 Electron **宽屏**、用户主动打开的同一入口、仪式文案与 Confide 语料都未接住时，才允许受约束短生成——**不是**全面允许生成；**窄屏 / 手机没有本地智能体**（见下「禅意倾听者」；Web/PWA Brief `task-confide-to-yin-v1.md`；桌面例外 Brief `task-desktop-on-device-companion.md`）。
+- **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练。**默认**本地分类 + 人工语料检索。**唯一已拍板例外**：仅限 Electron **宽屏**、用户主动打开的同一入口、仪式文案与 Confide 语料都未接住时，才允许受约束短生成——**不是**全面允许生成；**窄屏 / 手机没有本地智能体**（见下「禅意倾听者」；Web/PWA Brief `task-confide-to-yin-v1.md`；桌面例外 Brief `task-desktop-on-device-companion.md`）。**系统操作**（备份 / 更新 / 导出 / 改设置）**不**经由阿寅之口；长期入口为 Auto-Operating（`LOCAL_AI_OPERATING_LAYER.md`，方向锁、未实现）。
 
 长期愿景不是当前功能承诺。任何扩展仍须遵守 `PRINCIPLES.md` 的「价值优先于复杂度」与 `PROCESS.md` 的立项流程。
 
@@ -291,6 +292,42 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 > © 2026 Ihiro Armstrong Hao Hoh. All rights reserved.
 
 源码文件头与 `LICENSE` 用公司+作者并列的所有权句（见 `src/core/copyrightNotice.js`）。
+
+### 品牌精神句（Walking the Yin Way · 2026-08-27）
+
+**身份认同**问句与陈述水印——不是功能说明、不是硬推销。
+
+| 形态 | i18n 键 | EN | JA | zh（繁体 · draft） |
+|---|---|---|---|---|
+| 问句（邀请认同） | `BRAND_YIN_WAY_TAGLINE` | Walking the Yin Way? | 寅の道を歩む？ | 體驗寅之道嗎？ |
+| 首次造访双语 | `BRAND_YIN_WAY_TAGLINE_FIRST_VISIT_*` | EN 主行 + `(寅の道を歩む)` 副行 | 同左 | 同左 |
+| 陈述水印（导出） | `BRAND_YIN_WAY_SEAL` | Walking the Yin Way. · Focus Tiger | 寅の道を歩む。 · Focus Tiger | 體驗寅之道。 · Focus Tiger |
+
+**已接线场景（白名单）**
+
+| 场景 | 轨道 | 文案策略 |
+|---|---|---|
+| Yin's Collections 抽屉 Header 副标 | **C 轨**（寅币珍藏） | 跟 locale；**禁止**写 Sanctuary |
+| 首次 `first_session_complete` 后 Reflect 底栏 | Reflect | **仅一次**双语叠显 |
+| Quiet Line Save image PNG footer | 增长③ | 跟 locale · `resolveBrandYinWaySeal()` |
+
+**命名硬闸**：C 轨 = **Yin's Collections / 阿寅的珍藏**；B 轨付费内容 = **Sanctuary**——二者不得混称。实现 SSOT：`docs/task-briefs/task-brand-yin-way-tagline.md`。
+
+本水印**不是**把 **The Yin Way** / **Awakeners** 锁成文化运动或社区官方名称。文化探索、Discord 实验室、Objects / Identity 产品化门闩见 `FROM_APP_TO_CULTURE.md`。
+
+---
+
+## 十一a、文化探索（From App to Culture · 2026-08-27）
+
+长期可探索「安静的数字实践文化」，**不是**再做一个正念内容库、社交网络、或更聪明的 AI。
+
+- **SSOT**：[`FROM_APP_TO_CULTURE.md`](./FROM_APP_TO_CULTURE.md)（方向锁；无运行时）。
+- **现网可声称**：Practice alone / Grow quietly（与本文使命一致）。
+- **现网不可声称**：已上线 App 内社区、Quiet Circles、公开 UGC、共同仪式平台。
+- **Discord**：炉火实验室，不是产品本体；接线另口令。
+- **Local AI**：平行主线；文化锁只约束「AI 服务什么气质」，不捆绑大改 Confide / Memory / YPE。
+
+任何「文化功能」提案须先过该文四档表（采纳验证 / 证据后产品化 / Backlog / 禁止）与六条 Culture Principles；仍不得绕过本文第十三节与 `PRINCIPLES.md`。
 
 ---
 

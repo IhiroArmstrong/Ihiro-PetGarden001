@@ -3,7 +3,7 @@
 
 本文档记录开发组织纪律。完整协作约定（角色分工、Task Brief 书写规范、文档更新规则、日常协作流程）见 **COLLAB.md**。
 
-权威文档索引另见：`PRODUCT_POSITIONING.md` / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）/ **[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)**（设计上就该没反应的白名单）/ **[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)**（点击接收反馈 vs 结果反馈；`RULES_INDEX` → `interaction-feedback`）/ **[`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md)**（实现前冲突扫描；`RULES_INDEX` → `feature-conflict-review`）/ **`DEVELOP_DEBT_INVENTORY.md`**（存量验证债务）/ **[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)**（known-risky **优先人工验收步骤**）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**L0 实验室脚本路径 / 命名 / 已测候选索引**见 **[`LAB_SCRIPT_CONVENTIONS.md`](./LAB_SCRIPT_CONVENTIONS.md)**（只指路，不存测试数据）。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
+权威文档索引另见：`PRODUCT_POSITIONING.md` / **`FROM_APP_TO_CULTURE.md`**（文化探索方向锁） / `MVP_PRODUCT_DEFINITION.md` / `PRINCIPLES.md` / `ARCHITECTURE.md` / `DESIGN.md` / **`RESPONSIVE_LAYOUT.md`** / `EMOTION_BIBLE.md` / `CHARACTER_BIBLE.md` / `TASKS.md` / `TEST_TRACKER.md` / **`DEV_WORKFLOW_QUALITY.md`**（如何改善开发工作流来保证开发质量）/ **`EDGE_CASES.md`**（静默失败与边角观察册）/ **[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)**（设计上就该没反应的白名单）/ **[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)**（点击接收反馈 vs 结果反馈；`RULES_INDEX` → `interaction-feedback`）/ **[`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md)**（实现前冲突扫描；`RULES_INDEX` → `feature-conflict-review`）/ **`DEVELOP_DEBT_INVENTORY.md`**（存量验证债务）/ **[`KNOWN_RISKY_TEST_CHECKLIST.md`](./KNOWN_RISKY_TEST_CHECKLIST.md)**（known-risky **优先人工验收步骤**）。**规则主题 → 唯一权威来源**见 **[`RULES_INDEX.md`](./RULES_INDEX.md)**。**L0 实验室脚本路径 / 命名 / 已测候选索引**见 **[`LAB_SCRIPT_CONVENTIONS.md`](./LAB_SCRIPT_CONVENTIONS.md)**（只指路，不存测试数据）。**Local AI Operating Layer（方向锁 · 无运行时）**见 **[`LOCAL_AI_OPERATING_LAYER.md`](./LOCAL_AI_OPERATING_LAYER.md)**。**产品 z-index 登记**见 **[`Z_INDEX.md`](./Z_INDEX.md)**。**Git 分支与合并门禁**见仓库根目录 **[`WORKFLOW.md`](../../WORKFLOW.md)**（`main` = 稳定可发布，`develop` = 日常开发；**SemVer / 稳定 tag** 见同文件「语义化版本与稳定发布点」，`RULES_INDEX` → `git-semver-release`）。**预览浏览器与能耗**见 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc)（`RULES_INDEX` → `browser-energy`）。**本地 Cursor 高能耗（索引 / 并行 Agent / Cloud）**见下文「本地 Cursor 能耗」。
 
 ---
 
@@ -58,12 +58,15 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-08-26（UTC+8） · **Local AI 扩场景会审表入库（未拍板）** · **YPE L2 算法契约已锁**（五键→Pack 闭包；locale/Worker 未开工）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-08-28（UTC+8） · **Local AI 扩场景会审（未拍板）** · **Local AI Operating Layer 方向锁**（只文档；≠ Confide）· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；Discord 实验室另口令；Lanterns / Identity Runtime 须证据） · **YPE L2 算法契约已锁**（五键→Pack 闭包；locale/Worker 未开工）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Quiet Line overlay 未开工 · Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
+- **Local AI 扩场景会审（2026-08-28 · 未拍板 · 无运行时）**：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。V1–V5 现场唱名；不改 `LOCAL_AI_SCENARIOS_V1.md` 政策句。
+- **Local AI Operating Layer（2026-08-27 · 方向锁 · 无运行时）**：Yin = 陪伴；Local AI = 理解；Auto-Operating = 系统操作入口。Backup / Update / MCP **不**进 Confide。SSOT `LOCAL_AI_OPERATING_LAYER.md`。Confide 代码本轨不改；#472 仍待人工测。
+- **From App to Culture（2026-08-27 · 方向锁 · 无运行时）**：安静数字实践文化的探索框架；六条 Culture Principles；四档（验证 / 证据后产品化 / Backlog / 禁止）；Discord = 实验室非产品；Local AI 平行主线。SSOT `FROM_APP_TO_CULTURE.md`。**下一步**：设计师文化原型；另口令 Discord 接线。**不开工** Global Lanterns / Circle / Gallery / Identity Runtime。
 - **Yin Personalization Engine Architecture V1（2026-08-26 · 方向锁 + L0/L1 + L2 契约 + Consent 过稿 + 身份键 + 算法契约）**：编排层。核心原则：云端可以让阿寅越来越聪明，但不能让阿寅因为没有网络而消失。**L0/L1** 已开工。L2 **契约**已合 #454。Consent：关即删附录有条件通过。身份：本机随机 `ype_profile_id`（#456）。算法：五键→Pack 闭包（`task-l2-personalization-algorithm.md`）。Worker **未开工**。SSOT `YIN_PERSONALIZATION_ENGINE.md`。
 - **Yin Personal Memory Architecture V1（2026-08-24 · 方向锁）**：设计师 12 点入库；三套边界写死。**2026-08-25**：AE 能聊用户书面关单；口令「开工 Yin Personal Memory」→ **Slice 0 运行时**（读 `PracticeDaysStore`，禁 Qwen 编时长）。Slice 1a Consent + store 骨架已合（#427）；Slice 1b Remember 已合（#428）；Slice 1c 列表+Forget **本旁支**（`task-yin-memory-slice-1c-list-forget.md`）；层 3 注入 **仍未做**。Brief `task-yin-memory-slice-0-practice-facts.md`。
 - **练习备份后台网络错峰（2026-08-23 · 本旁支改运行时）**：已同意备份的用户，Idle 静默上传改到约 2.5s（让开首段呼吸）；busy 含 Arrival / Honesty 叠层，叠层结束会短重试；空库恢复同样 busy；白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 cloud-ok。OTP 点击路径未改。慢网 Idle/Arrival 流畅度仍待人工（TRACKER 碎片）。下两条仍未开工：品味层开机预取、陪伴首次下载。
@@ -423,6 +426,7 @@
 
 **下一步计划**：
 
+- **开工前优先级（2026-08-27 · 文化）**：`FROM_APP_TO_CULTURE.md` 已锁。**禁止**插队开 Global Lanterns / Circle / Gallery / Practice Identity Runtime。Discord 接线、文化原型属另口令 / 设计师。工程主线仍是 Confide / Memory / YPE / Checkout / Collections QA。
 - **开工前优先级（2026-08-23 补）**：练习备份后台网络错峰 **本旁支已改运行时**（待合 develop）。下两条仍须口令：品味层开机预取错峰 → 陪伴首次下载慢网核验。禁止和本运行时 PR 混修。Quiet Line 云端 overlay 仍未接线，下一刀须先答三问。
 - **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
@@ -543,6 +547,8 @@
 **最近拍板（2026-08-04）**：FocusHUD **否决「随风浮动」**——只保留毛玻璃隐退（Arrival 式半透明）；禁止整卡 `translate`/微旋转漂浮，以免与静置 chrome 风格不统一。见 `DESIGN.md` FocusHUD；`TEST_TRACKER`「冷启动首屏呼吸感」。
 
 **最近拍板（2026-08-01）**：场景动画——Honesty **≤20 / ≥30**；日语合十；勿接已取代；**Dispatcher 必做**；设计师其余项**一批**进 A′+B（非整碎）；驳回完成池 dance；Milestone/stretch/en 鞠躬已接线免重做。Brief `task-scene-animation-inventory-wire-slice-b.md`。
+
+**最近拍板（2026-08-27）**：**From App to Culture** 方向锁入库——文化是探索假设，须用户自发认同后再产品化；**不**锁 The Yin Way / Awakeners 为运动名；Discord = 实验室（另口令接线）；Objects / Identity / Lanterns **先设计验证**。SSOT `FROM_APP_TO_CULTURE.md`。
 
 **最近拍板（2026-07-31）**：**场景→动画接线表**正式产品稿；**Slice A** 已实现并合 develop（PR #59）。
 
@@ -995,6 +1001,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **可研种子**：本地配方导出、Reflection/菜单侧「正念卡片」存图（延续 Wallpapers / Quiet Line；**禁止**一键社交分享作核心卖点）；
 - **默认不做**：社区 Gallery、排行/Popular、创作者分成、茶包代币、**Pro Pass 订阅**（创作者生态概念，**≠** Yin Membership；与「无账号」基线及平台级复杂度冲突——默认不做社区订阅通行证）；
 - 艺术家联名轨若未来做，优先作 **Sanctuary 内容包 / 一次性 IAP**，不先建 UGC 平台。
+- **文化门闩（2026-08-27）**：公开 Ambient / Gallery 须先过 `FROM_APP_TO_CULTURE.md` Evidence Review；现网本地上传已够 PHASE 1。
 
 - **复杂度评级**：平台级高（账号、审核、CDN、版权、结算）
 - **价值定位**：长期相邻赛道；**不是**当前差异化主线
@@ -1013,7 +1020,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 - **复杂度评级**：中（轻量 presence 后端或先做可关视觉隐喻实验）
 - **价值定位**：无压力 Co-presence；卖同频温暖而非社交压力
-- **排期**：建议 v1.1+ 可选氛围实验；口令示例：「评估异步共修灯火」
+- **排期**：建议 v1.1+ 可选氛围实验；**产品化默认须先过** `FROM_APP_TO_CULTURE.md` Culture Evidence Review（Alone, together 有证据）；口令示例：「评估异步共修灯火」
 
 ### Backlog:节日主题引擎（Seasonal Theme · B 轨 · 2026-08-11 排期）
 

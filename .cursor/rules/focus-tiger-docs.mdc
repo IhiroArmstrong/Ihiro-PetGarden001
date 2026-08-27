@@ -17,12 +17,14 @@ alwaysApply: false
 3. 产品定位、范围、品牌措辞相关任务 → 先对照 `PRODUCT_POSITIONING.md`；用户、JTBD、指标、付费或隐私相关任务 → 先对照 `MVP_PRODUCT_DEFINITION.md`；情绪、互动、文案相关任务 → 先对照 `EMOTION_BIBLE.md`。
 4. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。 
 5. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
+6. 接云 / entitlement / locale / Worker 任务 → 先读 `docs/INFRA_SNAPSHOT.md`（`RULES_INDEX` → `infra-snapshot`）；`stale_after_paths` 过期或改相关 SSOT 时再读源文件。
 
 ## 权威文档地图
 
 | 文档 | 用途 |
 |---|---|
 | `docs/PRODUCT_POSITIONING.md` | **品牌与产品战略顶层**：核心使命、正念伙伴定位、宁静型游戏化、反馈分级与长期边界；产品语义层级高于 `DESIGN.md` |
+| `docs/FROM_APP_TO_CULTURE.md` | **文化探索方向锁**：From App to Culture；六条 Culture Principles；证据后再产品化；**无运行时** |
 | `docs/MVP_PRODUCT_DEFINITION.md` | **MVP 产品策略基线**：首要用户、JTBD、竞争替代品、验证指标、付费假设与隐私承诺；假设不等同于已上线功能 |
 | `docs/PRODUCT_MOMENTS.md` | **一天叙事框架（Five Moments）**：Arrive / Focus / Recover / Transition / Reflect；位于定位之下、`TASKS` 之上，不推翻已有实现 |
 | `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
@@ -32,6 +34,9 @@ alwaysApply: false
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/YIN_PERSONAL_MEMORY.md` | **阿寅个人记忆架构 V1**（方向锁；≠ 练习云备份 / Journey Log / `turns.jsonl`） |
 | `docs/YIN_PERSONALIZATION_ENGINE.md` | **Yin Personalization Engine V1**（方向锁；L0/L1 本地运行时；≠ Memory / 品味层 / Qwen；L2 契约/Consent/身份/算法已拍、Worker 未开工） |
+| `docs/CONFIDE_EXECUTABLE_INTENTS.md` | Confide 口头白名单 + Companion Tool Registry（≠ Operating Layer） |
+| `docs/LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划（Confide 轨道 A/B/C） |
+| `docs/LOCAL_AI_OPERATING_LAYER.md` | **Local AI Operating Layer**（方向锁；Auto-Operating ≠ Yin；只设计无运行时） |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
 | `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |
@@ -55,6 +60,8 @@ alwaysApply: false
 | `docs/SILENT_BEHAVIORS.md` | **已知静默白名单**：不在表里的「没反应」测试时一律当 bug |
 | `docs/LAB_SCRIPT_CONVENTIONS.md` | **L0 实验室脚本路径 / 调用 / 命名 / 陷阱 / 已测候选索引**（只指路，不存测试数据）；新会话同类任务先读本文 |
 | `docs/RULES_INDEX.md` | **规则主题 → 唯一权威来源**（工作流 / Git / 回归锁 / 文档契约）；新增规则先查此表 |
+| `docs/INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale 等；`infra-snapshot`）；接云/付费门闩前可读，过期再读 SSOT |
+| `docs/ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 
 ## PRINCIPLES 硬性摘要
 

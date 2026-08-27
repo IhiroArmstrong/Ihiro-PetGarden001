@@ -1,6 +1,7 @@
 ---
 本项目文档已拆分为以下结构，请在需要时查阅对应文件：
 - 产品定位(品牌使命与长期方向): /docs/PRODUCT_POSITIONING.md
+- 文化探索方向锁(From App to Culture；验证后再产品化): /docs/FROM_APP_TO_CULTURE.md
 - 项目原则(硬性红线): /docs/PRINCIPLES.md
 - 架构设计(模块职责边界): /docs/ARCHITECTURE.md
 - 产品设计(角色设定与状态语义): /docs/DESIGN.md
@@ -215,7 +216,20 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L3** | **Yin's Collections** 抽屉；挥手点播走珍藏底栏 | `feature/yin-coin-l3-surface` | **#352+#353+#354 已合** |
 | **本旁支** | 珍藏挥手点播 Play；抽屉仍清供 8 | `feature/focus-coins-wave-playback` | 进行中 |
 
-合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。
+合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md`。
+
+---
+
+## 📍 From App to Culture（2026-08-27 · 方向锁）
+
+> 把已有种子组成可验证的文化假设。**无运行时。** 权威 `FROM_APP_TO_CULTURE.md`。
+
+| 项 | 状态 |
+|---|---|
+| 战略锁本文 | **本支** |
+| 设计师文化原型（Objects / Identity / Quiet Social / Discord 概念） | 待 Design Review · **不排工程** |
+| Discord 实验室接线 Join our community | **另口令** |
+| Global Lanterns / Identity Runtime / 公开 Ambient | **证据后门闩** · 见 PROCESS Backlog |
 
 ---
 
@@ -263,7 +277,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工验收；并行合 Presence Signals（CI-02）。较弱：仪式 generate 扩权（须产品拍板）。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。扩场景**产品会审**（未拍板）：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。
+**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**（不改代码除非测出 bug）。至多一个新 read tool 须另拍板。Operating 只文档：`LOCAL_AI_OPERATING_LAYER.md`。较弱：仪式 generate；把 Confide 做成 CLI。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。扩场景**产品会审**（未拍板）：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。
 
 ---
 
@@ -332,7 +346,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 以下内容明确不在本次v5.0设计范围内，待Phase 0-1验证核心体验后再评估是否需要：
   - 奇遇系统(随机访客等惊喜机制)
   - 环境/角色皮肤商业化
-  - 社交/多人共修功能
+  - 社交/多人共修功能（App 内 SNS **禁止**本探索期；Discord 实验室与 Lanterns 见 `FROM_APP_TO_CULTURE.md`）
 
 原因：单指标单角色产品的核心价值在于"简单直接"，
 过早引入这些曾经为"三指标盆景世界"设计的扩展机制，

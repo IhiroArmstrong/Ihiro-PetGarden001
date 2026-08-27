@@ -30,6 +30,7 @@ alwaysApply: false
    - **问**用户是否要新开 worktree/分支处理（避免试错脏了其它任务）。
    - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或 **`test:e2e:changed --` 单个 spec**）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止多文件 changed / 全量 / 直调长列表（脚本+hook 硬拦；`RUN_E2E_LOCAL=true` 逃生口会打警告）。
 7. **上下文范围控制（防止大规模误读）**
+   - 单文件粒度见 `focus-tiger-source-read-granularity.mdc`（`RULES_INDEX` → `source-read-granularity`）。
    - 禁止一次性读取/索引整个仓库或大范围目录树，除非用户当回合明确批准范围。
    - 默认以 `.cursorignore` 为准排除 `node_modules`、构建产物（`dist`/`build`/`.next`/`out`）、大体积媒体资源（音频/视频/图片/字体）、大数据文件；若发现这类文件未被排除，先提醒用户补充 `.cursorignore`，不要直接把它们读入上下文。
    - 涉及跨目录 / 多文件（≥5 个文件）搜索或读取前，先说明预计扫描范围，等待用户确认后再执行，不要一次性拉取大范围上下文。

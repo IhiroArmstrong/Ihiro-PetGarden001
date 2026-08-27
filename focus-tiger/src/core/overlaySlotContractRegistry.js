@@ -83,7 +83,7 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     id: OVERLAY_SOURCES.HONESTY_PANEL,
     kind: OVERLAY_SLOT_KIND.VISUAL_PRIMARY,
     tier: 5,
-    readers: 'Honesty duration/breath/thanks; tea/reminder busy (target)'
+    readers: 'Honesty duration/breath/thanks + prompt; tea/reminder busy (target)'
   },
   {
     id: OVERLAY_SOURCES.FOCUS_DURATION_PICKER,

@@ -12,10 +12,17 @@
 | **禁止** | 承诺具名云保管同步；简介卡内嵌整篇长文 |
 | i18n | en + ja 对齐（zh draft 同步） |
 
-## 简介气质（已接线 `HINT_APP_PURPOSE_BODY`）
+## 简介气质（已接线 `HINT_APP_PURPOSE_BODY` · 2026-08-27）
 
-> Focus Tiger is a mindful companion for focus and presence — a quiet place for practice, at your own pace.  
-> No pressure, no ads. Practice stays on this device. We don’t mine your reflections.
+> **Title (`HINT_APP_PURPOSE_TITLE`)**: What Focus Tiger is  
+> **Body**:
+>
+> A quiet digital culture for people who want to live more consciously.  
+> Practice alone.  
+> Grow quietly.  
+> Meet others who do the same.
+>
+> Local first: no ads, no data mining. Your reflections stay on this device.
 
 **次要链**：`Privacy` → `#onboarding-privacy-sheet` → **Back** 回简介。
 
