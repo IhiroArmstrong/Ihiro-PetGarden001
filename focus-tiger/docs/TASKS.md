@@ -277,7 +277,27 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**（不改代码除非测出 bug）。至多一个新 read tool 须另拍板。Operating 只文档：`LOCAL_AI_OPERATING_LAYER.md`。较弱：仪式 generate；把 Confide 做成 CLI。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。扩场景**产品会审**（未拍板）：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。
+**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**。Phase 1 须**分项口令**（见下 §Local AI Phase 1）；**禁止**因 PO 拍板自动并行开工全部 runtime。较弱：V2 Journey Delete · Don't save this · Reflection **shipping**。
+
+---
+
+## 📍 Local AI Phase 1（2026-08-28 · PO 正式拍板）
+
+> **SSOT**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md`  
+> **会审输入**：#462 · 设计师预审 #475 · **PO 决策本 PR**  
+> **硬规则**：Brief 存在 ≠ 开工；**Validation ≠ Shipping**
+
+| 轨 | 内容 | Brief | PO | 状态 |
+|---|---|---|---|---|
+| **1A** | NL Actions MVP：Forget（CI-01）+ Show memory read | `task-local-ai-phase1-nl-actions-mvp.md` | **CORE** | Brief 已建 · **未开工** |
+| **1B** | Ask Journey / Presence · Retrieve + bounded Describe | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | Brief 已建 · **未开工** |
+| **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | Brief 已建 · **未开工** |
+| **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
+| **—** | Don't save this | — | **未批准** | — |
+
+**Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
+
+**我认为最合理的 Phase 1 开工顺序**：① #472 人工测 → ② **口令 1B**（含 CI-02 描述性问法）→ ③ **口令 1A**（Show memory）→ ④ **口令 1C validation**（非 shipping）。较弱：1C 与 1A/1B 同 PR；未 validation 就 ship Reflection generate。
 
 ---
 

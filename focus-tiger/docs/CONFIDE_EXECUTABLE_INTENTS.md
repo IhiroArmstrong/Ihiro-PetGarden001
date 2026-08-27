@@ -23,7 +23,9 @@
 |---|---|---|---|---|---|---|
 | **CI-00** | `query_practice_duration` | 「练了多久？」/ How long have I practiced? | 读 `PracticeDaysStore`（与 Journey Log 同源） | read | Confide · `fallback` 前 | `confidePracticeFacts.js` · `practice_facts` |
 | **CI-01** | `forget_memory_entry` | 「别再记周一的事了」/ Please forget what I said about Monday | 真删 `yin-personal-memory.json` 单条（同 1c IPC） | local_reversible | Confide · `fallback` + Consent granted | `yinPersonalMemoryVerbalForget.js` · `memory_forget` |
-| **CI-02** | `query_presence_trend` | 「我情绪这两周改善了吗？」/ Has my mood improved these two weeks? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
+| **CI-02** | `query_presence_trend` | 「最近两周我的情绪看起来怎样？」/ What has my mood looked like over the last two weeks? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
+
+> **PO · 2026-08-28**：**正式示例**改用描述性问法。**不再推广**「Has my mood improved? / 改善了吗」（可保留实现兼容 alias）。答句仍禁止诊断与「进步/improved」评判。
 
 **面板 Forget（1c）** 不在此表重复登记：同一 `forget` IPC，入口为 UI 行按钮，非口头意图。
 
@@ -36,6 +38,8 @@
 | 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；现网走 Journey / 练习云备份链 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
+| Don't save this / 别记这句 | PO **未批准** · persistence / memory policy | 诚实说明或 L3 不接「已控制未来保存」幻觉 |
+| Delete today's Journey entry | V2 **Future Candidate** · Phase 1 **NOT MVP** | 指向 Journey Log UI；Phase 2 另 Brief |
 
 ---
 

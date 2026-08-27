@@ -144,7 +144,7 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 **Local AI 扩场景会审（2026-08-26 起 · 2026-08-28 会前立场收口 · 未拍板）**
 
-对照 Y Whisper / X Recover / X2 / S Breath / Z Journey / AE / AF / AG。设计师书面：产品层先于 A/B/C；C0–C4 ≠ 路由 L 层；V1–V5 现场唱名；Journey Delete = V2；Reflection generate = V3；C4 关闭；MUST NOT ENTER 是产品原则。与 `LOCAL_AI_OPERATING_LAYER.md`：Backup/Update 仍不进 Confide。处置：会审输入 `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`（#462 已合）；设计师预审 `LOCAL_AI_SCENARIO_EXPANSION_DESIGNER_PRE_REVIEW.md`（Expected Position，**非**产品负责人批准）。**不**改 `LOCAL_AI_SCENARIOS_V1.md` 政策句；无 runtime。
+对照 Y Whisper / X Recover / X2 / S Breath / Z Journey / AE / AF / AG。设计师书面：产品层先于 A/B/C；C0–C4 ≠ 路由 L 层；V1–V5 现场唱名；Journey Delete = V2；Reflection generate = V3；C4 关闭；MUST NOT ENTER 是产品原则。与 `LOCAL_AI_OPERATING_LAYER.md`：Backup/Update 仍不进 Confide。处置：PO 正式决策 `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`（2026-08-28）：V1=A；V2 Future Candidate；V3 validation only；Phase 1A/1B CORE；1C candidate。`LOCAL_AI_SCENARIOS_V1.md` 已更新。**runtime 须分项口令**；Validation ≠ Shipping。
 
 ---
 
@@ -186,6 +186,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-28 | PO 正式拍板 Local AI Phase 1：V1=A；V2 future；V3 validation；Ceiling C2+少量C3；MUST NOT 锁。Brief 三份；无自动 runtime |
 | 2026-08-28 | 设计师预审 Expected Position 入库（非批准）：V1=A；V2 窄删 Candidate；V3 用户点；MUST NOT 全确认。无 runtime |
 | 2026-08-28 | 会审表收口为正式会程：Ceiling / MUST NOT ENTER / Top 3 候选 / V2·V3 唱名；不改场景规划政策句。无运行时 |
 | 2026-08-26 | Local AI 扩场景会审表入库（未拍板）：产品层先于 A/B/C；对照 Y/X/Z/AE/AF/AG；不改窄例外锁句。无运行时用户路径 |

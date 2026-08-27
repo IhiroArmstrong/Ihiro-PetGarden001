@@ -700,7 +700,7 @@
 1. **首次披露**：清 `focus-tiger.presence-signals-disclosure-seen.v1` → `?product=1` → Sit → Arrival → Notice 任点 → **0–1 秒内**观察短句**下方**见 `[data-testid=presence-signals-disclosure]`（约 **4s** 随 Notice 收起再进 Breath）→ 再走一遍 Arrival **不应**再出现。  
    *[单元：`presenceSignalsDisclosureGate`；**非**披露排版 DOM 时长观感]*
 2. **入账**：DevTools `focus-tiger.presence-signals.v1` 应有 `arrival_notice`（含 `emotionTag` + 时间戳）。**不进**练习备份 / Yin Memory。  
-3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「我情绪这两周改善了吗？」→ reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶。  
+3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「最近两周我的情绪看起来怎样？」/ *What has my mood looked like over the last two weeks?* → reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶（旧 improved 问法仅作兼容/负例，非 SSOT 正式示例）。  
 4. **同日 3 次 Notice**：同一天 3 次 Sit→Notice 不同选项 → 第 3 次后应满趋势门槛（**事件数**，非去重天数）。
 
 ### AF · Slice 2（Ritual Leave 回顾 · 方案 C）

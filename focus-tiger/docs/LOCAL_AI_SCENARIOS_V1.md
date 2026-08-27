@@ -1,11 +1,23 @@
 # 本地 AI 场景规划 · V1
 
-**状态（2026-08-27）**：产品方向锁 · 规划稿（Tool Registry #461 + Read Hybrid #472 已合；Operating **只文档**）。  
-**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_OPERATING_LAYER.md` · `task-confide-tool-registry-v1.md` · `task-confide-read-hybrid-v1.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
+**状态（2026-08-28）**：**产品会审已拍板**（PO · `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`）· Phase 1 Brief 已建 · **runtime 须逐项开工口令**。  
+**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_OPERATING_LAYER.md` · `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` · `task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md`
 
 ---
 
-## 1. 政策边界（不变）
+## 0. 战略假设 vs 现网政策（V1 · 已批准）
+
+**Strategic Hypothesis（不升级为对外定位）**
+
+> Local AI may become Yin's understanding layer.
+
+**Current product policy（不变）**
+
+> Local AI is only available at explicitly defined interaction boundaries.
+
+**永久分离（PO · 2026-08-28）**
+
+> **Understanding capability does not imply broader product authority.**
 
 本地 AI = **桌面端窄例外**：Electron 宽屏 Confide **fallback** 短生成 + **层 3 之前**的确定性事实/动作路由。
 
@@ -13,118 +25,183 @@
 0 Safety → 1 仪式语料（无 generate IPC）→ 2 情绪桶语料 → CI 白名单 → 3 L3 短生成
 ```
 
-**不是**：开放域 Agent · Web/PWA 生成 · 仪式文案改写 · 诊断/教练清单。  
-**不是** Auto-Operating（备份/更新/MCP）：长期边界见 `LOCAL_AI_OPERATING_LAYER.md`；**现网仍走专门 UI**，不进 Confide。
+**不是**：开放域 Agent · Web/PWA 生成 · 诊断/教练清单 · **C4 Autonomous**（not part of current product model）。  
+**不是** Auto-Operating：见 `LOCAL_AI_OPERATING_LAYER.md`；现网仍走专门 UI。
 
 ---
 
-## 1.1 Tool Registry（2026-08-26 · V1）
+## 0.1 Interaction Principles（PO · SSOT）
 
-CI 白名单的演进形态 = **有限 Tool Registry**（`confideExecutableTools.js`），不是设计师提案里的全量 JOURNEY/FOCUS/APP CLI。
+1. **Understand more ≠ speak more.**
+2. **Retrieve more ≠ judge more.**
+3. **Execute more ≠ become autonomous.**
+4. **AI should make existing moments deeper, not turn every moment into an AI conversation.**
+
+**Retrieval 原则**
+
+> **Yin may describe patterns in the user's records, but should not define what those patterns mean about the person.**
+
+**C2 阶梯**：Retrieve → bounded **Describe** ✅ · Interpret ❌ · Diagnose/Assess ❌（V5）
+
+---
+
+## 0.2 Capability Ceiling（PO · 已锁）
+
+| 级 | 含义 | PO |
+|---|---|---|
+| **C0–C2** | Understand / Respond / Retrieve + bounded Describe | **CORE** |
+| **C3** | Whitelisted Execute | **Limited** |
+| **C4** | Autonomous | **NO** · not part of current product model |
+
+**C0–C4** 是能力描述，不是 roadmap。技术上能到 C3 ≠ 产品应开放。
+
+---
+
+## 0.3 MUST NOT ENTER（V4 · 产品原则）
+
+Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch  
+
+> **AI does not improve the product value of these moments.**
+
+不是「Not yet」——模型更强**不是**重新打开的理由。
+
+---
+
+## 1. Local AI Phase 1（PO 批准 · 未自动开工）
+
+### Phase 1A · Natural-language Actions — **CORE**
+
+| Intent | Phase 1 | Brief |
+|---|---|---|
+| Forget this | ✅ 现网 CI-01 | — |
+| Show me what you remember | ✅ 新 read tool | `task-local-ai-phase1-nl-actions-mvp.md` |
+| Don't save this | ❌ 未批准 | 另审 persistence policy |
+| Delete today's Journey entry | ❌ V2 Future Candidate | 见 §1.1 |
+
+### Phase 1B · Ask Journey / Presence — **CORE**
+
+| 问句 | Phase 1 |
+|---|---|
+| When do I usually practice? | ✅ |
+| How have I been showing up? | ✅ |
+| What has my mood looked like recently? | ✅（**SSOT 正式示例**；替代 improved 问法） |
+| What have you noticed lately? | 🟡 observation-boundary candidate · **非** Phase 1 普通 Retrieve |
+
+Brief：`task-local-ai-phase1-ask-journey-presence-mvp.md`
+
+### Phase 1C · Reflection Companion — **Candidate · validation only**
+
+- 用户主动点 → **one short observation**（second mirror · 非 coach）  
+- **禁止**提交后自动 generate  
+- Brief：`task-local-ai-reflection-companion-validation.md`  
+- **Validation approval ≠ shipping approval**
+
+---
+
+## 1.1 Future Candidates（已批准方向 · NOT MVP）
+
+| 项 | PO | 工程 |
+|---|---|---|
+| **`DELETE_TODAY_JOURNEY_ENTRY`** | Future Candidate C3 · 仅今天一条 · 排在 read-only **之后** | **无** implementation task |
+| **Reflection shipping** | 须 validation 通过后再议 | 独立 shipping Brief |
+| **Don't save this** | 未批准 | — |
+
+Intent Contract（C3 与未来 Execute 共用）：
 
 ```text
-                 ┌──────────────────────┐
-User ──────────► │ Safety / 情绪桶       │（不变）
-                 └──────────┬───────────┘
-                            ▼
-                 ┌──────────────────────┐
-                 │ Tool Registry (CI-xx) │  ← 现网：正则 match
-                 │  read / reversible  │
-                 └──────────┬───────────┘
-                            ▼
-                 ┌──────────────────────┐
-                 │ 确定性 handler       │
-                 └──────────┬───────────┘
-                            ▼
-                 ┌──────────────────────┐
-                 │ L3 短生成（闲聊）     │
-                 └──────────────────────┘
-
-实验室（未进生产）：1.7B JSON tool id → 与 fixture 对照 → write FP 须为 0
+Natural Language → Intent Classification → Whitelisted Intent
+→ Deterministic Target Resolution → Deterministic Execution
 ```
 
-**Read Hybrid V1（#472 已合）**：正则 miss 且 fallback → 仅允许 Qwen 选 **read** tool；写工具仍正则 + Consent。人工验收未关单。
+---
+
+## 1.2 Tool Registry（现网 + Phase 1）
+
+```text
+Safety / 情绪桶 → Tool Registry (CI-xx) → 确定性 handler → L3 短生成
+```
+
+**Read Hybrid V1（#472 已合）**：regex miss → 仅 read + autoExecute；写仍 regex + Consent。
 
 ---
 
-## 2. 三条轨道（规划用）
+## 2. 三条轨道（实现分类 · Phase 5）
 
-| 轨道 | 含义 | 准入 |
-|---|---|---|
-| **A · 口头可执行（CI-xx）** | 规则识别 → 读/写本地真数据 → 模板回复 | 有权威字段 + 比专门 UI 更轻 + 写操作风险可控 |
-| **B · L3 被动增强** | generate 时注入观察块 | 不诊断、不 coach；例：Yin Memory 1d Use |
-| **C · 仪式 generate** | Whisper / Recover / Reflection 等 | **全局未拍板**；须单独产品会，不与 A/B 混 PR |
+| 轨道 | Phase 1 |
+|---|---|
+| **A · CI-xx** | Phase 1A + 1B read tools |
+| **B · L3 被动注入** | Memory 1d 等；Reflection 仅 validation 失败退路 |
+| **C · 仪式 generate** | **仅** Reflection Companion **validation**；**非** shipping |
+
+**混 PR 禁止**：1A / 1B / 1C validation 须分 PR。
 
 ---
 
-## 3. 已落地 / 在途（2026-08-25）
+## 3. 已落地 / 在途
 
 ### 3.1 Confide 口头白名单（轨道 A）
 
-| ID | 用户意图 | 数据源 | 状态 |
+| ID | 用户意图（SSOT 示例） | 数据源 | 状态 |
 |---|---|---|---|
-| **CI-00** | 练了多久 | `PracticeDaysStore` | **#424 已合** · `practice_facts` |
-| **CI-01** | 口头 Forget 单条 | `yin-personal-memory.json` | **#434 已合** · `memory_forget` |
-| **CI-02** | 情绪这两周怎么样 / Has my mood improved? | **`focus-tiger.presence-signals.v1`** | **本旁支** `feature/presence-signals-slice-0-1` · `presence_facts` |
+| **CI-00** | 练了多久 / How long have I practiced? | `PracticeDaysStore` | **#424 已合** |
+| **CI-01** | 口头 Forget 单条 | `yin-personal-memory.json` | **#434 已合** |
+| **CI-02** | 最近两周情绪看起来怎样 / What has my mood looked like over the last two weeks? | `presence-signals.v1` | 在途 · `presence_facts` |
+| **（Phase 1）** | Show me what you remember | Memory store | Brief 已建 · **未开工** |
 
-> **纠正（2026-08-25）**：Arrival Notice（calm / stressed / sad 等封闭标签）**已入账** `presence-signals.v1`；**不是**「无情绪账本」。趋势答句只作**描述性 breakdown**（如「14 天内 3 次 calm、2 次 stressed」），**禁止**诊断（「焦虑缓解」）或 L3 编造趋势。
+> CI-02 答句：封闭标签 · 14 日 · ≥3 条 · **描述性 breakdown**；**禁止**诊断。  
+> **正式示例不再使用**「Has my mood improved? / 改善了吗」——旧句实现可保留兼容 alias，不推广。
 
-### 3.2 Yin Personal Memory（轨道 B + 面板动作）
+### 3.2 Yin Personal Memory
 
-Slice 0 → 1e **代码已闭环**（#424–#434）。仪式 generate **仍未拍板**。
+Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全局仪式 generate 批准。
 
-### 3.3 商业化（非场景扩展）
+### 3.3 V5 禁止（全球）
 
-Support **第四卡 Pro + 第五卡 Lifetime AI Add-on** Checkout **已接线**（`feature/checkout-pro-companion-addon` · `FREE_PAID_MATRIX`）；TRACKER 待 Stripe Test 人工。
-
----
-
-## 4. Presence Signals 路线图（情绪账本 · 优先）
-
-SSOT：`SHARED_RESOURCES.md` · Brief `task-presence-signals-slice-0-1.md`。
-
-| Slice | 内容 | 状态 |
-|---|---|---|
-| **0–1 + 4 minimal** | 文档 + Arrival Notice 写入 + Confide 趋势只读（CI-02） | **本旁支开工** |
-| **2** | Ritual chip 点选入账 + Leave 弱提示 | 排期 |
-| **3** | Reflection Q1–Q3 分拆双写 | 排期 |
-| **5** | 用户查看/删除 + 首次告知 | 排期 |
-| **6** | L3 引用 freeText（读取侧 Consent） | 排期 |
-
-**分桶**：Presence（封闭标签事件）≠ Yin Memory（倾诉抽取）≠ Journey Log（留痕列表）≠ `reflections.v1`（自由文本最近 5 条）。
+诊断 · 量化进步 · 危机/情绪桶 generate · coach 清单。
 
 ---
 
-## 5. V1 明确不做（口头 / generate）
+## 4. Presence Signals 路线图
 
-| 用户可能说 | 为何不做 | 合理行为 |
-|---|---|---|
-| 帮我备份练习 | Confide 非 Auto-Operating | 指向 Journey / 云备份；长期见 `LOCAL_AI_OPERATING_LAYER.md` |
-| 忘掉你记得的一切 | bulk wipe | 引导 What Yin remembers 逐条 Forget |
-| 喜欢吃什么 | 无 Preference 字段 | 不记、不编 |
-| Journey / Reflection 润色 | Slice 0 Brief 仍禁 | 检索语料或诚实说明 |
-| 情绪趋势但 &lt;3 条 tagged | 产品门槛 | `presence_facts` insufficient 模板 |
+不变；CI-02 与 Phase 1B 对齐。见 `task-presence-signals-slice-0-1.md`。
 
 ---
 
-## 5.1 Yin Personalization Engine（编排 · 非本文件扩 CI）
+## 5. 明确不做（Phase 1）
 
-SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不是**轨道 C 仪式 generate。本地 AI 场景继续只谈路由与口头白名单；何时沉默 / 取哪几条记忆 / 政策档看 YPE。**L0** 门闩收口；**L1** 本地检索契约 / 计数 insight / 三档。L2 **契约**已拍（五键 + Pack）；Worker **未开工**。
+| 用户可能说 | 为何 |
+|---|---|
+| 帮我备份 | Operating Layer |
+| 忘掉一切 | bulk wipe |
+| Don't save this | PO 未批准 |
+| Delete Journey（Phase 1） | V2 Future Candidate |
+| Journey / Reflection 润色（非 validation） | 未批准 |
+| V4 各仪式时刻 generate | MUST NOT ENTER |
+
+---
+
+## 5.1 YPE
+
+编排层；**不是** Phase 1 扩 CI 清单。见 `YIN_PERSONALIZATION_ENGINE.md`。
+
+---
 
 ## 6. 我认为最合理的下一刀
 
-1. ~~实验室 tool-call 探针~~ · ~~Read Hybrid V1~~（#472 已合）。  
-2. **人工测 #472**（regex 命中不变；miss 只读补漏；写/备份/更新仍不执行）+ 探针 `writeFalsePositives === 0`。  
-3. **至多一个**新 Companion read tool（须另拍板；数据源已存在）。  
-4. Operating：**只**维护 `LOCAL_AI_OPERATING_LAYER.md`，不实现。
+1. **#472 Read Hybrid 人工测**（不改代码除非 bug）。  
+2. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
+3. **口令开工 Phase 1A**（Show memory read tool）。  
+4. **口令开工 Reflection validation**（**非** shipping）。  
+5. V2 Journey Delete · Don't save this · **不开工**。
 
-**较弱**：仪式 generate（轨道 C）；未测 hybrid 就开新 CI-xx；把 Confide 扩成 App CLI。
+**较弱**：未测 hybrid 就并行三 Phase 1 runtime；把 validation 当 shipping；仪式侧 MUST NOT 破例。
 
 ---
 
 ## 7. 新增场景准入 checklist
 
-1. 本地有 **可审计** 数据源（或写操作定义清晰、风险可控）  
-2. Confide 内故事 **轻于** 专门 UI  
-3. `SCENARIO_TESTS.md` 冲突扫描（强度 / 人设 / 职责）无未拍板疑点  
-4. 更新 **本文件** + `CONFIDE_EXECUTABLE_INTENTS.md` + Task Brief + tracker；若属系统操作 → **不得**写入 Confide 表，改走 `LOCAL_AI_OPERATING_LAYER.md`
+1. 可审计数据源或 Intent Contract 清晰的 C3  
+2. Confide 内轻于专门 UI  
+3. `SCENARIO_TESTS.md` 冲突扫描  
+4. 更新 **本文件** + `CONFIDE_EXECUTABLE_INTENTS.md` + Brief + tracker  
+5. 系统操作 → `LOCAL_AI_OPERATING_LAYER.md`，不进 Confide 表
