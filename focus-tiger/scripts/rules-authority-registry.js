@@ -42,6 +42,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-session-handoff.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
+  '.cursor/rules/focus-tiger-source-read-granularity.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
@@ -1327,6 +1328,45 @@ export const RULE_AUTHORITY_TOPICS = [
     citeExemptFiles: [
       '.cursor/rules/focus-tiger-docs.mdc',
       'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ]
+  },
+  {
+    id: 'source-read-granularity',
+    title: '源码读取粒度（大文件先定位再片段读，控上下文 token）',
+    ssotPath: '.cursor/rules/focus-tiger-source-read-granularity.mdc',
+    ssotSection: 'Focus Tiger · 源码读取粒度（控上下文 token · 按需层）',
+    ssotMustContain: [
+      /source-read-granularity/,
+      /≥ 400 行/,
+      /禁止无理由整文件 Read/,
+      /offset/,
+      /Grep/
+    ],
+    topicSignals: [
+      /source-read-granularity/,
+      /源码读取粒度/,
+      /整文件 Read/,
+      /片段读/
+    ],
+    mustCite: [/focus-tiger-source-read-granularity\.mdc|source-read-granularity/],
+    restatementFingerprints: [
+      /≥ 400 行/,
+      /禁止无理由整文件 Read/,
+      /先定位，不先整读/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'whole-file-read-large-source',
+        pattern:
+          /(?:可以|允许|应当)[^。\n]{0,24}(?:整文件|全文)[^。\n]{0,16}(?:Read|读取).{0,24}(?:大文件|≥\s*400|3000)/,
+        note: '大源码文件须先定位再片段读，禁止写成默认可整读'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
       'focus-tiger/docs/RULES_INDEX.md'
     ]
   },
