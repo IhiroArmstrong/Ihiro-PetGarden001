@@ -347,7 +347,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confide-to-yin-memory-list-link/);
     assert.match(ui, /onOpenMemoryPanel/);
     assert.match(ui, /shouldOfferYinMemoryConsent/);
-    assert.match(ui, /shouldHandleVerbalForget/);
+    assert.match(ui, /matchConfideExecutableTool/);
+    assert.match(ui, /CONFIDE_TOOL_ID\.FORGET_MEMORY_ENTRY/);
     assert.match(ui, /memory_forget/);
     assert.match(ui, /yinPersonalMemoryVerbalForget/);
     assert.match(ui, /confide-to-yin-memory-consent/);
@@ -364,7 +365,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
     assert.equal(turnPushes.length, 2);
-    assert.match(ui, /shouldAnswerWithPracticeFacts/);
+    assert.match(ui, /CONFIDE_TOOL_ID\.QUERY_PRACTICE_DURATION/);
     assert.match(ui, /source: 'practice_facts'/);
     assert.match(ui, /shown\.source === 'generate'/);
     assert.match(ui, /shown\.source === 'practice_facts'/);

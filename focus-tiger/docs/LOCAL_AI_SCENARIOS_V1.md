@@ -1,7 +1,7 @@
 # 本地 AI 场景规划 · V1
 
-**状态（2026-08-25）**：产品方向锁 · 规划稿（无新运行时须单独口令）。  
-**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
+**状态（2026-08-26）**：产品方向锁 · 规划稿（Tool Registry V1 已开工；Qwen tool-call 仅实验室）。  
+**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `task-confide-tool-registry-v1.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
 
 ---
 
@@ -13,7 +13,36 @@
 0 Safety → 1 仪式语料（无 generate IPC）→ 2 情绪桶语料 → CI 白名单 → 3 L3 短生成
 ```
 
-**不是**：开放域 Agent · Web/PWA 生成 · 仪式文案改写 · 诊断/教练清单。
+**不是**：开放域 Agent · Web/PWA 生成 · 仪式文案改写 · 诊断/教练清单 · **全 App 自然语言 Operating Layer**（备份/更新仍走专门 UI）。
+
+---
+
+## 1.1 Tool Registry（2026-08-26 · V1）
+
+CI 白名单的演进形态 = **有限 Tool Registry**（`confideExecutableTools.js`），不是设计师提案里的全量 JOURNEY/FOCUS/APP CLI。
+
+```text
+                 ┌──────────────────────┐
+User ──────────► │ Safety / 情绪桶       │（不变）
+                 └──────────┬───────────┘
+                            ▼
+                 ┌──────────────────────┐
+                 │ Tool Registry (CI-xx) │  ← 现网：正则 match
+                 │  read / reversible  │
+                 └──────────┬───────────┘
+                            ▼
+                 ┌──────────────────────┐
+                 │ 确定性 handler       │
+                 └──────────┬───────────┘
+                            ▼
+                 ┌──────────────────────┐
+                 │ L3 短生成（闲聊）     │
+                 └──────────────────────┘
+
+实验室（未进生产）：1.7B JSON tool id → 与 fixture 对照 → write FP 须为 0
+```
+
+**未来 hybrid（须探针过门）**：正则 miss 且 fallback → 仅允许 Qwen 选 **read** tool；写工具仍正则或用户确认。
 
 ---
 
@@ -83,11 +112,12 @@ SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不�
 
 ## 6. 我认为最合理的下一刀
 
-1. **合 Presence Signals 旁支** + 关 CI-02 tracker 人工（Arrival 点选 → Confide 趋势问句）。  
-2. **关 Yin Memory 1d/1e tracker** 人工（L3 回指 + 口头 Forget）。  
-3. **再排** Presence Slice 2（Ritual 入账）或 Slice 5（查看/删除 UI）——**较弱**：仪式 generate（轨道 C，须单独拍板）。
+1. **跑实验室 tool-call 探针**（`npm run companion:tool-call`）并记录 `/tmp/ft-l0-lab/tool-call-*.json`；过门 = `writeFalsePositives === 0`。  
+2. **关 Yin Memory 1d/1e + CI-02 tracker** 人工（行为应与 Tool Registry 改前一致）。  
+3. **仅探针过门后** 再排 read-tool 模型补漏（hybrid）；较弱：未过门就接 Qwen 进 send 路径。  
+4. **较弱**：仪式 generate（轨道 C，须单独拍板）；在未关 tracker 前开新 CI-xx。
 
-**较弱选项**：在未关 1d/1e/CI-02 tracker 前开新 CI-xx 或轨道 C。
+**较弱选项**：把 Confide 扩成 App CLI（备份/更新/批量删）。
 
 ---
 

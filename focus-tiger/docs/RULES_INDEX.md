@@ -178,7 +178,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey Log / turns.jsonl） |
 | `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份/算法已拍、Worker 未开工；≠ 品味层 / Memory store / Qwen） |
-| `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；≠ 开放域 Agent） |
+| `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；CI → Tool Registry；≠ 开放域 Agent） |
+| `LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划 V1（轨道 A/B/C；Tool Registry 演进；≠ Operating Layer） |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
 | `FLOWER_BLOW_WELCOME_DESIGN.md` | Day1/久别吹花鼓励：策略 C、同日 XOR 欢迎池、观察式文案、分阶段落线（未接线前以本文为准） |

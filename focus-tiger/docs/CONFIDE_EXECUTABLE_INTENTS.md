@@ -1,8 +1,9 @@
 # Confide 可执行意图白名单（V1）
 
-**状态（2026-08-25）**：产品方向锁 · 与 `YIN_PERSONAL_MEMORY.md` · `presenceSignalsGate.js` · `desktopCompanionL2Route.js` 四层门闩一致。  
+**状态（2026-08-26）**：产品方向锁 · 与 `YIN_PERSONAL_MEMORY.md` · `presenceSignalsGate.js` · `desktopCompanionL2Route.js` 四层门闩一致。  
 **规划 SSOT**：`LOCAL_AI_SCENARIOS_V1.md`。  
-**不是**开放域 Agent；**不是**「用户说什么都能自动执行」。
+**工程 SSOT**：`confideExecutableTools.js`（CI → Tool Registry；生产仍正则匹配）。  
+**不是**开放域 Agent；**不是**「用户说什么都能自动执行」；**不是**全 App Operating Layer。
 
 ---
 
@@ -17,11 +18,11 @@
 
 ## V1 白名单
 
-| ID | 用户意图（示例） | 数据 / 动作 | 入口 | 实现 |
-|---|---|---|---|---|
-| **CI-00** | 「练了多久？」/ How long have I practiced? | 读 `PracticeDaysStore`（与 Journey Log 同源） | Confide · `fallback` 前 | Slice 0 · `confidePracticeFacts.js` · `data-source=practice_facts` |
-| **CI-01** | 「别再记周一的事了」/ Please forget what I said about Monday | 真删 `yin-personal-memory.json` 单条（同 1c IPC） | Confide · `fallback` + Consent granted | Slice 1e · `yinPersonalMemoryVerbalForget.js` · `data-source=memory_forget` |
-| **CI-02** | 「我情绪这两周改善了吗？」/ Has my mood improved these two weeks? | 读 `focus-tiger.presence-signals.v1`（Arrival Notice 等封闭标签；14 日窗口；≥3 条才描述性 breakdown） | Confide · `fallback` 前 | Presence Slice 4 · `confidePresenceFacts.js` · `data-source=presence_facts` |
+| ID | Tool id | 用户意图（示例） | 数据 / 动作 | 风险 | 入口 | 实现 |
+|---|---|---|---|---|---|---|
+| **CI-00** | `query_practice_duration` | 「练了多久？」/ How long have I practiced? | 读 `PracticeDaysStore`（与 Journey Log 同源） | read | Confide · `fallback` 前 | `confidePracticeFacts.js` · `practice_facts` |
+| **CI-01** | `forget_memory_entry` | 「别再记周一的事了」/ Please forget what I said about Monday | 真删 `yin-personal-memory.json` 单条（同 1c IPC） | local_reversible | Confide · `fallback` + Consent granted | `yinPersonalMemoryVerbalForget.js` · `memory_forget` |
+| **CI-02** | `query_presence_trend` | 「我情绪这两周改善了吗？」/ Has my mood improved these two weeks? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
 
 **面板 Forget（1c）** 不在此表重复登记：同一 `forget` IPC，入口为 UI 行按钮，非口头意图。
 
@@ -58,11 +59,34 @@
 3. 冲突扫描（强度 / 人设 / 职责）无未拍板疑点；  
 4. 更新 **本表** + Task Brief + tracker。
 
-**我认为最合理的下一候选（若做）**：**CI-02** 合入 + tracker 人工（Presence Signals 旁支）；并行关 Yin Memory 1d/1e tracker。仪式 generate 须产品拍板，不进口头表。见 `LOCAL_AI_SCENARIOS_V1.md` §6。
+**我认为最合理的下一候选（若做）**：实验室 tool-call 探针过门后，**只读** paraphrase 补漏（正则 miss → Qwen 选 read tool）；写工具仍正则或确认。较弱：在未关 1d/1e/CI-02 tracker 前开新 CI-xx。仪式 generate 须产品拍板。见 `LOCAL_AI_SCENARIOS_V1.md` §6 · `task-confide-tool-registry-v1.md`。
+
+---
+
+## Tool Registry（2026-08-26 · V1）
+
+**原则**：**Qwen decides（未来、白名单内）· Tools execute · Data stays local。** 现网仍是 **正则优先**；Qwen tool-call **仅实验室**，未过探针不得进生产 send。
+
+```text
+ConfideToYinUI._onSend
+  → matchConfideExecutableTool (registry)
+       → CI-00 / CI-02: 确定性读 + 模板
+       → CI-01: 口头 Forget handler（非 autoExecute）
+  → 未命中 → YPE 门闩 → L3 短生成
+```
+
+| 风险级 | 例子 | 生产策略 |
+|---|---|---|
+| `read` | 练了多久、情绪趋势 | 正则命中即执行；未来可模型补漏 |
+| `local_reversible` | 删一条 memory | 正则 + Consent；**禁止**模型直接写 |
+| `destructive` | bulk wipe、备份、更新 | **禁止**进 V1 registry |
+
+新增 CI-xx：先扩 `CONFIDE_EXECUTABLE_TOOLS` + 单测 + 本表；**禁止**在 UI 堆识别 if。
 
 ---
 
 ## 工程注册（实现参考）
 
-口头 / 事实类意图在 `ConfideToYinUI._onSend` 中于 `practice_facts` → `presence_facts` → `memory_forget` 之后、`ypeMayUseCompanionGenerate`（YPE L0 收口现网层 3 门闩）之前顺序判定。  
-新增 CI-xx 时应扩 **纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
+`ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → forget）。  
+实验室：`desktop/scripts/l0-tool-call-probe.js` · `npm run companion:tool-call` · fixture `confideToolCallFixtures.js`。  
+新增 CI-xx 时应扩 **registry + 纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
