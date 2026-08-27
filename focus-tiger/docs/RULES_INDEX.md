@@ -183,6 +183,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划 V1（轨道 A/B/C；Tool Registry 演进；≠ Auto-Operating 入口） |
 | `LOCAL_AI_OPERATING_LAYER.md` | Local AI Operating Layer 方向锁（Auto-Operating ≠ Confide；只设计无运行时；Backup/Update/MCP 不进 Confide V1） |
 | `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` | Local AI 扩场景会审（产品层；V1–V5 未拍板；≠ 开工令） |
+| `LOCAL_AI_SCENARIO_EXPANSION_DESIGNER_PRE_REVIEW.md` | 设计师预审 Expected Position（≠ 产品负责人批准；≠ SSOT 变更） |
 | `EMOTION_BIBLE.md` | 情绪 / 互动 |
 | `SCENE_ANIMATION_WIRING.md` | 场景 → 动画接线（时刻 × 档位；v1 Slice A） |
 | `FLOWER_BLOW_WELCOME_DESIGN.md` | Day1/久别吹花鼓励：策略 C、同日 XOR 欢迎池、观察式文案、分阶段落线（未接线前以本文为准） |

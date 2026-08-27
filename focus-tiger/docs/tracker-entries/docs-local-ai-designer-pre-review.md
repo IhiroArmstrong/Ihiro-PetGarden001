@@ -1,0 +1,1 @@
+| Local AI Scenario Expansion · Designer Pre-Review | 纯后端/文档 | 仅单元测试覆盖 | 无 runtime。读 `LOCAL_AI_SCENARIO_EXPANSION_DESIGNER_PRE_REVIEW.md`：V1=A；V2=仅今天一条 Candidate C3；V3=用户点才出；V4/V5 全禁；Ceiling C2+少量C3；Top①② CORE、Top③等V3。**不是**产品负责人最终批准。 | — | — | — | 等产品负责人正式会审后再改 SSOT | 2026-08-28 |
