@@ -2,8 +2,9 @@
 
 **状态（2026-08-26）**：产品方向锁 · 与 `YIN_PERSONAL_MEMORY.md` · `presenceSignalsGate.js` · `desktopCompanionL2Route.js` 四层门闩一致。  
 **规划 SSOT**：`LOCAL_AI_SCENARIOS_V1.md`。  
+**Operating 长期边界**：`LOCAL_AI_OPERATING_LAYER.md`（只设计；Confide **禁止**执行 Operating Tools）。  
 **工程 SSOT**：`confideExecutableTools.js`（CI → Tool Registry；生产仍正则匹配）。  
-**不是**开放域 Agent；**不是**「用户说什么都能自动执行」；**不是**全 App Operating Layer。
+**不是**开放域 Agent；**不是**「用户说什么都能自动执行」；**不是** Auto-Operating 入口。
 
 ---
 
@@ -32,7 +33,7 @@
 
 | 用户可能说 | 为何不做 | 合理行为 |
 |---|---|---|
-| 帮我备份练习记录 | 备份在 Journey / 练习云备份链；Confide 非全 App 命令行 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
+| 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；现网走 Journey / 练习云备份链 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
 
@@ -59,7 +60,7 @@
 3. 冲突扫描（强度 / 人设 / 职责）无未拍板疑点；  
 4. 更新 **本表** + Task Brief + tracker。
 
-**我认为最合理的下一候选（若做）**：Read Hybrid V1 已开工（`task-confide-read-hybrid-v1.md`）：regex miss → L0 只读 tool；写工具仍正则。较弱：在未关 tracker 前开新 CI-xx。
+**我认为最合理的下一候选（若做）**：#472 Read Hybrid 已合 · **先人工测**；至多一个新 read tool 须另拍板。Operating / Backup / Update **不**进本表（见 `LOCAL_AI_OPERATING_LAYER.md`）。
 
 ---
 
@@ -82,7 +83,7 @@ ConfideToYinUI._onSend
 |---|---|---|
 | `read` | 练了多久、情绪趋势 | 正则优先；regex miss 可 L0 补漏（registry 闸门） |
 | `local_reversible` | 删一条 memory | 正则 + Consent；**禁止**模型直接写 |
-| `destructive` | bulk wipe、备份、更新 | **禁止**进 V1 registry |
+| `destructive` | bulk wipe、备份、更新 | **禁止**进 Confide registry；长期见 Operating Layer |
 
 新增 CI-xx：先扩 `CONFIDE_EXECUTABLE_TOOLS` + 单测 + 本表；**禁止**在 UI 堆识别 if。
 

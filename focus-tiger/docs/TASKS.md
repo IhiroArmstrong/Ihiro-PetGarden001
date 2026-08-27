@@ -277,7 +277,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：关 1d/1e tracker 人工；跑 **tool-call 实验室探针**（`task-confide-tool-registry-v1.md`）。较弱：仪式 generate 扩权（须产品拍板）。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。
+**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**（不改代码除非测出 bug）。至多一个新 read tool 须另拍板。Operating 只文档：`LOCAL_AI_OPERATING_LAYER.md`。较弱：仪式 generate；把 Confide 做成 CLI。规划 SSOT：`LOCAL_AI_SCENARIOS_V1.md`。
 
 ---
 

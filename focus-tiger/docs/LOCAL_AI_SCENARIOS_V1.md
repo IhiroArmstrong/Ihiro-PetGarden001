@@ -1,7 +1,7 @@
 # 本地 AI 场景规划 · V1
 
-**状态（2026-08-26）**：产品方向锁 · 规划稿（Tool Registry V1 已开工；Qwen tool-call 仅实验室）。  
-**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `task-confide-tool-registry-v1.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
+**状态（2026-08-27）**：产品方向锁 · 规划稿（Tool Registry #461 + Read Hybrid #472 已合；Operating **只文档**）。  
+**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_OPERATING_LAYER.md` · `task-confide-tool-registry-v1.md` · `task-confide-read-hybrid-v1.md` · `task-desktop-on-device-companion.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md` · `task-presence-signals-slice-0-1.md`
 
 ---
 
@@ -13,7 +13,8 @@
 0 Safety → 1 仪式语料（无 generate IPC）→ 2 情绪桶语料 → CI 白名单 → 3 L3 短生成
 ```
 
-**不是**：开放域 Agent · Web/PWA 生成 · 仪式文案改写 · 诊断/教练清单 · **全 App 自然语言 Operating Layer**（备份/更新仍走专门 UI）。
+**不是**：开放域 Agent · Web/PWA 生成 · 仪式文案改写 · 诊断/教练清单。  
+**不是** Auto-Operating（备份/更新/MCP）：长期边界见 `LOCAL_AI_OPERATING_LAYER.md`；**现网仍走专门 UI**，不进 Confide。
 
 ---
 
@@ -42,7 +43,7 @@ User ──────────► │ Safety / 情绪桶       │（不变
 实验室（未进生产）：1.7B JSON tool id → 与 fixture 对照 → write FP 须为 0
 ```
 
-**未来 hybrid（须探针过门）**：正则 miss 且 fallback → 仅允许 Qwen 选 **read** tool；写工具仍正则或用户确认。
+**Read Hybrid V1（#472 已合）**：正则 miss 且 fallback → 仅允许 Qwen 选 **read** tool；写工具仍正则 + Consent。人工验收未关单。
 
 ---
 
@@ -98,7 +99,7 @@ SSOT：`SHARED_RESOURCES.md` · Brief `task-presence-signals-slice-0-1.md`。
 
 | 用户可能说 | 为何不做 | 合理行为 |
 |---|---|---|
-| 帮我备份练习 | Confide 非全 App CLI | 指向 Journey / 云备份入口 |
+| 帮我备份练习 | Confide 非 Auto-Operating | 指向 Journey / 云备份；长期见 `LOCAL_AI_OPERATING_LAYER.md` |
 | 忘掉你记得的一切 | bulk wipe | 引导 What Yin remembers 逐条 Forget |
 | 喜欢吃什么 | 无 Preference 字段 | 不记、不编 |
 | Journey / Reflection 润色 | Slice 0 Brief 仍禁 | 检索语料或诚实说明 |
@@ -112,12 +113,12 @@ SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不�
 
 ## 6. 我认为最合理的下一刀
 
-1. ~~跑实验室 tool-call 探针~~（2026-08-27 已过门：`writeFalsePositives === 0`）。  
-2. **Read Hybrid V1 已开工**（`task-confide-read-hybrid-v1.md`）：regex miss → 仅 read tool；lab 探针仍单独跑回归。  
-3. **关 Yin Memory 1d/1e + CI-02 tracker** 人工（canonical 句与改前一致）。  
-4. **较弱**：仪式 generate（轨道 C）；未关 tracker 前开新 CI-xx。
+1. ~~实验室 tool-call 探针~~ · ~~Read Hybrid V1~~（#472 已合）。  
+2. **人工测 #472**（regex 命中不变；miss 只读补漏；写/备份/更新仍不执行）+ 探针 `writeFalsePositives === 0`。  
+3. **至多一个**新 Companion read tool（须另拍板；数据源已存在）。  
+4. Operating：**只**维护 `LOCAL_AI_OPERATING_LAYER.md`，不实现。
 
-**较弱选项**：把 Confide 扩成 App CLI（备份/更新/批量删）。
+**较弱**：仪式 generate（轨道 C）；未测 hybrid 就开新 CI-xx；把 Confide 扩成 App CLI。
 
 ---
 
@@ -126,4 +127,4 @@ SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**不是**新的 Confide CI-xx，**不�
 1. 本地有 **可审计** 数据源（或写操作定义清晰、风险可控）  
 2. Confide 内故事 **轻于** 专门 UI  
 3. `SCENARIO_TESTS.md` 冲突扫描（强度 / 人设 / 职责）无未拍板疑点  
-4. 更新 **本文件** + `CONFIDE_EXECUTABLE_INTENTS.md` + Task Brief + tracker
+4. 更新 **本文件** + `CONFIDE_EXECUTABLE_INTENTS.md` + Task Brief + tracker；若属系统操作 → **不得**写入 Confide 表，改走 `LOCAL_AI_OPERATING_LAYER.md`

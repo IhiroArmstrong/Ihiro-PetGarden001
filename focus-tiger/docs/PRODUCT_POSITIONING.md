@@ -91,7 +91,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 - 当前不承诺 AI 教练、心理咨询、儿童产品或企业员工管理功能；
 - **Wellness disclaimer（2026-08-14；2026-08-15 改落点）**：应用内须说明本产品是专注力 / 正念练习空间，用于 build focus skill、practice mindfulness、reduce everyday stress；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师、治疗师或医生；并含标准化兜底句 **not intended to diagnose, treat, cure, or prevent any disease**。落点：（1）**常驻查阅（默认）**：**?** → `#onboarding-app-purpose` 免责区块（不在冷启动自动弹出，以免吓跑用户）；（2）Privacy Sheet 一句交叉引用；（3）QA 仅 `?wellnessFirst=1` 可强制 `#onboarding-wellness-first` Got it 卡。文案键 `HINT_APP_PURPOSE_WELLNESS_*`（en + ja）。禁止把功能写成治疗焦虑、抑郁或其它临床病症。危机语料 `confide` `safety-01` 须与此边界一致（指向真实求助渠道 + 不能代替专业帮助），不另写一套。红线见 `PRINCIPLES.md`「一般身心练习，不是诊疗」。
 - 当前不因长期愿景而提前实现多角色、换装 UI、多场景、成就墙或复杂成长树；
-- **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练。**默认**本地分类 + 人工语料检索。**唯一已拍板例外**：仅限 Electron **宽屏**、用户主动打开的同一入口、仪式文案与 Confide 语料都未接住时，才允许受约束短生成——**不是**全面允许生成；**窄屏 / 手机没有本地智能体**（见下「禅意倾听者」；Web/PWA Brief `task-confide-to-yin-v1.md`；桌面例外 Brief `task-desktop-on-device-companion.md`）。
+- **向阿寅倾诉**（规划中）：用户主动触发时，阿寅是**禅意倾听者**（机锋 / 茶友），不是答疑教练。**默认**本地分类 + 人工语料检索。**唯一已拍板例外**：仅限 Electron **宽屏**、用户主动打开的同一入口、仪式文案与 Confide 语料都未接住时，才允许受约束短生成——**不是**全面允许生成；**窄屏 / 手机没有本地智能体**（见下「禅意倾听者」；Web/PWA Brief `task-confide-to-yin-v1.md`；桌面例外 Brief `task-desktop-on-device-companion.md`）。**系统操作**（备份 / 更新 / 导出 / 改设置）**不**经由阿寅之口；长期入口为 Auto-Operating（`LOCAL_AI_OPERATING_LAYER.md`，方向锁、未实现）。
 
 长期愿景不是当前功能承诺。任何扩展仍须遵守 `PRINCIPLES.md` 的「价值优先于复杂度」与 `PROCESS.md` 的立项流程。
 
