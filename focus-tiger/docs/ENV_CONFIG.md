@@ -1,7 +1,8 @@
 # Focus Tiger · 环境配置与密钥隔离
 
-> **状态（2026-08-15 核实）**：生产 Worker `focus-tiger-cloud` 已接 Tip / Sanctuary / Membership / OTP / practice-backup / newsletter 路由。前端只经公开 `VITE_CLOUD_API_BASE_URL` 调用；**Secret 仍不得进客户端**。CI Playwright **不**需要任何 API Key。  
-> 本文把隔离规则钉死，避免把 Secret Key 写进客户端。
+> **规则 SSOT**：本文 §1 / §3 / §4。  
+> **仓库与环境现状事实**（Worker URL、KV 绑定、生产 Version、Stripe Price 记档、`VITE_*` 政策等）→ [`INFRA_SNAPSHOT.md`](./INFRA_SNAPSHOT.md)（`RULES_INDEX` → `infra-snapshot`）。  
+> 前端只经公开 `VITE_CLOUD_API_BASE_URL` 调用；**Secret 仍不得进客户端**。CI Playwright **不**需要任何 API Key。
 
 ## 1. 硬性规则
 
@@ -20,19 +21,10 @@
 
 **Electron 步骤 A（2026-08-17）**：打包壳内的 Cloud POST 走**主进程 IPC**（不把自定义协议 Origin 直接打到 Worker）。失败仍抛错，UI 复用 Web 卡面（请茶 / Sanctuary / Membership / Journey 备份），不为壳另做提示。壳内 `getCloudApiBaseUrl()` 在缺 `VITE_*` 时回退到公开 Worker URL（避免打包后假「离线」把按钮禁用）。Worker `ALLOWED_ORIGIN` 已支持逗号列表（可含 `focus-tiger://app`）；**生产名单要等你明确下令 Redeploy 才改**，本回合不部署。
 
-## 2. 当前仓库事实
+## 2. 现状事实（已迁出）
 
-| 项 | 状态 |
-|---|---|
-| `focus-tiger/.env` / `.env.development` / `.env.production` 已提交？ | **否**（`.gitignore` 挡 `.env*`，仅放行 `.env.example`） |
-| 客户端调用云 API？ | **是（可选）**。配了 `VITE_CLOUD_API_BASE_URL` 时，Tip / Sanctuary / Membership / OTP restore / practice-backup / newsletter / **品味层**（`/api/emotion-weight`、`/api/daily-message`）走公开 Worker；未配则本地。品味层失败静默用本地表。**禁止**把 Secret 放进任何 `VITE_*` |
-| CI workflow 引用 `secrets.*`？ | **否**（`pr-smoke` / `focus-tiger-e2e-full` 等仅需 `CI=true`） |
-| 为当前全量 e2e 配置 GitHub Secrets？ | **不需要**；缺 Key **不会**导致现有 Playwright 失败 |
-| 品味层 runtime | **已接线**（`schemaVersion: 1` 可选 overlay；失败用本地冻结表）。**2026-08-20 本机 wrangler deploy** 生产 Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**。拉取在精灵预加载 + 欢迎/Idle 之后；冻结表相同不另存副本（`RB-20260820-L330`）。现有 Playwright **不**需要品味层 `secrets.*` |
-| Focus Tiger Pro Stripe Price（2026-08-20） | **已记、Checkout 未接。将来 Support 第四卡。** Dashboard **Focus Tiger Pro** US$12.99/月 · Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（**已锁定**）。给**非 Lifetime** 用户（含 B 轨 + 本地智能体）。**禁止**写入任何 `VITE_*`。Worker **尚未**消费该 ID（无 Pro checkout 路由；**不要**把 ID 放进 `wrangler.jsonc` `vars` 当真接线）。接线时须与第五卡同批。模板注释：`cloud/.env.example`。权威：`task-desktop-on-device-companion.md` · `FREE_PAID_MATRIX` A6 |
-| Lifetime AI 加购 SKU（2026-08-20） | **Price 已记、Checkout 未接。将来 Support 第五卡。** Dashboard **Focus Tiger: AI Companion Add-on** US$29.99 一次 · Price **`price_1U6GnXFuIhgJPGLiNlXs0IKe`**。SKU **`companion.addon.lifetime`**。**禁止**写入任何 `VITE_*`、**禁止**进 `FEATURE_CATALOG`。Worker **尚未**消费该 ID（无 checkout 路由；**不要**把 ID 放进 `wrangler.jsonc` `vars` 当真接线）。接线时须与第四卡 Pro 同批。模板注释：`cloud/.env.example`。权威：`FREE_PAID_MATRIX` A6 |
-| 宣传 / 营销站公开域（2026-08-20 拍板） | **`https://twinsology.com`**（apex canonical；`www` 默认 301 到 apex）。与发信同域（`hello@` / `restore@`）。**Slice 0 静态页**在仓库 `marketing-site/`；现网 Pages/DNS **未**绑。托管默认 Cloudflare Pages（同一 **163 / ihiro** 帐号），**禁止**改 MX / SPF / DKIM。练习壳 / API **仍**走下行 Worker URL，本条不是 App 自定义域。权威：`task-briefs/task-marketing-site.md`。 |
-| Tip / Sanctuary / Membership / practice-backup / newsletter Worker（2026-08-16） | **SSOT**：`https://focus-tiger-cloud.ihiro.workers.dev`（**163 / ihiro Cloudflare**）。当前生产 Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**（2026-08-20 本机 Redeploy：品味层 schemaVersion 1 冻结表；请茶 `STRIPE_PRICE_ID`=`price_1U4nanFuIhgJPGLidoTdxobW` US$4.99；Newsletter 路由 + 欢迎信 await/重发仍在，覆盖 `8c649d12-…` / `d0140328-…`；OTP / webhook / Membership / practice-backup 同 Worker）。**#378 layout ingest 已在 `develop` 源码，尚未进该 Version**——现网旧 ingest 会丢掉 `tea-first` / `sanctuary-first` 计数键。同日用户书面「部署」；Cloud Agent 无 token，须本机再 `npm run deploy`。本地 `.env.local` 用同一 base。**勿**用旁路 `*.focus-tiger.workers.dev`。**OTP 发信（2026-08-13）**：生产已 `wrangler secret put RESTORE_OTP_PEPPER` + `RESEND_API_KEY`；`RESEND_FROM` = `Yin <restore@twinsology.com>`。本地 Vite 缺 `VITE_CLOUD_API_BASE_URL` 时 Send code 会本地失败。**Newsletter**：From = **只** `NEWSLETTER_FROM`（`hello@twinsology.com`），**禁止**回退 `RESEND_FROM` / `restore@`。探路：无效邮箱 → 400。**2026-08-15 人工**：用户书面确认已收到 From `hello@twinsology.com`（一封约 18:54+08 进垃圾箱，属旧 Worker；一封约 20:54+08 为无 `welcomeSentAt` 重发）。**2026-08-16 人工**：再提交 Stay in touch + Dashboard `NEWSLETTER_KV` `newsletter:v1:{email}` — **测试 OK**。**wrangler login**：先在 Safari 切到正确 CF 帐号再 OAuth；环境若有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
+Worker 绑定、KV id、HTTP 路由、生产 `prod_worker_version`、Stripe Price 记档、locale tier、entitlement 表、CI workflow 清单等 **不再维护于本文**。  
+接云 / entitlement / Worker 任务前可读 [`INFRA_SNAPSHOT.md`](./INFRA_SNAPSHOT.md)；摘要过期或任务改相关源文件时再读 SSOT。
 
 ## 3. 与 CI 的关系
 
@@ -46,3 +38,4 @@
 - [ ] `.env.production` 与 `.env.development` 是否分文件、未互相粘贴 Secret？
 - [ ] CI 是否**真的**需要该 Key？需要 → 写入 Actions Secret 且 workflow 显式 `secrets.NAME`；不需要 → 不要为「以防万一」乱加
 - [ ] `cloud/` stub 仍无绑定时，勿把「缺 Key」误判为 e2e 失败根因
+- [ ] 生产 Worker 是否已 redeploy？→ 查 `INFRA_SNAPSHOT.md` §1 生产漂移表；**仅**用户口令「部署」+ redeploy 后可更新 `prod_worker_version`

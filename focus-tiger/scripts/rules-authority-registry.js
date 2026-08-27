@@ -42,6 +42,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-session-handoff.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
+  '.cursor/rules/focus-tiger-source-read-granularity.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
@@ -60,7 +61,9 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
   'focus-tiger/docs/SILENT_BEHAVIORS.md',
   'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
-  'focus-tiger/docs/BACKGROUND_NETWORK.md'
+  'focus-tiger/docs/BACKGROUND_NETWORK.md',
+  'focus-tiger/docs/INFRA_SNAPSHOT.md',
+  'focus-tiger/docs/ENV_CONFIG.md'
 ];
 
 /**
@@ -1327,6 +1330,84 @@ export const RULE_AUTHORITY_TOPICS = [
     citeExemptFiles: [
       '.cursor/rules/focus-tiger-docs.mdc',
       'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ]
+  },
+  {
+    id: 'infra-snapshot',
+    title: '基础设施现状摘要（Worker/KV/entitlement/locale 等低频配置快照）',
+    ssotPath: 'focus-tiger/docs/INFRA_SNAPSHOT.md',
+    ssotSection: 'INFRA_SNAPSHOT — 基础设施现状摘要（非 SSOT）',
+    ssotMustContain: [
+      /infra-snapshot/,
+      /snapshot_base/,
+      /stale_after_paths/,
+      /prod_worker_version/,
+      /§1 Cloud/
+    ],
+    topicSignals: [
+      /infra-snapshot/,
+      /INFRA_SNAPSHOT/,
+      /基础设施现状摘要/,
+      /prod_worker_version/
+    ],
+    mustCite: [/INFRA_SNAPSHOT\.md/],
+    restatementFingerprints: [
+      /stale_after_paths/,
+      /prod_worker_version/,
+      /KV bindings/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'infra-facts-in-env-config',
+        pattern:
+          /ENV_CONFIG\.md[^`\n]{0,40}(?:当前仓库事实|生产 Version|KV bindings 全表)/,
+        note: '环境现状事实应引用 INFRA_SNAPSHOT，不在 ENV_CONFIG 复述大表'
+      }
+    ],
+    citeExemptFiles: [
+      'focus-tiger/docs/ENV_CONFIG.md',
+      'focus-tiger/docs/RULES_INDEX.md',
+      '.cursor/rules/focus-tiger-docs.mdc'
+    ]
+  },
+  {
+    id: 'source-read-granularity',
+    title: '源码读取粒度（大文件先定位再片段读，控上下文 token）',
+    ssotPath: '.cursor/rules/focus-tiger-source-read-granularity.mdc',
+    ssotSection: 'Focus Tiger · 源码读取粒度（控上下文 token · 按需层）',
+    ssotMustContain: [
+      /source-read-granularity/,
+      /≥ 400 行/,
+      /禁止无理由整文件 Read/,
+      /offset/,
+      /Grep/
+    ],
+    topicSignals: [
+      /source-read-granularity/,
+      /源码读取粒度/,
+      /整文件 Read/,
+      /片段读/
+    ],
+    mustCite: [/focus-tiger-source-read-granularity\.mdc|source-read-granularity/],
+    restatementFingerprints: [
+      /≥ 400 行/,
+      /禁止无理由整文件 Read/,
+      /先定位，不先整读/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'whole-file-read-large-source',
+        pattern:
+          /(?:可以|允许|应当)[^。\n]{0,24}(?:整文件|全文)[^。\n]{0,16}(?:Read|读取).{0,24}(?:大文件|≥\s*400|3000)/,
+        note: '大源码文件须先定位再片段读，禁止写成默认可整读'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-docs.mdc',
       'focus-tiger/docs/RULES_INDEX.md'
     ]
   },

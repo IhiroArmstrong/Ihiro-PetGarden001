@@ -14,6 +14,7 @@
 
 import { COPY_POOLS, getLocale, t, tInLocale } from '../locales/i18n.js';
 import { getLocalDateKey } from '../utils/localDate.js';
+import { resolveBrandYinWaySeal } from './brandYinWaySeal.js';
 import { stampJourneyLogInsightSparkForDate } from './journeyLogGate.js';
 import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
 
@@ -489,7 +490,7 @@ export function renderDailyZenQuoteCanvas(opts) {
 
   ctx.fillStyle = QUIET_LINE_CARD.inkMuted;
   ctx.font = '400 28px system-ui, -apple-system, sans-serif';
-  ctx.fillText(opts.footer || 'Focus Tiger · with Yin', padX, footerY);
+  ctx.fillText(opts.footer || 'Walking the Yin Way. · Focus Tiger', padX, footerY);
   if (opts.dateKey) {
     ctx.fillText(
       formatQuietLineFooterDate(opts.dateKey, opts.locale),
@@ -591,7 +592,7 @@ export async function downloadCanvasPng(canvas, filename, deps = {}) {
 export async function saveDailyZenQuoteImage(opts = {}) {
   const resolved = resolveDailyZenQuote(opts);
   const title = t('DAILY_ZEN_QUOTE_CARD_TITLE');
-  const footer = t('DAILY_ZEN_QUOTE_IMAGE_FOOTER');
+  const footer = resolveBrandYinWaySeal({ t });
   const backdropSrc = pickDailyZenQuoteBackdropSrc(resolved.dateKey);
   let image = opts.backdropImage || null;
   if (!image && backdropSrc) {

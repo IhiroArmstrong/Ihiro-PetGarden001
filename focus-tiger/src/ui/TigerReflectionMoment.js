@@ -36,6 +36,12 @@ import {
 } from './glassPanelStyles.js';
 import './daily-wisdom.js';
 import { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
+import { mountReflectionBrandTagline } from './reflectionBrandTaglineMount.js';
+import { resolveBrandYinWayTagline } from '../core/brandYinWayTagline.js';
+import {
+  markBrandYinWayFirstReflectShown,
+  shouldShowBrandYinWayFirstReflect
+} from '../core/brandYinWayFirstReflectGate.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
@@ -154,6 +160,8 @@ export class TigerReflectionMoment {
     this.skipAllBtn = null;
     /** @type {HTMLElement | null} */
     this.wisdomHost = null;
+    /** @type {HTMLElement | null} */
+    this.brandTaglineHost = null;
     /** @type {string} */
     this._sessionIntention = '';
     /** @type {'icon' | 'typed' | null} */
@@ -340,8 +348,24 @@ export class TigerReflectionMoment {
     // Phase A: free Daily Wisdom at card bottom (no Sanctuary seal).
     const { host } = mountReflectionDailyWisdom(this.root);
     this.wisdomHost = host;
+    this._mountBrandTaglineIfNeeded();
     this.container.appendChild(this.root);
     this._refreshTexts();
+  }
+
+  _mountBrandTaglineIfNeeded() {
+    if (!this.root || this.brandTaglineHost) return;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (!shouldShowBrandYinWayFirstReflect({ storage })) return;
+    const resolved = resolveBrandYinWayTagline({
+      bilingualFirstVisit: true,
+      t
+    });
+    const mounted = mountReflectionBrandTagline(this.root, resolved);
+    if (!mounted) return;
+    this.brandTaglineHost = mounted.host;
+    markBrandYinWayFirstReflectShown(storage);
   }
 
   _refreshTexts() {
@@ -525,5 +549,6 @@ export class TigerReflectionMoment {
     this.skipBtn = null;
     this.skipAllBtn = null;
     this.wisdomHost = null;
+    this.brandTaglineHost = null;
   }
 }

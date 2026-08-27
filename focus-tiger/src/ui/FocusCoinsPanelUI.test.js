@@ -61,6 +61,23 @@ test('Collections panel Play is a footer control, not a shop SKU row', () => {
   assert.equal(listShopFocusCoinSkus().includes('gesture.wave-hello'), false);
 });
 
+test('Collections header shows locale brand tagline under panel title', () => {
+  assert.match(src, /dataset\.testid = 'yin-coin-brand-tagline'/);
+  assert.match(src, /BRAND_YIN_WAY_TAGLINE/);
+  const en = JSON.parse(
+    readFileSync(join(here, '../locales/en.json'), 'utf8')
+  );
+  const ja = JSON.parse(
+    readFileSync(join(here, '../locales/ja.json'), 'utf8')
+  );
+  const zh = JSON.parse(
+    readFileSync(join(here, '../locales/zh.json'), 'utf8')
+  );
+  assert.equal(en.BRAND_YIN_WAY_TAGLINE, 'Walking the Yin Way?');
+  assert.equal(ja.BRAND_YIN_WAY_TAGLINE, '寅の道を歩む？');
+  assert.equal(zh.BRAND_YIN_WAY_TAGLINE, '體驗寅之道嗎？');
+});
+
 test('not-for-sale copy names sitting-together over time, not years of sitting', () => {
   const en = JSON.parse(
     readFileSync(join(here, '../locales/en.json'), 'utf8')
