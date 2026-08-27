@@ -72,6 +72,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
 | `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
+| `infra-snapshot` | 基础设施现状摘要（Worker/KV/entitlement/locale 等低频配置快照） | `focus-tiger/docs/INFRA_SNAPSHOT.md` | INFRA_SNAPSHOT — 基础设施现状摘要（非 SSOT） |
 | `source-read-granularity` | 源码读取粒度（大文件先定位再片段读，控上下文 token） | `.cursor/rules/focus-tiger-source-read-granularity.mdc` | Focus Tiger · 源码读取粒度（控上下文 token · 按需层） |
 | `feature-conflict-review` | 实现前功能冲突扫描（强度 / 语气 / 职责） | `focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md` | 扫描三轴 |
 | `background-network` | 非用户点击的网络请求（时机 / 写盘 / 慢网动效） | `focus-tiger/docs/BACKGROUND_NETWORK.md` | 实现前三问（强制） |
@@ -114,6 +115,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
 | `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；实验室脚本路径/命名/已测候选见 `LAB_SCRIPT_CONVENTIONS.md`（勿复述路径表）；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
 | `source-read-granularity` | 「大文件片段读见 `focus-tiger-source-read-granularity.mdc`」；`agent-token-cost` §7 / `focus-tiger-core` 按需索引可一行引用 | 复述完整阈值表或流程；主张 ≥400 行源码默认可整文件 Read；平行写第二套行数门槛 |
+| `infra-snapshot` | 「Worker/KV/entitlement 现状见 `INFRA_SNAPSHOT.md`」；`ENV_CONFIG` 只链规则；接云任务前可读摘要 | 在 `ENV_CONFIG` 再维护「仓库事实」大表；把 Secret 值写进摘要；未经「部署」口令更新 `prod_worker_version` |
 | `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
 | `scenario-tests-eod-sync` | 「下班前 Git 同步须增量核对 `SCENARIO_TESTS.md` 见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏」；`git-agent-commit` 可一行引用 | 下班前 sync 只 push 不更新场景剧本；整份重写 SCENARIO_TESTS；把 TEST_TRACKER 碎片复制进场景正文 |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
@@ -163,7 +165,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
 | `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |
 | `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、清供 8、序列帧铁律（**方向锁 2026-08-20**；运行时见 Brief） |
-| `ENV_CONFIG.md` | 环境配置与密钥隔离（客户端禁 Secret；dev/prod；CI Secrets 时机） |
+| `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
+| `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
@@ -203,7 +206,7 @@ cd focus-tiger && npm run rules:doc-sync
 | CI | `.github/workflows/focus-tiger-doc-contract-check.yml` |
 | PR 轻量冒烟 | `.github/workflows/pr-smoke.yml`（Required on `develop`） |
 | 全量 e2e（夜间+手动） | `.github/workflows/focus-tiger-e2e-full.yml`（**`schedule` 读默认分支 YAML，现为 `develop`**；见 `ENV_CONFIG.md` §3） |
-| 环境与密钥 | `docs/ENV_CONFIG.md` |
+| 环境与密钥规则 | `docs/ENV_CONFIG.md` · 现状摘要 `docs/INFRA_SNAPSHOT.md` |
 
 ---
 
