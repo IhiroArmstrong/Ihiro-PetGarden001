@@ -1,0 +1,1 @@
+| Local AI Phase 1 PO Formal Decision | 纯后端/文档 | 仅单元测试覆盖 | PO 拍板已写入 `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` + `LOCAL_AI_SCENARIOS_V1.md`。Brief：1A NL Actions · 1B Ask Journey/Presence · 1C Reflection validation。**无 runtime**；须分项口令开工。Validation ≠ Shipping。 | — | — | — | 读 PO 决策 md；勿当已 shipping Reflection generate | 2026-08-28 |

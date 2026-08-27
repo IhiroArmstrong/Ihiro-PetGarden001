@@ -1,7 +1,6 @@
 # Local AI Layer — Scenario Expansion Design Review
 
-**状态（2026-08-28）**：会审材料 · **未拍板** · **不是开工令**。  
-**禁止本文件**：runtime、新 generate IPC、改 `LOCAL_AI_SCENARIOS_V1.md` 政策句。
+**状态（2026-08-28）**：会审材料 · **产品会审已结案** · 正式决策见 [`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`](./LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md) · **不是开工令**。
 
 **会议名**：Local AI Scenario Expansion Design Review  
 **不是**：Local AI implementation planning。

@@ -1,6 +1,6 @@
 # Local AI Scenario Expansion · Designer Pre-Review
 
-**状态（2026-08-28）**：设计师预审结论 · **Expected Position** · **不是产品负责人最终批准** · **不是 SSOT 变更** · **不是开工令**。
+**状态（2026-08-28）**：设计师预审 · **已由 PO 正式决策 supersede** · 见 [`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`](./LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md)。
 
 **会审输入材料（已合 develop · #462）**：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`  
 **现网政策（本会未改）**：`LOCAL_AI_SCENARIOS_V1.md` · `CONFIDE_EXECUTABLE_INTENTS.md`
