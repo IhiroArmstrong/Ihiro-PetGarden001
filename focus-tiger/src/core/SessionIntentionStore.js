@@ -5,10 +5,12 @@
 
 /**
  * Session Intention / Choose 本地存储 —— 仅保存非空意图，最近 5 条。
- * Notice 状态点选写入 presence-signals.v1，严禁写入本存储（意图）。
+ * 非空 Choose 同时双写 presence-signals.v1（`arrival_choose` · freeText）。
+ * Notice 状态点选写入 presence-signals.v1（`arrival_notice`），严禁写入本存储。
  */
 
 import { getStorage, setStorage } from '../utils/Storage.js';
+import { appendIntentionPresenceSignal } from './intentionPresenceBridge.js';
 
 export const INTENTION_STORAGE_KEY = 'focus-tiger.intentions.v1';
 export const INTENTION_MAX_SAVED = 5;
@@ -115,5 +117,10 @@ export function recordIntention(text, options = {}) {
   };
   const saved = trimIntentions(getStorage(INTENTION_STORAGE_KEY, []), entry);
   setStorage(INTENTION_STORAGE_KEY, saved);
+  const storage = globalThis.localStorage ?? null;
+  appendIntentionPresenceSignal(storage, entry.text, {
+    now: () => new Date(entry.timestamp),
+    at: new Date(entry.timestamp).toISOString()
+  });
   return entry;
 }

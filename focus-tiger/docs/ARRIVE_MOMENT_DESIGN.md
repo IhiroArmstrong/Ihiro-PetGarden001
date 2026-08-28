@@ -47,7 +47,7 @@ Companion Mode 三选一（独立组件，不合并进 Arrival Practice）
 确认 → 计时开始
   ↓
 会话结束（达标或中途主动结束，两条路径都会） → Reflection Moment
-  （开头回显 Choose 内容，两条路径都回显；Notice 状态永不回显、永不落库）
+  （开头回显 Choose 内容，两条路径都回显；Notice 状态永不回显到 Reflection，已入账 presence-signals）
 ```
 
 **Choose 确认视觉（2026-07-20）**：改用 **16:9 nod-bow**（不再合十）；Companion 门闩在确认瞬间打开（动画不挡流程）。Dolly 在点头回 idle 后拉回。跳过 Choose 时立刻清氛围并拉回。
@@ -69,12 +69,13 @@ PRINCIPLES 已有的"观照者而非情绪本身"原则：
 
 ## 四、数据存储与是否持久化（两步规则不同，容易搞混，务必分开处理）
 
-- **Notice 状态点选**：**不存储、不做跨会话统计**。只用于挑选 Yin 当次的一句回应台词，
-  用完即弃。这一步保留是为了完成"觉察当下"的体验，不是为了积累情绪数据——项目已经
-  明确删除过"情绪分析/AI Coach"类表达，这里不能借着"顺便存一下"把那个方向绕回来。
-- **Choose 选择**：沿用存储设计，仍然记录：
+- **Notice 状态点选**：入账 `presence-signals.v1`（`arrival_notice` · `emotionTag`）。
+  同时用于挑选 Yin 当次的一句回应台词；**不回显**到 Reflection。首次入账可展示一次性披露行
+  （`PRESENCE_SIGNALS_DISCLOSURE`）。趋势统计仍只计 closed tag 样本，不做临床式情绪分析。
+- **Choose 选择**：双写：
   ```
-  localStorage key: focus-tiger.intentions.v1
+  intentions.v1 — SSOT 最近 5 条意图历史 / Reflection 回显
+  presence-signals.v1 — arrival_choose · freeText（与 Reflection Q1–Q3 同轨，供 Yin 了解你）
   结构：[{ text: string, source: 'icon' | 'typed', timestamp: number }, ...]
   规则：仅非空才存；最多保留最近 5 条。
   source 字段区分是点了图标（存图标对应的标签文案，如 "Deep Work"）还是自己打的字。
@@ -87,7 +88,7 @@ PRINCIPLES 已有的"观照者而非情绪本身"原则：
   - EN: Attention toward: {selection}
   - **两条路径都回显**：达标结束和中途主动结束都会进入 Reflection Moment，Choose
     内容与是否达标无关，两条路径均回显；若当次跳过了 Choose，则不显示这句。
-  - Notice 状态在任何路径下都不回显、不落库。
+  - Notice 状态在任何路径下都不回显到 Reflection（已入账 presence-signals）。
 
 ---
 
@@ -137,7 +138,7 @@ v1 提议的原始流程里没有跳过点，这是必须修正的地方——�
    Mode 三选一，不合并成一个面板。
 2. **未达标是否回显**：要回显。Choose/意图内容与是否达标无关，达标结束和中途
    主动结束两条路径都会进入 Reflection Moment，且都回显 Choose 内容；Notice
-   状态永不回显、永不落库，这条不受影响。
+   状态永不回显到 Reflection（已入账 presence-signals），这条不受影响。
 3. **文案**：已过 EMOTION_BIBLE 四项观察式自检，定稿见第四节。
 4. **跳过交互（2026-07-24 修订）**：
    - **现行**：⚡ Quick Start（`#quick-start-focus`）跳过整段仪式并立刻 Focusing；Arrival UI 为
@@ -166,7 +167,7 @@ v1 提议的原始流程里没有跳过点，这是必须修正的地方——�
 2. 全程必须提供跳过路径（见设计文档第五节）：整体跳过入口 + Notice/Choose 各自
    独立可跳过，不设强制必选项。具体交互形式请先给 1-2 个方案，不要直接实现。
 
-3. Notice 状态点选严格不落库、不做跨会话统计，只用于选择 Yin 当次的一句回应
+3. Notice 状态点选入账 `presence-signals`（`arrival_notice`），不做跨会话统计展示；只用于选择 Yin 当次的一句回应
    台词（六句文案见设计文档第三节初稿，接入前需过 EMOTION_BIBLE 四项观察式
    自检）。
 

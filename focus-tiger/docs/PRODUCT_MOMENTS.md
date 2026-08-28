@@ -44,8 +44,8 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 - **对应现有实现**：
   - Honesty Check-in / DORMANT 唤醒仪式（按天、可忽略）——与 Arrival Practice **并存、不改名**。
   - **Honesty 桥接 CTA**（2026-07-19，见 `HONESTY_BRIDGE_CTA.md`）：每次补登结束后**立刻**出现邀请（顶行 thanks 回显 +「要不要现在也坐一会儿？」）；Yes → 完整 Arrival → Companion（**不**直接开表 / Ambient）；No → idle。允许当天多次补登、多次桥接。桥接**不是** Honesty 流程的一部分。
-  - Arrival Practice（TASKS.md 任务十，✅ v2）：点击 Sit with Yin 后 → 欢迎 / Notice 状态点选（不落库）/ ~5s 呼吸 / Choose（图标+次要打字，落库回显）→ Companion Mode → 再 Sit 计时。全程可跳过。详规见 `ARRIVE_MOMENT_DESIGN.md`；会话粒度见 `CORE_LOOP.md`。
-- **不做什么**：不做「每日打卡义务」式强制入口；Notice 不做跨会话情绪统计；不加角色语音；**不**把 Honesty 改成选时长即开计时。
+  - Arrival Practice（TASKS.md 任务十，✅ v2）：点击 Sit with Yin 后 → 欢迎 / Notice 状态点选（入账 `presence-signals` · `arrival_notice`）/ ~5s 呼吸 / Choose（图标+次要打字，落库 `intentions.v1` 并双写 `presence-signals` · `arrival_choose`）→ Companion Mode → 再 Sit 计时。全程可跳过。详规见 `ARRIVE_MOMENT_DESIGN.md`；会话粒度见 `CORE_LOOP.md`。
+- **不做什么**：不做「每日打卡义务」式强制入口；Notice 不做跨会话情绪**统计展示**（仅本地入账供觉察与陪伴）；不加角色语音；**不**把 Honesty 改成选时长即开计时。
 
 ### 4.2 Focus（已完整，本次不动）
 

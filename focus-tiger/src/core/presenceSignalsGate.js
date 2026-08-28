@@ -65,7 +65,7 @@ export const PRESENCE_EMOTION_TAG_IDS = Object.freeze([
 ]);
 
 /**
- * @typedef {'arrival_notice' | 'reflection_q1' | 'reflection_q2' | 'reflection_q3' | 'ritual_chip'} PresenceSignalSource
+ * @typedef {'arrival_notice' | 'arrival_choose' | 'reflection_q1' | 'reflection_q2' | 'reflection_q3' | 'ritual_chip'} PresenceSignalSource
  *
  * @typedef {{
  *   id: string,
@@ -151,6 +151,7 @@ export function normalizePresenceSignalEntries(raw) {
     if (!id || !at) continue;
     if (
       source !== 'arrival_notice' &&
+      source !== 'arrival_choose' &&
       source !== 'reflection_q1' &&
       source !== 'reflection_q2' &&
       source !== 'reflection_q3' &&
