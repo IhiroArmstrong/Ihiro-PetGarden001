@@ -1,0 +1,1 @@
+| PO Amendment · Bounded Temporal Compare | 纯后端/文档 | 仅单元测试覆盖 | PO 书面同意（2026-08-28 晚）：C2 开放两段时期并列事实；禁止人格进步评判（「你更稳了/进步了」）。对照型问句纳入 Phase 1B；实现仍须口令开工。SSOT `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` Amendment · `LOCAL_AI_SCENARIOS_V1.md` §0.1 | — | — | — | 读 Amendment；runtime = Phase 1B 口令 | 2026-08-28 |

@@ -290,7 +290,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 轨 | 内容 | Brief | PO | 状态 |
 |---|---|---|---|---|
 | **1A** | NL Actions MVP：Forget（CI-01）+ Show memory read | `task-local-ai-phase1-nl-actions-mvp.md` | **CORE** | Brief 已建 · **未开工** |
-| **1B** | Ask Journey / Presence · Retrieve + bounded Describe | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | Brief 已建 · **未开工** |
+| **1B** | Ask Journey / Presence · Retrieve + bounded Describe + **Temporal Compare** | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | Brief 已建 · **未开工** · PO 2026-08-28 晚修订对照型问句 |
 | **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | Brief 已建 · **未开工** |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
 | **—** | Don't save this | — | **未批准** | — |
