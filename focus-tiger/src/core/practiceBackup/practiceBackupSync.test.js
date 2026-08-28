@@ -16,6 +16,10 @@ import {
 } from './practiceBackupSync.js';
 import { readPracticeBackupOptIn } from './practiceBackupOptIn.js';
 import { PRACTICE_BACKUP_STORE_KEYS } from './practiceBackupSnapshot.js';
+import {
+  setPracticeBackupCloudEnabledForTests,
+  practiceBackupCloudEnabled
+} from './practiceBackupCloudEnabled.js';
 
 function memStorage(initial = {}) {
   const map = new Map(Object.entries(initial));
@@ -33,6 +37,36 @@ function memStorage(initial = {}) {
 describe('practiceBackupSync', () => {
   beforeEach(() => {
     resetPracticeBackupSyncForTests();
+    setPracticeBackupCloudEnabledForTests(true);
+  });
+
+  it('skips all cloud paths when cloud backup is disabled', async () => {
+    setPracticeBackupCloudEnabledForTests(false);
+    const storage = memStorage();
+    enablePracticeBackupOptIn(storage, {
+      email: 'a@example.com',
+      deviceToken: 'tok_abcdefghijklmnopqrstuvwxyz012345'
+    });
+    let calls = 0;
+    const upload = await flushPracticeBackupUpload({
+      storage,
+      force: true,
+      postJson: async () => {
+        calls += 1;
+        return { ok: true };
+      }
+    });
+    assert.equal(upload.reason, 'cloud_disabled');
+    const restore = await maybeRestorePracticeBackupOnBoot({
+      storage,
+      postJson: async () => {
+        calls += 1;
+        return { ok: true, snapshot: {} };
+      }
+    });
+    assert.equal(restore.reason, 'cloud_disabled');
+    assert.equal(calls, 0);
+    assert.equal(practiceBackupCloudEnabled, false);
   });
 
   it('does not upload without consent', async () => {

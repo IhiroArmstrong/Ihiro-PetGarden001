@@ -8,14 +8,57 @@
  * Product SSOT narrative: docs/PRIVACY_NOTICE.md · Brief task-in-app-privacy-and-purpose-copy.
  */
 
-/** Locale keys rendered as paragraphs in `#onboarding-privacy-sheet`. */
-export const PRIVACY_SHEET_BODY_KEYS = Object.freeze([
-  'PRIVACY_SHEET_INTRO',
-  'PRIVACY_SHEET_ON_DEVICE',
-  'PRIVACY_SHEET_LOCAL_AI',
+/** Intro paragraph before numbered sections. */
+export const PRIVACY_SHEET_INTRO_KEY = 'PRIVACY_SHEET_INTRO';
+
+/** States that this sheet is the full in-app privacy notice. */
+export const PRIVACY_SHEET_FULL_LEAD_KEY = 'PRIVACY_SHEET_FULL_LEAD';
+
+/**
+ * Numbered sections aligned with docs/PRIVACY_NOTICE.md §1–§5.
+ * @type {readonly { id: string, titleKey: string, bodyKey: string, mountLocalData?: boolean }[]}
+ */
+export const PRIVACY_SHEET_SECTIONS = Object.freeze([
+  {
+    id: 'ai',
+    titleKey: 'PRIVACY_SHEET_SEC_1_TITLE',
+    bodyKey: 'PRIVACY_SHEET_AI_INFERENCE'
+  },
+  {
+    id: 'storage',
+    titleKey: 'PRIVACY_SHEET_SEC_2_TITLE',
+    bodyKey: 'PRIVACY_SHEET_DEFAULT_STORAGE'
+  },
+  {
+    id: 'export',
+    titleKey: 'PRIVACY_SHEET_SEC_3_TITLE',
+    bodyKey: 'PRIVACY_SHEET_EXPORT_IMPORT',
+    mountLocalData: true
+  },
+  {
+    id: 'cloud',
+    titleKey: 'PRIVACY_SHEET_SEC_4_TITLE',
+    bodyKey: 'PRIVACY_SHEET_CLOUD'
+  },
+  {
+    id: 'rights',
+    titleKey: 'PRIVACY_SHEET_SEC_5_TITLE',
+    bodyKey: 'PRIVACY_SHEET_RIGHTS'
+  }
+]);
+
+/** Optional consents + closing after the formal sections. */
+export const PRIVACY_SHEET_TAIL_KEYS = Object.freeze([
   'PRIVACY_SHEET_NOT_DO',
-  'PRIVACY_SHEET_CLOUD',
   'PRIVACY_SHEET_CLOSING'
+]);
+
+/** @deprecated Use PRIVACY_SHEET_SECTIONS + tail keys */
+export const PRIVACY_SHEET_BODY_KEYS = Object.freeze([
+  PRIVACY_SHEET_INTRO_KEY,
+  PRIVACY_SHEET_FULL_LEAD_KEY,
+  ...PRIVACY_SHEET_SECTIONS.flatMap((s) => [s.titleKey, s.bodyKey]),
+  ...PRIVACY_SHEET_TAIL_KEYS
 ]);
 
 /** Locale keys for YPE L2 cloud personalization opt-in (Privacy sheet). */
