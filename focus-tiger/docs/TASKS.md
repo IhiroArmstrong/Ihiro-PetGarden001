@@ -283,8 +283,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ## 📍 Local AI Phase 1（2026-08-28 · PO 正式拍板）
 
-> **SSOT**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md`  
-> **会审输入**：#462 · 设计师预审 #475 · **PO 决策本 PR**  
+> **SSOT**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md` · **`LOCAL_AI_PHASE1_TASK_PLAN.md`**（执行计划 · Gate 0.2 A/B/C）  
+> **会审输入**：#462 · 设计师预审 #475 · PO 决策 #476  
 > **硬规则**：Brief 存在 ≠ 开工；**Validation ≠ Shipping**
 
 | 轨 | 内容 | Brief | PO | 状态 |

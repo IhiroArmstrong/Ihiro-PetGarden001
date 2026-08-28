@@ -1,7 +1,7 @@
 # 本地 AI 场景规划 · V1
 
 **状态（2026-08-28）**：**产品会审已拍板**（PO · `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`）· Phase 1 Brief 已建 · **runtime 须逐项开工口令**。  
-**SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_OPERATING_LAYER.md` · `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` · `task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md`
+**SSOT 交叉引用**：`LOCAL_AI_PHASE1_TASK_PLAN.md`（执行计划 · Gate 0.2 A/B/C）· `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_OPERATING_LAYER.md` · `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` · `task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md`
 
 ---
 
@@ -187,6 +187,8 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 ---
 
 ## 6. 我认为最合理的下一刀
+
+**执行步骤 SSOT**：`LOCAL_AI_PHASE1_TASK_PLAN.md`（含 Gate 0.2 · #472 Read Hybrid 验收 A/B/C）。
 
 1. **#472 Read Hybrid 人工测**（不改代码除非 bug）。  
 2. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
