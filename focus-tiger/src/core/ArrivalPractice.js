@@ -7,7 +7,8 @@
  * Arrival Practice —— Sit 之后、计时之前的轻量仪式状态机（纯逻辑，无 DOM）。
  *
  * 步骤：welcome → notice → breath → choose → ready
- * Notice 点选写入 presence-signals（arrival_notice）；Choose 由调用方写入 intentions.v1。
+ * Notice 点选写入 presence-signals（arrival_notice）；Choose 由调用方写入 intentions.v1
+ * 并双写 presence-signals（arrival_choose · freeText）。
  */
 
 export const ARRIVAL_STEPS = Object.freeze({

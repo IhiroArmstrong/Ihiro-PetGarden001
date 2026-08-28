@@ -269,9 +269,14 @@ export class TigerReflectionMoment {
       'font-size:15px',
       'line-height:1.6',
       'color:#4a3a28',
-      'margin-bottom:12px',
+      'margin-bottom:8px',
       `transition:opacity ${FADE_MS}ms ease`
     ].join(';');
+
+    this.benefitHintEl = document.createElement('p');
+    this.benefitHintEl.dataset.testid = 'reflection-benefit-hint';
+    this.benefitHintEl.style.cssText =
+      'margin:0 0 12px;padding:0 2px;font-size:12px;line-height:1.45;color:rgba(74,58,40,.72);';
 
     this.inputEl = document.createElement('input');
     this.inputEl.type = 'text';
@@ -342,6 +347,7 @@ export class TigerReflectionMoment {
       this.root.appendChild(this.echoEl);
     }
     this.root.appendChild(this.questionEl);
+    this.root.appendChild(this.benefitHintEl);
     this.root.appendChild(this.inputEl);
     this.root.appendChild(this.companionEchoEl);
     this.root.appendChild(footer);
@@ -396,6 +402,9 @@ export class TigerReflectionMoment {
       questionCount: this.flow.questionCount
     });
     this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[qIndex]);
+    if (this.benefitHintEl) {
+      this.benefitHintEl.textContent = t('REFLECTION_BENEFIT_HINT');
+    }
     this.skipBtn.textContent = t('REFLECTION_SKIP');
     this.skipAllBtn.textContent = t('REFLECTION_SKIP_ALL');
     this.continueBtn.textContent = t('REFLECTION_CONTINUE');

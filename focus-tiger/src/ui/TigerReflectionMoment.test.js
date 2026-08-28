@@ -199,6 +199,13 @@ test('Reflection card uses shared home clearance and globe side inset', () => {
   assert.equal(src.includes('bottom:96px'), false);
 });
 
+test('Reflection mounts benefit + privacy hint on every question', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, 'TigerReflectionMoment.js'), 'utf8');
+  assert.match(src, /reflection-benefit-hint/);
+  assert.match(src, /REFLECTION_BENEFIT_HINT/);
+});
+
 test('Reflection mounts one-time bilingual brand tagline after first session', () => {
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(join(here, 'TigerReflectionMoment.js'), 'utf8');
