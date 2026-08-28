@@ -1108,6 +1108,12 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - 未明示同意就上传练习相关字段  
 - 把 A 与 B 混成「一个同步功能」却不分免费/付费  
 
+#### 暂停项（2026-08-28 · 本地导出优先）
+
+- **产品面**：云端备份 UI 隐藏；`practiceBackupCloudEnabled = false` 阻断静默 upload/restore（Worker 路由保留待加密方案）。
+- **替代**：Privacy 页本地导出/导入（同 6 key 快照）；政策写「当前不提供云端备份」。
+- **Backlog · 曾 opt-in 用户**：本机仍可能有 `practice-backup.v1` enabled 标记但被 flag 静默跳过 → 评估 **一次性轻提示**（例：「云端备份暂不可用，请用本地导出」）；**非**本 PR 范围。
+
 - **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  
 - **后台网络跟进（2026-08-23 · 本旁支已改运行时）**：Idle flush 约 2.5s；busy 含 Arrival / Honesty；同内容跳过写盘 / 跳过 PUT。慢网流畅度仍待人工。Brief `task-practice-backup-background-network.md`。权威：`BACKGROUND_NETWORK.md`。  
 - **口令示例**：「补 practice-backup OTP secrets」/「测练习记忆云端备份」

@@ -23,6 +23,7 @@ import {
   disablePracticeBackupAndDeleteCloud,
   flushPracticeBackupUpload
 } from '../core/practiceBackup/practiceBackupSync.js';
+import { practiceBackupCloudEnabled } from '../core/practiceBackup/practiceBackupCloudEnabled.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -282,6 +283,13 @@ export class JourneyLogUI {
   }
 
   _refreshBackupPanel() {
+    if (!practiceBackupCloudEnabled) {
+      this.backupLink.hidden = true;
+      this.backupPanel.hidden = true;
+      this._backupPanelOpen = false;
+      return;
+    }
+    this.backupLink.hidden = false;
     const opt = readPracticeBackupOptIn(this._storage);
     const on = Boolean(opt.enabled && opt.deviceToken);
     this.backupLink.textContent = on

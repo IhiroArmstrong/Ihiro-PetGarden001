@@ -49,7 +49,14 @@ import {
   resolvePurposeCardAwayFromTips,
   syncAllDiscoveryDots
 } from './hintDiscoveryDots.js';
-import { PRIVACY_SHEET_BODY_KEYS, PRIVACY_SHEET_YPE_OPT_IN_KEYS } from './privacyNoticeCopy.js';
+import {
+  PRIVACY_SHEET_INTRO_KEY,
+  PRIVACY_SHEET_FULL_LEAD_KEY,
+  PRIVACY_SHEET_SECTIONS,
+  PRIVACY_SHEET_TAIL_KEYS,
+  PRIVACY_SHEET_YPE_OPT_IN_KEYS
+} from './privacyNoticeCopy.js';
+import { LocalPracticeDataUI } from './LocalPracticeDataUI.js';
 import {
   isMonetizationFunnelOptInEnabled,
   setMonetizationFunnelOptIn
@@ -2126,7 +2133,37 @@ export class OnboardingHintsUI {
     const body = document.createElement('div');
     body.className = 'onboarding-privacy-sheet__body';
 
-    for (const key of PRIVACY_SHEET_BODY_KEYS) {
+    const intro = document.createElement('p');
+    intro.className = 'onboarding-privacy-sheet__p';
+    intro.dataset.privacyKey = PRIVACY_SHEET_INTRO_KEY;
+    body.appendChild(intro);
+
+    const fullLead = document.createElement('p');
+    fullLead.className = 'onboarding-privacy-sheet__p onboarding-privacy-sheet__full-lead';
+    fullLead.dataset.privacyKey = PRIVACY_SHEET_FULL_LEAD_KEY;
+    body.appendChild(fullLead);
+
+    const localDataMount = document.createElement('div');
+    localDataMount.className = 'onboarding-privacy-sheet__local-data';
+    localDataMount.dataset.testid = 'privacy-local-data-mount';
+
+    for (const section of PRIVACY_SHEET_SECTIONS) {
+      const heading = document.createElement('h3');
+      heading.className = 'onboarding-privacy-sheet__section-title';
+      heading.dataset.privacyKey = section.titleKey;
+      body.appendChild(heading);
+
+      const p = document.createElement('p');
+      p.className = 'onboarding-privacy-sheet__p';
+      p.dataset.privacyKey = section.bodyKey;
+      body.appendChild(p);
+
+      if (section.mountLocalData) {
+        body.appendChild(localDataMount);
+      }
+    }
+
+    for (const key of PRIVACY_SHEET_TAIL_KEYS) {
       const p = document.createElement('p');
       p.className = 'onboarding-privacy-sheet__p';
       p.dataset.privacyKey = key;
@@ -2247,6 +2284,12 @@ export class OnboardingHintsUI {
     sheet.append(title, body, wellnessNote, wellnessLink, ypeOptIn, optIn, back);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
+    this._localPracticeDataUI = new LocalPracticeDataUI(localDataMount, {
+      storage: globalThis.localStorage,
+      onImported: () => {
+        window.dispatchEvent(new Event('ft:practice-data-imported'));
+      }
+    });
     this._privacyTitleEl = title;
     this._privacyBodyEl = body;
     this._privacyBackEl = back;
@@ -3029,6 +3072,20 @@ export class OnboardingHintsUI {
         overflow: auto;
         flex: 1 1 auto;
         min-height: 0;
+      }
+      .onboarding-privacy-sheet__full-lead {
+        font-weight: 600;
+        color: #2f463c;
+      }
+      .onboarding-privacy-sheet__section-title {
+        margin: 14px 0 6px;
+        font-size: 13px;
+        font-weight: 650;
+        line-height: 1.35;
+        color: #2f463c;
+      }
+      .onboarding-privacy-sheet__section-title:first-of-type {
+        margin-top: 4px;
       }
       .onboarding-privacy-sheet__p {
         margin: 0 0 10px;

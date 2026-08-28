@@ -27,6 +27,7 @@ import { normalizeOwnershipState } from '../entitlement/entitlementOwnership.js'
 import { normalizeJourneyLogState } from '../journeyLogGate.js';
 import { normalizeRitualCompletionState } from '../RitualCompletionStore.js';
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
+import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
 
 export const PRACTICE_BACKUP_DEBOUNCE_MS = 10 * 60 * 1000;
 export const PRACTICE_BACKUP_MIN_UPLOAD_GAP_MS = 60 * 1000;
@@ -139,6 +140,9 @@ export function applyPracticeBackupSnapshot(storage, snapshot, opts = {}) {
  * @param {boolean} [opts.forceSoon] Idle flush — still respects min gap unless force
  */
 export function schedulePracticeBackupUpload(opts = {}) {
+  if (!practiceBackupCloudEnabled) {
+    return;
+  }
   const storage =
     opts.storage ??
     (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -163,6 +167,9 @@ export function schedulePracticeBackupUpload(opts = {}) {
  * @returns {Promise<{ ok: boolean, reason?: string, skipped?: boolean }>}
  */
 export async function flushPracticeBackupUpload(opts = {}) {
+  if (!practiceBackupCloudEnabled) {
+    return { ok: false, reason: 'cloud_disabled', skipped: true };
+  }
   const storage =
     opts.storage ??
     (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -245,6 +252,9 @@ export async function flushPracticeBackupUpload(opts = {}) {
  * @param {typeof postCloudJson} [opts.postJson]
  */
 export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
+  if (!practiceBackupCloudEnabled) {
+    return { ok: false, reason: 'cloud_disabled', skipped: true };
+  }
   const storage =
     opts.storage ??
     (typeof localStorage !== 'undefined' ? localStorage : null);

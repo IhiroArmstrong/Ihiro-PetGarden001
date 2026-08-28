@@ -10,6 +10,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import {
   PRIVACY_SHEET_BODY_KEYS,
+  PRIVACY_SHEET_SECTIONS,
+  PRIVACY_SHEET_FULL_LEAD_KEY,
   PRIVACY_SHEET_YPE_OPT_IN_KEYS,
   findPrivacyKeysWithForbiddenCloudBrand,
   findYpeConsentForbiddenSubstrings,
@@ -25,19 +27,32 @@ function loadLocale(name) {
 
 describe('privacyNoticeCopy', () => {
   it('lists stable sheet body keys', () => {
-    assert.equal(PRIVACY_SHEET_BODY_KEYS.length >= 5, true);
+    assert.equal(PRIVACY_SHEET_BODY_KEYS.length >= 8, true);
     assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_INTRO'));
-    assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_LOCAL_AI'));
+    assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_FULL_LEAD'));
+    assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_AI_INFERENCE'));
+    assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_SEC_3_TITLE'));
+  });
+
+  it('en + ja full privacy lead and five numbered sections', () => {
+    for (const file of ['en.json', 'ja.json']) {
+      const map = loadLocale(file);
+      assert.match(map[PRIVACY_SHEET_FULL_LEAD_KEY], /full privacy|完全なプライバシー/i);
+      assert.equal(PRIVACY_SHEET_SECTIONS.length, 5);
+      for (const section of PRIVACY_SHEET_SECTIONS) {
+        assert.equal(typeof map[section.titleKey], 'string', `${file} ${section.titleKey}`);
+        assert.equal(typeof map[section.bodyKey], 'string', `${file} ${section.bodyKey}`);
+      }
+    }
   });
 
   it('en + ja local AI privacy line stays on-device', () => {
     const en = loadLocale('en.json');
     const ja = loadLocale('ja.json');
-    assert.match(en.PRIVACY_SHEET_LOCAL_AI, /stay on your device/i);
-    assert.match(en.PRIVACY_SHEET_LOCAL_AI, /Yin can listen locally/i);
-    assert.match(en.PRIVACY_SHEET_LOCAL_AI, /cloud AI/i);
-    assert.match(ja.PRIVACY_SHEET_LOCAL_AI, /端末|ローカル/);
-    assert.match(ja.PRIVACY_SHEET_LOCAL_AI, /クラウドAI/);
+    assert.match(en.PRIVACY_SHEET_AI_INFERENCE, /on your device/i);
+    assert.match(en.PRIVACY_SHEET_AI_INFERENCE, /third-party/i);
+    assert.match(ja.PRIVACY_SHEET_AI_INFERENCE, /端末/);
+    assert.match(ja.PRIVACY_SHEET_AI_INFERENCE, /第三者/);
   });
 
   it('detects forbidden iCloud brand in free text', () => {
