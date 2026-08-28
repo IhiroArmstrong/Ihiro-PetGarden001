@@ -186,6 +186,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-28 | PO 修订 Bounded Temporal Compare：C2 开放两段时期并列事实；禁止人格进步评判；Phase 1B 扩对照型问句。无 runtime |
 | 2026-08-28 | PO 正式拍板 Local AI Phase 1：V1=A；V2 future；V3 validation；Ceiling C2+少量C3；MUST NOT 锁。Brief 三份；无自动 runtime |
 | 2026-08-28 | 设计师预审 Expected Position 入库（非批准）：V1=A；V2 窄删 Candidate；V3 用户点；MUST NOT 全确认。无 runtime |
 | 2026-08-28 | 会审表收口为正式会程：Ceiling / MUST NOT ENTER / Top 3 候选 / V2·V3 唱名；不改场景规划政策句。无运行时 |

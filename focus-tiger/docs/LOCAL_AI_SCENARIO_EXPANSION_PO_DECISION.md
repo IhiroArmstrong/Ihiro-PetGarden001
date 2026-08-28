@@ -7,6 +7,8 @@
 
 **签字**：Product Owner · 2026-08-28
 
+**修订（2026-08-28 晚 · PO 书面同意）**：§V5 收窄释义 + §Bounded Temporal Compare + Phase 1B 问句扩列。见文末 **PO Amendment · Bounded Temporal Compare**。
+
 ---
 
 ## 决策总表
@@ -79,9 +81,21 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 
 ---
 
-## V5 — FULL BAN
+## V5 — FULL BAN（2026-08-28 晚收窄释义）
 
-禁止 diagnosis · progress quantification · mental-health assessment · crisis/emotion bucket generate。
+**仍禁止（全球）**
+
+- clinical **diagnosis**（临床诊断）
+- **mental-health assessment**（心理健康评估 / 量表式结论）
+- **crisis / emotion bucket generate**
+- **person-level progress judgment**（对用户本人的进步/退步/品格评判句）
+- **quantified scores / grades / rankings**（分数、等级、排名、百分比进步）
+
+**不再一律禁止**
+
+- 用户问「是不是比以前久 / 更稳定 / 更容易进入状态」等**对照型**口语 —— 归入 C2 **Bounded Temporal Compare**（见文末 Amendment），用本机记录做**两段时期并列事实**，**不是** Operating Tools，**不是** Interpret。
+
+> **区分**：问「有没有变化」✅ 可答时期对照 · 答「你进步了/更稳定了」❌ 仍属 V5 人格评判。
 
 ---
 
@@ -100,6 +114,7 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 |---|---|
 | Retrieve | ✅ |
 | bounded Describe | ✅ |
+| **bounded Temporal Compare** | ✅（2026-08-28 晚 PO 修订；见 Amendment） |
 | Interpret | ❌ 默认不开放 |
 | Diagnose / Assess | ❌ 禁止（V5） |
 
@@ -138,6 +153,9 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 | When do I usually practice? | ✅ CORE |
 | How have I been showing up? | ✅ CORE |
 | What has my mood looked like recently? | ✅ CORE（**替代** Has my mood improved? 为正式示例） |
+| Am I practicing longer / more than before? / 我是不是坚持得比以前久？ | ✅ CORE · **Temporal Compare** |
+| Have I been more steady lately? / 我是不是最近比较稳定？ | ✅ CORE · **Temporal Compare** |
+| Have I been getting into practice more easily? / 有没有更容易进入状态？ | ✅ CORE · **Temporal Compare**（仅可审计字段；禁止推断心流） |
 | What have you noticed lately? | 🟡 observation-boundary **candidate**（不作普通 Retrieve 示例） |
 
 ### C · Reflection Companion — Candidate · validation only
@@ -158,7 +176,49 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 - What has my mood looked like recently?  
 - 最近两周我的情绪看起来怎样？
 
-**禁止示例方向：** improved / getting better / less anxious / emotional health improved
+**禁止示例方向（答句）**：improved / getting better / less anxious / emotional health improved · **你更稳定了** · **你坚持得更好了** · **你进步了** · 任意百分比/分数
+
+**对照型问句（路由）**：`Has my mood improved?` / **是不是比以前久** / **是不是更稳定** 等可命中 Companion read / Temporal Compare；**答句仍须时期事实并列**，不得用「是，改善了」收尾。
+
+---
+
+## PO Amendment · Bounded Temporal Compare（2026-08-28 晚 · 书面同意）
+
+### 产品意图
+
+用户常用口语常带**时期对照**（比以前久、稳不稳、进状态顺不顺）。这些属于 **懂我 / 读本机记录**，不是 Operating（备份/更新），也不是临床诊断。PO 同意在 C2 内开放 **Bounded Temporal Compare**。
+
+### 定义
+
+> **Yin may compare two time windows using deterministic local records, but must not conclude what that comparison means about the person's character, progress, or mental health.**
+
+中文：阿寅可以用本机记录**并列两段时期的事实**（次数、时长、封闭标签分布、时段模式），**不得**据此下「你更好了/更稳了/进步了」等人格或健康结论。
+
+### 答句契约（工程须遵守）
+
+| 必须 | 禁止 |
+|---|---|
+| 两段窗口并列（例：近 14 日 vs 前 14 日） | 单句人格评判（「你更稳定了」） |
+| 数字来自 `PracticeDaysStore` / `presence-signals.v1` / Journey 可审计字段 | Qwen 编造或四舍五入捏造 |
+| 数据不足 → `insufficient` 诚实说明 | 用 L3 闲聊假装答过 |
+| 模板 / 确定性拼接 | improved / getting better / 分数 / 排名 / 诊断名 |
+
+**允许答句示例**
+
+- EN: *In the last two weeks you completed 5 sessions; in the two weeks before that, 3.*
+- ZH: *最近两周记录里 calm 出现 4 次，再往前两周是 2 次。*
+
+**禁止答句示例**
+
+- *Yes, you've been more consistent.* / *你最近更稳定了。* / *Your discipline is improving.*
+
+### 与 Operating Layer
+
+Temporal Compare 走 **Companion Tools**（`query_*` + 确定性 handler + Read Hybrid NLU）。**不**因对照型问句开放 Operating Tools，**不**改「Confide 不得执行 backup/update」硬闸。
+
+### runtime
+
+本修订 **只锁 PO 边界**；实现归 **Phase 1B** 口令开工（可扩 CI-00/02 handler 或新增 `query_*`；须单测 + 冲突扫描）。**不是**自动开工令。
 
 ---
 

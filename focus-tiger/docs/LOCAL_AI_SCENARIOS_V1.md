@@ -1,6 +1,6 @@
 # 本地 AI 场景规划 · V1
 
-**状态（2026-08-28）**：**产品会审已拍板**（PO · `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`）· Phase 1 Brief 已建 · **runtime 须逐项开工口令**。  
+**状态（2026-08-28）**：**产品会审已拍板**（PO · `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`）· **2026-08-28 晚 PO 修订：Bounded Temporal Compare** · Phase 1 Brief 已建 · **runtime 须逐项开工口令**。  
 **SSOT 交叉引用**：`CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_OPERATING_LAYER.md` · `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` · `task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `YIN_PERSONAL_MEMORY.md` · `YIN_PERSONALIZATION_ENGINE.md`
 
 ---
@@ -41,7 +41,13 @@
 
 > **Yin may describe patterns in the user's records, but should not define what those patterns mean about the person.**
 
-**C2 阶梯**：Retrieve → bounded **Describe** ✅ · Interpret ❌ · Diagnose/Assess ❌（V5）
+**C2 阶梯**：Retrieve → bounded **Describe** ✅ → bounded **Temporal Compare** ✅（PO 2026-08-28 晚）· Interpret ❌ · Diagnose/Assess ❌（V5）
+
+**Temporal Compare 原则（PO · SSOT）**
+
+> **Yin may compare two time windows using deterministic local records, but must not conclude what that comparison means about the person's character, progress, or mental health.**
+
+并列两段时期事实 ✅ · 「你更稳了/进步了」等人格结论 ❌。
 
 ---
 
@@ -85,6 +91,9 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 | When do I usually practice? | ✅ |
 | How have I been showing up? | ✅ |
 | What has my mood looked like recently? | ✅（**SSOT 正式示例**；替代 improved 问法） |
+| Am I practicing longer / more than before? / 我是不是坚持得比以前久？ | ✅ · Temporal Compare |
+| Have I been more steady lately? / 我是不是最近比较稳定？ | ✅ · Temporal Compare |
+| Have I been getting into practice more easily? / 有没有更容易进入状态？ | ✅ · Temporal Compare（仅可审计字段） |
 | What have you noticed lately? | 🟡 observation-boundary candidate · **非** Phase 1 普通 Retrieve |
 
 Brief：`task-local-ai-phase1-ask-journey-presence-mvp.md`
@@ -148,8 +157,9 @@ Safety / 情绪桶 → Tool Registry (CI-xx) → 确定性 handler → L3 短生
 | **CI-02** | 最近两周情绪看起来怎样 / What has my mood looked like over the last two weeks? | `presence-signals.v1` | 在途 · `presence_facts` |
 | **（Phase 1）** | Show me what you remember | Memory store | Brief 已建 · **未开工** |
 
-> CI-02 答句：封闭标签 · 14 日 · ≥3 条 · **描述性 breakdown**；**禁止**诊断。  
-> **正式示例不再使用**「Has my mood improved? / 改善了吗」——旧句实现可保留兼容 alias，不推广。
+> CI-02 答句：封闭标签 · 14 日 · ≥3 条 · **描述性 breakdown**；**禁止**诊断与人格进步评判。  
+> **Temporal Compare（PO 2026-08-28 晚）**：对照型问句（比以前久 / 稳不稳 / 进状态）可路由；答句须**两段时期并列事实**，禁止「你更好了/更稳了」。  
+> **正式示例不再推广**「Has my mood improved? / 改善了吗」——可作路由 alias；答句仍不得用 improved 收尾。
 
 ### 3.2 Yin Personal Memory
 
@@ -157,7 +167,9 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 
 ### 3.3 V5 禁止（全球）
 
-诊断 · 量化进步 · 危机/情绪桶 generate · coach 清单。
+临床诊断 · 心理健康评估 · 人格进步/退步评判句 · 分数/排名/百分比量化 · 危机/情绪桶 generate · coach 清单。
+
+**≠** 禁止时期对照：见 §0.1 Temporal Compare。
 
 ---
 
