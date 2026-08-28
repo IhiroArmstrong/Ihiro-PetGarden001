@@ -1,0 +1,1 @@
+| Local AI Phase 1 执行任务计划 SSOT | 纯文档 | 仅单元测试覆盖 | 新增 `LOCAL_AI_PHASE1_TASK_PLAN.md`：Gate 0.2 #472 Read Hybrid 验收 A/B/C（1.7B expansion）· Phase 1 三轨口令与分 PR 纪律。**无 runtime**。关单验收步骤见本文 §3；tracker 关单行 `feature-confide-read-hybrid-v1`。 | — | — | — | `LOCAL_AI_PHASE1_TASK_PLAN.md` · `LOCAL_AI_SCENARIOS_V1.md` §6 · `TASKS.md` §Local AI Phase 1 | 2026-08-28 |
