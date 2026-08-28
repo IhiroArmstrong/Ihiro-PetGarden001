@@ -123,6 +123,58 @@ describe('practiceBackupLocalIo', () => {
     assert.ok(storage.getItem('focus-tiger.journey-log.v1')?.includes('"minutes":20'));
   });
 
+  it('rolls back all keys when write fails on the third whitelist key', () => {
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({
+        entries: [
+          {
+            at: '2026-01-01T00:00:00.000Z',
+            minutes: 5,
+            arrive: false,
+            reflect: false
+          }
+        ]
+      }),
+      'focus-tiger.practice-days.v1': JSON.stringify({
+        days: [{ date: '2026-01-01', totalMinutes: 25 }]
+      }),
+      'focus-tiger.milestone-glow.v1': JSON.stringify({ played: ['streak-7'] })
+    });
+    const beforeJourney = storage.getItem('focus-tiger.journey-log.v1');
+    const beforeDays = storage.getItem('focus-tiger.practice-days.v1');
+    const beforeMilestone = storage.getItem('focus-tiger.milestone-glow.v1');
+
+    const snapshot = createPracticeExportPayload(storage).snapshot;
+    snapshot.stores['focus-tiger.journey-log.v1'] = {
+      entries: [
+        {
+          at: '2026-02-01T00:00:00.000Z',
+          minutes: 99,
+          arrive: true,
+          reflect: true
+        }
+      ]
+    };
+    snapshot.stores['focus-tiger.practice-days.v1'] = {
+      days: [{ date: '2026-02-01', totalMinutes: 99 }]
+    };
+    snapshot.stores['focus-tiger.milestone-glow.v1'] = { played: ['streak-14'] };
+
+    const originalSet = storage.setItem.bind(storage);
+    storage.setItem = (k, v) => {
+      if (k === 'focus-tiger.milestone-glow.v1') {
+        throw new Error('quota');
+      }
+      originalSet(k, v);
+    };
+
+    const failed = importPracticeSnapshotAtomic(storage, snapshot);
+    assert.equal(failed.ok, false);
+    assert.equal(storage.getItem('focus-tiger.journey-log.v1'), beforeJourney);
+    assert.equal(storage.getItem('focus-tiger.practice-days.v1'), beforeDays);
+    assert.equal(storage.getItem('focus-tiger.milestone-glow.v1'), beforeMilestone);
+  });
+
   it('detects data-loss risk when import has fewer rows', () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
