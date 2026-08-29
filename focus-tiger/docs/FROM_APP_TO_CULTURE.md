@@ -26,7 +26,7 @@ Culture ≠ UGC Platform
 |---|---|
 | **a. 强度** | 本锁不增加点击或仪式。无冲突。 |
 | **b. 人设** | 与「陪伴非监督 / 觉察非评分」同向。无冲突。 |
-| **c. 职责** | Practice Identity / 故事型 Objects **不得**与练习徽章、芥子印、清供 8 再开第三套运行时。本文件只规定：先设计验证，后证据产品化。Join our community 仍是外链入口；Discord 接线另口令。 |
+| **c. 职责** | Practice Identity / 故事型 Objects **不得**与练习徽章、芥子印、清供 8 再开第三套运行时。本文件只规定：先设计验证，后证据产品化。Join our community 已接线 Slack 邀请外链（`communityLink.js`）。 |
 
 ---
 
@@ -49,16 +49,16 @@ Focus Tiger **不应该**长期竞争成「又一个 mindfulness app」，也**�
 | 层 | 句子 | 现网是否可声称 |
 |---|---|---|
 | 个人实践 | Practice alone. Grow quietly. | **可以**（与定位稿使命一致） |
-| 共享在场 | Meet others who do the same. | **现在不行**（指向 Discord 实验室 / 未来 Lanterns，禁止写成已上线 App 社交） |
+| 共享在场 | Meet others who do the same. | **现在不行**（指向 Slack 实验室 / 未来 Lanterns，禁止写成已上线 App 社交） |
 
 ### 1.2 明确不锁的品牌名
 
-下列**不是**正式文化运动名、用户身份头衔或 Discord 服务器对外品牌：
+下列**不是**正式文化运动名、用户身份头衔或 Slack 服务器对外品牌：
 
 - **The Yin Way**（运动名）
 - **Awakeners** / Awakener
 
-已接线的身份水印 **Walking the Yin Way?**（Collections 副标 / 首次 Reflect / Quiet Line 导出）**继续有效**，见 `PRODUCT_POSITIONING.md`「品牌精神句」。那是产品表面印记，**不等于**把「The Yin Way」升格为社区/文化官方名称。用户若在 Discord **自发**使用这些词，记入验证信号；产品**不**带头锁死。
+已接线的身份水印 **Walking the Yin Way?**（Collections 副标 / 首次 Reflect / Quiet Line 导出）**继续有效**，见 `PRODUCT_POSITIONING.md`「品牌精神句」。那是产品表面印记，**不等于**把「The Yin Way」升格为社区/文化官方名称。用户若在 Slack **自发**使用这些词，记入验证信号；产品**不**带头锁死。
 
 ### 1.3 我们不是什么（功能闸）
 
@@ -71,7 +71,7 @@ Focus Tiger **不应该**长期竞争成「又一个 mindfulness app」，也**�
 | AI therapist / AI life coach | 禅意倾听者；Wellness disclaimer |
 | Meditation content library | 不做 Calm/Headspace 内容军备 |
 | Competitive fitness / streak machine | 宁静型游戏化；禁止强迫签到 |
-| Discord community disguised as an app | Discord = 炉火实验室，不是产品本体 |
+| Slack community disguised as an app | Slack = 炉火实验室，不是产品本体 |
 | Habit streak / 财富排行 / Level 升级 | 寅币不是社交货币；Identity ≠ Level |
 
 ---
@@ -106,7 +106,7 @@ Focus Tiger **不应该**长期竞争成「又一个 mindfulness app」，也**�
 | Ambient + **本地上传** | `task-user-ambient-upload-v1` | 私域创造入口；**不是** SoundCloud |
 | Local-first / 练习备份 | 备份 Briefs | 隐私与永不消失的地基 |
 | Confide / Memory / YPE | 各自 SSOT | 被理解，不是被优化；**平行主线**（§7） |
-| Join our community | `NEWSLETTER_CAPTURE.md` | 外链占位；Discord 接线另口令 |
+| Join our community | `NEWSLETTER_CAPTURE.md` | 已接线 Slack 邀请外链（`communityLink.js`） |
 | Global Lanterns | `PROCESS.md` Backlog | Alone, together 的产品候选；**证据后**才开工 |
 
 文化工作的价值是给这些种子一个**可验证的意义系统**，不是再开一条功能轨。
@@ -120,13 +120,13 @@ Focus Tiger **不应该**长期竞争成「又一个 mindfulness app」，也**�
 | 项 | 做什么 | 不做什么 |
 |---|---|---|
 | 本方向锁 | 本文 + 定位/寅币/社群交叉引用 | 白皮书膨胀、改 UI |
-| Discord 实验室 | 小规模接 Join our community（**另口令**）；目标 ≈ **100 个真正在乎的人**，不是 5000 挂名 | 当客服论坛；15 个频道；大规模宣传「社区平台」 |
+| Slack 实验室 | Join our community 已接线 Slack 邀请外链；目标 ≈ **100 个真正在乎的人**，不是 5000 挂名 | 当客服论坛；15 个频道；大规模宣传「社区平台」 |
 | Culture prototypes（设计师） | Objects / Identity / Quiet Social **概念稿** | 立刻开发 |
 | 寅币语义 | 文档层：时间被收藏；余额不在 Profile 炫耀 | 改发点公式、改清供价、改商店口吻 |
 
 ### 4.2 需要用户证据后再产品化
 
-| 若 Discord / 研究出现… | 才考虑产品化 |
+| 若 Slack / 研究出现… | 才考虑产品化 |
 |---|---|
 | Alone, together 有心理价值 | **Global Lanterns**（真实人数、可关、禁止假灯火冒充） |
 | 用户展示/谈论器物与身份 | Collections meaning layer 运行时 + Practice Identity v0（≤8，非 Level） |
@@ -144,9 +144,9 @@ Shared Yin / 共同数字物、用户自建仪式平台、Creator ecosystem、�
 - 寅币当社交货币或公开财富  
 - Identity 写成「因为你完成了 287 场所以你是 Deep Listener」  
 - 伪造在场人数  
-- 把 Memory / Journey / Confide / 情绪数据送进 Discord  
+- 把 Memory / Journey / Confide / 情绪数据送进 Slack  
 - 为文化项目捆绑大改 Local AI  
-- Gallery / 排行 / Creator 分成 / Discord 假扮成 App
+- Gallery / 排行 / Creator 分成 / Slack 假扮成 App
 
 ---
 
@@ -161,7 +161,7 @@ Identity（behavior reflection，非升级）
         ↓
 Shared Presence（Lanterns）
         ↓
-Community（先 Discord 实验室，后极薄 App）
+Community（先 Slack 实验室，后极薄 App）
         ↓
 UGC（Private Ambient → Export → Curated）
 ```
@@ -176,8 +176,8 @@ UGC（Private Ambient → Export → Curated）
 
 ```text
 PHASE 0  战略定义          ← 本文（现在）
-PHASE 1  文化原型          ← 设计师：Objects / Identity / Quiet Social / Discord 概念
-PHASE 2  真实用户验证      ← Discord 实验室 + 观察（4–8 周）
+PHASE 1  文化原型          ← 设计师：Objects / Identity / Quiet Social / Slack 概念
+PHASE 2  真实用户验证      ← Slack 实验室 + 观察（4–8 周）
 PHASE 3  产品化            ← 只做证据支持的切片（Lanterns / meaning layer / Identity）
 PHASE 4  生态化            ← Ambient UGC 公开层等；最晚、最高风险
 ```
@@ -202,14 +202,14 @@ PHASE 4  生态化            ← Ambient UGC 公开层等；最晚、最高风�
 
 ---
 
-## 8. Discord = culture laboratory（不是产品）
+## 8. Slack = culture laboratory（不是产品）
 
-**可以现在做（另口令接线）**；成本低、可逆、验证价值高。菜单已有 Join our community（`communityLink.js` 现为占位 URL）。
+**已接线（2026-08-29）**：菜单 **Join our community** → `communityLink.js` 永不过期 Slack 邀请链接。成本低、可逆、验证价值高。
 
 ### 8.1 第一阶段目标
 
 Find the first **100 people who care about what Focus Tiger stands for.**  
-不是 1000 Discord members。对外可称 **Early Yin Community** / culture laboratory，**禁止**宣传成社区平台。
+不是 1000 Slack members。对外可称 **Early Yin Community** / culture laboratory，**禁止**宣传成社区平台。
 
 ### 8.2 第一阶段只开 5 个频道
 
@@ -223,9 +223,9 @@ Find the first **100 people who care about what Focus Tiger stands for.**
 
 ### 8.3 禁止变成 Support Forum
 
-Bug / payment / feature request / technical support **另走**（现有邮件 / Support FAB / GitHub，不在本锁规定新系统）。Discord 是「喜欢这种生活方式的人」，不是客服中心。
+Bug / payment / feature request / technical support **另走**（现有邮件 / Support FAB / GitHub，不在本锁规定新系统）。Slack 是「喜欢这种生活方式的人」，不是客服中心。
 
-**禁止**把 Private reflections、Personal Memory、Journey 明细、AI 对话贴进 Discord（公约写明）。
+**禁止**把 Private reflections、Personal Memory、Journey 明细、AI 对话贴进 Slack（公约写明）。
 
 ---
 
@@ -265,7 +265,7 @@ Designer Brief，**禁止**本锁附带工程实现。
 
 | 信号 | 意义 |
 |---|---|
-| Discord join rate（从 App 外链） | 是否愿意进一步连接 |
+| Slack join rate（从 App 外链） | 是否愿意进一步连接 |
 | 7-day active members | 是否真社区 |
 | 主动发帖率 | 是否产生文化 |
 | Ambient 分享数量 | 是否产生 UGC |
@@ -321,8 +321,8 @@ Ambient：**Private → Export/Share → Curated Community**。公开层会立�
 
 ## 12. 下一步（本锁之后 · 非本 PR）
 
-1. **设计师**输出 Prototype A–C + Discord 概念 → Culture Design Review。  
-2. **另口令**小规模 Discord 接线 Join our community（5 频道 + 公约 + 非客服）。  
+1. **设计师**输出 Prototype A–C + Slack 概念 → Culture Design Review。  
+2. **Slack 实验室**：Join our community 已接线（5 频道 + 公约 + 非客服）。  
 3. **工程**继续地基，不插队开 Lanterns / Identity Runtime / Gallery。
 
-口令示例：「开工 Discord 实验室接线」「评估 Global Lanterns」（仍须先过 Evidence Review，除非用户当回合书面豁免本锁）。
+口令示例：「评估 Global Lanterns」（仍须先过 Evidence Review，除非用户当回合书面豁免本锁）。

@@ -20,14 +20,14 @@
 | 托管 | 同一 **163 / ihiro Cloudflare** 帐号上的 **Cloudflare Pages**（静态）。与 `focus-tiger-cloud` Worker **分项目**。 |
 | DNS | 只加 Pages 所需的 apex / www。**禁止**改 MX / SPF / DKIM / DMARC / Resend 验证记录。 |
 | 语气 | 观察式、宁静；允许委婉付费感知；**禁止** FOMO、倒计时、强迫签到、街机狂欢。 |
-| 应用内接线 | **本切片不改** `communityLink.js`（仍是 `example.com` 占位）。Join our community 改指向营销站 = **另口令**。 |
+| 应用内接线 | `communityLink.js` 已指向 Slack 邀请外链（2026-08-29）。改指向营销站 = **另口令**。 |
 
 ## 与相邻入口的分职
 
 | 入口 | 职责 | 本站是否替代 |
 |---|---|---|
 | 应用内 Stay in touch | 已练习用户可选留资；From `hello@twinsology.com` | **否**。营销站以后若做留资，是公网漏斗，须另 Brief（CORS 要放行 `twinsology.com`）。 |
-| Join our community | 占位外链 | **否**（本切片不动）。 |
+| Join our community | Slack 邀请外链（`communityLink.js`） | **否**（本切片不动）。 |
 | 练习壳 / PWA / Electron | 真正坐禅 | **否**。禁止把 `public/sprites` 重型 App 部署到营销 apex。 |
 | Newsletter 发信 DNS | `hello@` / `restore@` | **共用域名、分记录**。网站记录不得覆盖邮件记录。 |
 
@@ -48,7 +48,7 @@
 - 练习壳自定义域 / 把 Vite 产物挂到 `twinsology.com/`  
 - 改 `communityLink.js` / Stay in touch 文案  
 - 改 MX / SPF / DKIM / `RESEND_FROM` / `NEWSLETTER_FROM`  
-- 博客、店铺、Discord、多语言整站、SEO 大战、分析像素（未单独立项前）  
+- 博客、店铺、Slack、多语言整站、SEO 大战、分析像素（未单独立项前）  
 - FOMO / 硬推销 CTA  
 
 ## 排期口令

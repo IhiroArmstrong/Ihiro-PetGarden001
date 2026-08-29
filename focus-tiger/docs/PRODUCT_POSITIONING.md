@@ -313,7 +313,7 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 
 **命名硬闸**：C 轨 = **Yin's Collections / 阿寅的珍藏**；B 轨付费内容 = **Sanctuary**——二者不得混称。实现 SSOT：`docs/task-briefs/task-brand-yin-way-tagline.md`。
 
-本水印**不是**把 **The Yin Way** / **Awakeners** 锁成文化运动或社区官方名称。文化探索、Discord 实验室、Objects / Identity 产品化门闩见 `FROM_APP_TO_CULTURE.md`。
+本水印**不是**把 **The Yin Way** / **Awakeners** 锁成文化运动或社区官方名称。文化探索、Slack 实验室、Objects / Identity 产品化门闩见 `FROM_APP_TO_CULTURE.md`。
 
 ---
 
@@ -324,7 +324,7 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 - **SSOT**：[`FROM_APP_TO_CULTURE.md`](./FROM_APP_TO_CULTURE.md)（方向锁；无运行时）。
 - **现网可声称**：Practice alone / Grow quietly（与本文使命一致）。
 - **现网不可声称**：已上线 App 内社区、Quiet Circles、公开 UGC、共同仪式平台。
-- **Discord**：炉火实验室，不是产品本体；接线另口令。
+- **Slack**：炉火实验室，不是产品本体；Join our community 已接线 Slack 邀请外链（2026-08-29）。
 - **Local AI**：平行主线；文化锁只约束「AI 服务什么气质」，不捆绑大改 Confide / Memory / YPE。
 
 任何「文化功能」提案须先过该文四档表（采纳验证 / 证据后产品化 / Backlog / 禁止）与六条 Culture Principles；仍不得绕过本文第十三节与 `PRINCIPLES.md`。

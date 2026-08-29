@@ -1,7 +1,7 @@
 # 坐禅小老虎 · 项目原则
 # Focus Tiger · PRINCIPLES.md
 
-本文档记录不可违反的硬性红线。品牌定位与长期方向见 `PRODUCT_POSITIONING.md`；**文化探索方向锁**（验证后再产品化；Discord 实验室 ≠ App 社交）见 `FROM_APP_TO_CULTURE.md`（六条 Culture Principles **不得**覆盖本文硬红线）；一天中的产品叙事框架（Five Moments）见 `PRODUCT_MOMENTS.md`；单次会话七步状态机见 `CORE_LOOP.md`；Arrival Practice 详规见 `ARRIVE_MOMENT_DESIGN.md`；任务序列见 `TASKS.md`；功能×付费对账见 `FREE_PAID_MATRIX.md`。  
+本文档记录不可违反的硬性红线。品牌定位与长期方向见 `PRODUCT_POSITIONING.md`；**文化探索方向锁**（验证后再产品化；Slack 实验室 ≠ App 社交）见 `FROM_APP_TO_CULTURE.md`（六条 Culture Principles **不得**覆盖本文硬红线）；一天中的产品叙事框架（Five Moments）见 `PRODUCT_MOMENTS.md`；单次会话七步状态机见 `CORE_LOOP.md`；Arrival Practice 详规见 `ARRIVE_MOMENT_DESIGN.md`；任务序列见 `TASKS.md`；功能×付费对账见 `FREE_PAID_MATRIX.md`。  
 **点击接收反馈 vs 结果反馈 vs 已知静默**：见 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md) 与 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）；勿在本文复述。
 
 ---

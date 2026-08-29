@@ -11,9 +11,9 @@ import {
 } from './communityLink.js';
 
 describe('communityLink', () => {
-  it('exports a non-empty placeholder URL', () => {
+  it('exports the Slack invite URL', () => {
     assert.equal(typeof COMMUNITY_EXTERNAL_URL, 'string');
-    assert.ok(COMMUNITY_EXTERNAL_URL.startsWith('http'));
+    assert.ok(COMMUNITY_EXTERNAL_URL.startsWith('https://join.slack.com/'));
   });
 
   it('opens with noopener target', () => {

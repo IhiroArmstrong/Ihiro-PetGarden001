@@ -162,7 +162,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 文档 | 权威主题 |
 |---|---|
 | `PRODUCT_POSITIONING.md` | 品牌与产品战略 |
-| `FROM_APP_TO_CULTURE.md` | **文化探索方向锁**（From App to Culture；验证框架；Discord 实验室 ≠ App 社交；无运行时；从属定位稿 + PRINCIPLES） |
+| `FROM_APP_TO_CULTURE.md` | **文化探索方向锁**（From App to Culture；验证框架；Slack 实验室 ≠ App 社交；无运行时；从属定位稿 + PRINCIPLES） |
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
 | `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |
 | `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、清供 8、序列帧铁律（**方向锁 2026-08-20**；运行时见 Brief） |
