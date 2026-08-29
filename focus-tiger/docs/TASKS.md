@@ -227,8 +227,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 项 | 状态 |
 |---|---|
 | 战略锁本文 | **本支** |
-| 设计师文化原型（Objects / Identity / Quiet Social / Discord 概念） | 待 Design Review · **不排工程** |
-| Discord 实验室接线 Join our community | **另口令** |
+| 设计师文化原型（Objects / Identity / Quiet Social / Slack 概念） | 待 Design Review · **不排工程** |
+| Slack 实验室接线 Join our community | ✅ **已接线**（2026-08-29 · `communityLink.js`） |
 | Global Lanterns / Identity Runtime / 公开 Ambient | **证据后门闩** · 见 PROCESS Backlog |
 
 ---
@@ -366,7 +366,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 以下内容明确不在本次v5.0设计范围内，待Phase 0-1验证核心体验后再评估是否需要：
   - 奇遇系统(随机访客等惊喜机制)
   - 环境/角色皮肤商业化
-  - 社交/多人共修功能（App 内 SNS **禁止**本探索期；Discord 实验室与 Lanterns 见 `FROM_APP_TO_CULTURE.md`）
+  - 社交/多人共修功能（App 内 SNS **禁止**本探索期；Slack 实验室与 Lanterns 见 `FROM_APP_TO_CULTURE.md`）
 
 原因：单指标单角色产品的核心价值在于"简单直接"，
 过早引入这些曾经为"三指标盆景世界"设计的扩展机制，

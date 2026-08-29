@@ -4,13 +4,13 @@
  */
 
 /**
- * Join our community — static external link (placeholder until real Discord /
- * landing URL is chosen). No backend, no local state.
+ * Join our community — static external link to the Focus Tiger Slack workspace.
+ * No backend, no local state.
  */
 
-/** Placeholder; replace when the real community / Discord URL is ready. */
+/** Permanent Slack shared invite for Early Yin Community. */
 export const COMMUNITY_EXTERNAL_URL =
-  'https://example.com/yin-community-placeholder';
+  'https://join.slack.com/t/focustigercommunity/shared_invite/zt-48ced3q4y-gEbQ98CwCzVHIZy1WlEY7w';
 
 /**
  * Open the community URL in a new tab.
