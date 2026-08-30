@@ -10,6 +10,7 @@ export {
   isPracticeDurationQuestion,
   shouldAnswerWithPracticeFacts,
   summarizePracticeFacts,
+  summarizePracticeFactsFromJourneyLog,
   formatPracticeDurationReply
 } from './confidePracticeFacts.js';
 export {

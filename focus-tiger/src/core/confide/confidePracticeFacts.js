@@ -4,12 +4,13 @@
  */
 
 /**
- * Slice 0 · Yin Personal Memory: duration questions use PracticeDaysStore
- * (same ledger as Journey Log). Safety / emotion classify still wins.
- * Not a Memory store. Not generate.
+ * Slice 0 · Confide practice duration facts.
+ * User-visible numbers must match Journey Log (SCENARIO_TESTS · AG).
+ * Safety / emotion classify still wins. Not a Memory store. Not generate.
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { journeyLogDateKey, readJourneyLog } from '../journeyLogGate.js';
 
 const DURATION_RES = [
   /\bhow\s+long\s+have\s+i\s+(been\s+)?practi[cs]e(?:d|ing)?\b/i,
@@ -39,10 +40,39 @@ export function shouldAnswerWithPracticeFacts(route, text) {
 }
 
 /**
- * @param {{ getPracticeDayEntries?: () => { date: string, totalMinutes: number | null }[] } | null | undefined} store
+ * @param {Storage | null | undefined} storage
  * @returns {{ dayCount: number, knownMinutes: number | null, unknownMinuteDays: number }}
  */
-export function summarizePracticeFacts(store) {
+export function summarizePracticeFactsFromJourneyLog(storage) {
+  const entries = readJourneyLog(storage).entries;
+  if (!entries.length) {
+    return { dayCount: 0, knownMinutes: null, unknownMinuteDays: 0 };
+  }
+  /** @type {Map<string, number>} */
+  const byDate = new Map();
+  for (const entry of entries) {
+    const date = journeyLogDateKey(entry.at);
+    const mins = Math.max(0, Number(entry.minutes) || 0);
+    byDate.set(date, (byDate.get(date) || 0) + mins);
+  }
+  let knownMinutes = 0;
+  for (const mins of byDate.values()) knownMinutes += mins;
+  return {
+    dayCount: byDate.size,
+    knownMinutes: Math.round(knownMinutes),
+    unknownMinuteDays: 0
+  };
+}
+
+/**
+ * @param {{ getPracticeDayEntries?: () => { date: string, totalMinutes: number | null }[] } | null | undefined} store
+ * @param {Storage | null | undefined} [storage]
+ * @returns {{ dayCount: number, knownMinutes: number | null, unknownMinuteDays: number }}
+ */
+export function summarizePracticeFacts(store, storage = null) {
+  const journeySummary = summarizePracticeFactsFromJourneyLog(storage);
+  if (journeySummary.dayCount > 0) return journeySummary;
+
   const rows = store?.getPracticeDayEntries?.() || [];
   const dayCount = rows.length;
   let knownMinutes = 0;

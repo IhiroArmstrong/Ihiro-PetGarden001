@@ -720,6 +720,7 @@
   "MEMBERSHIP_RESTORE_LINK": "別の端末で復元",
   "MEMBERSHIP_RESTORE_BACK": "戻る",
   "YIN_MEMORY_CONSENT_BLURB": "寅はこの端末だけで、少しずつあなたのことを覚えます。アップロードはしません。",
+  "YIN_MEMORY_CONSENT_TITLE": "端末内メモリ",
   "YIN_MEMORY_CONSENT_ALLOW": "許可する",
   "YIN_MEMORY_CONSENT_DENY": "今はしない",
   "YIN_MEMORY_PANEL_LINK": "寅が覚えていること",

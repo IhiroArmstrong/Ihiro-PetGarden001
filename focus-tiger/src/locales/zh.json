@@ -720,6 +720,7 @@
   "MEMBERSHIP_RESTORE_LINK": "在其他设备恢复",
   "MEMBERSHIP_RESTORE_BACK": "返回",
   "YIN_MEMORY_CONSENT_BLURB": "阿寅可以只在这台设备上记住少量事情，慢慢更懂你。不会上传。",
+  "YIN_MEMORY_CONSENT_TITLE": "隐私保护说明",
   "YIN_MEMORY_CONSENT_ALLOW": "允许",
   "YIN_MEMORY_CONSENT_DENY": "暂不",
   "YIN_MEMORY_PANEL_LINK": "阿寅记得什么",

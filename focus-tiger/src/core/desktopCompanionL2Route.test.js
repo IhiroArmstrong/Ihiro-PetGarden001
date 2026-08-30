@@ -365,6 +365,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confide-to-yin-memory-list-link/);
     assert.match(ui, /onOpenMemoryPanel/);
     assert.match(ui, /shouldOfferYinMemoryConsent/);
+    assert.match(ui, /_maybeOfferMemoryConsentOnOpen/);
+    assert.match(ui, /confide-to-yin-memory-consent-title/);
     assert.match(ui, /matchConfideExecutableTool/);
     assert.match(ui, /mayUseConfideReadHybrid/);
     assert.match(ui, /buildConfideReadHybridPrompt/);

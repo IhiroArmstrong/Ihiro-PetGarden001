@@ -1124,6 +1124,7 @@ async function init() {
     canOpen: canOpenConfideNow,
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
+      wakeYinForConfideCompanion();
     },
     onOpenMemoryPanel: () => {
       closeGrowthOverlayCards({ except: 'yin-memory' });
@@ -1802,7 +1803,40 @@ async function init() {
       supportModalOpen: supportYinModalUI.isOpen() === true,
       sanctuaryOpen: sanctuaryUnlockUI.isOpen?.() === true,
       membershipOpen: membershipUnlockUI.isOpen?.() === true,
-      flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true
+      flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true,
+      confideOpen: confideToYinUI.isOpen() === true
+    });
+  }
+
+  const CONFIDE_WAKE_SLEEPING_EMOTION_KEYS = new Set([
+    'sleeping',
+    'cloakSleep',
+    'starlightSleeping',
+    'starlightCloakSleep'
+  ]);
+
+  function wakeYinForConfideCompanion() {
+    const fromDormant = stateManager.state === STATES.DORMANT;
+    const fromSleepingPose = CONFIDE_WAKE_SLEEPING_EMOTION_KEYS.has(
+      emotionController.getCurrentEmotionKey()
+    );
+    if (!fromDormant && !fromSleepingPose) return;
+
+    if (fromDormant) {
+      honestyCheckIn.applyDormantSessionDelta('leave-dormant');
+    }
+
+    emotionController.playEmotion('dormantWake', {
+      holdPose: true,
+      onComplete: () => {
+        if (stateManager.state === STATES.DORMANT) {
+          stateManager.setState(STATES.IDLE);
+        }
+        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS
+        });
+      }
     });
   }
 
@@ -3550,6 +3584,7 @@ async function init() {
 
   function maybeOfferWellnessDisclaimerFirstCard() {
     if (!productChrome) return false;
+    if (confideToYinUI.isOpen()) return false;
     if (onboardingHints?.isWellnessFirstCardOpen?.()) return true;
     if (wellnessFirstConsumedThisPage) return false;
     const storage =
@@ -3575,6 +3610,7 @@ async function init() {
 
   function maybeOfferFiveMomentsCompassFirstCard() {
     if (!productChrome) return;
+    if (confideToYinUI.isOpen()) return;
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (!shouldOfferFiveMomentsCompassFirstCard(storage)) return;
