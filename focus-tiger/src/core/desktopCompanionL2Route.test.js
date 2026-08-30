@@ -356,6 +356,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(preload, /desktop:yin-personal-memory-get/);
     assert.match(ipcSrc, /desktop:yin-personal-memory-set-consent/);
     assert.match(preload, /desktop:yin-personal-memory-remember-from-confide/);
+    assert.match(preload, /desktop:yin-personal-memory-record-opt-out/);
+    assert.match(preload, /desktop:yin-personal-memory-suppress-post-recall/);
+    assert.match(preload, /recordOptOut/);
+    assert.match(preload, /suppressPostRecallFromConfide/);
     assert.match(ipcSrc, /desktop:yin-personal-memory-forget/);
     assert.match(preload, /desktop:yin-personal-memory-forget/);
     assert.match(ui, /confide-to-yin-memory-list-link/);
@@ -369,6 +373,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /CONFIDE_TOOL_ID\.FORGET_MEMORY_ENTRY/);
     assert.match(ui, /memory_forget/);
     assert.match(ui, /yinPersonalMemoryVerbalForget/);
+    assert.match(ui, /yinPersonalMemorySuppress/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
     assert.match(ui, /_maybeRememberFromL3/);

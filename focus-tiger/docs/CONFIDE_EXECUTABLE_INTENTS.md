@@ -39,7 +39,7 @@
 | 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；现网走 Journey / 练习云备份链 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
-| Don't save this / 别记这句 | PO **未批准** · persistence / memory policy | 诚实说明或 L3 不接「已控制未来保存」幻觉 |
+| Don't save this / 别记这句 | **Slice 1f · pipeline** · `memory_suppress` · **非 CI** | 见 `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` · `forget this` → suppress · 非 CI-01 |
 | Delete today's Journey entry | V2 **Future Candidate** · Phase 1 **NOT MVP** | 指向 Journey Log UI；Phase 2 另 Brief |
 
 ---
@@ -99,3 +99,16 @@ ConfideToYinUI._onSend
 `ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → forget）。  
 实验室：`desktop/scripts/l0-tool-call-probe.js` · `npm run companion:tool-call` · fixture `confideToolCallFixtures.js`。  
 新增 CI-xx 时应扩 **registry + 纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
+
+
+---
+
+## Memory suppress（Slice 1f · pipeline · 非 CI 表项）
+
+| 机制 | 说明 |
+|---|---|
+| **`memory_suppress`** | Remember 管道 opt-out · `rememberOptOuts[]` · **无** `confideExecutableTools` id |
+| **发后撤回** | `Forget this` / 忘掉刚才那句 → 删上一 turn 记忆 · **不**扩 CI-01 |
+| **CI-01 不变** | `Please forget about Monday` / 别再记周一 → `memory_forget` |
+
+**SSOT**：`YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md`

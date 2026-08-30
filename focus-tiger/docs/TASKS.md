@@ -276,8 +276,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1c** | What Yin remembers 列表 + Forget UI | `task-yin-memory-slice-1c-list-forget.md` | **已合 #430** |
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
+| **Slice 1f** | Don't save this · memory suppress | `task-yin-memory-slice-1f-dont-save-this.md` | **本旁支** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**。Phase 1 须**分项口令**（见下 §Local AI Phase 1）；**禁止**因 PO 拍板自动并行开工全部 runtime。较弱：V2 Journey Delete · Don't save this · Reflection **shipping**。
+**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**。Phase 1 须**分项口令**（见下 §Local AI Phase 1）；**禁止**因 PO 拍板自动并行开工全部 runtime。较弱：V2 Journey Delete · Reflection **shipping**。
 
 ---
 
@@ -293,7 +294,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **1B** | Ask Journey / Presence · Retrieve + bounded Describe + **Temporal Compare** | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | Brief 已建 · **未开工** · PO 2026-08-28 晚修订对照型问句 |
 | **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | **开工** · lab `?reflectionCompanion=1` · tracker 待人工 |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
-| **—** | Don't save this | — | **未批准** | — |
+| **—** | Don't save this | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` | ✅ Slice 1f | tracker 待人工 |
 
 **Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
 

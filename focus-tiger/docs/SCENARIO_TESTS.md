@@ -739,7 +739,9 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** �
 2. **1b Remember**：Consent **Allow** → 发可抽取句（例：`I prefer quiet, short reflections.`）→ L3 成功后查 `yin-personal-memory.json`：`memories` 有 1 条 `active`。**负例**：`I'm tired` / 练多久 / 危机 → **不写** memory。  
 3. **1c 面板**：点 **What Yin remembers** → 见类型/摘要/Why → 点 **Forget** → **0–1 秒内**行消失 → JSON 该条已删。**空态**：无 memory 时见空文案。  
 4. **1d 注入**：已有 Monday 记忆 medium+ → 再发「Monday feels crowded again」→ L3 短句应**可核对**回指周一。**对照**：「the weather is mild」→ **不得**硬插无关旧记忆。**Forget 后**再发 Monday 句 → 不应再回指。  
+
 5. **1e 口头 Forget**：发「别再记周一的事了」/ Please forget what I said about Monday → **0–1 秒内** `data-source=memory_forget` 确认句 → JSON 该条已删。**bulk**「forget everything」→ 引导面板逐条。**面板同步**：开着 What Yin remembers 时口头删 → 行消失。
+6. **1f Don't save · memory suppress**：Consent Allow → (T-1) 同句 `…Don't save this.` → L3 后 `memories[]` 不增 · `rememberOptOuts[]` 有记录。**(T-2)** 入库后下一句 `Forget this` / 刚才那句别记 → `data-source=memory_suppress` · 上一 turn 条目已删。**(T-3)** 仅 `Don't save this` → 诚实短句。**回归**：`Please forget about Monday` 仍 CI-01 `memory_forget`。
 
 ---
 

@@ -81,7 +81,7 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 |---|---|---|
 | Forget this | ✅ 现网 CI-01 | — |
 | Show me what you remember | ✅ 新 read tool | `task-local-ai-phase1-nl-actions-mvp.md` |
-| Don't save this | ❌ 未批准 | 另审 persistence policy |
+| Don't save this | ✅ **已批准** · Slice 1f | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` |
 | Delete today's Journey entry | ❌ V2 Future Candidate | 见 §1.1 |
 
 ### Phase 1B · Ask Journey / Presence — **CORE**
@@ -113,7 +113,7 @@ Brief：`task-local-ai-phase1-ask-journey-presence-mvp.md`
 |---|---|---|
 | **`DELETE_TODAY_JOURNEY_ENTRY`** | Future Candidate C3 · 仅今天一条 · 排在 read-only **之后** | **无** implementation task |
 | **Reflection shipping** | 须 validation 通过后再议 | 独立 shipping Brief |
-| **Don't save this** | 未批准 | — |
+| **Don't save this** | ✅ Slice 1f · pipeline | `memory_suppress` |
 
 Intent Contract（C3 与未来 Execute 共用）：
 
@@ -185,7 +185,7 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 |---|---|
 | 帮我备份 | Operating Layer |
 | 忘掉一切 | bulk wipe |
-| Don't save this | PO 未批准 |
+| Don't save this | ✅ PO 定稿 2026-08-30 · Slice 1f |
 | Delete Journey（Phase 1） | V2 Future Candidate |
 | Journey / Reflection 润色（非 validation） | 未批准 |
 | V4 各仪式时刻 generate | MUST NOT ENTER |
@@ -206,7 +206,7 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 2. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
 3. **口令开工 Phase 1A**（Show memory read tool）。  
 4. **口令开工 Reflection validation**（**非** shipping）。  
-5. V2 Journey Delete · Don't save this · **不开工**。
+5. V2 Journey Delete · **不开工**。（Don't save → Slice 1f 已批准）
 
 **较弱**：未测 hybrid 就并行三 Phase 1 runtime；把 validation 当 shipping；仪式侧 MUST NOT 破例。
 

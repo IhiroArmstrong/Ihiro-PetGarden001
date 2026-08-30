@@ -747,5 +747,8 @@
   "YPE_STYLE_HINT": "只留在这台设备。选「平时」等于关掉个人化。",
   "YPE_STYLE_DEFAULT": "平时",
   "YPE_STYLE_QUIET": "更安静",
-  "YPE_STYLE_WARM": "多一点承认"
+  "YPE_STYLE_WARM": "多一点承认",
+  "YIN_MEMORY_SUPPRESS_TURN": "好的，这句我不会记下来。",
+  "YIN_MEMORY_SUPPRESS_RECALLED": "好的，我已经不记那一句了。",
+  "YIN_MEMORY_SUPPRESS_NO_MATCH": "我没有找到对应的一句可以删掉。"
 }

@@ -18,6 +18,10 @@ import {
 import { applyYinMemoryConsent } from '../../src/core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 import { rememberFromConfideTurn } from '../../src/core/yinPersonalMemory/yinPersonalMemoryRemember.js';
 import { forgetYinPersonalMemory } from '../../src/core/yinPersonalMemory/yinPersonalMemoryForget.js';
+import {
+  appendRememberOptOut,
+  applyPostRecallMemorySuppress
+} from '../../src/core/yinPersonalMemory/yinPersonalMemorySuppress.js';
 import { ypeRetrieveMemories } from '../../src/core/yinPersonalizationEngine.js';
 
 export const YIN_PERSONAL_MEMORY_DIRNAME = 'companion-l2';
@@ -146,3 +150,47 @@ export async function retrieveYpeMemoriesForL3Generate(userDataDir, userText, op
   });
 }
 
+
+
+/**
+ * @param {string} userDataDir
+ * @param {{ turnId?: string, scope?: 'turn' | 'session', at?: string }} payload
+ */
+export async function recordYinPersonalMemoryOptOut(userDataDir, payload) {
+  const current = await readYinPersonalMemoryState(userDataDir);
+  const safe =
+    payload && typeof payload === 'object' ? payload : /** @type {Record<string, unknown>} */ ({});
+  const next = appendRememberOptOut(current, {
+    turnId: typeof safe.turnId === 'string' ? safe.turnId : '',
+    scope: safe.scope === 'session' ? 'session' : 'turn',
+    at: typeof safe.at === 'string' ? safe.at : undefined
+  });
+  return writeYinPersonalMemoryState(userDataDir, next);
+}
+
+/**
+ * @param {string} userDataDir
+ * @param {{
+ *   previousTurnOrdinal?: number,
+ *   currentTurnOrdinal?: number,
+ *   nowIso?: string
+ * }} payload
+ */
+export async function suppressYinPersonalMemoryPostRecall(userDataDir, payload) {
+  const current = await readYinPersonalMemoryState(userDataDir);
+  const safe =
+    payload && typeof payload === 'object' ? payload : /** @type {Record<string, unknown>} */ ({});
+  const result = applyPostRecallMemorySuppress(current, {
+    previousTurnOrdinal:
+      typeof safe.previousTurnOrdinal === 'number' && Number.isFinite(safe.previousTurnOrdinal)
+        ? safe.previousTurnOrdinal
+        : -1,
+    currentTurnOrdinal:
+      typeof safe.currentTurnOrdinal === 'number' && Number.isFinite(safe.currentTurnOrdinal)
+        ? safe.currentTurnOrdinal
+        : 0,
+    nowIso: typeof safe.nowIso === 'string' ? safe.nowIso : undefined
+  });
+  const written = await writeYinPersonalMemoryState(userDataDir, result.state);
+  return { state: written, outcome: result.outcome };
+}

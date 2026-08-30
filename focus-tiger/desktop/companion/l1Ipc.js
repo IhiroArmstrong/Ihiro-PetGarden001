@@ -14,8 +14,10 @@ import { CompanionL1Runtime } from './l1Runtime.js';
 import {
   forgetYinPersonalMemoryEntry,
   readYinPersonalMemoryState,
+  recordYinPersonalMemoryOptOut,
   rememberYinPersonalMemoryFromConfide,
-  setYinPersonalMemoryConsent
+  setYinPersonalMemoryConsent,
+  suppressYinPersonalMemoryPostRecall
 } from './yinPersonalMemoryPersistence.js';
 
 /**
@@ -69,6 +71,20 @@ export function attachCompanionL1Ipc(deps) {
       payload && typeof payload === 'object' ? payload : {}
     )
   );
+
+  deps.ipcMain.handle('desktop:yin-personal-memory-record-opt-out', (_event, payload) =>
+    recordYinPersonalMemoryOptOut(
+      deps.app.getPath('userData'),
+      payload && typeof payload === 'object' ? payload : {}
+    )
+  );
+  deps.ipcMain.handle('desktop:yin-personal-memory-suppress-post-recall', (_event, payload) =>
+    suppressYinPersonalMemoryPostRecall(
+      deps.app.getPath('userData'),
+      payload && typeof payload === 'object' ? payload : {}
+    )
+  );
+
   deps.ipcMain.handle('desktop:yin-personal-memory-forget', (_event, memoryId) =>
     forgetYinPersonalMemoryEntry(
       deps.app.getPath('userData'),

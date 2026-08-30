@@ -747,5 +747,8 @@
   "YPE_STYLE_HINT": "On this device only. Usual turns personalization off.",
   "YPE_STYLE_DEFAULT": "Usual",
   "YPE_STYLE_QUIET": "Quieter",
-  "YPE_STYLE_WARM": "A little more recognition"
+  "YPE_STYLE_WARM": "A little more recognition",
+  "YIN_MEMORY_SUPPRESS_TURN": "All right — I won't keep that in memory.",
+  "YIN_MEMORY_SUPPRESS_RECALLED": "All right — I've removed that from what I remember.",
+  "YIN_MEMORY_SUPPRESS_NO_MATCH": "I don't see a matching memory to remove."
 }

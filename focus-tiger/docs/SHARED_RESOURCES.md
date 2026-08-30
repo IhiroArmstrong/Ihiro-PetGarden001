@@ -16,14 +16,14 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
-**Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]`；1b 起 L3 成功后 Remember；1c 列表 + Forget；1e 口头 Forget CI-01；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
+**Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]` + `rememberOptOuts[]`；1b Remember；1c Forget；1e CI-01；**1f** `memory_suppress` / Don't save；**禁止** 列入练习备份 6 key；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
 **Yin Personalization Engine（2026-08-26 · L0/L1）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。L1 key：`focus-tiger.ype-companion-style.v1`（quiet/default/warm；`default`＝关掉个人化）。**无** State Pack 文件（L2 契约/Consent/身份/算法已拍、运行时未开工）。L2 逻辑身份 `ype_profile_id`（本机随机 opaque；**禁止**硬件指纹 / 备份 OTP；**禁止**写入练习备份 6 key）。V1 Pack 的 `companionStyle` 回声用户选档，完成率不得改档。关同意须丢弃本机 Pack 缓存并排队删云端该 profile 行。用户本机选档优先于过期 Pack。
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 
-| `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent + schema；1b Remember 写 `memories[]`；1c Forget 真删）；**不进**练习备份；Web 无此文件 |
+| `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent；1b Remember；1c Forget；1f `rememberOptOuts[]` + suppress）；**不进**练习备份；Web 无此文件 |
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图。**「今日已同坐」语义 SSOT**：`hasCompletedToday()` — 全表见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
 | `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js`。**只读消费者**：Support Modal 请茶优先（与莲花分钟并上；有练习日则不再 Tea 打头） |
