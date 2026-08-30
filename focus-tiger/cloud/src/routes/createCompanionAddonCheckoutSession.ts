@@ -56,7 +56,7 @@ export async function handleCreateCompanionAddonCheckoutSession(
 			cancelUrl: resolveCheckoutReturnUrl(cancelUrl, returnSurface, bridgeOrigin),
 			customerEmail,
 		});
-		return json({ url: session.url });
+		return json({ url: session.url, sessionId: session.id });
 	} catch (err) {
 		const detail = err instanceof Error ? err.message : "checkout_failed";
 		return errorJson(502, "stripe_error", detail);

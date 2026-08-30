@@ -19,14 +19,19 @@ const PENDING_MAX_MS = 2 * 60 * 60 * 1000;
 
 /**
  * @param {DesktopCheckoutKind} kind
+ * @param {string} [sessionId] Stripe Checkout Session id (`cs_…`) when known.
  * @param {() => Date} [now]
  */
-export function markDesktopCheckoutPending(kind, now = () => new Date()) {
+export function markDesktopCheckoutPending(kind, sessionId = '', now = () => new Date()) {
   if (!isDesktopShellRuntime()) return;
+  const id =
+    typeof sessionId === 'string' && sessionId.startsWith('cs_')
+      ? sessionId.trim()
+      : null;
   try {
     sessionStorage.setItem(
       DESKTOP_CHECKOUT_PENDING_STORAGE_KEY,
-      JSON.stringify({ kind, startedAt: now().toISOString() })
+      JSON.stringify({ kind, startedAt: now().toISOString(), sessionId: id })
     );
   } catch {
     // ignore quota / privacy mode
@@ -43,7 +48,7 @@ export function clearDesktopCheckoutPending() {
 
 /**
  * @param {() => Date} [now]
- * @returns {{ kind: DesktopCheckoutKind, startedAt: string } | null}
+ * @returns {{ kind: DesktopCheckoutKind, startedAt: string, sessionId: string | null } | null}
  */
 export function readDesktopCheckoutPending(now = () => new Date()) {
   try {
@@ -53,6 +58,10 @@ export function readDesktopCheckoutPending(now = () => new Date()) {
     const kind = parsed?.kind;
     const startedAt =
       typeof parsed?.startedAt === 'string' ? parsed.startedAt : '';
+    const sessionId =
+      typeof parsed?.sessionId === 'string' && parsed.sessionId.startsWith('cs_')
+        ? parsed.sessionId
+        : null;
     if (kind !== 'pro' && kind !== 'companion-addon') {
       clearDesktopCheckoutPending();
       return null;
@@ -66,7 +75,7 @@ export function readDesktopCheckoutPending(now = () => new Date()) {
       clearDesktopCheckoutPending();
       return null;
     }
-    return { kind, startedAt };
+    return { kind, startedAt, sessionId };
   } catch {
     clearDesktopCheckoutPending();
     return null;

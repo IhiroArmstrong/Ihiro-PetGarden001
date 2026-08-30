@@ -218,6 +218,7 @@ import {
   clearDesktopCheckoutPending,
   readDesktopCheckoutPending
 } from './core/desktopCheckoutPending.js';
+import { resumePendingDesktopCheckout } from './core/desktopCheckoutConfirm.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -1295,32 +1296,30 @@ async function init() {
   let resumeDesktopCheckoutInFlight = false;
   async function resumeDesktopCheckoutAfterExternal() {
     if (!isDesktopShellRuntime() || resumeDesktopCheckoutInFlight) return;
-    if (!readDesktopCheckoutPending()) return;
-    if (
-      isCompanionEntitled({
+    if (!readDesktopCheckoutPending()) {
+      if (isCompanionEntitled({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,
         search: location.search
-      })
-    ) {
-      clearDesktopCheckoutPending();
-      syncEntitlementDependentIdleChrome();
+      })) {
+        syncEntitlementDependentIdleChrome();
+      }
       return;
     }
     resumeDesktopCheckoutInFlight = true;
+    const pendingKind = readDesktopCheckoutPending()?.kind;
     try {
-      const proRet = await bootProReturnConfirm({});
-      if (proRet?.outcome === 'success') {
-        clearDesktopCheckoutPending();
-        monetizationFunnelStore.checkoutComplete('pro', 'return');
-        applyPaymentThanksSprite('pro');
-        syncEntitlementDependentIdleChrome();
-        return;
-      }
-      const addonRet = await bootCompanionAddonReturnConfirm({});
-      if (addonRet?.outcome === 'success') {
-        clearDesktopCheckoutPending();
-        monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
-        applyPaymentThanksSprite('companion-addon');
+      const outcome = await resumePendingDesktopCheckout({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        search: location.search
+      });
+      if (outcome === 'success' && pendingKind) {
+        monetizationFunnelStore.checkoutComplete(
+          pendingKind === 'companion-addon' ? 'companion-addon' : 'pro',
+          'return'
+        );
+        applyPaymentThanksSprite(
+          pendingKind === 'companion-addon' ? 'companion-addon' : 'pro'
+        );
         syncEntitlementDependentIdleChrome();
       }
     } finally {
@@ -1329,17 +1328,28 @@ async function init() {
   }
 
   if (isDesktopShellRuntime()) {
+    const tickDesktopCheckoutResume = () => {
+      void resumeDesktopCheckoutAfterExternal();
+    };
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        void resumeDesktopCheckoutAfterExternal();
-      }
+      if (document.visibilityState === 'visible') tickDesktopCheckoutResume();
     });
+    window.addEventListener('focus', tickDesktopCheckoutResume);
     const checkoutShell = getDesktopShellBridge();
     checkoutShell?.onShellVisibility?.((payload) => {
-      if (payload?.hidden === false) {
-        void resumeDesktopCheckoutAfterExternal();
-      }
+      if (payload?.hidden === false) tickDesktopCheckoutResume();
     });
+    if (readDesktopCheckoutPending()) {
+      tickDesktopCheckoutResume();
+      const checkoutResumePoll = window.setInterval(() => {
+        if (!readDesktopCheckoutPending()) {
+          window.clearInterval(checkoutResumePoll);
+          return;
+        }
+        if (document.visibilityState !== 'visible') return;
+        tickDesktopCheckoutResume();
+      }, 2500);
+    }
   }
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   applyQaPracticeSeedFromSearch({

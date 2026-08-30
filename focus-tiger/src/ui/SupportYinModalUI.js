@@ -522,9 +522,16 @@ export class SupportYinModalUI {
       res && typeof res === 'object'
         ? /** @type {{ url?: unknown }} */ (res).url
         : null;
+    const sessionId =
+      res && typeof res === 'object'
+        ? /** @type {{ sessionId?: unknown }} */ (res).sessionId
+        : null;
     if (typeof url === 'string' && url) {
       getMonetizationFunnelStore().checkoutStart(kind, 'support-modal');
-      markDesktopCheckoutPending(kind);
+      markDesktopCheckoutPending(
+        kind,
+        typeof sessionId === 'string' ? sessionId : ''
+      );
       await openCheckoutUrl(url);
       return;
     }
