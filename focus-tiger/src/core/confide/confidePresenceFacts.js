@@ -6,6 +6,8 @@
 /**
  * Presence Signals · Confide factual replies (Slice 4 minimal).
  * Reads presence-signals ledger only; descriptive, never diagnostic.
+ * **Does not read freeText** — only emotionTag tallies via summarizePresenceEmotionTags.
+ * Any future L3 freeText injection must use listPresenceFreeTextForL3 (consent-gated).
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';

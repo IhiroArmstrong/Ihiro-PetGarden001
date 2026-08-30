@@ -17,7 +17,8 @@ import {
 } from '../core/presenceSignalsDelete.js';
 import {
   readPresenceFreeTextL3Consent,
-  writePresenceFreeTextL3Consent
+  writePresenceFreeTextL3Consent,
+  isPresenceFreeTextL3ReadEnabled
 } from '../core/presenceFreeTextL3Consent.js';
 import {
   GLASS_BLUR_CSS,
@@ -165,7 +166,18 @@ export class PresenceSignalsPanelUI {
   }
 
   _syncConsent() {
+    const readEnabled = isPresenceFreeTextL3ReadEnabled();
     const state = readPresenceFreeTextL3Consent(this._storage);
+    if (!readEnabled) {
+      this.consentWrap.hidden = false;
+      this.consentText.textContent = t('PRESENCE_FREETEXT_L3_NOT_IN_USE');
+      this.consentAllowBtn.hidden = true;
+      this.consentDenyBtn.hidden = true;
+      return;
+    }
+    this.consentAllowBtn.hidden = false;
+    this.consentDenyBtn.hidden = false;
+    this.consentText.textContent = t('PRESENCE_FREETEXT_L3_CONSENT_PROMPT');
     this.consentWrap.hidden = state !== 'unset';
   }
 

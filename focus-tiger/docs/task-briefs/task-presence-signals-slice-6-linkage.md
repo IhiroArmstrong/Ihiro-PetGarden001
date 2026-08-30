@@ -85,11 +85,11 @@ deletePresenceSignalById(storage, signalId)
 
 | 指标 | 值 | 说明 |
 |---|---|---|
-| QA 机 presence 行数 | **0** | 无存量用户数据 → 行数「几乎为空」 |
-| presence legacy 行占比 | **N/A（0 行）** | 无行则不计占比；新写入立刻带 `presenceSessionId` |
-| 理论存量（若仅有上线前数据） | **100% by 字段** | 旧行缺 `presenceSessionId`；行数仍取决于实际使用 |
+| QA 机 presence 行数 | **0** | 干净机仅证明新账本设计；**不能**单独作为老用户 legacy 占比证据 |
+| presence legacy 行占比 | **N/A（0 行）** | pre-launch 无历史负债时可按批准处理 |
+| 理论存量（若仅有上线前数据） | **100% by 字段** | 旧行缺 `presenceSessionId` |
 
-结论：**符合「几乎为空」前提 → 策略 A 可开工**；若未来 QA 机出现 **>个位数 %** legacy 行，暂停并回报实际数字。
+结论：**pre-launch 可按批准开工**；若有内测/真实使用设备，须在合入前用有痕迹的快照复测 legacy 占比（>个位数 % 须暂停回报）。
 
 ---
 
@@ -100,7 +100,10 @@ deletePresenceSignalById(storage, signalId)
 | 触发 | Presence freeText **首次**将被 L3 读取（非 Confide Memory Consent） |
 | 存储 | `focus-tiger.presence-freetext-l3-consent.v1`（granted / denied / unset） |
 | 默认 | 未同意 → L3 **不**注入 presence freeText；CI-02 趋势仍只读 `emotionTag` |
-| UI | Slice 6 面板内一次性条（`PresenceSignalsPanelUI`） |
+| UI | 读路径未开通时面板显示「尚未用于回复」说明；开通后显示一次性同意条 |
+| 读侧 SSOT | `listPresenceFreeTextForL3`（须 `PRESENCE_FREETEXT_L3_READ_ENABLED` + consent） |
+
+**2026-08-30 审计**：当前 **无** Confide/desktop generate 路径读取 presence freeText；`confidePresenceFacts` 仅 `summarizePresenceEmotionTags`。门闩未接线 **不构成即时泄露风险**；读路径开通时须 flip flag 并只经 `listPresenceFreeTextForL3` 读取。
 
 ---
 
