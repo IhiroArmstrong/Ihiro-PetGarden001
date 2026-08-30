@@ -206,13 +206,19 @@ import {
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
-import { bindDesktopShellAttention } from './core/desktopShell.js';
+import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import {
   canRegisterDesktopCompanionGeneration,
   getDesktopCompanionBridge,
   hasDesktopCompanionBridge
 } from './core/desktopCompanionGate.js';
+import { isCompanionEntitled } from './core/companionEntitlement.js';
+import {
+  clearDesktopCheckoutPending,
+  readDesktopCheckoutPending
+} from './core/desktopCheckoutPending.js';
+import { resumePendingDesktopCheckout } from './core/desktopCheckoutConfirm.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -1098,13 +1104,20 @@ async function init() {
       Boolean(honestyBridge?.isVisible?.()) ||
       (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
     if (busy) return false;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
     return canOpenConfidePanel({
       search: location.search,
       stage: 'idle',
-      companionGeneration: canRegisterDesktopCompanionGeneration({
-        hasBridge: hasDesktopCompanionBridge(),
-        widthPx: window.innerWidth
-      })
+      companionGeneration:
+        canRegisterDesktopCompanionGeneration({
+          hasBridge: hasDesktopCompanionBridge(),
+          widthPx: window.innerWidth
+        }) &&
+        isCompanionEntitled({
+          storage,
+          search: location.search
+        })
     });
   };
   const confideToYinUI = new ConfideToYinUI(document.body, {
@@ -1140,6 +1153,12 @@ async function init() {
   const syncConfideEarChrome = () => {
     confideEarChrome.sync();
     idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
+  };
+  const syncEntitlementDependentIdleChrome = () => {
+    syncConfideEarChrome();
+    idleChrome.wide.refreshSecondaryHintDots?.();
+    idleChrome.narrow.refreshSecondaryHintDots?.();
+    supportYinModalUI.syncEntitlementCards?.();
   };
   window.addEventListener('resize', () => syncConfideEarChrome());
   syncConfideEarChrome();
@@ -1259,16 +1278,79 @@ async function init() {
   });
   void bootProReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
+      clearDesktopCheckoutPending();
       monetizationFunnelStore.checkoutComplete('pro', 'return');
       applyPaymentThanksSprite('pro');
+      syncEntitlementDependentIdleChrome();
     }
   });
   void bootCompanionAddonReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
+      clearDesktopCheckoutPending();
       monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
       applyPaymentThanksSprite('companion-addon');
+      syncEntitlementDependentIdleChrome();
     }
   });
+
+  let resumeDesktopCheckoutInFlight = false;
+  async function resumeDesktopCheckoutAfterExternal() {
+    if (!isDesktopShellRuntime() || resumeDesktopCheckoutInFlight) return;
+    if (!readDesktopCheckoutPending()) {
+      if (isCompanionEntitled({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        search: location.search
+      })) {
+        syncEntitlementDependentIdleChrome();
+      }
+      return;
+    }
+    resumeDesktopCheckoutInFlight = true;
+    const pendingKind = readDesktopCheckoutPending()?.kind;
+    try {
+      const outcome = await resumePendingDesktopCheckout({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        search: location.search
+      });
+      if (outcome === 'success' && pendingKind) {
+        monetizationFunnelStore.checkoutComplete(
+          pendingKind === 'companion-addon' ? 'companion-addon' : 'pro',
+          'return'
+        );
+        applyPaymentThanksSprite(
+          pendingKind === 'companion-addon' ? 'companion-addon' : 'pro'
+        );
+        syncEntitlementDependentIdleChrome();
+      }
+    } finally {
+      resumeDesktopCheckoutInFlight = false;
+    }
+  }
+
+  if (isDesktopShellRuntime()) {
+    const tickDesktopCheckoutResume = () => {
+      void resumeDesktopCheckoutAfterExternal();
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') tickDesktopCheckoutResume();
+    });
+    window.addEventListener('focus', tickDesktopCheckoutResume);
+    const checkoutShell = getDesktopShellBridge();
+    checkoutShell?.onShellVisibility?.((payload) => {
+      if (payload?.hidden === false) tickDesktopCheckoutResume();
+    });
+    if (readDesktopCheckoutPending()) {
+      tickDesktopCheckoutResume();
+      const checkoutResumePoll = window.setInterval(() => {
+        if (!readDesktopCheckoutPending()) {
+          window.clearInterval(checkoutResumePoll);
+          return;
+        }
+        if (document.visibilityState !== 'visible') return;
+        tickDesktopCheckoutResume();
+      }, 2500);
+    }
+  }
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   applyQaPracticeSeedFromSearch({
     search: window.location.search,

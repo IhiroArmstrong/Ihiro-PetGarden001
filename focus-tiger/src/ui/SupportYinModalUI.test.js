@@ -106,6 +106,7 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /#e8dfd2/);
     assert.match(src, /SUPPORT_DESKTOP_RAM_NOTE/);
     assert.match(src, /isDesktopShellRuntime/);
+    assert.match(src, /buildCheckoutSessionBody/);
     assert.match(src, /yin-support-desktop-ram/);
   });
 

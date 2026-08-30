@@ -1,4 +1,8 @@
 import { errorJson, json } from "../lib/http";
+import {
+	isDesktopReturnSurface,
+	resolveCheckoutReturnUrl,
+} from "../lib/checkoutReturnUrls";
 import { createProCheckoutSession } from "../lib/stripe";
 import { isPlausibleEmail, normalizeEmail } from "../lib/membershipKv";
 import type { Env } from "../types";
@@ -26,8 +30,11 @@ export async function handleCreateProCheckoutSession(
 	}
 
 	let customerEmail: string | undefined;
+	/** @type {unknown} */
+	let parsedBody: unknown = null;
 	try {
-		const body = (await request.json()) as { email?: unknown };
+		parsedBody = await request.json();
+		const body = parsedBody as { email?: unknown };
 		if (typeof body?.email === "string" && body.email.trim()) {
 			if (!isPlausibleEmail(body.email)) {
 				return errorJson(400, "invalid_email", "email looks invalid");
@@ -38,15 +45,18 @@ export async function handleCreateProCheckoutSession(
 		// Empty body OK.
 	}
 
+	const returnSurface = isDesktopReturnSurface(parsedBody) ? "desktop" : undefined;
+	const bridgeOrigin = new URL(request.url).origin;
+
 	try {
 		const session = await createProCheckoutSession({
 			secretKey: secret,
 			priceId,
-			successUrl,
-			cancelUrl,
+			successUrl: resolveCheckoutReturnUrl(successUrl, returnSurface, bridgeOrigin),
+			cancelUrl: resolveCheckoutReturnUrl(cancelUrl, returnSurface, bridgeOrigin),
 			customerEmail,
 		});
-		return json({ url: session.url });
+		return json({ url: session.url, sessionId: session.id });
 	} catch (err) {
 		const detail = err instanceof Error ? err.message : "checkout_failed";
 		return errorJson(502, "stripe_error", detail);

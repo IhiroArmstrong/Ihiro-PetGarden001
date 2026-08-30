@@ -37,6 +37,7 @@ import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
 import { handleUnsubscribeNewsletter } from "./routes/unsubscribeNewsletter";
 import { handleYpePersonalizationIngest } from "./routes/ypePersonalizationIngest";
 import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelete";
+import { handleDesktopCheckoutReturn } from "./routes/desktopCheckoutReturn";
 
 /**
  * Focus Tiger · Cloudflare Workers API.
@@ -53,6 +54,10 @@ export default {
 
 		if (request.method === "GET" && url.pathname === "/health") {
 			return json({ ok: true, service: "focus-tiger-cloud" });
+		}
+
+		if (request.method === "GET" && url.pathname === "/checkout/desktop-return") {
+			return handleDesktopCheckoutReturn(request);
 		}
 
 		if (
