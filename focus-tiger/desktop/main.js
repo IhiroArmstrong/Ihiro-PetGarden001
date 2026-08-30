@@ -24,8 +24,10 @@ import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import {
   DESKTOP_CUSTOM_ORIGIN,
+  desktopCheckoutReturnSearch,
   isAllowedCloudApiPath,
-  isAllowedExternalUrl
+  isAllowedExternalUrl,
+  isDesktopCheckoutReturnUrl
 } from './ipcGuard.js';
 import {
   HIDE_REASON_NONE,
@@ -56,6 +58,8 @@ const DEV_LOAD_URL = 'http://127.0.0.1:5173/?product=1';
 
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
+/** @type {string | null} */
+let pendingCheckoutReturnUrl = null;
 /** @type {import('./companion/l1Runtime.js').CompanionL1Runtime | null} */
 let companionRuntime = null;
 /** @type {Tray | null} */
@@ -164,6 +168,72 @@ function showMainWindow() {
   notifyShellVisibility(mainWindow);
 }
 
+/**
+ * Stripe success/cancel deep-link → reload shell with session query so
+ * `bootProReturnConfirm` / companion-addon confirm runs in Electron storage.
+ *
+ * @param {string} rawUrl `focus-tiger://app/?product=1&pro_session=cs_…`
+ */
+function navigateDesktopCheckoutReturn(rawUrl) {
+  const search = desktopCheckoutReturnSearch(rawUrl);
+  showMainWindow();
+  const win = mainWindow;
+  if (!win || win.isDestroyed()) return;
+  const params = new URLSearchParams(search.replace(/^\?/, ''));
+  if (!params.has('product')) params.set('product', '1');
+  const qs = params.toString();
+  if (isDevMode()) {
+    const base = DEV_LOAD_URL.split('?')[0];
+    void win.loadURL(`${base}?${qs}`);
+    return;
+  }
+  void win.loadURL(`${DESKTOP_CUSTOM_ORIGIN}/index.html?${qs}`);
+}
+
+/**
+ * @param {string} rawUrl
+ */
+function handleDesktopCheckoutReturn(rawUrl) {
+  if (!isDesktopCheckoutReturnUrl(rawUrl)) return;
+  if (!app.isReady()) {
+    pendingCheckoutReturnUrl = rawUrl;
+    return;
+  }
+  navigateDesktopCheckoutReturn(rawUrl);
+}
+
+function registerDesktopCheckoutProtocol() {
+  if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+      app.setAsDefaultProtocolClient(
+        'focus-tiger',
+        process.execPath,
+        [path.resolve(process.argv[1])]
+      );
+    }
+  } else {
+    app.setAsDefaultProtocolClient('focus-tiger');
+  }
+
+  app.on('open-url', (event, url) => {
+    event.preventDefault();
+    handleDesktopCheckoutReturn(url);
+  });
+}
+
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (_event, argv) => {
+    const deepLink = argv.find((arg) => isDesktopCheckoutReturnUrl(arg));
+    if (deepLink) handleDesktopCheckoutReturn(deepLink);
+    else showMainWindow();
+  });
+
+  registerDesktopCheckoutProtocol();
+}
+
 function attachWindowLifecycle(win) {
   win.on('close', (event) => {
     if (shouldQuitOnWindowClose({ isQuitting })) return;
@@ -244,7 +314,8 @@ function createMainWindow() {
   return win;
 }
 
-app.whenReady().then(async () => {
+if (gotSingleInstanceLock) {
+  app.whenReady().then(async () => {
   protocol.handle('focus-tiger', (request) => serveCustomProtocol(request));
 
   ipcMain.handle('desktop:open-external', async (_event, url) => {
@@ -340,10 +411,16 @@ app.whenReady().then(async () => {
   createTray();
   mainWindow = createMainWindow();
 
+  if (pendingCheckoutReturnUrl) {
+    navigateDesktopCheckoutReturn(pendingCheckoutReturnUrl);
+    pendingCheckoutReturnUrl = null;
+  }
+
   app.on('activate', () => {
     showMainWindow();
   });
-});
+  });
+}
 
 app.on('before-quit', () => {
   isQuitting = true;

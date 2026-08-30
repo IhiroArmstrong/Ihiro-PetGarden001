@@ -45,3 +45,31 @@ export function isAllowedExternalUrl(rawUrl) {
 
 /** Packaged custom-protocol origin (must stay stable for storage + CORS docs). */
 export const DESKTOP_CUSTOM_ORIGIN = 'focus-tiger://app';
+
+/** Stripe Checkout deep-link return into the Electron shell. */
+export const DESKTOP_CHECKOUT_SCHEME = 'focus-tiger';
+
+/**
+ * @param {unknown} rawUrl
+ * @returns {boolean}
+ */
+export function isDesktopCheckoutReturnUrl(rawUrl) {
+  if (typeof rawUrl !== 'string' || !rawUrl.trim()) return false;
+  try {
+    const url = new URL(rawUrl);
+    return url.protocol === `${DESKTOP_CHECKOUT_SCHEME}:` && url.host === 'app';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Query string from a desktop checkout return URL (`?product=1&pro_session=…`).
+ *
+ * @param {unknown} rawUrl
+ * @returns {string}
+ */
+export function desktopCheckoutReturnSearch(rawUrl) {
+  if (!isDesktopCheckoutReturnUrl(rawUrl)) return '';
+  return new URL(String(rawUrl)).search || '';
+}

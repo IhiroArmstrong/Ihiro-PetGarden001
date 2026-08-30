@@ -213,6 +213,7 @@ import {
   getDesktopCompanionBridge,
   hasDesktopCompanionBridge
 } from './core/desktopCompanionGate.js';
+import { isCompanionEntitled } from './core/companionEntitlement.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -1098,13 +1099,20 @@ async function init() {
       Boolean(honestyBridge?.isVisible?.()) ||
       (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
     if (busy) return false;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
     return canOpenConfidePanel({
       search: location.search,
       stage: 'idle',
-      companionGeneration: canRegisterDesktopCompanionGeneration({
-        hasBridge: hasDesktopCompanionBridge(),
-        widthPx: window.innerWidth
-      })
+      companionGeneration:
+        canRegisterDesktopCompanionGeneration({
+          hasBridge: hasDesktopCompanionBridge(),
+          widthPx: window.innerWidth
+        }) &&
+        isCompanionEntitled({
+          storage,
+          search: location.search
+        })
     });
   };
   const confideToYinUI = new ConfideToYinUI(document.body, {
@@ -1140,6 +1148,12 @@ async function init() {
   const syncConfideEarChrome = () => {
     confideEarChrome.sync();
     idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
+  };
+  const syncEntitlementDependentIdleChrome = () => {
+    syncConfideEarChrome();
+    idleChrome.wide.refreshSecondaryHintDots?.();
+    idleChrome.narrow.refreshSecondaryHintDots?.();
+    supportYinModalUI.syncEntitlementCards?.();
   };
   window.addEventListener('resize', () => syncConfideEarChrome());
   syncConfideEarChrome();
@@ -1261,12 +1275,14 @@ async function init() {
     if (ret?.outcome === 'success') {
       monetizationFunnelStore.checkoutComplete('pro', 'return');
       applyPaymentThanksSprite('pro');
+      syncEntitlementDependentIdleChrome();
     }
   });
   void bootCompanionAddonReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
       monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
       applyPaymentThanksSprite('companion-addon');
+      syncEntitlementDependentIdleChrome();
     }
   });
   const focusSessionEndStore = new FocusSessionEndStore({ now });
@@ -1747,6 +1763,8 @@ async function init() {
 
   function isIdleYinTapOverlayBusy() {
     return (
+      onboardingHints?.isPurposeCardOpen?.() === true ||
+      onboardingHints?.isPrivacySheetOpen?.() === true ||
       sessionUiGate.postSessionOverlayActive === true ||
       honestyCheckInUI?.phase === 'duration' ||
       honestyCheckInUI?.phase === 'breath' ||
@@ -2480,7 +2498,11 @@ async function init() {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
     },
-    onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
+    onPurposeOpen: () => {
+      idleSecondaryPanelHost.close({ except: 'purpose' });
+      syncIdleYinTap();
+    },
+    onPurposeClose: () => syncIdleYinTap(),
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();
     }

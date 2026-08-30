@@ -12,6 +12,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { isDesktopShellRuntime } from '../core/desktopShell.js';
+import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import { TIP_JAR_PRICE_USD } from '../core/tipJarGate.js';
 import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
 import { FOCUS_TIGER_PRO_PRICE_DISPLAY } from '../core/proCheckout.js';
@@ -513,7 +514,9 @@ export class SupportYinModalUI {
       kind === 'pro'
         ? '/api/create-pro-checkout-session'
         : '/api/create-companion-addon-checkout-session';
-    const res = await postCloudJson(path, { body: JSON.stringify({}) });
+    const res = await postCloudJson(path, {
+      body: JSON.stringify(buildCheckoutSessionBody({}))
+    });
     const url =
       res && typeof res === 'object'
         ? /** @type {{ url?: unknown }} */ (res).url
@@ -622,6 +625,11 @@ export class SupportYinModalUI {
       !isProSubscriptionActive({ storage });
     this.proCard.hidden = !showPro;
     this.companionAddonCard.hidden = !showAddon;
+  }
+
+  /** After Stripe return confirms Pro / companion add-on in the shell. */
+  syncEntitlementCards() {
+    this._syncPaidCardVisibility();
   }
 
   /** @returns {'tea-first' | 'sanctuary-first'} */

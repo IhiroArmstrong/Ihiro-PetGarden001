@@ -10,8 +10,10 @@ import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import {
   DESKTOP_CUSTOM_ORIGIN,
+  desktopCheckoutReturnSearch,
   isAllowedCloudApiPath,
-  isAllowedExternalUrl
+  isAllowedExternalUrl,
+  isDesktopCheckoutReturnUrl
 } from '../../desktop/ipcGuard.js';
 
 const desktopPkg = JSON.parse(
@@ -104,6 +106,12 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(mainSrc, /DESKTOP_CUSTOM_ORIGIN/);
     assert.match(mainSrc, /\$\{DESKTOP_CUSTOM_ORIGIN\}/);
   });
+
+  it('registers focus-tiger checkout deep-link return', () => {
+    assert.match(mainSrc, /setAsDefaultProtocolClient\(\s*['"]focus-tiger['"]/);
+    assert.match(mainSrc, /navigateDesktopCheckoutReturn/);
+    assert.match(mainSrc, /isDesktopCheckoutReturnUrl/);
+  });
 });
 
 describe('desktop IPC allowlists', () => {
@@ -121,5 +129,16 @@ describe('desktop IPC allowlists', () => {
     assert.equal(isAllowedExternalUrl('http://127.0.0.1:4242/ok'), true);
     assert.equal(isAllowedExternalUrl('http://evil.example/phish'), false);
     assert.equal(isAllowedExternalUrl('file:///tmp/x'), false);
+  });
+
+  it('detects desktop checkout return deep links', () => {
+    const url =
+      'focus-tiger://app/?product=1&pro_session=cs_test_abc';
+    assert.equal(isDesktopCheckoutReturnUrl(url), true);
+    assert.equal(
+      desktopCheckoutReturnSearch(url),
+      '?product=1&pro_session=cs_test_abc'
+    );
+    assert.equal(isDesktopCheckoutReturnUrl('http://127.0.0.1:5173/?product=1'), false);
   });
 });
