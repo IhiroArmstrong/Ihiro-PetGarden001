@@ -30,7 +30,7 @@
 |---|---|---|---|
 | 1 | **3** | Reflection Q1–Q3 分拆双写；reflections freeText 90 天对齐 | **已合** #436 |
 | 2 | **2** | Ritual chip 入账 + Leave 事后回顾（方案 C） | **已合** #441 · `task-presence-signals-slice-2.md` |
-| 3 | **6** | 查看/删除 UI + freeText L3 Consent | Ritual 之后 |
+| 3 | **6** | 查看/删除 UI + freeText L3 Consent | 联动删除方案见 `task-presence-signals-slice-6-linkage.md` · Ritual 之后 |
 
 ### Slice 6 前置条件（面板 Slice 开工前须满足）
 

@@ -22,7 +22,8 @@ import {
 import {
   L2_GENERATE_TIMEOUT_MS,
   L2_MAX_TOKENS,
-  buildCompanionL2Prompt
+  buildCompanionL2Prompt,
+  buildReflectionCompanionPrompt
 } from './l2Persona.js';
 import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
 import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
@@ -263,32 +264,59 @@ export class CompanionL1Runtime {
     if (this.status.focusing) {
       return { ok: false, reason: 'focusing' };
     }
+    const purpose =
+      typeof payload.purpose === 'string' ? payload.purpose.trim() : '';
+    const isReflectionCompanion = purpose === 'reflection_companion';
     const text = typeof payload.text === 'string' ? payload.text.trim() : '';
-    if (!text) return { ok: false, reason: 'empty' };
+    const reflectionAnswers =
+      payload.reflectionAnswers &&
+      typeof payload.reflectionAnswers === 'object' &&
+      !Array.isArray(payload.reflectionAnswers)
+        ? payload.reflectionAnswers
+        : {};
+    if (!isReflectionCompanion && !text) return { ok: false, reason: 'empty' };
+    if (
+      isReflectionCompanion &&
+      !Object.values(reflectionAnswers).some(
+        (row) => typeof row === 'string' && row.trim()
+      )
+    ) {
+      return { ok: false, reason: 'empty_reflection' };
+    }
     const ready = await this.ensureReady();
     if (!ready.ok || this.status.phase !== 'ready') {
       return { ok: false, reason: ready.reason || 'not_ready' };
     }
     const id = randomUUID();
-    if (!Array.isArray(this._ypeSessionMemoryIds)) this._ypeSessionMemoryIds = [];
-    const retrieved = await retrieveYpeMemoriesForL3Generate(this.userDataDir, text, {
-      companionStyle: payload.companionStyle,
-      sessionExcludeIds: this._ypeSessionMemoryIds,
-      skipYpeOnSafety: Boolean(payload.skipYpeOnSafety)
-    });
-    this._ypeSessionMemoryIds = [
-      ...this._ypeSessionMemoryIds,
-      ...retrieved.ids.filter((mid) => !this._ypeSessionMemoryIds.includes(mid))
-    ];
-    const prompt = buildCompanionL2Prompt({
-      text,
-      locale: typeof payload.locale === 'string' ? payload.locale : 'en',
-      history: Array.isArray(payload.history) ? payload.history : [],
-      memorySummaries: retrieved.summaries,
-      patternInsights: Array.isArray(payload.patternInsights)
-        ? payload.patternInsights
-        : []
-    });
+    const locale = typeof payload.locale === 'string' ? payload.locale : 'en';
+    /** @type {string} */
+    let prompt;
+    if (isReflectionCompanion) {
+      prompt = buildReflectionCompanionPrompt({
+        answers: reflectionAnswers,
+        locale
+      });
+    } else {
+      if (!Array.isArray(this._ypeSessionMemoryIds)) this._ypeSessionMemoryIds = [];
+      const retrieved = await retrieveYpeMemoriesForL3Generate(this.userDataDir, text, {
+        companionStyle: payload.companionStyle,
+        sessionExcludeIds: this._ypeSessionMemoryIds,
+        skipYpeOnSafety: Boolean(payload.skipYpeOnSafety)
+      });
+      this._ypeSessionMemoryIds = [
+        ...this._ypeSessionMemoryIds,
+        ...retrieved.ids.filter((mid) => !this._ypeSessionMemoryIds.includes(mid))
+      ];
+      prompt = buildCompanionL2Prompt({
+        text,
+        locale,
+        history: Array.isArray(payload.history) ? payload.history : [],
+        memorySummaries: retrieved.summaries,
+        patternInsights: Array.isArray(payload.patternInsights)
+          ? payload.patternInsights
+          : []
+      });
+    }
     this._queue = this._queue.then(async () => {
       const done = new Promise((resolve) => {
         this._generateWaiters.set(id, resolve);

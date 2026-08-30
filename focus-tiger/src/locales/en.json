@@ -120,6 +120,8 @@
   "REFLECTION_ECHO_5": "A soft line on the page — already enough.",
   "REFLECTION_ECHO_6": "Nothing to prove. The sitting continues.",
   "REFLECTION_ECHO_7": "Noted without weighing. Yin keeps you company.",
+  "REFLECTION_COMPANION_VALIDATION_INVITE": "Show me what you noticed",
+  "REFLECTION_COMPANION_VALIDATION_GENERATING": "Listening…",
   "SESSION_INTENTION_PLACEHOLDER": "What are you bringing attention toward? (optional)",
   "SESSION_INTENTION_ECHO": "Written direction: {text}",
   "HONESTY_CHECKIN_PROMPT": "Yin is sitting with you. Quiet time elsewhere can live here too.",

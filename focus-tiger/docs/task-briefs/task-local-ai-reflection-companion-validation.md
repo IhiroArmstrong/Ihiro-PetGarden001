@@ -1,6 +1,6 @@
 # Task Brief · Reflection Companion · Validation（非 Shipping）
 
-> **状态（2026-08-28）**：**Brief 已建 · 未开工** · 须口令「开工 Reflection Companion Validation」。  
+> **状态（2026-08-30）**：**开工**（口令「开工 Reflection Companion Validation」）· lab flag `?reflectionCompanion=1` · **非 shipping**  
 > **PO 决策**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · **V3 = validation only, NOT shipping**  
 > **轨道**：轨道 **C · 仪式 generate**（仅验证分支；通过 validation 后再议 shipping Brief）
 

@@ -14,7 +14,7 @@
  * - 若本次填写了 Session Intention，开头回显一句纯展示文字，不参与三问跳过/记录。
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   ReflectionFlowState,
   REFLECTION_QUESTION_KEYS
@@ -43,6 +43,12 @@ import {
   shouldShowBrandYinWayFirstReflect
 } from '../core/brandYinWayFirstReflectGate.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
+import {
+  canOfferReflectionCompanionValidation,
+  reflectionCompanionGenerateReady,
+  REFLECTION_COMPANION_GENERATE_PURPOSE
+} from '../core/reflectionCompanionValidation.js';
+import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
@@ -170,6 +176,11 @@ export class TigerReflectionMoment {
     this._companionEchoKey = null;
     /** Last-question echo is on screen; wait for Continue / Skip / Esc. */
     this._awaitingLastEchoHold = false;
+    /** @type {HTMLButtonElement | null} */
+    this.companionInviteBtn = null;
+    /** @type {HTMLElement | null} */
+    this.companionObservationEl = null;
+    this._reflectionCompanionBusy = false;
 
     this._onKeyDown = (event) => {
       if (event.key === 'Escape') this._dismiss();
@@ -264,6 +275,42 @@ export class TigerReflectionMoment {
       'opacity:0.92'
     ].join(';');
 
+    this.companionObservationEl = document.createElement('div');
+    this.companionObservationEl.dataset.testid = 'reflection-companion-observation';
+    this.companionObservationEl.hidden = true;
+    this.companionObservationEl.style.cssText = [
+      'font-size:13px',
+      'line-height:1.55',
+      'font-weight:500',
+      'color:#5c4330',
+      'margin:0 0 10px',
+      'padding:8px 10px',
+      'border-radius:10px',
+      'background:rgba(212,165,116,.1)',
+      'border:1px solid rgba(139,115,85,.16)'
+    ].join(';');
+
+    this.companionInviteBtn = document.createElement('button');
+    this.companionInviteBtn.type = 'button';
+    this.companionInviteBtn.dataset.testid = 'reflection-companion-invite';
+    this.companionInviteBtn.hidden = true;
+    this.companionInviteBtn.style.cssText = [
+      'display:block',
+      'width:100%',
+      'margin:0 0 12px',
+      'padding:8px 12px',
+      'font-size:13px',
+      'color:#4a3a28',
+      `background:${GLASS_FILL_STRONG}`,
+      GLASS_BORDER_STRONG,
+      'border-radius:12px',
+      'cursor:pointer',
+      'text-align:center'
+    ].join(';');
+    this.companionInviteBtn.addEventListener('click', () => {
+      void this._onReflectionCompanionInvite();
+    });
+
     this.questionEl = document.createElement('div');
     this.questionEl.style.cssText = [
       'font-size:15px',
@@ -350,6 +397,8 @@ export class TigerReflectionMoment {
     this.root.appendChild(this.benefitHintEl);
     this.root.appendChild(this.inputEl);
     this.root.appendChild(this.companionEchoEl);
+    this.root.appendChild(this.companionObservationEl);
+    this.root.appendChild(this.companionInviteBtn);
     this.root.appendChild(footer);
     // Phase A: free Daily Wisdom at card bottom (no Sanctuary seal).
     const { host } = mountReflectionDailyWisdom(this.root);
@@ -408,6 +457,64 @@ export class TigerReflectionMoment {
     this.skipBtn.textContent = t('REFLECTION_SKIP');
     this.skipAllBtn.textContent = t('REFLECTION_SKIP_ALL');
     this.continueBtn.textContent = t('REFLECTION_CONTINUE');
+    this._syncReflectionCompanionOffer();
+  }
+
+  _syncReflectionCompanionOffer() {
+    if (!this.companionInviteBtn) return;
+    const search =
+      typeof location !== 'undefined' ? String(location.search || '') : '';
+    const widthPx =
+      typeof globalThis.innerWidth === 'number' ? globalThis.innerWidth : 0;
+    const offer =
+      this._awaitingLastEchoHold &&
+      this.flow?.hasAnyAnswer() &&
+      canOfferReflectionCompanionValidation({ search, widthPx });
+    this.companionInviteBtn.hidden = !offer;
+    if (offer) {
+      this.companionInviteBtn.textContent = this._reflectionCompanionBusy
+        ? t('REFLECTION_COMPANION_VALIDATION_GENERATING')
+        : t('REFLECTION_COMPANION_VALIDATION_INVITE');
+      this.companionInviteBtn.disabled = this._reflectionCompanionBusy;
+    }
+  }
+
+  async _onReflectionCompanionInvite() {
+    if (this._reflectionCompanionBusy || !this.flow?.hasAnyAnswer()) return;
+    const companion = getDesktopCompanionBridge();
+    if (!companion || typeof companion.generate !== 'function') return;
+    const search =
+      typeof location !== 'undefined' ? String(location.search || '') : '';
+    const widthPx =
+      typeof globalThis.innerWidth === 'number' ? globalThis.innerWidth : 0;
+    if (!canOfferReflectionCompanionValidation({ search, widthPx })) return;
+
+    this._reflectionCompanionBusy = true;
+    this._syncReflectionCompanionOffer();
+    try {
+      const status =
+        typeof companion.getStatus === 'function'
+          ? await companion.getStatus()
+          : null;
+      if (
+        !reflectionCompanionGenerateReady(status, { search, widthPx })
+      ) {
+        return;
+      }
+      const result = await companion.generate({
+        purpose: REFLECTION_COMPANION_GENERATE_PURPOSE,
+        reflectionAnswers: this.flow.getResult(),
+        locale: getLocale()
+      });
+      if (result?.ok && result.text && this.companionObservationEl) {
+        this.companionObservationEl.textContent = result.text;
+        this.companionObservationEl.hidden = false;
+        this.companionInviteBtn.hidden = true;
+      }
+    } finally {
+      this._reflectionCompanionBusy = false;
+      this._syncReflectionCompanionOffer();
+    }
   }
 
   _renderStep({ instant = false } = {}) {
@@ -491,6 +598,7 @@ export class TigerReflectionMoment {
       this.inputEl.readOnly = true;
       this.inputEl.setAttribute('aria-readonly', 'true');
     }
+    this._syncReflectionCompanionOffer();
     this._refreshTexts();
   }
 
@@ -551,6 +659,8 @@ export class TigerReflectionMoment {
     this.root = null;
     this.echoEl = null;
     this.companionEchoEl = null;
+    this.companionObservationEl = null;
+    this.companionInviteBtn = null;
     this.questionEl = null;
     this.inputEl = null;
     this.dotEls = [];
