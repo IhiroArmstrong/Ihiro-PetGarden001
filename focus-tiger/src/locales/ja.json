@@ -118,6 +118,8 @@
   "REFLECTION_ECHO_5": "ページのやわらかい一行——それで十分です。",
   "REFLECTION_ECHO_6": "証明することはありません。坐はつづきます。",
   "REFLECTION_ECHO_7": "重くせずに、記しました。インが同伴しています。",
+  "REFLECTION_COMPANION_VALIDATION_INVITE": "気づいたことを見せて",
+  "REFLECTION_COMPANION_VALIDATION_GENERATING": "聞いています…",
   "SESSION_INTENTION_PLACEHOLDER": "何に注意を向けますか？（任意）",
   "SESSION_INTENTION_ECHO": "書いた方向：{text}",
   "HONESTY_CHECKIN_PROMPT": "阿寅はあなたと坐っています。よそでの静かな時間も、ここに置けます。",

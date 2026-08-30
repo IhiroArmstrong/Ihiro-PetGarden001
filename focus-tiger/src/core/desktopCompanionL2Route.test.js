@@ -18,6 +18,7 @@ import {
 } from './desktopCompanionL2Route.js';
 import {
   buildCompanionL2Prompt,
+  buildReflectionCompanionPrompt,
   historyForGeneratePrompt
 } from '../../desktop/companion/l2Persona.js';
 import { sanitizeCompanionL2Reply } from '../../desktop/companion/l2Sanitize.js';
@@ -275,6 +276,17 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.match(prompt, /the weather is mild today/);
     assert.equal(prompt.includes("I don't want to live"), false);
     assert.equal(prompt.includes('too heavy to hold alone'), false);
+  });
+
+  it('buildReflectionCompanionPrompt uses session answers only (validation)', () => {
+    const prompt = buildReflectionCompanionPrompt({
+      answers: { notice: 'wind moved the curtain', emotion: 'tired' },
+      locale: 'en'
+    });
+    assert.match(prompt, /second mirror/i);
+    assert.match(prompt, /wind moved the curtain/);
+    assert.match(prompt, /do not advise/i);
+    assert.doesNotMatch(prompt, /Recent turns:/);
   });
 
   it('filters corpus first then keeps the last 8 remaining rows', () => {

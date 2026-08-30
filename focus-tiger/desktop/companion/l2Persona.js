@@ -61,6 +61,50 @@ export function historyForGeneratePrompt(
  * }} [opts]
  * @returns {string}
  */
+const REFLECTION_FIELD_LABELS = {
+  notice: 'What they noticed',
+  emotion: 'What visited',
+  nextFocus: 'What they named for next time'
+};
+
+/**
+ * Validation-only prompt: one short observation from this session's reflection.
+ * No advice, diagnosis, or progress judgment.
+ *
+ * @param {{
+ *   answers?: Record<string, string>,
+ *   locale?: string
+ * }} [opts]
+ * @returns {string}
+ */
+export function buildReflectionCompanionPrompt({
+  answers = {},
+  locale = 'en'
+} = {}) {
+  const lang = LANG[locale] || LANG.en;
+  const lines = Object.entries(REFLECTION_FIELD_LABELS)
+    .map(([field, label]) => {
+      const text =
+        typeof answers[field] === 'string' ? answers[field].trim() : '';
+      if (!text) return '';
+      return `${label}: ${text.slice(0, 280)}`;
+    })
+    .filter(Boolean);
+  const block =
+    lines.length > 0
+      ? lines.join('\n')
+      : 'The user completed reflection but left no written answers.';
+  return [
+    '/no_think',
+    `You are Yin, a young tiger cub. Reply in ${lang}.`,
+    'The user already saw their own reflection. They invited you to offer ONE short observation — a second mirror.',
+    'Write one or two short sentences only. Observe what is already in their words; do not advise, diagnose, coach, score progress, or add action steps.',
+    'Do not mention being an AI or a model.',
+    `Their reflection (this session only — do not invent other facts):\n${block}`,
+    'Yin (one short observation):'
+  ].join('\n');
+}
+
 export function buildCompanionL2Prompt({
   text = '',
   locale = 'en',
