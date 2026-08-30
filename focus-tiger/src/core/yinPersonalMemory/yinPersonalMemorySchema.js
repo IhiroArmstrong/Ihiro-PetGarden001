@@ -36,6 +36,7 @@ export const YIN_PERSONAL_MEMORY_SCHEMA_VERSION = 1;
  *   schemaVersion: number,
  *   consent: YinMemoryConsent | null,
  *   consentedAt: string | null,
+ *   rememberOptOuts: { turnId: string, scope: 'turn' | 'session', at: string }[]
  *   memories: YinMemoryEntry[]
  * }} YinPersonalMemoryState
  */
@@ -53,6 +54,7 @@ export function emptyYinPersonalMemoryState() {
     schemaVersion: YIN_PERSONAL_MEMORY_SCHEMA_VERSION,
     consent: null,
     consentedAt: null,
+    rememberOptOuts: [],
     memories: []
   };
 }
@@ -102,6 +104,21 @@ export function normalizeYinMemoryEntry(raw) {
  * @param {unknown} raw
  * @returns {YinPersonalMemoryState}
  */
+
+/**
+ * @param {unknown} raw
+ * @returns {{ turnId: string, scope: 'turn' | 'session', at: string } | null}
+ */
+function normalizeRememberOptOutEntry(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const o = /** @type {Record<string, unknown>} */ (raw);
+  const turnId = typeof o.turnId === 'string' && o.turnId.trim() ? o.turnId.trim() : null;
+  const scope = o.scope === 'session' ? 'session' : o.scope === 'turn' ? 'turn' : null;
+  const at = typeof o.at === 'string' && o.at ? o.at : null;
+  if (!turnId || !scope || !at) return null;
+  return { turnId, scope, at };
+}
+
 export function normalizeYinPersonalMemoryState(raw) {
   const empty = emptyYinPersonalMemoryState();
   if (!raw || typeof raw !== 'object') return empty;
@@ -117,6 +134,13 @@ export function normalizeYinPersonalMemoryState(raw) {
       : null;
   const consentedAt =
     typeof o.consentedAt === 'string' && o.consentedAt ? o.consentedAt : null;
+  const rememberOptOuts = [];
+  if (Array.isArray(o.rememberOptOuts)) {
+    for (const row of o.rememberOptOuts) {
+      const entry = normalizeRememberOptOutEntry(row);
+      if (entry) rememberOptOuts.push(entry);
+    }
+  }
   const memories = [];
   if (Array.isArray(o.memories)) {
     for (const row of o.memories) {
@@ -128,6 +152,7 @@ export function normalizeYinPersonalMemoryState(raw) {
     schemaVersion,
     consent,
     consentedAt: consent ? consentedAt : null,
+    rememberOptOuts,
     memories
   };
 }

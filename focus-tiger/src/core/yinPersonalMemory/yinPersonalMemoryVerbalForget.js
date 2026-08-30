@@ -14,21 +14,21 @@ import { canRememberYinPersonalMemory } from './yinPersonalMemoryConsent.js';
 import { listActiveYinMemories } from './yinPersonalMemoryForget.js';
 import { isYinMemoryThemeRelatedToUserText } from './yinPersonalMemoryRetrieve.js';
 import { normalizeYinPersonalMemoryState } from './yinPersonalMemorySchema.js';
+import {
+  isInlineMemorySuppressIntent,
+  isPostRecallMemorySuppressIntent
+} from './yinPersonalMemorySuppress.js';
 
 const CONFIDENCE_RANK = Object.freeze({ high: 2, medium: 1, low: 0 });
 
 /** @type {readonly RegExp[]} */
 const VERBAL_FORGET_INTENT_RES = Object.freeze([
-  /\b(?:please\s+)?forget\s+(?:what\s+i\s+said\b|about\b|that\b)/i,
+  /\b(?:please\s+)?forget\s+(?:what\s+i\s+said\b|about\b)/i,
   /\bstop\s+remembering\b/i,
-  /\bdon'?t\s+remember\s+(?:this|that|it)\b/i,
-  /\bdon'?t\s+record\s+(?:this|that|it)\b/i,
-  /\bstop\s+recording\s+(?:this|that|it)\b/i,
   /别再记/,
   /不要记住/,
   /别再记录/,
-  /别再记住/,
-  /忘掉.*(?:事|话|这个|那句)/
+  /别再记住/
 ]);
 
 /** @type {readonly RegExp[]} */
@@ -80,6 +80,7 @@ export function shouldHandleVerbalForget({
   const raw = typeof text === 'string' ? text.trim() : '';
   if (!raw) return false;
   if (isBulkVerbalForgetIntent(raw)) return true;
+  if (isPostRecallMemorySuppressIntent(raw) || isInlineMemorySuppressIntent(raw)) return false;
   return isVerbalForgetIntent(raw);
 }
 
@@ -103,6 +104,7 @@ export function resolveVerbalForgetTarget(state, userText) {
     return { outcome: 'bulk_rejected' };
   }
   if (!isVerbalForgetIntent(raw)) return null;
+  if (isPostRecallMemorySuppressIntent(raw) || isInlineMemorySuppressIntent(raw)) return null;
 
   const normalized = normalizeYinPersonalMemoryState(state);
   if (!canRememberYinPersonalMemory(normalized)) return null;

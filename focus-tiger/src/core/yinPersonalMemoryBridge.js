@@ -17,6 +17,8 @@ import { normalizeYinPersonalMemoryState } from './yinPersonalMemory/yinPersonal
  *   getState: () => Promise<unknown>,
  *   setConsent: (granted: boolean) => Promise<unknown>,
  *   rememberFromConfide: (payload: object) => Promise<unknown>,
+ *   recordOptOut: (payload: object) => Promise<unknown>,
+ *   suppressPostRecallFromConfide: (payload: object) => Promise<unknown>,
  *   forget: (memoryId: string) => Promise<unknown>
  * }}
  */
@@ -26,6 +28,8 @@ export function getYinPersonalMemoryBridge(globalObj = globalThis) {
   if (!memory || typeof memory.getState !== 'function') return null;
   if (typeof memory.setConsent !== 'function') return null;
   if (typeof memory.rememberFromConfide !== 'function') return null;
+  if (typeof memory.recordOptOut !== 'function') return null;
+  if (typeof memory.suppressPostRecallFromConfide !== 'function') return null;
   if (typeof memory.forget !== 'function') return null;
   return memory;
 }
@@ -103,3 +107,50 @@ export async function forgetYinPersonalMemoryEntry(memoryId, globalObj = globalT
     return normalizeYinPersonalMemoryState(null);
   }
 }
+
+/**
+ * @param {{ turnId: string, scope?: 'turn' | 'session', at?: string }} payload
+ * @param {object} [globalObj]
+ */
+export async function recordYinPersonalMemoryOptOut(payload, globalObj = globalThis) {
+  const bridge = getYinPersonalMemoryBridge(globalObj);
+  if (!bridge) return normalizeYinPersonalMemoryState(null);
+  try {
+    const raw = await bridge.recordOptOut(payload && typeof payload === 'object' ? payload : {});
+    return normalizeYinPersonalMemoryState(raw);
+  } catch {
+    return normalizeYinPersonalMemoryState(null);
+  }
+}
+
+/**
+ * @param {{
+ *   previousTurnOrdinal: number,
+ *   currentTurnOrdinal: number,
+ *   nowIso?: string
+ * }} payload
+ * @param {object} [globalObj]
+ */
+export async function suppressYinPersonalMemoryPostRecall(payload, globalObj = globalThis) {
+  const bridge = getYinPersonalMemoryBridge(globalObj);
+  if (!bridge) {
+    return { state: normalizeYinPersonalMemoryState(null), outcome: 'no_match' };
+  }
+  try {
+    const raw = await bridge.suppressPostRecallFromConfide(
+      payload && typeof payload === 'object' ? payload : {}
+    );
+    if (raw && typeof raw === 'object' && 'state' in raw) {
+      const o = /** @type {{ state?: unknown, outcome?: string }} */ (raw);
+      const outcome =
+        o.outcome === 'suppressed' || o.outcome === 'turn_opt_out' || o.outcome === 'no_match'
+          ? o.outcome
+          : 'no_match';
+      return { state: normalizeYinPersonalMemoryState(o.state), outcome };
+    }
+    return { state: normalizeYinPersonalMemoryState(raw), outcome: 'no_match' };
+  } catch {
+    return { state: normalizeYinPersonalMemoryState(null), outcome: 'no_match' };
+  }
+}
+

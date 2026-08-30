@@ -24,7 +24,7 @@ Natural Language → Intent Classification → Whitelisted Intent
 
 | 项 | 原因 |
 |---|---|
-| **Don't save this** | PO **未批准** · persistence / memory policy · 另审 |
+| **Don't save this** | **Slice 1f** · 见 `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` · 非 1A scope |
 | **Delete today's Journey entry** | V2 **Future Candidate** · Phase 2 · 排在 read-only 之后 |
 | bulk wipe / 备份 / 更新 | Operating Layer · 不进 Confide |
 | 模型直接写 | 写工具仍 regex + Consent |

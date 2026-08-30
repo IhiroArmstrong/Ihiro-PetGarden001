@@ -2,6 +2,7 @@
 
 > **状态（2026-08-24）**：**方向锁 · 只设计，不写存取代码。** 本文件是「阿寅关于这个人逐渐知道了什么」的产品 SSOT。  
 > **不是**：练习记忆云备份、Journey Log、Confide `turns.jsonl`、用户微调 / LoRA、全面运行时对话。  
+> **Don't save / opt-out 政策**：`YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md`（Slice 1f · PO 2026-08-30）
 > **口令**：实现另下「开工 Yin Personal Memory」；**禁止**本文件合入后默认开工 store / UI / prompt 接线。  
 > **前置**：1.7B 生产默认接线 + 场景 AE 关单级「能聊」过关之后，再排 Remember / Use / Forget。现在把记忆写成一等公民，是为了以后不必回头补。
 

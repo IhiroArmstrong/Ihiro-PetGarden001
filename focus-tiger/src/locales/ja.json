@@ -747,5 +747,8 @@
   "YPE_STYLE_HINT": "この端末だけです。いつもの仕方に戻すと、個人化を止めます。",
   "YPE_STYLE_DEFAULT": "いつもの",
   "YPE_STYLE_QUIET": "もっと静かに",
-  "YPE_STYLE_WARM": "少し多めに認める"
+  "YPE_STYLE_WARM": "少し多めに認める",
+  "YIN_MEMORY_SUPPRESS_TURN": "わかりました。このことは覚えません。",
+  "YIN_MEMORY_SUPPRESS_RECALLED": "わかりました。覚えていたその内容は取り除きました。",
+  "YIN_MEMORY_SUPPRESS_NO_MATCH": "覚えていることと合いませんでした。"
 }

@@ -189,7 +189,7 @@ npm run desktop:dev
 | 1A.5 | 人工：Electron Confide · Show memory 诚实模板 | tracker |
 
 **口令**：`开工 Local AI Phase 1 NL Actions`  
-**不做**：Don't save this（未批准）· Delete today Journey（V2 Future Candidate）
+**不做**：Delete today Journey（V2 Future Candidate）· Don't save → **Slice 1f 已定稿**（非 Phase 1A NL Actions）
 
 ### 4.3 轨 1C · Reflection Companion（**第三** · validation only）
 
@@ -221,7 +221,7 @@ npm run desktop:dev
 | 项 | PO 结论 |
 |---|---|
 | **V2** `DELETE_TODAY_JOURNEY_ENTRY` | Future Candidate · NOT MVP · **无** implementation task |
-| **Don't save this** | 未批准 |
+| **Don't save this** | ✅ Slice 1f · 见 `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` |
 | **V3 shipping** | 须 1C validation 通过后再议 |
 | **V4** Arrival / Breath / Celebrating 等 | MUST NOT ENTER |
 | **V5** Interpret / Diagnose / Coach | 全禁 |

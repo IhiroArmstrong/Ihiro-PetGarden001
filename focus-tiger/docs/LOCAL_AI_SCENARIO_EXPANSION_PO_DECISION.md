@@ -143,7 +143,7 @@ Arrival · Breath · Moment Whisper · Basic Focusing · Celebrating · X2 touch
 |---|---|
 | Forget this | ✅ 现网 CI-01 |
 | Show me what you remember | ✅ **新 read tool · 须 Brief 开工** |
-| Don't save this | ❌ **未批准**（persistence / memory policy · 另审） |
+| Don't save this | ✅ **已批准** · Slice 1f · `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` |
 | Delete today's Journey entry | ❌ **V2 Future Candidate** |
 
 ### B · Ask Journey / Presence — CORE · MVP
@@ -233,3 +233,17 @@ Temporal Compare 走 **Companion Tools**（`query_*` + 确定性 handler + Read 
 | 5 | Brief · Reflection Companion Validation | `task-local-ai-reflection-companion-validation.md` |
 | 6 | V2 Journey Delete | **仅** Future Candidate 记录；**无** implementation task |
 | 7 | runtime / generate IPC | **等待**逐项「开工」口令 |
+
+
+---
+
+## Persistence Policy · PO 定稿（2026-08-30）
+
+**Don't save this** 正式批准为 Yin Personal Memory **Slice 1f**：
+
+- 默认 scope = **本条 turn**；发后撤回 V1 必做；发前 opt-out Phase 2
+- **无新 CI** · `memory_suppress` 管道 · CI-01 主题 Forget 不变
+- `forget this` / 忘掉刚才那句 → suppress，**不**走 CI-01
+- `rememberOptOuts[]` 持久化 · 逐句 opt-out **优先于** Consent Allow
+
+**SSOT**：`YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md`

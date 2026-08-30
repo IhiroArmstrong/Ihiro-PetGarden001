@@ -13,6 +13,13 @@ import { CONFIDE_EMOTION_BUCKETS, CONFIDE_ROUTE } from '../confide/confideRoutes
 import { shouldAnswerWithPracticeFacts } from '../confide/confidePracticeFacts.js';
 import { canRememberYinPersonalMemory } from './yinPersonalMemoryConsent.js';
 import { normalizeYinPersonalMemoryState } from './yinPersonalMemorySchema.js';
+import {
+  appendRememberOptOut,
+  buildConfideTurnId,
+  isInlineMemorySuppressIntent,
+  isRememberSuppressedForTurn,
+  stripMemorySuppressPhrases
+} from './yinPersonalMemorySuppress.js';
 
 export const YIN_MEMORY_SOURCE_ROUTE = Object.freeze({
   CONFIDE_FALLBACK: 'confide_fallback',
@@ -88,7 +95,7 @@ export function canRememberFromConfideTurn({
  * @returns {null | { ruleId: string, kind: import('./yinPersonalMemorySchema.js').YinMemoryKind, summary: string }}
  */
 export function matchYinMemoryRememberRule(userText) {
-  const text = typeof userText === 'string' ? userText.trim() : '';
+  const text = stripMemorySuppressPhrases(typeof userText === 'string' ? userText : '');
   if (!text || containsForbiddenRememberExtractText(text)) return null;
 
   if (
@@ -237,6 +244,22 @@ export function rememberFromConfideTurn(state, payload) {
   const base = normalizeYinPersonalMemoryState(state);
   if (!canRememberYinPersonalMemory(base)) {
     return { state: base, remembered: false };
+  }
+  const turnOrdinal =
+    Number.isFinite(payload?.turnOrdinal) && payload.turnOrdinal >= 0
+      ? Math.floor(payload.turnOrdinal)
+      : 0;
+  if (isRememberSuppressedForTurn(base, turnOrdinal)) {
+    return { state: base, remembered: false };
+  }
+  const userText = typeof payload?.userText === 'string' ? payload.userText : '';
+  if (isInlineMemorySuppressIntent(userText)) {
+    const next = appendRememberOptOut(base, {
+      turnId: buildConfideTurnId(turnOrdinal),
+      scope: 'turn',
+      at: typeof payload?.nowIso === 'string' ? payload.nowIso : new Date().toISOString()
+    });
+    return { state: next, remembered: false };
   }
   const candidate = proposeYinMemoryFromConfideTurn(payload);
   if (!candidate) {

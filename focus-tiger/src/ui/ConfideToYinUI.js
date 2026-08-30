@@ -53,8 +53,10 @@ import {
   fetchYinPersonalMemoryState,
   forgetYinPersonalMemoryEntry,
   hasYinPersonalMemoryBridge,
+  recordYinPersonalMemoryOptOut,
   rememberYinPersonalMemoryFromConfide,
-  saveYinPersonalMemoryConsent
+  saveYinPersonalMemoryConsent,
+  suppressYinPersonalMemoryPostRecall
 } from '../core/yinPersonalMemoryBridge.js';
 import {
   canRememberYinPersonalMemory,
@@ -64,6 +66,12 @@ import {
   formatVerbalForgetReply,
   resolveVerbalForgetTarget
 } from '../core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
+import {
+  buildConfideTurnId,
+  formatMemorySuppressReply,
+  shouldHandlePostRecallMemorySuppress,
+  shouldHandleStandaloneMemorySuppress
+} from '../core/yinPersonalMemory/yinPersonalMemorySuppress.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
 const FADE_MS = 220;
@@ -462,7 +470,9 @@ export class ConfideToYinUI {
               ? 'presence_facts'
               : shown.source === 'memory_forget'
                 ? 'memory_forget'
-                : 'corpus'
+                : shown.source === 'memory_suppress'
+                  ? 'memory_suppress'
+                  : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
@@ -506,6 +516,54 @@ export class ConfideToYinUI {
         route: hit.route,
         text: replyText,
         source: 'memory_forget'
+      },
+      text
+    );
+  }
+
+
+  /**
+   * @param {string} text
+   * @param {object} hit
+   */
+  async _handleMemorySuppressStandalone(text, hit) {
+    const turnOrdinal = Math.floor(this._l2Turns.length / 2);
+    this._memoryState = await recordYinPersonalMemoryOptOut({
+      turnId: buildConfideTurnId(turnOrdinal),
+      scope: 'turn'
+    });
+    this._showReply(
+      {
+        route: hit.route,
+        text: formatMemorySuppressReply('turn_opt_out', t),
+        source: 'memory_suppress'
+      },
+      text
+    );
+  }
+
+  /**
+   * @param {string} text
+   * @param {object} hit
+   */
+  async _handleMemorySuppressPostRecall(text, hit) {
+    const currentTurnOrdinal = Math.floor(this._l2Turns.length / 2);
+    const previousTurnOrdinal = currentTurnOrdinal - 1;
+    const result = await suppressYinPersonalMemoryPostRecall({
+      previousTurnOrdinal,
+      currentTurnOrdinal
+    });
+    this._memoryState = result.state;
+    if (result.outcome === 'suppressed') {
+      const removed = result.state.memories.length;
+      void removed;
+      this.handlers.onMemoryForgotten?.('post-recall');
+    }
+    this._showReply(
+      {
+        route: hit.route,
+        text: formatMemorySuppressReply(result.outcome, t),
+        source: 'memory_suppress'
       },
       text
     );
@@ -651,6 +709,30 @@ export class ConfideToYinUI {
     if (!hit) return;
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
+    const turnOrdinal = Math.floor(this._l2Turns.length / 2);
+    if (
+      shouldHandlePostRecallMemorySuppress({
+        route: hit.route,
+        text,
+        memoryState: this._memoryState,
+        hasBridge: hasYinPersonalMemoryBridge(),
+        turnOrdinal
+      })
+    ) {
+      void this._handleMemorySuppressPostRecall(text, hit);
+      return;
+    }
+    if (
+      shouldHandleStandaloneMemorySuppress({
+        route: hit.route,
+        text,
+        memoryState: this._memoryState,
+        hasBridge: hasYinPersonalMemoryBridge()
+      })
+    ) {
+      void this._handleMemorySuppressStandalone(text, hit);
+      return;
+    }
     const tool = matchConfideExecutableTool({
       route: hit.route,
       text,
