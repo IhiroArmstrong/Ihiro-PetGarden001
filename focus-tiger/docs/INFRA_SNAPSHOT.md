@@ -65,8 +65,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `5b5b3451-4c35-4d9b-b27b-622b72ed673e` |
-| `prod_verified_at` | 2026-08-20（本机 `wrangler deploy`） |
+| `prod_worker_version` | `49ae0e60-f4e2-440a-b0e8-adaa13b783ce` |
+| `prod_verified_at` | 2026-08-30（本机 `wrangler deploy` · Electron Checkout `returnSurface:desktop` → `focus-tiger://app`） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
