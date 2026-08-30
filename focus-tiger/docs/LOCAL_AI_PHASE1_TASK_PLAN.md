@@ -63,6 +63,8 @@
 
 **0.2 通过前**：**不开** 1A / 1B / 1C runtime（测出 bug 除外）。
 
+**Lab 旁支并行（2026-08-30 · PO 拍板）**：带 **lab flag** 的 Phase 1 轨（如 1C `?reflectionCompanion=1`）可在 **feature 旁支上分 PR 并行开发**；**合 develop / 对用户 mount** 顺序仍跟本文 §1 流程图与 §4 顺序——**Gate 0.2 hybrid 验收关单 → 1B → 1A → 1C validation**。开发进度与上线顺序解耦：旁支开发不被 #472 卡住，但 **不得**抢跑到真实用户（无 lab · 无 validation 结论 · 非 shipping）。
+
 ---
 
 ## 3. Gate 0.2 · #472 Read Hybrid（1.7B Expansion Use）
