@@ -858,6 +858,12 @@ export class NarrowIdleShell {
       this.handlers.onJourneyLog?.();
       return;
     }
+    if (key === 'presence-signals') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onPresenceSignals?.();
+      return;
+    }
     if (key === 'yin-coin') {
       this.closeSheet();
       this.clearStage();

@@ -684,6 +684,12 @@ export class WideIdleMoreMenu {
       this.handlers.onJourneyLog?.();
       return;
     }
+    if (key === 'presence-signals') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onPresenceSignals?.();
+      return;
+    }
     if (key === 'yin-coin') {
       this.clearStage();
       this.closeMenu();

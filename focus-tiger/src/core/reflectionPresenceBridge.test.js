@@ -41,7 +41,7 @@ const tFn = (key) =>
 describe('reflectionPresenceBridge', () => {
   it('appends one presence row per non-empty reflection field', () => {
     const storage = mockStorage();
-    const count = appendReflectionPresenceSignals(
+    const result = appendReflectionPresenceSignals(
       storage,
       {
         notice: 'saw light',
@@ -53,7 +53,8 @@ describe('reflectionPresenceBridge', () => {
         idFn: () => 'batch-1'
       }
     );
-    assert.equal(count, 3);
+    assert.equal(result.count, 3);
+    assert.ok(result.presenceSessionId);
     const entries = readPresenceSignals(storage).entries;
     assert.equal(entries.length, 3);
     assert.deepEqual(

@@ -9,6 +9,7 @@
  */
 
 import { appendPresenceSignal } from './presenceSignalsGate.js';
+import { createPresenceSessionId } from './presenceSessionId.js';
 
 /**
  * @param {Storage | null | undefined} storage
@@ -23,7 +24,12 @@ export function appendIntentionPresenceSignal(storage, text, opts = {}) {
   const at = opts.at || now().toISOString();
   return appendPresenceSignal(
     storage,
-    { source: 'arrival_choose', freeText: trimmed, at },
+    {
+      source: 'arrival_choose',
+      freeText: trimmed,
+      at,
+      presenceSessionId: createPresenceSessionId()
+    },
     opts
   );
 }

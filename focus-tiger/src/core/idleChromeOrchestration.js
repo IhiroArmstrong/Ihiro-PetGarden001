@@ -390,6 +390,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null,
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
     { proxy: 'journey-log', labelKey: 'JOURNEY_LOG_MENU_LABEL' },
+    { proxy: 'presence-signals', labelKey: 'PRESENCE_SIGNALS_MENU_LABEL' },
     yinCoinVisible
       ? {
           proxy: 'yin-coin',

@@ -35,8 +35,9 @@
 | `focus-tiger.brand-yin-way-first-reflect.v1` | `brandYinWayFirstReflectGate` | 首次 `first_session_complete` 后 Reflect 底栏品牌句已展示（`{ shown }`）；双语仅该次 |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势 SSOT）；freeText **90 天**与 presence-signals 对齐 prune |
-| `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice / Ritual chip（`ritual_chip` + `ritualCompleted` / `ritualSessionId`）等封闭标签事件；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
+| `focus-tiger.presence-signals.v1` | `presenceSignalsGate` | **陪伴观察 SSOT**：Arrival Notice / Ritual chip（`ritual_chip` + `ritualCompleted` / `ritualSessionId`）等封闭标签事件；Reflection 双写行带 `presenceSessionId` 与 `reflections.v1` bundle 关联；Confide `presence_facts` 趋势只读本 key；freeText 默认 90 天保留后剥离；**不进**练习备份 / Yin Memory |
 | `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
+| `focus-tiger.presence-freetext-l3-consent.v1` | `presenceFreeTextL3Consent` | Presence freeText 首次将被 L3 读取时的单独同意（`granted` / `denied` / unset）；与 Yin Memory Consent 分离 |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆 |
 | `focus-tiger.ype-companion-style.v1` | `yinPersonalizationEngine` | L1 陪伴档 quiet/default/warm；What Yin remembers 邻接可改；`default` 即关掉个人化；**不进**练习备份 |
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
