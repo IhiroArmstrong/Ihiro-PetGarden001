@@ -9,7 +9,7 @@
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test src/lib/membershipKv.test.ts src/lib/stripeWebhookSig.test.ts src/lib/stripePeriod.test.ts src/lib/restoreOtp.test.ts src/lib/membershipDeviceToken.test.ts src/lib/monetizationFunnelKv.test.ts src/lib/practiceBackupKv.test.ts src/lib/newsletterKv.test.ts src/lib/newsletterCopy.test.ts src/lib/newsletterWelcome.test.ts src/lib/ypePersonalizationAlgorithm.test.ts src/routes/subscribeNewsletter.test.ts src/lib/cors.test.ts src/lib/tasteLayerFreeze.test.ts src/lib/checkoutReturnUrls.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/membershipKv.test.ts src/lib/stripeWebhookSig.test.ts src/lib/stripePeriod.test.ts src/lib/restoreOtp.test.ts src/lib/membershipDeviceToken.test.ts src/lib/monetizationFunnelKv.test.ts src/lib/practiceBackupKv.test.ts src/lib/newsletterKv.test.ts src/lib/newsletterCopy.test.ts src/lib/newsletterWelcome.test.ts src/lib/ypePersonalizationAlgorithm.test.ts src/routes/subscribeNewsletter.test.ts src/lib/cors.test.ts src/lib/tasteLayerFreeze.test.ts src/lib/checkoutReturnUrls.test.ts src/routes/desktopCheckoutReturn.test.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260721.1",

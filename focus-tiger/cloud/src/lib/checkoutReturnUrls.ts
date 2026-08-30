@@ -7,6 +7,7 @@
  */
 
 export const DESKTOP_CHECKOUT_ORIGIN = "focus-tiger://app";
+export const DESKTOP_CHECKOUT_BRIDGE_PATH = "/checkout/desktop-return";
 
 /**
  * @param {unknown} body Parsed JSON POST body (may be null).
@@ -17,22 +18,31 @@ export function isDesktopReturnSurface(body: unknown): boolean {
 }
 
 /**
- * Rewrite a configured Web success/cancel URL for the desktop custom protocol.
+ * Rewrite a configured Web success/cancel URL for the desktop shell.
+ *
+ * Stripe accepts https URLs reliably; direct `focus-tiger://` redirects from
+ * Stripe often fail in the system browser. The bridge page deep-links into the
+ * Electron shell with a manual fallback link.
  *
  * @param {string} webUrl Worker env template URL.
  * @param {unknown} returnSurface `desktop` when Checkout started from Electron.
+ * @param {string} bridgeOrigin Worker origin, e.g. `https://focus-tiger-cloud.ihiro.workers.dev`
  */
 export function resolveCheckoutReturnUrl(
 	webUrl: string,
 	returnSurface: unknown,
+	bridgeOrigin: string,
 ): string {
 	const trimmed = String(webUrl || "").trim();
 	if (!trimmed || returnSurface !== "desktop") return trimmed;
+	const origin = String(bridgeOrigin || "").trim().replace(/\/+$/, "");
+	if (!origin) return trimmed;
 	try {
 		const parsed = new URL(trimmed);
-		const tail = `${parsed.pathname}${parsed.search}${parsed.hash}`;
-		return `${DESKTOP_CHECKOUT_ORIGIN}${tail.startsWith("/") ? tail : `/${tail}`}`;
+		const bridge = new URL(DESKTOP_CHECKOUT_BRIDGE_PATH, `${origin}/`);
+		bridge.search = parsed.search;
+		return bridge.toString();
 	} catch {
-		return trimmed.replace(/^https?:\/\/[^/?#]+/, DESKTOP_CHECKOUT_ORIGIN);
+		return trimmed;
 	}
 }

@@ -215,10 +215,27 @@ function registerDesktopCheckoutProtocol() {
     app.setAsDefaultProtocolClient('focus-tiger');
   }
 
-  app.on('open-url', (event, url) => {
-    event.preventDefault();
+  const onCheckoutDeepLink = (event, url) => {
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
     handleDesktopCheckoutReturn(url);
-  });
+  };
+
+  if (process.platform === 'darwin') {
+    app.on('will-finish-launching', () => {
+      app.on('open-url', onCheckoutDeepLink);
+    });
+  } else {
+    app.on('open-url', onCheckoutDeepLink);
+  }
+}
+
+const coldStartCheckoutUrl = process.argv.find((arg) =>
+  isDesktopCheckoutReturnUrl(arg)
+);
+if (coldStartCheckoutUrl) {
+  pendingCheckoutReturnUrl = coldStartCheckoutUrl;
 }
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock();

@@ -46,13 +46,14 @@ export async function handleCreateProCheckoutSession(
 	}
 
 	const returnSurface = isDesktopReturnSurface(parsedBody) ? "desktop" : undefined;
+	const bridgeOrigin = new URL(request.url).origin;
 
 	try {
 		const session = await createProCheckoutSession({
 			secretKey: secret,
 			priceId,
-			successUrl: resolveCheckoutReturnUrl(successUrl, returnSurface),
-			cancelUrl: resolveCheckoutReturnUrl(cancelUrl, returnSurface),
+			successUrl: resolveCheckoutReturnUrl(successUrl, returnSurface, bridgeOrigin),
+			cancelUrl: resolveCheckoutReturnUrl(cancelUrl, returnSurface, bridgeOrigin),
 			customerEmail,
 		});
 		return json({ url: session.url });

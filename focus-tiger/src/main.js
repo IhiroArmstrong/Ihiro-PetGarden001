@@ -206,7 +206,7 @@ import {
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
-import { bindDesktopShellAttention } from './core/desktopShell.js';
+import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import {
   canRegisterDesktopCompanionGeneration,
@@ -214,6 +214,10 @@ import {
   hasDesktopCompanionBridge
 } from './core/desktopCompanionGate.js';
 import { isCompanionEntitled } from './core/companionEntitlement.js';
+import {
+  clearDesktopCheckoutPending,
+  readDesktopCheckoutPending
+} from './core/desktopCheckoutPending.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -1273,6 +1277,7 @@ async function init() {
   });
   void bootProReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
+      clearDesktopCheckoutPending();
       monetizationFunnelStore.checkoutComplete('pro', 'return');
       applyPaymentThanksSprite('pro');
       syncEntitlementDependentIdleChrome();
@@ -1280,11 +1285,62 @@ async function init() {
   });
   void bootCompanionAddonReturnConfirm({}).then((ret) => {
     if (ret?.outcome === 'success') {
+      clearDesktopCheckoutPending();
       monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
       applyPaymentThanksSprite('companion-addon');
       syncEntitlementDependentIdleChrome();
     }
   });
+
+  let resumeDesktopCheckoutInFlight = false;
+  async function resumeDesktopCheckoutAfterExternal() {
+    if (!isDesktopShellRuntime() || resumeDesktopCheckoutInFlight) return;
+    if (!readDesktopCheckoutPending()) return;
+    if (
+      isCompanionEntitled({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        search: location.search
+      })
+    ) {
+      clearDesktopCheckoutPending();
+      syncEntitlementDependentIdleChrome();
+      return;
+    }
+    resumeDesktopCheckoutInFlight = true;
+    try {
+      const proRet = await bootProReturnConfirm({});
+      if (proRet?.outcome === 'success') {
+        clearDesktopCheckoutPending();
+        monetizationFunnelStore.checkoutComplete('pro', 'return');
+        applyPaymentThanksSprite('pro');
+        syncEntitlementDependentIdleChrome();
+        return;
+      }
+      const addonRet = await bootCompanionAddonReturnConfirm({});
+      if (addonRet?.outcome === 'success') {
+        clearDesktopCheckoutPending();
+        monetizationFunnelStore.checkoutComplete('companion-addon', 'return');
+        applyPaymentThanksSprite('companion-addon');
+        syncEntitlementDependentIdleChrome();
+      }
+    } finally {
+      resumeDesktopCheckoutInFlight = false;
+    }
+  }
+
+  if (isDesktopShellRuntime()) {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        void resumeDesktopCheckoutAfterExternal();
+      }
+    });
+    const checkoutShell = getDesktopShellBridge();
+    checkoutShell?.onShellVisibility?.((payload) => {
+      if (payload?.hidden === false) {
+        void resumeDesktopCheckoutAfterExternal();
+      }
+    });
+  }
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   applyQaPracticeSeedFromSearch({
     search: window.location.search,
