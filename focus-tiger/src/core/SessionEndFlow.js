@@ -85,11 +85,15 @@ export class SessionEndFlow {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
       const createdAt = this.now();
-      appendReflectionPresenceSignals(storage, result, {
+      const written = appendReflectionPresenceSignals(storage, result, {
         now: () => new Date(createdAt),
         at: new Date(createdAt).toISOString()
       });
-      const entry = { createdAt, ...result };
+      const entry = {
+        createdAt,
+        presenceSessionId: written.presenceSessionId,
+        ...result
+      };
       const saved = trimReflections(
         getStorage(REFLECTION_STORAGE_KEY, []),
         entry

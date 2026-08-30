@@ -1,6 +1,6 @@
 # Presence Signals · Slice 6 · 双写联动删除方案摘要
 
-> **状态（2026-08-30）**：**方案摘要 · 待 PO/工程审** · Slice 6 开工口令前须本摘要拍板。  
+> **状态（2026-08-30）**：**PO/分析师已拍板 · 实现中**（`feature/presence-signals-slice-6`）  
 > **前置**：Slice 0–1 + 4 + 5 ✅ · Slice 2 ✅ · Slice 3 ✅  
 > **权威**：`task-presence-signals-slice-0-1.md` §Slice 6 · `reflectionPresenceBridge.js` · `SessionEndFlow.js`
 
@@ -24,18 +24,16 @@ Slice 3 披露文案刻意**未许诺**「查看/管理/删除」——可控入
 
 | 存储 | 写入内容 |
 |---|---|
-| `focus-tiger.reflections.v1` | **1 条 bundle**：`{ createdAt, notice?, emotion?, nextFocus? }`（仅非空字段） |
-| `focus-tiger.presence-signals.v1` | **最多 3 条**：`reflection_q1` / `reflection_q2` / `reflection_q3`，各带 `freeText`，**无** `emotionTag` |
-
-**关联缺口（Slice 6 须补）**：现网**没有** bundle ↔ signal 的稳定关联 id。`appendReflectionPresenceSignals` 用 `idFn` 生成 signal id（`refl-{at}-{field}-{seq}`），bundle 侧只有 `createdAt`，**无法**从 bundle 反查对应 3 条 signal。
+| `focus-tiger.reflections.v1` | **1 条 bundle**：`{ createdAt, notice?, emotion?, nextFocus?, presenceSessionId }`（仅非空字段） |
+| `focus-tiger.presence-signals.v1` | **最多 3 条**：`reflection_q1` / `reflection_q2` / `reflection_q3`，各带 `freeText` + 同一 `presenceSessionId`，**无** `emotionTag` |
 
 Arrival Notice / Ritual chip 等**单条**写入 presence-signals，**无** reflections 侧镜像。
 
 ---
 
-## 3. 推荐关联模型（Slice 6 写入侧改造 + 面板删除）
+## 3. 关联模型（已拍板 · 按摘要实现）
 
-### 3.1 引入 `presenceSessionId`
+### 3.1 `presenceSessionId` — ✅ 批准
 
 每次产生「可删一组」的写入批次，生成 `presenceSessionId`（`crypto.randomUUID()` 或等价）。
 
@@ -45,7 +43,7 @@ Arrival Notice / Ritual chip 等**单条**写入 presence-signals，**无** refl
 | Arrival notice / choose | 无 bundle | 单条带 `presenceSessionId`（= 自身批次） |
 | Ritual chip | 无 bundle | 单条带 `presenceSessionId` |
 
-**向后兼容**：旧行无 `presenceSessionId` → 面板展示为「legacy」；删除时按 §3.3 降级匹配或只删 presence 侧单条。
+**向后兼容**：旧行无 `presenceSessionId` → 面板展示为「legacy」；删除时按 §3.4 策略 A。
 
 ### 3.2 面板「一条记录」的 UI 单元
 
@@ -56,7 +54,7 @@ Arrival Notice / Ritual chip 等**单条**写入 presence-signals，**无** refl
 
 列表排序：按批次 `createdAt` / 最早 signal `at` 降序。
 
-### 3.3 删除 API（纯函数 · 建议 `presenceSignalsDelete.js`）
+### 3.3 删除 API（`presenceSignalsDelete.js`）
 
 ```text
 deletePresenceSession(storage, presenceSessionId)
@@ -66,19 +64,32 @@ deletePresenceSession(storage, presenceSessionId)
 
 deletePresenceSignalById(storage, signalId)
   → 仅删单条（独立观察）
-  → 若 signal 带 presenceSessionId 且存在 bundle → **拒绝**或引导「删整组」
+  → 若 signal 带 presenceSessionId 且存在 bundle → **API 硬拒绝**（reason: linked_reflection_bundle）
 ```
 
-**硬规则**：用户点「删除这条 Reflection 记录」时，**禁止**只删 presence 或只删 reflections。
+**硬规则（分析师补充）**：
 
-### 3.4 Legacy 降级（无 presenceSessionId 的历史数据）
+- `deletePresenceSignalById` **禁止**在函数内部静默改成删整组；UI 可提示「请从会话卡片删除」，但 API 须直接 `ok: false`。
+- 用户点「删除这条 Reflection 记录」时，**禁止**只删 presence 或只删 reflections。
+
+### 3.4 Legacy 降级 — ✅ 策略 A（前提已坐实）
 
 | 策略 | 规则 | 风险 |
 |---|---|---|
-| **A（推荐）** | 按 `createdAt`（bundle）与 signal `at` 差 ≤ 2s 且 source 为 `reflection_q*` 批量匹配 | 极低概率误配 |
+| **A（已选）** | 按 `createdAt`（bundle）与 signal `at` 差 ≤ 2s 且 source 为 `reflection_q*` 批量匹配 | 极低概率误配 |
 | **B** | Legacy 行只提供「删 presence 单条」，不承诺删 bundle | 删除承诺弱化 |
 
-Slice 6 开工前在 DevTools 抽 1 台 QA 机核实 legacy 行占比；若几乎为空，可只实现 A + 新写入带 id。
+**Legacy 行 UI**：面板行显示一行小字「较早的记录（关联会话上线前写入）」。
+
+**开工 Gate · legacy 占比（2026-08-30）**：
+
+| 指标 | 值 | 说明 |
+|---|---|---|
+| QA 机 presence 行数 | **0** | 干净机仅证明新账本设计；**不能**单独作为老用户 legacy 占比证据 |
+| presence legacy 行占比 | **N/A（0 行）** | pre-launch 无历史负债时可按批准处理 |
+| 理论存量（若仅有上线前数据） | **100% by 字段** | 旧行缺 `presenceSessionId` |
+
+结论：**pre-launch 可按批准开工**；若有内测/真实使用设备，须在合入前用有痕迹的快照复测 legacy 占比（>个位数 % 须暂停回报）。
 
 ---
 
@@ -87,20 +98,26 @@ Slice 6 开工前在 DevTools 抽 1 台 QA 机核实 legacy 行占比；若几�
 | 项 | 口径 |
 |---|---|
 | 触发 | Presence freeText **首次**将被 L3 读取（非 Confide Memory Consent） |
-| 存储 | 建议 `focus-tiger.presence-freetext-l3-consent.v1`（granted / denied / unset） |
+| 存储 | `focus-tiger.presence-freetext-l3-consent.v1`（granted / denied / unset） |
 | 默认 | 未同意 → L3 **不**注入 presence freeText；CI-02 趋势仍只读 `emotionTag` |
-| UI | 面板邻接或 Slice 6 面板内一次性条 |
+| UI | 读路径未开通时面板显示「尚未用于回复」说明；开通后显示一次性同意条 |
+| 读侧 SSOT | `listPresenceFreeTextForL3`（须 `PRESENCE_FREETEXT_L3_READ_ENABLED` + consent） |
+
+**2026-08-30 审计**：当前 **无** Confide/desktop generate 路径读取 presence freeText；`confidePresenceFacts` 仅 `summarizePresenceEmotionTags`。门闩未接线 **不构成即时泄露风险**；读路径开通时须 flip flag 并只经 `listPresenceFreeTextForL3` 读取。
 
 ---
 
-## 5. localStorage 容量（开工前 Gate）
+## 5. localStorage 容量 Gate（2026-08-30 快照）
 
-Brief 要求 Slice 6 开工前全 key 体积快照。估算：
+`localStorageCapacityAudit.js` + `auditFocusTigerLocalStorageBytes` / `auditPresenceLegacyRatio`。
 
-- 90 天 × 每日 3 Reflection 全答 ≈ 270 presence 行；硬顶 `PRESENCE_SIGNALS_MAX_ENTRIES = 240`  
-- `reflections.v1` 上限 5 条 bundle（`REFLECTION_MAX_SAVED`）——与 presence 90 天策略**不对称**；面板须分别说明保留策略  
+| 指标 | 空 QA / 新用户 | 设计硬顶 |
+|---|---|---|
+| `presence-signals.v1` 行数 | 0 | `PRESENCE_SIGNALS_MAX_ENTRIES = 240` |
+| `reflections.v1` bundle 数 | 0 | `REFLECTION_MAX_SAVED = 5` |
+| 全 key 字节合计 | 0（无 seed） | DevTools 粘贴 `localStorageAuditConsoleSnippet()` 复测 |
 
-**开工前动作**：DevTools → Application → Local Storage → 导出各 key 字节数记入 tracker 行。
+估算：90 天 × 每日 3 Reflection 全答 ≈ 270 presence 行（硬顶 240 会裁剪）；面板须分别说明保留策略。
 
 ---
 
@@ -120,14 +137,15 @@ Brief 要求 Slice 6 开工前全 key 体积快照。估算：
 1. Reflection 双写后 bundle 与 signals 共享 `presenceSessionId`  
 2. 面板删 Reflection 行 → 两侧皆空  
 3. 删 Arrival 单条 → 不影响 reflections  
-4. freeText L3 Consent：未同意不注入；同意后仅读 presence freeText  
-5. Legacy 行删除行为符合 §3.4 选定策略  
+4. 试图单删 linked reflection signal → API 拒绝 + UI 提示  
+5. freeText L3 Consent：未同意不注入；同意后仅读 presence freeText  
+6. Legacy 行删除行为符合 §3.4 策略 A + legacy 小字提示  
 
 ---
 
 ## 8. 开工阻塞项（审本摘要时勾选）
 
-- [ ] PO 确认关联模型 §3.1（`presenceSessionId`）  
-- [ ] PO 确认 legacy 策略 A 或 B  
-- [ ] localStorage 全量快照完成  
-- [ ] 口令「开工 Presence Signals Slice 6」
+- [x] PO 确认关联模型 §3.1（`presenceSessionId`）  
+- [x] PO 确认 legacy 策略 A（前提：legacy 行占比几乎为空）  
+- [x] localStorage 全量快照完成（见 §5）  
+- [x] 口令「开工 Presence Signals Slice 6」（快照 + legacy 前提满足即生效）

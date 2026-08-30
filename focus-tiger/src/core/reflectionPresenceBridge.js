@@ -10,6 +10,7 @@
 
 import { appendPresenceSignal } from './presenceSignalsGate.js';
 import { REFLECTION_ANSWER_FIELDS } from '../ui/ReflectionFlowState.js';
+import { createPresenceSessionId, normalizePresenceSessionId } from './presenceSessionId.js';
 
 /** @type {Record<string, 'reflection_q1' | 'reflection_q2' | 'reflection_q3'>} */
 const SOURCE_BY_FIELD = Object.freeze({
@@ -21,11 +22,15 @@ const SOURCE_BY_FIELD = Object.freeze({
 /**
  * @param {Storage | null | undefined} storage
  * @param {Record<string, string>} result
- * @param {{ now?: () => Date, idFn?: () => string, at?: string }} [opts]
- * @returns {number} rows appended
+ * @param {{ now?: () => Date, idFn?: () => string, at?: string, presenceSessionId?: string }} [opts]
+ * @returns {{ count: number, presenceSessionId: string }}
  */
 export function appendReflectionPresenceSignals(storage, result, opts = {}) {
-  if (!storage || !result || typeof result !== 'object') return 0;
+  if (!storage || !result || typeof result !== 'object') {
+    return { count: 0, presenceSessionId: '' };
+  }
+  const presenceSessionId =
+    normalizePresenceSessionId(opts.presenceSessionId) || createPresenceSessionId();
   const now = opts.now ?? (() => new Date());
   const at = opts.at || now().toISOString();
   let count = 0;
@@ -37,7 +42,7 @@ export function appendReflectionPresenceSignals(storage, result, opts = {}) {
     if (!source) continue;
     const row = appendPresenceSignal(
       storage,
-      { source, freeText: text.trim(), at },
+      { source, freeText: text.trim(), at, presenceSessionId },
       {
         now,
         idFn: () => {
@@ -50,5 +55,5 @@ export function appendReflectionPresenceSignals(storage, result, opts = {}) {
     );
     if (row) count += 1;
   }
-  return count;
+  return { count, presenceSessionId };
 }

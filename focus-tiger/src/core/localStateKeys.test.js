@@ -67,6 +67,7 @@ import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import { PRESENCE_SIGNALS_STORAGE_KEY } from './presenceSignalsGate.js';
 import { PRESENCE_SIGNALS_DISCLOSURE_SEEN_KEY } from './presenceSignalsDisclosureGate.js';
+import { PRESENCE_FREETEXT_L3_CONSENT_KEY } from './presenceFreeTextL3Consent.js';
 import { TIP_JAR_STORAGE_KEY } from './tipJarGate.js';
 import { CONTEXTUAL_TEA_TIP_STORAGE_KEY } from './contextualTeaTipGate.js';
 import { MONETIZATION_FUNNEL_STORAGE_KEY } from './monetizationIntentFunnel.js';
@@ -141,6 +142,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   REFLECTION_STORAGE_KEY,
   PRESENCE_SIGNALS_STORAGE_KEY,
   PRESENCE_SIGNALS_DISCLOSURE_SEEN_KEY,
+  PRESENCE_FREETEXT_L3_CONSENT_KEY,
   COMPANION_MODE_STORAGE_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
   REMINDER_PREFERENCE_STORAGE_KEY,

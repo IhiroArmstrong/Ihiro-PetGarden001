@@ -3,6 +3,8 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
+import { createPresenceSessionId, normalizePresenceSessionId } from './presenceSessionId.js';
+
 /**
  * Presence Signals · structured companion observations (not clinical scores).
  *
@@ -77,7 +79,8 @@ export const PRESENCE_EMOTION_TAG_IDS = Object.freeze([
  *   field?: string,
  *   ritualSessionId?: string,
  *   ritualCompleted?: boolean,
- *   retrospectiveMentioned?: boolean
+ *   retrospectiveMentioned?: boolean,
+ *   presenceSessionId?: string
  * }} PresenceSignalEntry
  *
  * @typedef {{ entries: PresenceSignalEntry[] }} PresenceSignalsState
@@ -177,6 +180,8 @@ export function normalizePresenceSignalEntries(raw) {
     if (o.retrospectiveMentioned === true || o.retrospectiveMentioned === false) {
       entry.retrospectiveMentioned = o.retrospectiveMentioned;
     }
+    const sessionId = normalizePresenceSessionId(o.presenceSessionId);
+    if (sessionId) entry.presenceSessionId = sessionId;
     if (!entry.emotionTag && !entry.freeText) continue;
     out.push(entry);
   }
@@ -293,6 +298,8 @@ export function appendPresenceSignal(storage, partial, opts = {}) {
   ) {
     row.retrospectiveMentioned = partial.retrospectiveMentioned;
   }
+  const sessionId = normalizePresenceSessionId(partial.presenceSessionId);
+  if (sessionId) row.presenceSessionId = sessionId;
 
   const prev = readPresenceSignals(storage);
   const entries = normalizePresenceSignalEntries([...prev.entries, row]);
@@ -309,9 +316,15 @@ export function appendPresenceSignal(storage, partial, opts = {}) {
 export function appendArrivalNoticeSignal(storage, noticeId, opts = {}) {
   const tag = normalizePresenceEmotionTag(noticeId);
   if (!tag) return null;
+  const presenceSessionId =
+    normalizePresenceSessionId(opts.presenceSessionId) || createPresenceSessionId();
   return appendPresenceSignal(
     storage,
-    { source: 'arrival_notice', emotionTag: tag },
+    {
+      source: 'arrival_notice',
+      emotionTag: tag,
+      presenceSessionId: presenceSessionId || undefined
+    },
     opts
   );
 }

@@ -98,6 +98,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
+import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
@@ -994,6 +995,8 @@ async function init() {
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
   const journeyLogUI = new JourneyLogUI(document.body, {});
   window.__journeyLog = journeyLogUI;
+  const presenceSignalsPanelUI = new PresenceSignalsPanelUI(document.body, {});
+  window.__presenceSignalsPanel = presenceSignalsPanelUI;
   const yinPersonalMemoryUI = new YinPersonalMemoryUI(document.body, {});
   window.__yinPersonalMemory = yinPersonalMemoryUI;
   /** @type {FocusCoinsPanelUI | null} */
@@ -1154,6 +1157,7 @@ async function init() {
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
   }
@@ -1192,6 +1196,11 @@ async function init() {
     if (action.type === 'journey-log') {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();
+      return;
+    }
+    if (action.type === 'presence-signals') {
+      closeGrowthOverlayCards({ except: 'presence' });
+      presenceSignalsPanelUI.open();
     }
   }
 
@@ -2280,6 +2289,10 @@ async function init() {
     onJourneyLog: () => {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();
+    },
+    onPresenceSignals: () => {
+      closeGrowthOverlayCards({ except: 'presence' });
+      presenceSignalsPanelUI.open();
     },
     onYinCoin: () => {
       closeGrowthOverlayCards({ except: 'yin-coin' });

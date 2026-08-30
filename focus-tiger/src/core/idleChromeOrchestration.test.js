@@ -318,6 +318,7 @@ describe('listSecondaryChromeEntries', () => {
         'companion',
         'five-moments',
         'journey-log',
+        'presence-signals',
         'yin-coin',
         'zen-cinema',
         'daily-quote',
@@ -352,6 +353,7 @@ describe('listSecondaryChromeEntries', () => {
         'companion',
         'five-moments',
         'journey-log',
+        'presence-signals',
         'yin-coin',
         'zen-cinema',
         'daily-quote',
@@ -387,6 +389,7 @@ describe('listSecondaryChromeEntries', () => {
       [
         'five-moments',
         'journey-log',
+        'presence-signals',
         'yin-coin',
         'zen-cinema',
         'daily-quote',
@@ -402,10 +405,13 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
-  it('yin-coin sits immediately after journey-log; flag-off hides the row', () => {
+  it('yin-coin sits immediately after presence-signals; flag-off hides the row', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     const proxies = entries.filter((e) => e.proxy).map((e) => e.proxy);
-    assert.equal(proxies.indexOf('yin-coin'), proxies.indexOf('journey-log') + 1);
+    assert.equal(
+      proxies.indexOf('yin-coin'),
+      proxies.indexOf('presence-signals') + 1
+    );
     const hidden = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       yinCoinVisible: false

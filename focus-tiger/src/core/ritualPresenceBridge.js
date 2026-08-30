@@ -9,6 +9,7 @@
  */
 
 import { getRitualConfig } from './RitualFlow.js';
+import { createPresenceSessionId } from './presenceSessionId.js';
 import {
   appendPresenceSignal,
   readPresenceSignals,
@@ -168,6 +169,7 @@ export function appendRitualChipPresenceSignals(
   let count = 0;
   let seq = 0;
 
+  const presenceSessionId = createPresenceSessionId();
   for (const { field, chipId } of chips) {
     const at = Number.isFinite(baseMs)
       ? new Date(baseMs + seq).toISOString()
@@ -182,7 +184,8 @@ export function appendRitualChipPresenceSignals(
         field,
         ritualSessionId: opts.ritualSessionId,
         ritualCompleted: opts.ritualCompleted,
-        retrospectiveMentioned: opts.ritualCompleted ? undefined : false
+        retrospectiveMentioned: opts.ritualCompleted ? undefined : false,
+        presenceSessionId
       },
       {
         now,
