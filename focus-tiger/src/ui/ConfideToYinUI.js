@@ -147,6 +147,10 @@ export class ConfideToYinUI {
     this.memoryConsentWrap.dataset.testid = 'confide-to-yin-memory-consent';
     this.memoryConsentWrap.hidden = true;
 
+    this.memoryConsentTitle = document.createElement('p');
+    this.memoryConsentTitle.className = 'confide-to-yin__memory-consent-title';
+    this.memoryConsentTitle.dataset.testid = 'confide-to-yin-memory-consent-title';
+
     this.memoryConsentCopy = document.createElement('p');
     this.memoryConsentCopy.className = 'confide-to-yin__memory-consent-copy';
 
@@ -175,7 +179,11 @@ export class ConfideToYinUI {
       this.memoryConsentAllowBtn,
       this.memoryConsentDenyBtn
     );
-    this.memoryConsentWrap.append(this.memoryConsentCopy, this.memoryConsentActions);
+    this.memoryConsentWrap.append(
+      this.memoryConsentTitle,
+      this.memoryConsentCopy,
+      this.memoryConsentActions
+    );
 
     this.inputEl = document.createElement('textarea');
     this.inputEl.className = 'confide-to-yin__input';
@@ -289,7 +297,10 @@ export class ConfideToYinUI {
     this._sending = false;
     this._syncSendEnabled();
     this._syncGenerateLayerForViewport({ ensure: true });
-    void this._refreshMemoryState();
+    void this._refreshMemoryState().then(() => {
+      if (!this._open) return;
+      this._maybeOfferMemoryConsentOnOpen();
+    });
     requestAnimationFrame(() => {
       this.root.classList.add('is-visible');
       this.inputEl.focus();
@@ -430,6 +441,7 @@ export class ConfideToYinUI {
     this.cancelBtn.textContent = t('CONFIDE_PANEL_CANCEL');
     this.closeBtn.textContent = t('CONFIDE_PANEL_CLOSE');
     this.memoryConsentCopy.textContent = t('YIN_MEMORY_CONSENT_BLURB');
+    this.memoryConsentTitle.textContent = t('YIN_MEMORY_CONSENT_TITLE');
     this.memoryConsentAllowBtn.textContent = t('YIN_MEMORY_CONSENT_ALLOW');
     this.memoryConsentDenyBtn.textContent = t('YIN_MEMORY_CONSENT_DENY');
     if (this.memoryListLink) {
@@ -441,7 +453,9 @@ export class ConfideToYinUI {
 
   _syncSendEnabled() {
     const ok = canSubmitConfideText(this.inputEl.value);
-    this.sendBtn.disabled = this._sending || !ok;
+    const consentPending =
+      Boolean(this.memoryConsentWrap) && !this.memoryConsentWrap.hidden;
+    this.sendBtn.disabled = this._sending || !ok || consentPending;
   }
 
   /**
@@ -572,6 +586,18 @@ export class ConfideToYinUI {
   _hideMemoryConsent() {
     if (!this.memoryConsentWrap) return;
     this.memoryConsentWrap.hidden = true;
+    this._syncSendEnabled();
+  }
+
+  /** First open only — before any L3 send (SCENARIO AG · Slice 1a). */
+  _maybeOfferMemoryConsentOnOpen() {
+    if (!hasYinPersonalMemoryBridge()) return;
+    if (!shouldOfferYinMemoryConsent(this._memoryState)) return;
+    this._pendingL3Send = null;
+    this.memoryConsentWrap.hidden = false;
+    this.memoryConsentAllowBtn.disabled = this._memoryConsentSaving;
+    this.memoryConsentDenyBtn.disabled = this._memoryConsentSaving;
+    this._syncSendEnabled();
   }
 
   /**
@@ -582,6 +608,7 @@ export class ConfideToYinUI {
     this.memoryConsentWrap.hidden = false;
     this.memoryConsentAllowBtn.disabled = this._memoryConsentSaving;
     this.memoryConsentDenyBtn.disabled = this._memoryConsentSaving;
+    this._syncSendEnabled();
   }
 
   /**
@@ -770,7 +797,10 @@ export class ConfideToYinUI {
   _executeConfideTool(tool, hit, text) {
     if (tool.id === CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION) {
       const factsText = formatPracticeDurationReply(
-        summarizePracticeFacts(this._practiceDaysStore),
+        summarizePracticeFacts(
+          this._practiceDaysStore,
+          typeof localStorage !== 'undefined' ? localStorage : null
+        ),
         t
       );
       this._showReply(
@@ -926,6 +956,13 @@ export class ConfideToYinUI {
         border-radius: 12px;
         background: ${GLASS_FILL_STRONG};
         border: 1px solid rgba(122, 83, 64, 0.18);
+      }
+      .confide-to-yin__memory-consent-title {
+        margin: 0 0 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.35;
+        color: #2c1f14;
       }
       .confide-to-yin__memory-consent-copy {
         margin: 0 0 10px;

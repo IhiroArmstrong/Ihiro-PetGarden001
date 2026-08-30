@@ -393,6 +393,16 @@ describe('target matrix (C1–C6 · PR-2 contract)', () => {
       canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, withCompass),
       true
     );
+
+    const withConfide = buildOverlaySnapshot({ confideOpen: true });
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, withConfide),
+      false
+    );
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, withConfide),
+      false
+    );
   });
 });
 

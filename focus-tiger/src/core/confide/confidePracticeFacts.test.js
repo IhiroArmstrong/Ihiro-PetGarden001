@@ -12,7 +12,8 @@ import {
   formatPracticeDurationReply,
   isPracticeDurationQuestion,
   shouldAnswerWithPracticeFacts,
-  summarizePracticeFacts
+  summarizePracticeFacts,
+  summarizePracticeFactsFromJourneyLog
 } from './confidePracticeFacts.js';
 import { shouldUseDesktopCompanionGenerate } from '../desktopCompanionL2Route.js';
 
@@ -93,5 +94,44 @@ describe('confide practice facts (Slice 0)', () => {
       formatPracticeDurationReply(withMins, tFn),
       /1 practiced days, about 25 minutes/
     );
+  });
+
+  it('prefers Journey Log totals over practice-days streak ledger', () => {
+    const storage = {
+      _d: {},
+      getItem(k) {
+        return this._d[k] ?? null;
+      },
+      setItem(k, v) {
+        this._d[k] = v;
+      }
+    };
+    storage.setItem(
+      'focus-tiger.journey-log.v1',
+      JSON.stringify({
+        entries: [
+          { at: '2026-08-25T10:00:00.000Z', minutes: 1, arrive: false, reflect: false },
+          { at: '2026-08-25T11:00:00.000Z', minutes: 10, arrive: false, reflect: false },
+          { at: '2026-08-25T12:00:00.000Z', minutes: 1, arrive: false, reflect: false },
+          { at: '2026-08-25T13:00:00.000Z', minutes: 10, arrive: false, reflect: false }
+        ]
+      })
+    );
+    storage.setItem(
+      'focus-tiger.practice-days.v1',
+      JSON.stringify({
+        days: [
+          { date: '2026-08-23', totalMinutes: 8 },
+          { date: '2026-08-24', totalMinutes: 8 },
+          { date: '2026-08-25', totalMinutes: 24 }
+        ]
+      })
+    );
+    const store = new PracticeDaysStore({ storage });
+    const summary = summarizePracticeFactsFromJourneyLog(storage);
+    assert.equal(summary.dayCount, 1);
+    assert.equal(summary.knownMinutes, 22);
+    assert.equal(summarizePracticeFacts(store, storage).knownMinutes, 22);
+    assert.equal(summarizePracticeFacts(store, storage).dayCount, 1);
   });
 });

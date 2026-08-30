@@ -47,6 +47,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [membershipOpen]
  * @property {boolean} [flowerWelcomeVisible]
  * @property {boolean} [secondaryMenuOpen]
+ * @property {boolean} [confideOpen]
  */
 
 /**
@@ -55,7 +56,8 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'arrivalOpen' | 'reflectionOpen' | 'microRitualOpen' | 'ritualFlowOpen' |
  *   'focusDurationPickerOpen' | 'companionPickerOpen' | 'postSessionOverlayActive' |
  *   'compassOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
- *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen'
+ *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen' |
+ *   'confideOpen'
  * >>} OverlaySnapshot
  */
 
@@ -86,7 +88,8 @@ export function buildOverlaySnapshot(input = {}) {
     sanctuaryOpen: Boolean(input.sanctuaryOpen),
     membershipOpen: Boolean(input.membershipOpen),
     flowerWelcomeVisible: Boolean(input.flowerWelcomeVisible),
-    secondaryMenuOpen: Boolean(input.secondaryMenuOpen)
+    secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
+    confideOpen: Boolean(input.confideOpen)
   };
 }
 
@@ -581,6 +584,7 @@ export function requestOverlaySlot(req) {
  * @returns {boolean}
  */
 export function canAttemptFirstCard(source, snapshot) {
+  if (snapshot.confideOpen) return false;
   const blockers = collectFirstCardBlockers(snapshot, source);
   if (blockers.length) return false;
   if (activeVisualPrimary(snapshot)) return false;
