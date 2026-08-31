@@ -18,6 +18,55 @@ import {
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
 import { normalizeSnapshotStoresForApply } from './practiceBackupSync.js';
 
+/** Dispatched after a successful local import (Privacy sheet). */
+export const PRACTICE_DATA_IMPORTED_EVENT = 'ft:practice-data-imported';
+
+/**
+ * @param {EventTarget | undefined} [target]
+ */
+export function dispatchPracticeDataImported(target = globalThis) {
+  target?.dispatchEvent?.(new Event(PRACTICE_DATA_IMPORTED_EVENT));
+}
+
+/**
+ * @param {EventListener} handler
+ * @param {EventTarget | undefined} [target]
+ * @returns {() => void} unsubscribe
+ */
+export function subscribePracticeDataImported(handler, target = globalThis) {
+  if (!target?.addEventListener) return () => {};
+  target.addEventListener(PRACTICE_DATA_IMPORTED_EVENT, handler);
+  return () => {
+    target.removeEventListener(PRACTICE_DATA_IMPORTED_EVENT, handler);
+  };
+}
+
+/**
+ * Friendly local time for import preview (no extra date lib).
+ * @param {string} iso
+ * @param {() => Date} [now]
+ * @param {(key: string) => string} [translate]
+ */
+export function formatPracticeImportSavedAt(
+  iso,
+  now = () => new Date(),
+  translate = (key) => key
+) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return String(iso || '');
+  const pad = (n) => String(n).padStart(2, '0');
+  const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const n = now();
+  const sameDay =
+    d.getFullYear() === n.getFullYear() &&
+    d.getMonth() === n.getMonth() &&
+    d.getDate() === n.getDate();
+  if (sameDay) {
+    return translate('LOCAL_DATA_IMPORT_SAVED_TODAY').replace('{time}', hm);
+  }
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${hm}`;
+}
+
 /** @typedef {'journey_log' | 'practice_days' | 'milestone_glow' | 'entitlement_ownership' | 'ritual_completions' | 'mustard_seed_seal'} PracticeDataCategoryId */
 
 /** @type {readonly { id: PracticeDataCategoryId, storeKey: string }[]} */
@@ -311,6 +360,19 @@ export function importHasDataLossRisk(storage, importSnapshot) {
   return rows.some((row) => {
     if (row.localCount == null || row.importCount == null) return false;
     return row.importCount < row.localCount;
+  });
+}
+
+/**
+ * Whether import file has more entries than local for any category.
+ * @param {Storage | null | undefined} storage
+ * @param {import('./practiceBackupSnapshot.js').PracticeBackupSnapshot} importSnapshot
+ */
+export function importHasDataGain(storage, importSnapshot) {
+  const rows = comparePracticeImportCounts(storage, importSnapshot);
+  return rows.some((row) => {
+    if (row.localCount == null || row.importCount == null) return false;
+    return row.importCount > row.localCount;
   });
 }
 

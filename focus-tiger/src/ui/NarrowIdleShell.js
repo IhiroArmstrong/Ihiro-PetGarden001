@@ -13,6 +13,7 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
+import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
   NARROW_HOME_CTA_BOTTOM_PX,
@@ -116,6 +117,10 @@ export class NarrowIdleShell {
       this._syncActionBarStateFromHud();
       this._tickWallClock();
       this._refreshHomeCtas();
+    });
+    // Clone after heatmap's same-tick listener (shell is constructed first).
+    this._unsubPracticeImport = subscribePracticeDataImported(() => {
+      queueMicrotask(() => this._refreshDrawerItems());
     });
   }
 
@@ -299,6 +304,7 @@ export class NarrowIdleShell {
    */
   destroy() {
     this._localeUnsub?.();
+    this._unsubPracticeImport?.();
     this._stopWallClock();
     this._hudObserver?.disconnect();
     this._mq?.removeEventListener?.('change', this._onMqChange);

@@ -57,6 +57,7 @@ import {
   PRIVACY_SHEET_YPE_OPT_IN_KEYS
 } from './privacyNoticeCopy.js';
 import { LocalPracticeDataUI } from './LocalPracticeDataUI.js';
+import { dispatchPracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   isMonetizationFunnelOptInEnabled,
   setMonetizationFunnelOptIn
@@ -2327,7 +2328,7 @@ export class OnboardingHintsUI {
     this._localPracticeDataUI = new LocalPracticeDataUI(localDataMount, {
       storage: globalThis.localStorage,
       onImported: () => {
-        window.dispatchEvent(new Event('ft:practice-data-imported'));
+        dispatchPracticeDataImported();
       }
     });
     this._privacyTitleEl = title;

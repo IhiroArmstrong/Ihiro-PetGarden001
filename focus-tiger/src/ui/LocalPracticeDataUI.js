@@ -12,6 +12,8 @@ import {
   comparePracticeImportCounts,
   importPracticeSnapshotAtomic,
   importHasDataLossRisk,
+  importHasDataGain,
+  formatPracticeImportSavedAt,
   PRACTICE_DATA_CATEGORY_DEFS
 } from '../core/practiceBackup/practiceBackupLocalIo.js';
 
@@ -75,9 +77,30 @@ export class LocalPracticeDataUI {
     this.previewEl.className = 'local-practice-data__preview';
     this.previewEl.hidden = true;
 
+    this.headingEl = document.createElement('p');
+    this.headingEl.className = 'local-practice-data__heading';
+    this.headingEl.hidden = true;
+    this.headingEl.dataset.testid = 'local-practice-data-overwrite-heading';
+    this.headingIcon = document.createElement('span');
+    this.headingIcon.className = 'local-practice-data__heading-icon';
+    this.headingIcon.setAttribute('aria-hidden', 'true');
+    this.headingIcon.textContent = '⚠';
+    this.headingText = document.createElement('span');
+    this.headingEl.append(this.headingIcon, this.headingText);
+
+    this.leadEl = document.createElement('p');
+    this.leadEl.className = 'local-practice-data__lead';
+    this.leadEl.hidden = true;
+    this.leadEl.dataset.testid = 'local-practice-data-overwrite-lead';
+
     this.warningEl = document.createElement('p');
     this.warningEl.className = 'local-practice-data__warning';
     this.warningEl.hidden = true;
+
+    this.infoEl = document.createElement('p');
+    this.infoEl.className = 'local-practice-data__info';
+    this.infoEl.hidden = true;
+    this.infoEl.dataset.testid = 'local-practice-data-gain-info';
 
     this.confirmRow = document.createElement('label');
     this.confirmRow.className = 'local-practice-data__confirm';
@@ -117,8 +140,11 @@ export class LocalPracticeDataUI {
     this.confirmActions.append(this.cancelBtn, this.confirmBtn);
     this.panel.append(
       this.statusEl,
+      this.headingEl,
+      this.leadEl,
       this.previewEl,
       this.warningEl,
+      this.infoEl,
       this.confirmRow,
       this.confirmActions,
       this.retryBtn
@@ -160,9 +186,19 @@ export class LocalPracticeDataUI {
       .local-practice-data__btn--danger:disabled { opacity: .45; cursor: not-allowed; }
       .local-practice-data__panel { margin-top: 10px; font-size: 13px; line-height: 1.45; color: #4a3a28; }
       .local-practice-data__status[data-kind="error"] { color: #6b2e24; }
+      .local-practice-data__heading {
+        display: flex; gap: 8px; align-items: flex-start;
+        margin: 0 0 6px; font-weight: 650; color: #6b2e24;
+      }
+      .local-practice-data__heading-icon { flex: none; }
+      .local-practice-data__lead { margin: 0 0 8px; }
       .local-practice-data__warning {
         margin: 8px 0; padding: 8px 10px; border-radius: 10px;
         background: rgba(200,140,40,.12); border: 1px solid rgba(200,140,40,.25);
+      }
+      .local-practice-data__info {
+        margin: 8px 0; padding: 8px 10px; border-radius: 10px;
+        background: rgba(90,120,150,.08); border: 1px solid rgba(90,120,150,.18);
       }
       .local-practice-data__preview table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
       .local-practice-data__preview th, .local-practice-data__preview td {
@@ -183,13 +219,18 @@ export class LocalPracticeDataUI {
       ? t('LOCAL_DATA_IMPORT_CONFIRM_OVERWRITE')
       : t('LOCAL_DATA_IMPORT_CONFIRM');
     this.confirmText.textContent = t('LOCAL_DATA_IMPORT_ACK');
+    this.headingText.textContent = t('LOCAL_DATA_IMPORT_OVERWRITE_TITLE');
+    this.leadEl.textContent = t('LOCAL_DATA_IMPORT_OVERWRITE_LEAD');
     this.retryBtn.textContent = t('LOCAL_DATA_IMPORT_RETRY');
   }
 
   _showStatus(message, kind = 'ok') {
     this.panel.hidden = false;
     this.previewEl.hidden = true;
+    this.headingEl.hidden = true;
+    this.leadEl.hidden = true;
     this.warningEl.hidden = true;
+    this.infoEl.hidden = true;
     this.confirmRow.hidden = true;
     this.confirmActions.hidden = true;
     this.retryBtn.hidden = true;
@@ -242,12 +283,9 @@ export class LocalPracticeDataUI {
     this.previewEl.hidden = false;
     this.previewEl.replaceChildren();
 
-    const savedAt = document.createElement('p');
-    savedAt.textContent = t('LOCAL_DATA_IMPORT_SAVED_AT').replace(
-      '{time}',
-      snapshot.savedAt
-    );
-    this.previewEl.appendChild(savedAt);
+    const overwrite = this._needsOverwriteConfirm;
+    this.headingEl.hidden = !overwrite;
+    this.leadEl.hidden = !overwrite;
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');
@@ -292,6 +330,20 @@ export class LocalPracticeDataUI {
       }
       tbody.appendChild(tr);
     });
+    const savedTr = document.createElement('tr');
+    const savedName = document.createElement('td');
+    savedName.textContent = t('LOCAL_DATA_IMPORT_COL_SAVED_AT');
+    savedTr.appendChild(savedName);
+    const savedValue = document.createElement('td');
+    savedValue.colSpan = compare ? 2 : 1;
+    savedValue.className = 'import-accent';
+    savedValue.textContent = formatPracticeImportSavedAt(
+      snapshot.savedAt,
+      () => new Date(),
+      t
+    );
+    savedTr.appendChild(savedValue);
+    tbody.appendChild(savedTr);
     table.appendChild(tbody);
     this.previewEl.appendChild(table);
 
@@ -299,6 +351,11 @@ export class LocalPracticeDataUI {
     this.warningEl.hidden = !lossRisk;
     if (lossRisk) {
       this.warningEl.textContent = t('LOCAL_DATA_IMPORT_LOSS_WARNING');
+    }
+    const gain = importHasDataGain(this._storage, snapshot);
+    this.infoEl.hidden = !gain;
+    if (gain) {
+      this.infoEl.textContent = t('LOCAL_DATA_IMPORT_GAIN_INFO');
     }
 
     this.confirmRow.hidden = !this._needsOverwriteConfirm;
@@ -319,7 +376,10 @@ export class LocalPracticeDataUI {
   _showError(message) {
     this.panel.hidden = false;
     this.previewEl.hidden = true;
+    this.headingEl.hidden = true;
+    this.leadEl.hidden = true;
     this.warningEl.hidden = true;
+    this.infoEl.hidden = true;
     this.confirmRow.hidden = true;
     this.confirmActions.hidden = true;
     this.statusEl.hidden = false;
@@ -336,6 +396,10 @@ export class LocalPracticeDataUI {
     this.confirmCheck.checked = false;
     this.confirmBtn.disabled = true;
     this.previewEl.replaceChildren();
+    this.headingEl.hidden = true;
+    this.leadEl.hidden = true;
+    this.warningEl.hidden = true;
+    this.infoEl.hidden = true;
     this.statusEl.hidden = true;
     this.retryBtn.hidden = true;
   }

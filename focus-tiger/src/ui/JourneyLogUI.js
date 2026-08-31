@@ -24,6 +24,7 @@ import {
   flushPracticeBackupUpload
 } from '../core/practiceBackup/practiceBackupSync.js';
 import { practiceBackupCloudEnabled } from '../core/practiceBackup/practiceBackupCloudEnabled.js';
+import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -201,6 +202,9 @@ export class JourneyLogUI {
 
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refresh());
+    this._unsubPracticeImport = subscribePracticeDataImported(() =>
+      this._refresh()
+    );
     this._refresh();
   }
 
@@ -233,6 +237,7 @@ export class JourneyLogUI {
 
   destroy() {
     this._unsubLocale?.();
+    this._unsubPracticeImport?.();
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     this.root.remove();
