@@ -66,6 +66,7 @@ describe('confide read hybrid', () => {
   it('omits forget from read hybrid prompt and parser', () => {
     const prompt = buildConfideReadHybridPrompt('How long?');
     assert.match(prompt, /query_practice_duration/);
+    assert.match(prompt, /query_memory_list/);
     assert.equal(prompt.includes('forget_memory_entry'), false);
     const forgetParsed = parseConfideReadHybridJson(
       JSON.stringify({ tool: CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY, arguments: {} })
@@ -80,6 +81,11 @@ describe('confide read hybrid', () => {
     );
     assert.equal(presence?.id, CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND);
     assert.equal(isConfideHybridExecutableReadTool(presence), true);
+    const memoryList = resolveConfideReadHybridToolFromRaw(
+      JSON.stringify({ tool: CONFIDE_TOOL_ID.QUERY_MEMORY_LIST, arguments: {} })
+    );
+    assert.equal(memoryList?.id, CONFIDE_TOOL_ID.QUERY_MEMORY_LIST);
+    assert.equal(isConfideHybridExecutableReadTool(memoryList), true);
     assert.equal(
       resolveConfideReadHybridToolFromRaw(
         JSON.stringify({ tool: CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY, arguments: {} })

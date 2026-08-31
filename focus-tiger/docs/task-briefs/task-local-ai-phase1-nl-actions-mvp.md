@@ -1,6 +1,6 @@
 # Task Brief · Local AI Phase 1 · Natural-language Actions MVP
 
-> **状态（2026-08-28）**：**Brief 已建 · 未开工** · 须口令「开工 Local AI Phase 1 NL Actions」。  
+> **状态（2026-09-01）**：**口令已执行** · CI-03 `query_memory_list` 本旁支。  
 > **PO 决策**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md` §Phase 1A  
 > **权威**：`CONFIDE_EXECUTABLE_INTENTS.md` · `confideExecutableTools.js`
 

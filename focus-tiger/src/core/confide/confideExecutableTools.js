@@ -11,6 +11,7 @@
 
 import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
+import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
 import { shouldHandleVerbalForget } from '../yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 
 export const CONFIDE_TOOL_RISK = Object.freeze({
@@ -22,6 +23,7 @@ export const CONFIDE_TOOL_RISK = Object.freeze({
 export const CONFIDE_TOOL_ID = Object.freeze({
   QUERY_PRACTICE_DURATION: 'query_practice_duration',
   QUERY_PRESENCE_TREND: 'query_presence_trend',
+  QUERY_MEMORY_LIST: 'query_memory_list',
   FORGET_MEMORY_ENTRY: 'forget_memory_entry'
 });
 
@@ -30,7 +32,7 @@ export const CONFIDE_LAB_NONE_TOOL_ID = 'none';
 
 /**
  * Frozen V1 registry. Order = production match order
- * (practice → presence → forget). Do not reorder without tests.
+ * (practice → presence → memory_list → forget). Do not reorder without tests.
  * @type {readonly {
  *   id: string,
  *   ciId: string,
@@ -67,6 +69,17 @@ export const CONFIDE_EXECUTABLE_TOOLS = Object.freeze([
     autoExecute: true,
     match(ctx) {
       return shouldAnswerWithPresenceFacts(ctx?.route, ctx?.text);
+    }
+  }),
+  Object.freeze({
+    id: CONFIDE_TOOL_ID.QUERY_MEMORY_LIST,
+    ciId: 'CI-03',
+    source: 'memory_list',
+    risk: CONFIDE_TOOL_RISK.READ,
+    readOnly: true,
+    autoExecute: true,
+    match(ctx) {
+      return shouldAnswerWithMemoryList(ctx?.route, ctx?.text, ctx?.hasBridge);
     }
   }),
   Object.freeze({

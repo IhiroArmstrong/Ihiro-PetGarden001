@@ -16,8 +16,10 @@ import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
 import { buildPracticeFactsReply } from '../core/confide/confidePracticeFacts.js';
 import { buildPresenceFactsReply } from '../core/confide/confidePresenceFacts.js';
+import { formatMemoryListReply } from '../core/confide/confideMemoryList.js';
 import {
   CONFIDE_TOOL_ID,
+  isConfideHybridExecutableReadTool,
   matchConfideExecutableTool
 } from '../core/confide/confideExecutableTools.js';
 import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
@@ -484,7 +486,9 @@ export class ConfideToYinUI {
             ? 'practice_facts'
             : shown.source === 'presence_facts'
               ? 'presence_facts'
-              : shown.source === 'memory_forget'
+              : shown.source === 'memory_list'
+                ? 'memory_list'
+                : shown.source === 'memory_forget'
                 ? 'memory_forget'
                 : shown.source === 'memory_suppress'
                   ? 'memory_suppress'
@@ -856,6 +860,18 @@ export class ConfideToYinUI {
       );
       return;
     }
+    if (tool.id === CONFIDE_TOOL_ID.QUERY_MEMORY_LIST) {
+      const factsText = formatMemoryListReply(this._memoryState, t);
+      this._showReply(
+        {
+          route: hit.route,
+          text: factsText,
+          source: 'memory_list'
+        },
+        text
+      );
+      return;
+    }
     if (tool.id === CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY) {
       void this._handleVerbalForget(text, hit);
     }
@@ -882,11 +898,7 @@ export class ConfideToYinUI {
           result?.ok && result.raw
             ? resolveConfideReadHybridToolFromRaw(result.raw)
             : null;
-        if (
-          tool &&
-          (tool.id === CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION ||
-            tool.id === CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND)
-        ) {
+        if (tool && isConfideHybridExecutableReadTool(tool)) {
           this._executeConfideTool(tool, hit, text);
           return 'sync';
         }
