@@ -1,0 +1,1 @@
+| 用户体验优先 · Confide 意图诊断门禁（文档） | 纯后端/逻辑 | 仅单元测试覆盖 | 无 UI。权威：`PRINCIPLES.md`「用户体验优先」· `PRODUCT_POSITIONING.md` 哲学 §0 · `LOCAL_AI_PHASE1_TASK_PLAN.md` Gate 0.D。换模型 / 改 L2 prompt 须另口令。 | — | — | — | 本碎片对应分支 `docs/ux-first-companion-experience` | 2026-08-31 |

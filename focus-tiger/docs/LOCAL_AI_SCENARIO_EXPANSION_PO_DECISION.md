@@ -247,3 +247,15 @@ Temporal Compare 走 **Companion Tools**（`query_*` + 确定性 handler + Read 
 - `rememberOptOuts[]` 持久化 · 逐句 opt-out **优先于** Consent Allow
 
 **SSOT**：`YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md`
+
+---
+
+## PO Amendment · 用户体验优先 · Confide 意图（2026-08-31）
+
+**签字**：Product Owner · 2026-08-31
+
+1. **最高原则**写入 `PRINCIPLES.md`：只要不违法、不违背开发工作基本原则，用户体验第一。禁止用内部红线清单压过陪伴。
+2. **Boundary Respect** 升格为 Local AI 评测指标。反例：「I'm not sure whether I want to talk about it.」→「I am curious.」= 产品失败，不论短句是否像 Yin。
+3. **不换默认模型**，直到 Gate 0.D（intent JSON，不生成 Yin 句）拆开模型能力 vs routing。
+4. Forget：「没有 matching memory」在**记忆库确实没有可解析条目**时保留诚实；**禁止**为了显得聪明而猜删。指代「昨天那件事」解析不到，算 entity 缺口，另口令，不在本 amendment 改 runtime。
+5. 在 Confide 内识别 ARRIVE / 陪伴坐下 **不等于** 违反 V4（AI 不进入 Arrival 仪式 UI）。

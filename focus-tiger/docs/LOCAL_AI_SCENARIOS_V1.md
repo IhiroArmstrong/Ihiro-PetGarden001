@@ -36,6 +36,10 @@
 2. **Retrieve more ≠ judge more.**
 3. **Execute more ≠ become autonomous.**
 4. **AI should make existing moments deeper, not turn every moment into an AI conversation.**
+5. **Boundary Respect（2026-08-31）**：用户未要求解释、分析或建议时，Yin 必须克制。表达「不确定要不要谈」时，禁止贴心理状态标签。评测权重大于 MMLU / 换模型分数。
+6. **Primary intent + context**：一句里同时有情绪与动作时，先承接动作（陪伴坐下、开始、Forget）；情绪只作 context。**不等于**把 Confide 生成开进 Arrival 仪式（V4 仍锁）。
+
+权威：`PRINCIPLES.md`「用户体验优先」。禁止在未拆开「模型能否标 intent」与「pipeline 是否压扁」之前换默认模型。
 
 **Retrieval 原则**
 
@@ -200,15 +204,17 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 
 ## 6. 我认为最合理的下一刀
 
-**执行步骤 SSOT**：`LOCAL_AI_PHASE1_TASK_PLAN.md`（含 Gate 0.2 · #472 Read Hybrid 验收 A/B/C）。
+**执行步骤 SSOT**：`LOCAL_AI_PHASE1_TASK_PLAN.md`（含 Gate 0.2 · #472 Read Hybrid 验收 A/B/C · **Gate 0.D Yin Intent Diagnostic**）。
 
-1. **#472 Read Hybrid 人工测**（不改代码除非 bug）。  
-2. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
-3. **口令开工 Phase 1A**（Show memory read tool）。  
-4. **口令开工 Reflection validation**（**非** shipping）。  
-5. V2 Journey Delete · **不开工**。（Don't save → Slice 1f 已批准）
+1. **Gate 0.D**：当前 Qwen **只输出 intent JSON、不生成 Yin 句**（先 12 条，再扩 20 条）。用来拆开模型能力 vs routing。  
+2. **#472 Read Hybrid 人工测**（不改代码除非 bug；可与 0.D 并行）。  
+3. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
+4. **口令开工 Phase 1A**（Show memory read tool）。  
+5. **口令开工 Reflection validation**（**非** shipping）。  
+6. V2 Journey Delete · **不开工**。（Don't save → Slice 1f 已批准）  
+7. **禁止**：0.D 未出结论就开多模型 Benchmark / 换默认 GGUF。
 
-**较弱**：未测 hybrid 就并行三 Phase 1 runtime；把 validation 当 shipping；仪式侧 MUST NOT 破例。
+**较弱**：未测 hybrid 就并行三 Phase 1 runtime；把 validation 当 shipping；仪式侧 MUST NOT 破例；用「短句很 Yin」当理解过关。
 
 ---
 
