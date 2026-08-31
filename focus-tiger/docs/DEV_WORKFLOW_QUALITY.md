@@ -824,8 +824,9 @@
 | B · 静默武装 | 开卡后 `CHECKOUT_ARM_MS` 内点 CTA **直接 return**，无按压、无文案。 |
 | C · 层级 | Sanctuary 卡曾 z **18**，Support 遮罩 **25** / 模态 **26**。关 Support 后淡出层仍 `pointer-events: auto`，点 Unlock 点在遮罩或透明模态上。现卡 **27**；淡出层默认 `pointer-events: none`，仅 `.is-visible` 可点。 |
 | D · 提示 | 08-20 记「与无 toast / 取消 auto tip 冲突，待拍板」后**没有开工口令**。记入 ≠ 实现（同 §6.13 F1）。 |
+| E · CORS 端口 | 生产 Worker `ALLOWED_ORIGIN` **只有** `http://127.0.0.1:5173`。Safari 在 **5174** 直连 `workers.dev` 的 preflight **没有** `access-control-allow-origin`（2026-09-01 实测对照：5173 有、5174 无）。硬刷新页面**不能**改 Worker 名单。看起来像「点了没付款页」：fetch 被浏览器拦，卡面只剩通用错误句。 |
 
-**工作流补丁**：结账失败不得重开用户已关的卡；CTA 须 0–1s 状态行；Support 淡出遮罩 `pointer-events: none`。TRACKER「未改运行时 / 待拍板」项须在用户再点名时当场排期或明确拒绝，禁止只复述旧冲突句。
+**工作流补丁**：结账失败不得重开用户已关的卡；CTA 须 0–1s 状态行；Support 淡出遮罩 `pointer-events: none`。TRACKER「未改运行时 / 待拍板」项须在用户再点名时当场排期或明确拒绝，禁止只复述旧冲突句。邀测写清 **端口**：QA `:5173` 可直连 Worker；旁支 `:5174` 须 Vite `/api` 代理（改 `vite.config.js` 后**必须重启** Vite，单刷页面不够）。禁止把「5174 刷一下」写成已覆盖结账。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

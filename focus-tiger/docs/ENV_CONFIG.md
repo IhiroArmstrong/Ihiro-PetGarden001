@@ -21,6 +21,8 @@
 
 **Electron 步骤 A（2026-08-17）**：打包壳内的 Cloud POST 走**主进程 IPC**（不把自定义协议 Origin 直接打到 Worker）。失败仍抛错，UI 复用 Web 卡面（请茶 / Sanctuary / Membership / Journey 备份），不为壳另做提示。壳内 `getCloudApiBaseUrl()` 在缺 `VITE_*` 时回退到公开 Worker URL（避免打包后假「离线」把按钮禁用）。Worker `ALLOWED_ORIGIN` 已支持逗号列表（可含 `focus-tiger://app`）；**生产名单要等你明确下令 Redeploy 才改**，本回合不部署。
 
+**本地 Vite 旁支端口（2026-09-01）**：生产 Worker Origin 名单仍是 `:5173`。`npm run dev` 在浏览器里把 Cloud POST 打到**当前页 origin** `/api`，由 `vite.config.js` 代理到公开 Worker（避免 `:5174` CORS）。改 proxy 后须**重启** Vite。
+
 ## 2. 现状事实（已迁出）
 
 Worker 绑定、KV id、HTTP 路由、生产 `prod_worker_version`、Stripe Price 记档、locale tier、entitlement 表、CI workflow 清单等 **不再维护于本文**。  

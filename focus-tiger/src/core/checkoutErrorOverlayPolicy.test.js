@@ -54,4 +54,11 @@ describe('Sanctuary / Membership / Tip jar wire the policy', () => {
     assert.match(src, /\.yin-support-modal \{[\s\S]*pointer-events: none;/);
     assert.match(src, /\.yin-support-modal\.is-visible \{[\s\S]*pointer-events: auto;/);
   });
+
+  it('Vite dev proxies /api so feature-branch ports are not CORS-blocked', () => {
+    const src = readFileSync(join(root, '../vite.config.js'), 'utf8');
+    assert.match(src, /proxy:\s*\{/);
+    assert.match(src, /['"]\/api['"]/);
+    assert.match(src, /focus-tiger-cloud\.ihiro\.workers\.dev/);
+  });
 });
