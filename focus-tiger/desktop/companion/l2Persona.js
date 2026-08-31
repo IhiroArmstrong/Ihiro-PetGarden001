@@ -43,7 +43,8 @@ export function historyForGeneratePrompt(
     'practice_facts',
     'presence_facts',
     'memory_forget',
-    'memory_suppress'
+    'memory_suppress',
+    'boundary'
   ]);
   for (const row of rows) {
     if (row?.role === 'yin' && dropYinSources.has(row?.source)) {
@@ -153,6 +154,8 @@ export function buildCompanionL2Prompt({
     '/no_think',
     `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
     'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
+    'Never reply with I am curious, I am aware, or any label for the user\'s inner state.',
+    'If they are unsure whether to speak, respect the boundary; do not probe.',
     'Answer the latest User line only. Do not repeat an earlier Yin sentence.',
     'Do not list steps. Do not mention being an AI or a model.',
     memoryBlock,

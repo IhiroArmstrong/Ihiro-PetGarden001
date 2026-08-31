@@ -67,6 +67,10 @@ import {
   resolveVerbalForgetTarget
 } from '../core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 import {
+  formatConfideBoundaryReply,
+  shouldHandleConfideBoundary
+} from '../core/confide/confideBoundaryRespect.js';
+import {
   buildConfideTurnId,
   formatMemorySuppressReply,
   shouldHandlePostRecallMemorySuppress,
@@ -486,7 +490,9 @@ export class ConfideToYinUI {
                 ? 'memory_forget'
                 : shown.source === 'memory_suppress'
                   ? 'memory_suppress'
-                  : 'corpus'
+                  : shown.source === 'boundary'
+                    ? 'boundary'
+                    : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
     this.inputEl.value = '';
@@ -541,11 +547,13 @@ export class ConfideToYinUI {
    * @param {object} hit
    */
   async _handleMemorySuppressStandalone(text, hit) {
-    const turnOrdinal = Math.floor(this._l2Turns.length / 2);
-    this._memoryState = await recordYinPersonalMemoryOptOut({
-      turnId: buildConfideTurnId(turnOrdinal),
-      scope: 'turn'
-    });
+    if (hasYinPersonalMemoryBridge()) {
+      const turnOrdinal = Math.floor(this._l2Turns.length / 2);
+      this._memoryState = await recordYinPersonalMemoryOptOut({
+        turnId: buildConfideTurnId(turnOrdinal),
+        scope: 'turn'
+      });
+    }
     this._showReply(
       {
         route: hit.route,
@@ -561,6 +569,17 @@ export class ConfideToYinUI {
    * @param {object} hit
    */
   async _handleMemorySuppressPostRecall(text, hit) {
+    if (!hasYinPersonalMemoryBridge()) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatMemorySuppressReply('no_match', t),
+          source: 'memory_suppress'
+        },
+        text
+      );
+      return;
+    }
     const currentTurnOrdinal = Math.floor(this._l2Turns.length / 2);
     const previousTurnOrdinal = currentTurnOrdinal - 1;
     const result = await suppressYinPersonalMemoryPostRecall({
@@ -754,10 +773,22 @@ export class ConfideToYinUI {
         route: hit.route,
         text,
         state: this._memoryState,
-        hasBridge: hasYinPersonalMemoryBridge()
+        hasBridge: hasYinPersonalMemoryBridge(),
+        turnOrdinal
       })
     ) {
       void this._handleMemorySuppressStandalone(text, hit);
+      return;
+    }
+    if (shouldHandleConfideBoundary({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideBoundaryReply(t),
+          source: 'boundary'
+        },
+        text
+      );
       return;
     }
     const tool = matchConfideExecutableTool({

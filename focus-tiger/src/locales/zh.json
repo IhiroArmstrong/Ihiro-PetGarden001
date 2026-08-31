@@ -751,5 +751,6 @@
   "YPE_STYLE_WARM": "多一点承认",
   "YIN_MEMORY_SUPPRESS_TURN": "好的，这句我不会记下来。",
   "YIN_MEMORY_SUPPRESS_RECALLED": "好的，我已经不记那一句了。",
-  "YIN_MEMORY_SUPPRESS_NO_MATCH": "我没有找到对应的一句可以删掉。"
+  "YIN_MEMORY_SUPPRESS_NO_MATCH": "我没有找到对应的一句可以删掉。",
+  "CONFIDE_BOUNDARY_RESPECT": "可以先不说。寅在这儿。"
 }

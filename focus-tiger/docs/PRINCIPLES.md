@@ -22,7 +22,7 @@
 ### 禁止用红线当挡箭牌
 
 - 禁止堆砌内部清单（情绪桶、语料句、分类失败就硬凑标签），却交出更差的陪伴。
-- **Confide / Local AI**：用户在表达「我现在不确定要不要说」这类**边界**时，禁止因 routing / prompt / corpus pipeline **主动给用户贴心理状态标签**（反例：「I'm not sure whether I want to talk about it.」→「I am curious.」）。
+- **Confide / Local AI**：用户在表达「我现在不确定要不要说」这类**边界**时，禁止因 routing / prompt / corpus pipeline **主动给用户贴心理状态标签**（反例：「I'm not sure whether I want to talk about it.」→「I am curious.」）。现网：层 3 前走 `boundary` 模板（`CONFIDE_BOUNDARY_RESPECT`），L3 禁止生成该标签。
 - 一句里同时有情绪信号与明确请求（陪伴坐下、开始、忘掉某事）时，须先回应**当下用户要 Yin 做什么**；情绪只作背景，不得盖过请求。
 - 「Yin 短句好听」≠「Yin 听懂了」。人设短句不得代替对用户意图的承接。
 

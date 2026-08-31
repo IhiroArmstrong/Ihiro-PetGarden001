@@ -17,6 +17,7 @@ import {
   isPostRecallMemorySuppressIntent,
   isRememberSuppressedForTurn,
   shouldHandlePostRecallMemorySuppress,
+  shouldHandleStandaloneMemorySuppress,
   stripMemorySuppressPhrases
 } from './yinPersonalMemorySuppress.js';
 import { isVerbalForgetIntent } from './yinPersonalMemoryVerbalForget.js';
@@ -115,6 +116,65 @@ describe('yinPersonalMemorySuppress', () => {
     assert.match(
       stripMemorySuppressPhrases("I prefer quiet reflections. Don't save this."),
       /prefer quiet reflections/i
+    );
+  });
+
+  test('Dont keep this one is standalone suppress on first turn', () => {
+    const granted = applyYinMemoryConsent(null, true);
+    assert.equal(isInlineMemorySuppressIntent("Don't keep this one."), true);
+    assert.equal(isMemorySuppressStandaloneIntent("Don't keep this one."), true);
+    assert.equal(
+      shouldHandleStandaloneMemorySuppress({
+        route: CONFIDE_ROUTE.FALLBACK,
+        state: granted,
+        text: "Don't keep this one.",
+        hasBridge: true,
+        turnOrdinal: 0
+      }),
+      true
+    );
+    assert.equal(
+      shouldHandlePostRecallMemorySuppress({
+        route: CONFIDE_ROUTE.FALLBACK,
+        state: granted,
+        text: "Don't keep this one.",
+        hasBridge: true,
+        turnOrdinal: 0
+      }),
+      false
+    );
+    assert.equal(
+      shouldHandleStandaloneMemorySuppress({
+        route: CONFIDE_ROUTE.FALLBACK,
+        state: granted,
+        text: "Don't keep this one.",
+        hasBridge: true,
+        turnOrdinal: 2
+      }),
+      false
+    );
+    assert.equal(
+      shouldHandlePostRecallMemorySuppress({
+        route: CONFIDE_ROUTE.FALLBACK,
+        state: granted,
+        text: "Don't keep this one.",
+        hasBridge: true,
+        turnOrdinal: 2
+      }),
+      true
+    );
+  });
+
+  test('standalone Dont save this still routes without consent', () => {
+    assert.equal(
+      shouldHandleStandaloneMemorySuppress({
+        route: CONFIDE_ROUTE.FALLBACK,
+        state: null,
+        text: "Don't save this",
+        hasBridge: true,
+        turnOrdinal: 0
+      }),
+      true
     );
   });
 });

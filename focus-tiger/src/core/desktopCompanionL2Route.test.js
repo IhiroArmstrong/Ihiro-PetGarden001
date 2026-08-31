@@ -166,7 +166,11 @@ describe('desktop companion L2 persona / sanitize', () => {
     });
     assert.match(prompt, /\/no_think/);
     assert.match(prompt, /do not advise/i);
+    assert.match(prompt, /Never reply with I am curious/i);
+    assert.match(prompt, /respect the boundary/i);
     assert.match(prompt, /do not repeat an earlier Yin sentence/i);
+    assert.equal(sanitizeCompanionL2Reply('I am curious.'), null);
+    assert.equal(sanitizeCompanionL2Reply('I am aware of your mood.'), null);
     assert.match(prompt, /the weather is mild today/);
     assert.equal(sanitizeCompanionL2Reply('Tea is still warm.'), 'Tea is still warm.');
     assert.equal(sanitizeCompanionL2Reply('Yes'), null);
@@ -218,6 +222,23 @@ describe('desktop companion L2 persona / sanitize', () => {
     });
     assert.equal(prompt.includes(ack), false);
     assert.equal(prompt.includes('forget it'), false);
+  });
+
+  it('drops boundary exchanges from Recent turns', () => {
+    const line = 'We can leave it unspoken. Yin is here.';
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      history: [
+        {
+          role: 'user',
+          text: "I'm not sure whether I want to talk about it."
+        },
+        { role: 'yin', text: line, source: 'boundary' }
+      ]
+    });
+    assert.equal(prompt.includes(line), false);
+    assert.equal(prompt.includes('not sure whether I want to talk'), false);
   });
 
   it('drops practice_facts exchanges from Recent turns', () => {
@@ -404,6 +425,9 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /memory_forget/);
     assert.match(ui, /yinPersonalMemoryVerbalForget/);
     assert.match(ui, /yinPersonalMemorySuppress/);
+    assert.match(ui, /confideBoundaryRespect/);
+    assert.match(ui, /shouldHandleConfideBoundary/);
+    assert.match(ui, /source: 'boundary'/);
     assert.match(ui, /shouldHandlePostRecallMemorySuppress\(\{[\s\S]*?state: this\._memoryState/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
@@ -426,6 +450,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /source: 'practice_facts'/);
     assert.match(ui, /shown\.source === 'generate'/);
     assert.match(ui, /shown\.source === 'practice_facts'/);
+    assert.match(ui, /shown\.source === 'boundary'/);
     assert.match(ui, /this\._l2Turns\.slice\(\)/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);

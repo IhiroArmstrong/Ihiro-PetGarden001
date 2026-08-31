@@ -290,7 +290,7 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 12 条 JSON 对照表 | tracker 仅单元；**不**改生产层序 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 12 条 JSON 对照表 | tracker 仅单元；**已合 #495** |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
@@ -299,8 +299,10 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 
 ## 9. 我认为最合理的下一刀
 
-1. **Gate 0.D** 与 **Gate 0.2** 并行：0.D 只出 intent JSON；0.2 继续 hybrid 关单。  
-2. 0.D 若证明 pipeline 压扁 → **另口令**修层序 / prompt / 语料（禁止顺手换模型）。  
-3. 0.2 通过后下 **1B 口令**，再 **1A** → **1C validation**（非 shipping）。
+1. **#472 关单**（Gate 0.2 hybrid 人工）。  
+2. 再下 **1B 口令**，然后 **1A** → **1C validation**（非 shipping）。  
+3. Forget「昨天那件事」= Yin Memory 指代另口令（不扫 `turns.jsonl`、不猜删）。
 
-**较弱**：未测 hybrid 就并行三 Phase 1 shipping runtime；1C 与 1A/1B 同 PR；未 validation 就 ship Reflection generate；0.D 没跑就 Benchmark Llama。
+**较弱**：未关 #472 就并行三 Phase 1 shipping；扩设计师 20 条 Phase 2 诊断（0.D 已够支撑层序刀）；0.D 后再 Benchmark Llama。
+
+Gate 0.D 已证明 pipeline 压扁 → **层序 / L3 prompt 已另口令修**（边界模板 + Don't keep suppress；本计划不换模型）。
