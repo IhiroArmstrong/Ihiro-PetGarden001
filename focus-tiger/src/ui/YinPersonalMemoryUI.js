@@ -196,6 +196,14 @@ export class YinPersonalMemoryUI {
     if (this._open) this._refresh();
   }
 
+  /**
+   * Re-read store when Confide Remember writes while this panel is already open.
+   */
+  reloadIfOpen() {
+    if (!this._open) return;
+    void this._loadAndRefresh();
+  }
+
   _styleStorage() {
     return typeof localStorage !== 'undefined' ? localStorage : null;
   }

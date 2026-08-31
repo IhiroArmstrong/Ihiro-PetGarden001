@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-31（**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-09-01（**AG** What Yin remembers：开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8；**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -743,8 +743,8 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** �
 **前提**：`npm run desktop:dev` 宽屏；L2 **ready**（见 AE · L2）。
 
 1. **1a Consent**：首次 **unmatched** 句（非情绪桶/非练多久/非危机）→ L3 前应出现 Consent 条（Allow / Not now）→ 点选后 **0–1 秒内**消失并继续回复。**回流**：同会话第二条 unmatched **不再**弹；关 Confide 再开仍不弹（已决策）。**Not now** → 面板见 denied 文案。  
-2. **1b Remember**：Consent **Allow** → 发可抽取句（例：`I prefer quiet, short reflections.`）→ L3 成功后查 `yin-personal-memory.json`：`memories` 有 1 条 `active`。**负例**：`I'm tired` / 练多久 / 危机 → **不写** memory。  
-3. **1c 面板**：点 **What Yin remembers** → 见类型/摘要/Why → 点 **Forget** → **0–1 秒内**行消失 → JSON 该条已删。**空态**：Consent 未决策 → `YIN_MEMORY_PANEL_EMPTY`；**Allow 后仍无抽取条目** → `YIN_MEMORY_PANEL_EMPTY_GRANTED`（**禁止**再写「去 Confide 允许」；闲聊 L3 答句默认不入库）。**Denied**：Consent Not now 后打开面板见 denied 文案。  
+2. **1b Remember**：Consent **Allow** → 发可抽取句（例：`I prefer quiet, short reflections.` / `Mondays feel crowded` / `I think I need a reset.`）→ L3 成功后查 `yin-personal-memory.json`：`memories` 有 1 条 `active`（摘要是观察句，不必逐字等于用户句）。**负例**：`I'm tired` / 练多久 / 危机 / `Can we just sit here for a minute?` / 对不上规则的中文闲聊 → **不写** memory。  
+3. **1c 面板**：点 **What Yin remembers** → 见类型/摘要/Why → 点 **Forget** → **0–1 秒内**行消失 → JSON 该条已删。**面板保持打开**再发可抽取句（例：`Mondays feel crowded`）→ **0–1 秒内**出现 Pattern 行（摘要是观察句，不必逐字等于用户句）。**空态**：Consent 未决策 → `YIN_MEMORY_PANEL_EMPTY`；**Allow 后仍无抽取条目** → `YIN_MEMORY_PANEL_EMPTY_GRANTED`（**禁止**再写「去 Confide 允许」；对不上抽取规则的闲聊 L3 答句默认不入库）。**Denied**：Consent Not now 后打开面板见 denied 文案。  
 4. **1d 注入**：已有 Monday 记忆 medium+ → 再发「Monday feels crowded again」→ L3 短句应**可核对**回指周一。**对照**：「the weather is mild」→ **不得**硬插无关旧记忆。**Forget 后**再发 Monday 句 → 不应再回指。  
 
 5. **1e 口头 Forget**：发「别再记周一的事了」/ Please forget what I said about Monday → **0–1 秒内** `data-source=memory_forget` 确认句 → JSON 该条已删。**bulk**「forget everything」→ 引导面板逐条。**面板同步**：开着 What Yin remembers 时口头删 → 行消失。

@@ -177,6 +177,24 @@ V1 **允许的抽取时机**（仍不写代码，只锁门闩）：
 
 抽取可用小模型，但抽取器 **不得**把诊断词写进 `summary`。宁可不记。
 
+### V1 运行时抽取规则（透明清单 · 2026-09-01）
+
+Allow 只开抽取门闩。列表 **不是** 聊天记录，也 **不是** L3 答句。当前实现是 `matchYinMemoryRememberRule`（`yinPersonalMemoryRemember.js`）：只读**用户句**，命中下面**很少几条英文规则**才写入 `memories[]`。对不上 = L3 仍可回答，**不**入库。
+
+| ruleId | 用户句须同时满足（英文，大小写不敏感） | 写入 kind / summary |
+|---|---|---|
+| `relationship-no-advice` | don't/do not/rather not … advice/fix/solutions，或 no advice / not looking for advice | relationship · You like when Yin does not jump to advice. |
+| `preference-quiet-short` | prefer/like/want/need/love **或** keep it/stay … **且** quiet/short/gentle/simple/soft/brief | preference · You prefer quiet, short reflections. |
+| `pattern-monday-crowded` | 含 monday(s) **且** hard/tough/crowded/heavy/rough/stress(ed/ful)/overwhelm | pattern · Mondays have often felt crowded for you. |
+| `pattern-monday` | 含 monday(s)，但没有上一行的拥挤词 | pattern · Mondays have come up when you check in. |
+| `pattern-need-reset` | need(s/ed) 与 reset 在约 32 字内互见 | pattern · You have named needing a reset. |
+| `pattern-not-focusing-today` | don't/do not … feel like/want to/up for … focus | pattern · Some days focusing has not felt available. |
+| `pattern-morning-shift` | until this morning，**或** was doing/going … well/ok/fine … until/before | pattern · A morning has shifted after things had been going well. |
+
+**仍不写**：危机/诊断词；情绪桶路由；练多久等事实工具；中文闲聊（如「彤彤儿爱吃什么」）；请求当下陪伴但不是关于「你是怎样的人」的句（如 `Can we just sit here for a minute?`）；把 Yin **答句**当成记忆。
+
+面板若已打开，Remember 成功后须 **刷新列表**（与 Forget 对称），不得让用户关了再开才看见。
+
 ---
 
 ## 9. 何时检索 · 生成注入优先级（硬）
