@@ -95,6 +95,7 @@ LOCAL AI TOOL REGISTRY
 ├── Companion Tools          ← Confide 可调用（只读分析）
 │   ├── query_practice_duration     （CI-00 · 已有）
 │   ├── query_presence_trend        （CI-02 · 已有）
+│   ├── query_memory_list           （CI-03 · 已有）
 │   └── （未来）query_* 须已有权威本地字段；禁止诊断句
 │
 ├── Companion Actions        ← Confide 极窄写；Consent / 正则；模型不得 autoExecute

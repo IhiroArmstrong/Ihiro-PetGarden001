@@ -23,8 +23,9 @@ export const CONFIDE_TOOL_CALL_ALLOWED_IDS = Object.freeze([
 /** Production read hybrid: none + auto-execute read tools only (no forget). */
 export const CONFIDE_READ_HYBRID_ALLOWED_IDS = Object.freeze([
   CONFIDE_LAB_NONE_TOOL_ID,
-  CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION,
-  CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND
+  ...CONFIDE_EXECUTABLE_TOOLS.filter((tool) => tool.readOnly && tool.autoExecute).map(
+    (tool) => tool.id
+  )
 ]);
 
 const FENCE_RE = /```(?:json)?\s*([\s\S]*?)```/i;
@@ -141,6 +142,7 @@ export function buildConfideToolCallLabPrompt(userText) {
     `- ${CONFIDE_LAB_NONE_TOOL_ID}: chit-chat, crisis, mood labels, or anything else`,
     `- ${CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION}: how long they practiced, when they usually sit, how they have been showing up, comparing two practice windows, or Arrival counts across windows`,
     `- ${CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND}: what mood looked like, presence tag counts, or comparing two check-in windows (not diagnoses)`,
+    `- ${CONFIDE_TOOL_ID.QUERY_MEMORY_LIST}: list what Yin remembers on this device`,
     `- ${CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY}: forget one remembered topic (not bulk wipe)`,
     'Never invent backup, update, or delete-all tools.',
     'If unsure, use none.',
@@ -162,6 +164,7 @@ export function buildConfideReadHybridPrompt(userText) {
     `- ${CONFIDE_LAB_NONE_TOOL_ID}: chit-chat, crisis, mood labels, or anything else`,
     `- ${CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION}: how long they practiced, when they usually sit, how they have been showing up, comparing two practice windows, or Arrival counts across windows`,
     `- ${CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND}: what mood looked like, presence tag counts, or comparing two check-in windows (not diagnoses)`,
+    `- ${CONFIDE_TOOL_ID.QUERY_MEMORY_LIST}: list what Yin remembers on this device`,
     'Never invent backup, update, forget, or delete-all tools.',
     'If unsure, use none.',
     `User: ${utterance}`

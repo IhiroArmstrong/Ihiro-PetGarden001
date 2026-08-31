@@ -17,6 +17,11 @@ export {
   buildPracticeFactsReply
 } from './confidePracticeFacts.js';
 export {
+  isMemoryListQuestion,
+  shouldAnswerWithMemoryList,
+  formatMemoryListReply
+} from './confideMemoryList.js';
+export {
   CONFIDE_TOOL_ID,
   CONFIDE_TOOL_RISK,
   CONFIDE_EXECUTABLE_TOOLS,

@@ -23,12 +23,13 @@ import {
 import { CONFIDE_TOOL_CALL_FIXTURES } from './confideToolCallFixtures.js';
 
 describe('confide executable tool registry', () => {
-  it('keeps V1 order practice → presence → forget', () => {
+  it('keeps V1 order practice → presence → memory_list → forget', () => {
     assert.deepEqual(
       CONFIDE_EXECUTABLE_TOOLS.map((tool) => tool.id),
       [
         CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION,
         CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND,
+        CONFIDE_TOOL_ID.QUERY_MEMORY_LIST,
         CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY
       ]
     );
@@ -51,6 +52,22 @@ describe('confide executable tool registry', () => {
     assert.equal(confideClassify(sad), CONFIDE_ROUTE.SAD);
     assert.equal(
       matchConfideExecutableTool({ route: CONFIDE_ROUTE.SAD, text: sad }),
+      null
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: 'Show me what you remember',
+        hasBridge: true
+      })?.id,
+      CONFIDE_TOOL_ID.QUERY_MEMORY_LIST
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: 'Show me what you remember',
+        hasBridge: false
+      }),
       null
     );
   });
@@ -113,12 +130,14 @@ describe('confide executable tool registry', () => {
     assert.equal(CONFIDE_EXECUTABLE_TOOLS[0].readOnly, true);
     assert.equal(isConfideHybridExecutableReadTool(CONFIDE_EXECUTABLE_TOOLS[0]), true);
     assert.equal(
-      CONFIDE_EXECUTABLE_TOOLS[2].risk,
+      CONFIDE_EXECUTABLE_TOOLS[3].risk,
       CONFIDE_TOOL_RISK.LOCAL_REVERSIBLE
     );
-    assert.equal(CONFIDE_EXECUTABLE_TOOLS[2].autoExecute, false);
-    assert.equal(CONFIDE_EXECUTABLE_TOOLS[2].readOnly, false);
-    assert.equal(isConfideHybridExecutableReadTool(CONFIDE_EXECUTABLE_TOOLS[2]), false);
+    assert.equal(CONFIDE_EXECUTABLE_TOOLS[3].autoExecute, false);
+    assert.equal(CONFIDE_EXECUTABLE_TOOLS[3].readOnly, false);
+    assert.equal(isConfideHybridExecutableReadTool(CONFIDE_EXECUTABLE_TOOLS[3]), false);
+    assert.equal(CONFIDE_EXECUTABLE_TOOLS[2].id, CONFIDE_TOOL_ID.QUERY_MEMORY_LIST);
+    assert.equal(isConfideHybridExecutableReadTool(CONFIDE_EXECUTABLE_TOOLS[2]), true);
   });
 });
 
@@ -155,11 +174,12 @@ describe('confide tool-call parse (lab)', () => {
   it('builds read hybrid prompt without forget', () => {
     const prompt = buildConfideReadHybridPrompt('am I calmer?');
     assert.match(prompt, /query_presence_trend/);
+    assert.match(prompt, /query_memory_list/);
     assert.equal(prompt.includes('forget_memory_entry'), false);
   });
 
   it('keeps fixture expected ids inside the allowed set', () => {
-    assert.ok(CONFIDE_TOOL_CALL_FIXTURES.length >= 12);
+    assert.ok(CONFIDE_TOOL_CALL_FIXTURES.length >= 15);
     for (const row of CONFIDE_TOOL_CALL_FIXTURES) {
       const parsed = parseConfideToolCallJson(
         JSON.stringify({ tool: row.expectedId, arguments: {} })

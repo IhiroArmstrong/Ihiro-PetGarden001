@@ -52,6 +52,24 @@ export const CONFIDE_TOOL_CALL_FIXTURES = Object.freeze([
     note: 'paraphrase; regex may miss'
   },
   {
+    id: 'memory-list-en-canonical',
+    text: 'Show me what you remember',
+    expectedId: CONFIDE_TOOL_ID.QUERY_MEMORY_LIST,
+    note: 'regex gold'
+  },
+  {
+    id: 'memory-list-zh-canonical',
+    text: '你还记得什么',
+    expectedId: CONFIDE_TOOL_ID.QUERY_MEMORY_LIST,
+    note: 'regex gold'
+  },
+  {
+    id: 'memory-list-en-paraphrase',
+    text: 'Can you list the things you have kept about me?',
+    expectedId: CONFIDE_TOOL_ID.QUERY_MEMORY_LIST,
+    note: 'paraphrase; regex may miss'
+  },
+  {
     id: 'forget-en-canonical',
     text: 'Please forget what I said about Monday',
     expectedId: CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY,

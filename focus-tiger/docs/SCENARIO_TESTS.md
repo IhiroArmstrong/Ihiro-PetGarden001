@@ -751,6 +751,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 5. **1e 口头 Forget**：须先在 **What Yin remembers** 见到条目（例：`I prefer quiet, short reflections.` 抽中后）。再发「别再记周一的事了」/ Please forget what I said about Monday → **0–1 秒内** `data-source=memory_forget` 确认句 → JSON 该条已删。**空库**：无匹配条 → 诚实短句（「没有记得的」），**不算** CI-01 命中。L3 闲聊（如 `Mondays feel crowded`）**未必**入库，不必等一周。**bulk**「forget everything」→ 引导面板逐条。**面板同步**：开着 What Yin remembers 时口头删 → 行消失。
 6. **1f Don't save · memory suppress**：Consent Allow → (T-1) 同句 `…Don't save this.` → L3 后 `memories[]` 不增 · `rememberOptOuts[]` 有记录。**(T-2)** 入库后下一句 `Forget this` / 刚才那句别记 → `data-source=memory_suppress` · 上一 turn 条目已删。**(T-3)** 仅 `Don't save this` / `Don't keep this one.` → 诚实短句 · **即使尚未 Allow Consent**。**回归**：`Please forget about Monday` 仍 CI-01 `memory_forget`。
+7. **Phase 1A Show memory（CI-03）**：Consent Allow 且 What Yin remembers 已有条目 → 发 `Show me what you remember` / `你还记得什么` → **0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=memory_list`**，摘要须对面板 `active` 行（禁止 L3 编造）。**空态**：Allow 后无条目 → 诚实「还没有记下」。**Denied**：Not now 后同一问句 → 诚实「现在没有在记」。**负例**：`I feel depressed, show me what you remember` → sad 语料，非 `memory_list`。**不替代面板**：Forget 仍走面板或 CI-01。**Web / 无 bridge**：不走 CI-03。
 
 ---
 

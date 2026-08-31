@@ -201,6 +201,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 | 日期 | 说明 |
 |---|---|
 | 2026-09-01 | L3 prompt 禁风景顶替听见：对照 AE Confide / AG 1d 注入。强度仍短 generate；人设仍观察非建议；职责不写入 Memory / 情绪桶。无冲突 |
+| 2026-09-01 | Phase 1A Show memory：对照 AE Confide / AG 面板。口头列表为事实摘要、无新全屏；不替代 What Yin remembers；不抢 CI-01 Forget / Journey / Presence。危机仍情绪桶 |
 | 2026-09-01 | Phase 1B shipping：扩 CI-00/02 描述性 + Temporal Compare 问法；答句两窗并列；不抢 Journey/Presence 面板、Forget、1A Show memory。无新 tool id |
 | 2026-09-01 | CI-00 扩 `total sitting time` regex：对照 AG Slice 0 / AE Confide；强度仍 0–1s 模板；人设仍 facts 非 L3 观察句；职责仍 Journey 账本。无冲突 |
 | 2026-08-31 | 叠层占用三问接 registry：`blocksIdleYinTap` / `blocksEnterSleep` 派生；Confide wake helper 共用 |

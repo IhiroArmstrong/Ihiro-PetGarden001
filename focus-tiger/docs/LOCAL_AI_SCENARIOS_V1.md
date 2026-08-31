@@ -159,7 +159,7 @@ Safety / 情绪桶 → Tool Registry (CI-xx) → 确定性 handler → L3 短生
 | **CI-00** | 练了多久 / When do I usually practice? / 两窗次数时长 | Journey Log | **#424 + Phase 1B** |
 | **CI-01** | 口头 Forget 单条 | `yin-personal-memory.json` | **#434 已合** |
 | **CI-02** | 最近两周情绪看起来怎样 / What has my mood looked like recently? / 稳不稳两窗标签 | `presence-signals.v1` | **Phase 1B shipping** · `presence_facts` |
-| **（Phase 1）** | Show me what you remember | Memory store | Brief 已建 · **未开工** |
+| **CI-03** | Show me what you remember / 你还记得什么 | `yin-personal-memory.json` | **口令 1A 本旁支** · `memory_list` |
 
 > CI-02 答句：封闭标签 · 14 日 · ≥3 条 · **描述性 breakdown**；**禁止**诊断与人格进步评判。  
 > **Temporal Compare（PO 2026-08-28 晚）**：对照型问句（比以前久 / 稳不稳 / 进状态）可路由；答句须**两段时期并列事实**，禁止「你更好了/更稳了」。  
@@ -208,13 +208,13 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 
 1. **Gate 0.D**：已合 #495；换模型前仍以 intent JSON 为准。  
 2. **#472 Read Hybrid**： **2026-09-01 关单**（C-3 suspend · C-5 follow-up 另轨）。  
-3. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
-4. **口令开工 Phase 1A**（Show memory read tool）。  
+3. **Phase 1B** Ask Journey / Presence：**#503 已合**。  
+4. **Phase 1A** Show memory：**口令已执行**（本旁支 · CI-03 `memory_list`）。  
 5. **口令开工 Reflection validation**（**非** shipping）。  
 6. V2 Journey Delete · **不开工**。（Don't save → Slice 1f 已批准）  
 7. **禁止**：0.D 未出结论就开多模型 Benchmark / 换默认 GGUF。
 
-**较弱**：未发「口令 1B」就写 1B shipping；把 validation 当 shipping；仪式侧 MUST NOT 破例；用「短句很 Yin」当理解过关。
+**较弱**：把 validation 当 shipping；仪式侧 MUST NOT 破例；用「短句很 Yin」当理解过关。
 
 ---
 
