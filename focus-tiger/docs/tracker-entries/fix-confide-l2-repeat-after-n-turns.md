@@ -1,0 +1,5 @@
+# tracker fragment · fix/confide-l2-repeat-after-n-turns
+
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 备注 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| 桌面 L2：第 5–6 句闲聊不得复读首句 generate | UI可见 | 待人工测试 | **仅 Electron 非低配宽屏。** **主路径**：Idle 宽窗 → Confide ready → 连续 ≥6 次对不上情绪桶的闲聊（例：`What do you want?` → `小姐姐是谁？` → `彤彤爱吃啥？` → `Can we just sit here for a minute?` → `I’m not sure whether I want to talk about it.` → `Nothing special today.`）。**0–1 秒内**发送钮 disabled + 正在听；第 5–6 句 **不得**再显示第 1 句 generate 全文（曾为 `Yes.` / `I am curious about what you would like to eat.`）。允许新 generate 短句，或失败时 corpus 茶句；**禁止空白**。中间夹 `How long have I practiced?` 仍 `practice_facts`。**回流**：关卡再开后第 1 句闲聊仍可 generate。自动化：`desktopCompanionL2Route.test.js`（echo sanitize · sequence dispose · memory_suppress 不进 Recent turns）。 | **2026-08-31 用户书面**：约第 5–6 句起复读 `I am curious about what you would like to eat.`（`data-source=generate`）；上次同位置复读 `Yes.`。forget it 模板句 OK。 | — | — | `#confide-to-yin-reply` · `l1Hold` · `l2Sanitize` | 2026-08-31 |

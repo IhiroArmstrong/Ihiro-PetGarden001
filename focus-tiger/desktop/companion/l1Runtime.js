@@ -25,7 +25,10 @@ import {
   buildCompanionL2Prompt,
   buildReflectionCompanionPrompt
 } from './l2Persona.js';
-import { sanitizeCompanionL2Reply } from './l2Sanitize.js';
+import {
+  priorGenerateRepliesFromHistory,
+  sanitizeCompanionL2Reply
+} from './l2Sanitize.js';
 import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 
@@ -337,7 +340,9 @@ export class CompanionL1Runtime {
     });
     const ev = await this._queue;
     const raw = ev?.event === 'generated' ? ev.text : '';
-    const sanitized = sanitizeCompanionL2Reply(raw);
+    const sanitized = sanitizeCompanionL2Reply(raw, {
+      priorReplies: priorGenerateRepliesFromHistory(payload.history)
+    });
     const record = {
       at: new Date().toISOString(),
       locale: payload.locale || 'en',

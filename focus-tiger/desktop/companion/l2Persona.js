@@ -23,8 +23,8 @@ const LANG = {
 };
 
 /**
- * Drop corpus-backed exchanges (Yin `source === 'corpus'` and the user
- * turn immediately before it), then keep the last N rows.
+ * Drop non-generate Yin exchanges (corpus / facts / forget / suppress and
+ * the user turn immediately before each), then keep the last N rows.
  * Rows without `source` stay (legacy tests / untagged generate).
  *
  * @param {unknown} history
@@ -38,8 +38,15 @@ export function historyForGeneratePrompt(
   const rows = Array.isArray(history) ? history : [];
   /** @type {Array<{ role?: string, text?: string, source?: string }>} */
   const kept = [];
+  const dropYinSources = new Set([
+    'corpus',
+    'practice_facts',
+    'presence_facts',
+    'memory_forget',
+    'memory_suppress'
+  ]);
   for (const row of rows) {
-    if (row?.role === 'yin' && (row?.source === 'corpus' || row?.source === 'practice_facts')) {
+    if (row?.role === 'yin' && dropYinSources.has(row?.source)) {
       if (kept.length && kept[kept.length - 1]?.role === 'user') {
         kept.pop();
       }
@@ -146,6 +153,7 @@ export function buildCompanionL2Prompt({
     '/no_think',
     `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
     'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
+    'Answer the latest User line only. Do not repeat an earlier Yin sentence.',
     'Do not list steps. Do not mention being an AI or a model.',
     memoryBlock,
     insightBlock,
