@@ -1,0 +1,3 @@
+# qa-ag-slice-1e-forget-e2e
+
+| AG Slice 1e · Forget 端到端补测 | UI可见 | 待人工测试 | **不绑 #472。** Electron 宽屏 QA develop 树：Consent **Allow** → 发可抽取句（优先 `I prefer quiet, short reflections.`）→ **What Yin remembers** 确认有条目 → 再发 `Please forget what I said about Monday` 或对应该条主题的 Forget → **0–1s** `[data-testid=confide-to-yin-reply]` `data-source=memory_forget` + 确认句 → JSON 该条已删。**空库对照**：无条目时诚实短句不算本行 pass。**禁止**把 L3 闲聊未入库当成须等一周。**回流**：关 Confide 再开，面板不再见该条。自动化：`yinPersonalMemoryVerbalForget.test.js`（非完整 Electron 链路）。 | **2026-09-01 用户书面**：#472 C-3 suspend，允许关 Hybrid；本行单独补测。 | — | — | `npm run desktop:dev` · Confide · What Yin remembers | 2026-09-01 |

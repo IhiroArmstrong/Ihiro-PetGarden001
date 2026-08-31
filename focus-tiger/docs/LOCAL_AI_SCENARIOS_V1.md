@@ -206,15 +206,15 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 
 **执行步骤 SSOT**：`LOCAL_AI_PHASE1_TASK_PLAN.md`（含 Gate 0.2 · #472 Read Hybrid 验收 A/B/C · **Gate 0.D Yin Intent Diagnostic**）。
 
-1. **Gate 0.D**：当前 Qwen **只输出 intent JSON、不生成 Yin 句**（先 12 条，再扩 20 条）。用来拆开模型能力 vs routing。  
-2. **#472 Read Hybrid 人工测**（不改代码除非 bug；可与 0.D 并行）。  
+1. **Gate 0.D**：已合 #495；换模型前仍以 intent JSON 为准。  
+2. **#472 Read Hybrid**： **2026-09-01 关单**（C-3 suspend · C-5 follow-up 另轨）。  
 3. **口令开工 Phase 1B**（Ask Journey / Presence · 含 CI-02 描述性问法迁移）— 与 Presence 旁支可协调，**仍分 PR 职责**。  
 4. **口令开工 Phase 1A**（Show memory read tool）。  
 5. **口令开工 Reflection validation**（**非** shipping）。  
 6. V2 Journey Delete · **不开工**。（Don't save → Slice 1f 已批准）  
 7. **禁止**：0.D 未出结论就开多模型 Benchmark / 换默认 GGUF。
 
-**较弱**：未测 hybrid 就并行三 Phase 1 runtime；把 validation 当 shipping；仪式侧 MUST NOT 破例；用「短句很 Yin」当理解过关。
+**较弱**：未发「口令 1B」就写 1B shipping；把 validation 当 shipping；仪式侧 MUST NOT 破例；用「短句很 Yin」当理解过关。
 
 ---
 

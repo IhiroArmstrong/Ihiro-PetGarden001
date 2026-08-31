@@ -278,7 +278,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
 | **Slice 1f** | Don't save this · memory suppress | `task-yin-memory-slice-1f-dont-save-this.md` | **本旁支** · tracker 待人工 |
 
-**我认为最合理的下一刀运行时**：#472 Read Hybrid **人工测**。Phase 1 须**分项口令**（见下 §Local AI Phase 1）；**禁止**因 PO 拍板自动并行开工全部 runtime。较弱：V2 Journey Delete · Reflection **shipping**。
+**我认为最合理的下一刀运行时**：**口令 1B**（Ask Journey / Presence）。Gate 0.2 #472 **2026-09-01 已关单**。Phase 1 仍须**分项口令**；**禁止**因 PO 拍板自动并行开工全部 runtime。较弱：未发口令就开 1B shipping；V2 Journey Delete · Reflection **shipping**。
 
 ---
 
@@ -299,7 +299,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 **Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
 
-**我认为最合理的 Phase 1 开工顺序**：① #472 关单 → ② **口令 1B** → ③ **口令 1A** → ④ **口令 1C validation**（非 shipping）。Forget「昨天那件事」Yin Memory 指代另口令。较弱：未关 #472 就并行三 Phase 1 shipping；未 validation 就 ship Reflection generate；0.D 后再 Benchmark Llama。
+**我认为最合理的 Phase 1 开工顺序**：① #472 **已关单** → ② **口令 1B**（合入 C-5 sitting-time PR 后更干净）→ ③ **口令 1A** → ④ **口令 1C validation**（非 shipping）。Forget 端到端补测不挡 1B（独立 tracker 行）。较弱：未发「口令 1B」就写 shipping runtime；未 validation 就 ship Reflection generate；0.D 后再 Benchmark Llama。
 
 ---
 

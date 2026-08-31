@@ -16,7 +16,9 @@ const DURATION_RES = [
   /\bhow\s+long\s+have\s+i\s+(been\s+)?practi[cs]e(?:d|ing)?\b/i,
   /\bhow\s+long\s+have\s+i\s+(been\s+)?sitt(?:ing|en)\b/i,
   /\bhow\s+many\s+(days|minutes|hours)\s+have\s+i\s+(been\s+)?practi[cs]e(?:d|ing)?\b/i,
-  /练了多久|坐了多久|练习了多久|練習多久|坐了几天|练了几天|練習了幾天/
+  /\b(?:total\s+)?sitting\s+time\b/i,
+  /\b(?:total\s+)?sit(?:ting)?\s+(?:time|minutes|hours)\s+on\s+this\s+device\b/i,
+  /练了多久|坐了多久|练习了多久|練習多久|坐了几天|练了几天|練習了幾天|同坐多久|一共坐了多久/
 ];
 
 /**

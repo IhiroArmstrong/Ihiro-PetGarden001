@@ -1,6 +1,6 @@
 # Task Brief · Confide Read Hybrid V1
 
-> **状态（2026-08-27）**：**已开工**（设计师拍板：regex miss → L0 只读 tool 补漏）。  
+> **状态（2026-09-01）**：**Gate 0.2 已关单**（QA tip `86a4c72e`）。C-5 practice paraphrase 产品修在 `fix/confide-sitting-time-practice-facts`（regex 升格；原 Brief「不追 known gap」仅关单口径）。  
 > **前置**：Tool Registry #461 + 实验室探针 `writeFalsePositives === 0`（基线 JSON：`tool-call-1787834402925.json`）。  
 > **权威**：`CONFIDE_EXECUTABLE_INTENTS.md` · `confideReadHybrid.js` · `confideExecutableTools.js`
 
