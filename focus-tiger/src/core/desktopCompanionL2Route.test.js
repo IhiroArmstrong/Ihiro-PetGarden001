@@ -226,6 +226,20 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(prompt.includes('forget it'), false);
   });
 
+  it('drops companion_presence exchanges from Recent turns', () => {
+    const line = 'Yin is here. We can stay like this — no need to begin.';
+    const prompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      history: [
+        { role: 'user', text: 'Can we just sit here for a minute?' },
+        { role: 'yin', text: line, source: 'companion_presence' }
+      ]
+    });
+    assert.equal(prompt.includes(line), false);
+    assert.equal(prompt.includes('sit here for a minute'), false);
+  });
+
   it('drops boundary exchanges from Recent turns', () => {
     const line = 'We can leave it unspoken. Yin is here.';
     const prompt = buildCompanionL2Prompt({
@@ -430,6 +444,12 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confideBoundaryRespect/);
     assert.match(ui, /shouldHandleConfideBoundary/);
     assert.match(ui, /source: 'boundary'/);
+    assert.match(ui, /confideCompanionPresence/);
+    assert.match(ui, /shouldHandleConfideCompanionPresence/);
+    assert.match(ui, /source: 'companion_presence'/);
+    assert.match(ui, /confidePreferenceHonesty/);
+    assert.match(ui, /shouldHandleConfidePreferenceHonesty/);
+    assert.match(ui, /source: 'preference_honesty'/);
     assert.match(ui, /shouldHandlePostRecallMemorySuppress\(\{[\s\S]*?state: this\._memoryState/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);

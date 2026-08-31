@@ -789,5 +789,7 @@
   "YIN_MEMORY_SUPPRESS_TURN": "好的，这句我不会记下来。",
   "YIN_MEMORY_SUPPRESS_RECALLED": "好的，我已经不记那一句了。",
   "YIN_MEMORY_SUPPRESS_NO_MATCH": "我没有找到对应的一句可以删掉。",
-  "CONFIDE_BOUNDARY_RESPECT": "可以先不说。寅在这儿。"
+  "CONFIDE_BOUNDARY_RESPECT": "可以先不说。寅在这儿。",
+  "CONFIDE_COMPANION_PRESENCE": "寅在这儿。可以就这样待着，不必开始一场练习。",
+  "CONFIDE_PREFERENCE_HONESTY": "寅不记口味清单。你允许留下的，在「阿寅记得什么」里。"
 }
