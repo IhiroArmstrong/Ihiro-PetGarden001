@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-31（**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-31（**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。

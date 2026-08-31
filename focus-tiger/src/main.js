@@ -37,6 +37,8 @@ import {
   deriveTeaBubbleBusyTarget,
   deriveReminderBusySessionTarget,
   deriveFocusAwarenessCardBusy,
+  deriveIdleYinTapOverlayBusy,
+  deriveSceneAnimOverlayBusy,
   canAttemptFirstCard
 } from './core/overlaySlotArbitration.js';
 import { OVERLAY_SOURCES } from './core/overlaySlotContractRegistry.js';
@@ -519,13 +521,7 @@ async function init() {
 
   /** Shared overlay-busy for scene Animation Dispatcher */
   function isSceneAnimOverlayBusy() {
-    return (
-      honestyCheckInUI?.phase !== 'hidden' ||
-      arrivalPractice?.isOpen?.() === true ||
-      reflectionMoment?.isOpen?.() === true ||
-      microRitualUI?.isOpen?.() === true ||
-      focusDurationPicker?.isOpen?.() === true
-    );
+    return deriveSceneAnimOverlayBusy(buildLiveOverlaySnapshot());
   }
   prefetchTasteLayerForLocale = () => {
     void prefetchTasteLayer({
@@ -540,6 +536,9 @@ async function init() {
     /** @type {import('./ui/FlowerBlowWelcomeBubbleUI.js').FlowerBlowWelcomeBubbleUI | null} */ (
       null
     );
+  /** Box, not `let onboardingHints`: overlayBusy may run before that binding. */
+  /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
+  const onboardingHintHost = { hints: null };
 
   function tryPlaySceneAnim(event, extra = {}) {
     const { playOptions, ...resolveOpts } = extra;
@@ -886,6 +885,7 @@ async function init() {
   const reflectionMoment = new TigerReflectionMoment(
     document.getElementById('ui-overlay')
   );
+  window.__reflectionMoment = reflectionMoment;
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
 
   const momentWhisperUI = new MomentWhisperUI(
@@ -977,37 +977,55 @@ async function init() {
       now: reminderNow
     }
   );
-  languagePreferenceUI = new LanguagePreferenceUI(document.body, {
-    onOpen: () => {
-      onboardingHints?.markSeen('language-preference');
-    },
-    onClose: () => {
-      document.body.classList.remove('ft-narrow-stage-language');
-      document.body.classList.remove('ft-wide-stage-language');
-    },
-    onLocaleChosen: () => {
-      onboardingHints?.markSeen('language-preference');
-    }
-  });
+  languagePreferenceUI = new LanguagePreferenceUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onOpen: () => {
+        onboardingHints?.markSeen('language-preference');
+      },
+      onClose: () => {
+        document.body.classList.remove('ft-narrow-stage-language');
+        document.body.classList.remove('ft-wide-stage-language');
+      },
+      onLocaleChosen: () => {
+        onboardingHints?.markSeen('language-preference');
+      }
+    })
+  );
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
-  const zenCinemaCardUI = new ZenCinemaCardUI(document.body, {});
+  const zenCinemaCardUI = new ZenCinemaCardUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
   window.__zenCinemaCard = zenCinemaCardUI;
 
-  const fiveMomentsCompassUI = new FiveMomentsCompassUI(document.body, {
-    onMomentSelect: (momentId) => handleFiveMomentSelect(momentId),
-    onOpen: () => syncInAppReminderBanner()
-  });
+  const fiveMomentsCompassUI = new FiveMomentsCompassUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onMomentSelect: (momentId) => handleFiveMomentSelect(momentId),
+      onOpen: () => syncInAppReminderBanner()
+    })
+  );
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
-  const journeyLogUI = new JourneyLogUI(document.body, {});
+  const journeyLogUI = new JourneyLogUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
   window.__journeyLog = journeyLogUI;
-  const presenceSignalsPanelUI = new PresenceSignalsPanelUI(document.body, {});
+  const presenceSignalsPanelUI = new PresenceSignalsPanelUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
   window.__presenceSignalsPanel = presenceSignalsPanelUI;
   const yinPersonalMemoryUI = new YinPersonalMemoryUI(document.body, {});
   window.__yinPersonalMemory = yinPersonalMemoryUI;
   /** @type {FocusCoinsPanelUI | null} */
   let yinCoinPanelUI = null;
-  const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(document.body, {});
+  const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
   /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
   let pendingReflectionAfterMustardSeed = null;
@@ -1032,6 +1050,7 @@ async function init() {
       }
     }
   });
+  window.__mustardSeedCard = mustardSeedSealCardUI;
   window.__mustardSeedSeal = {
     open: (opts) => mustardSeedSealCardUI.open(opts || { mode: 'force' }),
     close: () => mustardSeedSealCardUI.close(),
@@ -1045,29 +1064,38 @@ async function init() {
         typeof localStorage !== 'undefined' ? localStorage : null
       )
   };
-  const digitalWallpapersCardUI = new DigitalWallpapersCardUI(document.body, {});
+  const digitalWallpapersCardUI = new DigitalWallpapersCardUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
   const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
   window.__sanctuaryEnsoMark = sanctuaryEnsoMarkChrome;
-  const sanctuaryUnlockUI = new SanctuaryUnlockUI(document.body, {
-    onBadgesChanged: () => {
-      tipKindnessBadgesChrome.refresh();
-      sanctuaryEnsoMarkChrome.refresh();
-    }
-  });
+  const sanctuaryUnlockUI = new SanctuaryUnlockUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onBadgesChanged: () => {
+        tipKindnessBadgesChrome.refresh();
+        sanctuaryEnsoMarkChrome.refresh();
+      }
+    })
+  );
   window.__sanctuaryUnlock = sanctuaryUnlockUI;
   /** @type {{ close: (opts?: object) => void }} */
   const idleSecondaryPanelHost = { close: () => {} };
-  const membershipUnlockUI = new MembershipUnlockUI(document.body, {
-    onOpen: () => idleSecondaryPanelHost.close({ except: 'membership' }),
-    onEntitlementChanged: () => {
-      // Ritual lock rows re-read isEntitled on next menu/drawer open.
-      tipKindnessBadgesChrome.refresh();
-      sanctuaryEnsoMarkChrome.refresh();
-    }
-  });
+  const membershipUnlockUI = new MembershipUnlockUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onOpen: () => idleSecondaryPanelHost.close({ except: 'membership' }),
+      onEntitlementChanged: () => {
+        // Ritual lock rows re-read isEntitled on next menu/drawer open.
+        tipKindnessBadgesChrome.refresh();
+        sanctuaryEnsoMarkChrome.refresh();
+      }
+    })
+  );
   window.__membershipUnlock = membershipUnlockUI;
   // Peek before TipJarUI consumes `?tip=1` (and before welcome boot).
   const checkoutReturnKind = peekCheckoutReturnThanksKind(
@@ -1076,23 +1104,29 @@ async function init() {
   const checkoutWelcomeGate =
     resolveCheckoutReturnWelcomeGate(checkoutReturnKind);
 
-  const tipJarUI = new TipJarUI(document.body, {
-    onBadgesChanged: () => tipKindnessBadgesChrome.refresh(),
-    onTipThanks: () => {
-      // Tip emotion is deferred to the welcome boot slot so WELCOME_APP
-      // cannot overwrite teaDrinking on Stripe full-page return.
-    }
-  });
+  const tipJarUI = new TipJarUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onBadgesChanged: () => tipKindnessBadgesChrome.refresh(),
+      onTipThanks: () => {
+        // Tip emotion is deferred to the welcome boot slot so WELCOME_APP
+        // cannot overwrite teaDrinking on Stripe full-page return.
+      }
+    })
+  );
   window.__tipJar = tipJarUI;
 
-  const newsletterCaptureUI = new NewsletterCaptureUI(document.body, {
-    onOpen: () => {
-      closeGrowthOverlayCards({ except: 'newsletter' });
-    },
-    onSubmitted: () => {
-      // Menu rows rebuild on next open; nothing else to unlock.
-    }
-  });
+  const newsletterCaptureUI = new NewsletterCaptureUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onOpen: () => {
+        closeGrowthOverlayCards({ except: 'newsletter' });
+      },
+      onSubmitted: () => {
+        // Menu rows rebuild on next open; nothing else to unlock.
+      }
+    })
+  );
   window.__newsletterCapture = newsletterCaptureUI;
 
   const canOpenConfideNow = () => {
@@ -1120,11 +1154,13 @@ async function init() {
         })
     });
   };
-  const confideToYinUI = new ConfideToYinUI(document.body, {
+  const confideToYinUI = new ConfideToYinUI(
+    document.body,
+    withIdleOverlayOccupancySync({
     canOpen: canOpenConfideNow,
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'confide' });
-      wakeYinForConfideCompanion();
+      wakeYinIfSleeping();
     },
     onOpenMemoryPanel: () => {
       closeGrowthOverlayCards({ except: 'yin-memory' });
@@ -1140,7 +1176,8 @@ async function init() {
       }
       emotionController.playEmotion('mindfulAcknowledge');
     }
-  });
+    })
+  );
   window.__confideToYin = confideToYinUI;
   confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
   const confideEarChrome = new ConfideEarChromeUI(document.body, {
@@ -1180,6 +1217,7 @@ async function init() {
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
+    syncIdleYinTap();
   }
 
   /**
@@ -1224,26 +1262,29 @@ async function init() {
     }
   }
 
-  const supportYinModalUI = new SupportYinModalUI(document.body, {
-    onOpen: () => {
-      closeGrowthOverlayCards({ except: 'support' });
-    },
-    // Support CTAs open the same detail cards as the Idle menu — user confirms
-    // Subscribe/Unlock/Buy on the card. (Auto startCheckout skipped a visible card
-    // and felt like “menu opens Stripe with no card”.)
-    onUnlockSanctuary: () => {
-      closeGrowthOverlayCards({ except: 'sanctuary' });
-      sanctuaryUnlockUI.open();
-    },
-    onJoinMembership: () => {
-      closeGrowthOverlayCards({ except: 'membership' });
-      membershipUnlockUI.open();
-    },
-    onBuyTea: () => {
-      closeGrowthOverlayCards({ except: 'tip' });
-      tipJarUI.open();
-    }
-  });
+  const supportYinModalUI = new SupportYinModalUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onOpen: () => {
+        closeGrowthOverlayCards({ except: 'support' });
+      },
+      // Support CTAs open the same detail cards as the Idle menu — user confirms
+      // Subscribe/Unlock/Buy on the card. (Auto startCheckout skipped a visible card
+      // and felt like “menu opens Stripe with no card”.)
+      onUnlockSanctuary: () => {
+        closeGrowthOverlayCards({ except: 'sanctuary' });
+        sanctuaryUnlockUI.open();
+      },
+      onJoinMembership: () => {
+        closeGrowthOverlayCards({ except: 'membership' });
+        membershipUnlockUI.open();
+      },
+      onBuyTea: () => {
+        closeGrowthOverlayCards({ except: 'tip' });
+        tipJarUI.open();
+      }
+    })
+  );
   window.__supportYin = supportYinModalUI;
 
   const contextualTeaTipBubbleUI = new ContextualTeaTipBubbleUI(
@@ -1438,7 +1479,9 @@ async function init() {
     },
     playWave: () => playCollectionsWaveHello()
   };
-  yinCoinPanelUI = new FocusCoinsPanelUI(document.body, {
+  yinCoinPanelUI = new FocusCoinsPanelUI(
+    document.body,
+    withIdleOverlayOccupancySync({
     getContext: () => ({
       ...buildFocusCoinRedeemContext({
         store: focusCoinsStore,
@@ -1452,7 +1495,8 @@ async function init() {
     playWave: () => window.__focusCoins.playWave(),
     onMessage: (message) =>
       mindfulToast.show(message, { placement: 'center' })
-  });
+    })
+  );
   window.__yinCoinPanel = yinCoinPanelUI;
   syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
@@ -1461,6 +1505,7 @@ async function init() {
   honestyCheckInUI = new HonestyCheckInUI(
     document.getElementById('ui-overlay')
   );
+  window.__honestyCheckInUI = honestyCheckInUI;
   const honestyCheckIn = new HonestyCheckInController({
     store: dailyCompletionStore,
     focusSessionEndStore,
@@ -1582,6 +1627,7 @@ async function init() {
     focusButton,
     companionModeHandlers
   );
+  window.__companionModePicker = companionModePicker;
 
   microRitualUI = new MicroRitualUI(document.getElementById('ui-overlay'), {
     onIdleEntryClick: () => {
@@ -1707,6 +1753,7 @@ async function init() {
 
   /** Arrival / 叠层 / 完成中门闩的唯一可变源（见 SessionUiGate） */
   const sessionUiGate = new SessionUiGate();
+  window.__sessionUiGate = sessionUiGate;
 
   const readSpriteFrameSrc = () => {
     const img = spritePlayer?.imgEl;
@@ -1783,33 +1830,39 @@ async function init() {
   const { syncHonestyIdleEntry, syncArrivalGateReady } = sessionChromeSyncApi;
   /** @type {IdleYinTapAnchorUI | null} */
   let idleYinTapAnchor = null;
-  // Box, not `let onboardingHints`: `syncIdleYinTap` runs before that binding
-  // is initialized (AmbientSoundscapeUI / first arm). Bare `onboardingHints?.`
-  // in overlayBusy is TDZ and blocks `__FT_APP_READY__`.
-  /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
-  const onboardingHintHost = { hints: null };
 
   function buildLiveOverlaySnapshot() {
     return buildOverlaySnapshot({
       sessionState: stateManager.state,
-      completionPending: sessionUiGate.completionPending,
-      honestyPhase: honestyCheckInUI?.phase,
-      honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
-      arrivalOpen: arrivalPractice?.isOpen?.() === true,
-      reflectionOpen: reflectionMoment?.isOpen?.() === true,
-      microRitualOpen: microRitualUI?.isOpen?.() === true,
-      ritualFlowOpen: ritualFlowUI?.isOpen?.() === true,
-      focusDurationPickerOpen: focusDurationPicker?.isOpen?.() === true,
-      companionPickerOpen: companionModePicker?.isOpen?.() === true,
-      postSessionOverlayActive: sessionUiGate.postSessionOverlayActive,
-      compassOpen: fiveMomentsCompassUI.isOpen(),
-      mustardSeedOpen: mustardSeedSealCardUI.isOpen?.() === true,
-      tipJarOpen: tipJarUI.isOpen() === true,
-      supportModalOpen: supportYinModalUI.isOpen() === true,
-      sanctuaryOpen: sanctuaryUnlockUI.isOpen?.() === true,
-      membershipOpen: membershipUnlockUI.isOpen?.() === true,
+      completionPending: window.__sessionUiGate?.completionPending === true,
+      honestyPhase: window.__honestyCheckInUI?.phase,
+      honestyBridgeVisible: window.__honestyBridge?.isVisible?.() === true,
+      arrivalOpen: window.__arrivalPractice?.isOpen?.() === true,
+      reflectionOpen: window.__reflectionMoment?.isOpen?.() === true,
+      microRitualOpen: window.__microRitualUI?.isOpen?.() === true,
+      ritualFlowOpen: window.__ritualFlowUI?.isOpen?.() === true,
+      focusDurationPickerOpen: window.__focusDurationPicker?.isOpen?.() === true,
+      companionPickerOpen: window.__companionModePicker?.isOpen?.() === true,
+      postSessionOverlayActive:
+        window.__sessionUiGate?.postSessionOverlayActive === true,
+      compassOpen: window.__fiveMomentsCompass?.isOpen?.() === true,
+      mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
+      tipJarOpen: window.__tipJar?.isOpen?.() === true,
+      supportModalOpen: window.__supportYin?.isOpen?.() === true,
+      sanctuaryOpen: window.__sanctuaryUnlock?.isOpen?.() === true,
+      membershipOpen: window.__membershipUnlock?.isOpen?.() === true,
       flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true,
-      confideOpen: confideToYinUI.isOpen() === true
+      confideOpen: window.__confideToYin?.isOpen?.() === true,
+      journeyOpen: window.__journeyLog?.isOpen?.() === true,
+      coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
+      quoteOpen: window.__dailyZenQuoteCard?.isOpen?.() === true,
+      wallpapersOpen: window.__digitalWallpapersCard?.isOpen?.() === true,
+      cinemaOpen: window.__zenCinemaCard?.isOpen?.() === true,
+      newsletterOpen: window.__newsletterCapture?.isOpen?.() === true,
+      presenceOpen: window.__presenceSignalsPanel?.isOpen?.() === true,
+      languageOpen: window.__languagePreference?.isOpen?.() === true,
+      purposeCardOpen: onboardingHintHost.hints?.isPurposeCardOpen?.() === true,
+      privacySheetOpen: onboardingHintHost.hints?.isPrivacySheetOpen?.() === true
     });
   }
 
@@ -1820,7 +1873,7 @@ async function init() {
     'starlightCloakSleep'
   ]);
 
-  function wakeYinForConfideCompanion() {
+  function wakeYinIfSleeping() {
     const fromDormant = stateManager.state === STATES.DORMANT;
     const fromSleepingPose = CONFIDE_WAKE_SLEEPING_EMOTION_KEYS.has(
       emotionController.getCurrentEmotionKey()
@@ -1845,6 +1898,10 @@ async function init() {
     });
   }
 
+  function wakeYinForConfideCompanion() {
+    wakeYinIfSleeping();
+  }
+
   function playCollectionsWaveHello() {
     const result = evaluateCollectionsWaveHelloPlay({
       sessionState: stateManager.state,
@@ -1867,18 +1924,23 @@ async function init() {
   }
 
   function isIdleYinTapOverlayBusy() {
-    return (
-      onboardingHintHost.hints?.isPurposeCardOpen?.() === true ||
-      onboardingHintHost.hints?.isPrivacySheetOpen?.() === true ||
-      sessionUiGate.postSessionOverlayActive === true ||
-      honestyCheckInUI?.phase === 'duration' ||
-      honestyCheckInUI?.phase === 'breath' ||
-      honestyCheckInUI?.phase === 'thanks' ||
-      supportYinModalUI?.isOpen?.() === true ||
-      tipJarUI?.isOpen?.() === true ||
-      sanctuaryUnlockUI?.isOpen?.() === true ||
-      membershipUnlockUI?.isOpen?.() === true
-    );
+    return deriveIdleYinTapOverlayBusy(buildLiveOverlaySnapshot());
+  }
+
+  function withIdleOverlayOccupancySync(handlers = {}) {
+    const prevOpen = handlers.onOpen;
+    const prevClose = handlers.onClose;
+    return {
+      ...handlers,
+      onOpen: (...args) => {
+        prevOpen?.(...args);
+        syncIdleYinTap();
+      },
+      onClose: (...args) => {
+        prevClose?.(...args);
+        syncIdleYinTap();
+      }
+    };
   }
 
   function syncIdleYinTap() {

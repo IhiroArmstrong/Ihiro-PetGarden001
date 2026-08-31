@@ -49,13 +49,11 @@ describe('purpose card hover grace + left-ball no mint', () => {
       hintsSrc,
       /sheet\.append\(title, body, back\);\s*body\.append\(ypeOptIn, optIn/
     );
+    assert.match(hintsSrc, /resolveHelpOutsideDismissAction/);
+    assert.match(hintsSrc, /HELP_OUTSIDE_DISMISS\.CLOSE_PRIVACY/);
     assert.match(hintsSrc, /isPrivacySheetOpen\(\)/);
     assert.match(hintsSrc, /_showPrivacyBackdrop\(\)/);
     assert.match(hintsSrc, /_dismissPrivacyAndPurpose\(\)/);
-    assert.match(
-      hintsSrc,
-      /if \(privacyOpen\) \{[\s\S]*_dismissPrivacyAndPurpose/
-    );
     assert.match(
       hintsSrc,
       /if \(this\.privacySheet && !this\.privacySheet\.hidden\) \{[\s\S]*_dismissPrivacyAndPurpose/

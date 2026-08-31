@@ -662,7 +662,7 @@
 | H3 | 凡「播完回 Idle 再武装」不得只挂 oneshot `onComplete`——须认 `_finishOneShot` **先回调、后 idle**；包装 `playEmotion` 或在回 Idle 之后 sync |
 | H4 | `opacity:0` 的 canvas **须** `pointer-events:none`，避免占位情绪把 miss 吞成静默 |
 | H5 | TRACKER 写「已接线」而状态仍「待人工测试」= **未验收**；不得在 PROCESS 速览暗示用户可当完成 |
-| H6 | 新叠层 / 弹层（? 简介、Privacy、Support…）打开时须进 `isIdleYinTapOverlayBusy()`（及开关时 `syncIdleYinTap()`）。漏登记 = 弹窗挡额头或 hit 仍 armed 却点不到 → 用户报「摸头又没了」。禁止只验 helper 绿。读 `OnboardingHintsUI` 须走已提前初始化的 `onboardingHintHost.hints`，禁止在该函数里写裸 `onboardingHints?.`（`let` 在首次 `syncIdleYinTap` 之后才赋值 → TDZ → `__FT_APP_READY__` 永不置位 → PR smoke 整壳超时）。 |
+| H6 | 新叠层 / 弹层（? 简介、Privacy、Support、Confide、Idle 玻璃卡…）打开时须进 `OVERLAY_SOURCE_CONTRACTS`（`blocksIdleYinTap` / `blocksEnterSleep`）并由 `deriveIdleYinTapOverlayBusy(buildLiveOverlaySnapshot())` 派生；开关须 `syncIdleYinTap()`。禁止在 `main.js` 再写 OR 列表。漏登记 = 弹窗挡额头或 hit 仍 armed 却点不到。读 OnboardingHints 须走已提前初始化的 `onboardingHintHost.hints`，禁止裸 `onboardingHints?.`（TDZ → `__FT_APP_READY__` 永不置位）。 |
 
 **本回合落地**：额头 hit（`top:30%`）+ `wrapPlayEmotionWithIdleYinTapSync` + 隐藏 canvas 不抢点 + `e2e/idle-yin-tap.spec.js`；TRACKER 记入 08-18 反馈（`RB-20260818-L379`）。**2026-08-31**：? / Privacy 漏进 overlay busy 已补（`fix/privacy-idle-tap-chimes-volume`）。
 

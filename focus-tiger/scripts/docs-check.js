@@ -20,6 +20,7 @@ import { runVisibilityContractDocCheck } from './visibility-contract-doc-check.j
 import { runDocsConsistencyCheck } from './check-docs-consistency.js';
 import { runCopyrightHeaderCheck } from './copyright-header.js';
 import { runTrackerFragmentCheck } from './assemble-tracker.js';
+import { runOverlayContractUiCheck } from './overlay-contract-ui-check.js';
 
 function main() {
   let ok = true;
@@ -32,6 +33,7 @@ function main() {
   if (!runDocsConsistencyCheck()) ok = false;
   if (!runCopyrightHeaderCheck()) ok = false;
   if (!runTrackerFragmentCheck()) ok = false;
+  if (!runOverlayContractUiCheck()) ok = false;
 
   if (!ok) {
     console.error(

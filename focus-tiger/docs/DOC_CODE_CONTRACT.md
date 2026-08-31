@@ -55,6 +55,7 @@
 | **P-01** | `ARCHITECTURE.md` 目录树 / 角色文件表 | 组织性文档，变更频率低，自动生成 ROI 低 | 人工维护；触及时在 PR 自检 |
 | **R-01** | `SHARED_RESOURCES` §1 各 key「谁读写」叙述列 | 自然语言波及面，无法可靠从代码提取 | §1 表格**叙述列**仍手写；**key 列表**由 L-01 契约测试锁 |
 | **Y-01** | 精灵占用 / 进睡仲裁（冷启动·回前台·付款·会话结束） | 优先级矩阵是行为契约，不是 enum 导出 | **(b)**：`spriteChannelArbitration.test.js` + `dormantIdle.test.js` overlayBusy；叙事 `DEV_WORKFLOW_QUALITY` §6.17 |
+| **O-01** | 叠层占用三问（摸头 / 进睡 / 点空白） | `OVERLAY_SOURCE_CONTRACTS` 五字段 + `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`；禁止 `main.js` 手写 OR | **(a)** `scripts/overlay-contract-ui-check.js`（`docs:check`）；**(b)** `overlaySlotArbitration.test.js` |
 
 ---
 
