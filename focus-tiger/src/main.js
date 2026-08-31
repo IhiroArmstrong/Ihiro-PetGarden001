@@ -172,6 +172,11 @@ import {
   canPlayIdleYinTap,
   wrapPlayEmotionWithIdleYinTapSync
 } from './core/idleYinTapGate.js';
+import {
+  hasSeenIdleYinTapHint,
+  markIdleYinTapHintSeen,
+  shouldShowIdleYinTapHint
+} from './core/idleYinTapHintGate.js';
 import { NewsletterCaptureUI } from './ui/NewsletterCaptureUI.js';
 import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { YinPersonalMemoryUI } from './ui/YinPersonalMemoryUI.js';
@@ -590,7 +595,9 @@ async function init() {
         avoidCopyKey: prevFlower.lastCopyKey,
         tInLocale
       });
-      flowerBlowWelcomeBubble?.show(msg.lines);
+      flowerBlowWelcomeBubble?.show(msg.lines, {
+        onHidden: () => maybeOfferIdleYinTapHint()
+      });
       markFlowerWelcomeBubbleShown(flowerStorage, { copyKey: msg.copyKey });
     }
     // Locale greeting: consume daily quota only after playEmotion starts
@@ -1957,6 +1964,21 @@ async function init() {
         occupancy: spriteOccupancy
       })
     );
+    maybeOfferIdleYinTapHint();
+  }
+
+  function maybeOfferIdleYinTapHint() {
+    if (!idleYinTapAnchor) return;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const show = shouldShowIdleYinTapHint({
+      seen: hasSeenIdleYinTapHint(storage),
+      sessionState: stateManager.state,
+      overlayBusy: isIdleYinTapOverlayBusy(),
+      flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true,
+      armed: idleYinTapAnchor.isArmed()
+    });
+    idleYinTapAnchor.setHintVisible(show);
   }
 
   function resyncSessionChrome() {
@@ -1981,7 +2003,14 @@ async function init() {
           syncIdleYinTap();
           return;
         }
+        markIdleYinTapHintSeen(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        idleYinTapAnchor.setHintVisible(false);
         emotionController.playEmotion(IDLE_YIN_TAP_EMOTION_KEY, {
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          returnCrossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true,
           onComplete: () => syncIdleYinTap()
         });
         syncIdleYinTap();

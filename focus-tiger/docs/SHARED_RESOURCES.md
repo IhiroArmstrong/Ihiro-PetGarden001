@@ -53,6 +53,7 @@
 | `focus-tiger.locale-greeting.v1` | `localeGreeting` / Dispatcher `LANGUAGE_CHANGED` | 切语问候同日限频：`{ dateKey, locales[] }`；ja→`bookReading`；en→`teaDrinking`（皆单程+CapCut）。**写入时机**：`playEmotion` 开播成功后 `markLocaleGreetingPlayed`（resolve 不预扣） |
 | `focus-tiger.scene-anim-daily.v1` | `sceneAnimationDispatcher` | 欢迎池等同日额度：`{ dateKey, welcome }`（吹花与欢迎池同日 XOR 共用此旗） |
 | `focus-tiger.flower-welcome.v1` | `flowerWelcomeGate` | 吹花门闩：`{ lastOpenDateKey, firstBubbleDone, lastCopyKey }`（Day1 / ≥3 日久别；文案轮换记账） |
+| `focus-tiger.idle-yin-tap-hint.v1` | `idleYinTapHintGate` | 冷启动额头发现气泡已读：`'1'` 后不再出现 |
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
 | `focus-tiger.tip-jar.v1` | `tipJarGate` | Buy Yin a Tea 本地 tip 状态：`{ tipped, tipCount, lastTippedAt, email?, source?, badgeIds[], tipLog[] }`；`badgeIds` = 善意/练习徽章（付费起 3，免费练习起 1，只增不减；练习上涨可 sync）；`tipLog` = 茶室留痕；**不**解锁内容；与 Sanctuary **零耦合** |
 | `focus-tiger.contextual-tea-tip.v1` | `contextualTeaTipGate` | 场景化请茶气泡：`{ lastShownLocalDay, lastShownReason, lastShownAt, dismissedCount }`；本地日一次；达标 / 里程碑触发；**不**解锁内容 |
@@ -136,7 +137,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `intentionNod`（intentionSet） | Arrival Choose 确认 | 与 Companion 展开时序 |
 | `mindfulAcknowledge` / `stretchReminder` | `MindfulReminderController` | 被动提醒占共享额度；Offline/Flow 抑制离开类 |
 | `triggerActiveRecover` / Tiger Anchor | `MindfulReminderController` + `ActiveRecoverAnchorUI` | 主动 Recover：**不**占额度；180s 冷却；Focusing only。冷却再点 → `acknowledgeActiveRecoverCooldownTap`（`nodBowMicro`，无 toast）。幽灵句叠角色时须锁**对比度/底色**（`DEV_WORKFLOW_QUALITY` §6.20），禁止只锁 `top%` 当可读 |
-| Idle 轻点阿寅 / `#idle-yin-tap-anchor` | `IdleYinTapAnchorUI` + `canPlayIdleYinTap`；`main.js` `wrapPlayEmotionWithIdleYinTapSync`；**占用 SSOT** `OVERLAY_SOURCE_CONTRACTS` + `deriveIdleYinTapOverlayBusy(buildLiveOverlaySnapshot())`（禁止在 `isIdleYinTapOverlayBusy` 再写 OR） | Idle only；点**额头** → `earWiggleHeadTouch`。武装须在 `playEmotion('idle')` 之后（`_finishOneShot` 先 onComplete 后 idle）。Focusing 让位 Recover。隐藏 3D canvas 须 `pointer-events:none`（§6.16）。新叠层须登记 `blocksIdleYinTap` 并 `syncIdleYinTap` |
+| Idle 轻点阿寅 / `#idle-yin-tap-anchor` | `IdleYinTapAnchorUI` + `canPlayIdleYinTap`；`main.js` `wrapPlayEmotionWithIdleYinTapSync`；**占用 SSOT** `OVERLAY_SOURCE_CONTRACTS` + `deriveIdleYinTapOverlayBusy(buildLiveOverlaySnapshot())`（禁止在 `isIdleYinTapOverlayBusy` 再写 OR） | Idle only；点**额头** → `earWiggleHeadTouch`。武装须在 `playEmotion('idle')` 之后（`_finishOneShot` 先 onComplete 后 idle）。Focusing 让位 Recover。隐藏 3D canvas 须 `pointer-events:none`（§6.16）。新叠层须登记 `blocksIdleYinTap` 并 `syncIdleYinTap`。**首次 Idle** 额头上方白玉句 `IDLE_YIN_TAP_HINT`（点一次后写入 `idle-yin-tap-hint.v1`，不恢复 auto tip 喷洒） |
 | `nodGreeting` | 靠近自动已拆；**欢迎池试验 40%**（与 magicBookReading） | 勿接回默认靠近 |
 | `magicBookReading` | 开场欢迎池试验（60%） | 已烘焙 pingpong；**硬切** Idle |
 | `welcomeBack` | **停接线**（2026-08-02）：不播新旧挥手；键保留 | 素材仍入库；场景以后另议 |

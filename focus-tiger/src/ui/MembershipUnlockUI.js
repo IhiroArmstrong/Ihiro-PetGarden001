@@ -28,6 +28,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
+import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
 
 const STYLE_ID = 'yin-membership-card-styles-v2';
 const FADE_MS = 220;
@@ -52,6 +53,7 @@ export class MembershipUnlockUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._userDismissed = false;
     this._focusTimer = null;
     /** @type {number} */
     this._checkoutArmedAt = 0;
@@ -262,6 +264,7 @@ export class MembershipUnlockUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._userDismissed = false;
     this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
     this._view = isMembershipActiveLocally({ storage: this._storage })
       ? 'active'
@@ -285,6 +288,7 @@ export class MembershipUnlockUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._userDismissed = true;
     this._checkoutArmedAt = 0;
     if (this._focusTimer != null) {
       window.clearTimeout(this._focusTimer);
@@ -316,15 +320,14 @@ export class MembershipUnlockUI {
 
   async _startCheckout() {
     if (this._busy) return;
-    if (Date.now() < this._checkoutArmedAt) return;
     if (!getCloudApiBaseUrl()) {
-      if (!this._open) this.open();
       this.statusEl.textContent = t('MEMBERSHIP_CLOUD_OFFLINE');
       return;
     }
     this._busy = true;
     this.buyBtn.disabled = true;
     this.manageBtn.disabled = true;
+    this.statusEl.textContent = t('MEMBERSHIP_CHECKOUT_PENDING');
     let checkoutError = false;
     try {
       const email = this.emailInput.value.trim();
@@ -345,18 +348,22 @@ export class MembershipUnlockUI {
         return;
       }
       checkoutError = true;
-      this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
     } catch {
       checkoutError = true;
-      this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
     } finally {
       this._busy = false;
       this.buyBtn.disabled = false;
       this.manageBtn.disabled = false;
       if (checkoutError) {
-        if (!this._open) this.open();
-        this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
-      } else {
+        if (
+          resolveCheckoutErrorOverlay({
+            overlayOpen: this._open,
+            userDismissed: this._userDismissed
+          }) === 'show-on-open'
+        ) {
+          this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
+        }
+      } else if (this._open) {
         this._refreshTexts();
       }
     }

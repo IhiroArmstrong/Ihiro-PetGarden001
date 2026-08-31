@@ -22,7 +22,8 @@ test('Idle Yin tap is hidden when not armed (no silent click on a visible hit)',
   assert.match(src, /this\.root\.hidden = !show/);
   assert.match(src, /if \(!this\._armed\) return/);
   assert.match(src, /z-index: 12/);
-  assert.match(src, /IDLE_YIN_TAP_ARIA/);
+  assert.match(src, /idle-yin-tap-hint/);
+  assert.match(src, /IDLE_YIN_TAP_HINT/);
 });
 
 test('Idle Yin tap hit covers the forehead band, not only the Recover body oval', () => {
@@ -32,5 +33,9 @@ test('Idle Yin tap hit covers the forehead band, not only the Recover body oval'
   assert.ok(topPct <= 32, `forehead hit top must be ≤32%, got ${topPct}`);
   assert.doesNotMatch(src, /top: 46%/);
   assert.match(mainSrc, /wrapPlayEmotionWithIdleYinTapSync\(emotionController/);
+  assert.match(
+    mainSrc,
+    /playEmotion\(IDLE_YIN_TAP_EMOTION_KEY, \{[\s\S]*?returnCrossFadeMs: CAPCUT_DISSOLVE_MS[\s\S]*?freezeUntilCrossFadeEnds: true/
+  );
   assert.match(poseSrc, /pointerEvents = clamped === 0 \? 'none'/);
 });

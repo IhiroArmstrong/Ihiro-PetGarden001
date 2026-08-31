@@ -34,6 +34,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
+import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
 
 const STYLE_ID = 'yin-tip-jar-card-styles-v2';
 const FADE_MS = 220;
@@ -56,6 +57,7 @@ export class TipJarUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._userDismissed = false;
     this._focusTimer = null;
     /** @type {number} */
     this._checkoutArmedAt = 0;
@@ -202,6 +204,7 @@ export class TipJarUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._userDismissed = false;
     this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
     this.root.hidden = false;
     this.root.tabIndex = -1;
@@ -219,6 +222,7 @@ export class TipJarUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._userDismissed = true;
     this._checkoutArmedAt = 0;
     if (this._focusTimer != null) {
       window.clearTimeout(this._focusTimer);
@@ -401,9 +405,7 @@ export class TipJarUI {
 
   async _onBuy() {
     if (this._busy) return;
-    if (Date.now() < this._checkoutArmedAt) return;
     if (!this._cloudReady()) {
-      if (!this._open) this.open();
       this._setFeedback(t('TIP_CLOUD_OFFLINE'), true);
       return;
     }
@@ -432,8 +434,14 @@ export class TipJarUI {
         err instanceof Error && err.message === 'cloud_api_unconfigured'
           ? t('TIP_CLOUD_OFFLINE')
           : t('TIP_BUY_ERROR');
-      if (!this._open) this.open();
-      this._setFeedback(msg, true);
+      if (
+        resolveCheckoutErrorOverlay({
+          overlayOpen: this._open,
+          userDismissed: this._userDismissed
+        }) === 'show-on-open'
+      ) {
+        this._setFeedback(msg, true);
+      }
       this._busy = false;
       this._refresh();
     }

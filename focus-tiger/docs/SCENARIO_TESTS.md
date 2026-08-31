@@ -510,11 +510,12 @@
 > **仍须人工**：正+倒一次 + CapCut 回 Idle 观感；Focusing 不得走摸头。  
 > **0–1 秒内**：点阿寅**额头**（或上半身 hit）→ CapCut 切入摸头序列开始（无 toast）。
 
-1. `?product=1` Idle → 轻点阿寅**额头** → **0–1 秒内**见摸头动画开始。
-2. 播完 ~1s CapCut 回闭目呼吸；再点可再播。
-3. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
-4. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。**?** 简介或 Privacy 开着时同样：hit 卸武装或被挡；关掉弹窗后再点额头须摸头。
-5. **回流**：Rise → Skip Reflection 回 Idle 后再点额头仍须摸头（禁止第一次播完后 hit 永久 hidden）。
+1. 冷启动（清 `idle-yin-tap-hint.v1`）：吹花若出现须先结束；随后头顶白玉句「试试触摸或点击阿寅的头顶」（跟 locale）。点额头后提示消失，再刷不再出。**不是**每次摸头 toast。
+2. `?product=1` Idle → 轻点阿寅**额头** → **0–1 秒内**见摸头动画开始。
+3. 播完 ~1s CapCut 回闭目呼吸（不得闪白）；再点可再播。
+4. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
+5. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。**?** 简介或 Privacy 开着时同样：hit 卸武装或被挡；关掉弹窗后再点额头须摸头。
+6. **回流**：Rise → Skip Reflection 回 Idle 后再点额头仍须摸头（禁止第一次播完后 hit 永久 hidden）。
 
 ---
 
