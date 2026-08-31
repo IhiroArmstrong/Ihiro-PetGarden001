@@ -291,7 +291,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 轨 | 内容 | Brief | PO | 状态 |
 |---|---|---|---|---|
 | **1A** | NL Actions MVP：Forget（CI-01）+ Show memory read | `task-local-ai-phase1-nl-actions-mvp.md` | **CORE** | Brief 已建 · **未开工** |
-| **1B** | Ask Journey / Presence · Retrieve + bounded Describe + **Temporal Compare** | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | Brief 已建 · **未开工** · PO 2026-08-28 晚修订对照型问句 |
+| **1B** | Ask Journey / Presence · Retrieve + bounded Describe + **Temporal Compare** | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | **口令已执行** · 扩 CI-00/02 regex + 两窗模板（本旁支） |
 | **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | **开工** · lab `?reflectionCompanion=1` · tracker 待人工 |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
 | **—** | Don't save this | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` | ✅ Slice 1f | tracker 待人工 |
@@ -299,7 +299,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 **Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
 
-**我认为最合理的 Phase 1 开工顺序**：① #472 **已关单** → ② **口令 1B**（合入 C-5 sitting-time PR 后更干净）→ ③ **口令 1A** → ④ **口令 1C validation**（非 shipping）。Forget 端到端补测不挡 1B（独立 tracker 行）。较弱：未发「口令 1B」就写 shipping runtime；未 validation 就 ship Reflection generate；0.D 后再 Benchmark Llama。
+**我认为最合理的 Phase 1 开工顺序**：① #472 **已关单** → ② **1B 本旁支** → ③ **口令 1A** → ④ **口令 1C validation**（非 shipping；lab 旁支可并行但不混 PR）。Forget 端到端补测不挡 1A。较弱：1B 未合入就并行 Show memory；未 validation 就 ship Reflection generate；0.D 后再 Benchmark Llama。
 
 ---
 

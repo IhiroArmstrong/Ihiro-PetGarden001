@@ -693,6 +693,7 @@
 6. **回流**：关卡再开；Focusing 卸载后 Share 不得 generate。  
 7. **边界尊重**：`I'm not sure whether I want to talk about it.` → **0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=boundary`**，文案为 `CONFIDE_BOUNDARY_RESPECT`（en：We can leave it unspoken…）。**禁止** `I am curious` / generate。**回流**：关卡再开后再发同句仍 boundary。  
 8. **Don't keep**：首句或仅 `Don't keep this one.` → **`data-source=memory_suppress`**（诚实短句），**禁止** L3「I am observing」。**回归**：`Please forget about Monday` 仍 CI-01。
+9. **Phase 1B 事实（交叉 AG / AF）**：`When do I usually practice?` / `How have I been showing up?` / `Am I practicing longer than before?` → **0–1 秒内** `data-source=practice_facts`（两窗并列或时段计数；**禁止**「你更稳了/进步了」）。`What has my mood looked like recently?` / `Have I been more steady lately?` → `presence_facts`（描述性 breakdown 或两窗标签；旧 *improved* 问法仅 alias）。**负例**：`What have you noticed lately?` **不得**走 CI-00/02；`I feel depressed, what has my mood looked like recently?` → sad 语料。
 
 ---
 
@@ -707,7 +708,7 @@
 1. **首次披露**：清 `focus-tiger.presence-signals-disclosure-seen.v1` → `?product=1` → Sit → Arrival → Notice 任点 → **0–1 秒内**观察短句**下方**见 `[data-testid=presence-signals-disclosure]`（约 **4s** 随 Notice 收起再进 Breath）→ 再走一遍 Arrival **不应**再出现。  
    *[单元：`presenceSignalsDisclosureGate`；**非**披露排版 DOM 时长观感]*
 2. **入账**：DevTools `focus-tiger.presence-signals.v1` 应有 `arrival_notice`（含 `emotionTag` + 时间戳）。**不进**练习备份 / Yin Memory。  
-3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「最近两周我的情绪看起来怎样？」/ *What has my mood looked like over the last two weeks?* → reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶（旧 improved 问法仅作兼容/负例，非 SSOT 正式示例）。  
+3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「最近两周我的情绪看起来怎样？」/ *What has my mood looked like over the last two weeks?* → reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。对照型：*Have I been more steady lately?* / 「我是不是最近比较稳定？」→ 两窗标签并列，**禁止**「你更稳了」。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶（旧 improved 问法仅作兼容/负例，非 SSOT 正式示例）。  
 4. **同日 3 次 Notice**：同一天 3 次 Sit→Notice 不同选项 → 第 3 次后应满趋势门槛（**事件数**，非去重天数）。
 
 ### AF · Slice 2（Ritual Leave 回顾 · 方案 C）
@@ -736,7 +737,7 @@
 
 ### AG · Slice 0（练习字段 · 已关单参考）
 
-Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / **Can you tell me my total sitting time on this device?** → `[data-testid=confide-to-yin-reply]` **`data-source=practice_facts`**（约 **0–1 秒内**），数字须对 Journey Log。**危机/情绪优先**：`I feel depressed, how long have I practiced?` → sad 语料。**Web**：无 practice_facts 宽屏壳时仍走 harness 规则（见 AE · Web）。
+Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / **Can you tell me my total sitting time on this device?** → `[data-testid=confide-to-yin-reply]` **`data-source=practice_facts`**（约 **0–1 秒内**），数字须对 Journey Log。**Phase 1B**：`When do I usually practice?`（Journey ≥3 条才报时段）；`How have I been showing up?`；`Am I practicing longer than before?`（近 14 日 vs 前 14 日并列）。**危机/情绪优先**：`I feel depressed, how long have I practiced?` → sad 语料。**Web**：无 practice_facts 宽屏壳时仍走 harness 规则（见 AE · Web）。
 
 ### AG · Slice 1a–1e（Consent → Remember → 面板 → 注入 → 口头 Forget）
 
