@@ -138,18 +138,42 @@ describe('wrapPlayEmotionWithIdleYinTapSync', () => {
 });
 
 describe('isIdleYinTapOverlayBusy wiring (main.js source contract)', () => {
-  it('registers purpose card and Privacy sheet, and re-syncs on close', () => {
+  it('derives occupancy from snapshot; purpose/Privacy live on the host box', () => {
     const fn = mainSrc.match(
       /function isIdleYinTapOverlayBusy\(\) \{[\s\S]*?\n  \}/
     )?.[0];
     assert.ok(fn, 'isIdleYinTapOverlayBusy missing');
-    assert.match(fn, /onboardingHintHost\.hints\?\.isPurposeCardOpen/);
-    assert.match(fn, /onboardingHintHost\.hints\?\.isPrivacySheetOpen/);
+    assert.match(fn, /deriveIdleYinTapOverlayBusy\(buildLiveOverlaySnapshot\(\)\)/);
+    assert.equal(
+      /isPurposeCardOpen|isPrivacySheetOpen|supportYinModalUI/.test(fn),
+      false,
+      'overlayBusy must not keep a handwritten OR list'
+    );
     assert.equal(
       /\bonboardingHints\?/.test(fn),
       false,
       'bare onboardingHints?. inside overlayBusy is TDZ before let init'
     );
+    const snap = mainSrc.match(
+      /function buildLiveOverlaySnapshot\(\) \{[\s\S]*?\n  \}/
+    )?.[0];
+    assert.ok(snap, 'buildLiveOverlaySnapshot missing');
+    assert.match(snap, /onboardingHintHost\.hints\?\.isPurposeCardOpen/);
+    assert.match(snap, /onboardingHintHost\.hints\?\.isPrivacySheetOpen/);
+    assert.match(snap, /confideOpen:/);
+    assert.equal(
+      /\bonboardingHints\?/.test(snap),
+      false,
+      'snapshot must not read uninitialized onboardingHints'
+    );
     assert.match(mainSrc, /onPurposeClose:\s*\(\)\s*=>\s*syncIdleYinTap\(\)/);
+  });
+
+  it('isSceneAnimOverlayBusy derives from the same snapshot', () => {
+    const fn = mainSrc.match(
+      /function isSceneAnimOverlayBusy\(\) \{[\s\S]*?\n  \}/
+    )?.[0];
+    assert.ok(fn, 'isSceneAnimOverlayBusy missing');
+    assert.match(fn, /deriveSceneAnimOverlayBusy\(buildLiveOverlaySnapshot\(\)\)/);
   });
 });

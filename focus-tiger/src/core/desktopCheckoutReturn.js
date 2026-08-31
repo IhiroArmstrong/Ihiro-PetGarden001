@@ -16,10 +16,13 @@ import { isDesktopShellRuntime } from './desktopShell.js';
  * @param {Record<string, unknown>} [extra]
  * @returns {Record<string, unknown>}
  */
-export function buildCheckoutSessionBody(extra = {}) {
+export function buildCheckoutSessionBody(extra = {}, globalObj = globalThis) {
   const body = { ...extra };
-  if (isDesktopShellRuntime()) {
+  if (isDesktopShellRuntime(globalObj)) {
     body.returnSurface = 'desktop';
+    return body;
   }
+  const origin = String(globalObj?.location?.origin || '').replace(/\/+$/, '');
+  if (origin) body.pageOrigin = origin;
   return body;
 }

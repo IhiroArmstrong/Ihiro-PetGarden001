@@ -16,19 +16,39 @@ export const DEFAULT_CLOUD_API_BASE_URL =
 
 /**
  * @param {object} [globalObj]
+ * @param {{ viteDev?: boolean }} [flags]
  * @returns {string} Cloud API base without trailing slash, or "" if unset.
  */
-export function getCloudApiBaseUrl(globalObj = globalThis) {
+export function getCloudApiBaseUrl(globalObj = globalThis, flags = {}) {
+  // Packaged Electron: IPC POST; URL is a fallback signal for UI “cloud ready”.
+  if (isDesktopShellRuntime(globalObj)) {
+    try {
+      const raw = String(import.meta.env?.VITE_CLOUD_API_BASE_URL || '').trim();
+      if (raw) return raw.replace(/\/+$/, '');
+    } catch {
+      // Vite env unavailable.
+    }
+    return DEFAULT_CLOUD_API_BASE_URL;
+  }
+  let viteDev = flags.viteDev;
+  if (viteDev === undefined) {
+    try {
+      viteDev = Boolean(import.meta.env?.DEV);
+    } catch {
+      viteDev = false;
+    }
+  }
+  // Vite `npm run dev` on :5174+ is not on Worker ALLOWED_ORIGIN (:5173 only).
+  // Same-origin `/api` → vite.config.js proxy, so Safari is not CORS-blocked.
+  if (viteDev) {
+    const origin = String(globalObj?.location?.origin || '').replace(/\/+$/, '');
+    if (origin) return origin;
+  }
   try {
     const raw = String(import.meta.env?.VITE_CLOUD_API_BASE_URL || '').trim();
     if (raw) return raw.replace(/\/+$/, '');
   } catch {
     // Vite env unavailable (unit tests / non-bundled).
-  }
-  // Packaged Electron may be built without `.env.local`; the main process
-  // still has a default Worker URL and Cloud POST goes through IPC.
-  if (isDesktopShellRuntime(globalObj)) {
-    return DEFAULT_CLOUD_API_BASE_URL;
   }
   return '';
 }

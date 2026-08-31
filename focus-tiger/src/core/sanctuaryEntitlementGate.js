@@ -119,6 +119,19 @@ export function isSanctuaryUnlocked({
 }
 
 /**
+ * Lifetime CTA on the Sanctuary card must not open Stripe after unlock.
+ *
+ * @param {object} [opts]
+ * @param {Storage | null} [opts.storage]
+ * @returns {boolean}
+ */
+export function shouldStartSanctuaryLifetimeCheckout({
+  storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null
+} = {}) {
+  return isSanctuaryUnlocked({ storage }) !== true;
+}
+
+/**
  * Preview / lab gift only — not a payment path.
  *
  * @param {Storage | null | undefined} storage

@@ -70,6 +70,15 @@ export default defineConfig({
   server: {
     // Match TEST_TRACKER / Playwright (`127.0.0.1:5173`); default Vite `localhost` is IPv6-only on macOS.
     host: '127.0.0.1',
-    port: 5173
+    port: 5173,
+    // Worker ALLOWED_ORIGIN is only :5173. Feature-branch Vite (:5174+) must
+    // same-origin proxy /api or Safari checkout POSTs fail CORS (no Stripe).
+    proxy: {
+      '/api': {
+        target: 'https://focus-tiger-cloud.ihiro.workers.dev',
+        changeOrigin: true,
+        secure: true
+      }
+    }
   }
 });

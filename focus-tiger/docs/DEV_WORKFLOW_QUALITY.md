@@ -41,6 +41,7 @@
 | 2026-08-21 | Breath 抄 Arrival 微笑、磬声 slider 假绿、Quick Start 退役后 Companion 下残留球 | **§6.19** |
 | 2026-08-23 | Focusing Recover 幽灵文案叠灰袍几乎不可见；错开单测只锁 `top%` | **§6.20** |
 | 2026-08-25 | Electron/各壳 :5173：Float Yin 哑点击、空白右键从未接线、? 卡点不到 Privacy、Skip all 后无结束舞、Update 0.0.0 | **§6.21** |
+| 2026-09-01 | Unlock Lifetime 失败重开已关卡 + 额头提示记入未实现 | **§6.22** |
 
 **一句话（整套机制）**：  
 回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）+ **悬停预览不得盖住点击钉住；feature detect 不得把「函数在」写成「能打开」；合入邻接 PR ≠ 已修用户点名的另一入口**（§6.21）。  
@@ -662,7 +663,7 @@
 | H3 | 凡「播完回 Idle 再武装」不得只挂 oneshot `onComplete`——须认 `_finishOneShot` **先回调、后 idle**；包装 `playEmotion` 或在回 Idle 之后 sync |
 | H4 | `opacity:0` 的 canvas **须** `pointer-events:none`，避免占位情绪把 miss 吞成静默 |
 | H5 | TRACKER 写「已接线」而状态仍「待人工测试」= **未验收**；不得在 PROCESS 速览暗示用户可当完成 |
-| H6 | 新叠层 / 弹层（? 简介、Privacy、Support…）打开时须进 `isIdleYinTapOverlayBusy()`（及开关时 `syncIdleYinTap()`）。漏登记 = 弹窗挡额头或 hit 仍 armed 却点不到 → 用户报「摸头又没了」。禁止只验 helper 绿。读 `OnboardingHintsUI` 须走已提前初始化的 `onboardingHintHost.hints`，禁止在该函数里写裸 `onboardingHints?.`（`let` 在首次 `syncIdleYinTap` 之后才赋值 → TDZ → `__FT_APP_READY__` 永不置位 → PR smoke 整壳超时）。 |
+| H6 | 新叠层 / 弹层（? 简介、Privacy、Support、Confide、Idle 玻璃卡…）打开时须进 `OVERLAY_SOURCE_CONTRACTS`（`blocksIdleYinTap` / `blocksEnterSleep`）并由 `deriveIdleYinTapOverlayBusy(buildLiveOverlaySnapshot())` 派生；开关须 `syncIdleYinTap()`。禁止在 `main.js` 再写 OR 列表。漏登记 = 弹窗挡额头或 hit 仍 armed 却点不到。读 OnboardingHints 须走已提前初始化的 `onboardingHintHost.hints`，禁止裸 `onboardingHints?.`（TDZ → `__FT_APP_READY__` 永不置位）。 |
 
 **本回合落地**：额头 hit（`top:30%`）+ `wrapPlayEmotionWithIdleYinTapSync` + 隐藏 canvas 不抢点 + `e2e/idle-yin-tap.spec.js`；TRACKER 记入 08-18 反馈（`RB-20260818-L379`）。**2026-08-31**：? / Privacy 漏进 overlay busy 已补（`fix/privacy-idle-tap-chimes-volume`）。
 
@@ -807,6 +808,25 @@
 | H5 | 软更新芯片：dev 须预期 `0.0.0`；出现 = buildId 不一致，不是付费/邮箱门闩。Electron 测前确认 `desktopShell.isDesktop===true`，否则芯片是网页探针误入壳。 |
 
 **本回合落地**：查证写入本 §6.21 + `TEST_TRACKER` 用户反馈列。**未改运行时**（一次一任务：先根因，专修另开 `fix/*`）。
+
+### 6.22 Checkout 失败重开已关卡 + 发现提示记入≠实现（2026-09-01）
+
+**现象**：
+
+1. Support → Sanctuary：**Unlock Lifetime** 像没反应；状态行其实已是 `SANCTUARY_ERROR_GENERIC`（日文「少し静かに」易被当成副标题）。离开后再回来卡又弹出。5173 与 5174 都有。
+2. 冷启动额头提示「试试点头顶」2026-08-20 已写入 TRACKER **未改运行时**，一直拖到用户再问「是不是从没做」。
+
+**不是** Stripe 突然删了。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 失败重开 | `SanctuaryUnlockUI` / Membership / Tip `_startCheckout` 在 `checkoutError` 时 `if (!this._open) this.open()`。用户点 Not now 或切走 tab 时请求仍在飞，失败后把卡拉回来。 |
+| B · 静默武装 | 开卡后 `CHECKOUT_ARM_MS` 内点 CTA **直接 return**，无按压、无文案。 |
+| C · 层级 | Sanctuary 卡曾 z **18**，Support 遮罩 **25** / 模态 **26**。关 Support 后淡出层仍 `pointer-events: auto`，点 Unlock 点在遮罩或透明模态上。现卡 **27**；淡出层默认 `pointer-events: none`，仅 `.is-visible` 可点。 |
+| D · 提示 | 08-20 记「与无 toast / 取消 auto tip 冲突，待拍板」后**没有开工口令**。记入 ≠ 实现（同 §6.13 F1）。 |
+| E · CORS 端口 | 生产 Worker `ALLOWED_ORIGIN` **只有** `http://127.0.0.1:5173`。Safari 在 **5174** 直连 `workers.dev` 的 preflight **没有** `access-control-allow-origin`（2026-09-01 实测对照：5173 有、5174 无）。硬刷新页面**不能**改 Worker 名单。看起来像「点了没付款页」：fetch 被浏览器拦，卡面只剩通用错误句。 |
+
+**工作流补丁**：结账失败不得重开用户已关的卡；CTA 须 0–1s 状态行；Support 淡出遮罩 `pointer-events: none`。TRACKER「未改运行时 / 待拍板」项须在用户再点名时当场排期或明确拒绝，禁止只复述旧冲突句。邀测写清 **端口**：QA `:5173` 可直连 Worker；旁支 `:5174` 须 Vite `/api` 代理（改 `vite.config.js` 后**必须重启** Vite，单刷页面不够）。禁止把「5174 刷一下」写成已覆盖结账。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

@@ -13,6 +13,8 @@
 
 已取消（代码可留死路径，产品勿再验）：自动 tip 喷洒、点「?」补救铺开、`help-remedy` / catalog 芯片、Focusing「还有 N 条」。
 
+**例外（2026-09-01 · 一次发现，不是 auto spray）**：冷启动 Idle 额头上方白玉句 `IDLE_YIN_TAP_HINT`（`IdleYinTapAnchorUI`，key `idle-yin-tap-hint.v1`）。点额头一次后永不再出。禁止借本条例恢复 mint 脉冲喷洒。
+
 原则：不强迫用户读说明书；发现路径靠脉冲点悬停，空间定位靠「?」简介卡。
 
 > **Five Moments 显性化（2026-08-09）**：Moment Whisper / Compass **不是** Hint `auto` 喷洒，不得借机恢复已取消的补救铺开。权威排期与边界见 `PRODUCT_MOMENTS.md` §5.6 与 `task-briefs/task-five-moments-surface-plan.md`。Whisper = `#moment-whisper` 一生一次淡出句（`momentWhispersGate`）；与 Hint registry **分轨**。
