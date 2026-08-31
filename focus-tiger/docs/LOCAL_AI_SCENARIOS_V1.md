@@ -156,9 +156,9 @@ Safety / 情绪桶 → Tool Registry (CI-xx) → 确定性 handler → L3 短生
 
 | ID | 用户意图（SSOT 示例） | 数据源 | 状态 |
 |---|---|---|---|
-| **CI-00** | 练了多久 / How long have I practiced? | `PracticeDaysStore` | **#424 已合** |
+| **CI-00** | 练了多久 / When do I usually practice? / 两窗次数时长 | Journey Log | **#424 + Phase 1B** |
 | **CI-01** | 口头 Forget 单条 | `yin-personal-memory.json` | **#434 已合** |
-| **CI-02** | 最近两周情绪看起来怎样 / What has my mood looked like over the last two weeks? | `presence-signals.v1` | 在途 · `presence_facts` |
+| **CI-02** | 最近两周情绪看起来怎样 / What has my mood looked like recently? / 稳不稳两窗标签 | `presence-signals.v1` | **Phase 1B shipping** · `presence_facts` |
 | **（Phase 1）** | Show me what you remember | Memory store | Brief 已建 · **未开工** |
 
 > CI-02 答句：封闭标签 · 14 日 · ≥3 条 · **描述性 breakdown**；**禁止**诊断与人格进步评判。  

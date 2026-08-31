@@ -354,10 +354,11 @@
 ### Q1 · Support Modal（统一入口）
 
 1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
-2. 见三卡（**始终都可见、可点**；头图暖纸底；三 CTA 同款米色立体，Join Membership **不得**蒲团橙白字）：
+2. 见三卡（头图暖纸底；三 CTA 同款米色立体，Join Membership **不得**蒲团橙白字）：
    - **未完成过任何一次记账练习**（清 `practice-days.v1` 与 `lotus-pond.v1`；勿用 `?qaSeedStreak=` / `?qaLotusBlooms=`）：顺序 **Tea → Sanctuary → Membership**（375 最上为请茶）；**Suggested** 在 Tea 卡（`[data-testid=yin-support-suggested-badge][data-host=tea]`）。Sanctuary / Membership 仍完整可点，价文案不变。
    - **已完成过至少一次**（Focus 达标 / Honesty 成功 / Breath 完成，不论时长）：顺序恢复 **Sanctuary → Membership → Tea**；Suggested 回 Sanctuary（`data-host=sanctuary`）。此态**永久**（久别再开仍如此）。未达标 Rise **不得**切到 Sanctuary 优先。
-   - Sanctuary 文案含 **One-time Lifetime** + **About $89.99**；Membership **About $6.99 · billed monthly**；Tea 三条仪式感 bullets。**Electron**：模态底 `#yin-support-desktop-ram`；**Web 不见。** **0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
+   - **Lifetime 已买**：Sanctuary 卡**保留**、淡化（`.is-settled`），CTA **Unlock → Unlocked** 且 `disabled`（点了无 Checkout，不是哑点击）。**Suggested** 改挂 Tea。第五卡 AI Companion Add-on 出现（可点，直到加购也付完）。**Web** 模态底 `#yin-support-web-local-ai` 一句：Local AI 只在桌面应用。**Electron** 仍是 `#yin-support-desktop-ram`，不见网页那句。
+   - Sanctuary 文案含 **One-time Lifetime** + **About $89.99**；Membership **About $6.99 · billed monthly**；Tea 三条仪式感 bullets。**Electron**：模态底 `#yin-support-desktop-ram`。**Web**：第四卡 Pro 或第五卡加购在栅格时见 `#yin-support-web-local-ai`（Local AI 不在浏览器）。**0–1 秒内**点任一**未结算**卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
    - **对照**：场景化请茶气泡仍只在达标后出现，本步不改。
 3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
@@ -374,8 +375,8 @@
 ### Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
 10. Support Primary → **0–1 秒内**同 Q2（按压 + disabled + 关模态）；随后 `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
-11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
-12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。
+11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。再开 Support：Sanctuary 卡淡化、CTA 不可点；若未加购则见第五卡。
+12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。加购付完后再开 Support：第五卡**仍在**、淡化、CTA Unlocked / disabled（不得整卡消失）。
 
 ### Q4 · 统一练习徽章（免费路径 · #204）
 
@@ -693,6 +694,7 @@
 6. **回流**：关卡再开；Focusing 卸载后 Share 不得 generate。  
 7. **边界尊重**：`I'm not sure whether I want to talk about it.` → **0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=boundary`**，文案为 `CONFIDE_BOUNDARY_RESPECT`（en：We can leave it unspoken…）。**禁止** `I am curious` / generate。**回流**：关卡再开后再发同句仍 boundary。  
 8. **Don't keep**：首句或仅 `Don't keep this one.` → **`data-source=memory_suppress`**（诚实短句），**禁止** L3「I am observing」。**回归**：`Please forget about Monday` 仍 CI-01。
+9. **Phase 1B 事实（交叉 AG / AF）**：`When do I usually practice?` / `How have I been showing up?` / `Am I practicing longer than before?` → **0–1 秒内** `data-source=practice_facts`（两窗并列或时段计数；**禁止**「你更稳了/进步了」）。`What has my mood looked like recently?` / `Have I been more steady lately?` → `presence_facts`（描述性 breakdown 或两窗标签；旧 *improved* 问法仅 alias）。**负例**：`What have you noticed lately?` **不得**走 CI-00/02；`I feel depressed, what has my mood looked like recently?` → sad 语料。
 
 ---
 
@@ -707,7 +709,7 @@
 1. **首次披露**：清 `focus-tiger.presence-signals-disclosure-seen.v1` → `?product=1` → Sit → Arrival → Notice 任点 → **0–1 秒内**观察短句**下方**见 `[data-testid=presence-signals-disclosure]`（约 **4s** 随 Notice 收起再进 Breath）→ 再走一遍 Arrival **不应**再出现。  
    *[单元：`presenceSignalsDisclosureGate`；**非**披露排版 DOM 时长观感]*
 2. **入账**：DevTools `focus-tiger.presence-signals.v1` 应有 `arrival_notice`（含 `emotionTag` + 时间戳）。**不进**练习备份 / Yin Memory。  
-3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「最近两周我的情绪看起来怎样？」/ *What has my mood looked like over the last two weeks?* → reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶（旧 improved 问法仅作兼容/负例，非 SSOT 正式示例）。  
+3. **Confide 趋势（交叉 AE）**：同设备 ≥3 次不同 Notice 打卡 → Electron/Web harness 问「最近两周我的情绪看起来怎样？」/ *What has my mood looked like over the last two weeks?* → reply **`data-source=presence_facts`** 描述性 breakdown；&lt;3 条 → insufficient。对照型：*Have I been more steady lately?* / 「我是不是最近比较稳定？」→ 两窗标签并列，**禁止**「你更稳了」。**负例**：「I feel depressed, has my mood improved?」→ 仍 **sad** 语料，**禁止**用趋势盖过危机/情绪桶（旧 improved 问法仅作兼容/负例，非 SSOT 正式示例）。  
 4. **同日 3 次 Notice**：同一天 3 次 Sit→Notice 不同选项 → 第 3 次后应满趋势门槛（**事件数**，非去重天数）。
 
 ### AF · Slice 2（Ritual Leave 回顾 · 方案 C）
@@ -736,7 +738,7 @@
 
 ### AG · Slice 0（练习字段 · 已关单参考）
 
-Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / **Can you tell me my total sitting time on this device?** → `[data-testid=confide-to-yin-reply]` **`data-source=practice_facts`**（约 **0–1 秒内**），数字须对 Journey Log。**危机/情绪优先**：`I feel depressed, how long have I practiced?` → sad 语料。**Web**：无 practice_facts 宽屏壳时仍走 harness 规则（见 AE · Web）。
+Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / **Can you tell me my total sitting time on this device?** → `[data-testid=confide-to-yin-reply]` **`data-source=practice_facts`**（约 **0–1 秒内**），数字须对 Journey Log。**Phase 1B**：`When do I usually practice?`（Journey ≥3 条才报时段）；`How have I been showing up?`；`Am I practicing longer than before?`（近 14 日 vs 前 14 日并列）。**危机/情绪优先**：`I feel depressed, how long have I practiced?` → sad 语料。**Web**：无 practice_facts 宽屏壳时仍走 harness 规则（见 AE · Web）。
 
 ### AG · Slice 1a–1e（Consent → Remember → 面板 → 注入 → 口头 Forget）
 

@@ -21,11 +21,11 @@
 
 | ID | Tool id | 用户意图（示例） | 数据 / 动作 | 风险 | 入口 | 实现 |
 |---|---|---|---|---|---|---|
-| **CI-00** | `query_practice_duration` | 「练了多久？」/ How long have I practiced? | 读 `PracticeDaysStore`（与 Journey Log 同源） | read | Confide · `fallback` 前 | `confidePracticeFacts.js` · `practice_facts` |
+| **CI-00** | `query_practice_duration` | 「练了多久？」/ When do I usually practice? / How have I been showing up? / Am I practicing longer than before? | 读 Journey Log（优先）/ `PracticeDaysStore`；Phase 1B 含时段模式与两窗次数/时长/Arrival 并列 | read | Confide · `fallback` 前 | `confidePracticeFacts.js` · `practice_facts` |
 | **CI-01** | `forget_memory_entry` | 「别再记周一的事了」/ Please forget what I said about Monday | 真删 `yin-personal-memory.json` 单条（同 1c IPC） | local_reversible | Confide · `fallback` + Consent granted | `yinPersonalMemoryVerbalForget.js` · `memory_forget` |
 
 > **PO · 2026-08-31**：CI-01 / `memory_suppress` **意图对了、指代解析不到**时，保留诚实短句（`YIN_MEMORY_SUPPRESS_NO_MATCH`），**禁止猜删**。`turns.jsonl` ≠ Yin Personal Memory。口头「昨天那件事」解析是 entity 缺口，另口令，不在本表白名单扩成对话全量可删。
-| **CI-02** | `query_presence_trend` | 「最近两周我的情绪看起来怎样？」/ What has my mood looked like over the last two weeks? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
+| **CI-02** | `query_presence_trend` | 「最近两周我的情绪看起来怎样？」/ What has my mood looked like recently? / Have I been more steady lately? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown 或两窗并列） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
 
 > **PO · 2026-08-28**：**正式示例**改用描述性问法。**不再推广**「Has my mood improved? / 改善了吗」（可作路由 alias）。答句禁止诊断与人格进步评判（**你更稳了 / 你进步了**）。  
 > **PO · 2026-08-28 晚**：**Bounded Temporal Compare** — 对照型问句（比以前久 / 稳不稳 / 进状态）可路由；答句须**两段时期并列事实**，见 `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` Amendment。
@@ -67,7 +67,7 @@
 3. 冲突扫描（强度 / 人设 / 职责）无未拍板疑点；  
 4. 更新 **本表** + Task Brief + tracker。
 
-**我认为最合理的下一候选（若做）**：#472 Read Hybrid 已合 · **先人工测**；至多一个新 read tool 须另拍板。Operating / Backup / Update **不**进本表（见 `LOCAL_AI_OPERATING_LAYER.md`）。
+**我认为最合理的下一候选（若做）**：**口令 1A** Show memory read tool（分 PR）。Operating / Backup / Update **不**进本表。
 
 ---
 

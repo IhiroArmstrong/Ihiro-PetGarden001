@@ -1,6 +1,6 @@
 # Local AI Phase 1 · 执行任务计划
 
-**状态（2026-08-28）**：**执行 SSOT 已建** · PO 已拍板 · Brief 已建 · **runtime 须分项口令** · **本文件 ≠ 自动开工**。  
+**状态（2026-09-01）**：**执行 SSOT** · Gate 0.2 #472 已关单 · **1B 口令本旁支 shipping** · 1A / 1C 仍须分项口令。  
 **产品政策 SSOT**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md`  
 **排期索引**：`TASKS.md` §Local AI Phase 1  
 **交叉引用**：`task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LAB_SCRIPT_CONVENTIONS.md`
@@ -34,14 +34,14 @@
 |---|---|---|
 | **规划 / PO** | ✅ 已结案 | PR #476 · `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` |
 | **Brief** | ✅ 已建 | 1A / 1B / 1C · **存在 ≠ 开工** |
-| **Runtime** | ⏸ 未开工 | 须分项口令 · **分 PR** |
+| **Runtime** | 🟡 1B 本旁支 | 1A / 1C 仍须口令 · **分 PR** |
 
 ```text
 [✅ PO + SSOT #476]
         ↓
 [Gate 0.2 · #472 Read Hybrid 验收 A→B→C]  ← **2026-09-01 关单**（tip `86a4c72e`）
         ↓
-[口令 → 1B Ask Journey/Presence]  PR 独立  ← **下一刀（须口令）**
+[口令 → 1B Ask Journey/Presence]  ← **本旁支 shipping**
         ↓
 [口令 → 1A NL Actions · Show memory]  PR 独立
         ↓
@@ -62,7 +62,7 @@
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
 | **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | 🟡 **实验室已开工**（与 0.2 并行；换模型之前必做） |
 
-**0.2 已通过（2026-09-01）**：可排 **口令 1B** shipping runtime（仍须分项口令；lab flag 旁支仍可并行）。C-5 sitting-time 产品修建议先合入再开 1B 问法扩面。
+**0.2 已通过（2026-09-01）**：**1B 口令已执行**（本旁支；#502 sitting-time 已在 develop）。下一刀须 **口令 1A**。
 
 **0.D 通过前**：**不开** 多模型 Benchmark、**不**改生产默认 GGUF。0.D 证明「Qwen 能标 intent、现网仍贴标签」→ 修 prompt / 层序 / 语料，不换模型。Qwen 标不出 companion / boundary / mixed primary intent → 再议容量（1.7B 是否瓶颈）。
 
@@ -299,8 +299,8 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 
 ## 9. 我认为最合理的下一刀
 
-1. **#472 关单**（Gate 0.2 hybrid 人工）。  
-2. 再下 **1B 口令**，然后 **1A** → **1C validation**（非 shipping）。  
+1. **合入本 1B PR**（CI 绿即可合 develop）。  
+2. 再下 **口令 1A**（Show memory），然后 **口令 1C validation**（非 shipping）。  
 3. Forget「昨天那件事」= Yin Memory 指代另口令（不扫 `turns.jsonl`、不猜删）。
 
 **较弱**：未关 #472 就并行三 Phase 1 shipping；扩设计师 20 条 Phase 2 诊断（0.D 已够支撑层序刀）；0.D 后再 Benchmark Llama。

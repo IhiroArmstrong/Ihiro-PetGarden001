@@ -32,7 +32,21 @@ This note is also in the desktop app: tap **?** and open **Support Yin**. Safari
 
 Safari on the QA tree (`http://127.0.0.1:5173/?product=1`) is the **Web** product. It never loads llama. Use an **Electron window**.
 
-Do not run another Vite on port 5173 at the same time (`desktop:dev` starts its own and waits for that port).
+Do not run another Vite on port 5173 at the same time. If Safari / `npm run dev` is **already** on `127.0.0.1:5173`, the same command **attaches Electron only** (it will not start a second Vite):
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger
+npm run desktop:dev
+```
+
+If nothing is listening on 5173, `desktop:dev` starts Vite then Electron.
+
+Electron-only (same URL, Vite must already be up):
+
+```text
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/desktop
+FT_DESKTOP_DEV=1 ./node_modules/.bin/electron . --dev
+```
 
 From the develop QA worktree on the Mac:
 

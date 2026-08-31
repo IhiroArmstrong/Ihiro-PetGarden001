@@ -55,6 +55,45 @@ describe('confide executable tool registry', () => {
     );
   });
 
+  it('routes Phase 1B CORE questions onto existing read tools', () => {
+    const fallback = CONFIDE_ROUTE.FALLBACK;
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: 'When do I usually practice?'
+      })?.id,
+      CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: 'How have I been showing up?'
+      })?.id,
+      CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: 'What has my mood looked like recently?'
+      })?.id,
+      CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: 'Have I been more steady lately?'
+      })?.id,
+      CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: 'What have you noticed lately?'
+      }),
+      null
+    );
+  });
+
   it('does not match verbal forget without bridge and consent-shaped state', () => {
     assert.equal(
       matchConfideExecutableTool({

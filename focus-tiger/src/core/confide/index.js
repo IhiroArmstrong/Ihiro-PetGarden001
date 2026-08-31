@@ -8,10 +8,13 @@ export { resolveConfideReply } from './confideReplyFlow.js';
 export { confideClassify, canSubmitConfideText } from './confideClassify.js';
 export {
   isPracticeDurationQuestion,
+  isPracticeFactsQuestion,
+  classifyPracticeFactsKind,
   shouldAnswerWithPracticeFacts,
   summarizePracticeFacts,
   summarizePracticeFactsFromJourneyLog,
-  formatPracticeDurationReply
+  formatPracticeDurationReply,
+  buildPracticeFactsReply
 } from './confidePracticeFacts.js';
 export {
   CONFIDE_TOOL_ID,
