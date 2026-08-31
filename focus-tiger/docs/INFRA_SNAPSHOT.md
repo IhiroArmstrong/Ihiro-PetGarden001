@@ -23,7 +23,7 @@
 |---|---|
 | Worker name | `focus-tiger-cloud` |
 | Public URL | `https://focus-tiger-cloud.ihiro.workers.dev`（163 / ihiro Cloudflare；**勿**用旁路 `*.focus-tiger.workers.dev`） |
-| `ALLOWED_ORIGIN`（vars） | `http://127.0.0.1:5173`（支持逗号列表；可含 `focus-tiger://app`；**生产名单变更须 redeploy**） |
+| `ALLOWED_ORIGIN`（vars） | `http://127.0.0.1:5173`（支持逗号列表；可含 `focus-tiger://app`；**生产名单变更须 redeploy**）。本地旁支 `:5174` 不在名单内 → 浏览器 CORS 拦结账；Vite dev 用同源 `/api` 代理，不扩生产 Origin。Checkout POST `pageOrigin` 仅改写 loopback success/cancel；生产 Version `2e94d4c0`（2026-09-01）已含。 |
 | KV bindings（7） | 见下表 |
 | Checkout `vars` 接线 | Tip ✓ · Sanctuary ✓ · Membership ✓ · **Pro ✓** · **Companion Add-on ✓** |
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
@@ -65,15 +65,13 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `d46b2dad-937b-412d-b0e3-7c09a80f94dc` |
-| `prod_verified_at` | 2026-08-31（本机 `wrangler deploy` · `/checkout/desktop-return` HTTPS→`focus-tiger://` 桥接） |
+| `prod_worker_version` | `2e94d4c0-0ec5-42e8-aa89-d06dd914b303` |
+| `prod_verified_at` | 2026-09-01（本机 `wrangler deploy` · 163 / ihiro · Checkout `pageOrigin` loopback 回跳 + `/health` 200） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
-| `monetization-funnel-ingest`（#378） | 现网旧 ingest 会丢 `tea-first` / `sanctuary-first` 计数键 |
-| YPE L2 ingest/delete（#459–#460） | 须 KV 绑定 + redeploy 后生产才可用 |
-| Pro / Companion Add-on checkout（#checkout 线） | `wrangler.jsonc` vars 已接线；**合 develop ≠ 生产已生效** |
-| 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 deploy 已含；更早 Version 可能仍为旧价 |
+| （本 Version `2e94d4c0` 起）漏斗 ingest layout / YPE L2 ingest / Pro+Add-on Checkout / `pageOrigin` 回跳 | 2026-09-01 本机 Redeploy 已从 `fix/overlay-three-questions` 上传；Safari 结账回跳仍须人工 |
+| 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
 
 ---
 

@@ -76,6 +76,10 @@ import {
   secondaryProxyForHintId,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
+import {
+  HELP_OUTSIDE_DISMISS,
+  resolveHelpOutsideDismissAction
+} from './helpOverlayOutsideDismiss.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -562,34 +566,37 @@ export class OnboardingHintsUI {
         event.target instanceof Element ? event.target : event.target?.parentElement
       );
       if (!el) return;
-      if (this.isWellnessFirstCardOpen()) {
-        if (this.wellnessFirstCard?.contains(el)) return;
+      const action = resolveHelpOutsideDismissAction({
+        wellnessFirstOpen: this.isWellnessFirstCardOpen(),
+        wellnessFirstContains: this.wellnessFirstCard?.contains(el) === true,
+        wellnessDetailOpen: Boolean(
+          this.wellnessDetailCard && !this.wellnessDetailCard.hidden
+        ),
+        wellnessDetailContains: this.wellnessDetailCard?.contains(el) === true,
+        privacyOpen: this.isPrivacySheetOpen(),
+        privacyContains: this.privacySheet?.contains(el) === true,
+        purposeOpen: this.isPurposeCardOpen(),
+        purposeContains: this.purposeCard?.contains(el) === true,
+        helpContains:
+          this.helpBtn.contains(el) ||
+          Boolean(el.closest('#ft-narrow-help-btn'))
+      });
+      if (action === HELP_OUTSIDE_DISMISS.CLOSE_WELLNESS_FIRST) {
         this.hideWellnessFirstCard({ markSeen: true, notify: true });
         return;
       }
-      const purposeOpen = Boolean(this.purposeCard && !this.purposeCard.hidden);
-      const wellnessDetailOpen = Boolean(
-        this.wellnessDetailCard && !this.wellnessDetailCard.hidden
-      );
-      if (wellnessDetailOpen) {
-        if (this.wellnessDetailCard?.contains(el)) return;
+      if (action === HELP_OUTSIDE_DISMISS.CLOSE_WELLNESS_DETAIL) {
         this._hideWellnessDetailCard();
         return;
       }
-      const privacyOpen = Boolean(
-        this.privacySheet && !this.privacySheet.hidden
-      );
-      if (privacyOpen) {
-        if (this.privacySheet?.contains(el)) return;
+      if (action === HELP_OUTSIDE_DISMISS.CLOSE_PRIVACY) {
         this._dismissPrivacyAndPurpose();
         return;
       }
-      if (!purposeOpen) return;
-      if (this.helpBtn.contains(el)) return;
-      if (el.closest('#ft-narrow-help-btn')) return;
-      if (this.purposeCard?.contains(el)) return;
-      this._hidePurposeCard();
-      this._purposeFromHover = false;
+      if (action === HELP_OUTSIDE_DISMISS.CLOSE_PURPOSE) {
+        this._hidePurposeCard();
+        this._purposeFromHover = false;
+      }
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
   }

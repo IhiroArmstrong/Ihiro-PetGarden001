@@ -48,7 +48,11 @@
 2. **`SCENE_ANIMATION_WIRING`**：打开 / 关闭叠层时精灵应播什么？无行 = 实现默认不动睡态。
 3. **`SCENARIO_TESTS`**：AE / AD 交叉步是否写明睡态路径（例：AE 步 6 · DORMANT → 开 Confide → `dormantWake` → idle）。
 
-**正面案例（Confide 睡态唤醒 · #491）**：Confide MVP 只锁发送后点头，未扫 AD；深夜 DORMANT 下开倾诉面板 Yin 仍睡。修复 = `onOpen` → `wakeYinForConfideCompanion`（与 Honesty 睡态选时长对称）。以后新 Idle 叠层：**先写接线表 + 场景步，再写 UI**。
+**占用接线（2026-08-31）**：摸头 / 进睡占用读 `OVERLAY_SOURCE_CONTRACTS` 的 `blocksIdleYinTap` / `blocksEnterSleep`，经 `buildLiveOverlaySnapshot` 派生。新 Idle 叠层**禁止**只进 `closeGrowthOverlayCards` 却不登记。本轮 `dormantWakeOnOpen: required` 仅 Confide（Honesty 面板既有路径不变）；Journey / Support 唤醒留风险 5+。
+
+**2026-09-01 合入前补丁**：Unlock Lifetime 结账失败不得再 `open()` 已关卡；Support 淡出遮罩不得抢 Sanctuary CTA。冷启动额头提示是一次发现气泡，**不是** Hint auto 喷洒、**不是**每次摸头 toast；吹花气泡在时不出。与场景 X2「无 toast」无冲突。Vite 旁支端口结账走同源 `/api` 代理，不改变生产 Worker 支付契约。已买 Lifetime 的 Sanctuary CTA 关卡、不重开 Stripe（场景 Q3）；第五卡 Add-on 与第四卡 Pro 仍互斥，不另开入口。
+
+**正面案例（Confide 睡态唤醒 · #491）**：Confide MVP 只锁发送后点头，未扫 AD；深夜 DORMANT 下开倾诉面板 Yin 仍睡。修复 = `onOpen` → `wakeYinIfSleeping`（`wakeYinForConfideCompanion` 别名；与 Honesty 睡态选时长对称）。以后新 Idle 叠层：**先写接线表 + 场景步，再写 UI**。
 
 ### b. 人设 / 语气不一致
 
@@ -197,6 +201,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 | 日期 | 说明 |
 |---|---|
 | 2026-09-01 | CI-00 扩 `total sitting time` regex：对照 AG Slice 0 / AE Confide；强度仍 0–1s 模板；人设仍 facts 非 L3 观察句；职责仍 Journey 账本。无冲突 |
+| 2026-08-31 | 叠层占用三问接 registry：`blocksIdleYinTap` / `blocksEnterSleep` 派生；Confide wake helper 共用 |
 | 2026-08-31 | 邻接扫描提示：Idle 陪伴叠层须扫 AD + `SCENE_ANIMATION_WIRING` + 睡态场景步；正面案例 Confide #491 睡态唤醒 |
 | 2026-08-28 | PO 修订 Bounded Temporal Compare：C2 开放两段时期并列事实；禁止人格进步评判；Phase 1B 扩对照型问句。无 runtime |
 | 2026-08-28 | PO 正式拍板 Local AI Phase 1：V1=A；V2 future；V3 validation；Ceiling C2+少量C3；MUST NOT 锁。Brief 三份；无自动 runtime |

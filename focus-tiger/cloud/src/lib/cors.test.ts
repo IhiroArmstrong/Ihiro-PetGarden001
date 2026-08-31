@@ -41,4 +41,14 @@ describe("cors allowlist", () => {
 			null,
 		);
 	});
+
+	it("rejects Vite feature-branch origin :5174 when only :5173 is listed", () => {
+		const request = new Request("https://focus-tiger-cloud.ihiro.workers.dev/api/x", {
+			headers: { origin: "http://127.0.0.1:5174" },
+		});
+		assert.equal(
+			resolveAllowedOrigin(env("http://127.0.0.1:5173"), request),
+			null,
+		);
+	});
 });

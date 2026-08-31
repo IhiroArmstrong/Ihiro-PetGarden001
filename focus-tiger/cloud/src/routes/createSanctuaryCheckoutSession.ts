@@ -1,4 +1,5 @@
 import { errorJson, json } from "../lib/http";
+import { resolveSessionReturnUrls } from "../lib/checkoutReturnUrls";
 import { createSanctuaryCheckoutSession } from "../lib/stripe";
 import { isPlausibleEmail, normalizeEmail } from "../lib/sanctuaryKv";
 import type { Env } from "../types";
@@ -29,8 +30,11 @@ export async function handleCreateSanctuaryCheckoutSession(
 	}
 
 	let customerEmail: string | undefined;
+	/** @type {unknown} */
+	let parsedBody: unknown = null;
 	try {
-		const body = (await request.json()) as { email?: unknown };
+		parsedBody = await request.json();
+		const body = parsedBody as { email?: unknown };
 		if (typeof body?.email === "string" && body.email.trim()) {
 			if (!isPlausibleEmail(body.email)) {
 				return errorJson(400, "invalid_email", "email looks invalid");
@@ -41,12 +45,14 @@ export async function handleCreateSanctuaryCheckoutSession(
 		// Empty body OK.
 	}
 
+	const returns = resolveSessionReturnUrls(successUrl, cancelUrl, parsedBody, request);
+
 	try {
 		const session = await createSanctuaryCheckoutSession({
 			secretKey: secret,
 			priceId,
-			successUrl,
-			cancelUrl,
+			successUrl: returns.successUrl,
+			cancelUrl: returns.cancelUrl,
 			customerEmail,
 		});
 		return json({ url: session.url });
