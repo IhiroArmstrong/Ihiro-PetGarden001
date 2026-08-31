@@ -90,6 +90,7 @@ export class ConfideToYinUI {
    * @param {() => boolean} [handlers.canOpen]
    * @param {() => void} [handlers.onOpenMemoryPanel]
    * @param {(memoryId: string) => void} [handlers.onMemoryForgotten]
+   * @param {() => void} [handlers.onMemoryRemembered]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -671,6 +672,7 @@ export class ConfideToYinUI {
       turnOrdinal
     }).then((state) => {
       this._memoryState = state;
+      this.handlers.onMemoryRemembered?.();
     });
   }
 

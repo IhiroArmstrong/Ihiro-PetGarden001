@@ -23,6 +23,7 @@ import {
   yinMemoryKindLabelKey,
   yinMemoryWhyCopyKey
 } from '../core/yinPersonalMemory/yinPersonalMemoryForget.js';
+import { yinMemoryPanelEmptyCopyKey } from '../core/yinPersonalMemory/yinPersonalMemoryConsent.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -195,6 +196,14 @@ export class YinPersonalMemoryUI {
     if (this._open) this._refresh();
   }
 
+  /**
+   * Re-read store when Confide Remember writes while this panel is already open.
+   */
+  reloadIfOpen() {
+    if (!this._open) return;
+    void this._loadAndRefresh();
+  }
+
   _styleStorage() {
     return typeof localStorage !== 'undefined' ? localStorage : null;
   }
@@ -230,7 +239,7 @@ export class YinPersonalMemoryUI {
       row.span.textContent = styleCopy[id];
       row.input.checked = style === id;
     }
-    this.emptyEl.textContent = t('YIN_MEMORY_PANEL_EMPTY');
+    this.emptyEl.textContent = t(yinMemoryPanelEmptyCopyKey(this._consent));
     this.deniedEl.textContent = t('YIN_MEMORY_PANEL_DENIED');
 
     const denied = this._consent === 'denied';

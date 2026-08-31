@@ -738,6 +738,7 @@
   "YIN_MEMORY_PANEL_TITLE": "寅が覚えていること",
   "YIN_MEMORY_PANEL_BLURB": "この端末だけに残る、寅の観察です。いつでも忘れられます。",
   "YIN_MEMORY_PANEL_EMPTY": "まだありません——吐露で許可したあとに覚えます。",
+  "YIN_MEMORY_PANEL_EMPTY_GRANTED": "まだ観察はありません。寅は繰り返すことだけを残し、吐露のすべての返事は覚えません。",
   "YIN_MEMORY_PANEL_DENIED": "寅は今、新しいことを覚えていません。",
   "YIN_MEMORY_PANEL_CLOSE": "閉じる",
   "YIN_MEMORY_FORGET": "忘れる",

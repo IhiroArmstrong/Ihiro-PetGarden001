@@ -738,6 +738,7 @@
   "YIN_MEMORY_PANEL_TITLE": "What Yin remembers",
   "YIN_MEMORY_PANEL_BLURB": "A few observations Yin keeps on this device only. You can forget any of them.",
   "YIN_MEMORY_PANEL_EMPTY": "Nothing here yet — Yin only remembers after you allow it in Confide.",
+  "YIN_MEMORY_PANEL_EMPTY_GRANTED": "Nothing kept yet. Yin notes a few repeating observations — not every Confide reply.",
   "YIN_MEMORY_PANEL_DENIED": "Yin is not remembering new things right now.",
   "YIN_MEMORY_PANEL_CLOSE": "Close",
   "YIN_MEMORY_FORGET": "Forget",

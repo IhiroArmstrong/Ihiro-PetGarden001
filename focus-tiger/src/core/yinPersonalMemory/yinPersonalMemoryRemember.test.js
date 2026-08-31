@@ -73,6 +73,31 @@ test('matchYinMemoryRememberRule maps preference and relationship cues', () => {
   assert.equal(matchYinMemoryRememberRule('Just checking in today.'), null);
 });
 
+test('matchYinMemoryRememberRule maps Monday crowded including the tracker example', () => {
+  const a = matchYinMemoryRememberRule('Mondays feel crowded');
+  assert.equal(a?.ruleId, 'pattern-monday-crowded');
+  assert.equal(a?.kind, 'pattern');
+  const b = matchYinMemoryRememberRule('Mondays feel crowded → Pattern');
+  assert.equal(b?.ruleId, 'pattern-monday-crowded');
+});
+
+test('matchYinMemoryRememberRule maps first-person check-in patterns', () => {
+  assert.equal(matchYinMemoryRememberRule('I think I need a reset.')?.ruleId, 'pattern-need-reset');
+  assert.equal(
+    matchYinMemoryRememberRule("I don’t feel like focusing today.")?.ruleId,
+    'pattern-not-focusing-today'
+  );
+  assert.equal(
+    matchYinMemoryRememberRule("I don't feel like focusing today.")?.ruleId,
+    'pattern-not-focusing-today'
+  );
+  assert.equal(
+    matchYinMemoryRememberRule('I was doing pretty well until this morning.')?.ruleId,
+    'pattern-morning-shift'
+  );
+  assert.equal(matchYinMemoryRememberRule('Can we just sit here for a minute?'), null);
+});
+
 test('rememberFromConfideTurn writes active memory after granted consent', () => {
   const { state, remembered } = rememberFromConfideTurn(granted(), {
     userText: 'I prefer quiet, short reflections.',
