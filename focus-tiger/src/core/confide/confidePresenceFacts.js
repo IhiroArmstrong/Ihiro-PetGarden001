@@ -17,7 +17,13 @@ import {
   summarizePresenceSignalsForWindow
 } from '../presenceSignalsGate.js';
 
+export const PRESENCE_FACTS_KIND = Object.freeze({
+  TREND: 'trend',
+  COMPARE: 'compare'
+});
+
 const TREND_QUESTION_RES = [
+  /\bwhat\s+has\s+my\s+mood\s+looked\s+like\b/i,
   /\b(has|have)\s+my\s+mood\s+(improved|changed|gotten\s+better)\b/i,
   /\bhow\s+(has|have)\s+my\s+(mood|emotions?)\s+been\b/i,
   /\bhow\s+(am|are)\s+i\s+feeling\s+lately\b/i,
@@ -25,9 +31,16 @@ const TREND_QUESTION_RES = [
   /\b(past|last)\s+two\s+weeks\b.*\b(mood|emotion|feeling|calm|stress)/i,
   /情绪.*(改善|变好|变化)/,
   /这两周.*情绪/,
-  /最近.*情绪.*怎么样/,
+  /最近.*(两周)?.*(情绪|心情).*怎么样/,
   /心情.*(这两周|最近)/,
-  /过去两周.*(情绪|心情|状态)/
+  /过去两周.*(情绪|心情|状态)/,
+  /最近两周我的情绪看起来怎样/
+];
+
+const COMPARE_STEADY_RES = [
+  /\bhave\s+i\s+been\s+more\s+steady\s+lately\b/i,
+  /\bam\s+i\s+(more\s+)?steady\s+lately\b/i,
+  /我是不是最近比较稳定|最近比较稳定|是不是更稳定/
 ];
 
 /**
@@ -54,12 +67,22 @@ export const PRESENCE_TAG_LABEL_KEYS = Object.freeze({
 
 /**
  * @param {string} text
+ * @returns {(typeof PRESENCE_FACTS_KIND)[keyof typeof PRESENCE_FACTS_KIND] | null}
+ */
+export function classifyPresenceFactsKind(text) {
+  const raw = typeof text === 'string' ? text.trim() : '';
+  if (!raw) return null;
+  if (COMPARE_STEADY_RES.some((re) => re.test(raw))) return PRESENCE_FACTS_KIND.COMPARE;
+  if (TREND_QUESTION_RES.some((re) => re.test(raw))) return PRESENCE_FACTS_KIND.TREND;
+  return null;
+}
+
+/**
+ * @param {string} text
  * @returns {boolean}
  */
 export function isPresenceTrendQuestion(text) {
-  const raw = typeof text === 'string' ? text.trim() : '';
-  if (!raw) return false;
-  return TREND_QUESTION_RES.some((re) => re.test(raw));
+  return classifyPresenceFactsKind(text) != null;
 }
 
 /**
@@ -139,4 +162,75 @@ export function formatPresenceTrendReply(summary, tFn) {
 export function buildPresenceTrendReply(storage, tFn, opts = {}) {
   const summary = summarizePresenceSignalsForWindow(storage, opts);
   return formatPresenceTrendReply(summary, tFn);
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @param {{ windowDays?: number, reference?: Date }} [opts]
+ */
+export function summarizePresenceCompareWindows(storage, opts = {}) {
+  const reference = opts.reference ?? new Date();
+  const windowDays =
+    Number(opts.windowDays) || PRESENCE_SIGNALS_DEFAULT_WINDOW_DAYS;
+  const recent = summarizePresenceSignalsForWindow(storage, {
+    windowDays,
+    reference
+  });
+  const priorRef = new Date(reference);
+  priorRef.setHours(12, 0, 0, 0);
+  priorRef.setDate(priorRef.getDate() - windowDays);
+  const prior = summarizePresenceSignalsForWindow(storage, {
+    windowDays,
+    reference: priorRef
+  });
+  return { windowDays, recent, prior };
+}
+
+/**
+ * @param {{
+ *   windowDays: number,
+ *   recent: { totalTagged: number, counts: Record<string, number> },
+ *   prior: { totalTagged: number, counts: Record<string, number> }
+ * }} windows
+ * @param {(key: string) => string} tFn
+ */
+export function formatPresenceCompareReply(windows, tFn) {
+  const lookup = typeof tFn === 'function' ? tFn : () => '';
+  const recentTotal = Number(windows?.recent?.totalTagged) || 0;
+  const priorTotal = Number(windows?.prior?.totalTagged) || 0;
+  if (recentTotal + priorTotal < PRESENCE_SIGNALS_MIN_TREND_COUNT) {
+    return lookup('CONFIDE_PRESENCE_FACTS_COMPARE_INSUFFICIENT');
+  }
+  const days = Number(windows?.windowDays) || PRESENCE_SIGNALS_DEFAULT_WINDOW_DAYS;
+  const recentBreakdown =
+    formatPresenceTagBreakdown(windows?.recent?.counts || {}, lookup) ||
+    lookup('CONFIDE_PRESENCE_FACTS_COMPARE_NONE');
+  const priorBreakdown =
+    formatPresenceTagBreakdown(windows?.prior?.counts || {}, lookup) ||
+    lookup('CONFIDE_PRESENCE_FACTS_COMPARE_NONE');
+  return fill(lookup('CONFIDE_PRESENCE_FACTS_COMPARE'), {
+    days,
+    recentBreakdown,
+    recentTotal,
+    priorBreakdown,
+    priorTotal
+  });
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @param {(key: string) => string} tFn
+ * @param {string} text
+ * @param {{ windowDays?: number, reference?: Date }} [opts]
+ * @returns {string}
+ */
+export function buildPresenceFactsReply(storage, tFn, text, opts = {}) {
+  const kind = classifyPresenceFactsKind(text) || PRESENCE_FACTS_KIND.TREND;
+  if (kind === PRESENCE_FACTS_KIND.COMPARE) {
+    return formatPresenceCompareReply(
+      summarizePresenceCompareWindows(storage, opts),
+      tFn
+    );
+  }
+  return buildPresenceTrendReply(storage, tFn, opts);
 }

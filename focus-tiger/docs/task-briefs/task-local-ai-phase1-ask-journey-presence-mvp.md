@@ -1,8 +1,8 @@
 # Task Brief · Local AI Phase 1 · Ask Journey / Presence MVP
 
-> **状态（2026-08-28）**：**Brief 已建 · 未开工** · 须口令「开工 Local AI Phase 1 Ask Journey Presence」。  
+> **状态（2026-09-01）**：**口令已执行 · shipping runtime 本旁支** · 扩 CI-00/02，不新增 tool id。  
 > **PO 决策**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md`（含 **2026-08-28 晚 · Bounded Temporal Compare**）· `LOCAL_AI_SCENARIOS_V1.md` §Phase 1B  
-> **前置**：#472 Read Hybrid 人工测；Presence CI-02 链路人验收
+> **前置**：#472 Read Hybrid 关单 · #502 sitting-time Journey 合入
 
 ---
 

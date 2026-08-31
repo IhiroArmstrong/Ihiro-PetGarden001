@@ -8,10 +8,13 @@ import { describe, it } from 'node:test';
 import { confideClassify } from './confideClassify.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import {
+  buildPresenceFactsReply,
   buildPresenceTrendReply,
   formatPresenceTrendReply,
   isPresenceTrendQuestion,
-  shouldAnswerWithPresenceFacts
+  shouldAnswerWithPresenceFacts,
+  classifyPresenceFactsKind,
+  PRESENCE_FACTS_KIND
 } from './confidePresenceFacts.js';
 import {
   appendArrivalNoticeSignal,
@@ -26,6 +29,11 @@ const tFn = (key) =>
       'There are not enough check-ins yet to see a pattern.',
     CONFIDE_PRESENCE_FACTS_SUMMARY:
       'In the past {days} days you checked in {total} times: {breakdown}. That is only a few notes—not a full picture.',
+    CONFIDE_PRESENCE_FACTS_COMPARE:
+      'In the last {days} days: {recentBreakdown} ({recentTotal} check-ins). In the {days} days before that: {priorBreakdown} ({priorTotal} check-ins).',
+    CONFIDE_PRESENCE_FACTS_COMPARE_NONE: 'none written down',
+    CONFIDE_PRESENCE_FACTS_COMPARE_INSUFFICIENT:
+      'There are not enough check-ins yet to compare two periods.',
     ARRIVAL_NOTICE_CALM: 'Calm',
     ARRIVAL_NOTICE_STRESSED: 'Stressed'
   })[key] || key;
@@ -122,5 +130,53 @@ describe('confide presence facts (Slice 4 minimal)', () => {
     }
     const reply = buildPresenceTrendReply(storage, tFn, { reference: now });
     assert.match(reply, /3 times/);
+  });
+
+  it('matches descriptive mood questions and keeps improved as an alias', () => {
+    assert.equal(
+      classifyPresenceFactsKind('What has my mood looked like recently?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(
+      classifyPresenceFactsKind('What has my mood looked like over the last two weeks?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(
+      classifyPresenceFactsKind('Have I been more steady lately?'),
+      PRESENCE_FACTS_KIND.COMPARE
+    );
+    assert.equal(isPresenceTrendQuestion('What have you noticed lately?'), false);
+  });
+
+  it('compare replies list two windows and never say you got steadier', () => {
+    const storage = mockStorage();
+    const now = new Date(2026, 8, 1, 12, 0, 0);
+    appendArrivalNoticeSignal(storage, 'calm', {
+      now: () => new Date(2026, 7, 25, 10, 0, 0),
+      idFn: () => 'r1'
+    });
+    appendArrivalNoticeSignal(storage, 'calm', {
+      now: () => new Date(2026, 7, 26, 10, 0, 0),
+      idFn: () => 'r2'
+    });
+    appendArrivalNoticeSignal(storage, 'stressed', {
+      now: () => new Date(2026, 7, 10, 10, 0, 0),
+      idFn: () => 'p1'
+    });
+    const reply = buildPresenceFactsReply(
+      storage,
+      tFn,
+      'Have I been more steady lately?',
+      { reference: now }
+    );
+    assert.match(reply, /Calm 2/);
+    assert.match(reply, /Stressed 1/);
+    assert.equal(/more consistent|improving|更稳了|进步了/i.test(reply), false);
+  });
+
+  it('does not steal sad routes on descriptive mood questions', () => {
+    const sad = 'I feel depressed, what has my mood looked like recently?';
+    assert.equal(confideClassify(sad), CONFIDE_ROUTE.SAD);
+    assert.equal(shouldAnswerWithPresenceFacts(CONFIDE_ROUTE.SAD, sad), false);
   });
 });
