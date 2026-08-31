@@ -23,6 +23,8 @@
 |---|---|---|---|---|---|---|
 | **CI-00** | `query_practice_duration` | 「练了多久？」/ How long have I practiced? | 读 `PracticeDaysStore`（与 Journey Log 同源） | read | Confide · `fallback` 前 | `confidePracticeFacts.js` · `practice_facts` |
 | **CI-01** | `forget_memory_entry` | 「别再记周一的事了」/ Please forget what I said about Monday | 真删 `yin-personal-memory.json` 单条（同 1c IPC） | local_reversible | Confide · `fallback` + Consent granted | `yinPersonalMemoryVerbalForget.js` · `memory_forget` |
+
+> **PO · 2026-08-31**：CI-01 / `memory_suppress` **意图对了、指代解析不到**时，保留诚实短句（`YIN_MEMORY_SUPPRESS_NO_MATCH`），**禁止猜删**。`turns.jsonl` ≠ Yin Personal Memory。口头「昨天那件事」解析是 entity 缺口，另口令，不在本表白名单扩成对话全量可删。
 | **CI-02** | `query_presence_trend` | 「最近两周我的情绪看起来怎样？」/ What has my mood looked like over the last two weeks? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
 
 > **PO · 2026-08-28**：**正式示例**改用描述性问法。**不再推广**「Has my mood improved? / 改善了吗」（可作路由 alias）。答句禁止诊断与人格进步评判（**你更稳了 / 你进步了**）。  

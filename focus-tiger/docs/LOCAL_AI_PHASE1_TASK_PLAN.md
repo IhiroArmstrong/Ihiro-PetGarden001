@@ -60,8 +60,11 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ⏳ **下一刀** |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | ⏳ **与 0.2 并行；换模型之前必做** |
 
-**0.2 通过前**：**不开** 1A / 1B / 1C runtime（测出 bug 除外）。
+**0.2 通过前**：**不开** 1A / 1B / 1C **shipping** runtime（测出 bug 除外；lab flag 旁支仍可并行）。
+
+**0.D 通过前**：**不开** 多模型 Benchmark、**不**改生产默认 GGUF。0.D 证明「Qwen 能标 intent、现网仍贴标签」→ 修 prompt / 层序 / 语料，不换模型。Qwen 标不出 companion / boundary / mixed primary intent → 再议容量（1.7B 是否瓶颈）。
 
 **Lab 旁支并行（2026-08-30 · PO 拍板）**：带 **lab flag** 的 Phase 1 轨（如 1C `?reflectionCompanion=1`）可在 **feature 旁支上分 PR 并行开发**；**合 develop / 对用户 mount** 顺序仍跟本文 §1 流程图与 §4 顺序——**Gate 0.2 hybrid 验收关单 → 1B → 1A → 1C validation**。开发进度与上线顺序解耦：旁支开发不被 #472 卡住，但 **不得**抢跑到真实用户（无 lab · 无 validation 结论 · 非 shipping）。
 
@@ -226,6 +229,37 @@ npm run desktop:dev
 | **V4** Arrival / Breath / Celebrating 等 | MUST NOT ENTER |
 | **V5** Interpret / Diagnose / Coach | 全禁 |
 | **C4 Autonomous** | not part of current product model |
+| **换生产默认模型 / 多模型 Benchmark** | **0.D 未出结论前禁止** |
+
+---
+
+## 6.1 Gate 0.D · Yin Intent Diagnostic（2026-08-31 · 实验室）
+
+**目的**：拆开 **Qwen 能力** 与 **Confide routing / prompt / corpus**。不是生产路径，不改默认 GGUF。
+
+**现网事实（对照用，勿在 0.D 里改）**
+
+```text
+0 Safety → 1 仪式 → 2 情绪桶语料（命中则禁止 generate）
+  → CI 白名单 / memory_suppress
+  → 3 L3 短生成（persona：观察、短句、不教练）
+```
+
+「I am present / I am curious」类句**不在** `confideCorpus.js`，多半是 **L3 persona 生成**；「I don't see a matching memory」是 **suppress / forget 诚实模板**，不是 Qwen。
+
+**Phase 1（当前 Qwen · 12 条）**：只输出 JSON，禁止 Yin 口吻。fixture = 本轮人工测到的句子 + 此前 7 条。例：
+
+```json
+{ "primary_intent": "COMPANION_PRESENCE | BEGIN | BOUNDARY | FORGET | EMOTION | OTHER", "secondary_signal": "...", "confidence": 0 }
+```
+
+期望方向（不是锁死枚举）：sit with me → `COMPANION_PRESENCE`；not sure I want to talk → `BOUNDARY`；mess + let's begin → primary `BEGIN`，secondary negative emotion。
+
+**Phase 2**：同一协议扩到设计师 20 条。
+
+**Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
+
+**口令**：**开工 Yin Intent Diagnostic**
 
 ---
 
@@ -236,6 +270,7 @@ npm run desktop:dev
 | 开工 Journey/Presence + CI-02 迁移 | **开工 Local AI Phase 1 Ask Journey Presence** |
 | 开工 Show memory read tool | **开工 Local AI Phase 1 NL Actions** |
 | 开工 Reflection 实验（非 shipping） | **开工 Reflection Companion Validation** |
+| 拆开模型 vs routing（不换模型） | **开工 Yin Intent Diagnostic** |
 | #472 人工测有 bug | 直接描述现象 · 不必口令 |
 
 ---
@@ -253,8 +288,8 @@ npm run desktop:dev
 
 ## 9. 我认为最合理的下一刀
 
-1. **Gate 0.2**：A 单测 → B 探针（有 GGUF）→ C Electron；先 canonical 再 paraphrase。  
-2. 通过后下 **1B 口令**（与 Presence/CI-02 最顺）。  
-3. 再 **1A** → **1C validation**（非 shipping）。
+1. **Gate 0.D** 与 **Gate 0.2** 并行：0.D 只出 intent JSON；0.2 继续 hybrid 关单。  
+2. 0.D 若证明 pipeline 压扁 → **另口令**修层序 / prompt / 语料（禁止顺手换模型）。  
+3. 0.2 通过后下 **1B 口令**，再 **1A** → **1C validation**（非 shipping）。
 
-**较弱**：未测 hybrid 就并行三 Phase 1 runtime；1C 与 1A/1B 同 PR；未 validation 就 ship Reflection generate。
+**较弱**：未测 hybrid 就并行三 Phase 1 shipping runtime；1C 与 1A/1B 同 PR；未 validation 就 ship Reflection generate；0.D 没跑就 Benchmark Llama。
