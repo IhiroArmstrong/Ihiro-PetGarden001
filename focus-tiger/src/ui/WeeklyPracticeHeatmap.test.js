@@ -5,12 +5,20 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   buildWeeklyHeatmapCells,
   heatmapDowLabel,
   isPracticeDayLit,
   weekdayIndexFromDateKey
 } from './WeeklyPracticeHeatmap.js';
+
+const heatmapSrc = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), 'WeeklyPracticeHeatmap.js'),
+  'utf8'
+);
 
 describe('isPracticeDayLit', () => {
   it('lights null (legacy unknown) and positive minutes', () => {
@@ -95,5 +103,13 @@ describe('buildWeeklyHeatmapCells', () => {
     ]);
     assert.equal(cells[0].today, false);
     assert.equal(cells[1].today, true);
+  });
+});
+
+describe('WeeklyPracticeHeatmap import refresh wiring', () => {
+  it('subscribes via bindPracticeImportRefresh and unsubscribes on destroy', () => {
+    assert.match(heatmapSrc, /subscribePracticeDataImported/);
+    assert.match(heatmapSrc, /bindPracticeImportRefresh/);
+    assert.match(heatmapSrc, /_unsubPracticeImport\?\.\(\)/);
   });
 });

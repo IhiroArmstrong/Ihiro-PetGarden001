@@ -1362,6 +1362,9 @@ async function init() {
     storage: typeof localStorage !== 'undefined' ? localStorage : null
   });
   const practiceDaysStore = new PracticeDaysStore();
+  weeklyPracticeHeatmap.bindPracticeImportRefresh(() =>
+    practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
+  );
   confideToYinUI.bindPracticeDaysStore(practiceDaysStore);
   const focusCoinsStore = new FocusCoinsStore({ now });
   function awardFocusCoins(event) {

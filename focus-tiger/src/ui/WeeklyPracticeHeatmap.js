@@ -12,6 +12,7 @@
  */
 
 import { t } from '../locales/i18n.js';
+import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 
 export const WEEKLY_PRACTICE_HEATMAP_DAYS = 7;
 
@@ -102,8 +103,32 @@ export class WeeklyPracticeHeatmap {
     /** @type {HTMLElement[]} */
     this.dowEls = [];
     this._visible = false;
+    /** @type {(() => { date: string, totalMinutes: number | null }[]) | null} */
+    this._getImportDays = null;
+    this._unsubPracticeImport = null;
     this._injectStyles();
     this._build();
+  }
+
+  /**
+   * Re-read practice days after local import. Bind after PracticeDaysStore exists.
+   * @param {() => { date: string, totalMinutes: number | null }[]} getDays
+   */
+  bindPracticeImportRefresh(getDays) {
+    this._unsubPracticeImport?.();
+    this._getImportDays = getDays;
+    this._unsubPracticeImport = subscribePracticeDataImported(() => {
+      if (!this._getImportDays || !this.root) return;
+      this.render({
+        visible: this._visible,
+        days: this._getImportDays()
+      });
+    });
+  }
+
+  destroy() {
+    this._unsubPracticeImport?.();
+    this._unsubPracticeImport = null;
   }
 
   /** 供提醒设置等旁挂控件加入同一左下角簇。 */

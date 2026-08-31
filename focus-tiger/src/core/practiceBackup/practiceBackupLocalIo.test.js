@@ -13,7 +13,11 @@ import {
   importPracticeSnapshotAtomic,
   hasLocalPracticeData,
   importHasDataLossRisk,
-  comparePracticeImportCounts
+  importHasDataGain,
+  comparePracticeImportCounts,
+  subscribePracticeDataImported,
+  dispatchPracticeDataImported,
+  formatPracticeImportSavedAt
 } from './practiceBackupLocalIo.js';
 import { PRACTICE_BACKUP_SCHEMA_VERSION } from './practiceBackupSnapshot.js';
 
@@ -188,5 +192,66 @@ describe('practiceBackupLocalIo', () => {
     const rows = comparePracticeImportCounts(storage, snapshot);
     assert.equal(rows[0].localCount, 3);
     assert.equal(rows[0].importCount, 1);
+  });
+
+  it('detects data-gain when import has more rows', () => {
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({
+        entries: [{}]
+      })
+    });
+    const snapshot = createPracticeExportPayload(storage).snapshot;
+    snapshot.stores['focus-tiger.journey-log.v1'] = { entries: [{}, {}, {}] };
+    assert.equal(importHasDataGain(storage, snapshot), true);
+    assert.equal(importHasDataLossRisk(storage, snapshot), false);
+  });
+
+  it('formats savedAt as today or calendar datetime', () => {
+    const now = () => new Date(2026, 7, 31, 18, 0, 0);
+    const todayIso = new Date(2026, 7, 31, 9, 14, 0).toISOString();
+    assert.equal(
+      formatPracticeImportSavedAt(todayIso, now, (k) =>
+        k === 'LOCAL_DATA_IMPORT_SAVED_TODAY' ? '今天 {time}' : k
+      ),
+      '今天 09:14'
+    );
+    const earlier = new Date(2026, 7, 28, 9, 14, 0).toISOString();
+    assert.match(
+      formatPracticeImportSavedAt(earlier, now),
+      /^2026-08-28 09:14$/
+    );
+  });
+
+  it('subscribePracticeDataImported fires then unsubscribes', () => {
+    const target = new EventTarget();
+    let n = 0;
+    const off = subscribePracticeDataImported(() => {
+      n += 1;
+    }, target);
+    dispatchPracticeDataImported(target);
+    assert.equal(n, 1);
+    off();
+    dispatchPracticeDataImported(target);
+    assert.equal(n, 1);
+  });
+
+  it('import refresh subscriber re-reads storage on dispatch', () => {
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({ entries: [{}] })
+    });
+    let reads = 0;
+    const origGet = storage.getItem.bind(storage);
+    storage.getItem = (k) => {
+      reads += 1;
+      return origGet(k);
+    };
+    const target = new EventTarget();
+    const off = subscribePracticeDataImported(() => {
+      storage.getItem('focus-tiger.journey-log.v1');
+    }, target);
+    const before = reads;
+    dispatchPracticeDataImported(target);
+    assert.ok(reads > before);
+    off();
   });
 });

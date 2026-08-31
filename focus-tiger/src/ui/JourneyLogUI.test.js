@@ -21,3 +21,9 @@ test('Journey Log close and backup controls have :active press (Z 0–1s)', () =
 test('cloud backup link hidden when cloud backup feature is disabled', () => {
   assert.match(src, /practiceBackupCloudEnabled/);
 });
+
+test('Journey Log resubscribes to local import refresh and unsubscribes on destroy', () => {
+  assert.match(src, /subscribePracticeDataImported/);
+  assert.match(src, /_unsubPracticeImport/);
+  assert.match(src, /this\._unsubPracticeImport\?\.\(\)/);
+});
