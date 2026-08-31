@@ -139,9 +139,16 @@ describe('wrapPlayEmotionWithIdleYinTapSync', () => {
 
 describe('isIdleYinTapOverlayBusy wiring (main.js source contract)', () => {
   it('registers purpose card and Privacy sheet, and re-syncs on close', () => {
-    assert.match(
-      mainSrc,
-      /function isIdleYinTapOverlayBusy\(\) \{[\s\S]*isPurposeCardOpen[\s\S]*isPrivacySheetOpen/
+    const fn = mainSrc.match(
+      /function isIdleYinTapOverlayBusy\(\) \{[\s\S]*?\n  \}/
+    )?.[0];
+    assert.ok(fn, 'isIdleYinTapOverlayBusy missing');
+    assert.match(fn, /onboardingHintHost\.hints\?\.isPurposeCardOpen/);
+    assert.match(fn, /onboardingHintHost\.hints\?\.isPrivacySheetOpen/);
+    assert.equal(
+      /\bonboardingHints\?/.test(fn),
+      false,
+      'bare onboardingHints?. inside overlayBusy is TDZ before let init'
     );
     assert.match(mainSrc, /onPurposeClose:\s*\(\)\s*=>\s*syncIdleYinTap\(\)/);
   });

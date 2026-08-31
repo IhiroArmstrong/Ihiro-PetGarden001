@@ -1783,6 +1783,11 @@ async function init() {
   const { syncHonestyIdleEntry, syncArrivalGateReady } = sessionChromeSyncApi;
   /** @type {IdleYinTapAnchorUI | null} */
   let idleYinTapAnchor = null;
+  // Box, not `let onboardingHints`: `syncIdleYinTap` runs before that binding
+  // is initialized (AmbientSoundscapeUI / first arm). Bare `onboardingHints?.`
+  // in overlayBusy is TDZ and blocks `__FT_APP_READY__`.
+  /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
+  const onboardingHintHost = { hints: null };
 
   function buildLiveOverlaySnapshot() {
     return buildOverlaySnapshot({
@@ -1863,8 +1868,8 @@ async function init() {
 
   function isIdleYinTapOverlayBusy() {
     return (
-      onboardingHints?.isPurposeCardOpen?.() === true ||
-      onboardingHints?.isPrivacySheetOpen?.() === true ||
+      onboardingHintHost.hints?.isPurposeCardOpen?.() === true ||
+      onboardingHintHost.hints?.isPrivacySheetOpen?.() === true ||
       sessionUiGate.postSessionOverlayActive === true ||
       honestyCheckInUI?.phase === 'duration' ||
       honestyCheckInUI?.phase === 'breath' ||
@@ -2311,9 +2316,7 @@ async function init() {
   });
   const sessionCues = new SessionCueController();
   sessionCues.preload();
-  // Avoid TDZ: AmbientSoundscapeUI paints during construct, before `let onboardingHints`.
-  /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
-  const onboardingHintHost = { hints: null };
+  // Avoid TDZ: AmbientSoundscapeUI paints during construct — use onboardingHintHost (declared with idle tap).
   // 挂 body：避免落在 pointer-events:none 的 ui-overlay 栈内，并压过调试栏
   const ambientSoundscapeUI = new AmbientSoundscapeUI(
     document.body,
