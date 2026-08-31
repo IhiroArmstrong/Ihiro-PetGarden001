@@ -166,6 +166,8 @@ describe('desktop companion L2 persona / sanitize', () => {
     });
     assert.match(prompt, /\/no_think/);
     assert.match(prompt, /do not advise/i);
+    assert.match(prompt, /do not answer with river, mountain, or ground/i);
+    assert.match(prompt, /do not replace them with scenery, weather, season, or light/i);
     assert.match(prompt, /Never reply with I am curious/i);
     assert.match(prompt, /respect the boundary/i);
     assert.match(prompt, /do not repeat an earlier Yin sentence/i);
