@@ -751,5 +751,6 @@
   "YPE_STYLE_WARM": "少し多めに認める",
   "YIN_MEMORY_SUPPRESS_TURN": "わかりました。このことは覚えません。",
   "YIN_MEMORY_SUPPRESS_RECALLED": "わかりました。覚えていたその内容は取り除きました。",
-  "YIN_MEMORY_SUPPRESS_NO_MATCH": "覚えていることと合いませんでした。"
+  "YIN_MEMORY_SUPPRESS_NO_MATCH": "覚えていることと合いませんでした。",
+  "CONFIDE_BOUNDARY_RESPECT": "話さなくていい。寅はここにいる。"
 }

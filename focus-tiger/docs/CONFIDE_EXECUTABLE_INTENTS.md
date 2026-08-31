@@ -12,7 +12,7 @@
 
 1. **仅系统已有权威数据 + 产品明确允许的动作** 才可进入本白名单。  
 2. **执行路径在层 3 之前**：规则识别 → 确定性 handler → 模板/系统字段回复；**禁止** Qwen 编造数字、假装删库、假装备份。  
-3. **优先级不变**：Safety → 情绪桶语料 → **本表白名单** → L3 短生成（仅接不住的闲聊）。  
+3. **优先级不变**：Safety → 情绪桶语料 → **本表白名单 + `memory_suppress` + 边界尊重模板** → L3 短生成（仅接不住的闲聊）。L3 **禁止**对边界句贴「I am curious / I am aware」。  
 4. **新意图**须 Brief + 冲突扫描；**禁止**为每句用户话无限加 slice。
 
 ---
@@ -41,7 +41,7 @@
 | 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；现网走 Journey / 练习云备份链 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
-| Don't save this / 别记这句 | **Slice 1f · pipeline** · `memory_suppress` · **非 CI** | 见 `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` · `forget this` → suppress · 非 CI-01 |
+| Don't save this / Don't keep this one / 别记这句 | **Slice 1f · pipeline** · `memory_suppress` · **非 CI** | 见 `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` · 含 `this one` · 无 Consent 仍走模板 · **不** L3
 | Delete today's Journey entry | V2 **Future Candidate** · Phase 1 **NOT MVP** | 指向 Journey Log UI；Phase 2 另 Brief |
 
 ---
@@ -78,6 +78,8 @@
 ```text
 ConfideToYinUI._onSend
   → Safety / emotion（不变）
+  → memory_suppress（Don't keep / Don't save · 非 CI）
+  → boundary respect（不确定要不要谈 · 模板，不进 L3）
   → matchConfideExecutableTool (regex)
        → CI-00 / CI-02: 确定性读 + 模板
        → CI-01: 口头 Forget handler（非 autoExecute）
@@ -115,3 +117,17 @@ Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic
 | **CI-01 不变** | `Please forget about Monday` / 别再记周一 → `memory_forget` |
 
 **SSOT**：`YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md`
+
+---
+
+## Boundary respect（pipeline · 非 CI 表项 · 2026-08-31）
+
+Gate 0.D：1.7B **能**把「I'm not sure whether I want to talk about it.」标成 `BOUNDARY`；现网曾压扁成 L3「I am curious」。
+
+| 机制 | 说明 |
+|---|---|
+| **`boundary`** | `confideBoundaryRespect.js` · 层 3 **之前**模板 · `data-source=boundary` |
+| **不进 L3** | 禁止贴「I am curious / I am aware」；L3 prompt + sanitize 双闸 |
+| **不做** | 不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令 |
+
+---

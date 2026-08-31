@@ -10,7 +10,6 @@
  */
 
 import { CONFIDE_ROUTE } from '../confide/confideRoutes.js';
-import { canRememberYinPersonalMemory } from './yinPersonalMemoryConsent.js';
 import { forgetYinPersonalMemory, listActiveYinMemories } from './yinPersonalMemoryForget.js';
 import { normalizeYinPersonalMemoryState } from './yinPersonalMemorySchema.js';
 
@@ -18,19 +17,27 @@ import { normalizeYinPersonalMemoryState } from './yinPersonalMemorySchema.js';
 
 /** @typedef {'suppressed' | 'turn_opt_out' | 'no_match'} MemorySuppressOutcome */
 
+function normalizeMemorySuppressText(text) {
+  return String(text || '')
+    .replace(/[\u2018\u2019\u201B\u2032]/g, "'")
+    .trim();
+}
+
 /** @type {readonly RegExp[]} */
 const INLINE_MEMORY_SUPPRESS_RES = Object.freeze([
-  /\bdon'?t\s+(?:save|remember|keep)\s+this\b/i,
-  /\bdon'?t\s+(?:save|remember|keep)\s+that\b/i,
+  /\bdon'?t\s+(?:save|remember|keep)\s+(?:this|that)(?:\s+one)?\b/i,
+  /\bdo not\s+(?:save|remember|keep)\s+(?:this|that)(?:\s+one)?\b/i,
   /别记这句/,
   /不要记这句/,
-  /这句话别记住/
+  /这句话别记住/,
+  /别记下这一条/,
+  /不要留着这句/
 ]);
 
 /** @type {readonly RegExp[]} */
 const POST_RECALL_MEMORY_SUPPRESS_RES = Object.freeze([
   /\bforget\s+(?:this|that|it)\b(?!\s+about\b)/i,
-  /\b(?:don'?t|do not)\s+(?:save|remember|keep)\s+(?:this|that|it)\b/i,
+  /\b(?:don'?t|do not)\s+(?:save|remember|keep)\s+(?:this|that|it)(?:\s+one)?\b/i,
   /忘掉刚才那句/,
   /刚才那句别记/,
   /刚才说的别记/
@@ -64,7 +71,7 @@ export function normalizeRememberOptOut(raw) {
  * @returns {boolean}
  */
 export function isInlineMemorySuppressIntent(text) {
-  const raw = typeof text === 'string' ? text.trim() : '';
+  const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
   return INLINE_MEMORY_SUPPRESS_RES.some((re) => re.test(raw));
 }
@@ -74,7 +81,7 @@ export function isInlineMemorySuppressIntent(text) {
  * @returns {boolean}
  */
 export function isPostRecallMemorySuppressIntent(text) {
-  const raw = typeof text === 'string' ? text.trim() : '';
+  const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
   return POST_RECALL_MEMORY_SUPPRESS_RES.some((re) => re.test(raw));
 }
@@ -85,7 +92,7 @@ export function isPostRecallMemorySuppressIntent(text) {
  * @returns {boolean}
  */
 export function isMemorySuppressStandaloneIntent(text) {
-  const raw = typeof text === 'string' ? text.trim() : '';
+  const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
   if (!isInlineMemorySuppressIntent(raw) && !isPostRecallMemorySuppressIntent(raw)) {
     return false;
@@ -98,7 +105,7 @@ export function isMemorySuppressStandaloneIntent(text) {
  * @returns {string}
  */
 export function stripMemorySuppressPhrases(text) {
-  let next = typeof text === 'string' ? text.trim() : '';
+  let next = normalizeMemorySuppressText(text);
   if (!next) return '';
   for (const re of [...INLINE_MEMORY_SUPPRESS_RES, ...POST_RECALL_MEMORY_SUPPRESS_RES]) {
     next = next.replace(re, ' ').replace(/\s+/g, ' ').trim();
@@ -226,9 +233,7 @@ export function shouldHandlePostRecallMemorySuppress({
 } = {}) {
   if (!hasBridge) return false;
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
-  const normalized = normalizeYinPersonalMemoryState(state);
-  if (!canRememberYinPersonalMemory(normalized)) return false;
-  const raw = typeof text === 'string' ? text.trim() : '';
+  const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
   if (!isPostRecallMemorySuppressIntent(raw)) return false;
   return turnOrdinal > 0;
@@ -247,16 +252,18 @@ export function shouldHandleStandaloneMemorySuppress({
   route = null,
   state = null,
   text = '',
-  hasBridge = false
+  hasBridge = false,
+  turnOrdinal = 0
 } = {}) {
   if (!hasBridge) return false;
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
-  const normalized = normalizeYinPersonalMemoryState(state);
-  if (!canRememberYinPersonalMemory(normalized)) return false;
-  const raw = typeof text === 'string' ? text.trim() : '';
+  const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
-  if (isPostRecallMemorySuppressIntent(raw)) return false;
-  return isMemorySuppressStandaloneIntent(raw);
+  if (!isMemorySuppressStandaloneIntent(raw)) return false;
+  // Overlap: "Don't keep this" also matches post-recall. Prefer post-recall
+  // only when there is a prior turn; otherwise still take the suppress path.
+  if (isPostRecallMemorySuppressIntent(raw) && turnOrdinal > 0) return false;
+  return true;
 }
 
 /**

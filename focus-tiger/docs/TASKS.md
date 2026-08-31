@@ -295,11 +295,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | **开工** · lab `?reflectionCompanion=1` · tracker 待人工 |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
 | **—** | Don't save this | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` | ✅ Slice 1f | tracker 待人工 |
-| **0.D** | Yin Intent Diagnostic（只输出 intent JSON） | `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 | **换模型前必做** | 实验室已开工 · `npm run companion:intent-diagnostic` |
+| **0.D** | Yin Intent Diagnostic（只输出 intent JSON） | `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 | **换模型前必做** | **已合 #495** |
 
 **Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
 
-**我认为最合理的 Phase 1 开工顺序**：① **Gate 0.D**（与 #472 人工测并行）→ ② #472 关单 → ③ **口令 1B** → ④ **口令 1A** → ⑤ **口令 1C validation**（非 shipping）。较弱：0.D 没跑就换 GGUF；1C 与 1A/1B 同 PR；未 validation 就 ship Reflection generate。
+**我认为最合理的 Phase 1 开工顺序**：① #472 关单 → ② **口令 1B** → ③ **口令 1A** → ④ **口令 1C validation**（非 shipping）。Forget「昨天那件事」Yin Memory 指代另口令。较弱：未关 #472 就并行三 Phase 1 shipping；未 validation 就 ship Reflection generate；0.D 后再 Benchmark Llama。
 
 ---
 

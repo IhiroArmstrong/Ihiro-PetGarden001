@@ -14,6 +14,8 @@ const BANNED = [
   /\bdiagnos/i,
   /here('s| is) (a |the )?list/i,
   /as an ai/i,
+  /\bi am curious\b/i,
+  /\bi am aware\b/i,
   /你应该/,
   /深呼吸/,
   /诊断/,

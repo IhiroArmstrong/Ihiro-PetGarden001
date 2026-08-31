@@ -685,7 +685,9 @@
 3. **安全不生成**：`I don't want to live` → safety-01 转介，**一个字都不能**换成茶句。  
 4. **情绪桶不生成**：「太累了」/ `depressed`→sad → corpus only，**禁止** generate。  
 5. **视觉**：闲聊/生成回复左侧 **浅金**竖线；危机回复 **偏棕**竖线。出答案时 `[data-testid=confide-to-yin-user]` 仍见原问。  
-6. **回流**：关卡再开；Focusing 卸载后 Share 不得 generate。
+6. **回流**：关卡再开；Focusing 卸载后 Share 不得 generate。  
+7. **边界尊重**：`I'm not sure whether I want to talk about it.` → **0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=boundary`**，文案为 `CONFIDE_BOUNDARY_RESPECT`（en：We can leave it unspoken…）。**禁止** `I am curious` / generate。**回流**：关卡再开后再发同句仍 boundary。  
+8. **Don't keep**：首句或仅 `Don't keep this one.` → **`data-source=memory_suppress`**（诚实短句），**禁止** L3「I am observing」。**回归**：`Please forget about Monday` 仍 CI-01。
 
 ---
 
@@ -741,7 +743,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** �
 4. **1d 注入**：已有 Monday 记忆 medium+ → 再发「Monday feels crowded again」→ L3 短句应**可核对**回指周一。**对照**：「the weather is mild」→ **不得**硬插无关旧记忆。**Forget 后**再发 Monday 句 → 不应再回指。  
 
 5. **1e 口头 Forget**：发「别再记周一的事了」/ Please forget what I said about Monday → **0–1 秒内** `data-source=memory_forget` 确认句 → JSON 该条已删。**bulk**「forget everything」→ 引导面板逐条。**面板同步**：开着 What Yin remembers 时口头删 → 行消失。
-6. **1f Don't save · memory suppress**：Consent Allow → (T-1) 同句 `…Don't save this.` → L3 后 `memories[]` 不增 · `rememberOptOuts[]` 有记录。**(T-2)** 入库后下一句 `Forget this` / 刚才那句别记 → `data-source=memory_suppress` · 上一 turn 条目已删。**(T-3)** 仅 `Don't save this` → 诚实短句。**回归**：`Please forget about Monday` 仍 CI-01 `memory_forget`。
+6. **1f Don't save · memory suppress**：Consent Allow → (T-1) 同句 `…Don't save this.` → L3 后 `memories[]` 不增 · `rememberOptOuts[]` 有记录。**(T-2)** 入库后下一句 `Forget this` / 刚才那句别记 → `data-source=memory_suppress` · 上一 turn 条目已删。**(T-3)** 仅 `Don't save this` / `Don't keep this one.` → 诚实短句 · **即使尚未 Allow Consent**。**回归**：`Please forget about Monday` 仍 CI-01 `memory_forget`。
 
 ---
 

@@ -12,6 +12,7 @@
  *   0 safety_redirect → never generate
  *   1 product rituals (Whisper / Recover / …) → never call this helper
  *   2 emotion buckets → corpus retrieve, never generate
+ *   2b CI whitelist / memory_suppress / boundary respect → templates, never generate
  *   3 fallback + desktop ready → short generate; fail → corpus fallback
  */
 

@@ -173,12 +173,13 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 0 安全（safety_redirect，固定转介句；模型不调用）
   → 1 产品仪式（Arrival / Whisper / Recover / Re-focus / 提醒 / Reflection……已审 i18n）
   → 2 Confide 语料桶（anxious / tired / stuck / sad / scattered）
-  → 3 仅 Electron **且宽屏**：自由倾诉短生成（约束：短句、承接不建议、不诊断、不呼吸指令、超长截断）
+  → 2b CI 白名单 / memory_suppress / 边界尊重模板（不调用模型）
+  → 3 仅 Electron **且宽屏**：自由倾诉短生成（约束：短句、承接不建议、不诊断、不呼吸指令、禁止「I am curious / I am aware」、超长截断）
 ```
 
 **2026-08-22 拍板（情绪不得落入生成兜底）**：禁止把用户的情绪自述交给模型去做诊断 / 教练式发挥。日常自述 `depressed` / 抑郁等**并入现有 `sad` 桶**（观察句），**不**升格为最高危机热线，也**不**新开临床诊断桶。单独 `help me` 仍太宽，不进词表。关单级「能聊」：栏杆允许的范围内须接住该句意图；**禁止**不同问题吐同一句套话；有输出 ≠ pass。
 
-**2026-08-31 修订（体验优先 · 意图竞争）**：2026-08-22 **不**等于「句子里只要带一点情绪色彩，就必须压成情绪桶短句」。用户同时给出陪伴请求、开始练习、或「我还不确定要不要谈」的边界时，**primary intent** 是请求 / 边界，情绪只是 **context**。禁止因第 2 层语料或 L3 persona 把用户映射成「I am curious / I am aware」这类心理状态标签。这不是废止安全阀，也不是把 Confide 生成开进 Arrival 仪式（V4 MUST NOT ENTER 仍锁）。换模型之前须先拆开 **Qwen 能否标出 intent JSON** 与 **现网 pipeline 是否把它压扁**（见 `LOCAL_AI_PHASE1_TASK_PLAN.md` Gate 0.D）。
+**2026-08-31 修订（体验优先 · 意图竞争）**：2026-08-22 **不**等于「句子里只要带一点情绪色彩，就必须压成情绪桶短句」。用户同时给出陪伴请求、开始练习、或「我还不确定要不要谈」的边界时，**primary intent** 是请求 / 边界，情绪只是 **context**。禁止因第 2 层语料或 L3 persona 把用户映射成「I am curious / I am aware」这类心理状态标签。**Gate 0.D 已证明** Qwen 能标 `BOUNDARY`；现网压扁已用 **层序拦截 + L3 prompt** 修（`confideBoundaryRespect.js`）。这不是废止安全阀，也不是把 Confide 生成开进 Arrival 仪式（V4 MUST NOT ENTER 仍锁）。
 
 技术边界（已认可，实现另 Brief）：`node-llama-cpp` 只在 Electron 主进程（L1 用 Node 子进程 hold，避免 Electron ABI）；模型首次下载不进 DMG；Focusing 时卸载；**窄屏壳不加载、不露出生成入口**。**低配（总内存 ≤8.5 GiB，Mac 与 Windows 同样）默认不出入口。** **L1（2026-08-20 · #362 已合）**：宽屏面板 + 下载进度已接线。**L2（2026-08-20 · 口令已执行）**：Electron 宽屏 fallback 可短生成；Web 仍检索。Checkout 未接。关单级「能聊」**2026-08-25 用户书面已关**（1.7B 问答基本可以）。**付费（2026-08-20）**：**Focus Tiger Pro US$12.99/月**（将来第四卡）含 Base（B 轨）+ 本地智能体（非 Lifetime 路径；Stripe Price 已记、Checkout 未接）。**已买 Sanctuary Lifetime** 走一次性加购 **`companion.addon.lifetime`**（US$29.99 · 将来第五卡 · Price `price_1U6GnXFuIhgJPGLiNlXs0IKe` 已记、Checkout 未接；不进 `isEntitled`）。**一旦接线须两卡同批。** 本地模型仍只 Electron（无壳 = 无本地 AI）；付款可走 Web，接 Checkout 另开。
 
