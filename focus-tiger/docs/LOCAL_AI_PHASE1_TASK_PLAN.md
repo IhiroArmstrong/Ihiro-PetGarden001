@@ -39,9 +39,9 @@
 ```text
 [✅ PO + SSOT #476]
         ↓
-[Gate 0.2 · #472 Read Hybrid 验收 A→B→C]  ← 当前
+[Gate 0.2 · #472 Read Hybrid 验收 A→B→C]  ← **2026-09-01 关单**（tip `86a4c72e`）
         ↓
-[口令 → 1B Ask Journey/Presence]  PR 独立
+[口令 → 1B Ask Journey/Presence]  PR 独立  ← **下一刀（须口令）**
         ↓
 [口令 → 1A NL Actions · Show memory]  PR 独立
         ↓
@@ -57,12 +57,12 @@
 | # | 任务 | 类型 | 触发 | 产出 | 状态 |
 |---|---|---|---|---|---|
 | **0.1** | PO 决策 + Brief 入库 | Git | ✅ PR #476 | 规划 SSOT + Brief | ✅ Done |
-| **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ⏳ **下一刀** |
+| **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ✅ **2026-09-01 关单**（tip `86a4c72e`；C-3 suspend · C-5 follow-up） |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
 | **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | 🟡 **实验室已开工**（与 0.2 并行；换模型之前必做） |
 
-**0.2 通过前**：**不开** 1A / 1B / 1C **shipping** runtime（测出 bug 除外；lab flag 旁支仍可并行）。
+**0.2 已通过（2026-09-01）**：可排 **口令 1B** shipping runtime（仍须分项口令；lab flag 旁支仍可并行）。C-5 sitting-time 产品修建议先合入再开 1B 问法扩面。
 
 **0.D 通过前**：**不开** 多模型 Benchmark、**不**改生产默认 GGUF。0.D 证明「Qwen 能标 intent、现网仍贴标签」→ 修 prompt / 层序 / 语料，不换模型。Qwen 标不出 companion / boundary / mixed primary intent → 再议容量（1.7B 是否瓶颈）。
 
@@ -142,7 +142,7 @@ npm run desktop:dev
 | C-2 | `Has my mood improved these two weeks?` / `我情绪这两周改善了吗？` | `presence_facts` | CI-02 · regex gold（SSOT 描述性问法迁移在 **1B**） |
 | C-3 | 口头 Forget（见 AG · 1e 前置） | `memory_forget` | CI-01 · 须 Consent + memory 条目 |
 | C-4 | `Looking at my check-ins, am I calmer than last month?` | 最好 `presence_facts` | paraphrase · **模型依赖** |
-| C-5 | `Can you tell me my total sitting time on this device?` | **可不**命中 `practice_facts` | **known gap** · 不追 |
+| C-5 | `Can you tell me my total sitting time on this device?` | 关单口径 **可不**命中 `practice_facts`（known gap） | **2026-09-01 产品修**：regex 升格为 CI-00；见 `fix-confide-sitting-time-practice-facts` |
 
 **负例**：`I feel depressed, has my mood improved?` → **sad 语料**，非 `presence_facts`。
 

@@ -1,0 +1,3 @@
+# fix-confide-sitting-time-practice-facts
+
+| Confide CI-00 · total sitting time 走 Journey 账本 | UI可见 | 待人工测试 | **Electron 宽屏** `desktop:dev`：Idle ⋯ Confide ready → 发 `Can you tell me my total sitting time on this device?` → **0–1s** `[data-testid=confide-to-yin-reply]` `data-source=practice_facts`，天数/分钟与 **Journey log** 手算一致（同 C-1）。**回归**：`How long have I practiced?` 仍 practice_facts；`I feel depressed, how long have I practiced?` 仍 sad。**负例**：天气闲聊不得 practice_facts。自动化：`confidePracticeFacts.test.js`（regex + generate 门闩）。 | **2026-09-01 用户书面**（#472 C-5 · tip `86a4c72e`）：该句答「Still observing.」不对，应按 Sit with Yin 时长统计；允许 Hybrid 关单，本行跟修复。 | — | — | `desktop:dev` · Journey log + Confide | 2026-09-01 |

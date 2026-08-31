@@ -38,8 +38,24 @@ describe('confide practice facts (Slice 0)', () => {
   it('matches How long have I practiced? and 练了多久', () => {
     assert.equal(isPracticeDurationQuestion('How long have I practiced?'), true);
     assert.equal(isPracticeDurationQuestion('练了多久'), true);
+    assert.equal(
+      isPracticeDurationQuestion('Can you tell me my total sitting time on this device?'),
+      true
+    );
     assert.equal(isPracticeDurationQuestion('the weather is mild today'), false);
     assert.equal(isPracticeDurationQuestion('I practiced too long and feel tired'), false);
+  });
+
+  it('total sitting time paraphrase blocks generate on fallback', () => {
+    const text = 'Can you tell me my total sitting time on this device?';
+    const route = confideClassify(text);
+    assert.equal(route, CONFIDE_ROUTE.FALLBACK);
+    assert.equal(shouldAnswerWithPracticeFacts(route, text), true);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }) &&
+        !shouldAnswerWithPracticeFacts(route, text),
+      false
+    );
   });
 
   it('does not steal safety or sad routes', () => {
