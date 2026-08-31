@@ -12,7 +12,7 @@
 
 1. **仅系统已有权威数据 + 产品明确允许的动作** 才可进入本白名单。  
 2. **执行路径在层 3 之前**：规则识别 → 确定性 handler → 模板/系统字段回复；**禁止** Qwen 编造数字、假装删库、假装备份。  
-3. **优先级不变**：Safety → 情绪桶语料 → **本表白名单 + `memory_suppress` + 边界尊重模板** → L3 短生成（仅接不住的闲聊）。L3 **禁止**对边界句贴「I am curious / I am aware」。  
+3. **优先级**：Safety → **陪伴在场 / 边界尊重**（口头待着 ≠ 开计时；不确定要不要谈）→ 情绪桶语料 → **本表白名单 + `memory_suppress` + 偏好诚实模板** → L3 短生成（仅接不住的闲聊）。L3 **禁止**对边界句贴「I am curious / I am aware」，**禁止**把 sit-with-me 说成 BEGIN。  
 4. **新意图**须 Brief + 冲突扫描；**禁止**为每句用户话无限加 slice。
 
 ---
@@ -78,11 +78,13 @@
 **原则**：**Qwen 候选 tool call · Registry 执行 · Data stays local。** 现网 **正则优先**；regex miss 时 L0 仅可补 **readOnly + autoExecute** 的 registry 项（2026-08-27 · Read Hybrid V1）。
 
 ```text
+resolveConfideReply: Safety → emotion buckets → fallback
 ConfideToYinUI._onSend
-  → Safety / emotion（不变）
   → memory_suppress（Don't keep / Don't save · 非 CI）
-  → boundary respect（不确定要不要谈 · 模板，不进 L3）
-  → matchConfideExecutableTool (regex)
+  → boundary respect（不确定要不要谈 · 仅 fallback 模板）
+  → companion presence（sit / stay · 可压过情绪桶 · 不 beginFocus · 不进 L3）
+  → preference honesty（无口味清单 · 仅 fallback · 不进 L3）
+  → matchConfideExecutableTool (regex；CI-02/03 仍要 fallback)
        → CI-00 / CI-02 / CI-03: 确定性读 + 模板
        → CI-01: 口头 Forget handler（非 autoExecute）
   → regex miss + fallback → classifyReadTool (L0, read prompt only)
@@ -129,7 +131,9 @@ Gate 0.D：1.7B **能**把「I'm not sure whether I want to talk about it.」标
 | 机制 | 说明 |
 |---|---|
 | **`boundary`** | `confideBoundaryRespect.js` · 层 3 **之前**模板 · `data-source=boundary` |
-| **不进 L3** | 禁止贴「I am curious / I am aware」；L3 prompt + sanitize 双闸 |
-| **不做** | 不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令 |
+| **`companion_presence`** | `confideCompanionPresence.js` · sit / stay · **高于**情绪桶、**低于** Safety；不启动 Focus |
+| **`preference_honesty`** | `confidePreferenceHonesty.js` · 无偏好 store · 诚实短句，不编口味 |
+| **不进 L3** | 禁止贴「I am curious / I am aware」；禁止把待着说成 BEGIN；L3 prompt **本刀未改** |
+| **不做** | 不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令；不换默认 GGUF |
 
 ---

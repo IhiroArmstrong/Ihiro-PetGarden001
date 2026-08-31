@@ -309,4 +309,4 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 
 **较弱**：未关 #472 就并行三 Phase 1 shipping；扩设计师 20 条 Phase 2 诊断（0.D 已够支撑层序刀）；0.D 后再 Benchmark Llama。
 
-Gate 0.D Phase 1+2 均证明 pipeline 压扁 → **层序 / L3 prompt 另口令**（边界模板 + Don't keep suppress 已做一刀；Phase 2 仍漏 `COMPANION_PRESENCE` / `OTHER`）；本计划**不换模型**。
+Gate 0.D Phase 1+2 均证明 pipeline 压扁 → **层序已补** companion presence + OTHER 读工具复述 / 偏好诚实（本旁支）；L3 prompt **未改**；本计划**不换模型**。

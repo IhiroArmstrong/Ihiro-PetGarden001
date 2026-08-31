@@ -70,6 +70,14 @@ import {
   shouldHandleConfideBoundary
 } from '../core/confide/confideBoundaryRespect.js';
 import {
+  formatConfideCompanionPresenceReply,
+  shouldHandleConfideCompanionPresence
+} from '../core/confide/confideCompanionPresence.js';
+import {
+  formatConfidePreferenceHonestyReply,
+  shouldHandleConfidePreferenceHonesty
+} from '../core/confide/confidePreferenceHonesty.js';
+import {
   buildConfideTurnId,
   formatMemorySuppressReply,
   shouldHandlePostRecallMemorySuppress,
@@ -494,6 +502,10 @@ export class ConfideToYinUI {
                   ? 'memory_suppress'
                   : shown.source === 'boundary'
                     ? 'boundary'
+                    : shown.source === 'companion_presence'
+                      ? 'companion_presence'
+                      : shown.source === 'preference_honesty'
+                        ? 'preference_honesty'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -789,6 +801,28 @@ export class ConfideToYinUI {
           route: hit.route,
           text: formatConfideBoundaryReply(t),
           source: 'boundary'
+        },
+        text
+      );
+      return;
+    }
+    if (shouldHandleConfideCompanionPresence({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideCompanionPresenceReply(t),
+          source: 'companion_presence'
+        },
+        text
+      );
+      return;
+    }
+    if (shouldHandleConfidePreferenceHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfidePreferenceHonestyReply(t),
+          source: 'preference_honesty'
         },
         text
       );
@@ -1124,6 +1158,8 @@ export class ConfideToYinUI {
       .confide-to-yin__reply[data-source='generate']::before,
       .confide-to-yin__reply[data-source='practice_facts']::before,
       .confide-to-yin__reply[data-source='presence_facts']::before,
+      .confide-to-yin__reply[data-source='companion_presence']::before,
+      .confide-to-yin__reply[data-source='preference_honesty']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;

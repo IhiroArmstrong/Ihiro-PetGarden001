@@ -17,7 +17,10 @@ export const CONFIDE_MEMORY_LIST_MAX = 6;
 
 const LIST_QUESTION_RES = [
   /\bshow\s+me\s+what\s+you\s+remember\b/i,
+  /\bshow\s+me\s+what\s+you(?:'ve|\s+have)\s+remembered\b/i,
+  /\bcould you show me what you(?:'ve|\s+have)\s+remembered\b/i,
   /\bwhat\s+do\s+you\s+remember(?:\s+about\s+me)?\b/i,
+  /\bwhat\s+do\s+you\s+remember\s+from\s+our\s+last\b/i,
   /\bwhat\s+have\s+you\s+remembered\b/i,
   /\bwhat\s+are\s+you\s+(still\s+)?keeping\s+(in\s+mind|about\s+me)\b/i,
   /\blist\s+what\s+you\s+remember\b/i,
