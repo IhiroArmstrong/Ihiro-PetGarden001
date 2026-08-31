@@ -81,13 +81,18 @@ export async function loadModelHold(opts) {
   return {
     gpu,
     async generate(prompt, genOpts = {}) {
-      if (disposed || !chat) throw new Error('companion_session_disposed');
-      // Each Share already sends a full one-shot prompt. Keeping LlamaChatSession
-      // history stacks those prompts and overflows after ~2 turns → empty/timeout
-      // → corpus tea fallback (答非所问).
-      if (typeof chat.resetChatHistory === 'function') {
-        await chat.resetChatHistory();
+      if (disposed || !context) throw new Error('companion_session_disposed');
+      // Each Share already sends a full one-shot prompt. Clearing the JS
+      // message list does not erase the KV sequence, so by ~turn 5 Qwen
+      // repeats the first generate reply (previously "Yes."). Dispose the
+      // sequence and start a fresh session.
+      if (chat && typeof chat.dispose === 'function') {
+        chat.dispose({ disposeSequence: true });
+        chat = null;
       }
+      chat = new LlamaChatSession({
+        contextSequence: context.getSequence()
+      });
       const maxTokens = Number(genOpts.maxTokens);
       const text = await chat.prompt(String(prompt || ''), {
         maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48
@@ -97,6 +102,13 @@ export async function loadModelHold(opts) {
     async dispose() {
       if (disposed) return;
       disposed = true;
+      if (chat && typeof chat.dispose === 'function') {
+        try {
+          chat.dispose({ disposeSequence: true });
+        } catch {
+          /* already failed */
+        }
+      }
       chat = null;
       await disposeQuietly(context, null, 4000);
       context = null;

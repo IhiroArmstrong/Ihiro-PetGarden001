@@ -166,9 +166,22 @@ describe('desktop companion L2 persona / sanitize', () => {
     });
     assert.match(prompt, /\/no_think/);
     assert.match(prompt, /do not advise/i);
+    assert.match(prompt, /do not repeat an earlier Yin sentence/i);
     assert.match(prompt, /the weather is mild today/);
     assert.equal(sanitizeCompanionL2Reply('Tea is still warm.'), 'Tea is still warm.');
     assert.equal(sanitizeCompanionL2Reply('Yes'), null);
+    assert.equal(
+      sanitizeCompanionL2Reply('I am curious about what you would like to eat.', {
+        priorReplies: ['I am curious about what you would like to eat.']
+      }),
+      null
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply('Clouds drift.', {
+        priorReplies: ['I am curious about what you would like to eat.']
+      }),
+      'Clouds drift.'
+    );
     assert.equal(sanitizeCompanionL2Reply('You should try to breathe slowly.'), null);
     assert.equal(sanitizeCompanionL2Reply('你应该深呼吸。'), null);
     assert.equal(sanitizeCompanionL2Reply(''), null);
@@ -191,6 +204,20 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(prompt.includes(safety), false);
     assert.equal(prompt.includes("I don't want to live"), false);
     assert.match(prompt, /Whom do you like\?/);
+  });
+
+  it('drops memory_suppress exchanges from Recent turns', () => {
+    const ack = 'Okay. I will not keep that last line.';
+    const prompt = buildCompanionL2Prompt({
+      text: 'Can we just sit here for a minute?',
+      locale: 'en',
+      history: [
+        { role: 'user', text: 'That thing I told you about yesterday… forget it.' },
+        { role: 'yin', text: ack, source: 'memory_suppress' }
+      ]
+    });
+    assert.equal(prompt.includes(ack), false);
+    assert.equal(prompt.includes('forget it'), false);
   });
 
   it('drops practice_facts exchanges from Recent turns', () => {
@@ -386,6 +413,7 @@ describe('desktop companion L2 isolation', () => {
       'utf8'
     );
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
+    assert.match(runtime, /priorReplies/);
     assert.match(runtime, /classifyReadTool/);
     assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);
     
@@ -412,7 +440,9 @@ describe('desktop companion L2 isolation', () => {
       join(focusTigerRoot, 'desktop/companion/l1Hold.js'),
       'utf8'
     );
-    assert.match(hold, /resetChatHistory/);
+    assert.match(hold, /disposeSequence:\s*true/);
+    assert.match(hold, /context\.getSequence\(\)/);
+    assert.equal(hold.includes('resetChatHistory'), false);
   });
 
   it('keeps llama out of src/', () => {

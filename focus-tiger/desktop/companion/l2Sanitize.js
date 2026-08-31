@@ -22,10 +22,35 @@ const BANNED = [
 ];
 
 /**
+ * @param {unknown} text
+ * @returns {string}
+ */
+export function normalizeCompanionL2Reply(text) {
+  return String(text || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?。！？]+$/u, '')
+    .toLowerCase();
+}
+
+/**
+ * @param {unknown} history
+ * @returns {string[]}
+ */
+export function priorGenerateRepliesFromHistory(history = []) {
+  if (!Array.isArray(history)) return [];
+  return history
+    .filter((row) => row?.role === 'yin' && row?.source === 'generate')
+    .map((row) => String(row?.text || '').trim())
+    .filter(Boolean);
+}
+
+/**
  * @param {unknown} raw
+ * @param {{ priorReplies?: unknown }} [opts]
  * @returns {string | null}
  */
-export function sanitizeCompanionL2Reply(raw) {
+export function sanitizeCompanionL2Reply(raw, opts = {}) {
   let text = String(raw || '')
     .replace(/<think>[\s\S]*?<\/think>/gi, '')
     .replace(/<\/?think>/gi, '')
@@ -38,5 +63,13 @@ export function sanitizeCompanionL2Reply(raw) {
   if (!text) return null;
   if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
+  const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
+  const normalized = normalizeCompanionL2Reply(text);
+  if (
+    normalized &&
+    prior.some((row) => normalizeCompanionL2Reply(row) === normalized)
+  ) {
+    return null;
+  }
   return text;
 }
