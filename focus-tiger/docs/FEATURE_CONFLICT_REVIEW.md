@@ -200,6 +200,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-01 | Phase 1B shipping：扩 CI-00/02 描述性 + Temporal Compare 问法；答句两窗并列；不抢 Journey/Presence 面板、Forget、1A Show memory。无新 tool id |
 | 2026-09-01 | CI-00 扩 `total sitting time` regex：对照 AG Slice 0 / AE Confide；强度仍 0–1s 模板；人设仍 facts 非 L3 观察句；职责仍 Journey 账本。无冲突 |
 | 2026-08-31 | 叠层占用三问接 registry：`blocksIdleYinTap` / `blocksEnterSleep` 派生；Confide wake helper 共用 |
 | 2026-08-31 | 邻接扫描提示：Idle 陪伴叠层须扫 AD + `SCENE_ANIMATION_WIRING` + 睡态场景步；正面案例 Confide #491 睡态唤醒 |

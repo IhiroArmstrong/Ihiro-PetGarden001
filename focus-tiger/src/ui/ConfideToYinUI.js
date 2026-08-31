@@ -14,11 +14,8 @@ import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js'
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
-import {
-  formatPracticeDurationReply,
-  summarizePracticeFacts
-} from '../core/confide/confidePracticeFacts.js';
-import { buildPresenceTrendReply } from '../core/confide/confidePresenceFacts.js';
+import { buildPracticeFactsReply } from '../core/confide/confidePracticeFacts.js';
+import { buildPresenceFactsReply } from '../core/confide/confidePresenceFacts.js';
 import {
   CONFIDE_TOOL_ID,
   matchConfideExecutableTool
@@ -829,12 +826,11 @@ export class ConfideToYinUI {
    */
   _executeConfideTool(tool, hit, text) {
     if (tool.id === CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION) {
-      const factsText = formatPracticeDurationReply(
-        summarizePracticeFacts(
-          this._practiceDaysStore,
-          typeof localStorage !== 'undefined' ? localStorage : null
-        ),
-        t
+      const factsText = buildPracticeFactsReply(
+        this._practiceDaysStore,
+        typeof localStorage !== 'undefined' ? localStorage : null,
+        t,
+        text
       );
       this._showReply(
         {
@@ -849,7 +845,7 @@ export class ConfideToYinUI {
     if (tool.id === CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND) {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
-      const factsText = buildPresenceTrendReply(storage, t);
+      const factsText = buildPresenceFactsReply(storage, t, text);
       this._showReply(
         {
           route: hit.route,
