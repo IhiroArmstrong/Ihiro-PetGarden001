@@ -57,6 +57,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_LAB_CANDIDATE` | `0.6q5` 或 `1.7q4` | 候选脚本选哪一条 |
 | `FT_TOOL_CALL_GGUF` | 可选 · 绝对路径 | tool-call 探针 GGUF；缺省 = `~/Library/Application Support/Focus Tiger/companion-l0/Qwen3-1.7B-Q4_K_M.gguf` |
 | `FT_TOOL_CALL_MAX_TOKENS` | 可选 · 整数 | tool-call 探针 `maxTokens`；缺省 = `L0_MAX_TOKENS` |
+| `FT_INTENT_GGUF` | 可选 · 绝对路径 | Gate 0.D 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
+| `FT_INTENT_MAX_TOKENS` | 可选 · 整数 | Gate 0.D `maxTokens`；缺省 = 96 |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
 
@@ -88,6 +90,14 @@ cd focus-tiger/desktop && npm run companion:tool-call
 
 结果：`/tmp/ft-l0-lab/tool-call-<epoch>.json`。过门必要条件：`writeFalsePositives === 0`。fixture：`src/core/confide/confideToolCallFixtures.js`。实验室 prompt 仍含 forget 测假阳性；**生产 Read Hybrid** 用 `buildConfideReadHybridPrompt`（无 forget），见 `task-confide-read-hybrid-v1.md`。
 
+**Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:intent-diagnostic
+```
+
+结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`src/core/confide/confideIntentDiagnosticFixtures.js`（12 条）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。
+
 质量七问（空历史，不要另起一组）：`你知道彤彤儿喜欢吃啥？` / `彤彤儿是谁？` / `Why are you happy?` / `What are you doing?` / `What do you want?` / `Where do you live?` / `Whom do you like?`。调用 `buildCompanionL2Prompt({ text, locale, history: [] })` + `LlamaChatSession`，`maxTokens: L2_MAX_TOKENS`。不要改生产提示词来迁就实验室。
 
 L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP95DeltaMs` 置 `null`。下完 = 字节数等于 `Content-Length`。
@@ -102,7 +112,7 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 | bartowski dest | **保持上游文件名** `Qwen_Qwen3-…` | `Qwen_Qwen3-0.6B-Q4_K_M.gguf` |
 | unsloth dest | `{Model}-{quant}-unsloth.gguf`（不要再加 `Qwen_`） | `Qwen3-0.6B-Q5_K_M-unsloth.gguf` |
 | 续传半截 | dest + `.part` + `.meta.json` | `Qwen3-1.7B-Q4_K_M-unsloth.gguf.part` |
-| 结果 JSON | `compare-<Date.now()>.json` | `compare-1787511745122.json` |
+| 结果 JSON | `compare-<Date.now()>.json` / `intent-diag-<epoch>.json` | `compare-1787511745122.json` |
 | 对照表 | 固定名 `compare-tables.md`，只追加 | `/tmp/ft-l0-lab/compare-tables.md` |
 | 实验室 `id` | dest stem | `Qwen3-4B-Q4_K_M-unsloth` |
 
@@ -121,6 +131,7 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
 11. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
+12. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。
 
 ---
 

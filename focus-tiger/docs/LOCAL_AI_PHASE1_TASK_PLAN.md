@@ -60,7 +60,7 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ⏳ **下一刀** |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
-| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | ⏳ **与 0.2 并行；换模型之前必做** |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | 🟡 **实验室已开工**（与 0.2 并行；换模型之前必做） |
 
 **0.2 通过前**：**不开** 1A / 1B / 1C **shipping** runtime（测出 bug 除外；lab flag 旁支仍可并行）。
 
@@ -247,13 +247,23 @@ npm run desktop:dev
 
 「I am present / I am curious」类句**不在** `confideCorpus.js`，多半是 **L3 persona 生成**；「I don't see a matching memory」是 **suppress / forget 诚实模板**，不是 Qwen。
 
-**Phase 1（当前 Qwen · 12 条）**：只输出 JSON，禁止 Yin 口吻。fixture = 本轮人工测到的句子 + 此前 7 条。例：
+**Phase 1（当前 Qwen · 12 条）**：只输出 JSON，禁止 Yin 口吻。fixture SSOT：`src/core/confide/confideIntentDiagnosticFixtures.js` = Confide 实测 10 句 + 2 条对照（纯情绪 / 练了多久）。质量七问是人设探针，**不**进本表。允许标签含 `SUPPRESS`（Don't keep）与示例枚举并列，不是锁死产品路由。
 
 ```json
-{ "primary_intent": "COMPANION_PRESENCE | BEGIN | BOUNDARY | FORGET | EMOTION | OTHER", "secondary_signal": "...", "confidence": 0 }
+{ "primary_intent": "COMPANION_PRESENCE | BEGIN | BOUNDARY | FORGET | SUPPRESS | EMOTION | OTHER", "secondary_signal": "...", "confidence": 0 }
 ```
 
-期望方向（不是锁死枚举）：sit with me → `COMPANION_PRESENCE`；not sure I want to talk → `BOUNDARY`；mess + let's begin → primary `BEGIN`，secondary negative emotion。
+期望方向（不是锁死枚举）：sit with me → `COMPANION_PRESENCE`；not sure I want to talk → `BOUNDARY`；mess + let's begin → primary `BEGIN`，secondary `EMOTION`。
+
+**怎么跑（系统终端 · Metal）**
+
+```bash
+cd focus-tiger/desktop && npm run companion:intent-diagnostic
+```
+
+解析 / 打分：`confideIntentDiagnosticParse.js`（单测，不调 GGUF）。结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。读 `reading`：`model_can_label_boundary_check_pipeline` → 修 prompt / 层序 / 语料，不换模型；`model_also_flattens_boundary_capacity_question` → 再议 1.7B 容量。
+
+**首跑（生产 1.7B Q4 · 2026-08-31）**：`parseOk` 12/12；`BOUNDARY` / mixed `BEGIN` / `SUPPRESS` / `FORGET` 能标中；`COMPANION_PRESENCE` 常被标成 `BEGIN`。现网「I am curious」对照 `BOUNDARY` 已能标 → **pipeline 压扁，不是 1.7B 标不出边界**。数字留结果 JSON，不抄进本文。
 
 **Phase 2**：同一协议扩到设计师 20 条。
 
@@ -280,6 +290,7 @@ npm run desktop:dev
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 12 条 JSON 对照表 | tracker 仅单元；**不**改生产层序 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
