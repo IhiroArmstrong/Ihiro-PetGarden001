@@ -15,6 +15,7 @@ import {
   isSanctuaryUnlocked,
   markSanctuaryFromPayment,
   markSanctuaryPreview,
+  shouldStartSanctuaryLifetimeCheckout,
   normalizeSanctuaryEntitlement,
   readSanctuaryEntitlement
 } from './sanctuaryEntitlementGate.js';
@@ -46,6 +47,7 @@ describe('sanctuaryEntitlementGate', () => {
       now: () => new Date('2026-08-07T00:00:00.000Z')
     });
     assert.equal(isSanctuaryUnlocked({ storage }), true);
+    assert.equal(shouldStartSanctuaryLifetimeCheckout({ storage }), false);
     assert.equal(readSanctuaryEntitlement(storage).unlockedVia, 'payment');
     assert.ok(storage.getItem(SANCTUARY_STORAGE_KEY));
     clearSanctuaryEntitlement(storage);

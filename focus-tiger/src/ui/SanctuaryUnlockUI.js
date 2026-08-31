@@ -9,11 +9,14 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
-import { postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
+import { getCloudApiBaseUrl, postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
+import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
+import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
 import {
   confirmSanctuaryReturnQuery,
   isSanctuaryUnlocked,
   markSanctuaryFromPayment,
+  shouldStartSanctuaryLifetimeCheckout,
   readSanctuaryEntitlement,
   syncSanctuaryBadgesFromPractice
 } from '../core/sanctuaryEntitlementGate.js';
@@ -33,7 +36,6 @@ import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js'
 
 const STYLE_ID = 'yin-sanctuary-card-styles-v1';
 const FADE_MS = 220;
-const CHECKOUT_ARM_MS = 450;
 
 /** Display price (USD). Stripe Lifetime Price ID lives on the Worker. */
 export const SANCTUARY_LIFETIME_PRICE_USD = '89.99';
@@ -53,9 +55,8 @@ export class SanctuaryUnlockUI {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._open = false;
     this._busy = false;
+    this._userDismissed = false;
     this._focusTimer = null;
-    /** @type {number} */
-    this._checkoutArmedAt = 0;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-sanctuary-card';
@@ -106,6 +107,10 @@ export class SanctuaryUnlockUI {
       'yin-sanctuary__btn yin-sanctuary__btn--primary';
     this.buyBtn.dataset.testid = 'yin-sanctuary-buy';
     this.buyBtn.addEventListener('click', () => {
+      if (!shouldStartSanctuaryLifetimeCheckout({ storage: this._storage })) {
+        this.close();
+        return;
+      }
       void this._startCheckout();
     });
 
@@ -200,7 +205,7 @@ export class SanctuaryUnlockUI {
   open() {
     if (this._open) return;
     this._open = true;
-    this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
+    this._userDismissed = false;
     this.root.hidden = false;
     this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
@@ -218,7 +223,7 @@ export class SanctuaryUnlockUI {
   close() {
     if (!this._open) return;
     this._open = false;
-    this._checkoutArmedAt = 0;
+    this._userDismissed = true;
     if (this._focusTimer != null) {
       window.clearTimeout(this._focusTimer);
       this._focusTimer = null;
@@ -243,13 +248,22 @@ export class SanctuaryUnlockUI {
 
   async _startCheckout() {
     if (this._busy) return;
-    if (Date.now() < this._checkoutArmedAt) return;
+    if (!shouldStartSanctuaryLifetimeCheckout({ storage: this._storage })) {
+      this.close();
+      return;
+    }
+    if (!getCloudApiBaseUrl()) {
+      this.statusEl.textContent = t('SANCTUARY_CLOUD_OFFLINE');
+      return;
+    }
     this._busy = true;
     this.buyBtn.disabled = true;
+    this.statusEl.textContent = t('SANCTUARY_CHECKOUT_PENDING');
     let checkoutError = false;
+    let checkoutErrorKey = 'SANCTUARY_ERROR_GENERIC';
     try {
       const email = this.emailInput.value.trim();
-      const body = email ? { email } : {};
+      const body = buildCheckoutSessionBody(email ? { email } : {});
       const res = await postCloudJson('/api/create-sanctuary-checkout-session', {
         body: JSON.stringify(body)
       });
@@ -263,17 +277,24 @@ export class SanctuaryUnlockUI {
         return;
       }
       checkoutError = true;
-      this.statusEl.textContent = t('SANCTUARY_ERROR_GENERIC');
-    } catch {
+    } catch (err) {
       checkoutError = true;
-      this.statusEl.textContent = t('SANCTUARY_ERROR_GENERIC');
+      if (err instanceof Error && err.message === 'cloud_api_unconfigured') {
+        checkoutErrorKey = 'SANCTUARY_CLOUD_OFFLINE';
+      }
     } finally {
       this._busy = false;
       this.buyBtn.disabled = false;
       if (checkoutError) {
-        if (!this._open) this.open();
-        this.statusEl.textContent = t('SANCTUARY_ERROR_GENERIC');
-      } else {
+        if (
+          resolveCheckoutErrorOverlay({
+            overlayOpen: this._open,
+            userDismissed: this._userDismissed
+          }) === 'show-on-open'
+        ) {
+          this.statusEl.textContent = t(checkoutErrorKey);
+        }
+      } else if (this._open) {
         this._refreshTexts();
       }
     }
@@ -453,7 +474,7 @@ export class SanctuaryUnlockUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: 27;
         width: min(400px, calc(100vw - 40px));
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;
@@ -573,6 +594,9 @@ export class SanctuaryUnlockUI {
       .yin-sanctuary__btn--primary {
         background: ${GLASS_FILL_STRONG};
         border-color: rgba(120, 90, 55, 0.35);
+      }
+      .yin-sanctuary__btn--primary:active:not(:disabled) {
+        transform: scale(0.97);
       }
       .yin-sanctuary__btn--ghost {
         background: transparent;

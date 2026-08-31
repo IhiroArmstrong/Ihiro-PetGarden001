@@ -1,4 +1,5 @@
 import { errorJson, json } from "../lib/http";
+import { resolveSessionReturnUrls } from "../lib/checkoutReturnUrls";
 import { createTipCheckoutSession } from "../lib/stripe";
 import { isPlausibleEmail, normalizeEmail } from "../lib/tipKv";
 import type { Env } from "../types";
@@ -26,8 +27,11 @@ export async function handleCreateTipCheckoutSession(
 	}
 
 	let customerEmail: string | undefined;
+	/** @type {unknown} */
+	let parsedBody: unknown = null;
 	try {
-		const body = (await request.json()) as { email?: unknown };
+		parsedBody = await request.json();
+		const body = parsedBody as { email?: unknown };
 		if (typeof body?.email === "string" && body.email.trim()) {
 			if (!isPlausibleEmail(body.email)) {
 				return errorJson(400, "invalid_email", "email looks invalid");
@@ -38,12 +42,14 @@ export async function handleCreateTipCheckoutSession(
 		// Empty / non-JSON body is fine — Checkout still collects email.
 	}
 
+	const returns = resolveSessionReturnUrls(successUrl, cancelUrl, parsedBody, request);
+
 	try {
 		const session = await createTipCheckoutSession({
 			secretKey: secret,
 			priceId,
-			successUrl,
-			cancelUrl,
+			successUrl: returns.successUrl,
+			cancelUrl: returns.cancelUrl,
 			customerEmail,
 		});
 		return json({ url: session.url });

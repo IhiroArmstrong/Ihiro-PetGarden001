@@ -11,11 +11,24 @@ import {
   postCloudJson
 } from './cloudApiClient.js';
 
-describe('postCloudJson desktop IPC', () => {
-  it('getCloudApiBaseUrl is non-empty in the desktop shell without Vite env', () => {
+describe('getCloudApiBaseUrl', () => {
+  it('is non-empty in the desktop shell without Vite env', () => {
     const url = getCloudApiBaseUrl({ desktopShell: { isDesktop: true } });
     assert.equal(url, DEFAULT_CLOUD_API_BASE_URL);
   });
+
+  it('uses the page origin in Vite dev so :5174 can proxy /api', () => {
+    assert.equal(
+      getCloudApiBaseUrl(
+        { location: { origin: 'http://127.0.0.1:5174' } },
+        { viteDev: true }
+      ),
+      'http://127.0.0.1:5174'
+    );
+  });
+});
+
+describe('postCloudJson desktop IPC', () => {
 
   it('unwraps the main-process success envelope', async () => {
     const body = await postCloudJson(

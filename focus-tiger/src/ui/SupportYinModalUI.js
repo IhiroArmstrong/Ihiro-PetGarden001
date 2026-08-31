@@ -639,6 +639,7 @@ export class SupportYinModalUI {
   /** After Stripe return confirms Pro / companion add-on in the shell. */
   syncEntitlementCards() {
     this._syncPaidCardVisibility();
+    this._syncLeadLayout();
   }
 
   /** @returns {'tea-first' | 'sanctuary-first'} */
@@ -741,10 +742,11 @@ export class SupportYinModalUI {
         background: rgba(48, 34, 22, 0.28);
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease;
-        pointer-events: auto;
+        pointer-events: none;
       }
       .yin-support-backdrop.is-visible {
         opacity: 1;
+        pointer-events: auto;
       }
       .yin-support-modal {
         position: fixed;
@@ -764,11 +766,12 @@ export class SupportYinModalUI {
         color: #3d2e22;
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
-        pointer-events: auto;
+        pointer-events: none;
       }
       .yin-support-modal.is-visible {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
       }
       .yin-support-modal__title {
         margin: 0 0 4px;

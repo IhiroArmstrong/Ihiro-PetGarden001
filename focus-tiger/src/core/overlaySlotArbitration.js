@@ -21,7 +21,8 @@ import { isHonestyPhaseBusy, isHonestyUiBusy } from './sessionChromeSync.js';
 import {
   FIRST_CARD_DEFER_PRIORITY,
   OVERLAY_SLOT_KIND,
-  OVERLAY_SOURCES
+  OVERLAY_SOURCES,
+  OVERLAY_SOURCE_CONTRACTS
 } from './overlaySlotContractRegistry.js';
 
 export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistry.js';
@@ -48,6 +49,16 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [flowerWelcomeVisible]
  * @property {boolean} [secondaryMenuOpen]
  * @property {boolean} [confideOpen]
+ * @property {boolean} [journeyOpen]
+ * @property {boolean} [coinPanelOpen]
+ * @property {boolean} [quoteOpen]
+ * @property {boolean} [wallpapersOpen]
+ * @property {boolean} [cinemaOpen]
+ * @property {boolean} [newsletterOpen]
+ * @property {boolean} [presenceOpen]
+ * @property {boolean} [languageOpen]
+ * @property {boolean} [purposeCardOpen]
+ * @property {boolean} [privacySheetOpen]
  */
 
 /**
@@ -57,7 +68,9 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'focusDurationPickerOpen' | 'companionPickerOpen' | 'postSessionOverlayActive' |
  *   'compassOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
  *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen' |
- *   'confideOpen'
+ *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
+ *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
+ *   'purposeCardOpen' | 'privacySheetOpen'
  * >>} OverlaySnapshot
  */
 
@@ -89,8 +102,32 @@ export function buildOverlaySnapshot(input = {}) {
     membershipOpen: Boolean(input.membershipOpen),
     flowerWelcomeVisible: Boolean(input.flowerWelcomeVisible),
     secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
-    confideOpen: Boolean(input.confideOpen)
+    confideOpen: Boolean(input.confideOpen),
+    journeyOpen: Boolean(input.journeyOpen),
+    coinPanelOpen: Boolean(input.coinPanelOpen),
+    quoteOpen: Boolean(input.quoteOpen),
+    wallpapersOpen: Boolean(input.wallpapersOpen),
+    cinemaOpen: Boolean(input.cinemaOpen),
+    newsletterOpen: Boolean(input.newsletterOpen),
+    presenceOpen: Boolean(input.presenceOpen),
+    languageOpen: Boolean(input.languageOpen),
+    purposeCardOpen: Boolean(input.purposeCardOpen),
+    privacySheetOpen: Boolean(input.privacySheetOpen)
   };
+}
+
+/**
+ * @param {OverlaySnapshot} snapshot
+ * @param {'blocksIdleYinTap'|'blocksEnterSleep'} flag
+ * @returns {boolean}
+ */
+function anyContractSnapshotFlag(snapshot, flag) {
+  for (const row of OVERLAY_SOURCE_CONTRACTS) {
+    if (!row[flag]) continue;
+    const field = row.snapshotField;
+    if (field && snapshot[field] === true) return true;
+  }
+  return false;
 }
 
 // ── Legacy derive (Phase A equivalence — mirrors main.js inline OR lists) ──
@@ -102,13 +139,10 @@ export function buildOverlaySnapshot(input = {}) {
  * @returns {boolean}
  */
 export function deriveSceneAnimOverlayBusy(snapshot) {
-  return (
-    snapshot.honestyPhase !== 'hidden' ||
-    snapshot.arrivalOpen ||
-    snapshot.reflectionOpen ||
-    snapshot.microRitualOpen ||
-    snapshot.focusDurationPickerOpen
-  );
+  if (snapshot.honestyPhase && snapshot.honestyPhase !== 'hidden') {
+    return true;
+  }
+  return anyContractSnapshotFlag(snapshot, 'blocksEnterSleep');
 }
 
 /** @deprecated alias for sprite channel consumers */
@@ -221,16 +255,15 @@ export function deriveFocusAwarenessCardBusy(snapshot) {
  * @returns {boolean}
  */
 export function deriveIdleYinTapOverlayBusy(snapshot) {
-  return (
-    snapshot.postSessionOverlayActive === true ||
+  if (snapshot.postSessionOverlayActive === true) return true;
+  if (
     snapshot.honestyPhase === 'duration' ||
     snapshot.honestyPhase === 'breath' ||
-    snapshot.honestyPhase === 'thanks' ||
-    snapshot.supportModalOpen ||
-    snapshot.tipJarOpen ||
-    snapshot.sanctuaryOpen ||
-    snapshot.membershipOpen
-  );
+    snapshot.honestyPhase === 'thanks'
+  ) {
+    return true;
+  }
+  return anyContractSnapshotFlag(snapshot, 'blocksIdleYinTap');
 }
 
 /**

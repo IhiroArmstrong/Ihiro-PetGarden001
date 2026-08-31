@@ -141,6 +141,7 @@ export class PresenceSignalsPanelUI {
     this.root.getBoundingClientRect();
     this.root.style.opacity = '1';
     this.root.style.transform = 'translate(-50%, 0)';
+    this.handlers.onOpen?.();
   }
 
   close() {
@@ -151,6 +152,7 @@ export class PresenceSignalsPanelUI {
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
     }, FADE_MS);
+    this.handlers.onClose?.();
   }
 
   _refreshTexts() {

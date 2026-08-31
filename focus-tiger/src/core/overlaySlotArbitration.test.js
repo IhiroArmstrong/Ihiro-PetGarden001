@@ -13,7 +13,9 @@ import {
   FIRST_CARD_DEFER_PRIORITY,
   OVERLAY_SLOT_KIND,
   OVERLAY_SOURCES,
-  OVERLAY_SOURCE_CONTRACTS
+  OVERLAY_SOURCE_CONTRACTS,
+  OVERLAY_OUTSIDE_DISMISS,
+  OVERLAY_DORMANT_WAKE
 } from './overlaySlotContractRegistry.js';
 import {
   buildOverlaySnapshot,
@@ -240,6 +242,49 @@ describe('legacy derive equivalence (Phase A regression)', () => {
       postSessionOverlayActive: false
     });
     assert.equal(deriveIdleYinTapOverlayBusy(promptOnly), false);
+  });
+
+  it('confideOpen occupies idle tap and enter-sleep (registry, not main OR)', () => {
+    assert.equal(deriveIdleYinTapOverlayBusy({ confideOpen: true }), true);
+    assert.equal(
+      deriveIdleYinTapOverlayBusy(buildOverlaySnapshot({ confideOpen: true })),
+      true
+    );
+    assert.equal(
+      deriveSceneAnimOverlayBusy(buildOverlaySnapshot({ confideOpen: true })),
+      true
+    );
+  });
+
+  it('Support family occupies enter-sleep via blocksEnterSleep', () => {
+    assert.equal(
+      deriveSceneAnimOverlayBusy(
+        buildOverlaySnapshot({ supportModalOpen: true })
+      ),
+      true
+    );
+    assert.equal(
+      deriveSceneAnimOverlayBusy(buildOverlaySnapshot({ tipJarOpen: true })),
+      true
+    );
+    assert.equal(
+      deriveIdleYinTapOverlayBusy(
+        buildOverlaySnapshot({ supportModalOpen: true })
+      ),
+      true
+    );
+  });
+
+  it('Privacy sheet occupies idle tap when purpose is hidden', () => {
+    assert.equal(
+      deriveIdleYinTapOverlayBusy(
+        buildOverlaySnapshot({
+          privacySheetOpen: true,
+          purposeCardOpen: false
+        })
+      ),
+      true
+    );
   });
 
   it('practice backup busy parity', () => {
@@ -469,6 +514,33 @@ describe('overlaySlotContractRegistry', () => {
       (c) => c.id === OVERLAY_SOURCES.HONESTY_PROMPT
     );
     assert.equal(row?.kind, OVERLAY_SLOT_KIND.BUSY_ONLY);
+  });
+
+  it('every contract has occupancy five-field shape', () => {
+    for (const row of OVERLAY_SOURCE_CONTRACTS) {
+      assert.equal(typeof row.blocksIdleYinTap, 'boolean', row.id);
+      assert.equal(typeof row.blocksEnterSleep, 'boolean', row.id);
+      assert.ok(
+        Object.values(OVERLAY_OUTSIDE_DISMISS).includes(row.outsideDismiss),
+        row.id
+      );
+      assert.equal(typeof row.dismissRoot, 'string', row.id);
+      assert.ok(
+        Object.values(OVERLAY_DORMANT_WAKE).includes(row.dormantWakeOnOpen),
+        row.id
+      );
+    }
+  });
+
+  it('Confide requires dormant wake; glass cards do not in this slice', () => {
+    const confide = OVERLAY_SOURCE_CONTRACTS.find(
+      (c) => c.id === OVERLAY_SOURCES.CONFIDE
+    );
+    assert.equal(confide?.dormantWakeOnOpen, OVERLAY_DORMANT_WAKE.REQUIRED);
+    const journey = OVERLAY_SOURCE_CONTRACTS.find(
+      (c) => c.id === OVERLAY_SOURCES.JOURNEY_LOG
+    );
+    assert.equal(journey?.dormantWakeOnOpen, OVERLAY_DORMANT_WAKE.NOT_NEEDED);
   });
 });
 

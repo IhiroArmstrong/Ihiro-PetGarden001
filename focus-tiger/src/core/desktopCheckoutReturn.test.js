@@ -12,7 +12,17 @@ describe('desktopCheckoutReturn', () => {
     const prev = globalThis.desktopShell;
     delete globalThis.desktopShell;
     try {
-      assert.deepEqual(buildCheckoutSessionBody({ email: 'a@b.co' }), {
+      assert.deepEqual(
+        buildCheckoutSessionBody(
+          { email: 'a@b.co' },
+          { location: { origin: 'http://127.0.0.1:5174' } }
+        ),
+        {
+          email: 'a@b.co',
+          pageOrigin: 'http://127.0.0.1:5174'
+        }
+      );
+      assert.deepEqual(buildCheckoutSessionBody({ email: 'a@b.co' }, {}), {
         email: 'a@b.co'
       });
     } finally {

@@ -300,15 +300,16 @@ describe('Confide open dormant-wake contract (#491)', () => {
   const confideUiStart = mainSrc.indexOf('const confideToYinUI = new ConfideToYinUI');
   const confideUiEnd = mainSrc.indexOf('window.__confideToYin', confideUiStart);
   const confideUiBlock = mainSrc.slice(confideUiStart, confideUiEnd);
-  const wakeFnStart = mainSrc.indexOf('function wakeYinForConfideCompanion()');
+  const wakeFnStart = mainSrc.indexOf('function wakeYinIfSleeping()');
   const wakeFnBody = mainSrc.slice(wakeFnStart, wakeFnStart + 1400);
 
-  it('wires wakeYinForConfideCompanion to confide onOpen before the panel opens', () => {
+  it('wires wakeYinIfSleeping to confide onOpen before the panel opens', () => {
     assert.ok(confideUiStart > 0);
-    assert.match(confideUiBlock, /onOpen:\s*\(\)\s*=>\s*\{[\s\S]*wakeYinForConfideCompanion\(\)/);
+    assert.match(confideUiBlock, /onOpen:\s*\(\)\s*=>\s*\{[\s\S]*wakeYinIfSleeping\(\)/);
     const openIdx = confideUiBlock.indexOf('onOpen:');
-    const wakeIdx = confideUiBlock.indexOf('wakeYinForConfideCompanion()');
+    const wakeIdx = confideUiBlock.indexOf('wakeYinIfSleeping()');
     assert.ok(openIdx >= 0 && wakeIdx > openIdx);
+    assert.match(mainSrc, /function wakeYinForConfideCompanion\(\) \{\s*wakeYinIfSleeping\(\);/);
   });
 
   it('routes the listening-ear entry through confideToYinUI.open so onOpen still wakes Yin', () => {

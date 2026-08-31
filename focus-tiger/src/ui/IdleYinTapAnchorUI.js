@@ -48,7 +48,13 @@ export class IdleYinTapAnchorUI {
     this.hit.className = 'idle-yin-tap-anchor__hit';
     this.hit.dataset.testid = 'idle-yin-tap-hit';
 
-    this.root.append(this.hit);
+    this.hint = document.createElement('p');
+    this.hint.className = 'idle-yin-tap-anchor__hint';
+    this.hint.dataset.testid = 'idle-yin-tap-hint';
+    this.hint.hidden = true;
+    this.hint.setAttribute('role', 'status');
+
+    this.root.append(this.hit, this.hint);
     container.appendChild(this.root);
 
     this._injectStyles();
@@ -75,6 +81,20 @@ export class IdleYinTapAnchorUI {
     return this._armed && !this.root.hidden;
   }
 
+  /**
+   * First-run jade bubble above the forehead hit. Hidden after first tap.
+   * @param {boolean} show
+   */
+  setHintVisible(show) {
+    if (!this.hint) return;
+    const on = Boolean(show) && this._armed;
+    this.hint.hidden = !on;
+  }
+
+  isHintVisible() {
+    return Boolean(this.hint) && !this.hint.hidden;
+  }
+
   dispose() {
     this._unsubLocale?.();
     this.root.remove();
@@ -83,12 +103,14 @@ export class IdleYinTapAnchorUI {
   _syncCopy() {
     const label = t('IDLE_YIN_TAP_ARIA');
     this.hit.setAttribute('aria-label', label);
+    if (this.hint) this.hint.textContent = t('IDLE_YIN_TAP_HINT');
   }
 
   _syncVisibility() {
     const show = this._armed;
     this.root.hidden = !show;
     this.root.setAttribute('aria-hidden', show ? 'false' : 'true');
+    if (!show && this.hint) this.hint.hidden = true;
   }
 
   _injectStyles() {
@@ -121,6 +143,29 @@ export class IdleYinTapAnchorUI {
       .idle-yin-tap-anchor__hit:focus-visible {
         outline: 2px solid rgba(196, 154, 74, 0.45);
         outline-offset: 4px;
+      }
+      .idle-yin-tap-anchor__hint {
+        position: absolute;
+        left: 50%;
+        top: ${IDLE_YIN_TAP_HIT_LAYOUT.top};
+        z-index: 1;
+        max-width: min(280px, calc(100vw - 48px));
+        margin: 0;
+        padding: 10px 16px;
+        transform: translate(-50%, calc(-100% - 10px));
+        text-align: center;
+        pointer-events: none;
+        color: #2c2c2e;
+        font-size: 14px;
+        font-weight: 560;
+        line-height: 1.45;
+        letter-spacing: 0.01em;
+        background: rgba(255, 255, 255, 0.90);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
       }
       @media (max-width: 479px) {
         .idle-yin-tap-anchor__hit {

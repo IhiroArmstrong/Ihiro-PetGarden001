@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-31（**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-31（**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -510,11 +510,12 @@
 > **仍须人工**：正+倒一次 + CapCut 回 Idle 观感；Focusing 不得走摸头。  
 > **0–1 秒内**：点阿寅**额头**（或上半身 hit）→ CapCut 切入摸头序列开始（无 toast）。
 
-1. `?product=1` Idle → 轻点阿寅**额头** → **0–1 秒内**见摸头动画开始。
-2. 播完 ~1s CapCut 回闭目呼吸；再点可再播。
-3. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
-4. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。**?** 简介或 Privacy 开着时同样：hit 卸武装或被挡；关掉弹窗后再点额头须摸头。
-5. **回流**：Rise → Skip Reflection 回 Idle 后再点额头仍须摸头（禁止第一次播完后 hit 永久 hidden）。
+1. 冷启动（清 `idle-yin-tap-hint.v1`）：吹花若出现须先结束；随后头顶白玉句「试试触摸或点击阿寅的头顶」（跟 locale）。点额头后提示消失，再刷不再出。**不是**每次摸头 toast。
+2. `?product=1` Idle → 轻点阿寅**额头** → **0–1 秒内**见摸头动画开始。
+3. 播完 ~1s CapCut 回闭目呼吸（不得闪白）；再点可再播。
+4. Sit → Focusing → 点阿寅 = 场景 X Recover，**不是**摸头。
+5. Honesty 时长板 / Arrival / Support 卡开着时 hit 隐藏（点不到、不是哑点击）。**?** 简介或 Privacy 开着时同样：hit 卸武装或被挡；关掉弹窗后再点额头须摸头。
+6. **回流**：Rise → Skip Reflection 回 Idle 后再点额头仍须摸头（禁止第一次播完后 hit 永久 hidden）。
 
 ---
 
