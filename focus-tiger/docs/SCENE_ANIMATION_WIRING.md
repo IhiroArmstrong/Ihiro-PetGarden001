@@ -89,6 +89,7 @@
 | Arrival Choose 确认 | `intentionSet` → **`intentionNod`（nod-bow pingpong）** | ack | **已接线** | 与门闩并行；合十曾作 Choose 视觉，现改 nod（画幅衔接） |
 | Arrival Welcome | `smiling` / blink-smile | — | **已接线** | |
 | Honesty · 睡态选时长 | `dormantWake`（cloak 倒放） | ack | **已接线** | 呼吸同期；暂不自动接 halo |
+| Confide · 打开倾诉（睡态 / DORMANT） | `dormantWake`（cloak 倒放）→ CapCut `idle` | ack | **已接线**（#491） | 与 Honesty 睡态对称；`onOpen` 即醒（含倾听耳第二入口）；DORMANT 须 `leave-dormant`；**禁止**面板已开仍 sleeping / 披毯睡 |
 | Honesty · **Idle** 选时长并呼吸结束成功记账 | **≤20 min**（含 21–29）：`mindfulAcknowledge`（**pingpong×1** + CapCut）；**≥30 min**：`goldenHaloPalms`（试验；`breathHaloHq` 仍调试） | ack / ritual-lite | **已实现**（Dispatcher） | 睡态不叠；**禁止** Celebrating |
 | Honesty 桥接 Yes → Arrival | 不另插庆祝 | — | **已接线** | 进 Arrival 既有序列即可 |
 | 一分钟呼吸（微仪式）完成 | 同档池：`sessionComplete` ~65% · `mindfulAcknowledge` ~28% · **`parrotEarVisit` 稀有 ~7%**（**无** `curiousTilt`/blink-smile） | light / ack / messenger | **已实现**（Dispatcher） | 从不 Celebrating。**呼吸进行中** = Idle 闭目坐禅（2026-08-21；勿再抄 Arrival 短拍 smiling）。完成池仍不抽 blink-smile |
@@ -145,7 +146,8 @@
 ## 六、Slice A 验收口径（产品）
 
 1. **Language**：`?product=1` → Language → 日本語 → 阿寅播**单程看书**（`bookReading` + CapCut）→ 回 Idle；再切 English → **喝茶**（`teaDrinking` + CapCut）；同日重复切同一语**不**反复播。  
-2. **Honesty Idle**：非睡态 → ≤29 短点头 / ≥30 `goldenHaloPalms`（试验）→ toast → 桥接；睡态仅 dormantWake，**不**叠 Celebrating。  
+2. **Honesty Idle**：非睡态 → ≤29 短点头 / ≥30 `goldenHaloPalms`（试验）→ toast → 桥接；睡态仅 dormantWake，**不**叠 Celebrating。
+2b. **Confide 打开**：睡态 / DORMANT → `dormantWake` → CapCut `idle`；面板后须 idle 坐姿，**禁止**仍 sleeping（见 **场景 AE** 步 6 · #491）。  
 3. **微仪式 / 非首次完成**：同档轻量池（可 sessionComplete / nod / blink）；中置 toast 仍在。  
 4. **禁止**：切语言或 Honesty / 轻量完成触发 `celebrating`。
 
@@ -255,4 +257,5 @@
 | 2026-08-20 | Yin's Collections 底栏 **挥手点播**：`collectionsWaveHello` → 已入库 `waveHello`；不要求结缘 SKU；`welcomeBack` / 10min 自主挥手仍停接线 |
 | 2026-08-20 | **精灵占用仲裁**：`spriteChannelArbitration` 统一冷启动 / 回前台 / 会话结束 / 付款致谢；深夜窗 ≥23 或 &lt;06 与 wellness 对齐；付款回跳压过披毯（§6.17） |
 | 2026-08-21 | timed Breath practice **进行中**改 Idle 闭目坐禅（不再抄 Arrival smiling@4fps） |
+| 2026-08-31 | **Confide 打开睡态唤醒**（#491）：`wakeYinForConfideCompanion` · DORMANT/`sleeping`/`cloakSleep` → `dormantWake` → CapCut `idle`；与 Honesty 睡态对称；接线表 §5.1 + 场景 AE 步 6 |
 

@@ -98,7 +98,7 @@
 1. Idle ⋯/抽屉入口 + 轻量面板 `#confide-to-yin-card` —— **已接线**；菜单行预留，**默认隐藏**（mount false）。**2026-08-22**：Idle 倾听耳（宽屏左上 / 窄屏 ActionBar）与菜单同一开闸。叠层/Focusing/Arrival 期间 `canOpen` 拒绝。  
 2. `confideClassify.js`：safety → 情绪 → fallback（单测已锁）。  
 3. `confideCorpus.js`：禅意 18 + safety-01 **ok**；安全命中不得抽禅意池。  
-4. 轻姿态：安全 → `nodBow`；其它 → `mindfulAcknowledge`。  
+4. 轻姿态：安全 → `nodBow`；其它 → `mindfulAcknowledge`。**打开 Confide 时若处于睡态 / DORMANT 则先唤醒**（`dormantWake` → CapCut `idle`；`wakeYinForConfideCompanion` · #491；与 Honesty 睡态对称）。  
 5. 存储：暂无。  
 6. 门闩：busy session 不打开。  
 7. 单测 + TRACKER。  

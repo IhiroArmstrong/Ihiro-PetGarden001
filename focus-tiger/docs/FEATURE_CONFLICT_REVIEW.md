@@ -40,6 +40,16 @@
 
 问自己：用户没主动求助时，我们是否塞了比「更糟情况的正式路径」更重的仪式？
 
+### 邻接扫描提示 · 精灵占用 × 叠层语义（2026-08-31 · Confide #491 教训）
+
+新增或改写 **Idle 陪伴叠层**（Confide、Honesty、Reflection、Support、Welcome、倾听耳第二入口等）时，除上列三轴外还须对照：
+
+1. **场景 AD**（睡 / Welcome / 付款回跳）：叠层已开时 Yin 是否仍应 sleeping / DORMANT？用户主动找 Yin「在听」的 UI，背景仍睡 = **人设 / 职责冲突**（#491 首测即 bug）。
+2. **`SCENE_ANIMATION_WIRING`**：打开 / 关闭叠层时精灵应播什么？无行 = 实现默认不动睡态。
+3. **`SCENARIO_TESTS`**：AE / AD 交叉步是否写明睡态路径（例：AE 步 6 · DORMANT → 开 Confide → `dormantWake` → idle）。
+
+**正面案例（Confide 睡态唤醒 · #491）**：Confide MVP 只锁发送后点头，未扫 AD；深夜 DORMANT 下开倾诉面板 Yin 仍睡。修复 = `onOpen` → `wakeYinForConfideCompanion`（与 Honesty 睡态选时长对称）。以后新 Idle 叠层：**先写接线表 + 场景步，再写 UI**。
+
 ### b. 人设 / 语气不一致
 
 新文案的语气是否和相邻场景的角色定位冲突（观照式 vs 指导式、伙伴 vs 教练、允许补登 vs 怀疑质问等）。
@@ -186,6 +196,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-08-31 | 邻接扫描提示：Idle 陪伴叠层须扫 AD + `SCENE_ANIMATION_WIRING` + 睡态场景步；正面案例 Confide #491 睡态唤醒 |
 | 2026-08-28 | PO 修订 Bounded Temporal Compare：C2 开放两段时期并列事实；禁止人格进步评判；Phase 1B 扩对照型问句。无 runtime |
 | 2026-08-28 | PO 正式拍板 Local AI Phase 1：V1=A；V2 future；V3 validation；Ceiling C2+少量C3；MUST NOT 锁。Brief 三份；无自动 runtime |
 | 2026-08-28 | 设计师预审 Expected Position 入库（非批准）：V1=A；V2 窄删 Candidate；V3 用户点；MUST NOT 全确认。无 runtime |
