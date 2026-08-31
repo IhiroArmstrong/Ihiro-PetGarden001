@@ -8,7 +8,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
-import { YIN_INTENT_DIAGNOSTIC_FIXTURES } from './confideIntentDiagnosticFixtures.js';
+import {
+  YIN_INTENT_DIAGNOSTIC_FIXTURES,
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE1,
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2
+} from './confideIntentDiagnosticFixtures.js';
 import {
   YIN_INTENT_LABEL,
   YIN_INTENT_LABELS,
@@ -20,11 +24,28 @@ import {
 const here = path.dirname(fileURLToPath(import.meta.url));
 
 describe('yin intent diagnostic (lab)', () => {
-  it('freezes 12 fixtures on allowed labels', () => {
-    assert.equal(YIN_INTENT_DIAGNOSTIC_FIXTURES.length, 12);
+  it('freezes phase 1 (12) plus designer phase 2 (20)', () => {
+    assert.equal(YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE1.length, 12);
+    assert.equal(YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2.length, 20);
+    assert.equal(YIN_INTENT_DIAGNOSTIC_FIXTURES.length, 32);
+    const ids = new Set();
     for (const row of YIN_INTENT_DIAGNOSTIC_FIXTURES) {
       assert.ok(YIN_INTENT_LABELS.includes(row.expectedPrimary), row.id);
+      if (row.expectedSecondary) {
+        assert.ok(YIN_INTENT_LABELS.includes(row.expectedSecondary), row.id);
+      }
+      assert.equal(ids.has(row.id), false, row.id);
+      ids.add(row.id);
     }
+  });
+
+  it('clears phase-2 #1 secondary (no emotion word)', () => {
+    const row = YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2.find(
+      (item) => item.id === 'maybe-later-talk'
+    );
+    assert.ok(row);
+    assert.equal(row.expectedPrimary, YIN_INTENT_LABEL.BOUNDARY);
+    assert.equal(row.expectedSecondary, '');
   });
 
   it('parses fenced JSON and scores boundary flatten', () => {
