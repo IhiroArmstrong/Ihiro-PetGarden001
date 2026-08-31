@@ -41,6 +41,16 @@ export function canRememberYinPersonalMemory(state) {
 }
 
 /**
+ * Empty-list copy in What Yin remembers.
+ * After Allow, do not tell the user to allow again.
+ * @param {import('./yinPersonalMemorySchema.js').YinMemoryConsent | null | undefined} consent
+ * @returns {'YIN_MEMORY_PANEL_EMPTY' | 'YIN_MEMORY_PANEL_EMPTY_GRANTED'}
+ */
+export function yinMemoryPanelEmptyCopyKey(consent) {
+  return consent === 'granted' ? 'YIN_MEMORY_PANEL_EMPTY_GRANTED' : 'YIN_MEMORY_PANEL_EMPTY';
+}
+
+/**
  * @param {import('./yinPersonalMemorySchema.js').YinPersonalMemoryState} state
  * @param {boolean} granted
  * @param {string} [nowIso]

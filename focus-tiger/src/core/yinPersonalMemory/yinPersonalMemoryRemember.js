@@ -137,6 +137,38 @@ export function matchYinMemoryRememberRule(userText) {
     };
   }
 
+  if (
+    /\b(need|needs|needed)\b.{0,32}\breset\b/i.test(text) ||
+    /\breset\b.{0,32}\b(need|needs|needed)\b/i.test(text)
+  ) {
+    return {
+      ruleId: 'pattern-need-reset',
+      kind: 'pattern',
+      summary: 'You have named needing a reset.'
+    };
+  }
+
+  if (
+    /\b(don'?t|do not|don’t)\b.{0,48}\b(feel like|want to|up for)\b.{0,24}\bfocus/i.test(text)
+  ) {
+    return {
+      ruleId: 'pattern-not-focusing-today',
+      kind: 'pattern',
+      summary: 'Some days focusing has not felt available.'
+    };
+  }
+
+  if (
+    /\buntil this morning\b/i.test(text) ||
+    /\b(was doing|going)\b.{0,40}\b(well|okay|ok|fine)\b.{0,24}\b(until|before)\b/i.test(text)
+  ) {
+    return {
+      ruleId: 'pattern-morning-shift',
+      kind: 'pattern',
+      summary: 'A morning has shifted after things had been going well.'
+    };
+  }
+
   return null;
 }
 

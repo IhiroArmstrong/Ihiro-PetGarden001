@@ -11,7 +11,8 @@ import {
   applyYinMemoryConsent,
   canRememberYinPersonalMemory,
   hasYinMemoryConsentDecision,
-  shouldOfferYinMemoryConsent
+  shouldOfferYinMemoryConsent,
+  yinMemoryPanelEmptyCopyKey
 } from './yinPersonalMemoryConsent.js';
 
 test('consent offer only before decision', () => {
@@ -33,4 +34,10 @@ test('granted enables remember gate', () => {
   assert.equal(granted.consent, 'granted');
   assert.equal(granted.consentedAt, 't');
   assert.equal(canRememberYinPersonalMemory(granted), true);
+});
+
+test('granted empty panel copy does not ask to allow again', () => {
+  assert.equal(yinMemoryPanelEmptyCopyKey(null), 'YIN_MEMORY_PANEL_EMPTY');
+  assert.equal(yinMemoryPanelEmptyCopyKey('denied'), 'YIN_MEMORY_PANEL_EMPTY');
+  assert.equal(yinMemoryPanelEmptyCopyKey('granted'), 'YIN_MEMORY_PANEL_EMPTY_GRANTED');
 });

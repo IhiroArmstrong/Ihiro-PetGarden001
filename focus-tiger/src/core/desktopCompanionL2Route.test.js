@@ -432,6 +432,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
     assert.match(ui, /_maybeRememberFromL3/);
+    assert.match(ui, /onMemoryRemembered/);
     const runtime = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
       'utf8'

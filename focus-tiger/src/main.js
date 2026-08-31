@@ -1176,6 +1176,9 @@ async function init() {
     onMemoryForgotten: (memoryId) => {
       yinPersonalMemoryUI.removeMemoryIfOpen(memoryId);
     },
+    onMemoryRemembered: () => {
+      yinPersonalMemoryUI.reloadIfOpen();
+    },
     onReplied: ({ route }) => {
       if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
         emotionController.playEmotion('nodBow');
