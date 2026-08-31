@@ -36,6 +36,29 @@ function errorMessage(err) {
   return err instanceof Error ? err.message : String(err);
 }
 
+function readDiagnostic(rows, parseOk) {
+  if (parseOk <= 0) return 'see_rows';
+  const boundaryRow =
+    rows.find((row) => row.id === 'boundary-unsure') ||
+    rows.find((row) => row.id === 'terrible-day-dont-talk');
+  if (boundaryRow?.primaryHit) return 'model_can_label_boundary_check_pipeline';
+  if (boundaryRow?.gotPrimary === 'EMOTION') {
+    return 'model_also_flattens_boundary_capacity_question';
+  }
+  return 'see_rows';
+}
+
+function selectFixtures() {
+  const phase = String(process.env.FT_INTENT_PHASE || '').trim();
+  if (phase === '2') {
+    return YIN_INTENT_DIAGNOSTIC_FIXTURES.filter((row) => row.phase === 2);
+  }
+  if (phase === '1') {
+    return YIN_INTENT_DIAGNOSTIC_FIXTURES.filter((row) => row.phase === 1);
+  }
+  return YIN_INTENT_DIAGNOSTIC_FIXTURES;
+}
+
 function resolveModelPath() {
   const fromEnv = process.env.FT_INTENT_GGUF || process.env.FT_TOOL_CALL_GGUF;
   if (fromEnv && fs.existsSync(fromEnv)) return fromEnv;
@@ -71,6 +94,7 @@ async function main() {
   let model = null;
   /** @type {object[]} */
   const rows = [];
+  const fixtures = selectFixtures();
 
   try {
     llama = await getLlama();
@@ -78,7 +102,7 @@ async function main() {
     const context = await model.createContext();
     const sequence = context.getSequence();
 
-    for (const fixture of YIN_INTENT_DIAGNOSTIC_FIXTURES) {
+    for (const fixture of fixtures) {
       const session = new LlamaChatSession({ contextSequence: sequence });
       const prompt = buildYinIntentDiagnosticPrompt(fixture.text);
       let text = '';
@@ -90,6 +114,7 @@ async function main() {
         text = '';
         rows.push({
           id: fixture.id,
+          phase: fixture.phase,
           expectedPrimary: fixture.expectedPrimary,
           error: errorMessage(err),
           raw: '',
@@ -107,6 +132,7 @@ async function main() {
       });
       rows.push({
         id: fixture.id,
+        phase: fixture.phase,
         text: fixture.text,
         liveReplyNote: fixture.liveReplyNote,
         expectedPrimary: fixture.expectedPrimary,
@@ -130,6 +156,7 @@ async function main() {
   const boundaryFlattened = rows.filter((row) => row.boundaryFlattened).length;
   const mixedBeginFlattened = rows.filter((row) => row.mixedBeginFlattened).length;
   const yinVoiceLeaks = rows.filter((row) => row.yinVoiceLeak).length;
+  const phase2Rows = rows.filter((row) => row.phase === 2);
   const report = {
     at: new Date().toISOString(),
     modelPath,
@@ -139,14 +166,15 @@ async function main() {
     boundaryFlattened,
     mixedBeginFlattened,
     yinVoiceLeaks,
-    reading:
-      parseOk > 0 &&
-      rows.some((row) => row.id === 'boundary-unsure' && row.primaryHit)
-        ? 'model_can_label_boundary_check_pipeline'
-        : parseOk > 0 &&
-            rows.some((row) => row.id === 'boundary-unsure' && row.gotPrimary === 'EMOTION')
-          ? 'model_also_flattens_boundary_capacity_question'
-          : 'see_rows',
+    phase2: {
+      n: phase2Rows.length,
+      parseOk: phase2Rows.filter((row) => row.parseOk).length,
+      primaryHits: phase2Rows.filter((row) => row.primaryHit).length,
+      boundaryFlattened: phase2Rows.filter((row) => row.boundaryFlattened).length,
+      mixedBeginFlattened: phase2Rows.filter((row) => row.mixedBeginFlattened)
+        .length
+    },
+    reading: readDiagnostic(rows, parseOk),
     rows
   };
 
@@ -163,6 +191,7 @@ async function main() {
         boundaryFlattened,
         mixedBeginFlattened,
         yinVoiceLeaks,
+        phase2: report.phase2,
         reading: report.reading
       },
       null,

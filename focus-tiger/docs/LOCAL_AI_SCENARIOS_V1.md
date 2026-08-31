@@ -206,7 +206,7 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 
 **执行步骤 SSOT**：`LOCAL_AI_PHASE1_TASK_PLAN.md`（含 Gate 0.2 · #472 Read Hybrid 验收 A/B/C · **Gate 0.D Yin Intent Diagnostic**）。
 
-1. **Gate 0.D**：已合 #495；换模型前仍以 intent JSON 为准。  
+1. **Gate 0.D**：Phase 1 已合 #495；Phase 2 设计师 20 条已冻（#1 secondary 空）；换模型前仍以 intent JSON 为准。  
 2. **#472 Read Hybrid**： **2026-09-01 关单**（C-3 suspend · C-5 follow-up 另轨）。  
 3. **Phase 1B** Ask Journey / Presence：**#503 已合**。  
 4. **Phase 1A** Show memory：**口令已执行**（本旁支 · CI-03 `memory_list`）。  
