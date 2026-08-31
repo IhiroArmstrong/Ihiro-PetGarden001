@@ -27,6 +27,7 @@ describe('yinPersonalMemorySuppress', () => {
   test('detects inline and post-recall suppress phrases', () => {
     assert.equal(isInlineMemorySuppressIntent("I prefer quiet reflections. Don't save this."), true);
     assert.equal(isPostRecallMemorySuppressIntent('Forget this'), true);
+    assert.equal(isPostRecallMemorySuppressIntent('forget it!'), true);
     assert.equal(isPostRecallMemorySuppressIntent('Please forget about Monday'), false);
     assert.equal(isVerbalForgetIntent('Forget this'), false);
     assert.equal(isVerbalForgetIntent('Please forget about Monday'), true);

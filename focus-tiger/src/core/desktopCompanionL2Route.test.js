@@ -168,6 +168,7 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.match(prompt, /do not advise/i);
     assert.match(prompt, /the weather is mild today/);
     assert.equal(sanitizeCompanionL2Reply('Tea is still warm.'), 'Tea is still warm.');
+    assert.equal(sanitizeCompanionL2Reply('Yes'), null);
     assert.equal(sanitizeCompanionL2Reply('You should try to breathe slowly.'), null);
     assert.equal(sanitizeCompanionL2Reply('你应该深呼吸。'), null);
     assert.equal(sanitizeCompanionL2Reply(''), null);
@@ -376,6 +377,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /memory_forget/);
     assert.match(ui, /yinPersonalMemoryVerbalForget/);
     assert.match(ui, /yinPersonalMemorySuppress/);
+    assert.match(ui, /shouldHandlePostRecallMemorySuppress\(\{[\s\S]*?state: this\._memoryState/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
     assert.match(ui, /_maybeRememberFromL3/);

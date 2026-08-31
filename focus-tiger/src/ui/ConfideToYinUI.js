@@ -741,7 +741,7 @@ export class ConfideToYinUI {
       shouldHandlePostRecallMemorySuppress({
         route: hit.route,
         text,
-        memoryState: this._memoryState,
+        state: this._memoryState,
         hasBridge: hasYinPersonalMemoryBridge(),
         turnOrdinal
       })
@@ -753,7 +753,7 @@ export class ConfideToYinUI {
       shouldHandleStandaloneMemorySuppress({
         route: hit.route,
         text,
-        memoryState: this._memoryState,
+        state: this._memoryState,
         hasBridge: hasYinPersonalMemoryBridge()
       })
     ) {

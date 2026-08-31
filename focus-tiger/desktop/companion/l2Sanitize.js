@@ -5,6 +5,9 @@
 
 import { L2_MAX_REPLY_CHARS } from './l2Persona.js';
 
+/** One-word model misfires (e.g. Qwen acknowledging a prompt) — fall back to corpus. */
+const TRIVIAL_ONLY_REPLIES = /^(?:yes|no|ok|okay|sure|yep|nope|是|嗯|好|对)\.?$/iu;
+
 const BANNED = [
   /you should/i,
   /try (to )?breathe/i,
@@ -33,6 +36,7 @@ export function sanitizeCompanionL2Reply(raw) {
     text = text.slice(0, L2_MAX_REPLY_CHARS).replace(/\s+\S*$/, '').trim();
   }
   if (!text) return null;
+  if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
   return text;
 }

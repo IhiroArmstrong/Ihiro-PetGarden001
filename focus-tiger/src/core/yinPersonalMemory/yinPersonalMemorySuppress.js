@@ -29,7 +29,7 @@ const INLINE_MEMORY_SUPPRESS_RES = Object.freeze([
 
 /** @type {readonly RegExp[]} */
 const POST_RECALL_MEMORY_SUPPRESS_RES = Object.freeze([
-  /\bforget\s+(?:this|that)\b(?!\s+about\b)/i,
+  /\bforget\s+(?:this|that|it)\b(?!\s+about\b)/i,
   /\b(?:don'?t|do not)\s+(?:save|remember|keep)\s+(?:this|that|it)\b/i,
   /忘掉刚才那句/,
   /刚才那句别记/,
