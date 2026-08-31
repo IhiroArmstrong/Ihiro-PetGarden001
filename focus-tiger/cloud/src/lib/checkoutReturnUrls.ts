@@ -46,3 +46,82 @@ export function resolveCheckoutReturnUrl(
 		return trimmed;
 	}
 }
+
+const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost"]);
+
+/**
+ * Loopback Vite origins only (`http://127.0.0.1:5174`). Production hosts
+ * stay on Worker env URLs — never an open redirect.
+ */
+export function isLoopbackWebOrigin(origin: string): boolean {
+	try {
+		const parsed = new URL(origin);
+		if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+			return false;
+		}
+		return LOOPBACK_HOSTS.has(parsed.hostname);
+	} catch {
+		return false;
+	}
+}
+
+export function checkoutPageOriginFromBody(body: unknown): string {
+	if (!body || typeof body !== "object") return "";
+	const raw = (body as { pageOrigin?: unknown }).pageOrigin;
+	if (typeof raw !== "string") return "";
+	return raw.trim().replace(/\/+$/, "");
+}
+
+/**
+ * Keep `{CHECKOUT_SESSION_ID}` unencoded: do not round-trip through URL().
+ */
+export function rewriteCheckoutReturnPageOrigin(
+	webUrl: string,
+	pageOrigin: string,
+): string {
+	const trimmed = String(webUrl || "").trim();
+	const origin = String(pageOrigin || "").trim().replace(/\/+$/, "");
+	if (!trimmed || !origin) return trimmed;
+	let templateOrigin = "";
+	try {
+		templateOrigin = new URL(trimmed).origin;
+	} catch {
+		return trimmed;
+	}
+	if (
+		!isLoopbackWebOrigin(templateOrigin) ||
+		!isLoopbackWebOrigin(origin)
+	) {
+		return trimmed;
+	}
+	if (templateOrigin === origin) return trimmed;
+	if (!trimmed.startsWith(templateOrigin)) return trimmed;
+	return `${origin}${trimmed.slice(templateOrigin.length)}`;
+}
+
+/**
+ * Desktop → Worker HTTPS bridge. Web Vite → same loopback port as the tab.
+ */
+export function resolveSessionReturnUrls(
+	successUrl: string,
+	cancelUrl: string,
+	parsedBody: unknown,
+	request: Request,
+): { successUrl: string; cancelUrl: string } {
+	const bridgeOrigin = new URL(request.url).origin;
+	if (isDesktopReturnSurface(parsedBody)) {
+		return {
+			successUrl: resolveCheckoutReturnUrl(
+				successUrl,
+				"desktop",
+				bridgeOrigin,
+			),
+			cancelUrl: resolveCheckoutReturnUrl(cancelUrl, "desktop", bridgeOrigin),
+		};
+	}
+	const pageOrigin = checkoutPageOriginFromBody(parsedBody);
+	return {
+		successUrl: rewriteCheckoutReturnPageOrigin(successUrl, pageOrigin),
+		cancelUrl: rewriteCheckoutReturnPageOrigin(cancelUrl, pageOrigin),
+	};
+}

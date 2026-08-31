@@ -23,7 +23,7 @@
 |---|---|
 | Worker name | `focus-tiger-cloud` |
 | Public URL | `https://focus-tiger-cloud.ihiro.workers.dev`（163 / ihiro Cloudflare；**勿**用旁路 `*.focus-tiger.workers.dev`） |
-| `ALLOWED_ORIGIN`（vars） | `http://127.0.0.1:5173`（支持逗号列表；可含 `focus-tiger://app`；**生产名单变更须 redeploy**）。本地旁支 `:5174` 不在名单内 → 浏览器 CORS 拦结账；Vite dev 用同源 `/api` 代理，不扩生产 Origin。 |
+| `ALLOWED_ORIGIN`（vars） | `http://127.0.0.1:5173`（支持逗号列表；可含 `focus-tiger://app`；**生产名单变更须 redeploy**）。本地旁支 `:5174` 不在名单内 → 浏览器 CORS 拦结账；Vite dev 用同源 `/api` 代理，不扩生产 Origin。Checkout POST `pageOrigin` 仅改写 loopback success/cancel；**须 redeploy** 后 `:5174` 才不再被 Stripe 打回 `:5173`。 |
 | KV bindings（7） | 见下表 |
 | Checkout `vars` 接线 | Tip ✓ · Sanctuary ✓ · Membership ✓ · **Pro ✓** · **Companion Add-on ✓** |
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |

@@ -1,8 +1,5 @@
 import { errorJson, json } from "../lib/http";
-import {
-	isDesktopReturnSurface,
-	resolveCheckoutReturnUrl,
-} from "../lib/checkoutReturnUrls";
+import { resolveSessionReturnUrls } from "../lib/checkoutReturnUrls";
 import { createCompanionAddonCheckoutSession } from "../lib/stripe";
 import { isPlausibleEmail, normalizeEmail } from "../lib/companionAddonKv";
 import type { Env } from "../types";
@@ -45,15 +42,19 @@ export async function handleCreateCompanionAddonCheckoutSession(
 		// Empty body OK.
 	}
 
-	const returnSurface = isDesktopReturnSurface(parsedBody) ? "desktop" : undefined;
-	const bridgeOrigin = new URL(request.url).origin;
+	const returns = resolveSessionReturnUrls(
+		successUrl,
+		cancelUrl,
+		parsedBody,
+		request,
+	);
 
 	try {
 		const session = await createCompanionAddonCheckoutSession({
 			secretKey: secret,
 			priceId,
-			successUrl: resolveCheckoutReturnUrl(successUrl, returnSurface, bridgeOrigin),
-			cancelUrl: resolveCheckoutReturnUrl(cancelUrl, returnSurface, bridgeOrigin),
+			successUrl: returns.successUrl,
+			cancelUrl: returns.cancelUrl,
 			customerEmail,
 		});
 		return json({ url: session.url, sessionId: session.id });

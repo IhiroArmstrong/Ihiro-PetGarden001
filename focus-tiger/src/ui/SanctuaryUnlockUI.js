@@ -10,11 +10,13 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { getCloudApiBaseUrl, postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
+import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
 import {
   confirmSanctuaryReturnQuery,
   isSanctuaryUnlocked,
   markSanctuaryFromPayment,
+  shouldStartSanctuaryLifetimeCheckout,
   readSanctuaryEntitlement,
   syncSanctuaryBadgesFromPractice
 } from '../core/sanctuaryEntitlementGate.js';
@@ -105,6 +107,10 @@ export class SanctuaryUnlockUI {
       'yin-sanctuary__btn yin-sanctuary__btn--primary';
     this.buyBtn.dataset.testid = 'yin-sanctuary-buy';
     this.buyBtn.addEventListener('click', () => {
+      if (!shouldStartSanctuaryLifetimeCheckout({ storage: this._storage })) {
+        this.close();
+        return;
+      }
       void this._startCheckout();
     });
 
@@ -242,6 +248,10 @@ export class SanctuaryUnlockUI {
 
   async _startCheckout() {
     if (this._busy) return;
+    if (!shouldStartSanctuaryLifetimeCheckout({ storage: this._storage })) {
+      this.close();
+      return;
+    }
     if (!getCloudApiBaseUrl()) {
       this.statusEl.textContent = t('SANCTUARY_CLOUD_OFFLINE');
       return;
@@ -253,7 +263,7 @@ export class SanctuaryUnlockUI {
     let checkoutErrorKey = 'SANCTUARY_ERROR_GENERIC';
     try {
       const email = this.emailInput.value.trim();
-      const body = email ? { email } : {};
+      const body = buildCheckoutSessionBody(email ? { email } : {});
       const res = await postCloudJson('/api/create-sanctuary-checkout-session', {
         body: JSON.stringify(body)
       });

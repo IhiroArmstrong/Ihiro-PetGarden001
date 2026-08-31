@@ -21,6 +21,7 @@ import {
   tipLogDateKey
 } from '../core/tipJarGate.js';
 import { openCheckoutUrl } from '../core/desktopShell.js';
+import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import {
   getTipKindnessBadgeById,
   tipKindnessBadgeSrc
@@ -414,9 +415,8 @@ export class TipJarUI {
     this._setFeedback(t('TIP_BUY_PENDING'), false);
     try {
       const email = String(this.emailInput.value || '').trim();
-      const body = email ? JSON.stringify({ email }) : '{}';
       const data = await postCloudJson('/api/create-tip-checkout-session', {
-        body
+        body: JSON.stringify(buildCheckoutSessionBody(email ? { email } : {}))
       });
       const url =
         data && typeof data === 'object' && typeof data.url === 'string'

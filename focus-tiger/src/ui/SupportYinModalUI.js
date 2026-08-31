@@ -639,6 +639,7 @@ export class SupportYinModalUI {
   /** After Stripe return confirms Pro / companion add-on in the shell. */
   syncEntitlementCards() {
     this._syncPaidCardVisibility();
+    this._syncLeadLayout();
   }
 
   /** @returns {'tea-first' | 'sanctuary-first'} */

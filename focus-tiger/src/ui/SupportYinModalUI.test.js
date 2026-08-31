@@ -118,6 +118,10 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /supportModalSuggestedHost/);
     assert.match(src, /setShouldLeadWithTea/);
     assert.match(src, /_syncLeadLayout/);
+    assert.match(
+      src,
+      /syncEntitlementCards\(\) \{\s*this\._syncPaidCardVisibility\(\);\s*this\._syncLeadLayout\(\);/
+    );
     assert.match(src, /yin-support-suggested-badge/);
     assert.match(src, /supportModalFunnelLayout/);
     assert.match(src, /_funnelLayout/);

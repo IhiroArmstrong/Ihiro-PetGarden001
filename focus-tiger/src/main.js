@@ -1317,6 +1317,7 @@ async function init() {
     if (ret?.outcome === 'success') {
       monetizationFunnelStore.checkoutComplete('sanctuary', 'return');
       applyPaymentThanksSprite('sanctuary');
+      syncEntitlementDependentIdleChrome();
     }
   });
   void bootMembershipReturnConfirm({}).then((ret) => {

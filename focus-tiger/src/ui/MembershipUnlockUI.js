@@ -12,6 +12,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { getCloudApiBaseUrl, postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
+import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import {
   isMembershipActiveLocally,
   markMembershipFromPayment,
@@ -331,7 +332,7 @@ export class MembershipUnlockUI {
     let checkoutError = false;
     try {
       const email = this.emailInput.value.trim();
-      const body = email ? { email } : {};
+      const body = buildCheckoutSessionBody(email ? { email } : {});
       const res = await postCloudJson('/api/create-membership-checkout-session', {
         body: JSON.stringify(body)
       });
