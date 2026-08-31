@@ -26,6 +26,7 @@
 
 > **PO · 2026-08-31**：CI-01 / `memory_suppress` **意图对了、指代解析不到**时，保留诚实短句（`YIN_MEMORY_SUPPRESS_NO_MATCH`），**禁止猜删**。`turns.jsonl` ≠ Yin Personal Memory。口头「昨天那件事」解析是 entity 缺口，另口令，不在本表白名单扩成对话全量可删。
 | **CI-02** | `query_presence_trend` | 「最近两周我的情绪看起来怎样？」/ What has my mood looked like recently? / Have I been more steady lately? | 读 `focus-tiger.presence-signals.v1`（封闭标签；14 日；≥3 条描述性 breakdown 或两窗并列） | read | Confide · `fallback` 前 | `confidePresenceFacts.js` · `presence_facts` |
+| **CI-03** | `query_memory_list` | 「你还记得什么」/ Show me what you remember | 读 `yin-personal-memory.json` 的 `active` 摘要模板（Consent 诚实空态；**禁止** L3 编造） | read | Confide · `fallback` + Electron bridge | `confideMemoryList.js` · `memory_list` |
 
 > **PO · 2026-08-28**：**正式示例**改用描述性问法。**不再推广**「Has my mood improved? / 改善了吗」（可作路由 alias）。答句禁止诊断与人格进步评判（**你更稳了 / 你进步了**）。  
 > **PO · 2026-08-28 晚**：**Bounded Temporal Compare** — 对照型问句（比以前久 / 稳不稳 / 进状态）可路由；答句须**两段时期并列事实**，见 `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` Amendment。
@@ -53,6 +54,7 @@
 | 1a Consent | 能不能记 | 否（一次性 UI） |
 | 1b Remember | 静默记下 | 否（L3 后管道） |
 | 1c 列表 + 面板 Forget | 看 / 点删 | 面板，非口头表项 |
+| 1A Show memory | 口头列出摘要 | **是（CI-03）** |
 | 1d Use | L3 注入回指 | 否（被动） |
 | 1e 口头 Forget | 对话删一条 | **是（CI-01）** |
 
@@ -81,7 +83,7 @@ ConfideToYinUI._onSend
   → memory_suppress（Don't keep / Don't save · 非 CI）
   → boundary respect（不确定要不要谈 · 模板，不进 L3）
   → matchConfideExecutableTool (regex)
-       → CI-00 / CI-02: 确定性读 + 模板
+       → CI-00 / CI-02 / CI-03: 确定性读 + 模板
        → CI-01: 口头 Forget handler（非 autoExecute）
   → regex miss + fallback → classifyReadTool (L0, read prompt only)
        → registry readOnly + autoExecute → 同上模板
@@ -90,7 +92,7 @@ ConfideToYinUI._onSend
 
 | 风险级 | 例子 | 生产策略 |
 |---|---|---|
-| `read` | 练了多久、情绪趋势 | 正则优先；regex miss 可 L0 补漏（registry 闸门） |
+| `read` | 练了多久、情绪趋势、Show memory | 正则优先；regex miss 可 L0 补漏（registry 闸门） |
 | `local_reversible` | 删一条 memory | 正则 + Consent；**禁止**模型直接写 |
 | `destructive` | bulk wipe、备份、更新 | **禁止**进 Confide registry；长期见 Operating Layer |
 
@@ -100,7 +102,7 @@ ConfideToYinUI._onSend
 
 ## 工程注册（实现参考）
 
-`ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → forget）。  
+`ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → memory_list → forget）。  
 实验室：`desktop/scripts/l0-tool-call-probe.js` · `npm run companion:tool-call` · fixture `confideToolCallFixtures.js`。  
 Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`。  
 新增 CI-xx 时应扩 **registry + 纯函数模块 + 单测**，禁止在 UI 内堆 if 树。

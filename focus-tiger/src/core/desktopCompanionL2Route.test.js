@@ -448,7 +448,10 @@ describe('desktop companion L2 isolation', () => {
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];
     assert.equal(turnPushes.length, 2);
     assert.match(ui, /CONFIDE_TOOL_ID\.QUERY_PRACTICE_DURATION/);
+    assert.match(ui, /CONFIDE_TOOL_ID\.QUERY_MEMORY_LIST/);
     assert.match(ui, /source: 'practice_facts'/);
+    assert.match(ui, /source: 'memory_list'/);
+    assert.match(ui, /isConfideHybridExecutableReadTool/);
     assert.match(ui, /shown\.source === 'generate'/);
     assert.match(ui, /shown\.source === 'practice_facts'/);
     assert.match(ui, /shown\.source === 'boundary'/);
