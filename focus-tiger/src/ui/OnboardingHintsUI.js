@@ -455,6 +455,7 @@ export class OnboardingHintsUI {
       onOpenFiveMoments = null,
       onWellnessFirstDismiss = null,
       onPurposeOpen = null,
+      onPurposeClose = null,
       storage = null
     } = {}
   ) {
@@ -463,6 +464,7 @@ export class OnboardingHintsUI {
     this.onOpenFiveMoments = onOpenFiveMoments;
     this.onWellnessFirstDismiss = onWellnessFirstDismiss;
     this.onPurposeOpen = onPurposeOpen;
+    this.onPurposeClose = onPurposeClose;
     this._storage =
       storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -571,6 +573,14 @@ export class OnboardingHintsUI {
       if (wellnessDetailOpen) {
         if (this.wellnessDetailCard?.contains(el)) return;
         this._hideWellnessDetailCard();
+        return;
+      }
+      const privacyOpen = Boolean(
+        this.privacySheet && !this.privacySheet.hidden
+      );
+      if (privacyOpen) {
+        if (this.privacySheet?.contains(el)) return;
+        this._dismissPrivacyAndPurpose();
         return;
       }
       if (!purposeOpen) return;
@@ -1849,6 +1859,10 @@ export class OnboardingHintsUI {
     backdrop.className = 'onboarding-app-purpose-backdrop';
     backdrop.hidden = true;
     backdrop.addEventListener('click', () => {
+      if (this.privacySheet && !this.privacySheet.hidden) {
+        this._dismissPrivacyAndPurpose();
+        return;
+      }
       this.closePurposeCard();
     });
     this.mountRoot.appendChild(backdrop);
@@ -2112,9 +2126,27 @@ export class OnboardingHintsUI {
     return Boolean(this.purposeCard && !this.purposeCard.hidden);
   }
 
+  /** @returns {boolean} */
+  isPrivacySheetOpen() {
+    return Boolean(this.privacySheet && !this.privacySheet.hidden);
+  }
+
   /** Close ? purpose card (+ backdrop + wellness detail). */
   closePurposeCard() {
     this._hidePurposeCard();
+  }
+
+  _dismissPrivacyAndPurpose() {
+    this._hidePrivacySheet();
+    this._hidePurposeCard();
+    this.onPurposeClose?.();
+  }
+
+  _showPrivacyBackdrop() {
+    this._ensurePurposeBackdrop();
+    if (!this.purposeBackdrop) return;
+    this.purposeBackdrop.hidden = false;
+    this.purposeBackdrop.classList.add('is-visible');
   }
 
   _ensurePrivacySheet() {
@@ -2281,7 +2313,8 @@ export class OnboardingHintsUI {
       this._closePrivacySheetToPurpose();
     });
 
-    sheet.append(title, body, wellnessNote, wellnessLink, ypeOptIn, optIn, back);
+    sheet.append(title, body, back);
+    body.append(ypeOptIn, optIn, wellnessNote, wellnessLink);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._localPracticeDataUI = new LocalPracticeDataUI(localDataMount, {
@@ -2376,9 +2409,12 @@ export class OnboardingHintsUI {
     this._ensurePrivacySheet();
     this._refreshPrivacySheetCopy();
     this._purposeFromHover = false;
+    this._purposePinned = true;
     if (this.purposeCard) this.purposeCard.hidden = true;
+    this._showPrivacyBackdrop();
     this.privacySheet.hidden = false;
     this._privacyOpenedFromPurpose = true;
+    this.onPurposeOpen?.();
     try {
       this._privacyBackEl.focus({ preventScroll: true });
     } catch {
@@ -2392,6 +2428,7 @@ export class OnboardingHintsUI {
       this._privacyOpenedFromPurpose = false;
       this._showPurposeCard();
     }
+    this.onPurposeClose?.();
   }
 
   _hidePrivacySheet() {
@@ -2445,6 +2482,7 @@ export class OnboardingHintsUI {
     this._purposePinned = false;
     this._hideWellnessDetailCard();
     this._hidePrivacySheet();
+    this.onPurposeClose?.();
   }
 
   /** @returns {boolean} */
@@ -3144,6 +3182,7 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet__back {
         align-self: flex-start;
+        flex: 0 0 auto;
         margin: 0;
         padding: 6px 14px;
         border-radius: 999px;

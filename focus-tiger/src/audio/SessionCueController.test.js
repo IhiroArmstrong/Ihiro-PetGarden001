@@ -28,7 +28,6 @@ import {
   SESSION_INTERVAL_BELL_SRC,
   SESSION_END_CHIME_SRC
 } from './SessionCueController.js';
-import { AMBIENT_DEFAULT_VOLUME } from './AmbientSoundscapeController.js';
 
 function createMapStorage(initial = {}) {
   const map = new Map(Object.entries(initial));
@@ -85,7 +84,8 @@ test('default pref: start/end on, interval off, awareness on', () => {
     sessionStartBellEnabled: true,
     sessionEndBellEnabled: true,
     sessionIntervalMs: SESSION_INTERVAL_MS_OFF,
-    focusAwarenessCardEnabled: true
+    focusAwarenessCardEnabled: true,
+    cueVolume: SESSION_CUE_DEFAULT_VOLUME
   });
   assert.equal(SESSION_CUE_PREF_STORAGE_KEY, 'focus-tiger.session-cues.v1');
 });
@@ -100,7 +100,8 @@ test('normalize syncs start/end only; migrates old interval boolean', () => {
       sessionStartBellEnabled: false,
       sessionEndBellEnabled: false,
       sessionIntervalMs: 0,
-      focusAwarenessCardEnabled: true
+      focusAwarenessCardEnabled: true,
+      cueVolume: SESSION_CUE_DEFAULT_VOLUME
     }
   );
   assert.deepEqual(
@@ -113,7 +114,8 @@ test('normalize syncs start/end only; migrates old interval boolean', () => {
       sessionStartBellEnabled: true,
       sessionEndBellEnabled: true,
       sessionIntervalMs: SESSION_INTERVAL_MS_3MIN,
-      focusAwarenessCardEnabled: true
+      focusAwarenessCardEnabled: true,
+      cueVolume: SESSION_CUE_DEFAULT_VOLUME
     }
   );
   assert.deepEqual(
@@ -127,7 +129,8 @@ test('normalize syncs start/end only; migrates old interval boolean', () => {
       sessionStartBellEnabled: true,
       sessionEndBellEnabled: true,
       sessionIntervalMs: SESSION_INTERVAL_MS_5MIN,
-      focusAwarenessCardEnabled: false
+      focusAwarenessCardEnabled: false,
+      cueVolume: SESSION_CUE_DEFAULT_VOLUME
     }
   );
 });
@@ -259,8 +262,8 @@ test('sitting bells play at half the Soundscape slider (perceived peak)', () => 
   assert.equal(SESSION_CUE_RELATIVE_GAIN, 0.5);
 });
 
-test('sitting bells share the Soundscape default volume (not HTMLAudio 1.0)', () => {
-  assert.equal(SESSION_CUE_DEFAULT_VOLUME, AMBIENT_DEFAULT_VOLUME);
+test('sitting bells default to 25% with relative gain (not HTMLAudio 1.0)', () => {
+  assert.equal(SESSION_CUE_DEFAULT_VOLUME, 0.25);
   const startAudio = createMockAudio();
   startAudio.volume = 1;
   const cues = new SessionCueController({
@@ -280,7 +283,7 @@ test('sitting bells share the Soundscape default volume (not HTMLAudio 1.0)', ()
     isAudiblePlaying: () => false
   };
   assert.equal(cues.playStart({ ambient }), true);
-  assert.equal(startAudio.volume, 0.2 * SESSION_CUE_RELATIVE_GAIN);
+  assert.equal(startAudio.volume, 0.25 * SESSION_CUE_RELATIVE_GAIN);
   cues.setVolume(0.35);
   assert.equal(startAudio.volume, 0.35 * SESSION_CUE_RELATIVE_GAIN);
   assert.equal(cues.getVolume(), 0.35);

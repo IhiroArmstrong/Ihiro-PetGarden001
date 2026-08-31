@@ -50,5 +50,7 @@ test('Focusing auto-starts sitting music on the same gesture as the start bell',
 test('Soundscape volume bar is labelled volume, not a progress control', () => {
   assert.match(uiSrc, /AMBIENT_VOLUME_LABEL/);
   assert.match(uiSrc, /id = 'ambient-volume-slider'/);
-  assert.match(uiSrc, /sessionCues\?\.setVolume/);
+  assert.match(uiSrc, /CHIMES_VOLUME_LABEL/);
+  assert.match(uiSrc, /id = 'ambient-chimes-volume-slider'/);
+  assert.match(uiSrc, /chimeVolumeInput/);
 });

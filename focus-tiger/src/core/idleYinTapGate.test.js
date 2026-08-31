@@ -5,11 +5,17 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   IDLE_YIN_TAP_EMOTION_KEY,
   canPlayIdleYinTap,
   wrapPlayEmotionWithIdleYinTapSync
 } from './idleYinTapGate.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
 
 describe('canPlayIdleYinTap', () => {
   it('allows Idle sitting with idle/smiling baseline', () => {
@@ -128,5 +134,22 @@ describe('wrapPlayEmotionWithIdleYinTapSync', () => {
     assert.ok(
       canPlayIdleYinTap({ sessionState: 'IDLE', emotionKey: 'idle' })
     );
+  });
+});
+
+describe('isIdleYinTapOverlayBusy wiring (main.js source contract)', () => {
+  it('registers purpose card and Privacy sheet, and re-syncs on close', () => {
+    const fn = mainSrc.match(
+      /function isIdleYinTapOverlayBusy\(\) \{[\s\S]*?\n  \}/
+    )?.[0];
+    assert.ok(fn, 'isIdleYinTapOverlayBusy missing');
+    assert.match(fn, /onboardingHintHost\.hints\?\.isPurposeCardOpen/);
+    assert.match(fn, /onboardingHintHost\.hints\?\.isPrivacySheetOpen/);
+    assert.equal(
+      /\bonboardingHints\?/.test(fn),
+      false,
+      'bare onboardingHints?. inside overlayBusy is TDZ before let init'
+    );
+    assert.match(mainSrc, /onPurposeClose:\s*\(\)\s*=>\s*syncIdleYinTap\(\)/);
   });
 });

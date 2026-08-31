@@ -44,6 +44,24 @@ describe('purpose card hover grace + left-ball no mint', () => {
     );
   });
 
+  it('Privacy sheet opt-in lives in the scroll body; outside tap dismisses', () => {
+    assert.match(
+      hintsSrc,
+      /sheet\.append\(title, body, back\);\s*body\.append\(ypeOptIn, optIn/
+    );
+    assert.match(hintsSrc, /isPrivacySheetOpen\(\)/);
+    assert.match(hintsSrc, /_showPrivacyBackdrop\(\)/);
+    assert.match(hintsSrc, /_dismissPrivacyAndPurpose\(\)/);
+    assert.match(
+      hintsSrc,
+      /if \(privacyOpen\) \{[\s\S]*_dismissPrivacyAndPurpose/
+    );
+    assert.match(
+      hintsSrc,
+      /if \(this\.privacySheet && !this\.privacySheet\.hidden\) \{[\s\S]*_dismissPrivacyAndPurpose/
+    );
+  });
+
   it('Focus HUD click tips bind host hover and skip floating mint pulses', () => {
     assert.match(hintsSrc, /HOST_HOVER_NO_PULSE_HINT_IDS/);
     assert.match(hintsSrc, /_syncHudHostHover/);
