@@ -1,0 +1,3 @@
+# fix/yin-memory-empty-copy-after-allow · 2026-09-01
+
+| Allow 后 What Yin remembers 空态文案 | UI可见 | 待人工测试 | **Electron 宽屏**：Consent **Allow** 且 `memories[]` 仍空 → 点 **What Yin remembers** → **0–1s** 见 `YIN_MEMORY_PANEL_EMPTY_GRANTED`（**不得**再写 “allow it in Confide”）。**对照**：未决策空态仍为 `YIN_MEMORY_PANEL_EMPTY`；Not now 见 denied。**列表**：发可抽取句 `I prefer quiet, short reflections.` 后应出现 Preference 行。**375/Web**：无面板。 | — | — | — | `npm run desktop:dev` · Confide · What Yin remembers | 2026-09-01 |

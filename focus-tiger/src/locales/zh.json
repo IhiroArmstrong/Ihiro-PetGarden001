@@ -734,6 +734,7 @@
   "YIN_MEMORY_PANEL_TITLE": "阿寅记得什么",
   "YIN_MEMORY_PANEL_BLURB": "阿寅只在这台设备上保留少量观察。你可以随时忘掉。",
   "YIN_MEMORY_PANEL_EMPTY": "还没有——需在倾诉里允许后才会记住。",
+  "YIN_MEMORY_PANEL_EMPTY_GRANTED": "还没有记下观察。阿寅只留下少量反复出现的事，不是倾诉里的每一句。",
   "YIN_MEMORY_PANEL_DENIED": "阿寅现在不会记住新的事情。",
   "YIN_MEMORY_PANEL_CLOSE": "关闭",
   "YIN_MEMORY_FORGET": "忘掉",
