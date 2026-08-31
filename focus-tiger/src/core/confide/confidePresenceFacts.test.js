@@ -145,6 +145,14 @@ describe('confide presence facts (Slice 4 minimal)', () => {
       classifyPresenceFactsKind('Have I been more steady lately?'),
       PRESENCE_FACTS_KIND.COMPARE
     );
+    assert.equal(
+      classifyPresenceFactsKind('How has my mood been over the last couple of weeks?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(
+      classifyPresenceFactsKind('Have I been feeling different lately?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
     assert.equal(isPresenceTrendQuestion('What have you noticed lately?'), false);
   });
 

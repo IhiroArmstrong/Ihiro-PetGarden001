@@ -43,6 +43,14 @@ function activeEntry(id, summary, lastSeenAt) {
 describe('confide memory list (Phase 1A CI-03)', () => {
   it('matches Show memory canonicals and not sharing or forget', () => {
     assert.equal(isMemoryListQuestion('Show me what you remember'), true);
+    assert.equal(
+      isMemoryListQuestion("Could you show me what you've remembered about me?"),
+      true
+    );
+    assert.equal(
+      isMemoryListQuestion('What do you remember from our last few conversations?'),
+      true
+    );
     assert.equal(isMemoryListQuestion('What do you remember about me?'), true);
     assert.equal(isMemoryListQuestion('你还记得什么'), true);
     assert.equal(isMemoryListQuestion('何を覚えていますか'), true);

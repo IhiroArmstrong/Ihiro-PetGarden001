@@ -1,0 +1,5 @@
+# fix/confide-presence-other-layering
+
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 访问路径 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| Confide 陪伴在场 / OTHER 层序 | UI可见 | 待人工测试 | **Electron 宽屏 Confide。** **在场**：发 `Can I just sit here with you for a bit?` / `Just stay with me.` → **0–1 秒内**见 `CONFIDE_COMPANION_PRESENCE`（EN: stay like this, no need to begin），**不得**开计时、**不得** L3 BEGIN 口吻。**负例**：`Let's get started.` / `ready to begin` 仍走原情绪桶或 L3，不进在场模板。**lonely+stay**：`I'm lonely today. Can we just stay here for a while?` → 在场模板，不贴 SAD 语料。**OTHER 读**：`Could you show me what you've remembered about me?` → memory_list（须已 Allow 记忆）；`How has my mood been over the last couple of weeks?` / `Have I been feeling different lately?` → presence_facts。**偏好**：`What have you learned about my preferences so far?` → `CONFIDE_PREFERENCE_HONESTY`，不编口味。**回流**：关卡再开后同样。**窄/Web**：无 generate，模板仍应出。自动化：`confideCompanionPresence.test.js` · `confidePreferenceHonesty.test.js` · memory/presence 复述单测。 | — | — | — | `#confide-to-yin-reply` · `npm run desktop:dev` | 2026-09-01 |
