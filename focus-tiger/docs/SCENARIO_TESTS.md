@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-08-26（升格 **AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD/AE** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-08-31（**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -23,7 +23,7 @@
   - `e2e/flower-welcome.spec.js` — **V** Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗
   - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 交叉引用 + Idle 不自动出免责卡 + `?` 仍见免责 + `?wellnessFirst=1` QA 卡 + Focusing/? 主条契约（不全覆盖 W 观感）
   - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
-  - `desktopCompanionL1.test.js` / `desktopCompanionL2Route.test.js` + `confideClassify` / `confideReplyFlow` — **AE** Electron Confide 壳 / 生成路由（**非** Web Safari `?product=1`）
+  - `desktopCompanionL1.test.js` / `desktopCompanionL2Route.test.js` + `confideClassify` / `confideReplyFlow` — **AE** Electron Confide 壳 / 生成路由 / **DORMANT 开 Confide → dormantWake 契约**（**非** Web Safari `?product=1` · **非** CapCut 观感 DOM）
   - `spriteChannelArbitration.test.js` + `dormantIdle` overlayBusy — **AD** 睡/欢迎/付款仲裁门闩（**非**完整用户链路 e2e）
   - `presenceSignalsGate` · `confidePresenceFacts` · `presenceSignalsDisclosureGate` · `ritualPresenceBridge` · `reflectionPresenceBridge` — **AF** Presence Signals 入账 / 披露 / Ritual Leave / Reflection 双写（**非**完整用户链路 e2e）
   - `freeTextRetentionCutoffMs`（`presenceSignalsGate.test.js`）— **AF Slice 3 / #440** Reflection bundle 与 presence freeText **同一 90 天 cutoff**（**无 UI**）
@@ -665,6 +665,8 @@
 3. **安全**：`I don't want to live` → `data-route=safety_redirect`，英文须是 **safety-01** 转介句（Heard. If this feels too heavy…），**禁止**茶句；危机回复左侧 **偏棕**竖线。  
 4. **情绪桶**：「太累了」→ tired；`I feel depressed. Can you help me?` → `data-route=sad` + corpus，**禁止** generate / safety-01。  
 5. **回流**：Close 后再开 harness；Focusing / Arrival 中 **不得**打开。**禁止**把 Web harness 当 Electron 本地 AI 验收。
+6. **睡态唤醒（交叉 AD · #491）**：在 DORMANT 或 `sleeping` / `cloakSleep` 姿态下（见 **场景 D** 步 1–2 或 **场景 AD** 深夜窗）→ 开 Confide（harness ⋯ 行或倾听耳）→ **0–1 秒内** `dormantWake` 播放，面板出现后 Yin 须为 **idle 坐姿**（**禁止**背景仍 sleeping / 披毯睡）。倾听耳第二入口经 `confideToYinUI.open()` 同路径。
+   *[单元：`desktopCompanionL1.test.js` Confide dormant-wake 契约；**非** CapCut 叠化观感 DOM]*
 
 ### AE · Electron L1（宽屏壳 · #362 已合）
 
@@ -675,6 +677,8 @@
 3. **Focusing 卸载**：Sit→Focusing → companion 状态不再 ready；Share **不得**走生成。Rise 后再开 ⋯ 仍有该行。  
 4. **拖窄关层**：拖到 ≤479 → 生成层关掉；窄屏抽屉 **无** Confide 行。  
 5. **对照**：低配 ≤8GB / Web `?product=1` → **无** companion key、无该行。
+6. **睡态唤醒（交叉 AD · #491）**：DORMANT 或 sleeping 姿态下 → ⋯ **Confide to Yin** 或倾听耳 → **0–1 秒内** `dormantWake`，玻璃卡后 Yin 为 **idle 坐姿**（**禁止**仍 sleeping）。与 **场景 AE · Web** 步 6 同契约。
+   *[单元：`desktopCompanionL1.test.js` Confide dormant-wake 契约；**非** CapCut 观感 DOM]*
 
 ### AE · Electron L2（宽屏 fallback 短生成 · 口令已执行）
 

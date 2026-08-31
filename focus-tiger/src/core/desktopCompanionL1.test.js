@@ -294,3 +294,46 @@ describe('desktop companion L1 isolation', () => {
     assert.match(mainSrc, /bindDesktopCompanion/);
   });
 });
+
+describe('Confide open dormant-wake contract (#491)', () => {
+  const mainSrc = readFileSync(join(focusTigerRoot, 'src/main.js'), 'utf8');
+  const confideUiStart = mainSrc.indexOf('const confideToYinUI = new ConfideToYinUI');
+  const confideUiEnd = mainSrc.indexOf('window.__confideToYin', confideUiStart);
+  const confideUiBlock = mainSrc.slice(confideUiStart, confideUiEnd);
+  const wakeFnStart = mainSrc.indexOf('function wakeYinForConfideCompanion()');
+  const wakeFnBody = mainSrc.slice(wakeFnStart, wakeFnStart + 1400);
+
+  it('wires wakeYinForConfideCompanion to confide onOpen before the panel opens', () => {
+    assert.ok(confideUiStart > 0);
+    assert.match(confideUiBlock, /onOpen:\s*\(\)\s*=>\s*\{[\s\S]*wakeYinForConfideCompanion\(\)/);
+    const openIdx = confideUiBlock.indexOf('onOpen:');
+    const wakeIdx = confideUiBlock.indexOf('wakeYinForConfideCompanion()');
+    assert.ok(openIdx >= 0 && wakeIdx > openIdx);
+  });
+
+  it('routes the listening-ear entry through confideToYinUI.open so onOpen still wakes Yin', () => {
+    const earStart = mainSrc.indexOf('const confideEarChrome = new ConfideEarChromeUI');
+    const earEnd = mainSrc.indexOf('window.__confideEarChrome', earStart);
+    const earBlock = mainSrc.slice(earStart, earEnd);
+    assert.match(earBlock, /confideToYinUI\.open\(\)/);
+  });
+
+  it('leaves DORMANT via dormantWake then crossfades to idle seated pose', () => {
+    assert.match(wakeFnBody, /STATES\.DORMANT/);
+    assert.match(wakeFnBody, /applyDormantSessionDelta\('leave-dormant'\)/);
+    assert.match(wakeFnBody, /playEmotion\('dormantWake'/);
+    assert.match(wakeFnBody, /playEmotion\('idle'/);
+    assert.match(wakeFnBody, /CAPCUT_DISSOLVE_MS/);
+  });
+
+  it('also wakes from sleeping pose keys without requiring DORMANT state', () => {
+    const keysStart = mainSrc.indexOf('const CONFIDE_WAKE_SLEEPING_EMOTION_KEYS');
+    const keysBlock = mainSrc.slice(keysStart, keysStart + 400);
+    assert.match(keysBlock, /CONFIDE_WAKE_SLEEPING_EMOTION_KEYS/);
+    assert.match(keysBlock, /'sleeping'/);
+    assert.match(keysBlock, /'cloakSleep'/);
+    assert.match(keysBlock, /'starlightSleeping'/);
+    assert.match(keysBlock, /'starlightCloakSleep'/);
+    assert.match(wakeFnBody, /CONFIDE_WAKE_SLEEPING_EMOTION_KEYS\.has/);
+  });
+});
