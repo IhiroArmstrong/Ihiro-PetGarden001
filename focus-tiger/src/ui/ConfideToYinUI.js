@@ -547,11 +547,13 @@ export class ConfideToYinUI {
    * @param {object} hit
    */
   async _handleMemorySuppressStandalone(text, hit) {
-    const turnOrdinal = Math.floor(this._l2Turns.length / 2);
-    this._memoryState = await recordYinPersonalMemoryOptOut({
-      turnId: buildConfideTurnId(turnOrdinal),
-      scope: 'turn'
-    });
+    if (hasYinPersonalMemoryBridge()) {
+      const turnOrdinal = Math.floor(this._l2Turns.length / 2);
+      this._memoryState = await recordYinPersonalMemoryOptOut({
+        turnId: buildConfideTurnId(turnOrdinal),
+        scope: 'turn'
+      });
+    }
     this._showReply(
       {
         route: hit.route,
@@ -567,6 +569,17 @@ export class ConfideToYinUI {
    * @param {object} hit
    */
   async _handleMemorySuppressPostRecall(text, hit) {
+    if (!hasYinPersonalMemoryBridge()) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatMemorySuppressReply('no_match', t),
+          source: 'memory_suppress'
+        },
+        text
+      );
+      return;
+    }
     const currentTurnOrdinal = Math.floor(this._l2Turns.length / 2);
     const previousTurnOrdinal = currentTurnOrdinal - 1;
     const result = await suppressYinPersonalMemoryPostRecall({

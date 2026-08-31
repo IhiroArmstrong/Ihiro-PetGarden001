@@ -231,7 +231,7 @@ export function shouldHandlePostRecallMemorySuppress({
   hasBridge = false,
   turnOrdinal = 0
 } = {}) {
-  if (!hasBridge) return false;
+  void hasBridge;
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
   const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
@@ -255,7 +255,7 @@ export function shouldHandleStandaloneMemorySuppress({
   hasBridge = false,
   turnOrdinal = 0
 } = {}) {
-  if (!hasBridge) return false;
+  void hasBridge;
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
   const raw = normalizeMemorySuppressText(text);
   if (!raw) return false;
