@@ -59,6 +59,7 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_TOOL_CALL_MAX_TOKENS` | 可选 · 整数 | tool-call 探针 `maxTokens`；缺省 = `L0_MAX_TOKENS` |
 | `FT_INTENT_GGUF` | 可选 · 绝对路径 | Gate 0.D 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 | `FT_INTENT_MAX_TOKENS` | 可选 · 整数 | Gate 0.D `maxTokens`；缺省 = 96 |
+| `FT_INTENT_PHASE` | 可选 · `1` 或 `2` | 只跑 Phase 1（12）或 Phase 2（设计师 20）；缺省 = 32 条全跑 |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
 
@@ -96,7 +97,7 @@ cd focus-tiger/desktop && npm run companion:tool-call
 cd focus-tiger/desktop && npm run companion:intent-diagnostic
 ```
 
-结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`src/core/confide/confideIntentDiagnosticFixtures.js`（12 条）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。
+结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`src/core/confide/confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 设计师 20 · 缺省合计 32）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。只跑设计师 20 条：`FT_INTENT_PHASE=2`。
 
 质量七问（空历史，不要另起一组）：`你知道彤彤儿喜欢吃啥？` / `彤彤儿是谁？` / `Why are you happy?` / `What are you doing?` / `What do you want?` / `Where do you live?` / `Whom do you like?`。调用 `buildCompanionL2Prompt({ text, locale, history: [] })` + `LlamaChatSession`，`maxTokens: L2_MAX_TOKENS`。不要改生产提示词来迁就实验室。
 
