@@ -34,3 +34,9 @@ test('narrow staged reminder panel uses transform not extra translate', () => {
     /ft-narrow-stage-reminder \.reminder-pref__panel[\s\S]*translate: none !important/
   );
 });
+
+test('narrow drawer reclones heatmap after practice import (microtask + destroy unsub)', () => {
+  assert.match(src, /subscribePracticeDataImported/);
+  assert.match(src, /queueMicrotask\(\(\) => this\._refreshDrawerItems\(\)\)/);
+  assert.match(src, /this\._unsubPracticeImport\?\.\(\)/);
+});
