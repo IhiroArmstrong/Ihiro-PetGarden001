@@ -45,7 +45,9 @@ import {
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 import {
   canOfferReflectionCompanionValidation,
+  reflectionAnswersMatchSafety,
   reflectionCompanionGenerateReady,
+  resolveReflectionCompanionObservation,
   REFLECTION_COMPANION_GENERATE_PURPOSE
 } from '../core/reflectionCompanionValidation.js';
 import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
@@ -181,6 +183,7 @@ export class TigerReflectionMoment {
     /** @type {HTMLElement | null} */
     this.companionObservationEl = null;
     this._reflectionCompanionBusy = false;
+    this._reflectionCompanionSettled = false;
 
     this._onKeyDown = (event) => {
       if (event.key === 'Escape') this._dismiss();
@@ -204,6 +207,8 @@ export class TigerReflectionMoment {
       this._sessionIntention && intentionSource === 'icon' ? 'icon' : 'typed';
     this.flow = new ReflectionFlowState();
     this._awaitingLastEchoHold = false;
+    this._reflectionCompanionBusy = false;
+    this._reflectionCompanionSettled = false;
     this._buildDom();
     this._renderStep({ instant: true });
 
@@ -277,6 +282,7 @@ export class TigerReflectionMoment {
 
     this.companionObservationEl = document.createElement('div');
     this.companionObservationEl.dataset.testid = 'reflection-companion-observation';
+    this.companionObservationEl.setAttribute('aria-live', 'polite');
     this.companionObservationEl.hidden = true;
     this.companionObservationEl.style.cssText = [
       'font-size:13px',
@@ -469,6 +475,7 @@ export class TigerReflectionMoment {
     const offer =
       this._awaitingLastEchoHold &&
       this.flow?.hasAnyAnswer() &&
+      !this._reflectionCompanionSettled &&
       canOfferReflectionCompanionValidation({ search, widthPx });
     this.companionInviteBtn.hidden = !offer;
     if (offer) {
@@ -479,10 +486,23 @@ export class TigerReflectionMoment {
     }
   }
 
+  _showReflectionCompanionObservation(resolved) {
+    if (!this.companionObservationEl || !resolved?.text) return;
+    this.companionObservationEl.textContent = resolved.text;
+    this.companionObservationEl.dataset.source = resolved.source;
+    this.companionObservationEl.hidden = false;
+    this._reflectionCompanionSettled = true;
+    if (this.companionInviteBtn) this.companionInviteBtn.hidden = true;
+  }
+
   async _onReflectionCompanionInvite() {
-    if (this._reflectionCompanionBusy || !this.flow?.hasAnyAnswer()) return;
-    const companion = getDesktopCompanionBridge();
-    if (!companion || typeof companion.generate !== 'function') return;
+    if (
+      this._reflectionCompanionBusy ||
+      this._reflectionCompanionSettled ||
+      !this.flow?.hasAnyAnswer()
+    ) {
+      return;
+    }
     const search =
       typeof location !== 'undefined' ? String(location.search || '') : '';
     const widthPx =
@@ -491,26 +511,66 @@ export class TigerReflectionMoment {
 
     this._reflectionCompanionBusy = true;
     this._syncReflectionCompanionOffer();
+    const answers = this.flow.getResult();
+    const locale = getLocale();
     try {
+      if (reflectionAnswersMatchSafety(answers)) {
+        this._showReflectionCompanionObservation(
+          resolveReflectionCompanionObservation({
+            answers,
+            locale,
+            generateReady: false
+          })
+        );
+        return;
+      }
+      const companion = getDesktopCompanionBridge();
+      if (!companion || typeof companion.generate !== 'function') {
+        this._showReflectionCompanionObservation(
+          resolveReflectionCompanionObservation({
+            answers,
+            locale,
+            generateReady: false
+          })
+        );
+        return;
+      }
       const status =
         typeof companion.getStatus === 'function'
           ? await companion.getStatus()
           : null;
-      if (
-        !reflectionCompanionGenerateReady(status, { search, widthPx })
-      ) {
+      const generateReady = reflectionCompanionGenerateReady(status, {
+        search,
+        widthPx
+      });
+      if (!generateReady) {
+        this._showReflectionCompanionObservation(
+          resolveReflectionCompanionObservation({
+            answers,
+            locale,
+            generateReady: false
+          })
+        );
         return;
       }
-      const result = await companion.generate({
-        purpose: REFLECTION_COMPANION_GENERATE_PURPOSE,
-        reflectionAnswers: this.flow.getResult(),
-        locale: getLocale()
-      });
-      if (result?.ok && result.text && this.companionObservationEl) {
-        this.companionObservationEl.textContent = result.text;
-        this.companionObservationEl.hidden = false;
-        this.companionInviteBtn.hidden = true;
+      let generateResult = { ok: false };
+      try {
+        generateResult = await companion.generate({
+          purpose: REFLECTION_COMPANION_GENERATE_PURPOSE,
+          reflectionAnswers: answers,
+          locale
+        });
+      } catch {
+        generateResult = { ok: false };
       }
+      this._showReflectionCompanionObservation(
+        resolveReflectionCompanionObservation({
+          answers,
+          locale,
+          generateReady: true,
+          generateResult
+        })
+      );
     } finally {
       this._reflectionCompanionBusy = false;
       this._syncReflectionCompanionOffer();
@@ -641,6 +701,8 @@ export class TigerReflectionMoment {
     this._intentionSource = null;
     this._companionEchoKey = null;
     this._awaitingLastEchoHold = false;
+    this._reflectionCompanionBusy = false;
+    this._reflectionCompanionSettled = false;
     document.removeEventListener('keydown', this._onKeyDown);
 
     if (this.root) {

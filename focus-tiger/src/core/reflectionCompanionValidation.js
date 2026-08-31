@@ -14,6 +14,9 @@ import {
   isDesktopCompanionViewportAllowed
 } from './desktopCompanionGate.js';
 import { companionGenerateEnabled } from './desktopCompanionL2Route.js';
+import { pickConfideLine, confideLineText } from './confide/confideCorpus.js';
+import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
+import { matchesSafetyRedirect } from './confide/confideSafetyKeywords.js';
 import { REFLECTION_ANSWER_FIELDS } from '../ui/ReflectionFlowState.js';
 
 export const REFLECTION_COMPANION_LAB_PARAM = 'reflectionCompanion';
@@ -103,3 +106,77 @@ export function formatReflectionCompanionAnswers(answers = {}) {
 }
 
 export const REFLECTION_COMPANION_GENERATE_PURPOSE = 'reflection_companion';
+
+export const REFLECTION_COMPANION_SOURCE = Object.freeze({
+  GENERATE: 'generate',
+  CORPUS_SAFETY: 'corpus_safety',
+  CORPUS_FALLBACK: 'corpus_fallback'
+});
+
+/**
+ * V5: crisis phrases in this session's answers must not go to generate.
+ * @param {Record<string, string>} [answers]
+ * @returns {boolean}
+ */
+export function reflectionAnswersMatchSafety(answers = {}) {
+  return REFLECTION_ANSWER_FIELDS.some((field) => {
+    const text = answers[field];
+    return typeof text === 'string' && matchesSafetyRedirect(text);
+  });
+}
+
+/**
+ * @param {{ safety?: boolean, locale?: string }} [opts]
+ * @returns {string}
+ */
+export function pickReflectionCompanionCorpusText({
+  safety = false,
+  locale = 'en'
+} = {}) {
+  const route = safety
+    ? CONFIDE_ROUTE.SAFETY_REDIRECT
+    : CONFIDE_ROUTE.FALLBACK;
+  const line = pickConfideLine({ route, localDate: '', salt: 0 });
+  return confideLineText(line, locale);
+}
+
+/**
+ * @param {{
+ *   answers?: Record<string, string>,
+ *   locale?: string,
+ *   generateReady?: boolean,
+ *   generateResult?: { ok?: boolean, text?: string } | null
+ * }} [opts]
+ * @returns {{ source: string, text: string, skipGenerate: boolean }}
+ */
+export function resolveReflectionCompanionObservation({
+  answers = {},
+  locale = 'en',
+  generateReady = false,
+  generateResult = null
+} = {}) {
+  if (reflectionAnswersMatchSafety(answers)) {
+    return {
+      source: REFLECTION_COMPANION_SOURCE.CORPUS_SAFETY,
+      text: pickReflectionCompanionCorpusText({ safety: true, locale }),
+      skipGenerate: true
+    };
+  }
+  if (
+    generateReady &&
+    generateResult?.ok &&
+    typeof generateResult.text === 'string' &&
+    generateResult.text.trim()
+  ) {
+    return {
+      source: REFLECTION_COMPANION_SOURCE.GENERATE,
+      text: generateResult.text.trim(),
+      skipGenerate: false
+    };
+  }
+  return {
+    source: REFLECTION_COMPANION_SOURCE.CORPUS_FALLBACK,
+    text: pickReflectionCompanionCorpusText({ safety: false, locale }),
+    skipGenerate: !generateReady
+  };
+}
