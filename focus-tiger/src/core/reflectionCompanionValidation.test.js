@@ -9,8 +9,12 @@ import {
   canOfferReflectionCompanionValidation,
   formatReflectionCompanionAnswers,
   isReflectionCompanionLabEnabled,
+  pickReflectionCompanionCorpusText,
   reflectionAnswersHaveContent,
-  reflectionCompanionGenerateReady
+  reflectionAnswersMatchSafety,
+  reflectionCompanionGenerateReady,
+  resolveReflectionCompanionObservation,
+  REFLECTION_COMPANION_SOURCE
 } from './reflectionCompanionValidation.js';
 
 describe('reflectionCompanionValidation', () => {
@@ -90,5 +94,49 @@ describe('reflectionCompanionValidation', () => {
       ),
       false
     );
+  });
+
+  it('crisis answers skip generate and use safety corpus', () => {
+    assert.equal(
+      reflectionAnswersMatchSafety({ notice: "I don't want to live" }),
+      true
+    );
+    const resolved = resolveReflectionCompanionObservation({
+      answers: { notice: "I don't want to live" },
+      locale: 'en',
+      generateReady: true,
+      generateResult: { ok: true, text: 'You should try harder.' }
+    });
+    assert.equal(resolved.skipGenerate, true);
+    assert.equal(resolved.source, REFLECTION_COMPANION_SOURCE.CORPUS_SAFETY);
+    assert.match(resolved.text, /crisis line/i);
+    assert.doesNotMatch(resolved.text, /try harder/i);
+  });
+
+  it('generate miss uses reviewed fallback corpus', () => {
+    const resolved = resolveReflectionCompanionObservation({
+      answers: { notice: 'wind' },
+      locale: 'en',
+      generateReady: false,
+      generateResult: null
+    });
+    assert.equal(resolved.skipGenerate, true);
+    assert.equal(resolved.source, REFLECTION_COMPANION_SOURCE.CORPUS_FALLBACK);
+    assert.equal(
+      resolved.text,
+      pickReflectionCompanionCorpusText({ safety: false, locale: 'en' })
+    );
+  });
+
+  it('ready generate success keeps generate source', () => {
+    const resolved = resolveReflectionCompanionObservation({
+      answers: { notice: 'wind' },
+      locale: 'en',
+      generateReady: true,
+      generateResult: { ok: true, text: '  Wind moved.  ' }
+    });
+    assert.equal(resolved.source, REFLECTION_COMPANION_SOURCE.GENERATE);
+    assert.equal(resolved.text, 'Wind moved.');
+    assert.equal(resolved.skipGenerate, false);
   });
 });

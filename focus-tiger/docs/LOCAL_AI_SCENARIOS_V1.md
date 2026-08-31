@@ -159,7 +159,7 @@ Safety / 情绪桶 → Tool Registry (CI-xx) → 确定性 handler → L3 短生
 | **CI-00** | 练了多久 / When do I usually practice? / 两窗次数时长 | Journey Log | **#424 + Phase 1B** |
 | **CI-01** | 口头 Forget 单条 | `yin-personal-memory.json` | **#434 已合** |
 | **CI-02** | 最近两周情绪看起来怎样 / What has my mood looked like recently? / 稳不稳两窗标签 | `presence-signals.v1` | **Phase 1B shipping** · `presence_facts` |
-| **CI-03** | Show me what you remember / 你还记得什么 | `yin-personal-memory.json` | **口令 1A 本旁支** · `memory_list` |
+| **CI-03** | Show me what you remember / 你还记得什么 | `yin-personal-memory.json` | **#506 已合** · `memory_list` |
 
 > CI-02 答句：封闭标签 · 14 日 · ≥3 条 · **描述性 breakdown**；**禁止**诊断与人格进步评判。  
 > **Temporal Compare（PO 2026-08-28 晚）**：对照型问句（比以前久 / 稳不稳 / 进状态）可路由；答句须**两段时期并列事实**，禁止「你更好了/更稳了」。  
