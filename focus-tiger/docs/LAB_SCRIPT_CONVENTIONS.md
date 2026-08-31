@@ -97,7 +97,7 @@ cd focus-tiger/desktop && npm run companion:tool-call
 cd focus-tiger/desktop && npm run companion:intent-diagnostic
 ```
 
-结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`src/core/confide/confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 设计师 20 · 缺省合计 32）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。只跑设计师 20 条：`FT_INTENT_PHASE=2`。
+结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`src/core/confide/confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 设计师 20 · 缺省合计 32）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。只跑设计师 20 条：`FT_INTENT_PHASE=2`。Phase 2 Metal 首跑结论记入 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（本文不存分数）。
 
 质量七问（空历史，不要另起一组）：`你知道彤彤儿喜欢吃啥？` / `彤彤儿是谁？` / `Why are you happy?` / `What are you doing?` / `What do you want?` / `Where do you live?` / `Whom do you like?`。调用 `buildCompanionL2Prompt({ text, locale, history: [] })` + `LlamaChatSession`，`maxTokens: L2_MAX_TOKENS`。不要改生产提示词来迁就实验室。
 

@@ -60,7 +60,7 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ✅ **2026-09-01 关单**（tip `86a4c72e`；C-3 suspend · C-5 follow-up） |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
-| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **已合 #495**；**Phase 2 设计师 20 条本旁支冻**（换模型之前必做） |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **已合 #495**；Phase 2 fixture **已合 #509**；Metal 20 条 **2026-09-01** `reading=model_can_label_boundary_check_pipeline`（不换 GGUF） |
 
 **0.2 已通过（2026-09-01）**：**1B #503 已合**。**1A 口令已执行**（本旁支）。
 
@@ -266,7 +266,9 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 
 **首跑（生产 1.7B Q4 · 2026-08-31）**：`parseOk` 12/12；`BOUNDARY` / mixed `BEGIN` / `SUPPRESS` / `FORGET` 能标中；`COMPANION_PRESENCE` 常被标成 `BEGIN`。现网「I am curious」对照 `BOUNDARY` 已能标 → **pipeline 压扁，不是 1.7B 标不出边界**。数字留结果 JSON，不抄进本文。
 
-**Phase 2（2026-09-01 · PO 冻）**：同一协议扩设计师 20 条。#1 `Maybe later…` **secondary 空**（无情绪词）。fixture `YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2`。不换默认 GGUF，不进 Confide send。
+**Phase 2（2026-09-01 · PO 冻 · #509 已合）**：同一协议扩设计师 20 条。#1 `Maybe later…` **secondary 空**（无情绪词）。fixture `YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2`。不换默认 GGUF，不进 Confide send。
+
+**Phase 2 首跑（生产 1.7B Q4 · Metal · `FT_INTENT_PHASE=2` · 2026-09-01）**：`parseOk` 20/20；`reading=model_can_label_boundary_check_pipeline`。`BEGIN` / `FORGET` / `SUPPRESS` 能标中；`BOUNDARY` 部分能中（#1 `Maybe later` 被标 `EMOTION`；`not-go-there` 被标 `BEGIN`）；`COMPANION_PRESENCE` 仍常压成 `BEGIN`/`EMOTION`；记忆/心情类 `OTHER` 常压成 `EMOTION`。`yinVoiceLeaks` 0。→ **仍是 pipeline / 标签层序问题，不是 1.7B 标不出边界**；**禁止**据此开 Phase 3 换模型。逐条数字留 `/tmp/ft-l0-lab/intent-diag-1788217815538.json`，不抄进本文。
 
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
@@ -292,7 +294,7 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON 对照表（Phase 1 = 12 · Phase 2 = 20；`FT_INTENT_PHASE=2` 可只跑 20） | tracker 仅单元；Phase 1 **已合 #495**；Phase 2 本旁支 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON 对照表（Phase 1 = 12 · Phase 2 = 20；`FT_INTENT_PHASE=2` 可只跑 20） | tracker 仅单元；Phase 1 **已合 #495**；Phase 2 **已合 #509**；Metal 20 条 reading 已记 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
@@ -307,4 +309,4 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 
 **较弱**：未关 #472 就并行三 Phase 1 shipping；扩设计师 20 条 Phase 2 诊断（0.D 已够支撑层序刀）；0.D 后再 Benchmark Llama。
 
-Gate 0.D 已证明 pipeline 压扁 → **层序 / L3 prompt 已另口令修**（边界模板 + Don't keep suppress；本计划不换模型）。
+Gate 0.D Phase 1+2 均证明 pipeline 压扁 → **层序 / L3 prompt 另口令**（边界模板 + Don't keep suppress 已做一刀；Phase 2 仍漏 `COMPANION_PRESENCE` / `OTHER`）；本计划**不换模型**。

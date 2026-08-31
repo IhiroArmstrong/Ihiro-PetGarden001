@@ -104,7 +104,7 @@ ConfideToYinUI._onSend
 
 `ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → memory_list → forget）。  
 实验室：`desktop/scripts/l0-tool-call-probe.js` · `npm run companion:tool-call` · fixture `confideToolCallFixtures.js`。  
-Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 20）。  
+Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 20）。Phase 2 Metal 结论见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（不换默认 GGUF）。  
 新增 CI-xx 时应扩 **registry + 纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
 
 
