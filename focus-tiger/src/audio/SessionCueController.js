@@ -6,7 +6,7 @@
 /**
  * Sitting 计时提示音：开始磬 / 间隔磬 / 达标结束铃。
  * Focusing **与** Breath practice 共用；免费核心反馈——不走 Ambient entitlement；
- * 音量跟 Soundscape 同一条 volume bar；可复用 ambient ducking。
+ * 音量跟 Soundscape Chimes 页签独立滑条（默认 25%）；可复用 ambient ducking。
  */
 
 import {
@@ -14,9 +14,11 @@ import {
   writeSessionCuePrefEnabled,
   writeSessionIntervalMs,
   writeFocusAwarenessCardEnabled,
+  writeCueVolume,
   isSessionCueMasterEnabled,
   isSessionIntervalEnabled,
-  normalizeSessionIntervalMs
+  normalizeSessionIntervalMs,
+  SESSION_CUE_DEFAULT_VOLUME
 } from './sessionCuePreference.js';
 import { evaluateIntervalCue } from './sessionIntervalScheduler.js';
 
@@ -29,10 +31,10 @@ export const SESSION_CUE_DUCK_RATIO = 0.35;
 /** Unduck / end fade window after cue (ms). */
 export const SESSION_CUE_FADE_MS = 1500;
 /**
- * Cue loudness follows the Soundscape volume bar (same 0–1 as ambient).
+ * Cue loudness follows the Chimes volume slider (0–1).
  * HTMLAudio default is 1.0 — that made start/interval/end bowls overpower music.
  */
-export const SESSION_CUE_DEFAULT_VOLUME = 0.45;
+export { SESSION_CUE_DEFAULT_VOLUME } from './sessionCuePreference.js';
 /**
  * Bells are transient peaks; matching the slider number to music still
  * left bowls much louder. Play cues at half the shared sitting volume.
@@ -104,7 +106,7 @@ export class SessionCueController {
     this._intervalActive = false;
     /** @type {number} */
     this._intervalFiredCount = 0;
-    this._volume = SESSION_CUE_DEFAULT_VOLUME;
+    this._volume = this._pref.cueVolume;
     this._applyVolumeToElements();
   }
 
@@ -131,6 +133,7 @@ export class SessionCueController {
     this._volume = Number.isFinite(n)
       ? Math.min(1, Math.max(0, n))
       : SESSION_CUE_DEFAULT_VOLUME;
+    this._pref = writeCueVolume(this._storage, this._volume);
     this._applyVolumeToElements();
   }
 
@@ -156,14 +159,11 @@ export class SessionCueController {
   }
 
   /**
-   * @param {{ getVolume?: () => number } | null | undefined} ambient
+   * Chimes use their own volume slider — ambient is only for ducking.
+   * @param {object | null | undefined} _ambient
    * @returns {number}
    */
-  _resolveCueVolume(ambient) {
-    if (ambient && typeof ambient.getVolume === 'function') {
-      const n = Number(ambient.getVolume());
-      if (Number.isFinite(n)) return Math.min(1, Math.max(0, n));
-    }
+  _resolveCueVolume(_ambient) {
     return this._volume;
   }
 
@@ -215,6 +215,8 @@ export class SessionCueController {
 
   reloadPref() {
     this._pref = readSessionCuePref(this._storage);
+    this._volume = this._pref.cueVolume;
+    this._applyVolumeToElements();
   }
 
   /** Begin mid-session interval scheduling (call on Focus start). */

@@ -68,7 +68,6 @@ export class AmbientSoundscapeUI {
     this.controller = controller;
     this.handlers = handlers;
     this.sessionCues = handlers.sessionCues || null;
-    this.sessionCues?.setVolume(controller.getVolume());
     this._expanded = false;
     this._sessionActive = false;
     this._nudgeVisible = false;
@@ -254,12 +253,45 @@ export class AmbientSoundscapeUI {
       if (!this._sessionActive && !this._narrowForcedPanel) return;
       const next = Number(this.volumeInput.value) / 100;
       controller.setVolume(next);
-      this.sessionCues?.setVolume(next);
       this._syncVolumeChrome();
       this._refreshMuteBtn();
     });
     this.volumeLabel.append(this.volumeHead, this.volumeInput);
     this._syncVolumeChrome();
+
+    this.chimeVolumeLabel = document.createElement('label');
+    this.chimeVolumeLabel.className = 'ambient-soundscape__volume';
+    this.chimeVolumeHead = document.createElement('span');
+    this.chimeVolumeHead.className = 'ambient-soundscape__volume-head';
+    this.chimeVolumeIcon = document.createElement('span');
+    this.chimeVolumeIcon.className = 'ambient-soundscape__volume-icon';
+    this.chimeVolumeIcon.setAttribute('aria-hidden', 'true');
+    this.chimeVolumeIcon.innerHTML = VOLUME_SPEAKER_ICON;
+    this.chimeVolumeCaption = document.createElement('span');
+    this.chimeVolumeCaption.className = 'ambient-soundscape__volume-caption';
+    this.chimeVolumeValueEl = document.createElement('span');
+    this.chimeVolumeValueEl.className = 'ambient-soundscape__volume-value';
+    this.chimeVolumeHead.append(
+      this.chimeVolumeIcon,
+      this.chimeVolumeCaption,
+      this.chimeVolumeValueEl
+    );
+    this.chimeVolumeInput = document.createElement('input');
+    this.chimeVolumeInput.type = 'range';
+    this.chimeVolumeInput.min = '0';
+    this.chimeVolumeInput.max = '100';
+    this.chimeVolumeInput.step = '1';
+    this.chimeVolumeInput.id = 'ambient-chimes-volume-slider';
+    this.chimeVolumeInput.setAttribute('aria-valuemin', '0');
+    this.chimeVolumeInput.setAttribute('aria-valuemax', '100');
+    this.chimeVolumeInput.addEventListener('input', () => {
+      if (!this._sessionActive && !this._narrowForcedPanel) return;
+      const next = Number(this.chimeVolumeInput.value) / 100;
+      this.sessionCues?.setVolume(next);
+      this._syncChimeVolumeChrome();
+    });
+    this.chimeVolumeLabel.append(this.chimeVolumeHead, this.chimeVolumeInput);
+    this._syncChimeVolumeChrome();
 
     this.cueToggleLabel = document.createElement('label');
     this.cueToggleLabel.className = 'ambient-soundscape__session-cues';
@@ -355,6 +387,7 @@ export class AmbientSoundscapeUI {
       this.volumeLabel
     );
     this.chimesPane.append(
+      this.chimeVolumeLabel,
       this.cueToggleLabel,
       this.intervalRhythmLabel,
       this.awarenessToggleLabel
@@ -788,7 +821,7 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * Volume bar is a loudness control (music + sitting bells), not playback progress.
+   * Ambience volume bar — music loudness only (not chimes).
    */
   _syncVolumeChrome() {
     if (!this.volumeInput) return;
@@ -801,6 +834,21 @@ export class AmbientSoundscapeUI {
     if (this.volumeValueEl) this.volumeValueEl.textContent = valueText;
     this.volumeInput.setAttribute('aria-label', `${caption}, ${valueText}`);
     this.volumeLabel?.setAttribute('title', t('AMBIENT_VOLUME_HINT'));
+  }
+
+  /** Chimes tab volume — start/interval/end bells only. */
+  _syncChimeVolumeChrome() {
+    if (!this.chimeVolumeInput) return;
+    const live = this.sessionCues ? this.sessionCues.getVolume() : 0.25;
+    const pct = Math.round(live * 100);
+    this.chimeVolumeInput.value = String(pct);
+    this.chimeVolumeInput.setAttribute('aria-valuenow', String(pct));
+    const caption = t('CHIMES_VOLUME_LABEL');
+    const valueText = `${pct}%`;
+    if (this.chimeVolumeCaption) this.chimeVolumeCaption.textContent = caption;
+    if (this.chimeVolumeValueEl) this.chimeVolumeValueEl.textContent = valueText;
+    this.chimeVolumeInput.setAttribute('aria-label', `${caption}, ${valueText}`);
+    this.chimeVolumeLabel?.setAttribute('title', t('CHIMES_VOLUME_HINT'));
   }
 
   _renderPanel() {
@@ -825,6 +873,7 @@ export class AmbientSoundscapeUI {
     this.uploadHintEl.textContent = t('AMBIENT_UPLOAD_LOCAL_HINT');
     this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
     this._syncVolumeChrome();
+    this._syncChimeVolumeChrome();
     this.cueToggleText.textContent = t('SESSION_CUES_TOGGLE');
     this.cueToggleLabel.title = t('SESSION_CUES_TOGGLE_HINT');
     this.cueToggleHint.textContent = t('SESSION_CUES_TOGGLE_HINT');

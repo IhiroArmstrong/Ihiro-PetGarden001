@@ -5,11 +5,17 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   IDLE_YIN_TAP_EMOTION_KEY,
   canPlayIdleYinTap,
   wrapPlayEmotionWithIdleYinTapSync
 } from './idleYinTapGate.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
 
 describe('canPlayIdleYinTap', () => {
   it('allows Idle sitting with idle/smiling baseline', () => {
@@ -128,5 +134,15 @@ describe('wrapPlayEmotionWithIdleYinTapSync', () => {
     assert.ok(
       canPlayIdleYinTap({ sessionState: 'IDLE', emotionKey: 'idle' })
     );
+  });
+});
+
+describe('isIdleYinTapOverlayBusy wiring (main.js source contract)', () => {
+  it('registers purpose card and Privacy sheet, and re-syncs on close', () => {
+    assert.match(
+      mainSrc,
+      /function isIdleYinTapOverlayBusy\(\) \{[\s\S]*isPurposeCardOpen[\s\S]*isPrivacySheetOpen/
+    );
+    assert.match(mainSrc, /onPurposeClose:\s*\(\)\s*=>\s*syncIdleYinTap\(\)/);
   });
 });

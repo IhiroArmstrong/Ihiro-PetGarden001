@@ -13,6 +13,9 @@
 /** 与 `localStateKeys.js` 白名单同步。 */
 export const SESSION_CUE_PREF_STORAGE_KEY = 'focus-tiger.session-cues.v1';
 
+/** Default chimes loudness (0–1). Independent from Ambience music volume. */
+export const SESSION_CUE_DEFAULT_VOLUME = 0.25;
+
 /** @typedef {0 | 180000 | 300000} SessionIntervalMs */
 
 export const SESSION_INTERVAL_MS_OFF = 0;
@@ -30,7 +33,8 @@ export const SESSION_INTERVAL_MS_OPTIONS = Object.freeze([
  *   sessionStartBellEnabled: boolean,
  *   sessionEndBellEnabled: boolean,
  *   sessionIntervalMs: SessionIntervalMs,
- *   focusAwarenessCardEnabled: boolean
+ *   focusAwarenessCardEnabled: boolean,
+ *   cueVolume: number
  * }} SessionCuePref
  */
 
@@ -40,8 +44,19 @@ export function defaultSessionCuePref() {
     sessionStartBellEnabled: true,
     sessionEndBellEnabled: true,
     sessionIntervalMs: SESSION_INTERVAL_MS_OFF,
-    focusAwarenessCardEnabled: true
+    focusAwarenessCardEnabled: true,
+    cueVolume: SESSION_CUE_DEFAULT_VOLUME
   };
+}
+
+/**
+ * @param {unknown} value
+ * @returns {number}
+ */
+export function normalizeCueVolume(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return SESSION_CUE_DEFAULT_VOLUME;
+  return Math.min(1, Math.max(0, n));
 }
 
 /**
@@ -89,11 +104,16 @@ export function normalizeSessionCuePref(raw) {
       ? raw.focusAwarenessCardEnabled
       : true;
 
+  const cueVolume = Object.prototype.hasOwnProperty.call(raw, 'cueVolume')
+    ? normalizeCueVolume(raw.cueVolume)
+    : SESSION_CUE_DEFAULT_VOLUME;
+
   return {
     sessionStartBellEnabled: startEnd,
     sessionEndBellEnabled: startEnd,
     sessionIntervalMs: intervalMs,
-    focusAwarenessCardEnabled: awareness
+    focusAwarenessCardEnabled: awareness,
+    cueVolume
   };
 }
 
@@ -168,6 +188,19 @@ export function writeFocusAwarenessCardEnabled(storage, enabled) {
   return persistSessionCuePref(storage, {
     ...prev,
     focusAwarenessCardEnabled: Boolean(enabled)
+  });
+}
+
+/**
+ * @param {Storage | { getItem?: Function, setItem?: Function } | null | undefined} storage
+ * @param {number} volume
+ * @returns {SessionCuePref}
+ */
+export function writeCueVolume(storage, volume) {
+  const prev = readSessionCuePref(storage);
+  return persistSessionCuePref(storage, {
+    ...prev,
+    cueVolume: normalizeCueVolume(volume)
   });
 }
 

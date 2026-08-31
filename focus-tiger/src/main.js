@@ -1863,6 +1863,8 @@ async function init() {
 
   function isIdleYinTapOverlayBusy() {
     return (
+      onboardingHints?.isPurposeCardOpen?.() === true ||
+      onboardingHints?.isPrivacySheetOpen?.() === true ||
       sessionUiGate.postSessionOverlayActive === true ||
       honestyCheckInUI?.phase === 'duration' ||
       honestyCheckInUI?.phase === 'breath' ||
@@ -2596,7 +2598,11 @@ async function init() {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
     },
-    onPurposeOpen: () => idleSecondaryPanelHost.close({ except: 'purpose' }),
+    onPurposeOpen: () => {
+      idleSecondaryPanelHost.close({ except: 'purpose' });
+      syncIdleYinTap();
+    },
+    onPurposeClose: () => syncIdleYinTap(),
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();
     }
