@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-01（**Gate 0.2 #472 关单**；AG Slice 0 含 `total sitting time` → `practice_facts`；What Yin remembers 开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8；AG 1e Forget 须先有抽取条目）。**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-09-01（**1C lab 本旁支** · 场景 **AL** Reflection Companion validation；**Gate 0.2 #472 关单**；AG Slice 0 含 `total sitting time` → `practice_facts`；What Yin remembers 开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8；AG 1e Forget 须先有抽取条目）。**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -70,11 +70,11 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA–AK** / **AF–AJ** |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA–AL** / **AF–AJ** |
 | [http://localhost:5173/?product=1&entitlementMock=subscription](http://localhost:5173/?product=1&entitlementMock=subscription) | **Presence Slice 2 QA**：Morning Ritual chip / Leave 回顾（见 **场景 AF · Slice 2**） |
 | [http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6](http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6) | **长周期 QA**：播种昨天往前 6 个练习日；Sit 满 1 分钟可测 MilestoneGlow（不必真等 7 天） |
 | [http://localhost:5173/?product=1&confide=1](http://localhost:5173/?product=1&confide=1) | **Confide QA harness**（产品挂载仍关）：Idle ⋯/抽屉见 Confide 行；**仍检索不生成**；见 **场景 AE · Web** |
-| Electron `desktop:dev` | **场景 AB**（托盘）、**AE · Electron**（Confide L1/L2）、**AG**（Yin Memory）、**AK**（Float Yin PiP 探针）；Web Safari **测不了** llama / 托盘 / memory 文件 |
+| Electron `desktop:dev` | **场景 AB**（托盘）、**AE · Electron**（Confide L1/L2）、**AG**（Yin Memory）、**AK**（Float Yin PiP 探针）、**AL**（Reflection Companion lab）；Web Safari **测不了** llama / 托盘 / memory 文件 |
 
 演示会话时长：`DEMO_SESSION_MINUTES = 1`（约 1 分钟达标，便于故事测完）。  
 语言切换：宽屏 ⋯ / 窄屏抽屉 → **Language**（v1.0 对外 **English + Japanese**）；DEV 仍可用 `__i18n.setLocale('zh')` / `'en'`（`?product=1` 下同一 bundle）。
@@ -797,6 +797,21 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ---
 
+## 场景 AL：Reflection Companion · validation only（lab · 非 shipping）
+
+> **政策**：`task-local-ai-reflection-companion-validation.md` · V3 validation ≠ shipping。**仅** Electron 非低配宽屏 + `?reflectionCompanion=1`。无 flag / Web / 375 **不得**出现 invite，也 **不得**自动 generate。  
+> **单元**：`reflectionCompanionValidation.test.js` · `buildReflectionCompanionPrompt`。  
+> **邻接**：场景 C 末题 echo hold · 场景 AE 危机语料 · 确定性 `[data-testid=reflection-companion-echo]` 池（非 AI）。  
+> **仍须人工**：one short observation 观感是否「照见」而非「指导」；Celebrating 不被空白挡住。
+
+1. **主路径（Electron 宽屏）**：`desktop:dev` + `?product=1&reflectionCompanion=1&sessionMinutes=1` → Sit 达标 → Reflection 末题非空 Continue → **0–1 秒内**见 echo 留下 + `[data-testid=reflection-companion-invite]`。点 invite → **0–1 秒内**钮文案变「Listening…」→ `[data-testid=reflection-companion-observation]` 见一句 observation，**`data-source=generate`**。再 Continue / Skip / Esc 关卡，Celebrating 不被挡住。  
+2. **无 lab**：同一路径 **无** `?reflectionCompanion=1` → **不得**出现 invite；确定性 echo 仍可出现。  
+3. **危机负例**：末题写入 `I don't want to live` → 点 invite → **0–1 秒内** Listening… → observation **`data-source=corpus_safety`**，英文须含 crisis line；**禁止** generate。  
+4. **失败不挡**：companion 未 ready 时点 invite → **0–1 秒内** Listening… → observation **`data-source=corpus_fallback`**（已审语料）；卡仍可关，**禁止**空白卡死。  
+5. **回流**：关 Reflection → 再开一场 **无** lab → 无 invite。
+
+---
+
 ## 建议补充的故事（相对 A–G；O/P/Q/S–W/X–Z 已升格为正式场景）
 
 
@@ -830,6 +845,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | **AI** | 练习备份恢复对齐热力图/提醒 | **已升格** → 见上文「场景 AI」；#437 |
 | **AJ** | Stay in touch / Newsletter | **已升格** → 见上文「场景 AJ」；#444 Resend **待合** |
 | **AK** | Focusing Float Yin PiP 探针 | **已升格** → 见上文「场景 AK」；#438；对照 AA Idle PiP |
+| **AL** | Reflection Companion validation（lab） | **已升格** → 见上文「场景 AL」；非 shipping；#486 原型 + 本旁支 fail-soft / crisis |
 
 ---
 

@@ -1,6 +1,6 @@
 # Local AI Phase 1 · 执行任务计划
 
-**状态（2026-09-01）**：**执行 SSOT** · Gate 0.2 #472 已关单 · **1B 口令本旁支 shipping** · 1A / 1C 仍须分项口令。  
+**状态（2026-09-01）**：**执行 SSOT** · Gate 0.2 #472 已关单 · **1B #503 已合** · **1A #506 已合** · **1C lab 本旁支（非 shipping）**。  
 **产品政策 SSOT**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md`  
 **排期索引**：`TASKS.md` §Local AI Phase 1  
 **交叉引用**：`task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LAB_SCRIPT_CONVENTIONS.md`
@@ -34,7 +34,7 @@
 |---|---|---|
 | **规划 / PO** | ✅ 已结案 | PR #476 · `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` |
 | **Brief** | ✅ 已建 | 1A / 1B / 1C · **存在 ≠ 开工** |
-| **Runtime** | 🟡 1A 本旁支 | 1C validation 仍须口令 · **分 PR** |
+| **Runtime** | 🟡 1C lab 本旁支 | 1A #506 · 1B #503 已合 · **Validation ≠ Shipping** |
 
 ```text
 [✅ PO + SSOT #476]
@@ -43,9 +43,9 @@
         ↓
 [口令 → 1B Ask Journey/Presence]  ← **#503 已合**
         ↓
-[口令 → 1A NL Actions · Show memory]  ← **本旁支 shipping**
+[口令 → 1A NL Actions · Show memory]  ← **#506 已合**
         ↓
-[口令 → 1C Reflection validation]  PR 独立（非 shipping）
+[口令 → 1C Reflection validation]  ← **本旁支 lab（非 shipping）**
         ↓
 [若 1C 通过 → 新 shipping Brief → 再议]
 ```
@@ -203,8 +203,9 @@ npm run desktop:dev
 | 1C.3 | 设计师 + PO 书面 validation 结论 | 同上 |
 | 1C.4 | 若通过 → **另开** shipping Brief | 新 Brief · 未来口令 |
 
-**口令**：`开工 Reflection Companion Validation`  
-**硬规则**：Validation approval ≠ shipping approval · **禁止**提交后自动 generate · **禁止**与 1A/1B 同 PR
+**口令**：`开工 Reflection Companion Validation` / **2026-09-01 口令 1C**  
+**硬规则**：Validation approval ≠ shipping approval · **禁止**提交后自动 generate · **禁止**与 1A/1B 同 PR  
+**本旁支**：fail-soft 已审语料 · 危机不 generate · `data-source` · 场景 AL
 
 ---
 
