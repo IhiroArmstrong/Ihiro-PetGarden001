@@ -43,8 +43,9 @@ import {
   supportModalFunnelLayout,
   supportModalSuggestedHost
 } from '../core/supportModalLead.js';
+import { supportPaidCardPresentation } from '../core/supportPaidCardPresentation.js';
 
-const STYLE_ID = 'yin-support-modal-styles-v5';
+const STYLE_ID = 'yin-support-modal-styles-v6';
 const FADE_MS = 220;
 
 const ICON_SRC = '/ui/support/support-yin-icon.png';
@@ -275,9 +276,6 @@ export class SupportYinModalUI {
     this.companionAddonCta = companionAddon.ctaBtn;
     this.companionAddonImg = companionAddon.imgEl;
 
-    this._syncPaidCardVisibility();
-    this._syncLeadLayout();
-
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
     this.closeBtn.className = 'yin-support-modal__close';
@@ -290,13 +288,23 @@ export class SupportYinModalUI {
     this.desktopRamNote.dataset.testid = 'yin-support-desktop-ram';
     this.desktopRamNote.hidden = true;
 
+    this.webLocalAiNote = document.createElement('p');
+    this.webLocalAiNote.id = 'yin-support-web-local-ai';
+    this.webLocalAiNote.className = 'yin-support-modal__desktop-ram';
+    this.webLocalAiNote.dataset.testid = 'yin-support-web-local-ai';
+    this.webLocalAiNote.hidden = true;
+
     this.root.append(
       this.titleEl,
       this.subtitleEl,
       this.grid,
       this.desktopRamNote,
+      this.webLocalAiNote,
       this.closeBtn
     );
+
+    this._syncPaidCardVisibility();
+    this._syncLeadLayout();
 
     mountRoot.append(this.fab, this.backdrop, this.root);
 
@@ -455,12 +463,17 @@ export class SupportYinModalUI {
    */
   async _runCheckout(kind) {
     if (this._busy) return;
+    if (kind === 'sanctuary' && this.sanctuaryCard.classList.contains('is-settled')) {
+      return;
+    }
+    if (
+      kind === 'companion-addon' &&
+      this.companionAddonCard.classList.contains('is-settled')
+    ) {
+      return;
+    }
     this._busy = true;
-    this.sanctuaryCta.disabled = true;
-    this.membershipCta.disabled = true;
-    this.teaCta.disabled = true;
-    this.proCta.disabled = true;
-    this.companionAddonCta.disabled = true;
+    this._setCheckoutBusy(true);
     try {
       getMonetizationFunnelStore().supportCta(
         kind,
@@ -489,12 +502,21 @@ export class SupportYinModalUI {
       }
     } finally {
       this._busy = false;
-      this.sanctuaryCta.disabled = false;
-      this.membershipCta.disabled = false;
-      this.teaCta.disabled = false;
-      this.proCta.disabled = false;
-      this.companionAddonCta.disabled = false;
+      this._setCheckoutBusy(false);
     }
+  }
+
+  /**
+   * @param {boolean} busy
+   */
+  _setCheckoutBusy(busy) {
+    this.membershipCta.disabled = busy;
+    this.teaCta.disabled = busy;
+    this.proCta.disabled = busy;
+    this.sanctuaryCta.disabled =
+      busy || this.sanctuaryCard.classList.contains('is-settled');
+    this.companionAddonCta.disabled =
+      busy || this.companionAddonCard.classList.contains('is-settled');
   }
 
   /**
@@ -564,7 +586,11 @@ export class SupportYinModalUI {
       t('SUPPORT_SANCTUARY_PRICE'),
       SANCTUARY_LIFETIME_PRICE_USD
     );
-    this.sanctuaryCta.textContent = t('SUPPORT_SANCTUARY_CTA');
+    this.sanctuaryCta.textContent = this.sanctuaryCard.classList.contains(
+      'is-settled'
+    )
+      ? t('SUPPORT_SANCTUARY_CTA_OWNED')
+      : t('SUPPORT_SANCTUARY_CTA');
 
     this.membershipImg.alt = t('SUPPORT_MEMBERSHIP_IMG_ALT');
     this.membershipTitle.textContent = t('SUPPORT_MEMBERSHIP_TITLE');
@@ -612,28 +638,60 @@ export class SupportYinModalUI {
       t('SUPPORT_COMPANION_ADDON_PRICE'),
       String(COMPANION_ADDON_LIFETIME_PRICE_USD)
     );
-    this.companionAddonCta.textContent = t('SUPPORT_COMPANION_ADDON_CTA');
+    this.companionAddonCta.textContent = this.companionAddonCard.classList.contains(
+      'is-settled'
+    )
+      ? t('SUPPORT_COMPANION_ADDON_CTA_OWNED')
+      : t('SUPPORT_COMPANION_ADDON_CTA');
 
     this._syncPaidCardVisibility();
 
     const showDesktopRam = isDesktopShellRuntime();
     this.desktopRamNote.hidden = !showDesktopRam;
     this.desktopRamNote.textContent = t('SUPPORT_DESKTOP_RAM_NOTE');
+    this.webLocalAiNote.textContent = t('SUPPORT_WEB_LOCAL_AI_NOTE');
   }
 
   _syncPaidCardVisibility() {
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
-    const showPro =
-      !isLifetimeActiveForAddonOffer({ storage }) &&
-      !isProSubscriptionActive({ storage }) &&
-      !isCompanionEntitled({ storage });
-    const showAddon =
-      isLifetimeActiveForAddonOffer({ storage }) &&
-      !isCompanionAddonActive({ storage }) &&
-      !isProSubscriptionActive({ storage });
-    this.proCard.hidden = !showPro;
-    this.companionAddonCard.hidden = !showAddon;
+    const p = supportPaidCardPresentation({
+      lifetimeActive: isLifetimeActiveForAddonOffer({ storage }),
+      addonActive: isCompanionAddonActive({ storage }),
+      proActive: isProSubscriptionActive({ storage }),
+      companionEntitled: isCompanionEntitled({ storage }),
+      isDesktopShell: isDesktopShellRuntime()
+    });
+    this.proCard.hidden = !p.showPro;
+    this.companionAddonCard.hidden = !p.showAddon;
+    this._setCardSettled(
+      this.sanctuaryCard,
+      this.sanctuaryCta,
+      p.sanctuarySettled,
+      'SUPPORT_SANCTUARY_CTA_OWNED',
+      'SUPPORT_SANCTUARY_CTA'
+    );
+    this._setCardSettled(
+      this.companionAddonCard,
+      this.companionAddonCta,
+      p.addonSettled,
+      'SUPPORT_COMPANION_ADDON_CTA_OWNED',
+      'SUPPORT_COMPANION_ADDON_CTA'
+    );
+    this.webLocalAiNote.hidden = !p.showWebLocalAiNote;
+  }
+
+  /**
+   * @param {HTMLElement} card
+   * @param {HTMLButtonElement} cta
+   * @param {boolean} settled
+   * @param {string} ownedKey
+   * @param {string} buyKey
+   */
+  _setCardSettled(card, cta, settled, ownedKey, buyKey) {
+    card.classList.toggle('is-settled', settled);
+    cta.disabled = settled;
+    cta.textContent = t(settled ? ownedKey : buyKey);
   }
 
   /** After Stripe return confirms Pro / companion add-on in the shell. */
@@ -657,13 +715,14 @@ export class SupportYinModalUI {
     if (!this.proCard.hidden) cards.push(this.proCard);
     if (!this.companionAddonCard.hidden) cards.push(this.companionAddonCard);
     this.grid.replaceChildren(...cards);
-    const host =
-      supportModalSuggestedHost(leadWithTea) === 'tea'
-        ? this.teaCard
-        : this.sanctuaryCard;
+    const preferTea = supportModalSuggestedHost(leadWithTea) === 'tea';
+    const sanctuarySettled = this.sanctuaryCard.classList.contains('is-settled');
+    const host = preferTea || sanctuarySettled ? this.teaCard : this.sanctuaryCard;
     this._attachSuggestedBadge(host);
     if (this.suggestedBadge) {
-      this.suggestedBadge.dataset.host = leadWithTea ? 'tea' : 'sanctuary';
+      this.suggestedBadge.dataset.host =
+        preferTea || sanctuarySettled ? 'tea' : 'sanctuary';
+      this.suggestedBadge.hidden = false;
     }
   }
 
@@ -808,6 +867,14 @@ export class SupportYinModalUI {
         border-radius: 16px;
         border: 1px solid rgba(139, 115, 85, 0.2);
         background: ${GLASS_FILL};
+      }
+      .yin-support-card.is-settled {
+        opacity: 0.48;
+        filter: saturate(0.62);
+      }
+      .yin-support-card.is-settled .yin-support-card__cta:disabled {
+        opacity: 0.9;
+        cursor: default;
       }
       .yin-support-card__badge {
         position: absolute;

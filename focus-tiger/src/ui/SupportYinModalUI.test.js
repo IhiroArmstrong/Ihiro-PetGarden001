@@ -33,6 +33,7 @@ const REQUIRED_SUPPORT_KEYS = [
   'SUPPORT_SANCTUARY_BADGE',
   'SUPPORT_SANCTUARY_PRICE',
   'SUPPORT_SANCTUARY_CTA',
+  'SUPPORT_SANCTUARY_CTA_OWNED',
   'SUPPORT_SANCTUARY_IMG_ALT',
   'SUPPORT_MEMBERSHIP_TITLE',
   'SUPPORT_MEMBERSHIP_BLURB',
@@ -40,6 +41,7 @@ const REQUIRED_SUPPORT_KEYS = [
   'SUPPORT_MEMBERSHIP_CTA',
   'SUPPORT_MEMBERSHIP_IMG_ALT',
   'SUPPORT_DESKTOP_RAM_NOTE',
+  'SUPPORT_WEB_LOCAL_AI_NOTE',
   'SUPPORT_TEA_TITLE',
   'SUPPORT_TEA_BLURB',
   'SUPPORT_TEA_BENEFIT_1',
@@ -86,7 +88,9 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(en.SUPPORT_MEMBERSHIP_PRICE, /billed monthly/i);
     assert.match(zh.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
     assert.match(ja.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
-    assert.equal(MEMBERSHIP_PRICE_DISPLAY, '6.99');
+    assert.equal(en.SUPPORT_SANCTUARY_CTA_OWNED, 'Unlocked');
+    assert.equal(en.SUPPORT_COMPANION_ADDON_CTA_OWNED, 'Unlocked');
+    assert.match(en.SUPPORT_WEB_LOCAL_AI_NOTE, /desktop app/i);
     assert.equal(
       formatSupportPrice(en.SUPPORT_MEMBERSHIP_PRICE, MEMBERSHIP_PRICE_DISPLAY),
       'About $6.99 · billed monthly'
@@ -105,9 +109,13 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /MEMBERSHIP_PRICE_DISPLAY/);
     assert.match(src, /#e8dfd2/);
     assert.match(src, /SUPPORT_DESKTOP_RAM_NOTE/);
+    assert.match(src, /SUPPORT_WEB_LOCAL_AI_NOTE/);
     assert.match(src, /isDesktopShellRuntime/);
     assert.match(src, /buildCheckoutSessionBody/);
     assert.match(src, /yin-support-desktop-ram/);
+    assert.match(src, /yin-support-web-local-ai/);
+    assert.match(src, /supportPaidCardPresentation/);
+    assert.match(src, /yin-support-card\.is-settled/);
   });
 
   it('tea-first layout reuses Suggested badge and stays off sprite arbitration', () => {

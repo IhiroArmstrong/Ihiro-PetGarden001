@@ -354,10 +354,11 @@
 ### Q1 · Support Modal（统一入口）
 
 1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
-2. 见三卡（**始终都可见、可点**；头图暖纸底；三 CTA 同款米色立体，Join Membership **不得**蒲团橙白字）：
+2. 见三卡（头图暖纸底；三 CTA 同款米色立体，Join Membership **不得**蒲团橙白字）：
    - **未完成过任何一次记账练习**（清 `practice-days.v1` 与 `lotus-pond.v1`；勿用 `?qaSeedStreak=` / `?qaLotusBlooms=`）：顺序 **Tea → Sanctuary → Membership**（375 最上为请茶）；**Suggested** 在 Tea 卡（`[data-testid=yin-support-suggested-badge][data-host=tea]`）。Sanctuary / Membership 仍完整可点，价文案不变。
    - **已完成过至少一次**（Focus 达标 / Honesty 成功 / Breath 完成，不论时长）：顺序恢复 **Sanctuary → Membership → Tea**；Suggested 回 Sanctuary（`data-host=sanctuary`）。此态**永久**（久别再开仍如此）。未达标 Rise **不得**切到 Sanctuary 优先。
-   - Sanctuary 文案含 **One-time Lifetime** + **About $89.99**；Membership **About $6.99 · billed monthly**；Tea 三条仪式感 bullets。**Electron**：模态底 `#yin-support-desktop-ram`；**Web 不见。** **0–1 秒内**点任一卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
+   - **Lifetime 已买**：Sanctuary 卡**保留**、淡化（`.is-settled`），CTA **Unlock → Unlocked** 且 `disabled`（点了无 Checkout，不是哑点击）。**Suggested** 改挂 Tea。第五卡 AI Companion Add-on 出现（可点，直到加购也付完）。**Web** 模态底 `#yin-support-web-local-ai` 一句：Local AI 只在桌面应用。**Electron** 仍是 `#yin-support-desktop-ram`，不见网页那句。
+   - Sanctuary 文案含 **One-time Lifetime** + **About $89.99**；Membership **About $6.99 · billed monthly**；Tea 三条仪式感 bullets。**Electron**：模态底 `#yin-support-desktop-ram`。**Web**：第四卡 Pro 或第五卡加购在栅格时见 `#yin-support-web-local-ai`（Local AI 不在浏览器）。**0–1 秒内**点任一**未结算**卡 CTA：按压 + `disabled` + 模态收起（结果层见 Q2/Q3）。
    - **对照**：场景化请茶气泡仍只在达标后出现，本步不改。
 3. **Maybe later** 为文字链关闭（非全宽描边钮）。**0–1 秒内**：链按压 + 模态收起，Idle 壳仍在。关后再开仍可用。
 4. **375**：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。
@@ -374,8 +375,8 @@
 ### Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
 10. Support Primary → **0–1 秒内**同 Q2（按压 + disabled + 关模态）；随后 `#yin-sanctuary-card` 卡面约 **$89.99** → Unlock → Lifetime Checkout。
-11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。
-12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。
+11. 回跳须服务端 confirm；邮箱 restore 可用。卡内 `#yin-sanctuary-badges` ≥3 枚尊贵视觉（上限 17）；Idle 阿寅旁**优先**显示 Sanctuary 章。再开 Support：Sanctuary 卡淡化、CTA 不可点；若未加购则见第五卡。
+12. **禁止**：读 tip 状态解锁。Ambient 深库：未购仅免费 5 首可播（见 TRACKER Ambient entitlement 行）。加购付完后再开 Support：第五卡**仍在**、淡化、CTA Unlocked / disabled（不得整卡消失）。
 
 ### Q4 · 统一练习徽章（免费路径 · #204）
 

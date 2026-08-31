@@ -1,0 +1,3 @@
+# fix/support-settled-cards
+
+| Support 已购卡淡化（Sanctuary + Local AI add-on）+ 网页 Local AI 提醒 | UI可见 | 待人工测试 | **主路径（`http://127.0.0.1:5173/?product=1`）**：(1) Unlock Lifetime 付完 → 再开 Support：Yin's Sanctuary 卡淡化、按钮「已解锁」不可点；AI Companion Add-on 卡出现。(2) 加购付完 → 再开 Support：add-on 卡**仍在**、同样淡化、按钮不可点（不得消失）。(3) **Web** 模态底见 `#yin-support-web-local-ai`（Local AI 只在桌面应用）。**Electron**：该句不出现，仍见 `#yin-support-desktop-ram`。**回流**：关 Support 再开；Suggested 在 Lifetime 后挂 Tea。自动化：`supportPaidCardPresentation.test.js` + `SupportYinModalUI.test.js` locale/源码契约。 | — | — | — | `http://127.0.0.1:5173/?product=1` · `#yin-support-modal` · `[data-testid=yin-support-companion-addon-card]` | 2026-09-01 |
