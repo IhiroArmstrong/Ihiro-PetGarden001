@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Support 已购卡淡化（2026-09-01 · `fix/support-settled-cards`）**：Lifetime 付完 Sanctuary 卡虚化且 CTA 不可点；加购付完第五卡保留虚化。网页 Support 底一句 Local AI 仅桌面。`desktop:dev` 若 5173 已占用则只挂 Electron。
+
 - **叠层占用三问接 registry（2026-08-31 · 本旁支 `fix/overlay-three-questions`）**：Confide / Privacy / Idle 玻璃卡 / Support 族摸头与进睡走 `derive*`；Privacy 点空白关 sheet 本身。**2026-09-01**：合入前补 Unlock Lifetime 失败不重开已关卡 + Support 淡出不抢点 + 冷启动额头一次提示；摸头回 Idle 显式 CapCut freeze；**Vite `/api` 代理**让 `:5174` 结账绕过 Worker 只允许 `:5173` 的 CORS。风险 5–10 仍未改。须人工复测，CI 绿 ≠ 可合入。
 - **Privacy 溢出 / 点空白关闭 + 摸头 overlay busy + Chimes 独立音量（2026-08-31）**：Privacy opt-in 进可滚 body；点空白/backdrop 关 sheet+简介；Chimes 滑条默认 25%。工作流补丁 §6.16 H6。TRACKER 碎片待人工。
 - **Local AI 扩场景会审（2026-08-28 · 未拍板 · 无运行时）**：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。V1–V5 现场唱名；不改 `LOCAL_AI_SCENARIOS_V1.md` 政策句。
