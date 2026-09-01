@@ -59,8 +59,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_TOOL_CALL_MAX_TOKENS` | 可选 · 整数 | tool-call 探针 `maxTokens`；缺省 = `L0_MAX_TOKENS` |
 | `FT_INTENT_GGUF` | 可选 · 绝对路径 | Gate 0.D 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 | `FT_INTENT_MAX_TOKENS` | 可选 · 整数 | Gate 0.D `maxTokens`；缺省 = 96 |
-| `FT_INTENT_PHASE` | 可选 · `1` / `2` / `2b` | `1`=12 · `2`=设计师 20 · `2b`=v4 评分+对照（44；不含 🔁）；缺省 = Phase 1+2 共 32 |
-| `FT_INTENT_ARCH` | 可选 · `A` / `C` / `D` | 2B 架构：A=7-way 现状 · C=决策树 prompt · D=规则预筛+残差；缺省 = A |
+| `FT_INTENT_PHASE` | 可选 · `1` / `2` / `2b` / `2b-hard5` | `1`=12 · `2`=设计师 20 · `2b`=v4（44）· `2b-hard5`=hard-5 子集（5）；缺省 = Phase 1+2 共 32 |
+| `FT_INTENT_ARCH` | 可选 · `A` / `C` / `D` / `E` | 2B 架构：A=7-way · C=决策树 · D=规则预筛+残差 · E=C+hard-5 OTHER 扩写；`2b-hard5` 缺省 `E` |
 | `FT_INTENT_HOLDOUT` | 可选 · `1` | 仅 `2b`：追加 🔁 holdout；禁止拿去调 C |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
@@ -99,7 +99,7 @@ cd focus-tiger/desktop && npm run companion:tool-call
 cd focus-tiger/desktop && npm run companion:intent-diagnostic
 ```
 
-结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 设计师 20 · 缺省合计 32）+ `confideIntentDiagnosticPhase2b.js`（v4）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。只跑设计师 20 条：`FT_INTENT_PHASE=2`。Phase 2B：`FT_INTENT_PHASE=2b`，再设 `FT_INTENT_ARCH=A|C|D`（须系统终端跑三次）。Phase 2 Metal 首跑结论记入 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（本文不存分数）。
+结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json`。fixture：`confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 设计师 20 · 缺省合计 32）+ `confideIntentDiagnosticPhase2b.js`（v4）。只出 intent JSON，**不**生成 Yin 句，**不**改生产 GGUF / Confide send。缺模型：`FT_INTENT_GGUF` 或 `FT_TOOL_CALL_GGUF`。`FT_INTENT_MAX_TOKENS` 缺省 96。只跑设计师 20 条：`FT_INTENT_PHASE=2`。Phase 2B：`FT_INTENT_PHASE=2b`，再设 `FT_INTENT_ARCH=A|C|D`（须系统终端跑三次）。hard-5 第四刀：`FT_INTENT_PHASE=2b-hard5 FT_INTENT_ARCH=E`（5 条 · 读 `hard5Gates`）。Metal 结论记入 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（本文不存分数）。
 
 质量七问（空历史，不要另起一组）：`你知道彤彤儿喜欢吃啥？` / `彤彤儿是谁？` / `Why are you happy?` / `What are you doing?` / `What do you want?` / `Where do you live?` / `Whom do you like?`。调用 `buildCompanionL2Prompt({ text, locale, history: [] })` + `LlamaChatSession`，`maxTokens: L2_MAX_TOKENS`。不要改生产提示词来迁就实验室。
 

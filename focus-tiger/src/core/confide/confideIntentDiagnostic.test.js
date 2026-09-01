@@ -15,8 +15,11 @@ import {
 } from './confideIntentDiagnosticFixtures.js';
 import {
   YIN_INTENT_2B_GATES,
+  YIN_INTENT_2B_HARD5_GOLD_IDS,
   YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B,
-  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5,
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN,
+  scoreYinIntentHard5Gates
 } from './confideIntentDiagnosticPhase2b.js';
 import {
   YIN_INTENT_ARCH,
@@ -164,6 +167,34 @@ describe('yin intent diagnostic (lab)', () => {
     const residual = buildYinIntentDiagnosticPrompt('x', YIN_INTENT_ARCH.D);
     assert.match(residual, /Rules already handled/);
     assert.equal(residual.includes('FORGET'), false);
+  });
+
+  it('keeps architecture E as C plus hard-5 OTHER emphasis', () => {
+    const prompt = buildYinIntentDiagnosticPrompt('x', YIN_INTENT_ARCH.E);
+    assert.match(prompt, /Decide in this order/);
+    assert.match(prompt, /showing up consistently, mood trend, presence stats/);
+    assert.match(prompt, /no factual question to answer/);
+    assert.doesNotMatch(prompt, /Rules already handled/);
+  });
+
+  it('freezes hard-5 fixtures and gates for the fourth cut', () => {
+    assert.deepEqual(
+      YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5.map((row) => row.goldId).sort(),
+      [...YIN_INTENT_2B_HARD5_GOLD_IDS].sort()
+    );
+    assert.equal(YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5.length, 5);
+    const rows = YIN_INTENT_2B_HARD5_GOLD_IDS.map((goldId) => ({
+      goldId,
+      primaryHit: true,
+      otherFlattenedToEmotion: false
+    }));
+    assert.equal(scoreYinIntentHard5Gates(rows).passHard5, true);
+    rows[0].primaryHit = false;
+    rows[0].otherFlattenedToEmotion = true;
+    const gates = scoreYinIntentHard5Gates(rows);
+    assert.equal(gates.passHard5, false);
+    assert.equal(gates.hard5Hits, 4);
+    assert.equal(gates.hard5Emotion, 1);
   });
 
   it('prefilters D with production rules and leaves A2 to the residual LLM', () => {

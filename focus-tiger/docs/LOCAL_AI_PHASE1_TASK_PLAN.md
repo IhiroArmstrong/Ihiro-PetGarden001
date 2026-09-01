@@ -295,6 +295,14 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 3. **`otherEmotion=5` 三架构同分 ≠ 容量定论**：C/D **分别**改过 OTHER↔EMOTION（C 决策树重排 · D 规则+残差）；C 在 B16/B20/B21 上 OTHER primary **3/8**（A **0/8**）→ pipeline **可局部改善**。同分因 **hard-5**（B7/B11/B13/B17/B19）在 A/C/D 上仍全 → EMOTION。
 4. **Phase 3 vs D 收窄**：**未定**；须先跑 **OTHER/EMOTION hard-5 第四刀**（架构 E · `FT_INTENT_PHASE=2b-hard5`）。第四刀仍全军覆没 → 才支持「容量瓶颈 · 谈 Phase 3」。
 
+**Phase 2B hard-5 第四刀（架构 E · 实验室 · 未跑 Metal）**：只跑 B7/B11/B13/B17/B19（A/C/D 上均 → EMOTION）。架构 E = C 决策树 + 第 5 步扩写（mood-adjacent 练习/趋势/签到统计问句仍归 OTHER）。**不进 Confide send**。
+
+```bash
+cd focus-tiger/desktop && FT_INTENT_PHASE=2b-hard5 FT_INTENT_ARCH=E npm run companion:intent-diagnostic
+```
+
+结果 JSON 读 `hard5Gates`（`passHard5` = 5/5 且 Emotion=0）。`reading=hard5_pipeline_can_label_mood_adjacent_other` → pipeline 仍可挖；`hard5_still_capacity_question` → 才支持 Phase 3 讨论。
+
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
 **口令**：**开工 Yin Intent Diagnostic**
