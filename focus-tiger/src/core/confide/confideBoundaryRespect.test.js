@@ -30,6 +30,19 @@ describe('confideBoundaryRespect', () => {
     assert.equal(isConfideBoundaryIntent('不确定要不要谈这件事。'), true);
     assert.equal(isConfideBoundaryIntent("What's the weather like?"), false);
     assert.equal(isConfideBoundaryIntent("Don't keep this one."), false);
+    assert.equal(isConfideBoundaryIntent("I'd rather not get into that."), true);
+    assert.equal(isConfideBoundaryIntent("Let's leave that alone for now."), true);
+    assert.equal(isConfideBoundaryIntent("Not today, if that's okay."), true);
+    assert.equal(
+      isConfideBoundaryIntent("I don't think I'm up for that conversation."),
+      true
+    );
+    assert.equal(isConfideBoundaryIntent('Can we come back to that another time?'), true);
+    assert.equal(isConfideBoundaryIntent("I'd prefer to keep this light today."), true);
+    assert.equal(isConfideBoundaryIntent("Let's not open that door right now."), true);
+    assert.equal(isConfideBoundaryIntent("I think I'll pass on that one."), true);
+    assert.equal(isConfideBoundaryIntent("I'm just tired of everything."), false);
+    assert.equal(isConfideBoundaryIntent("This is just a hard week."), false);
   });
 
   it('only intercepts fallback — never safety or emotion buckets', () => {

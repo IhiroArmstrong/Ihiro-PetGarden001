@@ -36,6 +36,22 @@ describe('confideCompanionPresence', () => {
       isConfideCompanionPresenceIntent('Can we just sit here for a minute?'),
       true
     );
+    assert.equal(
+      isConfideCompanionPresenceIntent('Can you just sit next to me while I feel this?'),
+      true
+    );
+    assert.equal(
+      isConfideCompanionPresenceIntent('Can we just breathe together for a bit?'),
+      true
+    );
+    assert.equal(
+      isConfideCompanionPresenceIntent('No agenda, just keep me company.'),
+      true
+    );
+    assert.equal(
+      isConfideCompanionPresenceIntent("Stay a little longer, that's all I need."),
+      true
+    );
   });
 
   it('does not steal BEGIN + emotion pairs', () => {
