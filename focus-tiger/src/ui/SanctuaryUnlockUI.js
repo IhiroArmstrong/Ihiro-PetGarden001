@@ -11,6 +11,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { getCloudApiBaseUrl, postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
+import { noteDesktopCheckoutOpened } from '../core/desktopCheckoutPending.js';
 import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
 import {
   confirmSanctuaryReturnQuery,
@@ -273,6 +274,7 @@ export class SanctuaryUnlockUI {
           : null;
       if (typeof url === 'string' && url) {
         getMonetizationFunnelStore().checkoutStart('sanctuary', 'sanctuary-card');
+        noteDesktopCheckoutOpened('sanctuary', res);
         await openCheckoutUrl(url);
         return;
       }
