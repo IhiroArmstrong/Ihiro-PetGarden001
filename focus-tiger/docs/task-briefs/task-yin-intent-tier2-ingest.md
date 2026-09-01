@@ -1,7 +1,7 @@
 # Task Brief · Yin Intent Diagnostic Tier 2 入库（盲测 fixture + 一轮 Metal）
 
-> **状态（2026-09-01）**：**口令已开工** · 金标 **v3.1 冻结** · T2-A3 用 L1 零例外句 · **不进 Confide send** · **不换 GGUF** · **不调 E′ prompt**  
-> **轨道**：Gate 0.D 实验室 · 与 FORGET 双命中切片 **分口令**
+> **状态（2026-09-01）**：**#526 已合 develop** · 金标 **v3.1 冻结** · Metal 一轮 `passTier2` ❌ · **PO 不立项 Phase 3 / 不换模** · **不进 Confide send** · **不调 E′ prompt**  
+> **轨道**：Gate 0.D 实验室 · 切片 3 双命中 **#525**（分口令已合）
 
 ---
 
