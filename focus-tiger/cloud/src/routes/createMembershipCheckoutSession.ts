@@ -7,7 +7,7 @@ import type { Env } from "../types";
 /**
  * POST /api/create-membership-checkout-session
  * Body: optional { email?: string }
- * Returns: { url: string }
+ * Returns: { url: string, sessionId?: string }
  *
  * Uses STRIPE_MEMBERSHIP_PRICE_ID + Membership success/cancel URLs.
  * mode: subscription (never tip / sanctuary payment prices).
@@ -62,7 +62,7 @@ export async function handleCreateMembershipCheckoutSession(
 			cancelUrl: returns.cancelUrl,
 			customerEmail,
 		});
-		return json({ url: session.url });
+		return json({ url: session.url, sessionId: session.id });
 	} catch (err) {
 		const detail = err instanceof Error ? err.message : "checkout_failed";
 		return errorJson(502, "stripe_error", detail);

@@ -2,7 +2,7 @@
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
-| 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | Electron `localStorage` ≠ Safari；`canPlayIdleYinTap` 须 Idle+smiling；Support 须 `refreshEntitlement` 后 `syncEntitlementCards` | 跟进中 |
+| 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | **两层**：(1) 存储隔离仍是产品事实——Safari 购买不会写入 Electron `localStorage`，**不**做跨浏览器同步。(2) **结账回跳**：Electron 内付完若落到 Vite `5173` 成功页，权益写进 Safari，本壳卡不淡化。`fix/electron-checkout-return-shell`：session id 在本壳 confirm + Worker 桥页深链。`canPlayIdleYinTap` 须 Idle+smiling。Support 须 confirm 后 `syncEntitlementCards`。 | 跟进中 |
 | 独立bug | Reflection 输入框下多余白条（companion invite 幽灵条） | 2026-09-02 用户书面 · Breath→Reflection | `TigerReflectionMoment` companion invite `display:block` 盖过 `[hidden]` | 已解决 |
 | 独立bug | ⋯ 菜单 Quiet Line / Wallpapers 等 growth 行点开即消失（底栏/chrome 闪没、卡片不出现） | 2026-09-02 用户书面 · 5173 变更后 | PR #528 `isGrowthCardOverlayActive` → `setSuppressed` → `clearStage` → `onClearStage` 关掉刚开的 growth 卡 | 跟进中 |
 | 独立bug | Journey log 打开时底栏蓝脉冲点仍可点 | 2026-09-02 用户书面 | `JourneyLogUI` z-index 18 < 壳 z30；growth 卡未 suppress home chrome | 已解决 |
