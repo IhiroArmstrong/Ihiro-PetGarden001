@@ -102,7 +102,8 @@ export class IdleChromeFacade {
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
       onSheetChange: h.onSheetChange,
-      isHintUnread: h.isHintUnread
+      isHintUnread: h.isHintUnread,
+      isGrowthCardOverlayActive: h.isGrowthCardOverlayActive
     });
     this.wide.setHandlers({
       onSound: h.onSound,
@@ -129,7 +130,8 @@ export class IdleChromeFacade {
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
       onMenuChange: h.onMenuChange,
-      isHintUnread: h.isHintUnread
+      isHintUnread: h.isHintUnread,
+      isGrowthCardOverlayActive: h.isGrowthCardOverlayActive
     });
   }
 

@@ -2510,6 +2510,7 @@ async function init() {
   void ambientSoundscapeUI.bootDefaultMusic();
 
   idleChrome.setHandlers({
+    isGrowthCardOverlayActive: () => isGrowthCardOverlayActive(),
     isHintUnread: (hintId) => {
       if (!onboardingHints?.store) return false;
       const store = onboardingHints.store;

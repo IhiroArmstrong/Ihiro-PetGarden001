@@ -4,6 +4,7 @@
 | --- | --- | --- | --- | --- |
 | 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | Electron `localStorage` ≠ Safari；`canPlayIdleYinTap` 须 Idle+smiling；Support 须 `refreshEntitlement` 后 `syncEntitlementCards` | 跟进中 |
 | 独立bug | Reflection 输入框下多余白条（companion invite 幽灵条） | 2026-09-02 用户书面 · Breath→Reflection | `TigerReflectionMoment` companion invite `display:block` 盖过 `[hidden]` | 已解决 |
+| 独立bug | ⋯ 菜单 Quiet Line / Wallpapers 等 growth 行点开即消失（底栏/chrome 闪没、卡片不出现） | 2026-09-02 用户书面 · 5173 变更后 | PR #528 `isGrowthCardOverlayActive` → `setSuppressed` → `clearStage` → `onClearStage` 关掉刚开的 growth 卡 | 跟进中 |
 | 独立bug | Journey log 打开时底栏蓝脉冲点仍可点 | 2026-09-02 用户书面 | `JourneyLogUI` z-index 18 < 壳 z30；growth 卡未 suppress home chrome | 已解决 |
 | 独立bug | 宽屏时长选择器开着时底排 Honesty 仍可点 | 2026-09-02 用户书面 | `WideIdleMoreMenu._sync` `showHome` 未随 `_suppressed` 隐藏 | 已解决 |
 | 独立bug | 英文 UI 混入「寅币」 | 2026-09-02 用户书面 | `en.json` `focus_coins.duration_hint` | 已解决 |

@@ -109,8 +109,9 @@ export class WideIdleMoreMenu {
    *     onQuickStart?: () => void,
    *     onClearCompanion?: () => void,
    *     onClearStage?: () => void,
-   *     onMenuChange?: (open: boolean) => void,
-   *     isHintUnread?: (id: string) => boolean,
+     *     onMenuChange?: (open: boolean) => void,
+     *     isHintUnread?: (id: string) => boolean,
+     *     isGrowthCardOverlayActive?: () => boolean,
    *   }
    * }} [options]
    */
@@ -227,16 +228,28 @@ export class WideIdleMoreMenu {
   }
 
   /**
-   * Dismiss staged secondary panels (Soundscape / companion / reminder).
+   * Drop sound/companion/reminder/language stage body classes only.
    * @returns {void}
    */
-  clearStage() {
+  _dropStageClasses() {
     document.body.classList.remove(
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
       WIDE_STAGE_CLASS.language
     );
+  }
+
+  /**
+   * Dismiss staged secondary panels (Soundscape / companion / reminder).
+   * @returns {void}
+   */
+  clearStage() {
+    this._dropStageClasses();
+    // Growth glass cards *are* the overlay — onClearStage closes them via
+    // idleSecondaryPanelHost; suppress after open would flash-dismiss Quiet Line /
+    // Wallpapers rows (7940bfaa · isGrowthCardOverlayActive).
+    if (this.handlers.isGrowthCardOverlayActive?.()) return;
     this.handlers.onClearStage?.();
   }
 
