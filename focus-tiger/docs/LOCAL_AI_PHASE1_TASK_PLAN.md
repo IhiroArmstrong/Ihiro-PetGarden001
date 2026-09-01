@@ -379,7 +379,13 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 |---|---|---|
 | **Hard Intent** | `Let's begin.` / `Please forget what I said about Monday.` | 规则即可；1.7B 可选 |
 | **Soft Intent** | `Can I just stay here with you?` / 软拒绝字面 | 规则预筛（#523）+ 必要时 1.7B；**本阶段不接 E′ prompt** |
-| **Pragmatic Intent** | A14「不用你说话」· A15「知道你在就行」· D7 无 forget 字面的删义 | **能力探针**；不为过 benchmark 硬塞生产 prompt / 无限加正则 |
+| **Pragmatic Intent** | A14「不用你说话」· A15「知道你在就行」· D7 无 forget 字面的删义 | **能力探针**；不为过 benchmark 硬塞生产 prompt / 无限加正则。**PO 2026-09-01 否决**为这三条写生产规则预筛；维持 backlog/L3。若未来重议，须先有**同义改写验证方案**且门槛从严（改写失守率高 = 明确不上生产，不是再调一版正则）。 |
+
+#### PO 拍板（2026-09-01）
+
+1. **架构锁文档合 develop** — 批准。Pragmatic（A14/A15/D7）= 探针残差，**不是**待修 bug；防止旧 tracker「转生产层序」措辞误导为「写正则接三条」。
+2. **切片 3** — 另开口令；按已拍板合同实现双命中 FORGET 让路（与 A14/A15/D7 **无关**）。
+3. **否决**为 A14/A15/D7 写生产规则预筛 — 维持 backlog/L3 残差；未来重议前置 = 改写验证 + 从严门槛。
 
 #### 书面增量切片（对照 #523）
 

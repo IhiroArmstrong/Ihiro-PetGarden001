@@ -13,7 +13,7 @@
 1. **仅系统已有权威数据 + 产品明确允许的动作** 才可进入本白名单。  
 2. **执行路径在层 3 之前**：规则识别 → 确定性 handler → 模板/系统字段回复；**禁止** Qwen 编造数字、假装删库、假装备份。  
 3. **优先级**：Safety → **陪伴在场 / 边界尊重**（口头待着 ≠ 开计时；不确定要不要谈）→ 情绪桶语料 → **本表白名单 + `memory_suppress` + 偏好诚实模板** → L3 短生成（仅接不住的闲聊）。L3 **禁止**对边界句贴「I am curious / I am aware」，**禁止**把 sit-with-me 说成 BEGIN。  
-   **Intent 三级**（SSOT：`LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1）：Hard / Soft / Pragmatic。Pragmatic（A14/A15/D7）**不为过线污染生产**。  
+   **Intent 三级**（SSOT：`LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1）：Hard / Soft / Pragmatic。Pragmatic（A14/A15/D7）**不为过线污染生产**。**PO 2026-09-01**：明确否决为 A14/A15/D7 写生产规则预筛；维持 L3/backlog。  
    **FORGET vs BOUNDARY（双命中 · 2026-09-01 拍板）**：同一句同时命中 CI-01 与 boundary 正则 → **FORGET 赢**。现网 `_onSend` 仍先 boundary（双命中会不删）。**未实现**；禁止把整张设计师冲突表当成现网。详 § Intent precedence。  
 4. **新意图**须 Brief + 冲突扫描；**禁止**为每句用户话无限加 slice。
 
