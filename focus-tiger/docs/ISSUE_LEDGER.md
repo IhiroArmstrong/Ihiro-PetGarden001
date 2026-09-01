@@ -2,6 +2,11 @@
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
+| 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | Electron `localStorage` ≠ Safari；`canPlayIdleYinTap` 须 Idle+smiling；Support 须 `refreshEntitlement` 后 `syncEntitlementCards` | 跟进中 |
+| 独立bug | Reflection 输入框下多余白条（companion invite 幽灵条） | 2026-09-02 用户书面 · Breath→Reflection | `TigerReflectionMoment` companion invite `display:block` 盖过 `[hidden]` | 已解决 |
+| 独立bug | Journey log 打开时底栏蓝脉冲点仍可点 | 2026-09-02 用户书面 | `JourneyLogUI` z-index 18 < 壳 z30；growth 卡未 suppress home chrome | 已解决 |
+| 独立bug | 宽屏时长选择器开着时底排 Honesty 仍可点 | 2026-09-02 用户书面 | `WideIdleMoreMenu._sync` `showHome` 未随 `_suppressed` 隐藏 | 已解决 |
+| 独立bug | 英文 UI 混入「寅币」 | 2026-09-02 用户书面 | `en.json` `focus_coins.duration_hint` | 已解决 |
 | 独立bug | Confide L2 同面板约第 5–6 句闲聊复读第一句 generate（先是 `Yes.`，#492 拦截后变成完整旧句） | 2026-08-31 用户书面 · 本会话 | `l1Hold.js` KV sequence（`resetChatHistory` 不擦序列）；`l2Sanitize` 缺 echo 拒绝；`historyForGeneratePrompt` 未丢 `memory_suppress` | 已解决 |
 | 独立bug | Allow 后 What Yin remembers 空态仍写「去 Confide 允许」 | 2026-09-01 用户书面 · 本会话 | `YinPersonalMemoryUI` 空列表一律 `YIN_MEMORY_PANEL_EMPTY` | 已解决 |
 | 独立bug | What Yin remembers 开着时 Forget 后新抽取不出现在列表 | 2026-09-01 用户书面 · Mondays feel crowded | `YinPersonalMemoryUI` 无 `reloadIfOpen`；Confide Remember 未通知面板（Forget 已有 `removeMemoryIfOpen`） | 已解决 |

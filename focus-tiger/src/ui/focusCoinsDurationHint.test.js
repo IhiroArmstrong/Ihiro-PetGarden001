@@ -24,11 +24,17 @@ describe('focusCoinsDurationHint', () => {
     );
   });
 
-  it('en/zh/ja name 寅币 and the Stay-rate floor, without arcade copy', () => {
+  it('locale hints name the currency and Stay-rate floor, without arcade copy', () => {
     assert.equal(STAY_MINUTES_PER_POINT, 5);
     const localesDir = join(here, '../locales');
     const forbidden = /earn|shop|limited|积分|金币|抽奖|错过|赶紧/i;
-    for (const file of ['en.json', 'zh.json', 'ja.json']) {
+    const en = JSON.parse(readFileSync(join(localesDir, 'en.json'), 'utf8'));
+    const enHint = en['focus_coins.duration_hint'];
+    assert.match(enHint, /Focus Coins/i, 'en must use Focus Coins');
+    assert.doesNotMatch(enHint, /[\u4e00-\u9fff]/, 'en must not mix CJK');
+    assert.match(enHint, /5/, 'en must name the 5-minute floor');
+    assert.equal(forbidden.test(enHint), false, 'en must stay observational');
+    for (const file of ['zh.json', 'ja.json']) {
       const loc = JSON.parse(readFileSync(join(localesDir, file), 'utf8'));
       const hint = loc['focus_coins.duration_hint'];
       assert.equal(typeof hint, 'string', file);
