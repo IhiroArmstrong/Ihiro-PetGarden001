@@ -269,6 +269,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
    缺汇总或缺高风险标注 = 视同未完成同步汇报。  
 7. **「请安排下班前的 Git 同步」固定语义（强制）**：该口令（及同等的下班前 / 批量 Git 同步）= 清扫**尚未推送的遗漏**：把**当前所在短命旁支**上剩余未推 commit 按标准同步动作推到**该旁支自身**的远端（开/更新 `--base develop` 的 PR），并按第 6 条给出「Git 同步汇总」。日常任务收尾本就应已 push+PR（第 5 条）；本口令补漏，**不再**按「只推非运行时 / 业务代码默认不推」过滤。  
    - **SCENARIO_TESTS 增量核对（强制 · 2026-08-26）**：执行本口令**之前**，须对照 `origin/develop` 自本文「最近代码核对」日以来合入的用户面功能，**增量更新** `focus-tiger/docs/SCENARIO_TESTS.md`（文首日期 + 升格场景 / 自动化指针 / 增量摘要；**勿**整份重写）。无新合入时也须确认文首日期是否为**当天**；若仍落后则先补文档再 push。索引 `RULES_INDEX` → `scenario-tests-eod-sync`。  
+   - **TEST_TRACKER 碎片拼装（强制 · 2026-09-01）**：执行本口令时，若 `focus-tiger/docs/tracker-entries/` 除 `readme.md` / `_*.md` 外仍有**任意**碎片（≥1）→ **须**另开独立 `docs/*` PR 跑 `npm run tracker:assemble` 并提交 `TEST_TRACKER.md` 机器块（可与 SCENARIO_TESTS 增量同旁支；**禁止**在功能 PR 里拼装）。汇总须写明折入了多少条碎片。索引 `RULES_INDEX` → `tracker-eod-sync`；SSOT `TEST_TRACKER.md`「拼装触发」P1。  
    - **标准同步动作（强制写法 · 勿并列主干）**：  
      1. 确认当前分支是短命旁支（`feature/*` / `fix/*` / `docs/*` 等），**不是** `develop` / `main`  
      2. `git push -u origin HEAD`（或等价：只推**当前旁支**）  
