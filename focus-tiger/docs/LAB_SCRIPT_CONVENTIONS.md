@@ -60,7 +60,7 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_INTENT_GGUF` | 可选 · 绝对路径 | Gate 0.D 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 | `FT_INTENT_MAX_TOKENS` | 可选 · 整数 | Gate 0.D `maxTokens`；缺省 = 96 |
 | `FT_INTENT_PHASE` | 可选 · `1` / `2` / `2b` / `2b-hard5` | `1`=12 · `2`=设计师 20 · `2b`=v4（44）· `2b-hard5`=hard-5 子集（5）；缺省 = Phase 1+2 共 32 |
-| `FT_INTENT_ARCH` | 可选 · `A` / `C` / `D` / `E` | 2B 架构：A=7-way · C=决策树 · D=规则预筛+残差 · E=C+hard-5 OTHER 扩写；`2b-hard5` 缺省 `E` |
+| `FT_INTENT_ARCH` | 可选 · `A` / `C` / `D` / `E` | 2B 架构：A=7-way · C=决策树 · D=规则预筛+残差 · E=C+窄化 stats/trend OTHER（E′）；`2b-hard5` 缺省 `E` |
 | `FT_INTENT_HOLDOUT` | 可选 · `1` | 仅 `2b`：追加 🔁 holdout；禁止拿去调 C |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
