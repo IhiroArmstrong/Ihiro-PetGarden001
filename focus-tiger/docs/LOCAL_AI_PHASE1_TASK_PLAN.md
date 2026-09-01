@@ -278,6 +278,23 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=C npm run companion:
 cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:intent-diagnostic
 ```
 
+**Phase 2B Metal 首跑（生产 1.7B Q4 · 2026-09-01 · #516 已合 develop）**：系统终端各跑 A/C/D 一次。结果 JSON：`intent-diag-1788231569140.json`（A）· `1788231641941.json`（C）· `1788231700685.json`（D）。`yinVoiceLeaks` 0；`parseOk` A/C=44/44，D=42/44（`2b-a8` BEGIN 对照 · `2b-b16` OTHER — 均输出非法 label `FACTUAL_ASK`；**不在 D 锚点 6 条内**）。
+
+| 门槛 | A | C | D |
+|---|---|---|---|
+| COMPANION ≥6/8 · Begin≤1 | 1/8 · Begin=4 ❌ | 0/8 ❌ | 1/8 ❌ |
+| 软 BOUNDARY ≥6/8 | 2/8 ❌ | 0/8 ❌ | **8/8 ✓** |
+| OTHER · Emotion≤1/8 | 5 ❌ | 5 ❌ | 5 ❌ |
+| D 锚点 ≥5/6 | **5/6 ✓** | 3/6 ❌ | **0/6 ❌**（6 条均 parseOk；判错非缺输出） |
+| architecturePass（combo lift ≥+15pp 且 anchor≥5/6） | — | ❌ | ❌ |
+
+**reading=`architecture_none_pass_d_boundary_collapse_c_partial_other_lift`**（不进 Confide send · 不换 GGUF）：
+
+1. **联合门槛生效**：D 软 BOUNDARY 8/8 但 anchor 0/6 → **不得**单独判 D 赢；FORGET/SUPPRESS/BEGIN 被系统性压成 BOUNDARY，属分类器塌缩而非「学会软拒绝」。
+2. **A2 实测**：架构 A 将「一起呼吸」压成 **BEGIN** → 冻 `COMPANION_PRESENCE`（≠ 口头 BEGIN）有 Metal 支撑。
+3. **`otherEmotion=5` 三架构同分 ≠ 容量定论**：C/D **分别**改过 OTHER↔EMOTION（C 决策树重排 · D 规则+残差）；C 在 B16/B20/B21 上 OTHER primary **3/8**（A **0/8**）→ pipeline **可局部改善**。同分因 **hard-5**（B7/B11/B13/B17/B19）在 A/C/D 上仍全 → EMOTION。
+4. **Phase 3 vs D 收窄**：**未定**；须先跑 **OTHER/EMOTION hard-5 第四刀**（架构 E · `FT_INTENT_PHASE=2b-hard5`）。第四刀仍全军覆没 → 才支持「容量瓶颈 · 谈 Phase 3」。
+
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
 **口令**：**开工 Yin Intent Diagnostic**
@@ -294,6 +311,7 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 | 拆开模型 vs routing（不换模型） | **开工 Yin Intent Diagnostic** |
 | 冻设计师 20 条 intent fixture | **开工 Yin Intent Diagnostic Phase 2** |
 | 冻 v4 金标 + A/C/D 实验室对照 | **开工 Yin Intent Diagnostic Phase 2B** |
+| OTHER/EMOTION hard-5 第四刀（架构 E） | **开工 Yin Intent Diagnostic Phase 2B hard-5** |
 | #472 人工测有 bug | 直接描述现象 · 不必口令 |
 
 ---
@@ -303,7 +321,7 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON 对照表（Phase 1 = 12 · Phase 2 = 20；Phase 2B = `FT_INTENT_PHASE=2b` × `FT_INTENT_ARCH=A\|C\|D`） | tracker 仅单元；Phase 1 **已合 #495**；Phase 2 **已合 #509**；Phase 2B fixture 本旁支；Metal 20 条 reading 已记；2B Metal 未跑 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（Phase 2B A/C/D **已跑 2026-09-01** · §6.1；hard-5 第四刀 Metal 未跑） | tracker 仅单元；Phase 1 **#495** · Phase 2 **#509** · Phase 2B **#516**；2B reading 已记 §6.1 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
