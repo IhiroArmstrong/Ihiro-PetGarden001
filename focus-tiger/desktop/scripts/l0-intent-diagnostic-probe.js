@@ -19,9 +19,16 @@ import { fileURLToPath } from 'node:url';
 import { L0_MODEL_FILENAME } from '../companion/l0Config.js';
 import { YIN_INTENT_DIAGNOSTIC_FIXTURES } from '../../src/core/confide/confideIntentDiagnosticFixtures.js';
 import {
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HOLDOUT,
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN
+} from '../../src/core/confide/confideIntentDiagnosticPhase2b.js';
+import {
+  YIN_INTENT_ARCH,
   buildYinIntentDiagnosticPrompt,
   parseYinIntentJson,
-  scoreYinIntent
+  prefilterYinIntentByProductionRules,
+  scoreYinIntent,
+  scoreYinIntentPhase2bGates
 } from '../../src/core/confide/confideIntentDiagnosticParse.js';
 
 const labRoot = '/tmp/ft-l0-lab';
@@ -49,7 +56,16 @@ function readDiagnostic(rows, parseOk) {
 }
 
 function selectFixtures() {
-  const phase = String(process.env.FT_INTENT_PHASE || '').trim();
+  const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
+  if (phase === '2b') {
+    if (String(process.env.FT_INTENT_HOLDOUT || '').trim() === '1') {
+      return [
+        ...YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN,
+        ...YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HOLDOUT
+      ];
+    }
+    return YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN;
+  }
   if (phase === '2') {
     return YIN_INTENT_DIAGNOSTIC_FIXTURES.filter((row) => row.phase === 2);
   }
@@ -57,6 +73,14 @@ function selectFixtures() {
     return YIN_INTENT_DIAGNOSTIC_FIXTURES.filter((row) => row.phase === 1);
   }
   return YIN_INTENT_DIAGNOSTIC_FIXTURES;
+}
+
+function resolveArch() {
+  const raw = String(process.env.FT_INTENT_ARCH || YIN_INTENT_ARCH.A)
+    .trim()
+    .toUpperCase();
+  if (raw === YIN_INTENT_ARCH.C || raw === YIN_INTENT_ARCH.D) return raw;
+  return YIN_INTENT_ARCH.A;
 }
 
 function resolveModelPath() {
@@ -88,7 +112,8 @@ async function main() {
     process.exit(2);
   }
 
-  process.stderr.write(`[intent-diag] model ${modelPath}\n`);
+  const arch = resolveArch();
+  process.stderr.write(`[intent-diag] model ${modelPath} arch=${arch}\n`);
   const { getLlama, LlamaChatSession } = await import('node-llama-cpp');
   let llama = null;
   let model = null;
@@ -103,27 +128,50 @@ async function main() {
     const sequence = context.getSequence();
 
     for (const fixture of fixtures) {
-      const session = new LlamaChatSession({ contextSequence: sequence });
-      const prompt = buildYinIntentDiagnosticPrompt(fixture.text);
+      const rule =
+        arch === YIN_INTENT_ARCH.D
+          ? prefilterYinIntentByProductionRules(fixture.text)
+          : { hit: false, primary: null, source: '' };
       let text = '';
-      try {
-        text = await session.prompt(prompt, {
-          maxTokens: Number(process.env.FT_INTENT_MAX_TOKENS) || DEFAULT_MAX_TOKENS
+      let parsed;
+      if (rule.hit) {
+        parsed = {
+          ok: true,
+          primary_intent: rule.primary,
+          secondary_signal: '',
+          confidence: 1
+        };
+        text = JSON.stringify({
+          primary_intent: rule.primary,
+          secondary_signal: '',
+          confidence: 1
         });
-      } catch (err) {
-        text = '';
-        rows.push({
-          id: fixture.id,
-          phase: fixture.phase,
-          expectedPrimary: fixture.expectedPrimary,
-          error: errorMessage(err),
-          raw: '',
-          parseOk: false,
-          primaryHit: false
-        });
-        continue;
+      } else {
+        const session = new LlamaChatSession({ contextSequence: sequence });
+        const prompt = buildYinIntentDiagnosticPrompt(fixture.text, arch);
+        try {
+          text = await session.prompt(prompt, {
+            maxTokens: Number(process.env.FT_INTENT_MAX_TOKENS) || DEFAULT_MAX_TOKENS
+          });
+        } catch (err) {
+          text = '';
+          rows.push({
+            id: fixture.id,
+            goldId: fixture.goldId || '',
+            phase: fixture.phase,
+            role: fixture.role || '',
+            scoreBucket: fixture.scoreBucket || '',
+            expectedPrimary: fixture.expectedPrimary,
+            error: errorMessage(err),
+            raw: '',
+            parseOk: false,
+            primaryHit: false,
+            source: 'llm_error'
+          });
+          continue;
+        }
+        parsed = parseYinIntentJson(text);
       }
-      const parsed = parseYinIntentJson(text);
       const score = scoreYinIntent({
         expectedPrimary: fixture.expectedPrimary,
         expectedSecondary: fixture.expectedSecondary,
@@ -132,12 +180,16 @@ async function main() {
       });
       rows.push({
         id: fixture.id,
+        goldId: fixture.goldId || '',
         phase: fixture.phase,
+        role: fixture.role || '',
+        scoreBucket: fixture.scoreBucket || '',
         text: fixture.text,
         liveReplyNote: fixture.liveReplyNote,
         expectedPrimary: fixture.expectedPrimary,
         expectedSecondary: fixture.expectedSecondary,
         raw: String(text || '').slice(0, 400),
+        source: rule.hit ? rule.source : 'llm',
         ...score,
         confidence: parsed.ok ? parsed.confidence : 0,
         secondary_signal: parsed.ok ? parsed.secondary_signal : ''
@@ -157,9 +209,11 @@ async function main() {
   const mixedBeginFlattened = rows.filter((row) => row.mixedBeginFlattened).length;
   const yinVoiceLeaks = rows.filter((row) => row.yinVoiceLeak).length;
   const phase2Rows = rows.filter((row) => row.phase === 2);
+  const phase2bGates = scoreYinIntentPhase2bGates(rows);
   const report = {
     at: new Date().toISOString(),
     modelPath,
+    arch,
     n,
     parseOk,
     primaryHits,
@@ -174,6 +228,7 @@ async function main() {
       mixedBeginFlattened: phase2Rows.filter((row) => row.mixedBeginFlattened)
         .length
     },
+    phase2bGates,
     reading: readDiagnostic(rows, parseOk),
     rows
   };
@@ -191,7 +246,9 @@ async function main() {
         boundaryFlattened,
         mixedBeginFlattened,
         yinVoiceLeaks,
+        arch,
         phase2: report.phase2,
+        phase2bGates: report.phase2bGates,
         reading: report.reading
       },
       null,
