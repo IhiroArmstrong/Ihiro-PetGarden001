@@ -202,7 +202,7 @@
   "focus_duration.hint": "Focus sittings start at 10 minutes. For a shorter pause, use Breath practice.",
   "focus_duration.minutes_chip": "{n} min",
   "focus_duration.leave": "Leave",
-  "focus_coins.duration_hint": "From 5 minutes on, a sitting can gather 寅币 — for titles and space variants money cannot buy.",
+  "focus_coins.duration_hint": "From 5 minutes on, a sitting can gather Focus Coins — for titles and space variants money cannot buy.",
   "HONESTY_IDLE_ENTRY": "Honesty Check-in",
   "HONESTY_PENDING_LOST": "Something went sideways — please choose a duration again.",
   "HONESTY_CHECKIN_RECORDED": "Quiet time elsewhere counts, too.",

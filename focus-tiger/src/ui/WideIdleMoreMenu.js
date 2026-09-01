@@ -550,8 +550,9 @@ export class WideIdleMoreMenu {
     const park = wide && this._idle;
     const keepQs = Boolean(this._keepQuickStart);
     const showMore = park && !this._suppressed;
-    // Home balls stay for wide Idle (incl. Arrival keepQs / bridge suppress).
-    const showHome = park;
+    // Full suppress (Reflection / duration picker / growth cards): hide home balls.
+    // keepQuickStart: Quick Start only via `.is-arrival-quick` (matches narrow shell).
+    const showHome = park && (!this._suppressed || keepQs);
     // Dock Sit/⚡ pills only while Focusing Rise — never during Idle (prevents
     // Sit flash if chrome sync races label reset).
     const showDockRise = wide && !this._idle;

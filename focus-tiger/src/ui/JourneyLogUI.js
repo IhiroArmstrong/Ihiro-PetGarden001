@@ -54,6 +54,12 @@ export class JourneyLogUI {
     this._open = false;
     this._backupPanelOpen = false;
 
+    this.backdrop = document.createElement('div');
+    this.backdrop.className = 'journey-log-backdrop';
+    this.backdrop.hidden = true;
+    this.backdrop.dataset.testid = 'journey-log-backdrop';
+    this.backdrop.addEventListener('click', () => this.close());
+
     this.root = document.createElement('div');
     this.root.id = 'journey-log';
     this.root.className = 'journey-log';
@@ -180,6 +186,7 @@ export class JourneyLogUI {
       this.backupPanel,
       this.actions
     );
+    mountRoot.appendChild(this.backdrop);
     mountRoot.appendChild(this.root);
 
     this._onKeyDown = (event) => {
@@ -216,8 +223,10 @@ export class JourneyLogUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this.backdrop.hidden = false;
     this.root.hidden = false;
     this.root.getBoundingClientRect();
+    this.backdrop.classList.add('is-visible');
     this.root.classList.add('is-visible');
     this._refresh();
     this.closeBtn.focus({ preventScroll: true });
@@ -228,9 +237,13 @@ export class JourneyLogUI {
     if (!this._open) return;
     this._open = false;
     this._backupPanelOpen = false;
+    this.backdrop.classList.remove('is-visible');
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
-      if (!this._open) this.root.hidden = true;
+      if (!this._open) {
+        this.backdrop.hidden = true;
+        this.root.hidden = true;
+      }
     }, FADE_MS + 40);
     this.handlers.onClose?.();
   }
@@ -241,6 +254,7 @@ export class JourneyLogUI {
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     this.root.remove();
+    this.backdrop?.remove();
   }
 
   _refresh() {
@@ -420,11 +434,25 @@ export class JourneyLogUI {
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
+      .journey-log-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 31;
+        background: rgba(44, 31, 20, 0.12);
+        ${GLASS_BLUR_CSS};
+        opacity: 0;
+        transition: opacity ${FADE_MS}ms ease;
+        pointer-events: none;
+      }
+      .journey-log-backdrop.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
       .journey-log {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: 32;
         width: min(360px, calc(100vw - 40px));
         max-height: min(70vh, 520px);
         overflow: auto;

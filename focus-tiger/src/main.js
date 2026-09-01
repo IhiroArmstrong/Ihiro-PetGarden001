@@ -1296,6 +1296,9 @@ async function init() {
     })
   );
   window.__supportYin = supportYinModalUI;
+  void refreshEntitlement().then(() => {
+    syncEntitlementDependentIdleChrome();
+  });
 
   const contextualTeaTipBubbleUI = new ContextualTeaTipBubbleUI(
     document.getElementById('ui-overlay') || document.body,
@@ -1823,6 +1826,29 @@ async function init() {
    * Idle 入口 + 叠层门闩 / 窄宽壳投影（等价抽离；见 sessionChromeSync.js）。
    * Honesty 提示/时长**故意不列入** overlay 源——仍允许点 hint 展开三选一。
    */
+  /**
+   * Growth glass cards (Journey Log, Collections, …) must park home chrome
+   * like Reflection — not only block Idle tap.
+   */
+  function isGrowthCardOverlayActive() {
+    return (
+      journeyLogUI?.isOpen?.() === true ||
+      yinCoinPanelUI?.isOpen?.() === true ||
+      dailyZenQuoteCardUI?.isOpen?.() === true ||
+      digitalWallpapersCardUI?.isOpen?.() === true ||
+      zenCinemaCardUI?.isOpen?.() === true ||
+      presenceSignalsPanelUI?.isOpen?.() === true ||
+      confideToYinUI?.isOpen?.() === true ||
+      fiveMomentsCompassUI?.isOpen?.() === true ||
+      supportYinModalUI?.isOpen?.() === true ||
+      sanctuaryUnlockUI?.isOpen?.() === true ||
+      membershipUnlockUI?.isOpen?.() === true ||
+      tipJarUI?.isOpen?.() === true ||
+      mustardSeedSealCardUI?.isOpen?.() === true ||
+      newsletterCaptureUI?.isOpen?.() === true
+    );
+  }
+
   const sessionChromeSyncApi = createSessionChromeSync({
     getHonestyBridge: () => honestyBridge,
     getArrivalPractice: () => arrivalPractice,
@@ -1838,6 +1864,7 @@ async function init() {
     stateManager,
     sessionUiGate,
     getPostChoosePending: () => postChooseChrome.pending,
+    isGrowthCardOverlayActive,
     syncInAppReminderBanner: () => syncInAppReminderBanner(),
     setFocusButtonEnabled
   });
@@ -1948,11 +1975,11 @@ async function init() {
       ...handlers,
       onOpen: (...args) => {
         prevOpen?.(...args);
-        syncIdleYinTap();
+        resyncSessionChrome();
       },
       onClose: (...args) => {
         prevClose?.(...args);
-        syncIdleYinTap();
+        resyncSessionChrome();
       }
     };
   }

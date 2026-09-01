@@ -301,7 +301,7 @@ export class TigerReflectionMoment {
     this.companionInviteBtn.dataset.testid = 'reflection-companion-invite';
     this.companionInviteBtn.hidden = true;
     this.companionInviteBtn.style.cssText = [
-      'display:block',
+      'display:none',
       'width:100%',
       'margin:0 0 12px',
       'padding:8px 12px',
@@ -316,6 +316,8 @@ export class TigerReflectionMoment {
     this.companionInviteBtn.addEventListener('click', () => {
       void this._onReflectionCompanionInvite();
     });
+
+    this._injectCompanionSlotStyles();
 
     this.questionEl = document.createElement('div');
     this.questionEl.style.cssText = [
@@ -445,10 +447,10 @@ export class TigerReflectionMoment {
     if (this.companionEchoEl) {
       if (this._companionEchoKey) {
         this.companionEchoEl.textContent = t(this._companionEchoKey);
-        this.companionEchoEl.hidden = false;
+        this._setCompanionSlotVisible(this.companionEchoEl, true);
       } else {
         this.companionEchoEl.textContent = '';
-        this.companionEchoEl.hidden = true;
+        this._setCompanionSlotVisible(this.companionEchoEl, false);
       }
     }
     const qIndex = reflectionDisplayQuestionIndex({
@@ -477,7 +479,7 @@ export class TigerReflectionMoment {
       this.flow?.hasAnyAnswer() &&
       !this._reflectionCompanionSettled &&
       canOfferReflectionCompanionValidation({ search, widthPx });
-    this.companionInviteBtn.hidden = !offer;
+    this._setCompanionSlotVisible(this.companionInviteBtn, offer);
     if (offer) {
       this.companionInviteBtn.textContent = this._reflectionCompanionBusy
         ? t('REFLECTION_COMPANION_VALIDATION_GENERATING')
@@ -486,13 +488,25 @@ export class TigerReflectionMoment {
     }
   }
 
+  /**
+   * Inline `display:block` on invite once beat `[hidden]` in WebKit (ghost bar).
+   * @param {HTMLElement | null} el
+   * @param {boolean} visible
+   */
+  _setCompanionSlotVisible(el, visible) {
+    if (!el) return;
+    const on = Boolean(visible);
+    el.hidden = !on;
+    el.style.display = on ? 'block' : 'none';
+  }
+
   _showReflectionCompanionObservation(resolved) {
     if (!this.companionObservationEl || !resolved?.text) return;
     this.companionObservationEl.textContent = resolved.text;
     this.companionObservationEl.dataset.source = resolved.source;
-    this.companionObservationEl.hidden = false;
+    this._setCompanionSlotVisible(this.companionObservationEl, true);
     this._reflectionCompanionSettled = true;
-    if (this.companionInviteBtn) this.companionInviteBtn.hidden = true;
+    this._setCompanionSlotVisible(this.companionInviteBtn, false);
   }
 
   async _onReflectionCompanionInvite() {
@@ -577,6 +591,21 @@ export class TigerReflectionMoment {
     }
   }
 
+  _injectCompanionSlotStyles() {
+    const id = 'tiger-reflection-companion-slot-styles-v1';
+    if (document.getElementById(id)) return;
+    const style = document.createElement('style');
+    style.id = id;
+    style.textContent = `
+      #tiger-reflection-moment [data-testid="reflection-companion-echo"][hidden],
+      #tiger-reflection-moment [data-testid="reflection-companion-observation"][hidden],
+      #tiger-reflection-moment [data-testid="reflection-companion-invite"][hidden] {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   _renderStep({ instant = false } = {}) {
     if (!this.flow || this.flow.isDone()) return;
 
@@ -640,7 +669,7 @@ export class TigerReflectionMoment {
         this._companionEchoKey
       ) {
         this.companionEchoEl.textContent = t(this._companionEchoKey);
-        this.companionEchoEl.hidden = false;
+        this._setCompanionSlotVisible(this.companionEchoEl, true);
         this._enterLastEchoHold();
         return;
       }
