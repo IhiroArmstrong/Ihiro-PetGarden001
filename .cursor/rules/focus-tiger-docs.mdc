@@ -43,7 +43,7 @@ alwaysApply: false
 | `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |
 | `docs/CHARACTER_BIBLE.md` | 角色 Master Prompt 全文归档 + 项目关联澄清（Rive/莲花/蒲团/Suffix） |
 | `docs/DESIGN.md` | 产品语义与玩法（专注、一炷香、沉睡唤醒等） |
-| `docs/SANCTUARY_UI_ART_DIRECTION.md` | Idle 栖居主屏视觉语言与 chrome 对照；补 DESIGN，不覆盖断点 / z-index |
+| `docs/SANCTUARY_UI_ART_DIRECTION.md` | 栖居主屏 + 次级表面唯一美术 SSOT（A–D）；补 DESIGN，不覆盖断点 / z-index / 寅币账本 |
 | `docs/RESPONSIVE_LAYOUT.md` | **移动浏览器布局基线**：功能对等（竖/横屏）、竖屏 P1、可建议横屏；断点与验收矩阵 |
 | `docs/PROCESS.md` | 协作流程、角色边界、**Backlog**、文首「当前进度速览」（重大进展后更新） |
 | `docs/DEV_WORKFLOW_QUALITY.md` | **如何改善开发工作流来保证开发质量**：原则/规范/指引/注意事项；防假修好+防改坏叙事权威；门禁仍以 regression-lock 规则为准 |
