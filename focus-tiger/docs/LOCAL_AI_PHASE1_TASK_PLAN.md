@@ -347,6 +347,33 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 
 **E′ 基线锁定（#520 已合 develop · 2026-09-01）**：实验室架构 E（E′ prompt）到此收线，不再追 COMPANION 满 8/8 或锚点满 6/6。
 
+**Tier 1 holdout Metal（生产 1.7B Q4 · 2026-09-01 · 分析师过拟合复核）**：`FT_INTENT_PHASE=2b FT_INTENT_ARCH=E FT_INTENT_HOLDOUT=1`（系统终端 Metal）。🔁 holdout **9 条**在 v4 冻金（#516 `5dba279b`）时已标，**早于** E/E′ prompt 调整（#518 · #520）；默认 2b 跑分**不含** holdout，E/E′ 迭代未用其打分。JSON：`intent-diag-1788248640868.json`（持久副本：`~/Library/Application Support/Focus Tiger/lab/intent-diag-1788248640868-tier1-holdout.json`）。`parseOk` 53/53 · 评分集门槛与 #520 **逐项一致**（COMP 5/8 · 软边界 8/8 · OTHERemo 0 · 锚点 4/6 · hard-5 5/5）。
+
+| 桶 | holdout 条 | 命中 | 读数 |
+|---|---|---|---|
+| OTHER 近义 | B1 · B3 · B5 | **3/3** | 过拟合担心**基本解除**（非「完全解决」） |
+| 软 BOUNDARY 近义 | C1 · C9 · C11 | **3/3** | 同上 |
+| COMPANION 近义 | A3 | **1/1** | 评分集 A6/A14/A15 仍败 → 能力边界更可信 |
+| 锚点 holdout | D2 · D6 | 1/2 | D2 FORGET→BOUNDARY：见 `ISSUE_LEDGER`（并入 FORGET 双命中切片） |
+
+**E/E′ 调参与 holdout 接触（书面确认 · 2026-09-01）**：E′ prompt **未写入** holdout 字面句（无 *just stay with me* / *Maybe some other time* / *erase what I said about work* 等）；调参依据为评分集 Metal 输出（A2/A13 · C13–C17 · hard-5）。`phase2b.js` 单文件含 SCORE+HOLDOUT 行——读 fixture 时**可见** holdout 文本，但**无** `FT_INTENT_HOLDOUT=1` 跑分记录。
+
+**Tier 2 盲测冻结（v3.1 · 2026-09-01 · 口令入库）**：12 条全新句，独立文件 `confideIntentDiagnosticTier2.js`（不与 2b SCORE 同文件）。扫描：2b 53 = L1–L4 硬门禁；Phase 1/2 **仅 L1**。T2-A3 用 L1 零例外句（不用 `I'd rather not`）。T2-C4 保留拒答句。过关 3/4；**只跑一轮**；**禁止**据此调 E′ prompt。Brief：`task-yin-intent-tier2-ingest.md`。
+
+```bash
+cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=E FT_INTENT_TIER2=1 npm run companion:intent-diagnostic
+```
+
+**Tier 2 Metal（生产 1.7B Q4 · 2026-09-01 · 一轮 · 不调参）**：`FT_INTENT_PHASE=2b FT_INTENT_ARCH=E FT_INTENT_TIER2=1`。JSON：`/tmp/ft-l0-lab/intent-diag-1788254841103.json`（本机副本：`focus-tiger/.tmp/intent-diag-1788254841103-tier2.json`，gitignore；`/tmp` 重启会清，可自行再拷到 `~/Library/Application Support/Focus Tiger/lab/`）。`parseOk` 12/12 · `yinVoiceLeaks` 0 · Begin 误吸 0 · OTHER Emotion 误吸 0 · `reading=tier2_see_rows` · **`passTier2` ❌**。
+
+| 桶 | 条数 | 过关线 | 命中 | 读数 |
+|---|---|---|---|---|
+| COMPANION | 4 | ≥3/4 · Begin≤1 | **1/4** ❌ | 仅 T2-A1 ✓；A2/A3/A4 → OTHER |
+| OTHER | 4 | ≥3/4 · Emotion≤1 | **4/4** ✓ | B1–B4 全中 |
+| 软 BOUNDARY | 4 | ≥3/4 | **2/4** ❌ | C1/C2 ✓；C3/C4 → OTHER |
+
+**读数（非容量定论 · 禁止据此改 send / 默认 GGUF / E′ prompt）**：全新句上 OTHER 窄门泛化成立；COMPANION 语用/陪伴请求与软 BOUNDARY 的能量/拒答子型仍被吸进 OTHER。与评分集「A6/A14/A15 语用缺口、OTHER/软边界字面已过」同方向，**不等于**换模已批准。Phase 3 仍须 PO 另议。
+
 **第五刀尝试（A6 + D3 · 未合入）**：Metal 验证后**不 ship** — 两类失败的可修复路径不同，硬堆 prompt 无净收益：
 
 | 目标 | 尝试 | Metal 结果 | 结论 |
@@ -428,6 +455,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 | 冻设计师 20 条 intent fixture | **开工 Yin Intent Diagnostic Phase 2** |
 | 冻 v4 金标 + A/C/D 实验室对照 | **开工 Yin Intent Diagnostic Phase 2B** |
 | OTHER/EMOTION hard-5 第四刀（架构 E） | **开工 Yin Intent Diagnostic Phase 2B hard-5** |
+| 冻 Tier 2 全新句盲测 + 一轮 Metal | **开工 Yin Intent Diagnostic Tier 2 入库** |
 | #472 人工测有 bug | 直接描述现象 · 不必口令 |
 
 ---
@@ -446,8 +474,8 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 
 ## 9. 我认为最合理的下一刀
 
-1. **合入本架构锁 docs PR**（CI 绿即可合 develop）。  
+1. 读 §6.1 **Tier 2 Metal**（`passTier2` ❌ · OTHER 4/4 · COMPANION 1/4 · 软边界 2/4）后再议 Phase 3 / 换模。  
 2. 另口令实现 **切片 3**：仅双命中 FORGET 让路（不重写 `_onSend` 整树；不挂 E′ prompt）。  
-3. Forget「昨天那件事」指代、残差 Qwen、3B/4B：**不开工**。
+3. Forget「昨天那件事」指代、残差 Qwen、3B/4B：**不开工**（换模须 PO 看完 Tier 2 读数）。
 
 **较弱**：把完整 Phase 2F（含 Qwen 挂发送）一次做进 `_onSend`；为 A14/A15 加正则/prompt；当 #523 未发生再做一遍字面预筛。

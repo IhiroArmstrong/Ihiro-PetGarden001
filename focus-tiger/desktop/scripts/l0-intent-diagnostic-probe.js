@@ -25,6 +25,10 @@ import {
   scoreYinIntentHard5Gates
 } from '../../src/core/confide/confideIntentDiagnosticPhase2b.js';
 import {
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2,
+  scoreYinIntentTier2Gates
+} from '../../src/core/confide/confideIntentDiagnosticTier2.js';
+import {
   YIN_INTENT_ARCH,
   buildYinIntentDiagnosticPrompt,
   parseYinIntentJson,
@@ -55,6 +59,10 @@ function readDiagnostic(rows, parseOk, phase) {
     }
     return 'see_rows';
   }
+  if (String(process.env.FT_INTENT_TIER2 || '').trim() === '1') {
+    const gates = scoreYinIntentTier2Gates(rows);
+    return gates.passTier2 ? 'tier2_blind_pass' : 'tier2_see_rows';
+  }
   const boundaryRow =
     rows.find((row) => row.id === 'boundary-unsure') ||
     rows.find((row) => row.id === 'terrible-day-dont-talk');
@@ -66,6 +74,9 @@ function readDiagnostic(rows, parseOk, phase) {
 }
 
 function selectFixtures() {
+  if (String(process.env.FT_INTENT_TIER2 || '').trim() === '1') {
+    return YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2;
+  }
   const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
   if (phase === '2b-hard5') {
     return YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5;
@@ -90,8 +101,9 @@ function selectFixtures() {
 
 function resolveArch() {
   const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
+  const tier2 = String(process.env.FT_INTENT_TIER2 || '').trim() === '1';
   const defaultArch =
-    phase === '2b-hard5' ? YIN_INTENT_ARCH.E : YIN_INTENT_ARCH.A;
+    phase === '2b-hard5' || tier2 ? YIN_INTENT_ARCH.E : YIN_INTENT_ARCH.A;
   const raw = String(process.env.FT_INTENT_ARCH || defaultArch)
     .trim()
     .toUpperCase();
@@ -232,8 +244,15 @@ async function main() {
   const mixedBeginFlattened = rows.filter((row) => row.mixedBeginFlattened).length;
   const yinVoiceLeaks = rows.filter((row) => row.yinVoiceLeak).length;
   const phase2Rows = rows.filter((row) => row.phase === 2);
-  const phase2bGates = scoreYinIntentPhase2bGates(rows);
-  const hard5Gates = scoreYinIntentHard5Gates(rows);
+  const phase2bGates =
+    String(process.env.FT_INTENT_TIER2 || '').trim() === '1'
+      ? null
+      : scoreYinIntentPhase2bGates(rows);
+  const hard5Gates =
+    String(process.env.FT_INTENT_TIER2 || '').trim() === '1'
+      ? null
+      : scoreYinIntentHard5Gates(rows);
+  const tier2Gates = scoreYinIntentTier2Gates(rows);
   const report = {
     at: new Date().toISOString(),
     modelPath,
@@ -254,6 +273,7 @@ async function main() {
     },
     phase2bGates,
     hard5Gates,
+    tier2Gates,
     reading: readDiagnostic(rows, parseOk, phase),
     rows
   };
@@ -275,6 +295,7 @@ async function main() {
         phase2: report.phase2,
         phase2bGates: report.phase2bGates,
         hard5Gates: report.hard5Gates,
+        tier2Gates: report.tier2Gates,
         reading: report.reading
       },
       null,

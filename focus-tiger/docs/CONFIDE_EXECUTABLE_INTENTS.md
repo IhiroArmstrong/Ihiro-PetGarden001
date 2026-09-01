@@ -124,7 +124,7 @@ ConfideToYinUI._onSend
 
 `ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → memory_list → forget）。  
 实验室：`desktop/scripts/l0-tool-call-probe.js` · `npm run companion:tool-call` · fixture `confideToolCallFixtures.js`。  
-Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 20）。Phase 2 / 2B / E′ 结论与 **三门禁** 见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（Model PASS-provisional · Architecture 未过 · 生产第一刀 **#523** 字面预筛）。  
+Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 20）。Phase 2B：`confideIntentDiagnosticPhase2b.js`。Tier 2 盲测：`confideIntentDiagnosticTier2.js` · `FT_INTENT_TIER2=1`。Phase 2 / 2B / E′ / Tier 2 结论与 **三门禁** 见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（Model PASS-provisional · Architecture 未过 · 生产第一刀 **#523** 字面预筛）。  
 新增 CI-xx 时应扩 **registry + 纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
 
 
