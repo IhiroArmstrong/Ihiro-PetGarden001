@@ -2849,7 +2849,7 @@ async function init() {
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
-              companionModePicker.open();
+              companionModePicker.open({ afterArrivalChoose: true });
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
@@ -3716,6 +3716,7 @@ async function init() {
 
   function maybeOfferWellnessDisclaimerFirstCard() {
     if (!productChrome) return false;
+    if (postChooseChrome.pending) return false;
     if (confideToYinUI.isOpen()) return false;
     if (onboardingHints?.isWellnessFirstCardOpen?.()) return true;
     if (wellnessFirstConsumedThisPage) return false;
@@ -3742,6 +3743,7 @@ async function init() {
 
   function maybeOfferFiveMomentsCompassFirstCard() {
     if (!productChrome) return;
+    if (postChooseChrome.pending) return;
     if (confideToYinUI.isOpen()) return;
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
