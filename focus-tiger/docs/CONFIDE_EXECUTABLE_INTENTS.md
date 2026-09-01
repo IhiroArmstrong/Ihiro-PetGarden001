@@ -14,7 +14,7 @@
 2. **执行路径在层 3 之前**：规则识别 → 确定性 handler → 模板/系统字段回复；**禁止** Qwen 编造数字、假装删库、假装备份。  
 3. **优先级**：Safety → **陪伴在场 / 边界尊重**（口头待着 ≠ 开计时；不确定要不要谈）→ 情绪桶语料 → **本表白名单 + `memory_suppress` + 偏好诚实模板** → L3 短生成（仅接不住的闲聊）。L3 **禁止**对边界句贴「I am curious / I am aware」，**禁止**把 sit-with-me 说成 BEGIN。  
    **Intent 三级**（SSOT：`LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1）：Hard / Soft / Pragmatic。Pragmatic（A14/A15/D7）**不为过线污染生产**。**PO 2026-09-01**：明确否决为 A14/A15/D7 写生产规则预筛；维持 L3/backlog。  
-   **FORGET vs BOUNDARY（双命中 · 2026-09-01 拍板）**：同一句同时命中 CI-01 与 boundary 正则 → **FORGET 赢**。现网 `_onSend` 仍先 boundary（双命中会不删）。**未实现**；禁止把整张设计师冲突表当成现网。详 § Intent precedence。  
+   **FORGET vs BOUNDARY（双命中 · 2026-09-01 拍板）**：同一句同时命中 CI-01 与 boundary 正则 → **FORGET 赢**（CI-01 可跑时 boundary 让路 · **#524**）。Web / 无 Consent 仍走 boundary。禁止把整张设计师冲突表当成现网。详 § Intent precedence。  
 4. **新意图**须 Brief + 冲突扫描；**禁止**为每句用户话无限加 slice。
 
 ---
@@ -108,7 +108,7 @@ ConfideToYinUI._onSend
   → 仍未命中 → YPE 门闩 → L3 短生成
 ```
 
-**层序是现网事实，不是「设计师 precedence 表已落地」。** 双命中 FORGET 赢 = 已拍板合同，代码仍走上一行 boundary-first（切片 3 另口令）。完整表见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1。
+**层序是现网事实，不是「设计师 precedence 表已落地」。** 双命中：CI-01 可跑时 FORGET 赢（切片 3）；其它冲突格仍以 §6.1 现网列为准。完整表见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1。
 
 | 风险级 | 例子 | 生产策略 |
 |---|---|---|
@@ -164,4 +164,4 @@ SSOT 全文：`LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1「Intent precedence」。本�
 |---|---|---|
 | 纯边界（AE 步 7） | `boundary` 模板 | 已实现 |
 | 纯口头 Forget（AG 1e） | `memory_forget` | 已实现（句中无 boundary 正则时能落到 CI-01） |
-| **双命中**（forget 动词 **且** boundary 正则） | **FORGET 赢**（须删点名条目；确认句仍模板） | **BOUNDARY 先** → 不删。切片 3 另口令，**不**改本文件当已实现 |
+| **双命中**（forget 动词 **且** boundary 正则） | **FORGET 赢**（须删点名条目；确认句仍模板） | CI-01 可跑时 **FORGET**（boundary 让路）。Web / 无 Consent 仍 boundary |

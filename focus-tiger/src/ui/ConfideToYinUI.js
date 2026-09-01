@@ -844,7 +844,14 @@ export class ConfideToYinUI {
       void this._handleMemorySuppressStandalone(text, hit);
       return;
     }
-    if (shouldHandleConfideBoundary({ route: hit.route, text })) {
+    if (
+      shouldHandleConfideBoundary({
+        route: hit.route,
+        text,
+        memoryState: this._memoryState,
+        hasBridge: hasYinPersonalMemoryBridge()
+      })
+    ) {
       this._showReply(
         {
           route: hit.route,
