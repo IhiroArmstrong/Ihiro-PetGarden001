@@ -60,7 +60,7 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ✅ **2026-09-01 关单**（tip `86a4c72e`；C-3 suspend · C-5 follow-up） |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
-| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **已合 #495**；Phase 2 fixture **已合 #509**；Metal 20 条 **2026-09-01** `reading=model_can_label_boundary_check_pipeline`（不换 GGUF）；**Phase 2B v4 fixture 本旁支**（A/C/D Metal 未跑） |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **#495** · Phase 2 **#509** · 2B/E′ **#516–#520** · 生产字面预筛 **#523** · 三门禁/三级 intent **本旁支文档锁**（§6.1）；**不**换默认 GGUF；**不**把 E′ prompt 挂 Share |
 
 **0.2 已通过（2026-09-01）**：**1B #503 已合**。**1A 口令已执行**（本旁支）。
 
@@ -357,7 +357,53 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 **剩余失败分两类（不再 prompt 硬撬）**：
 
 1. **关键词覆盖缺口（可窄修但已停）**：A6 · D3 — 见上表。
-2. **语用推断缺口（五架构全败 · 换说法即失效）**：A14 · A15 · D7 — **禁止**再堆示例句过拟合。关键词缺口（sit next / breathe together / 软 BOUNDARY C13–C17 / OTHER 窄门）已由 **`fix/confide-eprime-rule-prescreen`** 写入现网正则；**不**把 diagnostic prompt 接到 Confide send。A14/A15/D7 仍走 L3。
+2. **语用推断缺口（五架构全败 · 换说法即失效）**：A14 · A15 · D7 — **禁止**再堆示例句过拟合。关键词缺口（sit next / breathe together / 软 BOUNDARY C13–C17 / OTHER 窄门）已由 **#523** `fix/confide-eprime-rule-prescreen` 写入现网正则；**不**把 diagnostic prompt 接到 Confide send。A14/A15/D7 仍走 L3。
+
+### Gate 0.D · 生产架构锁（2026-09-01 · 设计师 §10 · 纯文档）
+
+Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**决定产品干什么。停止堆实验室 prompt 例句（A6↔D3 拉锯已证过拟合）。
+
+#### 三门禁
+
+| Gate | 状态 | 含义 |
+|---|---|---|
+| **Model** | **PASS — provisional** | 同一 Qwen3-1.7B Q4 在正确层序下能标核心 intent（BEGIN / FORGET / SUPPRESS 稳；OTHER 窄门与软 BOUNDARY 在 E′ 上过线）。**不是**「具备完整自然语言理解」。 |
+| **Architecture** | **NOT YET FINAL** | 实验室 E′：COMPANION **5/8**（门槛 6/8）；D 锚点 **4/6**（门槛 5/6）。残差 Qwen **不得**因此焊进 Share。 |
+| **Production** | **第一刀已合 #523** | 规则预筛 = OTHER 窄门 + 软边界字面 + presence 字面。**未**把 E′ JSON 探针接到 `ConfideToYinUI._onSend`。**未**换默认 GGUF。 |
+
+换模（3B/4B）**仅当**：预筛 + 已拍板 precedence + 保守 fallback 都落地后，**同一套 benchmark** 上 1.7B 仍系统性失败，且更大模型在相同 L0 约束下明显改善。
+
+#### 三级 intent
+
+| 等级 | 例子 | 生产处理 |
+|---|---|---|
+| **Hard Intent** | `Let's begin.` / `Please forget what I said about Monday.` | 规则即可；1.7B 可选 |
+| **Soft Intent** | `Can I just stay here with you?` / 软拒绝字面 | 规则预筛（#523）+ 必要时 1.7B；**本阶段不接 E′ prompt** |
+| **Pragmatic Intent** | A14「不用你说话」· A15「知道你在就行」· D7 无 forget 字面的删义 | **能力探针**；不为过 benchmark 硬塞生产 prompt / 无限加正则 |
+
+#### 书面增量切片（对照 #523）
+
+| 刀 | 范围 | 状态 |
+|---|---|---|
+| **1** | OTHER 窄门 + 软边界字面 + presence 字面；不改 `_onSend` 树；不挂 E′ prompt；不换 GGUF | **已合 develop #523** |
+| **2** | 三门禁 + 三级 intent + precedence 合同（本文 + `CONFIDE_EXECUTABLE_INTENTS.md`） | **本旁支文档** |
+| **3** | **仅** CI-01 与 BOUNDARY **双命中** → FORGET 让路（见下表）；单测锁 AE 纯边界 / AG 纯 forget / 1f suppress 仍先 | **已拍板 · 未实现**（须另口令；**禁止**顺手改 `_onSend` 整树） |
+| **4** | 残差才考虑 1.7B + 保守 fallback（竞争时宁 BOUNDARY/COMPANION，勿擅自 BEGIN / 贴 EMOTION） | **Architecture Gate 未过 · 禁止本阶段开工** |
+
+#### Intent precedence（合同 · 非「设计师表 = 现网」）
+
+现网 `_onSend` 层序（事实）：`memory_suppress` → `boundary`（仅 `fallback`）→ `companion_presence` → 偏好诚实 → CI 工具（practice → presence → memory_list → **forget**）→ Read Hybrid → L3。
+
+| 冲突 | 合同 | 现网 | 本刀 |
+|---|---|---|---|
+| **FORGET vs BOUNDARY**（同一句 **同时**命中 CI-01 与 boundary 正则） | **FORGET 赢** | boundary 在 forget **之前** → 双命中走 `data-source=boundary`、**不删** | **已拍板 · 不改代码** |
+| COMPANION vs BEGIN | COMPANION，除非明确 begin 字面 | presence 已对 begin 字面让路 | 已实现 |
+| SUPPRESS vs FORGET | Don't keep / Don't save（即将产生）先于 CI-01（旧内容） | suppress 在 forget 之前 | 已实现；不在本切片改 |
+| QUERY vs EMOTION | 统计/趋势/列表问句走 CI，不贴情绪桶短句 | #523 OTHER 窄门 + 既有 CI | 第一刀已覆盖字面 |
+| BOUNDARY vs EMOTION | 仅 fallback 上的边界正则；**不**宣称压过已命中的情绪桶语料 | `resolveConfideReply` 仍先情绪桶 | **未**把设计师「BOUNDARY 总赢」写成实现 |
+| BEGIN vs EMOTION | 明确 begin 走练习，不因情绪色彩取消 | 口头 BEGIN ≠ 本表新增 | 不在本切片改 |
+
+**FORGET 赢的理由（双命中）**：用户点名了可审计删除；BOUNDARY 模板会吞掉 CI-01，留下要求忘掉的条目。Forget 仍是确定性确认句，不是 BEGIN / 「I am curious」。纯边界句（`SCENARIO_TESTS` AE 步 7）不含 forget 动词，合同不改它们。
 
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
@@ -385,7 +431,7 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 · 字面预筛 #523 · 架构锁本旁支 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
@@ -394,10 +440,8 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 
 ## 9. 我认为最合理的下一刀
 
-1. **合入本 1A PR**（CI 绿即可合 develop）。  
-2. 再下 **口令 1C validation**（非 shipping；lab 旁支可并行但不混 PR）。  
-3. Forget「昨天那件事」= Yin Memory 指代另口令（不扫 `turns.jsonl`、不猜删）。
+1. **合入本架构锁 docs PR**（CI 绿即可合 develop）。  
+2. 另口令实现 **切片 3**：仅双命中 FORGET 让路（不重写 `_onSend` 整树；不挂 E′ prompt）。  
+3. Forget「昨天那件事」指代、残差 Qwen、3B/4B：**不开工**。
 
-**较弱**：未关 #472 就并行三 Phase 1 shipping；扩设计师 20 条 Phase 2 诊断（0.D 已够支撑层序刀）；0.D 后再 Benchmark Llama。
-
-Gate 0.D Phase 1+2 均证明 pipeline 压扁 → **层序已补** companion presence + OTHER 读工具复述 / 偏好诚实（本旁支）；L3 prompt **未改**；本计划**不换模型**。
+**较弱**：把完整 Phase 2F（含 Qwen 挂发送）一次做进 `_onSend`；为 A14/A15 加正则/prompt；当 #523 未发生再做一遍字面预筛。
