@@ -2,4 +2,4 @@
 
 | 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 访问路径 | 日期 |
 |---|---|---|---|---|---|---|---|---|
-| Yin Intent Diagnostic hard-5 第四刀（架构 E） | 纯后端/桌面 | 仅单元测试覆盖 | **无产品 UI。** Metal **已完成 2026-09-01**：`hard5Hits` 5/5 · `passHard5` ✓ · JSON `intent-diag-1788233563846.json` · `reading=hard5_pipeline_can_label_mood_adjacent_other`。详见 §6.1。不改 Confide send / 默认 GGUF。 | — | — | — | §6.1 · #518 | 2026-09-01 |
+| Yin Intent Diagnostic hard-5 第四刀（架构 E → E′） | 纯后端/桌面 | 仅单元测试覆盖 | **无产品 UI。** E′ Metal **2026-09-01**：hard-5 **5/5**（`intent-diag-1788234716620.json`）；全量 44 条 **COMP 5/8 · 软边界 8/8 · OTHERemo 0 · 锚点 4/6**（`intent-diag-1788234739530.json`）。A2/A13 ✓ · C13–C17 ✓。不改 Confide send / 默认 GGUF。 | — | — | — | §6.1 · #518 · #519 | 2026-09-01 |

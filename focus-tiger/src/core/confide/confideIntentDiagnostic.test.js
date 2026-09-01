@@ -169,11 +169,13 @@ describe('yin intent diagnostic (lab)', () => {
     assert.equal(residual.includes('FORGET'), false);
   });
 
-  it('keeps architecture E as C plus hard-5 OTHER emphasis', () => {
+  it('keeps architecture E as C plus narrow stats/trend OTHER (E′)', () => {
     const prompt = buildYinIntentDiagnosticPrompt('x', YIN_INTENT_ARCH.E);
     assert.match(prompt, /Decide in this order/);
-    assert.match(prompt, /showing up consistently, mood trend, presence stats/);
-    assert.match(prompt, /no factual question to answer/);
+    assert.match(prompt, /stats\/frequency\/trend\/history ask about practice or mood/);
+    assert.match(prompt, /showing up consistently or on planned days/);
+    assert.match(prompt, /Even if the sentence mentions mood, feelings, honestly/);
+    assert.match(prompt, /Not companion company: breathe together, sit next to me, sit here with you/);
     assert.doesNotMatch(prompt, /Rules already handled/);
   });
 

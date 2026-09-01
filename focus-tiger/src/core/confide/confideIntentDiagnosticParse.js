@@ -278,7 +278,7 @@ export function compareYinIntentArchitectures({ a, c, d }) {
 /**
  * Constrained prompt for the lab probe. Do not reuse as L3 persona.
  * @param {string} userText
- * @param {string} [arch] A = 7-way status quo · C = one-prompt tree · D residual = 4-way · E = C + hard-5 OTHER emphasis
+ * @param {string} [arch] A = 7-way status quo · C = one-prompt tree · D residual = 4-way · E = C + narrow stats/trend OTHER (E′)
  */
 export function buildYinIntentDiagnosticPrompt(userText, arch = YIN_INTENT_ARCH.A) {
   const utterance = typeof userText === 'string' ? userText.trim() : '';
@@ -310,9 +310,9 @@ export function buildYinIntentDiagnosticPrompt(userText, arch = YIN_INTENT_ARCH.
       '2. SUPPRESS — do not save / do not keep this turn.',
       '3. BEGIN — start today\'s practice, session, or check-in (begin/start/session). Breathing together without a session is not BEGIN.',
       '4. BOUNDARY — decline, postpone, or skip a topic. Feeling bad is not a refusal.',
-      '5. OTHER — factual ask about practice frequency, check-in history, showing up consistently, mood trend, presence stats, or "can you check/tell me" about these topics. Even if the sentence mentions mood, feelings, honestly, or being present emotionally, classify as OTHER when there is a factual question — put felt mood in secondary_signal (EMOTION), not primary.',
-      '6. COMPANION_PRESENCE — company, silence, sitting, being here; no session start.',
-      '7. EMOTION — feelings are the whole request with no factual question to answer (no stats, trend, show-up history, or check-in ask).',
+      '5. OTHER — stats/frequency/trend/history ask about practice or mood: (a) showing up consistently or on planned days, (b) mood trend/trending up or down, (c) check-in count/history/presence stats, (d) "can you check/tell me" about stats/trend/history/presence data. Even if the sentence mentions mood, feelings, honestly, or being present emotionally, classify as OTHER when the ask matches (a)-(d) — put felt mood in secondary_signal (EMOTION), not primary. Not companion company: breathe together, sit next to me, sit here with you → step 6.',
+      '6. COMPANION_PRESENCE — company, silence, sitting, being here, breathe together, sit next to me, sit here with you; no session start. Never OTHER even if phrased as "can we" or "can you".',
+      '7. EMOTION — feelings are the whole request with no stats/trend/history ask (see step 5).',
       'If mood and an ask share one sentence, primary_intent is the ask. Put mood in secondary_signal (use EMOTION).',
       `User: ${utterance}`
     ].join('\n');

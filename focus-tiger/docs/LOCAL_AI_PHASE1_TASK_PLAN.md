@@ -305,11 +305,45 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 | B17 | don't know if present — can you check | EMOTION | **OTHER ✓** |
 | B19 | mood trending up or down | EMOTION | **OTHER ✓** |
 
-**读数**：hard-5 在 A/C/D 上全败、在 E 上全中 → **先前 `otherEmotion=5` 是 prompt/层序未点到，不是 1.7B 标不出**。**禁止**据此 hard-5 子集开 Phase 3。**仍禁止**未跑全量 2B×E 就改 Confide send / 默认 GGUF。COMPANION / 软 BOUNDARY / D 锚点问题仍按 §6.1 A/C/D 表处理。
+**读数**：hard-5 在 A/C/D 上全败、在 E 上全中 → **先前 `otherEmotion=5` 是 prompt/层序未点到，不是 1.7B 标不出**。**禁止**据此 hard-5 子集开 Phase 3。
 
-```bash
-cd focus-tiger/desktop && FT_INTENT_PHASE=2b-hard5 FT_INTENT_ARCH=E npm run companion:intent-diagnostic
-```
+**Phase 2B 全量 E Metal（生产 1.7B Q4 · 2026-09-01 · #519 已合 develop）**：`FT_INTENT_PHASE=2b FT_INTENT_ARCH=E`。JSON：`intent-diag-1788234330077.json`。`parseOk` 44/44 · `yinVoiceLeaks` 0 · `hard5Gates` **5/5 · passHard5 ✓** · `reading=see_rows`。
+
+| 门槛 | A | C | D | **E（全量）** |
+|---|---|---|---|---|
+| COMPANION ≥6/8 · Begin≤1 | 1/8 · B=4 ❌ | 0/8 ❌ | 1/8 ❌ | **1/8 · B=0** ❌ |
+| 软 BOUNDARY ≥6/8 | 2/8 ❌ | 0/8 ❌ | **8/8 ✓** | **4/8** ❌ |
+| OTHER · Emotion≤1/8 | 5 ❌ | 5 ❌ | 5 ❌ | **0 ✓** |
+| D 锚点 ≥5/6 | **5/6 ✓** | 3/6 ❌ | 0/6 ❌ | **4/6** ❌ |
+
+**全量 E 读数（非容量定论 · 禁止据此改 Confide send / 默认 GGUF）**：
+
+1. **OTHER↔EMOTION 完美修复**：OTHER 查询 8/8 · `otherEmotion=0`（A/C/D 均为 5）；hard-5 在全量上仍 5/5。
+2. **OTHER 过吸副作用**：E 第 5 步「事实性问句 → OTHER」触发过宽 — A2「一起呼吸」/ A13「sit next to me」被判 `OTHER`（非 `COMPANION_PRESENCE`）；9 条 EMOTION 对照也被吸进 `OTHER`。
+3. **软 BOUNDARY 相对 D 退步**：E 4/8；C13/C14/C15/C17 在 D 上命中、E 上 miss（EMOTION/OTHER）。
+4. **D 锚点 4/6**：D3 SUPPRESS→OTHER · D7 FORGET→OTHER；相对 A 的 5/6 丢 D3。
+
+**下一刀（E′ · 方向 A）**：收窄 E 第 5 步 — OTHER 只认统计/频率/趋势类关键词（consistently · trending · check-in 次数等），明确排除陪伴意图句式；回归盯 hard-5 · A2/A13 · C13–C17。**不做 D+E 组合评估**（C 架构已证规则拼接易打架）。
+
+**Phase 2B 全量 E′ Metal（生产 1.7B Q4 · 2026-09-01）**：`FT_INTENT_PHASE=2b FT_INTENT_ARCH=E`（E′ prompt 已合入同 arch 常量）。JSON：`intent-diag-1788234739530.json`。hard-5 JSON：`intent-diag-1788234716620.json`。
+
+| 门槛 | E（全量 · 收窄前） | **E′（全量 · 收窄后）** |
+|---|---|---|
+| COMPANION ≥6/8 · Begin≤1 | 1/8 · B=0 ❌ | **5/8 · B=0** ❌ |
+| 软 BOUNDARY ≥6/8 | 4/8 ❌ | **8/8 ✓** |
+| OTHER · Emotion≤1/8 | 0 ✓ | **0 ✓** |
+| D 锚点 ≥5/6 | 4/6 ❌ | **4/6** ❌ |
+| hard-5 | 5/5 ✓ | **5/5 ✓** |
+
+**E′ 三组回归（相对 E）**：
+
+| 组 | 结果 |
+|---|---|
+| hard-5（B7/B11/B13/B17/B19） | **5/5 保持** |
+| A2/A13 | **OTHER → COMPANION_PRESENCE ✓** |
+| C13–C17 | **4/4 从 D 退步项全部收回 BOUNDARY ✓** |
+
+**E′ 仍不过线**：COMPANION 差 1 条（A6/A14/A15）；D 锚点 D3 SUPPRESS→BOUNDARY · D7 FORGET→OTHER。**仍禁止**据此改 Confide send / 默认 GGUF。
 
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
