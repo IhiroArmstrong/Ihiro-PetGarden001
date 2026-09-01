@@ -15,7 +15,7 @@
 | Stay in touch | 打开 `#newsletter-capture-card`；提交走 `NewsletterProvider`。**录入中点页面空白不关卡**（**SB-19**）；关卡用左下 **Cancel**、右下 **Close**，或 Esc |
 
 | 提交后 | 菜单行变为 **We'll keep in touch**（`interactive: false`），不可再开表单。**You're subscribed** 只用于已解锁进阶仪式的付费确认行 |
-| Join our community | 静态外链 → Focus Tiger Slack workspace（`communityLink.js` 永不过期邀请链接，**2026-08-29 已接线**）。**文化口径**：**culture laboratory / Early Yin Community**，不是 App 内社交、不是 Support Forum；目标是约 100 个真正在乎的人。频道/公约/禁止项见 `FROM_APP_TO_CULTURE.md`。 |
+| Join our community | 静态外链 → Focus Tiger Slack workspace（`communityLink.js` 永不过期邀请链接，**2026-08-29 已接线**）。**文化口径**：**culture laboratory / Early Yin Community**，不是 App 内社交、不是 Support Forum；目标是约 100 个真正在乎的人。五空间 IA 见 `FROM_APP_TO_CULTURE.md` §8.2；公约见 `SLACK_COMMUNITY_GUIDELINES.md`。 |
 | 本地状态 | `focus-tiger.newsletter-capture.v1` → `{ submitted }` 仅标记；**不**存邮箱明文 |
 
 ## Provider 接口
