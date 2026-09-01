@@ -293,15 +293,23 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 1. **联合门槛生效**：D 软 BOUNDARY 8/8 但 anchor 0/6 → **不得**单独判 D 赢；FORGET/SUPPRESS/BEGIN 被系统性压成 BOUNDARY，属分类器塌缩而非「学会软拒绝」。
 2. **A2 实测**：架构 A 将「一起呼吸」压成 **BEGIN** → 冻 `COMPANION_PRESENCE`（≠ 口头 BEGIN）有 Metal 支撑。
 3. **`otherEmotion=5` 三架构同分 ≠ 容量定论**：C/D **分别**改过 OTHER↔EMOTION（C 决策树重排 · D 规则+残差）；C 在 B16/B20/B21 上 OTHER primary **3/8**（A **0/8**）→ pipeline **可局部改善**。同分因 **hard-5**（B7/B11/B13/B17/B19）在 A/C/D 上仍全 → EMOTION。
-4. **Phase 3 vs D 收窄**：**未定**；须先跑 **OTHER/EMOTION hard-5 第四刀**（架构 E · `FT_INTENT_PHASE=2b-hard5`）。第四刀仍全军覆没 → 才支持「容量瓶颈 · 谈 Phase 3」。
+4. **Phase 3 vs D 收窄**：hard-5 第四刀 **已跑**（见下）→ **hard-5 不支持容量定论**；Phase 3 / D 收窄仍 **未定**（须看全量 44 条 + COMPANION/锚点）。
 
-**Phase 2B hard-5 第四刀（架构 E · 实验室 · 未跑 Metal）**：只跑 B7/B11/B13/B17/B19（A/C/D 上均 → EMOTION）。架构 E = C 决策树 + 第 5 步扩写（mood-adjacent 练习/趋势/签到统计问句仍归 OTHER）。**不进 Confide send**。
+**Phase 2B hard-5 第四刀 Metal（生产 1.7B Q4 · 2026-09-01 · #518 已合 develop）**：`FT_INTENT_PHASE=2b-hard5 FT_INTENT_ARCH=E`。JSON：`intent-diag-1788233563846.json`。`parseOk` 5/5 · `hard5Hits` **5/5** · `hard5Emotion` 0 · **`passHard5` ✓** · `reading=hard5_pipeline_can_label_mood_adjacent_other`。
+
+| goldId | 句意（fixture） | A/C/D | E |
+|---|---|---|---|
+| B7 | showing up consistently | EMOTION | **OTHER ✓** |
+| B11 | mood trend this week | EMOTION | **OTHER ✓** |
+| B13 | show up on days I say I will | EMOTION | **OTHER ✓** |
+| B17 | don't know if present — can you check | EMOTION | **OTHER ✓** |
+| B19 | mood trending up or down | EMOTION | **OTHER ✓** |
+
+**读数**：hard-5 在 A/C/D 上全败、在 E 上全中 → **先前 `otherEmotion=5` 是 prompt/层序未点到，不是 1.7B 标不出**。**禁止**据此 hard-5 子集开 Phase 3。**仍禁止**未跑全量 2B×E 就改 Confide send / 默认 GGUF。COMPANION / 软 BOUNDARY / D 锚点问题仍按 §6.1 A/C/D 表处理。
 
 ```bash
 cd focus-tiger/desktop && FT_INTENT_PHASE=2b-hard5 FT_INTENT_ARCH=E npm run companion:intent-diagnostic
 ```
-
-结果 JSON 读 `hard5Gates`（`passHard5` = 5/5 且 Emotion=0）。`reading=hard5_pipeline_can_label_mood_adjacent_other` → pipeline 仍可挖；`hard5_still_capacity_question` → 才支持 Phase 3 讨论。
 
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
@@ -329,7 +337,7 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b-hard5 FT_INTENT_ARCH=E npm run comp
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（Phase 2B A/C/D **已跑 2026-09-01** · §6.1；hard-5 第四刀 Metal 未跑） | tracker 仅单元；Phase 1 **#495** · Phase 2 **#509** · Phase 2B **#516**；2B reading 已记 §6.1 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（2B A/C/D + hard-5 E **已跑 2026-09-01** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
