@@ -86,7 +86,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-branch-model` | 「分支职责见 `WORKFLOW.md`」 | 再抄一份五列表 |
 | `git-merge-main` | 「合并 main 门禁见 `WORKFLOW.md`」 | 另造「须 N 人审批」等未立项条款；Agent 代点合并 |
 | `git-semver-release` | 「SemVer / 稳定 tag 见 `WORKFLOW.md` 语义化版本节」 | 主张开发期就开长期 `release/*` 线；平行复述完整 MAJOR/MINOR/PATCH 表与发版 SOP |
-| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **任务完成后默认 push 旁支/开 PR** + Git 同步分级汇总 + 下班前口令补漏 + **SCENARIO_TESTS 增量核对**） | 主张「先问再 commit」；主张**每次** push 须口头授权；完整抄门禁条文；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 生产部署 / 推进无关 PR；**下班前同步却不更新 SCENARIO_TESTS** |
+| `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **任务完成后默认 push 旁支/开 PR** + Git 同步分级汇总 + 下班前口令补漏 + **SCENARIO_TESTS 增量核对** + **TEST_TRACKER 碎片拼装**） | 主张「先问再 commit」；主张**每次** push 须口头授权；完整抄门禁条文；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 生产部署 / 推进无关 PR；**下班前同步却不更新 SCENARIO_TESTS**；**下班前同步却不拼装 TEST_TRACKER 碎片** |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」；对话交接摘要见 `session-handoff`，勿与本条混写 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针）；把本条扩成交接模板 |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」；Cloud 旁支落本机见同节第 8 款（一行指针即可） | 主张同目录并行写可接受；主张可在主仓点 Cursor Apply / checkout migrated branch；在非 SSOT 复述完整 SOP |
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`）；会话结束 N14 须报锁态 | 主张可按 OS mtime / git log 推断占用态；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布；把「锁可自动接管」扩成可静默 `worktree remove` |
@@ -118,6 +118,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `infra-snapshot` | 「Worker/KV/entitlement 现状见 `INFRA_SNAPSHOT.md`」；`ENV_CONFIG` 只链规则；接云任务前可读摘要 | 在 `ENV_CONFIG` 再维护「仓库事实」大表；把 Secret 值写进摘要；未经「部署」口令更新 `prod_worker_version` |
 | `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
 | `scenario-tests-eod-sync` | 「下班前 Git 同步须增量核对 `SCENARIO_TESTS.md` 见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏」；`git-agent-commit` 可一行引用 | 下班前 sync 只 push 不更新场景剧本；整份重写 SCENARIO_TESTS；把 TEST_TRACKER 碎片复制进场景正文 |
+| `tracker-eod-sync` | 「下班前 Git 同步须拼装 `TEST_TRACKER` 碎片见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏 step 0b」；`git-agent-commit` / `TEST_TRACKER.md`「拼装触发」P1 可一行引用 | 下班前 sync 只 push 不跑 `tracker:assemble`；在功能 PR 里拼装；把碎片直接复制进 `SCENARIO_TESTS` |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
@@ -238,6 +239,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-09-02 | 扩展 `agent-token-cost`：`Merged` 硬断点 + 新会话模型一行速查表；`PROCESS`「本地 Cursor 能耗」增 P0 显眼小节（只指路 SSOT） |
 | 2026-09-02 | `SANCTUARY_UI_ART_DIRECTION.md` 升为 A–D 四层唯一美术 SSOT（补 D 次级表面；不进 rules-authority 机器块） |
 | 2026-09-02 | 产品表新增 `SANCTUARY_UI_ART_DIRECTION.md`（栖居主屏视觉；不进 rules-authority 机器块；不覆盖断点 / z-index） |
+| 2026-09-01 | 新增 `tracker-eod-sync`：口令「请安排下班前的 Git 同步」时若 `tracker-entries/` 有任意碎片须另开 `docs/*` PR 跑 `tracker:assemble`。SSOT `TEST_TRACKER.md`「拼装触发」P1 + regression-lock 第 7 条 + `PROCESS` step 0b。原「≥5 必拼」降为 P2 WARN |
 | 2026-09-01 | 扩展 `branch-freshness`：实现状态判断（含随口提问）须 freshness；新增「地面真相优先级」（git 事实 > Brief 措辞）；`agent-token-cost` 区分验证类 vs 探索类 git 检查不受省 token 约束。SSOT 仍 regression-lock + agent-token-cost |
 | 2026-08-27 | 新增 `LOCAL_AI_OPERATING_LAYER.md`：Auto-Operating ≠ Confide；只设计无运行时 |
 | 2026-08-26 | 新增 `scenario-tests-eod-sync`：口令「请安排下班前的 Git 同步」须先增量核对并更新 `SCENARIO_TESTS.md`（文首日期 + 升格场景；勿整份重写）。SSOT regression-lock 第 7 条 + `PROCESS` Git 同步节奏 step 0。本次升格 **AF–AK**（Presence / Yin Memory / Overlay / Backup / Newsletter / PiP gate） |

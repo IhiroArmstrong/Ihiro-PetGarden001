@@ -19,9 +19,10 @@
 > 目的：避免「下一步再拼装」没人记得触发，碎片越积越乱。Brief：[`task-briefs/task-tracker-fragment-assemble-trigger.md`](./task-briefs/task-tracker-fragment-assemble-trigger.md)。
 
 1. **P0 · 批量测前必拼**：口令 **「批量人工测试」** / **「给我待测清单」** 时，若 `docs/tracker-entries/` 除 `readme.md` / `_*.md` 外仍有碎片 → **先**开独立 `docs/*` PR 跑 `npm run tracker:assemble` 并提交机器块，**再**出清单。禁止在功能 PR 里拼装。  
-2. **P1 · 满 5 个必拼**：待拼碎片文件数 **≥ 5**（不含 readme / `_`）→ 不等批量测；口令 **「请安排下班前的 Git 同步」** 或下一次文档会话必须另开拼装 PR。  
-3. **不做**每周五定时（Agent 无 cron）。`docs:check` / `tracker:check` **不因未拼装而红**；`tracker:check` 在 ≥5 时 **WARN**（仍绿）。  
-4. 本轮拼装**只写入机器块、不删除碎片文件**；目录瘦身（consume-on-assemble）另议。  
+2. **P1 · 下班前必拼（2026-09-01）**：口令 **「请安排下班前的 Git 同步」**（及同等下班前 / 批量 Git 同步）时，若 `docs/tracker-entries/` 除 `readme.md` / `_*.md` 外仍有**任意**碎片（≥1）→ **须**另开独立 `docs/*` PR 跑 `npm run tracker:assemble` 并提交机器块（可与 SCENARIO_TESTS 增量核对同旁支；**禁止**在功能 PR 里拼装）。汇总须写明折入了多少条碎片。  
+3. **P2 · 满 5 个早警**：待拼碎片文件数 **≥ 5**（不含 readme / `_`）→ `tracker:check` **WARN**（仍绿）；提示已错过当日下班前拼装，下一次文档会话须优先开拼装 PR。  
+4. **不做**每周五定时（Agent 无 cron）。`docs:check` / `tracker:check` **不因未拼装而红**。  
+5. 本轮拼装**只写入机器块、不删除碎片文件**；目录瘦身（consume-on-assemble）另议。  
 
 **PROCESS.md / RULES_INDEX.md 为何本轮不拆**：`PROCESS`「当前进度速览」是叙事 bullet、常改同一段时间戳，碎片能减冲突但排序/措辞要另定规则；`RULES_INDEX` 主题表已是 `rules:doc-sync` 机器块，日常冲突主要在文末修订记录（新增规则才写，远少于 TRACKER 插行）。试点先验证 TRACKER 新增行这条最高频路径。
 
