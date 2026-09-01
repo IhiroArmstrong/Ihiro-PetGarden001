@@ -6,7 +6,7 @@ import { DESKTOP_CHECKOUT_ORIGIN } from "../lib/checkoutReturnUrls.ts";
  *
  * Stripe accepts https success URLs; macOS often fails when Stripe redirects
  * directly to focus-tiger://. This bridge page immediately deep-links into the
- * Electron shell (with a manual link fallback).
+ * Electron shell (with a manual link fallback). It is not the product app.
  */
 export function handleDesktopCheckoutReturn(request: Request): Response {
 	const url = new URL(request.url);
@@ -19,6 +19,7 @@ export function handleDesktopCheckoutReturn(request: Request): Response {
 	const qs = params.toString();
 	const deepLink = `${DESKTOP_CHECKOUT_ORIGIN}/?${qs}`;
 	const safeHref = deepLink.replace(/"/g, "&quot;");
+	const jsHref = JSON.stringify(deepLink);
 
 	const html = `<!DOCTYPE html>
 <html lang="en">
@@ -33,8 +34,10 @@ export function handleDesktopCheckoutReturn(request: Request): Response {
   </style>
 </head>
 <body>
-  <p>Opening Focus Tiger…</p>
-  <p><a href="${safeHref}">Tap here if the app does not open</a></p>
+  <p>Returning to the Focus Tiger desktop app…</p>
+  <p>You can close this browser tab.</p>
+  <p><a href="${safeHref}">Open Focus Tiger</a></p>
+  <script>window.location.replace(${jsHref});</script>
 </body>
 </html>`;
 

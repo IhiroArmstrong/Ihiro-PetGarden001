@@ -13,7 +13,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
-import { markDesktopCheckoutPending } from '../core/desktopCheckoutPending.js';
+import { noteDesktopCheckoutOpened } from '../core/desktopCheckoutPending.js';
 import { TIP_JAR_PRICE_USD } from '../core/tipJarGate.js';
 import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
 import { FOCUS_TIGER_PRO_PRICE_DISPLAY } from '../core/proCheckout.js';
@@ -550,10 +550,10 @@ export class SupportYinModalUI {
         : null;
     if (typeof url === 'string' && url) {
       getMonetizationFunnelStore().checkoutStart(kind, 'support-modal');
-      markDesktopCheckoutPending(
-        kind,
-        typeof sessionId === 'string' ? sessionId : ''
-      );
+      noteDesktopCheckoutOpened(kind, {
+        url,
+        sessionId: typeof sessionId === 'string' ? sessionId : ''
+      });
       await openCheckoutUrl(url);
       return;
     }

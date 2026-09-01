@@ -22,6 +22,7 @@ import {
 } from '../core/tipJarGate.js';
 import { openCheckoutUrl } from '../core/desktopShell.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
+import { noteDesktopCheckoutOpened } from '../core/desktopCheckoutPending.js';
 import {
   getTipKindnessBadgeById,
   tipKindnessBadgeSrc
@@ -424,6 +425,7 @@ export class TipJarUI {
           : '';
       if (!url) throw new Error('missing_checkout_url');
       getMonetizationFunnelStore().checkoutStart('tea', 'tip-jar');
+      noteDesktopCheckoutOpened('tea', data);
       const mode = await openCheckoutUrl(url);
       if (mode === 'external') {
         this._busy = false;

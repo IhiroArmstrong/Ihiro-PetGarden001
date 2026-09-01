@@ -7,7 +7,7 @@ import type { Env } from "../types";
 /**
  * POST /api/create-tip-checkout-session
  * Body: optional { email?: string }
- * Returns: { url: string }
+ * Returns: { url: string, sessionId?: string }
  */
 export async function handleCreateTipCheckoutSession(
 	request: Request,
@@ -52,7 +52,7 @@ export async function handleCreateTipCheckoutSession(
 			cancelUrl: returns.cancelUrl,
 			customerEmail,
 		});
-		return json({ url: session.url });
+		return json({ url: session.url, sessionId: session.id });
 	} catch (err) {
 		const detail = err instanceof Error ? err.message : "checkout_failed";
 		return errorJson(502, "stripe_error", detail);
