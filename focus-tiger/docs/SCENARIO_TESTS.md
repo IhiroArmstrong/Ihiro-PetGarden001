@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-01（**E′ 规则预筛进 AE L2** sit next / 软边界 / 窄 OTHER · **1C lab 本旁支** · 场景 **AL** Reflection Companion validation；**Gate 0.2 #472 关单**；AG Slice 0 含 `total sitting time` → `practice_facts`；What Yin remembers 开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8；AG 1e Forget 须先有抽取条目）。**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS` → `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`（Confide / Privacy / Idle 玻璃卡 / Support 进睡）；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals（Slice 0–1 / 2 / 3）· **AG** Yin Personal Memory（Slice 0–1e）· **AH** Overlay slot 首卡队列（PR2）· **AI** 练习备份恢复对齐热力图/提醒 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP 探针（#438）；**AD** 仍有效。Presence freeText 90 天剥离与 Reflection 对齐（#440 · 单源 `freeTextRetentionCutoffMs`）。Newsletter Resend（#444）**待合**——AJ 步骤标待核对。AB 托盘 + SB-18；长周期 QA `?qaSeedStreak=` 与莲花池 `?qaLotusBlooms=` **分 key**。AA Idle PiP 仍实验。**R** 仍建议。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-09-02（**Electron 结账回本壳 confirm**，不把 Vite `5173` 当产品成功页；Safari 存储仍不自动同步。**E′ 规则预筛进 AE L2** sit next / 软边界 / 窄 OTHER · 场景 **AL** Reflection Companion validation；**Gate 0.2 #472 关单**；AG Slice 0 含 `total sitting time` → `practice_facts`；What Yin remembers 开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8。**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS`；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals · **AG** Yin Personal Memory · **AH** Overlay slot · **AI** 练习备份 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP；**AD** 仍有效。AB 托盘 + SB-18。逐功能仍以 `TEST_TRACKER` 为准）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -348,7 +348,7 @@
 > **单元**：`SupportYinModalUI.test.js` · `practiceBadgeAward` / `tipKindnessBadges` / `sanctuaryBadges` · `tipJarGate` / `sanctuaryEntitlementGate` 零耦合。  
 > **DOM**：无完整 Stripe 真付 e2e；菜单开卡见 `wide-idle-more-menu` 等零星断言。  
 > **仍须人工**：Test 卡金额（Tea **US$4.99** / Sanctuary **US$89.99** / Membership **US$6.99/月**，卡面 `TIP_JAR_PRICE_USD` / `MEMBERSHIP_PRICE_DISPLAY`；Checkout 应对齐）；付完回跳；徽章公式与阿寅旁优先 Sanctuary 章；Focusing 时 FAB 隐藏。三卡头图暖纸底。  
-> **Electron 步骤 A**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走；失败复用现有卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC`），不为壳另做 UI。付完回 App 走 Restore / OTP。Web 仍可 `location.assign`。  
+> **Electron**：壳内 Checkout **0–1 秒内**系统浏览器打开 Stripe（`openExternal`），Electron 窗不得被导航走。付完后 Stripe 最多落到 Worker 桥页（「Returning to the desktop app」），**不得**把 Vite `http://127.0.0.1:5173/?product=1` 当成功页写进 Safari。本壳用 session id **自行 confirm** 并淡化 Support 卡（不必再走 Restore / OTP）。跨浏览器（Safari↔Electron）存储仍隔离。失败复用现有卡面错误文案。Web 仍可 `location.assign`。  
 > **未做 / 勿当缺口报**：多档 tip。**场景化请茶** / **意愿漏斗**已接线（TRACKER 对应行）。Ambient 深库分层见 TRACKER「Ambient · 深度曲 entitlement」（免费 5 / 其余 B）。**Focus Tiger Pro / AI Companion Add-on**：Stripe 已建、Checkout 未接。**L2 短生成**仅 Electron 宽屏 fallback（内部测）；**当前场景 Q 验收仍只测三卡**。Safari 测的是 Web 壳/付款，不是 llama。
 
 ### Q1 · Support Modal（统一入口）

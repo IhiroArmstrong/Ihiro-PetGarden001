@@ -225,7 +225,10 @@ import {
   clearDesktopCheckoutPending,
   readDesktopCheckoutPending
 } from './core/desktopCheckoutPending.js';
-import { resumePendingDesktopCheckout } from './core/desktopCheckoutConfirm.js';
+import {
+  paymentThanksKindFromDesktopPending,
+  resumePendingDesktopCheckout
+} from './core/desktopCheckoutConfirm.js';
 import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
@@ -1369,14 +1372,14 @@ async function init() {
         search: location.search
       });
       if (outcome === 'success' && pendingKind) {
+        const thanksKind = paymentThanksKindFromDesktopPending(pendingKind);
         monetizationFunnelStore.checkoutComplete(
-          pendingKind === 'companion-addon' ? 'companion-addon' : 'pro',
+          thanksKind === 'tip' ? 'tea' : thanksKind || 'pro',
           'return'
         );
-        applyPaymentThanksSprite(
-          pendingKind === 'companion-addon' ? 'companion-addon' : 'pro'
-        );
+        if (thanksKind) applyPaymentThanksSprite(thanksKind);
         syncEntitlementDependentIdleChrome();
+        void getDesktopShellBridge()?.show?.();
       }
     } finally {
       resumeDesktopCheckoutInFlight = false;
@@ -1395,17 +1398,11 @@ async function init() {
     checkoutShell?.onShellVisibility?.((payload) => {
       if (payload?.hidden === false) tickDesktopCheckoutResume();
     });
-    if (readDesktopCheckoutPending()) {
+    tickDesktopCheckoutResume();
+    window.setInterval(() => {
+      if (!readDesktopCheckoutPending()) return;
       tickDesktopCheckoutResume();
-      const checkoutResumePoll = window.setInterval(() => {
-        if (!readDesktopCheckoutPending()) {
-          window.clearInterval(checkoutResumePoll);
-          return;
-        }
-        if (document.visibilityState !== 'visible') return;
-        tickDesktopCheckoutResume();
-      }, 2500);
-    }
+    }, 2500);
   }
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   applyQaPracticeSeedFromSearch({

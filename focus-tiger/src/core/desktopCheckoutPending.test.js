@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   clearDesktopCheckoutPending,
   markDesktopCheckoutPending,
+  noteDesktopCheckoutOpened,
   readDesktopCheckoutPending
 } from './desktopCheckoutPending.js';
 
@@ -50,11 +51,17 @@ describe('desktopCheckoutPending', () => {
     };
     globalThis.desktopShell = { isDesktop: true };
     try {
-      markDesktopCheckoutPending('pro', () => new Date('2026-08-30T12:00:00Z'));
+      markDesktopCheckoutPending('pro', '', () => new Date('2026-08-30T12:00:00Z'));
       assert.equal(readDesktopCheckoutPending(() => new Date('2026-08-30T12:05:00Z'))?.kind, 'pro');
       assert.ok(readDesktopCheckoutPending(() => new Date('2026-08-30T12:05:00Z'))?.startedAt);
       clearDesktopCheckoutPending();
       assert.equal(readDesktopCheckoutPending(), null);
+      noteDesktopCheckoutOpened('membership', {
+        sessionId: 'cs_test_mem_1',
+        url: 'https://checkout.stripe.com/c/pay/cs_test_ignored'
+      });
+      assert.equal(readDesktopCheckoutPending()?.kind, 'membership');
+      assert.equal(readDesktopCheckoutPending()?.sessionId, 'cs_test_mem_1');
     } finally {
       delete globalThis.desktopShell;
     }

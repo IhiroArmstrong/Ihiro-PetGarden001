@@ -13,6 +13,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { getCloudApiBaseUrl, postCloudJson, openCheckoutUrl } from '../core/cloudApiClient.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
+import { noteDesktopCheckoutOpened } from '../core/desktopCheckoutPending.js';
 import {
   isMembershipActiveLocally,
   markMembershipFromPayment,
@@ -345,6 +346,7 @@ export class MembershipUnlockUI {
           'membership',
           'membership-card'
         );
+        noteDesktopCheckoutOpened('membership', res);
         await openCheckoutUrl(url);
         return;
       }
