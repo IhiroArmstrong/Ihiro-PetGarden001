@@ -31,8 +31,9 @@
 权威：`TEST_TRACKER.md`「拼装触发」。功能 PR **禁止**拼装。
 
 1. **P0**：口令「批量人工测试」/「给我待测清单」前，若本目录除 readme / `_` 外仍有碎片 → 先独立 `docs/*` PR 跑 `tracker:assemble`，再出清单。  
-2. **P1**：待拼碎片 **≥ 5** → 下班前 Git 同步或下一次文档会话必须另开拼装 PR。  
-3. 不做每周五定时。`tracker:check` 在 ≥5 时 WARN，不红。本轮拼装不删碎片文件。
+2. **P1**：口令「请安排下班前的 Git 同步」时，若本目录除 readme / `_` 外仍有**任意**碎片（≥1）→ 须另开独立 `docs/*` PR 跑 `tracker:assemble` 并提交机器块。  
+3. **P2**：待拼碎片 **≥ 5** → `tracker:check` WARN（仍绿）；提示已错过当日下班前拼装。  
+4. 不做每周五定时。本轮拼装不删碎片文件。
 
 ```bash
 cd focus-tiger && npm run tracker:check      # 校验碎片（docs:check 已包含）
