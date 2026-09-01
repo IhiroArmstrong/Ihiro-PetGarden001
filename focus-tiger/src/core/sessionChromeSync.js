@@ -84,6 +84,8 @@ export function isHonestyUiBusy(phase) {
  * @property {() => void} syncInAppReminderBanner
  * @property {() => boolean} [getPostChoosePending]
  *   Choose→nod gap before Companion expands (Quick-only latch).
+ * @property {() => boolean} [isGrowthCardOverlayActive]
+ *   Journey Log / Collections / growth glass cards — suppress home chrome.
  * @property {(enabled: boolean) => void} [setFocusButtonEnabled]
  *   Sit/Rise `#btn-focus` 禁用态（completionPending / 微仪式）。
  */
@@ -110,6 +112,7 @@ export function createSessionChromeSync(deps) {
     sessionUiGate,
     syncInAppReminderBanner,
     getPostChoosePending = () => false,
+    isGrowthCardOverlayActive = () => false,
     setFocusButtonEnabled
   } = deps;
 
@@ -120,7 +123,8 @@ export function createSessionChromeSync(deps) {
       () => getMicroRitualUI()?.isOpen() === true,
       () => getRitualFlowUI()?.isOpen() === true,
       () => getFocusDurationPicker()?.isOpen() === true,
-      () => getMustardSeedSealUI()?.isOpen?.() === true
+      () => getMustardSeedSealUI()?.isOpen?.() === true,
+      () => isGrowthCardOverlayActive()
     ];
   }
 
