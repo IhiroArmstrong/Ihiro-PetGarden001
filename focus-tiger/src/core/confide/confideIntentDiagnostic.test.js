@@ -22,6 +22,12 @@ import {
   scoreYinIntentHard5Gates
 } from './confideIntentDiagnosticPhase2b.js';
 import {
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2,
+  YIN_INTENT_TIER2_GATES,
+  findYinIntentThreeGramHits,
+  scoreYinIntentTier2Gates
+} from './confideIntentDiagnosticTier2.js';
+import {
   YIN_INTENT_ARCH,
   YIN_INTENT_LABEL,
   YIN_INTENT_LABELS,
@@ -259,5 +265,59 @@ describe('yin intent diagnostic (lab)', () => {
     });
     assert.equal(compared.cWins, true);
     assert.equal(compared.architecturePass, true);
+  });
+
+  it('freezes Tier 2 v3.1 twelve rows and 3/4 gates', () => {
+    assert.equal(YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2.length, 12);
+    const byBucket = (bucket) =>
+      YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2.filter((row) => row.scoreBucket === bucket);
+    assert.equal(byBucket('companion').length, 4);
+    assert.equal(byBucket('other_query').length, 4);
+    assert.equal(byBucket('soft_boundary').length, 4);
+    const a3 = YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2.find((row) => row.goldId === 'T2-A3');
+    assert.match(a3.text, /shouldn't have only me in it/);
+    assert.equal(a3.text.includes("I'd rather not"), false);
+    const c4 = YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2.find((row) => row.goldId === 'T2-C4');
+    assert.match(c4.text, /doesn't get a reply/);
+    const mk = (scoreBucket, extra) => ({
+      scoreBucket,
+      primaryHit: true,
+      companionFlattenedToBegin: false,
+      otherFlattenedToEmotion: false,
+      ...extra
+    });
+    const rows = [
+      ...Array.from({ length: 4 }, () => mk('companion')),
+      ...Array.from({ length: 4 }, () => mk('soft_boundary')),
+      ...Array.from({ length: 4 }, () => mk('other_query'))
+    ];
+    assert.equal(scoreYinIntentTier2Gates(rows).passTier2, true);
+    rows[0].primaryHit = false;
+    assert.equal(scoreYinIntentTier2Gates(rows).passCompanion, true);
+    rows[1].primaryHit = false;
+    assert.equal(scoreYinIntentTier2Gates(rows).passCompanion, false);
+    assert.equal(YIN_INTENT_TIER2_GATES.companionMinHits, 3);
+  });
+
+  it('keeps Tier 2 L1 three-grams off 2b 53 and Phase 1/2', () => {
+    const twoB = YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B.map((row) => row.text);
+    const prior = [
+      ...YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE1,
+      ...YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2
+    ].map((row) => row.text);
+    for (const fixture of YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2) {
+      const vs2b = findYinIntentThreeGramHits(fixture.text, twoB);
+      assert.equal(
+        vs2b.length,
+        0,
+        `${fixture.goldId} 2b 3-gram ${vs2b[0]?.gram || ''}`
+      );
+      const vsPrior = findYinIntentThreeGramHits(fixture.text, prior);
+      assert.equal(
+        vsPrior.length,
+        0,
+        `${fixture.goldId} phase1/2 3-gram ${vsPrior[0]?.gram || ''}`
+      );
+    }
   });
 });
