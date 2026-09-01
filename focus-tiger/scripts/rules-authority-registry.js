@@ -935,13 +935,15 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'branch-freshness',
-    title: 'Agent 邀测 / 声称 develop 行为前须 check:branch-freshness',
+    title: 'Agent 邀测 / 声称 develop 行为 / 判断实现状态前须 check:branch-freshness',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',
-    ssotSection: '分支新鲜度（强制 · 验收 / 声称 develop 行为之前）',
+    ssotSection: '分支新鲜度（强制 · 任何「代码现状」判断之前）',
     ssotMustContain: [
       /check:branch-freshness/,
       /behind origin\/develop/,
-      /behind > 0/
+      /behind > 0/,
+      /地面真相优先级/,
+      /随口提问/
     ],
     topicSignals: [
       /check:branch-freshness/,

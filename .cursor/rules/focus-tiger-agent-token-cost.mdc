@@ -11,6 +11,20 @@ alwaysApply: false
 
 索引：`RULES_INDEX.md` → `agent-token-cost`（本地 e2e 硬顶另见 `e2e-local-budget`）。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask + **`gate-local-heavy-e2e` deny**；**IDE Browser MCP deny** 见 `browser-energy`）。
 
+## 验证类 vs 探索类（强制 · 勿把省 token 扩到地面真相）
+
+控 token **只约束探索类 / 重成本调用**。**不约束**验证类地面真相检查。两条规则不互相拉扯：本文件省 token；实现状态以 git 为准见 `focus-tiger-regression-lock.mdc`「分支新鲜度」「地面真相优先级」（`RULES_INDEX` → `branch-freshness`）。
+
+**验证类（几乎零成本；怀疑分支或实现状态时无条件执行，不受下方第 5 / 7 / 11 条「少工具调用」约束）**：
+
+- `git status`、`git branch`、`git log --oneline`（可限制条数，如 `-5` / `-20`）
+- `git fetch origin develop` 以及 `npm run check:branch-freshness`（或等价的 behind 计数）
+- `git branch --contains <hash>` / `git merge-base --is-ancestor`
+
+这类命令与读取大源码、跑全量测试、开子 Agent **不是一个量级**。**禁止**为「少一次工具调用 / 省 token」跳过它们。漏做会把过期 Brief 当成 git 事实，比多一次 `git log` 贵得多。
+
+**探索类（须精简，见下方第 1–12 条）**：大范围 Grep/Glob、一次打开 ≥5 个文件、整文件读大源码、全量 e2e、子 Agent、轮询长 CI。源码片段读见 `source-read-granularity`。
+
 ## 强制（本会话）
 
 1. **禁止 Task / 子 Agent**（含 `explore` / `generalPurpose` / `shell` / bugbot / security-review 等）。默认在**父 Agent**内直接完成。
@@ -22,7 +36,7 @@ alwaysApply: false
    - 结果另开短回合查摘要；不要在本回合守 30–120 分钟。
 4. **禁止擅自触发全量 e2e**（`gh workflow run` 指向 `focus-tiger-e2e-full` / `test:e2e` 全量）。须用户当回合明确批准（如「批准触发 full e2e」）。
    - 硬闸：`beforeShellExecution` → ask（`gate-full-e2e-dispatch.sh`）。
-5. **工具轮数自觉上限**：单任务若已连续大量工具调用仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转。
+5. **工具轮数自觉上限**（**仅探索类 / 试错空转**）：单任务若已连续大量工具调用仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转。**本条不覆盖**上一节验证类 git / freshness 检查——那些几乎零成本，该跑就跑。
 6. **CI 红 / 合入受阻 / 多文件冲突 · 本地验证预算（强制）**
    适用：PR checks 失败、merge 冲突、或预计 **≥3 文件** / **多轮试错** 才能解的改动。
    - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。
@@ -45,7 +59,7 @@ alwaysApply: false
    - 若任务本质是机械性流程（分支切换、commit、push、开 PR、QA 树同步、状态确认等），不涉及复杂逻辑推理，在任务开始前提示用户：「这类任务用 Composer 2.5 会更省成本，是否要切换？」
    - 不得擅自假设用户已同意切换模型；模型切换权始终在用户手中。
 11. **机械性操作的一次性批量规划**
-   - 对于 Git/PR/QA 同步这类多步骤机械操作，执行前先列出完整步骤清单（占坑锁、stash、切分支、commit、push、开 PR 等），一次性说明后再连续执行，不要每完成一步就停下来单独确认一次，避免把一个任务拆成过多工具调用轮次（每多一轮，规则前缀就多计一次 token）。
+   - 对于 Git/PR/QA 同步这类多步骤机械操作，执行前先列出完整步骤清单（占坑锁、stash、切分支、commit、push、开 PR 等），一次性说明后再连续执行，不要每完成一步就停下来单独确认一次，避免把一个任务拆成过多**探索/确认**轮次（每多一轮，规则前缀就多计一次 token）。**不是**让你省略清单里的 `git status` / `git log` / freshness：那些验证类命令仍须执行，只是不要拆成「每条命令停下来问一次」。
    - 仅当某一步存在风险判断（如可能冲突、可能覆盖他人改动）时，才单独停下来问用户。
 
 12. **测试输出卫生（强制 · 与 `focus-tiger-core.mdc` 一致）**

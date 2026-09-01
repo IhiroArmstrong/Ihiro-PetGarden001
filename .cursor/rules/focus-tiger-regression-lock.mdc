@@ -1,11 +1,11 @@
 ---
-description: 回归锁·完工门禁·§7·Git 同步——bug/交互修复收尾、commit/push、声称已修复前须 Read 全文
+description: 回归锁·完工门禁·§7·Git 同步——bug/交互修复收尾、commit/push、声称已修复、判断某功能是否已实现/已开工/已合入前须 Read 全文
 alwaysApply: false
 ---
 
 # Focus Tiger · 回归锁（Regression Lock · 按需层）
 
-> **加载时机**：bug/交互修复、任务收尾、commit/push、声称「已修复」、worktree 占坑、邀测/branch-freshness、合 main 前。常驻 Git 硬闸见 `focus-tiger-core.mdc`。
+> **加载时机**：bug/交互修复、任务收尾、commit/push、声称「已修复」、worktree 占坑、邀测/branch-freshness、**回答某功能是否已实现/已开工/已合入（含随口提问）**、合 main 前。常驻 Git 硬闸见 `focus-tiger-core.mdc`。
 
 > **叙事全文（原则/规范/指引/注意事项）**：`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`  
 > 本文件为 **强制门禁**；解释「为什么、怎么做」以该文档为准，后续完善也写进该文档。
@@ -132,9 +132,10 @@ alwaysApply: false
 4. **建议跑** `cd focus-tiger && npm run check:worktree-occupancy`（只读；exit 2 = 非陈旧外锁 / 不明脏树 / 主仓 develop → 须停手问用户）。  
 5. **清锁**：只删自己的锁；若保留锁文件须先标 `occupancy: "releasable"`。强制清别人的 **非陈旧** `active`/未知锁须用户原话含「我确认要强制清除锁」（或 `I confirm force-clearing the lock`）；陈旧外锁可自动清但须 `.ft-session-lock.history.log` 留痕。
 
-## 分支新鲜度（强制 · 验收 / 声称 develop 行为之前）
+## 分支新鲜度（强制 · 任何「代码现状」判断之前）
 
-> **索引**：`RULES_INDEX.md` → `branch-freshness`。人工验收基线 SSOT：`TEST_TRACKER.md`「人工验收唯一基线」（`qa-develop-tip`）。
+> **索引**：`RULES_INDEX.md` → `branch-freshness`。人工验收基线 SSOT：`TEST_TRACKER.md`「人工验收唯一基线」（`qa-develop-tip`）。  
+> **与省 token**：`git status` / `git log` / `check:branch-freshness` 属**验证类**地面真相检查，**不**受 `agent-token-cost`「减少工具调用」约束（见该文件「验证类 vs 探索类」）。本条与「地面真相优先级」同文件并列，不互相豁免。
 
 凡下列任一情形，**之前必须**先执行（脚本会自行 `git fetch origin develop`；fetch 失败则 exit 1，不得假装已检查）：
 
@@ -142,19 +143,32 @@ alwaysApply: false
 cd focus-tiger && npm run check:branch-freshness
 ```
 
-触发情形：
+触发情形（**不限正式验收话术**；随口提问同等强制）：
 
 1. **起开发服务器给人验收**（`npm run dev` / Vite / 预览 URL 交给用户测）  
 2. **声称**已验证 / 已复现 / 代表 **`develop` 现状**的行为或验收结论  
-3. **正式邀测**（请用户按 TEST_TRACKER 做关单级人工验收）
+3. **正式邀测**（请用户按 TEST_TRACKER 做关单级人工验收）  
+4. **任何会被当作事实依据的实现状态判断**：回答某功能 / 某代码 **是否已实现、已开工、已合入、是否已在 develop 上**——不论用户以关单、验收、还是随口提问提出。只要回复会陈述「代码现状是什么」，就必须先跑本检查（对比当前分支与 `origin/develop` 是否落后关键 commit）。
 
 强制要求：
 
 - 汇报里**必须写出**脚本给出的 **`behind origin/develop` 落后数**（及当前分支名）。  
-- **`behind > 0`**：**禁止**用本次结果代表 develop 现状；**禁止**邀用户做关单级验收；只可写诚实进度（例：「本分支落后 origin/develop N commits，请先合入/变基后再验」）。  
+- 回答第 4 类问题时，回复还须显式带上 **当前所在分支名** 与 **最近相关 commit hash**（或 `git log` / `git branch --contains` 的简短依据），让人一眼能判断结论基于哪条分支状态。  
+- **`behind > 0`**：**禁止**用本次结果代表 develop 现状；**禁止**邀用户做关单级验收。对第 4 类问题：只可写诚实口径（例：「本分支落后 origin/develop N commits；以下结论仅针对本分支 HEAD，不能当成 develop 事实」）；若 `origin/develop` 已含相关 commit，须按 fetch 后的 git 事实陈述，**禁止**把落后分支上的过期 Brief 措辞当成「未开工 / 未实现」。  
 - **`behind === 0`** 且邀正式验收时：验收 hash 仍须等于 **`origin/develop` tip**（见 `TEST_TRACKER`）；feature 自检不等于正式验收。
 
 未跑脚本、未报落后数 → 视同未完成新鲜度前置。
+
+## 地面真相优先级（强制 · git 事实 > 文档措辞）
+
+> 与上节「分支新鲜度」配套；判断实现状态时两条都要满足。索引仍走 `branch-freshness`（不另开主题）。
+
+判断「某功能是否已实现 / 已开工 / 已合入」时：
+
+1. **Brief / 计划文档 / 任务清单 / 口令说明等文字只反映意图**，永远不能单独作为「是否已完成」的证据。  
+2. **唯一依据**是 `git log` / `git diff` / `git branch --contains` / `npm run check:branch-freshness` 等命令返回的结果（须对照 `origin/develop`，勿只看本分支过期树）。  
+3. 若文档措辞与 git 事实冲突、或时间上可能不同步（例：Brief 仍写「须口令开工」，但相关 commit 已合入 develop）：**以 git 事实为准**，并在回复中写明发现了文档滞后。  
+4. **禁止**用「文档还这么写」跳过 git 检查；也**禁止**把 `agent-token-cost` 的省 token / 少工具调用理解成可以跳过本条（验证类 git 命令几乎零成本，见该文件「验证类 vs 探索类」）。
 
 ## 标「已通过」门禁（强制 · 防止记入≠验证到位）
 
@@ -221,7 +235,7 @@ cd focus-tiger && npm run check:open-blockers -- --release-gate
   - **待你知道**：…（commit、PR URL、待人工测项、未覆盖路径等；否则写「无」）
   - 若本回合起过 Vite / Playwright → **必须**含进程收尾提醒（见 `RULES_INDEX` → `browser-energy`）
   - 若本回合为 Cloud 或建议启用 Cloud → **必须**含「独立会话」提醒句（同上）
-  - 若本回合起过给人验收的预览、或正式邀测 / 声称 develop 行为 → **必须**含 `check:branch-freshness` 的落后数（见上节「分支新鲜度」）
+  - 若本回合起过给人验收的预览、正式邀测 / 声称 develop 行为、或回答了「是否已实现 / 已开工 / 已合入」→ **必须**含 `check:branch-freshness` 的落后数（见「分支新鲜度」）；状态判断类还须含当前分支名 + 最近相关 commit hash（或简短 git 依据）
   - 若本回合有 PR **已合入 `develop`** → **必须**跑 `npm run sync:qa-develop` 并写清 ① 是否须重启 QA Vite ② 一句合并变化（见 `RULES_INDEX` → `qa-develop-worktree`）
   - **会话明显结束**（任务收尾 / 用户明确停止 / 本工作线已完）→ **必须**写明 `.ft-session-lock` 实际状态：`已删除` 或 `已标 releasable`（见 `RULES_INDEX` → `git-worktree-occupancy`）；**禁止**默认同条提议 `worktree remove`（拆盘口令见 `git-worktree-hygiene`）
   - 用户口令「请清理闲置 worktree」→ 跑 `npm run check:worktree-hygiene`，把候选清单贴进「待你决定」；未点名 path 前禁止 remove
