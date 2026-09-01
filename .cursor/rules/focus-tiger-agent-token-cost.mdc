@@ -50,11 +50,11 @@ alwaysApply: false
    - 结果另开短回合查摘要；不要在本回合守 30–120 分钟。
 4. **禁止擅自触发全量 e2e**（`gh workflow run` 指向 `focus-tiger-e2e-full` / `test:e2e` 全量）。须用户当回合明确批准（如「批准触发 full e2e」）。
    - 硬闸：`beforeShellExecution` → ask（`gate-full-e2e-dispatch.sh`）。
-5. **工具轮数自觉上限**（**仅探索类 / 试错空转**）：单任务若已连续大量工具调用仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转。**本条不覆盖**上一节验证类 git / freshness 检查——那些几乎零成本，该跑就跑。
+5. **工具轮数自觉上限**（**仅探索类 / 试错空转**）：单任务若已连续大量工具调用仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转。**本条不覆盖**上一节验证类 git / freshness 检查——那些几乎零成本，该跑就跑。CI/smoke 失败且用户未附日志 → 先 Read `focus-tiger-ci-failure-triage.mdc`（`ci-failure-triage`）；其 Step C **5 轮硬顶**在本场景优先于本条笼统上限。
 6. **CI 红 / 合入受阻 / 多文件冲突 · 本地验证预算（强制）**
    适用：PR checks 失败、merge 冲突、或预计 **≥3 文件** / **多轮试错** 才能解的改动。
    - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。
-   - **先**给「冲突 / 失败分析摘要」（哪些文件、什么类型：语法 / 契约 / e2e 选择器 / 真逻辑），**不要**立刻开改。
+   - **先**给「冲突 / 失败分析摘要」（哪些文件、什么类型：语法 / 契约 / e2e 选择器 / 真逻辑），**不要**立刻开改。摘要**必须**先完成 `ci-failure-triage` Step A 的日志提取（见 `focus-tiger-ci-failure-triage.mdc`）；**禁止**无 CI 日志信号的臆测摘要。
    - **问**用户是否要新开 worktree/分支处理（避免试错脏了其它任务）。
    - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或 **`test:e2e:changed --` 单个 spec**）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止多文件 changed / 全量 / 直调长列表（脚本+hook 硬拦；`RUN_E2E_LOCAL=true` 逃生口会打警告）。
 7. **上下文范围控制（防止大规模误读）**

@@ -44,6 +44,7 @@ alwaysApply: true
 | 判断某功能是否已实现/已开工/已合入（含随口提问） | `focus-tiger-regression-lock.mdc` |
 | 起 Vite·预览·Safari 验收·IDE Browser | `focus-tiger-browser-energy.mdc` |
 | 跑测试·e2e·CI·控 token | `testing-strategy.mdc` + `focus-tiger-agent-token-cost.mdc` |
+| CI/smoke/PR checks 失败且未附失败日志 | `focus-tiger-ci-failure-triage.mdc`（`RULES_INDEX` → `ci-failure-triage`） |
 | 关单 QA·5173·PR 合 develop 后 | `focus-tiger-qa-develop-worktree.mdc`（`WORKFLOW.md` · `qa-develop-worktree`） |
 | 口令「生成交接」·阶段性收尾 | `focus-tiger-session-handoff.mdc` |
 | 记录未闭环 bug/根因扇出·「核对问题清单」 | `focus-tiger-issue-ledger.mdc` |
