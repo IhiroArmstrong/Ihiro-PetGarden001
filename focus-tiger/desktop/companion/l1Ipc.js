@@ -19,6 +19,10 @@ import {
   setYinPersonalMemoryConsent,
   suppressYinPersonalMemoryPostRecall
 } from './yinPersonalMemoryPersistence.js';
+import {
+  readLocalBackupCompanionFiles,
+  writeLocalBackupCompanionFiles
+} from './localBackupCompanionFiles.js';
 
 /**
  * @param {{
@@ -89,6 +93,16 @@ export function attachCompanionL1Ipc(deps) {
     forgetYinPersonalMemoryEntry(
       deps.app.getPath('userData'),
       typeof memoryId === 'string' ? memoryId : ''
+    )
+  );
+
+  deps.ipcMain.handle('desktop:local-backup-read-companion-files', () =>
+    readLocalBackupCompanionFiles(deps.app.getPath('userData'))
+  );
+  deps.ipcMain.handle('desktop:local-backup-write-companion-files', (_event, bundle) =>
+    writeLocalBackupCompanionFiles(
+      deps.app.getPath('userData'),
+      bundle && typeof bundle === 'object' ? bundle : {}
     )
   );
 

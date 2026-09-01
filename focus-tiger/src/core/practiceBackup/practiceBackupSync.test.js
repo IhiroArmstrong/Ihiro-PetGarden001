@@ -15,7 +15,10 @@ import {
   PRACTICE_BACKUP_DEBOUNCE_MS
 } from './practiceBackupSync.js';
 import { readPracticeBackupOptIn } from './practiceBackupOptIn.js';
-import { PRACTICE_BACKUP_STORE_KEYS } from './practiceBackupSnapshot.js';
+import {
+  PRACTICE_BACKUP_STORE_KEYS,
+  PRACTICE_BACKUP_V1_STORE_KEYS
+} from './practiceBackupSnapshot.js';
 import {
   setPracticeBackupCloudEnabledForTests,
   practiceBackupCloudEnabled
@@ -177,7 +180,7 @@ describe('practiceBackupSync', () => {
       schemaVersion: 1,
       savedAt: '2026-08-12T00:00:00.000Z',
       stores: Object.fromEntries(
-        PRACTICE_BACKUP_STORE_KEYS.map((k) => {
+        PRACTICE_BACKUP_V1_STORE_KEYS.map((k) => {
           if (k === 'focus-tiger.journey-log.v1') {
             return [
               k,

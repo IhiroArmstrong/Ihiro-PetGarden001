@@ -8,7 +8,10 @@ import { describe, it } from 'node:test';
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
 import { applyPracticeBackupSnapshot } from './practiceBackupSync.js';
 import { DailyCompletionStore } from '../DailyCompletionStore.js';
-import { PRACTICE_BACKUP_STORE_KEYS } from './practiceBackupSnapshot.js';
+import {
+  PRACTICE_BACKUP_STORE_KEYS,
+  PRACTICE_BACKUP_V1_STORE_KEYS
+} from './practiceBackupSnapshot.js';
 import { getLocalDateKey } from '../../utils/localDate.js';
 
 function memStorage(initial = {}) {
@@ -112,7 +115,7 @@ describe('applyPracticeBackupSnapshot reconcile hook', () => {
       schemaVersion: 1,
       savedAt: FIXED_NOW.toISOString(),
       stores: Object.fromEntries(
-        PRACTICE_BACKUP_STORE_KEYS.map((k) => [
+        PRACTICE_BACKUP_V1_STORE_KEYS.map((k) => [
           k,
           k === 'focus-tiger.practice-days.v1'
             ? { days: [{ date: dateKey, totalMinutes: 22 }] }

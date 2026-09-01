@@ -240,12 +240,14 @@ export class LocalPracticeDataUI {
   }
 
   _onExport() {
-    try {
-      downloadPracticeExport(this._storage);
-      this._showStatus(t('LOCAL_DATA_EXPORT_DONE'));
-    } catch {
-      this._showStatus(t('LOCAL_DATA_EXPORT_ERR'), 'error');
-    }
+    void (async () => {
+      try {
+        await downloadPracticeExport(this._storage);
+        this._showStatus(t('LOCAL_DATA_EXPORT_DONE'));
+      } catch {
+        this._showStatus(t('LOCAL_DATA_EXPORT_ERR'), 'error');
+      }
+    })();
   }
 
   _onPickFile() {
@@ -414,7 +416,10 @@ export class LocalPracticeDataUI {
 
   async _onConfirmImport() {
     if (!this._pendingSnapshot) return;
-    const result = importPracticeSnapshotAtomic(this._storage, this._pendingSnapshot);
+    const result = await importPracticeSnapshotAtomic(
+      this._storage,
+      this._pendingSnapshot
+    );
     if (!result.ok) {
       this._showError(t('LOCAL_DATA_IMPORT_ERR_WRITE'));
       return;

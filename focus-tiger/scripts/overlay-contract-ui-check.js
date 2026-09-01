@@ -33,6 +33,7 @@ const WHITELIST_FILES = new Set([
   'ImmersivePresenceUI.js',
   'IdleCompanionPipUI.js',
   'LocalPracticeDataUI.js',
+  'LocalPracticeDataPanelUI.js',
   'SeasonalThemeChromeUI.js',
   'SoftUpdatePromptUI.js',
   'NarrowIdleShell.js',
