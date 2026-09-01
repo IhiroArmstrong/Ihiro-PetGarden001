@@ -513,3 +513,45 @@ export const YIN_INTENT_2B_GATES = Object.freeze({
   anchorN: 6,
   architectureLiftPp: 15
 });
+
+/** Phase 2B OTHER/EMOTION hard subset — A/C/D all missed on Metal 2026-09-01. */
+export const YIN_INTENT_2B_HARD5_GOLD_IDS = Object.freeze([
+  'B7',
+  'B11',
+  'B13',
+  'B17',
+  'B19'
+]);
+
+export const YIN_INTENT_HARD5_GATES = Object.freeze({
+  hard5N: 5,
+  hard5MinHits: 5,
+  hard5MaxEmotion: 0
+});
+
+/** @type {readonly YinIntentDiagnosticFixture2b[]} */
+export const YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5 = Object.freeze(
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN.filter((item) =>
+    YIN_INTENT_2B_HARD5_GOLD_IDS.includes(item.goldId)
+  )
+);
+
+/**
+ * Lab-only hard-5 gate for architecture E fourth cut.
+ * @param {readonly object[]} rows
+ */
+export function scoreYinIntentHard5Gates(rows) {
+  const list = Array.isArray(rows) ? rows : [];
+  const hard5 = list.filter((row) => YIN_INTENT_2B_HARD5_GOLD_IDS.includes(row.goldId));
+  const hard5Hits = hard5.filter((row) => row.primaryHit).length;
+  const hard5Emotion = hard5.filter((row) => row.otherFlattenedToEmotion).length;
+  return {
+    hard5N: YIN_INTENT_HARD5_GATES.hard5N,
+    hard5Hits,
+    hard5Emotion,
+    passHard5:
+      hard5.length === YIN_INTENT_HARD5_GATES.hard5N &&
+      hard5Hits >= YIN_INTENT_HARD5_GATES.hard5MinHits &&
+      hard5Emotion <= YIN_INTENT_HARD5_GATES.hard5MaxEmotion
+  };
+}

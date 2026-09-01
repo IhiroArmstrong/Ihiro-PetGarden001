@@ -19,8 +19,10 @@ import { fileURLToPath } from 'node:url';
 import { L0_MODEL_FILENAME } from '../companion/l0Config.js';
 import { YIN_INTENT_DIAGNOSTIC_FIXTURES } from '../../src/core/confide/confideIntentDiagnosticFixtures.js';
 import {
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5,
   YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HOLDOUT,
-  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RUN,
+  scoreYinIntentHard5Gates
 } from '../../src/core/confide/confideIntentDiagnosticPhase2b.js';
 import {
   YIN_INTENT_ARCH,
@@ -43,8 +45,16 @@ function errorMessage(err) {
   return err instanceof Error ? err.message : String(err);
 }
 
-function readDiagnostic(rows, parseOk) {
+function readDiagnostic(rows, parseOk, phase) {
   if (parseOk <= 0) return 'see_rows';
+  if (phase === '2b-hard5') {
+    const gates = scoreYinIntentHard5Gates(rows);
+    if (gates.passHard5) return 'hard5_pipeline_can_label_mood_adjacent_other';
+    if (gates.hard5Hits === 0 && gates.hard5Emotion >= 4) {
+      return 'hard5_still_capacity_question';
+    }
+    return 'see_rows';
+  }
   const boundaryRow =
     rows.find((row) => row.id === 'boundary-unsure') ||
     rows.find((row) => row.id === 'terrible-day-dont-talk');
@@ -57,6 +67,9 @@ function readDiagnostic(rows, parseOk) {
 
 function selectFixtures() {
   const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
+  if (phase === '2b-hard5') {
+    return YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5;
+  }
   if (phase === '2b') {
     if (String(process.env.FT_INTENT_HOLDOUT || '').trim() === '1') {
       return [
@@ -76,10 +89,19 @@ function selectFixtures() {
 }
 
 function resolveArch() {
-  const raw = String(process.env.FT_INTENT_ARCH || YIN_INTENT_ARCH.A)
+  const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
+  const defaultArch =
+    phase === '2b-hard5' ? YIN_INTENT_ARCH.E : YIN_INTENT_ARCH.A;
+  const raw = String(process.env.FT_INTENT_ARCH || defaultArch)
     .trim()
     .toUpperCase();
-  if (raw === YIN_INTENT_ARCH.C || raw === YIN_INTENT_ARCH.D) return raw;
+  if (
+    raw === YIN_INTENT_ARCH.C ||
+    raw === YIN_INTENT_ARCH.D ||
+    raw === YIN_INTENT_ARCH.E
+  ) {
+    return raw;
+  }
   return YIN_INTENT_ARCH.A;
 }
 
@@ -113,6 +135,7 @@ async function main() {
   }
 
   const arch = resolveArch();
+  const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
   process.stderr.write(`[intent-diag] model ${modelPath} arch=${arch}\n`);
   const { getLlama, LlamaChatSession } = await import('node-llama-cpp');
   let llama = null;
@@ -210,6 +233,7 @@ async function main() {
   const yinVoiceLeaks = rows.filter((row) => row.yinVoiceLeak).length;
   const phase2Rows = rows.filter((row) => row.phase === 2);
   const phase2bGates = scoreYinIntentPhase2bGates(rows);
+  const hard5Gates = scoreYinIntentHard5Gates(rows);
   const report = {
     at: new Date().toISOString(),
     modelPath,
@@ -229,7 +253,8 @@ async function main() {
         .length
     },
     phase2bGates,
-    reading: readDiagnostic(rows, parseOk),
+    hard5Gates,
+    reading: readDiagnostic(rows, parseOk, phase),
     rows
   };
 
@@ -249,6 +274,7 @@ async function main() {
         arch,
         phase2: report.phase2,
         phase2bGates: report.phase2bGates,
+        hard5Gates: report.hard5Gates,
         reading: report.reading
       },
       null,
