@@ -43,7 +43,7 @@ jobs:
         run: |
           echo "test:pr-smoke skipped (no product paths). Job exits green so Required check stays safe."
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.paths.outputs.product == 'true'
         with:
           node-version: '20'

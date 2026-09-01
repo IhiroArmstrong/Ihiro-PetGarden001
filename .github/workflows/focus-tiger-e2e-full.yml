@@ -45,7 +45,7 @@ jobs:
           # dispatch input) so the suite still tests the daily integration tip.
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || 'develop' }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: npm
