@@ -118,7 +118,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   companion: 'ft-narrow-stage-companion',
   reminder: 'ft-narrow-stage-reminder',
   sound: 'ft-narrow-stage-sound',
-  language: 'ft-narrow-stage-language'
+  language: 'ft-narrow-stage-language',
+  localBackup: 'ft-narrow-stage-local-backup'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -126,7 +127,8 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   companion: 'ft-wide-stage-companion',
   reminder: 'ft-wide-stage-reminder',
   sound: 'ft-wide-stage-sound',
-  language: 'ft-wide-stage-language'
+  language: 'ft-wide-stage-language',
+  localBackup: 'ft-wide-stage-local-backup'
 });
 
 /**
@@ -433,7 +435,8 @@ export function listSecondaryChromeEntries(surface, visibility) {
           interactive: false
         }
       : { proxy: 'newsletter', labelKey: 'NEWSLETTER_MENU_LABEL' },
-    { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' }
+    { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' },
+    { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' }
   ]);
 
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.

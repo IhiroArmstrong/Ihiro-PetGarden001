@@ -77,6 +77,7 @@ export class NarrowIdleShell {
      *     onTipJar?: () => void,
    *     onNewsletter?: () => void,
    *     onCommunity?: () => void,
+   *     onLocalBackup?: () => void,
    *     onRitualFlow?: (proxy: string) => void,
    *     onHonesty?: () => void,
    *     onQuickStart?: () => void,
@@ -944,6 +945,13 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onCommunity?.();
+      return;
+    }
+    if (key === 'local-backup') {
+      this.closeSheet();
+      this.clearStage();
+      document.body.classList.add(NARROW_STAGE_CLASS.localBackup);
+      this.handlers.onLocalBackup?.();
       return;
     }
     if (

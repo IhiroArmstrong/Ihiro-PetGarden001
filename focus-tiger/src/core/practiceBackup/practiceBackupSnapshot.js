@@ -4,12 +4,13 @@
  */
 
 /**
- * Practice-memory cloud backup · whitelist + snapshot helpers (client).
+ * Local export/import + cloud backup · whitelist + snapshot helpers (client).
  */
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 1;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 2;
 
-export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+/** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
+export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
   'focus-tiger.journey-log.v1',
   'focus-tiger.practice-days.v1',
   'focus-tiger.milestone-glow.v1',
@@ -18,15 +19,98 @@ export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
   'focus-tiger.mustard-seed-seal.v1'
 ]);
 
+export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V1_STORE_KEYS,
+  'focus-tiger.presence-signals.v1',
+  'focus-tiger.presence-freetext-l3-consent.v1',
+  'focus-tiger.reflections.v1',
+  'focus-tiger.locale.v1',
+  'focus-tiger.reminder-preference.v1',
+  'focus-tiger.companion-mode.v1',
+  'focus-tiger.ambient-pref.v1',
+  'focus-tiger.session-cues.v1'
+]);
+
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
+
+/**
+ * @typedef {{
+ *   yinPersonalMemory?: unknown | null,
+ *   confideTurnsJsonl?: string | null
+ * }} PracticeBackupCompanionFiles
+ */
 
 /**
  * @typedef {{
  *   schemaVersion: number,
  *   savedAt: string,
- *   stores: Record<string, unknown | null>
+ *   stores: Record<string, unknown | null>,
+ *   companionFiles?: PracticeBackupCompanionFiles | null
  * }} PracticeBackupSnapshot
  */
+
+/**
+ * @param {number} schemaVersion
+ * @returns {readonly string[] | null}
+ */
+export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
+  if (schemaVersion === 1) return PRACTICE_BACKUP_V1_STORE_KEYS;
+  if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
+    return PRACTICE_BACKUP_STORE_KEYS;
+  }
+  return null;
+}
+
+/**
+ * @param {string | null} raw
+ * @returns {unknown | null}
+ */
+export function parsePracticeBackupStorageRaw(raw) {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return raw;
+  }
+}
+
+/**
+ * @param {unknown | null} val
+ * @returns {string}
+ */
+export function stringifyPracticeBackupStorageValue(val) {
+  if (val == null) return '';
+  if (typeof val === 'string') return val;
+  return JSON.stringify(val);
+}
+
+/**
+ * @param {unknown} companionFiles
+ * @returns {PracticeBackupCompanionFiles | undefined}
+ */
+export function normalizePracticeBackupCompanionFiles(companionFiles) {
+  if (!companionFiles || typeof companionFiles !== 'object') return undefined;
+  const o = /** @type {Record<string, unknown>} */ (companionFiles);
+  /** @type {PracticeBackupCompanionFiles} */
+  const out = {};
+  if ('yinPersonalMemory' in o) {
+    out.yinPersonalMemory = o.yinPersonalMemory ?? null;
+  }
+  if ('confideTurnsJsonl' in o) {
+    const turns = o.confideTurnsJsonl;
+    out.confideTurnsJsonl =
+      turns == null ? null : typeof turns === 'string' ? turns : null;
+  }
+  if (
+    out.yinPersonalMemory == null &&
+    out.confideTurnsJsonl == null &&
+    !('yinPersonalMemory' in o) &&
+    !('confideTurnsJsonl' in o)
+  ) {
+    return undefined;
+  }
+  return out;
+}
 
 /**
  * @param {Storage | null | undefined} storage
@@ -50,7 +134,7 @@ export function serializePracticeBackupSnapshot(
         stores[key] = null;
         continue;
       }
-      stores[key] = JSON.parse(raw);
+      stores[key] = parsePracticeBackupStorageRaw(raw);
     } catch {
       stores[key] = null;
     }
@@ -63,7 +147,7 @@ export function serializePracticeBackupSnapshot(
 }
 
 /**
- * Reject unknown keys; require exact whitelist.
+ * Reject unknown keys; require exact whitelist for schema version.
  * @param {unknown} raw
  * @returns {{ ok: true, snapshot: PracticeBackupSnapshot } | { ok: false, reason: string }}
  */
@@ -72,7 +156,12 @@ export function parsePracticeBackupSnapshotClient(raw) {
     return { ok: false, reason: 'not_object' };
   }
   const o = /** @type {Record<string, unknown>} */ (raw);
-  if (o.schemaVersion !== PRACTICE_BACKUP_SCHEMA_VERSION) {
+  const schemaVersion = o.schemaVersion;
+  if (typeof schemaVersion !== 'number') {
+    return { ok: false, reason: 'schema' };
+  }
+  const expectedKeys = practiceBackupStoreKeysForSchemaVersion(schemaVersion);
+  if (!expectedKeys) {
     return { ok: false, reason: 'schema' };
   }
   if (typeof o.savedAt !== 'string' || !o.savedAt) {
@@ -83,26 +172,31 @@ export function parsePracticeBackupSnapshotClient(raw) {
   }
   const storesIn = /** @type {Record<string, unknown>} */ (o.stores);
   const keys = Object.keys(storesIn);
-  if (keys.length !== PRACTICE_BACKUP_STORE_KEYS.length) {
+  if (keys.length !== expectedKeys.length) {
     return { ok: false, reason: 'key_count' };
   }
   /** @type {Record<string, unknown | null>} */
   const stores = {};
-  for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+  for (const key of expectedKeys) {
     if (!(key in storesIn)) return { ok: false, reason: `missing:${key}` };
     stores[key] = storesIn[key] ?? null;
   }
   for (const key of keys) {
-    if (!PRACTICE_BACKUP_STORE_KEYS.includes(key)) {
+    if (!expectedKeys.includes(key)) {
       return { ok: false, reason: `extra:${key}` };
     }
   }
+  const companionFiles =
+    schemaVersion >= 2
+      ? normalizePracticeBackupCompanionFiles(o.companionFiles)
+      : undefined;
   return {
     ok: true,
     snapshot: {
-      schemaVersion: PRACTICE_BACKUP_SCHEMA_VERSION,
+      schemaVersion,
       savedAt: o.savedAt,
-      stores
+      stores,
+      ...(companionFiles ? { companionFiles } : {})
     }
   };
 }
@@ -121,11 +215,19 @@ export function isPracticeBackupStoreEmpty(storage, key) {
     return true;
   }
   if (!raw) return true;
+
+  if (key === 'focus-tiger.presence-freetext-l3-consent.v1') {
+    return raw !== 'granted' && raw !== 'denied';
+  }
+  if (key === 'focus-tiger.locale.v1' || key === 'focus-tiger.companion-mode.v1') {
+    return !String(raw).trim();
+  }
+
   let parsed;
   try {
     parsed = JSON.parse(raw);
   } catch {
-    return true;
+    return !String(raw).trim();
   }
   if (!parsed || typeof parsed !== 'object') return true;
 
@@ -145,6 +247,18 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       return !Array.isArray(parsed.entries) || parsed.entries.length === 0;
     case 'focus-tiger.mustard-seed-seal.v1':
       return parsed.revealed !== true;
+    case 'focus-tiger.presence-signals.v1':
+      return !Array.isArray(parsed.entries) || parsed.entries.length === 0;
+    case 'focus-tiger.reflections.v1':
+      return !Array.isArray(parsed) || parsed.length === 0;
+    case 'focus-tiger.reminder-preference.v1':
+      return (
+        typeof parsed.hour !== 'number' ||
+        typeof parsed.minute !== 'number'
+      );
+    case 'focus-tiger.ambient-pref.v1':
+    case 'focus-tiger.session-cues.v1':
+      return Object.keys(parsed).length === 0;
     default:
       return true;
   }
@@ -166,7 +280,10 @@ export function isPracticeBackupWhitelistCompletelyEmpty(storage) {
  */
 export function practiceBackupStoresFingerprint(snapshot) {
   try {
-    return JSON.stringify(snapshot?.stores ?? null);
+    return JSON.stringify({
+      stores: snapshot?.stores ?? null,
+      companionFiles: snapshot?.companionFiles ?? null
+    });
   } catch {
     return '';
   }
@@ -182,7 +299,7 @@ function storageTextUnchanged(prev, next) {
   try {
     return JSON.stringify(JSON.parse(prev)) === JSON.stringify(JSON.parse(next));
   } catch {
-    return false;
+    return prev === next;
   }
 }
 
@@ -190,7 +307,10 @@ export function writePracticeBackupStoresRaw(storage, snapshot) {
   if (!storage) return { wrote: 0, skipped: 0 };
   let wrote = 0;
   let skipped = 0;
-  for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+  const keys =
+    practiceBackupStoreKeysForSchemaVersion(snapshot.schemaVersion) ??
+    PRACTICE_BACKUP_STORE_KEYS;
+  for (const key of keys) {
     const val = snapshot.stores[key];
     try {
       if (val == null) {
@@ -201,7 +321,7 @@ export function writePracticeBackupStoresRaw(storage, snapshot) {
           wrote += 1;
         }
       } else {
-        const next = JSON.stringify(val);
+        const next = stringifyPracticeBackupStorageValue(val);
         if (storageTextUnchanged(storage.getItem(key), next)) {
           skipped += 1;
         } else {

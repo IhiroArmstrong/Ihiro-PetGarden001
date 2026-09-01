@@ -61,4 +61,11 @@ if (companionAllowed) {
   };
 }
 
+desktopShell.localBackup = {
+  readCompanionFiles: () =>
+    ipcRenderer.invoke('desktop:local-backup-read-companion-files'),
+  writeCompanionFiles: (bundle) =>
+    ipcRenderer.invoke('desktop:local-backup-write-companion-files', bundle)
+};
+
 contextBridge.exposeInMainWorld('desktopShell', desktopShell);
