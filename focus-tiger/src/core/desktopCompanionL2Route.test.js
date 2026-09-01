@@ -446,6 +446,11 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /yinPersonalMemorySuppress/);
     assert.match(ui, /confideBoundaryRespect/);
     assert.match(ui, /shouldHandleConfideBoundary/);
+    assert.match(ui, /memoryState: this\._memoryState/);
+    assert.match(
+      ui,
+      /shouldHandleStandaloneMemorySuppress[\s\S]*shouldHandleConfideBoundary[\s\S]*matchConfideExecutableTool/
+    );
     assert.match(ui, /source: 'boundary'/);
     assert.match(ui, /confideCompanionPresence/);
     assert.match(ui, /shouldHandleConfideCompanionPresence/);

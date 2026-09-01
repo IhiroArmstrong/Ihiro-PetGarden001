@@ -21,6 +21,8 @@ import {
   scoreConfideToolCall
 } from './confideToolCallParse.js';
 import { CONFIDE_TOOL_CALL_FIXTURES } from './confideToolCallFixtures.js';
+import { applyYinMemoryConsent } from '../yinPersonalMemory/yinPersonalMemoryConsent.js';
+import { emptyYinPersonalMemoryState } from '../yinPersonalMemory/yinPersonalMemorySchema.js';
 
 describe('confide executable tool registry', () => {
   it('keeps V1 order practice → presence → memory_list → forget', () => {
@@ -119,6 +121,25 @@ describe('confide executable tool registry', () => {
         hasBridge: false
       }),
       null
+    );
+  });
+
+  it('still matches CI-01 on forget+boundary dual-match when forget can run', () => {
+    const dual =
+      "Please forget what I said about Monday. I'd rather not get into that.";
+    const memoryState = applyYinMemoryConsent(
+      emptyYinPersonalMemoryState(),
+      true,
+      '2026-09-01T00:00:00.000Z'
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: dual,
+        memoryState,
+        hasBridge: true
+      })?.id,
+      CONFIDE_TOOL_ID.FORGET_MEMORY_ENTRY
     );
   });
 

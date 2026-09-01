@@ -60,7 +60,7 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ✅ **2026-09-01 关单**（tip `86a4c72e`；C-3 suspend · C-5 follow-up） |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
-| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **#495** · Phase 2 **#509** · 2B/E′ **#516–#520** · 生产字面预筛 **#523** · 三门禁/三级 intent **本旁支文档锁**（§6.1）；**不**换默认 GGUF；**不**把 E′ prompt 挂 Share |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **#495** · Phase 2 **#509** · 2B/E′ **#516–#520** · 生产字面预筛 **#523** · 三门禁/三级 intent **#524** · 切片 3 双命中 FORGET 让路 **本旁支**；**不**换默认 GGUF；**不**把 E′ prompt 挂 Share |
 
 **0.2 已通过（2026-09-01）**：**1B #503 已合**。**1A 口令已执行**（本旁支）。
 
@@ -386,17 +386,17 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 | 刀 | 范围 | 状态 |
 |---|---|---|
 | **1** | OTHER 窄门 + 软边界字面 + presence 字面；不改 `_onSend` 树；不挂 E′ prompt；不换 GGUF | **已合 develop #523** |
-| **2** | 三门禁 + 三级 intent + precedence 合同（本文 + `CONFIDE_EXECUTABLE_INTENTS.md`） | **本旁支文档** |
-| **3** | **仅** CI-01 与 BOUNDARY **双命中** → FORGET 让路（见下表）；单测锁 AE 纯边界 / AG 纯 forget / 1f suppress 仍先 | **已拍板 · 未实现**（须另口令；**禁止**顺手改 `_onSend` 整树） |
+| **2** | 三门禁 + 三级 intent + precedence 合同（本文 + `CONFIDE_EXECUTABLE_INTENTS.md`） | **已合 develop #524** |
+| **3** | **仅** CI-01 与 BOUNDARY **双命中** → FORGET 让路（见下表）；单测锁 AE 纯边界 / AG 纯 forget / 1f suppress 仍先 | **本旁支**（`shouldHandleConfideBoundary` 在 CI-01 可跑时让路；**不**重写 `_onSend` 整树；不挂 E′ prompt） |
 | **4** | 残差才考虑 1.7B + 保守 fallback（竞争时宁 BOUNDARY/COMPANION，勿擅自 BEGIN / 贴 EMOTION） | **Architecture Gate 未过 · 禁止本阶段开工** |
 
 #### Intent precedence（合同 · 非「设计师表 = 现网」）
 
-现网 `_onSend` 层序（事实）：`memory_suppress` → `boundary`（仅 `fallback`）→ `companion_presence` → 偏好诚实 → CI 工具（practice → presence → memory_list → **forget**）→ Read Hybrid → L3。
+现网 `_onSend` 层序（事实）：`memory_suppress` → `boundary`（仅 `fallback`；**CI-01 可跑的双命中除外**）→ `companion_presence` → 偏好诚实 → CI 工具（practice → presence → memory_list → **forget**）→ Read Hybrid → L3。
 
 | 冲突 | 合同 | 现网 | 本刀 |
 |---|---|---|---|
-| **FORGET vs BOUNDARY**（同一句 **同时**命中 CI-01 与 boundary 正则） | **FORGET 赢** | boundary 在 forget **之前** → 双命中走 `data-source=boundary`、**不删** | **已拍板 · 不改代码** |
+| **FORGET vs BOUNDARY**（同一句 **同时**命中 CI-01 与 boundary 正则） | **FORGET 赢** | CI-01 可跑（Electron bridge + Consent）时 boundary **让路**；Web / 无 Consent 仍 boundary（forget 本就不能删） | **切片 3 · 本旁支** |
 | COMPANION vs BEGIN | COMPANION，除非明确 begin 字面 | presence 已对 begin 字面让路 | 已实现 |
 | SUPPRESS vs FORGET | Don't keep / Don't save（即将产生）先于 CI-01（旧内容） | suppress 在 forget 之前 | 已实现；不在本切片改 |
 | QUERY vs EMOTION | 统计/趋势/列表问句走 CI，不贴情绪桶短句 | #523 OTHER 窄门 + 既有 CI | 第一刀已覆盖字面 |
@@ -431,7 +431,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 · 字面预筛 #523 · 架构锁本旁支 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` · `confideBoundaryRespect.test.js`（双命中） | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 · 字面预筛 #523 · 架构锁 #524 · 切片 3 本旁支 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
@@ -440,8 +440,8 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 
 ## 9. 我认为最合理的下一刀
 
-1. **合入本架构锁 docs PR**（CI 绿即可合 develop）。  
-2. 另口令实现 **切片 3**：仅双命中 FORGET 让路（不重写 `_onSend` 整树；不挂 E′ prompt）。  
-3. Forget「昨天那件事」指代、残差 Qwen、3B/4B：**不开工**。
+1. **合入本切片 3 PR**（CI 绿即可合 develop）。  
+2. Forget「昨天那件事」指代、残差 Qwen、3B/4B、切片 4：**不开工**（Architecture Gate 未过）。  
+3. A14/A15/D7 仍探针，不为过线加正则。
 
-**较弱**：把完整 Phase 2F（含 Qwen 挂发送）一次做进 `_onSend`；为 A14/A15 加正则/prompt；当 #523 未发生再做一遍字面预筛。
+**较弱**：把完整 Phase 2F（含 Qwen 挂发送）一次做进 `_onSend`；为 A14/A15 加正则/prompt；当 #523/#524 未发生再做一遍字面预筛或架构锁。

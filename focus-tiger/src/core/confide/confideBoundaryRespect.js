@@ -10,6 +10,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { shouldHandleVerbalForget } from '../yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 
 /** ASCII + curly apostrophes so typed “Don’t” still matches. */
 export function normalizeConfideIntentText(text) {
@@ -53,12 +54,37 @@ export function isConfideBoundaryIntent(text) {
 }
 
 /**
- * @param {{ route?: string | null, text?: string }} [opts]
+ * Slice 3: if the same fallback utterance also qualifies as CI-01 verbal
+ * forget (bridge + consent), FORGET wins — do not swallow with boundary.
+ * Web / no Consent: CI-01 cannot run, so boundary still intercepts.
+ *
+ * @param {{
+ *   route?: string | null,
+ *   text?: string,
+ *   memoryState?: object | null,
+ *   hasBridge?: boolean
+ * }} [opts]
  * @returns {boolean}
  */
-export function shouldHandleConfideBoundary({ route = null, text = '' } = {}) {
+export function shouldHandleConfideBoundary({
+  route = null,
+  text = '',
+  memoryState = null,
+  hasBridge = false
+} = {}) {
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
-  return isConfideBoundaryIntent(text);
+  if (!isConfideBoundaryIntent(text)) return false;
+  if (
+    shouldHandleVerbalForget({
+      route,
+      state: memoryState,
+      text,
+      hasBridge
+    })
+  ) {
+    return false;
+  }
+  return true;
 }
 
 /**

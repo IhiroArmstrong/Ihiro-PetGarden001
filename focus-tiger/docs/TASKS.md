@@ -295,7 +295,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | **本旁支** · lab `?reflectionCompanion=1` · 非 shipping · tracker 待人工 |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
 | **—** | Don't save this | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` | ✅ Slice 1f | tracker 待人工 |
-| **0.D** | Yin Intent Diagnostic（只输出 intent JSON） | `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 | **换模型前必做** | Phase 1–2B/E′ **#495–#520** · 字面预筛 **#523** · 三门禁/三级 intent 文档锁（本旁支）；**不**换模型 |
+| **0.D** | Yin Intent Diagnostic（只输出 intent JSON） | `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 | **换模型前必做** | Phase 1–2B/E′ **#495–#520** · 字面预筛 **#523** · 三门禁 **#524** · 切片 3 双命中 **本旁支**；**不**换模型 |
 
 **Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
 
