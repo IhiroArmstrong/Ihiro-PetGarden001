@@ -60,7 +60,7 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ✅ **2026-09-01 关单**（tip `86a4c72e`；C-3 suspend · C-5 follow-up） |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
-| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **#495** · Phase 2 **#509** · 2B/E′ **#516–#520** · 生产字面预筛 **#523** · 三门禁/三级 intent **#524** · 切片 3 双命中 FORGET 让路 **本旁支**；**不**换默认 GGUF；**不**把 E′ prompt 挂 Share |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **#495** · Phase 2 **#509** · 2B/E′ **#516–#520** · 生产字面预筛 **#523** · 三门禁/三级 intent **#524** · 切片 3 双命中 **#525** · Tier 2 盲测 **#526** · **PO 不立项 Phase 3 / 不换模**；**不**把 E′ prompt 挂 Share |
 
 **0.2 已通过（2026-09-01）**：**1B #503 已合**。**1A 口令已执行**（本旁支）。
 
@@ -372,7 +372,9 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=E FT_INTENT_TIER2=1 
 | OTHER | 4 | ≥3/4 · Emotion≤1 | **4/4** ✓ | B1–B4 全中 |
 | 软 BOUNDARY | 4 | ≥3/4 | **2/4** ❌ | C1/C2 ✓；C3/C4 → OTHER |
 
-**读数（非容量定论 · 禁止据此改 send / 默认 GGUF / E′ prompt）**：全新句上 OTHER 窄门泛化成立；COMPANION 语用/陪伴请求与软 BOUNDARY 的能量/拒答子型仍被吸进 OTHER。与评分集「A6/A14/A15 语用缺口、OTHER/软边界字面已过」同方向，**不等于**换模已批准。Phase 3 仍须 PO 另议。
+**读数（非容量定论 · 禁止据此改 send / 默认 GGUF / E′ prompt）**：全新句上 OTHER 窄门泛化成立；COMPANION 语用/陪伴请求与软 BOUNDARY 的能量/拒答子型仍被吸进 OTHER。与评分集「A6/A14/A15 语用缺口、OTHER/软边界字面已过」同方向。
+
+**PO 拍板（2026-09-01 · #526 合入后）**：**暂不立项 Phase 3 / 不换默认 GGUF**。继续 Architecture 路线（切片 1–3 已合；切片 4 仍禁）。剩余 COMPANION 语用与部分软边界 = **Pragmatic 残差**（与 A14/A15 同型），**不是**待排期的生产修复任务，**不是** 1.7B 容量瓶颈。
 
 **第五刀尝试（A6 + D3 · 未合入）**：Metal 验证后**不 ship** — 两类失败的可修复路径不同，硬堆 prompt 无净收益：
 
@@ -395,7 +397,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 | Gate | 状态 | 含义 |
 |---|---|---|
 | **Model** | **PASS — provisional** | 同一 Qwen3-1.7B Q4 在正确层序下能标核心 intent（BEGIN / FORGET / SUPPRESS 稳；OTHER 窄门与软 BOUNDARY 在 E′ 上过线）。**不是**「具备完整自然语言理解」。 |
-| **Architecture** | **NOT YET FINAL** | 实验室 E′：COMPANION **5/8**（门槛 6/8）；D 锚点 **4/6**（门槛 5/6）。残差 Qwen **不得**因此焊进 Share。 |
+| **Architecture** | **NOT YET FINAL** | 实验室 E′：COMPANION **5/8**（门槛 6/8）；D 锚点 **4/6**（门槛 5/6）。Tier 2 盲测同方向（COMPANION 1/4 · 软边界 2/4）。残差 Qwen **不得**因此焊进 Share。未过关 **不等于**要再开「修语用」实现单——见下 PO。 |
 | **Production** | **第一刀已合 #523** | 规则预筛 = OTHER 窄门 + 软边界字面 + presence 字面。**未**把 E′ JSON 探针接到 `ConfideToYinUI._onSend`。**未**换默认 GGUF。 |
 
 换模（3B/4B）**仅当**：预筛 + 已拍板 precedence + 保守 fallback 都落地后，**同一套 benchmark** 上 1.7B 仍系统性失败，且更大模型在相同 L0 约束下明显改善。
@@ -411,8 +413,9 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 #### PO 拍板（2026-09-01）
 
 1. **架构锁文档合 develop** — 批准。Pragmatic（A14/A15/D7）= 探针残差，**不是**待修 bug；防止旧 tracker「转生产层序」措辞误导为「写正则接三条」。
-2. **切片 3** — 另开口令；按已拍板合同实现双命中 FORGET 让路（与 A14/A15/D7 **无关**）。
+2. **切片 3** — **#525 已合 develop**（`fix/confide-forget-boundary-dual-match`）；与 A14/A15/D7 **无关**。
 3. **否决**为 A14/A15/D7 写生产规则预筛 — 维持 backlog/L3 残差；未来重议前置 = 改写验证 + 从严门槛。
+4. **#526 后 · 不立项 Phase 3 / 不换模** — 继续 Architecture；**不为** Tier 2 A2–A4 / C3–C4 / A14/A15 另开生产实现任务。切片 4 仍禁。
 
 #### 书面增量切片（对照 #523）
 
@@ -420,7 +423,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 |---|---|---|
 | **1** | OTHER 窄门 + 软边界字面 + presence 字面；不改 `_onSend` 树；不挂 E′ prompt；不换 GGUF | **已合 develop #523** |
 | **2** | 三门禁 + 三级 intent + precedence 合同（本文 + `CONFIDE_EXECUTABLE_INTENTS.md`） | **已合 develop #524** |
-| **3** | **仅** CI-01 与 BOUNDARY **双命中** → FORGET 让路（见下表）；单测锁 AE 纯边界 / AG 纯 forget / 1f suppress 仍先 | **本旁支**（`shouldHandleConfideBoundary` 在 CI-01 可跑时让路；**不**重写 `_onSend` 整树；不挂 E′ prompt） |
+| **3** | **仅** CI-01 与 BOUNDARY **双命中** → FORGET 让路（见下表）；单测锁 AE 纯边界 / AG 纯 forget / 1f suppress 仍先 | **已合 develop #525**（`shouldHandleConfideBoundary` 在 CI-01 可跑时让路；**不**重写 `_onSend` 整树；不挂 E′ prompt） |
 | **4** | 残差才考虑 1.7B + 保守 fallback（竞争时宁 BOUNDARY/COMPANION，勿擅自 BEGIN / 贴 EMOTION） | **Architecture Gate 未过 · 禁止本阶段开工** |
 
 #### Intent precedence（合同 · 非「设计师表 = 现网」）
@@ -429,7 +432,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 
 | 冲突 | 合同 | 现网 | 本刀 |
 |---|---|---|---|
-| **FORGET vs BOUNDARY**（同一句 **同时**命中 CI-01 与 boundary 正则） | **FORGET 赢** | CI-01 可跑（Electron bridge + Consent）时 boundary **让路**；Web / 无 Consent 仍 boundary（forget 本就不能删） | **切片 3 · 本旁支** |
+| **FORGET vs BOUNDARY**（同一句 **同时**命中 CI-01 与 boundary 正则） | **FORGET 赢** | CI-01 可跑（Electron bridge + Consent）时 boundary **让路**；Web / 无 Consent 仍 boundary（forget 本就不能删） | **切片 3 · #525** |
 | COMPANION vs BEGIN | COMPANION，除非明确 begin 字面 | presence 已对 begin 字面让路 | 已实现 |
 | SUPPRESS vs FORGET | Don't keep / Don't save（即将产生）先于 CI-01（旧内容） | suppress 在 forget 之前 | 已实现；不在本切片改 |
 | QUERY vs EMOTION | 统计/趋势/列表问句走 CI，不贴情绪桶短句 | #523 OTHER 窄门 + 既有 CI | 第一刀已覆盖字面 |
@@ -465,7 +468,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` · `confideBoundaryRespect.test.js`（双命中） | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 · 字面预筛 #523 · 架构锁 #524 · 切片 3 本旁支 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` · `confideBoundaryRespect.test.js`（双命中） | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · Tier 2 **#526** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 · 字面预筛 #523 · 架构锁 #524 · 切片 3 **#525** · Tier 2 **#526** |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
@@ -474,9 +477,11 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 
 ## 9. 我认为最合理的下一刀
 
-1. **PO 读 §6.1 Tier 2 Metal**（`passTier2` ❌ · OTHER 4/4 · COMPANION 1/4 · 软边界 2/4）后再议 Phase 3 / 换模；**不等于**批准换模。  
-2. 切片 3（双命中 FORGET 让路）**已在 develop**（#524）；本 PR 合入后 Tier 2 fixture 与读数入库。  
-3. Forget「昨天那件事」指代、残差 Qwen、3B/4B、切片 4：**不开工**（Architecture Gate 未过；换模须 PO 书面拍板）。  
-4. A14/A15/D7 仍探针，不为过线加正则。
+**0.D 诊断三角已走完**（起草 → 冻结入库 #526 → 一轮 Metal → PO 读数）。**本线无下一刀实现任务。**
 
-**较弱**：把完整 Phase 2F（含 Qwen 挂发送）一次做进 `_onSend`；为 A14/A15 加正则/prompt；当 #523/#524 未发生再做一遍字面预筛或架构锁。
+1. **Phase 3 / 换模**：**不开工**（PO 2026-09-01 书面否决）。  
+2. **不为** COMPANION 语用 / 软边界能量·拒答子型 / A14/A15/D7 另开生产实现单（正则、E′ prompt、挂 Qwen send 均禁）。若未来重议 Pragmatic，须先有同义改写验证方案。  
+3. **切片 4**（残差 1.7B + 保守 fallback）：Architecture Gate 未过 → **仍禁**。  
+4. **离开 0.D 诊断线**的下一产品口令（另开，不混进本门禁）：1C validation、Forget「昨天那件事」指代、search-memory / journey-delete Brief（若已起草）。
+
+**较弱**：为过 Architecture 数字再调 E′ / 加 A14 正则；把切片 4 当「修语用」开工；用 3B/4B 代替层序。
