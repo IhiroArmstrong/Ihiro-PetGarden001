@@ -21,15 +21,9 @@ import {
   getSanctuaryBadgeById,
   sanctuaryBadgeSrc
 } from '../core/sanctuaryBadges.js';
-import {
-  GLASS_BLUR_CSS,
-  GLASS_BORDER,
-  GLASS_FILL,
-  GLASS_RADIUS,
-  GLASS_SHADOW
-} from './glassPanelStyles.js';
+import { GLASS_BLUR_CSS, GLASS_FILL, GLASS_RADIUS } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-tip-kindness-badges-chrome-v3';
+const STYLE_ID = 'yin-tip-kindness-badges-chrome-v4';
 
 export class TipKindnessBadgesChrome {
   /**
@@ -51,16 +45,10 @@ export class TipKindnessBadgesChrome {
     this.root.dataset.testid = 'yin-tip-kindness-badges';
     this.root.setAttribute('role', 'group');
 
-    this.labelEl = document.createElement('p');
-    this.labelEl.className = 'yin-tip-kindness-badges__label';
-
     this.row = document.createElement('div');
     this.row.className = 'yin-tip-kindness-badges__row';
 
-    this.hintEl = document.createElement('p');
-    this.hintEl.className = 'yin-tip-kindness-badges__hint';
-
-    this.root.append(this.labelEl, this.row, this.hintEl);
+    this.root.append(this.row);
     mountRoot.appendChild(this.root);
 
     this._injectStyles();
@@ -81,16 +69,14 @@ export class TipKindnessBadgesChrome {
   refresh() {
     const pack = syncAndReadIdleBadgePack(this._storage);
     if (pack.kind === 'sanctuary') {
-      this.labelEl.textContent = t('SANCTUARY_BADGES_BESIDE_LABEL');
-      this.hintEl.textContent = t('SANCTUARY_BADGES_DOWNLOAD_HINT');
+      this.root.setAttribute('aria-label', t('SANCTUARY_BADGES_BESIDE_LABEL'));
       this.root.dataset.badgeKind = 'sanctuary';
+    } else if (pack.kind === 'tip') {
+      this.root.setAttribute('aria-label', t('TIP_BADGES_BESIDE_LABEL'));
+      this.root.dataset.badgeKind = 'tip';
     } else {
-      this.labelEl.textContent =
-        pack.kind === 'tip'
-          ? t('TIP_BADGES_BESIDE_LABEL')
-          : t('PRACTICE_BADGES_BESIDE_LABEL');
-      this.hintEl.textContent = t('TIP_BADGES_DOWNLOAD_HINT');
-      this.root.dataset.badgeKind = pack.kind;
+      this.root.setAttribute('aria-label', t('PRACTICE_BADGES_BESIDE_LABEL'));
+      this.root.dataset.badgeKind = 'practice';
     }
 
     this.row.replaceChildren();
@@ -163,6 +149,7 @@ export class TipKindnessBadgesChrome {
     if (document.getElementById(STYLE_ID)) return;
     document.getElementById('yin-tip-kindness-badges-chrome-v1')?.remove();
     document.getElementById('yin-tip-kindness-badges-chrome-v2')?.remove();
+    document.getElementById('yin-tip-kindness-badges-chrome-v3')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -175,21 +162,14 @@ export class TipKindnessBadgesChrome {
         top: max(120px, 28vh);
         bottom: auto;
         max-width: min(200px, 38vw);
-        padding: 10px 12px;
+        padding: 4px;
         border-radius: ${GLASS_RADIUS};
-        border: ${GLASS_BORDER};
+        border: none;
         background: ${GLASS_FILL};
         ${GLASS_BLUR_CSS};
-        box-shadow: ${GLASS_SHADOW};
+        box-shadow: none;
         pointer-events: auto;
         color: #4a3426;
-      }
-      .yin-tip-kindness-badges__label {
-        margin: 0 0 6px;
-        font-size: 11px;
-        font-weight: 650;
-        letter-spacing: 0.02em;
-        color: rgba(92, 72, 52, 0.82);
       }
       .yin-tip-kindness-badges__row {
         display: flex;
@@ -218,17 +198,11 @@ export class TipKindnessBadgesChrome {
         background: rgba(255, 252, 245, 0.55);
         box-shadow: 0 1px 0 rgba(255,255,255,.5) inset;
       }
-      .yin-tip-kindness-badges__hint {
-        margin: 6px 0 0;
-        font-size: 10px;
-        line-height: 1.35;
-        color: rgba(92, 72, 52, 0.65);
-      }
       @media (max-width: 479px) {
         .yin-tip-kindness-badges {
           max-width: min(148px, 42vw);
           top: max(96px, 22vh);
-          padding: 8px 10px;
+          padding: 3px;
         }
         .yin-tip-kindness-badges__img {
           width: 32px;

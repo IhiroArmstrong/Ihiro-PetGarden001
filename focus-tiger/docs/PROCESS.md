@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **Sanctuary UI Art Direction（2026-09-02 · 纯文档）**：栖居主屏视觉 SSOT 入库。A/B 可对照；C.1 徽章去文案 / C.2 Idle HUD 变轻 / C.3 只改 Reflection CTA（Arrival 无三胶囊）。不覆盖 `RESPONSIVE_LAYOUT` / `Z_INDEX`。运行时未改。
+- **Sanctuary C.1 徽章印记条去文案（2026-09-02 · `feature/sanctuary-c1-badge-strip`）**：`#yin-tip-kindness-badges` 默认不显示标题/hint；弱化厚卡片阴影；每枚按钮仍保 `*_DOWNLOAD_ONE` 下载名。授予公式 / Focusing 隐藏不变。SSOT `SANCTUARY_UI_ART_DIRECTION.md` C.1。TRACKER 待人工。
+- **Sanctuary UI Art Direction（2026-09-02 · #529 已合）**：栖居主屏视觉 SSOT 入库。A/B 可对照；C.2 Idle HUD 变轻 / C.3 只改 Reflection CTA（Arrival 无三胶囊）仍待分 PR。不覆盖 `RESPONSIVE_LAYOUT` / `Z_INDEX`。
 - **Gate 0.D PO 否决 Phase 3（2026-09-01 · 纯文档）**：#526 合入后书面拍板不换模、继续 Architecture。语用/软边界残差走 L3，**不**另开生产实现任务。切片 4 仍禁。SSOT `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 / §9。
 - **Gate 0.D Tier 2 盲测入库（2026-09-01 · 实验室 · #526）**：v3.1 12 条 · `FT_INTENT_TIER2=1` · 独立 fixture 文件。**不**改 send / GGUF / E′。Metal 一轮见 §6.1（`passTier2` ❌ · OTHER 4/4 · COMPANION 1/4 · 软边界 2/4）。
 - **Gate 0.D 切片 3（2026-09-01 · `fix/confide-forget-boundary-dual-match` · #525）**：CI-01 与 BOUNDARY 双命中时 FORGET 赢（`shouldHandleConfideBoundary` 让路）。不重写 `_onSend` 整树、不挂 E′ prompt、不换 GGUF。AE 纯边界 / AG 纯 Forget / 1f suppress 仍先。SSOT `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1。
