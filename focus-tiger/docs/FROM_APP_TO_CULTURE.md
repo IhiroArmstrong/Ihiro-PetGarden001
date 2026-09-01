@@ -211,21 +211,73 @@ PHASE 4  生态化            ← Ambient UGC 公开层等；最晚、最高风�
 Find the first **100 people who care about what Focus Tiger stands for.**  
 不是 1000 Slack members。对外可称 **Early Yin Community** / culture laboratory，**禁止**宣传成社区平台。
 
-### 8.2 第一阶段只开 5 个频道
+### 8.2 第一阶段：5-space architecture（2026-08-29 · Culture Design Review）
 
-| 频道 | 用途 |
+> **历史**：此前 §8.2 为扁平 5 频道表（`#welcome` / `#quiet-room` / `#ambient` / `#journeys` / `#the-den`）。**2026-08-29 由 Culture Design Review 更新**为下列心理旅程架构；Slack 频道须按此重组，**禁止**并列保留旧频道。
+
+一级空间**最多 5 个**。不新增 `#general` / `#random` / `#off-topic` / `#announcements` / `#memes` / `#events` / `#support` / `#feedback`——若将来需要，一律作为二级 thread / collection 解决。
+
+| 空间（Slack 频道建议名） | 心理层 | 用途 | 二级主题（thread / pinned / 子帖，非一级频道） |
+|---|---|---|---|
+| 🌱 **Newcomers** · `#newcomers` | **Arrive** | 入口：「我刚进来，该干什么？」**不是**长期闲聊区 | Welcome · How Focus Tiger Works · Meet the Community · Introduce Yourself |
+| 🧭 **Journey** · `#journey` | **Grow** | 我的成长；安静回顾，不是成绩单 | My Journey · Small Wins（**不得**升为一级空间）· Reflections |
+| 🧘 **Focus & Flow** · `#focus-and-flow` | **Practice** | 共同探索专注与心流；知识与实践社区 | Focus Sessions · Flow Stories · Focus Techniques · Questions & Insights（**仅实践类**问题） |
+| 🌙 **Quiet Room** · `#quiet-room` | **Just Be** | 差异化空间：不必说话、不必回复、不必表现 | Just being here · A quiet place to pause · 允许只发 🌙 或 “Here for a moment.” |
+| 🐯 **The Den** · `#the-den` | **Belong** | 社群归属；Yin 是 spirit / companion，不是管理员专栏 | Yin's Messages · Weekly Reflection · Community Chat · Casual Conversation |
+
+**整合映射（旧 → 新）**
+
+| 旧概念 | 归入 |
 |---|---|
-| `#welcome` | Focus Tiger 是什么 |
-| `#quiet-room` | 共同安静练习 |
-| `#ambient` | Ambient 分享 |
-| `#journeys` | 实践故事 |
-| `#the-den` | 产品 / 想法（文化讨论，不是工单队列） |
+| 🌿 Start Here + Community → Introductions | 🌱 Newcomers |
+| 🌱 Journey / My Journey / Small Wins / Share your progress | 🧭 Journey（Small Wins 为子主题） |
+| Focus & Flow / Focus Sessions / Flow Stories | 🧘 Focus & Flow |
+| 🌙 Quiet Room | 🌙 Quiet Room（定义加强） |
+| 🐯 Yin's Corner / 🌎 Community 闲聊 | 🐯 The Den（**The Den** 取代 Yin's Corner 为一级名） |
 
-### 8.3 禁止变成 Support Forum
+### 8.3 心理旅程（比「频道分类」更重要）
+
+```text
+                    FOCUS TIGER
+                    COMMUNITY
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+     ARRIVE           PRACTICE         GROW
+        │                │                │
+   🌱 Newcomers    🧘 Focus & Flow    🧭 Journey
+        │                │                │
+        │          🎧 Ambient Atelier   Small Wins
+        │                │                │
+        └────────────────┼────────────────┘
+                         │
+                    JUST BE
+                         │
+                  🌙 Quiet Room
+                         │
+                    BELONG
+                         │
+                    🐯 The Den
+```
+
+用户路径：**Arrive → Practice → Grow → Be → Belong**。设计的是 Focus Tiger 用户的心理旅程，不是 Discord 式频道堆叠。
+
+### 8.4 Ambient Atelier（体验层 · 不占一级空间）
+
+🎧 **Ambient Atelier** 是 **Content / Experience Layer**，不是 Community Layer。性质是「听」，不是「聊」。
+
+- **禁止**升为第六个一级 Slack 频道。
+- **建议落点**：Slack 侧栏 **Home / Canvas** 或 workspace 描述区的**固定入口**（分隔线以下），与五个一级空间并列展示、但不占频道位。
+- 内容方向：Ambient sounds · Focus music · Nature loops · Yin's soundscapes；用户进入后**可以不说话**。
+- 与产品路径一致：`Private → Export/Share → Curated Community`（§11）。现网 App 本地上传已够 PHASE 1；公开层须证据后再开。
+
+若须在 Slack 内收纳链接，可用 `#focus-and-flow` 置顶帖指向 Atelier 合集，**不**单独开 `#ambient`。
+
+### 8.5 禁止变成 Support Forum
 
 Bug / payment / feature request / technical support **另走**（现有邮件 / Support FAB / GitHub，不在本锁规定新系统）。Slack 是「喜欢这种生活方式的人」，不是客服中心。
 
-**禁止**把 Private reflections、Personal Memory、Journey 明细、AI 对话贴进 Slack（公约写明）。
+**禁止**把 Private reflections、Personal Memory、Journey 明细、AI 对话贴进 Slack。完整公约（Quiet Room 规则、Support 分流、隐私红线）见 **`SLACK_COMMUNITY_GUIDELINES.md`**。
 
 ---
 
@@ -321,8 +373,8 @@ Ambient：**Private → Export/Share → Curated Community**。公开层会立�
 
 ## 12. 下一步（本锁之后 · 非本 PR）
 
-1. **设计师**输出 Prototype A–C + Slack 概念 → Culture Design Review。  
-2. **Slack 实验室**：Join our community 已接线（5 频道 + 公约 + 非客服）。  
+1. ~~**设计师**输出 Prototype A–C + Slack 概念 → Culture Design Review。~~ **五空间 IA 已锁**（§8.2，2026-08-29）；公约草案见 `SLACK_COMMUNITY_GUIDELINES.md`。Prototype A–C（Objects / Identity / Quiet Social）仍待 Design Review。  
+2. **Slack workspace 运营**：按 §8.2 重组频道 + 贴公约 pinned 文案；Join our community **App 外链已接线**（`communityLink.js`，2026-08-29）。  
 3. **工程**继续地基，不插队开 Lanterns / Identity Runtime / Gallery。
 
 口令示例：「评估 Global Lanterns」（仍须先过 Evidence Review，除非用户当回合书面豁免本锁）。
