@@ -9,6 +9,7 @@
  *
  * Phase 1: Confide-measured 10 + 2 controls (2026-08-31).
  * Phase 2: designer 20 (2026-09-01 PO freeze; #1 secondary empty).
+ * Phase 2B: v4 gold lives in confideIntentDiagnosticPhase2b.js (not this array).
  * Quality-seven persona prompts stay out: this probe forbids Yin voice.
  */
 

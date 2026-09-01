@@ -60,7 +60,7 @@
 | **0.2** | **#472 Read Hybrid 验收**（1.7B expansion · regex miss → L0 只读） | A/B/C 见 §3 | 直接测 · bug 才改代码 | tracker 关单或 bug 单 | ✅ **2026-09-01 关单**（tip `86a4c72e`；C-3 suspend · C-5 follow-up） |
 | **0.3** | Memory Slice 1d / 1e tracker 人工 | 人工 QA | 可与 0.2 并行 | 口头 Forget 链路人验 | ⏳ 待人工 |
 | **0.4** | Presence Signals 旁支（CI-02 链路） | Git + QA | 视旁支 PR | 1B 前置环境 | 🟡 与 1B 协调 |
-| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **已合 #495**；Phase 2 fixture **已合 #509**；Metal 20 条 **2026-09-01** `reading=model_can_label_boundary_check_pipeline`（不换 GGUF） |
+| **0.D** | **Yin Intent Diagnostic**（模型 vs routing 拆开） | 实验室 · 无生产改动 | PO 2026-08-31 · Confide 实测 | intent JSON 对照表 | Phase 1 **已合 #495**；Phase 2 fixture **已合 #509**；Metal 20 条 **2026-09-01** `reading=model_can_label_boundary_check_pipeline`（不换 GGUF）；**Phase 2B v4 fixture 本旁支**（A/C/D Metal 未跑） |
 
 **0.2 已通过（2026-09-01）**：**1B #503 已合**。**1A 口令已执行**（本旁支）。
 
@@ -270,6 +270,14 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 
 **Phase 2 首跑（生产 1.7B Q4 · Metal · `FT_INTENT_PHASE=2` · 2026-09-01）**：`parseOk` 20/20；`reading=model_can_label_boundary_check_pipeline`。`BEGIN` / `FORGET` / `SUPPRESS` 能标中；`BOUNDARY` 部分能中（#1 `Maybe later` 被标 `EMOTION`；`not-go-there` 被标 `BEGIN`）；`COMPANION_PRESENCE` 仍常压成 `BEGIN`/`EMOTION`；记忆/心情类 `OTHER` 常压成 `EMOTION`。`yinVoiceLeaks` 0。→ **仍是 pipeline / 标签层序问题，不是 1.7B 标不出边界**；**禁止**据此开 Phase 3 换模型。逐条数字留 `/tmp/ft-l0-lab/intent-diag-1788217815538.json`，不抄进本文。
 
+**Phase 2B（2026-09-01 · PO 冻 v4）**：新评分集四类分母 COMPANION 8 / 软 BOUNDARY 8 / OTHER 查询 8 / D 锚点 6。A2=`COMPANION_PRESENCE`（一起呼吸 ≠ 开练习）。B14/B15/B18 不入库；B16=练习查询；A13=`sit next to me`；OTHER 含 B19/B20/B21。BEGIN / EMOTION 只作对照，不进门槛。🔁 holdout 默认不跑（`FT_INTENT_HOLDOUT=1`）。架构 A=现状 7-way · C=同一 prompt 决策树 · D=生产规则预筛 + 残差 4-way。过关数字见 `YIN_INTENT_2B_GATES`。同一 1.7B Q4；**不进 Confide send**；**不含更大模型**。C 或 D 过关 → 结案不换模；都不过且锚点仍 ≥5/6 → 才允许谈 Phase 3。
+
+```bash
+cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=A npm run companion:intent-diagnostic
+cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=C npm run companion:intent-diagnostic
+cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:intent-diagnostic
+```
+
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
 **口令**：**开工 Yin Intent Diagnostic**
@@ -285,6 +293,7 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 | 开工 Reflection 实验（非 shipping） | **开工 Reflection Companion Validation** |
 | 拆开模型 vs routing（不换模型） | **开工 Yin Intent Diagnostic** |
 | 冻设计师 20 条 intent fixture | **开工 Yin Intent Diagnostic Phase 2** |
+| 冻 v4 金标 + A/C/D 实验室对照 | **开工 Yin Intent Diagnostic Phase 2B** |
 | #472 人工测有 bug | 直接描述现象 · 不必口令 |
 
 ---
@@ -294,7 +303,7 @@ cd focus-tiger/desktop && npm run companion:intent-diagnostic
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON 对照表（Phase 1 = 12 · Phase 2 = 20；`FT_INTENT_PHASE=2` 可只跑 20） | tracker 仅单元；Phase 1 **已合 #495**；Phase 2 **已合 #509**；Metal 20 条 reading 已记 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON 对照表（Phase 1 = 12 · Phase 2 = 20；Phase 2B = `FT_INTENT_PHASE=2b` × `FT_INTENT_ARCH=A\|C\|D`） | tracker 仅单元；Phase 1 **已合 #495**；Phase 2 **已合 #509**；Phase 2B fixture 本旁支；Metal 20 条 reading 已记；2B Metal 未跑 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
