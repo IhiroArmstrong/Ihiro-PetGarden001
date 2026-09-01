@@ -206,8 +206,10 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
 
   非评判约束（硬性）：
     不是表单、不是日报：无提交按钮、无必填校验、无"1/3"式进度数字
-    （仅三个弱化圆点示意位置）；每题独立可跳，Skip 与 Continue
-    视觉同级；Esc 可整体划过；任何跳过路径零提示、零劝导文案
+    （仅三个弱化圆点示意位置）；每题独立可跳；Esc 可整体划过；任何跳过路径零提示、零劝导文案
+    **现行运行时**：Skip 与 Continue **视觉同级**（三胶囊）。**已记录、尚未改代码**的视觉分层见
+    `SANCTUARY_UI_ART_DIRECTION.md` C.3（Continue 更重 / Skip 文字链 / Skip all 角落）。
+    未合入该代码 PR 前，仍以本段「视觉同级」为验收口径。
 
   数据处理（MVP）：
     仅非空答案本地保存最近 5 条（localStorage，复用 Storage 封装）；

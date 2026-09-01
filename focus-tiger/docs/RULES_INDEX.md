@@ -193,6 +193,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `HINTS_WIRING.md` | 场景 → Hint 接线（时刻 × 互斥/门闩/批次；对标动画接线管法） |
 | `CHARACTER_BIBLE.md` | 角色设定 |
 | `DESIGN.md` | 产品语义与玩法 |
+| `SANCTUARY_UI_ART_DIRECTION.md` | Idle 栖居主屏视觉语言（A）+ chrome `#id` 对照（B）+ 已拍板未实施补丁（C）；**不**覆盖断点 / z-index / 三球；C.3 实施前玩法仍以 `DESIGN.md` 为准 |
 | `RESPONSIVE_LAYOUT.md` | 窄屏 / 移动布局 |
 | `SHARED_RESOURCES.md` | 共享资源波及面 |
 | `TODAY_PRACTICE_SEMANTICS_AUDIT.md` | **「今日算不算练过 / 已同坐」语义 SSOT**（完成账本 vs celebrated / Journey / DORMANT / 留存；新功能判断前先查） |
@@ -234,6 +235,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-02 | 产品表新增 `SANCTUARY_UI_ART_DIRECTION.md`（栖居主屏视觉；不进 rules-authority 机器块；不覆盖断点 / z-index） |
 | 2026-09-01 | 扩展 `branch-freshness`：实现状态判断（含随口提问）须 freshness；新增「地面真相优先级」（git 事实 > Brief 措辞）；`agent-token-cost` 区分验证类 vs 探索类 git 检查不受省 token 约束。SSOT 仍 regression-lock + agent-token-cost |
 | 2026-08-27 | 新增 `LOCAL_AI_OPERATING_LAYER.md`：Auto-Operating ≠ Confide；只设计无运行时 |
 | 2026-08-26 | 新增 `scenario-tests-eod-sync`：口令「请安排下班前的 Git 同步」须先增量核对并更新 `SCENARIO_TESTS.md`（文首日期 + 升格场景；勿整份重写）。SSOT regression-lock 第 7 条 + `PROCESS` Git 同步节奏 step 0。本次升格 **AF–AK**（Presence / Yin Memory / Overlay / Backup / Newsletter / PiP gate） |
