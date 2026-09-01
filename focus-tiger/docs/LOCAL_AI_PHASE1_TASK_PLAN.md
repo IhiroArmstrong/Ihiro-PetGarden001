@@ -343,7 +343,21 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 | A2/A13 | **OTHER → COMPANION_PRESENCE ✓** |
 | C13–C17 | **4/4 从 D 退步项全部收回 BOUNDARY ✓** |
 
-**E′ 仍不过线**：COMPANION 差 1 条（A6/A14/A15）；D 锚点 D3 SUPPRESS→BOUNDARY · D7 FORGET→OTHER。**仍禁止**据此改 Confide send / 默认 GGUF。
+**E′ 仍不过线**：COMPANION 差 1 条（A6/A14/A15 三条未过 · 门槛需 6/8）；D 锚点差 1 条（D3/D7 两条未过 · 门槛需 5/6）。**仍禁止**据此改 Confide send / 默认 GGUF。
+
+**E′ 基线锁定（#520 已合 develop · 2026-09-01）**：实验室架构 E（E′ prompt）到此收线，不再追 COMPANION 满 8/8 或锚点满 6/6。
+
+**第五刀尝试（A6 + D3 · 未合入）**：Metal 验证后**不 ship** — 两类失败的可修复路径不同，硬堆 prompt 无净收益：
+
+| 目标 | 尝试 | Metal 结果 | 结论 |
+|---|---|---|---|
+| **A6** | step 4/6 补 *stay a little longer* | 仍稳定判 BOUNDARY；连带软边界 8/8→5–6/8 | 关键词表缺口，但修它会松动刚锁住的门槛 → **不收** |
+| **D3** | step 2 补 *don't keep a record* | D3 ✓ 但 COMPANION 5/8→2/8 · 软边界 8/8→6/8 | 表层关键词可修，但与 E′ 其余门槛**拉锯** → **不收** |
+
+**剩余失败分两类（不再 prompt 硬撬）**：
+
+1. **关键词覆盖缺口（可窄修但已停）**：A6 · D3 — 见上表。
+2. **语用推断缺口（五架构全败 · 换说法即失效）**：A14 · A15 · D7 — 转**生产层序 / 规则预筛**，或等 Phase 3 一并评估；**禁止**再堆示例句过拟合。
 
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 
@@ -371,7 +385,7 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 | 轨 / 门禁 | 单测 | 人工 | 文档 |
 |---|---|---|---|
 | **Gate 0.2** | §3.2 + 探针基线绿 | §3.4 canonical + paraphrase | tracker 关单 |
-| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（2B A/C/D + hard-5 E **已跑 2026-09-01** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 |
+| **Gate 0.D** | `confideIntentDiagnostic.test.js` | 系统终端 JSON（2B A/C/D + E′ **已锁 #520** · §6.1） | tracker 仅单元；#495 · #509 · #516 · #517 · #518 · #520 |
 | **1B** | registry + 纯函数 | 三 CORE 问句 + 危机句 | `SCENARIO_TESTS` · `CONFIDE_EXECUTABLE_INTENTS` |
 | **1A** | registry + hybrid 闸门 | Forget 不变 + Show memory | `CONFIDE_EXECUTABLE_INTENTS` |
 | **1C** | lab 范围 | 「照见」非「指导」 | validation 结论文档 |
