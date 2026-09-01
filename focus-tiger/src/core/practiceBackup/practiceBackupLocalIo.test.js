@@ -40,11 +40,35 @@ describe('practiceBackupLocalIo', () => {
     assert.match(name, /^focus-tiger-backup-2026-08-28-150405\.json$/);
   });
 
-  it('exports empty whitelist without error', () => {
+  it('exports empty whitelist without error', async () => {
     const storage = memStorage();
-    const payload = createPracticeExportPayload(storage, () => new Date('2026-01-01T00:00:00Z'));
+    const payload = await createPracticeExportPayload(
+      storage,
+      () => new Date('2026-01-01T00:00:00Z')
+    );
     assert.equal(payload.snapshot.schemaVersion, PRACTICE_BACKUP_SCHEMA_VERSION);
     assert.ok(payload.json.includes('"stores"'));
+  });
+
+  it('migrates v1 import payloads to v2', () => {
+    const v1 = {
+      schemaVersion: 1,
+      savedAt: '2026-01-01T00:00:00.000Z',
+      stores: {
+        'focus-tiger.journey-log.v1': { entries: [] },
+        'focus-tiger.practice-days.v1': { days: [] },
+        'focus-tiger.milestone-glow.v1': { played: [] },
+        'focus-tiger.entitlement-ownership.v1': { owned: {} },
+        'focus-tiger.ritual-completions.v1': { entries: [] },
+        'focus-tiger.mustard-seed-seal.v1': { revealed: false }
+      }
+    };
+    const validated = validatePracticeImportPayload(JSON.stringify(v1));
+    assert.equal(validated.ok, true);
+    if (validated.ok) {
+      assert.equal(validated.snapshot.schemaVersion, 2);
+      assert.ok('focus-tiger.presence-signals.v1' in validated.snapshot.stores);
+    }
   });
 
   it('rejects invalid JSON and future schema versions', () => {
@@ -84,7 +108,7 @@ describe('practiceBackupLocalIo', () => {
     );
   });
 
-  it('imports atomically and rolls back on write failure', () => {
+  it('imports atomically and rolls back on write failure', async () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
         entries: [
@@ -97,7 +121,7 @@ describe('practiceBackupLocalIo', () => {
         ]
       })
     });
-    const snapshot = createPracticeExportPayload(storage).snapshot;
+    const snapshot = (await createPracticeExportPayload(storage)).snapshot;
     snapshot.stores['focus-tiger.journey-log.v1'] = {
       entries: [
         {
@@ -117,17 +141,17 @@ describe('practiceBackupLocalIo', () => {
       originalSet(k, v);
     };
 
-    const failed = importPracticeSnapshotAtomic(storage, snapshot);
+    const failed = await importPracticeSnapshotAtomic(storage, snapshot);
     assert.equal(failed.ok, false);
     assert.ok(storage.getItem('focus-tiger.journey-log.v1')?.includes('"minutes":5'));
 
     storage.setItem = originalSet;
-    const ok = importPracticeSnapshotAtomic(storage, snapshot);
+    const ok = await importPracticeSnapshotAtomic(storage, snapshot);
     assert.equal(ok.ok, true);
     assert.ok(storage.getItem('focus-tiger.journey-log.v1')?.includes('"minutes":20'));
   });
 
-  it('rolls back all keys when write fails on the third whitelist key', () => {
+  it('rolls back all keys when write fails on the third whitelist key', async () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
         entries: [
@@ -148,7 +172,7 @@ describe('practiceBackupLocalIo', () => {
     const beforeDays = storage.getItem('focus-tiger.practice-days.v1');
     const beforeMilestone = storage.getItem('focus-tiger.milestone-glow.v1');
 
-    const snapshot = createPracticeExportPayload(storage).snapshot;
+    const snapshot = (await createPracticeExportPayload(storage)).snapshot;
     snapshot.stores['focus-tiger.journey-log.v1'] = {
       entries: [
         {
@@ -172,20 +196,20 @@ describe('practiceBackupLocalIo', () => {
       originalSet(k, v);
     };
 
-    const failed = importPracticeSnapshotAtomic(storage, snapshot);
+    const failed = await importPracticeSnapshotAtomic(storage, snapshot);
     assert.equal(failed.ok, false);
     assert.equal(storage.getItem('focus-tiger.journey-log.v1'), beforeJourney);
     assert.equal(storage.getItem('focus-tiger.practice-days.v1'), beforeDays);
     assert.equal(storage.getItem('focus-tiger.milestone-glow.v1'), beforeMilestone);
   });
 
-  it('detects data-loss risk when import has fewer rows', () => {
+  it('detects data-loss risk when import has fewer rows', async () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
         entries: [{}, {}, {}]
       })
     });
-    const snapshot = createPracticeExportPayload(storage).snapshot;
+    const snapshot = (await createPracticeExportPayload(storage)).snapshot;
     snapshot.stores['focus-tiger.journey-log.v1'] = { entries: [{}] };
     assert.equal(hasLocalPracticeData(storage), true);
     assert.equal(importHasDataLossRisk(storage, snapshot), true);
@@ -194,13 +218,13 @@ describe('practiceBackupLocalIo', () => {
     assert.equal(rows[0].importCount, 1);
   });
 
-  it('detects data-gain when import has more rows', () => {
+  it('detects data-gain when import has more rows', async () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
         entries: [{}]
       })
     });
-    const snapshot = createPracticeExportPayload(storage).snapshot;
+    const snapshot = (await createPracticeExportPayload(storage)).snapshot;
     snapshot.stores['focus-tiger.journey-log.v1'] = { entries: [{}, {}, {}] };
     assert.equal(importHasDataGain(storage, snapshot), true);
     assert.equal(importHasDataLossRisk(storage, snapshot), false);
