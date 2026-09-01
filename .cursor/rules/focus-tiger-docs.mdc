@@ -117,7 +117,7 @@ alwaysApply: false
 1. **UI / 动画 / 文案 / 交互**可见改动 → 在 `docs/tracker-entries/<分支名>.md` 新增一行（`/` → `-`），状态「待人工测试」，写清测试步骤与本地访问路径，日期填当天。**不要**在 `TEST_TRACKER.md` 主表插行（见文首「新增行走碎片」）。
 2. **纯后端 / 逻辑** → 同样写入碎片，登记「仅单元测试覆盖」，仍要登记。
 3. 完成消息须写明「本次有 N 项需要你测试，已写入 tracker-entries/」；禁止仅以「已完成 / 已验收」收尾。正式邀测前须跑 `npm run check:branch-freshness` 并汇报落后数（`RULES_INDEX` → `branch-freshness`）；落后 > 0 不得代表 develop 邀测。  
-   **拼装触发**（SSOT：`TEST_TRACKER.md`「拼装触发」）：功能 PR **禁止** `tracker:assemble`。口令「批量人工测试」前若有碎片 → 先独立 `docs/*` PR 拼装再出清单；待拼碎片 ≥ 5 → 下班前 Git 同步或下一次文档会话必须另开拼装 PR。
+   **拼装触发**（SSOT：`TEST_TRACKER.md`「拼装触发」）：功能 PR **禁止** `tracker:assemble`。口令「批量人工测试」前若有碎片 → 先独立 `docs/*` PR 拼装再出清单；口令「请安排下班前的 Git 同步」时若有任意碎片 → 须另开独立 `docs/*` PR 拼装（`tracker-eod-sync`）；待拼 ≥ 5 → `tracker:check` WARN。
 4. 单元测试通过 ≠ 用户验收；视觉项在用户确认前保持「待人工测试」。
 5. 用户反馈问题 → 该行改「有问题」，**只写入「用户反馈」列**（日期 + 原话要点）；**禁止**混入「测试步骤」；同时填「严重度」「处理承诺」（见 `TEST_TRACKER`「缺陷分级与处理承诺」）；修复后再改回「待人工测试」等复测，**禁止**自行标「已通过」。
 6. **用户书面测试意见（2026-07-19 起）**：即使本回合未立刻开修，也必须记入对应行的「用户反馈」列；见 `TEST_TRACKER.md` 文首「用户测试反馈记入规则」。书面意见若测自非 `origin/develop` tip → 仍记入反馈，但**不得**据此关单（见文首「人工验收唯一基线」）。
@@ -135,7 +135,7 @@ alwaysApply: false
 
 ## Git 同步（任务收尾默认 push + PR；禁止直推主干）
 
-操作节奏摘要见 `PROCESS.md`「Git 同步节奏」（含口令「请安排下班前的 Git 同步」须先增量核对 `SCENARIO_TESTS.md` · `scenario-tests-eod-sync`；与「批量人工测试」）。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main` / `git-develop-small-pr-run-merge` / `prod-worker-deploy` / `scenario-tests-eod-sync`）与 regression-lock 第 5–7 条（**禁止直推 develop/main**；同步=旁支 + PR）。
+操作节奏摘要见 `PROCESS.md`「Git 同步节奏」（含口令「请安排下班前的 Git 同步」须先增量核对 `SCENARIO_TESTS.md` · `scenario-tests-eod-sync`，以及 TEST_TRACKER 碎片拼装 · `tracker-eod-sync`；与「批量人工测试」）。政策 SSOT 见 `RULES_INDEX.md`（`git-agent-commit` / `git-merge-main` / `git-develop-small-pr-run-merge` / `prod-worker-deploy` / `scenario-tests-eod-sync` / `tracker-eod-sync`）与 regression-lock 第 5–7 条（**禁止直推 develop/main**；同步=旁支 + PR）。
 `stop` 的 Git 同步 macOS 通知钩子已关闭（`hooks.json` 的 `stop` 为空）。若日后重新启用，只允许本地系统通知并返回 `{}`；禁止使用 `followup_message` 自动开启额外 Agent 回合。
 
 禁止：post-commit 钩子自动 push、保存即 commit、未经确认把大体量抽帧素材 / `node_modules` 推上远程、静默 commit 不汇报、**直推 `develop`/`main`**、未说「部署」就 Redeploy 生产 Worker。详见 regression-lock 与 `WORKFLOW.md`。 

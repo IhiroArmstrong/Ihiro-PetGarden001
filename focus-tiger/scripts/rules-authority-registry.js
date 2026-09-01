@@ -40,6 +40,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
+  '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
   '.cursor/rules/focus-tiger-source-read-granularity.mdc',
@@ -1287,6 +1288,52 @@ export const RULE_AUTHORITY_TOPICS = [
           /交接摘要.{0,24}(?:即|就是|等于|当作).{0,16}(?:已验证|已修复|关单)/,
         note: '交接摘要不改变已验证须人工测 / 关单门禁'
       }
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'ci-failure-triage',
+    title:
+      'CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮）',
+    ssotPath: '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
+    ssotSection: 'Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层）',
+    ssotMustContain: [
+      /ci-failure-triage/,
+      /Step A/,
+      /连续 5 次/,
+      /禁止.*地毯式/
+    ],
+    topicSignals: [
+      /ci-failure-triage/,
+      /CI\/Smoke 失败排查/,
+      /Step A — 取失败信号/
+    ],
+    mustCite: [/focus-tiger-ci-failure-triage\.mdc|ci-failure-triage/],
+    restatementFingerprints: [
+      /Step A — 取失败信号/,
+      /连续 5 次/,
+      /需要失败日志才能精确定位/,
+      /禁止.*无 CI 日志信号的臆测摘要/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'ci-fail-grep-without-log',
+        pattern:
+          /CI[^。\n]{0,24}(?:红了|失败|挂了)[^。\n]{0,32}(?:可以|允许|应当|先)[^。\n]{0,24}(?:grep|搜索|探索)/,
+        note: 'CI 失败须先取日志；禁止写成可无日志先 grep'
+      },
+      {
+        id: 'ci-fail-guess-summary',
+        pattern:
+          /失败分析摘要[^。\n]{0,24}(?:可以|允许|不必|无需)[^。\n]{0,24}(?:日志|gh|Actions)/,
+        note: '失败分析摘要须基于 Step A 日志提取，禁止写成可臆测'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
     ],
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
   },

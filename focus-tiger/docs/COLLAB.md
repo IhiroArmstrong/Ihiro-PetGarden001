@@ -68,7 +68,7 @@ COLLAB.md（本文档，协作层）
    → 该任务的Brief结项，进入下一个任务
 ```
 
-**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。**新增行**写 `docs/tracker-entries/<分支名>.md`（见文首「新增行走碎片」）。**拼装触发**见同文「拼装触发」：功能 PR 禁止 `tracker:assemble`；批量人工测试前若有碎片须先独立 docs PR 拼装；满 5 个碎片须另开拼装 PR。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。用户书面测试意见只写进表格 **「用户反馈」列**，禁止混入「测试步骤」（见文首「用户测试反馈记入规则」，2026-07-19 起）。
+**TEST_TRACKER 约定**：权威路径 `focus-tiger/docs/TEST_TRACKER.md`。**新增行**写 `docs/tracker-entries/<分支名>.md`（见文首「新增行走碎片」）。**拼装触发**见同文「拼装触发」：功能 PR 禁止 `tracker:assemble`；批量人工测试前若有碎片须先独立 docs PR 拼装；下班前 Git 同步时若有任意碎片须另开拼装 PR（`tracker-eod-sync`）；满 5 个碎片 `tracker:check` WARN。Cursor 不得自行把「待人工测试」改成「已通过」；单元测试通过 ≠ 用户验收。用户书面测试意见只写进表格 **「用户反馈」列**，禁止混入「测试步骤」（见文首「用户测试反馈记入规则」，2026-07-19 起）。
 
 **回归锁约定**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`（门禁）与 `DEV_WORKFLOW_QUALITY.md`（叙事）；主题权威索引 `RULES_INDEX.md`。此处不复述。
 

@@ -1,0 +1,113 @@
+---
+description: CI/Smoke 失败排查前置检查——用户报 CI 挂且未附失败日志时，须先 gh 取摘要，禁止无信号探索性 grep
+alwaysApply: false
+---
+
+# Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层）
+
+> **加载时机**：用户报告 CI 失败 / smoke 失败 / PR checks 不过，且任务目标是修复该失败。
+>
+> 索引：`RULES_INDEX.md` → `ci-failure-triage`。
+>
+> **只管排查前的信息收集顺序**；不改变 push/PR 默认、合 develop（CI 绿）、§7 人工关单、本地 e2e 硬顶。
+
+## 适用条件（同时满足才生效）
+
+1. 用户意图是修复 **CI / smoke / Required check** 失败（含仅给 PR 链接 +「smoke 要修」）。
+2. 用户消息**未同时提供**以下三项中的**至少两项**：
+   - 失败的 check / job / step 名称（如 `test:pr-smoke`）
+   - 失败用例名或失败命令（如 `e2e/foo.spec.js` 或 `npm run test:smoke` 子项）
+   - 一行断言/报错摘要（含可定位的堆栈行或文件:行号）
+
+仅 PR URL / PR 号 /「smoke 挂了」= **信息不足**，必须走下方 Step A。
+
+## Step A — 取失败信号（硬闸 · 优先于一切源码 Grep/Read）
+
+在**第一次**对 `focus-tiger/` 源码或测试做 Grep / Read / Glob 之前，**必须**完成本步。
+
+### A1. 解析锚点
+
+- 有 PR 号/URL → 用该 PR
+- 仅有分支 → `gh pr list --head <branch> --json number,url --limit 1`
+- 都没有 → **停下**，在「待你决定」请用户提供 PR 号或分支名
+
+### A2. 拉 check 状态（一次）
+
+`gh pr checks <n>` 和/或 `gh pr view <n> --json statusCheckRollup,headRefName,url`
+
+汇报：**哪些 check 红**、对应 workflow run 链接（若有）。
+
+### A3. 拉失败摘要（一次，结构化）
+
+对**第一个失败**的 check / run：
+
+1. `gh run view <run-id> --json jobs,conclusion,displayTitle,url`
+2. 取失败 job 的日志片段（**禁止**整段贴入回复或上下文）：
+   - 优先：`gh run view <run-id> --log-failed` 管道落盘
+     `focus-tiger/.tmp/ci-failed-<timestamp>.log`，再 `Read` **仅失败段**（≤80 行）
+   - 或：`gh api repos/{owner}/{repo}/actions/jobs/{job_id}/logs` 等价的 targeted 拉取
+
+**必须提取并写入回复**（缺任一项 = Step A 未完成）：
+
+- 失败 check/job/step 名
+- 失败用例或失败命令
+- 一行断言/报错 + **最相关**的文件路径（有则写行号）
+
+### A4. gh 不可用或日志拉不到
+
+连续 **2 次** gh 尝试仍无结构化摘要 → **停下**，不进入 Step B。
+在「待你决定」写明：
+
+> 需要失败日志才能精确定位。请贴：失败的 check 名 + 失败用例/命令 + 报错一行（或 Actions run 页「失败 step」截图文字）。
+
+**禁止**以「可能相关」为由开始地毯式搜索。
+
+### Step A 与 agent-token-cost 的关系
+
+- 允许：`gh pr checks` / `gh run view` / **单次**日志拉取（**不是** `gh run watch`、不是 sleep 轮询）
+- Step A 的 gh 调用**不计入** Step B 探索轮次
+
+## Step B — 定点读码（仅 Step A 完成后）
+
+1. 日志已给出文件/用例/符号 → **直接** Grep/Read 该点；禁止先全仓搜同类词。
+2. 日志只有用例名 → 先 `Grep` 该 spec/测试名，再读失败断言附近代码。
+3. 日志仍不足以指向代码 → 才允许探索性 Grep/Read/Glob。
+
+## Step C — 探索轮次上限（硬顶）
+
+**仅**在 Step B 第 3 款（日志不足）时计数。
+
+- **计数对象**：对 `focus-tiger/`（含 `e2e/`、`scripts/`）的 Grep、Read、Glob
+- **不计数**：git/gh/npm 验证命令；对已锁定文件的片段 Read（offset/limit）
+
+**连续 5 次**探索类工具调用后，若仍未收敛到「具体文件 + 函数/组件/测试用例」级怀疑对象 → **必须停下**，禁止扩大搜索范围。
+
+停下时**必须**输出：
+
+| 已查 | 结论 |
+|---|---|
+| （关键词/文件） | 相关 / 不相关 / 待定 |
+
+并在「待你决定」请用户补充：更完整日志、复现步骤、或指定怀疑模块。
+
+未获用户新信号前，**禁止**第 6 次探索性 Grep/Read。
+
+## 收敛定义
+
+以下任一即视为收敛，探索计数清零：
+
+- 已锁定失败用例 + 断言对应的实现文件
+- 已锁定具体函数/组件 + 失败原因假设（可进入改代码）
+
+## 与其它规则
+
+- `source-read-granularity`：Step B 定点读码时适用
+- `agent-token-cost` §3：仍禁 `gh run watch`；本条不授权轮询
+- `agent-token-cost` §5–§6：CI/smoke 失败排查场景下，本条 Step C 的 **5 轮硬顶**优先于 §5 笼统上限；§6「失败分析摘要」**必须基于 Step A 提取的日志**，禁止臆测
+- `testing-strategy.mdc`（`RULES_INDEX` → `e2e-local-budget`）：修完后本地验证仍遵守 e2e 硬顶；本条不改为本地跑全量
+- `regression-lock` / §7：声称修好仍须五证 + 人工关单；**已合 develop ≠ 已修复**
+
+## 汇报
+
+触及本主题的回合，在正文或「待你知道」须一行写明：
+`ci-triage: 已 gh 取摘要 / 已请用户贴日志 / 探索 N 轮后停下`
