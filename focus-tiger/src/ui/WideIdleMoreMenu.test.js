@@ -101,6 +101,16 @@ describe('wide more menu click reception', () => {
     assert.match(src, /pointer-events: auto !important/);
   });
 
+  it('clearStage skips onClearStage while a growth glass card is the overlay', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /isGrowthCardOverlayActive/);
+    assert.match(
+      src,
+      /if \(this\.handlers\.isGrowthCardOverlayActive\?\.\(\)\) return;[\s\S]*onClearStage/
+    );
+  });
+
   it('reminder panel lives on body as viewport-fixed (escapes cluster filter)', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');

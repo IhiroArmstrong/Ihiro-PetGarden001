@@ -302,11 +302,13 @@ export class CompanionModePicker {
 
   /**
    * 展开三选一面板（叠层占用中则 no-op）。会先恢复空闲 chrome。
+   * @param {{ afterArrivalChoose?: boolean }} [opts]
+   *   Choose→nod 后须展开三选一；首卡/growth 叠层不得挡住该握手。
    * @returns {void}
    */
-  open() {
+  open(opts = {}) {
     this.setIdleChromeVisible(true);
-    if (this._postSessionOverlay) return;
+    if (this._postSessionOverlay && !opts.afterArrivalChoose) return;
     this._expanded = true;
     this._syncExpanded();
     this._syncHintLabel();

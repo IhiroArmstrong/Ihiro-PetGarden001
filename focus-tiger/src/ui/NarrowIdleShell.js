@@ -82,6 +82,7 @@ export class NarrowIdleShell {
    *     onQuickStart?: () => void,
    *     onClearStage?: () => void,
    *     onSheetChange?: (open: boolean) => void,
+   *     isGrowthCardOverlayActive?: () => boolean,
    *   }
    * }} [options]
    */
@@ -167,15 +168,24 @@ export class NarrowIdleShell {
   }
 
   /**
-   * Clear companion/reminder staging classes.
+   * Drop companion/reminder/sound stage body classes only.
    * @returns {void}
    */
-  clearStage() {
+  _dropStageClasses() {
     document.body.classList.remove(
       NARROW_STAGE_CLASS.companion,
       NARROW_STAGE_CLASS.reminder,
       NARROW_STAGE_CLASS.sound
     );
+  }
+
+  /**
+   * Clear companion/reminder staging classes.
+   * @returns {void}
+   */
+  clearStage() {
+    this._dropStageClasses();
+    if (this.handlers.isGrowthCardOverlayActive?.()) return;
     this.handlers.onClearStage?.();
   }
 
