@@ -9,7 +9,21 @@ alwaysApply: false
 
 目的：阻止 Agent 自动多轮递归、并行子 Agent、长 CI 守候、无限制上下文读取、默认走高价模型档位，瞬间吞掉数十次 Fast Request 或天量 token。
 
-索引：`RULES_INDEX.md` → `agent-token-cost`（本地 e2e 硬顶另见 `e2e-local-budget`）。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask + **`gate-local-heavy-e2e` deny**；**IDE Browser MCP deny** 见 `browser-energy`）。
+索引：`RULES_INDEX.md` → `agent-token-cost`（本地 e2e 硬顶另见 `e2e-local-budget`）。硬闸门另见 `.cursor/hooks.json`（`subagentStart` deny + full-e2e shell ask + **`gate-local-heavy-e2e` deny**；**IDE Browser MCP deny** 见 `browser-energy`）。`PROCESS.md`「本地 Cursor 能耗」有同款速查表（只指路，不复述全文）。
+
+## 速查（Merged · 新会话 · 模型一行）
+
+**PR 合入后（`Merged` / 「PR 合了」/ `#NNN` 已合）→ 必须新开 Chat。** 禁止在同一会话里接下一任务、验收或 Git 同步——旧会话的工具返回与规则前缀会在**每一轮**重复计费；单轮 500万–650万 token 多由此而来。
+
+**新会话第一条消息末尾附一行模型（用户口吻；Agent 可提示、不得擅自切换）：**
+
+| 任务类型 | 推荐一行 |
+|---|---|
+| 机械 Git / PR / QA 树同步 / 状态确认 | `Cursor Model: Composer 2.5` |
+| 常规实现、多文件改代码、局部调试 | `Cursor Model: Composer 2.5 / Fast OFF` |
+| 跨模块架构、疑难推理、安全边界设计 | `Cursor Model: Grok 4.6 / Fast OFF` |
+
+**例外**：用户当回合书面「就在这里做」→ 方可继续当前会话（仍建议换便宜模型）。
 
 ## 验证类 vs 探索类（强制 · 勿把省 token 扩到地面真相）
 
@@ -52,11 +66,12 @@ alwaysApply: false
    - 简单编辑、局部调试、格式修正、小范围重构：使用当前默认/轻量模型，不主动建议或假设需要切换到 high 推理档位。
    - 涉及跨文件架构设计、复杂逻辑推理、疑难 bug 排查等确实需要深度推理的任务：可以提示用户「这个任务可能需要更强模型（如 high 档位），是否切换？」，但不得擅自假设已获同意并按更高档位继续执行。
    - 模型档位切换权始终在用户手中，Agent 不得通过工具调用绕过。
-9. **长会话收尾卫生（Session Hygiene）**
-   - 当用户消息是简短确认/收尾类内容（如「Merged」「同步一下 QA」「PR 合了」等），且当前会话已经跨越较长时间或已处理过多个不相关话题时，先提示用户：「这个会话历史较长，建议新开一个会话处理这个收尾动作，能减少不必要的 token 开销」，而不是直接在旧会话里继续执行。
-   - 只有当用户明确回复「就在这里做」或类似确认后，才继续在当前会话执行。
+9. **长会话收尾卫生（Session Hygiene）· `Merged` 硬断点**
+   - **`Merged` / 「PR 合了」/ `#NNN` 已合 = 会话终点**：Agent **必须**提示用户新开 Chat，再处理下一任务（验收、同步 QA、新 Brief、下一 PR）。**禁止**默认在当前会话继续——不是「建议」，是硬断点（见上文「速查」）。
+   - 其它简短收尾（如「同步一下 QA」）且会话已跨多话题 / 多轮工具时，同样先提示新开 Chat，并说明历史上下文会线性累积计费。
+   - 仅当用户明确回复「就在这里做」或类似确认后，才继续当前会话。
 10. **Git / PR / QA 同步类任务的模型路由建议**
-   - 若任务本质是机械性流程（分支切换、commit、push、开 PR、QA 树同步、状态确认等），不涉及复杂逻辑推理，在任务开始前提示用户：「这类任务用 Composer 2.5 会更省成本，是否要切换？」
+   - 机械性流程（分支切换、commit、push、开 PR、QA 树同步、状态确认等）→ 任务开始前提示用户附 **`Cursor Model: Composer 2.5`**（见上文速查表）。
    - 不得擅自假设用户已同意切换模型；模型切换权始终在用户手中。
 11. **机械性操作的一次性批量规划**
    - 对于 Git/PR/QA 同步这类多步骤机械操作，执行前先列出完整步骤清单（占坑锁、stash、切分支、commit、push、开 PR 等），一次性说明后再连续执行，不要每完成一步就停下来单独确认一次，避免把一个任务拆成过多**探索/确认**轮次（每多一轮，规则前缀就多计一次 token）。**不是**让你省略清单里的 `git status` / `git log` / freshness：那些验证类命令仍须执行，只是不要拆成「每条命令停下来问一次」。
