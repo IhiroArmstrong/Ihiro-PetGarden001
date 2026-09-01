@@ -13,6 +13,8 @@
 1. **仅系统已有权威数据 + 产品明确允许的动作** 才可进入本白名单。  
 2. **执行路径在层 3 之前**：规则识别 → 确定性 handler → 模板/系统字段回复；**禁止** Qwen 编造数字、假装删库、假装备份。  
 3. **优先级**：Safety → **陪伴在场 / 边界尊重**（口头待着 ≠ 开计时；不确定要不要谈）→ 情绪桶语料 → **本表白名单 + `memory_suppress` + 偏好诚实模板** → L3 短生成（仅接不住的闲聊）。L3 **禁止**对边界句贴「I am curious / I am aware」，**禁止**把 sit-with-me 说成 BEGIN。  
+   **Intent 三级**（SSOT：`LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1）：Hard / Soft / Pragmatic。Pragmatic（A14/A15/D7）**不为过线污染生产**。  
+   **FORGET vs BOUNDARY（双命中 · 2026-09-01 拍板）**：同一句同时命中 CI-01 与 boundary 正则 → **FORGET 赢**。现网 `_onSend` 仍先 boundary（双命中会不删）。**未实现**；禁止把整张设计师冲突表当成现网。详 § Intent precedence。  
 4. **新意图**须 Brief + 冲突扫描；**禁止**为每句用户话无限加 slice。
 
 ---
@@ -106,6 +108,8 @@ ConfideToYinUI._onSend
   → 仍未命中 → YPE 门闩 → L3 短生成
 ```
 
+**层序是现网事实，不是「设计师 precedence 表已落地」。** 双命中 FORGET 赢 = 已拍板合同，代码仍走上一行 boundary-first（切片 3 另口令）。完整表见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1。
+
 | 风险级 | 例子 | 生产策略 |
 |---|---|---|
 | `read` | 练了多久、情绪趋势、Show memory | 正则优先；regex miss 可 L0 补漏（registry 闸门） |
@@ -120,7 +124,7 @@ ConfideToYinUI._onSend
 
 `ConfideToYinUI._onSend` 经 `matchConfideExecutableTool` 于层 3 之前判定；顺序 = registry 数组顺序（practice → presence → memory_list → forget）。  
 实验室：`desktop/scripts/l0-tool-call-probe.js` · `npm run companion:tool-call` · fixture `confideToolCallFixtures.js`。  
-Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 20）。Phase 2 Metal 结论见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（不换默认 GGUF）。  
+Gate 0.D intent JSON（**不**进 send）：`npm run companion:intent-diagnostic` · `confideIntentDiagnosticFixtures.js`（Phase 1 = 12 · Phase 2 = 20）。Phase 2 / 2B / E′ 结论与 **三门禁** 见 `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1（Model PASS-provisional · Architecture 未过 · 生产第一刀 **#523** 字面预筛）。  
 新增 CI-xx 时应扩 **registry + 纯函数模块 + 单测**，禁止在 UI 内堆 if 树。
 
 
@@ -148,6 +152,16 @@ Gate 0.D：1.7B **能**把「I'm not sure whether I want to talk about it.」标
 | **`companion_presence`** | `confideCompanionPresence.js` · sit / stay / sit next to me / breathe together / keep me company · **高于**情绪桶、**低于** Safety；不启动 Focus |
 | **`preference_honesty`** | `confidePreferenceHonesty.js` · 无偏好 store · 诚实短句，不编口味 |
 | **不进 L3** | 禁止贴「I am curious / I am aware」；禁止把待着说成 BEGIN；L3 prompt **本刀未改** |
-| **不做** | 不把 Gate 0.D E′ JSON 探针接到 Share；不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令；不换默认 GGUF；A14/A15/D7 无字面句不硬撬 |
+| **不做** | 不把 Gate 0.D E′ JSON 探针接到 Share；不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令；不换默认 GGUF；A14/A15/D7 无字面句不硬撬；**不**把设计师冲突表未拍板格写成现网 |
 
 ---
+
+## Intent precedence（2026-09-01 · 合同）
+
+SSOT 全文：`LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1「Intent precedence」。本表只锁 **FORGET vs BOUNDARY 双命中**。
+
+| 情形 | 合同 | 现网 `_onSend` |
+|---|---|---|
+| 纯边界（AE 步 7） | `boundary` 模板 | 已实现 |
+| 纯口头 Forget（AG 1e） | `memory_forget` | 已实现（句中无 boundary 正则时能落到 CI-01） |
+| **双命中**（forget 动词 **且** boundary 正则） | **FORGET 赢**（须删点名条目；确认句仍模板） | **BOUNDARY 先** → 不删。切片 3 另口令，**不**改本文件当已实现 |
