@@ -6,7 +6,12 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { resumePendingDesktopCheckout } from './desktopCheckoutConfirm.js';
-import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.js';
+import {
+  DESKTOP_CHECKOUT_PENDING_STORAGE_KEY,
+  noteDesktopCheckoutOpened,
+  readDesktopCheckoutPending,
+  stripeCheckoutSessionIdFromValue
+} from './desktopCheckoutPending.js';
 import { ENTITLEMENT_CACHE_STORAGE_KEY } from './entitlement/entitlementState.js';
 
 describe('desktopCheckoutConfirm', () => {
@@ -57,5 +62,76 @@ describe('desktopCheckoutConfirm', () => {
     const cache = JSON.parse(storage.getItem(ENTITLEMENT_CACHE_STORAGE_KEY));
     assert.equal(cache.subscription.planId, 'focus-tiger-pro');
     assert.equal(storage.getItem(DESKTOP_CHECKOUT_PENDING_STORAGE_KEY), null);
+  });
+
+  it('confirms Sanctuary using pending sessionId without URL deep link', async () => {
+    const storage = {
+      data: {},
+      getItem(k) {
+        return this.data[k] ?? null;
+      },
+      setItem(k, v) {
+        this.data[k] = v;
+      },
+      removeItem(k) {
+        delete this.data[k];
+      }
+    };
+    globalThis.localStorage = storage;
+    globalThis.sessionStorage = storage;
+    globalThis.desktopShell = { isDesktop: true };
+    storage.setItem(
+      DESKTOP_CHECKOUT_PENDING_STORAGE_KEY,
+      JSON.stringify({
+        kind: 'sanctuary',
+        startedAt: new Date().toISOString(),
+        sessionId: 'cs_test_sanctuary_123'
+      })
+    );
+
+    const posts = [];
+    const outcome = await resumePendingDesktopCheckout({
+      storage,
+      search: '?product=1',
+      postJson: async (path, init) => {
+        posts.push({ path, body: init?.body });
+        return { unlocked: true };
+      }
+    });
+
+    assert.equal(outcome, 'success');
+    assert.equal(posts.length, 1);
+    assert.equal(posts[0].path, '/api/confirm-sanctuary-session');
+    assert.match(String(posts[0].body), /cs_test_sanctuary_123/);
+    assert.equal(storage.getItem(DESKTOP_CHECKOUT_PENDING_STORAGE_KEY), null);
+  });
+
+  it('reads session id from hosted Checkout URL', () => {
+    assert.equal(
+      stripeCheckoutSessionIdFromValue(
+        'https://checkout.stripe.com/c/pay/cs_test_a1B2C3D4'
+      ),
+      'cs_test_a1B2C3D4'
+    );
+    globalThis.sessionStorage = {
+      data: {},
+      getItem(k) {
+        return this.data[k] ?? null;
+      },
+      setItem(k, v) {
+        this.data[k] = v;
+      },
+      removeItem(k) {
+        delete this.data[k];
+      }
+    };
+    globalThis.desktopShell = { isDesktop: true };
+    noteDesktopCheckoutOpened('sanctuary', {
+      url: 'https://checkout.stripe.com/c/pay/cs_live_lifetime99'
+    });
+    assert.equal(
+      readDesktopCheckoutPending()?.sessionId,
+      'cs_live_lifetime99'
+    );
   });
 });
