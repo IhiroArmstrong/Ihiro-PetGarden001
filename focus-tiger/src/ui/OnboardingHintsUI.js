@@ -56,8 +56,6 @@ import {
   PRIVACY_SHEET_TAIL_KEYS,
   PRIVACY_SHEET_YPE_OPT_IN_KEYS
 } from './privacyNoticeCopy.js';
-import { LocalPracticeDataUI } from './LocalPracticeDataUI.js';
-import { dispatchPracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   isMonetizationFunnelOptInEnabled,
   setMonetizationFunnelOptIn
@@ -2183,10 +2181,6 @@ export class OnboardingHintsUI {
     fullLead.dataset.privacyKey = PRIVACY_SHEET_FULL_LEAD_KEY;
     body.appendChild(fullLead);
 
-    const localDataMount = document.createElement('div');
-    localDataMount.className = 'onboarding-privacy-sheet__local-data';
-    localDataMount.dataset.testid = 'privacy-local-data-mount';
-
     for (const section of PRIVACY_SHEET_SECTIONS) {
       const heading = document.createElement('h3');
       heading.className = 'onboarding-privacy-sheet__section-title';
@@ -2197,10 +2191,6 @@ export class OnboardingHintsUI {
       p.className = 'onboarding-privacy-sheet__p';
       p.dataset.privacyKey = section.bodyKey;
       body.appendChild(p);
-
-      if (section.mountLocalData) {
-        body.appendChild(localDataMount);
-      }
     }
 
     for (const key of PRIVACY_SHEET_TAIL_KEYS) {
@@ -2325,12 +2315,6 @@ export class OnboardingHintsUI {
     body.append(ypeOptIn, optIn, wellnessNote, wellnessLink);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
-    this._localPracticeDataUI = new LocalPracticeDataUI(localDataMount, {
-      storage: globalThis.localStorage,
-      onImported: () => {
-        dispatchPracticeDataImported();
-      }
-    });
     this._privacyTitleEl = title;
     this._privacyBodyEl = body;
     this._privacyBackEl = back;

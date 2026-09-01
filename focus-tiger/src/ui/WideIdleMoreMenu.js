@@ -103,6 +103,7 @@ export class WideIdleMoreMenu {
      *     onTipJar?: () => void,
      *     onNewsletter?: () => void,
      *     onCommunity?: () => void,
+     *     onLocalBackup?: () => void,
      *     onRitualFlow?: (proxy: string) => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
@@ -768,6 +769,13 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onCommunity?.();
+      return;
+    }
+    if (key === 'local-backup') {
+      this.clearStage();
+      this.closeMenu();
+      document.body.classList.add(WIDE_STAGE_CLASS.localBackup);
+      this.handlers.onLocalBackup?.();
       return;
     }
     if (

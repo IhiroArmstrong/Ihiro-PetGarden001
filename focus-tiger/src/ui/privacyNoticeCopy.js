@@ -32,8 +32,7 @@ export const PRIVACY_SHEET_SECTIONS = Object.freeze([
   {
     id: 'export',
     titleKey: 'PRIVACY_SHEET_SEC_3_TITLE',
-    bodyKey: 'PRIVACY_SHEET_EXPORT_IMPORT',
-    mountLocalData: true
+    bodyKey: 'PRIVACY_SHEET_EXPORT_IMPORT'
   },
   {
     id: 'cloud',
