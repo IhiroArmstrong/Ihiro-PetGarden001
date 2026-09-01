@@ -24,6 +24,7 @@ alwaysApply: true
 - **一次一任务**；新文件/目录路径须英文 ASCII、`kebab-case`（全文见 `PRINCIPLES.md`）。
 - 接**实现类**任务前 → 先 `Read` **`focus-tiger-docs.mdc`**。
 - 声称修好 / 交互修复收尾 / commit·push 前 → 先 `Read` **`focus-tiger-regression-lock.mdc`**。
+- 回答某功能是否已实现 / 已开工 / 已合入（**含随口提问**）→ 先 `Read` **`focus-tiger-regression-lock.mdc`**（「分支新鲜度」+「地面真相优先级」）；**禁止**只凭 Brief/计划文档措辞下结论。细则勿在本文件复述。
 
 ## 收尾（N14 · 每次用户可见回复末尾）
 
@@ -40,6 +41,7 @@ alwaysApply: true
 |---|---|
 | 接任务 / 改产品语义 / 情绪·架构·文案 | `focus-tiger-docs.mdc` |
 | bug 修复·交互修复·完工·commit·push·§7 | `focus-tiger-regression-lock.mdc` |
+| 判断某功能是否已实现/已开工/已合入（含随口提问） | `focus-tiger-regression-lock.mdc` |
 | 起 Vite·预览·Safari 验收·IDE Browser | `focus-tiger-browser-energy.mdc` |
 | 跑测试·e2e·CI·控 token | `testing-strategy.mdc` + `focus-tiger-agent-token-cost.mdc` |
 | 关单 QA·5173·PR 合 develop 后 | `focus-tiger-qa-develop-worktree.mdc`（`WORKFLOW.md` · `qa-develop-worktree`） |

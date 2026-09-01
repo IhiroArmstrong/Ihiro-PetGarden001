@@ -6,8 +6,10 @@
 
 /**
  * Branch freshness vs origin/develop.
- * Agent gate (regression-lock「分支新鲜度」): required before inviting user QA
- * or claiming verified develop behavior. Not a git hook / CI job — Agent must run it.
+ * Agent gate (regression-lock「分支新鲜度」): required before inviting user QA,
+ * claiming verified develop behavior, or answering whether a feature is
+ * implemented / started / merged (including informal questions).
+ * Not a git hook / CI job — Agent must run it.
  *
  * Always runs `git fetch origin develop` first so behind/ahead counts are not
  * based on a stale remote-tracking tip. Fetch failure aborts (exit 1) with an

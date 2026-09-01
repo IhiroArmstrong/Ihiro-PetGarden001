@@ -36,6 +36,22 @@ export {
   linesForRoute
 } from './confideCorpus.js';
 export {
+  formatConfideBoundaryReply,
+  isConfideBoundaryIntent,
+  shouldHandleConfideBoundary
+} from './confideBoundaryRespect.js';
+export {
+  formatConfideCompanionPresenceReply,
+  isConfideBeginActionIntent,
+  isConfideCompanionPresenceIntent,
+  shouldHandleConfideCompanionPresence
+} from './confideCompanionPresence.js';
+export {
+  formatConfidePreferenceHonestyReply,
+  isConfidePreferenceQuery,
+  shouldHandleConfidePreferenceHonesty
+} from './confidePreferenceHonesty.js';
+export {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideUserVisible,
   isConfideDevHarness,
