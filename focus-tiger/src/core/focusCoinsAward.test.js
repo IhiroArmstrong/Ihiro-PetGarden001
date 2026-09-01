@@ -234,7 +234,7 @@ describe('focusCoinsAward L1', () => {
       PRACTICE_BACKUP_STORE_KEYS.includes(FOCUS_COINS_STORAGE_KEY),
       false
     );
-    assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 6);
+    assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 14);
   });
 
   it('main.js completeMicroRitual awards breath coins; Leave does not', () => {

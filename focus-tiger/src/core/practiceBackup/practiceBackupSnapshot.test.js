@@ -7,6 +7,8 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   PRACTICE_BACKUP_STORE_KEYS,
+  PRACTICE_BACKUP_V1_STORE_KEYS,
+  PRACTICE_BACKUP_SCHEMA_VERSION,
   serializePracticeBackupSnapshot,
   parsePracticeBackupSnapshotClient,
   isPracticeBackupWhitelistCompletelyEmpty,
@@ -37,7 +39,7 @@ describe('practiceBackupSnapshot', () => {
       'focus-tiger.entitlement-cache.v1': JSON.stringify({ lifetime: true })
     });
     const snap = serializePracticeBackupSnapshot(storage, () => new Date('2026-08-12T00:00:00.000Z'));
-    assert.equal(snap.schemaVersion, 1);
+    assert.equal(snap.schemaVersion, PRACTICE_BACKUP_SCHEMA_VERSION);
     assert.deepEqual(Object.keys(snap.stores).sort(), [...PRACTICE_BACKUP_STORE_KEYS].sort());
     assert.equal('focus-tiger.tip-jar.v1' in snap.stores, false);
     assert.ok(snap.stores['focus-tiger.journey-log.v1']);
@@ -50,7 +52,7 @@ describe('practiceBackupSnapshot', () => {
       schemaVersion: 1,
       savedAt: '2026-08-12T00:00:00.000Z',
       stores: {
-        ...Object.fromEntries(PRACTICE_BACKUP_STORE_KEYS.map((k) => [k, null])),
+        ...Object.fromEntries(PRACTICE_BACKUP_V1_STORE_KEYS.map((k) => [k, null])),
         'focus-tiger.tip-jar.v1': { tipped: true }
       }
     };
@@ -58,7 +60,7 @@ describe('practiceBackupSnapshot', () => {
     assert.equal(parsePracticeBackupSnapshotClient(bad).ok, false);
   });
 
-  it('whitelist empty only when all six stores empty', () => {
+  it('whitelist empty only when all backup stores empty', () => {
     const empty = memStorage();
     assert.equal(isPracticeBackupWhitelistCompletelyEmpty(empty), true);
 

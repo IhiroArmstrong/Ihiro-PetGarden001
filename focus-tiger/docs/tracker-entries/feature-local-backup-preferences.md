@@ -1,0 +1,3 @@
+# feature/local-backup-preferences
+
+| 备份与恢复入口（Preferences）+ 扩展白名单 v2 | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → ⋯/抽屉 → Preferences → **Backup & restore** → 0–1s 内见 `#local-practice-data-panel` 与导出/导入钮。**Privacy**：`?` → Privacy → §3 **无**按钮，文案指向 Preferences。**导出**：有 Journey/观察记录等 → 导出 `.json` → 文件含 schemaVersion 2 与扩展类别行。**导入**：清部分 key 后导入同一文件 → Journey/热力图/观察面板数据恢复；Journey 开着导入无须关页。**v1 旧文件**：6 key 的 v1 JSON 仍可导入并升到 v2。**Electron**：导出含 Yin memory / Confide turns（若有）；Web 无 companion 段亦正常。自动化：`practiceBackupLocalIo.test.js`（v2 + v1 迁移）· `idleChromeOrchestration.test.js`。 | — | — | — | `#local-practice-data-panel` · `#ft-wide-more-menu [data-proxy=local-backup]` | 2026-09-02 |

@@ -97,6 +97,7 @@ import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
+import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
@@ -1004,6 +1005,13 @@ async function init() {
   );
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
+  const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-narrow-stage-local-backup');
+      document.body.classList.remove('ft-wide-stage-local-backup');
+    }
+  });
+  window.__localPracticeDataPanel = localPracticeDataPanelUI;
   const zenCinemaCardUI = new ZenCinemaCardUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1230,6 +1238,7 @@ async function init() {
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
+    if (except !== 'local-backup') localPracticeDataPanelUI.closePanel();
     syncIdleYinTap();
   }
 
@@ -2582,6 +2591,10 @@ async function init() {
       closeGrowthOverlayCards();
       openCommunityExternalLink();
     },
+    onLocalBackup: () => {
+      closeGrowthOverlayCards({ except: 'local-backup' });
+      localPracticeDataPanelUI.openPanel();
+    },
     onRitualFlow: (proxy) => {
       openRitualFlowFromMenu(proxy);
     },
@@ -2613,6 +2626,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
+      localPracticeDataPanelUI.closePanel();
       idleSecondaryPanelHost.close();
       momentWhisperUI.hide({ immediate: true });
       ambientSoundscapeUI.clearNarrowSoundStage();
@@ -2849,7 +2863,7 @@ async function init() {
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
-              companionModePicker.open();
+              companionModePicker.open({ afterArrivalChoose: true });
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
@@ -3716,6 +3730,7 @@ async function init() {
 
   function maybeOfferWellnessDisclaimerFirstCard() {
     if (!productChrome) return false;
+    if (postChooseChrome.pending) return false;
     if (confideToYinUI.isOpen()) return false;
     if (onboardingHints?.isWellnessFirstCardOpen?.()) return true;
     if (wellnessFirstConsumedThisPage) return false;
@@ -3742,6 +3757,7 @@ async function init() {
 
   function maybeOfferFiveMomentsCompassFirstCard() {
     if (!productChrome) return;
+    if (postChooseChrome.pending) return;
     if (confideToYinUI.isOpen()) return;
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
