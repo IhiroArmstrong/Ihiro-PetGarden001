@@ -31,6 +31,20 @@
 > **PO · 2026-08-28**：**正式示例**改用描述性问法。**不再推广**「Has my mood improved? / 改善了吗」（可作路由 alias）。答句禁止诊断与人格进步评判（**你更稳了 / 你进步了**）。  
 > **PO · 2026-08-28 晚**：**Bounded Temporal Compare** — 对照型问句（比以前久 / 稳不稳 / 进状态）可路由；答句须**两段时期并列事实**，见 `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` Amendment。
 
+### Verbal hint chips（发现性 · 非新口令）
+
+`confideVerbalHintChips.js`：点芯片 **只填入** 已入正则的金句，**不**自动发送。  
+**`shipped: true` 的门槛是端到端人工闭环**，不是「regex 能命中」：路由对了 ≠ 取数/格式化/答句已验收。
+
+| id | 填入句（en） | 本轮 `shipped` | 解锁条件 |
+|---|---|---|---|
+| `forget_this` | Forget this | **true**（Electron bridge） | AG / 1e–1f 发后撤回已人工闭环 |
+| `dont_save_this` | Don't save this | false | Slice 1f 人工测通过后改 `shipped` |
+| `practice_duration` | How long have I practiced? | false | Phase 1B CORE 问句人工测通过后改 `shipped` |
+| `presence_trend` | What has my mood looked like over the last two weeks? | false | 先人工测 pipeline；**且**勿把「two weeks」当成从用户句解析出的窗口 |
+
+**CI-02 窗口事实（2026-09-01 核对）**：`What has my mood looked like over the last two weeks?` 的 `two weeks` **只用于趋势问句分类**。`ConfideToYinUI` 调 `buildPresenceFactsReply(storage, t, text)` **不传** `windowDays`；ledger 窗口恒为 `PRESENCE_SIGNALS_DEFAULT_WINDOW_DAYS`（**14**）。不是从问句解析 14 vs 7。默认碰巧是两周，**不等于**「工具读了这句话里的时间词」。在 `shipped` 打开前须人工确认答句 `{days}` 与 14 日账本一致；若产品要承诺别的窗口，须先改取数，再改芯片文案。
+
 **面板 Forget（1c）** 不在此表重复登记：同一 `forget` IPC，入口为 UI 行按钮，非口头意图。
 
 ---

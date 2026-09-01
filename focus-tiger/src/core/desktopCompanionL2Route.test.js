@@ -427,6 +427,9 @@ describe('desktop companion L2 isolation', () => {
     assert.match(preload, /suppressPostRecallFromConfide/);
     assert.match(ipcSrc, /desktop:yin-personal-memory-forget/);
     assert.match(preload, /desktop:yin-personal-memory-forget/);
+    assert.match(ui, /confide-to-yin-verbal-chips/);
+    assert.match(ui, /listShippedConfideVerbalHintChips/);
+    assert.match(ui, /_fillVerbalHintChip/);
     assert.match(ui, /confide-to-yin-memory-list-link/);
     assert.match(ui, /onOpenMemoryPanel/);
     assert.match(ui, /shouldOfferYinMemoryConsent/);

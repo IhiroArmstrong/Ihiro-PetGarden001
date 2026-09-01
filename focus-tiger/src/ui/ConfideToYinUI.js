@@ -23,6 +23,7 @@ import {
   matchConfideExecutableTool
 } from '../core/confide/confideExecutableTools.js';
 import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
+import { listShippedConfideVerbalHintChips } from '../core/confide/confideVerbalHintChips.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -130,6 +131,18 @@ export class ConfideToYinUI {
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'confide-to-yin__blurb';
+
+    this.chipWrap = document.createElement('div');
+    this.chipWrap.className = 'confide-to-yin__chips';
+    this.chipWrap.dataset.testid = 'confide-to-yin-verbal-chips';
+    this.chipWrap.hidden = true;
+
+    this.chipIntro = document.createElement('p');
+    this.chipIntro.className = 'confide-to-yin__chips-intro';
+
+    this.chipRow = document.createElement('div');
+    this.chipRow.className = 'confide-to-yin__chips-row';
+    this.chipWrap.append(this.chipIntro, this.chipRow);
 
     this.statusWrap = document.createElement('div');
     this.statusWrap.className = 'confide-to-yin__desktop-status';
@@ -255,6 +268,7 @@ export class ConfideToYinUI {
     this.root.append(
       this.titleEl,
       this.blurbEl,
+      this.chipWrap,
       this.statusWrap,
       this.memoryConsentWrap,
       this.inputEl,
@@ -448,6 +462,7 @@ export class ConfideToYinUI {
   _applyCopy() {
     this.titleEl.textContent = t('CONFIDE_PANEL_TITLE');
     this.blurbEl.textContent = t('CONFIDE_PANEL_BLURB');
+    this._renderVerbalHintChips();
     this.inputEl.placeholder = t('CONFIDE_PANEL_PLACEHOLDER');
     this.sendBtn.textContent = t('CONFIDE_PANEL_SEND');
     this.cancelBtn.textContent = t('CONFIDE_PANEL_CANCEL');
@@ -461,6 +476,40 @@ export class ConfideToYinUI {
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
     }
     this._renderDesktopStatus();
+  }
+
+  _renderVerbalHintChips() {
+    const chips = listShippedConfideVerbalHintChips({
+      hasMemoryBridge: hasYinPersonalMemoryBridge()
+    });
+    this.chipRow.replaceChildren();
+    if (chips.length === 0) {
+      this.chipWrap.hidden = true;
+      this.chipIntro.textContent = '';
+      return;
+    }
+    this.chipWrap.hidden = false;
+    this.chipIntro.textContent = t('CONFIDE_CHIP_INTRO');
+    for (const chip of chips) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'confide-to-yin__chip';
+      btn.dataset.testid = 'confide-to-yin-verbal-chip';
+      btn.dataset.chipId = chip.id;
+      btn.textContent = t(chip.fillKey);
+      btn.addEventListener('click', () => this._fillVerbalHintChip(chip.fillKey));
+      this.chipRow.append(btn);
+    }
+  }
+
+  /**
+   * @param {string} fillKey
+   */
+  _fillVerbalHintChip(fillKey) {
+    const fill = t(fillKey);
+    this.inputEl.value = fill;
+    this._syncSendEnabled();
+    this.inputEl.focus();
   }
 
   _syncSendEnabled() {
@@ -1024,6 +1073,38 @@ export class ConfideToYinUI {
         font-size: 0.88rem;
         line-height: 1.45;
         opacity: 0.92;
+      }
+      .confide-to-yin__chips {
+        margin: -4px 0 12px;
+      }
+      .confide-to-yin__chips-intro {
+        margin: 0 0 8px;
+        font-size: 0.76rem;
+        line-height: 1.4;
+        opacity: 0.78;
+      }
+      .confide-to-yin__chips-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .confide-to-yin__chip {
+        appearance: none;
+        margin: 0;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        background: ${GLASS_FILL_STRONG};
+        color: inherit;
+        font: inherit;
+        font-size: 0.76rem;
+        line-height: 1.3;
+        cursor: pointer;
+        transition: transform 120ms ease, opacity 120ms ease;
+      }
+      .confide-to-yin__chip:active {
+        opacity: 0.92;
+        transform: translateY(1px);
       }
       .confide-to-yin__memory-consent {
         margin: 10px 0 4px;
