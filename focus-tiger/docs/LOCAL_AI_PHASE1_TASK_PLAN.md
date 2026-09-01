@@ -357,7 +357,7 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=D npm run companion:
 **剩余失败分两类（不再 prompt 硬撬）**：
 
 1. **关键词覆盖缺口（可窄修但已停）**：A6 · D3 — 见上表。
-2. **语用推断缺口（五架构全败 · 换说法即失效）**：A14 · A15 · D7 — 转**生产层序 / 规则预筛**，或等 Phase 3 一并评估；**禁止**再堆示例句过拟合。
+2. **语用推断缺口（五架构全败 · 换说法即失效）**：A14 · A15 · D7 — **禁止**再堆示例句过拟合。关键词缺口（sit next / breathe together / 软 BOUNDARY C13–C17 / OTHER 窄门）已由 **`fix/confide-eprime-rule-prescreen`** 写入现网正则；**不**把 diagnostic prompt 接到 Confide send。A14/A15/D7 仍走 L3。
 
 **Phase 3（仅 0.D 证明容量瓶颈之后）**：Qwen3-1.7B Q4 / Q5、Llama 3.2 3B Q4、SmolLM3 3B Q4。Persona fidelity 与 Intent 分开打分；**不**因 Intent 略高就换掉 Yin 声线更好的模型。
 

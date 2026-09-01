@@ -215,6 +215,19 @@ describe('confide practice facts (Phase 1B)', () => {
       PRACTICE_FACTS_KIND.SHOWING_UP
     );
     assert.equal(
+      classifyPracticeFactsKind('Have I been showing up consistently?'),
+      PRACTICE_FACTS_KIND.SHOWING_UP
+    );
+    assert.equal(
+      classifyPracticeFactsKind('Do I even show up on the days I say I will?'),
+      PRACTICE_FACTS_KIND.SHOWING_UP
+    );
+    assert.equal(
+      classifyPracticeFactsKind('Has anything changed in how often I check in?'),
+      PRACTICE_FACTS_KIND.SHOWING_UP
+    );
+    assert.equal(classifyPracticeFactsKind('I feel so inconsistent lately.'), null);
+    assert.equal(
       classifyPracticeFactsKind('Am I practicing longer than before?'),
       PRACTICE_FACTS_KIND.COMPARE_VOLUME
     );

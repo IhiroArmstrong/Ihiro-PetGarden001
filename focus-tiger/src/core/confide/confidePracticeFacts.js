@@ -41,6 +41,9 @@ const USUAL_TIME_RES = [
 
 const SHOWING_UP_RES = [
   /\bhow\s+have\s+i\s+been\s+showing\s+up\b/i,
+  /\bshowing\s+up\s+consistently\b/i,
+  /\bshow\s+up\s+on\s+the\s+days\s+i\s+say\b/i,
+  /\bhow\s+often\s+i\s+check\s+in\b/i,
   /最近有没有来(坐|练)|最近有沒有來(坐|練)|我最近来坐了吗/
 ];
 

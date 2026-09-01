@@ -199,7 +199,7 @@ describe('yin intent diagnostic (lab)', () => {
     assert.equal(gates.hard5Emotion, 1);
   });
 
-  it('prefilters D with production rules and leaves A2 to the residual LLM', () => {
+  it('prefilters D with production rules including E′ presence literals', () => {
     const stay = prefilterYinIntentByProductionRules(
       'Can I just sit here with you for a bit?'
     );
@@ -208,7 +208,12 @@ describe('yin intent diagnostic (lab)', () => {
     const breathe = prefilterYinIntentByProductionRules(
       'Can we just breathe together for a bit?'
     );
-    assert.equal(breathe.hit, false);
+    assert.equal(breathe.hit, true);
+    assert.equal(breathe.primary, YIN_INTENT_LABEL.COMPANION_PRESENCE);
+    const beside = prefilterYinIntentByProductionRules(
+      'Can you just sit next to me while I feel this?'
+    );
+    assert.equal(beside.primary, YIN_INTENT_LABEL.COMPANION_PRESENCE);
     const begin = prefilterYinIntentByProductionRules("Let's get started.");
     assert.equal(begin.primary, YIN_INTENT_LABEL.BEGIN);
   });

@@ -153,6 +153,24 @@ describe('confide presence facts (Slice 4 minimal)', () => {
       classifyPresenceFactsKind('Have I been feeling different lately?'),
       PRESENCE_FACTS_KIND.TREND
     );
+    assert.equal(
+      classifyPresenceFactsKind('Can you tell me my mood trend from this week?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(
+      classifyPresenceFactsKind('Has my mood been trending up or down lately?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(
+      classifyPresenceFactsKind(
+        "I honestly don't know if I've been present much — can you check?"
+      ),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(
+      classifyPresenceFactsKind('Can you just sit next to me while I feel this?'),
+      null
+    );
     assert.equal(isPresenceTrendQuestion('What have you noticed lately?'), false);
   });
 

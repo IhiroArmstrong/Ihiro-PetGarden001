@@ -144,10 +144,10 @@ Gate 0.D：1.7B **能**把「I'm not sure whether I want to talk about it.」标
 
 | 机制 | 说明 |
 |---|---|
-| **`boundary`** | `confideBoundaryRespect.js` · 层 3 **之前**模板 · `data-source=boundary` |
-| **`companion_presence`** | `confideCompanionPresence.js` · sit / stay · **高于**情绪桶、**低于** Safety；不启动 Focus |
+| **`boundary`** | `confideBoundaryRespect.js` · 层 3 **之前**模板 · `data-source=boundary` · 含软拒绝（rather not / leave that alone / not up for that conversation 等） |
+| **`companion_presence`** | `confideCompanionPresence.js` · sit / stay / sit next to me / breathe together / keep me company · **高于**情绪桶、**低于** Safety；不启动 Focus |
 | **`preference_honesty`** | `confidePreferenceHonesty.js` · 无偏好 store · 诚实短句，不编口味 |
 | **不进 L3** | 禁止贴「I am curious / I am aware」；禁止把待着说成 BEGIN；L3 prompt **本刀未改** |
-| **不做** | 不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令；不换默认 GGUF |
+| **不做** | 不把 Gate 0.D E′ JSON 探针接到 Share；不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令；不换默认 GGUF；A14/A15/D7 无字面句不硬撬 |
 
 ---
