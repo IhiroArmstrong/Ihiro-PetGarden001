@@ -1,0 +1,111 @@
+# 防剽窃层 · Anti-Plagiarism Layer
+
+> **状态（2026-09-02）**：产品方向锁 · **本文件无新运行时**。  
+> **拍板**：凡客观上有「难复制的表 / 闭包变换只存在服务器、客户端只拿 overlay、没网用本地冻结表」作用的云切片，统称 **防剽窃层**。  
+> **本文件禁止被解读成**：一次把 Quiet Line / YPE V2 / Confide 句库全部改运行时；须分 PR。口令队列见 §5。
+
+交叉引用（只引用、不复述细则）：
+
+| 文档 | 职责 |
+|---|---|
+| `PROCESS.md` Backlog「云端品味层」 | 权重 + 日签池现网 v1 |
+| `YIN_PERSONALIZATION_ENGINE.md` | YPE 编排 / Consent / Pack 形状 |
+| `task-briefs/task-l2-personalization-algorithm.md` | YPE V1 五键→Pack 闭包 |
+| `task-briefs/task-quiet-line-copy-overlay.md` | Quiet Line 句包 overlay（下一刀运行时） |
+| `task-briefs/task-ype-v2-secret-transform.md` | YPE V2 秘密变换 + `algorithmVersion` |
+| `task-briefs/task-confide-copy-overlay.md` | Confide 句库/模板 overlay |
+| `BACKGROUND_NETWORK.md` | 非点击拉取三问 |
+| `MVP_PRODUCT_DEFINITION.md` | 云同步须明示同意 |
+
+**编号注意**：品味云、YPE 云仍是 **Worker 上的不同路由 / KV**。防剽窃层是 **概念与准入尺**，不是把支付、备份、漏斗并进同一条 API。
+
+---
+
+## 1. 一句话
+
+> **最难复制的知识和算法只存在服务器；客户端只得到运行所需的结果；没网时核心体验不得消失。**
+
+这不是 DRM，也不是「别人绝对无法复制」。播放器、PNG 序列、Sit 门闩、Confide 路由仍在客户端。保护的是 **调度表、句池、长期个人化闭包**。
+
+---
+
+## 2. 什么算、什么不算
+
+### 算（防剽窃层成员）
+
+| 切片 | 云上秘密 | 客户端得到 | 离线 |
+|---|---|---|---|
+| **品味云** | Dispatcher 权重、日签/文案池正文 | `schemaVersion` overlay | 本地冻结表 |
+| **YPE 云** | 五键→Pack 变换（V1 回声；V2 才是秘密闭包） | PersonalizationStatePack | 无 Pack → L0/L1 |
+| **Quiet Line 句包**（排队） | 今日静语混合池正文 | 同品味层 overlay 形态 | 本机 `DAILY_ZEN_QUOTE` ∪ insight 种子 |
+| **Confide 句库/模板**（排队） | 已审回复句正文 | 句 overlay | 本机 locale / corpus 冻结表 |
+| **YPE `algorithmVersion`**（排队，随 V2） | 只存在服务器的算法世代 | **不下发**；Pack 形状不变 | 本机不认识的 Pack 字段整包丢 |
+
+### 不算（禁止塞进本层）
+
+| 系统 | 为何 |
+|---|---|
+| Stripe / entitlement / 寅币发点 | 支付云；过不了准入③ |
+| 练习备份 / OTP | 可靠性，不是 IP |
+| 意愿漏斗 ingest | 匿名计数，不是手感表 |
+| Idle / CapCut / 精灵播放器 | 永远本地 |
+| Confide 路由、E′、CI 白名单、Tool Registry、Qwen | 开口须 0–1 秒；Memory / 原文默认不上云 |
+| Memory ranking、Speak probability | 留 L0/L1；**≠** Pack |
+
+**支付云 ≠ 品味云 ≠ YPE 云 ≠ 备份云。** 它们都可以「在云上」，但只有上表「算」的才叫防剽窃层。
+
+---
+
+## 3. 准入四问（扩成员须同时过）
+
+一项要纳入本层须 **同时** 过：
+
+1. **改错代价**：会不会让用户用不了、错扣/少给钱或点？会 → 不上本层。  
+2. **点击路径**：是否必须在用户点击 / 开口当下用到（不能等网；0–1 秒接收反馈）？是 → 不上本层（可 overlay 缓存，不可挡 Sit / Confide Send）。  
+3. **钱与权益**：是否定价 / 门槛 / `isEntitled` / Stripe / 发点？是 → 走支付云，不走本层。  
+4. **本地同一张表**：没网能否用本地副本；认不了的 `schemaVersion` / 键集合能否静默丢掉？不能 → 不上本层。
+
+品味层 Backlog 的四问与本条 **同一把尺**；扩池改形须升 `schemaVersion` 并同步本地兜底。
+
+---
+
+## 4. 不变量
+
+- 核心 Sit / Rise / Idle / Confide Send **禁止**硬依赖云请求成功。  
+- overlay 失败、超时、未知版本 → 静默本地。  
+- 内容相同 → 不另存副本（`BACKGROUND_NETWORK` Q2；品味层 `RB-20260820-L330`）。  
+- **禁止**默认上传 Confide 原文、Memory 摘要、Whisper 掩码。  
+- **禁止**用完成率把陪伴档改成教练（YPE 选档仍用户优先）。  
+- 后台预取须答 `BACKGROUND_NETWORK.md` 三问；禁止与精灵预加载 / Arrival·Honesty CapCut 抢主线程。  
+- 生产 Worker Redeploy 仍须口令「部署」（`prod-worker-deploy`）。
+
+---
+
+## 5. 口令队列（2026-09-02）
+
+用户已同意执行下列口令。**一次一任务**；本文件只锁次序与 Brief 指针。
+
+| 序 | 任务 | 口令 | 本回合 |
+|---|---|---|---|
+| **0** | 本 SSOT 入库 | （概念纳入项目） | **本 PR** |
+| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | Brief 已开 · **运行时下一 PR** |
+| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | Brief 已开 · 须先冻结 insight 白名单再改 Worker |
+| **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | Brief 已开 · 路由/正则/Qwen **留下** |
+| **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
+
+**我认为最合理的运行时下一刀是序 1（Quiet Line overlay）。**  
+理由：品味层管道已在；只扩句包、不改个人化语义；Confide 开口路径零改动。YPE V2 会改 Pack 校验（现网非空 `patternInsights` 会整包丢），应在句包 overlay 稳定后再动。Confide 句 overlay 与开口 0–1 秒相邻，放在 YPE V2 之后，避免同时改两套「说话」面。`algorithmVersion` **并进序 2**，禁止单独发一个空版本号 PR。
+
+---
+
+## 6. 后排池 · 用户场景（不是开工令）
+
+这三项都过四问，但是 **调手感权重 / 扩文学句**，不是新入口。
+
+| 外号 | 用户实际碰到什么 |
+|---|---|
+| **日签 14→N** | 一场练习结束，Reflection 卡**底部**那句 Daily Wisdom（与菜单 **A Quiet Line / 今日静语** 分池）。现在 en/ja 各冻 14 个 id。扩 N = 同一位置句子变多、同日仍锁一句；**不是** Quiet Line 明信片。 |
+| **伸懒腰池** | 计时中途点 **Rise**，阿寅播加权池：约 60% 伸懒腰箕坐 / 25% 喝茶 / 15% 看书，然后 Reflection。上云只调这三档权重，不改动画文件。 |
+| **好奇池** | Idle 里鼠标靠近停几秒，极低概率耳摇或张望。上云只调这些 Idle 彩蛋权重，不改 Sit。 |
+
+挥手点播（珍藏）**不是**本层。
