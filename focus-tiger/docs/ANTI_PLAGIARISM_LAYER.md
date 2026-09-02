@@ -37,7 +37,7 @@
 |---|---|---|---|
 | **品味云** | Dispatcher 权重、日签/文案池正文 | `schemaVersion` overlay | 本地冻结表 |
 | **YPE 云** | 五键→Pack 变换（V1 回声；V2 才是秘密闭包） | PersonalizationStatePack | 无 Pack → L0/L1 |
-| **Quiet Line 句包**（排队） | 今日静语混合池正文 | 同品味层 overlay 形态 | 本机 `DAILY_ZEN_QUOTE` ∪ insight 种子 |
+| **Quiet Line 句包** | 今日静语混合池正文 | 同品味层 overlay 形态 | 本机 `DAILY_ZEN_QUOTE` ∪ insight 种子（源码 **#543**；生产 Redeploy 另册） |
 | **Confide 句库/模板**（排队） | 已审回复句正文 | 句 overlay | 本机 locale / corpus 冻结表 |
 | **YPE `algorithmVersion`**（排队，随 V2） | 只存在服务器的算法世代 | **不下发**；Pack 形状不变 | 本机不认识的 Pack 字段整包丢 |
 
@@ -69,6 +69,27 @@
 
 ---
 
+## 3.1 冻表 = 公开兜底；现网表可密（2026-09-02 拍板）
+
+「别人能拷走 App、很难拷走灵魂参数」**只有**在已部署 Worker 上的表 / 闭包与仓库冻表 **分叉之后**才成立。
+
+| 层 | 进 git 的是什么 | 允许只活在已部署 Worker 的是什么 |
+|---|---|---|
+| **品味 / Quiet Line** | 本地冻结表（够用的离线手感、键集合、`schemaVersion` 兜底） | 权重数字、句池正文（同键；可与冻表不同） |
+| **YPE** | Pack **形状**、V1 回声闭包、V2 **token 白名单**（验收锚） | V2 阈值与映射（`algorithmVersion`；**不下发** Pack） |
+
+硬闸：
+
+1. **冻表是公开兜底**，不是现网手感的副本义务。四问④要求没网仍有本地同一**张**表（同键 / 可静默丢未知版本），**不**要求数字永远等于生产。  
+2. **现网一旦与 git 分叉**：禁止把灵魂数字再写回 `tasteLayerFreeze` / locale 冻池 / 本 Brief 的阈值表，当作「同步文档」。客户端继续带公开兜底即可。  
+3. **扩形**（增删 key / 新 insight token / 新 `schemaVersion`）仍须升版本，并给客户端一份认得出的兜底；手感漂移走 Redeploy，不走把现网表贴进 git。  
+4. **未知版本整包丢弃**（已有）：客户端不认识 → 本地冻表 / L0/L1；禁止崩、禁止挡 Sit。  
+5. **现状（2026-09-02）**：品味层 `schemaVersion: 1` Worker 与客户端冻表仍相同 → 拷仓库 ≈ 拷现网。本条先锁政策；真正分叉须口令「部署」，且不要把新数字合进 freeze 源文件。YPE V1 没有可藏的秘密（回声选档）。
+
+权威交叉：`PROCESS.md` Backlog「云端品味层」· `YIN_PERSONALIZATION_ENGINE.md` §E · `task-ype-v2-secret-transform.md`。
+
+---
+
 ## 4. 不变量
 
 - 核心 Sit / Rise / Idle / Confide Send **禁止**硬依赖云请求成功。  
@@ -88,13 +109,13 @@
 | 序 | 任务 | 口令 | 本回合 |
 |---|---|---|---|
 | **0** | 本 SSOT 入库 | （概念纳入项目） | **#542 已合** |
-| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合** |
-| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | **本旁支运行时** · 生产须部署 |
+| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合**（源码；生产 Redeploy 另须「部署」） |
+| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | **#545 已合 develop**（生产须「部署」） |
 | **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | Brief 已开 · 路由/正则/Qwen **留下** |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
 
 **我认为最合理的运行时下一刀是序 3（Confide 句库 overlay）。**  
-理由：序 1–2 已进代码；Confide 换字与开口路径相邻，单独一刀。YPE 现网签发须另口令「部署」。日签扩容 / 伸懒腰 / 好奇仍后排。
+理由：序 1–2 源码已合（#543 / #545）。分叉政策见 §3.1；生产手感仍须口令「部署」。Confide 换字与开口路径相邻，单独一刀。日签扩容 / 伸懒腰 / 好奇仍后排。
 
 ---
 

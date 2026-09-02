@@ -34,6 +34,8 @@
 
 服务器记录 `algorithmVersion: 2`。改阈值或增 token → 升 `algorithmVersion`，**另口令**；客户端不读该字段。
 
+上表阈值（0.6 / 0.4）是 **git 公开验收锚 / 离线语义说明**。现网 Worker 允许用同一 token、不同阈值（§3.1 分叉）；**禁止**把现网阈值再写回本表「同步文档」。本机不读阈值，只消费 Pack 里的 token。
+
 ## 冲突扫描
 
 对照 AE Confide / AG Memory / AF Presence / 品味层 / Y Whisper。

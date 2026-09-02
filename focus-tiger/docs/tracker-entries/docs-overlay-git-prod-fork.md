@@ -1,0 +1,1 @@
+| 冻表 vs 现网可分叉（品味 / YPE） | 纯文档 | 仅单元测试覆盖 | 无运行时、无 Redeploy。读 `ANTI_PLAGIARISM_LAYER.md` §3.1：git 冻表=公开兜底；Worker 可分叉；分叉后禁止把灵魂数字写回 freeze。YPE V1 仍回声；V2 已排入口令队列未开工。`npm run docs:check`。 | — | — | — | `ANTI_PLAGIARISM_LAYER.md` §3.1 · PROCESS 品味层 Backlog · `YIN_PERSONALIZATION_ENGINE.md` §E | 2026-09-02 |
