@@ -187,7 +187,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
 | `ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay 准入尺；≠ 支付 / 备份 / Confide 路由） |
 | `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey Log / turns.jsonl） |
-| `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份/算法已拍、ingest 已合；V2 Brief 另见；≠ 品味层 / Memory store / Qwen；同属防剽窃层） |
+| `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份已拍、ingest 已合；V2 白名单 insight + 服务器 algorithmVersion；≠ 品味层 / Memory store / Qwen；同属防剽窃层） |
 | `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；CI → Tool Registry；≠ 开放域 Agent） |
 | `LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划 V1（轨道 A/B/C；Tool Registry 演进；≠ Auto-Operating 入口） |
 | `LOCAL_AI_OPERATING_LAYER.md` | Local AI Operating Layer 方向锁（Auto-Operating ≠ Confide；只设计无运行时；Backup/Update/MCP 不进 Confide V1） |

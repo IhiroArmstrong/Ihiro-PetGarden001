@@ -3,7 +3,7 @@
 > **状态（2026-08-26）**：**L0 + L1 运行时已开工**。本文件仍是编排产品 SSOT。  
 > **工作名称**：Yin Personalization Engine（YPE）。**不是**模型、**不是** Memory store、**不是**品味层、**不是**练习云备份。  
 > **已做**：L0 门闩收口；L1 本地检索契约 / Journey 计数 insight / 三档政策（可关回 `default`）。  
-> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档 · #454）。Consent：**关即删** + 三语附录有条件通过（`task-briefs/task-l2-personalization-consent.md`；**未**写入 locale）。身份键 **已拍**（`task-briefs/task-l2-personalization-identity.md`；本机随机 `ype_profile_id`）。算法契约 **已拍**（`task-briefs/task-l2-personalization-algorithm.md`；V1 为五键→Pack 闭包）。**未开工**：Worker / ingest / Pack 存取 / Privacy 开关 / 生产行为。  
+> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档 · #454）。Consent：**关即删** + 三语附录有条件通过。身份键 **已拍**。算法：**V1 回声**仍见 `task-l2-personalization-algorithm.md`；**V2 签发**见 `task-ype-v2-secret-transform.md`（白名单 `patternInsights` + KV `algorithmVersion: 2`，不下发 Pack）。Worker ingest **源码已合**；生产须绑定 `YPE_PERSONALIZATION_KV` 并部署后才签发 V2。  
 > **命名**：YPE **L2** = 云端 State Pack 层。**≠** 桌面陪伴 L2（Electron 本机 generate）。离线必须可用的是 **Local Runtime**（YPE L0/L1 + 桌面 generate），不是 YPE L2。  
 > **仍禁**：Speak 概率；与 Qwen L0 下载 / Checkout 混 PR。
 
@@ -234,7 +234,7 @@ L1 检索实现里若仍有可选本地 `rankHint` 参数，那是本机接口�
 **不可以：** `user has poor sleep discipline`。  
 **更不可以：** `user suffers from anxiety` / 人格类型 / 医疗判断。
 
-`morning_settle` 依赖上午 vs 晚间完成对比。H.3 V1 **不含** `morning_consistency` / `late_session_completion`，故 **云端 V1 不得下发该 insight**。本机 L1 仍可计算并（仅 `warm`）注入层 3。Pack 的 `patternInsights` 在云端 V1 **必须为空数组**（字段保留为前向兼容）。将来逐项把时段特征加入 H.3 后，再另会批准云端 insight id 白名单。
+`morning_settle` 依赖上午 vs 晚间完成对比。H.3 V1 **不含** `morning_consistency` / `late_session_completion`，故 **云端 V1 不得下发该 insight**。本机 L1 仍可计算并（仅 `warm`）注入层 3。Pack 的 `patternInsights` 在云端 **V2** 仅允许冻结表 token：`returns_often`、`reflects_often`（字符串；见 `task-ype-v2-secret-transform.md`）。**仍禁止**云端下发 `morning_settle`。本机 L1 计数 insight 与云端白名单不是同一张表。
 
 ---
 
@@ -264,16 +264,16 @@ V1 **仅三档**（可改名，不可暗中变成连续「干预概率」）：
 
 执行层：`task-briefs/task-l2-personalization-algorithm.md`。
 
-**仅 YPE L2（运行时未开工）** 可把下列留在服务端：
+**仅 YPE L2** 可把下列留在服务端：
 
 - 该 `ype_profile_id` 上的 H.3 V1 五键（同意开启期间）  
 - `algorithmVersion` 与内部映射表（**不下发** Pack）  
 
-**V1 公开变换（锁死）：** Pack.`companionStyle` = 用户上传的 `companion_style_preference`（非法则 `default`）。`patternInsights` = `[]`。**禁止**用完成率 / 反思频率 / 练习日数改档。样本不足则不签发 overlay。
+**V2 公开变换：** Pack.`companionStyle` = 用户上传的 `companion_style_preference`（非法则 `default`）。`patternInsights` = 冻结表白名单（可空）。**禁止**用完成率 / 反思频率 / 练习日数改档。样本不足则不签发 overlay。`algorithmVersion` 只写 KV 行。
 
 **V1 不把 Memory ranking 公式放到云端「再下发结果」**——没有摘要就排不了；下发分数或有序 id 都会泄漏。Ranking **留 L1**。
 
-客户端可见的永远是 **结果**：`companionStyle`、空的 insight 数组、`packVersion`。**不下发** `rankHint`、权重表、`intervention_probability`、现在开口指令。
+客户端可见的永远是 **结果**：`companionStyle`、白名单 insight 字符串数组、`packVersion`。**不下发** `algorithmVersion`、`rankHint`、权重表、`intervention_probability`、现在开口指令。未知 Pack 键 → 整包丢。
 
 **V1 不做** opaque token。若将来要增加逆向成本，另拍板；不得阻塞 QA。
 
@@ -312,7 +312,7 @@ PersonalizationStatePack v1
   issuedAt: ISO-8601,
   expiresAt: ISO-8601,      // 过期 → 忽略 overlay，不锁 Sit
   companionStyle: "quiet" | "default" | "warm",
-  patternInsights: []       // 云端 V1 必须为空；见 §C
+  patternInsights: [] | ["returns_often", ...]  // V2 白名单字符串；见 §C / V2 Brief
 }
 ```
 

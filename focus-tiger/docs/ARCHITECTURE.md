@@ -89,7 +89,7 @@ focus-tiger/
 │  ├─ ARCHITECTURE.md
 │  ├─ ANTI_PLAGIARISM_LAYER.md    # 防剽窃层方向锁（品味云∪YPE云∪句包 overlay）
 │  ├─ YIN_PERSONAL_MEMORY.md      # 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey / turns）
-│  ├─ YIN_PERSONALIZATION_ENGINE.md # Yin Personalization Engine V1（方向锁；L0/L1 本地；L2 契约+Consent+身份+算法已拍；≠ Memory / 品味层 / Qwen）
+│  ├─ YIN_PERSONALIZATION_ENGINE.md # Yin Personalization Engine V1（方向锁；L0/L1 本地；L2 ingest + V2 白名单 insight；≠ Memory / 品味层 / Qwen）
 │  ├─ DESIGN.md
 │  ├─ PROCESS.md
 │  ├─ COLLAB.md

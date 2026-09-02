@@ -239,13 +239,13 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 序 | 内容 | Brief | 状态 |
 |---|---|---|---|
-| **0** | 概念 + 准入四问 | `ANTI_PLAGIARISM_LAYER.md` | **本切片（文档）** |
-| **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | 口令已给 · **运行时下一 PR** |
-| **2** | YPE V2 + `algorithmVersion` | `task-ype-v2-secret-transform.md` | 口令已给 · 运行时未开工 |
+| **0** | 概念 + 准入四问 | `ANTI_PLAGIARISM_LAYER.md` | **#542 已合** |
+| **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | **#543 已合** |
+| **2** | YPE V2 + `algorithmVersion` | `task-ype-v2-secret-transform.md` | **本旁支运行时** · 生产须部署 |
 | **3** | Confide 句库 overlay | `task-confide-copy-overlay.md` | 口令已给 · 运行时未开工 |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 | — | 不开工 |
 
-**我认为最合理的下一刀**：Quiet Line 句包运行时（序 1）。较弱：先改 YPE Pack 校验（会动个人化语义，且现网非空 insight 整包丢）。
+**我认为最合理的下一刀**：序 3 Confide 句库 overlay。较弱：未部署就当现网 V2 已生效（须口令「部署」）。
 
 ## 📍 云端品味层（2026-08-18 政策锁）
 
@@ -272,10 +272,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L2 同意 UI** | 第四条独立同意；Privacy 开关；本机 `ype_profile_id`；无 Worker | `task-l2-personalization-consent.md` | **本支 `feature/ype-l2-ui-consent` 开工** |
 | **L2 同意文案** | 关即删；HINT+DETAIL 附录 | 同上 | **已进 locale（en/ja/zh）** |
 | **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（#456）** |
-| **L2 算法** | 五键 → Pack 闭包变换；V1 不按完成率改档 | `task-l2-personalization-algorithm.md` | **本切片（文档）** |
-| **L2 运行时** | Worker ingest / delete / Pack 签发 + 客户端 sync | `task-l2-personalization-algorithm.md` | **本支 `feature/ype-l2-worker` 开工** |
+| **L2 算法** | 五键 → Pack 闭包变换；V1 回声；V2 白名单 insight | `task-l2-personalization-algorithm.md` · `task-ype-v2-secret-transform.md` | **V2 本旁支** |
+| **L2 运行时** | Worker ingest / delete / Pack 签发 + 客户端 sync | `task-l2-personalization-algorithm.md` | ingest 已合；V2 签发本旁支 |
 
-**我认为最合理的下一刀**：防剽窃层序 1 Quiet Line overlay 运行时。YPE 人工验收 ingest 可并行（不阻塞句包 PR）。
+**我认为最合理的下一刀**：防剽窃层序 3 Confide 句 overlay。YPE 现网生效须部署 Worker。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 
