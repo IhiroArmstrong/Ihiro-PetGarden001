@@ -72,6 +72,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
+| `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
 | `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
 | `infra-snapshot` | 基础设施现状摘要（Worker/KV/entitlement/locale 等低频配置快照） | `focus-tiger/docs/INFRA_SNAPSHOT.md` | INFRA_SNAPSHOT — 基础设施现状摘要（非 SSOT） |
 | `source-read-granularity` | 源码读取粒度（大文件先定位再片段读，控上下文 token） | `.cursor/rules/focus-tiger-source-read-granularity.mdc` | Focus Tiger · 源码读取粒度（控上下文 token · 按需层） |
@@ -115,6 +116,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
 | `ci-failure-triage` | 「CI/smoke 失败且缺日志见 `focus-tiger-ci-failure-triage.mdc`」；`agent-token-cost` §5–§6 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无日志先 grep；主张失败分析摘要可臆测；把合 develop / §7 关单门禁写进本条 |
+| `ui-bug-triage` | 「UI/交互回归且缺锚点见 `focus-tiger-ui-bug-triage.mdc`」；`agent-token-cost` §5 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无复现/锚点先全仓 grep；主张分析会话可无限探索；把合 develop / §7 关单门禁写进本条 |
 | `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；实验室脚本路径/命名/已测候选见 `LAB_SCRIPT_CONVENTIONS.md`（勿复述路径表）；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
 | `source-read-granularity` | 「大文件片段读见 `focus-tiger-source-read-granularity.mdc`」；`agent-token-cost` §7 / `focus-tiger-core` 按需索引可一行引用 | 复述完整阈值表或流程；主张 ≥400 行源码默认可整文件 Read；平行写第二套行数门槛 |
 | `infra-snapshot` | 「Worker/KV/entitlement 现状见 `INFRA_SNAPSHOT.md`」；`ENV_CONFIG` 只链规则；接云任务前可读摘要 | 在 `ENV_CONFIG` 再维护「仓库事实」大表；把 Secret 值写进摘要；未经「部署」口令更新 `prod_worker_version` |
@@ -140,6 +142,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc) | **SSOT**：会话交接（口令「生成交接」；`session-handoff`） |
 | [`.cursor/rules/focus-tiger-ci-failure-triage.mdc`](../../.cursor/rules/focus-tiger-ci-failure-triage.mdc) | **SSOT**：CI/Smoke 失败排查前置检查（先 gh 取日志、后探索；探索最多 5 轮；`ci-failure-triage`；**按需加载，非 alwaysApply**） |
+| [`.cursor/rules/focus-tiger-ui-bug-triage.mdc`](../../.cursor/rules/focus-tiger-ui-bug-triage.mdc) | **SSOT**：UI/交互回归排查前置检查（先取 git/复现锚点、后探索；探索最多 5 轮；`ui-bug-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-source-read-granularity.mdc`](../../.cursor/rules/focus-tiger-source-read-granularity.mdc) | **SSOT**：源码读取粒度（大文件先定位再片段读；`source-read-granularity`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
@@ -239,6 +242,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-02 | 新增 `ui-bug-triage`：UI/交互回归且用户未给锚点时须先取 git log/show + 复现信号（Step A），禁止无信号全仓考古；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ui-bug-triage.mdc`；`agent-token-cost` §5 / `focus-tiger-core` 补指针；与 `ci-failure-triage` 对称；不改变 push/PR / 合 develop / §7 关单 |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |
 | 2026-09-02 | 扩展 `agent-token-cost`：`Merged` 硬断点 + 新会话模型一行速查表；`PROCESS`「本地 Cursor 能耗」增 P0 显眼小节（只指路 SSOT） |
 | 2026-09-02 | `SANCTUARY_UI_ART_DIRECTION.md` 升为 A–D 四层唯一美术 SSOT（补 D 次级表面；不进 rules-authority 机器块） |
