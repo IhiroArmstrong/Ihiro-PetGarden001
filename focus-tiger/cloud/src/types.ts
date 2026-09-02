@@ -90,6 +90,13 @@ export interface DailyMessageResponse {
 	variantSeed: string;
 }
 
+export interface QuietLineResponse {
+	schemaVersion: number;
+	locale: string;
+	pool: Array<{ key: string; text: string }>;
+	variantSeed: string;
+}
+
 export interface EmotionWeightResponse {
 	schemaVersion: number;
 	variant: string;

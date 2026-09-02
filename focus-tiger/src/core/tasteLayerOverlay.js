@@ -11,6 +11,7 @@
  */
 
 import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
+import { COPY_POOLS } from '../locales/i18n.js';
 
 export const TASTE_LAYER_SCHEMA_VERSION = 1;
 
@@ -22,6 +23,10 @@ const LIGHT_KEYS = new Set([
   'parrotEarVisit'
 ]);
 const DAILY_WISDOM_IDS = Object.freeze(DAILY_WISDOM_EN.map((e) => e.id));
+const QUIET_LINE_KEYS = new Set([
+  ...COPY_POOLS.DAILY_ZEN_QUOTE,
+  ...COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT
+]);
 
 /** @typedef {{ key: string, weight: number }} WeightedEntry */
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
@@ -42,13 +47,25 @@ const DAILY_WISDOM_IDS = Object.freeze(DAILY_WISDOM_EN.map((e) => e.id));
  * }} TasteDailyWisdomOverlay
  */
 
+/** @typedef {{ key: string, text: string }} QuietLineEntry */
+
+/**
+ * @typedef {{
+ *   locale: string,
+ *   pool: ReadonlyArray<QuietLineEntry>
+ * }} TasteQuietLineOverlay
+ */
+
 /** @type {TasteWeightOverlay | null} */
 let weightOverlay = null;
 /** @type {TasteDailyWisdomOverlay | null} */
 let dailyWisdomOverlay = null;
+/** @type {TasteQuietLineOverlay | null} */
+let quietLineOverlay = null;
 /** Cloud v1 validated even when we skip retaining a freeze-identical copy. */
 let weightCloudOk = false;
 let dailyCloudOk = false;
+let quietLineCloudOk = false;
 
 /**
  * @param {unknown} raw
@@ -154,6 +171,47 @@ export function parseDailyMessageOverlay(body, expectedLocale) {
   };
 }
 
+/**
+ * @param {unknown} body
+ * @param {string} [expectedLocale]
+ * @returns {TasteQuietLineOverlay | null}
+ */
+export function parseQuietLineOverlay(body, expectedLocale) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
+  const o = /** @type {Record<string, unknown>} */ (body);
+  if (o.schemaVersion !== TASTE_LAYER_SCHEMA_VERSION) return null;
+  const rawLocale = typeof o.locale === 'string' ? o.locale.trim() : '';
+  if (!rawLocale) return null;
+  const have = rawLocale === 'ja' ? 'ja' : 'en';
+  if (expectedLocale) {
+    const want = expectedLocale === 'ja' ? 'ja' : 'en';
+    if (have !== want) return null;
+  }
+  const poolRaw = o.pool;
+  if (!Array.isArray(poolRaw) || poolRaw.length !== QUIET_LINE_KEYS.size) {
+    return null;
+  }
+  /** @type {QuietLineEntry[]} */
+  const pool = [];
+  const seen = new Set();
+  for (const entry of poolRaw) {
+    if (!entry || typeof entry !== 'object') return null;
+    const key = /** @type {{ key?: unknown }} */ (entry).key;
+    const text = /** @type {{ text?: unknown }} */ (entry).text;
+    if (typeof key !== 'string' || !QUIET_LINE_KEYS.has(key) || seen.has(key)) {
+      return null;
+    }
+    if (typeof text !== 'string' || !text.trim()) return null;
+    seen.add(key);
+    pool.push({ key, text: text.trim() });
+  }
+  if (seen.size !== QUIET_LINE_KEYS.size) return null;
+  return {
+    locale: have,
+    pool: Object.freeze(pool.map((e) => Object.freeze({ ...e })))
+  };
+}
+
 /** @returns {TasteWeightOverlay | null} */
 export function getTasteWeightOverlay() {
   return weightOverlay;
@@ -162,6 +220,11 @@ export function getTasteWeightOverlay() {
 /** @returns {TasteDailyWisdomOverlay | null} */
 export function getTasteDailyWisdomOverlay() {
   return dailyWisdomOverlay;
+}
+
+/** @returns {TasteQuietLineOverlay | null} */
+export function getTasteQuietLineOverlay() {
+  return quietLineOverlay;
 }
 
 /** @param {TasteWeightOverlay | null} next */
@@ -174,6 +237,11 @@ export function setTasteDailyWisdomOverlay(next) {
   dailyWisdomOverlay = next;
 }
 
+/** @param {TasteQuietLineOverlay | null} next */
+export function setTasteQuietLineOverlay(next) {
+  quietLineOverlay = next;
+}
+
 /** Mark cloud weights as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteWeightCloudOk() {
   weightCloudOk = true;
@@ -182,6 +250,11 @@ export function markTasteWeightCloudOk() {
 /** Mark cloud daily-wisdom as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteDailyWisdomCloudOk() {
   dailyCloudOk = true;
+}
+
+/** Mark cloud quiet-line as schemaVersion 1 OK without retaining a duplicate freeze copy. */
+export function markTasteQuietLineCloudOk() {
+  quietLineCloudOk = true;
 }
 
 /** @returns {boolean} */
@@ -194,11 +267,18 @@ export function isTasteDailyWisdomCloudConfirmed() {
   return dailyCloudOk || Boolean(dailyWisdomOverlay);
 }
 
+/** @returns {boolean} */
+export function isTasteQuietLineCloudConfirmed() {
+  return quietLineCloudOk || Boolean(quietLineOverlay);
+}
+
 export function resetTasteLayerOverlayForTests() {
   weightOverlay = null;
   dailyWisdomOverlay = null;
+  quietLineOverlay = null;
   weightCloudOk = false;
   dailyCloudOk = false;
+  quietLineCloudOk = false;
 }
 
 /**
@@ -212,4 +292,18 @@ export function overlayDailyWisdomPoolForLocale(locale) {
   return dailyWisdomOverlay.pool;
 }
 
+/**
+ * @param {string} key
+ * @param {string} [locale]
+ * @returns {string | null}
+ */
+export function overlayQuietLineTextForKey(key, locale) {
+  if (!quietLineOverlay || !key) return null;
+  const want = locale === 'ja' ? 'ja' : 'en';
+  if (quietLineOverlay.locale !== want) return null;
+  const row = quietLineOverlay.pool.find((e) => e.key === key);
+  return row?.text || null;
+}
+
 export { DAILY_WISDOM_IDS as TASTE_LAYER_DAILY_WISDOM_IDS };
+export { QUIET_LINE_KEYS as TASTE_LAYER_QUIET_LINE_KEYS };
