@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（縱橫馳騁…所向無痕皆披靡）；菜单轮换已揭示诗；旧档仍先出 Case 2。TRACKER 待人工。
+
 - **Sanctuary C.1 徽章印记条去文案（2026-09-02 · `feature/sanctuary-c1-badge-strip`）**：`#yin-tip-kindness-badges` 默认不显示标题/hint；弱化厚卡片阴影；每枚按钮仍保 `*_DOWNLOAD_ONE` 下载名。授予公式 / Focusing 隐藏不变。SSOT `SANCTUARY_UI_ART_DIRECTION.md` C.1。TRACKER 待人工。
 - **Sanctuary UI Art Direction（2026-09-02 · #529 已合）**：栖居主屏视觉 SSOT 入库。A/B 可对照；C.2 Idle HUD 变轻 / C.3 只改 Reflection CTA（Arrival 无三胶囊）仍待分 PR。不覆盖 `RESPONSIVE_LAYOUT` / `Z_INDEX`。
 - **Gate 0.D PO 否决 Phase 3（2026-09-01 · 纯文档）**：#526 合入后书面拍板不换模、继续 Architecture。语用/软边界残差走 L3，**不**另开生产实现任务。切片 4 仍禁。SSOT `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 / §9。
@@ -138,6 +140,8 @@
 
 - **收回切走轻语（2026-08-16）**：revert 已合入的 PR #323。Here & Now 切走 **20s–180s** 再回来**不再**出 Yin 轻语两钮（一起做 / 跳过）或嵌套呼吸；**>60s** 仍走经典 Re-focus（观察式 toast + `nod-bow`）。产品判断：被动回归不应比主动 Recover 更重。TRACKER 待人工确认轻语不再出现、经典路径仍在。
 
+- **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印场景、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（縱橫馳騁…所向無痕皆披靡）；菜单轮换；旧档 `revealed` 不挡 Case 2/3。TRACKER 待人工。
+
 - **芥子须弥第二 case · 乐五斋七言歌行（2026-08-17）**：同一纪念印场景、同一 score≥21；Case 1 揭示后再完成一次计时出第二首（山海奇云…英雄岂是池中物）；菜单轮换；旧档 `revealed` 不挡 Case 2。TRACKER 待人工。
 
 - **Idle Document PiP 陪伴浮窗（2026-08-16 · 实验原型）**：桌面 Chrome/Edge 在 Idle 热力图簇旁可主动打开置顶小窗，镜像阿寅呼吸；不支持的浏览器入口完全不出现。**不是**桌面客户端、不是 Focusing Immersive Presence 浮动计时窗。使用记录 `focus-tiger.idle-companion-pip.v1` 只供后续是否加大投入，不用于提醒。TRACKER + 场景 AA 待人工。
@@ -195,7 +199,7 @@
 - **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（本地只记 `submitted`、不存邮箱）+ 社群 Slack 邀请外链（2026-08-29 接线 `communityLink.js`）；提交后菜单行 **We'll keep in touch** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实发信见文首 2026-08-13 条。
-- **芥子须弥纪念印（#246 + 金章 #256 已合 tip `5440a53`；2026-08-17 第二 case）**：统一练习 score≥21；完成仪式后出卡；两首乐五斋诗分两次完成揭示；菜单可重读轮换；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER 待人工（须验方章 + 七言歌行）。
+- **芥子须弥纪念印（#246 + 金章 #256 已合 tip `5440a53`；2026-08-17 第二 case；2026-09-02 第三 case）**：统一练习 score≥21；完成仪式后出卡；三首乐五斋诗分三次完成揭示；菜单可重读轮换；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER 待人工（须验方章 + 七言歌行 + 诗稿〇九〇二）。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`；古典扩库本支）**：内容池 `src/content/daily-wisdom/`（en/ja；Yin 短句 + 可选 `attribution` 古典/文学句同池）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`（有署名时 `<cite>`）；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**Phase A 挂 Reflection 底部**（本支 `feature/daily-wisdom-reflection-mount`；与 Quiet Line 分池；**Phase B 印花未做**）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。

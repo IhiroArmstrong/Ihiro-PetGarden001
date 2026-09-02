@@ -6,7 +6,7 @@
 /**
  * Mustard Seed · Sumeru memorial seal card.
  * Quiet Line–like glass card: ZH poem + EN + 乐五斋 attribution + companion badge.
- * Verse cases: 《芥子须弥》then 七言歌行; same scene, one unrevealed case per ceremony.
+ * Verse cases: 《芥子须弥》then 七言歌行 then 詩稿〇九〇二; same scene, one unrevealed case per ceremony.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';

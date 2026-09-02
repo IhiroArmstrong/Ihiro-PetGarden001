@@ -11,9 +11,12 @@ import {
   MUSTARD_SEED_SEAL_STORAGE_KEY,
   MUSTARD_SEED_SEAL_CASE_SUMERU,
   MUSTARD_SEED_SEAL_CASE_HERO,
+  MUSTARD_SEED_SEAL_CASE_NO_TRACE,
   MUSTARD_SEED_SEAL_CASES,
   MUSTARD_SEED_SEAL_HERO_POEM_ZH,
   MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
+  MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH,
+  MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH,
   clearMustardSeedSealState,
   getMustardSeedSealCase,
   isMustardSeedSealScoreMet,
@@ -84,10 +87,11 @@ describe('mustardSeedSeal', () => {
     );
   });
 
-  it('catalog has two Le Wu Zhai verse cases', () => {
-    assert.equal(MUSTARD_SEED_SEAL_CASES.length, 2);
+  it('catalog has three Le Wu Zhai verse cases', () => {
+    assert.equal(MUSTARD_SEED_SEAL_CASES.length, 3);
     assert.equal(MUSTARD_SEED_SEAL_CASES[0].id, MUSTARD_SEED_SEAL_CASE_SUMERU);
     assert.equal(MUSTARD_SEED_SEAL_CASES[1].id, MUSTARD_SEED_SEAL_CASE_HERO);
+    assert.equal(MUSTARD_SEED_SEAL_CASES[2].id, MUSTARD_SEED_SEAL_CASE_NO_TRACE);
     assert.deepEqual(MUSTARD_SEED_SEAL_HERO_POEM_ZH, [
       '山海奇雲風幡舞，',
       '紅塵如電亦如露。',
@@ -98,8 +102,18 @@ describe('mustardSeedSeal', () => {
       MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
       '樂五齋七言歌行'
     );
+    assert.deepEqual(MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH, [
+      '縱橫馳騁九萬里，',
+      '芥子唯微納須彌。',
+      '英雄何需青龍手，',
+      '所向無痕皆披靡。'
+    ]);
     assert.equal(
-      getMustardSeedSealCase(MUSTARD_SEED_SEAL_CASE_HERO)?.poemZh.length,
+      MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH,
+      '樂五齋詩稿〇九〇二'
+    );
+    assert.equal(
+      getMustardSeedSealCase(MUSTARD_SEED_SEAL_CASE_NO_TRACE)?.poemZh.length,
       4
     );
   });
@@ -238,12 +252,24 @@ describe('mustardSeedSeal', () => {
     markMustardSeedSealRevealed(storage, {
       caseId: MUSTARD_SEED_SEAL_CASE_HERO
     });
-    const afterBoth = resolveMustardSeedSeal(storage);
-    assert.equal(afterBoth.shouldAutoReveal, false);
-    assert.equal(afterBoth.nextCase, null);
-    assert.deepEqual(afterBoth.revealedCaseIds, [
+    const afterSecond = resolveMustardSeedSeal(storage);
+    assert.equal(afterSecond.shouldAutoReveal, true);
+    assert.equal(afterSecond.nextCase?.id, MUSTARD_SEED_SEAL_CASE_NO_TRACE);
+    assert.deepEqual(afterSecond.revealedCaseIds, [
       MUSTARD_SEED_SEAL_CASE_SUMERU,
       MUSTARD_SEED_SEAL_CASE_HERO
+    ]);
+
+    markMustardSeedSealRevealed(storage, {
+      caseId: MUSTARD_SEED_SEAL_CASE_NO_TRACE
+    });
+    const afterAll = resolveMustardSeedSeal(storage);
+    assert.equal(afterAll.shouldAutoReveal, false);
+    assert.equal(afterAll.nextCase, null);
+    assert.deepEqual(afterAll.revealedCaseIds, [
+      MUSTARD_SEED_SEAL_CASE_SUMERU,
+      MUSTARD_SEED_SEAL_CASE_HERO,
+      MUSTARD_SEED_SEAL_CASE_NO_TRACE
     ]);
 
     clearMustardSeedSealState(storage);
