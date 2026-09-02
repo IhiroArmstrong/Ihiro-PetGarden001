@@ -26,6 +26,8 @@ npx wrangler pages deploy marketing-site --project-name twinsology-marketing
 
 Then in the dashboard: **Custom domains** → `twinsology.com` and `www.twinsology.com` (www redirects to apex).
 
+**Live (2026-09-03)**: `https://twinsology.com` · Pages project `twinsology-marketing`.
+
 **Do not** edit MX / SPF / DKIM / DMARC / Resend records. Website records only.
 
 ## Slice 0 does not

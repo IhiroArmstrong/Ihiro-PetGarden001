@@ -213,7 +213,7 @@
 | 全量 e2e GitHub Secrets | **不需要** |
 | Workflows（6） | `pr-smoke` · `focus-tiger-e2e-full`（schedule+dispatch）· `focus-tiger-doc-contract-check` · `focus-tiger-visibility-contract` · `pr-merge-conflict-check` · `dependency-audit` |
 | `schedule` cron | 读**默认分支** YAML（现为 `develop`；UTC 02:00） |
-| 营销站公开域 | `https://twinsology.com`（apex；`marketing-site/` Slice 0；Pages/DNS **未**绑） |
+| 营销站公开域 | `https://twinsology.com`（apex；`marketing-site/` Slice 0；Pages **`twinsology-marketing`** · `twinsology.com` + `www` Active · 2026-09-03 关单） |
 | Rules 主题数 | 见 [`RULES_INDEX.md`](./RULES_INDEX.md) 机器块（`npm run rules:doc-sync` 刷新） |
 
 ---
