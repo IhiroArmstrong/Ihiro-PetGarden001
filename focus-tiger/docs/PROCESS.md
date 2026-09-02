@@ -66,7 +66,7 @@
 
 - **冻表 vs 现网可分叉（2026-09-02 · 纯文档）**：git 冻表 = 公开兜底；Worker 可与仓库分叉，分叉后禁止把灵魂数字写回 freeze。SSOT `ANTI_PLAGIARISM_LAYER.md` §3.1。本切片 **无 Redeploy**。
 - **防剽窃层方向锁（2026-09-02）**：品味云 / YPE 云 / 句包 overlay。准入四问。SSOT `ANTI_PLAGIARISM_LAYER.md`。Quiet Line 源码 **#543 已合**；YPE V2 **#545 已合**（生产须部署）。
-- **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（縱橫馳騁…所向無痕皆披靡）；菜单轮换已揭示诗；旧档仍先出 Case 2。TRACKER 待人工。
+- **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（乾坤縱橫…所向無痕皆披靡）；菜单轮换已揭示诗；旧档仍先出 Case 2。TRACKER 待人工。
 - **Sanctuary C.1 徽章印记条去文案（2026-09-02 · `feature/sanctuary-c1-badge-strip`）**：`#yin-tip-kindness-badges` 默认不显示标题/hint；弱化厚卡片阴影；每枚按钮仍保 `*_DOWNLOAD_ONE` 下载名。授予公式 / Focusing 隐藏不变。SSOT `SANCTUARY_UI_ART_DIRECTION.md` C.1。TRACKER 待人工。
 - **Sanctuary UI Art Direction（2026-09-02 · #529 已合）**：栖居主屏视觉 SSOT 入库。A/B 可对照；C.2 Idle HUD 变轻 / C.3 只改 Reflection CTA（Arrival 无三胶囊）仍待分 PR。不覆盖 `RESPONSIVE_LAYOUT` / `Z_INDEX`。
 - **Gate 0.D PO 否决 Phase 3（2026-09-01 · 纯文档）**：#526 合入后书面拍板不换模、继续 Architecture。语用/软边界残差走 L3，**不**另开生产实现任务。切片 4 仍禁。SSOT `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 / §9。
@@ -141,7 +141,7 @@
 
 - **收回切走轻语（2026-08-16）**：revert 已合入的 PR #323。Here & Now 切走 **20s–180s** 再回来**不再**出 Yin 轻语两钮（一起做 / 跳过）或嵌套呼吸；**>60s** 仍走经典 Re-focus（观察式 toast + `nod-bow`）。产品判断：被动回归不应比主动 Recover 更重。TRACKER 待人工确认轻语不再出现、经典路径仍在。
 
-- **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印场景、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（縱橫馳騁…所向無痕皆披靡）；菜单轮换；旧档 `revealed` 不挡 Case 2/3。TRACKER 待人工。
+- **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印场景、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（乾坤縱橫…所向無痕皆披靡）；菜单轮换；旧档 `revealed` 不挡 Case 2/3。TRACKER 待人工。
 
 - **芥子须弥第二 case · 乐五斋七言歌行（2026-08-17）**：同一纪念印场景、同一 score≥21；Case 1 揭示后再完成一次计时出第二首（山海奇云…英雄岂是池中物）；菜单轮换；旧档 `revealed` 不挡 Case 2。TRACKER 待人工。
 

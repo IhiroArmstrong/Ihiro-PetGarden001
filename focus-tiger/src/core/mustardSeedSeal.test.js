@@ -103,14 +103,14 @@ describe('mustardSeedSeal', () => {
       '樂五齋七言歌行'
     );
     assert.deepEqual(MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH, [
-      '縱橫馳騁九萬里，',
+      '乾坤縱橫九萬里，',
       '芥子唯微納須彌。',
       '英雄何需青龍手，',
       '所向無痕皆披靡。'
     ]);
     assert.equal(
       MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH,
-      '樂五齋詩稿〇九〇二'
+      '樂五齋詩稿'
     );
     assert.equal(
       getMustardSeedSealCase(MUSTARD_SEED_SEAL_CASE_NO_TRACE)?.poemZh.length,
