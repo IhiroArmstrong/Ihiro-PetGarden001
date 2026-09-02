@@ -1,6 +1,6 @@
 # Task Brief · YPE V2 秘密变换 + algorithmVersion
 
-> **状态（2026-09-02）**：口令已给 · **本 Brief 无运行时**。父概念 `ANTI_PLAGIARISM_LAYER.md` §5 序 2。  
+> **状态（2026-09-02）**：口令已给 · **本旁支运行时**（签发 + Pack 校验）。父概念 `ANTI_PLAGIARISM_LAYER.md` §5 序 2。生产 Worker 须另口令「部署」。
 > **与 V1 的关系**：V1 = 校验五键 + **回声**用户已选 `companionStyle` + `patternInsights=[]`。V2 = **同一五键上的闭包变换**（非空、白名单 insight）+ 服务器只存的 `algorithmVersion`。  
 > **是同一件事**：把 YPE 从「回声选档」做成真正的秘密变换 = 本 Brief。`algorithmVersion` **并进本刀**，禁止单独空 bump。
 

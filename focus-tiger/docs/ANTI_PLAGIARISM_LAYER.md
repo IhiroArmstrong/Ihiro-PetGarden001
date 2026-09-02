@@ -87,14 +87,14 @@
 
 | 序 | 任务 | 口令 | 本回合 |
 |---|---|---|---|
-| **0** | 本 SSOT 入库 | （概念纳入项目） | **本 PR** |
-| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | Brief 已开 · **运行时下一 PR** |
-| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | Brief 已开 · 须先冻结 insight 白名单再改 Worker |
+| **0** | 本 SSOT 入库 | （概念纳入项目） | **#542 已合** |
+| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合** |
+| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | **本旁支运行时** · 生产须部署 |
 | **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | Brief 已开 · 路由/正则/Qwen **留下** |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
 
-**我认为最合理的运行时下一刀是序 1（Quiet Line overlay）。**  
-理由：品味层管道已在；只扩句包、不改个人化语义；Confide 开口路径零改动。YPE V2 会改 Pack 校验（现网非空 `patternInsights` 会整包丢），应在句包 overlay 稳定后再动。Confide 句 overlay 与开口 0–1 秒相邻，放在 YPE V2 之后，避免同时改两套「说话」面。`algorithmVersion` **并进序 2**，禁止单独发一个空版本号 PR。
+**我认为最合理的运行时下一刀是序 3（Confide 句库 overlay）。**  
+理由：序 1–2 已进代码；Confide 换字与开口路径相邻，单独一刀。YPE 现网签发须另口令「部署」。日签扩容 / 伸懒腰 / 好奇仍后排。
 
 ---
 
