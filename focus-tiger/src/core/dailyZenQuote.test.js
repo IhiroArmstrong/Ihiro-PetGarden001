@@ -24,6 +24,11 @@ import {
   readDailyZenQuotePoolV2
 } from './dailyZenQuote.js';
 import { COPY_POOLS, setLocale } from '../locales/i18n.js';
+import en from '../locales/en.json' with { type: 'json' };
+import {
+  resetTasteLayerOverlayForTests,
+  setTasteQuietLineOverlay
+} from './tasteLayerOverlay.js';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -85,6 +90,28 @@ describe('dailyZenQuote', () => {
     assert.match(ja.text, /./);
     assert.notEqual(ja.text, en.text);
     setLocale('en', { persist: false });
+  });
+
+  it('resolveDailyZenQuote prefers taste-layer overlay text when set', () => {
+    resetTasteLayerOverlayForTests();
+    const key = pickDailyZenQuoteKey('2026-08-06');
+    setTasteQuietLineOverlay({
+      locale: 'en',
+      pool: [
+        ...COPY_POOLS.DAILY_ZEN_QUOTE,
+        ...COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT
+      ].map((k) => ({
+        key: k,
+        text: k === key ? 'Overlay quiet line for today.' : en[k]
+      }))
+    });
+    const resolved = resolveDailyZenQuote({
+      date: new Date(2026, 7, 6),
+      locale: 'en'
+    });
+    assert.equal(resolved.key, key);
+    assert.equal(resolved.text, 'Overlay quiet line for today.');
+    resetTasteLayerOverlayForTests();
   });
 
   it('wrapCanvasText wraps long English and CJK', () => {

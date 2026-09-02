@@ -15,7 +15,7 @@
 import { DAILY_WISDOM_EN, DAILY_WISDOM_JA } from '../content/daily-wisdom/index.js';
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import { getLocalDateKey } from '../utils/localDate.js';
-import { getLocale } from '../locales/i18n.js';
+import { getLocale, tInLocale } from '../locales/i18n.js';
 import {
   HONESTY_LONG_MIN_MINUTES,
   LIGHT_COMPLETE_POOL,
@@ -25,12 +25,16 @@ import {
 import {
   getTasteWeightOverlay,
   isTasteDailyWisdomCloudConfirmed,
+  isTasteQuietLineCloudConfirmed,
   isTasteWeightCloudConfirmed,
   markTasteDailyWisdomCloudOk,
+  markTasteQuietLineCloudOk,
   markTasteWeightCloudOk,
   parseDailyMessageOverlay,
   parseEmotionWeightOverlay,
+  parseQuietLineOverlay,
   setTasteDailyWisdomOverlay,
+  setTasteQuietLineOverlay,
   setTasteWeightOverlay,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
@@ -132,10 +136,26 @@ export function tasteDailyOverlayMatchesLocalFreeze(parsed, locale) {
   });
 }
 
+/**
+ * @param {import('./tasteLayerOverlay.js').TasteQuietLineOverlay} parsed
+ * @param {string} [locale]
+ */
+export function tasteQuietLineOverlayMatchesLocalFreeze(parsed, locale) {
+  if (!parsed) return false;
+  const want = locale === 'ja' || parsed.locale === 'ja' ? 'ja' : 'en';
+  if (parsed.locale !== want) return false;
+  return parsed.pool.every((e) => {
+    const localText = String(tInLocale(want, e.key) || '').trim();
+    return localText === e.text;
+  });
+}
+
 /** @type {import('./tasteLayerOverlay.js').TasteWeightOverlay | null} */
 let pendingWeight = null;
 /** @type {import('./tasteLayerOverlay.js').TasteDailyWisdomOverlay | null} */
 let pendingDaily = null;
+/** @type {import('./tasteLayerOverlay.js').TasteQuietLineOverlay | null} */
+let pendingQuietLine = null;
 /** @type {ReturnType<typeof setTimeout> | 0} */
 let flushTimer = 0;
 
@@ -156,6 +176,11 @@ export function flushPendingTasteLayerApply(canApply = () => true) {
     pendingDaily = null;
     applied = true;
   }
+  if (pendingQuietLine) {
+    setTasteQuietLineOverlay(pendingQuietLine);
+    pendingQuietLine = null;
+    applied = true;
+  }
   return applied;
 }
 
@@ -166,7 +191,7 @@ function schedulePendingFlush(canApply) {
   if (flushTimer) return;
   const tick = () => {
     flushTimer = 0;
-    if (!pendingWeight && !pendingDaily) return;
+    if (!pendingWeight && !pendingDaily && !pendingQuietLine) return;
     if (canApply()) {
       flushPendingTasteLayerApply(canApply);
       return;
@@ -194,15 +219,18 @@ async function waitUntilCanApply(canApply, waitApplyMs) {
  * @returns {{
  *   weights: boolean,
  *   dailyWisdom: boolean,
+ *   quietLine: boolean,
  *   honestyLongMinMinutes: number | null
  * }}
  */
 export function getTasteLayerStatus() {
   const weights = isTasteWeightCloudConfirmed();
   const dailyWisdom = isTasteDailyWisdomCloudConfirmed();
+  const quietLine = isTasteQuietLineCloudConfirmed();
   return {
     weights,
     dailyWisdom,
+    quietLine,
     honestyLongMinMinutes:
       getTasteWeightOverlay()?.honestyLongMinMinutes ??
       (weights ? HONESTY_LONG_MIN_MINUTES : null)
@@ -212,6 +240,7 @@ export function getTasteLayerStatus() {
 export function resetTasteLayerSyncForTests() {
   pendingWeight = null;
   pendingDaily = null;
+  pendingQuietLine = null;
   if (flushTimer) {
     clearTimeout(flushTimer);
     flushTimer = 0;
@@ -228,7 +257,7 @@ export function resetTasteLayerSyncForTests() {
  * @param {string} [opts.cloudBaseUrl]
  * @param {() => boolean} [opts.canApply]
  * @param {number} [opts.waitApplyMs]
- * @returns {Promise<{ weights: boolean, dailyWisdom: boolean }>}
+ * @returns {Promise<{ weights: boolean, dailyWisdom: boolean, quietLine: boolean }>}
  */
 export async function prefetchTasteLayer(opts = {}) {
   const search =
@@ -236,7 +265,7 @@ export async function prefetchTasteLayer(opts = {}) {
     (typeof location !== 'undefined' ? String(location.search || '') : '');
   const cloudBaseUrl = opts.cloudBaseUrl ?? getCloudApiBaseUrl();
   if (!isTasteLayerFetchEnabled({ search, cloudBaseUrl })) {
-    return { weights: false, dailyWisdom: false };
+    return { weights: false, dailyWisdom: false, quietLine: false };
   }
 
   const canApply = opts.canApply ?? (() => true);
@@ -247,7 +276,7 @@ export async function prefetchTasteLayer(opts = {}) {
   const locale = opts.locale || getLocale() || 'en';
   const localDate = opts.localDate || getLocalDateKey(new Date());
 
-  const [weightResult, dailyResult] = await Promise.allSettled([
+  const [weightResult, dailyResult, quietLineResult] = await Promise.allSettled([
     withTimeout(
       postJson('/api/emotion-weight', {
         body: JSON.stringify({
@@ -263,11 +292,18 @@ export async function prefetchTasteLayer(opts = {}) {
         body: JSON.stringify({ locale, localDate })
       }),
       timeoutMs
+    ),
+    withTimeout(
+      postJson('/api/quiet-line', {
+        body: JSON.stringify({ locale, localDate })
+      }),
+      timeoutMs
     )
   ]);
 
   let weights = false;
   let dailyWisdom = false;
+  let quietLine = false;
 
   if (weightResult.status === 'fulfilled') {
     const parsed = parseEmotionWeightOverlay(weightResult.value);
@@ -301,5 +337,21 @@ export async function prefetchTasteLayer(opts = {}) {
     }
   }
 
-  return { weights, dailyWisdom };
+  if (quietLineResult.status === 'fulfilled') {
+    const parsed = parseQuietLineOverlay(quietLineResult.value, locale);
+    if (parsed) {
+      quietLine = true;
+      if (tasteQuietLineOverlayMatchesLocalFreeze(parsed, locale)) {
+        markTasteQuietLineCloudOk();
+      } else if (canApply()) {
+        setTasteQuietLineOverlay(parsed);
+        markTasteQuietLineCloudOk();
+      } else {
+        pendingQuietLine = parsed;
+        schedulePendingFlush(canApply);
+      }
+    }
+  }
+
+  return { weights, dailyWisdom, quietLine };
 }

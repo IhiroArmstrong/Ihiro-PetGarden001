@@ -1,0 +1,3 @@
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 备注 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| Quiet Line 句包 overlay（品味层 `/api/quiet-line`） | 纯后端 + UI文案 | 待人工测试 | **主路径（`?product=1` · 配 `VITE_CLOUD_API_BASE_URL`）**：硬刷新后 `__tasteLayer.status()` 含 `quietLine: true`（可在欢迎/首段 Idle 之后）。Idle → ⋯ → **A Quiet Line** → **0–1 秒内**卡片淡入，句文与本地池一致（现网冻结表相同则不另存 overlay，开卡仍用 locale 句）。**对照**：`?tasteLayer=0` → `quietLine: false`，开卡仍正常。**慢网**：失败不得挡 Sit / 开卡。**回流**：同日再开句不变；Save image 用已解析句，不等网。**分列**：① Idle 呼吸→眨眼不闪；② overlay 开着 Arrival/Honesty 叠化；③ Journey 洞察 `◦` 仍仅 insight 种子。自动化：`tasteLayerOverlay.test.js` · `tasteLayerSync.test.js` · `dailyZenQuote.test.js`（overlay 句优先）。**完整用户链路无 e2e**（须人工）。 | — | — | — | `feature/quiet-line-copy-overlay` · Worker 新路由须口令「部署」才上现网 | 2026-09-02 |

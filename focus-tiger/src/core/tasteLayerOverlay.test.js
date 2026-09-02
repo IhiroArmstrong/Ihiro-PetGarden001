@@ -7,6 +7,8 @@ import assert from 'node:assert/strict';
 import { afterEach, test } from 'node:test';
 
 import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
+import en from '../locales/en.json' with { type: 'json' };
+import { COPY_POOLS } from '../locales/i18n.js';
 import {
   HONESTY_LONG_MIN_MINUTES,
   LIGHT_COMPLETE_POOL,
@@ -16,6 +18,7 @@ import {
 import {
   parseDailyMessageOverlay,
   parseEmotionWeightOverlay,
+  parseQuietLineOverlay,
   resetTasteLayerOverlayForTests,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
@@ -107,6 +110,51 @@ test('parseDailyMessageOverlay rejects locale mismatch and missing ids', () => {
         schemaVersion: 1,
         locale: 'en',
         pool: DAILY_WISDOM_EN.slice(0, 3).map((e) => ({ id: e.id, text: e.text }))
+      },
+      'en'
+    ),
+    null
+  );
+});
+
+test('parseQuietLineOverlay accepts freeze 21-key pool', () => {
+  const parsed = parseQuietLineOverlay(
+    {
+      schemaVersion: 1,
+      locale: 'en',
+      pool: [
+        ...COPY_POOLS.DAILY_ZEN_QUOTE,
+        ...COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT
+      ].map((key) => ({ key, text: en[key] }))
+    },
+    'en'
+  );
+  assert.ok(parsed);
+  assert.equal(parsed.locale, 'en');
+  assert.equal(parsed.pool.length, 21);
+});
+
+test('parseQuietLineOverlay rejects locale mismatch and illegal keys', () => {
+  assert.equal(
+    parseQuietLineOverlay(
+      {
+        schemaVersion: 1,
+        locale: 'ja',
+        pool: [
+          ...COPY_POOLS.DAILY_ZEN_QUOTE,
+          ...COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT
+        ].map((key) => ({ key, text: en[key] }))
+      },
+      'en'
+    ),
+    null
+  );
+  assert.equal(
+    parseQuietLineOverlay(
+      {
+        schemaVersion: 1,
+        locale: 'en',
+        pool: [{ key: 'DAILY_ZEN_QUOTE_1', text: 'x' }]
       },
       'en'
     ),

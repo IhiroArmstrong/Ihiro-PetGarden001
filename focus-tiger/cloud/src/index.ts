@@ -9,6 +9,7 @@ import {
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
 import { handleDailyMessage } from "./routes/dailyMessage";
+import { handleQuietLine } from "./routes/quietLine";
 import { handleEmotionWeight } from "./routes/emotionWeight";
 import { handleMonetizationFunnelIngest } from "./routes/monetizationFunnelIngest";
 import { handleCreateTipCheckoutSession } from "./routes/createTipCheckoutSession";
@@ -84,6 +85,7 @@ export default {
 				url.pathname === "/api/practice-backup/get" ||
 				url.pathname === "/api/practice-backup/delete" ||
 				url.pathname === "/api/daily-message" ||
+				url.pathname === "/api/quiet-line" ||
 				url.pathname === "/api/emotion-weight" ||
 				url.pathname === "/api/monetization-funnel-ingest" ||
 				url.pathname === "/api/ype-personalization-ingest" ||
@@ -459,6 +461,16 @@ export default {
 				);
 			}
 			return withCors(await handleDailyMessage(request), origin);
+		}
+
+		if (url.pathname === "/api/quiet-line") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(await handleQuietLine(request), origin);
 		}
 
 		if (url.pathname === "/api/emotion-weight") {

@@ -17,6 +17,7 @@ import { getLocalDateKey } from '../utils/localDate.js';
 import { resolveBrandYinWaySeal } from './brandYinWaySeal.js';
 import { stampJourneyLogInsightSparkForDate } from './journeyLogGate.js';
 import { DIGITAL_WALLPAPER_STILLS } from './digitalWallpapersCatalog.js';
+import { overlayQuietLineTextForKey } from './tasteLayerOverlay.js';
 
 export const DAILY_ZEN_QUOTE_POOL_KEY = 'DAILY_ZEN_QUOTE';
 export const DAILY_ZEN_QUOTE_INSIGHT_POOL_KEY = 'DAILY_ZEN_QUOTE_INSIGHT';
@@ -293,9 +294,10 @@ export function resolveDailyZenQuote(opts = {}) {
     });
   }
   const locale = opts.locale || getLocale();
-  // Product quotes are en+ja only; other locales fall back via tInLocale → en.
+  const overlayText = overlayQuietLineTextForKey(key, locale);
   const text =
-    locale === 'en' || locale === 'ja' ? tInLocale(locale, key) : t(key);
+    overlayText ??
+    (locale === 'en' || locale === 'ja' ? tInLocale(locale, key) : t(key));
   return {
     dateKey,
     key,

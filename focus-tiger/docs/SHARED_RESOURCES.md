@@ -145,7 +145,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `collectionsWaveHello` | Yin's Collections 挥手点播（底栏 Play；抽屉不列 SKU） | 播已入库 `waveHello`；勿接欢迎池 / 10min 自主；勿改 PNG |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
-| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取。拉取不得与精灵预加载 / Arrival·Honesty CapCut 抢主线程；冻结表相同不另存副本（`RB-20260820-L330`）。扩池须过 `ANTI_PLAGIARISM_LAYER.md` 四问；Quiet Line overlay **口令已给、未接线**（`task-quiet-line-copy-overlay.md`） |
+| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 + **Quiet Line 混合句池**（`overlayQuietLineTextForKey`） | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取（含 Quiet Line）。`prefetchTasteLayer` 并行拉 `/api/quiet-line`；拉取不得与精灵预加载 / Arrival·Honesty CapCut 抢主线程；冻结表相同不另存副本（`RB-20260820-L330`）。扩池须过 `ANTI_PLAGIARISM_LAYER.md` 四问 |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 
 完整键见 `EmotionController.js` 的 `EMOTIONS` / `EMOTION_KEYS`；情绪语义权威仍为 `EMOTION_BIBLE.md`。
