@@ -32,8 +32,9 @@ alwaysApply: false
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
 | `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
+| `docs/ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay；准入四问；≠ 支付/备份/Confide 路由） |
 | `docs/YIN_PERSONAL_MEMORY.md` | **阿寅个人记忆架构 V1**（方向锁；≠ 练习云备份 / Journey Log / `turns.jsonl`） |
-| `docs/YIN_PERSONALIZATION_ENGINE.md` | **Yin Personalization Engine V1**（方向锁；L0/L1 本地运行时；≠ Memory / 品味层 / Qwen；L2 契约/Consent/身份/算法已拍、Worker 未开工） |
+| `docs/YIN_PERSONALIZATION_ENGINE.md` | **Yin Personalization Engine V1**（方向锁；L0/L1 本地运行时；≠ Memory / 品味层 / Qwen；L2 已拍；ingest 已合；V2 见 `task-ype-v2-secret-transform.md`） |
 | `docs/CONFIDE_EXECUTABLE_INTENTS.md` | Confide 口头白名单 + Companion Tool Registry（≠ Operating Layer） |
 | `docs/LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划（Confide 轨道 A/B/C） |
 | `docs/LOCAL_AI_PHASE1_TASK_PLAN.md` | **Local AI Phase 1 执行计划**：门禁 · 口令 · #472 A/B/C 验收 · 分 PR 纪律 |

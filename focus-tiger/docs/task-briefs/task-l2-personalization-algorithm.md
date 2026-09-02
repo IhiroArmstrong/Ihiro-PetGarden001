@@ -1,9 +1,9 @@
 # Task Brief · YPE L2 Cloud Algorithm Contract
 
-> **状态（2026-08-26）**：Consent 附录有条件通过；身份键已拍（#456）。**本切片**锁定云端 **V1 算法契约**（文档）。  
-> **本切片禁止**：写入 `src/locales/*.json`、Privacy 现网开关、Worker、ingest、改 `l0Config.js`、改 L1/桌面 generate runtime、改生产行为、发明未拍板的 insight id。  
-> **权威**：`YIN_PERSONALIZATION_ENGINE.md` §E · §G · §H.3 · §H.5 · 文首不变量。本 Brief 是算法 **执行层** SSOT。  
-> **下一刀**：locale 须口令「开工 L2 UI」；运行时须口令「开工 L2」。不要在未口令时写 Worker。
+> **状态（2026-08-26）**：Consent 附录有条件通过；身份键已拍（#456）。**本切片**锁定云端 **V1 算法契约**。  
+> **V2（2026-09-02 口令已给 · 未改本 V1 运行时）**：秘密变换 + 服务器 `algorithmVersion` 见 `task-ype-v2-secret-transform.md`。属防剽窃层。本文件仍是 **V1 回声**契约，直至 V2 PR 改 Worker / Pack 校验。  
+> **本切片禁止**：写入 `src/locales/*.json`、Privacy 现网开关、改 `l0Config.js`、改 L1/桌面 generate runtime、发明未拍板的 insight id（V2 id 只写在 V2 Brief）。  
+> **权威**：`YIN_PERSONALIZATION_ENGINE.md` §E · §G · §H.3 · §H.5 · 文首不变量。V1 执行层 SSOT = 本文；V2 执行层 = V2 Brief。
 
 ---
 

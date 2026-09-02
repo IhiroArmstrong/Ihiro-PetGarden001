@@ -185,8 +185,9 @@ cd focus-tiger && npm run rules:doc-sync
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
+| `ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay 准入尺；≠ 支付 / 备份 / Confide 路由） |
 | `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey Log / turns.jsonl） |
-| `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份/算法已拍、Worker 未开工；≠ 品味层 / Memory store / Qwen） |
+| `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份/算法已拍、ingest 已合；V2 Brief 另见；≠ 品味层 / Memory store / Qwen；同属防剽窃层） |
 | `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；CI → Tool Registry；≠ 开放域 Agent） |
 | `LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划 V1（轨道 A/B/C；Tool Registry 演进；≠ Auto-Operating 入口） |
 | `LOCAL_AI_OPERATING_LAYER.md` | Local AI Operating Layer 方向锁（Auto-Operating ≠ Confide；只设计无运行时；Backup/Update/MCP 不进 Confide V1） |
@@ -242,7 +243,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
-| 2026-09-02 | 新增 `ui-bug-triage`：UI/交互回归且用户未给锚点时须先取 git log/show + 复现信号（Step A），禁止无信号全仓考古；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ui-bug-triage.mdc`；`agent-token-cost` §5 / `focus-tiger-core` 补指针；与 `ci-failure-triage` 对称；不改变 push/PR / 合 develop / §7 关单 |
+| 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |
 | 2026-09-02 | 扩展 `agent-token-cost`：`Merged` 硬断点 + 新会话模型一行速查表；`PROCESS`「本地 Cursor 能耗」增 P0 显眼小节（只指路 SSOT） |
 | 2026-09-02 | `SANCTUARY_UI_ART_DIRECTION.md` 升为 A–D 四层唯一美术 SSOT（补 D 次级表面；不进 rules-authority 机器块） |

@@ -233,6 +233,20 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 防剽窃层（2026-09-02 方向锁）
+
+> SSOT：`ANTI_PLAGIARISM_LAYER.md`。品味云 ∪ YPE 云 ∪ 句包 overlay。**≠** 支付 / 备份 / Confide 路由。
+
+| 序 | 内容 | Brief | 状态 |
+|---|---|---|---|
+| **0** | 概念 + 准入四问 | `ANTI_PLAGIARISM_LAYER.md` | **本切片（文档）** |
+| **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | 口令已给 · **运行时下一 PR** |
+| **2** | YPE V2 + `algorithmVersion` | `task-ype-v2-secret-transform.md` | 口令已给 · 运行时未开工 |
+| **3** | Confide 句库 overlay | `task-confide-copy-overlay.md` | 口令已给 · 运行时未开工 |
+| **后排** | 日签 14→N；伸懒腰 / 好奇池 | — | 不开工 |
+
+**我认为最合理的下一刀**：Quiet Line 句包运行时（序 1）。较弱：先改 YPE Pack 校验（会动个人化语义，且现网非空 insight 整包丢）。
+
 ## 📍 云端品味层（2026-08-18 政策锁）
 
 > 旧称「v1.1 云端算法」。**支付云 ≠ 品味云**。权威 `PROCESS.md` Backlog「云端品味层」。
@@ -241,13 +255,13 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **政策** | 只上云权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工；`schemaVersion` 降级；**四问筛选尺**（2026-08-20） | `task-cloud-taste-layer.md` | **#337 已合** · 窄冻结已拍板 · 四问已拍板 |
 | **实现** | 可选拉取 + 本地降级；不接 Sit 门闩 | 口令「开工云端品味层」 | **#349 已合**；**2026-08-20 本机 deploy** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 v1） |
-| **下一刀** | Quiet Line / 今日静语句包 overlay | 现网 v1 **且** 三条观感人工后再口令 | **未开工**；日签扩容 / 伸懒腰·好奇池后排 |
+| **下一刀** | Quiet Line / 今日静语句包 overlay | `task-quiet-line-copy-overlay.md` | **口令已给**；运行时未接线；日签扩容 / 伸懒腰·好奇池后排 |
 
 ---
 
 ## 📍 Yin Personalization Engine（2026-08-26 方向锁）
 
-> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份。L0/L1 已开工。L2 **契约**已合 #454。Consent **附录有条件通过**（不写 locale）。身份键 **已拍**（#456）。算法契约 **本切片**。Worker/runtime **未开工**。
+> 编排 SSOT：`YIN_PERSONALIZATION_ENGINE.md`。**≠** Memory store / 品味层 / Qwen runtime / 练习备份（同属防剽窃层、不同路由）。L0/L1 已开工。L2 **契约**已合 #454。Consent **附录有条件通过**。身份键 **已拍**（#456）。算法契约 V1。**Worker ingest 源码已合**。V2 见 `task-ype-v2-secret-transform.md`。
 
 | 级 | 内容 | 文档 | 状态 |
 |---|---|---|---|
@@ -261,7 +275,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L2 算法** | 五键 → Pack 闭包变换；V1 不按完成率改档 | `task-l2-personalization-algorithm.md` | **本切片（文档）** |
 | **L2 运行时** | Worker ingest / delete / Pack 签发 + 客户端 sync | `task-l2-personalization-algorithm.md` | **本支 `feature/ype-l2-worker` 开工** |
 
-**我认为最合理的下一刀**：部署 Worker（`YPE_PERSONALIZATION_KV` 绑定 + Redeploy）后人工验收 ingest/delete；较弱：未部署就标「已通过」。
+**我认为最合理的下一刀**：防剽窃层序 1 Quiet Line overlay 运行时。YPE 人工验收 ingest 可并行（不阻塞句包 PR）。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 

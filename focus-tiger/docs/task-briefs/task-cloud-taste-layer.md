@@ -1,8 +1,7 @@
 # Task Brief · 云端品味层（权重覆盖 + 日签/文案池）
 
-> **状态（2026-08-20）**：范围 / 窄冻结 / **四问筛选尺**已拍板；**#349 已合** schemaVersion 1 可选 overlay（tip `a0fed0b`）。**本机 wrangler deploy 成功**：生产 Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**；现网 JSON 含 `schemaVersion: 1`。Safari `__tasteLayer.status()` 已见 true。**A/B**：`?tasteLayer=0` Arrival 叠化正常；overlay 开着闪（`RB-20260820-L330`）→ **runtime 开修**：预加载后再拉云；冻结表相同不另存副本。下一刀 Quiet Line overlay **未开工**。  
-> **权威**：`PROCESS.md` Backlog「云端品味层」。旧称「v1.1 云端算法」——**支付云 ≠ 品味云**；SemVer 首稳仍是 `v1.0.0`。  
-> **开工**：用户书面 L1/L0 告一段落后安排下一步 = 本切片（接线已合）。
+> **状态（2026-09-02）**：范围 / 窄冻结 / **四问**见 `ANTI_PLAGIARISM_LAYER.md` §3。**#349 已合** schemaVersion 1 可选 overlay。Quiet Line overlay **口令已给** · Brief `task-quiet-line-copy-overlay.md`（**本文件无 Quiet Line 运行时**）。  
+> **权威**：`PROCESS.md` Backlog「云端品味层」+ 父概念 `ANTI_PLAGIARISM_LAYER.md`。旧称「v1.1 云端算法」——**支付云 ≠ 品味云**；SemVer 首稳仍是 `v1.0.0`。
 
 ## 一句话
 
@@ -23,9 +22,8 @@
    - 轻量完成：`sessionComplete` 70 / 点头 30 / 鹦鹉 weight 8 ≈7%（`LIGHT_COMPLETE_POOL`）
    - Honesty：≤29 分点头 `mindfulAcknowledge`；≥30 分金辉 `goldenHaloPalms`
    - 日签：`daily-wisdom.en.js` / `.ja.js` 各 14 条、id 对齐；切片期间不扩不删
-7. **四问筛选尺（2026-08-20）**：品味层是可远程调的 config / master data overlay，**不是**「全部 master data 上云」。须同时过：① 改错会不会用不了 / 错扣或少给钱点；② 是否卡在点击当下（0–1 秒反馈，不能等网）；③ 是否定价/门槛/`isEntitled`/发点；④ 没网能否用本地同一张表、认不了能否静默丢。过四问才扩池；扩形须升 `schemaVersion` 并同步本地兜底。
-8. **下一刀（2026-08-20）**：现网已是 v1 冻结表 **且** 三条观感人工过完后，下一刀 = Quiet Line / 今日静语句包 overlay（须新口令）。日签 14→N、伸懒腰/好奇池 **后排**。挥手点播（#356）**不是**品味层。  
-   **2026-08-22**：下一刀开工前须按 `BACKGROUND_NETWORK.md` 答完三问（现网 Quiet Line **未**接线，无现网后台拉取）。开机品味层预取错峰是**另一条**任务（`task-taste-layer-boot-prefetch-defer.md`），禁止和句包 overlay 混做一个 PR。
+7. **四问筛选尺**：见 `ANTI_PLAGIARISM_LAYER.md` §3。过四问才扩池；扩形须升 `schemaVersion` 并同步本地兜底。
+8. **下一刀（2026-09-02）**：Quiet Line / 今日静语句包 overlay **口令已给**（`task-quiet-line-copy-overlay.md`）。日签 14→N、伸懒腰/好奇池 **后排**。挥手点播（#356）**不是**品味层。开机品味层预取错峰是**另一条**任务（`task-taste-layer-boot-prefetch-defer.md`），禁止和句包 overlay 混做一个 PR。
 
 ## 开工前优先级（已走过）
 
