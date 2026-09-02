@@ -38,6 +38,7 @@ export const MUSTARD_SEED_SEAL_BADGE_FILE =
 
 export const MUSTARD_SEED_SEAL_CASE_SUMERU = 'mustard-seed-sumeru';
 export const MUSTARD_SEED_SEAL_CASE_HERO = 'hero-not-pond';
+export const MUSTARD_SEED_SEAL_CASE_NO_TRACE = 'no-trace-might';
 
 export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
   '大鵬展翅九萬里，',
@@ -76,6 +77,25 @@ export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH = '樂五齋七言歌行';
 export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN =
   'Song Verse of Le Wu Zhai';
 
+export const MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH = Object.freeze([
+  '縱橫馳騁九萬里，',
+  '芥子唯微納須彌。',
+  '英雄何需青龍手，',
+  '所向無痕皆披靡。'
+]);
+
+/** Product EN lines (2026-09-02: same draft posture as cases 1–2). */
+export const MUSTARD_SEED_SEAL_NO_TRACE_POEM_EN = Object.freeze([
+  'Gallop freely across ninety thousand miles;',
+  'Minute as a mustard seed, it still holds Mount Sumeru.',
+  "Why would a hero need the Azure Dragon's hand?",
+  'Wherever one goes, unmarked, all yield.'
+]);
+
+export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH = '樂五齋詩稿〇九〇二';
+export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_EN =
+  'Verses of Le Wu Zhai · 0902';
+
 /**
  * Ordered verse cases for this memorial scene (same card, same score gate).
  * @type {ReadonlyArray<{
@@ -100,6 +120,13 @@ export const MUSTARD_SEED_SEAL_CASES = Object.freeze([
     poemEn: MUSTARD_SEED_SEAL_HERO_POEM_EN,
     attributionZh: MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
     attributionEn: MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN
+  }),
+  Object.freeze({
+    id: MUSTARD_SEED_SEAL_CASE_NO_TRACE,
+    poemZh: MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH,
+    poemEn: MUSTARD_SEED_SEAL_NO_TRACE_POEM_EN,
+    attributionZh: MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH,
+    attributionEn: MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_EN
   })
 ]);
 
