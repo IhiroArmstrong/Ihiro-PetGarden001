@@ -128,6 +128,10 @@ PR 第三问写同一结论（场景名 + 一句为何无冲突即可）。
 
 对照 Y Whisper / AE / AG ranking / 品味层。V1 变换 = 五键 → Pack：`companionStyle` 回声用户选档；`patternInsights=[]`；完成率 **不得**改档。不加重 Sit；不把云变成遥控器。无新用户路径。
 
+**冻表 vs 现网可分叉（2026-09-02 · 文档）**
+
+对照品味层 overlay / Quiet Line / YPE Pack / 离线 Sit。政策：git 冻表 = 公开兜底；Worker 可分叉；未知 schema 静默丢。不加重 Sit；不改 Confide 路由。无新用户路径。
+
 **检索不生成 vs 桌面陪伴（2026-08-18）**
 
 2026-08-10「禅意倾听者」已锁 **检索不生成**。桌面端侧模型提案与之冲突（人设 / 职责），扫描没有默默开工，而是列出 0.4 三问等拍板。用户书面：**不要全面推翻**；批复措辞为 **「仅限桌面端受约束生成、其余场景仍然检索不生成」**。入口与 Confide 合并；仅用户主动；生成只在安全阀 + 仪式文案 + 语料桶都未接住之后。**2026-08-18 补**：本地智能体仅 **Electron 宽屏 ⋯**；窄屏抽屉 / 手机 **没有**该能力（故意不对等，不是漏适配）。随后才改定位稿。**禁止**把这次批准扩大到 Web / Whisper / Recover / 主动开口 / 窄屏。
@@ -200,7 +204,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
-| 2026-09-01 | 中文抽取闸门补复查纪律：对照 AG。无运行时；不改抽取规则 / L3 prompt |
+| 2026-09-02 | 冻表 vs 现网可分叉：对照品味 overlay / Quiet Line / YPE Pack / 离线 Sit。无运行时。 |
 | 2026-09-01 | L3 prompt 禁风景顶替听见：对照 AE Confide / AG 1d 注入。强度仍短 generate；人设仍观察非建议；职责不写入 Memory / 情绪桶。无冲突 |
 | 2026-09-01 | Phase 1A Show memory：对照 AE Confide / AG 面板。口头列表为事实摘要、无新全屏；不替代 What Yin remembers；不抢 CI-01 Forget / Journey / Presence。危机仍情绪桶 |
 | 2026-09-01 | Phase 1B shipping：扩 CI-00/02 描述性 + Temporal Compare 问法；答句两窗并列；不抢 Journey/Presence 面板、Forget、1A Show memory。无新 tool id |

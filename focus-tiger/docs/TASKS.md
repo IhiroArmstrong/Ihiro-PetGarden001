@@ -239,13 +239,14 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 序 | 内容 | Brief | 状态 |
 |---|---|---|---|
-| **0** | 概念 + 准入四问 | `ANTI_PLAGIARISM_LAYER.md` | **本切片（文档）** |
-| **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | 口令已给 · **运行时下一 PR** |
-| **2** | YPE V2 + `algorithmVersion` | `task-ype-v2-secret-transform.md` | 口令已给 · 运行时未开工 |
+| **0** | 概念 + 准入四问 | `ANTI_PLAGIARISM_LAYER.md` | **#542 已合** |
+| **0b** | 冻表 vs 现网可分叉 | `ANTI_PLAGIARISM_LAYER.md` §3.1 | **本切片（文档）** |
+| **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | **#543 已合 develop**（生产须「部署」） |
+| **2** | YPE V2 + `algorithmVersion`（契约内真正政策） | `task-ype-v2-secret-transform.md` | 口令已给 · **运行时未开工 · 下一刀** |
 | **3** | Confide 句库 overlay | `task-confide-copy-overlay.md` | 口令已给 · 运行时未开工 |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 | — | 不开工 |
 
-**我认为最合理的下一刀**：Quiet Line 句包运行时（序 1）。较弱：先改 YPE Pack 校验（会动个人化语义，且现网非空 insight 整包丢）。
+**我认为最合理的下一刀**：口令「开工 YPE V2」（序 2）。较弱：先 Confide 句 overlay（与开口 0–1 秒相邻）；再堆远程 flag。
 
 ## 📍 云端品味层（2026-08-18 政策锁）
 
@@ -255,7 +256,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **政策** | 只上云权重覆盖 + 日签/文案池；播放器永远本地；窄冻结后开工；`schemaVersion` 降级；**四问筛选尺**（2026-08-20） | `task-cloud-taste-layer.md` | **#337 已合** · 窄冻结已拍板 · 四问已拍板 |
 | **实现** | 可选拉取 + 本地降级；不接 Sit 门闩 | 口令「开工云端品味层」 | **#349 已合**；**2026-08-20 本机 deploy** Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 v1） |
-| **下一刀** | Quiet Line / 今日静语句包 overlay | `task-quiet-line-copy-overlay.md` | **口令已给**；运行时未接线；日签扩容 / 伸懒腰·好奇池后排 |
+| **下一刀** | Quiet Line / 今日静语句包 overlay | `task-quiet-line-copy-overlay.md` | **#543 已合**；生产 Redeploy 另须「部署」；日签扩容 / 伸懒腰·好奇池后排 |
 
 ---
 
@@ -272,10 +273,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L2 同意 UI** | 第四条独立同意；Privacy 开关；本机 `ype_profile_id`；无 Worker | `task-l2-personalization-consent.md` | **本支 `feature/ype-l2-ui-consent` 开工** |
 | **L2 同意文案** | 关即删；HINT+DETAIL 附录 | 同上 | **已进 locale（en/ja/zh）** |
 | **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（#456）** |
-| **L2 算法** | 五键 → Pack 闭包变换；V1 不按完成率改档 | `task-l2-personalization-algorithm.md` | **本切片（文档）** |
-| **L2 运行时** | Worker ingest / delete / Pack 签发 + 客户端 sync | `task-l2-personalization-algorithm.md` | **本支 `feature/ype-l2-worker` 开工** |
+| **L2 算法 V1** | 五键 → Pack 闭包；回声选档；`patternInsights=[]`；不按完成率改档 | `task-l2-personalization-algorithm.md` | **契约已锁** · Worker 签发已合 |
+| **L2 算法 V2** | 同一五键上的秘密闭包 + `algorithmVersion`；白名单 insight；仍禁止用户可见打分 / 用完成率改档 | `task-ype-v2-secret-transform.md` | **已排入口令队列** · 运行时未开工 · 须口令「开工 YPE V2」 |
+| **L2 运行时 V1** | Worker ingest / delete / Pack 签发 + 客户端 sync | `task-l2-personalization-algorithm.md` | **源码已合**；生产 KV/Redeploy 见 TRACKER |
 
-**我认为最合理的下一刀**：防剽窃层序 1 Quiet Line overlay 运行时。YPE 人工验收 ingest 可并行（不阻塞句包 PR）。
+**我认为最合理的下一刀**：口令「开工 YPE V2」（防剽窃层序 2）。较弱：未部署 ingest 就当 V2 已上。
 
 ## 📍 Yin Personal Memory（2026-08-24 方向锁 · 2026-08-25 排 Slice 0）
 

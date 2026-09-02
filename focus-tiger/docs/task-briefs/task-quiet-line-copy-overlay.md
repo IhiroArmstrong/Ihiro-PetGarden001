@@ -1,8 +1,7 @@
 # Task Brief · Quiet Line / 今日静语句包 overlay
 
-> **状态（2026-09-02）**：口令已给 · **本 Brief 无运行时**。父概念 `ANTI_PLAGIARISM_LAYER.md` §5 序 1。  
-> **开工运行时**须另开 `feature/quiet-line-copy-overlay`（禁止与本概念 PR 混修；禁止与品味层开机预取错峰混修）。  
-> **权威**：本 Brief = 执行层；准入四问见防剽窃层 SSOT。
+> **状态（2026-09-02）**：**#543 已合 develop**（客户端 `/api/quiet-line` 预取）。生产 Worker Redeploy 另须「部署」。父概念 `ANTI_PLAGIARISM_LAYER.md` §5 序 1。  
+> **权威**：本 Brief = 执行层；准入四问见防剽窃层 SSOT。冻表 vs 现网分叉见 §3.1。
 
 ## 一句话
 

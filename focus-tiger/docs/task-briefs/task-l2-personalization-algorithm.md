@@ -45,7 +45,9 @@ YPE V1 cloud algorithm
 3. 签发 `packVersion` / `issuedAt` / `expiresAt`，供本机缓存与去重。  
 4. 把五键留在该 `ype_profile_id` 行上，**直到关即删**。
 
-**V1 明确不做：** 用 `focus_return_rate` / `reflection_frequency` / `practice_day_count_window` 去改 `companionStyle`（例如「回来得少 → 改成 quiet」）。那会变成监督、也和「用户选档优先」打架。若将来要用计数键改档或填非空 `patternInsights`，**另会**（V2），且仍须受 Pack 禁字段约束。
+**V1 明确不做：** 用 `focus_return_rate` / `reflection_frequency` / `practice_day_count_window` 去改 `companionStyle`（例如「回来得少 → 改成 quiet」）。那会变成监督、也和「用户选档优先」打架。
+
+**V2 已排期（非本 Brief 运行时）**：在契约内长出真正政策 = `task-ype-v2-secret-transform.md`（防剽窃层序 2）。仍禁止完成率改档、禁止用户可见打分。V2 **token 白名单**可进 git；**阈值数字**允许只活在 Worker（`ANTI_PLAGIARISM_LAYER.md` §3.1）。须口令「开工 YPE V2」；Quiet Line 源码已合后才动 Pack 校验。
 
 秘密层可以有 `algorithmVersion`（**只存在服务器**，不下发 Pack）。V1 的公开变换是上面的闭包，不是黑盒人格模型。
 
