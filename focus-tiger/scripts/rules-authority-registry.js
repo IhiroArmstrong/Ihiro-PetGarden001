@@ -41,6 +41,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
   '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
+  '.cursor/rules/focus-tiger-ui-bug-triage.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
   '.cursor/rules/focus-tiger-source-read-granularity.mdc',
@@ -1328,6 +1329,53 @@ export const RULE_AUTHORITY_TOPICS = [
         pattern:
           /失败分析摘要[^。\n]{0,24}(?:可以|允许|不必|无需)[^。\n]{0,24}(?:日志|gh|Actions)/,
         note: '失败分析摘要须基于 Step A 日志提取，禁止写成可臆测'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'ui-bug-triage',
+    title:
+      'UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮）',
+    ssotPath: '.cursor/rules/focus-tiger-ui-bug-triage.mdc',
+    ssotSection:
+      'Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层）',
+    ssotMustContain: [
+      /ui-bug-triage/,
+      /Step A/,
+      /连续 5 次/,
+      /禁止.*地毯式/
+    ],
+    topicSignals: [
+      /ui-bug-triage/,
+      /UI\/交互回归排查/,
+      /Step A — 取锚点/
+    ],
+    mustCite: [/focus-tiger-ui-bug-triage\.mdc|ui-bug-triage/],
+    restatementFingerprints: [
+      /Step A — 取锚点/,
+      /ui-triage:/,
+      /需要锚点才能精确定位/,
+      /分析会话 vs 修代码会话/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'ui-bug-grep-without-anchor',
+        pattern:
+          /(?:UI|交互|菜单|点击)[^。\n]{0,24}(?:坏了|没反应|回归)[^。\n]{0,32}(?:可以|允许|应当|先)[^。\n]{0,24}(?:grep|搜索|探索|全仓)/,
+        note: 'UI/交互 bug 须先取锚点；禁止写成可无锚点先 grep/全仓考古'
+      },
+      {
+        id: 'ui-bug-skip-repro',
+        pattern:
+          /交互[^。\n]{0,24}(?:定位|排查)[^。\n]{0,24}(?:可以|允许|不必|无需)[^。\n]{0,24}(?:复现|锚点|怀疑文件)/,
+        note: '交互 bug 定位须基于复现/锚点，禁止写成可跳过'
       }
     ],
     citeExemptFiles: [
