@@ -4,8 +4,9 @@
  */
 
 /**
- * PersonalizationStatePack v1 cache + validation.
+ * PersonalizationStatePack v1 cache + validation (YPE V2 insight whitelist).
  * @see docs/YIN_PERSONALIZATION_ENGINE.md §G
+ * @see docs/task-briefs/task-ype-v2-secret-transform.md
  */
 
 import { normalizeYpeCompanionStyle } from './yinPersonalizationEngine.js';
@@ -15,6 +16,21 @@ export const YPE_PERSONALIZATION_PACK_STORAGE_KEY =
 
 export const YPE_PACK_SCHEMA_VERSION = 1;
 
+/** Frozen V2 tokens — unknown strings are dropped, not a whole-pack reject. */
+export const YPE_PATTERN_INSIGHT_TOKENS = Object.freeze([
+  'returns_often',
+  'reflects_often'
+]);
+
+const ALLOWED_PACK_KEYS = new Set([
+  'schemaVersion',
+  'packVersion',
+  'issuedAt',
+  'expiresAt',
+  'companionStyle',
+  'patternInsights'
+]);
+
 const FORBIDDEN_PACK_KEYS = [
   'rankHint',
   'memoryRankHints',
@@ -22,8 +38,26 @@ const FORBIDDEN_PACK_KEYS = [
   'eligibleMemoryIds',
   'interventionStyle',
   'intervention_probability',
-  'interventionProbability'
+  'interventionProbability',
+  'algorithmVersion'
 ];
+
+/**
+ * Keep whitelist strings; drop objects / unknown tokens; freeze-table order.
+ * @param {unknown} insights
+ * @returns {string[] | null} null when not an array
+ */
+export function sanitizePatternInsights(insights) {
+  if (!insights || !Array.isArray(insights)) return null;
+  const allowed = new Set(YPE_PATTERN_INSIGHT_TOKENS);
+  const seen = new Set();
+  for (const item of insights) {
+    if (typeof item !== 'string') continue;
+    if (!allowed.has(item) || seen.has(item)) continue;
+    seen.add(item);
+  }
+  return YPE_PATTERN_INSIGHT_TOKENS.filter((token) => seen.has(token));
+}
 
 /**
  * @param {unknown} raw
@@ -40,6 +74,11 @@ export function validatePersonalizationStatePack(raw) {
   for (const key of FORBIDDEN_PACK_KEYS) {
     if (key in o) return { ok: false, reason: `forbidden-${key}` };
   }
+  for (const key of Object.keys(o)) {
+    if (!ALLOWED_PACK_KEYS.has(key)) {
+      return { ok: false, reason: 'unknown-pack-key' };
+    }
+  }
   const packVersion = Number(o.packVersion);
   if (!Number.isFinite(packVersion) || packVersion < 1) {
     return { ok: false, reason: 'bad-pack-version' };
@@ -54,12 +93,9 @@ export function validatePersonalizationStatePack(raw) {
     return { ok: false, reason: 'expired' };
   }
   const companionStyle = normalizeYpeCompanionStyle(o.companionStyle);
-  const insights = o.patternInsights;
-  if (!Array.isArray(insights)) {
+  const patternInsights = sanitizePatternInsights(o.patternInsights);
+  if (!patternInsights) {
     return { ok: false, reason: 'bad-insights' };
-  }
-  if (insights.length > 0) {
-    return { ok: false, reason: 'non-empty-cloud-insights' };
   }
   return {
     ok: true,
@@ -69,7 +105,7 @@ export function validatePersonalizationStatePack(raw) {
       issuedAt,
       expiresAt,
       companionStyle,
-      patternInsights: []
+      patternInsights
     }
   };
 }

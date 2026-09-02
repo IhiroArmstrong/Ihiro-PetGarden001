@@ -3,7 +3,7 @@
 > **状态（2026-08-26）**：**L0 + L1 运行时已开工**。本文件仍是编排产品 SSOT。  
 > **工作名称**：Yin Personalization Engine（YPE）。**不是**模型、**不是** Memory store、**不是**品味层、**不是**练习云备份。  
 > **已做**：L0 门闩收口；L1 本地检索契约 / Journey 计数 insight / 三档政策（可关回 `default`）。  
-> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档 · #454）。Consent：**关即删** + 三语附录有条件通过（`task-briefs/task-l2-personalization-consent.md`；**未**写入 locale）。身份键 **已拍**（`task-briefs/task-l2-personalization-identity.md`；本机随机 `ype_profile_id`）。算法契约 **已拍**（`task-briefs/task-l2-personalization-algorithm.md`；V1 为五键→Pack 闭包）。L2 **Worker ingest / delete / Pack 签发源码已合**。Privacy 第四条开关已接线。**未开工**：YPE **V2** 秘密闭包（`task-ype-v2-secret-transform.md`）。  
+> **L2 契约（2026-08-26 产品会 · 收口版）**：H.3 **V1 五键**白名单 + Pack 字段集 **已拍板**（文档 · #454）。Consent：**关即删** + 三语附录有条件通过（`task-briefs/task-l2-personalization-consent.md`；**未**写入 locale）。身份键 **已拍**（`task-briefs/task-l2-personalization-identity.md`；本机随机 `ype_profile_id`）。算法：**V1 回声**见 `task-l2-personalization-algorithm.md`；**V2 签发**见 `task-ype-v2-secret-transform.md`（#545 已合；白名单 `patternInsights` + KV `algorithmVersion: 2`，不下发 Pack）。L2 **Worker ingest / delete / Pack 签发源码已合**；生产须绑定 `YPE_PERSONALIZATION_KV` 并部署后才签发 V2。  
 > **命名**：YPE **L2** = 云端 State Pack 层。**≠** 桌面陪伴 L2（Electron 本机 generate）。离线必须可用的是 **Local Runtime**（YPE L0/L1 + 桌面 generate），不是 YPE L2。  
 > **仍禁**：Speak 概率；与 Qwen L0 下载 / Checkout 混 PR。
 
@@ -271,13 +271,13 @@ V1 **仅三档**（可改名，不可暗中变成连续「干预概率」）：
 - 该 `ype_profile_id` 上的 H.3 V1 五键（同意开启期间）  
 - `algorithmVersion` 与内部映射表（**不下发** Pack；V2 才有可分叉的秘密）  
 
-**V1 公开变换（锁死 · 现网）：** Pack.`companionStyle` = 用户上传的 `companion_style_preference`（非法则 `default`）。`patternInsights` = `[]`。**禁止**用完成率 / 反思频率 / 练习日数改档。样本不足则不签发 overlay。拷仓库即可复现 V1——这是刻意的公开兜底，不是漏洞清单漏项。
+**V1 公开变换（锁死 · 现网兜底）：** Pack.`companionStyle` = 用户上传的 `companion_style_preference`（非法则 `default`）。`patternInsights` = `[]`。**禁止**用完成率 / 反思频率 / 练习日数改档。样本不足则不签发 overlay。拷仓库即可复现 V1——这是刻意的公开兜底，不是漏洞清单漏项。
 
-**V2（已排期 · 运行时未开工）：** 同一五键上的闭包；允许白名单 `patternInsights` token；仍禁止完成率改档、禁止用户可见打分。口令「开工 YPE V2」· Brief `task-ype-v2-secret-transform.md`。阈值允许与 git 验收锚分叉（§3.1）。
+**V2（#545 已合 · 生产须部署）：** 同一五键上的闭包；允许白名单 `patternInsights` token；仍禁止完成率改档、禁止用户可见打分。Brief `task-ype-v2-secret-transform.md`。阈值允许与 git 验收锚分叉（`ANTI_PLAGIARISM_LAYER.md` §3.1）。`algorithmVersion` 只写 KV 行。
 
 **V1 不把 Memory ranking 公式放到云端「再下发结果」**——没有摘要就排不了；下发分数或有序 id 都会泄漏。Ranking **留 L1**。
 
-客户端可见的永远是 **结果**：`companionStyle`、空的 insight 数组、`packVersion`。**不下发** `rankHint`、权重表、`intervention_probability`、现在开口指令。
+客户端可见的永远是 **结果**：`companionStyle`、白名单 insight 字符串数组、`packVersion`。**不下发** `rankHint`、权重表、`intervention_probability`、现在开口指令。
 
 **V1 不做** opaque token。若将来要增加逆向成本，另拍板；不得阻塞 QA。
 

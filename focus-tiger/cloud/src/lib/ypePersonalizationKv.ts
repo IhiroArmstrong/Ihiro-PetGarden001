@@ -5,19 +5,15 @@
 import {
 	YPE_PROFILE_SCHEMA_VERSION,
 	type PersonalizationStatePackV1,
+	type YpeProfileRecord,
 	type YpeSignalsV1,
 	sanitizeYpeSignalsV1,
-	issuePersonalizationPackV1,
+	issuePersonalizationPackV2,
+	assembleYpeProfileRecord,
+	normalizeStoredAlgorithmVersion,
 } from "./ypePersonalizationAlgorithm";
 
-export type YpeProfileRecord = {
-	schemaVersion: number;
-	ypeProfileId: string;
-	signals: YpeSignalsV1;
-	pack: PersonalizationStatePackV1 | null;
-	packVersion: number;
-	updatedAt: string;
-};
+export type { YpeProfileRecord };
 
 export function ypeProfileKvKey(ypeProfileId: string): string {
 	return `ype:v1:${ypeProfileId.trim()}`;
@@ -49,6 +45,7 @@ export function parseYpeProfileRecord(raw: string): YpeProfileRecord | null {
 				typeof o.packVersion === "number" && Number.isFinite(o.packVersion)
 					? Math.floor(o.packVersion)
 					: pack?.packVersion ?? 0,
+			algorithmVersion: normalizeStoredAlgorithmVersion(o.algorithmVersion),
 			updatedAt:
 				typeof o.updatedAt === "string" && o.updatedAt
 					? o.updatedAt
@@ -80,20 +77,19 @@ export async function upsertYpeProfileSignals(
 	const now = opts.now ?? new Date();
 	const prev = await getYpeProfileRecord(kv, opts.ypeProfileId);
 	const previousPackVersion = prev?.packVersion ?? 0;
-	const pack = issuePersonalizationPackV1({
+	const pack = issuePersonalizationPackV2({
 		signals: opts.signals,
 		windowCompletionCount: opts.windowCompletionCount,
 		previousPackVersion,
 		now,
 	});
-	const record: YpeProfileRecord = {
-		schemaVersion: YPE_PROFILE_SCHEMA_VERSION,
+	const record = assembleYpeProfileRecord({
 		ypeProfileId: opts.ypeProfileId,
 		signals: opts.signals,
 		pack,
-		packVersion: pack?.packVersion ?? previousPackVersion,
-		updatedAt: now.toISOString(),
-	};
+		previousPackVersion,
+		now,
+	});
 	await kv.put(ypeProfileKvKey(opts.ypeProfileId), JSON.stringify(record));
 	return { record, pack };
 }

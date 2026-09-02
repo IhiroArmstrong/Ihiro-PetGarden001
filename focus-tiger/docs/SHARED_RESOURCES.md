@@ -18,7 +18,7 @@
 
 **Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]` + `rememberOptOuts[]`；1b Remember；1c Forget；1e CI-01；**1f** `memory_suppress` / Don't save；**不进**云端练习备份 6 key；**本地** Preferences → Backup & restore **v2** 经 `companionFiles.yinPersonalMemory` 导出/导入；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
-**Yin Personalization Engine（2026-08-26 · L0/L1）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。L1 key：`focus-tiger.ype-companion-style.v1`（quiet/default/warm；`default`＝关掉个人化）。**无** State Pack 文件（L2 契约/Consent/身份/算法已拍、运行时未开工）。L2 逻辑身份 `ype_profile_id`（本机随机 opaque；**禁止**硬件指纹 / 备份 OTP；**禁止**写入练习备份 6 key）。V1 Pack 的 `companionStyle` 回声用户选档，完成率不得改档。关同意须丢弃本机 Pack 缓存并排队删云端该 profile 行。用户本机选档优先于过期 Pack。
+**Yin Personalization Engine（2026-08-26 · L0/L1 · L2 Pack · V2 签发）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。L1 key：`focus-tiger.ype-companion-style.v1`（quiet/default/warm；`default`＝关掉个人化）。L2 缓存 key：`focus-tiger.ype-personalization-pack.v1`。L2 逻辑身份 `ype_profile_id`（本机随机 opaque；**禁止**硬件指纹 / 备份 OTP；**禁止**写入练习备份 6 key）。Pack `companionStyle` 仍回声用户选档；V2 允许白名单 `patternInsights` 字符串（`returns_often` / `reflects_often`）；未知 Pack 键整包丢；`algorithmVersion` 只在 KV 行。关同意须丢弃本机 Pack 缓存并排队删云端该 profile 行。用户本机选档优先于过期 Pack。本刀 **不**把 insight 打进 Confide L3。
 
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|

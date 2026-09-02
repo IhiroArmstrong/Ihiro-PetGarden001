@@ -109,13 +109,13 @@
 | 序 | 任务 | 口令 | 本回合 |
 |---|---|---|---|
 | **0** | 本 SSOT 入库 | （概念纳入项目） | **#542 已合** |
-| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合 develop**（源码；生产 Redeploy 另须「部署」） |
-| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | Brief 已开 · **运行时下一刀** · 须先冻结 insight 白名单再改 Worker |
+| **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合**（源码；生产 Redeploy 另须「部署」） |
+| **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | **#545 已合 develop**（生产须「部署」） |
 | **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | Brief 已开 · 路由/正则/Qwen **留下** |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
 
-**我认为最合理的运行时下一刀是序 2（YPE V2）。**  
-理由：序 1 Quiet Line 源码已合 #543。YPE V2 会改 Pack 校验（现网 V1 非空 insight 会整包丢），须单独 PR + 口令「开工 YPE V2」。Confide 句 overlay 仍放在 V2 之后。`algorithmVersion` **并进序 2**，禁止单独发一个空版本号 PR。分叉政策见 §3.1（本切片只写条款，不 Redeploy）。
+**我认为最合理的运行时下一刀是序 3（Confide 句库 overlay）。**  
+理由：序 1–2 源码已合（#543 / #545）。分叉政策见 §3.1；生产手感仍须口令「部署」。Confide 换字与开口路径相邻，单独一刀。日签扩容 / 伸懒腰 / 好奇仍后排。
 
 ---
 

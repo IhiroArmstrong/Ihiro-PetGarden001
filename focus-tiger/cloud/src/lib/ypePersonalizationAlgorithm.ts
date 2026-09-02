@@ -1,15 +1,25 @@
 /**
- * YPE L2 V1 cloud algorithm — closed transform from H.3 five keys → Pack v1.
- * @see docs/task-briefs/task-l2-personalization-algorithm.md
+ * YPE L2 V2 cloud algorithm — closed transform from H.3 five keys → Pack v1.
+ * @see docs/task-briefs/task-ype-v2-secret-transform.md
  */
 
 export const YPE_PROFILE_SCHEMA_VERSION = 1;
 export const YPE_PACK_SCHEMA_VERSION = 1;
+export const YPE_ALGORITHM_VERSION = 2;
 export const YPE_MIN_SAMPLE_COMPLETIONS = 10;
 export const YPE_PACK_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
+export const YPE_RETURNS_OFTEN_MIN = 0.6;
+export const YPE_REFLECTS_OFTEN_MIN = 0.4;
+
 export const YPE_COMPANION_STYLES = ["quiet", "default", "warm"] as const;
 export type YpeCompanionStyle = (typeof YPE_COMPANION_STYLES)[number];
+
+export const YPE_PATTERN_INSIGHT_TOKENS = [
+	"returns_often",
+	"reflects_often",
+] as const;
+export type YpePatternInsightToken = (typeof YPE_PATTERN_INSIGHT_TOKENS)[number];
 
 export type YpeSignalsV1 = {
 	focus_return_rate: number;
@@ -25,7 +35,7 @@ export type PersonalizationStatePackV1 = {
 	issuedAt: string;
 	expiresAt: string;
 	companionStyle: YpeCompanionStyle;
-	patternInsights: [];
+	patternInsights: YpePatternInsightToken[];
 };
 
 export function normalizeCompanionStyle(value: unknown): YpeCompanionStyle {
@@ -65,9 +75,26 @@ export function sanitizeYpeSignalsV1(raw: unknown): YpeSignalsV1 | null {
 }
 
 /**
- * V1 closed transform. Returns null when sample gate fails.
+ * Frozen V2 insight table — order is table order, not ranking.
  */
-export function issuePersonalizationPackV1(opts: {
+export function computePatternInsightsV2(
+	signals: YpeSignalsV1,
+): YpePatternInsightToken[] {
+	const out: YpePatternInsightToken[] = [];
+	if (signals.focus_return_rate >= YPE_RETURNS_OFTEN_MIN) {
+		out.push("returns_often");
+	}
+	if (signals.reflection_frequency >= YPE_REFLECTS_OFTEN_MIN) {
+		out.push("reflects_often");
+	}
+	return out;
+}
+
+/**
+ * V2 closed transform. Returns null when sample gate fails.
+ * companionStyle still echoes the user-chosen band; rates never retune it.
+ */
+export function issuePersonalizationPackV2(opts: {
 	signals: YpeSignalsV1;
 	windowCompletionCount: number;
 	previousPackVersion?: number;
@@ -84,6 +111,40 @@ export function issuePersonalizationPackV1(opts: {
 		companionStyle: normalizeCompanionStyle(
 			opts.signals.companion_style_preference,
 		),
-		patternInsights: [],
+		patternInsights: computePatternInsightsV2(opts.signals),
+	};
+}
+
+export type YpeProfileRecord = {
+	schemaVersion: number;
+	ypeProfileId: string;
+	signals: YpeSignalsV1;
+	pack: PersonalizationStatePackV1 | null;
+	packVersion: number;
+	/** Server-only generation; never copied into Pack. */
+	algorithmVersion: number;
+	updatedAt: string;
+};
+
+export function normalizeStoredAlgorithmVersion(value: unknown): number {
+	const n = Number(value);
+	return Number.isFinite(n) ? Math.floor(n) : 1;
+}
+
+export function assembleYpeProfileRecord(opts: {
+	ypeProfileId: string;
+	signals: YpeSignalsV1;
+	pack: PersonalizationStatePackV1 | null;
+	previousPackVersion: number;
+	now: Date;
+}): YpeProfileRecord {
+	return {
+		schemaVersion: YPE_PROFILE_SCHEMA_VERSION,
+		ypeProfileId: opts.ypeProfileId,
+		signals: opts.signals,
+		pack: opts.pack,
+		packVersion: opts.pack?.packVersion ?? opts.previousPackVersion,
+		algorithmVersion: YPE_ALGORITHM_VERSION,
+		updatedAt: opts.now.toISOString(),
 	};
 }

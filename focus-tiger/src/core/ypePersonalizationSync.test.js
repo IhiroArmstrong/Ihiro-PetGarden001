@@ -63,14 +63,17 @@ describe('ypePersonalizationSync', () => {
             issuedAt: '2026-08-26T00:00:00.000Z',
             expiresAt: '2099-01-01T00:00:00.000Z',
             companionStyle: 'default',
-            patternInsights: []
+            patternInsights: ['returns_often', 'bogus']
           }
         };
       }
     });
     assert.equal(result.ok, true);
     assert.ok(body?.ypeProfileId);
-    assert.ok(storage.getItem(YPE_PERSONALIZATION_PACK_STORAGE_KEY));
+    const cached = JSON.parse(
+      storage.getItem(YPE_PERSONALIZATION_PACK_STORAGE_KEY)
+    );
+    assert.deepEqual(cached.patternInsights, ['returns_often']);
   });
 
   it('delete clears pending profile id on success', async () => {

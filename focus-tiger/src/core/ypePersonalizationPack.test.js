@@ -43,12 +43,49 @@ describe('ypePersonalizationPack', () => {
     assert.equal(bad.ok, false);
   });
 
-  it('rejects non-empty patternInsights', () => {
+  it('rejects algorithmVersion on the pack (server-only)', () => {
     const bad = validatePersonalizationStatePack({
       ...validPack,
-      patternInsights: [{ id: 'x' }]
+      algorithmVersion: 2
     });
     assert.equal(bad.ok, false);
+    assert.equal(bad.reason, 'forbidden-algorithmVersion');
+  });
+
+  it('rejects unknown pack keys', () => {
+    const bad = validatePersonalizationStatePack({
+      ...validPack,
+      extraHint: true
+    });
+    assert.equal(bad.ok, false);
+    assert.equal(bad.reason, 'unknown-pack-key');
+  });
+
+  it('keeps whitelist insight tokens and drops unknown items', () => {
+    const ok = validatePersonalizationStatePack({
+      ...validPack,
+      patternInsights: [
+        { id: 'x' },
+        'reflects_often',
+        'bogus',
+        'returns_often',
+        'returns_often'
+      ]
+    });
+    assert.equal(ok.ok, true);
+    assert.deepEqual(ok.pack.patternInsights, [
+      'returns_often',
+      'reflects_often'
+    ]);
+  });
+
+  it('treats all-illegal insights as empty, not a whole-pack reject', () => {
+    const ok = validatePersonalizationStatePack({
+      ...validPack,
+      patternInsights: [{ id: 'x' }, 'morning_settle']
+    });
+    assert.equal(ok.ok, true);
+    assert.deepEqual(ok.pack.patternInsights, []);
   });
 
   it('skips identical cache write', () => {
