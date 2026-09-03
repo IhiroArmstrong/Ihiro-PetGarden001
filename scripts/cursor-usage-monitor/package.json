@@ -1,0 +1,14 @@
+{
+  "name": "cursor-usage-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monitor Cursor Dashboard usage CSV exports and send webhook alerts",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node monitor.mjs",
+    "check": "node monitor.mjs --dry-run"
+  }
+}
