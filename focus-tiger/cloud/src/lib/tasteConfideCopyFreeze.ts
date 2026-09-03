@@ -32,7 +32,7 @@ const CORPUS_IDS = [
 const EN_TEMPLATES: ConfideCopyTemplateEntry[] = [
 	{
 		key: "CONFIDE_BOUNDARY_RESPECT",
-		text: "We can leave it unspoken. Yin is here.",
+		text: "Nothing needs to be said. Yin is still here.",
 	},
 	{
 		key: "CONFIDE_COMPANION_PRESENCE",

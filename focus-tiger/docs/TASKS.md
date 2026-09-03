@@ -243,10 +243,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **0b** | 冻表 vs 现网可分叉 | `ANTI_PLAGIARISM_LAYER.md` §3.1 | **本切片（文档）** |
 | **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | **#543 已合**（生产须「部署」） |
 | **2** | YPE V2 + `algorithmVersion`（契约内真正政策） | `task-ype-v2-secret-transform.md` | **#545 已合 develop**（生产须「部署」） |
-| **3** | Confide 句库 overlay | `task-confide-copy-overlay.md` | **本旁支运行时**（生产须「部署」） |
+| **3** | Confide 句库 overlay | `task-confide-copy-overlay.md` | **#548 已合**（生产 overlay 已 Redeploy） |
+| **3b** | Confide 在场 EN 分叉 | — | **#550 已合**（`CONFIDE_COMPANION_PRESENCE`） |
+| **3c** | Confide boundary EN 分叉 | `task-confide-boundary-prod-fork.md` | **本旁支 Worker 源表**（生产须「部署」） |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 | — | 不开工 |
 
-**我认为最合理的下一刀**：生产 Redeploy（须口令「部署」）后再谈现网分叉。较弱：未部署就把 overlay 当现网已换句。
+**我认为最合理的下一刀**：口令「部署」后 boundary 才现网分叉。较弱：未部署就把 Worker 源表当生产已换句。
 
 ## 📍 云端品味层（2026-08-18 政策锁）
 
