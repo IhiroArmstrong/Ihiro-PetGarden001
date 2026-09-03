@@ -6,7 +6,7 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `960f40b8` |
+| `snapshot_base` | `origin/develop` tip `ae00ac64` |
 | `snapshot_date` | 2026-09-04 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
@@ -59,7 +59,7 @@
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
 | Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
-| Focus Circle | `/api/focus-circle`（源码已接线；**生产须部署**；`TIP_KV` `circle:v1:*` · 最多 8 人） |
+| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` · 最多 8 人） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 
@@ -67,8 +67,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `9233d1ed-bdb6-403d-9dec-ea73d0de470f` |
-| `prod_verified_at` | 2026-09-04（本机 `wrangler deploy` · `/api/lantern-presence` peek/heartbeat 200 · #554 Quiet Together） |
+| `prod_worker_version` | `333ad5e9-9c93-471d-8ae1-649f05abba2b` |
+| `prod_verified_at` | 2026-09-04（本机 `wrangler deploy` · `/api/focus-circle` route live · #556 Focus Circle） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
