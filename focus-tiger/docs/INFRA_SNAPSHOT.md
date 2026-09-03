@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `fc61fd7f` |
-| `snapshot_date` | 2026-08-27 |
+| `snapshot_base` | `origin/develop` tip `cfc21175` |
+| `snapshot_date` | 2026-09-03 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -29,7 +29,7 @@
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
-| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message`；失败静默本地冻结表 |
+| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表 |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -65,8 +65,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `2e94d4c0-0ec5-42e8-aa89-d06dd914b303` |
-| `prod_verified_at` | 2026-09-01（本机 `wrangler deploy` · 163 / ihiro · Checkout `pageOrigin` loopback 回跳 + `/health` 200） |
+| `prod_worker_version` | `cbaa913a-d68d-4a22-8568-8f6e96529c42` |
+| `prod_verified_at` | 2026-09-03（本机 `wrangler deploy` · Quiet Line `DAILY_ZEN_QUOTE_1` 生产分叉 + `/api/quiet-line` · `/api/confide-copy` 200） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|

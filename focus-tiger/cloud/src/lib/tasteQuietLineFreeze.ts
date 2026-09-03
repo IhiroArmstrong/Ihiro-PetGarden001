@@ -1,7 +1,7 @@
 export type TasteQuietLineEntry = { key: string; text: string };
 
 export const TASTE_QUIET_LINE_EN: TasteQuietLineEntry[] = [
-  { key: "DAILY_ZEN_QUOTE_1", text: "Soft light finds the room whether you notice or not." },
+  { key: "DAILY_ZEN_QUOTE_1", text: "The world and I were never two." },
   { key: "DAILY_ZEN_QUOTE_2", text: "One breath is already a return." },
   { key: "DAILY_ZEN_QUOTE_3", text: "Sitting still is also a kind of care." },
   { key: "DAILY_ZEN_QUOTE_4", text: "The day can wait while you arrive." },
