@@ -73,6 +73,14 @@ import {
   stopLanternHeartbeat
 } from '../core/quietTogetherPresence.js';
 import {
+  createFocusCircle,
+  joinFocusCircle,
+  leaveFocusCircle,
+  readCircleJoinQueryCode,
+  readFocusCircleMembership,
+  refreshFocusCircleStatus
+} from '../core/focusCircleMembership.js';
+import {
   onYpeCloudPersonalizationConsentDisabled,
   onYpeCloudPersonalizationConsentEnabled
 } from '../core/ypePersonalizationSync.js';
@@ -2299,6 +2307,99 @@ export class OnboardingHintsUI {
     lanternOptInLabel.append(lanternOptInCheck, lanternOptInText);
     lanternOptIn.append(lanternOptInLabel, lanternOptInHint);
 
+    const circleSection = document.createElement('section');
+    circleSection.className = 'onboarding-privacy-sheet__focus-circle';
+    circleSection.id = 'privacy-focus-circle';
+    circleSection.dataset.testid = 'privacy-focus-circle';
+
+    const circleTitle = document.createElement('h3');
+    circleTitle.className = 'onboarding-privacy-sheet__section-title';
+    circleTitle.dataset.privacyKey = 'PRIVACY_SHEET_FOCUS_CIRCLE_TITLE';
+
+    const circleHint = document.createElement('p');
+    circleHint.className = 'onboarding-privacy-sheet__opt-in-hint';
+    circleHint.dataset.privacyKey = 'PRIVACY_SHEET_FOCUS_CIRCLE_HINT';
+
+    const circleNotIn = document.createElement('div');
+    circleNotIn.className = 'onboarding-privacy-sheet__focus-circle-not-in';
+    circleNotIn.dataset.focusCirclePanel = 'not-in';
+
+    const circleCreateBtn = document.createElement('button');
+    circleCreateBtn.type = 'button';
+    circleCreateBtn.className = 'onboarding-privacy-sheet__focus-circle-btn';
+    circleCreateBtn.dataset.testid = 'focus-circle-create';
+    circleCreateBtn.addEventListener('click', () => {
+      void this._handleFocusCircleCreate();
+    });
+
+    const circleJoinRow = document.createElement('div');
+    circleJoinRow.className = 'onboarding-privacy-sheet__focus-circle-join-row';
+
+    const circleJoinInput = document.createElement('input');
+    circleJoinInput.type = 'text';
+    circleJoinInput.inputMode = 'text';
+    circleJoinInput.autocomplete = 'off';
+    circleJoinInput.spellcheck = false;
+    circleJoinInput.maxLength = 6;
+    circleJoinInput.className = 'onboarding-privacy-sheet__focus-circle-input';
+    circleJoinInput.dataset.testid = 'focus-circle-join-input';
+    circleJoinInput.setAttribute('aria-label', 'Focus Circle invite code');
+
+    const circleJoinBtn = document.createElement('button');
+    circleJoinBtn.type = 'button';
+    circleJoinBtn.className = 'onboarding-privacy-sheet__focus-circle-btn';
+    circleJoinBtn.dataset.testid = 'focus-circle-join';
+    circleJoinBtn.addEventListener('click', () => {
+      void this._handleFocusCircleJoin();
+    });
+
+    circleJoinRow.append(circleJoinInput, circleJoinBtn);
+    circleNotIn.append(circleCreateBtn, circleJoinRow);
+
+    const circleIn = document.createElement('div');
+    circleIn.className = 'onboarding-privacy-sheet__focus-circle-in';
+    circleIn.dataset.focusCirclePanel = 'in';
+    circleIn.hidden = true;
+
+    const circleCodeLabel = document.createElement('p');
+    circleCodeLabel.className = 'onboarding-privacy-sheet__focus-circle-code';
+    circleCodeLabel.dataset.testid = 'focus-circle-code';
+
+    const circleCount = document.createElement('p');
+    circleCount.className = 'onboarding-privacy-sheet__focus-circle-count';
+    circleCount.dataset.testid = 'focus-circle-count';
+
+    const circleCopyBtn = document.createElement('button');
+    circleCopyBtn.type = 'button';
+    circleCopyBtn.className = 'onboarding-privacy-sheet__focus-circle-btn';
+    circleCopyBtn.dataset.testid = 'focus-circle-copy';
+    circleCopyBtn.addEventListener('click', () => {
+      void this._handleFocusCircleCopy();
+    });
+
+    const circleLeaveBtn = document.createElement('button');
+    circleLeaveBtn.type = 'button';
+    circleLeaveBtn.className = 'onboarding-privacy-sheet__focus-circle-btn onboarding-privacy-sheet__focus-circle-btn--leave';
+    circleLeaveBtn.dataset.testid = 'focus-circle-leave';
+    circleLeaveBtn.addEventListener('click', () => {
+      void this._handleFocusCircleLeave();
+    });
+
+    circleIn.append(circleCodeLabel, circleCount, circleCopyBtn, circleLeaveBtn);
+
+    const circleStatus = document.createElement('p');
+    circleStatus.className = 'onboarding-privacy-sheet__focus-circle-status';
+    circleStatus.dataset.testid = 'focus-circle-status';
+    circleStatus.hidden = true;
+
+    circleSection.append(
+      circleTitle,
+      circleHint,
+      circleNotIn,
+      circleIn,
+      circleStatus
+    );
+
     const optIn = document.createElement('div');
     optIn.className = 'onboarding-privacy-sheet__opt-in';
     optIn.id = 'privacy-monetization-funnel-opt-in';
@@ -2355,7 +2456,7 @@ export class OnboardingHintsUI {
     });
 
     sheet.append(title, body, back);
-    body.append(ypeOptIn, lanternOptIn, optIn, wellnessNote, wellnessLink);
+    body.append(ypeOptIn, lanternOptIn, circleSection, optIn, wellnessNote, wellnessLink);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
@@ -2370,6 +2471,17 @@ export class OnboardingHintsUI {
     this._privacyQuietTogetherCheck = lanternOptInCheck;
     this._privacyQuietTogetherText = lanternOptInText;
     this._privacyQuietTogetherHint = lanternOptInHint;
+    this._privacyFocusCircleSection = circleSection;
+    this._privacyFocusCircleCreateBtn = circleCreateBtn;
+    this._privacyFocusCircleJoinInput = circleJoinInput;
+    this._privacyFocusCircleJoinBtn = circleJoinBtn;
+    this._privacyFocusCircleNotIn = circleNotIn;
+    this._privacyFocusCircleIn = circleIn;
+    this._privacyFocusCircleCodeEl = circleCodeLabel;
+    this._privacyFocusCircleCountEl = circleCount;
+    this._privacyFocusCircleCopyBtn = circleCopyBtn;
+    this._privacyFocusCircleLeaveBtn = circleLeaveBtn;
+    this._privacyFocusCircleStatusEl = circleStatus;
     this._privacyOptInEl = optIn;
     this._privacyOptInCheck = optInCheck;
     this._privacyOptInText = optInText;
@@ -2422,6 +2534,182 @@ export class OnboardingHintsUI {
     }
   }
 
+  _setFocusCircleStatus(messageKey, visible = true) {
+    if (!this._privacyFocusCircleStatusEl) return;
+    if (!visible || !messageKey) {
+      this._privacyFocusCircleStatusEl.hidden = true;
+      this._privacyFocusCircleStatusEl.textContent = '';
+      return;
+    }
+    this._privacyFocusCircleStatusEl.hidden = false;
+    this._privacyFocusCircleStatusEl.textContent = t(messageKey);
+  }
+
+  _setFocusCircleBusy(busy) {
+    const disabled = Boolean(busy);
+    if (this._privacyFocusCircleCreateBtn) {
+      this._privacyFocusCircleCreateBtn.disabled = disabled;
+    }
+    if (this._privacyFocusCircleJoinBtn) {
+      this._privacyFocusCircleJoinBtn.disabled = disabled;
+    }
+    if (this._privacyFocusCircleLeaveBtn) {
+      this._privacyFocusCircleLeaveBtn.disabled = disabled;
+    }
+    if (this._privacyFocusCircleCopyBtn) {
+      this._privacyFocusCircleCopyBtn.disabled = disabled;
+    }
+  }
+
+  _refreshFocusCircleSection() {
+    if (!this._privacyFocusCircleSection) return;
+    const membership = readFocusCircleMembership(globalThis.localStorage);
+    const inCircle = Boolean(membership);
+    if (this._privacyFocusCircleNotIn) {
+      this._privacyFocusCircleNotIn.hidden = inCircle;
+    }
+    if (this._privacyFocusCircleIn) {
+      this._privacyFocusCircleIn.hidden = !inCircle;
+    }
+    if (this._privacyFocusCircleCreateBtn) {
+      this._privacyFocusCircleCreateBtn.textContent = t(
+        'PRIVACY_SHEET_FOCUS_CIRCLE_CREATE'
+      );
+    }
+    if (this._privacyFocusCircleJoinBtn) {
+      this._privacyFocusCircleJoinBtn.textContent = t(
+        'PRIVACY_SHEET_FOCUS_CIRCLE_JOIN'
+      );
+    }
+    if (this._privacyFocusCircleCopyBtn) {
+      this._privacyFocusCircleCopyBtn.textContent = t(
+        'PRIVACY_SHEET_FOCUS_CIRCLE_COPY'
+      );
+    }
+    if (this._privacyFocusCircleLeaveBtn) {
+      this._privacyFocusCircleLeaveBtn.textContent = t(
+        'PRIVACY_SHEET_FOCUS_CIRCLE_LEAVE'
+      );
+    }
+    if (this._privacyFocusCircleJoinInput) {
+      const pending = readCircleJoinQueryCode(globalThis.location?.search ?? '');
+      if (pending && !this._privacyFocusCircleJoinInput.value) {
+        this._privacyFocusCircleJoinInput.value = pending;
+      }
+      this._privacyFocusCircleJoinInput.placeholder = t(
+        'PRIVACY_SHEET_FOCUS_CIRCLE_CODE_PLACEHOLDER'
+      );
+      this._privacyFocusCircleJoinInput.setAttribute(
+        'aria-label',
+        t('PRIVACY_SHEET_FOCUS_CIRCLE_CODE_PLACEHOLDER')
+      );
+    }
+    if (inCircle && membership) {
+      if (this._privacyFocusCircleCodeEl) {
+        this._privacyFocusCircleCodeEl.textContent = t(
+          'PRIVACY_SHEET_FOCUS_CIRCLE_CODE_LABEL'
+        ).replace('{code}', membership.code);
+      }
+      if (this._privacyFocusCircleCountEl) {
+        const count = membership.memberCount ?? 1;
+        this._privacyFocusCircleCountEl.textContent =
+          count === 1
+            ? t('PRIVACY_SHEET_FOCUS_CIRCLE_COUNT_ONE')
+            : t('PRIVACY_SHEET_FOCUS_CIRCLE_COUNT_MANY').replace(
+                '{n}',
+                String(count)
+              );
+      }
+    }
+    this._setFocusCircleStatus('', false);
+  }
+
+  async _handleFocusCircleCreate() {
+    this._setFocusCircleBusy(true);
+    this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
+    try {
+      const result = await createFocusCircle({
+        storage: globalThis.localStorage,
+        search: globalThis.location?.search ?? ''
+      });
+      if (!result.ok || !result.membership) {
+        const key =
+          result.reason === 'disabled'
+            ? 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED'
+            : 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC';
+        this._setFocusCircleStatus(key, true);
+        return;
+      }
+      this._refreshFocusCircleSection();
+      this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_CREATED', true);
+    } finally {
+      this._setFocusCircleBusy(false);
+    }
+  }
+
+  async _handleFocusCircleJoin() {
+    const code = this._privacyFocusCircleJoinInput?.value ?? '';
+    this._setFocusCircleBusy(true);
+    this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
+    try {
+      const result = await joinFocusCircle({
+        storage: globalThis.localStorage,
+        search: globalThis.location?.search ?? '',
+        code
+      });
+      if (!result.ok || !result.membership) {
+        let key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC';
+        if (result.reason === 'bad_code') {
+          key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_CODE';
+        } else if (result.reason === 'not_found') {
+          key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_NOT_FOUND';
+        } else if (result.reason === 'circle_full') {
+          key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_FULL';
+        } else if (result.reason === 'disabled') {
+          key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED';
+        }
+        this._setFocusCircleStatus(key, true);
+        return;
+      }
+      if (this._privacyFocusCircleJoinInput) {
+        this._privacyFocusCircleJoinInput.value = '';
+      }
+      this._refreshFocusCircleSection();
+      this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_JOINED', true);
+    } finally {
+      this._setFocusCircleBusy(false);
+    }
+  }
+
+  async _handleFocusCircleLeave() {
+    this._setFocusCircleBusy(true);
+    this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
+    try {
+      await leaveFocusCircle({
+        storage: globalThis.localStorage,
+        search: globalThis.location?.search ?? ''
+      });
+      if (this._privacyFocusCircleJoinInput) {
+        this._privacyFocusCircleJoinInput.value = '';
+      }
+      this._refreshFocusCircleSection();
+      this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_LEFT', true);
+    } finally {
+      this._setFocusCircleBusy(false);
+    }
+  }
+
+  async _handleFocusCircleCopy() {
+    const membership = readFocusCircleMembership(globalThis.localStorage);
+    if (!membership?.code) return;
+    try {
+      await globalThis.navigator?.clipboard?.writeText(membership.code);
+      this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_COPIED', true);
+    } catch {
+      this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC', true);
+    }
+  }
+
   _refreshPrivacyOptInCopy() {
     if (!this._privacyOptInCheck) return;
     this._privacyOptInCheck.checked = isMonetizationFunnelOptInEnabled(
@@ -2449,6 +2737,7 @@ export class OnboardingHintsUI {
     }
     this._refreshYpeOptInCopy();
     this._refreshQuietTogetherOptInCopy();
+    this._refreshFocusCircleSection();
     this._refreshPrivacyOptInCopy();
     if (this._privacyWellnessNoteEl) {
       this._privacyWellnessNoteEl.textContent = t('PRIVACY_SHEET_WELLNESS_NOTE');
@@ -2465,6 +2754,12 @@ export class OnboardingHintsUI {
   _openPrivacySheetFromPurpose() {
     this._ensurePrivacySheet();
     this._refreshPrivacySheetCopy();
+    void refreshFocusCircleStatus({
+      storage: globalThis.localStorage,
+      search: globalThis.location?.search ?? ''
+    }).then(() => {
+      this._refreshFocusCircleSection();
+    });
     this._purposeFromHover = false;
     this._purposePinned = true;
     if (this.purposeCard) this.purposeCard.hidden = true;
@@ -3236,6 +3531,62 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet__opt-in-detail-list li {
         margin: 0 0 0.35rem;
+      }
+      .onboarding-privacy-sheet__focus-circle {
+        margin: 0.85rem 0 0.35rem;
+        padding: 0.65rem 0.7rem;
+        border: 1px solid rgba(90, 107, 74, 0.28);
+        border-radius: 8px;
+        background: rgba(244, 248, 240, 0.55);
+      }
+      .onboarding-privacy-sheet__focus-circle-join-row {
+        display: flex;
+        gap: 0.45rem;
+        margin-top: 0.55rem;
+        align-items: center;
+      }
+      .onboarding-privacy-sheet__focus-circle-input {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.35rem 0.45rem;
+        border-radius: 6px;
+        border: 1px solid rgba(90, 107, 74, 0.35);
+        background: rgba(255, 255, 255, 0.75);
+        color: #2c1f14;
+      }
+      .onboarding-privacy-sheet__focus-circle-btn {
+        margin-top: 0.55rem;
+        margin-right: 0.45rem;
+        font-size: 0.82rem;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        border: 1px solid rgba(90, 107, 74, 0.35);
+        background: rgba(255, 255, 255, 0.8);
+        color: #2c1f14;
+        cursor: pointer;
+      }
+      .onboarding-privacy-sheet__focus-circle-btn:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
+      .onboarding-privacy-sheet__focus-circle-btn--leave {
+        margin-top: 0.65rem;
+      }
+      .onboarding-privacy-sheet__focus-circle-code,
+      .onboarding-privacy-sheet__focus-circle-count {
+        margin: 0.35rem 0 0;
+        font-size: 0.86rem;
+        line-height: 1.4;
+        color: #2c1f14;
+      }
+      .onboarding-privacy-sheet__focus-circle-status {
+        margin: 0.5rem 0 0;
+        font-size: 0.78rem;
+        line-height: 1.35;
+        color: #3a5348;
       }
       .onboarding-privacy-sheet__back {
         align-self: flex-start;

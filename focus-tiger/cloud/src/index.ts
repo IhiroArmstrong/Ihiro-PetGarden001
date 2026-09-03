@@ -8,6 +8,7 @@ import {
 	STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE,
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 	LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE,
+	FOCUS_CIRCLE_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
 import { handleDailyMessage } from "./routes/dailyMessage";
 import { handleQuietLine } from "./routes/quietLine";
@@ -42,6 +43,7 @@ import { handleYpePersonalizationIngest } from "./routes/ypePersonalizationInges
 import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelete";
 import { handleDesktopCheckoutReturn } from "./routes/desktopCheckoutReturn";
 import { handleLanternPresence } from "./routes/lanternPresence";
+import { handleFocusCircle } from "./routes/focusCircle";
 
 /**
  * Focus Tiger · Cloudflare Workers API.
@@ -95,6 +97,7 @@ export default {
 				url.pathname === "/api/ype-personalization-ingest" ||
 				url.pathname === "/api/ype-personalization-delete" ||
 				url.pathname === "/api/lantern-presence" ||
+				url.pathname === "/api/focus-circle" ||
 				url.pathname === "/api/newsletter/subscribe")
 		) {
 			return preflightResponse(origin);
@@ -550,6 +553,21 @@ export default {
 			});
 			if (lanternLimited) return withCors(lanternLimited, origin);
 			return withCors(await handleLanternPresence(request, env), origin);
+		}
+
+		if (url.pathname === "/api/focus-circle") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const circleLimited = enforceRateLimit(request, {
+				limit: FOCUS_CIRCLE_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "focus-circle",
+			});
+			if (circleLimited) return withCors(circleLimited, origin);
+			return withCors(await handleFocusCircle(request, env), origin);
 		}
 
 		return withCors(
