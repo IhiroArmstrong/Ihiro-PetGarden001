@@ -6,7 +6,7 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `cfc21175` |
+| `snapshot_base` | `origin/develop` tip `8106f027` |
 | `snapshot_date` | 2026-09-03 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
@@ -65,8 +65,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `cbaa913a-d68d-4a22-8568-8f6e96529c42` |
-| `prod_verified_at` | 2026-09-03（本机 `wrangler deploy` · Quiet Line `DAILY_ZEN_QUOTE_1` 生产分叉 + `/api/quiet-line` · `/api/confide-copy` 200） |
+| `prod_worker_version` | `47dff360-b7ca-4a5b-a636-8ef60697860f` |
+| `prod_verified_at` | 2026-09-03（本机 `wrangler deploy` · Confide `CONFIDE_COMPANION_PRESENCE` 生产分叉 + `/api/confide-copy` · `/api/quiet-line` 200） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
