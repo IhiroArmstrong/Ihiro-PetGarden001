@@ -146,6 +146,14 @@ import {
   setYpePersonalizationBusyProbe,
   YPE_PERSONALIZATION_IDLE_FLUSH_MS
 } from './core/ypePersonalizationSync.js';
+import {
+  bindLanternPresencePageHide,
+  scheduleLanternPeek,
+  setLanternPresenceBusyProbe,
+  startLanternHeartbeat,
+  stopLanternHeartbeat,
+  LANTERN_PEEK_IDLE_MS
+} from './core/quietTogetherPresence.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
@@ -164,6 +172,7 @@ import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
+import { QuietTogetherLanternsChrome } from './ui/QuietTogetherLanternsChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
@@ -1091,6 +1100,12 @@ async function init() {
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
   const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
   window.__sanctuaryEnsoMark = sanctuaryEnsoMarkChrome;
+  const quietTogetherLanternsChrome = new QuietTogetherLanternsChrome(
+    document.body,
+    {}
+  );
+  window.__quietTogetherLanterns = quietTogetherLanternsChrome;
+  bindLanternPresencePageHide();
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(
     document.body,
     withIdleOverlayOccupancySync({
@@ -3161,6 +3176,8 @@ async function init() {
     sanctuaryEnsoMarkChrome.setVisible(true);
     activeRecoverAnchor.setFocusing(false);
     immersivePresenceUI.setFocusing(false);
+    quietTogetherLanternsChrome.setFocusing(false);
+    void stopLanternHeartbeat();
     companionModePicker.setIdleChromeVisible(true);
   }
 
@@ -3331,6 +3348,8 @@ async function init() {
     sanctuaryEnsoMarkChrome.setFocusing(true);
     activeRecoverAnchor.setFocusing(true);
     immersivePresenceUI.setFocusing(true);
+    quietTogetherLanternsChrome.setFocusing(true);
+    startLanternHeartbeat();
     attentionSignals.setEnabled(true);
     acrossToolsIdleGuard.stop();
     if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {
@@ -4198,6 +4217,10 @@ async function init() {
         debounceMs: YPE_PERSONALIZATION_IDLE_FLUSH_MS,
         forceSoon: true
       });
+      scheduleLanternPeek({
+        storage: typeof localStorage !== 'undefined' ? localStorage : null,
+        delayMs: LANTERN_PEEK_IDLE_MS
+      });
     }
   });
 
@@ -4219,6 +4242,17 @@ async function init() {
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
       arrivalPractice?.isOpen?.() === true ||
+      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+    return {
+      busy: focusing || overlay,
+      retry: overlay && !focusing
+    };
+  });
+  setLanternPresenceBusyProbe(() => {
+    const s = stateManager.state;
+    const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
+    const overlay =
+      Boolean(sessionUiGate?.postSessionOverlayActive) ||
       isHonestyPhaseBusy(honestyCheckInUI?.phase);
     return {
       busy: focusing || overlay,

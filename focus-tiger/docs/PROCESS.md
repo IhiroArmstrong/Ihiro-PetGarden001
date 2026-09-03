@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Quiet Together ∪ Global Lanterns MVP（2026-09-04 · 本旁支改运行时）**：匿名同坐人数 + Idle/Arrive 灯火；Privacy 可关；结束 leave；不聊天。Brief `task-quiet-together-lanterns-mvp.md`。生产 `/api/lantern-presence` 须口令「部署」。
+
 - **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 
 - **Confide boundary EN 生产分叉 Redeploy（2026-09-03 · `chore/confide-boundary-prod-fork-verify`）**：Worker `CONFIDE_BOUNDARY_RESPECT` = `Nothing needs to be said. Yin is still here.`；locale 冻表不改。Version `78199a3b-37a2-4e62-a2c4-57233777ab96`。Brief `task-confide-boundary-prod-fork.md`。
@@ -85,7 +87,7 @@
 - **Local AI 扩场景会审（2026-08-28 · 未拍板 · 无运行时）**：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。V1–V5 现场唱名；不改 `LOCAL_AI_SCENARIOS_V1.md` 政策句。
 - **Local AI Phase 1（2026-09-01 · 口令 1C lab）**：Gate 0.2 #472 已关单；**1B #503 已合**；**1A Show memory #506 已合**。本旁支 = Reflection Companion **validation**（`?reflectionCompanion=1` · 非 shipping）：危机走 `corpus_safety`、generate 失败走已审 fallback、observation 写 `data-source`。Forget 端到端见 tracker `qa-ag-slice-1e-forget-e2e`。**同日 Gate 0.D Phase 2**：设计师 20 条 intent fixture **已合 #509**；Metal reading=pipeline。**同日口令**：生产层序补 `companion_presence` / CI-03·CI-02 复述 / 偏好诚实模板（不改 L3 prompt、不换 GGUF）。**同日 Phase 2B**：v4 金标 **#516 已合**；A/C/D Metal **已跑**；hard-5 架构 E **5/5 Metal**（#518 · §6.1）。
 - **Local AI Operating Layer（2026-08-27 · 方向锁 · 无运行时）**：Yin = 陪伴；Local AI = 理解；Auto-Operating = 系统操作入口。Backup / Update / MCP **不**进 Confide。SSOT `LOCAL_AI_OPERATING_LAYER.md`。Confide 代码本轨不改；#472 **2026-09-01 已关单**。
-- **From App to Culture（2026-08-27 · 方向锁 · 2026-09-04 PO 修订 · 无运行时）**：安静数字实践文化；六条 Culture Principles；四档（运营 / 方向已锁 / 远期 / 禁止）；**废除证据门**；App 社交塑造 Slack；§13 设计师评审。SSOT `FROM_APP_TO_CULTURE.md`。**下一步**：口令开工 Quiet Together ∪ Lanterns MVP。未口令不塞进地基 PR。
+- **From App to Culture（2026-08-27 · 方向锁 · 2026-09-04 PO 修订 · 刀 1 已口令）**：安静数字实践文化；六条 Culture Principles；四档（运营 / 方向已锁 / 远期 / 禁止）；**废除证据门**；App 社交塑造 Slack；§13 设计师评审。SSOT `FROM_APP_TO_CULTURE.md`。**下一步**：Circle 另口令。未口令不把 Circle / Identity / Gallery 塞进地基 PR。
 - **Yin Personalization Engine Architecture V1（2026-08-26 · 方向锁 + L0/L1 + L2 契约 + Consent 过稿 + 身份键 + 算法契约）**：编排层。核心原则：云端可以让阿寅越来越聪明，但不能让阿寅因为没有网络而消失。**L0/L1** 已开工。L2 **契约**已合 #454。Consent：关即删附录有条件通过。身份：本机随机 `ype_profile_id`（#456）。算法：五键→Pack 闭包（`task-l2-personalization-algorithm.md`）。**Worker ingest 源码已合**（现网须绑定 `YPE_PERSONALIZATION_KV`；TRACKER 待人工）。V1 = 回声选档。**V2 口令已给**（秘密变换 + `algorithmVersion`）见 `task-ype-v2-secret-transform.md` · **运行时未开工**。属防剽窃层。SSOT `YIN_PERSONALIZATION_ENGINE.md`。
 - **Yin Personal Memory Architecture V1（2026-08-24 · 方向锁）**：设计师 12 点入库；三套边界写死。**2026-08-25**：AE 能聊用户书面关单；口令「开工 Yin Personal Memory」→ **Slice 0 运行时**（读 `PracticeDaysStore`，禁 Qwen 编时长）。Slice 1a Consent + store 骨架已合（#427）；Slice 1b Remember 已合（#428）；Slice 1c 列表+Forget **本旁支**（`task-yin-memory-slice-1c-list-forget.md`）；层 3 注入 **仍未做**。Brief `task-yin-memory-slice-0-practice-facts.md`。
 - **练习备份后台网络错峰（2026-08-23 · 本旁支改运行时）**：已同意备份的用户，Idle 静默上传改到约 2.5s（让开首段呼吸）；busy 含 Arrival / Honesty 叠层，叠层结束会短重试；空库恢复同样 busy；白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 cloud-ok。OTP 点击路径未改。慢网 Idle/Arrival 流畅度仍待人工（TRACKER 碎片）。下两条仍未开工：品味层开机预取、陪伴首次下载。
@@ -1051,7 +1053,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ### Backlog:异步无声共修（Global Lanterns · 优先切片 · 待口令）
 
-> **2026-08-09 入库**；**2026-09-04**：不再等 Culture Evidence Review。品牌契合度高于 UGC 平台；与 Quiet Together **合并为同一 MVP 方向**（见 `FROM_APP_TO_CULTURE.md` §13）。**未立项 Brief、未开工。**
+> **2026-08-09 入库**；**2026-09-04**：不再等 Culture Evidence Review。品牌契合度高于 UGC 平台；与 Quiet Together **合并为同一 MVP 方向**（见 `FROM_APP_TO_CULTURE.md` §13）。**已立项 Brief、本旁支开工。** 生产 Worker 须另口令「部署」。
 
 **姿态（评估结论，入库约束）**：
 
@@ -1062,7 +1064,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 - **复杂度评级**：中（轻量 presence 后端或先做可关视觉隐喻实验）
 - **价值定位**：无压力 Co-presence；卖同频温暖而非社交压力
-- **排期**：建议作为安静社交**第一刀**；口令示例：「评估/开工异步共修灯火」或「开工 Quiet Together MVP」。**不再**要求 Slack 证据门。
+- **排期**：安静社交**第一刀**已口令开工（2026-09-04）。Circle / Identity / Echo **不**并入本 Backlog 运行时。
 
 ### Backlog:节日主题引擎（Seasonal Theme · B 轨 · 2026-08-11 排期）
 

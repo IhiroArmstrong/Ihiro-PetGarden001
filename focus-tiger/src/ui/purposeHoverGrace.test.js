@@ -47,7 +47,7 @@ describe('purpose card hover grace + left-ball no mint', () => {
   it('Privacy sheet opt-in lives in the scroll body; outside tap dismisses', () => {
     assert.match(
       hintsSrc,
-      /sheet\.append\(title, body, back\);\s*body\.append\(ypeOptIn, optIn/
+      /sheet\.append\(title, body, back\);\s*body\.append\(ypeOptIn, lanternOptIn, optIn/
     );
     assert.match(hintsSrc, /resolveHelpOutsideDismissAction/);
     assert.match(hintsSrc, /HELP_OUTSIDE_DISMISS\.CLOSE_PRIVACY/);

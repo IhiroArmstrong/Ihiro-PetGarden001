@@ -58,6 +58,7 @@
 | Practice backup | `/api/practice-backup/request-otp` · `verify` · `put` · `get` · `delete` |
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
+| Quiet Together | `/api/lantern-presence`（源码已接线；**生产须部署**；`TIP_KV` `lantern:v1:live`） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 

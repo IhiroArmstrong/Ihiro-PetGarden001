@@ -7,6 +7,7 @@ import {
 	NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE,
 	STRIPE_WEBHOOK_RATE_LIMIT_PER_MINUTE,
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+	LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
 import { handleDailyMessage } from "./routes/dailyMessage";
 import { handleQuietLine } from "./routes/quietLine";
@@ -40,6 +41,7 @@ import { handleUnsubscribeNewsletter } from "./routes/unsubscribeNewsletter";
 import { handleYpePersonalizationIngest } from "./routes/ypePersonalizationIngest";
 import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelete";
 import { handleDesktopCheckoutReturn } from "./routes/desktopCheckoutReturn";
+import { handleLanternPresence } from "./routes/lanternPresence";
 
 /**
  * Focus Tiger · Cloudflare Workers API.
@@ -92,6 +94,7 @@ export default {
 				url.pathname === "/api/monetization-funnel-ingest" ||
 				url.pathname === "/api/ype-personalization-ingest" ||
 				url.pathname === "/api/ype-personalization-delete" ||
+				url.pathname === "/api/lantern-presence" ||
 				url.pathname === "/api/newsletter/subscribe")
 		) {
 			return preflightResponse(origin);
@@ -532,6 +535,21 @@ export default {
 				await handleYpePersonalizationDelete(request, env),
 				origin,
 			);
+		}
+
+		if (url.pathname === "/api/lantern-presence") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const lanternLimited = enforceRateLimit(request, {
+				limit: LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "lantern-presence",
+			});
+			if (lanternLimited) return withCors(lanternLimited, origin);
+			return withCors(await handleLanternPresence(request, env), origin);
 		}
 
 		return withCors(

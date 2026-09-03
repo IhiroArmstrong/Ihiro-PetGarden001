@@ -19,6 +19,9 @@ export const RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE = 5;
 /** Stay in touch subscribe — same Resend-burn budget as OTP request. */
 export const NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE = 5;
 
+/** Quiet Together peek/heartbeat/leave — anonymous, no email. */
+export const LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE = 40;
+
 /**
  * Stripe webhook: exempt from global 60/min, but still capped to blunt
  * unsigned flood DoS on HMAC verification (product: ~300/min/IP).

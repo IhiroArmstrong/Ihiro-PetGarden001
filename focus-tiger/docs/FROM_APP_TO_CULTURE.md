@@ -382,7 +382,7 @@ Ambient：**Private → Export/Share → Curated Community**。公开层会立�
 2. **Slack workspace 运营**：按 §8.2 重组频道 + 贴公约 pinned 文案；Join our community **App 外链已接线**（`communityLink.js`，2026-08-29）。App 社交上线后，用 Slack **观察**语言变化，不反向发卡。  
 3. **工程**：安静社交第一刀须独立口令 + Brief（建议：**Quiet Together / Global Lanterns 匿名同坐 MVP**）。未口令不得把 Lanterns / Circle / Identity / Gallery 塞进地基 PR。
 
-口令示例：「评估 / 开工 Global Lanterns」或「开工 Quiet Together MVP」。**不再**要求 Evidence Review 豁免。
+口令示例：「评估 / 开工 Global Lanterns」或「开工 Quiet Together MVP」。**不再**要求 Evidence Review 豁免。**2026-09-04 已口令开工** → Brief `task-quiet-together-lanterns-mvp.md`。
 
 ---
 
@@ -438,4 +438,14 @@ Ambient：**Private → Export/Share → Curated Community**。公开层会立�
 ```
 
 **我认为最合理的第一工程口令**是刀 1（Quiet Together ∪ Lanterns），而不是先做 Circle 或仪式平台：一个人打开 App 就能感到「有人在」，且不要求通讯录、账号图谱或通知系统。
+
+### 13.5 Circle 识别层（刀 2 设计原则 · 非本刀运行时）
+
+> 2026-09-04：与「Practice Identity（行为反射）」**不是**同一物。本小节只锁信封，**不**开工 Circle。
+
+- **进圈**：第一版邀请 = 外部渠道上的 **6 位暗号 / 深链**。无账号也能进。
+- **认出人（可选、晚于进圈）**：本机不透明 ID + 可选限长昵称 + 预设 Tiger/Yin 徽标。**不是**可登录账号。禁止头像上传与自由简介。
+- **跨设备**：不是必须；若做，**复用**现有邮箱 OTP（备份 / Membership restore 同一套基础设施），不为 Circle 另造账号。
+- **审核**：8 人暗号圈；先不做主动审核管线；举报 + 本机把昵称显示成「一位同伴」。
+- **Practice Identity** 仍走刀 4（14 天规则反射、无收集条）。**Collective Echo** 仍走刀 5，**不是** Circle 或刀 1 的开工门闩。
 
