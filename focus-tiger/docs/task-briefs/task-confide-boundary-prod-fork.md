@@ -1,6 +1,6 @@
 # Task Brief · Confide boundary 模板生产分叉
 
-> **状态（2026-09-03）**：审定句已锁 · **本旁支 Worker 源表**。生产 Redeploy 另须口令「部署」。父概念 `ANTI_PLAGIARISM_LAYER.md` §3.1 · overlay `task-confide-copy-overlay.md`。  
+> **状态（2026-09-03）**：审定句已锁 · **#551 已合 + 生产 Redeploy**（Version `78199a3b`）。父概念 `ANTI_PLAGIARISM_LAYER.md` §3.1 · overlay `task-confide-copy-overlay.md`。  
 > **硬边界**：只换 `CONFIDE_BOUNDARY_RESPECT` **EN value**。路由 / E′ 正则 / `data-source=boundary` / ja·zh / locale 冻表 / corpus **不改**。
 
 ## 审定句（本刀权威）
