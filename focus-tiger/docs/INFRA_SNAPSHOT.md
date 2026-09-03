@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `8106f027` |
-| `snapshot_date` | 2026-09-03 |
+| `snapshot_base` | `origin/develop` tip `960f40b8` |
+| `snapshot_date` | 2026-09-04 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -58,7 +58,7 @@
 | Practice backup | `/api/practice-backup/request-otp` · `verify` · `put` · `get` · `delete` |
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
-| Quiet Together | `/api/lantern-presence`（源码已接线；**生产须部署**；`TIP_KV` `lantern:v1:live`） |
+| Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 
@@ -66,8 +66,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `78199a3b-37a2-4e62-a2c4-57233777ab96` |
-| `prod_verified_at` | 2026-09-03（本机 `wrangler deploy` · Confide `CONFIDE_BOUNDARY_RESPECT` + `CONFIDE_COMPANION_PRESENCE` 生产分叉 + `/api/confide-copy` · `/api/quiet-line` 200） |
+| `prod_worker_version` | `9233d1ed-bdb6-403d-9dec-ea73d0de470f` |
+| `prod_verified_at` | 2026-09-04（本机 `wrangler deploy` · `/api/lantern-presence` peek/heartbeat 200 · #554 Quiet Together） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
