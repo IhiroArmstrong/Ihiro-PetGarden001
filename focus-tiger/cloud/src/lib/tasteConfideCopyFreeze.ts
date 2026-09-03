@@ -36,7 +36,7 @@ const EN_TEMPLATES: ConfideCopyTemplateEntry[] = [
 	},
 	{
 		key: "CONFIDE_COMPANION_PRESENCE",
-		text: "Yin is here. We can stay like this — no need to begin.",
+		text: "Yin is still here. We can stay like this — nothing needs to begin.",
 	},
 	{
 		key: "CONFIDE_PREFERENCE_HONESTY",

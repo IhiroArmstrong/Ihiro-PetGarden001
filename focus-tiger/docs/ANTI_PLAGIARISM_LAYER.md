@@ -84,7 +84,7 @@
 2. **现网一旦与 git 分叉**：禁止把灵魂数字再写回 `tasteLayerFreeze` / locale 冻池 / 本 Brief 的阈值表，当作「同步文档」。客户端继续带公开兜底即可。  
 3. **扩形**（增删 key / 新 insight token / 新 `schemaVersion`）仍须升版本，并给客户端一份认得出的兜底；手感漂移走 Redeploy，不走把现网表贴进 git。  
 4. **未知版本整包丢弃**（已有）：客户端不认识 → 本地冻表 / L0/L1；禁止崩、禁止挡 Sit。  
-5. **现状（2026-09-03）**：**首次生产分叉**——Worker `DAILY_ZEN_QUOTE_1`（en）= `The world and I were never two.`；git locale / 客户端冻表仍为 `Soft light…`。日文池未分叉。YPE V1 仍无秘密闭包。
+5. **现状（2026-09-03）**：**生产分叉**——① Worker `DAILY_ZEN_QUOTE_1`（en）= `The world and I were never two.`；git locale / 客户端冻表仍为 `Soft light…`。② Worker `CONFIDE_COMPANION_PRESENCE`（en）= `Yin is still here. We can stay like this — nothing needs to begin.`；git locale / 客户端冻表仍为 `Yin is here. We can stay like this — no need to begin.`。日文 / boundary / corpus 未分叉。YPE V1 仍无秘密闭包。
 
 权威交叉：`PROCESS.md` Backlog「云端品味层」· `YIN_PERSONALIZATION_ENGINE.md` §E · `task-ype-v2-secret-transform.md`。
 
