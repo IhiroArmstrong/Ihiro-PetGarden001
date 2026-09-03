@@ -84,7 +84,7 @@
 2. **现网一旦与 git 分叉**：禁止把灵魂数字再写回 `tasteLayerFreeze` / locale 冻池 / 本 Brief 的阈值表，当作「同步文档」。客户端继续带公开兜底即可。  
 3. **扩形**（增删 key / 新 insight token / 新 `schemaVersion`）仍须升版本，并给客户端一份认得出的兜底；手感漂移走 Redeploy，不走把现网表贴进 git。  
 4. **未知版本整包丢弃**（已有）：客户端不认识 → 本地冻表 / L0/L1；禁止崩、禁止挡 Sit。  
-5. **现状（2026-09-03）**：**生产分叉**——① Worker `DAILY_ZEN_QUOTE_1`（en）= `The world and I were never two.`；git locale / 客户端冻表仍为 `Soft light…`。② Worker `CONFIDE_COMPANION_PRESENCE`（en）= `Yin is still here. We can stay like this — nothing needs to begin.`；git locale / 客户端冻表仍为 `Yin is here. We can stay like this — no need to begin.`。日文 / boundary / corpus 未分叉。YPE V1 仍无秘密闭包。
+5. **现状（2026-09-03）**：**生产分叉**——① Worker `DAILY_ZEN_QUOTE_1`（en）= `The world and I were never two.`；git locale / 客户端冻表仍为 `Soft light…`。② Worker `CONFIDE_COMPANION_PRESENCE`（en）= `Yin is still here. We can stay like this — nothing needs to begin.`；git locale / 客户端冻表仍为 `Yin is here. We can stay like this — no need to begin.`。③ **本旁支 Worker 源表** `CONFIDE_BOUNDARY_RESPECT`（en）= `Nothing needs to be said. Yin is still here.`；git locale 仍 `We can leave it unspoken. Yin is here.`——**生产 curl 仍旧句，须口令「部署」后才现网分叉**。ja / zh / corpus 未分叉。YPE V1 仍无秘密闭包。
 
 权威交叉：`PROCESS.md` Backlog「云端品味层」· `YIN_PERSONALIZATION_ENGINE.md` §E · `task-ype-v2-secret-transform.md`。
 
@@ -111,10 +111,12 @@
 | **0** | 本 SSOT 入库 | （概念纳入项目） | **#542 已合** |
 | **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合**（源码；生产 Redeploy 另须「部署」） |
 | **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | **#545 已合 develop**（生产须「部署」） |
-| **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | **本旁支运行时**（`/api/confide-copy`；生产须「部署」） |
+| **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | **#548 已合**（`/api/confide-copy`） |
+| **3b** | Confide 在场 EN 生产分叉 | 审定句 + 「部署」 | **#550 已合**（`CONFIDE_COMPANION_PRESENCE`） |
+| **3c** | Confide boundary EN 生产分叉 | 审定句已锁 + 「部署」 | **本旁支 Worker 源表**（`task-confide-boundary-prod-fork.md`；生产须「部署」） |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
 
-**运行时下一刀**：生产 Redeploy（须口令「部署」）后再谈现网分叉。序 1–3 源码本刀已齐。日签扩容 / 伸懒腰 / 好奇仍后排。
+**运行时下一刀**：口令「部署」后 boundary 才现网分叉。序 1–3 源码已齐；在场已分叉。日签扩容 / 伸懒腰 / 好奇仍后排。
 
 ---
 

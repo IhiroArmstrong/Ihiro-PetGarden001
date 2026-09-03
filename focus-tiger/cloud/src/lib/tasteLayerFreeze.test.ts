@@ -78,5 +78,15 @@ describe("taste-layer freeze tables", () => {
 		);
 		assert.equal(tasteConfideCopyTemplates("en").length, 3);
 		assert.equal(tasteConfideCopyTemplates("zh")[0].key, "CONFIDE_BOUNDARY_RESPECT");
+		assert.equal(
+			tasteConfideCopyTemplates("en").find((e) => e.key === "CONFIDE_BOUNDARY_RESPECT")
+				?.text,
+			"Nothing needs to be said. Yin is still here.",
+		);
+		assert.equal(
+			tasteConfideCopyTemplates("ja").find((e) => e.key === "CONFIDE_BOUNDARY_RESPECT")
+				?.text,
+			"話さなくていい。寅はここにいる。",
+		);
 	});
 });
