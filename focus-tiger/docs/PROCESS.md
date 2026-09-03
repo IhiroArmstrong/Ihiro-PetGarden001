@@ -66,6 +66,8 @@
 
 - **Quiet Together ∪ Global Lanterns MVP（2026-09-04 · #554 已合 develop）**：匿名同坐人数 + Idle/Arrive 灯火；Privacy 可关；结束 leave；不聊天。Brief `task-quiet-together-lanterns-mvp.md`。**2026-09-04 本机 wrangler deploy**：生产 Version `9233d1ed-bdb6-403d-9dec-ea73d0de470f`；`POST /api/lantern-presence` peek/heartbeat 200。
 
+- **Focus Circle MVP 刀 2a（2026-09-04 · 本旁支 `feature/focus-circle-mvp`）**：Privacy 内建圈 / 六位暗号加入 / 离开；最多 8 人；无聊天。Brief `task-focus-circle-mvp.md`。生产 `/api/focus-circle` 须口令「部署」。
+
 - **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 
 - **Confide boundary EN 生产分叉 Redeploy（2026-09-03 · `chore/confide-boundary-prod-fork-verify`）**：Worker `CONFIDE_BOUNDARY_RESPECT` = `Nothing needs to be said. Yin is still here.`；locale 冻表不改。Version `78199a3b-37a2-4e62-a2c4-57233777ab96`。Brief `task-confide-boundary-prod-fork.md`。

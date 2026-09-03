@@ -230,7 +230,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 设计师 Quiet Social / Identity / Rituals | **PO 评审已写入** §13 · 工程须口令 |
 | Slack 实验室接线 Join our community | ✅ **已接线**（2026-08-29 · `communityLink.js`） |
 | Global Lanterns / Quiet Together MVP | **本旁支开工** · Brief `task-quiet-together-lanterns-mvp.md` · 生产须部署 |
-| Circle / Identity Runtime / 公开 Ambient | 按 §13 分阶段 · **未开工** |
+| Circle / Identity Runtime / 公开 Ambient | Circle **刀 2a 本旁支开工** · Brief `task-focus-circle-mvp.md` · 生产须部署 |
 
 ---
 

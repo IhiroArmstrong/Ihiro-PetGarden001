@@ -629,6 +629,20 @@
 
 ---
 
+## 场景 AN：Focus Circle（小圈暗号 · 2026-09-04）
+
+> **地位**：Privacy 内可选社交基础设施。**≠** 全球灯火（AM）、**≠** Presence Signals、**≠** 聊天。  
+> **单元**：`focusCircleMembership.test.js` · cloud `focusCircleKv.test.ts`。  
+> **生产**：Worker 未部署 `/api/focus-circle` 时 Create/Join 须见错误文案，不挡 Sit。  
+> **点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。
+
+1. `?product=1` → ? → Privacy → **Focus Circle** → Start a circle → **0–1 秒内**见六位暗号与「一人」。  
+2. 另一标签 Join 同码 → 人数增至 2（满 8 时 Join 须见满员句）。  
+3. Leave → **0–1 秒内**回到未入圈态；错误暗号须见「无匹配」类文案。  
+4. `?circleJoin=XXXXXX` 打开 Privacy 时预填加入框。`?focusCircle=0` 禁用请求。
+
+---
+
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
 > **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。  

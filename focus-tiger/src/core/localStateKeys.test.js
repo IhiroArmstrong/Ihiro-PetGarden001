@@ -93,6 +93,7 @@ import { YPE_COMPANION_STYLE_STORAGE_KEY } from './yinPersonalizationEngine.js';
 import { YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY } from './ypeCloudPersonalizationConsent.js';
 import { YPE_PERSONALIZATION_PACK_STORAGE_KEY } from './ypePersonalizationPack.js';
 import { QUIET_TOGETHER_STORAGE_KEY } from './quietTogetherPreference.js';
+import { FOCUS_CIRCLE_STORAGE_KEY } from './focusCircleMembership.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
@@ -183,7 +184,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   YPE_COMPANION_STYLE_STORAGE_KEY,
   YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY,
   YPE_PERSONALIZATION_PACK_STORAGE_KEY,
-  QUIET_TOGETHER_STORAGE_KEY
+  QUIET_TOGETHER_STORAGE_KEY,
+  FOCUS_CIRCLE_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

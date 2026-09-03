@@ -21,6 +21,7 @@ export const NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE = 5;
 
 /** Quiet Together peek/heartbeat/leave — anonymous, no email. */
 export const LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE = 40;
+export const FOCUS_CIRCLE_RATE_LIMIT_PER_MINUTE = 20;
 
 /**
  * Stripe webhook: exempt from global 60/min, but still capped to blunt

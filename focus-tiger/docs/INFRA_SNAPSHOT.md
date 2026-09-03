@@ -59,6 +59,7 @@
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
 | Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
+| Focus Circle | `/api/focus-circle`（源码已接线；**生产须部署**；`TIP_KV` `circle:v1:*` · 最多 8 人） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 
