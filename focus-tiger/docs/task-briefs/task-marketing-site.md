@@ -1,6 +1,6 @@
 # Task Brief · 宣传 / 营销站（Twinsology · Focus Tiger）
 
-> **状态（2026-08-20）**：公开营销域已拍板 **`twinsology.com`**。**Slice 0 静态页已入库** `marketing-site/`。现网自定义域仍须本机 Cloudflare Pages 绑定（Cloud Agent 无 wrangler 登录）。  
+> **状态（2026-09-03）**：公开营销域 **`twinsology.com`** 已上线（Cloudflare Pages `twinsology-marketing`；`twinsology.com` + `www` Active；TRACKER 已通过）。**Slice 0 静态页**在 `marketing-site/`。  
 > **性质**：获客向静态站，**不是**练习壳、不是 PWA、不是 Cloudflare Worker API。  
 > **权威交叉**：`PRODUCT_POSITIONING.md`（品牌 / 宁静型游戏化）· `PRINCIPLES.md`（禁止 FOMO / 硬推销）· `NEWSLETTER_CAPTURE.md`（发信已用同一域）· `ENV_CONFIG.md`（公开 hostname）· `PROCESS.md` Backlog「宣传 / 营销站」。
 
@@ -53,9 +53,8 @@
 
 ## 排期口令
 
-- **已完成**：域名拍板；**Slice 0 静态页**（`marketing-site/`）。  
-- **下一步（须本机 Cloudflare）**：Pages deploy + 绑定 `twinsology.com` / `www`（见 `marketing-site/README.md`）。口令可写 **「绑定宣传站域名」**。  
-- 应用内 Join our community 改链、公网留资表单、`app.twinsology.com` = 更后面的独立口令。
+- **已完成**：域名拍板；**Slice 0 静态页**（`marketing-site/`）；**现网 Pages 绑定 + 人工验收**（2026-09-03 关单）。  
+- **下一步（须另口令）**：应用内 Join our community 改链、公网留资表单、`app.twinsology.com` = 更后面的独立口令。
 
 ## 冲突扫描（Slice 0）
 

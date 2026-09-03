@@ -96,7 +96,7 @@
 
 - **精灵占用仲裁层（2026-08-20 · `fix/sprite-channel-arbitration`）**：冷启动 / 回前台 / 会话结束 / 付款致谢由 `spriteChannelArbitration` 一处拍板。凌晨 0–6 与 wellness 对齐；付款回跳压过深夜披毯；叠层开着不得进睡。吸收 #341/#347 产品规则，不重开那两单。工作流 **§6.17**。TRACKER 碎片待人工。
 
-- **宣传 / 营销站 Slice 0（2026-08-20）**：静态首页入库仓库根 `marketing-site/`。Canonical `https://twinsology.com`；CTA = `mailto:hello@twinsology.com`；**无** workers.dev。现网 Pages/DNS **未**绑（须本机 Cloudflare；禁止改 MX/SPF/DKIM）。权威：`task-briefs/task-marketing-site.md`。TRACKER 待人工。
+- **宣传 / 营销站 Slice 0（2026-08-20 · 2026-09-03 现网关单）**：静态首页入库仓库根 `marketing-site/`。Canonical `https://twinsology.com`；CTA = `mailto:hello@twinsology.com`；**无** workers.dev。Cloudflare Pages **`twinsology-marketing`**（`twinsology.com` + `www` Active）。权威：`task-briefs/task-marketing-site.md`。TRACKER **已通过**。
 
 - **Welcome 后短切 tab 不得披毯（2026-08-18 · #341）**：冷启动 Welcome / 鹦鹉仍 Idle；visibility 仅当 **hiddenMs ≥2h** 才 `allowEnterDormant`。Reflection 卡用共享底栏净空 + 176px 侧留白，避免日签压三球/地球；慧能/赵州日签改字（仍 14 id）。TRACKER 待人工。
 
@@ -619,7 +619,7 @@
 - **阿寅壁纸免费赠送**（Brief `task-digital-wallpapers-gift.md`；实现中 `feature/digital-wallpapers-gift`）
 - **本地个人混音（Soundscape Mixer）**（多层本地音效/用户曲叠播；**非**已交付的单曲上传选播；远期）
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
-- **宣传 / 营销站（域名已拍板 `twinsology.com` · Slice 0 已入库 · 现网未绑）**（Brief `task-marketing-site.md`；绑定须口令「绑定宣传站域名」）
+- **宣传 / 营销站（域名已拍板 `twinsology.com` · Slice 0 已入库 · 现网已上线 · 2026-09-03 关单）**（Brief `task-marketing-site.md`）
 - **付费转化路径梳理（获客向 · 2026-08-12）**：在 Enso / Wisdom 印花 / Daily Card 等**存量体验**任务之后，单独立项盘点——免费用户在哪些时刻看见清晰付费价值、Deep 15s 试听后 Unlock 文案、Support 漏斗完整性。**不挡**当前四任务；防止「经济可持续」原则只落成老用户彩蛋（见 `PRINCIPLES` 案例锚定诚实边界）
 - **异步无声共修（Global Lanterns）**（匿名灯火 + 可选无声赠茶；可关；不进 Focusing；远期）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
@@ -1186,15 +1186,15 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **Brief**：`docs/task-briefs/task-cloud-taste-layer.md`。
 - **可扩展性（开发期间也遵守）**：前后端解耦；禁止在 EmotionController / 门闩主路径硬编码「无网即失败」。
 
-### Backlog:宣传 / 营销站（`twinsology.com` · Slice 0 已入库 · 现网未绑）
+### Backlog:宣传 / 营销站（`twinsology.com` · Slice 0 已上线 · 2026-09-03 关单）
 
 > **拍板（2026-08-20）**：产品宣传与营销网站的公开域名 = 系统里已有的 **`twinsology.com`**。与 Newsletter / OTP 发信同域；**不要**另开 `focustiger.app`。练习产品壳 / Worker **不**因本条搬家。  
-> **Slice 0（同日口令已执行）**：仓库根 `marketing-site/` 静态首页。现网自定义域仍须本机 Cloudflare Pages。
+> **Slice 0（2026-09-03 关单）**：仓库根 `marketing-site/` 静态首页；Cloudflare Pages **`twinsology-marketing`**（`twinsology.com` + `www` Active）。
 
 - **Canonical**：`https://twinsology.com`；`www` → apex 301。  
-- **托管默认**：同一 ihiro Cloudflare 帐号 **Pages**（静态），与 `focus-tiger-cloud` Worker 分项目。DNS **只**加网站记录；**禁止**改 MX / SPF / DKIM / Resend。  
+- **托管**：同一 ihiro Cloudflare 帐号 **Pages**（静态），与 `focus-tiger-cloud` Worker 分项目。  
 - **身份**：Twinsology 工作室首页，主角 Focus Tiger；不是把重型练习壳挂在根路径。  
-- **下一刀**：口令 **「绑定宣传站域名」**（本机 wrangler / Dashboard）。`communityLink.js` 已接线 Slack（2026-08-29）；公网 Newsletter 表单、`app.twinsology.com` 均须另口令。  
+- **下一刀（须另口令）**：`communityLink.js` 改链营销站；公网 Newsletter 表单、`app.twinsology.com`。  
 - **Brief**：`docs/task-briefs/task-marketing-site.md`。
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）
