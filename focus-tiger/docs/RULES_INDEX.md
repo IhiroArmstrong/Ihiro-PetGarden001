@@ -169,7 +169,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 文档 | 权威主题 |
 |---|---|
 | `PRODUCT_POSITIONING.md` | 品牌与产品战略 |
-| `FROM_APP_TO_CULTURE.md` | **文化探索方向锁**（From App to Culture；验证框架；Slack 实验室 ≠ App 社交；五空间 IA §8.2；无运行时；从属定位稿 + PRINCIPLES） |
+| `FROM_APP_TO_CULTURE.md` | **文化探索方向锁**（From App to Culture；App→Slack；废除证据门；§13 PO 评审；五空间 IA §8.2；无运行时；从属定位稿 + PRINCIPLES） |
 | `SLACK_COMMUNITY_GUIDELINES.md` | **Slack 实验室公约草案**（Quiet Room · Support 分流 · 隐私红线；从属 `FROM_APP_TO_CULTURE` §8） |
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
 | `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |

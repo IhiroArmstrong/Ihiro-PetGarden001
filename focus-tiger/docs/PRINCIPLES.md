@@ -1,17 +1,18 @@
 # 坐禅小老虎 · 项目原则
 # Focus Tiger · PRINCIPLES.md
 
-本文档记录不可违反的硬性红线。品牌定位与长期方向见 `PRODUCT_POSITIONING.md`；**文化探索方向锁**（验证后再产品化；Slack 实验室 ≠ App 社交）见 `FROM_APP_TO_CULTURE.md`（六条 Culture Principles **不得**覆盖本文硬红线）；一天中的产品叙事框架（Five Moments）见 `PRODUCT_MOMENTS.md`；单次会话七步状态机见 `CORE_LOOP.md`；Arrival Practice 详规见 `ARRIVE_MOMENT_DESIGN.md`；任务序列见 `TASKS.md`；功能×付费对账见 `FREE_PAID_MATRIX.md`。  
+本文档记录不可违反的硬性红线。品牌定位与长期方向见 `PRODUCT_POSITIONING.md`；**文化探索方向锁**（App 安静社交会塑造 Slack 行为，**不是**「Slack 有证据才产品化」；Slack 实验室 ≠ 产品本体）见 `FROM_APP_TO_CULTURE.md`（六条 Culture Principles **不得**覆盖本文硬红线，也**不得**用文化门闩压过「用户体验第一」）；一天中的产品叙事框架（Five Moments）见 `PRODUCT_MOMENTS.md`；单次会话七步状态机见 `CORE_LOOP.md`；Arrival Practice 详规见 `ARRIVE_MOMENT_DESIGN.md`；任务序列见 `TASKS.md`；功能×付费对账见 `FREE_PAID_MATRIX.md`。  
 **点击接收反馈 vs 结果反馈 vs 已知静默**：见 [`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md) 与 [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）；勿在本文复述。
 
 ---
 
-## 用户体验优先（硬 · 2026-08-31 · 产品最高原则）
+## 用户体验优先（硬 · 2026-08-31 · 产品最高原则 · 2026-09-04 补强）
 
 > **只要不违法、不违背开发工作基本原则，用户体验才是第一位的。**  
-> 只盯着所谓「红线」、不顾用户是否被听见、是否被尊重边界，是产品设计里**绝对禁止**的现象。
+> **禁止不顾「用户体验第一」去设置产品设计红线。**  
+> 只盯着所谓「红线」、不顾用户是否被听见、是否被尊重边界、是否仍能完整独处使用，是产品设计里**绝对禁止**的现象。
 
-红线存在是为了保护用户与诚实工程，**不是**为了让内部 routing / prompt / 语料清单压过陪伴体验。
+红线存在是为了保护用户与诚实工程，**不是**为了让内部 routing / prompt / 语料清单、也**不是**为了让「先看 Slack / 先攒证据再产品化」这类流程门闩，压过陪伴与安静连接的体验。
 
 ### 仍必须遵守（底线，不可用「体验」绕过）
 
@@ -21,6 +22,7 @@
 
 ### 禁止用红线当挡箭牌
 
+- **禁止**把「产品设计红线」写成与最高原则对打的开工禁令（反例：未经 Product Owner 要求，却把「Culture Evidence Review / Slack 先有信号」当成 App 社交不得产品化的硬门）。保护性约束（不制造焦虑、诚实人数、可关、Social 可选）**本身就是体验**，可以保留；流程/验证戏剧**不是**体验。
 - 禁止堆砌内部清单（情绪桶、语料句、分类失败就硬凑标签），却交出更差的陪伴。
 - **Confide / Local AI**：用户在表达「我现在不确定要不要说」这类**边界**时，禁止因 routing / prompt / corpus pipeline **主动给用户贴心理状态标签**（反例：「I'm not sure whether I want to talk about it.」→「I am curious.」）。现网：层 3 前走 `boundary` 模板（`CONFIDE_BOUNDARY_RESPECT`），L3 禁止生成该标签。
 - 一句里同时有情绪信号与明确请求（陪伴坐下、开始、忘掉某事）时，须先回应**当下用户要 Yin 做什么**；情绪只作背景，不得盖过请求。

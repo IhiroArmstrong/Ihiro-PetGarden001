@@ -58,11 +58,13 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-09-03（UTC+8） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；Slack 实验室另口令；Lanterns / Identity Runtime 须证据） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-09-04（UTC+8） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 
 - **Confide boundary EN 生产分叉 Redeploy（2026-09-03 · `chore/confide-boundary-prod-fork-verify`）**：Worker `CONFIDE_BOUNDARY_RESPECT` = `Nothing needs to be said. Yin is still here.`；locale 冻表不改。Version `78199a3b-37a2-4e62-a2c4-57233777ab96`。Brief `task-confide-boundary-prod-fork.md`。
 - **Confide 句库 overlay（2026-09-03 · #548）**：`prefetchTasteLayer` 并行 `/api/confide-copy`；3 条模板键 + 19 条 corpus id；未知 schema 丢；Send 不待网。在场 EN 分叉 **#550**。Brief `task-confide-copy-overlay.md`。
@@ -83,7 +85,7 @@
 - **Local AI 扩场景会审（2026-08-28 · 未拍板 · 无运行时）**：`LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md`。V1–V5 现场唱名；不改 `LOCAL_AI_SCENARIOS_V1.md` 政策句。
 - **Local AI Phase 1（2026-09-01 · 口令 1C lab）**：Gate 0.2 #472 已关单；**1B #503 已合**；**1A Show memory #506 已合**。本旁支 = Reflection Companion **validation**（`?reflectionCompanion=1` · 非 shipping）：危机走 `corpus_safety`、generate 失败走已审 fallback、observation 写 `data-source`。Forget 端到端见 tracker `qa-ag-slice-1e-forget-e2e`。**同日 Gate 0.D Phase 2**：设计师 20 条 intent fixture **已合 #509**；Metal reading=pipeline。**同日口令**：生产层序补 `companion_presence` / CI-03·CI-02 复述 / 偏好诚实模板（不改 L3 prompt、不换 GGUF）。**同日 Phase 2B**：v4 金标 **#516 已合**；A/C/D Metal **已跑**；hard-5 架构 E **5/5 Metal**（#518 · §6.1）。
 - **Local AI Operating Layer（2026-08-27 · 方向锁 · 无运行时）**：Yin = 陪伴；Local AI = 理解；Auto-Operating = 系统操作入口。Backup / Update / MCP **不**进 Confide。SSOT `LOCAL_AI_OPERATING_LAYER.md`。Confide 代码本轨不改；#472 **2026-09-01 已关单**。
-- **From App to Culture（2026-08-27 · 方向锁 · 无运行时）**：安静数字实践文化的探索框架；六条 Culture Principles；四档（验证 / 证据后产品化 / Backlog / 禁止）；Slack = 实验室非产品；Local AI 平行主线。SSOT `FROM_APP_TO_CULTURE.md`。**下一步**：设计师文化原型；另口令 Slack 接线。**不开工** Global Lanterns / Circle / Gallery / Identity Runtime。
+- **From App to Culture（2026-08-27 · 方向锁 · 2026-09-04 PO 修订 · 无运行时）**：安静数字实践文化；六条 Culture Principles；四档（运营 / 方向已锁 / 远期 / 禁止）；**废除证据门**；App 社交塑造 Slack；§13 设计师评审。SSOT `FROM_APP_TO_CULTURE.md`。**下一步**：口令开工 Quiet Together ∪ Lanterns MVP。未口令不塞进地基 PR。
 - **Yin Personalization Engine Architecture V1（2026-08-26 · 方向锁 + L0/L1 + L2 契约 + Consent 过稿 + 身份键 + 算法契约）**：编排层。核心原则：云端可以让阿寅越来越聪明，但不能让阿寅因为没有网络而消失。**L0/L1** 已开工。L2 **契约**已合 #454。Consent：关即删附录有条件通过。身份：本机随机 `ype_profile_id`（#456）。算法：五键→Pack 闭包（`task-l2-personalization-algorithm.md`）。**Worker ingest 源码已合**（现网须绑定 `YPE_PERSONALIZATION_KV`；TRACKER 待人工）。V1 = 回声选档。**V2 口令已给**（秘密变换 + `algorithmVersion`）见 `task-ype-v2-secret-transform.md` · **运行时未开工**。属防剽窃层。SSOT `YIN_PERSONALIZATION_ENGINE.md`。
 - **Yin Personal Memory Architecture V1（2026-08-24 · 方向锁）**：设计师 12 点入库；三套边界写死。**2026-08-25**：AE 能聊用户书面关单；口令「开工 Yin Personal Memory」→ **Slice 0 运行时**（读 `PracticeDaysStore`，禁 Qwen 编时长）。Slice 1a Consent + store 骨架已合（#427）；Slice 1b Remember 已合（#428）；Slice 1c 列表+Forget **本旁支**（`task-yin-memory-slice-1c-list-forget.md`）；层 3 注入 **仍未做**。Brief `task-yin-memory-slice-0-practice-facts.md`。
 - **练习备份后台网络错峰（2026-08-23 · 本旁支改运行时）**：已同意备份的用户，Idle 静默上传改到约 2.5s（让开首段呼吸）；busy 含 Arrival / Honesty 叠层，叠层结束会短重试；空库恢复同样 busy；白名单 JSON 相同则跳过 `setItem`；快照指纹相同则不 PUT，只刷新 cloud-ok。OTP 点击路径未改。慢网 Idle/Arrival 流畅度仍待人工（TRACKER 碎片）。下两条仍未开工：品味层开机预取、陪伴首次下载。
@@ -446,7 +448,7 @@
 **下一步计划**：
 
 - **Gate 0.D（2026-09-01）**：诊断三角已完（#526 + PO 否决 Phase 3）。**本线无下一刀实现**。切片 4 / 换模 / 语用生产修复均不开工。离开本线的产品口令另开（1C、Forget 指代等）。
-- **开工前优先级（2026-08-27 · 文化）**：`FROM_APP_TO_CULTURE.md` 已锁。**禁止**插队开 Global Lanterns / Circle / Gallery / Practice Identity Runtime。Slack 接线、文化原型属另口令 / 设计师。工程主线仍是 Confide / Memory / YPE / Checkout / Collections QA。
+- **开工前优先级（2026-09-04 · 文化）**：`FROM_APP_TO_CULTURE.md` 证据门 **已废除**。安静社交按 §13：优先 Quiet Together ∪ Lanterns，再 Circle。**仍须口令 + Brief** 才写运行时；禁止与 Confide/YPE 地基混在同一 PR。Gallery / 用户仪式创建器 / Gentle Match **不**插队。
 - **开工前优先级（2026-08-23 补）**：练习备份后台网络错峰 **本旁支已改运行时**（待合 develop）。下两条仍须口令：品味层开机预取错峰 → 陪伴首次下载慢网核验。禁止和本运行时 PR 混修。Quiet Line 云端 overlay 仍未接线，下一刀须先答三问。
 - **开工前优先级（2026-08-20 更新）**：#358 / #348 / #336 / **#362 L1** / **#341** / **#343** / **#347** / **#365** / **#378** / **#379** 已合 `origin/develop`。**L2 口令已执行**（本旁支）。品味层 **#349 已合**；**2026-08-20 本机 wrangler deploy** 现网 v1（Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`）。**#378 layout ingest 源码已合、现网未 Redeploy**——须本机再 `npm run deploy`。品味层**下一刀** Quiet Line 句包 overlay：须先修 overlay 开着时 Arrival 叠化闪动（`RB-20260820-L330`），再口令开工。挥手点播 Play 在 #356（**≠** 品味层）。**下一步** 四页签珍藏壳。**仍不接**第四卡 Pro / 第五卡 Add-on Checkout（等关单级能聊）。Electron 步骤 B 已接线、待 Mac 场景 AB。
 - **陪伴 · 寅币 / Yin's Collections（2026-08-20）**：L0–L3 已合。铁律进 PRINCIPLES。抽屉 = 清供 8。围着阿寅盖序列仍不跟。
@@ -622,7 +624,7 @@
 - **UGC 创作者生态（约束版）**（本地配方/明信片种子可研；社区 Gallery / 分成 / Pro Pass **默认不做**；远期）
 - **宣传 / 营销站（域名已拍板 `twinsology.com` · Slice 0 已入库 · 现网已上线 · 2026-09-03 关单）**（Brief `task-marketing-site.md`）
 - **付费转化路径梳理（获客向 · 2026-08-12）**：在 Enso / Wisdom 印花 / Daily Card 等**存量体验**任务之后，单独立项盘点——免费用户在哪些时刻看见清晰付费价值、Deep 15s 试听后 Unlock 文案、Support 漏斗完整性。**不挡**当前四任务；防止「经济可持续」原则只落成老用户彩蛋（见 `PRINCIPLES` 案例锚定诚实边界）
-- **异步无声共修（Global Lanterns）**（匿名灯火 + 可选无声赠茶；可关；不进 Focusing；远期）
+- **异步无声共修（Global Lanterns）**（匿名灯火 ∪ Quiet Together；可关；第一刀不进 Focusing；待口令）
 - **stash · chore/split-hints-from-pr2**（**已关闭 2026-08-01**；PRD 见 `docs/archive/stashed-prds-2026-07-24/`）
 
 ---
@@ -1041,26 +1043,26 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **可研种子**：本地配方导出、Reflection/菜单侧「正念卡片」存图（延续 Wallpapers / Quiet Line；**禁止**一键社交分享作核心卖点）；
 - **默认不做**：社区 Gallery、排行/Popular、创作者分成、茶包代币、**Pro Pass 订阅**（创作者生态概念，**≠** Yin Membership；与「无账号」基线及平台级复杂度冲突——默认不做社区订阅通行证）；
 - 艺术家联名轨若未来做，优先作 **Sanctuary 内容包 / 一次性 IAP**，不先建 UGC 平台。
-- **文化门闩（2026-08-27）**：公开 Ambient / Gallery 须先过 `FROM_APP_TO_CULTURE.md` Evidence Review；现网本地上传已够 PHASE 1。
+- **文化约束（2026-09-04）**：公开 Ambient / Gallery 默认不做（版权、审核、平台级）；**不是** Slack Evidence Review 门闩。现网本地上传仍够个人创造。
 
 - **复杂度评级**：平台级高（账号、审核、CDN、版权、结算）
 - **价值定位**：长期相邻赛道；**不是**当前差异化主线
 - **排期**：核心留存与付费假设成立后再单独立项
 
-### Backlog:异步无声共修（Global Lanterns · 远期）
+### Backlog:异步无声共修（Global Lanterns · 优先切片 · 待口令）
 
-> **2026-08-09 入库**：全球静坐灯火 + 无声赠茶 / 特色灯火小额。品牌契合度高于 UGC 平台；**不排期**。
+> **2026-08-09 入库**；**2026-09-04**：不再等 Culture Evidence Review。品牌契合度高于 UGC 平台；与 Quiet Together **合并为同一 MVP 方向**（见 `FROM_APP_TO_CULTURE.md` §13）。**未立项 Brief、未开工。**
 
 **姿态（评估结论，入库约束）**：
 
-- 仅 Idle / Arrive 背景级存在感；**禁止**进入 Focusing 主视线；必须 **可关**；
+- 仅 Idle / Arrive 背景级存在感；第一刀**不进** Focusing 主视线（可关）；日后极慢静态背景须另评抢戏，不作永久封死；必须 **可关**；
 - 匿名聚合（诚实：假灯火不得冒充真共修；真 presence 须去标识）；
 - **禁止**人数炫耀、排行、连续同坐天数、聊天/关注；
 - 特色灯火若付费，贴近 **A · Buy Yin a Tea** 可忽略情绪轨，**不得**作 Sanctuary 门槛或「不买看不见共修」。
 
 - **复杂度评级**：中（轻量 presence 后端或先做可关视觉隐喻实验）
 - **价值定位**：无压力 Co-presence；卖同频温暖而非社交压力
-- **排期**：建议 v1.1+ 可选氛围实验；**产品化默认须先过** `FROM_APP_TO_CULTURE.md` Culture Evidence Review（Alone, together 有证据）；口令示例：「评估异步共修灯火」
+- **排期**：建议作为安静社交**第一刀**；口令示例：「评估/开工异步共修灯火」或「开工 Quiet Together MVP」。**不再**要求 Slack 证据门。
 
 ### Backlog:节日主题引擎（Seasonal Theme · B 轨 · 2026-08-11 排期）
 
