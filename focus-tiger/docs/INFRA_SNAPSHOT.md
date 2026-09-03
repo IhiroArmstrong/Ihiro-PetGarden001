@@ -65,8 +65,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `47dff360-b7ca-4a5b-a636-8ef60697860f` |
-| `prod_verified_at` | 2026-09-03（本机 `wrangler deploy` · Confide `CONFIDE_COMPANION_PRESENCE` 生产分叉 + `/api/confide-copy` · `/api/quiet-line` 200） |
+| `prod_worker_version` | `78199a3b-37a2-4e62-a2c4-57233777ab96` |
+| `prod_verified_at` | 2026-09-03（本机 `wrangler deploy` · Confide `CONFIDE_BOUNDARY_RESPECT` + `CONFIDE_COMPANION_PRESENCE` 生产分叉 + `/api/confide-copy` · `/api/quiet-line` 200） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
