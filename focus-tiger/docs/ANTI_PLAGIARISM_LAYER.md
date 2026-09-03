@@ -38,8 +38,8 @@
 | **品味云** | Dispatcher 权重、日签/文案池正文 | `schemaVersion` overlay | 本地冻结表 |
 | **YPE 云** | 五键→Pack 变换（V1 回声；V2 才是秘密闭包） | PersonalizationStatePack | 无 Pack → L0/L1 |
 | **Quiet Line 句包** | 今日静语混合池正文 | 同品味层 overlay 形态 | 本机 `DAILY_ZEN_QUOTE` ∪ insight 种子（源码 **#543**；生产 Redeploy 另册） |
-| **Confide 句库/模板**（排队） | 已审回复句正文 | 句 overlay | 本机 locale / corpus 冻结表 |
-| **YPE `algorithmVersion`**（排队，随 V2） | 只存在服务器的算法世代 | **不下发**；Pack 形状不变 | 本机不认识的 Pack 字段整包丢 |
+| **Confide 句库/模板**（源码本刀） | 已审回复句正文 | 句 overlay | 本机 locale / corpus 冻结表 |
+| **YPE `algorithmVersion`**（随 V2） | 只存在服务器的算法世代 | **不下发**；Pack 形状不变 | 本机不认识的 Pack 字段整包丢 |
 
 ### 不算（禁止塞进本层）
 
@@ -111,11 +111,10 @@
 | **0** | 本 SSOT 入库 | （概念纳入项目） | **#542 已合** |
 | **1** | Quiet Line / 今日静语句包 overlay | 「开工 Quiet Line 句包 overlay」 | **#543 已合**（源码；生产 Redeploy 另须「部署」） |
 | **2** | YPE V2 秘密变换 + 服务器 `algorithmVersion` | 「开工 YPE V2」 | **#545 已合 develop**（生产须「部署」） |
-| **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | Brief 已开 · 路由/正则/Qwen **留下** |
+| **3** | Confide 句库/模板 overlay | 「开工 Confide 句库 overlay」 | **本旁支运行时**（`/api/confide-copy`；生产须「部署」） |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
 
-**我认为最合理的运行时下一刀是序 3（Confide 句库 overlay）。**  
-理由：序 1–2 源码已合（#543 / #545）。分叉政策见 §3.1；生产手感仍须口令「部署」。Confide 换字与开口路径相邻，单独一刀。日签扩容 / 伸懒腰 / 好奇仍后排。
+**运行时下一刀**：生产 Redeploy（须口令「部署」）后再谈现网分叉。序 1–3 源码本刀已齐。日签扩容 / 伸懒腰 / 好奇仍后排。
 
 ---
 

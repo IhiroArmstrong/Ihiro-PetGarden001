@@ -10,6 +10,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { overlayConfideCorpusTextForId } from '../tasteLayerOverlay.js';
 
 /**
  * @typedef {{
@@ -267,6 +268,8 @@ export function pickConfideLine({
  */
 export function confideLineText(line, locale = 'en') {
   if (!line) return '';
+  const overlay = overlayConfideCorpusTextForId(line.id, locale);
+  if (overlay) return overlay;
   if (locale === 'zh') return line.zh;
   if (locale === 'ja') return line.ja;
   return line.en;

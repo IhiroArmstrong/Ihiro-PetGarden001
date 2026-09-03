@@ -97,6 +97,14 @@ export interface QuietLineResponse {
 	variantSeed: string;
 }
 
+export interface ConfideCopyResponse {
+	schemaVersion: number;
+	locale: string;
+	templates: Array<{ key: string; text: string }>;
+	corpus: Array<{ id: string; text: string }>;
+	variantSeed: string;
+}
+
 export interface EmotionWeightResponse {
 	schemaVersion: number;
 	variant: string;

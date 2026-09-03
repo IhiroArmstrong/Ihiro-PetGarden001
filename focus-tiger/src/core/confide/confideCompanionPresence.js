@@ -10,6 +10,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { overlayConfideTemplateTextForKey } from '../tasteLayerOverlay.js';
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 
 /** Timed-session / start-practice cues — presence must yield. */
@@ -92,6 +93,8 @@ export function shouldHandleConfideCompanionPresence({
  * @returns {string}
  */
 export function formatConfideCompanionPresenceReply(tFn) {
+  const overlay = overlayConfideTemplateTextForKey('CONFIDE_COMPANION_PRESENCE');
+  if (overlay) return overlay;
   const t = typeof tFn === 'function' ? tFn : (key) => key;
   return t('CONFIDE_COMPANION_PRESENCE');
 }

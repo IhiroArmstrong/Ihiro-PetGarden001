@@ -11,7 +11,7 @@
  */
 
 import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
-import { COPY_POOLS } from '../locales/i18n.js';
+import { COPY_POOLS, getLocale } from '../locales/i18n.js';
 
 export const TASTE_LAYER_SCHEMA_VERSION = 1;
 
@@ -27,6 +27,34 @@ const QUIET_LINE_KEYS = new Set([
   ...COPY_POOLS.DAILY_ZEN_QUOTE,
   ...COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT
 ]);
+export const CONFIDE_COPY_TEMPLATE_KEYS = Object.freeze([
+  'CONFIDE_BOUNDARY_RESPECT',
+  'CONFIDE_COMPANION_PRESENCE',
+  'CONFIDE_PREFERENCE_HONESTY'
+]);
+export const CONFIDE_COPY_CORPUS_IDS = Object.freeze([
+  'safety-01',
+  'fallback-01',
+  'fallback-02',
+  'fallback-03',
+  'anxious-01',
+  'anxious-02',
+  'anxious-03',
+  'tired-01',
+  'tired-02',
+  'tired-03',
+  'stuck-01',
+  'stuck-02',
+  'stuck-03',
+  'sad-01',
+  'sad-02',
+  'sad-03',
+  'scattered-01',
+  'scattered-02',
+  'scattered-03'
+]);
+const CONFIDE_TEMPLATE_KEY_SET = new Set(CONFIDE_COPY_TEMPLATE_KEYS);
+const CONFIDE_CORPUS_ID_SET = new Set(CONFIDE_COPY_CORPUS_IDS);
 
 /** @typedef {{ key: string, weight: number }} WeightedEntry */
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
@@ -56,16 +84,30 @@ const QUIET_LINE_KEYS = new Set([
  * }} TasteQuietLineOverlay
  */
 
+/** @typedef {{ key: string, text: string }} ConfideCopyTemplateEntry */
+/** @typedef {{ id: string, text: string }} ConfideCopyCorpusEntry */
+
+/**
+ * @typedef {{
+ *   locale: string,
+ *   templates: ReadonlyArray<ConfideCopyTemplateEntry>,
+ *   corpus: ReadonlyArray<ConfideCopyCorpusEntry>
+ * }} TasteConfideCopyOverlay
+ */
+
 /** @type {TasteWeightOverlay | null} */
 let weightOverlay = null;
 /** @type {TasteDailyWisdomOverlay | null} */
 let dailyWisdomOverlay = null;
 /** @type {TasteQuietLineOverlay | null} */
 let quietLineOverlay = null;
+/** @type {TasteConfideCopyOverlay | null} */
+let confideCopyOverlay = null;
 /** Cloud v1 validated even when we skip retaining a freeze-identical copy. */
 let weightCloudOk = false;
 let dailyCloudOk = false;
 let quietLineCloudOk = false;
+let confideCopyCloudOk = false;
 
 /**
  * @param {unknown} raw
@@ -212,6 +254,91 @@ export function parseQuietLineOverlay(body, expectedLocale) {
   };
 }
 
+/**
+ * @param {string} [raw]
+ * @returns {'en' | 'ja' | 'zh'}
+ */
+export function confideCopyOverlayLocale(raw) {
+  if (raw === 'ja') return 'ja';
+  if (raw === 'zh') return 'zh';
+  return 'en';
+}
+
+/**
+ * @param {unknown} body
+ * @param {string} [expectedLocale]
+ * @returns {TasteConfideCopyOverlay | null}
+ */
+export function parseConfideCopyOverlay(body, expectedLocale) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
+  const o = /** @type {Record<string, unknown>} */ (body);
+  if (o.schemaVersion !== TASTE_LAYER_SCHEMA_VERSION) return null;
+  const have = confideCopyOverlayLocale(
+    typeof o.locale === 'string' ? o.locale.trim() : ''
+  );
+  if (expectedLocale) {
+    if (have !== confideCopyOverlayLocale(expectedLocale)) return null;
+  }
+  const templatesRaw = o.templates;
+  const corpusRaw = o.corpus;
+  if (
+    !Array.isArray(templatesRaw) ||
+    templatesRaw.length !== CONFIDE_COPY_TEMPLATE_KEYS.length
+  ) {
+    return null;
+  }
+  if (
+    !Array.isArray(corpusRaw) ||
+    corpusRaw.length !== CONFIDE_COPY_CORPUS_IDS.length
+  ) {
+    return null;
+  }
+  /** @type {ConfideCopyTemplateEntry[]} */
+  const templates = [];
+  const seenKeys = new Set();
+  for (const entry of templatesRaw) {
+    if (!entry || typeof entry !== 'object') return null;
+    const key = /** @type {{ key?: unknown }} */ (entry).key;
+    const text = /** @type {{ text?: unknown }} */ (entry).text;
+    if (
+      typeof key !== 'string' ||
+      !CONFIDE_TEMPLATE_KEY_SET.has(key) ||
+      seenKeys.has(key)
+    ) {
+      return null;
+    }
+    if (typeof text !== 'string' || !text.trim()) return null;
+    seenKeys.add(key);
+    templates.push({ key, text: text.trim() });
+  }
+  if (seenKeys.size !== CONFIDE_COPY_TEMPLATE_KEYS.length) return null;
+
+  /** @type {ConfideCopyCorpusEntry[]} */
+  const corpus = [];
+  const seenIds = new Set();
+  for (const entry of corpusRaw) {
+    if (!entry || typeof entry !== 'object') return null;
+    const id = /** @type {{ id?: unknown }} */ (entry).id;
+    const text = /** @type {{ text?: unknown }} */ (entry).text;
+    if (
+      typeof id !== 'string' ||
+      !CONFIDE_CORPUS_ID_SET.has(id) ||
+      seenIds.has(id)
+    ) {
+      return null;
+    }
+    if (typeof text !== 'string' || !text.trim()) return null;
+    seenIds.add(id);
+    corpus.push({ id, text: text.trim() });
+  }
+  if (seenIds.size !== CONFIDE_COPY_CORPUS_IDS.length) return null;
+  return {
+    locale: have,
+    templates: Object.freeze(templates.map((e) => Object.freeze({ ...e }))),
+    corpus: Object.freeze(corpus.map((e) => Object.freeze({ ...e })))
+  };
+}
+
 /** @returns {TasteWeightOverlay | null} */
 export function getTasteWeightOverlay() {
   return weightOverlay;
@@ -225,6 +352,11 @@ export function getTasteDailyWisdomOverlay() {
 /** @returns {TasteQuietLineOverlay | null} */
 export function getTasteQuietLineOverlay() {
   return quietLineOverlay;
+}
+
+/** @returns {TasteConfideCopyOverlay | null} */
+export function getTasteConfideCopyOverlay() {
+  return confideCopyOverlay;
 }
 
 /** @param {TasteWeightOverlay | null} next */
@@ -242,6 +374,11 @@ export function setTasteQuietLineOverlay(next) {
   quietLineOverlay = next;
 }
 
+/** @param {TasteConfideCopyOverlay | null} next */
+export function setTasteConfideCopyOverlay(next) {
+  confideCopyOverlay = next;
+}
+
 /** Mark cloud weights as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteWeightCloudOk() {
   weightCloudOk = true;
@@ -255,6 +392,11 @@ export function markTasteDailyWisdomCloudOk() {
 /** Mark cloud quiet-line as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteQuietLineCloudOk() {
   quietLineCloudOk = true;
+}
+
+/** Mark cloud Confide copy as schemaVersion 1 OK without retaining a duplicate freeze copy. */
+export function markTasteConfideCopyCloudOk() {
+  confideCopyCloudOk = true;
 }
 
 /** @returns {boolean} */
@@ -272,13 +414,20 @@ export function isTasteQuietLineCloudConfirmed() {
   return quietLineCloudOk || Boolean(quietLineOverlay);
 }
 
+/** @returns {boolean} */
+export function isTasteConfideCopyCloudConfirmed() {
+  return confideCopyCloudOk || Boolean(confideCopyOverlay);
+}
+
 export function resetTasteLayerOverlayForTests() {
   weightOverlay = null;
   dailyWisdomOverlay = null;
   quietLineOverlay = null;
+  confideCopyOverlay = null;
   weightCloudOk = false;
   dailyCloudOk = false;
   quietLineCloudOk = false;
+  confideCopyCloudOk = false;
 }
 
 /**
@@ -302,6 +451,32 @@ export function overlayQuietLineTextForKey(key, locale) {
   const want = locale === 'ja' ? 'ja' : 'en';
   if (quietLineOverlay.locale !== want) return null;
   const row = quietLineOverlay.pool.find((e) => e.key === key);
+  return row?.text || null;
+}
+
+/**
+ * @param {string} key
+ * @param {string} [locale]
+ * @returns {string | null}
+ */
+export function overlayConfideTemplateTextForKey(key, locale) {
+  if (!confideCopyOverlay || !key) return null;
+  const want = confideCopyOverlayLocale(locale || getLocale());
+  if (confideCopyOverlay.locale !== want) return null;
+  const row = confideCopyOverlay.templates.find((e) => e.key === key);
+  return row?.text || null;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {string | null}
+ */
+export function overlayConfideCorpusTextForId(id, locale) {
+  if (!confideCopyOverlay || !id) return null;
+  const want = confideCopyOverlayLocale(locale || getLocale());
+  if (confideCopyOverlay.locale !== want) return null;
+  const row = confideCopyOverlay.corpus.find((e) => e.id === id);
   return row?.text || null;
 }
 
