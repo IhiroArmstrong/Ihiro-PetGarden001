@@ -104,7 +104,7 @@ focus-tiger/
 │  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
 │     # 2026-07-22：校验 + 内存限流
 │     # 2026-07-30：v1.0.0 纯本地发布 — 保留本目录作云端扩展点；禁止核心路径硬依赖云请求
-│     # 2026-08-18：品味层 schemaVersion 1 可选接线；未知版本→本地冻结表。生产须「部署」
+│     # 2026-09-04：Quiet Together POST /api/lantern-presence（TIP_KV `lantern:v1:live`）；生产须「部署」
 │     # 2026-08-20：用户已书面部署；Cloud 无 Cloudflare 登录，现网仍旧 mock。四问筛选尺见 PROCESS Backlog
 │
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建

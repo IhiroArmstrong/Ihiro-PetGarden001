@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-08-28
+最后更新 / Last updated / 最終更新日: 2026-09-04
 
 ---
 
@@ -18,6 +18,8 @@
 ### 2. 默认数据存储
 
 除非你使用下文第 3 节的导出/导入自行迁移，你的习惯打卡、练习记录等数据默认**仅保存在你的设备本地**，本应用**不会自动将其上传到开发者服务器**。
+
+**安静同坐 / 灯火（默认开，可在 Privacy 关闭）**：你坐下时，本应用只向自有服务器发送一个**随机会话 id**，用于维持诚实的同坐人数。不含姓名、邮箱、练习日志或聊天。关闭后既不出现在计数里，也看不见别人的灯火。
 
 ### 3. 本地导出 / 导入
 
@@ -57,6 +59,8 @@ AI companion features related to habits, check-ins, and practice guidance run **
 
 Unless you use local export/import (Section 3), your habit check-ins, practice records, and similar data are stored **only on your local device by default**. This app **does not automatically upload this data to our servers**.
 
+**Quiet Together / lanterns (on by default; off in Privacy):** while you sit, this app sends only a **random session id** to our server so a shared sit-count can stay honest. No name, email, practice log, or chat. If you turn it off, you neither appear in the count nor see others' lanterns.
+
 ### 3. Local Export / Import
 
 This app provides **local export/import** on the Privacy sheet. You can:
@@ -94,6 +98,8 @@ If we introduce cloud backup later, we will update this notice before launch, ex
 ### 2. デフォルトのデータ保存
 
 第3節のエクスポート/インポートを使わない限り、習慣のチェックインや練習記録などは、デフォルトで**お使いの端末内にのみ保存**され、本アプリが**開発者のサーバーへ自動的にアップロードすることはありません**。
+
+**静かな同席 / 灯（初期オン、Privacy でオフ可）**：座っているあいだ、正直な人数のために**ランダムなセッション id** だけを自社サーバーへ送ります。名前・メール・練習ログ・チャットは含みません。オフにすると数えられず、他の灯も見えません。
 
 ### 3. ローカルでのエクスポート / インポート
 

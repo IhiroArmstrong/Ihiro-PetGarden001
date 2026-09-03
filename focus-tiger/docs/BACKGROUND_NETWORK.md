@@ -120,6 +120,17 @@
 修复任务：`docs/task-briefs/task-taste-layer-boot-prefetch-defer.md`  
 口令：「开工品味层开机预取错峰」
 
+### 5. Quiet Together / Global Lanterns（本旁支接线 · 生产须部署）
+
+| 问 | 结论 |
+|---|---|
+| 触发 | Idle/Arrive **peek** 推迟约 2500ms；Sit 后 **heartbeat** 推迟约 2500ms，之后 45s。Honesty / Reflection / Focusing 为 busy（Arrival 开着仍允许 peek）。Rise / 完成 / 关开关 / `pagehide` → leave。 |
+| Q1 | 已错峰。禁止与 Arrival/Honesty CapCut、Idle 首段呼吸同步发。Focusing 内不画灯火。 |
+| Q2 | 人数未变不刷新 DOM。偏好只在用户拨开关时写入。 |
+| Q3 | 失败隐藏灯火，不挡 Sit。慢网 Idle 呼吸仍须人工。 |
+
+Brief：`task-quiet-together-lanterns-mvp.md`。
+
 ---
 
 ## 修复任务怎么排（本回合只立项）

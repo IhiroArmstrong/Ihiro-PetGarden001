@@ -328,9 +328,9 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 
 长期可探索「安静的数字实践文化」，**不是**再做一个正念内容库、社交网络、或更聪明的 AI。
 
-- **SSOT**：[`FROM_APP_TO_CULTURE.md`](./FROM_APP_TO_CULTURE.md)（方向锁；无运行时）。
+- **SSOT**：[`FROM_APP_TO_CULTURE.md`](./FROM_APP_TO_CULTURE.md)（方向锁；刀 1 运行时另见 Brief `task-quiet-together-lanterns-mvp.md`）。
 - **现网可声称**：Practice alone / Grow quietly（与本文使命一致）。
-- **现网不可声称**：已上线 App 内社区、Quiet Circles、公开 UGC、共同仪式平台。
+- **现网不可声称**：已上线 App 内社区、Quiet Circles、公开 UGC、共同仪式平台。Quiet Together 灯火须 **Worker 部署**后才可说「现网有同坐人数」；源码合入 ≠ 现网。
 - **Slack**：炉火实验室，不是产品本体；Join our community 已接线 Slack 邀请外链（2026-08-29）。**因果**：App 内安静社交会塑造 Slack 行为；**禁止**把 Slack 信号当作 App 能否产品化的前置门。
 - **Local AI**：平行主线；文化锁只约束「AI 服务什么气质」，不捆绑大改 Confide / Memory / YPE。
 

@@ -65,6 +65,14 @@ import {
   setYpeCloudPersonalizationConsent
 } from '../core/ypeCloudPersonalizationConsent.js';
 import {
+  isQuietTogetherEnabled,
+  setQuietTogetherEnabled
+} from '../core/quietTogetherPreference.js';
+import {
+  scheduleLanternPeek,
+  stopLanternHeartbeat
+} from '../core/quietTogetherPresence.js';
+import {
   onYpeCloudPersonalizationConsentDisabled,
   onYpeCloudPersonalizationConsentEnabled
 } from '../core/ypePersonalizationSync.js';
@@ -2256,6 +2264,41 @@ export class OnboardingHintsUI {
     ypeOptInLabel.append(ypeOptInCheck, ypeOptInText);
     ypeOptIn.append(ypeOptInLabel, ypeOptInHint, ypeOptInDetail);
 
+    const lanternOptIn = document.createElement('div');
+    lanternOptIn.className = 'onboarding-privacy-sheet__opt-in';
+    lanternOptIn.id = 'privacy-quiet-together-opt-in';
+
+    const lanternOptInLabel = document.createElement('label');
+    lanternOptInLabel.className = 'onboarding-privacy-sheet__opt-in-label';
+    lanternOptInLabel.htmlFor = 'privacy-quiet-together-opt-in-toggle';
+
+    const lanternOptInCheck = document.createElement('input');
+    lanternOptInCheck.type = 'checkbox';
+    lanternOptInCheck.id = 'privacy-quiet-together-opt-in-toggle';
+    lanternOptInCheck.className = 'onboarding-privacy-sheet__opt-in-check';
+    lanternOptInCheck.dataset.testid = 'privacy-quiet-together-toggle';
+    lanternOptInCheck.addEventListener('change', () => {
+      const enabled = lanternOptInCheck.checked === true;
+      setQuietTogetherEnabled(globalThis.localStorage, enabled);
+      if (enabled) {
+        scheduleLanternPeek({ storage: globalThis.localStorage, forceSoon: true });
+      } else {
+        void stopLanternHeartbeat();
+      }
+      this._refreshQuietTogetherOptInCopy();
+    });
+
+    const lanternOptInText = document.createElement('span');
+    lanternOptInText.className = 'onboarding-privacy-sheet__opt-in-text';
+    lanternOptInText.dataset.privacyKey = 'PRIVACY_SHEET_QUIET_TOGETHER_LABEL';
+
+    const lanternOptInHint = document.createElement('p');
+    lanternOptInHint.className = 'onboarding-privacy-sheet__opt-in-hint';
+    lanternOptInHint.dataset.privacyKey = 'PRIVACY_SHEET_QUIET_TOGETHER_HINT';
+
+    lanternOptInLabel.append(lanternOptInCheck, lanternOptInText);
+    lanternOptIn.append(lanternOptInLabel, lanternOptInHint);
+
     const optIn = document.createElement('div');
     optIn.className = 'onboarding-privacy-sheet__opt-in';
     optIn.id = 'privacy-monetization-funnel-opt-in';
@@ -2312,7 +2355,7 @@ export class OnboardingHintsUI {
     });
 
     sheet.append(title, body, back);
-    body.append(ypeOptIn, optIn, wellnessNote, wellnessLink);
+    body.append(ypeOptIn, lanternOptIn, optIn, wellnessNote, wellnessLink);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
@@ -2323,6 +2366,10 @@ export class OnboardingHintsUI {
     this._privacyYpeOptInText = ypeOptInText;
     this._privacyYpeOptInHint = ypeOptInHint;
     this._privacyYpeOptInDetail = ypeOptInDetail;
+    this._privacyQuietTogetherEl = lanternOptIn;
+    this._privacyQuietTogetherCheck = lanternOptInCheck;
+    this._privacyQuietTogetherText = lanternOptInText;
+    this._privacyQuietTogetherHint = lanternOptInHint;
     this._privacyOptInEl = optIn;
     this._privacyOptInCheck = optInCheck;
     this._privacyOptInText = optInText;
@@ -2358,6 +2405,23 @@ export class OnboardingHintsUI {
     }
   }
 
+  _refreshQuietTogetherOptInCopy() {
+    if (!this._privacyQuietTogetherCheck) return;
+    this._privacyQuietTogetherCheck.checked = isQuietTogetherEnabled(
+      globalThis.localStorage
+    );
+    if (this._privacyQuietTogetherText) {
+      this._privacyQuietTogetherText.textContent = t(
+        'PRIVACY_SHEET_QUIET_TOGETHER_LABEL'
+      );
+    }
+    if (this._privacyQuietTogetherHint) {
+      this._privacyQuietTogetherHint.textContent = t(
+        'PRIVACY_SHEET_QUIET_TOGETHER_HINT'
+      );
+    }
+  }
+
   _refreshPrivacyOptInCopy() {
     if (!this._privacyOptInCheck) return;
     this._privacyOptInCheck.checked = isMonetizationFunnelOptInEnabled(
@@ -2384,6 +2448,7 @@ export class OnboardingHintsUI {
       if (key) p.textContent = t(key);
     }
     this._refreshYpeOptInCopy();
+    this._refreshQuietTogetherOptInCopy();
     this._refreshPrivacyOptInCopy();
     if (this._privacyWellnessNoteEl) {
       this._privacyWellnessNoteEl.textContent = t('PRIVACY_SHEET_WELLNESS_NOTE');
