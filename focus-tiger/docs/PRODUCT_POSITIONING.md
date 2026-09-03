@@ -1,12 +1,12 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.6
-> 最后更新：2026-08-31
+> 版本：1.7
+> 最后更新：2026-09-04
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
-在产品语义文档中，本文档层级高于 `DESIGN.md`；`DESIGN.md` 负责把定位转化为当前阶段的具体玩法。`PRINCIPLES.md` 仍是不可违反的硬性红线。**最高原则**是：只要不违法、不违背开发工作基本原则，**用户体验第一**——禁止只盯内部红线清单、交出更差的陪伴（见 `PRINCIPLES.md`「用户体验优先」）。任何定位表达和功能提议均不得绕过「不制造焦虑」「永不消失」「价值优先于复杂度」等**保护用户**的约束；也不得用 routing / 语料「红线」压过被听见与边界尊重。
+在产品语义文档中，本文档层级高于 `DESIGN.md`；`DESIGN.md` 负责把定位转化为当前阶段的具体玩法。`PRINCIPLES.md` 仍是不可违反的硬性红线。**最高原则**是：只要不违法、不违背开发工作基本原则，**用户体验第一**——**禁止不顾用户体验第一去设置产品设计红线**（见 `PRINCIPLES.md`「用户体验优先」）。保护用户的约束（不制造焦虑、永不消失、诚实机制）本身就是体验；内部 routing / 语料清单、以及「先 Slack 证据再产品化」等流程门闩，不得压过被听见、边界尊重与可选的安静连接。
 
 文档职责顺序：
 
@@ -61,7 +61,7 @@ Focus Tiger：一只陪伴你练习专注与觉察的小老虎。
 
 ### 0. Lived experience before internal red-line theater
 
-只要不违法、不违背开发工作基本原则，**用户是否被听见、边界是否被尊重**高于内部分类/语料是否「守住了」。堆砌红线却让 Yin 主动给用户贴心理状态标签，是产品禁止项。权威条款：`PRINCIPLES.md`「用户体验优先」。
+只要不违法、不违背开发工作基本原则，**用户是否被听见、边界是否被尊重**高于内部分类/语料是否「守住了」。**禁止不顾用户体验第一去设置产品设计红线**（含把 Slack 证据当开工许可证）。堆砌红线却让 Yin 主动给用户贴心理状态标签，是产品禁止项。权威条款：`PRINCIPLES.md`「用户体验优先」。
 
 ### 1. Focus is a skill, not a personality trait
 
@@ -320,21 +320,21 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 
 **命名硬闸**：C 轨 = **Yin's Collections / 阿寅的珍藏**；B 轨付费内容 = **Sanctuary**——二者不得混称。实现 SSOT：`docs/task-briefs/task-brand-yin-way-tagline.md`。
 
-本水印**不是**把 **The Yin Way** / **Awakeners** 锁成文化运动或社区官方名称。文化探索、Slack 实验室、Objects / Identity 产品化门闩见 `FROM_APP_TO_CULTURE.md`。
+本水印**不是**把 **The Yin Way** / **Awakeners** 锁成文化运动或社区官方名称。文化探索、Slack 实验室、Objects / Identity 产品化优先级见 `FROM_APP_TO_CULTURE.md`。
 
 ---
 
-## 十一a、文化探索（From App to Culture · 2026-08-27）
+## 十一a、文化探索（From App to Culture · 2026-08-27 · 2026-09-04）
 
 长期可探索「安静的数字实践文化」，**不是**再做一个正念内容库、社交网络、或更聪明的 AI。
 
 - **SSOT**：[`FROM_APP_TO_CULTURE.md`](./FROM_APP_TO_CULTURE.md)（方向锁；无运行时）。
 - **现网可声称**：Practice alone / Grow quietly（与本文使命一致）。
 - **现网不可声称**：已上线 App 内社区、Quiet Circles、公开 UGC、共同仪式平台。
-- **Slack**：炉火实验室，不是产品本体；Join our community 已接线 Slack 邀请外链（2026-08-29）。
+- **Slack**：炉火实验室，不是产品本体；Join our community 已接线 Slack 邀请外链（2026-08-29）。**因果**：App 内安静社交会塑造 Slack 行为；**禁止**把 Slack 信号当作 App 能否产品化的前置门。
 - **Local AI**：平行主线；文化锁只约束「AI 服务什么气质」，不捆绑大改 Confide / Memory / YPE。
 
-任何「文化功能」提案须先过该文四档表（采纳验证 / 证据后产品化 / Backlog / 禁止）与六条 Culture Principles；仍不得绕过本文第十三节与 `PRINCIPLES.md`。
+任何「文化功能」提案对照该文四档表（运营 / 方向已锁 / 远期 / 禁止）、六条 Culture Principles，以及 §13 PO 评审；仍不得绕过本文第十三节与 `PRINCIPLES.md`「用户体验第一」。
 
 ---
 

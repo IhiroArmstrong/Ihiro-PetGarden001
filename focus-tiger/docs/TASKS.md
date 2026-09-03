@@ -1,7 +1,7 @@
 ---
 本项目文档已拆分为以下结构，请在需要时查阅对应文件：
 - 产品定位(品牌使命与长期方向): /docs/PRODUCT_POSITIONING.md
-- 文化探索方向锁(From App to Culture；验证后再产品化): /docs/FROM_APP_TO_CULTURE.md
+- 文化探索方向锁(From App to Culture；App 社交塑造 Slack；废除证据门): /docs/FROM_APP_TO_CULTURE.md
 - 项目原则(硬性红线): /docs/PRINCIPLES.md
 - 架构设计(模块职责边界): /docs/ARCHITECTURE.md
 - 产品设计(角色设定与状态语义): /docs/DESIGN.md
@@ -216,20 +216,21 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L3** | **Yin's Collections** 抽屉；挥手点播走珍藏底栏 | `feature/yin-coin-l3-surface` | **#352+#353+#354 已合** |
 | **本旁支** | 珍藏挥手点播 Play；抽屉仍清供 8 | `feature/focus-coins-wave-playback` | 进行中 |
 
-合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md`。
+合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md` §13。
 
 ---
 
-## 📍 From App to Culture（2026-08-27 · 方向锁）
+## 📍 From App to Culture（2026-08-27 · 方向锁 · 2026-09-04 修订）
 
-> 把已有种子组成可验证的文化假设。**无运行时。** 权威 `FROM_APP_TO_CULTURE.md`。
+> 安静实践文化；App 社交塑造 Slack。**本表无运行时。** 权威 `FROM_APP_TO_CULTURE.md`。
 
 | 项 | 状态 |
 |---|---|
-| 战略锁本文 | **本支** |
-| 设计师文化原型（Objects / Identity / Quiet Social / Slack 概念） | 待 Design Review · **不排工程** |
+| 战略锁本文 | **方向锁**（证据门 **已废除**） |
+| 设计师 Quiet Social / Identity / Rituals | **PO 评审已写入** §13 · 工程须口令 |
 | Slack 实验室接线 Join our community | ✅ **已接线**（2026-08-29 · `communityLink.js`） |
-| Global Lanterns / Identity Runtime / 公开 Ambient | **证据后门闩** · 见 PROCESS Backlog |
+| Global Lanterns / Quiet Together MVP | **优先切片** · 见 PROCESS Backlog · **未开工** |
+| Circle / Identity Runtime / 公开 Ambient | 按 §13 分阶段 · **未开工** |
 
 ---
 
