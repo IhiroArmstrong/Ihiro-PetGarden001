@@ -81,14 +81,16 @@
 修复任务：`docs/task-briefs/task-practice-backup-background-network.md`  
 口令：「开工练习备份后台网络修复」
 
-### 2. Quiet Line 云端拉取（未接线 · 口令已给 · 无现网风险）
+### 2. Quiet Line / Confide 句包（已接线 · 并进品味层预取 · 生产须部署）
 
 | 问 | 结论 |
 |---|---|
-| 现状 | 今日静语仍是本地混合池 + 同日锁。云端句包 overlay **口令已给**（2026-09-02）；Brief `task-quiet-line-copy-overlay.md`。属防剽窃层。运行时须另 PR。 |
-| Q1–Q3 | **现网不发**后台 Quiet Line 请求。运行时 PR 必须按本文件三问答完（Brief 已预填设计答案），不得沿用「品味层已非阻塞」当免检。 |
+| 触发 | `prefetchTasteLayer` 在 `waitUntilCanApply` 之后 `Promise.all`：`/api/quiet-line` + **`/api/confide-copy`**（与权重/日签同槽；`?tasteLayer=0` 全关）。**不**在 Confide Send 热路径发请求。 |
+| Q1 | 与品味层同一错峰：`canApply` 看 Arrival / Honesty / Reflection chrome；仍可能与精灵预加载窗口相邻（错峰债务见 §4，本 PR **不**顺手改开机时机）。 |
+| Q2 | overlay 仅内存；冻表相同只标 cloud-ok，不另存副本。 |
+| Q3 | 失败/超时用本地句；Send 0–1s 不待网。低速网 Idle 呼吸仍须人工（TRACKER）。 |
 
-运行时 Brief：`task-quiet-line-copy-overlay.md`。禁止和开机预取错峰 / YPE V2 混同一个 PR。
+运行时 Brief：`task-quiet-line-copy-overlay.md` · `task-confide-copy-overlay.md`。禁止和开机预取错峰 / YPE 混同一个 PR。
 
 ### 3. Electron 桌面陪伴首次模型下载（已接线 · 有残余风险 · 单独修复任务）
 

@@ -16,12 +16,14 @@ import {
   WELCOME_POOL
 } from './sceneAnimationDispatcher.js';
 import {
+  parseConfideCopyOverlay,
   parseDailyMessageOverlay,
   parseEmotionWeightOverlay,
   parseQuietLineOverlay,
   resetTasteLayerOverlayForTests,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
+import { CONFIDE_CORPUS } from './confide/confideCorpus.js';
 
 afterEach(() => {
   resetTasteLayerOverlayForTests();
@@ -156,6 +158,46 @@ test('parseQuietLineOverlay rejects locale mismatch and illegal keys', () => {
         locale: 'en',
         pool: [{ key: 'DAILY_ZEN_QUOTE_1', text: 'x' }]
       },
+      'en'
+    ),
+    null
+  );
+});
+
+function freezeConfideBody(overrides = {}) {
+  return {
+    schemaVersion: TASTE_LAYER_SCHEMA_VERSION,
+    locale: 'en',
+    templates: [
+      'CONFIDE_BOUNDARY_RESPECT',
+      'CONFIDE_COMPANION_PRESENCE',
+      'CONFIDE_PREFERENCE_HONESTY'
+    ].map((key) => ({ key, text: en[key] })),
+    corpus: CONFIDE_CORPUS.map((line) => ({ id: line.id, text: line.en })),
+    ...overrides
+  };
+}
+
+test('parseConfideCopyOverlay accepts freeze templates + 19 corpus ids', () => {
+  const parsed = parseConfideCopyOverlay(freezeConfideBody(), 'en');
+  assert.ok(parsed);
+  assert.equal(parsed.locale, 'en');
+  assert.equal(parsed.templates.length, 3);
+  assert.equal(parsed.corpus.length, 19);
+  assert.equal(parsed.corpus[0].id, 'safety-01');
+});
+
+test('parseConfideCopyOverlay rejects unknown schema, locale mismatch, and extra keys', () => {
+  assert.equal(
+    parseConfideCopyOverlay({ ...freezeConfideBody(), schemaVersion: 2 }, 'en'),
+    null
+  );
+  assert.equal(parseConfideCopyOverlay(freezeConfideBody({ locale: 'ja' }), 'en'), null);
+  assert.equal(
+    parseConfideCopyOverlay(
+      freezeConfideBody({
+        templates: [{ key: 'CONFIDE_PANEL_TITLE', text: 'nope' }]
+      }),
       'en'
     ),
     null

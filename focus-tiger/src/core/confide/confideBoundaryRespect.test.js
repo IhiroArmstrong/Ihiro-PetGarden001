@@ -4,7 +4,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it, afterEach } from 'node:test';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { confideClassify } from './confideClassify.js';
 import {
@@ -12,6 +12,13 @@ import {
   isConfideBoundaryIntent,
   shouldHandleConfideBoundary
 } from './confideBoundaryRespect.js';
+import {
+  parseConfideCopyOverlay,
+  resetTasteLayerOverlayForTests,
+  setTasteConfideCopyOverlay
+} from '../tasteLayerOverlay.js';
+import { CONFIDE_CORPUS } from './confideCorpus.js';
+import en from '../../locales/en.json' with { type: 'json' };
 import { applyYinMemoryConsent } from '../yinPersonalMemory/yinPersonalMemoryConsent.js';
 import { emptyYinPersonalMemoryState } from '../yinPersonalMemory/yinPersonalMemorySchema.js';
 import {
@@ -30,6 +37,9 @@ const grantedState = () =>
   applyYinMemoryConsent(emptyYinPersonalMemoryState(), true, '2026-09-01T00:00:00.000Z');
 
 describe('confideBoundaryRespect', () => {
+  afterEach(() => {
+    resetTasteLayerOverlayForTests();
+  });
   it('matches Gate 0.D boundary utterance and close paraphrases', () => {
     assert.equal(
       isConfideBoundaryIntent("I'm not sure whether I want to talk about it."),
@@ -87,6 +97,24 @@ describe('confideBoundaryRespect', () => {
   it('uses a dedicated locale key without curiosity labels', () => {
     const line = formatConfideBoundaryReply((key) => key);
     assert.equal(line, 'CONFIDE_BOUNDARY_RESPECT');
+    assert.equal(/curious/i.test(line), false);
+  });
+
+  it('overlay replaces boundary template value without changing the key contract', () => {
+    const parsed = parseConfideCopyOverlay({
+      schemaVersion: 1,
+      locale: 'en',
+      templates: [
+        { key: 'CONFIDE_BOUNDARY_RESPECT', text: 'We can leave it. Overlay Yin stays.' },
+        { key: 'CONFIDE_COMPANION_PRESENCE', text: en.CONFIDE_COMPANION_PRESENCE },
+        { key: 'CONFIDE_PREFERENCE_HONESTY', text: en.CONFIDE_PREFERENCE_HONESTY }
+      ],
+      corpus: CONFIDE_CORPUS.map((line) => ({ id: line.id, text: line.en }))
+    });
+    assert.ok(parsed);
+    setTasteConfideCopyOverlay(parsed);
+    const line = formatConfideBoundaryReply((key) => key);
+    assert.equal(line, 'We can leave it. Overlay Yin stays.');
     assert.equal(/curious/i.test(line), false);
   });
 

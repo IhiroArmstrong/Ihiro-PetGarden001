@@ -1,6 +1,6 @@
 # Task Brief · Confide 句库 / 模板 overlay
 
-> **状态（2026-09-02）**：口令已给 · **本 Brief 无运行时**。父概念 `ANTI_PLAGIARISM_LAYER.md` §5 序 3。  
+> **状态（2026-09-03）**：口令已给 · **本旁支运行时**（`/api/confide-copy` 并进品味层预取）。父概念 `ANTI_PLAGIARISM_LAYER.md` §5 序 3。生产 Worker Redeploy 另须「部署」。  
 > **硬边界**：只 overlay **已审回复句正文**。路由、E′ 正则、CI 白名单、Tool Registry、Qwen **留下本机**。
 
 ## 一句话

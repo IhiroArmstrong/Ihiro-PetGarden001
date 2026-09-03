@@ -8,6 +8,12 @@ import {
 	TASTE_WELCOME_POOL,
 } from "./tasteLayerFreeze.ts";
 import { tasteDailyWisdomPool } from "./tasteDailyWisdomFreeze.ts";
+import {
+	CONFIDE_COPY_CORPUS_IDS,
+	CONFIDE_COPY_TEMPLATE_KEYS,
+	tasteConfideCopyCorpus,
+	tasteConfideCopyTemplates,
+} from "./tasteConfideCopyFreeze.ts";
 
 describe("taste-layer freeze tables", () => {
 	it("locks schemaVersion 1 and Honesty 30", () => {
@@ -50,5 +56,27 @@ describe("taste-layer freeze tables", () => {
 			ja.map((e) => e.id),
 		);
 		assert.equal(en[0].id, "catch-this-moment");
+	});
+
+	it("confide copy freeze has 3 templates and 19 corpus ids", () => {
+		assert.equal(CONFIDE_COPY_TEMPLATE_KEYS.length, 3);
+		assert.equal(CONFIDE_COPY_CORPUS_IDS.length, 19);
+		const en = tasteConfideCopyCorpus("en");
+		const ja = tasteConfideCopyCorpus("ja");
+		const zh = tasteConfideCopyCorpus("zh");
+		assert.deepEqual(
+			en.map((e) => e.id),
+			[...CONFIDE_COPY_CORPUS_IDS],
+		);
+		assert.deepEqual(
+			ja.map((e) => e.id),
+			en.map((e) => e.id),
+		);
+		assert.deepEqual(
+			zh.map((e) => e.id),
+			en.map((e) => e.id),
+		);
+		assert.equal(tasteConfideCopyTemplates("en").length, 3);
+		assert.equal(tasteConfideCopyTemplates("zh")[0].key, "CONFIDE_BOUNDARY_RESPECT");
 	});
 });

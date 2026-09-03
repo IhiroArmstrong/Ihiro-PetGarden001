@@ -10,6 +10,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { overlayConfideTemplateTextForKey } from '../tasteLayerOverlay.js';
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 
 /** @type {readonly RegExp[]} */
@@ -49,6 +50,8 @@ export function shouldHandleConfidePreferenceHonesty({
  * @returns {string}
  */
 export function formatConfidePreferenceHonestyReply(tFn) {
+  const overlay = overlayConfideTemplateTextForKey('CONFIDE_PREFERENCE_HONESTY');
+  if (overlay) return overlay;
   const t = typeof tFn === 'function' ? tFn : (key) => key;
   return t('CONFIDE_PREFERENCE_HONESTY');
 }

@@ -10,6 +10,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { overlayConfideTemplateTextForKey } from '../tasteLayerOverlay.js';
 import { shouldHandleVerbalForget } from '../yinPersonalMemory/yinPersonalMemoryVerbalForget.js';
 
 /** ASCII + curly apostrophes so typed “Don’t” still matches. */
@@ -92,6 +93,8 @@ export function shouldHandleConfideBoundary({
  * @returns {string}
  */
 export function formatConfideBoundaryReply(tFn) {
+  const overlay = overlayConfideTemplateTextForKey('CONFIDE_BOUNDARY_RESPECT');
+  if (overlay) return overlay;
   const t = typeof tFn === 'function' ? tFn : (key) => key;
   return t('CONFIDE_BOUNDARY_RESPECT');
 }

@@ -4,7 +4,7 @@
  */
 
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import {
   CONFIDE_CORPUS,
   confideLineText,
@@ -13,6 +13,16 @@ import {
   pickConfideLine
 } from './confideCorpus.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import {
+  parseConfideCopyOverlay,
+  resetTasteLayerOverlayForTests,
+  setTasteConfideCopyOverlay
+} from '../tasteLayerOverlay.js';
+import en from '../../locales/en.json' with { type: 'json' };
+
+afterEach(() => {
+  resetTasteLayerOverlayForTests();
+});
 
 test('zen buckets each have ≥3 ok lines', () => {
   for (const route of [
@@ -70,4 +80,32 @@ test('pickConfideLine: emotion retrieve returns matching route', () => {
 test('corpus ids are unique', () => {
   const ids = CONFIDE_CORPUS.map((l) => l.id);
   assert.equal(ids.length, new Set(ids).size);
+});
+
+test('confide overlay replaces corpus text and keeps pick id / route', () => {
+  const parsed = parseConfideCopyOverlay({
+    schemaVersion: 1,
+    locale: 'en',
+    templates: [
+      'CONFIDE_BOUNDARY_RESPECT',
+      'CONFIDE_COMPANION_PRESENCE',
+      'CONFIDE_PREFERENCE_HONESTY'
+    ].map((key) => ({ key, text: en[key] })),
+    corpus: CONFIDE_CORPUS.map((line) => ({
+      id: line.id,
+      text: line.id === 'tired-01' ? 'Overlay cushion line.' : line.en
+    }))
+  });
+  assert.ok(parsed);
+  setTasteConfideCopyOverlay(parsed);
+  const line = pickConfideLine({
+    route: CONFIDE_ROUTE.TIRED,
+    localDate: '2026-01-01',
+    salt: 0,
+    excludeIds: ['tired-02', 'tired-03']
+  });
+  assert.ok(line);
+  assert.equal(line.id, 'tired-01');
+  assert.equal(line.route, CONFIDE_ROUTE.TIRED);
+  assert.equal(confideLineText(line, 'en'), 'Overlay cushion line.');
 });
