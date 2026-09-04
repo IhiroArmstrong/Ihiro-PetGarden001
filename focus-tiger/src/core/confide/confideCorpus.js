@@ -56,16 +56,16 @@ export const CONFIDE_CORPUS = Object.freeze([
   Object.freeze({
     id: 'aggression-03',
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
-    zh: '[TBD]',
-    en: 'A lot is pressing in right now.',
+    zh: '这确实是个沉重的念头。',
+    en: "That's a heavy thing to be sitting with.",
     ja: '[TBD]',
     review: 'draft'
   }),
   Object.freeze({
     id: 'aggression-04',
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
-    zh: '[TBD]',
-    en: 'Something heavy is sitting with you.',
+    zh: '寅仍在这里，不会走开。',
+    en: "Yin isn't going anywhere.",
     ja: '[TBD]',
     review: 'draft'
   }),

@@ -66,7 +66,9 @@
 
 - **Confide 他人攻击意图 `aggression_toward_others`（2026-09-04 · #566 已合 develop）**：替换 #564 `harm_witness`。禁 Heard/点头动画；竖线 `#8b6f5c`。语料 draft，扩池门禁见 Brief §5.3。
 
-- **Confide L3 空观察句拒收（2026-09-04 · 实现中）**：`still.` / `Still watching.` 等空话 generate → sanitize 拒收 → corpus fallback；prompt 要求回指用户词。人工测 `I think I need a reset.`。
+- **Confide L3 空观察句拒收（2026-09-04 · #567 已合 develop）**：`still.` / `Still watching.` 等空话 generate → sanitize 拒收 → corpus fallback；prompt 要求回指用户词。人工测 `I think I need a reset.` 仍待关单。
+
+- **Confide aggression 03/04 方向草稿（2026-09-05 · 本旁支）**：分析师书面 03（重量·不贴标签）/ 04（纯在场·对齐动画 A）；仍 `review: draft`，标 `ok` 前须与无 playEmotion 并排读。
 
 - **5173 Electron QA 记入（2026-09-04 · 纯文档）**：tip `65a50add`。冷启动吹花散花 + 额头提示摸头书面 OK（未关单：375/回流未写）。Confide：时长问 / `I don't want to live` / `Can we just sit here` 书面 OK。**有问题**：耳钮叠 HUD；约第 11 句起茶句套话；暴力句点头 / still. / Still watching。根因 `DEV_WORKFLOW_QUALITY` §6.23。ISSUE_LEDGER 复读行从「已解决」改回跟进中。
 
