@@ -111,7 +111,7 @@ zh/ja 同向占位见 §5.1 · 附录 A。`review: 'draft'` 直至产品书面�
 **精灵动画 — 拍板：候选 A**
 
 现网 Confide `onReplied`（`main.js`）：`safety_redirect` → `nodBow`；其它路由 → `mindfulAcknowledge`。  
-`mindfulAcknowledge` **内部即 `nod-bow` 13 帧 pingpong×1**（`EMOTIONController.js`）——与本次 bug「文字点头 + 动作点头」双重误读同源。**攻击他人路由：不调用 `playEmotion`**，Yin 保持 Idle 闭目呼吸。
+`mindfulAcknowledge` **内部即 `nod-bow` 13 帧 pingpong×1**（`EmotionController.js`）——与本次 bug「文字点头 + 动作点头」双重误读同源。**攻击他人路由：不调用 `playEmotion`**，Yin 保持 Idle 闭目呼吸。
 
 | 候选 | 结论 |
 |---|---|
