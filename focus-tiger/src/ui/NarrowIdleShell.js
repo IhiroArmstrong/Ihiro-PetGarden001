@@ -954,6 +954,20 @@ export class NarrowIdleShell {
       this.handlers.onLocalBackup?.();
       return;
     }
+    if (key === 'quiet-together') {
+      this.closeSheet();
+      this.clearStage();
+      document.body.classList.add(NARROW_STAGE_CLASS.quietTogether);
+      this.handlers.onQuietTogether?.();
+      return;
+    }
+    if (key === 'focus-circle') {
+      this.closeSheet();
+      this.clearStage();
+      document.body.classList.add(NARROW_STAGE_CLASS.focusCircle);
+      this.handlers.onFocusCircle?.();
+      return;
+    }
     if (
       key === 'ritual-morning' ||
       key === 'ritual-emotional-reset' ||

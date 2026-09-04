@@ -778,6 +778,20 @@ export class WideIdleMoreMenu {
       this.handlers.onLocalBackup?.();
       return;
     }
+    if (key === 'quiet-together') {
+      this.clearStage();
+      this.closeMenu();
+      document.body.classList.add(WIDE_STAGE_CLASS.quietTogether);
+      this.handlers.onQuietTogether?.();
+      return;
+    }
+    if (key === 'focus-circle') {
+      this.clearStage();
+      this.closeMenu();
+      document.body.classList.add(WIDE_STAGE_CLASS.focusCircle);
+      this.handlers.onFocusCircle?.();
+      return;
+    }
     if (
       key === 'ritual-morning' ||
       key === 'ritual-emotional-reset' ||

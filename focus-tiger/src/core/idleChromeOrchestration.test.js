@@ -323,6 +323,8 @@ describe('listSecondaryChromeEntries', () => {
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'quiet-together',
+        'focus-circle',
         'reminder',
         'language',
         'newsletter',
@@ -340,6 +342,7 @@ describe('listSecondaryChromeEntries', () => {
       [
         'MENU_GROUP_PRACTICE',
         'MENU_GROUP_INSPIRATION',
+        'MENU_GROUP_NOT_ALONE',
         'MENU_GROUP_PREFERENCES',
         'ritual.menu_group'
       ]
@@ -359,6 +362,8 @@ describe('listSecondaryChromeEntries', () => {
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'quiet-together',
+        'focus-circle',
         'reminder',
         'language',
         'newsletter',
@@ -396,6 +401,8 @@ describe('listSecondaryChromeEntries', () => {
         'zen-cinema',
         'daily-quote',
         'wallpapers',
+        'quiet-together',
+        'focus-circle',
         'language',
         'newsletter',
         'community',
