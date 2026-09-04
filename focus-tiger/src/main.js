@@ -1690,6 +1690,7 @@ async function init() {
     resolveDurationMs: () =>
       MICRO_RITUAL_MS_OVERRIDE != null ? MICRO_RITUAL_MS_OVERRIDE : undefined,
     onBreathStart: () => {
+      beginBreathLanternPresence();
       lightProgression.beginBreath();
       // Timed Breath practice sits with the existing Idle 闭目坐禅 loop
       // (idleBreathClosed ×2 → glance). Do not override with blink-smile —
@@ -1728,6 +1729,7 @@ async function init() {
         ? RITUAL_BREATH_MS_OVERRIDE
         : durationMs,
     onBreathStart: () => {
+      beginBreathLanternPresence();
       lightProgression.beginBreath();
       emotionController.playEmotion('smiling', {
         fps: ARRIVAL_BREATH_SMILE_FPS,
@@ -1746,6 +1748,7 @@ async function init() {
       syncOnboardingAutoHints();
     },
     onBreathEnd: () => {
+      endBreathLanternPresence();
       lightProgression.endBreath({ releaseDolly: false });
     },
     onComplete: ({ ritualId, selections, ritualSessionId }) => {
@@ -2200,6 +2203,16 @@ async function init() {
     syncOnboardingAutoHints();
   }
 
+  function beginBreathLanternPresence() {
+    quietTogetherLanternsChrome.setContributing(true);
+    startLanternHeartbeat();
+  }
+
+  function endBreathLanternPresence() {
+    quietTogetherLanternsChrome.setContributing(false);
+    void stopLanternHeartbeat();
+  }
+
   /**
    * @param {string} proxy menu proxy from Idle More / drawer
    */
@@ -2244,6 +2257,7 @@ async function init() {
    * @param {string} [ritualSessionId]
    */
   function completeRitualFlow(ritualId, selections, ritualSessionId) {
+    endBreathLanternPresence();
     ambientSoundscape.stopPlaybackEphemeral();
     const config = getRitualConfig(ritualId);
     ritualCompletionStore.recordCompletion(ritualId, { selections });
@@ -2292,6 +2306,7 @@ async function init() {
    * }} payload
    */
   function leaveRitualFlowQuietly(payload) {
+    endBreathLanternPresence();
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (storage && payload?.ritualSessionId) {
@@ -2315,6 +2330,7 @@ async function init() {
   }
 
   function completeMicroRitual() {
+    endBreathLanternPresence();
     sessionCues.stopIntervalSession();
     const stopAmbientAfterEndCue = () => {
       ambientSoundscape.stopPlaybackEphemeral();
@@ -2376,6 +2392,7 @@ async function init() {
   }
 
   function leaveMicroRitualQuietly() {
+    endBreathLanternPresence();
     sessionCues.cancelPending();
     sessionCues.stopIntervalSession();
     ambientSoundscape.stopPlaybackEphemeral();

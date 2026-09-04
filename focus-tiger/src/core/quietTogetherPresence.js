@@ -236,7 +236,7 @@ async function sendHeartbeat(opts = {}) {
 }
 
 /**
- * Light a lantern after Sit (delayed so Arrival/Idle breath is not blocked).
+ * Light a lantern after Sit or breath practice (delayed so Arrival is not blocked).
  */
 export function startLanternHeartbeat(opts = {}) {
   stopLanternHeartbeatTimers();

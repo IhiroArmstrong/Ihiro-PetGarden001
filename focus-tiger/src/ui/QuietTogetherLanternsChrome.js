@@ -5,7 +5,8 @@
 
 /**
  * Idle / Arrive background lanterns — pointer-events none.
- * Hidden while Focusing. Honest blank when count is 0 or cloud is down.
+ * Hidden while Focusing or while this tab is contributing breath/ritual.
+ * Honest blank when count is 0 or cloud is down.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -39,6 +40,7 @@ export class QuietTogetherLanternsChrome {
       handlers.storage ??
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._focusing = false;
+    this._contributing = false;
     this._visibleAllowed = true;
     this._sitting = null;
 
@@ -90,6 +92,15 @@ export class QuietTogetherLanternsChrome {
   }
 
   /**
+   * Breath / ritual practice on this tab — contribute heartbeat but hide lanterns.
+   * @param {boolean} contributing
+   */
+  setContributing(contributing) {
+    this._contributing = Boolean(contributing);
+    this.refresh();
+  }
+
+  /**
    * @param {number | null} sitting
    */
   setSitting(sitting) {
@@ -118,6 +129,7 @@ export class QuietTogetherLanternsChrome {
       this._visibleAllowed &&
       enabled &&
       !this._focusing &&
+      !this._contributing &&
       sitting != null &&
       sitting > 0;
 
