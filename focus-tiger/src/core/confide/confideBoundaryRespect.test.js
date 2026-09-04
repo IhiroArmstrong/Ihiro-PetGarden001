@@ -12,12 +12,13 @@ import {
   isConfideBoundaryIntent,
   shouldHandleConfideBoundary
 } from './confideBoundaryRespect.js';
+import { CONFIDE_CORPUS } from './confideCorpus.js';
 import {
+  CONFIDE_COPY_CORPUS_IDS,
   parseConfideCopyOverlay,
   resetTasteLayerOverlayForTests,
   setTasteConfideCopyOverlay
 } from '../tasteLayerOverlay.js';
-import { CONFIDE_CORPUS } from './confideCorpus.js';
 import en from '../../locales/en.json' with { type: 'json' };
 import { applyYinMemoryConsent } from '../yinPersonalMemory/yinPersonalMemoryConsent.js';
 import { emptyYinPersonalMemoryState } from '../yinPersonalMemory/yinPersonalMemorySchema.js';
@@ -109,7 +110,10 @@ describe('confideBoundaryRespect', () => {
         { key: 'CONFIDE_COMPANION_PRESENCE', text: en.CONFIDE_COMPANION_PRESENCE },
         { key: 'CONFIDE_PREFERENCE_HONESTY', text: en.CONFIDE_PREFERENCE_HONESTY }
       ],
-      corpus: CONFIDE_CORPUS.map((line) => ({ id: line.id, text: line.en }))
+      corpus: CONFIDE_COPY_CORPUS_IDS.map((id) => {
+        const line = CONFIDE_CORPUS.find((row) => row.id === id);
+        return { id, text: line.en };
+      })
     });
     assert.ok(parsed);
     setTasteConfideCopyOverlay(parsed);

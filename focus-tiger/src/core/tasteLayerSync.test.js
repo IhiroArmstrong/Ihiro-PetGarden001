@@ -17,6 +17,7 @@ import {
 } from './sceneAnimationDispatcher.js';
 import { CONFIDE_CORPUS } from './confide/confideCorpus.js';
 import {
+  CONFIDE_COPY_CORPUS_IDS,
   getTasteConfideCopyOverlay,
   getTasteDailyWisdomOverlay,
   getTasteQuietLineOverlay,
@@ -76,7 +77,10 @@ const freezeConfideCopy = {
     'CONFIDE_COMPANION_PRESENCE',
     'CONFIDE_PREFERENCE_HONESTY'
   ].map((key) => ({ key, text: en[key] })),
-  corpus: CONFIDE_CORPUS.map((line) => ({ id: line.id, text: line.en }))
+  corpus: CONFIDE_COPY_CORPUS_IDS.map((id) => {
+    const line = CONFIDE_CORPUS.find((row) => row.id === id);
+    return { id, text: line.en };
+  })
 };
 
 function tastePostJson(path, weightOverride) {

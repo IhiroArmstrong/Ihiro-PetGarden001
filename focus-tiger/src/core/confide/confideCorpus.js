@@ -36,6 +36,16 @@ export const CONFIDE_CORPUS = Object.freeze([
     review: 'ok'
   }),
 
+  // —— harm_witness (other-directed; not crisis line; not fallback nod) ——
+  Object.freeze({
+    id: 'harm-01',
+    route: CONFIDE_ROUTE.HARM_WITNESS,
+    zh: '听见了。寅在这儿，并不附和。',
+    en: 'Heard. Yin stays, without agreeing.',
+    ja: '聴いた。寅はここにいる。賛同はしない。',
+    review: 'ok'
+  }),
+
   // —— fallback ——
   Object.freeze({
     id: 'fallback-01',
