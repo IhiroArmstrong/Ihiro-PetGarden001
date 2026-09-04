@@ -6,7 +6,7 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `10ff6b2b` |
+| `snapshot_base` | `origin/develop` tip `60d6cb92` |
 | `snapshot_date` | 2026-09-05 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
@@ -59,7 +59,7 @@
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
 | Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
-| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` · 最多 8 人 · presence TTL 120s） |
+| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:witness:{id}` · 最多 8 人 · presence TTL 120s · witness 滚动 24h） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 
@@ -67,8 +67,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `22326de3-0856-45fc-8942-776f50a34db7` |
-| `prod_verified_at` | 2026-09-05（本机 `wrangler deploy` · `/api/focus-circle` presence actions live · #572 Focus Circle Presence 2b） |
+| `prod_worker_version` | `815a9c33-758f-4029-b689-ab9150927e9d` |
+| `prod_verified_at` | 2026-09-05（本机 `wrangler deploy` · `/api/focus-circle` witness_peek / witness_leave / witness_respond live · #577 Focus Circle Gentle Witness 2c） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
