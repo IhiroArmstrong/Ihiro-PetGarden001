@@ -1,6 +1,6 @@
 # Task Brief · Confide 攻击他人意图单独分类
 
-> **状态（2026-09-04）**：方案阶段 · 分析师已拍板多语言/轻量转介（见 §10）· 文案/色/动画待逐条意见 · 实现另开 `fix/confide-aggression-toward-others`。  
+> **状态（2026-09-04）**：方案 **已拍板**（§10）· PR #563 · 实现待 `fix/confide-l3-repeat-fallback` 合 develop。  
 > **背景**：PR #561（复读锁）已合；本任务与其无关，单独开分支。  
 > **触发**：Confide 人工测试 — `I want to beat people.` → `Heard. Yin nods quietly.`（fallback-01）判定不妥。  
 > **SSOT 邻接**：`task-confide-to-yin-v1.md`（危机 `safety_redirect` 优先层）· `confideClassify.js` · `confideSafetyKeywords.js` · `confideCorpus.js`
@@ -84,16 +84,17 @@ route id: aggression_toward_others
 | 庆祝/玩笑姿态 | 与场景严重错位 |
 | L2 短生成 | 与 `safety_redirect` 一致：**语料检索，禁止 generate** |
 
-### 3.4 建议回应方向（占位 · 非最终文案）
+### 3.4 回应方向与语料优先级（分析师拍板 · 2026-09-04）
 
-承认**情绪强度**，不承认/不否定**行为本身**；把注意力引向用户状态，不附和暴力意象：
+**首选调性**（`aggression-02`）：口语、不动声色、不直接贴情绪标签；与 Confide 现有克制/留白风格一致。  
+**备选**（`aggression-01`）：承认情绪强度、不承认行为；偏「咨询式」直白，池中第二条，不与 02 平权。
 
-| 方向 | 英文占位示例 | 备注 |
-|---|---|---|
-| 承载愤怒 | `[TBD] That sounds like a lot of anger to carry.` | 产品审定 |
-| 聚焦触发 | `[TBD] Something's really gotten to you.` | 产品审定 |
+| id | 优先级 | en（占位 · draft） | 风格备注 |
+|---|---|---|---|
+| `aggression-02` | **首选** | `Something's really gotten to you.` | 聚焦「发生了什么」，不涉及暴力意象 |
+| `aggression-01` | 备选 | `That sounds like a lot of anger to carry.` | 点名 anger；教科书感较强，非默认语气 |
 
-占位语料 `review: 'draft'`，**禁止**标 `ok` 直至产品书面审定。
+zh/ja 同向占位见 §5.1 · 附录 A。`review: 'draft'` 直至产品书面审定；**禁止**仅 2 条就标 `ok` 上线（见 §5.3）。
 
 ### 3.5 是否附加轻量安全提示语（待产品确认 · 本轮不实现）
 
@@ -105,33 +106,33 @@ route id: aggression_toward_others
 
 **我认为最合理的**：方案阶段先写进 Brief，**默认不实现**；产品若选「极轻转介」，作为审定后第二句独立语料行（`aggression-02`），不与首句绑死。
 
-### 3.6 姿态与 UI（待分析师逐条意见）
+### 3.6 姿态与 UI（分析师拍板 · 2026-09-04）
 
-**精灵动画 — 重要更正**
+**精灵动画 — 拍板：候选 A**
 
 现网 Confide `onReplied`（`main.js`）：`safety_redirect` → `nodBow`；其它路由 → `mindfulAcknowledge`。  
-但 `mindfulAcknowledge` **内部即 `nod-bow` 13 帧 pingpong×1**（`EmotionController.js` · `EMOTION_BIBLE.md` 映射表），调试面板标为「正念点头鞠躬」。**不能**用于攻击他人路由。
+`mindfulAcknowledge` **内部即 `nod-bow` 13 帧 pingpong×1**（`EMOTIONController.js`）——与本次 bug「文字点头 + 动作点头」双重误读同源。**攻击他人路由：不调用 `playEmotion`**，Yin 保持 Idle 闭目呼吸。
 
-| 候选 | 行为 | 风险 |
-|---|---|---|
-| **A（推荐）** | `aggression_toward_others` 时 **不调用** `playEmotion`；Yin 保持 Idle 闭目呼吸 | 最低误读风险；无新素材 |
-| B | 极轻 `teaDrinking` 抿茶（若已有接线） | 可能被读成「淡定认可」；须人工看图 |
-| C | 新建「静坐无点头」oneshot | 范围膨胀；本轮不推荐 |
+| 候选 | 结论 |
+|---|---|
+| **A** | **✓ 采用** — 零 oneshot |
+| B 抿茶 | ✗ 仍有「云淡风轻认可」风险 |
+| C 新 oneshot | ✗ 范围膨胀 |
 
-**回复竖线色候选**（对照现网 `ConfideToYinUI.js`）
+**回复竖线色 — 拍板：Agg-2 `#8b6f5c`**
 
 | 键 | 色值 | 用于 |
 |---|---|---|
-| fallback 茶句 | `#d4a24a` | 通用禅意 fallback |
-| safety 危机转介 | `#7a5340` | `safety_redirect` |
-| **候选 Agg-1** | `#7a5340`（与 safety 同色） | 强调「安全邻接」；难区分危机 vs 攻击他人 |
-| **候选 Agg-2（推荐）** | `#8b6f5c` | 同棕系、略浅，表示「严肃但非危机转介」 |
-| **候选 Agg-3** | `#6a5a52` | 更灰棕，与金色 fallback 拉开 |
+| fallback | `#d4a24a` | 禅意 fallback |
+| safety | `#7a5340` | 危机转介 |
+| **aggression** | **`#8b6f5c`** | `aggression_toward_others` |
+
+**人工验收注意**：`#8b6f5c` 与 safety `#7a5340` 同属棕系、hex 接近——实现后须 **并排截图** 历史记录中两种回复，确认用户能一眼区分「危机转介」vs「攻击他人路由」，不能仅靠色值表过关。
 
 | 触点 | 设计 |
 |---|---|
 | `data-route` | `aggression_toward_others` |
-| companion presence / boundary / CI 工具 | 本路由 **不触发**；与 `safety_redirect` 同 gates |
+| companion presence / boundary / CI 工具 | 本路由 **不触发** |
 
 ---
 
@@ -210,23 +211,34 @@ want to beat her
 
 ## 五、语料池骨架
 
-### 5.1 结构
+### 5.1 结构（实现轮可先 2+2 占位；上线前须扩池）
 
-| id | route | review | en（占位） | zh（占位） | ja（占位） |
+| id | 优先级 | review | en（占位） | zh（占位） | ja |
 |---|---|---|---|---|---|
-| `aggression-01` | `aggression_toward_others` | `draft` | `[TBD] That sounds like a lot of anger to carry.` | `[TBD] 听起来你背负了很多怒气。` | `[TBD] …` |
-| `aggression-02` | `aggression_toward_others` | `draft` | `[TBD] Something's really gotten to you.` | `[TBD] 一定有什么让你很难受。` | `[TBD] …` |
+| `aggression-02` | **首选** | `draft` | `Something's really gotten to you.` | `一定有什么让你很难受。` | `[TBD]` |
+| `aggression-01` | 备选 | `draft` | `That sounds like a lot of anger to carry.` | `听起来你背负了很多怒气。` | `[TBD]` |
+| `aggression-03` | 扩池 | `draft` | `[TBD — 口语/留白，不贴 anger 标签]` | `[TBD]` | `[TBD]` |
+| `aggression-04` | 扩池 | `draft` | `[TBD — 同上]` | `[TBD]` | `[TBD]` |
 
 - **独立池**；不与 `fallback-01` 等共用。  
-- `pickConfideLine`：若池空，**禁止**回落到禅意 `fallback`（与 `safety_redirect` 同 guard）。  
-- 审定后更新 `docs/confide-corpus-seed.md` + `cloud/src/lib/tasteConfideCopyFreeze.ts`（若 overlay 需要）。
+- `pickConfideLine`：池空时 **禁止** 回落禅意 `fallback`（与 `safety_redirect` 同 guard）。  
+- 与 #561 复读锁协同：池仅 2 条时，连续触发本路由会在两句间交替，虽不违反「连续不得同字面」，但体验上仍显可预测——**扩池是上线门禁，不是可选项**。  
+- 审定后同步 `docs/confide-corpus-seed.md` + `cloud/src/lib/tasteConfideCopyFreeze.ts`（若 overlay 需要）。
 
 ### 5.2 措辞约束（继承 confide 红线）
 
 1. **无「听见了」/ Heard** — 在本路由视为确认风险。  
 2. **无点头动作描写**。  
-3. **不建议、不评判、不诊断**。  
-4. 允许短、中性、观察式。
+3. **不建议、不评判、不诊断**；避免咨询式「anger」贴标签（首选走 02 调性）。  
+4. 短、中性、观察式；意象留白优先于情绪命名。
+
+### 5.3 扩池门禁（分析师 · 2026-09-04）
+
+| 阶段 | 池规模 | 说明 |
+|---|---|---|
+| **实现 PR** | ≥2 条审定向 + ≥2 条 `[TBD]` 占位 | 骨架 + 分类 + 单测可先合；占位 id 预留 |
+| **标 `review: ok` / 对用户可见** | **≥4 条** 同调性短句 | 产品审定替换 03/04；禁止 2 条定型上线 |
+| **人工测** | 连续发 3+ 条同类暴力句 | 不得只在 2 句间 ping-pong；须 feels 非机械 |
 
 ---
 
@@ -238,13 +250,13 @@ want to beat her
 | `confideAggressionKeywords.js` | **新建** · 正例/排除 · `matchesAggressionTowardOthers` |
 | `confideClassify.js` | safety 之后插入 aggression 层 |
 | `confideClassify.test.js` | 正例 + 负例（见 §七） |
-| `confideCorpus.js` | `aggression-01` / `aggression-02` 占位 |
+| `confideCorpus.js` | `aggression-02/01` + `aggression-03/04` 占位（§5.3） |
 | `confideCorpus.test.js` | 池隔离 · 禁止回落 fallback |
 | `confideReplyFlow.test.js` | 端到端：`I want to beat people` → 新路由 |
 | `desktopCompanionL2Route.js` | `shouldUseDesktopCompanionGenerate` 排除新路由 |
 | `confideCompanionPresence.js` | `shouldHandleConfideCompanionPresence` 排除新路由 |
-| `main.js` | `onReplied`：新路由 **禁止** `nodBow` |
-| `ConfideToYinUI.js` | 可选：`data-route` 竖线色 |
+| `main.js` | `onReplied`：新路由 **跳过** `playEmotion`（Idle only） |
+| `ConfideToYinUI.js` | `data-route` 竖线 `#8b6f5c`；验收与 safety 并排可辨 |
 | `SCENARIO_TESTS.md` | 新安全邻接场景步 |
 | `docs/confide-corpus-seed.md` | 登记新池 |
 
@@ -306,50 +318,50 @@ anxious and I want to hurt someone → aggression_toward_others（安全层未�
 
 | 阶段 | 交付物 | 状态 |
 |---|---|---|
-| **1 · 方案** | 本文档（规则 + 误判清单 + 路由骨架） | **当前** |
-| **2 · 实现** | `fix/confide-aggression-toward-others` · 分类 + 占位语料 + 单测 · PR `--base develop` | 待方案确认 |
-| **3 · 审定** | 产品替换 `[TBD]` 文案 · `review: ok` · tracker 人工测 | 实现后 |
+| **1 · 方案** | 本文档（规则 + 误判 + 拍板） | **✓ 完成** |
+| **2 · 实现** | `fix/confide-aggression-toward-others` · 分类 + 占位语料 + 单测 | **待 `fix/confide-l3-repeat-fallback` 合 develop 后开工** |
+| **3 · 扩池审定** | 03/04 正式文案 · 池 ≥4 条 · `review: ok` | 实现后 · 上线门禁 |
+| **4 · 人工测** | tracker · 含连续触发 + 色条并排 + 无点头动画 | 扩池后 |
 
 **明确不做（本 PR）**：`still.` / `Still watching.` 语料扩充 · 中文识别规则（除非方案拍板改 A） · 安全提示第二句（除非产品选定 §3.5）。
 
 ---
 
-## 十、拍板与待确认项
-
-### 已拍板（分析师 · 2026-09-04）
+## 十、拍板记录（分析师 · 2026-09-04）
 
 | 项 | 结论 |
 |---|---|
 | 流水线分层 | `safety_redirect` → `aggression_toward_others` → 情绪桶 → fallback ✓ |
-| 多语言 | **A**：本轮仅 EN 规则；zh/ja 占位 `[TBD]`，中文规则 fast-follow ✓ |
-| 轻量转介 | **默认不加**；若以后要，单独审 `aggression-02`，不与首句绑死 ✓ |
+| 多语言 | 本轮仅 EN 规则；zh/ja 占位 `[TBD]`，中文 fast-follow ✓ |
+| 轻量转介 | 默认不加 ✓ |
+| 文案优先级 | **02 首选** · 01 备选（非平权）✓ |
+| 扩池门禁 | 上线前池 **≥4 条**；实现可先 2+2 占位 ✓ |
+| 竖线色 | **Agg-2 `#8b6f5c`**；须与 safety 并排验收可辨 ✓ |
+| 动画 | **候选 A** — 不 `playEmotion`，Idle 呼吸 ✓ |
 
-### 待分析师逐条意见
+### 附录 A · 占位文案（审定用）
 
-1. **占位文案**（§3.4 两句原文 + 中文同向草稿，见下方「附录 A」）  
-2. **UI 竖线色**：Agg-1 `#7a5340` / Agg-2 `#8b6f5c` / Agg-3 `#6a5a52`  
-3. **精灵动画**：候选 A 不播 oneshot（推荐）/ B 抿茶 / C 新素材
-
-### 附录 A · 占位文案候选（审定用 · 非上线文案）
-
-**aggression-01 · 承载愤怒（不承认/不否定行为）**
-
-| locale | 草稿 |
-|---|---|
-| en | `That sounds like a lot of anger to carry.` |
-| zh | `听起来你背负了很多怒气。` |
-| ja | `[TBD]` |
-
-**aggression-02 · 聚焦触发（不涉及暴力意象本身）**
+**aggression-02（首选）**
 
 | locale | 草稿 |
 |---|---|
 | en | `Something's really gotten to you.` |
 | zh | `一定有什么让你很难受。` |
-| ja | `[TBD]` |
 
-**刻意避免**：`Heard` · `I understand` · `Yin nods` · 点头动作描写 · 危机转介句式。
+**aggression-01（备选）**
+
+| locale | 草稿 |
+|---|---|
+| en | `That sounds like a lot of anger to carry.` |
+| zh | `听起来你背负了很多怒气。` |
+
+**aggression-03 / 04（扩池 · 方向锁）**
+
+- 口语、留白、不直接贴 `anger` 等标签；风格对齐 02，非 01 咨询腔。  
+- 实现轮可用 `[TBD]` 占位 id；**标 ok 前须替换为审定正文**。
+
+**刻意避免**：`Heard` · `I understand` · `Yin nods` · 点头动作 · 危机转介句式。
 
 ---
 
-*方案作者：Cursor Agent · 2026-09-04 · 分支：待 `fix/confide-aggression-toward-others`*
+*方案作者：Cursor Agent · 2026-09-04 · 方案 PR #563 · 实现：待 `fix/confide-l3-repeat-fallback` 合入后 `fix/confide-aggression-toward-others`*
