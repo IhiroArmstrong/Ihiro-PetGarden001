@@ -59,6 +59,8 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [languageOpen]
  * @property {boolean} [purposeCardOpen]
  * @property {boolean} [privacySheetOpen]
+ * @property {boolean} [focusCircleWitnessLeaveVisible]
+ * @property {boolean} [focusCircleWitnessRespondOpen]
  */
 
 /**
@@ -70,7 +72,8 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen' |
  *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
- *   'purposeCardOpen' | 'privacySheetOpen'
+ *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
+ *   'focusCircleWitnessRespondOpen'
  * >>} OverlaySnapshot
  */
 
@@ -112,7 +115,9 @@ export function buildOverlaySnapshot(input = {}) {
     presenceOpen: Boolean(input.presenceOpen),
     languageOpen: Boolean(input.languageOpen),
     purposeCardOpen: Boolean(input.purposeCardOpen),
-    privacySheetOpen: Boolean(input.privacySheetOpen)
+    privacySheetOpen: Boolean(input.privacySheetOpen),
+    focusCircleWitnessLeaveVisible: Boolean(input.focusCircleWitnessLeaveVisible),
+    focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen)
   };
 }
 
@@ -482,6 +487,27 @@ function collectFirstCardBlockers(snapshot, source) {
   return blockers;
 }
 
+function collectWitnessLeaveYield(snapshot) {
+  /** @type {string[]} */
+  const blockers = [];
+  if (snapshot.postSessionOverlayActive) blockers.push('post-session-overlay');
+  if (snapshot.flowerWelcomeVisible) {
+    blockers.push(OVERLAY_SOURCES.FLOWER_WELCOME);
+  }
+  if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
+  if (snapshot.mustardSeedOpen) {
+    blockers.push(OVERLAY_SOURCES.GROWTH_MUSTARD_SEED);
+  }
+  const primary = activeVisualPrimary(snapshot);
+  if (primary) blockers.push(primary);
+  const growth = activeGrowthCard(snapshot);
+  if (growth) blockers.push(growth);
+  if (snapshot.focusCircleWitnessRespondOpen) {
+    blockers.push(OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND);
+  }
+  return blockers;
+}
+
 /**
  * @param {object} req
  * @param {string} req.source
@@ -567,6 +593,17 @@ export function requestOverlaySlot(req) {
   if (source === OVERLAY_SOURCES.FOCUS_AWARENESS) {
     if (deriveFocusAwarenessCardBusy(snapshot)) {
       mustYieldTo.push('focus-awareness-busy');
+    }
+  }
+
+  if (source === OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE) {
+    mustYieldTo.push(...collectWitnessLeaveYield(snapshot));
+  }
+
+  if (source === OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND) {
+    mustYieldTo.push(...collectWitnessLeaveYield(snapshot));
+    if (snapshot.focusCircleWitnessLeaveVisible) {
+      mustYieldTo.push(OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE);
     }
   }
 

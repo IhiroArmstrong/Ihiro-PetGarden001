@@ -78,7 +78,7 @@
 
 - **Focus Circle Presence 刀 2b（2026-09-05 · #572 已合 develop）**：Idle/Arrive 圈内 sitting dots + heartbeat；Focusing 内不画。Brief `task-focus-circle-presence-2b.md`。**2026-09-05 本机 wrangler deploy**：生产 Version `22326de3-0856-45fc-8942-776f50a34db7`；`POST /api/focus-circle` presence_peek / presence_heartbeat / presence_leave 已上线。
 
-- **Focus Circle Gentle Witness 刀 2c（2026-09-05 · Brief v2）**：预设短语留痕 + 每条最多一次回应。Brief `task-focus-circle-witness-2c.md` · 场景 **AP**。**PO 已批**：≥60s 门槛 · API 命名 · 24h TTL · 1 回应/trace · Idle 1 未回应痕。**v2 澄清**：3s = 延迟出现非限时关条；Rise 条须 `overlaySlotArbitration` Tier26 + yield celebrate/首卡/postSession。**待口令开工**。
+- **Focus Circle Gentle Witness 刀 2c（2026-09-05 · 实现中）**：预设短语留痕 + 每条最多一次回应。Brief `task-focus-circle-witness-2c.md` · 场景 **AP**。**PO 已批**：≥60s 门槛 · API 命名 · 24h TTL · 1 回应/trace · Idle 1 未回应痕。**v2 澄清**：3s = 延迟出现非限时关条；Rise 条须 `overlaySlotArbitration` Tier26 + yield celebrate/首卡/postSession。**分支** `feature/focus-circle-witness-2c`。
 
 - **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 

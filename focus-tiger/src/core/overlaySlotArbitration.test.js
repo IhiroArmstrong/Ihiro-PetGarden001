@@ -497,6 +497,37 @@ describe('requestOverlaySlot', () => {
     assert.equal(d.canShow, false);
     assert.ok(d.mustYieldTo.includes('session-hard-gate'));
   });
+
+  it('witness leave yields to post-session overlay and growth cards', () => {
+    const snapshot = buildOverlaySnapshot({
+      reflectionOpen: true,
+      focusCircleWitnessLeaveVisible: false
+    });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, false);
+    assert.ok(d.mustYieldTo.includes(OVERLAY_SOURCES.REFLECTION));
+  });
+
+  it('witness leave yields to flower welcome and compass', () => {
+    const snapshot = buildOverlaySnapshot({
+      flowerWelcomeVisible: true,
+      compassOpen: true
+    });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, false);
+    assert.ok(d.mustYieldTo.includes(OVERLAY_SOURCES.FLOWER_WELCOME));
+    assert.ok(d.mustYieldTo.includes(OVERLAY_SOURCES.GROWTH_COMPASS));
+  });
 });
 
 describe('overlaySlotContractRegistry', () => {

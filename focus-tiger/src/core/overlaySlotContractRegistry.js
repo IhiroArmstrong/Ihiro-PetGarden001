@@ -44,6 +44,8 @@ export const OVERLAY_SOURCES = Object.freeze({
   ZEN_CINEMA: 'zen-cinema',
   NEWSLETTER: 'newsletter',
   PRESENCE_SIGNALS: 'presence-signals',
+  FOCUS_CIRCLE_WITNESS_LEAVE: 'focus-circle-witness-leave',
+  FOCUS_CIRCLE_WITNESS_RESPOND: 'focus-circle-witness-respond',
   LANGUAGE_PREF: 'language-pref',
   SUPPORT_MODAL: 'support-modal',
   TIP_JAR: 'tip-jar',
@@ -417,6 +419,24 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     readers: 'Wellness disclaimer first card (off by default; ?wellnessFirst=1)'
   }),
   contract({
+    id: OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 26,
+    readers: 'Focus Circle Gentle Witness rise leave strip',
+    blocksIdleYinTap: false,
+    blocksEnterSleep: false,
+    snapshotField: 'focusCircleWitnessLeaveVisible'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND,
+    kind: OVERLAY_SLOT_KIND.HINT,
+    tier: 27,
+    readers: 'Focus Circle Gentle Witness respond phrase picker',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: false,
+    snapshotField: 'focusCircleWitnessRespondOpen'
+  }),
+  contract({
     id: OVERLAY_SOURCES.ONBOARDING_HINT,
     kind: OVERLAY_SLOT_KIND.HINT,
     tier: 30,
@@ -474,5 +494,9 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'InAppReminderBannerUI.js': [OVERLAY_SOURCES.REMINDER_BANNER],
   'ContextualTeaTipBubbleUI.js': [OVERLAY_SOURCES.TEA_BUBBLE],
   'MomentWhisperUI.js': [OVERLAY_SOURCES.MOMENT_WHISPER],
-  'FocusAwarenessCardUI.js': [OVERLAY_SOURCES.FOCUS_AWARENESS]
+  'FocusAwarenessCardUI.js': [OVERLAY_SOURCES.FOCUS_AWARENESS],
+  'FocusCircleWitnessLeaveUI.js': [
+    OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
+    OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND
+  ]
 });
