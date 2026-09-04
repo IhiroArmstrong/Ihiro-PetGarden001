@@ -74,6 +74,8 @@
 
 - **Focus Circle MVP 刀 2a（2026-09-04 · #556 已合 develop）**：Privacy 内建圈 / 六位暗号加入 / 离开；最多 8 人；无聊天。Brief `task-focus-circle-mvp.md`。**2026-09-04 本机 wrangler deploy**：生产 Version `333ad5e9-9c93-471d-8ae1-649f05abba2b`；`POST /api/focus-circle` 路由已上线。
 
+- **Focus Circle Presence 刀 2b（2026-09-05 · #572 已合 develop）**：Idle/Arrive 圈内 sitting dots + heartbeat；Focusing 内不画。Brief `task-focus-circle-presence-2b.md`。**2026-09-05 本机 wrangler deploy**：生产 Version `22326de3-0856-45fc-8942-776f50a34db7`；`POST /api/focus-circle` presence_peek / presence_heartbeat / presence_leave 已上线。
+
 - **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 
 - **Confide boundary EN 生产分叉 Redeploy（2026-09-03 · `chore/confide-boundary-prod-fork-verify`）**：Worker `CONFIDE_BOUNDARY_RESPECT` = `Nothing needs to be said. Yin is still here.`；locale 冻表不改。Version `78199a3b-37a2-4e62-a2c4-57233777ab96`。Brief `task-confide-boundary-prod-fork.md`。

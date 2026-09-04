@@ -647,7 +647,7 @@
 
 > **地位**：Idle / Arrive 背景级圈内同伴 sitting。**≠** 全球灯火（AM）、**≠** Circle 管理（AN）、**≠** Presence Signals。Focusing 内不画。  
 > **单元**：`focusCirclePresence.test.js` · cloud `focusCirclePresenceKv.test.ts`。  
-> **生产**：Worker 未部署 presence actions 时 Idle 保持空白（诚实）。  
+> **生产**：Version `22326de3`（2026-09-05 · #572）已含 presence actions；未部署时 Idle 保持空白（诚实）。  
 > **点击**：银蓝 dots `pointer-events: none`；管理仍在菜单 / Privacy。
 
 1. A、B **均已入圈**（两独立浏览器配置）→ A **Sit** 进 Focusing → B **硬刷新 Idle** 约 2.5–10s 见银蓝 dots +「圈里有人在坐」（全球金灯火可同时出现）。  
