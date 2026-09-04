@@ -19,9 +19,25 @@ import {
 	parseFocusCircleRecord,
 	removeFocusCircleMember,
 } from "../lib/focusCircleKv";
+import {
+	FOCUS_CIRCLE_PRESENCE_SCHEMA_VERSION,
+	applyCirclePresenceHeartbeat,
+	applyCirclePresenceLeave,
+	circlePresenceKvKey,
+	countCircleSittingSessions,
+	parseFocusCirclePresenceRecord,
+} from "../lib/focusCirclePresenceKv";
 import type { Env } from "../types";
 
-const ACTIONS = new Set(["create", "join", "leave", "status"]);
+const ACTIONS = new Set([
+	"create",
+	"join",
+	"leave",
+	"status",
+	"presence_peek",
+	"presence_heartbeat",
+	"presence_leave",
+]);
 const MAX_CODE_RETRIES = 12;
 
 type KvLike = {
@@ -43,6 +59,37 @@ async function saveCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<typ
 async function deleteCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>) {
 	await kv.delete(circleIdKvKey(record.circleId));
 	await kv.delete(circleCodeKvKey(record.code));
+	await kv.delete(circlePresenceKvKey(record.circleId));
+}
+
+async function loadCirclePresence(kv: KvLike, circleId: string) {
+	const raw = await kv.get(circlePresenceKvKey(circleId));
+	return parseFocusCirclePresenceRecord(raw).sessions;
+}
+
+async function saveCirclePresence(
+	kv: KvLike,
+	circleId: string,
+	sessions: Record<string, number>,
+) {
+	await kv.put(
+		circlePresenceKvKey(circleId),
+		JSON.stringify({
+			schemaVersion: FOCUS_CIRCLE_PRESENCE_SCHEMA_VERSION,
+			sessions,
+		}),
+	);
+}
+
+async function clearCircleMemberPresence(
+	kv: KvLike,
+	circleId: string,
+	memberId: string,
+	nowMs: number,
+) {
+	const sessions = await loadCirclePresence(kv, circleId);
+	const next = applyCirclePresenceLeave(sessions, memberId, nowMs);
+	await saveCirclePresence(kv, circleId, next);
 }
 
 function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>, memberId: string) {
@@ -80,7 +127,11 @@ export async function handleFocusCircle(
 	}
 	const action = typeof o.action === "string" ? o.action : "";
 	if (!ACTIONS.has(action)) {
-		return errorJson(400, "bad_action", "action must be create, join, leave, or status");
+		return errorJson(
+			400,
+			"bad_action",
+			"action must be create, join, leave, status, presence_peek, presence_heartbeat, or presence_leave",
+		);
 	}
 
 	const kv = env.TIP_KV;
@@ -154,6 +205,40 @@ export async function handleFocusCircle(
 			return errorJson(404, "circle_not_found", "Circle not found");
 		}
 
+		if (
+			action === "presence_peek" ||
+			action === "presence_heartbeat" ||
+			action === "presence_leave"
+		) {
+			if (!record.members[memberId]) {
+				return errorJson(403, "not_member", "Not a member of this circle");
+			}
+			const sessions = await loadCirclePresence(kv, circleId);
+			if (action === "presence_peek") {
+				const sittingOthers = countCircleSittingSessions(
+					sessions,
+					nowMs,
+					memberId,
+				);
+				return json({
+					ok: true,
+					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+					sittingOthers,
+				});
+			}
+			const next =
+				action === "presence_heartbeat"
+					? applyCirclePresenceHeartbeat(sessions, memberId, nowMs)
+					: applyCirclePresenceLeave(sessions, memberId, nowMs);
+			await saveCirclePresence(kv, circleId, next);
+			const sittingOthers = countCircleSittingSessions(next, nowMs, memberId);
+			return json({
+				ok: true,
+				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+				sittingOthers,
+			});
+		}
+
 		if (action === "status") {
 			const isMember = Boolean(record.members[memberId]);
 			return json({
@@ -168,6 +253,7 @@ export async function handleFocusCircle(
 		}
 
 		const next = removeFocusCircleMember(record, memberId);
+		await clearCircleMemberPresence(kv, circleId, memberId, nowMs);
 		if (!next) {
 			await deleteCircle(kv, record);
 			return json({

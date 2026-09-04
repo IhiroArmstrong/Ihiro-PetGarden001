@@ -36,6 +36,7 @@ const WHITELIST_FILES = new Set([
   'LocalPracticeDataPanelUI.js',
   'QuietTogetherPanelUI.js',
   'FocusCirclePanelUI.js',
+  'FocusCirclePresenceChrome.js',
   'SeasonalThemeChromeUI.js',
   'SoftUpdatePromptUI.js',
   'NarrowIdleShell.js',

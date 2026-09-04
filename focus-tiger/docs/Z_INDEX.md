@@ -23,6 +23,7 @@
 | **2** | `index.html` | `#scene-canvas` 3D/WebGL 场景画布 |
 | **2** | `index.html` | FocusHUD 连胜环（`.ft-hud__streak`）相对 HUD 卡 |
 | **2** | `src/ui/QuietTogetherLanternsChrome.js` | Quiet Together 灯火（`#quiet-together-lanterns`，`pointer-events: none`；宽屏锚在热力图簇上方；Idle/Arrive 背景；Focusing 隐藏） |
+| **2** | `src/ui/FocusCirclePresenceChrome.js` | Focus Circle 圈内 sitting（`#focus-circle-presence`，银蓝 dots；叠在全球灯火上方；Idle/Arrive；Focusing 隐藏） |
 | **2** | `src/ui/OnboardingHintsUI.js` | 提示发现小圆点（`.ft-hint-discovery-dot`）相对宿主按钮角标 |
 | **2** | `ui-kit/components/streak-meter.js` | `<streak-meter>` host 相对邻居 |
 | **3** | `index.html` | FocusHUD 悬停详情卡（`.ft-hud__detail`） |
