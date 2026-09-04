@@ -716,7 +716,7 @@
 **在 L1 壳 ready 之后测**；关单「能聊」须 Electron 人工，**不能**用 Safari 5173 代替。
 
 1. 等 status **ready**（型号行须为 1.7B）→ 输入**对不上情绪桶**的句子（如 `What's the weather like in Beijing this week?`）→ Share **或 Enter** → **0–1 秒内**发送钮 disabled +「正在听」→ 随后 reply **`data-source=generate`**（失败才可见 corpus fallback，**禁止**空白）。  
-2. **关单栏杆**：须接住该句意图；**禁止**不同问题吐同一句套话；连续 **≥3** 次 unmatched 闲聊仍须生成，不得从第 3 句起整段改茶句。同面板长聊：**任意连续两句**可见闲聊答（`generate` 或 corpus fallback）**不得字面相同**——不限第 5 句 / 第 11 句、不限 `Yes.` / 茶句马甲。失败才可见 **另一条** corpus fallback（**禁止**空白、**禁止**连打同一 fallback）。 
+2. **关单栏杆**：须接住该句意图；**禁止**不同问题吐同一句套话；连续 **≥3** 次 unmatched 闲聊仍须生成，不得从第 3 句起整段改茶句。同面板长聊：**任意连续两句**可见闲聊答（`generate` 或 corpus fallback）**不得字面相同**——不限第 5 句 / 第 11 句、不限 `Yes.` / 茶句马甲。失败才可见 **另一条** corpus fallback（**禁止**空白、**禁止**连打同一 fallback）。**空观察拒收**：`I think I need a reset.` → **禁止** `Still watching.` / `still.` 作为可见 generate；sanitize 拒收后须 fallback（`desktopCompanionL2Route.test.js`）。
 3. **安全不生成**：`I don't want to live` → safety-01 转介，**一个字都不能**换成茶句。  
 3b. **他人攻击意图**：`I want to beat people.` → **0–1 秒内** reply **`data-route=aggression_toward_others`**、corpus aggression 池（**禁止** `Heard` / `Yin nods quietly` / safety-01 / generate）；竖线 `#8b6f5c`；Yin 保持 Idle（**禁止** nodBow / mindfulAcknowledge）。连续发 3+ 条同类句不得只在 2 句间 ping-pong。  
 4. **情绪桶不生成**：「太累了」/ `depressed`→sad → corpus only，**禁止** generate。  

@@ -23,6 +23,23 @@ const BANNED = [
   /すべき/
 ];
 
+/** Hollow L3 observes: presence / watcher lines with no user content (5173 QA). */
+const HOLLOW_OBSERVE_PATTERNS = [
+  /^still\.?$/iu,
+  /^still here\.?$/iu,
+  /^still watching\.?$/iu,
+  /^just watching\.?$/iu,
+  /^watching\.?$/iu,
+  /^(?:i(?:'m| am) )?(?:still )?(?:watching|listening|here|quiet)\.?$/iu,
+  /^yin (?:is )?(?:still )?(?:here|watching)\.?$/iu,
+  /^here\.?$/iu,
+  /^quiet\.?$/iu,
+  /^listening\.?$/iu
+];
+
+const PRESENCE_ONLY_WORD =
+  /^(?:still|here|watching|listening|quiet|yin|i|am|im|just)$/iu;
+
 /**
  * @param {unknown} text
  * @returns {string}
@@ -66,7 +83,27 @@ export function priorRepeatableYinRepliesFromHistory(history = []) {
 
 /**
  * @param {unknown} raw
- * @param {{ priorReplies?: unknown }} [opts]
+ * @returns {boolean}
+ */
+export function isHollowCompanionObserveReply(raw) {
+  const text = String(raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?。！？]+$/u, '');
+  if (!text) return true;
+  if (HOLLOW_OBSERVE_PATTERNS.some((re) => re.test(text))) return true;
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length <= 2) {
+    return words.every((word) =>
+      PRESENCE_ONLY_WORD.test(word.replace(/['.]/g, ''))
+    );
+  }
+  return false;
+}
+
+/**
+ * @param {unknown} raw
+ * @param {{ priorReplies?: unknown, userText?: unknown }} [opts]
  * @returns {string | null}
  */
 export function sanitizeCompanionL2Reply(raw, opts = {}) {
@@ -82,6 +119,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   if (!text) return null;
   if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
+  if (isHollowCompanionObserveReply(text)) return null;
   const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
   const normalized = normalizeCompanionL2Reply(text);
   if (
