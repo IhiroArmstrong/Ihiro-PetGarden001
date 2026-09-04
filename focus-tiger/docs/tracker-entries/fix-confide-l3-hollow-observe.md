@@ -1,0 +1,3 @@
+# fix/confide-l3-hollow-observe · 2026-09-04
+
+| Confide L3 拒收空观察句（still. / Still watching.） | UI可见 | 待人工测试 | **仅 Electron 非低配宽屏 · Confide ready。** **主路径**：`I think I need a reset.` → Share → **禁止**可见 `Still watching.` / `still.` 作为 `data-source=generate`；若 L3 产出空话须 sanitize 拒收并走 **另一条** corpus fallback（禁止空白）。**负例**：`Tea is still warm.` 仍可为合法 corpus fallback（含 still 但非空话）。**对照**：`I don't feel like focusing today.` 仍允许 generate 或 corpus，但不得是仅 presence 的 1–2 词。**回流**：关卡再开同句仍不得空话 generate。自动化：`desktopCompanionL2Route.test.js`（prompt 约束 + `isHollowCompanionObserveReply` / sanitize）。 | **2026-09-04 用户书面**（5173 QA）：`reset`→`Still watching.` 不妥。 | — | — | `npm run desktop:dev` · `#confide-to-yin-reply` | 2026-09-04 |

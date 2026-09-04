@@ -341,7 +341,8 @@ export class CompanionL1Runtime {
     const ev = await this._queue;
     const raw = ev?.event === 'generated' ? ev.text : '';
     const sanitized = sanitizeCompanionL2Reply(raw, {
-      priorReplies: priorRepeatableYinRepliesFromHistory(payload.history)
+      priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
+      userText: text
     });
     const record = {
       at: new Date().toISOString(),

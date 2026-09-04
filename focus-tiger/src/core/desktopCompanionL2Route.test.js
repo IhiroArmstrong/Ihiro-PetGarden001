@@ -21,7 +21,7 @@ import {
   buildReflectionCompanionPrompt,
   historyForGeneratePrompt
 } from '../../desktop/companion/l2Persona.js';
-import { sanitizeCompanionL2Reply } from '../../desktop/companion/l2Sanitize.js';
+import { sanitizeCompanionL2Reply, isHollowCompanionObserveReply } from '../../desktop/companion/l2Sanitize.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const focusTigerRoot = join(here, '../..');
@@ -184,6 +184,8 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.match(prompt, /do not advise/i);
     assert.match(prompt, /do not answer with river, mountain, or ground/i);
     assert.match(prompt, /do not replace them with scenery, weather, season, or light/i);
+    assert.match(prompt, /Name at least one concrete word or idea from their latest message/i);
+    assert.match(prompt, /Do not answer with only still, watching, here, quiet, or listening presence/i);
     assert.match(prompt, /Never reply with I am curious/i);
     assert.match(prompt, /respect the boundary/i);
     assert.match(prompt, /do not repeat an earlier Yin sentence/i);
@@ -191,6 +193,18 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(sanitizeCompanionL2Reply('I am aware of your mood.'), null);
     assert.match(prompt, /the weather is mild today/);
     assert.equal(sanitizeCompanionL2Reply('Tea is still warm.'), 'Tea is still warm.');
+    assert.equal(
+      sanitizeCompanionL2Reply('still.', { userText: 'I think I need a reset.' }),
+      null
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply('Still watching.', {
+        userText: 'I think I need a reset.'
+      }),
+      null
+    );
+    assert.equal(isHollowCompanionObserveReply('Still watching.'), true);
+    assert.equal(isHollowCompanionObserveReply('What you said stays here.'), false);
     assert.equal(sanitizeCompanionL2Reply('Yes'), null);
     assert.equal(
       sanitizeCompanionL2Reply('Sit a while. Tea is still warm.', {
