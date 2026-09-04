@@ -643,6 +643,21 @@
 
 ---
 
+## 场景 AO：Focus Circle Presence（圈内 sitting · 2026-09-04）
+
+> **地位**：Idle / Arrive 背景级圈内同伴 sitting。**≠** 全球灯火（AM）、**≠** Circle 管理（AN）、**≠** Presence Signals。Focusing 内不画。  
+> **单元**：`focusCirclePresence.test.js` · cloud `focusCirclePresenceKv.test.ts`。  
+> **生产**：Worker 未部署 presence actions 时 Idle 保持空白（诚实）。  
+> **点击**：银蓝 dots `pointer-events: none`；管理仍在菜单 / Privacy。
+
+1. A、B **均已入圈**（两独立浏览器配置）→ A **Sit** 进 Focusing → B **硬刷新 Idle** 约 2.5–10s 见银蓝 dots +「圈里有人在坐」（全球金灯火可同时出现）。  
+2. A **Rise** 回 Idle → B 约 5–10s 内 dots 消失（诚实 0）。  
+3. A **Breath practice** 呼吸 ≥5s → B Idle 亦应见圈内 dots（A 练习窗自身不画）。  
+4. A **Leave circle** → B 不再见 A 的圈内 presence；A 本地亦清 snapshot。  
+5. `?focusCircle=0` → 不请求、不画。
+
+---
+
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
 > **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。  

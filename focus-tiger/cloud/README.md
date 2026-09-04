@@ -40,7 +40,7 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/emotion-weight` | 品味层权重 overlay（`schemaVersion: 1`） |
 | `POST` | `/api/monetization-funnel-ingest` | 意愿漏斗 opt-in 快照（含可选 `layout`）→ `TIP_KV` 键 `funnel:v1:{day}:{clientId}`（TTL 90d） |
 | `POST` | `/api/lantern-presence` | Quiet Together 匿名 presence：`action` = `peek` \| `heartbeat` \| `leave`；`sessionId` UUID；`TIP_KV` `lantern:v1:live`（TTL 120s） |
-| `POST` | `/api/focus-circle` | Focus Circle MVP：`action` = `create` \| `join` \| `leave` \| `status`；6 位暗号；`TIP_KV` `circle:v1:*`（最多 8 人） |
+| `POST` | `/api/focus-circle` | Focus Circle MVP：`action` = `create` \| `join` \| `leave` \| `status` \| `presence_peek` \| `presence_heartbeat` \| `presence_leave`；6 位暗号；`TIP_KV` `circle:v1:*`（最多 8 人；presence TTL 120s） |
 | `POST` | `/api/create-tip-checkout-session` | Stripe Checkout（`mode: payment`）→ `{ url }` |
 | `POST` | `/api/create-sanctuary-checkout-session` | Stripe Checkout（`mode: payment` Lifetime）→ `{ url }` |
 | `POST` | `/api/create-membership-checkout-session` | Stripe Checkout（`mode: subscription`）→ `{ url }` |

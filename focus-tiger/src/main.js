@@ -158,6 +158,22 @@ import {
   stopLanternHeartbeat
 } from './core/quietTogetherPresence.js';
 import { syncLanternIdleObserverPeek } from './core/quietTogetherIdleSchedule.js';
+import {
+  bindFocusCirclePresencePageHide,
+  bindFocusCirclePresenceVisibilityPeek,
+  peekFocusCirclePresence,
+  scheduleFocusCirclePeek,
+  setFocusCirclePresenceBusyProbe,
+  setFocusCirclePresenceContributing,
+  startFocusCircleHeartbeat,
+  stopFocusCircleHeartbeat,
+  clearFocusCirclePresenceSnapshot
+} from './core/focusCirclePresence.js';
+import { syncFocusCircleIdleObserverPeek } from './core/focusCircleIdleSchedule.js';
+import {
+  FOCUS_CIRCLE_CHANGE_EVENT,
+  readFocusCircleMembership
+} from './core/focusCircleMembership.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
@@ -177,6 +193,7 @@ import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { QuietTogetherLanternsChrome } from './ui/QuietTogetherLanternsChrome.js';
+import { FocusCirclePresenceChrome } from './ui/FocusCirclePresenceChrome.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
@@ -1129,8 +1146,15 @@ async function init() {
     {}
   );
   window.__quietTogetherLanterns = quietTogetherLanternsChrome;
+  const focusCirclePresenceChrome = new FocusCirclePresenceChrome(
+    document.body,
+    {}
+  );
+  window.__focusCirclePresence = focusCirclePresenceChrome;
   window.peekLanternPresence = peekLanternPresence;
+  window.peekFocusCirclePresence = peekFocusCirclePresence;
   bindLanternPresencePageHide();
+  bindFocusCirclePresencePageHide();
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(
     document.body,
     withIdleOverlayOccupancySync({
@@ -2233,13 +2257,23 @@ async function init() {
 
   function beginBreathLanternPresence() {
     quietTogetherLanternsChrome.setContributing(true);
+    focusCirclePresenceChrome.setFocusing(false);
+    setFocusCirclePresenceContributing(true);
     startLanternHeartbeat();
+    startFocusCircleHeartbeat();
   }
 
   function endBreathLanternPresence() {
     quietTogetherLanternsChrome.setContributing(false);
+    setFocusCirclePresenceContributing(false);
     void stopLanternHeartbeat().then(() => {
       scheduleLanternPeek({
+        storage:
+          typeof localStorage !== 'undefined' ? localStorage : null
+      });
+    });
+    void stopFocusCircleHeartbeat().then(() => {
+      scheduleFocusCirclePeek({
         storage:
           typeof localStorage !== 'undefined' ? localStorage : null
       });
@@ -3239,7 +3273,9 @@ async function init() {
     activeRecoverAnchor.setFocusing(false);
     immersivePresenceUI.setFocusing(false);
     quietTogetherLanternsChrome.setFocusing(false);
+    focusCirclePresenceChrome.setFocusing(false);
     void stopLanternHeartbeat();
+    void stopFocusCircleHeartbeat();
     companionModePicker.setIdleChromeVisible(true);
   }
 
@@ -3411,7 +3447,9 @@ async function init() {
     activeRecoverAnchor.setFocusing(true);
     immersivePresenceUI.setFocusing(true);
     quietTogetherLanternsChrome.setFocusing(true);
+    focusCirclePresenceChrome.setFocusing(true);
     startLanternHeartbeat();
+    startFocusCircleHeartbeat();
     attentionSignals.setEnabled(true);
     acrossToolsIdleGuard.stop();
     if (companionMode === COMPANION_MODE_ACROSS_TOOLS) {
@@ -4262,6 +4300,9 @@ async function init() {
     syncLanternIdleObserverPeek(stateManager.state, {
       storage: idleLanternStorage
     });
+    syncFocusCircleIdleObserverPeek(stateManager.state, {
+      storage: idleLanternStorage
+    });
   }
 
   stateManager.onChange(() => {
@@ -4297,6 +4338,19 @@ async function init() {
   bindLanternPresenceVisibilityPeek(
     () => stateManager.state === STATES.IDLE
   );
+  bindFocusCirclePresenceVisibilityPeek(
+    () => stateManager.state === STATES.IDLE
+  );
+
+  globalThis.addEventListener?.(FOCUS_CIRCLE_CHANGE_EVENT, () => {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (!readFocusCircleMembership(storage)) {
+      clearFocusCirclePresenceSnapshot();
+      void stopFocusCircleHeartbeat({ storage });
+      focusCirclePresenceChrome.refresh();
+    }
+  });
 
   setPracticeBackupBusyProbe(() => {
     const s = stateManager.state;
@@ -4323,6 +4377,17 @@ async function init() {
     };
   });
   setLanternPresenceBusyProbe(() => {
+    const s = stateManager.state;
+    const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
+    const overlay =
+      Boolean(sessionUiGate?.postSessionOverlayActive) ||
+      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+    return {
+      busy: focusing || overlay,
+      retry: overlay && !focusing
+    };
+  });
+  setFocusCirclePresenceBusyProbe(() => {
     const s = stateManager.state;
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
