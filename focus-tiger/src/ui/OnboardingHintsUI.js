@@ -78,7 +78,9 @@ import {
   leaveFocusCircle,
   readCircleJoinQueryCode,
   readFocusCircleMembership,
-  refreshFocusCircleStatus
+  refreshFocusCircleStatus,
+  startFocusCircleStatusPolling,
+  stopFocusCircleStatusPolling
 } from '../core/focusCircleMembership.js';
 import {
   onYpeCloudPersonalizationConsentDisabled,
@@ -2624,6 +2626,25 @@ export class OnboardingHintsUI {
     this._setFocusCircleStatus('', false);
   }
 
+  _syncFocusCirclePrivacyPolling() {
+    if (!this.privacySheet || this.privacySheet.hidden) {
+      stopFocusCircleStatusPolling();
+      return;
+    }
+    if (!readFocusCircleMembership(globalThis.localStorage)) {
+      stopFocusCircleStatusPolling();
+      return;
+    }
+    startFocusCircleStatusPolling({
+      storage: globalThis.localStorage,
+      search: globalThis.location?.search ?? '',
+      onUpdate: () => {
+        if (!this.privacySheet || this.privacySheet.hidden) return;
+        this._refreshFocusCircleSection();
+      }
+    });
+  }
+
   async _handleFocusCircleCreate() {
     this._setFocusCircleBusy(true);
     this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
@@ -2641,6 +2662,7 @@ export class OnboardingHintsUI {
         return;
       }
       this._refreshFocusCircleSection();
+      this._syncFocusCirclePrivacyPolling();
       this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_CREATED', true);
     } finally {
       this._setFocusCircleBusy(false);
@@ -2675,6 +2697,7 @@ export class OnboardingHintsUI {
         this._privacyFocusCircleJoinInput.value = '';
       }
       this._refreshFocusCircleSection();
+      this._syncFocusCirclePrivacyPolling();
       this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_JOINED', true);
     } finally {
       this._setFocusCircleBusy(false);
@@ -2693,6 +2716,7 @@ export class OnboardingHintsUI {
         this._privacyFocusCircleJoinInput.value = '';
       }
       this._refreshFocusCircleSection();
+      stopFocusCircleStatusPolling();
       this._setFocusCircleStatus('PRIVACY_SHEET_FOCUS_CIRCLE_LEFT', true);
     } finally {
       this._setFocusCircleBusy(false);
@@ -2759,6 +2783,7 @@ export class OnboardingHintsUI {
       search: globalThis.location?.search ?? ''
     }).then(() => {
       this._refreshFocusCircleSection();
+      this._syncFocusCirclePrivacyPolling();
     });
     this._purposeFromHover = false;
     this._purposePinned = true;
@@ -2775,6 +2800,7 @@ export class OnboardingHintsUI {
   }
 
   _closePrivacySheetToPurpose() {
+    stopFocusCircleStatusPolling();
     if (this.privacySheet) this.privacySheet.hidden = true;
     if (this._privacyOpenedFromPurpose) {
       this._privacyOpenedFromPurpose = false;
@@ -2784,6 +2810,7 @@ export class OnboardingHintsUI {
   }
 
   _hidePrivacySheet() {
+    stopFocusCircleStatusPolling();
     if (this.privacySheet) this.privacySheet.hidden = true;
     this._privacyOpenedFromPurpose = false;
   }
