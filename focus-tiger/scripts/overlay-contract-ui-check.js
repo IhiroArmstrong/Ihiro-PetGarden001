@@ -34,6 +34,8 @@ const WHITELIST_FILES = new Set([
   'IdleCompanionPipUI.js',
   'LocalPracticeDataUI.js',
   'LocalPracticeDataPanelUI.js',
+  'QuietTogetherPanelUI.js',
+  'FocusCirclePanelUI.js',
   'SeasonalThemeChromeUI.js',
   'SoftUpdatePromptUI.js',
   'NarrowIdleShell.js',

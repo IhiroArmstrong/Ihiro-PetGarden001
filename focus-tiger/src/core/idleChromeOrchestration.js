@@ -119,7 +119,9 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   reminder: 'ft-narrow-stage-reminder',
   sound: 'ft-narrow-stage-sound',
   language: 'ft-narrow-stage-language',
-  localBackup: 'ft-narrow-stage-local-backup'
+  localBackup: 'ft-narrow-stage-local-backup',
+  quietTogether: 'ft-narrow-stage-quiet-together',
+  focusCircle: 'ft-narrow-stage-focus-circle'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -128,7 +130,9 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   reminder: 'ft-wide-stage-reminder',
   sound: 'ft-wide-stage-sound',
   language: 'ft-wide-stage-language',
-  localBackup: 'ft-wide-stage-local-backup'
+  localBackup: 'ft-wide-stage-local-backup',
+  quietTogether: 'ft-wide-stage-quiet-together',
+  focusCircle: 'ft-wide-stage-focus-circle'
 });
 
 /**
@@ -419,6 +423,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
         }
       : null,
     { proxy: 'wallpapers', labelKey: 'WALLPAPER_MENU_LABEL' }
+  ]);
+
+  pushLabeledGroup(out, 'MENU_GROUP_NOT_ALONE', [
+    { proxy: 'quiet-together', labelKey: 'QUIET_TOGETHER_MENU_LABEL' },
+    { proxy: 'focus-circle', labelKey: 'FOCUS_CIRCLE_MENU_LABEL' }
   ]);
 
   pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', [

@@ -17,7 +17,7 @@
 
 /** Keys that may stay identical to English (brand / film titles). */
 export const JA_MAY_MATCH_EN = Object.freeze(
-  new Set(['APP_TITLE', 'ZEN_CINEMA_FILM_TITLE'])
+  new Set(['APP_TITLE', 'ZEN_CINEMA_FILM_TITLE', 'MENU_GROUP_NOT_ALONE'])
 );
 
 /** Hiragana | Katakana | CJK Unified Ideographs (covers kanji-only labels). */

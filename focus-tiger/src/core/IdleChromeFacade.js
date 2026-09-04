@@ -98,6 +98,8 @@ export class IdleChromeFacade {
       onNewsletter: h.onNewsletter,
       onCommunity: h.onCommunity,
       onLocalBackup: h.onLocalBackup,
+      onQuietTogether: h.onQuietTogether,
+      onFocusCircle: h.onFocusCircle,
       onRitualFlow: h.onRitualFlow,
       onHonesty: h.onHonesty,
       onQuickStart: h.onQuickStart,
@@ -127,6 +129,8 @@ export class IdleChromeFacade {
       onNewsletter: h.onNewsletter,
       onCommunity: h.onCommunity,
       onLocalBackup: h.onLocalBackup,
+      onQuietTogether: h.onQuietTogether,
+      onFocusCircle: h.onFocusCircle,
       onRitualFlow: h.onRitualFlow,
       onHonesty: h.onHonesty,
       onQuickStart: h.onQuickStart,
@@ -195,10 +199,16 @@ export class IdleChromeFacade {
       NARROW_STAGE_CLASS.reminder,
       NARROW_STAGE_CLASS.sound,
       NARROW_STAGE_CLASS.language,
+      NARROW_STAGE_CLASS.localBackup,
+      NARROW_STAGE_CLASS.quietTogether,
+      NARROW_STAGE_CLASS.focusCircle,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
       WIDE_STAGE_CLASS.sound,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.localBackup,
+      WIDE_STAGE_CLASS.quietTogether,
+      WIDE_STAGE_CLASS.focusCircle
     );
   }
 

@@ -98,6 +98,8 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
+import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
+import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
@@ -1029,6 +1031,20 @@ async function init() {
     }
   });
   window.__localPracticeDataPanel = localPracticeDataPanelUI;
+  const quietTogetherPanelUI = new QuietTogetherPanelUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-narrow-stage-quiet-together');
+      document.body.classList.remove('ft-wide-stage-quiet-together');
+    }
+  });
+  window.__quietTogetherPanel = quietTogetherPanelUI;
+  const focusCirclePanelUI = new FocusCirclePanelUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-narrow-stage-focus-circle');
+      document.body.classList.remove('ft-wide-stage-focus-circle');
+    }
+  });
+  window.__focusCirclePanel = focusCirclePanelUI;
   const zenCinemaCardUI = new ZenCinemaCardUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1266,6 +1282,8 @@ async function init() {
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
     if (except !== 'local-backup') localPracticeDataPanelUI.closePanel();
+    if (except !== 'quiet-together') quietTogetherPanelUI.closePanel();
+    if (except !== 'focus-circle') focusCirclePanelUI.closePanel();
     syncIdleYinTap();
   }
 
@@ -2644,6 +2662,14 @@ async function init() {
       closeGrowthOverlayCards({ except: 'local-backup' });
       localPracticeDataPanelUI.openPanel();
     },
+    onQuietTogether: () => {
+      closeGrowthOverlayCards({ except: 'quiet-together' });
+      quietTogetherPanelUI.openPanel();
+    },
+    onFocusCircle: () => {
+      closeGrowthOverlayCards({ except: 'focus-circle' });
+      focusCirclePanelUI.openPanel();
+    },
     onRitualFlow: (proxy) => {
       openRitualFlowFromMenu(proxy);
     },
@@ -2676,6 +2702,8 @@ async function init() {
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
       localPracticeDataPanelUI.closePanel();
+      quietTogetherPanelUI.closePanel();
+      focusCirclePanelUI.closePanel();
       idleSecondaryPanelHost.close();
       momentWhisperUI.hide({ immediate: true });
       ambientSoundscapeUI.clearNarrowSoundStage();
