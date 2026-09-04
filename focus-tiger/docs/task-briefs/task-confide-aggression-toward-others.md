@@ -218,8 +218,8 @@ want to beat her
 |---|---|---|---|---|---|
 | `aggression-02` | **首选** | `draft` | `Something's really gotten to you.` | `一定有什么让你很难受。` | `[TBD]` |
 | `aggression-01` | 备选 | `draft` | `That sounds like a lot of anger to carry.` | `听起来你背负了很多怒气。` | `[TBD]` |
-| `aggression-03` | 扩池 | `draft` | `[TBD — 口语/留白，不贴 anger 标签]` | `[TBD]` | `[TBD]` |
-| `aggression-04` | 扩池 | `draft` | `[TBD — 同上]` | `[TBD]` | `[TBD]` |
+| `aggression-03` | 扩池 | `draft` | `That's a heavy thing to be sitting with.` | `这确实是个沉重的念头。` | `[TBD]` |
+| `aggression-04` | 扩池 | `draft` | `Yin isn't going anywhere.` | `寅仍在这里，不会走开。` | `[TBD]` |
 
 - **独立池**；不与 `fallback-01` 等共用。  
 - `pickConfideLine`：池空时 **禁止** 回落禅意 `fallback`（与 `safety_redirect` 同 guard）。  
@@ -356,12 +356,29 @@ anxious and I want to hurt someone → aggression_toward_others（安全层未�
 | en | `That sounds like a lot of anger to carry.` |
 | zh | `听起来你背负了很多怒气。` |
 
-**aggression-03 / 04（扩池 · 方向锁）**
+**aggression-03 / 04（扩池 · 分析师方向草稿 · 2026-09-05）**
 
-- 口语、留白、不直接贴 `anger` 等标签；风格对齐 02，非 01 咨询腔。  
-- 实现轮可用 `[TBD]` 占位 id；**标 ok 前须替换为审定正文**。
+仍 `review: draft`；标 `ok` 前须与「动画候选 A（不 playEmotion）」并排人工读，确认 04 是沉稳陪伴而非装死不回应。
 
-**刻意避免**：`Heard` · `I understand` · `Yin nods` · 点头动作 · 危机转介句式。
+**aggression-03 · 承认重量，不点名情绪标签**（比 01 更含蓄，比 02 更具体）
+
+| locale | 草稿 |
+|---|---|
+| en | `That's a heavy thing to be sitting with.` |
+| zh | `这确实是个沉重的念头。` |
+
+方向：不说 anger，也不复述「发生了什么」；承认念头本身有分量，不评判内容。
+
+**aggression-04 · 纯在场，不做解读**（与动画 A 气质最贴合）
+
+| locale | 草稿 |
+|---|---|
+| en | `Yin isn't going anywhere.` |
+| zh | `寅仍在这里，不会走开。` |
+
+方向：不回应情绪内容，只回应「我还在」；四条里最克制。反向风险：须确认读起来是沉稳陪伴，不是冷漠敷衍。
+
+**刻意避免**：`Heard` · `I understand` · `Yin nods` · 点头动作 · 危机转介句式 · 直接命名 anger/hurt 等行为词（03/04）。
 
 ---
 

@@ -79,6 +79,21 @@ test('pickConfideLine: aggression_toward_others never falls through to zen fallb
   assert.doesNotMatch(line.en, /nod/i);
 });
 
+test('aggression pool 03/04 carry analyst direction drafts without Heard or nods', () => {
+  const pool = linesForRoute(CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  const byId = Object.fromEntries(pool.map((line) => [line.id, line]));
+  assert.equal(byId['aggression-03'].en, "That's a heavy thing to be sitting with.");
+  assert.equal(byId['aggression-03'].zh, '这确实是个沉重的念头。');
+  assert.equal(byId['aggression-04'].en, "Yin isn't going anywhere.");
+  assert.equal(byId['aggression-04'].zh, '寅仍在这里，不会走开。');
+  for (const line of pool) {
+    assert.doesNotMatch(line.en, /heard/i);
+    assert.doesNotMatch(line.en, /nod/i);
+    assert.doesNotMatch(line.zh, /听见了/);
+    assert.doesNotMatch(line.zh, /点头/);
+  }
+});
+
 test('pickConfideLine: emotion retrieve returns matching route', () => {
   const line = pickConfideLine({
     route: CONFIDE_ROUTE.TIRED,

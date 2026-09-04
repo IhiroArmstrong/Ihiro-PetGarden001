@@ -40,14 +40,14 @@
 
 > **SSOT**：`task-briefs/task-confide-aggression-toward-others.md` · 关键词：`confideAggressionKeywords.js`（EN 规则）。  
 > **红线**：禁 `Heard` / 点头描写 / 危机转介。`review: ok` 前不得对用户可见挂载。  
-> **扩池门禁**：上线前须 ≥4 条审定文案（03/04 仍为 draft 占位）。
+> **扩池门禁**：上线前须 ≥4 条审定文案（03/04 为分析师方向草稿 · 2026-09-05，仍 `draft`）。
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
 | aggression-02 | 一定有什么让你很难受。 | Something's really gotten to you. | [TBD] | **draft（首选）** |
 | aggression-01 | 听起来你背负了很多怒气。 | That sounds like a lot of anger to carry. | [TBD] | **draft（备选）** |
-| aggression-03 | [TBD] | A lot is pressing in right now. | [TBD] | **draft（扩池占位）** |
-| aggression-04 | [TBD] | Something heavy is sitting with you. | [TBD] | **draft（扩池占位）** |
+| aggression-03 | 这确实是个沉重的念头。 | That's a heavy thing to be sitting with. | [TBD] | **draft（重量·不贴情绪标签）** |
+| aggression-04 | 寅仍在这里，不会走开。 | Yin isn't going anywhere. | [TBD] | **draft（纯在场·对齐动画 A）** |
 
 > 句库 overlay 白名单仍 19 条；本池 id **不进**云 overlay，直至产品审定。
 
