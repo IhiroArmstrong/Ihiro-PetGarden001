@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
-  scheduleLanternPeekWhenIdle,
+  syncLanternIdleObserverPeek,
   shouldScheduleLanternPeekForSessionState
 } from './quietTogetherIdleSchedule.js';
 import {
@@ -22,13 +22,13 @@ describe('quietTogetherIdleSchedule', () => {
     assert.equal(shouldScheduleLanternPeekForSessionState('DORMANT'), false);
   });
 
-  it('scheduleLanternPeekWhenIdle returns false when not IDLE', () => {
+  it('syncLanternIdleObserverPeek returns false when not IDLE', () => {
     resetLanternPresenceForTests();
-    assert.equal(scheduleLanternPeekWhenIdle('FOCUSING', { storage: null }), false);
+    assert.equal(syncLanternIdleObserverPeek('FOCUSING', { storage: null }), false);
     resetLanternPresenceForTests();
   });
 
-  it('scheduleLanternPeekWhenIdle schedules on IDLE (cold boot path)', () => {
+  it('syncLanternIdleObserverPeek starts observer on IDLE (cold boot path)', () => {
     resetLanternPresenceForTests();
     const calls = [];
     const originalSetTimeout = globalThis.setTimeout;
@@ -38,7 +38,7 @@ describe('quietTogetherIdleSchedule', () => {
     };
     try {
       assert.equal(
-        scheduleLanternPeekWhenIdle('IDLE', {
+        syncLanternIdleObserverPeek('IDLE', {
           storage: null,
           delayMs: LANTERN_PEEK_IDLE_MS
         }),

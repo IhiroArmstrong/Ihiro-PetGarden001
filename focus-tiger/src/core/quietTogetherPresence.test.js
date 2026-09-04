@@ -13,7 +13,11 @@ import {
   postLanternPresence,
   resetLanternPresenceForTests,
   setLanternPresenceBusyProbe,
-  stopLanternHeartbeat
+  startLanternHeartbeat,
+  stopLanternHeartbeat,
+  stopLanternIdleObserverPeek,
+  startLanternIdleObserverPeek,
+  LANTERN_IDLE_OBSERVER_PEEK_MS
 } from './quietTogetherPresence.js';
 import { setQuietTogetherEnabled } from './quietTogetherPreference.js';
 
@@ -111,6 +115,74 @@ describe('quietTogetherPresence', () => {
     resetLanternPresenceForTests();
     const r = await stopLanternHeartbeat();
     assert.equal(r.reason, 'no_session');
+  });
+
+  it('leave refreshes sitting snapshot from server', async () => {
+    resetLanternPresenceForTests();
+    const storage = memoryStorage();
+    setQuietTogetherEnabled(storage, true, { dispatch: () => {} });
+    const opts = {
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      joinDelayMs: 0,
+      heartbeatMs: 600_000,
+      postJson: async (_path, init) => {
+        const body = JSON.parse(init.body);
+        if (body.action === 'heartbeat') {
+          return { schemaVersion: 1, sitting: 1 };
+        }
+        if (body.action === 'leave') {
+          return { schemaVersion: 1, sitting: 0 };
+        }
+        return { schemaVersion: 1, sitting: 0 };
+      }
+    };
+    startLanternHeartbeat(opts);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    assert.equal(getLanternSittingSnapshot(), 1);
+    const leave = await stopLanternHeartbeat(opts);
+    assert.equal(leave.ok, true);
+    assert.equal(leave.sitting, 0);
+    assert.equal(getLanternSittingSnapshot(), 0);
+    resetLanternPresenceForTests();
+  });
+
+  it('idle observer polls after the first delayed peek', async () => {
+    resetLanternPresenceForTests();
+    const storage = memoryStorage();
+    setQuietTogetherEnabled(storage, true, { dispatch: () => {} });
+    const timeouts = [];
+    const originalSetTimeout = globalThis.setTimeout;
+    globalThis.setTimeout = (fn, ms) => {
+      timeouts.push(ms);
+      if (timeouts.length === 1) {
+        queueMicrotask(() => {
+          fn();
+        });
+      }
+      return timeouts.length;
+    };
+    const originalClearTimeout = globalThis.clearTimeout;
+    globalThis.clearTimeout = () => {};
+    try {
+      startLanternIdleObserverPeek({
+        storage,
+        search: '',
+        getBaseUrl: () => 'https://example.test',
+        delayMs: 10,
+        intervalMs: LANTERN_IDLE_OBSERVER_PEEK_MS,
+        postJson: async () => ({ schemaVersion: 1, sitting: 0 })
+      });
+      assert.deepEqual(timeouts, [10]);
+      await new Promise((resolve) => queueMicrotask(resolve));
+      await new Promise((resolve) => queueMicrotask(resolve));
+      assert.ok(timeouts.includes(LANTERN_IDLE_OBSERVER_PEEK_MS));
+    } finally {
+      globalThis.setTimeout = originalSetTimeout;
+      globalThis.clearTimeout = originalClearTimeout;
+      resetLanternPresenceForTests();
+    }
   });
 
   it('heartbeat payload includes schema and action', async () => {

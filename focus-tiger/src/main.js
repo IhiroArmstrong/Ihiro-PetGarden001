@@ -148,11 +148,14 @@ import {
 } from './core/ypePersonalizationSync.js';
 import {
   bindLanternPresencePageHide,
+  bindLanternPresenceVisibilityPeek,
+  peekLanternPresence,
+  scheduleLanternPeek,
   setLanternPresenceBusyProbe,
   startLanternHeartbeat,
   stopLanternHeartbeat
 } from './core/quietTogetherPresence.js';
-import { scheduleLanternPeekWhenIdle } from './core/quietTogetherIdleSchedule.js';
+import { syncLanternIdleObserverPeek } from './core/quietTogetherIdleSchedule.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
@@ -721,7 +724,11 @@ async function init() {
     emotionController.playEmotion(emotionKeyForPaymentThanks(kind));
   };
 
-  const WELCOME_EMOTION_KEYS = new Set(['magicBookReading', 'nodGreeting']);
+  const WELCOME_EMOTION_KEYS = new Set([
+    'magicBookReading',
+    'nodGreeting',
+    'conjureFlowersBlowAway'
+  ]);
   function isColdStartWelcomePlaying() {
     return WELCOME_EMOTION_KEYS.has(emotionController.getCurrentEmotionKey());
   }
@@ -742,6 +749,8 @@ async function init() {
     parrotMessengerPlayedThisPageSession = true;
     pendingParrotMessengerAfterWelcome = false;
     emotionController.playEmotion('parrotEarVisit', {
+      crossFadeMs: CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: true,
       onComplete: () => {
         spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
       }
@@ -1104,6 +1113,7 @@ async function init() {
     {}
   );
   window.__quietTogetherLanterns = quietTogetherLanternsChrome;
+  window.peekLanternPresence = peekLanternPresence;
   bindLanternPresencePageHide();
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(
     document.body,
@@ -2210,7 +2220,12 @@ async function init() {
 
   function endBreathLanternPresence() {
     quietTogetherLanternsChrome.setContributing(false);
-    void stopLanternHeartbeat();
+    void stopLanternHeartbeat().then(() => {
+      scheduleLanternPeek({
+        storage:
+          typeof localStorage !== 'undefined' ? localStorage : null
+      });
+    });
   }
 
   /**
@@ -3706,7 +3721,7 @@ async function init() {
         }
         pendingParrotMessengerAfterWelcome = false;
         syncInAppReminderBanner();
-      }, 0);
+      }, CAPCUT_DISSOLVE_MS);
     }
   };
 
@@ -4215,8 +4230,8 @@ async function init() {
   const idleLanternStorage =
     typeof localStorage !== 'undefined' ? localStorage : null;
 
-  function scheduleIdleLanternPeekIfNeeded() {
-    scheduleLanternPeekWhenIdle(stateManager.state, {
+  function syncIdleLanternObserverIfNeeded() {
+    syncLanternIdleObserverPeek(stateManager.state, {
       storage: idleLanternStorage
     });
   }
@@ -4232,6 +4247,7 @@ async function init() {
     }
     syncConfideEarChrome();
     syncInAppReminderBanner();
+    syncIdleLanternObserverIfNeeded();
     if (stateManager.state === STATES.IDLE) {
       scheduleFirstCardOffers(900);
       // Practice-memory backup: Idle flush after first breath has room (not 400ms).
@@ -4245,12 +4261,14 @@ async function init() {
         debounceMs: YPE_PERSONALIZATION_IDLE_FLUSH_MS,
         forceSoon: true
       });
-      scheduleIdleLanternPeekIfNeeded();
     }
   });
 
   // Cold boot: StateManager starts IDLE without firing onChange.
-  scheduleIdleLanternPeekIfNeeded();
+  syncIdleLanternObserverIfNeeded();
+  bindLanternPresenceVisibilityPeek(
+    () => stateManager.state === STATES.IDLE
+  );
 
   setPracticeBackupBusyProbe(() => {
     const s = stateManager.state;
