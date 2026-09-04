@@ -1,7 +1,6 @@
 # Task Brief · Confide 攻击他人意图单独分类
 
-> **状态（2026-09-04）**：方案 **已拍板**（§10）· PR **#563 已合 develop**。  
-> **与 #564 关系（强制）**：`harm_witness` / harm-01 **是临时占位，不是长期路由。** `#564` 已合 develop，只堵「点头默许」；**正式实现本 Brief 时必须删除** `CONFIDE_ROUTE.HARM_WITNESS`、`confideHarmKeywords.js`、corpus `harm-01` 及所有 `data-route=harm_witness` 断言，改为 `aggression_toward_others` + `aggression-02`/`aggression-01`（禁 Heard）。**禁止**两条路由长期并存处理同一类输入。harm-01 含 Heard. = **已知红线妥协**，不得关单成「文案已审定」。  
+> **状态（2026-09-04）**：实现中 · `fix/confide-aggression-toward-others`（方案 #563 已合；替换 #564 `harm_witness`）。
 > **背景**：PR #561（复读锁）已合。  
 > **触发**：Confide 人工测试 — `I want to beat people.` → `Heard. Yin nods quietly.`（fallback-01）判定不妥。  
 > **SSOT 邻接**：`task-confide-to-yin-v1.md`（危机 `safety_redirect` 优先层）· `confideClassify.js` · `confideSafetyKeywords.js` · `confideCorpus.js`
@@ -321,7 +320,7 @@ anxious and I want to hurt someone → aggression_toward_others（安全层未�
 | 阶段 | 交付物 | 状态 |
 |---|---|---|
 | **1 · 方案** | 本文档（规则 + 误判 + 拍板） | **✓ 完成** |
-| **2 · 实现** | `fix/confide-aggression-toward-others` · 分类 + 占位语料 + 单测 | **待 `fix/confide-l3-repeat-fallback` 合 develop 后开工** |
+| **2 · 实现** | `fix/confide-aggression-toward-others` · 分类 + 占位语料 + 单测 | **进行中** |
 | **3 · 扩池审定** | 03/04 正式文案 · 池 ≥4 条 · `review: ok` | 实现后 · 上线门禁 |
 | **4 · 人工测** | tracker · 含连续触发 + 色条并排 + 无点头动画 | 扩池后 |
 

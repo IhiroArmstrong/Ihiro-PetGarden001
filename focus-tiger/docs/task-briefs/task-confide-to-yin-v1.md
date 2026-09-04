@@ -56,12 +56,12 @@
 ```text
 空文本 → 禁用发送（不进分类）
   → safety_redirect 关键词层（命中则停）
-  → harm_witness（**#564 临时占位**；正式 id 见 Brief `aggression_toward_others`，上线后删除本层）
+  → aggression_toward_others 关键词层（命中则停；见 Brief `task-confide-aggression-toward-others.md`）
   → 情绪桶规则（anxious / tired / stuck / sad / scattered；显式优先级）
   → fallback
 ```
 
-单测至少锁：① 安全关键词 → 必 `safety_redirect`、不得 `fallback`；② 无匹配 → `fallback`；③ 禁止 score 选桶；④ `I want to beat people.` → `harm_witness`、不得 fallback-01 点头、不得 safety-01。
+单测至少锁：① 安全关键词 → 必 `safety_redirect`、不得 `fallback`；② 无匹配 → `fallback`；③ 禁止 score 选桶；④ `I want to beat people.` → `aggression_toward_others`、不得 fallback-01 点头、不得 safety-01、禁 Heard。
 
 ## 语料库 · v1 最小情绪标签集
 
@@ -70,7 +70,7 @@
 | 桶 / 路由 id | 粗粒度语义 | 示例触发词方向（实现时再落表） |
 |---|---|---|
 | `safety_redirect` | **安全优先路由**（非情绪桶） | 自伤 / 自杀 / 结束生命等危机向短语（表另立；勿与日常 sad 混桶） |
-| `harm_witness` | **临时**他人伤害（#564） | 正式改为 `aggression_toward_others`（#563）；禁与 fallback 点头长期并存 |
+| `aggression_toward_others` | **他人攻击意图**（非情绪桶） | `I want to beat people` / hurt him / punch someone；EN 规则见 `confideAggressionKeywords.js` |
 | `anxious` | 焦虑 / 紧绷 | 焦虑、担心、慌、紧张… |
 | `tired` | 疲惫 / 耗尽 | 累、疲惫、困、撑不住… |
 | `stuck` | 卡壳 / 停滞 | 卡住、卡住了、没思路、走不动… |

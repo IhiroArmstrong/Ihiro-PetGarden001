@@ -57,17 +57,22 @@ test('resolveConfideReply: unmatched → fallback line', () => {
   assert.equal(hit.line.route, CONFIDE_ROUTE.FALLBACK);
 });
 
-test('resolveConfideReply: beat people → harm-01, never nods quietly', () => {
+test('resolveConfideReply: beat people → aggression pool, never nods quietly', () => {
   const hit = resolveConfideReply({
     text: 'I want to beat people.',
     localDate: '2026-09-04'
   });
   assert.ok(hit);
-  assert.equal(hit.route, CONFIDE_ROUTE.HARM_WITNESS);
-  assert.equal(hit.line.id, 'harm-01');
-  assert.equal(hit.line.en, 'Heard. Yin stays, without agreeing.');
+  assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.ok(
+    ['aggression-01', 'aggression-02', 'aggression-03', 'aggression-04'].includes(
+      hit.line.id
+    )
+  );
+  assert.doesNotMatch(hit.line.en, /heard/i);
   assert.doesNotMatch(hit.line.en, /nod/i);
   assert.doesNotMatch(hit.line.zh, /点头/);
+  assert.doesNotMatch(hit.line.zh, /听见了/);
 });
 
 test('resolveCorpusFallbackAfterGenerateFailure: 8 frozen-exclude fails are not consecutive-identical', () => {

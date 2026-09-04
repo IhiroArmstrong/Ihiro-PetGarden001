@@ -61,13 +61,19 @@ test('bare help-me stays unmatched (do not widen into emotion or safety)', () =>
   assert.equal(confideClassify('Can you help me?'), CONFIDE_ROUTE.FALLBACK);
 });
 
-test('other-directed harm is harm_witness, not fallback nod or crisis line', () => {
+test('other-directed aggression is aggression_toward_others, not fallback nod or crisis line', () => {
   assert.equal(
     confideClassify('I want to beat people.'),
-    CONFIDE_ROUTE.HARM_WITNESS
+    CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
   );
-  assert.equal(confideClassify('想打人'), CONFIDE_ROUTE.HARM_WITNESS);
-  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.HARM_WITNESS);
+  assert.equal(
+    confideClassify('I want to hurt him'),
+    CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
+  );
+  assert.equal(
+    confideClassify('I want to punch someone'),
+    CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
+  );
   assert.notEqual(
     confideClassify('I want to beat people.'),
     CONFIDE_ROUTE.FALLBACK
@@ -78,10 +84,23 @@ test('other-directed harm is harm_witness, not fallback nod or crisis line', () 
   );
 });
 
-test('self-harm still beats other-directed harm', () => {
+test('aggression classify is EN-only this round', () => {
+  assert.equal(confideClassify('想打人'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.FALLBACK);
+});
+
+test('self-harm still beats other-directed aggression', () => {
   assert.equal(
     confideClassify('I want to die and beat people'),
     CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
+  assert.equal(
+    confideClassify('I want to kill myself'),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
+  assert.equal(
+    confideClassify('I want to kill him'),
+    CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
   );
 });
 

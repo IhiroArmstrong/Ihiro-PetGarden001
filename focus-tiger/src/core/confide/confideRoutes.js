@@ -10,8 +10,7 @@
 
 export const CONFIDE_ROUTE = Object.freeze({
   SAFETY_REDIRECT: 'safety_redirect',
-  /** STOPGAP (#564). Replaced by CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS when that route ships. Do not treat as the long-term id. */
-  HARM_WITNESS: 'harm_witness',
+  AGGRESSION_TOWARD_OTHERS: 'aggression_toward_others',
   ANXIOUS: 'anxious',
   TIRED: 'tired',
   STUCK: 'stuck',

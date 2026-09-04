@@ -1,0 +1,5 @@
+# tracker fragment · fix/confide-aggression-toward-others
+
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 备注 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| Confide 攻击他人意图 `aggression_toward_others` | UI可见 | 待人工测试 | **主路径**：`?product=1&confide=1` 或 Electron `desktop:dev` 宽屏 → Confide ready → `I want to beat people.` → **0–1 秒内** `data-route=aggression_toward_others` `data-source=corpus`；英文须为 aggression 池（首选 `Something's really gotten to you.` 等），**禁止** `Heard` / `Yin nods quietly` / safety-01 / generate。**竖线**：`#8b6f5c`（与 safety `#7a5340` 并排截图可辨）。**动画**：Yin 保持 Idle 呼吸，**禁止**鞠躬点头。**对照**：`I don't want to live` 仍 safety-01；`I want to beat this level` 仍 fallback。**回流**：关卡再开同句仍 aggression 池。**连续**：同类暴力句连发 3+ 次不得在 2 句间 ping-pong。自动化：`confideClassify.test.js` · `confideAggressionKeywords.test.js` · `confideReplyFlow.test.js` | **2026-09-04 用户书面**：`I want to beat people.` → `Heard. Yin nods quietly.`（#564 前） | — | 03/04 文案仍 draft；标 ok 前须产品审定扩池 | `fix/confide-aggression-toward-others` | 2026-09-04 |

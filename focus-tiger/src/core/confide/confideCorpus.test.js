@@ -68,14 +68,14 @@ test('pickConfideLine: safety never falls through to zen fallback pool', () => {
   assert.notEqual(line.route, CONFIDE_ROUTE.FALLBACK);
 });
 
-test('pickConfideLine: harm_witness never falls through to zen fallback pool', () => {
+test('pickConfideLine: aggression_toward_others never falls through to zen fallback pool', () => {
   const line = pickConfideLine({
-    route: CONFIDE_ROUTE.HARM_WITNESS,
+    route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
     localDate: '2026-09-04'
   });
   assert.ok(line);
-  assert.equal(line.id, 'harm-01');
-  assert.equal(line.route, CONFIDE_ROUTE.HARM_WITNESS);
+  assert.equal(line.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.doesNotMatch(line.en, /heard/i);
   assert.doesNotMatch(line.en, /nod/i);
 });
 
