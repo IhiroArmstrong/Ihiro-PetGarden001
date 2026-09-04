@@ -663,13 +663,13 @@
 > **地位**：Idle / Arrive 背景级匿名短句痕迹 + **每条最多一次**预设回应。**≠** sitting dots（AO）、**≠** 聊天、**≠** 点赞墙、**≠** was-here-today（2d）、**≠** 昵称（2e）。Focusing 内不画。  
 > **单元**：（开工后）`focusCircleWitness.test.js` · cloud `focusCircleWitnessKv.test.ts`。  
 > **生产**：Worker 未部署 witness actions 时 Idle **不画痕迹**（诚实）。  
-> **点击**：Rise 后留痕条须 0–1s 反馈；Idle 回应须 0–1s disabled → picker → 确认。
+> **点击**：Rise 留痕条须 0–1s 反馈且无自动消失倒计时；Idle 回应须 0–1s disabled → picker。**仲裁**：Rise 条 = `FOCUS_CIRCLE_WITNESS_LEAVE` Tier26；回应 picker = Tier27；须过 `requestOverlaySlot`（场景 AH / AD 邻接）。
 
-1. A、B **均已入圈** → A **Sit ≥ Brief 门槛** → **Rise** → **0–3s** 见可忽略留痕条 → 点 **留下** → 选预设句 → 条消失（可选轻确认）。  
-2. B **硬刷新 Idle** 约 2.5–10s 见 **1 条**匿名痕迹文案（无昵称）+ **回应** 入口；银蓝 dots（AO）可同时出现。  
-3. B 点 **回应** → 预设句 picker → 确认 → **0–1s** 内入口消失；同 trace **不可**二次回应。  
-4. A **跳过** 留痕条 → B Idle **不见** A 的痕迹。  
-5. `?focusCircleWitness=0` → 不 peek、不画、不弹 Rise 条。`?focusCircle=0` → 同禁用。
+1. A、B **均已入圈** → A **Sit ≥60s** → **Rise** → **约 3s 后**（非 3s 限时关条）见可忽略留痕条 → **留下** → 选预设句 → 条消失。**对照**：Celebrate / 芥子印 / 吹花首卡可见时条 **不得**抢叠。  
+2. B **硬刷新 Idle** 约 2.5–10s 见 **1 条**匿名痕迹 + **回应** 入口；银蓝 dots（AO）可同时出现。  
+3. B **回应** → picker → 确认 → **0–1s** 内消失；同 trace **不可**二次回应。  
+4. A **跳过** → B **不见** A 的痕迹。  
+5. `?focusCircleWitness=0` / `?focusCircle=0` → 禁用。
 
 ---
 
