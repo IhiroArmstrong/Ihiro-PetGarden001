@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `ae00ac64` |
-| `snapshot_date` | 2026-09-04 |
+| `snapshot_base` | `origin/develop` tip `10ff6b2b` |
+| `snapshot_date` | 2026-09-05 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -67,8 +67,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `333ad5e9-9c93-471d-8ae1-649f05abba2b` |
-| `prod_verified_at` | 2026-09-04（本机 `wrangler deploy` · `/api/focus-circle` route live · #556 Focus Circle） |
+| `prod_worker_version` | `22326de3-0856-45fc-8942-776f50a34db7` |
+| `prod_verified_at` | 2026-09-05（本机 `wrangler deploy` · `/api/focus-circle` presence actions live · #572 Focus Circle Presence 2b） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
