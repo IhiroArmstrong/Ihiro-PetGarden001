@@ -39,9 +39,10 @@ import {
   deriveFocusAwarenessCardBusy,
   deriveIdleYinTapOverlayBusy,
   deriveSceneAnimOverlayBusy,
-  canAttemptFirstCard
+  canAttemptFirstCard,
+  requestOverlaySlot
 } from './core/overlaySlotArbitration.js';
-import { OVERLAY_SOURCES } from './core/overlaySlotContractRegistry.js';
+import { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './core/overlaySlotContractRegistry.js';
 import { StateManager, STATES } from './core/StateManager.js';
 import { TigerCharacter } from './character/TigerCharacter.js';
 import { PoseManager } from './character/PoseManager.js';
@@ -171,6 +172,17 @@ import {
 } from './core/focusCirclePresence.js';
 import { syncFocusCircleIdleObserverPeek } from './core/focusCircleIdleSchedule.js';
 import {
+  bindFocusCircleWitnessPageHide,
+  clearFocusCircleWitnessSnapshot,
+  isWitnessEligibleSession,
+  peekFocusCircleWitness,
+  rememberRespondedTraceId,
+  resetFocusCircleWitnessSessionPrompt,
+  scheduleFocusCircleWitnessPeek,
+  setFocusCircleWitnessBusyProbe
+} from './core/focusCircleWitness.js';
+import { syncFocusCircleWitnessIdleObserverPeek } from './core/focusCircleWitnessIdleSchedule.js';
+import {
   FOCUS_CIRCLE_CHANGE_EVENT,
   readFocusCircleMembership
 } from './core/focusCircleMembership.js';
@@ -194,6 +206,8 @@ import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { QuietTogetherLanternsChrome } from './ui/QuietTogetherLanternsChrome.js';
 import { FocusCirclePresenceChrome } from './ui/FocusCirclePresenceChrome.js';
+import { FocusCircleWitnessChrome } from './ui/FocusCircleWitnessChrome.js';
+import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
@@ -1151,10 +1165,113 @@ async function init() {
     {}
   );
   window.__focusCirclePresence = focusCirclePresenceChrome;
+
+  let witnessLeaveSlotHeld = false;
+  let witnessRespondSlotHeld = false;
+
+  function requestWitnessLeaveOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        focusCircleWitnessLeaveVisible: false,
+        focusCircleWitnessRespondOpen: witnessRespondSlotHeld
+      })
+    });
+    if (!decision.canShow) return false;
+    witnessLeaveSlotHeld = true;
+    syncIdleYinTap();
+    return true;
+  }
+
+  function releaseWitnessLeaveOverlaySlot() {
+    if (!witnessLeaveSlotHeld) return;
+    witnessLeaveSlotHeld = false;
+    syncIdleYinTap();
+  }
+
+  function requestWitnessRespondOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND,
+      kind: OVERLAY_SLOT_KIND.HINT,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        focusCircleWitnessLeaveVisible: witnessLeaveSlotHeld,
+        focusCircleWitnessRespondOpen: false
+      })
+    });
+    if (!decision.canShow) return false;
+    witnessRespondSlotHeld = true;
+    syncIdleYinTap();
+    return true;
+  }
+
+  function releaseWitnessRespondOverlaySlot() {
+    if (!witnessRespondSlotHeld) return;
+    witnessRespondSlotHeld = false;
+    syncIdleYinTap();
+  }
+
+  const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
+    document.getElementById('ui-overlay') || document.body,
+    {
+      requestLeaveSlot: requestWitnessLeaveOverlaySlot,
+      releaseLeaveSlot: releaseWitnessLeaveOverlaySlot,
+      requestRespondSlot: requestWitnessRespondOverlaySlot,
+      releaseRespondSlot: releaseWitnessRespondOverlaySlot,
+      onLeaveComplete: () => {
+        void peekFocusCircleWitness({
+          storage:
+            typeof localStorage !== 'undefined' ? localStorage : null
+        });
+      },
+      onRespondComplete: (traceId) => {
+        const storage =
+          typeof localStorage !== 'undefined' ? localStorage : null;
+        rememberRespondedTraceId(storage, traceId);
+        focusCircleWitnessChrome.setRespondDisabled(false);
+        clearFocusCircleWitnessSnapshot();
+        void peekFocusCircleWitness({ storage });
+      }
+    }
+  );
+  window.__focusCircleWitnessLeave = focusCircleWitnessLeaveUI;
+
+  const focusCircleWitnessChrome = new FocusCircleWitnessChrome(
+    document.body,
+    {
+      onRespond: () => {
+        const trace = focusCircleWitnessChrome.getTrace();
+        if (!trace?.traceId) return;
+        focusCircleWitnessChrome.setRespondDisabled(true);
+        const opened = focusCircleWitnessLeaveUI.openRespondPicker(trace.traceId);
+        if (!opened) {
+          focusCircleWitnessChrome.setRespondDisabled(false);
+        }
+      }
+    }
+  );
+  window.__focusCircleWitness = focusCircleWitnessChrome;
+
+  function maybeOfferWitnessLeave(elapsedSeconds) {
+    if (!isWitnessEligibleSession(elapsedSeconds)) return;
+    focusCircleWitnessLeaveUI.scheduleLeaveOffer();
+  }
+
+  function ritualFlowBreathElapsedSeconds(ritualId) {
+    const config = getRitualConfig(ritualId);
+    const breath = config?.steps?.find((step) => step.kind === 'breath');
+    const ms =
+      typeof breath?.durationMs === 'number' ? breath.durationMs : 0;
+    return ms / 1000;
+  }
+
   window.peekLanternPresence = peekLanternPresence;
   window.peekFocusCirclePresence = peekFocusCirclePresence;
   bindLanternPresencePageHide();
   bindFocusCirclePresencePageHide();
+  bindFocusCircleWitnessPageHide();
   const sanctuaryUnlockUI = new SanctuaryUnlockUI(
     document.body,
     withIdleOverlayOccupancySync({
@@ -1950,7 +2067,7 @@ async function init() {
   /** @type {IdleYinTapAnchorUI | null} */
   let idleYinTapAnchor = null;
 
-  function buildLiveOverlaySnapshot() {
+  function buildLiveOverlaySnapshot(overrides = {}) {
     return buildOverlaySnapshot({
       sessionState: stateManager.state,
       completionPending: window.__sessionUiGate?.completionPending === true,
@@ -1981,7 +2098,12 @@ async function init() {
       presenceOpen: window.__presenceSignalsPanel?.isOpen?.() === true,
       languageOpen: window.__languagePreference?.isOpen?.() === true,
       purposeCardOpen: onboardingHintHost.hints?.isPurposeCardOpen?.() === true,
-      privacySheetOpen: onboardingHintHost.hints?.isPrivacySheetOpen?.() === true
+      privacySheetOpen: onboardingHintHost.hints?.isPrivacySheetOpen?.() === true,
+      focusCircleWitnessLeaveVisible:
+        focusCircleWitnessLeaveUI?.isLeaveVisible?.() === true,
+      focusCircleWitnessRespondOpen:
+        focusCircleWitnessLeaveUI?.isRespondOpen?.() === true,
+      ...overrides
     });
   }
 
@@ -2258,6 +2380,7 @@ async function init() {
   function beginBreathLanternPresence() {
     quietTogetherLanternsChrome.setContributing(true);
     focusCirclePresenceChrome.setFocusing(false);
+    focusCircleWitnessChrome.setFocusing(false);
     setFocusCirclePresenceContributing(true);
     startLanternHeartbeat();
     startFocusCircleHeartbeat();
@@ -2363,6 +2486,7 @@ async function init() {
       }
     });
     // Explicit: do NOT call sessionEndFlow / TigerReflectionMoment.
+    maybeOfferWitnessLeave(ritualFlowBreathElapsedSeconds(ritualId));
   }
 
   /**
@@ -2456,6 +2580,7 @@ async function init() {
     const draft = microRitualJourneyDraft(durationMinutes);
     if (draft) pendingJourneyDraft = draft;
     sessionEndFlow.onSessionEnded({ completed: true });
+    maybeOfferWitnessLeave(durationMinutes * 60);
   }
 
   function leaveMicroRitualQuietly() {
@@ -3274,6 +3399,7 @@ async function init() {
     immersivePresenceUI.setFocusing(false);
     quietTogetherLanternsChrome.setFocusing(false);
     focusCirclePresenceChrome.setFocusing(false);
+    focusCircleWitnessChrome.setFocusing(false);
     void stopLanternHeartbeat();
     void stopFocusCircleHeartbeat();
     companionModePicker.setIdleChromeVisible(true);
@@ -3382,6 +3508,8 @@ async function init() {
 
   function beginFocusWithMode(companionMode) {
     resetFocusCoinsSession();
+    resetFocusCircleWitnessSessionPrompt();
+    focusCircleWitnessLeaveUI.cancelScheduledOffer();
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
     honestyCheckInUI.hide();
@@ -3448,6 +3576,7 @@ async function init() {
     immersivePresenceUI.setFocusing(true);
     quietTogetherLanternsChrome.setFocusing(true);
     focusCirclePresenceChrome.setFocusing(true);
+    focusCircleWitnessChrome.setFocusing(true);
     startLanternHeartbeat();
     startFocusCircleHeartbeat();
     attentionSignals.setEnabled(true);
@@ -3666,6 +3795,7 @@ async function init() {
         intention: currentSessionIntention,
         intentionSource: currentIntentionSource
       });
+      maybeOfferWitnessLeave(focusSession.getElapsedSeconds());
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
       // ambient-soundscape stays unread until a track is actually chosen
@@ -3678,6 +3808,7 @@ async function init() {
 
   function finishCompletedSession() {
     if (!sessionUiGate.completionPending) return;
+    const witnessElapsedSeconds = focusSession.getElapsedSeconds();
     stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
@@ -3719,6 +3850,7 @@ async function init() {
     } else {
       sessionEndFlow.onSessionEnded(endOpts);
     }
+    maybeOfferWitnessLeave(witnessElapsedSeconds);
     onboardingHints?.markSeen('rise-button');
   }
 
@@ -4303,6 +4435,9 @@ async function init() {
     syncFocusCircleIdleObserverPeek(stateManager.state, {
       storage: idleLanternStorage
     });
+    syncFocusCircleWitnessIdleObserverPeek(stateManager.state, {
+      storage: idleLanternStorage
+    });
   }
 
   stateManager.onChange(() => {
@@ -4347,8 +4482,13 @@ async function init() {
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (!readFocusCircleMembership(storage)) {
       clearFocusCirclePresenceSnapshot();
+      clearFocusCircleWitnessSnapshot();
+      focusCircleWitnessLeaveUI.cancelScheduledOffer();
+      focusCircleWitnessLeaveUI.hideLeave({ immediate: true });
+      focusCircleWitnessLeaveUI.hideRespondPicker({ immediate: true });
       void stopFocusCircleHeartbeat({ storage });
       focusCirclePresenceChrome.refresh();
+      focusCircleWitnessChrome.refresh();
     }
   });
 
@@ -4393,6 +4533,19 @@ async function init() {
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
       isHonestyPhaseBusy(honestyCheckInUI?.phase);
+    return {
+      busy: focusing || overlay,
+      retry: overlay && !focusing
+    };
+  });
+  setFocusCircleWitnessBusyProbe(() => {
+    const s = stateManager.state;
+    const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
+    const overlay =
+      Boolean(sessionUiGate?.postSessionOverlayActive) ||
+      isHonestyPhaseBusy(honestyCheckInUI?.phase) ||
+      focusCircleWitnessLeaveUI?.isLeaveVisible?.() === true ||
+      focusCircleWitnessLeaveUI?.isRespondOpen?.() === true;
     return {
       busy: focusing || overlay,
       retry: overlay && !focusing

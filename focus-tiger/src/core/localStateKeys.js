@@ -62,7 +62,8 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.ype-personalization-pack.v1',
   'focus-tiger.idle-yin-tap-hint.v1',
   'focus-tiger.quiet-together.v1',
-  'focus-tiger.focus-circle.v1'
+  'focus-tiger.focus-circle.v1',
+  'focus-tiger.focus-circle-witness-responded.v1'
 ]);
 
 /** sessionStorage：重置后首屏 toast（不写入 localStorage，避免被清空逻辑误伤）。 */

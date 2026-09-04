@@ -155,12 +155,13 @@ describe('isIdleYinTapOverlayBusy wiring (main.js source contract)', () => {
       'bare onboardingHints?. inside overlayBusy is TDZ before let init'
     );
     const snap = mainSrc.match(
-      /function buildLiveOverlaySnapshot\(\) \{[\s\S]*?\n  \}/
+      /function buildLiveOverlaySnapshot\([^)]*\) \{[\s\S]*?\n  \}/
     )?.[0];
     assert.ok(snap, 'buildLiveOverlaySnapshot missing');
     assert.match(snap, /onboardingHintHost\.hints\?\.isPurposeCardOpen/);
     assert.match(snap, /onboardingHintHost\.hints\?\.isPrivacySheetOpen/);
-    assert.match(snap, /confideOpen:/);
+    assert.match(snap, /focusCircleWitnessLeaveVisible:/);
+    assert.match(snap, /focusCircleWitnessRespondOpen:/);
     assert.equal(
       /\bonboardingHints\?/.test(snap),
       false,

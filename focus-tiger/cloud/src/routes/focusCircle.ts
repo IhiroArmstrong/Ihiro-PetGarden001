@@ -27,6 +27,18 @@ import {
 	countCircleSittingSessions,
 	parseFocusCirclePresenceRecord,
 } from "../lib/focusCirclePresenceKv";
+import {
+	isWitnessLeavePhraseKey,
+	isWitnessRespondPhraseKey,
+} from "../lib/focusCircleWitnessPhrases";
+import {
+	FOCUS_CIRCLE_WITNESS_SCHEMA_VERSION,
+	applyWitnessLeave,
+	applyWitnessRespond,
+	buildWitnessPeekTraces,
+	circleWitnessKvKey,
+	parseFocusCircleWitnessRecord,
+} from "../lib/focusCircleWitnessKv";
 import type { Env } from "../types";
 
 const ACTIONS = new Set([
@@ -37,6 +49,9 @@ const ACTIONS = new Set([
 	"presence_peek",
 	"presence_heartbeat",
 	"presence_leave",
+	"witness_leave",
+	"witness_peek",
+	"witness_respond",
 ]);
 const MAX_CODE_RETRIES = 12;
 
@@ -60,6 +75,7 @@ async function deleteCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<t
 	await kv.delete(circleIdKvKey(record.circleId));
 	await kv.delete(circleCodeKvKey(record.code));
 	await kv.delete(circlePresenceKvKey(record.circleId));
+	await kv.delete(circleWitnessKvKey(record.circleId));
 }
 
 async function loadCirclePresence(kv: KvLike, circleId: string) {
@@ -90,6 +106,25 @@ async function clearCircleMemberPresence(
 	const sessions = await loadCirclePresence(kv, circleId);
 	const next = applyCirclePresenceLeave(sessions, memberId, nowMs);
 	await saveCirclePresence(kv, circleId, next);
+}
+
+async function loadCircleWitness(kv: KvLike, circleId: string) {
+	const raw = await kv.get(circleWitnessKvKey(circleId));
+	return parseFocusCircleWitnessRecord(raw).traces;
+}
+
+async function saveCircleWitness(
+	kv: KvLike,
+	circleId: string,
+	traces: Awaited<ReturnType<typeof loadCircleWitness>>,
+) {
+	await kv.put(
+		circleWitnessKvKey(circleId),
+		JSON.stringify({
+			schemaVersion: FOCUS_CIRCLE_WITNESS_SCHEMA_VERSION,
+			traces,
+		}),
+	);
 }
 
 function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>, memberId: string) {
@@ -130,7 +165,7 @@ export async function handleFocusCircle(
 		return errorJson(
 			400,
 			"bad_action",
-			"action must be create, join, leave, status, presence_peek, presence_heartbeat, or presence_leave",
+			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, or witness_respond",
 		);
 	}
 
@@ -203,6 +238,78 @@ export async function handleFocusCircle(
 		const record = await loadCircle(kv, circleId);
 		if (!record) {
 			return errorJson(404, "circle_not_found", "Circle not found");
+		}
+
+		if (
+			action === "witness_peek" ||
+			action === "witness_leave" ||
+			action === "witness_respond"
+		) {
+			if (!record.members[memberId]) {
+				return errorJson(403, "not_member", "Not a member of this circle");
+			}
+			const traces = await loadCircleWitness(kv, circleId);
+			if (action === "witness_peek") {
+				const peekTraces = buildWitnessPeekTraces(traces, nowMs, memberId);
+				return json({
+					ok: true,
+					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+					traces: peekTraces,
+				});
+			}
+			if (action === "witness_leave") {
+				const phraseKey =
+					typeof o.phraseKey === "string" ? o.phraseKey.trim() : "";
+				if (!isWitnessLeavePhraseKey(phraseKey)) {
+					return errorJson(400, "bad_phrase", "phraseKey is not allowed");
+				}
+				const traceId = crypto.randomUUID();
+				const next = applyWitnessLeave(
+					traces,
+					memberId,
+					phraseKey,
+					traceId,
+					nowMs,
+				);
+				await saveCircleWitness(kv, circleId, next);
+				return json({
+					ok: true,
+					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+					traceId,
+				});
+			}
+			const traceId =
+				typeof o.traceId === "string" ? o.traceId.trim() : "";
+			const phraseKey =
+				typeof o.phraseKey === "string" ? o.phraseKey.trim() : "";
+			if (!traceId) {
+				return errorJson(400, "bad_trace_id", "traceId is required");
+			}
+			if (!isWitnessRespondPhraseKey(phraseKey)) {
+				return errorJson(400, "bad_phrase", "phraseKey is not allowed");
+			}
+			const responded = applyWitnessRespond(
+				traces,
+				traceId,
+				memberId,
+				phraseKey,
+				nowMs,
+			);
+			if (responded.outcome === "not_found") {
+				return errorJson(404, "trace_not_found", "Trace not found");
+			}
+			if (responded.outcome === "already_responded") {
+				return json({
+					ok: false,
+					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+					reason: "already_responded",
+				});
+			}
+			await saveCircleWitness(kv, circleId, responded.traces);
+			return json({
+				ok: true,
+				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+			});
 		}
 
 		if (

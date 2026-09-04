@@ -1,6 +1,6 @@
 # Task Brief · Focus Circle Gentle Witness（刀 2c）
 
-> **状态（2026-09-05）**：Brief v2 · PO 已批五项参数；**叠层仲裁 + 3s 语义**已澄清。**待口令**「开工 Focus Circle Witness 2c」。权威 `FROM_APP_TO_CULTURE.md` §13.2 · §13.4 刀 2。  
+> **状态（2026-09-05）**：Brief v2 · PO 已批五项参数；**叠层仲裁 + 3s 语义**已澄清。**实现中** `feature/focus-circle-witness-2c`。权威 `FROM_APP_TO_CULTURE.md` §13.2 · §13.4 刀 2。  
 > **本文件无** was-here-today（刀 2d）、认人层 / 昵称徽标（刀 2e）、圈内聊天、自由长文本。
 
 ## 一句话
