@@ -6,7 +6,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
-import { resolveConfideReply } from './confideReplyFlow.js';
+import { resolveConfideReply, resolveCorpusFallbackAfterGenerateFailure } from './confideReplyFlow.js';
+import { firstConsecutiveDuplicateIndex } from './confideReplyUniqueness.js';
 
 test('resolveConfideReply: empty → null', () => {
   assert.equal(resolveConfideReply({ text: '  ' }), null);
@@ -54,4 +55,25 @@ test('resolveConfideReply: unmatched → fallback line', () => {
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.FALLBACK);
   assert.equal(hit.line.route, CONFIDE_ROUTE.FALLBACK);
+});
+
+test('resolveCorpusFallbackAfterGenerateFailure: 8 frozen-exclude fails are not consecutive-identical', () => {
+  const excludeIds = new Set(['fallback-01', 'fallback-02', 'fallback-03']);
+  const history = [];
+  const texts = [];
+  for (let i = 0; i < 8; i += 1) {
+    const hit = resolveCorpusFallbackAfterGenerateFailure({
+      locale: 'en',
+      localDate: '2026-09-04',
+      salt: excludeIds.size,
+      excludeIds,
+      history,
+      failedLineId: 'fallback-03'
+    });
+    assert.ok(hit);
+    texts.push(hit.text);
+    history.push({ role: 'user', text: `idle ${i}` });
+    history.push({ role: 'yin', text: hit.text, source: 'corpus' });
+  }
+  assert.equal(firstConsecutiveDuplicateIndex(texts), -1);
 });

@@ -8,7 +8,9 @@
 | 独立bug | Journey log 打开时底栏蓝脉冲点仍可点 | 2026-09-02 用户书面 | `JourneyLogUI` z-index 18 < 壳 z30；growth 卡未 suppress home chrome | 已解决 |
 | 独立bug | 宽屏时长选择器开着时底排 Honesty 仍可点 | 2026-09-02 用户书面 | `WideIdleMoreMenu._sync` `showHome` 未随 `_suppressed` 隐藏 | 已解决 |
 | 独立bug | 英文 UI 混入「寅币」 | 2026-09-02 用户书面 | `en.json` `focus_coins.duration_hint` | 已解决 |
-| 独立bug | Confide L2 同面板长聊后复读（先约第 5–6 句复读首句 generate；**2026-09-04 复测**约第 11 句起连打 `Sit a while. Tea is still warm.`） | 2026-08-31 用户书面 · 2026-09-04 5173 Electron 再报 | **未真正闭环。** #492 只锁 echo sanitize / sequence dispose，**允许** generate 失败走 corpus 茶句；单测不锁「连续 N 句不得同一 fallback 字面」。ISSUE_LEDGER 曾标「已解决」但 TRACKER 该行从未人工关单。工作流根因 `DEV_WORKFLOW_QUALITY` **§6.23**。 | 跟进中 |
+| 独立bug | Confide L2 同面板长聊后复读（先约第 5–6 句复读首句 generate；**2026-09-04 复测**约第 11 句起连打 `Sit a while. Tea is still warm.`） | 2026-08-31 用户书面 · 2026-09-04 5173 Electron 再报 | **跟进中（属性锁已开工，未人工关单）。** `fix/confide-repeat-property-lock`：连续可见闲聊答句不得字面相同（与 echo/茶句诱因无关）；generate 失败重抽 fallback；冻住 exclude Set 不得再连打。TRACKER L365/L614 仍须 Electron 复测 ≥12 句。工作流 `DEV_WORKFLOW_QUALITY` §6.23。 | 跟进中 |
+| 独立bug | Confide「I want to beat people」落入 fallback-01 点头（听起来像默许伤害他人） | 2026-09-04 用户书面 · 分析师：安全分类漏洞 | 现网只有自伤/自杀转介（safety-01）；**针对他人的攻击意图**无独立路由，掉进 `Heard. Yin nods quietly.`。**本回合不修运行时**（一次一任务：先锁复读属性）。须另开 corpus/路由：「攻击他人意图」→ 中性、不点头、不确认；勿与负面情绪 fallback 池共用。 | 未跟进 |
+| 优化建议 | Confide 过短空观察句没接住内容（`still.` / `Still watching.`） | 2026-09-04 用户书面 · 分析师：语料质量 ≠ 复读逻辑 | 与茶句连打不是一类。须另开 corpus 扩充，禁止并进复读 PR。 | 未跟进 |
 | 独立bug | Allow 后 What Yin remembers 空态仍写「去 Confide 允许」 | 2026-09-01 用户书面 · 本会话 | `YinPersonalMemoryUI` 空列表一律 `YIN_MEMORY_PANEL_EMPTY` | 已解决 |
 | 独立bug | What Yin remembers 开着时 Forget 后新抽取不出现在列表 | 2026-09-01 用户书面 · Mondays feel crowded | `YinPersonalMemoryUI` 无 `reloadIfOpen`；Confide Remember 未通知面板（Forget 已有 `removeMemoryIfOpen`） | 已解决 |
 | 独立bug | Confide「total sitting time」未走 Journey 同坐时长 | 2026-09-01 用户书面 · Gate 0.2 C-5 | `isPracticeDurationQuestion` 未匹配 paraphrase；L3「Still observing.」→ `confidePracticeFacts.js` 读 Journey Log | 已解决 |

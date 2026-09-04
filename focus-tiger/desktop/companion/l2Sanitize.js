@@ -48,6 +48,23 @@ export function priorGenerateRepliesFromHistory(history = []) {
 }
 
 /**
+ * Repeatable jackets: generate *and* corpus fallback (tea / nod / stay-here).
+ * @param {unknown} history
+ * @returns {string[]}
+ */
+export function priorRepeatableYinRepliesFromHistory(history = []) {
+  if (!Array.isArray(history)) return [];
+  return history
+    .filter(
+      (row) =>
+        row?.role === 'yin' &&
+        (row?.source === 'generate' || row?.source === 'corpus')
+    )
+    .map((row) => String(row?.text || '').trim())
+    .filter(Boolean);
+}
+
+/**
  * @param {unknown} raw
  * @param {{ priorReplies?: unknown }} [opts]
  * @returns {string | null}

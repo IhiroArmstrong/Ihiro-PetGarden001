@@ -11,6 +11,7 @@
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { overlayConfideCorpusTextForId } from '../tasteLayerOverlay.js';
+import { normalizeVisibleConfideReply } from './confideReplyUniqueness.js';
 
 /**
  * @typedef {{
@@ -223,12 +224,14 @@ export function confideDateSeed(isoDate) {
 }
 
 /**
- * Pick one line for a route (day salt; optional exclude ids for session de-dupe).
+ * Pick one line for a route (day salt; optional exclude ids / last visible texts).
  * @param {object} opts
  * @param {string} opts.route
  * @param {string} [opts.localDate]
  * @param {number} [opts.salt]
  * @param {ReadonlySet<string> | string[]} [opts.excludeIds]
+ * @param {readonly string[]} [opts.excludeNormalizedTexts]
+ * @param {string} [opts.locale]
  * @param {readonly ConfideLine[]} [opts.corpus]
  * @returns {ConfideLine | null}
  */
@@ -237,6 +240,8 @@ export function pickConfideLine({
   localDate = '',
   salt = 0,
   excludeIds = [],
+  excludeNormalizedTexts = [],
+  locale = 'en',
   corpus = CONFIDE_CORPUS
 } = {}) {
   if (!route) return null;
@@ -244,14 +249,28 @@ export function pickConfideLine({
     excludeIds instanceof Set
       ? excludeIds
       : new Set(Array.isArray(excludeIds) ? excludeIds : []);
-  let pool = linesForRoute(route, corpus).filter((line) => !exclude.has(line.id));
+  const withoutIds = (lines) => lines.filter((line) => !exclude.has(line.id));
+  const withoutLastVisible = (lines) => {
+    const banned = new Set(
+      (Array.isArray(excludeNormalizedTexts) ? excludeNormalizedTexts : [])
+        .map((t) => normalizeVisibleConfideReply(t))
+        .filter(Boolean)
+    );
+    if (!banned.size) return lines;
+    const filtered = lines.filter(
+      (line) =>
+        !banned.has(normalizeVisibleConfideReply(confideLineText(line, locale)))
+    );
+    return filtered.length ? filtered : lines;
+  };
+  let pool = withoutLastVisible(withoutIds(linesForRoute(route, corpus)));
   if (pool.length === 0) {
-    pool = linesForRoute(route, corpus);
+    pool = withoutLastVisible(linesForRoute(route, corpus));
   }
   if (pool.length === 0) {
     // Safety must never fall through to zen fallback at retrieve time.
     if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) return null;
-    pool = linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus);
+    pool = withoutLastVisible(linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus));
   }
   if (pool.length === 0) return null;
   const idx =

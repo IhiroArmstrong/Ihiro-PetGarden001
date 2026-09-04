@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Confide 复读属性锁（2026-09-04 · `fix/confide-repeat-property-lock`）**：连续可见闲聊答句不得字面相同；generate 失败改抽另一条 fallback；冻住 `_sessionExclude` 不得再连打茶句。§6.23 根因的根因。L365/L614 仍待 Electron 复测。暴力句点头 / `still.` 未改运行时（ledger 未跟进）。
+
 - **5173 Electron QA 记入（2026-09-04 · 纯文档）**：tip `65a50add`。冷启动吹花散花 + 额头提示摸头书面 OK（未关单：375/回流未写）。Confide：时长问 / `I don't want to live` / `Can we just sit here` 书面 OK。**有问题**：耳钮叠 HUD；约第 11 句起茶句套话；暴力句点头 / still. / Still watching。根因 `DEV_WORKFLOW_QUALITY` §6.23。ISSUE_LEDGER 复读行从「已解决」改回跟进中。
 
 - **Quiet Together ∪ Global Lanterns MVP（2026-09-04 · #554 已合 develop）**：匿名同坐人数 + Idle/Arrive 灯火；Privacy 可关；结束 leave；不聊天。Brief `task-quiet-together-lanterns-mvp.md`。**2026-09-04 本机 wrangler deploy**：生产 Version `9233d1ed-bdb6-403d-9dec-ea73d0de470f`；`POST /api/lantern-presence` peek/heartbeat 200。

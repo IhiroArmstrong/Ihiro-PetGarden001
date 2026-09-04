@@ -177,8 +177,8 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.equal(sanitizeCompanionL2Reply('Tea is still warm.'), 'Tea is still warm.');
     assert.equal(sanitizeCompanionL2Reply('Yes'), null);
     assert.equal(
-      sanitizeCompanionL2Reply('I am curious about what you would like to eat.', {
-        priorReplies: ['I am curious about what you would like to eat.']
+      sanitizeCompanionL2Reply('Sit a while. Tea is still warm.', {
+        priorReplies: ['Sit a while. Tea is still warm.']
       }),
       null
     );
@@ -468,7 +468,7 @@ describe('desktop companion L2 isolation', () => {
       'utf8'
     );
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
-    assert.match(runtime, /priorReplies/);
+    assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
     assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);
     
@@ -485,7 +485,9 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /shown\.source === 'generate'/);
     assert.match(ui, /shown\.source === 'practice_facts'/);
     assert.match(ui, /shown\.source === 'boundary'/);
-    assert.match(ui, /this\._l2Turns\.slice\(\)/);
+    assert.match(ui, /resolveCorpusFallbackAfterGenerateFailure/);
+    assert.match(ui, /_showGenerateFailureFallback/);
+    assert.match(ui, /salt: this\._l2Turns\.length/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);
     assert.match(ui, /#d4a24a/);
