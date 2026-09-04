@@ -10,6 +10,7 @@
  *
  * Layers:
  *   0 safety_redirect → never generate
+ *   0b harm_witness → corpus retrieve, never generate (not crisis line)
  *   1 product rituals (Whisper / Recover / …) → never call this helper
  *   2 emotion buckets → corpus retrieve, never generate
  *   2b CI whitelist / memory_suppress / boundary / companion presence / preference honesty → templates, never generate
@@ -38,6 +39,7 @@ export function shouldUseDesktopCompanionGenerate({
 } = {}) {
   if (!generateEnabled || !generateLayerOpen || !hasGenerateFn) return false;
   if (!route || route === CONFIDE_ROUTE.SAFETY_REDIRECT) return false;
+  if (route === CONFIDE_ROUTE.HARM_WITNESS) return false;
   if (CONFIDE_EMOTION_BUCKETS.includes(route)) return false;
   return route === CONFIDE_ROUTE.FALLBACK;
 }

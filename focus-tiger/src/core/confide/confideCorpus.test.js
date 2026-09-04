@@ -14,10 +14,12 @@ import {
 } from './confideCorpus.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import {
+  CONFIDE_COPY_CORPUS_IDS,
   parseConfideCopyOverlay,
   resetTasteLayerOverlayForTests,
   setTasteConfideCopyOverlay
 } from '../tasteLayerOverlay.js';
+import { firstConsecutiveDuplicateIndex } from './confideReplyUniqueness.js';
 import en from '../../locales/en.json' with { type: 'json' };
 
 afterEach(() => {
@@ -66,6 +68,17 @@ test('pickConfideLine: safety never falls through to zen fallback pool', () => {
   assert.notEqual(line.route, CONFIDE_ROUTE.FALLBACK);
 });
 
+test('pickConfideLine: harm_witness never falls through to zen fallback pool', () => {
+  const line = pickConfideLine({
+    route: CONFIDE_ROUTE.HARM_WITNESS,
+    localDate: '2026-09-04'
+  });
+  assert.ok(line);
+  assert.equal(line.id, 'harm-01');
+  assert.equal(line.route, CONFIDE_ROUTE.HARM_WITNESS);
+  assert.doesNotMatch(line.en, /nod/i);
+});
+
 test('pickConfideLine: emotion retrieve returns matching route', () => {
   const line = pickConfideLine({
     route: CONFIDE_ROUTE.TIRED,
@@ -91,7 +104,9 @@ test('confide overlay replaces corpus text and keeps pick id / route', () => {
       'CONFIDE_COMPANION_PRESENCE',
       'CONFIDE_PREFERENCE_HONESTY'
     ].map((key) => ({ key, text: en[key] })),
-    corpus: CONFIDE_CORPUS.map((line) => ({
+    corpus: CONFIDE_CORPUS.filter((line) =>
+      CONFIDE_COPY_CORPUS_IDS.includes(line.id)
+    ).map((line) => ({
       id: line.id,
       text: line.id === 'tired-01' ? 'Overlay cushion line.' : line.en
     }))
@@ -108,4 +123,22 @@ test('confide overlay replaces corpus text and keeps pick id / route', () => {
   assert.equal(line.id, 'tired-01');
   assert.equal(line.route, CONFIDE_ROUTE.TIRED);
   assert.equal(confideLineText(line, 'en'), 'Overlay cushion line.');
+});
+
+test('pickConfideLine: wrapped exclude set still cannot consecutive-repeat fallback text', () => {
+  const excludeIds = new Set(['fallback-01', 'fallback-02', 'fallback-03']);
+  const texts = [];
+  for (let salt = 0; salt < 8; salt += 1) {
+    const line = pickConfideLine({
+      route: CONFIDE_ROUTE.FALLBACK,
+      localDate: '2026-09-04',
+      salt: excludeIds.size,
+      excludeIds,
+      excludeNormalizedTexts: texts.slice(-1),
+      locale: 'en'
+    });
+    assert.ok(line);
+    texts.push(confideLineText(line, 'en'));
+  }
+  assert.equal(firstConsecutiveDuplicateIndex(texts), -1);
 });

@@ -11,6 +11,7 @@
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { overlayConfideCorpusTextForId } from '../tasteLayerOverlay.js';
+import { normalizeVisibleConfideReply } from './confideReplyUniqueness.js';
 
 /**
  * @typedef {{
@@ -32,6 +33,16 @@ export const CONFIDE_CORPUS = Object.freeze([
     zh: '听见了。若此刻很难独自撑住，请联系信任的人或当地专业援助热线。寅陪着，却不能代替专业帮助。',
     en: 'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help.',
     ja: '聴いた。一人で抱えきれない時は、信頼できる人や地域の相談窓口へ。寅はここにいる——専門援助の代わりにはなれない。',
+    review: 'ok'
+  }),
+
+  // —— harm_witness (other-directed; not crisis line; not fallback nod) ——
+  Object.freeze({
+    id: 'harm-01',
+    route: CONFIDE_ROUTE.HARM_WITNESS,
+    zh: '听见了。寅在这儿，并不附和。',
+    en: 'Heard. Yin stays, without agreeing.',
+    ja: '聴いた。寅はここにいる。賛同はしない。',
     review: 'ok'
   }),
 
@@ -223,12 +234,14 @@ export function confideDateSeed(isoDate) {
 }
 
 /**
- * Pick one line for a route (day salt; optional exclude ids for session de-dupe).
+ * Pick one line for a route (day salt; optional exclude ids / last visible texts).
  * @param {object} opts
  * @param {string} opts.route
  * @param {string} [opts.localDate]
  * @param {number} [opts.salt]
  * @param {ReadonlySet<string> | string[]} [opts.excludeIds]
+ * @param {readonly string[]} [opts.excludeNormalizedTexts]
+ * @param {string} [opts.locale]
  * @param {readonly ConfideLine[]} [opts.corpus]
  * @returns {ConfideLine | null}
  */
@@ -237,6 +250,8 @@ export function pickConfideLine({
   localDate = '',
   salt = 0,
   excludeIds = [],
+  excludeNormalizedTexts = [],
+  locale = 'en',
   corpus = CONFIDE_CORPUS
 } = {}) {
   if (!route) return null;
@@ -244,14 +259,28 @@ export function pickConfideLine({
     excludeIds instanceof Set
       ? excludeIds
       : new Set(Array.isArray(excludeIds) ? excludeIds : []);
-  let pool = linesForRoute(route, corpus).filter((line) => !exclude.has(line.id));
+  const withoutIds = (lines) => lines.filter((line) => !exclude.has(line.id));
+  const withoutLastVisible = (lines) => {
+    const banned = new Set(
+      (Array.isArray(excludeNormalizedTexts) ? excludeNormalizedTexts : [])
+        .map((t) => normalizeVisibleConfideReply(t))
+        .filter(Boolean)
+    );
+    if (!banned.size) return lines;
+    const filtered = lines.filter(
+      (line) =>
+        !banned.has(normalizeVisibleConfideReply(confideLineText(line, locale)))
+    );
+    return filtered.length ? filtered : lines;
+  };
+  let pool = withoutLastVisible(withoutIds(linesForRoute(route, corpus)));
   if (pool.length === 0) {
-    pool = linesForRoute(route, corpus);
+    pool = withoutLastVisible(linesForRoute(route, corpus));
   }
   if (pool.length === 0) {
     // Safety must never fall through to zen fallback at retrieve time.
     if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) return null;
-    pool = linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus);
+    pool = withoutLastVisible(linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus));
   }
   if (pool.length === 0) return null;
   const idx =
