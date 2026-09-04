@@ -4,13 +4,14 @@
  */
 
 /**
- * Idle lantern peek scheduling — cold boot + state transitions.
- * StateManager starts IDLE without firing onChange; boot must schedule too.
+ * Idle lantern observer — cold boot + state transitions.
+ * StateManager starts IDLE without firing onChange; boot must start observer too.
  */
 
 import {
   LANTERN_PEEK_IDLE_MS,
-  scheduleLanternPeek
+  startLanternIdleObserverPeek,
+  stopLanternIdleObserverPeek
 } from './quietTogetherPresence.js';
 
 /**
@@ -26,14 +27,22 @@ export function shouldScheduleLanternPeekForSessionState(sessionState) {
  * @param {object} [opts]
  * @param {Storage | null} [opts.storage]
  * @param {number} [opts.delayMs]
- * @returns {boolean} whether a peek was scheduled
+ * @returns {boolean} whether the idle observer was started
  */
-export function scheduleLanternPeekWhenIdle(sessionState, opts = {}) {
-  if (!shouldScheduleLanternPeekForSessionState(sessionState)) return false;
-  scheduleLanternPeek({
+export function syncLanternIdleObserverPeek(sessionState, opts = {}) {
+  if (!shouldScheduleLanternPeekForSessionState(sessionState)) {
+    stopLanternIdleObserverPeek();
+    return false;
+  }
+  startLanternIdleObserverPeek({
     storage: opts.storage ?? null,
     delayMs: opts.delayMs ?? LANTERN_PEEK_IDLE_MS,
     ...opts
   });
   return true;
+}
+
+/** @deprecated use syncLanternIdleObserverPeek */
+export function scheduleLanternPeekWhenIdle(sessionState, opts = {}) {
+  return syncLanternIdleObserverPeek(sessionState, opts);
 }

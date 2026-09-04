@@ -16,6 +16,8 @@ export const LANTERN_PRESENCE_SCHEMA_VERSION = 1;
 export const LANTERN_HEARTBEAT_MS = 45_000;
 export const LANTERN_JOIN_DELAY_MS = 2500;
 export const LANTERN_PEEK_IDLE_MS = 2500;
+/** Idle observer polls so Electron / background tabs see remote sitters without manual peek. */
+export const LANTERN_IDLE_OBSERVER_PEEK_MS = 5_000;
 export const LANTERN_BUSY_RETRY_MS = 2000;
 export const QUIET_TOGETHER_QUERY_PARAM = 'quietTogether';
 export const QUIET_TOGETHER_SITTING_EVENT = 'focus-tiger:quiet-together-sitting';
@@ -28,6 +30,11 @@ let heartbeatTimer = null;
 let joinTimer = null;
 /** @type {ReturnType<typeof setTimeout> | null} */
 let peekTimer = null;
+/** @type {ReturnType<typeof setTimeout> | null} */
+let idleObserverTimer = null;
+let idleObserverActive = false;
+/** @type {object | null} */
+let idleObserverOpts = null;
 let sittingSnapshot = null;
 let peekInFlight = false;
 
@@ -103,6 +110,7 @@ export function resetLanternPresenceForTests() {
   if (joinTimer) clearTimeout(joinTimer);
   if (peekTimer) clearTimeout(peekTimer);
   if (heartbeatTimer) clearInterval(heartbeatTimer);
+  stopLanternIdleObserverPeek();
   joinTimer = null;
   peekTimer = null;
   heartbeatTimer = null;
@@ -216,12 +224,53 @@ export function scheduleLanternPeek(opts = {}) {
   }, delayMs);
 }
 
+function clearIdleObserverTimer() {
+  if (idleObserverTimer) clearTimeout(idleObserverTimer);
+  idleObserverTimer = null;
+}
+
+export function stopLanternIdleObserverPeek() {
+  idleObserverActive = false;
+  idleObserverOpts = null;
+  clearIdleObserverTimer();
+}
+
+async function runIdleObserverPeekTick() {
+  if (!idleObserverActive) return;
+  await peekLanternPresence(idleObserverOpts ?? {});
+  if (!idleObserverActive) return;
+  clearIdleObserverTimer();
+  const intervalMs =
+    idleObserverOpts?.intervalMs ?? LANTERN_IDLE_OBSERVER_PEEK_MS;
+  idleObserverTimer = setTimeout(() => {
+    idleObserverTimer = null;
+    void runIdleObserverPeekTick();
+  }, intervalMs);
+}
+
+/**
+ * First peek after Idle/Arrive, then poll while Idle so observers see remote joins/leaves.
+ * @param {object} [opts]
+ */
+export function startLanternIdleObserverPeek(opts = {}) {
+  stopLanternIdleObserverPeek();
+  idleObserverActive = true;
+  idleObserverOpts = opts;
+  clearIdleObserverTimer();
+  const delayMs = opts.delayMs ?? LANTERN_PEEK_IDLE_MS;
+  idleObserverTimer = setTimeout(() => {
+    idleObserverTimer = null;
+    void runIdleObserverPeekTick();
+  }, delayMs);
+}
+
 async function sendHeartbeat(opts = {}) {
   if (!sessionId) return;
   if (
     !isLanternPresenceClientEnabled({
       search: opts.search ?? globalThis.location?.search ?? '',
-      storage: opts.storage ?? globalThis.localStorage
+      storage: opts.storage ?? globalThis.localStorage,
+      cloudBaseUrl: opts.getBaseUrl?.() ?? getCloudApiBaseUrl()
     })
   ) {
     return;
@@ -243,7 +292,8 @@ export function startLanternHeartbeat(opts = {}) {
   if (
     !isLanternPresenceClientEnabled({
       search: opts.search ?? globalThis.location?.search ?? '',
-      storage: opts.storage ?? globalThis.localStorage
+      storage: opts.storage ?? globalThis.localStorage,
+      cloudBaseUrl: opts.getBaseUrl?.() ?? getCloudApiBaseUrl()
     })
   ) {
     return;
@@ -274,12 +324,14 @@ export async function stopLanternHeartbeat(opts = {}) {
   const id = sessionId;
   sessionId = null;
   if (!id) return { ok: true, skipped: true, reason: 'no_session' };
-  return postLanternPresence({
+  const result = await postLanternPresence({
     postJson: opts.postJson,
     getBaseUrl: opts.getBaseUrl,
     action: 'leave',
     sessionId: id
   });
+  if (result.ok) rememberSitting(result.sitting);
+  return result;
 }
 
 export function bindLanternPresencePageHide() {
@@ -288,4 +340,19 @@ export function bindLanternPresencePageHide() {
   };
   globalThis.addEventListener?.('pagehide', onHide);
   return () => globalThis.removeEventListener?.('pagehide', onHide);
+}
+
+/**
+ * Re-peek when a tab returns visible so Idle observers see remote leaves.
+ * @param {() => boolean} [isIdle]
+ */
+export function bindLanternPresenceVisibilityPeek(isIdle = () => true) {
+  const onVisible = () => {
+    if (globalThis.document?.visibilityState !== 'visible') return;
+    if (!isIdle()) return;
+    scheduleLanternPeek();
+  };
+  globalThis.document?.addEventListener?.('visibilitychange', onVisible);
+  return () =>
+    globalThis.document?.removeEventListener?.('visibilitychange', onVisible);
 }

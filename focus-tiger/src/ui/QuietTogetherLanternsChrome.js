@@ -123,8 +123,8 @@ export class QuietTogetherLanternsChrome {
             ? globalThis.location.search
             : ''
       });
-    const sitting =
-      this._sitting == null ? getLanternSittingSnapshot() : this._sitting;
+    const snapshot = getLanternSittingSnapshot();
+    const sitting = snapshot != null ? snapshot : this._sitting;
     const show =
       this._visibleAllowed &&
       enabled &&
