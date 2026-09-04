@@ -10,7 +10,7 @@
 
 export const CONFIDE_ROUTE = Object.freeze({
   SAFETY_REDIRECT: 'safety_redirect',
-  /** Other-directed harm intent — corpus witness, not crisis line, not fallback nod. */
+  /** STOPGAP (#564). Replaced by CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS when that route ships. Do not treat as the long-term id. */
   HARM_WITNESS: 'harm_witness',
   ANXIOUS: 'anxious',
   TIRED: 'tired',
