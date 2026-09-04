@@ -148,12 +148,11 @@ import {
 } from './core/ypePersonalizationSync.js';
 import {
   bindLanternPresencePageHide,
-  scheduleLanternPeek,
   setLanternPresenceBusyProbe,
   startLanternHeartbeat,
-  stopLanternHeartbeat,
-  LANTERN_PEEK_IDLE_MS
+  stopLanternHeartbeat
 } from './core/quietTogetherPresence.js';
+import { scheduleLanternPeekWhenIdle } from './core/quietTogetherIdleSchedule.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import {
@@ -4193,6 +4192,15 @@ async function init() {
     composer.render();
   }
 
+  const idleLanternStorage =
+    typeof localStorage !== 'undefined' ? localStorage : null;
+
+  function scheduleIdleLanternPeekIfNeeded() {
+    scheduleLanternPeekWhenIdle(stateManager.state, {
+      storage: idleLanternStorage
+    });
+  }
+
   stateManager.onChange(() => {
     syncIdleYinTap();
     const companion = getDesktopCompanionBridge();
@@ -4217,12 +4225,12 @@ async function init() {
         debounceMs: YPE_PERSONALIZATION_IDLE_FLUSH_MS,
         forceSoon: true
       });
-      scheduleLanternPeek({
-        storage: typeof localStorage !== 'undefined' ? localStorage : null,
-        delayMs: LANTERN_PEEK_IDLE_MS
-      });
+      scheduleIdleLanternPeekIfNeeded();
     }
   });
+
+  // Cold boot: StateManager starts IDLE without firing onChange.
+  scheduleIdleLanternPeekIfNeeded();
 
   setPracticeBackupBusyProbe(() => {
     const s = stateManager.state;

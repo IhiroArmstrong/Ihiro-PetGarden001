@@ -622,7 +622,7 @@
 > **生产**：Worker 未部署时灯火保持空白（诚实）。  
 > **点击**：灯火本身 `pointer-events: none`。Privacy 开关 0–1 秒内勾选变化；关掉则灯火消失。
 
-1. `?product=1` Idle 坐下约 2.5s：若云端有人在坐 → 左下灯点 + 短句；若 0 人或无路由 → **不出现假灯火**。  
+1. `?product=1` **硬刷新进 Idle** 约 2.5s：若云端有人在坐 → 左下（宽屏在热力图簇**上方**）灯点 + 短句；若 0 人或无路由 → **不出现假灯火**。  
 2. Sit 进 Focusing → 灯火 **须消失**（0–1 秒内淡出）。Rise 回 Idle → 可再 peek。  
 3. ? → Privacy → 关掉 Quiet Together → **0–1 秒内**灯火消失且不再 heartbeat。  
 4. 回流：再打开开关；`?quietTogether=0` 永不请求。

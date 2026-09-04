@@ -14,6 +14,11 @@ import {
   isQuietTogetherEnabled
 } from '../core/quietTogetherPreference.js';
 import {
+  IDLE_LANTERN_BOTTOM_NARROW_CSS,
+  IDLE_LANTERN_BOTTOM_WIDE_CSS,
+  IDLE_LANTERN_NARROW_MQ_MAX_PX
+} from '../core/quietTogetherLanternLayout.js';
+import {
   QUIET_TOGETHER_SITTING_EVENT,
   getLanternSittingSnapshot,
   isLanternPresenceClientEnabled
@@ -160,7 +165,7 @@ export class QuietTogetherLanternsChrome {
       .quiet-together-lanterns {
         position: fixed;
         left: 18px;
-        bottom: 22%;
+        bottom: ${IDLE_LANTERN_BOTTOM_WIDE_CSS};
         z-index: 2;
         pointer-events: none;
         display: flex;
@@ -194,10 +199,10 @@ export class QuietTogetherLanternsChrome {
         color: rgba(236, 228, 208, 0.72);
         text-shadow: 0 1px 2px rgba(20, 16, 10, 0.45);
       }
-      @media (max-width: 430px) {
+      @media (max-width: ${IDLE_LANTERN_NARROW_MQ_MAX_PX}px) {
         .quiet-together-lanterns {
           left: 12px;
-          bottom: 28%;
+          bottom: ${IDLE_LANTERN_BOTTOM_NARROW_CSS};
         }
       }
     `;
