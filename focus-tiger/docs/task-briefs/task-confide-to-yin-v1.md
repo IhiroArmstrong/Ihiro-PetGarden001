@@ -56,7 +56,7 @@
 ```text
 空文本 → 禁用发送（不进分类）
   → safety_redirect 关键词层（命中则停）
-  → harm_witness（针对他人的攻击短语；**不是**热线、**不是** fallback 点头）
+  → harm_witness（**#564 临时占位**；正式 id 见 Brief `aggression_toward_others`，上线后删除本层）
   → 情绪桶规则（anxious / tired / stuck / sad / scattered；显式优先级）
   → fallback
 ```
@@ -70,7 +70,7 @@
 | 桶 / 路由 id | 粗粒度语义 | 示例触发词方向（实现时再落表） |
 |---|---|---|
 | `safety_redirect` | **安全优先路由**（非情绪桶） | 自伤 / 自杀 / 结束生命等危机向短语（表另立；勿与日常 sad 混桶） |
-| `harm_witness` | **他人伤害意图**（非情绪桶、非热线） | `beat people` / 想打人 等；中性在场、不点头、不附和 |
+| `harm_witness` | **临时**他人伤害（#564） | 正式改为 `aggression_toward_others`（#563）；禁与 fallback 点头长期并存 |
 | `anxious` | 焦虑 / 紧绷 | 焦虑、担心、慌、紧张… |
 | `tired` | 疲惫 / 耗尽 | 累、疲惫、困、撑不住… |
 | `stuck` | 卡壳 / 停滞 | 卡住、卡住了、没思路、走不动… |

@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Confide 他人伤害不点头（2026-09-04 · `fix/confide-l3-repeat-fallback`）**：`I want to beat people.` → `harm_witness` / harm-01（不附和、不热线、不 generate）。茶句连打属性锁已合 **#561**。`still.` 仍未改。L365/L614 仍待 Electron 复测。
+- **Confide 他人伤害：临时 `harm_witness`（2026-09-04 · #564 已合）**：堵点头默许。正式 SSOT `#563` `aggression_toward_others`。**上线正式路由时删除** harm 占位。harm-01 含 Heard. = 已知红线妥协。`still.` 排在 aggression 实现之后。
 
 - **5173 Electron QA 记入（2026-09-04 · 纯文档）**：tip `65a50add`。冷启动吹花散花 + 额头提示摸头书面 OK（未关单：375/回流未写）。Confide：时长问 / `I don't want to live` / `Can we just sit here` 书面 OK。**有问题**：耳钮叠 HUD；约第 11 句起茶句套话；暴力句点头 / still. / Still watching。根因 `DEV_WORKFLOW_QUALITY` §6.23。ISSUE_LEDGER 复读行从「已解决」改回跟进中。
 

@@ -36,7 +36,9 @@ export const CONFIDE_CORPUS = Object.freeze([
     review: 'ok'
   }),
 
-  // —— harm_witness (other-directed; not crisis line; not fallback nod) ——
+  // STOPGAP (#564). Delete with HARM_WITNESS when aggression_toward_others ships
+  // (Brief task-confide-aggression-toward-others.md). harm-01 still contains "Heard."
+  // — known red-line compromise, not the #563 copy.
   Object.freeze({
     id: 'harm-01',
     route: CONFIDE_ROUTE.HARM_WITNESS,

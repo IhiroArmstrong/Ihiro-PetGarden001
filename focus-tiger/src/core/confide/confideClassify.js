@@ -9,7 +9,7 @@
  * Pipeline (locked):
  *   empty → null (caller must disable send)
  *   → safety_redirect (priority)
- *   → harm_witness (other-directed attack phrases; not crisis line)
+ *   → harm_witness (STOPGAP #564; replace with aggression_toward_others)
  *   → emotion buckets (explicit priority on multi-hit)
  *   → fallback
  */

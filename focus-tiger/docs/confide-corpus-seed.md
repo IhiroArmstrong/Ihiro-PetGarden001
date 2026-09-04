@@ -36,16 +36,17 @@
 > **与 Wellness 免责对齐（2026-08-14）**：本句指向真实求助渠道（信任的人 / 当地热线 / crisis line / 相談窓口），并写明「不能代替专业帮助 / not a substitute」——与应用内「不是诊疗、不能替代咨询师」同一边界；**不改写**已审 `ok` 原文。权威：`PRODUCT_POSITIONING.md`「Wellness disclaimer」。  
 > **待评估（不阻塞）**：是否在 UI 层为 `safety_redirect` 附加具体地区热线/链接（文案里「当地…」现为抽象表述）。
 
-## 他人伤害意图槽（非情绪桶 · 非危机热线）
+## 他人伤害意图槽（临时 · 待废弃）
 
-> **为何**：`I want to beat people.` 曾落入 `fallback-01`「寅安静地点头」，听起来像默许伤害他人。自伤/自杀仍走 `safety-01`；本槽**不**转介热线、**不**点头、**不**确认。
-> **机制**：`confideClassify` 在 safety 之后、情绪桶之前 → route `harm_witness` → **本槽静态文案**；**禁止** generate。
+> **正式 SSOT**：`task-briefs/task-confide-aggression-toward-others.md`（`aggression_toward_others`）。  
+> **现网 #564**：`harm_witness` / harm-01 只堵点头默许。**实现正式路由时删除本槽。**  
+> harm-01 英文仍以 **Heard.** 开头 = `#563` 红线**已知临时妥协**，不是审定终稿。`review: ok` 只表示可挂发送，**不等于**红线已满足。
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
-| harm-01 | 听见了。寅在这儿，并不附和。 | Heard. Yin stays, without agreeing. | 聴いた。寅はここにいる。賛同はしない。 | **ok** |
+| harm-01 | 听见了。寅在这儿，并不附和。 | Heard. Yin stays, without agreeing. | 聴いた。寅はここにいる。賛同はしない。 | **ok（临时）** |
 
-> 关键词表：`confideHarmKeywords.js`（保守短语）。句库 overlay 白名单仍 19 条，本 id **不进**云 overlay，直到另开 overlay PR。
+> 关键词表：`confideHarmKeywords.js`。句库 overlay 白名单仍 19 条；本 id **不进**云 overlay。
 
 ## 样板桶（语气基准）
 
