@@ -8,8 +8,8 @@
 | 独立bug | Journey log 打开时底栏蓝脉冲点仍可点 | 2026-09-02 用户书面 | `JourneyLogUI` z-index 18 < 壳 z30；growth 卡未 suppress home chrome | 已解决 |
 | 独立bug | 宽屏时长选择器开着时底排 Honesty 仍可点 | 2026-09-02 用户书面 | `WideIdleMoreMenu._sync` `showHome` 未随 `_suppressed` 隐藏 | 已解决 |
 | 独立bug | 英文 UI 混入「寅币」 | 2026-09-02 用户书面 | `en.json` `focus_coins.duration_hint` | 已解决 |
-| 独立bug | Confide L2 同面板长聊后复读（先约第 5–6 句复读首句 generate；**2026-09-04 复测**约第 11 句起连打 `Sit a while. Tea is still warm.`） | 2026-08-31 用户书面 · 2026-09-04 5173 Electron 再报 | **跟进中（属性锁已开工，未人工关单）。** `fix/confide-repeat-property-lock`：连续可见闲聊答句不得字面相同（与 echo/茶句诱因无关）；generate 失败重抽 fallback；冻住 exclude Set 不得再连打。TRACKER L365/L614 仍须 Electron 复测 ≥12 句。工作流 `DEV_WORKFLOW_QUALITY` §6.23。 | 跟进中 |
-| 独立bug | Confide「I want to beat people」落入 fallback-01 点头（听起来像默许伤害他人） | 2026-09-04 用户书面 · 分析师：安全分类漏洞 | 现网只有自伤/自杀转介（safety-01）；**针对他人的攻击意图**无独立路由，掉进 `Heard. Yin nods quietly.`。**本回合不修运行时**（一次一任务：先锁复读属性）。须另开 corpus/路由：「攻击他人意图」→ 中性、不点头、不确认；勿与负面情绪 fallback 池共用。 | 未跟进 |
+| 独立bug | Confide L2 同面板长聊后复读（先约第 5–6 句复读首句 generate；**2026-09-04 复测**约第 11 句起连打 `Sit a while. Tea is still warm.`） | 2026-08-31 用户书面 · 2026-09-04 5173 Electron 再报 | **跟进中（#561 属性锁已合 develop，未人工关单）。** 连续可见闲聊答句不得字面相同；generate 失败重抽 fallback。TRACKER L365/L614 仍须 Electron 复测 ≥12 句。工作流 `DEV_WORKFLOW_QUALITY` §6.23。 | 跟进中 |
+| 独立bug | Confide「I want to beat people」落入 fallback-01 点头（听起来像默许伤害他人） | 2026-09-04 用户书面 · 分析师：安全分类漏洞 | **跟进中（代码本旁支，未人工关单）。** `fix/confide-l3-repeat-fallback`：`harm_witness` + harm-01；safety 仍优先。TRACKER 新碎片 + L614 须 Electron 复测。禁止标已解决代替关单（§6.23 H1）。 | 跟进中 |
 | 优化建议 | Confide 过短空观察句没接住内容（`still.` / `Still watching.`） | 2026-09-04 用户书面 · 分析师：语料质量 ≠ 复读逻辑 | 与茶句连打不是一类。须另开 corpus 扩充，禁止并进复读 PR。 | 未跟进 |
 | 独立bug | Allow 后 What Yin remembers 空态仍写「去 Confide 允许」 | 2026-09-01 用户书面 · 本会话 | `YinPersonalMemoryUI` 空列表一律 `YIN_MEMORY_PANEL_EMPTY` | 已解决 |
 | 独立bug | What Yin remembers 开着时 Forget 后新抽取不出现在列表 | 2026-09-01 用户书面 · Mondays feel crowded | `YinPersonalMemoryUI` 无 `reloadIfOpen`；Confide Remember 未通知面板（Forget 已有 `removeMemoryIfOpen`） | 已解决 |
@@ -21,4 +21,4 @@
 | 优化建议 | 「你观察到我什么 / 你摸到什么模式」≠ 普通 OTHER 查询 | 2026-09-01 分析师 Phase 2B 候选 B9/B10 | `What have you noticed about me?` / `I wonder what patterns you've picked up on.` **禁止**标 OTHER 并与 CI-02/03 同一对错标准。2B 金标已排除；另口令再议诚实空态。 | 未跟进 |
 | 技术债 | D2 holdout：`Please erase what I said about work.` → BOUNDARY（期望 FORGET） | 2026-09-01 Tier 1 holdout Metal · 分析师 | **非孤立噪音**——与 D 架构「边界过敏、系统性压成 BOUNDARY」（锚点 0/6 塌缩）**同类风险**；本次仅 1 条 anchor holdout 露头。**处理**：并入 **FORGET vs BOUNDARY 双命中切片**（§6.1 切片 3 · **#525 已合 develop**），不单独立项。若 E′ 后续迭代再现 BOUNDARY 过吸 → 回溯本行。JSON：`intent-diag-1788248640868-tier1-holdout.json`。 | 跟进中 |
 | 独立bug | 宽屏 Idle 倾听耳 `#confide-ear-chrome` 左上与 FocusHUD 重叠 | 2026-09-04 用户书面 · 5173 Electron | 耳钮 `position:fixed; top/left:14px`；HUD 同为左上 C.2。`SANCTUARY_UI_ART_DIRECTION` B 表原先**未登记**倾听耳。建议错开（⋯ 邻侧或右上 Support 避让带），本回合不改运行时。 | 未跟进 |
-| 独立bug | Confide 闲聊答句接不住内容：暴力句点头、过短 still、空观察 | 2026-09-04 用户书面 · 5173 Electron | `I want to beat people.` → `Heard. Yin nods quietly.`（fallback-01，像默认同意伤害）。`I’m here, but my mind really isn’t.` → `still.`。`I think I need a reset.` → `Still watching.`（风景行「接住内容」失败）。与茶句复读同行扇出。 | 未跟进 |
+| 独立bug | Confide 闲聊答句接不住内容：暴力句点头、过短 still、空观察 | 2026-09-04 用户书面 · 5173 Electron | **扇出。** 暴力点头 → 上行 `harm_witness` **跟进中**。`still.` / `Still watching.` 仍 **未跟进**（禁止并进本 PR）。 | 未跟进 |

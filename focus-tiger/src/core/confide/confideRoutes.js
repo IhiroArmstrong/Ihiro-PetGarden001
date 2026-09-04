@@ -10,6 +10,8 @@
 
 export const CONFIDE_ROUTE = Object.freeze({
   SAFETY_REDIRECT: 'safety_redirect',
+  /** Other-directed harm intent — corpus witness, not crisis line, not fallback nod. */
+  HARM_WITNESS: 'harm_witness',
   ANXIOUS: 'anxious',
   TIRED: 'tired',
   STUCK: 'stuck',

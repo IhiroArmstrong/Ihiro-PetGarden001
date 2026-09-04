@@ -61,6 +61,38 @@ test('bare help-me stays unmatched (do not widen into emotion or safety)', () =>
   assert.equal(confideClassify('Can you help me?'), CONFIDE_ROUTE.FALLBACK);
 });
 
+test('other-directed harm is harm_witness, not fallback nod or crisis line', () => {
+  assert.equal(
+    confideClassify('I want to beat people.'),
+    CONFIDE_ROUTE.HARM_WITNESS
+  );
+  assert.equal(confideClassify('想打人'), CONFIDE_ROUTE.HARM_WITNESS);
+  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.HARM_WITNESS);
+  assert.notEqual(
+    confideClassify('I want to beat people.'),
+    CONFIDE_ROUTE.FALLBACK
+  );
+  assert.notEqual(
+    confideClassify('I want to beat people.'),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
+});
+
+test('self-harm still beats other-directed harm', () => {
+  assert.equal(
+    confideClassify('I want to die and beat people'),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
+});
+
+test('sports beat / beaten-down mood stay unmatched', () => {
+  assert.equal(
+    confideClassify('I want to beat the high score'),
+    CONFIDE_ROUTE.FALLBACK
+  );
+  assert.equal(confideClassify('I feel beaten down today'), CONFIDE_ROUTE.FALLBACK);
+});
+
 test('multi-hit uses explicit priority (anxious over tired)', () => {
   assert.equal(
     confideClassify('anxious and exhausted'),
