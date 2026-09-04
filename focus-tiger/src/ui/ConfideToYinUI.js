@@ -13,7 +13,15 @@ import { canSubmitConfideText } from '../core/confide/confideClassify.js';
 import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
-import { resolveConfideReply } from '../core/confide/confideReplyFlow.js';
+import {
+  resolveConfideReply,
+  resolveCorpusFallbackAfterGenerateFailure
+} from '../core/confide/confideReplyFlow.js';
+import {
+  CONSECUTIVE_GENERATE_FALLBACK_WARN_AT,
+  lastRepeatableYinReplyText,
+  nextGenerateFailStreak
+} from '../core/confide/confideReplyUniqueness.js';
 import { buildPracticeFactsReply } from '../core/confide/confidePracticeFacts.js';
 import { buildPresenceFactsReply } from '../core/confide/confidePresenceFacts.js';
 import { formatMemoryListReply } from '../core/confide/confideMemoryList.js';
@@ -104,6 +112,7 @@ export class ConfideToYinUI {
     this.handlers = handlers;
     this._open = false;
     this._sessionExclude = new Set();
+    this._generateFailStreak = 0;
     this._companion = null;
     this._unsubCompanion = null;
     this._generateLayerOpen = false;
@@ -316,6 +325,8 @@ export class ConfideToYinUI {
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
     this._l2Turns = [];
+    this._sessionExclude = new Set();
+    this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
     this._hideMemoryConsent();
@@ -339,6 +350,8 @@ export class ConfideToYinUI {
     this._sendEpoch += 1;
     this._sending = false;
     this._l2Turns = [];
+    this._sessionExclude = new Set();
+    this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
     this._hideMemoryConsent();
@@ -739,6 +752,53 @@ export class ConfideToYinUI {
   }
 
   /**
+   * @param {{ hit: object, locale: string, text: string, corpusText: string }} payload
+   */
+  _showGenerateFailureFallback(payload) {
+    const { hit, locale, text, corpusText } = payload;
+    if (hit?.line?.id) this._sessionExclude.add(hit.line.id);
+    this._generateFailStreak = nextGenerateFailStreak(
+      this._generateFailStreak,
+      false
+    );
+    if (this._generateFailStreak >= CONSECUTIVE_GENERATE_FALLBACK_WARN_AT) {
+      console.info('[focus-tiger][confide] consecutive generate fallback', {
+        streak: this._generateFailStreak
+      });
+    }
+    const picked = resolveCorpusFallbackAfterGenerateFailure({
+      locale,
+      localDate: formatLocalDateYmd(),
+      salt: this._l2Turns.length,
+      excludeIds: this._sessionExclude,
+      history: this._l2Turns,
+      failedLineId: hit?.line?.id || ''
+    });
+    if (picked) {
+      this._sessionExclude.add(picked.line.id);
+      this._showReply(
+        {
+          route: picked.route,
+          line: picked.line,
+          text: picked.text,
+          source: 'corpus'
+        },
+        text
+      );
+      return;
+    }
+    this._showReply(
+      {
+        route: hit?.line ? hit.route : 'fallback',
+        line: hit?.line,
+        text: corpusText,
+        source: 'corpus'
+      },
+      text
+    );
+  }
+
+  /**
    * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
    */
   _runL3Generate(payload) {
@@ -769,6 +829,10 @@ export class ConfideToYinUI {
       .then((result) => {
         if (!this._open || epoch !== this._sendEpoch) return;
         if (result?.ok && result.text) {
+          this._generateFailStreak = nextGenerateFailStreak(
+            this._generateFailStreak,
+            true
+          );
           this._showReply(
             {
               route: 'generate',
@@ -784,19 +848,21 @@ export class ConfideToYinUI {
           });
           return;
         }
-        this._sessionExclude.add(hit.line.id);
-        this._showReply(
-          { route: hit.route, line: hit.line, text: corpusText, source: 'corpus' },
-          text
-        );
+        this._showGenerateFailureFallback({
+          hit,
+          locale,
+          text,
+          corpusText
+        });
       })
       .catch(() => {
         if (!this._open || epoch !== this._sendEpoch) return;
-        this._sessionExclude.add(hit.line.id);
-        this._showReply(
-          { route: hit.line ? hit.route : 'fallback', line: hit.line, text: corpusText, source: 'corpus' },
-          text
-        );
+        this._showGenerateFailureFallback({
+          hit,
+          locale,
+          text,
+          corpusText
+        });
       })
       .finally(() => {
         if (epoch !== this._sendEpoch) return;
@@ -813,8 +879,12 @@ export class ConfideToYinUI {
     const hit = resolveConfideReply({
       text,
       localDate: formatLocalDateYmd(),
-      salt: this._sessionExclude.size,
-      excludeIds: this._sessionExclude
+      salt: this._l2Turns.length,
+      excludeIds: this._sessionExclude,
+      excludeNormalizedTexts: [lastRepeatableYinReplyText(this._l2Turns)].filter(
+        Boolean
+      ),
+      locale: getLocale()
     });
     if (!hit) return;
     const locale = getLocale();

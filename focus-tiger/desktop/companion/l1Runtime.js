@@ -26,7 +26,7 @@ import {
   buildReflectionCompanionPrompt
 } from './l2Persona.js';
 import {
-  priorGenerateRepliesFromHistory,
+  priorRepeatableYinRepliesFromHistory,
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
 import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
@@ -341,7 +341,7 @@ export class CompanionL1Runtime {
     const ev = await this._queue;
     const raw = ev?.event === 'generated' ? ev.text : '';
     const sanitized = sanitizeCompanionL2Reply(raw, {
-      priorReplies: priorGenerateRepliesFromHistory(payload.history)
+      priorReplies: priorRepeatableYinRepliesFromHistory(payload.history)
     });
     const record = {
       at: new Date().toISOString(),

@@ -18,6 +18,7 @@ import {
   resetTasteLayerOverlayForTests,
   setTasteConfideCopyOverlay
 } from '../tasteLayerOverlay.js';
+import { firstConsecutiveDuplicateIndex } from './confideReplyUniqueness.js';
 import en from '../../locales/en.json' with { type: 'json' };
 
 afterEach(() => {
@@ -108,4 +109,22 @@ test('confide overlay replaces corpus text and keeps pick id / route', () => {
   assert.equal(line.id, 'tired-01');
   assert.equal(line.route, CONFIDE_ROUTE.TIRED);
   assert.equal(confideLineText(line, 'en'), 'Overlay cushion line.');
+});
+
+test('pickConfideLine: wrapped exclude set still cannot consecutive-repeat fallback text', () => {
+  const excludeIds = new Set(['fallback-01', 'fallback-02', 'fallback-03']);
+  const texts = [];
+  for (let salt = 0; salt < 8; salt += 1) {
+    const line = pickConfideLine({
+      route: CONFIDE_ROUTE.FALLBACK,
+      localDate: '2026-09-04',
+      salt: excludeIds.size,
+      excludeIds,
+      excludeNormalizedTexts: texts.slice(-1),
+      locale: 'en'
+    });
+    assert.ok(line);
+    texts.push(confideLineText(line, 'en'));
+  }
+  assert.equal(firstConsecutiveDuplicateIndex(texts), -1);
 });
