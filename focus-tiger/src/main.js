@@ -1209,6 +1209,9 @@ async function init() {
         emotionController.playEmotion('nodBow');
         return;
       }
+      if (route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) {
+        return;
+      }
       emotionController.playEmotion('mindfulAcknowledge');
     }
     })

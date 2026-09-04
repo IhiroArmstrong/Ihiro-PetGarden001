@@ -33,9 +33,9 @@ const readyOpen = {
 };
 
 describe('desktop companion L2 route', () => {
-  it('beat-people classifies as harm_witness and never generates', () => {
+  it('beat-people classifies as aggression_toward_others and never generates', () => {
     const route = confideClassify('I want to beat people.');
-    assert.equal(route, CONFIDE_ROUTE.HARM_WITNESS);
+    assert.equal(route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
     assert.equal(
       shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
       false
@@ -51,7 +51,7 @@ describe('desktop companion L2 route', () => {
     );
   });
 
-  it('never generates on safety, harm witness, or emotion buckets', () => {
+  it('never generates on safety, aggression toward others, or emotion buckets', () => {
     assert.equal(
       shouldUseDesktopCompanionGenerate({
         ...readyOpen,
@@ -62,7 +62,7 @@ describe('desktop companion L2 route', () => {
     assert.equal(
       shouldUseDesktopCompanionGenerate({
         ...readyOpen,
-        route: CONFIDE_ROUTE.HARM_WITNESS
+        route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
       }),
       false
     );

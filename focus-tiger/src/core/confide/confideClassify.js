@@ -9,7 +9,7 @@
  * Pipeline (locked):
  *   empty → null (caller must disable send)
  *   → safety_redirect (priority)
- *   → harm_witness (STOPGAP #564; replace with aggression_toward_others)
+ *   → aggression_toward_others (other-directed violence intent)
  *   → emotion buckets (explicit priority on multi-hit)
  *   → fallback
  */
@@ -22,8 +22,8 @@ import {
   EMOTION_PHRASES,
   textMatchesAnyPhrase
 } from './confideEmotionKeywords.js';
+import { matchesAggressionTowardOthers } from './confideAggressionKeywords.js';
 import { matchesSafetyRedirect } from './confideSafetyKeywords.js';
-import { matchesHarmWitness } from './confideHarmKeywords.js';
 
 /**
  * @param {string} text
@@ -37,8 +37,8 @@ export function confideClassify(text) {
     return CONFIDE_ROUTE.SAFETY_REDIRECT;
   }
 
-  if (matchesHarmWitness(raw)) {
-    return CONFIDE_ROUTE.HARM_WITNESS;
+  if (matchesAggressionTowardOthers(raw)) {
+    return CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS;
   }
 
   /** @type {string[]} */

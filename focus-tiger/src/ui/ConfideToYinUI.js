@@ -1326,6 +1326,10 @@ export class ConfideToYinUI {
         display: block;
         background: #7a5340;
       }
+      .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS}']::before {
+        display: block;
+        background: #8b6f5c;
+      }
       .confide-to-yin__actions {
         display: flex;
         gap: 8px;

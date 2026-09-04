@@ -36,16 +36,38 @@ export const CONFIDE_CORPUS = Object.freeze([
     review: 'ok'
   }),
 
-  // STOPGAP (#564). Delete with HARM_WITNESS when aggression_toward_others ships
-  // (Brief task-confide-aggression-toward-others.md). harm-01 still contains "Heard."
-  // — known red-line compromise, not the #563 copy.
+  // —— aggression_toward_others (#563; draft until product review ok) ——
   Object.freeze({
-    id: 'harm-01',
-    route: CONFIDE_ROUTE.HARM_WITNESS,
-    zh: '听见了。寅在这儿，并不附和。',
-    en: 'Heard. Yin stays, without agreeing.',
-    ja: '聴いた。寅はここにいる。賛同はしない。',
-    review: 'ok'
+    id: 'aggression-02',
+    route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
+    zh: '一定有什么让你很难受。',
+    en: "Something's really gotten to you.",
+    ja: '[TBD]',
+    review: 'draft'
+  }),
+  Object.freeze({
+    id: 'aggression-01',
+    route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
+    zh: '听起来你背负了很多怒气。',
+    en: 'That sounds like a lot of anger to carry.',
+    ja: '[TBD]',
+    review: 'draft'
+  }),
+  Object.freeze({
+    id: 'aggression-03',
+    route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
+    zh: '[TBD]',
+    en: 'A lot is pressing in right now.',
+    ja: '[TBD]',
+    review: 'draft'
+  }),
+  Object.freeze({
+    id: 'aggression-04',
+    route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
+    zh: '[TBD]',
+    en: 'Something heavy is sitting with you.',
+    ja: '[TBD]',
+    review: 'draft'
   }),
 
   // —— fallback ——
@@ -280,8 +302,13 @@ export function pickConfideLine({
     pool = withoutLastVisible(linesForRoute(route, corpus));
   }
   if (pool.length === 0) {
-    // Safety must never fall through to zen fallback at retrieve time.
-    if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) return null;
+    // Safety / aggression must never fall through to zen fallback at retrieve time.
+    if (
+      route === CONFIDE_ROUTE.SAFETY_REDIRECT ||
+      route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
+    ) {
+      return null;
+    }
     pool = withoutLastVisible(linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus));
   }
   if (pool.length === 0) return null;

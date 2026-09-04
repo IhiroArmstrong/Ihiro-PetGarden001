@@ -85,6 +85,7 @@ export function shouldHandleConfideCompanionPresence({
   text = ''
 } = {}) {
   if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) return false;
+  if (route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) return false;
   return isConfideCompanionPresenceIntent(text);
 }
 
