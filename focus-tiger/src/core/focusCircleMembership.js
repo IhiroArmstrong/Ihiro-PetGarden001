@@ -17,8 +17,15 @@ export const FOCUS_CIRCLE_QUERY_PARAM = 'focusCircle';
 export const FOCUS_CIRCLE_JOIN_QUERY_PARAM = 'circleJoin';
 export const FOCUS_CIRCLE_CHANGE_EVENT = 'focus-tiger:focus-circle-change';
 export const FOCUS_CIRCLE_MAX_MEMBERS = 8;
+/** While Privacy / circle UI is open, poll cloud status for memberCount changes. */
+export const FOCUS_CIRCLE_STATUS_POLL_MS = 5000;
 
 const CODE_RE = /^[A-HJ-NP-Z2-9]{6}$/;
+
+/** @type {ReturnType<typeof setInterval> | null} */
+let statusPollTimer = null;
+/** @type {(() => void) | null} */
+let statusPollOnVisible = null;
 
 /**
  * @param {unknown} raw
@@ -342,4 +349,55 @@ export async function refreshFocusCircleStatus(opts = {}) {
   }
   writeFocusCircleMembership(storage, result.membership);
   return { ok: true, membership: result.membership };
+}
+
+/**
+ * Poll cloud status while circle settings are visible (e.g. Privacy sheet open).
+ * Stops when membership clears or {@link stopFocusCircleStatusPolling} runs.
+ *
+ * @param {object} [opts]
+ * @param {Storage | null | undefined} [opts.storage]
+ * @param {string} [opts.search]
+ * @param {typeof postCloudJson} [opts.postJson]
+ * @param {() => string} [opts.getBaseUrl]
+ * @param {number} [opts.intervalMs]
+ * @param {(result: Awaited<ReturnType<typeof refreshFocusCircleStatus>>) => void} [opts.onUpdate]
+ */
+export function startFocusCircleStatusPolling(opts = {}) {
+  stopFocusCircleStatusPolling();
+  const tick = () => {
+    if (!readFocusCircleMembership(opts.storage ?? getDefaultStorage())) {
+      stopFocusCircleStatusPolling();
+      return;
+    }
+    void refreshFocusCircleStatus(opts).then((result) => {
+      opts.onUpdate?.(result);
+    });
+  };
+  tick();
+  statusPollTimer = setInterval(
+    tick,
+    opts.intervalMs ?? FOCUS_CIRCLE_STATUS_POLL_MS
+  );
+  if (typeof globalThis.addEventListener === 'function') {
+    statusPollOnVisible = () => {
+      if (globalThis.document?.visibilityState !== 'visible') return;
+      tick();
+    };
+    globalThis.addEventListener('visibilitychange', statusPollOnVisible);
+    globalThis.addEventListener('focus', statusPollOnVisible);
+  }
+}
+
+export function stopFocusCircleStatusPolling() {
+  if (statusPollTimer) clearInterval(statusPollTimer);
+  statusPollTimer = null;
+  if (
+    statusPollOnVisible &&
+    typeof globalThis.removeEventListener === 'function'
+  ) {
+    globalThis.removeEventListener('visibilitychange', statusPollOnVisible);
+    globalThis.removeEventListener('focus', statusPollOnVisible);
+    statusPollOnVisible = null;
+  }
 }

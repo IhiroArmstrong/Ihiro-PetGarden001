@@ -14,6 +14,9 @@ import {
   postFocusCircle,
   readCircleJoinQueryCode,
   readFocusCircleMembership,
+  refreshFocusCircleStatus,
+  startFocusCircleStatusPolling,
+  stopFocusCircleStatusPolling,
   writeFocusCircleMembership
 } from './focusCircleMembership.js';
 
@@ -119,5 +122,65 @@ describe('focusCircleMembership', () => {
     assert.equal(result.ok, true);
     assert.equal(payload.action, 'create');
     assert.equal(payload.memberId, '22222222-2222-4222-8222-222222222222');
+  });
+
+  it('refreshFocusCircleStatus updates stored memberCount from cloud', async () => {
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 1
+    });
+    const result = await refreshFocusCircleStatus({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => ({
+        ok: true,
+        schemaVersion: 1,
+        circleId: '11111111-1111-4111-8111-111111111111',
+        memberId: '22222222-2222-4222-8222-222222222222',
+        code: 'ABCD23',
+        memberCount: 2,
+        isMember: true
+      })
+    });
+    assert.equal(result.ok, true);
+    assert.equal(readFocusCircleMembership(storage)?.memberCount, 2);
+  });
+
+  it('status polling stops when membership clears', async () => {
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 1
+    });
+    let polls = 0;
+    startFocusCircleStatusPolling({
+      storage,
+      search: '',
+      intervalMs: 20,
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        polls += 1;
+        clearFocusCircleMembership(storage);
+        return {
+          ok: true,
+          schemaVersion: 1,
+          circleId: '11111111-1111-4111-8111-111111111111',
+          memberId: '22222222-2222-4222-8222-222222222222',
+          code: 'ABCD23',
+          memberCount: 0,
+          isMember: false
+        };
+      }
+    });
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    stopFocusCircleStatusPolling();
+    assert.ok(polls >= 1);
+    assert.equal(readFocusCircleMembership(storage), null);
   });
 });
