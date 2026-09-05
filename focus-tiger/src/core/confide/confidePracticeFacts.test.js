@@ -241,6 +241,11 @@ describe('confide practice facts (Phase 1B)', () => {
     );
     assert.equal(classifyPracticeFactsKind('What have you noticed lately?'), null);
     assert.equal(classifyPracticeFactsKind('Have I been more steady lately?'), null);
+    assert.equal(
+      classifyPracticeFactsKind('What patterns have you noticed in how I practice?'),
+      PRACTICE_FACTS_KIND.SHOWING_UP
+    );
+    assert.equal(classifyPracticeFactsKind('你练习的模式是什么'), PRACTICE_FACTS_KIND.SHOWING_UP);
   });
 
   it('names the usual evening bucket without judging discipline', () => {

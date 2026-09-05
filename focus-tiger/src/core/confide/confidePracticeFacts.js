@@ -11,6 +11,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 import { journeyLogDateKey, readJourneyLog } from '../journeyLogGate.js';
 
 export const PRACTICE_COMPARE_WINDOW_DAYS = 14;
@@ -60,6 +61,14 @@ const COMPARE_EASE_RES = [
   /更容易进入状态|更容易進入狀態|进状态(顺不顺|容易)/
 ];
 
+/** CI-05 · domain-limited practice pattern asks (not meta-observation). */
+const PRACTICE_PATTERN_OBSERVATION_RES = Object.freeze([
+  /\bpatterns?\b.*\b(how\s+i\s+practi[cs]e|my\s+practi[cs]e|showing\s+up)\b/i,
+  /\bwhat\s+have\s+you\s+noticed\b.*\b(how\s+i\s+practi[cs]e|my\s+practi[cs]e|showing\s+up)\b/i,
+  /练习.*模式/,
+  /(?:我)?练习.*模式/
+]);
+
 const BUCKET_KEYS = Object.freeze({
   morning: 'CONFIDE_PRACTICE_BUCKET_MORNING',
   afternoon: 'CONFIDE_PRACTICE_BUCKET_AFTERNOON',
@@ -76,12 +85,26 @@ export function isPracticeDurationQuestion(text) {
 }
 
 /**
+ * CI-05 · practice-domain pattern observation (excluded from observation_honesty).
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isConfidePracticePatternObservationQuery(text) {
+  const raw = normalizeConfideIntentText(text);
+  if (!raw) return false;
+  return PRACTICE_PATTERN_OBSERVATION_RES.some((re) => re.test(raw));
+}
+
+/**
  * @param {string} text
  * @returns {(typeof PRACTICE_FACTS_KIND)[keyof typeof PRACTICE_FACTS_KIND] | null}
  */
 export function classifyPracticeFactsKind(text) {
   const raw = typeof text === 'string' ? text.trim() : '';
   if (!raw) return null;
+  if (isConfidePracticePatternObservationQuery(raw)) {
+    return PRACTICE_FACTS_KIND.SHOWING_UP;
+  }
   if (COMPARE_EASE_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.COMPARE_EASE;
   if (USUAL_TIME_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.USUAL_TIME;
   if (SHOWING_UP_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.SHOWING_UP;

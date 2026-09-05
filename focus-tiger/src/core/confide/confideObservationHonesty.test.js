@@ -71,6 +71,29 @@ describe('confideObservationHonesty', () => {
     assert.equal(isMemoryListQuestion('Show me what you remember'), true);
   });
 
+  it('excludes CI-05/06 domain-limited asks from observation_honesty', () => {
+    const ciPractice = 'What patterns have you noticed in how I practice?';
+    const ciMood = 'What have you noticed about my mood?';
+    assert.equal(isConfideObservationMetaQuery(ciPractice), false);
+    assert.equal(isConfideObservationMetaQuery(ciMood), false);
+    assert.equal(
+      shouldHandleConfideObservationHonesty({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: ciPractice
+      }),
+      false
+    );
+    assert.equal(
+      shouldHandleConfideObservationHonesty({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: ciMood
+      }),
+      false
+    );
+    assert.equal(classifyPracticeFactsKind(ciPractice), PRACTICE_FACTS_KIND.SHOWING_UP);
+    assert.equal(classifyPresenceFactsKind(ciMood), PRESENCE_FACTS_KIND.TREND);
+  });
+
   it('formats locale key only', () => {
     assert.equal(
       formatConfideObservationHonestyReply((key) => key),

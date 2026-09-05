@@ -382,6 +382,8 @@
   "CONFIDE_CHIP_FILL_DONT_SAVE_THIS": "Don't save this",
   "CONFIDE_CHIP_FILL_PRACTICE_DURATION": "How long have I practiced?",
   "CONFIDE_CHIP_FILL_PRESENCE_TREND": "What has my mood looked like over the last two weeks?",
+  "CONFIDE_CHIP_FILL_PRACTICE_COMPARE": "Am I practicing longer than before?",
+  "CONFIDE_CHIP_FILL_PRESENCE_RECENT": "What has my mood looked like recently?",
   "CONFIDE_PANEL_PLACEHOLDER": "A few words…",
   "CONFIDE_PANEL_SEND": "Share",
   "CONFIDE_PANEL_CANCEL": "Cancel",

@@ -18,7 +18,9 @@ describe('confideVerbalHintChips', () => {
       CONFIDE_VERBAL_HINT_CHIP_ID.FORGET_THIS,
       CONFIDE_VERBAL_HINT_CHIP_ID.DONT_SAVE_THIS,
       CONFIDE_VERBAL_HINT_CHIP_ID.PRACTICE_DURATION,
-      CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_TREND
+      CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_TREND,
+      CONFIDE_VERBAL_HINT_CHIP_ID.PRACTICE_COMPARE,
+      CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_RECENT
     ]);
     assert.equal(
       CONFIDE_VERBAL_HINT_CHIPS.find(
@@ -27,15 +29,45 @@ describe('confideVerbalHintChips', () => {
       true
     );
     assert.equal(
+      CONFIDE_VERBAL_HINT_CHIPS.find(
+        (chip) => chip.id === CONFIDE_VERBAL_HINT_CHIP_ID.PRACTICE_COMPARE
+      )?.shipped,
+      true
+    );
+    assert.equal(
+      CONFIDE_VERBAL_HINT_CHIPS.find(
+        (chip) => chip.id === CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_RECENT
+      )?.shipped,
+      true
+    );
+    assert.equal(
       CONFIDE_VERBAL_HINT_CHIPS.filter((chip) => chip.shipped).length,
-      1
+      3
     );
   });
 
-  it('lists Forget this only when the memory bridge exists', () => {
-    assert.deepEqual(listShippedConfideVerbalHintChips({ hasMemoryBridge: false }), []);
+  it('lists observation guidance chips without memory bridge', () => {
+    const shipped = listShippedConfideVerbalHintChips({ hasMemoryBridge: false });
+    assert.equal(shipped.length, 2);
+    assert.deepEqual(
+      shipped.map((chip) => chip.id),
+      [
+        CONFIDE_VERBAL_HINT_CHIP_ID.PRACTICE_COMPARE,
+        CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_RECENT
+      ]
+    );
+  });
+
+  it('lists Forget this plus observation guidance when bridge exists', () => {
     const shipped = listShippedConfideVerbalHintChips({ hasMemoryBridge: true });
-    assert.equal(shipped.length, 1);
+    assert.equal(shipped.length, 3);
     assert.equal(shipped[0].id, CONFIDE_VERBAL_HINT_CHIP_ID.FORGET_THIS);
+    assert.deepEqual(
+      shipped.slice(1).map((chip) => chip.id),
+      [
+        CONFIDE_VERBAL_HINT_CHIP_ID.PRACTICE_COMPARE,
+        CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_RECENT
+      ]
+    );
   });
 });

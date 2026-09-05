@@ -12,6 +12,8 @@
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { overlayConfideTemplateTextForKey } from '../tasteLayerOverlay.js';
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { isConfidePracticePatternObservationQuery } from './confidePracticeFacts.js';
+import { isConfideMoodObservationQuery } from './confidePresenceFacts.js';
 
 /** @type {readonly RegExp[]} */
 const OBSERVATION_META_QUERY_RES = Object.freeze([
@@ -31,6 +33,8 @@ const OBSERVATION_META_QUERY_RES = Object.freeze([
 export function isConfideObservationMetaQuery(text) {
   const raw = normalizeConfideIntentText(text);
   if (!raw) return false;
+  if (isConfidePracticePatternObservationQuery(raw)) return false;
+  if (isConfideMoodObservationQuery(raw)) return false;
   return OBSERVATION_META_QUERY_RES.some((re) => re.test(raw));
 }
 
