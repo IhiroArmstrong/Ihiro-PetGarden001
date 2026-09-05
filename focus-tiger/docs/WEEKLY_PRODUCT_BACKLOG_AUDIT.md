@@ -81,7 +81,7 @@
 
 | # | 问题 | 出处 | 建议 |
 |---|---|---|---|
-| C1 | 「你观察到我什么」≠ OTHER 查询 | ISSUE_LEDGER 行 22 | **PO 已拍板（2026-09-06）**：Phase 2B 探针残差；生产 send 不动 |
+| C1 | 「你观察到我什么」≠ OTHER 查询 | ISSUE_LEDGER 行 22 | **结论已锁**：诚实空态 MVP（`task-confide-observation-honesty-mvp.md`）可开工；2B 探针不挡 ship |
 | C2 | Confide 多语言 Personal Memory 抽取 | ISSUE_LEDGER 行 17 | **PO 已拍板（2026-09-06）**：语言无关须入库；撤销 V1 中文排除 → **下一批 Brief** |
 | C3 | Gate 0.D 语用残差（A14/A15/D7 等） | ISSUE_LEDGER 行 20–21 | PO 已否决 Phase 3 → 保持探针/L3 残差，不另开生产单 |
 | C4 | Hints 整体再设计 + viewport-context 解耦 | LOGGED #2 · Backlog ⑤ | **Brief 已开**：`task-hints-redesign-phase2.md` + `task-hints-whisper-boundary-audit.md`；实现口令「开工 Hints viewport-context 试点」 |
