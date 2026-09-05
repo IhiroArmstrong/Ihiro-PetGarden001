@@ -293,6 +293,19 @@ describe('desktop companion L1 isolation', () => {
     assert.match(mainSrc, /confideToYinUI\.close\(\)/);
     assert.match(mainSrc, /bindDesktopCompanion/);
   });
+
+  it('schedules idle companion unload on Confide close and shell hidden (60s grace)', () => {
+    const mainSrc = readFileSync(join(focusTigerRoot, 'src/main.js'), 'utf8');
+    assert.match(mainSrc, /createCompanionUnloadScheduler/);
+    assert.match(mainSrc, /bindDesktopCompanionShellUnload/);
+    assert.match(mainSrc, /companionIdleUnloadScheduler\.cancel\(\)/);
+    assert.match(mainSrc, /companionIdleUnloadScheduler\.schedule\(\)/);
+    const scheduleSrc = readFileSync(
+      join(focusTigerRoot, 'src/core/desktopCompanionUnloadSchedule.js'),
+      'utf8'
+    );
+    assert.match(scheduleSrc, /COMPANION_UNLOAD_GRACE_MS = 60_000/);
+  });
 });
 
 describe('Confide open dormant-wake contract (#491)', () => {
