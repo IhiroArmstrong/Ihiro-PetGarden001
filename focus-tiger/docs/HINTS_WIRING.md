@@ -181,7 +181,7 @@
 | ② | PR 模板强制批次簇 / 单 tip 例外说明 | **已落地**（`.github/PULL_REQUEST_TEMPLATE.md`） |
 | ③ | 用真实 **簇 A** 跑一遍全流程，验收本表格式是否好用 | **已验证（2026-08-03）**：校正 §4.1 与 `resolveAutoHintIds` 漂移；补 cluster A 单测；宽窄路径指既有 e2e；§五补 idle-after。**可宣称接线表格式已被真实编辑检验**（非视觉快照、非壳层解耦） |
 | ④ | 关键 hint 窄宽视觉护栏（尖角几何 / mint 色 / tip 软快照） | **试点已合（PR #93）· 观察中（2026-08-03 拍板）**：保持现状；**暂不**扩 linux 软快照 / peeked / 更多 hintId。触发再开：CI 绿但人眼抓到 tip 形/peeked 坏，或某 id remap 反复漂。观感关单仍人工。 |
-| ⑤ | hint 锚点只吃传入 viewport-context，少直接摸壳层状态 | 架构 Backlog · **不本轮立刻全改**（偏高风险；先 Brief/试点） |
+| ⑤ | hint 锚点只吃传入 viewport-context，少直接摸壳层状态 | **Brief 已开**：`task-briefs/task-hints-redesign-phase2.md`（试点范围）· Whisper 分轨审计：`task-hints-whisper-boundary-audit.md` |
 
 ### 簇 A 试跑清单（③ · 已完成）
 

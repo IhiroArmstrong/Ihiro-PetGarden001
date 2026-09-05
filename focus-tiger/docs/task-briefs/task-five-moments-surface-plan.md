@@ -88,6 +88,8 @@
 
 **并行约束**：可与 `feature/active-recover-*` **文档/排期**并存；**实现**勿与 Recover 大 PR 抢同一共享面（Hints UI / locales 大文件）而无姊妹分支同步。
 
+**Hints / Whisper 分轨（2026-09-06）**：再设计与边界审计见 `task-briefs/task-hints-redesign-phase2.md` · `task-hints-whisper-boundary-audit.md`。
+
 ---
 
 ## 六、验收与文档义务（各任务收尾）
