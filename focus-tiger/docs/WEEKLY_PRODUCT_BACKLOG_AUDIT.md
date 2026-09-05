@@ -61,7 +61,7 @@
 | # | 问题 | 出处 | 动作 |
 |---|---|---|---|
 | A1 | 宽屏 `#confide-ear-chrome` 与 `#focus-hud` 重叠 | ISSUE_LEDGER · TRACKER 倾听耳行 · SANCTUARY B 表 | **本回合 `fix/weekly-audit-confide-ear-hud`**：耳钮下移至 HUD 下方（+112px） |
-| A2 | Arrival 鞠躬→Idle **闪白**（§6.15 `clear:false`） | TRACKER RB-20260806 · ISSUE 间接 | 分支 `fix/arrival-capcut-clear-false` 已存在；下一批合入前须 tip 复测 |
+| A2 | ~~Arrival 鞠躬→Idle 闪白~~ | — | **已移入 B 桶**（#150 `clear:false` + #386 鞠躬回落 1s 叠化已在 develop）；下一批 **TRACKER 人工关单**，禁止重复开修 |
 | A3 | Reflection 末题共鸣「来不及看就关」 | TRACKER RB-20260822 | 分支 `fix/reflection-last-echo-hold` 待核是否已合 tip |
 
 ### 4.2 B · 已合 develop · 待人工关单（禁止重复开修）
@@ -75,15 +75,16 @@
 | B5 | Electron Support 结账回本壳 | PR **#530** | 行 5：代码已合 · 待 TRACKER L335 关单 |
 | B6 | Journey 时长 / 空态 / EN 寅币等叠层穿透 | 多 PR 2026-09-02 批 | 行 8–10：已解决 ✓（ledger 已准） |
 | B7 | L3 山水式答句 | PR **#505** | 行 18：仍 fail 空话/茶句马甲 → 保持跟进中，非重复开 #505 |
+| B8 | Arrival CapCut 抗闪全链（§6.15） | PR **#150** + **#386** · develop tip `ef80d3cb` | **禁止**再开 `fix/arrival-capcut-clear-false`；下一批 develop tip **人工验收关单**（`?tasteLayer=0` 对照 + 分列三条） |
 
 ### 4.3 C · 须拍板（本盘点不开修）
 
 | # | 问题 | 出处 | 建议 |
 |---|---|---|---|
-| C1 | 「你观察到我什么」≠ OTHER 查询 | ISSUE_LEDGER 行 22 | **PO 已拍板（2026-09-06）**：Phase 2B 探针残差；生产 send 不动 |
+| C1 | 「你观察到我什么」≠ OTHER 查询 | ISSUE_LEDGER 行 22 | **结论已锁**：诚实空态 MVP（`task-confide-observation-honesty-mvp.md`）可开工；2B 探针不挡 ship |
 | C2 | Confide 多语言 Personal Memory 抽取 | ISSUE_LEDGER 行 17 | **PO 已拍板（2026-09-06）**：语言无关须入库；撤销 V1 中文排除 → **下一批 Brief** |
 | C3 | Gate 0.D 语用残差（A14/A15/D7 等） | ISSUE_LEDGER 行 20–21 | PO 已否决 Phase 3 → 保持探针/L3 残差，不另开生产单 |
-| C4 | Hints 整体再设计 + viewport-context 解耦 | LOGGED #2 · Backlog ⑤ | **PO（2026-09-06）**：合理 → **下一批 Brief**（不与尖角热修混批） |
+| C4 | Hints 整体再设计 + viewport-context 解耦 | LOGGED #2 · Backlog ⑤ | **Brief 已开**：`task-hints-redesign-phase2.md` + `task-hints-whisper-boundary-audit.md`；实现口令「开工 Hints viewport-context 试点」 |
 | C5 | ~~主动 Recover 入口~~ | LOGGED #6 | **已移出 C 桶**：Tiger Anchor 已落地（2026-08-09）→ B/D · TRACKER 待 QA |
 | C6 | SessionComplete 观察式文案 | LOGGED #5 | 先看原文措辞再定是否改 |
 
