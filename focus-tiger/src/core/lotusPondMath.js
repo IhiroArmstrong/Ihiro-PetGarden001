@@ -33,9 +33,9 @@ export const LOTUS_POND_GOLDEN_ANGLE_DEG = 137.5;
  * Tunable — Yin is not screen-centered; keep inner radius off the face
  * and outer radius inside HUD / Sit chrome.
  *
- * Narrow (≤479): overlay is zoomed and Yin fills the stage, so a tighter
- * golden-angle spiral (Vogel packing, **not** 12 equally spaced clock hours)
- * keeps one ring of up to {@link LOTUS_POND_RING_CAPACITY} around the cushion.
+ * Narrow (≤479): overlay is zoomed and Yin fills the stage, so blooms sit on
+ * one ring (equal angular spacing) of up to {@link LOTUS_POND_RING_CAPACITY}
+ * around the cushion — not a filled Vogel spiral that can land on the robe.
  *
  * Wide (≥480): same packing, larger inner/outer radius so blooms sit farther
  * from Yin (wide screens made the default 17–34% ring look glued to the robe).
@@ -182,25 +182,102 @@ export function minutesToSeedQaBloomCount(bloomCount) {
  * }} [spiral]
  * @param {number} index 0-based bloom index
  */
+/**
+ * Blooms on the upper-center robe / face axis must not land on Yin.
+ * @param {number} leftPct
+ * @param {number} bottomPct
+ * @param {typeof LOTUS_POND_SPIRAL} spiral
+ */
+function isYinExclusionZone(leftPct, bottomPct, spiral) {
+  return (
+    Math.abs(leftPct - spiral.originLeftPct) < 12 &&
+    bottomPct > spiral.originBottomPct + 6
+  );
+}
+
+/**
+ * @param {number} leftPct
+ * @param {number} bottomPct
+ * @param {Array<{ leftPct: number, bottomPct: number }>} placed
+ */
+function collidesWithPlaced(leftPct, bottomPct, placed) {
+  for (const prev of placed) {
+    const dx = leftPct - prev.leftPct;
+    const dy = bottomPct - prev.bottomPct;
+    if (dx * dx + dy * dy <= 4) return true;
+  }
+  return false;
+}
+
+/**
+ * @param {number} count
+ * @param {typeof LOTUS_POND_SPIRAL} [spiral]
+ */
+export function spiralSlots(count = LOTUS_POND_RING_CAPACITY, spiral = LOTUS_POND_SPIRAL) {
+  const n = Math.min(
+    LOTUS_POND_RING_CAPACITY,
+    Math.max(0, Math.floor(Number(count)) || 0)
+  );
+  const stepDeg = 360 / LOTUS_POND_RING_CAPACITY;
+  const r = spiral.rOuterPct;
+  /** @type {Array<{ index: number, leftPct: number, bottomPct: number, widthCss: string }>} */
+  const placed = [];
+  for (let i = 0; i < n; i += 1) {
+    let angleDeg = spiral.angleOffsetDeg + i * stepDeg;
+    let slot = null;
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      const rad = (angleDeg * Math.PI) / 180;
+      const leftPct = clamp(
+        spiral.originLeftPct + r * Math.cos(rad),
+        spiral.leftMinPct,
+        spiral.leftMaxPct
+      );
+      const bottomPct = clamp(
+        spiral.originBottomPct + r * spiral.yScale * Math.sin(rad),
+        spiral.bottomMinPct,
+        spiral.bottomMaxPct
+      );
+      if (
+        isYinExclusionZone(leftPct, bottomPct, spiral) ||
+        collidesWithPlaced(leftPct, bottomPct, placed)
+      ) {
+        angleDeg += stepDeg / 2;
+        continue;
+      }
+      slot = {
+        index: i,
+        leftPct,
+        bottomPct,
+        widthCss: spiral.bloomWidthCss
+      };
+      break;
+    }
+    if (!slot) {
+      const rad = (angleDeg * Math.PI) / 180;
+      slot = {
+        index: i,
+        leftPct: clamp(
+          spiral.originLeftPct + r * Math.cos(rad),
+          spiral.leftMinPct,
+          spiral.leftMaxPct
+        ),
+        bottomPct: clamp(
+          spiral.originBottomPct + r * spiral.yScale * Math.sin(rad),
+          spiral.bottomMinPct,
+          spiral.bottomMaxPct
+        ),
+        widthCss: spiral.bloomWidthCss
+      };
+    }
+    placed.push(slot);
+  }
+  return placed;
+}
+
 export function spiralSlotForBloomIndex(index, spiral = LOTUS_POND_SPIRAL) {
   const i = Math.max(0, Math.floor(Number(index)) || 0);
-  const last = Math.max(1, LOTUS_POND_RING_CAPACITY - 1);
-  const t = Math.min(i, last) / last;
-  const r =
-    spiral.rInnerPct + (spiral.rOuterPct - spiral.rInnerPct) * Math.sqrt(t);
-  const rad =
-    ((spiral.angleOffsetDeg + i * LOTUS_POND_GOLDEN_ANGLE_DEG) * Math.PI) /
-    180;
-  return {
-    index: i,
-    leftPct: clamp(spiral.originLeftPct + r * Math.cos(rad), spiral.leftMinPct, spiral.leftMaxPct),
-    bottomPct: clamp(
-      spiral.originBottomPct + r * spiral.yScale * Math.sin(rad),
-      spiral.bottomMinPct,
-      spiral.bottomMaxPct
-    ),
-    widthCss: spiral.bloomWidthCss
-  };
+  const slots = spiralSlots(i + 1, spiral);
+  return slots[i] ?? slots[slots.length - 1];
 }
 
 /**
