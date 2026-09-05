@@ -2,15 +2,15 @@
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
-| 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | **两层**：(1) 存储隔离仍是产品事实——Safari 购买不会写入 Electron `localStorage`，**不**做跨浏览器同步。(2) **结账回跳**：Electron 内付完若落到 Vite `5173` 成功页，权益写进 Safari，本壳卡不淡化。`fix/electron-checkout-return-shell`：session id 在本壳 confirm + Worker 桥页深链。`canPlayIdleYinTap` 须 Idle+smiling。Support 须 confirm 后 `syncEntitlementCards`。 | 跟进中 |
+| 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | **两层**：(1) 存储隔离仍是产品事实——Safari 购买不会写入 Electron `localStorage`，**不**做跨浏览器同步。(2) **结账回跳**：**#530 已合 develop**（`fix/electron-checkout-return-shell`）。Safari 淡化 OK / Electron 本壳仍须 tip 复测。`canPlayIdleYinTap` 须 Idle+smiling。 | 跟进中（代码已合 · 待关单） |
 | 独立bug | Reflection 输入框下多余白条（companion invite 幽灵条） | 2026-09-02 用户书面 · Breath→Reflection | `TigerReflectionMoment` companion invite `display:block` 盖过 `[hidden]` | 已解决 |
-| 独立bug | ⋯ 菜单 Quiet Line / Wallpapers 等 growth 行点开即消失（底栏/chrome 闪没、卡片不出现） | 2026-09-02 用户书面 · 5173 变更后 | PR #528 `isGrowthCardOverlayActive` → `setSuppressed` → `clearStage` → `onClearStage` 关掉刚开的 growth 卡 | 跟进中 |
+| 独立bug | ⋯ 菜单 Quiet Line / Wallpapers 等 growth 行点开即消失（底栏/chrome 闪没、卡片不出现） | 2026-09-02 用户书面 · 5173 变更后 | PR #528 根因 → **#533 已合 develop**（`WideIdleMoreMenu.clearStage` 门闩）。TRACKER L336 仍待人工关单。 | 跟进中（代码已合 · 待关单） |
 | 独立bug | Journey log 打开时底栏蓝脉冲点仍可点 | 2026-09-02 用户书面 | `JourneyLogUI` z-index 18 < 壳 z30；growth 卡未 suppress home chrome | 已解决 |
 | 独立bug | 宽屏时长选择器开着时底排 Honesty 仍可点 | 2026-09-02 用户书面 | `WideIdleMoreMenu._sync` `showHome` 未随 `_suppressed` 隐藏 | 已解决 |
 | 独立bug | 英文 UI 混入「寅币」 | 2026-09-02 用户书面 | `en.json` `focus_coins.duration_hint` | 已解决 |
 | 独立bug | Confide L2 同面板长聊后复读（先约第 5–6 句复读首句 generate；**2026-09-04 复测**约第 11 句起连打 `Sit a while. Tea is still warm.`） | 2026-08-31 用户书面 · 2026-09-04 5173 Electron 再报 | **跟进中（#561 属性锁已合 develop，未人工关单）。** 连续可见闲聊答句不得字面相同；generate 失败重抽 fallback。TRACKER L365/L614 仍须 Electron 复测 ≥12 句。工作流 `DEV_WORKFLOW_QUALITY` §6.23。 | 跟进中 |
 | 独立bug | Confide「I want to beat people」落入 fallback-01 点头（听起来像默许伤害他人） | 2026-09-04 用户书面 · 分析师：安全分类漏洞 | **`#566` 已合 develop**：`aggression_toward_others` + aggression 池（禁 Heard/点头动画）· 已删 `harm_witness`。语料仍 draft；关单须人工测 + 扩池审定。 | 跟进中 |
-| 优化建议 | Confide 过短空观察句没接住内容（`still.` / `Still watching.`） | 2026-09-04 用户书面 · 分析师：语料质量 ≠ 复读逻辑 | **`fix/confide-l3-hollow-observe` 实现中**：L3 sanitize 拒收空话 + prompt 要求回指用户词；拒收后走 corpus fallback。关单须 Electron 人工测 `I think I need a reset.`。 | 跟进中 |
+| 优化建议 | Confide 过短空观察句没接住内容（`still.` / `Still watching.`） | 2026-09-04 用户书面 · 分析师：语料质量 ≠ 复读逻辑 | **`#567` 已合 develop**：L3 sanitize 拒收空话 + prompt 要求回指用户词；拒收后走 corpus fallback。关单须 Electron 人工测 `I think I need a reset.`。 | 跟进中 |
 | 独立bug | Allow 后 What Yin remembers 空态仍写「去 Confide 允许」 | 2026-09-01 用户书面 · 本会话 | `YinPersonalMemoryUI` 空列表一律 `YIN_MEMORY_PANEL_EMPTY` | 已解决 |
 | 独立bug | What Yin remembers 开着时 Forget 后新抽取不出现在列表 | 2026-09-01 用户书面 · Mondays feel crowded | `YinPersonalMemoryUI` 无 `reloadIfOpen`；Confide Remember 未通知面板（Forget 已有 `removeMemoryIfOpen`） | 已解决 |
 | 独立bug | Confide「total sitting time」未走 Journey 同坐时长 | 2026-09-01 用户书面 · Gate 0.2 C-5 | `isPracticeDurationQuestion` 未匹配 paraphrase；L3「Still observing.」→ `confidePracticeFacts.js` 读 Journey Log | 已解决 |
@@ -21,5 +21,5 @@
 | 技术债 | Confide 规则 miss 的残差：不进 7-way 分类器，进语料或 L3 | 2026-09-01 分析师追问残差 · 对照 `ConfideToYinUI._onSend` | 顺序：Safety/情绪桶 → suppress → boundary 正则（仅 `fallback`；**CI-01 可跑的双命中让路**）→ companion presence 正则 → 偏好诚实 → CI regex → 宽屏 Electron 才 `classifyReadTool` → 否则 corpus；generate 开则 L3。Phase 2 的 45% **不是**现网命中率。**2026-09-01** E′ 字面已扩进正则（软边界 / sit next / 窄 OTHER）；**仍 miss 且 PO 定为探针残差**：A14/A15/D7 语用推断（**不**另开生产修复单）。 | 跟进中 |
 | 优化建议 | 「你观察到我什么 / 你摸到什么模式」≠ 普通 OTHER 查询 | 2026-09-01 分析师 Phase 2B 候选 B9/B10 | `What have you noticed about me?` / `I wonder what patterns you've picked up on.` **禁止**标 OTHER 并与 CI-02/03 同一对错标准。2B 金标已排除；另口令再议诚实空态。 | 未跟进 |
 | 技术债 | D2 holdout：`Please erase what I said about work.` → BOUNDARY（期望 FORGET） | 2026-09-01 Tier 1 holdout Metal · 分析师 | **非孤立噪音**——与 D 架构「边界过敏、系统性压成 BOUNDARY」（锚点 0/6 塌缩）**同类风险**；本次仅 1 条 anchor holdout 露头。**处理**：并入 **FORGET vs BOUNDARY 双命中切片**（§6.1 切片 3 · **#525 已合 develop**），不单独立项。若 E′ 后续迭代再现 BOUNDARY 过吸 → 回溯本行。JSON：`intent-diag-1788248640868-tier1-holdout.json`。 | 跟进中 |
-| 独立bug | 宽屏 Idle 倾听耳 `#confide-ear-chrome` 左上与 FocusHUD 重叠 | 2026-09-04 用户书面 · 5173 Electron | 耳钮 `position:fixed; top/left:14px`；HUD 同为左上 C.2。`SANCTUARY_UI_ART_DIRECTION` B 表原先**未登记**倾听耳。建议错开（⋯ 邻侧或右上 Support 避让带），本回合不改运行时。 | 未跟进 |
-| 独立bug | Confide 闲聊答句接不住内容：暴力句点头、过短 still、空观察 | 2026-09-04 用户书面 · 5173 Electron | **扇出。** 暴力点头 → `#566` aggression。**`still.` / `Still watching.`** → `fix/confide-l3-hollow-observe`。 | 跟进中 |
+| 独立bug | 宽屏 Idle 倾听耳 `#confide-ear-chrome` 左上与 FocusHUD 重叠 | 2026-09-04 用户书面 · 5173 Electron | 耳钮原 `top/left: 14px` 与 C.2 HUD 重叠。**2026-09-06 盘点开修**：下移至 HUD 下方（`fix/weekly-audit-confide-ear-hud`）。 | 跟进中（待 tip 复测） |
+| 独立bug | Confide 闲聊答句接不住内容：暴力句点头、过短 still、空观察 | 2026-09-04 用户书面 · 5173 Electron | **扇出。** 暴力点头 → **#566 已合**。空话 → **#567 已合**。关单须 Electron 复测。 | 跟进中（代码已合 · 待关单） |
