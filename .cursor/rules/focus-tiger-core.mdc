@@ -48,7 +48,7 @@ alwaysApply: true
 | UI/交互回归 bug（菜单无反应、点击无反馈等）且未给锚点 | `focus-tiger-ui-bug-triage.mdc`（`RULES_INDEX` → `ui-bug-triage`） |
 | 关单 QA·5173·PR 合 develop 后 | `focus-tiger-qa-develop-worktree.mdc`（`WORKFLOW.md` · `qa-develop-worktree`） |
 | 口令「生成交接」·阶段性收尾 | `focus-tiger-session-handoff.mdc` |
-| 记录未闭环 bug/根因扇出·「核对问题清单」 | `focus-tiger-issue-ledger.mdc` |
+| 记录未闭环 bug/根因扇出·「核对问题清单」·「产品盘点」 | `focus-tiger-issue-ledger.mdc` + `WEEKLY_PRODUCT_BACKLOG_AUDIT.md` |
 | 实现前冲突扫描 | `focus-tiger-feature-conflict-review.mdc` |
 | 可点击交互·PR 反馈三问 | `focus-tiger-interaction-feedback.mdc` |
 | 非用户点击的网络请求 | `focus-tiger-background-network.mdc` |
