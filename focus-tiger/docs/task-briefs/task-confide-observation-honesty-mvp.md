@@ -1,6 +1,6 @@
 # Task Brief · Confide 元观察问句 · 诚实空态 MVP（C1）
 
-> **状态（2026-09-06）**：**结论已锁 · 待 PO 审定句 + 口令开工**（本文件 = C1 拦路虎澄清；**不是** Phase 2B 探针挡路）。  
+> **状态（2026-09-06）**：**A 轨已开工** · B 轨 residual fixture 同 PR（`feature/c1-observation-honesty-and-2b-probe`）。  
 > **用户场景**：Kelly · Allow 记忆后问 `What have you noticed about me?` / `I wonder what patterns you've picked up on.`  
 > **PO 已拍板（2026-09-06）**：生产 send **不加** 7-way / L0 新分类器；**允许** regex + 模板诚实空态（同 `preference_honesty` 管道，**不算**分类器）。
 

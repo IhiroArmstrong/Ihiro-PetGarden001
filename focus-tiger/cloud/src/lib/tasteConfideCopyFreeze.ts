@@ -5,6 +5,7 @@ const TEMPLATE_KEYS = [
 	"CONFIDE_BOUNDARY_RESPECT",
 	"CONFIDE_COMPANION_PRESENCE",
 	"CONFIDE_PREFERENCE_HONESTY",
+	"CONFIDE_OBSERVATION_HONESTY",
 ] as const;
 
 const CORPUS_IDS = [
@@ -42,6 +43,10 @@ const EN_TEMPLATES: ConfideCopyTemplateEntry[] = [
 		key: "CONFIDE_PREFERENCE_HONESTY",
 		text: "Yin does not keep a preference list. What you allowed to remember is in What Yin remembers.",
 	},
+	{
+		key: "CONFIDE_OBSERVATION_HONESTY",
+		text: "Yin doesn't keep a running picture of you. What you allowed to remember is in What Yin remembers — not a pattern summary.",
+	},
 ];
 
 const JA_TEMPLATES: ConfideCopyTemplateEntry[] = [
@@ -54,6 +59,10 @@ const JA_TEMPLATES: ConfideCopyTemplateEntry[] = [
 		key: "CONFIDE_PREFERENCE_HONESTY",
 		text: "好みの一覧は持っていません。残してよいとしたことは「寅が覚えていること」にあります。",
 	},
+	{
+		key: "CONFIDE_OBSERVATION_HONESTY",
+		text: "寅は「あなたはどんな人か」のまとめは持っていません。覚えてよいとしたことは「寅が覚えていること」にあります——パターン報告ではありません。",
+	},
 ];
 
 const ZH_TEMPLATES: ConfideCopyTemplateEntry[] = [
@@ -65,6 +74,10 @@ const ZH_TEMPLATES: ConfideCopyTemplateEntry[] = [
 	{
 		key: "CONFIDE_PREFERENCE_HONESTY",
 		text: "寅不记口味清单。你允许留下的，在「阿寅记得什么」里。",
+	},
+	{
+		key: "CONFIDE_OBSERVATION_HONESTY",
+		text: "寅不做「你是个怎样的人」的总结。你允许记住的，在「阿寅记得什么」里——不是模式报告。",
 	},
 ];
 

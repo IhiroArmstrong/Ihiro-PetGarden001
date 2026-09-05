@@ -870,5 +870,6 @@
   "YIN_MEMORY_SUPPRESS_NO_MATCH": "覚えていることと合いませんでした。",
   "CONFIDE_BOUNDARY_RESPECT": "話さなくていい。寅はここにいる。",
   "CONFIDE_COMPANION_PRESENCE": "寅はここにいる。このままでいい。始める必要はない。",
-  "CONFIDE_PREFERENCE_HONESTY": "好みの一覧は持っていません。残してよいとしたことは「寅が覚えていること」にあります。"
+  "CONFIDE_PREFERENCE_HONESTY": "好みの一覧は持っていません。残してよいとしたことは「寅が覚えていること」にあります。",
+  "CONFIDE_OBSERVATION_HONESTY": "寅は「あなたはどんな人か」のまとめは持ちません。覚えてよいとしたことは「寅が覚えていること」にあります——パターン報告ではありません。"
 }
