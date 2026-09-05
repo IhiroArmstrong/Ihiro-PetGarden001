@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。不改现网句池。
+
 - **Confide 他人攻击意图 `aggression_toward_others`（2026-09-04 · #566 已合 develop）**：替换 #564 `harm_witness`。禁 Heard/点头动画；竖线 `#8b6f5c`。语料 draft，扩池门禁见 Brief §5.3。
 
 - **Confide L3 空观察句拒收（2026-09-04 · #567 已合 develop）**：`still.` / `Still watching.` 等空话 generate → sanitize 拒收 → corpus fallback；prompt 要求回指用户词。人工测 `I think I need a reset.` 仍待关单。

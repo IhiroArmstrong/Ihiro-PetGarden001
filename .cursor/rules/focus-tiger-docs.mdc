@@ -27,6 +27,7 @@ alwaysApply: false
 | `docs/FROM_APP_TO_CULTURE.md` | **文化探索方向锁**：From App to Culture；六条 Culture Principles；App 社交塑造 Slack（废除证据门）；**无运行时** |
 | `docs/MVP_PRODUCT_DEFINITION.md` | **MVP 产品策略基线**：首要用户、JTBD、竞争替代品、验证指标、付费假设与隐私承诺；假设不等同于已上线功能 |
 | `docs/PRODUCT_MOMENTS.md` | **一天叙事框架（Five Moments）**：Arrive / Focus / Recover / Transition / Reflect；位于定位之下、`TASKS` 之上，不推翻已有实现 |
+| `docs/CALM_ACTION_WISDOM.md` | **Calm Action Wisdom**：长度/禁词/Moment 标签/去重；70 条 CMS；与 Quiet Line / Daily Wisdom 分池；**无运行时** |
 | `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
 | `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
