@@ -58,11 +58,15 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-09-04（UTC+8） · **5173 Electron QA**：吹花+摸头提示书面 OK；Confide 时长/危机/在场书面 OK；茶句复读 + 耳钮叠 HUD 记入 TRACKER（§6.23） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-09-06（UTC+8） · **冷启动目标问答 PO 拍板**（方向采纳·现在不实现·blocked）· **冷启动第一幕 11 入口审计 Brief + 清单草案**（硬前置·待开工） · **5173 Electron QA**：吹花+摸头提示书面 OK；Confide 时长/危机/在场书面 OK；茶句复读 + 耳钮叠 HUD 记入 TRACKER（§6.23） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
+
+- **冷启动目标问答 · PO 拍板（2026-09-06 · 纯文档 · 无运行时）**：方向采纳（1 问·可跳过·当次会话可见效果·不问职业·不落画像库）；**现在不实现**。Brief `task-briefs/task-cold-start-goal-onboarding.md` 状态 **approved · blocked**。硬前置：冷启动第一幕审计（Brief `task-cold-start-first-scene-audit.md` + 清单 `cold-start-first-scene-audit-inventory.md`）。
+
+- **冷启动第一幕 11 入口审计 · 清单草案（2026-09-06 · 纯文档 · 无运行时）**：只读代码排查 E01–E11 + 卫星 E12–E14；gate 顺序 SSOT 草案已写入清单。待人工清库对照 + 逐条标 ok/gap/risk。口令：「开工冷启动第一幕审计」。
 
 - **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。不改现网句池。
 
@@ -464,6 +468,9 @@
 - **无角色语音原则已落档（2026-07-16）**：沟通仅文字（非模态文案等）；禁止真人配音与 lip-sync；长期原则、非 Backlog（见 `PRINCIPLES.md`）
 
 **下一步计划**：
+
+- **冷启动第一幕 11 入口审计（2026-09-06 · blocked backlog · 优先于目标问答）**：分散仲裁收口专项。Brief `task-cold-start-first-scene-audit.md`；清单 SSOT `cold-start-first-scene-audit-inventory.md`（草案已出）。须逐条标 ok/gap/risk → gap 另开 fix PR → PO 拍板 gate SSOT → 方可解除 goal-onboarding blocked。
+- **冷启动目标问答（2026-09-06 · blocked · 依赖上行审计）**：Brief `task-cold-start-goal-onboarding.md`。**禁止**在审计收口前合并 develop。解除 blocked 口令：「开工冷启动目标问答」。
 
 - **Gate 0.D（2026-09-01）**：诊断三角已完（#526 + PO 否决 Phase 3）。**本线无下一刀实现**。切片 4 / 换模 / 语用生产修复均不开工。离开本线的产品口令另开（1C、Forget 指代等）。
 - **开工前优先级（2026-09-04 · 文化）**：`FROM_APP_TO_CULTURE.md` 证据门 **已废除**。安静社交按 §13：优先 Quiet Together ∪ Lanterns，再 Circle。**仍须口令 + Brief** 才写运行时；禁止与 Confide/YPE 地基混在同一 PR。Gallery / 用户仪式创建器 / Gentle Match **不**插队。
@@ -889,6 +896,21 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 ---
 
 ## 后续 Backlog（暂缓事项,已记录、未开工）
+
+### Backlog:冷启动第一幕分散仲裁审计（11 入口 · 2026-09-06 立项）
+
+- **状态**：approved · 待开工（纯文档审计 + 清单维护；fix 另 PR）。
+- **Brief**：`task-briefs/task-cold-start-first-scene-audit.md`
+- **清单 SSOT**：`cold-start-first-scene-audit-inventory.md`
+- **阻塞**：`task-cold-start-goal-onboarding.md`（冷启动目标问答）解除 blocked 之前须本项收口。
+- **权威根因**：`DEV_WORKFLOW_QUALITY.md` §6.17；场景 **AD** / **V**。
+
+### Backlog:冷启动目标问答（2026-09-06 · blocked）
+
+- **状态**：approved · blocked（方向采纳；现在不实现）。
+- **Brief**：`task-briefs/task-cold-start-goal-onboarding.md`
+- **依赖**：上行「冷启动第一幕审计」PO 拍板 gate SSOT。
+- **设计锁**：1 问·4 选项·可跳过·session 级·不污染 Practice Identity。
 
 ### Backlog:寅币（Focus Coins · C 轨 · Yin's Collections）
 
