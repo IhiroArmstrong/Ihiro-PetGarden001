@@ -27,7 +27,9 @@ export const YIN_INTENT_LABEL = Object.freeze({
   FORGET: 'FORGET',
   SUPPRESS: 'SUPPRESS',
   EMOTION: 'EMOTION',
-  OTHER: 'OTHER'
+  OTHER: 'OTHER',
+  /** Lab-only probe label (C1 B9/B10). Not used in production send. */
+  OBSERVATION_META: 'OBSERVATION_META'
 });
 
 export const YIN_INTENT_LABELS = Object.freeze(Object.values(YIN_INTENT_LABEL));

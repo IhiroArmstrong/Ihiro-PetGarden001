@@ -870,5 +870,6 @@
   "YIN_MEMORY_SUPPRESS_NO_MATCH": "I don't see a matching memory to remove.",
   "CONFIDE_BOUNDARY_RESPECT": "We can leave it unspoken. Yin is here.",
   "CONFIDE_COMPANION_PRESENCE": "Yin is here. We can stay like this — no need to begin.",
-  "CONFIDE_PREFERENCE_HONESTY": "Yin does not keep a preference list. What you allowed to remember is in What Yin remembers."
+  "CONFIDE_PREFERENCE_HONESTY": "Yin does not keep a preference list. What you allowed to remember is in What Yin remembers.",
+  "CONFIDE_OBSERVATION_HONESTY": "Yin doesn't keep a running picture of you. What you allowed to remember is in What Yin remembers — not a pattern summary."
 }
