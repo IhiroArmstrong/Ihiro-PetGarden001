@@ -374,6 +374,14 @@ cd focus-tiger/desktop && FT_INTENT_PHASE=2b FT_INTENT_ARCH=E FT_INTENT_TIER2=1 
 
 **读数（非容量定论 · 禁止据此改 send / 默认 GGUF / E′ prompt）**：全新句上 OTHER 窄门泛化成立；COMPANION 语用/陪伴请求与软 BOUNDARY 的能量/拒答子型仍被吸进 OTHER。与评分集「A6/A14/A15 语用缺口、OTHER/软边界字面已过」同方向。
 
+**Phase 2B residual 探针（C1 B9/B10 · 2026-09-06 · #587 已合 develop）**：2 条元观察句，**不进**冻 v4 金标、**不进** Confide send。fixture：`confideIntentDiagnosticPhase2bResidual.js`；期望 label `OBSERVATION_META`（实验室专用）。生产已由 `observation_honesty` 模板短路（`confideObservationHonesty.js`）。合 develop 后先 `cd focus-tiger && npm run sync:qa-develop`，再在系统终端 Metal 跑：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_INTENT_PHASE=2b-residual FT_INTENT_ARCH=E npm run companion:intent-diagnostic
+```
+
+结果：`/tmp/ft-l0-lab/intent-diag-<epoch>.json` · 读 `residualGates`（`residualMinHits` 2/2）。`reading`：`residual_can_label_observation_meta` 或 `residual_see_rows`。**禁止**据此改 send / 默认 GGUF；只回答「未来换模型/分类器有没有净收益」。Metal 结论贴回本节（JSON 不进仓库）。
+
 **PO 拍板（2026-09-01 · #526 合入后）**：**暂不立项 Phase 3 / 不换默认 GGUF**。继续 Architecture 路线（切片 1–3 已合；切片 4 仍禁）。剩余 COMPANION 语用与部分软边界 = **Pragmatic 残差**（与 A14/A15 同型），**不是**待排期的生产修复任务，**不是** 1.7B 容量瓶颈。
 
 **第五刀尝试（A6 + D3 · 未合入）**：Metal 验证后**不 ship** — 两类失败的可修复路径不同，硬堆 prompt 无净收益：
@@ -459,6 +467,7 @@ Qwen 职责是帮助系统把用户句标进**已允许**的 intent，**不是**
 | 冻 v4 金标 + A/C/D 实验室对照 | **开工 Yin Intent Diagnostic Phase 2B** |
 | OTHER/EMOTION hard-5 第四刀（架构 E） | **开工 Yin Intent Diagnostic Phase 2B hard-5** |
 | 冻 Tier 2 全新句盲测 + 一轮 Metal | **开工 Yin Intent Diagnostic Tier 2 入库** |
+| C1 元观察 B9/B10 残差探针（可选 · 不挡 ship） | **跑 C1 Phase 2B 探针** |
 | #472 人工测有 bug | 直接描述现象 · 不必口令 |
 
 ---
