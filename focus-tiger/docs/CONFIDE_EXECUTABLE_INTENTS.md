@@ -151,7 +151,7 @@ Gate 0.D：1.7B **能**把「I'm not sure whether I want to talk about it.」标
 | **`boundary`** | `confideBoundaryRespect.js` · 层 3 **之前**模板 · `data-source=boundary` · 含软拒绝（rather not / leave that alone / not up for that conversation 等） |
 | **`companion_presence`** | `confideCompanionPresence.js` · sit / stay / sit next to me / breathe together / keep me company · **高于**情绪桶、**低于** Safety；不启动 Focus |
 | **`preference_honesty`** | `confidePreferenceHonesty.js` · 无偏好 store · 诚实短句，不编口味 |
-| **`observation_honesty`** | `confideObservationHonesty.js` · 无模式总结引擎 · 元观察问句诚实空态，不编「你傍晚常来」 |
+| **`observation_honesty`** | `confideObservationHonesty.js` · 无模式总结引擎 · 元观察问句诚实空态，不编「你傍晚常来」 · C2 扩容审计见 `confide-observation-honesty-bucket-audit.md`（CI-04 rollup 草案 · **禁止**运行时自由判断） |
 | **不进 L3** | 禁止贴「I am curious / I am aware」；禁止把待着说成 BEGIN；L3 prompt **本刀未改** |
 | **不做** | 不把 Gate 0.D E′ JSON 探针接到 Share；不扫 `turns.jsonl`；Forget「昨天那件事」仍 Yin Memory 指代另口令；不换默认 GGUF；A14/A15/D7 无字面句不硬撬；**不**把设计师冲突表未拍板格写成现网 |
 
