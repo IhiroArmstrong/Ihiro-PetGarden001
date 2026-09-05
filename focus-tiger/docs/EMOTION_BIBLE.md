@@ -424,6 +424,8 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 3. 是否要求用户确认、解释、点击回应或证明自己已经调整？
 4. 中英文两版是否传达同等的观察距离感，而不是一版克制、一版带评价？
 
+行为时刻的许可/行动句（Calm Action Wisdom）分池见 `CALM_ACTION_WISDOM.md`。该池**不替代**本节观察式 toast、Moment Whisper、Quiet Line。接线前不得把行动句写入 Quiet Line / Daily Wisdom / `REFOCUS_ACKNOWLEDGE` / `ACTIVE_RECOVER`。
+
 ### 与触发频率的边界
 
 本节只规范**怎样说**，不决定**何时说、一天说几次**。原有 20 分钟阶段认可与 2 小时伸展提醒的判定基准继续有效；三类非模态提醒的共享自然日限频已于 2026-07-16 拍板为合计每天最多 3 次，详见第六部分「提醒共享限频池」。
