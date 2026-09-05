@@ -870,5 +870,6 @@
   "YIN_MEMORY_SUPPRESS_NO_MATCH": "我没有找到对应的一句可以删掉。",
   "CONFIDE_BOUNDARY_RESPECT": "可以先不说。寅在这儿。",
   "CONFIDE_COMPANION_PRESENCE": "寅在这儿。可以就这样待着，不必开始一场练习。",
-  "CONFIDE_PREFERENCE_HONESTY": "寅不记口味清单。你允许留下的，在「阿寅记得什么」里。"
+  "CONFIDE_PREFERENCE_HONESTY": "寅不记口味清单。你允许留下的，在「阿寅记得什么」里。",
+  "CONFIDE_OBSERVATION_HONESTY": "寅不做「你是个怎样的人」的总结。你允许记住的，在「阿寅记得什么」里——不是模式报告。"
 }

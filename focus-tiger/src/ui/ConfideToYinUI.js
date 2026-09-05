@@ -87,6 +87,10 @@ import {
   shouldHandleConfidePreferenceHonesty
 } from '../core/confide/confidePreferenceHonesty.js';
 import {
+  formatConfideObservationHonestyReply,
+  shouldHandleConfideObservationHonesty
+} from '../core/confide/confideObservationHonesty.js';
+import {
   buildConfideTurnId,
   formatMemorySuppressReply,
   shouldHandlePostRecallMemorySuppress,
@@ -568,6 +572,8 @@ export class ConfideToYinUI {
                       ? 'companion_presence'
                       : shown.source === 'preference_honesty'
                         ? 'preference_honesty'
+                        : shown.source === 'observation_honesty'
+                          ? 'observation_honesty'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -954,6 +960,17 @@ export class ConfideToYinUI {
       );
       return;
     }
+    if (shouldHandleConfideObservationHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideObservationHonestyReply(t),
+          source: 'observation_honesty'
+        },
+        text
+      );
+      return;
+    }
     const tool = matchConfideExecutableTool({
       route: hit.route,
       text,
@@ -1318,6 +1335,7 @@ export class ConfideToYinUI {
       .confide-to-yin__reply[data-source='presence_facts']::before,
       .confide-to-yin__reply[data-source='companion_presence']::before,
       .confide-to-yin__reply[data-source='preference_honesty']::before,
+      .confide-to-yin__reply[data-source='observation_honesty']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;
