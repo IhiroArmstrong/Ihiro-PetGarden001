@@ -1,6 +1,6 @@
 # Task Brief · Confide `observation_honesty` 桶枚举审计 + C2 确定性 rollup 扩容
 
-> **状态（2026-09-06）**：**审计已完成** · 结论文档 `confide-observation-honesty-bucket-audit.md` · **待 PO 逐条拍板**后再开实现 Brief。  
+> **状态（2026-09-06）**：**审计已完成** · PO 拍板：**Batch 0 + CI-05/06 开工** · **CI-04 暂缓**。结论文档 `confide-observation-honesty-bucket-audit.md` §7。  
 > **关联**：C1（`task-confide-observation-honesty-mvp.md` · #587）· CI-00 · CI-02 · CI-03 · `CONFIDE_EXECUTABLE_INTENTS.md`
 
 ## 一句话

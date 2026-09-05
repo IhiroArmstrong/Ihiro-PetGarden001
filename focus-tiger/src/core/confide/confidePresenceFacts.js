@@ -11,6 +11,7 @@
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 import {
   PRESENCE_SIGNALS_DEFAULT_WINDOW_DAYS,
   PRESENCE_SIGNALS_MIN_TREND_COUNT,
@@ -51,6 +52,12 @@ const COMPARE_STEADY_RES = [
   /我是不是最近比较稳定|最近比较稳定|是不是更稳定/
 ];
 
+/** CI-06 · mood-domain observation asks (excluded from observation_honesty). */
+const MOOD_OBSERVATION_RES = Object.freeze([
+  /\bwhat\s+have\s+you\s+noticed\s+about\s+my\s+mood\b/i,
+  /你观察.*我的?(情绪|心情)/
+]);
+
 /**
  * Locale keys for closed-tag labels (Arrival + ritual overlap).
  * @type {Record<string, string>}
@@ -74,6 +81,17 @@ export const PRESENCE_TAG_LABEL_KEYS = Object.freeze({
 });
 
 /**
+ * CI-06 · mood-domain observation (excluded from observation_honesty).
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isConfideMoodObservationQuery(text) {
+  const raw = normalizeConfideIntentText(text);
+  if (!raw) return false;
+  return MOOD_OBSERVATION_RES.some((re) => re.test(raw));
+}
+
+/**
  * @param {string} text
  * @returns {(typeof PRESENCE_FACTS_KIND)[keyof typeof PRESENCE_FACTS_KIND] | null}
  */
@@ -81,6 +99,7 @@ export function classifyPresenceFactsKind(text) {
   const raw = typeof text === 'string' ? text.trim() : '';
   if (!raw) return null;
   if (COMPARE_STEADY_RES.some((re) => re.test(raw))) return PRESENCE_FACTS_KIND.COMPARE;
+  if (isConfideMoodObservationQuery(raw)) return PRESENCE_FACTS_KIND.TREND;
   if (TREND_QUESTION_RES.some((re) => re.test(raw))) return PRESENCE_FACTS_KIND.TREND;
   return null;
 }

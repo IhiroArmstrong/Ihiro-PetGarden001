@@ -126,13 +126,14 @@ document.querySelector('[data-testid=confide-to-yin-reply]')?.dataset.source
 
 ---
 
-## C2 后续（2026-09-06 · 桶枚举审计）
+## C2 后续（2026-09-06 · 桶枚举审计 · PO 拍板）
 
-审计结论文档：`confide-observation-honesty-bucket-audit.md` · Brief `task-confide-observation-honesty-audit.md`。
+审计：`confide-observation-honesty-bucket-audit.md` §7。
 
-- Kelly 两句**默认仍** meta · C1 诚实拒答正确；**不**因账本有数据自动改答。
-- 可选 **CI-04 确定性 rollup**（冻结 O1/O2 regex · 复用 CI-00/02 模板 · 不足回退 C1）待 PO 拍板。
-- 域限定句型（练习/情绪）→ 建议 **CI-05/06** 新 regex，系统性移出 observation 桶。
-- **禁止**运行时自由判断层 · **禁止**「50% / 比上周开心」类答句。
+| 批次 | 状态 |
+|---|---|
+| **Batch 0** chips（N5/N6）+ **CI-05/06** | **已开工** · `feature/confide-observation-c2-batch0-ci0506` |
+| **CI-04 rollup**（Kelly O1/O2） | **暂缓** · 先看 Batch 0 引导效果 |
+| **F7 灰区** | 保持 `observation_honesty` |
 
-**口令（实现）**：「开工 Confide 元观察 rollup CI-04」
+**口令（实现）**：「批准 2/3/4/5，第 1 条先做 Batch 0，CI-04 暂缓待观察」

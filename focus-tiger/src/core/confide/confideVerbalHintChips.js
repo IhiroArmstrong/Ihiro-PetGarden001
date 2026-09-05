@@ -13,7 +13,9 @@ export const CONFIDE_VERBAL_HINT_CHIP_ID = Object.freeze({
   FORGET_THIS: 'forget_this',
   DONT_SAVE_THIS: 'dont_save_this',
   PRACTICE_DURATION: 'practice_duration',
-  PRESENCE_TREND: 'presence_trend'
+  PRESENCE_TREND: 'presence_trend',
+  PRACTICE_COMPARE: 'practice_compare',
+  PRESENCE_RECENT: 'presence_recent'
 });
 
 /**
@@ -51,6 +53,18 @@ export const CONFIDE_VERBAL_HINT_CHIPS = Object.freeze([
     fillKey: 'CONFIDE_CHIP_FILL_PRESENCE_TREND',
     requiresMemoryBridge: false,
     shipped: false
+  }),
+  Object.freeze({
+    id: CONFIDE_VERBAL_HINT_CHIP_ID.PRACTICE_COMPARE,
+    fillKey: 'CONFIDE_CHIP_FILL_PRACTICE_COMPARE',
+    requiresMemoryBridge: false,
+    shipped: true
+  }),
+  Object.freeze({
+    id: CONFIDE_VERBAL_HINT_CHIP_ID.PRESENCE_RECENT,
+    fillKey: 'CONFIDE_CHIP_FILL_PRESENCE_RECENT',
+    requiresMemoryBridge: false,
+    shipped: true
   })
 ]);
 

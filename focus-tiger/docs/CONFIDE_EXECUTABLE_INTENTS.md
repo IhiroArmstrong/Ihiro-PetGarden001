@@ -41,6 +41,8 @@
 | id | 填入句（en） | 本轮 `shipped` | 解锁条件 |
 |---|---|---|---|
 | `forget_this` | Forget this | **true**（Electron bridge） | AG / 1e–1f 发后撤回已人工闭环 |
+| `practice_compare` | Am I practicing longer than before? | **true**（Batch 0 · C2） | 引导 meta 观察 → CI-00 compare · 2026-09-06 |
+| `presence_recent` | What has my mood looked like recently? | **true**（Batch 0 · C2） | 引导 meta 观察 → CI-02 trend · 2026-09-06 |
 | `dont_save_this` | Don't save this | false | Slice 1f 人工测通过后改 `shipped` |
 | `practice_duration` | How long have I practiced? | false | Phase 1B CORE 问句人工测通过后改 `shipped` |
 | `presence_trend` | What has my mood looked like over the last two weeks? | false | 先人工测 pipeline；**且**勿把「two weeks」当成从用户句解析出的窗口 |

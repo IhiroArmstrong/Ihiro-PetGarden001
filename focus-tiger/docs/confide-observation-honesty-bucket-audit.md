@@ -174,26 +174,28 @@ Task Brief：`task-briefs/task-confide-observation-honesty-audit.md`
 
 ---
 
-## 7. PO 拍板清单（实现前必答）
+## 7. PO 拍板清单（2026-09-06 · 分析师书面）
 
-| # | 问题 | 选项 |
+| # | 问题 | **拍板** |
 |---|---|---|
-| 1 | Kelly O1/O2 是否批准 **CI-04 rollup**？ | A 保持 C1 only · B 有数据时 CI-04 · C 延后 |
-| 2 | **F2/F3** 是否批准 **CI-05/06** regex 扩面？ | Y/N 分批 |
-| 3 | 灰区 **F7** 归哪类？ | observation_honesty / 待观察 / 拆成两句引导 |
-| 4 | CI-04 是否单独 `data-source=observation_rollup`？ | 建议 Y（便于 tracker） |
-| 5 | verbal chips 是否加「练习对比 / 情绪趋势」引导？ | 发现性 · 非本审计实现 |
+| 1 | Kelly O1/O2 是否批准 **CI-04 rollup**？ | **暂缓** — 先做 Batch 0，观察用户是否被 chips 引导到 N5/N6；有真实数据后再决定是否建 CI-04 |
+| 2 | **F2/F3** 是否批准 **CI-05/06** regex 扩面？ | **Y** · 本 PR 实现 |
+| 3 | 灰区 **F7** 归哪类？ | **保持 `observation_honesty`** · chips 引导拆问 |
+| 4 | CI-04 是否单独 `data-source=observation_rollup`？ | **Y（预留）** — CI-04 暂缓，标签设计仍保留供未来 Batch 1 |
+| 5 | verbal chips 引导练习对比 / 情绪趋势？ | **Y · Batch 0 主线** · `practice_compare` + `presence_recent` 已 ship |
+
+**口令**：「批准 2/3/4/5，第 1 条先做 Batch 0，CI-04 暂缓待观察」
 
 ---
 
 ## 8. 建议实现批次（审计后 · 每批独立 PR）
 
-| 批次 | 范围 | 依赖 |
+| 批次 | 范围 | 状态 |
 |---|---|---|
-| **Batch 0** | verbal chips / Hint 指向 N5/N6（发现性） | 无 |
-| **Batch 1** | CI-04 rollup（若 PO=1B）· O1/O2 only | C1 已 ship |
-| **Batch 2** | CI-05 + CI-06 regex · 互斥 observation | Batch 1 或 PO 跳过 1 |
-| **Batch 3** | F7 裁定 + i18n 全量 | PO 答案 |
+| **Batch 0** | verbal chips · N5/N6（`practice_compare` · `presence_recent`） | **本 PR** · `feature/confide-observation-c2-batch0-ci0506` |
+| **Batch 2** | CI-05 + CI-06 regex · 互斥 observation | **本 PR**（与 Batch 0 同 PR · PO 已批 2/3/4/5） |
+| **Batch 1** | CI-04 rollup（O1/O2 only） | **暂缓** · 待 Batch 0 观察 |
+| **Batch 3** | F7 裁定 + i18n 全量 | 待 PO |
 
 **禁止**：把 Batch 1–3 与 C1 关单或本审计文档混进同一代码 PR。
 
