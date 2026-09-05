@@ -36,6 +36,7 @@ import {
   trayMenuLabels
 } from './trayPolicy.js';
 import { attachCompanionL1Ipc } from './companion/l1Ipc.js';
+import { appendConfideObservationLog } from './companion/confideObservationLog.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -401,6 +402,13 @@ if (gotSingleInstanceLock) {
     return visibilityPayload();
   });
   ipcMain.handle('desktop:shell-visibility-get', () => visibilityPayload());
+
+  ipcMain.handle('desktop:confide-observation-append', (_event, record) =>
+    appendConfideObservationLog(
+      app.getPath('userData'),
+      record && typeof record === 'object' ? record : {}
+    )
+  );
 
   if (process.env.FT_COMPANION_L0 === '1') {
     const { runL0BenchInMain } = await import('./companion/l0Main.js');

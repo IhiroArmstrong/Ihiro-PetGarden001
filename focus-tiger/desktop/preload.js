@@ -68,4 +68,9 @@ desktopShell.localBackup = {
     ipcRenderer.invoke('desktop:local-backup-write-companion-files', bundle)
 };
 
+desktopShell.confideObservation = {
+  append: (record) =>
+    ipcRenderer.invoke('desktop:confide-observation-append', record)
+};
+
 contextBridge.exposeInMainWorld('desktopShell', desktopShell);

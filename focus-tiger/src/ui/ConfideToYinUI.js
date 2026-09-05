@@ -32,6 +32,10 @@ import {
 } from '../core/confide/confideExecutableTools.js';
 import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
 import { listShippedConfideVerbalHintChips } from '../core/confide/confideVerbalHintChips.js';
+import {
+  trackConfideChipTapped,
+  trackConfideShare
+} from '../core/confide/confideObservationTelemetry.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -514,15 +518,19 @@ export class ConfideToYinUI {
       btn.dataset.testid = 'confide-to-yin-verbal-chip';
       btn.dataset.chipId = chip.id;
       btn.textContent = t(chip.fillKey);
-      btn.addEventListener('click', () => this._fillVerbalHintChip(chip.fillKey));
+      btn.addEventListener('click', () =>
+        this._fillVerbalHintChip(chip.fillKey, chip.id)
+      );
       this.chipRow.append(btn);
     }
   }
 
   /**
    * @param {string} fillKey
+   * @param {string} chipId
    */
-  _fillVerbalHintChip(fillKey) {
+  _fillVerbalHintChip(fillKey, chipId) {
+    trackConfideChipTapped(chipId);
     const fill = t(fillKey);
     this.inputEl.value = fill;
     this._syncSendEnabled();
@@ -549,6 +557,10 @@ export class ConfideToYinUI {
     this.replyEl.dataset.route = shown.route;
     this.replyEl.dataset.lineId = shown.line?.id || '';
     this.replyEl.dataset.source = shown.source;
+    trackConfideShare(
+      { dataSource: shown.source, userText: asked },
+      { translate: t }
+    );
     this._l2Turns.push({ role: 'user', text: asked });
     this._l2Turns.push({
       role: 'yin',

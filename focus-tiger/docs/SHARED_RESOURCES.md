@@ -25,6 +25,7 @@
 
 | `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent；1b Remember；1c Forget；1f `rememberOptOuts[]` + suppress）；**不进**云端 6 key；**本地** Backup & restore v2 `companionFiles`；Web 无此文件 |
 | `userData/companion-l2/turns.jsonl` | `CompanionL1Runtime._appendTurnLog` | Confide 调试 jsonl（**非** Personal Memory）；**本地** Backup & restore v2 `companionFiles.confideTurnsJsonl`（Electron）；**不进**云端 6 key |
+| `userData/companion-l2/confide-observation.jsonl` | `confideObservationTelemetry` / IPC `desktop:confide-observation-append` | Batch 0 观察本地打点（chip tap / Share `data-source` + chip 匹配；**不含**用户自由文本）；Electron jsonl + 渲染层 `focus-tiger.confide-observation.v1` localStorage 环缓；汇总 `node scripts/dump-confide-observation.js`；**不进**云端 6 key / 练习备份 |
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图。**「今日已同坐」语义 SSOT**：`hasCompletedToday()` — 全表见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
 | `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js`。**只读消费者**：Support Modal 请茶优先（与莲花分钟并上；有练习日则不再 Tea 打头） |
@@ -33,6 +34,7 @@
 | `focus-tiger.ritual-completions.v1` | `RitualCompletionStore` | 进阶 RitualFlow（Morning / Emotional Reset / Work Transition）完成记录；**不**走 MicroRitual / Focus / Journey Log / Reflection |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
+| `focus-tiger.confide-observation.v1` | `confideObservationTelemetry` | Confide Batch 0 观察环缓（最多 500 条）：`confide_chip_tapped` / `confide_share`（`dataSource` + `matchedChipId`；**无**用户原文）；Web/Electron 渲染层；Electron 另追加 `userData/companion-l2/confide-observation.jsonl` |
 | `focus-tiger.brand-yin-way-first-reflect.v1` | `brandYinWayFirstReflectGate` | 首次 `first_session_complete` 后 Reflect 底栏品牌句已展示（`{ shown }`）；双语仅该次 |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势 SSOT）；freeText **90 天**与 presence-signals 对齐 prune；**本地** Backup & restore v2 白名单 |
