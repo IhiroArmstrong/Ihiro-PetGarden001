@@ -1,6 +1,6 @@
 # Task Brief · Confide 元观察问句 · 诚实空态 MVP（C1）
 
-> **状态（2026-09-06）**：**A 轨已开工** · B 轨 residual fixture 同 PR（`feature/c1-observation-honesty-and-2b-probe`）。  
+> **状态（2026-09-06）**：**A 轨已合 develop #587**（`feature/c1-observation-honesty-and-2b-probe` · `d6ce083e`）。B 轨 2b-residual 探针已入库，**不挡** A 轨 ship；Metal 可选。  
 > **用户场景**：Kelly · Allow 记忆后问 `What have you noticed about me?` / `I wonder what patterns you've picked up on.`  
 > **PO 已拍板（2026-09-06）**：生产 send **不加** 7-way / L0 新分类器；**允许** regex + 模板诚实空态（同 `preference_honesty` 管道，**不算**分类器）。
 
@@ -69,7 +69,13 @@
 ## Phase 2B B9/B10 探针（B 轨 · 可选 · 不挡 A）
 
 **现状**：2B 冻 v4 金标 **已排除** B9/B10；Metal A/C/D + E′ **已结案**（architecture_none_pass · #520）。  
-**若要做**：实验室加 2 条 fixture + 一次 `FT_INTENT_PHASE=2b-residual` 跑分——只回答「未来换模型/分类器有没有净收益」，**不改变** A 轨 ship 决策。
+**若要做**：合 develop 后先 `cd focus-tiger && npm run sync:qa-develop`，再在系统终端 Metal 跑（完整路径）：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_INTENT_PHASE=2b-residual FT_INTENT_ARCH=E npm run companion:intent-diagnostic
+```
+
+→ `/tmp/ft-l0-lab/intent-diag-<epoch>.json` · 读 `residualGates`。只回答「未来换模型/分类器有没有净收益」，**不改变** A 轨 ship 决策。
 
 | id | 句 | 期望 label（探针用） |
 |---|---|---|
@@ -94,7 +100,24 @@
 
 ## 验收
 
-- Electron 宽屏：Kelly 两句 → `observation_honesty` · 0–1s · 无 generate  
+**Electron（须 QA develop 树 · 含 #587）**：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger && npm run sync:qa-develop
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger && npm run desktop:dev
+```
+
+宽屏 Confide · Allow → `What have you noticed about me?` → **0–1s** en 审定句（*Yin doesn't keep a running picture of you…*），**不得** fallback-02「What you said stays here.」。
+
+**看 `data-source`**：`Cmd+Option+I` 开 DevTools → Console：
+
+```js
+document.querySelector('[data-testid=confide-to-yin-reply]')?.dataset.source
+// 期望：'observation_honesty'
+```
+
+主仓 `feature/*` / `fix/*` 旁支若未合 #587，Share 后会走 `corpus`（常见 fallback-02）——**不算**本行 pass。
+
 - 负例三句仍走 CI 原 `data-source`  
 - `npm run test:smoke` 绿  
 - 人工读 en 审定句语感
