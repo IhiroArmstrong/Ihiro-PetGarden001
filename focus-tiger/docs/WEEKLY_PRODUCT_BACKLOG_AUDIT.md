@@ -80,11 +80,11 @@
 
 | # | 问题 | 出处 | 建议 |
 |---|---|---|---|
-| C1 | 「你观察到我什么」≠ OTHER 查询 | ISSUE_LEDGER 行 22 | **我认为最合理的**：并入 Local AI Phase 2B 探针口令，不单开生产分类器 |
-| C2 | Yin memory 中文 Slice | ISSUE_LEDGER 行 17 | 两项闸门未满足 → **禁止**开 `feature/yin-memory-zh-extract` |
+| C1 | 「你观察到我什么」≠ OTHER 查询 | ISSUE_LEDGER 行 22 | **PO 已拍板（2026-09-06）**：Phase 2B 探针残差；生产 send 不动 |
+| C2 | Confide 多语言 Personal Memory 抽取 | ISSUE_LEDGER 行 17 | **PO 已拍板（2026-09-06）**：语言无关须入库；撤销 V1 中文排除 → **下一批 Brief** |
 | C3 | Gate 0.D 语用残差（A14/A15/D7 等） | ISSUE_LEDGER 行 20–21 | PO 已否决 Phase 3 → 保持探针/L3 残差，不另开生产单 |
-| C4 | Hints 整体再设计 | LOGGED #2 总分 9 | 须 Brief；不与尖角热修混批 |
-| C5 | 主动 Recover 入口 | LOGGED #6 | 产品空白 → Brief 前不进修复排期 |
+| C4 | Hints 整体再设计 + viewport-context 解耦 | LOGGED #2 · Backlog ⑤ | **PO（2026-09-06）**：合理 → **下一批 Brief**（不与尖角热修混批） |
+| C5 | ~~主动 Recover 入口~~ | LOGGED #6 | **已移出 C 桶**：Tiger Anchor 已落地（2026-08-09）→ B/D · TRACKER 待 QA |
 | C6 | SessionComplete 观察式文案 | LOGGED #5 | 先看原文措辞再定是否改 |
 
 ### 4.4 D · 继续观察（本盘点不动）
