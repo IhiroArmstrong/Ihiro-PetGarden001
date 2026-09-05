@@ -13,10 +13,11 @@ const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'ConfideEarChromeUI.js'), 'utf8');
 const iconPng = join(here, '../../public/icons/icon-confide-to-yin.png');
 
-test('wide ear chrome is a top-left Idle disc with press feedback', () => {
+test('wide ear chrome sits below Focus HUD with press feedback', () => {
   assert.equal(existsSync(iconPng), true);
   assert.match(src, /ROOT_ID = 'confide-ear-chrome'/);
-  assert.match(src, /left: max\(14px/);
+  assert.match(src, /left: max\(18px/);
+  assert.match(src, /top: calc\(max\(18px/);
   assert.match(src, /icon-confide-to-yin\.png/);
   assert.match(src, /CONFIDE_MENU_LABEL/);
   assert.match(src, /CONFIDE_EAR_TOOLTIP/);

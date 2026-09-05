@@ -91,7 +91,7 @@ D.5 是次级面板的**停靠优先**（侧停 / 缩小 / 下半屏），**不�
 | 元素 | `#id` / 选择器 | 场景 | 层级初判 | 可点/装饰 | 既有拍板 | 本轮 |
 |---|---|---|---|---|---|---|
 | FocusHUD（状态名+计时+环+条+连胜环） | `#focus-hud`；子：`.ft-hud`、`.ft-hud__state`、`.ft-hud__time`、`.ft-hud__session-target`、`.ft-hud__gauge`、`.ft-hud__bar`、`.ft-hud__streak` | Idle / Focusing | Idle 应变轻；Focusing = 主反馈 | 可点；悬停出 `.ft-hud__detail` | `index.html` 样式：Idle 时时间半透明，hover / Focusing 提高不透明度；环/条/连胜环仍常驻 | **C.2** |
-| Idle 倾听耳（向阿寅倾诉） | `#confide-ear-chrome`；窄屏 `#ft-narrow-confide-btn` | Idle 宽屏（闸开） | 次级入口；**不得**与 C.2 HUD 抢左上角 | 可点；悬停出 `#confide-ear-chrome-tip` | 现网 `top/left: 14px` 与 HUD 重叠（2026-09-04 用户书面） | **待 chrome 小 PR**（建议 ⋯ 邻侧或右上 Support 避让带；不改 z-index 登记数字除非另开） |
+| Idle 倾听耳（向阿寅倾诉） | `#confide-ear-chrome`；窄屏 `#ft-narrow-confide-btn` | Idle 宽屏（闸开） | 次级入口；**不得**与 C.2 HUD 抢左上角 | 可点；悬停出 `#confide-ear-chrome-tip` | 2026-09-04 重叠 HUD；**2026-09-06** 下移至 HUD 下方 | **待 tip 复测** |
 | Support Yin | `#yin-support-fab`；标签 `.yin-support-fab__label` | Idle（Focusing 隐藏） | L2 付费入口 | 可点 | 统一 Support 三卡；A.6 禁止无标签纯 icon | **D.8**（Idle 默认小标；hover/展开后完整药丸；**不是**去标签） |
 | 徽章条 | `#yin-tip-kindness-badges` | Idle | B 轨身份印记，非成就墙 | 可点，下载 PNG | 右侧；付费 `min=3`（Sanctuary 上限 17 / tip 上限 9）；练习分上涨只增 | **C.1** |
 | 宽屏三球 | `#ft-wide-home-ctas`；`#ft-wide-home-quickstart` · `#ft-wide-home-sit` · `#ft-wide-home-honesty`；⋯ `#ft-wide-more-btn` | Idle ≥480 | **主 CTA** | 可点 | `RESPONSIVE_LAYOUT` 宽屏清场；e2e `wide-idle-more-menu` | **维持** |
