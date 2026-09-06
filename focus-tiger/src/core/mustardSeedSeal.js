@@ -55,6 +55,17 @@ export const MUSTARD_SEED_SEAL_CASE_SUMERU = MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SU
 export const MUSTARD_SEED_SEAL_CASE_HERO = MEMORIAL_SEAL_ENTRY_HERO;
 export const MUSTARD_SEED_SEAL_CASE_NO_TRACE = MEMORIAL_SEAL_ENTRY_NO_TRACE;
 
+/** Body class toggled while the memorial seal card is open (scene chrome). */
+export const MUSTARD_SEED_SEAL_BODY_CLASS = 'ft-mustard-seed-seal-open';
+
+/**
+ * @param {string} locale
+ * @returns {boolean}
+ */
+export function mustardSeedSealZhIsPrimaryLocale(locale) {
+  return locale === 'zh';
+}
+
 const sumeruEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_SUMERU);
 const heroEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_HERO);
 const noTraceEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_NO_TRACE);

@@ -12,15 +12,18 @@
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   MUSTARD_SEED_SEAL_CASES,
+  MUSTARD_SEED_SEAL_BODY_CLASS,
   getMustardSeedSealCase,
   markMustardSeedSealRevealed,
   mustardSeedSealBadgeSrc,
   mustardSeedSealNavMeta,
+  mustardSeedSealZhIsPrimaryLocale,
   navigateMustardSeedSealCase,
   readMustardSeedSealState,
   rememberMustardSeedSealLastShown,
   resolveMustardSeedSeal
 } from '../core/mustardSeedSeal.js';
+import { saveMustardSeedSealImage } from '../core/saveMustardSeedSealImage.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -30,17 +33,11 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'mustard-seed-seal-card-styles-v2';
-const LEGACY_STYLE_ID = 'mustard-seed-seal-card-styles-v1';
+const STYLE_ID = 'mustard-seed-seal-card-styles-v3';
+const LEGACY_STYLE_ID = 'mustard-seed-seal-card-styles-v2';
 const FADE_MS = 220;
 
-/**
- * @param {string} locale
- * @returns {boolean}
- */
-export function mustardSeedSealZhIsPrimaryLocale(locale) {
-  return locale === 'zh';
-}
+export { mustardSeedSealZhIsPrimaryLocale };
 
 export class MustardSeedSealCardUI {
   /**
@@ -48,11 +45,14 @@ export class MustardSeedSealCardUI {
    * @param {object} [handlers]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
+   * @param {(info: { ok: boolean, filename: string, caseId: string }) => void} [handlers.onSaved]
+   * @param {typeof saveMustardSeedSealImage} [handlers.saveImage]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._open = false;
+    this._saving = false;
     /** @type {'auto' | 'menu' | 'force'} */
     this._mode = 'menu';
     /** @type {string | null} */
@@ -65,6 +65,12 @@ export class MustardSeedSealCardUI {
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');
     this.root.setAttribute('aria-labelledby', 'mustard-seed-seal-card-title');
+
+    this.backdrop = document.createElement('div');
+    this.backdrop.id = 'mustard-seed-seal-backdrop';
+    this.backdrop.className = 'mustard-seed-seal-card__backdrop';
+    this.backdrop.hidden = true;
+    this.backdrop.addEventListener('click', () => this.close());
 
     this.headRow = document.createElement('div');
     this.headRow.className = 'mustard-seed-seal-card__head';
@@ -118,8 +124,20 @@ export class MustardSeedSealCardUI {
     this.attrEl.className = 'mustard-seed-seal-card__attr';
     this.attrEl.dataset.testid = 'mustard-seed-seal-attribution';
 
+    this.saveNoteEl = document.createElement('p');
+    this.saveNoteEl.className = 'mustard-seed-seal-card__save-note';
+
     this.actions = document.createElement('div');
     this.actions.className = 'mustard-seed-seal-card__actions';
+
+    this.saveBtn = document.createElement('button');
+    this.saveBtn.type = 'button';
+    this.saveBtn.className =
+      'mustard-seed-seal-card__btn mustard-seed-seal-card__btn--ghost';
+    this.saveBtn.dataset.testid = 'mustard-seed-seal-save';
+    this.saveBtn.addEventListener('click', () => {
+      void this._confirmSave();
+    });
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -128,16 +146,17 @@ export class MustardSeedSealCardUI {
     this.closeBtn.dataset.testid = 'mustard-seed-seal-continue';
     this.closeBtn.addEventListener('click', () => this.close());
 
-    this.actions.append(this.closeBtn);
+    this.actions.append(this.saveBtn, this.closeBtn);
     this.root.append(
       this.headRow,
       this.blurbEl,
       this.badgeWrap,
       this.poemStack,
       this.attrEl,
+      this.saveNoteEl,
       this.actions
     );
-    mountRoot.appendChild(this.root);
+    mountRoot.append(this.backdrop, this.root);
 
     this._onKeyDown = (event) => {
       if (!this._open) return;
@@ -219,8 +238,12 @@ export class MustardSeedSealCardUI {
     this.badgeImg.src = mustardSeedSealBadgeSrc();
     this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
     this._renderMustardSeedVerse(verse);
+    this._setSceneChromeOpen(true);
+    this.backdrop.hidden = false;
     this.root.hidden = false;
+    this.backdrop.getBoundingClientRect();
     this.root.getBoundingClientRect();
+    this.backdrop.classList.add('is-visible');
     this.root.classList.add('is-visible');
     this._refreshTexts();
     if (opts.notifyOpen) {
@@ -285,17 +308,49 @@ export class MustardSeedSealCardUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this.backdrop.classList.remove('is-visible');
     this.root.classList.remove('is-visible');
+    this._setSceneChromeOpen(false);
     window.setTimeout(() => {
-      if (!this._open) this.root.hidden = true;
+      if (!this._open) {
+        this.backdrop.hidden = true;
+        this.root.hidden = true;
+      }
     }, FADE_MS + 40);
     this.handlers.onClose?.();
   }
 
+  async _confirmSave() {
+    if (this._saving) return;
+    this._saving = true;
+    this.saveBtn.disabled = true;
+    try {
+      const saveFn = this.handlers.saveImage || saveMustardSeedSealImage;
+      const badgeReady =
+        this.badgeImg?.complete && this.badgeImg.naturalWidth > 0
+          ? this.badgeImg
+          : undefined;
+      const info = await saveFn({
+        caseId: this._currentCaseId || this.root.dataset.caseId || '',
+        badgeImage: badgeReady
+      });
+      this.handlers.onSaved?.(info);
+    } finally {
+      this._saving = false;
+      this.saveBtn.disabled = false;
+    }
+  }
+
+  _setSceneChromeOpen(open) {
+    document.body.classList.toggle(MUSTARD_SEED_SEAL_BODY_CLASS, open);
+  }
+
   destroy() {
     this._unsubLocale?.();
+    this._setSceneChromeOpen(false);
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this.backdrop.remove();
     this.root.remove();
   }
 
@@ -303,6 +358,8 @@ export class MustardSeedSealCardUI {
     this.titleEl.textContent = t('MUSTARD_SEED_SEAL_CARD_TITLE');
     this.blurbEl.textContent = t('MUSTARD_SEED_SEAL_CARD_BLURB');
     this.closeBtn.textContent = t('MUSTARD_SEED_SEAL_CONTINUE');
+    this.saveBtn.textContent = t('MUSTARD_SEED_SEAL_SAVE');
+    this.saveNoteEl.textContent = t('MUSTARD_SEED_SEAL_SAVE_NOTE');
     this.prevBtn.textContent = t('MUSTARD_SEED_SEAL_PREV');
     this.nextBtn.textContent = t('MUSTARD_SEED_SEAL_NEXT');
     this.prevBtn.setAttribute('aria-label', t('MUSTARD_SEED_SEAL_PREV'));
@@ -330,10 +387,37 @@ export class MustardSeedSealCardUI {
 
   _injectStyles() {
     document.getElementById(LEGACY_STYLE_ID)?.remove();
+    document.getElementById('mustard-seed-seal-card-styles-v1')?.remove();
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
+      body.${MUSTARD_SEED_SEAL_BODY_CLASS} #sprite-stage {
+        top: 2% !important;
+        bottom: 30% !important;
+        transition: top ${FADE_MS}ms ease, bottom ${FADE_MS}ms ease;
+      }
+      body.${MUSTARD_SEED_SEAL_BODY_CLASS}.ft-narrow-shell #sprite-overlay {
+        transform: translateY(-4vh) scale(0.94);
+        transform-origin: center 42%;
+        transition: transform ${FADE_MS}ms ease;
+      }
+      .mustard-seed-seal-card__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 17;
+        background: rgba(44, 31, 20, 0.16);
+        ${GLASS_BLUR_CSS};
+        opacity: 0;
+        pointer-events: auto;
+        transition: opacity ${FADE_MS}ms ease;
+      }
+      .mustard-seed-seal-card__backdrop.is-visible {
+        opacity: 1;
+      }
+      .mustard-seed-seal-card__backdrop[hidden] {
+        display: none !important;
+      }
       .mustard-seed-seal-card {
         position: fixed;
         left: 50%;
@@ -458,12 +542,19 @@ export class MustardSeedSealCardUI {
         order: 2;
       }
       .mustard-seed-seal-card__attr {
-        margin: 0 0 14px;
+        margin: 0 0 10px;
         font-size: 12px;
         line-height: 1.45;
         text-align: center;
         color: rgba(92,67,48,.88);
         letter-spacing: 0.02em;
+      }
+      .mustard-seed-seal-card__save-note {
+        margin: 0 0 12px;
+        font-size: 12px;
+        line-height: 1.45;
+        text-align: center;
+        color: rgba(92,67,48,.85);
       }
       .mustard-seed-seal-card__actions {
         display: flex;
@@ -484,6 +575,9 @@ export class MustardSeedSealCardUI {
         background: rgba(212,165,116,.35);
         border-color: rgba(139,115,85,.35);
         font-weight: 600;
+      }
+      .mustard-seed-seal-card__btn--ghost {
+        background: ${GLASS_FILL_STRONG};
       }
     `;
     document.head.appendChild(style);

@@ -231,17 +231,72 @@ test.describe('Mustard Seed memorial seal', () => {
 
     const card = page.locator('#mustard-seed-seal-card');
     const poemEn = page.locator('[data-testid="mustard-seed-seal-poem-en"]');
+    await expect(card).toBeVisible({ timeout: 10_000 });
     await expect(card).toHaveClass(/locale-en-primary/);
     await expect(poemEn).toHaveClass(/is-poem-primary/);
 
-    const fab = page.locator('#language-preference-fab');
-    await expect(fab).toBeVisible({ timeout: 8_000 });
-    await fab.click();
-    await expect(page.locator('#language-preference-panel')).toBeVisible({
-      timeout: 5_000
+    await page.evaluate(() => window.__mustardSeedCard.close());
+    await expect(card).toBeHidden({ timeout: 5_000 });
+
+    await page.evaluate(() => {
+      localStorage.setItem('focus-tiger.locale.v1', 'ja');
     });
-    await page.locator('#language-preference-ja').check();
+    await page.reload();
+    await expect
+      .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
+        timeout: 15_000
+      })
+      .toBe(true);
+    await page.evaluate(() => {
+      window.__mustardSeedSeal.open({ mode: 'force', caseId: 'mustard-seed-sumeru' });
+    });
+    await expect(card).toBeVisible({ timeout: 10_000 });
     await expect(card).toHaveClass(/locale-en-primary/);
     await expect(poemEn).toHaveClass(/is-poem-primary/);
+
+    await page.evaluate(() => window.__mustardSeedCard.close());
+    await expect(card).toBeHidden({ timeout: 5_000 });
+  });
+
+  test('phase B: backdrop dim, yin body class, and save image control', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+
+    await expect
+      .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
+        timeout: 15_000
+      })
+      .toBe(true);
+
+    await page.evaluate(() => {
+      window.__mustardSeedSeal.open({ mode: 'force', caseId: 'mustard-seed-sumeru' });
+    });
+
+    const backdrop = page.locator('#mustard-seed-seal-backdrop');
+    const saveBtn = page.locator('[data-testid="mustard-seed-seal-save"]');
+    await expect(backdrop).toBeVisible({ timeout: 10_000 });
+    await expect(saveBtn).toBeVisible();
+    await expect(saveBtn).toBeEnabled();
+
+    await expect
+      .poll(async () =>
+        page.evaluate(() =>
+          document.body.classList.contains('ft-mustard-seed-seal-open')
+        )
+      )
+      .toBe(true);
+
+    await page.evaluate(() => {
+      document.getElementById('mustard-seed-seal-backdrop')?.click();
+    });
+    await expect(backdrop).toBeHidden({ timeout: 5_000 });
+    await expect
+      .poll(async () =>
+        page.evaluate(() =>
+          document.body.classList.contains('ft-mustard-seed-seal-open')
+        )
+      )
+      .toBe(false);
   });
 });
