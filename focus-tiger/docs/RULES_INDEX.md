@@ -244,6 +244,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-06 | 防剽窃层补 **兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2）：现网≠冻表才算真保护。不进 rules-authority 机器块 |
 | 2026-09-06 | 防剽窃层补 **值得保护四测**（`ANTI_PLAGIARISM_LAYER.md` §3.2）；与准入四问正交；`PRINCIPLES.md` 加「云端防剽窃与护城河」指针。不进 rules-authority 机器块 |
 | 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |

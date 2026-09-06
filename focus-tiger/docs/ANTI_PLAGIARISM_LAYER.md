@@ -134,6 +134,54 @@
 
 **已兑现价值的部分**：持续在写、且能不发版就改的内容型 overlay（品味/日签管道、Quiet Line、Confide 句），加上少数已与冻表分叉的现网句。YPE 与未分叉的权重表目前主要是管道，不是秘密。
 
+### 3.2.2 兑现清单（现网 ≠ 冻表？· 2026-09-06）
+
+问「这个东西已经进防剽窃层了吗」时，**先**问现网数字/正文是否仍等于 git 冻表（§3.1 兑现句）。  
+**禁止**把「overlay 已接线」写成「秘密已在保护」。本表只登记地面真相；分叉后禁止把灵魂数字写回 freeze。
+
+#### A · 真保护（现网 ≠ 冻表）
+
+这三处才算「保护正在发生」：
+
+| 键 | 现网（已部署 Worker） | git 冻表仍是 |
+|---|---|---|
+| Quiet Line `DAILY_ZEN_QUOTE_1`（en） | `The world and I were never two.` | `Soft light…` |
+| Confide `CONFIDE_COMPANION_PRESENCE`（en） | `Yin is still here. We can stay like this — nothing needs to begin.` | `Yin is here. We can stay like this — no need to begin.` |
+| Confide `CONFIDE_BOUNDARY_RESPECT`（en） | `Nothing needs to be said. Yin is still here.` | `We can leave it unspoken. Yin is here.` |
+
+ja / zh / corpus **未**分叉。上列之外的 Quiet Line / Confide 键，现网仍等于冻表。
+
+#### B · 已收进本层、尚未兑现（管道在 · 现网 = 冻表）
+
+成员表（§2）里有名字，复制测试未兑现：
+
+| 项目 | 为何仍是空管道 / 薄秘密 |
+|---|---|
+| 品味层 Dispatcher 权重（**#349**） | 可一比一套的表；现网仍接近冻表 |
+| Honesty 分档阈值 | 同上；overlay 不改 `HonestyCheckInController` |
+| 日签池 14 条（en/ja） | 管道在；正文未与冻表分叉（Quiet Line 另池，见 A） |
+| Quiet Line 除 `DAILY_ZEN_QUOTE_1` en 外 | overlay **#543** 已合；其余键 = 冻表 |
+| Confide 除在场/boundary EN 外 | overlay **#548** 已合；ja/zh/corpus = 冻表 |
+| YPE V1 | 回声；无秘密闭包 |
+| YPE V2（**#545** 源码已合） | 阈值 0.6/0.4 仍是 git 验收锚；insight 默认不进 Confide 开口；生产须「部署」才谈现网 |
+| `algorithmVersion` / schema 管道 | **不是**被保护内容 |
+
+#### C · 应该进入、尚未进入（关注清单 · 不开工令）
+
+| 项目 | 缺的是什么 | 何时才算「进了」 |
+|---|---|---|
+| Dispatcher 权重 / Honesty 分档（**唯一算法型秘密候选**，除 YPE 外） | 管道已在 B；缺与冻表分叉的手感数字 | 现网权重/分档 ≠ git 冻表，且不再写回 freeze |
+| YPE V2 非平凡闭包 | 源码在；缺现网阈值分叉 + insight 被真实消费 | 现网阈值 ≠ 验收锚，且 Confide/编排真用上 insight |
+| Quiet Line / Confide 其余键与 ja/zh/corpus | 内容型；多数键还等于冻表 | 逐键现网 ≠ 冻表（不要求一次全部分叉） |
+| Calm Action Wisdom 70 CMS | **无运行时** | 先接线，再套已验证 overlay；现在谈保护过早 |
+| 后排：日签 14→N / 伸懒腰池 / 好奇池 | 过 §3；内容未扩 / 权重仍冻表 | 另口令。**禁止**只因为「属于防剽窃层」提前开工 |
+
+#### D · 明确排除（不要进本层）
+
+chrome 文案、Idle/CapCut/精灵播放器、Confide 路由 / Qwen / Tool Registry、支付/entitlement、练习备份、安全分类（含 `aggression_toward_others`）。
+
+**一句话对照**：A = 已经进（真保护）。B = 名字在层里、秘密还没有。C = 该进真保护或该接线、现在还没有。D = 永远不算。
+
 ---
 
 ## 4. 不变量
