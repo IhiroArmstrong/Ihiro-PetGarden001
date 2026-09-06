@@ -5,11 +5,11 @@
 
 /**
  * Mustard Seed · Sumeru memorial seal card.
- * Quiet Line–like glass card: ZH poem + EN + 乐五斋 attribution + companion badge.
+ * Quiet Line–like glass card: locale-primary poem + secondary translation + badge hero.
  * Verse cases: 《芥子须弥》then 七言歌行 then 詩稿〇九〇二; same scene, one unrevealed case per ceremony.
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   MUSTARD_SEED_SEAL_CASES,
   getMustardSeedSealCase,
@@ -27,8 +27,17 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'mustard-seed-seal-card-styles-v1';
+const STYLE_ID = 'mustard-seed-seal-card-styles-v2';
+const LEGACY_STYLE_ID = 'mustard-seed-seal-card-styles-v1';
 const FADE_MS = 220;
+
+/**
+ * @param {string} locale
+ * @returns {boolean}
+ */
+export function mustardSeedSealZhIsPrimaryLocale(locale) {
+  return locale === 'zh';
+}
 
 export class MustardSeedSealCardUI {
   /**
@@ -67,6 +76,10 @@ export class MustardSeedSealCardUI {
     this.badgeImg.decoding = 'async';
     this.badgeWrap.appendChild(this.badgeImg);
 
+    this.poemStack = document.createElement('div');
+    this.poemStack.className = 'mustard-seed-seal-card__poems';
+    this.poemStack.dataset.testid = 'mustard-seed-seal-poem-stack';
+
     this.poemZhEl = document.createElement('p');
     this.poemZhEl.className = 'mustard-seed-seal-card__poem-zh';
     this.poemZhEl.dataset.testid = 'mustard-seed-seal-poem-zh';
@@ -74,6 +87,8 @@ export class MustardSeedSealCardUI {
     this.poemEnEl = document.createElement('p');
     this.poemEnEl.className = 'mustard-seed-seal-card__poem-en';
     this.poemEnEl.dataset.testid = 'mustard-seed-seal-poem-en';
+
+    this.poemStack.append(this.poemZhEl, this.poemEnEl);
 
     this.attrEl = document.createElement('p');
     this.attrEl.className = 'mustard-seed-seal-card__attr';
@@ -94,8 +109,7 @@ export class MustardSeedSealCardUI {
       this.titleEl,
       this.blurbEl,
       this.badgeWrap,
-      this.poemZhEl,
-      this.poemEnEl,
+      this.poemStack,
       this.attrEl,
       this.actions
     );
@@ -206,9 +220,25 @@ export class MustardSeedSealCardUI {
     if (this.badgeImg.src) {
       this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
     }
+    this._syncPresentationChrome();
+  }
+
+  _syncPresentationChrome() {
+    const showBlurb = this._open && this._mode === 'auto';
+    this.blurbEl.hidden = !showBlurb;
+    this.root.classList.toggle('has-blurb', showBlurb);
+
+    const zhPrimary = mustardSeedSealZhIsPrimaryLocale(getLocale());
+    this.root.classList.toggle('locale-zh-primary', zhPrimary);
+    this.root.classList.toggle('locale-en-primary', !zhPrimary);
+    this.poemZhEl.classList.toggle('is-poem-primary', zhPrimary);
+    this.poemZhEl.classList.toggle('is-poem-secondary', !zhPrimary);
+    this.poemEnEl.classList.toggle('is-poem-primary', !zhPrimary);
+    this.poemEnEl.classList.toggle('is-poem-secondary', zhPrimary);
   }
 
   _injectStyles() {
+    document.getElementById(LEGACY_STYLE_ID)?.remove();
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -239,50 +269,82 @@ export class MustardSeedSealCardUI {
         transform: translate(-50%, 0);
       }
       .mustard-seed-seal-card__title {
-        margin: 0 0 6px;
+        margin: 0 0 4px;
         font-size: 16px;
         font-weight: 650;
         line-height: 1.35;
         color: #3d2e22;
+        text-align: center;
+      }
+      .mustard-seed-seal-card.has-blurb .mustard-seed-seal-card__title {
+        margin-bottom: 2px;
       }
       .mustard-seed-seal-card__blurb {
-        margin: 0 0 12px;
-        font-size: 13px;
-        line-height: 1.5;
+        margin: 0 0 10px;
+        font-size: 12px;
+        line-height: 1.45;
         color: #5c4330;
+        text-align: center;
+      }
+      .mustard-seed-seal-card__blurb[hidden] {
+        display: none;
       }
       .mustard-seed-seal-card__badge-wrap {
         display: flex;
         justify-content: center;
-        margin: 0 0 12px;
+        margin: 2px 0 14px;
+        padding: 4px 0;
       }
       .mustard-seed-seal-card__badge {
-        width: 72px;
-        height: 72px;
+        width: 108px;
+        height: 108px;
         object-fit: contain;
-        filter: drop-shadow(0 2px 6px rgba(80, 55, 30, 0.22));
+        filter:
+          drop-shadow(0 0 14px rgba(212, 165, 116, 0.42))
+          drop-shadow(0 4px 10px rgba(80, 55, 30, 0.24));
       }
-      .mustard-seed-seal-card__poem-zh {
+      .mustard-seed-seal-card__poems {
+        display: flex;
+        flex-direction: column;
         margin: 0 0 10px;
-        padding: 12px 14px;
+      }
+      .mustard-seed-seal-card__poem-zh,
+      .mustard-seed-seal-card__poem-en {
+        margin: 0;
+        padding: 0;
+        white-space: pre-line;
+        text-align: center;
+        background: none;
+        border: none;
+        border-radius: 0;
+      }
+      .mustard-seed-seal-card__poem-zh.is-poem-primary,
+      .mustard-seed-seal-card__poem-en.is-poem-primary {
         font-size: 15px;
         font-weight: 560;
-        line-height: 1.7;
-        white-space: pre-line;
-        text-align: center;
+        line-height: 1.65;
         color: #3d2e22;
-        background: rgba(255,252,245,.55);
-        border: 1px solid rgba(139,115,85,.16);
-        border-radius: 12px;
+        margin-bottom: 8px;
       }
-      .mustard-seed-seal-card__poem-en {
-        margin: 0 0 8px;
-        font-size: 13px;
+      .mustard-seed-seal-card__poem-zh.is-poem-secondary,
+      .mustard-seed-seal-card__poem-en.is-poem-secondary {
+        font-size: 12px;
         font-weight: 450;
-        line-height: 1.55;
-        white-space: pre-line;
-        text-align: center;
-        color: #5c4330;
+        line-height: 1.5;
+        color: rgba(92, 67, 48, 0.78);
+        margin-bottom: 2px;
+      }
+      .mustard-seed-seal-card.locale-zh-primary .mustard-seed-seal-card__poem-zh {
+        order: 1;
+      }
+      .mustard-seed-seal-card.locale-zh-primary .mustard-seed-seal-card__poem-en {
+        order: 2;
+      }
+      .mustard-seed-seal-card.locale-en-primary .mustard-seed-seal-card__poem-en {
+        order: 1;
+      }
+      .mustard-seed-seal-card.locale-en-primary .mustard-seed-seal-card__poem-zh {
+        order: 2;
       }
       .mustard-seed-seal-card__attr {
         margin: 0 0 14px;
