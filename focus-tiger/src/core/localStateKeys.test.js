@@ -86,6 +86,7 @@ import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
 import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
 import { MUSTARD_SEED_SEAL_STORAGE_KEY } from './mustardSeedSeal.js';
+import { CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY } from './contemplativeArchiveSeal.js';
 import { DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY } from './dailyZenQuote.js';
 import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
 import { FOCUS_COINS_STORAGE_KEY, FocusCoinsStore } from './focusCoinsStore.js';
@@ -185,6 +186,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRACTICE_BACKUP_OPT_IN_KEY,
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY,
+  CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY,
   DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
   IDLE_COMPANION_PIP_STORAGE_KEY,
   FOCUS_COINS_STORAGE_KEY,

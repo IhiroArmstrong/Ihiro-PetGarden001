@@ -7,21 +7,27 @@
  * Memorial Seal directory — machine-readable SSOT for Contemplative Archive seals.
  * Content spec + candidate table: `docs/CONTEMPLATIVE_ARCHIVE.md`.
  *
- * New seal on screen = append one enabled record here (no trigger/UI code change).
+ * New seal on screen = append one enabled record (no trigger/UI code change).
  */
+
+import { CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES } from './memorialSealCatalogCa.js';
 
 /** @typedef {'stillness' | 'smallness-vastness' | 'time-continuity' | 'imperfection-return'} MemorialSealToneTag */
 
 /**
  * @typedef {{
+ *   catalogId?: string,
  *   id: string,
  *   sealSceneId: string,
  *   scoreThreshold: number,
  *   poemZh?: readonly string[],
  *   poemJa?: readonly string[],
  *   poemEn: readonly string[],
+ *   poemEnExpanded?: readonly string[],
  *   attributionZh: string,
  *   attributionEn: string,
+ *   menuLabelKey?: string,
+ *   cardTitleKey?: string,
  *   badgeDir: string,
  *   badgeAsset: string,
  *   toneTag: MemorialSealToneTag,
@@ -38,17 +44,17 @@ export const MEMORIAL_SEAL_DEFAULT_BADGE_FILE =
 /** Mustard Seed · Sumeru scene (three verse cases, same card). */
 export const MEMORIAL_SEAL_SCENE_MUSTARD_SEED = 'mustard-seed-sumeru';
 
-/** Future seal 02 · The Old Pond (CA-01). */
-export const MEMORIAL_SEAL_SCENE_OLD_POND = 'old-pond';
-
 export const MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU = 'mustard-seed-sumeru';
 export const MEMORIAL_SEAL_ENTRY_HERO = 'hero-not-pond';
 export const MEMORIAL_SEAL_ENTRY_NO_TRACE = 'no-trace-might';
-export const MEMORIAL_SEAL_ENTRY_OLD_POND = 'ca-01-old-pond';
+
+export const CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX =
+  'contemplative-archive-seal:';
 
 /** @type {readonly MemorialSealEntry[]} */
-export const MEMORIAL_SEAL_DIRECTORY = Object.freeze([
+const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
   Object.freeze({
+    catalogId: 'MS-01',
     id: MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
     scoreThreshold: 21,
@@ -72,6 +78,7 @@ export const MEMORIAL_SEAL_DIRECTORY = Object.freeze([
     enabled: true
   }),
   Object.freeze({
+    catalogId: 'MS-02',
     id: MEMORIAL_SEAL_ENTRY_HERO,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
     scoreThreshold: 21,
@@ -95,6 +102,7 @@ export const MEMORIAL_SEAL_DIRECTORY = Object.freeze([
     enabled: true
   }),
   Object.freeze({
+    catalogId: 'MS-03',
     id: MEMORIAL_SEAL_ENTRY_NO_TRACE,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
     scoreThreshold: 21,
@@ -116,24 +124,13 @@ export const MEMORIAL_SEAL_DIRECTORY = Object.freeze([
     badgeAsset: MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
     toneTag: 'smallness-vastness',
     enabled: true
-  }),
-  Object.freeze({
-    id: MEMORIAL_SEAL_ENTRY_OLD_POND,
-    sealSceneId: MEMORIAL_SEAL_SCENE_OLD_POND,
-    scoreThreshold: 30,
-    poemJa: Object.freeze(['古池や蛙飛びこむ水の音']),
-    poemEn: Object.freeze([
-      'AN OLD POND—',
-      'A FROG JUMPS IN,',
-      'THE SOUND OF WATER.'
-    ]),
-    attributionZh: '',
-    attributionEn: 'Matsuo Bashō · Adapted for product EN',
-    badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
-    badgeAsset: MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
-    toneTag: 'stillness',
-    enabled: false
   })
+]);
+
+/** @type {readonly MemorialSealEntry[]} */
+export const MEMORIAL_SEAL_DIRECTORY = Object.freeze([
+  ...MUSTARD_SEED_DIRECTORY_ENTRIES,
+  ...CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES
 ]);
 
 /**
@@ -156,7 +153,42 @@ export function listMemorialSealEntriesForScene(sealSceneId) {
 }
 
 /**
- * Lowest score gate among enabled entries in a scene (mustard seed unlock).
+ * Enabled standalone Contemplative Archive seals (not mustard-seed multi-case scene).
+ * @returns {readonly MemorialSealEntry[]}
+ */
+export function listEnabledContemplativeArchiveSealEntries() {
+  return MEMORIAL_SEAL_DIRECTORY.filter(
+    (entry) =>
+      entry.sealSceneId !== MEMORIAL_SEAL_SCENE_MUSTARD_SEED && entry.enabled
+  );
+}
+
+/**
+ * @param {MemorialSealEntry} entry
+ * @returns {boolean}
+ */
+export function isContemplativeArchiveSealEntry(entry) {
+  return entry.sealSceneId !== MEMORIAL_SEAL_SCENE_MUSTARD_SEED;
+}
+
+/**
+ * @param {string} proxy
+ * @returns {string | null}
+ */
+export function contemplativeArchiveSealIdFromProxy(proxy) {
+  if (
+    typeof proxy !== 'string' ||
+    !proxy.startsWith(CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX)
+  ) {
+    return null;
+  }
+  const id = proxy.slice(CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX.length);
+  const entry = getMemorialSealEntry(id);
+  return entry && isContemplativeArchiveSealEntry(entry) ? id : null;
+}
+
+/**
+ * Lowest score gate among enabled entries in a scene.
  * @param {string} sealSceneId
  * @returns {number | null}
  */
@@ -197,9 +229,30 @@ export function nextUnrevealedMemorialSealEntry(entries, revealedIds, score) {
 export function memorialSealEntryToVerseCase(entry) {
   return {
     id: entry.id,
-    poemZh: entry.poemZh ?? [],
+    poemZh: entry.poemZh ?? entry.poemJa ?? [],
     poemEn: entry.poemEn,
     attributionZh: entry.attributionZh,
     attributionEn: entry.attributionEn
   };
+}
+
+/**
+ * @param {MemorialSealEntry} entry
+ * @returns {string}
+ */
+export function memorialSealBadgeSrcForEntry(entry) {
+  const dir = entry.badgeDir || MEMORIAL_SEAL_BADGE_PUBLIC_DIR;
+  const file = entry.badgeAsset || MEMORIAL_SEAL_DEFAULT_BADGE_FILE;
+  return `${dir}/${file}`;
+}
+
+/**
+ * @param {MemorialSealEntry} entry
+ * @returns {string}
+ */
+export function formatMemorialSealAttribution(entry) {
+  const zh = entry.attributionZh?.trim();
+  const en = entry.attributionEn?.trim();
+  if (zh && en) return `${zh} · ${en}`;
+  return en || zh || '';
 }

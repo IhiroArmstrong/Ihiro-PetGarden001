@@ -73,6 +73,35 @@ test.describe('Mustard Seed memorial seal', () => {
     expect(directoryIds).toEqual(cases.map((c) => c.caseId));
   });
 
+  test('CA-01 old pond renders Japanese original from catalog', async ({ page }) => {
+    await openFreshProductShell(page);
+
+    await expect
+      .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
+        timeout: 15_000
+      })
+      .toBe(true);
+
+    await page.evaluate(() => {
+      window.__mustardSeedSeal.clearArchive();
+      window.__mustardSeedSeal.open({
+        mode: 'force',
+        archiveEntryId: 'ca-01-old-pond'
+      });
+    });
+
+    const card = page.locator('#mustard-seed-seal-card');
+    await expect(card).toBeVisible({ timeout: 10_000 });
+    await expect(card).toHaveAttribute('data-case-id', 'ca-01-old-pond');
+    await expect(card).toHaveAttribute('data-surface', 'contemplative-archive');
+    await expect(
+      page.locator('[data-testid="mustard-seed-seal-poem-zh"]')
+    ).toContainText('古池や');
+    await expect(
+      page.locator('[data-testid="mustard-seed-seal-poem-en"]')
+    ).toContainText('AN OLD POND');
+  });
+
   test('force mode hides blurb; auto mode shows blurb', async ({ page }) => {
     await openFreshProductShell(page, {
       query: { sessionMinutes: 1, qaSeedStreak: 15 }
