@@ -178,6 +178,50 @@ export function pickMustardSeedSealMenuCase(state) {
 }
 
 /**
+ * In-card Prev/Next chrome: only when multiple cases are revealed.
+ * @param {{ revealed?: boolean, revealedCaseIds?: unknown }} [state]
+ * @param {string | null | undefined} currentCaseId
+ * @returns {{ showNav: boolean, canPrev: boolean, canNext: boolean }}
+ */
+export function mustardSeedSealNavMeta(state, currentCaseId) {
+  const revealedIds = listRevealedMustardSeedCaseIds(state);
+  const showNav = revealedIds.length > 1;
+  const idx =
+    typeof currentCaseId === 'string'
+      ? revealedIds.indexOf(currentCaseId)
+      : -1;
+  const safeIdx = idx >= 0 ? idx : 0;
+  return {
+    showNav,
+    canPrev: showNav && safeIdx > 0,
+    canNext: showNav && safeIdx < revealedIds.length - 1
+  };
+}
+
+/**
+ * Step within revealed cases only; stops at boundaries (no wrap).
+ * @param {{ revealed?: boolean, revealedCaseIds?: unknown }} [state]
+ * @param {'prev' | 'next'} direction
+ * @param {string} currentCaseId
+ * @returns {(typeof MUSTARD_SEED_SEAL_CASES)[number] | null}
+ */
+export function navigateMustardSeedSealCase(state, direction, currentCaseId) {
+  const revealedIds = listRevealedMustardSeedCaseIds(state);
+  if (revealedIds.length <= 1) return null;
+  const idx = revealedIds.indexOf(currentCaseId);
+  if (idx < 0) return null;
+  if (direction === 'prev') {
+    if (idx <= 0) return null;
+    return getMustardSeedSealCase(revealedIds[idx - 1]);
+  }
+  if (direction === 'next') {
+    if (idx >= revealedIds.length - 1) return null;
+    return getMustardSeedSealCase(revealedIds[idx + 1]);
+  }
+  return null;
+}
+
+/**
  * @param {Storage | null | undefined} storage
  * @param {ReturnType<typeof emptySealState>} state
  */

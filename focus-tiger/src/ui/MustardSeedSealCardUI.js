@@ -15,6 +15,9 @@ import {
   getMustardSeedSealCase,
   markMustardSeedSealRevealed,
   mustardSeedSealBadgeSrc,
+  mustardSeedSealNavMeta,
+  navigateMustardSeedSealCase,
+  readMustardSeedSealState,
   rememberMustardSeedSealLastShown,
   resolveMustardSeedSeal
 } from '../core/mustardSeedSeal.js';
@@ -52,6 +55,8 @@ export class MustardSeedSealCardUI {
     this._open = false;
     /** @type {'auto' | 'menu' | 'force'} */
     this._mode = 'menu';
+    /** @type {string | null} */
+    this._currentCaseId = null;
 
     this.root = document.createElement('div');
     this.root.id = 'mustard-seed-seal-card';
@@ -61,9 +66,28 @@ export class MustardSeedSealCardUI {
     this.root.setAttribute('aria-modal', 'true');
     this.root.setAttribute('aria-labelledby', 'mustard-seed-seal-card-title');
 
+    this.headRow = document.createElement('div');
+    this.headRow.className = 'mustard-seed-seal-card__head';
+
+    this.prevBtn = document.createElement('button');
+    this.prevBtn.type = 'button';
+    this.prevBtn.className =
+      'mustard-seed-seal-card__btn mustard-seed-seal-card__btn--nav';
+    this.prevBtn.dataset.testid = 'mustard-seed-seal-prev';
+    this.prevBtn.addEventListener('click', () => this._navigateCase('prev'));
+
     this.titleEl = document.createElement('p');
     this.titleEl.id = 'mustard-seed-seal-card-title';
     this.titleEl.className = 'mustard-seed-seal-card__title';
+
+    this.nextBtn = document.createElement('button');
+    this.nextBtn.type = 'button';
+    this.nextBtn.className =
+      'mustard-seed-seal-card__btn mustard-seed-seal-card__btn--nav';
+    this.nextBtn.dataset.testid = 'mustard-seed-seal-next';
+    this.nextBtn.addEventListener('click', () => this._navigateCase('next'));
+
+    this.headRow.append(this.prevBtn, this.titleEl, this.nextBtn);
 
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'mustard-seed-seal-card__blurb';
@@ -106,7 +130,7 @@ export class MustardSeedSealCardUI {
 
     this.actions.append(this.closeBtn);
     this.root.append(
-      this.titleEl,
+      this.headRow,
       this.blurbEl,
       this.badgeWrap,
       this.poemStack,
@@ -181,19 +205,81 @@ export class MustardSeedSealCardUI {
       rememberMustardSeedSealLastShown(storage, verse.id);
     }
 
+    this._presentMustardSeedCase(verse, { notifyOpen: true });
+  }
+
+  /**
+   * @param {(typeof MUSTARD_SEED_SEAL_CASES)[number]} verse
+   * @param {{ notifyOpen?: boolean }} [opts]
+   */
+  _presentMustardSeedCase(verse, opts = {}) {
     this._open = true;
+    this._currentCaseId = verse.id;
     this.root.dataset.caseId = verse.id;
     this.badgeImg.src = mustardSeedSealBadgeSrc();
     this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
-    this.poemZhEl.textContent = verse.poemZh.join('\n');
-    this.poemEnEl.textContent = verse.poemEn.join('\n');
-    this.attrEl.textContent = `${verse.attributionZh} · ${verse.attributionEn}`;
+    this._renderMustardSeedVerse(verse);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._refreshTexts();
-    this.closeBtn.focus({ preventScroll: true });
-    this.handlers.onOpen?.();
+    if (opts.notifyOpen) {
+      this.closeBtn.focus({ preventScroll: true });
+      this.handlers.onOpen?.();
+    }
+    this._syncNavChrome();
+  }
+
+  /**
+   * @param {(typeof MUSTARD_SEED_SEAL_CASES)[number]} verse
+   */
+  _renderMustardSeedVerse(verse) {
+    this.poemZhEl.textContent = verse.poemZh.join('\n');
+    this.poemEnEl.textContent = verse.poemEn.join('\n');
+    this.attrEl.textContent = `${verse.attributionZh} · ${verse.attributionEn}`;
+  }
+
+  /** @param {'prev' | 'next'} direction */
+  _navigateCase(direction) {
+    if (this._mode === 'auto') return;
+    const storage =
+      this.handlers.storage ??
+      (typeof localStorage !== 'undefined' ? localStorage : null);
+    const state = readMustardSeedSealState(storage);
+    const currentId = this._currentCaseId || this.root.dataset.caseId || '';
+    const nextCase = navigateMustardSeedSealCase(state, direction, currentId);
+    if (!nextCase) return;
+    rememberMustardSeedSealLastShown(storage, nextCase.id);
+    this._currentCaseId = nextCase.id;
+    this.root.dataset.caseId = nextCase.id;
+    this._renderMustardSeedVerse(nextCase);
+    this._syncNavChrome();
+  }
+
+  _syncNavChrome() {
+    if (this._mode === 'auto') {
+      this.headRow.classList.remove('has-nav');
+      this.prevBtn.hidden = true;
+      this.nextBtn.hidden = true;
+      return;
+    }
+    const storage =
+      this.handlers.storage ??
+      (typeof localStorage !== 'undefined' ? localStorage : null);
+    const state = readMustardSeedSealState(storage);
+    const currentId = this._currentCaseId || this.root.dataset.caseId || '';
+    const { showNav, canPrev, canNext } = mustardSeedSealNavMeta(state, currentId);
+    if (!showNav) {
+      this.headRow.classList.remove('has-nav');
+      this.prevBtn.hidden = true;
+      this.nextBtn.hidden = true;
+      return;
+    }
+    this.headRow.classList.add('has-nav');
+    this.prevBtn.hidden = false;
+    this.nextBtn.hidden = false;
+    this.prevBtn.disabled = !canPrev;
+    this.nextBtn.disabled = !canNext;
   }
 
   close() {
@@ -217,10 +303,15 @@ export class MustardSeedSealCardUI {
     this.titleEl.textContent = t('MUSTARD_SEED_SEAL_CARD_TITLE');
     this.blurbEl.textContent = t('MUSTARD_SEED_SEAL_CARD_BLURB');
     this.closeBtn.textContent = t('MUSTARD_SEED_SEAL_CONTINUE');
+    this.prevBtn.textContent = t('MUSTARD_SEED_SEAL_PREV');
+    this.nextBtn.textContent = t('MUSTARD_SEED_SEAL_NEXT');
+    this.prevBtn.setAttribute('aria-label', t('MUSTARD_SEED_SEAL_PREV'));
+    this.nextBtn.setAttribute('aria-label', t('MUSTARD_SEED_SEAL_NEXT'));
     if (this.badgeImg.src) {
       this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
     }
     this._syncPresentationChrome();
+    if (this._open) this._syncNavChrome();
   }
 
   _syncPresentationChrome() {
@@ -268,8 +359,18 @@ export class MustardSeedSealCardUI {
         opacity: 1;
         transform: translate(-50%, 0);
       }
+      .mustard-seed-seal-card__head {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .mustard-seed-seal-card__head.has-nav {
+        grid-template-columns: auto 1fr auto;
+        gap: 6px;
+      }
       .mustard-seed-seal-card__title {
-        margin: 0 0 4px;
+        margin: 0;
         font-size: 16px;
         font-weight: 650;
         line-height: 1.35;
@@ -278,6 +379,16 @@ export class MustardSeedSealCardUI {
       }
       .mustard-seed-seal-card.has-blurb .mustard-seed-seal-card__title {
         margin-bottom: 2px;
+      }
+      .mustard-seed-seal-card__btn--nav {
+        min-width: 0;
+        padding: 6px 10px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .mustard-seed-seal-card__btn--nav:disabled {
+        opacity: 0.38;
+        cursor: default;
       }
       .mustard-seed-seal-card__blurb {
         margin: 0 0 10px;

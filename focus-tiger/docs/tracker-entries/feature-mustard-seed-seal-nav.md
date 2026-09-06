@@ -1,0 +1,3 @@
+# feature/mustard-seed-seal-nav
+
+| 芥子须弥纪念印 · 卡内 Prev/Next 导航 | UI可见 | 待人工测试 | **主路径**：三首均已揭示 → `?product=1` → `__mustardSeedSeal.open({ mode:'force', caseId:'mustard-seed-sumeru' })`（或菜单打开）→ `#mustard-seed-seal-card` 标题行两侧见 **上一首 / 下一首**（EN: Prev / Next）→ 点 Next 诗面与 `data-case-id` 即时切换 → 第一首 Prev 禁用、最后一首 Next 禁用，**不循环**。**仪式 auto**：完成会话首张揭示时 **无** Prev/Next。**单首已揭示**：菜单打开仍 **无** 箭头。**375**：箭头不挡 Continue。**禁止**未揭示诗偷看。自动化：`mustardSeedSeal.test.js`（nav 边界）+ `mustard-seed-seal.spec.js`（force prev/next DOM）。 | — | — | — | `?product=1` · `#mustard-seed-seal-card` · `__mustardSeedSeal` | 2026-09-07 |
