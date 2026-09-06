@@ -28,7 +28,8 @@ export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
   'focus-tiger.reminder-preference.v1',
   'focus-tiger.companion-mode.v1',
   'focus-tiger.ambient-pref.v1',
-  'focus-tiger.session-cues.v1'
+  'focus-tiger.session-cues.v1',
+  'focus-tiger.contemplative-archive-seals.v1'
 ]);
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
@@ -247,6 +248,10 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       return !Array.isArray(parsed.entries) || parsed.entries.length === 0;
     case 'focus-tiger.mustard-seed-seal.v1':
       return parsed.revealed !== true;
+    case 'focus-tiger.contemplative-archive-seals.v1': {
+      const ids = parsed.revealedEntryIds;
+      return !Array.isArray(ids) || ids.length === 0;
+    }
     case 'focus-tiger.presence-signals.v1':
       return !Array.isArray(parsed.entries) || parsed.entries.length === 0;
     case 'focus-tiger.reflections.v1':

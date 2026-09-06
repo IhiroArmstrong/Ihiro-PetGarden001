@@ -13,6 +13,8 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
+import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
+import { contemplativeArchiveSealIdFromProxy } from '../core/memorialSealDirectory.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
@@ -728,7 +730,10 @@ export class NarrowIdleShell {
       newsletterSubmitted: hasSubmittedNewsletter(),
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
-      ).unlocked
+      ).unlocked,
+      contemplativeArchiveSealMenus: resolveContemplativeArchiveSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ).menuEntries
     });
 
     this.listEl.innerHTML = '';
@@ -909,6 +914,13 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onMustardSeedSeal?.();
+      return;
+    }
+    const archiveSealId = contemplativeArchiveSealIdFromProxy(key);
+    if (archiveSealId) {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onContemplativeArchiveSeal?.(archiveSealId);
       return;
     }
     if (key === 'wallpapers') {

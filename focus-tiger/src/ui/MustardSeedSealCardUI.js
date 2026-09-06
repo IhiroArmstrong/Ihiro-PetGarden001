@@ -19,6 +19,15 @@ import {
   resolveMustardSeedSeal
 } from '../core/mustardSeedSeal.js';
 import {
+  formatMemorialSealAttribution,
+  getMemorialSealEntry,
+  memorialSealBadgeSrcForEntry
+} from '../core/memorialSealDirectory.js';
+import {
+  markContemplativeArchiveSealRevealed,
+  resolveContemplativeArchiveSeal
+} from '../core/contemplativeArchiveSeal.js';
+import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
   GLASS_FILL,
@@ -43,6 +52,8 @@ export class MustardSeedSealCardUI {
     this._open = false;
     /** @type {'auto' | 'menu' | 'force'} */
     this._mode = 'menu';
+    /** @type {'mustard-seed' | 'contemplative-archive'} */
+    this._surface = 'mustard-seed';
 
     this.root = document.createElement('div');
     this.root.id = 'mustard-seed-seal-card';
@@ -132,7 +143,8 @@ export class MustardSeedSealCardUI {
    * @param {{
    *   mode?: 'auto' | 'menu' | 'force',
    *   claim?: boolean,
-   *   caseId?: string
+   *   caseId?: string,
+   *   archiveEntryId?: string
    * }} [opts]
    */
   open(opts = {}) {
@@ -142,6 +154,11 @@ export class MustardSeedSealCardUI {
     const storage =
       this.handlers.storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
+    if (opts.archiveEntryId) {
+      this._openContemplativeArchiveEntry(storage, mode, opts);
+      return;
+    }
+    this._surface = 'mustard-seed';
     const resolved = resolveMustardSeedSeal(storage);
     if (mode !== 'force' && !resolved.unlocked && mode !== 'menu') {
       return;
@@ -167,13 +184,81 @@ export class MustardSeedSealCardUI {
       rememberMustardSeedSealLastShown(storage, verse.id);
     }
 
+    this._presentEntry({
+      entryId: verse.id,
+      title: t('MUSTARD_SEED_SEAL_CARD_TITLE'),
+      blurb: t('MUSTARD_SEED_SEAL_CARD_BLURB'),
+      badgeSrc: mustardSeedSealBadgeSrc(),
+      originalLines: verse.poemZh,
+      poemEnLines: verse.poemEn,
+      attribution: `${verse.attributionZh} · ${verse.attributionEn}`
+    });
+  }
+
+  /**
+   * @param {Storage | null} storage
+   * @param {'auto' | 'menu' | 'force'} mode
+   * @param {{ claim?: boolean, archiveEntryId: string }} opts
+   */
+  _openContemplativeArchiveEntry(storage, mode, opts) {
+    const entry = getMemorialSealEntry(opts.archiveEntryId);
+    if (!entry) return;
+    this._surface = 'contemplative-archive';
+    const resolved = resolveContemplativeArchiveSeal(storage);
+    const unlocked = resolved.score >= entry.scoreThreshold;
+    const revealed = resolved.menuEntries.some(
+      (row) => row.id === entry.id && row.revealed
+    );
+    if (mode !== 'force' && !unlocked && mode !== 'menu') {
+      return;
+    }
+    if (mode === 'menu' && !unlocked && !revealed) {
+      return;
+    }
+    const claim =
+      opts.claim !== false &&
+      unlocked &&
+      !revealed &&
+      resolved.nextEntry?.id === entry.id;
+    if (claim) {
+      markContemplativeArchiveSealRevealed(storage, entry.id);
+    }
+
+    const originalLines = entry.poemJa ?? entry.poemZh ?? [];
+    this._presentEntry({
+      entryId: entry.id,
+      title: t(entry.cardTitleKey || 'CONTEMPLATIVE_ARCHIVE_SEAL_CARD_TITLE'),
+      blurb: t('CONTEMPLATIVE_ARCHIVE_SEAL_CARD_BLURB'),
+      badgeSrc: memorialSealBadgeSrcForEntry(entry),
+      originalLines,
+      poemEnLines: entry.poemEn,
+      attribution: formatMemorialSealAttribution(entry)
+    });
+  }
+
+  /**
+   * @param {{
+   *   entryId: string,
+   *   title: string,
+   *   blurb: string,
+   *   badgeSrc: string,
+   *   originalLines: readonly string[],
+   *   poemEnLines: readonly string[],
+   *   attribution: string
+   * }} view
+   */
+  _presentEntry(view) {
     this._open = true;
-    this.root.dataset.caseId = verse.id;
-    this.badgeImg.src = mustardSeedSealBadgeSrc();
+    this.root.dataset.caseId = view.entryId;
+    this.root.dataset.surface = this._surface;
+    this.badgeImg.src = view.badgeSrc;
     this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
-    this.poemZhEl.textContent = verse.poemZh.join('\n');
-    this.poemEnEl.textContent = verse.poemEn.join('\n');
-    this.attrEl.textContent = `${verse.attributionZh} · ${verse.attributionEn}`;
+    this.titleEl.textContent = view.title;
+    this.blurbEl.textContent = view.blurb;
+    this.poemZhEl.textContent = view.originalLines.join('\n');
+    this.poemZhEl.hidden = view.originalLines.length === 0;
+    this.poemEnEl.textContent = view.poemEnLines.join('\n');
+    this.attrEl.textContent = view.attribution;
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
@@ -200,8 +285,18 @@ export class MustardSeedSealCardUI {
   }
 
   _refreshTexts() {
-    this.titleEl.textContent = t('MUSTARD_SEED_SEAL_CARD_TITLE');
-    this.blurbEl.textContent = t('MUSTARD_SEED_SEAL_CARD_BLURB');
+    if (this._surface === 'contemplative-archive' && this._open) {
+      const entry = getMemorialSealEntry(this.root.dataset.caseId || '');
+      if (entry) {
+        this.titleEl.textContent = t(
+          entry.cardTitleKey || 'CONTEMPLATIVE_ARCHIVE_SEAL_CARD_TITLE'
+        );
+        this.blurbEl.textContent = t('CONTEMPLATIVE_ARCHIVE_SEAL_CARD_BLURB');
+      }
+    } else {
+      this.titleEl.textContent = t('MUSTARD_SEED_SEAL_CARD_TITLE');
+      this.blurbEl.textContent = t('MUSTARD_SEED_SEAL_CARD_BLURB');
+    }
     this.closeBtn.textContent = t('MUSTARD_SEED_SEAL_CONTINUE');
     if (this.badgeImg.src) {
       this.badgeImg.alt = t('MUSTARD_SEED_SEAL_BADGE_ALT');
