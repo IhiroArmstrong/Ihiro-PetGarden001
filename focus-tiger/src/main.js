@@ -181,6 +181,7 @@ import {
   scheduleFocusCircleWitnessPeek,
   setFocusCircleWitnessBusyProbe
 } from './core/focusCircleWitness.js';
+import { maybeWasHereMark } from './core/focusCircleWasHere.js';
 import { syncFocusCircleWitnessIdleObserverPeek } from './core/focusCircleWitnessIdleSchedule.js';
 import {
   FOCUS_CIRCLE_CHANGE_EVENT,
@@ -1257,6 +1258,11 @@ async function init() {
     }
   );
   window.__focusCircleWitness = focusCircleWitnessChrome;
+
+  function onFocusCircleRiseSideEffects(elapsedSeconds) {
+    maybeWasHereMark({ elapsedSeconds });
+    maybeOfferWitnessLeave(elapsedSeconds);
+  }
 
   function maybeOfferWitnessLeave(elapsedSeconds) {
     if (!isWitnessEligibleSession(elapsedSeconds)) return;
@@ -2509,7 +2515,7 @@ async function init() {
       }
     });
     // Explicit: do NOT call sessionEndFlow / TigerReflectionMoment.
-    maybeOfferWitnessLeave(ritualFlowBreathElapsedSeconds(ritualId));
+    onFocusCircleRiseSideEffects(ritualFlowBreathElapsedSeconds(ritualId));
   }
 
   /**
@@ -2603,7 +2609,7 @@ async function init() {
     const draft = microRitualJourneyDraft(durationMinutes);
     if (draft) pendingJourneyDraft = draft;
     sessionEndFlow.onSessionEnded({ completed: true });
-    maybeOfferWitnessLeave(durationMinutes * 60);
+    onFocusCircleRiseSideEffects(durationMinutes * 60);
   }
 
   function leaveMicroRitualQuietly() {
@@ -3818,7 +3824,7 @@ async function init() {
         intention: currentSessionIntention,
         intentionSource: currentIntentionSource
       });
-      maybeOfferWitnessLeave(focusSession.getElapsedSeconds());
+      onFocusCircleRiseSideEffects(focusSession.getElapsedSeconds());
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
       // ambient-soundscape stays unread until a track is actually chosen
@@ -3873,7 +3879,7 @@ async function init() {
     } else {
       sessionEndFlow.onSessionEnded(endOpts);
     }
-    maybeOfferWitnessLeave(witnessElapsedSeconds);
+    onFocusCircleRiseSideEffects(witnessElapsedSeconds);
     onboardingHints?.markSeen('rise-button');
   }
 

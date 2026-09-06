@@ -73,8 +73,43 @@ test.describe('Mustard Seed memorial seal', () => {
     expect(directoryIds).toEqual(cases.map((c) => c.caseId));
   });
 
+  test('force mode hides blurb; auto mode shows blurb', async ({ page }) => {
+    await openFreshProductShell(page, {
+      query: { sessionMinutes: 1, qaSeedStreak: 15 }
+    });
+
+    await expect
+      .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
+        timeout: 15_000
+      })
+      .toBe(true);
+
+    await page.evaluate(() => {
+      window.__mustardSeedSeal.clear();
+      window.__mustardSeedSeal.open({ mode: 'force', caseId: 'mustard-seed-sumeru' });
+    });
+
+    const card = page.locator('#mustard-seed-seal-card');
+    const blurb = page.locator('.mustard-seed-seal-card__blurb');
+    await expect(card).toBeVisible({ timeout: 10_000 });
+    await expect(blurb).toBeHidden();
+
+    await page.evaluate(() => {
+      window.__mustardSeedCard.close();
+      window.__mustardSeedSeal.open({
+        mode: 'auto',
+        claim: false
+      });
+    });
+
+    await expect(card).toBeVisible({ timeout: 10_000 });
+    await expect(blurb).toBeVisible();
+    await expect(blurb).not.toBeEmpty();
+  });
+
   test('prev/next switches revealed verses in force mode', async ({ page }) => {
     await openFreshProductShell(page);
+
     await expect
       .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
         timeout: 15_000
@@ -130,6 +165,7 @@ test.describe('Mustard Seed memorial seal', () => {
 
   test('auto mode hides prev/next on first reveal', async ({ page }) => {
     await openFreshProductShell(page);
+
     await expect
       .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
         timeout: 15_000
@@ -177,5 +213,35 @@ test.describe('Mustard Seed memorial seal', () => {
 
     await page.evaluate(() => window.__mustardSeedCard.close());
     await expect(card).toBeHidden({ timeout: 5_000 });
+  });
+
+  test('locale keeps English poem primary for en and ja', async ({ page }) => {
+    await openFreshProductShell(page);
+    await page.setViewportSize({ width: 1100, height: 720 });
+
+    await expect
+      .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
+        timeout: 15_000
+      })
+      .toBe(true);
+
+    await page.evaluate(() => {
+      window.__mustardSeedSeal.open({ mode: 'force', caseId: 'mustard-seed-sumeru' });
+    });
+
+    const card = page.locator('#mustard-seed-seal-card');
+    const poemEn = page.locator('[data-testid="mustard-seed-seal-poem-en"]');
+    await expect(card).toHaveClass(/locale-en-primary/);
+    await expect(poemEn).toHaveClass(/is-poem-primary/);
+
+    const fab = page.locator('#language-preference-fab');
+    await expect(fab).toBeVisible({ timeout: 8_000 });
+    await fab.click();
+    await expect(page.locator('#language-preference-panel')).toBeVisible({
+      timeout: 5_000
+    });
+    await page.locator('#language-preference-ja').check();
+    await expect(card).toHaveClass(/locale-en-primary/);
+    await expect(poemEn).toHaveClass(/is-poem-primary/);
   });
 });

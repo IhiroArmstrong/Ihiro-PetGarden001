@@ -10,6 +10,10 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { FocusCircleControlsUI } from './FocusCircleControlsUI.js';
 import {
+  isFocusCirclePassiveShareEnabled,
+  setFocusCirclePassiveShareEnabled
+} from '../core/focusCirclePassiveShare.js';
+import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
   GLASS_FILL,
@@ -45,6 +49,30 @@ export class FocusCirclePanelUI {
     this.blurbEl = document.createElement('p');
     this.blurbEl.className = 'focus-circle-panel__blurb';
 
+    this.passiveShareLabel = document.createElement('label');
+    this.passiveShareLabel.className = 'focus-circle-panel__opt-in-label';
+    this.passiveShareLabel.htmlFor = 'focus-circle-passive-share-toggle';
+
+    this.passiveShareCheck = document.createElement('input');
+    this.passiveShareCheck.type = 'checkbox';
+    this.passiveShareCheck.id = 'focus-circle-passive-share-toggle';
+    this.passiveShareCheck.className = 'focus-circle-panel__opt-in-check';
+    this.passiveShareCheck.dataset.testid = 'focus-circle-passive-share-toggle';
+    this.passiveShareCheck.addEventListener('change', () => {
+      setFocusCirclePassiveShareEnabled(
+        globalThis.localStorage,
+        this.passiveShareCheck.checked === true
+      );
+    });
+
+    this.passiveShareText = document.createElement('span');
+    this.passiveShareText.className = 'focus-circle-panel__opt-in-text';
+
+    this.passiveShareHint = document.createElement('p');
+    this.passiveShareHint.className = 'focus-circle-panel__hint';
+
+    this.passiveShareLabel.append(this.passiveShareCheck, this.passiveShareText);
+
     this.controlsMount = document.createElement('div');
     this.controlsMount.className = 'focus-circle-panel__mount';
 
@@ -56,6 +84,8 @@ export class FocusCirclePanelUI {
     this.root.append(
       this.titleEl,
       this.blurbEl,
+      this.passiveShareLabel,
+      this.passiveShareHint,
       this.controlsMount,
       this.closeBtn
     );
@@ -104,6 +134,11 @@ export class FocusCirclePanelUI {
   _refreshTexts() {
     this.titleEl.textContent = t('FOCUS_CIRCLE_PANEL_TITLE');
     this.blurbEl.textContent = t('FOCUS_CIRCLE_PANEL_BLURB');
+    this.passiveShareText.textContent = t('FOCUS_CIRCLE_PASSIVE_SHARE_LABEL');
+    this.passiveShareHint.textContent = t('FOCUS_CIRCLE_PASSIVE_SHARE_HINT');
+    this.passiveShareCheck.checked = isFocusCirclePassiveShareEnabled(
+      globalThis.localStorage
+    );
     this.closeBtn.textContent = t('FOCUS_CIRCLE_PANEL_CLOSE');
     this.controls.refresh();
   }
@@ -141,6 +176,25 @@ export class FocusCirclePanelUI {
         margin: 0 0 10px;
         font-size: 13px;
         line-height: 1.45;
+      }
+      .focus-circle-panel__opt-in-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 0 0 6px;
+        font-size: 13px;
+        line-height: 1.4;
+        cursor: pointer;
+      }
+      .focus-circle-panel__opt-in-check {
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .focus-circle-panel__hint {
+        margin: 0 0 10px;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: rgba(74, 58, 40, 0.72);
       }
       .focus-circle-panel__close {
         margin-top: 12px;
