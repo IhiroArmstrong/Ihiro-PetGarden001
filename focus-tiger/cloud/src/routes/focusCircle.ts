@@ -40,6 +40,16 @@ import {
 	parseFocusCircleWitnessRecord,
 } from "../lib/focusCircleWitnessKv";
 import {
+	FOCUS_CIRCLE_IDENTITY_SCHEMA_VERSION,
+	applyIdentitySet,
+	buildIdentityPeekMap,
+	circleIdentityKvKey,
+	isFocusCircleBadgeKey,
+	normalizeFocusCircleNickname,
+	parseFocusCircleIdentityRecord,
+	type FocusCircleIdentityEntry,
+} from "../lib/focusCircleIdentityKv";
+import {
 	FOCUS_CIRCLE_WAS_HERE_SCHEMA_VERSION,
 	applyWasHereMark,
 	circleWasHereKvKey,
@@ -62,6 +72,7 @@ const ACTIONS = new Set([
 	"witness_peek",
 	"witness_respond",
 	"was_here_mark",
+	"identity_set",
 ]);
 const MAX_CODE_RETRIES = 12;
 
@@ -87,6 +98,7 @@ async function deleteCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<t
 	await kv.delete(circlePresenceKvKey(record.circleId));
 	await kv.delete(circleWitnessKvKey(record.circleId));
 	await kv.delete(circleWasHereKvKey(record.circleId));
+	await kv.delete(circleIdentityKvKey(record.circleId));
 }
 
 async function loadCirclePresence(kv: KvLike, circleId: string) {
@@ -157,6 +169,25 @@ async function saveCircleWasHere(
 	);
 }
 
+async function loadCircleIdentity(kv: KvLike, circleId: string) {
+	const raw = await kv.get(circleIdentityKvKey(circleId));
+	return parseFocusCircleIdentityRecord(raw).members;
+}
+
+async function saveCircleIdentity(
+	kv: KvLike,
+	circleId: string,
+	members: Record<string, FocusCircleIdentityEntry>,
+) {
+	await kv.put(
+		circleIdentityKvKey(circleId),
+		JSON.stringify({
+			schemaVersion: FOCUS_CIRCLE_IDENTITY_SCHEMA_VERSION,
+			members,
+		}),
+	);
+}
+
 function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>, memberId: string) {
 	return {
 		ok: true as const,
@@ -195,7 +226,7 @@ export async function handleFocusCircle(
 		return errorJson(
 			400,
 			"bad_action",
-			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, or was_here_mark",
+			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, was_here_mark, or identity_set",
 		);
 	}
 
@@ -281,10 +312,16 @@ export async function handleFocusCircle(
 			const traces = await loadCircleWitness(kv, circleId);
 			if (action === "witness_peek") {
 				const peekTraces = buildWitnessPeekTraces(traces, nowMs, memberId);
+				const identityMembers = await loadCircleIdentity(kv, circleId);
+				const identities = buildIdentityPeekMap(
+					identityMembers,
+					Object.keys(record.members),
+				);
 				return json({
 					ok: true,
 					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 					traces: peekTraces,
+					identities,
 				});
 			}
 			if (action === "witness_leave") {
@@ -416,6 +453,56 @@ export async function handleFocusCircle(
 				ok: true,
 				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 				sittingOthers,
+			});
+		}
+
+		if (action === "identity_set") {
+			if (!record.members[memberId]) {
+				return errorJson(403, "not_member", "Not a member of this circle");
+			}
+			const nicknameProvided = Object.prototype.hasOwnProperty.call(o, "nickname");
+			if (!nicknameProvided) {
+				return errorJson(400, "bad_nickname", "nickname is required");
+			}
+			const nicknameRaw = o.nickname;
+			let nickname: string | null = null;
+			if (nicknameRaw === null || nicknameRaw === "") {
+				nickname = null;
+			} else if (typeof nicknameRaw === "string") {
+				nickname = normalizeFocusCircleNickname(nicknameRaw);
+				if (!nickname) {
+					return errorJson(400, "bad_nickname", "nickname is invalid");
+				}
+			} else {
+				return errorJson(400, "bad_nickname", "nickname must be a string or null");
+			}
+			const badgeProvided = Object.prototype.hasOwnProperty.call(o, "badgeKey");
+			if (!badgeProvided) {
+				return errorJson(400, "bad_badge", "badgeKey is required");
+			}
+			let badgeKey: "tiger" | "yin" | null = null;
+			if (o.badgeKey === null || o.badgeKey === "") {
+				badgeKey = null;
+			} else if (typeof o.badgeKey === "string") {
+				const trimmed = o.badgeKey.trim();
+				if (!isFocusCircleBadgeKey(trimmed)) {
+					return errorJson(400, "bad_badge", "badgeKey must be tiger or yin");
+				}
+				badgeKey = trimmed;
+			} else {
+				return errorJson(400, "bad_badge", "badgeKey must be a string or null");
+			}
+			const identityMembers = await loadCircleIdentity(kv, circleId);
+			const nextIdentity = applyIdentitySet(
+				identityMembers,
+				memberId,
+				nickname,
+				badgeKey,
+			);
+			await saveCircleIdentity(kv, circleId, nextIdentity);
+			return json({
+				ok: true,
+				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 			});
 		}
 

@@ -688,6 +688,21 @@
 
 ---
 
+## 场景 AR：Focus Circle Identity（认人层 · 2026-09-07）
+
+> **地位**：My circle 可选昵称 + Tiger/Yin 徽标；Witness Idle 文案 `{name}` 替换「一位同伴」；本机 Hide 回匿名。**≠** was-here 计数（AQ）· **≠** OTP 跨设备（后续 Brief）。  
+> **单元**：`focusCircleIdentity.test.js` · cloud `focusCircleIdentityKv.test.ts`。  
+> **生产**：Worker 未部署 `identity_set` / 合并 `witness_peek.identities` 时全员匿名（诚实）。  
+> **点击**：Save 0–1s 反馈；Hide name 立刻回匿名。
+
+1. A 设昵称 + 徽标 → Save → B Witness 痕见昵称（非匿名）。  
+2. B **Hide this name** → 本机回「一位同伴」/「A companion」。  
+3. A 清昵称 Save → B 见匿名。  
+4. `?focusCircleIdentity=0` → 不展示认人 UI、Witness 仍匿名。  
+5. 与 AQ 并存：was-here 仍无昵称。
+
+---
+
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
 > **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。  
