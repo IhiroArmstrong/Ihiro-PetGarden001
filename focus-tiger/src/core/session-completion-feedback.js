@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import { EMOTION_KEYS } from './EmotionController.js';
+import { EMOTION_KEYS, CAPCUT_DISSOLVE_MS } from './EmotionController.js';
 import {
   SCENE_ANIM_EVENTS,
   resolveSceneAnimation
@@ -50,6 +50,9 @@ export function triggerSessionCompletionFeedback({
     random
   });
   const key = decision.emotionKey || EMOTION_KEYS.SESSION_COMPLETE;
-  emotionController.playEmotion(key, { onComplete });
+  emotionController.playEmotion(key, {
+    crossFadeMs: CAPCUT_DISSOLVE_MS,
+    onComplete
+  });
   return key;
 }
