@@ -1,6 +1,7 @@
 # Task Brief · 芥子须弥纪念印（Mustard Seed · Sumeru）
 
 > 状态：**#246 + #256 已合** `origin/develop` tip `5440a53`（方章金章）  
+> 内容层：静思典藏 **第一枚纪念印**（`CONTEMPLATIVE_ARCHIVE.md`）。新印勿再挂 score 21 队列。  
 > 拍板：统一徽章 `score` 门槛；首次挂在计时完成仪式后；署名「乐五斋诗稿」一并露出。  
 > **2026-08-12**：EN 译维持现稿（不另开人审）；金章用方章 `yin-badge-square-gold-on-silver-alt.png`（根目录中文名入库译为 kebab-case）。  
 > **2026-08-17**：第二 case《乐五斋七言歌行》纳入同一场景（同一 score、同一卡、下一场完成仪式再出）。  

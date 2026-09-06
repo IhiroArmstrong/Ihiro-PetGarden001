@@ -177,7 +177,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
 | `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
-| `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom 分池；**无运行时**） |
+| `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时**） |
+| `CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**（Contemplative Archive）：长期纪念文学 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
@@ -244,6 +245,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-06 | 产品表新增 `CONTEMPLATIVE_ARCHIVE.md`（静思典藏层；12 候选；芥子须弥 = 第一枚纪念印；不进 rules-authority 机器块） |
 | 2026-09-06 | 防剽窃层补 **值得保护四测**（`ANTI_PLAGIARISM_LAYER.md` §3.2）；与准入四问正交；`PRINCIPLES.md` 加「云端防剽窃与护城河」指针。不进 rules-authority 机器块 |
 | 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |

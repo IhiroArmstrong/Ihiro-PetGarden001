@@ -424,7 +424,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 3. 是否要求用户确认、解释、点击回应或证明自己已经调整？
 4. 中英文两版是否传达同等的观察距离感，而不是一版克制、一版带评价？
 
-行为时刻的许可/行动句（Calm Action Wisdom）分池见 `CALM_ACTION_WISDOM.md`。该池**不替代**本节观察式 toast、Moment Whisper、Quiet Line。接线前不得把行动句写入 Quiet Line / Daily Wisdom / `REFOCUS_ACKNOWLEDGE` / `ACTIVE_RECOVER`。
+行为时刻的许可/行动句（Calm Action Wisdom）分池见 `CALM_ACTION_WISDOM.md`。该池**不替代**本节观察式 toast、Moment Whisper、Quiet Line。接线前不得把行动句写入 Quiet Line / Daily Wisdom / `REFOCUS_ACKNOWLEDGE` / `ACTIVE_RECOVER`。长期纪念文学（静思典藏 / 纪念印）分池见 `CONTEMPLATIVE_ARCHIVE.md`，不得灌进日签或本节 toast。
 
 ### 与触发频率的边界
 
