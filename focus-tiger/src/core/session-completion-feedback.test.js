@@ -7,6 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { triggerSessionCompletionFeedback } from './session-completion-feedback.js';
+import { CAPCUT_DISSOLVE_MS } from './EmotionController.js';
 
 test('already celebrated → sessionComplete without celebrating', () => {
   const emotions = [];
@@ -32,6 +33,7 @@ test('already celebrated → sessionComplete without celebrating', () => {
   assert.equal(emotions.length, 1);
   assert.equal(emotions[0].key, 'sessionComplete');
   assert.equal(emotions[0].options.onComplete, onComplete);
+  assert.equal(emotions[0].options.crossFadeMs, CAPCUT_DISSOLVE_MS);
 });
 
 test('already celebrated light pool never picks celebrate-dance', () => {
