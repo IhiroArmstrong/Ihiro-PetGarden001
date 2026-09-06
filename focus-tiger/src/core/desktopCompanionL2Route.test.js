@@ -488,6 +488,9 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confidePreferenceHonesty/);
     assert.match(ui, /shouldHandleConfidePreferenceHonesty/);
     assert.match(ui, /source: 'preference_honesty'/);
+    assert.match(ui, /confideObservationHonesty/);
+    assert.match(ui, /shouldHandleConfideObservationHonesty/);
+    assert.match(ui, /source: 'observation_honesty'/);
     assert.match(ui, /shouldHandlePostRecallMemorySuppress\(\{[\s\S]*?state: this\._memoryState/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);

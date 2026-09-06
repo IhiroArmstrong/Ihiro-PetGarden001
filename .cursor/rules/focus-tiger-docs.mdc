@@ -27,12 +27,14 @@ alwaysApply: false
 | `docs/FROM_APP_TO_CULTURE.md` | **文化探索方向锁**：From App to Culture；六条 Culture Principles；App 社交塑造 Slack（废除证据门）；**无运行时** |
 | `docs/MVP_PRODUCT_DEFINITION.md` | **MVP 产品策略基线**：首要用户、JTBD、竞争替代品、验证指标、付费假设与隐私承诺；假设不等同于已上线功能 |
 | `docs/PRODUCT_MOMENTS.md` | **一天叙事框架（Five Moments）**：Arrive / Focus / Recover / Transition / Reflect；位于定位之下、`TASKS` 之上，不推翻已有实现 |
+| `docs/CALM_ACTION_WISDOM.md` | **Calm Action Wisdom**：长度/禁词/Moment 标签/去重；70 条 CMS；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时** |
+| `docs/CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**：长期纪念文学规范 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
 | `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
 | `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
-| `docs/ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay；准入四问；≠ 支付/备份/Confide 路由） |
+| `docs/ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay；准入四问 + 值得保护四测；≠ 支付/备份/Confide 路由） |
 | `docs/YIN_PERSONAL_MEMORY.md` | **阿寅个人记忆架构 V1**（方向锁；≠ 练习云备份 / Journey Log / `turns.jsonl`） |
 | `docs/YIN_PERSONALIZATION_ENGINE.md` | **Yin Personalization Engine V1**（方向锁；L0/L1 本地运行时；≠ Memory / 品味层 / Qwen；L2 已拍；ingest 已合；V2 见 `task-ype-v2-secret-transform.md`） |
 | `docs/CONFIDE_EXECUTABLE_INTENTS.md` | Confide 口头白名单 + Companion Tool Registry（≠ Operating Layer） |
@@ -69,6 +71,7 @@ alwaysApply: false
 ## PRINCIPLES 硬性摘要
 
 - **用户体验优先（2026-08-31 · 2026-09-04）**：只要不违法、不违背开发工作基本原则，陪伴是否被听见、边界是否被尊重，高于内部 routing / 语料红线清单。**禁止不顾用户体验第一去设置产品设计红线**（含 Slack 证据门）。禁止 Confide 对「不确定要不要谈」主动贴心理状态标签。全文 `PRINCIPLES.md`。
+- **云端防剽窃与护城河（2026-09-06）**：准入≠值得；空壳 overlay 不算保护。细则 `ANTI_PLAGIARISM_LAYER.md` §3.2。
 - **经济可持续（2026-08-11）**：发布已远不止「只验证 MVP」；短长期收益须平衡；禁止学雷锋式堆功能导致无付款动力；假收费须优先修。允许委婉付费感知；禁止 FOMO / 共鸣句硬推销。**案例锚定**：Reflection 底 Wisdom+静默印花＝允许；共鸣句硬推销＝禁止（见 `PRINCIPLES.md`）。静默彩蛋≠获客转化。
 - **正念伙伴，不是传统电子宠物**：保留伙伴式互动；禁止喂养、健康退化、照料责任与宠物收集叙事。
 - **诚实机制**：允许无验证补登别处完成的练习；与正常计时一视同仁；禁止怀疑性文案；不占系统提醒限频池。

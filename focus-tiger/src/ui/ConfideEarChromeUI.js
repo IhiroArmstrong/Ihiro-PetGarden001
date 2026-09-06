@@ -4,7 +4,7 @@
  */
 
 /**
- * Idle Confide second entry — wide top-left ear disc.
+ * Idle Confide second entry — wide ear disc below Focus HUD (C.2 clearance).
  * Narrow ActionBar owns its own button (same panel, same gate).
  *
  * Idle chrome stays ghost-quiet (mute-family opacity), then lifts on hover /
@@ -99,8 +99,9 @@ export class ConfideEarChromeUI {
     style.textContent = `
       .confide-ear-chrome {
         position: fixed;
-        top: max(14px, env(safe-area-inset-top, 0px));
-        left: max(14px, env(safe-area-inset-left, 0px));
+        /* Below #focus-hud glass card (~18px + card height); SANCTUARY_UI_ART_DIRECTION B */
+        top: calc(max(18px, env(safe-area-inset-top, 0px)) + 112px);
+        left: max(18px, env(safe-area-inset-left, 0px));
         z-index: 24;
         width: 52px;
         height: 52px;

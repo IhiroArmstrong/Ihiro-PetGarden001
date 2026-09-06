@@ -68,7 +68,7 @@
 | # | 问题描述（摘录） | 出处 | 不修理由 | 涉及模块 | 频率 | 严重度 | 修复成本 | 搁置趋势 | 总分 | 建议 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | `completionPending` 时 Sit `return false`，按钮未禁用 →「点了没反应」 | `EDGE_CASES.md` P1 #5（2026-07-22「先不修」）；`DEVELOP_DEBT` / `KNOWN_RISKY` #10；回归锁红线 | 批次 4–5 候选；等 1–3 验收后再排 | `main.js` FocusInput · `SessionUiGate` | 2 | 3 | 3 | 3 | **11** | **已开修（批 4 · `fix/logged-debt-batch-134`）** |
-| 2 | Hints 尖角/补救/weekly tip 等「问题很多」→ 整体再设计；暂缓单点硬修 | `TEST_TRACKER`「? 补救」行（2026-08-04，严重度 `post-v1`）；`KNOWN_RISKY` #5 步5 / #7；`HINTS_WIRING` | 产品方向再设计；v1 不挡合 main | `OnboardingHints*` · `HINTS_WIRING.md` | 3 | 2 | 1 | 3 | **9** | **暂不开 Brief**（先厘清与 HINTS_WIRING SSOT 关系） |
+| 2 | Hints 尖角/补救/weekly tip 等「问题很多」→ 整体再设计；暂缓单点硬修 | `TEST_TRACKER`「? 补救」行（2026-08-04，严重度 `post-v1`）；`KNOWN_RISKY` #5 步5 / #7；`HINTS_WIRING` | 产品方向再设计；v1 不挡合 main | `OnboardingHints*` · `HINTS_WIRING.md` | 3 | 2 | 1 | 3 | **9** | **Brief 已开（2026-09-06）**：`task-hints-redesign-phase2.md` + `task-hints-whisper-boundary-audit.md`；实现须口令，禁止尖角热修混批 |
 | 3 | `playEmotion` 返回值常忽略；hold/强情绪 key 散落；新情绪漏登记难查 | `EDGE_CASES` P1 #17–19；`DEVELOP_DEBT` / `KNOWN_RISKY` #15「暂不处理（观察）」 | 工程观察；非产品走查主项 | `EmotionController.js` · 多调用方 | 2 | 2 | 2 | 3 | **9** | **已开修（批 4 · 部分收口）** |
 | 4 | Visibility 契约 `gap-*` 未全锁；改 suppress 易只绿一侧视口 | `DEVELOP_DEBT` known-risky；`SHARED_RESOURCES` §6 / `DOC_CODE_CONTRACT` V-gap；`KNOWN_RISKY` #11 | 建议「补测试」但长期未收口（无专修 commit） | `visibilityContractRegistry.js` · visibility e2e | 2 | 2 | 2 | 3 | **9** | **已开修（批 4 · gap 收 locked）** |
 | 5 | `SessionComplete` 非模态观察式文案尚未实现（情绪/分流已有） | `PROCESS.md` 进度速览；`DEVELOP_DEBT` assumed-ok「产品拍板或暂不处理」；`PRODUCT_MOMENTS` Reflect 邻接 | 功能半截但静默；未立项开修 | 完成反馈 UI · locales | 2 | 2 | 3 | 2 | **9** | **单独档 · 先看原文措辞**（不与批 4 混） |

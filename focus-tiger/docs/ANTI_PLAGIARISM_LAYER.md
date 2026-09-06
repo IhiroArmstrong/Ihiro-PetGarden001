@@ -1,7 +1,8 @@
 # 防剽窃层 · Anti-Plagiarism Layer
 
-> **状态（2026-09-02）**：产品方向锁 · **本文件无新运行时**。  
+> **状态（2026-09-06）**：产品方向锁 · **本文件无新运行时**。  
 > **拍板**：凡客观上有「难复制的表 / 闭包变换只存在服务器、客户端只拿 overlay、没网用本地冻结表」作用的云切片，统称 **防剽窃层**。  
+> **两把尺**：§3 **准入四问**（能不能放进本层）与 §3.2 **值得保护四测**（该不该花保护资源）必须分开；过准入 ≠ 值得。原则指针见 `PRINCIPLES.md`「云端防剽窃与护城河」。  
 > **本文件禁止被解读成**：一次把 Quiet Line / YPE V2 / Confide 句库全部改运行时；须分 PR。口令队列见 §5。
 
 交叉引用（只引用、不复述细则）：
@@ -11,7 +12,7 @@
 | `PROCESS.md` Backlog「云端品味层」 | 权重 + 日签池现网 v1 |
 | `YIN_PERSONALIZATION_ENGINE.md` | YPE 编排 / Consent / Pack 形状 |
 | `task-briefs/task-l2-personalization-algorithm.md` | YPE V1 五键→Pack 闭包 |
-| `task-briefs/task-quiet-line-copy-overlay.md` | Quiet Line 句包 overlay（下一刀运行时） |
+| `task-briefs/task-quiet-line-copy-overlay.md` | Quiet Line 句包 overlay（**#543 已合**） |
 | `task-briefs/task-ype-v2-secret-transform.md` | YPE V2 秘密变换 + `algorithmVersion` |
 | `task-briefs/task-confide-copy-overlay.md` | Confide 句库/模板 overlay |
 | `BACKGROUND_NETWORK.md` | 非点击拉取三问 |
@@ -50,7 +51,9 @@
 | 意愿漏斗 ingest | 匿名计数，不是手感表 |
 | Idle / CapCut / 精灵播放器 | 永远本地 |
 | Confide 路由、E′、CI 白名单、Tool Registry、Qwen | 开口须 0–1 秒；Memory / 原文默认不上云 |
+| Confide `aggression_toward_others` 等安全分类 / 危机转介 | **安全功能**，不是商业秘密；语料可 overlay，分类器本身不算本层 |
 | Memory ranking、Speak probability | 留 L0/L1；**≠** Pack |
+| Calm Action Wisdom 70 条 CMS | 内容型候选；**尚未接线** → 先长出运行时，再谈 overlay（§3.2②） |
 
 **支付云 ≠ 品味云 ≠ YPE 云 ≠ 备份云。** 它们都可以「在云上」，但只有上表「算」的才叫防剽窃层。
 
@@ -66,6 +69,8 @@
 4. **本地同一张表**：没网能否用本地副本；认不了的 `schemaVersion` / 键集合能否静默丢掉？不能 → 不上本层。
 
 品味层 Backlog 的四问与本条 **同一把尺**；扩池改形须升 `schemaVersion` 并同步本地兜底。
+
+**过本条只证明「放进本层不会踩离线 / 付钱 / 点击红线」。** 空壳、回声闭包、与冻表尚未分叉的表，都可以过四问，却仍然不值得当成「已保护的秘密」。是否投入保护资源 → §3.2。
 
 ---
 
@@ -87,6 +92,47 @@
 5. **现状（2026-09-03）**：**生产分叉**——① Worker `DAILY_ZEN_QUOTE_1`（en）= `The world and I were never two.`；git locale / 客户端冻表仍为 `Soft light…`。② Worker `CONFIDE_COMPANION_PRESENCE`（en）= `Yin is still here. We can stay like this — nothing needs to begin.`；git locale / 客户端冻表仍为 `Yin is here. We can stay like this — no need to begin.`。③ Worker `CONFIDE_BOUNDARY_RESPECT`（en）= `Nothing needs to be said. Yin is still here.`；git locale 仍 `We can leave it unspoken. Yin is here.`。ja / zh / corpus 未分叉。YPE V1 仍无秘密闭包。
 
 权威交叉：`PROCESS.md` Backlog「云端品味层」· `YIN_PERSONALIZATION_ENGINE.md` §E · `task-ype-v2-secret-transform.md`。
+
+---
+
+## 3.2 值得保护四测（2026-09-06）
+
+扩成员或争论「要不要上云防抄」时，在过 §3 之后 **再** 过下列四测。来源：2026-09-06 分析师框架；入库时补上 §3.1 兑现句与误归属闸。
+
+1. **复制测试**：对手若拿到完整客户端，能不能一比一复刻同样手感？  
+   - 价值在持续人工打磨（句库品味、编辑语气）→ **藏代码挡不住**；护城河是「我们一直在写、对方没有」。overlay 的意义是降低改句发版成本，不是把句子变成 DRM。  
+   - 价值在一张可套用的权重表 / 规则表 / 闭包阈值 → **才真正需要云端表与 git 冻表分叉**（§3.1）。
+2. **成熟度测试**：现在有没有长出具体内容，还是空壳 / 占位 / 回声？空壳阶段保护的是「将来可能有价值的位置」，不是「现在已有的资产」。优先级：**先长内容，再锁**。
+3. **性价比测试**：走已验证的异步 overlay / Pack / `algorithmVersion` 管道 → 成本低、不碰离线与隐私红线 → 即使对象暂时不厚，**顺手接管道可以**。若机制要牵动实时决策、账号身份、或牺牲离线 → 保护对象必须真正值钱，禁止用低门槛逻辑对待。
+4. **可维护测试**：团队会不会持续改它（每周句库 / 不定期权重）？会 → 放云端有发版意义。基本定型、几年不改 → 放不放云端对防抄几乎无差，只增架构复杂度。
+
+**兑现句（与 §3.1 同一把锁）**：overlay 管道已经接线，但现网数字/正文仍等于 git 冻表 → **复制测试尚未兑现**。此时「已上防剽窃层」只说明有管道，不说明有秘密。
+
+禁止：
+
+- 把 `algorithmVersion` / schema 管道本身算成「秘密」。它是让句池与闭包能低成本迭代的基础设施。  
+- 把安全分类、支付、备份、Confide 路由塞进本层来凑「保护面」。  
+- 在东西还没长出来之前，先开新的加密 / 身份 / 实时云决策去「锁住它」。
+
+原则层一句：`PRINCIPLES.md`「云端防剽窃与护城河」。逐项判定见下表。
+
+### 3.2.1 已收进本层的逐项（地面真相 · 2026-09-06）
+
+> 实现状态以 `origin/develop` git 为准，不以 Brief 措辞为准。
+
+| 项目 | ①复制 | ②成熟 | ③性价比 | ④可维护 | 结论 |
+|---|---|---|---|---|---|
+| 品味层 overlay（权重 + 日签 · **#349** 现网） | 权重表可一比一套；日签是内容资产 | 通过；权重仍接近冻表，日签持续可写 | 异步、已验证 | 权重改得少；句池会写 | **值得留管道**。权重要等与冻表分叉才算秘密；句池护城河是持续写 |
+| Quiet Line 句包（**#543**；EN `DAILY_ZEN_QUOTE_1` 已生产分叉） | 内容型；现网句 ≠ git 冻表 | 通过 | 通过 | 通过 | **值得，且已有一处兑现的分叉**。分析师清单若只写「品味层 overlay」会漏这一行 |
+| Confide 句库/模板 overlay（**#548**；在场 **#550** / boundary **#551** 已分叉） | 语气/措辞是编辑资产 | 通过 | 通过 | 通过 | **值得**；与 Quiet Line 同类。高危模板 EN 已分叉；ja/zh/corpus 多数字仍等于冻表 |
+| `algorithmVersion` / overlay 版本管道 | 不适用（不是被保护内容） | 不适用 | 通过（成本低） | 通过 | **保留为管道**，不要算进「秘密清单」 |
+| YPE V1（回声选档 + `patternInsights=[]`） | 没内容可复制 | 空壳 | — | — | **现在没有可保护的秘密** |
+| YPE V2（**#545 源码已合**；白名单两 token；阈值 0.6/0.4 仍是 git 验收锚；生产须「部署」） | 闭包仍浅；阈值公开则复制测试未兑现 | 管道在、秘密薄；insight **默认不进** Confide L3 | 异步 Pack 通过 | 很少改 | **管道可留；不要当成已有护城河。** 分析师写「V2 尚未实现」已过时——过时的是「无运行时」，不是「无秘密」。等现网阈值与 git 分叉、且 insight 被真实消费，再谈锁 |
+| Confide `aggression_toward_others` | 不适用 | 不适用 | 不适用 | — | **不算本层**（安全，不是 IP） |
+| Calm Action Wisdom 70 CMS | 将来是内容型 | **无运行时** | 接线后走 overlay 则通过 | 会写 | **现在谈保护过早**；先接线，再套已验证 overlay |
+| 后排：日签 14→N / 伸懒腰池 / 好奇池 | 句扩容=内容；两池=可套用权重 | 内容未扩 / 权重已在冻表 | 过 §3，低成本 | 看是否持续调 | **后排**。过准入 ≠ 因「防剽窃」提前开工 |
+
+**已兑现价值的部分**：持续在写、且能不发版就改的内容型 overlay（品味/日签管道、Quiet Line、Confide 句），加上少数已与冻表分叉的现网句。YPE 与未分叉的权重表目前主要是管道，不是秘密。
 
 ---
 
@@ -122,7 +168,7 @@
 
 ## 6. 后排池 · 用户场景（不是开工令）
 
-这三项都过四问，但是 **调手感权重 / 扩文学句**，不是新入口。
+这三项都过准入四问，但是 **调手感权重 / 扩文学句**，不是新入口。是否开工仍须另口令，并过 §3.2（成熟度 / 可维护）；**禁止**只因为「属于防剽窃层」就提前做。
 
 | 外号 | 用户实际碰到什么 |
 |---|---|

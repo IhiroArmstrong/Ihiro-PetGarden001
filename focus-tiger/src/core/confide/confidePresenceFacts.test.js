@@ -205,4 +205,16 @@ describe('confide presence facts (Slice 4 minimal)', () => {
     assert.equal(confideClassify(sad), CONFIDE_ROUTE.SAD);
     assert.equal(shouldAnswerWithPresenceFacts(CONFIDE_ROUTE.SAD, sad), false);
   });
+
+  it('matches CI-06 mood-domain observation asks', () => {
+    assert.equal(
+      classifyPresenceFactsKind('What have you noticed about my mood?'),
+      PRESENCE_FACTS_KIND.TREND
+    );
+    assert.equal(classifyPresenceFactsKind('你观察到我的情绪怎样'), PRESENCE_FACTS_KIND.TREND);
+    assert.equal(
+      classifyPresenceFactsKind('What have you noticed about me?'),
+      null
+    );
+  });
 });

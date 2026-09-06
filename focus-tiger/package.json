@@ -46,7 +46,8 @@
     "tracker:assemble": "node scripts/assemble-tracker.js --write",
     "locale:export-ja": "node scripts/locale-pack.js export-ja",
     "locale:import-ja": "node scripts/locale-pack.js import-ja",
-    "i18n:sync": "node scripts/i18n-sync.js"
+    "i18n:sync": "node scripts/i18n-sync.js",
+    "confide:dump-observation": "node scripts/dump-confide-observation.js"
   },
   "dependencies": {
     "lit": "^3.3.3",

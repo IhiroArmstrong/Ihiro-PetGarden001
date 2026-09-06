@@ -58,8 +58,8 @@ describe("taste-layer freeze tables", () => {
 		assert.equal(en[0].id, "catch-this-moment");
 	});
 
-	it("confide copy freeze has 3 templates and 19 corpus ids", () => {
-		assert.equal(CONFIDE_COPY_TEMPLATE_KEYS.length, 3);
+	it("confide copy freeze has 4 templates and 19 corpus ids", () => {
+		assert.equal(CONFIDE_COPY_TEMPLATE_KEYS.length, 4);
 		assert.equal(CONFIDE_COPY_CORPUS_IDS.length, 19);
 		const en = tasteConfideCopyCorpus("en");
 		const ja = tasteConfideCopyCorpus("ja");
@@ -76,7 +76,7 @@ describe("taste-layer freeze tables", () => {
 			zh.map((e) => e.id),
 			en.map((e) => e.id),
 		);
-		assert.equal(tasteConfideCopyTemplates("en").length, 3);
+		assert.equal(tasteConfideCopyTemplates("en").length, 4);
 		assert.equal(tasteConfideCopyTemplates("zh")[0].key, "CONFIDE_BOUNDARY_RESPECT");
 		assert.equal(
 			tasteConfideCopyTemplates("en").find((e) => e.key === "CONFIDE_BOUNDARY_RESPECT")

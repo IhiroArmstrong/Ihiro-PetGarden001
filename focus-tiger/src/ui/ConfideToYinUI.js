@@ -32,6 +32,10 @@ import {
 } from '../core/confide/confideExecutableTools.js';
 import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
 import { listShippedConfideVerbalHintChips } from '../core/confide/confideVerbalHintChips.js';
+import {
+  trackConfideChipTapped,
+  trackConfideShare
+} from '../core/confide/confideObservationTelemetry.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -86,6 +90,10 @@ import {
   formatConfidePreferenceHonestyReply,
   shouldHandleConfidePreferenceHonesty
 } from '../core/confide/confidePreferenceHonesty.js';
+import {
+  formatConfideObservationHonestyReply,
+  shouldHandleConfideObservationHonesty
+} from '../core/confide/confideObservationHonesty.js';
 import {
   buildConfideTurnId,
   formatMemorySuppressReply,
@@ -510,15 +518,19 @@ export class ConfideToYinUI {
       btn.dataset.testid = 'confide-to-yin-verbal-chip';
       btn.dataset.chipId = chip.id;
       btn.textContent = t(chip.fillKey);
-      btn.addEventListener('click', () => this._fillVerbalHintChip(chip.fillKey));
+      btn.addEventListener('click', () =>
+        this._fillVerbalHintChip(chip.fillKey, chip.id)
+      );
       this.chipRow.append(btn);
     }
   }
 
   /**
    * @param {string} fillKey
+   * @param {string} chipId
    */
-  _fillVerbalHintChip(fillKey) {
+  _fillVerbalHintChip(fillKey, chipId) {
+    trackConfideChipTapped(chipId);
     const fill = t(fillKey);
     this.inputEl.value = fill;
     this._syncSendEnabled();
@@ -545,6 +557,10 @@ export class ConfideToYinUI {
     this.replyEl.dataset.route = shown.route;
     this.replyEl.dataset.lineId = shown.line?.id || '';
     this.replyEl.dataset.source = shown.source;
+    trackConfideShare(
+      { dataSource: shown.source, userText: asked },
+      { translate: t }
+    );
     this._l2Turns.push({ role: 'user', text: asked });
     this._l2Turns.push({
       role: 'yin',
@@ -568,6 +584,8 @@ export class ConfideToYinUI {
                       ? 'companion_presence'
                       : shown.source === 'preference_honesty'
                         ? 'preference_honesty'
+                        : shown.source === 'observation_honesty'
+                          ? 'observation_honesty'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -954,6 +972,17 @@ export class ConfideToYinUI {
       );
       return;
     }
+    if (shouldHandleConfideObservationHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideObservationHonestyReply(t),
+          source: 'observation_honesty'
+        },
+        text
+      );
+      return;
+    }
     const tool = matchConfideExecutableTool({
       route: hit.route,
       text,
@@ -1318,6 +1347,7 @@ export class ConfideToYinUI {
       .confide-to-yin__reply[data-source='presence_facts']::before,
       .confide-to-yin__reply[data-source='companion_presence']::before,
       .confide-to-yin__reply[data-source='preference_honesty']::before,
+      .confide-to-yin__reply[data-source='observation_honesty']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;

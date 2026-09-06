@@ -369,6 +369,7 @@ export class FocusCircleWitnessLeaveUI {
         bottom: calc(${homeClearanceBottomCss()} + 12px);
         transform: translateX(-50%) translateY(8px);
         z-index: 26;
+        pointer-events: auto;
         width: min(92vw, 420px);
         padding: 12px 14px;
         border-radius: 14px;
@@ -417,6 +418,7 @@ export class FocusCircleWitnessLeaveUI {
         top: 50%;
         transform: translate(-50%, -48%);
         z-index: 27;
+        pointer-events: auto;
         width: min(92vw, 380px);
         max-height: 70vh;
         overflow: auto;

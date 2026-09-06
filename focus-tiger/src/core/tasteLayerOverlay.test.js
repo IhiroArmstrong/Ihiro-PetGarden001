@@ -172,7 +172,8 @@ function freezeConfideBody(overrides = {}) {
     templates: [
       'CONFIDE_BOUNDARY_RESPECT',
       'CONFIDE_COMPANION_PRESENCE',
-      'CONFIDE_PREFERENCE_HONESTY'
+      'CONFIDE_PREFERENCE_HONESTY',
+      'CONFIDE_OBSERVATION_HONESTY'
     ].map((key) => ({ key, text: en[key] })),
     corpus: CONFIDE_COPY_CORPUS_IDS.map((id) => {
       const line = CONFIDE_CORPUS.find((row) => row.id === id);
@@ -186,7 +187,7 @@ test('parseConfideCopyOverlay accepts freeze templates + 19 corpus ids', () => {
   const parsed = parseConfideCopyOverlay(freezeConfideBody(), 'en');
   assert.ok(parsed);
   assert.equal(parsed.locale, 'en');
-  assert.equal(parsed.templates.length, 3);
+  assert.equal(parsed.templates.length, 4);
   assert.equal(parsed.corpus.length, 19);
   assert.equal(parsed.corpus[0].id, 'safety-01');
 });

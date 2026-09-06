@@ -117,7 +117,8 @@ test('confide overlay replaces corpus text and keeps pick id / route', () => {
     templates: [
       'CONFIDE_BOUNDARY_RESPECT',
       'CONFIDE_COMPANION_PRESENCE',
-      'CONFIDE_PREFERENCE_HONESTY'
+      'CONFIDE_PREFERENCE_HONESTY',
+      'CONFIDE_OBSERVATION_HONESTY'
     ].map((key) => ({ key, text: en[key] })),
     corpus: CONFIDE_CORPUS.filter((line) =>
       CONFIDE_COPY_CORPUS_IDS.includes(line.id)

@@ -108,7 +108,8 @@ describe('confideBoundaryRespect', () => {
       templates: [
         { key: 'CONFIDE_BOUNDARY_RESPECT', text: 'We can leave it. Overlay Yin stays.' },
         { key: 'CONFIDE_COMPANION_PRESENCE', text: en.CONFIDE_COMPANION_PRESENCE },
-        { key: 'CONFIDE_PREFERENCE_HONESTY', text: en.CONFIDE_PREFERENCE_HONESTY }
+        { key: 'CONFIDE_PREFERENCE_HONESTY', text: en.CONFIDE_PREFERENCE_HONESTY },
+        { key: 'CONFIDE_OBSERVATION_HONESTY', text: en.CONFIDE_OBSERVATION_HONESTY }
       ],
       corpus: CONFIDE_COPY_CORPUS_IDS.map((id) => {
         const line = CONFIDE_CORPUS.find((row) => row.id === id);

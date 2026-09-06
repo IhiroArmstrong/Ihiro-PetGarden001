@@ -75,7 +75,8 @@ const freezeConfideCopy = {
   templates: [
     'CONFIDE_BOUNDARY_RESPECT',
     'CONFIDE_COMPANION_PRESENCE',
-    'CONFIDE_PREFERENCE_HONESTY'
+    'CONFIDE_PREFERENCE_HONESTY',
+    'CONFIDE_OBSERVATION_HONESTY'
   ].map((key) => ({ key, text: en[key] })),
   corpus: CONFIDE_COPY_CORPUS_IDS.map((id) => {
     const line = CONFIDE_CORPUS.find((row) => row.id === id);

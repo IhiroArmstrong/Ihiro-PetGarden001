@@ -22,6 +22,12 @@ import {
   scoreYinIntentHard5Gates
 } from './confideIntentDiagnosticPhase2b.js';
 import {
+  YIN_INTENT_2B_RESIDUAL_GOLD_IDS,
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RESIDUAL,
+  buildYinIntentObservationMetaProbePrompt,
+  scoreYinIntentResidualGates
+} from './confideIntentDiagnosticPhase2bResidual.js';
+import {
   YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2,
   YIN_INTENT_TIER2_GATES,
   findYinIntentThreeGramHits,
@@ -203,6 +209,30 @@ describe('yin intent diagnostic (lab)', () => {
     assert.equal(gates.passHard5, false);
     assert.equal(gates.hard5Hits, 4);
     assert.equal(gates.hard5Emotion, 1);
+  });
+
+  it('freezes C1 residual probe fixtures outside v4 gold', () => {
+    assert.deepEqual(
+      YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RESIDUAL.map((row) => row.goldId).sort(),
+      [...YIN_INTENT_2B_RESIDUAL_GOLD_IDS].sort()
+    );
+    for (const row of YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RESIDUAL) {
+      assert.equal(row.expectedPrimary, YIN_INTENT_LABEL.OBSERVATION_META, row.id);
+      assert.equal(row.phase, '2b-residual');
+    }
+    const prompt = buildYinIntentObservationMetaProbePrompt(
+      'What have you noticed about me?'
+    );
+    assert.match(prompt, /OBSERVATION_META/);
+    assert.equal(
+      scoreYinIntentResidualGates(
+        YIN_INTENT_2B_RESIDUAL_GOLD_IDS.map((goldId) => ({
+          goldId,
+          primaryHit: true
+        }))
+      ).passResidual,
+      true
+    );
   });
 
   it('prefilters D with production rules including E′ presence literals', () => {

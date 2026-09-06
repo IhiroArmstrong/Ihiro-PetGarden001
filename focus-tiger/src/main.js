@@ -265,6 +265,10 @@ import {
   getDesktopCompanionBridge,
   hasDesktopCompanionBridge
 } from './core/desktopCompanionGate.js';
+import {
+  bindDesktopCompanionShellUnload,
+  createCompanionUnloadScheduler
+} from './core/desktopCompanionUnloadSchedule.js';
 import { isCompanionEntitled } from './core/companionEntitlement.js';
 import {
   clearDesktopCheckoutPending,
@@ -1353,13 +1357,26 @@ async function init() {
         })
     });
   };
+  const companionIdleUnloadScheduler = createCompanionUnloadScheduler({
+    unload: () => {
+      const companion = getDesktopCompanionBridge();
+      if (companion && typeof companion.unload === 'function') {
+        return companion.unload();
+      }
+      return undefined;
+    }
+  });
   const confideToYinUI = new ConfideToYinUI(
     document.body,
     withIdleOverlayOccupancySync({
     canOpen: canOpenConfideNow,
     onOpen: () => {
+      companionIdleUnloadScheduler.cancel();
       closeGrowthOverlayCards({ except: 'confide' });
       wakeYinIfSleeping();
+    },
+    onClose: () => {
+      companionIdleUnloadScheduler.schedule();
     },
     onOpenMemoryPanel: () => {
       closeGrowthOverlayCards({ except: 'yin-memory' });
@@ -1385,6 +1402,12 @@ async function init() {
   );
   window.__confideToYin = confideToYinUI;
   confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
+  if (isDesktopShellRuntime()) {
+    bindDesktopCompanionShellUnload(
+      companionIdleUnloadScheduler,
+      getDesktopShellBridge()
+    );
+  }
   const confideEarChrome = new ConfideEarChromeUI(document.body, {
     canShow: canOpenConfideNow,
     onOpen: () => {
@@ -4447,6 +4470,7 @@ async function init() {
       void companion.setFocusing(stateManager.state === STATES.FOCUSING);
     }
     if (stateManager.state === STATES.FOCUSING) {
+      companionIdleUnloadScheduler.cancel();
       confideToYinUI.close();
     }
     syncConfideEarChrome();

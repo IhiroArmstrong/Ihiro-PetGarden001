@@ -92,6 +92,37 @@ describe('lotusPondMath spiral slots', () => {
     );
   });
 
+  it('early blooms stay on the ring beside Yin, not on the robe center', () => {
+    const second = spiralSlotForBloomIndex(1);
+    const third = spiralSlotForBloomIndex(2);
+    const { originLeftPct, originBottomPct } = LOTUS_POND_SPIRAL;
+    for (const slot of [second, third]) {
+      const onRobe =
+        Math.abs(slot.leftPct - originLeftPct) < 12 &&
+        slot.bottomPct > originBottomPct + 6;
+      assert.equal(
+        onRobe,
+        false,
+        `bloom ${slot.index} must not sit on Yin (left=${slot.leftPct}, bottom=${slot.bottomPct})`
+      );
+    }
+    assert.ok(second.leftPct < originLeftPct, 'second bloom stays left of center');
+    assert.ok(third.leftPct < originLeftPct, 'third bloom stays left of center');
+  });
+
+  it('full ring avoids the upper-center robe slot', () => {
+    const slots = Array.from({ length: 12 }, (_, i) =>
+      spiralSlotForBloomIndex(i)
+    );
+    const { originLeftPct, originBottomPct } = LOTUS_POND_SPIRAL;
+    for (const slot of slots) {
+      const onRobe =
+        Math.abs(slot.leftPct - originLeftPct) < 12 &&
+        slot.bottomPct > originBottomPct + 6;
+      assert.equal(onRobe, false, `slot ${slot.index} on robe center`);
+    }
+  });
+
   it('12 slots share one width and stay distinct (no shrinking / crowding)', () => {
     const slots = Array.from({ length: 12 }, (_, i) =>
       spiralSlotForBloomIndex(i)

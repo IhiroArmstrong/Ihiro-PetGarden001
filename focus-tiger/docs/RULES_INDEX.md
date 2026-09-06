@@ -70,6 +70,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `risk-mitigation-playbook` | 中高风险任务落地降险 Playbook | `focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md` | 触发条件 |
 | `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
+| `plain-language-summary` | 用户可见汇报前置大白话总结（≤5 句、无技术术语） | `WORKFLOW.md` | 用户可见汇报：前置大白话总结（强制） |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
@@ -177,6 +178,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
 | `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
+| `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时**） |
+| `CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**（Contemplative Archive）：长期纪念文学 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
@@ -185,7 +188,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
 | `ARCHITECTURE.md` | 模块边界 / 2D 主线 |
-| `ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay 准入尺；≠ 支付 / 备份 / Confide 路由） |
+| `ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay；准入四问 + 值得保护四测；≠ 支付 / 备份 / Confide 路由） |
 | `YIN_PERSONAL_MEMORY.md` | 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey Log / turns.jsonl） |
 | `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份已拍、ingest 已合；V2 白名单 insight + 服务器 algorithmVersion；≠ 品味层 / Memory store / Qwen；同属防剽窃层） |
 | `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；CI → Tool Registry；≠ 开放域 Agent） |
@@ -243,6 +246,8 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-06 | 产品表新增 `CONTEMPLATIVE_ARCHIVE.md`（静思典藏层；12 候选；芥子须弥 = 第一枚纪念印；不进 rules-authority 机器块） |
+| 2026-09-06 | 防剽窃层补 **值得保护四测**（`ANTI_PLAGIARISM_LAYER.md` §3.2）；与准入四问正交；`PRINCIPLES.md` 加「云端防剽窃与护城河」指针。不进 rules-authority 机器块 |
 | 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |
 | 2026-09-02 | 扩展 `agent-token-cost`：`Merged` 硬断点 + 新会话模型一行速查表；`PROCESS`「本地 Cursor 能耗」增 P0 显眼小节（只指路 SSOT） |

@@ -58,7 +58,7 @@ Witness 有 **两个 UI 面**，仲裁方式不同——**不能**混成「一�
 | 项 | 口径 |
 |---|---|
 | **DOM** | `#focus-circle-witness` · 与 `#focus-circle-presence` **视觉分层**（`Z_INDEX.md` 登记），但 **不进** overlay busy 派生 |
-| **pointer-events** | 容器 **none**（同 2b 银蓝 dots）；**仅**「回应」钮可点 |
+| **pointer-events** | 容器 **none**（同 2b 银蓝 dots）；**仅**「回应」钮可点；**Rise 留痕条 / 选句 picker** 挂 `#ui-overlay` 时根节点须 `pointer-events: auto`（契约 **O-02** · `OVERLAY_UI_POINTER_HIT_TEST_REQUIRED`） |
 | **peek** | 与 2b 同档 Idle observer；Focusing 隐藏 |
 
 ### C. Idle「回应」短语 picker（可点 · 短 overlay）

@@ -111,6 +111,20 @@ describe('confide executable tool registry', () => {
       }),
       null
     );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: 'What have you noticed about me?'
+      }),
+      null
+    );
+    assert.equal(
+      matchConfideExecutableTool({
+        route: fallback,
+        text: "I wonder what patterns you've picked up on."
+      }),
+      null
+    );
   });
 
   it('does not match verbal forget without bridge and consent-shaped state', () => {

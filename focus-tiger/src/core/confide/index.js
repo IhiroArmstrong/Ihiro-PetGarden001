@@ -52,6 +52,11 @@ export {
   shouldHandleConfidePreferenceHonesty
 } from './confidePreferenceHonesty.js';
 export {
+  formatConfideObservationHonestyReply,
+  isConfideObservationMetaQuery,
+  shouldHandleConfideObservationHonesty
+} from './confideObservationHonesty.js';
+export {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideUserVisible,
   isConfideDevHarness,

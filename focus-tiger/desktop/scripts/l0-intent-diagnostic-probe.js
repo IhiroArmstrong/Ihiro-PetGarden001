@@ -25,6 +25,11 @@ import {
   scoreYinIntentHard5Gates
 } from '../../src/core/confide/confideIntentDiagnosticPhase2b.js';
 import {
+  YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RESIDUAL,
+  buildYinIntentObservationMetaProbePrompt,
+  scoreYinIntentResidualGates
+} from '../../src/core/confide/confideIntentDiagnosticPhase2bResidual.js';
+import {
   YIN_INTENT_DIAGNOSTIC_FIXTURES_TIER2,
   scoreYinIntentTier2Gates
 } from '../../src/core/confide/confideIntentDiagnosticTier2.js';
@@ -59,6 +64,12 @@ function readDiagnostic(rows, parseOk, phase) {
     }
     return 'see_rows';
   }
+  if (phase === '2b-residual') {
+    const gates = scoreYinIntentResidualGates(rows);
+    return gates.passResidual
+      ? 'residual_can_label_observation_meta'
+      : 'residual_see_rows';
+  }
   if (String(process.env.FT_INTENT_TIER2 || '').trim() === '1') {
     const gates = scoreYinIntentTier2Gates(rows);
     return gates.passTier2 ? 'tier2_blind_pass' : 'tier2_see_rows';
@@ -80,6 +91,9 @@ function selectFixtures() {
   const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
   if (phase === '2b-hard5') {
     return YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5;
+  }
+  if (phase === '2b-residual') {
+    return YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_RESIDUAL;
   }
   if (phase === '2b') {
     if (String(process.env.FT_INTENT_HOLDOUT || '').trim() === '1') {
@@ -103,7 +117,9 @@ function resolveArch() {
   const phase = String(process.env.FT_INTENT_PHASE || '').trim().toLowerCase();
   const tier2 = String(process.env.FT_INTENT_TIER2 || '').trim() === '1';
   const defaultArch =
-    phase === '2b-hard5' || tier2 ? YIN_INTENT_ARCH.E : YIN_INTENT_ARCH.A;
+    phase === '2b-hard5' || phase === '2b-residual' || tier2
+      ? YIN_INTENT_ARCH.E
+      : YIN_INTENT_ARCH.A;
   const raw = String(process.env.FT_INTENT_ARCH || defaultArch)
     .trim()
     .toUpperCase();
@@ -183,7 +199,10 @@ async function main() {
         });
       } else {
         const session = new LlamaChatSession({ contextSequence: sequence });
-        const prompt = buildYinIntentDiagnosticPrompt(fixture.text, arch);
+        const prompt =
+          phase === '2b-residual'
+            ? buildYinIntentObservationMetaProbePrompt(fixture.text)
+            : buildYinIntentDiagnosticPrompt(fixture.text, arch);
         try {
           text = await session.prompt(prompt, {
             maxTokens: Number(process.env.FT_INTENT_MAX_TOKENS) || DEFAULT_MAX_TOKENS
@@ -252,6 +271,8 @@ async function main() {
     String(process.env.FT_INTENT_TIER2 || '').trim() === '1'
       ? null
       : scoreYinIntentHard5Gates(rows);
+  const residualGates =
+    phase === '2b-residual' ? scoreYinIntentResidualGates(rows) : null;
   const tier2Gates = scoreYinIntentTier2Gates(rows);
   const report = {
     at: new Date().toISOString(),
@@ -273,6 +294,7 @@ async function main() {
     },
     phase2bGates,
     hard5Gates,
+    residualGates,
     tier2Gates,
     reading: readDiagnostic(rows, parseOk, phase),
     rows
@@ -295,6 +317,7 @@ async function main() {
         phase2: report.phase2,
         phase2bGates: report.phase2bGates,
         hard5Gates: report.hard5Gates,
+        residualGates: report.residualGates,
         tier2Gates: report.tier2Gates,
         reading: report.reading
       },
