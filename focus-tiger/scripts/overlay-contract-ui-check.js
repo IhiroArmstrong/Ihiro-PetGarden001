@@ -15,13 +15,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   OVERLAY_SOURCE_CONTRACTS,
-  OVERLAY_UI_FILE_SOURCES
+  OVERLAY_UI_FILE_SOURCES,
+  OVERLAY_UI_POINTER_HIT_TEST_REQUIRED
 } from '../src/core/overlaySlotContractRegistry.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const UI_DIR = join(__dirname, '../src/ui');
 
 const STATUS_FN = /(?:isOpen|isVisible|isPrivacySheetOpen|isPurposeCardOpen|isWellnessFirstCardOpen)\s*\(\s*\)\s*\{|phase\s*!==\s*'hidden'/;
+const POINTER_HIT_TEST = /pointer-events\s*:\s*auto/;
 
 /** Chrome / hits / nested controls — not independent occupancy overlays. */
 const WHITELIST_FILES = new Set([
@@ -90,6 +92,22 @@ export function runOverlayContractUiCheck() {
       if (!registered.has(id)) {
         errors.push(`${name} maps to unregistered overlay id ${id}`);
       }
+    }
+  }
+
+  for (const name of OVERLAY_UI_POINTER_HIT_TEST_REQUIRED) {
+    const path = join(UI_DIR, name);
+    let src;
+    try {
+      src = readFileSync(path, 'utf8');
+    } catch {
+      errors.push(`${name} listed in OVERLAY_UI_POINTER_HIT_TEST_REQUIRED but file missing`);
+      continue;
+    }
+    if (!POINTER_HIT_TEST.test(src)) {
+      errors.push(
+        `${name} mounts under #ui-overlay but lacks pointer-events: auto (O-02)`
+      );
     }
   }
 

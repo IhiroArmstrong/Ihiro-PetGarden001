@@ -458,6 +458,29 @@ export const FIRST_CARD_DEFER_PRIORITY = Object.freeze([
  * UI module basename → overlay source id(s). Scan whitelist lives in
  * `scripts/overlay-contract-ui-check.js`.
  */
+/**
+ * Registered overlay UI modules that mount under `#ui-overlay` (`pointer-events: none`
+ * in `index.html`) and must opt interactive roots into `pointer-events: auto`.
+ * Orthogonal to O-01 visibility / busy arbitration — see `DOC_CODE_CONTRACT` O-02.
+ * @type {ReadonlyArray<string>}
+ */
+export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
+  'ArrivalPracticeUI.js',
+  'TigerReflectionMoment.js',
+  'RitualFlowUI.js',
+  'MicroRitualUI.js',
+  'HonestyCheckInUI.js',
+  'FocusDurationPickerUI.js',
+  'CompanionModePicker.js',
+  'InAppReminderBannerUI.js',
+  'FlowerBlowWelcomeBubbleUI.js',
+  'ContextualTeaTipBubbleUI.js',
+  'MomentWhisperUI.js',
+  'FocusAwarenessCardUI.js',
+  'FocusCircleWitnessLeaveUI.js',
+  'OnboardingHintsUI.js'
+]);
+
 export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'ArrivalPracticeUI.js': [OVERLAY_SOURCES.ARRIVAL],
   'TigerReflectionMoment.js': [OVERLAY_SOURCES.REFLECTION],
