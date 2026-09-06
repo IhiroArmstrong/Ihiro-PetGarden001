@@ -70,7 +70,7 @@
 
 - **冷启动第一幕 11 入口审计 · 清单草案（2026-09-06 · 纯文档 · 无运行时）**：只读代码排查 E01–E11 + 卫星 E12–E14；gate 顺序 SSOT 草案已写入清单。待人工清库对照 + 逐条标 ok/gap/risk。口令：「开工冷启动第一幕审计」。
 
-- **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。不改现网句池。
+- **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。**2026-09-06**：§四 8 条已接线为 `DAILY_ZEN_QUOTE_INSIGHT_15–22`（overlay schema 2 · 29 键；Worker 须「部署」）。Action 70 仍无运行时。
 
 - **Confide 他人攻击意图 `aggression_toward_others`（2026-09-04 · #566 已合 develop）**：替换 #564 `harm_witness`。禁 Heard/点头动画；竖线 `#8b6f5c`。语料 draft，扩池门禁见 Brief §5.3。
 

@@ -27,6 +27,7 @@ import {
   isTasteQuietLineCloudConfirmed,
   isTasteWeightCloudConfirmed,
   resetTasteLayerOverlayForTests,
+  QUIET_LINE_OVERLAY_SCHEMA_VERSION,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
 import {
@@ -61,7 +62,7 @@ const freezeDaily = {
 };
 
 const freezeQuietLine = {
-  schemaVersion: TASTE_LAYER_SCHEMA_VERSION,
+  schemaVersion: QUIET_LINE_OVERLAY_SCHEMA_VERSION,
   locale: 'en',
   pool: [
     ...COPY_POOLS.DAILY_ZEN_QUOTE,

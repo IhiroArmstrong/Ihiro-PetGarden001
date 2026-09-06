@@ -389,17 +389,14 @@ describe('dailyZenQuote', () => {
 
   it('mixes classic and insight pools without throwing', () => {
     const mixed = listMixedDailyZenQuoteKeys();
-    assert.equal(COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.length, 14);
+    assert.equal(COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.length, 22);
     assert.ok(mixed.length > COPY_POOLS.DAILY_ZEN_QUOTE.length);
     assert.equal(
       mixed.length,
       COPY_POOLS.DAILY_ZEN_QUOTE.length + COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.length
     );
     assert.ok(COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.includes('DAILY_ZEN_QUOTE_INSIGHT_14'));
-    assert.equal(
-      COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.includes('DAILY_ZEN_QUOTE_INSIGHT_15'),
-      false
-    );
+    assert.ok(COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.includes('DAILY_ZEN_QUOTE_INSIGHT_22'));
     const empty = listMixedDailyZenQuoteKeys([], []);
     assert.equal(empty.length, 0);
     const fromEmptyArg = pickDailyZenQuoteKey('2026-08-14', []);

@@ -14,6 +14,10 @@ import {
 	tasteConfideCopyCorpus,
 	tasteConfideCopyTemplates,
 } from "./tasteConfideCopyFreeze.ts";
+import {
+	QUIET_LINE_OVERLAY_SCHEMA_VERSION,
+	tasteQuietLinePool,
+} from "./tasteQuietLineFreeze.ts";
 
 describe("taste-layer freeze tables", () => {
 	it("locks schemaVersion 1 and Honesty 30", () => {
@@ -56,6 +60,22 @@ describe("taste-layer freeze tables", () => {
 			ja.map((e) => e.id),
 		);
 		assert.equal(en[0].id, "catch-this-moment");
+	});
+
+	it("quiet-line freeze has 29 aligned keys and overlay schema 2", () => {
+		assert.equal(QUIET_LINE_OVERLAY_SCHEMA_VERSION, 2);
+		const en = tasteQuietLinePool("en");
+		const ja = tasteQuietLinePool("ja");
+		assert.equal(en.length, 29);
+		assert.deepEqual(
+			en.map((e) => e.key),
+			ja.map((e) => e.key),
+		);
+		assert.equal(en[en.length - 1].key, "DAILY_ZEN_QUOTE_INSIGHT_22");
+		assert.equal(
+			en.find((e) => e.key === "DAILY_ZEN_QUOTE_1")?.text,
+			"The world and I were never two.",
+		);
 	});
 
 	it("confide copy freeze has 4 templates and 19 corpus ids", () => {

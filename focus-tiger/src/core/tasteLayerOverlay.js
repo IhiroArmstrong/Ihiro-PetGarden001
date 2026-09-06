@@ -14,6 +14,8 @@ import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
 import { COPY_POOLS, getLocale } from '../locales/i18n.js';
 
 export const TASTE_LAYER_SCHEMA_VERSION = 1;
+/** Quiet Line mixed-pool overlay only; other taste slices stay on schema 1. */
+export const QUIET_LINE_OVERLAY_SCHEMA_VERSION = 2;
 
 const RISE_KEYS = new Set(['riseStretchCasual', 'teaDrinking', 'bookReading']);
 const WELCOME_KEYS = new Set(['magicBookReading', 'nodGreeting']);
@@ -222,7 +224,7 @@ export function parseDailyMessageOverlay(body, expectedLocale) {
 export function parseQuietLineOverlay(body, expectedLocale) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
   const o = /** @type {Record<string, unknown>} */ (body);
-  if (o.schemaVersion !== TASTE_LAYER_SCHEMA_VERSION) return null;
+  if (o.schemaVersion !== QUIET_LINE_OVERLAY_SCHEMA_VERSION) return null;
   const rawLocale = typeof o.locale === 'string' ? o.locale.trim() : '';
   if (!rawLocale) return null;
   const have = rawLocale === 'ja' ? 'ja' : 'en';
