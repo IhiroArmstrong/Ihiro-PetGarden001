@@ -294,15 +294,16 @@ WHAT LOOKS EMPTY STILL HOLDS WITHOUT END.
 | In the Smallest Thing | 与芥子须弥主题重叠；后补且远离 21 |
 | 100 条 CMS | **明确不做**（本切片） |
 
-下一枚新印：**另开 Brief**。推荐 **CA-01 古池、score 带 30**；CA-02 浅井了意节选留给 60。不与未关单的芥子须弥人工测试搅在同一运行时 PR。
+下一枚新印：目录化后 **翻 `enabled` + 定门槛** 即可；推荐 **CA-01 古池、score 30**；CA-02 浅井了意节选留给 60。上线口令另走，不必再开 12 份任务书。
 
 ---
 
-## 九、接线顺序（未开工）
+## 九、接线顺序
 
 1. 本文件为内容锁。  
 2. 芥子须弥三 case：维持现网；人工关单走原 TRACKER。  
-3. 第 2 枚印：口令 + Brief 后才能改 `mustardSeedSeal` 或新模块。  
-4. 禁止本 PR 改 `en.json` Quiet Line 键、Daily Wisdom 冻表、Action 70 正文。
+3. **目录化（工程）**：`src/core/memorialSealDirectory.js` + Brief `task-memorial-seal-directory.md`——读配置表、门槛可配；古池占位 `enabled: false`。  
+4. 第 2 枚印真正上线：口令翻 `enabled`（或新 `sealSceneId` 接线）；不在目录化 PR 内定排期。  
+5. 禁止改 `en.json` Quiet Line 键、Daily Wisdom 冻表、Action 70 正文。
 
-修订：2026-09-06 初稿（层级 + 12 候选；无运行时）。
+修订：2026-09-06 初稿；2026-09-06 接线顺序对齐目录化任务书。

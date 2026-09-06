@@ -11,6 +11,8 @@
  * after a timed completion ceremony; thereafter re-openable from Idle ⋯ /
  * drawer (Quiet Line–like card), cycling revealed cases.
  *
+ * Verse catalog is read from `memorialSealDirectory.js` (mustard-seed scene).
+ *
  * score = practiceDayCount + floor(lifetimeMinutes / 60) — same as practice badges.
  */
 
@@ -19,82 +21,71 @@ import {
   readPracticeDaysForTipBadges,
   summarizePracticeDaysForBadges
 } from './tipKindnessBadges.js';
+import {
+  MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
+  MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
+  MEMORIAL_SEAL_DIRECTORY,
+  MEMORIAL_SEAL_ENTRY_HERO,
+  MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU,
+  MEMORIAL_SEAL_ENTRY_NO_TRACE,
+  MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
+  getMemorialSealEntry,
+  listMemorialSealEntriesForScene,
+  memorialSealEntryToVerseCase,
+  memorialSealSceneUnlockThreshold,
+  nextUnrevealedMemorialSealEntry
+} from './memorialSealDirectory.js';
 
 export const MUSTARD_SEED_SEAL_STORAGE_KEY = 'focus-tiger.mustard-seed-seal.v1';
 
 /** Aligned with long-horizon memorial tier (~21 practice score units). */
-export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD = 21;
+export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD =
+  memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED) ?? 21;
 
 /** Dedicated seal badge dir (not tip / Sanctuary catalogs). */
-export const MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR =
-  '/ui/support/mustard-seed-seal';
+export const MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR = MEMORIAL_SEAL_BADGE_PUBLIC_DIR;
 
 /**
  * Companion medallion for the memorial seal card.
  * Ingested 2026-08-12 from root「芥子须弥纪念印所用的金章-…」→ kebab-case.
  */
-export const MUSTARD_SEED_SEAL_BADGE_FILE =
-  'yin-badge-square-gold-on-silver-alt.png';
+export const MUSTARD_SEED_SEAL_BADGE_FILE = MEMORIAL_SEAL_DEFAULT_BADGE_FILE;
 
-export const MUSTARD_SEED_SEAL_CASE_SUMERU = 'mustard-seed-sumeru';
-export const MUSTARD_SEED_SEAL_CASE_HERO = 'hero-not-pond';
-export const MUSTARD_SEED_SEAL_CASE_NO_TRACE = 'no-trace-might';
+export const MUSTARD_SEED_SEAL_CASE_SUMERU = MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU;
+export const MUSTARD_SEED_SEAL_CASE_HERO = MEMORIAL_SEAL_ENTRY_HERO;
+export const MUSTARD_SEED_SEAL_CASE_NO_TRACE = MEMORIAL_SEAL_ENTRY_NO_TRACE;
 
-export const MUSTARD_SEED_SEAL_POEM_ZH = Object.freeze([
-  '大鵬展翅九萬里，',
-  '十方世界共菩提。',
-  '誰言我心不無量，',
-  '芥子亦足納須彌。'
-]);
+const sumeruEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_SUMERU);
+const heroEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_HERO);
+const noTraceEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_NO_TRACE);
 
-/** Product EN lines (2026-08-12: accept current draft; no further editorial gate). */
-export const MUSTARD_SEED_SEAL_POEM_EN = Object.freeze([
-  'A roc spreads its wings for ninety thousand miles;',
-  'In every direction, the worlds share one Bodhi.',
-  'Who says this heart is not immeasurable?',
-  'A mustard seed can hold Mount Sumeru.'
-]);
+export const MUSTARD_SEED_SEAL_POEM_ZH = sumeruEntry?.poemZh ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_POEM_EN = sumeruEntry?.poemEn ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_ATTRIBUTION_ZH =
+  sumeruEntry?.attributionZh ?? '樂五齋詩稿';
+export const MUSTARD_SEED_SEAL_ATTRIBUTION_EN =
+  sumeruEntry?.attributionEn ?? 'Verses of Le Wu Zhai';
 
-export const MUSTARD_SEED_SEAL_ATTRIBUTION_ZH = '樂五齋詩稿';
-export const MUSTARD_SEED_SEAL_ATTRIBUTION_EN = 'Verses of Le Wu Zhai';
-
-export const MUSTARD_SEED_SEAL_HERO_POEM_ZH = Object.freeze([
-  '山海奇雲風幡舞，',
-  '紅塵如電亦如露。',
-  '芥子無量納須彌，',
-  '英雄豈是池中物。'
-]);
-
-/** Product EN lines (2026-08-17: same draft posture as case 1). */
-export const MUSTARD_SEED_SEAL_HERO_POEM_EN = Object.freeze([
-  'Strange clouds over mountains and seas; wind-banners dance.',
-  'Red dust is like lightning, and like dew.',
-  'Immeasurable, a mustard seed holds Mount Sumeru.',
-  'How could a hero remain a creature of the pond?'
-]);
-
-export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH = '樂五齋七言歌行';
+export const MUSTARD_SEED_SEAL_HERO_POEM_ZH = heroEntry?.poemZh ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_HERO_POEM_EN = heroEntry?.poemEn ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH =
+  heroEntry?.attributionZh ?? '樂五齋七言歌行';
 export const MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN =
-  'Song Verse of Le Wu Zhai';
+  heroEntry?.attributionEn ?? 'Song Verse of Le Wu Zhai';
 
-export const MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH = Object.freeze([
-  '乾坤縱橫九萬里，',
-  '芥子唯微納須彌。',
-  '英雄何需青龍手，',
-  '所向無痕皆披靡。'
-]);
-
-/** Product EN lines (2026-09-02: same draft posture as cases 1–2). */
-export const MUSTARD_SEED_SEAL_NO_TRACE_POEM_EN = Object.freeze([
-  'Heaven and earth span ninety thousand miles;',
-  'Minute as a mustard seed, it still holds Mount Sumeru.',
-  "Why would a hero need the Azure Dragon's hand?",
-  'Wherever one goes, unmarked, all yield.'
-]);
-
-export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH = '樂五齋詩稿';
+export const MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH =
+  noTraceEntry?.poemZh ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_NO_TRACE_POEM_EN =
+  noTraceEntry?.poemEn ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH =
+  noTraceEntry?.attributionZh ?? '樂五齋詩稿';
 export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_EN =
-  'Verses of Le Wu Zhai · 0902';
+  noTraceEntry?.attributionEn ?? 'Verses of Le Wu Zhai · 0902';
+
+/** Enabled mustard-seed scene entries in directory order. */
+const MUSTARD_SEED_SCENE_ENTRIES = listMemorialSealEntriesForScene(
+  MEMORIAL_SEAL_SCENE_MUSTARD_SEED
+);
 
 /**
  * Ordered verse cases for this memorial scene (same card, same score gate).
@@ -106,29 +97,11 @@ export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_EN =
  *   attributionEn: string
  * }>}
  */
-export const MUSTARD_SEED_SEAL_CASES = Object.freeze([
-  Object.freeze({
-    id: MUSTARD_SEED_SEAL_CASE_SUMERU,
-    poemZh: MUSTARD_SEED_SEAL_POEM_ZH,
-    poemEn: MUSTARD_SEED_SEAL_POEM_EN,
-    attributionZh: MUSTARD_SEED_SEAL_ATTRIBUTION_ZH,
-    attributionEn: MUSTARD_SEED_SEAL_ATTRIBUTION_EN
-  }),
-  Object.freeze({
-    id: MUSTARD_SEED_SEAL_CASE_HERO,
-    poemZh: MUSTARD_SEED_SEAL_HERO_POEM_ZH,
-    poemEn: MUSTARD_SEED_SEAL_HERO_POEM_EN,
-    attributionZh: MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
-    attributionEn: MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_EN
-  }),
-  Object.freeze({
-    id: MUSTARD_SEED_SEAL_CASE_NO_TRACE,
-    poemZh: MUSTARD_SEED_SEAL_NO_TRACE_POEM_ZH,
-    poemEn: MUSTARD_SEED_SEAL_NO_TRACE_POEM_EN,
-    attributionZh: MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH,
-    attributionEn: MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_EN
-  })
-]);
+export const MUSTARD_SEED_SEAL_CASES = Object.freeze(
+  MUSTARD_SEED_SCENE_ENTRIES.map((entry) =>
+    Object.freeze(memorialSealEntryToVerseCase(entry))
+  )
+);
 
 /**
  * @returns {{
@@ -311,7 +284,7 @@ export function clearMustardSeedSealState(storage) {
   try {
     storage?.removeItem(MUSTARD_SEED_SEAL_STORAGE_KEY);
   } catch {
-    // ignore
+    // ignore quota
   }
 }
 
@@ -350,7 +323,15 @@ export function resolveMustardSeedSeal(storage, opts = {}) {
   const score = computePracticeScore(summary);
   const unlocked = score >= threshold;
   const state = readMustardSeedSealState(storage);
-  const nextCase = nextUnrevealedMustardSeedCase(state);
+  const revealed = new Set(listRevealedMustardSeedCaseIds(state));
+  const pendingEntry = nextUnrevealedMemorialSealEntry(
+    MUSTARD_SEED_SCENE_ENTRIES,
+    revealed,
+    score
+  );
+  const nextCase = pendingEntry
+    ? memorialSealEntryToVerseCase(pendingEntry)
+    : null;
   return {
     score,
     summary,
