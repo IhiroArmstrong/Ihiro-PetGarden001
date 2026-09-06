@@ -60,7 +60,8 @@
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
-| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换） |
+| **17** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-backdrop` 芥子须弥纪念印遮罩 |
+| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
 | **27** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（须高于 Support 模态 25/26，避免 Unlock Lifetime 点到淡出遮罩） |
 | **17** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-backdrop` Membership 模态遮罩 |

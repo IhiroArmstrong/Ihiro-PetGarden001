@@ -5,7 +5,7 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { mustardSeedSealZhIsPrimaryLocale } from './MustardSeedSealCardUI.js';
+import { mustardSeedSealZhIsPrimaryLocale } from '../core/mustardSeedSeal.js';
 
 describe('mustardSeedSealZhIsPrimaryLocale', () => {
   it('zh uses traditional poem as primary', () => {

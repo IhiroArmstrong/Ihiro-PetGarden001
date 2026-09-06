@@ -1,7 +1,8 @@
 # Task Brief · 芥子须弥纪念印 · UI 层级优化（Phase A）
 
-> 状态：**实现中** · `feature/mustard-seed-seal-ui-hierarchy`  
+> 状态：**#612 已合** `origin/develop`  
 > 前置：`task-mustard-seed-seal.md`（行为/文案不变）  
+> Phase B：`task-mustard-seed-seal-ui-phase-b.md`（背景 dim / 阿寅露脸 / Save image）  
 > 拍板（2026-09-07）：纯 UI 层级；**不改**三首中英文诗与印名；locale **主显 + 辅语言次要**；副标题 blurb **仅 `auto` 首次仪式**显示，`menu`/`force` 重读隐藏。
 
 ## 目标
