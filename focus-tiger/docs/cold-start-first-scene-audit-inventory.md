@@ -21,6 +21,10 @@
   6. Expand A 深夜进睡（E06，仅 welcome 已用当日）
   7. 默认 Idle（E07）
 
+第一幕结束后（精灵通道续 · 非第一帧竞争者）
+  7b. 提醒鹦鹉信使（E12 精灵半）— FIRST_PAINT_OCCUPANCY 期间 KEEP；
+      onComplete + CAPCUT_DISSOLVE_MS 后再 occupy PARROT。横幅可先出。
+
 短延迟叠层（FIRST_CARD_DEFER_PRIORITY · scheduleFirstCardOffers）
   8. 吹花白玉气泡（E08）— defer 队首；须等 E02 动画触发
   9. Wellness 免责首卡（E10）— 默认关；?wellnessFirst=1 时优先于 Compass
@@ -28,9 +32,9 @@
 
 并行发现（不与 defer 队统一仲裁 · 须 overlayBusy / occupancy 门闩）
  11. 额头摸头提示（E11）— 吹花气泡可见时不得出
+ 12. 提醒横幅（E12 叠层半）— 欢迎播放中可出；鹦鹉走 7b
 
 卫星（记录互斥 · 不阻塞本表 11 项索引）
-  E12 提醒横幅 + 鹦鹉信使 — 欢迎播放中 hold；见 §6.10
   E13 Onboarding auto hints — help-affordance 等；≤1 条自动
   E14 Purpose / Privacy 卡 — 手动 ? 路径；block 首卡
 ```
@@ -49,7 +53,7 @@
 | **E06** | Expand A 深夜 DORMANT | A | `resolveBootSpriteOccupancy` lateNight boot | `welcomeUsed` + `isLateNightHour` | 精灵 #10；仅 welcome 已用后 | SCENARIO_TESTS **AD** · §6.9 互斥 | **ok** — `shouldAttemptLateNightOnBoot` 互斥已合 |
 | **E07** | 默认 Idle 闭目坐禅 | A | `resolveBootSpriteOccupancy` fallback · `emotionController.playEmotion('idle')` | — | 兜底 | TRACKER 开场即睡 · smoke A1b | **ok** — 新用户/清库主路径 |
 | **E08** | 吹花白玉气泡 | B | `FlowerBlowWelcomeBubbleUI` · `FIRST_CARD_DEFER_PRIORITY[0]` | 跟 E02 同日 XOR | defer **队首** | SCENARIO_TESTS **V** 窄屏气泡 | **ok** — 2026-09-04 用户书面 OK |
-| **E09** | Five Moments Compass | B | `FiveMomentsCompassUI` · `scheduleFirstCardOffers` | `focus-tiger.five-moments-compass-seen.v1` | defer #2（低于 E08/E10） | SCENARIO_TESTS Compass 首卡 | **gap** — defer 重试 4s 逻辑复杂；缺组合 e2e |
+| **E09** | Five Moments Compass | B | `FiveMomentsCompassUI` · `scheduleFirstCardOffers` | `focus-tiger.five-moments-compass-seen.v1` | defer #2（低于 E08/E10） | SCENARIO_TESTS Compass 首卡 | **gap** — defer 重试 4s 逻辑复杂；缺组合 e2e（吹花×鹦鹉同型：单入口 ok 验不出时序） |
 | **E10** | Wellness 免责首卡 | B | `OnboardingHintsUI.openWellnessFirstCard` | `?wellnessFirst=1`；**默认不自动弹** | defer #3；`?` 查阅仍可用 | SCENARIO_TESTS wellness 免责 | **ok** — 2026-08-15 拍板不冷启动弹窗 |
 | **E11** | 额头摸头发现提示 | C | `idleYinTapHintGate` · `IdleYinTapAnchorUI` | `focus-tiger.idle-yin-tap-hint.v1` | 独立；`overlayBusy` / `flowerWelcomeVisible` 门闩 | SCENARIO_TESTS 摸头提示 · TRACKER | **ok** — 2026-09-04 用户书面 OK |
 
@@ -59,7 +63,7 @@
 
 | ID | 名称 | Owner | 与 11 项互斥 | 测试锚 | 审计状态 |
 |---|---|---|---|---|---|
-| **E12** | 应用内提醒横幅 + 鹦鹉信使 | `inAppReminderBannerController` · `parrotMessengerGate` | 欢迎播放中 hold；`welcomePlayOptions.onComplete` flush | SCENARIO_TESTS 场景 A/P3 · §6.10 | **risk** — 逻辑已修；冷启动+已过提醒时分组合仍靠人工 |
+| **E12** | 应用内提醒横幅 + 鹦鹉信使 | `inAppReminderBannerController` · `parrotMessengerGate` · `occupancyHoldsParrotMessenger` | 第一幕占用 KEEP；onComplete + 1s CapCut 后 flush | SCENARIO_TESTS 场景 A/P3/V 组合 · §6.10 | **risk** — 2026-09-06 冷启动吹花后鹦鹉无叠化=本项证据（非 E08）。逻辑已收 occupancy；清库组合仍靠人工 |
 | **E13** | Onboarding auto hints | `OnboardingHintsStore` · `syncOnboardingAutoHints` | `AUTO_HINT_PRIORITY` ≤1 自动；Reflection/Focusing 不抢 | `HINTS_WIRING.md` · 窄屏 e2e | **gap** — 冷启动组合 auto hint 无专门场景 |
 | **E14** | Purpose / Privacy 卡 | `OnboardingHintsUI` | `onboardingHintsBlockFirstCard()` 阻断 E09/E10 | Privacy e2e | **ok** — 非默认冷启动路径 |
 
@@ -70,7 +74,7 @@
 | # | 现象 | 涉及入口 | 文档根因 | 建议 |
 |---|---|---|---|---|
 | G1 | Compass 与吹花/欢迎时序 | E08/E09/E05 | `scheduleFirstCardOffers` 4s 重试 | 补组合 e2e 或单测锁 `canAttemptFirstCard` 快照 |
-| G2 | 提醒横幅 vs 欢迎 | E12/E05 | §6.10 已修 hold | TRACKER 标 `ok` 前补冷启动+提醒已过组合步骤 |
+| G2 | 提醒横幅 vs 欢迎/吹花 | E12/E05/E02 | 曾平行白名单漏吹花键；现 occupancy KEEP | 清库：有提醒且已过时分 + Day1 吹花 → 须先吹花再 1s 叠化才鹦鹉 |
 | G3 | `overlayBusy` vs `isIdleYinTapOverlayBusy` 分裂 | E11/E08 | 两套 busy 派生 | 对照 `overlaySlotArbitration` derive* 是否一致 |
 | G4 | 新 gate 插入位未定 | 未来 goal-onboarding | 本表未含目标问答 | 审计收口后插入 defer 队 **E08 之后、E09 之前** 或 sprite 层之后（PO 拍板） |
 
@@ -94,3 +98,4 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-09-06 | 初稿：自 `spriteChannelArbitration` / `main.js` / `FIRST_CARD_DEFER_PRIORITY` 只读排查 |
+| 2026-09-06 | E12 入精灵续链 7b；吹花×鹦鹉无叠化为 E12 risk 证据；E09 gap 补「组合 e2e」说明 |

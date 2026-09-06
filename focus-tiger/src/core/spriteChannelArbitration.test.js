@@ -12,6 +12,7 @@ import {
   SPRITE_OCCUPANCY,
   SPRITE_SOURCES,
   TAP_BLOCKING_OCCUPANCY,
+  occupancyHoldsParrotMessenger,
   arbitrateSpriteChannel,
   resolveBootSpriteOccupancy,
   resolveSessionEndSpriteOccupancy,
@@ -227,4 +228,37 @@ test('rise-sync only sleeps on 2h stamp, not late-night hour', () => {
     }
   });
   assert.equal(stale.sessionDelta, 'enter-dormant');
+});
+
+test('parrot yields while first-paint occupancy still holds the sprite', () => {
+  for (const occupancy of [
+    SPRITE_OCCUPANCY.FLOWER,
+    SPRITE_OCCUPANCY.WELCOME,
+    SPRITE_OCCUPANCY.MORNING_WAKE,
+    SPRITE_OCCUPANCY.PAYMENT_THANKS
+  ]) {
+    assert.equal(occupancyHoldsParrotMessenger(occupancy), true);
+    const d = arbitrateSpriteChannel({
+      intent: SPRITE_OCCUPANCY.PARROT,
+      source: SPRITE_SOURCES.PARROT,
+      context: {
+        now: afternoon,
+        sessionState: STATES.IDLE,
+        occupancy
+      }
+    });
+    assert.equal(d.occupy, SPRITE_OCCUPANCY.KEEP);
+    assert.equal(d.reason, 'first-paint-holds-parrot');
+  }
+  const idle = arbitrateSpriteChannel({
+    intent: SPRITE_OCCUPANCY.PARROT,
+    source: SPRITE_SOURCES.PARROT,
+    context: {
+      now: afternoon,
+      sessionState: STATES.IDLE,
+      occupancy: SPRITE_OCCUPANCY.IDLE_BASELINE
+    }
+  });
+  assert.equal(idle.occupy, SPRITE_OCCUPANCY.PARROT);
+  assert.equal(occupancyHoldsParrotMessenger(SPRITE_OCCUPANCY.IDLE_BASELINE), false);
 });

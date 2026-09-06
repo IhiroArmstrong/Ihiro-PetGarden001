@@ -13,6 +13,9 @@ import {
   HONESTY_LONG_MIN_MINUTES,
   LIGHT_COMPLETE_POOL,
   WELCOME_POOL,
+  COLD_START_WELCOME_EXTRA_EMOTION_KEYS,
+  collectColdStartWelcomeEmotionKeys,
+  isColdStartWelcomeEmotionKey,
   RISE_INTERRUPT_POOL,
   shouldAttemptLateNightOnBoot,
   pickWeighted,
@@ -121,6 +124,27 @@ test('WELCOME_POOL trial is magicBookReading + nodGreeting (wave out of cold-sta
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'teaDrinking'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'yawnStretch'));
   assert.ok(!WELCOME_POOL.some((e) => e.key === 'stretchReminder'));
+});
+
+test('cold-start welcome latch is derived from WELCOME_POOL + extras (fail-closed)', () => {
+  const latch = collectColdStartWelcomeEmotionKeys(WELCOME_POOL);
+  for (const entry of WELCOME_POOL) {
+    assert.equal(latch.has(entry.key), true, entry.key);
+  }
+  assert.equal(latch.has(FLOWER_WELCOME_EMOTION_KEY), true);
+  assert.deepEqual(
+    [...COLD_START_WELCOME_EXTRA_EMOTION_KEYS],
+    [FLOWER_WELCOME_EMOTION_KEY]
+  );
+  assert.equal(latch.has('yawnStretch'), false);
+  assert.equal(
+    collectColdStartWelcomeEmotionKeys([
+      { key: 'futureWelcomeGesture', weight: 1 }
+    ]).has('futureWelcomeGesture'),
+    true
+  );
+  assert.equal(isColdStartWelcomeEmotionKey('conjureFlowersBlowAway'), true);
+  assert.equal(isColdStartWelcomeEmotionKey('parrotEarVisit'), false);
 });
 
 test('RISE_INTERRUPT_POOL is stretch 60 / tea 25 / book 15; no magic/yawn/celebrate', () => {

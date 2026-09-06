@@ -43,6 +43,7 @@
 | 2026-08-25 | Electron/各壳 :5173：Float Yin 哑点击、空白右键从未接线、? 卡点不到 Privacy、Skip all 后无结束舞、Update 0.0.0 | **§6.21** |
 | 2026-09-01 | Unlock Lifetime 失败重开已关卡 + 额头提示记入未实现 | **§6.22** |
 | 2026-09-04 | Confide 复读「已解决」却再测仍套话：ledger 假关 + 茶句 fallback 被单测放行 | **§6.23** |
+| 2026-09-06 | 冷启动吹花后鹦鹉无叠化：第一幕占用未拦鹦鹉 + 平行情绪键白名单漏 `conjureFlowersBlowAway` | **§6.10 补记 / §6.17 Y6** |
 
 **一句话（整套机制）**：  
 回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）+ **悬停预览不得盖住点击钉住；feature detect 不得把「函数在」写成「能打开」；合入邻接 PR ≠ 已修用户点名的另一入口**（§6.21）+ **ISSUE_LEDGER「已解决」不得早于 TRACKER 人工关单；允许的 fallback 字面须锁「不得连打同一句」**（§6.23）。  
@@ -445,6 +446,7 @@
 | 2026-08-04 | 新增 §6.13：窄屏 Focusing×? tip 叠团（记入≠开修；KnownRisky 复测失败）；§6.11=Expand A 长挂；§6.12=鹦鹉 CapCut 关单窄 |
 | 2026-09-04 | 新增 §6.23：ISSUE_LEDGER 假关 + 茶句 fallback 连打（Confide 复读） |
 | 2026-09-04 | §6.23 补「根因的根因」+ 运行时锁连续可见字面（`fix/confide-repeat-property-lock`） |
+| 2026-09-06 | §6.10 补记 + §6.17 Y6：鹦鹉须让第一幕占用；欢迎键派生 fail-closed |
 
 ### 6.7 开场即睡：修好过一段时间又失效（2026-07-26 事故）
 
@@ -567,6 +569,8 @@
 | C4 | e2e 断言信使时优先锁 **可见 emotion key**（或等价 DOM），勿只锁「曾调用过 play」类观测戳 |
 
 **本事故落地（代码已合 PR #96）**：欢迎期间 hold + `pending`；欢迎 `onComplete` 用 `setTimeout(0)` 补播；横幅每次 hidden→visible 可再播；约 60s 静候再评；e2e 先 `setNow` 再填表。本文件补工作流根因，供后案对照。
+
+**2026-09-06 补记（吹花 × 鹦鹉 · 同一家族）**：把 `conjureFlowersBlowAway` 塞进 `main.js` 平行 `Set` **仍是白名单补丁**。真因是鹦鹉走独立通道：`arbitrateSpriteChannel` 的 PARROT 枝只拦 DORMANT，**不读** `FIRST_PAINT_OCCUPANCY`；hold 另靠一份硬编码情绪键。新欢迎期动画默认不在清单里 → 冷启动可抢播且跳过 CapCut。收口：PARROT 在第一幕占用上 `KEEP`；欢迎键由 `WELCOME_POOL` + `COLD_START_WELCOME_EXTRA_EMOTION_KEYS` 派生，单测 fail-closed；第一幕 `onComplete` 后等 `CAPCUT_DISSOLVE_MS` 再播。组合场景（E02×E12）不得用单入口 Happy Path 冒充。
 
 ### 6.11 长挂 Vite「第一眼披斗篷」≠ 白天冷启动回归（2026-08-04）
 
@@ -694,6 +698,7 @@
 | Y3 | 叠层占用（Reflection / Arrival / Honesty 流程）须否决进睡；会话结束仪式 **永不** cloak |
 | Y4 | 付款回跳致谢 **压过** 深夜披毯（总表第 3 行）。「我们该谢谢你」高于「现在是深夜该睡了」 |
 | Y5 | Mood 不得在 boot occupancy 拍板前 `handleStateChange(IDLE)` 抢第一幕 |
+| Y6 | 鹦鹉 / 提醒信使 **不是**第一帧竞争者：`FIRST_PAINT_OCCUPANCY` 期间 PARROT 必须 `KEEP`；新欢迎期情绪键须进 `WELCOME_POOL` 或 `COLD_START_WELCOME_EXTRA_EMOTION_KEYS`，禁止在 `main.js` 另抄一份白名单 |
 
 **本回合落地**：`spriteChannelArbitration.js` + Honesty `applyDormantSessionDelta` 执行器；冷启动 / visibility / 付款 async / 鹦鹉走总表。§6.7 / §6.9 / §6.11 的产品规则吸收进矩阵，**不**重开 #341/#347。
 

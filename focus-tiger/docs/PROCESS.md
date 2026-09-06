@@ -66,7 +66,9 @@
 
 - **冷启动目标问答 · PO 拍板（2026-09-06 · 纯文档 · 无运行时）**：方向采纳（1 问·可跳过·当次会话可见效果·不问职业·不落画像库）；**现在不实现**。Brief `task-briefs/task-cold-start-goal-onboarding.md` 状态 **approved · blocked**。硬前置：冷启动第一幕审计（Brief `task-cold-start-first-scene-audit.md` + 清单 `cold-start-first-scene-audit-inventory.md`）。
 
-- **冷启动第一幕 11 入口审计 · 清单草案（2026-09-06 · 纯文档 · 无运行时）**：只读代码排查 E01–E11 + 卫星 E12–E14；gate 顺序 SSOT 草案已写入清单。待人工清库对照 + 逐条标 ok/gap/risk。口令：「开工冷启动第一幕审计」。
+- **冷启动第一幕 11 入口审计 · 清单草案（2026-09-06 · 纯文档 · 无运行时）**：只读代码排查 E01–E11 + 卫星 E12–E14；gate 顺序 SSOT 草案已写入清单。待人工清库对照 + 逐条标 ok/gap/risk。口令：「开工冷启动第一幕审计」。**同日 follow-up**：E12 鹦鹉收进精灵续链（第一幕 occupancy KEEP + CapCut 后再播）；吹花×鹦鹉无叠化记为 E12 risk 证据，不改 E02/E08 ok。
+
+- **冷启动鹦鹉让第一幕（2026-09-06 · `fix/parrot-first-paint-occupancy`）**：根因是 PARROT 不读 `FIRST_PAINT_OCCUPANCY` + `main.js` 平行欢迎键白名单。单测锁 occupancy KEEP 与 latch 派生。TRACKER 待清库组合复测。
 
 - **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。不改现网句池。
 
