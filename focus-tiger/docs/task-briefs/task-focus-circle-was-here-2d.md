@@ -1,6 +1,6 @@
 # Task Brief · Focus Circle Was-Here-Today（刀 2d）
 
-> **状态（2026-09-07）**：Brief v2 · **待 PO 书面「同意建议默认」**（含下方 §PO 评审澄清）· 口令「开工 Focus Circle Was-Here-Today 2d」前不得写代码。权威 `FROM_APP_TO_CULTURE.md` §13.2（`sitting / was here today` · **必须隐身**）· §13.4 刀 2 信封（**2d → 2e**）。  
+> **状态（2026-09-07）**：Brief v2 · **PO 已批建议默认** · 口令「开工 Focus Circle Was-Here-Today 2d」。权威 `FROM_APP_TO_CULTURE.md` §13.2（`sitting / was here today` · **必须隐身**）· §13.4 刀 2 信封（**2d → 2e**）。  
 > **本文件无** 认人层 / 昵称徽标（刀 2e）、圈内聊天、自由长文本、Witness 留痕/回应（刀 2c）。
 
 ## 一句话

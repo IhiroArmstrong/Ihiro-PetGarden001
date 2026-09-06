@@ -59,7 +59,7 @@
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
 | Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
-| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:witness:{id}` · 最多 8 人 · presence TTL 120s · witness 滚动 24h） |
+| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:here:{id}` + `circle:v1:witness:{id}` · 最多 8 人 · presence TTL 120s · was-here 日历日 · witness 滚动 24h） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 
