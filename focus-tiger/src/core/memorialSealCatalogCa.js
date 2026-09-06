@@ -54,7 +54,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA02_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA02_CARD_TITLE',
     toneTag: 'stillness',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -74,7 +74,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA03_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA03_CARD_TITLE',
     toneTag: 'stillness',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -93,7 +93,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA04_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA04_CARD_TITLE',
     toneTag: 'stillness',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -112,7 +112,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA05_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA05_CARD_TITLE',
     toneTag: 'imperfection-return',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -131,7 +131,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA06_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA06_CARD_TITLE',
     toneTag: 'time-continuity',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -151,7 +151,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA07_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA07_CARD_TITLE',
     toneTag: 'time-continuity',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -169,7 +169,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA08_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA08_CARD_TITLE',
     toneTag: 'imperfection-return',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -188,7 +188,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA09_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA09_CARD_TITLE',
     toneTag: 'stillness',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -207,7 +207,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA10_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA10_CARD_TITLE',
     toneTag: 'stillness',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -226,7 +226,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA11_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA11_CARD_TITLE',
     toneTag: 'imperfection-return',
-    enabled: false,
+    enabled: true,
     ...badge
   }),
   Object.freeze({
@@ -251,7 +251,7 @@ export const CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES = Object.freeze([
     menuLabelKey: 'CONTEMPLATIVE_ARCHIVE_CA12_MENU_LABEL',
     cardTitleKey: 'CONTEMPLATIVE_ARCHIVE_CA12_CARD_TITLE',
     toneTag: 'smallness-vastness',
-    enabled: false,
+    enabled: true,
     ...badge
   })
 ]);

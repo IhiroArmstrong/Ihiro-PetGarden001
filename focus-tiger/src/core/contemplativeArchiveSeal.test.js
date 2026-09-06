@@ -32,6 +32,31 @@ function memoryStorage(seed = {}) {
 
 describe('contemplativeArchiveSeal', () => {
   it('offers CA-01 at score 30 after mustard queue is done', () => {
+    const days = [];
+    for (let i = 1; i <= 15; i += 1) {
+      days.push({
+        date: `2026-07-${String(i).padStart(2, '0')}`,
+        totalMinutes: 60
+      });
+    }
+    const storage = memoryStorage({
+      [PRACTICE_DAYS_STORAGE_KEY]: JSON.stringify({ days })
+    });
+    const resolved = resolveContemplativeArchiveSeal(storage);
+    assert.equal(resolved.score, 30);
+    assert.equal(resolved.nextEntry?.id, 'ca-01-old-pond');
+    assert.equal(
+      shouldOfferContemplativeArchiveSealAfterCeremony({
+        completed: true,
+        shouldAutoReveal: resolved.shouldAutoReveal
+      }),
+      true
+    );
+    assert.equal(resolved.menuEntries.length, 1);
+    assert.equal(resolved.menuEntries[0].proxy, 'contemplative-archive-seal:ca-01-old-pond');
+  });
+
+  it('lists all twelve CA menu entries once score meets each threshold', () => {
     const richDays = [];
     for (let i = 1; i <= 30; i += 1) {
       richDays.push({
@@ -43,17 +68,9 @@ describe('contemplativeArchiveSeal', () => {
       [PRACTICE_DAYS_STORAGE_KEY]: JSON.stringify({ days: richDays })
     });
     const resolved = resolveContemplativeArchiveSeal(storage);
-    assert.ok(resolved.score >= 30);
+    assert.equal(resolved.score, 60);
+    assert.equal(resolved.menuEntries.length, 12);
     assert.equal(resolved.nextEntry?.id, 'ca-01-old-pond');
-    assert.equal(
-      shouldOfferContemplativeArchiveSealAfterCeremony({
-        completed: true,
-        shouldAutoReveal: resolved.shouldAutoReveal
-      }),
-      true
-    );
-    assert.equal(resolved.menuEntries.length, 1);
-    assert.equal(resolved.menuEntries[0].proxy, 'contemplative-archive-seal:ca-01-old-pond');
   });
 
   it('does not auto-offer below score 30', () => {

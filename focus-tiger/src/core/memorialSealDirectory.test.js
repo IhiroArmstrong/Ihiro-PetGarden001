@@ -30,18 +30,19 @@ describe('memorialSealDirectory', () => {
     assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 15);
   });
 
-  it('only CA-01 old pond is enabled in the archive catalog', () => {
+  it('all twelve CA entries are enabled in the archive catalog', () => {
     const enabled = listEnabledContemplativeArchiveSealEntries();
-    assert.equal(enabled.length, 1);
+    assert.equal(enabled.length, 12);
     assert.equal(enabled[0].id, 'ca-01-old-pond');
     assert.equal(enabled[0].scoreThreshold, 30);
+    assert.ok(enabled.every((entry) => entry.enabled));
     const oldPond = getMemorialSealEntry('ca-01-old-pond');
     assert.ok(oldPond?.poemJa?.[0]?.includes('古池'));
   });
 
-  it('disabled CA entries remain in directory for future enablement', () => {
+  it('CA-02 cherry blossoms keeps excerpt threshold and expanded copy', () => {
     const cherry = getMemorialSealEntry('ca-02-cherry-blossoms');
-    assert.equal(cherry?.enabled, false);
+    assert.equal(cherry?.enabled, true);
     assert.equal(cherry?.scoreThreshold, 60);
     assert.ok(cherry?.poemEnExpanded?.length);
   });
