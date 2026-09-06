@@ -1258,6 +1258,38 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'plain-language-summary',
+    title: '用户可见汇报前置大白话总结（≤5 句、无技术术语）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '用户可见汇报：前置大白话总结（强制）',
+    ssotMustContain: [
+      /plain-language-summary/,
+      /大白话总结/,
+      /不超过 5 句话/,
+      /session-handoff/
+    ],
+    topicSignals: [
+      /plain-language-summary/,
+      /大白话总结/,
+      /前置大白话/,
+      /plain language summary/i
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /不超过 5 句话/,
+      /禁止出现.*分支名/,
+      /需要你决定什么或知道什么/
+    ],
+    restatementThreshold: 2,
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: []
+  },
+  {
     id: 'session-handoff',
     title: '会话交接（口令「生成交接」：结构化摘要给下一会话）',
     ssotPath: '.cursor/rules/focus-tiger-session-handoff.mdc',
