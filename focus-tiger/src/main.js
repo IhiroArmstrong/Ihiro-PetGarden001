@@ -194,6 +194,11 @@ import {
   shouldOfferMustardSeedSealAfterCeremony,
   clearMustardSeedSealState
 } from './core/mustardSeedSeal.js';
+import {
+  clearContemplativeArchiveSealState,
+  resolveContemplativeArchiveSeal,
+  shouldOfferContemplativeArchiveSealAfterCeremony
+} from './core/contemplativeArchiveSeal.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -1144,9 +1149,17 @@ async function init() {
       resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ),
+    resolveArchive: () =>
+      resolveContemplativeArchiveSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
     cases: () => MUSTARD_SEED_SEAL_CASES.map((entry) => entry.id),
     clear: () =>
       clearMustardSeedSealState(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    clearArchive: () =>
+      clearContemplativeArchiveSealState(
         typeof localStorage !== 'undefined' ? localStorage : null
       )
   };
@@ -2816,6 +2829,10 @@ async function init() {
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'menu' });
     },
+    onContemplativeArchiveSeal: (entryId) => {
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'menu', archiveEntryId: entryId });
+    },
     onWallpapers: () => {
       closeGrowthOverlayCards({ except: 'wallpapers' });
       digitalWallpapersCardUI.open();
@@ -3871,7 +3888,23 @@ async function init() {
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'auto' });
     } else {
-      sessionEndFlow.onSessionEnded(endOpts);
+      const archive = resolveContemplativeArchiveSeal(storage);
+      if (
+        shouldOfferContemplativeArchiveSealAfterCeremony({
+          completed: true,
+          shouldAutoReveal: archive.shouldAutoReveal
+        }) &&
+        archive.nextEntry
+      ) {
+        pendingReflectionAfterMustardSeed = endOpts;
+        closeGrowthOverlayCards({ except: 'mustard-seed' });
+        mustardSeedSealCardUI.open({
+          mode: 'auto',
+          archiveEntryId: archive.nextEntry.id
+        });
+      } else {
+        sessionEndFlow.onSessionEnded(endOpts);
+      }
     }
     maybeOfferWitnessLeave(witnessElapsedSeconds);
     onboardingHints?.markSeen('rise-button');

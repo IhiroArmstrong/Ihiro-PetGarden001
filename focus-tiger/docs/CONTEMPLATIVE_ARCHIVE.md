@@ -131,7 +131,7 @@ Case 1–3 诗面与署名为现网权威（`mustardSeedSeal.js`），此处不�
 
 | id | 题 | 气质 | 版权 | 英文首屏 | chars | 建议 score 带 | seal | 触发注意 |
 |---|---|---|---|---|---:|---|---|---|
-| CA-01 | The Old Pond | stillness | PD / ADAPT-PD | 见下 | 49 | **30** | **是（下一枚首选）** | 勿与 21 排队 |
+| CA-01 | The Old Pond | stillness | PD / ADAPT-PD | 见下 | 49 | **30** | **已上线（#605+）** | 勿与 21 排队 |
 | CA-02 | The Cherry Blossoms | stillness | ADAPT-PD | 节选 | 119 | **60** | 是（晚于 CA-01） | 首屏只用节选 |
 | CA-03 | The Morning Field | stillness | ADAPT-PD | 见下 | 81 | 45 | 否（先典藏） | — |
 | CA-04 | The Empty Room | stillness | ORIG | 见下 | 104 | 45+ | 否 | 深夜/高累计 |

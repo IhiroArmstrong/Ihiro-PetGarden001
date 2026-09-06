@@ -51,6 +51,7 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
  * @property {boolean} [companionGeneration] Electron wide L1 only; ignored on narrow-drawer
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
+ * @property {Array<{ proxy: string, labelKey: string }>} [contemplativeArchiveSealMenus]
  * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  */
 
@@ -422,6 +423,10 @@ export function listSecondaryChromeEntries(surface, visibility) {
           labelKey: 'MUSTARD_SEED_SEAL_MENU_LABEL'
         }
       : null,
+    ...(visibility.contemplativeArchiveSealMenus ?? []).map((row) => ({
+      proxy: row.proxy,
+      labelKey: row.labelKey
+    })),
     { proxy: 'wallpapers', labelKey: 'WALLPAPER_MENU_LABEL' }
   ]);
 
