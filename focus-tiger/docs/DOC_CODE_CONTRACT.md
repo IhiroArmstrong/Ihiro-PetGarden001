@@ -56,6 +56,7 @@
 | **R-01** | `SHARED_RESOURCES` §1 各 key「谁读写」叙述列 | 自然语言波及面，无法可靠从代码提取 | §1 表格**叙述列**仍手写；**key 列表**由 L-01 契约测试锁 |
 | **Y-01** | 精灵占用 / 进睡仲裁（冷启动·回前台·付款·会话结束） | 优先级矩阵是行为契约，不是 enum 导出 | **(b)**：`spriteChannelArbitration.test.js` + `dormantIdle.test.js` overlayBusy；叙事 `DEV_WORKFLOW_QUALITY` §6.17 |
 | **O-01** | 叠层占用三问（摸头 / 进睡 / 点空白） | `OVERLAY_SOURCE_CONTRACTS` 五字段 + `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`；禁止 `main.js` 手写 OR | **(a)** `scripts/overlay-contract-ui-check.js`（`docs:check`）；**(b)** `overlaySlotArbitration.test.js` |
+| **O-02** | 叠层可交互性（`#ui-overlay` 下须 `pointer-events: auto`） | `#ui-overlay` 全局 `pointer-events: none`；挂在其内的可点叠层须在交互根显式 opt-in。与 O-01 **正交**（O-01 管「谁该显示」，O-02 管「显示出来能不能点到」）。SSOT 列表：`OVERLAY_UI_POINTER_HIT_TEST_REQUIRED` | **(a)** `overlay-contract-ui-check.js` O-02 段（`docs:check`）；**(b)** 暂无 e2e 像素点击锁 |
 
 ---
 
