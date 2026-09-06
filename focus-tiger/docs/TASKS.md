@@ -252,6 +252,19 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 **我认为最合理的下一刀**：日签扩容 / 伸懒腰 / 好奇池仍后排，须另口令。较弱：未人工测就再开下一分叉。
 
+## 📍 静思典藏层（2026-09-06 · 内容锁 · 无新运行时）
+
+> SSOT：`CONTEMPLATIVE_ARCHIVE.md`。**≠** Quiet Line / Daily Wisdom / Calm Action Wisdom。
+
+| 项 | 状态 |
+|---|---|
+| 层级名 Contemplative Archive / 静思典藏 | **已写入规范** |
+| 第一枚纪念印 《芥子须弥》三 case | **现网已接线**；TRACKER 待人工关单 |
+| 12 条候选表 | **已入库**（无运行时） |
+| 第 2 枚印（古池 · score 30） | **未立项**；须另 Brief + 口令 |
+
+---
+
 ## 📍 云端品味层（2026-08-18 政策锁）
 
 > 旧称「v1.1 云端算法」。**支付云 ≠ 品味云**。权威 `PROCESS.md` Backlog「云端品味层」。

@@ -134,6 +134,10 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 世俗行动提示句，按 Arrive / Focus / Recover / Transition / Reflect 标注。**不是**第六 Moment，也**不是** Quiet Line / Daily Wisdom。规范与 70 条表：`CALM_ACTION_WISDOM.md`。观察式 toast / Whisper 仍以 `EMOTION_BIBLE.md` 为准，不得用本池替换。
 
+### 5.8 Contemplative Archive（静思典藏 · 纪念层）
+
+长期练习中偶然发现的文学片段 / 纪念印。**不是**第六 Moment，**不是**日签加长档。规范与 12 条候选：`CONTEMPLATIVE_ARCHIVE.md`。现网仅芥子须弥三 case；第 2 枚印另 Brief。
+
 ---
 
 ## 六、Family Edition — 存档至 Backlog（本次不展开设计）
