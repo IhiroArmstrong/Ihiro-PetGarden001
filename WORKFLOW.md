@@ -1,7 +1,44 @@
 # Git 分支与工作流
 
 > **适用范围**：整个仓库（`focus-tiger/` 及根目录文档）。  
-> **协作细则**（Task Brief、回归锁、文档同步）仍以 [`focus-tiger/docs/PROCESS.md`](focus-tiger/docs/PROCESS.md) 与 [`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) 为准；本文只约定 **分支职责与合并门禁**。
+> **协作细则**（Task Brief、回归锁、文档同步）仍以 [`focus-tiger/docs/PROCESS.md`](focus-tiger/docs/PROCESS.md) 与 [`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) 为准；本文约定 **分支职责与合并门禁**，以及 **给用户看的汇报格式**。
+
+---
+
+## 用户可见汇报：前置大白话总结（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `plain-language-summary`）。与 regression-lock「任务汇报门禁（N14）」**互补**：N14 管回复**末尾**「待你决定 / 待你知道」；本条管回复**最前面**的大白话总结。技术细节照常写，只是往后挪，**不必精简**。
+
+### 适用范围
+
+**须遵守**（凡提交给**用户**阅读的汇报/答复）：
+
+- PR 描述、进度更新、方案说明、任务收尾的用户可见回复  
+- 含「待你决定 / 待你知道」的回复——大白话在**最前**，N14 小节仍在**末尾**
+
+**不适用**（本来就是写给 AI / 工程追溯的，不需要大白话翻译）：
+
+- 纯给下一 Cursor 会话 / agent 的交接文档（如口令「生成交接」模板；见 `session-handoff`）  
+- 纯代码注释、内部 tracker 条目（如 `docs/tracker-entries/`）
+
+### 大白话总结的要求
+
+1. 放在汇报/答复的**最前面**（标题可用 **大白话总结**）。  
+2. **不超过 5 句话**。  
+3. **禁止出现**：分支名、commit hash、PR 编号、文件名、函数名、技术术语（如 overlay、schemaVersion、TTL、Worker、KV 等）。  
+4. **必须回答三件事**（用日常语言）：  
+   - **做了什么 / 发现了什么**——对用户实际体验或产品有什么影响，或暂时还没有影响；  
+   - **现在到哪一步了**——例如「方案定了还没写代码」「代码写完了还没测」「已经在线上生效」；  
+   - **需要你决定什么或知道什么**——若没有，直接写「不需要你做任何事」。  
+5. 总结之后用一条分隔线（`---`）隔开；**后面照常写详细技术记录**，该有多细仍有多细，只是位置后移。
+
+### 示例（格式参考，非强制文案）
+
+> **大白话总结**：这次帮你把收集到的 100 多条金句整理归类好了，一批适合「陪你观察当下」的语气，一批适合「提醒你怎么做」的语气，已经分好类存进文档。**但这些句子现在用户在 App 里还看不到一条**，因为还没有把它们接到具体显示的画面上。这部分工作还没开始。你不需要现在做任何决定；如果同意接下来先从「专注开始前」这个画面开始接线，回复「同意」就行。
+>
+> ---
+>
+> [下面正常写技术细节…]
 
 ---
 
@@ -558,7 +595,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
