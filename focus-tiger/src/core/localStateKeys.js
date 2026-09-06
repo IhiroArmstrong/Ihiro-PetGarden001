@@ -53,6 +53,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.practice-backup.v1',
   'focus-tiger.daily-wisdom.v1',
   'focus-tiger.mustard-seed-seal.v1',
+  'focus-tiger.contemplative-archive-seals.v1',
   'focus-tiger.daily-zen-quote-pool-v2.v1',
   'focus-tiger.idle-companion-pip.v1',
   'focus-tiger.brand-yin-way-first-reflect.v1',

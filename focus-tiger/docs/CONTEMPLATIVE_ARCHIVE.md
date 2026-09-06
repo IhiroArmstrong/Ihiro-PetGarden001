@@ -131,18 +131,18 @@ Case 1–3 诗面与署名为现网权威（`mustardSeedSeal.js`），此处不�
 
 | id | 题 | 气质 | 版权 | 英文首屏 | chars | 建议 score 带 | seal | 触发注意 |
 |---|---|---|---|---|---:|---|---|---|
-| CA-01 | The Old Pond | stillness | PD / ADAPT-PD | 见下 | 49 | **30** | **是（下一枚首选）** | 勿与 21 排队 |
-| CA-02 | The Cherry Blossoms | stillness | ADAPT-PD | 节选 | 119 | **60** | 是（晚于 CA-01） | 首屏只用节选 |
-| CA-03 | The Morning Field | stillness | ADAPT-PD | 见下 | 81 | 45 | 否（先典藏） | — |
-| CA-04 | The Empty Room | stillness | ORIG | 见下 | 104 | 45+ | 否 | 深夜/高累计 |
-| CA-05 | The Bird Has Flown | return | ORIG | 见下 | 80 | 45+ | 否 | 禁止断签弹 |
-| CA-06 | Spring Water | time-flow | ORIG | 见下 | 75 | 30–60 | 否 | 可含回归用户，仍累计触发 |
-| CA-07 | The Distant Mountain | time-flow | ORIG | 见下 | 120 | 60 | 否 | — |
-| CA-08 | The Moonlight | return | ORIG | 见下 | 64 | 45+ | 否 | 反连签哲学；禁止断签弹 |
-| CA-09 | The Still Tree | stillness | ORIG | 见下 | 74 | 30+ | 否 | — |
-| CA-10 | The Sound After the Bell | stillness | ORIG | 见下 | 81 | 30+ | 否 | 禁宗教「梵钟」解说 |
-| CA-11 | The Falling Leaf | return | ORIG | 见下 | 76 | 45+ / 仅重读 | 否 | **禁止**断签事件 |
-| CA-12 | Cypress in the Old Lane | small-vast | ORIG | 见下 | 137 | **≠ 21**；建议 45+ | 晚印候选 | 勿接芥子须弥队列；EN 避开教义空性 |
+| CA-01 | The Old Pond | stillness | PD / ADAPT-PD | 见下 | 49 | **30** | **已上线（#605+）** | 勿与 21 排队 |
+| CA-02 | The Cherry Blossoms | stillness | ADAPT-PD | 节选 | 119 | **60** | **已上线（#609+）** | 首屏只用节选 |
+| CA-03 | The Morning Field | stillness | ADAPT-PD | 见下 | 81 | 45 | **已上线（#609+）** | — |
+| CA-04 | The Empty Room | stillness | ORIG | 见下 | 104 | 45+ | **已上线（#609+）** | 深夜/高累计 |
+| CA-05 | The Bird Has Flown | return | ORIG | 见下 | 80 | 45+ | **已上线（#609+）** | 禁止断签弹 |
+| CA-06 | Spring Water | time-flow | ORIG | 见下 | 75 | 30–60 | **已上线（#609+）** | 可含回归用户，仍累计触发 |
+| CA-07 | The Distant Mountain | time-flow | ORIG | 见下 | 120 | 60 | **已上线（#609+）** | — |
+| CA-08 | The Moonlight | return | ORIG | 见下 | 64 | 45+ | **已上线（#609+）** | 反连签哲学；禁止断签弹 |
+| CA-09 | The Still Tree | stillness | ORIG | 见下 | 74 | 30+ | **已上线（#609+）** | — |
+| CA-10 | The Sound After the Bell | stillness | ORIG | 见下 | 81 | 30+ | **已上线（#609+）** | 禁宗教「梵钟」解说 |
+| CA-11 | The Falling Leaf | return | ORIG | 见下 | 76 | 45+ / 仅重读 | **已上线（#609+）** | **禁止**断签事件 |
+| CA-12 | Cypress in the Old Lane | small-vast | ORIG | 见下 | 137 | **≠ 21**；建议 45+ | **已上线（#609+）** | 勿接芥子须弥队列；EN 避开教义空性 |
 
 ### CA-01 · The Old Pond
 
@@ -294,7 +294,7 @@ WHAT LOOKS EMPTY STILL HOLDS WITHOUT END.
 | In the Smallest Thing | 与芥子须弥主题重叠；后补且远离 21 |
 | 100 条 CMS | **明确不做**（本切片） |
 
-下一枚新印：目录化后 **翻 `enabled` + 定门槛** 即可；推荐 **CA-01 古池、score 30**；CA-02 浅井了意节选留给 60。上线口令另走，不必再开 12 份任务书。
+12 条候选已全部 **翻 `enabled: true`**（PO 2026-09-07 · 便于全量测试）；门槛见上表 `scoreThreshold`（CA-01 = 30，CA-02 = 60，其余 45 或 60）。新印仍只需改配置表，不必再开 12 份任务书。
 
 ---
 
@@ -302,8 +302,8 @@ WHAT LOOKS EMPTY STILL HOLDS WITHOUT END.
 
 1. 本文件为内容锁。  
 2. 芥子须弥三 case：维持现网；人工关单走原 TRACKER。  
-3. **目录化（工程）**：`src/core/memorialSealDirectory.js` + Brief `task-memorial-seal-directory.md`——读配置表、门槛可配；古池占位 `enabled: false`。  
-4. 第 2 枚印真正上线：口令翻 `enabled`（或新 `sealSceneId` 接线）；不在目录化 PR 内定排期。  
+3. **目录化（工程）**：`memorialSealDirectory.js` + `memorialSealCatalogCa.js` + Brief `task-memorial-seal-directory.md`——读配置表、门槛可配。  
+4. **12 条全开（2026-09-07）**：PO 拍板 CA-02…CA-12 全部 `enabled: true`（#609）；日后若要分批上线，只翻配置开关即可。  
 5. 禁止改 `en.json` Quiet Line 键、Daily Wisdom 冻表、Action 70 正文。
 
 修订：2026-09-06 初稿；2026-09-06 接线顺序对齐目录化任务书。

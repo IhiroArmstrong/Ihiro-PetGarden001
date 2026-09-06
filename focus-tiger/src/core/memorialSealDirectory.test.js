@@ -6,14 +6,15 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES
+} from './memorialSealCatalogCa.js';
+import {
   MEMORIAL_SEAL_DIRECTORY,
-  MEMORIAL_SEAL_ENTRY_OLD_POND,
   MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-  MEMORIAL_SEAL_SCENE_OLD_POND,
   getMemorialSealEntry,
+  listEnabledContemplativeArchiveSealEntries,
   listMemorialSealEntriesForScene,
-  memorialSealSceneUnlockThreshold,
-  nextUnrevealedMemorialSealEntry
+  memorialSealSceneUnlockThreshold
 } from './memorialSealDirectory.js';
 
 describe('memorialSealDirectory', () => {
@@ -24,38 +25,25 @@ describe('memorialSealDirectory', () => {
     assert.equal(memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED), 21);
   });
 
-  it('old-pond placeholder is disabled and excluded from mustard-seed scene', () => {
-    const oldPond = getMemorialSealEntry(MEMORIAL_SEAL_ENTRY_OLD_POND);
-    assert.ok(oldPond);
-    assert.equal(oldPond.enabled, false);
-    assert.equal(oldPond.sealSceneId, MEMORIAL_SEAL_SCENE_OLD_POND);
-    assert.equal(oldPond.scoreThreshold, 30);
-    assert.equal(
-      listMemorialSealEntriesForScene(MEMORIAL_SEAL_SCENE_OLD_POND).length,
-      0
-    );
-    assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 4);
+  it('catalog has twelve CA candidates plus three mustard cases', () => {
+    assert.equal(CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES.length, 12);
+    assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 15);
   });
 
-  it('nextUnrevealedMemorialSealEntry respects enabled, score, and reveal order', () => {
-    const mustard = listMemorialSealEntriesForScene(
-      MEMORIAL_SEAL_SCENE_MUSTARD_SEED
-    );
-    const first = nextUnrevealedMemorialSealEntry(mustard, [], 21);
-    assert.equal(first?.id, 'mustard-seed-sumeru');
-    const second = nextUnrevealedMemorialSealEntry(mustard, [first.id], 21);
-    assert.equal(second?.id, 'hero-not-pond');
-    assert.equal(
-      nextUnrevealedMemorialSealEntry(mustard, [], 20),
-      null
-    );
-    const withDisabled = [
-      ...mustard,
-      getMemorialSealEntry(MEMORIAL_SEAL_ENTRY_OLD_POND)
-    ];
-    assert.equal(
-      nextUnrevealedMemorialSealEntry(withDisabled, [], 30)?.id,
-      'mustard-seed-sumeru'
-    );
+  it('all twelve CA entries are enabled in the archive catalog', () => {
+    const enabled = listEnabledContemplativeArchiveSealEntries();
+    assert.equal(enabled.length, 12);
+    assert.equal(enabled[0].id, 'ca-01-old-pond');
+    assert.equal(enabled[0].scoreThreshold, 30);
+    assert.ok(enabled.every((entry) => entry.enabled));
+    const oldPond = getMemorialSealEntry('ca-01-old-pond');
+    assert.ok(oldPond?.poemJa?.[0]?.includes('古池'));
+  });
+
+  it('CA-02 cherry blossoms keeps excerpt threshold and expanded copy', () => {
+    const cherry = getMemorialSealEntry('ca-02-cherry-blossoms');
+    assert.equal(cherry?.enabled, true);
+    assert.equal(cherry?.scoreThreshold, 60);
+    assert.ok(cherry?.poemEnExpanded?.length);
   });
 });
