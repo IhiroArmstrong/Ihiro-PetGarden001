@@ -98,6 +98,10 @@ import { FOCUS_CIRCLE_STORAGE_KEY } from './focusCircleMembership.js';
 import { FOCUS_CIRCLE_WITNESS_RESPONDED_STORAGE_KEY } from './focusCircleWitness.js';
 import { FOCUS_CIRCLE_PASSIVE_SHARE_STORAGE_KEY } from './focusCirclePassiveShare.js';
 import { FOCUS_CIRCLE_WAS_HERE_MARK_STORAGE_KEY } from './focusCircleWasHere.js';
+import {
+  FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
+  FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
+} from './focusCircleIdentity.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
@@ -193,7 +197,9 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_CIRCLE_STORAGE_KEY,
   FOCUS_CIRCLE_WITNESS_RESPONDED_STORAGE_KEY,
   FOCUS_CIRCLE_PASSIVE_SHARE_STORAGE_KEY,
-  FOCUS_CIRCLE_WAS_HERE_MARK_STORAGE_KEY
+  FOCUS_CIRCLE_WAS_HERE_MARK_STORAGE_KEY,
+  FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
+  FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {
