@@ -1,6 +1,6 @@
 # Task Brief · Focus Circle Was-Here-Today（刀 2d）
 
-> **状态（2026-09-05）**：Brief v1 草稿 · **待 PO 拍板 TTL / 展示上限** · 口令「开工 Focus Circle Was-Here-Today 2d」前不得写代码。权威 `FROM_APP_TO_CULTURE.md` §13.2（`sitting / was here today` · **必须隐身**）· §13.4 刀 2 信封（**2d → 2e**）。  
+> **状态（2026-09-07）**：Brief v2 · **待 PO 书面「同意建议默认」**（含下方 §PO 评审澄清）· 口令「开工 Focus Circle Was-Here-Today 2d」前不得写代码。权威 `FROM_APP_TO_CULTURE.md` §13.2（`sitting / was here today` · **必须隐身**）· §13.4 刀 2 信封（**2d → 2e**）。  
 > **本文件无** 认人层 / 昵称徽标（刀 2e）、圈内聊天、自由长文本、Witness 留痕/回应（刀 2c）。
 
 ## 一句话
@@ -30,13 +30,58 @@
 
 | # | 议题 | **建议默认** | 备选 | 备注 |
 |---|---|---|---|---|
-| 1 | **TTL / 「今天」边界** | **本机日历日**：`dayKey = YYYY-MM-DD`（`Intl` / 用户 locale 时区）；KV 记录在 `dayKey` 变更时自然过期；**不用** 2c 的滚动 24h | UTC 日界 · 固定 +8 · 滚动 24h | 滚动 24h 与「today」文案冲突，且与 2c 难区分 |
+| 1 | **TTL / 「今天」边界** | **查看者本机日历日** 计数（`markedAtMs` + peek 带 `viewerDayKey` / `viewerTimeZone`）；见 §PO 评审澄清 #1 | 写入方 dayKey 硬过滤 · UTC 日界 · 滚动 24h | 滚动 24h = 2c；写入方过滤与「today」文案不一致 |
 | 2 | **展示上限** | **只显示有无**：`hereTodayOthers ≥ 1` → 一条观察式短句（**不展示精确人数**）；视觉上 **0–1 个**轻点（或仅文案、无点） | 展示精确人数 N（≤7）· 与 sitting 同款多点 | 精确人数易滑向排行；§13.2 要求模糊态 |
-| 3 | **隐身（必须）** | **双轨**：(a) 本机 Privacy / 小圈区块新增 **「不向圈内展示今日来过」** 开关（默认关 = 允许记入）；(b) `was_here_mark` 带 `visible: false` 时 **不写** KV。全局 `?focusCircleWasHere=0` 仍保留 kill switch | 仅 kill switch、无面板开关 · 默认全员隐身 | §13.2「必须隐身」= 用户须能选择不被看见 |
-| 4 | **单圈活跃印记上限** | KV 每圈每 `dayKey` **≤8** `memberId`（与圈容量同档）；超出丢弃最旧 | 不限 | 防 KV 膨胀 |
+| 3 | **隐身（必须）** | **单一被动开关**（见 §PO 评审澄清 #2）：Privacy「不向圈内自动展示今日来过」；关 = `was_here_mark` no-op；**不**为 2c 另开开关。`?focusCircleWasHere=0` = kill switch | 仅 kill switch · 默认全员隐身 | §13.2「必须隐身」= 用户须能 opt-out 被动印记 |
+| 4 | **单圈活跃印记上限** | **复用 `FOCUS_CIRCLE_MAX_MEMBERS`**（当前 8）；超出丢弃最旧；改圈容量须同步常量 | 不限 | 防 KV 膨胀；禁止硬编码第二个 `8` |
 | 5 | **与 Witness 同 session** | 同一次 ≥60s 完成：**可同时** `was_here_mark`（自动）**与**可选 Witness 留痕（用户点「留下」）；二者 KV **分离** | 有 Witness 则跳过 was-here | 职责不同：2d=日到访、2c=自愿短语 |
 
-**我认为最合理的是**：上表 **建议默认** 全套——日历日 TTL + 仅「有人来过」不曝数 + Privacy 隐身开关 + KV≤8 + 与 Witness 并存。理由：对齐 §13.2「模糊态」与「必须隐身」，且与 2b 实时 / 2c 短语三轨清晰，UI 最不易长成 Feed。
+**我认为最合理的是**：上表 **建议默认** 全套——日历日 TTL + 仅「有人来过」不曝数 + **单一被动印记 Privacy 开关** + KV 上限 **复用** `FOCUS_CIRCLE_MAX_MEMBERS` + 与 Witness 并存且 **Rise 单点编排**。理由：对齐 §13.2「模糊态」与「必须隐身」，且与 2b 实时 / 2c 短语三轨清晰，UI 最不易长成 Feed。
+
+## PO 评审澄清（2026-09-07 · 拍板前必读）
+
+### 1. TTL 跨时区：以谁的本机「今天」为准？
+
+| 环节 | 机制（v2 锁定） |
+|---|---|
+| **写 `was_here_mark`** | KV 存 **`markedAtMs`（UTC 绝对时刻）** + **`markerDayKey`**（产生印记设备的本机 `YYYY-MM-DD`） |
+| **读 `presence_peek` / was-here 计数** | 客户端带 **`viewerDayKey`**（查看者本机当日）；服务端计入：`toLocalDayKey(markedAtMs, viewerTimeZone) === viewerDayKey`（`viewerTimeZone` = 客户端 IANA，如 `America/Los_Angeles`） |
+| **文案** | Idle 短句始终对齐 **查看者** 的「今天」——与 `FOCUS_CIRCLE_WAS_HERE_CAPTION` 语义一致 |
+| **已知限制** | 跨时区圈友在各自午夜附近，**最多 ±数小时** 的「今天」错位可接受；**不做** 全球统一日界或滚动 24h（那是 2c） |
+
+**不是**：按写入方 `markerDayKey` 硬过滤（查看者换日时会对不上）；**也不是** UTC 零点全球同时清零。
+
+### 2. 隐身开关会不会和 2c「打架」？
+
+**不会叠两个同类开关——因为 2c 根本没有 Privacy 隐身开关。**
+
+| 功能 | 隐身机制 |
+|---|---|
+| **2c Witness** | **自愿**：Rise 条点「跳过」= 不留痕；另有 kill switch `?focusCircleWitness=0`。**无**「不向圈内展示」面板项 |
+| **2d was-here** | **被动自动** mark → **须**可 opt-out：Privacy / 小圈区块 **一个**开关：「不向圈内自动展示今日来过」（`focus-tiger.focus-circle-passive-share.v1`，默认 **开** = 允许记入） |
+| **2e 认人层（未来）** | **复用同一被动开关**或在其下加子说明；**不**再为每个子功能各开一个隐身开关 |
+
+Witness 与 was-here **职责不同**：前者 = 用户主动留句；后者 = 被动日到访印记。面板里只出现 **一个**「被动圈内可见性」控件。
+
+### 3. Rise 时刻：与 Witness 会不会重演「分散仲裁」？
+
+**2d 不占 overlay、不出 Rise UI**——风险低于叠层类功能，但 **仍须单点编排**，禁止两处各自 `addEventListener` Rise。
+
+| 项 | 口径 |
+|---|---|
+| **单点入口** | `main.js` 抽出 `onFocusCircleRiseSideEffects({ elapsedSeconds })`；**所有** Rise / 完成路径（Sit Rise · `finishCompletedSession` · RitualFlow）只调此函数 |
+| **调用顺序** | ① `maybeWasHereMark(elapsed)` — **同步判定 + fire-and-forget POST**，不 `await`，不占 `requestOverlaySlot` → ② `maybeOfferWitnessLeave(elapsed)` — 现有 3s delay + Tier26 仲裁 **不变** |
+| **UI 冲突** | was-here **零** Rise 动效；Witness 条仍走 `overlaySlotArbitration`；**不可能**两条同时抢同一 overlay |
+| **单测** | `focusCircleWasHere.test.js`：eligible session 先 mark 再 schedule witness；mark 失败不挡 witness；`<60s` 两者皆不触发 |
+
+### 4. KV 上限 8：是否与圈子人数挂钩？
+
+**是，必须复用常量，禁止魔法数字。**
+
+- Worker：`FOCUS_CIRCLE_MAX_MEMBERS`（`cloud/src/lib/focusCircleKv.ts`）
+- 客户端：`FOCUS_CIRCLE_MAX_MEMBERS`（`src/core/focusCircleMembership.js`）
+- was-here KV 裁剪：`members` 条数 **≤ `FOCUS_CIRCLE_MAX_MEMBERS`**；将来 PO 改圈容量只改一处常量 + 单测
+- 满员 8 人圈逻辑自洽：每人每日最多 1 条 was-here 印记，桶不会溢出
 
 ## 产品语义（§13.2 扩写）
 
@@ -71,9 +116,9 @@
 
 | 邻接 | 风险 | 对策 |
 |---|---|---|
-| **2c Witness Rise 条** | 同 session 双轨 | 2d `mark` **静默**在 Rise 后 fire-and-forget；**不**占 overlay |
+| **2c Witness Rise 条** | 同 session 双轨、分散监听 | **`onFocusCircleRiseSideEffects` 单点**（§PO 评审澄清 #3）：先 mark 再 schedule witness；2d **不占 overlay** |
 | **Celebrate / postSession** | 抢注意力 | 2d **仅** Idle 背景；Rise 瞬间不画 |
-| **2b sitting leave** | Rise 后 sitting 归零、was-here 应出现 | `mark` 在 `presence_leave` **之后或并行**；peek 合并响应里 `hereTodayOthers` 已含本机若未隐身 |
+| **2b sitting leave** | Rise 后 sitting 归零、was-here 应出现 | `mark` 与 `presence_leave` 同编排内 **并行** fire-and-forget；peek 合并响应已含本机（若未隐身） |
 
 ## 后台网络三问
 
@@ -99,34 +144,36 @@
 ```json
 {
   "sittingOthers": 0,
-  "hereTodayOthers": 2,
-  "dayKey": "2026-09-05"
+  "hereTodayOthers": 1,
+  "viewerDayKey": "2026-09-07"
 }
 ```
+
+> `hereTodayOthers` 为 **布尔计数语义**（0 或 1，不曝精确 N）；实现可内部计数后 clamp 为「≥1 → 1」。
 
 ### 独立 action（备选）
 
 | action | 请求要点 | 响应要点 |
 |---|---|---|
-| `was_here_mark` | `circleId`, `memberId`, `dayKey?`, `visible`（默认 true） | `ok` |
-| `was_here_peek` | `circleId`, `memberId` | `hereTodayOthers`, `dayKey` |
+| `was_here_mark` | `circleId`, `memberId`, `markerDayKey`, `markedAtMs?`（默认 `Date.now()`） | `ok` |
+| `was_here_peek` | `circleId`, `memberId`, `viewerDayKey`, `viewerTimeZone` | `hereTodayOthers`, `viewerDayKey` |
 
-**KV**：`circle:v1:here:{circleId}:{dayKey}` · 值 = `{ schemaVersion, members: Record<memberId, markedAtMs> }` · **日历日结束即逻辑失效**（读时校验 `dayKey`）。
+**KV**：`circle:v1:here:{circleId}` · 值 = `{ schemaVersion, members: Record<memberId, { markedAtMs, markerDayKey }> }` · peek 时按 **查看者** `viewerDayKey` + `viewerTimeZone` 过滤（§PO 评审澄清 #1）。
 
 **mark 规则**：
 
 - 校验 `memberId` ∈ 圈成员；
-- `visible: false` → **no-op**（隐身）；
-- 同 `dayKey` 同 `memberId` 重复 mark → idempotent `ok`；
-- 裁剪至 ≤8 members。
+- 本机被动开关关 / `?focusCircleWasHere=0` → **no-op**（隐身）；
+- 同 `memberId` 同日重复 mark → idempotent `ok`（刷新 `markedAtMs` 可接受）；
+- 裁剪至 **≤ `FOCUS_CIRCLE_MAX_MEMBERS`** members。
 
 ## 文案（locale 冻表 · 开工前定稿）
 
 | 键（草案） | EN 示意 | 用途 |
 |---|---|---|
 | `FOCUS_CIRCLE_WAS_HERE_CAPTION` | Someone was here today. | Idle 背景（`hereTodayOthers ≥ 1`） |
-| `FOCUS_CIRCLE_WAS_HERE_PRIVACY_LABEL` | Don't show others I practiced today | Privacy 隐身开关 |
-| `FOCUS_CIRCLE_WAS_HERE_PRIVACY_HINT` | You can still see others; this only hides your mark. | 开关说明 |
+| `FOCUS_CIRCLE_PASSIVE_SHARE_LABEL` | Share when I practiced today with my circle | **被动印记**总开关（默认 on） |
+| `FOCUS_CIRCLE_PASSIVE_SHARE_HINT` | Hides automatic "was here" marks only. Leaving a Witness phrase is still your choice each session. | 与 2c 自愿留痕区分 |
 
 **禁止**：「N 人今天来过」精确数（除非 PO 推翻 #2 选备选）。
 
