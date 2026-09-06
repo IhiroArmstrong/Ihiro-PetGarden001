@@ -90,6 +90,8 @@
 
 - **Focus Circle Gentle Witness 刀 2c（2026-09-05 · #577 已合 develop）**：预设短语留痕 + 每条最多一次回应。Brief `task-focus-circle-witness-2c.md` · 场景 **AP**。**PO 已批**：≥60s 门槛 · API 命名 · 24h TTL · 1 回应/trace · Idle 1 未回应痕。**v2 澄清**：3s = 延迟出现非限时关条；Rise 条须 `overlaySlotArbitration` Tier26 + yield celebrate/首卡/postSession。**2026-09-05 本机 wrangler deploy**：生产 Version `815a9c33-758f-4029-b689-ab9150927e9d`；`POST /api/focus-circle` witness_peek / witness_leave / witness_respond 已上线。
 
+- **Focus Circle Was-Here-Today 刀 2d（2026-09-07 · `feature/focus-circle-was-here-2d`）**：≥60s Rise 后自动 `was_here_mark`；`presence_peek` 合并 `hereTodayOthers`；被动分享开关 · `onFocusCircleRiseSideEffects` 单点编排。Brief `task-focus-circle-was-here-2d.md` v2 · 场景 **AQ**。**源码合入 ≠ 现网**；须口令「部署」后 Worker 才有 was-here actions。
+
 - **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 
 - **Confide boundary EN 生产分叉 Redeploy（2026-09-03 · `chore/confide-boundary-prod-fork-verify`）**：Worker `CONFIDE_BOUNDARY_RESPECT` = `Nothing needs to be said. Yin is still here.`；locale 冻表不改。Version `78199a3b-37a2-4e62-a2c4-57233777ab96`。Brief `task-confide-boundary-prod-fork.md`。

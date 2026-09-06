@@ -15,6 +15,11 @@ import {
   isFocusCircleClientEnabled,
   readFocusCircleMembership
 } from './focusCircleMembership.js';
+import { getViewerTimeZone, toLocalDayKey } from './focusCircleDayKey.js';
+import {
+  isFocusCircleWasHereClientEnabled,
+  readFocusCircleWasHereQueryFlag
+} from './focusCircleWasHere.js';
 import {
   LANTERN_BUSY_RETRY_MS,
   LANTERN_HEARTBEAT_MS,
@@ -45,6 +50,7 @@ let idleObserverActive = false;
 /** @type {object | null} */
 let idleObserverOpts = null;
 let sittingOthersSnapshot = null;
+let hereTodayOthersSnapshot = null;
 let peekInFlight = false;
 let contributing = false;
 
@@ -85,11 +91,27 @@ function parseSittingOthers(body) {
   return Math.min(Math.floor(n), 7);
 }
 
+function parseHereTodayOthers(body) {
+  if (!body || typeof body !== 'object') return null;
+  if (body.schemaVersion !== FOCUS_CIRCLE_SCHEMA_VERSION) return null;
+  if (!('hereTodayOthers' in body)) return null;
+  const n = Number(body.hereTodayOthers);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return n >= 1 ? 1 : 0;
+}
+
 /**
  * @returns {number | null}
  */
 export function getFocusCircleSittingOthersSnapshot() {
   return sittingOthersSnapshot;
+}
+
+/**
+ * @returns {number | null}
+ */
+export function getFocusCircleHereTodayOthersSnapshot() {
+  return hereTodayOthersSnapshot;
 }
 
 export function setFocusCirclePresenceContributing(value) {
@@ -109,6 +131,7 @@ export function resetFocusCirclePresenceForTests() {
   peekTimer = null;
   heartbeatTimer = null;
   sittingOthersSnapshot = null;
+  hereTodayOthersSnapshot = null;
   peekInFlight = false;
   contributing = false;
   busyProbe = () => false;
@@ -144,6 +167,16 @@ export async function postFocusCirclePresence({
     circleId: circleId || membership.circleId,
     memberId: memberId || membership.memberId
   };
+  if (
+    action === 'presence_peek' &&
+    isFocusCircleWasHereClientEnabled({
+      storage,
+      cloudBaseUrl: getBaseUrl()
+    })
+  ) {
+    payload.viewerDayKey = toLocalDayKey();
+    payload.viewerTimeZone = getViewerTimeZone();
+  }
   try {
     const body = await postJson(FOCUS_CIRCLE_PATH, {
       body: JSON.stringify(payload)
@@ -152,27 +185,43 @@ export async function postFocusCirclePresence({
     if (sittingOthers == null) {
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
-    return { ok: true, sittingOthers, skipped: false };
+    const hereTodayOthers = parseHereTodayOthers(body);
+    return {
+      ok: true,
+      sittingOthers,
+      hereTodayOthers,
+      skipped: false
+    };
   } catch {
     return { ok: false, reason: 'network', skipped: true };
   }
 }
 
-function rememberSittingOthers(sittingOthers) {
-  if (sittingOthersSnapshot === sittingOthers) {
-    return { changed: false, sittingOthers };
-  }
+function rememberPresencePeek(sittingOthers, hereTodayOthers) {
+  const sittingChanged = sittingOthersSnapshot !== sittingOthers;
+  const hereChanged =
+    hereTodayOthers != null && hereTodayOthersSnapshot !== hereTodayOthers;
   sittingOthersSnapshot = sittingOthers;
+  if (hereTodayOthers != null) {
+    hereTodayOthersSnapshot = hereTodayOthers;
+  }
+  if (!sittingChanged && !hereChanged) {
+    return { changed: false, sittingOthers, hereTodayOthers };
+  }
   try {
     globalThis.dispatchEvent?.(
       new CustomEvent(FOCUS_CIRCLE_SITTING_EVENT, {
-        detail: { sittingOthers }
+        detail: { sittingOthers, hereTodayOthers: hereTodayOthersSnapshot }
       })
     );
   } catch {
     // non-DOM tests
   }
-  return { changed: true, sittingOthers };
+  return {
+    changed: sittingChanged || hereChanged,
+    sittingOthers,
+    hereTodayOthers: hereTodayOthersSnapshot
+  };
 }
 
 /**
@@ -207,7 +256,10 @@ export async function peekFocusCirclePresence(opts = {}) {
       action: 'presence_peek'
     });
     if (!result.ok) return result;
-    const remembered = rememberSittingOthers(result.sittingOthers);
+    const remembered = rememberPresencePeek(
+      result.sittingOthers,
+      result.hereTodayOthers
+    );
     return { ...result, changed: remembered.changed };
   } finally {
     peekInFlight = false;
@@ -289,7 +341,9 @@ async function sendHeartbeat(opts = {}) {
     ...opts,
     action: 'presence_heartbeat'
   });
-  if (result.ok) rememberSittingOthers(result.sittingOthers);
+  if (result.ok) {
+    rememberPresencePeek(result.sittingOthers, result.hereTodayOthers);
+  }
 }
 
 /**
@@ -342,7 +396,9 @@ export async function stopFocusCircleHeartbeat(opts = {}) {
     ...opts,
     action: 'presence_leave'
   });
-  if (result.ok) rememberSittingOthers(result.sittingOthers);
+  if (result.ok) {
+    rememberPresencePeek(result.sittingOthers, result.hereTodayOthers);
+  }
   return result;
 }
 
@@ -373,13 +429,16 @@ export function bindFocusCirclePresenceVisibilityPeek(isIdle = () => true) {
  */
 export function clearFocusCirclePresenceSnapshot() {
   sittingOthersSnapshot = null;
+  hereTodayOthersSnapshot = null;
   try {
     globalThis.dispatchEvent?.(
       new CustomEvent(FOCUS_CIRCLE_SITTING_EVENT, {
-        detail: { sittingOthers: null }
+        detail: { sittingOthers: null, hereTodayOthers: null }
       })
     );
   } catch {
     // non-DOM tests
   }
 }
+
+export { readFocusCircleWasHereQueryFlag };

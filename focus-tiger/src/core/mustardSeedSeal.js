@@ -55,6 +55,17 @@ export const MUSTARD_SEED_SEAL_CASE_SUMERU = MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SU
 export const MUSTARD_SEED_SEAL_CASE_HERO = MEMORIAL_SEAL_ENTRY_HERO;
 export const MUSTARD_SEED_SEAL_CASE_NO_TRACE = MEMORIAL_SEAL_ENTRY_NO_TRACE;
 
+/** Body class toggled while the memorial seal card is open (scene chrome). */
+export const MUSTARD_SEED_SEAL_BODY_CLASS = 'ft-mustard-seed-seal-open';
+
+/**
+ * @param {string} locale
+ * @returns {boolean}
+ */
+export function mustardSeedSealZhIsPrimaryLocale(locale) {
+  return locale === 'zh';
+}
+
 const sumeruEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_SUMERU);
 const heroEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_HERO);
 const noTraceEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_NO_TRACE);
@@ -175,6 +186,50 @@ export function pickMustardSeedSealMenuCase(state) {
       ? revealedIds[(idx + 1) % revealedIds.length]
       : revealedIds[0];
   return getMustardSeedSealCase(nextId) ?? MUSTARD_SEED_SEAL_CASES[0];
+}
+
+/**
+ * In-card Prev/Next chrome: only when multiple cases are revealed.
+ * @param {{ revealed?: boolean, revealedCaseIds?: unknown }} [state]
+ * @param {string | null | undefined} currentCaseId
+ * @returns {{ showNav: boolean, canPrev: boolean, canNext: boolean }}
+ */
+export function mustardSeedSealNavMeta(state, currentCaseId) {
+  const revealedIds = listRevealedMustardSeedCaseIds(state);
+  const showNav = revealedIds.length > 1;
+  const idx =
+    typeof currentCaseId === 'string'
+      ? revealedIds.indexOf(currentCaseId)
+      : -1;
+  const safeIdx = idx >= 0 ? idx : 0;
+  return {
+    showNav,
+    canPrev: showNav && safeIdx > 0,
+    canNext: showNav && safeIdx < revealedIds.length - 1
+  };
+}
+
+/**
+ * Step within revealed cases only; stops at boundaries (no wrap).
+ * @param {{ revealed?: boolean, revealedCaseIds?: unknown }} [state]
+ * @param {'prev' | 'next'} direction
+ * @param {string} currentCaseId
+ * @returns {(typeof MUSTARD_SEED_SEAL_CASES)[number] | null}
+ */
+export function navigateMustardSeedSealCase(state, direction, currentCaseId) {
+  const revealedIds = listRevealedMustardSeedCaseIds(state);
+  if (revealedIds.length <= 1) return null;
+  const idx = revealedIds.indexOf(currentCaseId);
+  if (idx < 0) return null;
+  if (direction === 'prev') {
+    if (idx <= 0) return null;
+    return getMustardSeedSealCase(revealedIds[idx - 1]);
+  }
+  if (direction === 'next') {
+    if (idx >= revealedIds.length - 1) return null;
+    return getMustardSeedSealCase(revealedIds[idx + 1]);
+  }
+  return null;
 }
 
 /**
