@@ -42,7 +42,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'mustard-seed-seal-card-styles-v3';
+const STYLE_ID = 'mustard-seed-seal-card-styles-v4';
 const LEGACY_STYLE_ID = 'mustard-seed-seal-card-styles-v2';
 const FADE_MS = 220;
 
@@ -491,6 +491,7 @@ export class MustardSeedSealCardUI {
 
   _injectStyles() {
     document.getElementById(LEGACY_STYLE_ID)?.remove();
+    document.getElementById('mustard-seed-seal-card-styles-v3')?.remove();
     document.getElementById('mustard-seed-seal-card-styles-v1')?.remove();
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
@@ -682,6 +683,63 @@ export class MustardSeedSealCardUI {
       }
       .mustard-seed-seal-card__btn--ghost {
         background: ${GLASS_FILL_STRONG};
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card {
+        bottom: max(108px, env(safe-area-inset-bottom, 0px) + 88px);
+        max-height: min(72vh, 520px);
+        padding: 12px 14px 12px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__head {
+        margin-bottom: 4px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__title {
+        font-size: 14px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__btn--nav {
+        padding: 5px 8px;
+        font-size: 11px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__badge-wrap {
+        margin: 0 0 8px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__badge {
+        width: 80px;
+        height: 80px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__poems {
+        margin: 0 0 6px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__poem-zh.is-poem-primary,
+      body.ft-narrow-shell .mustard-seed-seal-card__poem-en.is-poem-primary {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 4px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__poem-zh.is-poem-secondary,
+      body.ft-narrow-shell .mustard-seed-seal-card__poem-en.is-poem-secondary {
+        display: none;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__attr {
+        margin: 0 0 8px;
+        font-size: 11px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__save-note {
+        display: none;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__actions {
+        gap: 6px;
+      }
+      body.ft-narrow-shell .mustard-seed-seal-card__btn {
+        padding: 7px 12px;
+        font-size: 12px;
       }
     `;
     document.head.appendChild(style);
