@@ -1,0 +1,3 @@
+# fix/narrow-idle-home-minimal-chrome
+
+| 窄屏 Idle 首页极简 chrome（C.1 窄屏 + 抽屉指示条） | UI可见 | 待人工测试 | **基线**：`fix/narrow-idle-home-minimal-chrome`（develop tip `cded0b63` 之后）。**375 · `?product=1` Idle**：① `#yin-tip-kindness-badges` 印记**无白底玻璃卡**，圆印浮在右下（约 `bottom: 38vh`），**不挡阿寅脸**；② 底栏只见 Home Indicator 横条（`::before`），**不见**「Swipe up for options」可见字；`aria-label` 仍保留；③ 点横条/上滑仍可开抽屉；点单枚印记仍可下载 PNG。**≥480**：徽章条仍右侧中部 + 轻玻璃底（C.1 宽屏不变）。**禁止**枚数收成 3、改 3D 莲花/Enso 位置。自动化：`TipKindnessBadgesChrome.test.js` + `NarrowIdleShell.test.js`。 | — | — | — | `?product=1` · `#yin-tip-kindness-badges` · `.ft-narrow-grabber` · 375 | 2026-09-07 |

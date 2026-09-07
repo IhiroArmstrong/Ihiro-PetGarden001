@@ -27,3 +27,18 @@ test('C.1 badge strip softens achievement-panel chrome', () => {
   assert.doesNotMatch(src, /GLASS_SHADOW/);
   assert.doesNotMatch(src, /GLASS_BORDER/);
 });
+
+test('C.1 badge strip floats without panel chrome on narrow shell', () => {
+  assert.match(
+    src,
+    /@media \(max-width: 479px\)[\s\S]*\.yin-tip-kindness-badges[\s\S]*background:\s*transparent/
+  );
+  assert.match(
+    src,
+    /@media \(max-width: 479px\)[\s\S]*\.yin-tip-kindness-badges[\s\S]*bottom:\s*38vh/
+  );
+  assert.match(
+    src,
+    /@media \(max-width: 479px\)[\s\S]*backdrop-filter:\s*none/
+  );
+});
