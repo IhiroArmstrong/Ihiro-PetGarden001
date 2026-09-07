@@ -32,6 +32,8 @@ export class BreathPacerElement extends LitElement {
   static properties = {
     preset: { type: String },
     cycles: { type: Number },
+    /** Reset context: hide preset pills; completion shows Done only. */
+    compact: { type: Boolean, reflect: true },
     /** @private */
     _phase: { state: true },
     /** @private */
@@ -378,35 +380,41 @@ export class BreathPacerElement extends LitElement {
       ${this._completed
         ? html`
             <div class="breath-pacer__complete">
-              <button
-                type="button"
-                class="primary"
-                @click=${this._onCompleteFocus}
-              >
-                ${t('BREATH_COMPLETE_FOCUS') || 'Start focusing'}
-              </button>
+              ${this.compact
+                ? nothing
+                : html`
+                    <button
+                      type="button"
+                      class="primary"
+                      @click=${this._onCompleteFocus}
+                    >
+                      ${t('BREATH_COMPLETE_FOCUS') || 'Start focusing'}
+                    </button>
+                  `}
               <button type="button" @click=${this._onCompleteDone}>
                 ${t('BREATH_COMPLETE_DONE') || 'Done, thanks'}
               </button>
             </div>
           `
-        : html`
-            <div class="breath-pacer__presets">
-              ${PRESET_IDS.map(
-                (id) => html`
-                  <button
-                    type="button"
-                    class="breath-pacer__preset ${id === this._activePresetId
-                      ? 'is-active'
-                      : ''}"
-                    @click=${() => this._onPresetSelect(id)}
-                  >
-                    ${resolveBreathPacerConfig(id, this.cycles).preset.label}
-                  </button>
-                `
-              )}
-            </div>
-          `}
+        : this.compact
+          ? nothing
+          : html`
+              <div class="breath-pacer__presets">
+                ${PRESET_IDS.map(
+                  (id) => html`
+                    <button
+                      type="button"
+                      class="breath-pacer__preset ${id === this._activePresetId
+                        ? 'is-active'
+                        : ''}"
+                      @click=${() => this._onPresetSelect(id)}
+                    >
+                      ${resolveBreathPacerConfig(id, this.cycles).preset.label}
+                    </button>
+                  `
+                )}
+              </div>
+            `}
     `;
   }
 }

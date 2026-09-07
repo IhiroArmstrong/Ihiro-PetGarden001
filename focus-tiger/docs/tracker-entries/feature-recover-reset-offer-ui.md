@@ -1,0 +1,3 @@
+# feature/recover-reset-offer-ui
+
+| Reset & Return MVP · PR-A（Offer + 三练习 UI） | UI可见 | 待人工测试 | **主路径**：`?product=1&sessionMinutes=1` → Here & Now → Focusing → 切走 **70s** 回来（或 e2e 注入 refocus）→ 先 **REFOCUS** toast + nod-bow → ~8s 后底部 **emoji 条**（`recover-reset-offer`）。选 🪨 → Ground 引导 ~20s；选 💨 → 2× natural 呼吸（compact，无 preset 切换）；选 👀 → 5-4-3-2-1 ~45s；选 😰 → 呼吸后 Confide 柔性链接；选 🌤️/✕/8s → 关条继续专注。**对照**：主动 Tiger Anchor Recover → **无** emoji 条。**保护面**：Re-focus 额度 / toast 观察式 / Focus Awareness / Honesty 门闩不变。e2e：`e2e/recover-reset-offer.spec.js`。Brief `task-reset-return-mvp.md` §九 step 3–4。 | — | — | — | `RecoverResetOfferUI.js` · `RecoverResetPracticeUI.js` · `breath-pacer` compact | 2026-09-07 |
