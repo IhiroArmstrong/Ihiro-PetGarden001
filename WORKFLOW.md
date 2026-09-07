@@ -87,6 +87,23 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 2. **禁止默认打到 `main`**：除非用户**当回合书面**要求「开往 `main`」或「`develop` → `main` 发版 PR」。  
 3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base 或关 PR 重开**，禁止带着错误 base 等 CI / 催合。
 
+### PR 描述须引用所属任务线 Issue（硬性 · 2026-09-07）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-task-line-ref`）。与「任务完成后默认 push 旁支 + 开 PR」（`git-agent-commit`）并列；目的：PR 一开出来就自动挂到对应任务线，无需事后归类。
+
+开向 `develop` 的 PR 描述**必须**引用所属任务线 Issue（正文或「Development」关联区均可）：
+
+| Issue 类型 | 写法 | 说明 |
+|---|---|---|
+| **Epic**（活基线，如 `#627`–`#647`） | `Relates to #NNN` | Epic 无「整线关完」终点；合并后须保持 **open** |
+| **审计 / 切片**（有明确终点，如 `#648`–`#650`） | `Closes #NNN` | 仅用于确有终点的子 Issue |
+
+**硬规则**：
+
+1. **禁止对 Epic 使用 `Closes #NNN`**：Epic 是活基线；PR 合并若带 `Closes` 会把 Epic 自动关掉，看板假死——与「整线互卡」同类事故，只是触发方式不同。  
+2. **`Closes #NNN` 只用于审计 / 切片类**有明确终点的子 Issue。  
+3. 日常开发引用所属 Epic 一律 `Relates to #NNN`；不确定时默认 `Relates to`，**不要**对 Epic 写 `Closes`。
+
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-cross-session`）。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。门禁文件只保留指针，勿在别处再抄全文。  
@@ -611,6 +628,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 我想… | 做法 |
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
+| PR 引用任务线 | Epic 写 `Relates to #NNN`；审计/切片写 `Closes #NNN`；**禁止**对 Epic 用 `Closes`（见「PR 描述须引用所属任务线 Issue」） |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
 | 把 Cloud 旁支落到本机 | `git fetch` + `git worktree add …-wt-… origin/<branch>`；禁止主仓 Apply / migrated checkout（见「并行 Cursor 会话」第 8 款） |
 | 关单 / 批量人工测试 | 固定 QA 树 `…-wt-develop-qa` · `:5173`；合入后 `npm run sync:qa-develop`（见 `qa-develop-worktree`） |
