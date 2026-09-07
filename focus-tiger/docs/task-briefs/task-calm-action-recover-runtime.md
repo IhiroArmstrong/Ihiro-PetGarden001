@@ -1,6 +1,6 @@
 # Task Brief · Calm Action Wisdom · Recover 运行时（第一刀）
 
-> **状态（2026-09-07）**：**待口令**「开工 Calm Action Recover」。  
+> **状态（2026-09-07）**：**开工** · 旁支 `feature/calm-action-recover-runtime`。  
 > **父排期**：`taste-layer-calm-action-roadmap.md` · **C1**。  
 > **内容 SSOT**：`CALM_ACTION_WISDOM.md`（Recover 段 S/M · 约 14 条 hero）。  
 > **用户拍板**：Recover 第一刀；Arrive 第二刀（C1 关单后立刻排）。
