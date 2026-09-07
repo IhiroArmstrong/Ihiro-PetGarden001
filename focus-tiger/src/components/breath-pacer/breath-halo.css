@@ -1,0 +1,52 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ */
+
+/**
+ * Focus Tiger — breath pacer halo (CSS-only overlay on mascot slot).
+ */
+
+.breath-pacer__halo {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(214, 236, 221, 0.55) 0%,
+    rgba(214, 236, 221, 0.08) 58%,
+    transparent 72%
+  );
+  transform: scale(1);
+  filter: brightness(1);
+  transition:
+    transform var(--phase-duration, 4s) ease-in-out,
+    filter var(--phase-duration, 4s) ease-in-out;
+}
+
+.breath-pacer__halo.inhale {
+  transform: scale(1.15);
+  filter: brightness(1.1);
+}
+
+.breath-pacer__halo.hold {
+  animation: breath-halo-pulse 1s ease-in-out infinite;
+}
+
+.breath-pacer__halo.exhale {
+  transform: scale(0.9);
+  filter: brightness(0.9);
+}
+
+@keyframes breath-halo-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1.05);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
