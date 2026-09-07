@@ -61,6 +61,9 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [privacySheetOpen]
  * @property {boolean} [focusCircleWitnessLeaveVisible]
  * @property {boolean} [focusCircleWitnessRespondOpen]
+ * @property {boolean} [focusAwarenessOpen]
+ * @property {boolean} [recoverResetOfferOpen]
+ * @property {boolean} [recoverResetPracticeOpen]
  */
 
 /**
@@ -73,7 +76,8 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
- *   'focusCircleWitnessRespondOpen'
+ *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' | 'recoverResetOfferOpen' |
+ *   'recoverResetPracticeOpen'
  * >>} OverlaySnapshot
  */
 
@@ -117,7 +121,10 @@ export function buildOverlaySnapshot(input = {}) {
     purposeCardOpen: Boolean(input.purposeCardOpen),
     privacySheetOpen: Boolean(input.privacySheetOpen),
     focusCircleWitnessLeaveVisible: Boolean(input.focusCircleWitnessLeaveVisible),
-    focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen)
+    focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen),
+    focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
+    recoverResetOfferOpen: Boolean(input.recoverResetOfferOpen),
+    recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen)
   };
 }
 
@@ -234,12 +241,16 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
 }
 
 /**
- * `main.isFocusAwarenessCardBusy()` equivalent.
+ * Focusing soft cards (awareness + Reset offer/practice) mutual exclusion +
+ * shared blockers. `main.isFocusAwarenessCardBusy()` equivalent.
  *
  * @param {OverlaySnapshot} snapshot
  * @returns {boolean}
  */
-export function deriveFocusAwarenessCardBusy(snapshot) {
+export function deriveFocusingSoftCardBusy(snapshot) {
+  if (snapshot.recoverResetOfferOpen) return true;
+  if (snapshot.recoverResetPracticeOpen) return true;
+  if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.compassOpen) return true;
   if (snapshot.mustardSeedOpen) return true;
   if (snapshot.sessionState === STATES.CELEBRATE) return true;
@@ -251,6 +262,14 @@ export function deriveFocusAwarenessCardBusy(snapshot) {
   if (snapshot.reflectionOpen) return true;
   if (snapshot.focusDurationPickerOpen) return true;
   return false;
+}
+
+/**
+ * @param {OverlaySnapshot} snapshot
+ * @returns {boolean}
+ */
+export function deriveFocusAwarenessCardBusy(snapshot) {
+  return deriveFocusingSoftCardBusy(snapshot);
 }
 
 /**
@@ -509,6 +528,40 @@ function collectWitnessLeaveYield(snapshot) {
 }
 
 /**
+ * Shared yield targets for Reset offer / practice during Focusing.
+ *
+ * @param {OverlaySnapshot} snapshot
+ * @returns {string[]}
+ */
+function collectRecoverResetBaseYield(snapshot) {
+  /** @type {string[]} */
+  const blockers = [];
+  if (snapshot.sessionState === STATES.CELEBRATE) {
+    blockers.push('session-celebrate');
+  }
+  if (snapshot.arrivalOpen) blockers.push(OVERLAY_SOURCES.ARRIVAL);
+  if (snapshot.reflectionOpen) blockers.push(OVERLAY_SOURCES.REFLECTION);
+  if (snapshot.microRitualOpen) blockers.push(OVERLAY_SOURCES.MICRO_RITUAL);
+  if (isHonestyUiBusy(snapshot.honestyPhase)) {
+    blockers.push(OVERLAY_SOURCES.HONESTY_PANEL);
+  }
+  if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
+  if (snapshot.mustardSeedOpen) {
+    blockers.push(OVERLAY_SOURCES.GROWTH_MUSTARD_SEED);
+  }
+  if (snapshot.flowerWelcomeVisible) {
+    blockers.push(OVERLAY_SOURCES.FLOWER_WELCOME);
+  }
+  if (snapshot.focusCircleWitnessLeaveVisible) {
+    blockers.push(OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE);
+  }
+  if (snapshot.focusCircleWitnessRespondOpen) {
+    blockers.push(OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND);
+  }
+  return blockers;
+}
+
+/**
  * @param {object} req
  * @param {string} req.source
  * @param {string} [req.kind]
@@ -555,10 +608,12 @@ export function requestOverlaySlot(req) {
   }
 
   if (isSessionHardGate(snapshot)) {
-    const focusingAllowed =
-      source === OVERLAY_SOURCES.FOCUS_AWARENESS &&
+    const focusingSoftCardAllowed =
+      (source === OVERLAY_SOURCES.FOCUS_AWARENESS ||
+        source === OVERLAY_SOURCES.RECOVER_RESET_OFFER ||
+        source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) &&
       snapshot.sessionState === STATES.FOCUSING;
-    if (!focusingAllowed) {
+    if (!focusingSoftCardAllowed) {
       mustYieldTo.push('session-hard-gate');
     }
   }
@@ -591,8 +646,25 @@ export function requestOverlaySlot(req) {
   }
 
   if (source === OVERLAY_SOURCES.FOCUS_AWARENESS) {
-    if (deriveFocusAwarenessCardBusy(snapshot)) {
+    if (deriveFocusingSoftCardBusy(snapshot)) {
       mustYieldTo.push('focus-awareness-busy');
+    }
+  }
+
+  if (source === OVERLAY_SOURCES.RECOVER_RESET_OFFER) {
+    mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
+    if (deriveFocusingSoftCardBusy(snapshot)) {
+      mustYieldTo.push('focusing-soft-card-busy');
+    }
+  }
+
+  if (source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) {
+    mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
+    if (snapshot.recoverResetOfferOpen) {
+      mustYieldTo.push(OVERLAY_SOURCES.RECOVER_RESET_OFFER);
+    }
+    if (deriveFocusingSoftCardBusy(snapshot)) {
+      mustYieldTo.push('focusing-soft-card-busy');
     }
   }
 

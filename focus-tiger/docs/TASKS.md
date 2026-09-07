@@ -249,8 +249,27 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **3b** | Confide 在场 EN 分叉 | — | **#550 已合**（`CONFIDE_COMPANION_PRESENCE`） |
 | **3c** | Confide boundary EN 分叉 | `task-confide-boundary-prod-fork.md` | **#551 已合 + 生产 Redeploy** |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 | — | 不开工 |
+| **权重分叉** | Rise 60/25/15 · Honesty ≤29/≥30 等 | — | **2026-09-07 拍板：暂不分叉**（roadmap D3） |
 
-**我认为最合理的下一刀**：日签扩容 / 伸懒腰 / 好奇池仍后排，须另口令。较弱：未人工测就再开下一分叉。
+**执行排期 SSOT**：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)（Recover→Arrive→overlay→后排三池 · 2026-09-07）。
+
+**我认为最合理的下一刀**：**Calm Action Recover 运行时**（口令「开工 Calm Action Recover」· Brief `task-calm-action-recover-runtime.md`）。较弱：日签扩容 / 伸懒腰 / 好奇池仍后排；权重生产分叉在无调参目标前不做。
+
+## 📍 Calm Action Wisdom 运行时（2026-09-07 · 用户拍板）
+
+> SSOT 内容：`CALM_ACTION_WISDOM.md`（70 条 · 无 overlay）。**执行次序** → [`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)。
+
+| 序 | 表面 | Brief | 状态 |
+|---|---|---|---|
+| **C1** | **Recover**（打断后 S/M；不替换 toast） | `task-briefs/task-calm-action-recover-runtime.md` | **下一刀 · 待口令** |
+| **C2** | **Arrive**（C1 §7 关单后立刻排；建议 B1 冷启动 gate 已拍板） | `task-briefs/task-calm-action-arrive-runtime.md`（C1 后建） | 未开工 |
+| C3+ | Focus S 标语 / Transition / Reflect | 另 Brief | 未立项 |
+| **D** | Calm Action overlay | 待建 | C1 关单后再谈 |
+| **—** | 日签 14→N | 另 PR · 另口令 | 后排（≠ Calm Action） |
+
+**2026-09-07 拍板**：Recover 第一刀 · Arrive 第二刀（不无限延后）· 权重表暂不分叉。
+
+---
 
 ## 📍 静思典藏层（2026-09-06 · 内容锁 · 无新运行时）
 
