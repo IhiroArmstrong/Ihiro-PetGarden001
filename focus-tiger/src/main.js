@@ -422,6 +422,8 @@ import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
+import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
+import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -922,6 +924,7 @@ async function init() {
         lightProgression.playRecoverDisturbance();
       }
       if (type === 'activeRecover') {
+        calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
       }
     }
@@ -965,6 +968,12 @@ async function init() {
   );
   window.__momentWhisper = momentWhisperUI;
 
+  const calmActionRecoverStore = new CalmActionRecoverStore();
+  const calmActionRecoverCardUI = new CalmActionRecoverCardUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionRecoverStore
+  );
+  window.__calmActionRecoverCard = calmActionRecoverCardUI;
   const focusAwarenessCardUI = new FocusAwarenessCardUI(
     document.getElementById('ui-overlay') || document.body
   );
@@ -3433,6 +3442,7 @@ async function init() {
     acrossToolsIdleGuard.stop();
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
+    calmActionRecoverCardUI.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -3612,6 +3622,8 @@ async function init() {
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
     focusAwarenessCardUI.resetSession();
+    calmActionRecoverStore.resetSession();
+    calmActionRecoverCardUI.resetSession();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
@@ -3811,6 +3823,7 @@ async function init() {
       sessionCues.cancelPending();
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
+      calmActionRecoverCardUI.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
