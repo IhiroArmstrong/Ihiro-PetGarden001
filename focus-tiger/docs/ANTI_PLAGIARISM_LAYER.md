@@ -161,8 +161,11 @@
 | **3b** | Confide 在场 EN 生产分叉 | 审定句 + 「部署」 | **#550 已合**（`CONFIDE_COMPANION_PRESENCE`） |
 | **3c** | Confide boundary EN 生产分叉 | 审定句已锁 + 「部署」 | **#551 已合 + 生产 Redeploy**（`CONFIDE_BOUNDARY_RESPECT`） |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
+| **权重分叉** | Rise / 好奇 / Honesty 分档 | 有调参目标时 | **2026-09-07 拍板：暂不分叉** |
 
-**运行时下一刀**：Confide 高危模板 EN 分叉已齐（在场 + boundary）。日签扩容 / 伸懒腰 / 好奇仍后排。
+**执行排期 SSOT**：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)（Layer A–E · Recover→Arrive→overlay→后排）。
+
+**运行时下一刀**：**Calm Action Recover**（口令「开工 Calm Action Recover」）。Confide 句 overlay 序 3 已齐。日签扩容 / 伸懒腰 / 好奇仍后排；权重分叉冻结至有 secret 调参目标。
 
 ---
 
