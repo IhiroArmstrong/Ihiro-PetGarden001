@@ -23,7 +23,7 @@ import {
 } from '../core/sanctuaryBadges.js';
 import { GLASS_BLUR_CSS, GLASS_FILL, GLASS_RADIUS } from './glassPanelStyles.js';
 
-const STYLE_ID = 'yin-tip-kindness-badges-chrome-v4';
+const STYLE_ID = 'yin-tip-kindness-badges-chrome-v5';
 
 export class TipKindnessBadgesChrome {
   /**
@@ -150,6 +150,7 @@ export class TipKindnessBadgesChrome {
     document.getElementById('yin-tip-kindness-badges-chrome-v1')?.remove();
     document.getElementById('yin-tip-kindness-badges-chrome-v2')?.remove();
     document.getElementById('yin-tip-kindness-badges-chrome-v3')?.remove();
+    document.getElementById('yin-tip-kindness-badges-chrome-v4')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -200,13 +201,25 @@ export class TipKindnessBadgesChrome {
       }
       @media (max-width: 479px) {
         .yin-tip-kindness-badges {
-          max-width: min(148px, 42vw);
-          top: max(96px, 22vh);
-          padding: 3px;
+          max-width: min(120px, 36vw);
+          top: auto;
+          bottom: 38vh;
+          right: max(8px, env(safe-area-inset-right, 0px));
+          padding: 0;
+          border-radius: 0;
+          background: transparent;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+        }
+        .yin-tip-kindness-badges__row {
+          gap: 4px;
+          justify-content: flex-end;
         }
         .yin-tip-kindness-badges__img {
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
+          background: rgba(255, 252, 245, 0.35);
+          box-shadow: 0 1px 4px rgba(44, 31, 20, 0.12);
         }
       }
     `;
