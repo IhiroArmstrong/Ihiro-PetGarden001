@@ -52,6 +52,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-develop-small-pr-run-merge` | 合入 develop：CI 绿即可合并（人工测试非合入门闩） | `WORKFLOW.md` | 合入 develop：CI 绿即可合并 |
 | `prod-worker-deploy` | 生产 Worker Redeploy 须明确「部署」口令 | `WORKFLOW.md` | 生产 Worker Redeploy |
 | `git-pr-base-develop` | 开 PR 须确认 `--base`（默认 develop；禁默认打 main） | `WORKFLOW.md` | 开 PR 前 · `--base` 自查 |
+| `git-pr-task-line-ref` | PR 描述须引用所属任务线 Issue（Epic 用 Relates to；审计/切片用 Closes；禁对 Epic 用 Closes） | `WORKFLOW.md` | PR 描述须引用所属任务线 Issue |
 | `git-branch-health` | 分支健康度（即时纪律 + 双周普查；非 CI 硬拦） | `focus-tiger/docs/PROCESS.md` | 分支健康度 |
 | `regression-gate` | 交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…） | `.cursor/rules/focus-tiger-regression-lock.mdc` | 交互修复完工门禁 |
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
@@ -98,6 +99,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-develop-small-pr-run-merge` | 「合入 develop：CI 绿即可合并见 `WORKFLOW.md`」（旧称文档/小 PR Run 合并；现含运行时 PR）；regression-lock / PROCESS / COLLAB / docs.mdc 可一行引用 | 把合 develop 默认改回「只请你上 GitHub 手合」或「等人工测完再合」；把本条扩成合 `main` 或生产部署；下班前口令顺手推进无关 PR |
 | `prod-worker-deploy` | 「生产 Worker 须明确「部署」见 `WORKFLOW.md`」；cloud README 可一行引用 | 主张合入 develop / CI 绿即可 redeploy；把「同步」「发布」当成部署口令 |
 | `git-pr-base-develop` | 「开 PR 须 `--base develop`；见 `WORKFLOW.md`」；PROCESS 血统检查可一行引用 | 主张可省略 `--base` 靠 GitHub 默认；日常 PR 默认可打 `main`；误开后仍等 CI 不立刻纠正 |
+| `git-pr-task-line-ref` | 「PR 描述须引用所属任务线 Issue；Epic 用 `Relates to`、审计/切片用 `Closes`；见 `WORKFLOW.md`」 | 主张对 Epic 写 `Closes`；主张 PR 不必引用任务线 Issue；把活基线 Epic 当可关单子 Issue |
 | `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
@@ -246,6 +248,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-07 | 新增 `git-pr-task-line-ref`：PR 描述须引用所属任务线 Issue；Epic 用 `Relates to`、审计/切片用 `Closes`；禁止对 Epic 用 `Closes`。SSOT `WORKFLOW.md`「PR 描述须引用所属任务线 Issue」 |
 | 2026-09-06 | 产品表新增 `CONTEMPLATIVE_ARCHIVE.md`（静思典藏层；12 候选；芥子须弥 = 第一枚纪念印；不进 rules-authority 机器块） |
 | 2026-09-06 | 防剽窃层补 **值得保护四测**（`ANTI_PLAGIARISM_LAYER.md` §3.2）；与准入四问正交；`PRINCIPLES.md` 加「云端防剽窃与护城河」指针。不进 rules-authority 机器块 |
 | 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |

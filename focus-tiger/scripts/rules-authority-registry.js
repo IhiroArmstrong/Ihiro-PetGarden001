@@ -566,6 +566,42 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-pr-task-line-ref',
+    title: 'PR 描述须引用所属任务线 Issue（Epic 用 Relates to；审计/切片用 Closes；禁对 Epic 用 Closes）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: 'PR 描述须引用所属任务线 Issue',
+    ssotMustContain: [
+      /git-pr-task-line-ref/,
+      /Relates to #NNN/,
+      /禁止对 Epic 使用 `Closes #NNN`/,
+      /审计 \/ 切片/
+    ],
+    topicSignals: [
+      /git-pr-task-line-ref/,
+      /Relates to #/,
+      /禁止对 Epic.*Closes/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /Relates to #/,
+      /禁止对 Epic.*Closes/,
+      /Closes #NNN.*审计/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'closes-epic-in-pr',
+        pattern: /(?:Epic|活基线).{0,24}Closes\s+#\d+/,
+        note: 'Epic 是活基线，PR 禁止 Closes；须 Relates to',
+        exemptIfLineMatches: /禁止|不得|不要/
+      }
+    ]
+  },
+  {
     id: 'git-branch-health',
     title: '分支健康度（即时纪律 + 双周普查；非 CI 硬拦）',
     ssotPath: 'focus-tiger/docs/PROCESS.md',
