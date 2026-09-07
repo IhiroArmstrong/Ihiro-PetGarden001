@@ -30,6 +30,8 @@ export const OVERLAY_SOURCES = Object.freeze({
   FLOWER_WELCOME: 'flower-welcome',
   MOMENT_WHISPER: 'moment-whisper',
   FOCUS_AWARENESS: 'focus-awareness',
+  RECOVER_RESET_OFFER: 'recover-reset-offer',
+  RECOVER_RESET_PRACTICE: 'recover-reset-practice',
   ONBOARDING_HINT: 'onboarding-hint',
   WELLNESS_FIRST: 'wellness-first',
   SOFT_UPDATE: 'soft-update',
@@ -411,6 +413,25 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
     readers: 'FocusAwarenessCardUI.tryShow (Focusing allowed)'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers: 'RecoverResetOfferUI.tryShow (Focusing allowed; passive refocus follow-up)',
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#recover-reset-offer',
+    snapshotField: 'recoverResetOfferOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers: 'RecoverResetPracticeUI.tryShow (Focusing allowed; blocks idle Yin tap)',
+    blocksIdleYinTap: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BACKDROP_ONLY,
+    dismissRoot: '#recover-reset-practice',
+    snapshotField: 'recoverResetPracticeOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.WELLNESS_FIRST,
