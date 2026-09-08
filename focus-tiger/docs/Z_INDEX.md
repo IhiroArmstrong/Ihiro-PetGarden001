@@ -68,6 +68,10 @@
 | **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |
 | **17** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-backdrop` 阿寅静帧壁纸卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
+| **17** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-backdrop` Stay in touch 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **17** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-backdrop` 向阿寅倾诉遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **17** | `src/ui/TipJarUI.js` | `#yin-tip-jar-backdrop` Buy Yin a Tea 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **26** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-backdrop` Sanctuary Lifetime 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only；卡 z27） |
 | **27** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（须高于 Support 模态 25/26，避免 Unlock Lifetime 点到淡出遮罩） |
 | **17** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-backdrop` Membership 模态遮罩 |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |
