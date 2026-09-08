@@ -83,12 +83,12 @@
 | 5 | 苹果 DMG 发布准备（`mac-dmg-release`） | **并行**到打包周。**耦合** #9（是否打进模型）、#4（收款）。**兼容** #19（下载入口）。 | 不 blocks #9 开工。 |
 | 6 | Focus Coin & Collections（`focus-coin-collections`） | **耦合** #1（发点来源）。**耦合** #14（花园 vs 珍藏空间，已切开）。**兼容** #18（数字对得上即可）。 | 新「按时长发点」切片建议等 #1 口径；商店/清供可并行。 |
 | 7 | Five Moments 场景功能扩充（`five-moments-expansion`） | **兼容** #10 #11 #13（共用 Arrive/Focus/Recover/… 标签）。**禁止**整线耦合、禁止本线认领金句/Reset/倾诉实现。 | 范围=分类框架扩展；具体功能归各产品线。 |
-| 8 | Yin's Personalization Engine 算法层（`personalization-engine`） | **并行**本地 L0/L1。**耦合** #21（云端秘密变换归防剽窃，本线只管信号/Pack 形状）。**兼容** #12（问答若将来做，只是可选输入）。**兼容** #17（画像是否进备份包，分切片谈）。**不**耦合 #9。 | Epic 写清：算法/信号 ≠ YPE 云闭包 ≠ Qwen ≠ Operating。 |
+| 8 | Yin's Personalization Engine 算法层（`personalization-engine`） | **并行**本地 L0/L1。**耦合** #21（云端秘密变换归防剽窃，本线只管信号/Pack 形状）。**兼容** #12（问答若将来做，只是可选输入）。**兼容** #17（画像是否进备份包，分切片谈）。**不**耦合 #9。 | 算法/信号 ≠ YPE 云闭包 ≠ Qwen ≠ Operating。**防剽窃收口**：YPE V2 真保护须 insight 被 Confide 真实消费 + 现网阈值 ≠ git 验收锚 + 「部署」——见 `ANTI_PLAGIARISM_LAYER.md` §3.2.2 C。 |
 | 9 | Local AI Operating 层（`local-ai-operating`） | **并行**（现仅方向锁）。**兼容** #13（可共用本机模型文件，入口禁止混成「阿寅就是操作系统」）。**耦合** #5（打包进壳）。与 #8 **并行**。 | 1C 实验室环境可借用本机模型，不等于本线必须先完结。 |
 | 10 | Ground Exercise & Reset and Return（`reset-return`） | **并行**。**兼容** #13（overwhelmed 引流是可选出口，不挡 MVP）。**兼容** #7（Recover 桶名）。**耦合** #11（Recover 槽若挂行动句）。 | MVP 已拍板，可直接写进备注。 |
-| 11 | 金句库/三池 + 逐步接线（`wisdom-pools`） | **并行**。**耦合** #21（Quiet Line overlay）。**兼容** #7（Moment 分桶）。与 #13 **并行且分池**（禁止倾诉语料当金句菜单）。 | 内容入库 + overlay 槽 + 挂到界面；不另开接线 Epic。 |
+| 11 | 金句库/三池 + 逐步接线（`wisdom-pools`） | **并行**。**耦合** #21（Quiet Line overlay）。**兼容** #7（Moment 分桶）。与 #13 **并行且分池**（禁止倾诉语料当金句菜单）。 | 内容入库 + overlay 槽 + 挂到界面；不另开接线 Epic。**防剽窃收口**：Quiet Line 其余键逐键部署分叉（overlay 已就绪）；Calm Action 70 须 runtime Layer C 关单后再谈 overlay——见 §3.2.2 C / C′。 |
 | 12 | Onboarding 提问（`onboarding-goal-questions`） | **真串行**：blocked by **表外**「冷启动第一幕审计」收口。与 #8 **不**互 blocks。 | 现状：方向采纳、现在不实现。解禁口令另说。建议审计做短 Epic 或挂本线前置子 Issue。 |
-| 13 | Confide 与 AI 仪式应用（`confide-ai-ritual`） | **并行**活基线。**耦合** #21（句库 overlay）。**兼容** #9 #10。#22 是本线验收轨，**不**互设 Epic blocks。 | 工作量最大；正文链已有 task-briefs。 |
+| 13 | Confide 与 AI 仪式应用（`confide-ai-ritual`） | **并行**活基线。**耦合** #21（句库 overlay）。**兼容** #9 #10。#22 是本线验收轨，**不**互设 Epic blocks。 | 工作量最大；正文链已有 task-briefs。**防剽窃收口**：句库除已分叉 EN 外，其余键 + ja/zh/corpus 逐键部署分叉；YPE insight 消费路径到位后 V2 闭包才算熟——见 §3.2.2 C。 |
 | 14 | Yin Evolution（`yin-evolution`） | **耦合** #1（终身分钟）。**耦合** #6（空间切开）。**兼容** #20。 | 一句话：身旁终身莲花池；Slice A 已接线；后续 Slice B 金环 + 未接线环境纪念物。 |
 | 15 | 多语言（`i18n`） | **兼容约束（全局）**：凡用户可见文案的线都要对它兼容；**永不** blocks。 | 只 claim en+ja，zh 为草稿。 |
 | 16 | ~~Personalization Engine~~ | — | **已并入 #8**，不建 Epic。 |
@@ -96,7 +96,7 @@
 | 18 | Journey Log（`journey-log`） | **耦合** #1（写入钩）。**兼容** #6 #8 #22（1B 读数须对列表）。**耦合** #17（在备份白名单里）。 | |
 | 19 | 市场官网（`marketing-site`） | **并行**。发布周 **兼容** #4 定价、#5 下载链。 | |
 | 20 | 美术优化（`art-polish`） | **兼容约束（全局 UI）**；不阻塞。 | |
-| 21 | 防剽窃层（`anti-plagiarism-layer`） | **耦合** #8 #11 #13（分 PR overlay，不整线互相等完）。 | 正文链 `ANTI_PLAGIARISM_LAYER.md`。 |
+| 21 | 防剽窃层（`anti-plagiarism-layer`） | **耦合** #8 #11 #13（分 PR overlay，不整线互相等完）。 | 正文链 `ANTI_PLAGIARISM_LAYER.md`。**不单独排期**：§3.2.2 C 挂主线前置；权重分叉等 D3 冻结；真保护 = 现网 ≠ 冻表（尺子，不是第 22 条产品线）。 |
 | 22 | Local AI Phase 1A/1B/1C 验收（`phase1-a-b-c-testing`） | **挂在 #13 下的验收轨**，Epic 级并行于其它产品线。**兼容** #18（1B 数字）。1C 只用实验室环境，**不** blocks #9。 | 1B 问练习/到场；1A 口头出示记忆；1C 第二面镜子 validation≠上线。≠ 记忆切片 1a/1b/1c。 |
 
 ## 已拍板

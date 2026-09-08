@@ -466,6 +466,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 2. **口令**：仅当你**当回合书面**明确说「部署」/「redeploy」/「部署生产 Worker」时，才可执行。含糊的「同步」「上线」「发布」「合进去了」**都不算**。  
 3. **与合 `main` 分开**：合并 `develop` → `main`（`git-merge-main`）**也不**自动授权 Worker deploy；两边都要各自的明确指令。  
 4. **汇报**：若执行了部署，须写清 Worker 名、环境（生产）、版本/部署 id（若有）、以及「未部署」时不得假装已对真实用户生效。
+5. **防剽窃分叉核对（可选）**：若本次 Redeploy 含 Quiet Line / Confide 句库键值更新，顺带对照 `ANTI_PLAGIARISM_LAYER.md` §3.2.2 **C′ 部署核对**（逐键审定、现网 ≠ 冻表、禁止写回 freeze）。Dispatcher 权重 / Honesty 分档不在此清单（D3 冻结）。
 
 命令与密钥细节见 [`focus-tiger/cloud/README.md`](focus-tiger/cloud/README.md)；本节只管**何时允许执行**。
 

@@ -153,7 +153,7 @@ W5+     口令触发 D2 日签 / D3 QL      E 区仅在有调参目标时
 
 | 文档 | 关系 |
 |---|---|
-| `ANTI_PLAGIARISM_LAYER.md` §3.2 / §5 / §6 | 四测 · 口令队列 · 后排池定义 |
+| `ANTI_PLAGIARISM_LAYER.md` §3.2 / §3.2.2 C / §5 / §6 | 四测 · 兑现清单主线依赖 · 口令队列 · 后排池定义 |
 | `CALM_ACTION_WISDOM.md` | 70 条 CMS · 四池 · Recover/Arrive 表面 |
 | `TASKS.md` §防剽窃层 + §Calm Action | 摘要索引 → **本表 SSOT** |
 | `PROCESS.md` 当前进度速览 | 重大关单后补一行 |

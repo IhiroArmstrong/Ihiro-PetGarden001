@@ -168,13 +168,26 @@ ja / zh / corpus **未**分叉。上列之外的 Quiet Line / Confide 键，现�
 
 #### C · 应该进入、尚未进入（关注清单 · 不开工令）
 
-| 项目 | 缺的是什么 | 何时才算「进了」 |
-|---|---|---|
-| Dispatcher 权重 / Honesty 分档（**唯一算法型秘密候选**，除 YPE 外） | 管道已在 B；缺与冻表分叉的手感数字 | 现网权重/分档 ≠ git 冻表，且不再写回 freeze |
-| YPE V2 非平凡闭包 | 源码在；缺现网阈值分叉 + insight 被真实消费 | 现网阈值 ≠ 验收锚，且 Confide/编排真用上 insight |
-| Quiet Line / Confide 其余键与 ja/zh/corpus | 内容型；多数键还等于冻表 | 逐键现网 ≠ 冻表（不要求一次全部分叉） |
-| Calm Action Wisdom 70 CMS | **无运行时** | 先接线，再套已验证 overlay；现在谈保护过早 |
-| 后排：日签 14→N / 伸懒腰池 / 好奇池 | 过 §3；内容未扩 / 权重仍冻表 | 另口令。**禁止**只因为「属于防剽窃层」提前开工 |
+**排期权不在本层**：下列项须逐个兑现，但 **不设** 防剽窃专属 1/2/3 号序。排序权交还各主线 Epic（`task-lines-epic-draft.md`）与 `taste-layer-calm-action-roadmap.md`；本表只登记「在等什么」，不另开 Epic #22。
+
+| 项目 | 缺的是什么 | 何时才算「进了」 | 主线 / 前置（≠ 第几个做） |
+|---|---|---|---|
+| Dispatcher 权重 / Honesty 分档（**唯一算法型秘密候选**，除 YPE 外） | 管道已在 B；缺与冻表分叉的手感数字 | 现网权重/分档 ≠ git 冻表，且不再写回 freeze | 品味层 Backlog + Epic **#21** 耦合；`taste-layer-calm-action-roadmap` **D3 冻结**——须有 secret 调参目标后再谈生产分叉；**不开**独立防剽窃 PR |
+| YPE V2 非平凡闭包 | 源码在；缺现网阈值分叉 + insight 被真实消费 | 现网阈值 ≠ 验收锚，且 Confide/编排真用上 insight | Epic **#8**（信号 / Pack / insight 消费路径）+ **#13**（Confide 开口）+ **#21**（云闭包收口）；现网阈值分叉须口令「部署」 |
+| Quiet Line / Confide 其余键与 ja/zh/corpus | 内容型；多数键还等于冻表 | 逐键现网 ≠ 冻表（不要求一次全部分叉） | Epic **#11** / **#13**（内容审定）；overlay **#543** / **#548** 已就绪 → **部署核对**（下节），非新开发排期 |
+| Calm Action Wisdom 70 CMS | **无运行时** | 先接线，再套已验证 overlay；现在谈保护过早 | Epic **#11** + roadmap **Layer C→D**（Recover / Arrive 运行时关单后再谈 overlay） |
+| 后排：日签 14→N / 伸懒腰池 / 好奇池 | 过 §3；内容未扩 / 权重仍冻表 | 另口令。**禁止**只因为「属于防剽窃层」提前开工 | 品味层 + roadmap **Layer E**；D3 冻结期间权重项一律「管道在、秘密薄」 |
+
+#### C′ · 部署核对（第一类 · overlay 已就绪、只差分叉）
+
+> 衔接 `WORKFLOW.md`「生产 Worker Redeploy」（`prod-worker-deploy`）。**不走** PR / 开发流程；用户当回合说「部署」时顺带核对。
+
+| 核对项 | 说明 |
+|---|---|
+| 本次分叉哪些键？ | Quiet Line / Confide 其余 en/ja/zh/corpus 键——**逐键**审定，不要求一次全做 |
+| 现网 ≠ 冻表？ | Redeploy 后抽样对照 §3.2.2 A 口径；仍等于冻表 → 不算真保护 |
+| 禁止写回 freeze | 分叉后的灵魂数字/正文 **不得** 贴回 `tasteLayerFreeze` / locale 冻池 / Brief 阈值表 |
+| 与 D3 无关 | 本清单 **不** 含 Dispatcher 权重 / Honesty 分档（D3 冻结至有 secret 调参目标） |
 
 #### D · 明确排除（不要进本层）
 
@@ -185,7 +198,8 @@ chrome 文案、Idle/CapCut/精灵播放器、Confide 路由 / Qwen / Tool Regis
 脚注（2026-09-08 · 分析师核对，不影响上表结论）：
 
 1. **Dispatcher 权重 / Honesty 分档同时出现在 B 与 C，不是矛盾。** B 是 t0（名字已在成员表，现网仍等于冻表，严格不算已保护）；C 是 t1（等积累出冻表覆盖不了的差异化数字，再纳入真保护）。同一对象的两个镜头，不要合并或去重成一行。  
-2. **YPE V1 只在 B、不进 C，不是漏项。** V1 契约就是回声选档 + `patternInsights=[]`，设计上不产生非平凡秘密，没有「等成熟」的未来态；接班的是 V2。禁止用「V1 怎么还没进」要求把它列入 C。
+2. **YPE V1 只在 B、不进 C，不是漏项。** V1 契约就是回声选档 + `patternInsights=[]`，设计上不产生非平凡秘密，没有「等成熟」的未来态；接班的是 V2。禁止用「V1 怎么还没进」要求把它列入 C。  
+3. **C 表「主线 / 前置」列不是排期表。** 问「还没保护是忘了还是在等」→ 查该列；问「下一个做谁」→ 查对应 Epic 与 `taste-layer-calm-action-roadmap.md`，禁止在防剽窃层另立序号。
 
 ---
 
