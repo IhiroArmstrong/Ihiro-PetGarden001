@@ -16,6 +16,7 @@ const css = readFileSync(join(dir, 'styles.css'), 'utf8');
 const redirects = readFileSync(join(dir, '_redirects'), 'utf8');
 const privacy = readFileSync(join(dir, 'privacy.html'), 'utf8');
 const wellness = readFileSync(join(dir, 'wellness.html'), 'utf8');
+const headers = readFileSync(join(dir, '_headers'), 'utf8');
 const communityLink = readFileSync(
   join(repoRoot, 'focus-tiger/src/core/communityLink.js'),
   'utf8'
@@ -111,5 +112,12 @@ describe('marketing-site Slice 2 contract', () => {
     assert.doesNotMatch(communitySection, /limited time/i);
     assert.doesNotMatch(communitySection, /workers\.dev/i);
     assert.doesNotMatch(communitySection, /hurry/i);
+  });
+
+  it('centers the Slack note and keeps Yin square for WebKit', () => {
+    assert.match(css, /\.community-note[\s\S]*?margin:\s*0\.85rem auto 0/);
+    assert.match(css, /\.hero-yin[\s\S]*?aspect-ratio:\s*1\s*\/\s*1/);
+    assert.doesNotMatch(css, /Iowan Old Style/);
+    assert.match(headers, /\*\.css[\s\S]*Content-Type:\s*text\/css/);
   });
 });
