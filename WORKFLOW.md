@@ -105,7 +105,10 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 1. **统一用 `Closes #NNN`**（Epic、审计、切片均同）；**禁止**再用 `Relates to #NNN` 作任务线引用——GitHub 只把它记为 cross-reference，**不会**写入 Linked pull requests 列。  
 2. **禁止手动 Development 侧栏关联替代关键字**：手动关联与 `Closes` 享受同样工作流；在 auto-close **开启**时会误关 Epic——关键字 + 关掉的 auto-close 才是正路。  
 3. **双保险**：若仓库 auto-close 设置被重新打开，须立即改回：**Epic 用 `Relates to #NNN`**（Linked pull requests 列会再变空），**仅**有终点的审计/切片继续用 `Closes #NNN`。文档与本节须同步改回并汇报。  
-4. 一条 PR 只 `Closes` **一个**所属线 Issue（主 Epic 或主切片）；跨线说明写在正文，勿一行 Closes 多个 Epic。
+4. **`Closes` 目标数量按 Issue 类型区分**（防误关已由仓库 auto-close 设置兜底，本条管的是看板可读性与范围纪律）：
+   - **审计 / 切片**（有明确终点，如 `#648`–`#650`）：一条 PR 只 `Closes` **一个** Issue；一条 PR 对应两个切片说明范围没切干净，须警惕。
+   - **Epic**（活基线）：允许一条 PR `Closes` **多个** Epic（如 `Closes #637` / `Closes #645` 分两行，或 `Closes #637, #645`）——表示一次改动耦合多条线，**应**同时出现在各 Epic 的 Linked pull requests 列；跨线说明仍写在正文。
+   - **Dependabot / 纯依赖 bump / 无产品语义维护 PR**：**不挂**任务线（正文勿写 `Closes #NNN`）；误挂会污染 Epic 的 Linked pull requests 列（如 `#558`/`#559` 误挂 `#630`）。
 
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
