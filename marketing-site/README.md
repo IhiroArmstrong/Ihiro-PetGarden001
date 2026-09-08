@@ -22,10 +22,18 @@ node --test marketing-site/slice0-contract.test.js
 
 ## Deploy (Cloudflare Pages · same ihiro account)
 
+**Production** (`twinsology.com` / `www`) only updates when the deploy branch matches the Pages **production branch** (`develop` for `twinsology-marketing`). Without `--branch develop`, `wrangler` creates a **preview** deployment (e.g. `feature-….pages.dev`) and the custom domain stays on the old build.
+
 ```bash
 cd /path/to/repo
-npx wrangler pages deploy marketing-site --project-name twinsology-marketing
+git checkout develop && git pull origin develop
+npx wrangler pages deploy marketing-site \
+  --project-name twinsology-marketing \
+  --branch develop \
+  --commit-dirty=true
 ```
+
+Verify: `curl -sL https://twinsology.com/ | rg "Early Yin Community"` should match.
 
 Custom domains: `twinsology.com` and `www.twinsology.com` (www redirects to apex).
 
