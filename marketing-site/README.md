@@ -35,7 +35,7 @@ npx wrangler pages deploy marketing-site \
 
 Verify: `curl -sL https://twinsology.com/ | rg "Early Yin Community"` should match.
 
-Custom domains: `twinsology.com` and `www.twinsology.com` (www redirects to apex).
+Custom domains: `twinsology.com` and `www.twinsology.com`. **www must 301 to apex** (`functions/_middleware.js`). Pages `_redirects` cannot do hostname redirects, so a file-only rule never ran — Safari then cached `www` CSS separately (`max-age=14400`).
 
 **Do not** edit MX / SPF / DKIM / DMARC / Resend records. Website records only.
 
