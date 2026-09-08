@@ -192,7 +192,7 @@ gh api graphql -f query="
       projectV2View { id name filter }
     }
   }" >/dev/null
-echo "    View filter: is:issue (PRs via Issue Linked pull requests column)"
+echo "    View filter: is:issue (Linked pull requests column fills when PR body uses Closes #NNN; auto-close must be OFF — see WORKFLOW.md)"
 
 echo "==> Project workflows (enable in UI if any missing)..."
 gh api graphql -f query="
@@ -213,7 +213,7 @@ echo ""
 echo "========== SUMMARY =========="
 echo "Project: $PROJECT_URL"
 echo "Fields: 状态 ✓ | 排期波次 ✓ | $TASK_LINE_FIELD ✓ (状态留空，请手动标注)"
-echo "View: $VIEW_NAME ✓ (filter is:issue; Group by 须网页点一次)"
+echo "View: $VIEW_NAME ✓ (filter is:issue; Linked pull requests ← Closes #NNN in PR body)"
 echo "Repo link: $REPO ✓"
 echo "Items: ${#ISSUES[@]} issues"
 echo ""

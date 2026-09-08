@@ -87,22 +87,25 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 2. **禁止默认打到 `main`**：除非用户**当回合书面**要求「开往 `main`」或「`develop` → `main` 发版 PR」。  
 3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base 或关 PR 重开**，禁止带着错误 base 等 CI / 催合。
 
-### PR 描述须引用所属任务线 Issue（硬性 · 2026-09-07）
+### PR 描述须引用所属任务线 Issue（硬性 · 2026-09-07 · 2026-09-08 修订）
 
-> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-task-line-ref`）。与「任务完成后默认 push 旁支 + 开 PR」（`git-agent-commit`）并列；目的：PR 一开出来就自动挂到对应任务线，无需事后归类。
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-task-line-ref`）。与「任务完成后默认 push 旁支 + 开 PR」（`git-agent-commit`）并列；目的：PR 一开出来就挂到对应任务线，并填充 Projects **Linked pull requests** 列。
 
-开向 `develop` 的 PR 描述**必须**引用所属任务线 Issue（正文或「Development」关联区均可）：
+开向 `develop` 的 PR 描述**必须**引用所属任务线 Issue（正文末尾一行即可；**须用 `Closes #NNN`**，以便 GitHub 写入 Projects 的 Linked pull requests 字段）：
 
 | Issue 类型 | 写法 | 说明 |
 |---|---|---|
-| **Epic**（活基线，如 `#627`–`#647`） | `Relates to #NNN` | Epic 无「整线关完」终点；合并后须保持 **open** |
-| **审计 / 切片**（有明确终点，如 `#648`–`#650`） | `Closes #NNN` | 仅用于确有终点的子 Issue |
+| **Epic**（活基线，如 `#627`–`#647`） | `Closes #NNN` | 依赖仓库设置（见下）；合并后 Epic **须保持 open** |
+| **审计 / 切片**（有明确终点，如 `#648`–`#650`） | `Closes #NNN` | 合并后可关子 Issue（审计/切片有终点） |
+
+**仓库前提（2026-09-08 已配置）**：`Ihiro-PetGarden001` → Settings → General → Issues → **已取消勾选**「Auto-close issues with merged linked pull requests」。在此前提下，Epic 与切片 PR 均用 `Closes #NNN` **不会**在合并时误关 Issue，且看板 Epic 行的 Linked pull requests 列会自动显示对应 PR。
 
 **硬规则**：
 
-1. **禁止对 Epic 使用 `Closes #NNN`**：Epic 是活基线；PR 合并若带 `Closes` 会把 Epic 自动关掉，看板假死——与「整线互卡」同类事故，只是触发方式不同。  
-2. **`Closes #NNN` 只用于审计 / 切片类**有明确终点的子 Issue。  
-3. 日常开发引用所属 Epic 一律 `Relates to #NNN`；不确定时默认 `Relates to`，**不要**对 Epic 写 `Closes`。
+1. **统一用 `Closes #NNN`**（Epic、审计、切片均同）；**禁止**再用 `Relates to #NNN` 作任务线引用——GitHub 只把它记为 cross-reference，**不会**写入 Linked pull requests 列。  
+2. **禁止手动 Development 侧栏关联替代关键字**：手动关联与 `Closes` 享受同样工作流；在 auto-close **开启**时会误关 Epic——关键字 + 关掉的 auto-close 才是正路。  
+3. **双保险**：若仓库 auto-close 设置被重新打开，须立即改回：**Epic 用 `Relates to #NNN`**（Linked pull requests 列会再变空），**仅**有终点的审计/切片继续用 `Closes #NNN`。文档与本节须同步改回并汇报。  
+4. 一条 PR 只 `Closes` **一个**所属线 Issue（主 Epic 或主切片）；跨线说明写在正文，勿一行 Closes 多个 Epic。
 
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
@@ -628,7 +631,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 我想… | 做法 |
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
-| PR 引用任务线 | Epic 写 `Relates to #NNN`；审计/切片写 `Closes #NNN`；**禁止**对 Epic 用 `Closes`（见「PR 描述须引用所属任务线 Issue」） |
+| PR 引用任务线 | 统一 `Closes #NNN`（仓库已关 auto-close；见「PR 描述须引用所属任务线 Issue」） |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
 | 把 Cloud 旁支落到本机 | `git fetch` + `git worktree add …-wt-… origin/<branch>`；禁止主仓 Apply / migrated checkout（见「并行 Cursor 会话」第 8 款） |
 | 关单 / 批量人工测试 | 固定 QA 树 `…-wt-develop-qa` · `:5173`；合入后 `npm run sync:qa-develop`（见 `qa-develop-worktree`） |
