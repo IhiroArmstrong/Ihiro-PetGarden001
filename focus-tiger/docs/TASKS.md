@@ -284,6 +284,27 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 前景卡背景 dim 推广（2026-09-08 · 排期锁）
+
+> SSOT：`task-briefs/task-overlay-backdrop-dim-rollout.md`。标杆：纪念印 Phase B（#614 已合）。**会话主路径永久排除 dim**（Arrival / Reflection 等轻量观照，用户 2026-09-08 拍板）。
+
+| 切片 | 内容 | Brief | 任务线 | 状态 |
+|---|---|---|---|---|
+| **—** | 排期 + 清单 | `task-overlay-backdrop-dim-rollout.md` | #645 · #637 · #630 | **本支文档** |
+| **0** | `overlayBackdrop` 共享 helper |  rollout §Slice 0 | #645 | 待开工 |
+| **1a** | Quiet Line 背景 dim | `task-quiet-line-backdrop-dim.md` | #637 · #645 | **Brief 已交付** · 待 `feature/quiet-line-backdrop-dim` |
+| **1b** | Wallpapers 背景 dim | `task-wallpapers-backdrop-dim.md` | #645 | 待建 Brief |
+| **2** | Compass + Yin Coin + Zen Cinema | 待建 | #633 · #632 | 待口令 |
+| **3** | 付费族 SB-19 视觉-only dim | 待建 | #630 · #639 | 待口令 |
+
+**已有 dim（不必重做）**：纪念印 · Journey Log · Support · Membership · ? 钉住 + Privacy · 宽/窄菜单抽屉。
+
+**永久排除**：Arrival · Honesty · 微仪式 · Reflection · Ritual · Companion · 时长选择 · Whisper/气泡族 · Sound/Reminder chrome。
+
+**我认为最合理的下一刀**：Slice 0 helper → Slice 1a Quiet Line（与纪念印同族 Save image 卡）。
+
+---
+
 ## 📍 云端品味层（2026-08-18 政策锁）
 
 > 旧称「v1.1 云端算法」。**支付云 ≠ 品味云**。权威 `PROCESS.md` Backlog「云端品味层」。
