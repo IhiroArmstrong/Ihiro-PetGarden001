@@ -1,6 +1,6 @@
 # Task Brief · 宣传 / 营销站（Twinsology · Focus Tiger）
 
-> **状态（2026-09-03）**：公开营销域 **`twinsology.com`** 已上线（Cloudflare Pages `twinsology-marketing`；`twinsology.com` + `www` Active；TRACKER 已通过）。**Slice 0 静态页**在 `marketing-site/`。  
+> **状态（2026-09-08）**：公开营销域 **`twinsology.com`** 已上线（Cloudflare Pages `twinsology-marketing`；`twinsology.com` + `www` Active；Slice 0 已关单）。**Slice 1** 短单页见 `task-marketing-site-slice-1.md`。  
 > **性质**：获客向静态站，**不是**练习壳、不是 PWA、不是 Cloudflare Worker API。  
 > **权威交叉**：`PRODUCT_POSITIONING.md`（品牌 / 宁静型游戏化）· `PRINCIPLES.md`（禁止 FOMO / 硬推销）· `NEWSLETTER_CAPTURE.md`（发信已用同一域）· `ENV_CONFIG.md`（公开 hostname）· `PROCESS.md` Backlog「宣传 / 营销站」。
 
@@ -53,8 +53,8 @@
 
 ## 排期口令
 
-- **已完成**：域名拍板；**Slice 0 静态页**（`marketing-site/`）；**现网 Pages 绑定 + 人工验收**（2026-09-03 关单）。  
-- **下一步（须另口令）**：应用内 Join our community 改链、公网留资表单、`app.twinsology.com` = 更后面的独立口令。
+- **已完成**：域名拍板；**Slice 0**（关单 2026-09-03）；**Slice 1** 短单页（`task-marketing-site-slice-1.md` · 2026-09-08）。  
+- **下一步（Slice 2 · 须另口令）**：Slack 实验室入口（shared invite）；极短 Philosophy；应用内 Join our community 改链、公网留资、`app.twinsology.com` = 更后面独立口令。
 
 ## 冲突扫描（Slice 0）
 
