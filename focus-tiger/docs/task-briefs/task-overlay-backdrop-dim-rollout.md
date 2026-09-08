@@ -47,10 +47,10 @@
 | Five Moments Compass | `#five-moments-compass` | `task-growth-panels-backdrop-dim.md` | #633 | `BLANK_CLOSES` |
 | Yin's Collections | `#yin-coin-panel` | `task-growth-panels-backdrop-dim.md` | #632 | `BLANK_CLOSES` |
 | Zen Cinema | `#zen-cinema-card` | `task-growth-panels-backdrop-dim.md` | #633 | `BLANK_CLOSES` |
-| Sanctuary Lifetime | `#yin-sanctuary-card` | 待建 | #630 | `SB19_HOLD` · 视觉-only dim |
-| Buy Yin a Tea | `#yin-tip-jar-card` | 待建 | #630 | `SB19_HOLD` |
-| Stay in touch | `#newsletter-capture-card` | 待建 | #630 | `SB19_HOLD` |
-| Confide to Yin | `#confide-to-yin-card` | 待建 | #639 | `SB19_HOLD` |
+| Sanctuary Lifetime | `#yin-sanctuary-card` | `task-paid-panels-backdrop-dim.md` | #630 | `SB19_HOLD` · 视觉-only dim |
+| Buy Yin a Tea | `#yin-tip-jar-card` | `task-paid-panels-backdrop-dim.md` | #630 | `SB19_HOLD` |
+| Stay in touch | `#newsletter-capture-card` | `task-paid-panels-backdrop-dim.md` | #630 | `SB19_HOLD` |
+| Confide to Yin | `#confide-to-yin-card` | `task-paid-panels-backdrop-dim.md` | #639 | `SB19_HOLD` |
 | Language 偏好 | `#language-preference` | 待评估 | #641 | 锚定 FAB；轻 dim 或局部 |
 
 ### P2 — 可选
@@ -84,7 +84,7 @@ Slice 0  overlayBackdrop helper + 单测          → feature/overlay-backdrop-h
 Slice 1a Quiet Line dim                         → feature/quiet-line-backdrop-dim
 Slice 1b Wallpapers dim                         → feature/wallpapers-backdrop-dim
 Slice 2  Compass + Yin Coin + Zen Cinema        → feature/growth-panels-backdrop-dim
-Slice 3  付费族 SB-19 视觉-only dim             → 待口令
+Slice 3  付费族 SB-19 视觉-only dim             → feature/paid-panels-backdrop-dim
 ```
 
 ## 冲突扫描（2026-09-08）
