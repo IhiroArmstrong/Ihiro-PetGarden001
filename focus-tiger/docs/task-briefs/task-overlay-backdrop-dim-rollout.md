@@ -38,7 +38,7 @@
 | 顺序 | 面板 | DOM id | Brief | Epic | outsideDismiss |
 |---|---|---|---|---|---|
 | **1a** | 今日静语 Quiet Line | `#daily-zen-quote-card` | `task-quiet-line-backdrop-dim.md` | #637 + #645 | `BLANK_CLOSES` |
-| **1b** | 阿寅静帧壁纸 | `#digital-wallpapers-card` | `task-wallpapers-backdrop-dim.md`（待建） | #645 | `BLANK_CLOSES` |
+| **1b** | 阿寅静帧壁纸 | `#digital-wallpapers-card` | `task-wallpapers-backdrop-dim.md` | #645 | `BLANK_CLOSES` |
 
 ### P1 — Growth / 付费
 
