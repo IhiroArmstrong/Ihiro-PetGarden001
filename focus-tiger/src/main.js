@@ -424,6 +424,8 @@ import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
 import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
 import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
+import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
+import { CalmActionArriveCardUI } from './ui/CalmActionArriveCardUI.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -974,6 +976,12 @@ async function init() {
     calmActionRecoverStore
   );
   window.__calmActionRecoverCard = calmActionRecoverCardUI;
+  const calmActionArriveStore = new CalmActionArriveStore();
+  const calmActionArriveCardUI = new CalmActionArriveCardUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionArriveStore
+  );
+  window.__calmActionArriveCard = calmActionArriveCardUI;
   const focusAwarenessCardUI = new FocusAwarenessCardUI(
     document.getElementById('ui-overlay') || document.body
   );
@@ -3177,6 +3185,7 @@ async function init() {
         suppressCompanionOpenAfterNod = false;
         pendingChoose = null;
         postChooseChrome.pending = false;
+        calmActionArriveCardUI.resetFlow();
         syncArrivalGateReady(false);
         resyncSessionChrome();
         syncHonestyIdleEntry();
@@ -3224,11 +3233,15 @@ async function init() {
           if (info.chose && resumeMode) {
             suppressCompanionOpenAfterNod = true;
           }
+          calmActionArriveCardUI.hide({ immediate: true });
           requestBeginFocusWithMode(
             resumeMode || companionModePicker.getSelectedMode()
           );
         } else if (!info.chose) {
+          calmActionArriveCardUI.tryShowAfterArrival();
           companionModePicker.open();
+        } else {
+          calmActionArriveCardUI.tryShowAfterArrival();
         }
         syncOnboardingAutoHints();
       }
@@ -3370,6 +3383,7 @@ async function init() {
     onboardingHints?.markSeen('dormant-open');
     onboardingHints?.markSeen('honesty-optional');
     arrivalPractice.start();
+    calmActionArriveStore.arm();
     onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
     resyncSessionChrome();
     syncHonestyIdleEntry();
@@ -3443,6 +3457,7 @@ async function init() {
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
     calmActionRecoverCardUI.hide({ immediate: true });
+    calmActionArriveCardUI.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -3563,6 +3578,7 @@ async function init() {
   }
 
   function beginFocusWithMode(companionMode) {
+    calmActionArriveCardUI.hide({ immediate: true });
     resetFocusCoinsSession();
     resetFocusCircleWitnessSessionPrompt();
     focusCircleWitnessLeaveUI.cancelScheduledOffer();
@@ -3671,6 +3687,7 @@ async function init() {
   };
 
   companionModeHandlers.onModeSelected = (mode) => {
+    calmActionArriveCardUI.hide({ immediate: true });
     onboardingHints?.markSeen('companion-mode');
     if (mode === COMPANION_MODE_STAY) onboardingHints?.markSeen('companion-stay');
     if (mode === COMPANION_MODE_STEP_AWAY) {
@@ -3824,6 +3841,7 @@ async function init() {
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
       calmActionRecoverCardUI.hide({ immediate: true });
+    calmActionArriveCardUI.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });

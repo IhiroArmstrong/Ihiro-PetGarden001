@@ -1,0 +1,3 @@
+# feature/calm-action-arrive-runtime
+
+| Calm Action Arrive 运行时（C2） | UI可见 | 待人工测试 | **主路径**：`?product=1` → Sit → 走完 Arrival（Notice→Breath→Choose Reading）→ 鞠躬后 Companion 面板上方见 **Calm Action** 卡（`calm-action-arrive-card`）约 0.5s 后出现；点卡可关。**对照**：Quick Start 跳过 Arrival → **不出**卡。**回流**：同日第二次 Arrival 仍同日锁句；取消 Arrival 外侧点空白 → 卡不出现。**保护面**：Companion 三选 / Honesty 桥接 / Offline 直开表不变。e2e：`e2e/calm-action-arrive.spec.js`。Brief `task-calm-action-arrive-runtime.md` · roadmap C2。 | — | — | — | `CalmActionArriveStore.js` · `CalmActionArriveCardUI.js` · `content/calm-action-wisdom/calm-action-arrive.*` | 2026-09-08 |
