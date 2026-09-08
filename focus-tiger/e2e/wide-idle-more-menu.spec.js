@@ -346,16 +346,20 @@ test('wide Idle: Quiet Line row opens quote card and save stays available', asyn
   await expect(menu.locator('[data-proxy="daily-quote"]')).toBeVisible();
   await menu.locator('[data-proxy="daily-quote"]').click();
   const card = page.locator('#daily-zen-quote-card');
+  const backdrop = page.getByTestId('daily-zen-quote-backdrop');
   await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
   await expect(page.getByTestId('daily-zen-quote-text')).not.toBeEmpty();
   await expect(page.getByTestId('daily-zen-quote-save')).toBeVisible();
-  await card.locator('.daily-zen-quote-card__btn--ghost').click();
+  await backdrop.click();
   await expect(card).toBeHidden({ timeout: 5_000 });
+  await expect(backdrop).toBeHidden({ timeout: 5_000 });
   // Reflow: reopen menu → card again
   await page.locator('#ft-wide-more-btn').click();
   await expect(menu).toBeVisible({ timeout: 5_000 });
   await menu.locator('[data-proxy="daily-quote"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
 });
 
 test('wide Idle: no ambient autoplay on boot', async ({ page }) => {

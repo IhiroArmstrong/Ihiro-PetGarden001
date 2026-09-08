@@ -15,6 +15,7 @@ import {
   saveDailyZenQuoteImage,
   noteDailyZenQuoteOpened
 } from '../core/dailyZenQuote.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -22,9 +23,15 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const STYLE_ID = 'daily-zen-quote-card-styles-v2';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class DailyZenQuoteCardUI {
   /**
@@ -45,6 +52,14 @@ export class DailyZenQuoteCardUI {
     this._saving = false;
     /** @type {{ dateKey: string, key: string, text: string, locale: string } | null} */
     this._resolved = null;
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'daily-zen-quote-backdrop',
+      testId: 'daily-zen-quote-backdrop',
+      zIndex: 17,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+      onDismiss: () => this.close()
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'daily-zen-quote-card';
@@ -134,6 +149,7 @@ export class DailyZenQuoteCardUI {
     if (this._open) return;
     this._open = true;
     this._resolved = noteDailyZenQuoteOpened({ storage: this._storage });
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
@@ -145,6 +161,7 @@ export class DailyZenQuoteCardUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -156,6 +173,7 @@ export class DailyZenQuoteCardUI {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this.backdrop.remove();
     this.root.remove();
   }
 

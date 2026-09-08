@@ -291,9 +291,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 切片 | 内容 | Brief | 任务线 | 状态 |
 |---|---|---|---|---|
 | **—** | 排期 + 清单 | `task-overlay-backdrop-dim-rollout.md` | #645 · #637 · #630 | **本支文档** |
-| **0** | `overlayBackdrop` 共享 helper |  rollout §Slice 0 | #645 | 待开工 |
-| **1a** | Quiet Line 背景 dim | `task-quiet-line-backdrop-dim.md` | #637 · #645 | **Brief 已交付** · 待 `feature/quiet-line-backdrop-dim` |
-| **1b** | Wallpapers 背景 dim | `task-wallpapers-backdrop-dim.md` | #645 | 待建 Brief |
+| **0** | `overlayBackdrop` 共享 helper |  rollout §Slice 0 | #645 | **已合 #655** |
+| **1a** | Quiet Line 背景 dim | `task-quiet-line-backdrop-dim.md` | #637 · #645 | **`feature/quiet-line-backdrop-dim` 开工** |
+| **1b** | Wallpapers 背景 dim | `task-wallpapers-backdrop-dim.md` | #645 | Brief 已建档 · 待 `feature/wallpapers-backdrop-dim` |
 | **2** | Compass + Yin Coin + Zen Cinema | 待建 | #633 · #632 | 待口令 |
 | **3** | 付费族 SB-19 视觉-only dim | 待建 | #630 · #639 | 待口令 |
 

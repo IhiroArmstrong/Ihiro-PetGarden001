@@ -1,6 +1,6 @@
 # Task Brief · Quiet Line · 背景 dim（P0 · Slice 1a）
 
-> **状态**：**待开工**  
+> **状态**：**Slice 1a 开工**（`feature/quiet-line-backdrop-dim`）
 > **分支**：`feature/quiet-line-backdrop-dim`  
 > **前置**：`task-overlay-backdrop-dim-rollout.md`（排期 SSOT）· 建议先合 Slice 0 `overlayBackdrop` helper  
 > **任务线**：`Relates to #637`（金句库/三池）· `Relates to #645`（美术优化）  
