@@ -12,6 +12,8 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
+import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
+import { contemplativeArchiveSealIdFromProxy } from '../core/memorialSealDirectory.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   canRegisterDesktopCompanionGeneration,
@@ -609,6 +611,9 @@ export class WideIdleMoreMenu {
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ).unlocked,
+      contemplativeArchiveSealMenus: resolveContemplativeArchiveSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ).menuEntries,
       companionGeneration:
         canRegisterDesktopCompanionGeneration({
           hasBridge: hasDesktopCompanionBridge(),
@@ -733,6 +738,13 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onMustardSeedSeal?.();
+      return;
+    }
+    const archiveSealId = contemplativeArchiveSealIdFromProxy(key);
+    if (archiveSealId) {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onContemplativeArchiveSeal?.(archiveSealId);
       return;
     }
     if (key === 'wallpapers') {

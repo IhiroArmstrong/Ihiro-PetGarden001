@@ -130,9 +130,15 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 **A′ 为何不是「原 Banner」**：原 Contextual Banner 易变说明书且撞 Focus 隐退。万全之策 = **「?」永远可查** + **Whisper 一生一次认出** + **B 完整地图自愿查阅**。
 
-### 5.7 Calm Action Wisdom（内容池 · 未接线）
+### 5.7 Calm Action Wisdom（内容池 · 运行时排期中）
 
 世俗行动提示句，按 Arrive / Focus / Recover / Transition / Reflect 标注。**不是**第六 Moment，也**不是** Quiet Line / Daily Wisdom。规范与 70 条表：`CALM_ACTION_WISDOM.md`。观察式 toast / Whisper 仍以 `EMOTION_BIBLE.md` 为准，不得用本池替换。
+
+**落地次序（2026-09-07 拍板）**：Recover 第一刀 → Arrive 第二刀（C1 关单后立刻排）→ overlay / 日签扩容另 PR。全表：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)。
+
+### 5.8 Contemplative Archive（静思典藏 · 纪念层）
+
+长期练习中偶然发现的文学片段 / 纪念印。**不是**第六 Moment，**不是**日签加长档。规范与 12 条候选：`CONTEMPLATIVE_ARCHIVE.md`。现网仅芥子须弥三 case；第 2 枚印另 Brief。
 
 ---
 

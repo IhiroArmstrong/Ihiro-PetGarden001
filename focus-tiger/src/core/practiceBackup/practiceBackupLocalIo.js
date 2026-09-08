@@ -85,6 +85,10 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'entitlement_ownership', storeKey: 'focus-tiger.entitlement-ownership.v1' },
   { id: 'ritual_completions', storeKey: 'focus-tiger.ritual-completions.v1' },
   { id: 'mustard_seed_seal', storeKey: 'focus-tiger.mustard-seed-seal.v1' },
+  {
+    id: 'contemplative_archive_seals',
+    storeKey: 'focus-tiger.contemplative-archive-seals.v1'
+  },
   { id: 'presence_signals', storeKey: 'focus-tiger.presence-signals.v1' },
   { id: 'reflections', storeKey: 'focus-tiger.reflections.v1' },
   { id: 'yin_memory', companionField: 'yinPersonalMemory' },
@@ -257,6 +261,11 @@ export function countPracticeStoreEntries(storeKey, val) {
     }
     case 'focus-tiger.mustard-seed-seal.v1':
       return /** @type {{ revealed?: unknown }} */ (val).revealed === true ? 1 : 0;
+    case 'focus-tiger.contemplative-archive-seals.v1': {
+      const ids = /** @type {{ revealedEntryIds?: unknown }} */ (val)
+        .revealedEntryIds;
+      return Array.isArray(ids) ? ids.length : 0;
+    }
     case 'focus-tiger.presence-signals.v1': {
       const entries = /** @type {{ entries?: unknown }} */ (val).entries;
       return Array.isArray(entries) ? entries.length : 0;

@@ -673,6 +673,36 @@
 
 ---
 
+## 场景 AQ：Focus Circle Was-Here-Today（圈内今日来过 · 2026-09-07）
+
+> **地位**：Idle / Arrive 背景级「今天有人来过」模糊印记（自动、无短语）。**≠** sitting dots（AO）、**≠** Witness 痕迹（AP）、**≠** 聊天、**≠** 精确人数榜。Focusing 内不画。  
+> **单元**：`focusCircleWasHere.test.js` · `focusCirclePassiveShare.test.js` · cloud `focusCircleWasHereKv.test.ts`。  
+> **生产**：Worker 未部署 was-here actions 时 Idle **不画 was-here**（诚实）；`presence_peek` 仍可有 sitting。  
+> **点击**：was-here 区 `pointer-events: none`；被动开关在 ⋯ → My circle 面板。
+
+1. A、B **均已入圈** → A **Sit ≥60s** → Rise → B **sitting=0** 时 Idle 约 2.5–10s 见轻文案「今天有人来过」（**不**显示精确人数）；A 再 Sit 时 B 见 **sitting dots 优先**，was-here 隐藏。  
+2. A 关 **Share when I practiced today** → 同上完成练习 → B **不见** A 的 was-here；A 仍可见 B（若 B 未关）。  
+3. A **Sit <60s** → B 不见 was-here。  
+4. `?focusCircleWasHere=0` / `?focusCircle=0` / Leave → 不请求、不画。  
+5. 与 2c 并存：A 可自动 was-here + 自愿 Witness 痕；B Idle 可同时见 Witness（AP）与 was-here（职责分离）。
+
+---
+
+## 场景 AR：Focus Circle Identity（认人层 · 2026-09-07）
+
+> **地位**：My circle 可选昵称 + Tiger/Yin 徽标；Witness Idle 文案 `{name}` 替换「一位同伴」；本机 Hide 回匿名。**≠** was-here 计数（AQ）· **≠** OTP 跨设备（后续 Brief）。  
+> **单元**：`focusCircleIdentity.test.js` · cloud `focusCircleIdentityKv.test.ts`。  
+> **生产**：Worker 未部署 `identity_set` / 合并 `witness_peek.identities` 时全员匿名（诚实）。  
+> **点击**：Save 0–1s 反馈；Hide name 立刻回匿名。
+
+1. A 设昵称 + 徽标 → Save → B Witness 痕见昵称（非匿名）。  
+2. B **Hide this name** → 本机回「一位同伴」/「A companion」。  
+3. A 清昵称 Save → B 见匿名。  
+4. `?focusCircleIdentity=0` → 不展示认人 UI、Witness 仍匿名。  
+5. 与 AQ 并存：was-here 仍无昵称。
+
+---
+
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
 > **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。  

@@ -1,0 +1,3 @@
+# feature/mustard-seed-seal-ui-phase-b
+
+| 芥子须弥纪念印 · UI Phase B | UI可见 | 已通过 | **主路径**：`?product=1` → `__mustardSeedSeal.open({ mode:'force' })` → 见 `#mustard-seed-seal-backdrop` 浅 dim + 阿寅面部不被卡裁切 + **Save image** 钮可点下载 PNG（`focus-tiger-mustard-seed-<caseId>.png`）→ Continue 仍关卡。**仪式 auto** / **菜单** 同契约。**375**：#619 后遮罩可点关、Save 不挡 Continue、卡一屏可读。**禁止**诗面改字、一键社交分享。自动化：`saveMustardSeedSealImage.test.js` + `mustard-seed-seal.spec.js`（backdrop/body class/save 钮）。 | **2026-09-07 用户书面**（develop tip `d149528c`）：**≥480 宽屏** — **全部测试 OK**。**375** 初测不行 → **#619 合入后复测 OK**（见 `fix-mustard-seed-seal-375-compact` 行）。 | — | — | `?product=1` · `#mustard-seed-seal-card` · `#mustard-seed-seal-backdrop` · `__mustardSeedSeal` · 375 | 2026-09-07 |

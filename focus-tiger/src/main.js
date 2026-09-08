@@ -181,6 +181,7 @@ import {
   scheduleFocusCircleWitnessPeek,
   setFocusCircleWitnessBusyProbe
 } from './core/focusCircleWitness.js';
+import { maybeWasHereMark } from './core/focusCircleWasHere.js';
 import { syncFocusCircleWitnessIdleObserverPeek } from './core/focusCircleWitnessIdleSchedule.js';
 import {
   FOCUS_CIRCLE_CHANGE_EVENT,
@@ -194,6 +195,11 @@ import {
   shouldOfferMustardSeedSealAfterCeremony,
   clearMustardSeedSealState
 } from './core/mustardSeedSeal.js';
+import {
+  clearContemplativeArchiveSealState,
+  resolveContemplativeArchiveSeal,
+  shouldOfferContemplativeArchiveSealAfterCeremony
+} from './core/contemplativeArchiveSeal.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -416,6 +422,8 @@ import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
+import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
+import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -916,6 +924,7 @@ async function init() {
         lightProgression.playRecoverDisturbance();
       }
       if (type === 'activeRecover') {
+        calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
       }
     }
@@ -959,6 +968,12 @@ async function init() {
   );
   window.__momentWhisper = momentWhisperUI;
 
+  const calmActionRecoverStore = new CalmActionRecoverStore();
+  const calmActionRecoverCardUI = new CalmActionRecoverCardUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionRecoverStore
+  );
+  window.__calmActionRecoverCard = calmActionRecoverCardUI;
   const focusAwarenessCardUI = new FocusAwarenessCardUI(
     document.getElementById('ui-overlay') || document.body
   );
@@ -1144,9 +1159,17 @@ async function init() {
       resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ),
+    resolveArchive: () =>
+      resolveContemplativeArchiveSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
     cases: () => MUSTARD_SEED_SEAL_CASES.map((entry) => entry.id),
     clear: () =>
       clearMustardSeedSealState(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    clearArchive: () =>
+      clearContemplativeArchiveSealState(
         typeof localStorage !== 'undefined' ? localStorage : null
       )
   };
@@ -1257,6 +1280,11 @@ async function init() {
     }
   );
   window.__focusCircleWitness = focusCircleWitnessChrome;
+
+  function onFocusCircleRiseSideEffects(elapsedSeconds) {
+    maybeWasHereMark({ elapsedSeconds });
+    maybeOfferWitnessLeave(elapsedSeconds);
+  }
 
   function maybeOfferWitnessLeave(elapsedSeconds) {
     if (!isWitnessEligibleSession(elapsedSeconds)) return;
@@ -2509,7 +2537,7 @@ async function init() {
       }
     });
     // Explicit: do NOT call sessionEndFlow / TigerReflectionMoment.
-    maybeOfferWitnessLeave(ritualFlowBreathElapsedSeconds(ritualId));
+    onFocusCircleRiseSideEffects(ritualFlowBreathElapsedSeconds(ritualId));
   }
 
   /**
@@ -2603,7 +2631,7 @@ async function init() {
     const draft = microRitualJourneyDraft(durationMinutes);
     if (draft) pendingJourneyDraft = draft;
     sessionEndFlow.onSessionEnded({ completed: true });
-    maybeOfferWitnessLeave(durationMinutes * 60);
+    onFocusCircleRiseSideEffects(durationMinutes * 60);
   }
 
   function leaveMicroRitualQuietly() {
@@ -2815,6 +2843,10 @@ async function init() {
     onMustardSeedSeal: () => {
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'menu' });
+    },
+    onContemplativeArchiveSeal: (entryId) => {
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'menu', archiveEntryId: entryId });
     },
     onWallpapers: () => {
       closeGrowthOverlayCards({ except: 'wallpapers' });
@@ -3410,6 +3442,7 @@ async function init() {
     acrossToolsIdleGuard.stop();
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
+    calmActionRecoverCardUI.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -3589,6 +3622,8 @@ async function init() {
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
     focusAwarenessCardUI.resetSession();
+    calmActionRecoverStore.resetSession();
+    calmActionRecoverCardUI.resetSession();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
@@ -3788,6 +3823,7 @@ async function init() {
       sessionCues.cancelPending();
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
+      calmActionRecoverCardUI.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
@@ -3818,7 +3854,7 @@ async function init() {
         intention: currentSessionIntention,
         intentionSource: currentIntentionSource
       });
-      maybeOfferWitnessLeave(focusSession.getElapsedSeconds());
+      onFocusCircleRiseSideEffects(focusSession.getElapsedSeconds());
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
       // ambient-soundscape stays unread until a track is actually chosen
@@ -3871,9 +3907,25 @@ async function init() {
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'auto' });
     } else {
-      sessionEndFlow.onSessionEnded(endOpts);
+      const archive = resolveContemplativeArchiveSeal(storage);
+      if (
+        shouldOfferContemplativeArchiveSealAfterCeremony({
+          completed: true,
+          shouldAutoReveal: archive.shouldAutoReveal
+        }) &&
+        archive.nextEntry
+      ) {
+        pendingReflectionAfterMustardSeed = endOpts;
+        closeGrowthOverlayCards({ except: 'mustard-seed' });
+        mustardSeedSealCardUI.open({
+          mode: 'auto',
+          archiveEntryId: archive.nextEntry.id
+        });
+      } else {
+        sessionEndFlow.onSessionEnded(endOpts);
+      }
     }
-    maybeOfferWitnessLeave(witnessElapsedSeconds);
+    onFocusCircleRiseSideEffects(witnessElapsedSeconds);
     onboardingHints?.markSeen('rise-button');
   }
 

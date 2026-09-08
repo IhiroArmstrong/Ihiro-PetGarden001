@@ -20,10 +20,12 @@ import {
 } from '../core/quietTogetherLanternLayout.js';
 import {
   FOCUS_CIRCLE_SITTING_EVENT,
+  getFocusCircleHereTodayOthersSnapshot,
   getFocusCircleSittingOthersSnapshot,
   isFocusCirclePresenceClientEnabled,
   isFocusCirclePresenceContributing
 } from '../core/focusCirclePresence.js';
+import { isFocusCircleWasHereClientEnabled } from '../core/focusCircleWasHere.js';
 
 const STYLE_ID = 'focus-circle-presence-chrome-v1';
 const MAX_DOTS = 7;
@@ -44,6 +46,7 @@ export class FocusCirclePresenceChrome {
     this._focusing = false;
     this._visibleAllowed = true;
     this._sittingOthers = null;
+    this._hereTodayOthers = null;
 
     this.root = document.createElement('div');
     this.root.id = 'focus-circle-presence';
@@ -65,6 +68,10 @@ export class FocusCirclePresenceChrome {
     this._onMembership = () => this.refresh();
     this._onSitting = (event) => {
       const sittingOthers = event?.detail?.sittingOthers;
+      const hereTodayOthers = event?.detail?.hereTodayOthers;
+      if (hereTodayOthers != null && Number.isFinite(hereTodayOthers)) {
+        this.setHereTodayOthers(hereTodayOthers);
+      }
       if (sittingOthers == null || !Number.isFinite(sittingOthers)) {
         this.refresh();
         return;
@@ -107,6 +114,21 @@ export class FocusCirclePresenceChrome {
     this.refresh();
   }
 
+  /**
+   * @param {number | null} hereTodayOthers
+   */
+  setHereTodayOthers(hereTodayOthers) {
+    const next =
+      hereTodayOthers == null || !Number.isFinite(hereTodayOthers)
+        ? null
+        : hereTodayOthers >= 1
+          ? 1
+          : 0;
+    if (next === this._hereTodayOthers) return;
+    this._hereTodayOthers = next;
+    this.refresh();
+  }
+
   refresh() {
     const enabled =
       isFocusCirclePresenceClientEnabled({
@@ -116,43 +138,77 @@ export class FocusCirclePresenceChrome {
             ? globalThis.location.search
             : ''
       }) && Boolean(readFocusCircleMembership(this._storage));
+    const wasHereEnabled = isFocusCircleWasHereClientEnabled({
+      storage: this._storage,
+      search:
+        typeof globalThis.location?.search === 'string'
+            ? globalThis.location.search
+            : ''
+    });
     const snapshot = getFocusCircleSittingOthersSnapshot();
     const sittingOthers = snapshot != null ? snapshot : this._sittingOthers;
-    const show =
+    const hereSnapshot = getFocusCircleHereTodayOthersSnapshot();
+    const hereTodayOthers =
+      hereSnapshot != null ? hereSnapshot : this._hereTodayOthers;
+    const showSitting =
       this._visibleAllowed &&
       enabled &&
       !this._focusing &&
       !isFocusCirclePresenceContributing() &&
       sittingOthers != null &&
       sittingOthers > 0;
+    const showWasHere =
+      this._visibleAllowed &&
+      enabled &&
+      wasHereEnabled &&
+      !this._focusing &&
+      !isFocusCirclePresenceContributing() &&
+      (sittingOthers == null || sittingOthers === 0) &&
+      hereTodayOthers != null &&
+      hereTodayOthers > 0;
+    const show = showSitting || showWasHere;
 
     this.root.hidden = !show;
     this.root.setAttribute('aria-hidden', show ? 'false' : 'true');
+    this.root.classList.toggle('is-was-here', showWasHere && !showSitting);
     if (!show) {
       this.caption.textContent = '';
       this.dots.replaceChildren();
       return;
     }
 
-    const n = Math.min(sittingOthers, MAX_DOTS);
-    if (this.dots.childElementCount !== n) {
-      this.dots.replaceChildren();
-      for (let i = 0; i < n; i += 1) {
-        const dot = document.createElement('span');
-        dot.className = 'focus-circle-presence__dot';
-        this.dots.appendChild(dot);
+    if (showSitting) {
+      const n = Math.min(sittingOthers, MAX_DOTS);
+      if (this.dots.childElementCount !== n) {
+        this.dots.replaceChildren();
+        for (let i = 0; i < n; i += 1) {
+          const dot = document.createElement('span');
+          dot.className = 'focus-circle-presence__dot';
+          this.dots.appendChild(dot);
+        }
       }
+      this.caption.textContent =
+        sittingOthers === 1
+          ? t('FOCUS_CIRCLE_PRESENCE_ONE')
+          : t('FOCUS_CIRCLE_PRESENCE_MANY').replace('{n}', String(sittingOthers));
+      this.root.setAttribute(
+        'aria-label',
+        sittingOthers === 1
+          ? t('FOCUS_CIRCLE_PRESENCE_ARIA_ONE')
+          : t('FOCUS_CIRCLE_PRESENCE_ARIA_MANY').replace(
+              '{n}',
+              String(sittingOthers)
+            )
+      );
+      return;
     }
-    this.caption.textContent =
-      sittingOthers === 1
-        ? t('FOCUS_CIRCLE_PRESENCE_ONE')
-        : t('FOCUS_CIRCLE_PRESENCE_MANY').replace('{n}', String(sittingOthers));
-    this.root.setAttribute(
-      'aria-label',
-      sittingOthers === 1
-        ? t('FOCUS_CIRCLE_PRESENCE_ARIA_ONE')
-        : t('FOCUS_CIRCLE_PRESENCE_ARIA_MANY').replace('{n}', String(sittingOthers))
-    );
+
+    this.dots.replaceChildren();
+    const dot = document.createElement('span');
+    dot.className = 'focus-circle-presence__dot focus-circle-presence__dot--was-here';
+    this.dots.appendChild(dot);
+    this.caption.textContent = t('FOCUS_CIRCLE_WAS_HERE_CAPTION');
+    this.root.setAttribute('aria-label', t('FOCUS_CIRCLE_WAS_HERE_ARIA'));
   }
 
   destroy() {
@@ -196,6 +252,16 @@ export class FocusCirclePresenceChrome {
         border-radius: 50%;
         background: radial-gradient(circle at 30% 30%, #e8f0ff, #8aa4c8 72%);
         box-shadow: 0 0 6px rgba(160, 188, 220, 0.45);
+      }
+      .focus-circle-presence.is-was-here {
+        opacity: 0.62;
+      }
+      .focus-circle-presence.is-was-here .focus-circle-presence__caption {
+        color: rgba(210, 218, 228, 0.58);
+      }
+      .focus-circle-presence__dot--was-here {
+        background: radial-gradient(circle at 30% 30%, #dce4ee, #9aa8b8 72%);
+        box-shadow: 0 0 4px rgba(150, 168, 188, 0.28);
       }
       .focus-circle-presence__caption {
         margin: 0;

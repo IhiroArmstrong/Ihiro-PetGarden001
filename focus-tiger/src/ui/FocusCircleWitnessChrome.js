@@ -13,6 +13,14 @@ import {
   readFocusCircleMembership
 } from '../core/focusCircleMembership.js';
 import {
+  FOCUS_CIRCLE_IDENTITY_CHANGE_EVENT,
+  getFocusCircleIdentityPeekMap,
+  hideFocusCircleMemberLocally,
+  isFocusCircleIdentityClientEnabled,
+  readHiddenMemberIds,
+  resolveFocusCircleDisplayName
+} from '../core/focusCircleIdentity.js';
+import {
   IDLE_LANTERN_BOTTOM_NARROW_CSS,
   IDLE_LANTERN_BOTTOM_WIDE_CSS,
   IDLE_LANTERN_NARROW_MQ_MAX_PX
@@ -41,7 +49,7 @@ export class FocusCircleWitnessChrome {
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._focusing = false;
     this._visibleAllowed = true;
-    /** @type {{ traceId: string, phraseKey: string } | null} */
+    /** @type {{ traceId: string, phraseKey: string, authorMemberId?: string } | null} */
     this._trace = null;
 
     this.root = document.createElement('div');
@@ -64,7 +72,25 @@ export class FocusCircleWitnessChrome {
       this.handlers.onRespond?.();
     });
 
-    this.root.append(this.phrase, this.respondBtn);
+    this.hideBtn = document.createElement('button');
+    this.hideBtn.type = 'button';
+    this.hideBtn.className = 'focus-circle-witness__hide';
+    this.hideBtn.dataset.testid = 'focus-circle-witness-hide-name';
+    this.hideBtn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const membership = readFocusCircleMembership(this._storage);
+      const authorMemberId = this._trace?.authorMemberId;
+      if (!membership?.circleId || !authorMemberId) return;
+      hideFocusCircleMemberLocally(
+        this._storage,
+        membership.circleId,
+        authorMemberId
+      );
+      this.refresh();
+    });
+
+    this.root.append(this.phrase, this.respondBtn, this.hideBtn);
     mountRoot.appendChild(this.root);
     this._injectStyles();
 
@@ -82,6 +108,10 @@ export class FocusCircleWitnessChrome {
     globalThis.addEventListener?.(
       FOCUS_CIRCLE_WITNESS_CHANGE_EVENT,
       this._onWitness
+    );
+    globalThis.addEventListener?.(
+      FOCUS_CIRCLE_IDENTITY_CHANGE_EVENT,
+      this._onMembership
     );
 
     this.refresh();
@@ -105,7 +135,7 @@ export class FocusCircleWitnessChrome {
   }
 
   /**
-   * @param {{ traceId?: string, phraseKey?: string } | null} trace
+   * @param {{ traceId?: string, phraseKey?: string, authorMemberId?: string } | null} trace
    */
   setTrace(trace) {
     if (!trace || !trace.traceId || !trace.phraseKey) {
@@ -113,13 +143,14 @@ export class FocusCircleWitnessChrome {
     } else {
       this._trace = {
         traceId: trace.traceId,
-        phraseKey: trace.phraseKey
+        phraseKey: trace.phraseKey,
+        ...(trace.authorMemberId ? { authorMemberId: trace.authorMemberId } : {})
       };
     }
     this.refresh();
   }
 
-  /** @returns {{ traceId: string, phraseKey: string } | null} */
+  /** @returns {{ traceId: string, phraseKey: string, authorMemberId?: string } | null} */
   getTrace() {
     return this._trace;
   }
@@ -147,19 +178,48 @@ export class FocusCircleWitnessChrome {
     if (!show) {
       this.phrase.textContent = '';
       this.respondBtn.disabled = false;
+      this.hideBtn.hidden = true;
       return;
     }
 
     this._trace = {
       traceId: trace.traceId,
-      phraseKey: trace.phraseKey
+      phraseKey: trace.phraseKey,
+      ...(trace.authorMemberId ? { authorMemberId: trace.authorMemberId } : {})
     };
+    const membership = readFocusCircleMembership(this._storage);
+    const identityEnabled = isFocusCircleIdentityClientEnabled({
+      storage: this._storage,
+      search:
+        typeof globalThis.location?.search === 'string'
+          ? globalThis.location.search
+          : ''
+    });
+    const anonLabel = t('FOCUS_CIRCLE_IDENTITY_ANON_LABEL');
+    const hiddenMemberIds =
+      membership?.circleId && identityEnabled
+        ? readHiddenMemberIds(this._storage, membership.circleId)
+        : new Set();
+    const displayName = identityEnabled
+      ? resolveFocusCircleDisplayName({
+          anonLabel,
+          memberId: trace.authorMemberId ?? '',
+          identities: getFocusCircleIdentityPeekMap(),
+          hiddenMemberIds,
+          t
+        })
+      : anonLabel;
     const phraseText = t(trace.phraseKey);
-    this.phrase.textContent = t('FOCUS_CIRCLE_WITNESS_IDLE_LINE').replace(
-      '{phrase}',
-      phraseText
-    );
+    this.phrase.textContent = t('FOCUS_CIRCLE_WITNESS_IDLE_LINE')
+      .replace('{name}', displayName)
+      .replace('{phrase}', phraseText);
     this.respondBtn.textContent = t('FOCUS_CIRCLE_WITNESS_RESPOND_BTN');
+    const canHide =
+      identityEnabled &&
+      trace.authorMemberId &&
+      displayName !== anonLabel;
+    this.hideBtn.hidden = !canHide;
+    this.hideBtn.textContent = t('FOCUS_CIRCLE_IDENTITY_HIDE_BTN');
     this.root.setAttribute(
       'aria-label',
       t('FOCUS_CIRCLE_WITNESS_IDLE_ARIA')
@@ -176,6 +236,10 @@ export class FocusCircleWitnessChrome {
     globalThis.removeEventListener?.(
       FOCUS_CIRCLE_WITNESS_CHANGE_EVENT,
       this._onWitness
+    );
+    globalThis.removeEventListener?.(
+      FOCUS_CIRCLE_IDENTITY_CHANGE_EVENT,
+      this._onMembership
     );
     this.root.remove();
   }
@@ -222,6 +286,22 @@ export class FocusCircleWitnessChrome {
         font-size: 10px;
         letter-spacing: 0.03em;
         cursor: pointer;
+      }
+      .focus-circle-witness__hide {
+        pointer-events: auto;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: rgba(198, 208, 224, 0.62);
+        font-size: 9.5px;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .focus-circle-witness__hide[hidden] {
+        display: none;
       }
       .focus-circle-witness__respond:disabled {
         opacity: 0.55;

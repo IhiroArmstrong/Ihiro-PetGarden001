@@ -24,6 +24,12 @@ test('hides while contributing or focusing', () => {
   assert.match(src, /!this\._focusing/);
 });
 
+test('was-here mode shows when sitting is zero', () => {
+  assert.match(src, /is-was-here/);
+  assert.match(src, /FOCUS_CIRCLE_WAS_HERE_CAPTION/);
+  assert.match(src, /sittingOthers === 0/);
+});
+
 test('pointer-events none and stacks above lanterns', () => {
   assert.match(src, /pointer-events:\s*none/);
   assert.match(src, /IDLE_LANTERN_BOTTOM_WIDE_CSS/);

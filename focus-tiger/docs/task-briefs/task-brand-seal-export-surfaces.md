@@ -20,7 +20,7 @@
 | **落点** | Daily Quote / Quiet Line 明信片导出（`saveDailyZenQuoteImage`） |
 | **键** | `BRAND_YIN_WAY_SEAL`（句号、无问号） |
 | **locale** | 跟用户 locale（**非**双语叠显） |
-| **芥子印卡** | **本 Slice 不做**——尚无 save image 能力；有导出后再接同一 resolver |
+| **芥子印卡** | **Phase B（#612 后支）** — `saveMustardSeedSealImage` + `resolveBrandYinWaySeal` footer |
 | **不做** | MilestoneGlow 海报 · 新 Landing · mindfulness scroll export（Backlog） |
 
 ---

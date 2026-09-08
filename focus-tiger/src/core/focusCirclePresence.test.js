@@ -11,6 +11,7 @@ import {
 } from './focusCircleMembership.js';
 import {
   getFocusCircleSittingOthersSnapshot,
+  getFocusCircleHereTodayOthersSnapshot,
   isFocusCirclePresenceClientEnabled,
   peekFocusCirclePresence,
   postFocusCirclePresence,
@@ -73,6 +74,32 @@ describe('focusCirclePresence', () => {
       }),
       true
     );
+  });
+
+  it('presence_peek forwards viewer day key when was-here enabled', async () => {
+    resetFocusCirclePresenceForTests();
+    const storage = memoryStorage({
+      [FOCUS_CIRCLE_STORAGE_KEY]: JSON.stringify(MEMBERSHIP)
+    });
+    let body = null;
+    await peekFocusCirclePresence({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async (_path, init) => {
+        body = JSON.parse(init.body);
+        return {
+          schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+          sittingOthers: 0,
+          hereTodayOthers: 1,
+          viewerDayKey: '2026-09-07'
+        };
+      }
+    });
+    assert.equal(body.action, 'presence_peek');
+    assert.equal(typeof body.viewerDayKey, 'string');
+    assert.equal(typeof body.viewerTimeZone, 'string');
+    assert.equal(getFocusCircleHereTodayOthersSnapshot(), 1);
   });
 
   it('peek skips when busy and does not rewrite unchanged count', async () => {

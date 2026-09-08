@@ -9,6 +9,10 @@
 
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import {
+  rememberFocusCircleIdentityPeekMap,
+  resetFocusCircleIdentityForTests
+} from './focusCircleIdentity.js';
+import {
   FOCUS_CIRCLE_PATH,
   FOCUS_CIRCLE_SCHEMA_VERSION,
   isFocusCircleClientEnabled,
@@ -43,7 +47,7 @@ let idleObserverActive = false;
 /** @type {object | null} */
 let idleObserverOpts = null;
 let peekInFlight = false;
-/** @type {{ traceId: string, phraseKey: string, hasResponded: boolean, respondPhraseKey?: string } | null} */
+/** @type {{ traceId: string, phraseKey: string, authorMemberId?: string, hasResponded: boolean, respondPhraseKey?: string } | null} */
 let witnessPeekSnapshot = null;
 let witnessPromptedThisSession = false;
 
@@ -120,6 +124,7 @@ export function resetFocusCircleWitnessForTests() {
   witnessPeekSnapshot = null;
   witnessPromptedThisSession = false;
   busyProbe = () => false;
+  resetFocusCircleIdentityForTests();
 }
 
 /**
@@ -163,7 +168,7 @@ export function rememberRespondedTraceId(storage, traceId) {
 /**
  * @param {unknown[]} traces
  * @param {Set<string>} respondedIds
- * @returns {{ traceId: string, phraseKey: string, hasResponded: boolean, respondPhraseKey?: string } | null}
+ * @returns {{ traceId: string, phraseKey: string, authorMemberId?: string, hasResponded: boolean, respondPhraseKey?: string } | null}
  */
 export function pickIdleWitnessTrace(traces, respondedIds) {
   if (!Array.isArray(traces)) return null;
@@ -171,6 +176,8 @@ export function pickIdleWitnessTrace(traces, respondedIds) {
     if (!row || typeof row !== 'object') continue;
     const traceId = typeof row.traceId === 'string' ? row.traceId : '';
     const phraseKey = typeof row.phraseKey === 'string' ? row.phraseKey : '';
+    const authorMemberId =
+      typeof row.authorMemberId === 'string' ? row.authorMemberId : '';
     if (!traceId || !phraseKey) continue;
     const hasResponded =
       Boolean(row.hasResponded) || respondedIds.has(traceId);
@@ -178,6 +185,7 @@ export function pickIdleWitnessTrace(traces, respondedIds) {
     return {
       traceId,
       phraseKey,
+      ...(authorMemberId ? { authorMemberId } : {}),
       hasResponded: false,
       ...(typeof row.respondPhraseKey === 'string'
         ? { respondPhraseKey: row.respondPhraseKey }
@@ -191,6 +199,7 @@ function parseWitnessPeekBody(body) {
   if (!body || typeof body !== 'object') return null;
   if (body.schemaVersion !== FOCUS_CIRCLE_SCHEMA_VERSION) return null;
   if (!Array.isArray(body.traces)) return null;
+  rememberFocusCircleIdentityPeekMap(body.identities);
   return body.traces;
 }
 

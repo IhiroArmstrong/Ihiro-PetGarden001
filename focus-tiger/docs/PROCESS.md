@@ -58,13 +58,17 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-09-06（UTC+8） · **防剽窃层兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2 · 现网≠冻表才算真保护） · **防剽窃层值得保护四测入库**（`ANTI_PLAGIARISM_LAYER.md` §3.2 · 准入≠值得） · **产品待办每周盘点机制**（`WEEKLY_PRODUCT_BACKLOG_AUDIT.md` · 口令「产品盘点」· 首盘 A1 倾听耳 HUD 已开修） · **冷启动目标问答 PO 拍板**（方向采纳·现在不实现·blocked）· **冷启动第一幕 11 入口审计 Brief + 清单草案**（硬前置·待开工） · **5173 Electron QA**：吹花+摸头提示书面 OK；Confide 时长/危机/在场书面 OK；茶句复读 + 耳钮叠 HUD 记入 TRACKER（§6.23） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-09-08（UTC+8） · **防剽窃层兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2 · 现网≠冻表才算真保护） · **开发任务线 Epic 建库**（`docs/planning/task-lines-epic-draft.md` · Epic 之间不设 blocked by） · **品味层×Calm Action 落地排期表**（`taste-layer-calm-action-roadmap.md` · Recover 第一刀 / Arrive 第二刀 / 权重暂不分叉） · **静思典藏层入库**（`CONTEMPLATIVE_ARCHIVE.md` · 12 候选 · 芥子须弥 = 第一枚纪念印 · 无新运行时） · **防剽窃层值得保护四测入库**（`ANTI_PLAGIARISM_LAYER.md` §3.2 · 准入≠值得） · **产品待办每周盘点机制**（`WEEKLY_PRODUCT_BACKLOG_AUDIT.md` · 口令「产品盘点」· 首盘 A1 倾听耳 HUD 已开修） · **冷启动目标问答 PO 拍板**（方向采纳·现在不实现·blocked）· **冷启动第一幕 11 入口审计 Brief + 清单草案**（硬前置·待开工） · **5173 Electron QA**：吹花+摸头提示书面 OK；Confide 时长/危机/在场书面 OK；茶句复读 + 耳钮叠 HUD 记入 TRACKER（§6.23） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单）· Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **防剽窃层兑现清单（2026-09-06 · 纯文档 · 无运行时）**：`ANTI_PLAGIARISM_LAYER.md` §3.2.2。真保护仅 Quiet Line / Confide 三处 EN 分叉；权重表与 YPE 仍是管道。无 Redeploy。
+- **防剽窃层兑现清单（2026-09-08 · 纯文档 · 无运行时）**：`ANTI_PLAGIARISM_LAYER.md` §3.2.2。真保护仅 Quiet Line / Confide 三处 EN 分叉；权重表与 YPE 仍是管道。脚注：Dispatcher B+C = t0/t1；YPE V1 不进 C 不是漏项。无 Redeploy。
+
+- **开发任务线 Epic 建库（2026-09-07 · 纯文档 + GitHub Issues）**：草案 `docs/planning/task-lines-epic-draft.md`；对照表 `docs/planning/task-lines-issue-map.md`。原则见下文「Epic Issue / 任务线看板」——Epic 之间不设 blocked by。
+
+- **静思典藏层（2026-09-06 · 纯文档 · 无新运行时）**：`CONTEMPLATIVE_ARCHIVE.md` — 内部名 Contemplative Archive；与 Quiet Line / Daily Wisdom / Action 70 分池；日签仍 ≤100 字符；12 条公有域/原创候选；《芥子须弥》= 第一枚纪念印。**不做**：改日抽、灌 14 条日签、加长 70 条、100 条库、断签弹回归诗、本切片开第 2 枚印。
 
 - **防剽窃层值得保护四测（2026-09-06 · 纯文档 · 无运行时）**：`ANTI_PLAGIARISM_LAYER.md` §3.2；`PRINCIPLES.md`「云端防剽窃与护城河」。准入四问 ≠ 值得投入保护。无 Redeploy。
 
@@ -73,6 +77,8 @@
 - **冷启动第一幕 11 入口审计 · 清单草案（2026-09-06 · 纯文档 · 无运行时）**：只读代码排查 E01–E11 + 卫星 E12–E14；gate 顺序 SSOT 草案已写入清单。待人工清库对照 + 逐条标 ok/gap/risk。口令：「开工冷启动第一幕审计」。
 
 - **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。不改现网句池。
+
+- **品味层×Calm Action 落地排期（2026-09-07 · 纯文档）**：`taste-layer-calm-action-roadmap.md` — Layer A–E 执行次序；**拍板** Recover 第一刀 · Arrive C1 关单后立刻第二刀 · 权重/ Honesty 分档**暂不分叉**；C1 Brief `task-calm-action-recover-runtime.md`。下一口令：「开工 Calm Action Recover」。
 
 - **Confide 他人攻击意图 `aggression_toward_others`（2026-09-04 · #566 已合 develop）**：替换 #564 `harm_witness`。禁 Heard/点头动画；竖线 `#8b6f5c`。语料 draft，扩池门禁见 Brief §5.3。
 
@@ -89,6 +95,10 @@
 - **Focus Circle Presence 刀 2b（2026-09-05 · #572 已合 develop）**：Idle/Arrive 圈内 sitting dots + heartbeat；Focusing 内不画。Brief `task-focus-circle-presence-2b.md`。**2026-09-05 本机 wrangler deploy**：生产 Version `22326de3-0856-45fc-8942-776f50a34db7`；`POST /api/focus-circle` presence_peek / presence_heartbeat / presence_leave 已上线。
 
 - **Focus Circle Gentle Witness 刀 2c（2026-09-05 · #577 已合 develop）**：预设短语留痕 + 每条最多一次回应。Brief `task-focus-circle-witness-2c.md` · 场景 **AP**。**PO 已批**：≥60s 门槛 · API 命名 · 24h TTL · 1 回应/trace · Idle 1 未回应痕。**v2 澄清**：3s = 延迟出现非限时关条；Rise 条须 `overlaySlotArbitration` Tier26 + yield celebrate/首卡/postSession。**2026-09-05 本机 wrangler deploy**：生产 Version `815a9c33-758f-4029-b689-ab9150927e9d`；`POST /api/focus-circle` witness_peek / witness_leave / witness_respond 已上线。
+
+- **Focus Circle Was-Here-Today 刀 2d（2026-09-07 · #613 已合 develop）**：≥60s Rise 后自动 `was_here_mark`；`presence_peek` 合并 `hereTodayOthers`；被动分享开关 · `onFocusCircleRiseSideEffects` 单点编排。Brief `task-focus-circle-was-here-2d.md` v2 · 场景 **AQ**。**2026-09-07 本机 wrangler deploy**：生产 Version `cab857c9-a865-45a9-b48d-984edb485b88`；`was_here_mark` + 合并 peek 已上线。
+
+- **Focus Circle Identity 刀 2e（2026-09-07 · `feature/focus-circle-identity-2e`）**：可选昵称 + Tiger/Yin 徽标；Witness `{name}` 替「一位同伴」；本机 Hide 回匿名。Brief `task-focus-circle-identity-2e.md` · 场景 **AR**。**源码合入 ≠ 现网**；须口令「部署」后 Worker 才有 `identity_set` / `witness_peek.identities`。
 
 - **废除证据门 · Quiet Social PO 评审（2026-09-04 · 纯文档）**：`FROM_APP_TO_CULTURE.md` 旧 §4.2/§10.3 开工门闩作废；因果改为 App 塑造 Slack。设计师 Lanterns/Circle/Rituals/Identity/8 条 Social 的裁决见该文 §13。无运行时。
 
@@ -666,6 +676,16 @@
 
 ---
 
+## Epic Issue / 任务线看板（2026-09-07）
+
+> **草案 SSOT**：[`planning/task-lines-epic-draft.md`](./planning/task-lines-epic-draft.md)（线名、耦合/兼容、排期）。建库口令见同目录 `cursor-batch-issue-prompt.md`。Issue 号对照表：[`planning/task-lines-issue-map.md`](./planning/task-lines-issue-map.md)（建库后填写）。
+
+**原则**：Epic 是活基线（Sit & Breath、Confide、Personalization Engine 等几乎不会有「整线完结」那一天）。**禁止**把整条 Epic 设成 `blocked by` 另一条 Epic。以后任何时候看到这种依赖，先反问「这条线真的会有整线完结那一天吗？」——答案是「不会」就说明 block 打错了地方。
+
+正确做法：Epic 之间**默认并行**；共用账本/overlay 写进正文「耦合」互链；数字/分桶名/文案对齐写「兼容」；GitHub 原生 `blocked by` **只打在子 Issue / 切片**（例如 Ritual 分享切片等 Circle 可分享基建；Onboarding 提问等冷启动第一幕审计收口）。逻辑先后写进排期备注，不写成整线阻塞。
+
+---
+
 ## Task Brief 存放约定
 
 各 Task Brief 统一存放于 `docs/task-briefs/`（目录结构见 ARCHITECTURE.md）。
@@ -937,6 +957,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **Web2 徽章子集（2026-08-24）**：静态「修行纪念印」走 C 轨 **勋章印记** + **累计时长/score** 门槛，Brief `task-practice-imprint-badges.md`；**不做**成就墙全屏、**不做**链上。`MilestoneGlow` 仪式动画与 streak 节点保留；新徽章对外文案避免「连坐 N 天」。
 - 奖励呈现形式包括：
   - **金牌/徽章**：C 轨页签 + 只增列表（`task-practice-imprint-badges`）；全屏「成就墙」仍 **不做**
+  - **静思典藏 / 纪念印**（2026-09-06）：文学性一次发现，SSOT `CONTEMPLATIVE_ARCHIVE.md`；第一枚 = 芥子须弥（score≥21 三 case）。第 2 枚印另 Brief（建议古池 · score 带 30）。**禁止**成就墙、禁止挂进 21 分队列、禁止断签触发
   - **环境细节/温和动作**：解锁永久保留的纪念物、环境细节或新表达；默认状态始终完整、温暖，不以缺失或退化反衬奖励
   - **3D 塑胶公仔展示**：复用已保留的 3D 多姿态模型资产与绕 Y 轴旋转展示效果（见 `ARCHITECTURE.md`「已有 3D 资产的保留与新定位」），用户可在奖品展示场景中 360 度观赏获得的虚拟公仔
 

@@ -1,0 +1,1 @@
+| 今日静语 Quiet Line · 背景 dim（Slice 1a） | UI可见 | 待人工测试 | **主路径**：`?product=1` 宽屏 → ⋯ → Quiet Line / 今日静语 → 卡出现同时 `#daily-zen-quote-backdrop` 轻 dim → 点遮罩或 Not now → 卡 + dim 同退 → Save image 仍下载 PNG。**375**：遮罩不挡三球/主 CTA；Save 不挡 Not now。**回流**：关后再开同日金句不变。 | — | — | — | `#daily-zen-quote-card` · `#daily-zen-quote-backdrop` · `data-testid=daily-zen-quote-backdrop` | 2026-09-08 |

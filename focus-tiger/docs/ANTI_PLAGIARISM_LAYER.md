@@ -182,6 +182,11 @@ chrome 文案、Idle/CapCut/精灵播放器、Confide 路由 / Qwen / Tool Regis
 
 **一句话对照**：A = 已经进（真保护）。B = 名字在层里、秘密还没有。C = 该进真保护或该接线、现在还没有。D = 永远不算。
 
+脚注（2026-09-08 · 分析师核对，不影响上表结论）：
+
+1. **Dispatcher 权重 / Honesty 分档同时出现在 B 与 C，不是矛盾。** B 是 t0（名字已在成员表，现网仍等于冻表，严格不算已保护）；C 是 t1（等积累出冻表覆盖不了的差异化数字，再纳入真保护）。同一对象的两个镜头，不要合并或去重成一行。  
+2. **YPE V1 只在 B、不进 C，不是漏项。** V1 契约就是回声选档 + `patternInsights=[]`，设计上不产生非平凡秘密，没有「等成熟」的未来态；接班的是 V2。禁止用「V1 怎么还没进」要求把它列入 C。
+
 ---
 
 ## 4. 不变量
@@ -209,8 +214,11 @@ chrome 文案、Idle/CapCut/精灵播放器、Confide 路由 / Qwen / Tool Regis
 | **3b** | Confide 在场 EN 生产分叉 | 审定句 + 「部署」 | **#550 已合**（`CONFIDE_COMPANION_PRESENCE`） |
 | **3c** | Confide boundary EN 生产分叉 | 审定句已锁 + 「部署」 | **#551 已合 + 生产 Redeploy**（`CONFIDE_BOUNDARY_RESPECT`） |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
+| **权重分叉** | Rise / 好奇 / Honesty 分档 | 有调参目标时 | **2026-09-07 拍板：暂不分叉** |
 
-**运行时下一刀**：Confide 高危模板 EN 分叉已齐（在场 + boundary）。日签扩容 / 伸懒腰 / 好奇仍后排。
+**执行排期 SSOT**：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)（Layer A–E · Recover→Arrive→overlay→后排）。
+
+**运行时下一刀**：**Calm Action Recover**（口令「开工 Calm Action Recover」）。Confide 句 overlay 序 3 已齐。日签扩容 / 伸懒腰 / 好奇仍后排；权重分叉冻结至有 secret 调参目标。
 
 ---
 

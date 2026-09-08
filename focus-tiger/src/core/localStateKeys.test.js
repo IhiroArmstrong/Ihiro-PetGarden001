@@ -86,6 +86,7 @@ import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
 import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
 import { MUSTARD_SEED_SEAL_STORAGE_KEY } from './mustardSeedSeal.js';
+import { CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY } from './contemplativeArchiveSeal.js';
 import { DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY } from './dailyZenQuote.js';
 import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
 import { FOCUS_COINS_STORAGE_KEY, FocusCoinsStore } from './focusCoinsStore.js';
@@ -95,6 +96,12 @@ import { YPE_PERSONALIZATION_PACK_STORAGE_KEY } from './ypePersonalizationPack.j
 import { QUIET_TOGETHER_STORAGE_KEY } from './quietTogetherPreference.js';
 import { FOCUS_CIRCLE_STORAGE_KEY } from './focusCircleMembership.js';
 import { FOCUS_CIRCLE_WITNESS_RESPONDED_STORAGE_KEY } from './focusCircleWitness.js';
+import { FOCUS_CIRCLE_PASSIVE_SHARE_STORAGE_KEY } from './focusCirclePassiveShare.js';
+import { FOCUS_CIRCLE_WAS_HERE_MARK_STORAGE_KEY } from './focusCircleWasHere.js';
+import {
+  FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
+  FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
+} from './focusCircleIdentity.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
@@ -179,6 +186,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRACTICE_BACKUP_OPT_IN_KEY,
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY,
+  CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY,
   DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
   IDLE_COMPANION_PIP_STORAGE_KEY,
   FOCUS_COINS_STORAGE_KEY,
@@ -187,7 +195,11 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   YPE_PERSONALIZATION_PACK_STORAGE_KEY,
   QUIET_TOGETHER_STORAGE_KEY,
   FOCUS_CIRCLE_STORAGE_KEY,
-  FOCUS_CIRCLE_WITNESS_RESPONDED_STORAGE_KEY
+  FOCUS_CIRCLE_WITNESS_RESPONDED_STORAGE_KEY,
+  FOCUS_CIRCLE_PASSIVE_SHARE_STORAGE_KEY,
+  FOCUS_CIRCLE_WAS_HERE_MARK_STORAGE_KEY,
+  FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
+  FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

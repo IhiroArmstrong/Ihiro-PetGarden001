@@ -26,10 +26,11 @@ alwaysApply: true
 - 声称修好 / 交互修复收尾 / commit·push 前 → 先 `Read` **`focus-tiger-regression-lock.mdc`**。
 - 回答某功能是否已实现 / 已开工 / 已合入（**含随口提问**）→ 先 `Read` **`focus-tiger-regression-lock.mdc`**（「分支新鲜度」+「地面真相优先级」）；**禁止**只凭 Brief/计划文档措辞下结论。细则勿在本文件复述。
 
-## 收尾（N14 · 每次用户可见回复末尾）
+## 汇报格式（开头 + 末尾）
 
-独立小节 **「待你决定 / 待你知道」**（无事项也须标题 +「无」）。  
-列 ≥2 个可执行开放方案时须写 **我认为最合理的**（细则按需读 `focus-tiger-recommend-most-reasonable.mdc`）。
+- **开头（强制）**：用户可见回复**最前面**须有一段 **大白话总结**（≤5 句、无分支名/commit/技术术语；交代做了什么、到哪一步、需你决定什么）。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `plain-language-summary`）；技术细节后移，不必精简。  
+- **末尾（N14）**：独立小节 **「待你决定 / 待你知道」**（无事项也须标题 +「无」）。  
+- 列 ≥2 个可执行开放方案时须写 **我认为最合理的**（细则按需读 `focus-tiger-recommend-most-reasonable.mdc`）。
 
 ## 测试输出卫生（强制）
 

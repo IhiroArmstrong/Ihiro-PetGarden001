@@ -39,6 +39,25 @@ import {
 	circleWitnessKvKey,
 	parseFocusCircleWitnessRecord,
 } from "../lib/focusCircleWitnessKv";
+import {
+	FOCUS_CIRCLE_IDENTITY_SCHEMA_VERSION,
+	applyIdentitySet,
+	buildIdentityPeekMap,
+	circleIdentityKvKey,
+	isFocusCircleBadgeKey,
+	normalizeFocusCircleNickname,
+	parseFocusCircleIdentityRecord,
+	type FocusCircleIdentityEntry,
+} from "../lib/focusCircleIdentityKv";
+import {
+	FOCUS_CIRCLE_WAS_HERE_SCHEMA_VERSION,
+	applyWasHereMark,
+	circleWasHereKvKey,
+	countHereTodayOthers,
+	isWasHereDayKey,
+	parseFocusCircleWasHereRecord,
+	toLocalDayKey,
+} from "../lib/focusCircleWasHereKv";
 import type { Env } from "../types";
 
 const ACTIONS = new Set([
@@ -52,6 +71,8 @@ const ACTIONS = new Set([
 	"witness_leave",
 	"witness_peek",
 	"witness_respond",
+	"was_here_mark",
+	"identity_set",
 ]);
 const MAX_CODE_RETRIES = 12;
 
@@ -76,6 +97,8 @@ async function deleteCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<t
 	await kv.delete(circleCodeKvKey(record.code));
 	await kv.delete(circlePresenceKvKey(record.circleId));
 	await kv.delete(circleWitnessKvKey(record.circleId));
+	await kv.delete(circleWasHereKvKey(record.circleId));
+	await kv.delete(circleIdentityKvKey(record.circleId));
 }
 
 async function loadCirclePresence(kv: KvLike, circleId: string) {
@@ -127,6 +150,44 @@ async function saveCircleWitness(
 	);
 }
 
+async function loadCircleWasHere(kv: KvLike, circleId: string) {
+	const raw = await kv.get(circleWasHereKvKey(circleId));
+	return parseFocusCircleWasHereRecord(raw).members;
+}
+
+async function saveCircleWasHere(
+	kv: KvLike,
+	circleId: string,
+	members: Record<string, { markedAtMs: number; markerDayKey: string }>,
+) {
+	await kv.put(
+		circleWasHereKvKey(circleId),
+		JSON.stringify({
+			schemaVersion: FOCUS_CIRCLE_WAS_HERE_SCHEMA_VERSION,
+			members,
+		}),
+	);
+}
+
+async function loadCircleIdentity(kv: KvLike, circleId: string) {
+	const raw = await kv.get(circleIdentityKvKey(circleId));
+	return parseFocusCircleIdentityRecord(raw).members;
+}
+
+async function saveCircleIdentity(
+	kv: KvLike,
+	circleId: string,
+	members: Record<string, FocusCircleIdentityEntry>,
+) {
+	await kv.put(
+		circleIdentityKvKey(circleId),
+		JSON.stringify({
+			schemaVersion: FOCUS_CIRCLE_IDENTITY_SCHEMA_VERSION,
+			members,
+		}),
+	);
+}
+
 function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>, memberId: string) {
 	return {
 		ok: true as const,
@@ -165,7 +226,7 @@ export async function handleFocusCircle(
 		return errorJson(
 			400,
 			"bad_action",
-			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, or witness_respond",
+			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, was_here_mark, or identity_set",
 		);
 	}
 
@@ -251,10 +312,16 @@ export async function handleFocusCircle(
 			const traces = await loadCircleWitness(kv, circleId);
 			if (action === "witness_peek") {
 				const peekTraces = buildWitnessPeekTraces(traces, nowMs, memberId);
+				const identityMembers = await loadCircleIdentity(kv, circleId);
+				const identities = buildIdentityPeekMap(
+					identityMembers,
+					Object.keys(record.members),
+				);
 				return json({
 					ok: true,
 					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 					traces: peekTraces,
+					identities,
 				});
 			}
 			if (action === "witness_leave") {
@@ -315,22 +382,65 @@ export async function handleFocusCircle(
 		if (
 			action === "presence_peek" ||
 			action === "presence_heartbeat" ||
-			action === "presence_leave"
+			action === "presence_leave" ||
+			action === "was_here_mark"
 		) {
 			if (!record.members[memberId]) {
 				return errorJson(403, "not_member", "Not a member of this circle");
 			}
 			const sessions = await loadCirclePresence(kv, circleId);
+			if (action === "was_here_mark") {
+				const markerDayKey =
+					typeof o.markerDayKey === "string" ? o.markerDayKey.trim() : "";
+				if (!isWasHereDayKey(markerDayKey)) {
+					return errorJson(400, "bad_day_key", "markerDayKey must be YYYY-MM-DD");
+				}
+				const markedAtMs =
+					typeof o.markedAtMs === "number" && Number.isFinite(o.markedAtMs)
+						? o.markedAtMs
+						: nowMs;
+				const members = await loadCircleWasHere(kv, circleId);
+				const next = applyWasHereMark(
+					members,
+					memberId,
+					markerDayKey,
+					markedAtMs,
+				);
+				await saveCircleWasHere(kv, circleId, next);
+				return json({
+					ok: true,
+					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+				});
+			}
 			if (action === "presence_peek") {
 				const sittingOthers = countCircleSittingSessions(
 					sessions,
 					nowMs,
 					memberId,
 				);
+				const viewerDayKey =
+					typeof o.viewerDayKey === "string" && isWasHereDayKey(o.viewerDayKey.trim())
+						? o.viewerDayKey.trim()
+						: toLocalDayKey(nowMs, "UTC");
+				const viewerTimeZone =
+					typeof o.viewerTimeZone === "string" && o.viewerTimeZone.trim()
+						? o.viewerTimeZone.trim()
+						: "UTC";
+				const wasHereMembers = await loadCircleWasHere(kv, circleId);
+				const hereTodayOthers = countHereTodayOthers(
+					wasHereMembers,
+					viewerDayKey,
+					viewerTimeZone,
+					memberId,
+					sessions,
+					nowMs,
+				);
 				return json({
 					ok: true,
 					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 					sittingOthers,
+					hereTodayOthers,
+					viewerDayKey,
 				});
 			}
 			const next =
@@ -343,6 +453,56 @@ export async function handleFocusCircle(
 				ok: true,
 				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 				sittingOthers,
+			});
+		}
+
+		if (action === "identity_set") {
+			if (!record.members[memberId]) {
+				return errorJson(403, "not_member", "Not a member of this circle");
+			}
+			const nicknameProvided = Object.prototype.hasOwnProperty.call(o, "nickname");
+			if (!nicknameProvided) {
+				return errorJson(400, "bad_nickname", "nickname is required");
+			}
+			const nicknameRaw = o.nickname;
+			let nickname: string | null = null;
+			if (nicknameRaw === null || nicknameRaw === "") {
+				nickname = null;
+			} else if (typeof nicknameRaw === "string") {
+				nickname = normalizeFocusCircleNickname(nicknameRaw);
+				if (!nickname) {
+					return errorJson(400, "bad_nickname", "nickname is invalid");
+				}
+			} else {
+				return errorJson(400, "bad_nickname", "nickname must be a string or null");
+			}
+			const badgeProvided = Object.prototype.hasOwnProperty.call(o, "badgeKey");
+			if (!badgeProvided) {
+				return errorJson(400, "bad_badge", "badgeKey is required");
+			}
+			let badgeKey: "tiger" | "yin" | null = null;
+			if (o.badgeKey === null || o.badgeKey === "") {
+				badgeKey = null;
+			} else if (typeof o.badgeKey === "string") {
+				const trimmed = o.badgeKey.trim();
+				if (!isFocusCircleBadgeKey(trimmed)) {
+					return errorJson(400, "bad_badge", "badgeKey must be tiger or yin");
+				}
+				badgeKey = trimmed;
+			} else {
+				return errorJson(400, "bad_badge", "badgeKey must be a string or null");
+			}
+			const identityMembers = await loadCircleIdentity(kv, circleId);
+			const nextIdentity = applyIdentitySet(
+				identityMembers,
+				memberId,
+				nickname,
+				badgeKey,
+			);
+			await saveCircleIdentity(kv, circleId, nextIdentity);
+			return json({
+				ok: true,
+				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
 			});
 		}
 
