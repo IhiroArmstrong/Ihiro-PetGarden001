@@ -40,11 +40,18 @@ describe('marketing-site Slice 0 contract', () => {
     assert.doesNotMatch(html, /focustiger\.app/i);
   });
 
-  it('keeps www → apex in Pages redirects', () => {
-    assert.match(
+  it('keeps www → apex in Pages middleware, not domain-level _redirects', () => {
+    assert.doesNotMatch(
       redirects,
       /https:\/\/www\.twinsology\.com\/\* https:\/\/twinsology\.com\/:splat 301/
     );
+    const middleware = readFileSync(
+      join(dir, 'functions/_middleware.js'),
+      'utf8'
+    );
+    assert.match(middleware, /www\.twinsology\.com/);
+    assert.match(middleware, /url\.hostname = 'twinsology\.com'/);
+    assert.match(middleware, /Response\.redirect\([^,]+,\s*301\)/);
   });
 
   it('uses the product wash, not an arcade palette', () => {
