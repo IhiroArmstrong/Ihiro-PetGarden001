@@ -53,6 +53,13 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 import {
   canRegisterDesktopCompanionGeneration,
   desktopCompanionDownloadPercent,
@@ -102,7 +109,7 @@ import {
 } from '../core/yinPersonalMemory/yinPersonalMemorySuppress.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class ConfideToYinUI {
   /**
@@ -132,6 +139,13 @@ export class ConfideToYinUI {
     this._memoryState = null;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'confide-to-yin-backdrop',
+      testId: 'confide-to-yin-backdrop',
+      zIndex: 17,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'confide-to-yin-card';
@@ -325,6 +339,7 @@ export class ConfideToYinUI {
     if (this.handlers.canOpen && !this.handlers.canOpen()) return;
     this.handlers.onOpen?.();
     this._open = true;
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.inputEl.value = '';
     this.userEl.hidden = true;
@@ -364,10 +379,11 @@ export class ConfideToYinUI {
     this._memoryConsentSaving = false;
     this._hideMemoryConsent();
     this.hideGenerateLayer({ unload: false });
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
-    }, FADE_MS);
+    }, FADE_MS + 40);
     this.handlers.onClose?.();
   }
 
@@ -477,6 +493,7 @@ export class ConfideToYinUI {
     }
     this._unsubCompanion?.();
     this._unsubLocale?.();
+    this.backdrop.remove();
     this.root.remove();
   }
 

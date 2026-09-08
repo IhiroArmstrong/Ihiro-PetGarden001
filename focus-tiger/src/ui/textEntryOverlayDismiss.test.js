@@ -19,6 +19,7 @@ test('Stay in touch has Cancel and does not close on outside pointer', () => {
   const src = readUi('NewsletterCaptureUI.js');
   assert.match(src, /newsletter-capture-cancel/);
   assert.match(src, /NEWSLETTER_CANCEL/);
+  assert.match(src, /SB19_HOLD/);
   assert.doesNotMatch(src, /_onDocPointer/);
 });
 
