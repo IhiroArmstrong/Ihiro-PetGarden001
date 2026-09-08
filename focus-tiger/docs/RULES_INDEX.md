@@ -248,6 +248,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-08 | 收窄 `git-pr-task-line-ref`：`Closes` 数量按 Issue 类型区分——切片/审计一 PR 一 Closes；Epic 允许多 Closes（耦合信号）；Dependabot/bump 不挂线。移除 `#558`/`#559` 误挂 `#630`。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 修订 `git-pr-task-line-ref`：仓库 auto-close 已关；Epic/切片 PR 统一 `Closes #NNN` 以填充 Projects Linked pull requests 列；`Relates to` 仅作 auto-close 重开时的回退。SSOT `WORKFLOW.md` |
 | 2026-09-07 | 新增 `git-pr-task-line-ref`：PR 描述须引用所属任务线 Issue；Epic 用 `Relates to`、审计/切片用 `Closes`；禁止对 Epic 用 `Closes`。SSOT `WORKFLOW.md`「PR 描述须引用所属任务线 Issue」 |
 | 2026-09-06 | 产品表新增 `CONTEMPLATIVE_ARCHIVE.md`（静思典藏层；12 候选；芥子须弥 = 第一枚纪念印；不进 rules-authority 机器块） |

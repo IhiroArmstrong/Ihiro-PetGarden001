@@ -2,6 +2,7 @@
 # Append `Closes #NNN` to open PRs missing task-line refs.
 # Requires: repo Settings → General → Issues → auto-close OFF (see WORKFLOW.md git-pr-task-line-ref).
 # Mapping is heuristic from changed paths/titles; review before re-running.
+# Skip: Dependabot / deps-dev bump PRs (no task line); see WORKFLOW.md git-pr-task-line-ref rule 4.
 # Requires: gh token scope repo
 # Usage: ./focus-tiger/scripts/backfill-open-pr-task-line-refs.sh [--dry-run]
 
@@ -13,8 +14,6 @@ DRY_RUN=false
 
 # PR number | task-line issue (see task-lines-issue-map.md)
 MAPPINGS=(
-  "558|630"
-  "559|630"
   "593|630"
   "595|642"
   "596|642"
