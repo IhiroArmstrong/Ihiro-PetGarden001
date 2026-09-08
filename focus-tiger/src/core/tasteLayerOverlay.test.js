@@ -22,6 +22,7 @@ import {
   parseEmotionWeightOverlay,
   parseQuietLineOverlay,
   resetTasteLayerOverlayForTests,
+  QUIET_LINE_OVERLAY_SCHEMA_VERSION,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
 import { CONFIDE_CORPUS } from './confide/confideCorpus.js';
@@ -120,10 +121,10 @@ test('parseDailyMessageOverlay rejects locale mismatch and missing ids', () => {
   );
 });
 
-test('parseQuietLineOverlay accepts freeze 21-key pool', () => {
+test('parseQuietLineOverlay accepts freeze 29-key pool', () => {
   const parsed = parseQuietLineOverlay(
     {
-      schemaVersion: 1,
+      schemaVersion: QUIET_LINE_OVERLAY_SCHEMA_VERSION,
       locale: 'en',
       pool: [
         ...COPY_POOLS.DAILY_ZEN_QUOTE,
@@ -134,14 +135,31 @@ test('parseQuietLineOverlay accepts freeze 21-key pool', () => {
   );
   assert.ok(parsed);
   assert.equal(parsed.locale, 'en');
-  assert.equal(parsed.pool.length, 21);
+  assert.equal(parsed.pool.length, 29);
+});
+
+test('parseQuietLineOverlay rejects legacy schema 1 pool', () => {
+  assert.equal(
+    parseQuietLineOverlay(
+      {
+        schemaVersion: TASTE_LAYER_SCHEMA_VERSION,
+        locale: 'en',
+        pool: [
+          ...COPY_POOLS.DAILY_ZEN_QUOTE,
+          ...COPY_POOLS.DAILY_ZEN_QUOTE_INSIGHT.slice(0, 14)
+        ].map((key) => ({ key, text: en[key] }))
+      },
+      'en'
+    ),
+    null
+  );
 });
 
 test('parseQuietLineOverlay rejects locale mismatch and illegal keys', () => {
   assert.equal(
     parseQuietLineOverlay(
       {
-        schemaVersion: 1,
+        schemaVersion: QUIET_LINE_OVERLAY_SCHEMA_VERSION,
         locale: 'ja',
         pool: [
           ...COPY_POOLS.DAILY_ZEN_QUOTE,
@@ -155,7 +173,7 @@ test('parseQuietLineOverlay rejects locale mismatch and illegal keys', () => {
   assert.equal(
     parseQuietLineOverlay(
       {
-        schemaVersion: 1,
+        schemaVersion: QUIET_LINE_OVERLAY_SCHEMA_VERSION,
         locale: 'en',
         pool: [{ key: 'DAILY_ZEN_QUOTE_1', text: 'x' }]
       },

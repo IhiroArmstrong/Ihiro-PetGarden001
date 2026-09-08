@@ -76,7 +76,7 @@
 
 - **冷启动第一幕 11 入口审计 · 清单草案（2026-09-06 · 纯文档 · 无运行时）**：只读代码排查 E01–E11 + 卫星 E12–E14；gate 顺序 SSOT 草案已写入清单。待人工清库对照 + 逐条标 ok/gap/risk。口令：「开工冷启动第一幕审计」。
 
-- **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。不改现网句池。
+- **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。**2026-09-06**：§四 8 条已接线为 `DAILY_ZEN_QUOTE_INSIGHT_15–22`（overlay schema 2 · 29 键；Worker 须「部署」）。Action 70 仍无运行时。
 
 - **品味层×Calm Action 落地排期（2026-09-07 · 纯文档）**：`taste-layer-calm-action-roadmap.md` — Layer A–E 执行次序；**拍板** Recover 第一刀 · Arrive C1 关单后立刻第二刀 · 权重/ Honesty 分档**暂不分叉**；C1 Brief `task-calm-action-recover-runtime.md`。下一口令：「开工 Calm Action Recover」。
 

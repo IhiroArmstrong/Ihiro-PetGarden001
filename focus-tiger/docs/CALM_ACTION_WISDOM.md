@@ -87,6 +87,8 @@
 
 现网经典 7 + 洞察 14 仍偏「不痛不痒」或过像公案。下列从分析员 20+15 **改写**而来：有图像、不教练、不临床。审定后经 Quiet Line overlay / locale 扩，**不要**写入 Action 70 的 id。
 
+**运行时（2026-09-06）**：已接线为 `DAILY_ZEN_QUOTE_INSIGHT_15`–`22`（Quiet Line overlay `schemaVersion` 2 · 29 键混合池）。生产 Worker 须口令「部署」才上云。
+
 | id | n | EN | JA | ZH（CMS） | 备注 |
 |---|---:|---|---|---|---|
 | QL-C01 | 47 | A mountain does not try to prove its stability. | 山は、静けさを証明しようとしない。 | 一座山不必向谁证明它的沉静。 | 采纳自 A2「山」 |

@@ -1,0 +1,3 @@
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 备注 | 日期 |
+|---|---|---|---|---|---|---|---|---|
+| Quiet Line 扩 8 条观察句（INSIGHT_15–22 · overlay schema 2） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → ⋯ / 抽屉 **A Quiet Line** → 当日句可能来自扩池（混合 7 经典 + 22 洞察；共 29 键）。**对照**：`?tasteLayer=0` 仍用 locale 冻表（含新 8 条）。**回流**：同日再开句不变；Save image 用已解析句。**Journey**：开 insight 句（含 15–22）仍见 `◦`。**慢网**：失败不得挡 Sit / 开卡。**未配 cloud**：纯本地 29 键即可见新句。**部署**：Worker `/api/quiet-line` 须口令「部署」才返回 schema 2；部署前客户端拒 schema 1 → 静默本地 29 键。自动化：`tasteLayerOverlay.test.js` · `tasteLayerSync.test.js` · `dailyZenQuote.test.js` · `cloud` `tasteLayerFreeze.test.ts`。 | — | — | — | `feature/quiet-line-insight-pool-v2` · QL-C01–C08 | 2026-09-06 |
