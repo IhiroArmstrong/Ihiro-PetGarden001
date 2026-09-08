@@ -250,8 +250,10 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|
 | 2026-09-08 | 收窄 `git-pr-task-line-ref`：`Closes` 数量按 Issue 类型区分——切片/审计一 PR 一 Closes；Epic 允许多 Closes（耦合信号）；Dependabot/bump 不挂线。移除 `#558`/`#559` 误挂 `#630`。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 修订 `git-pr-task-line-ref`：仓库 auto-close 已关；Epic/切片 PR 统一 `Closes #NNN` 以填充 Projects Linked pull requests 列；`Relates to` 仅作 auto-close 重开时的回退。SSOT `WORKFLOW.md` |
+| 2026-09-08 | 防剽窃层 §3.2.2 补分析师脚注：Dispatcher 同现 B+C = t0/t1；YPE V1 不进 C 不是漏项。不进 rules-authority 机器块 |
 | 2026-09-07 | 新增 `git-pr-task-line-ref`：PR 描述须引用所属任务线 Issue；Epic 用 `Relates to`、审计/切片用 `Closes`；禁止对 Epic 用 `Closes`。SSOT `WORKFLOW.md`「PR 描述须引用所属任务线 Issue」 |
 | 2026-09-06 | 产品表新增 `CONTEMPLATIVE_ARCHIVE.md`（静思典藏层；12 候选；芥子须弥 = 第一枚纪念印；不进 rules-authority 机器块） |
+| 2026-09-06 | 防剽窃层补 **兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2）：现网≠冻表才算真保护。不进 rules-authority 机器块 |
 | 2026-09-06 | 防剽窃层补 **值得保护四测**（`ANTI_PLAGIARISM_LAYER.md` §3.2）；与准入四问正交；`PRINCIPLES.md` 加「云端防剽窃与护城河」指针。不进 rules-authority 机器块 |
 | 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |

@@ -242,7 +242,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **0** | 概念 + 准入四问 | `ANTI_PLAGIARISM_LAYER.md` | **#542 已合** |
 | **0b** | 冻表 vs 现网可分叉 | `ANTI_PLAGIARISM_LAYER.md` §3.1 | **已合文档** |
-| **0c** | 值得保护四测（准入≠值得） | `ANTI_PLAGIARISM_LAYER.md` §3.2 · `PRINCIPLES.md` | **本切片（文档）** |
+| **0c** | 值得保护四测（准入≠值得） | `ANTI_PLAGIARISM_LAYER.md` §3.2 · `PRINCIPLES.md` | **#599 已合** |
+| **0d** | 兑现清单（现网 ≠ 冻表） | `ANTI_PLAGIARISM_LAYER.md` §3.2.2 | **本切片（文档）** |
 | **1** | Quiet Line 句包 overlay | `task-quiet-line-copy-overlay.md` | **#543 已合**（生产须「部署」） |
 | **2** | YPE V2 + `algorithmVersion`（契约内真正政策） | `task-ype-v2-secret-transform.md` | **#545 已合 develop**（生产须「部署」） |
 | **3** | Confide 句库 overlay | `task-confide-copy-overlay.md` | **#548 已合**（生产 overlay 已 Redeploy） |
