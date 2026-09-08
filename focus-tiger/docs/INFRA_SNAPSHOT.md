@@ -67,8 +67,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `815a9c33-758f-4029-b689-ab9150927e9d` |
-| `prod_verified_at` | 2026-09-05（本机 `wrangler deploy` · `/api/focus-circle` witness_peek / witness_leave / witness_respond live · #577 Focus Circle Gentle Witness 2c） |
+| `prod_worker_version` | `0ef2b77a-6815-431b-ab8d-593988e56193` |
+| `prod_verified_at` | 2026-09-08（本机 `wrangler deploy` · Quiet Line schema 2 · 29 键 mixed pool · #602） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
