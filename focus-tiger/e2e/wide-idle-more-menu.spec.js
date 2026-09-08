@@ -362,6 +362,31 @@ test('wide Idle: Quiet Line row opens quote card and save stays available', asyn
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
 });
 
+test('wide Idle: Wallpapers row opens card with backdrop dim and blank dismiss', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="wallpapers"]')).toBeVisible();
+  await menu.locator('[data-proxy="wallpapers"]').click();
+  const card = page.locator('#digital-wallpapers-card');
+  const backdrop = page.getByTestId('digital-wallpapers-backdrop');
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('digital-wallpapers-grid')).toBeVisible();
+  await expect(page.getByTestId('digital-wallpapers-save')).toBeVisible();
+  await backdrop.click({ position: { x: 12, y: 12 } });
+  await expect(card).toBeHidden({ timeout: 5_000 });
+  await expect(backdrop).toBeHidden({ timeout: 5_000 });
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="wallpapers"]').click();
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
+});
+
 test('wide Idle: no ambient autoplay on boot', async ({ page }) => {
   await openFreshProductShell(page);
   const playing = await page.evaluate(() => {
