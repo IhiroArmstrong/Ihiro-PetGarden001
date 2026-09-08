@@ -294,8 +294,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **—** | 排期 + 清单 | `task-overlay-backdrop-dim-rollout.md` | #645 · #637 · #630 | **本支文档** |
 | **0** | `overlayBackdrop` 共享 helper |  rollout §Slice 0 | #645 | **已合 #655** |
 | **1a** | Quiet Line 背景 dim | `task-quiet-line-backdrop-dim.md` | #637 · #645 | **已合 #656** |
-| **1b** | Wallpapers 背景 dim | `task-wallpapers-backdrop-dim.md` | #645 | **`feature/wallpapers-backdrop-dim` 开工** |
-| **2** | Compass + Yin Coin + Zen Cinema | 待建 | #633 · #632 | 待口令 |
+| **1b** | Wallpapers 背景 dim | `task-wallpapers-backdrop-dim.md` | #645 | **已合 #659** |
+| **2** | Compass + Yin Coin + Zen Cinema | `task-growth-panels-backdrop-dim.md` | #633 · #632 | **`feature/growth-panels-backdrop-dim` 开工** |
 | **3** | 付费族 SB-19 视觉-only dim | 待建 | #630 · #639 | 待口令 |
 
 **已有 dim（不必重做）**：纪念印 · Journey Log · Support · Membership · ? 钉住 + Privacy · 宽/窄菜单抽屉。

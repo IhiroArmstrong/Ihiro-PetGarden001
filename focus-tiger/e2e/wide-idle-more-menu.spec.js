@@ -317,23 +317,101 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   }
 });
 
-test('wide Idle: Zen Cinema row opens confirm card', async ({ page }) => {
+test('wide Idle: Zen Cinema row opens confirm card with backdrop dim', async ({
+  page
+}) => {
   await openFreshProductShell(page);
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
+    } catch {
+      /* ignore */
+    }
+  });
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
   await expect(menu.locator('[data-proxy="zen-cinema"]')).toBeVisible();
   await menu.locator('[data-proxy="zen-cinema"]').click();
   const card = page.locator('#zen-cinema-card');
+  const backdrop = page.getByTestId('zen-cinema-backdrop');
   await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
   await expect(card.locator('.zen-cinema-card__thumb')).toBeVisible();
   await expect(page.getByTestId('zen-cinema-open-youtube')).toBeVisible();
-  await card.locator('.zen-cinema-card__btn--ghost').click();
+  await backdrop.click({ position: { x: 12, y: 12 } });
   await expect(card).toBeHidden({ timeout: 5_000 });
+  await expect(backdrop).toBeHidden({ timeout: 5_000 });
   await page.locator('#ft-wide-more-btn').click();
   await expect(menu).toBeVisible({ timeout: 5_000 });
   await menu.locator('[data-proxy="zen-cinema"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
+  await card.locator('.zen-cinema-card__btn--ghost').click();
+  await expect(card).toBeHidden({ timeout: 5_000 });
+});
+
+test('wide Idle: Five Moments Compass row opens card with backdrop dim', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
+    } catch {
+      /* ignore */
+    }
+  });
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="five-moments"]')).toBeVisible();
+  await menu.locator('[data-proxy="five-moments"]').click();
+  const card = page.locator('#five-moments-compass');
+  const backdrop = page.getByTestId('five-moments-compass-backdrop');
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('five-moments-compass-close')).toBeVisible();
+  await backdrop.click({ position: { x: 12, y: 12 } });
+  await expect(card).toBeHidden({ timeout: 5_000 });
+  await expect(backdrop).toBeHidden({ timeout: 5_000 });
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="five-moments"]').click();
+  await expect(card).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
+});
+
+test('wide Idle: Yin Collections row opens panel with backdrop dim', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
+    } catch {
+      /* ignore */
+    }
+  });
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expect(menu.locator('[data-proxy="yin-coin"]')).toBeVisible();
+  await menu.locator('[data-proxy="yin-coin"]').click();
+  const panel = page.locator('#yin-coin-panel');
+  const backdrop = page.getByTestId('yin-coin-panel-backdrop');
+  await expect(panel).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('yin-coin-list')).toBeVisible();
+  await expect(page.getByTestId('yin-coin-wave-play')).toBeVisible();
+  await backdrop.click({ position: { x: 12, y: 12 } });
+  await expect(panel).toBeHidden({ timeout: 5_000 });
+  await expect(backdrop).toBeHidden({ timeout: 5_000 });
+  await page.locator('#ft-wide-more-btn').click();
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="yin-coin"]').click();
+  await expect(panel).toBeVisible({ timeout: 5_000 });
+  await expect(backdrop).toBeVisible({ timeout: 5_000 });
 });
 
 test('wide Idle: Quiet Line row opens quote card and save stays available', async ({
