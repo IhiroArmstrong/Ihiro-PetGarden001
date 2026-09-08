@@ -23,7 +23,7 @@
 | **2** | `index.html` | `#scene-canvas` 3D/WebGL 场景画布 |
 | **2** | `index.html` | FocusHUD 连胜环（`.ft-hud__streak`）相对 HUD 卡 |
 | **2** | `src/ui/QuietTogetherLanternsChrome.js` | Quiet Together 灯火（`#quiet-together-lanterns`，`pointer-events: none`；宽屏锚在热力图簇上方；Idle/Arrive 背景；Focusing 隐藏） |
-| **2** | `src/ui/FocusCirclePresenceChrome.js` | Focus Circle 圈内 sitting（`#focus-circle-presence`，银蓝 dots；叠在全球灯火上方；Idle/Arrive；Focusing 隐藏） |
+| **2** | `src/ui/FocusCirclePresenceChrome.js` | Focus Circle 圈内 sitting（`#focus-circle-presence`，银蓝 dots；叠在全球灯火上方；Idle/Arrive；Focusing 隐藏；**含 was-here-today 轻文案轨 · 刀 2d**） |
 | **3** | `src/ui/FocusCircleWitnessChrome.js` | Focus Circle Gentle Witness 匿名痕迹（`#focus-circle-witness`；叠在 presence 上方；pointer-events none；回应钮可点；Focusing 隐藏） |
 | **2** | `src/ui/OnboardingHintsUI.js` | 提示发现小圆点（`.ft-hint-discovery-dot`）相对宿主按钮角标 |
 | **2** | `ui-kit/components/streak-meter.js` | `<streak-meter>` host 相对邻居 |
@@ -59,9 +59,19 @@
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
+| **17** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass-backdrop` Five Moments Compass 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel-backdrop` Yin's Collections 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-backdrop` Zen Cinema 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-backdrop` 今日静语卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
-| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换） |
+| **17** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-backdrop` 芥子须弥纪念印遮罩 |
+| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |
+| **17** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-backdrop` 阿寅静帧壁纸卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
+| **17** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-backdrop` Stay in touch 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **17** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-backdrop` 向阿寅倾诉遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **17** | `src/ui/TipJarUI.js` | `#yin-tip-jar-backdrop` Buy Yin a Tea 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **26** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-backdrop` Sanctuary Lifetime 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only；卡 z27） |
 | **27** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（须高于 Support 模态 25/26，避免 Unlock Lifetime 点到淡出遮罩） |
 | **17** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-backdrop` Membership 模态遮罩 |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |

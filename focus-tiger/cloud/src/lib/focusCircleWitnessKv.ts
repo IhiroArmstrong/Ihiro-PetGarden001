@@ -96,6 +96,7 @@ export function applyWitnessRespond(
 export type WitnessPeekTrace = {
 	traceId: string;
 	phraseKey: string;
+	authorMemberId: string;
 	hasResponded: boolean;
 	respondPhraseKey?: string;
 };
@@ -112,6 +113,7 @@ export function buildWitnessPeekTraces(
 		out.push({
 			traceId: row.traceId,
 			phraseKey: row.phraseKey,
+			authorMemberId: row.memberId,
 			hasResponded: Boolean(row.respond),
 			...(row.respond ? { respondPhraseKey: row.respond.phraseKey } : {}),
 		});

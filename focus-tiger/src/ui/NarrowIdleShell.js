@@ -13,6 +13,8 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
+import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
+import { contemplativeArchiveSealIdFromProxy } from '../core/memorialSealDirectory.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
@@ -478,7 +480,7 @@ export class NarrowIdleShell {
     }
     if (this.grabber) {
       this.grabber.setAttribute('aria-label', t('NARROW_SHEET_SWIPE_HINT'));
-      this.grabber.textContent = t('NARROW_SHEET_SWIPE_HINT');
+      this.grabber.textContent = '';
     }
     if (this.homeCtas) {
       this.homeCtas.setAttribute('aria-label', t('NARROW_SHEET_TITLE'));
@@ -728,7 +730,10 @@ export class NarrowIdleShell {
       newsletterSubmitted: hasSubmittedNewsletter(),
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
-      ).unlocked
+      ).unlocked,
+      contemplativeArchiveSealMenus: resolveContemplativeArchiveSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ).menuEntries
     });
 
     this.listEl.innerHTML = '';
@@ -909,6 +914,13 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onMustardSeedSeal?.();
+      return;
+    }
+    const archiveSealId = contemplativeArchiveSealIdFromProxy(key);
+    if (archiveSealId) {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onContemplativeArchiveSeal?.(archiveSealId);
       return;
     }
     if (key === 'wallpapers') {
@@ -1222,22 +1234,21 @@ export class NarrowIdleShell {
         bottom: max(6px, env(safe-area-inset-bottom, 0px));
         transform: translateX(-50%);
         width: min(220px, calc(100vw - 64px));
-        min-height: 36px;
-        padding: 8px 12px 6px;
+        min-height: 20px;
+        padding: 6px 12px 4px;
         border-radius: 16px 16px 0 0;
         border: none;
         border-top: 1px solid rgba(139, 115, 85, 0.14);
         background: transparent;
-        color: rgba(74, 58, 40, 0.55);
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.03em;
+        color: transparent;
+        font-size: 0;
+        line-height: 0;
         cursor: pointer;
         box-shadow: none;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 6px;
+        gap: 0;
       }
       .ft-narrow-grabber::before {
         content: '';

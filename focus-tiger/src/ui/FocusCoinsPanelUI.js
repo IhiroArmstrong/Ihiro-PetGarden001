@@ -18,6 +18,7 @@ import {
   formatFocusCoinGapMessage,
   listFocusCoinSurfaceRows
 } from '../core/focusCoinsSurface.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -26,9 +27,15 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const STYLE_ID = 'yin-coin-panel-styles-v3';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
 /** Relief medallion — panel header / ceremonial. Not a sprite overlay. */
 const MARK_SRC = '/ui/focus-coins/yin-coin-mark.png';
@@ -51,6 +58,14 @@ export class FocusCoinsPanelUI {
     this.handlers = handlers;
     this._open = false;
     this._ceremonialTimer = 0;
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'yin-coin-panel-backdrop',
+      testId: 'yin-coin-panel-backdrop',
+      zIndex: 17,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+      onDismiss: () => this.close()
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'yin-coin-panel';
@@ -195,6 +210,7 @@ export class FocusCoinsPanelUI {
   open() {
     if (this._open) return;
     this._open = true;
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
@@ -207,6 +223,7 @@ export class FocusCoinsPanelUI {
     if (!this._open) return;
     this._open = false;
     this._hideCeremonial();
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -219,6 +236,7 @@ export class FocusCoinsPanelUI {
     window.clearTimeout(this._ceremonialTimer);
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this.backdrop.remove();
     this.root.remove();
   }
 

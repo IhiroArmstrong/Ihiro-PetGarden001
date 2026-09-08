@@ -40,3 +40,10 @@ test('narrow drawer reclones heatmap after practice import (microtask + destroy 
   assert.match(src, /queueMicrotask\(\(\) => this\._refreshDrawerItems\(\)\)/);
   assert.match(src, /this\._unsubPracticeImport\?\.\(\)/);
 });
+
+test('narrow grabber keeps swipe aria-label but hides visible hint text', () => {
+  assert.match(src, /this\.grabber\.setAttribute\('aria-label', t\('NARROW_SHEET_SWIPE_HINT'\)\)/);
+  assert.match(src, /this\.grabber\.textContent = '';/);
+  assert.match(src, /\.ft-narrow-grabber[\s\S]*font-size:\s*0;/);
+  assert.match(src, /\.ft-narrow-grabber::before/);
+});

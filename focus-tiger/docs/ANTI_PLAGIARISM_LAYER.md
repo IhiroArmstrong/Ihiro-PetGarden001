@@ -134,6 +134,73 @@
 
 **已兑现价值的部分**：持续在写、且能不发版就改的内容型 overlay（品味/日签管道、Quiet Line、Confide 句），加上少数已与冻表分叉的现网句。YPE 与未分叉的权重表目前主要是管道，不是秘密。
 
+### 3.2.2 兑现清单（现网 ≠ 冻表？· 2026-09-06）
+
+问「这个东西已经进防剽窃层了吗」时，**先**问现网数字/正文是否仍等于 git 冻表（§3.1 兑现句）。  
+**禁止**把「overlay 已接线」写成「秘密已在保护」。本表只登记地面真相；分叉后禁止把灵魂数字写回 freeze。
+
+#### A · 真保护（现网 ≠ 冻表）
+
+这三处才算「保护正在发生」：
+
+| 键 | 现网（已部署 Worker） | git 冻表仍是 |
+|---|---|---|
+| Quiet Line `DAILY_ZEN_QUOTE_1`（en） | `The world and I were never two.` | `Soft light…` |
+| Confide `CONFIDE_COMPANION_PRESENCE`（en） | `Yin is still here. We can stay like this — nothing needs to begin.` | `Yin is here. We can stay like this — no need to begin.` |
+| Confide `CONFIDE_BOUNDARY_RESPECT`（en） | `Nothing needs to be said. Yin is still here.` | `We can leave it unspoken. Yin is here.` |
+
+ja / zh / corpus **未**分叉。上列之外的 Quiet Line / Confide 键，现网仍等于冻表。
+
+#### B · 已收进本层、尚未兑现（管道在 · 现网 = 冻表）
+
+成员表（§2）里有名字，复制测试未兑现：
+
+| 项目 | 为何仍是空管道 / 薄秘密 |
+|---|---|
+| 品味层 Dispatcher 权重（**#349**） | 可一比一套的表；现网仍接近冻表 |
+| Honesty 分档阈值 | 同上；overlay 不改 `HonestyCheckInController` |
+| 日签池 14 条（en/ja） | 管道在；正文未与冻表分叉（Quiet Line 另池，见 A） |
+| Quiet Line 除 `DAILY_ZEN_QUOTE_1` en 外 | overlay **#543** 已合；其余键 = 冻表 |
+| Confide 除在场/boundary EN 外 | overlay **#548** 已合；ja/zh/corpus = 冻表 |
+| YPE V1 | 回声；无秘密闭包 |
+| YPE V2（**#545** 源码已合） | 阈值 0.6/0.4 仍是 git 验收锚；insight 默认不进 Confide 开口；生产须「部署」才谈现网 |
+| `algorithmVersion` / schema 管道 | **不是**被保护内容 |
+
+#### C · 应该进入、尚未进入（关注清单 · 不开工令）
+
+**排期权不在本层**：下列项须逐个兑现，但 **不设** 防剽窃专属 1/2/3 号序。排序权交还各主线 Epic（`task-lines-epic-draft.md`）与 `taste-layer-calm-action-roadmap.md`；本表只登记「在等什么」，不另开 Epic #22。
+
+| 项目 | 缺的是什么 | 何时才算「进了」 | 主线 / 前置（≠ 第几个做） |
+|---|---|---|---|
+| Dispatcher 权重 / Honesty 分档（**唯一算法型秘密候选**，除 YPE 外） | 管道已在 B；缺与冻表分叉的手感数字 | 现网权重/分档 ≠ git 冻表，且不再写回 freeze | 品味层 Backlog + Epic **#21** 耦合；`taste-layer-calm-action-roadmap` **D3 冻结**——须有 secret 调参目标后再谈生产分叉；**不开**独立防剽窃 PR |
+| YPE V2 非平凡闭包 | 源码在；缺现网阈值分叉 + insight 被真实消费 | 现网阈值 ≠ 验收锚，且 Confide/编排真用上 insight | Epic **#8**（信号 / Pack / insight 消费路径）+ **#13**（Confide 开口）+ **#21**（云闭包收口）；现网阈值分叉须口令「部署」 |
+| Quiet Line / Confide 其余键与 ja/zh/corpus | 内容型；多数键还等于冻表 | 逐键现网 ≠ 冻表（不要求一次全部分叉） | Epic **#11** / **#13**（内容审定）；overlay **#543** / **#548** 已就绪 → **部署核对**（下节），非新开发排期 |
+| Calm Action Wisdom 70 CMS | **无运行时** | 先接线，再套已验证 overlay；现在谈保护过早 | Epic **#11** + roadmap **Layer C→D**（Recover / Arrive 运行时关单后再谈 overlay） |
+| 后排：日签 14→N / 伸懒腰池 / 好奇池 | 过 §3；内容未扩 / 权重仍冻表 | 另口令。**禁止**只因为「属于防剽窃层」提前开工 | 品味层 + roadmap **Layer E**；D3 冻结期间权重项一律「管道在、秘密薄」 |
+
+#### C′ · 部署核对（第一类 · overlay 已就绪、只差分叉）
+
+> 衔接 `WORKFLOW.md`「生产 Worker Redeploy」（`prod-worker-deploy`）。**不走** PR / 开发流程；用户当回合说「部署」时顺带核对。
+
+| 核对项 | 说明 |
+|---|---|
+| 本次分叉哪些键？ | Quiet Line / Confide 其余 en/ja/zh/corpus 键——**逐键**审定，不要求一次全做 |
+| 现网 ≠ 冻表？ | Redeploy 后抽样对照 §3.2.2 A 口径；仍等于冻表 → 不算真保护 |
+| 禁止写回 freeze | 分叉后的灵魂数字/正文 **不得** 贴回 `tasteLayerFreeze` / locale 冻池 / Brief 阈值表 |
+| 与 D3 无关 | 本清单 **不** 含 Dispatcher 权重 / Honesty 分档（D3 冻结至有 secret 调参目标） |
+
+#### D · 明确排除（不要进本层）
+
+chrome 文案、Idle/CapCut/精灵播放器、Confide 路由 / Qwen / Tool Registry、支付/entitlement、练习备份、安全分类（含 `aggression_toward_others`）。
+
+**一句话对照**：A = 已经进（真保护）。B = 名字在层里、秘密还没有。C = 该进真保护或该接线、现在还没有。D = 永远不算。
+
+脚注（2026-09-08 · 分析师核对，不影响上表结论）：
+
+1. **Dispatcher 权重 / Honesty 分档同时出现在 B 与 C，不是矛盾。** B 是 t0（名字已在成员表，现网仍等于冻表，严格不算已保护）；C 是 t1（等积累出冻表覆盖不了的差异化数字，再纳入真保护）。同一对象的两个镜头，不要合并或去重成一行。  
+2. **YPE V1 只在 B、不进 C，不是漏项。** V1 契约就是回声选档 + `patternInsights=[]`，设计上不产生非平凡秘密，没有「等成熟」的未来态；接班的是 V2。禁止用「V1 怎么还没进」要求把它列入 C。  
+3. **C 表「主线 / 前置」列不是排期表。** 问「还没保护是忘了还是在等」→ 查该列；问「下一个做谁」→ 查对应 Epic 与 `taste-layer-calm-action-roadmap.md`，禁止在防剽窃层另立序号。
+
 ---
 
 ## 4. 不变量
@@ -161,8 +228,11 @@
 | **3b** | Confide 在场 EN 生产分叉 | 审定句 + 「部署」 | **#550 已合**（`CONFIDE_COMPANION_PRESENCE`） |
 | **3c** | Confide boundary EN 生产分叉 | 审定句已锁 + 「部署」 | **#551 已合 + 生产 Redeploy**（`CONFIDE_BOUNDARY_RESPECT`） |
 | **后排** | 日签 14→N；伸懒腰 / 好奇池 overlay | 另口令 | 场景见 §6 · **不开工** |
+| **权重分叉** | Rise / 好奇 / Honesty 分档 | 有调参目标时 | **2026-09-07 拍板：暂不分叉** |
 
-**运行时下一刀**：Confide 高危模板 EN 分叉已齐（在场 + boundary）。日签扩容 / 伸懒腰 / 好奇仍后排。
+**执行排期 SSOT**：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)（Layer A–E · Recover→Arrive→overlay→后排）。
+
+**运行时下一刀**：**Calm Action Recover**（口令「开工 Calm Action Recover」）。Confide 句 overlay 序 3 已齐。日签扩容 / 伸懒腰 / 好奇仍后排；权重分叉冻结至有 secret 调参目标。
 
 ---
 

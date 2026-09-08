@@ -22,12 +22,14 @@ import {
   isMustardSeedSealScoreMet,
   listRevealedMustardSeedCaseIds,
   markMustardSeedSealRevealed,
+  mustardSeedSealBadgeSrc,
+  mustardSeedSealNavMeta,
+  navigateMustardSeedSealCase,
   nextUnrevealedMustardSeedCase,
   pickMustardSeedSealMenuCase,
   readMustardSeedSealState,
   resolveMustardSeedSeal,
   shouldOfferMustardSeedSealAfterCeremony,
-  mustardSeedSealBadgeSrc,
   MUSTARD_SEED_SEAL_BADGE_FILE,
   MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR
 } from './mustardSeedSeal.js';
@@ -191,6 +193,65 @@ describe('mustardSeedSeal', () => {
     assert.equal(resolved.revealed, true);
     assert.equal(resolved.shouldAutoReveal, true);
     assert.equal(resolved.nextCase?.id, MUSTARD_SEED_SEAL_CASE_HERO);
+  });
+
+  it('in-card nav stays within revealed list and stops at boundaries', () => {
+    const twoRevealed = {
+      revealed: true,
+      revealedCaseIds: [
+        MUSTARD_SEED_SEAL_CASE_SUMERU,
+        MUSTARD_SEED_SEAL_CASE_HERO
+      ]
+    };
+    assert.deepEqual(
+      mustardSeedSealNavMeta(twoRevealed, MUSTARD_SEED_SEAL_CASE_SUMERU),
+      { showNav: true, canPrev: false, canNext: true }
+    );
+    assert.deepEqual(
+      mustardSeedSealNavMeta(twoRevealed, MUSTARD_SEED_SEAL_CASE_HERO),
+      { showNav: true, canPrev: true, canNext: false }
+    );
+    assert.equal(
+      navigateMustardSeedSealCase(
+        twoRevealed,
+        'next',
+        MUSTARD_SEED_SEAL_CASE_SUMERU
+      )?.id,
+      MUSTARD_SEED_SEAL_CASE_HERO
+    );
+    assert.equal(
+      navigateMustardSeedSealCase(
+        twoRevealed,
+        'prev',
+        MUSTARD_SEED_SEAL_CASE_HERO
+      )?.id,
+      MUSTARD_SEED_SEAL_CASE_SUMERU
+    );
+    assert.equal(
+      navigateMustardSeedSealCase(
+        twoRevealed,
+        'prev',
+        MUSTARD_SEED_SEAL_CASE_SUMERU
+      ),
+      null
+    );
+    assert.equal(
+      navigateMustardSeedSealCase(
+        twoRevealed,
+        'next',
+        MUSTARD_SEED_SEAL_CASE_HERO
+      ),
+      null
+    );
+
+    const oneRevealed = {
+      revealed: true,
+      revealedCaseIds: [MUSTARD_SEED_SEAL_CASE_SUMERU]
+    };
+    assert.deepEqual(
+      mustardSeedSealNavMeta(oneRevealed, MUSTARD_SEED_SEAL_CASE_SUMERU),
+      { showNav: false, canPrev: false, canNext: false }
+    );
   });
 
   it('menu pick cycles revealed cases', () => {

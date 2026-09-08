@@ -53,6 +53,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.practice-backup.v1',
   'focus-tiger.daily-wisdom.v1',
   'focus-tiger.mustard-seed-seal.v1',
+  'focus-tiger.contemplative-archive-seals.v1',
   'focus-tiger.daily-zen-quote-pool-v2.v1',
   'focus-tiger.idle-companion-pip.v1',
   'focus-tiger.brand-yin-way-first-reflect.v1',
@@ -63,7 +64,11 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.idle-yin-tap-hint.v1',
   'focus-tiger.quiet-together.v1',
   'focus-tiger.focus-circle.v1',
-  'focus-tiger.focus-circle-witness-responded.v1'
+  'focus-tiger.focus-circle-witness-responded.v1',
+  'focus-tiger.focus-circle-passive-share.v1',
+  'focus-tiger.focus-circle-was-here-mark.v1',
+  'focus-tiger.focus-circle-identity.v1',
+  'focus-tiger.focus-circle-identity-hidden.v1'
 ]);
 
 /** sessionStorage：重置后首屏 toast（不写入 localStorage，避免被清空逻辑误伤）。 */

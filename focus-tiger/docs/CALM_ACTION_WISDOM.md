@@ -3,21 +3,23 @@
 > 地位：行为时刻金句的 **内容 SSOT**。语气底线仍看 `EMOTION_BIBLE.md` §观察式；一天叙事仍看 `PRODUCT_MOMENTS.md`。  
 > **无运行时**。本文件不改 Quiet Line / Daily Wisdom / Recover toast / Moment Whisper 的现网句。  
 > 产品露出：**en + ja**。中文仅 CMS 草稿，不进 v1.0.0 产品金句池。  
-> 日期：2026-09-05
+> 长期纪念文学层（不是本池加长）：`CONTEMPLATIVE_ARCHIVE.md`。  
+> 日期：2026-09-05 · 2026-09-06 补第四池指针
 
 对外产品名：**Calm Action Wisdom**（世俗行动提示）。对内可写「东方节奏的内核」；**禁止**对外叫禅语、禅宗金句、哲学名言。
 
 ---
 
-## 一、三池分家（硬边界）
+## 一、四池分家（硬边界）
 
 | 池 | 脸 | 现网落点 | 本表 |
 |---|---|---|---|
 | **Quiet Line** | 诗性、观察、几乎不给建议 | ⋯ / 抽屉今日静语卡 + 明信片；Journey Daily Card 计划复用同日句 | **不**灌行动句；仅 §四候选可审后扩 |
 | **Daily Wisdom** | Yin 短句 ∪ 古典署名 | Reflection 底部；**14 id 品味层冻结** | **不**扩、不并池 |
 | **Calm Action Wisdom（本池）** | 许可、降低门槛、行动提示；不说教 | **尚未接线** | 70 条 CMS |
+| **Contemplative Archive** | 一次发现的文学纪念物 | 芥子须弥纪念印卡（三 case）；**不是**日签 | **不**写入本 70；SSOT `CONTEMPLATIVE_ARCHIVE.md` |
 
-禁止：把三池做成「每日一句」互相抽；禁止 Confide 语料当金句菜单；禁止用本池替换 `REFOCUS_ACKNOWLEDGE` / `ACTIVE_RECOVER` / `MOMENT_WHISPER`（那些必须保持观察式、短、限频）。
+禁止：把四池做成「每日一句」互相抽；禁止 Confide 语料当金句菜单；禁止用本池替换 `REFOCUS_ACKNOWLEDGE` / `ACTIVE_RECOVER` / `MOMENT_WHISPER`（那些必须保持观察式、短、限频）；禁止把典藏长文灌进 Quiet Line / Daily Wisdom / 本池加长档。
 
 ---
 
@@ -30,6 +32,8 @@
 | **S** | 25–45 | Widget / Push（若做）/ Focusing 标语（极少）/ 换场一句 |
 | **M（主力）** | 46–75 | 专注开始前、打断回来后的卡、每日行动卡 |
 | **L** | 76–90 | 仅 Reflect / 低谷；**硬顶 90** |
+
+日签 / 本池 **禁止**用「再加一档超长 Quote」突破 100 characters。更长的诗与俳句只进 `CONTEMPLATIVE_ARCHIVE.md`（纪念印首屏另计，全文可到约 180 words）。
 
 中日文对齐**节奏**，不对齐字符数（中文约 16–28 字，日文约 18–36 字）。日文自然语优先，禁止「せよ」说教调。英文用 `do not` 与现网 locale 一致，避免 `don't` 混用。
 
@@ -219,4 +223,4 @@ Focusing HUD 若接线：只用 F01–F03、F08、F09（S）。F04/F12 给开始
 2. Action 池：先 Arrive（Sit 前一句）+ Recover 次屏（不碰 toast），再 Reflect 完成页；Focus HUD 默认可关；Transition 等入口存在再挂。  
 3. 禁止本 PR 改 `en.json` Quiet Line 键，除非另开 Quiet Line 内容 PR。
 
-修订：2026-09-05 初稿（70 + QL 8 候选；无运行时）。
+修订：2026-09-05 初稿（70 + QL 8 候选；无运行时）。2026-09-06：四池指针 + 长度例外指向静思典藏。

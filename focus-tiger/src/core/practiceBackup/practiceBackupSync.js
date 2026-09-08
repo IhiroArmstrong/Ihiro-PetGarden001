@@ -109,6 +109,8 @@ export function normalizeSnapshotStoresForApply(snapshot) {
         stores[key] = val;
       } else if (key === 'focus-tiger.mustard-seed-seal.v1') {
         stores[key] = val;
+      } else if (key === 'focus-tiger.contemplative-archive-seals.v1') {
+        stores[key] = val;
       } else {
         stores[key] = val;
       }
