@@ -1,8 +1,8 @@
-# Twinsology marketing site · Slice 0 + Slice 1
+# Twinsology marketing site · Slice 0 + Slice 1 + Slice 2
 
 Static public face for **`https://twinsology.com`**. Not the Focus Tiger practice app.
 
-Authority: `focus-tiger/docs/task-briefs/task-marketing-site.md` · Slice 1: `task-marketing-site-slice-1.md`.
+Authority: `focus-tiger/docs/task-briefs/task-marketing-site.md` · Slice 1: `task-marketing-site-slice-1.md` · Slice 2: `task-marketing-site-slice-2.md`.
 
 ## Local preview
 
@@ -38,6 +38,13 @@ Custom domains: `twinsology.com` and `www.twinsology.com` (www redirects to apex
 - Secondary CTA: **Write to Yin** → mailto
 - Three in-app stills under `assets/`
 - Static `privacy.html` + `wellness.html`
+
+## Slice 2 (2026-09-08)
+
+- **Early Yin Community** section after showcase
+- Five-space short journey (Newcomers → The Den)
+- **Join the laboratory** → same shared invite as `communityLink.js` (new tab)
+- No `#the-den` deep links
 
 ## Does not
 
