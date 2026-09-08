@@ -10,11 +10,20 @@ import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 
 const dir = dirname(fileURLToPath(import.meta.url));
+const repoRoot = join(dir, '..');
 const html = readFileSync(join(dir, 'index.html'), 'utf8');
 const css = readFileSync(join(dir, 'styles.css'), 'utf8');
 const redirects = readFileSync(join(dir, '_redirects'), 'utf8');
 const privacy = readFileSync(join(dir, 'privacy.html'), 'utf8');
 const wellness = readFileSync(join(dir, 'wellness.html'), 'utf8');
+const communityLink = readFileSync(
+  join(repoRoot, 'focus-tiger/src/core/communityLink.js'),
+  'utf8'
+);
+const sharedInviteMatch = communityLink.match(
+  /COMMUNITY_EXTERNAL_URL\s*=\s*'([^']+)'/
+);
+const sharedInviteUrl = sharedInviteMatch?.[1] ?? '';
 
 describe('marketing-site Slice 0 contract', () => {
   it('uses the locked public hostname', () => {
@@ -67,9 +76,40 @@ describe('marketing-site Slice 1 contract', () => {
     assert.match(wellness, /prevent any disease/i);
   });
 
-  it('does not promise download, Slack, or fake navigation', () => {
+  it('does not promise download or fake navigation', () => {
     assert.doesNotMatch(html, /Download App/i);
-    assert.doesNotMatch(html, /join\.slack\.com/i);
     assert.doesNotMatch(html, /\[ Practice \]/);
+  });
+});
+
+describe('marketing-site Slice 2 contract', () => {
+  it('uses the same Slack shared invite as communityLink.js', () => {
+    assert.ok(sharedInviteUrl, 'communityLink.js must export COMMUNITY_EXTERNAL_URL');
+    assert.match(sharedInviteUrl, /shared_invite/);
+    assert.match(html, new RegExp(sharedInviteUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.doesNotMatch(html, /#the-den/i);
+  });
+
+  it('describes the five-space journey without deep-linking channels', () => {
+    assert.match(html, /Early Yin Community/);
+    assert.match(html, /culture laboratory/i);
+    assert.match(html, /Newcomers/);
+    assert.match(html, /Journey/);
+    assert.match(html, /Focus &amp; Flow/);
+    assert.match(html, /Quiet Room/);
+    assert.match(html, /The Den/);
+    assert.match(html, />Join the laboratory</);
+    assert.match(html, /rel="noopener noreferrer"/);
+  });
+
+  it('keeps calm tone without FOMO or download promises', () => {
+    const communitySection = html.match(
+      /<section id="community"[\s\S]*?<\/section>/
+    )?.[0] ?? '';
+    assert.ok(communitySection, 'community section must exist');
+    assert.doesNotMatch(communitySection, /Download App/i);
+    assert.doesNotMatch(communitySection, /limited time/i);
+    assert.doesNotMatch(communitySection, /workers\.dev/i);
+    assert.doesNotMatch(communitySection, /hurry/i);
   });
 });

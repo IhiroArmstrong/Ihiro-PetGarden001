@@ -251,6 +251,109 @@ h1 {
   color: var(--color-ink-muted);
 }
 
+.community-lab {
+  width: 100%;
+  margin-top: clamp(3rem, 10vw, 5rem);
+  padding-top: 0.5rem;
+  scroll-margin-top: 1.5rem;
+}
+
+.community-heading {
+  margin: 0 0 1rem;
+  font-size: clamp(1.15rem, 3.5vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.community-lead {
+  margin: 0 auto 1.75rem;
+  max-width: 30rem;
+  line-height: 1.6;
+  font-size: 0.98rem;
+  color: var(--color-ink-muted);
+}
+
+.space-journey {
+  list-style: none;
+  margin: 0 auto 2rem;
+  padding: 0;
+  display: grid;
+  gap: 1.1rem;
+  max-width: 30rem;
+  text-align: left;
+}
+
+.space-journey li {
+  margin: 0;
+  padding: 0.85rem 1rem 0.9rem;
+  border-radius: 0.65rem;
+  background: rgba(255, 250, 244, 0.45);
+  border: 1px solid rgba(181, 98, 58, 0.14);
+  box-shadow: 0 6px 16px rgba(44, 31, 20, 0.05);
+}
+
+.space-name {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-ink);
+}
+
+.space-layer {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.space-journey p {
+  margin: 0.45rem 0 0;
+  line-height: 1.5;
+  font-size: 0.92rem;
+  color: var(--color-ink-muted);
+}
+
+.cta-community {
+  display: inline-block;
+  padding: 0.72rem 1.45rem 0.78rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 1rem;
+  color: var(--color-accent);
+  background: rgba(232, 230, 225, 0.55);
+  border: 1px solid rgba(181, 98, 58, 0.45);
+  box-shadow: 0 4px 14px rgba(44, 31, 20, 0.06);
+  transition:
+    transform 200ms var(--ease-calm),
+    box-shadow 200ms var(--ease-calm),
+    border-color 200ms var(--ease-calm),
+    background-color 200ms var(--ease-calm);
+}
+
+.cta-community:hover,
+.cta-community:focus-visible {
+  transform: scale(1.02);
+  border-color: rgba(181, 98, 58, 0.7);
+  background: rgba(255, 250, 244, 0.75);
+  box-shadow: 0 8px 18px rgba(44, 31, 20, 0.1);
+}
+
+.cta-community:active {
+  transform: scale(0.99);
+}
+
+.community-note {
+  margin: 0.85rem 0 0;
+  max-width: 26rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-ink-muted);
+}
+
 .colophon {
   margin-top: clamp(3rem, 10vw, 4.5rem);
   padding-top: 1.5rem;
