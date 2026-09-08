@@ -1,6 +1,6 @@
 # Task Brief · Wallpapers · 背景 dim（P0 · Slice 1b）
 
-> **状态**：**开工**  
+> **状态**：**已合 #659**  
 > **分支**：`feature/wallpapers-backdrop-dim`  
 > **前置**：`task-overlay-backdrop-dim-rollout.md`（排期 SSOT）· **须先合** Slice 0 `overlayBackdrop` helper  
 > **任务线**：`Closes #645`（美术优化）  

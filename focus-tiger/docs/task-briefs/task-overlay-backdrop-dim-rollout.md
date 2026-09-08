@@ -44,9 +44,9 @@
 
 | 面板 | DOM id | Brief | Epic | outsideDismiss |
 |---|---|---|---|---|
-| Five Moments Compass | `#five-moments-compass` | 待建 | #633 | `BLANK_CLOSES` |
-| Yin's Collections | `#yin-coin-panel` | 待建 | #632 | `BLANK_CLOSES` |
-| Zen Cinema | `#zen-cinema-card` | 待建 | #633 | `BLANK_CLOSES` |
+| Five Moments Compass | `#five-moments-compass` | `task-growth-panels-backdrop-dim.md` | #633 | `BLANK_CLOSES` |
+| Yin's Collections | `#yin-coin-panel` | `task-growth-panels-backdrop-dim.md` | #632 | `BLANK_CLOSES` |
+| Zen Cinema | `#zen-cinema-card` | `task-growth-panels-backdrop-dim.md` | #633 | `BLANK_CLOSES` |
 | Sanctuary Lifetime | `#yin-sanctuary-card` | 待建 | #630 | `SB19_HOLD` · 视觉-only dim |
 | Buy Yin a Tea | `#yin-tip-jar-card` | 待建 | #630 | `SB19_HOLD` |
 | Stay in touch | `#newsletter-capture-card` | 待建 | #630 | `SB19_HOLD` |
@@ -83,7 +83,7 @@ Presence Signals / Quiet Together / Focus Circle / Local Practice Data 子面板
 Slice 0  overlayBackdrop helper + 单测          → feature/overlay-backdrop-helper
 Slice 1a Quiet Line dim                         → feature/quiet-line-backdrop-dim
 Slice 1b Wallpapers dim                         → feature/wallpapers-backdrop-dim
-Slice 2  Compass + Yin Coin + Zen Cinema        → 待口令
+Slice 2  Compass + Yin Coin + Zen Cinema        → feature/growth-panels-backdrop-dim
 Slice 3  付费族 SB-19 视觉-only dim             → 待口令
 ```
 
