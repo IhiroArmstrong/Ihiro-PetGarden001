@@ -14,10 +14,17 @@ const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'FocusCoinsPanelUI.js'), 'utf8');
 const publicUi = join(here, '../../public/ui/focus-coins');
 
+test("Yin's Collections overlay backdrop contract", () => {
+  assert.match(src, /id: 'yin-coin-panel-backdrop'/);
+  assert.match(src, /testId: 'yin-coin-panel-backdrop'/);
+  assert.match(src, /showOverlayBackdrop\(this\.backdrop\)/);
+  assert.match(src, /hideOverlayBackdrop\(this\.backdrop\)/);
+});
+
 test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fade, :active)", () => {
   assert.match(src, /id = 'yin-coin-panel'/);
   assert.match(src, /z-index: 18/);
-  assert.match(src, /const FADE_MS = 220/);
+  assert.match(src, /const FADE_MS = OVERLAY_BACKDROP_FADE_MS/);
   assert.match(src, /\.yin-coin-panel__btn:active:not\(:disabled\)/);
   assert.match(src, /overflow: auto/);
   assert.match(src, /listFocusCoinSurfaceRows/);

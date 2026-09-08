@@ -59,6 +59,9 @@
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
+| **17** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass-backdrop` Five Moments Compass 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel-backdrop` Yin's Collections 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-backdrop` Zen Cinema 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **17** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-backdrop` 今日静语卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
 | **17** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-backdrop` 芥子须弥纪念印遮罩 |
