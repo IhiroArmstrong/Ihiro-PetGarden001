@@ -2,7 +2,7 @@
 
 > **状态**：**排期已拍板**（2026-09-08）  
 > **标杆**：`task-mustard-seed-seal-ui-phase-b.md`（#614 已合 develop）  
-> **任务线**：`Relates to #645`（美术优化）· Quiet Line 切片另 `Relates to #637` · 付费卡族另 `Relates to #630`
+> **任务线**：`Closes #645`（美术优化）· Quiet Line 切片另 `Closes #637` · 付费卡族另 `Closes #630`
 
 ## 目标
 
@@ -16,7 +16,7 @@
 | 会话流程 | Arrival / Honesty / 微仪式 / Reflection / Ritual / Companion / 时长选择 → **不做**全屏 dim |
 | SB-19 | 录入卡（Tea / Newsletter / Confide / Sanctuary / Membership restore）→ dim **仅视觉**；遮罩 `pointer-events: none` 或不可点关 |
 | 共享基建 | Slice 0 抽 `overlayBackdrop` helper，对齐纪念印数值 |
-| PR 纪律 | 开向 develop 的 PR **必须** `Relates to #NNN`（Epic）或 `Closes #NNN`（审计/切片）；**禁止**对 Epic 用 `Closes` |
+| PR 纪律 | 开向 develop 的 PR **必须** `Closes #NNN`（仓库已关 auto-close；见 `WORKFLOW.md`） |
 
 ## 已有 dim（不必重做）
 

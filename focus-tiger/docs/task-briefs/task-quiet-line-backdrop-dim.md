@@ -3,7 +3,7 @@
 > **状态**：**待开工**  
 > **分支**：`feature/quiet-line-backdrop-dim`  
 > **前置**：`task-overlay-backdrop-dim-rollout.md`（排期 SSOT）· 建议先合 Slice 0 `overlayBackdrop` helper  
-> **任务线**：`Relates to #637`（金句库/三池）· `Relates to #645`（美术优化）  
+> **任务线**：`Closes #637`（金句库/三池）· `Closes #645`（美术优化）  
 > **标杆**：`MustardSeedSealCardUI` Phase B（#614）
 
 ## 目标

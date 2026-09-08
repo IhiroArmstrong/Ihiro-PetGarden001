@@ -567,25 +567,26 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'git-pr-task-line-ref',
-    title: 'PR 描述须引用所属任务线 Issue（Epic 用 Relates to；审计/切片用 Closes；禁对 Epic 用 Closes）',
+    title: 'PR 描述须引用所属任务线 Issue（统一 Closes #NNN；仓库 auto-close 已关；Linked pull requests 列）',
     ssotPath: 'WORKFLOW.md',
     ssotSection: 'PR 描述须引用所属任务线 Issue',
     ssotMustContain: [
       /git-pr-task-line-ref/,
-      /Relates to #NNN/,
-      /禁止对 Epic 使用 `Closes #NNN`/,
-      /审计 \/ 切片/
+      /Closes #NNN/,
+      /Auto-close issues with merged linked pull requests/,
+      /Linked pull requests/
     ],
     topicSignals: [
       /git-pr-task-line-ref/,
+      /Closes #/,
       /Relates to #/,
-      /禁止对 Epic.*Closes/
+      /Linked pull requests/
     ],
     mustCite: [/WORKFLOW\.md/],
     restatementFingerprints: [
-      /Relates to #/,
-      /禁止对 Epic.*Closes/,
-      /Closes #NNN.*审计/
+      /Closes #/,
+      /auto-close/,
+      /Linked pull requests/
     ],
     restatementThreshold: 2,
     restatementExemptFiles: [
@@ -594,10 +595,16 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     forbiddenOutsideSsot: [
       {
-        id: 'closes-epic-in-pr',
-        pattern: /(?:Epic|活基线).{0,24}Closes\s+#\d+/,
-        note: 'Epic 是活基线，PR 禁止 Closes；须 Relates to',
-        exemptIfLineMatches: /禁止|不得|不要/
+        id: 'relates-to-for-task-line-ref',
+        pattern: /(?:Epic|任务线|活基线).{0,32}Relates to\s+#\d+/,
+        note: '任务线引用须 Closes（auto-close 已关）；Relates to 不填 Linked pull requests 列',
+        exemptIfLineMatches: /禁止|不得|不要|回退|auto-close.*重新打开/
+      },
+      {
+        id: 'manual-dev-safer-than-closes',
+        pattern: /手动.{0,12}Development.{0,24}(?:更安全|不会关|不误关)/,
+        note: '手动 Development 关联与 Closes 同享 auto-close；须关仓库设置而非改用手动',
+        exemptIfLineMatches: /禁止|不得|不要|同样/
       }
     ]
   },
