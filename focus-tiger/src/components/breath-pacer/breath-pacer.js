@@ -11,7 +11,7 @@
  * <breath-pacer preset="natural" cycles="2"></breath-pacer>
  */
 
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, unsafeCSS, nothing } from 'lit';
 import { BreathEngine } from './breath-engine.js';
 import {
   PRESET_IDS,
@@ -49,9 +49,7 @@ export class BreathPacerElement extends LitElement {
   };
 
   static styles = [
-    css`
-      ${breathHaloCss}
-    `,
+    unsafeCSS(breathHaloCss),
     css`
       :host {
         display: block;
