@@ -255,7 +255,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 **执行排期 SSOT**：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)（Recover→Arrive→overlay→后排三池 · 2026-09-07）。
 
-**我认为最合理的下一刀**：**Calm Action Recover 运行时**（口令「开工 Calm Action Recover」· Brief `task-calm-action-recover-runtime.md`）。较弱：日签扩容 / 伸懒腰 / 好奇池仍后排；权重生产分叉在无调参目标前不做。
+**我认为最合理的下一刀**：**Calm Action overlay**（口令「开工 Calm Action overlay」· Brief 待建；须 C1+C2 人工关单后再开）。较弱：C3+ Focus 标语 / 日签扩容 / 伸懒腰 / 好奇池仍后排；权重生产分叉在无调参目标前不做。
 
 ## 📍 Calm Action Wisdom 运行时（2026-09-07 · 用户拍板）
 
@@ -263,10 +263,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 序 | 表面 | Brief | 状态 |
 |---|---|---|---|
-| **C1** | **Recover**（打断后 S/M；不替换 toast） | `task-briefs/task-calm-action-recover-runtime.md` | **下一刀 · 待口令** |
-| **C2** | **Arrive**（C1 §7 关单后立刻排；建议 B1 冷启动 gate 已拍板） | `task-briefs/task-calm-action-arrive-runtime.md`（C1 后建） | 未开工 |
+| **C1** | **Recover**（打断后 S/M；不替换 toast） | `task-briefs/task-calm-action-recover-runtime.md` | **#625 已合**（TRACKER 待人工） |
+| **C2** | **Arrive**（C1 §7 关单后立刻排；建议 B1 冷启动 gate 已拍板） | `task-briefs/task-calm-action-arrive-runtime.md` | **#665 已合**（TRACKER 待人工） |
 | C3+ | Focus S 标语 / Transition / Reflect | 另 Brief | 未立项 |
-| **D** | Calm Action overlay | 待建 | C1 关单后再谈 |
+| **D** | Calm Action overlay | 待建 | C1+C2 人工关单后再谈 |
 | **—** | 日签 14→N | 另 PR · 另口令 | 后排（≠ Calm Action） |
 
 **2026-09-07 拍板**：Recover 第一刀 · Arrive 第二刀（不无限延后）· 权重表暂不分叉。

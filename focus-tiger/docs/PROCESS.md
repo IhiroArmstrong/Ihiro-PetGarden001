@@ -78,7 +78,7 @@
 
 - **Calm Action Wisdom 内容规范（2026-09-05 · 纯文档 · 无运行时）**：`CALM_ACTION_WISDOM.md` — 70 条 en/ja（zh CMS 草稿）按 Five Moments 标注；Quiet Line 另列 8 条观察式扩句候选。**2026-09-06**：§四 8 条已接线为 `DAILY_ZEN_QUOTE_INSIGHT_15–22`（overlay schema 2 · 29 键；Worker 须「部署」）。Action 70 仍无运行时。
 
-- **品味层×Calm Action 落地排期（2026-09-07 · 纯文档）**：`taste-layer-calm-action-roadmap.md` — Layer A–E 执行次序；**拍板** Recover 第一刀 · Arrive C1 关单后立刻第二刀 · 权重/ Honesty 分档**暂不分叉**；C1 Brief `task-calm-action-recover-runtime.md`。下一口令：「开工 Calm Action Recover」。
+- **品味层×Calm Action 落地排期（2026-09-07 · 纯文档）**：`taste-layer-calm-action-roadmap.md` — Layer A–E 执行次序；**拍板** Recover 第一刀 · Arrive 第二刀 · 权重/ Honesty 分档**暂不分叉**。**C1 Recover 已合 develop**（PR [#625](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/625) · `1767995`）；**C2 Arrive 已合 develop**（PR [#665](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/665) · `3d7fa6c`）。TRACKER 两行仍待人工；下一口令（overlay 就绪后）：「开工 Calm Action overlay」。
 
 - **Confide 他人攻击意图 `aggression_toward_others`（2026-09-04 · #566 已合 develop）**：替换 #564 `harm_witness`。禁 Heard/点头动画；竖线 `#8b6f5c`。语料 draft，扩池门禁见 Brief §5.3。
 
