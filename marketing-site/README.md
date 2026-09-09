@@ -25,17 +25,17 @@ node --test marketing-site/slice0-contract.test.js
 **Production** (`twinsology.com` / `www`) only updates when the deploy branch matches the Pages **production branch** (`develop` for `twinsology-marketing`). Without `--branch develop`, `wrangler` creates a **preview** deployment (e.g. `feature-….pages.dev`) and the custom domain stays on the old build.
 
 ```bash
-cd /path/to/repo
+cd /path/to/repo/marketing-site
 git checkout develop && git pull origin develop
-npx wrangler pages deploy marketing-site \
+npx wrangler pages deploy . \
   --project-name twinsology-marketing \
   --branch develop \
   --commit-dirty=true
 ```
 
-Verify: `curl -sL https://twinsology.com/ | rg "Early Yin Community"` should match.
+Verify: `curl -sI https://www.twinsology.com/` → **301** `Location: https://twinsology.com/`.
 
-Custom domains: `twinsology.com` and `www.twinsology.com`. **www must 301 to apex** (`functions/_middleware.js`). Pages `_redirects` cannot do hostname redirects, so a file-only rule never ran — Safari then cached `www` CSS separately (`max-age=14400`).
+Custom domains: `twinsology.com` and `www.twinsology.com`. **www must 301 to apex** (`_worker.js` + `www-redirect.js`). Pages `_redirects` cannot do hostname redirects. Deploy the `marketing-site/` folder itself so `_worker.js` is bundled — `wrangler pages deploy marketing-site` from the repo root looks for `./functions` beside the repo, not `marketing-site/functions/`, so the old middleware never ran in production.
 
 **Do not** edit MX / SPF / DKIM / DMARC / Resend records. Website records only.
 

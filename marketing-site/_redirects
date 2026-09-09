@@ -1,2 +1,2 @@
 # www → apex cannot live here: Cloudflare Pages does not support
-# domain-level redirects in `_redirects`. See functions/_middleware.js.
+# domain-level redirects in `_redirects`. See `_worker.js`.
