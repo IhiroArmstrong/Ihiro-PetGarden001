@@ -1669,6 +1669,12 @@ async function init() {
       openRitualFlowFromMenu(action.proxy);
       return;
     }
+    if (action.type === 'transition-moment') {
+      if (!transitionMomentUI.tryOpen()) {
+        mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
+      }
+      return;
+    }
     if (action.type === 'journey-log') {
       closeGrowthOverlayCards({ except: 'journey' });
       journeyLogUI.open();

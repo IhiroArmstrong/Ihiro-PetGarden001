@@ -1,6 +1,6 @@
 # Task Brief · Transition Moment MVP（结界划线 · Calm Action C5）
 
-> **状态（2026-09-09 · §七 修订 v2 · P4 终稿）**：**方案文档 + 资产核实 + P1–P5 全部拍板** · C5 **已开工** · C5.1 待 overlay 验收  
+> **状态（2026-09-09 · §七 修订 v2 · P4 终稿）**：**方案文档 + 资产核实 + P1–P5 全部拍板** · C5 **#679 已合 develop** · C5.1 **本旁支开工**（罗盘改路由；**不**开 Whisper）  
 > **上游**：设计师 Transition 交互提案（2026-09-09）· 分析师审阅意见 · `PRODUCT_MOMENTS.md` §4.4 · `CALM_ACTION_WISDOM.md` · roadmap **C5**  
 > **参照接线范式**：`task-reset-return-mvp.md` §五（overlay / sprite 仲裁）· `task-calm-action-recover-runtime.md`（Calm Action 卡形态）
 
@@ -241,7 +241,7 @@ resolveQuote():
 2. 进行中点空白 / Esc → 立即淡出；阿寅回 Idle 闭目。
 3. **对照**：点 Sit → **不**误触 Transition；Transition 中 **无**摸头。
 4. **对照**：开 Confide / Journey / Compass → Transition 入口 disabled 或请求被拒。
-5. **对照**：菜单 **Work Transition** 仪式仍独立可走；**C5** 期间 Compass Transition 芯片仍跳仪式（旧路径兜底）。
+5. **对照**：菜单 **Work Transition** 仪式仍独立可走；Compass Transition 芯片 → **C5.1** 起开 Transition Moment overlay（与 Idle 微钮同路径）。
 6. 连续两次 Transition → **不得**连出同一条 CAW-T（池 ≥2；P3 排除上一条）。
 7. **375**：句不溢出；trigger 不挡三球 / Sit。
 8. **不**写入 Journey Log；**不**开 Reflection。
