@@ -104,6 +104,7 @@
 | N26 | 可点击交互：接收反馈 ≠ 结果反馈；设计静默须进 `SILENT_BEHAVIORS.md`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`） |
 | N27 | 实现前冲突扫描：对照 `SCENARIO_TESTS.md` 的强度 / 语气 / 职责；有疑点须等拍板。全文见 `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`） |
 | N28 | 非用户点击的网络请求：实现前须答时机 / 写盘 / 慢网动效。全文见 `BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`） |
+| N29 | 触及 overlayBusy / HUD 呼吸驱动 / 遮罩 dim：Task Brief 须写出点名消费者的核对结论句（禁止纯打勾）。写法见 `COLLAB.md` 第七节；清单见 `SHARED_RESOURCES.md` §4.1–4.2 与 `Z_INDEX.md` Idle 常驻 chrome |
 
 ### 2.2 防把好的改坏（重写 / 改转场开工）
 
@@ -378,6 +379,7 @@
 
 - [ ] 动高风险面前记 `baseline: <short-hash>`  
 - [ ] 高风险面：按模块补「最小复测脚本 / 控制台加速手法」  
+- [x] Task Brief：共用机制核对须写结论句（非纯打勾）→ **COLLAB.md 第七节**（2026-09-09）
 - [ ] Task Brief 模板：固定「已好清单 / 保护面 / baseline」  
 - [ ] 非交互类改动的轻量门禁是否区分  
 - [x] 多 Agent / 长期并存分支基线约定 → **§6.6**（2026-07-21 宽/窄屏事故升格；并行写隔离另见 `WORKFLOW.md` worktree 节）  
@@ -419,7 +421,7 @@
 | 2026-07-20 | 合并 SUPPLEMENT：§6.1–6.4；落地 `scenario-smoke`；升格 N12/N13；删除平行补充文档 |
 | 2026-07-20 | 升格 N14：任务汇报末尾独立「待你决定 / 待你知道」；同步 regression-lock |
 | 2026-08-05 | 升格 N14a：「待你决定」伪选项标（不合理）；防「合理则办」误授权 |
-| 2026-08-22 | 升格 N28：后台网络三问；SSOT `BACKGROUND_NETWORK.md` / `background-network` |
+| 2026-09-09 | 升格 N29：共用机制核对须写 Brief 结论句；清单扩 `SHARED_RESOURCES` §4.1–4.2 / `Z_INDEX` Idle chrome；写法 SSOT `COLLAB.md` 第七节 |
 | 2026-08-16 | 升格 N27：实现前冲突扫描；SSOT `FEATURE_CONFLICT_REVIEW.md` / `feature-conflict-review` |
 | 2026-08-18 | 新增 §6.16：Idle 点额头无摸头（已接线假绿 + 误跳 e2e + hit 未盖额头） |
 | 2026-08-20 | 新增 §6.17：精灵占用须一处仲裁（多入口各判睡/欢迎/付款） |
