@@ -32,6 +32,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   FOCUS_AWARENESS: 'focus-awareness',
   CALM_ACTION_RECOVER: 'calm-action-recover',
   CALM_ACTION_ARRIVE: 'calm-action-arrive',
+  TRANSITION_MOMENT: 'transition-moment',
   RECOVER_RESET_OFFER: 'recover-reset-offer',
   RECOVER_RESET_PRACTICE: 'recover-reset-practice',
   ONBOARDING_HINT: 'onboarding-hint',
@@ -430,6 +431,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
       'CalmActionArriveCardUI.tryShowAfterArrival (post-Arrival, pre-Focusing only)'
   }),
   contract({
+    id: OVERLAY_SOURCES.TRANSITION_MOMENT,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 22,
+    readers: 'TransitionMomentUI.tryOpen (Idle boundary marking; blocks Yin tap)',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: false,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#transition-moment-overlay',
+    snapshotField: 'transitionMomentOpen'
+  }),
+  contract({
     id: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
@@ -515,6 +527,7 @@ export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
   'FocusAwarenessCardUI.js',
   'CalmActionRecoverCardUI.js',
   'CalmActionArriveCardUI.js',
+  'TransitionMomentUI.js',
   'FocusCircleWitnessLeaveUI.js',
   'OnboardingHintsUI.js'
 ]);
@@ -558,6 +571,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'FocusAwarenessCardUI.js': [OVERLAY_SOURCES.FOCUS_AWARENESS],
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
+  'TransitionMomentUI.js': [OVERLAY_SOURCES.TRANSITION_MOMENT],
   'FocusCircleWitnessLeaveUI.js': [
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND

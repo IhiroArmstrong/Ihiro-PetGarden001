@@ -553,6 +553,47 @@ describe('requestOverlaySlot', () => {
     assert.ok(d.mustYieldTo.includes(OVERLAY_SOURCES.RECOVER_RESET_OFFER));
   });
 
+  it('transition moment granted on idle when no blockers', () => {
+    const snapshot = buildOverlaySnapshot({ sessionState: STATES.IDLE });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, true);
+  });
+
+  it('transition moment yields during focusing and when confide open', () => {
+    const focusing = buildOverlaySnapshot({ sessionState: STATES.FOCUSING });
+    const focusingBlock = requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: focusing
+    });
+    assert.equal(focusingBlock.canShow, false);
+    assert.ok(focusingBlock.mustYieldTo.includes('session-not-idle'));
+
+    const confide = buildOverlaySnapshot({
+      sessionState: STATES.IDLE,
+      confideOpen: true
+    });
+    const confideBlock = requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: confide
+    });
+    assert.equal(confideBlock.canShow, false);
+    assert.ok(confideBlock.mustYieldTo.includes(OVERLAY_SOURCES.CONFIDE));
+  });
+
+  it('transition moment blocks idle yin tap when open', () => {
+    const snapshot = buildOverlaySnapshot({ transitionMomentOpen: true });
+    assert.equal(deriveIdleYinTapOverlayBusy(snapshot), true);
+  });
+
   it('recover reset practice blocks idle yin tap when open', () => {
     const snapshot = buildOverlaySnapshot({ recoverResetPracticeOpen: true });
     assert.equal(deriveIdleYinTapOverlayBusy(snapshot), true);
