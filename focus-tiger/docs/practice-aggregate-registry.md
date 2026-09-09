@@ -1,7 +1,7 @@
 # Practice aggregate registry — cumulative trigger coverage audit
 
-> **Status**: Reconnaissance (2026-09-07) · **not merged into runtime yet**  
-> **Companion code**: `src/core/practiceAggregate.js` (read-only skeleton)  
+> **Status**: Batch 4 wired (2026-09-09) · registry SSOT + CI audit  
+> **Companion code**: `src/core/practiceAggregate.js` · `src/core/practiceAggregateConsumerRegistry.js`  
 > **Related**: `TODAY_PRACTICE_SEMANTICS_AUDIT.md` (today / write hooks) · `SHARED_RESOURCES.md` §1 (store semantics)
 
 ---
@@ -56,6 +56,32 @@ Sources that **should** feed cumulative practice metrics (via the shared write h
 ---
 
 ## Consumer registry
+
+<!-- practice-aggregate-consumer-registry:begin -->
+
+> **机器块 · 勿手改**。真源：`src/core/practiceAggregateConsumerRegistry.js`。刷新：`npm run audit:practice-coverage -- --write`。
+
+**Baseline sources**: `sit-timed` · `honesty-checkin` · `breath-micro-ritual`
+
+| id | P | batch | status | module | anchors | reflected |
+|---|---:|---:|---|---|---|---|
+| `confide-practice-facts-duration` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `confide-practice-facts-compare` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `tip-kindness-badges` | P0 | 2 | ok | `src/core/tipKindnessBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `sanctuary-badges` | P0 | 2 | ok | `src/core/sanctuaryBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `mustard-seed-seal-score` | P0 | 2 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `contemplative-archive-seal-score` | P0 | 2 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `mustard-seed-seal-ceremony` | P1 | 3 | ok | `src/main.js` | `maybeOfferGrowthSealAfterBaselineCeremony` `shouldOfferMustardSeedSealAfterCeremony(` `shouldOfferContemplativeArchiveSealAfterCeremony(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `focus-coins-redeem` | P1 | 2 | wire-only | `src/core/focusCoinsRedeem.js` | `resolvePracticeAggregate(` | — |
+| `support-modal-tea-first` | P1 | 2 | wire-only | `src/main.js` | `resolvePracticeAggregate(` | — |
+| `lotus-pond-bloom` | P1 | — | wire-only | `src/core/LotusPondStore.js` | `addMinutes(` | — |
+| `daily-completion-today` | P2 | — | wire-only | `src/core/DailyCompletionStore.js` | `hasCompletedToday` | — |
+| `practice-days-heatmap` | P2 | — | wire-only | `src/core/PracticeDaysStore.js` | `getLastNDays` | — |
+| `milestone-glow-streak` | P2 | — | wire-only | `src/core/MilestoneGlowStore.js` | `claimOffer` | — |
+| `celebrating-timed-only` | P2 | — | intentional-exclude | `src/core/DailyCompletionStore.js` | `hasCelebratedToday` | — |
+| `recover-reset-breath` | P2 | — | intentional-exclude | `src/ui/RecoverResetPracticeUI.js` | `RecoverResetPracticeUI` | — |
+
+<!-- practice-aggregate-consumer-registry:end -->
 
 Legend: **Gap** = baseline practice sources not reflected in current read path.  
 **Migration** = planned `resolvePracticeAggregate` field(s).
@@ -118,7 +144,7 @@ delta            = baseline_sources − actual_sources
 **Pass** when `delta` is empty **or** row is marked `intentional-exclude`.  
 **Fail** when `delta` non-empty and priority P0/P1.
 
-Planned script: `npm run audit:practice-coverage` (not implemented in recon pass).
+Planned script: `npm run audit:practice-coverage` (wired in `docs:check` · Batch 4).
 
 ---
 
@@ -128,8 +154,8 @@ Planned script: `npm run audit:practice-coverage` (not implemented in recon pass
 |---|---|---|
 | **1** | Confide `practice_facts` → aggregate | **Done** (#681) — duration / compare / showing-up on aggregate; Journey kept for usual-time + Arrival ease only |
 | **2** | Badges + mustard score → `aggregate.score`; wire redeem/support to same API | **Done** (#682) — tip/sanctuary badges + mustard seal on aggregate; redeem/support wired |
-| **3** | Mustard auto-offer ceremony on any baseline completion | **In progress** (`fix/practice-aggregate-batch-3`) — Honesty + Breath completion paths share `maybeOfferGrowthSealAfterBaselineCeremony` |
-| **4** | Registry + audit script in CI | Regression guard |
+| **3** | Mustard auto-offer ceremony on any baseline completion | **Done** (#683) — Honesty + Breath completion paths share `maybeOfferGrowthSealAfterBaselineCeremony` |
+| **4** | Registry + audit script in CI | **Done** — `practiceAggregateConsumerRegistry.js` + `npm run audit:practice-coverage` in `docs:check` |
 
 **Out of scope**: write hooks, new Store, Celebrating / tea tip / DORMANT / RitualFlow / Arrival.
 
@@ -143,4 +169,5 @@ Planned script: `npm run audit:practice-coverage` (not implemented in recon pass
 | 2026-09-09 | Batch 1: Confide duration/compare/showing-up wired to aggregate; Journey sub-semantics unchanged for usual-time + Arrival ease |
 | 2026-09-09 | Batch 2: tip/sanctuary badges + mustard seal score on aggregate; focus-coins redeem + support modal on same API |
 | 2026-09-09 | Batch 3: mustard / archive auto-offer wired to Honesty + Breath baseline completion ceremonies |
+| 2026-09-09 | Batch 4: machine registry + `audit:practice-coverage` in docs:check; contemplative archive score on aggregate |
 | 2026-09-07 | Add `recover-reset-breath` intentional exclude (Reset MVP cross-line alignment) |
