@@ -24,8 +24,8 @@
 ```text
 Layer A  已完成管道（#349/#543/#548…）          ✅ 不必回头重做
 Layer B  产品硬前置（冷启动审计等）              ⏳ 与 C 并行时可插队，但不挡 C 口令
-Layer C  Calm Action 运行时（Recover → Arrive）  ▶ 当前主线 · 下一口令
-Layer D  Calm Action / Daily Wisdom overlay      ⏸ 等 C 关单后再谈
+Layer C  Calm Action 运行时（Recover → Arrive → Reflect）  ▶ Reflect 本旁支
+Layer D  Calm Action / Daily Wisdom overlay      ✅ D1 已合 · Reflect overlay 后排
 Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 权重分叉冻结
 ```
 
@@ -77,7 +77,8 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 | **C1** | **Recover 第一刀** | 打断回来后 **追加** S/M 句（卡/次屏）；toast 仍观察式 | `task-briefs/task-calm-action-recover-runtime.md` | `FEATURE_CONFLICT_REVIEW` + `CALM_ACTION_WISDOM.md` §三；禁止替换 `ACTIVE_RECOVER_*` | **「开工 Calm Action Recover」** | Recover 回流路径；慢网；与 Re-focus toast 分池；375 e2e 锁可见句 | ✅ **#625 已合 develop**（TRACKER 待人工） |
 | **C2** | **Arrive 第二刀** | Sit 前 / Arrival 欢迎后降门槛 S/M | `task-briefs/task-calm-action-arrive-runtime.md` | **B1 gate SSOT 已拍板**；Arrival 叠层冲突扫描；`overlaySlotArbitration` | **「开工 Calm Action Arrive」** | 不碰 Honesty 补登；Welcome/CapCut/Choose 保护面清单 | ✅ **#665 已合 develop**（TRACKER 待人工） |
 | C3 | Focus 标语（可选第三刀） | Focusing 页 **仅 S**、低频 | 另 Brief | 默认安静；禁止会话中轮播 | 另口令 | 频控 + 不比 Recover 吵 | ⏸ 未立项 |
-| C4 | Transition / Reflect 接线 | 未来入口 / 完成页并排 | 另 Brief | Transition 入口仍空白 | 另口令 | 不替代 Daily Wisdom | ⏸ 未立项 |
+| **C4** | **Reflect 第三场景** | Reflection 卡内、Daily Wisdom 上方 | `task-calm-action-reflect-runtime.md` | C1+C2 已合；分池 Daily Wisdom | **「开工 Calm Action Reflect」** | 不替代 echo / 三问；同日锁 | 📋 **本旁支开工** |
+| C5 | Transition 接线 | 未来入口 | 另 Brief | Transition 入口仍空白 | 另口令 | — | ⏸ 未立项 |
 
 **C1 → C2 硬衔接（用户 D2）**：C1 须完成 **§7 Bug 关单口径**（smoke/e2e + TRACKER 人工 + push CI）后，**同一产品线内下一任务即 C2**，不得无限期搁置 Arrive。
 
@@ -89,9 +90,9 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 
 | 序 | 项 | 依赖 | Brief 指针 | 口令 | 状态 |
 |---|---|---|---|---|---|
-| D1 | Calm Action 句包 overlay | **C1+C2 已合**（#625/#665；TRACKER 仍待人工） | `task-calm-action-copy-overlay.md` | 「开工 Calm Action overlay」 | 📋 **本旁支开工** |
+| D1 | Calm Action 句包 overlay | **C1+C2 已合**（#625/#665） | `task-calm-action-copy-overlay.md` | 「开工 Calm Action overlay」 | ✅ **#670 已合**（生产已部署） |
 | D2 | Daily Wisdom 日签 **14→N** | 与 Calm Action **分 PR**；升 `schemaVersion` + 本地兜底 | `task-daily-wisdom-expand.md`（待建） | 「开工日签扩容」 | ⏸ 后排 |
-| D3 | Quiet Line §四 8 条候选审定 | 内容审定 + overlay | 扩 `#543` 或 locale | 「开工 Quiet Line 扩句」 | ⏸ 内容候选在 CMS |
+| D3 | Quiet Line §四 8 条候选审定 | 内容审定 + overlay | 扩 `#543` 或 locale | 「开工 Quiet Line 扩句」 | ✅ **2026-09-06 已接线**（schema 2 · 29 键） |
 
 **较弱方案（禁止）**：D2 与 C1 并 PR——Daily Wisdom 与 Calm Action 职责混池。
 
@@ -165,7 +166,7 @@ W5+     口令触发 D2 日签 / D3 QL      E 区仅在有调参目标时
 
 | 字段 | 值 |
 |---|---|
-| 日期 | 2026-09-07 |
-| 拍板 | D1 Recover · D2 Arrive 紧跟 · D3 权重暂不分叉 |
-| 下一口令 | **「开工 Calm Action Arrive」**（C2 本旁支） |
-| develop 对照 | 排期编写时 `origin/develop` tip `128a8c6a`（若漂移以 git 为准） |
+| 日期 | 2026-09-09 |
+| 拍板 | D1 Recover · D2 Arrive · D3 权重暂不分叉 · Reflect 第三场景 |
+| 下一口令 | **「开工 Calm Action Reflect」**（C4 本旁支）→ 后排 Transition / Focus 标语 |
+| develop 对照 | 排期编写时 `origin/develop` tip `6418153e`（若漂移以 git 为准） |

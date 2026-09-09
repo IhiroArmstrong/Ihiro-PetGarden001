@@ -4,7 +4,7 @@
  */
 
 /**
- * Calm Action Wisdom content loader — Recover (C1) + Arrive (C2) pools.
+ * Calm Action Wisdom content loader — Recover (C1) + Arrive (C2) + Reflect (C4) pools.
  * Separate from Daily Wisdom / Quiet Line / ACTIVE_RECOVER toast pools.
  */
 
@@ -12,6 +12,8 @@ import { CALM_ACTION_ARRIVE_EN } from './calm-action-arrive.en.js';
 import { CALM_ACTION_ARRIVE_JA } from './calm-action-arrive.ja.js';
 import { CALM_ACTION_RECOVER_EN } from './calm-action-recover.en.js';
 import { CALM_ACTION_RECOVER_JA } from './calm-action-recover.ja.js';
+import { CALM_ACTION_REFLECT_EN } from './calm-action-reflect.en.js';
+import { CALM_ACTION_REFLECT_JA } from './calm-action-reflect.ja.js';
 import {
   overlayCalmActionArriveTextForId,
   overlayCalmActionRecoverTextForId
@@ -19,6 +21,7 @@ import {
 
 /** @typedef {{ id: string, text: string }} CalmActionRecoverEntry */
 /** @typedef {{ id: string, text: string }} CalmActionArriveEntry */
+/** @typedef {{ id: string, text: string }} CalmActionReflectEntry */
 
 /** @type {Readonly<Record<string, readonly CalmActionRecoverEntry[]>>} */
 const RECOVER_POOLS = Object.freeze({
@@ -30,6 +33,12 @@ const RECOVER_POOLS = Object.freeze({
 const ARRIVE_POOLS = Object.freeze({
   en: CALM_ACTION_ARRIVE_EN,
   ja: CALM_ACTION_ARRIVE_JA
+});
+
+/** @type {Readonly<Record<string, readonly CalmActionReflectEntry[]>>} */
+const REFLECT_POOLS = Object.freeze({
+  en: CALM_ACTION_REFLECT_EN,
+  ja: CALM_ACTION_REFLECT_JA
 });
 
 /**
@@ -80,9 +89,33 @@ export function findCalmActionArriveEntry(id, locale = 'en') {
   return ARRIVE_POOLS.en.find((e) => e.id === key) ?? null;
 }
 
+/**
+ * @param {string} [locale]
+ * @returns {readonly CalmActionReflectEntry[]}
+ */
+export function getCalmActionReflectPool(locale = 'en') {
+  if (locale === 'ja') return REFLECT_POOLS.ja;
+  return REFLECT_POOLS.en;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {CalmActionReflectEntry | null}
+ */
+export function findCalmActionReflectEntry(id, locale = 'en') {
+  const key = String(id || '');
+  if (!key) return null;
+  const preferred = getCalmActionReflectPool(locale).find((e) => e.id === key);
+  if (preferred) return preferred;
+  return REFLECT_POOLS.en.find((e) => e.id === key) ?? null;
+}
+
 export {
   CALM_ACTION_ARRIVE_EN,
   CALM_ACTION_ARRIVE_JA,
   CALM_ACTION_RECOVER_EN,
-  CALM_ACTION_RECOVER_JA
+  CALM_ACTION_RECOVER_JA,
+  CALM_ACTION_REFLECT_EN,
+  CALM_ACTION_REFLECT_JA
 };

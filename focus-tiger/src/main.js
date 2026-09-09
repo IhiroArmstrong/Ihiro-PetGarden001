@@ -426,6 +426,7 @@ import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
 import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
 import { CalmActionArriveCardUI } from './ui/CalmActionArriveCardUI.js';
+import { CalmActionReflectStore } from './core/CalmActionReflectStore.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -957,9 +958,11 @@ async function init() {
   attentionSignals.bind();
   bindDesktopShellAttention(attentionSignals);
 
+  const calmActionReflectStore = new CalmActionReflectStore();
   // 结束反思：正常完成在庆祝播完回归坐姿后淡入；主动结束不播完成反馈，短暂留白后淡入。
   const reflectionMoment = new TigerReflectionMoment(
-    document.getElementById('ui-overlay')
+    document.getElementById('ui-overlay'),
+    { calmActionReflectStore }
   );
   window.__reflectionMoment = reflectionMoment;
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });

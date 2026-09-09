@@ -36,6 +36,10 @@ import {
 } from './glassPanelStyles.js';
 import './daily-wisdom.js';
 import { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
+import {
+  mountReflectionCalmAction,
+  refreshReflectionCalmActionLine
+} from './reflectionCalmActionMount.js';
 import { mountReflectionBrandTagline } from './reflectionBrandTaglineMount.js';
 import { resolveBrandYinWayTagline } from '../core/brandYinWayTagline.js';
 import {
@@ -150,10 +154,12 @@ export class TigerReflectionMoment {
    * @param {HTMLElement} container
    * @param {object} [options]
    * @param {(result: Record<string, string>, hasAnyAnswer: boolean) => void} [options.onDone]
+   * @param {import('../core/CalmActionReflectStore.js').CalmActionReflectStore} [options.calmActionReflectStore]
    */
-  constructor(container, { onDone } = {}) {
+  constructor(container, { onDone, calmActionReflectStore = null } = {}) {
     this.container = container;
     this.onDone = onDone;
+    this.calmActionReflectStore = calmActionReflectStore;
     /** @type {ReflectionFlowState | null} */
     this.flow = null;
     this.root = null;
@@ -168,6 +174,10 @@ export class TigerReflectionMoment {
     this.skipAllBtn = null;
     /** @type {HTMLElement | null} */
     this.wisdomHost = null;
+    /** @type {HTMLElement | null} */
+    this.calmActionHost = null;
+    /** @type {HTMLElement | null} */
+    this.calmActionLineEl = null;
     /** @type {HTMLElement | null} */
     this.brandTaglineHost = null;
     /** @type {string} */
@@ -408,6 +418,15 @@ export class TigerReflectionMoment {
     this.root.appendChild(this.companionObservationEl);
     this.root.appendChild(this.companionInviteBtn);
     this.root.appendChild(footer);
+    if (this.calmActionReflectStore) {
+      const calm = mountReflectionCalmAction(
+        this.root,
+        this.calmActionReflectStore,
+        getLocale()
+      );
+      this.calmActionHost = calm.host;
+      this.calmActionLineEl = calm.lineEl;
+    }
     // Phase A: free Daily Wisdom at card bottom (no Sanctuary seal).
     const { host } = mountReflectionDailyWisdom(this.root);
     this.wisdomHost = host;
@@ -465,6 +484,13 @@ export class TigerReflectionMoment {
     this.skipBtn.textContent = t('REFLECTION_SKIP');
     this.skipAllBtn.textContent = t('REFLECTION_SKIP_ALL');
     this.continueBtn.textContent = t('REFLECTION_CONTINUE');
+    if (this.calmActionReflectStore && this.calmActionLineEl) {
+      refreshReflectionCalmActionLine(
+        this.calmActionLineEl,
+        this.calmActionReflectStore,
+        getLocale()
+      );
+    }
     this._syncReflectionCompanionOffer();
   }
 
@@ -759,6 +785,8 @@ export class TigerReflectionMoment {
     this.skipBtn = null;
     this.skipAllBtn = null;
     this.wisdomHost = null;
+    this.calmActionHost = null;
+    this.calmActionLineEl = null;
     this.brandTaglineHost = null;
   }
 }
