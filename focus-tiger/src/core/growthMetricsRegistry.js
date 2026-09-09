@@ -108,9 +108,10 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
     ]),
     aggregationWindow: 'mixed',
     dailyCapPolicy:
-      'Day count +1 per calendar practice day (max 90 entries in window). Lifetime minutes add uncapped per session (open product question on binge fairness).',
-    formulaVersion: 'scoreFormula.v2',
-    formulaSummary: 'practiceDayCount + floor(lifetimeMinutes / 60)',
+      'Day count +1 per calendar practice day (max 90 entries in window). Score-eligible lotus minutes capped at 180 min/calendar day (raw lifetime uncapped for blooms).',
+    formulaVersion: 'scoreFormula.v3',
+    formulaSummary:
+      'practiceDayCount + floor(scoreEligibleLifetimeMinutes / 60); per-day lotus cap 180m',
     formulaModule: 'src/core/practiceBadgeAward.js',
     authoritativeConsumers: Object.freeze([
       'tip-kindness-badges',
@@ -122,13 +123,14 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
     relatedPersonas: Object.freeze([
       'steady-light',
       'single-binge',
+      'single-binge-extreme',
       'deep-weekly',
       'rolling-veteran',
       'qa-mustard-shortcut',
       'qa-seed-streak-15-legacy'
     ]),
     migrationNotes:
-      'scoreFormula.v1 (pre-2026-09-09 Batch 2) wrongly summed 90-day practice-days minutes as lifetime. v2 reads lotus-pond.v1; long-term users may jump score/badges/seals — expected fix, not silent reweight.'
+      'v1→v2: lotus lifetime reads. v2→v3: grandfather scoreEligibleLifetimeMinutes = lifetimeMinutes on first read; new accrual capped 180 min/calendar day toward score only (blooms uncapped). No retroactive score downgrade.'
   }),
   Object.freeze({
     id: 'lotus-bloom',

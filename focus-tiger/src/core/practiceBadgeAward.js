@@ -6,7 +6,8 @@
 /**
  * Shared practice-level → badge target count (Tip / Sanctuary / free).
  *
- * score = practiceDayCount + floor(lifetimeMinutes / 60)
+ * score = practiceDayCount + floor(scoreEligibleLifetimeMinutes / 60)
+ * (scoreFormula.v3; falls back to lifetimeMinutes when eligible not provided)
  * target = min + floor(score / 3), clamped to [min, max]
  *
  * Paid paths (Tea / Sanctuary): requirePractice=false → no practice still yields `min`.
@@ -15,12 +16,18 @@
 
 /**
  * Unified practice score (same formula as badge awards / memorial seals).
- * @param {{ practiceDayCount?: number, lifetimeMinutes?: number }} summary
+ * @param {{
+ *   practiceDayCount?: number,
+ *   lifetimeMinutes?: number,
+ *   scoreEligibleLifetimeMinutes?: number
+ * }} summary
  * @returns {number}
  */
 export function computePracticeScore(summary = {}) {
   const days = Math.max(0, Math.floor(Number(summary.practiceDayCount) || 0));
-  const minutes = Math.max(0, Number(summary.lifetimeMinutes) || 0);
+  const rawMinutes =
+    summary.scoreEligibleLifetimeMinutes ?? summary.lifetimeMinutes;
+  const minutes = Math.max(0, Number(rawMinutes) || 0);
   return days + Math.floor(minutes / 60);
 }
 
@@ -39,7 +46,11 @@ export function computePracticeBadgeTargetCount(summary = {}, opts) {
   if (!hasPractice) {
     return requirePractice ? 0 : min;
   }
-  const score = computePracticeScore({ practiceDayCount: days, lifetimeMinutes: minutes });
+  const score = computePracticeScore({
+    practiceDayCount: days,
+    lifetimeMinutes: minutes,
+    scoreEligibleLifetimeMinutes: summary.scoreEligibleLifetimeMinutes
+  });
   const raw = min + Math.floor(score / 3);
   return Math.min(max, Math.max(min, raw));
 }

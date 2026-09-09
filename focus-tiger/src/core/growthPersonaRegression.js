@@ -20,6 +20,7 @@ import {
   GROWTH_PERSONA_TODAY_KEY,
   GROWTH_PERSONA_FIXTURES
 } from './growthPersonaFixtures.js';
+import { resolvePersonaScoreEligibleMinutes } from './scoreDailyCap.js';
 
 /**
  * @typedef {import('./growthPersonaFixtures.js').GrowthPersonaSeed} GrowthPersonaSeed
@@ -45,10 +46,20 @@ export function evaluateGrowthPersonaSeed(seed) {
     0,
     Number(seed.lifetimeMinutes) || 0
   );
-  const score = computePracticeScore({ practiceDayCount, lifetimeMinutes });
+  const scoreEligibleLifetimeMinutes =
+    resolvePersonaScoreEligibleMinutes(seed);
+  const score = computePracticeScore({
+    practiceDayCount,
+    lifetimeMinutes,
+    scoreEligibleLifetimeMinutes
+  });
   const visibleBloomCount = bloomCountForMinutes(lifetimeMinutes);
   const freeBadgeCount = computePracticeBadgeTargetCount(
-    { practiceDayCount, lifetimeMinutes },
+    {
+      practiceDayCount,
+      lifetimeMinutes,
+      scoreEligibleLifetimeMinutes
+    },
     { min: 1, max: 9, requirePractice: true }
   );
   const mustardUnlocked = practiceAggregateMeetsScoreThreshold(
