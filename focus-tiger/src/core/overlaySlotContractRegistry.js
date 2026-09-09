@@ -31,6 +31,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   MOMENT_WHISPER: 'moment-whisper',
   FOCUS_AWARENESS: 'focus-awareness',
   CALM_ACTION_RECOVER: 'calm-action-recover',
+  CALM_ACTION_ARRIVE: 'calm-action-arrive',
   RECOVER_RESET_OFFER: 'recover-reset-offer',
   RECOVER_RESET_PRACTICE: 'recover-reset-practice',
   ONBOARDING_HINT: 'onboarding-hint',
@@ -422,6 +423,13 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     readers: 'CalmActionRecoverCardUI.tryShowAfterActiveRecover (Active Recover only)'
   }),
   contract({
+    id: OVERLAY_SOURCES.CALM_ACTION_ARRIVE,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers:
+      'CalmActionArriveCardUI.tryShowAfterArrival (post-Arrival, pre-Focusing only)'
+  }),
+  contract({
     id: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
@@ -506,6 +514,7 @@ export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
   'MomentWhisperUI.js',
   'FocusAwarenessCardUI.js',
   'CalmActionRecoverCardUI.js',
+  'CalmActionArriveCardUI.js',
   'FocusCircleWitnessLeaveUI.js',
   'OnboardingHintsUI.js'
 ]);
@@ -548,6 +557,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'MomentWhisperUI.js': [OVERLAY_SOURCES.MOMENT_WHISPER],
   'FocusAwarenessCardUI.js': [OVERLAY_SOURCES.FOCUS_AWARENESS],
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
+  'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
   'FocusCircleWitnessLeaveUI.js': [
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND

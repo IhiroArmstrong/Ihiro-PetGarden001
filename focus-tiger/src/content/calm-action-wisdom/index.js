@@ -4,19 +4,28 @@
  */
 
 /**
- * Calm Action Wisdom content loader — Recover pool (C1 runtime).
+ * Calm Action Wisdom content loader — Recover (C1) + Arrive (C2) pools.
  * Separate from Daily Wisdom / Quiet Line / ACTIVE_RECOVER toast pools.
  */
 
+import { CALM_ACTION_ARRIVE_EN } from './calm-action-arrive.en.js';
+import { CALM_ACTION_ARRIVE_JA } from './calm-action-arrive.ja.js';
 import { CALM_ACTION_RECOVER_EN } from './calm-action-recover.en.js';
 import { CALM_ACTION_RECOVER_JA } from './calm-action-recover.ja.js';
 
 /** @typedef {{ id: string, text: string }} CalmActionRecoverEntry */
+/** @typedef {{ id: string, text: string }} CalmActionArriveEntry */
 
 /** @type {Readonly<Record<string, readonly CalmActionRecoverEntry[]>>} */
 const RECOVER_POOLS = Object.freeze({
   en: CALM_ACTION_RECOVER_EN,
   ja: CALM_ACTION_RECOVER_JA
+});
+
+/** @type {Readonly<Record<string, readonly CalmActionArriveEntry[]>>} */
+const ARRIVE_POOLS = Object.freeze({
+  en: CALM_ACTION_ARRIVE_EN,
+  ja: CALM_ACTION_ARRIVE_JA
 });
 
 /**
@@ -41,4 +50,31 @@ export function findCalmActionRecoverEntry(id, locale = 'en') {
   return RECOVER_POOLS.en.find((e) => e.id === key) ?? null;
 }
 
-export { CALM_ACTION_RECOVER_EN, CALM_ACTION_RECOVER_JA };
+/**
+ * @param {string} [locale]
+ * @returns {readonly CalmActionArriveEntry[]}
+ */
+export function getCalmActionArrivePool(locale = 'en') {
+  if (locale === 'ja') return ARRIVE_POOLS.ja;
+  return ARRIVE_POOLS.en;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {CalmActionArriveEntry | null}
+ */
+export function findCalmActionArriveEntry(id, locale = 'en') {
+  const key = String(id || '');
+  if (!key) return null;
+  const preferred = getCalmActionArrivePool(locale).find((e) => e.id === key);
+  if (preferred) return preferred;
+  return ARRIVE_POOLS.en.find((e) => e.id === key) ?? null;
+}
+
+export {
+  CALM_ACTION_ARRIVE_EN,
+  CALM_ACTION_ARRIVE_JA,
+  CALM_ACTION_RECOVER_EN,
+  CALM_ACTION_RECOVER_JA
+};
