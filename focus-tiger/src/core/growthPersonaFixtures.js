@@ -75,10 +75,26 @@ export const GROWTH_PERSONA_FIXTURES = Object.freeze([
       todayKey: GROWTH_PERSONA_TODAY_KEY
     }),
     expectations: Object.freeze({
-      score: 11,
+      score: 4,
       mustardUnlocked: false,
       visibleBloomCount: 12,
-      freeBadgeCount: 4
+      freeBadgeCount: 2
+    })
+  }),
+  Object.freeze({
+    id: 'single-binge-extreme',
+    label: '极端单次爆肝型',
+    intent: '一天 24 小时不间断 — 封顶后不得越过芥子 unlock 线',
+    seed: Object.freeze({
+      practiceDayCount: 1,
+      lifetimeMinutes: 1440,
+      todayKey: GROWTH_PERSONA_TODAY_KEY
+    }),
+    expectations: Object.freeze({
+      score: 4,
+      mustardUnlocked: false,
+      visibleBloomCount: 12,
+      freeBadgeCount: 2
     })
   }),
   Object.freeze({

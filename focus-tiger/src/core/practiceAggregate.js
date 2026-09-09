@@ -41,6 +41,7 @@ export const PRACTICE_BASELINE_SOURCE_IDS = Object.freeze([
 /**
  * @typedef {{
  *   lifetimeMinutes: number,
+ *   scoreEligibleLifetimeMinutes: number,
  *   practiceDayCount: number,
  *   score: number,
  *   todayMinutes: number,
@@ -82,17 +83,23 @@ export function resolvePracticeAggregate(deps = {}) {
     deps.dailyCompletionStore ?? new DailyCompletionStore({ storage, now });
 
   const lifetimeMinutes = Math.max(0, Number(lotus.getLifetimeMinutes()) || 0);
+  const scoreEligibleLifetimeMinutes = Math.max(
+    0,
+    Number(lotus.getScoreEligibleLifetimeMinutes()) || 0
+  );
   const practiceDayCount = Math.max(
     0,
     practiceDays.getPracticedDateKeys().length
   );
   const score = computePracticeScore({
     practiceDayCount,
-    lifetimeMinutes
+    lifetimeMinutes,
+    scoreEligibleLifetimeMinutes
   });
 
   return {
     lifetimeMinutes,
+    scoreEligibleLifetimeMinutes,
     practiceDayCount,
     score,
     todayMinutes: Math.max(0, Number(daily.getTodayTotalMinutes()) || 0),
@@ -114,12 +121,22 @@ export function resolvePracticeAggregateFromStorage(storage, now = () => new Dat
 /**
  * Badge / memorial seal consumers: `{ practiceDayCount, lifetimeMinutes }` slice.
  * @param {PracticeAggregate} aggregate
- * @returns {{ practiceDayCount: number, lifetimeMinutes: number }}
+ * @returns {{
+ *   practiceDayCount: number,
+ *   lifetimeMinutes: number,
+ *   scoreEligibleLifetimeMinutes: number
+ * }}
  */
 export function practiceAggregateBadgeSummary(aggregate) {
+  const lifetimeMinutes = Math.max(0, Number(aggregate?.lifetimeMinutes) || 0);
+  const scoreEligibleLifetimeMinutes = Math.max(
+    0,
+    Number(aggregate?.scoreEligibleLifetimeMinutes) || lifetimeMinutes
+  );
   return {
     practiceDayCount: Math.max(0, Number(aggregate?.practiceDayCount) || 0),
-    lifetimeMinutes: Math.max(0, Number(aggregate?.lifetimeMinutes) || 0)
+    lifetimeMinutes,
+    scoreEligibleLifetimeMinutes
   };
 }
 

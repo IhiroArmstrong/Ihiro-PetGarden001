@@ -51,7 +51,7 @@ Before changing any growth formula or adding a cumulative consumer:
 
 | id | purpose | window | formulaVersion | formulaSummary |
 |---|---|---|---|---|
-| `practice-score` | unlock-gate | mixed | scoreFormula.v2 | practiceDayCount + floor(lifetimeMinutes / 60) |
+| `practice-score` | unlock-gate | mixed | scoreFormula.v3 | practiceDayCount + floor(scoreEligibleLifetimeMinutes / 60); per-day lotus cap 180m |
 | `lotus-bloom` | presentation-feedback | lifetime | lotusPondSliceA.v1 | Piecewise thresholds: bloom1=25m; blooms2–5 +25m each; blooms6–12 +45m each; max 12 visible. |
 | `practice-badges-free` | presentation-feedback | mixed | badgeAward.v1 | target = min(9, max(1, 1 + floor(score/3))); 0 badges when no practice. |
 | `practice-badges-paid` | presentation-feedback | mixed | badgeAward.v1 | target = min(17, max(3, 3 + floor(score/3))) for Sanctuary; tip max 9. |
@@ -67,7 +67,8 @@ Before changing any growth formula or adding a cumulative consumer:
 | id | label | intent | score | mustard | blooms | badges |
 |---|---|---|---:|---|---:|---:|
 | `steady-light` | 坚持型轻练习者 | 每天 Honesty 5 分钟 ×21 天 — 应能开芥子印（奖励常回来） | 22 | yes | 4 | 8 |
-| `single-binge` | 单次爆肝型 | 一天坐 10 小时 — 不应单日接近芥子 unlock 线（防 binge 刷分） | 11 | no | 12 | 4 |
+| `single-binge` | 单次爆肝型 | 一天坐 10 小时 — 不应单日接近芥子 unlock 线（防 binge 刷分） | 4 | no | 12 | 2 |
+| `single-binge-extreme` | 极端单次爆肝型 | 一天 24 小时不间断 — 封顶后不得越过芥子 unlock 线 | 4 | no | 12 | 2 |
 | `deep-weekly` | 深度冥想型 | 12 个练习日 × 每次 60 分钟 — 莲花开得快，score 也达标 | 24 | yes | 12 | 9 |
 | `rolling-veteran` | 断续型老用户 | 窗口内 30 天 + 高终身分钟 — 分钟不倒退，池满 12 朵封顶 | 113 | yes | 12 | 9 |
 | `qa-mustard-shortcut` | QA · 芥子印正确播种 | qaSeedStreak=21（只写 practice-days）→ score=21，可测纪念印 | 21 | yes | 0 | 8 |
@@ -88,6 +89,7 @@ Fixtures live in `growthPersonaFixtures.js`. Each row encodes **product intent**
 |---|---|
 | `steady-light` | Honesty-only regulars should reach memorial unlock |
 | `single-binge` | One-day binge must not near unlock line |
+| `single-binge-extreme` | 24h single-day binge must stay well below unlock line after cap |
 | `deep-weekly` | Depth-heavy users bloom fast + unlock |
 | `rolling-veteran` | Lifetime minutes survive 90-day window roll |
 | `qa-mustard-shortcut` | **Correct** mustard QA: `?qaSeedStreak=21` |
@@ -100,16 +102,29 @@ Run: `npm run audit:growth-metrics` (also in `docs:check`).
 
 ## Formula versions & migrations
 
-### `scoreFormula.v2` (current · Batch 2+, 2026-09-09)
+### `scoreFormula.v3` (current · 2026-09-10)
+
+```text
+score = practiceDayCount + floor(scoreEligibleLifetimeMinutes / 60)
+```
+
+- `practiceDayCount` ← count of entries in `focus-tiger.practice-days.v1` (≤ 90-day window).
+- `scoreEligibleLifetimeMinutes` ← `focus-tiger.lotus-pond.v1` field accrued at write time with **180 min/calendar-day** soft cap toward score.
+- `lifetimeMinutes` (same key) ← true lifetime, monotonic, **uncapped** — drives lotus blooms only.
+
+**Binge acceptance**: `single-binge` / `single-binge-extreme` persona scores must stay ≤ 60% of mustard threshold (21 → ≤ 12).
+
+**Consumers**: tip/sanctuary badges, mustard seal, contemplative archive, focus-coins redeem gates (via `resolvePracticeAggregate`).
+
+**Migration rule (v2→v3)**: grandfather — on first read, `scoreEligibleLifetimeMinutes = lifetimeMinutes`; new accrual capped per day. No retroactive score downgrade. Blooms unchanged.
+
+### `scoreFormula.v2` (retired · Batch 2, 2026-09-09)
 
 ```text
 score = practiceDayCount + floor(lifetimeMinutes / 60)
 ```
 
-- `practiceDayCount` ← count of entries in `focus-tiger.practice-days.v1` (≤ 90-day window).
-- `lifetimeMinutes` ← `focus-tiger.lotus-pond.v1` (true lifetime, monotonic).
-
-**Consumers**: tip/sanctuary badges, mustard seal, contemplative archive, focus-coins redeem gates (via `resolvePracticeAggregate`).
+Uncapped lifetime minutes allowed single-day binge to approach unlock line.
 
 ### `scoreFormula.v1` (retired semantics)
 
@@ -123,7 +138,7 @@ Pre-Batch-2 reads summed **90-day practice-days minutes** as if they were lifeti
 
 | Topic | Current state | Decision owner |
 |---|---|---|
-| Lotus lifetime minutes **per day cap** | None — binge can max blooms in one day | Product |
+| Lotus lifetime minutes **per day cap** | **Closed** — 180 min/day toward score only; blooms uncapped (`scoreFormula.v3`) | PO 2026-09-10 |
 | Honesty 5 min × 21 days → mustard unlock | Allowed by score (days dominate) | Persona `steady-light` locks intent until changed |
 | MilestoneGlow vs score | Orthogonal streak ladder | By design |
 
@@ -147,3 +162,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 | Date | Change |
 |---|---|
 | 2026-09-10 | Initial charter + registry schema + persona CI + TEST_TRACKER seed contract |
+| 2026-09-10 | scoreFormula.v3 — 180 min/day score cap; `single-binge-extreme` persona |

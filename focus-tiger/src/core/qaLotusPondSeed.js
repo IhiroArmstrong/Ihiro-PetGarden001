@@ -67,7 +67,10 @@ export function applyQaLotusPondSeedFromSearch(opts = {}) {
   const lifetimeMinutes = minutesToSeedQaBloomCount(seededBlooms);
   storage.setItem(
     LOTUS_POND_STORAGE_KEY,
-    JSON.stringify({ lifetimeMinutes })
+    JSON.stringify({
+      lifetimeMinutes,
+      scoreEligibleLifetimeMinutes: lifetimeMinutes
+    })
   );
   return {
     seededBlooms,

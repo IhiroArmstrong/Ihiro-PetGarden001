@@ -55,8 +55,33 @@ describe('practiceAggregate', () => {
     });
 
     assert.equal(aggregate.lifetimeMinutes, 120);
+    assert.equal(aggregate.scoreEligibleLifetimeMinutes, 120);
     assert.equal(aggregate.practiceDayCount, 1);
     assert.equal(aggregate.score, 1 + Math.floor(120 / 60));
+  });
+
+  it('score uses capped score-eligible minutes on binge days', () => {
+    const storage = createStorage();
+    const lotus = new LotusPondStore({
+      storage,
+      now: () => new Date(2026, 8, 10, 12, 0, 0)
+    });
+    const practiceDays = new PracticeDaysStore({
+      storage,
+      now: () => new Date(2026, 8, 10, 12, 0, 0)
+    });
+    lotus.addMinutes(600);
+    practiceDays.markToday(600);
+
+    const aggregate = resolvePracticeAggregate({
+      lotusPondStore: lotus,
+      practiceDaysStore: practiceDays,
+      dailyCompletionStore: new DailyCompletionStore({ storage })
+    });
+
+    assert.equal(aggregate.lifetimeMinutes, 600);
+    assert.equal(aggregate.scoreEligibleLifetimeMinutes, 180);
+    assert.equal(aggregate.score, 4);
   });
 
   it('today fields come from daily completion store', () => {
