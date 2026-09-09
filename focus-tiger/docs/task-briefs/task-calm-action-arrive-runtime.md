@@ -1,6 +1,6 @@
 # Task Brief · Calm Action Wisdom · Arrive 运行时（第二刀）
 
-> **状态（2026-09-08）**：**开工** · 旁支 `feature/calm-action-arrive-runtime`。  
+> **状态（2026-09-09）**：**已合 `develop`**（PR [#665](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/665) · tip `3d7fa6c`）；人工验收仍见 `docs/tracker-entries/feature-calm-action-arrive-runtime.md`。  
 > **父排期**：`taste-layer-calm-action-roadmap.md` · **C2**。  
 > **内容 SSOT**：`CALM_ACTION_WISDOM.md`（Arrive 段 S/M · 14 条 hero）。  
 > **用户拍板**：C1 Recover 已合 #625；Sit 前接 Action 70（2026-09-08 口令）。

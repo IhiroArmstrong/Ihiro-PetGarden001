@@ -74,8 +74,8 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 
 | 序 | 项 | 落点 | Brief | 门禁 | 口令 | 验收要点 | 状态 |
 |---|---|---|---|---|---|---|---|
-| **C1** | **Recover 第一刀** | 打断回来后 **追加** S/M 句（卡/次屏）；toast 仍观察式 | `task-briefs/task-calm-action-recover-runtime.md` | `FEATURE_CONFLICT_REVIEW` + `CALM_ACTION_WISDOM.md` §三；禁止替换 `ACTIVE_RECOVER_*` | **「开工 Calm Action Recover」** | Recover 回流路径；慢网；与 Re-focus toast 分池；375 e2e 锁可见句 | 📋 Brief 已建 · **下一刀** |
-| **C2** | **Arrive 第二刀** | Sit 前 / Arrival 欢迎后降门槛 S/M | `task-briefs/task-calm-action-arrive-runtime.md` | **B1 gate SSOT 已拍板**；Arrival 叠层冲突扫描；`overlaySlotArbitration` | **「开工 Calm Action Arrive」** | 不碰 Honesty 补登；Welcome/CapCut/Choose 保护面清单 | 📋 **本旁支开工** |
+| **C1** | **Recover 第一刀** | 打断回来后 **追加** S/M 句（卡/次屏）；toast 仍观察式 | `task-briefs/task-calm-action-recover-runtime.md` | `FEATURE_CONFLICT_REVIEW` + `CALM_ACTION_WISDOM.md` §三；禁止替换 `ACTIVE_RECOVER_*` | **「开工 Calm Action Recover」** | Recover 回流路径；慢网；与 Re-focus toast 分池；375 e2e 锁可见句 | ✅ **#625 已合 develop**（TRACKER 待人工） |
+| **C2** | **Arrive 第二刀** | Sit 前 / Arrival 欢迎后降门槛 S/M | `task-briefs/task-calm-action-arrive-runtime.md` | **B1 gate SSOT 已拍板**；Arrival 叠层冲突扫描；`overlaySlotArbitration` | **「开工 Calm Action Arrive」** | 不碰 Honesty 补登；Welcome/CapCut/Choose 保护面清单 | ✅ **#665 已合 develop**（TRACKER 待人工） |
 | C3 | Focus 标语（可选第三刀） | Focusing 页 **仅 S**、低频 | 另 Brief | 默认安静；禁止会话中轮播 | 另口令 | 频控 + 不比 Recover 吵 | ⏸ 未立项 |
 | C4 | Transition / Reflect 接线 | 未来入口 / 完成页并排 | 另 Brief | Transition 入口仍空白 | 另口令 | 不替代 Daily Wisdom | ⏸ 未立项 |
 
@@ -89,7 +89,7 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 
 | 序 | 项 | 依赖 | Brief 指针 | 口令 | 状态 |
 |---|---|---|---|---|---|
-| D1 | Calm Action 句包 overlay | **C1+C2 至少 Recover 关单**；理想 C2 也关 | `task-calm-action-copy-overlay.md`（待建） | 「开工 Calm Action overlay」 | ⏸ |
+| D1 | Calm Action 句包 overlay | **C1+C2 人工关单**（#625/#665 已合；TRACKER 仍待人工） | `task-calm-action-copy-overlay.md`（待建） | 「开工 Calm Action overlay」 | ⏸ 待口令 |
 | D2 | Daily Wisdom 日签 **14→N** | 与 Calm Action **分 PR**；升 `schemaVersion` + 本地兜底 | `task-daily-wisdom-expand.md`（待建） | 「开工日签扩容」 | ⏸ 后排 |
 | D3 | Quiet Line §四 8 条候选审定 | 内容审定 + overlay | 扩 `#543` 或 locale | 「开工 Quiet Line 扩句」 | ⏸ 内容候选在 CMS |
 
