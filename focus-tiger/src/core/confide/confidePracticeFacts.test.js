@@ -5,6 +5,7 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { LotusPondStore } from '../LotusPondStore.js';
 import { PracticeDaysStore } from '../PracticeDaysStore.js';
 import { confideClassify } from './confideClassify.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
@@ -106,7 +107,8 @@ describe('confide practice facts (Slice 0)', () => {
       now: () => new Date(2026, 7, 25)
     });
     store.markToday(25);
-    const withMins = summarizePracticeFacts(store);
+    new LotusPondStore({ storage, now: () => new Date(2026, 7, 25) }).addMinutes(25);
+    const withMins = summarizePracticeFacts(store, storage);
     assert.equal(withMins.dayCount, 1);
     assert.equal(withMins.knownMinutes, 25);
     assert.match(
@@ -115,7 +117,7 @@ describe('confide practice facts (Slice 0)', () => {
     );
   });
 
-  it('prefers Journey Log totals over practice-days streak ledger', () => {
+  it('uses aggregate totals (lotus + practice-days), not Journey-only sit trace', () => {
     const storage = {
       _d: {},
       getItem(k) {
@@ -142,16 +144,51 @@ describe('confide practice facts (Slice 0)', () => {
         days: [
           { date: '2026-08-23', totalMinutes: 8 },
           { date: '2026-08-24', totalMinutes: 8 },
-          { date: '2026-08-25', totalMinutes: 24 }
+          { date: '2026-08-25', totalMinutes: 30 }
         ]
       })
     );
+    storage.setItem(
+      'focus-tiger.lotus-pond.v1',
+      JSON.stringify({ lifetimeMinutes: 46 })
+    );
     const store = new PracticeDaysStore({ storage });
-    const summary = summarizePracticeFactsFromJourneyLog(storage);
+    const journeyOnly = summarizePracticeFactsFromJourneyLog(storage);
+    assert.equal(journeyOnly.dayCount, 1);
+    assert.equal(journeyOnly.knownMinutes, 22);
+    const aggregateBacked = summarizePracticeFacts(store, storage);
+    assert.equal(aggregateBacked.knownMinutes, 46);
+    assert.equal(aggregateBacked.dayCount, 3);
+  });
+
+  it('includes Honesty-only practice when Journey Log is empty', () => {
+    const storage = {
+      _d: {},
+      getItem(k) {
+        return this._d[k] ?? null;
+      },
+      setItem(k, v) {
+        this._d[k] = v;
+      }
+    };
+    storage.setItem(
+      'focus-tiger.practice-days.v1',
+      JSON.stringify({
+        days: [{ date: '2026-08-25', totalMinutes: 30 }]
+      })
+    );
+    storage.setItem(
+      'focus-tiger.lotus-pond.v1',
+      JSON.stringify({ lifetimeMinutes: 30 })
+    );
+    const store = new PracticeDaysStore({ storage });
+    const summary = summarizePracticeFacts(store, storage);
     assert.equal(summary.dayCount, 1);
-    assert.equal(summary.knownMinutes, 22);
-    assert.equal(summarizePracticeFacts(store, storage).knownMinutes, 22);
-    assert.equal(summarizePracticeFacts(store, storage).dayCount, 1);
+    assert.equal(summary.knownMinutes, 30);
+    assert.match(
+      formatPracticeDurationReply(summary, tFn),
+      /1 practiced days, about 30 minutes/
+    );
   });
 });
 
@@ -272,6 +309,16 @@ describe('confide practice facts (Phase 1B)', () => {
       { at: new Date(2026, 7, 28, 10, 0, 0).toISOString(), minutes: 10, arrive: false, reflect: false },
       { at: new Date(2026, 7, 10, 10, 0, 0).toISOString(), minutes: 5, arrive: true, reflect: false }
     ]);
+    storage.setItem(
+      'focus-tiger.practice-days.v1',
+      JSON.stringify({
+        days: [
+          { date: '2026-08-25', totalMinutes: 20 },
+          { date: '2026-08-28', totalMinutes: 10 },
+          { date: '2026-08-10', totalMinutes: 5 }
+        ]
+      })
+    );
     const reply = buildPracticeFactsReply(
       null,
       storage,
