@@ -12,6 +12,7 @@ import {
   evaluateFocusCoinRedeem
 } from './focusCoinsLedger.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
+import { resolvePracticeAggregate } from './practiceAggregate.js';
 
 /**
  * @param {object} opts
@@ -27,11 +28,15 @@ export function buildFocusCoinRedeemContext({
 }) {
   const snap = store.getSnapshot();
   const bloomCount = lotusPondStore.getVisibleBloomCount();
+  const aggregate = resolvePracticeAggregate({
+    lotusPondStore,
+    practiceDaysStore
+  });
   return {
     balance: snap.balance,
     ownedIds: snap.ownedIds,
-    lifetimeMinutes: lotusPondStore.getLifetimeMinutes(),
-    practiceDayCount: practiceDaysStore.getPracticedDateKeys().length,
+    lifetimeMinutes: aggregate.lifetimeMinutes,
+    practiceDayCount: aggregate.practiceDayCount,
     hasLotusBloom: bloomCount > 0,
     hasIncense: false,
     hasHonestyWake: snap.lifetimeMarks?.honestyWake === true,

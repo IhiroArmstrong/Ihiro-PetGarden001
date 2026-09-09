@@ -126,8 +126,8 @@ Planned script: `npm run audit:practice-coverage` (not implemented in recon pass
 
 | Batch | Scope | Risk |
 |---|---|---|
-| **1** | Confide `practice_facts` → aggregate | **In progress** (`fix/confide-practice-aggregate-batch-1`) — duration / compare / showing-up on aggregate; Journey kept for usual-time + Arrival ease only |
-| **2** | Badges + mustard score → `aggregate.score`; wire redeem/support to same API | Fixes false “lifetime” naming |
+| **1** | Confide `practice_facts` → aggregate | **Done** (#681) — duration / compare / showing-up on aggregate; Journey kept for usual-time + Arrival ease only |
+| **2** | Badges + mustard score → `aggregate.score`; wire redeem/support to same API | **In progress** (`fix/practice-aggregate-batch-2`) — tip/sanctuary badges + mustard seal on aggregate; redeem/support wired |
 | **3** | Mustard auto-offer ceremony on any baseline completion | Small UX gate change |
 | **4** | Registry + audit script in CI | Regression guard |
 
@@ -141,4 +141,5 @@ Planned script: `npm run audit:practice-coverage` (not implemented in recon pass
 |---|---|
 | 2026-09-07 | Initial recon registry + `practiceAggregate.js` skeleton (no runtime wiring) |
 | 2026-09-09 | Batch 1: Confide duration/compare/showing-up wired to aggregate; Journey sub-semantics unchanged for usual-time + Arrival ease |
+| 2026-09-09 | Batch 2: tip/sanctuary badges + mustard seal score on aggregate; focus-coins redeem + support modal on same API |
 | 2026-09-07 | Add `recover-reset-breath` intentional exclude (Reset MVP cross-line alignment) |
