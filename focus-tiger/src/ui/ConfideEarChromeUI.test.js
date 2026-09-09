@@ -18,6 +18,7 @@ test('wide ear chrome sits below Focus HUD with press feedback', () => {
   assert.match(src, /ROOT_ID = 'confide-ear-chrome'/);
   assert.match(src, /left: max\(18px/);
   assert.match(src, /top: calc\(max\(18px/);
+  assert.match(src, /\+ 152px\)/);
   assert.match(src, /icon-confide-to-yin\.png/);
   assert.match(src, /CONFIDE_MENU_LABEL/);
   assert.match(src, /CONFIDE_EAR_TOOLTIP/);
