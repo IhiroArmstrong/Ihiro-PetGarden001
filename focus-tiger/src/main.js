@@ -431,6 +431,11 @@ import { CalmActionReflectStore } from './core/CalmActionReflectStore.js';
 import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
 import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
 import {
+  RecoverResetOfferUI,
+  RESET_ROUTES
+} from './ui/RecoverResetOfferUI.js';
+import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
+import {
   createHintsSeenStore,
   resolveAutoHintIds
 } from './core/OnboardingHintsStore.js';
@@ -929,6 +934,9 @@ async function init() {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
       }
+      if (type === 'refocus') {
+        scheduleRecoverResetOfferAfterRefocus();
+      }
       if (type === 'activeRecover') {
         calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
@@ -1247,6 +1255,12 @@ async function init() {
   let witnessLeaveSlotHeld = false;
   let witnessRespondSlotHeld = false;
   let transitionMomentSlotHeld = false;
+  let recoverResetOfferSlotHeld = false;
+  let recoverResetPracticeSlotHeld = false;
+  /** @type {RecoverResetOfferUI | null} */
+  let recoverResetOfferUI = null;
+  /** @type {RecoverResetPracticeUI | null} */
+  let recoverResetPracticeUI = null;
 
   function requestWitnessLeaveOverlaySlot() {
     const decision = requestOverlaySlot({
@@ -1311,6 +1325,76 @@ async function init() {
     transitionMomentSlotHeld = false;
     syncIdleYinTap();
     syncTransitionMomentTrigger();
+  }
+
+  function requestRecoverResetOfferOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        recoverResetOfferOpen: false,
+        recoverResetPracticeOpen: recoverResetPracticeSlotHeld
+      })
+    });
+    if (!decision.canShow) return false;
+    recoverResetOfferSlotHeld = true;
+    syncIdleYinTap();
+    return true;
+  }
+
+  function releaseRecoverResetOfferOverlaySlot() {
+    if (!recoverResetOfferSlotHeld) return;
+    recoverResetOfferSlotHeld = false;
+    syncIdleYinTap();
+  }
+
+  function requestRecoverResetPracticeOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        recoverResetOfferOpen: recoverResetOfferSlotHeld,
+        recoverResetPracticeOpen: false
+      })
+    });
+    if (!decision.canShow) return false;
+    recoverResetPracticeSlotHeld = true;
+    syncIdleYinTap();
+    return true;
+  }
+
+  function releaseRecoverResetPracticeOverlaySlot() {
+    if (!recoverResetPracticeSlotHeld) return;
+    recoverResetPracticeSlotHeld = false;
+    syncIdleYinTap();
+  }
+
+  const overlayRoot =
+    document.getElementById('ui-overlay') || document.body;
+  recoverResetOfferUI = new RecoverResetOfferUI(overlayRoot, {
+    requestSlot: requestRecoverResetOfferOverlaySlot,
+    releaseSlot: releaseRecoverResetOfferOverlaySlot,
+    getBusy: () => isFocusAwarenessCardBusy(),
+    onSelect: (route) => {
+      if (route === RESET_ROUTES.STEADY) return;
+      recoverResetPracticeUI?.show(route);
+    }
+  });
+  recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
+    requestSlot: requestRecoverResetPracticeOverlaySlot,
+    releaseSlot: releaseRecoverResetPracticeOverlaySlot,
+    onClose: () => syncIdleYinTap(),
+    onOpenConfide: () => {
+      if (canOpenConfideNow()) confideToYinUI.open();
+    }
+  });
+  window.__recoverResetOffer = recoverResetOfferUI;
+  window.__recoverResetPractice = recoverResetPracticeUI;
+
+  function scheduleRecoverResetOfferAfterRefocus() {
+    recoverResetOfferUI?.tryScheduleAfterRefocus();
   }
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
@@ -2236,6 +2320,13 @@ async function init() {
         focusCircleWitnessLeaveUI?.isRespondOpen?.() === true,
       transitionMomentOpen:
         transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
+      focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
+      recoverResetOfferOpen:
+        recoverResetOfferSlotHeld ||
+        recoverResetOfferUI?.isVisible?.() === true,
+      recoverResetPracticeOpen:
+        recoverResetPracticeSlotHeld ||
+        recoverResetPracticeUI?.isVisible?.() === true,
       ...overrides
     });
   }
@@ -3183,9 +3274,10 @@ async function init() {
   window.__ambientSoundscape = ambientSoundscape;
   window.__ambientSoundscapeUI = ambientSoundscapeUI;
   window.__sessionCues = sessionCues;
+  // Recover Reset e2e injects passive refocus in vite preview (DEV=false).
+  window.__mindfulReminderController = mindfulReminderController;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
-    window.__mindfulReminderController = mindfulReminderController;
     window.__attentionSignals = attentionSignals;
     window.__reflectionMoment = reflectionMoment;
     window.__honestyCheckIn = honestyCheckIn;
@@ -3571,6 +3663,8 @@ async function init() {
     calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
+    recoverResetOfferUI?.hide({ immediate: true });
+    recoverResetPracticeUI?.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -3754,6 +3848,8 @@ async function init() {
     focusAwarenessCardUI.resetSession();
     calmActionRecoverStore.resetSession();
     calmActionRecoverCardUI.resetSession();
+    recoverResetOfferUI?.resetSession();
+    recoverResetPracticeUI?.resetSession();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
@@ -3955,8 +4051,10 @@ async function init() {
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
       calmActionRecoverCardUI.hide({ immediate: true });
-    calmActionArriveCardUI.hide({ immediate: true });
+      calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
+      recoverResetOfferUI?.hide({ immediate: true });
+      recoverResetPracticeUI?.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
