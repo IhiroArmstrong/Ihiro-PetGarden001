@@ -110,6 +110,10 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    - **Epic**（活基线）：允许一条 PR `Closes` **多个** Epic（如 `Closes #637` / `Closes #645` 分两行，或 `Closes #637, #645`）——表示一次改动耦合多条线，**应**同时出现在各 Epic 的 Linked pull requests 列；跨线说明仍写在正文。
    - **Dependabot / 纯依赖 bump / 无产品语义维护 PR**：**不挂**任务线（正文勿写 `Closes #NNN`）；误挂会污染 Epic 的 Linked pull requests 列（如 `#558`/`#559` 误挂 `#630`）。
 
+**自动提醒（2026-09-09）**：开向 `develop` 的 PR 若正文缺少 `Closes #NNN`（或 `Closes` 未指向带 `type:epic` / `type:slice` / `type:audit` 标签的 Issue），GitHub Action [`.github/workflows/task-line-ref-check.yml`](.github/workflows/task-line-ref-check.yml) 会在 PR 下自动评论提醒。**不阻塞合并**（非 required check）；Dependabot PR 跳过。目的：把「记得写 Closes」从文档靠记性 → 开 PR 时机器提醒，减少看板 Linked pull requests 列漏挂。
+
+**漏挂回填**：`focus-tiger/scripts/backfill-open-pr-task-line-refs.sh` 默认扫 **open** PR；加 `--merged` 扫已合并 PR。已有 `Closes` 的 PR 会跳过，不重复追加。回填后核对 Epic 仍为 **OPEN**（`gh issue view <n> --json state`）。
+
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-cross-session`）。Agent **读不到**其他会话的对话原文；本条要求的是对 **仓库客观状态** 保持敏感。门禁文件只保留指针，勿在别处再抄全文。  
