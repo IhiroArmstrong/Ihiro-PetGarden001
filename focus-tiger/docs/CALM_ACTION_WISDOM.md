@@ -16,7 +16,7 @@
 |---|---|---|---|
 | **Quiet Line** | 诗性、观察、几乎不给建议 | ⋯ / 抽屉今日静语卡 + 明信片；Journey Daily Card 计划复用同日句 | **不**灌行动句；仅 §四候选可审后扩 |
 | **Daily Wisdom** | Yin 短句 ∪ 古典署名 | Reflection 底部；**14 id 品味层冻结** | **不**扩、不并池 |
-| **Calm Action Wisdom（本池）** | 许可、降低门槛、行动提示；不说教 | **尚未接线** | 70 条 CMS |
+| **Calm Action Wisdom（本池）** | 许可、降低门槛、行动提示；不说教 | **Recover / Arrive / Reflect 已接线**；Focus / Transition 未接 | 70 条 CMS |
 | **Contemplative Archive** | 一次发现的文学纪念物 | 芥子须弥纪念印卡（三 case）；**不是**日签 | **不**写入本 70；SSOT `CONTEMPLATIVE_ARCHIVE.md` |
 
 禁止：把四池做成「每日一句」互相抽；禁止 Confide 语料当金句菜单；禁止用本池替换 `REFOCUS_ACKNOWLEDGE` / `ACTIVE_RECOVER` / `MOMENT_WHISPER`（那些必须保持观察式、短、限频）；禁止把典藏长文灌进 Quiet Line / Daily Wisdom / 本池加长档。
@@ -69,15 +69,15 @@
 | Reflection echo | 共鸣短句 | 已上；分池 |
 | Confide 芯片 | 倾诉语料 | 已上；分池 |
 
-**本池真正缺的接线（内容已备、运行时未做）：**
+**运行时接线状态（2026-09-09）：**
 
-| Moment | 用户时刻 | 建议档 | 说明 |
+| Moment | 用户时刻 | 状态 | 说明 |
 |---|---|---|---|
-| **Arrive** | Sit 前 / Arrival 欢迎后、尚未 Focusing | S 或 M | 降启动门槛；不是 Honesty 补登文案 |
-| **Focus** | 倒计时页可选一句标语 | **仅 S**、低频或一次 | 默认安静；禁止会话中轮播 |
-| **Recover** | 打断回来**之后**的一句（卡/次屏） | S/M | **不替换**现网 toast；toast 仍观察式 |
-| **Transition** | 任务切换（入口仍空白） | S | 给未来 Transition 用；现在只入库 |
-| **Reflect** | 完成页、Journey、低谷日 | S/M | 不替代 Daily Wisdom；可并排但不同句 |
+| **Arrive** | Sit 前 / Arrival 欢迎后 | ✅ C2 #665 + D1 overlay #670 | 降启动门槛 |
+| **Recover** | 打断回来之后 | ✅ C1 #625 + D1 overlay #670 | **不替换** toast |
+| **Reflect** | Reflection 完成页 | 📋 C4 本旁支 | 与 Daily Wisdom 分池并排 |
+| **Focus** | 倒计时页可选标语 | ⏸ 未立项 | **仅 S**、低频；禁止轮播 |
+| **Transition** | 任务切换 | ⏸ 入口空白 | 只入库 |
 
 可选、未立项：Widget / Push / 每日弹窗。若做「Daily Quote」：**继续用 Quiet Line 同日锁**，不要第四套每日一句。卡片背景图走 Quiet Line 明信片，不把行动句印满屏。
 
@@ -217,10 +217,12 @@ Focusing HUD 若接线：只用 F01–F03、F08、F09（S）。F04/F12 给开始
 
 ---
 
-## 七、接线顺序（未开工）
+## 七、接线顺序（执行中）
 
-1. Quiet Line：审定 §四 8 条 → overlay / locale（与现网洞察池混合策略另 Brief）。  
-2. Action 池：先 Arrive（Sit 前一句）+ Recover 次屏（不碰 toast），再 Reflect 完成页；Focus HUD 默认可关；Transition 等入口存在再挂。  
-3. 禁止本 PR 改 `en.json` Quiet Line 键，除非另开 Quiet Line 内容 PR。
+1. ✅ Quiet Line §四 8 条 → `INSIGHT_15–22`（overlay schema 2 · 2026-09-06）。  
+2. ✅ Calm Action Recover（C1 #625）→ Arrive（C2 #665）→ overlay D1（#670 · Recover+Arrive 云句包）。  
+3. 📋 **Reflect 完成页**（C4 · 口令「开工 Calm Action Reflect」）——本旁支。  
+4. ⏸ 后排：Transition（入口空白）· Focus 标语（默认不做轮播）· Reflect overlay（另 PR）。  
+5. 禁止把 Action 句灌进 Quiet Line / Daily Wisdom；禁止本 PR 改 `en.json` Quiet Line 键。
 
-修订：2026-09-05 初稿（70 + QL 8 候选；无运行时）。2026-09-06：四池指针 + 长度例外指向静思典藏。
+修订：2026-09-05 初稿。2026-09-06：QL 8 条 + 四池指针。2026-09-09：Recover/Arrive/overlay 已合；Reflect 开工。
