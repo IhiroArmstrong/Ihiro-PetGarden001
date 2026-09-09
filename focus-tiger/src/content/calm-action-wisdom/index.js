@@ -4,7 +4,7 @@
  */
 
 /**
- * Calm Action Wisdom content loader — Recover (C1) + Arrive (C2) + Reflect (C4) pools.
+ * Calm Action Wisdom content loader — Recover (C1) + Arrive (C2) + Reflect (C4) + Transition (C5) pools.
  * Separate from Daily Wisdom / Quiet Line / ACTIVE_RECOVER toast pools.
  */
 
@@ -14,6 +14,8 @@ import { CALM_ACTION_RECOVER_EN } from './calm-action-recover.en.js';
 import { CALM_ACTION_RECOVER_JA } from './calm-action-recover.ja.js';
 import { CALM_ACTION_REFLECT_EN } from './calm-action-reflect.en.js';
 import { CALM_ACTION_REFLECT_JA } from './calm-action-reflect.ja.js';
+import { CALM_ACTION_TRANSITION_EN } from './calm-action-transition.en.js';
+import { CALM_ACTION_TRANSITION_JA } from './calm-action-transition.ja.js';
 import {
   overlayCalmActionArriveTextForId,
   overlayCalmActionRecoverTextForId,
@@ -23,6 +25,7 @@ import {
 /** @typedef {{ id: string, text: string }} CalmActionRecoverEntry */
 /** @typedef {{ id: string, text: string }} CalmActionArriveEntry */
 /** @typedef {{ id: string, text: string }} CalmActionReflectEntry */
+/** @typedef {{ id: string, text: string }} CalmActionTransitionEntry */
 
 /** @type {Readonly<Record<string, readonly CalmActionRecoverEntry[]>>} */
 const RECOVER_POOLS = Object.freeze({
@@ -40,6 +43,12 @@ const ARRIVE_POOLS = Object.freeze({
 const REFLECT_POOLS = Object.freeze({
   en: CALM_ACTION_REFLECT_EN,
   ja: CALM_ACTION_REFLECT_JA
+});
+
+/** @type {Readonly<Record<string, readonly CalmActionTransitionEntry[]>>} */
+const TRANSITION_POOLS = Object.freeze({
+  en: CALM_ACTION_TRANSITION_EN,
+  ja: CALM_ACTION_TRANSITION_JA
 });
 
 /**
@@ -114,11 +123,35 @@ export function findCalmActionReflectEntry(id, locale = 'en') {
   return REFLECT_POOLS.en.find((e) => e.id === key) ?? null;
 }
 
+/**
+ * @param {string} [locale]
+ * @returns {readonly CalmActionTransitionEntry[]}
+ */
+export function getCalmActionTransitionPool(locale = 'en') {
+  if (locale === 'ja') return TRANSITION_POOLS.ja;
+  return TRANSITION_POOLS.en;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {CalmActionTransitionEntry | null}
+ */
+export function findCalmActionTransitionEntry(id, locale = 'en') {
+  const key = String(id || '');
+  if (!key) return null;
+  const preferred = getCalmActionTransitionPool(locale).find((e) => e.id === key);
+  if (preferred) return preferred;
+  return TRANSITION_POOLS.en.find((e) => e.id === key) ?? null;
+}
+
 export {
   CALM_ACTION_ARRIVE_EN,
   CALM_ACTION_ARRIVE_JA,
   CALM_ACTION_RECOVER_EN,
   CALM_ACTION_RECOVER_JA,
   CALM_ACTION_REFLECT_EN,
-  CALM_ACTION_REFLECT_JA
+  CALM_ACTION_REFLECT_JA,
+  CALM_ACTION_TRANSITION_EN,
+  CALM_ACTION_TRANSITION_JA
 };

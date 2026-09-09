@@ -426,7 +426,10 @@ import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
 import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
 import { CalmActionArriveCardUI } from './ui/CalmActionArriveCardUI.js';
+import { CalmActionTransitionStore } from './core/CalmActionTransitionStore.js';
 import { CalmActionReflectStore } from './core/CalmActionReflectStore.js';
+import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
+import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -985,6 +988,42 @@ async function init() {
     calmActionArriveStore
   );
   window.__calmActionArriveCard = calmActionArriveCardUI;
+  const calmActionTransitionStore = new CalmActionTransitionStore();
+  const transitionMomentUI = new TransitionMomentUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionTransitionStore,
+    {
+      requestSlot: requestTransitionMomentOverlaySlot,
+      releaseSlot: releaseTransitionMomentOverlaySlot,
+      onOpen: () => {
+        transitionMomentSlotHeld = true;
+        syncIdleYinTap();
+        syncTransitionMomentTrigger();
+      },
+      onClose: () => {
+        syncTransitionMomentTrigger();
+      },
+      onPlayPalmsTogether: () => {
+        emotionController.playEmotion('palmsTogether', { holdPose: true });
+      },
+      onReturnIdle: () => {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS
+        });
+      }
+    }
+  );
+  window.__transitionMoment = transitionMomentUI;
+  const transitionMomentTrigger = new TransitionMomentTriggerUI(
+    document.getElementById('ui-overlay'),
+    {
+      canShow: () => canShowTransitionMomentTrigger(),
+      onActivate: () => {
+        transitionMomentUI.tryOpen();
+      }
+    }
+  );
+  window.__transitionMomentTrigger = transitionMomentTrigger;
   const focusAwarenessCardUI = new FocusAwarenessCardUI(
     document.getElementById('ui-overlay') || document.body
   );
@@ -1010,6 +1049,7 @@ async function init() {
     if (forKey !== 'reflect' && reflectionMoment?.isOpen?.() === true) {
       return true;
     }
+    if (transitionMomentUI?.isOpen?.() === true) return true;
     return false;
   }
 
@@ -1206,6 +1246,7 @@ async function init() {
 
   let witnessLeaveSlotHeld = false;
   let witnessRespondSlotHeld = false;
+  let transitionMomentSlotHeld = false;
 
   function requestWitnessLeaveOverlaySlot() {
     const decision = requestOverlaySlot({
@@ -1249,6 +1290,27 @@ async function init() {
     if (!witnessRespondSlotHeld) return;
     witnessRespondSlotHeld = false;
     syncIdleYinTap();
+  }
+
+  function requestTransitionMomentOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ transitionMomentOpen: false })
+    });
+    if (!decision.canShow) return false;
+    transitionMomentSlotHeld = true;
+    syncIdleYinTap();
+    syncTransitionMomentTrigger();
+    return true;
+  }
+
+  function releaseTransitionMomentOverlaySlot() {
+    if (!transitionMomentSlotHeld) return;
+    transitionMomentSlotHeld = false;
+    syncIdleYinTap();
+    syncTransitionMomentTrigger();
   }
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
@@ -1467,6 +1529,7 @@ async function init() {
   };
   window.addEventListener('resize', () => syncConfideEarChrome());
   syncConfideEarChrome();
+  syncTransitionMomentTrigger();
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
@@ -2165,8 +2228,40 @@ async function init() {
         focusCircleWitnessLeaveUI?.isLeaveVisible?.() === true,
       focusCircleWitnessRespondOpen:
         focusCircleWitnessLeaveUI?.isRespondOpen?.() === true,
+      transitionMomentOpen:
+        transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
       ...overrides
     });
+  }
+
+  const TRANSITION_MOMENT_BLOCKED_EMOTIONS = new Set([
+    'celebrating',
+    'sessionComplete'
+  ]);
+
+  function canShowTransitionMomentTrigger() {
+    if (stateManager.state !== STATES.IDLE) return false;
+    if (transitionMomentUI?.isOpen?.() === true) return false;
+    if (
+      spriteOccupancy === SPRITE_OCCUPANCY.CELEBRATE ||
+      spriteOccupancy === SPRITE_OCCUPANCY.RISE_HOLD
+    ) {
+      return false;
+    }
+    const emotionKey = emotionController.getCurrentEmotionKey();
+    if (emotionKey && TRANSITION_MOMENT_BLOCKED_EMOTIONS.has(emotionKey)) {
+      return false;
+    }
+    return requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ transitionMomentOpen: false })
+    }).canShow;
+  }
+
+  function syncTransitionMomentTrigger() {
+    transitionMomentTrigger?.sync?.();
   }
 
   const CONFIDE_WAKE_SLEEPING_EMOTION_KEYS = new Set([
@@ -2278,6 +2373,7 @@ async function init() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
     syncConfideEarChrome();
+    syncTransitionMomentTrigger();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -3468,6 +3564,7 @@ async function init() {
     focusAwarenessCardUI.hide({ immediate: true });
     calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
+    transitionMomentUI.close();
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -3589,6 +3686,7 @@ async function init() {
 
   function beginFocusWithMode(companionMode) {
     calmActionArriveCardUI.hide({ immediate: true });
+    transitionMomentUI.close();
     resetFocusCoinsSession();
     resetFocusCircleWitnessSessionPrompt();
     focusCircleWitnessLeaveUI.cancelScheduledOffer();
@@ -3852,6 +3950,7 @@ async function init() {
       focusAwarenessCardUI.hide({ immediate: true });
       calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
+      transitionMomentUI.close();
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
@@ -4567,6 +4666,7 @@ async function init() {
       confideToYinUI.close();
     }
     syncConfideEarChrome();
+    syncTransitionMomentTrigger();
     syncInAppReminderBanner();
     syncIdleLanternObserverIfNeeded();
     if (stateManager.state === STATES.IDLE) {

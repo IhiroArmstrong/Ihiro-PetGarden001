@@ -1,0 +1,3 @@
+# feature/calm-action-transition
+
+| C5 · Transition Moment（Idle 微入口 + overlay + CAW-T 排除上一条） | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → 热力图簇旁微入口（`transition-moment-trigger`）→ 点 → 0–1s 柔化遮罩 + 合十 + 居中 CAW-T（`transition-moment-quote`）→ ~8s 自动消失；Esc/点空白立即关。**回流**：连续两次 Transition 不得连出同句（池≥2）。**保护面**：Sit 不误触；Confide/Compass/Journey 开时入口 disabled；Compass Transition 芯片仍跳 Work Transition 仪式；不开 Whisper。Brief `task-calm-action-transition-mvp.md` §十 C5。 | — | — | — | `TransitionMomentUI.js` · `TransitionMomentTriggerUI.js` · `CalmActionTransitionStore.js` · `content/calm-action-wisdom/calm-action-transition.*` | 2026-09-09 |

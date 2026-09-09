@@ -64,6 +64,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [focusAwarenessOpen]
  * @property {boolean} [recoverResetOfferOpen]
  * @property {boolean} [recoverResetPracticeOpen]
+ * @property {boolean} [transitionMomentOpen]
  */
 
 /**
@@ -77,7 +78,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
  *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' | 'recoverResetOfferOpen' |
- *   'recoverResetPracticeOpen'
+ *   'recoverResetPracticeOpen' | 'transitionMomentOpen'
  * >>} OverlaySnapshot
  */
 
@@ -124,7 +125,8 @@ export function buildOverlaySnapshot(input = {}) {
     focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen),
     focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
     recoverResetOfferOpen: Boolean(input.recoverResetOfferOpen),
-    recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen)
+    recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
+    transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };
 }
 
@@ -237,6 +239,7 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
   if (snapshot.companionPickerOpen) return true;
   if (forKey !== 'arrive' && snapshot.arrivalOpen) return true;
   if (forKey !== 'reflect' && snapshot.reflectionOpen) return true;
+  if (snapshot.transitionMomentOpen) return true;
   return false;
 }
 
@@ -533,6 +536,51 @@ function collectWitnessLeaveYield(snapshot) {
  * @param {OverlaySnapshot} snapshot
  * @returns {string[]}
  */
+/**
+ * Yield targets for Transition Moment (Idle-only boundary marking).
+ *
+ * @param {OverlaySnapshot} snapshot
+ * @returns {string[]}
+ */
+function collectTransitionMomentYield(snapshot) {
+  /** @type {string[]} */
+  const blockers = [];
+  if (snapshot.sessionState !== STATES.IDLE) {
+    blockers.push('session-not-idle');
+  }
+  if (snapshot.postSessionOverlayActive) {
+    blockers.push('post-session-overlay');
+  }
+  if (snapshot.arrivalOpen) blockers.push(OVERLAY_SOURCES.ARRIVAL);
+  if (snapshot.reflectionOpen) blockers.push(OVERLAY_SOURCES.REFLECTION);
+  if (isHonestyUiBusy(snapshot.honestyPhase)) {
+    blockers.push(OVERLAY_SOURCES.HONESTY_PANEL);
+  }
+  if (snapshot.honestyBridgeVisible) {
+    blockers.push(OVERLAY_SOURCES.HONESTY_BRIDGE);
+  }
+  if (snapshot.microRitualOpen) blockers.push(OVERLAY_SOURCES.MICRO_RITUAL);
+  if (snapshot.ritualFlowOpen) blockers.push(OVERLAY_SOURCES.RITUAL_FLOW);
+  if (snapshot.companionPickerOpen) {
+    blockers.push(OVERLAY_SOURCES.COMPANION_PICKER);
+  }
+  if (snapshot.confideOpen) blockers.push(OVERLAY_SOURCES.CONFIDE);
+  if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
+  if (snapshot.journeyOpen) blockers.push(OVERLAY_SOURCES.JOURNEY_LOG);
+  if (snapshot.recoverResetPracticeOpen) {
+    blockers.push(OVERLAY_SOURCES.RECOVER_RESET_PRACTICE);
+  }
+  if (snapshot.focusDurationPickerOpen) {
+    blockers.push(OVERLAY_SOURCES.FOCUS_DURATION_PICKER);
+  }
+  const primary = activeVisualPrimary(snapshot);
+  if (primary) blockers.push(primary);
+  if (snapshot.transitionMomentOpen) {
+    blockers.push(OVERLAY_SOURCES.TRANSITION_MOMENT);
+  }
+  return blockers;
+}
+
 function collectRecoverResetBaseYield(snapshot) {
   /** @type {string[]} */
   const blockers = [];
@@ -666,6 +714,10 @@ export function requestOverlaySlot(req) {
     if (deriveFocusingSoftCardBusy(snapshot)) {
       mustYieldTo.push('focusing-soft-card-busy');
     }
+  }
+
+  if (source === OVERLAY_SOURCES.TRANSITION_MOMENT) {
+    mustYieldTo.push(...collectTransitionMomentYield(snapshot));
   }
 
   if (source === OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE) {
