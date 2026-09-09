@@ -4489,7 +4489,7 @@ async function init() {
       sessionCues.tickInterval({
         elapsedSeconds: overlayElapsed ?? 0,
         targetSeconds:
-          (microBreathing
+          ((microBreathing
             ? microRitualUI?.getDurationMinutes?.()
             : ritualFlowUI?.getDurationMinutes?.()) ?? 1) * 60,
         ambient: ambientSoundscape
