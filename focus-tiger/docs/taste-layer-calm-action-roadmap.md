@@ -78,7 +78,8 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 | **C2** | **Arrive 第二刀** | Sit 前 / Arrival 欢迎后降门槛 S/M | `task-briefs/task-calm-action-arrive-runtime.md` | **B1 gate SSOT 已拍板**；Arrival 叠层冲突扫描；`overlaySlotArbitration` | **「开工 Calm Action Arrive」** | 不碰 Honesty 补登；Welcome/CapCut/Choose 保护面清单 | ✅ **#665 已合 develop**（TRACKER 待人工） |
 | C3 | Focus 标语（可选第三刀） | Focusing 页 **仅 S**、低频 | 另 Brief | 默认安静；禁止会话中轮播 | 另口令 | 频控 + 不比 Recover 吵 | ⏸ 未立项 |
 | **C4** | **Reflect 第三场景** | Reflection 卡内、Daily Wisdom 上方 | `task-calm-action-reflect-runtime.md` | C1+C2 已合；分池 Daily Wisdom | **「开工 Calm Action Reflect」** | 不替代 echo / 三问；同日锁 | 📋 **本旁支开工** |
-| C5 | Transition 接线 | 未来入口 | 另 Brief | Transition 入口仍空白 | 另口令 | — | ⏸ 未立项 |
+| **C5** | **Transition Moment** | Idle 微入口 + ~10s overlay | `task-calm-action-transition-mvp.md` | overlay 仲裁 + P4 不开 Whisper | **「开工 Calm Action Transition」** | Y-Transition；排除上一条 CAW-T | ✅ **#679 已合 develop**（TRACKER 待人工） |
+| **C5.1** | **Compass 改路由** | Transition 芯片 → overlay | 同上 Brief §十 | 与 C5 同路径；**不**开 Whisper | **「开工 Calm Action Transition compass」** | Compass 芯片开 overlay；Work Transition 仍留菜单 | 📋 **本旁支开工** |
 
 **C1 → C2 硬衔接（用户 D2）**：C1 须完成 **§7 Bug 关单口径**（smoke/e2e + TRACKER 人工 + push CI）后，**同一产品线内下一任务即 C2**，不得无限期搁置 Arrive。
 

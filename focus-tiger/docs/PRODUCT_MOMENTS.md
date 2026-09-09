@@ -28,10 +28,10 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 | **Arrive** | 一天开始，或准备开始一项任务 | 帮助用户觉察当前状态 | ✅ Arrival Practice v2（Sit→欢迎/Notice/呼吸/Choose→Companion Mode）；Honesty Check-in 按天并存 |
 | **Focus** | 正在专注 | 安静陪伴，不打扰，提供稳定感 | 已完整——FocusSession / Companion Mode / Sit with Yin |
 | **Recover** | 分心、焦虑、卡住 | 帮助用户回到当下，而非责备 | 被动 Re-focus ✅；**主动 Recover（Tiger Anchor）已落地**（Focusing 轻触阿寅；不占被动额度；180s 冷却）。`welcomeBack` **不是** Recover（见下） |
-| **Transition** | 在任务/会议/学习/休息之间切换 | 帮助用户完成心理上的"重置" | **空白**——完全未设计 |
+| **Transition** | 在任务/会议/学习/休息之间切换 | 帮助用户完成心理上的"重置" | **C5 已接线**（Idle 微入口 + ~10s overlay · 合十 + CAW-T；#679）；**C5.1** 罗盘芯片同路径；Work Transition 仪式仍留 Rituals 菜单 |
 | **Reflect** | 完成一次专注或一天后 | 回顾觉察与成长，而非只统计数字 | 已完整——Tiger Reflection Moment 三问 |
 
-**关键判断**：Transition 仍是真正的新增空白。Recover 被动侧（Re-focus）与主动侧（Tiger Anchor）均已落地——打磨重点转为观感与冷却手感，而非「占位日志」。
+**关键判断**：Transition **轻量入口已落地**（C5/C5.1）；与订阅 Work Transition 仪式并存、分工不同。Recover 被动侧（Re-focus）与主动侧（Tiger Anchor）均已落地——打磨重点转为观感与冷却手感，而非「占位日志」。
 **动画接线**：各 Moment 应对哪一档角色动画，见 **`SCENE_ANIMATION_WIRING.md`**（v1.0.0 先交付 Slice A：语言切换问候 + Honesty Idle 短认可；微仪式完成已接线）。
 
 ---

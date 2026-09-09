@@ -530,7 +530,7 @@
 
 ### Y1 · Compass（B）
 
-1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect **单行** + Got it/Close。点芯片分别进入 Arrival / Companion / Recover 仪式 / Transition 仪式 / Journey log（未授权仪式则 toast）。
+1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect **单行** + Got it/Close。点芯片分别进入 Arrival / Companion / Recover 仪式 / **Transition Moment overlay**（C5.1；与 Idle 微钮同路径）/ Journey log（未授权 Recover 仪式则 toast）。
 2. **「?」**：简介含 Moments 链 → **The five moments** → 同卡。
 3. **首卡**：清 `focus-tiger.five-moments-compass-seen.v1` → 冷启动 Idle 约数秒出一次；Skip/Got it 后不再出。
 4. **回流**：关后再开；Rise 后再开。**375**：可滚可关、不挡 Sit。
