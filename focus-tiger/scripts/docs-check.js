@@ -22,6 +22,7 @@ import { runCopyrightHeaderCheck } from './copyright-header.js';
 import { runTrackerFragmentCheck } from './assemble-tracker.js';
 import { runOverlayContractUiCheck } from './overlay-contract-ui-check.js';
 import { runPracticeAggregateCoverageAudit } from './audit-practice-coverage.js';
+import { runGrowthMetricsAudit } from './audit-growth-metrics.js';
 
 function main() {
   let ok = true;
@@ -36,6 +37,7 @@ function main() {
   if (!runTrackerFragmentCheck()) ok = false;
   if (!runOverlayContractUiCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;
+  if (!runGrowthMetricsAudit()) ok = false;
 
   if (!ok) {
     console.error(
