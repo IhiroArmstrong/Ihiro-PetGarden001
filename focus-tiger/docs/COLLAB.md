@@ -75,6 +75,8 @@ COLLAB.md（本文档，协作层）
 **点击反馈约定（2026-08-14）**：含可点击交互的 Task Brief / PR 须回答「点击后 0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）。
 
 **功能冲突扫描约定（2026-08-16）**：实现前对照 `SCENARIO_TESTS.md` 做冲突扫描；有疑点须等用户拍板。全文见 `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）。
+
+**共用机制核对约定（2026-09-09）**：新功能接入 overlayBusy / HUD 呼吸驱动 / 遮罩 dim 等共用机制时，Brief **禁止只打勾**。须写出可检查的核对结论句。清单在 `SHARED_RESOURCES.md` §4.1–4.2 与 `Z_INDEX.md`「Idle 常驻 chrome」。写法见下文「七」。
 ---
 
 ## 四、什么时候需要更新TASKS.md（判断标准）
@@ -136,4 +138,34 @@ COLLAB.md（本文档，协作层）
 细则与半自动脚本见 `PROCESS.md`「Git 同步」与 `DEV_WORKFLOW_QUALITY.md` §8。
 
 ---
-*版本：1.7 · 2026-08-14 任务完成后默认 push+PR；CI 绿合 develop；人工测试事后批量*
+
+## 七、Task Brief · 共用机制核对（强制写出结论句）
+
+> **目的**：共用机制上的漏接 / 误伤，不是缺清单，是 Brief 只要求「已核对」却不留下可检查的文字。本条约束**写法**；三张清单本身不在本文复述。
+
+触及下列任一者时，Brief 必须有一小节 **「共用机制核对」**（不触及则写一句跳过理由，不得省略该节）：
+
+1. **overlayBusy / 叠层忙碌门闩** → 对照 `SHARED_RESOURCES.md` §4.1  
+2. **HUD 呼吸 / 计时驱动** → 对照 `SHARED_RESOURCES.md` §4.2  
+3. **z-index / overlay 遮罩 dim** → 对照 `Z_INDEX.md`「Idle 常驻 chrome（遮罩 dim 消费者）」
+
+**合格**：每条写出**一句结论**，点名清单里的具体项，并写清「不受影响」或「需要联动」。
+
+例：
+
+- `本次改动涉及 z≥17 遮罩，核对后确认 Support FAB / Ambient 音符 / 倾听耳（z=24）须走 overlayBackdrop idle-chrome dim，不得只盖低于 17 的背景。`
+- `本次新增 overlay 状态 \`fooOpen\`：默认计入 sceneAnim overlayBusy；核对后确认切语问候不得被它挡住（须在问候路径排除，类比 languageOpen）。`
+- `本次新增带 breath 步的流程：核对 HUD 呼吸驱动者表后，须在主循环 \`overlayBreathing\` 接线，并验证左上角从 00:00 走动。`
+
+**不合格（视为未做核对）**：
+
+- 只有 `☑ 已核对 z-index 消费者清单`
+- 「已对照三处打勾」但没有点名任何消费者
+- 把「我这条新功能能跑通」写成核对结论
+
+不触及三处时允许的跳过句（仍须出现在 Brief）：`本次不触及 overlayBusy / HUD 呼吸驱动 / z≥17 遮罩，三处核对跳过。`
+
+运行时字段（如 registry 的 `busyGateExceptions`）**本约定不要求同 PR 改 JS**；先把结论写进 Brief。清单漏项则先补 `SHARED_RESOURCES` / `Z_INDEX` 再实现。
+
+---
+*版本：1.8 · 2026-09-09 Brief 共用机制核对须写结论句；CI 绿合 develop；人工测试事后批量*
