@@ -66,14 +66,15 @@ export const FIVE_MOMENT_LABEL_KEYS = Object.freeze({
 
 /**
  * Compass chip → existing product surface.
- * Transition maps to the work-transition ritual (the day-axis blank is the
- * auto-detect story, not this voluntary jump).
+ * Transition opens the C5 Transition Moment overlay (free ~10s boundary marking).
+ * Work Transition ritual stays on the Rituals menu only.
  *
  * @param {string} momentId
  * @returns {
  *   | { type: 'arrival' }
  *   | { type: 'companion' }
  *   | { type: 'ritual', proxy: string }
+ *   | { type: 'transition-moment' }
  *   | { type: 'journey-log' }
  *   | null
  * }
@@ -87,7 +88,7 @@ export function resolveFiveMomentAction(momentId) {
     case 'recover':
       return { type: 'ritual', proxy: 'ritual-emotional-reset' };
     case 'transition':
-      return { type: 'ritual', proxy: 'ritual-work-transition' };
+      return { type: 'transition-moment' };
     case 'reflect':
       return { type: 'journey-log' };
     default:

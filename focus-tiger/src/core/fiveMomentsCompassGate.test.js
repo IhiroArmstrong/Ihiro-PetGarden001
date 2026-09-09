@@ -55,8 +55,7 @@ describe('fiveMomentsCompassGate', () => {
       proxy: 'ritual-emotional-reset'
     });
     assert.deepEqual(resolveFiveMomentAction('transition'), {
-      type: 'ritual',
-      proxy: 'ritual-work-transition'
+      type: 'transition-moment'
     });
     assert.deepEqual(resolveFiveMomentAction('reflect'), {
       type: 'journey-log'
