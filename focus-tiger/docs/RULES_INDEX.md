@@ -155,7 +155,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
-| [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；验收 tip 规则引用 `TEST_TRACKER` |
+| [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；**SSOT**：共用机制核对须写结论句（第七节）；验收 tip 规则引用 `TEST_TRACKER` |
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | [`RISK_MITIGATION_PLAYBOOK.md`](./RISK_MITIGATION_PLAYBOOK.md) | **SSOT**：中高风险功能落地降险（四件套 + 架构红线；索引 `risk-mitigation-playbook`） |
 | [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) | **SSOT**：实现前功能冲突扫描（强度 / 语气 / 职责；索引 `feature-conflict-review`） |
@@ -163,7 +163,7 @@ cd focus-tiger && npm run rules:doc-sync
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
 | [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip；**SSOT**：标「已通过」覆盖分工（`qa-pass-coverage-split`）；**SSOT**：批量人工测试口令（`qa-batch-human-test`）；**SSOT**：缺陷分级与处理承诺（`release-blocker-ledger`） |
 | [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、unit\*→smoke 分类（§7）、Honesty/i18n 发布口径 |
-| [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 |
+| [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 + Idle 常驻 chrome（遮罩 dim 消费者） |
 | [`SCENARIO_TESTS.md`](./SCENARIO_TESTS.md) | 场景剧本权威 |
 | `./scripts/git-sync-safe.sh`（仓库根） | 推送前体检脚本（非政策正文） |
 
@@ -248,6 +248,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-09 | Brief 共用机制核对：须写点名结论句（SSOT `COLLAB.md` 第七节）；清单扩 `SHARED_RESOURCES` §4.1–4.2、`Z_INDEX` Idle chrome。不另起总册、不进新 rules-authority 主题 |
 | 2026-09-09 | `git-pr-task-line-ref`：新增 `.github/workflows/task-line-ref-check.yml` 软提醒；`backfill-open-pr-task-line-refs.sh` 支持 `--merged`；回填 #663–#672 → #644/#637。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 收窄 `git-pr-task-line-ref`：`Closes` 数量按 Issue 类型区分——切片/审计一 PR 一 Closes；Epic 允许多 Closes（耦合信号）；Dependabot/bump 不挂线。移除 `#558`/`#559` 误挂 `#630`。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 修订 `git-pr-task-line-ref`：仓库 auto-close 已关；Epic/切片 PR 统一 `Closes #NNN` 以填充 Projects Linked pull requests 列；`Relates to` 仅作 auto-close 重开时的回退。SSOT `WORKFLOW.md` |

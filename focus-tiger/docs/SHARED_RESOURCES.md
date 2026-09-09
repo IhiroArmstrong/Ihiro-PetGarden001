@@ -3,7 +3,7 @@
 > **地位**：与 `DEV_WORKFLOW_QUALITY.md` §2.3 **高风险面**互补，不是替代。  
 > - §2.3 = 已知踩过坑的具体点（事故清单）  
 > - 本表 = 当前共享资源分别被谁用（开工查波及面）  
-> **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。  
+> **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。触及 overlayBusy 例外 / HUD 呼吸驱动时补 §4.1–4.2。  
 > **§4 机器块**：由 `sessionUiGateContractRegistry.js` 生成；`npm run gate:doc-sync`；详见 `DOC_CODE_CONTRACT.md`。  
 > **工作流**：`DEV_WORKFLOW_QUALITY.md` §8（N19 / **N25**）；布局细则：`RESPONSIVE_LAYOUT.md`。  
 > **可见性 SSOT**：下列机器块 = `visibilityContractRegistry.js`（状态 × 视口 × 用户可见宿主）。人工叙事摘要见机器块下方「非显隐类」补充。
@@ -225,6 +225,29 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 
 扩展第三种叠层：在 `sessionChromeSync` 的 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
 
+### 4.1 overlayBusy 门控例外（文档先行 · 2026-09-09）
+
+> **地位**：`OVERLAY_SOURCE_CONTRACTS` 登记「谁开着算忙」。本表登记 **哪些忙碌源不得误伤并行交互**。运行时尚未加 `busyGateExceptions` 字段；先以本表 + Brief 结论句为准（`COLLAB.md` 第七节）。漏登记 = 新面板挡住不该停的动画（例：语言面板挡住切语问候）。
+
+| snapshotField / 源 | 默认计入 sceneAnim `overlayBusy` | 例外（须单独划界） | 实现锚 |
+|---|---|---|---|
+| `languageOpen` | 是（语言面板开着挡摸头 / 进睡 / 多数场景动画） | **切语问候不得被面板自己挡住**：问候路径须把 `languageOpen` 视为 false（面板即切换入口） | `main.js` `overlayBusyForLocaleGreeting`；`ritualFlowHudWiring.test.js` |
+| 其它 `OVERLAY_SOURCE_CONTRACTS` 行 | 按 `readers` / `deriveSceneAnimOverlayBusy` | 无则写「无例外」；新增源时必须填本列 | `overlaySlotContractRegistry.js` |
+
+新增会被算进 `overlayBusy` 的面板时：先补本表一行（含「无例外」或点名不得误伤的交互），再接线。禁止只测「面板能打开」。
+
+### 4.2 HUD 呼吸驱动者（FocusHUD live view · 2026-09-09）
+
+> **地位**：主渲染循环里谁在呼吸步、谁该推动左上角计时。漏登记 = HUD 停在 Idle / 00:00。新增带 breath 步的仪式 / 流程必须补行 **并** 接入 `overlayBreathing`。
+
+| 流程 | 呼吸判定 | 时长 / 进度接口 | 主循环 |
+|---|---|---|---|
+| 微仪式 `MicroRitualUI` | `phase === 'breath'` | `getElapsedSeconds()` / `getProgress()` | `microBreathing` → `overlayBreathing` |
+| 进阶仪式 `RitualFlowUI`（Morning / Emotional Reset / Work Transition） | `isBreathing()` | `getElapsedSeconds()` / `getProgress()` | `ritualBreathing` → `overlayBreathing` |
+| 正式 Focus 会话 | `FocusSession` focusing | 会话 elapsed / target | 非 overlay 路径（既有 HUD） |
+
+契约锁（源码字符串）：`ritualFlowHudWiring.test.js`。新 breath 流程不得只测面板内圆环，须写明左上角 Focusing + 秒数走动。
+
 ---
 
 ## 5. 用法（开工）
@@ -233,6 +256,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 2. 「谁用」列还有谁 → 写入保护面并复测。  
 3. 若属 §2.3 事故点 → 额外跑冒烟 + 对应 TEST_TRACKER 观感行。  
 4. 若触及 Idle chrome / Arrival / Honesty / Hints → 对照 **§6 双壳不变量** + `DEV_WORKFLOW_QUALITY.md` **§8（375）** 与 **§9（宽屏）** 故事最小集。
+5. 若触及 overlayBusy / HUD 呼吸 / 遮罩 dim → 对照 **§4.1–4.2** 与 `Z_INDEX.md` Idle 常驻 chrome，并在 Brief 写出点名结论句（`COLLAB.md` 第七节）。
 
 ---
 

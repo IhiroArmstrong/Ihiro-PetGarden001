@@ -18,6 +18,7 @@ alwaysApply: false
 4. 模块归属不清 → 对照 `ARCHITECTURE.md` + `PROCESS.md` 角色分工。 
 5. Prompt 未手写引用文档时，仍以本规则 + 文档路径为准，必要时主动打开对应 md。
 6. 接云 / entitlement / locale / Worker 任务 → 先读 `docs/INFRA_SNAPSHOT.md`（`RULES_INDEX` → `infra-snapshot`）；`stale_after_paths` 过期或改相关 SSOT 时再读源文件。
+7. 触及 overlayBusy / HUD 呼吸计时 / overlay 遮罩 dim → Brief 须写出点名消费者的核对结论句（禁止纯打勾）。写法 `COLLAB.md` 第七节；清单 `SHARED_RESOURCES.md` §4.1–4.2、`Z_INDEX.md` Idle 常驻 chrome。勿在本文件复述例句。
 
 ## 权威文档地图
 
@@ -52,7 +53,7 @@ alwaysApply: false
 | `docs/DEV_WORKFLOW_QUALITY.md` | **如何改善开发工作流来保证开发质量**：原则/规范/指引/注意事项；防假修好+防改坏叙事权威；门禁仍以 regression-lock 规则为准 |
 | `docs/SHARED_RESOURCES.md` | 共享资源对照表（localStorage / EmotionController / Idle）；与 §2.3 高风险面互补 |
 | `docs/RETENTION_FUNNEL.md` | **留存漏斗故事骨架**：首次打开 / 首次完成 / dayN 回访 / Honesty 桥接事件名与占位接线；无第三方 |
-| `docs/COLLAB.md` | Task Brief / 文档更新协作约定 |
+| `docs/COLLAB.md` | Task Brief / 文档更新协作约定；共用机制核对结论句（第七节） |
 | `docs/TASKS.md` | 任务序列（按需查，勿全文常驻上下文） |
 | `docs/TEST_TRACKER.md` | **功能验收追踪表**：用户可感知改动登记「待人工测试」；纯后端登记「仅单元测试覆盖」；用户书面意见进 **「用户反馈」列**（勿混入测试步骤）；缺陷须填 **严重度 + 处理承诺**（`RULES_INDEX` → `release-blocker-ledger`）；**关单级人工验收只认 `origin/develop` tip**（`qa-develop-tip`）；**标「已通过」须覆盖分工明示**（e2e 锁哪些 + 人工测哪些；`qa-pass-coverage-split`）；完成任务时须更新并在回复中说明需测项 |
 | `docs/DEVELOP_DEBT_INVENTORY.md` | **develop 存量验证债务**：verified / assumed-ok / known-risky / unknown；排期用 |

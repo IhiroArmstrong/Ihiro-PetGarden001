@@ -3,8 +3,8 @@
 > **目的**：新加 `position: fixed` / 浮层前，先扫一眼本表，避免与既有层级打架。  
 > **范围**：`focus-tiger/` 产品运行时代码（`index.html` + `src/` + 实际挂进主壳的 ui-kit 组件）。  
 > **不含**：仅 e2e 测试夹具、`ui-kit/demo.html` 演示页（见文末附录）。  
-> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。  
-> **扫描日**：2026-07-29（对照当前 `develop` 工作树）。
+> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。新增 dim 遮罩时对照下文 **Idle 常驻 chrome**，不得只按「卡片 z − 1」覆盖背景。  
+> **扫描日**：2026-07-29（对照当前 `develop` 工作树）。**dim 消费者节**：2026-09-09。
 
 叠层上下文提醒：多数业务浮层挂在 `#ui-overlay`（`z-index: 10`）内部；其子节点的 `z-index` 只在该 stacking context 内比较。`NarrowIdleShell` / Ambient / Hints 等是 **同级 `position: fixed` 挂在 `body`/`#app`**，会与 `#ui-overlay` 整层比较。`IdleChromeFacade`（Task 3）**不设** z-index——层级仍登记在下方 Narrow / Wide 适配器行。
 
@@ -120,6 +120,25 @@
 | 符号 | 文件 | 说明 |
 |---|---|---|
 | `var(--z-modal)` → **1000** | `ui-kit/tokens.css` + `ui-kit/components/achievement-modal.js` | 成就弹层 token；主产品日常壳未接此组件 |
+
+---
+
+## Idle 常驻 chrome（遮罩 dim 消费者）
+
+> **列含义**：这些元素 **z≥22**、Idle 时常驻、会压在 z=17 growth 遮罩之上。新 `overlayBackdrop` / dim 上线时必须逐项写清：联动变暗，或明确「保持全亮（并说明为何）」。禁止只按 backdrop = 卡 z − 1 覆盖背景。  
+> **实现锚**：`overlayBackdrop.js` `body.ft-idle-overlay-chrome-dim`（Support / 音符 / 倾听耳）。**不要**把 backdrop 抬到 z-24（会挡住可点性）。Brief 结论句见 `COLLAB.md` 第七节。
+
+| 常驻 chrome | z | 选择器 | 开 growth / 日签等 z17 遮罩时 |
+|---|---|---|---|
+| Support Yin FAB | 24 | `#yin-support-fab` | **须 dim**（opacity/filter，保持可点） |
+| Ambient 音符 / mute | 24 | `.ambient-soundscape__mute` | **须 dim** |
+| 倾听耳（宽屏） | 24 | `#confide-ear-chrome` | **须 dim**（与上两项同带） |
+| 左下 `?` 帮助 | 22 | `.onboarding-hint-help` | 新遮罩须点名结论：dim 或保持（现 overlayBackdrop 默认列表未含此项） |
+| 软更新芯片 | 22 | `#ft-soft-update-prompt` | 同上，默认未列入 idle-chrome dim |
+| Soundscape 右下 FAB 容器 | 23 | Ambient focus chrome | 新遮罩须点名；勿与右上 mute 混为一谈 |
+| 窄屏 ActionBar Confide | 30 壳内 | `#ft-narrow-confide-btn` | 窄屏路径单独写结论（耳钮 CSS 隐藏） |
+
+新增 z≥22 的 Idle 常驻按钮时：**先补本表一行**，再决定是否加入 `overlayBackdropBaseCss` 的 dim 选择器。
 
 ---
 
