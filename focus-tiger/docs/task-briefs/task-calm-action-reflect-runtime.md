@@ -1,6 +1,6 @@
 # Task Brief · Calm Action Wisdom · Reflect 运行时（C4）
 
-> **状态（2026-09-09）**：**开工** · 旁支 `feature/calm-action-reflect-runtime`。  
+> **状态（2026-09-09）**：**PR [#672](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/672)** · 旁支 `feature/calm-action-reflect-runtime`。  
 > **父排期**：`taste-layer-calm-action-roadmap.md` · **C4**。  
 > **内容 SSOT**：`CALM_ACTION_WISDOM.md`（Reflect 段 · 20 ids `CAW-L01`–`L20`）。  
 > **用户拍板**：口令「开工 Calm Action Reflect」（2026-09-09）。
