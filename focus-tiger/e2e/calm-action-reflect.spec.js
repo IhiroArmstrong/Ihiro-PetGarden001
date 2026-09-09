@@ -18,7 +18,7 @@ async function riseAndAwaitReflection(page) {
   return reflection;
 }
 
-test('Rise opens Reflection with Calm Action line and Daily Wisdom', async ({
+test('Reflection shows Calm Action during questions, Daily Wisdom only after Skip all', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -33,5 +33,16 @@ test('Rise opens Reflection with Calm Action line and Daily Wisdom', async ({
   await expect(calmLine).toHaveText(/.{12,}/);
 
   const wisdom = reflection.locator('[data-testid="reflection-daily-wisdom"]');
+  await expect(wisdom).toBeHidden();
+
+  await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
+  await expect(reflection).toHaveAttribute('data-wisdom-hold', 'true');
+  await expect(calmLine).toBeHidden();
   await expect(wisdom).toBeVisible();
+  await expect(wisdom.locator('[data-testid="daily-wisdom-text"]')).not.toHaveText(
+    ''
+  );
+
+  await reflection.getByRole('button', { name: /Continue|继续/i }).click();
+  await expect(reflection).toBeHidden({ timeout: 10_000 });
 });
