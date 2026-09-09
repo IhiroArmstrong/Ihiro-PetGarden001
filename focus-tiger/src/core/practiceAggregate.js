@@ -10,7 +10,8 @@
  * **Read side** should migrate here instead of picking Journey / practice-days /
  * lotus independently (see `docs/practice-aggregate-registry.md`).
  *
- * Recon skeleton (2026-09-07): not wired into Confide / badges yet.
+ * Batch 1 (2026-09-09): Confide `practice_facts` duration / compare / showing-up.
+ * Badges / memorial seal still pending Batch 2.
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';
