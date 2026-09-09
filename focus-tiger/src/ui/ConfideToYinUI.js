@@ -613,6 +613,19 @@ export class ConfideToYinUI {
       lineId: shown.line?.id || '',
       source: shown.source
     });
+    this._scrollReplyIntoView();
+  }
+
+  /** @returns {void} */
+  _scrollReplyIntoView() {
+    if (typeof requestAnimationFrame !== 'function') {
+      this.root.scrollTop = this.root.scrollHeight;
+      return;
+    }
+    requestAnimationFrame(() => {
+      if (!this._open) return;
+      this.root.scrollTop = this.root.scrollHeight;
+    });
   }
 
 

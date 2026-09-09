@@ -31,6 +31,13 @@ test('Confide has Cancel on the left of Share / Close', () => {
   assert.match(src, /shouldSubmitConfideOnEnter/);
 });
 
+test('Confide scrolls the card to the latest reply after Share', () => {
+  const src = readUi('ConfideToYinUI.js');
+  assert.match(src, /_scrollReplyIntoView/);
+  assert.match(src, /this\.root\.scrollTop = this\.root\.scrollHeight/);
+  assert.match(src, /_showReply[\s\S]*_scrollReplyIntoView/);
+});
+
 test('Tip jar and Sanctuary (always-visible email) do not close on outside pointer', () => {
   assert.doesNotMatch(readUi('TipJarUI.js'), /_onDocPointer/);
   assert.doesNotMatch(readUi('SanctuaryUnlockUI.js'), /_onDocPointer/);
