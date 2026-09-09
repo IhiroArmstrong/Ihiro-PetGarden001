@@ -216,6 +216,7 @@ import { FocusCircleWitnessChrome } from './ui/FocusCircleWitnessChrome.js';
 import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
+import { resolvePracticeAggregate } from './core/practiceAggregate.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -1845,12 +1846,16 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
-  supportYinModalUI.setShouldLeadWithTea(() =>
-    shouldLeadSupportModalWithTea({
-      lifetimeMinutes: lotusPondStore.getLifetimeMinutes(),
-      practicedDayCount: practiceDaysStore.getPracticedDateKeys().length
-    })
-  );
+  supportYinModalUI.setShouldLeadWithTea(() => {
+    const aggregate = resolvePracticeAggregate({
+      lotusPondStore,
+      practiceDaysStore
+    });
+    return shouldLeadSupportModalWithTea({
+      lifetimeMinutes: aggregate.lifetimeMinutes,
+      practicedDayCount: aggregate.practiceDayCount
+    });
+  });
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
       documentElement: document.documentElement,

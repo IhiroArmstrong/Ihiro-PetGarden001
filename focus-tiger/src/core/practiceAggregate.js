@@ -11,7 +11,7 @@
  * lotus independently (see `docs/practice-aggregate-registry.md`).
  *
  * Batch 1 (2026-09-09): Confide `practice_facts` duration / compare / showing-up.
- * Badges / memorial seal still pending Batch 2.
+ * Batch 2 (2026-09-09): badges + mustard score + redeem/support wire.
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';
@@ -108,6 +108,18 @@ export function resolvePracticeAggregate(deps = {}) {
  */
 export function resolvePracticeAggregateFromStorage(storage, now = () => new Date()) {
   return resolvePracticeAggregate({ storage, now });
+}
+
+/**
+ * Badge / memorial seal consumers: `{ practiceDayCount, lifetimeMinutes }` slice.
+ * @param {PracticeAggregate} aggregate
+ * @returns {{ practiceDayCount: number, lifetimeMinutes: number }}
+ */
+export function practiceAggregateBadgeSummary(aggregate) {
+  return {
+    practiceDayCount: Math.max(0, Number(aggregate?.practiceDayCount) || 0),
+    lifetimeMinutes: Math.max(0, Number(aggregate?.lifetimeMinutes) || 0)
+  };
 }
 
 /**

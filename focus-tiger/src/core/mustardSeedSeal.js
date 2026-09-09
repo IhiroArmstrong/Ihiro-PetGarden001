@@ -18,9 +18,9 @@
 
 import { computePracticeScore } from './practiceBadgeAward.js';
 import {
-  readPracticeDaysForTipBadges,
-  summarizePracticeDaysForBadges
-} from './tipKindnessBadges.js';
+  practiceAggregateBadgeSummary,
+  resolvePracticeAggregateFromStorage
+} from './practiceAggregate.js';
 import {
   MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
   MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
@@ -372,10 +372,9 @@ export function isMustardSeedSealScoreMet(
  */
 export function resolveMustardSeedSeal(storage, opts = {}) {
   const threshold = opts.threshold ?? MUSTARD_SEED_SEAL_SCORE_THRESHOLD;
-  const summary = summarizePracticeDaysForBadges(
-    readPracticeDaysForTipBadges(storage)
-  );
-  const score = computePracticeScore(summary);
+  const aggregate = resolvePracticeAggregateFromStorage(storage);
+  const summary = practiceAggregateBadgeSummary(aggregate);
+  const score = aggregate.score;
   const unlocked = score >= threshold;
   const state = readMustardSeedSealState(storage);
   const revealed = new Set(listRevealedMustardSeedCaseIds(state));
