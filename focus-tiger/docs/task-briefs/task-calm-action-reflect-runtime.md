@@ -33,7 +33,7 @@
 
 - [x] Reflect 池 20 id → locale CMS 表  
 - [x] 选取：日历日锁  
-- [x] 展示：Reflection 卡内 footer 与 Daily Wisdom 之间  
+- [x] 展示：三问阶段仅 Calm Action；完成后再 Daily Wisdom（时序渐显，禁止同框叠两句）  
 - [x] 离线：本地 CMS；失败静默（不渲染行）  
 - [x] 单测 + e2e（Rise → Reflection 可见 `calm-action-reflect-line`）
 

@@ -75,7 +75,7 @@
 |---|---|---|---|
 | **Arrive** | Sit 前 / Arrival 欢迎后 | ✅ C2 #665 + D1 overlay #670 | 降启动门槛 |
 | **Recover** | 打断回来之后 | ✅ C1 #625 + D1 overlay #670 | **不替换** toast |
-| **Reflect** | Reflection 完成页 | 📋 C4 本旁支 | 与 Daily Wisdom 分池并排 |
+| **Reflect** | Reflection 完成页 | ✅ C4 #672 + 时序渐显 | 三问阶段仅许可句；结算页再 Daily Wisdom（禁止同框叠两句） |
 | **Focus** | 倒计时页可选标语 | ⏸ 未立项 | **仅 S**、低频；禁止轮播 |
 | **Transition** | 任务切换 | ⏸ 入口空白 | 只入库 |
 

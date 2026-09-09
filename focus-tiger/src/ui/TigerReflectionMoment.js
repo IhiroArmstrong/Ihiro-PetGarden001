@@ -40,6 +40,13 @@ import {
   mountReflectionCalmAction,
   refreshReflectionCalmActionLine
 } from './reflectionCalmActionMount.js';
+import {
+  REFLECTION_QUOTE_PHASE,
+  reflectionQuoteVisibility,
+  setReflectionQuoteHostVisible,
+  shouldAdvanceFromLastEchoHold,
+  shouldFinishWisdomHold
+} from './reflectionQuoteDisclosure.js';
 import { mountReflectionBrandTagline } from './reflectionBrandTaglineMount.js';
 import { resolveBrandYinWayTagline } from '../core/brandYinWayTagline.js';
 import {
@@ -112,7 +119,7 @@ export function shouldHoldReflectionLastEcho({
 }
 
 /**
- * While holding after last echo, every dismiss control must close (no silent return).
+ * While holding after last echo, advance to Daily Wisdom landing (not dismiss).
  * @param {object} opts
  * @param {boolean} opts.awaitingLastEchoHold
  * @param {'continue' | 'skip' | 'skip-all' | 'escape' | 'enter'} opts.action
@@ -122,14 +129,7 @@ export function shouldFinishHeldReflection({
   awaitingLastEchoHold,
   action
 } = {}) {
-  if (!awaitingLastEchoHold) return false;
-  return (
-    action === 'continue' ||
-    action === 'skip' ||
-    action === 'skip-all' ||
-    action === 'escape' ||
-    action === 'enter'
-  );
+  return shouldAdvanceFromLastEchoHold({ awaitingLastEchoHold, action });
 }
 
 /**
@@ -188,6 +188,10 @@ export class TigerReflectionMoment {
     this._companionEchoKey = null;
     /** Last-question echo is on screen; wait for Continue / Skip / Esc. */
     this._awaitingLastEchoHold = false;
+    /** Daily Wisdom landing after questions; dismiss closes Reflection. */
+    this._awaitingWisdomHold = false;
+    /** @type {HTMLElement | null} */
+    this.questionBlockEl = null;
     /** @type {HTMLButtonElement | null} */
     this.companionInviteBtn = null;
     /** @type {HTMLElement | null} */
@@ -217,6 +221,7 @@ export class TigerReflectionMoment {
       this._sessionIntention && intentionSource === 'icon' ? 'icon' : 'typed';
     this.flow = new ReflectionFlowState();
     this._awaitingLastEchoHold = false;
+    this._awaitingWisdomHold = false;
     this._reflectionCompanionBusy = false;
     this._reflectionCompanionSettled = false;
     this._buildDom();
@@ -329,6 +334,9 @@ export class TigerReflectionMoment {
 
     this._injectCompanionSlotStyles();
 
+    this.questionBlockEl = document.createElement('div');
+    this.questionBlockEl.dataset.testid = 'reflection-question-block';
+
     this.questionEl = document.createElement('div');
     this.questionEl.style.cssText = [
       'font-size:15px',
@@ -411,12 +419,13 @@ export class TigerReflectionMoment {
     if (this._sessionIntention) {
       this.root.appendChild(this.echoEl);
     }
-    this.root.appendChild(this.questionEl);
-    this.root.appendChild(this.benefitHintEl);
-    this.root.appendChild(this.inputEl);
-    this.root.appendChild(this.companionEchoEl);
-    this.root.appendChild(this.companionObservationEl);
-    this.root.appendChild(this.companionInviteBtn);
+    this.questionBlockEl.appendChild(this.questionEl);
+    this.questionBlockEl.appendChild(this.benefitHintEl);
+    this.questionBlockEl.appendChild(this.inputEl);
+    this.questionBlockEl.appendChild(this.companionEchoEl);
+    this.questionBlockEl.appendChild(this.companionObservationEl);
+    this.questionBlockEl.appendChild(this.companionInviteBtn);
+    this.root.appendChild(this.questionBlockEl);
     this.root.appendChild(footer);
     if (this.calmActionReflectStore) {
       const calm = mountReflectionCalmAction(
@@ -432,7 +441,24 @@ export class TigerReflectionMoment {
     this.wisdomHost = host;
     this._mountBrandTaglineIfNeeded();
     this.container.appendChild(this.root);
+    this._applyQuotePhase(REFLECTION_QUOTE_PHASE.QUESTIONS, { instant: true });
     this._refreshTexts();
+  }
+
+  /**
+   * @param {import('./reflectionQuoteDisclosure.js').ReflectionQuotePhase} phase
+   * @param {{ instant?: boolean }} [opts]
+   */
+  _applyQuotePhase(phase, { instant = false } = {}) {
+    const { calmAction, dailyWisdom } = reflectionQuoteVisibility(phase);
+    const fadeMs = instant ? 0 : FADE_MS;
+    setReflectionQuoteHostVisible(this.calmActionHost, calmAction, { fadeMs });
+    setReflectionQuoteHostVisible(this.wisdomHost, dailyWisdom, { fadeMs });
+    if (this.brandTaglineHost) {
+      setReflectionQuoteHostVisible(this.brandTaglineHost, dailyWisdom, {
+        fadeMs
+      });
+    }
   }
 
   _mountBrandTaglineIfNeeded() {
@@ -452,7 +478,13 @@ export class TigerReflectionMoment {
 
   _refreshTexts() {
     if (!this.root || !this.flow) return;
-    if (this.flow.isDone() && !this._awaitingLastEchoHold) return;
+    if (
+      this.flow.isDone() &&
+      !this._awaitingLastEchoHold &&
+      !this._awaitingWisdomHold
+    ) {
+      return;
+    }
     if (this.echoEl && this._sessionIntention) {
       this.echoEl.textContent = formatIntentionEcho(
         t(intentionEchoKey(this._intentionSource)),
@@ -657,13 +689,25 @@ export class TigerReflectionMoment {
   }
 
   _advance({ submit }) {
+    const action = submit ? 'continue' : 'skip';
     if (
-      shouldFinishHeldReflection({
-        awaitingLastEchoHold: this._awaitingLastEchoHold,
-        action: submit ? 'continue' : 'skip'
+      shouldFinishWisdomHold({
+        awaitingWisdomHold: this._awaitingWisdomHold,
+        action
       })
     ) {
       this._finish();
+      return;
+    }
+    if (
+      shouldAdvanceFromLastEchoHold({
+        awaitingLastEchoHold: this._awaitingLastEchoHold,
+        action
+      })
+    ) {
+      this._awaitingLastEchoHold = false;
+      if (this.root) delete this.root.dataset.lastEchoHold;
+      this._enterWisdomHold();
       return;
     }
     if (!this.flow || this.flow.isDone()) return;
@@ -699,10 +743,26 @@ export class TigerReflectionMoment {
         this._enterLastEchoHold();
         return;
       }
-      this._finish();
+      this._enterWisdomHold();
     } else {
       this._renderStep();
     }
+  }
+
+  /** Completion landing: Calm Action out, Daily Wisdom in; footer stays for dismiss. */
+  _enterWisdomHold() {
+    this._awaitingWisdomHold = true;
+    if (this.root) this.root.dataset.wisdomHold = 'true';
+    if (this.questionBlockEl) {
+      this.questionBlockEl.hidden = true;
+      this.questionBlockEl.style.display = 'none';
+    }
+    if (this.echoEl) {
+      this.echoEl.hidden = true;
+      this.echoEl.style.display = 'none';
+    }
+    this._applyQuotePhase(REFLECTION_QUOTE_PHASE.WISDOM);
+    this._syncReflectionCompanionOffer();
   }
 
   /** Keep last-question echo on screen; input becomes read-only. */
@@ -720,28 +780,50 @@ export class TigerReflectionMoment {
   /** 一次跳过全部剩余问题；已填答案保留，未填不落库。 */
   _skipAll() {
     if (
-      shouldFinishHeldReflection({
-        awaitingLastEchoHold: this._awaitingLastEchoHold,
+      shouldFinishWisdomHold({
+        awaitingWisdomHold: this._awaitingWisdomHold,
         action: 'skip-all'
       })
     ) {
       this._finish();
       return;
     }
+    if (
+      shouldAdvanceFromLastEchoHold({
+        awaitingLastEchoHold: this._awaitingLastEchoHold,
+        action: 'skip-all'
+      })
+    ) {
+      this._awaitingLastEchoHold = false;
+      if (this.root) delete this.root.dataset.lastEchoHold;
+      this._enterWisdomHold();
+      return;
+    }
     if (!this.flow || this.flow.isDone()) return;
     this.flow.abandonRest();
-    this._finish();
+    this._enterWisdomHold();
   }
 
   /** Esc 或外部关闭：剩余问题视作跳过，已答内容保留，无任何提示。 */
   _dismiss() {
     if (
-      shouldFinishHeldReflection({
-        awaitingLastEchoHold: this._awaitingLastEchoHold,
+      shouldFinishWisdomHold({
+        awaitingWisdomHold: this._awaitingWisdomHold,
         action: 'escape'
       })
     ) {
       this._finish();
+      return;
+    }
+    if (
+      shouldAdvanceFromLastEchoHold({
+        awaitingLastEchoHold: this._awaitingLastEchoHold,
+        action: 'escape'
+      })
+    ) {
+      this._awaitingLastEchoHold = false;
+      if (this.root) delete this.root.dataset.lastEchoHold;
+      this._enterWisdomHold();
       return;
     }
     if (!this.flow) return;
@@ -756,6 +838,7 @@ export class TigerReflectionMoment {
     this._intentionSource = null;
     this._companionEchoKey = null;
     this._awaitingLastEchoHold = false;
+    this._awaitingWisdomHold = false;
     this._reflectionCompanionBusy = false;
     this._reflectionCompanionSettled = false;
     document.removeEventListener('keydown', this._onKeyDown);
@@ -778,6 +861,7 @@ export class TigerReflectionMoment {
     this.companionEchoEl = null;
     this.companionObservationEl = null;
     this.companionInviteBtn = null;
+    this.questionBlockEl = null;
     this.questionEl = null;
     this.inputEl = null;
     this.dotEls = [];
