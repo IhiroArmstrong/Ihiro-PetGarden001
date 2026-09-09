@@ -35,4 +35,6 @@
 1. `https://twinsology.com`：见 Early Yin Community 段 + 五空间列表 + **Join the laboratory** → shared invite（新标签）。  
 2. HTML **无** `#the-den` 深链。  
 3. 375 Safari：段落不横溢；CTA 可点。  
-4. `node --test marketing-site/slice0-contract.test.js` 绿（含与 `communityLink.js` 同链断言）。
+4. `node --test marketing-site/slice0-contract.test.js` 绿（含与 `communityLink.js` 同链断言）。  
+5. **现网部署**：`wrangler pages deploy … --branch develop`（Pages production branch = `develop`；省略则只上 preview，**不会**更新 `twinsology.com`）。  
+6. Safari：`https://www.twinsology.com` 须 **301** 到 apex，观感与 `https://twinsology.com` 相同（硬刷新一次以清旧 CSS 缓存）。

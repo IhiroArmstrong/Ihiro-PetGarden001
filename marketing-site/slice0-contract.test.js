@@ -16,6 +16,7 @@ const css = readFileSync(join(dir, 'styles.css'), 'utf8');
 const redirects = readFileSync(join(dir, '_redirects'), 'utf8');
 const privacy = readFileSync(join(dir, 'privacy.html'), 'utf8');
 const wellness = readFileSync(join(dir, 'wellness.html'), 'utf8');
+const headers = readFileSync(join(dir, '_headers'), 'utf8');
 const communityLink = readFileSync(
   join(repoRoot, 'focus-tiger/src/core/communityLink.js'),
   'utf8'
@@ -39,11 +40,18 @@ describe('marketing-site Slice 0 contract', () => {
     assert.doesNotMatch(html, /focustiger\.app/i);
   });
 
-  it('keeps www → apex in Pages redirects', () => {
-    assert.match(
+  it('keeps www → apex in Pages middleware, not domain-level _redirects', () => {
+    assert.doesNotMatch(
       redirects,
       /https:\/\/www\.twinsology\.com\/\* https:\/\/twinsology\.com\/:splat 301/
     );
+    const middleware = readFileSync(
+      join(dir, 'functions/_middleware.js'),
+      'utf8'
+    );
+    assert.match(middleware, /www\.twinsology\.com/);
+    assert.match(middleware, /url\.hostname = 'twinsology\.com'/);
+    assert.match(middleware, /Response\.redirect\([^,]+,\s*301\)/);
   });
 
   it('uses the product wash, not an arcade palette', () => {
@@ -111,5 +119,12 @@ describe('marketing-site Slice 2 contract', () => {
     assert.doesNotMatch(communitySection, /limited time/i);
     assert.doesNotMatch(communitySection, /workers\.dev/i);
     assert.doesNotMatch(communitySection, /hurry/i);
+  });
+
+  it('centers the Slack note and keeps Yin square for WebKit', () => {
+    assert.match(css, /\.community-note[\s\S]*?margin:\s*0\.85rem auto 0/);
+    assert.match(css, /\.hero-yin[\s\S]*?aspect-ratio:\s*1\s*\/\s*1/);
+    assert.doesNotMatch(css, /Iowan Old Style/);
+    assert.match(headers, /\*\.css[\s\S]*Content-Type:\s*text\/css/);
   });
 });

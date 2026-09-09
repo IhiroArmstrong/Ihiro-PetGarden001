@@ -15,7 +15,7 @@
 | 项 | 口径 |
 |---|---|
 | Canonical URL | `https://twinsology.com`（apex） |
-| `www` | `https://www.twinsology.com` **301 → apex** |
+| `www` | `https://www.twinsology.com` **301 → apex**（Pages `_redirects` **不能**按域名跳；现网用 `marketing-site/functions/_middleware.js`） |
 | 站点身份 | **Twinsology 工作室首页，主角是 Focus Tiger**（colophon 已写 product of Twinsology）。不是多产品门户，也不是把练习壳挂在根路径。 |
 | 托管 | 同一 **163 / ihiro Cloudflare** 帐号上的 **Cloudflare Pages**（静态）。与 `focus-tiger-cloud` Worker **分项目**。 |
 | DNS | 只加 Pages 所需的 apex / www。**禁止**改 MX / SPF / DKIM / DMARC / Resend 验证记录。 |
