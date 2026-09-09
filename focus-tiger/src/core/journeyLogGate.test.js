@@ -119,12 +119,12 @@ describe('journeyLogGate', () => {
     const body = src.slice(start, end);
     const stashAt = body.indexOf('microRitualJourneyDraft(');
     const assignAt = body.indexOf('pendingJourneyDraft = draft');
-    const handoffAt = body.indexOf('sessionEndFlow.onSessionEnded');
+    const handoffAt = body.indexOf('maybeOfferGrowthSealAfterBaselineCeremony');
     assert.ok(stashAt >= 0, 'completeMicroRitual must call microRitualJourneyDraft');
     assert.ok(assignAt > stashAt, 'completeMicroRitual must assign pendingJourneyDraft');
     assert.ok(
       handoffAt > assignAt,
-      'stash must precede Reflection handoff so Skip still logs'
+      'stash must precede growth-seal / Reflection handoff so Skip still logs'
     );
     const leaveBody = src.slice(end, src.indexOf('const reflectionOpen'));
     assert.equal(
