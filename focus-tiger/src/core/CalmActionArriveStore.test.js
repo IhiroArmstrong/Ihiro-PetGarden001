@@ -11,6 +11,10 @@ import {
   getCalmActionArrivePool
 } from '../content/calm-action-wisdom/index.js';
 import { CalmActionArriveStore } from './CalmActionArriveStore.js';
+import {
+  resetTasteLayerOverlayForTests,
+  setTasteCalmActionCopyOverlay
+} from './tasteLayerOverlay.js';
 
 test('Calm Action Arrive pool has 14 ids with en + ja text', () => {
   assert.equal(CALM_ACTION_ARRIVE_EN.length, 14);
@@ -41,4 +45,18 @@ test('CalmActionArriveStore shows once per armed flow and locks id per day', () 
 
 test('findCalmActionArriveEntry returns null for unknown id', () => {
   assert.equal(findCalmActionArriveEntry('CAW-A99', 'en'), null);
+});
+
+test('findCalmActionArriveEntry prefers cloud overlay text for known id', () => {
+  resetTasteLayerOverlayForTests();
+  setTasteCalmActionCopyOverlay({
+    locale: 'en',
+    recover: [],
+    arrive: Object.freeze([
+      Object.freeze({ id: 'CAW-A01', text: 'Overlay arrive line.' })
+    ])
+  });
+  const row = findCalmActionArriveEntry('CAW-A01', 'en');
+  assert.equal(row?.text, 'Overlay arrive line.');
+  resetTasteLayerOverlayForTests();
 });

@@ -12,6 +12,10 @@ import { CALM_ACTION_ARRIVE_EN } from './calm-action-arrive.en.js';
 import { CALM_ACTION_ARRIVE_JA } from './calm-action-arrive.ja.js';
 import { CALM_ACTION_RECOVER_EN } from './calm-action-recover.en.js';
 import { CALM_ACTION_RECOVER_JA } from './calm-action-recover.ja.js';
+import {
+  overlayCalmActionArriveTextForId,
+  overlayCalmActionRecoverTextForId
+} from '../../core/tasteLayerOverlay.js';
 
 /** @typedef {{ id: string, text: string }} CalmActionRecoverEntry */
 /** @typedef {{ id: string, text: string }} CalmActionArriveEntry */
@@ -45,6 +49,8 @@ export function getCalmActionRecoverPool(locale = 'en') {
 export function findCalmActionRecoverEntry(id, locale = 'en') {
   const key = String(id || '');
   if (!key) return null;
+  const overlayText = overlayCalmActionRecoverTextForId(key, locale);
+  if (overlayText) return { id: key, text: overlayText };
   const preferred = getCalmActionRecoverPool(locale).find((e) => e.id === key);
   if (preferred) return preferred;
   return RECOVER_POOLS.en.find((e) => e.id === key) ?? null;
@@ -67,6 +73,8 @@ export function getCalmActionArrivePool(locale = 'en') {
 export function findCalmActionArriveEntry(id, locale = 'en') {
   const key = String(id || '');
   if (!key) return null;
+  const overlayText = overlayCalmActionArriveTextForId(key, locale);
+  if (overlayText) return { id: key, text: overlayText };
   const preferred = getCalmActionArrivePool(locale).find((e) => e.id === key);
   if (preferred) return preferred;
   return ARRIVE_POOLS.en.find((e) => e.id === key) ?? null;

@@ -15,6 +15,13 @@ import {
 	tasteConfideCopyTemplates,
 } from "./tasteConfideCopyFreeze.ts";
 import {
+	CALM_ACTION_ARRIVE_IDS,
+	CALM_ACTION_OVERLAY_SCHEMA_VERSION,
+	CALM_ACTION_RECOVER_IDS,
+	tasteCalmActionArrivePool,
+	tasteCalmActionRecoverPool,
+} from "./tasteCalmActionCopyFreeze.ts";
+import {
 	QUIET_LINE_OVERLAY_SCHEMA_VERSION,
 	tasteQuietLinePool,
 } from "./tasteQuietLineFreeze.ts";
@@ -108,5 +115,33 @@ describe("taste-layer freeze tables", () => {
 				?.text,
 			"話さなくていい。寅はここにいる。",
 		);
+	});
+
+	it("calm-action copy freeze has 14 recover + 14 arrive ids and schema 1", () => {
+		assert.equal(CALM_ACTION_OVERLAY_SCHEMA_VERSION, 1);
+		assert.equal(CALM_ACTION_RECOVER_IDS.length, 14);
+		assert.equal(CALM_ACTION_ARRIVE_IDS.length, 14);
+		const enRecover = tasteCalmActionRecoverPool("en");
+		const jaRecover = tasteCalmActionRecoverPool("ja");
+		const enArrive = tasteCalmActionArrivePool("en");
+		const jaArrive = tasteCalmActionArrivePool("ja");
+		assert.deepEqual(
+			enRecover.map((e) => e.id),
+			[...CALM_ACTION_RECOVER_IDS],
+		);
+		assert.deepEqual(
+			jaRecover.map((e) => e.id),
+			enRecover.map((e) => e.id),
+		);
+		assert.deepEqual(
+			enArrive.map((e) => e.id),
+			[...CALM_ACTION_ARRIVE_IDS],
+		);
+		assert.deepEqual(
+			jaArrive.map((e) => e.id),
+			enArrive.map((e) => e.id),
+		);
+		assert.equal(enRecover[0].id, "CAW-R01");
+		assert.equal(enArrive[0].id, "CAW-A01");
 	});
 });

@@ -266,7 +266,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **C1** | **Recover**（打断后 S/M；不替换 toast） | `task-briefs/task-calm-action-recover-runtime.md` | **#625 已合**（TRACKER 待人工） |
 | **C2** | **Arrive**（C1 §7 关单后立刻排；建议 B1 冷启动 gate 已拍板） | `task-briefs/task-calm-action-arrive-runtime.md` | **#665 已合**（TRACKER 待人工） |
 | C3+ | Focus S 标语 / Transition / Reflect | 另 Brief | 未立项 |
-| **D** | Calm Action overlay | 待建 | C1+C2 人工关单后再谈 |
+| **D** | Calm Action overlay | `task-briefs/task-calm-action-copy-overlay.md` | **本旁支开工** |
 | **—** | 日签 14→N | 另 PR · 另口令 | 后排（≠ Calm Action） |
 
 **2026-09-07 拍板**：Recover 第一刀 · Arrive 第二刀（不无限延后）· 权重表暂不分叉。

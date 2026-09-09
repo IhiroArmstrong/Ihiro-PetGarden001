@@ -11,11 +11,17 @@
  */
 
 import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
+import {
+  CALM_ACTION_ARRIVE_EN,
+  CALM_ACTION_RECOVER_EN
+} from '../content/calm-action-wisdom/index.js';
 import { COPY_POOLS, getLocale } from '../locales/i18n.js';
 
 export const TASTE_LAYER_SCHEMA_VERSION = 1;
 /** Quiet Line mixed-pool overlay only; other taste slices stay on schema 1. */
 export const QUIET_LINE_OVERLAY_SCHEMA_VERSION = 2;
+/** Calm Action Recover + Arrive pool overlay (C1+C2 runtime). */
+export const CALM_ACTION_OVERLAY_SCHEMA_VERSION = 1;
 
 const RISE_KEYS = new Set(['riseStretchCasual', 'teaDrinking', 'bookReading']);
 const WELCOME_KEYS = new Set(['magicBookReading', 'nodGreeting']);
@@ -58,6 +64,14 @@ export const CONFIDE_COPY_CORPUS_IDS = Object.freeze([
 ]);
 const CONFIDE_TEMPLATE_KEY_SET = new Set(CONFIDE_COPY_TEMPLATE_KEYS);
 const CONFIDE_CORPUS_ID_SET = new Set(CONFIDE_COPY_CORPUS_IDS);
+export const CALM_ACTION_RECOVER_IDS = Object.freeze(
+  CALM_ACTION_RECOVER_EN.map((e) => e.id)
+);
+export const CALM_ACTION_ARRIVE_IDS = Object.freeze(
+  CALM_ACTION_ARRIVE_EN.map((e) => e.id)
+);
+const CALM_ACTION_RECOVER_ID_SET = new Set(CALM_ACTION_RECOVER_IDS);
+const CALM_ACTION_ARRIVE_ID_SET = new Set(CALM_ACTION_ARRIVE_IDS);
 
 /** @typedef {{ key: string, weight: number }} WeightedEntry */
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
@@ -98,6 +112,14 @@ const CONFIDE_CORPUS_ID_SET = new Set(CONFIDE_COPY_CORPUS_IDS);
  * }} TasteConfideCopyOverlay
  */
 
+/**
+ * @typedef {{
+ *   locale: string,
+ *   recover: ReadonlyArray<{ id: string, text: string }>,
+ *   arrive: ReadonlyArray<{ id: string, text: string }>
+ * }} TasteCalmActionCopyOverlay
+ */
+
 /** @type {TasteWeightOverlay | null} */
 let weightOverlay = null;
 /** @type {TasteDailyWisdomOverlay | null} */
@@ -106,11 +128,14 @@ let dailyWisdomOverlay = null;
 let quietLineOverlay = null;
 /** @type {TasteConfideCopyOverlay | null} */
 let confideCopyOverlay = null;
+/** @type {TasteCalmActionCopyOverlay | null} */
+let calmActionCopyOverlay = null;
 /** Cloud v1 validated even when we skip retaining a freeze-identical copy. */
 let weightCloudOk = false;
 let dailyCloudOk = false;
 let quietLineCloudOk = false;
 let confideCopyCloudOk = false;
+let calmActionCopyCloudOk = false;
 
 /**
  * @param {unknown} raw
@@ -342,6 +367,66 @@ export function parseConfideCopyOverlay(body, expectedLocale) {
   };
 }
 
+/**
+ * @param {ReadonlyArray<{ id: string, text: string }>} poolRaw
+ * @param {ReadonlySet<string>} allowed
+ * @param {number} expectedSize
+ * @returns {ReadonlyArray<{ id: string, text: string }> | null}
+ */
+function parseCalmActionPoolSlice(poolRaw, allowed, expectedSize) {
+  if (!Array.isArray(poolRaw) || poolRaw.length !== expectedSize) return null;
+  /** @type {{ id: string, text: string }[]} */
+  const pool = [];
+  const seen = new Set();
+  for (const entry of poolRaw) {
+    if (!entry || typeof entry !== 'object') return null;
+    const id = /** @type {{ id?: unknown }} */ (entry).id;
+    const text = /** @type {{ text?: unknown }} */ (entry).text;
+    if (typeof id !== 'string' || !allowed.has(id) || seen.has(id)) {
+      return null;
+    }
+    if (typeof text !== 'string' || !text.trim()) return null;
+    seen.add(id);
+    pool.push({ id, text: text.trim() });
+  }
+  if (seen.size !== expectedSize) return null;
+  return Object.freeze(pool.map((e) => Object.freeze({ ...e })));
+}
+
+/**
+ * @param {unknown} body
+ * @param {string} [expectedLocale]
+ * @returns {TasteCalmActionCopyOverlay | null}
+ */
+export function parseCalmActionCopyOverlay(body, expectedLocale) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
+  const o = /** @type {Record<string, unknown>} */ (body);
+  if (o.schemaVersion !== CALM_ACTION_OVERLAY_SCHEMA_VERSION) return null;
+  const rawLocale = typeof o.locale === 'string' ? o.locale.trim() : '';
+  if (!rawLocale) return null;
+  const have = rawLocale === 'ja' ? 'ja' : 'en';
+  if (expectedLocale) {
+    const want = expectedLocale === 'ja' ? 'ja' : 'en';
+    if (have !== want) return null;
+  }
+  const recover = parseCalmActionPoolSlice(
+    o.recover,
+    CALM_ACTION_RECOVER_ID_SET,
+    CALM_ACTION_RECOVER_IDS.length
+  );
+  const arrive = parseCalmActionPoolSlice(
+    o.arrive,
+    CALM_ACTION_ARRIVE_ID_SET,
+    CALM_ACTION_ARRIVE_IDS.length
+  );
+  if (!recover || !arrive) return null;
+  return {
+    locale: have,
+    recover,
+    arrive
+  };
+}
+
 /** @returns {TasteWeightOverlay | null} */
 export function getTasteWeightOverlay() {
   return weightOverlay;
@@ -360,6 +445,11 @@ export function getTasteQuietLineOverlay() {
 /** @returns {TasteConfideCopyOverlay | null} */
 export function getTasteConfideCopyOverlay() {
   return confideCopyOverlay;
+}
+
+/** @returns {TasteCalmActionCopyOverlay | null} */
+export function getTasteCalmActionCopyOverlay() {
+  return calmActionCopyOverlay;
 }
 
 /** @param {TasteWeightOverlay | null} next */
@@ -382,6 +472,11 @@ export function setTasteConfideCopyOverlay(next) {
   confideCopyOverlay = next;
 }
 
+/** @param {TasteCalmActionCopyOverlay | null} next */
+export function setTasteCalmActionCopyOverlay(next) {
+  calmActionCopyOverlay = next;
+}
+
 /** Mark cloud weights as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteWeightCloudOk() {
   weightCloudOk = true;
@@ -400,6 +495,11 @@ export function markTasteQuietLineCloudOk() {
 /** Mark cloud Confide copy as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteConfideCopyCloudOk() {
   confideCopyCloudOk = true;
+}
+
+/** Mark cloud Calm Action copy as schemaVersion 1 OK without retaining a duplicate freeze copy. */
+export function markTasteCalmActionCopyCloudOk() {
+  calmActionCopyCloudOk = true;
 }
 
 /** @returns {boolean} */
@@ -422,15 +522,22 @@ export function isTasteConfideCopyCloudConfirmed() {
   return confideCopyCloudOk || Boolean(confideCopyOverlay);
 }
 
+/** @returns {boolean} */
+export function isTasteCalmActionCopyCloudConfirmed() {
+  return calmActionCopyCloudOk || Boolean(calmActionCopyOverlay);
+}
+
 export function resetTasteLayerOverlayForTests() {
   weightOverlay = null;
   dailyWisdomOverlay = null;
   quietLineOverlay = null;
   confideCopyOverlay = null;
+  calmActionCopyOverlay = null;
   weightCloudOk = false;
   dailyCloudOk = false;
   quietLineCloudOk = false;
   confideCopyCloudOk = false;
+  calmActionCopyCloudOk = false;
 }
 
 /**
@@ -480,6 +587,32 @@ export function overlayConfideCorpusTextForId(id, locale) {
   const want = confideCopyOverlayLocale(locale || getLocale());
   if (confideCopyOverlay.locale !== want) return null;
   const row = confideCopyOverlay.corpus.find((e) => e.id === id);
+  return row?.text || null;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {string | null}
+ */
+export function overlayCalmActionRecoverTextForId(id, locale) {
+  if (!calmActionCopyOverlay || !id) return null;
+  const want = locale === 'ja' ? 'ja' : 'en';
+  if (calmActionCopyOverlay.locale !== want) return null;
+  const row = calmActionCopyOverlay.recover.find((e) => e.id === id);
+  return row?.text || null;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {string | null}
+ */
+export function overlayCalmActionArriveTextForId(id, locale) {
+  if (!calmActionCopyOverlay || !id) return null;
+  const want = locale === 'ja' ? 'ja' : 'en';
+  if (calmActionCopyOverlay.locale !== want) return null;
+  const row = calmActionCopyOverlay.arrive.find((e) => e.id === id);
   return row?.text || null;
 }
 

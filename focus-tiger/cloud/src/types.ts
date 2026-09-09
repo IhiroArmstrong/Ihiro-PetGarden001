@@ -105,6 +105,14 @@ export interface ConfideCopyResponse {
 	variantSeed: string;
 }
 
+export interface CalmActionCopyResponse {
+	schemaVersion: number;
+	locale: string;
+	recover: Array<{ id: string; text: string }>;
+	arrive: Array<{ id: string; text: string }>;
+	variantSeed: string;
+}
+
 export interface EmotionWeightResponse {
 	schemaVersion: number;
 	variant: string;

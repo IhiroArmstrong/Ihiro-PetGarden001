@@ -89,7 +89,7 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 
 | 序 | 项 | 依赖 | Brief 指针 | 口令 | 状态 |
 |---|---|---|---|---|---|
-| D1 | Calm Action 句包 overlay | **C1+C2 人工关单**（#625/#665 已合；TRACKER 仍待人工） | `task-calm-action-copy-overlay.md`（待建） | 「开工 Calm Action overlay」 | ⏸ 待口令 |
+| D1 | Calm Action 句包 overlay | **C1+C2 已合**（#625/#665；TRACKER 仍待人工） | `task-calm-action-copy-overlay.md` | 「开工 Calm Action overlay」 | 📋 **本旁支开工** |
 | D2 | Daily Wisdom 日签 **14→N** | 与 Calm Action **分 PR**；升 `schemaVersion` + 本地兜底 | `task-daily-wisdom-expand.md`（待建） | 「开工日签扩容」 | ⏸ 后排 |
 | D3 | Quiet Line §四 8 条候选审定 | 内容审定 + overlay | 扩 `#543` 或 locale | 「开工 Quiet Line 扩句」 | ⏸ 内容候选在 CMS |
 
