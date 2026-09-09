@@ -10,12 +10,16 @@ import {
   OVERLAY_BACKDROP_FADE_MS,
   OVERLAY_BACKDROP_RGBA,
   OVERLAY_BACKDROP_BASE_CLASS,
+  IDLE_OVERLAY_CHROME_DIM_BODY_CLASS,
+  acquireIdleOverlayChromeDim,
   createOverlayBackdrop,
   ensureOverlayBackdropStyles,
   hideOverlayBackdrop,
   overlayBackdropBaseCss,
   overlayBackdropDismissModifier,
-  showOverlayBackdrop
+  releaseIdleOverlayChromeDim,
+  showOverlayBackdrop,
+  syncIdleOverlayChromeDim
 } from './overlayBackdrop.js';
 
 describe('overlayBackdrop constants', () => {
@@ -64,6 +68,22 @@ describe('overlayBackdrop pointer-events contract', () => {
     assert.match(
       css,
       /\.ft-overlay-backdrop--sb19-hold\.is-visible[\s\S]*pointer-events: none/
+    );
+  });
+
+  it('dims fixed Idle chrome above z-17 backdrops', () => {
+    const css = overlayBackdropBaseCss();
+    assert.match(
+      css,
+      new RegExp(
+        `body\\.${IDLE_OVERLAY_CHROME_DIM_BODY_CLASS} #yin-support-fab`
+      )
+    );
+    assert.match(
+      css,
+      new RegExp(
+        `body\\.${IDLE_OVERLAY_CHROME_DIM_BODY_CLASS} \\.ambient-soundscape__mute`
+      )
     );
   });
 });
@@ -129,6 +149,7 @@ describe('overlayBackdrop lifecycle (mock DOM)', () => {
 
       assert.equal(backdrop.id, 'daily-zen-quote-backdrop');
       assert.equal(backdrop.style.zIndex, '17');
+      assert.equal(backdrop.dataset.dimIdleChrome, '1');
       assert.match(backdrop.className, /ft-overlay-backdrop--blank-closes/);
       assert.ok(styles.has('ft-overlay-backdrop-styles-v1'));
 
@@ -223,6 +244,94 @@ describe('overlayBackdrop lifecycle (mock DOM)', () => {
       assert.equal(injected, 1);
     } finally {
       globalThis.document = previousDocument;
+    }
+  });
+
+  it('toggles idle chrome dim body class with backdrop visibility', () => {
+    const previousDocument = globalThis.document;
+    const previousSetTimeout = globalThis.setTimeout;
+    const timers = [];
+    globalThis.setTimeout = (fn, ms) => {
+      timers.push({ fn, ms });
+      return timers.length;
+    };
+
+    const body = {
+      classList: {
+        _tokens: new Set(),
+        add(token) {
+          this._tokens.add(token);
+        },
+        remove(token) {
+          this._tokens.delete(token);
+        },
+        toggle(token, on) {
+          if (on) this._tokens.add(token);
+          else this._tokens.delete(token);
+        },
+        contains(token) {
+          return this._tokens.has(token);
+        }
+      }
+    };
+
+    const mountRoot = { children: [], append(node) { this.children.push(node); } };
+    const doc = {
+      head: { appendChild() {} },
+      getElementById: () => null,
+      body,
+      createElement: (tag) => {
+        if (tag === 'style') return { id: '', textContent: '' };
+        const listeners = new Map();
+        return {
+          className: '',
+          hidden: false,
+          style: {},
+          dataset: { dimIdleChrome: '1' },
+          classList: {
+            _tokens: new Set(),
+            add(token) { this._tokens.add(token); },
+            remove(token) { this._tokens.delete(token); },
+            contains(token) { return this._tokens.has(token); }
+          },
+          addEventListener(type, fn) {
+            listeners.set(type, fn);
+          },
+          getBoundingClientRect() {}
+        };
+      }
+    };
+    globalThis.document = doc;
+
+    try {
+      const backdrop = createOverlayBackdrop(mountRoot, { document: doc });
+      showOverlayBackdrop(backdrop);
+      assert.equal(
+        body.classList.contains(IDLE_OVERLAY_CHROME_DIM_BODY_CLASS),
+        true
+      );
+
+      hideOverlayBackdrop(backdrop);
+      assert.equal(
+        body.classList.contains(IDLE_OVERLAY_CHROME_DIM_BODY_CLASS),
+        true
+      );
+      timers[0].fn();
+      assert.equal(
+        body.classList.contains(IDLE_OVERLAY_CHROME_DIM_BODY_CLASS),
+        false
+      );
+
+      acquireIdleOverlayChromeDim(backdrop);
+      releaseIdleOverlayChromeDim(backdrop);
+      syncIdleOverlayChromeDim();
+      assert.equal(
+        body.classList.contains(IDLE_OVERLAY_CHROME_DIM_BODY_CLASS),
+        false
+      );
+    } finally {
+      globalThis.document = previousDocument;
+      globalThis.setTimeout = previousSetTimeout;
     }
   });
 });

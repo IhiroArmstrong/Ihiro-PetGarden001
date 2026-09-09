@@ -15,6 +15,11 @@ export const OVERLAY_BACKDROP_FADE_MS = 220;
 export const OVERLAY_BACKDROP_RGBA = 'rgba(44, 31, 20, 0.16)';
 export const OVERLAY_BACKDROP_BASE_CLASS = 'ft-overlay-backdrop';
 export const OVERLAY_BACKDROP_STYLES_ID = 'ft-overlay-backdrop-styles-v1';
+/** Dims fixed Idle chrome (Support FAB, music note) that sits above z-17 backdrops. */
+export const IDLE_OVERLAY_CHROME_DIM_BODY_CLASS = 'ft-idle-overlay-chrome-dim';
+
+/** @type {Set<HTMLElement>} */
+const idleChromeDimBackdrops = new Set();
 
 const DISMISS_MODIFIER = Object.freeze({
   [OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES]: 'ft-overlay-backdrop--blank-closes',
@@ -59,7 +64,52 @@ export function overlayBackdropBaseCss() {
       .${OVERLAY_BACKDROP_BASE_CLASS}[hidden] {
         display: none !important;
       }
+      body.${IDLE_OVERLAY_CHROME_DIM_BODY_CLASS} #yin-support-fab,
+      body.${IDLE_OVERLAY_CHROME_DIM_BODY_CLASS} .ambient-soundscape__mute,
+      body.${IDLE_OVERLAY_CHROME_DIM_BODY_CLASS} #confide-ear-chrome {
+        opacity: 0.38 !important;
+        filter: brightness(0.9);
+        transition: opacity ${fade}ms ease, filter ${fade}ms ease;
+      }
     `;
+}
+
+/**
+ * @param {HTMLElement} backdrop
+ * @returns {boolean}
+ */
+export function shouldDimIdleChromeForBackdrop(backdrop) {
+  return backdrop?.dataset?.dimIdleChrome !== '0';
+}
+
+/** @returns {void} */
+export function syncIdleOverlayChromeDim() {
+  const body = typeof document !== 'undefined' ? document.body : null;
+  if (!body) return;
+  body.classList.toggle(
+    IDLE_OVERLAY_CHROME_DIM_BODY_CLASS,
+    idleChromeDimBackdrops.size > 0
+  );
+}
+
+/**
+ * @param {HTMLElement} backdrop
+ * @returns {void}
+ */
+export function acquireIdleOverlayChromeDim(backdrop) {
+  if (!shouldDimIdleChromeForBackdrop(backdrop)) return;
+  if (idleChromeDimBackdrops.has(backdrop)) return;
+  idleChromeDimBackdrops.add(backdrop);
+  syncIdleOverlayChromeDim();
+}
+
+/**
+ * @param {HTMLElement} backdrop
+ * @returns {void}
+ */
+export function releaseIdleOverlayChromeDim(backdrop) {
+  if (!idleChromeDimBackdrops.delete(backdrop)) return;
+  syncIdleOverlayChromeDim();
 }
 
 /**
@@ -106,6 +156,7 @@ export function createOverlayBackdrop(mountRoot, opts = {}) {
     .join(' ');
   if (opts.id) backdrop.id = opts.id;
   if (opts.testId) backdrop.dataset.testid = opts.testId;
+  backdrop.dataset.dimIdleChrome = opts.dimIdleChrome === false ? '0' : '1';
   backdrop.hidden = true;
   backdrop.style.zIndex = String(opts.zIndex ?? 17);
 
@@ -124,6 +175,7 @@ export function showOverlayBackdrop(backdrop) {
   backdrop.hidden = false;
   backdrop.getBoundingClientRect();
   backdrop.classList.add('is-visible');
+  acquireIdleOverlayChromeDim(backdrop);
 }
 
 /**
@@ -138,6 +190,7 @@ export function hideOverlayBackdrop(backdrop, opts = {}) {
   const timer = globalThis.setTimeout(() => {
     if (!backdrop.classList.contains('is-visible')) {
       backdrop.hidden = true;
+      releaseIdleOverlayChromeDim(backdrop);
       opts.onHidden?.();
     }
   }, fadeMs + 40);

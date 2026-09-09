@@ -20,9 +20,8 @@ import {
 const STYLE_ID = 'local-practice-data-ui-v1';
 
 /**
- * Privacy sheet · local export/import controls.
- * Export and import each get an independent sub-card so import confirmation
- * never appears beside export status.
+ * Preferences · backup & restore — two collapsible cards (export / import).
+ * Import confirmation stays inside the import card body.
  */
 export class LocalPracticeDataUI {
   /**
@@ -36,25 +35,12 @@ export class LocalPracticeDataUI {
       opts.storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
     this._onImported = opts.onImported;
+    this._exportExpanded = false;
+    this._importExpanded = false;
 
     this.root = document.createElement('div');
     this.root.className = 'local-practice-data';
     this.root.dataset.testid = 'local-practice-data';
-
-    this.actions = document.createElement('div');
-    this.actions.className = 'local-practice-data__actions';
-
-    this.exportBtn = document.createElement('button');
-    this.exportBtn.type = 'button';
-    this.exportBtn.className = 'local-practice-data__btn';
-    this.exportBtn.dataset.testid = 'local-practice-data-export';
-    this.exportBtn.addEventListener('click', () => this._onExport());
-
-    this.importBtn = document.createElement('button');
-    this.importBtn.type = 'button';
-    this.importBtn.className = 'local-practice-data__btn';
-    this.importBtn.dataset.testid = 'local-practice-data-import';
-    this.importBtn.addEventListener('click', () => this._onPickFile());
 
     this.fileInput = document.createElement('input');
     this.fileInput.type = 'file';
@@ -63,22 +49,57 @@ export class LocalPracticeDataUI {
     this.fileInput.dataset.testid = 'local-practice-data-file';
     this.fileInput.addEventListener('change', () => void this._onFileSelected());
 
-    this.actions.append(this.exportBtn, this.importBtn, this.fileInput);
-
     this.exportCard = document.createElement('div');
-    this.exportCard.className = 'local-practice-data__card local-practice-data__card--export';
-    this.exportCard.hidden = true;
+    this.exportCard.className =
+      'local-practice-data__card local-practice-data__card--export';
     this.exportCard.dataset.testid = 'local-practice-data-export-card';
+
+    this.exportHeadBtn = document.createElement('button');
+    this.exportHeadBtn.type = 'button';
+    this.exportHeadBtn.className = 'local-practice-data__card-head';
+    this.exportHeadBtn.dataset.testid = 'local-practice-data-export-head';
+    this.exportHeadBtn.addEventListener('click', () => this._toggleExportCard());
+
+    this.exportBody = document.createElement('div');
+    this.exportBody.className = 'local-practice-data__card-body';
+    this.exportBody.hidden = true;
+    this.exportBody.dataset.testid = 'local-practice-data-export-body';
+
+    this.exportBtn = document.createElement('button');
+    this.exportBtn.type = 'button';
+    this.exportBtn.className = 'local-practice-data__btn';
+    this.exportBtn.dataset.testid = 'local-practice-data-export';
+    this.exportBtn.addEventListener('click', () => this._onExport());
 
     this.exportStatusEl = document.createElement('p');
     this.exportStatusEl.className = 'local-practice-data__status';
     this.exportStatusEl.dataset.testid = 'local-practice-data-export-status';
-    this.exportCard.append(this.exportStatusEl);
+    this.exportStatusEl.hidden = true;
+
+    this.exportBody.append(this.exportBtn, this.exportStatusEl);
+    this.exportCard.append(this.exportHeadBtn, this.exportBody);
 
     this.importCard = document.createElement('div');
-    this.importCard.className = 'local-practice-data__card local-practice-data__card--import';
-    this.importCard.hidden = true;
+    this.importCard.className =
+      'local-practice-data__card local-practice-data__card--import';
     this.importCard.dataset.testid = 'local-practice-data-import-card';
+
+    this.importHeadBtn = document.createElement('button');
+    this.importHeadBtn.type = 'button';
+    this.importHeadBtn.className = 'local-practice-data__card-head';
+    this.importHeadBtn.dataset.testid = 'local-practice-data-import-head';
+    this.importHeadBtn.addEventListener('click', () => this._toggleImportCard());
+
+    this.importBody = document.createElement('div');
+    this.importBody.className = 'local-practice-data__card-body';
+    this.importBody.hidden = true;
+    this.importBody.dataset.testid = 'local-practice-data-import-body';
+
+    this.importBtn = document.createElement('button');
+    this.importBtn.type = 'button';
+    this.importBtn.className = 'local-practice-data__btn';
+    this.importBtn.dataset.testid = 'local-practice-data-import';
+    this.importBtn.addEventListener('click', () => this._onPickFile());
 
     this.headingEl = document.createElement('p');
     this.headingEl.className = 'local-practice-data__heading';
@@ -127,7 +148,7 @@ export class LocalPracticeDataUI {
     this.cancelBtn.type = 'button';
     this.cancelBtn.className = 'local-practice-data__btn local-practice-data__btn--ghost';
     this.cancelBtn.dataset.testid = 'local-practice-data-cancel';
-    this.cancelBtn.addEventListener('click', () => this._resetImportCard());
+    this.cancelBtn.addEventListener('click', () => this._resetImportPreview());
 
     this.confirmBtn = document.createElement('button');
     this.confirmBtn.type = 'button';
@@ -150,7 +171,8 @@ export class LocalPracticeDataUI {
     this.importStatusEl.hidden = true;
 
     this.confirmActions.append(this.cancelBtn, this.confirmBtn);
-    this.importCard.append(
+    this.importBody.append(
+      this.importBtn,
       this.importStatusEl,
       this.headingEl,
       this.leadEl,
@@ -161,8 +183,9 @@ export class LocalPracticeDataUI {
       this.confirmActions,
       this.retryBtn
     );
+    this.importCard.append(this.importHeadBtn, this.importBody);
 
-    this.root.append(this.actions, this.exportCard, this.importCard);
+    this.root.append(this.exportCard, this.importCard, this.fileInput);
     mountRoot.appendChild(this.root);
 
     /** @type {import('../core/practiceBackup/practiceBackupSnapshot.js').PracticeBackupSnapshot | null} */
@@ -184,8 +207,7 @@ export class LocalPracticeDataUI {
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
-      .local-practice-data { margin: 12px 0 4px; }
-      .local-practice-data__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      .local-practice-data { margin: 12px 0 4px; display: flex; flex-direction: column; gap: 8px; }
       .local-practice-data__btn {
         font: inherit; font-size: 13px; padding: 8px 12px; border-radius: 12px;
         border: 1px solid rgba(139,115,85,.22); background: rgba(255,252,245,.85);
@@ -198,37 +220,55 @@ export class LocalPracticeDataUI {
       }
       .local-practice-data__btn--danger:disabled { opacity: .45; cursor: not-allowed; }
       .local-practice-data__card {
-        margin-top: 10px; padding: 10px 12px; border-radius: 12px;
+        border-radius: 12px;
         border: 1px solid rgba(139,115,85,.14); background: rgba(255,252,245,.55);
         font-size: 13px; line-height: 1.45; color: #4a3a28;
+        overflow: hidden;
+      }
+      .local-practice-data__card-head {
+        display: flex; align-items: center; justify-content: space-between;
+        width: 100%; padding: 10px 12px; border: none; background: transparent;
+        font: inherit; font-size: 13px; font-weight: 650; color: #4a3a28;
+        cursor: pointer; text-align: left;
+      }
+      .local-practice-data__card-head::after {
+        content: '▾'; font-size: 11px; opacity: .55; transition: transform 160ms ease;
+      }
+      .local-practice-data__card.is-expanded .local-practice-data__card-head::after {
+        transform: rotate(180deg);
+      }
+      .local-practice-data__card-body {
+        padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px;
       }
       .local-practice-data__status[data-kind="error"] { color: #6b2e24; }
       .local-practice-data__heading {
         display: flex; gap: 8px; align-items: flex-start;
-        margin: 0 0 6px; font-weight: 650; color: #6b2e24;
+        margin: 0; font-weight: 650; color: #6b2e24;
       }
       .local-practice-data__heading-icon { flex: none; }
-      .local-practice-data__lead { margin: 0 0 8px; }
+      .local-practice-data__lead { margin: 0; }
       .local-practice-data__warning {
-        margin: 8px 0; padding: 8px 10px; border-radius: 10px;
+        margin: 0; padding: 8px 10px; border-radius: 10px;
         background: rgba(200,140,40,.12); border: 1px solid rgba(200,140,40,.25);
       }
       .local-practice-data__info {
-        margin: 8px 0; padding: 8px 10px; border-radius: 10px;
+        margin: 0; padding: 8px 10px; border-radius: 10px;
         background: rgba(90,120,150,.08); border: 1px solid rgba(90,120,150,.18);
       }
-      .local-practice-data__preview table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+      .local-practice-data__preview table { width: 100%; border-collapse: collapse; margin: 0; font-size: 12px; }
       .local-practice-data__preview th, .local-practice-data__preview td {
         text-align: left; padding: 4px 6px; border-bottom: 1px solid rgba(139,115,85,.12);
       }
       .local-practice-data__preview td.import-accent { font-weight: 600; color: #5a4028; }
-      .local-practice-data__confirm { display: flex; gap: 8px; align-items: flex-start; margin: 10px 0; }
+      .local-practice-data__confirm { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
       .local-practice-data__confirm-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     `;
     document.head.appendChild(style);
   }
 
   _refreshStaticCopy() {
+    this.exportHeadBtn.textContent = t('LOCAL_DATA_EXPORT_BTN');
+    this.importHeadBtn.textContent = t('LOCAL_DATA_IMPORT_BTN');
     this.exportBtn.textContent = t('LOCAL_DATA_EXPORT_BTN');
     this.importBtn.textContent = t('LOCAL_DATA_IMPORT_BTN');
     this.cancelBtn.textContent = t('LOCAL_DATA_IMPORT_CANCEL');
@@ -241,15 +281,38 @@ export class LocalPracticeDataUI {
     this.retryBtn.textContent = t('LOCAL_DATA_IMPORT_RETRY');
   }
 
-  _hideExportCard() {
-    this.exportCard.hidden = true;
+  _setExportExpanded(expanded) {
+    this._exportExpanded = expanded;
+    this.exportBody.hidden = !expanded;
+    this.exportCard.classList.toggle('is-expanded', expanded);
+    this.exportHeadBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  }
+
+  _setImportExpanded(expanded) {
+    this._importExpanded = expanded;
+    this.importBody.hidden = !expanded;
+    this.importCard.classList.toggle('is-expanded', expanded);
+    this.importHeadBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  }
+
+  _toggleExportCard() {
+    this._setExportExpanded(!this._exportExpanded);
+  }
+
+  _toggleImportCard() {
+    this._setImportExpanded(!this._importExpanded);
+  }
+
+  _clearExportStatus() {
+    this.exportStatusEl.hidden = true;
     this.exportStatusEl.textContent = '';
     this.exportStatusEl.dataset.kind = '';
   }
 
   _showExportStatus(message, kind = 'ok') {
-    this._resetImportCard();
-    this.exportCard.hidden = false;
+    this._resetImportPreview();
+    this._setExportExpanded(true);
+    this.exportStatusEl.hidden = false;
     this.exportStatusEl.dataset.kind = kind;
     this.exportStatusEl.textContent = message;
   }
@@ -266,7 +329,8 @@ export class LocalPracticeDataUI {
   }
 
   _onPickFile() {
-    this._hideExportCard();
+    this._setImportExpanded(true);
+    this._clearExportStatus();
     this.fileInput.value = '';
     this.fileInput.click();
   }
@@ -274,7 +338,8 @@ export class LocalPracticeDataUI {
   async _onFileSelected() {
     const file = this.fileInput.files?.[0];
     if (!file) return;
-    this._hideExportCard();
+    this._setImportExpanded(true);
+    this._clearExportStatus();
     let text = '';
     try {
       text = await file.text();
@@ -296,7 +361,7 @@ export class LocalPracticeDataUI {
    * @param {import('../core/practiceBackup/practiceBackupSnapshot.js').PracticeBackupSnapshot} snapshot
    */
   _showPreview(snapshot) {
-    this.importCard.hidden = false;
+    this._setImportExpanded(true);
     this.importStatusEl.hidden = true;
     this.retryBtn.hidden = true;
     this.previewEl.hidden = false;
@@ -393,7 +458,7 @@ export class LocalPracticeDataUI {
   }
 
   _showImportError(message) {
-    this.importCard.hidden = false;
+    this._setImportExpanded(true);
     this.previewEl.hidden = true;
     this.headingEl.hidden = true;
     this.leadEl.hidden = true;
@@ -408,13 +473,13 @@ export class LocalPracticeDataUI {
     this._pendingSnapshot = null;
   }
 
-  _resetImportCard() {
-    this.importCard.hidden = true;
+  _resetImportPreview() {
     this._pendingSnapshot = null;
     this._needsOverwriteConfirm = false;
     this.confirmCheck.checked = false;
     this.confirmBtn.disabled = true;
     this.previewEl.replaceChildren();
+    this.previewEl.hidden = true;
     this.headingEl.hidden = true;
     this.leadEl.hidden = true;
     this.warningEl.hidden = true;
@@ -443,8 +508,8 @@ export class LocalPracticeDataUI {
       this._showImportError(t('LOCAL_DATA_IMPORT_ERR_WRITE'));
       return;
     }
-    this._resetImportCard();
-    this.importCard.hidden = false;
+    this._resetImportPreview();
+    this._setImportExpanded(true);
     this.importStatusEl.hidden = false;
     this.importStatusEl.dataset.kind = 'ok';
     this.importStatusEl.textContent = t('LOCAL_DATA_IMPORT_DONE');

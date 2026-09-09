@@ -3275,8 +3275,15 @@ async function init() {
   };
   window.__sceneAnimationSliceA = sceneAnimationSliceA;
   onLocaleChange((locale) => {
+    const snapshot = buildLiveOverlaySnapshot();
+    const overlayBusyForLocaleGreeting = deriveSceneAnimOverlayBusy({
+      ...snapshot,
+      // Language panel is the switch surface — must not block greeting anim.
+      languageOpen: false
+    });
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.LANGUAGE_CHANGED, {
       locale,
+      overlayBusy: overlayBusyForLocaleGreeting,
       // JA book / EN tea: oneshot (no reverse) + ~1s CapCut idle
       playOptions: playOptionsForLocaleGreeting(locale)
     });
@@ -4418,14 +4425,22 @@ async function init() {
 
     const microOpen = microRitualUI?.isOpen() === true;
     const microBreathing = microRitualUI?.phase === 'breath';
+    const ritualBreathing = ritualFlowUI?.isBreathing?.() === true;
     const microElapsed = microBreathing
       ? microRitualUI.getElapsedSeconds()
       : null;
+    const ritualElapsed = ritualBreathing
+      ? ritualFlowUI.getElapsedSeconds()
+      : null;
     const microProgress = microBreathing ? microRitualUI.getProgress() : null;
+    const ritualProgress = ritualBreathing ? ritualFlowUI.getProgress() : null;
+    const overlayBreathing = microBreathing || ritualBreathing;
+    const overlayElapsed = microBreathing ? microElapsed : ritualElapsed;
+    const overlayProgress = microProgress ?? ritualProgress;
 
     const focusLevel =
-      microProgress != null
-        ? microProgress
+      overlayProgress != null
+        ? overlayProgress
         : honestyGlowLevel != null && stateManager.state !== STATES.FOCUSING
           ? honestyGlowLevel
           : focusSession.getFocusLevel();
@@ -4470,10 +4485,13 @@ async function init() {
           }, 120);
         }
       });
-    } else if (microBreathing) {
+    } else if (overlayBreathing) {
       sessionCues.tickInterval({
-        elapsedSeconds: microElapsed ?? 0,
-        targetSeconds: (microRitualUI?.getDurationMinutes?.() ?? 1) * 60,
+        elapsedSeconds: overlayElapsed ?? 0,
+        targetSeconds:
+          ((microBreathing
+            ? microRitualUI?.getDurationMinutes?.()
+            : ritualFlowUI?.getDurationMinutes?.()) ?? 1) * 60,
         ambient: ambientSoundscape
       });
     }
@@ -4483,11 +4501,13 @@ async function init() {
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
-      treatAsFocusing: microBreathing,
-      liveElapsedSeconds: microElapsed,
-      focusLevelOverride: microProgress,
-      sessionTargetMinutes: microBreathing
-        ? microRitualUI?.getDurationMinutes?.()
+      treatAsFocusing: overlayBreathing,
+      liveElapsedSeconds: overlayElapsed,
+      focusLevelOverride: overlayProgress,
+      sessionTargetMinutes: overlayBreathing
+        ? microBreathing
+          ? microRitualUI?.getDurationMinutes?.()
+          : ritualFlowUI?.getDurationMinutes?.()
         : focusSession.targetMinutes
     });
     weeklyPracticeHeatmap.render({
