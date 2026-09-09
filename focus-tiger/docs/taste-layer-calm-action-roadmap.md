@@ -91,7 +91,7 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 | 序 | 项 | 依赖 | Brief 指针 | 口令 | 状态 |
 |---|---|---|---|---|---|
 | D1 | Calm Action 句包 overlay（Recover+Arrive） | **C1+C2 已合**（#625/#665） | `task-calm-action-copy-overlay.md` | 「开工 Calm Action overlay」 | ✅ **#670 已合**（生产已部署） |
-| D1b | Calm Action Reflect overlay 扩面 | **C4 已合**（#672/#674） | `task-calm-action-reflect-overlay.md` | 「同意开工 Reflect overlay」 | 📋 **本旁支** |
+| D1b | Calm Action Reflect overlay 扩面 | **C4 已合**（#672/#674） | `task-calm-action-reflect-overlay.md` | 「同意开工 Reflect overlay」 | ✅ **#675 已合**（生产已部署） |
 | D2 | Daily Wisdom 日签 **14→N** | 与 Calm Action **分 PR**；升 `schemaVersion` + 本地兜底 | `task-daily-wisdom-expand.md`（待建） | 「开工日签扩容」 | ⏸ 后排 |
 | D3 | Quiet Line §四 8 条候选审定 | 内容审定 + overlay | 扩 `#543` 或 locale | 「开工 Quiet Line 扩句」 | ✅ **2026-09-06 已接线**（schema 2 · 29 键） |
 
