@@ -28,6 +28,11 @@ on:
       - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/scripts/audit-practice-coverage.js'
+      - 'focus-tiger/scripts/audit-practice-coverage.test.js'
+      - 'focus-tiger/src/core/practiceAggregate.js'
+      - 'focus-tiger/src/core/practiceAggregateConsumerRegistry.js'
+      - 'focus-tiger/docs/practice-aggregate-registry.md'
       - 'focus-tiger/scripts/assemble-tracker.js'
       - 'focus-tiger/docs/TEST_TRACKER.md'
       - 'focus-tiger/docs/tracker-entries/**'
@@ -62,6 +67,11 @@ on:
       - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/scripts/audit-practice-coverage.js'
+      - 'focus-tiger/scripts/audit-practice-coverage.test.js'
+      - 'focus-tiger/src/core/practiceAggregate.js'
+      - 'focus-tiger/src/core/practiceAggregateConsumerRegistry.js'
+      - 'focus-tiger/docs/practice-aggregate-registry.md'
       - 'focus-tiger/scripts/assemble-tracker.js'
       - 'focus-tiger/docs/TEST_TRACKER.md'
       - 'focus-tiger/docs/tracker-entries/**'
@@ -100,5 +110,7 @@ jobs:
         run: node --test scripts/sync-qa-develop-worktree.test.js scripts/check-worktree-hygiene.test.js
       - name: TEST_TRACKER fragment assemble unit smoke
         run: node --test scripts/assemble-tracker.test.js
+      - name: Practice aggregate coverage audit unit smoke
+        run: node --test scripts/audit-practice-coverage.test.js
       - name: Behavioral contracts (gate + scenario smoke)
         run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js

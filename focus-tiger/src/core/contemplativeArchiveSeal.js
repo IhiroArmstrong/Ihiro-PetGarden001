@@ -8,11 +8,10 @@
  * Mustard Seed · Sumeru multi-case scene stays in `mustardSeedSeal.js`.
  */
 
-import { computePracticeScore } from './practiceBadgeAward.js';
 import {
-  readPracticeDaysForTipBadges,
-  summarizePracticeDaysForBadges
-} from './tipKindnessBadges.js';
+  practiceAggregateBadgeSummary,
+  resolvePracticeAggregateFromStorage
+} from './practiceAggregate.js';
 import {
   CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX,
   getMemorialSealEntry,
@@ -130,10 +129,9 @@ export function isContemplativeArchiveSealUnlocked(entryId, score, state) {
  * }}
  */
 export function resolveContemplativeArchiveSeal(storage) {
-  const summary = summarizePracticeDaysForBadges(
-    readPracticeDaysForTipBadges(storage)
-  );
-  const score = computePracticeScore(summary);
+  const aggregate = resolvePracticeAggregateFromStorage(storage);
+  const summary = practiceAggregateBadgeSummary(aggregate);
+  const score = aggregate.score;
   const state = readContemplativeArchiveSealState(storage);
   const revealed = new Set(state.revealedEntryIds);
   const enabledEntries = listEnabledContemplativeArchiveSealEntries();

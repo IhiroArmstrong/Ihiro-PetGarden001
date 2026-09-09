@@ -12,6 +12,7 @@
  *
  * Batch 1 (2026-09-09): Confide `practice_facts` duration / compare / showing-up.
  * Batch 2 (2026-09-09): badges + mustard score + redeem/support wire.
+ * Batch 4 (2026-09-09): consumer registry + CI audit (`audit:practice-coverage`).
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';
