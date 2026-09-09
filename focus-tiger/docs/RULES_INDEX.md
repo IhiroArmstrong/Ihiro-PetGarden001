@@ -248,6 +248,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-09 | `git-pr-task-line-ref`：新增 `.github/workflows/task-line-ref-check.yml` 软提醒；`backfill-open-pr-task-line-refs.sh` 支持 `--merged`；回填 #663–#672 → #644/#637。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 收窄 `git-pr-task-line-ref`：`Closes` 数量按 Issue 类型区分——切片/审计一 PR 一 Closes；Epic 允许多 Closes（耦合信号）；Dependabot/bump 不挂线。移除 `#558`/`#559` 误挂 `#630`。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 修订 `git-pr-task-line-ref`：仓库 auto-close 已关；Epic/切片 PR 统一 `Closes #NNN` 以填充 Projects Linked pull requests 列；`Relates to` 仅作 auto-close 重开时的回退。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 防剽窃层 §3.2.2 补分析师脚注：Dispatcher 同现 B+C = t0/t1；YPE V1 不进 C 不是漏项。不进 rules-authority 机器块 |
