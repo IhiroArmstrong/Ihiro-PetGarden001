@@ -40,18 +40,17 @@ describe('marketing-site Slice 0 contract', () => {
     assert.doesNotMatch(html, /focustiger\.app/i);
   });
 
-  it('keeps www → apex in Pages middleware, not domain-level _redirects', () => {
+  it('keeps www → apex in Pages _worker.js, not domain-level _redirects', () => {
     assert.doesNotMatch(
       redirects,
       /https:\/\/www\.twinsology\.com\/\* https:\/\/twinsology\.com\/:splat 301/
     );
-    const middleware = readFileSync(
-      join(dir, 'functions/_middleware.js'),
-      'utf8'
-    );
-    assert.match(middleware, /www\.twinsology\.com/);
-    assert.match(middleware, /url\.hostname = 'twinsology\.com'/);
-    assert.match(middleware, /Response\.redirect\([^,]+,\s*301\)/);
+    const workerSource = readFileSync(join(dir, '_worker.js'), 'utf8');
+    const redirectSource = readFileSync(join(dir, 'www-redirect.js'), 'utf8');
+    assert.match(redirectSource, /www\.twinsology\.com/);
+    assert.match(redirectSource, /url\.hostname = 'twinsology\.com'/);
+    assert.match(redirectSource, /Response\.redirect\([^,]+,\s*301\)/);
+    assert.match(workerSource, /env\.ASSETS\.fetch/);
   });
 
   it('uses the product wash, not an arcade palette', () => {
