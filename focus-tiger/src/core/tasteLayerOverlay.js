@@ -13,15 +13,16 @@
 import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
 import {
   CALM_ACTION_ARRIVE_EN,
-  CALM_ACTION_RECOVER_EN
+  CALM_ACTION_RECOVER_EN,
+  CALM_ACTION_REFLECT_EN
 } from '../content/calm-action-wisdom/index.js';
 import { COPY_POOLS, getLocale } from '../locales/i18n.js';
 
 export const TASTE_LAYER_SCHEMA_VERSION = 1;
 /** Quiet Line mixed-pool overlay only; other taste slices stay on schema 1. */
 export const QUIET_LINE_OVERLAY_SCHEMA_VERSION = 2;
-/** Calm Action Recover + Arrive pool overlay (C1+C2 runtime). */
-export const CALM_ACTION_OVERLAY_SCHEMA_VERSION = 1;
+/** Calm Action Recover + Arrive + Reflect pool overlay (C1+C2+C4 runtime). */
+export const CALM_ACTION_OVERLAY_SCHEMA_VERSION = 2;
 
 const RISE_KEYS = new Set(['riseStretchCasual', 'teaDrinking', 'bookReading']);
 const WELCOME_KEYS = new Set(['magicBookReading', 'nodGreeting']);
@@ -70,8 +71,12 @@ export const CALM_ACTION_RECOVER_IDS = Object.freeze(
 export const CALM_ACTION_ARRIVE_IDS = Object.freeze(
   CALM_ACTION_ARRIVE_EN.map((e) => e.id)
 );
+export const CALM_ACTION_REFLECT_IDS = Object.freeze(
+  CALM_ACTION_REFLECT_EN.map((e) => e.id)
+);
 const CALM_ACTION_RECOVER_ID_SET = new Set(CALM_ACTION_RECOVER_IDS);
 const CALM_ACTION_ARRIVE_ID_SET = new Set(CALM_ACTION_ARRIVE_IDS);
+const CALM_ACTION_REFLECT_ID_SET = new Set(CALM_ACTION_REFLECT_IDS);
 
 /** @typedef {{ key: string, weight: number }} WeightedEntry */
 /** @typedef {{ id: string, text: string, attribution?: string }} DailyWisdomEntry */
@@ -116,7 +121,8 @@ const CALM_ACTION_ARRIVE_ID_SET = new Set(CALM_ACTION_ARRIVE_IDS);
  * @typedef {{
  *   locale: string,
  *   recover: ReadonlyArray<{ id: string, text: string }>,
- *   arrive: ReadonlyArray<{ id: string, text: string }>
+ *   arrive: ReadonlyArray<{ id: string, text: string }>,
+ *   reflect: ReadonlyArray<{ id: string, text: string }>
  * }} TasteCalmActionCopyOverlay
  */
 
@@ -419,11 +425,17 @@ export function parseCalmActionCopyOverlay(body, expectedLocale) {
     CALM_ACTION_ARRIVE_ID_SET,
     CALM_ACTION_ARRIVE_IDS.length
   );
-  if (!recover || !arrive) return null;
+  const reflect = parseCalmActionPoolSlice(
+    o.reflect,
+    CALM_ACTION_REFLECT_ID_SET,
+    CALM_ACTION_REFLECT_IDS.length
+  );
+  if (!recover || !arrive || !reflect) return null;
   return {
     locale: have,
     recover,
-    arrive
+    arrive,
+    reflect
   };
 }
 
@@ -613,6 +625,19 @@ export function overlayCalmActionArriveTextForId(id, locale) {
   const want = locale === 'ja' ? 'ja' : 'en';
   if (calmActionCopyOverlay.locale !== want) return null;
   const row = calmActionCopyOverlay.arrive.find((e) => e.id === id);
+  return row?.text || null;
+}
+
+/**
+ * @param {string} id
+ * @param {string} [locale]
+ * @returns {string | null}
+ */
+export function overlayCalmActionReflectTextForId(id, locale) {
+  if (!calmActionCopyOverlay || !id) return null;
+  const want = locale === 'ja' ? 'ja' : 'en';
+  if (calmActionCopyOverlay.locale !== want) return null;
+  const row = calmActionCopyOverlay.reflect.find((e) => e.id === id);
   return row?.text || null;
 }
 

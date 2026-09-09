@@ -18,8 +18,10 @@ import {
 	CALM_ACTION_ARRIVE_IDS,
 	CALM_ACTION_OVERLAY_SCHEMA_VERSION,
 	CALM_ACTION_RECOVER_IDS,
+	CALM_ACTION_REFLECT_IDS,
 	tasteCalmActionArrivePool,
 	tasteCalmActionRecoverPool,
+	tasteCalmActionReflectPool,
 } from "./tasteCalmActionCopyFreeze.ts";
 import {
 	QUIET_LINE_OVERLAY_SCHEMA_VERSION,
@@ -117,14 +119,17 @@ describe("taste-layer freeze tables", () => {
 		);
 	});
 
-	it("calm-action copy freeze has 14 recover + 14 arrive ids and schema 1", () => {
-		assert.equal(CALM_ACTION_OVERLAY_SCHEMA_VERSION, 1);
+	it("calm-action copy freeze has 14 recover + 14 arrive + 20 reflect ids and schema 2", () => {
+		assert.equal(CALM_ACTION_OVERLAY_SCHEMA_VERSION, 2);
 		assert.equal(CALM_ACTION_RECOVER_IDS.length, 14);
 		assert.equal(CALM_ACTION_ARRIVE_IDS.length, 14);
+		assert.equal(CALM_ACTION_REFLECT_IDS.length, 20);
 		const enRecover = tasteCalmActionRecoverPool("en");
 		const jaRecover = tasteCalmActionRecoverPool("ja");
 		const enArrive = tasteCalmActionArrivePool("en");
 		const jaArrive = tasteCalmActionArrivePool("ja");
+		const enReflect = tasteCalmActionReflectPool("en");
+		const jaReflect = tasteCalmActionReflectPool("ja");
 		assert.deepEqual(
 			enRecover.map((e) => e.id),
 			[...CALM_ACTION_RECOVER_IDS],
@@ -143,5 +148,14 @@ describe("taste-layer freeze tables", () => {
 		);
 		assert.equal(enRecover[0].id, "CAW-R01");
 		assert.equal(enArrive[0].id, "CAW-A01");
+		assert.deepEqual(
+			enReflect.map((e) => e.id),
+			[...CALM_ACTION_REFLECT_IDS],
+		);
+		assert.deepEqual(
+			jaReflect.map((e) => e.id),
+			enReflect.map((e) => e.id),
+		);
+		assert.equal(enReflect[0].id, "CAW-L01");
 	});
 });

@@ -1,6 +1,6 @@
 export type CalmActionCopyEntry = { id: string; text: string };
 
-export const CALM_ACTION_OVERLAY_SCHEMA_VERSION = 1 as const;
+export const CALM_ACTION_OVERLAY_SCHEMA_VERSION = 2 as const;
 
 export const CALM_ACTION_RECOVER_IDS = [
 	"CAW-R01",
@@ -34,6 +34,29 @@ export const CALM_ACTION_ARRIVE_IDS = [
 	"CAW-A12",
 	"CAW-A13",
 	"CAW-A14",
+] as const;
+
+export const CALM_ACTION_REFLECT_IDS = [
+	"CAW-L01",
+	"CAW-L02",
+	"CAW-L03",
+	"CAW-L04",
+	"CAW-L05",
+	"CAW-L06",
+	"CAW-L07",
+	"CAW-L08",
+	"CAW-L09",
+	"CAW-L10",
+	"CAW-L11",
+	"CAW-L12",
+	"CAW-L13",
+	"CAW-L14",
+	"CAW-L15",
+	"CAW-L16",
+	"CAW-L17",
+	"CAW-L18",
+	"CAW-L19",
+	"CAW-L20",
 ] as const;
 
 const EN_RECOVER: CalmActionCopyEntry[] = [
@@ -191,6 +214,169 @@ const JA_ARRIVE: CalmActionCopyEntry[] = [
 	{ id: "CAW-A14", text: "始めることを、もっと簡単にしよう。" },
 ];
 
+const EN_REFLECT: CalmActionCopyEntry[] = [
+	{
+		id: "CAW-L01",
+		text: "A good day does not have to be a perfect day.",
+	},
+	{
+		id: "CAW-L02",
+		text: "You do not need to keep pace with everyone.",
+	},
+	{
+		id: "CAW-L03",
+		text: "Your pace is allowed to be your own.",
+	},
+	{
+		id: "CAW-L04",
+		text: "Small actions become powerful when repeated.",
+	},
+	{ id: "CAW-L05", text: "You showed up. That matters." },
+	{
+		id: "CAW-L06",
+		text: "A small finish can still be meaningful.",
+	},
+	{
+		id: "CAW-L07",
+		text: "Not every win needs to be loud.",
+	},
+	{
+		id: "CAW-L08",
+		text: "You moved forward today. That is enough.",
+	},
+	{
+		id: "CAW-L09",
+		text: "Progress is rarely a straight line.",
+	},
+	{
+		id: "CAW-L10",
+		text: "You are still growing, even when it feels slow.",
+	},
+	{
+		id: "CAW-L11",
+		text: "Notice what went well before you judge the rest.",
+	},
+	{
+		id: "CAW-L12",
+		text: "You did what you could with the day you had.",
+	},
+	{
+		id: "CAW-L13",
+		text: "You are allowed to leave some things undone.",
+	},
+	{
+		id: "CAW-L14",
+		text: "A quiet ending can still be a good ending.",
+	},
+	{
+		id: "CAW-L15",
+		text: "Take the lesson. Leave the weight behind.",
+	},
+	{
+		id: "CAW-L16",
+		text: "Today is complete, even if everything is not.",
+	},
+	{
+		id: "CAW-L17",
+		text: "Consistency does not have to look impressive.",
+	},
+	{
+		id: "CAW-L18",
+		text: "You are building more than today's result.",
+	},
+	{
+		id: "CAW-L19",
+		text: "There is no need to become someone overnight.",
+	},
+	{
+		id: "CAW-L20",
+		text: "The life you want is shaped by what you repeat.",
+	},
+];
+
+const JA_REFLECT: CalmActionCopyEntry[] = [
+	{
+		id: "CAW-L01",
+		text: "良い一日は、完璧な一日でなくていい。",
+	},
+	{
+		id: "CAW-L02",
+		text: "誰もが同じペースで進む必要はない。",
+	},
+	{
+		id: "CAW-L03",
+		text: "自分のペースは、自分だけのものでいい。",
+	},
+	{
+		id: "CAW-L04",
+		text: "小さな行動も、続ければ大きな力になる。",
+	},
+	{
+		id: "CAW-L05",
+		text: "ここまで来た。それだけでも意味がある。",
+	},
+	{
+		id: "CAW-L06",
+		text: "小さな達成にも、十分な意味がある。",
+	},
+	{
+		id: "CAW-L07",
+		text: "すべての達成を、大げさに祝う必要はない。",
+	},
+	{
+		id: "CAW-L08",
+		text: "今日は前に進めた。それだけで十分。",
+	},
+	{
+		id: "CAW-L09",
+		text: "成長は、まっすぐな線を描くものではない。",
+	},
+	{
+		id: "CAW-L10",
+		text: "ゆっくりに感じても、あなたは進み続けている。",
+	},
+	{
+		id: "CAW-L11",
+		text: "足りなかったことを見る前に、うまくいったことにも目を向けよう。",
+	},
+	{
+		id: "CAW-L12",
+		text: "今日という一日の中で、できることをやった。",
+	},
+	{
+		id: "CAW-L13",
+		text: "やり残したことがあっても、大丈夫。",
+	},
+	{
+		id: "CAW-L14",
+		text: "静かな終わり方でも、良い一日は終えられる。",
+	},
+	{
+		id: "CAW-L15",
+		text: "学びだけを持ち帰り、重さはここに置いていこう。",
+	},
+	{
+		id: "CAW-L16",
+		text: "すべてが終わらなくても、今日という一日は終わる。",
+	},
+	{
+		id: "CAW-L17",
+		text: "続けることは、いつも華やかでなくていい。",
+	},
+	{
+		id: "CAW-L18",
+		text: "あなたが積み上げているのは、今日の結果だけではない。",
+	},
+	{
+		id: "CAW-L19",
+		text: "一晩で、別の自分になる必要はない。",
+	},
+	{
+		id: "CAW-L20",
+		text: "望む人生は、毎日繰り返すことによって形づくられていく。",
+	},
+];
+
 export function tasteCalmActionRecoverPool(
 	locale: string,
 ): CalmActionCopyEntry[] {
@@ -201,4 +387,10 @@ export function tasteCalmActionArrivePool(
 	locale: string,
 ): CalmActionCopyEntry[] {
 	return locale === "ja" ? JA_ARRIVE : EN_ARRIVE;
+}
+
+export function tasteCalmActionReflectPool(
+	locale: string,
+): CalmActionCopyEntry[] {
+	return locale === "ja" ? JA_REFLECT : EN_REFLECT;
 }

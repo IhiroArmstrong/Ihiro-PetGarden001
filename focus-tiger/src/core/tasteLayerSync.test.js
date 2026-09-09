@@ -34,7 +34,8 @@ import {
 } from './tasteLayerOverlay.js';
 import {
   CALM_ACTION_ARRIVE_EN,
-  CALM_ACTION_RECOVER_EN
+  CALM_ACTION_RECOVER_EN,
+  CALM_ACTION_REFLECT_EN
 } from '../content/calm-action-wisdom/index.js';
 import {
   flushPendingTasteLayerApply,
@@ -95,7 +96,8 @@ const freezeCalmActionCopy = {
   schemaVersion: CALM_ACTION_OVERLAY_SCHEMA_VERSION,
   locale: 'en',
   recover: CALM_ACTION_RECOVER_EN.map((e) => ({ id: e.id, text: e.text })),
-  arrive: CALM_ACTION_ARRIVE_EN.map((e) => ({ id: e.id, text: e.text }))
+  arrive: CALM_ACTION_ARRIVE_EN.map((e) => ({ id: e.id, text: e.text })),
+  reflect: CALM_ACTION_REFLECT_EN.map((e) => ({ id: e.id, text: e.text }))
 };
 
 function tastePostJson(path, weightOverride) {

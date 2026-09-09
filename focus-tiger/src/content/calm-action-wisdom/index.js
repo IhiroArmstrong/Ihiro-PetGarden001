@@ -16,7 +16,8 @@ import { CALM_ACTION_REFLECT_EN } from './calm-action-reflect.en.js';
 import { CALM_ACTION_REFLECT_JA } from './calm-action-reflect.ja.js';
 import {
   overlayCalmActionArriveTextForId,
-  overlayCalmActionRecoverTextForId
+  overlayCalmActionRecoverTextForId,
+  overlayCalmActionReflectTextForId
 } from '../../core/tasteLayerOverlay.js';
 
 /** @typedef {{ id: string, text: string }} CalmActionRecoverEntry */
@@ -106,6 +107,8 @@ export function getCalmActionReflectPool(locale = 'en') {
 export function findCalmActionReflectEntry(id, locale = 'en') {
   const key = String(id || '');
   if (!key) return null;
+  const overlayText = overlayCalmActionReflectTextForId(key, locale);
+  if (overlayText) return { id: key, text: overlayText };
   const preferred = getCalmActionReflectPool(locale).find((e) => e.id === key);
   if (preferred) return preferred;
   return REFLECT_POOLS.en.find((e) => e.id === key) ?? null;
