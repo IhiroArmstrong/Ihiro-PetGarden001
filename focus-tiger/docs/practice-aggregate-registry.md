@@ -2,6 +2,7 @@
 
 > **Status**: Batch 4 wired (2026-09-09) · registry SSOT + CI audit  
 > **Companion code**: `src/core/practiceAggregate.js` · `src/core/practiceAggregateConsumerRegistry.js`  
+> **Growth governance**: `GROWTH_METRICS_CHARTER.md` · `growthMetricsRegistry.js` · persona CI `audit:growth-metrics`  
 > **Related**: `TODAY_PRACTICE_SEMANTICS_AUDIT.md` (today / write hooks) · `SHARED_RESOURCES.md` §1 (store semantics)
 
 ---
@@ -156,6 +157,7 @@ Planned script: `npm run audit:practice-coverage` (wired in `docs:check` · Batc
 | **2** | Badges + mustard score → `aggregate.score`; wire redeem/support to same API | **Done** (#682) — tip/sanctuary badges + mustard seal on aggregate; redeem/support wired |
 | **3** | Mustard auto-offer ceremony on any baseline completion | **Done** (#683) — Honesty + Breath completion paths share `maybeOfferGrowthSealAfterBaselineCeremony` |
 | **4** | Registry + audit script in CI | **Done** — `practiceAggregateConsumerRegistry.js` + `npm run audit:practice-coverage` in `docs:check` |
+| **5** | Growth metrics charter + persona regression | **Done** — `GROWTH_METRICS_CHARTER.md` + `growthMetricsRegistry.js` + `npm run audit:growth-metrics` in `docs:check` |
 
 **Out of scope**: write hooks, new Store, Celebrating / tea tip / DORMANT / RitualFlow / Arrival.
 
@@ -170,4 +172,5 @@ Planned script: `npm run audit:practice-coverage` (wired in `docs:check` · Batc
 | 2026-09-09 | Batch 2: tip/sanctuary badges + mustard seal score on aggregate; focus-coins redeem + support modal on same API |
 | 2026-09-09 | Batch 3: mustard / archive auto-offer wired to Honesty + Breath baseline completion ceremonies |
 | 2026-09-09 | Batch 4: machine registry + `audit:practice-coverage` in docs:check; contemplative archive score on aggregate |
+| 2026-09-10 | Batch 5 (governance): `GROWTH_METRICS_CHARTER.md` + persona regression CI; TEST_TRACKER qaSeedStreak=21 |
 | 2026-09-07 | Add `recover-reset-breath` intentional exclude (Reset MVP cross-line alignment) |

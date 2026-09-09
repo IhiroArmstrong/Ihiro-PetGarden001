@@ -49,7 +49,9 @@
     "i18n:sync": "node scripts/i18n-sync.js",
     "confide:dump-observation": "node scripts/dump-confide-observation.js",
     "audit:practice-coverage": "node scripts/audit-practice-coverage.js",
-    "audit:practice-coverage:sync": "node scripts/audit-practice-coverage.js --write"
+    "audit:practice-coverage:sync": "node scripts/audit-practice-coverage.js --write",
+    "audit:growth-metrics": "node scripts/audit-growth-metrics.js",
+    "audit:growth-metrics:sync": "node scripts/audit-growth-metrics.js --write"
   },
   "dependencies": {
     "lit": "^3.3.3",
