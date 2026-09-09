@@ -528,6 +528,8 @@ export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
   'CalmActionRecoverCardUI.js',
   'CalmActionArriveCardUI.js',
   'TransitionMomentUI.js',
+  'RecoverResetOfferUI.js',
+  'RecoverResetPracticeUI.js',
   'FocusCircleWitnessLeaveUI.js',
   'OnboardingHintsUI.js'
 ]);
@@ -572,6 +574,8 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
   'TransitionMomentUI.js': [OVERLAY_SOURCES.TRANSITION_MOMENT],
+  'RecoverResetOfferUI.js': [OVERLAY_SOURCES.RECOVER_RESET_OFFER],
+  'RecoverResetPracticeUI.js': [OVERLAY_SOURCES.RECOVER_RESET_PRACTICE],
   'FocusCircleWitnessLeaveUI.js': [
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_RESPOND
