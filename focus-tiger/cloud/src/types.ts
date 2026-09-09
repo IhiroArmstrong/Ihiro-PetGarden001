@@ -110,6 +110,7 @@ export interface CalmActionCopyResponse {
 	locale: string;
 	recover: Array<{ id: string; text: string }>;
 	arrive: Array<{ id: string; text: string }>;
+	reflect: Array<{ id: string; text: string }>;
 	variantSeed: string;
 }
 

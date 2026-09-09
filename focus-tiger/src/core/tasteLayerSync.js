@@ -21,7 +21,9 @@ import {
   CALM_ACTION_ARRIVE_EN,
   CALM_ACTION_ARRIVE_JA,
   CALM_ACTION_RECOVER_EN,
-  CALM_ACTION_RECOVER_JA
+  CALM_ACTION_RECOVER_JA,
+  CALM_ACTION_REFLECT_EN,
+  CALM_ACTION_REFLECT_JA
 } from '../content/calm-action-wisdom/index.js';
 import {
   HONESTY_LONG_MIN_MINUTES,
@@ -202,9 +204,11 @@ export function tasteCalmActionCopyOverlayMatchesLocalFreeze(parsed, locale) {
   if (parsed.locale !== want) return false;
   const recoverPool = want === 'ja' ? CALM_ACTION_RECOVER_JA : CALM_ACTION_RECOVER_EN;
   const arrivePool = want === 'ja' ? CALM_ACTION_ARRIVE_JA : CALM_ACTION_ARRIVE_EN;
+  const reflectPool = want === 'ja' ? CALM_ACTION_REFLECT_JA : CALM_ACTION_REFLECT_EN;
   return (
     calmActionPoolTextsMatch(parsed.recover, recoverPool) &&
-    calmActionPoolTextsMatch(parsed.arrive, arrivePool)
+    calmActionPoolTextsMatch(parsed.arrive, arrivePool) &&
+    calmActionPoolTextsMatch(parsed.reflect, reflectPool)
   );
 }
 

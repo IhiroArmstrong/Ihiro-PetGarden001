@@ -4,13 +4,21 @@
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { afterEach, test } from 'node:test';
 import {
   CALM_ACTION_REFLECT_EN,
   findCalmActionReflectEntry,
   getCalmActionReflectPool
 } from '../content/calm-action-wisdom/index.js';
 import { CalmActionReflectStore } from './CalmActionReflectStore.js';
+import {
+  resetTasteLayerOverlayForTests,
+  setTasteCalmActionCopyOverlay
+} from './tasteLayerOverlay.js';
+
+afterEach(() => {
+  resetTasteLayerOverlayForTests();
+});
 
 test('Calm Action Reflect pool has 20 ids with en + ja text', () => {
   assert.equal(CALM_ACTION_REFLECT_EN.length, 20);
@@ -34,4 +42,15 @@ test('CalmActionReflectStore locks one id per calendar day', () => {
 
 test('findCalmActionReflectEntry returns null for unknown id', () => {
   assert.equal(findCalmActionReflectEntry('CAW-L99', 'en'), null);
+});
+
+test('findCalmActionReflectEntry prefers cloud overlay text for known id', () => {
+  setTasteCalmActionCopyOverlay({
+    locale: 'en',
+    recover: [],
+    arrive: [],
+    reflect: [{ id: 'CAW-L01', text: 'Cloud reflect line.' }]
+  });
+  const row = findCalmActionReflectEntry('CAW-L01', 'en');
+  assert.equal(row?.text, 'Cloud reflect line.');
 });

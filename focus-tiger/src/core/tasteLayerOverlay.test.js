@@ -30,7 +30,8 @@ import {
 import { CONFIDE_CORPUS } from './confide/confideCorpus.js';
 import {
   CALM_ACTION_ARRIVE_EN,
-  CALM_ACTION_RECOVER_EN
+  CALM_ACTION_RECOVER_EN,
+  CALM_ACTION_REFLECT_EN
 } from '../content/calm-action-wisdom/index.js';
 
 afterEach(() => {
@@ -239,22 +240,25 @@ function freezeCalmActionBody(overrides = {}) {
     locale: 'en',
     recover: CALM_ACTION_RECOVER_EN.map((e) => ({ id: e.id, text: e.text })),
     arrive: CALM_ACTION_ARRIVE_EN.map((e) => ({ id: e.id, text: e.text })),
+    reflect: CALM_ACTION_REFLECT_EN.map((e) => ({ id: e.id, text: e.text })),
     ...overrides
   };
 }
 
-test('parseCalmActionCopyOverlay accepts freeze 14 recover + 14 arrive ids', () => {
+test('parseCalmActionCopyOverlay accepts freeze 14 recover + 14 arrive + 20 reflect ids', () => {
   const parsed = parseCalmActionCopyOverlay(freezeCalmActionBody(), 'en');
   assert.ok(parsed);
   assert.equal(parsed.locale, 'en');
   assert.equal(parsed.recover.length, 14);
   assert.equal(parsed.arrive.length, 14);
+  assert.equal(parsed.reflect.length, 20);
   assert.equal(parsed.recover[0].id, 'CAW-R01');
+  assert.equal(parsed.reflect[0].id, 'CAW-L01');
 });
 
 test('parseCalmActionCopyOverlay rejects unknown schema, locale mismatch, and illegal ids', () => {
   assert.equal(
-    parseCalmActionCopyOverlay({ ...freezeCalmActionBody(), schemaVersion: 2 }, 'en'),
+    parseCalmActionCopyOverlay({ ...freezeCalmActionBody(), schemaVersion: 1 }, 'en'),
     null
   );
   assert.equal(parseCalmActionCopyOverlay(freezeCalmActionBody({ locale: 'ja' }), 'en'), null);

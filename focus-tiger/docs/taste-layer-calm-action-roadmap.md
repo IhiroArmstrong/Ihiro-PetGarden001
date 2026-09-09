@@ -25,7 +25,7 @@
 Layer A  已完成管道（#349/#543/#548…）          ✅ 不必回头重做
 Layer B  产品硬前置（冷启动审计等）              ⏳ 与 C 并行时可插队，但不挡 C 口令
 Layer C  Calm Action 运行时（Recover → Arrive → Reflect）  ▶ Reflect 本旁支
-Layer D  Calm Action / Daily Wisdom overlay      ✅ D1 已合 · Reflect overlay 后排
+Layer D  Calm Action / Daily Wisdom overlay      ✅ D1 已合 · 📋 Reflect overlay 本旁支
 Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 权重分叉冻结
 ```
 
@@ -90,7 +90,8 @@ Layer E  后排三池 + 权重分叉                      ⏸ 另口令 · D3 �
 
 | 序 | 项 | 依赖 | Brief 指针 | 口令 | 状态 |
 |---|---|---|---|---|---|
-| D1 | Calm Action 句包 overlay | **C1+C2 已合**（#625/#665） | `task-calm-action-copy-overlay.md` | 「开工 Calm Action overlay」 | ✅ **#670 已合**（生产已部署） |
+| D1 | Calm Action 句包 overlay（Recover+Arrive） | **C1+C2 已合**（#625/#665） | `task-calm-action-copy-overlay.md` | 「开工 Calm Action overlay」 | ✅ **#670 已合**（生产已部署） |
+| D1b | Calm Action Reflect overlay 扩面 | **C4 已合**（#672/#674） | `task-calm-action-reflect-overlay.md` | 「同意开工 Reflect overlay」 | 📋 **本旁支** |
 | D2 | Daily Wisdom 日签 **14→N** | 与 Calm Action **分 PR**；升 `schemaVersion` + 本地兜底 | `task-daily-wisdom-expand.md`（待建） | 「开工日签扩容」 | ⏸ 后排 |
 | D3 | Quiet Line §四 8 条候选审定 | 内容审定 + overlay | 扩 `#543` 或 locale | 「开工 Quiet Line 扩句」 | ✅ **2026-09-06 已接线**（schema 2 · 29 键） |
 
@@ -167,6 +168,6 @@ W5+     口令触发 D2 日签 / D3 QL      E 区仅在有调参目标时
 | 字段 | 值 |
 |---|---|
 | 日期 | 2026-09-09 |
-| 拍板 | D1 Recover · D2 Arrive · D3 权重暂不分叉 · Reflect 第三场景 |
-| 下一口令 | **「开工 Calm Action Reflect」**（C4 本旁支）→ 后排 Transition / Focus 标语 |
+| 拍板 | D1 Recover+Arrive overlay · C4 Reflect 运行时 · Reflect overlay 本旁支 |
+| 下一口令 | **Reflect overlay 本旁支** → 后排 Transition / Focus 标语 / D2 日签 |
 | develop 对照 | 排期编写时 `origin/develop` tip `6418153e`（若漂移以 git 为准） |

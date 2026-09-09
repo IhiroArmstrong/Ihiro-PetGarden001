@@ -75,7 +75,7 @@
 |---|---|---|---|
 | **Arrive** | Sit 前 / Arrival 欢迎后 | ✅ C2 #665 + D1 overlay #670 | 降启动门槛 |
 | **Recover** | 打断回来之后 | ✅ C1 #625 + D1 overlay #670 | **不替换** toast |
-| **Reflect** | Reflection 完成页 | ✅ C4 #672 + 时序渐显 | 三问阶段仅许可句；结算页再 Daily Wisdom（禁止同框叠两句） |
+| **Reflect** | Reflection 完成页 | ✅ C4 #672 + 时序渐显 · 📋 Reflect overlay 本旁支 | 三问阶段仅许可句；结算页再 Daily Wisdom（禁止同框叠两句） |
 | **Focus** | 倒计时页可选标语 | ⏸ 未立项 | **仅 S**、低频；禁止轮播 |
 | **Transition** | 任务切换 | ⏸ 入口空白 | 只入库 |
 
@@ -221,8 +221,9 @@ Focusing HUD 若接线：只用 F01–F03、F08、F09（S）。F04/F12 给开始
 
 1. ✅ Quiet Line §四 8 条 → `INSIGHT_15–22`（overlay schema 2 · 2026-09-06）。  
 2. ✅ Calm Action Recover（C1 #625）→ Arrive（C2 #665）→ overlay D1（#670 · Recover+Arrive 云句包）。  
-3. 📋 **Reflect 完成页**（C4 · 口令「开工 Calm Action Reflect」）——本旁支。  
-4. ⏸ 后排：Transition（入口空白）· Focus 标语（默认不做轮播）· Reflect overlay（另 PR）。  
-5. 禁止把 Action 句灌进 Quiet Line / Daily Wisdom；禁止本 PR 改 `en.json` Quiet Line 键。
+3. ✅ **Reflect 完成页**（C4 #672 + #674 时序渐显）。  
+4. 📋 **Reflect overlay**（D1 扩面 · schema 2 · 口令「同意开工 Reflect overlay」）——本旁支。  
+5. ⏸ 后排：Transition（入口空白）· Focus 标语（默认不做轮播）。  
+6. 禁止把 Action 句灌进 Quiet Line / Daily Wisdom；禁止本 PR 改 `en.json` Quiet Line 键。
 
-修订：2026-09-05 初稿。2026-09-06：QL 8 条 + 四池指针。2026-09-09：Recover/Arrive/overlay 已合；Reflect 开工。
+修订：2026-09-05 初稿。2026-09-06：QL 8 条 + 四池指针。2026-09-09：Recover/Arrive/overlay 已合；Reflect 运行时 #672；Reflect overlay 本旁支。
