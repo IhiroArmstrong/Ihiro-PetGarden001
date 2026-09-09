@@ -410,7 +410,8 @@ export function mustardSeedSealBadgeSrc(
 }
 
 /**
- * Pure gate for post-completion auto offer (timed session ceremony only).
+ * Pure gate for post-completion auto offer after any baseline practice ceremony
+ * (timed Sit, Honesty check-in, Breath micro-ritual).
  * Prefer `hasUnrevealedCase` (second verse still pending after case 1).
  * If omitted, falls back to legacy `revealed !== true`.
  * @param {{

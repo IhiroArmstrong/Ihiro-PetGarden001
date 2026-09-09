@@ -1188,8 +1188,14 @@ async function init() {
     withIdleOverlayOccupancySync({})
   );
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
-  /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
-  let pendingReflectionAfterMustardSeed = null;
+  /**
+   * Continuation after mustard / contemplative archive auto card closes.
+   * @type {null | {
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }}
+   */
+  let pendingAfterMustardSeed = null;
   const mustardSeedSealCardUI = new MustardSeedSealCardUI(document.body, {
     storage: typeof localStorage !== 'undefined' ? localStorage : null,
     onOpen: () => {
@@ -1198,10 +1204,12 @@ async function init() {
       resyncSessionChrome();
     },
     onClose: () => {
-      const pending = pendingReflectionAfterMustardSeed;
-      pendingReflectionAfterMustardSeed = null;
-      if (pending) {
-        sessionEndFlow.onSessionEnded(pending);
+      const pending = pendingAfterMustardSeed;
+      pendingAfterMustardSeed = null;
+      if (pending?.sessionEndOpts) {
+        sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
+      } else if (pending?.onContinue) {
+        pending.onContinue();
       } else if (
         !reflectionMoment?.isOpen?.() &&
         !honestyBridge?.isVisible?.()
@@ -1978,17 +1986,17 @@ async function init() {
         syncHonestyIdleEntry();
         syncOnboardingAutoHints();
       };
+      const afterHonestyCeremony = () => {
+        maybeOfferGrowthSealAfterBaselineCeremony({ onContinue: revealBridge });
+        lotusPondRuntime.releaseBirths();
+      };
       if (nodeId) {
         emotionController.playEmotion('milestoneGlow', {
           milestoneNodeId: nodeId,
-          onComplete: () => {
-            revealBridge();
-            lotusPondRuntime.releaseBirths();
-          }
+          onComplete: afterHonestyCeremony
         });
       } else {
-        revealBridge();
-        lotusPondRuntime.releaseBirths();
+        afterHonestyCeremony();
       }
     },
     onPracticeDay: ({ durationMinutes } = {}) => {
@@ -2839,7 +2847,9 @@ async function init() {
     // Product-equivalent sitting: stash before Reflection so Skip still logs.
     const draft = microRitualJourneyDraft(durationMinutes);
     if (draft) pendingJourneyDraft = draft;
-    sessionEndFlow.onSessionEnded({ completed: true });
+    maybeOfferGrowthSealAfterBaselineCeremony({
+      sessionEndOpts: { completed: true }
+    });
     onFocusCircleRiseSideEffects(durationMinutes * 60);
   }
 
@@ -4101,6 +4111,55 @@ async function init() {
     }
   );
 
+  /**
+   * After any baseline practice completion ceremony (timed Sit, Honesty, Breath),
+   * offer mustard / contemplative archive seal before Reflection or Honesty bridge.
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [opts]
+   * @returns {boolean} true when a seal card was opened
+   */
+  function maybeOfferGrowthSealAfterBaselineCeremony(opts = {}) {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const seal = resolveMustardSeedSeal(storage);
+    if (
+      shouldOfferMustardSeedSealAfterCeremony({
+        completed: true,
+        unlocked: seal.unlocked,
+        hasUnrevealedCase: Boolean(seal.nextCase)
+      })
+    ) {
+      pendingAfterMustardSeed = opts;
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'auto' });
+      return true;
+    }
+    const archive = resolveContemplativeArchiveSeal(storage);
+    if (
+      shouldOfferContemplativeArchiveSealAfterCeremony({
+        completed: true,
+        shouldAutoReveal: archive.shouldAutoReveal
+      }) &&
+      archive.nextEntry
+    ) {
+      pendingAfterMustardSeed = opts;
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({
+        mode: 'auto',
+        archiveEntryId: archive.nextEntry.id
+      });
+      return true;
+    }
+    if (opts.sessionEndOpts) {
+      sessionEndFlow.onSessionEnded(opts.sessionEndOpts);
+    } else if (opts.onContinue) {
+      opts.onContinue();
+    }
+    return false;
+  }
+
   function finishCompletedSession() {
     if (!sessionUiGate.completionPending) return;
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
@@ -4129,38 +4188,7 @@ async function init() {
     };
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
-    const storage =
-      typeof localStorage !== 'undefined' ? localStorage : null;
-    const seal = resolveMustardSeedSeal(storage);
-    if (
-      shouldOfferMustardSeedSealAfterCeremony({
-        completed: true,
-        unlocked: seal.unlocked,
-        hasUnrevealedCase: Boolean(seal.nextCase)
-      })
-    ) {
-      pendingReflectionAfterMustardSeed = endOpts;
-      closeGrowthOverlayCards({ except: 'mustard-seed' });
-      mustardSeedSealCardUI.open({ mode: 'auto' });
-    } else {
-      const archive = resolveContemplativeArchiveSeal(storage);
-      if (
-        shouldOfferContemplativeArchiveSealAfterCeremony({
-          completed: true,
-          shouldAutoReveal: archive.shouldAutoReveal
-        }) &&
-        archive.nextEntry
-      ) {
-        pendingReflectionAfterMustardSeed = endOpts;
-        closeGrowthOverlayCards({ except: 'mustard-seed' });
-        mustardSeedSealCardUI.open({
-          mode: 'auto',
-          archiveEntryId: archive.nextEntry.id
-        });
-      } else {
-        sessionEndFlow.onSessionEnded(endOpts);
-      }
-    }
+    maybeOfferGrowthSealAfterBaselineCeremony({ sessionEndOpts: endOpts });
     onFocusCircleRiseSideEffects(witnessElapsedSeconds);
     onboardingHints?.markSeen('rise-button');
   }

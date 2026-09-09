@@ -74,7 +74,7 @@ Legend: **Gap** = baseline practice sources not reflected in current read path.
 
 | ID | Feature | Trigger | Current read path | Migration target | Gap | Fix batch |
 |---|---|---|---|---|---|---|
-| `mustard-seed-seal-ceremony` | Auto card after completion | Timed Sit ceremony end | `shouldOfferMustardSeedSealAfterCeremony` in `finishCompletedSession` only | Offer when `aggregate.score` crosses + any **baseline** completion ceremony | Honesty/Breath-only users may be unlocked but never auto-offered | **3** |
+| `mustard-seed-seal-ceremony` | Auto card after completion | Any baseline ceremony end | `maybeOfferGrowthSealAfterBaselineCeremony` in timed Sit, Honesty, Breath | Offer when `aggregate.score` crosses + any **baseline** completion ceremony | ✅ Batch 3 — Honesty + Breath wired | **3** |
 | `focus-coins-redeem` | Yin coin shop redeem gates | SKU `minLifetimeMinutes` / `minPracticeDays` | `buildFocusCoinRedeemContext` → lotus + practice-day **count** | Already aligned; consume `aggregate` for one API | None for baseline sources; **badge score still diverges** | **2** (wire only) |
 | `support-modal-tea-first` | Support modal card order | Any recorded practice | lotus `lifetimeMinutes` ∪ practice-day count | `aggregate` | ✅ Aligned on baseline sources | wire only |
 | `lotus-pond-bloom` | Lotus birth / visible blooms | Lifetime minutes | `LotusPondStore` via `notePracticeMinutes` | `aggregate.lifetimeMinutes` | ✅ Write hook aligned | wire only |
@@ -127,8 +127,8 @@ Planned script: `npm run audit:practice-coverage` (not implemented in recon pass
 | Batch | Scope | Risk |
 |---|---|---|
 | **1** | Confide `practice_facts` → aggregate | **Done** (#681) — duration / compare / showing-up on aggregate; Journey kept for usual-time + Arrival ease only |
-| **2** | Badges + mustard score → `aggregate.score`; wire redeem/support to same API | **In progress** (`fix/practice-aggregate-batch-2`) — tip/sanctuary badges + mustard seal on aggregate; redeem/support wired |
-| **3** | Mustard auto-offer ceremony on any baseline completion | Small UX gate change |
+| **2** | Badges + mustard score → `aggregate.score`; wire redeem/support to same API | **Done** (#682) — tip/sanctuary badges + mustard seal on aggregate; redeem/support wired |
+| **3** | Mustard auto-offer ceremony on any baseline completion | **In progress** (`fix/practice-aggregate-batch-3`) — Honesty + Breath completion paths share `maybeOfferGrowthSealAfterBaselineCeremony` |
 | **4** | Registry + audit script in CI | Regression guard |
 
 **Out of scope**: write hooks, new Store, Celebrating / tea tip / DORMANT / RitualFlow / Arrival.
@@ -142,4 +142,5 @@ Planned script: `npm run audit:practice-coverage` (not implemented in recon pass
 | 2026-09-07 | Initial recon registry + `practiceAggregate.js` skeleton (no runtime wiring) |
 | 2026-09-09 | Batch 1: Confide duration/compare/showing-up wired to aggregate; Journey sub-semantics unchanged for usual-time + Arrival ease |
 | 2026-09-09 | Batch 2: tip/sanctuary badges + mustard seal score on aggregate; focus-coins redeem + support modal on same API |
+| 2026-09-09 | Batch 3: mustard / archive auto-offer wired to Honesty + Breath baseline completion ceremonies |
 | 2026-09-07 | Add `recover-reset-breath` intentional exclude (Reset MVP cross-line alignment) |
