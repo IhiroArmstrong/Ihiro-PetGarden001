@@ -311,7 +311,6 @@ import {
   MilestoneGlowStore,
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
-import { applyQaPracticeSeedFromSearch } from './core/qaPracticeSeed.js';
 import { LotusPondStore } from './core/LotusPondStore.js';
 import { GRANT_KIND } from './core/focusCoinsLedger.js';
 import { FocusCoinsStore } from './core/focusCoinsStore.js';
@@ -331,7 +330,6 @@ import {
   COLLECTIONS_WAVE_HELLO_EMOTION_KEY,
   evaluateCollectionsWaveHelloPlay
 } from './core/collectionsWaveHelloGate.js';
-import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import {
@@ -1843,14 +1841,13 @@ async function init() {
     }, 2500);
   }
   const focusSessionEndStore = new FocusSessionEndStore({ now });
-  applyQaPracticeSeedFromSearch({
-    search: window.location.search,
-    storage: typeof localStorage !== 'undefined' ? localStorage : null
-  });
-  applyQaLotusPondSeedFromSearch({
-    search: window.location.search,
-    storage: typeof localStorage !== 'undefined' ? localStorage : null
-  });
+  if (import.meta.env.DEV || import.meta.env.VITE_FT_QA_BOOT === '1') {
+    const { applyQaBootSeedFromSearch } = await import('./core/qaBootSeed.js');
+    applyQaBootSeedFromSearch({
+      search: window.location.search,
+      storage: typeof localStorage !== 'undefined' ? localStorage : null
+    });
+  }
   const practiceDaysStore = new PracticeDaysStore();
   weeklyPracticeHeatmap.bindPracticeImportRefresh(() =>
     practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
