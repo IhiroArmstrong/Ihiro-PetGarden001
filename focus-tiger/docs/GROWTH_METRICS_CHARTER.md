@@ -139,6 +139,7 @@ Pre-Batch-2 reads summed **90-day practice-days minutes** as if they were lifeti
 | Topic | Current state | Decision owner |
 |---|---|---|
 | Lotus lifetime minutes **per day cap** | **Closed** — 180 min/day toward score only; blooms uncapped (`scoreFormula.v3`) | PO 2026-09-10 |
+| **scoreFormula fairness** (binge vs light practice) | **Resolved · under observation** — v3 + persona CI lock `single-binge`/`single-binge-extreme` at score 4 and `steady-light` at 22 (mustard ok). **No v4 candidate deliberation** until: (1) real user/CS signal that depth users are too slow or light users too fast; (2) a new feature is more score-sensitive than mustard unlock; or (3) mustard threshold (21) changes — then rerun persona table (review `steady-light` vs `single-binge` first). Do **not** raise minute weight or add AND gates without that trigger. | PO 2026-09-10 |
 | Honesty 5 min × 21 days → mustard unlock | Allowed by score (days dominate) | Persona `steady-light` locks intent until changed |
 | MilestoneGlow vs score | Orthogonal streak ladder | By design |
 
@@ -163,3 +164,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 |---|---|
 | 2026-09-10 | Initial charter + registry schema + persona CI + TEST_TRACKER seed contract |
 | 2026-09-10 | scoreFormula.v3 — 180 min/day score cap; `single-binge-extreme` persona |
+| 2026-09-10 | Open questions: scoreFormula fairness marked **resolved · under observation**; v4 candidate deliberation gated on data / new feature / threshold change |
