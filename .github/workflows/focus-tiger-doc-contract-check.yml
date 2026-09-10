@@ -32,6 +32,9 @@ on:
       - 'focus-tiger/scripts/audit-practice-coverage.test.js'
       - 'focus-tiger/scripts/audit-growth-metrics.js'
       - 'focus-tiger/scripts/audit-growth-metrics.test.js'
+      - 'focus-tiger/scripts/tool-budget-explore.test.js'
+      - '.cursor/hooks/**'
+      - '.cursor/rules/focus-tiger-agent-token-cost.mdc'
       - 'focus-tiger/src/core/growthMetricsRegistry.js'
       - 'focus-tiger/src/core/growthPersonaFixtures.js'
       - 'focus-tiger/src/core/growthPersonaRegression.js'
@@ -77,6 +80,9 @@ on:
       - 'focus-tiger/scripts/audit-practice-coverage.test.js'
       - 'focus-tiger/scripts/audit-growth-metrics.js'
       - 'focus-tiger/scripts/audit-growth-metrics.test.js'
+      - 'focus-tiger/scripts/tool-budget-explore.test.js'
+      - '.cursor/hooks/**'
+      - '.cursor/rules/focus-tiger-agent-token-cost.mdc'
       - 'focus-tiger/src/core/growthMetricsRegistry.js'
       - 'focus-tiger/src/core/growthPersonaFixtures.js'
       - 'focus-tiger/src/core/growthPersonaRegression.js'
@@ -126,5 +132,7 @@ jobs:
         run: node --test scripts/audit-practice-coverage.test.js
       - name: Growth metrics persona regression unit smoke
         run: node --test scripts/audit-growth-metrics.test.js
+      - name: Tool-budget explore-only hook unit smoke
+        run: node --test scripts/tool-budget-explore.test.js
       - name: Behavioral contracts (gate + scenario smoke)
         run: node --test src/core/SessionUiGate.test.js src/core/sessionUiGateContractRegistry.test.js src/core/scenario-smoke.test.js

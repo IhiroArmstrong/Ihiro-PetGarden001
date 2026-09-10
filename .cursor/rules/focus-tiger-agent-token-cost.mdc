@@ -27,31 +27,48 @@ alwaysApply: false
 
 ## 工具调用预算分档（agent-tool-budget · 可执行）
 
-> **执行层**：`.cursor/hooks/session_gate.sh`（`beforeSubmitPrompt` 选档 + 重置）+ `.cursor/hooks/tool_budget.sh`（`preToolUse` 计数）。数字 SSOT：`.cursor/hooks/config.json`。
+> **执行层**：`.cursor/hooks/session_gate.sh`（`beforeSubmitPrompt` 选档 + 重置）+ `.cursor/hooks/tool_budget.sh`（`preToolUse` **只计探索类**）。数字 SSOT：`.cursor/hooks/config.json`。
+
+### 计什么（强制）
+
+硬顶打在**浪费的探索**上，不打断收尾干活：
+
+| 计入探索预算 | 不计入（硬顶也不拦） |
+|---|---|
+| `Grep` / `Glob` / `codebase_search` / WebSearch / WebFetch / SearchConversations / Task | `StrReplace` / `Write` / `Delete` |
+| 无 `offset`/`limit` 且超过 `explore_unbounded_read_lines` 的整文件 `Read` | 定点 `Read`（带行号范围）与短文件整读 |
+| Shell 里的 `rg` / `grep` / `find` / `git grep` | `git` / `gh`（非 grep）、约定的一次 `test:smoke` / `node --test` |
+
+软上限到达时：**先口头汇报**；改文件与 git 仍可走。硬顶到达时：**只 deny 再探索**；禁止因此新开 Chat。
 
 ### 三档表 + 口令
 
 | 档位 | 用户口令（消息中含） | 软上限 | 硬上限 | 典型场景 |
 |---|---|---|---|---|
 | `qa` | 默认（随口问 / 核对 / 首条无口令） | 22 | **28** | 状态确认、是否已实现、短问答 |
-| `impl` | **「开工」** | 40 | **50** | 常规实现、多文件改代码 |
-| `large` | **「大任务」** | 64 | **80** | 跨模块架构、大范围落地 |
+| `impl` | **「开工」** | 40 | **64** | 局部/少文件实现；软上限=先停口头汇报 |
+| `large` | **「大任务」** | 64 | **80** | **跨模块 + 单测 + PR**（含 Yin Evolution P0 这类刀） |
 
 - **首条消息**无口令 → 自动 `qa`；同会话后续消息**保持**当前档位，直至口令升档或「继续」重置。
-- **「开工」** / **「大任务」** → 写入对应档位并**重置**工具计数。
-- **「继续」**（可附任务名，如「继续 P0」）→ **继承**当前档位（尚无档位时默认 `impl`）、写 `continue_resume` 标记、**重置**工具计数。Agent 应**少勘探、直接续写**（见下节）。
+- **「开工」** / **「大任务」** → 写入对应档位并**重置**探索计数。
+- **「继续」**（可附任务名，如「继续 P0」）→ **继承**当前档位（尚无档位时默认 `impl`）、写 `continue_resume` 标记、**重置**探索计数。Agent 应**少勘探、直接续写**（见下节）。
+- 跨模块、新 core/UI/locale、还要单测并开 PR → 第一条用 **「大任务」**，不要用「开工」硬扛。Agent 若判断属此类而用户只发了「开工」，须在开工回复里请补发「大任务」（**禁止**擅自改档）。
 
-### 中断恢复（「继续」纪律）
+### 中断恢复（「继续」纪律 · 只留本 Chat）
+
+硬顶或软上限之后：**只在被打断的同一 Chat 发「继续 &lt;任务&gt;」**。**禁止**为此 New Agent / 新开 Chat（会把规则前缀与全仓搜索再交一遍税）。
+
+**新开 Chat 仅允许**：本会话对应 PR 已合入（见上文 `Merged`），或完全换题。
 
 用户发 **「继续」** 或 **「继续 &lt;任务&gt;」** 后：
 
 1. **继承上下文**：不重复汇报已完成工作；从上次中断点接着做。
 2. **跳过已完成勘探**：默认**不再**全仓 `grep` / 大范围 `fetch` / 批量打开 ≥5 个文件；除非用户明确要求复查或代码面已变。
-3. **验证类 git 检查不受限**：`git status` / `git log` / `check:branch-freshness` 仍该跑就跑（见下节「验证类」）。
+3. **验证类 git 检查不受限**：`git status` / `git log` / `check:branch-freshness` 仍该跑就跑（见下节「验证类」）；**且不计入**探索硬顶。
 4. **大文件**：须片段读 → `focus-tiger-source-read-granularity.mdc`（`source-read-granularity`），禁止为「再确认一遍」整文件重读。
-5. **测试**：实现类任务 → **收尾跑一次** `test:smoke`（或已约定的单 spec）；失败再针对性读日志。**禁止**每改一小处就跑一遍测试（细则见 `testing-strategy.mdc`「实现类冒烟纪律」）。
+5. **测试**：实现类任务 → **收尾跑一次** `test:smoke`（或已约定的单 spec）；失败再针对性读日志。**禁止**每改一小处就跑一遍测试（细则见 `testing-strategy.mdc`「实现类冒烟纪律」）。约定 smoke **不计入**探索硬顶。
 
-硬顶耗尽时 hook 会拦截并提示用户发「继续 &lt;任务&gt;」重置预算。
+硬顶耗尽时 hook **只拦截探索类**，并提示在**本对话**发「继续 &lt;任务&gt;」重置探索计数。Agent **禁止**建议新开 Chat 来续同一任务。
 
 ## 验证类 vs 探索类（强制 · 勿把省 token 扩到地面真相）
 
@@ -78,7 +95,7 @@ alwaysApply: false
    - 结果另开短回合查摘要；不要在本回合守 30–120 分钟。
 4. **禁止擅自触发全量 e2e**（`gh workflow run` 指向 `focus-tiger-e2e-full` / `test:e2e` 全量）。须用户当回合明确批准（如「批准触发 full e2e」）。
    - 硬闸：`beforeShellExecution` → ask（`gate-full-e2e-dispatch.sh`）。
-5. **工具轮数上限**（**仅探索类 / 试错空转**）：可执行硬顶见上文「工具调用预算分档」（`tool_budget.sh` 按 `qa`/`impl`/`large` 计数）。单任务若已接近软上限仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转；硬顶耗尽须等用户发「继续」重置。**本条不覆盖**上一节验证类 git / freshness 检查——那些几乎零成本，该跑就跑。CI/smoke 失败且用户未附日志 → 先 Read `focus-tiger-ci-failure-triage.mdc`（`ci-failure-triage`）；其 Step C **5 轮硬顶**在本场景优先于分档硬顶。UI/交互回归 bug 且用户未给足够锚点（复现 / 怀疑 commit / 怀疑文件）→ 先 Read `focus-tiger-ui-bug-triage.mdc`（`ui-bug-triage`）；其 Step C **5 轮硬顶**在本场景同样优先于分档硬顶。
+5. **工具轮数上限**（**仅探索类 / 试错空转**）：可执行硬顶见上文「工具调用预算分档」（`tool_budget.sh` 按 `qa`/`impl`/`large` **只计探索**）。单任务若已接近软上限仍无收敛，先停下来用「待你决定」问用户，禁止为凑绿而空转；硬顶耗尽须在**本 Chat**发「继续」重置探索计数（禁止 New Agent）。**本条不覆盖**上一节验证类 git / freshness 检查——那些几乎零成本，该跑就跑，且 **hook 不计次**。CI/smoke 失败且用户未附日志 → 先 Read `focus-tiger-ci-failure-triage.mdc`（`ci-failure-triage`）；其 Step C **5 轮硬顶**在本场景优先于分档硬顶。UI/交互回归 bug 且用户未给足够锚点（复现 / 怀疑 commit / 怀疑文件）→ 先 Read `focus-tiger-ui-bug-triage.mdc`（`ui-bug-triage`）；其 Step C **5 轮硬顶**在本场景同样优先于分档硬顶。
 6. **CI 红 / 合入受阻 / 多文件冲突 · 本地验证预算（强制）**
    适用：PR checks 失败、merge 冲突、或预计 **≥3 文件** / **多轮试错** 才能解的改动。
    - **一开始**就用独立 worktree + 分支 / 既有 PR 分支，**禁止**在主仓或其它任务的 worktree 原地反复试。

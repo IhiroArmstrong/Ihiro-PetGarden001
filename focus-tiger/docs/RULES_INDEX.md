@@ -107,7 +107,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
 | `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款或具体分钟/时长数值；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；违反 SSOT 连续开放上限 / 续开不清零 / 精确时间戳汇报；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent / `Merged` 须新开会话见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI；主张 `Merged` 后可在同会话继续 |
-| `agent-tool-budget` | 「工具调用预算分档 / 口令「开工」「继续」「大任务」见 `focus-tiger-agent-token-cost.mdc`」；执行：`session_gate.sh` / `tool_budget.sh` / `config.json`；实现类冒烟见 `testing-strategy.mdc` | 平行写第二套软/硬上限数字；主张可无「继续」无限探索；主张每改一点就跑 smoke |
+| `agent-tool-budget` | 「工具调用预算分档 / 口令「开工」「继续」「大任务」见 `focus-tiger-agent-token-cost.mdc`」；执行：`session_gate.sh` / `tool_budget.sh` / `config.json`；只计探索；「继续」只留本 Chat；跨模块+单测+PR 用「大任务」；实现类冒烟见 `testing-strategy.mdc` | 平行写第二套软/硬上限数字；主张可无「继续」无限探索；主张每改一点就跑 smoke；主张硬顶后 New Agent / 新开 Chat 续同一任务；主张硬顶统计全部工具调用 |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解；本机树见 `qa-develop-worktree` | 主张 feature/fix 试跑即正式关单验收；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
 | `qa-develop-worktree` | 「固定 QA 树见 `WORKFLOW.md`」；合入后 `sync:qa-develop` + ①重启/硬刷新 ②一句变化；`TEST_TRACKER` / KnownRisky / regression-lock / browser-energy 可一行引用 | 主张在 QA 树开发/commit；主张每次新建 `…-wt-qa-develop-tip`；Cloud 假装已在 Mac pull；为收尾停掉 QA `:5173` Vite；主张 `5173` 正在测时抢端口或 `git switch` 正在出码的目录 |
@@ -251,6 +251,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-10 | 修订 `agent-tool-budget`：hook **只计探索类**；硬顶不拦改文件/git/约定 smoke；「继续」只留本 Chat（禁止 New Agent 续同一任务）；跨模块+单测+PR 用口令「大任务」。数字仍以 `config.json` + `focus-tiger-agent-token-cost.mdc` 为准。 |
 | 2026-09-10 | 新增 `agent-tool-budget`：三档工具调用预算（qa 28 / impl 50 / large 80 硬顶）+ 口令「开工」「继续」「大任务」；执行 `session_gate.sh` + `tool_budget.sh`；「继续」继承档位并重置计数；实现类冒烟纪律见 `testing-strategy.mdc`。SSOT `focus-tiger-agent-token-cost.mdc` 新节 |
 | 2026-09-09 | Brief 共用机制核对：须写点名结论句（SSOT `COLLAB.md` 第七节）；清单扩 `SHARED_RESOURCES` §4.1–4.2、`Z_INDEX` Idle chrome。不另起总册、不进新 rules-authority 主题 |
 | 2026-09-09 | `git-pr-task-line-ref`：新增 `.github/workflows/task-line-ref-check.yml` 软提醒；`backfill-open-pr-task-line-refs.sh` 支持 `--merged`；回填 #663–#672 → #644/#637。SSOT `WORKFLOW.md` |

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# preToolUse — per-conversation tool-call budget (tiered soft ask / hard deny).
+# preToolUse — explore-only tool-call budget (tiered soft ask / hard deny).
+# Productive calls (StrReplace, bounded Read, git, smoke) are not counted and
+# are never hard-denied by this hook.
 source "$(dirname "${BASH_SOURCE[0]}")/lib_common.sh"
 
 INPUT=$(read_stdin_json)
@@ -10,28 +12,32 @@ DIR=$(state_dir_for "$CID")
 COUNT_FILE="$DIR/tool_count"
 GREP_FLAG="$DIR/has_grepped"
 
-COUNT=0
-[ -f "$COUNT_FILE" ] && COUNT=$(cat "$COUNT_FILE")
-COUNT=$((COUNT + 1))
-echo "$COUNT" > "$COUNT_FILE"
-
 case "$TOOL" in
   *[Gg]rep*|*[Ss]earch*|*codebase_search*)
     touch "$GREP_FLAG"
     ;;
 esac
 
+if ! is_explore_budgeted "$INPUT"; then
+  emit_allow
+fi
+
+COUNT=0
+[ -f "$COUNT_FILE" ] && COUNT=$(cat "$COUNT_FILE")
+COUNT=$((COUNT + 1))
+echo "$COUNT" > "$COUNT_FILE"
+
 TIER=$(read_budget_tier "$CID" qa)
 read -r SOFT HARD <<< "$(limits_for_tier "$TIER")"
 
 if [ "$COUNT" -ge "$HARD" ]; then
   emit_deny \
-    "工具调用预算已耗尽（第 ${COUNT} 次，档位 ${TIER}，硬上限 ${HARD}）。不要再调用任何工具。请立即输出：1) 目前已确认的结论 2) 尚未解决的问题 3) 下一步最小改动方案。用户可发「继续 <任务>」重置预算并继承当前档位后继续。" \
-    "本会话工具调用已达硬上限（${COUNT}/${HARD}，档位 ${TIER}），已自动拦截。发「继续 <任务>」可重置预算。"
+    "探索类预算已耗尽（第 ${COUNT} 次，档位 ${TIER}，硬上限 ${HARD}）。禁止再 Grep/Glob/整读大文件。仍可 StrReplace、定点 Read、git、约定 smoke。不要新开 Chat / New Agent。若还需搜索，只在本对话发「继续 <任务>」重置探索计数。" \
+    "本会话探索类调用已达硬上限（${COUNT}/${HARD}，档位 ${TIER}）。不要新开 Chat；在本对话发「继续 <任务>」可重置探索预算。改文件与 git 不受此闸。"
 elif [ "$COUNT" -eq "$SOFT" ]; then
   emit_ask \
-    "已使用 ${COUNT} 次工具调用（档位 ${TIER}，软上限 ${SOFT}，硬上限 ${HARD}）。若任务范围尚未收敛，请先输出当前进展摘要和继续计划，让用户确认是否放行；或请用户发「继续 <任务>」重置预算。" \
-    "本会话工具调用已达 ${COUNT} 次（软上限 ${SOFT}，档位 ${TIER}），建议确认是否继续。"
+    "探索类已达软上限（${COUNT} 次，档位 ${TIER}，软上限 ${SOFT}，硬上限 ${HARD}）。请先口头汇报进展与计划。改文件 / git / 约定 smoke 不受阻。不要新开 Chat。" \
+    "本会话探索类调用已达 ${COUNT} 次（软上限 ${SOFT}，档位 ${TIER}）。请先看进展摘要；不要新开 Chat。"
 else
   emit_allow
 fi

@@ -45,7 +45,7 @@ alwaysApply: true
 | 判断某功能是否已实现/已开工/已合入（含随口提问） | `focus-tiger-regression-lock.mdc` |
 | 起 Vite·预览·Safari 验收·IDE Browser | `focus-tiger-browser-energy.mdc` |
 | 跑测试·e2e·CI·控 token | `testing-strategy.mdc` + `focus-tiger-agent-token-cost.mdc` |
-| 工具调用预算分档·口令「开工」「继续」「大任务」 | `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-tool-budget`） |
+| 工具调用预算分档·口令「开工」「继续」「大任务」；继续只留本 Chat；跨模块用「大任务」 | `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-tool-budget`） |
 | CI/smoke/PR checks 失败且未附失败日志 | `focus-tiger-ci-failure-triage.mdc`（`RULES_INDEX` → `ci-failure-triage`） |
 | UI/交互回归 bug（菜单无反应、点击无反馈等）且未给锚点 | `focus-tiger-ui-bug-triage.mdc`（`RULES_INDEX` → `ui-bug-triage`） |
 | 关单 QA·5173·PR 合 develop 后 | `focus-tiger-qa-develop-worktree.mdc`（`WORKFLOW.md` · `qa-develop-worktree`） |
