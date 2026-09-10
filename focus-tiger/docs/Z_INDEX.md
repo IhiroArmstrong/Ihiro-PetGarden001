@@ -3,8 +3,8 @@
 > **目的**：新加 `position: fixed` / 浮层前，先扫一眼本表，避免与既有层级打架。  
 > **范围**：`focus-tiger/` 产品运行时代码（`index.html` + `src/` + 实际挂进主壳的 ui-kit 组件）。  
 > **不含**：仅 e2e 测试夹具、`ui-kit/demo.html` 演示页（见文末附录）。  
-> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。  
-> **扫描日**：2026-07-29（对照当前 `develop` 工作树）。
+> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。新增 dim 遮罩时对照下文 **Idle 常驻 chrome**，不得只按「卡片 z − 1」覆盖背景。  
+> **扫描日**：2026-07-29（对照当前 `develop` 工作树）。**dim 消费者节**：2026-09-09。
 
 叠层上下文提醒：多数业务浮层挂在 `#ui-overlay`（`z-index: 10`）内部；其子节点的 `z-index` 只在该 stacking context 内比较。`NarrowIdleShell` / Ambient / Hints 等是 **同级 `position: fixed` 挂在 `body`/`#app`**，会与 `#ui-overlay` 整层比较。`IdleChromeFacade`（Task 3）**不设** z-index——层级仍登记在下方 Narrow / Wide 适配器行。
 
@@ -23,7 +23,7 @@
 | **2** | `index.html` | `#scene-canvas` 3D/WebGL 场景画布 |
 | **2** | `index.html` | FocusHUD 连胜环（`.ft-hud__streak`）相对 HUD 卡 |
 | **2** | `src/ui/QuietTogetherLanternsChrome.js` | Quiet Together 灯火（`#quiet-together-lanterns`，`pointer-events: none`；宽屏锚在热力图簇上方；Idle/Arrive 背景；Focusing 隐藏） |
-| **2** | `src/ui/FocusCirclePresenceChrome.js` | Focus Circle 圈内 sitting（`#focus-circle-presence`，银蓝 dots；叠在全球灯火上方；Idle/Arrive；Focusing 隐藏） |
+| **2** | `src/ui/FocusCirclePresenceChrome.js` | Focus Circle 圈内 sitting（`#focus-circle-presence`，银蓝 dots；叠在全球灯火上方；Idle/Arrive；Focusing 隐藏；**含 was-here-today 轻文案轨 · 刀 2d**） |
 | **3** | `src/ui/FocusCircleWitnessChrome.js` | Focus Circle Gentle Witness 匿名痕迹（`#focus-circle-witness`；叠在 presence 上方；pointer-events none；回应钮可点；Focusing 隐藏） |
 | **2** | `src/ui/OnboardingHintsUI.js` | 提示发现小圆点（`.ft-hint-discovery-dot`）相对宿主按钮角标 |
 | **2** | `ui-kit/components/streak-meter.js` | `<streak-meter>` host 相对邻居 |
@@ -38,6 +38,7 @@
 | **12** | `src/ui/WeeklyPracticeHeatmap.js` | 周练习热力图簇（含 Reminder 时钟入口） |
 | **12** | `src/ui/ActiveRecoverAnchorUI.js` | Focusing Tiger Anchor（轻触阿寅 / 幽灵提示）；冷却期微光+提示 hidden、**invisible hit 仍在**（FB-01）；`#ui-overlay` 内；须低于 dock Rise(16) 与 toast(18/40) |
 | **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅额头 `#idle-yin-tap-anchor`（invisible hit，`top:30%` 盖额头；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
+| **12** | `src/ui/TransitionMomentTriggerUI.js` | Idle Transition 微入口 `#transition-moment-trigger`（热力图簇邻接；Focusing 隐藏；低于 dock Sit(16)） |
 | **14** | `src/ui/HonestyCheckInUI.js` | Idle「再补登」文字入口（在 Honesty 面板之下） |
 | **14** | `src/ui/MicroRitualUI.js` | 微仪式 Idle 文字入口（对称 Honesty） |
 | **15** | `src/ui/HonestyCheckInUI.js` | Honesty Check-in 主面板 |
@@ -50,7 +51,10 @@
 | **16** | `src/ui/LanguagePreferenceUI.js` | 宽屏 Idle 右下语言地球钮（`.language-pref__fab`）；窄屏 CSS 隐藏 |
 | **17** | `src/ui/FlowerBlowWelcomeBubbleUI.js` | 变花鼓励气泡（`#flower-blow-welcome-bubble`）；白玉毛玻璃 + 尖角；窄屏 `top` 须让开 ActionBar（`homeClearanceTopCss`）；须可点消 |
 | **17** | `src/ui/MomentWhisperUI.js` | `#moment-whisper` Five Moments 轻量认出句（阿寅旁；3–4s 淡出；非 Banner） |
+| **17** | `src/ui/TransitionMomentUI.js` | `#transition-moment-overlay` + `#transition-moment-backdrop` Calm Action Transition 结界（合十 + CAW-T；~8s 自动关；`BLANK_CLOSES`） |
 | **17** | `src/ui/FocusAwarenessCardUI.js` | `#focus-awareness-card` Focusing **底部**间隔拍觉察短句（可重复；可单独关；**不**写 Whisper seen） |
+| **17** | `src/ui/RecoverResetOfferUI.js` | `#recover-reset-offer` 被动 Re-focus 后可选 emoji 条（8s 超时；可跳过） |
+| **17** | `src/ui/RecoverResetPracticeUI.js` | `#recover-reset-practice` Reset 微练习半高卡（Ground / Breath / Look Around） |
 | **17** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-whisper` 节日观察式短句（一日一次；可点消；非 Banner） |
 | **17** | `src/ui/ContextualTeaTipBubbleUI.js` | `#contextual-tea-tip-bubble` 场景化请茶轻气泡（达标/里程碑；可忽略；非 modal 墙） |
 | **18** | `src/ui/HonestyBridgeCtaUI.js` | Honesty 桥接 Yes/No CTA |
@@ -59,9 +63,19 @@
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
+| **17** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass-backdrop` Five Moments Compass 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel-backdrop` Yin's Collections 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-backdrop` Zen Cinema 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-backdrop` 今日静语卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
-| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换） |
+| **17** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-backdrop` 芥子须弥纪念印遮罩 |
+| **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |
+| **17** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-backdrop` 阿寅静帧壁纸卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
+| **17** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-backdrop` Stay in touch 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **17** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-backdrop` 向阿寅倾诉遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **17** | `src/ui/TipJarUI.js` | `#yin-tip-jar-backdrop` Buy Yin a Tea 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
+| **26** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-backdrop` Sanctuary Lifetime 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only；卡 z27） |
 | **27** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（须高于 Support 模态 25/26，避免 Unlock Lifetime 点到淡出遮罩） |
 | **17** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-backdrop` Membership 模态遮罩 |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |
@@ -108,6 +122,25 @@
 | 符号 | 文件 | 说明 |
 |---|---|---|
 | `var(--z-modal)` → **1000** | `ui-kit/tokens.css` + `ui-kit/components/achievement-modal.js` | 成就弹层 token；主产品日常壳未接此组件 |
+
+---
+
+## Idle 常驻 chrome（遮罩 dim 消费者）
+
+> **列含义**：这些元素 **z≥22**、Idle 时常驻、会压在 z=17 growth 遮罩之上。新 `overlayBackdrop` / dim 上线时必须逐项写清：联动变暗，或明确「保持全亮（并说明为何）」。禁止只按 backdrop = 卡 z − 1 覆盖背景。  
+> **实现锚**：`overlayBackdrop.js` `body.ft-idle-overlay-chrome-dim`（Support / 音符 / 倾听耳）。**不要**把 backdrop 抬到 z-24（会挡住可点性）。Brief 结论句见 `COLLAB.md` 第七节。
+
+| 常驻 chrome | z | 选择器 | 开 growth / 日签等 z17 遮罩时 |
+|---|---|---|---|
+| Support Yin FAB | 24 | `#yin-support-fab` | **须 dim**（opacity/filter，保持可点） |
+| Ambient 音符 / mute | 24 | `.ambient-soundscape__mute` | **须 dim** |
+| 倾听耳（宽屏） | 24 | `#confide-ear-chrome` | **须 dim**（与上两项同带） |
+| 左下 `?` 帮助 | 22 | `.onboarding-hint-help` | 新遮罩须点名结论：dim 或保持（现 overlayBackdrop 默认列表未含此项） |
+| 软更新芯片 | 22 | `#ft-soft-update-prompt` | 同上，默认未列入 idle-chrome dim |
+| Soundscape 右下 FAB 容器 | 23 | Ambient focus chrome | 新遮罩须点名；勿与右上 mute 混为一谈 |
+| 窄屏 ActionBar Confide | 30 壳内 | `#ft-narrow-confide-btn` | 窄屏路径单独写结论（耳钮 CSS 隐藏） |
+
+新增 z≥22 的 Idle 常驻按钮时：**先补本表一行**，再决定是否加入 `overlayBackdropBaseCss` 的 dim 选择器。
 
 ---
 

@@ -27,6 +27,7 @@ import {
   getTipKindnessBadgeById,
   tipKindnessBadgeSrc
 } from '../core/tipKindnessBadges.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -37,9 +38,15 @@ import {
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const STYLE_ID = 'yin-tip-jar-card-styles-v2';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CHECKOUT_ARM_MS = 450;
 
 export class TipJarUI {
@@ -63,6 +70,13 @@ export class TipJarUI {
     this._focusTimer = null;
     /** @type {number} */
     this._checkoutArmedAt = 0;
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'yin-tip-jar-backdrop',
+      testId: 'yin-tip-jar-backdrop',
+      zIndex: 17,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'yin-tip-jar-card';
@@ -208,6 +222,7 @@ export class TipJarUI {
     this._open = true;
     this._userDismissed = false;
     this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
@@ -230,6 +245,7 @@ export class TipJarUI {
       window.clearTimeout(this._focusTimer);
       this._focusTimer = null;
     }
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -240,6 +256,7 @@ export class TipJarUI {
   destroy() {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
+    this.backdrop.remove();
     this.root.remove();
   }
 

@@ -162,6 +162,31 @@ export class RitualFlowUI {
     return this.state?.ritualId ?? null;
   }
 
+  /** @returns {boolean} */
+  isBreathing() {
+    if (!this.state || this._breathStartedAt == null) return false;
+    return getCurrentStep(this.state)?.kind === 'breath';
+  }
+
+  /** Wall-clock elapsed seconds during breath step (0…duration); otherwise 0. */
+  getElapsedSeconds() {
+    if (!this.isBreathing() || this._breathStartedAt == null) return 0;
+    const elapsedMs = Date.now() - this._breathStartedAt;
+    return Math.min(this._breathDurationMs, Math.max(0, elapsedMs)) / 1000;
+  }
+
+  /** 0…1 progress during breath step. */
+  getProgress() {
+    if (!this.isBreathing() || !(this._breathDurationMs > 0)) return 0;
+    return Math.min(1, this.getElapsedSeconds() / (this._breathDurationMs / 1000));
+  }
+
+  /** Breath step target minutes (for HUD session target chip). */
+  getDurationMinutes() {
+    if (!(this._breathDurationMs > 0)) return 1;
+    return Math.max(1, Math.round(this._breathDurationMs / 60_000));
+  }
+
   /**
    * @param {string} ritualId
    * @returns {boolean}

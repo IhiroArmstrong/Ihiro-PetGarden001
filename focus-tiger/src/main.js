@@ -181,6 +181,7 @@ import {
   scheduleFocusCircleWitnessPeek,
   setFocusCircleWitnessBusyProbe
 } from './core/focusCircleWitness.js';
+import { maybeWasHereMark } from './core/focusCircleWasHere.js';
 import { syncFocusCircleWitnessIdleObserverPeek } from './core/focusCircleWitnessIdleSchedule.js';
 import {
   FOCUS_CIRCLE_CHANGE_EVENT,
@@ -194,6 +195,11 @@ import {
   shouldOfferMustardSeedSealAfterCeremony,
   clearMustardSeedSealState
 } from './core/mustardSeedSeal.js';
+import {
+  clearContemplativeArchiveSealState,
+  resolveContemplativeArchiveSeal,
+  shouldOfferContemplativeArchiveSealAfterCeremony
+} from './core/contemplativeArchiveSeal.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -210,6 +216,7 @@ import { FocusCircleWitnessChrome } from './ui/FocusCircleWitnessChrome.js';
 import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
+import { resolvePracticeAggregate } from './core/practiceAggregate.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -418,6 +425,19 @@ import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
+import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
+import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
+import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
+import { CalmActionArriveCardUI } from './ui/CalmActionArriveCardUI.js';
+import { CalmActionTransitionStore } from './core/CalmActionTransitionStore.js';
+import { CalmActionReflectStore } from './core/CalmActionReflectStore.js';
+import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
+import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
+import {
+  RecoverResetOfferUI,
+  RESET_ROUTES
+} from './ui/RecoverResetOfferUI.js';
+import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -934,7 +954,11 @@ async function init() {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
       }
+      if (type === 'refocus') {
+        scheduleRecoverResetOfferAfterRefocus();
+      }
       if (type === 'activeRecover') {
+        calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
       }
     }
@@ -965,9 +989,11 @@ async function init() {
   attentionSignals.bind();
   bindDesktopShellAttention(attentionSignals);
 
+  const calmActionReflectStore = new CalmActionReflectStore();
   // 结束反思：正常完成在庆祝播完回归坐姿后淡入；主动结束不播完成反馈，短暂留白后淡入。
   const reflectionMoment = new TigerReflectionMoment(
-    document.getElementById('ui-overlay')
+    document.getElementById('ui-overlay'),
+    { calmActionReflectStore }
   );
   window.__reflectionMoment = reflectionMoment;
   const sessionEndFlow = new SessionEndFlow({ reflectionMoment });
@@ -978,6 +1004,54 @@ async function init() {
   );
   window.__momentWhisper = momentWhisperUI;
 
+  const calmActionRecoverStore = new CalmActionRecoverStore();
+  const calmActionRecoverCardUI = new CalmActionRecoverCardUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionRecoverStore
+  );
+  window.__calmActionRecoverCard = calmActionRecoverCardUI;
+  const calmActionArriveStore = new CalmActionArriveStore();
+  const calmActionArriveCardUI = new CalmActionArriveCardUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionArriveStore
+  );
+  window.__calmActionArriveCard = calmActionArriveCardUI;
+  const calmActionTransitionStore = new CalmActionTransitionStore();
+  const transitionMomentUI = new TransitionMomentUI(
+    document.getElementById('ui-overlay') || document.body,
+    calmActionTransitionStore,
+    {
+      requestSlot: requestTransitionMomentOverlaySlot,
+      releaseSlot: releaseTransitionMomentOverlaySlot,
+      onOpen: () => {
+        transitionMomentSlotHeld = true;
+        syncIdleYinTap();
+        syncTransitionMomentTrigger();
+      },
+      onClose: () => {
+        syncTransitionMomentTrigger();
+      },
+      onPlayPalmsTogether: () => {
+        emotionController.playEmotion('palmsTogether', { holdPose: true });
+      },
+      onReturnIdle: () => {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS
+        });
+      }
+    }
+  );
+  window.__transitionMoment = transitionMomentUI;
+  const transitionMomentTrigger = new TransitionMomentTriggerUI(
+    document.getElementById('ui-overlay'),
+    {
+      canShow: () => canShowTransitionMomentTrigger(),
+      onActivate: () => {
+        transitionMomentUI.tryOpen();
+      }
+    }
+  );
+  window.__transitionMomentTrigger = transitionMomentTrigger;
   const focusAwarenessCardUI = new FocusAwarenessCardUI(
     document.getElementById('ui-overlay') || document.body
   );
@@ -1003,6 +1077,7 @@ async function init() {
     if (forKey !== 'reflect' && reflectionMoment?.isOpen?.() === true) {
       return true;
     }
+    if (transitionMomentUI?.isOpen?.() === true) return true;
     return false;
   }
 
@@ -1132,8 +1207,14 @@ async function init() {
     withIdleOverlayOccupancySync({})
   );
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
-  /** @type {null | { completed: boolean, intention: string, intentionSource: string }} */
-  let pendingReflectionAfterMustardSeed = null;
+  /**
+   * Continuation after mustard / contemplative archive auto card closes.
+   * @type {null | {
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }}
+   */
+  let pendingAfterMustardSeed = null;
   const mustardSeedSealCardUI = new MustardSeedSealCardUI(document.body, {
     storage: typeof localStorage !== 'undefined' ? localStorage : null,
     onOpen: () => {
@@ -1142,10 +1223,12 @@ async function init() {
       resyncSessionChrome();
     },
     onClose: () => {
-      const pending = pendingReflectionAfterMustardSeed;
-      pendingReflectionAfterMustardSeed = null;
-      if (pending) {
-        sessionEndFlow.onSessionEnded(pending);
+      const pending = pendingAfterMustardSeed;
+      pendingAfterMustardSeed = null;
+      if (pending?.sessionEndOpts) {
+        sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
+      } else if (pending?.onContinue) {
+        pending.onContinue();
       } else if (
         !reflectionMoment?.isOpen?.() &&
         !honestyBridge?.isVisible?.()
@@ -1163,9 +1246,17 @@ async function init() {
       resolveMustardSeedSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ),
+    resolveArchive: () =>
+      resolveContemplativeArchiveSeal(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
     cases: () => MUSTARD_SEED_SEAL_CASES.map((entry) => entry.id),
     clear: () =>
       clearMustardSeedSealState(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    clearArchive: () =>
+      clearContemplativeArchiveSealState(
         typeof localStorage !== 'undefined' ? localStorage : null
       )
   };
@@ -1191,6 +1282,13 @@ async function init() {
 
   let witnessLeaveSlotHeld = false;
   let witnessRespondSlotHeld = false;
+  let transitionMomentSlotHeld = false;
+  let recoverResetOfferSlotHeld = false;
+  let recoverResetPracticeSlotHeld = false;
+  /** @type {RecoverResetOfferUI | null} */
+  let recoverResetOfferUI = null;
+  /** @type {RecoverResetPracticeUI | null} */
+  let recoverResetPracticeUI = null;
 
   function requestWitnessLeaveOverlaySlot() {
     const decision = requestOverlaySlot({
@@ -1236,6 +1334,97 @@ async function init() {
     syncIdleYinTap();
   }
 
+  function requestTransitionMomentOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ transitionMomentOpen: false })
+    });
+    if (!decision.canShow) return false;
+    transitionMomentSlotHeld = true;
+    syncIdleYinTap();
+    syncTransitionMomentTrigger();
+    return true;
+  }
+
+  function releaseTransitionMomentOverlaySlot() {
+    if (!transitionMomentSlotHeld) return;
+    transitionMomentSlotHeld = false;
+    syncIdleYinTap();
+    syncTransitionMomentTrigger();
+  }
+
+  function requestRecoverResetOfferOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        recoverResetOfferOpen: false,
+        recoverResetPracticeOpen: recoverResetPracticeSlotHeld
+      })
+    });
+    if (!decision.canShow) return false;
+    recoverResetOfferSlotHeld = true;
+    syncIdleYinTap();
+    return true;
+  }
+
+  function releaseRecoverResetOfferOverlaySlot() {
+    if (!recoverResetOfferSlotHeld) return;
+    recoverResetOfferSlotHeld = false;
+    syncIdleYinTap();
+  }
+
+  function requestRecoverResetPracticeOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        recoverResetOfferOpen: recoverResetOfferSlotHeld,
+        recoverResetPracticeOpen: false
+      })
+    });
+    if (!decision.canShow) return false;
+    recoverResetPracticeSlotHeld = true;
+    syncIdleYinTap();
+    return true;
+  }
+
+  function releaseRecoverResetPracticeOverlaySlot() {
+    if (!recoverResetPracticeSlotHeld) return;
+    recoverResetPracticeSlotHeld = false;
+    syncIdleYinTap();
+  }
+
+  const overlayRoot =
+    document.getElementById('ui-overlay') || document.body;
+  recoverResetOfferUI = new RecoverResetOfferUI(overlayRoot, {
+    requestSlot: requestRecoverResetOfferOverlaySlot,
+    releaseSlot: releaseRecoverResetOfferOverlaySlot,
+    getBusy: () => isFocusAwarenessCardBusy(),
+    onSelect: (route) => {
+      if (route === RESET_ROUTES.STEADY) return;
+      recoverResetPracticeUI?.show(route);
+    }
+  });
+  recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
+    requestSlot: requestRecoverResetPracticeOverlaySlot,
+    releaseSlot: releaseRecoverResetPracticeOverlaySlot,
+    onClose: () => syncIdleYinTap(),
+    onOpenConfide: () => {
+      if (canOpenConfideNow()) confideToYinUI.open();
+    }
+  });
+  window.__recoverResetOffer = recoverResetOfferUI;
+  window.__recoverResetPractice = recoverResetPracticeUI;
+
+  function scheduleRecoverResetOfferAfterRefocus() {
+    recoverResetOfferUI?.tryScheduleAfterRefocus();
+  }
+
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
     document.getElementById('ui-overlay') || document.body,
     {
@@ -1276,6 +1465,11 @@ async function init() {
     }
   );
   window.__focusCircleWitness = focusCircleWitnessChrome;
+
+  function onFocusCircleRiseSideEffects(elapsedSeconds) {
+    maybeWasHereMark({ elapsedSeconds });
+    maybeOfferWitnessLeave(elapsedSeconds);
+  }
 
   function maybeOfferWitnessLeave(elapsedSeconds) {
     if (!isWitnessEligibleSession(elapsedSeconds)) return;
@@ -1447,6 +1641,7 @@ async function init() {
   };
   window.addEventListener('resize', () => syncConfideEarChrome());
   syncConfideEarChrome();
+  syncTransitionMomentTrigger();
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     if (except !== 'support') supportYinModalUI.close();
@@ -1499,6 +1694,12 @@ async function init() {
     }
     if (action.type === 'ritual') {
       openRitualFlowFromMenu(action.proxy);
+      return;
+    }
+    if (action.type === 'transition-moment') {
+      if (!transitionMomentUI.tryOpen()) {
+        mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
+      }
       return;
     }
     if (action.type === 'journey-log') {
@@ -1678,12 +1879,16 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
-  supportYinModalUI.setShouldLeadWithTea(() =>
-    shouldLeadSupportModalWithTea({
-      lifetimeMinutes: lotusPondStore.getLifetimeMinutes(),
-      practicedDayCount: practiceDaysStore.getPracticedDateKeys().length
-    })
-  );
+  supportYinModalUI.setShouldLeadWithTea(() => {
+    const aggregate = resolvePracticeAggregate({
+      lotusPondStore,
+      practiceDaysStore
+    });
+    return shouldLeadSupportModalWithTea({
+      lifetimeMinutes: aggregate.lifetimeMinutes,
+      practicedDayCount: aggregate.practiceDayCount
+    });
+  });
   function syncFocusCoinsCosmetics() {
     applyFocusCoinsCosmetics(focusCoinsStore.getSnapshot(), {
       documentElement: document.documentElement,
@@ -1800,17 +2005,17 @@ async function init() {
         syncHonestyIdleEntry();
         syncOnboardingAutoHints();
       };
+      const afterHonestyCeremony = () => {
+        maybeOfferGrowthSealAfterBaselineCeremony({ onContinue: revealBridge });
+        lotusPondRuntime.releaseBirths();
+      };
       if (nodeId) {
         emotionController.playEmotion('milestoneGlow', {
           milestoneNodeId: nodeId,
-          onComplete: () => {
-            revealBridge();
-            lotusPondRuntime.releaseBirths();
-          }
+          onComplete: afterHonestyCeremony
         });
       } else {
-        revealBridge();
-        lotusPondRuntime.releaseBirths();
+        afterHonestyCeremony();
       }
     },
     onPracticeDay: ({ durationMinutes } = {}) => {
@@ -2145,8 +2350,47 @@ async function init() {
         focusCircleWitnessLeaveUI?.isLeaveVisible?.() === true,
       focusCircleWitnessRespondOpen:
         focusCircleWitnessLeaveUI?.isRespondOpen?.() === true,
+      transitionMomentOpen:
+        transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
+      focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
+      recoverResetOfferOpen:
+        recoverResetOfferSlotHeld ||
+        recoverResetOfferUI?.isVisible?.() === true,
+      recoverResetPracticeOpen:
+        recoverResetPracticeSlotHeld ||
+        recoverResetPracticeUI?.isVisible?.() === true,
       ...overrides
     });
+  }
+
+  const TRANSITION_MOMENT_BLOCKED_EMOTIONS = new Set([
+    'celebrating',
+    'sessionComplete'
+  ]);
+
+  function canShowTransitionMomentTrigger() {
+    if (stateManager.state !== STATES.IDLE) return false;
+    if (transitionMomentUI?.isOpen?.() === true) return false;
+    if (
+      spriteOccupancy === SPRITE_OCCUPANCY.CELEBRATE ||
+      spriteOccupancy === SPRITE_OCCUPANCY.RISE_HOLD
+    ) {
+      return false;
+    }
+    const emotionKey = emotionController.getCurrentEmotionKey();
+    if (emotionKey && TRANSITION_MOMENT_BLOCKED_EMOTIONS.has(emotionKey)) {
+      return false;
+    }
+    return requestOverlaySlot({
+      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ transitionMomentOpen: false })
+    }).canShow;
+  }
+
+  function syncTransitionMomentTrigger() {
+    transitionMomentTrigger?.sync?.();
   }
 
   const CONFIDE_WAKE_SLEEPING_EMOTION_KEYS = new Set([
@@ -2258,6 +2502,7 @@ async function init() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
     syncConfideEarChrome();
+    syncTransitionMomentTrigger();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -2528,7 +2773,7 @@ async function init() {
       }
     });
     // Explicit: do NOT call sessionEndFlow / TigerReflectionMoment.
-    maybeOfferWitnessLeave(ritualFlowBreathElapsedSeconds(ritualId));
+    onFocusCircleRiseSideEffects(ritualFlowBreathElapsedSeconds(ritualId));
   }
 
   /**
@@ -2621,8 +2866,10 @@ async function init() {
     // Product-equivalent sitting: stash before Reflection so Skip still logs.
     const draft = microRitualJourneyDraft(durationMinutes);
     if (draft) pendingJourneyDraft = draft;
-    sessionEndFlow.onSessionEnded({ completed: true });
-    maybeOfferWitnessLeave(durationMinutes * 60);
+    maybeOfferGrowthSealAfterBaselineCeremony({
+      sessionEndOpts: { completed: true }
+    });
+    onFocusCircleRiseSideEffects(durationMinutes * 60);
   }
 
   function leaveMicroRitualQuietly() {
@@ -2834,6 +3081,10 @@ async function init() {
     onMustardSeedSeal: () => {
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'menu' });
+    },
+    onContemplativeArchiveSeal: (entryId) => {
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'menu', archiveEntryId: entryId });
     },
     onWallpapers: () => {
       closeGrowthOverlayCards({ except: 'wallpapers' });
@@ -3057,9 +3308,10 @@ async function init() {
   window.__ambientSoundscape = ambientSoundscape;
   window.__ambientSoundscapeUI = ambientSoundscapeUI;
   window.__sessionCues = sessionCues;
+  // Recover Reset e2e injects passive refocus in vite preview (DEV=false).
+  window.__mindfulReminderController = mindfulReminderController;
   if (import.meta.env.DEV) {
     window.__reminderQuotaManager = reminderQuotaManager;
-    window.__mindfulReminderController = mindfulReminderController;
     window.__attentionSignals = attentionSignals;
     window.__reflectionMoment = reflectionMoment;
     window.__honestyCheckIn = honestyCheckIn;
@@ -3164,6 +3416,7 @@ async function init() {
         suppressCompanionOpenAfterNod = false;
         pendingChoose = null;
         postChooseChrome.pending = false;
+        calmActionArriveCardUI.resetFlow();
         syncArrivalGateReady(false);
         resyncSessionChrome();
         syncHonestyIdleEntry();
@@ -3211,11 +3464,15 @@ async function init() {
           if (info.chose && resumeMode) {
             suppressCompanionOpenAfterNod = true;
           }
+          calmActionArriveCardUI.hide({ immediate: true });
           requestBeginFocusWithMode(
             resumeMode || companionModePicker.getSelectedMode()
           );
         } else if (!info.chose) {
+          calmActionArriveCardUI.tryShowAfterArrival();
           companionModePicker.open();
+        } else {
+          calmActionArriveCardUI.tryShowAfterArrival();
         }
         syncOnboardingAutoHints();
       }
@@ -3246,8 +3503,15 @@ async function init() {
   };
   window.__sceneAnimationSliceA = sceneAnimationSliceA;
   onLocaleChange((locale) => {
+    const snapshot = buildLiveOverlaySnapshot();
+    const overlayBusyForLocaleGreeting = deriveSceneAnimOverlayBusy({
+      ...snapshot,
+      // Language panel is the switch surface — must not block greeting anim.
+      languageOpen: false
+    });
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.LANGUAGE_CHANGED, {
       locale,
+      overlayBusy: overlayBusyForLocaleGreeting,
       // JA book / EN tea: oneshot (no reverse) + ~1s CapCut idle
       playOptions: playOptionsForLocaleGreeting(locale)
     });
@@ -3357,6 +3621,7 @@ async function init() {
     onboardingHints?.markSeen('dormant-open');
     onboardingHints?.markSeen('honesty-optional');
     arrivalPractice.start();
+    calmActionArriveStore.arm();
     onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
     resyncSessionChrome();
     syncHonestyIdleEntry();
@@ -3429,6 +3694,11 @@ async function init() {
     acrossToolsIdleGuard.stop();
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
+    calmActionRecoverCardUI.hide({ immediate: true });
+    calmActionArriveCardUI.hide({ immediate: true });
+    transitionMomentUI.close();
+    recoverResetOfferUI?.hide({ immediate: true });
+    recoverResetPracticeUI?.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
     }
@@ -3549,6 +3819,8 @@ async function init() {
   }
 
   function beginFocusWithMode(companionMode) {
+    calmActionArriveCardUI.hide({ immediate: true });
+    transitionMomentUI.close();
     resetFocusCoinsSession();
     resetFocusCircleWitnessSessionPrompt();
     focusCircleWitnessLeaveUI.cancelScheduledOffer();
@@ -3608,6 +3880,10 @@ async function init() {
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
     focusAwarenessCardUI.resetSession();
+    calmActionRecoverStore.resetSession();
+    calmActionRecoverCardUI.resetSession();
+    recoverResetOfferUI?.resetSession();
+    recoverResetPracticeUI?.resetSession();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
@@ -3655,6 +3931,7 @@ async function init() {
   };
 
   companionModeHandlers.onModeSelected = (mode) => {
+    calmActionArriveCardUI.hide({ immediate: true });
     onboardingHints?.markSeen('companion-mode');
     if (mode === COMPANION_MODE_STAY) onboardingHints?.markSeen('companion-stay');
     if (mode === COMPANION_MODE_STEP_AWAY) {
@@ -3807,6 +4084,11 @@ async function init() {
       sessionCues.cancelPending();
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
+      calmActionRecoverCardUI.hide({ immediate: true });
+      calmActionArriveCardUI.hide({ immediate: true });
+      transitionMomentUI.close();
+      recoverResetOfferUI?.hide({ immediate: true });
+      recoverResetPracticeUI?.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
@@ -3837,7 +4119,7 @@ async function init() {
         intention: currentSessionIntention,
         intentionSource: currentIntentionSource
       });
-      maybeOfferWitnessLeave(focusSession.getElapsedSeconds());
+      onFocusCircleRiseSideEffects(focusSession.getElapsedSeconds());
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
       // ambient-soundscape stays unread until a track is actually chosen
@@ -3847,6 +4129,55 @@ async function init() {
       syncOnboardingAutoHints();
     }
   );
+
+  /**
+   * After any baseline practice completion ceremony (timed Sit, Honesty, Breath),
+   * offer mustard / contemplative archive seal before Reflection or Honesty bridge.
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [opts]
+   * @returns {boolean} true when a seal card was opened
+   */
+  function maybeOfferGrowthSealAfterBaselineCeremony(opts = {}) {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const seal = resolveMustardSeedSeal(storage);
+    if (
+      shouldOfferMustardSeedSealAfterCeremony({
+        completed: true,
+        unlocked: seal.unlocked,
+        hasUnrevealedCase: Boolean(seal.nextCase)
+      })
+    ) {
+      pendingAfterMustardSeed = opts;
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({ mode: 'auto' });
+      return true;
+    }
+    const archive = resolveContemplativeArchiveSeal(storage);
+    if (
+      shouldOfferContemplativeArchiveSealAfterCeremony({
+        completed: true,
+        shouldAutoReveal: archive.shouldAutoReveal
+      }) &&
+      archive.nextEntry
+    ) {
+      pendingAfterMustardSeed = opts;
+      closeGrowthOverlayCards({ except: 'mustard-seed' });
+      mustardSeedSealCardUI.open({
+        mode: 'auto',
+        archiveEntryId: archive.nextEntry.id
+      });
+      return true;
+    }
+    if (opts.sessionEndOpts) {
+      sessionEndFlow.onSessionEnded(opts.sessionEndOpts);
+    } else if (opts.onContinue) {
+      opts.onContinue();
+    }
+    return false;
+  }
 
   function finishCompletedSession() {
     if (!sessionUiGate.completionPending) return;
@@ -3876,23 +4207,8 @@ async function init() {
     };
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
-    const storage =
-      typeof localStorage !== 'undefined' ? localStorage : null;
-    const seal = resolveMustardSeedSeal(storage);
-    if (
-      shouldOfferMustardSeedSealAfterCeremony({
-        completed: true,
-        unlocked: seal.unlocked,
-        hasUnrevealedCase: Boolean(seal.nextCase)
-      })
-    ) {
-      pendingReflectionAfterMustardSeed = endOpts;
-      closeGrowthOverlayCards({ except: 'mustard-seed' });
-      mustardSeedSealCardUI.open({ mode: 'auto' });
-    } else {
-      sessionEndFlow.onSessionEnded(endOpts);
-    }
-    maybeOfferWitnessLeave(witnessElapsedSeconds);
+    maybeOfferGrowthSealAfterBaselineCeremony({ sessionEndOpts: endOpts });
+    onFocusCircleRiseSideEffects(witnessElapsedSeconds);
     onboardingHints?.markSeen('rise-button');
   }
 
@@ -4353,14 +4669,22 @@ async function init() {
 
     const microOpen = microRitualUI?.isOpen() === true;
     const microBreathing = microRitualUI?.phase === 'breath';
+    const ritualBreathing = ritualFlowUI?.isBreathing?.() === true;
     const microElapsed = microBreathing
       ? microRitualUI.getElapsedSeconds()
       : null;
+    const ritualElapsed = ritualBreathing
+      ? ritualFlowUI.getElapsedSeconds()
+      : null;
     const microProgress = microBreathing ? microRitualUI.getProgress() : null;
+    const ritualProgress = ritualBreathing ? ritualFlowUI.getProgress() : null;
+    const overlayBreathing = microBreathing || ritualBreathing;
+    const overlayElapsed = microBreathing ? microElapsed : ritualElapsed;
+    const overlayProgress = microProgress ?? ritualProgress;
 
     const focusLevel =
-      microProgress != null
-        ? microProgress
+      overlayProgress != null
+        ? overlayProgress
         : honestyGlowLevel != null && stateManager.state !== STATES.FOCUSING
           ? honestyGlowLevel
           : focusSession.getFocusLevel();
@@ -4405,10 +4729,13 @@ async function init() {
           }, 120);
         }
       });
-    } else if (microBreathing) {
+    } else if (overlayBreathing) {
       sessionCues.tickInterval({
-        elapsedSeconds: microElapsed ?? 0,
-        targetSeconds: (microRitualUI?.getDurationMinutes?.() ?? 1) * 60,
+        elapsedSeconds: overlayElapsed ?? 0,
+        targetSeconds:
+          ((microBreathing
+            ? microRitualUI?.getDurationMinutes?.()
+            : ritualFlowUI?.getDurationMinutes?.()) ?? 1) * 60,
         ambient: ambientSoundscape
       });
     }
@@ -4418,11 +4745,13 @@ async function init() {
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
-      treatAsFocusing: microBreathing,
-      liveElapsedSeconds: microElapsed,
-      focusLevelOverride: microProgress,
-      sessionTargetMinutes: microBreathing
-        ? microRitualUI?.getDurationMinutes?.()
+      treatAsFocusing: overlayBreathing,
+      liveElapsedSeconds: overlayElapsed,
+      focusLevelOverride: overlayProgress,
+      sessionTargetMinutes: overlayBreathing
+        ? microBreathing
+          ? microRitualUI?.getDurationMinutes?.()
+          : ritualFlowUI?.getDurationMinutes?.()
         : focusSession.targetMinutes
     });
     weeklyPracticeHeatmap.render({
@@ -4482,6 +4811,7 @@ async function init() {
       confideToYinUI.close();
     }
     syncConfideEarChrome();
+    syncTransitionMomentTrigger();
     syncInAppReminderBanner();
     syncIdleLanternObserverIfNeeded();
     if (stateManager.state === STATES.IDLE) {

@@ -25,6 +25,7 @@ import {
   getSanctuaryBadgeById,
   sanctuaryBadgeSrc
 } from '../core/sanctuaryBadges.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -34,9 +35,15 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const STYLE_ID = 'yin-sanctuary-card-styles-v1';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 /** Display price (USD). Stripe Lifetime Price ID lives on the Worker. */
 export const SANCTUARY_LIFETIME_PRICE_USD = '89.99';
@@ -58,6 +65,13 @@ export class SanctuaryUnlockUI {
     this._busy = false;
     this._userDismissed = false;
     this._focusTimer = null;
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'yin-sanctuary-backdrop',
+      testId: 'yin-sanctuary-backdrop',
+      zIndex: 26,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'yin-sanctuary-card';
@@ -207,6 +221,7 @@ export class SanctuaryUnlockUI {
     if (this._open) return;
     this._open = true;
     this._userDismissed = false;
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.tabIndex = -1;
     this.root.getBoundingClientRect();
@@ -229,6 +244,7 @@ export class SanctuaryUnlockUI {
       window.clearTimeout(this._focusTimer);
       this._focusTimer = null;
     }
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -239,6 +255,7 @@ export class SanctuaryUnlockUI {
   destroy() {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
+    this.backdrop.remove();
     this.root.remove();
   }
 

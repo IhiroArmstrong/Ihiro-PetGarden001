@@ -1,2 +1,2 @@
-# www → apex. Do not add mail/SPF/DKIM records here.
-https://www.twinsology.com/* https://twinsology.com/:splat 301
+# www → apex cannot live here: Cloudflare Pages does not support
+# domain-level redirects in `_redirects`. See `_worker.js`.

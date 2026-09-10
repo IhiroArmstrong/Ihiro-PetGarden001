@@ -8,8 +8,10 @@ import assert from 'node:assert/strict';
 import { PRACTICE_DAYS_MAX_ENTRIES } from './PracticeDaysStore.js';
 import {
   LOTUS_POND_STORAGE_KEY,
-  LotusPondStore
+  LotusPondStore,
+  normalizeLotusPondState
 } from './LotusPondStore.js';
+import { DAILY_SCORE_CAP_MINUTES } from './scoreDailyCap.js';
 
 function createStorage(seed) {
   const values = new Map(seed ? Object.entries(seed) : []);
@@ -60,6 +62,41 @@ describe('LotusPondStore', () => {
     });
     const store = new LotusPondStore({ storage });
     assert.equal(store.getLifetimeMinutes(), 439);
+    assert.equal(store.getScoreEligibleLifetimeMinutes(), 439);
     assert.equal(store.getVisibleBloomCount(), 11);
+  });
+
+  it('grandfathers scoreEligibleLifetimeMinutes from legacy lifetime-only payload', () => {
+    const state = normalizeLotusPondState({ lifetimeMinutes: 250 });
+    assert.equal(state.scoreEligibleLifetimeMinutes, 250);
+  });
+
+  it('caps score-eligible minutes per calendar day while lifetime stays uncapped', () => {
+    const store = new LotusPondStore({
+      storage: createStorage(),
+      now: () => new Date(2026, 8, 10, 12, 0, 0)
+    });
+    store.addMinutes(200);
+    assert.equal(store.getLifetimeMinutes(), 200);
+    assert.equal(store.getScoreEligibleLifetimeMinutes(), DAILY_SCORE_CAP_MINUTES);
+    store.addMinutes(50);
+    assert.equal(store.getLifetimeMinutes(), 250);
+    assert.equal(store.getScoreEligibleLifetimeMinutes(), DAILY_SCORE_CAP_MINUTES);
+  });
+
+  it('resets daily score cap on a new calendar day', () => {
+    let day = new Date(2026, 8, 10, 12, 0, 0);
+    const store = new LotusPondStore({
+      storage: createStorage(),
+      now: () => day
+    });
+    store.addMinutes(DAILY_SCORE_CAP_MINUTES);
+    day = new Date(2026, 8, 11, 12, 0, 0);
+    store.addMinutes(60);
+    assert.equal(store.getLifetimeMinutes(), DAILY_SCORE_CAP_MINUTES + 60);
+    assert.equal(
+      store.getScoreEligibleLifetimeMinutes(),
+      DAILY_SCORE_CAP_MINUTES + 60
+    );
   });
 });

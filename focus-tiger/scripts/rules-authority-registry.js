@@ -566,6 +566,49 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-pr-task-line-ref',
+    title: 'PR 描述须引用所属任务线 Issue（统一 Closes #NNN；仓库 auto-close 已关；Linked pull requests 列）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: 'PR 描述须引用所属任务线 Issue',
+    ssotMustContain: [
+      /git-pr-task-line-ref/,
+      /Closes #NNN/,
+      /Auto-close issues with merged linked pull requests/,
+      /Linked pull requests/
+    ],
+    topicSignals: [
+      /git-pr-task-line-ref/,
+      /Closes #/,
+      /Relates to #/,
+      /Linked pull requests/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /Closes #/,
+      /auto-close/,
+      /Linked pull requests/
+    ],
+    restatementThreshold: 2,
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'relates-to-for-task-line-ref',
+        pattern: /(?:Epic|任务线|活基线).{0,32}Relates to\s+#\d+/,
+        note: '任务线引用须 Closes（auto-close 已关）；Relates to 不填 Linked pull requests 列',
+        exemptIfLineMatches: /禁止|不得|不要|回退|auto-close.*重新打开/
+      },
+      {
+        id: 'manual-dev-safer-than-closes',
+        pattern: /手动.{0,12}Development.{0,24}(?:更安全|不会关|不误关)/,
+        note: '手动 Development 关联与 Closes 同享 auto-close；须关仓库设置而非改用手动',
+        exemptIfLineMatches: /禁止|不得|不要|同样/
+      }
+    ]
+  },
+  {
     id: 'git-branch-health',
     title: '分支健康度（即时纪律 + 双周普查；非 CI 硬拦）',
     ssotPath: 'focus-tiger/docs/PROCESS.md',
@@ -1256,6 +1299,38 @@ export const RULE_AUTHORITY_TOPICS = [
       'focus-tiger/docs/TEST_TRACKER.md',
       'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md'
     ]
+  },
+  {
+    id: 'plain-language-summary',
+    title: '用户可见汇报前置大白话总结（≤5 句、无技术术语）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '用户可见汇报：前置大白话总结（强制）',
+    ssotMustContain: [
+      /plain-language-summary/,
+      /大白话总结/,
+      /不超过 5 句话/,
+      /session-handoff/
+    ],
+    topicSignals: [
+      /plain-language-summary/,
+      /大白话总结/,
+      /前置大白话/,
+      /plain language summary/i
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /不超过 5 句话/,
+      /禁止出现.*分支名/,
+      /需要你决定什么或知道什么/
+    ],
+    restatementThreshold: 2,
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-regression-lock.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: []
   },
   {
     id: 'session-handoff',

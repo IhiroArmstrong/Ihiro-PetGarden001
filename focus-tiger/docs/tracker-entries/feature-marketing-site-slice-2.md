@@ -1,0 +1,3 @@
+# feature/marketing-site-slice-2 · 2026-09-08
+
+| 宣传 / 营销站 Slice 2（Slack 实验室 · 五空间旅程） | UI可见 | 待人工测试 | **主路径（现网）**：`https://twinsology.com` → 滚过三截图区后见 **Early Yin Community**；五空间极短说明（Newcomers / Journey / Focus & Flow / Quiet Room / The Den）；**Join the laboratory** → shared invite 新标签打开 Slack（与 App Join our community 同链）。**禁止**：`#the-den` 深链 · Download App · workers.dev。**375**：Safari 响应式 375，五空间列表与 CTA 不横溢、可点。**回流**：Hero / Privacy / Medical disclaimer 仍可用。**本地**：`python3 -m http.server 4173 --directory marketing-site`。自动化：`node --test marketing-site/slice0-contract.test.js`。 | — | — | — | Brief `task-marketing-site-slice-2.md` | 2026-09-08 |

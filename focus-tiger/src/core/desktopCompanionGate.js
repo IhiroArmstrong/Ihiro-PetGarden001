@@ -89,14 +89,20 @@ export function desktopCompanionStatusCopyKey(status, { sending = false } = {}) 
   }
 }
 
+/** Obscure display names for Confide status strip (never show raw GGUF ids). */
+const DESKTOP_COMPANION_MODEL_DISPLAY = Object.freeze({
+  'Qwen3-1.7B-Q4_K_M': 'Model317'
+});
+
 /**
- * Visible model id for Confide's desktop status strip (not a separate HUD).
+ * Visible model label for Confide's desktop status strip (not a separate HUD).
  * @param {{ modelId?: string } | null | undefined} status
  * @returns {string}
  */
 export function desktopCompanionModelLabel(status) {
   const id = typeof status?.modelId === 'string' ? status.modelId.trim() : '';
-  return id;
+  if (!id) return '';
+  return DESKTOP_COMPANION_MODEL_DISPLAY[id] ?? '';
 }
 
 /**

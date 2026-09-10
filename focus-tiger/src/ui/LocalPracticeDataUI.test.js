@@ -12,11 +12,15 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'LocalPracticeDataUI.js'), 'utf8');
 
-test('export and import use independent sub-cards', () => {
+test('export and import use independent collapsible sub-cards', () => {
   assert.match(src, /local-practice-data-export-card/);
   assert.match(src, /local-practice-data-import-card/);
+  assert.match(src, /local-practice-data-export-head/);
+  assert.match(src, /local-practice-data-import-head/);
+  assert.match(src, /local-practice-data-export-body/);
+  assert.match(src, /local-practice-data-import-body/);
+  assert.match(src, /_toggleImportCard/);
   assert.match(src, /_showExportStatus/);
-  assert.match(src, /_resetImportCard/);
   assert.doesNotMatch(src, /local-practice-data-panel/);
 });
 

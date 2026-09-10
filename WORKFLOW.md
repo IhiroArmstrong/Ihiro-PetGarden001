@@ -1,7 +1,44 @@
 # Git 分支与工作流
 
 > **适用范围**：整个仓库（`focus-tiger/` 及根目录文档）。  
-> **协作细则**（Task Brief、回归锁、文档同步）仍以 [`focus-tiger/docs/PROCESS.md`](focus-tiger/docs/PROCESS.md) 与 [`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) 为准；本文只约定 **分支职责与合并门禁**。
+> **协作细则**（Task Brief、回归锁、文档同步）仍以 [`focus-tiger/docs/PROCESS.md`](focus-tiger/docs/PROCESS.md) 与 [`focus-tiger/docs/DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) 为准；本文约定 **分支职责与合并门禁**，以及 **给用户看的汇报格式**。
+
+---
+
+## 用户可见汇报：前置大白话总结（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `plain-language-summary`）。与 regression-lock「任务汇报门禁（N14）」**互补**：N14 管回复**末尾**「待你决定 / 待你知道」；本条管回复**最前面**的大白话总结。技术细节照常写，只是往后挪，**不必精简**。
+
+### 适用范围
+
+**须遵守**（凡提交给**用户**阅读的汇报/答复）：
+
+- PR 描述、进度更新、方案说明、任务收尾的用户可见回复  
+- 含「待你决定 / 待你知道」的回复——大白话在**最前**，N14 小节仍在**末尾**
+
+**不适用**（本来就是写给 AI / 工程追溯的，不需要大白话翻译）：
+
+- 纯给下一 Cursor 会话 / agent 的交接文档（如口令「生成交接」模板；见 `session-handoff`）  
+- 纯代码注释、内部 tracker 条目（如 `docs/tracker-entries/`）
+
+### 大白话总结的要求
+
+1. 放在汇报/答复的**最前面**（标题可用 **大白话总结**）。  
+2. **不超过 5 句话**。  
+3. **禁止出现**：分支名、commit hash、PR 编号、文件名、函数名、技术术语（如 overlay、schemaVersion、TTL、Worker、KV 等）。  
+4. **必须回答三件事**（用日常语言）：  
+   - **做了什么 / 发现了什么**——对用户实际体验或产品有什么影响，或暂时还没有影响；  
+   - **现在到哪一步了**——例如「方案定了还没写代码」「代码写完了还没测」「已经在线上生效」；  
+   - **需要你决定什么或知道什么**——若没有，直接写「不需要你做任何事」。  
+5. 总结之后用一条分隔线（`---`）隔开；**后面照常写详细技术记录**，该有多细仍有多细，只是位置后移。
+
+### 示例（格式参考，非强制文案）
+
+> **大白话总结**：这次帮你把收集到的 100 多条金句整理归类好了，一批适合「陪你观察当下」的语气，一批适合「提醒你怎么做」的语气，已经分好类存进文档。**但这些句子现在用户在 App 里还看不到一条**，因为还没有把它们接到具体显示的画面上。这部分工作还没开始。你不需要现在做任何决定；如果同意接下来先从「专注开始前」这个画面开始接线，回复「同意」就行。
+>
+> ---
+>
+> [下面正常写技术细节…]
 
 ---
 
@@ -49,6 +86,33 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 1. **默认 base = `develop`**：日常 `feature/*` / `fix/*` / `docs/*` PR **必须**显式 `--base develop`（或 UI 选 `develop`）。  
 2. **禁止默认打到 `main`**：除非用户**当回合书面**要求「开往 `main`」或「`develop` → `main` 发版 PR」。  
 3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base 或关 PR 重开**，禁止带着错误 base 等 CI / 催合。
+
+### PR 描述须引用所属任务线 Issue（硬性 · 2026-09-07 · 2026-09-08 修订）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-task-line-ref`）。与「任务完成后默认 push 旁支 + 开 PR」（`git-agent-commit`）并列；目的：PR 一开出来就挂到对应任务线，并填充 Projects **Linked pull requests** 列。
+
+开向 `develop` 的 PR 描述**必须**引用所属任务线 Issue（正文末尾一行即可；**须用 `Closes #NNN`**，以便 GitHub 写入 Projects 的 Linked pull requests 字段）：
+
+| Issue 类型 | 写法 | 说明 |
+|---|---|---|
+| **Epic**（活基线，如 `#627`–`#647`） | `Closes #NNN` | 依赖仓库设置（见下）；合并后 Epic **须保持 open** |
+| **审计 / 切片**（有明确终点，如 `#648`–`#650`） | `Closes #NNN` | 合并后可关子 Issue（审计/切片有终点） |
+
+**仓库前提（2026-09-08 已配置）**：`Ihiro-PetGarden001` → Settings → General → Issues → **已取消勾选**「Auto-close issues with merged linked pull requests」。在此前提下，Epic 与切片 PR 均用 `Closes #NNN` **不会**在合并时误关 Issue，且看板 Epic 行的 Linked pull requests 列会自动显示对应 PR。
+
+**硬规则**：
+
+1. **统一用 `Closes #NNN`**（Epic、审计、切片均同）；**禁止**再用 `Relates to #NNN` 作任务线引用——GitHub 只把它记为 cross-reference，**不会**写入 Linked pull requests 列。  
+2. **禁止手动 Development 侧栏关联替代关键字**：手动关联与 `Closes` 享受同样工作流；在 auto-close **开启**时会误关 Epic——关键字 + 关掉的 auto-close 才是正路。  
+3. **双保险**：若仓库 auto-close 设置被重新打开，须立即改回：**Epic 用 `Relates to #NNN`**（Linked pull requests 列会再变空），**仅**有终点的审计/切片继续用 `Closes #NNN`。文档与本节须同步改回并汇报。  
+4. **`Closes` 目标数量按 Issue 类型区分**（防误关已由仓库 auto-close 设置兜底，本条管的是看板可读性与范围纪律）：
+   - **审计 / 切片**（有明确终点，如 `#648`–`#650`）：一条 PR 只 `Closes` **一个** Issue；一条 PR 对应两个切片说明范围没切干净，须警惕。
+   - **Epic**（活基线）：允许一条 PR `Closes` **多个** Epic（如 `Closes #637` / `Closes #645` 分两行，或 `Closes #637, #645`）——表示一次改动耦合多条线，**应**同时出现在各 Epic 的 Linked pull requests 列；跨线说明仍写在正文。
+   - **Dependabot / 纯依赖 bump / 无产品语义维护 PR**：**不挂**任务线（正文勿写 `Closes #NNN`）；误挂会污染 Epic 的 Linked pull requests 列（如 `#558`/`#559` 误挂 `#630`）。
+
+**自动提醒（2026-09-09）**：开向 `develop` 的 PR 若正文缺少 `Closes #NNN`（或 `Closes` 未指向带 `type:epic` / `type:slice` / `type:audit` 标签的 Issue），GitHub Action [`.github/workflows/task-line-ref-check.yml`](.github/workflows/task-line-ref-check.yml) 会在 PR 下自动评论提醒。**不阻塞合并**（非 required check）；Dependabot PR 跳过。目的：把「记得写 Closes」从文档靠记性 → 开 PR 时机器提醒，减少看板 Linked pull requests 列漏挂。
+
+**漏挂回填**：`focus-tiger/scripts/backfill-open-pr-task-line-refs.sh` 默认扫 **open** PR；加 `--merged` 扫已合并 PR。已有 `Closes` 的 PR 会跳过，不重复追加。回填后核对 Epic 仍为 **OPEN**（`gh issue view <n> --json state`）。
 
 ### 跨会话指令冲突处理（开 PR / 合并 / push 前）
 
@@ -406,6 +470,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 2. **口令**：仅当你**当回合书面**明确说「部署」/「redeploy」/「部署生产 Worker」时，才可执行。含糊的「同步」「上线」「发布」「合进去了」**都不算**。  
 3. **与合 `main` 分开**：合并 `develop` → `main`（`git-merge-main`）**也不**自动授权 Worker deploy；两边都要各自的明确指令。  
 4. **汇报**：若执行了部署，须写清 Worker 名、环境（生产）、版本/部署 id（若有）、以及「未部署」时不得假装已对真实用户生效。
+5. **防剽窃分叉核对（可选）**：若本次 Redeploy 含 Quiet Line / Confide 句库键值更新，顺带对照 `ANTI_PLAGIARISM_LAYER.md` §3.2.2 **C′ 部署核对**（逐键审定、现网 ≠ 冻表、禁止写回 freeze）。Dispatcher 权重 / Honesty 分档不在此清单（D3 冻结）。
 
 命令与密钥细节见 [`focus-tiger/cloud/README.md`](focus-tiger/cloud/README.md)；本节只管**何时允许执行**。
 
@@ -558,7 +623,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
@@ -574,6 +639,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 | 我想… | 做法 |
 |---|---|
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
+| PR 引用任务线 | 统一 `Closes #NNN`（仓库已关 auto-close；见「PR 描述须引用所属任务线 Issue」） |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
 | 把 Cloud 旁支落到本机 | `git fetch` + `git worktree add …-wt-… origin/<branch>`；禁止主仓 Apply / migrated checkout（见「并行 Cursor 会话」第 8 款） |
 | 关单 / 批量人工测试 | 固定 QA 树 `…-wt-develop-qa` · `:5173`；合入后 `npm run sync:qa-develop`（见 `qa-develop-worktree`） |

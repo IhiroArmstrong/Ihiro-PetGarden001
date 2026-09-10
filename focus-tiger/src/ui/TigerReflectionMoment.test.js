@@ -147,12 +147,12 @@ test('shouldHoldReflectionLastEcho: last non-empty Continue holds; skip/blank/mi
   );
 });
 
-test('shouldFinishHeldReflection: second Continue/Skip/Esc must close (no silent no-op)', () => {
+test('shouldFinishHeldReflection: last echo hold advances to wisdom landing', () => {
   for (const action of ['continue', 'skip', 'skip-all', 'escape', 'enter']) {
     assert.equal(
       shouldFinishHeldReflection({ awaitingLastEchoHold: true, action }),
       true,
-      `held ${action} must finish`
+      `held ${action} must advance`
     );
   }
   assert.equal(
@@ -189,6 +189,14 @@ test('last-echo hold has no auto-dismiss timer and marks input read-only', () =>
   assert.equal(src.includes('setTimeout(() => this._finish(), 900)'), false);
   assert.match(src, /_enterLastEchoHold/);
   assert.match(src, /inputEl\.readOnly = true/);
+});
+
+test('Reflection uses progressive quote disclosure (never both pools at once)', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, 'TigerReflectionMoment.js'), 'utf8');
+  assert.match(src, /reflectionQuoteDisclosure/);
+  assert.match(src, /_enterWisdomHold/);
+  assert.match(src, /_applyQuotePhase/);
 });
 
 test('Reflection card uses shared home clearance and globe side inset', () => {

@@ -14,6 +14,19 @@ import {
 	tasteConfideCopyCorpus,
 	tasteConfideCopyTemplates,
 } from "./tasteConfideCopyFreeze.ts";
+import {
+	CALM_ACTION_ARRIVE_IDS,
+	CALM_ACTION_OVERLAY_SCHEMA_VERSION,
+	CALM_ACTION_RECOVER_IDS,
+	CALM_ACTION_REFLECT_IDS,
+	tasteCalmActionArrivePool,
+	tasteCalmActionRecoverPool,
+	tasteCalmActionReflectPool,
+} from "./tasteCalmActionCopyFreeze.ts";
+import {
+	QUIET_LINE_OVERLAY_SCHEMA_VERSION,
+	tasteQuietLinePool,
+} from "./tasteQuietLineFreeze.ts";
 
 describe("taste-layer freeze tables", () => {
 	it("locks schemaVersion 1 and Honesty 30", () => {
@@ -58,6 +71,22 @@ describe("taste-layer freeze tables", () => {
 		assert.equal(en[0].id, "catch-this-moment");
 	});
 
+	it("quiet-line freeze has 29 aligned keys and overlay schema 2", () => {
+		assert.equal(QUIET_LINE_OVERLAY_SCHEMA_VERSION, 2);
+		const en = tasteQuietLinePool("en");
+		const ja = tasteQuietLinePool("ja");
+		assert.equal(en.length, 29);
+		assert.deepEqual(
+			en.map((e) => e.key),
+			ja.map((e) => e.key),
+		);
+		assert.equal(en[en.length - 1].key, "DAILY_ZEN_QUOTE_INSIGHT_22");
+		assert.equal(
+			en.find((e) => e.key === "DAILY_ZEN_QUOTE_1")?.text,
+			"The world and I were never two.",
+		);
+	});
+
 	it("confide copy freeze has 4 templates and 19 corpus ids", () => {
 		assert.equal(CONFIDE_COPY_TEMPLATE_KEYS.length, 4);
 		assert.equal(CONFIDE_COPY_CORPUS_IDS.length, 19);
@@ -88,5 +117,45 @@ describe("taste-layer freeze tables", () => {
 				?.text,
 			"話さなくていい。寅はここにいる。",
 		);
+	});
+
+	it("calm-action copy freeze has 14 recover + 14 arrive + 20 reflect ids and schema 2", () => {
+		assert.equal(CALM_ACTION_OVERLAY_SCHEMA_VERSION, 2);
+		assert.equal(CALM_ACTION_RECOVER_IDS.length, 14);
+		assert.equal(CALM_ACTION_ARRIVE_IDS.length, 14);
+		assert.equal(CALM_ACTION_REFLECT_IDS.length, 20);
+		const enRecover = tasteCalmActionRecoverPool("en");
+		const jaRecover = tasteCalmActionRecoverPool("ja");
+		const enArrive = tasteCalmActionArrivePool("en");
+		const jaArrive = tasteCalmActionArrivePool("ja");
+		const enReflect = tasteCalmActionReflectPool("en");
+		const jaReflect = tasteCalmActionReflectPool("ja");
+		assert.deepEqual(
+			enRecover.map((e) => e.id),
+			[...CALM_ACTION_RECOVER_IDS],
+		);
+		assert.deepEqual(
+			jaRecover.map((e) => e.id),
+			enRecover.map((e) => e.id),
+		);
+		assert.deepEqual(
+			enArrive.map((e) => e.id),
+			[...CALM_ACTION_ARRIVE_IDS],
+		);
+		assert.deepEqual(
+			jaArrive.map((e) => e.id),
+			enArrive.map((e) => e.id),
+		);
+		assert.equal(enRecover[0].id, "CAW-R01");
+		assert.equal(enArrive[0].id, "CAW-A01");
+		assert.deepEqual(
+			enReflect.map((e) => e.id),
+			[...CALM_ACTION_REFLECT_IDS],
+		);
+		assert.deepEqual(
+			jaReflect.map((e) => e.id),
+			enReflect.map((e) => e.id),
+		);
+		assert.equal(enReflect[0].id, "CAW-L01");
 	});
 });

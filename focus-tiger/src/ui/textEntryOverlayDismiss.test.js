@@ -19,6 +19,7 @@ test('Stay in touch has Cancel and does not close on outside pointer', () => {
   const src = readUi('NewsletterCaptureUI.js');
   assert.match(src, /newsletter-capture-cancel/);
   assert.match(src, /NEWSLETTER_CANCEL/);
+  assert.match(src, /SB19_HOLD/);
   assert.doesNotMatch(src, /_onDocPointer/);
 });
 
@@ -28,6 +29,13 @@ test('Confide has Cancel on the left of Share / Close', () => {
   assert.match(src, /CONFIDE_PANEL_CANCEL/);
   assert.match(src, /confide-to-yin__actions-end/);
   assert.match(src, /shouldSubmitConfideOnEnter/);
+});
+
+test('Confide scrolls the card to the latest reply after Share', () => {
+  const src = readUi('ConfideToYinUI.js');
+  assert.match(src, /_scrollReplyIntoView/);
+  assert.match(src, /this\.root\.scrollTop = this\.root\.scrollHeight/);
+  assert.match(src, /_showReply[\s\S]*_scrollReplyIntoView/);
 });
 
 test('Tip jar and Sanctuary (always-visible email) do not close on outside pointer', () => {

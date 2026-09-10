@@ -32,6 +32,17 @@ describe('practiceBadgeAward', () => {
     assert.equal(computePracticeScore({}), 0);
   });
 
+  it('prefers scoreEligibleLifetimeMinutes over raw lifetime', () => {
+    assert.equal(
+      computePracticeScore({
+        practiceDayCount: 1,
+        lifetimeMinutes: 600,
+        scoreEligibleLifetimeMinutes: 180
+      }),
+      4
+    );
+  });
+
   it('paid: no practice → min floor', () => {
     assert.equal(
       computePracticeBadgeTargetCount(

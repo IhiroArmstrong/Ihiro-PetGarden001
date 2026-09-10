@@ -14,6 +14,7 @@ import {
   findDigitalWallpaperById
 } from '../core/digitalWallpapersCatalog.js';
 import { saveDigitalWallpaperImage } from '../core/saveDigitalWallpaper.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -22,9 +23,15 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const STYLE_ID = 'digital-wallpapers-card-styles-v1';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class DigitalWallpapersCardUI {
   /**
@@ -41,6 +48,14 @@ export class DigitalWallpapersCardUI {
     this._saving = false;
     /** @type {string} */
     this._selectedId = DIGITAL_WALLPAPER_STILLS[0]?.id || '';
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'digital-wallpapers-backdrop',
+      testId: 'digital-wallpapers-backdrop',
+      zIndex: 17,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+      onDismiss: () => this.close()
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'digital-wallpapers-card';
@@ -154,6 +169,7 @@ export class DigitalWallpapersCardUI {
     if (!findDigitalWallpaperById(this._selectedId)) {
       this._select(DIGITAL_WALLPAPER_STILLS[0]?.id || '');
     }
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
@@ -165,6 +181,7 @@ export class DigitalWallpapersCardUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -176,6 +193,7 @@ export class DigitalWallpapersCardUI {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this.backdrop.remove();
     this.root.remove();
   }
 

@@ -52,6 +52,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-develop-small-pr-run-merge` | 合入 develop：CI 绿即可合并（人工测试非合入门闩） | `WORKFLOW.md` | 合入 develop：CI 绿即可合并 |
 | `prod-worker-deploy` | 生产 Worker Redeploy 须明确「部署」口令 | `WORKFLOW.md` | 生产 Worker Redeploy |
 | `git-pr-base-develop` | 开 PR 须确认 `--base`（默认 develop；禁默认打 main） | `WORKFLOW.md` | 开 PR 前 · `--base` 自查 |
+| `git-pr-task-line-ref` | PR 描述须引用所属任务线 Issue（统一 Closes #NNN；仓库 auto-close 已关；Linked pull requests 列） | `WORKFLOW.md` | PR 描述须引用所属任务线 Issue |
 | `git-branch-health` | 分支健康度（即时纪律 + 双周普查；非 CI 硬拦） | `focus-tiger/docs/PROCESS.md` | 分支健康度 |
 | `regression-gate` | 交互修复完工门禁（主路径+回流、静默失败、冒烟、N14/N15…） | `.cursor/rules/focus-tiger-regression-lock.mdc` | 交互修复完工门禁 |
 | `bug-close-s7` | Bug close（§7）五证 checklist | `.cursor/rules/focus-tiger-regression-lock.mdc` | AI 修复验收规范（Bug close · §7 · 强制） |
@@ -70,6 +71,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `risk-mitigation-playbook` | 中高风险任务落地降险 Playbook | `focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md` | 触发条件 |
 | `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
+| `plain-language-summary` | 用户可见汇报前置大白话总结（≤5 句、无技术术语） | `WORKFLOW.md` | 用户可见汇报：前置大白话总结（强制） |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
@@ -97,6 +99,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-develop-small-pr-run-merge` | 「合入 develop：CI 绿即可合并见 `WORKFLOW.md`」（旧称文档/小 PR Run 合并；现含运行时 PR）；regression-lock / PROCESS / COLLAB / docs.mdc 可一行引用 | 把合 develop 默认改回「只请你上 GitHub 手合」或「等人工测完再合」；把本条扩成合 `main` 或生产部署；下班前口令顺手推进无关 PR |
 | `prod-worker-deploy` | 「生产 Worker 须明确「部署」见 `WORKFLOW.md`」；cloud README 可一行引用 | 主张合入 develop / CI 绿即可 redeploy；把「同步」「发布」当成部署口令 |
 | `git-pr-base-develop` | 「开 PR 须 `--base develop`；见 `WORKFLOW.md`」；PROCESS 血统检查可一行引用 | 主张可省略 `--base` 靠 GitHub 默认；日常 PR 默认可打 `main`；误开后仍等 CI 不立刻纠正 |
+| `git-pr-task-line-ref` | 「PR 须 `Closes #NNN`；仓库 auto-close 已关；见 `WORKFLOW.md`」 | 主张 Epic 用 `Relates to`（Linked pull requests 列会空）；主张仅用手动 Development 即可挂线且免误关；把活基线 Epic 当可关单子 Issue |
 | `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
 | `doc-code-contract` | 在 ARCHITECTURE / TEST_TRACKER 链到本文 | 平行发明第二套 docs:check 语义 |
@@ -152,7 +155,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
 | [`PROCESS.md`](./PROCESS.md) | 协作组织、进度速览、Git **操作节奏**摘要；政策指向 SSOT |
-| [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；验收 tip 规则引用 `TEST_TRACKER` |
+| [`COLLAB.md`](./COLLAB.md) | Task Brief / 角色协作约定；**SSOT**：共用机制核对须写结论句（第七节）；验收 tip 规则引用 `TEST_TRACKER` |
 | [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) | **SSOT**：文档↔代码结构对齐机制 |
 | [`RISK_MITIGATION_PLAYBOOK.md`](./RISK_MITIGATION_PLAYBOOK.md) | **SSOT**：中高风险功能落地降险（四件套 + 架构红线；索引 `risk-mitigation-playbook`） |
 | [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) | **SSOT**：实现前功能冲突扫描（强度 / 语气 / 职责；索引 `feature-conflict-review`） |
@@ -160,7 +163,7 @@ cd focus-tiger && npm run rules:doc-sync
 | **本文件 `RULES_INDEX.md`** | **SSOT**：规则主题 → 权威映射 + 检测入口 |
 | [`TEST_TRACKER.md`](./TEST_TRACKER.md) | 验收表维护规则；**SSOT**：关单级人工验收只认 `origin/develop` tip；**SSOT**：标「已通过」覆盖分工（`qa-pass-coverage-split`）；**SSOT**：批量人工测试口令（`qa-batch-human-test`）；**SSOT**：缺陷分级与处理承诺（`release-blocker-ledger`） |
 | [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md) | **SSOT**：功能模块 vs smoke/e2e 覆盖对照、永不自动化清单、unit\*→smoke 分类（§7）、Honesty/i18n 发布口径 |
-| [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 |
+| [`Z_INDEX.md`](./Z_INDEX.md) | **SSOT**：产品 z-index 层叠登记 + Idle 常驻 chrome（遮罩 dim 消费者） |
 | [`SCENARIO_TESTS.md`](./SCENARIO_TESTS.md) | 场景剧本权威 |
 | `./scripts/git-sync-safe.sh`（仓库根） | 推送前体检脚本（非政策正文） |
 
@@ -174,10 +177,12 @@ cd focus-tiger && npm run rules:doc-sync
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
 | `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |
 | `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、清供 8、序列帧铁律（**方向锁 2026-08-20**；运行时见 Brief） |
+| `GROWTH_METRICS_CHARTER.md` | **成长指标治理 SSOT**：多轨 registry · persona 回归 · 公式版本迁移 · QA seed 契约（`audit:growth-metrics` in `docs:check`） |
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
 | `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
-| `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom 分池；**无运行时**） |
+| `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时**） |
+| `CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**（Contemplative Archive）：长期纪念文学 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
@@ -244,6 +249,14 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-09 | Brief 共用机制核对：须写点名结论句（SSOT `COLLAB.md` 第七节）；清单扩 `SHARED_RESOURCES` §4.1–4.2、`Z_INDEX` Idle chrome。不另起总册、不进新 rules-authority 主题 |
+| 2026-09-09 | `git-pr-task-line-ref`：新增 `.github/workflows/task-line-ref-check.yml` 软提醒；`backfill-open-pr-task-line-refs.sh` 支持 `--merged`；回填 #663–#672 → #644/#637。SSOT `WORKFLOW.md` |
+| 2026-09-08 | 收窄 `git-pr-task-line-ref`：`Closes` 数量按 Issue 类型区分——切片/审计一 PR 一 Closes；Epic 允许多 Closes（耦合信号）；Dependabot/bump 不挂线。移除 `#558`/`#559` 误挂 `#630`。SSOT `WORKFLOW.md` |
+| 2026-09-08 | 修订 `git-pr-task-line-ref`：仓库 auto-close 已关；Epic/切片 PR 统一 `Closes #NNN` 以填充 Projects Linked pull requests 列；`Relates to` 仅作 auto-close 重开时的回退。SSOT `WORKFLOW.md` |
+| 2026-09-08 | 防剽窃层 §3.2.2 补分析师脚注：Dispatcher 同现 B+C = t0/t1；YPE V1 不进 C 不是漏项。不进 rules-authority 机器块 |
+| 2026-09-07 | 新增 `git-pr-task-line-ref`：PR 描述须引用所属任务线 Issue；Epic 用 `Relates to`、审计/切片用 `Closes`；禁止对 Epic 用 `Closes`。SSOT `WORKFLOW.md`「PR 描述须引用所属任务线 Issue」 |
+| 2026-09-06 | 产品表新增 `CONTEMPLATIVE_ARCHIVE.md`（静思典藏层；12 候选；芥子须弥 = 第一枚纪念印；不进 rules-authority 机器块） |
+| 2026-09-06 | 防剽窃层补 **兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2）：现网≠冻表才算真保护。不进 rules-authority 机器块 |
 | 2026-09-06 | 防剽窃层补 **值得保护四测**（`ANTI_PLAGIARISM_LAYER.md` §3.2）；与准入四问正交；`PRINCIPLES.md` 加「云端防剽窃与护城河」指针。不进 rules-authority 机器块 |
 | 2026-09-02 | 产品表新增 `ANTI_PLAGIARISM_LAYER.md`（防剽窃层方向锁；不进 rules-authority 机器块；准入四问从 PROCESS 品味层 Backlog 收口到该 SSOT） |
 | 2026-09-02 | 新增 `ci-failure-triage`：CI/smoke/PR checks 失败且用户未附日志时须先 `gh` 取失败摘要（Step A），禁止无信号探索性 grep；探索最多 5 轮后停下问用户。SSOT `.cursor/rules/focus-tiger-ci-failure-triage.mdc`；`agent-token-cost` §5–§6 补「摘要须基于 Step A 日志」指针；不改变 push/PR / 合 develop / §7 关单 |

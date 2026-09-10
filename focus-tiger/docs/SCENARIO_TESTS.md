@@ -531,7 +531,7 @@
 
 ### Y1 · Compass（B）
 
-1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect **单行** + Got it/Close。点芯片分别进入 Arrival / Companion / Recover 仪式 / Transition 仪式 / Journey log（未授权仪式则 toast）。
+1. Idle → 宽屏 ⋯ / 窄屏抽屉 **The 5 Moments** → `#five-moments-compass` 见 Arrive→Focus→Recover→Transition→Reflect **单行** + Got it/Close。点芯片分别进入 Arrival / Companion / Recover 仪式 / **Transition Moment overlay**（C5.1；与 Idle 微钮同路径）/ Journey log（未授权 Recover 仪式则 toast）。
 2. **「?」**：简介含 Moments 链 → **The five moments** → 同卡。
 3. **首卡**：清 `focus-tiger.five-moments-compass-seen.v1` → 冷启动 Idle 约数秒出一次；Skip/Got it 后不再出。
 4. **回流**：关后再开；Rise 后再开。**375**：可滚可关、不挡 Sit。
@@ -674,6 +674,36 @@
 
 ---
 
+## 场景 AQ：Focus Circle Was-Here-Today（圈内今日来过 · 2026-09-07）
+
+> **地位**：Idle / Arrive 背景级「今天有人来过」模糊印记（自动、无短语）。**≠** sitting dots（AO）、**≠** Witness 痕迹（AP）、**≠** 聊天、**≠** 精确人数榜。Focusing 内不画。  
+> **单元**：`focusCircleWasHere.test.js` · `focusCirclePassiveShare.test.js` · cloud `focusCircleWasHereKv.test.ts`。  
+> **生产**：Worker 未部署 was-here actions 时 Idle **不画 was-here**（诚实）；`presence_peek` 仍可有 sitting。  
+> **点击**：was-here 区 `pointer-events: none`；被动开关在 ⋯ → My circle 面板。
+
+1. A、B **均已入圈** → A **Sit ≥60s** → Rise → B **sitting=0** 时 Idle 约 2.5–10s 见轻文案「今天有人来过」（**不**显示精确人数）；A 再 Sit 时 B 见 **sitting dots 优先**，was-here 隐藏。  
+2. A 关 **Share when I practiced today** → 同上完成练习 → B **不见** A 的 was-here；A 仍可见 B（若 B 未关）。  
+3. A **Sit <60s** → B 不见 was-here。  
+4. `?focusCircleWasHere=0` / `?focusCircle=0` / Leave → 不请求、不画。  
+5. 与 2c 并存：A 可自动 was-here + 自愿 Witness 痕；B Idle 可同时见 Witness（AP）与 was-here（职责分离）。
+
+---
+
+## 场景 AR：Focus Circle Identity（认人层 · 2026-09-07）
+
+> **地位**：My circle 可选昵称 + Tiger/Yin 徽标；Witness Idle 文案 `{name}` 替换「一位同伴」；本机 Hide 回匿名。**≠** was-here 计数（AQ）· **≠** OTP 跨设备（后续 Brief）。  
+> **单元**：`focusCircleIdentity.test.js` · cloud `focusCircleIdentityKv.test.ts`。  
+> **生产**：Worker 未部署 `identity_set` / 合并 `witness_peek.identities` 时全员匿名（诚实）。  
+> **点击**：Save 0–1s 反馈；Hide name 立刻回匿名。
+
+1. A 设昵称 + 徽标 → Save → B Witness 痕见昵称（非匿名）。  
+2. B **Hide this name** → 本机回「一位同伴」/「A companion」。  
+3. A 清昵称 Save → B 见匿名。  
+4. `?focusCircleIdentity=0` → 不展示认人 UI、Witness 仍匿名。  
+5. 与 AQ 并存：was-here 仍无昵称。
+
+---
+
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
 > **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。  
@@ -734,7 +764,7 @@
 
 **前提**：`cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger` → `npm --prefix desktop install` → `npm run desktop:dev`。**勿**与 `dev:qa` 抢 5173。非低配宽屏（≥480）；Web Safari 同 URL **不算**本场景。
 
-1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见 **`Qwen3-1.7B-Q4_K_M`**（不是独立 HUD；Safari Web **无**此行）。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：**仅**一条 `Forget this`（或当前 locale 金句）；**禁止**出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → **0–1 秒内** textarea 填入该金句、Share **仍可点**、**不**自动发送。  
+1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见隐晦代号 **`Model317`**（小字淡色；**禁止**裸显 `Qwen3-1.7B-Q4_K_M`；不是独立 HUD；Safari Web **无**此行）。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：**仅**一条 `Forget this`（或当前 locale 金句）；**禁止**出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → **0–1 秒内** textarea 填入该金句、Share **仍可点**、**不**自动发送。  
 2. Share **或** textarea 里 **Enter**（对得上情绪桶 / 安全阀）→ **0–1 秒内**发送钮按压/disabled + `[data-testid=confide-to-yin-reply]` **`data-source=corpus`**。**Shift+Enter** 只换行、不发送。下载中 Share/Enter **仍**有检索回复（非哑点击）。  
 3. **Focusing 卸载**：Sit→Focusing → companion 状态不再 ready；Share **不得**走生成。Rise 后再开 ⋯ 仍有该行。  
 4. **拖窄关层**：拖到 ≤479 → 生成层关掉；窄屏抽屉 **无** Confide 行。  

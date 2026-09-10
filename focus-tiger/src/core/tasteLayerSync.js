@@ -18,6 +18,14 @@ import { getLocalDateKey } from '../utils/localDate.js';
 import { getLocale, tInLocale } from '../locales/i18n.js';
 import { CONFIDE_CORPUS } from './confide/confideCorpus.js';
 import {
+  CALM_ACTION_ARRIVE_EN,
+  CALM_ACTION_ARRIVE_JA,
+  CALM_ACTION_RECOVER_EN,
+  CALM_ACTION_RECOVER_JA,
+  CALM_ACTION_REFLECT_EN,
+  CALM_ACTION_REFLECT_JA
+} from '../content/calm-action-wisdom/index.js';
+import {
   HONESTY_LONG_MIN_MINUTES,
   LIGHT_COMPLETE_POOL,
   RISE_INTERRUPT_POOL,
@@ -27,18 +35,22 @@ import {
   CONFIDE_COPY_CORPUS_IDS,
   CONFIDE_COPY_TEMPLATE_KEYS,
   getTasteWeightOverlay,
+  isTasteCalmActionCopyCloudConfirmed,
   isTasteConfideCopyCloudConfirmed,
   isTasteDailyWisdomCloudConfirmed,
   isTasteQuietLineCloudConfirmed,
   isTasteWeightCloudConfirmed,
+  markTasteCalmActionCopyCloudOk,
   markTasteConfideCopyCloudOk,
   markTasteDailyWisdomCloudOk,
   markTasteQuietLineCloudOk,
   markTasteWeightCloudOk,
+  parseCalmActionCopyOverlay,
   parseConfideCopyOverlay,
   parseDailyMessageOverlay,
   parseEmotionWeightOverlay,
   parseQuietLineOverlay,
+  setTasteCalmActionCopyOverlay,
   setTasteConfideCopyOverlay,
   setTasteDailyWisdomOverlay,
   setTasteQuietLineOverlay,
@@ -182,6 +194,34 @@ export function tasteConfideCopyOverlayMatchesLocalFreeze(parsed, locale) {
   });
 }
 
+/**
+ * @param {import('./tasteLayerOverlay.js').TasteCalmActionCopyOverlay} parsed
+ * @param {string} [locale]
+ */
+export function tasteCalmActionCopyOverlayMatchesLocalFreeze(parsed, locale) {
+  if (!parsed) return false;
+  const want = locale === 'ja' || parsed.locale === 'ja' ? 'ja' : 'en';
+  if (parsed.locale !== want) return false;
+  const recoverPool = want === 'ja' ? CALM_ACTION_RECOVER_JA : CALM_ACTION_RECOVER_EN;
+  const arrivePool = want === 'ja' ? CALM_ACTION_ARRIVE_JA : CALM_ACTION_ARRIVE_EN;
+  const reflectPool = want === 'ja' ? CALM_ACTION_REFLECT_JA : CALM_ACTION_REFLECT_EN;
+  return (
+    calmActionPoolTextsMatch(parsed.recover, recoverPool) &&
+    calmActionPoolTextsMatch(parsed.arrive, arrivePool) &&
+    calmActionPoolTextsMatch(parsed.reflect, reflectPool)
+  );
+}
+
+/**
+ * @param {readonly { id: string, text: string }[]} overlay
+ * @param {readonly { id: string, text: string }[]} local
+ */
+function calmActionPoolTextsMatch(overlay, local) {
+  if (overlay.length !== local.length) return false;
+  const byId = new Map(local.map((e) => [e.id, e.text]));
+  return overlay.every((e) => byId.get(e.id) === e.text);
+}
+
 /** @type {import('./tasteLayerOverlay.js').TasteWeightOverlay | null} */
 let pendingWeight = null;
 /** @type {import('./tasteLayerOverlay.js').TasteDailyWisdomOverlay | null} */
@@ -190,6 +230,8 @@ let pendingDaily = null;
 let pendingQuietLine = null;
 /** @type {import('./tasteLayerOverlay.js').TasteConfideCopyOverlay | null} */
 let pendingConfideCopy = null;
+/** @type {import('./tasteLayerOverlay.js').TasteCalmActionCopyOverlay | null} */
+let pendingCalmActionCopy = null;
 /** @type {ReturnType<typeof setTimeout> | 0} */
 let flushTimer = 0;
 
@@ -220,6 +262,11 @@ export function flushPendingTasteLayerApply(canApply = () => true) {
     pendingConfideCopy = null;
     applied = true;
   }
+  if (pendingCalmActionCopy) {
+    setTasteCalmActionCopyOverlay(pendingCalmActionCopy);
+    pendingCalmActionCopy = null;
+    applied = true;
+  }
   return applied;
 }
 
@@ -230,7 +277,7 @@ function schedulePendingFlush(canApply) {
   if (flushTimer) return;
   const tick = () => {
     flushTimer = 0;
-    if (!pendingWeight && !pendingDaily && !pendingQuietLine && !pendingConfideCopy) return;
+    if (!pendingWeight && !pendingDaily && !pendingQuietLine && !pendingConfideCopy && !pendingCalmActionCopy) return;
     if (canApply()) {
       flushPendingTasteLayerApply(canApply);
       return;
@@ -260,6 +307,7 @@ async function waitUntilCanApply(canApply, waitApplyMs) {
  *   dailyWisdom: boolean,
  *   quietLine: boolean,
  *   confideCopy: boolean,
+ *   calmActionCopy: boolean,
  *   honestyLongMinMinutes: number | null
  * }}
  */
@@ -268,11 +316,13 @@ export function getTasteLayerStatus() {
   const dailyWisdom = isTasteDailyWisdomCloudConfirmed();
   const quietLine = isTasteQuietLineCloudConfirmed();
   const confideCopy = isTasteConfideCopyCloudConfirmed();
+  const calmActionCopy = isTasteCalmActionCopyCloudConfirmed();
   return {
     weights,
     dailyWisdom,
     quietLine,
     confideCopy,
+    calmActionCopy,
     honestyLongMinMinutes:
       getTasteWeightOverlay()?.honestyLongMinMinutes ??
       (weights ? HONESTY_LONG_MIN_MINUTES : null)
@@ -284,6 +334,7 @@ export function resetTasteLayerSyncForTests() {
   pendingDaily = null;
   pendingQuietLine = null;
   pendingConfideCopy = null;
+  pendingCalmActionCopy = null;
   if (flushTimer) {
     clearTimeout(flushTimer);
     flushTimer = 0;
@@ -300,7 +351,7 @@ export function resetTasteLayerSyncForTests() {
  * @param {string} [opts.cloudBaseUrl]
  * @param {() => boolean} [opts.canApply]
  * @param {number} [opts.waitApplyMs]
- * @returns {Promise<{ weights: boolean, dailyWisdom: boolean, quietLine: boolean, confideCopy: boolean }>}
+ * @returns {Promise<{ weights: boolean, dailyWisdom: boolean, quietLine: boolean, confideCopy: boolean, calmActionCopy: boolean }>}
  */
 export async function prefetchTasteLayer(opts = {}) {
   const search =
@@ -308,7 +359,13 @@ export async function prefetchTasteLayer(opts = {}) {
     (typeof location !== 'undefined' ? String(location.search || '') : '');
   const cloudBaseUrl = opts.cloudBaseUrl ?? getCloudApiBaseUrl();
   if (!isTasteLayerFetchEnabled({ search, cloudBaseUrl })) {
-    return { weights: false, dailyWisdom: false, quietLine: false, confideCopy: false };
+    return {
+      weights: false,
+      dailyWisdom: false,
+      quietLine: false,
+      confideCopy: false,
+      calmActionCopy: false
+    };
   }
 
   const canApply = opts.canApply ?? (() => true);
@@ -319,7 +376,7 @@ export async function prefetchTasteLayer(opts = {}) {
   const locale = opts.locale || getLocale() || 'en';
   const localDate = opts.localDate || getLocalDateKey(new Date());
 
-  const [weightResult, dailyResult, quietLineResult, confideCopyResult] =
+  const [weightResult, dailyResult, quietLineResult, confideCopyResult, calmActionCopyResult] =
     await Promise.allSettled([
     withTimeout(
       postJson('/api/emotion-weight', {
@@ -348,6 +405,12 @@ export async function prefetchTasteLayer(opts = {}) {
         body: JSON.stringify({ locale, localDate })
       }),
       timeoutMs
+    ),
+    withTimeout(
+      postJson('/api/calm-action-copy', {
+        body: JSON.stringify({ locale, localDate })
+      }),
+      timeoutMs
     )
   ]);
 
@@ -355,6 +418,7 @@ export async function prefetchTasteLayer(opts = {}) {
   let dailyWisdom = false;
   let quietLine = false;
   let confideCopy = false;
+  let calmActionCopy = false;
 
   if (weightResult.status === 'fulfilled') {
     const parsed = parseEmotionWeightOverlay(weightResult.value);
@@ -420,5 +484,21 @@ export async function prefetchTasteLayer(opts = {}) {
     }
   }
 
-  return { weights, dailyWisdom, quietLine, confideCopy };
+  if (calmActionCopyResult.status === 'fulfilled') {
+    const parsed = parseCalmActionCopyOverlay(calmActionCopyResult.value, locale);
+    if (parsed) {
+      calmActionCopy = true;
+      if (tasteCalmActionCopyOverlayMatchesLocalFreeze(parsed, locale)) {
+        markTasteCalmActionCopyCloudOk();
+      } else if (canApply()) {
+        setTasteCalmActionCopyOverlay(parsed);
+        markTasteCalmActionCopyCloudOk();
+      } else {
+        pendingCalmActionCopy = parsed;
+        schedulePendingFlush(canApply);
+      }
+    }
+  }
+
+  return { weights, dailyWisdom, quietLine, confideCopy, calmActionCopy };
 }

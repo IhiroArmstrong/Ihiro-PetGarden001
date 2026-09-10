@@ -99,8 +99,8 @@ export class ConfideEarChromeUI {
     style.textContent = `
       .confide-ear-chrome {
         position: fixed;
-        /* Below #focus-hud glass card (~18px + card height); SANCTUARY_UI_ART_DIRECTION B */
-        top: calc(max(18px, env(safe-area-inset-top, 0px)) + 112px);
+        /* Below #focus-hud glass card (row + shared-sitting bar); SANCTUARY_UI_ART_DIRECTION B */
+        top: calc(max(18px, env(safe-area-inset-top, 0px)) + 152px);
         left: max(18px, env(safe-area-inset-left, 0px));
         z-index: 24;
         width: 52px;

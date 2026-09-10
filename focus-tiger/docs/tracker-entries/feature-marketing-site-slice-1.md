@@ -1,0 +1,3 @@
+# feature/marketing-site-slice-1 · 2026-09-08
+
+| 宣传 / 营销站 Slice 1（短单页 · 见阿寅） | UI可见 | 待人工测试 | **主路径（现网）**：`https://twinsology.com` → Hero 见 2D 阿寅 + `Walking the Yin Way?`；主钮 **See the companion** 平滑滚到三截图区；次钮 **Write to Yin** → `hello@twinsology.com` mailto。**截图区**：Gentle companion / Mindful rituals & ambience / Quiet Line & collections 三卡。**页脚**：Privacy · Medical disclaimer 可开、可回首页。**禁止**：Download App · workers.dev · 练习壳。**375**：Safari 响应式 375，Hero 与三卡不横溢、两 CTA 可点。**回流**：`privacy.html` / `wellness.html` → Back to Focus Tiger。**本地**：`python3 -m http.server 4173 --directory marketing-site`。自动化：`node --test marketing-site/slice0-contract.test.js`。 | — | — | — | `https://twinsology.com` · Brief `task-marketing-site-slice-1.md` | 2026-09-08 |

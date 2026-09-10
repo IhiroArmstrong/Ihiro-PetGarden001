@@ -18,6 +18,10 @@ import {
   computePracticeBadgeTargetCount,
   mergeCatalogBadgeAwards
 } from './practiceBadgeAward.js';
+import {
+  practiceAggregateBadgeSummary,
+  resolvePracticeAggregateFromStorage
+} from './practiceAggregate.js';
 
 export const SANCTUARY_BADGE_PUBLIC_DIR = '/ui/support/sanctuary-badges';
 
@@ -166,8 +170,8 @@ export function readPracticeDaysForSanctuaryBadges(storage) {
  * @param {string[]} [prevBadgeIds]
  */
 export function planSanctuaryBadgeAward(storage, prevBadgeIds = []) {
-  const summary = summarizePracticeDaysForSanctuaryBadges(
-    readPracticeDaysForSanctuaryBadges(storage)
+  const summary = practiceAggregateBadgeSummary(
+    resolvePracticeAggregateFromStorage(storage)
   );
   const targetCount = computeSanctuaryBadgeTargetCount(summary);
   const merge = mergeSanctuaryBadgeAwards(prevBadgeIds, targetCount);

@@ -19,6 +19,10 @@ import {
   computePracticeBadgeTargetCount,
   mergeCatalogBadgeAwards
 } from './practiceBadgeAward.js';
+import {
+  practiceAggregateBadgeSummary,
+  resolvePracticeAggregateFromStorage
+} from './practiceAggregate.js';
 
 /** Public URL prefix for high-res PNGs (download + display). */
 export const TIP_KINDNESS_BADGE_PUBLIC_DIR = '/ui/support/yin-badges';
@@ -207,8 +211,8 @@ export function planTipBadgeAward(
   prevBadgeIds = [],
   { mode = 'paid' } = {}
 ) {
-  const summary = summarizePracticeDaysForBadges(
-    readPracticeDaysForTipBadges(storage)
+  const summary = practiceAggregateBadgeSummary(
+    resolvePracticeAggregateFromStorage(storage)
   );
   const targetCount =
     mode === 'free'

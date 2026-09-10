@@ -190,7 +190,7 @@ export const QUIET_LINE_CARD = Object.freeze({
   inkMuted: 'rgba(61, 46, 34, 0.62)',
   titleInk: '#5c4330',
   focusX: 0.5,
-  focusY: 0.28,
+  focusY: 0.22,
   padX: 88,
   seamFade: 72
 });

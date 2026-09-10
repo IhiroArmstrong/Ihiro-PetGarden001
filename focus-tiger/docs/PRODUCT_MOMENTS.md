@@ -28,10 +28,10 @@ Five Moments 是**一天当中的时间轴**，回答"用户什么时候会想�
 | **Arrive** | 一天开始，或准备开始一项任务 | 帮助用户觉察当前状态 | ✅ Arrival Practice v2（Sit→欢迎/Notice/呼吸/Choose→Companion Mode）；Honesty Check-in 按天并存 |
 | **Focus** | 正在专注 | 安静陪伴，不打扰，提供稳定感 | 已完整——FocusSession / Companion Mode / Sit with Yin |
 | **Recover** | 分心、焦虑、卡住 | 帮助用户回到当下，而非责备 | 被动 Re-focus ✅；**主动 Recover（Tiger Anchor）已落地**（Focusing 轻触阿寅；不占被动额度；180s 冷却）。`welcomeBack` **不是** Recover（见下） |
-| **Transition** | 在任务/会议/学习/休息之间切换 | 帮助用户完成心理上的"重置" | **空白**——完全未设计 |
+| **Transition** | 在任务/会议/学习/休息之间切换 | 帮助用户完成心理上的"重置" | **C5 已接线**（Idle 微入口 + ~10s overlay · 合十 + CAW-T；#679）；**C5.1** 罗盘芯片同路径；Work Transition 仪式仍留 Rituals 菜单 |
 | **Reflect** | 完成一次专注或一天后 | 回顾觉察与成长，而非只统计数字 | 已完整——Tiger Reflection Moment 三问 |
 
-**关键判断**：Transition 仍是真正的新增空白。Recover 被动侧（Re-focus）与主动侧（Tiger Anchor）均已落地——打磨重点转为观感与冷却手感，而非「占位日志」。
+**关键判断**：Transition **轻量入口已落地**（C5/C5.1）；与订阅 Work Transition 仪式并存、分工不同。Recover 被动侧（Re-focus）与主动侧（Tiger Anchor）均已落地——打磨重点转为观感与冷却手感，而非「占位日志」。
 **动画接线**：各 Moment 应对哪一档角色动画，见 **`SCENE_ANIMATION_WIRING.md`**（v1.0.0 先交付 Slice A：语言切换问候 + Honesty Idle 短认可；微仪式完成已接线）。
 
 ---
@@ -130,9 +130,15 @@ Five Moments 按「一天」叙事；单次会话末尾的 **Grow Together**（�
 
 **A′ 为何不是「原 Banner」**：原 Contextual Banner 易变说明书且撞 Focus 隐退。万全之策 = **「?」永远可查** + **Whisper 一生一次认出** + **B 完整地图自愿查阅**。
 
-### 5.7 Calm Action Wisdom（内容池 · 未接线）
+### 5.7 Calm Action Wisdom（内容池 · 运行时排期中）
 
 世俗行动提示句，按 Arrive / Focus / Recover / Transition / Reflect 标注。**不是**第六 Moment，也**不是** Quiet Line / Daily Wisdom。规范与 70 条表：`CALM_ACTION_WISDOM.md`。观察式 toast / Whisper 仍以 `EMOTION_BIBLE.md` 为准，不得用本池替换。
+
+**落地次序（2026-09-07 拍板）**：Recover 第一刀 → Arrive 第二刀（C1 关单后立刻排）→ overlay / 日签扩容另 PR。全表：[`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)。
+
+### 5.8 Contemplative Archive（静思典藏 · 纪念层）
+
+长期练习中偶然发现的文学片段 / 纪念印。**不是**第六 Moment，**不是**日签加长档。规范与 12 条候选：`CONTEMPLATIVE_ARCHIVE.md`。现网仅芥子须弥三 case；第 2 枚印另 Brief。
 
 ---
 

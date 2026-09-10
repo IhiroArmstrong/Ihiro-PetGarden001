@@ -30,6 +30,7 @@ async function riseAndAwaitReflection(page) {
 
 async function dismissReflection(page, reflection) {
   await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
+  await reflection.getByRole('button', { name: /Continue|继续/i }).click();
   await expect(reflection).toBeHidden({ timeout: 10_000 });
 }
 
@@ -47,7 +48,7 @@ test('Quick Start then Rise does not show intention echo on Reflection', async (
   await dismissReflection(page, reflection);
 });
 
-test('Reflection shows free Daily Wisdom; Skip all still dismisses', async ({
+test('Reflection reveals Daily Wisdom on completion; Skip all then Continue dismisses', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -57,12 +58,13 @@ test('Reflection shows free Daily Wisdom; Skip all still dismisses', async ({
 
   const reflection = await riseAndAwaitReflection(page);
   const wisdom = reflection.locator('[data-testid="reflection-daily-wisdom"]');
+  await expect(wisdom).toBeHidden();
+  await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
   await expect(wisdom).toBeVisible();
   await expect(wisdom.locator('[data-testid="daily-wisdom-text"]')).not.toHaveText(
     ''
   );
-  // Skip must remain available — wisdom is not a gate.
-  await dismissReflection(page, reflection);
+  await reflection.getByRole('button', { name: /Continue|继续/i }).click();
   await expect(page.locator('#tiger-reflection-moment')).toHaveCount(0);
 });
 

@@ -55,7 +55,10 @@
 | **P-01** | `ARCHITECTURE.md` 目录树 / 角色文件表 | 组织性文档，变更频率低，自动生成 ROI 低 | 人工维护；触及时在 PR 自检 |
 | **R-01** | `SHARED_RESOURCES` §1 各 key「谁读写」叙述列 | 自然语言波及面，无法可靠从代码提取 | §1 表格**叙述列**仍手写；**key 列表**由 L-01 契约测试锁 |
 | **Y-01** | 精灵占用 / 进睡仲裁（冷启动·回前台·付款·会话结束） | 优先级矩阵是行为契约，不是 enum 导出 | **(b)**：`spriteChannelArbitration.test.js` + `dormantIdle.test.js` overlayBusy；叙事 `DEV_WORKFLOW_QUALITY` §6.17 |
-| **O-01** | 叠层占用三问（摸头 / 进睡 / 点空白） | `OVERLAY_SOURCE_CONTRACTS` 五字段 + `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`；禁止 `main.js` 手写 OR | **(a)** `scripts/overlay-contract-ui-check.js`（`docs:check`）；**(b)** `overlaySlotArbitration.test.js` |
+| **O-01** | 叠层占用三问（摸头 / 进睡 / 点空白） | `OVERLAY_SOURCE_CONTRACTS` 五字段 + `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`；禁止 `main.js` 手写 OR | **(a)** `scripts/overlay-contract-ui-check.js`（`docs:check`）；**(b)** `overlaySlotArbitration.test.js`。**门控例外**（谁忙但不得误伤并行交互）文档表：`SHARED_RESOURCES` §4.1；Brief 结论句：`COLLAB.md` 第七节 |
+| **O-02** | 叠层可交互性（`#ui-overlay` 下须 `pointer-events: auto`） | `#ui-overlay` 全局 `pointer-events: none`；挂在其内的可点叠层须在交互根显式 opt-in。与 O-01 **正交**（O-01 管「谁该显示」，O-02 管「显示出来能不能点到」）。SSOT 列表：`OVERLAY_UI_POINTER_HIT_TEST_REQUIRED` | **(a)** `overlay-contract-ui-check.js` O-02 段（`docs:check`）；**(b)** 暂无 e2e 像素点击锁 |
+| **O-03** | HUD 呼吸驱动者（谁在 breath 须推 FocusHUD） | 清单在 `SHARED_RESOURCES` §4.2；漏接 = 计时停 00:00 | **暂无 (a)**；部分字符串锁 `ritualFlowHudWiring.test.js`。新增 breath 流程须补表 + `overlayBreathing`。Brief 结论句见 `COLLAB.md` 第七节 |
+| **Z-dim** | Idle 常驻 chrome 在 overlay dim 时的变暗对象 | `Z_INDEX.md`「Idle 常驻 chrome」；禁止只按卡 z−1 盖背景 | **暂无 (a)**；`overlayBackdrop.test.js` 锁 Support / mute 选择器。Brief 结论句见 `COLLAB.md` 第七节 |
 
 ---
 

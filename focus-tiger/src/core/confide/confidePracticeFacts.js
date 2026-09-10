@@ -5,7 +5,9 @@
 
 /**
  * Slice 0 + Phase 1B · Confide practice facts.
- * User-visible numbers must match Journey Log (SCENARIO_TESTS · AG).
+ * Cumulative duration / compare / showing-up reads `resolvePracticeAggregate`
+ * (lotus lifetime minutes + practice-days). Journey Log remains for Sit-trace
+ * sub-semantics only (usual time-of-day, Arrival ease compare).
  * Safety / emotion classify still wins. Not a Memory store. Not generate.
  * Temporal Compare: two windows side by side — never character judgments.
  */
@@ -13,6 +15,8 @@
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 import { journeyLogDateKey, readJourneyLog } from '../journeyLogGate.js';
+import { PracticeDaysStore } from '../PracticeDaysStore.js';
+import { resolvePracticeAggregate } from '../practiceAggregate.js';
 
 export const PRACTICE_COMPARE_WINDOW_DAYS = 14;
 export const PRACTICE_USUAL_MIN_SESSIONS = 3;
@@ -214,28 +218,53 @@ export function summarizePracticeFactsFromJourneyLog(storage) {
  * @returns {{ dayCount: number, knownMinutes: number | null, unknownMinuteDays: number }}
  */
 export function summarizePracticeFacts(store, storage = null) {
-  const journeySummary = summarizePracticeFactsFromJourneyLog(storage);
-  if (journeySummary.dayCount > 0) return journeySummary;
-
-  const rows = store?.getPracticeDayEntries?.() || [];
-  const dayCount = rows.length;
-  let knownMinutes = 0;
+  const aggregate = resolvePracticeAggregate({
+    storage,
+    practiceDaysStore:
+      store && typeof store.getPracticeDayEntries === 'function' ? store : undefined
+  });
+  const rows = readPracticeDayRows(store, storage);
   let unknownMinuteDays = 0;
-  let knownDayCount = 0;
   for (const row of rows) {
     const mins = row?.totalMinutes;
     if (mins == null || !Number.isFinite(Number(mins))) {
       unknownMinuteDays += 1;
-      continue;
     }
-    knownDayCount += 1;
-    knownMinutes += Math.max(0, Number(mins));
   }
-  return {
-    dayCount,
-    knownMinutes: knownDayCount > 0 ? Math.round(knownMinutes) : null,
-    unknownMinuteDays
-  };
+
+  const dayCount = aggregate.practiceDayCount;
+  const lifetimeMinutes = aggregate.lifetimeMinutes;
+
+  if (dayCount <= 0 && lifetimeMinutes <= 0) {
+    return { dayCount: 0, knownMinutes: null, unknownMinuteDays: 0 };
+  }
+
+  if (lifetimeMinutes > 0) {
+    return {
+      dayCount,
+      knownMinutes: Math.round(lifetimeMinutes),
+      unknownMinuteDays
+    };
+  }
+
+  if (dayCount > 0 && unknownMinuteDays > 0) {
+    return { dayCount, knownMinutes: null, unknownMinuteDays };
+  }
+
+  return { dayCount, knownMinutes: null, unknownMinuteDays: 0 };
+}
+
+/**
+ * @param {{ getPracticeDayEntries?: () => { date: string, totalMinutes: number | null }[] } | null | undefined} store
+ * @param {Storage | null | undefined} storage
+ * @returns {{ date: string, totalMinutes: number | null }[]}
+ */
+function readPracticeDayRows(store, storage) {
+  if (store && typeof store.getPracticeDayEntries === 'function') {
+    return store.getPracticeDayEntries() || [];
+  }
+  if (!storage) return [];
+  return new PracticeDaysStore({ storage }).getPracticeDayEntries();
 }
 
 /**
@@ -280,11 +309,35 @@ function summarizePracticeDayWindow(rows, bounds) {
 }
 
 /**
+ * Practice-days windows for cumulative compare / showing-up (all baseline sources).
+ *
  * @param {{ getPracticeDayEntries?: () => { date: string, totalMinutes: number | null }[] } | null | undefined} store
  * @param {Storage | null | undefined} storage
  * @param {Date} reference
  */
-export function summarizePracticeCompareWindows(store, storage, reference) {
+export function summarizePracticeDayCompareWindows(store, storage, reference) {
+  const windowDays = PRACTICE_COMPARE_WINDOW_DAYS;
+  const recentBounds = inclusiveDayWindowBounds(reference, windowDays);
+  const priorBounds = inclusiveDayWindowBounds(
+    priorWindowReference(reference, windowDays),
+    windowDays
+  );
+  const rows = readPracticeDayRows(store, storage);
+  return {
+    windowDays,
+    recent: summarizePracticeDayWindow(rows, recentBounds),
+    prior: summarizePracticeDayWindow(rows, priorBounds),
+    hasArriveField: false
+  };
+}
+
+/**
+ * Journey windows for Arrival ease compare (Sit trace sub-semantics only).
+ *
+ * @param {Storage | null | undefined} storage
+ * @param {Date} reference
+ */
+export function summarizeJourneyCompareWindows(storage, reference) {
   const windowDays = PRACTICE_COMPARE_WINDOW_DAYS;
   const recentBounds = inclusiveDayWindowBounds(reference, windowDays);
   const priorBounds = inclusiveDayWindowBounds(
@@ -292,21 +345,22 @@ export function summarizePracticeCompareWindows(store, storage, reference) {
     windowDays
   );
   const journey = readJourneyLog(storage).entries;
-  if (journey.length) {
-    return {
-      windowDays,
-      recent: summarizeJourneyWindow(journey, recentBounds),
-      prior: summarizeJourneyWindow(journey, priorBounds),
-      hasArriveField: true
-    };
-  }
-  const rows = store?.getPracticeDayEntries?.() || [];
   return {
     windowDays,
-    recent: summarizePracticeDayWindow(rows, recentBounds),
-    prior: summarizePracticeDayWindow(rows, priorBounds),
-    hasArriveField: false
+    recent: summarizeJourneyWindow(journey, recentBounds),
+    prior: summarizeJourneyWindow(journey, priorBounds),
+    hasArriveField: journey.length > 0
   };
+}
+
+/**
+ * @deprecated Prefer `summarizePracticeDayCompareWindows` or `summarizeJourneyCompareWindows`.
+ * @param {{ getPracticeDayEntries?: () => { date: string, totalMinutes: number | null }[] } | null | undefined} store
+ * @param {Storage | null | undefined} storage
+ * @param {Date} reference
+ */
+export function summarizePracticeCompareWindows(store, storage, reference) {
+  return summarizePracticeDayCompareWindows(store, storage, reference);
 }
 
 /**
@@ -481,18 +535,18 @@ export function buildPracticeFactsReply(store, storage, tFn, text, opts = {}) {
     return formatPracticeUsualTimeReply(tallyPracticeHourBuckets(storage), tFn);
   }
   if (kind === PRACTICE_FACTS_KIND.SHOWING_UP) {
-    const windows = summarizePracticeCompareWindows(store, storage, reference);
+    const windows = summarizePracticeDayCompareWindows(store, storage, reference);
     return formatPracticeShowingUpReply(windows.recent, tFn);
   }
   if (kind === PRACTICE_FACTS_KIND.COMPARE_VOLUME) {
     return formatPracticeVolumeCompareReply(
-      summarizePracticeCompareWindows(store, storage, reference),
+      summarizePracticeDayCompareWindows(store, storage, reference),
       tFn
     );
   }
   if (kind === PRACTICE_FACTS_KIND.COMPARE_EASE) {
     return formatPracticeArriveCompareReply(
-      summarizePracticeCompareWindows(store, storage, reference),
+      summarizeJourneyCompareWindows(storage, reference),
       tFn
     );
   }

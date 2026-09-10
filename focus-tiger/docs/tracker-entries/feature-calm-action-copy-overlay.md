@@ -1,0 +1,3 @@
+# feature/calm-action-copy-overlay
+
+| Calm Action 句包 overlay（`/api/calm-action-copy`） | 纯后端 + UI文案 | 待人工测试 | **主路径（`?product=1` · 配 `VITE_CLOUD_API_BASE_URL`）**：硬刷新后 `__tasteLayer.status()` 含 `calmActionCopy: true`（可在欢迎/首段 Idle 之后）。**Recover**：Focusing → Tiger Anchor → Calm Action 卡句与本地冻表一致（冻表相同则不另存 overlay）。**Arrive**：走完 Arrival → Companion 上方 Calm Action 卡句一致。**对照**：`?tasteLayer=0` → `calmActionCopy: false`，卡仍正常。**慢网**：失败不得挡 Sit / 卡淡入。**回流**：同日 Arrive 仍日锁；同 session Recover 仍 session 锁。自动化：`tasteLayerOverlay.test.js` · `tasteLayerSync.test.js`。**完整用户链路无 e2e**（须人工）。 | — | — | — | `feature/calm-action-copy-overlay` · Worker 新路由须口令「部署」才上现网 | 2026-09-09 |

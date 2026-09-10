@@ -1,5 +1,8 @@
 export type TasteQuietLineEntry = { key: string; text: string };
 
+/** Quiet Line mixed-pool overlay only; other taste slices stay on schema 1. */
+export const QUIET_LINE_OVERLAY_SCHEMA_VERSION = 2 as const;
+
 export const TASTE_QUIET_LINE_EN: TasteQuietLineEntry[] = [
   { key: "DAILY_ZEN_QUOTE_1", text: "The world and I were never two." },
   { key: "DAILY_ZEN_QUOTE_2", text: "One breath is already a return." },
@@ -21,7 +24,15 @@ export const TASTE_QUIET_LINE_EN: TasteQuietLineEntry[] = [
   { key: "DAILY_ZEN_QUOTE_INSIGHT_11", text: "Can looking look, without turning into a chore?" },
   { key: "DAILY_ZEN_QUOTE_INSIGHT_12", text: "Not every ache needs a name to be felt." },
   { key: "DAILY_ZEN_QUOTE_INSIGHT_13", text: "Watching happens — must someone be doing it?" },
-  { key: "DAILY_ZEN_QUOTE_INSIGHT_14", text: "No conclusion is required before the next breath arrives." }
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_14", text: "No conclusion is required before the next breath arrives." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_15", text: "A mountain does not try to prove its stability." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_16", text: "When walking, walk. When resting, rest." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_17", text: "Stay with the question. Answers unfold in time." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_18", text: "Calmness is not weakness; it is quiet strength." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_19", text: "The storm passes. The sky remains." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_20", text: "Peace begins when this moment is allowed to be." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_21", text: "Simplicity is not less. It is room for what matters." },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_22", text: "Quiet does not need to announce itself." }
 ];
 
 export const TASTE_QUIET_LINE_JA: TasteQuietLineEntry[] = [
@@ -45,7 +56,15 @@ export const TASTE_QUIET_LINE_JA: TasteQuietLineEntry[] = [
   { key: "DAILY_ZEN_QUOTE_INSIGHT_11", text: "見ることは、雑用にならずに、見ていられるだろうか。" },
   { key: "DAILY_ZEN_QUOTE_INSIGHT_12", text: "疼きのすべてに、感じるための名前が要るわけではない。" },
   { key: "DAILY_ZEN_QUOTE_INSIGHT_13", text: "見ることが起きている——それをしている誰かが、要るだろうか。" },
-  { key: "DAILY_ZEN_QUOTE_INSIGHT_14", text: "次の息が来る前に、結論はまだ着いていない。" }
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_14", text: "次の息が来る前に、結論はまだ着いていない。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_15", text: "山は、静けさを証明しようとしない。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_16", text: "歩くときは歩き、休むときは休む。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_17", text: "問いと共にいよう。答えは、やがてひらく。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_18", text: "静けさは弱さではない。穏やかな強さだ。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_19", text: "嵐は過ぎる。空は、そのまま残る。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_20", text: "この瞬間をあるがままにしたとき、静けさが始まる。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_21", text: "シンプルさは不足ではない。大切なもののための余白だ。" },
+  { key: "DAILY_ZEN_QUOTE_INSIGHT_22", text: "静けさは、自らを主張しなくていい。" }
 ];
 
 export function tasteQuietLinePool(locale: string): TasteQuietLineEntry[] {

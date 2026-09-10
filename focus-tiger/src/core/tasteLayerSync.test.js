@@ -22,13 +22,21 @@ import {
   getTasteDailyWisdomOverlay,
   getTasteQuietLineOverlay,
   getTasteWeightOverlay,
+  isTasteCalmActionCopyCloudConfirmed,
   isTasteConfideCopyCloudConfirmed,
   isTasteDailyWisdomCloudConfirmed,
   isTasteQuietLineCloudConfirmed,
   isTasteWeightCloudConfirmed,
   resetTasteLayerOverlayForTests,
+  CALM_ACTION_OVERLAY_SCHEMA_VERSION,
+  QUIET_LINE_OVERLAY_SCHEMA_VERSION,
   TASTE_LAYER_SCHEMA_VERSION
 } from './tasteLayerOverlay.js';
+import {
+  CALM_ACTION_ARRIVE_EN,
+  CALM_ACTION_RECOVER_EN,
+  CALM_ACTION_REFLECT_EN
+} from '../content/calm-action-wisdom/index.js';
 import {
   flushPendingTasteLayerApply,
   getTasteLayerStatus,
@@ -61,7 +69,7 @@ const freezeDaily = {
 };
 
 const freezeQuietLine = {
-  schemaVersion: TASTE_LAYER_SCHEMA_VERSION,
+  schemaVersion: QUIET_LINE_OVERLAY_SCHEMA_VERSION,
   locale: 'en',
   pool: [
     ...COPY_POOLS.DAILY_ZEN_QUOTE,
@@ -84,11 +92,20 @@ const freezeConfideCopy = {
   })
 };
 
+const freezeCalmActionCopy = {
+  schemaVersion: CALM_ACTION_OVERLAY_SCHEMA_VERSION,
+  locale: 'en',
+  recover: CALM_ACTION_RECOVER_EN.map((e) => ({ id: e.id, text: e.text })),
+  arrive: CALM_ACTION_ARRIVE_EN.map((e) => ({ id: e.id, text: e.text })),
+  reflect: CALM_ACTION_REFLECT_EN.map((e) => ({ id: e.id, text: e.text }))
+};
+
 function tastePostJson(path, weightOverride) {
   if (path === '/api/emotion-weight') return weightOverride ?? freezeWeight;
   if (path === '/api/daily-message') return freezeDaily;
   if (path === '/api/quiet-line') return freezeQuietLine;
   if (path === '/api/confide-copy') return freezeConfideCopy;
+  if (path === '/api/calm-action-copy') return freezeCalmActionCopy;
   throw new Error(`unexpected ${path}`);
 }
 
@@ -130,7 +147,8 @@ test('prefetchTasteLayer confirms freeze-identical v1 without retaining overlay 
     weights: true,
     dailyWisdom: true,
     quietLine: true,
-    confideCopy: true
+    confideCopy: true,
+    calmActionCopy: true
   });
   assert.equal(getTasteWeightOverlay(), null);
   assert.equal(getTasteDailyWisdomOverlay(), null);
@@ -140,11 +158,13 @@ test('prefetchTasteLayer confirms freeze-identical v1 without retaining overlay 
   assert.equal(isTasteDailyWisdomCloudConfirmed(), true);
   assert.equal(isTasteQuietLineCloudConfirmed(), true);
   assert.equal(isTasteConfideCopyCloudConfirmed(), true);
+  assert.equal(isTasteCalmActionCopyCloudConfirmed(), true);
   assert.deepEqual(getTasteLayerStatus(), {
     weights: true,
     dailyWisdom: true,
     quietLine: true,
     confideCopy: true,
+    calmActionCopy: true,
     honestyLongMinMinutes: 30
   });
 });
@@ -161,7 +181,8 @@ test('prefetchTasteLayer retains overlay when weights differ from local freeze',
     weights: true,
     dailyWisdom: true,
     quietLine: true,
-    confideCopy: true
+    confideCopy: true,
+    calmActionCopy: true
   });
   assert.equal(getTasteWeightOverlay()?.honestyLongMinMinutes, 45);
   assert.equal(getTasteDailyWisdomOverlay(), null);
@@ -181,7 +202,8 @@ test('prefetchTasteLayer defers retaining a different table while canApply is fa
     weights: true,
     dailyWisdom: true,
     quietLine: true,
-    confideCopy: true
+    confideCopy: true,
+    calmActionCopy: true
   });
   assert.equal(getTasteWeightOverlay(), null);
   assert.equal(isTasteWeightCloudConfirmed(), false);
@@ -202,7 +224,8 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     weights: false,
     dailyWisdom: false,
     quietLine: false,
-    confideCopy: false
+    confideCopy: false,
+    calmActionCopy: false
   });
   assert.equal(getTasteWeightOverlay(), null);
   assert.equal(isTasteWeightCloudConfirmed(), false);
@@ -222,7 +245,8 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     weights: false,
     dailyWisdom: false,
     quietLine: false,
-    confideCopy: false
+    confideCopy: false,
+    calmActionCopy: false
   });
 
   const timed = await prefetchTasteLayer({
@@ -237,7 +261,8 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     weights: false,
     dailyWisdom: false,
     quietLine: false,
-    confideCopy: false
+    confideCopy: false,
+    calmActionCopy: false
   });
 });
 
@@ -257,6 +282,7 @@ test('prefetchTasteLayer does not fetch when disabled', async () => {
     weights: false,
     dailyWisdom: false,
     quietLine: false,
-    confideCopy: false
+    confideCopy: false,
+    calmActionCopy: false
   });
 });

@@ -1,0 +1,81 @@
+name: Task Line Reference Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+    branches:
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  check-task-line-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Closes #NNN referencing a line Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            if (author === 'dependabot[bot]' || author === 'dependabot-preview[bot]') {
+              core.info('Skipping Dependabot PR');
+              return;
+            }
+
+            const marker = '<!-- task-line-ref-check -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              per_page: 100,
+            });
+            if (comments.some((c) => c.body?.includes(marker))) {
+              core.info('Reminder already posted; skip duplicate');
+              return;
+            }
+
+            const body = pr.body || '';
+            const matches = [...body.matchAll(/\bCloses\s+#(\d+)/gi)].map((m) => parseInt(m[1], 10));
+
+            if (matches.length === 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `${marker}\n⚠️ 这个 PR 没有写 \`Closes #NNN\` 引用任务线 Epic/切片 Issue，看板的 Linked pull requests 列不会显示它。补一行 \`Closes #NNN\` 就行（仓库已关闭 auto-close，不会误关 Epic）。`,
+              });
+              return;
+            }
+
+            let foundValid = false;
+            for (const num of matches) {
+              try {
+                const issue = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: num,
+                });
+                const labels = issue.data.labels.map((l) => (typeof l === 'string' ? l : l.name));
+                if (labels.includes('type:epic') || labels.includes('type:slice') || labels.includes('type:audit')) {
+                  foundValid = true;
+                  break;
+                }
+              } catch (e) {
+                core.info(`Issue #${num} not found; skip`);
+              }
+            }
+
+            if (!foundValid) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `${marker}\n⚠️ \`Closes #NNN\` 指向的 Issue 都不是任务线 Epic/切片/审计（没有 type:epic/type:slice/type:audit 标签），看板可能挂错线了，麻烦确认一下。`,
+              });
+            }

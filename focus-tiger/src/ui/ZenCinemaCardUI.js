@@ -14,6 +14,7 @@ import {
   ZEN_CINEMA_YOUTUBE_URL,
   openZenCinemaExternal
 } from '../core/zenCinemaConfig.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -22,9 +23,15 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import {
+  OVERLAY_BACKDROP_FADE_MS,
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const STYLE_ID = 'zen-cinema-card-styles-v1';
-const FADE_MS = 220;
+const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class ZenCinemaCardUI {
   /**
@@ -37,6 +44,14 @@ export class ZenCinemaCardUI {
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._open = false;
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      id: 'zen-cinema-backdrop',
+      testId: 'zen-cinema-backdrop',
+      zIndex: 17,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+      onDismiss: () => this.close()
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'zen-cinema-card';
@@ -122,6 +137,7 @@ export class ZenCinemaCardUI {
   open() {
     if (this._open) return;
     this._open = true;
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
@@ -133,6 +149,7 @@ export class ZenCinemaCardUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
       if (!this._open) this.root.hidden = true;
@@ -144,6 +161,7 @@ export class ZenCinemaCardUI {
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this.backdrop.remove();
     this.root.remove();
   }
 

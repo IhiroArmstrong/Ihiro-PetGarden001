@@ -1,0 +1,3 @@
+# fix/practice-aggregate-batch-3
+
+| Confide practice aggregate · Batch 3 mustard ceremony | UI可见 | 待人工测试 | **修复**：芥子须弥印 / 静思典藏印自动出卡现接三条 baseline 完成仪式（计时 Sit、Honesty 补登、一分钟呼吸），不再仅限计时 Sit。**Honesty-only / Breath-only** 用户 score≥21 且仍有未揭示诗时，仪式后应先见纪念印卡 → Continue → 再进 Honesty 桥接或 Reflection。**测**：① `?product=1&qaSeedStreak=21` + Honesty 补登一场 → 仪式后出 Case 1 芥子卡 → Continue → Honesty 桥接；② 同 seed 完成一分钟呼吸 → 出卡 → Continue → Reflection；③ 计时 Sit 主路径与改前一致（庆祝 → 芥子 → Reflection）。**勿用** `qaSeedStreak=15` alone（Batch 2 后 score=15）。**自动化**：`practiceAggregateBatch3.test.js` + `mustardSeedSeal.test.js` + `audit:growth-metrics` persona。 | — | — | `desktop:dev` · Honesty · Breath · Sit 完成 · `GROWTH_METRICS_CHARTER.md` | 2026-09-10 |

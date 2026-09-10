@@ -71,6 +71,7 @@ describe("focusCircleWitnessKv", () => {
 		);
 		const peekB = buildWitnessPeekTraces(traces, NOW, MEMBER_B);
 		assert.equal(peekB.length, 1);
+		assert.equal(peekB[0].authorMemberId, MEMBER_A);
 		assert.equal(peekB[0].hasResponded, false);
 		const peekA = buildWitnessPeekTraces(traces, NOW, MEMBER_A);
 		assert.equal(peekA.length, 0);

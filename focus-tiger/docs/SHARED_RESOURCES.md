@@ -3,7 +3,7 @@
 > **地位**：与 `DEV_WORKFLOW_QUALITY.md` §2.3 **高风险面**互补，不是替代。  
 > - §2.3 = 已知踩过坑的具体点（事故清单）  
 > - 本表 = 当前共享资源分别被谁用（开工查波及面）  
-> **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。  
+> **维护**：新增 emotion key / localStorage key / Idle 编排入口时顺手补一行（R3）。触及 overlayBusy 例外 / HUD 呼吸驱动时补 §4.1–4.2。  
 > **§4 机器块**：由 `sessionUiGateContractRegistry.js` 生成；`npm run gate:doc-sync`；详见 `DOC_CODE_CONTRACT.md`。  
 > **工作流**：`DEV_WORKFLOW_QUALITY.md` §8（N19 / **N25**）；布局细则：`RESPONSIVE_LAYOUT.md`。  
 > **可见性 SSOT**：下列机器块 = `visibilityContractRegistry.js`（状态 × 视口 × 用户可见宿主）。人工叙事摘要见机器块下方「非显隐类」补充。
@@ -46,6 +46,12 @@
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
 | `focus-tiger.ype-personalization-pack.v1` | `ypePersonalizationPack` | L2 云端 Pack 缓存（schema v1）；关同意须丢弃；相同 JSON 跳过重写；**不进**练习备份 |
 | `focus-tiger.quiet-together.v1` | `quietTogetherPreference` | Quiet Together 可关（缺省=开）。只存 `{ enabled }`。会话 UUID **不**进 localStorage |
+| `focus-tiger.focus-circle.v1` | `focusCircleMembership` | 本机入圈 `{ circleId, memberId, code, memberCount? }`；无账号 |
+| `focus-tiger.focus-circle-witness-responded.v1` | `focusCircleWitness` | 本机已回应 traceId 列表（防重复 picker） |
+| `focus-tiger.focus-circle-passive-share.v1` | `focusCirclePassiveShare` | was-here 被动分享开关（默认 on） |
+| `focus-tiger.focus-circle-was-here-mark.v1` | `focusCircleWasHere` | 本机当日是否已 fire-and-forget mark（防重复） |
+| `focus-tiger.focus-circle-identity.v1` | `focusCircleIdentity` | 本机昵称/徽标草稿（与 Worker `identity_set` 对齐） |
+| `focus-tiger.focus-circle-identity-hidden.v1` | `focusCircleIdentity` | 按 `circleId` 的本机 hidden memberId 集（Hide name → 回匿名） |
 | `focus-tiger.reminder-quota.v1` | `ReminderQuotaManager` | Mindful / Re-focus / stretch 共享日额度（3） |
 | `focus-tiger.reminder-preference.v1` | `reminderPreference` + `ReminderPreferenceUI`（Idle 热力图簇旁）+ `InAppReminderBannerUI`（`#ui-overlay` 顶部居中）+ `InAppReminderBannerController` + **Scene A** `parrotEarVisit`（`parrotMessengerGate`） | 应用内提醒**每日**时分偏好 `{ hour, minute }` 或 `null`（**无 `enabled` 字段**——存在即开启）；面板常显 `reminder.daily_blurb`；已过时分可存 + `past_time_note`；今日已练 + `practiced_today_note`（仍可改时；`#reminder-preference-status` 为 callout 衬底，与斜体 blurb 区分）；时间旁 **→** / Enter 保存（`#reminder-preference-confirm` + hint；短暂 `Saved`）；onboarding Hint `in-app-reminder`；`evaluateInAppReminderBanner` 返回候选（boolean + `reminder.gentle_waiting`）；横幅每次 **hidden→visible** 伴随 `parrotEarVisit`（欢迎池 live hold + pending flush，结束后补播；同页约 60s 再评到期；`__inAppReminder.parrotMessengerPlayed` / `pendingParrotMessengerAfterWelcome` / `resetParrotMessenger`）；不占浏览器 Notification；「今日已完成」含 Honesty / 微仪式；忙碌（Arrival/Focusing/Celebrate/Reflection/微仪式）**已拍板 `suppress`**（隐藏不排队；**不做** defer）；`main.js` 固定 `busyPolicy: 'suppress'`（2026-07-23）；**本地** Backup & restore v2 白名单 |
 | `focus-tiger.hints-seen.v1` | `OnboardingHintsStore` | 分散式提示已读；实验室可单清 |
@@ -77,7 +83,8 @@
 | `focus-tiger.journey-log.v1` | `journeyLogGate` / `JourneyLogUI` | Journey Log 本地条目 `{ entries: { at, minutes, arrive, reflect, insightSpark? }[] }`（Tea Log 模式；上限约 30；**非** HealthKit；与 tip-jar / Sanctuary / `practiceBadgeAward` **零耦合**）。写入：正式 Focus Rise 后 Reflection 关闭，**或** Breath practice 完成且 Reflection 关闭（chip 分钟、`arrive: false`）。Honesty / RitualFlow **不**写。`insightSpark` 仅在当场打开 Quiet Line 且当日句来自洞察种子池时为 `true`；缺省降级为无标记。**本地导入成功**后 `dispatchPracticeDataImported`（`ft:practice-data-imported`）：`JourneyLogUI` 重读列表；`WeeklyPracticeHeatmap.bindPracticeImportRefresh` 重绘 7 格；`NarrowIdleShell` **microtask** 再克隆抽屉热力图（壳构造早于热力图，避免拷到旧 DOM） |
 | `focus-tiger.practice-backup.v1` | `practiceBackupOptIn` / Journey Log 角落引导 | 练习记忆云端备份 opt-in：`{ enabled, consentedAt, email, deviceToken, lastUploadAt, lastUploadFingerprint, lastRestoreAt }`；云端快照仍为 **v1 六 key** → `PRACTICE_BACKUP_KV`；关闭须 OTP **删云端**。指纹相同则不 PUT。**不含** `monetization-funnel.v1`；打开备份不会上传意愿漏斗。白名单**仍不含** `daily-completions`；**恢复后** `applyPracticeBackupSnapshot` → `reconcileDailyCompletionAfterRestore` 从 `practice-days` 派生当日 `sessions`（`celebrated` 不可还原；见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` §9）。**本地** Preferences → Backup & restore 为 **v2**（14 localStorage keys + 可选 Electron `companionFiles`）；入口见 `LocalPracticeDataPanelUI` |
 | `focus-tiger.daily-wisdom.v1` | `DailyWisdomStore` / `resolveTodayWisdom` / `<daily-wisdom>` | Yin 每日一句：`{ dateKey, quoteId, recentIds[] }`；同日锁定；`recentIds` 滑动窗（默认 7）避近期重复；池条目 `{ id, text, attribution? }`（Yin 短句无署名；古典/文学句有 locale 署名）；entitlement featureKey **`content.daily-wisdom`**（`free` / `ongoing`，每次 resolve 走 `isEntitled` 姿势、非 paywall）；**不**写 entitlementOwnership；与 Quiet Line / `dailyZenQuote` **分池分 key**；**Phase A 落点** = Reflection 卡底部（`[data-testid=reflection-daily-wisdom]`）；Phase B 印花另支 |
-| `focus-tiger.mustard-seed-seal.v1` | `mustardSeedSeal` / `MustardSeedSealCardUI` | 纪念印《芥子须弥》三 case：`{ revealed, revealedAt, scoreAtReveal, revealedCaseIds, lastShownCaseId }`；门槛 = 统一练习 **score ≥ 21**；每首未揭示诗在完成仪式后出卡一次（Case 1 乐五斋诗稿 / Case 2 乐五斋七言歌行 / Case 3 乐五斋诗稿〇九〇二）；旧档仅 `revealed:true` 视为 Case 1 已见、仍可出 Case 2 再 Case 3；菜单轮换已揭示诗；**不**绑 tip/Sanctuary；章 = `public/ui/support/mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（2026-08-12 入库；EN 译维持现稿） |
+| `focus-tiger.mustard-seed-seal.v1` | `memorialSealDirectory` → `mustardSeedSeal` / `MustardSeedSealCardUI` | 静思典藏 **第一枚纪念印**《芥子须弥》三 case（内容 SSOT `CONTEMPLATIVE_ARCHIVE.md`；目录 `memorialSealDirectory.js` + `memorialSealCatalogCa.js`）：`{ revealed, revealedAt, scoreAtReveal, revealedCaseIds, lastShownCaseId }`；门槛 = 统一练习 **score ≥ 21**；每首未揭示诗在完成仪式后出卡一次；旧档仅 `revealed:true` 视为 Case 1 已见；菜单轮换已揭示诗；**不**绑 tip/Sanctuary |
+| `focus-tiger.contemplative-archive-seals.v1` | `contemplativeArchiveSeal` / `MustardSeedSealCardUI`（`archiveEntryId`） | 静思典藏 **独立纪念印**（CA-01…CA-12；配置 `memorialSealCatalogCa.js`）：`{ revealedEntryIds }`；**现网 enabled = 全部 12 条**（CA-01 score ≥ 30；CA-02 ≥ 60；其余按表内 `scoreThreshold`）；仪式在芥子须弥队列之后、Reflection 之前；菜单按门槛解锁 |
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
 | `focus-tiger.idle-companion-pip.v1` | `idleCompanionPipGate` / `IdleCompanionPipUI` | Idle Document PiP 实验原型：`{ used, usedAt }`。只记是否曾打开过浮窗，供后续是否加大投入参考；**不得**用于提醒 / 激励 / 限频。Safari 等不支持时入口不挂载 |
 | `focus-tiger.focus-coins.v1` | `FocusCoinsStore` / `applyFocusCoinsGrant` / `applyBreathPracticeFocusCoinsGrant` / `applyFocusCoinsRedeem` / `FocusCoinsPanelUI` | 寅币钱包：`{ balance, ownedIds, equippedTitle, lifetimeMarks, dateKey, day, session }`。L1 发点（Stay 达标 + **Breath 坐满按 Stay 档**）；L2 `__focusCoins.redeem(skuId)` 花点留下只增不减 `ownedIds`。清供 8 可兑为珍藏卡；晨露/须弥滤镜已拆（不点亮莲花/蒲团）。L3 `#yin-coin-panel` 只列 `listShopFocusCoinSkus()` = `FOCUS_COIN_CURIO_SHOP_IDS`。币标：`/ui/focus-coins/yin-coin-mark.png` 抬头、`yin-coin-mark-icon.png` 余额/价格（#354 定稿）；SKU 仍占位色点；**不**叠 `#sprite-stage`。时长 chip `#focus-coins-duration-hint`。`?focusCoins=0` 关闸完全不写、菜单行隐藏。**不**进练习备份 6 key；**不**满足 `isEntitled`；**不**写 Tea / Sanctuary `badgeIds`；**不**改莲花池自动开花 |
@@ -148,7 +155,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `collectionsWaveHello` | Yin's Collections 挥手点播（底栏 Play；抽屉不列 SKU） | 播已入库 `waveHello`；勿接欢迎池 / 10min 自主；勿改 PNG |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
-| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 + Quiet Line 混合句池（`overlayQuietLineTextForKey`）+ **Confide 句库**（`overlayConfideTemplateTextForKey` / `overlayConfideCorpusTextForId`） | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩 / Confide Send。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取（含 Quiet Line / Confide copy）。`prefetchTasteLayer` 并行拉 `/api/quiet-line` + `/api/confide-copy`；拉取不得与精灵预加载 / Arrival·Honesty CapCut 抢主线程；冻结表相同不另存副本（`RB-20260820-L330`）。扩池须过 `ANTI_PLAGIARISM_LAYER.md` 准入四问 **且** 值得保护四测。**冻表 vs 现网分叉**见该文 §3.1（本行不锁生产数字） |
+| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 + Quiet Line 混合句池（`overlayQuietLineTextForKey`）+ **Confide 句库**（`overlayConfideTemplateTextForKey` / `overlayConfideCorpusTextForId`） | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩 / Confide Send。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取（含 Quiet Line / Confide copy）。`prefetchTasteLayer` 并行拉 `/api/quiet-line` + `/api/confide-copy`；拉取不得与精灵预加载 / Arrival·Honesty CapCut 抢主线程；冻结表相同不另存副本（`RB-20260820-L330`）。扩池须过 `ANTI_PLAGIARISM_LAYER.md` 准入四问 **且** 值得保护四测。**冻表 vs 现网分叉**见该文 §3.1；兑现清单 §3.2.2（本行不锁生产数字） |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 
 完整键见 `EmotionController.js` 的 `EMOTIONS` / `EMOTION_KEYS`；情绪语义权威仍为 `EMOTION_BIBLE.md`。
@@ -218,6 +225,29 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 
 扩展第三种叠层：在 `sessionChromeSync` 的 `getPostSessionOverlaySources()` 数组追加 `() => other.isOpen()`，**不必**改 `computePostSessionOverlayActive`。
 
+### 4.1 overlayBusy 门控例外（文档先行 · 2026-09-09）
+
+> **地位**：`OVERLAY_SOURCE_CONTRACTS` 登记「谁开着算忙」。本表登记 **哪些忙碌源不得误伤并行交互**。运行时尚未加 `busyGateExceptions` 字段；先以本表 + Brief 结论句为准（`COLLAB.md` 第七节）。漏登记 = 新面板挡住不该停的动画（例：语言面板挡住切语问候）。
+
+| snapshotField / 源 | 默认计入 sceneAnim `overlayBusy` | 例外（须单独划界） | 实现锚 |
+|---|---|---|---|
+| `languageOpen` | 是（语言面板开着挡摸头 / 进睡 / 多数场景动画） | **切语问候不得被面板自己挡住**：问候路径须把 `languageOpen` 视为 false（面板即切换入口） | `main.js` `overlayBusyForLocaleGreeting`；`ritualFlowHudWiring.test.js` |
+| 其它 `OVERLAY_SOURCE_CONTRACTS` 行 | 按 `readers` / `deriveSceneAnimOverlayBusy` | 无则写「无例外」；新增源时必须填本列 | `overlaySlotContractRegistry.js` |
+
+新增会被算进 `overlayBusy` 的面板时：先补本表一行（含「无例外」或点名不得误伤的交互），再接线。禁止只测「面板能打开」。
+
+### 4.2 HUD 呼吸驱动者（FocusHUD live view · 2026-09-09）
+
+> **地位**：主渲染循环里谁在呼吸步、谁该推动左上角计时。漏登记 = HUD 停在 Idle / 00:00。新增带 breath 步的仪式 / 流程必须补行 **并** 接入 `overlayBreathing`。
+
+| 流程 | 呼吸判定 | 时长 / 进度接口 | 主循环 |
+|---|---|---|---|
+| 微仪式 `MicroRitualUI` | `phase === 'breath'` | `getElapsedSeconds()` / `getProgress()` | `microBreathing` → `overlayBreathing` |
+| 进阶仪式 `RitualFlowUI`（Morning / Emotional Reset / Work Transition） | `isBreathing()` | `getElapsedSeconds()` / `getProgress()` | `ritualBreathing` → `overlayBreathing` |
+| 正式 Focus 会话 | `FocusSession` focusing | 会话 elapsed / target | 非 overlay 路径（既有 HUD） |
+
+契约锁（源码字符串）：`ritualFlowHudWiring.test.js`。新 breath 流程不得只测面板内圆环，须写明左上角 Focusing + 秒数走动。
+
 ---
 
 ## 5. 用法（开工）
@@ -226,6 +256,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 2. 「谁用」列还有谁 → 写入保护面并复测。  
 3. 若属 §2.3 事故点 → 额外跑冒烟 + 对应 TEST_TRACKER 观感行。  
 4. 若触及 Idle chrome / Arrival / Honesty / Hints → 对照 **§6 双壳不变量** + `DEV_WORKFLOW_QUALITY.md` **§8（375）** 与 **§9（宽屏）** 故事最小集。
+5. 若触及 overlayBusy / HUD 呼吸 / 遮罩 dim → 对照 **§4.1–4.2** 与 `Z_INDEX.md` Idle 常驻 chrome，并在 Brief 写出点名结论句（`COLLAB.md` 第七节）。
 
 ---
 
