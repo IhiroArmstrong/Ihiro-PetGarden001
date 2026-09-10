@@ -122,6 +122,7 @@ import {
   microRitualJourneyDraft,
   resolveJourneyMinutes
 } from './core/journeyLogGate.js';
+import { syncJourneyPracticeMemories } from './core/journeyPracticeMemory.js';
 import { appendArrivalNoticeSignal } from './core/presenceSignalsGate.js';
 import {
   appendRitualChipPresenceSignals,
@@ -2040,10 +2041,20 @@ async function init() {
         afterHonestyCeremony();
       }
     },
-    onPracticeDay: ({ durationMinutes } = {}) => {
+    onPracticeDay: ({ durationMinutes, sourceId } = {}) => {
       practiceDaysStore.markToday(durationMinutes);
       lotusPondRuntime.notePracticeMinutes(durationMinutes);
       tipKindnessBadgesChrome.refresh();
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      if (sourceId) {
+        syncJourneyPracticeMemories(storage, {
+          sourceId,
+          practiceDaysStore,
+          lotusPondStore: lotusPondRuntime.store,
+          now
+        });
+      }
     },
     onSessionRecorded: ({ durationMinutes }) => {
       retentionFunnelStore.noteSessionComplete({ durationMinutes });
@@ -2847,6 +2858,15 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
+    syncJourneyPracticeMemories(
+      typeof localStorage !== 'undefined' ? localStorage : null,
+      {
+        sourceId: 'breath-micro-ritual',
+        practiceDaysStore,
+        lotusPondStore: lotusPondRuntime.store,
+        now
+      }
+    );
     applyBreathPracticeFocusCoinsGrant({
       durationMinutes,
       store: focusCoinsStore,

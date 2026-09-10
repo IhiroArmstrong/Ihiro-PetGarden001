@@ -161,9 +161,26 @@ export function writeJourneyLog(storage, state) {
   if (!storage) return;
   try {
     const normalized = normalizeJourneyLogState(state);
+    let extras = {};
+    try {
+      const prevRaw = storage.getItem(JOURNEY_LOG_STORAGE_KEY);
+      if (prevRaw) {
+        const prev = JSON.parse(prevRaw);
+        if (prev && typeof prev === 'object') {
+          if (Array.isArray(prev.memories)) extras.memories = prev.memories;
+          if (Array.isArray(prev.sourcesSeen)) {
+            extras.sourcesSeen = prev.sourcesSeen;
+          }
+        }
+      }
+    } catch {
+      /* keep extras empty */
+    }
+    if (Array.isArray(state.memories)) extras.memories = state.memories;
+    if (Array.isArray(state.sourcesSeen)) extras.sourcesSeen = state.sourcesSeen;
     storage.setItem(
       JOURNEY_LOG_STORAGE_KEY,
-      JSON.stringify({ entries: normalized.entries })
+      JSON.stringify({ entries: normalized.entries, ...extras })
     );
   } catch {
     // ignore quota / private mode
