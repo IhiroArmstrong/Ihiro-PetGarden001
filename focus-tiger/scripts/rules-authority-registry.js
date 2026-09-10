@@ -1120,7 +1120,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /session_gate\.sh/,
       /开工/,
       /继续/,
-      /大任务/
+      /大任务/,
+      /探索类/,
+      /本 Chat|本对话/
     ],
     topicSignals: [
       /agent-tool-budget/,
@@ -1141,6 +1143,16 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'parallel-tool-budget-numbers',
         pattern: /tool_(?:soft|hard)_limit(?:_qa|_impl|_large)?\s*[:=]\s*\d+/,
         note: '软/硬上限数字只在 config.json + agent-token-cost SSOT；别处只链主题'
+      },
+      {
+        id: 'resume-via-new-agent',
+        pattern: /硬顶后(?:应|须|可以)?新开\s*(?:Chat|Agent)/,
+        note: '继续只留本 Chat；禁止建议 New Agent 续同一任务'
+      },
+      {
+        id: 'count-writes-as-explore',
+        pattern: /(?:StrReplace|git status|test:smoke).{0,24}计入.{0,12}硬顶/,
+        note: '改文件 / git / 约定 smoke 不计入探索硬顶'
       }
     ]
   },

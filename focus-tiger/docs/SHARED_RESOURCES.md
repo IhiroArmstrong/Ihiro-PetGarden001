@@ -339,8 +339,8 @@ _（无）_
 | `gate-destructive-shell.sh` | `beforeShellExecution` | `git push\|reset\|clean\|rebase\|merge`；`gh pr merge`；`gh repo delete` | `permission: ask` — 远程 / 破坏性 git·gh 须确认 |
 | `gate-full-e2e-dispatch.sh` | `beforeShellExecution` | `gh workflow run`；`gh run watch\|rerun`；长 `sleep`（≥60s） | `permission: ask` — 全量 e2e / CI 轮询须确认 |
 | `gate-local-heavy-e2e.sh` | `beforeShellExecution` | `test:e2e`；`playwright test`；多 spec 链式 | `permission: deny` — 本地重 e2e 硬拦（逃生：`RUN_E2E_LOCAL=true`） |
-| `session_gate.sh` | `beforeSubmitPrompt` | PR 已合并 → 断会话；口令「大任务」「开工」「继续」选档并重置计数 | `continue: false` 或放行 |
-| `tool_budget.sh` | `preToolUse` | 按 `budget_tier`（qa/impl/large）计次；软 ask / 硬 deny | 耗尽时提示发「继续 &lt;任务&gt;」 |
+| `session_gate.sh` | `beforeSubmitPrompt` | PR 已合并 → 断会话；口令「大任务」「开工」「继续」选档并重置**探索**计数；新会话上的「继续」会提醒应留在本 Chat | `continue: false` 或放行 |
+| `tool_budget.sh` | `preToolUse` | 按 `budget_tier` **只计探索类**；软 ask / 硬 deny 只拦 Grep/Glob/整读大文件 | 探索耗尽时提示在**本对话**发「继续 &lt;任务&gt;」；不拦改文件/git |
 
 **`stop`**：空数组（2026-07-21 起不再发 Git 同步系统通知；`remind-git-sync.sh` 保留未挂）。
 

@@ -3,7 +3,7 @@
 
 HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$HOOK_DIR/config.json"
-STATE_ROOT="$HOOK_DIR/state"
+STATE_ROOT="${FOCUS_TIGER_HOOK_STATE_ROOT:-$HOOK_DIR/state}"
 mkdir -p "$STATE_ROOT"
 
 cfg() {
@@ -89,7 +89,7 @@ limits_for_tier() {
       ;;
     impl)
       soft=$(cfg tool_soft_limit_impl 40)
-      hard=$(cfg tool_hard_limit_impl 50)
+      hard=$(cfg tool_hard_limit_impl 64)
       ;;
     qa|*)
       soft=$(cfg tool_soft_limit_qa 22)
@@ -110,4 +110,62 @@ classify_prompt_tier_action() {
   else
     echo unchanged
   fi
+}
+
+# Pull a field from preToolUse JSON (tool_input / arguments / top-level).
+json_tool_field() {
+  local json="$1" key="$2"
+  echo "$json" | jq -r --arg k "$key" '
+    (.tool_input // {})[$k] // (.arguments // {})[$k] // .[$k] // empty
+  ' 2>/dev/null
+}
+
+# 0 = this call counts against explore budget; 1 = productive / verify, skip count.
+is_explore_budgeted() {
+  local json="$1"
+  local tool n path offset limit cmd thresh lines
+  tool=$(field "$json" '.tool_name' '')
+  n=$(printf '%s' "$tool" | tr '[:upper:]' '[:lower:]')
+
+  case "$n" in
+    grep|glob|*grep*|*glob*|*codebase_search*|websearch|webfetch|web_search|web_fetch|*searchconversations*|task)
+      return 0
+      ;;
+  esac
+
+  if printf '%s' "$n" | grep -qE '^(read|read_file|readfile)$'; then
+    path=$(json_tool_field "$json" path)
+    [ -z "$path" ] && path=$(json_tool_field "$json" file_path)
+    offset=$(json_tool_field "$json" offset)
+    limit=$(json_tool_field "$json" limit)
+    if [ -n "$offset" ] && [ "$offset" != "null" ]; then
+      return 1
+    fi
+    if [ -n "$limit" ] && [ "$limit" != "null" ]; then
+      return 1
+    fi
+    if [ -z "$path" ] || [ ! -f "$path" ]; then
+      return 1
+    fi
+    thresh=$(cfg explore_unbounded_read_lines 400)
+    lines=$(wc -l < "$path" 2>/dev/null | tr -d ' ')
+    [ -z "$lines" ] && lines=0
+    if [ "$lines" -gt "$thresh" ]; then
+      return 0
+    fi
+    return 1
+  fi
+
+  if printf '%s' "$n" | grep -qE '^(shell|bash|terminal)$'; then
+    cmd=$(json_tool_field "$json" command)
+    if printf '%s' "$cmd" | grep -qiE '(^|[;&|[:space:]])(rg|grep|egrep|fgrep|find|ag|ack)[[:space:]]'; then
+      return 0
+    fi
+    if printf '%s' "$cmd" | grep -qiE 'git[[:space:]]+grep'; then
+      return 0
+    fi
+    return 1
+  fi
+
+  return 1
 }

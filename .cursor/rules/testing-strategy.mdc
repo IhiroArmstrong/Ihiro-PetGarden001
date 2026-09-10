@@ -38,7 +38,7 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 1. **收尾跑一次**：功能块或 PR 粒度改完后，跑 **一次** `npm run test:smoke`（或已约定的单 spec `test:e2e:changed`）。通过 → 可 commit / push。
 2. **失败再深挖**：仅当 smoke / 单 spec 红时，才针对性 `Read` 失败日志或相关源码片段；**禁止**为排查一次失败再开第二轮全量探索。
 3. **禁止微改微测**：同一实现回合内，**不要**每改几行就跑一遍 smoke / e2e——浪费工具预算与 Fast Request。
-4. **与分档硬顶配合**：探索类调用受 `tool_budget.sh` 计数；验证类 git 检查不受限（见 `agent-token-cost`「验证类 vs 探索类」）。
+4. **与分档硬顶配合**：仅探索类调用受 `tool_budget.sh` 计数；`StrReplace` / 定点 Read / 验证类 git / 约定 smoke **不计次、硬顶不拦**（见 `agent-token-cost`「验证类 vs 探索类」与「计什么」）。
 
 ## 本地 e2e 硬顶（e2e-local-budget · 可执行）
 

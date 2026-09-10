@@ -704,7 +704,7 @@
 
 ## 本地 Cursor 能耗（索引 · 并行 Agent · Cloud）
 
-> 预览浏览器限时规则以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准，本文档**不复述具体数值**。本节管 **Process Explorer 里 Shared / Agent / Renderer 偏高** 时的治本操作。Agent **token / Fast Request** 会话卫生见 [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc)（`RULES_INDEX` → `agent-token-cost`）。**工具调用预算分档**（口令「开工」「继续」「大任务」；hook 可执行）见同文件「工具调用预算分档」（`agent-tool-budget`）。
+> 预览浏览器限时规则以 [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) **当前生效条文**为准，本文档**不复述具体数值**。本节管 **Process Explorer 里 Shared / Agent / Renderer 偏高** 时的治本操作。Agent **token / Fast Request** 会话卫生见 [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc)（`RULES_INDEX` → `agent-token-cost`）。**工具调用预算分档**（口令「开工」「继续」「大任务」；hook **只计探索**；硬顶后续做只在本 Chat 发「继续」，勿与合入后新开 Chat 混淆）见同文件「工具调用预算分档」（`agent-tool-budget`）。
 
 ### Merged → 必须新开会话（Agent token · P0）
 
