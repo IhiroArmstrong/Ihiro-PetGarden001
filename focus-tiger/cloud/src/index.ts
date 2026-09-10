@@ -45,6 +45,7 @@ import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelet
 import { handleDesktopCheckoutReturn } from "./routes/desktopCheckoutReturn";
 import { handleLanternPresence } from "./routes/lanternPresence";
 import { handleFocusCircle } from "./routes/focusCircle";
+import { handleGrowthMetricsConfig } from "./routes/growthMetricsConfig";
 
 /**
  * Focus Tiger · Cloudflare Workers API.
@@ -98,6 +99,7 @@ export default {
 				url.pathname === "/api/monetization-funnel-ingest" ||
 				url.pathname === "/api/ype-personalization-ingest" ||
 				url.pathname === "/api/ype-personalization-delete" ||
+				url.pathname === "/api/growth-metrics-config" ||
 				url.pathname === "/api/lantern-presence" ||
 				url.pathname === "/api/focus-circle" ||
 				url.pathname === "/api/newsletter/subscribe")
@@ -511,6 +513,19 @@ export default {
 				);
 			}
 			return withCors(await handleEmotionWeight(request), origin);
+		}
+
+		if (url.pathname === "/api/growth-metrics-config") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleGrowthMetricsConfig(request, env),
+				origin,
+			);
 		}
 
 		if (url.pathname === "/api/monetization-funnel-ingest") {

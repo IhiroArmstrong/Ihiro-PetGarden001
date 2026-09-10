@@ -11,6 +11,10 @@ import {
   resolvePersonaScoreEligibleMinutes,
   resolveScoreEligibleIncrement
 } from './scoreDailyCap.js';
+import {
+  resetGrowthMetricsConfigOverlayForTests,
+  setGrowthMetricsConfigOverlay
+} from './growthMetricsConfigOverlay.js';
 
 describe('scoreDailyCap', () => {
   it('caps a single day at 180 minutes for score', () => {
@@ -55,5 +59,12 @@ describe('scoreDailyCap', () => {
       }),
       180
     );
+  });
+
+  it('capDailyMinutesForScore respects remote overlay when applied', () => {
+    setGrowthMetricsConfigOverlay({ schemaVersion: 1, dailyScoreCapMinutes: 240 });
+    assert.equal(capDailyMinutesForScore(600), 240);
+    resetGrowthMetricsConfigOverlayForTests();
+    assert.equal(capDailyMinutesForScore(600), DAILY_SCORE_CAP_MINUTES);
   });
 });
