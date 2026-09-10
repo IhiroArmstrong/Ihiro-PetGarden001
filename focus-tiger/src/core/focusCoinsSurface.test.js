@@ -26,7 +26,7 @@ const LOOKUP = {
   YIN_COIN_GAP_MINUTES: 'Need {n} more lifetime minutes.',
   YIN_COIN_GAP_PRACTICE_DAYS: 'Need {n} more practice days.',
   YIN_COIN_GAP_INCENSE: 'Need incense, or {n} more practice days.',
-  YIN_COIN_GAP_LOTUS: 'Need a first lotus bloom.',
+  YIN_COIN_GAP_LOTUS: 'Need a lotus trace in the garden first.',
   YIN_COIN_GAP_HONESTY: 'Need one Honesty wake.',
   YIN_COIN_GAP_RECOVER: 'Need one active Recover.'
 };
